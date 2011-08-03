@@ -14,15 +14,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *	\file       htdocs/compta/index.php
  *	\ingroup    compta
  *	\brief      Main page of accountancy area
- *	\version    $Id: index.php,v 1.182 2011/06/30 21:53:02 eldy Exp $
+ *	\version    $Id: index.php,v 1.184 2011/08/03 00:46:24 eldy Exp $
  */
 
 require('../main.inc.php');
@@ -100,12 +99,7 @@ print_fiche_titre($langs->trans("AccountancyTreasuryArea"));
 print '<table border="0" width="100%" class="notopnoleftnoright">';
 
 print '<tr>';
-
-if (($conf->facture->enabled && $user->rights->facture->lire) ||
-    ($conf->fournisseur->enabled && $user->rights->fournisseur->facture->lire))
-{
-	print '<td valign="top" width="30%" class="notopnoleft">';
-}
+print '<td valign="top" width="30%" class="notopnoleft">';
 
 $max=3;
 
@@ -321,16 +315,8 @@ if ($conf->fournisseur->enabled && $user->rights->fournisseur->facture->lire)
 	}
 }
 
-if (($conf->facture->enabled && $user->rights->facture->lire) ||
-    ($conf->fournisseur->enabled && $user->rights->fournisseur->lire))
-{
-	print '</td>';
-	print '<td valign="top" width="70%" class="notopnoleftnoright">';
-}
-else
-{
-	print '<td valign="top" width="100%" class="notopnoleftnoright">';
-}
+print '</td>';
+print '<td valign="top" width="70%" class="notopnoleftnoright">';
 
 // Last modified customer invoices
 if ($conf->facture->enabled && $user->rights->facture->lire)
@@ -1045,5 +1031,5 @@ print '</table>';
 $db->close();
 
 
-llxFooter('$Date: 2011/06/30 21:53:02 $ - $Revision: 1.182 $');
+llxFooter('$Date: 2011/08/03 00:46:24 $ - $Revision: 1.184 $');
 ?>

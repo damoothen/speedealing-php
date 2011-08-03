@@ -14,14 +14,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *		\file       htdocs/theme/eldy/style.css.php
  *		\brief      Fichier de style CSS du theme Eldy
- *		\version    $Id: style.css.php,v 1.87 2011/07/21 01:20:33 eldy Exp $
+ *		\version    $Id: style.css.php,v 1.89 2011/07/31 23:22:05 eldy Exp $
  */
 
 //if (! defined('NOREQUIREUSER')) define('NOREQUIREUSER','1');	// Not disabled cause need to load personalized language
@@ -1207,9 +1206,9 @@ border: 0px;
  */
 
 .boxtable {
--moz-box-shadow: 8px 8px 20px #CCC;
--webkit-box-shadow: 8px 8px 20px #CCC;
-box-shadow: 8px 8px 20px #CCC;
+-moz-box-shadow: 4px 4px 4px #CCC;
+-webkit-box-shadow: 4px 4px 4px #CCC;
+box-shadow: 4px 4px 4px #CCC;
 }
 
 .box {

@@ -14,8 +14,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
@@ -23,7 +22,7 @@
  *	\brief      File of class to manage widget boxes
  *	\author     Rodolphe Qiedeville
  *	\author	    Laurent Destailleur
- *	\version    $Id: boxes.php,v 1.53 2011/07/08 17:59:55 eldy Exp $
+ *	\version    $Id: boxes.php,v 1.55 2011/08/01 13:26:21 hregis Exp $
  */
 
 
@@ -221,7 +220,7 @@ class InfoBox
 					{
 						$boxname = $regs[1];
 						$module = $regs[2];
-						$sourcefile = dol_buildpath("/".$module."/inc/boxes/".$boxname.".php");
+						$sourcefile = dol_buildpath("/".$module."/includes/boxes/".$boxname.".php");
 					}
 					else
 					{
@@ -282,7 +281,7 @@ class InfoBox
 					{
 						$boxname = $regs[1];
 						$module = $regs[2];
-						$sourcefile = "/".$module."/inc/boxes/".$boxname.".php";
+						$sourcefile = "/".$module."/includes/boxes/".$boxname.".php";
 					}
 					else
 					{
