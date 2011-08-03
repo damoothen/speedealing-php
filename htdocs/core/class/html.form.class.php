@@ -24,15 +24,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *	\file       htdocs/core/class/html.form.class.php
  *  \ingroup    core
  *	\brief      File of class with all html predefined components
- *	\version	$Id: html.form.class.php,v 1.190 2011/07/17 19:01:26 eldy Exp $
+ *	\version	$Id: html.form.class.php,v 1.193 2011/07/31 23:45:14 eldy Exp $
  */
 
 
@@ -138,17 +137,18 @@ class Form
     /**
      *	Show a text and picto with tooltip on text or picto
      *	@param  text				Text to show
-     *	@param  htmltext	    	Content html of tooltip, coded into HTML/UTF8
+     *	@param  htmltext	    	Content html of tooltip. Must be HTML/UTF8 encoded.
      *	@param	tooltipon			1=tooltip sur texte, 2=tooltip sur picto, 3=tooltip sur les 2
      *	@param	direction			-1=Le picto est avant, 0=pas de picto, 1=le picto est apres
      *	@param	img					Code img du picto (use img_xxx() function to get it)
      *  @param  extracss            Add a CSS style to td tags
      *  @param  notabs              Do not include table and tr tags
      *  @param  incbefore			Include code before the text
+     *  @param  noencodehtmltext    Do not encode into html entity the htmltext
      *	@return	string				Code html du tooltip (texte+picto)
      * 	@see	Use function textwithpicto if you can.
      */
-    function textwithtooltip($text,$htmltext,$tooltipon=1,$direction=0,$img='',$extracss='',$notabs=0,$incbefore='')
+    function textwithtooltip($text,$htmltext,$tooltipon=1,$direction=0,$img='',$extracss='',$notabs=0,$incbefore='',$noencodehtmltext=0)
     {
         global $conf;
 
@@ -161,8 +161,10 @@ class Form
         $htmltext=str_replace("\n","",$htmltext);
 
        	$htmltext=str_replace('"',"&quot;",$htmltext);
-       	$paramfortooltipimg=' class="classfortooltip'.($extracss?' '.$extracss:'').'" title="'.dol_escape_htmltag($htmltext,1).'"'; // Attribut to put on td img tag to store tooltip
-       	$paramfortooltiptd =($extracss?' class="'.$extracss.'"':''); // Attribut to put on td text tag
+       	if ($tooltipon == 2 || $tooltipon == 3) $paramfortooltipimg=' class="classfortooltip'.($extracss?' '.$extracss:'').'" title="'.($noencodehtmltext?$htmltext:dol_escape_htmltag($htmltext,1)).'"'; // Attribut to put on td img tag to store tooltip
+        else $paramfortooltipimg =($extracss?' class="'.$extracss.'"':''); // Attribut to put on td text tag
+       	if ($tooltipon == 1 || $tooltipon == 3) $paramfortooltiptd=' class="classfortooltip'.($extracss?' '.$extracss:'').'" title="'.($noencodehtmltext?$htmltext:dol_escape_htmltag($htmltext,1)).'"'; // Attribut to put on td tag to store tooltip
+        else $paramfortooltiptd =($extracss?' class="'.$extracss.'"':''); // Attribut to put on td text tag
 
        	$s="";
         if (empty($notabs)) $s.='<table class="nobordernopadding" summary=""><tr>';
@@ -198,9 +200,10 @@ class Form
      *	@param		direction			1=Icon is after text, -1=Icon is before text
      * 	@param		type				Type of picto (info, help, warning, superadmin...)
      *  @param  	extracss            Add a CSS style to td tags
+     *  @param      noencodehtmltext    Do not encode into html entity the htmltext
      * 	@return		string				HTML code of text, picto, tooltip
      */
-    function textwithpicto($text,$htmltext,$direction=1,$type='help',$extracss='')
+    function textwithpicto($text,$htmltext,$direction=1,$type='help',$extracss='',$noencodehtmltext=0)
     {
         global $conf;
 
@@ -226,7 +229,7 @@ class Form
         // Warnings
         if ($type == 'warning') 			$img=img_warning($alt);
 
-        return $this->textwithtooltip($text,$htmltext,2,$direction,$img,$extracss);
+        return $this->textwithtooltip($text,$htmltext,2,$direction,$img,$extracss,0,'',$noencodehtmltext);
     }
 
     /**
@@ -676,7 +679,7 @@ class Form
         $sql = "SELECT s.rowid, s.name, s.firstname, s.poste FROM";
         $sql.= " ".MAIN_DB_PREFIX ."socpeople as s";
         $sql.= " WHERE entity = ".$conf->entity;
-        if ($socid) $sql.= " AND fk_soc=".$socid;
+        if ($socid > 0) $sql.= " AND fk_soc=".$socid;
         $sql.= " ORDER BY s.name ASC";
 
         dol_syslog("Form::select_contacts sql=".$sql);

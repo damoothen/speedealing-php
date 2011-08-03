@@ -16,8 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  * or see http://www.gnu.org/
  */
 
@@ -25,7 +24,7 @@
  *	\file       htdocs/lib/pdf.lib.php
  *	\brief      Set of functions used for PDF generation
  *	\ingroup    core
- *	\version    $Id: pdf.lib.php,v 1.97 2011/07/20 13:32:25 eldy Exp $
+ *	\version    $Id: pdf.lib.php,v 1.99 2011/07/31 23:25:42 eldy Exp $
  */
 
 
@@ -635,7 +634,8 @@ function pdf_pagefoot(&$pdf,$outputlangs,$paramfreetext,$fromcompany,$marge_bass
     if (pdf_getPDFFont($outputlangs) == 'Helvetica')
     {
         $pdf->SetXY(-20,-$posy);
-        $pdf->MultiCell(11, 2, $pdf->PageNo().'/{nb}', 0, 'R', 0);
+        $pdf->MultiCell(11, 2, $pdf->PageNo().'/'.$pdf->getAliasNbPages(), 0, 'R', 0);
+        //print 'xxx'.$pdf->getAliasNbPages().'-'.$pdf->getAliasNumPage();exit;
     }
 }
 

@@ -22,7 +22,7 @@
 /**
  *	\file       htdocs/index.php
  *	\brief      Dolibarr home page
- *	\version    $Id: index.php,v 1.198 2011/07/08 15:35:08 eldy Exp $
+ *	\version    $Id: index.php,v 1.199 2011/07/30 10:23:24 eldy Exp $
  */
 
 define('NOCSRFCHECK',1);	// This is login page. We must be able to go on it from another web site.
@@ -580,7 +580,7 @@ if ($user->admin && empty($conf->global->MAIN_REMOVE_INSTALL_WARNING))
     }
 
     // Conf files must be in read only mode
-    if (is_writable(DOL_DOCUMENT_ROOT.'/conf/conf.php'))
+    if (is_writable($conffile))
     {
         $langs->load("errors");
         $langs->load("other");
@@ -599,7 +599,7 @@ if ($user->admin && empty($conf->global->MAIN_REMOVE_INSTALL_WARNING))
 
 $db->close();
 
-llxFooter('$Date: 2011/07/08 15:35:08 $ - $Revision: 1.198 $');
+llxFooter('$Date: 2011/07/30 10:23:24 $ - $Revision: 1.199 $');
 
 
 /**

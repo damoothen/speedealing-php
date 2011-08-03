@@ -3,7 +3,7 @@
  * Copyright (C) 2003      Jean-Louis Bergamo   <jlb@j1b.org>
  * Copyright (C) 2004-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2004      Eric Seigne          <eric.seigne@ryxeo.com>
- * Copyright (C) 2005-2010 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2011      Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -17,14 +17,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *  \file       htdocs/admin/modules.php
  *  \brief      Page to activate/disable all modules
- *  \version    $Id$
+ *  \version    $Id: modules.php,v 1.157 2011/08/01 12:25:15 hregis Exp $
  */
 
 require("../main.inc.php");
@@ -81,12 +80,35 @@ $modules = array();
 $orders = array();
 $categ = array();
 $dirmod = array();
+$modulesdir = array();
 $i = 0;	// is a sequencer of modules found
 $j = 0;	// j is module number. Automatically affected if module number not defined.
-foreach ($conf->file->dol_document_root as $dirroot)
-{
-	$dir = $dirroot . "/includes/modules/";
 
+foreach ($conf->file->dol_document_root as $type => $dirroot)
+{
+	$modulesdir[] = $dirroot . "/includes/modules/";
+	
+	if ($type == 'alt')
+	{	
+		$althandle=@opendir($dirroot);
+		if (is_resource($althandle))
+		{
+			while (($file = readdir($althandle))!==false)
+			{
+			    if (is_dir($dirroot.'/'.$file) && substr($file, 0, 1) <> '.' && substr($file, 0, 3) <> 'CVS' && $file != 'includes')
+			    {
+			    	if (is_dir($dirroot . '/' . $file . '/includes/modules/'))
+			    	{
+			    		$modulesdir[] = $dirroot . '/' . $file . '/includes/modules/';
+			    	}
+			    }
+			}
+		}
+	}
+}
+
+foreach ($modulesdir as $dir)
+{
 	// Load modules attributes in arrays (name, numero, orders) from dir directory
 	//print $dir."\n<br>";
 	dol_syslog("Scan directory ".$dir." for modules");
@@ -113,6 +135,7 @@ foreach ($conf->file->dol_document_root as $dirroot)
 		            {
 		                $j = 1000 + $i;
 		            }
+
 					$modulequalified=1;
 
 					// We discard modules according to features level (PS: if module is activated we always show it)
@@ -123,14 +146,14 @@ foreach ($conf->file->dol_document_root as $dirroot)
 					if ($modulequalified)
 					{
 						$modules[$i] = $objMod;
-                                                $filename[$i]= $modName;
-                                                $orders[$i]  = $objMod->family."_".$j;   // Tri par famille puis numero module
+			            $filename[$i]= $modName;
+			            $orders[$i]  = $objMod->family."_".$j;   // Tri par famille puis numero module
 						//print "x".$modName." ".$orders[$i]."\n<br>";
 						if (isset($categ[$objMod->special])) $categ[$objMod->special]++;					// Array of all different modules categories
-                                                else $categ[$objMod->special]=1;
+			            else $categ[$objMod->special]=1;
 						$dirmod[$i] = $dirroot;
 						$j++;
-                                                $i++;
+			            $i++;
 					}
 					else dol_syslog("Module ".get_class($objMod)." not qualified");
 		        }
@@ -216,8 +239,8 @@ if ($mesg) print '<div class="error">'.$mesg.'</div>';
 if ($mode != 4)
 {
     print "<table summary=\"list_of_modules\" class=\"noborder\" width=\"100%\">\n";
-    print "<tr class=\"liste_titre\">\n";
-    //print '<tr class="liste_total">'."\n";
+    //print "<tr class=\"liste_titre\">\n";
+    print '<tr class="liste_total">'."\n";
     //print "  <td>".$langs->trans("Family")."</td>\n";
     print "  <td colspan=\"2\">".$langs->trans("Module")."</td>\n";
     print "  <td>".$langs->trans("Description")."</td>\n";
@@ -335,14 +358,7 @@ if ($mode != 4)
             print "</td>\n";
 
             // Activate/Disable and Setup (2 columns)
-            if(!empty($objMod->moddir) && !is_readable($dirroot."/".$objMod->moddir."/index.php"))
-            {
-                print "<td align=\"center\" valign=\"top\">"; // Ne charge pas le module car dossier module vide
-                print $langs->trans("NotInstalled");
-                print '</td>'."\n";
-                print "<td>&nbsp;</td>\n";
-            }
-            elseif (! empty($conf->global->$const_name))
+            if (! empty($conf->global->$const_name))
             {
                 $disableSetup = 0;
 
@@ -413,11 +429,11 @@ if ($mode != 4)
                 {
                     // Ne devrait pas arriver.
                 }
-                
+
                 // Module non actif
-                print '<a href="modules.php?id='.$objMod->numero.'&amp;action=set&amp;value=' . $modName . '&amp;mode=' . $mode . '">';
-                print img_picto($langs->trans("Disabled"),'off');
-                print "</a></td>\n  <td>&nbsp;</td>\n";
+               	print '<a href="modules.php?id='.$objMod->numero.'&amp;action=set&amp;value=' . $modName . '&amp;mode=' . $mode . '">';
+               	print img_picto($langs->trans("Disabled"),'off');
+               	print "</a></td>\n  <td>&nbsp;</td>\n";
             }
 
             print "</tr>\n";
@@ -457,5 +473,5 @@ print '</div>';
 
 $db->close();
 
-llxFooter('$Date$ - $Revision$');
+llxFooter('$Date: 2011/08/01 12:25:15 $ - $Revision: 1.157 $');
 ?>
