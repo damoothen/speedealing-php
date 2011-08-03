@@ -433,5 +433,5 @@ else
 
 $db->close();
 
-llxFooter('$Date$ - $Revision$');
+llxFooter('$Date: 2011/08/03 00:46:26 $ - $Revision: 1.79 $');
 ?>
