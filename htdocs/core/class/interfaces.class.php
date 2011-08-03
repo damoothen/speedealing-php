@@ -14,15 +14,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *   \file		    htdocs/core/class/interfaces.class.php
  *   \ingroup		core
  *   \brief			Fichier de la classe de gestion des triggers
- *   \version		$Id: interfaces.class.php,v 1.7 2011/06/27 10:41:31 hregis Exp $
+ *   \version		$Id: interfaces.class.php,v 1.9 2011/07/31 23:45:13 eldy Exp $
  */
 
 
@@ -122,7 +121,7 @@ class Interfaces
     					if ($objMod)
     					{
     						// Bypass if workflow module is enabled and if the trigger asked to be disable in such case
-    						if ($conf->workflow->enabled && ! empty($objMod->disabled_if_workflow))
+    						if (! empty($conf->workflow->enabled) && ! empty($objMod->disabled_if_workflow))
     						{
     							dol_syslog("Interfaces::run_triggers action=".$action." Bypass triggers for file '".$file."'",LOG_INFO);
     							continue;

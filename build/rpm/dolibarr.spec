@@ -20,7 +20,7 @@ Vendor: Dolibarr dev team
 
 URL: http://www.%{name}.org
 Source: /usr/src/RPM/SOURCES/%{name}-%{version}.tgz
-#BuildArch: noarch
+BuildArch: noarch
 #BuildArchitectures: noarch
 BuildRoot: /tmp/%{name}-buildroot
 #Icon: dolibarr_logo1.gif
@@ -48,7 +48,7 @@ AutoReqProv: no
 
 
 %description
-Dolibarr ERP & CRM is an easy to use open source/free software for small  
+An easy to use CRM & ERP open source/free software for small  
 and medium companies, foundations or freelances. It includes different 
 features for Enterprise Resource Planning (ERP) and Customer Relationship 
 Management (CRM) but also for different other activities.
@@ -56,7 +56,7 @@ Dolibarr was designed to provide only features you need and be easy to
 use.
 
 %description -l es
-Dolibarr ERP y CRM es un software open source/gratis para pequeñas y
+Un software ERP y CRM open source/gratis para pequeñas y
 medianas empresas, asociaciones o autónomos. Incluye diferentes
 funcionalidades para la Planificación de Recursos Empresariales (ERP) y
 Gestión de la Relación con los Clientes (CRM) así como para para otras
@@ -65,13 +65,13 @@ solamente las funcionalidades que necesita y haciendo hincapié en su
 facilidad de uso.
     
 %description -l fr
-Dolibarr ERP & CRM est un logiciel de gestion de PME/PMI, autoentrepreneurs, 
+Logiciel ERP & CRM de gestion de PME/PMI, autoentrepreneurs, 
 artisans ou associations. Il permet de gérer vos clients, prospect, 
 fournisseurs, devis, factures, comptes bancaires, agenda, campagne emailings
 et bien d'autres choses dans une interface pensée pour la simplicité.
 
 %description -l it
-Dolibarr è un programma gestionale open source e gratuito per piccole e medie
+Un programma gestionale open source e gratuito per piccole e medie
 imprese, fondazioni e liberi professionisti. Include varie funzionalità per
 Enterprise Resource Planning e gestione dei clienti (CRM), ma anche ulteriori
 attività. Dolibar è progettato per poter fornire solo ciò di cui hai bisogno 
@@ -101,6 +101,7 @@ mkdir -p $RPM_BUILD_ROOT/var/www/dolibarr/doc
 mkdir -p $RPM_BUILD_ROOT/var/www/dolibarr/htdocs
 mkdir -p $RPM_BUILD_ROOT/var/www/dolibarr/scripts
 
+# %{_datadir} = /usr/share
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/pixmaps
 cp doc/images/dolibarr_48x48.png $RPM_BUILD_ROOT%{_datadir}/pixmaps/dolibarr.png
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/applications
@@ -138,23 +139,63 @@ rm -rf $RPM_BUILD_ROOT
 #%config /var/www/dolibarr/htdocs/conf/conf.php
 
 
-#---- post (after install)
+#---- post (after unzip during install)
 %post
-%update_menus
+#%update_menus	# Does not exists on fedora nor mandriva
 
+
+# Define vars
 # Dolibarr files are stored into /var/www
 export targetdir='/var/www/dolibarr'
-# Dolibarr uploaded files and generated documents are stored into /usr/share/dolibarr/documents 
-export docdir='/usr/share/dolibarr/documents'
+# Dolibarr uploaded files and generated documents will be stored into docdir 
+#export docdir="/var/lib/dolibarr/documents"
+export docdir="/usr/share/dolibarr/documents"
+export installfileorig="$targetdir/build/rpm/install.forced.php.install"
+export installconfig="%{_sysconfdir}/dolibarr/install.forced.php"
+export apachefileorig="$targetdir/build/rpm/httpd-dolibarr.conf"
+export apacheconfig="%{_sysconfdir}/dolibarr/apache.conf"
+export sefileorig="$targetdir/build/rpm/file_contexts.dolibarr"
+export seconfig="%{_sysconfdir}/selinux/targeted/contexts/files/file_contexts.dolibarr"
+#config="/usr/share/dolibarr/htdocs/conf/conf.php"
+config="%{_sysconfdir}/dolibarr/conf.php"
+lockfile="/usr/share/dolibarr/install.lock"
+
+
+# Detect OS
+os='unknown';
+if [ -d %{_sysconfdir}/httpd/conf.d ]; then
+    export os='fedora-redhat';
+    export apachelink="%{_sysconfdir}/httpd/conf.d/dolibarr.conf"
+    export apacheuser='apache';
+    export apachegroup='apache';
+fi
+if [ -d %{_sysconfdir}/apache2/conf.d -a `grep ^wwwrun /etc/passwd | wc -l` -ge 1 ]; then
+    export os='opensuse';
+    export apachelink="%{_sysconfdir}/apache2/conf.d/dolibarr.conf"
+    export apacheuser='wwwrun';
+    export apachegroup='www';
+fi
+if [ -d %{_sysconfdir}/httpd/conf.d -a `grep -i "^mageia\|mandriva" /etc/issue | wc -l` -ge 1 ]; then
+    export os='mageia-mandriva';
+    export apachelink="%{_sysconfdir}/httpd/conf.d/dolibarr.conf"
+    export apacheuser='apache';
+    export apachegroup='apache';
+fi
+if [ -d %{_sysconfdir}/apache2/conf.d -a `grep ^www-data /etc/passwd | wc -l` -ge 1 ]; then
+    export os='ubuntu-debian';
+    export apachelink="%{_sysconfdir}/apache2/conf.d/dolibarr.conf"
+    export apacheuser='www-data';
+    export apachegroup='www-data';
+fi
+echo OS detected: $os
 
 
 # Create empty directory for uploaded files and generated documents 
 echo Create document directory $docdir
 mkdir -p $docdir
+mkdir -p %{_sysconfdir}/dolibarr
 
 # Create install.forced.php into Dolibarr install directory
-fileorig="$targetdir/build/rpm/install.forced.php.install"
-config="$targetdir/htdocs/install/install.forced.php"
 superuserlogin=''
 superuserpassword=''
 if [ -f %{_sysconfdir}/mysql/debian.cnf ] ; then
@@ -164,72 +205,55 @@ if [ -f %{_sysconfdir}/mysql/debian.cnf ] ; then
 fi
 echo Mysql superuser found to use is $superuserlogin
 if [ -z "$superuserlogin" ] ; then
-    cat $fileorig | sed -e 's/__SUPERUSERLOGIN__/root/g' | sed -e 's/__SUPERUSERPASSWORD__//g' > $config
+    cat $installfileorig | sed -e 's/__SUPERUSERLOGIN__/root/g' | sed -e 's/__SUPERUSERPASSWORD__//g' > $installconfig
 else
-    cat $fileorig | sed -e 's/__SUPERUSERLOGIN__/'$superuserlogin'/g' | sed -e 's/__SUPERUSERPASSWORD__/'$superuserpassword'/g' > $config
+    cat $installfileorig | sed -e 's/__SUPERUSERLOGIN__/'$superuserlogin'/g' | sed -e 's/__SUPERUSERPASSWORD__/'$superuserpassword'/g' > $installconfig
+fi
+chown -R root:$apachegroup $installconfig
+chmod -R 660 $installconfig
+
+# Create an empty conf.php with permission to web server
+if [ ! -f $config ]
+then 
+	echo Create empty file $config		
+	touch $config
+	chown -R root:$apachegroup $config
+	chmod -R 660 $config
 fi
 
-# Create a config file %{_sysconfdir}/dolibarr/apache.conf
-if [ ! -f %{_sysconfdir}/dolibarr/apache.conf ]; then
-  	 echo Create dolibarr web server config file %{_sysconfdir}/dolibarr/apache.conf
-     mkdir -p %{_sysconfdir}/dolibarr
-     cp $targetdir/build/rpm/httpd-dolibarr.conf %{_sysconfdir}/dolibarr/apache.conf
-     chmod a-x %{_sysconfdir}/dolibarr/apache.conf
-     chmod go-w %{_sysconfdir}/dolibarr/apache.conf
+# Create config file for apache $apacheconfig
+if [ ! -f $apacheconfig ]; then
+  	 echo Create dolibarr web server config file $apacheconfig
+     cp $apachefileorig $apacheconfig
+     chmod a-x $apacheconfig
+     chmod go-w $apacheconfig
 fi
 
+# Create config file for se $seconfig
+if [ ! -f $seconfig ]; then
+  	 echo Create se config file $seconfig
+     cp $sefileorig $seconfig
+#     chmod a-x $apacheconfig
+#     chmod go-w $apacheconfig
+fi
 
-# Detect OS
-os='unknown';
-if [ -d %{_sysconfdir}/httpd/conf.d ]; then
-    export os='fedora-redhat';
-    export conffile="%{_sysconfdir}/httpd/conf.d/dolibarr.conf"
-    export apacheuser='apache';
-    export apachegroup='apache';
-fi
-if [ -d %{_sysconfdir}/apache2/conf.d -a `grep ^wwwrun /etc/passwd | wc -l` -ge 1 ]; then
-    export os='opensuse';
-    export conffile="%{_sysconfdir}/apache2/conf.d/dolibarr.conf"
-    export apacheuser='wwwrun';
-    export apachegroup='www';
-fi
-if [ -d %{_sysconfdir}/httpd/conf.d -a `grep -i "^mageia\|mandriva" /etc/issue | wc -l` -ge 1 ]; then
-    export os='mageia-mandriva';
-    export conffile="%{_sysconfdir}/httpd/conf.d/dolibarr.conf"
-    export apacheuser='apache';
-    export apachegroup='apache';
-fi
-if [ -d %{_sysconfdir}/apache2/conf.d -a `grep ^www-data /etc/passwd | wc -l` -ge 1 ]; then
-    export os='ubuntu-debian';
-    export conffile="%{_sysconfdir}/apache2/conf.d/dolibarr.conf"
-    export apacheuser='www-data';
-    export apachegroup='www-data';
-fi
-echo OS detected: $os
-
-# Create a config link dolibarr.conf for Fedora or Redhat
-if [ ! -f $conffile ]; then
-    echo Create dolibarr web server config link $conffile
-    ln -fs /etc/dolibarr/apache.conf $conffile
+# Create a config link dolibarr.conf
+if [ ! -f $apachelink ]; then
+    echo Create dolibarr web server config link $apachelink
+    ln -fs $apacheconfig $apachelink
 fi
 
 # Set permissions
 echo Set permission to $apacheuser:$apachegroup on $targetdir
 chown -R $apacheuser:$apachegroup $targetdir
 chmod -R a-w $targetdir
+chmod u+w $targetdir
 
 echo Set permission to $apacheuser:$apachegroup on $docdir
 chown -R $apacheuser:$apachegroup $docdir
 chmod -R o-w $docdir
 
-# Create empty conf.php file for web installer
-if [ ! -s $targetdir/htdocs/conf/conf.php ]; then
-    echo Create empty Dolibarr conf.php file
-    touch $targetdir/htdocs/conf/conf.php
-    chown $apacheuser:$apachegroup $targetdir/htdocs/conf/conf.php
-    chmod ug+rw $targetdir/htdocs/conf/conf.php
-fi
-
+# Set SE Linux on OS SE is enabled
 if [ "x$os" = "xfedora-redhat" -a -s /usr/bin/chcon ]; then
     echo Set SELinux permissions
     # Warning: chcon seems not cumulative 
@@ -237,6 +261,7 @@ if [ "x$os" = "xfedora-redhat" -a -s /usr/bin/chcon ]; then
     #chcon -R -h -t httpd_sys_content_t $docdir
     chcon -R -h -t httpd_sys_script_rw_t $targetdir
     chcon -R -h -t httpd_sys_script_rw_t $docdir
+    chcon -R -h -t httpd_sys_script_rw_t %{_sysconfdir}/dolibarr
     #chcon -R -h -t httpd_sys_script_exec_t $targetdir
 fi
 
@@ -253,57 +278,71 @@ fi
 echo
 echo "----- Dolibarr %version - (c) Dolibarr dev team -----"
 echo "Dolibarr files are now installed (into /var/www/dolibarr)."
-echo To finish installation and use Dolibarr, call the following
-echo page from your web browser:  
-echo http://localhost/dolibarr/
+echo "To finish installation and use Dolibarr, click on ne menu" 
+echo "entry Dolibarr ERP-CRM or call the following page from your"
+echo "web browser:"  
+echo "http://localhost/dolibarr/"
+echo "--------------------------------------------------"
 echo
-
 
 
 #---- postun (after uninstall)
 %postun
-%clean_menus
+#%clean_menus	# Does not exists on fedora nor mandriva
+
+
+# Define vars
+# Dolibarr files are stored into targetdir
+export targetdir='/var/www/dolibarr'
+# Dolibarr uploaded files and generated documents will be stored into docdir 
+#export docdir="/var/lib/dolibarr/documents"
+export docdir="/usr/share/dolibarr/documents"
+export installfileorig="$targetdir/build/rpm/install.forced.php.install"
+export installconfig="%{_sysconfdir}/dolibarr/install.forced.php"
+export apachefileorig="$targetdir/build/rpm/httpd-dolibarr.conf"
+export apacheconfig="%{_sysconfdir}/dolibarr/apache.conf"
+#config="/usr/share/dolibarr/htdocs/conf/conf.php"
+config="%{_sysconfdir}/dolibarr/conf.php"
+lockfile="$targetdir/install.lock"
+
 
 # Detect OS
 os='unknown';
 if [ -d %{_sysconfdir}/httpd/conf.d ]; then
     export os='fedora-redhat';
-    export conffile="%{_sysconfdir}/httpd/conf.d/dolibarr.conf"
+    export apachelink="%{_sysconfdir}/httpd/conf.d/dolibarr.conf"
     export apacheuser='apache';
     export apachegroup='apache';
 fi
 if [ -d %{_sysconfdir}/apache2/conf.d -a `grep ^wwwrun /etc/passwd | wc -l` -ge 1 ]; then
     export os='opensuse';
-    export conffile="%{_sysconfdir}/apache2/conf.d/dolibarr.conf"
+    export apachelink="%{_sysconfdir}/apache2/conf.d/dolibarr.conf"
     export apacheuser='wwwrun';
     export apachegroup='www';
 fi
 if [ -d %{_sysconfdir}/httpd/conf.d -a `grep -i "^mageia\|mandriva" /etc/issue | wc -l` -ge 1 ]; then
     export os='mageia-mandriva';
-    export conffile="%{_sysconfdir}/httpd/conf.d/dolibarr.conf"
+    export apachelink="%{_sysconfdir}/httpd/conf.d/dolibarr.conf"
     export apacheuser='apache';
     export apachegroup='apache';
 fi
 if [ -d %{_sysconfdir}/apache2/conf.d -a `grep ^www-data /etc/passwd | wc -l` -ge 1 ]; then
     export os='ubuntu-debian';
-    export conffile="%{_sysconfdir}/apache2/conf.d/dolibarr.conf"
+    export apachelink="%{_sysconfdir}/apache2/conf.d/dolibarr.conf"
     export apacheuser='www-data';
     export apachegroup='www-data';
 fi
 echo OS detected: $os
 
-# Dolibarr files are stored into /var/www
-export targetdir='/var/www/dolibarr'
-# Dolibarr uploaded files and generated documents are stored into /usr/share/dolibarr/documents 
-export docdir='/usr/share/dolibarr/documents'
-
-if [ -f $conffile ] ;
+# Remove apache link
+if [ -f $apachelink ] ;
 then
-    echo Delete apache config file for Dolibarr
-    rm -f $conffile
+    echo Delete apache config link for Dolibarr
+    rm -f $apachelink
     status=purge
 fi
 
+# Restart web servers if required
 if [ "x$status" = "xpurge" ] ;
 then
     # Restart web server
@@ -317,11 +356,19 @@ then
 fi
 
 # Removed dirs after apache restart
-echo Removed remaining dirs
-rm -rf /etc/dolibarr
-rm -rf $targetdir/htdocs/conf
-rm -rf $targetdir/htdocs/install
+echo Removed remaining $apacheconfig
+rm -f $apacheconfig
+echo Removed remaining $config
+rm -f $config
+echo Removed remaining $installconfig
+rm -f $installconfig
+echo Removed remaining $lockfile
+rm -f $lockfile
+echo Removed remaining dir $targetdir/doc
 rmdir $targetdir/doc >/dev/null 2>&1
-rmdir $targetdir/htdocs >/dev/null 2>&1
+#echo Removed remaining dir $targetdir/htdocs
+#rmdir $targetdir/htdocs >/dev/null 2>&1	# Already removed by rpm
 
 %changelog
+* Wed Jul 31 2011 Laurent Destailleur 3.1.0-0.2.beta1
+- Initial version (#723326)
