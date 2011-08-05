@@ -17,15 +17,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *	\file       htdocs/product/class/product.class.php
  *	\ingroup    produit
  *	\brief      Fichier de la classe des produits predefinis
- *	\version    $Id: product.class.php,v 1.47 2011/07/29 20:47:35 eldy Exp $
+ *	\version    $Id: product.class.php,v 1.49 2011/08/04 21:46:51 eldy Exp $
  */
 require_once(DOL_DOCUMENT_ROOT ."/core/class/commonobject.class.php");
 
@@ -2862,7 +2861,7 @@ class Product extends CommonObject
 			$this->tpl['price_base_type'] = $html->load_PriceBaseType($this->price_base_type, "price_base_type");
 
 			// VAT
-			$this->tpl['tva_tx'] = $html->load_tva("tva_tx",$conf->defaulttx,$mysoc,'');
+			$this->tpl['tva_tx'] = $html->load_tva("tva_tx",-1,$mysoc,'');
 		}
 
 		if ($action == 'create' || $action == 'edit')

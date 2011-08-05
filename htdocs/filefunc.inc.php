@@ -20,15 +20,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *	\file       htdocs/filefunc.inc.php
  * 	\ingroup	core
  *  \brief      File that include conf.php file and functions.lib.php
- *  \version    $Id: filefunc.inc.php,v 1.20 2011/07/30 10:23:24 eldy Exp $
+ *  \version    $Id: filefunc.inc.php,v 1.22 2011/08/04 12:07:29 eldy Exp $
  */
 
 define('DOL_VERSION','3.1.0-beta');	// Also defined in htdocs/install/inc.php (Ex: x.y.z-alpha, x.y.z)
@@ -61,11 +60,12 @@ error_reporting(E_ALL ^ E_NOTICE);
 //error_reporting(E_ALL);
 
 
+# Define vars
 $conffiletoshowshort = "conf.php";
 # Define localization of conf file
 $conffile = "conf/conf.php";
 $conffiletoshow = "htdocs/conf/conf.php";
-# For debian like systems
+# For debian/redhat like systems
 #$conffile = "/etc/dolibarr/conf.php";
 #$conffiletoshow = "/etc/dolibarr/conf.php";
 

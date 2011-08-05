@@ -16,15 +16,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *		\file       htdocs/install/etape1.php
  *		\ingroup	install
  *		\brief      Build conf file on disk
- *		\version    $Id: etape1.php,v 1.135 2011/07/30 14:56:42 eldy Exp $
+ *		\version    $Id: etape1.php,v 1.137 2011/08/04 13:19:26 eldy Exp $
  */
 
 define('DONOTLOADCONF',1);	// To avoid loading conf by file inc.php
@@ -65,14 +64,14 @@ $error = 0;
 // Repertoire des pages dolibarr
 $main_dir=isset($_POST["main_dir"])?trim($_POST["main_dir"]):'';
 
-// On supprime /  de fin dans main_dir
+// Remove last / into dans main_dir
 if (substr($main_dir, dol_strlen($main_dir) -1) == "/")
 {
 	$main_dir = substr($main_dir, 0, dol_strlen($main_dir)-1);
 }
 
-// On supprime /  de fin dans main_url
-if (substr($_POST["main_url"], dol_strlen($_POST["main_url"]) -1) == "/")
+// Remove last / into dans main_url
+if (! empty($_POST["main_url"]) && substr($_POST["main_url"], dol_strlen($_POST["main_url"]) -1) == "/")
 {
 	$_POST["main_url"] = substr($_POST["main_url"], 0, dol_strlen($_POST["main_url"])-1);
 }
