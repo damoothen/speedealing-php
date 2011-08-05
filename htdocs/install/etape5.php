@@ -16,15 +16,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *       \file      htdocs/install/etape5.php
  *	 	 \ingroup	install
  *       \brief     Last page of upgrade or install process
- *       \version   $Id: etape5.php,v 1.106 2011/07/31 13:28:45 eldy Exp $
+ *       \version   $Id: etape5.php,v 1.108 2011/08/04 12:07:30 eldy Exp $
  */
 
 include_once("./inc.php");
@@ -315,7 +314,8 @@ if ($action == "set")
 		if (! empty($force_install_lockinstall))
 		{
 			// Install is finished, we create the lock file
-			$fp = @fopen($lockfile, "w");
+			$lockfile=DOL_DATA_ROOT.'/install.lock';
+		    $fp = @fopen($lockfile, "w");
 			if ($fp)
 			{
                 if ($force_install_lockinstall == 1) $force_install_lockinstall=444;    // For backward compatibility
@@ -364,7 +364,8 @@ elseif (preg_match('/upgrade/i',$action))
 		if (! empty($force_install_lockinstall))
 		{
 			// Upgrade is finished, we create the lock file
-			$fp = @fopen($lockfile, "w");
+			$lockfile=DOL_DATA_ROOT.'/install.lock';
+		    $fp = @fopen($lockfile, "w");
 			if ($fp)
 			{
                 if ($force_install_lockinstall == 1) $force_install_lockinstall=444;    // For backward compatibility

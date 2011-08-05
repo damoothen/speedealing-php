@@ -15,14 +15,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *	\file       htdocs/index.php
  *	\brief      Dolibarr home page
- *	\version    $Id: index.php,v 1.199 2011/07/30 10:23:24 eldy Exp $
+ *	\version    $Id: index.php,v 1.201 2011/08/04 12:07:30 eldy Exp $
  */
 
 define('NOCSRFCHECK',1);	// This is login page. We must be able to go on it from another web site.
@@ -571,8 +570,9 @@ if ($user->admin && empty($conf->global->MAIN_REMOVE_INSTALL_WARNING))
 {
     $message='';
 
-    // Install lock missing
-    if (! file_exists('../install.lock') && is_dir(DOL_DOCUMENT_ROOT."/install"))
+    // Check if install lock file is present
+    $lockfile=DOL_DATA_ROOT.'/install.lock';
+    if (! empty($lockfile) && ! file_exists($lockfile) && is_dir(DOL_DOCUMENT_ROOT."/install"))
     {
         $langs->load("other");
         //if (! empty($message)) $message.='<br>';
@@ -599,7 +599,7 @@ if ($user->admin && empty($conf->global->MAIN_REMOVE_INSTALL_WARNING))
 
 $db->close();
 
-llxFooter('$Date: 2011/07/30 10:23:24 $ - $Revision: 1.199 $');
+llxFooter('$Date: 2011/08/04 12:07:30 $ - $Revision: 1.201 $');
 
 
 /**
