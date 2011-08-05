@@ -18,15 +18,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *  \file       htdocs/product/fiche.php
  *  \ingroup    product
  *  \brief      Page to show product
- *  \version    $Id: fiche.php,v 1.373 2011/07/29 20:47:35 eldy Exp $
+ *  \version    $Id: fiche.php,v 1.375 2011/08/04 21:46:50 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -794,7 +793,7 @@ if ($action == 'create' && ($user->rights->produit->creer || $user->rights->serv
 
 			// VAT
 			print '<tr><td width="20%">'.$langs->trans("VATRate").'</td><td>';
-			print $html->select_tva("tva_tx",$conf->defaulttx,$mysoc,'');
+			print $html->load_tva("tva_tx",-1,$mysoc,'');
 			print '</td></tr>';
 
 			print '</table>';
@@ -1646,6 +1645,6 @@ if ($product->id && $action == '' && $product->status)
 
 $db->close();
 
-llxFooter('$Date: 2011/07/29 20:47:35 $ - $Revision: 1.373 $');
+llxFooter('$Date: 2011/08/04 21:46:50 $ - $Revision: 1.375 $');
 
 ?>
