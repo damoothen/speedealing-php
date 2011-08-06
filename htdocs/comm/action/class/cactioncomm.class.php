@@ -175,7 +175,10 @@ class CActionComm {
 
 		// Check if translation available
 		$transcode=$langs->trans("Action".$this->code);
-		if ($transcode != "Action".$this->code) return $transcode;
+		if ($transcode != "Action".$this->code) 
+                        return $transcode;
+                else
+                    return $this->libelle;
 	}
 
 }
