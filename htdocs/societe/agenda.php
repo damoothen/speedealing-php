@@ -31,7 +31,7 @@
 require("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
 require_once(DOL_DOCUMENT_ROOT."/compta/facture/class/facture.class.php");
-if ($conf->highcharts->enabled) require_once(DOL_DOCUMENT_ROOT."/highCharts/class/highCharts.class.php");
+if ($conf->highcharts->enabled) require_once(DOL_DOCUMENT_ROOT_ALT."/highCharts/class/highCharts.class.php");
 
 $langs->load("companies");
 
