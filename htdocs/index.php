@@ -221,7 +221,7 @@ if ($user->societe_id == 0)
 	DOL_URL_ROOT.'/product/liste.php?type=0&amp;mainmenu=products',
 	DOL_URL_ROOT.'/product/liste.php?type=1&amp;mainmenu=products',
 	DOL_URL_ROOT.'/comm/propal.php?mainmenu=commercial',
-        DOL_URL_ROOT.'/lead/liste.php',
+        DOL_URL_ROOT_ALT.'/lead/liste.php',
 	DOL_URL_ROOT.'/commande/liste.php?mainmenu=commercial',
 	DOL_URL_ROOT.'/compta/facture.php?mainmenu=accountancy',
 	DOL_URL_ROOT.'/contrat/liste.php');
