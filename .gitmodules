@@ -10,3 +10,6 @@
 [submodule "htdocs/custom/milestone"]
 	path = htdocs/custom/milestone
 	url = git+ssh://scm.doliforge.org/gitroot/milestone/milestone.git
+[submodule "htdocs/custom/docgen"]
+	path = htdocs/custom/docgen
+	url = git+ssh://scm.doliforge.org/gitroot/docgen/docgen.git
