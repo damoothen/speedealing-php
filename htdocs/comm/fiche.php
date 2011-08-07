@@ -38,7 +38,7 @@ if ($conf->commande->enabled) require_once(DOL_DOCUMENT_ROOT."/commande/class/co
 if ($conf->contrat->enabled) require_once(DOL_DOCUMENT_ROOT."/contrat/class/contrat.class.php");
 if ($conf->adherent->enabled) require_once(DOL_DOCUMENT_ROOT."/adherents/class/adherent.class.php");
 if ($conf->ficheinter->enabled) require_once(DOL_DOCUMENT_ROOT."/fichinter/class/fichinter.class.php");
-if ($conf->lead->enabled) require_once(DOL_DOCUMENT_ROOT_ALT."/lead/lib/lead.lib.php");
+if ($conf->lead->enabled) dol_include_once("/lead/lib/lead.lib.php");
 if (!empty($conf->global->MAIN_MODULE_CHRONODOCS)) require_once(DOL_DOCUMENT_ROOT."/chronodocs/chronodocs_entries.class.php");
 
 $langs->load("companies");

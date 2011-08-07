@@ -33,7 +33,7 @@ require_once(DOL_DOCUMENT_ROOT."/comm/action/class/actioncomm.class.php");
 require_once(DOL_DOCUMENT_ROOT."/lib/agenda.lib.php");
 if ($conf->contrat->enabled) require_once(DOL_DOCUMENT_ROOT."/contrat/class/contrat.class.php");
 if ($conf->propal->enabled)  require_once(DOL_DOCUMENT_ROOT."/comm/propal/class/propal.class.php");
-if ($conf->lead->enabled)  require_once(DOL_DOCUMENT_ROOT_ALT."/lead/lib/lead.lib.php");
+if ($conf->lead->enabled)  dol_include_once("/lead/lib/lead.lib.php");
 
 if (!$user->rights->societe->lire)
 accessforbidden();
@@ -148,7 +148,7 @@ $max=3;
 
 if($conf->highcharts->enabled && $user->rights->highcharts->read )
 {
-    require_once(DOL_DOCUMENT_ROOT_ALT."/highCharts/class/highCharts.class.php");
+    dol_include_once("/highCharts/class/highCharts.class.php");
     $langs->load("highcharts@highCharts");
 
     $graph=new HighCharts($db);

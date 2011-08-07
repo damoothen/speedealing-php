@@ -154,17 +154,17 @@ if ($user->societe_id == 0)
 	! empty($conf->facture->enabled) && $user->rights->facture->lire,
 	! empty($conf->societe->enabled) && $user->rights->contrat->activer);
 	// Class file containing the method load_state_board for each line
-	$includes=array(DOL_DOCUMENT_ROOT."/societe/class/client.class.php",
-	DOL_DOCUMENT_ROOT."/comm/prospect/class/prospect.class.php",
-	DOL_DOCUMENT_ROOT."/fourn/class/fournisseur.class.php",
-	DOL_DOCUMENT_ROOT."/adherents/class/adherent.class.php",
-	DOL_DOCUMENT_ROOT."/product/class/product.class.php",
-	DOL_DOCUMENT_ROOT."/product/class/service.class.php",
-	DOL_DOCUMENT_ROOT."/comm/propal/class/propal.class.php",
-        DOL_DOCUMENT_ROOT_ALT."/lead/class/lead.class.php",
-	DOL_DOCUMENT_ROOT."/commande/class/commande.class.php",
-	DOL_DOCUMENT_ROOT."/compta/facture/class/facture.class.php",
-	DOL_DOCUMENT_ROOT."/contrat/class/contrat.class.php");
+	$includes=array("/societe/class/client.class.php",
+	"/comm/prospect/class/prospect.class.php",
+	"/fourn/class/fournisseur.class.php",
+	"/adherents/class/adherent.class.php",
+	"/product/class/product.class.php",
+	"/product/class/service.class.php",
+	"/comm/propal/class/propal.class.php",
+        "/lead/class/lead.class.php",
+	"/commande/class/commande.class.php",
+	"/compta/facture/class/facture.class.php",
+	"/contrat/class/contrat.class.php");
 	// Name class containing the method load_state_board for each line
 	$classes=array('Client',
                    'Prospect',
@@ -214,17 +214,17 @@ if ($user->societe_id == 0)
                   "BillsCustomers",
                   "Contracts");
 	// Dashboard Link lines
-	$links=array(DOL_URL_ROOT.'/comm/clients.php',
-	DOL_URL_ROOT.'/comm/prospect/prospects.php',
-	DOL_URL_ROOT.'/fourn/liste.php',
-	DOL_URL_ROOT.'/adherents/liste.php?statut=1&amp;mainmenu=members',
-	DOL_URL_ROOT.'/product/liste.php?type=0&amp;mainmenu=products',
-	DOL_URL_ROOT.'/product/liste.php?type=1&amp;mainmenu=products',
-	DOL_URL_ROOT.'/comm/propal.php?mainmenu=commercial',
-        DOL_URL_ROOT_ALT.'/lead/liste.php',
-	DOL_URL_ROOT.'/commande/liste.php?mainmenu=commercial',
-	DOL_URL_ROOT.'/compta/facture.php?mainmenu=accountancy',
-	DOL_URL_ROOT.'/contrat/liste.php');
+	$links=array('/comm/clients.php',
+	'/comm/prospect/prospects.php',
+	'/fourn/liste.php',
+	'/adherents/liste.php?statut=1&amp;mainmenu=members',
+	'/product/liste.php?type=0&amp;mainmenu=products',
+	'/product/liste.php?type=1&amp;mainmenu=products',
+	'/comm/propal.php?mainmenu=commercial',
+        '/lead/liste.php',
+	'/commande/liste.php?mainmenu=commercial',
+	'/compta/facture.php?mainmenu=accountancy',
+	'/contrat/liste.php');
 	// Translation lang files
 	$langfile=array("bills",
                     "prospects",
@@ -249,7 +249,7 @@ if ($user->societe_id == 0)
 			// Search in cache if load_state_board is already realized
 			if (! isset($boardloaded[$classe]) || ! is_object($boardloaded[$classe]))
 			{
-				include_once($includes[$key]);
+				dol_include_once($includes[$key]);
 
 				$board=new $classe($db);
 				$board->load_state_board($user);
@@ -260,9 +260,9 @@ if ($user->societe_id == 0)
 			$var=!$var;
 			if ($langfile[$key]) $langs->load($langfile[$key]);
 			$title=$langs->trans($titres[$key]);
-			print '<tr '.$bc[$var].'><td width="16"><a href="'.$links[$key].'">'.img_object($title,$icons[$key]).'</a></td>';
-			print '<td><a href="'.$links[$key].'">'.$title.'</a></td>';
-			print '<td align="right"><a href="'.$links[$key].'">'.$board->nb[$val].'</a></td>';
+			print '<tr '.$bc[$var].'><td width="16"><a href="'.dol_buildpath($links[$key],1).'">'.img_object($title,$icons[$key]).'</a></td>';
+			print '<td><a href="'.dol_buildpath($links[$key],1).'">'.$title.'</a></td>';
+			print '<td align="right"><a href="'.dol_buildpath($links[$key],1).'">'.$board->nb[$val].'</a></td>';
 			print '</tr>';
 
 			//print $includes[$key].' '.memory_get_usage()."<br>";
@@ -538,7 +538,7 @@ print '<br>';
 
 if ($conf->agenda->enabled && $user->rights->agenda->myactions->read && $conf->highcharts->enabled && $user->rights->highcharts->read)
 {
-    require_once(DOL_DOCUMENT_ROOT_ALT."/highCharts/class/highCharts.class.php");
+    dol_include_once("/highCharts/class/highCharts.class.php");
     $langs->load("highcharts@highCharts");
 
     $graph=new HighCharts($db);
