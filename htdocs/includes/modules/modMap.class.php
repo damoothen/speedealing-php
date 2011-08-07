@@ -51,7 +51,7 @@ class modMap extends DolibarrModules
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
 	$this->name = preg_replace('/^mod/i','',get_class($this));
         $this->description = "Carthographie";
-        $this->version = 'development';                        // 'experimental' or 'dolibarr' or version
+        $this->version = 'dolibarr';                        // 'experimental' or 'dolibarr' or version
         $this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
         $this->special = 0;
         $this->picto='globe';
@@ -73,7 +73,7 @@ class modMap extends DolibarrModules
         // Constantes
         //-----------
         $this->const = array();
-        $this->const[0]  = array("MAP_SYSTEM","texte","openlayer");
+        $this->const[0]  = array("MAP_SYSTEM","texte","openlayers");
 
         // Boites
         //-------
@@ -115,7 +115,7 @@ class modMap extends DolibarrModules
 
         $sql = array();
 
-        $result=$this->load_tables();
+        //$result=$this->load_tables();
         return $this->_init($sql);
     }
 

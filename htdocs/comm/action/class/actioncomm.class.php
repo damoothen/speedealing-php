@@ -56,7 +56,7 @@ class ActionComm extends CommonObject
 
     var $datep;			// Date action start (datep)
     var $datef;			// Date action end (datep2)
-    var $durationp = -1;
+    var $durationp = 3600;
     //var $date;			// Date action realise debut (datea)	// deprecated
     //var $dateend; 		// Date action realise fin (datea2)		// deprecated
     //var $durationa = -1;	// Duration                             // deprecated

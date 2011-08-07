@@ -34,14 +34,14 @@
 
 delete from llx_c_stcomm;
 insert into llx_c_stcomm (id,code,libelle,type) values (-1, 'ST_NO',    'Ne pas contacter',0);
-insert into llx_c_stcomm (id,code,libelle,type) values ( 0, 'ST_NEVER', 'Jamais contacté',0);
-insert into llx_c_stcomm (id,code,libelle,type) values ( 1, 'ST_TODO',  'A contacter',0);
-insert into llx_c_stcomm (id,code,libelle,type) values ( 2, 'ST_PEND',  'Contact en cours',0);
-insert into llx_c_stcomm (id,code,libelle,type) values ( 3, 'ST_DONE',  'Contactée',0);
+insert into llx_c_stcomm (id,code,libelle,active,type) values ( 0, 'ST_NEVER', 'Jamais contacté',1,0);
+insert into llx_c_stcomm (id,code,libelle,active,type) values ( 1, 'ST_TODO',  'A contacter',0,0);
+insert into llx_c_stcomm (id,code,libelle,active,type) values ( 2, 'ST_PEND',  'Contact en cours',0,0);
+insert into llx_c_stcomm (id,code,libelle,active,type) values ( 3, 'ST_DONE',  'Contactée',0,0);
 insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (4, 'ST_PFROI', 'Prospect froid', 1, 0);
 insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (5, 'ST_PTIED', 'Prospect tiède', 0, 0);
-insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (6, 'ST_PCHAU', 'Prospect chaud', 0, 0);
-insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (7, 'ST_CINF3', 'Client -3 mois', 0, 1);
+insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (6, 'ST_PCHAU', 'Prospect chaud', 1, 0);
+insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (7, 'ST_CINF3', 'Client -3 mois', 1, 1);
 insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (8, 'ST_CREC', 'Client récurrent', 0, 1);
 insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (9, 'ST_CFID', 'Client fidèle', 1, 1);
 insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (10, 'ST_CPAR', 'Client partenaire', 0, 1);

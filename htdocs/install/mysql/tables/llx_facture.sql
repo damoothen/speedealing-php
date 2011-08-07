@@ -3,6 +3,7 @@
 -- Copyright (C) 2004-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
 -- Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
 -- Copyright (C) 2010      Juanjo Menent        <jmenent@2byte.es>
+-- Copyright (C) 2010-2011 Herve Prot           <herve.prot@symeos.com>
 -- 
 -- This program is free software; you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -61,6 +62,7 @@ create table llx_facture
 
   fk_facture_source   integer,                      -- facture origine si facture avoir
   fk_projet           integer,                      -- projet auquel est associee la facture
+  fk_lead             integer     DEFAULT NULL,		-- affaire auquel est rattachee la facture
 
   fk_cond_reglement   integer  DEFAULT 1 NOT NULL,  -- condition de reglement (30 jours, fin de mois ...)
   fk_mode_reglement   integer,                      -- mode de reglement (Virement, Prelevement)

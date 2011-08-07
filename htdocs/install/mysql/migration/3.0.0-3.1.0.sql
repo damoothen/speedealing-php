@@ -24,12 +24,26 @@ ALTER TABLE llx_c_ziptown ADD COLUMN fk_pays integer NOT NULL DEFAULT 0 after fk
 ALTER TABLE llx_c_ziptown MODIFY fk_county integer NULL; 
 
 ALTER TABLE llx_c_actioncomm ADD COLUMN position integer NOT NULL DEFAULT 0;
+alter table llx_c_actioncomm add priority       integer     NOT NULL;
+
 ALTER TABLE llx_propal ADD COLUMN fk_demand_reason integer NULL DEFAULT 0;
 ALTER TABLE llx_commande_fournisseur ADD COLUMN fk_cond_reglement integer NULL DEFAULT 0 after model_pdf;
 ALTER TABLE llx_commande_fournisseur ADD COLUMN fk_mode_reglement integer NULL DEFAULT 0 after fk_cond_reglement;
 ALTER TABLE llx_commande_fournisseur ADD COLUMN import_key varchar(14);
 
 --ALTER TABLE llx_c_currencies ADD COLUMN symbole varchar(3) NOT NULL default '';
+
+alter table llx_propal add fk_lead       integer     DEFAULT NULL;		-- affaire auquel est rattachee la propale
+alter table llx_facture add fk_lead       integer     DEFAULT NULL;		-- affaire auquel est rattachee la facture
+alter table llx_commande add fk_lead       integer     DEFAULT NULL;		-- affaire auquel est rattachee la commande
+alter table llx_facture_rec add fk_lead       integer     DEFAULT NULL;		-- affaire auquel est rattachee au modèle de facture
+alter table llx_commande_fournisseur  add fk_lead       integer     DEFAULT NULL;		-- affaire auquel est rattachee aux commandes fournisseurs
+alter table llx_facture_fourn add fk_lead       integer     DEFAULT NULL;		-- affaire auquel est rattachee aux factures fournisseurs
+alter table llx_contrat add fk_lead       integer     DEFAULT NULL;		-- affaire auquel est rattachee aux contrats
+alter table llx_fichinter add fk_lead       integer     DEFAULT NULL;		-- affaire auquel est rattachee aux interventions
+alter table llx_actioncomm add fk_lead       integer     DEFAULT NULL;		-- affaire auquel est rattachee aux actions
+alter table llx_deplacement add fk_lead       integer     DEFAULT NULL;		-- affaire auquel est rattachee des déplacements
+
 
 ALTER TABLE llx_commande_fournisseur MODIFY model_pdf varchar(255);
 ALTER TABLE llx_commande MODIFY model_pdf varchar(255);
@@ -47,6 +61,8 @@ ALTER TABLE llx_societe MODIFY siret varchar(32);
 ALTER TABLE llx_societe MODIFY ape varchar(32);
 ALTER TABLE llx_societe MODIFY idprof4 varchar(32);
 ALTER TABLE llx_societe MODIFY fk_stcomm smallint default 0 not null;
+alter table llx_societe add latitude       double     DEFAULT 0;
+alter table llx_societe add longitude       double     DEFAULT 0;
 
 ALTER TABLE llx_c_stcomm add type smallint DEFAULT 0;
 ALTER TABLE llx_categorie add priority    integer     DEFAULT 0;
@@ -148,6 +164,17 @@ ALTER TABLE llx_livraison ADD COLUMN ref_int varchar(30) AFTER ref_ext;
 
 INSERT INTO llx_c_shipment_mode (rowid,code,libelle,description,active) VALUES (4,'LETTREMAX','Lettre Max','Courrier Suivi et Lettre Max',0);
 INSERT INTO llx_c_actioncomm (id, code, type, libelle, module, position) VALUES ( 10, 'AC_SHIP', 'system', 'Send shipping by email'	,'shipping', 11);
+insert into llx_c_actioncomm (id,code,type,libelle,module,priority,active) VALUES (11, 'AC_LEAD', '0', 'Lead change', 'lead',1 , 1);
+insert into llx_c_actioncomm (id,code,type,libelle,module,priority,active) VALUES (12, 'AC_PROSPECT', '0', 'Prospect change', 'agenda',1 , 1);
+insert into llx_c_actioncomm (id,code,type,libelle,module,priority,active) VALUES (20, 'AC_PRDV', '2', 'Prendre rendez-vous', '',15 , 1);
+insert into llx_c_actioncomm (id,code,type,libelle,module,priority,active) VALUES (21, 'AC_CRR', '2', 'Compte-rendu', '',4 , 1);
+insert into llx_c_actioncomm (id,code,type,libelle,module,priority,active) VALUES (22, 'AC_DOC', '2', 'Envoye documentation', '',6 , 1);
+insert into llx_c_actioncomm (id,code,type,libelle,module,priority,active) VALUES (23, 'RDV_TELC', '1', 'Conference Telephonique', '',12 , 1);
+insert into llx_c_actioncomm (id,code,type,libelle,module,priority,active) VALUES (24, 'RDV_WEB', '1', 'Web conference', '',10 , 1);
+insert into llx_c_actioncomm (id,code,type,libelle,module,priority,active) VALUES (25, 'AC_NEWSUS', '0', 'Nouveau suspect', '',6 , 1);
+insert into llx_c_actioncomm (id,code,type,libelle,module,priority,active) VALUES (26, 'AC_QUALIF', '0', 'Qualification', '',12 , 1);
+insert into llx_c_actioncomm (id,code,type,libelle,module,priority,active) VALUES (27, 'AC_SUSP', '0', 'Suspect -> prospect', '',10 , 1);
+
 
 ALTER TABLE llx_actioncomm DROP INDEX idx_actioncomm_fk_facture;
 ALTER TABLE llx_actioncomm DROP INDEX idx_actioncomm_fk_supplier_order;
@@ -155,6 +182,7 @@ ALTER TABLE llx_actioncomm DROP INDEX idx_actioncomm_fk_supplier_invoice;
 ALTER TABLE llx_actioncomm ADD COLUMN entity integer DEFAULT 1 NOT NULL AFTER id;
 ALTER TABLE llx_actioncomm ADD COLUMN fk_element integer DEFAULT NULL AFTER note;
 ALTER TABLE llx_actioncomm ADD COLUMN elementtype varchar(16) DEFAULT NULL AFTER fk_element;
+ALTER TABLE llx_actioncomm ADD fk_task       integer     DEFAULT NULL;
 
 
 ALTER TABLE llx_c_regions MODIFY COLUMN cheflieu    varchar(50);

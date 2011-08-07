@@ -2,6 +2,7 @@
 -- Copyright (C) 2001-2003 Rodolphe Quiedeville <rodolphe@quiedeville.org>
 -- Copyright (C) 2005-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
 -- Copyright (C) 2011      Regis Houssin        <regis@dolibarr.fr>
+-- Copyright (C) 2010-2011 Herve Prot           <herve.prot@symeos.com>
 --
 -- This program is free software; you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -39,6 +40,7 @@ create table llx_actioncomm
   fk_user_mod		integer,						-- id dernier user qui a modifier l'action
 
   fk_project		integer,
+  fk_lead       integer     DEFAULT NULL,		-- affaire auquel est rattachee aux actions
   fk_soc			integer,
   fk_contact		integer,
   fk_parent			integer NOT NULL default 0,
@@ -54,6 +56,7 @@ create table llx_actioncomm
   durationa			real,							-- deprecated
   note				text,
   
+  fk_task               integer DEFAULT NULL,
   fk_element		integer DEFAULT NULL,
   elementtype		varchar(16) DEFAULT NULL
 
