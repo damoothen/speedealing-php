@@ -41,7 +41,7 @@ if ($user->societe_id) $socid=$user->societe_id;
 $result = restrictedArea($user, 'societe',$socid,'');
 
 $socname            = GETPOST("socname",'alpha');
-$pstcomm            = GETPOST("pstcomm",'int');
+$pstcomm            = GETPOST("pstcomm");
 $type               = GETPOST("type",'int');
 $search_nom         = GETPOST("search_nom");
 $search_ville       = GETPOST("search_ville");
