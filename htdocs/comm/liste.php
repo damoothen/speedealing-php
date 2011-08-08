@@ -41,7 +41,8 @@ if ($user->societe_id) $socid=$user->societe_id;
 $result = restrictedArea($user, 'societe',$socid,'');
 
 $socname            = GETPOST("socname",'alpha');
-$stcomm             = GETPOST("stcomm",'int');
+$pstcomm            = GETPOST("pstcomm",'int');
+$type               = GETPOST("type",'int');
 $search_nom         = GETPOST("search_nom");
 $search_ville       = GETPOST("search_ville");
 $search_departement = GETPOST("search_departement");
@@ -152,7 +153,7 @@ if (!$user->rights->societe->client->voir && !$socid) $search_sale = $user->id;
  */
 if ($_GET["action"] == 'cstc')
 {
-	$sql = "UPDATE ".MAIN_DB_PREFIX."societe SET fk_stcomm = ".$_GET["pstcomm"];
+	$sql = "UPDATE ".MAIN_DB_PREFIX."societe SET fk_stcomm = ".$_GET["stcomm"];
 	$sql .= " WHERE rowid = ".$_GET["socid"];
 	$result=$db->query($sql);
 }
@@ -165,7 +166,7 @@ if ($_GET["action"] == 'cstc')
 $htmlother=new FormOther($db);
 
 $sql = "SELECT s.rowid, s.nom, s.ville, s.datec, s.datea, s.status as status,";
-$sql.= " st.libelle as stcomm, s.prefix_comm, s.fk_stcomm, s.fk_prospectlevel,";
+$sql.= " st.libelle as stcomm, s.prefix_comm, s.fk_stcomm, s.fk_prospectlevel,st.type,";
 $sql.= " d.nom as departement, s.cp as cp";
 // Updated by Matelli 
 // We'll need these fields in order to filter by sale (including the case where the user can only see his prospects)
@@ -180,14 +181,14 @@ if ($search_categ) $sql.= ", ".MAIN_DB_PREFIX."categorie_societe as cs";
 $sql.= " ) ";
 $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."c_departements as d on (d.rowid = s.fk_departement)";
 $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."c_stcomm as st ON st.id = s.fk_stcomm";
-$sql.= " WHERE s.client in (1,3)";
-if(isset($_GET["isclient"]))
-    $sql.= " AND st.isclient=".$_GET["isclient"];
+$sql.= " WHERE s.client in (1,2,3)";
+if($type!='')
+    $sql.= " AND st.type=".$type;
 $sql.= " AND s.entity = ".$conf->entity;
 if ($user->societe_id) $sql.= " AND s.rowid = " .$user->societe_id;
 if ($search_sale) $sql.= " AND s.rowid = sc.fk_soc";		// Join for the needed table to filter by sale
 if ($search_categ) $sql.= " AND s.rowid = cs.fk_societe";	// Join for the needed table to filter by categ
-if (isset($stcomm) && $stcomm != '') $sql.= " AND s.fk_stcomm=".$stcomm;
+if (isset($pstcomm) && $pstcomm != '') $sql.= " AND s.fk_stcomm=".$pstcomm;
 
 if ($search_nom)   $sql .= " AND s.nom like '%".$db->escape(strtolower($search_nom))."%'";
 if ($search_ville) $sql .= " AND s.ville like '%".$db->escape(strtolower($search_ville))."%'";
@@ -250,7 +251,7 @@ if ($resql)
 	$param='&amp;search_nom='.urlencode($search_nom).'&amp;search_ville='.urlencode($search_ville);
  	// Added by Matelli 
  	// Store the status filter in the URL
- 	if (isSet($search_cstc))
+ 	if (isset($search_cstc))
  	{
  		foreach ($search_cstc as $key => $value)
  		{
@@ -264,14 +265,31 @@ if ($resql)
  	if ($search_level_to != '') $param.='&amp;search_level_to='.$search_level_to;
  	if ($search_categ != '') $param.='&amp;search_categ='.$search_categ;
  	if ($search_sale != '') $param.='&amp;search_sale='.$search_sale;
+        if ($pstcomm != '') $param.='&amp;pstcomm='.$pstcomm;
+        if ($type != '') $param.='&amp;type='.$type;
  	// $param and $urladd should have the same value
  	$urladd = $param;
 
-	print_barre_liste($langs->trans("ListOfCustomers"), $page, $_SERVER["PHP_SELF"],$param,$sortfield,$sortorder,'',$num,$nbtotalofrecords);
+        if($type!='')
+        {   
+            if($type==0)
+                $titre=$langs->trans("ListOfSuspects");
+            elseif($type==1)
+                $titre=$langs->trans("ListOfProspects");
+            else
+                $titre=$langs->trans("ListOfCustomers");
+        }
+        else
+            $titre=$langs->trans("ListOfCustomers");
+        
+            
+                
+        
+	print_barre_liste($titre, $page, $_SERVER["PHP_SELF"],$param,$sortfield,$sortorder,'',$num,$nbtotalofrecords);
 
 
  	// Print the search-by-sale and search-by-categ filters
- 	print '<form method="get" action="clients.php" id="formulaire_recherche">';
+ 	print '<form method="get" action="liste.php" id="formulaire_recherche">';
 
 	print '<table class="liste" width="100%">';
 
@@ -356,7 +374,8 @@ if ($resql)
     print '</td>';
 
     print '<td class="liste_titre" align="center">';
-    print '&nbsp;';
+    print '<input type="hidden" class="flat" name="type" size="10" value="'.$type.'">';
+    print $htmlother->select_stcomm($type,$pstcomm,'pstcomm');
     print '</td>';
 
     print '<td class="liste_titre" align="center">';
@@ -374,7 +393,6 @@ if ($resql)
 	$var=true;
 
 	$prospectstatic=new Prospect($db);
-	$prospectstatic->client=2;
 
 	while ($i < min($num,$conf->liste_limit))
 	{
@@ -386,7 +404,7 @@ if ($resql)
 		print '<td>';
 		$prospectstatic->id=$obj->rowid;
 		$prospectstatic->nom=$obj->nom;
-        $prospectstatic->status=$obj->status;
+                $prospectstatic->status=$obj->status;
 		print $prospectstatic->getNomUrl(1,'prospect');
         print '</td>';
 		print "<td>".$obj->ville."&nbsp;</td>";
@@ -399,15 +417,15 @@ if ($resql)
 		print $prospectstatic->LibLevel($obj->fk_prospectlevel);
 		print "</td>";
 		// Statut
-		print '<td align="center" nowrap="nowrap">';
+		print '<td align="left" nowrap="nowrap">';
 		print $prospectstatic->LibProspStatut($obj->fk_stcomm,2);
 		print "</td>";
 
 		// icone action
 		print '<td align="center" nowrap>';
                 $prospectstatic->stcomm_id=$obj->fk_stcomm;
-		$prospectstatic->client=$obj->client;
-                print $prospectstatic->getIconList(DOL_URL_ROOT."/comm/clients.php?socid=".$obj->rowid.'&amp;pstcomm='.$value.'&amp;action=cstc&amp;'.$param.($page?'&amp;page='.$page:''));
+		$prospectstatic->type=$obj->type;
+                print $prospectstatic->getIconList(DOL_URL_ROOT."/comm/liste.php?socid=".$obj->rowid.'&amp;action=cstc&amp;'.$param.($page?'&amp;page='.$page:''));
 		print '</td>';
 
                 print '<td align="right">';
