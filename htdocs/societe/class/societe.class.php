@@ -119,6 +119,7 @@ class Societe extends CommonObject
     var $note;
     //! code statut prospect
     var $stcomm_id;
+    var $type; //0: suspect, 1: prospect, 2:client
     var $statut_commercial;
 
     var $price_level;
@@ -646,7 +647,7 @@ class Societe extends CommonObject
         $sql .= ', e.libelle as effectif';
         $sql .= ', p.code as pays_code, p.libelle as pays';
         $sql .= ', d.code_departement as departement_code, d.nom as departement';
-        $sql .= ', st.libelle as stcomm';
+        $sql .= ', st.libelle as stcomm, st.type as type';
         $sql .= ', te.code as typent_code';
         $sql .= ' FROM '.MAIN_DB_PREFIX.'societe as s';
         $sql .= ' LEFT JOIN '.MAIN_DB_PREFIX.'c_effectif as e ON s.fk_effectif = e.id';
@@ -712,6 +713,7 @@ class Societe extends CommonObject
                 $transcode=$langs->trans('StatusProspect'.$obj->fk_stcomm);
                 $libelle=($transcode!='StatusProspect'.$obj->fk_stcomm?$transcode:$obj->stcomm);
                 $this->stcomm_id = $obj->fk_stcomm;     // id statut commercial
+                $this->type      = $obj->type;          // stcomm type
                 $this->statut_commercial = $libelle;    // libelle statut commercial
 
                 $this->email = $obj->email;

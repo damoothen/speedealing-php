@@ -34,8 +34,6 @@ include_once(DOL_DOCUMENT_ROOT."/societe/class/societe.class.php");
 class Prospect extends Societe
 {
     var $db;
-    
-    var $type; //0: suspect, 1: prospect, 2:client
 
 
     /**

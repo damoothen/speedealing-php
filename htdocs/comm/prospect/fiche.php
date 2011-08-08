@@ -261,7 +261,7 @@ if ($socid > 0)
 	print '<td id="value">'.$societe->getLibStatut(4).'</td>';
         print '<td>';
         // Affichage icone de changement de statut prospect
-        print $societe->getIconList();
+        print $societe->getIconList(DOL_URL_ROOT.'/comm/prospect/fiche.php?socid='.$societe->id.'&amp;action=cstc');
 	print '</td></tr>';
         $var=!$var;
 
