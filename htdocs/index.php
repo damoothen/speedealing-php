@@ -209,7 +209,7 @@ if ($user->societe_id == 0)
     // Translation keyword
     $titres=array("Customers",
                   "Prospects",
-                  "NotClassified",
+                  "Suspects",
                   "Suppliers",
                   "Members",
                   "Products",

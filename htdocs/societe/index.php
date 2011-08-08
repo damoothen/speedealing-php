@@ -90,8 +90,9 @@ if ($result)
     while ($objp = $db->fetch_object($result))
     {
         $found=0;
-        if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_CUSTOMERS_STATS) && ($objp->client == 1 || $objp->client == 3) && $objp->type==1) { $found=1; $third['customer']++; }
-        if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_PROSPECTS_STATS) && ($objp->client == 2 || $objp->client == 3) && $objp->type==0) { $found=1; $third['prospect']++; }
+        if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_CUSTOMERS_STATS) && ($objp->client == 1 || $objp->client == 3) && $objp->type==2) { $found=1; $third['customer']++; }
+        if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_PROSPECTS_STATS) && ($objp->client == 2 || $objp->client == 3) && $objp->type==1) { $found=1; $third['prospect']++; }
+        if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_SUSPECTS_STATS) && ($objp->client == 2 || $objp->client == 3) && $objp->type==0) { $found=1; $third['suspect']++; }
         if ($conf->fournisseur->enabled && empty($conf->global->SOCIETE_DISABLE_SUPPLIERS_STATS) && $objp->fournisseur) { $found=1; $third['supplier']++; }
 
         if ($found) $total++;
@@ -105,8 +106,9 @@ if ($conf->use_javascript_ajax && empty($conf->global->DISABLE_NATIVE_CHARTS) &&
 {
     print '<tr><td align="center">';
     $dataseries=array();
-    if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_PROSPECTS_STATS)) $dataseries[]=array('label'=>$langs->trans("Prospects"),'values'=>array(round($third['prospect'])));
     if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_CUSTOMERS_STATS)) $dataseries[]=array('label'=>$langs->trans("Customers"),'values'=>array(round($third['customer'])));
+    if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_PROSPECTS_STATS)) $dataseries[]=array('label'=>$langs->trans("Prospects"),'values'=>array(round($third['prospect'])));
+    if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_SUSPECTS_STATS)) $dataseries[]=array('label'=>$langs->trans("Suspects"),'values'=>array(round($third['suspect'])));
     if ($conf->fournisseur->enabled && empty($conf->global->SOCIETE_DISABLE_SUPPLIERS_STATS)) $dataseries[]=array('label'=>$langs->trans("Suppliers"),'values'=>array(round($third['supplier'])));
     $data=array('series'=>$dataseries);
     dol_print_graph('stats',300,180,$data,1,'pie',0);
@@ -114,21 +116,27 @@ if ($conf->use_javascript_ajax && empty($conf->global->DISABLE_NATIVE_CHARTS) &&
 }
 else
 {
-    if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_PROSPECTS_STATS))
-    {
-        $statstring = "<tr $bc[0]>";
-        $statstring.= '<td><a href="'.DOL_URL_ROOT.'/comm/prospect/prospects.php">'.$langs->trans("Prospects").'</a></td><td align="right">'.round($third['prospect']).'</td>';
-        $statstring.= "</tr>";
-    }
     if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_CUSTOMERS_STATS))
     {
+        $statstring= "<tr $bc[0]>";
+        $statstring.= '<td><a href="'.DOL_URL_ROOT.'/comm/liste.php?type=2">'.$langs->trans("Customers").'</a></td><td align="right">'.round($third['customer']).'</td>';
+        $statstring.= "</tr>";
+    }
+    if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_PROSPECTS_STATS))
+    {
         $statstring.= "<tr $bc[1]>";
-        $statstring.= '<td><a href="'.DOL_URL_ROOT.'/comm/clients.php">'.$langs->trans("Customers").'</a></td><td align="right">'.round($third['customer']).'</td>';
+        $statstring.= '<td><a href="'.DOL_URL_ROOT.'/comm/liste.php?type=1">'.$langs->trans("Prospects").'</a></td><td align="right">'.round($third['prospect']).'</td>';
+        $statstring.= "</tr>";
+    }
+    if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_SUSPECTS_STATS))
+    {
+        $statstring.= "<tr $bc[0]>";
+        $statstring.= '<td><a href="'.DOL_URL_ROOT.'/comm/liste.php?type=0">'.$langs->trans("Suspects").'</a></td><td align="right">'.round($third['suspect']).'</td>';
         $statstring.= "</tr>";
     }
     if ($conf->fournisseur->enabled && empty($conf->global->SOCIETE_DISABLE_SUPPLIERS_STATS))
     {
-        $statstring2 = "<tr $bc[0]>";
+        $statstring2 = "<tr $bc[1]>";
         $statstring2.= '<td><a href="'.DOL_URL_ROOT.'/fourn/liste.php">'.$langs->trans("Suppliers").'</a></td><td align="right">'.round($third['supplier']).'</td>';
         $statstring2.= "</tr>";
     }
