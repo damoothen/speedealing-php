@@ -734,7 +734,7 @@ function print_left_eldy_menu($db,$menu_array_before,$menu_array_after)
             if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_PROSPECTS))
             {
                 $langs->load("commercial");
-                $newmenu->add("/comm/prospect/prospects.php?leftmenu=prospects", $langs->trans("ListProspectsShort"), 1, $user->rights->societe->lire);
+                $newmenu->add("/comm/liste.php?leftmenu=prospects&type=1", $langs->trans("ListProspectsShort"), 1, $user->rights->societe->lire);
 
                 //if ($leftmenu=="prospects") $newmenu->add("/comm/prospect/prospects.php?sortfield=s.datec&amp;sortorder=desc&amp;begin=&amp;stcomm=-1", $langs->trans("LastProspectDoNotContact"), 2, $user->rights->societe->lire);
                 //if ($leftmenu=="prospects") $newmenu->add("/comm/prospect/prospects.php?sortfield=s.datec&amp;sortorder=desc&amp;begin=&amp;stcomm=0", $langs->trans("LastProspectNeverContacted"), 2, $user->rights->societe->lire);
@@ -750,7 +750,7 @@ function print_left_eldy_menu($db,$menu_array_before,$menu_array_after)
             if ($conf->societe->enabled)
             {
                 $langs->load("commercial");
-                $newmenu->add("/comm/clients.php?leftmenu=customers", $langs->trans("ListCustomersShort"), 1, $user->rights->societe->lire);
+                $newmenu->add("/comm/liste.php?leftmenu=customers&type=2", $langs->trans("ListCustomersShort"), 1, $user->rights->societe->lire);
 
                 $newmenu->add("/societe/soc.php?leftmenu=customers&amp;action=create&amp;type=c", $langs->trans("MenuNewCustomer"), 2, $user->rights->societe->creer);
                 //$newmenu->add("/contact/index.php?leftmenu=customers&amp;type=c", $langs->trans("Contacts"), 2, $user->rights->societe->contact->lire);
@@ -819,10 +819,10 @@ function print_left_eldy_menu($db,$menu_array_before,$menu_array_after)
             $langs->load("companies");
 
             // Prospects
-            $newmenu->add("/comm/prospect/index.php?leftmenu=prospects", $langs->trans("Prospects"), 0, $user->rights->societe->lire);
+            $newmenu->add("/comm/liste.php?leftmenu=prospects&type=1", $langs->trans("Prospects"), 0, $user->rights->societe->lire);
 
             $newmenu->add("/societe/soc.php?leftmenu=prospects&amp;action=create&amp;type=p", $langs->trans("MenuNewProspect"), 1, $user->rights->societe->creer);
-            $newmenu->add("/comm/prospect/prospects.php?leftmenu=prospects", $langs->trans("List"), 1, $user->rights->societe->contact->lire);
+            $newmenu->add("/comm/liste.php?leftmenu=prospects&type=1", $langs->trans("List"), 1, $user->rights->societe->contact->lire);
 
             //if ($leftmenu=="prospects") $newmenu->add("/comm/prospect/prospects.php?sortfield=s.datec&amp;sortorder=desc&amp;begin=&amp;stcomm=-1", $langs->trans("LastProspectDoNotContact"), 2, $user->rights->societe->lire);
             //if ($leftmenu=="prospects") $newmenu->add("/comm/prospect/prospects.php?sortfield=s.datec&amp;sortorder=desc&amp;begin=&amp;stcomm=0", $langs->trans("LastProspectNeverContacted"), 2, $user->rights->societe->lire);
@@ -836,7 +836,7 @@ function print_left_eldy_menu($db,$menu_array_before,$menu_array_after)
             $newmenu->add("/comm/index.php?leftmenu=customers", $langs->trans("Customers"), 0, $user->rights->societe->lire);
 
             $newmenu->add("/societe/soc.php?leftmenu=customers&amp;action=create&amp;type=c", $langs->trans("MenuNewCustomer"), 1, $user->rights->societe->creer);
-            $newmenu->add("/comm/clients.php?leftmenu=customers", $langs->trans("List"), 1, $user->rights->societe->lire);
+            $newmenu->add("/comm/liste.php?leftmenu=customers&type=2", $langs->trans("List"), 1, $user->rights->societe->lire);
             $newmenu->add("/contact/index.php?leftmenu=customers&amp;type=c", $langs->trans("Contacts"), 1, $user->rights->societe->contact->lire);
 
             // Suppliers

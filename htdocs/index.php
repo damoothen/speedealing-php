@@ -144,6 +144,7 @@ if ($user->societe_id == 0)
 	$conditions=array(
 	! empty($conf->societe->enabled) && $user->rights->societe->lire && empty($conf->global->SOCIETE_DISABLE_CUSTOMERS_STATS),
 	! empty($conf->societe->enabled) && $user->rights->societe->lire && empty($conf->global->SOCIETE_DISABLE_PROSPECTS_STATS),
+        ! empty($conf->societe->enabled) && $user->rights->societe->lire && empty($conf->global->SOCIETE_DISABLE_SUSPECTS_STATS),
 	! empty($conf->fournisseur->enabled) && $user->rights->fournisseur->lire && empty($conf->global->SOCIETE_DISABLE_SUPPLIERS_STATS),
 	! empty($conf->adherent->enabled) && $user->rights->adherent->lire,
 	! empty($conf->product->enabled) && $user->rights->produit->lire,
@@ -154,8 +155,9 @@ if ($user->societe_id == 0)
 	! empty($conf->facture->enabled) && $user->rights->facture->lire,
 	! empty($conf->societe->enabled) && $user->rights->contrat->activer);
 	// Class file containing the method load_state_board for each line
-	$includes=array("/societe/class/client.class.php",
+	$includes=array("/comm/prospect/class/prospect.class.php",
 	"/comm/prospect/class/prospect.class.php",
+        "/comm/prospect/class/prospect.class.php",
 	"/fourn/class/fournisseur.class.php",
 	"/adherents/class/adherent.class.php",
 	"/product/class/product.class.php",
@@ -166,7 +168,8 @@ if ($user->societe_id == 0)
 	"/compta/facture/class/facture.class.php",
 	"/contrat/class/contrat.class.php");
 	// Name class containing the method load_state_board for each line
-	$classes=array('Client',
+	$classes=array('Prospect',
+                   'Prospect',
                    'Prospect',
                    'Fournisseur',
                    'Adherent',
@@ -180,6 +183,7 @@ if ($user->societe_id == 0)
     // Cle array returned by the method load_state_board for each line
     $keys=array('customers',
                 'prospects',
+                'suspects',
                 'suppliers',
                 'members',
                 'products',
@@ -193,6 +197,7 @@ if ($user->societe_id == 0)
     $icons=array('company',
                  'company',
                  'company',
+                 'company',
                  'user',
                  'product',
                  'service',
@@ -204,6 +209,7 @@ if ($user->societe_id == 0)
     // Translation keyword
     $titres=array("Customers",
                   "Prospects",
+                  "NotClassified",
                   "Suppliers",
                   "Members",
                   "Products",
@@ -214,8 +220,9 @@ if ($user->societe_id == 0)
                   "BillsCustomers",
                   "Contracts");
 	// Dashboard Link lines
-	$links=array('/comm/clients.php',
-	'/comm/prospect/prospects.php',
+	$links=array('/comm/liste.php?type=2',
+	'/comm/liste.php?type=1',
+        '/comm/liste.php?type=0',
 	'/fourn/liste.php',
 	'/adherents/liste.php?statut=1&amp;mainmenu=members',
 	'/product/liste.php?type=0&amp;mainmenu=products',
@@ -227,6 +234,7 @@ if ($user->societe_id == 0)
 	'/contrat/liste.php');
 	// Translation lang files
 	$langfile=array("bills",
+                    "prospects",
                     "prospects",
                     "suppliers",
                     "members",
