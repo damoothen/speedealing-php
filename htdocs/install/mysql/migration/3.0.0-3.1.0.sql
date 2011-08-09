@@ -1,5 +1,5 @@
 --
--- $Id: 3.0.0-3.1.0.sql,v 1.85 2011/08/03 10:55:39 simnandez Exp $
+-- $Id: 3.0.0-3.1.0.sql,v 1.88 2011/08/08 22:27:01 hregis Exp $
 --
 -- Be carefull to requests order.
 -- This file must be loaded by calling /install/index.php page
@@ -484,4 +484,3 @@ ALTER TABLE llx_don ADD   phone_mobile    varchar(24) after email;
 ALTER TABLE llx_don ADD   phone           varchar(24) after email;
 
 ALTER TABLE llx_user ADD civilite varchar(6) after entity;
-
