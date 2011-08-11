@@ -27,7 +27,7 @@
  *	\file       htdocs/societe/class/societe.class.php
  *	\ingroup    societe
  *	\brief      File for third party class
- *	\version    $Id: societe.class.php,v 1.94 2011/08/10 00:50:16 eldy Exp $
+ *	\version    $Id: societe.class.php,v 1.96 2011/08/10 22:47:35 eldy Exp $
  */
 require_once(DOL_DOCUMENT_ROOT."/core/class/commonobject.class.php");
 
@@ -553,9 +553,10 @@ class Societe extends CommonObject
 
                 // Actions on extra fields (by external module or standard code)
                 include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
-                $hookmanager=new HookManager($db);
+                $hookmanager=new HookManager($this->db);
                 $hookmanager->callHooks(array('thirdparty_extrafields'));
-                $reshook=$hookmanager->executeHooks('insertExtraFields',$action,$this,$socid);    // Note that $action and $object may have been modified by some hooks
+                $parameters=array('socid'=>$socid);
+                $reshook=$hookmanager->executeHooks('insertExtraFields',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
                 if (empty($reshook))
                 {
                     $result=$this->insertExtraFields($this);
