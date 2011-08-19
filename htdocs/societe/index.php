@@ -239,9 +239,9 @@ if ($result)
 
 		print "</table><br>";
                 /* Print Graph */
-                if($conf->highcharts->enabled && $user->rights->highcharts->read && $conf->societe->enabled)
+                if($conf->highcharts->enabled && $user->rights->highcharts->read && $conf->societe->enabled && $conf->categorie->enabled)
                 {
-                    require_once(DOL_DOCUMENT_ROOT."/highCharts/class/highCharts.class.php");
+                    dol_include_once("/highCharts/class/highCharts.class.php");
                     $langs->load("highcharts@highCharts");
 
                     $graph=new HighCharts($db);

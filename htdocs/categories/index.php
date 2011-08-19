@@ -321,7 +321,7 @@ print "</table><br>";
 
     if($conf->highcharts->enabled && $user->rights->highcharts->read && $conf->societe->enabled)
     {
-        require_once(DOL_DOCUMENT_ROOT."/highCharts/class/highCharts.class.php");
+        dol_include_once("/highCharts/class/highCharts.class.php");
         $langs->load("highcharts@highCharts");
 
         $graph=new HighCharts($db);
