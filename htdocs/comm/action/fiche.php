@@ -37,8 +37,8 @@ require_once(DOL_DOCUMENT_ROOT."/core/class/html.formactions.class.php");
 require_once(DOL_DOCUMENT_ROOT.'/comm/propal/class/propal.class.php');
 require_once(DOL_DOCUMENT_ROOT."/projet/class/project.class.php");
 require_once(DOL_DOCUMENT_ROOT."/lib/project.lib.php");
-if($conf->lead->enabled) require_once(DOL_DOCUMENT_ROOT."/lead/class/lead.class.php");
-if($conf->lead->enabled) require_once(DOL_DOCUMENT_ROOT."/lead/lib/lead.lib.php");
+if($conf->lead->enabled) dol_include_once("/lead/class/lead.class.php");
+if($conf->lead->enabled) dol_include_once("/lead/lib/lead.lib.php");
 
 $langs->load("companies");
 $langs->load("commercial");

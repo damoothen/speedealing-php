@@ -126,7 +126,7 @@ $tabsql[2] = "SELECT d.rowid as rowid, d.code_departement as code, d.nom as libe
 $tabsql[3] = "SELECT r.rowid as rowid, code_region as code, nom as libelle, r.fk_pays as pays_id, p.code as pays_code, p.libelle as pays, r.active FROM ".MAIN_DB_PREFIX."c_regions as r, ".MAIN_DB_PREFIX."c_pays as p WHERE r.fk_pays=p.rowid and p.active=1";
 $tabsql[4] = "SELECT rowid   as rowid, code, libelle, active FROM ".MAIN_DB_PREFIX."c_pays";
 $tabsql[5] = "SELECT c.rowid as rowid, c.code as code, c.civilite AS libelle, c.active FROM ".MAIN_DB_PREFIX."c_civilite AS c";
-$tabsql[6] = "SELECT a.id    as rowid, a.code as code, a.libelle AS libelle, a.type, a.active, a.module, a.position FROM ".MAIN_DB_PREFIX."c_actioncomm AS a";
+$tabsql[6] = "SELECT a.id    as rowid, a.code as code, a.libelle AS libelle, a.type, a.active, a.module, a.position, a.priority FROM ".MAIN_DB_PREFIX."c_actioncomm AS a";
 $tabsql[7] = "SELECT a.id    as rowid, a.code as code, a.libelle AS libelle, a.deductible, p.code as pays_code, p.libelle as pays, a.fk_pays as pays_id, a.active FROM ".MAIN_DB_PREFIX."c_chargesociales AS a, ".MAIN_DB_PREFIX."c_pays as p WHERE a.fk_pays=p.rowid and p.active=1";
 $tabsql[8] = "SELECT id      as rowid, code, libelle, active FROM ".MAIN_DB_PREFIX."c_typent";
 //$tabsql[9] = "SELECT code, code_iso, label as libelle, symbole, active FROM ".MAIN_DB_PREFIX."c_currencies";
@@ -155,7 +155,7 @@ $tabsqlsort[2] ="pays ASC, code ASC";
 $tabsqlsort[3] ="pays ASC, code ASC";
 $tabsqlsort[4] ="code ASC";
 $tabsqlsort[5] ="libelle ASC";
-$tabsqlsort[6] ="a.type ASC, a.module, a.position, a.code ASC";
+$tabsqlsort[6] ="a.type ASC, a.module, a.position, a.priority ASC";
 $tabsqlsort[7] ="pays ASC, code ASC, a.libelle ASC";
 $tabsqlsort[8] ="libelle ASC";
 $tabsqlsort[9] ="code ASC";
