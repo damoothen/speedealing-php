@@ -65,19 +65,6 @@ alter table llx_societe add latitude       double     DEFAULT 0;
 alter table llx_societe add longitude       double     DEFAULT 0;
 
 ALTER TABLE llx_c_stcomm add type smallint DEFAULT 0;
-delete from llx_c_stcomm;
-insert into llx_c_stcomm (id,code,libelle,type) values (-1, 'ST_NO',    'Ne pas contacter',-1);
-insert into llx_c_stcomm (id,code,libelle,active,type) values ( 0, 'ST_NEVER', 'Jamais contacté',1,0);
-insert into llx_c_stcomm (id,code,libelle,active,type) values ( 1, 'ST_TODO',  'A contacter',0,0);
-insert into llx_c_stcomm (id,code,libelle,active,type) values ( 2, 'ST_PEND',  'Contact en cours',0,0);
-insert into llx_c_stcomm (id,code,libelle,active,type) values ( 3, 'ST_DONE',  'Contactée',0,0);
-insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (4, 'ST_PFROI', 'Prospect froid', 1, 1);
-insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (5, 'ST_PTIED', 'Prospect tiède', 0, 1);
-insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (6, 'ST_PCHAU', 'Prospect chaud', 1, 1);
-insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (7, 'ST_CINF3', 'Client -3 mois', 1, 2);
-insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (8, 'ST_CREC', 'Client récurrent', 0, 2);
-insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (9, 'ST_CFID', 'Client fidèle', 1, 2);
-insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (10, 'ST_CPAR', 'Client partenaire', 0, 2);
 ALTER TABLE llx_categorie add priority    integer     DEFAULT 0;
 
 -- Delete old constants
@@ -176,18 +163,6 @@ ALTER TABLE llx_livraison ADD COLUMN ref_ext varchar(30) AFTER fk_soc;
 ALTER TABLE llx_livraison ADD COLUMN ref_int varchar(30) AFTER ref_ext;
 
 INSERT INTO llx_c_shipment_mode (rowid,code,libelle,description,active) VALUES (4,'LETTREMAX','Lettre Max','Courrier Suivi et Lettre Max',0);
-INSERT INTO llx_c_actioncomm (id, code, type, libelle, module, position) VALUES ( 10, 'AC_SHIP', 'system', 'Send shipping by email'	,'shipping', 11);
-insert into llx_c_actioncomm (id,code,type,libelle,module,priority,active) VALUES (11, 'AC_LEAD', '0', 'Lead change', 'lead',1 , 1);
-insert into llx_c_actioncomm (id,code,type,libelle,module,priority,active) VALUES (12, 'AC_PROSPECT', '0', 'Prospect change', 'agenda',1 , 1);
-insert into llx_c_actioncomm (id,code,type,libelle,module,priority,active) VALUES (20, 'AC_PRDV', '2', 'Prendre rendez-vous', '',15 , 1);
-insert into llx_c_actioncomm (id,code,type,libelle,module,priority,active) VALUES (21, 'AC_CRR', '2', 'Compte-rendu', '',4 , 1);
-insert into llx_c_actioncomm (id,code,type,libelle,module,priority,active) VALUES (22, 'AC_DOC', '2', 'Envoye documentation', '',6 , 1);
-insert into llx_c_actioncomm (id,code,type,libelle,module,priority,active) VALUES (23, 'RDV_TELC', '1', 'Conference Telephonique', '',12 , 1);
-insert into llx_c_actioncomm (id,code,type,libelle,module,priority,active) VALUES (24, 'RDV_WEB', '1', 'Web conference', '',10 , 1);
-insert into llx_c_actioncomm (id,code,type,libelle,module,priority,active) VALUES (25, 'AC_NEWSUS', '0', 'Nouveau suspect', '',6 , 1);
-insert into llx_c_actioncomm (id,code,type,libelle,module,priority,active) VALUES (26, 'AC_QUALIF', '0', 'Qualification', '',12 , 1);
-insert into llx_c_actioncomm (id,code,type,libelle,module,priority,active) VALUES (27, 'AC_SUSP', '0', 'Suspect -> prospect', '',10 , 1);
-
 
 ALTER TABLE llx_actioncomm DROP INDEX idx_actioncomm_fk_facture;
 ALTER TABLE llx_actioncomm DROP INDEX idx_actioncomm_fk_supplier_order;
