@@ -65,6 +65,7 @@ alter table llx_societe add latitude       double     DEFAULT 0;
 alter table llx_societe add longitude       double     DEFAULT 0;
 
 ALTER TABLE llx_c_stcomm add type smallint DEFAULT 0;
+ALTER TABLE llx_c_stcomm drop isclient;
 ALTER TABLE llx_categorie add priority    integer     DEFAULT 0;
 
 -- Delete old constants
