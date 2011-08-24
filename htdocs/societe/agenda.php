@@ -127,8 +127,9 @@ if ($_GET["socid"])
                 $var=!$var;
 	}
 
-	print "<tr ".$bc[$var]."><td valign=\"top\" id=\"label\">".$langs->trans('Address')."</td><td colspan=\"3\" id=\"value\">".nl2br($soc->address)."</td></tr>";
-        $var=!$var;
+	print "<tr><td valign=\"top\">".$langs->trans('Address')."</td><td colspan=\"3\">";
+	dol_print_address($soc->address, 'gmap', 'thirdparty', $soc->id);
+	print "</td></tr>";
 
 	// Zip / Town
     print '<tr '.$bc[$var].'><td id="label" width="25%">'.$langs->trans('Zip').' / '.$langs->trans("Town").'</td><td id="value" colspan="3">';
