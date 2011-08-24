@@ -108,7 +108,7 @@ if ($_GET["socid"])
 		print $soc->code_client;
 		if ($soc->check_codeclient() <> 0) print ' <font class="error">('.$langs->trans("WrongCustomerCode").')</font>';
 		print '</td></tr>';
-        $var=!$var;
+                $var=!$var;
 	}
 
 	if ($soc->fournisseur)
@@ -127,15 +127,17 @@ if ($_GET["socid"])
                 $var=!$var;
 	}
 
-	print "<tr><td valign=\"top\">".$langs->trans('Address')."</td><td colspan=\"3\">";
+        // Address
+	print "<tr ".$bc[$var]."><td id=\"label\" valign=\"top\">".$langs->trans('Address')."</td><td id=\"value\" colspan=\"3\">";
 	dol_print_address($soc->address, 'gmap', 'thirdparty', $soc->id);
 	print "</td></tr>";
+        $var=!$var;
 
 	// Zip / Town
-    print '<tr '.$bc[$var].'><td id="label" width="25%">'.$langs->trans('Zip').' / '.$langs->trans("Town").'</td><td id="value" colspan="3">';
-    print $soc->cp.($soc->cp && $soc->ville?" / ":"").$soc->ville;
-    print "</td>";
-    print '</tr>';
+        print '<tr '.$bc[$var].'><td id="label" width="25%">'.$langs->trans('Zip').' / '.$langs->trans("Town").'</td><td id="value" colspan="3">';
+        print $soc->cp.($soc->cp && $soc->ville?" / ":"").$soc->ville;
+        print "</td>";
+        print '</tr>';
         $var=!$var;
 
 	// Country
