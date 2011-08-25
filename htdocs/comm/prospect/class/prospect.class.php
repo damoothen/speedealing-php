@@ -276,7 +276,7 @@ class Prospect extends Societe
 
                 for($i=0, $size=sizeof($array); $i < $size; $i++)
                 {
-                    print '<tr '.$bc[$var].'><td><a href='.DOL_URL_ROOT.'/comm/liste.php?pstcomm='.$array[$i]['id'].'>';
+                    print '<tr '.$bc[$var].'><td><a href='.DOL_URL_ROOT.'/comm/list.php?pstcomm='.$array[$i]['id'].'>';
                     print img_action($langs->trans("Show"),$array[$i]['id']).' ';
                     print $langs->trans($array[$i]['libelle']);
 

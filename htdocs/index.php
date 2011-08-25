@@ -220,9 +220,9 @@ if ($user->societe_id == 0)
                   "BillsCustomers",
                   "Contracts");
 	// Dashboard Link lines
-	$links=array('/comm/liste.php?type=2',
-	'/comm/liste.php?type=1',
-        '/comm/liste.php?type=0',
+	$links=array('/comm/list.php?type=2',
+	'/comm/list.php?type=1',
+        '/comm/list.php?type=0',
 	'/fourn/liste.php',
 	'/adherents/liste.php?statut=1&amp;mainmenu=members',
 	'/product/liste.php?type=0&amp;mainmenu=products',
