@@ -20,10 +20,10 @@
  */
 
 /**
- *	\file       htdocs/comm/clients.php
+ *	\file       htdocs/comm/list.php
  *	\ingroup    commercial societe
  *	\brief      List of customers
- *	\version    $Id: clients.php,v 1.80 2011/08/08 16:15:05 eldy Exp $
+ *	\version    $Id: list.php,v 1.80 2011/08/08 16:15:05 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -106,7 +106,7 @@ else
 }
 
 // Select every potentiels, and note each potentiels which fit in search parameters
-dol_syslog('clients::prospects_prospect_level',LOG_DEBUG);
+dol_syslog('list::prospects_prospect_level',LOG_DEBUG);
 $sql = "SELECT code, label, sortorder, ".$sortwhere;
 $sql.= " FROM ".MAIN_DB_PREFIX."c_prospectlevel";
 $sql.= " WHERE active > 0";
@@ -239,7 +239,7 @@ if ($resql)
 	if ($num == 1 && $socname)
 	{
 		$obj = $db->fetch_object($resql);
-		Header("Location: clients.php?socid=".$obj->rowid);
+		Header("Location: list.php?socid=".$obj->rowid);
 		exit;
 	}
 	else
@@ -289,7 +289,7 @@ if ($resql)
 
 
  	// Print the search-by-sale and search-by-categ filters
- 	print '<form method="get" action="liste.php" id="formulaire_recherche">';
+ 	print '<form method="get" action="list.php" id="formulaire_recherche">';
 
 	print '<table class="liste" width="100%">';
 
@@ -316,13 +316,13 @@ if ($resql)
 	}
 
 	print '<tr class="liste_titre">';
-	print_liste_field_titre($langs->trans("Company"),"clients.php","s.nom","",$param,'',$sortfield,$sortorder);
-	print_liste_field_titre($langs->trans("Town"),"clients.php","s.ville","",$param,"",$sortfield,$sortorder);
-	print_liste_field_titre($langs->trans("State"),"clients.php","s.fk_departement","",$param,'align="center"',$sortfield,$sortorder);
-	print_liste_field_titre($langs->trans("Postalcode"),"clients.php","cp","",$param,"align=\"left\"",$sortfield,$sortorder);
-	print_liste_field_titre($langs->trans("DateCreation"),"clients.php","s.datec","",$param,'align="center"',$sortfield,$sortorder);
-	print_liste_field_titre($langs->trans("ProspectLevelShort"),"clients.php","s.fk_prospectlevel","",$param,'align="center"',$sortfield,$sortorder);
-	print_liste_field_titre($langs->trans("StatusProsp"),"clients.php","s.fk_stcomm","",$param,'align="center"',$sortfield,$sortorder);
+	print_liste_field_titre($langs->trans("Company"),"list.php","s.nom","",$param,'',$sortfield,$sortorder);
+	print_liste_field_titre($langs->trans("Town"),"list.php","s.ville","",$param,"",$sortfield,$sortorder);
+	print_liste_field_titre($langs->trans("State"),"list.php","s.fk_departement","",$param,'align="center"',$sortfield,$sortorder);
+	print_liste_field_titre($langs->trans("Postalcode"),"list.php","cp","",$param,"align=\"left\"",$sortfield,$sortorder);
+	print_liste_field_titre($langs->trans("DateCreation"),"list.php","s.datec","",$param,'align="center"',$sortfield,$sortorder);
+	print_liste_field_titre($langs->trans("ProspectLevelShort"),"list.php","s.fk_prospectlevel","",$param,'align="center"',$sortfield,$sortorder);
+	print_liste_field_titre($langs->trans("StatusProsp"),"list.php","s.fk_stcomm","",$param,'align="center"',$sortfield,$sortorder);
 	print '<td class="liste_titre">&nbsp;</td>';
     print_liste_field_titre($langs->trans("Status"),$_SERVER["PHP_SELF"],"s.status","",$params,'align="right"',$sortfield,$sortorder);
 	print "</tr>\n";
@@ -428,7 +428,7 @@ if ($resql)
 		print '<td align="center" nowrap>';
                 $prospectstatic->stcomm_id=$obj->fk_stcomm;
 		$prospectstatic->type=$obj->type;
-                print $prospectstatic->getIconList(DOL_URL_ROOT."/comm/liste.php?socid=".$obj->rowid.'&amp;action=cstc&amp;'.$param.($page?'&amp;page='.$page:''));
+                print $prospectstatic->getIconList(DOL_URL_ROOT."/comm/list.php?socid=".$obj->rowid.'&amp;action=cstc&amp;'.$param.($page?'&amp;page='.$page:''));
 		print '</td>';
 
                 print '<td align="right">';
