@@ -1,5 +1,5 @@
 <?php
-/* Copyright (C) 2005-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
+/* Copyright (C) 2005-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2010      Regis Houssin        <regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -168,7 +168,7 @@ if ($_GET["action"] == 'edit')
     print ($conf->global->MAIN_LANG_DEFAULT=='auto'?$langs->trans("AutoDetectLang"):$langs->trans("Language_".$conf->global->MAIN_LANG_DEFAULT));
     print '</td>';
     print '<td align="left" nowrap="nowrap" width="20%"><input '.$bc[$var].' name="check_MAIN_LANG_DEFAULT" type="checkbox" '.($fuser->conf->MAIN_LANG_DEFAULT?" checked":"");
-    print ! empty($dolibarr_main_demo)?' disabled="true"':'';	// Disabled for demo
+    print ! empty($dolibarr_main_demo)?' disabled="disabled"':'';	// Disabled for demo
     print '> '.$langs->trans("UsePersonalValue").'</td>';
     print '<td>';
     print $formadmin->select_language($fuser->conf->MAIN_LANG_DEFAULT,'main_lang_default',1);
@@ -179,15 +179,14 @@ if ($_GET["action"] == 'edit')
     print '<tr '.$bc[$var].'><td>'.$langs->trans("MaxSizeList").'</td>';
     print '<td>'.$conf->global->MAIN_SIZE_LISTE_LIMIT.'</td>';
     print '<td align="left" nowrap="nowrap" width="20%"><input '.$bc[$var].' name="check_SIZE_LISTE_LIMIT" type="checkbox" '.($fuser->conf->MAIN_SIZE_LISTE_LIMIT?" checked":"");
-    print ! empty($dolibarr_main_demo)?' disabled="true"':'';	// Disabled for demo
+    print ! empty($dolibarr_main_demo)?' disabled="disabled"':'';	// Disabled for demo
     print '> '.$langs->trans("UsePersonalValue").'</td>';
     print '<td><input class="flat" name="main_size_liste_limit" size="4" value="' . $fuser->conf->SIZE_LISTE_LIMIT . '"></td></tr>';
 
     print '</table><br>';
 
-
     // Theme
-    show_theme($fuser,empty($dolibarr_main_demo)?1:0,true);
+    show_theme($fuser,(($user->admin || empty($dolibarr_main_demo))?1:0),true);
 
     print '</div>';
 
@@ -235,7 +234,7 @@ else
     print '</div>';
 
     print '<div class="tabsAction">';
-    if (! empty($dolibarr_main_demo))
+    if (empty($user->admin) && ! empty($dolibarr_main_demo))
     {
         print "<a class=\"butActionRefused\" title=\"".$langs->trans("FeatureDisabledInDemo")."\" href=\"#\">".$langs->trans("Modify")."</a>";
     }

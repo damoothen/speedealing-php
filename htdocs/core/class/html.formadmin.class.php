@@ -259,11 +259,9 @@ class FormAdmin
 			{
 				print '	selected="selected"';
 			}
-            //if ($key == 'rodolphe') print ' disabled="true"';
 			print '>';
 			if ($key == 'all') print $langs->trans("AllMenus");
 			else print $key;
-			//if ($key == 'rodolphe') print ' ('.$langs->trans("PersonalizedMenusNotSupported").')';
 			print '</option>'."\n";
 		}
 		print '</select>';
@@ -322,10 +320,12 @@ class FormAdmin
 
 	/**
 	 *    	Return html select list with available languages (key='en_US', value='United States' for example)
-	 *    	@param      selected        Langue pre-selectionnee
-	 *    	@param      htmlname        Nom de la zone select
-	 * 		@param		filter			Key to filter
-	 * 		@param		showempty		Add empty value
+	 *
+	 *    	@param      string	$selected       Paper format pre-selected
+	 *    	@param      string	$htmlname       Name of HTML select field
+	 * 		@param		string	$filter			Key to filter
+	 * 		@param		int		$showempty		Add empty value
+	 * 		@return		string					Return HTML output
 	 */
 	function select_paper_format($selected='',$htmlname='paperformat_id',$filter=0,$showempty=0)
 	{
