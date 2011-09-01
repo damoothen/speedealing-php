@@ -1268,7 +1268,7 @@ class BonPrelevement extends CommonObject
         	$this->total = 0;
 
         	$sql = "SELECT pl.rowid, pl.client_nom, pl.code_banque, pl.code_guichet, pl.number, pl.amount,";
-        	$sql.= " f.facnumber, pf.fk_facture";
+        	$sql.= " f.facnumber, pf.fk_facture, f.fk_soc";
         	$sql.= " FROM";
         	$sql.= " ".MAIN_DB_PREFIX."prelevement_lignes as pl,";
         	$sql.= " ".MAIN_DB_PREFIX."facture as f,";
@@ -1295,7 +1295,9 @@ class BonPrelevement extends CommonObject
                 	$row[4],
                 	$row[5],
                 	$row[6],
-                	$row[7]);
+                	$row[7],
+			$row[8]);
+
 
                 	$this->total = $this->total + $row[5];
 
@@ -1368,8 +1370,18 @@ class BonPrelevement extends CommonObject
     *	@param	facnumber	ref of invoice
     *	@param	facid		id of invoice
     */
-    function EnregDestinataire($rowid, $client_nom, $rib_banque, $rib_guichet, $rib_number, $amount, $facnumber, $facid)
+    function EnregDestinataire($rowid, $client_nom, $rib_banque, $rib_guichet, $rib_number, $amount, $facnumber, $facid, $socid)
     {
+
+	$societe = new Societe($this->db);
+	$societe->fetch($socid);
+	$societe->load_ban();
+
+
+	$facture = new Facture($this->db);
+	$facture->fetch($facid);
+
+
         fputs ($this->file, "06");
         fputs ($this->file, "08"); // Prelevement ordinaire
 
@@ -1385,7 +1397,8 @@ class BonPrelevement extends CommonObject
 
         // Raison Sociale Destinataire C2
 
-        fputs ($this->file, substr($client->nom. "                           ",0,24));
+        //fputs ($this->file, substr($client->nom. "                           ",0,24));
+        fputs ($this->file, substr($client_nom. "                           ",0,24));
 
         // Domiciliation facultative D1
 
@@ -1397,11 +1410,14 @@ class BonPrelevement extends CommonObject
 
         // Code Guichet  D3
 
-        fputs ($this->file, $rib_guichet);
+        //fputs ($this->file, $rib_guichet);
+        fputs ($this->file, $societe->bank_account->code_guichet);
 
         // Numero de compte D4
 
-        fputs ($this->file, substr("000000000000000".$rib_number, -11));
+        //fputs ($this->file, substr("000000000000000".$rib_number, -11));
+        fputs ($this->file, substr("000000000000000".$societe->bank_account->number, -11));
+
 
         // Zone E Montant
 
@@ -1411,7 +1427,8 @@ class BonPrelevement extends CommonObject
 
         // Libelle F
 
-        fputs ($this->file, substr("*".$this->ref.$rowid."                                   ",0,13));
+        //fputs ($this->file, substr("*".$this->ref.$rowid."                                   ",0,13));
+        fputs ($this->file, substr(" ".$facture->ref."                                   ",0,13));
         fputs ($this->file, substr("                                        ",0,18));
 
         // Code etablissement G1
