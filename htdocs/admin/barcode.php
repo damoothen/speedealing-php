@@ -1,6 +1,6 @@
 <?php
 /* Copyright (C) 2003-2004 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2009 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -18,9 +18,9 @@
  */
 
 /**
- *	\file       htdocs/includes/modules/barcode/admin/barcode.php
+ *	\file       htdocs/admin/barcode.php
  *	\ingroup    barcode
- *	\brief      Page d'administration/configuration du module Code barre
+ *	\brief      Page to setup barcode module
  */
 
 require("../main.inc.php");
@@ -30,29 +30,40 @@ require_once(DOL_DOCUMENT_ROOT."/includes/barcode/html.formbarcode.class.php");
 $langs->load("admin");
 
 if (!$user->admin)
-accessforbidden();
+	accessforbidden();
 
-if ($_POST["action"] == 'setcoder')
+$action = GETPOST("action");
+
+/*
+ * Actions
+ */
+
+if ($action == 'setcoder')
 {
+	$coder = GETPOST("coder");
+	$code_id = GETPOST("code_id");
 	$sqlp = "UPDATE ".MAIN_DB_PREFIX."c_barcode_type";
-	$sqlp.= " SET coder = '" . $_POST["coder"]."'";
-	$sqlp.= " WHERE rowid = ". $_POST["code_id"];
+	$sqlp.= " SET coder = '" . $coder."'";
+	$sqlp.= " WHERE rowid = ". $code_id;
 	$sqlp.= " AND entity = ".$conf->entity;
 
 	$resql=$db->query($sqlp);
 	//print $sqlp;
 }
-else if ($_POST["action"] == 'setgenbarcodelocation')
+else if ($action == 'setgenbarcodelocation')
 {
-	dolibarr_set_const($db, "GENBARCODE_LOCATION",$_POST["genbarcodelocation"],'chaine',0,'',$conf->entity);
+	$location = GETPOST("genbarcodelocation");
+	$res = dolibarr_set_const($db, "GENBARCODE_LOCATION",$location,'chaine',0,'',$conf->entity);
 }
-else if ($_POST["action"] == 'setdefaultbarcodetype')
+else if ($action == 'setdefaultbarcodetype')
 {
-	dolibarr_set_const($db, "PRODUIT_DEFAULT_BARCODE_TYPE", $_POST["coder_id"],'chaine',0,'',$conf->entity);
+	$coder_id = GETPOST("coder_id");
+	$res = dolibarr_set_const($db, "PRODUIT_DEFAULT_BARCODE_TYPE", $coder_id,'chaine',0,'',$conf->entity);
 }
-else if ($_POST["action"] == 'GENBARCODE_BARCODETYPE_THIRDPARTY')
+else if ($action == 'GENBARCODE_BARCODETYPE_THIRDPARTY')
 {
-	dolibarr_set_const($db, "GENBARCODE_BARCODETYPE_THIRDPARTY", $_POST["coder_id"],'chaine',0,'',$conf->entity);
+	$coder_id = GETPOST("coder_id");
+	$res = dolibarr_set_const($db, "GENBARCODE_BARCODETYPE_THIRDPARTY", $coder_id,'chaine',0,'',$conf->entity);
 }
 /*
  else if ($_POST["action"] == 'setproductusebarcode')
@@ -63,9 +74,22 @@ else if ($_POST["action"] == 'GENBARCODE_BARCODETYPE_THIRDPARTY')
  }
  */
 
+if($action && $action!='setcoder')
+{
+	if (! $res > 0) $error++;
+    
+	if (! $error)
+    {   
+        $mesg = "<font class=\"ok\">".$langs->trans("SetupSaved")."</font>";
+    }
+    else
+    {
+        $mesg = "<font class=\"error\">".$langs->trans("Error")."</font>";
+	}
+}
 
 /*
- * Actions
+ * View
  */
 
 $html = new Form($db);
@@ -293,6 +317,8 @@ if ($conf->product->enabled)
 print '</table>';
 
 print "<br>";
+
+dol_htmloutput_mesg($mesg);
 
 $db->close();
 

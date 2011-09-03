@@ -142,7 +142,8 @@ class User extends CommonObject
 		$sql.= " u.datelastlogin as datel,";
 		$sql.= " u.datepreviouslogin as datep,";
 		$sql.= " u.photo as photo,";
-		$sql.= " u.openid as openid";
+		$sql.= " u.openid as openid,";
+		$sql.= " u.ref_int, u.ref_ext";
 		$sql.= " FROM ".MAIN_DB_PREFIX."user as u";
 
 		if(! empty($conf->multicompany->enabled) && $conf->entity == 1)
@@ -176,6 +177,9 @@ class User extends CommonObject
 			{
 				$this->id 			= $obj->rowid;
 				$this->ref 			= $obj->rowid;
+				
+				$this->ref_int 		= $obj->ref_int;
+				$this->ref_ext 		= $obj->ref_ext;
 
 				$this->ldap_sid 	= $obj->ldap_sid;
 				$this->nom 			= $obj->name;		// TODO deprecated
@@ -602,16 +606,14 @@ class User extends CommonObject
 		$error=0;
 
 		// Check parameters
-		if ($this->statut == $statut)
-		{
-			return 0;
-		}
+		if ($this->statut == $statut) return 0;
+		else $this->statut = $statut;
 
 		$this->db->begin();
 
 		// Desactive utilisateur
 		$sql = "UPDATE ".MAIN_DB_PREFIX."user";
-		$sql.= " SET statut = ".$statut;
+		$sql.= " SET statut = ".$this->statut;
 		$sql.= " WHERE rowid = ".$this->id;
 		$result = $this->db->query($sql);
 
@@ -634,7 +636,6 @@ class User extends CommonObject
 		else
 		{
 			$this->db->commit();
-			$this->statut=$statut;
 			return 1;
 		}
 	}
@@ -839,8 +840,10 @@ class User extends CommonObject
 
 		// Positionne parametres
 		$this->admin = 0;
-		$this->nom = $contact->nom;
-		$this->prenom = $contact->prenom;
+		$this->nom = $contact->nom;			// TODO deprecated
+		$this->prenom = $contact->prenom;	// TODO deprecated
+		$this->lastname = $contact->nom;
+		$this->firstname = $contact->prenom;
 		$this->email = $contact->email;
 
 		if (empty($login)) $login=strtolower(substr($contact->prenom, 0, 4)) . strtolower(substr($contact->nom, 0, 4));
@@ -1010,8 +1013,10 @@ class User extends CommonObject
 		dol_syslog("User::update notrigger=".$notrigger.", nosyncmember=".$nosyncmember.", nosyncmemberpass=".$nosyncmemberpass);
 
 		// Clean parameters
-		$this->nom          = trim($this->nom);
-		$this->prenom       = trim($this->prenom);
+		$this->nom          = trim($this->nom);		// TODO deprecated
+		$this->prenom       = trim($this->prenom);  // TODO deprecated
+		$this->lastname     = trim($this->lastname);
+		$this->firstname    = trim($this->firstname);
 		$this->login        = trim($this->login);
 		$this->pass         = trim($this->pass);
 		$this->office_phone = trim($this->office_phone);
@@ -1041,8 +1046,8 @@ class User extends CommonObject
 
 		// Mise a jour autres infos
 		$sql = "UPDATE ".MAIN_DB_PREFIX."user SET";
-		$sql.= " name = '".$this->db->escape($this->nom)."'";
-		$sql.= ", firstname = '".$this->db->escape($this->prenom)."'";
+		$sql.= " name = '".$this->db->escape($this->lastname)."'";
+		$sql.= ", firstname = '".$this->db->escape($this->firstname)."'";
 		$sql.= ", login = '".$this->db->escape($this->login)."'";
 		$sql.= ", admin = ".$this->admin;
 		$sql.= ", office_phone = '".$this->db->escape($this->office_phone)."'";
@@ -1103,8 +1108,8 @@ class User extends CommonObject
 
 					if ($result >= 0)
 					{
-						$adh->prenom=$this->prenom;
-						$adh->nom=$this->nom;
+						$adh->prenom=$this->firstname;
+						$adh->nom=$this->lastname;
 						$adh->login=$this->login;
 						$adh->pass=$this->pass;
 						$adh->societe=(empty($adh->societe) && $this->societe_id ? $this->societe_id : $adh->societe);
@@ -1134,36 +1139,37 @@ class User extends CommonObject
 						$error++;
 					}
 				}
-
-				if (! $error && ! $notrigger)
-				{
-					// Appel des triggers
-					include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
-					$interface=new Interfaces($this->db);
-					$result=$interface->run_triggers('USER_MODIFY',$this,$user,$langs,$conf);
-					if ($result < 0) { $error++; $this->errors=$interface->errors; }
-					// Fin appel triggers
-				}
+			}
+			
+			if (! $error && ! $notrigger)
+			{
+				// Appel des triggers
+				include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+				$interface=new Interfaces($this->db);
+				$result=$interface->run_triggers('USER_MODIFY',$this,$user,$langs,$conf);
+				if ($result < 0) { $error++; $this->errors=$interface->errors; }
+				// Fin appel triggers
 			}
 
 			if (! $error)
 			{
 				$this->db->commit();
+				return $nbrowsaffected;
 			}
 			else
 			{
+				$this->error=$this->db->lasterror();
+				dol_syslog(get_class($this)."::update error=".$this->error,LOG_ERR);
 				$this->db->rollback();
+				return -1;
 			}
-
-			return $nbrowsaffected;
 		}
 		else
 		{
-			$this->db->rollback();
-
 			$this->error=$this->db->lasterror();
-			dol_syslog("User::update ".$this->error,LOG_ERR);
-			return -1;
+			dol_syslog(get_class($this)."::update error=".$this->error,LOG_ERR);
+			$this->db->rollback();
+			return -2;
 		}
 
 	}
