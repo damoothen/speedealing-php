@@ -31,7 +31,6 @@ require("../../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/paypal/lib/paypal.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/paypal/lib/paypalfunctions.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/lib/company.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/security.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/lib/functions2.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
 
@@ -87,7 +86,7 @@ $SOURCE=GETPOST("source",'alpha');
 $ref=$REF=GETPOST('ref','alpha');
 $TAG=GETPOST("tag",'alpha');
 $FULLTAG=GETPOST("fulltag",'alpha');		// fulltag is tag with more informations
-$SECUREKEY=GETPOST("securekey",'alpha');	// Secure key
+$SECUREKEY=GETPOST("securekey");	        // Secure key
 
 if (! empty($SOURCE))
 {
@@ -138,10 +137,35 @@ if (empty($PAYPAL_API_SIGNATURE))
     return -1;
 }
 
+// Check security token
+$valid=true;
+if (! empty($conf->global->PAYPAL_SECURITY_TOKEN))
+{
+    if (! empty($conf->global->PAYPAL_SECURITY_TOKEN_UNIQUE))
+    {
+	    if ($SOURCE && $REF) $token = dol_hash($conf->global->PAYPAL_SECURITY_TOKEN . $SOURCE . $REF, 2);    // Use the source in the hash to avoid duplicates if the references are identical
+	    else $token = dol_hash($conf->global->PAYPAL_SECURITY_TOKEN, 2);
+    }
+    else
+    {
+        $token = $conf->global->PAYPAL_SECURITY_TOKEN;
+    }
+	if ($SECUREKEY != $token) $valid=false;
+
+	if (! $valid)
+	{
+    	print '<div class="error">Bad value for key.</div>';
+	    //print 'SECUREKEY='.$SECUREKEY.' token='.$token.' valid='.$valid;
+    	exit;
+	}
+}
+
+
 
 /*
  * Actions
  */
+
 if (GETPOST("action") == 'dopayment')
 {
 	$PAYPAL_API_PRICE=price2num(GETPOST("newamount"),'MT');
@@ -237,6 +261,7 @@ print '<input type="hidden" name="action" value="dopayment">'."\n";
 print '<input type="hidden" name="amount" value="'.GETPOST("amount",'int').'">'."\n";
 print '<input type="hidden" name="tag" value="'.GETPOST("tag",'alpha').'">'."\n";
 print '<input type="hidden" name="suffix" value="'.GETPOST("suffix",'alpha').'">'."\n";
+print '<input type="hidden" name="securekey" value="'.$SECUREKEY.'">'."\n";
 print "\n";
 print '<!-- Form to send a Paypal payment -->'."\n";
 print '<!-- PAYPAL_API_SANDBOX = '.$conf->global->PAYPAL_API_SANDBOX.' -->'."\n";
@@ -303,16 +328,8 @@ $found=false;
 $error=0;
 $var=false;
 
-// Check security token
-$valid=true;
-if (! empty($conf->global->PAYPAL_SECURITY_TOKEN) )
-{
-	$token = dol_hash($conf->global->PAYPAL_SECURITY_TOKEN . $SOURCE . $ref, 2);
-	if ($SECUREKEY != $token) $valid=false;
-}
-
 // Free payment
-if (! GETPOST("source"))
+if (! GETPOST("source") && $valid)
 {
 	$found=true;
 	$tag=GETPOST("tag");

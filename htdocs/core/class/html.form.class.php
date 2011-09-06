@@ -2732,7 +2732,7 @@ class Form
      *      @param      societe_vendeuse    Objet societe vendeuse
      *      @param      societe_acheteuse   Objet societe acheteuse
      *      @param      idprod              Id product
-     *      @param      info_bits           Miscellanous information on line
+     *      @param      info_bits           Miscellaneous information on line
      *      @param      type               ''=Unknown, 0=Product, 1=Service (Used if idprod not defined)
      *                  Si vendeur non assujeti a TVA, TVA par defaut=0. Fin de regle.
      *                  Si le (pays vendeur = pays acheteur) alors la TVA par defaut=TVA du produit vendu. Fin de regle.
@@ -2755,7 +2755,7 @@ class Form
      *      @param      societe_vendeuse   Objet societe vendeuse
      *      @param      societe_acheteuse  Objet societe acheteuse
      *      @param      idprod             Id product
-     *      @param      info_bits          Miscellanous information on line
+     *      @param      info_bits          Miscellaneous information on line
      *      @param      type               ''=Unknown, 0=Product, 1=Service (Used if idprod not defined)
      *                  Si vendeur non assujeti a TVA, TVA par defaut=0. Fin de regle.
      *                  Si le (pays vendeur = pays acheteur) alors la TVA par defaut=TVA du produit vendu. Fin de regle.
@@ -3476,7 +3476,7 @@ class Form
                 {
                     global $dolibarr_main_url_root;
                     $ret.='<!-- Put link to gravatar -->';
-                    $ret.='<img alt="Photo found on Gravatar" title="Photo Gravatar.com - email '.$email.'" border="0" width="'.$width.'" src="http://www.gravatar.com/avatar/'.md5($email).'?s='.$width.'&d='.urlencode( dol_buildpath('/theme/common/nophoto.jpg',2) ).'">';
+                    $ret.='<img alt="Photo found on Gravatar" title="Photo Gravatar.com - email '.$email.'" border="0" width="'.$width.'" src="http://www.gravatar.com/avatar/'.dol_hash($email).'?s='.$width.'&d='.urlencode( dol_buildpath('/theme/common/nophoto.jpg',2) ).'">';
                 }
                 else
                 {
