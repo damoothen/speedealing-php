@@ -25,7 +25,7 @@
  *	\file       htdocs/main.inc.php
  *	\ingroup	core
  *	\brief      File that defines environment for Dolibarr pages only (variables not required by scripts)
- *	\version    $Id: main.inc.php,v 1.759 2011/08/10 22:47:36 eldy Exp $
+ *	\version    $Id: main.inc.php,v 1.756 2011/07/31 23:19:05 eldy Exp $
  */
 
 @ini_set('memory_limit', '64M');	// This may be useless if memory is hard limited by your PHP
@@ -750,14 +750,17 @@ if (!empty($conf->global->MAIN_MODULE_MULTICOMPANY))
 {
 	if (GETPOST('action') == 'switchentity' && $user->admin && ! $user->entity)
 	{
-		require_once(DOL_DOCUMENT_ROOT."/multicompany/class/actions_multicompany.class.php");
-
-		$mc = new ActionsMulticompany($db);
-
-		if($mc->switchEntity(GETPOST('entity')) >= 0)
+		$res = @dol_include_once("/multicompany/class/actions_multicompany.class.php");
+		
+		if ($res)
 		{
-			Header("Location: ".DOL_URL_ROOT.'/');
-			exit;
+			$mc = new ActionsMulticompany($db);
+	
+			if($mc->switchEntity(GETPOST('entity')) > 0)
+			{
+				Header("Location: ".DOL_URL_ROOT.'/');
+				exit;
+			}
 		}
 	}
 }
@@ -1224,7 +1227,7 @@ function top_menu($head, $title='', $target='', $disablejs=0, $disablehead=0, $a
 	// Select entity
 	if (! empty($conf->global->MAIN_MODULE_MULTICOMPANY))
 	{
-		//if ($user->admin && ! $user->entity)
+		if ($user->admin && ! $user->entity)
 		{
 			$res=@dol_include_once('/multicompany/class/actions_multicompany.class.php');
 
@@ -1286,9 +1289,12 @@ function left_menu($menu_array_before, $helppagename='', $moresearchform='', $me
 	print "\n";
 
 	// Instantiate hooks of thirdparty module
-    include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
-    $hookmanager=new HookManager($db);
-    $hookmanager->callHooks(array('searchform','leftblock'));
+	if (is_array($conf->hooks_modules) && !empty($conf->hooks_modules))
+	{
+		require_once(DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php');
+		$object = new CommonObject($db);
+		$object->callHooks(array('searchform','leftblock'));
+	}
 
 	// Define $searchform
 	if ($conf->societe->enabled && $conf->global->MAIN_SEARCHFORM_SOCIETE && $user->rights->societe->lire)
@@ -1320,9 +1326,24 @@ function left_menu($menu_array_before, $helppagename='', $moresearchform='', $me
 		img_object('','user').' '.$langs->trans("Members"), 'member', 'sall');
 	}
 
-	// Execute hook printSearchForm
-	$parameters=array();
-    $searchform.=$hookmanager->executeHooks('printSearchForm',$parameters);    // Note that $action and $object may have been modified by some hooks
+	// Search form hook for external modules
+	if (! empty($object->hooks))
+	{
+		$searchform.='<!-- Begin search form hook area -->'."\n";
+
+		foreach($object->hooks as $hook)
+		{
+			if ($hook['type'] == 'searchform' && ! empty($hook['modules']))
+			{
+				foreach($hook['modules'] as $module)
+				{
+					if (method_exists($module,'printSearchForm')) $searchform.=$module->printSearchForm();
+				}
+			}
+		}
+
+        $searchform.="\n".'<!-- End of search form hook area -->'."\n";
+    }
 
 	// Define $bookmarks
 	if ($conf->bookmark->enabled && $user->rights->bookmark->lire)
@@ -1432,10 +1453,24 @@ function left_menu($menu_array_before, $helppagename='', $moresearchform='', $me
 
 	print "\n";
 
-	// Execute hook printLeftBlock
-	$parameters=array();
-    $leftblock.=$hookmanager->executeHooks('printLeftBlock',$parameters);    // Note that $action and $object may have been modified by some hooks
-    print $leftblock;
+	// Left block hook for external modules
+	if (! empty($object->hooks))
+	{
+		print '<!-- Begin left block hook area -->'."\n";
+
+		foreach($object->hooks as $hook)
+		{
+			if ($hook['type'] == 'leftblock' && ! empty($hook['modules']))
+			{
+				foreach($hook['modules'] as $module)
+				{
+					if (method_exists($module,'printLeftBlock')) $module->printLeftBlock();
+				}
+			}
+		}
+
+        print "\n".'<!-- End of left block hook area -->'."\n";
+    }
 
 	if ($conf->use_javascript_ajax && $conf->global->MAIN_MENU_USE_JQUERY_LAYOUT) print '</div> <!-- End left layout -->'."\n";
 	else print '</td>';
