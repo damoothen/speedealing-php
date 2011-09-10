@@ -518,7 +518,7 @@ class Categorie
 
 		// Clean parameters
 		if (empty($table)) $table=$field;
-
+                /*
 		$sql = "SELECT fk_".$field." FROM ".MAIN_DB_PREFIX."categorie_".$table;
 		$sql.= " WHERE fk_categorie = ".$this->id;
 
@@ -532,6 +532,63 @@ class Categorie
 				$obj->fetch($rec['fk_'.$field]);
 				$objs[] = $obj;
 			}
+			return $objs;
+		}
+		else
+		{
+			$this->error=$this->db->error().' sql='.$sql;
+			dol_syslog("Categorie::get_type ".$this->error, LOG_ERR);
+			return -1;
+		}*/
+                $objr=array();
+                $objr=$this->get_typer($field,$table,$this->id);
+                
+                foreach ($objr as $obj)
+		{
+                        $elem = new $classname($this->db);
+			$elem->fetch($obj);
+			$objs[] = $elem;
+		}
+                asort($objs);
+		return $objs;
+	}
+        /**
+	 * 	\brief	Return list of contents Recursive of a category
+	 * 	\param	field	Field name for select in table. Full field name will be fk_field.
+	 * 	\param	class	PHP Class of object to store entity
+	 * 	\param	table	Table name for select in table. Full table name will be PREFIX_categorie_table.
+	 */
+	function get_typer($field,$table='', $id_mother=null)
+	{
+		$objs = array();
+                $i=0;
+
+		// Clean parameters
+		if (empty($table)) $table=$field;
+
+		$sql = "SELECT fk_".$field.", fk_categorie_fille FROM ".MAIN_DB_PREFIX."categorie_".$table;
+                $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."categorie_association ON fk_categorie_mere=fk_categorie";
+		$sql.= " WHERE fk_categorie ".(($id_mother == null) ? 'is null' : ' = '.$id_mother);
+
+		dol_syslog("Categorie::get_type sql=".$sql);
+		$resql = $this->db->query($sql);
+		if ($resql)
+		{
+			while ($rec = $this->db->fetch_array($resql))
+			{
+                                $objs[$rec['fk_'.$field]]=$rec['fk_'.$field];
+                                
+                                if($rec['fk_categorie_fille']!=null)
+                                {
+                                    $obj=array();
+                                    $obj=$this->get_typer($field,$table,$rec['fk_categorie_fille']);
+                                    foreach ($obj as $elem)
+                                    {
+                                        $objs[$elem]=$elem;
+                                    }
+                                }
+			}
+                        $resql->free();
 			return $objs;
 		}
 		else
@@ -1050,7 +1107,7 @@ class Categorie
 		if ($typeid == 1)  { $table='societe'; $type='fournisseur'; }
 		if ($typeid == 2)  { $table='societe'; $type='societe'; }
 		if ($typeid == 3)  { $table='member'; $type='member'; }
-        if ($typeid == 4)  { $table='lead'; $type='lead'; }
+                if ($typeid == 4)  { $table='lead'; $type='lead'; }
 		if ($typeid == 5)  { $table='contact'; $type='contact'; }
 
 		$sql = "SELECT ct.fk_categorie";

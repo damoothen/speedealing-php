@@ -265,6 +265,7 @@ if ($resql)
  	if ($search_level_to != '') $param.='&amp;search_level_to='.$search_level_to;
  	if ($search_categ != '') $param.='&amp;search_categ='.$search_categ;
  	if ($search_sale != '') $param.='&amp;search_sale='.$search_sale;
+        if ($search_cp != '') $param.='&amp;search_cp='.$search_cp;
         if ($pstcomm != '') $param.='&amp;pstcomm='.$pstcomm;
         if ($type != '') $param.='&amp;type='.$type;
  	// $param and $urladd should have the same value
@@ -318,13 +319,14 @@ if ($resql)
 	print '<tr class="liste_titre">';
 	print_liste_field_titre($langs->trans("Company"),"list.php","s.nom","",$param,'',$sortfield,$sortorder);
 	print_liste_field_titre($langs->trans("Town"),"list.php","s.ville","",$param,"",$sortfield,$sortorder);
-	print_liste_field_titre($langs->trans("State"),"list.php","s.fk_departement","",$param,'align="center"',$sortfield,$sortorder);
-	print_liste_field_titre($langs->trans("Postalcode"),"list.php","cp","",$param,"align=\"left\"",$sortfield,$sortorder);
+        if (empty($conf->global->SOCIETE_DISABLE_STATE))
+            print_liste_field_titre($langs->trans("State"),"list.php","s.fk_departement","",$param,'align="center"',$sortfield,$sortorder);
+	print_liste_field_titre($langs->trans("Zip"),"list.php","cp","",$param,"align=\"left\"",$sortfield,$sortorder);
 	print_liste_field_titre($langs->trans("DateCreation"),"list.php","s.datec","",$param,'align="center"',$sortfield,$sortorder);
 	print_liste_field_titre($langs->trans("ProspectLevelShort"),"list.php","s.fk_prospectlevel","",$param,'align="center"',$sortfield,$sortorder);
 	print_liste_field_titre($langs->trans("StatusProsp"),"list.php","s.fk_stcomm","",$param,'align="center"',$sortfield,$sortorder);
 	print '<td class="liste_titre">&nbsp;</td>';
-    print_liste_field_titre($langs->trans("Status"),$_SERVER["PHP_SELF"],"s.status","",$params,'align="right"',$sortfield,$sortorder);
+        print_liste_field_titre($langs->trans("Status"),$_SERVER["PHP_SELF"],"s.status","",$params,'align="right"',$sortfield,$sortorder);
 	print "</tr>\n";
 
 	print '<tr class="liste_titre">';
@@ -333,9 +335,12 @@ if ($resql)
 	print '</td><td class="liste_titre">';
 	print '<input type="text" class="flat" name="search_ville" size="10" value="'.$search_ville.'">';
 	print '</td>';
- 	print '<td class="liste_titre" align="center">';
-    print '<input type="text" class="flat" name="search_departement" size="10" value="'.$search_departement.'">';
-    print '</td>';
+        if (empty($conf->global->SOCIETE_DISABLE_STATE))
+        {
+            print '<td class="liste_titre" align="center">';
+            print '<input type="text" class="flat" name="search_departement" size="10" value="'.$search_departement.'">';
+            print '</td>';
+        }
 	print '<td class="liste_titre">';
 	print '<input type="text" class="flat" name="search_cp" size="8" value="'.$_GET["search_cp"].'">';
     print '</td>';
@@ -409,9 +414,10 @@ if ($resql)
                     print $prospectstatic->getNomUrl(1,'customer');
                 else
                     print $prospectstatic->getNomUrl(1,'prospect');
-        print '</td>';
+                print '</td>';
 		print "<td>".$obj->ville."&nbsp;</td>";
-		print "<td align=\"center\">$obj->departement</td>";
+                if (empty($conf->global->SOCIETE_DISABLE_STATE))
+                    print "<td align=\"center\">$obj->departement</td>";
 		print "<td align=\"left\">$obj->cp</td>";
 		// Creation date
 		print "<td align=\"center\">".dol_print_date($db->jdate($obj->datec))."</td>";

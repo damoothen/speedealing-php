@@ -59,8 +59,11 @@ class FormActions
     {
         global $langs,$conf;
 
-        $listofstatus=array('-1'=>$langs->trans("ActionNotApplicable"),
+        /*$listofstatus=array('-1'=>$langs->trans("ActionNotApplicable"),
                             '0'=>$langs->trans("ActionRunningNotStarted"),
+                            '50'=>$langs->trans("ActionRunningShort"),
+                            '100'=>$langs->trans("ActionDoneShort"));*/
+        $listofstatus=array('0'=>$langs->trans("ActionRunningNotStarted"),
                             '50'=>$langs->trans("ActionRunningShort"),
                             '100'=>$langs->trans("ActionDoneShort"));
 
