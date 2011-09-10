@@ -839,7 +839,7 @@ function formCategory($db,$object,$typeid)
 				if ($typeid == 5) $permission=$user->rights->societe->creer;
 				if ($permission)
 				{
-					print "<a href= '".DOL_URL_ROOT."/categories/categorie.php?".(empty($_REQUEST["socid"])?'id':'socid')."=".$object->id.(empty($_REQUEST["socid"])?"&amp;type=".$typeid."&amp;typeid=".$typeid:'')."&amp;removecat=".$cat->id."'>";
+					print "<a href= '".DOL_URL_ROOT."/categories/categorie.php?".(empty($_REQUEST["socid"])?'id':'socid')."=".$object->id.(empty($GETPOST["socid"])?"&amp;type=".$typeid."&amp;typeid=".$typeid:'')."&amp;removecat=".$cat->id."'>";
 					print img_delete($langs->trans("DeleteFromCat")).' ';
 					print $langs->trans("DeleteFromCat")."</a>";
 				}
