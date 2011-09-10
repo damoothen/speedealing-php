@@ -398,17 +398,17 @@ class ActionComm extends CommonObject
         global $user;
 
         // Clean parameters
-		$this->label=trim($this->label);
+	$this->label=trim($this->label);
         $this->note=trim($this->note);
-		if (empty($this->percentage))    $this->percentage = 0;
+	if (empty($this->percentage))    $this->percentage = 0;
         if (empty($this->priority))      $this->priority = 0;
         if (empty($this->fulldayevent))  $this->fulldayevent = 0;
         if ($this->percentage > 100) $this->percentage = 100;
         if ($this->percentage == 100 && ! $this->dateend) $this->dateend = $this->date;
-		if ($this->datep && $this->datef)   $this->durationp=($this->datef - $this->datep);
-		if ($this->date  && $this->dateend) $this->durationa=($this->dateend - $this->date);
-		if ($this->datep && $this->datef && $this->datep > $this->datef) $this->datef=$this->datep;
-		if ($this->date  && $this->dateend && $this->date > $this->dateend) $this->dateend=$this->date;
+	if ($this->datep && $this->datef)   $this->durationp=($this->datef - $this->datep);
+	if ($this->date  && $this->dateend) $this->durationa=($this->dateend - $this->date);
+	if ($this->datep && $this->datef && $this->datep > $this->datef) $this->datef=$this->datep;
+	if ($this->date  && $this->dateend && $this->date > $this->dateend) $this->dateend=$this->date;
         if ($this->fk_project < 0) $this->fk_project = 0;
         if ($this->fk_lead < 0) $this->fk_lead = 0;
         if ($this->fk_task < 0) $this->fk_task = 0;
@@ -420,26 +420,27 @@ class ActionComm extends CommonObject
                 $this->datef=dol_now();
         
 
-		// Check parameters
-		if ($this->percentage == 0 && $this->userdone->id > 0)
-		{
-			$this->error="ErrorCantSaveADoneUserWithZeroPercentage";
-			return -1;
-		}
-                if ($this->percentage == 100 && !$this->userdone->id > 0)
-                {
-                    $this->userdone->id=$user->id;
-                }
+	// Check parameters
+	if ($this->percentage == 0 && $this->userdone->id > 0)
+	{
+		//$this->error="ErrorCantSaveADoneUserWithZeroPercentage";
+		//return -1;
+                $this->userdone->id = "";
+	}
+        if ($this->percentage == 100 && !$this->userdone->id > 0)
+        {
+                $this->userdone->id=$user->id;
+        }
 
-		//print 'eeea'.$this->datep.'-'.(strval($this->datep) != '').'-'.$this->db->idate($this->datep);
-		$sql = "UPDATE ".MAIN_DB_PREFIX."actioncomm ";
+	//print 'eeea'.$this->datep.'-'.(strval($this->datep) != '').'-'.$this->db->idate($this->datep);
+	$sql = "UPDATE ".MAIN_DB_PREFIX."actioncomm ";
         $sql.= " SET percent='".$this->percentage."'";
         $sql.= ", label = ".($this->label ? "'".$this->db->escape($this->label)."'":"null");
         $sql.= ", datep = ".(strval($this->datep)!='' ? "'".$this->db->idate($this->datep)."'" : 'null');
         $sql.= ", datep2 = ".(strval($this->datef)!='' ? "'".$this->db->idate($this->datef)."'" : 'null');
         //$sql.= ", datea = ".(strval($this->date)!='' ? "'".$this->db->idate($this->date)."'" : 'null');
         //$sql.= ", datea2 = ".(strval($this->dateend)!='' ? "'".$this->db->idate($this->dateend)."'" : 'null');
-		$sql.= ", durationp = ".($this->durationp ? "'".$this->durationp."'" : 'null');
+	$sql.= ", durationp = ".($this->durationp ? "'".$this->durationp."'" : 'null');
         $sql.= ", note = ".($this->note ? "'".$this->db->escape($this->note)."'":"null");
         $sql.= ", fk_soc =". ($this->societe->id > 0 ? "'".$this->societe->id."'":"null");
         $sql.= ", fk_project =". ($this->fk_project > 0 ? "'".$this->fk_project."'":"null");
@@ -450,11 +451,13 @@ class ActionComm extends CommonObject
         $sql.= ", fulldayevent = '".$this->fulldayevent."'";
         $sql.= ", location = ".($this->location ? "'".$this->db->escape($this->location)."'":"null");
         $sql.= ", fk_user_mod = '".$user->id."'";
-		$sql.= ", fk_user_action=".($this->usertodo->id > 0 ? "'".$this->usertodo->id."'":"null");
-		$sql.= ", fk_user_done=".($this->userdone->id > 0 ? "'".$this->userdone->id."'":"null");
+	$sql.= ", fk_user_action=".($this->usertodo->id > 0 ? "'".$this->usertodo->id."'":"null");
+	$sql.= ", fk_user_done=".($this->userdone->id > 0 ? "'".$this->userdone->id."'":"null");
         $sql.= " WHERE id=".$this->id;
+        
+        //print $sql;exit;
 
-		dol_syslog("ActionComm::update sql=".$sql);
+	dol_syslog("ActionComm::update sql=".$sql);
         if ($this->db->query($sql))
         {
             return 1;
@@ -462,7 +465,7 @@ class ActionComm extends CommonObject
         else
         {
         	$this->error=$this->db->error();
-			dol_syslog("ActionComm::update ".$this->error,LOG_ERR);
+		dol_syslog("ActionComm::update ".$this->error,LOG_ERR);
         	return -1;
     	}
     }

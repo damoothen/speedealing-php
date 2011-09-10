@@ -335,7 +335,7 @@ if ($action == 'update')
 {
 	if (! $_POST["cancel"])
 	{
-        $fulldayevent=$_POST["fullday"];
+            $fulldayevent=$_POST["fullday"];
 
 	    // Clean parameters
 		if ($_POST["aphour"] == -1) $_POST["aphour"]='0';
@@ -351,16 +351,16 @@ if ($action == 'update')
                 $result=$cactioncomm->fetch($actioncomm->type_id);
                 
 		$datep=dol_mktime(
-        $fulldayevent?'00':$_POST["aphour"],
-        $fulldayevent?'00':$_POST["apmin"],
+                $fulldayevent?'00':$_POST["aphour"],
+                $fulldayevent?'00':$_POST["apmin"],
 		0,
 		$_POST["apmonth"],
 		$_POST["apday"],
 		$_POST["apyear"]);
 
 		$datef=dol_mktime(
-        $fulldayevent?'23':$_POST["p2hour"],
-        $fulldayevent?'59':$_POST["p2min"],
+                $fulldayevent?'23':$_POST["p2hour"],
+                $fulldayevent?'59':$_POST["p2min"],
 		$fulldayevent?'59':'0',
 		$_POST["p2month"],
 		$_POST["p2day"],
@@ -404,7 +404,7 @@ if ($action == 'update')
                 if ($actioncomm->type==2) //ACTION
                     $actioncomm->durationp = !empty($_POST["duration"])?$_POST["duration"]*3600:3600;
 
-		if ($cactioncomm->type==2 && ! $datef && $_POST["percentage"] == 100)
+		if ($actioncomm->type==1 && ! $datef && $actioncomm->percentage == 100)
 		{
 			$error=$langs->trans("ErrorFieldRequired",$langs->trans("DateEnd"));
 			$action = 'edit';
@@ -423,7 +423,7 @@ if ($action == 'update')
 			$userdone->fetch($_POST["doneby"]);
 		}
 		$actioncomm->userdone = $userdone;
-
+                
 		if (! $error)
 		{
 			$db->begin();
@@ -437,16 +437,14 @@ if ($action == 'update')
 			else
 			{
 				$db->rollback();
+                                $langs->load("errors");
+                                $error=$langs->trans($actioncomm->error);
+                                $action='edit';
 			}
 		}
 	}
-
-	if ($result < 0)
-	{
-		$langs->load("errors");
-		$mesg='<div class="error">'.$langs->trans($actioncomm->error).'</div>';
-	}
-	else
+        
+        if (!$error)
 	{
 		if (! empty($_POST["from"]))  // deprecated. Use backtopage instead
 		{
@@ -675,7 +673,8 @@ if ($action == 'create')
 	// Status
 	print '<tr><td width="10%">'.$langs->trans("Status").' / '.$langs->trans("Percentage").'</td>';
 	print '<td>';
-	$percent=-1;
+	//$percent=-1;
+        $percent=0;
 	if (isset($_GET['percentage']) || isset($_POST['percentage']))
 	{
 		$percent=GETPOST('percentage');
