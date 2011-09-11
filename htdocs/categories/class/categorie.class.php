@@ -560,14 +560,17 @@ class Categorie
 	 */
 	function get_typer($field,$table='', $id_mother=null)
 	{
+                global $conf;
 		$objs = array();
                 $i=0;
+                $offset=0;
 
 		// Clean parameters
 		if (empty($table)) $table=$field;
 
 		$sql = "SELECT fk_".$field." FROM ".MAIN_DB_PREFIX."categorie_".$table;
                 $sql.= " WHERE fk_categorie ".(($id_mother == null) ? 'is null' : ' = '.$id_mother);
+                $sql.= $this->db->plimit($conf->liste_limit+1, $offset);
 
 		dol_syslog("Categorie::get_type sql=".$sql);
 		$resql = $this->db->query($sql);
