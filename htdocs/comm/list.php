@@ -281,7 +281,7 @@ if ($resql)
                 $titre=$langs->trans("ListOfCustomers");
         }
         else
-            $titre=$langs->trans("ListOfCustomers");
+            $titre=$langs->trans("ListOfAll");
         
             
                 
