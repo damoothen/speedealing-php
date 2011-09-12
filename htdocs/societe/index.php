@@ -119,19 +119,19 @@ else
     if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_CUSTOMERS_STATS))
     {
         $statstring= "<tr $bc[0]>";
-        $statstring.= '<td><a href="'.DOL_URL_ROOT.'/comm/liste.php?type=2">'.$langs->trans("Customers").'</a></td><td align="right">'.round($third['customer']).'</td>';
+        $statstring.= '<td><a href="'.DOL_URL_ROOT.'/comm/list.php?type=2">'.$langs->trans("Customers").'</a></td><td align="right">'.round($third['customer']).'</td>';
         $statstring.= "</tr>";
     }
     if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_PROSPECTS_STATS))
     {
         $statstring.= "<tr $bc[1]>";
-        $statstring.= '<td><a href="'.DOL_URL_ROOT.'/comm/liste.php?type=1">'.$langs->trans("Prospects").'</a></td><td align="right">'.round($third['prospect']).'</td>';
+        $statstring.= '<td><a href="'.DOL_URL_ROOT.'/comm/list.php?type=1">'.$langs->trans("Prospects").'</a></td><td align="right">'.round($third['prospect']).'</td>';
         $statstring.= "</tr>";
     }
     if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_SUSPECTS_STATS))
     {
         $statstring.= "<tr $bc[0]>";
-        $statstring.= '<td><a href="'.DOL_URL_ROOT.'/comm/liste.php?type=0">'.$langs->trans("Suspects").'</a></td><td align="right">'.round($third['suspect']).'</td>';
+        $statstring.= '<td><a href="'.DOL_URL_ROOT.'/comm/list.php?type=0">'.$langs->trans("Suspects").'</a></td><td align="right">'.round($third['suspect']).'</td>';
         $statstring.= "</tr>";
     }
     if ($conf->fournisseur->enabled && empty($conf->global->SOCIETE_DISABLE_SUPPLIERS_STATS))
