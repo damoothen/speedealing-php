@@ -210,7 +210,16 @@ if (empty($reshook))
         
         if($conf->map->enabled)
         {
-            $apiUrl = "http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=".urlencode ($_POST["adresse"].",".$_POST["zipcode"].",".$_POST["town"]);
+            //Retire le CEDEX de la ville :
+            $town=$_POST["town"];
+            $town=strtolower($town);
+            $find="cedex";
+            $pos=strpos($town, $find);
+            if($pos!=false)
+            {
+                $town=substr($town, 0,$pos);
+            }
+            $apiUrl = "http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=".urlencode ($_POST["adresse"].",".$_POST["zipcode"].",".$town);
             $c = curl_init();
             curl_setopt($c, CURLOPT_URL, $apiUrl);
             curl_setopt($c, CURLOPT_HEADER, false);
@@ -222,6 +231,11 @@ if (empty($reshook))
             if($response->status == "OK"){
                 $object->lat = $response->results[0]->geometry->location->lat;
                 $object->lng = $response->results[0]->geometry->location->lng;
+            }
+            else
+            {
+                $object->lat = 0;
+                $object->lng = 0;
             }
         }
 
@@ -363,6 +377,16 @@ if (empty($reshook))
                 ### Calcul des coordonnées GPS
                 if($conf->map->enabled)
                 {
+                    //Retire le CEDEX de la ville :
+                    $town=$_POST["town"];
+                    $town=strtolower($town);
+                    $find="cedex";
+                    $pos=strpos($town, $find);
+                    if($pos!=false)
+                    {
+                        $town=substr($town, 0,$pos);
+                        //print $town;exit;
+                    }
                     $apiUrl = "http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=".urlencode ($_POST["adresse"].",".$_POST["zipcode"].",".$_POST["town"]);
                     $c = curl_init();
                     curl_setopt($c, CURLOPT_URL, $apiUrl);
@@ -377,7 +401,11 @@ if (empty($reshook))
                         $object->lat = $response->results[0]->geometry->location->lat;
                         $object->lng = $response->results[0]->geometry->location->lng;
                     }
-                    
+                    else
+                    {
+                        $object->lat = 0;
+                        $object->lng = 0;
+                    }
                 }
 
                 // To not set code if third party is not concerned. But if it had values, we keep them.
