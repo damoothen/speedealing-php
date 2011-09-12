@@ -232,6 +232,11 @@ if (empty($reshook))
                 $object->lat = $response->results[0]->geometry->location->lat;
                 $object->lng = $response->results[0]->geometry->location->lng;
             }
+            else
+            {
+                $object->lat = 0;
+                $object->lng = 0;
+            }
         }
 
         if (GETPOST('deletephoto')) $object->logo = '';
@@ -380,6 +385,7 @@ if (empty($reshook))
                     if($pos!=false)
                     {
                         $town=substr($town, 0,$pos);
+                        //print $town;exit;
                     }
                     $apiUrl = "http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=".urlencode ($_POST["adresse"].",".$_POST["zipcode"].",".$_POST["town"]);
                     $c = curl_init();
@@ -395,7 +401,11 @@ if (empty($reshook))
                         $object->lat = $response->results[0]->geometry->location->lat;
                         $object->lng = $response->results[0]->geometry->location->lng;
                     }
-                    
+                    else
+                    {
+                        $object->lat = 0;
+                        $object->lng = 0;
+                    }
                 }
 
                 // To not set code if third party is not concerned. But if it had values, we keep them.
