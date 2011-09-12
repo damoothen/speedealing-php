@@ -210,7 +210,16 @@ if (empty($reshook))
         
         if($conf->map->enabled)
         {
-            $apiUrl = "http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=".urlencode ($_POST["adresse"].",".$_POST["zipcode"].",".$_POST["town"]);
+            //Retire le CEDEX de la ville :
+            $town=$_POST["town"];
+            $town=strtolower($town);
+            $find="cedex";
+            $pos=strpos($town, $find);
+            if($pos!=false)
+            {
+                $town=substr($town, 0,$pos);
+            }
+            $apiUrl = "http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=".urlencode ($_POST["adresse"].",".$_POST["zipcode"].",".$town);
             $c = curl_init();
             curl_setopt($c, CURLOPT_URL, $apiUrl);
             curl_setopt($c, CURLOPT_HEADER, false);
@@ -363,6 +372,15 @@ if (empty($reshook))
                 ### Calcul des coordonnées GPS
                 if($conf->map->enabled)
                 {
+                    //Retire le CEDEX de la ville :
+                    $town=$_POST["town"];
+                    $town=strtolower($town);
+                    $find="cedex";
+                    $pos=strpos($town, $find);
+                    if($pos!=false)
+                    {
+                        $town=substr($town, 0,$pos);
+                    }
                     $apiUrl = "http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=".urlencode ($_POST["adresse"].",".$_POST["zipcode"].",".$_POST["town"]);
                     $c = curl_init();
                     curl_setopt($c, CURLOPT_URL, $apiUrl);
