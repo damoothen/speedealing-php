@@ -7,7 +7,8 @@ $socid=$_GET['socid'];
 {
 	features: [
 <?php
-$resql = $db->query("SELECT rowid, address, ville ,nom , latitude, longitude FROM ".MAIN_DB_PREFIX."societe WHERE longitude <> 0 AND latitude <> 0 AND fk_stcomm > 0 AND rowid !=".$socid );
+$sql="SELECT rowid, address, ville ,nom , latitude, longitude FROM ".MAIN_DB_PREFIX."societe WHERE longitude > 0 AND latitude > 0 AND fk_stcomm > 0 AND rowid !=".$socid;
+$resql = $db->query($sql);
 if ($resql)
 {
 	$nump = $db->num_rows($resql);
@@ -47,7 +48,9 @@ if ($resql)
                         $i++;
 			
 		}
-                $resql = $db->query("SELECT rowid, address, ville ,nom , latitude, longitude FROM ".MAIN_DB_PREFIX."societe WHERE longitude <> 0 AND latitude <> 0 AND rowid=".$socid );
+        }
+}
+$resql = $db->query("SELECT rowid, address, ville ,nom , latitude, longitude FROM ".MAIN_DB_PREFIX."societe WHERE longitude > 0 AND latitude > 0 AND rowid=".$socid );
 if ($resql)
 {
 	$nump = $db->num_rows($resql);
@@ -89,11 +92,9 @@ if ($resql)
 		}
         }
 }
-        }
-        else
-        {
-		print '"error"';
-        }
+else
+{
+    print '"error"';
 }
 
 ?>
