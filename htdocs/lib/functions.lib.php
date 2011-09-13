@@ -1586,13 +1586,13 @@ function dol_trunc($string,$size=40,$trunc='right',$stringencoding='UTF-8')
 /**
  *	Show a picto called object_picto (generic function)
  *
- *	@param      alt                 Text of alt on image
- *	@param      picto               Name of image to show object_picto (example: user, group, action, bill, contract, propal, product, ...)
- *							        For external modules use imagename@mymodule to search into directory "img" of module.
- *  @param      options             Add more attribute on img tag
- *  @param      pictoisfullpath     If 1, image path is a full path
- *	@return     string              Return img tag
- *  @see        img_picto, img_picto_common
+ *	@param      string		$alt           		Text of alt on image
+ *	@param      string		$picto         		Name of image to show object_picto (example: user, group, action, bill, contract, propal, product, ...)
+ *							 		       		For external modules use imagename@mymodule to search into directory "img" of module.
+ *  @param      string		$options       		Add more attribute on img tag
+ *  @param      int			$pictoisfullpath    If 1, image path is a full path
+ *	@return     string      					Return img tag
+ *  @see        #img_picto, #img_picto_common
  */
 function img_object($alt, $picto, $options='', $pictoisfullpath=0)
 {
@@ -1624,15 +1624,16 @@ function img_object($alt, $picto, $options='', $pictoisfullpath=0)
 /**
  *	Show picto whatever it's its name (generic function)
  *
- *	@param      alt         		Text on alt and title of image
- *	@param      picto       		Name of image file to show (If no extension provided, we use '.png'). Image must be stored into img directory.
- *                                  Example: picto.png                  if picto.png is stored into htdocs/theme/mytheme/img
- *                                  Example: picto.png@mymodule         if picto.png is stored into htdocs/mymodule/img
- *                                  Example: /mydir/mysubdir/picto.png  if picto.png is stored into htdocs/mydir/mysubdir (pictoisfullpath must be set to 1)
- *	@param		options				Add more attribute on img tag (For example 'style="float: right"')
- *	@param		pictoisfullpath		If 1, image path is a full path
- *  @return     string              Return img tag
- *  @see        img_object, img_picto_common
+ *	@param      string		$alt         		Text on alt and title of image
+ *	@param      string		$picto       		Name of image file to show ('filenew', ...)
+ *												If no extension provided, we use '.png'. Image must be stored into theme/xxx/img directory.
+ *                                  			Example: picto.png                  if picto.png is stored into htdocs/theme/mytheme/img
+ *                                  			Example: picto.png@mymodule         if picto.png is stored into htdocs/mymodule/img
+ *                                  			Example: /mydir/mysubdir/picto.png  if picto.png is stored into htdocs/mydir/mysubdir (pictoisfullpath must be set to 1)
+ *	@param		string		$options			Add more attribute on img tag (For example 'style="float: right"')
+ *	@param		int			$pictoisfullpath	If 1, image path is a full path
+ *  @return     string       				    Return img tag
+ *  @see        #img_object, #img_picto_common
  */
 function img_picto($alt, $picto, $options='', $pictoisfullpath=0)
 {
@@ -1664,12 +1665,12 @@ function img_picto($alt, $picto, $options='', $pictoisfullpath=0)
 /**
  *	Show picto (generic function)
  *
- *	@param      alt         		Text on alt and title of image
- *	@param      picto       		Name of image file to show (If no extension provided, we use '.png'). Image must be stored into htdocs/theme/common directory.
- *	@param		options				Add more attribute on img tag
- *	@param		pictoisfullpath		If 1, image path is a full path
- *	@return     string      		Return img tag
- *  @see        img_object, img_picto
+ *	@param      string		$alt         		Text on alt and title of image
+ *	@param      string		$picto       		Name of image file to show (If no extension provided, we use '.png'). Image must be stored into htdocs/theme/common directory.
+ *	@param		string		$options			Add more attribute on img tag
+ *	@param		int			$pictoisfullpath	If 1, image path is a full path
+ *	@return     string      					Return img tag
+ *  @see        #img_object, #img_picto
  */
 function img_picto_common($alt, $picto, $options='', $pictoisfullpath=0)
 {
@@ -2037,27 +2038,34 @@ function info_admin($text,$infoonimgalt=0)
  *	@param      objectid      	Object ID if we want to check permission on a particular record (optionnal)
  *	@param      dbtablename    	Table name where object is stored. Not used if objectid is null (optionnal)
  *	@param      feature2		Feature to check, second level of permission (optionnal)
- *  @param      dbt_keyfield    Field name for socid foreign key if not fk_soc. (optionnal)
- *  @param      dbt_select      Field name for select if not rowid. (optionnal)
+ *  @param      dbt_keyfield    Field name for socid foreign key if not fk_soc (optionnal)
+ *  @param      dbt_select      Field name for select if not rowid (optionnal)
+ *  @param		objcanvas		Object canvas	
  * 	@return		int				Always 1, die process if not allowed
  */
-function restrictedArea($user, $features='societe', $objectid=0, $dbtablename='', $feature2='', $dbt_keyfield='fk_soc', $dbt_select='rowid')
+function restrictedArea($user, $features='societe', $objectid=0, $dbtablename='', $feature2='', $dbt_keyfield='fk_soc', $dbt_select='rowid', $objcanvas=null)
 {
     global $db, $conf;
 
     //dol_syslog("functions.lib:restrictedArea $feature, $objectid, $dbtablename,$feature2,$dbt_socfield,$dbt_select");
-    if ($dbt_select != 'rowid') $objectid = "'".$objectid."'";
-
     //print "user_id=".$user->id.", features=".$features.", feature2=".$feature2.", objectid=".$objectid;
     //print ", dbtablename=".$dbtablename.", dbt_socfield=".$dbt_keyfield.", dbt_select=".$dbt_select;
     //print ", perm: ".$features."->".$feature2."=".$user->rights->$features->$feature2->lire."<br>";
+    
+    // If we use canvas, we try to use function that overlod restrictarea if provided with canvas
+    if (is_object($objcanvas))
+    {
+	    if (method_exists($objcanvas->control,'restrictedArea')) return $objcanvas->control->restrictedArea($user,$features,$objectid,$dbtablename,$feature2,$dbt_keyfield,$dbt_select);
+    }
+    
+    if ($dbt_select != 'rowid') $objectid = "'".$objectid."'";
 
     // More features to check
     $features = explode("&",$features);
     //var_dump($features);
 
     // Check read permission from module
-    // TODO Replace "feature" param by permission for reading
+    // TODO Replace "feature" param into caller by first level of permission
     $readok=1;
     foreach ($features as $feature)
     {

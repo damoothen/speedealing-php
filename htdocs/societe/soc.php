@@ -56,21 +56,17 @@ $object = new Societe($db);
 $extrafields = new ExtraFields($db);
 
 // Get object canvas (By default, this is not defined, so standard usage of dolibarr)
-if ($socid) $object->getCanvas($socid);
+$object->getCanvas($socid);
 $canvas = $object->canvas?$object->canvas:GETPOST("canvas");
 if (! empty($canvas))
 {
     require_once(DOL_DOCUMENT_ROOT."/core/class/canvas.class.php");
     $objcanvas = new Canvas($db,$action);
     $objcanvas->getCanvas('thirdparty','card',$canvas);
-    // Security check
-    $result = $objcanvas->restrictedArea($user, 'societe', $socid);
 }
-else
-{
-    // Security check
-    $result = restrictedArea($user, 'societe', $socid);
-}
+
+// Security check
+$result = restrictedArea($user, 'societe', $socid, '', '', '', '', $objcanvas);
 
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
 include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
@@ -87,21 +83,6 @@ $hookmanager->callHooks(array('thirdpartycard','thirdparty_extrafields'));
 $parameters=array('socid'=>$socid);
 $reshook=$hookmanager->executeHooks('doActions',$parameters,$object,$action);    // Note that $action and $object may have been modified by some hooks
 $error=$hookmanager->error; $errors=$hookmanager->errors;
-
-// ---------- start deprecated. Must use hook to hook actions.
-/*if (method_exists($objcanvas->control,'doActions'))
-{
-    $objcanvas->doActions($socid);
-
-    if (! empty($objcanvas->error) || (! empty($objcanvas->errors) && sizeof($objcanvas->errors) > 0))
-    {
-        $error=$objcanvas->error; $errors=$objcanvas->errors;
-        if ($action=='add')    { $objcanvas->action='create'; $action='create'; }
-        if ($action=='update') { $objcanvas->action='edit';   $action='edit'; }
-    }
-}*/
-// ---------- end deprecated.
-
 
 if (empty($reshook))
 {
@@ -507,7 +488,6 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
     // -----------------------------------------
     if ($action == 'create')
     {
-        $objcanvas->assign_post();              // TODO: Put code of assign_post into assign_values to keep only assign_values
         $objcanvas->assign_values($action);     // Set value for templates
         $objcanvas->display_canvas($action,0);  // Show template
     }
@@ -520,7 +500,6 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
             $object->fetch($socid);
             $objcanvas->control->object=$object;
         }
-        $objcanvas->assign_post();              // TODO: Put code of assign_post into assign_values to keep only assign_values
         $objcanvas->assign_values($action);     // Set value for templates
         $objcanvas->display_canvas($action);    // Show template
     }
@@ -539,7 +518,6 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 }
 else
 {
-
     // -----------------------------------------
     // When used in standard mode
     // -----------------------------------------

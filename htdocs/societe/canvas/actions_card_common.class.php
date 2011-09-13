@@ -45,11 +45,12 @@ abstract class ActionsCardCommon
 	var $errors=array();
 
     /**
-     *    Constructor
-     *    @param   DB              Handler acces base de donnees
-     *    @param   targetmodule    Name of directory of module where canvas is stored
-     *    @param   canvas          Name of canvas
-     *    @param   card            Name of tab (sub-canvas)
+	 *    Constructor
+	 *
+     *    @param   DoliDB	$DB             Database handler
+     *    @param   string	$targetmodule	Name of directory of module where canvas is stored
+     *    @param   string	$canvas         Name of canvas
+     *    @param   string	$card           Name of tab (sub-canvas)
 	 */
 	function ActionsCardCommon($DB,$targetmodule,$canvas,$card)
 	{
@@ -347,7 +348,7 @@ abstract class ActionsCardCommon
     /**
      *  Return the title of card
      */
-    function getTitle($action)
+    private function getTitle($action)
     {
         global $langs;
 
@@ -362,13 +363,16 @@ abstract class ActionsCardCommon
 
 	/**
      *    Assigne les valeurs par defaut pour le canvas
-     *    @param      action     Type of template
+     *    
+     *    @param      string	$action     Type of template
      */
-    function assign_values($action='')
+    function assign_values($action)
     {
         global $conf, $langs, $user, $mysoc, $canvas;
         global $form, $formadmin, $formcompany;
 
+        if ($action == 'create' || $action == 'edit') $this->assign_post();
+        
         if ($_GET["type"]=='f')  		{ $this->object->fournisseur=1; }
         if ($_GET["type"]=='c')  		{ $this->object->client=1; }
         if ($_GET["type"]=='p')  		{ $this->object->client=2; }
@@ -392,7 +396,7 @@ abstract class ActionsCardCommon
 				jQuery(document).ready(function () {
 		              jQuery("#radiocompany").click(function() {
                             document.formsoc.action.value="create";
-                            document.formsoc.canvas.value="default";
+                            document.formsoc.canvas.value="company";
                             document.formsoc.private.value=0;
                             document.formsoc.submit();
 		              });
@@ -649,7 +653,7 @@ abstract class ActionsCardCommon
     /**
      *    Assigne les valeurs POST dans l'objet
      */
-    function assign_post()
+    private function assign_post($action)
     {
         global $langs, $mysoc;
 

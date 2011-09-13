@@ -45,10 +45,11 @@ abstract class ActionsContactCardCommon
 
     /**
 	 *    Constructor
-     *    @param   DB              Handler acces base de donnees
-     *    @param   targmetmodule   Name of directory of module where canvas is stored
-     *    @param   canvas          Name of canvas
-     *    @param   card            Name of tab (sub-canvas)
+	 *
+     *    @param   DoliDB	$DB              Handler acces base de donnees
+     *    @param   string	$targetmodule    Name of directory of module where canvas is stored
+     *    @param   string	$canvas          Name of canvas
+     *    @param   streing	$card            Name of tab (sub-canvas)
 	 */
 	function ActionsContactCardCommon($DB,$targetmodule,$canvas,$card)
 	{
@@ -60,7 +61,9 @@ abstract class ActionsContactCardCommon
 
 
     /**
-     *    Load data control
+     *  Load data control
+     *
+     *	@param	int		$id		Id of object
      */
     function doActions($id)
     {
@@ -185,6 +188,8 @@ abstract class ActionsContactCardCommon
 
     /**
      *  Return the title of card
+     *
+     *  @param		string		$action		Type of action
      */
     function getTitle($action)
     {
@@ -200,13 +205,16 @@ abstract class ActionsContactCardCommon
 
 	/**
      *    Set content of ->tpl array, to use into template
-     *    @param      action     Type of template
+     *
+     *    @param      string	$action     Type of action
      */
     function assign_values($action='')
     {
         global $conf, $langs, $user, $canvas;
         global $form, $formcompany, $objsoc;
 
+        if ($action == 'create' || $action == 'edit') $this->assign_post($action);
+        
         foreach($this->object as $key => $value)
         {
             $this->tpl[$key] = $value;
@@ -389,7 +397,7 @@ abstract class ActionsContactCardCommon
     /**
      *    Assigne les valeurs POST dans l'objet
      */
-    function assign_post()
+    function assign_post($action)
     {
         global $langs, $mysoc;
 

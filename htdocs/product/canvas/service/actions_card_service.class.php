@@ -36,50 +36,112 @@ class ActionsCardService extends Product
     //! Template container
 	var $tpl = array();
 
+	// List of fiels for action=list
+	var $field_list =array();
+
+
 	/**
-	 *    \brief      Constructeur de la classe
-	 *    \param      DB          Handler acces base de donnees
-	 *    \param      id          Id service (0 par defaut)
+	 *    Constructor
+	 *
+     *    @param   DoliDB	$DB             Handler acces base de donnees
+     *    @param   string	$targetmodule   Name of directory of module where canvas is stored
+     *    @param   string	$canvas         Name of canvas
+     *    @param   string	$card           Name of tab (sub-canvas)
 	 */
-	function ActionsCardService($DB=0, $id=0, $user=0)
+	function ActionsCardIndividual($DB,$targetmodule,$canvas,$card)
 	{
 		$this->db 				= $DB;
-		$this->id 				= $id ;
-		$this->user 			= $user;
+		$this->targetmodule     = $targetmodule;
+        $this->canvas           = $canvas;
+        $this->card             = $card;
+
 		$this->module 			= "service";
-		$this->canvas 			= "service";
 		$this->name 			= "service";
 		$this->definition 		= "Services canvas";
 		$this->fieldListName	= "product_service";
-
 		$this->next_prev_filter = "canvas='service'";
 	}
 
-	function getTitle()
+    /**
+     *  Return the title of card
+     */
+	private function getTitle()
 	{
-		return 'Services';
+		global $langs;
+
+		return $langs->trans("Products");
 	}
 
 	/**
-	 *    \brief      Lecture des donnees dans la base
-	 *    \param      id          Product id
+	 *    Assign custom values for canvas (for example into this->tpl to be used by templates)
+	 *
+	 *    @param      action     Type of action
 	 */
-	function fetch($id='', $ref='', $action='')
-	{
-		$result = parent::fetch($id);
-
-		return $result;
-	}
-
-	/**
-	 *    \brief      Assigne les valeurs pour les templates
-	 *    \param      object     object
-	 */
-	function assign_values($action='')
+	function assign_values($action)
 	{
 		global $conf,$langs,$user;
 		global $html, $formproduct;
 
+		// canvas
+		$this->tpl['canvas'] = $this->canvas;
+
+		// id
+		$this->tpl['id'] = $this->id;
+
+		// Ref
+		$this->tpl['ref'] = $this->ref;
+
+		// Label
+		$this->tpl['label'] = $this->libelle;
+
+		// Description
+		$this->tpl['description'] = nl2br($this->description);
+
+		// Statut
+		$this->tpl['status'] = $this->getLibStatut(2);
+
+		// Note
+		$this->tpl['note'] = nl2br($this->note);
+
+		if ($action == 'create')
+		{
+			// Price
+			$this->tpl['price'] = $this->price;
+			$this->tpl['price_min'] = $this->price_min;
+			$this->tpl['price_base_type'] = $html->load_PriceBaseType($this->price_base_type, "price_base_type");
+
+			// VAT
+			$this->tpl['tva_tx'] = $html->load_tva("tva_tx",-1,$mysoc,'');
+		}
+
+		if ($action == 'create' || $action == 'edit')
+		{
+			// Status
+			$statutarray=array('1' => $langs->trans("OnSell"), '0' => $langs->trans("NotOnSell"));
+			$this->tpl['status'] = $html->selectarray('statut',$statutarray,$this->status);
+
+			//To Buy
+			$statutarray=array('1' => $langs->trans("Yes"), '0' => $langs->trans("No"));
+			$this->tpl['tobuy'] = $html->selectarray('tobuy',$statutarray,$this->status_buy);
+
+            $this->tpl['description'] = $this->description;
+            $this->tpl['note'] = $this->note;
+		}
+
+		if ($action == 'view')
+		{
+			// Ref
+			$this->tpl['ref'] = $html->showrefnav($this,'ref','',1,'ref');
+
+			// Accountancy buy code
+			$this->tpl['accountancyBuyCodeKey'] = $html->editfieldkey("ProductAccountancyBuyCode",'productaccountancycodesell',$this->accountancy_code_sell,'id',$this->id,$user->rights->produit->creer);
+			$this->tpl['accountancyBuyCodeVal'] = $html->editfieldval("ProductAccountancyBuyCode",'productaccountancycodesell',$this->accountancy_code_sell,'id',$this->id,$user->rights->produit->creer);
+
+			// Accountancy sell code
+			$this->tpl['accountancySellCodeKey'] = $html->editfieldkey("ProductAccountancySellCode",'productaccountancycodebuy',$this->accountancy_code_buy,'id',$this->id,$user->rights->produit->creer);
+			$this->tpl['accountancySellCodeVal'] = $html->editfieldval("ProductAccountancySellCode",'productaccountancycodebuy',$this->accountancy_code_buy,'id',$this->id,$user->rights->produit->creer);
+		}
+		
 		$this->tpl['finished'] = $this->object->finished;
 		$this->tpl['ref'] = $this->object->ref;
 		$this->tpl['label'] = $this->object->label;
@@ -156,6 +218,62 @@ class ActionsCardService extends Product
 
 			$this->tpl['fiche_end']=dol_get_fiche_end();
 		}
+
+		if ($action == 'list')
+		{
+	        $this->LoadListDatas($GLOBALS['limit'], $GLOBALS['offset'], $GLOBALS['sortfield'], $GLOBALS['sortorder']);
+		}
+
+	}
+
+
+	/**
+	 * 	Fetch field list
+	 */
+	private function getFieldList()
+	{
+		global $conf, $langs;
+
+        $this->field_list = array();
+
+		$sql = "SELECT rowid, name, alias, title, align, sort, search, enabled, rang";
+		$sql.= " FROM ".MAIN_DB_PREFIX."c_field_list";
+		$sql.= " WHERE element = '".$this->fieldListName."'";
+		$sql.= " AND entity = ".$conf->entity;
+		$sql.= " ORDER BY rang ASC";
+
+		$resql = $this->db->query($sql);
+		if ($resql)
+		{
+			$num = $this->db->num_rows($resql);
+
+			$i = 0;
+			while ($i < $num)
+			{
+				$fieldlist = array();
+
+				$obj = $this->db->fetch_object($resql);
+
+				$fieldlist["id"]		= $obj->rowid;
+				$fieldlist["name"]		= $obj->name;
+				$fieldlist["alias"]		= $obj->alias;
+				$fieldlist["title"]		= $langs->trans($obj->title);
+				$fieldlist["align"]		= $obj->align;
+				$fieldlist["sort"]		= $obj->sort;
+				$fieldlist["search"]	= $obj->search;
+				$fieldlist["enabled"]	= verifCond($obj->enabled);
+				$fieldlist["order"]		= $obj->rang;
+
+				array_push($this->field_list,$fieldlist);
+
+				$i++;
+			}
+			$this->db->free($resql);
+		}
+		else
+		{
+			dol_print_error($db,$sql);
+		}
 	}
 
 	/**
@@ -164,6 +282,8 @@ class ActionsCardService extends Product
 	function LoadListDatas($limit, $offset, $sortfield, $sortorder)
 	{
 		global $conf;
+
+        $this->getFieldList();
 
 		$sql = 'SELECT DISTINCT p.rowid, p.ref, p.label, p.barcode, p.price, p.price_ttc, p.price_base_type,';
 		$sql.= ' p.fk_product_type, p.tms as datem,';

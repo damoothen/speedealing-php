@@ -48,8 +48,8 @@ class Canvas
    /**
 	*   Constructor
 	*
-	*   @param     DB          Database handler
-	*   @param     action      Action ('create', 'view', 'edit')
+	*   @param     DoliDB	$DB          Database handler
+	*   @param     string	$action      Action ('create', 'view', 'edit')
 	*/
 	function Canvas($DB, $action='view')
 	{
@@ -77,7 +77,7 @@ class Canvas
 	 *  and MVC properties:    ->control (Controller), ->control->object (Model), ->template_dir (View)
 	 *
 	 * 	@param		module		Name of target module (thirdparty, contact, ...)
-	 * 	@param		card	 	Type of card (ex: card, info, contactcard, ...)
+	 * 	@param		card	 	Type of card (ex: 'card', 'info', 'contactcard', ...) or '' for a list page
 	 * 	@param		canvas		Name of canvas (ex: mycanvas, default, or mycanvas@myexternalmodule)
 	 */
 	function getCanvas($module, $card, $canvas)
@@ -161,7 +161,7 @@ class Canvas
     }
 
     /**
-     *  get object
+     *  Get object
 	 *
      *  @param      param1          Param1
      *  @param      param2          Param2
@@ -181,59 +181,27 @@ class Canvas
         }
     }
 
-	/**
-	 * 	Check permissions of a user to show a page and an object. Check read permission.
-	 * 	If $_REQUEST['action'] defined, we also check write permission.
-	 *
-	 * 	@param      user      	  	User to check
-	 * 	@param      features	    Features to check (in most cases, it's module name)
-	 * 	@param      objectid      	Object ID if we want to check permission on a particular record (optionnal)
-	 *  @param      dbtablename    	Table name where object is stored. Not used if objectid is null (optionnal)
-	 *  @param      feature2		Feature to check (second level of permission)
-	 *  @param      dbt_keyfield    Field name for socid foreign key if not fk_soc. (optionnal)
-	 *  @param      dbt_select      Field name for select if not rowid. (optionnal)
-	 *  @return		int				1
-	 */
-	function restrictedArea($user, $features='societe', $objectid=0, $dbtablename='', $feature2='', $dbt_keyfield='fk_soc', $dbt_select='rowid')
-	{
-	    // If function to check permission is overwritten, we use new one
-	    if (method_exists($this->control,'restrictedArea')) return $this->control->restrictedArea($user,$features,$objectid,$dbtablename,$feature2,$dbt_keyfield,$dbt_select);
-	    else return restrictedArea($user,$features,$objectid,$dbtablename,$feature2,$dbt_keyfield,$dbt_select);
-	}
-
-
-    /**
-     *    Assign values into POST into object
-	 *
-     *    // TODO This should be useless. POST is already visible from everywhere.
-     */
-    function assign_post()
-    {
-        if (empty($_POST)) return;
-        if (method_exists($this->control,'assign_post')) $this->control->assign_post();
-    }
-
     /**
 	 * 	Shared method for canvas to assign values for templates
 	 */
-	function assign_values()
+	function assign_values($action)
 	{
-	    if (method_exists($this->control,'assign_values')) $this->control->assign_values($this->action);
+		if (method_exists($this->control,'assign_values')) $this->control->assign_values($action);
 	}
 
     /**
      *     Return the template to display canvas (if it exists)
 	 *
-     *     @param       mode        'create', ''='view', 'edit'
-     *     @return      string      Path to display canvas file if it exists, '' otherwise.
+     *     @param       string		$mode       'create', ''='view', 'edit', 'list'
+     *     @return      string      			Path to display canvas file if it exists, '' otherwise.
      */
     function displayCanvasExists($mode='view')
     {
         $newmode=$mode;
         if (empty($newmode)) $newmode='view';
         if (empty($this->template_dir)) return 0;
-        //print $this->template_dir.$this->card.'_'.$newmode.'.tpl.php';
-        if (file_exists($this->template_dir.$this->card.'_'.$newmode.'.tpl.php')) return 1;
+        //print $this->template_dir.($this->card?$this->card.'_':'').$newmode.'.tpl.php';
+        if (file_exists($this->template_dir.($this->card?$this->card.'_':'').$newmode.'.tpl.php')) return 1;
         else return 0;
     }
 
@@ -242,16 +210,16 @@ class Canvas
 	 *     Variables used by templates may have been defined, loaded before
 	 *     into the assign_values function.
 	 *
-	 *     @param      mode        'create', 'view', 'edit'
-	 *     @param      id          Id of object to show
+	 *     @param      string	$mode        'create', 'view', 'edit'
+	 *     @param      int		$id          Id of object to show
 	 */
 	function display_canvas($mode='view',$id=0)
 	{
 		global $db, $conf, $langs, $user, $canvas;
 		global $id, $form, $formfile;
 
-		//print $this->template_dir.$this->card.'_'.$mode.'.tpl.php';exit;
-		include($this->template_dir.$this->card.'_'.$mode.'.tpl.php');        // Include native PHP template
+		//print $this->template_dir.($this->card?$this->card.'_':'').$mode.'.tpl.php';exit;
+		include($this->template_dir.($this->card?$this->card.'_':'').$mode.'.tpl.php');        // Include native PHP template
 	}
 
 }

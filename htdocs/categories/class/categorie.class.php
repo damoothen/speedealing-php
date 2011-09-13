@@ -55,23 +55,23 @@ class Categorie
 
 
 	/**
-	 * 	Constructor
+	 *	Constructor
 	 *
-	 * 	@param	DB		acces base de donnees
-	 * 	@param	id		id de la categorie
+	 *  @param		DoliDB		$DB     Database handler
+	 *  @param		int			$id		Id of category to fetch during init
 	 */
 	function Categorie($DB, $id=-1)
 	{
 		$this->db = $DB;
 		$this->id = $id;
 
-		if ($id != -1) $this->fetch ($this->id);
+		if ($id != -1) $this->fetch($this->id);
 	}
 
 	/**
 	 * 	Load category into memory from database
 	 *
-	 * 	@param		id		id of category
+	 * 	@param		int		$id		Id of category
 	 */
 	function fetch($id)
 	{
@@ -80,7 +80,7 @@ class Categorie
 		$sql.= " WHERE rowid = ".$id;
 
 		dol_syslog("Categorie::fetch sql=".$sql);
-		$resql  = $this->db->query($sql);
+		$resql = $this->db->query($sql);
 		if ($resql)
 		{
 			$res = $this->db->fetch_array($resql);
@@ -102,7 +102,7 @@ class Categorie
 
 		$sql = "SELECT fk_categorie_mere";
 		$sql.= " FROM ".MAIN_DB_PREFIX."categorie_association";
-		$sql.= " WHERE fk_categorie_fille = '".$id."'";
+		$sql.= " WHERE fk_categorie_fille = ".$id;
 
 		dol_syslog("Categorie::fetch sql=".$sql);
 		$resql  = $this->db->query($sql);
@@ -215,6 +215,7 @@ class Categorie
 		$this->label=trim($this->label);
 		$this->description=trim($this->description);
 		$this->parentId = ($this->id_mere) != "" ? intval($this->id_mere) : 0;
+		$this->visible = ($this->visible) != "" ? intval($this->visible) : 0;
 
 		if ($this->already_exists())
 		{
@@ -226,7 +227,7 @@ class Categorie
 		$this->db->begin();
 
 		$sql = 'DELETE FROM '.MAIN_DB_PREFIX.'categorie_association';
-		$sql .= ' WHERE fk_categorie_fille = "'.$this->id.'"';
+		$sql.= ' WHERE fk_categorie_fille = '.$this->id;
 
 		dol_syslog("Categorie::update sql=".$sql);
 		if (! $this->db->query($sql))
@@ -239,7 +240,7 @@ class Categorie
 		if($this->id_mere !="" && $this->id_mere!=$this->id)
 		{
 			$sql = 'INSERT INTO '.MAIN_DB_PREFIX.'categorie_association(fk_categorie_mere,fk_categorie_fille)';
-			$sql .= ' VALUES ("'.$this->id_mere.'","'.$this->id.'")';
+			$sql.= ' VALUES ('.$this->id_mere.', '.$this->id.')';
 
 			dol_syslog("Categorie::update sql=".$sql);
 			if (! $this->db->query($sql))
@@ -398,14 +399,12 @@ class Categorie
 	/**
 	 * 	Ajout d'une sous-categorie
 	 *
-	 * 	@param	$fille		objet categorie
 	 * 	@return	int			 1 : OK
 	 *          			-2 : $fille est deja dans la famille de $this
 	 *          			-3 : categorie ($this ou $fille) invalide
 	 */
 	function add_fille()
 	{
-
 		$sql = "INSERT INTO ".MAIN_DB_PREFIX."categorie_association (fk_categorie_mere, fk_categorie_fille)";
 		$sql.= " VALUES (".$this->id_mere.", ".$this->id.")";
 
@@ -487,7 +486,8 @@ class Categorie
 	/**
 	 * Suppresion d'un produit de la categorie
 	 *
-	 * @param 	$prod est un objet de type produit
+	 * @param 	$obj	Object
+	 * @param	$type	Type
 	 * @return 	int		1 if OK, -1 if KO
 	 */
 	function del_type($obj,$type)
@@ -510,9 +510,9 @@ class Categorie
 	/**
 	 * 	Return list of contents of a category
 	 *
-	 * 	@param	field	Field name for select in table. Full field name will be fk_field.
-	 * 	@param	class	PHP Class of object to store entity
-	 * 	@param	table	Table name for select in table. Full table name will be PREFIX_categorie_table.
+	 * 	@param	field		Field name for select in table. Full field name will be fk_field.
+	 * 	@param	classname	PHP Class of object to store entity
+	 * 	@param	table		Table name for select in table. Full table name will be PREFIX_categorie_table.
 	 */
 	function get_type($field,$classname,$table='')
 	{
@@ -579,10 +579,10 @@ class Categorie
 	 * @param	int		$cate		Category id
 	 * @return	string				Description
 	 */
-	function get_desc ($cate)
+	function get_desc($cate)
 	{
 		$sql  = "SELECT description FROM ".MAIN_DB_PREFIX."categorie ";
-		$sql .= "WHERE rowid = '".$cate."'";
+		$sql .= "WHERE rowid = ".$cate;
 
 		$res  = $this->db->query($sql);
 		$n    = $this->db->fetch_array($res);
@@ -595,7 +595,7 @@ class Categorie
 	 *
 	 * @param	Category	$fille		Object category
 	 */
-	function is_fille ($fille)
+	function is_fille($fille)
 	{
 		$sql  = "SELECT count(fk_categorie_fille) FROM ".MAIN_DB_PREFIX."categorie_association ";
 		$sql .= "WHERE fk_categorie_mere = ".$this->id." AND fk_categorie_fille = ".$fille->id;
@@ -1077,7 +1077,7 @@ class Categorie
 		$sql = "SELECT ct.fk_categorie";
 		$sql.= " FROM ".MAIN_DB_PREFIX."categorie_".$type." as ct";
 		$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."categorie as c ON ct.fk_categorie = c.rowid";
-		$sql.= " WHERE  ct.fk_".$table." = ".$id." AND c.type = ".$typeid;
+		$sql.= " WHERE ct.fk_".$table." = ".$id." AND c.type = ".$typeid;
 
 		$res = $this->db->query($sql);
 		if ($res)
@@ -1211,10 +1211,9 @@ class Categorie
 	/**
 	 *    Build thumb
 	 *
-	 *    @param      sdir           Repertoire destination finale
-	 *    @param      file           Chemin du fichier d'origine
-	 *    @param      maxWidth       Largeur maximum que dois faire la miniature (160 par defaut)
-	 *    @param      maxHeight      Hauteur maximum que dois faire la miniature (120 par defaut)
+	 *    @param      string	$file           Chemin du fichier d'origine
+	 *    @param      int		$maxWidth       Largeur maximum que dois faire la miniature (160 par defaut)
+	 *    @param      int		$maxHeight      Hauteur maximum que dois faire la miniature (120 par defaut)
 	 */
 	function add_thumb($file, $maxWidth = 160, $maxHeight = 120)
 	{
@@ -1230,9 +1229,9 @@ class Categorie
 	/**
 	 *    Return tableau de toutes les photos de la categorie
 	 *
-	 *    @param      dir         Repertoire a scanner
-	 *    @param      nbmax       Nombre maximum de photos (0=pas de max)
-	 *    @return     array       Tableau de photos
+	 *    @param      string	$dir        Repertoire a scanner
+	 *    @param      int		$nbmax      Nombre maximum de photos (0=pas de max)
+	 *    @return     array       			Tableau de photos
 	 */
 	function liste_photos($dir,$nbmax=0)
 	{

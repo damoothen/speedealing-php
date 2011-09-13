@@ -17,17 +17,17 @@
  */
 
 /**
- *	\file       htdocs/societe/canvas/default/actions_card_default.class.php
+ *	\file       htdocs/societe/canvas/default/actions_card_company.class.php
  *	\ingroup    thirdparty
  *	\brief      Fichier de la classe Thirdparty card controller (default canvas)
  */
 include_once(DOL_DOCUMENT_ROOT.'/societe/canvas/actions_card_common.class.php');
 
 /**
- *	\class      ActionsCardDefault
+ *	\class      ActionsCardCompany
  *	\brief      Class with controller methods for thirdparty canvas
  */
-class ActionsCardDefault extends ActionsCardCommon
+class ActionsCardCompany extends ActionsCardCommon
 {
 	var $db;
     var $targetmodule;
@@ -36,12 +36,13 @@ class ActionsCardDefault extends ActionsCardCommon
 
 	/**
 	 *    Constructor
-     *    @param   DB              Handler acces base de donnees
-     *    @param   targmetmodule   Name of directory of module where canvas is stored
-     *    @param   canvas          Name of canvas
-     *    @param   card            Name of tab (sub-canvas)
+	 *
+     *    @param   DoliDB	$DB             Handler acces base de donnees
+     *    @param   string	$targetmodule	Name of directory of module where canvas is stored
+     *    @param   string	$canvas         Name of canvas
+     *    @param   string	$card           Name of tab (sub-canvas)
 	 */
-	function ActionsCardDefault($DB,$targetmodule,$canvas,$card)
+	function ActionsCardCompany($DB,$targetmodule,$canvas,$card)
 	{
         $this->db               = $DB;
         $this->targetmodule     = $targetmodule;
@@ -52,7 +53,7 @@ class ActionsCardDefault extends ActionsCardCommon
     /**
      *  Return the title of card
      */
-    function getTitle($action)
+    private function getTitle($action)
     {
         global $langs;
 
@@ -67,16 +68,9 @@ class ActionsCardDefault extends ActionsCardCommon
 
 
 	/**
-     *    Assigne les valeurs POST dans l'objet
-     */
-    function assign_post()
-    {
-    	parent::assign_post();
-    }
-
-	/**
 	 * 	Execute actions
-	 * 	@param 		Id of object (may be empty for creation)
+	 *
+	 * 	@param		int		$socid 		Id of object (may be empty for creation)
 	 */
 	function doActions($socid)
 	{
@@ -88,9 +82,9 @@ class ActionsCardDefault extends ActionsCardCommon
 	/**
 	 *    Assign custom values for canvas (for example into this->tpl to be used by templates)
 	 *
-	 *    @param      action     Type of action
+	 *    @param	string	$action     Type of action
 	 */
-	function assign_values($action='')
+	function assign_values($action)
 	{
 		global $conf, $langs, $user, $mysoc;
 		global $form, $formadmin, $formcompany;
@@ -102,7 +96,8 @@ class ActionsCardDefault extends ActionsCardCommon
 		$this->tpl['profid3'] 	= $this->object->ape;
 		$this->tpl['profid4'] 	= $this->object->idprof4;
 
-		if ($conf->use_javascript_ajax && empty($conf->global->MAIN_DISABLEVATCHECK)) {
+		if ($conf->use_javascript_ajax && empty($conf->global->MAIN_DISABLEVATCHECK)) 
+		{
 			$js = "\n";
 	        $js.= '<script language="JavaScript" type="text/javascript">';
 	        $js.= "function CheckVAT(a) {\n";

@@ -44,9 +44,9 @@ class RemiseCheque extends CommonObject
 	var $errno;
 
 	/**
-	 *    Constructor
+	 *	Constructor
 	 *
-	 *    @param  	DoliDB	$DB		Database handler
+	 *  @param		DoliDB		$DB      Database handler
 	 */
 	function RemiseCheque($DB)
 	{
@@ -426,8 +426,7 @@ class RemiseCheque extends CommonObject
 	/**
      *      Load indicators for dashboard (this->nbtodo and this->nbtodolate)
      *
-     *      @param      user                Objet user
-     *      @param      filteraccountid     To get info for a particular account id
+     *      @param      User	$user       Objet user
      *      @return     int                 <0 if KO, >0 if OK
 	 */
 	function load_board($user)
@@ -436,7 +435,7 @@ class RemiseCheque extends CommonObject
 
 		if ($user->societe_id) return -1;   // protection pour eviter appel par utilisateur externe
 
-		$now=gmmktime();
+		$now=dol_now();
 
 		$this->nbtodo=$this->nbtodolate=0;
 
