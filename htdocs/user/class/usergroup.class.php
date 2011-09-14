@@ -21,7 +21,6 @@
  *	 \file       htdocs/user/class/usergroup.class.php
  *	 \brief      Fichier de la classe des groupes d'utilisateur
  *	 \author     Rodolphe Qiedeville
- *	 \version    $Id: usergroup.class.php,v 1.12 2011/07/31 23:21:26 eldy Exp $
  */
 
 require_once(DOL_DOCUMENT_ROOT."/core/class/commonobject.class.php");
@@ -55,6 +54,7 @@ class UserGroup extends CommonObject
 
 	/**
      *    Constructor de la classe
+     *
      *    @param   DoliDb  $DB     Database handler
 	 */
 	function UserGroup($DB)
@@ -67,8 +67,9 @@ class UserGroup extends CommonObject
 
 	/**
 	 *	Charge un objet group avec toutes ces caracteristiques (excpet ->members array)
-	 *	@param      id      id du groupe a charger
-	 *	@return		int		<0 si KO, >0 si OK
+	 *
+	 *	@param      int		$id     id du groupe a charger
+	 *	@return		int				<0 if KO, >0 if OK
 	 */
 	function fetch($id)
 	{
@@ -115,12 +116,13 @@ class UserGroup extends CommonObject
 
 	/**
 	 * 	Return array of groups objects for a particular user
-	 *	@param		userid    User id to search
-	 * 	@return		array     Array of groups objects
+	 *
+	 *	@param		int		$userid 	User id to search
+	 * 	@return		array     			Array of groups objects
 	 */
 	function listGroupsForUser($userid)
 	{
-		global $conf;
+		global $conf, $user;
 
 		$ret=array();
 
@@ -129,10 +131,14 @@ class UserGroup extends CommonObject
 		$sql.= " ".MAIN_DB_PREFIX."usergroup_user as ug";
 		$sql.= " WHERE ug.fk_usergroup = g.rowid";
 		$sql.= " AND ug.fk_user = ".$userid;
-                if($conf->entity==0)
-                    $sql.= " AND ug.entity IS NOT NULL";
-                else
-                    $sql.= " AND ug.entity IN (0,".$conf->entity.")";
+		if(! empty($conf->multicompany->enabled) && $conf->entity == 1 && $user->admin && ! $user->entity)
+		{
+			$sql.= " AND g.entity IS NOT NULL";
+		}
+		else
+		{
+			$sql.= " AND g.entity IN (0,".$conf->entity.")";
+		}
 		$sql.= " ORDER BY g.nom";
 
 		dol_syslog("UserGroup::listGroupsForUser sql=".$sql,LOG_DEBUG);
@@ -141,11 +147,11 @@ class UserGroup extends CommonObject
 		{
 			while ($obj = $this->db->fetch_object($result))
 			{
-				$group=new UserGroup($this->db);
-				$group->fetch($obj->rowid);
-				$group->usergroup_entity = $obj->usergroup_entity;
+				$newgroup=new UserGroup($this->db);
+				$newgroup->fetch($obj->rowid);
+				$newgroup->usergroup_entity = $obj->usergroup_entity;
 
-				$ret[]=$group;
+				$ret[]=$newgroup;
 			}
 
 			$this->db->free($result);
@@ -162,11 +168,12 @@ class UserGroup extends CommonObject
 
 	/**
 	 * 	Return array of users id for group
+	 *
 	 * 	@return		array of users
 	 */
 	function listUsersForGroup()
 	{
-		global $conf;
+		global $conf, $user;
 
 		$ret=array();
 
@@ -175,22 +182,25 @@ class UserGroup extends CommonObject
 		$sql.= " ".MAIN_DB_PREFIX."usergroup_user as ug";
 		$sql.= " WHERE ug.fk_user = u.rowid";
 		$sql.= " AND ug.fk_usergroup = ".$this->id;
-                if($conf->entity==0)
-                    $sql.= " AND u.entity IS NOT NULL";
-                else
-                    $sql.= " AND u.entity IN (0,".$conf->entity.")";
-
+		if(! empty($conf->multicompany->enabled) && $conf->entity == 1 && $user->admin && ! $user->entity)
+		{
+			$sql.= " AND u.entity IS NOT NULL";
+		}
+		else
+		{
+			$sql.= " AND u.entity IN (0,".$conf->entity.")";
+		}
 		dol_syslog("UserGroup::listUsersForGroup sql=".$sql,LOG_DEBUG);
 		$result = $this->db->query($sql);
 		if ($result)
 		{
 			while ($obj = $this->db->fetch_object($result))
 			{
-				$user=new User($this->db);
-				$user->fetch($obj->rowid);
-				$user->usergroup_entity = $obj->usergroup_entity;
+				$newuser=new User($this->db);
+				$newuser->fetch($obj->rowid);
+				$newuser->usergroup_entity = $obj->usergroup_entity;
 
-				$ret[]=$user;
+				$ret[]=$newuser;
 			}
 
 			$this->db->free($result);
@@ -206,11 +216,12 @@ class UserGroup extends CommonObject
 	}
 
 	/**
-	 *    \brief      Ajoute un droit a l'utilisateur
-	 *    \param      rid         id du droit a ajouter
-	 *    \param      allmodule   Ajouter tous les droits du module allmodule
-	 *    \param      allperms    Ajouter tous les droits du module allmodule, perms allperms
-	 *    \return     int         > 0 si ok, < 0 si erreur
+	 *    Ajoute un droit a l'utilisateur
+	 *
+	 *    @param      int		$rid         id du droit a ajouter
+	 *    @param      string	$allmodule   Ajouter tous les droits du module allmodule
+	 *    @param      string	$allperms    Ajouter tous les droits du module allmodule, perms allperms
+	 *    @return     int         			 > 0 if OK, < 0 if KO
 	 */
 	function addrights($rid,$allmodule='',$allperms='')
 	{
@@ -305,11 +316,12 @@ class UserGroup extends CommonObject
 
 
 	/**
-	 *    \brief      Retire un droit a l'utilisateur
-	 *    \param      rid         id du droit a retirer
-	 *    \param      allmodule   Retirer tous les droits du module allmodule
-	 *    \param      allperms    Retirer tous les droits du module allmodule, perms allperms
-	 *    \return     int         > 0 si ok, < 0 si erreur
+	 *    Retire un droit a l'utilisateur
+	 *
+	 *    @param      int		$rid         id du droit a retirer
+	 *    @param      string	$allmodule   Retirer tous les droits du module allmodule
+	 *    @param      string	$allperms    Retirer tous les droits du module allmodule, perms allperms
+	 *    @return     int         			 > 0 if OK, < 0 if OK
 	 */
 	function delrights($rid,$allmodule='',$allperms='')
 	{
@@ -402,8 +414,10 @@ class UserGroup extends CommonObject
 
 
 	/**
-	 *    \brief      Charge dans l'objet group, la liste des permissions auquels le groupe a droit
-	 *    \param      module    	Nom du module dont il faut recuperer les droits ('' par defaut signifie tous les droits)
+	 *  Charge dans l'objet group, la liste des permissions auquels le groupe a droit
+	 *
+	 *  @param      string	$module    	Nom du module dont il faut recuperer les droits ('' par defaut signifie tous les droits)
+	 *	@return		int					<0 if KO, >0 if OK
 	 */
 	function getrights($module='')
 	{
@@ -444,8 +458,8 @@ class UserGroup extends CommonObject
 					{
 						$this->rights->$row[0]->$row[1] = 1;
 					}
-
 				}
+
 				$i++;
 			}
 		}
@@ -457,11 +471,13 @@ class UserGroup extends CommonObject
 			$this->all_permissions_are_loaded=1;
 		}
 
+        return 1;
 	}
 
 	/**
-	 *        \brief      Efface un groupe de la base
-	 *        \return     < 0 si erreur, > 0 si ok
+	 *        Efface un groupe de la base
+	 *
+	 *        @return     <0 if KO, > 0 if OK
 	 */
 	function delete()
 	{
@@ -502,14 +518,21 @@ class UserGroup extends CommonObject
 
 	/**
 	 *	Create group into database
-	 *	@param		notrigger	0=triggers enabled, 1=triggers disabled
-	 *	@return     int			<0 if KO, >=0 if OK
+	 *
+	 *	@param		int		$notrigger	0=triggers enabled, 1=triggers disabled
+	 *	@return     int					<0 if KO, >=0 if OK
 	 */
 	function create($notrigger=0)
 	{
 		global $user, $conf, $langs;
 
 		$now=dol_now();
+
+		$entity=$conf->entity;
+		if(! empty($conf->multicompany->enabled) && $conf->entity == 1)
+		{
+			$entity=$this->entity;
+		}
 
 		$sql = "INSERT INTO ".MAIN_DB_PREFIX."usergroup (";
 		$sql.= "datec";
@@ -518,7 +541,7 @@ class UserGroup extends CommonObject
 		$sql.= ") VALUES (";
 		$sql.= "'".$this->db->idate($now)."'";
 		$sql.= ",'".$this->db->escape($this->nom)."'";
-		$sql.= ",".($conf->entity==0 ? $this->entity : $conf->entity);
+		$sql.= ",".$entity;
 		$sql.= ")";
 
 		dol_syslog("UserGroup::Create sql=".$sql, LOG_DEBUG);
@@ -551,8 +574,9 @@ class UserGroup extends CommonObject
 
 	/**
 	 *		Update group into database
-	 *      @param      notrigger	    0=triggers enabled, 1=triggers disabled
-	 *    	@return     int				<0 if KO, >=0 if OK
+	 *
+	 *      @param      int		$notrigger	    0=triggers enabled, 1=triggers disabled
+	 *    	@return     int						<0 if KO, >=0 if OK
 	 */
 	function update($notrigger=0)
 	{
@@ -560,11 +584,17 @@ class UserGroup extends CommonObject
 
 		$error=0;
 
+		$entity=$conf->entity;
+		if(! empty($conf->multicompany->enabled) && $conf->entity == 1)
+		{
+			$entity=$this->entity;
+		}
+
 		$sql = "UPDATE ".MAIN_DB_PREFIX."usergroup SET ";
-		$sql.= " nom = '".$this->db->escape($this->nom)."'";
-		$sql.= ", entity = ".($conf->entity==0 ? $this->entity : $conf->entity);
-		$sql.= ", note = '".$this->db->escape($this->note)."'";
-		$sql.= " WHERE rowid = ".$this->id;
+		$sql.= " nom = '" . $this->db->escape($this->nom) . "'";
+		$sql.= ", entity = " . $entity;
+		$sql.= ", note = '" . $this->db->escape($this->note) . "'";
+		$sql.= " WHERE rowid = " . $this->id;
 
 		dol_syslog("Usergroup::update sql=".$sql);
 		$resql = $this->db->query($sql);
@@ -592,12 +622,13 @@ class UserGroup extends CommonObject
 
 
 	/**
-	 *	\brief		Retourne chaine DN complete dans l'annuaire LDAP pour l'objet
-	 *	\param		info		Info string loaded by _load_ldap_info
-	 *	\param		mode		0=Return full DN (uid=qqq,ou=xxx,dc=aaa,dc=bbb)
-	 *							1=Return DN without key inside (ou=xxx,dc=aaa,dc=bbb)
-	 *							2=Return key only (uid=qqq)
-	 *	\return		string		DN
+	 *	Retourne chaine DN complete dans l'annuaire LDAP pour l'objet
+	 *
+	 *	@param		string	$info		Info string loaded by _load_ldap_info
+	 *	@param		int		$mode		0=Return full DN (uid=qqq,ou=xxx,dc=aaa,dc=bbb)
+	 *									1=Return DN without key inside (ou=xxx,dc=aaa,dc=bbb)
+	 *									2=Return key only (uid=qqq)
+	 *	@return		string				DN
 	 */
 	function _load_ldap_dn($info,$mode=0)
 	{
@@ -611,8 +642,9 @@ class UserGroup extends CommonObject
 
 
 	/**
-	 *	\brief		Initialize the info array (array of LDAP values) that will be used to call LDAP functions
-	 *	\return		array		Tableau info des attributs
+	 *	Initialize the info array (array of LDAP values) that will be used to call LDAP functions
+	 *
+	 *	@return		array		Tableau info des attributs
 	 */
 	function _load_ldap_info()
 	{
@@ -647,7 +679,9 @@ class UserGroup extends CommonObject
 
 
 	/**
-	 *		\brief		Initialise le groupe avec valeurs fictives aleatoire
+	 *		Initialise le groupe avec valeurs fictives aleatoire
+	 *
+	 *		@return		void
 	 */
 	function initAsSpecimen()
 	{

@@ -23,11 +23,9 @@
  *  \ingroup    propale
  *  \brief      Fichier contenant la classe mere de generation des propales en PDF
  *  			et la classe mere de numerotation des propales
- *	\version    $Id: modules_propale.php,v 1.65 2011/08/10 23:21:13 eldy Exp $
  */
 
-require_once(FPDFI_PATH.'fpdi_protection.php');
-require_once(DOL_DOCUMENT_ROOT.'/lib/pdf.lib.php');
+require_once(DOL_DOCUMENT_ROOT."/core/class/commondocgenerator.class.php");
 require_once(DOL_DOCUMENT_ROOT."/compta/bank/class/account.class.php");   // Requis car utilise dans les classes qui heritent
 
 
@@ -35,7 +33,7 @@ require_once(DOL_DOCUMENT_ROOT."/compta/bank/class/account.class.php");   // Req
  *	\class      ModelePDFPropales
  *	\brief      Classe mere des modeles de propale
  */
-class ModelePDFPropales
+abstract class ModelePDFPropales extends CommonDocGenerator
 {
 	var $error='';
 
@@ -130,15 +128,17 @@ class ModeleNumRefPropales
 
 
 /**
- * 	Cree une propale sur disque en fonction du modele de PROPALE_ADDON_PDF
- * 	@param	    db  			Database handler
- * 	@param	    object			Object proposal
- * 	@param	    modele			Force model to use ('' to not force)
- * 	@param		outputlangs		Object langs to use for output
- *  @param      hidedetails     Hide details of lines
- *  @param      hidedesc        Hide description
- *  @param      hideref         Hide ref
- * 	@return     int         	0 if KO, 1 if OK
+ *  Create a document onto disk accordign to template module.
+ *
+ * 	@param	    DoliDB		$db  			Database handler
+ * 	@param	    Object		$object			Object proposal
+ * 	@param	    string		$modele			Force model to use ('' to not force)
+ * 	@param		Translate	$outputlangs	Object langs to use for output
+ *  @param      int			$hidedetails    Hide details of lines
+ *  @param      int			$hidedesc       Hide description
+ *  @param      int			$hideref        Hide ref
+ *  @param      HookManager	$hookmanager	Hook manager instance
+ * 	@return     int         				0 if KO, 1 if OK
  */
 function propale_pdf_create($db, $object, $modele, $outputlangs, $hidedetails=0, $hidedesc=0, $hideref=0, $hookmanager=false)
 {
@@ -170,9 +170,7 @@ function propale_pdf_create($db, $object, $modele, $outputlangs, $hidedetails=0,
 	// Si model pas encore bon
 	if (! $modelisok)
 	{
-		$liste=array();
-		$model=new ModelePDFPropales();
-		$liste=$model->liste_modeles($db);
+		$liste=ModelePDFPropales::liste_modeles($db);
 		$modele=key($liste);        // Renvoie premiere valeur de cle trouve dans le tableau
 		$file = "pdf_propale_".$modele.".modules.php";
 		$file = dol_buildpath($dir.$file);

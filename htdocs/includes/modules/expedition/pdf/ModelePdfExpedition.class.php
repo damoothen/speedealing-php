@@ -22,18 +22,15 @@
  *  \file       htdocs/includes/modules/expedition/pdf/ModelePdfExpedition.class.php
  *  \ingroup    shipping
  *  \brief      Fichier contenant la classe mere de generation des expeditions
- *  \version    $Id: ModelePdfExpedition.class.php,v 1.17 2011/08/10 23:20:55 eldy Exp $
  */
-
-require_once(FPDFI_PATH.'fpdi_protection.php');
-require_once(DOL_DOCUMENT_ROOT.'/lib/pdf.lib.php');
+require_once(DOL_DOCUMENT_ROOT."/core/class/commondocgenerator.class.php");
 
 
 /**
  *  \class      ModelePdfExpedition
  *  \brief      Parent class of sending receipts models
  */
-class ModelePdfExpedition
+abstract class ModelePdfExpedition extends CommonDocGenerator
 {
     var $error='';
 
@@ -94,9 +91,7 @@ function expedition_pdf_create($db, $object, $modele, $outputlangs)
     // Si model pas encore bon
 	if (! $modelisok)
 	{
-	    $liste=array();
-		$model=new ModelePDFExpedition();
-		$liste=$model->liste_modeles($db);
+		$liste=ModelePDFExpedition::liste_modeles($db);
         $modele=key($liste);        // Renvoie premiere valeur de cle trouve dans le tableau
       	$file = "pdf_expedition_".$modele.".modules.php";
       	// On verifie l'emplacement du modele

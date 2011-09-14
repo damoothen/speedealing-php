@@ -18,7 +18,6 @@
 /**
  *		\file 		htdocs/admin/tools/purge.php
  *		\brief      Page to purge files (temporary or not)
- *		\version    $Id: purge.php,v 1.19 2011/08/03 00:45:43 eldy Exp $
  */
 
 require("../../main.inc.php");
@@ -133,16 +132,16 @@ print '<tr class="border"><td style="padding: 4px">';
 if ($conf->syslog->enabled)
 {
 	print '<input type="radio" name="choice" value="logfile"';
-	print ($_REQUEST["choice"] && $_REQUEST["choice"]=='logfile') ? ' checked="true"' : '';
+	print ($_REQUEST["choice"] && $_REQUEST["choice"]=='logfile') ? ' checked="checked"' : '';
 	print '> '.$langs->trans("PurgeDeleteLogFile",$filelog).'<br><br>';
 }
 
 print '<input type="radio" name="choice" value="tempfiles"';
-print (! $_REQUEST["choice"] || $_REQUEST["choice"]=='tempfiles' || $_REQUEST["choice"]=='allfiles') ? ' checked="true"' : '';
+print (! $_REQUEST["choice"] || $_REQUEST["choice"]=='tempfiles' || $_REQUEST["choice"]=='allfiles') ? ' checked="checked"' : '';
 print '> '.$langs->trans("PurgeDeleteTemporaryFiles").'<br><br>';
 
 print '<input type="radio" name="choice" value="confirm_allfiles"';
-print ($_REQUEST["choice"] && $_REQUEST["choice"]=='confirm_allfiles') ? ' checked="true"' : '';
+print ($_REQUEST["choice"] && $_REQUEST["choice"]=='confirm_allfiles') ? ' checked="checked"' : '';
 print '> '.$langs->trans("PurgeDeleteAllFilesInDocumentsDir",$dolibarr_main_data_root).'<br>';
 
 print '</td></tr></table>';
@@ -171,5 +170,5 @@ if (preg_match('/^confirm/i',$_REQUEST["choice"]))
 }
 
 
-llxFooter('$Date: 2011/08/03 00:45:43 $ - $Revision: 1.19 $');
+llxFooter();
 ?>

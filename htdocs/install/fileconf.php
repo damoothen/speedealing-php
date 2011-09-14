@@ -24,7 +24,6 @@
  *       \file       htdocs/install/fileconf.php
  *       \ingroup    install
  *       \brief      Ask all informations required to build Dolibarr htdocs/conf/conf.php file (will be wrote on disk on next page)
- *       \version    $Id: fileconf.php,v 1.95 2011/08/06 23:10:01 eldy Exp $
  */
 include_once("./inc.php");
 
@@ -65,7 +64,7 @@ dolibarr_install_syslog("Fileconf: Entering fileconf.php page");
  *	View
  */
 
-pHeader($langs->trans("ConfigurationFile"),"etape0");
+pHeader($langs->trans("ConfigurationFile"),"etape1");
 
 // Test if we can run a first install process
 if (! is_writable($conffile))
@@ -126,7 +125,7 @@ if (! empty($force_install_message))
 		<td class="label" valign="top">
 		<?php
 		if ($force_install_noedit) print '<input type="hidden" value="'.$dolibarr_main_document_root.'" name="main_dir">';
-		print '<input type="text" size="60" value="'.$dolibarr_main_document_root.'"'.(empty($force_install_noedit)?'':' disabled="true"').' name="main_dir'.(empty($force_install_noedit)?'':'_bis').'">';
+		print '<input type="text" size="60" value="'.$dolibarr_main_document_root.'"'.(empty($force_install_noedit)?'':' disabled="disabled"').' name="main_dir'.(empty($force_install_noedit)?'':'_bis').'">';
 		?>
 		</td>
 		<td class="comment"><?php
@@ -162,7 +161,7 @@ if (! empty($force_install_message))
 		<td class="label" valign="top">
 		<?php
 		if ($force_install_noedit) print '<input type="hidden" value="'.$dolibarr_main_data_root.'" name="main_data_dir">';
-		print '<input type="text" size="60" value="'.$dolibarr_main_data_root.'"'.(empty($force_install_noedit)?'':' disabled="true"').' name="main_data_dir'.(empty($force_install_noedit)?'':'_bis').'">';
+		print '<input type="text" size="60" value="'.$dolibarr_main_data_root.'"'.(empty($force_install_noedit)?'':' disabled="disabled"').' name="main_data_dir'.(empty($force_install_noedit)?'':'_bis').'">';
 		?>
 		</td>
 		<td class="comment"><?php
@@ -211,7 +210,7 @@ if (empty($dolibarr_main_url_root))
 		<td valign="top" class="label">
 		<?php
 		if ($force_install_noedit) print '<input type="hidden" value="'.$dolibarr_main_url_root.'" name="main_url">';
-		print '<input type="text" size="60" value="'.$dolibarr_main_url_root.'"'.(empty($force_install_noedit)?'':' disabled="true"').' name="main_url'.(empty($force_install_noedit)?'':'_bis').'">';
+		print '<input type="text" size="60" value="'.$dolibarr_main_url_root.'"'.(empty($force_install_noedit)?'':' disabled="disabled"').' name="main_url'.(empty($force_install_noedit)?'':'_bis').'">';
 		?>
 		</td>
 		<td class="comment"><?php print $langs->trans("Examples").":<br>"; ?>
@@ -309,7 +308,7 @@ if (! empty($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == 'on') {   // Enabled if t
         }
 
         if ($force_install_noedit && $force_install_type) print '<input id="db_type" type="hidden" value="'.$force_install_type.'" name="db_type">';
-        print '<select id="db_type" name="db_type'.(empty($force_install_noedit) || empty($force_install_type)?'':'_bis').'"'.($force_install_noedit && $force_install_type?' disabled="true"':'').'>';
+        print '<select id="db_type" name="db_type'.(empty($force_install_noedit) || empty($force_install_type)?'':'_bis').'"'.($force_install_noedit && $force_install_type?' disabled="disabled"':'').'>';
 		print $option;
 		print '</select>';
 
@@ -347,7 +346,7 @@ if (! empty($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == 'on') {   // Enabled if t
 		<td class="label" valign="top"><b> <?php echo $langs->trans("DatabaseName"); ?>	</b></td>
 
 		<td class="label" valign="top"><input type="text" id="db_name" name="db_name"
-			value="<?php echo (! empty($dolibarr_main_db_name))?$dolibarr_main_db_name:$force_install_database; ?>"></td>
+			value="<?php echo (! empty($dolibarr_main_db_name))?$dolibarr_main_db_name:($force_install_database?$force_install_database:'dolibarr'); ?>"></td>
 		<td class="comment"><?php echo $langs->trans("DatabaseName"); ?></td>
 	</tr>
 
@@ -404,10 +403,16 @@ if (! empty($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == 'on') {   // Enabled if t
 		<td class="label" valign="top"><?php echo $langs->trans("Login"); ?></td>
 		<td class="label" valign="top"><input type="text" id="db_user_root" name="db_user_root" class="needroot"
 			value="<?php print (! empty($db_user_root))?$db_user_root:$force_install_databaserootlogin; ?>"></td>
-		<td class="label">
-		<div class="comment"><?php echo $langs->trans("DatabaseRootLoginDescription"); ?>
-		</div>
+		<td class="comment">
+		<?php echo $langs->trans("DatabaseRootLoginDescription"); ?>
+		<!--
+		<?php echo '<br>'.$langs->trans("Examples").':<br>' ?>
+		<ul>
+			<li>root (Mysql)</li>
+			<li>postgres (PostgreSql)</li>
+		</ul>
 		</td>
+		 -->
 	</tr>
 
 	<tr>
@@ -415,9 +420,8 @@ if (! empty($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == 'on') {   // Enabled if t
 		</td>
 		<td class="label" valign="top"><input type="password" id="db_pass_root" name="db_pass_root" class="needroot"
 			value="<?php print (! empty($db_pass_root))?$db_pass_root:$force_install_databaserootpass; ?>"></td>
-		<td class="label">
-		<div class="comment"><?php echo $langs->trans("KeepEmptyIfNoPassword"); ?>
-		</div>
+		<td class="comment">
+		<?php echo $langs->trans("KeepEmptyIfNoPassword"); ?>
 		</td>
 	</tr>
 

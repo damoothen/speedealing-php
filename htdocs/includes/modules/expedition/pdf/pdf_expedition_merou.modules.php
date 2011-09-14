@@ -22,7 +22,6 @@
  *	\file       htdocs/includes/modules/expedition/pdf/pdf_expedition_merou.modules.php
  *	\ingroup    expedition
  *	\brief      Fichier de la classe permettant de generer les bordereaux envoi au modele Merou
- *	\version    $Id: pdf_expedition_merou.modules.php,v 1.85 2011/07/31 23:28:13 eldy Exp $
  */
 
 require_once DOL_DOCUMENT_ROOT."/includes/modules/expedition/pdf/ModelePdfExpedition.class.php";
@@ -41,8 +40,9 @@ Class pdf_expedition_merou extends ModelePdfExpedition
 
 
 	/**
-	 *	\brief  Constructor
-	 *	\param	db		Database handler
+	 *	Constructor
+	 *
+	 *  @param		DoliDB		$DB      Database handler
 	 */
 	function pdf_expedition_merou($db=0)
 	{
@@ -54,9 +54,14 @@ Class pdf_expedition_merou extends ModelePdfExpedition
 		$this->description = $langs->trans("DocumentModelMerou");
 
 		$this->type = 'pdf';
-		$this->page_largeur = 148.5;
-		$this->page_hauteur = 210;
+		$formatarray=pdf_getFormat();
+		$this->page_largeur = $formatarray['width'];
+		$this->page_hauteur = round($formatarray['height']/2);
 		$this->format = array($this->page_largeur,$this->page_hauteur);
+		$this->marge_gauche=10;
+		$this->marge_droite=10;
+		$this->marge_haute=10;
+		$this->marge_basse=10;
 
 		$this->option_logo = 1;                    // Affiche logo
 
@@ -81,7 +86,7 @@ Class pdf_expedition_merou extends ModelePdfExpedition
 
 		if (! is_object($outputlangs)) $outputlangs=$langs;
 		// For backward compatibility with FPDF, force output charset to ISO, because FPDF expect text to be encoded in ISO
-		if (!class_exists('TCPDF')) $outputlangs->charset_output='ISO-8859-1';
+		if (! empty($conf->global->MAIN_USE_FPDF)) $outputlangs->charset_output='ISO-8859-1';
 
 		$outputlangs->load("main");
 		$outputlangs->load("dict");
@@ -162,7 +167,7 @@ Class pdf_expedition_merou extends ModelePdfExpedition
 				$pdf->SetKeyWords($outputlangs->convToOutputCharset($object->ref)." ".$outputlangs->transnoentities("Sending"));
 				if ($conf->global->MAIN_DISABLE_PDF_COMPRESSION) $pdf->SetCompression(false);
 
-				$pdf->SetMargins(10, 10, 10);
+				$pdf->SetMargins($this->marge_gauche, $this->marge_haute, $this->marge_droite);   // Left, Top, Right
 				$pdf->SetAutoPageBreak(1,0);
 
 				$pdf->SetFont('','', $default_font_size - 3);
@@ -170,18 +175,18 @@ Class pdf_expedition_merou extends ModelePdfExpedition
 				// New page
 				$pdf->AddPage();
 				$pagenb++;
-				$this->_pagehead($pdf, $this->expe, $outputlangs);
+				$this->_pagehead($pdf, $this->expe, 1, $outputlangs);
 				$pdf->SetFont('','', $default_font_size - 3);
 				$pdf->MultiCell(0, 3, '');		// Set interline to 3
 				$pdf->SetTextColor(0,0,0);
 
 				//Initialisation des coordonnees
 				$tab_top = 53;
-				$tab_height = 70;
+				$tab_height = $this->page_hauteur - 78;
 				$pdf->SetFillColor(240,240,240);
 				$pdf->SetTextColor(0,0,0);
 				$pdf->SetFont('','',  $default_font_size - 3);
-				$pdf->SetXY (10, $tab_top + 5 );
+				$pdf->SetXY(10, $tab_top + 5);
 				$iniY = $pdf->GetY();
 				$curY = $pdf->GetY();
 				$nexY = $pdf->GetY();
@@ -230,7 +235,7 @@ Class pdf_expedition_merou extends ModelePdfExpedition
 						// New page
 						$pdf->AddPage();
 						$pagenb++;
-						$this->_pagehead($pdf, $this->expe, $outputlangs);
+						$this->_pagehead($pdf, $this->expe, 0, $outputlangs);
 						$pdf->MultiCell(0, 3, '');		// Set interline to 3
 						$pdf->SetTextColor(0,0,0);
 						$pdf->SetFont('','', $default_font_size - 3);
@@ -295,10 +300,11 @@ Class pdf_expedition_merou extends ModelePdfExpedition
 	}
 
 	/**
-	 *   	\brief      Show footer of page
-	 *   	\param      pdf     		PDF factory
-	 * 		\param		object			Object invoice
-	 *      \param      outputlangs		Object lang for output
+	 *   	Show footer of page
+	 *
+	 *   	@param      pdf     		PDF factory
+	 * 		@param		object			Object invoice
+	 *      @param      outputlangs		Object lang for output
 	 */
 	function _pagefoot(&$pdf, $object, $outputlangs)
 	{
@@ -321,13 +327,14 @@ Class pdf_expedition_merou extends ModelePdfExpedition
 
 
 	/**
-	 *   	\brief      Show header of page
-	 *      \param      pdf             Object PDF
-	 *      \param      object          Object invoice
-	 *      \param      showadress      0=no, 1=yes
-	 *      \param      outputlang		Object lang for output
+	 *   	Show header of page
+	 *
+	 *      @param      pdf             Object PDF
+	 *      @param      object          Object invoice
+	 *      @param      showaddress     0=no, 1=yes
+	 *      @param      outputlang		Object lang for output
 	 */
-	function _pagehead(&$pdf, $object, $outputlangs)
+	function _pagehead(&$pdf, $object, $showaddress=1, $outputlangs)
 	{
 		global $conf, $langs;
 
@@ -340,6 +347,9 @@ Class pdf_expedition_merou extends ModelePdfExpedition
 		{
             pdf_watermark($pdf,$outputlangs,$this->page_hauteur,$this->page_largeur,'mm',$conf->global->SENDING_DRAFT_WATERMARK);
 		}
+
+        $posy=$this->marge_haute;
+        $posx=$this->page_largeur-$this->marge_droite-100;
 
 		$Xoff = 90;
 		$Yoff = 0;

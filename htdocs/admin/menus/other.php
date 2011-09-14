@@ -19,7 +19,6 @@
  *	    \file       htdocs/admin/menus/other.php
  *      \ingroup    core
  *      \brief      Menus options setup
- *		\version    $Id: other.php,v 1.6 2011/07/31 22:23:15 eldy Exp $
  */
 
 require("../../main.inc.php");
@@ -103,23 +102,23 @@ print '<td colspan="3">'.$langs->trans("Parameters").'</td>';
 print '<td align="center" width="80">'.$langs->trans("Status").'</td>';
 print '</tr>';
 
-// hide unauthorized menu
+// Hide unauthorized menu
 $var=!$var;
 print "<tr ".$bc[$var].">";
 print '<td colspan="3">'.$langs->trans("HideUnauthorizedMenu").'</td>';
 print '<td align="center">';
 if ($conf->global->MAIN_MENU_HIDE_UNAUTHORIZED == 0)
 {
-	print '<a href="'.$_SERVER["PHP_SELF"].'?action=activate_hidemenu">'.img_picto($langs->trans("Disabled"),'off').'</a>';
+	print '<a href="'.$_SERVER["PHP_SELF"].'?action=activate_hidemenu">'.img_picto($langs->trans("Disabled"),'switch_off').'</a>';
 }
 if($conf->global->MAIN_MENU_HIDE_UNAUTHORIZED == 1)
 {
-	print '<a href="'.$_SERVER["PHP_SELF"].'?action=disable_hidemenu">'.img_picto($langs->trans("Enabled"),'on').'</a>';
+	print '<a href="'.$_SERVER["PHP_SELF"].'?action=disable_hidemenu">'.img_picto($langs->trans("Enabled"),'switch_on').'</a>';
 }
 print "</td>";
 print '</tr>';
 
-// hide unauthorized menu
+// Use a flip-hide menu
 if ($conf->global->MAIN_FEATURES_LEVEL > 0)
 {
 	$var=!$var;
@@ -128,11 +127,11 @@ if ($conf->global->MAIN_FEATURES_LEVEL > 0)
 	print '<td align="center">';
 	if ($conf->global->MAIN_MENU_USE_JQUERY_LAYOUT == 0)
 	{
-		print '<a href="'.$_SERVER["PHP_SELF"].'?action=activate_layoutmenu">'.img_picto($langs->trans("Disabled"),'off').'</a>';
+		print '<a href="'.$_SERVER["PHP_SELF"].'?action=activate_layoutmenu">'.img_picto($langs->trans("Disabled"),'switch_off').'</a>';
 	}
 	if($conf->global->MAIN_MENU_USE_JQUERY_LAYOUT == 1)
 	{
-		print '<a href="'.$_SERVER["PHP_SELF"].'?action=disable_layoutmenu">'.img_picto($langs->trans("Enabled"),'on').'</a>';
+		print '<a href="'.$_SERVER["PHP_SELF"].'?action=disable_layoutmenu">'.img_picto($langs->trans("Enabled"),'switch_on').'</a>';
 	}
 	print "</td>";
 	print '</tr>';
@@ -142,5 +141,5 @@ print '</table>';
 
 $db->close();
 
-llxFooter('$Date: 2011/07/31 22:23:15 $ - $Revision: 1.6 $');
+llxFooter();
 ?>

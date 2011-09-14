@@ -21,7 +21,6 @@
  *       \file       htdocs/compta/facture/class/facturestats.class.php
  *       \ingroup    factures
  *       \brief      Fichier de la classe de gestion des stats des factures
- *       \version    $Id: facturestats.class.php,v 1.7 2011/08/03 00:46:25 eldy Exp $
  */
 include_once DOL_DOCUMENT_ROOT . "/core/class/stats.class.php";
 include_once DOL_DOCUMENT_ROOT . "/compta/facture/class/facture.class.php";
@@ -46,13 +45,13 @@ class FactureStats extends Stats
 
 
 	/**
-	 * Constructor
-	 *
-	 * @param 	$DB		   Database handler
-	 * @param 	$socid	   Id third party
-	 * @param 	$mode	   Option
-     * @param   $userid    Id user for filter
-	 * @return FactureStats
+     * 	Constructor
+     *
+	 * 	@param	DoliDB		$DB			Database handler
+	 * 	@param 	int			$socid		Id third party
+	 * 	@param 	string		$mode	   	Option
+     * 	@param	int			$userid    	Id user for filter
+	 * 	@return FactureStats
 	 */
 	function FactureStats($DB, $socid=0, $mode, $userid=0)
 	{

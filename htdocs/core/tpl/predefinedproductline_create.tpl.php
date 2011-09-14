@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- * $Id: predefinedproductline_create.tpl.php,v 1.16 2011/08/10 22:47:33 eldy Exp $
  *
  * Need to have following variables defined:
  * $conf
@@ -51,18 +50,13 @@
 <tr <?php echo $bcnd[$var]; ?>>
 	<td colspan="3">
 	<?php
-	// multiprix
-	if($conf->global->PRODUIT_MULTIPRICES)
-	$html->select_produits('','idprod','',$conf->product->limit_size,$buyer->price_level);
-	else
-	$html->select_produits('','idprod','',$conf->product->limit_size);
 
-	if (! $conf->global->PRODUIT_USE_SEARCH_TO_SELECT) echo '<br>';
+	$html->select_produits('','idprod','',$conf->product->limit_size,$buyer->price_level);
 
 	if (is_object($hookmanager))
 	{
-        $parameters=array();
-	    $hookmanager->executeHooks('formCreateProductOptions',$parameters,$object,$action);
+        $parameters=array('fk_parent_line'=>$_POST["fk_parent_line"]);
+	    echo $hookmanager->executeHooks('formCreateProductOptions',$parameters,$object,$action);
 	}
 
 	// Editor wysiwyg

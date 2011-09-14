@@ -23,7 +23,6 @@
  *       \file       htdocs/contrat/document.php
  *       \ingroup    contrat
  *       \brief      Page des documents joints sur les contrats
- *       \version    $Id: document.php,v 1.25 2011/07/31 23:46:55 eldy Exp $
  */
 
 require ("../main.inc.php");
@@ -110,7 +109,7 @@ llxHeader("","",$langs->trans("CardProduct".$product->type));
 
 if ($contrat->id)
 {
-    $soc = new Societe($db, $contrat->societe->id);
+    $soc = new Societe($db);
     $soc->fetch($contrat->societe->id);
 
 	if ( $error_msg )
@@ -172,5 +171,5 @@ else
 
 $db->close();
 
-llxFooter('$Date: 2011/07/31 23:46:55 $ - $Revision: 1.25 $');
+llxFooter();
 ?>

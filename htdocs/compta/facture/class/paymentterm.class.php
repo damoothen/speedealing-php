@@ -1,5 +1,5 @@
 <?php
-/* Copyright (C) 2007-2008 Laurent Destailleur  <eldy@users.sourceforge.net>
+/* Copyright (C) 2007-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,15 +19,8 @@
  *      \file       compta/facture/class/paymentterm.class.php
  *      \ingroup    facture
  *      \brief      This file is an example for a CRUD class file (Create/Read/Update/Delete)
- *		\version    $Id: paymentterm.class.php,v 1.5 2011/08/03 00:46:25 eldy Exp $
  *		\author		Put author name here
- *		\remarks	Initialy built by build_class_from_table on 2010-09-06 00:33
  */
-
-// Put here all includes required by your class file
-//require_once(DOL_DOCUMENT_ROOT."/core/class/commonobject.class.php");
-//require_once(DOL_DOCUMENT_ROOT."/societe/class/societe.class.php");
-//require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
 
 
 /**
@@ -58,8 +51,9 @@ class PaymentTerm // extends CommonObject
 
 
     /**
-     *      \brief      Constructor
-     *      \param      DB      Database handler
+     * 	Constructor
+     *
+	 * 	@param	DoliDB		$DB			Database handler
      */
     function PaymentTerm($DB)
     {
@@ -69,10 +63,11 @@ class PaymentTerm // extends CommonObject
 
 
     /**
-     *      \brief      Create in database
-     *      \param      user        	User that create
-     *      \param      notrigger	    0=launch triggers after, 1=disable triggers
-     *      \return     int         	<0 if KO, Id of created object if OK
+     *      Create in database
+     *
+     *      @param      User	$user        	User that create
+     *      @param      int		$notrigger	    0=launch triggers after, 1=disable triggers
+     *      @return     int       			  	<0 if KO, Id of created object if OK
      */
     function create($user, $notrigger=0)
     {
@@ -168,9 +163,10 @@ class PaymentTerm // extends CommonObject
 
 
     /**
-     *    \brief      Load object in memory from database
-     *    \param      id          id object
-     *    \return     int         <0 if KO, >0 if OK
+     *    Load object in memory from database
+     *
+     *    @param      int		$id     Id object
+     *    @return     int         		<0 if KO, >0 if OK
      */
     function fetch($id)
     {
@@ -227,6 +223,7 @@ class PaymentTerm // extends CommonObject
 
     /**
      *    Return id of default payment term
+     *
      *    @return     int         <0 if KO, >0 if OK
      */
     function getDefaultId()
@@ -262,10 +259,11 @@ class PaymentTerm // extends CommonObject
 
 
 	/**
-     *      \brief      Update database
-     *      \param      user        	User that modify
-     *      \param      notrigger	    0=launch triggers after, 1=disable triggers
-     *      \return     int         	<0 if KO, >0 if OK
+     *      Update database
+     *
+     *      @param      User	$user        	User that modify
+     *      @param      int		$notrigger	    0=launch triggers after, 1=disable triggers
+     *      @return     int       			  	<0 if KO, >0 if OK
      */
     function update($user=0, $notrigger=0)
     {
@@ -345,10 +343,11 @@ class PaymentTerm // extends CommonObject
 
 
  	/**
-	 *   \brief      Delete object in database
-     *	\param      user        	User that delete
-     *   \param      notrigger	    0=launch triggers after, 1=disable triggers
-	 *	\return		int				<0 if KO, >0 if OK
+	 *  Delete object in database
+	 *
+     *	@param      User	$user  		User that delete
+     *  @param      int		$notrigger	0=launch triggers after, 1=disable triggers
+	 *	@return		int					<0 if KO, >0 if OK
 	 */
 	function delete($user, $notrigger=0)
 	{
@@ -401,9 +400,10 @@ class PaymentTerm // extends CommonObject
 
 
 	/**
-	 *		\brief      Load an object from its id and create a new one in database
-	 *		\param      fromid     		Id of object to clone
-	 * 	 	\return		int				New id of clone
+	 *		Load an object from its id and create a new one in database
+	 *
+	 *		@param      int		$fromid     Id of object to clone
+	 * 	 	@return		int					New id of clone
 	 */
 	function createFromClone($fromid)
 	{
@@ -455,8 +455,10 @@ class PaymentTerm // extends CommonObject
 
 
 	/**
-	 *		\brief		Initialise object with example values
-	 *		\remarks	id must be 0 if object instance is a specimen.
+	 *	Initialise object with example values
+	 *	id must be 0 if object instance is a specimen
+	 *
+	 *	@return	void
 	 */
 	function initAsSpecimen()
 	{
@@ -470,8 +472,6 @@ class PaymentTerm // extends CommonObject
 		$this->fdm='';
 		$this->nbjour='';
 		$this->decalage='';
-
-
 	}
 
 }

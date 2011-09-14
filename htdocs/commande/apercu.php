@@ -22,7 +22,6 @@
  *		\file		htdocs/commande/apercu.php
  *		\ingroup	commande
  *		\brief		Page de l'onglet apercu d'une commande
- *		\version	$Id: apercu.php,v 1.52 2011/07/31 22:08:25 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -66,7 +65,7 @@ if ($id > 0 || ! empty($ref))
 
 	if ($object->fetch($id,$ref) > 0)
 	{
-		$soc = new Societe($db, $object->socid);
+		$soc = new Societe($db);
 		$soc->fetch($object->socid);
 
 
@@ -226,5 +225,5 @@ print '</div>';
 
 $db->close();
 
-llxFooter('$Date: 2011/07/31 22:08:25 $ - $Revision: 1.52 $');
+llxFooter();
 ?>

@@ -21,7 +21,6 @@
  *	\file       htdocs/projet/tasks/contact.php
  *	\ingroup    project
  *	\brief      Actors of a task
- *	\version    $Id: contact.php,v 1.22 2011/07/31 23:23:36 eldy Exp $
  */
 
 require ("../../main.inc.php");
@@ -78,31 +77,6 @@ if ($_POST["action"] == 'addcontact' && $user->rights->projet->creer)
 		}
 	}
 }
-// modification d'un contact. On enregistre le type
-if ($_POST["action"] == 'updateline' && $user->rights->projet->creer)
-{
-	$task = new Task($db);
-	if ($task->fetch($taskid))
-	{
-		$contact = $task->detail_contact($_POST["elrowid"]);
-		$type = $_POST["type"];
-		$statut = $contact->statut;
-
-		$result = $task->update_contact($_POST["elrowid"], $statut, $type);
-		if ($result >= 0)
-		{
-			$db->commit();
-		} else
-		{
-			dol_print_error($db, "result=$result");
-			$db->rollback();
-		}
-	}
-	else
-	{
-		dol_print_error($db);
-	}
-}
 
 // bascule du statut d'un contact
 if ($_GET["action"] == 'swapstatut' && $user->rights->projet->creer)
@@ -110,19 +84,7 @@ if ($_GET["action"] == 'swapstatut' && $user->rights->projet->creer)
 	$task = new Task($db);
 	if ($task->fetch($taskid))
 	{
-		$contact = $task->detail_contact($_GET["ligne"]);
-		$id_type_contact = $contact->fk_c_type_contact;
-		$statut = ($contact->statut == 4) ? 5 : 4;
-
-		$result = $task->update_contact($_GET["ligne"], $statut, $id_type_contact);
-		if ($result >= 0)
-		{
-			$db->commit();
-		} else
-		{
-			dol_print_error($db, "result=$result");
-			$db->rollback();
-		}
+	    $result=$task->swapContactStatus(GETPOST('ligne'));
 	}
 	else
 	{
@@ -167,7 +129,7 @@ $project = new Project($db);
 /* Mode vue et edition                                                         */
 /*                                                                             */
 /* *************************************************************************** */
-if (isset($mesg)) print $mesg;
+dol_htmloutput_mesg($mesg);
 
 $id = $_GET['id'];
 $ref= $_GET['ref'];
@@ -303,7 +265,7 @@ if ($id > 0 || ! empty($ref))
 				$formcompany->selectTypeContact($task, '', 'type','external','rowid');
 				print '</td>';
 				print '<td align="right" colspan="3" ><input type="submit" class="button" value="'.$langs->trans("Add").'"';
-				if (! $nbofcontacts) print ' disabled="true"';
+				if (! $nbofcontacts) print ' disabled="disabled"';
 				print '></td>';
 				print '</tr>';
 
@@ -416,5 +378,5 @@ if ($id > 0 || ! empty($ref))
 
 $db->close();
 
-llxFooter('$Date: 2011/07/31 23:23:36 $ - $Revision: 1.22 $');
+llxFooter();
 ?>

@@ -22,7 +22,6 @@
  *	\file       htdocs/comm/index.php
  *	\ingroup    commercial
  *	\brief      Home page of commercial area
- *	\version    $Id: index.php,v 1.173 2011/08/08 14:25:44 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -798,5 +797,5 @@ print '</table>';
 $db->close();
 
 
-llxFooter('$Date: 2011/08/08 14:25:44 $ - $Revision: 1.173 $');
+llxFooter();
 ?>

@@ -23,7 +23,6 @@
  *       \file       htdocs/comm/action/class/actioncomm.class.php
  *       \ingroup    commercial
  *       \brief      File of class to manage agenda events (actions)
- *       \version    $Id: actioncomm.class.php,v 1.43 2011/08/03 00:46:20 eldy Exp $
  */
 require_once(DOL_DOCUMENT_ROOT.'/comm/action/class/cactioncomm.class.php');
 require_once(DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php');
@@ -684,10 +683,12 @@ class ActionComm extends CommonObject
 	/**
 	 *    	Renvoie nom clicable (avec eventuellement le picto)
 	 *      Utilise $this->id, $this->code et $this->label
+	 *
 	 * 		@param		withpicto		0=Pas de picto, 1=Inclut le picto dans le lien, 2=Picto seul
 	 *		@param		maxlength		Nombre de caracteres max dans libelle
 	 *		@param		classname		Force style class on a link
 	 * 		@param		option			''=Link to action,'birthday'=Link to contact
+	 * 		@param		overwritepicto	1=Overwrite picto
 	 *		@return		string			Chaine avec URL
 	 */
 	function getNomUrl($withpicto=0,$maxlength=0,$classname='',$option='',$overwritepicto='')
@@ -785,7 +786,7 @@ class ActionComm extends CommonObject
 		}
 
 		// Create dir and define output file (definitive and temporary)
-		$result=create_exdir($conf->agenda->dir_temp);
+		$result=dol_mkdir($conf->agenda->dir_temp);
 		$outputfile=$conf->agenda->dir_temp.'/'.$filename;
 
 		$result=0;

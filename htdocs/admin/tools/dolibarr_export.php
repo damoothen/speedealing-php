@@ -19,7 +19,6 @@
  *		\file 		htdocs/admin/tools/dolibarr_export.php
  *		\ingroup	core
  *		\brief      Page to export database
- *		\version    $Id: dolibarr_export.php,v 1.40 2011/08/03 00:45:43 eldy Exp $
  */
 
 require("../../main.inc.php");
@@ -298,12 +297,12 @@ foreach($compression as $key => $val)
 {
 	if (! $val['function'] || function_exists($val['function']))	// Enabled export format
 	{
-		print '<input type="radio" name="compression" value="'.$key.'" id="'.$val['id'].'" checked="true">';
+		print '<input type="radio" name="compression" value="'.$key.'" id="'.$val['id'].'" checked="checked">';
 		print ' <label for="'.$val['id'].'">'.$val['label'].'</label>';
 	}
 	else	// Disabled export format
 	{
-		print '<input type="radio" name="compression" value="'.$key.'" id="'.$val['id'].'" disabled="true">';
+		print '<input type="radio" name="compression" value="'.$key.'" id="'.$val['id'].'" disabled="disabled">';
 		print ' <label for="'.$val['id'].'">'.$val['label'].'</label>';
 		print ' ('.$langs->trans("NotAvailable").')';
 	}
@@ -331,5 +330,5 @@ $result=$formfile->show_documents('systemtools','backup',$conf->admin->dir_outpu
 
 $db->close();
 
-llxFooter('$Date: 2011/08/03 00:45:43 $ - $Revision: 1.40 $');
+llxFooter();
 ?>

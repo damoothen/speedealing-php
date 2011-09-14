@@ -22,7 +22,6 @@
  *	    \file       htdocs/compta/bank/fiche.php
  *      \ingroup    banque
  *		\brief      Page to create/view a bank account
- *		\version    $Id: fiche.php,v 1.78 2011/07/31 22:23:16 eldy Exp $
  */
 
 require("./pre.inc.php");
@@ -557,7 +556,7 @@ else
         $conciliate=$account->canBeConciliated();
         if ($conciliate == -2) print $langs->trans("No").' ('.$langs->trans("CashAccount").')';
         else if ($conciliate == -3) print $langs->trans("No").' ('.$langs->trans("Closed").')';
-        else print '<input type="checkbox" class="flat" name="norappro"'.($account->rappro?'':' checked="true"').'"> '.$langs->trans("DisableConciliation");
+        else print '<input type="checkbox" class="flat" name="norappro"'.($account->rappro?'':' checked="checked"').'"> '.$langs->trans("DisableConciliation");
         print '</td></tr>';
 
         // Accountancy code
@@ -607,5 +606,5 @@ else
 
 $db->close();
 
-llxFooter('$Date: 2011/07/31 22:23:16 $ - $Revision: 1.78 $');
+llxFooter();
 ?>

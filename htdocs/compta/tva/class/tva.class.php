@@ -17,11 +17,10 @@
  */
 
 /**
-        \file       htdocs/compta/tva/class/tva.class.php
-		\ingroup    tax
-		\version    $Id: tva.class.php,v 1.8 2011/08/03 00:46:39 eldy Exp $
-		\author		Laurent Destailleur
-*/
+ *      \file       htdocs/compta/tva/class/tva.class.php
+ *      \ingroup    tax
+ *      \author		Laurent Destailleur
+ */
 
 // Put here all includes required by your class file
 require_once(DOL_DOCUMENT_ROOT ."/core/class/commonobject.class.php");
@@ -57,8 +56,9 @@ class Tva extends CommonObject
 
 
     /**
-     *      \brief      Constructor
-     *      \param      DB      Database handler
+	 *	Constructor
+	 *
+	 *  @param		DoliDB		$DB      Database handler
      */
     function Tva($DB)
     {
@@ -68,9 +68,10 @@ class Tva extends CommonObject
 
 
     /**
-     *      \brief      Create in database
-     *      \param      user        User that create
-     *      \return     int         <0 si ko, >0 si ok
+     *  Create in database
+     *
+     *  @param      User	$user       User that create
+     *  @return     int      			<0 if KO, >0 if OK
      */
     function create($user)
     {
@@ -512,7 +513,7 @@ class Tva extends CommonObject
         $result = $this->db->query($sql);
         if ($result)
         {
-            $this->id = $this->db->last_insert_id(MAIN_DB_PREFIX."tva");    // \todo devrait s'appeler paiementtva
+            $this->id = $this->db->last_insert_id(MAIN_DB_PREFIX."tva");    // TODO devrait s'appeler paiementtva
             if ($this->id > 0)
             {
                 $ok=1;

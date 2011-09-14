@@ -18,7 +18,6 @@
 /**
  *	\file       htdocs/core/class/cookie.class.php
  *	\ingroup    core
- *	\version	$Id: cookie.class.php,v 1.7 2011/07/31 23:45:13 eldy Exp $
  *	\brief      File of class to manage cookies
  */
 
@@ -40,8 +39,9 @@ class DolCookie
 	var $cookie;
 
 	/**
-	 *      \brief      Constructor
-	 *      \param      key      Personnal key
+	 *  Constructor
+	 *
+	 *  @param      string		$key      Personnal key
 	 */
 	function DolCookie($key = '')
 	{
@@ -54,7 +54,7 @@ class DolCookie
 
 
 	/**
-	 *      \brief      Encrypt en create the cookie
+	 *   Encrypt en create the cookie
 	 */
 	function cryptCookie()
 	{
@@ -75,7 +75,7 @@ class DolCookie
 	}
 
 	/**
-	 *      \brief      Decrypt the cookie
+	 *  Decrypt the cookie
 	 */
 	function decryptCookie()
 	{
@@ -97,9 +97,14 @@ class DolCookie
 	}
 
 	/**
-	 *      \brief  Set and create the cookie
-	 *      \param  cookie  Cookie name
-	 *      \param  value   Cookie value
+	 *   Set and create the cookie
+	 *
+	 *   @param  	string		$cookie  	Cookie name
+	 *   @param  	string		$value   	Cookie value
+	 *   @param		string		$expire		Expiration
+	 *   @param		string		$path		Path of cookie
+	 *   @param		string		$domaine	Domain name
+	 *   @param		int			$secure		0 or 1
 	 */
 	function _setCookie($cookie, $value, $expire=0, $path="/", $domain="", $secure=0)
 	{
@@ -116,10 +121,10 @@ class DolCookie
 	}
 
 	/**
-	 *      \brief   Get the cookie
-	 *      \param   cookie         Cookie name
-	 *      \param   value          Cookie value
-	 *      \return  decryptValue   Decrypted value
+	 *  Get the cookie
+	 *
+	 *  @param   	string		$cookie         Cookie name
+	 *  @return  	string						Decrypted value
 	 */
 	function _getCookie($cookie)
 	{

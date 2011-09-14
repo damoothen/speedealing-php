@@ -21,16 +21,17 @@
  *       \file       htdocs/comm/action/class/cactioncomm.class.php
  *       \ingroup    commercial
  *       \brief      File of class to manage type of agenda events
- *       \version    $Id: cactioncomm.class.php,v 1.6 2011/08/03 00:46:21 eldy Exp $
-*/
+ */
 
 
 /**
  *      \class      CActionComm
  *	    \brief      Class to manage different types of events
  */
-class CActionComm {
-  var $db;
+class CActionComm
+{
+    var $error;
+    var $db;
 
   var $id;
 
@@ -40,32 +41,33 @@ class CActionComm {
   var $active;
   var $priority;
 
-  var $error;
 
-  var $type_actions=array();
+    var $type_actions=array();
 
 
-  /**
-   *    \brief      Constructeur
-   *    \param      DB          Handler d'acces base de donnee
-   */
-  function CActionComm($DB)
+    /**
+     *  Constructor
+     *
+     *  @param	DoliDB		$DB		Database handler
+     */
+    function CActionComm($DB)
     {
-      $this->db = $DB;
+        $this->db = $DB;
     }
 
-  /**
-   *    \brief      Charge l'objet type d'action depuis la base
-   *    \param      id          id ou code du type d'action a recuperer
-   *    \return     int         1=ok, 0=aucune action, -1=erreur
-   */
-	function fetch($id)
+    /**
+     *  Charge l'objet type d'action depuis la base
+     *
+     *  @param      id          id ou code du type d'action a recuperer
+     *  @return     int         1=ok, 0=aucune action, -1=erreur
+     */
+    function fetch($id)
     {
 
         $sql = "SELECT id, code, type, libelle, active, priority ";
         $sql.= " FROM ".MAIN_DB_PREFIX."c_actioncomm";
-		if (is_numeric($id)) $sql.= " WHERE id=".$id;
-		else $sql.= " WHERE code='".$id."'";
+        if (is_numeric($id)) $sql.= " WHERE id=".$id;
+        else $sql.= " WHERE code='".$id."'";
 
         $resql=$this->db->query($sql);
         if ($resql)
@@ -108,8 +110,8 @@ class CActionComm {
 		global $langs,$conf;
 		$langs->load("commercial");
 
-		$repid = array();
-		$repcode = array();
+        $repid = array();
+        $repcode = array();
 
 		$sql = "SELECT id, code, libelle, module";
 		$sql.= " FROM ".MAIN_DB_PREFIX."c_actioncomm";

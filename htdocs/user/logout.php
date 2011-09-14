@@ -21,7 +21,6 @@
 /**
  *      \file       htdocs/user/logout.php
  *      \brief      Page called to disconnect a user
- * 		\version	$Id: logout.php,v 1.49 2011/07/31 23:19:42 eldy Exp $
  */
 
 //if (! defined('NOTOKENRENEWAL')) define('NOTOKENRENEWAL','1'); // Uncomment creates pb to relogon after a disconnect
@@ -73,7 +72,7 @@ dol_syslog("End of session ".$sessionname);
 // Define url to go
 $url=DOL_URL_ROOT."/index.php";		// By default go to login page
 if ($urlfrom) $url=DOL_URL_ROOT.$urlfrom;
-if ($conf->global->MAIN_LOGOUT_GOTO_URL) $url=$conf->global->MAIN_LOGOUT_GOTO_URL;
+if (! empty($conf->global->MAIN_LOGOUT_GOTO_URL)) $url=$conf->global->MAIN_LOGOUT_GOTO_URL;
 
 //print 'url='.$url;exit;
 header("Location: ".$url);

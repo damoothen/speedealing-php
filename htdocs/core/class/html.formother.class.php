@@ -29,7 +29,6 @@
  *	\file       htdocs/core/class/html.formother.class.php
  *  \ingroup    core
  *	\brief      Fichier de la classe des fonctions predefinie de composants html autre
- *	\version	$Id: html.formother.class.php,v 1.18 2011/07/31 23:45:14 eldy Exp $
  */
 
 
@@ -213,7 +212,7 @@ class FormOther
 	 */
 	function select_percent($selected=0,$htmlname='percent',$disabled=0,$increment=5,$start=0,$end=100)
 	{
-		$return = '<select class="flat" name="'.$htmlname.'" '.($disabled?'disabled="true"':'').'>';
+		$return = '<select class="flat" name="'.$htmlname.'" '.($disabled?'disabled="disabled"':'').'>';
 
 		for ($i = $start ; $i <= $end ; $i += $increment)
 		{
@@ -562,6 +561,8 @@ class FormOther
      */
     function select_month($selected='',$htmlname='monthid',$useempty=0)
     {
+        require_once(DOL_DOCUMENT_ROOT."/lib/date.lib.php");
+
         $month = monthArrayOrSelected(-1);	// Get array
 
         $select_month = '<select class="flat" name="'.$htmlname.'">';
@@ -597,7 +598,7 @@ class FormOther
     {
     	print $this->selectyear($selected,$htmlname,$useempty,$min_year,$max_year,$offset,$invert,$option);
     }
-    
+
     /**
      *    	Return HTML combo list of years
      *      @param      selected          Preselected value (''=current year, -1=none, year otherwise)
@@ -609,7 +610,7 @@ class FormOther
 	function selectyear($selected='',$htmlname='yearid',$useempty=0, $min_year=10, $max_year=5, $offset=0, $invert=0, $option='')
     {
     	$out='';
-    	
+
         $currentyear = date("Y")+$offset;
     	$max_year = $currentyear+$max_year;
         $min_year = $currentyear-$min_year;
@@ -640,7 +641,7 @@ class FormOther
 	        }
         }
         $out.= "</select>\n";
-        
+
         return $out;
     }
     
@@ -726,7 +727,7 @@ function PLineSelect(&$inc, $parent, $lines, $level=0, $selectedtask=0, $selecte
 			{
 				if ($lines[$i]->fk_project != $lastprojectid)
 				{
-					if ($i > 0 && $conf->browser->firefox) print '<option value="0" disabled="true">----------</option>';
+					if ($i > 0 && $conf->browser->firefox) print '<option value="0" disabled="disabled">----------</option>';
 					print '<option value="'.$lines[$i]->fk_project.'_0"';
 					if ($selectedproject == $lines[$i]->fk_project) print ' selected="selected"';
 					print '>';	// Project -> Task

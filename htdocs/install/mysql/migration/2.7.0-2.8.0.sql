@@ -1,6 +1,4 @@
 --
--- $Id$
---
 -- Be carefull to requests order.
 -- This file must be loaded by calling /install/index.php page
 -- when current version is 2.7.0 or higher. 
@@ -211,5 +209,3 @@ ALTER TABLE llx_propaldet ADD COLUMN fk_parent_line	integer NULL AFTER fk_propal
 ALTER TABLE llx_commandedet ADD COLUMN fk_parent_line integer NULL AFTER fk_commande;
 ALTER TABLE llx_facturedet ADD COLUMN fk_parent_line integer NULL AFTER fk_facture;
 ALTER TABLE llx_facturedet_rec ADD COLUMN fk_parent_line integer NULL AFTER fk_facture;
-
-

@@ -20,10 +20,6 @@
 /**
  *  \defgroup   fckeditor     Module fckeditor
  *  \brief      Module pour mettre en page les zones de saisie de texte
- *  \version	$Id: modFckeditor.class.php,v 1.21 2011/07/31 23:28:12 eldy Exp $
- */
-
-/**
  *  \file       htdocs/includes/modules/modFckeditor.class.php
  *  \ingroup    fckeditor
  *  \brief      Fichier de description et activation du module Fckeditor
@@ -32,7 +28,7 @@
 include_once(DOL_DOCUMENT_ROOT ."/includes/modules/DolibarrModules.class.php");
 
 
-/** 
+/**
  * 	\class modFckeditor
  *  \brief      Classe de description et activation du module Fckeditor
  */

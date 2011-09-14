@@ -17,17 +17,15 @@
  */
 
 /**
- *      \file       test/phpunit/SecurityTest.php
+ *      \file       test/phpunit/CoreTest.php
  *		\ingroup    test
  *      \brief      PHPUnit test
- *      \version    $Id$
  *		\remarks	To run this script as CLI:  phpunit filename.php
  */
 
 global $conf,$user,$langs,$db;
 //define('TEST_DB_FORCE_TYPE','mysql');	// This is to force using mysql driver
 require_once 'PHPUnit/Framework.php';
-require_once dirname(__FILE__).'/../../htdocs/lib/functions.lib.php';
 
 if (! defined('NOREQUIREUSER'))  define('NOREQUIREUSER','1');
 if (! defined('NOREQUIREDB'))    define('NOREQUIREDB','1');
@@ -176,6 +174,7 @@ class CoreTest extends PHPUnit_Framework_TestCase
 		//$dolibarr_main_url_root_alt='http://localhost/dolibarralias/custom2';
 
 		include dirname(__FILE__).'/../../htdocs/filefunc.inc.php';
+
 		print __METHOD__." DOL_MAIN_URL_ROOT=".DOL_MAIN_URL_ROOT."\n";
 		print __METHOD__." DOL_URL_ROOT=".DOL_URL_ROOT."\n";
         print __METHOD__." DOL_MAIN_URL_ROOT_ALT=".DOL_MAIN_URL_ROOT_ALT."\n";

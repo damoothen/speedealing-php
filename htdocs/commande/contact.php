@@ -21,7 +21,6 @@
  *     \file       htdocs/commande/contact.php
  *     \ingroup    commande
  *     \brief      Onglet de gestion des contacts de commande
- *     \version    $Id: contact.php,v 1.43 2011/07/31 22:23:15 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -75,51 +74,16 @@ if ($_POST["action"] == 'addcontact' && $user->rights->commande->creer)
 		}
 	}
 }
-// modification d'un contact. On enregistre le type
-if ($_POST["action"] == 'updateligne' && $user->rights->commande->creer)
-{
-	$commande = new Commande($db);
-	if ($commande->fetch($_GET["id"]))
-	{
-		$contact = $commande->detail_contact($_POST["elrowid"]);
-		$type = $_POST["type"];
-		$statut = $contact->statut;
-
-		$result = $commande->update_contact($_POST["elrowid"], $statut, $type);
-		if ($result >= 0)
-		{
-			$db->commit();
-		} else
-		{
-			dol_print_error($db, "result=$result");
-			$db->rollback();
-		}
-	} else
-	{
-		dol_print_error($db);
-	}
-}
 
 // bascule du statut d'un contact
 if ($_GET["action"] == 'swapstatut' && $user->rights->commande->creer)
 {
 	$commande = new Commande($db);
-	if ($commande->fetch($_GET["id"]))
+	if ($commande->fetch(GETPOST("id")))
 	{
-		$contact = $commande->detail_contact($_GET["ligne"]);
-		$id_type_contact = $contact->fk_c_type_contact;
-		$statut = ($contact->statut == 4) ? 5 : 4;
-
-		$result = $commande->update_contact($_GET["ligne"], $statut, $id_type_contact);
-		if ($result >= 0)
-		{
-			$db->commit();
-		} else
-		{
-			dol_print_error($db, "result=$result");
-			$db->rollback();
-		}
-	} else
+	    $result=$commande->swapContactStatus(GETPOST('ligne'));
+	}
+	else
 	{
 		dol_print_error($db);
 	}
@@ -160,7 +124,7 @@ $userstatic=new User($db);
 /* Mode vue et edition                                                         */
 /*                                                                             */
 /* *************************************************************************** */
-if (isset($mesg)) print $mesg;
+dol_htmloutput_mesg($mesg);
 
 $id = $_GET['id'];
 $ref= $_GET['ref'];
@@ -170,7 +134,7 @@ if ($id > 0 || ! empty($ref))
 	$commande = new Commande($db);
 	if ( $commande->fetch($_GET['id'],$_GET['ref']) > 0)
 	{
-		$soc = new Societe($db, $commande->socid);
+		$soc = new Societe($db);
 		$soc->fetch($commande->socid);
 
 
@@ -287,7 +251,7 @@ if ($id > 0 || ! empty($ref))
 			$formcompany->selectTypeContact($commande, '', 'type','external');
 			print '</td>';
 			print '<td align="right" colspan="3" ><input type="submit" class="button" value="'.$langs->trans("Add").'"';
-			if (! $nbofcontacts) print ' disabled="true"';
+			if (! $nbofcontacts) print ' disabled="disabled"';
 			print '></td>';
 			print '</tr>';
 
@@ -374,7 +338,7 @@ if ($id > 0 || ! empty($ref))
 				print '</td>';
 
 				// Icon update et delete
-				print '<td align="center" nowrap>';
+				print '<td align="center" nowrap="nowrap" colspan="2">';
 				if ($commande->statut < 5 && $user->rights->commande->creer)
 				{
 					print '&nbsp;';
@@ -400,5 +364,5 @@ if ($id > 0 || ! empty($ref))
 
 $db->close();
 
-llxFooter('$Date: 2011/07/31 22:23:15 $');
+llxFooter();
 ?>

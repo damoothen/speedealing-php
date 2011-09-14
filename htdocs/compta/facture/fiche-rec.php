@@ -21,7 +21,6 @@
  *	\file       htdocs/compta/facture/fiche-rec.php
  *	\ingroup    facture
  *	\brief      Page to show predefined invoice
- *	\version    $Id: fiche-rec.php,v 1.76 2011/08/10 19:55:22 hregis Exp $
  */
 
 require("../../main.inc.php");
@@ -338,7 +337,7 @@ else
 
 		if ($fac->fetch($facid, $user->societe_id) > 0)
 		{
-			$soc = new Societe($db, $fac->socid);
+			$soc = new Societe($db);
 			$soc->fetch($fac->socid);
 			$author = new User($db);
 			$author->fetch($fac->user_author);
@@ -569,5 +568,5 @@ else
 
 $db->close();
 
-llxFooter('$Date: 2011/08/10 19:55:22 $ - $Revision: 1.76 $');
+llxFooter();
 ?>

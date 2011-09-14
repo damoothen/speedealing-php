@@ -19,9 +19,7 @@
 /**
  *  \file       htdocs/core/class/menubase.class.php
  *  \ingroup    core
- *  \version	$Id: menubase.class.php,v 1.28 2011/07/31 23:45:14 eldy Exp $
  *  \brief      File of class to manage dynamic menu entries
- *  \remarks	Initialy built by build_class_from_table on 2008-01-12 14:19
  */
 
 
@@ -58,10 +56,11 @@ class Menubase
 
 
     /**
-     *      Constructor
-     *      @param     DB      Database handler
-     *      @param     menu_handler
-     *      @param     type
+	 *	Constructor
+	 *
+	 *  @param		DoliDB		$DB      Database handler
+     *  @param     	string		$menu_handler
+     *  @param     	string		$type
      */
     function Menubase($DB,$menu_handler='',$type='')
     {
@@ -74,8 +73,9 @@ class Menubase
 
     /**
      *      Create menu entry into database
-     *      @param      user        User that create
-     *      @return     int         <0 if KO, Id of record if OK
+     *
+     *      @param      User	$user       User that create
+     *      @return     int      			<0 if KO, Id of record if OK
      */
     function create($user=0)
     {

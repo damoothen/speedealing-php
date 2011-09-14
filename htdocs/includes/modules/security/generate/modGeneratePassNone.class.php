@@ -20,7 +20,6 @@
  *      \file       htdocs/includes/modules/security/generate/modGeneratePassNone.class.php
  *      \ingroup    core
  *      \brief      File to manage no password generation.
- *		\version	$Id: modGeneratePassNone.class.php,v 1.7 2011/07/31 23:28:16 eldy Exp $
  */
 
 require_once(DOL_DOCUMENT_ROOT ."/includes/modules/security/generate/modules_genpassword.php");
@@ -42,11 +41,12 @@ class modGeneratePassNone extends ModeleGenPassword
 
 
 	/**
-	 *		\brief      Constructor
-	 *		\param		db			Database handler
-	 *		\param		conf		Handler de conf
-	 *		\param		lang		Handler de langue
-	 *		\param		user		Handler du user connecte
+	 *	Constructor
+	 *
+	 *  @param		DoliDB		$DB      Database handler
+	 *	@param		conf		Handler de conf
+	 *	@param		lang		Handler de langue
+	 *	@param		user		Handler du user connecte
 	 */
 	function modGeneratePassNone($db, $conf, $langs, $user)
 	{

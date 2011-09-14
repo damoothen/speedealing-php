@@ -24,7 +24,6 @@
  *       \file       htdocs/fichinter/document.php
  *       \ingroup    fichinter
  *       \brief      Page des documents joints sur les contrats
- *       \version    $Id: document.php,v 1.22 2011/07/31 23:50:54 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -112,7 +111,7 @@ if ($object->id)
 {
 	$object->fetch_thirdparty();
 
-    $soc = new Societe($db, $object->societe->id);
+    $soc = new Societe($db);
     $soc->fetch($object->societe->id);
 
 	if ( $error_msg )
@@ -173,5 +172,5 @@ else
 
 $db->close();
 
-llxFooter('$Date: 2011/07/31 23:50:54 $ - $Revision: 1.22 $');
+llxFooter();
 ?>

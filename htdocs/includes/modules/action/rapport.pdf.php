@@ -23,10 +23,8 @@
  *	\file       htdocs/includes/modules/action/rapport.pdf.php
  *	\ingroup    commercial
  *	\brief      File to build PDF with events
- *	\version    $Id: rapport.pdf.php,v 1.36 2011/08/10 23:21:13 eldy Exp $
  */
 
-require_once(FPDFI_PATH.'fpdi_protection.php');
 require_once(DOL_DOCUMENT_ROOT.'/lib/pdf.lib.php');
 require_once(DOL_DOCUMENT_ROOT.'/lib/date.lib.php');
 require_once(DOL_DOCUMENT_ROOT."/lib/company.lib.php");
@@ -59,8 +57,9 @@ class CommActionRapport
 
 		// Dimension page pour format A4
 		$this->type = 'pdf';
-		$this->page_largeur = 210;
-		$this->page_hauteur = 297;
+		$formatarray=pdf_getFormat();
+		$this->page_largeur = $formatarray['width'];
+		$this->page_hauteur = $formatarray['height'];
 		$this->format = array($this->page_largeur,$this->page_hauteur);
 		$this->marge_gauche=5;
 		$this->marge_droite=5;
@@ -84,7 +83,7 @@ class CommActionRapport
 
 		if (! is_object($outputlangs)) $outputlangs=$langs;
 		// For backward compatibility with FPDF, force output charset to ISO, because FPDF expect text to be encoded in ISO
-		if (!class_exists('TCPDF')) $outputlangs->charset_output='ISO-8859-1';
+		if (! empty($conf->global->MAIN_USE_FPDF)) $outputlangs->charset_output='ISO-8859-1';
 
 		$outputlangs->load("main");
 		$outputlangs->load("dict");
@@ -226,10 +225,11 @@ class CommActionRapport
 	}
 
 	/**
-	 *      \brief      Affiche en-tete facture
-	 *      \param      pdf             Objet PDF
-	 *      \param      outputlang		Objet lang cible
-	 * 		\param		pagenb			Page nb
+	 *      Show page head
+	 *
+	 *      @param      pdf             Objet PDF
+	 *      @param      outputlangs		Objet lang cible
+	 * 		@param		pagenb			Page nb
 	 */
 	function _pagehead(&$pdf, $outputlangs, $pagenb)
 	{

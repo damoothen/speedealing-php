@@ -23,10 +23,6 @@
 /**
  *		\defgroup   commande     Module orders
  *		\brief      Module pour gerer le suivi des commandes
- *		\version	$Id: modCommande.class.php,v 1.81 2011/07/31 23:28:11 eldy Exp $
- */
-
-/**
  *		\file       htdocs/includes/modules/modCommande.class.php
  *		\ingroup    commande
  *		\brief      Fichier de description et activation du module Commande

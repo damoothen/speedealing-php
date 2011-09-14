@@ -20,7 +20,6 @@
 /**
  *  \file       htdocs/admin/system/index.php
  *  \brief      Home page of system information
- *  \version    $Id: index.php,v 1.49 2011/07/31 22:23:14 eldy Exp $
  */
 
 require("../../main.inc.php");
@@ -101,9 +100,9 @@ if ($db->type == 'pgsql')
 	if ($paramarray['standard_conforming_strings'] != 'on' && $paramarray['standard_conforming_strings'] != 1)
 	{
 		$langs->load("errors");
-		print '<div class="error">'.$langs->trans("ErrorDatabaseParameterWrong",'standard_conforming_strings','on').'</div>';
+		//print '<div class="error">'.$langs->trans("ErrorDatabaseParameterWrong",'standard_conforming_strings','on').'</div>';
 	}
-	// Check option standard_conforming_strings is on
+	// Check option backslash_quote is on
 	/*$paramarray=$db->getServerParametersValues('backslash_quote');
 	if ($paramarray['backslash_quote'] != 'on' && $paramarray['backslash_quote'] != 1)
 	{
@@ -126,5 +125,5 @@ print '<br>';
 print info_admin($langs->trans("SystemInfoDesc")).'<br>';
 
 
-llxFooter('$Date: 2011/07/31 22:23:14 $ - $Revision: 1.49 $');
+llxFooter();
 ?>

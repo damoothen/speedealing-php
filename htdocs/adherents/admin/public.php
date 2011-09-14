@@ -1,7 +1,8 @@
 <?php
 /* Copyright (C) 2001-2002 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2006-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
- *
+ * Copyright (C) 2011 	   Juanjo Menent		<jmenent@2byte.es>
+ * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -21,7 +22,6 @@
  *		\ingroup    member
  *		\brief      File of main public page for member module
  *		\author	    Laurent Destailleur
- *		\version    $Id: public.php,v 1.3 2011/08/03 00:45:42 eldy Exp $
  */
 
 require("../../main.inc.php");
@@ -41,14 +41,22 @@ $action=GETPOST('action');
 
 if ($action == 'update')
 {
-    $i=0;
-    $i+=dolibarr_set_const($db, "MEMBER_ENABLE_PUBLIC",$_POST["MEMBER_ENABLE_PUBLIC"],'chaine',0,'',$conf->entity);
-    $i+=dolibarr_set_const($db, "MEMBER_NEWFORM_AMOUNT",$_POST["MEMBER_NEWFORM_AMOUNT"],'chaine',0,'',$conf->entity);
-    $i+=dolibarr_set_const($db, "MEMBER_NEWFORM_EDITAMOUNT",$_POST["MEMBER_NEWFORM_EDITAMOUNT"],'chaine',0,'',$conf->entity);
-    $i+=dolibarr_set_const($db, "MEMBER_NEWFORM_PAYONLINE",$_POST["MEMBER_NEWFORM_PAYONLINE"],'chaine',0,'',$conf->entity);
-    if ($i == 4) $mesg=$langs->trans("RecordModifiedSuccessfully");
-}
+    $res=dolibarr_set_const($db, "MEMBER_ENABLE_PUBLIC",$_POST["MEMBER_ENABLE_PUBLIC"],'chaine',0,'',$conf->entity);
+    $res=dolibarr_set_const($db, "MEMBER_NEWFORM_AMOUNT",$_POST["MEMBER_NEWFORM_AMOUNT"],'chaine',0,'',$conf->entity);
+    $res=dolibarr_set_const($db, "MEMBER_NEWFORM_EDITAMOUNT",$_POST["MEMBER_NEWFORM_EDITAMOUNT"],'chaine',0,'',$conf->entity);
+    $res=dolibarr_set_const($db, "MEMBER_NEWFORM_PAYONLINE",$_POST["MEMBER_NEWFORM_PAYONLINE"],'chaine',0,'',$conf->entity);
+    
+    if (! $res > 0) $error++;
 
+ 	if (! $error)
+    {
+        $mesg = "<font class=\"ok\">".$langs->trans("SetupSaved")."</font>";
+    }
+    else
+    {
+        $mesg = "<font class=\"error\">".$langs->trans("Error")."</font>";
+    }
+}
 
 
 /*
@@ -186,5 +194,5 @@ print '</table>';
 
 $db->close();
 
-llxFooter('$Date: 2011/08/03 00:45:42 $ - $Revision: 1.3 $');
+llxFooter();
 ?>

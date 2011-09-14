@@ -20,9 +20,7 @@
  *  \file       htdocs/ecm/class/ecmdirectory.class.php
  *  \ingroup    ecm
  *  \brief      This file is an example for a class file
- *  \version    $Id: ecmdirectory.class.php,v 1.13 2011/07/31 23:50:54 eldy Exp $
  *  \author		Laurent Destailleur
- *  \remarks	Initialy built by build_class_from_table on 2008-02-24 19:24
  */
 
 /**
@@ -54,8 +52,9 @@ class EcmDirectory // extends CommonObject
 
 
 	/**
-	 *      \brief      Constructor
-	 *      \param      DB      Database handler
+	 *	Constructor
+	 *
+	 *  @param		DoliDB		$DB      Database handler
 	 */
 	function EcmDirectory($DB)
 	{
@@ -65,9 +64,10 @@ class EcmDirectory // extends CommonObject
 
 
 	/**
-	 *      Create record into database
-	 *      @param      user        User that create
-	 *      @return     int         <0 if KO, >0 if OK
+	 *  Create record into database
+	 *
+	 *  @param      User	$user       User that create
+	 *  @return     int      			<0 if KO, >0 if OK
 	 */
 	function create($user)
 	{

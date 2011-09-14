@@ -20,7 +20,6 @@
  *      \file       htdocs/imports/import.php
  *      \ingroup    import
  *      \brief      Pages of import Wizard
- *      \version    $Id: import.php,v 1.69 2011/07/31 23:46:39 eldy Exp $
  */
 
 require_once("../main.inc.php");
@@ -1183,7 +1182,7 @@ if ($step == 5 && $datatoimport)
 	print $langs->trans("Option");
 	print '</td><td>';
 	print '<input type="checkbox" name="excludefirstline" value="1"';
-	print ($excludefirstline?' checked="true"':'');
+	print ($excludefirstline?' checked="checked"':'');
 	print ' onClick="javascript: window.location=\''.$_SERVER["PHP_SELF"].'?leftmenu=import&excludefirstline='.($excludefirstline?'0':'1').'&step=5'.$param2.'\';">';
 	print ' '.$langs->trans("DoNotImportFirstLine");
 	print '</td></tr>';
@@ -1326,7 +1325,7 @@ if ($step == 5 && $datatoimport)
         $db->rollback();    // We force rollback because this was just a simulation.
 
         // Show OK
-        if (! sizeof($arrayoferrors) && ! sizeof($arrayofwarnings)) print img_tick().' <b>'.$langs->trans("NoError").'</b><br><br>';
+        if (! sizeof($arrayoferrors) && ! sizeof($arrayofwarnings)) print img_picto($langs->trans("OK"),'tick').' <b>'.$langs->trans("NoError").'</b><br><br>';
         else print $langs->trans("NbOfLinesOK",$nbok).'</b><br><br>';
 
         // Show Errors
@@ -1532,8 +1531,8 @@ if ($step == 6 && $datatoimport)
 	print '<tr><td>';
 	print $langs->trans("Option");
 	print '</td><td>';
-	print '<input type="checkbox" name="excludefirstline" value="1" disabled="true"';
-	print ($excludefirstline?' checked="true"':'');
+	print '<input type="checkbox" name="excludefirstline" value="1" disabled="disabled"';
+	print ($excludefirstline?' checked="checked"':'');
 	print '>';
 	print ' '.$langs->trans("DoNotImportFirstLine");
 	print '</td></tr>';
@@ -1668,7 +1667,7 @@ print '<br>';
 
 $db->close();
 
-llxFooter('$Date: 2011/07/31 23:46:39 $ - $Revision: 1.69 $');
+llxFooter();
 
 
 /*
@@ -1707,7 +1706,6 @@ function show_elem($fieldssource,$i,$pos,$key,$var,$nostyle='')
 	else	// Print field of source file
 	{
 		print '<tr '.($nostyle?'':$bc[$var]).' height="20">';
-		//print '<td width="16">'.img_file('','').'</td>';
 		print '<td class="nocellnopadding" width="16" style="font-weight: normal">';
 		// The image must have the class 'boxhandle' beause it's value used in DOM draggable objects to define the area used to catch the full object
 		print img_picto($langs->trans("MoveField",$pos),'uparrow','class="boxhandle" style="cursor:move;"');

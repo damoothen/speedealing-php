@@ -25,7 +25,8 @@ BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-build
 
 Group: Productivity/Office/Management
-Requires: mysql-community-server mysql-community-server-client apache2 apache2-mod_php5 php5 php5-gd php5-ldap php5-imap php5-mysql php5-openssl fonts-ttf-dejavu 
+Requires: apache2, apache2-mod_php5, php5 >= 5.3.0, php5-gd, php5-ldap, php5-imap, php5-mysql, php5-openssl, fonts-ttf-dejavu
+Requires: mysql-community-server, mysql-community-server-client 
 
 # Set yes to build test package, no for release (this disable need of /usr/bin/php not found by OpenSuse)
 AutoReqProv: no
@@ -79,26 +80,39 @@ cui hai bisogno ed essere facile da usare.
 %install
 %{__rm} -rf $RPM_BUILD_ROOT
 
-%{__mkdir} -p $RPM_BUILD_ROOT%{_sysconfdir}/dolibarr
-%{__install} -m 644 build/rpm/conf.php $RPM_BUILD_ROOT%{_sysconfdir}/dolibarr/conf.php
-%{__install} -m 644 build/rpm/httpd-dolibarr.conf $RPM_BUILD_ROOT%{_sysconfdir}/dolibarr/apache.conf
-%{__install} -m 644 build/rpm/file_contexts.dolibarr $RPM_BUILD_ROOT%{_sysconfdir}/dolibarr/file_contexts.dolibarr
-%{__install} -m 644 build/rpm/install.forced.php.fedora $RPM_BUILD_ROOT%{_sysconfdir}/dolibarr/install.forced.php
+%{__mkdir} -p $RPM_BUILD_ROOT%{_sysconfdir}/%{name}
+%{__install} -m 644 build/rpm/conf.php $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/conf.php
+%{__install} -m 644 build/rpm/httpd-dolibarr.conf $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/apache.conf
+%{__install} -m 644 build/rpm/file_contexts.dolibarr $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/file_contexts.dolibarr
+%{__install} -m 644 build/rpm/install.forced.php.opensuse $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/install.forced.php
 
 %{__mkdir} -p $RPM_BUILD_ROOT%{_datadir}/pixmaps
-%{__install} -m 644 doc/images/dolibarr_48x48.png $RPM_BUILD_ROOT%{_datadir}/pixmaps/dolibarr.png
+%{__install} -m 644 doc/images/dolibarr_48x48.png $RPM_BUILD_ROOT%{_datadir}/pixmaps/%{name}.png
 %{__mkdir} -p $RPM_BUILD_ROOT%{_datadir}/applications
-#desktop-file-install --delete-original --dir=$RPM_BUILD_ROOT%{_datadir}/applications build/rpm/dolibarr.desktop
-%{__install} -m 644 build/rpm/dolibarr.desktop $RPM_BUILD_ROOT%{_datadir}/applications/dolibarr.desktop
+#desktop-file-install --delete-original --dir=$RPM_BUILD_ROOT%{_datadir}/applications build/rpm/%{name}.desktop
+%{__install} -m 644 build/rpm/dolibarr.desktop $RPM_BUILD_ROOT%{_datadir}/applications/%{name}.desktop
 
-%{__mkdir} -p $RPM_BUILD_ROOT/usr/share/dolibarr/build/rpm
-%{__mkdir} -p $RPM_BUILD_ROOT/usr/share/dolibarr/build/tgz
-%{__mkdir} -p $RPM_BUILD_ROOT/usr/share/dolibarr/htdocs
-%{__mkdir} -p $RPM_BUILD_ROOT/usr/share/dolibarr/scripts
-%{__cp} -pr build/rpm/*     $RPM_BUILD_ROOT/usr/share/dolibarr/build/rpm
-%{__cp} -pr build/tgz/*     $RPM_BUILD_ROOT/usr/share/dolibarr/build/tgz
-%{__cp} -pr htdocs  $RPM_BUILD_ROOT/usr/share/dolibarr
-%{__cp} -pr scripts $RPM_BUILD_ROOT/usr/share/dolibarr
+%{__mkdir} -p $RPM_BUILD_ROOT%{_datadir}/%{name}/build/rpm
+%{__mkdir} -p $RPM_BUILD_ROOT%{_datadir}/%{name}/build/tgz
+%{__mkdir} -p $RPM_BUILD_ROOT%{_datadir}/%{name}/htdocs
+%{__mkdir} -p $RPM_BUILD_ROOT%{_datadir}/%{name}/scripts
+%{__cp} -pr build/rpm/*     $RPM_BUILD_ROOT%{_datadir}/%{name}/build/rpm
+%{__cp} -pr build/tgz/*     $RPM_BUILD_ROOT%{_datadir}/%{name}/build/tgz
+%{__cp} -pr htdocs  $RPM_BUILD_ROOT%{_datadir}/%{name}
+%{__cp} -pr scripts $RPM_BUILD_ROOT%{_datadir}/%{name}
+
+# Lang
+for i in $RPM_BUILD_ROOT%{_datadir}/%{name}/htdocs/langs/*_*
+do
+  lang=$(basename $i)
+  lang1=`expr substr $lang 1 2`; 
+  lang2=`expr substr $lang 4 2 | tr "[:upper:]" "[:lower:]"`; 
+  if [ "$lang1" = "$lang2" ] ; then
+	echo "%lang(${lang1}) %{_datadir}/%{name}/htdocs/langs/${lang}/*.lang"
+  else
+	echo "%lang(${lang}) %{_datadir}/%{name}/htdocs/langs/${lang}/*.lang"
+  fi
+done >%{name}.lang
 
 # Enable this command to tag desktop file for suse
 #%suse_update_desktop_file dolibarr
@@ -114,22 +128,69 @@ cui hai bisogno ed essere facile da usare.
 
 
 #---- files
-%files
+%files -f %{name}.lang
 
 %defattr(0755, root, root, 0755)
 %dir %_datadir/dolibarr/scripts
 %_datadir/dolibarr/scripts/*
 
 %defattr(-, root, root, 0755)
-%doc COPYING ChangeLog doc/index.html
-%dir %_datadir/dolibarr/build/rpm
-%dir %_datadir/dolibarr/build/tgz
-%dir %_datadir/dolibarr/htdocs
+%doc COPYING ChangeLog doc/index.html htdocs/langs/HOWTO-Translation.txt
+
 %_datadir/pixmaps/dolibarr.png
 %_datadir/applications/dolibarr.desktop
+
+%dir %_datadir/dolibarr/build/rpm
 %_datadir/dolibarr/build/rpm/*
+
+%dir %_datadir/dolibarr/build/tgz
 %_datadir/dolibarr/build/tgz/*
-%_datadir/dolibarr/htdocs/*
+
+%dir %_datadir/dolibarr/htdocs
+%_datadir/dolibarr/htdocs/accountancy
+%_datadir/dolibarr/htdocs/adherents
+%_datadir/dolibarr/htdocs/admin
+%_datadir/dolibarr/htdocs/asterisk
+%_datadir/dolibarr/htdocs/bookmarks
+%_datadir/dolibarr/htdocs/boutique
+%_datadir/dolibarr/htdocs/cashdesk
+%_datadir/dolibarr/htdocs/categories
+%_datadir/dolibarr/htdocs/comm
+%_datadir/dolibarr/htdocs/commande
+%_datadir/dolibarr/htdocs/compta
+%_datadir/dolibarr/htdocs/conf
+%_datadir/dolibarr/htdocs/contact
+%_datadir/dolibarr/htdocs/contrat
+%_datadir/dolibarr/htdocs/core
+%_datadir/dolibarr/htdocs/cron
+%_datadir/dolibarr/htdocs/ecm
+%_datadir/dolibarr/htdocs/expedition
+%_datadir/dolibarr/htdocs/exports
+%_datadir/dolibarr/htdocs/externalsite
+%_datadir/dolibarr/htdocs/fichinter
+%_datadir/dolibarr/htdocs/fourn
+%_datadir/dolibarr/htdocs/ftp
+%_datadir/dolibarr/htdocs/imports
+%_datadir/dolibarr/htdocs/includes
+%_datadir/dolibarr/htdocs/install
+%_datadir/dolibarr/htdocs/langs/HOWTO-Translation.txt
+%_datadir/dolibarr/htdocs/lib
+%_datadir/dolibarr/htdocs/livraison
+%_datadir/dolibarr/htdocs/mantis
+%_datadir/dolibarr/htdocs/paybox
+%_datadir/dolibarr/htdocs/paypal
+%_datadir/dolibarr/htdocs/product
+%_datadir/dolibarr/htdocs/projet
+%_datadir/dolibarr/htdocs/public
+%_datadir/dolibarr/htdocs/societe
+%_datadir/dolibarr/htdocs/support
+%_datadir/dolibarr/htdocs/theme
+%_datadir/dolibarr/htdocs/user
+%_datadir/dolibarr/htdocs/webservices
+%_datadir/dolibarr/htdocs/*.ico
+%_datadir/dolibarr/htdocs/*.patch
+%_datadir/dolibarr/htdocs/*.php
+%_datadir/dolibarr/htdocs/*.txt
 
 %defattr(0664, -, -)
 %config(noreplace) %{_sysconfdir}/dolibarr/conf.php

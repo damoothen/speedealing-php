@@ -18,20 +18,23 @@
 /**
  *		\file       htdocs/theme/phones/smartphone/theme/default/default.css.php
  *		\brief      Fichier de style CSS du theme Smartphone default
- *		\version    $Id: default.css.php,v 1.14 2011/08/03 01:39:44 eldy Exp $
  */
 
-if (! defined('NOTOKENRENEWAL')) define('NOTOKENRENEWAL','1'); // Disables token renewal
-if (! defined('NOREQUIREMENU'))  define('NOREQUIREMENU','1');
-if (! defined('NOREQUIREHTML'))  define('NOREQUIREHTML','1');
-if (! defined('NOREQUIREAJAX'))  define('NOREQUIREAJAX','1');
-if (! defined('NOREQUIRESOC'))   define('NOREQUIRESOC','1');
-//if (! defined('NOREQUIRETRAN'))  define('NOREQUIRETRAN','1'); // We need to use translation files to know direction
-if (! defined('NOREQUIREDB'))    define('NOREQUIREDB','1');
+//if (! defined('NOREQUIREUSER')) define('NOREQUIREUSER','1');	// Not disabled cause need to load personalized language
+//if (! defined('NOREQUIREDB'))   define('NOREQUIREDB','1');	// Not disabled to increase speed. Language code is found on url.
+if (! defined('NOREQUIRESOC'))    define('NOREQUIRESOC','1');
+//if (! defined('NOREQUIRETRAN')) define('NOREQUIRETRAN','1');	// Not disabled cause need to do translations
+if (! defined('NOCSRFCHECK'))     define('NOCSRFCHECK',1);
+if (! defined('NOTOKENRENEWAL'))  define('NOTOKENRENEWAL',1);
+if (! defined('NOLOGIN'))         define('NOLOGIN',1);
+if (! defined('NOREQUIREMENU'))   define('NOREQUIREMENU',1);
+if (! defined('NOREQUIREHTML'))   define('NOREQUIREHTML',1);
+if (! defined('NOREQUIREAJAX'))   define('NOREQUIREAJAX','1');
 
 session_cache_limiter( FALSE );
 
-require_once("../../../../../master.inc.php");
+require_once("../../../../../main.inc.php");
+require_once(DOL_DOCUMENT_ROOT."/lib/functions.lib.php");
 
 // Define css type
 header('Content-type: text/css');
@@ -39,6 +42,15 @@ header('Content-type: text/css');
 // each Dolibarr page access.
 if (empty($dolibarr_nocache)) header('Cache-Control: max-age=3600, public, must-revalidate');
 else header('Cache-Control: no-cache');
+
+// On the fly GZIP compression for all pages (if browser support it). Must set the bit 3 of constant to 1.
+if (isset($conf->global->MAIN_OPTIMIZE_SPEED) && ($conf->global->MAIN_OPTIMIZE_SPEED & 0x04)) { ob_start("ob_gzhandler"); }
+
+if (GETPOST('lang')) $langs->setDefaultLang(GETPOST('lang'));	// If language was forced on URL
+if (GETPOST('theme')) $conf->theme=GETPOST('theme');  // If theme was forced on URL
+$langs->load("main",0,1);
+$right=($langs->trans("DIRECTION")=='rtl'?'left':'right');
+$left=($langs->trans("DIRECTION")=='rtl'?'right':'left');
 
 ?>
 .ui-mobile-viewport {
@@ -110,11 +122,87 @@ input.ui-input-text, textarea.ui-input-text {
 
 
 
-div.titre {
+/* ============================================================================== */
+/* Styles de positionnement des zones                                             */
+/* ============================================================================== */
+
+div.fiche {
+	margin-<?php print $left; ?>: <?php print (empty($conf->browser->phone)?'10':'2'); ?>px;
+	margin-<?php print $right; ?>: <?php print (empty($conf->browser->phone)?'6':''); ?>px;
+}
+
+div.fichecenter {
+	width: 100%;
+	clear: both;	/* This is to have div fichecenter that are true rectangles */
+}
+div.fichethirdleft {
+	<?php if (empty($conf->browser->phone)) { print "float: ".$left.";\n"; } ?>
+	<?php if (empty($conf->browser->phone)) { print "width: 35%;\n"; } ?>
+}
+div.fichetwothirdright {
+	<?php if (empty($conf->browser->phone)) { print "float: ".$left.";\n"; } ?>
+	<?php if (empty($conf->browser->phone)) { print "width: 65%;\n"; } ?>
+}
+div.fichehalfleft {
+	<?php if (empty($conf->browser->phone)) { print "float: ".$left.";\n"; } ?>
+	<?php if (empty($conf->browser->phone)) { print "width: 50%;\n"; } ?>
+}
+div.fichehalfright {
+	<?php if (empty($conf->browser->phone)) { print "float: ".$left.";\n"; } ?>
+	<?php if (empty($conf->browser->phone)) { print "width: 50%;\n"; } ?>
+}
+div.ficheaddleft {
+	<?php if (empty($conf->browser->phone)) { print "padding-left: 6px;\n"; } ?>
+}
+
+
+/* ============================================================================== */
+/* Boutons actions                                                                */
+/* ============================================================================== */
+
+.butAction, .butAction:link, .butAction:visited, .butAction:hover, .butAction:active, .butActionDelete, .butActionDelete:link, .butActionDelete:visited, .butActionDelete:hover, .butActionDelete:active {
+    overflow: hidden;
+    padding: 0.6em 25px;
+    position: relative;
+    white-space: nowrap;
+
 	font-family: <?php print $fontlist ?>;
-	font-weight: normal;
-	color: #336666;
+	background: white;
+	border: 1px solid #8CACBB;
+	color: #436976;
+	padding: 0em 0.7em;
+	margin: 0em 0.5em;
 	text-decoration: none;
+	white-space: nowrap;
+}
+
+.butAction:hover   {
+	background: #dee7ec;
+}
+
+.butActionDelete, .butActionDelete:link, .butActionDelete:visited, .butActionDelete:hover, .butActionDelete:active {
+    border: 1px solid #997777;
+}
+
+.butActionDelete:hover {
+    background: #FFe7ec;
+}
+
+.butActionRefused {
+	font-family: <?php print $fontlist ?> !important;
+	font-weight: bold !important;
+	background: white !important;
+	border: 1px solid #AAAAAA !important;
+	color: #AAAAAA !important;
+	padding: 0em 0.7em !important;
+	margin: 0em 0.5em !important;
+	text-decoration: none !important;
+	white-space: nowrap !important;
+	cursor: not-allowed;
+}
+
+span.butAction, span.butActionDelete {
+	cursor: pointer;
 }
 
 
@@ -225,3 +313,220 @@ table.nobordernopadding td {
 border: 0px;
 padding: 0px 0px;
 }
+
+
+
+tr.liste_titre
+{
+    height: 24px;
+    background: -moz-linear-gradient(center top , #81A8CE, #5E87B0) repeat scroll 0 0 #5E87B0;
+    border: 1px solid #456F9A;
+    color: #FFFFFF;
+    font-family: <?php print $fontlist ?>;
+    /* border-bottom: 1px solid #FDFFFF; */
+    white-space: nowrap;
+}
+th.liste_titre, td.liste_titre
+{
+    background: -moz-linear-gradient(center top , #81A8CE, #5E87B0) repeat scroll 0 0 #5E87B0;
+    border: 1px solid #456F9A;
+    color: #FFFFFF;
+    font-family: <?php print $fontlist ?>;
+    font-weight: normal;
+    /* border-bottom: 1px solid #FDFFFF; */
+    white-space: nowrap;
+    text-align: <?php echo $left; ?>;
+}
+th.liste_titre_sel, td.liste_titre_sel
+{
+    background: -moz-linear-gradient(center top , #81A8CE, #5E87B0) repeat scroll 0 0 #5E87B0;
+    color: #FFFFFF;
+    font-family: <?php print $fontlist ?>;
+    font-weight: normal;
+    /* text-decoration: underline; */
+    /* border-bottom: 1px solid #FDFFFF; */
+    white-space: nowrap;
+    text-align: <?php echo $left; ?>;
+}
+input.liste_titre {
+background: transparent;
+background-repeat: repeat-x;
+border: 0px;
+}
+
+tr.liste_total td {
+border-top: 1px solid #DDDDDD;
+background: #F0F0F0;
+background-repeat: repeat-x;
+color: #332266;
+font-weight: normal;
+white-space: nowrap;
+}
+
+
+.impair {
+/* background: #d0d4d7; */
+background: #eaeaea;
+font-family: <?php print $fontlist ?>;
+border: 0px;
+}
+/*
+.impair:hover {
+background: #c0c4c7;
+border: 0px;
+}
+*/
+
+.pair	{
+/* background: #e6ebed; */
+background: #f4f4f4;
+font-family: <?php print $fontlist ?>;
+border: 0px;
+}
+/*
+.pair:hover {
+background: #c0c4c7;
+border: 0px;
+}
+*/
+
+
+
+div.titre {
+	padding-top: 10px;
+	font-family: <?php print $fontlist ?>;
+	font-weight: normal;
+	color: #336666;
+	text-decoration: none;
+}
+
+
+
+/* ============================================================================== */
+/* Onglets                                                                        */
+/* ============================================================================== */
+
+div.tabs {
+    top: 20px;
+    margin: 1px 0px 0px 0px;
+    padding: 0px 6px 0px 0px;
+    text-align: <?php print $left; ?>;
+}
+
+div.tabBar {
+    color: #234046;
+    padding-top: 10px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-bottom: 8px;
+    margin: 0px 0px 10px 0px;
+    -moz-border-radius-topleft:6px;
+    -moz-border-radius-topright:6px;
+    -moz-border-radius-bottomleft:6px;
+    -moz-border-radius-bottomright:6px;
+    border-right: 1px solid #555555;
+    border-bottom: 1px solid #555555;
+    border-left: 1px solid #D0D0D0;
+    border-top: 1px solid #D8D8D8;
+    background: #dee7ec url(<?php echo DOL_URL_ROOT.'/theme/auguria/img/tab_background.png' ?>) repeat-x;
+}
+
+div.tabsAction {
+    margin: 20px 0em 1px 0em;
+    padding: 0em 0em;
+    text-align: right;
+}
+
+
+a.tabTitle {
+	display: none;
+}
+
+a.tab:link {
+    background: #dee7ec;
+    color: #436976;
+	font-family: <?php print $fontlist ?>;
+    padding: 0px 6px;
+    margin: 0em 0.2em;
+    text-decoration: none;
+    white-space: nowrap;
+    -moz-border-radius-topleft:6px;
+    -moz-border-radius-topright:6px;
+
+    border-<?php print $right; ?>: 1px solid #555555;
+    border-<?php print $left; ?>: 1px solid #D8D8D8;
+    border-top: 1px solid #D8D8D8;
+}
+a.tab:visited {
+    background: #dee7ec;
+    color: #436976;
+	font-family: <?php print $fontlist ?>;
+    padding: 0px 6px;
+    margin: 0em 0.2em;
+    text-decoration: none;
+    white-space: nowrap;
+    -moz-border-radius-topleft:6px;
+    -moz-border-radius-topright:6px;
+
+    border-<?php print $right; ?>: 1px solid #555555;
+    border-<?php print $left; ?>: 1px solid #D8D8D8;
+    border-top: 1px solid #D8D8D8;
+}
+a.tab#active {
+    background: white;
+    border-bottom: #dee7ec 1px solid;
+	font-family: <?php print $fontlist ?>;
+    color: #436976;
+    padding: 0px 6px;
+    margin: 0em 0.2em;
+    text-decoration: none;
+    -moz-border-radius-topleft:6px;
+    -moz-border-radius-topright:6px;
+
+    border-<?php print $right; ?>: 1px solid #555555;
+    border-<?php print $left; ?>: 1px solid #D8D8D8;
+    border-top: 1px solid #D8D8D8;
+    border-bottom: 1px solid white;
+}
+a.tab:hover {
+    background: white;
+    color: #436976;
+	font-family: <?php print $fontlist ?>;
+    padding: 0px 6px;
+    margin: 0em 0.2em;
+    text-decoration: none;
+    -moz-border-radius-topleft:6px;
+    -moz-border-radius-topright:6px;
+
+    border-<?php print $right; ?>: 1px solid #555555;
+    border-<?php print $left; ?>: 1px solid #D8D8D8;
+    border-top: 1px solid #D8D8D8;
+}
+
+a.tabimage {
+    color: #436976;
+	font-family: <?php print $fontlist ?>;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+td.tab {
+    background: #dee7ec;
+}
+
+span.tabspan {
+    background: #dee7ec;
+    color: #436976;
+	font-family: <?php print $fontlist ?>;
+    padding: 0px 6px;
+    margin: 0em 0.2em;
+    text-decoration: none;
+    white-space: nowrap;
+    -moz-border-radius-topleft:6px;
+    -moz-border-radius-topright:6px;
+
+    border-<?php print $right; ?>: 1px solid #555555;
+    border-<?php print $left; ?>: 1px solid #D8D8D8;
+    border-top: 1px solid #D8D8D8;
+}
+

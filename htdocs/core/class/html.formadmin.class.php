@@ -21,7 +21,6 @@
  *      \file       htdocs/core/class/html.formadmin.class.php
  *      \ingroup    core
  *      \brief      File of class for html functions for admin pages
- *		\version	$Id: html.formadmin.class.php,v 1.24 2011/08/11 01:34:54 eldy Exp $
  */
 
 
@@ -36,8 +35,9 @@ class FormAdmin
 
 
 	/**
-	 *	\brief     Constructor
-	 *	\param     DB      handler d'acces base de donnee
+	 *	Constructor
+	 *
+	 *  @param		DoliDB		$DB      Database handler
 	 */
 	function FormAdmin($DB)
 	{
@@ -47,7 +47,8 @@ class FormAdmin
 	}
 
 	/**
-	 *    	Output list with available languages.
+	 *    	Output list with available languages
+	 *
 	 *      @deprecated                 Use select_language instead
 	 *    	@param      selected        Langue pre-selectionnee
 	 *    	@param      htmlname        Nom de la zone select
@@ -260,11 +261,9 @@ class FormAdmin
 			{
 				print '	selected="selected"';
 			}
-            //if ($key == 'rodolphe') print ' disabled="true"';
 			print '>';
 			if ($key == 'all') print $langs->trans("AllMenus");
 			else print $key;
-			//if ($key == 'rodolphe') print ' ('.$langs->trans("PersonalizedMenusNotSupported").')';
 			print '</option>'."\n";
 		}
 		print '</select>';
@@ -323,10 +322,12 @@ class FormAdmin
 
 	/**
 	 *    	Return html select list with available languages (key='en_US', value='United States' for example)
-	 *    	@param      selected        Langue pre-selectionnee
-	 *    	@param      htmlname        Nom de la zone select
-	 * 		@param		filter			Key to filter
-	 * 		@param		showempty		Add empty value
+	 *
+	 *    	@param      string	$selected       Paper format pre-selected
+	 *    	@param      string	$htmlname       Name of HTML select field
+	 * 		@param		string	$filter			Key to filter
+	 * 		@param		int		$showempty		Add empty value
+	 * 		@return		string					Return HTML output
 	 */
 	function select_paper_format($selected='',$htmlname='paperformat_id',$filter=0,$showempty=0)
 	{

@@ -1,5 +1,5 @@
 <?php
-/* Copyright (C) 2005-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
+/* Copyright (C) 2005-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,7 +20,6 @@
  *       \file       htdocs/exports/export.php
  *       \ingroup    export
  *       \brief      Pages of export Wizard
- *       \version    $Id: export.php,v 1.83 2011/07/31 23:50:55 eldy Exp $
  */
 
 require_once("../main.inc.php");
@@ -779,7 +778,7 @@ if ($step == 4 && $datatoexport)
 
     print '<table width="100%"><tr><td width="50%">';
 
-    if (! is_dir($conf->export->dir_temp)) create_exdir($conf->export->dir_temp);
+    if (! is_dir($conf->export->dir_temp)) dol_mkdir($conf->export->dir_temp);
 
     // Affiche liste des documents
     // NB: La fonction show_documents rescanne les modules qd genallowed=1, sinon prend $liste
@@ -787,18 +786,6 @@ if ($step == 4 && $datatoexport)
 
     print '</td><td width="50%">&nbsp;</td></tr>';
     print '</table>';
-
-	// If external library PHPEXCELREADER is available
-	// and defined by PHPEXCELREADER constant.
-    if (file_exists(PHPEXCELREADER.'excelreader.php'))
-    {
-    	// Test d'affichage du tableau excel et csv
-    	//print '<table width="100%"><tr><td>';
-	    //require_once(DOL_DOCUMENT_ROOT.'/lib/viewfiles.lib.php');
-		//viewExcelFileContent($conf->export->dir_temp.'/1/export_member_1.xls',5,3);
-	    //viewCsvFileContent($conf->export->dir_temp.'/1/export_member_1.csv',5);
-	    //print '</td></tr></table>';
-    }
 }
 
 
@@ -807,13 +794,14 @@ print '<br>';
 
 $db->close();
 
-llxFooter('$Date: 2011/07/31 23:50:55 $ - $Revision: 1.83 $');
+llxFooter();
 
 
 /**
- * 	\brief		Return table name of an alias. For this, we look for the "tablename as alias" in sql string.
- * 	\param		code				Alias.Fieldname
- * 	\param		sqlmaxforexport		SQL request to parse
+ * 	Return table name of an alias. For this, we look for the "tablename as alias" in sql string.
+ *
+ * 	@param		code				Alias.Fieldname
+ * 	@param		sqlmaxforexport		SQL request to parse
  */
 function getablenamefromfield($code,$sqlmaxforexport)
 {

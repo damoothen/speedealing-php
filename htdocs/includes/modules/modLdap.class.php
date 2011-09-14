@@ -19,14 +19,10 @@
 
 /**
  *  \defgroup   ldap     Module ldap
- *  \brief      Module pour interfacer les contacts avec un annuaire Ldap
- */
-
-/**
+ *  \brief		Module to manage LDAP interfaces with contacts or users
  *	\file       htdocs/includes/modules/modLdap.class.php
  *	\ingroup    ldap
- *	\brief      Fichier de description et activation du module Ldap
- *	\version	$Id: modLdap.class.php,v 1.35 2011/07/31 23:28:12 eldy Exp $
+ *	\brief		File to describe and activate Ldap module
  */
 include_once(DOL_DOCUMENT_ROOT ."/includes/modules/DolibarrModules.class.php");
 

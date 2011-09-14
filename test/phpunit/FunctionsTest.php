@@ -20,7 +20,6 @@
  *      \file       test/phpunit/SecurityTest.php
  *		\ingroup    test
  *      \brief      PHPUnit test
- *      \version    $Id$
  *		\remarks	To run this script as CLI:  phpunit filename.php
  */
 
@@ -42,6 +41,7 @@ if (! defined("NOLOGIN"))        define("NOLOGIN",'1');       // If this page is
 
 
 /**
+ *
  * @backupGlobals disabled
  * @backupStaticAttributes enabled
  * @remarks	backupGlobals must be disabled to have db,conf,user and lang not erased.

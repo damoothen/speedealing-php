@@ -21,37 +21,28 @@
  *	\file       htdocs/core/class/commonobject.class.php
  *	\ingroup    core
  *	\brief      File of parent class of all other business classes (invoices, contracts, proposals, orders, ...)
- *	\version    $Id: commonobject.class.php,v 1.154 2011/08/10 22:47:34 eldy Exp $
  */
 
 
 /**
  *	\class 		CommonObject
- *	\brief 		Class of all other business classes (invoices, contracts, proposals, orders, ...)
+ *	\brief 		Parent class of all other business classes (invoices, contracts, proposals, orders, ...)
  */
 
-class CommonObject
+abstract class CommonObject
 {
 	var $db;
 
-	var $linkedObjectBlock;
-	var $objectid;
+	var $canvas;                // Contains canvas name if it is
 
-	// Instantiate hook classe of thirdparty module
-	var $hooks=array();
 
-	/**
-	 *    Constructeur de la classe
-	 *    @param	DB		Handler acces base de donnees
-	 */
-	function CommonObject($DB)
-	{
-		$this->db = $DB;
-	}
+	// No constructor as it is an abstract class
+
 
 	/**
-	 *      \brief      Check if ref is used.
-	 * 		\return		int			<0 if KO, 0 if not found, >0 if found
+	 *  Check if ref is used.
+	 *
+	 * 	@return		int			<0 if KO, 0 if not found, >0 if found
 	 */
 	function verifyNumRef()
 	{
@@ -61,7 +52,7 @@ class CommonObject
 		$sql.= " FROM ".MAIN_DB_PREFIX.$this->table_element;
 		$sql.= " WHERE ref = '".$this->ref."'";
 		$sql.= " AND entity = ".$conf->entity;
-		dol_syslog("CommonObject::verifyNumRef sql=".$sql, LOG_DEBUG);
+		dol_syslog(get_class($this)."::verifyNumRef sql=".$sql, LOG_DEBUG);
 		$resql = $this->db->query($sql);
 		if ($resql)
 		{
@@ -71,36 +62,37 @@ class CommonObject
 		else
 		{
 			$this->error=$this->db->lasterror();
-			dol_syslog("CommonObject::verifyNumRef ".$this->error, LOG_ERR);
+			dol_syslog(get_class($this)."::verifyNumRef ".$this->error, LOG_ERR);
 			return -1;
 		}
 	}
 
 	/**
-	 *      Add a link between element $this->element and a contact
-	 *      @param      fk_socpeople        Id of contact to link
-	 *   	@param 		type_contact 		Type of contact (code or id)
-	 *      @param      source              external=Contact extern (llx_socpeople), internal=Contact intern (llx_user)
-	 *      @param      notrigger			Disable all triggers
-	 *      @return     int                 <0 if KO, >0 if OK
+	 *  Add a link between element $this->element and a contact
+	 *
+	 *  @param      fk_socpeople        Id of contact to link
+	 *  @param 		type_contact 		Type of contact (code or id)
+	 *  @param      source              external=Contact extern (llx_socpeople), internal=Contact intern (llx_user)
+	 *  @param      notrigger			Disable all triggers
+	 *  @return     int                 <0 if KO, >0 if OK
 	 */
 	function add_contact($fk_socpeople, $type_contact, $source='external',$notrigger=0)
 	{
 		global $user,$conf,$langs;
 
-		dol_syslog("CommonObject::add_contact $fk_socpeople, $type_contact, $source");
+		dol_syslog(get_class($this)."::add_contact $fk_socpeople, $type_contact, $source");
 
 		// Check parameters
 		if ($fk_socpeople <= 0)
 		{
 			$this->error=$langs->trans("ErrorWrongValueForParameter","1");
-			dol_syslog("CommonObject::add_contact ".$this->error,LOG_ERR);
+			dol_syslog(get_class($this)."::add_contact ".$this->error,LOG_ERR);
 			return -1;
 		}
 		if (! $type_contact)
 		{
 			$this->error=$langs->trans("ErrorWrongValueForParameter","2");
-			dol_syslog("CommonObject::add_contact ".$this->error,LOG_ERR);
+			dol_syslog(get_class($this)."::add_contact ".$this->error,LOG_ERR);
 			return -2;
 		}
 
@@ -134,7 +126,7 @@ class CommonObject
 		$sql.= $this->db->idate($datecreate);
 		$sql.= ", 4, '". $id_type_contact . "' ";
 		$sql.= ")";
-		dol_syslog("CommonObject::add_contact sql=".$sql);
+		dol_syslog(get_class($this)."::add_contact sql=".$sql);
 
 		$resql=$this->db->query($sql);
 		if ($resql)
@@ -169,44 +161,46 @@ class CommonObject
 
 	/**
 	 *      Update a link to contact line
+	 *
 	 *      @param      rowid               Id of line contact-element
 	 * 		@param		statut	            New status of link
-	 *      @param      type_contact_id     Id of contact type
+	 *      @param      type_contact_id     Id of contact type (not modified if 0)
 	 *      @return     int                 <0 if KO, >= 0 if OK
 	 */
-	function update_contact($rowid, $statut, $type_contact_id)
+	function update_contact($rowid, $statut, $type_contact_id=0)
 	{
 		// Insertion dans la base
 		$sql = "UPDATE ".MAIN_DB_PREFIX."element_contact set";
-		$sql.= " statut = ".$statut.",";
-		$sql.= " fk_c_type_contact = '".$type_contact_id ."'";
+		$sql.= " statut = ".$statut;
+		if ($type_contact_id) $sql.= ", fk_c_type_contact = '".$type_contact_id ."'";
 		$sql.= " where rowid = ".$rowid;
-		// Retour
-		if (  $this->db->query($sql) )
+		$resql=$this->db->query($sql);
+		if ($resql)
 		{
 			return 0;
 		}
 		else
 		{
-			dol_print_error($this->db);
+			$this->error=$this->db->lasterror();
 			return -1;
 		}
 	}
 
 	/**
 	 *    Delete a link to contact line
+	 *
 	 *    @param      	rowid			Id of contact link line to delete
 	 *    @param		notrigger		Disable all triggers
 	 *    @return     	int				>0 if OK, <0 if KO
 	 */
-	function delete_contact($rowid,$notrigger=0)
+	function delete_contact($rowid, $notrigger=0)
 	{
 		global $user,$langs,$conf;
 
 		$sql = "DELETE FROM ".MAIN_DB_PREFIX."element_contact";
 		$sql.= " WHERE rowid =".$rowid;
 
-		dol_syslog("CommonObject::delete_contact sql=".$sql);
+		dol_syslog(get_class($this)."::delete_contact sql=".$sql);
 		if ($this->db->query($sql))
 		{
 			if (! $notrigger)
@@ -224,13 +218,14 @@ class CommonObject
 		else
 		{
 			$this->error=$this->db->lasterror();
-			dol_syslog("CommonObject::delete_contact error=".$this->error, LOG_ERR);
+			dol_syslog(get_class($this)."::delete_contact error=".$this->error, LOG_ERR);
 			return -1;
 		}
 	}
 
 	/**
 	 *    Delete all links between an object $this and all its contacts
+	 *
 	 *    @return     int	>0 if OK, <0 if KO
 	 */
 	function delete_linked_contact()
@@ -248,7 +243,7 @@ class CommonObject
 		$sql.= " WHERE element_id =".$this->id;
 		$sql.= " AND fk_c_type_contact IN (".$listId.")";
 
-		dol_syslog("CommonObject::delete_linked_contact sql=".$sql);
+		dol_syslog(get_class($this)."::delete_linked_contact sql=".$sql);
 		if ($this->db->query($sql))
 		{
 			return 1;
@@ -256,17 +251,18 @@ class CommonObject
 		else
 		{
 			$this->error=$this->db->lasterror();
-			dol_syslog("CommonObject::delete_linked_contact error=".$this->error, LOG_ERR);
+			dol_syslog(get_class($this)."::delete_linked_contact error=".$this->error, LOG_ERR);
 			return -1;
 		}
 	}
 
 	/**
 	 *    Get array of all contacts for an object
-	 *    @param		statut		int          Status of lines to get (-1=all)
-	 *    @param		source		string       Source of contact: external or thirdparty (llx_socpeople) or internal (llx_user)
-	 *    @param		int         list         0:Return array contains all properties, 1:Return array contains just id
-	 *    @return		array		             Array of contacts
+	 *
+	 *    @param		int			$statut		Status of lines to get (-1=all)
+	 *    @param		string		$source		Source of contact: external or thirdparty (llx_socpeople) or internal (llx_user)
+	 *    @param		int         $list       0:Return array contains all properties, 1:Return array contains just id
+	 *    @return		array		            Array of contacts
 	 */
 	function liste_contact($statut=-1,$source='external',$list=0)
 	{
@@ -292,7 +288,7 @@ class CommonObject
 		if ($statut >= 0) $sql.= " AND ec.statut = '".$statut."'";
 		$sql.=" ORDER BY t.name ASC";
 
-		dol_syslog("CommonObject::liste_contact sql=".$sql);
+		dol_syslog(get_class($this)."::liste_contact sql=".$sql);
 		$resql=$this->db->query($sql);
 		if ($resql)
 		{
@@ -329,39 +325,46 @@ class CommonObject
 		}
 	}
 
-	/**
-	 *    Return fetch cursor of a contact
-	 *    FIXME We should never return an open db cursor
-	 *    @param      rowid      L'identifiant du contact
-	 *    @return     object     L'objet construit par DoliDb.fetch_object
-	 */
-	function detail_contact($rowid)
+
+    /**
+     * 		Update status of a contact linked to object
+     *
+     * 		@param		$rowid		Id of link between object and contact
+     * 		@return		int			<0 if KO, >=0 if OK
+     */
+	function swapContactStatus($rowid)
 	{
 		$sql = "SELECT ec.datecreate, ec.statut, ec.fk_socpeople, ec.fk_c_type_contact,";
-		$sql.= " tc.code, tc.libelle,";
-		$sql.= " s.fk_soc";
+		$sql.= " tc.code, tc.libelle";
+		//$sql.= ", s.fk_soc";
 		$sql.= " FROM (".MAIN_DB_PREFIX."element_contact as ec, ".MAIN_DB_PREFIX."c_type_contact as tc)";
-		$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."socpeople as s ON ec.fk_socpeople=s.rowid";	// Si contact de type external, alors il est li� � une societe
+		//$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."socpeople as s ON ec.fk_socpeople=s.rowid";	// Si contact de type external, alors il est lie a une societe
 		$sql.= " WHERE ec.rowid =".$rowid;
 		$sql.= " AND ec.fk_c_type_contact=tc.rowid";
 		$sql.= " AND tc.element = '".$this->element."'";
 
+		dol_syslog(get_class($object)."::swapContactStatus sql=".$sql);
 		$resql=$this->db->query($sql);
 		if ($resql)
 		{
 			$obj = $this->db->fetch_object($resql);
-			return $obj;
+		    $newstatut = ($obj->statut == 4) ? 5 : 4;
+		    $result = $this->update_contact($rowid, $newstatut);
+		    $this->db->free($resql);
+		    return $result;
 		}
 		else
 		{
 			$this->error=$this->db->error();
 			dol_print_error($this->db);
-			return null;
+			return -1;
 		}
+
 	}
 
 	/**
 	 *      Return array with list of possible values for type of contacts
+	 *
 	 *      @param      source      internal, external or all if not defined
 	 *      @param		order		Sort order by : code or rowid
 	 *      @param      option      0=Return array id->label, 1=Return array code->label
@@ -409,6 +412,7 @@ class CommonObject
 	 *      Example: contact client de facturation ('external', 'BILLING')
 	 *      Example: contact client de livraison ('external', 'SHIPPING')
 	 *      Example: contact interne suivi paiement ('internal', 'SALESREPFOLL')
+	 *
 	 *		@param		source		'external' or 'internal'
 	 *		@param		code		'BILLING', 'SHIPPING', 'SALESREPFOLL', ...
 	 *		@param		status		limited to a certain status
@@ -436,7 +440,7 @@ class CommonObject
 		$sql.= " AND tc.active = 1";
 		if ($status) $sql.= " AND ec.statut = ".$status;
 
-		dol_syslog("CommonObject::getIdContact sql=".$sql);
+		dol_syslog(get_class($this)."::getIdContact sql=".$sql);
 		$resql=$this->db->query($sql);
 		if ($resql)
 		{
@@ -449,7 +453,7 @@ class CommonObject
 		else
 		{
 			$this->error=$this->db->error();
-			dol_syslog("CommonObject::getIdContact ".$this->error, LOG_ERR);
+			dol_syslog(get_class($this)."::getIdContact ".$this->error, LOG_ERR);
 			return null;
 		}
 
@@ -457,9 +461,10 @@ class CommonObject
 	}
 
 	/**
-	 *		\brief      Charge le contact d'id $id dans this->contact
-	 *		\param      contactid          Id du contact
-	 *		\return		int			<0 if KO, >0 if OK
+	 *		Charge le contact d'id $id dans this->contact
+	 *
+	 *		@param      contactid          Id du contact
+	 *		@return		int			<0 if KO, >0 if OK
 	 */
 	function fetch_contact($contactid)
 	{
@@ -472,6 +477,7 @@ class CommonObject
 
 	/**
 	 *    	Load the third party of object from id $this->socid into this->thirdpary
+	 *
 	 *		@return		int			<0 if KO, >0 if OK
 	 */
 	function fetch_thirdparty()
@@ -496,8 +502,9 @@ class CommonObject
 	}
 
 	/**
-	 *		\brief      Charge le projet d'id $this->fk_project dans this->projet
-	 *		\return		int			<0 if KO, >=0 if OK
+	 *		Charge le projet d'id $this->fk_project dans this->projet
+	 *
+	 *		@return		int			<0 if KO, >=0 if OK
 	 */
 	function fetch_projet()
 	{
@@ -510,9 +517,10 @@ class CommonObject
 	}
 
 	/**
-	 *		\brief      Charge le user d'id userid dans this->user
-	 *		\param      userid 		Id du contact
-	 *		\return		int			<0 if KO, >0 if OK
+	 *		Charge le user d'id userid dans this->user
+	 *
+	 *		@param      userid 		Id du contact
+	 *		@return		int			<0 if KO, >0 if OK
 	 */
 	function fetch_user($userid)
 	{
@@ -523,8 +531,9 @@ class CommonObject
 	}
 
 	/**
-	 *		Charge l'adresse d'id $this->fk_address dans this->address
-	 *		@param      fk_address 		Id de l'adresse
+	 *		Load delivery adresse id into $this->fk_address
+	 *
+	 *		@param      fk_address 		Id of address
 	 *		@return		int				<0 if KO, >0 if OK
 	 */
 	function fetch_address($fk_address)
@@ -555,6 +564,7 @@ class CommonObject
 
 	/**
 	 *    	Load object from specific field
+	 *
 	 *    	@param		table		Table element or element line
 	 *    	@param		field		Field selected
 	 *    	@param		key			Import key
@@ -581,6 +591,7 @@ class CommonObject
 
 	/**
 	 *    	Update a specific field from an object
+	 *
 	 *    	@param		table		Table element or element line
 	 *    	@param		id			Object id
 	 *    	@param		field		Field to update
@@ -595,7 +606,7 @@ class CommonObject
 		$sql.= $field." = '".$value."'";
 		$sql.= " WHERE rowid = ".$id;
 
-		dol_syslog("CommonObject::updateObjectField sql=".$sql, LOG_DEBUG);
+		dol_syslog(get_class($this)."::updateObjectField sql=".$sql, LOG_DEBUG);
 		$resql = $this->db->query($sql);
 		if ($resql)
 		{
@@ -609,10 +620,11 @@ class CommonObject
 	}
 
 	/**
-	 *      \brief      Load properties id_previous and id_next
-	 *      \param      filter		Optional filter
-	 *	 	\param      fieldid   	Name of field to use for the select MAX and MIN
-	 *      \return     int         <0 if KO, >0 if OK
+	 *      Load properties id_previous and id_next
+	 *
+	 *      @param      filter		Optional filter
+	 *	 	@param      fieldid   	Name of field to use for the select MAX and MIN
+	 *      @return     int         <0 if KO, >0 if OK
 	 */
 	function load_previous_next_ref($filter='',$fieldid)
 	{
@@ -620,7 +632,7 @@ class CommonObject
 
 		if (! $this->table_element)
 		{
-			dol_print_error('',"CommonObject::load_previous_next_ref was called on objet with property table_element not defined", LOG_ERR);
+			dol_print_error('',get_class($this)."::load_previous_next_ref was called on objet with property table_element not defined", LOG_ERR);
 			return -1;
 		}
 
@@ -676,9 +688,10 @@ class CommonObject
 
 
 	/**
-	 *      \brief      Return list of id of contacts of project
-	 *      \param      source      Source of contact: external (llx_socpeople) or internal (llx_user) or thirdparty (llx_societe)
-	 *      \return     array		Array of id of contacts (if source=external or internal)
+	 *      Return list of id of contacts of project
+	 *
+	 *      @param      source      Source of contact: external (llx_socpeople) or internal (llx_user) or thirdparty (llx_societe)
+	 *      @return     array		Array of id of contacts (if source=external or internal)
 	 * 								Array of id of third parties with at least one contact on project (if source=thirdparty)
 	 */
 	function getListContactId($source='external')
@@ -698,15 +711,16 @@ class CommonObject
 
 
 	/**
-	 *	\brief     	Link element with a project
-	 *	\param     	projid		Project id to link element to
-	 *	\return		int			<0 if KO, >0 if OK
+	 *	Link element with a project
+	 *
+	 *	@param     	int		$projectid		Project id to link element to
+	 *	@return		int						<0 if KO, >0 if OK
 	 */
 	function setProject($projectid)
 	{
 		if (! $this->table_element)
 		{
-			dol_syslog("CommonObject::setProject was called on objet with property table_element not defined",LOG_ERR);
+			dol_syslog(get_class($this)."::setProject was called on objet with property table_element not defined",LOG_ERR);
 			return -1;
 		}
 
@@ -715,7 +729,7 @@ class CommonObject
 		else $sql.= ' SET fk_projet = NULL';
 		$sql.= ' WHERE rowid = '.$this->id;
 
-		dol_syslog("CommonObject::setProject sql=".$sql);
+		dol_syslog(get_class($this)."::setProject sql=".$sql);
 		if ($this->db->query($sql))
 		{
 			$this->fk_project = $projectid;
@@ -730,16 +744,17 @@ class CommonObject
 
 
 	/**
-	 *		\brief		Set last model used by doc generator
-	 *		\param		user		User object that make change
-	 *		\param		modelpdf	Modele name
-	 *		\return		int			<0 if KO, >0 if OK
+	 *		Set last model used by doc generator
+	 *
+	 *		@param		user		User object that make change
+	 *		@param		modelpdf	Modele name
+	 *		@return		int			<0 if KO, >0 if OK
 	 */
 	function setDocModel($user, $modelpdf)
 	{
 		if (! $this->table_element)
 		{
-			dol_syslog("CommonObject::setDocModel was called on objet with property table_element not defined",LOG_ERR);
+			dol_syslog(get_class($this)."::setDocModel was called on objet with property table_element not defined",LOG_ERR);
 			return -1;
 		}
 
@@ -751,7 +766,7 @@ class CommonObject
 		// if ($this->element == 'facture') $sql.= " AND fk_statut < 2";
 		// if ($this->element == 'propal')  $sql.= " AND fk_statut = 0";
 
-		dol_syslog("CommonObject::setDocModel sql=".$sql);
+		dol_syslog(get_class($this)."::setDocModel sql=".$sql);
 		$resql=$this->db->query($sql);
 		if ($resql)
 		{
@@ -767,19 +782,21 @@ class CommonObject
 
 
 	/**
-	 *      Stocke un numero de rang pour toutes les lignes de detail d'un element qui n'en ont pas.
-	 * 		@param		renum		true to renum all already ordered lines, false to renum only not already ordered lines.
+	 *  Stocke un numero de rang pour toutes les lignes de detail d'un element qui n'en ont pas.
+	 *
+	 * 	@param		boolean		$renum			true to renum all already ordered lines, false to renum only not already ordered lines.
+	 * 	@param		string		$rowidorder		ASC or DESC
 	 */
 	function line_order($renum=false, $rowidorder='ASC')
 	{
 		if (! $this->table_element_line)
 		{
-			dol_syslog("CommonObject::line_order was called on objet with property table_element_line not defined",LOG_ERR);
+			dol_syslog(get_class($this)."::line_order was called on objet with property table_element_line not defined",LOG_ERR);
 			return -1;
 		}
 		if (! $this->fk_element)
 		{
-			dol_syslog("CommonObject::line_order was called on objet with property fk_element not defined",LOG_ERR);
+			dol_syslog(get_class($this)."::line_order was called on objet with property fk_element not defined",LOG_ERR);
 			return -1;
 		}
 
@@ -814,8 +831,9 @@ class CommonObject
 	}
 
 	/**
-	 * Update a line to have a lower rank
-	 * @param $rowid
+	 * 	Update a line to have a lower rank
+	 *
+	 * 	@param 		int		$rowid
 	 */
 	function line_up($rowid)
 	{
@@ -829,8 +847,9 @@ class CommonObject
 	}
 
 	/**
-     * Update a line to have a higher rank
-	 * @param $rowid
+     * 	Update a line to have a higher rank
+     *
+	 * 	@param		int		$rowid
 	 */
 	function line_down($rowid)
 	{
@@ -847,7 +866,10 @@ class CommonObject
 	}
 
 	/**
-	 * 	   Update position of line (rang)
+	 * 	Update position of line (rang)
+	 *
+	 * 	@param		int		$rowid
+	 * 	@param		int		$rang
 	 */
 	function updateRangOfLine($rowid,$rang)
 	{
@@ -860,7 +882,9 @@ class CommonObject
 	}
 
 	/**
-	 * 	   Update position of line with ajax (rang)
+	 * 	Update position of line with ajax (rang)
+	 *
+	 * 	@param		int		$roworder
 	 */
 	function line_ajaxorder($roworder)
 	{
@@ -874,7 +898,10 @@ class CommonObject
 	}
 
 	/**
-	 * 	   Update position of line up (rang)
+	 * 	Update position of line up (rang)
+	 *
+	 * 	@param		int		$rowid
+	 * 	@param		int		$rang
 	 */
 	function updateLineUp($rowid,$rang)
 	{
@@ -900,7 +927,11 @@ class CommonObject
 	}
 
 	/**
-	 * 	   Update position of line down (rang)
+	 * 	Update position of line down (rang)
+	 *
+	 * 	@param	int		$rowid
+	 * 	@param	int		$rang
+	 * 	@param	int		$max
 	 */
 	function updateLineDown($rowid,$rang,$max)
 	{
@@ -926,8 +957,10 @@ class CommonObject
 	}
 
 	/**
-	 * 	   Get position of line (rang)
-	 *     @return     int     Value of rang in table of lines
+	 * 	Get position of line (rang)
+	 *
+	 * 	@param		int		$rowid		Id of line
+	 *  @return		int     			Value of rang in table of lines
 	 */
 	function getRangOfLine($rowid)
 	{
@@ -942,8 +975,10 @@ class CommonObject
 	}
 
 	/**
-	 * 	   Get rowid of the line relative to its position
-	 *     @return     int     Rowid of the line
+	 * 	Get rowid of the line relative to its position
+	 *
+	 * 	@param		int		$rang		Rang value
+	 *  @return     int     			Rowid of the line
 	 */
 	function getIdOfLine($rang)
 	{
@@ -959,8 +994,10 @@ class CommonObject
 	}
 
 	/**
-	 * 	   Get max value used for position of line (rang)
-	 *     @result     int     Max value of rang in table of lines
+	 * 	Get max value used for position of line (rang)
+	 *
+	 * 	@param		int		$fk_parent_line		Parent line id
+	 *  @return     int  			   			Max value of rang in table of lines
 	 */
 	function line_max($fk_parent_line=0)
 	{
@@ -996,15 +1033,16 @@ class CommonObject
 	}
 
 	/**
-	 *    \brief      Update private note of element
-	 *    \param      note			New value for note
-	 *    \return     int         	<0 if KO, >0 if OK
+	 *  Update private note of element
+	 *
+	 *  @param      string		$note	New value for note
+	 *  @return     int      		   	<0 if KO, >0 if OK
 	 */
 	function update_note($note)
 	{
 		if (! $this->table_element)
 		{
-			dol_syslog("CommonObject::update_note was called on objet with property table_element not defined", LOG_ERR);
+			dol_syslog(get_class($this)."::update_note was called on objet with property table_element not defined", LOG_ERR);
 			return -1;
 		}
 
@@ -1020,7 +1058,7 @@ class CommonObject
 		}
 		$sql.= " WHERE rowid =". $this->id;
 
-		dol_syslog("CommonObject::update_note sql=".$sql, LOG_DEBUG);
+		dol_syslog(get_class($this)."::update_note sql=".$sql, LOG_DEBUG);
 		if ($this->db->query($sql))
 		{
 			$this->note = $note;
@@ -1029,21 +1067,21 @@ class CommonObject
 		else
 		{
 			$this->error=$this->db->error();
-			dol_syslog("CommonObject::update_note error=".$this->error, LOG_ERR);
+			dol_syslog(get_class($this)."::update_note error=".$this->error, LOG_ERR);
 			return -1;
 		}
 	}
 
 	/**
-	 *    \brief      Update public note of element
-	 *    \param      note_public	New value for note
-	 *    \return     int         	<0 if KO, >0 if OK
+	 *    Update public note of element
+	 *    @param      note_public	New value for note
+	 *    @return     int         	<0 if KO, >0 if OK
 	 */
 	function update_note_public($note_public)
 	{
 		if (! $this->table_element)
 		{
-			dol_syslog("CommonObject::update_note_public was called on objet with property table_element not defined",LOG_ERR);
+			dol_syslog(get_class($this)."::update_note_public was called on objet with property table_element not defined",LOG_ERR);
 			return -1;
 		}
 
@@ -1051,7 +1089,7 @@ class CommonObject
 		$sql.= " SET note_public = '".$this->db->escape($note_public)."'";
 		$sql.= " WHERE rowid =". $this->id;
 
-		dol_syslog("CommonObject::update_note_public sql=".$sql);
+		dol_syslog(get_class($this)."::update_note_public sql=".$sql);
 		if ($this->db->query($sql))
 		{
 			$this->note_public = $note_public;
@@ -1066,6 +1104,7 @@ class CommonObject
 
 	/**
 	 *	Update total_ht, total_ttc and total_vat for an object (sum of lines)
+	 *
 	 *	@param	   exclspec          Exclude special product (product_type=9)
 	 *  @param     roundingadjust    -1=Use default method (MAIN_ROUNDOFTOTAL_NOT_TOTALOFROUND or 0), 0=Use total of rounding, 1=Use rounding of total
 	 *	@return	   int               <0 if KO, >0 if OK
@@ -1091,7 +1130,7 @@ class CommonObject
 		$sql.= ' WHERE '.$this->fk_element.' = '.$this->id;
 		if ($exclspec) $sql.= ' AND product_type <> 9';
 
-		dol_syslog("CommonObject::update_price sql=".$sql);
+		dol_syslog(get_class($this)."::update_price sql=".$sql);
 		$resql = $this->db->query($sql);
 		if ($resql)
 		{
@@ -1155,7 +1194,7 @@ class CommonObject
 			$sql .= ' WHERE rowid = '.$this->id;
 
 			//print "xx".$sql;
-			dol_syslog("CommonObject::update_price sql=".$sql);
+			dol_syslog(get_class($this)."::update_price sql=".$sql);
 			$resql=$this->db->query($sql);
 			if ($resql)
 			{
@@ -1164,20 +1203,21 @@ class CommonObject
 			else
 			{
 				$this->error=$this->db->error();
-				dol_syslog("CommonObject::update_price error=".$this->error,LOG_ERR);
+				dol_syslog(get_class($this)."::update_price error=".$this->error,LOG_ERR);
 				return -1;
 			}
 		}
 		else
 		{
 			$this->error=$this->db->error();
-			dol_syslog("CommonObject::update_price error=".$this->error,LOG_ERR);
+			dol_syslog(get_class($this)."::update_price error=".$this->error,LOG_ERR);
 			return -1;
 		}
 	}
 
 	/**
 	 * 	   Add objects linked in llx_element_element.
+	 *
 	 *     @return         int         <=0 if KO, >0 if OK
 	 */
 	function add_object_linked()
@@ -1196,7 +1236,7 @@ class CommonObject
 		$sql.= ", '".$this->element."'";
 		$sql.= ")";
 
-        dol_syslog("CommonObject::add_object_linked sql=".$sql);
+        dol_syslog(get_class($this)."::add_object_linked sql=".$sql);
 		if ($this->db->query($sql))
 	  	{
 	  		$this->db->commit();
@@ -1212,6 +1252,7 @@ class CommonObject
 
 	/**
 	 * 	   Fetch array of objects linked to current object. Links are loaded into this->linked_object array.
+	 *
 	 *     @param  sourceid
 	 *     @param  sourcetype
 	 *     @param  targetid
@@ -1252,7 +1293,7 @@ class CommonObject
 		}
 		//print $sql;
 
-		dol_syslog("CommonObject::fetchObjectLink sql=".$sql);
+		dol_syslog(get_class($this)."::fetchObjectLink sql=".$sql);
 		$resql = $this->db->query($sql);
 		if ($resql)
 		{
@@ -1326,6 +1367,7 @@ class CommonObject
 
 	/**
 	 *      Set statut of an object
+	 *
 	 *      @param		statut			Statut to set
 	 *      @param		elementId		Id of element to force (use this->id by default)
 	 *      @param		elementType		Type of element to force (use ->this->element by default)
@@ -1340,93 +1382,53 @@ class CommonObject
 		$sql.= " SET fk_statut = ".$statut;
 		$sql.= " WHERE rowid=".$elementId;
 
-		dol_syslog("CommonObject::setStatut sql=".$sql, LOG_DEBUG);
+		dol_syslog(get_class($this)."::setStatut sql=".$sql, LOG_DEBUG);
 		$resql = $this->db->query($sql);
 		if (!$resql)
 		{
 			$this->error=$this->db->lasterror();
-			dol_syslog("CommonObject::setStatut ".$this->error, LOG_ERR);
+			dol_syslog(get_class($this)."::setStatut ".$this->error, LOG_ERR);
 			return -1;
 		}
 
 		return 1;
 	}
 
-	/**
-	 * 	Fetch field list
-	 */
-	function getFieldList()
-	{
-		global $conf, $langs;
-
-		$this->field_list = array();
-
-		$sql = "SELECT rowid, name, alias, title, align, sort, search, enabled, rang";
-		$sql.= " FROM ".MAIN_DB_PREFIX."c_field_list";
-		$sql.= " WHERE element = '".$this->fieldListName."'";
-		$sql.= " AND entity = ".$conf->entity;
-		$sql.= " ORDER BY rang ASC";
-
-		$resql = $this->db->query($sql);
-		if ($resql)
-		{
-			$num = $this->db->num_rows($resql);
-
-			$i = 0;
-			while ($i < $num)
-			{
-				$fieldlist = array();
-
-				$obj = $this->db->fetch_object($resql);
-
-				$fieldlist["id"]		= $obj->rowid;
-				$fieldlist["name"]		= $obj->name;
-				$fieldlist["alias"]		= $obj->alias;
-				$fieldlist["title"]		= $langs->trans($obj->title);
-				$fieldlist["align"]		= $obj->align;
-				$fieldlist["sort"]		= $obj->sort;
-				$fieldlist["search"]	= $obj->search;
-				$fieldlist["enabled"]	= verifCond($obj->enabled);
-				$fieldlist["order"]		= $obj->rang;
-
-				array_push($this->field_list,$fieldlist);
-
-				$i++;
-			}
-			$this->db->free($resql);
-		}
-		else
-		{
-			dol_print_error($db,$sql);
-		}
-	}
 
     /**
-     *  Load type of canvas of an object
-     *  @param      id      Record id
-     *  @param      ref     Record ref
+     *  Load type of canvas of an object if it exists
+     *
+     *  @param      int		$id     Record id
+     *  @param      string	$ref    Record ref
+     *  @return		int				<0 if KO, 0 if nothing done, >0 if OK
      */
     function getCanvas($id=0,$ref='')
     {
         global $conf;
 
+        if (empty($id) && empty($ref)) return 0;
+        if (! empty($conf->global->MAIN_DISABLE_CANVAS)) return 0;    // To increase speed. Not enabled by default.
+
+        // Clean parameters
         $ref = trim($ref);
 
         $sql = "SELECT rowid, canvas";
         $sql.= " FROM ".MAIN_DB_PREFIX.$this->table_element;
         $sql.= " WHERE entity = ".$conf->entity;
-        if (!empty($id)) $sql.= " AND rowid = ".$id;
+        if (!empty($id))  $sql.= " AND rowid = ".$id;
         if (!empty($ref)) $sql.= " AND ref = '".$ref."'";
 
         $resql = $this->db->query($sql);
         if ($resql)
         {
             $obj = $this->db->fetch_object($resql);
-
-            $this->id       = $obj->rowid;
-            $this->canvas   = $obj->canvas;
-
-            return 1;
+            if ($obj)
+            {
+                $this->id       = $obj->rowid;
+                $this->canvas   = $obj->canvas;
+                return 1;
+            }
+            else return 0;
         }
         else
         {
@@ -1438,6 +1440,7 @@ class CommonObject
 
 	/**
 	 * 	Get special code of line
+	 *
 	 * 	@param		lineid		Id of line
 	 */
 	function getSpecialCode($lineid)
@@ -1455,6 +1458,7 @@ class CommonObject
 
     /**
      *  Function to get extra fields of a member into $this->array_options
+     *
      *  @param      rowid
      *  @param      optionsArray    Array resulting of call of extrafields->fetch_name_optionals_label()
      */
@@ -1505,6 +1509,105 @@ class CommonObject
         }
     }
 
+
+    /**
+	 *     Add/Update extra fields
+	 */
+	function insertExtraFields()
+	{
+	    if (sizeof($this->array_options) > 0)
+        {
+            $this->db->begin();
+
+            $sql_del = "DELETE FROM ".MAIN_DB_PREFIX.$this->table_element."_extrafields WHERE fk_object = ".$this->id;
+            dol_syslog(get_class($this)."::insertExtraFields delete sql=".$sql_del);
+            $this->db->query($sql_del);
+
+            $sql = "INSERT INTO ".MAIN_DB_PREFIX.$this->table_element."_extrafields (fk_object";
+            foreach($this->array_options as $key => $value)
+            {
+                // Add field of attribut
+                $sql.=",".substr($key,8);   // Remove 'options_' prefix
+            }
+            $sql .= ") VALUES (".$this->id;
+            foreach($this->array_options as $key => $value)
+            {
+                // Add field o fattribut
+                if ($this->array_options[$key] != '')
+                {
+                    $sql.=",'".$this->array_options[$key]."'";
+                }
+                else
+                {
+                    $sql.=",null";
+                }
+            }
+            $sql.=")";
+
+            dol_syslog(get_class($this)."::insertExtraFields insert sql=".$sql);
+            $resql = $this->db->query($sql);
+            if (! $resql)
+            {
+                $this->error=$this->db->lasterror();
+                dol_syslog(get_class($this)."::update ".$this->error,LOG_ERR);
+                $this->db->rollback();
+                return -1;
+            }
+            else
+            {
+                $this->db->commit();
+                return 1;
+            }
+        }
+        else return 0;
+	}
+    
+    
+    /**
+     *  Function to check if an object is used by others
+     *
+     *  @param		id				Id of object
+     *  @return		int				<0 if KO, 0 if not used, >0 if already used
+     */
+    function isObjectUsed($id)
+    {
+        // Check parameters
+        if (! isset($this->childtables) || ! is_array($this->childtables) || count($this->childtables) == 0)
+        {
+            dol_print_error('Called isObjectUsed on a class with property this->childtables not defined');
+            return -1;
+        }
+
+        // Test if child exists
+        $haschild=0;
+        foreach($this->childtables as $table)
+        {
+            // Check if third party can be deleted
+            $nb=0;
+            $sql = "SELECT COUNT(*) as nb from ".MAIN_DB_PREFIX.$table;
+            $sql.= " WHERE ".$this->fk_element." = ".$id;
+            $resql=$this->db->query($sql);
+            if ($resql)
+            {
+                $obj=$this->db->fetch_object($resql);
+                $haschild+=$obj->nb;
+                //print 'Found into table '.$table;
+                if ($haschild) break;    // We found at least on, we stop here
+            }
+            else
+            {
+                $this->error=$this->db->lasterror();
+                dol_syslog(get_class($this)."::delete error -1 ".$this->error, LOG_ERR);
+                return -1;
+            }
+        }
+        if ($haschild > 0)
+        {
+            $this->error="ErrorRecordHasChildren";
+            return $haschild;
+        }
+        else return 0;
+    }
 
 
     // --------------------
@@ -1588,14 +1691,15 @@ class CommonObject
             }
 
         	// To work with non standard path
-            if ($objecttype == 'facture') { $tplpath = 'compta/'.$element; }
-            if ($objecttype == 'propal')  { $tplpath = 'comm/'.$element; }
-            if ($objecttype == 'shipping') { $tplpath = 'expedition'; }
-            if ($objecttype == 'delivery') { $tplpath = 'livraison'; }
+            if ($objecttype == 'facture')          { $tplpath = 'compta/'.$element; }
+            if ($objecttype == 'propal')           { $tplpath = 'comm/'.$element; }
+            if ($objecttype == 'shipping')         { $tplpath = 'expedition'; }
+            if ($objecttype == 'delivery')         { $tplpath = 'livraison'; }
             if ($objecttype == 'invoice_supplier') { $tplpath = 'fourn/facture'; }
             if ($objecttype == 'order_supplier')   { $tplpath = 'fourn/commande'; }
 
-            $this->linkedObjectBlock = $objects;
+            global $linkedObjectBlock;
+            $linkedObjectBlock = $objects;
 
             dol_include_once('/'.$tplpath.'/tpl/linkedobjectblock.tpl.php');
         }
@@ -1611,9 +1715,11 @@ class CommonObject
 	 *	Show add predefined products/services form
      *  TODO Edit templates to use global variables and include them directly in controller call
 	 *  But for the moment we don't know if it's possible as we keep a method available on overloaded objects.
-     *  @param          $dateSelector       1=Show also date range input fields
-     *  @param			$seller				Object thirdparty who sell
-     *  @param			$buyer				Object thirdparty who buy
+	 *
+     *  @param      int	    		$dateSelector       1=Show also date range input fields
+     *  @param		Societe			$seller				Object thirdparty who sell
+     *  @param		Societe			$buyer				Object thirdparty who buy
+	 *	@param		HookManager		$hookmanager		Hook manager instance
 	 */
 	function formAddPredefinedProduct($dateSelector,$seller,$buyer,$hookmanager=false)
 	{
@@ -1628,7 +1734,11 @@ class CommonObject
 	 *	Show add free products/services form
      *  TODO Edit templates to use global variables and include them directly in controller call
      *  But for the moment we don't know if it'st possible as we keep a method available on overloaded objects.
-     *  @param          $dateSelector       1=Show also date range input fields
+     *
+     *  @param		int		        $dateSelector       1=Show also date range input fields
+     *  @param		Societe			$seller				Object thirdparty who sell
+     *  @param		Societe			$buyer				Object thirdparty who buy
+	 *	@param		HookManager		$hookmanager		Hook manager instance
      */
 	function formAddFreeProduct($dateSelector,$seller,$buyer,$hookmanager=false)
 	{
@@ -1800,7 +1910,7 @@ class CommonObject
      *  If lines are into a template, title must also be into a template
      *  But for the moment we don't know if it's possible as we keep a method available on overloaded objects.
 	 */
-	function printOriginLinesList()
+	function printOriginLinesList($hookmanager=false)
 	{
 		global $langs;
 
@@ -1820,14 +1930,12 @@ class CommonObject
 		{
 			$var=!$var;
 
-			if (! empty($this->hooks) && ( ($line->product_type == 9 && ! empty($line->special_code)) || ! empty($line->fk_parent_line) ) )
+			if (is_object($hookmanager) && ( ($line->product_type == 9 && ! empty($line->special_code)) || ! empty($line->fk_parent_line) ) )
 			{
 				if (empty($line->fk_parent_line))
 				{
-					foreach($this->hooks as $hook)
-					{
-						if (method_exists($hook['modules'][$line->special_code],'printOriginObjectLine')) $hook['modules'][$line->special_code]->printOriginObjectLine($this,$line,$var,$i);
-					}
+					$parameters=array('line'=>$line,'var'=>$var,'i'=>$i);
+					$reshook=$hookmanager->executeHooks('printOriginObjectLine',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
 				}
 			}
 			else
@@ -1922,60 +2030,6 @@ class CommonObject
 		$this->tpl['remise_percent'] = (($line->info_bits & 2) != 2) ? vatrate($line->remise_percent, true) : '&nbsp;';
 
 		include(DOL_DOCUMENT_ROOT.'/core/tpl/originproductline.tpl.php');
-	}
-
-
-	/**
-	 *     Add/Update extra fields
-	 *     TODO Use also type of field to do manage date fields
-	 */
-	function insertExtraFields($object)
-	{
-	    if (sizeof($object->array_options) > 0)
-        {
-            $this->db->begin();
-
-            $sql_del = "DELETE FROM ".MAIN_DB_PREFIX.$this->table_element."_extrafields WHERE fk_object = ".$object->id;
-            dol_syslog(get_class($object)."::insertExtraFields delete sql=".$sql_del);
-            $this->db->query($sql_del);
-
-            $sql = "INSERT INTO ".MAIN_DB_PREFIX.$object->table_element."_extrafields (fk_object";
-            foreach($object->array_options as $key => $value)
-            {
-                // Add field of attribut
-                $sql.=",".substr($key,8);   // Remove 'options_' prefix
-            }
-            $sql .= ") VALUES (".$object->id;
-            foreach($object->array_options as $key => $value)
-            {
-                // Add field o fattribut
-                if ($object->array_options[$key] != '')
-                {
-                    $sql.=",'".$object->array_options[$key]."'";
-                }
-                else
-                {
-                    $sql.=",null";
-                }
-            }
-            $sql.=")";
-
-            dol_syslog(get_class($object)."::insertExtraFields insert sql=".$sql);
-            $resql = $this->db->query($sql);
-            if (! $resql)
-            {
-                $this->error=$this->db->lasterror();
-                dol_syslog(get_class($object)."::update ".$this->error,LOG_ERR);
-                $this->db->rollback();
-                return -1;
-            }
-            else
-            {
-                $this->db->commit();
-                return 1;
-            }
-        }
-        else return 0;
 	}
 }
 

@@ -20,8 +20,7 @@
  *      \file       htdocs/compta/facture/info.php
  *      \ingroup    facture
  *		\brief      Page des informations d'une facture
- *		\version    $Id: info.php,v 1.31 2011/07/31 22:23:13 eldy Exp $
-*/
+ */
 
 require("../../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/compta/facture/class/facture.class.php");
@@ -42,7 +41,7 @@ $fac = new Facture($db);
 $fac->fetch($_GET["facid"]);
 $fac->info($_GET["facid"]);
 
-$soc = new Societe($db, $fac->socid);
+$soc = new Societe($db);
 $soc->fetch($fac->socid);
 
 $head = facture_prepare_head($fac);
@@ -57,5 +56,5 @@ print '</div>';
 
 $db->close();
 
-llxFooter('$Date: 2011/07/31 22:23:13 $ - $Revision: 1.31 $');
+llxFooter();
 ?>

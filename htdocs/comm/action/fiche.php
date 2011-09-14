@@ -24,7 +24,6 @@
  *       \file       htdocs/comm/action/fiche.php
  *       \ingroup    agenda
  *       \brief      Page for event card
- *       \version    $Id: fiche.php,v 1.228 2011/07/31 22:23:20 eldy Exp $
  */
 
 require("../../main.inc.php");
@@ -63,6 +62,7 @@ $actioncomm = new ActionComm($db);
 $contact = new Contact($db);
 //var_dump($_POST);
 
+
 /*
  * Action creation de l'action
  */
@@ -97,7 +97,7 @@ if ($action == 'add_action')
 	$_POST["apmonth"],
 	$_POST["apday"],
 	$_POST["apyear"]);
-	
+
 	$datef=dol_mktime(
 	$fulldayevent?'23':$_POST["p2hour"],
 	$fulldayevent?'59':$_POST["p2min"],
@@ -365,23 +365,7 @@ if ($action == 'update')
 		$_POST["p2month"],
 		$_POST["p2day"],
 		$_POST["p2year"]);
-		/*$datea=dol_mktime($_POST["adhour"],
-		 $_POST["admin"],
-		 0,
-		 $_POST["admonth"],
-		 $_POST["adday"],
-		 $_POST["adyear"]);
-		 $datea2=dol_mktime($_POST["a2hour"],
-		 $_POST["a2min"],
-		 0,
-		 $_POST["a2month"],
-		 $_POST["a2day"],
-		 $_POST["a2year"]);
-		 */
 
-		//print $_POST["apmonth"].",".$_POST["apday"].",".$_POST["apyear"].",".$_POST["aphour"].",".$_POST["apmin"]."<br>\n";
-		//print $actioncomm->datep;
-		//print 'dddd'.$datep;
 		$actioncomm->label       = $_POST["label"];
 		$actioncomm->datep       = $datep;
 		$actioncomm->datef       = $datef;
@@ -1007,12 +991,12 @@ if ($id)
 
 		// Affected to
 		print '<tr><td nowrap>'.$langs->trans("ActionAffectedTo").'</td><td colspan="3">';
-		$html->select_users($act->usertodo->id,'affectedto',1);
+		print $html->select_dolusers($act->usertodo->id>0?$act->usertodo->id:-1,'affectedto',1);
 		print '</td></tr>';
 
 		// Realised by
 		print '<tr><td nowrap>'.$langs->trans("ActionDoneBy").'</td><td colspan="3">';
-		$html->select_users($act->userdone->id,'doneby',1);
+		print $html->select_dolusers($act->userdone->id> 0?$act->userdone->id:-1,'doneby',1);
 		print '</td></tr>';
 
 		print '</table><br>';
@@ -1375,7 +1359,7 @@ if ($id)
 
 $db->close();
 
-llxFooter('$Date: 2011/07/31 22:23:20 $ - $Revision: 1.228 $');
+llxFooter();
 
 
 /**

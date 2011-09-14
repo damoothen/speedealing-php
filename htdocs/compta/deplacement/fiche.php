@@ -20,7 +20,6 @@
 /**
  *  \file       	htdocs/compta/deplacement/fiche.php
  *  \brief      	Page to show a trip card
- *  \version		$Id: fiche.php,v 1.56 2011/08/03 00:46:35 eldy Exp $
  */
 
 require("../../main.inc.php");
@@ -364,15 +363,15 @@ else
 					print '<table class="nobordernopadding" width="100%"><tr><td>';
 					print $langs->trans('Project');
 					print '</td>';
-					if ($_GET['action'] != 'classin')
+					if ($_GET['action'] != 'classify')
 					{
-						print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=classin&amp;id='.$deplacement->id.'">';
+						print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=classify&amp;id='.$deplacement->id.'">';
 						print img_edit($langs->trans('SetProject'),1);
 						print '</a></td>';
 					}
 					print '</tr></table>';
 					print '</td><td colspan="3">';
-					if ($_GET['action'] == 'classin')
+					if ($_GET['action'] == 'classify')
 					{
 						$html->form_project($_SERVER['PHP_SELF'].'?id='.$deplacement->id, $deplacement->socid, $deplacement->fk_project,'projectid');
 					}
@@ -432,5 +431,5 @@ print '</div>';
 
 $db->close();
 
-llxFooter('$Date: 2011/08/03 00:46:35 $ - $Revision: 1.56 $');
+llxFooter();
 ?>

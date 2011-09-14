@@ -20,7 +20,6 @@
  *	    \file       htdocs/admin/notification.php
  *		\ingroup    notification
  *		\brief      Page to setup notification module
- *		\version    $Id: notification.php,v 1.13 2011/07/31 22:23:25 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -28,26 +27,28 @@ require_once(DOL_DOCUMENT_ROOT."/lib/admin.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/includes/triggers/interface_modNotification_Notification.class.php");
 
 $langs->load("admin");
+$langs->load("other");
 
 // Security check
 if (!$user->admin)
   accessforbidden();
 
+$action = GETPOST("action");
 
 /*
  * Actions
  */
 
-if ($_POST["action"] == 'setvalue' && $user->admin)
+if ($action == 'setvalue' && $user->admin)
 {
 	$result=dolibarr_set_const($db, "NOTIFICATION_EMAIL_FROM",$_POST["email_from"],'chaine',0,'',$conf->entity);
   	if ($result >= 0)
   	{
-  		$mesg='<div class="ok">'.$langs->trans("Success").'</div>';
+  		$mesg = "<font class=\"ok\">".$langs->trans("SetupSaved")."</font>";
   	}
   	else
   	{
-		dol_print_error($db);
+		$mesg = "<font class=\"error\">".$langs->trans("Error")."</font>";
     }
 }
 
@@ -62,9 +63,7 @@ llxHeader();
 $linkback='<a href="'.DOL_URL_ROOT.'/admin/modules.php">'.$langs->trans("BackToModuleList").'</a>';
 print_fiche_titre($langs->trans("NotificationSetup"),$linkback,'setup');
 
-print $langs->trans("NotificationsDesc").'<br><br>';
-
-if ($mesg) print $mesg.'<br>';
+print $langs->trans("NotificationsDesc").'<br><br>';	
 
 print '<form method="post" action="'.$_SERVER["PHP_SELF"].'">';
 print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
@@ -81,6 +80,7 @@ $var=!$var;
 print '<tr '.$bc[$var].'><td>';
 print $langs->trans("NotificationEMailFrom").'</td><td>';
 print '<input size="32" type="text" name="email_from" value="'.$conf->global->NOTIFICATION_EMAIL_FROM.'">';
+if (! empty($conf->global->NOTIFICATION_EMAIL_FROM) && ! isValidEmail($conf->global->NOTIFICATION_EMAIL_FROM)) print ' '.img_warning($langs->trans("BadEMail"));
 print '</td></tr>';
 print '</table>';
 
@@ -108,7 +108,7 @@ $listofnotifiedevents=$notificationtrigger->getListOfManagedEvents();
 foreach($listofnotifiedevents as $notifiedevent)
 {
     $var=!$var;
-    $label=$langs->trans("Notify_".$notifiedevent['code'])!=$langs->trans("Notify_".$notifiedevent['code'])?$langs->trans("Notify_".$notifiedevent['code']):$notifiedevent['label'];
+    $label=$langs->trans("Notify_".$notifiedevent['code']); //!=$langs->trans("Notify_".$notifiedevent['code'])?$langs->trans("Notify_".$notifiedevent['code']):$notifiedevent['label'];
     print '<tr '.$bc[$var].'>';
     print '<td>'.$notifiedevent['elementtype'].'</td>';
     print '<td>'.$notifiedevent['code'].'</td>';
@@ -117,10 +117,9 @@ foreach($listofnotifiedevents as $notifiedevent)
 }
 print '</table>';
 
+dol_htmloutput_mesg($mesg);
 
 $db->close();
 
-
-llxFooter('$Date: 2011/07/31 22:23:25 $ - $Revision: 1.13 $');
-
+llxFooter();
 ?>

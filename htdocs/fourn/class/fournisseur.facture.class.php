@@ -24,7 +24,6 @@
  *	\file       htdocs/fourn/class/fournisseur.facture.class.php
  *	\ingroup    fournisseur,facture
  *	\brief      File of class to manage suppliers invoices
- *	\version    $Id: fournisseur.facture.class.php,v 1.35 2011/07/31 23:57:02 eldy Exp $
  */
 
 include_once(DOL_DOCUMENT_ROOT."/compta/facture/class/facture.class.php");
@@ -85,12 +84,11 @@ class FactureFournisseur extends Facture
 
 
     /**
-     *    Constructor
-     *    @param  DB          	Database access handler
-     *    @param  socid			Id societe ('' par defaut)
-     *    @param  facid       	Id facture ('' par defaut)
+	 *	Constructor
+	 *
+	 *  @param		DoliDB		$DB      Database handler
      */
-    function FactureFournisseur($DB, $socid='', $facid='')
+    function FactureFournisseur($DB)
     {
         $this->db = $DB ;
 
@@ -113,8 +111,9 @@ class FactureFournisseur extends Facture
 
     /**
      *    Create supplier invoice into database
-     *    @param      user        object utilisateur qui cree
-     *    @return     int         id facture si ok, < 0 si erreur
+     *
+     *    @param      User		$user       object utilisateur qui cree
+     *    @return     int    	     		id facture si ok, < 0 si erreur
      */
     function create($user)
     {
@@ -1232,6 +1231,7 @@ class FactureFournisseur extends Facture
         // Initialise parametres
         $this->id=0;
         $this->ref = 'SPECIMEN';
+        $this->ref_supplier = 'SUPPLIER_REF_SPECIMEN';
         $this->specimen=1;
         $this->socid = 1;
         $this->date = $now;
@@ -1253,15 +1253,31 @@ class FactureFournisseur extends Facture
             $line->tva_tx=19.6;
             $line->localtax1_tx=0;
             $line->localtax2_tx=0;
-            $line->remise_percent=10;
-            $line->total_ht=90;
-            $line->total_ttc=107.64;    // 90 * 1.196
-            $line->total_tva=17.64;
-            $prodid = rand(1, $num_prods);
+			if ($xnbp == 2)
+			{
+			    $line->total_ht=50;
+			    $line->total_ttc=59.8;
+			    $line->total_tva=9.8;
+    			$line->remise_percent=50;
+			}
+			else
+			{
+			    $line->total_ht=100;
+			    $line->total_ttc=119.6;
+			    $line->total_tva=19.6;
+    			$line->remise_percent=00;
+			}
+
+			$prodid = rand(1, $num_prods);
             $line->fk_product=$prodids[$prodid];
             $line->product_type=0;
 
             $this->lines[$xnbp]=$line;
+
+    		$this->total_ht       += $line->total_ht;
+    		$this->total_tva      += $line->total_tva;
+    		$this->total_ttc      += $line->total_ttc;
+
             $xnbp++;
         }
 

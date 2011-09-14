@@ -22,7 +22,6 @@
  *       \file       htdocs/adherents/fiche.php
  *       \ingroup    member
  *       \brief      Page of member
- *       \version    $Id: fiche.php,v 1.241 2011/08/10 22:47:35 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -236,9 +235,10 @@ if ($_REQUEST["action"] == 'update' && ! $_POST["cancel"] && $user->rights->adhe
 		$object->zip         = trim($_POST["zipcode"]);
         $object->ville       = trim($_POST["town"]);       // deprecated
         $object->town        = trim($_POST["town"]);
-
-		$object->fk_departement = $_POST["departement_id"];
-		$object->pays_id        = $_POST["pays_id"];
+		$object->state_id    = $_POST["departement_id"];
+		$object->country_id  = $_POST["pays_id"];
+		$object->fk_departement = $_POST["departement_id"];   // deprecated
+		$object->pays_id        = $_POST["pays_id"];   // deprecated
 
 		$object->phone       = trim($_POST["phone"]);
 		$object->phone_perso = trim($_POST["phone_perso"]);
@@ -710,7 +710,6 @@ if ($action == 'create')
     // Password
     if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
     {
-    	include_once(DOL_DOCUMENT_ROOT.'/lib/security.lib.php');
 	    $generated_password=getRandomPassword('');
         print '<tr><td><span class="fieldrequired">'.$langs->trans("Password").'</span></td><td>';
         print '<input size="30" maxsize="32" type="text" name="password" value="'.$generated_password.'">';
@@ -1031,13 +1030,13 @@ if ($action == 'edit')
 	else print $langs->trans("NoDolibarrAccess");
 	print '</td></tr>';
 
-	print '<tr><td colspan="3" align="center">';
+	print '</table>';
+	
+	print '<br><center>';
 	print '<input type="submit" class="button" name="save" value="'.$langs->trans("Save").'">';
 	print ' &nbsp; &nbsp; &nbsp; ';
 	print '<input type="submit" class="button" name="cancel" value="'.$langs->trans("Cancel").'">';
-	print '</td></tr>';
-
-	print '</table>';
+	print '</center';
 
 	print '</form>';
 
@@ -1363,17 +1362,20 @@ if ($rowid && $action != 'edit')
 	print '<table class="nobordernopadding" width="100%"><tr><td>';
 	print $langs->trans("LinkedToDolibarrUser");
 	print '</td>';
-	if ($_GET['action'] != 'editlogin' && $user->rights->adherent->creer) print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editlogin&amp;rowid='.$object->id.'">'.img_edit($langs->trans('SetLinkToUser'),1).'</a></td>';
+	if ($_GET['action'] != 'editlogin' && $user->rights->adherent->creer)
+	{
+	    print '<td align="right">';
+	    if ($user->rights->user->user->creer)
+	    {
+	        print '<a href="'.$_SERVER["PHP_SELF"].'?action=editlogin&amp;rowid='.$object->id.'">'.img_edit($langs->trans('SetLinkToUser'),1).'</a>';
+	    }
+	    print '</td>';
+	}
 	print '</tr></table>';
 	print '</td><td colspan="2" class="valeur">';
 	if ($_GET['action'] == 'editlogin')
 	{
-		/*$include=array();
-		if (empty($user->rights->user->user->creer))	// If can edit only itself user, we can link to itself only
-		{
-			$include=array($object->user_id,$user->id);
-		}*/
-		print $html->form_users($_SERVER['PHP_SELF'].'?rowid='.$object->id,$object->user_id,'userid','');
+	    print $html->form_users($_SERVER['PHP_SELF'].'?rowid='.$object->id,$object->user_id,'userid','');
 	}
 	else
 	{
@@ -1526,5 +1528,5 @@ if ($rowid && $action != 'edit')
 
 $db->close();
 
-llxFooter('$Date: 2011/08/10 22:47:35 $ - $Revision: 1.241 $');
+llxFooter();
 ?>

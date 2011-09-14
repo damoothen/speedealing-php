@@ -19,7 +19,6 @@
  *	\file       htdocs/lib/sendings.lib.php
  *	\ingroup    expedition
  *	\brief      Library for expedition module
- *	\version    $Id: sendings.lib.php,v 1.25 2011/07/31 23:25:42 eldy Exp $
  */
 require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
 require_once(DOL_DOCUMENT_ROOT."/expedition/class/expedition.class.php");
@@ -93,7 +92,9 @@ function delivery_prepare_head($object)
 /**
  * List sendings and receive receipts
  *
- * @param   $option
+ * @param   string		$origin			Origin
+ * @param	int			$origin_id		Origin id
+ * @param	string		$filter			Filter
  * @return
  */
 function show_list_sending_receive($origin='commande',$origin_id,$filter='')

@@ -26,8 +26,7 @@
 /**
  *	\file       htdocs/compta/facture/class/facture.class.php
  *	\ingroup    facture
- *	\brief      Fichier de la classe des factures clients
- *	\version    $Id: facture.class.php,v 1.126 2011/08/10 22:47:33 eldy Exp $
+ *	\brief      File of class to manage invoices
  */
 
 require_once(DOL_DOCUMENT_ROOT ."/core/class/commonobject.class.php");
@@ -37,7 +36,7 @@ require_once(DOL_DOCUMENT_ROOT ."/societe/class/client.class.php");
 
 /**
  *	\class      Facture
- *	\brief      Classe permettant la gestion des factures clients
+ *	\brief      Class to manage invoices
  */
 class Facture extends CommonObject
 {
@@ -110,17 +109,13 @@ class Facture extends CommonObject
     var $errno = 0;
 
     /**
-     *	\brief  Constructeur de la classe
-     *	\param  DB         	handler acces base de donnees
-     *	\param  socid		id societe ('' par defaut)
-     *	\param  facid      	id facture ('' par defaut)
+     * 	Constructor
+     *
+	 * 	@param	DoliDB		$DB			Database handler
      */
-    function Facture($DB, $socid='', $facid='')
+    function Facture($DB)
     {
         $this->db = $DB;
-
-        $this->id = $facid;
-        $this->socid = $socid;
 
         $this->amount = 0;
         $this->remise = 0;
@@ -136,6 +131,7 @@ class Facture extends CommonObject
     /**
      *	Create invoice in database
      *  Note: this->ref can be set or empty. If empty, we will use "(PROV)"
+     *
      *	@param     	user       		Object user that create
      *	@param      notrigger		1=Does not execute triggers, 0 otherwise
      * 	@param		forceduedate	1=Do not recalculate due date from payment condition but force it with value
@@ -376,7 +372,7 @@ class Facture extends CommonObject
                 {
                     if ($_facrec->lines[$i]->fk_product)
                     {
-                        $prod = new Product($this->db, $_facrec->lines[$i]->fk_product);
+                        $prod = new Product($this->db);
                         $res=$prod->fetch($_facrec->lines[$i]->fk_product);
                     }
                     $tva_tx = get_default_tva($mysoc,$soc,$prod->id);
@@ -457,6 +453,7 @@ class Facture extends CommonObject
 
     /**
      *	Create a new invoice in database from current invoice
+     *
      *	@param      user    		Object user that ask creation
      *	@param		invertdetail	Reverse sign of amounts for lines
      *	@return		int				<0 if KO, >0 if OK
@@ -514,9 +511,11 @@ class Facture extends CommonObject
 
     /**
      *		Load an object from its id and create a new one in database
-     *		@param      fromid     		Id of object to clone
-     *		@param		invertdetail	Reverse sign of amounts for lines
-     * 	 	@return		int				New id of clone
+     *
+     *		@param      int				$fromid     	Id of object to clone
+     *		@param		int				$invertdetail	Reverse sign of amounts for lines
+	 *		@param		HookManager		$hookmanager	Hook manager instance
+     * 	 	@return		int								New id of clone
      */
     function createFromClone($fromid,$invertdetail=0,$hookmanager=false)
     {
@@ -600,9 +599,11 @@ class Facture extends CommonObject
     }
 
     /**
-     *      Load an object from an order and create a new invoice into database
-     *      @param      object          Object source
-     *      @return     int             <0 if KO, 0 if nothing done, 1 if OK
+     *  Load an object from an order and create a new invoice into database
+     *
+     *  @param      Object			$object         	Object source
+	 *	@param		HookManager		$hookmanager		Hook manager instance
+     *  @return     int             					<0 if KO, 0 if nothing done, 1 if OK
      */
     function createFromOrder($object, $hookmanager=false)
     {
@@ -618,22 +619,25 @@ class Facture extends CommonObject
         {
             $line = new FactureLigne($this->db);
 
-            $line->libelle           = $object->lines[$i]->libelle;
-            $line->desc              = $object->lines[$i]->desc;
-            $line->price             = $object->lines[$i]->price;
-            $line->subprice          = $object->lines[$i]->subprice;
-            $line->tva_tx            = $object->lines[$i]->tva_tx;
-            $line->localtax1_tx      = $object->lines[$i]->localtax1_tx;
-            $line->localtax2_tx      = $object->lines[$i]->localtax2_tx;
-            $line->qty               = $object->lines[$i]->qty;
-            $line->fk_remise_except  = $object->lines[$i]->fk_remise_except;
-            $line->remise_percent    = $object->lines[$i]->remise_percent;
-            $line->fk_product        = $object->lines[$i]->fk_product;
-            $line->info_bits         = $object->lines[$i]->info_bits;
-            $line->product_type      = $object->lines[$i]->product_type;
-            $line->rang              = $object->lines[$i]->rang;
-            $line->special_code      = $object->lines[$i]->special_code;
-            $line->fk_parent_line    = $object->lines[$i]->fk_parent_line;
+            $line->libelle			= $object->lines[$i]->libelle;
+            $line->desc				= $object->lines[$i]->desc;
+            $line->price			= $object->lines[$i]->price;
+            $line->subprice			= $object->lines[$i]->subprice;
+            $line->total_ht			= $object->lines[$i]->total_ht;
+            $line->total_tva		= $object->lines[$i]->total_tva;
+            $line->total_ttc		= $object->lines[$i]->total_ttc;
+            $line->tva_tx			= $object->lines[$i]->tva_tx;
+            $line->localtax1_tx		= $object->lines[$i]->localtax1_tx;
+            $line->localtax2_tx		= $object->lines[$i]->localtax2_tx;
+            $line->qty				= $object->lines[$i]->qty;
+            $line->fk_remise_except	= $object->lines[$i]->fk_remise_except;
+            $line->remise_percent	= $object->lines[$i]->remise_percent;
+            $line->fk_product		= $object->lines[$i]->fk_product;
+            $line->info_bits		= $object->lines[$i]->info_bits;
+            $line->product_type		= $object->lines[$i]->product_type;
+            $line->rang				= $object->lines[$i]->rang;
+            $line->special_code		= $object->lines[$i]->special_code;
+            $line->fk_parent_line	= $object->lines[$i]->fk_parent_line;
 
             $this->lines[$i] = $line;
         }
@@ -661,8 +665,8 @@ class Facture extends CommonObject
         	// Hook of thirdparty module
 			if (is_object($hookmanager))
 			{
-			    $parameters=array('objFrom'=>$objFrom);
-				$reshook=$hookmanager->executeHooks('createfrom',$parameters,$object,$action);    // Note that $action and $object may have been modified by some hooks
+			    $parameters=array('objFrom'=>$object);
+				$reshook=$hookmanager->executeHooks('createfrom',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
 				if ($reshook < 0) $error++;
 			}
 
@@ -677,6 +681,7 @@ class Facture extends CommonObject
 
     /**
      *      Return clicable link of object (with eventually picto)
+     *
      *      @param      withpicto       Add picto into link
      *      @param      option          Where point the link
      *      @param      max             Maxlength of ref
@@ -715,6 +720,7 @@ class Facture extends CommonObject
 
     /**
      *	Get object and lines from database
+     *
      *	@param      rowid       Id of object to load
      * 	@param		ref			Reference of invoice
      * 	@param		ref_ext		External reference of invoice
@@ -850,6 +856,7 @@ class Facture extends CommonObject
 
     /**
      *	Recupere les lignes de factures dans this->lines
+     *
      *	@return     int         1 if OK, < 0 if KO
      */
     function fetch_lines()
@@ -928,10 +935,11 @@ class Facture extends CommonObject
 
 
     /**
-     *      \brief      Update database
-     *      \param      user        	User that modify
-     *      \param      notrigger	    0=launch triggers after, 1=disable triggers
-     *      \return     int         	<0 if KO, >0 if OK
+     *      Update database
+     *
+     *      @param      user        	User that modify
+     *      @param      notrigger	    0=launch triggers after, 1=disable triggers
+     *      @return     int         	<0 if KO, >0 if OK
      */
     function update($user=0, $notrigger=0)
     {
@@ -1049,9 +1057,10 @@ class Facture extends CommonObject
 
 
     /**
-     *    \brief     Ajout en base d'une ligne remise fixe en ligne de facture
-     *    \param     idremise			Id de la remise fixe
-     *    \return    int          		>0 si ok, <0 si ko
+     *    Add a discount line into invoice using an existing absolute discount
+     *
+     *    @param     int	$idremise	Id of absolute discount
+     *    @return    int          		>0 if OK, <0 if KO
      */
     function insert_discount($idremise)
     {
@@ -1100,7 +1109,7 @@ class Facture extends CommonObject
                 $result=$this->update_price(1);
                 if ($result > 0)
                 {
-                    // Cr�e lien entre remise et ligne de facture
+                    // Create linke between discount and invoice line
                     $result=$remise->link_to_invoice($lineid,0);
                     if ($result < 0)
                     {
@@ -1133,7 +1142,12 @@ class Facture extends CommonObject
         }
     }
 
-
+    /**
+     *	Set customer ref
+     *
+     *	@param     	string	$ref_client		Customer ref
+     *	@return		int						<0 if KO, >0 if OK
+     */
     function set_ref_client($ref_client)
     {
         $sql = 'UPDATE '.MAIN_DB_PREFIX.'facture';
@@ -1156,8 +1170,9 @@ class Facture extends CommonObject
 
     /**
      *	Delete invoice
-     *	@param     	rowid      	Id of invoice to delete
-     *	@return		int			<0 if KO, >0 if OK
+     *
+     *	@param     	int		$rowid      	Id of invoice to delete
+     *	@return		int						<0 if KO, >0 if OK
      */
     function delete($rowid=0)
     {
@@ -1766,30 +1781,31 @@ class Facture extends CommonObject
 
 
     /**
-     * 		Add an invoice line into database (linked to product/service or not)
-     * 		\param    	facid           	Id de la facture
-     * 		\param    	desc            	Description de la ligne
-     * 		\param    	pu_ht              	Prix unitaire HT (> 0 even for credit note)
-     * 		\param    	qty             	Quantite
-     * 		\param    	txtva           	Taux de tva force, sinon -1
-     * 		\param		txlocaltax1			Local tax 1 rate
-     *  	\param		txlocaltax2			Local tax 2 rate
-     *		\param    	fk_product      	Id du produit/service predefini
-     * 		\param    	remise_percent  	Pourcentage de remise de la ligne
-     * 		\param    	date_start      	Date de debut de validite du service
-     * 		\param    	date_end        	Date de fin de validite du service
-     * 		\param    	ventil          	Code de ventilation comptable
-     * 		\param    	info_bits			Bits de type de lignes
-     *		\param    	fk_remise_except	Id remise
-     *		\param		price_base_type		HT or TTC
-     * 		\param    	pu_ttc             	Prix unitaire TTC (> 0 even for credit note)
-     * 		\param		type				Type of line (0=product, 1=service)
-     *      \param      rang                Position of line
-     *    	\return    	int             	>0 if OK, <0 if KO
-     * 		\remarks	Les parametres sont deja cense etre juste et avec valeurs finales a l'appel
-     *					de cette methode. Aussi, pour le taux tva, il doit deja avoir ete defini
-     *					par l'appelant par la methode get_default_tva(societe_vendeuse,societe_acheteuse,produit)
-     *					et le desc doit deja avoir la bonne valeur (a l'appelant de gerer le multilangue)
+     * 		Add an invoice line into database (linked to product/service or not).
+     * 		Les parametres sont deja cense etre juste et avec valeurs finales a l'appel
+     *		de cette methode. Aussi, pour le taux tva, il doit deja avoir ete defini
+     *		par l'appelant par la methode get_default_tva(societe_vendeuse,societe_acheteuse,produit)
+     *		et le desc doit deja avoir la bonne valeur (a l'appelant de gerer le multilangue)
+     *
+     * 		@param    	facid           	Id de la facture
+     * 		@param    	desc            	Description de la ligne
+     * 		@param    	pu_ht              	Prix unitaire HT (> 0 even for credit note)
+     * 		@param    	qty             	Quantite
+     * 		@param    	txtva           	Taux de tva force, sinon -1
+     * 		@param		txlocaltax1			Local tax 1 rate
+     *  	@param		txlocaltax2			Local tax 2 rate
+     *		@param    	fk_product      	Id du produit/service predefini
+     * 		@param    	remise_percent  	Pourcentage de remise de la ligne
+     * 		@param    	date_start      	Date de debut de validite du service
+     * 		@param    	date_end        	Date de fin de validite du service
+     * 		@param    	ventil          	Code de ventilation comptable
+     * 		@param    	info_bits			Bits de type de lignes
+     *		@param    	fk_remise_except	Id remise
+     *		@param		price_base_type		HT or TTC
+     * 		@param    	pu_ttc             	Prix unitaire TTC (> 0 even for credit note)
+     * 		@param		type				Type of line (0=product, 1=service)
+     *      @param      rang                Position of line
+     *    	@return    	int             	<0 if KO, Id of line if OK
      */
     function addline($facid, $desc, $pu_ht, $qty, $txtva, $txlocaltax1=0, $txlocaltax2=0, $fk_product=0, $remise_percent=0, $date_start='', $date_end='', $ventil=0, $info_bits=0, $fk_remise_except='', $price_base_type='HT', $pu_ttc=0, $type=0, $rang=-1, $special_code=0, $origin='', $origin_id=0, $fk_parent_line=0)
     {
@@ -3049,6 +3065,8 @@ class Facture extends CommonObject
     {
         global $user,$langs,$conf;
 
+        $now=dol_now();
+
         $prodids = array();
         $sql = "SELECT rowid";
         $sql.= " FROM ".MAIN_DB_PREFIX."product";
@@ -3071,7 +3089,7 @@ class Facture extends CommonObject
         $this->ref = 'SPECIMEN';
         $this->specimen=1;
         $this->socid = 1;
-        $this->date = time();
+        $this->date = $now;
         $this->date_lim_reglement=$this->date+3600*24*30;
         $this->cond_reglement_id   = 1;
         $this->cond_reglement_code = 'RECEP';
@@ -3092,17 +3110,32 @@ class Facture extends CommonObject
             $line->tva_tx=19.6;
             $line->localtax1_tx=0;
             $line->localtax2_tx=0;
-            $line->remise_percent=10;
-            $line->total_ht=90;
-            $line->total_ttc=107.64;    // 90 * 1.196
-            $line->total_tva=17.64;
+			if ($xnbp == 2)
+			{
+			    $line->total_ht=50;
+			    $line->total_ttc=59.8;
+			    $line->total_tva=9.8;
+    			$line->remise_percent=50;
+			}
+			else
+			{
+			    $line->total_ht=100;
+			    $line->total_ttc=119.6;
+			    $line->total_tva=19.6;
+    			$line->remise_percent=00;
+			}
             $prodid = rand(1, $num_prods);
             $line->fk_product=$prodids[$prodid];
 
             $this->lines[$xnbp]=$line;
 
+    		$this->total_ht       += $line->total_ht;
+    		$this->total_tva      += $line->total_tva;
+    		$this->total_ttc      += $line->total_ttc;
+
             $xnbp++;
         }
+
         // Add a line "offered"
         $line=new FactureLigne($this->db);
         $line->desc=$langs->trans("Description")." ".$xnbp;
@@ -3121,17 +3154,14 @@ class Facture extends CommonObject
 
         $this->lines[$xnbp]=$line;
 
-        $xnbp++;
-
-        $this->amount_ht      = $xnbp*90;
-        $this->total_ht       = $xnbp*90;
-        $this->total_tva      = $xnbp*90*0.196;
-        $this->total_ttc      = $xnbp*90*1.196;
+		$xnbp++;
     }
 
     /**
-     *      \brief      Charge indicateurs this->nb de tableau de bord
-     *      \return     int         <0 si ko, >0 si ok
+     *      Load indicators for dashboard (this->nbtodo and this->nbtodolate)
+     *
+	 *      @param          user    Objet user
+	 *      @return         int     <0 if KO, >0 if OK
      */
     function load_state_board()
     {

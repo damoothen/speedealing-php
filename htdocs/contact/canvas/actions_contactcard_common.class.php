@@ -19,14 +19,13 @@
  *	\file       htdocs/contact/canvas/actions_contactcard_common.class.php
  *	\ingroup    thirdparty
  *	\brief      Fichier de la classe Thirdparty contact card controller (common)
- *	\version    $Id: actions_contactcard_common.class.php,v 1.25 2011/07/31 23:54:12 eldy Exp $
  */
 
 /**
  *	\class      ActionsContactCardCommon
  *	\brief      Classe permettant la gestion des contacts par defaut
  */
-class ActionsContactCardCommon
+abstract class ActionsContactCardCommon
 {
     var $db;
     var $targetmodule;
@@ -46,10 +45,11 @@ class ActionsContactCardCommon
 
     /**
 	 *    Constructor
-     *    @param   DB              Handler acces base de donnees
-     *    @param   targmetmodule   Name of directory of module where canvas is stored
-     *    @param   canvas          Name of canvas
-     *    @param   card            Name of tab (sub-canvas)
+	 *
+     *    @param   DoliDB	$DB              Handler acces base de donnees
+     *    @param   string	$targetmodule    Name of directory of module where canvas is stored
+     *    @param   string	$canvas          Name of canvas
+     *    @param   streing	$card            Name of tab (sub-canvas)
 	 */
 	function ActionsContactCardCommon($DB,$targetmodule,$canvas,$card)
 	{
@@ -61,7 +61,9 @@ class ActionsContactCardCommon
 
 
     /**
-     *    Load data control
+     *  Load data control
+     *
+     *	@param	int		$id		Id of object
      */
     function doActions($id)
     {
@@ -186,6 +188,8 @@ class ActionsContactCardCommon
 
     /**
      *  Return the title of card
+     *
+     *  @param		string		$action		Type of action
      */
     function getTitle($action)
     {
@@ -201,13 +205,16 @@ class ActionsContactCardCommon
 
 	/**
      *    Set content of ->tpl array, to use into template
-     *    @param      action     Type of template
+     *
+     *    @param      string	$action     Type of action
      */
     function assign_values($action='')
     {
         global $conf, $langs, $user, $canvas;
         global $form, $formcompany, $objsoc;
 
+        if ($action == 'create' || $action == 'edit') $this->assign_post($action);
+        
         foreach($this->object as $key => $value)
         {
             $this->tpl[$key] = $value;
@@ -340,7 +347,6 @@ class ActionsContactCardCommon
         		$generated_password='';
         		if (! $ldap_sid)
         		{
-					include_once(DOL_DOCUMENT_ROOT.'/lib/security.lib.php');
 	        		$generated_password=getRandomPassword('');
         		}
         		$password=$generated_password;
@@ -391,7 +397,7 @@ class ActionsContactCardCommon
     /**
      *    Assigne les valeurs POST dans l'objet
      */
-    function assign_post()
+    function assign_post($action)
     {
         global $langs, $mysoc;
 

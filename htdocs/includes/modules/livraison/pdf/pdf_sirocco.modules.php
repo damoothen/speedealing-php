@@ -23,7 +23,6 @@
  *	\file       htdocs/includes/modules/livraison/pdf/pdf_sirocco.modules.php
  *	\ingroup    livraison
  *	\brief      File of class to manage receving receipts with template Sirocco
- *	\version    $Id: pdf_sirocco.modules.php,v 1.78 2011/08/08 16:07:48 eldy Exp $
  */
 
 require_once(DOL_DOCUMENT_ROOT."/includes/modules/livraison/modules_livraison.php");
@@ -38,8 +37,10 @@ require_once(DOL_DOCUMENT_ROOT.'/lib/pdf.lib.php');
 class pdf_sirocco extends ModelePDFDeliveryOrder
 {
 
-	/**		\brief      Constructor
-	 *		\param	    db	    Database handler
+	/**
+	 *	Constructor
+	 *
+	 *  @param		DoliDB		$DB      Database handler
 	 */
 	function pdf_sirocco($db)
 	{
@@ -56,8 +57,9 @@ class pdf_sirocco extends ModelePDFDeliveryOrder
 
 		// Dimension page pour format A4
 		$this->type = 'pdf';
-		$this->page_largeur = 210;
-		$this->page_hauteur = 297;
+		$formatarray=pdf_getFormat();
+		$this->page_largeur = $formatarray['width'];
+		$this->page_hauteur = $formatarray['height'];
 		$this->format = array($this->page_largeur,$this->page_hauteur);
 		$this->marge_gauche=10;
 		$this->marge_droite=10;
@@ -85,7 +87,7 @@ class pdf_sirocco extends ModelePDFDeliveryOrder
 
 		if (! is_object($outputlangs)) $outputlangs=$langs;
 		// For backward compatibility with FPDF, force output charset to ISO, because FPDF expect text to be encoded in ISO
-		if (!class_exists('TCPDF')) $outputlangs->charset_output='ISO-8859-1';
+		if (! empty($conf->global->MAIN_USE_FPDF)) $outputlangs->charset_output='ISO-8859-1';
 
 		$outputlangs->load("main");
 		$outputlangs->load("dict");
@@ -311,12 +313,14 @@ class pdf_sirocco extends ModelePDFDeliveryOrder
 	}
 
 	/**
-	 *   	\brief      Affiche en-tete
-	 *   	\param      pdf     		objet PDF
-	 *   	\param      delivery    	object delivery
-	 *      \param      showadress      0=non, 1=oui
+	 *   	Show header of page
+	 *
+	 *   	@param      $pdf     		Object PDF
+	 *   	@param      $object     	Object delivery
+	 *      @param      $showaddress    0=no, 1=yes
+	 *      @param      $outputlangs	Object lang for output
 	 */
-	function _pagehead(&$pdf, $object, $showadress=1, $outputlangs)
+	function _pagehead(&$pdf, $object, $showaddress=1, $outputlangs)
 	{
 		global $langs,$conf,$mysoc;
 		$default_font_size = pdf_getPDFFontSize($outputlangs);
@@ -328,6 +332,7 @@ class pdf_sirocco extends ModelePDFDeliveryOrder
 		$pdf->SetTextColor(0,0,60);
 		$pdf->SetFont('','B', $default_font_size + 3);
 
+        $posx=$this->page_largeur-$this->marge_droite-100;
 		$posy=$this->marge_haute;
 
 		$pdf->SetXY($this->marge_gauche,$posy);
@@ -388,15 +393,15 @@ class pdf_sirocco extends ModelePDFDeliveryOrder
 
 		$pdf->SetTextColor(0,0,60);
 		$pdf->SetFont('','B', $default_font_size + 1);
-        $pdf->SetXY($this->page_largeur - $this->marge_droite - 100, 86);
+        $pdf->SetXY($posx, 86);
 		$pdf->MultiCell(100, 2, $outputlangs->transnoentities("Date")." : " . dol_print_date(($object->date_delivery?$object->date_delivery:$date->valid),"day",false,$outputlangs,true), 0, 'R');
-        $pdf->SetXY($this->page_largeur - $this->marge_droite - 100, 92);
+        $pdf->SetXY($posx, 92);
 		$pdf->MultiCell(100, 2, $outputlangs->transnoentities("DeliveryOrder")." ".$outputlangs->convToOutputCharset($object->ref), 0, 'R');
 
 		if ($object->client->code_client)
 		{
 			$posy+=7;
-			$pdf->SetXY($this->page_largeur - $this->marge_droite - 100, $posy);
+			$pdf->SetXY($posx, $posy);
 			$pdf->SetTextColor(0,0,60);
 			$pdf->MultiCell(100, 3, $outputlangs->transnoentities("CustomerCode")." : " . $outputlangs->transnoentities($object->client->code_client), '', 'R');
 		}
@@ -425,7 +430,7 @@ class pdf_sirocco extends ModelePDFDeliveryOrder
 						if ($result >= 0)
 						{
 							$posy+=5;
-							$pdf->SetXY(100,$posy);
+							$pdf->SetXY($posx,$posy);
 							$pdf->SetFont('','', $default_font_size - 1);
 							$text=$order->ref;
 							if ($order->ref_client) $text.=' ('.$order->ref_client.')';

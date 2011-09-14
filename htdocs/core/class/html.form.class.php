@@ -31,7 +31,6 @@
  *	\file       htdocs/core/class/html.form.class.php
  *  \ingroup    core
  *	\brief      File of class with all html predefined components
- *	\version	$Id: html.form.class.php,v 1.194 2011/08/04 21:46:51 eldy Exp $
  */
 
 
@@ -56,8 +55,9 @@ class Form
 
 
     /**
-     * Constructor
-     * @param      $DB      Database handler
+	 *	Constructor
+	 *
+	 *  @param		DoliDB		$DB      Database handler
      */
     function Form($DB)
     {
@@ -66,6 +66,7 @@ class Form
 
     /**
      * Output key field for an editable field
+     *
      * @param      text            Text of label
      * @param      htmlname        Name of select field
      * @param      preselected     Preselected value for parameter
@@ -195,9 +196,10 @@ class Form
 
     /**
      *	Show a text with a picto and a tooltip on picto
+     *
      *	@param     	text				Text to show
      *	@param   	htmltooltip     	Content of tooltip
-     *	@param		direction			1=Icon is after text, -1=Icon is before text
+     *	@param		direction			1=Icon is after text, -1=Icon is before text, 0=no icon
      * 	@param		type				Type of picto (info, help, warning, superadmin...)
      *  @param  	extracss            Add a CSS style to td tags
      *  @param      noencodehtmltext    Do not encode into html entity the htmltext
@@ -224,7 +226,7 @@ class Form
         // Info or help
         if ($type == 'info') 				$img=img_help(0,$alt);
         if ($type == 'help' || $type ==1)	$img=img_help(1,$alt);
-        if ($type == 'superadmin') 			$img=img_redstar($alt);
+        if ($type == 'superadmin') 			$img=img_picto($alt,"redstar");
         if ($type == 'admin')				$img=img_picto($alt,"star");
         // Warnings
         if ($type == 'warning') 			$img=img_warning($alt);
@@ -641,7 +643,7 @@ class Form
                     if ($maxvalue && $obj->amount_ttc > $maxvalue)
                     {
                         $qualifiedlines--;
-                        $disabled=' disabled="true"';
+                        $disabled=' disabled="disabled"';
                     }
 
                     print '<option value="'.$obj->rowid.'"'.$selectstring.$disabled.'>'.$desc.' ('.price($obj->amount_ht).' '.$langs->trans("HT").' - '.price($obj->amount_ttc).' '.$langs->trans("TTC").')</option>';
@@ -714,7 +716,7 @@ class Form
                         if ($selected && $selected == $obj->rowid)
                         {
                             print '<option value="'.$obj->rowid.'"';
-                            if ($disabled) print ' disabled="true"';
+                            if ($disabled) print ' disabled="disabled"';
                             print ' selected="selected">';
                             print $contactstatic->getFullName($langs);
                             if ($showfunction && $obj->poste) print ' ('.$obj->poste.')';
@@ -723,7 +725,7 @@ class Form
                         else
                         {
                             print '<option value="'.$obj->rowid.'"';
-                            if ($disabled) print ' disabled="true"';
+                            if ($disabled) print ' disabled="disabled"';
                             print '>';
                             print $contactstatic->getFullName($langs);
                             if ($showfunction && $obj->poste) print ' ('.$obj->poste.')';
@@ -756,6 +758,7 @@ class Form
 
     /**
      *	Return select list of users
+     *
      *  @param      selected        Id user preselected
      *  @param      htmlname        Field name in form
      *  @param      show_empty      0=liste sans valeur nulle, 1=ajoute valeur inconnue
@@ -763,14 +766,16 @@ class Form
      * 	@param		disabled		If select list must be disabled
      *  @param      include         Array list of users id to include
      * 	@param		enableonly		Array list of users id to be enabled. All other must be disabled
+     *  @param		force_entity	Possibility to force entity
      */
-    function select_users($selected='',$htmlname='userid',$show_empty=0,$exclude='',$disabled=0,$include='',$enableonly='')
+    function select_users($selected='',$htmlname='userid',$show_empty=0,$exclude='',$disabled=0,$include='',$enableonly='',$force_entity=0)
     {
-    	print $this->select_dolusers($selected,$htmlname,$show_empty,$exclude,$disabled,$include,$enableonly);
+    	print $this->select_dolusers($selected,$htmlname,$show_empty,$exclude,$disabled,$include,$enableonly,$force_entity);
     }
 
     /**
      *	Return select list of users
+     *
      *  @param      selected        User id or user object of user preselected. If -1, we use id of current user.
      *  @param      htmlname        Field name in form
      *  @param      show_empty      0=liste sans valeur nulle, 1=ajoute valeur inconnue
@@ -778,8 +783,9 @@ class Form
      * 	@param		disabled		If select list must be disabled
      *  @param      include         Array list of users id to include
      * 	@param		enableonly		Array list of users id to be enabled. All other must be disabled
+     *  @param		force_entity	Possibility to force entity
      */
-    function select_dolusers($selected='',$htmlname='userid',$show_empty=0,$exclude='',$disabled=0,$include='',$enableonly='')
+    function select_dolusers($selected='',$htmlname='userid',$show_empty=0,$exclude='',$disabled=0,$include='',$enableonly='',$force_entity=0)
     {
         global $conf,$user,$langs;
 
@@ -794,17 +800,22 @@ class Form
         $out='';
 
         // On recherche les utilisateurs
-        $sql = "SELECT u.rowid, u.name, u.firstname, u.login, u.admin";
-        if($conf->entity==0)
-            $sql.=" ,e.label";
-        $sql.= " FROM ".MAIN_DB_PREFIX ."user as u";
-        if($conf->entity==0)
+        $sql = "SELECT u.rowid, u.name, u.firstname, u.login, u.admin, u.entity";
+        if(! empty($conf->multicompany->enabled) && $conf->entity == 1 && $user->admin && ! $user->entity)
         {
-            $sql.=" LEFT JOIN ".MAIN_DB_PREFIX ."entity as e on e.rowid=u.entity";
-            $sql.=" WHERE u.entity IS NOT NULL";
+        	$sql.= ", e.label";
+        }
+        $sql.= " FROM ".MAIN_DB_PREFIX ."user as u";
+        if(! empty($conf->multicompany->enabled) && $conf->entity == 1 && $user->admin && ! $user->entity)
+        {
+            $sql.= " LEFT JOIN ".MAIN_DB_PREFIX ."entity as e on e.rowid=u.entity";
+            if ($force_entity) $sql.= " WHERE u.entity IN (0,".$force_entity.")";
+            else $sql.= " WHERE u.entity IS NOT NULL";
         }
         else
-            $sql.= " WHERE u.entity IN (0,".$conf->entity.")";
+        {
+        	$sql.= " WHERE u.entity IN (0,".$conf->entity.")";
+        }
         if (is_array($exclude) && $excludeUsers) $sql.= " AND u.rowid NOT IN ('".$excludeUsers."')";
         if (is_array($include) && $includeUsers) $sql.= " AND u.rowid IN ('".$includeUsers."')";
         $sql.= " ORDER BY u.name ASC";
@@ -813,13 +824,14 @@ class Form
         $resql=$this->db->query($sql);
         if ($resql)
         {
-            $out.= '<select class="flat" id="'.$htmlname.'" name="'.$htmlname.'"'.($disabled?' disabled="true"':'').'>';
-            if ($show_empty) $out.= '<option value="-1"'.($id==-1?' selected="selected"':'').'>&nbsp;</option>'."\n";
             $num = $this->db->num_rows($resql);
             $i = 0;
             if ($num)
             {
-                $userstatic=new User($this->db);
+            	$out.= '<select class="flat" id="'.$htmlname.'" name="'.$htmlname.'"'.($disabled?' disabled="disabled"':'').'>';
+            	if ($show_empty) $out.= '<option value="-1"'.($id==-1?' selected="selected"':'').'>&nbsp;</option>'."\n";
+
+            	$userstatic=new User($this->db);
 
                 while ($i < $num)
                 {
@@ -835,24 +847,33 @@ class Form
                     if ((is_object($selected) && $selected->id == $obj->rowid) || (! is_object($selected) && $selected == $obj->rowid))
                     {
                         $out.= '<option value="'.$obj->rowid.'"';
-                        if ($disableline) $out.= ' disabled="true"';
+                        if ($disableline) $out.= ' disabled="disabled"';
                         $out.= ' selected="selected">';
                     }
                     else
                     {
                         $out.= '<option value="'.$obj->rowid.'"';
-                        if ($disableline) $out.= ' disabled="true"';
+                        if ($disableline) $out.= ' disabled="disabled"';
                         $out.= '>';
                     }
                     $out.= $userstatic->getFullName($langs);
-                    if($conf->entity==0 && !$conf->global->MULTICOMPANY_MODE_TRANVERSAL)
-                        $out.=" (".$obj->label.")";
+
+                    if(! empty($conf->multicompany->enabled) && empty($conf->global->MULTICOMPANY_TRANSVERSE_MODE) && $conf->entity == 1 && $user->admin && ! $user->entity)
+                    {
+                    	if ($obj->admin && ! $obj->entity) $out.=" (".$langs->trans("AllEntities").")";
+						else $out.=" (".$obj->label.")";
+                    }
 
                     //if ($obj->admin) $out.= ' *';
                     if ($conf->global->MAIN_SHOW_LOGIN) $out.= ' ('.$obj->login.')';
                     $out.= '</option>';
                     $i++;
                 }
+            }
+        	else
+            {
+            	$out.= '<select class="flat" name="'.$htmlname.'" disabled="disabled">';
+            	$out.= '<option value="">'.$langs->trans("EmptyList").'</option>';
             }
             $out.= '</select>';
         }
@@ -880,6 +901,8 @@ class Form
     {
         global $langs,$conf;
 
+        $price_level = (! empty($price_level) ? $price_level : 0);
+
         if ($conf->global->PRODUIT_USE_SEARCH_TO_SELECT)
         {
         	if ($selected && empty($selected_input_value))
@@ -893,12 +916,13 @@ class Form
             print ajax_autocompleter($selected, $htmlname, DOL_URL_ROOT.'/product/ajaxproducts.php', 'htmlname='.$htmlname.'&outjson=1&price_level='.$price_level.'&type='.$filtertype.'&mode=1&status='.$status.'&finished='.$finished, $conf->global->PRODUIT_USE_SEARCH_TO_SELECT);
             if (! $hidelabel) print $langs->trans("RefOrLabel").' : ';
             print '<input type="text" size="20" name="search_'.$htmlname.'" id="search_'.$htmlname.'" value="'.$selected_input_value.'" />';
-            print '<br>';
         }
         else
         {
             $this->select_produits_do($selected,$htmlname,$filtertype,$limit,$price_level,'',$status,$finished,0);
         }
+
+        print '<br>';
     }
 
     /**
@@ -1382,7 +1406,7 @@ class Form
     }
 
     /**
-     *    Retourne la liste deroulante des adresses
+     *    Return list of delivery address
      *    @param      selected          Id contact pre-selectionn
      *    @param      socid
      *    @param      htmlname          Name of HTML field
@@ -1657,11 +1681,12 @@ class Form
 
 
     /**
-     *      \brief      Retourne la liste des types de paiements possibles
-     *      \param      selected        Id du type de paiement pre-selectionne
-     *      \param      htmlname        Nom de la zone select
-     *      \param      filtertype      Pour filtre
-     *		\param		addempty		Ajoute entree vide
+     *      Retourne la liste des types de paiements possibles
+     *
+     *      @param      selected        Id du type de paiement pre-selectionne
+     *      @param      htmlname        Nom de la zone select
+     *      @param      filtertype      Pour filtre
+     *		@param		addempty		Ajoute entree vide
      */
     function select_conditions_paiements($selected='',$htmlname='condid',$filtertype=-1,$addempty=0)
     {
@@ -1691,6 +1716,7 @@ class Form
 
     /**
      *      Return list of payment methods
+     *
      *      @param      selected        Id du mode de paiement pre-selectionne
      *      @param      htmlname        Nom de la zone select
      *      @param      filtertype      To filter on field type in llx_c_paiement (array('code'=>xx,'label'=>zz))
@@ -1743,9 +1769,10 @@ class Form
 
 
     /**
-     *      \brief      Selection HT ou TTC
-     *      \param      selected        Id pre-selectionne
-     *      \param      htmlname        Nom de la zone select
+     *      Selection HT or TTC
+     *
+     *      @param      selected        Id pre-selectionne
+     *      @param      htmlname        Nom de la zone select
      */
     function select_PriceBaseType($selected='',$htmlname='price_base_type')
     {
@@ -1754,9 +1781,10 @@ class Form
 
 
     /**
-     *      \brief      Selection HT ou TTC
-     *      \param      selected        Id pre-selectionne
-     *      \param      htmlname        Nom de la zone select
+     *      Selection HT or TTC
+     *
+     *      @param      selected        Id pre-selectionne
+     *      @param      htmlname        Nom de la zone select
      */
     function load_PriceBaseType($selected='',$htmlname='price_base_type')
     {
@@ -1912,6 +1940,7 @@ class Form
 
     /**
      *    Return list of categories having choosed type
+     *
      *    @param    type			Type de categories (0=product, 1=supplier, 2=customer, 3=member)
      *    @param    selected    	Id of category preselected
      *    @param    select_name		HTML field name
@@ -1931,7 +1960,7 @@ class Form
         $output = '<select class="flat" name="'.$select_name.'">';
         if (is_array($cate_arbo))
         {
-            if (! sizeof($cate_arbo)) $output.= '<option value="-1" disabled="true">'.$langs->trans("NoCategoriesDefined").'</option>';
+            if (! sizeof($cate_arbo)) $output.= '<option value="-1" disabled="disabled">'.$langs->trans("NoCategoriesDefined").'</option>';
             else
             {
                 $output.= '<option value="-1">&nbsp;</option>';
@@ -1956,6 +1985,7 @@ class Form
 
 	/**
      *     Show a confirmation HTML form or AJAX popup
+     *
      *     @param  page        	   Url of page to call if confirmation is OK
      *     @param  title       	   title
      *     @param  question    	   question
@@ -1973,6 +2003,7 @@ class Form
 
     /**
      *     Show a confirmation HTML form or AJAX popup
+     *
      *     @param  page        	   Url of page to call if confirmation is OK
      *     @param  title       	   title
      *     @param  question    	   question
@@ -2019,9 +2050,9 @@ class Form
 	                    $more.='<tr>';
 	                    $more.='<td valign="top">'.$input['label'].' </td><td valign="top" align="left">';
 	                    $more.='<input type="checkbox" class="flat" id="'.$input['name'].'" name="'.$input['name'].'"';
-	                    if (! is_bool($input['value']) && $input['value'] != 'false') $more.=' checked="true"';
-	                    if (is_bool($input['value']) && $input['value']) $more.=' checked="true"';
-	                    if ($input['disabled']) $more.=' disabled="true"';
+	                    if (! is_bool($input['value']) && $input['value'] != 'false') $more.=' checked="checked"';
+	                    if (is_bool($input['value']) && $input['value']) $more.=' checked="checked"';
+	                    if ($input['disabled']) $more.=' disabled="disabled"';
 	                    $more.=' /></td>';
 	                    $more.='<td valign="top" align="left">&nbsp;</td>';
 	                    $more.='</tr>'."\n";
@@ -2035,7 +2066,7 @@ class Form
 	                        if ($i==0) $more.='<td valign="top">'.$input['label'].'</td>';
 	                        else $more.='<td>&nbsp;</td>';
 	                        $more.='<td valign="top" width="20"><input type="radio" class="flat" id="'.$input['name'].'" name="'.$input['name'].'" value="'.$selkey.'"';
-	                        if ($input['disabled']) $more.=' disabled="true"';
+	                        if ($input['disabled']) $more.=' disabled="disabled"';
 	                        $more.=' /></td>';
 	                        $more.='<td valign="top" align="left">';
 	                        $more.=$selval;
@@ -2177,6 +2208,7 @@ class Form
 
     /**
      *    Show a form to select a project
+     *
      *    @param      page        Page
      *    @param      socid       Id societe
      *    @param      selected    Id projet pre-selectionne
@@ -2217,6 +2249,7 @@ class Form
 
     /**
      *    	Show a form to select payment conditions
+     *
      *    	@param      page        	Page
      *    	@param      selected    	Id condition pre-selectionne
      *    	@param      htmlname    	Name of select html field
@@ -2251,6 +2284,7 @@ class Form
 
 	 /**
      *    	Show a form to select a delivery delay
+     *
      *    	@param      page        	Page
      *    	@param      selected    	Id condition pre-selectionne
      *    	@param      htmlname    	Name of select html field
@@ -2285,6 +2319,7 @@ class Form
 
 	/**
      *    	Show a select form to select origin
+     *
      *    	@param      page        	Page
      *    	@param      selected    	Id condition pre-selectionne
      *    	@param      htmlname    	Name of select html field
@@ -2326,6 +2361,7 @@ class Form
 
     /**
      *    Show a form to select a date
+     *
      *    @param      page        Page
      *    @param      selected    Date preselected
      *    @param      htmlname    Name of input html field
@@ -2361,6 +2397,7 @@ class Form
 
     /**
      *    	Show a select form to choose a user
+     *
      *    	@param      page        	Page
      *   	@param      selected    	Id of user preselected
      *    	@param      htmlname    	Name of input html field
@@ -2401,10 +2438,11 @@ class Form
 
 
     /**
-     *    \brief      Affiche formulaire de selection des modes de reglement
-     *    \param      page        Page
-     *    \param      selected    Id mode pre-selectionne
-     *    \param      htmlname    Name of select html field
+     *    Affiche formulaire de selection des modes de reglement
+     *
+     *    @param      page        Page
+     *    @param      selected    Id mode pre-selectionne
+     *    @param      htmlname    Name of select html field
      */
     function form_modes_reglement($page, $selected='', $htmlname='mode_reglement_id')
     {
@@ -2436,6 +2474,7 @@ class Form
 
     /**
      *    	Show a select box with available absolute discounts
+     *
      *    	@param      page        	Page URL where form is shown
      *    	@param      selected    	Value pre-selected
      *		@param      htmlname    	Nom du formulaire select. Si none, non modifiable
@@ -2489,10 +2528,11 @@ class Form
 
 
     /**
-     *    \brief      Affiche formulaire de selection des contacts
-     *    \param      page        Page
-     *    \param      selected    Id contact pre-selectionne
-     *    \param      htmlname    Nom du formulaire select
+     *    Affiche formulaire de selection des contacts
+     *
+     *    @param      page        Page
+     *    @param      selected    Id contact pre-selectionne
+     *    @param      htmlname    Nom du formulaire select
      */
     function form_contacts($page, $societe, $selected='', $htmlname='contactidp')
     {
@@ -2532,10 +2572,11 @@ class Form
     }
 
 /**
-     *    \brief      Affiche formulaire de selection des tiers
-     *    \param      page        Page
-     *    \param      selected    Id contact pre-selectionne
-     *    \param      htmlname    Nom du formulaire select
+     *    Affiche formulaire de selection des tiers
+     *
+     *    @param      page        Page
+     *    @param      selected    Id contact pre-selectionne
+     *    @param      htmlname    Nom du formulaire select
      */
     function form_thirdparty($page, $selected='', $htmlname='socid')
     {
@@ -2568,12 +2609,13 @@ class Form
     }
 
     /**
-     *    	\brief      Affiche formulaire de selection de l'adresse
-     *    	\param      page        	Page
-     *    	\param      selected    	Id condition pre-selectionne
-     *    	\param      htmlname    	Nom du formulaire select
-     *		\param		origin        	Origine de l'appel pour pouvoir creer un retour
-     *      \param      originid      	Id de l'origine
+     *    	Affiche formulaire de selection de l'adresse
+     *
+     *    	@param      page        	Page
+     *    	@param      selected    	Id condition pre-selectionne
+     *    	@param      htmlname    	Nom du formulaire select
+     *		@param		origin        	Origine de l'appel pour pouvoir creer un retour
+     *      @param      originid      	Id de l'origine
      */
     function form_address($page, $selected='', $socid, $htmlname='address_id', $origin='', $originid='')
     {
@@ -2610,6 +2652,7 @@ class Form
 
     /**
      *    Retourne la liste des devises, dans la langue de l'utilisateur
+     *
      *    @param     selected    code devise pre-selectionne
      *    @param     htmlname    nom de la liste deroulante
      */
@@ -2620,6 +2663,7 @@ class Form
 
     /**
      *    Retourne la liste des devises, dans la langue de l'utilisateur
+     *
      *    @param     selected    code devise pre-selectionne
      *    @param     htmlname    nom de la liste deroulante
      */
@@ -2683,15 +2727,16 @@ class Form
     }
 
     /**
-     *      \brief      Output an HTML select vat rate
-     *      \param      htmlname            Nom champ html
-     *      \param      selectedrate        Forcage du taux tva pre-selectionne. Mettre '' pour aucun forcage.
-     *      \param      societe_vendeuse    Objet societe vendeuse
-     *      \param      societe_acheteuse   Objet societe acheteuse
-     *      \param      idprod              Id product
-     *      \param      info_bits           Miscellanous information on line
-     *      \param      type               ''=Unknown, 0=Product, 1=Service (Used if idprod not defined)
-     *      \remarks    Si vendeur non assujeti a TVA, TVA par defaut=0. Fin de regle.
+     *      Output an HTML select vat rate
+     *
+     *      @param      htmlname            Nom champ html
+     *      @param      selectedrate        Forcage du taux tva pre-selectionne. Mettre '' pour aucun forcage.
+     *      @param      societe_vendeuse    Objet societe vendeuse
+     *      @param      societe_acheteuse   Objet societe acheteuse
+     *      @param      idprod              Id product
+     *      @param      info_bits           Miscellaneous information on line
+     *      @param      type               ''=Unknown, 0=Product, 1=Service (Used if idprod not defined)
+     *                  Si vendeur non assujeti a TVA, TVA par defaut=0. Fin de regle.
      *                  Si le (pays vendeur = pays acheteur) alors la TVA par defaut=TVA du produit vendu. Fin de regle.
      *                  Si (vendeur et acheteur dans Communaute europeenne) et bien vendu = moyen de transports neuf (auto, bateau, avion), TVA par defaut=0 (La TVA doit etre paye par l'acheteur au centre d'impots de son pays et non au vendeur). Fin de regle.
      *                  Si (vendeur et acheteur dans Communaute europeenne) et bien vendu autre que transport neuf alors la TVA par defaut=TVA du produit vendu. Fin de regle.
@@ -2705,15 +2750,16 @@ class Form
 
 
     /**
-     *      \brief      Output an HTML select vat rate
-     *      \param      htmlname           Nom champ html
-     *      \param      selectedrate       Forcage du taux tva pre-selectionne. Mettre '' pour aucun forcage.
-     *      \param      societe_vendeuse   Objet societe vendeuse
-     *      \param      societe_acheteuse  Objet societe acheteuse
-     *      \param      idprod             Id product
-     *      \param      info_bits          Miscellanous information on line
-     *      \param      type               ''=Unknown, 0=Product, 1=Service (Used if idprod not defined)
-     *      \remarks    Si vendeur non assujeti a TVA, TVA par defaut=0. Fin de regle.
+     *      Output an HTML select vat rate
+     *
+     *      @param      htmlname           Nom champ html
+     *      @param      selectedrate       Forcage du taux tva pre-selectionne. Mettre '' pour aucun forcage.
+     *      @param      societe_vendeuse   Objet societe vendeuse
+     *      @param      societe_acheteuse  Objet societe acheteuse
+     *      @param      idprod             Id product
+     *      @param      info_bits          Miscellaneous information on line
+     *      @param      type               ''=Unknown, 0=Product, 1=Service (Used if idprod not defined)
+     *                  Si vendeur non assujeti a TVA, TVA par defaut=0. Fin de regle.
      *                  Si le (pays vendeur = pays acheteur) alors la TVA par defaut=TVA du produit vendu. Fin de regle.
      *                  Si (vendeur et acheteur dans Communaute europeenne) et bien vendu = moyen de transports neuf (auto, bateau, avion), TVA par defaut=0 (La TVA doit etre paye par l'acheteur au centre d'impots de son pays et non au vendeur). Fin de regle.
      *                  Si (vendeur et acheteur dans Communaute europeenne) et bien vendu autre que transport neuf alors la TVA par defaut=TVA du produit vendu. Fin de regle.
@@ -2870,6 +2916,7 @@ class Form
      *            	- set_time date (Local PHP server timestamps or date format YYYY-MM-DD or YYYY-MM-DD HH:MM)
      *            	- local date of PHP server if set_time is ''
      *            	- Empty (fields empty) if set_time is -1 (in this case, parameter empty must also have value 1)
+     *
      *		@param	set_time 		Pre-selected date (must be a local PHP server timestamp)
      *		@param	prefix			Prefix for fields name
      *		@param	h				1=Show also hours
@@ -2942,7 +2989,7 @@ class Form
                 {
                     // Zone de saisie manuelle de la date
                     $retstring.='<input id="'.$prefix.'" name="'.$prefix.'" type="text" size="9" maxlength="11" value="'.$formated_date.'"';
-                    $retstring.=($disabled?' disabled="true"':'');
+                    $retstring.=($disabled?' disabled="disabled"':'');
                     $retstring.=' onChange="dpChangeDay(\''.$prefix.'\',\''.$langs->trans("FormatDateShortJava").'\'); "';  // FormatDateShort for dol_print_date/FormatDateShortJava that is same for javascript
                     $retstring.='>';
 
@@ -2968,7 +3015,7 @@ class Form
             if (empty($conf->use_javascript_ajax) || $conf->global->MAIN_POPUP_CALENDAR == "none")
             {
                 // Day
-                $retstring.='<select'.($disabled?' disabled="true"':'').' class="flat" name="'.$prefix.'day">';
+                $retstring.='<select'.($disabled?' disabled="disabled"':'').' class="flat" name="'.$prefix.'day">';
 
                 if ($empty || $set_time == -1)
                 {
@@ -2990,7 +3037,7 @@ class Form
 
                 $retstring.="</select>";
 
-                $retstring.='<select'.($disabled?' disabled="true"':'').' class="flat" name="'.$prefix.'month">';
+                $retstring.='<select'.($disabled?' disabled="disabled"':'').' class="flat" name="'.$prefix.'month">';
                 if ($empty || $set_time == -1)
                 {
                     $retstring.='<option value="0" selected="selected">&nbsp;</option>';
@@ -3008,11 +3055,11 @@ class Form
                 // Year
                 if ($empty || $set_time == -1)
                 {
-                    $retstring.='<input'.($disabled?' disabled="true"':'').' class="flat" type="text" size="3" maxlength="4" name="'.$prefix.'year" value="'.$syear.'">';
+                    $retstring.='<input'.($disabled?' disabled="disabled"':'').' class="flat" type="text" size="3" maxlength="4" name="'.$prefix.'year" value="'.$syear.'">';
                 }
                 else
                 {
-                    $retstring.='<select'.($disabled?' disabled="true"':'').' class="flat" name="'.$prefix.'year">';
+                    $retstring.='<select'.($disabled?' disabled="disabled"':'').' class="flat" name="'.$prefix.'year">';
 
                     for ($year = $syear - 5; $year < $syear + 10 ; $year++)
                     {
@@ -3036,7 +3083,7 @@ class Form
         if ($h)
         {
             // Show hour
-        	$retstring.='<select'.($disabled?' disabled="true"':'').' class="flat '.($fullday?$fullday.'hour':'').'" name="'.$prefix.'hour">';
+        	$retstring.='<select'.($disabled?' disabled="disabled"':'').' class="flat '.($fullday?$fullday.'hour':'').'" name="'.$prefix.'hour">';
             if ($empty) $retstring.='<option value="-1">&nbsp;</option>';
             for ($hour = 0; $hour < 24; $hour++)
             {
@@ -3060,7 +3107,7 @@ class Form
         if ($m)
         {
             // Show minutes
-            $retstring.='<select'.($disabled?' disabled="true"':'').' class="flat '.($fullday?$fullday.'min':'').'" name="'.$prefix.'min">';
+            $retstring.='<select'.($disabled?' disabled="disabled"':'').' class="flat '.($fullday?$fullday.'min':'').'" name="'.$prefix.'min">';
             if ($empty) $retstring.='<option value="-1">&nbsp;</option>';
             for ($min = 0; $min < 60 ; $min++)
             {
@@ -3118,7 +3165,6 @@ class Form
             {
                 $retstring.='<button class="dpInvisibleButtons" id="'.$prefix.'ButtonNow" type="button" name="_useless" value="Now" onClick="'.$reset_scripts.'">';
                 $retstring.=$langs->trans("Now");
-                //print img_refresh($langs->trans("Now"));
                 $retstring.='</button> ';
             }
         }
@@ -3131,6 +3177,7 @@ class Form
 
     /**
      *	Function to show a form to select a duration on a page
+     *
      *	@param		prefix   	prefix
      *	@param  	iSecond  	Default preselected duration (number of seconds)
      * 	@param		disabled	Disable the combo box
@@ -3145,7 +3192,7 @@ class Form
             $minSelected = ConvertSecondToTime($iSecond,'min');
         }
 
-        print '<select class="flat" name="'.$prefix.'hour"'.($disabled?' disabled="true"':'').'>';
+        print '<select class="flat" name="'.$prefix.'hour"'.($disabled?' disabled="disabled"':'').'>';
         for ($hour = 0; $hour < 24; $hour++)
         {
             print '<option value="'.$hour.'"';
@@ -3157,7 +3204,7 @@ class Form
         }
         print "</select>";
         print "H &nbsp;";
-        print '<select class="flat" name="'.$prefix.'min"'.($disabled?' disabled="true"':'').'>';
+        print '<select class="flat" name="'.$prefix.'min"'.($disabled?' disabled="disabled"':'').'>';
         for ($min = 0; $min <= 55; $min=$min+5)
         {
             print '<option value="'.$min.'"';
@@ -3171,6 +3218,7 @@ class Form
 
     /**
      *	Show a select form from an array
+     *
      *	@param	htmlname        Name of html select area
      *	@param	array           Array with key+value
      *	@param	id              Preselected key
@@ -3187,7 +3235,7 @@ class Form
     {
         global $langs;
 
-        $out='<select id="'.$htmlname.'" '.($disabled?'disabled="true" ':'').'class="flat" name="'.$htmlname.'" '.($option != ''?$option:'').'>';
+        $out='<select id="'.$htmlname.'" '.($disabled?'disabled="disabled" ':'').'class="flat" name="'.$htmlname.'" '.($option != ''?$option:'').'>';
 
         if ($show_empty)
         {
@@ -3230,6 +3278,7 @@ class Form
 
     /**
      *	Show a select form from an array
+     *
      * 	@deprecated				Use selectarray instead
      */
     function select_array($htmlname, $array, $id='', $show_empty=0, $key_in_label=0, $value_as_key=0, $option='', $translate=0, $maxlen=0)
@@ -3240,6 +3289,7 @@ class Form
 
     /**
      *    	Return an html string with a select combo box to choose yes or no
+     *
      *    	@param      name            Name of html select field
      *    	@param      value           Pre-selected value
      *  	@param      option          0 return yes/no, 1 return 1/0
@@ -3275,7 +3325,8 @@ class Form
 
 
     /**
-     *    Retourne la liste des modeles d'export
+     *    Return list of export templates
+     *
      *    @param      selected          Id modele pre-selectionne
      *    @param      htmlname          Nom de la zone select
      *    @param      type              Type des modeles recherches
@@ -3324,6 +3375,7 @@ class Form
     /**
      *    Return a HTML area with the reference of object and a navigation bar for a business object
      *    To add a particular filter on select, you must set $object->next_prev_filter to SQL criteria.
+     *
      *    @param      object		Object to show
      *    @param      paramid   	Name of parameter to use to name the id into the URL link
      *    @param      morehtml  	More html content to output just before the nav bar
@@ -3370,6 +3422,7 @@ class Form
 
     /**
      *    	Return HTML code to output a photo
+     *
      *    	@param      modulepart		Key to define module concerned ('societe', 'userphoto', 'memberphoto')
      *     	@param      object			Object containing data to retrieve file name
      * 		@param		width			Width of photo
@@ -3425,7 +3478,7 @@ class Form
                 {
                     global $dolibarr_main_url_root;
                     $ret.='<!-- Put link to gravatar -->';
-                    $ret.='<img alt="Photo found on Gravatar" title="Photo Gravatar.com - email '.$email.'" border="0" width="'.$width.'" src="http://www.gravatar.com/avatar/'.md5($email).'?s='.$width.'&d='.urlencode( dol_buildpath('/theme/common/nophoto.jpg',2) ).'">';
+                    $ret.='<img alt="Photo found on Gravatar" title="Photo Gravatar.com - email '.$email.'" border="0" width="'.$width.'" src="http://www.gravatar.com/avatar/'.dol_hash($email).'?s='.$width.'&d='.urlencode( dol_buildpath('/theme/common/nophoto.jpg',2) ).'">';
                 }
                 else
                 {
@@ -3464,6 +3517,7 @@ class Form
 
     /**
      *	Return select list of groups
+     *
      *  @param      selected        Id group preselected
      *  @param      htmlname        Field name in form
      *  @param      show_empty      0=liste sans valeur nulle, 1=ajoute valeur inconnue
@@ -3471,10 +3525,11 @@ class Form
      * 	@param		disabled		If select list must be disabled
      *  @param      include         Array list of groups id to include
      * 	@param		enableonly		Array list of groups id to be enabled. All other must be disabled
+     * 	@param		force_entity	Possibility to force entity
      */
-    function select_dolgroups($selected='',$htmlname='groupid',$show_empty=0,$exclude='',$disabled=0,$include='',$enableonly='')
+    function select_dolgroups($selected='',$htmlname='groupid',$show_empty=0,$exclude='',$disabled=0,$include='',$enableonly='',$force_entity='')
     {
-        global $conf;
+        global $conf,$user,$langs;
 
         // Permettre l'exclusion de groupes
         if (is_array($exclude))	$excludeGroups = implode("','",$exclude);
@@ -3485,17 +3540,22 @@ class Form
 
         // On recherche les groupes
         $sql = "SELECT ug.rowid, ug.nom ";
-        if($conf->entity==0)
-            $sql.= ", e.label";
+        if(! empty($conf->multicompany->enabled) && $conf->entity == 1 && $user->admin && ! $user->entity)
+        {
+        	$sql.= ", e.label";
+        }
         $sql.= " FROM ".MAIN_DB_PREFIX."usergroup as ug ";
-        if($conf->entity==0)
+        if(! empty($conf->multicompany->enabled) && $conf->entity == 1 && $user->admin && ! $user->entity)
         {
             $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."entity as e on e.rowid=ug.entity";
-            $sql.= " WHERE ug.entity IS NOT NULL";
+            if ($force_entity) $sql.= " WHERE ug.entity IN (0,".$force_entity.")";
+            else $sql.= " WHERE ug.entity IS NOT NULL";
         }
         else
-             $sql.= " WHERE ug.entity IN (0,".$conf->entity.")";
-	if (is_array($exclude) && $excludeGroups) $sql.= " AND ug.rowid NOT IN ('".$excludeGroups."')";
+        {
+        	$sql.= " WHERE ug.entity IN (0,".$conf->entity.")";
+        }
+        if (is_array($exclude) && $excludeGroups) $sql.= " AND ug.rowid NOT IN ('".$excludeGroups."')";
         if (is_array($include) && $includeGroups) $sql.= " AND ug.rowid IN ('".$includeGroups."')";
 		$sql.= " ORDER BY ug.nom ASC";
 
@@ -3503,12 +3563,13 @@ class Form
         $resql=$this->db->query($sql);
         if ($resql)
         {
-            $out.= '<select class="flat" name="'.$htmlname.'"'.($disabled?' disabled="true"':'').'>';
-            if ($show_empty) $out.= '<option value="-1"'.($id==-1?' selected="selected"':'').'>&nbsp;</option>'."\n";
             $num = $this->db->num_rows($resql);
             $i = 0;
             if ($num)
             {
+            	$out.= '<select class="flat" name="'.$htmlname.'"'.($disabled?' disabled="disabled"':'').'>';
+            	if ($show_empty) $out.= '<option value="-1"'.($id==-1?' selected="selected"':'').'>&nbsp;</option>'."\n";
+
                 while ($i < $num)
                 {
                     $obj = $this->db->fetch_object($resql);
@@ -3516,7 +3577,7 @@ class Form
                     if (is_array($enableonly) && sizeof($enableonly) && ! in_array($obj->rowid,$enableonly)) $disableline=1;
 
                     $out.= '<option value="'.$obj->rowid.'"';
-                    if ($disableline) $out.= ' disabled="true"';
+                    if ($disableline) $out.= ' disabled="disabled"';
                     if ((is_object($selected) && $selected->id == $obj->rowid) || (! is_object($selected) && $selected == $obj->rowid))
                     {
                         $out.= ' selected="selected"';
@@ -3524,12 +3585,19 @@ class Form
                     $out.= '>';
 
                     $out.= $obj->nom;
-                    if($conf->entity==0 && !$conf->global->MULTICOMPANY_MODE_TRANVERSAL)
-                        $out.= " (".$obj->label.")";
+                    if(! empty($conf->multicompany->enabled) && empty($conf->global->MULTICOMPANY_TRANSVERSE_MODE) && $conf->entity == 1)
+                    {
+                    	$out.= " (".$obj->label.")";
+                    }
 
                     $out.= '</option>';
                     $i++;
                 }
+            }
+            else
+            {
+            	$out.= '<select class="flat" name="'.$htmlname.'" disabled="disabled">';
+            	$out.= '<option value="">'.$langs->trans("EmptyList").'</option>';
             }
             $out.= '</select>';
         }
@@ -3540,7 +3608,7 @@ class Form
 
         return $out;
     }
-    
+
 }
 
 ?>

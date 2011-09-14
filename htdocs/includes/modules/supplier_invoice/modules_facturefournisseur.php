@@ -20,24 +20,23 @@
  *		\file       htdocs/includes/modules/supplier_invoice/modules_facturefournisseur.php
  *      \ingroup    facture fourniseur
  *      \brief      File that contain parent class for supplier invoices models
- *      \version    $Id: modules_facturefournisseur.php,v 1.10 2011/08/10 23:21:14 eldy Exp $
  */
-require_once(FPDFI_PATH.'fpdi_protection.php');
-require_once(DOL_DOCUMENT_ROOT.'/lib/pdf.lib.php');
+require_once(DOL_DOCUMENT_ROOT."/core/class/commondocgenerator.class.php");
 
 
 /**
  *	\class      ModelePDFSuppliersInvoices
  *	\brief      Parent class for supplier invoices models
  */
-class ModelePDFSuppliersInvoices
+abstract class ModelePDFSuppliersInvoices extends CommonDocGenerator
 {
 	var $error='';
 
 
 	/**
-	 *      \brief      Return list of active generation modules
-	 * 		\param		$db		Database handler
+	 *  Return list of active generation modules
+	 *
+	 * 	@param		DoliDB		$db		Database handler
 	 */
 	function liste_modeles($db)
 	{
@@ -55,12 +54,13 @@ class ModelePDFSuppliersInvoices
 }
 
 /**
- *		Create object on disk
- *		@param	    db  			objet base de donnee
- *		@param	    object			object supplier invoice
- *		@param	    model			force le modele a utiliser ('' to not force)
- *		@param		outputlangs		objet lang a utiliser pour traduction
- *      @return     int         	0 si KO, 1 si OK
+ *	Create object on disk.
+ *
+ *	@param	    DoliDB		$db  			objet base de donnee
+ *	@param	    Object		$object			object supplier invoice
+ *	@param	    string		$model			force le modele a utiliser ('' to not force)
+ *	@param		Translate	$outputlangs	objet lang a utiliser pour traduction
+ *  @return     int         				0 if KO, 1 if OK
  */
 function supplier_invoice_pdf_create($db, $object, $model, $outputlangs)
 {
@@ -130,7 +130,7 @@ function supplier_invoice_delete_preview($db, $objectid)
 	global $langs,$conf;
     require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
 
-	$comfourn = new FactureFournisseur($db,"",$objectid);
+	$comfourn = new FactureFournisseur($db);
 	$comfourn->fetch($objectid);
 	$client = new Societe($db);
 	$client->fetch($comfourn->socid);

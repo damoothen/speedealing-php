@@ -18,7 +18,6 @@
 /**
  *	\file       htdocs/product/class/html.formproduct.class.php
  *	\brief      Fichier de la classe des fonctions predefinie de composants html
- *	\version	$Id: html.formproduct.class.php,v 1.11 2011/07/31 23:24:03 eldy Exp $
  */
 
 
@@ -116,7 +115,7 @@ class FormProduct
 
 		$this->loadWarehouses($fk_product);
 
-		print '<select class="flat"'.($disabled?' disabled="true"':'').' name="'.($htmlname.($disabled?'_disabled':'')).'">';
+		print '<select class="flat"'.($disabled?' disabled="disabled"':'').' name="'.($htmlname.($disabled?'_disabled':'')).'">';
 		if ($empty) print '<option value="">&nbsp;</option>';
 		foreach($this->cache_warehouses as $id => $arraytypes)
 		{

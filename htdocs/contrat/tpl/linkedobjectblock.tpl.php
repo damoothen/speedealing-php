@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- * $Id: linkedobjectblock.tpl.php,v 1.12 2011/07/31 23:50:01 eldy Exp $
  */
 ?>
 
@@ -23,10 +22,10 @@
 <?php
 
 $langs = $GLOBALS['langs'];
-$linkedObjectBlock = $GLOBALS['object']->linkedObjectBlock;
+$linkedObjectBlock = $GLOBALS['linkedObjectBlock'];
 
 $langs->load("contracts");
-echo '<br />';
+echo '<br>';
 print_titre($langs->trans('RelatedContracts'));
 ?>
 <table class="noborder" width="100%">

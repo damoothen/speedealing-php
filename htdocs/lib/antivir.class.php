@@ -22,7 +22,6 @@
 /**
  *      \file       htdocs/lib/antivir.class.php
  *      \brief      File of class to scan viruses
- *		\version    $Id: antivir.class.php,v 1.8 2011/07/31 23:25:40 eldy Exp $
  *      \author	    Laurent Destailleur.
  */
 
@@ -38,10 +37,10 @@ class AntiVir
 	var $db;
 
 	/**
-	 * Constructor
+	 *  Constructor
 	 *
-	 * @param  $db
-	 * @return AntiVir
+	 *  @param      DoliDB		$db      Database handler
+	 *	@return AntiVir
 	 */
 	function AntiVir($db)
 	{
@@ -51,6 +50,7 @@ class AntiVir
 	/**
 	 *	Scan a file with antivirus.
 	 *  This function runs the command defined in setup. This antivirus command must return 0 if OK.
+	 *
 	 *	@param	 	file			File to scan
 	 *	@return	 	int				<0 if KO (-98 if error, -99 if virus), 0 if OK
 	 */

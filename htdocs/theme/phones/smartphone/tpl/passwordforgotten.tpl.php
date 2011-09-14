@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- * $Id: passwordforgotten.tpl.php,v 1.14 2011/07/31 23:19:27 eldy Exp $
  */
 top_httphead();
 ?>
@@ -73,7 +72,7 @@ include('header.tpl.php');
 </div><!-- /page -->
 
 <?php if ($message) { ?>
-	<script type="text/javascript" language="javascript">
+	<script type="text/javascript">
 		alert('<?php echo $message; ?>');
 	</script>
 <?php } ?>

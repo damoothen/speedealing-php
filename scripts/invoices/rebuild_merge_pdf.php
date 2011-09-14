@@ -1,6 +1,6 @@
 #!/usr/bin/php
 <?php
-/**
+/*
  * Copyright (C) 2009-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -21,7 +21,6 @@
  *      \file       scripts/invoices/rebuild_merge_pdf.php
  *      \ingroup    facture
  *      \brief      Script to rebuild PDF and merge PDF files into one
- *		\version	$Id: rebuild_merge_pdf.php,v 1.22 2011/08/10 23:31:05 eldy Exp $
  */
 
 $sapi_type = php_sapi_name();
@@ -48,7 +47,7 @@ require_once(DOL_DOCUMENT_ROOT.'/lib/pdf.lib.php');
 $langs->load("main");
 
 // Global variables
-$version='$Revision: 1.22 $';
+$version='1.24';
 $error=0;
 
 
@@ -290,16 +289,17 @@ if ( $resql=$db->query($sql) )
 		//---------------------------------------------------------
 
         // Create empty PDF
-		$pdf=new FPDI('P','mm','A4');
-		if ($conf->global->MAIN_DISABLE_PDF_COMPRESSION) $pdf->SetCompression(false);
-		//$pdf->SetCompression(false);
-
+        $pdf=pdf_getInstance();
         if (class_exists('TCPDF'))
         {
             $pdf->setPrintHeader(false);
             $pdf->setPrintFooter(false);
         }
         $pdf->SetFont(pdf_getPDFFont($outputlangs));
+
+        if ($conf->global->MAIN_DISABLE_PDF_COMPRESSION) $pdf->SetCompression(false);
+		//$pdf->SetCompression(false);
+
 
 		//$pdf->Open();
 		//$pdf->AddPage();

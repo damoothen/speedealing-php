@@ -1,6 +1,6 @@
 <?php
 /* Copyright (C) 2003-2004 Rodolphe Quiedeville         <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2010 Laurent Destailleur          <eldy@users.sourceforge.net>
+ * Copyright (C) 2004-2011 Laurent Destailleur          <eldy@users.sourceforge.net>
  * Copyright (C) 2005      Eric Seigne                  <eric.seigne@ryxeo.com>
  * Copyright (C) 2005-2009 Regis Houssin                <regis@dolibarr.fr>
  * Copyright (C) 2008 	   Raphael Bertrand (Resultic)  <raphael.bertrand@resultic.fr>
@@ -23,7 +23,6 @@
  *      \file       htdocs/admin/facture.php
  *		\ingroup    facture
  *		\brief      Page to setup invoice module
- *		\version    $Id: facture.php,v 1.150 2011/07/31 22:23:25 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -31,34 +30,48 @@ require_once(DOL_DOCUMENT_ROOT."/lib/admin.lib.php");
 require_once(DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php');
 
 $langs->load("admin");
-$langs->load("companies");
-$langs->load("bills");
-$langs->load("other");
+//$langs->load("companies");
+//$langs->load("bills");
+//$langs->load("other");
 $langs->load("errors");
 
 if (!$user->admin)
 accessforbidden();
 
-$typeconst=array('yesno','texte','chaine');
+$action = GETPOST("action");
+$value = GETPOST("value");
+
+//$typeconst=array('yesno','texte','chaine');
 
 
 /*
  * Actions
  */
 
-if ($_POST["action"] == 'updateMask')
+if ($action == 'updateMask')
 {
-    $maskconstinvoice=$_POST['maskconstinvoice'];
-    $maskconstcredit=$_POST['maskconstcredit'];
-    $maskinvoice=$_POST['maskinvoice'];
-    $maskcredit=$_POST['maskcredit'];
-    if ($maskconstinvoice) dolibarr_set_const($db,$maskconstinvoice,$maskinvoice,'chaine',0,'',$conf->entity);
-    if ($maskconstcredit)  dolibarr_set_const($db,$maskconstcredit,$maskcredit,'chaine',0,'',$conf->entity);
+    $maskconstinvoice=GETPOST("maskconstinvoice");
+    $maskconstcredit=GETPOST("maskconstcredit");
+    $maskinvoice=GETPOST("maskinvoice");
+    $maskcredit=GETPOST("maskcredit");
+    if ($maskconstinvoice) $res = dolibarr_set_const($db,$maskconstinvoice,$maskinvoice,'chaine',0,'',$conf->entity);
+    if ($maskconstcredit)  $res = dolibarr_set_const($db,$maskconstcredit,$maskcredit,'chaine',0,'',$conf->entity);
+    
+	if (! $res > 0) $error++;
+
+ 	if (! $error)
+    {
+        $mesg = "<font class=\"ok\">".$langs->trans("SetupSaved")."</font>";
+    }
+    else
+    {
+        $mesg = "<font class=\"error\">".$langs->trans("Error")."</font>";
+    }
 }
 
-if ($_GET["action"] == 'specimen')
+if ($action == 'specimen')
 {
-    $modele=$_GET["module"];
+    $modele=GETPOST("module");
 
     $facture = new Facture($db);
     $facture->initAsSpecimen();
@@ -80,19 +93,19 @@ if ($_GET["action"] == 'specimen')
         }
         else
         {
-            $mesg='<div class="error">'.$obj->error.'</div>';
+            $mesg='<font class="error">'.$obj->error.'</font>';
             dol_syslog($obj->error, LOG_ERR);
         }
     }
     else
     {
-        $mesg='<div class="error">'.$langs->trans("ErrorModuleNotFound").'</div>';
+        $mesg='<font class="error">'.$langs->trans("ErrorModuleNotFound").'</font>';
         dol_syslog($langs->trans("ErrorModuleNotFound"), LOG_ERR);
     }
 }
 
 // define constants for models generator that need parameters
-if ($_POST["action"] == 'setModuleOptions')
+if ($action == 'setModuleOptions')
 {
     $post_size=count($_POST);
     for($i=0;$i < $post_size;$i++)
@@ -101,18 +114,31 @@ if ($_POST["action"] == 'setModuleOptions')
         {
             $param=$_POST["param".$i];
             $value=$_POST["value".$i];
-            if ($param) dolibarr_set_const($db,$param,$value,'chaine',0,'',$conf->entity);
+            if ($param) $res = dolibarr_set_const($db,$param,$value,'chaine',0,'',$conf->entity);
         }
+    }
+	if (! $res > 0) $error++;
+
+ 	if (! $error)
+    {
+        $mesg = "<font class=\"ok\">".$langs->trans("SetupSaved")."</font>";
+    }
+    else
+    {
+        $mesg = "<font class=\"error\">".$langs->trans("Error")."</font>";
     }
 }
 
-if ($_GET["action"] == 'set')
+if ($action == 'set')
 {
+	$label = GETPOST("label");
+	$scandir = GETPOST("scandir");
+	
     $type='invoice';
     $sql = "INSERT INTO ".MAIN_DB_PREFIX."document_model (nom, type, entity, libelle, description)";
-    $sql.= " VALUES ('".$db->escape($_GET["value"])."','".$type."',".$conf->entity.", ";
-    $sql.= ($_GET["label"]?"'".$db->escape($_GET["label"])."'":'null').", ";
-    $sql.= (! empty($_GET["scandir"])?"'".$db->escape($_GET["scandir"])."'":"null");
+    $sql.= " VALUES ('".$db->escape($value)."','".$type."',".$conf->entity.", ";
+    $sql.= ($label?"'".$db->escape($label)."'":'null').", ";
+    $sql.= (! empty($scandir)?"'".$db->escape($scandir)."'":"null");
     $sql.= ")";
     if ($db->query($sql))
     {
@@ -120,43 +146,46 @@ if ($_GET["action"] == 'set')
     }
 }
 
-if ($_GET["action"] == 'del')
+if ($action == 'del')
 {
     $type='invoice';
     $sql = "DELETE FROM ".MAIN_DB_PREFIX."document_model";
-    $sql.= " WHERE nom = '".$_GET["value"]."'";
+    $sql.= " WHERE nom = '".$db->escape($value)."'";
     $sql.= " AND type = '".$type."'";
     $sql.= " AND entity = ".$conf->entity;
 
     if ($db->query($sql))
     {
-
+        if ($conf->global->FACTURE_ADDON_PDF == "$value") dolibarr_del_const($db, 'FACTURE_ADDON_PDF',$conf->entity);
     }
 }
 
-if ($_GET["action"] == 'setdoc')
+if ($action == 'setdoc')
 {
+	$label = GETPOST("label");
+	$scandir = GETPOST("scandir");
+	
     $db->begin();
 
-    if (dolibarr_set_const($db, "FACTURE_ADDON_PDF",$_GET["value"],'chaine',0,'',$conf->entity))
+    if (dolibarr_set_const($db, "FACTURE_ADDON_PDF",$value,'chaine',0,'',$conf->entity))
     {
-        $conf->global->FACTURE_ADDON_PDF = $_GET["value"];
+        $conf->global->FACTURE_ADDON_PDF = $value;
     }
 
     // On active le modele
     $type='invoice';
 
     $sql_del = "DELETE FROM ".MAIN_DB_PREFIX."document_model";
-    $sql_del.= " WHERE nom = '".$db->escape($_GET["value"])."'";
+    $sql_del.= " WHERE nom = '".$db->escape($value)."'";
     $sql_del.= " AND type = '".$type."'";
     $sql_del.= " AND entity = ".$conf->entity;
     dol_syslog("facture.php ".$sql_del);
     $result1=$db->query($sql_del);
 
     $sql = "INSERT INTO ".MAIN_DB_PREFIX."document_model (nom, type, entity, libelle, description)";
-    $sql.= " VALUES ('".$_GET["value"]."', '".$type."', ".$conf->entity.", ";
-    $sql.= ($_GET["label"]?"'".$db->escape($_GET["label"])."'":'null').", ";
-    $sql.= (! empty($_GET["scandir"])?"'".$_GET["scandir"]."'":"null");
+    $sql.= " VALUES ('".$value."', '".$type."', ".$conf->entity.", ";
+    $sql.= ($label?"'".$db->escape($label)."'":'null').", ";
+    $sql.= (! empty($scandir)?"'".$scandir."'":"null");
     $sql.= ")";
     dol_syslog("facture.php ".$sql);
     $result2=$db->query($sql);
@@ -171,36 +200,89 @@ if ($_GET["action"] == 'setdoc')
     }
 }
 
-if ($_GET["action"] == 'setmod')
+if ($action == 'setmod')
 {
     // TODO Verifier si module numerotation choisi peut etre active
     // par appel methode canBeActivated
 
-    dolibarr_set_const($db, "FACTURE_ADDON",$_GET["value"],'chaine',0,'',$conf->entity);
+    dolibarr_set_const($db, "FACTURE_ADDON",$value,'chaine',0,'',$conf->entity);
 }
 
-if ($_POST["action"] == 'setribchq')
+if ($action == 'setribchq')
 {
-    dolibarr_set_const($db, "FACTURE_RIB_NUMBER",$_POST["rib"],'chaine',0,'',$conf->entity);
-    dolibarr_set_const($db, "FACTURE_CHQ_NUMBER",$_POST["chq"],'chaine',0,'',$conf->entity);
+	$rib = GETPOST("rib");
+	$chq = GETPOST("chq");
+	
+	$res = dolibarr_set_const($db, "FACTURE_RIB_NUMBER",$rib,'chaine',0,'',$conf->entity);
+    $res = dolibarr_set_const($db, "FACTURE_CHQ_NUMBER",$chq,'chaine',0,'',$conf->entity);
+    
+	if (! $res > 0) $error++;
+
+ 	if (! $error)
+    {
+        $mesg = "<font class=\"ok\">".$langs->trans("SetupSaved")."</font>";
+    }
+    else
+    {
+        $mesg = "<font class=\"error\">".$langs->trans("Error")."</font>";
+    }
 }
 
-if ($_POST["action"] == 'set_FACTURE_DRAFT_WATERMARK')
+if ($action == 'set_FACTURE_DRAFT_WATERMARK')
 {
-    dolibarr_set_const($db, "FACTURE_DRAFT_WATERMARK",trim($_POST["FACTURE_DRAFT_WATERMARK"]),'chaine',0,'',$conf->entity);
+	$draft = GETPOST("FACTURE_DRAFT_WATERMARK");
+	
+    $res = dolibarr_set_const($db, "FACTURE_DRAFT_WATERMARK",trim($draft),'chaine',0,'',$conf->entity);
+    
+	if (! $res > 0) $error++;
+
+ 	if (! $error)
+    {
+        $mesg = "<font class=\"ok\">".$langs->trans("SetupSaved")."</font>";
+    }
+    else
+    {
+        $mesg = "<font class=\"error\">".$langs->trans("Error")."</font>";
+    }
 }
 
-if ($_POST["action"] == 'set_FACTURE_FREE_TEXT')
+if ($action == 'set_FACTURE_FREE_TEXT')
 {
-    dolibarr_set_const($db, "FACTURE_FREE_TEXT",$_POST["FACTURE_FREE_TEXT"],'chaine',0,'',$conf->entity);
+	$free = GETPOST("FACTURE_FREE_TEXT");
+	
+    $res = dolibarr_set_const($db, "FACTURE_FREE_TEXT",$free,'chaine',0,'',$conf->entity);
+    
+	if (! $res > 0) $error++;
+
+ 	if (! $error)
+    {
+        $mesg = "<font class=\"ok\">".$langs->trans("SetupSaved")."</font>";
+    }
+    else
+    {
+        $mesg = "<font class=\"error\">".$langs->trans("Error")."</font>";
+    }
 }
 
-if ($_POST["action"] == 'setforcedate')
+if ($action == 'setforcedate')
 {
-    dolibarr_set_const($db, "FAC_FORCE_DATE_VALIDATION",$_POST["forcedate"],'chaine',0,'',$conf->entity);
+	$forcedate = GETPOST("forcedate");
+	
+    $res = dolibarr_set_const($db, "FAC_FORCE_DATE_VALIDATION",$forcedate,'chaine',0,'',$conf->entity);
+    
+	if (! $res > 0) $error++;
+
+ 	if (! $error)
+    {
+        $mesg = "<font class=\"ok\">".$langs->trans("SetupSaved")."</font>";
+    }
+    else
+    {
+        $mesg = "<font class=\"error\">".$langs->trans("Error")."</font>";
+    }
 }
 
-if ($_POST["action"] == 'update' || $_POST["action"] == 'add')
+/*if ($action == 'update' || $action == 'add')
 {
     if (! dolibarr_set_const($db, $_POST["constname"],$_POST["constvalue"],$typeconst[$_POST["consttype"]],0,isset($_POST["constnote"])?$_POST["constnote"]:'',$conf->entity));
     {
@@ -208,13 +290,14 @@ if ($_POST["action"] == 'update' || $_POST["action"] == 'add')
     }
 }
 
-if ($_GET["action"] == 'delete')
+if ($action == 'delete')
 {
-    if (! dolibarr_del_const($db, $_GET["rowid"],$conf->entity));
+	$rowid = GETPOST("rowid");
+    if (! dolibarr_del_const($db, $rowid,$conf->entity));
     {
         dol_print_error($db);
     }
-}
+}*/
 
 
 /*
@@ -315,11 +398,11 @@ foreach ($conf->file->dol_document_root as $dirroot)
                             //print "> ".$conf->global->FACTURE_ADDON." - ".$file;
                             if ($conf->global->FACTURE_ADDON == $file || $conf->global->FACTURE_ADDON.'.php' == $file)
                             {
-                                print img_picto($langs->trans("Activated"),'on');
+                                print img_picto($langs->trans("Activated"),'switch_on');
                             }
                             else
                             {
-                                print '<a href="'.$_SERVER["PHP_SELF"].'?action=setmod&amp;value='.preg_replace('/\.php$/','',$file).'&amp;scandir='.$module->scandir.'&amp;label='.urlencode($module->name).'" alt="'.$langs->trans("Default").'">'.img_picto($langs->trans("Disabled"),'off').'</a>';
+                                print '<a href="'.$_SERVER["PHP_SELF"].'?action=setmod&amp;value='.preg_replace('/\.php$/','',$file).'&amp;scandir='.$module->scandir.'&amp;label='.urlencode($module->name).'" alt="'.$langs->trans("Default").'">'.img_picto($langs->trans("Disabled"),'switch_off').'</a>';
                             }
                             print '</td>';
 
@@ -474,22 +557,22 @@ foreach ($conf->file->dol_document_root as $dirroot)
 	                            if (in_array($name, $def))
 	                            {
 	                                print "<td align=\"center\">\n";
-	                                if ($conf->global->FACTURE_ADDON_PDF != "$name")
-	                                {
+	                                //if ($conf->global->FACTURE_ADDON_PDF != "$name")
+	                                //{
 	                                    print '<a href="'.$_SERVER["PHP_SELF"].'?action=del&amp;value='.$name.'">';
-	                                    print img_picto($langs->trans("Enabled"),'on');
+	                                    print img_picto($langs->trans("Enabled"),'switch_on');
 	                                    print '</a>';
-	                                }
-	                                else
-	                                {
-	                                    print img_picto($langs->trans("Enabled"),'on');
-	                                }
+	                                //}
+	                                //else
+	                                //{
+	                                //    print img_picto($langs->trans("Enabled"),'on');
+	                                //}
 	                                print "</td>";
 	                            }
 	                            else
 	                            {
 	                                print "<td align=\"center\">\n";
-	                                print '<a href="'.$_SERVER["PHP_SELF"].'?action=set&amp;value='.$name.'&amp;scandir='.$module->scandir.'&amp;label='.urlencode($module->name).'">'.img_picto($langs->trans("Disabled"),'off').'</a>';
+	                                print '<a href="'.$_SERVER["PHP_SELF"].'?action=set&amp;value='.$name.'&amp;scandir='.$module->scandir.'&amp;label='.urlencode($module->name).'">'.img_picto($langs->trans("Disabled"),'switch_off').'</a>';
 	                                print "</td>";
 	                            }
 
@@ -510,7 +593,7 @@ foreach ($conf->file->dol_document_root as $dirroot)
 	                            $htmltooltip.='<br>'.$langs->trans("Type").': '.($module->type?$module->type:$langs->trans("Unknown"));
 	                            if ($module->type == 'pdf')
 	                            {
-	                                $htmltooltip.='<br>'.$langs->trans("Height").'/'.$langs->trans("Width").': '.$module->page_hauteur.'/'.$module->page_largeur;
+	                                $htmltooltip.='<br>'.$langs->trans("Width").'/'.$langs->trans("Height").': '.$module->page_largeur.'/'.$module->page_hauteur;
 	                            }
 	                            $htmltooltip.='<br><br><u>'.$langs->trans("FeaturesSupported").':</u>';
 	                            $htmltooltip.='<br>'.$langs->trans("Logo").': '.yn($module->option_logo,1,1);
@@ -586,7 +669,7 @@ if ($conf->banque->enabled)
         $num = $db->num_rows($resql);
         $i = 0;
         if ($num > 0) {
-            print "<select name=\"rib\">";
+            print '<select name="rib" class="flat" id="rib">';
             print '<option value="0">'.$langs->trans("DoNotSuggestPaymentMode").'</option>';
             while ($i < $num)
             {
@@ -613,7 +696,7 @@ $var=!$var;
 print '<tr '.$bc[$var].'>';
 print "<td>".$langs->trans("SuggestPaymentByChequeToAddress")."</td>";
 print "<td>";
-print '<select name="chq">';
+print '<select class="flat" name="chq" id="chq">';
 print '<option value="0">'.$langs->trans("DoNotSuggestPaymentMode").'</option>';
 print '<option value="-1"'.($conf->global->FACTURE_CHQ_NUMBER?' selected="selected"':'').'>'.$langs->trans("MenuCompanySetup").' ('.($mysoc->name?$mysoc->name:$langs->trans("NotDefined")).')</option>';
 
@@ -715,8 +798,9 @@ print "</table>\n";
 
 //dol_fiche_end();
 
+dol_htmloutput_mesg($mesg);
 
 $db->close();
 
-llxFooter('$Date: 2011/07/31 22:23:25 $ - $Revision: 1.150 $');
+llxFooter();
 ?>

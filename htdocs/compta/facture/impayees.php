@@ -22,7 +22,6 @@
  *		\file       htdocs/compta/facture/impayees.php
  *		\ingroup    facture
  *		\brief      Page to list and build liste of unpaid invoices
- *		\version    $Revision: 1.85 $
  */
 
 require("../../main.inc.php");
@@ -30,6 +29,7 @@ require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 require_once(DOL_DOCUMENT_ROOT."/compta/facture/class/facture.class.php");
 require_once(DOL_DOCUMENT_ROOT."/compta/paiement/class/paiement.class.php");
 require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
+require_once(DOL_DOCUMENT_ROOT.'/lib/pdf.lib.php');
 
 
 $langs->load("bills");
@@ -52,9 +52,6 @@ if ($_POST["action"] == "builddoc" && $user->rights->facture->lire)
 {
 	if (is_array($_POST['toGenerate']))
 	{
-        require_once(FPDFI_PATH.'fpdi.php');
-        require_once(DOL_DOCUMENT_ROOT.'/lib/pdf.lib.php');
-
 	    $arrayofexclusion=array();
 	    foreach($_POST['toGenerate'] as $tmppdf) $arrayofexclusion[]=preg_quote($tmppdf.'.pdf','/');
 		$factures = dol_dir_list($conf->facture->dir_output,'all',1,implode('|',$arrayofexclusion),'\.meta$|\.png','date',SORT_DESC);
@@ -70,22 +67,27 @@ if ($_POST["action"] == "builddoc" && $user->rights->facture->lire)
 			}
 		}
 
-		// Create empty PDF
-		$pdf=new FPDI('P','mm','A4');
-		if ($conf->global->MAIN_DISABLE_PDF_COMPRESSION) $pdf->SetCompression(false);
+        // Define output language (Here it is not used because we do only merging existing PDF)
+        $outputlangs = $langs;
+        $newlang='';
+        if ($conf->global->MAIN_MULTILANGS && empty($newlang) && GETPOST('lang_id')) $newlang=GETPOST('lang_id');
+        if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$object->client->default_lang;
+        if (! empty($newlang))
+        {
+            $outputlangs = new Translate("",$conf);
+            $outputlangs->setDefaultLang($newlang);
+        }
 
-		if (class_exists('TCPDF'))
-		{
-			$pdf->setPrintHeader(false);
-			$pdf->setPrintFooter(false);
-		}
-        //$pdf->SetFont(pdf_getPDFFont($outputlangs));
+        // Create empty PDF
+        $pdf=pdf_getInstance();
+        if (class_exists('TCPDF'))
+        {
+            $pdf->setPrintHeader(false);
+            $pdf->setPrintFooter(false);
+        }
+        $pdf->SetFont(pdf_getPDFFont($outputlangs));
 
-		//$pdf->Open();
-		//$pdf->AddPage();
-		//$title=$langs->trans("BillsCustomersUnpaid");
-		//if ($option=='late') $title=$langs->trans("BillsCustomersUnpaid");
-		//$pdf->MultiCell(100, 3, $title, 0, 'J');
+        if ($conf->global->MAIN_DISABLE_PDF_COMPRESSION) $pdf->SetCompression(false);
 
 		// Add all others
 		foreach($files as $file)
@@ -426,5 +428,5 @@ if ($result)
 
 $db->close();
 
-llxFooter('$Date: 2011/08/10 23:21:13 $ - $Revision: 1.85 $');
+llxFooter();
 ?>

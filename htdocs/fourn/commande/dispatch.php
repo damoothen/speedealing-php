@@ -24,7 +24,6 @@
  *	\file      htdocs/fourn/commande/dispatch.php
  *	\ingroup   commande
  *	\brief     Fiche de ventilation des commandes fournisseurs
- *	\version   $Id$
  */
 
 require("../../main.inc.php");
@@ -315,7 +314,7 @@ if ($id > 0 || ! empty($ref))
 				print '" class="flat"><br><br>';
 
 				print '<center><input type="submit" class="button" value="'.$langs->trans("DispatchVerb").'"';
-				if (sizeof($listwarehouses) <= 0) print ' disabled="true"';
+				if (count($listwarehouses) <= 0) print ' disabled="disabled"';
 				print '></center>';
 			}
 			if (! $nbproduct && $nbfreeproduct)
@@ -409,5 +408,5 @@ if ($id > 0 || ! empty($ref))
 
 $db->close();
 
-llxFooter('$Date$	- $Revision$');
+llxFooter();
 ?>

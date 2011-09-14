@@ -24,7 +24,6 @@
  * 	\file 		htdocs/core/class/extrafields.class.php
  *	\ingroup    core
  *	\brief      File of class to manage extra fields
- *	\version    $Id: extrafields.class.php,v 1.8 2011/08/08 12:31:14 hregis Exp $
  */
 
 /**
@@ -45,8 +44,9 @@ class ExtraFields
 
 
 	/**
-	 *  Constructor
-	 *  @param DB			base de donnees
+	 *	Constructor
+	 *
+	 *  @param		DoliDB		$DB      Database handler
 	 */
 	function ExtraFields($DB)
 	{
@@ -406,7 +406,7 @@ class ExtraFields
 	function showInputField($key,$value,$moreparam='')
 	{
 		global $conf;
-		
+
         $label=$this->attribute_label[$key];
 	    $type=$this->attribute_type[$key];
         $size=$this->attribute_size[$key];
@@ -428,7 +428,7 @@ class ExtraFields
             $showsize=round($size);
             if ($showsize > 48) $showsize=48;
         }
-        
+
 	    if ($type == 'varchar')
         {
         	$out='<input type="text" name="options_'.$key.'" size="'.$showsize.'" maxlength="'.$size.'" value="'.$value.'"'.($moreparam?$moreparam:'').'>';

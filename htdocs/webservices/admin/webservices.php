@@ -1,6 +1,7 @@
 <?php
 /* Copyright (C) 2004      Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2005-2010 Laurent Destailleur  <eldy@users.sourceforge.org>
+ * Copyright (C) 2011 	   Juanjo Menent		<jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +21,6 @@
  *      \file       htdocs/webservices/admin/webservices.php
  *		\ingroup    webservices
  *		\brief      Page to setup webservices module
- *		\version    $Id: webservices.php,v 1.8 2011/07/31 23:21:08 eldy Exp $
  */
 
 require("../../main.inc.php");
@@ -31,9 +31,7 @@ $langs->load("admin");
 if (!$user->admin)
   accessforbidden();
 
-
-$actionsave=$_POST["save"];
-
+$actionsave=GETPOST("save");
 
 // Sauvegardes parametres
 if ($actionsave)
@@ -42,7 +40,7 @@ if ($actionsave)
 
     $db->begin();
 
-    $i+=dolibarr_set_const($db,'WEBSERVICES_KEY',trim($_POST["WEBSERVICES_KEY"]),'chaine',0,'',$conf->entity);
+    $i+=dolibarr_set_const($db,'WEBSERVICES_KEY',trim(GETPOST("WEBSERVICES_KEY")),'chaine',0,'',$conf->entity);
 
     if ($i >= 1)
     {
@@ -52,7 +50,7 @@ if ($actionsave)
     else
     {
         $db->rollback();
-        $mesg = "<font class=\"error\">".$langs->trans("SaveFailed")."</font>";
+        $mesg = "<font class=\"error\">".$langs->trans("Error")."</font>";
     }
 }
 
@@ -94,7 +92,7 @@ print "</center>";
 
 print '</form>';
 
-if ($mesg) print '<br>'.$mesg;
+dol_htmloutput_mesg($mesg);
 
 print '<br><br>';
 
@@ -145,5 +143,5 @@ print '<br>';
 
 $db->close();
 
-llxFooter('$Date: 2011/07/31 23:21:08 $ - $Revision: 1.8 $');
+llxFooter();
 ?>

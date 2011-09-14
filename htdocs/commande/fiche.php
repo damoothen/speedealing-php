@@ -25,7 +25,6 @@
  *	\file       htdocs/commande/fiche.php
  *	\ingroup    commande
  *	\brief      Page to show customer order
- *	\version    $Id: fiche.php,v 1.533 2011/08/10 22:47:34 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -511,7 +510,7 @@ if ($action == 'addline' && $user->rights->commande->creer)
         // Ecrase $base_price_type par celui du produit
         if ($_POST['idprod'])
         {
-            $prod = new Product($db, $_POST['idprod']);
+            $prod = new Product($db);
             $prod->fetch($_POST['idprod']);
 
             $tva_tx = get_default_tva($mysoc,$object->client,$prod->id);
@@ -547,7 +546,7 @@ if ($action == 'addline' && $user->rights->commande->creer)
             }
 
             $desc = $prod->description;
-            $desc.= ($prod->description && $_POST['np_desc']) ? ((dol_textishtml($prod->description) || dol_textishtml($_POST['np_desc']))?"<br />\n":"\n") : "";
+            $desc.= ($prod->description && $_POST['np_desc']) ? ((dol_textishtml($prod->description) || dol_textishtml($_POST['np_desc']))?"<br>\n":"\n") : "";
             $desc.= $_POST['np_desc'];
             $type = $prod->type;
         }
@@ -1278,12 +1277,15 @@ if ($action == 'create' && $user->rights->commande->creer)
         print '</td></tr>';
     }
 
+    // Insert hooks
+    $parameters=array();
+    $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+
     print '<tr><td>'.$langs->trans('Model').'</td>';
     print '<td colspan="2">';
     // pdf
     include_once(DOL_DOCUMENT_ROOT.'/includes/modules/commande/modules_commande.php');
-    $model=new ModelePDFCommandes();
-    $liste=$model->liste_modeles($db);
+    $liste=ModelePDFCommandes::liste_modeles($db);
     print $html->selectarray('model',$liste,$conf->global->COMMANDE_ADDON_PDF);
     print "</td></tr>";
 
@@ -1392,7 +1394,7 @@ if ($action == 'create' && $user->rights->commande->creer)
 
         print '<table class="noborder" width="100%">';
 
-        $objectsrc->printOriginLinesList();
+        $objectsrc->printOriginLinesList($hookmanager);
 
         print '</table>';
     }
@@ -1502,7 +1504,7 @@ else
 
             if (! $formconfirm)
             {
-                $parameters=array('lineid'=>$lienid);
+                $parameters=array('lineid'=>$lineid);
                 $formconfirm=$hookmanager->executeHooks('formconfirm',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
             }
 
@@ -1745,7 +1747,6 @@ else
             //print '<a href="'.DOL_URL_ROOT.'/admin/dict.php?id=22&origin=order&originid='.$object->id.'">'.$langs->trans("DictionnarySource").'</a>';
             print '</td></tr>';
 
-
             // Project
             if ($conf->projet->enabled)
             {
@@ -1754,11 +1755,11 @@ else
                 print '<table class="nobordernopadding" width="100%"><tr><td>';
                 print $langs->trans('Project');
                 print '</td>';
-                if ($action != 'classer') print '<td align="right"><a href="'.$_SERVER['PHP_SELF'].'?action=classer&amp;id='.$object->id.'">'.img_edit($langs->trans('SetProject')).'</a></td>';
+                if ($action != 'classify') print '<td align="right"><a href="'.$_SERVER['PHP_SELF'].'?action=classify&amp;id='.$object->id.'">'.img_edit($langs->trans('SetProject')).'</a></td>';
                 print '</tr></table>';
                 print '</td><td colspan="2">';
                 //print "$object->id, $object->socid, $object->fk_project";
-                if ($action == 'classer')
+                if ($action == 'classify')
                 {
                     $html->form_project($_SERVER['PHP_SELF'].'?id='.$object->id, $object->socid, $object->fk_project, 'projectid');
                 }
@@ -1768,6 +1769,10 @@ else
                 }
                 print '</td></tr>';
             }
+
+            // Insert hooks
+            $parameters=array('colspan'=>' colspan="2"');
+            $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
 
             // Lignes de 3 colonnes
 
@@ -2070,5 +2075,5 @@ else
 
 $db->close();
 
-llxFooter('$Date: 2011/08/10 22:47:34 $ - $Revision: 1.533 $');
+llxFooter();
 ?>

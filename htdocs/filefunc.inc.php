@@ -26,11 +26,10 @@
 /**
  *	\file       htdocs/filefunc.inc.php
  * 	\ingroup	core
- *  \brief      File that include conf.php file and functions.lib.php
- *  \version    $Id: filefunc.inc.php,v 1.22 2011/08/04 12:07:29 eldy Exp $
+ *  \brief      File that include conf.php file and commons lib like functions.lib.php
  */
 
-define('DOL_VERSION','3.1.0-beta');	// Also defined in htdocs/install/inc.php (Ex: x.y.z-alpha, x.y.z)
+define('DOL_VERSION','3.2.0-alpha');	// Also defined in htdocs/install/inc.php (Ex: x.y.z-alpha, x.y.z)
 define('EURO',chr(128));
 
 // Definition des constantes syslog
@@ -176,9 +175,34 @@ if (! empty($dolibarr_main_url_root_alt))
 define('MAIN_DB_PREFIX',$dolibarr_main_db_prefix);
 //print DOL_URL_ROOT.'-'.DOL_URL_ROOT_ALT;
 
+
+/*
+ * Define PATH to external libraries
+ * To use other version than embeded libraries, define here constant to path. Use '' to use include class path autodetect.
+ */
+// Path to root libraries
+if (! defined('ADODB_PATH'))           { define('ADODB_PATH',           (!isset($dolibarr_lib_ADODB_PATH))?DOL_DOCUMENT_ROOT .'/includes/adodbtime/':(empty($dolibarr_lib_ADODB_PATH)?'':$dolibarr_lib_ADODB_PATH.'/')); }
+if (! defined('TCPDF_PATH'))           { define('TCPDF_PATH',           (!isset($dolibarr_lib_TCPDF_PATH))?DOL_DOCUMENT_ROOT .'/includes/tcpdf/':(empty($dolibarr_lib_TCPDF_PATH)?'':$dolibarr_lib_TCPDF_PATH.'/')); }
+if (! defined('FPDFI_PATH'))           { define('FPDFI_PATH',           (!isset($dolibarr_lib_FPDFI_PATH))?DOL_DOCUMENT_ROOT .'/includes/fpdfi/':(empty($dolibarr_lib_FPDFI_PATH)?'':$dolibarr_lib_FPDFI_PATH.'/')); }
+if (! defined('NUSOAP_PATH'))          { define('NUSOAP_PATH',          (!isset($dolibarr_lib_NUSOAP_PATH))?DOL_DOCUMENT_ROOT .'/includes/nusoap/lib/':(empty($dolibarr_lib_NUSOAP_PATH)?'':$dolibarr_lib_NUSOAP_PATH.'/')); }
+if (! defined('PHPEXCEL_PATH'))        { define('PHPEXCEL_PATH',        (!isset($dolibarr_lib_PHPEXCEL_PATH))?DOL_DOCUMENT_ROOT .'/includes/phpexcel/':(empty($dolibarr_lib_PHPEXCEL_PATH)?'':$dolibarr_lib_PHPEXCEL_PATH.'/')); }
+if (! defined('GEOIP_PATH'))           { define('GEOIP_PATH',           (!isset($dolibarr_lib_GEOIP_PATH))?DOL_DOCUMENT_ROOT.'/includes/geoip/':(empty($dolibarr_lib_GEOIP_PATH)?'':$dolibarr_lib_GEOIP_PATH.'/')); }
+if (! defined('ODTPHP_PATH'))          { define('ODTPHP_PATH',          (!isset($dolibarr_lib_ODTPHP_PATH))?DOL_DOCUMENT_ROOT.'/includes/odtphp/':(empty($dolibarr_lib_ODTPHP_PATH)?'':$dolibarr_lib_ODTPHP_PATH.'/')); }
+if (! defined('ODTPHP_PATHTOPCLZIP'))  { define('ODTPHP_PATHTOPCLZIP',  (!isset($dolibarr_lib_ODTPHP_PATHTOPCLZIP))?DOL_DOCUMENT_ROOT.'/includes/odtphp/zip/pclzip/':(empty($dolibarr_lib_ODTPHP_PATHTOPCLZIP)?'':$dolibarr_lib_ODTPHP_PATHTOPCLZIP.'/')); }
+if (! defined('ARTICHOW_FONT'))        { define('ARTICHOW_FONT',        (!isset($dolibarr_font_DOL_DEFAULT_TTF_BOLD))?DOL_DOCUMENT_ROOT.'/includes/artichow/font':dirname($dolibarr_font_DOL_DEFAULT_TTF_BOLD)); }
+// Other required path
+if (! defined('ARTICHOW_FONT_NAMES'))  { define('ARTICHOW_FONT_NAMES',  (!isset($dolibarr_font_DOL_DEFAULT_TTF_BOLD))?'Tuffy,TuffyBold,TuffyBoldItalic,TuffyItalic':'DejaVuSans,DejaVuSans-Bold,DejaVuSans-BoldOblique,DejaVuSans-Oblique'); }
+if (! defined('DOL_DEFAULT_TTF'))      { define('DOL_DEFAULT_TTF',      (!isset($dolibarr_font_DOL_DEFAULT_TTF))?DOL_DOCUMENT_ROOT.'/includes/barcode/php-barcode/fonts/Aerial.ttf':(empty($dolibarr_font_DOL_DEFAULT_TTF)?'':$dolibarr_font_DOL_DEFAULT_TTF)); }
+if (! defined('DOL_DEFAULT_TTF_BOLD')) { define('DOL_DEFAULT_TTF_BOLD', (!isset($dolibarr_font_DOL_DEFAULT_TTF_BOLD))?DOL_DOCUMENT_ROOT.'/includes/barcode/php-barcode/fonts/AerialBd.ttf':(empty($dolibarr_font_DOL_DEFAULT_TTF_BOLD)?'':$dolibarr_font_DOL_DEFAULT_TTF_BOLD)); }
+// Old path to root deprecated (no more used).
+//if (! defined('FPDF_PATH'))            { define('FPDF_PATH',            DOL_DOCUMENT_ROOT .'/includes/fpdf/fpdf/'); }
+
+
 /*
  * Include functions
  */
+
+if (! defined('ADODB_DATE_VERSION'))    include_once(ADODB_PATH.'adodb-time.inc.php');
 
 if (! file_exists(DOL_DOCUMENT_ROOT ."/lib/functions.lib.php"))
 {
@@ -188,12 +212,11 @@ if (! file_exists(DOL_DOCUMENT_ROOT ."/lib/functions.lib.php"))
 }
 
 include_once(DOL_DOCUMENT_ROOT ."/lib/functions.lib.php");	// Need 970ko memory (1.1 in 2.2)
-
+include_once(DOL_DOCUMENT_ROOT ."/lib/security.lib.php");	// Include by default
 
 // If password is encoded, we decode it
 if (preg_match('/crypted:/i',$dolibarr_main_db_pass) || ! empty($dolibarr_main_db_encrypted_pass))
 {
-	require_once(DOL_DOCUMENT_ROOT ."/lib/security.lib.php");
 	if (preg_match('/crypted:/i',$dolibarr_main_db_pass))
 	{
 		$dolibarr_main_db_pass = preg_replace('/crypted:/i', '', $dolibarr_main_db_pass);

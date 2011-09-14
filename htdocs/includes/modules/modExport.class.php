@@ -16,12 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**     \defgroup   export      Module export
- *		\brief      Module generique pour realiser des exports de donnees en base
- * 		\version	$Id: modExport.class.php,v 1.17 2011/07/31 23:28:12 eldy Exp $
- */
-
 /**
+ *  \defgroup   export      Module export
+ *  \brief      Module generique pour realiser des exports de donnees en base
  *	\file       htdocs/includes/modules/modExport.class.php
  *	\ingroup    export
  *	\brief      Fichier de description et activation du module export

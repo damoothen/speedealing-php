@@ -24,7 +24,6 @@
 /**
  *  \file           htdocs/includes/modules/DolibarrModules.class.php
  *  \brief          Fichier de description et activation des modules Dolibarr
- *  \version        $Id: DolibarrModules.class.php,v 1.163 2011/07/31 23:28:12 eldy Exp $
  */
 
 
@@ -32,7 +31,7 @@
  *  \class      DolibarrModules
  *  \brief      Classe mere des classes de description et activation des modules Dolibarr
  */
-class DolibarrModules
+abstract class DolibarrModules
 {
     //! Database handler
     var $db;
@@ -55,8 +54,9 @@ class DolibarrModules
 
 
     /**
-     *      Constructor
-     *      @param      DB      Database access handler
+	 *	Constructor
+	 *
+	 *  @param		DoliDB		$DB      Database handler
      */
     function DolibarrModules($DB)
     {
@@ -67,9 +67,10 @@ class DolibarrModules
 
     /**
      *      Fonction d'activation. Insere en base les constantes et boites du module
-     *      @param      array_sql       Tableau de requete sql a executer a l'activation
-     *      @param      options         Options when enabling module ('', 'noboxes')
-     *      @return     int             1 if OK, 0 if KO
+     *
+     *      @param      array	$array_sql  Array of SQL requests to execute when enabling module
+     *      @param      string	$options    Options when enabling module ('', 'noboxes')
+     *      @return     int              	1 if OK, 0 if KO
      */
     function _init($array_sql, $options='')
     {
@@ -165,9 +166,10 @@ class DolibarrModules
 
     /**
      *  Fonction de desactivation. Supprime de la base les constantes et boites du module
-     *  @param      array_sql       tableau de requete sql a executer a la desactivation
-     *  @param      options         Options when disabling module ('', 'noboxes')
-     *  @return     int             1 if OK, 0 if KO
+     *
+     *  @param      array	$array_sql      Array of SQL requests to execute when disable module
+     *  @param      string	$options		Options when disabling module ('', 'noboxes')
+     *  @return     int      		       	1 if OK, 0 if KO
      */
     function _remove($array_sql, $options='')
     {
@@ -264,7 +266,8 @@ class DolibarrModules
 
     /**
      *  Retourne la description traduite du module si la traduction existe dans admin.lang,
-     *  sinon la description definie par defaut dans le module.
+     *  sinon la description definie par defaut dans le module
+     *
      *  @return     string      Nom du module traduit
      */
     function getDesc()
@@ -290,6 +293,7 @@ class DolibarrModules
      *  Pour les modules a l'etat 'experimental', retourne la traduction de 'experimental'
      *  Pour les modules 'dolibarr', retourne la version de Dolibarr
      *  Pour les autres modules, retourne la version du module
+     *
      *  @return     string      Version du module
      */
     function getVersion()
@@ -307,6 +311,7 @@ class DolibarrModules
 
     /**
      *  Return list of lang files related to module
+     *
      *  @return     array       Array of lang files
      */
     function getLangFilesArray()
@@ -316,6 +321,7 @@ class DolibarrModules
 
     /**
      *  Return translated label of a export dataset
+     *
      *  @return     string      Label of databaset
      */
     function getExportDatasetLabel($r)
@@ -338,6 +344,7 @@ class DolibarrModules
 
     /**
      *  Return translated label of an import dataset
+     *
      *  @return     string      Label of databaset
      */
     function getImportDatasetLabel($r)
@@ -360,7 +367,8 @@ class DolibarrModules
 
     /**
      *  Insert line in dolibarr_modules table.
-     *  Storage is made for information only, table is not required for Dolibarr usage.
+     *  Storage is made for information only, table is not required for Dolibarr usage
+     *
      *  @return     int     Nb of errors (0 if OK)
      */
     function _dbactive()
@@ -400,7 +408,8 @@ class DolibarrModules
 
     /**
      *  Remove line in dolibarr_modules table
-     *  Storage is made for information only, table is not required for Dolibarr usage.
+     *  Storage is made for information only, table is not required for Dolibarr usage
+     *
      *  @return     int     Nb of errors (0 if OK)
      */
     function _dbunactive()
@@ -422,6 +431,7 @@ class DolibarrModules
 
     /**
      *      Insert constant to activate module
+     *
      *      @return     int     Nb of errors (0 if OK)
      */
     function _active()
@@ -457,6 +467,7 @@ class DolibarrModules
 
     /**
      *      Remove activation line
+     *
      *      @return     int     Nb of errors (0 if OK)
      **/
     function _unactive()
@@ -483,7 +494,8 @@ class DolibarrModules
      *      Create tables and keys required by module.
      *      Files module.sql and module.key.sql with create table and create keys
      *      commands must be stored in directory reldir='/module/sql/'
-     *      This function is called by this->init.
+     *      This function is called by this->init
+     *
      *      @return     int     <=0 if KO, >0 if OK
      */
     function _load_tables($reldir)
@@ -575,6 +587,7 @@ class DolibarrModules
 
     /**
      *  Insert boxes into llx_boxes_def
+     *
      *  @return     int     Nb of errors (0 if OK)
      */
     function insert_boxes()
@@ -631,6 +644,7 @@ class DolibarrModules
 
     /**
      *  Delete boxes
+     *
      *  @return     int     Nb of errors (0 if OK)
      */
     function delete_boxes()
@@ -682,6 +696,7 @@ class DolibarrModules
 
     /**
      *  Desactive feuille de style du module par suppression ligne dans llx_const
+     *
      *  @return     int     Nb of errors (0 if OK)
      */
     function delete_style_sheet()
@@ -710,6 +725,7 @@ class DolibarrModules
 
     /**
      *  Remove links to new module page present in llx_const
+     *
      *  @return     int     Nb of errors (0 if OK)
      */
     function delete_tabs()
@@ -734,7 +750,8 @@ class DolibarrModules
     }
 
     /**
-     *  Active la feuille de style associee au module par insertion ligne dans llx_const
+     *  Activate stylesheet provided by module by adding a line into llx_const
+     *
      *  @return     int     Nb of errors (0 if OK)
      */
     function insert_style_sheet()
@@ -777,6 +794,7 @@ class DolibarrModules
 
     /**
      *  Add links of new pages from modules in llx_const
+     *
      *  @return     int     Number of errors (0 if ok)
      */
     function insert_tabs()
@@ -826,6 +844,7 @@ class DolibarrModules
 
     /**
      *  Insert constants defined into $this->const array into table llx_const
+     *
      *  @return     int     Number of errors (0 if OK)
      */
     function insert_const()
@@ -893,6 +912,7 @@ class DolibarrModules
 
     /**
      * Remove constants with tags deleteonunactive
+     *
      * @return     int     <0 if KO, 0 if OK
      */
     function delete_const()
@@ -926,6 +946,7 @@ class DolibarrModules
 
     /**
      *  Insert permissions definitions related to the module into llx_rights_def
+     *
      *  @param      $reinitadminperms   If 1, we also grant them to all admin users
      *  @return     int                 Number of error (0 if OK)
      */
@@ -1049,6 +1070,7 @@ class DolibarrModules
 
     /**
      * Delete permissions
+     *
      * @return     int     Nb of errors (0 if OK)
      */
     function delete_permissions()
@@ -1074,6 +1096,7 @@ class DolibarrModules
 
     /**
      *  Insert menus entries found into $this->menu into llx_menu*
+     *
      *  @return     int     Nb of errors (0 if OK)
      */
     function insert_menus()
@@ -1169,6 +1192,7 @@ class DolibarrModules
 
     /**
      *  Remove menus entries
+     *
      *  @return     int     Nb of errors (0 if OK)
      */
     function delete_menus()
@@ -1195,6 +1219,7 @@ class DolibarrModules
 
     /**
      *  Create directories required by module
+     *
      *  @return     int     Nb of errors (0 if OK)
      */
     function create_dirs()
@@ -1252,6 +1277,7 @@ class DolibarrModules
 
     /**
      *  Insert directories in llx_const
+     *
      *  @return     int     Nb of errors (0 if OK)
      */
     function insert_dirs($name,$dir)
@@ -1293,6 +1319,7 @@ class DolibarrModules
 
     /**
      *  Remove directory entries
+     *
      *  @return     int     Nb of errors (0 if OK)
      */
     function delete_dirs()
@@ -1318,6 +1345,7 @@ class DolibarrModules
 
     /**
      *  Insert activation triggers from modules in llx_const
+     *
      *  @return     int     Nb of errors (0 if OK)
      */
     function insert_triggers()
@@ -1358,6 +1386,7 @@ class DolibarrModules
 
     /**
      *  Remove activation triggers from modules in llx_const
+     *
      *  @return     int     Nb of errors (0 if OK)
      */
     function delete_triggers()
@@ -1383,6 +1412,7 @@ class DolibarrModules
 
     /**
      *  Insert activation login method from modules in llx_const
+     *
      *  @return     int             Number of errors (0 if ok)
      */
     function insert_login_method()
@@ -1423,6 +1453,7 @@ class DolibarrModules
 
     /**
      *  Remove activation login method from modules in llx_const
+     *
      *  @return     int     Nombre d'erreurs (0 si ok)
      */
     function delete_login_method()

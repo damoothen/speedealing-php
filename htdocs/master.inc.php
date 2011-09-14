@@ -29,12 +29,10 @@
  * 	\ingroup	core
  *  \brief      File that defines environment for all Dolibarr process (pages or scripts)
  * 				This script reads the conf file, init $lang, $db and and empty $user
- *  \version    $Id: master.inc.php,v 1.352 2011/08/01 12:25:14 hregis Exp $
  */
 
 
 require_once("filefunc.inc.php");	// May have been already require by main.inc.php. But may not by scripts.
-
 
 
 /*
@@ -203,7 +201,7 @@ if (! empty($conf->global->MAIN_ONLY_LOGIN_ALLOWED))
 }
 
 /*
- * Create object $mysoc (A "Societe" object that contains properties of companies managed by Dolibarr.
+ * Create object $mysoc (A thirdparty object that contains properties of companies managed by Dolibarr.
  */
 if (! defined('NOREQUIREDB') && ! defined('NOREQUIRESOC'))
 {
@@ -219,7 +217,6 @@ if (! defined('NOREQUIREDB') && ! defined('NOREQUIRESOC'))
 	$mysoc->zip=$conf->global->MAIN_INFO_SOCIETE_CP;
 	$mysoc->ville=$conf->global->MAIN_INFO_SOCIETE_VILLE; 		// TODO deprecated
 	$mysoc->town=$conf->global->MAIN_INFO_SOCIETE_VILLE;
-	$mysoc->departement_id=$conf->global->MAIN_INFO_SOCIETE_DEPARTEMENT;	// TODO deprecated
 	$mysoc->state_id=$conf->global->MAIN_INFO_SOCIETE_DEPARTEMENT;
 	$mysoc->note=empty($conf->global->MAIN_INFO_SOCIETE_NOTE)?'':$conf->global->MAIN_INFO_SOCIETE_NOTE;
 
@@ -281,37 +278,11 @@ if (! defined('NOREQUIREDB') && ! defined('NOREQUIRESOC'))
 }
 
 
-/*
- * Set default language (must be after the setValues of $conf)
- */
+// Set default language (must be after the setValues of $conf)
 if (! defined('NOREQUIRETRAN'))
 {
 	$langs->setDefaultLang($conf->global->MAIN_LANG_DEFAULT);
 }
-
-/*
- * Pour utiliser d'autres versions des librairies externes que les
- * versions embarquees dans Dolibarr, definir les constantes adequates:
- * Pour FPDF:           FPDF_PATH
- * Pour PHP_WriteExcel: PHP_WRITEEXCEL_PATH
- * Pour MagpieRss:      MAGPIERSS_PATH
- * Pour PHPlot:         PHPLOT_PATH
- * Pour JPGraph:        JPGRAPH_PATH
- * Pour NuSOAP:         NUSOAP_PATH
- * Pour TCPDF:          TCPDF_PATH
- */
-// Les path racines
-if (! defined('FPDF_PATH'))           { define('FPDF_PATH',          DOL_DOCUMENT_ROOT .'/includes/fpdf/fpdf/'); }
-if (! defined('FPDFI_PATH'))          { define('FPDFI_PATH',         DOL_DOCUMENT_ROOT .'/includes/fpdf/fpdfi/'); }
-if (! defined('MAGPIERSS_PATH'))      { define('MAGPIERSS_PATH',     DOL_DOCUMENT_ROOT .'/includes/magpierss/'); }
-if (! defined('JPGRAPH_PATH'))        { define('JPGRAPH_PATH',       DOL_DOCUMENT_ROOT .'/includes/jpgraph/'); }
-if (! defined('NUSOAP_PATH'))         { define('NUSOAP_PATH',        DOL_DOCUMENT_ROOT .'/includes/nusoap/lib/'); }
-if (! defined('PHP_WRITEEXCEL_PATH')) { define('PHP_WRITEEXCEL_PATH',DOL_DOCUMENT_ROOT .'/includes/php_writeexcel/'); }
-if (! defined('PHPEXCELREADER'))      { define('PHPEXCELREADER',     DOL_DOCUMENT_ROOT .'/includes/phpexcelreader/'); }
-// Les autres path
-if (! defined('MAGPIE_DIR'))          { define('MAGPIE_DIR',         MAGPIERSS_PATH); }
-if (! defined('MAGPIE_CACHE_DIR'))    { define('MAGPIE_CACHE_DIR',   $conf->externalrss->dir_temp); }
-
 
 if (! defined('MAIN_LABEL_MENTION_NPR') ) define('MAIN_LABEL_MENTION_NPR','NPR');
 

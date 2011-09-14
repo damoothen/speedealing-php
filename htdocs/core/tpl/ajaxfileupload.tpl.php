@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- * $Id: ajaxfileupload.tpl.php,v 1.11 2011/07/31 23:45:11 eldy Exp $
  */
 ?>
 
@@ -42,6 +41,7 @@
 	</tr>
 </script>
 
+<!-- Warning id on script is not W3C compliant and is reported as error by phpcs but it is required by jfilepload plugin -->
 <script id="template-download" type="text/x-jquery-tmpl">
     <tr class="template-download{{if error}} ui-state-error{{/if}}">
         {{if error}}

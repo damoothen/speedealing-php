@@ -21,7 +21,6 @@
  *  \file       htdocs/admin/menus/index.php
  *  \ingroup    core
  *  \brief      Index page for menu editor
- *  \version    $Id: index.php,v 1.45 2011/07/31 22:23:15 eldy Exp $
  */
 
 require("../../main.inc.php");
@@ -301,7 +300,7 @@ if ($conf->use_javascript_ajax)
 		$num = $db->num_rows($res);
 
 		$i = 1;
-		while ($menu = $db->fetch_array ($res))
+		while ($menu = $db->fetch_array($res))
 		{
 			if (! empty($menu['langs'])) $langs->load($menu['langs']);
 			$titre = $langs->trans($menu['titre']);
@@ -342,4 +341,4 @@ $db->close();
 
 print '<br>';
 
-llxFooter('$Date: 2011/07/31 22:23:15 $ - $Revision: 1.45 $');
+llxFooter();

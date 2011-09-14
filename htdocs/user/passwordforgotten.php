@@ -19,7 +19,6 @@
 /**
  *       \file       htdocs/user/passwordforgotten.php
  *       \brief      Page to ask a new password
- *       \version    $Id: passwordforgotten.php,v 1.76 2011/07/31 23:19:43 eldy Exp $
  */
 
 define("NOLOGIN",1);	// This means this output page does not require to be logged.
@@ -65,7 +64,7 @@ if ($action == 'validatenewpassword' && $username && $passwordmd5)
     }
     else
     {
-        if (md5($edituser->pass_temp) == $passwordmd5)
+        if (dol_hash($edituser->pass_temp) == $passwordmd5)
         {
             $newpassword=$edituser->setPassword($user,$edituser->pass_temp,0);
             dol_syslog("passwordforgotten.php new password for user->id=".$edituser->id." validated in database");
@@ -192,7 +191,6 @@ if ($conf->global->MAIN_SECURITY_ENABLE_SENDPASSWORD) $disabled='';	 // To force
 $width=0;
 $rowspan=2;
 $urllogo=DOL_URL_ROOT.'/theme/login_logo.png';
-
 if (! empty($mysoc->logo_small) && is_readable($conf->mycompany->dir_output.'/logos/thumbs/'.$mysoc->logo_small))
 {
     $urllogo=DOL_URL_ROOT.'/viewimage.php?cache=1&amp;modulepart=companylogo&amp;file='.urlencode('thumbs/'.$mysoc->logo_small);
@@ -201,9 +199,11 @@ elseif (! empty($mysoc->logo_small) && is_readable($conf->mycompany->dir_output.
 {
     $urllogo=DOL_URL_ROOT.'/viewimage.php?cache=1&amp;modulepart=companylogo&amp;file='.urlencode($mysoc->logo);
     $width=128;
-}
-elseif (is_readable(DOL_DOCUMENT_ROOT.'/theme/dolibarr_logo.png'))
-{
+}elseif (is_readable(DOL_DOCUMENT_ROOT.'/theme/'.$conf->theme.'/img/dolibarr_logo.png'))
+	{
+		$urllogo=DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/dolibarr_logo.png';
+}elseif (is_readable(DOL_DOCUMENT_ROOT.'/theme/dolibarr_logo.png'))
+	{
     $urllogo=DOL_URL_ROOT.'/theme/dolibarr_logo.png';
 }
 
@@ -243,7 +243,7 @@ if (! empty($conf->global->MAIN_MODULE_MULTICOMPANY)  && empty($conf->global->MU
 if (function_exists("imagecreatefrompng") && ! $disabled)
 {
     $captcha = 1;
-    $captcha_refresh = img_refresh();
+    $captcha_refresh = img_picto($langs->trans("Refresh"),'refresh');
 }
 
 include($template_dir.'passwordforgotten.tpl.php');	// To use native PHP

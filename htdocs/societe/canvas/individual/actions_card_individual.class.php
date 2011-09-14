@@ -19,13 +19,12 @@
  *	\file       htdocs/societe/canvas/individual/actions_card_individual.class.php
  *	\ingroup    thirdparty
  *	\brief      Fichier de la classe Thirdparty card controller (individual canvas)
- *	\version    $Id: actions_card_individual.class.php,v 1.13 2011/07/31 23:22:59 eldy Exp $
  */
 include_once(DOL_DOCUMENT_ROOT.'/societe/canvas/actions_card_common.class.php');
 
 /**
  *	\class      ActionsCardIndividual
- *	\brief      Classe permettant la gestion des particuliers
+ *	\brief      Class with controller methods for individual canvas
  */
 class ActionsCardIndividual extends ActionsCardCommon
 {
@@ -35,11 +34,12 @@ class ActionsCardIndividual extends ActionsCardCommon
     var $card;
 
     /**
-     *    Constructor
-     *    @param   DB              Handler acces base de donnees
-     *    @param   targetmodule    Name of directory of module where canvas is stored
-     *    @param   canvas          Name of canvas
-     *    @param   card            Name of tab (sub-canvas)
+	 *    Constructor
+	 *
+     *    @param   DoliDB	$DB             Handler acces base de donnees
+     *    @param   string	$targetmodule	Name of directory of module where canvas is stored
+     *    @param   string	$canvas         Name of canvas
+     *    @param   string	$card           Name of tab (sub-canvas)
      */
 	function ActionsCardIndividual($DB,$targetmodule,$canvas,$card)
 	{
@@ -53,7 +53,7 @@ class ActionsCardIndividual extends ActionsCardCommon
     /**
      *  Return the title of card
      */
-    function getTitle($action)
+    private function getTitle($action)
     {
         global $langs;
 
@@ -68,16 +68,9 @@ class ActionsCardIndividual extends ActionsCardCommon
 
 
 	/**
-     *    Assigne les valeurs POST dans l'objet
-     */
-    function assign_post()
-    {
-    	parent::assign_post();
-    }
-
-	/**
 	 * 	Execute actions
-	 * 	@param 		Id of object (may be empty for creation)
+	 *
+	 * 	@param		int		$socid		Id of object (may be empty for creation)
 	 */
 	function doActions($socid)
 	{
@@ -87,10 +80,11 @@ class ActionsCardIndividual extends ActionsCardCommon
 	}
 
 	/**
-	 *    Assign custom values for canvas
-	 *    @param      action     Type of action
+	 *  Assign custom values for canvas (for example into this->tpl to be used by templates)
+	 *
+	 *  @param		string	$action		Type of action
 	 */
-	function assign_values($action='')
+	function assign_values($action)
 	{
 		global $conf, $langs;
 		global $form, $formcompany;
@@ -99,7 +93,7 @@ class ActionsCardIndividual extends ActionsCardCommon
 
 		if ($action == 'create' || $action == 'edit')
 		{
-			$this->tpl['select_civility'] = $formcompany->select_civility($contact->civilite_id);
+			$this->tpl['select_civility'] = $formcompany->select_civility(GETPOST('civilite_id'));
 		}
 		else
 		{

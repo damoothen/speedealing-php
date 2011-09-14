@@ -20,7 +20,6 @@
 /**
  *	\file       htdocs/includes/menus/standard/auguria_frontoffice.php
  *	\brief      Gestionnaire nomme Auguria du menu du haut
- *	\version    $Id: auguria_frontoffice.php,v 1.4 2011/07/31 23:46:07 eldy Exp $
  *
  *	\remarks    La construction d'un gestionnaire pour le menu du haut est simple:
  *	\remarks    Toutes les entrees de menu a faire apparaitre dans la barre du haut
@@ -79,6 +78,7 @@ class MenuLeft {
 
     /**
      *  Constructor
+     *
      *  @param      db                  Database handler
      *  @param      menu_array          Table of menu entries to show before entries of menu handler
      *  @param      menu_array_after    Table of menu entries to show after entries of menu handler
@@ -92,8 +92,9 @@ class MenuLeft {
 
 
     /**
-     *      \brief      Show menu
-     *      \return     int     Number of menu entries shown
+     *  Show menu
+     *
+     *  @return     int     Number of menu entries shown
      */
     function showmenu()
     {
