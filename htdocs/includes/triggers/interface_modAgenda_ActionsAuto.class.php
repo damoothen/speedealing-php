@@ -14,15 +14,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *	\file       htdocs/includes/triggers/interface_modAgenda_ActionsAuto.class.php
  *  \ingroup    agenda
  *  \brief      Trigger file for agenda module
- *	\version	$Id: interface_modAgenda_ActionsAuto.class.php,v 1.34 2011/07/13 18:05:27 eldy Exp $
+ *	\version	$Id: interface_modAgenda_ActionsAuto.class.php,v 1.36 2011/07/31 23:29:46 eldy Exp $
  */
 
 
@@ -52,6 +51,7 @@ class InterfaceActionsAuto
         $this->family = "agenda";
         $this->description = "Triggers of this module add actions in agenda according to setup made in agenda setup.";
         $this->version = 'dolibarr';                        // 'experimental' or 'dolibarr' or version
+        $this->picto = 'action';
     }
 
     /**

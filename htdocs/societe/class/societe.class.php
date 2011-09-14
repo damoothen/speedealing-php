@@ -7,6 +7,7 @@
  * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2008      Patrick Raguin       <patrick.raguin@auguria.net>
  * Copyright (C) 2010      Juanjo Menent        <jmenent@2byte.es>
+ * Copyright (C) 2010-2011 Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,15 +20,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *	\file       htdocs/societe/class/societe.class.php
  *	\ingroup    societe
  *	\brief      File for third party class
- *	\version    $Id: societe.class.php,v 1.91 2011/07/07 21:32:21 eldy Exp $
+ *	\version    $Id: societe.class.php,v 1.96 2011/08/10 22:47:35 eldy Exp $
  */
 require_once(DOL_DOCUMENT_ROOT."/core/class/commonobject.class.php");
 
@@ -119,6 +119,7 @@ class Societe extends CommonObject
     var $note;
     //! code statut prospect
     var $stcomm_id;
+    var $type; //0: suspect, 1: prospect, 2:client
     var $statut_commercial;
 
     var $price_level;
@@ -133,6 +134,11 @@ class Societe extends CommonObject
 
     var $ref_int;
     var $import_key;
+
+    //begin Symeos MAP
+    var $lat; // latitude
+    var $lng; // longitude
+    //end Symeos
 
     var $logo;
     var $logo_small;
@@ -160,6 +166,11 @@ class Societe extends CommonObject
         $this->prefixSupplierIsRequired = 0;
         $this->tva_assuj = 1;
         $this->status = 1;
+
+        //begin Symeos
+	$this->lat = 0;
+	$this->lng = 0;
+	//end symeos
 
         return 1;
     }
@@ -500,6 +511,12 @@ class Societe extends CommonObject
             $sql .= ",default_lang = ".($this->default_lang?"'".$this->default_lang."'":"null");
             $sql .= ",logo = ".($this->logo?"'".$this->logo."'":"null");
 
+            //begin Symeos
+            $sql .= ",latitude = " . $this->lat;
+            $sql .= ",longitude = " . $this->lng;
+            //end Symeos
+
+
             if ($allowmodcodeclient)
             {
                 //$this->check_codeclient();
@@ -534,11 +551,21 @@ class Societe extends CommonObject
                 // Si le fournisseur est classe on l'ajoute
                 $this->AddFournisseurInCategory($this->fournisseur_categorie);
 
-                $result=$this->insertExtraFields();
-                if ($result < 0)
+                // Actions on extra fields (by external module or standard code)
+                include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
+                $hookmanager=new HookManager($this->db);
+                $hookmanager->callHooks(array('thirdparty_extrafields'));
+                $parameters=array('socid'=>$socid);
+                $reshook=$hookmanager->executeHooks('insertExtraFields',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
+                if (empty($reshook))
                 {
-                    $error++;
+                    $result=$this->insertExtraFields($this);
+                    if ($result < 0)
+                    {
+                        $error++;
+                    }
                 }
+                else if ($reshook < 0) $error++;
 
                 if (! $error && $call_trigger)
                 {
@@ -622,11 +649,15 @@ class Societe extends CommonObject
         $sql .= ', s.fk_departement, s.fk_pays, s.fk_stcomm, s.remise_client, s.mode_reglement, s.cond_reglement, s.tva_assuj';
         $sql .= ', s.localtax1_assuj, s.localtax2_assuj, s.fk_prospectlevel, s.default_lang, s.logo';
         $sql .= ', s.import_key';
+        // Begin Symeos
+	$sql .= ', s.latitude';
+	$sql .= ', s.longitude';
+	// End Symeos
         $sql .= ', fj.libelle as forme_juridique';
         $sql .= ', e.libelle as effectif';
         $sql .= ', p.code as pays_code, p.libelle as pays';
         $sql .= ', d.code_departement as departement_code, d.nom as departement';
-        $sql .= ', st.libelle as stcomm';
+        $sql .= ', st.libelle as stcomm, st.type as type';
         $sql .= ', te.code as typent_code';
         $sql .= ' FROM '.MAIN_DB_PREFIX.'societe as s';
         $sql .= ' LEFT JOIN '.MAIN_DB_PREFIX.'c_effectif as e ON s.fk_effectif = e.id';
@@ -692,6 +723,7 @@ class Societe extends CommonObject
                 $transcode=$langs->trans('StatusProspect'.$obj->fk_stcomm);
                 $libelle=($transcode!='StatusProspect'.$obj->fk_stcomm?$transcode:$obj->stcomm);
                 $this->stcomm_id = $obj->fk_stcomm;     // id statut commercial
+                $this->type      = $obj->type;          // stcomm type
                 $this->statut_commercial = $libelle;    // libelle statut commercial
 
                 $this->email = $obj->email;
@@ -760,6 +792,11 @@ class Societe extends CommonObject
                 $this->price_level = $obj->price_level;
 
                 $this->import_key = $obj->import_key;
+
+                //begin Symeos
+		$this->lat = $obj->latitude;
+		$this->lng = $obj->longitude;
+		//End Symeos
 
                 $result = 1;
             }
@@ -1330,15 +1367,17 @@ class Societe extends CommonObject
     {
         if ($this->id)
         {
+        	$now=dol_now();
+        	
             $sql  = "UPDATE ".MAIN_DB_PREFIX."societe ";
             $sql .= " SET price_level = '".$price_level."'";
-            $sql .= " WHERE rowid = " . $this->id .";";
+            $sql .= " WHERE rowid = " . $this->id;
 
             $this->db->query($sql);
 
             $sql  = "INSERT INTO ".MAIN_DB_PREFIX."societe_prices ";
             $sql .= " ( datec, fk_soc, price_level, fk_user_author )";
-            $sql .= " VALUES (".$this->db->idate(mktime()).",".$this->id.",'".$price_level."',".$user->id.")";
+            $sql .= " VALUES ('".$this->db->idate($now)."',".$this->id.",'".$price_level."',".$user->id.")";
 
             if (! $this->db->query($sql) )
             {
@@ -1481,22 +1520,22 @@ class Societe extends CommonObject
         }
         if ($mode == 2)
         {
-            if ($statut==0) return img_picto($langs->trans("ActivityCeased"),'statut6').' '.$langs->trans("ActivityCeased");
+            if ($statut==0) return img_picto($langs->trans("ActivityCeased"),'statut5').' '.$langs->trans("ActivityCeased");
             if ($statut==1) return img_picto($langs->trans("InActivity"),'statut4').' '.$langs->trans("InActivity");
         }
         if ($mode == 3)
         {
-            if ($statut==0) return img_picto($langs->trans("ActivityCeased"),'statut6');
+            if ($statut==0) return img_picto($langs->trans("ActivityCeased"),'statut5');
             if ($statut==1) return img_picto($langs->trans("InActivity"),'statut4');
         }
         if ($mode == 4)
         {
-            if ($statut==0) return img_picto($langs->trans("ActivityCeased"),'statut6').' '.$langs->trans("ActivityCeased");
+            if ($statut==0) return img_picto($langs->trans("ActivityCeased"),'statut5').' '.$langs->trans("ActivityCeased");
             if ($statut==1) return img_picto($langs->trans("InActivity"),'statut4').' '.$langs->trans("InActivity");
         }
         if ($mode == 5)
         {
-            if ($statut==0) return $langs->trans("ActivityCeased").' '.img_picto($langs->trans("ActivityCeased"),'statut6');
+            if ($statut==0) return $langs->trans("ActivityCeased").' '.img_picto($langs->trans("ActivityCeased"),'statut5');
             if ($statut==1) return $langs->trans("InActivity").' '.img_picto($langs->trans("InActivity"),'statut4');
         }
     }
@@ -1528,14 +1567,16 @@ class Societe extends CommonObject
 
     /**
      *    Return list of contacts emails existing for third party
-     *    @return     array       Array of contacts emails
+     *
+     *	  @param	  int		$addthirdparty		1=Add also a record for thirdparty email
+     *    @return     array     					Array of contacts emails
      */
-    function thirdparty_and_contact_email_array()
+    function thirdparty_and_contact_email_array($addthirdparty=0)
     {
         global $langs;
 
         $contact_emails = $this->contact_property_array('email');
-        if ($this->email)
+        if ($this->email && $addthirdparty)
         {
             if (empty($this->name)) $this->name=$this->nom;
             // TODO: Tester si email non deja present dans tableau contact

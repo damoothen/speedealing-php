@@ -14,15 +14,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *      \file       htdocs/adherents/admin/adherent_extrafields.php
  *		\ingroup    member
  *		\brief      Page to setup extra fields of members
- *		\version    $Id: adherent_extrafields.php,v 1.3 2011/07/05 20:39:36 eldy Exp $
+ *		\version    $Id: adherent_extrafields.php,v 1.5 2011/08/03 00:45:42 eldy Exp $
  */
 
 require("../../main.inc.php");
@@ -204,13 +203,13 @@ $var=True;
 foreach($extrafields->attribute_type as $key => $value)
 {
 	$var=!$var;
-	print "<tr $bc[$var]>";
+	print "<tr ".$bc[$var].">";
     print "<td>".$extrafields->attribute_label[$key]."</td>\n";
 	print "<td>".$key."</td>\n";
 	print "<td>".$type2label[$extrafields->attribute_type[$key]]."</td>\n";
 	print '<td align="right">'.$extrafields->attribute_size[$key]."</td>\n";
-	print '<td align="right"><a href="".$_SERVER["PHP_SELF"]."?action=edit&attrname='.$key.'">'.img_edit().'</a>';
-	print "&nbsp; <a href=\"".$_SERVER["PHP_SELF"]."?action=delete&attrname=$key\">".img_delete()."</a></td>\n";
+	print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=edit&attrname='.$key.'">'.img_edit().'</a>';
+	print "&nbsp; <a href=\"".$_SERVER["PHP_SELF"]."?action=delete&attrname=".$key."\">".img_delete()."</a></td>\n";
 	print "</tr>";
 	//      $i++;
 }
@@ -312,5 +311,5 @@ if ($_GET["attrname"] && $action == 'edit')
 
 $db->close();
 
-llxFooter('$Date: 2011/07/05 20:39:36 $ - $Revision: 1.3 $');
+llxFooter('$Date: 2011/08/03 00:45:42 $ - $Revision: 1.5 $');
 ?>

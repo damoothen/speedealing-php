@@ -15,14 +15,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *	\file       htdocs/index.php
  *	\brief      Dolibarr home page
- *	\version    $Id: index.php,v 1.198 2011/07/08 15:35:08 eldy Exp $
+ *	\version    $Id: index.php,v 1.201 2011/08/04 12:07:30 eldy Exp $
  */
 
 define('NOCSRFCHECK',1);	// This is login page. We must be able to go on it from another web site.
@@ -129,7 +128,6 @@ print "</table>\n";
 $langs->load("commercial");
 $langs->load("bills");
 $langs->load("orders");
-$langs->load("lead");
 
 if ($user->societe_id == 0)
 {
@@ -146,6 +144,7 @@ if ($user->societe_id == 0)
 	$conditions=array(
 	! empty($conf->societe->enabled) && $user->rights->societe->lire && empty($conf->global->SOCIETE_DISABLE_CUSTOMERS_STATS),
 	! empty($conf->societe->enabled) && $user->rights->societe->lire && empty($conf->global->SOCIETE_DISABLE_PROSPECTS_STATS),
+        ! empty($conf->societe->enabled) && $user->rights->societe->lire && empty($conf->global->SOCIETE_DISABLE_SUSPECTS_STATS),
 	! empty($conf->fournisseur->enabled) && $user->rights->fournisseur->lire && empty($conf->global->SOCIETE_DISABLE_SUPPLIERS_STATS),
 	! empty($conf->adherent->enabled) && $user->rights->adherent->lire,
 	! empty($conf->product->enabled) && $user->rights->produit->lire,
@@ -156,19 +155,21 @@ if ($user->societe_id == 0)
 	! empty($conf->facture->enabled) && $user->rights->facture->lire,
 	! empty($conf->societe->enabled) && $user->rights->contrat->activer);
 	// Class file containing the method load_state_board for each line
-	$includes=array(DOL_DOCUMENT_ROOT."/societe/class/client.class.php",
-	DOL_DOCUMENT_ROOT."/comm/prospect/class/prospect.class.php",
-	DOL_DOCUMENT_ROOT."/fourn/class/fournisseur.class.php",
-	DOL_DOCUMENT_ROOT."/adherents/class/adherent.class.php",
-	DOL_DOCUMENT_ROOT."/product/class/product.class.php",
-	DOL_DOCUMENT_ROOT."/product/class/service.class.php",
-	DOL_DOCUMENT_ROOT."/comm/propal/class/propal.class.php",
-    DOL_DOCUMENT_ROOT."/lead/class/lead.class.php",
-	DOL_DOCUMENT_ROOT."/commande/class/commande.class.php",
-	DOL_DOCUMENT_ROOT."/compta/facture/class/facture.class.php",
-	DOL_DOCUMENT_ROOT."/contrat/class/contrat.class.php");
+	$includes=array("/comm/prospect/class/prospect.class.php",
+	"/comm/prospect/class/prospect.class.php",
+        "/comm/prospect/class/prospect.class.php",
+	"/fourn/class/fournisseur.class.php",
+	"/adherents/class/adherent.class.php",
+	"/product/class/product.class.php",
+	"/product/class/service.class.php",
+	"/comm/propal/class/propal.class.php",
+        "/lead/class/lead.class.php",
+	"/commande/class/commande.class.php",
+	"/compta/facture/class/facture.class.php",
+	"/contrat/class/contrat.class.php");
 	// Name class containing the method load_state_board for each line
-	$classes=array('Client',
+	$classes=array('Prospect',
+                   'Prospect',
                    'Prospect',
                    'Fournisseur',
                    'Adherent',
@@ -182,6 +183,7 @@ if ($user->societe_id == 0)
     // Cle array returned by the method load_state_board for each line
     $keys=array('customers',
                 'prospects',
+                'suspects',
                 'suppliers',
                 'members',
                 'products',
@@ -195,6 +197,7 @@ if ($user->societe_id == 0)
     $icons=array('company',
                  'company',
                  'company',
+                 'company',
                  'user',
                  'product',
                  'service',
@@ -206,6 +209,7 @@ if ($user->societe_id == 0)
     // Translation keyword
     $titres=array("Customers",
                   "Prospects",
+                  "Suspects",
                   "Suppliers",
                   "Members",
                   "Products",
@@ -216,26 +220,28 @@ if ($user->societe_id == 0)
                   "BillsCustomers",
                   "Contracts");
 	// Dashboard Link lines
-	$links=array(DOL_URL_ROOT.'/comm/clients.php',
-	DOL_URL_ROOT.'/comm/prospect/prospects.php',
-	DOL_URL_ROOT.'/fourn/liste.php',
-	DOL_URL_ROOT.'/adherents/liste.php?statut=1&amp;mainmenu=members',
-	DOL_URL_ROOT.'/product/liste.php?type=0&amp;mainmenu=products',
-	DOL_URL_ROOT.'/product/liste.php?type=1&amp;mainmenu=products',
-	DOL_URL_ROOT.'/comm/propal.php?mainmenu=commercial',
-        DOL_URL_ROOT.'/lead/liste.php',
-	DOL_URL_ROOT.'/commande/liste.php?mainmenu=commercial',
-	DOL_URL_ROOT.'/compta/facture.php?mainmenu=accountancy',
-	DOL_URL_ROOT.'/contrat/liste.php');
+	$links=array('/comm/list.php?type=2',
+	'/comm/list.php?type=1',
+        '/comm/list.php?type=0',
+	'/fourn/liste.php',
+	'/adherents/liste.php?statut=1&amp;mainmenu=members',
+	'/product/liste.php?type=0&amp;mainmenu=products',
+	'/product/liste.php?type=1&amp;mainmenu=products',
+	'/comm/propal.php?mainmenu=commercial',
+        '/lead/liste.php',
+	'/commande/liste.php?mainmenu=commercial',
+	'/compta/facture.php?mainmenu=accountancy',
+	'/contrat/liste.php');
 	// Translation lang files
 	$langfile=array("bills",
+                    "prospects",
                     "prospects",
                     "suppliers",
                     "members",
                     "products",
                     "produts",
                     "propal",
-                    "lead",
+                    "lead@lead",
                     "orders",
                     "bills",
 		    "Contracts");
@@ -251,7 +257,7 @@ if ($user->societe_id == 0)
 			// Search in cache if load_state_board is already realized
 			if (! isset($boardloaded[$classe]) || ! is_object($boardloaded[$classe]))
 			{
-				include_once($includes[$key]);
+				dol_include_once($includes[$key]);
 
 				$board=new $classe($db);
 				$board->load_state_board($user);
@@ -262,9 +268,9 @@ if ($user->societe_id == 0)
 			$var=!$var;
 			if ($langfile[$key]) $langs->load($langfile[$key]);
 			$title=$langs->trans($titres[$key]);
-			print '<tr '.$bc[$var].'><td width="16"><a href="'.$links[$key].'">'.img_object($title,$icons[$key]).'</a></td>';
-			print '<td><a href="'.$links[$key].'">'.$title.'</a></td>';
-			print '<td align="right"><a href="'.$links[$key].'">'.$board->nb[$val].'</a></td>';
+			print '<tr '.$bc[$var].'><td width="16"><a href="'.dol_buildpath($links[$key],1).'">'.img_object($title,$icons[$key]).'</a></td>';
+			print '<td><a href="'.dol_buildpath($links[$key],1).'">'.$title.'</a></td>';
+			print '<td align="right"><a href="'.dol_buildpath($links[$key],1).'">'.$board->nb[$val].'</a></td>';
 			print '</tr>';
 
 			//print $includes[$key].' '.memory_get_usage()."<br>";
@@ -540,8 +546,8 @@ print '<br>';
 
 if ($conf->agenda->enabled && $user->rights->agenda->myactions->read && $conf->highcharts->enabled && $user->rights->highcharts->read)
 {
-    require_once(DOL_DOCUMENT_ROOT."/highCharts/class/highCharts.class.php");
-    $langs->load("highcharts");
+    dol_include_once("/highCharts/class/highCharts.class.php");
+    $langs->load("highcharts@highCharts");
 
     $graph=new HighCharts($db);
     $graph->width="100%";
@@ -572,8 +578,9 @@ if ($user->admin && empty($conf->global->MAIN_REMOVE_INSTALL_WARNING))
 {
     $message='';
 
-    // Install lock missing
-    if (! file_exists('../install.lock') && is_dir(DOL_DOCUMENT_ROOT."/install"))
+    // Check if install lock file is present
+    $lockfile=DOL_DATA_ROOT.'/install.lock';
+    if (! empty($lockfile) && ! file_exists($lockfile) && is_dir(DOL_DOCUMENT_ROOT."/install"))
     {
         $langs->load("other");
         //if (! empty($message)) $message.='<br>';
@@ -581,7 +588,7 @@ if ($user->admin && empty($conf->global->MAIN_REMOVE_INSTALL_WARNING))
     }
 
     // Conf files must be in read only mode
-    if (is_writable(DOL_DOCUMENT_ROOT.'/conf/conf.php'))
+    if (is_writable($conffile))
     {
         $langs->load("errors");
         $langs->load("other");
@@ -600,7 +607,7 @@ if ($user->admin && empty($conf->global->MAIN_REMOVE_INSTALL_WARNING))
 
 $db->close();
 
-llxFooter('$Date: 2011/07/08 15:35:08 $ - $Revision: 1.198 $');
+llxFooter('$Date: 2011/08/04 12:07:30 $ - $Revision: 1.201 $');
 
 
 /**

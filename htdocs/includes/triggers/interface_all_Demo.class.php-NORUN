@@ -13,8 +13,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
@@ -28,7 +27,7 @@
  *                  - Le nom de la classe doit etre InterfaceMytrigger
  *                  - Le nom de la methode constructeur doit etre InterfaceMytrigger
  *                  - Le nom de la propriete name doit etre Mytrigger
- *		\version	$Id: interface_all_Demo.class.php-NORUN,v 1.28 2011/07/08 15:43:54 eldy Exp $
+ *		\version	$Id: interface_all_Demo.class.php-NORUN,v 1.30 2011/07/31 23:29:46 eldy Exp $
  */
 
 
@@ -52,6 +51,7 @@ class InterfaceDemo
         $this->family = "demo";
         $this->description = "Triggers of this module are empty functions. They have no effect. They are provided for tutorial purpose only.";
         $this->version = 'dolibarr';            // 'development', 'experimental', 'dolibarr' or version
+        $this->picto = 'technic';
     }
     
     

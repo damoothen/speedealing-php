@@ -14,14 +14,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *		\file       htdocs/theme/auguria/style.css.php
  *		\brief      Fichier de style CSS du theme auguria
- *		\version    $Id: style.css.php,v 1.87 2011/07/06 11:40:21 eldy Exp $
+ *		\version    $Id: style.css.php,v 1.96 2011/08/08 15:39:08 eldy Exp $
  */
 
 //if (! defined('NOREQUIREUSER')) define('NOREQUIREUSER','1');	// Not disabled cause need to load personalized language
@@ -82,6 +81,11 @@ body {
 
 a:link, a:visited, a:hover, a:active { font-family: <?php print $fontlist ?>; font-weight: bold; color: #000000; text-decoration: none; }
 
+/*
+input:focus, textarea:focus, button:focus, select:focus {
+    box-shadow: 0 0 4px #8091BF;
+}
+*/
 input {
     font-size: <?php print $fontsize ?>px;
     font-family: <?php print $fontlist ?>;
@@ -195,8 +199,8 @@ td.vmenu {
 }
 
 div.fiche {
-	margin-<?php print $left; ?>: 4px;
-	margin-<?php print $right; ?>: 4px;
+	margin-<?php print $left; ?>: 10px;
+	margin-<?php print $right; ?>: 6px;
 }
 
 /* ============================================================================== */
@@ -1027,7 +1031,7 @@ border-collapse: collapse;
 border: 0px;
 padding-top: 0px;
 padding-<?php print $left; ?>: 0px;
-padding-<?php print $right; ?>: 4px;
+padding-<?php print $right; ?>: 10px;
 padding-bottom: 4px;
 margin: 0px 0px;
 }
@@ -1082,6 +1086,10 @@ margin-left: 1px;
 margin-right: 1px;
 margin-bottom: 2px;
 margin-top: 0px;
+
+-moz-box-shadow: 2px 4px 2px #CCC;
+-webkit-box-shadow: 2px 4px 2px #CCC;
+box-shadow: 2px 4px 2px #CCC;
 }
 
 table.noborder tr {
@@ -1097,7 +1105,7 @@ border-left-style: solid;
 }
 
 table.noborder td {
-padding: 1px 2px 0px 1px;			/* t r b l */
+padding: 1px 2px 2px 1px;			/* t r b l */
 }
 
 table.nobordernopadding {
@@ -1120,6 +1128,10 @@ width: 100%;
 border-collapse: collapse;
 border-top-color: #FEFEFE;
 
+border-left-width: 1px;
+border-left-color: #BBBBBB;
+border-left-style: solid;
+
 border-right-width: 1px;
 border-right-color: #BBBBBB;
 border-right-style: solid;
@@ -1130,6 +1142,10 @@ border-bottom-style: solid;
 
 margin-bottom: 2px;
 margin-top: 0px;
+
+-moz-box-shadow: 2px 4px 2px #CCC;
+-webkit-box-shadow: 2px 4px 2px #CCC;
+box-shadow: 2px 4px 2px #CCC;
 }
 table.liste td {
 padding-right: 2px;
@@ -1227,6 +1243,12 @@ border: 0px;
  *  Boxes
  */
 
+.boxtable {
+-moz-box-shadow: 2px 4px 2px #CCC;
+-webkit-box-shadow: 2px 4px 2px #CCC;
+box-shadow: 2px 4px 2px #CCC;
+}
+
 .box {
 padding-right: 0px;
 padding-left: 0px;
@@ -1276,10 +1298,6 @@ font-family: <?php print $fontlist ?>;
 
 td.highlights { background: #f9c5c6; }
 
-td.warning {	/* Utilise par Smarty */
-  background: #FF99A9;
-}
-
 div.ok {
   color: #114466;
 }
@@ -1306,9 +1324,9 @@ div.info {
   color: #707070;
   padding: 0.2em 0.2em 0.2em 0.2em;
   margin: 0.5em 0em 0.5em 0em;
-  border: 1px solid #c0c0d0;
+  border: 1px solid #DFDFA0;
   -moz-border-radius:6px;
-  background: #efefd4;
+  background: #EFEFD4;
 }
 
 

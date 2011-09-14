@@ -2,6 +2,7 @@
 -- Copyright (C) 2003 Rodolphe Quiedeville <rodolphe@quiedeville.org>
 -- Copyright (C) 2009 Regis Houssin        <regis@dolibarr.fr>
 -- Copyright (C) 2010 Laurent Destailleur  <eldy@users.sourceforge.net>
+-- Copyright (C) 2010-2011 Herve Prot           <herve.prot@symeos.com>
 --
 -- This program is free software; you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -14,10 +15,9 @@
 -- GNU General Public License for more details.
 --
 -- You should have received a copy of the GNU General Public License
--- along with this program; if not, write to the Free Software
--- Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+-- along with this program. If not, see <http://www.gnu.org/licenses/>.
 --
--- $Id$
+-- $Id: llx_deplacement.sql,v 1.7 2011/08/03 01:25:31 eldy Exp $
 -- ============================================================================
 
 create table llx_deplacement
@@ -35,6 +35,7 @@ create table llx_deplacement
   km				real,
   fk_soc			integer,
   fk_projet         integer DEFAULT 0,
+  fk_lead       integer     DEFAULT NULL,		-- affaire auquel est rattachee des déplacements
   note				text,
   note_public       text
 )ENGINE=innodb;

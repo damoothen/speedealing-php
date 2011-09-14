@@ -2,6 +2,7 @@
 -- Copyright (C) 2002-2004 Rodolphe Quiedeville <rodolphe@quiedeville.org>
 -- Copyright (C) 2004-2005 Laurent Destailleur  <eldy@users.sourceforge.net>
 -- Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
+-- Copyright (C) 2010-2011 Herve Prot           <herve.prot@symeos.com>
 --
 -- This program is free software; you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -14,10 +15,9 @@
 -- GNU General Public License for more details.
 --
 -- You should have received a copy of the GNU General Public License
--- along with this program; if not, write to the Free Software
--- Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+-- along with this program. If not, see <http://www.gnu.org/licenses/>.
 --
--- $Id$
+-- $Id: llx_contrat.sql,v 1.3 2011/08/03 01:25:25 eldy Exp $
 -- ============================================================================
 
 create table llx_contrat
@@ -34,6 +34,7 @@ create table llx_contrat
   date_cloture            datetime,
   fk_soc                  integer NOT NULL,
   fk_projet               integer,
+  fk_lead       integer     DEFAULT NULL,		-- affaire auquel est rattachee aux contrats
   fk_commercial_signature integer NOT NULL, -- obsolete
   fk_commercial_suivi     integer NOT NULL,	-- obsolete
   fk_user_author          integer NOT NULL default 0,

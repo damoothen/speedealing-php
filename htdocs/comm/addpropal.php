@@ -16,15 +16,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *	\file       htdocs/comm/addpropal.php
  *	\ingroup    propal
  *	\brief      Page to add a new commercial proposal
- *	\version    $Id$
+ *	\version    $Id: addpropal.php,v 1.131 2011/08/03 00:46:26 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -121,12 +120,12 @@ if ($_GET["action"] == 'create')
 	// Ref
 	print '<tr><td class="fieldrequired">'.$langs->trans("Ref").'</td><td colspan="2"><input name="ref" value="'.$numpr.'"></td></tr>';
 
-	// Reference client
+	// Ref customer
 	print '<tr><td>'.$langs->trans('RefCustomer').'</td><td colspan="2">';
 	print '<input type="text" name="ref_client" value=""></td>';
 	print '</tr>';
 
-	// Societe
+	// Third party
 	print '<tr><td class="fieldrequired">'.$langs->trans('Company').'</td><td colspan="2">'.$soc->getNomUrl(1);
 	print '<input type="hidden" name="socid" value="'.$soc->id.'">';
 	print '</td>';
@@ -153,10 +152,11 @@ if ($_GET["action"] == 'create')
 	$html->select_date('','','','','',"addprop");
 	print '</td></tr>';
 
+	// Validaty duration
 	print '<tr><td class="fieldrequired">'.$langs->trans("ValidityDuration").'</td><td colspan="2"><input name="duree_validite" size="5" value="'.$conf->global->PROPALE_VALIDITY_DURATION.'"> '.$langs->trans("days").'</td></tr>';
 
 	// Terms of payment
-	print '<tr><td nowrap>'.$langs->trans('PaymentConditionsShort').'</td><td colspan="2">';
+	print '<tr><td nowrap="nowrap" class="fieldrequired">'.$langs->trans('PaymentConditionsShort').'</td><td colspan="2">';
 	$html->select_conditions_paiements($soc->cond_reglement,'cond_reglement_id');
 	print '</td></tr>';
 
@@ -170,9 +170,9 @@ if ($_GET["action"] == 'create')
     $html->select_demand_reason($propal->demand_reason,'demand_reason_id',"SRC_PROP",1);
     print '</td></tr>';
 
-	// delai de livraison
+	// Delivery delay
     print '<tr><td>'.$langs->trans('AvailabilityPeriod').'</td><td colspan="2">';
-    $html->select_availability($propal->availability,'availability_id');
+    $html->select_availability($propal->availability,'availability_id','',1);
     print '</td></tr>';
 
 	// Delivery date (or manufacturing)
@@ -338,5 +338,5 @@ if ($_GET["action"] == 'create')
 
 $db->close();
 
-llxFooter('$Date$ - $Revision$');
+llxFooter('$Date: 2011/08/03 00:46:26 $ - $Revision: 1.131 $');
 ?>

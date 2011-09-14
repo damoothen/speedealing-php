@@ -17,15 +17,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *	\file       htdocs/adherents/class/adherent.class.php
  *	\ingroup    member
  *	\brief      File of class to manage members of a foundation
- *	\version    $Id: adherent.class.php,v 1.44 2011/07/03 16:55:31 eldy Exp $
+ *	\version    $Id: adherent.class.php,v 1.49 2011/08/10 22:47:33 eldy Exp $
  */
 
 require_once(DOL_DOCUMENT_ROOT."/core/class/commonobject.class.php");
@@ -422,11 +421,21 @@ class Adherent extends CommonObject
         {
             $nbrowsaffected+=$this->db->affected_rows($resql);
 
-            $result=$this->insertExtraFields();
-            if ($result < 0)
+            // Actions on extra fields (by external module or standard code)
+            include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
+            $hookmanager=new HookManager($this->db);
+            $hookmanager->callHooks(array('member_extrafields'));
+            $parameters=array('socid'=>$socid);
+            $reshook=$hookmanager->executeHooks('insertExtraFields',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
+            if (empty($reshook))
             {
-                $error++;
+                $result=$this->insertExtraFields();
+                if ($result < 0)
+                {
+                    $error++;
+                }
             }
+            else if ($reshook < 0) $error++;
 
             // Update password
             if (! $error && $this->pass)

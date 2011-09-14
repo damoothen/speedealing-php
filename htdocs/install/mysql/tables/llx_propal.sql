@@ -3,6 +3,7 @@
 -- Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
 -- Copyright (C) 2010      Laurent Destailleur  <eldy@users.sourceforge.net>
 -- Copyright (C) 2010      Juanjo Menent        <jmenent@2byte.es>
+-- Copyright (C) 2010-2011 Herve Prot           <herve.prot@symeos.com>
 --
 -- This program is free software; you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -15,10 +16,9 @@
 -- GNU General Public License for more details.
 --
 -- You should have received a copy of the GNU General Public License
--- along with this program; if not, write to the Free Software
--- Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+-- along with this program. If not, see <http://www.gnu.org/licenses/>.
 --
--- $Id$
+-- $Id: llx_propal.sql,v 1.14 2011/08/03 01:25:38 eldy Exp $
 -- ===================================================================
 
 create table llx_propal
@@ -62,5 +62,7 @@ create table llx_propal
   model_pdf				varchar(255),
   date_livraison 		date DEFAULT NULL,		-- delivery date
   fk_availability 		integer NULL,
+  fk_demand_reason		integer,
+  fk_lead       integer     DEFAULT NULL,		-- affaire auquel est rattachee la propale
   fk_adresse_livraison  integer					-- delivery address (deprecated)
 )ENGINE=innodb;

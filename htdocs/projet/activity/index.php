@@ -14,15 +14,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *	\file       htdocs/projet/activity/index.php
  *	\ingroup    projet
  *	\brief      Page activite perso du module projet
- *	\version    $Id: index.php,v 1.35 2011/07/04 10:56:12 eldy Exp $
+ *	\version    $Id: index.php,v 1.37 2011/08/08 15:28:01 eldy Exp $
  */
 
 require ("../../main.inc.php");
@@ -127,7 +126,7 @@ print "</table>";
 // TODO Do not use date_add function to be compatible with all database
 if ($db->type != 'pgsql')
 {
-	
+
 /* Affichage de la liste des projets d'hier */
 print '<br><table class="noborder" width="100%">';
 print '<tr class="liste_titre">';
@@ -182,7 +181,7 @@ print "</table>";
 }
 
 
-print '</td><td width="70%" valign="top" class="notopnoleft">';
+print '</td><td width="70%" valign="top" class="notopnoleftright">';
 
 // TODO Do not use week function to be compatible with all database
 if ($db->type != 'pgsql')
@@ -332,5 +331,5 @@ print '</td></tr></table>';
 
 $db->close();
 
-llxFooter('$Date: 2011/07/04 10:56:12 $ - $Revision: 1.35 $');
+llxFooter('$Date: 2011/08/08 15:28:01 $ - $Revision: 1.37 $');
 ?>

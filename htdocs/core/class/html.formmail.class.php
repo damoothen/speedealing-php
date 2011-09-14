@@ -14,15 +14,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *       \file       htdocs/core/class/html.formmail.class.php
  *       \ingroup    core
  *       \brief      Fichier de la classe permettant la generation du formulaire html d'envoi de mail unitaire
- *       \version    $Id: html.formmail.class.php,v 1.33 2011/07/13 22:18:12 eldy Exp $
+ *       \version    $Id: html.formmail.class.php,v 1.34 2011/07/31 23:45:13 eldy Exp $
  */
 require_once(DOL_DOCUMENT_ROOT ."/core/class/html.form.class.php");
 
@@ -382,7 +381,7 @@ class FormMail
                     $liste=array();
                     $soc=new Societe($this->db);
                     $soc->fetch($this->withtosocid);
-                    foreach ($soc->thirdparty_and_contact_email_array() as $key=>$value)
+                    foreach ($soc->thirdparty_and_contact_email_array(1) as $key=>$value)
                     {
                         $liste[$key]=$value;
                     }
@@ -416,7 +415,7 @@ class FormMail
                     $liste=array();
                     $soc=new Societe($this->db);
                     $soc->fetch($this->withtoccsocid);
-                    foreach ($soc->thirdparty_and_contact_email_array() as $key=>$value)
+                    foreach ($soc->thirdparty_and_contact_email_array(1) as $key=>$value)
                     {
                         $liste[$key]=$value;
                     }
@@ -450,7 +449,7 @@ class FormMail
                     $liste=array();
                     $soc=new Societe($this->db);
                     $soc->fetch($this->withtosocid);
-                    foreach ($soc->thirdparty_and_contact_email_array() as $key=>$value)
+                    foreach ($soc->thirdparty_and_contact_email_array(1) as $key=>$value)
                     {
                         $liste[$key]=$value;
                     }

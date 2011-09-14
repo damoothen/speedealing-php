@@ -14,15 +14,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *	    \file       htdocs/comm/remx.php
  *      \ingroup    societe
  *		\brief      Page to edit absolute discounts for a customer
- *		\version    $Id: remx.php,v 1.50 2011/07/08 18:39:14 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -35,10 +33,10 @@ $langs->load("bills");
 $langs->load("companies");
 
 // Security check
-$_socid = $_GET["id"];
+$socid = GETPOST("id");
 if ($user->societe_id > 0)
 {
-	$_socid = $user->societe_id;
+	$socid = $user->societe_id;
 }
 
 
@@ -206,16 +204,16 @@ if (GETPOST("action") == 'confirm_remove' && GETPOST("confirm")=='yes')
 $form=new Form($db);
 $facturestatic=new Facture($db);
 
-llxHeader();
+llxHeader('',$langs->trans("GlobalDiscount"));
 
-if ($_socid > 0)
+if ($socid > 0)
 {
-	if ($mesg) print $mesg."<br>";
+	dol_htmloutput_mesg($mesg);
 
 	// On recupere les donnees societes par l'objet
 	$objsoc = new Societe($db);
-	$objsoc->id=$_socid;
-	$objsoc->fetch($_socid,$to);
+	$objsoc->id=$socid;
+	$objsoc->fetch($socid);
 
 	/*
 	 * Affichage onglets
@@ -258,10 +256,10 @@ if ($_socid > 0)
 	}
 
 	print '<tr><td width="38%">'.$langs->trans("CustomerAbsoluteDiscountAllUsers").'</td>';
-	print '<td>'.$remise_all.'&nbsp;'.$langs->trans("Currency".$conf->monnaie).'</td></tr>';
+	print '<td>'.$remise_all.'&nbsp;'.$langs->trans("Currency".$conf->monnaie).' '.$langs->trans("HT").'</td></tr>';
 
 	print '<tr><td>'.$langs->trans("CustomerAbsoluteDiscountMy").'</td>';
-	print '<td>'.$remise_user.'&nbsp;'.$langs->trans("Currency".$conf->monnaie).'</td></tr>';
+	print '<td>'.$remise_user.'&nbsp;'.$langs->trans("Currency".$conf->monnaie).' '.$langs->trans("HT").'</td></tr>';
 	print '</table>';
 	print '<br>';
 
@@ -271,23 +269,25 @@ if ($_socid > 0)
 	print '<td><input type="text" size="5" name="amount_ht" value="'.$_POST["amount_ht"].'">&nbsp;'.$langs->trans("Currency".$conf->monnaie).'</td></tr>';
 	print '<tr><td width="38%">'.$langs->trans("VAT").'</td>';
 	print '<td>';
-	$form->select_tva('tva_tx','0','',$mysoc,'');
+	print $form->load_tva('tva_tx',GETPOST('tva_tx'),'',$mysoc,'');
 	print '</td></tr>';
 	print '<tr><td>'.$langs->trans("NoteReason").'</td>';
 	print '<td><input type="text" size="60" name="desc" value="'.$_POST["desc"].'"></td></tr>';
 
-	print '<tr><td align="center" colspan="2">';
+	print "</table>";
+
+	print '<center>';
 	print '<input type="submit" class="button" name="submit" value="'.$langs->trans("AddGlobalDiscount").'">';
     if (GETPOST("backtopage"))
     {
         print '&nbsp; &nbsp; ';
 	    print '<input type="submit" class="button" name="cancel" value="'.$langs->trans("Cancel").'">';
     }
-	print '</td></tr>';
+	print '</center>';
 
-	print "</table></form>";
+	print '</form>';
 
-	print "</div>\n";
+	dol_fiche_end();
 
 	print '<br>';
 
@@ -539,5 +539,5 @@ if ($_socid > 0)
 
 $db->close();
 
-llxFooter('$Date: 2011/07/08 18:39:14 $ - $Revision: 1.50 $');
+llxFooter();
 ?>

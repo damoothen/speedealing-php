@@ -2,6 +2,7 @@
 /* Copyright (C) 2004      Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2008 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2010-2011 Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,8 +15,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  * or see http://www.gnu.org/
  */
 
@@ -23,10 +23,10 @@
  *	\file       htdocs/includes/modules/action/rapport.pdf.php
  *	\ingroup    commercial
  *	\brief      File to build PDF with events
- *	\version    $Id$
+ *	\version    $Id: rapport.pdf.php,v 1.36 2011/08/10 23:21:13 eldy Exp $
  */
 
-require_once(DOL_DOCUMENT_ROOT.'/includes/fpdf/fpdfi/fpdi_protection.php');
+require_once(FPDFI_PATH.'fpdi_protection.php');
 require_once(DOL_DOCUMENT_ROOT.'/lib/pdf.lib.php');
 require_once(DOL_DOCUMENT_ROOT.'/lib/date.lib.php');
 require_once(DOL_DOCUMENT_ROOT."/lib/company.lib.php");
@@ -165,10 +165,10 @@ class CommActionRapport
 		$sql.= " u.login";
 		$sql.= " FROM ".MAIN_DB_PREFIX."c_actioncomm as c, ".MAIN_DB_PREFIX."user as u, ".MAIN_DB_PREFIX."actioncomm as a";
         $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."societe as s ON a.fk_soc = s.rowid";
-		$sql.= " WHERE c.id=a.fk_action AND a.fk_user_author = u.rowid";
+		$sql.= " WHERE c.id=a.fk_action AND a.fk_user_done = u.rowid";
 		$sql.= " AND a.datep BETWEEN '".$this->db->idate(dol_get_first_day($this->year,$this->month,false))."'";
 		$sql.= " AND '".$this->db->idate(dol_get_last_day($this->year,$this->month,false))."'";
-		$sql.= " ORDER BY a.datep DESC";
+		$sql.= " ORDER BY u.rowid,a.datep";
 
 		dol_syslog("Rapport.pdf::_page sql=".$sql);
 		$resql=$this->db->query($sql);
@@ -208,9 +208,9 @@ class CommActionRapport
 				$pdf->MultiCell(32, $height, dol_trunc($outputlangs->convToOutputCharset($obj->societe),32), 0, 'L', 0);
 				$y1 = $pdf->GetY();
 
-				$pdf->SetXY(60,$y);
-				$pdf->MultiCell(32, $height, dol_trunc($outputlangs->convToOutputCharset($obj->libelle),32), 0, 'L', 0);
-				$y2 = $pdf->GetY();
+                $pdf->SetXY(60,$y);
+                $pdf->MultiCell(32, $height, dol_trunc($outputlangs->convToOutputCharset("(".$obj->login.") ".$obj->libelle),32), 0, 'L', 0);
+                $y2 = $pdf->GetY();
 
 				$pdf->SetXY(106,$y);
 				$pdf->MultiCell(94, $height, $outputlangs->convToOutputCharset($text), 0, 'L', 0);
@@ -245,8 +245,12 @@ class CommActionRapport
 		$pdf->SetFont('','B',10);
 		$pdf->SetXY($this->marge_gauche, $this->marge_haute);
 		$pdf->MultiCell(120, 1, $outputlangs->convToOutputCharset($this->title), 0, 'L', 0);
-		$pdf->SetXY($this->page_largeur-$this->marge_droite-40, $this->marge_haute);
-		$pdf->MultiCell(40, 1, $pagenb.'/{nb}', 0, 'R', 0);
+        // Show page nb only on iso languages (so default Helvetica font)
+        if (pdf_getPDFFont($outputlangs) == 'Helvetica')
+        {
+		    $pdf->SetXY($this->page_largeur-$this->marge_droite-40, $this->marge_haute);
+            $pdf->MultiCell(40, 1, $pagenb.'/'.$pdf->getAliasNbPages(), 0, 'R', 0);
+        }
 
 		$y=$pdf->GetY()+2;
 

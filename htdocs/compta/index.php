@@ -14,15 +14,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *	\file       htdocs/compta/index.php
  *	\ingroup    compta
  *	\brief      Main page of accountancy area
- *	\version    $Id: index.php,v 1.182 2011/06/30 21:53:02 eldy Exp $
+ *	\version    $Id: index.php,v 1.185 2011/08/08 14:25:45 eldy Exp $
  */
 
 require('../main.inc.php');
@@ -100,12 +99,7 @@ print_fiche_titre($langs->trans("AccountancyTreasuryArea"));
 print '<table border="0" width="100%" class="notopnoleftnoright">';
 
 print '<tr>';
-
-if (($conf->facture->enabled && $user->rights->facture->lire) ||
-    ($conf->fournisseur->enabled && $user->rights->fournisseur->facture->lire))
-{
-	print '<td valign="top" width="30%" class="notopnoleft">';
-}
+print '<td valign="top" width="30%" class="notopnoleft">';
 
 $max=3;
 
@@ -321,16 +315,8 @@ if ($conf->fournisseur->enabled && $user->rights->fournisseur->facture->lire)
 	}
 }
 
-if (($conf->facture->enabled && $user->rights->facture->lire) ||
-    ($conf->fournisseur->enabled && $user->rights->fournisseur->lire))
-{
-	print '</td>';
-	print '<td valign="top" width="70%" class="notopnoleftnoright">';
-}
-else
-{
-	print '<td valign="top" width="100%" class="notopnoleftnoright">';
-}
+print '</td>';
+print '<td valign="top" width="70%" class="notopnoleftnoright">';
 
 // Last modified customer invoices
 if ($conf->facture->enabled && $user->rights->facture->lire)
@@ -361,7 +347,7 @@ if ($conf->facture->enabled && $user->rights->facture->lire)
 		$i = 0;
 
 		print '<table class="noborder" width="100%">';
-		print '<tr class="liste_titre"><td colspan="2">'.$langs->trans("BoxTitleLastCustomerBills",min($max,$num)).'</td>';
+		print '<tr class="liste_titre"><td colspan="2">'.$langs->trans("BoxTitleLastCustomerBills",$max).'</td>';
 		if ($conf->global->MAIN_SHOW_HT_ON_SUMMARY) print '<td align="right">'.$langs->trans("AmountHT").'</td>';
 		print '<td align="right">'.$langs->trans("AmountTTC").'</td>';
 		print '<td align="right">'.$langs->trans("DateModificationShort").'</td>';
@@ -458,7 +444,7 @@ if ($conf->fournisseur->enabled && $user->rights->fournisseur->facture->lire)
 		$num = $db->num_rows($resql);
 
 		print '<table class="noborder" width="100%">';
-		print '<tr class="liste_titre"><td colspan="2">'.$langs->trans("BoxTitleLastSupplierBills",min($max,$num)).'</td>';
+		print '<tr class="liste_titre"><td colspan="2">'.$langs->trans("BoxTitleLastSupplierBills",$max).'</td>';
 		if ($conf->global->MAIN_SHOW_HT_ON_SUMMARY) print '<td align="right">'.$langs->trans("AmountHT").'</td>';
 		print '<td align="right">'.$langs->trans("AmountTTC").'</td>';
 		print '<td align="right">'.$langs->trans("DateModificationShort").'</td>';
@@ -533,7 +519,7 @@ if ($conf->don->enabled && $user->rights->societe->lire)
 		$i = 0;
 
 		print '<table class="noborder" width="100%">';
-		print '<tr class="liste_titre"><td>'.$langs->trans("BoxTitleLastModifiedDonations",min($max,$num)).'</td>';
+		print '<tr class="liste_titre"><td>'.$langs->trans("BoxTitleLastModifiedDonations",$max).'</td>';
         print '<td align="right">'.$langs->trans("AmountTTC").'</td>';
 		print '<td align="right">'.$langs->trans("DateModificationShort").'</td>';
         print '<td width="16">&nbsp;</td>';
@@ -602,7 +588,7 @@ if ($conf->deplacement->enabled && $user->rights->deplacement->lire)
 
 		print '<table class="noborder" width="100%">';
 		print '<tr class="liste_titre">';
-		print '<td colspan="2">'.$langs->trans("BoxTitleLastModifiedExpenses",min($max,$num)).'</td>';
+		print '<td colspan="2">'.$langs->trans("BoxTitleLastModifiedExpenses",$max).'</td>';
         print '<td align="right">'.$langs->trans("FeesKilometersOrAmout").'</td>';
 		print '<td align="right">'.$langs->trans("DateModificationShort").'</td>';
         print '<td width="16">&nbsp;</td>';
@@ -852,7 +838,7 @@ if ($conf->facture->enabled && $user->rights->facture->lire)
 		$i = 0;
 
 		print '<table class="noborder" width="100%">';
-		print '<tr class="liste_titre"><td colspan="2">'.$langs->trans("BillsCustomersUnpaid",min($conf->liste_limit,$num)).' <a href="'.DOL_URL_ROOT.'/compta/facture/impayees.php">('.$num.')</a></td>';
+		print '<tr class="liste_titre"><td colspan="2">'.$langs->trans("BillsCustomersUnpaid",$num).' <a href="'.DOL_URL_ROOT.'/compta/facture/impayees.php">('.$num.')</a></td>';
 		if ($conf->global->MAIN_SHOW_HT_ON_SUMMARY) print '<td align="right">'.$langs->trans("AmountHT").'</td>';
 		print '<td align="right">'.$langs->trans("AmountTTC").'</td>';
 		print '<td align="right">'.$langs->trans("Received").'</td>';
@@ -957,7 +943,7 @@ if ($conf->fournisseur->enabled && $user->rights->fournisseur->facture->lire)
 		$num = $db->num_rows($resql);
 
 		print '<table class="noborder" width="100%">';
-		print '<tr class="liste_titre"><td colspan="2">'.$langs->trans("BillsSuppliersUnpaid",min($conf->liste_limit,$num)).' <a href="'.DOL_URL_ROOT.'/fourn/facture/impayees.php">('.$num.')</a></td>';
+		print '<tr class="liste_titre"><td colspan="2">'.$langs->trans("BillsSuppliersUnpaid",$num).' <a href="'.DOL_URL_ROOT.'/fourn/facture/impayees.php">('.$num.')</a></td>';
 		if ($conf->global->MAIN_SHOW_HT_ON_SUMMARY) print '<td align="right">'.$langs->trans("AmountHT").'</td>';
 		print '<td align="right">'.$langs->trans("AmountTTC").'</td>';
 		print '<td align="right">'.$langs->trans("Paid").'</td>';
@@ -1045,5 +1031,5 @@ print '</table>';
 $db->close();
 
 
-llxFooter('$Date: 2011/06/30 21:53:02 $ - $Revision: 1.182 $');
+llxFooter('$Date: 2011/08/08 14:25:45 $ - $Revision: 1.185 $');
 ?>

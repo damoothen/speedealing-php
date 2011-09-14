@@ -17,15 +17,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *  \file       htdocs/commande/class/commande.class.php
  *  \ingroup    commande
  *  \brief      Fichier des classes de commandes
- *  \version    $Id: commande.class.php,v 1.119 2011/07/12 07:17:11 eldy Exp $
+ *  \version    $Id: commande.class.php,v 1.123 2011/08/10 22:47:33 eldy Exp $
  */
 require_once(DOL_DOCUMENT_ROOT."/core/class/commonobject.class.php");
 require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
@@ -770,19 +769,13 @@ class Commande extends CommonObject
 	 *		@param		socid			Id of thirdparty
 	 * 	 	@return		int				New id of clone
 	 */
-	function createFromClone($fromid,$invertdetail=0,$socid=0)
+	function createFromClone($fromid,$invertdetail=0,$socid=0,$hookmanager=false)
 	{
 		global $conf,$user,$langs;
 
 		$error=0;
 
 		$object=new Commande($this->db);
-
-		// Instantiate hooks of thirdparty module
-		if (is_array($conf->hooks_modules) && !empty($conf->hooks_modules))
-		{
-			$object->callHooks('ordercard');
-		}
 
 		$this->db->begin();
 
@@ -830,22 +823,11 @@ class Commande extends CommonObject
 		if (! $error)
 		{
 			// Hook of thirdparty module
-			if (! empty($object->hooks))
+			if (is_object($hookmanager))
 			{
-				foreach($object->hooks as $hook)
-				{
-					if (! empty($hook['modules']))
-					{
-						foreach($hook['modules'] as $module)
-						{
-							if (method_exists($module,'createfrom'))
-							{
-								$result = $module->createfrom($objFrom,$result,$object->element);
-								if ($result < 0) $error++;
-							}
-						}
-					}
-				}
+			    $parameters=array('objFrom'=>$objFrom);
+				$reshook=$hookmanager->executeHooks('createfrom',$parameters,$object,$action);    // Note that $action and $object may have been modified by some hooks
+				if ($reshook < 0) $error++;
 			}
 
 			// Appel des triggers
@@ -876,7 +858,7 @@ class Commande extends CommonObject
 	 *      @param      invertdetail    Reverse sign of amounts for lines
 	 *      @return     int             <0 if KO, 0 if nothing done, 1 if OK
 	 */
-	function createFromProposal($object,$invertdetail=0)
+	function createFromProposal($object,$invertdetail=0,$hookmanager=false)
 	{
 		global $conf,$user,$langs;
 
@@ -933,22 +915,10 @@ class Commande extends CommonObject
 			if ($ret > 0)
 			{
 				// Hook of thirdparty module
-				if (! empty($object->hooks))
+				if (is_object($hookmanager))
 				{
-					foreach($object->hooks as $hook)
-					{
-						if (! empty($hook['modules']))
-						{
-							foreach($hook['modules'] as $module)
-							{
-								if (method_exists($module,'createfrom'))
-								{
-									$result = $module->createfrom($object,$ret,$this->element);
-									if ($result < 0) $error++;
-								}
-							}
-						}
-					}
+					$reshook=$hookmanager->executeHooks('createfrom',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
+					if ($reshook < 0) $error++;
 				}
 
 				if (! $error)
@@ -2482,12 +2452,12 @@ class Commande extends CommonObject
 		}
 		if ($mode == 2)
 		{
-			if ($statut==-1) return img_picto($langs->trans('StatusOrderCanceledShort'),'statut5').' '.$langs->trans('StatusOrderCanceled');
-			if ($statut==0) return img_picto($langs->trans('StatusOrderDraftShort'),'statut0').' '.$langs->trans('StatusOrderDraft');
-			if ($statut==1) return img_picto($langs->trans('StatusOrderValidatedShort'),'statut1').' '.$langs->trans('StatusOrderValidated');
-			if ($statut==2) return img_picto($langs->trans('StatusOrderSentShort'),'statut3').' '.$langs->trans('StatusOrderSentShort');
-			if ($statut==3 && ! $facturee) return img_picto($langs->trans('StatusOrderToBillShort'),'statut7').' '.$langs->trans('StatusOrderToBill');
-			if ($statut==3 && $facturee) return img_picto($langs->trans('StatusOrderProcessedShort'),'statut6').' '.$langs->trans('StatusOrderProcessed');
+			if ($statut==-1) return img_picto($langs->trans('StatusOrderCanceled'),'statut5').' '.$langs->trans('StatusOrderCanceledShort');
+			if ($statut==0) return img_picto($langs->trans('StatusOrderDraft'),'statut0').' '.$langs->trans('StatusOrderDraftShort');
+			if ($statut==1) return img_picto($langs->trans('StatusOrderValidated'),'statut1').' '.$langs->trans('StatusOrderValidatedShort');
+			if ($statut==2) return img_picto($langs->trans('StatusOrderOnProcess'),'statut3').' '.$langs->trans('StatusOrderSentShort');
+			if ($statut==3 && ! $facturee) return img_picto($langs->trans('StatusOrderToBill'),'statut7').' '.$langs->trans('StatusOrderToBillShort');
+			if ($statut==3 && $facturee) return img_picto($langs->trans('StatusOrderProcessed'),'statut6').' '.$langs->trans('StatusOrderProcessedShort');
 		}
 		if ($mode == 3)
 		{
@@ -2503,18 +2473,18 @@ class Commande extends CommonObject
 			if ($statut==-1) return img_picto($langs->trans('StatusOrderCanceled'),'statut5').' '.$langs->trans('StatusOrderCanceled');
 			if ($statut==0) return img_picto($langs->trans('StatusOrderDraft'),'statut0').' '.$langs->trans('StatusOrderDraft');
 			if ($statut==1) return img_picto($langs->trans('StatusOrderValidated'),'statut1').' '.$langs->trans('StatusOrderValidated');
-			if ($statut==2) return img_picto($langs->trans('StatusOrderSentShort'),'statut3').' '.$langs->trans('StatusOrderSentShort');
+			if ($statut==2) return img_picto($langs->trans('StatusOrderSentShort'),'statut3').' '.$langs->trans('StatusOrderOnProcess');
 			if ($statut==3 && ! $facturee) return img_picto($langs->trans('StatusOrderToBill'),'statut7').' '.$langs->trans('StatusOrderToBill');
 			if ($statut==3 && $facturee) return img_picto($langs->trans('StatusOrderProcessed'),'statut6').' '.$langs->trans('StatusOrderProcessed');
 		}
 		if ($mode == 5)
 		{
-			if ($statut==-1) return $langs->trans('StatusOrderCanceledShort').' '.img_picto($langs->trans('StatusOrderCanceledShort'),'statut5');
-			if ($statut==0) return $langs->trans('StatusOrderDraftShort').' '.img_picto($langs->trans('StatusOrderDraftShort'),'statut0');
-			if ($statut==1) return $langs->trans('StatusOrderValidatedShort').' '.img_picto($langs->trans('StatusOrderValidatedShort'),'statut1');
-			if ($statut==2) return $langs->trans('StatusOrderSentShort').' '.img_picto($langs->trans('StatusOrderSentShort'),'statut3');
-			if ($statut==3 && ! $facturee) return $langs->trans('StatusOrderToBillShort').' '.img_picto($langs->trans('StatusOrderToBillShort'),'statut7');
-			if ($statut==3 && $facturee) return $langs->trans('StatusOrderProcessedShort').' '.img_picto($langs->trans('StatusOrderProcessedShort'),'statut6');
+			if ($statut==-1) return $langs->trans('StatusOrderCanceledShort').' '.img_picto($langs->trans('StatusOrderCanceled'),'statut5');
+			if ($statut==0) return $langs->trans('StatusOrderDraftShort').' '.img_picto($langs->trans('StatusOrderDraft'),'statut0');
+			if ($statut==1) return $langs->trans('StatusOrderValidatedShort').' '.img_picto($langs->trans('StatusOrderValidated'),'statut1');
+			if ($statut==2) return $langs->trans('StatusOrderSentShort').' '.img_picto($langs->trans('StatusOrderOnProcess'),'statut3');
+			if ($statut==3 && ! $facturee) return $langs->trans('StatusOrderToBillShort').' '.img_picto($langs->trans('StatusOrderToBill'),'statut7');
+			if ($statut==3 && $facturee) return $langs->trans('StatusOrderProcessedShort').' '.img_picto($langs->trans('StatusOrderProcessed'),'statut6');
 		}
 	}
 

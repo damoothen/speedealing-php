@@ -1,6 +1,7 @@
 <?php
 /* Copyright (C) 2010-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2010      Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2010-2011 Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,15 +14,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  * or see http://www.gnu.org/
  */
 
 /**
  *  \file		htdocs/includes/menus/standard/eldy.lib.php
  *  \brief		Library for file eldy menus
- *  \version	$Id: eldy.lib.php,v 1.57 2011/07/13 11:26:17 eldy Exp $
+ *  \version	$Id: eldy.lib.php,v 1.64 2011/08/10 23:48:25 eldy Exp $
  */
 
 
@@ -71,6 +71,7 @@ function print_eldy_menu($db,$atarget,$type_user)
 	{
 		$langs->load("companies");
 		$langs->load("suppliers");
+                $langs->load("commercial");
 
 		$classname="";
 		if ($_SESSION["mainmenu"] && $_SESSION["mainmenu"] == "companies")
@@ -101,7 +102,7 @@ function print_eldy_menu($db,$atarget,$type_user)
 			{
 				print_start_menu_entry($idsel);
 				print '<div class="'.$id.' '.$idsel.'"><span class="'.$id.'" id="mainmenuspan_'.$idsel.'"></span></div>';
-				print '<a class="tmenudisabled" id="mainmenua_'.$idsel.'" href="#">';
+				print '<a class="tmenudisabled" id="mainmenua_'.$idsel.'" href="#" title="'.dol_escape_htmltag($langs->trans("NotAllowed")).'">';
 				print_text_menu_entry($langs->trans("ThirdParties"));
 				print '</a>';
 				print_end_menu_entry();
@@ -147,7 +148,7 @@ function print_eldy_menu($db,$atarget,$type_user)
 			{
 				print_start_menu_entry($idsel);
 				print '<div class="'.$id.' '.$idsel.'"><span class="'.$id.'" id="mainmenuspan_'.$idsel.'"></span></div>';
-				print '<a class="tmenudisabled" id="mainmenua_'.$idsel.'" href="#">';
+				print '<a class="tmenudisabled" id="mainmenua_'.$idsel.'" href="#" title="'.dol_escape_htmltag($langs->trans("NotAllowed")).'">';
 				print_text_menu_entry($chaine);
 				print '</a>';
 				print_end_menu_entry();
@@ -162,7 +163,7 @@ function print_eldy_menu($db,$atarget,$type_user)
     if (! empty($conf->fournisseur->enabled)) $menuqualified++;
     if (! empty($conf->contrat->enabled)) $menuqualified++;
     if (! empty($conf->ficheinter->enabled)) $menuqualified++;
-    if ($menuqualified)
+    if ($menuqualified && !$conf->lead->enabled)
     {
 		$langs->load("commercial");
 
@@ -194,7 +195,7 @@ function print_eldy_menu($db,$atarget,$type_user)
 			{
 				print_start_menu_entry($idsel);
 				print '<div class="'.$id.' '.$idsel.'"><span class="'.$id.'" id="mainmenuspan_'.$idsel.'"></span></div>';
-				print '<a class="tmenudisabled" id="mainmenua_'.$idsel.'" href="#">';
+				print '<a class="tmenudisabled" id="mainmenua_'.$idsel.'" href="#" title="'.dol_escape_htmltag($langs->trans("NotAllowed")).'">';
 				print print_text_menu_entry($langs->trans("Commercial"));
 				print '</a>';
 				print_end_menu_entry();
@@ -204,7 +205,7 @@ function print_eldy_menu($db,$atarget,$type_user)
 
 	// Financial
 	if ($conf->comptabilite->enabled || $conf->accounting->enabled
-	|| $conf->facture->enabled || $conf->deplacement->enabled || $conf->don->enabled)
+	|| $conf->facture->enabled || $conf->deplacement->enabled || $conf->don->enabled || $conf->tax->enabled)
 	{
 		$langs->load("compta");
 
@@ -220,7 +221,7 @@ function print_eldy_menu($db,$atarget,$type_user)
 
 		$idsel='accountancy';
 		if ($user->rights->compta->resultat->lire || $user->rights->accounting->plancompte->lire
-		|| $user->rights->facture->lire || $user->rights->banque->lire)
+		|| $user->rights->facture->lire || $user->rights->deplacement->lire || $user->rights->don->lire || $user->rights->tax->charges->lire)
 		{
 			print_start_menu_entry($idsel);
 			print '<a class="tmenuimage" href="'.DOL_URL_ROOT.'/compta/index.php?mainmenu=accountancy&amp;leftmenu="'.($atarget?' target="'.$atarget.'"':'').'>';
@@ -237,7 +238,7 @@ function print_eldy_menu($db,$atarget,$type_user)
 			{
 				print_start_menu_entry($idsel);
 				print '<div class="'.$id.' '.$idsel.'"><span class="'.$id.'" id="mainmenuspan_'.$idsel.'"></span></div>';
-				print '<a class="tmenudisabled" id="mainmenua_'.$idsel.'" href="#">';
+				print '<a class="tmenudisabled" id="mainmenua_'.$idsel.'" href="#" title="'.dol_escape_htmltag($langs->trans("NotAllowed")).'">';
 				print_text_menu_entry($langs->trans("MenuFinancial"));
 				print '</a>';
 				print_end_menu_entry();
@@ -279,7 +280,7 @@ function print_eldy_menu($db,$atarget,$type_user)
             {
                 print_start_menu_entry($idsel);
                 print '<div class="'.$id.' '.$idsel.'"><span class="'.$id.'" id="mainmenuspan_'.$idsel.'"></span></div>';
-                print '<a class="tmenudisabled" id="mainmenua_'.$idsel.'" href="#">';
+                print '<a class="tmenudisabled" id="mainmenua_'.$idsel.'" href="#" title="'.dol_escape_htmltag($langs->trans("NotAllowed")).'">';
                 print_text_menu_entry($langs->trans("MenuBankCash"));
                 print '</a>';
                 print_end_menu_entry();
@@ -320,7 +321,7 @@ function print_eldy_menu($db,$atarget,$type_user)
 			{
 				print_start_menu_entry($idsel);
 				print '<div class="'.$id.' '.$idsel.'"><span class="'.$id.'" id="mainmenuspan_'.$idsel.'"></span></div>';
-				print '<a class="tmenudisabled" id="mainmenua_'.$idsel.'" href="#">';
+				print '<a class="tmenudisabled" id="mainmenua_'.$idsel.'" href="#" title="'.dol_escape_htmltag($langs->trans("NotAllowed")).'">';
 				print_text_menu_entry($langs->trans("Projects"));
 				print '</a>';
 				print_end_menu_entry();
@@ -361,7 +362,7 @@ function print_eldy_menu($db,$atarget,$type_user)
 			{
 				print_start_menu_entry($idsel);
 				print '<div class="'.$id.' '.$idsel.'"><span class="'.$id.'" id="mainmenuspan_'.$idsel.'"></span></div>';
-				print '<a class="tmenudisabled"  id="mainmenua_'.$idsel.'" href="#">';
+				print '<a class="tmenudisabled"  id="mainmenua_'.$idsel.'" href="#" title="'.dol_escape_htmltag($langs->trans("NotAllowed")).'">';
 				print_text_menu_entry($langs->trans("Tools"));
 				print '</a>';
 				print_end_menu_entry();
@@ -428,7 +429,7 @@ function print_eldy_menu($db,$atarget,$type_user)
 			{
 				print_start_menu_entry($idsel);
 				print '<div class="'.$id.' '.$idsel.'"><span class="'.$id.'" id="mainmenuspan_'.$idsel.'"></span></div>';
-				print '<a class="tmenudisabled" id="mainmenua_'.$idsel.'" href="#">';
+				print '<a class="tmenudisabled" id="mainmenua_'.$idsel.'" href="#" title="'.dol_escape_htmltag($langs->trans("NotAllowed")).'">';
 				print_text_menu_entry($langs->trans("MenuMembers"));
 				print '</a>';
 				print_end_menu_entry();
@@ -460,13 +461,13 @@ function print_eldy_menu($db,$atarget,$type_user)
 				else
 				{
 					$url=dol_buildpath($newTabMenu[$i]['url'],1);
-					if (! preg_match('/\?/',$url)) $url.='?';
-					else $url.='&';
 					if (! preg_match('/mainmenu/i',$url) || ! preg_match('/leftmenu/i',$url))
 					{
-						$url.='mainmenu='.$newTabMenu[$i]['mainmenu'].'&leftmenu=&';
+                        if (! preg_match('/\?/',$url)) $url.='?';
+                        else $url.='&';
+					    $url.='mainmenu='.$newTabMenu[$i]['mainmenu'].'&leftmenu=';
 					}
-					$url.="idmenu=".$newTabMenu[$i]['rowid'];
+					//$url.="idmenu=".$newTabMenu[$i]['rowid'];    // Already done by menuLoad
 				}
 				$url=preg_replace('/__LOGIN__/',$user->login,$url);
 
@@ -490,7 +491,7 @@ function print_eldy_menu($db,$atarget,$type_user)
 				{
 					print_start_menu_entry($idsel);
 					print '<div class="'.$id.' '.$idsel.'"><span class="'.$id.' tmenuimage" id="mainmenuspan_'.$idsel.'"></span></div>';
-					print '<a class="tmenudisabled" id="mainmenua_'.$idsel.'" href="#">';
+					print '<a class="tmenudisabled" id="mainmenua_'.$idsel.'" href="#" title="'.dol_escape_htmltag($langs->trans("NotAllowed")).'">';
 					print_text_menu_entry($newTabMenu[$i]['titre']);
 					print '</a>';
 					print_end_menu_entry();
@@ -668,8 +669,9 @@ function print_left_eldy_menu($db,$menu_array_before,$menu_array_after)
 
                 if ($leftmenu=="setup") $newmenu->add("/admin/proxy.php", $langs->trans("Security"),1);
                 if ($leftmenu=="setup") $newmenu->add("/admin/limits.php", $langs->trans("MenuLimits"),1);
+                if ($leftmenu=="setup") $newmenu->add("/admin/pdf.php", $langs->trans("PDF"),1);
                 if ($leftmenu=="setup") $newmenu->add("/admin/mails.php", $langs->trans("Emails"),1);
-                if ($leftmenu=="setup" && $conf->global->MAIN_FEATURES_LEVEL) $newmenu->add("/admin/sms.php", $langs->trans("Sms"),1);
+                if ($leftmenu=="setup") $newmenu->add("/admin/sms.php", $langs->trans("Sms"),1);
                 if ($leftmenu=="setup") $newmenu->add("/admin/dict.php", $langs->trans("DictionnarySetup"),1);
                 if ($leftmenu=="setup") $newmenu->add("/admin/const.php", $langs->trans("OtherSetup"),1);
 
@@ -715,7 +717,7 @@ function print_left_eldy_menu($db,$menu_array_before,$menu_array_after)
             if ($conf->societe->enabled)
             {
                 $langs->load("companies");
-                $newmenu->add("/societe/societe.php", $langs->trans("ThirdParty"), 0, $user->rights->societe->lire);
+                $newmenu->add("/societe/index.php", $langs->trans("ThirdParty"), 0, $user->rights->societe->lire);
 
                 if ($user->rights->societe->creer)
                 {
@@ -723,17 +725,34 @@ function print_left_eldy_menu($db,$menu_array_before,$menu_array_after)
                     if (! $conf->use_javascript_ajax) $newmenu->add("/societe/soc.php?action=create&amp;private=1",$langs->trans("MenuNewPrivateIndividual"),1);
                 }
 
+                // TODO Avoid doing dir scan
                 if(is_dir("societe/groupe"))
                 {
                     $newmenu->add("/societe/groupe/index.php", $langs->trans("MenuSocGroup"),1);
                 }
+            }
+            
+            // Suspects
+            if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_SUSPECTS))
+            {
+                $langs->load("commercial");
+                $newmenu->add("/comm/list.php?leftmenu=suspects&type=0", $langs->trans("ListSuspectsShort"), 1, $user->rights->societe->lire);
+
+                //if ($leftmenu=="prospects") $newmenu->add("/comm/prospect/prospects.php?sortfield=s.datec&amp;sortorder=desc&amp;begin=&amp;stcomm=-1", $langs->trans("LastProspectDoNotContact"), 2, $user->rights->societe->lire);
+                //if ($leftmenu=="prospects") $newmenu->add("/comm/prospect/prospects.php?sortfield=s.datec&amp;sortorder=desc&amp;begin=&amp;stcomm=0", $langs->trans("LastProspectNeverContacted"), 2, $user->rights->societe->lire);
+                //if ($leftmenu=="prospects") $newmenu->add("/comm/prospect/prospects.php?sortfield=s.datec&amp;sortorder=desc&amp;begin=&amp;stcomm=1", $langs->trans("LastProspectToContact"), 2, $user->rights->societe->lire);
+                //if ($leftmenu=="prospects") $newmenu->add("/comm/prospect/prospects.php?sortfield=s.datec&amp;sortorder=desc&amp;begin=&amp;stcomm=2", $langs->trans("LastProspectContactInProcess"), 2, $user->rights->societe->lire);
+                //if ($leftmenu=="prospects") $newmenu->add("/comm/prospect/prospects.php?sortfield=s.datec&amp;sortorder=desc&amp;begin=&amp;stcomm=3", $langs->trans("LastProspectContactDone"), 2, $user->rights->societe->lire);
+
+                //$newmenu->add("/societe/soc.php?leftmenu=prospects&amp;action=create&amp;type=p", $langs->trans("MenuNewProspect"), 2, $user->rights->societe->creer);
+                //$newmenu->add("/contact/index.php?leftmenu=customers&amp;type=p", $langs->trans("Contacts"), 2, $user->rights->societe->contact->lire);
             }
 
             // Prospects
             if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_PROSPECTS))
             {
                 $langs->load("commercial");
-                $newmenu->add("/comm/prospect/prospects.php?leftmenu=prospects", $langs->trans("ListProspectsShort"), 1, $user->rights->societe->lire);
+                $newmenu->add("/comm/list.php?leftmenu=prospects&type=1", $langs->trans("ListProspectsShort"), 1, $user->rights->societe->lire);
 
                 //if ($leftmenu=="prospects") $newmenu->add("/comm/prospect/prospects.php?sortfield=s.datec&amp;sortorder=desc&amp;begin=&amp;stcomm=-1", $langs->trans("LastProspectDoNotContact"), 2, $user->rights->societe->lire);
                 //if ($leftmenu=="prospects") $newmenu->add("/comm/prospect/prospects.php?sortfield=s.datec&amp;sortorder=desc&amp;begin=&amp;stcomm=0", $langs->trans("LastProspectNeverContacted"), 2, $user->rights->societe->lire);
@@ -749,7 +768,7 @@ function print_left_eldy_menu($db,$menu_array_before,$menu_array_after)
             if ($conf->societe->enabled)
             {
                 $langs->load("commercial");
-                $newmenu->add("/comm/clients.php?leftmenu=customers", $langs->trans("ListCustomersShort"), 1, $user->rights->societe->lire);
+                $newmenu->add("/comm/list.php?leftmenu=customers&type=2", $langs->trans("ListCustomersShort"), 1, $user->rights->societe->lire);
 
                 $newmenu->add("/societe/soc.php?leftmenu=customers&amp;action=create&amp;type=c", $langs->trans("MenuNewCustomer"), 2, $user->rights->societe->creer);
                 //$newmenu->add("/contact/index.php?leftmenu=customers&amp;type=c", $langs->trans("Contacts"), 2, $user->rights->societe->contact->lire);
@@ -767,6 +786,21 @@ function print_left_eldy_menu($db,$menu_array_before,$menu_array_after)
                 }
                 //$newmenu->add("/fourn/liste.php?leftmenu=suppliers", $langs->trans("List"), 2, $user->rights->societe->lire && $user->rights->fournisseur->lire);
                 //$newmenu->add("/contact/index.php?leftmenu=suppliers&amp;type=f",$langs->trans("Contacts"), 2, $user->rights->societe->lire && $user->rights->fournisseur->lire && $user->rights->societe->contact->lire);
+            }
+            // Tous
+            if ($conf->societe->enabled)
+            {
+                $langs->load("commercial");
+                $newmenu->add("/comm/list.php?leftmenu=all", $langs->trans("ListAllShort"), 1, $user->rights->societe->lire);
+
+                //if ($leftmenu=="prospects") $newmenu->add("/comm/prospect/prospects.php?sortfield=s.datec&amp;sortorder=desc&amp;begin=&amp;stcomm=-1", $langs->trans("LastProspectDoNotContact"), 2, $user->rights->societe->lire);
+                //if ($leftmenu=="prospects") $newmenu->add("/comm/prospect/prospects.php?sortfield=s.datec&amp;sortorder=desc&amp;begin=&amp;stcomm=0", $langs->trans("LastProspectNeverContacted"), 2, $user->rights->societe->lire);
+                //if ($leftmenu=="prospects") $newmenu->add("/comm/prospect/prospects.php?sortfield=s.datec&amp;sortorder=desc&amp;begin=&amp;stcomm=1", $langs->trans("LastProspectToContact"), 2, $user->rights->societe->lire);
+                //if ($leftmenu=="prospects") $newmenu->add("/comm/prospect/prospects.php?sortfield=s.datec&amp;sortorder=desc&amp;begin=&amp;stcomm=2", $langs->trans("LastProspectContactInProcess"), 2, $user->rights->societe->lire);
+                //if ($leftmenu=="prospects") $newmenu->add("/comm/prospect/prospects.php?sortfield=s.datec&amp;sortorder=desc&amp;begin=&amp;stcomm=3", $langs->trans("LastProspectContactDone"), 2, $user->rights->societe->lire);
+
+                //$newmenu->add("/societe/soc.php?leftmenu=prospects&amp;action=create&amp;type=p", $langs->trans("MenuNewProspect"), 2, $user->rights->societe->creer);
+                //$newmenu->add("/contact/index.php?leftmenu=customers&amp;type=p", $langs->trans("Contacts"), 2, $user->rights->societe->contact->lire);
             }
 
             // Contacts
@@ -799,6 +833,13 @@ function print_left_eldy_menu($db,$menu_array_before,$menu_array_after)
                     }
                 }
                 //if ($leftmenu=="cat") $newmenu->add("/categories/liste.php", $langs->trans("List"), 1, $user->rights->categorie->lire);
+
+				//Symeos
+				$newmenu->add("/categories/index.php?leftmenu=cat&amp;type=5", "Cat&eacute;gories Contacts", 0, $user->rights->categorie->lire);
+                                if ($user->societe_id == 0)
+                                {
+                                        $newmenu->add("/categories/fiche.php?action=create&amp;type=5", "Nouvelle Cat&eacute;gorie", 1, $user->rights->categorie->creer);
+                                }
             }
 
         }
@@ -809,6 +850,46 @@ function print_left_eldy_menu($db,$menu_array_before,$menu_array_after)
         if ($mainmenu == 'commercial')
         {
             $langs->load("companies");
+
+            // Prospects
+            $newmenu->add("/comm/list.php?leftmenu=prospects&type=1", $langs->trans("Prospects"), 0, $user->rights->societe->lire);
+
+            $newmenu->add("/societe/soc.php?leftmenu=prospects&amp;action=create&amp;type=p", $langs->trans("MenuNewProspect"), 1, $user->rights->societe->creer);
+            $newmenu->add("/comm/list.php?leftmenu=prospects&type=1", $langs->trans("List"), 1, $user->rights->societe->contact->lire);
+
+            //if ($leftmenu=="prospects") $newmenu->add("/comm/prospect/prospects.php?sortfield=s.datec&amp;sortorder=desc&amp;begin=&amp;stcomm=-1", $langs->trans("LastProspectDoNotContact"), 2, $user->rights->societe->lire);
+            //if ($leftmenu=="prospects") $newmenu->add("/comm/prospect/prospects.php?sortfield=s.datec&amp;sortorder=desc&amp;begin=&amp;stcomm=0", $langs->trans("LastProspectNeverContacted"), 2, $user->rights->societe->lire);
+            //if ($leftmenu=="prospects") $newmenu->add("/comm/prospect/prospects.php?sortfield=s.datec&amp;sortorder=desc&amp;begin=&amp;stcomm=1", $langs->trans("LastProspectToContact"), 2, $user->rights->societe->lire);
+            //if ($leftmenu=="prospects") $newmenu->add("/comm/prospect/prospects.php?sortfield=s.datec&amp;sortorder=desc&amp;begin=&amp;stcomm=2", $langs->trans("LastProspectContactInProcess"), 2, $user->rights->societe->lire);
+            //if ($leftmenu=="prospects") $newmenu->add("/comm/prospect/prospects.php?sortfield=s.datec&amp;sortorder=desc&amp;begin=&amp;stcomm=3", $langs->trans("LastProspectContactDone"), 2, $user->rights->societe->lire);
+
+            $newmenu->add("/contact/index.php?leftmenu=prospects&amp;type=p", $langs->trans("Contacts"), 1, $user->rights->societe->contact->lire);
+
+            // Customers
+            $newmenu->add("/comm/index.php?leftmenu=customers", $langs->trans("Customers"), 0, $user->rights->societe->lire);
+
+            $newmenu->add("/societe/soc.php?leftmenu=customers&amp;action=create&amp;type=c", $langs->trans("MenuNewCustomer"), 1, $user->rights->societe->creer);
+            $newmenu->add("/comm/list.php?leftmenu=customers&type=2", $langs->trans("List"), 1, $user->rights->societe->lire);
+            $newmenu->add("/contact/index.php?leftmenu=customers&amp;type=c", $langs->trans("Contacts"), 1, $user->rights->societe->contact->lire);
+
+            // Suppliers
+            if ($conf->fournisseur->enabled)
+            {
+                $newmenu->add("/fourn/index.php?leftmenu=suppliers", $langs->trans("Suppliers"), 0, $user->rights->societe->lire);
+
+                $newmenu->add("/societe/soc.php?leftmenu=suppliers&amp;action=create&amp;type=f", $langs->trans("MenuNewSupplier"), 1, $user->rights->societe->creer);
+                $newmenu->add("/fourn/liste.php?leftmenu=customers", $langs->trans("List"), 1, $user->rights->societe->lire);
+                $newmenu->add("/contact/index.php?leftmenu=suppliers&amp;type=f", $langs->trans("Contacts"), 1, $user->rights->societe->contact->lire);
+            }
+
+            // Contacts
+            $newmenu->add("/contact/index.php?leftmenu=contacts", $langs->trans("Contacts"), 0, $user->rights->societe->contact->lire);
+            $newmenu->add("/contact/fiche.php?leftmenu=contacts&amp;action=create", $langs->trans("NewContact"), 1, $user->rights->societe->contact->creer);
+            $newmenu->add("/contact/index.php?leftmenu=contacts", $langs->trans("List"), 1, $user->rights->societe->contact->lire);
+            $newmenu->add("/contact/index.php?leftmenu=contacts&type=p", $langs->trans("Prospects"), 2, $user->rights->societe->contact->lire);
+            $newmenu->add("/contact/index.php?leftmenu=contacts&type=c", $langs->trans("Customers"), 2, $user->rights->societe->contact->lire);
+            if ($conf->fournisseur->enabled) $newmenu->add("/contact/index.php?leftmenu=contacts&type=f", $langs->trans("Suppliers"), 2, $user->rights->societe->contact->lire);
+            $newmenu->add("/contact/index.php?leftmenu=contacts&type=o", $langs->trans("Others"), 2, $user->rights->societe->contact->lire);
 
             // Propal
             if (! empty($conf->propal->enabled))

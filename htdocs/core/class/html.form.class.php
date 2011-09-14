@@ -24,15 +24,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *	\file       htdocs/core/class/html.form.class.php
  *  \ingroup    core
  *	\brief      File of class with all html predefined components
- *	\version	$Id: html.form.class.php,v 1.189 2011/07/13 14:03:15 eldy Exp $
+ *	\version	$Id: html.form.class.php,v 1.194 2011/08/04 21:46:51 eldy Exp $
  */
 
 
@@ -138,17 +137,18 @@ class Form
     /**
      *	Show a text and picto with tooltip on text or picto
      *	@param  text				Text to show
-     *	@param  htmltext	    	Content html of tooltip, coded into HTML/UTF8
+     *	@param  htmltext	    	Content html of tooltip. Must be HTML/UTF8 encoded.
      *	@param	tooltipon			1=tooltip sur texte, 2=tooltip sur picto, 3=tooltip sur les 2
      *	@param	direction			-1=Le picto est avant, 0=pas de picto, 1=le picto est apres
      *	@param	img					Code img du picto (use img_xxx() function to get it)
      *  @param  extracss            Add a CSS style to td tags
      *  @param  notabs              Do not include table and tr tags
      *  @param  incbefore			Include code before the text
+     *  @param  noencodehtmltext    Do not encode into html entity the htmltext
      *	@return	string				Code html du tooltip (texte+picto)
      * 	@see	Use function textwithpicto if you can.
      */
-    function textwithtooltip($text,$htmltext,$tooltipon=1,$direction=0,$img='',$extracss='',$notabs=0,$incbefore='')
+    function textwithtooltip($text,$htmltext,$tooltipon=1,$direction=0,$img='',$extracss='',$notabs=0,$incbefore='',$noencodehtmltext=0)
     {
         global $conf;
 
@@ -161,8 +161,10 @@ class Form
         $htmltext=str_replace("\n","",$htmltext);
 
        	$htmltext=str_replace('"',"&quot;",$htmltext);
-       	$paramfortooltipimg=' class="classfortooltip'.($extracss?' '.$extracss:'').'" title="'.dol_escape_htmltag($htmltext,1).'"'; // Attribut to put on td img tag to store tooltip
-       	$paramfortooltiptd =($extracss?' class="'.$extracss.'"':''); // Attribut to put on td text tag
+       	if ($tooltipon == 2 || $tooltipon == 3) $paramfortooltipimg=' class="classfortooltip'.($extracss?' '.$extracss:'').'" title="'.($noencodehtmltext?$htmltext:dol_escape_htmltag($htmltext,1)).'"'; // Attribut to put on td img tag to store tooltip
+        else $paramfortooltipimg =($extracss?' class="'.$extracss.'"':''); // Attribut to put on td text tag
+       	if ($tooltipon == 1 || $tooltipon == 3) $paramfortooltiptd=' class="classfortooltip'.($extracss?' '.$extracss:'').'" title="'.($noencodehtmltext?$htmltext:dol_escape_htmltag($htmltext,1)).'"'; // Attribut to put on td tag to store tooltip
+        else $paramfortooltiptd =($extracss?' class="'.$extracss.'"':''); // Attribut to put on td text tag
 
        	$s="";
         if (empty($notabs)) $s.='<table class="nobordernopadding" summary=""><tr>';
@@ -198,9 +200,10 @@ class Form
      *	@param		direction			1=Icon is after text, -1=Icon is before text
      * 	@param		type				Type of picto (info, help, warning, superadmin...)
      *  @param  	extracss            Add a CSS style to td tags
+     *  @param      noencodehtmltext    Do not encode into html entity the htmltext
      * 	@return		string				HTML code of text, picto, tooltip
      */
-    function textwithpicto($text,$htmltext,$direction=1,$type='help',$extracss='')
+    function textwithpicto($text,$htmltext,$direction=1,$type='help',$extracss='',$noencodehtmltext=0)
     {
         global $conf;
 
@@ -226,7 +229,7 @@ class Form
         // Warnings
         if ($type == 'warning') 			$img=img_warning($alt);
 
-        return $this->textwithtooltip($text,$htmltext,2,$direction,$img,$extracss);
+        return $this->textwithtooltip($text,$htmltext,2,$direction,$img,$extracss,0,'',$noencodehtmltext);
     }
 
     /**
@@ -676,7 +679,7 @@ class Form
         $sql = "SELECT s.rowid, s.name, s.firstname, s.poste FROM";
         $sql.= " ".MAIN_DB_PREFIX ."socpeople as s";
         $sql.= " WHERE entity = ".$conf->entity;
-        if ($socid) $sql.= " AND fk_soc=".$socid;
+        if ($socid > 0) $sql.= " AND fk_soc=".$socid;
         $sql.= " ORDER BY s.name ASC";
 
         dol_syslog("Form::select_contacts sql=".$sql);
@@ -1508,8 +1511,8 @@ class Form
      *      Retourne la liste des types de delais de livraison possibles
      *      @param      selected        Id du type de delais pre-selectionne
      *      @param      htmlname        Nom de la zone select
-     *      @param      filtertype      Pour filtre
-     *		@param		addempty		Ajoute entree vide
+     *      @param      filtertype      To add a filter
+     *		@param		addempty		Add empty entry
      */
     function select_availability($selected='',$htmlname='availid',$filtertype='',$addempty=0)
     {
@@ -1738,6 +1741,7 @@ class Form
         if ($user->admin && ! $noadmininfo) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"),1);
     }
 
+
     /**
      *      \brief      Selection HT ou TTC
      *      \param      selected        Id pre-selectionne
@@ -1747,6 +1751,7 @@ class Form
     {
         print $this->load_PriceBaseType($selected,$htmlname);
     }
+
 
     /**
      *      \brief      Selection HT ou TTC
@@ -1781,12 +1786,15 @@ class Form
         return $return;
     }
 
+
     /**
      *    Return combo list of differents status of a proposal
      *    Values are id of table c_propalst
-     *    @param      selected    etat pre-selectionne
+     *
+     *    @param    selected    etat pre-selectionne
+     *    @param	short		Use short labels
      */
-    function select_propal_statut($selected='')
+    function select_propal_statut($selected='',$short=0)
     {
         global $langs;
 
@@ -1814,7 +1822,17 @@ class Form
                     {
                         print '<option value="'.$obj->id.'">';
                     }
-                    print ($langs->trans("PropalStatus".$obj->code)!="PropalStatus".$obj->code)?$langs->trans("PropalStatus".$obj->code):$obj->label;
+                    $key=$obj->code;
+                    if ($langs->trans("PropalStatus".$key.($short?'Short':'')) != "PropalStatus".$key.($short?'Short':''))
+                    {
+                        print $langs->trans("PropalStatus".$key.($short?'Short':''));
+                    }
+                    else
+                    {
+                        $conv_to_new_code=array('PR_DRAFT'=>'Draft','PR_OPEN'=>'Opened','PR_CLOSED'=>'Closed','PR_SIGNED'=>'Signed','PR_NOTSIGNED'=>'NotSigned','PR_FAC'=>'Billed');
+                        if (! empty($conv_to_new_code[$obj->code])) $key=$conv_to_new_code[$obj->code];
+                        print ($langs->trans("PropalStatus".$key.($short?'Short':''))!="PropalStatus".$key.($short?'Short':''))?$langs->trans("PropalStatus".$key.($short?'Short':'')):$obj->label;
+                    }
                     print '</option>';
                     $i++;
                 }
@@ -1830,6 +1848,7 @@ class Form
 
     /**
      *    Return a HTML select list of bank accounts
+     *
      *    @param      selected          Id account pre-selected
      *    @param      htmlname          Name of select zone
      *    @param      statut            Status of searched accounts (0=open, 1=closed)
@@ -2677,11 +2696,10 @@ class Form
      *                  Si (vendeur et acheteur dans Communaute europeenne) et bien vendu = moyen de transports neuf (auto, bateau, avion), TVA par defaut=0 (La TVA doit etre paye par l'acheteur au centre d'impots de son pays et non au vendeur). Fin de regle.
      *                  Si (vendeur et acheteur dans Communaute europeenne) et bien vendu autre que transport neuf alors la TVA par defaut=TVA du produit vendu. Fin de regle.
      *                  Sinon la TVA proposee par defaut=0. Fin de regle.
+     *      @deprecated
      */
     function select_tva($htmlname='tauxtva', $selectedrate='', $societe_vendeuse='', $societe_acheteuse='', $idprod=0, $info_bits=0, $type='')
     {
-        // TODO size of field is too large
-    	//print '<script>jQuery(function() { jQuery( "#'.$htmlname.'" ).combobox(); });</script>';
     	print $this->load_tva($htmlname, $selectedrate, $societe_vendeuse, $societe_acheteuse, $idprod, $info_bits, $type);
     }
 
@@ -2808,6 +2826,7 @@ class Form
             $defaulttx=get_default_tva($societe_vendeuse,$societe_acheteuse,$idprod);
             $defaultnpr=get_default_npr($societe_vendeuse,$societe_acheteuse,$idprod);
         }
+
         // Si taux par defaut n'a pu etre determine, on prend dernier de la liste.
         // Comme ils sont tries par ordre croissant, dernier = plus eleve = taux courant
         if ($defaulttx < 0 || dol_strlen($defaulttx) == 0)

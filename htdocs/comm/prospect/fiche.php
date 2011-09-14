@@ -15,15 +15,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *	\file       htdocs/comm/prospect/fiche.php
  *	\ingroup    prospect
  *	\brief      Page de la fiche prospect
- *	\version    $Id$
+ *	\version    $Id: fiche.php,v 1.127 2011/08/03 00:46:27 eldy Exp $
  */
 
 require_once("../../main.inc.php");
@@ -34,7 +33,7 @@ require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
 require_once(DOL_DOCUMENT_ROOT."/comm/action/class/actioncomm.class.php");
 if ($conf->adherent->enabled) require_once(DOL_DOCUMENT_ROOT."/adherents/class/adherent.class.php");
 if ($conf->propal->enabled) require_once(DOL_DOCUMENT_ROOT."/comm/propal/class/propal.class.php");
-if ($conf->lead->enabled) require_once(DOL_DOCUMENT_ROOT."/lead/lib/lead.lib.php");
+if ($conf->lead->enabled) dol_include_once("/lead/lib/lead.lib.php");
 
 $langs->load('companies');
 $langs->load('lead@lead');
@@ -262,7 +261,7 @@ if ($socid > 0)
 	print '<td id="value">'.$societe->getLibStatut(4).'</td>';
         print '<td>';
         // Affichage icone de changement de statut prospect
-        print $societe->getIconList();
+        print $societe->getIconList(DOL_URL_ROOT.'/comm/prospect/fiche.php?socid='.$societe->id.'&amp;action=cstc');
 	print '</td></tr>';
         $var=!$var;
 
@@ -516,5 +515,5 @@ if ($socid > 0)
 
 $db->close();
 
-llxFooter('$Date$ - $Revision$');
+llxFooter('$Date: 2011/08/03 00:46:27 $ - $Revision: 1.127 $');
 ?>

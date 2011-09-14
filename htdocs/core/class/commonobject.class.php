@@ -14,15 +14,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *	\file       htdocs/core/class/commonobject.class.php
  *	\ingroup    core
  *	\brief      File of parent class of all other business classes (invoices, contracts, proposals, orders, ...)
- *	\version    $Id: commonobject.class.php,v 1.146 2011/07/13 16:55:25 eldy Exp $
+ *	\version    $Id: commonobject.class.php,v 1.154 2011/08/10 22:47:34 eldy Exp $
  */
 
 
@@ -1438,64 +1437,6 @@ class CommonObject
 
 
 	/**
-	 *	Init array this->hooks with instantiated controler and/or dao
-	 *	@param	     arraytype	      Array list of hooked tab/features. For example: thirdpartytab, ...
-	 */
-	function callHooks($arraytype)
-	{
-		global $conf;
-
-		if (! is_array($arraytype)) $arraytype=array($arraytype);
-
-		$i=0;
-
-		foreach($conf->hooks_modules as $module => $hooks)
-		{
-			if ($conf->$module->enabled)
-			{
-				foreach($arraytype as $type)
-				{
-					if (in_array($type,$hooks))
-					{
-						$path 		= '/'.$module.'/class/';
-						$actionfile = 'actions_'.$module.'.class.php';
-						$daofile 	= 'dao_'.$module.'.class.php';
-						$pathroot	= '';
-
-						$this->hooks[$i]['type']=$type;
-
-						// Include actions class (controller)
-                        //print 'include '.$path.$actionfile."\n";
-						$resaction=dol_include_once($path.$actionfile);
-
-						// Include dataservice class (model)
-                        //print 'include '.$path.$daofile."\n";
-						$resdao=dol_include_once($path.$daofile);
-
-						// Instantiate actions class (controller)
-						if ($resaction)
-						{
-    						$controlclassname = 'Actions'.ucfirst($module);
-    						$objModule = new $controlclassname($this->db);
-    						$this->hooks[$i]['modules'][$objModule->module_number] = $objModule;
-						}
-
-						// FIXME storing dao is useless here. It's goal of controller to known which dao to manage
-                        if ($resdao)
-                        {
-    						// Instantiate dataservice class (model)
-    						$modelclassname = 'Dao'.ucfirst($module);
-    						$this->hooks[$i]['modules'][$objModule->module_number]->object = new $modelclassname($this->db);
-                        }
-
-                        $i++;
-					}
-				}
-			}
-		}
-	}
-
-	/**
 	 * 	Get special code of line
 	 * 	@param		lineid		Id of line
 	 */
@@ -1674,7 +1615,7 @@ class CommonObject
      *  @param			$seller				Object thirdparty who sell
      *  @param			$buyer				Object thirdparty who buy
 	 */
-	function formAddPredefinedProduct($dateSelector,$seller,$buyer)
+	function formAddPredefinedProduct($dateSelector,$seller,$buyer,$hookmanager=false)
 	{
 		global $conf,$langs,$object;
 		global $html,$bcnd,$var;
@@ -1689,7 +1630,7 @@ class CommonObject
      *  But for the moment we don't know if it'st possible as we keep a method available on overloaded objects.
      *  @param          $dateSelector       1=Show also date range input fields
      */
-	function formAddFreeProduct($dateSelector,$seller,$buyer)
+	function formAddFreeProduct($dateSelector,$seller,$buyer,$hookmanager=false)
 	{
 		global $conf,$langs,$object;
 		global $html,$bcnd,$var;
@@ -1714,7 +1655,7 @@ class CommonObject
      *  @param		$selected		   	Object line selected
      *  @param      $dateSelector      	1=Show also date range input fields
 	 */
-	function printObjectLines($action='viewline',$seller,$buyer,$selected=0,$dateSelector=0)
+	function printObjectLines($action='viewline',$seller,$buyer,$selected=0,$dateSelector=0,$hookmanager=false)
 	{
 		global $conf,$langs;
 
@@ -1757,22 +1698,17 @@ class CommonObject
 		{
 			$var=!$var;
 
-			if (! empty($this->hooks) && ( ($line->product_type == 9 && ! empty($line->special_code)) || ! empty($line->fk_parent_line) ) )
+			if (is_object($hookmanager) && ( ($line->product_type == 9 && ! empty($line->special_code)) || ! empty($line->fk_parent_line) ) )
 			{
 				if (empty($line->fk_parent_line))
 				{
-					foreach($this->hooks as $hook)
-					{
-						if (method_exists($hook['modules'][$line->special_code],'printObjectLine'))
-						{
-							$hook['modules'][$line->special_code]->printObjectLine($action,$this,$line,$var,$num,$i,$dateSelector,$seller,$buyer,$selected);
-						}
-					}
+					$parameters = array('line'=>$line,'var'=>$var,'num'=>$num,'i'=>$i,'dateSelector'=>$dateSelector,'seller'=>$seller,'buyer'=>$buyer,'selected'=>$selected);
+					$reshook=$hookmanager->executeHooks('printObjectLine',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
 				}
 			}
 			else
 			{
-				$this->printLine($action,$line,$var,$num,$i,$dateSelector,$seller,$buyer,$selected);
+				$this->printLine($action,$line,$var,$num,$i,$dateSelector,$seller,$buyer,$selected,$hookmanager);
 			}
 
 			$i++;
@@ -1796,7 +1732,7 @@ class CommonObject
      *  @param      $buyer             Object of buyer third party
      *  @param		$selected		   Object line selected
 	 */
-	function printLine($action='viewline',$line,$var=true,$num=0,$i=0,$dateSelector=0,$seller,$buyer,$selected=0)
+	function printLine($action='viewline',$line,$var=true,$num=0,$i=0,$dateSelector=0,$seller,$buyer,$selected=0,$hookmanager=false)
 	{
 		global $conf,$langs,$user;
 		global $html,$bc,$bcdd;
@@ -1993,29 +1929,29 @@ class CommonObject
 	 *     Add/Update extra fields
 	 *     TODO Use also type of field to do manage date fields
 	 */
-	function insertExtraFields()
+	function insertExtraFields($object)
 	{
-        if (sizeof($this->array_options) > 0)
+	    if (sizeof($object->array_options) > 0)
         {
             $this->db->begin();
 
-            $sql_del = "DELETE FROM ".MAIN_DB_PREFIX.$this->table_element."_extrafields WHERE fk_object = ".$this->id;
-            dol_syslog(get_class($this)."::insertExtraFields delete sql=".$sql_del);
+            $sql_del = "DELETE FROM ".MAIN_DB_PREFIX.$this->table_element."_extrafields WHERE fk_object = ".$object->id;
+            dol_syslog(get_class($object)."::insertExtraFields delete sql=".$sql_del);
             $this->db->query($sql_del);
 
-            $sql = "INSERT INTO ".MAIN_DB_PREFIX.$this->table_element."_extrafields (fk_object";
-            foreach($this->array_options as $key => $value)
+            $sql = "INSERT INTO ".MAIN_DB_PREFIX.$object->table_element."_extrafields (fk_object";
+            foreach($object->array_options as $key => $value)
             {
                 // Add field of attribut
                 $sql.=",".substr($key,8);   // Remove 'options_' prefix
             }
-            $sql .= ") VALUES (".$this->id;
-            foreach($this->array_options as $key => $value)
+            $sql .= ") VALUES (".$object->id;
+            foreach($object->array_options as $key => $value)
             {
                 // Add field o fattribut
-                if ($this->array_options[$key] != '')
+                if ($object->array_options[$key] != '')
                 {
-                    $sql.=",'".$this->array_options[$key]."'";
+                    $sql.=",'".$object->array_options[$key]."'";
                 }
                 else
                 {
@@ -2024,12 +1960,12 @@ class CommonObject
             }
             $sql.=")";
 
-            dol_syslog(get_class($this)."::insertExtraFields insert sql=".$sql);
+            dol_syslog(get_class($object)."::insertExtraFields insert sql=".$sql);
             $resql = $this->db->query($sql);
             if (! $resql)
             {
                 $this->error=$this->db->lasterror();
-                dol_syslog(get_class($this)."::update ".$this->error,LOG_ERR);
+                dol_syslog(get_class($object)."::update ".$this->error,LOG_ERR);
                 $this->db->rollback();
                 return -1;
             }

@@ -16,15 +16,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *       \file       htdocs/contrat/fiche.php
  *       \ingroup    contrat
  *       \brief      Page of a contract
- *       \version    $Id$
+ *       \version    $Id: fiche.php,v 1.199 2011/08/04 21:46:51 eldy Exp $
  */
 
 require ("../main.inc.php");
@@ -758,7 +757,7 @@ else
 
 				$var=!$var;
 
-				if ($action != 'editline' || $_GET["rowid"] != $objp->rowid)
+				if ($_REQUEST["action"] != 'editline' || $_GET["rowid"] != $objp->rowid)
 				{
 					print '<tr '.$bc[$var].' valign="top">';
 					// Libelle
@@ -876,7 +875,7 @@ else
 					}
 					print '<textarea name="eldesc" cols="70" rows="1">'.$objp->description.'</textarea></td>';
 					print '<td align="right">';
-					print $form->select_tva("eltva_tx",$objp->tva_tx,$mysoc,$object->societe);
+					print $form->load_tva("eltva_tx",$objp->tva_tx,$mysoc,$object->societe);
 					print '</td>';
 					print '<td align="right"><input size="5" type="text" name="elprice" value="'.price($objp->subprice).'"></td>';
 					print '<td align="center"><input size="2" type="text" name="elqty" value="'.$objp->qty.'"></td>';
@@ -1196,7 +1195,7 @@ else
 			print '<td><textarea name="desc" cols="70" rows="'.ROWS_2.'"></textarea></td>';
 
 			print '<td>';
-			$form->select_tva("tva_tx",$conf->defaulttx,$mysoc,$object->societe);
+			print $form->load_tva("tva_tx",-1,$mysoc,$object->societe);
 			print '</td>';
 			print '<td align="right"><input type="text" class="flat" size="4" name="pu" value=""></td>';
 			print '<td align="center"><input type="text" class="flat" size="2" name="pqty" value="1"></td>';
@@ -1287,5 +1286,5 @@ else
 
 $db->close();
 
-llxFooter('$Date$ - $Revision$');
+llxFooter('$Date: 2011/08/04 21:46:51 $ - $Revision: 1.199 $');
 ?>

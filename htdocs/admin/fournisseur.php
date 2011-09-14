@@ -1,6 +1,6 @@
 <?php
 /* Copyright (C) 2003-2007 Rodolphe Quiedeville    <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2008 Laurent Destailleur     <eldy@users.sourceforge.net>
+ * Copyright (C) 2004-2011 Laurent Destailleur     <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2011 Regis Houssin           <regis@dolibarr.fr>
  * Copyright (C) 2004      Sebastien Di Cintio     <sdicintio@ressource-toi.org>
  * Copyright (C) 2004      Benoit Mortier          <benoit.mortier@opensides.be>
@@ -18,15 +18,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *  \file       htdocs/admin/fournisseur.php
  *  \ingroup    fournisseur
  *  \brief      Page d'administration-configuration du module Fournisseur
- *  \version    $Id$
+ *  \version    $Id: fournisseur.php,v 1.63 2011/07/31 22:23:21 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -110,10 +109,11 @@ if ($action == 'specimenfacture')   // For invoices
 	// Charge le modele
 	$dir = "/includes/modules/supplier_invoice/pdf/";
 	$file = "pdf_".$modele.".modules.php";
-	if (file_exists($dir.$file))
+	$file = dol_buildpath($dir.$file);
+	if (file_exists($file))
 	{
 		$classname = "pdf_".$modele;
-		require_once($dir.$file);
+		require_once($file);
 
 		$obj = new $classname($db,$facture);
 
@@ -618,5 +618,5 @@ print '<input type="submit" class="button" value="'.$langs->trans("Modify").'">'
 print "</td></tr>\n";
 print '</form>';
 
-llxFooter('$Date$ - $Revision$');
+llxFooter('$Date: 2011/07/31 22:23:21 $ - $Revision: 1.63 $');
 ?>

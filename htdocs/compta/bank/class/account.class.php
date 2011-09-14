@@ -16,15 +16,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *	\file       htdocs/compta/bank/class/account.class.php
  *	\ingroup    banque
  *	\brief      File of class to manage bank accounts
- *	\version    $Id: account.class.php,v 1.32 2011/07/04 10:44:36 eldy Exp $
+ *	\version    $Id: account.class.php,v 1.34 2011/08/05 21:05:19 eldy Exp $
  */
 
 require_once(DOL_DOCUMENT_ROOT ."/core/class/commonobject.class.php");
@@ -147,7 +146,7 @@ class Account extends CommonObject
         $sql.= ", '".$type."'";
         $sql.= ")";
 
-        dol_syslog("Account::add_url_line sql=".$sql);
+        dol_syslog(get_class($this)."::add_url_line sql=".$sql);
         if ($this->db->query($sql))
         {
             $rowid = $this->db->last_insert_id(MAIN_DB_PREFIX."bank_url");
@@ -156,25 +155,37 @@ class Account extends CommonObject
         else
         {
             $this->error=$this->db->lasterror();
-            dol_syslog("Account:add_url_line ".$this->error, LOG_ERR);
+            dol_syslog(get_class($this)."::add_url_line ".$this->error, LOG_ERR);
             return -1;
         }
     }
 
     /**
-     *      Return array with links
-     *      @param      line_id         Id transaction line
+     * 		TODO Move this into AccountLine
+     *      Return array with links from llx_bank_url
+     *      @param      fk_bank         To search using bank transaction id
+     *      @param		url_id          To search using link to
+     *      @param      type            To search using type
      *      @return     array           Array of links
      */
-    function get_url($line_id)
+    function get_url($fk_bank='', $url_id='', $type='')
     {
         $lines = array();
 
-        $sql = "SELECT url_id, url, label, type";
+        // Check parameters
+        if (! empty($fk_bank) && (! empty($url_id) || ! empty($type)))
+        {
+            $this->error="ErrorBadParameter";
+            return -1;
+        }
+
+        $sql = "SELECT fk_bank, url_id, url, label, type";
         $sql.= " FROM ".MAIN_DB_PREFIX."bank_url";
-        $sql.= " WHERE fk_bank = ".$line_id;
+        if ($fk_bank > 0) { $sql.= " WHERE fk_bank = ".$fk_bank; }
+        else { $sql.= " WHERE url_id = ".$url_id." AND type = '".$type."'"; }
         $sql.= " ORDER BY type, label";
 
+        dol_syslog(get_class($this)."::get_url sql=".$sql);
         $result = $this->db->query($sql);
         if ($result)
         {
@@ -193,10 +204,13 @@ class Account extends CommonObject
                 $lines[$i]['url_id'] = $obj->url_id;
                 $lines[$i]['label'] = $obj->label;
                 $lines[$i]['type'] = $obj->type;
+                $lines[$i]['fk_bank'] = $obj->fk_bank;
                 $i++;
             }
-            return $lines;
         }
+        else dol_print_error($this->db);
+
+        return $lines;
     }
 
     /**
@@ -780,11 +794,11 @@ class Account extends CommonObject
         {
         	$obj=$this->db->fetch_object($resql);
         	$newdate=$this->db->jdate($obj->datev)+(3600*24*$sign);
-        	
+
 	    	$sql = "UPDATE ".MAIN_DB_PREFIX."bank SET ";
 	        $sql.= " datev = '".$this->db->idate($newdate)."'";
 	        $sql.= " WHERE rowid = ".$rowid;
-	
+
 	        $result = $this->db->query($sql);
 	        if ($result)
 	        {
@@ -802,7 +816,7 @@ class Account extends CommonObject
         else dol_print_error($this->db);
 		return 0;
     }
-    
+
     /**
      *	@param	rowid
      */
@@ -998,7 +1012,7 @@ class Account extends CommonObject
 
 /**
  *	\class      AccountLine
- *	\brief      Classto manage bank transaction lines
+ *	\brief      Class to manage bank transaction lines
  */
 class AccountLine extends CommonObject
 {
@@ -1113,7 +1127,7 @@ class AccountLine extends CommonObject
 
 
     /**
-     *      Delete bank line record
+     *      Delete transaction bank line record
      *		@param		user	User object that delete
      *      @return		int 	<0 if KO, >0 if OK
      */
@@ -1130,18 +1144,56 @@ class AccountLine extends CommonObject
 
         $this->db->begin();
 
-        $sql = "DELETE FROM ".MAIN_DB_PREFIX."bank_class WHERE lineid=".$this->rowid;
-        dol_syslog("AccountLine::delete sql=".$sql);
-        $result = $this->db->query($sql);
-        if (! $result) $nbko++;
+        // Delete urls
+        $result=$this->delete_urls();
+        if ($result < 0)
+        {
+             $nbko++;
+        }
 
-        $sql = "DELETE FROM ".MAIN_DB_PREFIX."bank_url WHERE fk_bank=".$this->rowid;
+        $sql = "DELETE FROM ".MAIN_DB_PREFIX."bank_class WHERE lineid=".$this->rowid;
         dol_syslog("AccountLine::delete sql=".$sql);
         $result = $this->db->query($sql);
         if (! $result) $nbko++;
 
         $sql = "DELETE FROM ".MAIN_DB_PREFIX."bank WHERE rowid=".$this->rowid;
         dol_syslog("AccountLine::delete sql=".$sql);
+        $result = $this->db->query($sql);
+        if (! $result) $nbko++;
+
+        if (! $nbko)
+        {
+            $this->db->commit();
+            return 1;
+        }
+        else
+        {
+            $this->db->rollback();
+            return -$nbko;
+        }
+    }
+
+
+    /**
+     *      Delete bank line records
+     *		@param		user	User object that delete
+     *      @return		int 	<0 if KO, >0 if OK
+     */
+    function delete_urls($user=0)
+    {
+        $nbko=0;
+
+        if ($this->rappro)
+        {
+            // Protection to avoid any delete of consolidated lines
+            $this->error="ErrorDeleteNotPossibleLineIsConsolidated";
+            return -1;
+        }
+
+        $this->db->begin();
+
+        $sql = "DELETE FROM ".MAIN_DB_PREFIX."bank_url WHERE fk_bank=".$this->rowid;
+        dol_syslog("AccountLine::delete_urls sql=".$sql);
         $result = $this->db->query($sql);
         if (! $result) $nbko++;
 

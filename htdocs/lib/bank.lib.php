@@ -12,8 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  * or see http://www.gnu.org/
  */
 
@@ -21,7 +20,7 @@
 	    \file       htdocs/lib/bank.lib.php
 		\brief      Ensemble de fonctions de base pour le module banque
         \ingroup    banque
-        \version    $Id$
+        \version    $Id: bank.lib.php,v 1.14 2011/07/31 23:25:13 eldy Exp $
 
 		Ensemble de fonctions de base de dolibarr sous forme d'include
 */
@@ -161,33 +160,58 @@ function checkBanForAccount($account)
  */
 function CheckES($IentOfi,$InumCta)
 {
-	$APesos = Array(1,2,4,8,5,10,9,7,3,6); // Array de "pesos"
-	$DC1=0;
-	$DC2=0;
-	$x=8;
-	while($x>0) {
-		$digito=$IentOfi[$x-1];
-		$DC1=$DC1+($APesos[$x+2-1]*($digito));
-		$x = $x - 1;
+	if (empty($IentOfi)||empty($InumCta)||strlen($IentOfi)!=8||strlen($InumCta)!=10)
+	{ 
+		$keycontrol =""; 
+		return $keycontrol;
 	}
-	$Resto = $DC1%11;
-	$DC1=11-$Resto;
-	if ($DC1==10) $DC1=1;
-	if ($DC1==11) $DC1=0;              // Digito control Entidad-Oficina
 
-	$x=10;
-	while($x>0) {
-		$digito=$InumCta[$x-1];
-		$DC2=$DC2+($APesos[$x-1]*($digito));
-		$x = $x - 1;
+	$ccc= $IentOfi . $InumCta;
+	$numbers = "1234567890";
+
+	$i = 0;
+
+	while ($i<=strlen($ccc)-1)
+	{
+		if (strpos($numbers,substr($ccc,$i,1)) === false)
+		{
+			$keycontrol =""; 
+			return $keycontrol;
+		}
+		$i++;
+	} 
+
+	$values = array(1,2,4,8,5,10,9,7,3,6);
+	$sum = 0;   
+
+	for($i=2; $i<10; $i++)
+
+	{
+		$sum += $values[$i] * substr($IentOfi, $i-2, 1);
+	}   
+
+	$key = 11-$sum%11;
+
+	if ($key==10) $key=1;
+	if ($key==11) $key=0; 
+
+  	$keycontrol = $key;
+
+	$sum = 0; 
+
+ 	for($i=0; $i<11; $i++)
+
+	{
+		$sum += $values[$i] * substr($InumCta,$i, 1);
 	}
-	$Resto = $DC2%11;
-	$DC2=11-$Resto;
-	if ($DC2==10) $DC1=1;
-	if ($DC2==11) $DC1=0;         // Digito Control C/C
 
-	$DigControl=($DC1)."".($DC2);   // los 2 numeros del D.C.
-	return $DigControl;
+ 	$key = 11-$sum%11;
+
+	if ($key==10) $key=1;
+	if ($key==11) $key=0; 
+
+ 	$keycontrol .= $key; 
+	return $keycontrol;
 }
 
 

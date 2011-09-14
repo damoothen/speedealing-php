@@ -2,6 +2,7 @@
 /* Copyright (C) 2001-2005 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2010 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2010-2011 Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,24 +15,25 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *	\file       htdocs/comm/index.php
  *	\ingroup    commercial
  *	\brief      Home page of commercial area
- *	\version    $Id$
+ *	\version    $Id: index.php,v 1.173 2011/08/08 14:25:44 eldy Exp $
  */
 
 require("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 require_once(DOL_DOCUMENT_ROOT."/societe/class/client.class.php");
+require_once(DOL_DOCUMENT_ROOT."/comm/prospect/class/prospect.class.php");
 require_once(DOL_DOCUMENT_ROOT."/comm/action/class/actioncomm.class.php");
 require_once(DOL_DOCUMENT_ROOT."/lib/agenda.lib.php");
 if ($conf->contrat->enabled) require_once(DOL_DOCUMENT_ROOT."/contrat/class/contrat.class.php");
 if ($conf->propal->enabled)  require_once(DOL_DOCUMENT_ROOT."/comm/propal/class/propal.class.php");
+if ($conf->lead->enabled)  dol_include_once("/lead/lib/lead.lib.php");
 
 if (!$user->rights->societe->lire)
 accessforbidden();
@@ -92,12 +94,12 @@ print_fiche_titre($langs->trans("CustomerArea"));
 print '<table border="0" width="100%" class="notopnoleftnoright">';
 
 print '<tr>';
-if (($conf->propal->enabled && $user->rights->propale->lire) ||
-    ($conf->contrat->enabled && $user->rights->contrat->lire) ||
-    ($conf->commande->enabled && $user->rights->commande->lire))
-{
+//if (($conf->propal->enabled && $user->rights->propale->lire) ||
+//    ($conf->contrat->enabled && $user->rights->contrat->lire) ||
+//    ($conf->commande->enabled && $user->rights->commande->lire))
+//{
 	print '<td valign="top" width="30%" class="notopnoleft">';
-}
+//}
 
 // Recherche Propal
 if ($conf->propal->enabled && $user->rights->propale->lire)
@@ -134,6 +136,102 @@ if ($conf->contrat->enabled && $user->rights->contrat->lire)
 	print "</table></form>\n";
 	print "<br>";
 }
+
+
+$NBMAX=3;
+$max=3;
+
+/*
+ * Prospects par status
+ *
+ */
+
+if($conf->highcharts->enabled && $user->rights->highcharts->read )
+{
+    dol_include_once("/highCharts/class/highCharts.class.php");
+    $langs->load("highcharts@highCharts");
+
+    $graph=new HighCharts($db);
+    $graph->width="100%";
+    $graph->height="300px";
+    $graph->name="ProspectionStatus";
+    $graph->label=$langs->trans("ProspectionStatus");
+    if($user->rights->highcharts->all)
+    {
+        $graph->mine=0;
+    }
+    $graph->ProspectStatus();
+}
+
+
+//print '<br>';
+
+$prospect=new Prospect($db);
+$prospect->ProspectStatus();
+
+/*
+ * Last modified customers or prospects
+ */
+if ($conf->societe->enabled && $user->rights->societe->lire)
+{
+	$langs->load("boxes");
+
+	$sql = "SELECT s.rowid,s.nom,s.client,s.datec,s.tms";
+	$sql.= " FROM ".MAIN_DB_PREFIX."societe as s";
+	if (!$user->rights->societe->client->voir && !$socid) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
+	$sql.= " WHERE s.client IN (1, 2, 3)";
+	$sql.= " AND s.entity = ".$conf->entity;
+	if (!$user->rights->societe->client->voir && !$socid) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
+	if ($socid)	$sql.= " AND s.rowid = $socid";
+	$sql .= " ORDER BY s.tms DESC";
+	$sql .= $db->plimit($max, 0);
+
+	$resql = $db->query($sql);
+	if ($resql)
+	{
+		$var=false;
+		$num = $db->num_rows($resql);
+		$i = 0;
+
+		print '<table class="noborder" width="100%">';
+		print '<tr class="liste_titre">';
+		print '<td colspan="2">'.$langs->trans("BoxTitleLastCustomersOrProspects",$max).'</td>';
+		print '<td align="right">'.$langs->trans("DateModificationShort").'</td>';
+		print '</tr>';
+		if ($num)
+		{
+			$company=new Societe($db);
+			while ($i < $num)
+			{
+				$objp = $db->fetch_object($resql);
+				$company->id=$objp->rowid;
+				$company->nom=$objp->nom;
+				$company->client=$objp->client;
+				print '<tr '.$bc[$var].'>';
+				print '<td nowrap="nowrap">'.$company->getNomUrl(1,'customer',25).'</td>';
+				print '<td align="right" nowrap>';
+				if ($objp->client == 2 || $objp->client == 3) print $langs->trans("Prospect");
+				if ($objp->client == 3) print ' / ';
+				if ($objp->client == 1 || $objp->client == 3) print $langs->trans("Customer");
+				print "</td>";
+				print '<td align="right" nowrap>'.dol_print_date($db->jdate($objp->tms),'day')."</td>";
+				print '</tr>';
+				$i++;
+				$var=!$var;
+
+			}
+			print "</table><br>";
+
+			$db->free($resql);
+		}
+		else
+		{
+			print '<tr '.$bc[$var].'><td colspan="3">'.$langs->trans("None").'</td></tr>';
+                        print "</table><br>";
+		}
+	}
+}
+
 
 /*
  * Draft proposals
@@ -255,19 +353,23 @@ if ($conf->commande->enabled && $user->rights->commande->lire)
 	}
 }
 
-if (($conf->propal->enabled && $user->rights->propale->lire) ||
-    ($conf->contrat->enabled && $user->rights->contrat->lire) ||
-    ($conf->commande->enabled && $user->rights->commande->lire))
+/*
+ * Liste des Affaires
+ */
+if ($conf->lead->enabled && $user->rights->lead->lire)
 {
-	print '</td>';
-	print '<td valign="top" width="70%" class="notopnoleftnoright">';
-}
-else
-{
-	print '<td valign="top" width="100%" class="notopnoleftnoright">';
-}
+    $socstatic=new Societe($db);
+    $leadstatic=new Lead($db);
 
+    if($conf->rights->lead->all)
+        $mine=1;
+    else
+        $mine=0;
+    
+    $leadsListId = $leadstatic->getLeadsAuthorizedForUser($user,$mine,1);
 
+    print_lead_array($db,1,$socid,$leadsListId);
+}
 
 $NBMAX=3;
 $max=3;
@@ -276,7 +378,7 @@ $max=3;
 /*
  * Last modified proposals
  */
-
+/*
 if ($conf->propal->enabled && $user->rights->propale->lire)
 {
 	$sql = "SELECT s.nom as name, s.rowid as socid, s.client, s.canvas, p.rowid as propalid, p.total_ht, p.ref, p.fk_statut, p.datep as dp";
@@ -298,7 +400,7 @@ if ($conf->propal->enabled && $user->rights->propale->lire)
 
 		$i = 0;
 		print '<table class="noborder" width="100%">';
-		print '<tr class="liste_titre"><td colspan="5">'.$langs->trans("LastModifiedProposals",$NBMAX).'</td></tr>';
+		print '<tr class="liste_titre"><td colspan="6">'.$langs->trans("LastModifiedProposals",$NBMAX).'</td></tr>';
 		$var=False;
 		while ($i < $num)
 		{
@@ -352,6 +454,45 @@ if ($conf->propal->enabled && $user->rights->propale->lire)
 		dol_print_error($db,'');
 	}
 }
+*/
+
+//if (($conf->propal->enabled && $user->rights->propale->lire) ||
+//    ($conf->contrat->enabled && $user->rights->contrat->lire) ||
+//    ($conf->commande->enabled && $user->rights->commande->lire))
+//{
+	print '</td>';
+	print '<td valign="top" width="70%" class="notopnoleftnoright">';
+//}
+//else
+//{
+//	print '<td valign="top" width="100%" class="notopnoleftnoright">';
+//}
+
+/* Print Portefeuille Prospection */
+
+if ($user->rights->agenda->myactions->read && $conf->highcharts->enabled && $user->rights->highcharts->read)
+{
+    $graph->name="graphProspectionState";
+    $graph->label=$langs->trans("ProspectionStatus");
+    if($user->rights->highcharts->all && $user->rights->agenda->allactions->read)
+        $graph->mine=0;
+    $graph->graphProspectionState();
+}
+
+/* Print Activity Graph */
+
+if ($user->rights->agenda->myactions->read && $conf->highcharts->enabled && $user->rights->highcharts->read)
+{
+    $graph->label=$langs->trans("graphMonthTaskDone").' '.(isset($_GET["month"])?$_GET["month"]:strftime("%m",dol_now()))."/".(isset($_GET["year"])?$_GET["year"]:strftime("%Y",dol_now()));
+    $graph->name="graphMonthTaskDone";
+    $graph->height="350px";
+    if($user->rights->highcharts->all && $user->rights->agenda->myactions->all)
+        $graph->mine=0;
+    $graph->graphTaskDone(isset($_GET["month"])?$_GET["month"]:strftime("%m",dol_now()),isset($_GET["year"])?$_GET["year"]:strftime("%Y",dol_now()));
+    
+}
+
+
 
 /*
  * Last modified customers or prospects
@@ -486,7 +627,33 @@ if ($user->rights->agenda->myactions->read)
 
 
 /*
- * Derniers contrats
+ * Graphe des suivis des objectifs des tous les commerciaux
+ */
+if ($user->rights->team->annual->read && $conf->highcharts->enabled && $conf->team->enabled)
+{
+    // YEAR
+    $graph->label=$langs->trans("graphObjectifYear")." ".(isset($_GET["year"])?$_GET["year"]:strftime("%Y",dol_now()));
+    $graph->name="graphAllObjectifYear";
+    $graph->height="350px";
+    if($user->rights->team->annual->all)
+            $graph->mine=0;
+    $graph->graphAllObjectif(0,isset($_GET["year"])?$_GET["year"]:strftime("%Y",dol_now()));
+}
+if ($user->rights->team->read && $conf->highcharts->enabled && $conf->team->enabled)
+{
+    // MONTH
+    $graph->label=$langs->trans("graphObjectifMonth").' '.(isset($_GET["month"])?$_GET["month"]:strftime("%m",dol_now()))."/".(isset($_GET["year"])?$_GET["year"]:strftime("%Y",dol_now()));
+    $graph->name="graphAllObjectifMonth";
+    $graph->height="350px";
+    if($user->rights->team->all)
+            $graph->mine=0;
+    $graph->graphAllObjectif(isset($_GET["month"])?$_GET["month"]:strftime("%m",dol_now()),isset($_GET["year"])?$_GET["year"]:strftime("%Y",dol_now()));
+    
+}
+
+
+/*
+ * Last contrats
  *
  */
 if ($conf->contrat->enabled && $user->rights->contrat->lire && 0) // TODO A REFAIRE DEPUIS NOUVEAU CONTRAT
@@ -546,8 +713,7 @@ if ($conf->contrat->enabled && $user->rights->contrat->lire && 0) // TODO A REFA
 }
 
 /*
- * Propales ouvertes
- *
+ * Opened proposals
  */
 if ($conf->propal->enabled && $user->rights->propale->lire)
 {
@@ -632,5 +798,5 @@ print '</table>';
 $db->close();
 
 
-llxFooter('$Date$ - $Revision$');
+llxFooter('$Date: 2011/08/08 14:25:44 $ - $Revision: 1.173 $');
 ?>

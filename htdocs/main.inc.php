@@ -18,15 +18,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *	\file       htdocs/main.inc.php
  *	\ingroup	core
  *	\brief      File that defines environment for Dolibarr pages only (variables not required by scripts)
- *	\version    $Id: main.inc.php,v 1.754 2011/07/12 20:16:03 eldy Exp $
+ *	\version    $Id: main.inc.php,v 1.756 2011/07/31 23:19:05 eldy Exp $
  */
 
 @ini_set('memory_limit', '64M');	// This may be useless if memory is hard limited by your PHP
@@ -137,31 +136,6 @@ session_start();
 // Init the 5 global objects
 // This include will set: $conf, $db, $langs, $user, $mysoc objects
 require_once("master.inc.php");
-
-// Activate error interceptions
-/*
-function processError($code, $message, $file, $line, $context)
-{
-	$errmess='ERROR '.$file.' - '.$line.' - '.error_reporting()." - ".$code."<br>\n";
-	//print $errmess;
-	if (error_reporting() & $code) {
-		print $errmess;
-		throw new Exception($message, $code);
-    }
-}
-set_error_handler('processError');
-*/
-
-// GET and POST converter
-/*
-foreach($_REQUEST as $key => $value)
-{
-	// For prevent conflict
-	$var = '__'.$key;
-	// Create variable with tested value
-	$$var = GETPOST($key);
-}
-*/
 
 // Activate end of page function
 register_shutdown_function('dol_shutdown');
@@ -296,31 +270,6 @@ if (! empty($_SESSION["disablemodules"]))
 	foreach($disabled_modules as $module)
 	{
 		if ($module) $conf->$module->enabled=false;
-	}
-}
-
-// Init Smarty (used by some modules like multicompany)
-if (sizeof($conf->need_smarty) > 0)
-{
-	// Usage of const in conf.php file (deprecated) can overwrite default dir.
-	$dolibarr_smarty_libs_dir=DOL_DOCUMENT_ROOT.'/includes/smarty/libs/';
-	$dolibarr_smarty_compile=DOL_DATA_ROOT.'/smarty/templates/temp';
-	$dolibarr_smarty_cache=DOL_DATA_ROOT.'/smarty/cache/temp';
-
-	// Create directory if not exist
-	if (! is_dir($dolibarr_smarty_compile)) create_exdir($dolibarr_smarty_compile);
-	if (! is_dir($dolibarr_smarty_cache))	create_exdir($dolibarr_smarty_cache);
-
-	$smarty_libs = $dolibarr_smarty_libs_dir. "Smarty.class.php";
-	if (@include_once($smarty_libs))
-	{
-		$smarty = new Smarty();
-		$smarty->compile_dir = $dolibarr_smarty_compile;
-		$smarty->cache_dir = $dolibarr_smarty_cache;
-	}
-	else
-	{
-		dol_print_error('',"Library Smarty ".$smarty_libs." not found.");
 	}
 }
 
@@ -801,14 +750,17 @@ if (!empty($conf->global->MAIN_MODULE_MULTICOMPANY))
 {
 	if (GETPOST('action') == 'switchentity' && $user->admin && ! $user->entity)
 	{
-		require_once(DOL_DOCUMENT_ROOT."/multicompany/class/actions_multicompany.class.php");
-
-		$mc = new ActionsMulticompany($db);
-
-		if($mc->switchEntity(GETPOST('entity')) >= 0)
+		$res = @dol_include_once("/multicompany/class/actions_multicompany.class.php");
+		
+		if ($res)
 		{
-			Header("Location: ".DOL_URL_ROOT.'/');
-			exit;
+			$mc = new ActionsMulticompany($db);
+	
+			if($mc->switchEntity(GETPOST('entity')) > 0)
+			{
+				Header("Location: ".DOL_URL_ROOT.'/');
+				exit;
+			}
 		}
 	}
 }
@@ -1275,7 +1227,7 @@ function top_menu($head, $title='', $target='', $disablejs=0, $disablehead=0, $a
 	// Select entity
 	if (! empty($conf->global->MAIN_MODULE_MULTICOMPANY))
 	{
-		//if ($user->admin && ! $user->entity)
+		if ($user->admin && ! $user->entity)
 		{
 			$res=@dol_include_once('/multicompany/class/actions_multicompany.class.php');
 

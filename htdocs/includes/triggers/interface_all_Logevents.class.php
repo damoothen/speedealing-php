@@ -13,15 +13,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *      \file       htdocs/includes/triggers/interface_all_Logevents.class.php
  *      \ingroup    core
  *      \brief      Trigger file for
- *		\version	$Id: interface_all_Logevents.class.php,v 1.21 2011/07/08 15:43:54 eldy Exp $
+ *		\version	$Id: interface_all_Logevents.class.php,v 1.23 2011/07/31 23:29:45 eldy Exp $
  */
 
 
@@ -51,6 +50,7 @@ class InterfaceLogevents
         $this->family = "core";
         $this->description = "Triggers of this module allows to add security event records inside Dolibarr.";
         $this->version = 'dolibarr';                        // 'experimental' or 'dolibarr' or version
+        $this->picto = 'technic';
     }
 
     /**

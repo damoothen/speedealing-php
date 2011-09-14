@@ -16,16 +16,15 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *	\file       	htdocs/core/class/conf.class.php
  *	\ingroup		core
- *  \brief      	Fichier de la classe de stockage de la config courante
- *  \remarks		La config est stockee dans le fichier conf/conf.php
- *  \version    	$Id: conf.class.php,v 1.61 2011/07/13 18:04:25 eldy Exp $
+ *  \brief      	File of class to manage storage of current setup
+ *  				Config is stored into file conf.php
+ *  \version    	$Id: conf.class.php,v 1.66 2011/08/10 23:30:19 eldy Exp $
  */
 
 
@@ -53,14 +52,13 @@ class Conf
 	var $smart_menu;
 
 	//! Used to store instance for multi-company (default 1)
-	var $entity=0;
+	var $entity=1;
 
 	var $css_modules			= array();
 	var $tabs_modules			= array();
 	var $triggers_modules		= array();
 	var $hooks_modules			= array();
 	var $login_method_modules	= array();
-	var $need_smarty			= array();
 	var $modules				= array();
 	var $entities				= array();
 
@@ -78,6 +76,7 @@ class Conf
 	{
 		//! Charset for HTML output and for storing data in memory
 		$this->file->character_set_client='UTF-8';	// UTF-8, ISO-8859-1
+                $this->entity=1;
 
         // $this->agendas_modules['comm/action'][]= 'ActionAgenda';
 	}
@@ -145,13 +144,13 @@ class Conf
 						elseif (preg_match('/^MAIN_MODULE_([A-Z_]+)_TRIGGERS$/i',$key,$reg))
 						{
 							$modulename = strtolower($reg[1]);
-							$this->triggers_modules[] = '/'.$modulename.'/inc/triggers/';    // TODO Replace inc by includes to have same path than standard
+							$this->triggers_modules[] = '/'.$modulename.'/includes/triggers/';
 						}
 						// If this is constant for login method activated by a module
 						elseif (preg_match('/^MAIN_MODULE_([A-Z_]+)_LOGIN_METHOD$/i',$key,$reg))
 						{
 							$modulename = strtolower($reg[1]);
-							$this->login_method_modules[] = DOL_DOCUMENT_ROOT.'/'.$modulename.'/inc/login/'; // TODO Replace inc by includes to have same path than standard
+							$this->login_method_modules[] = DOL_DOCUMENT_ROOT.'/'.$modulename.'/includes/login/';
 						}
 						// If this is constant for hook activated by a module. Value is list of hooked tabs separated with :
 						elseif (preg_match('/^MAIN_MODULE_([A-Z_]+)_HOOKS$/i',$key,$reg))
@@ -163,18 +162,11 @@ class Conf
 								$this->hooks_modules[$modulename][]=$value;
 							}
 						}
-						// If this is constant for a smarty need by a module
-						elseif (preg_match('/^MAIN_MODULE_([A-Z_]+)_NEEDSMARTY$/i',$key,$reg))
-						{
-							$module=strtolower($reg[1]);
-							// Add this module in list of modules that need smarty
-							$this->need_smarty[]=$module;
-						}
 					    // If this is constant for a sms engine
                         elseif (preg_match('/^MAIN_MODULE_([A-Z_]+)_SMS$/i',$key,$reg))
                         {
                             $module=strtolower($reg[1]);
-                            // Add this module in list of modules that need smarty
+                            // Add this module in list of modules that provide SMS
                             $this->sms_engine[$module]=$module;
                         }
 						// If this is a module constant
@@ -325,15 +317,6 @@ class Conf
 		// Defini le mode de calcul des etats comptables (CA,...)
 		$this->compta->mode = 'RECETTES-DEPENSES';  // By default
 		if (isset($this->global->COMPTA_MODE)) $this->compta->mode = $this->global->COMPTA_MODE;  // Can be 'RECETTES-DEPENSES' ou 'CREANCES-DETTES'
-
-		// $this->defaulttx
-		if (isset($this->global->FACTURE_TVAOPTION) && $this->global->FACTURE_TVAOPTION == 'franchise')
-		{
-			$this->defaulttx='0';		// Taux par defaut des factures clients
-		}
-		else {
-			$this->defaulttx='';		// Pas de taux par defaut des factures clients, le plus élevé sera pris
-		}
 
 		// $this->liste_limit = constante de taille maximale des listes
 		if (empty($this->global->MAIN_SIZE_LISTE_LIMIT)) $this->global->MAIN_SIZE_LISTE_LIMIT=25;

@@ -2,6 +2,7 @@
 /* Copyright (c) 2008-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2010-2011 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2010      Juanjo Menent        <jmenent@2byte.es>
+ * Copyright (C) 2011      Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,15 +15,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *      \file       htdocs/core/class/html.formactions.class.php
  *      \ingroup    core
  *      \brief      Fichier de la classe des fonctions predefinie de composants html actions
- *		\version	$Id: html.formactions.class.php,v 1.20 2011/07/07 21:56:20 eldy Exp $
+ *		\version	$Id: html.formactions.class.php,v 1.21 2011/07/31 23:45:14 eldy Exp $
  */
 
 
@@ -59,8 +59,11 @@ class FormActions
     {
         global $langs,$conf;
 
-        $listofstatus=array('-1'=>$langs->trans("ActionNotApplicable"),
+        /*$listofstatus=array('-1'=>$langs->trans("ActionNotApplicable"),
                             '0'=>$langs->trans("ActionRunningNotStarted"),
+                            '50'=>$langs->trans("ActionRunningShort"),
+                            '100'=>$langs->trans("ActionDoneShort"));*/
+        $listofstatus=array('0'=>$langs->trans("ActionRunningNotStarted"),
                             '50'=>$langs->trans("ActionRunningShort"),
                             '100'=>$langs->trans("ActionDoneShort"));
 
@@ -157,7 +160,7 @@ class FormActions
      *    @param      selected        Type pre-selectionne
      *    @param      htmlname        Nom champ formulaire
      */
-    function select_type_actions($selected='',$htmlname='actioncode')
+    function select_type_actions($selected='',$htmlname='actioncode',$active=1,$idorcode='code',$type='1,2')
     {
         global $langs,$user;
 
@@ -166,9 +169,9 @@ class FormActions
         $caction=new CActionComm($this->db);
         $form=new Form($this->db);
 
-        $arraylist=$caction->liste_array(1,'code');
-        array_unshift($arraylist,'&nbsp;');     // Add empty line at start
-        //asort($arraylist);
+        $arraylist=$caction->liste_array($active,$idorcode,$type);
+        $arraylist[0]='&nbsp;';
+        asort($arraylist);
 
         print $form->selectarray($htmlname, $arraylist, $selected);
         if ($user->admin) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"),1);

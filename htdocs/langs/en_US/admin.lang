@@ -307,6 +307,10 @@ ResponseTimeout=Response timeout
 SmsTestMessage=Test message from __PHONEFROM__ to __PHONETO__
 ModuleMustBeEnabledFirst=Module <b>%s</b> must be enabled first before using this feature.
 SecurityToken=Key to encrypt urls
+NoSmsEngine=No SMS sender manager available. SMS sender manager are not installed with default distribution (because they depends on an external supplier) but you can find some on http://www.dolistore.com
+PDF=PDF
+PDFDesc=You can set each global options related to the PDF generation
+PDFAddressForging=Rules to forge address boxes
 
 # Modules
 Module0Name=Users & groups
@@ -647,7 +651,9 @@ DictionnaryPaperFormat=Paper formats
 DictionnaryFees=Type of fees
 DictionnarySendingMethods=Shipping methods
 DictionnaryStaff=Staff
+DictionnaryAvailability=Delivery delay
 DictionnaryOrderMethods=Ordering methods
+DictionnarySource=Origin of proposals/orders
 SetupSaved=Setup saved
 BackToModuleList=Back to modules list
 BackToDictionnaryList=Back to dictionaries list
@@ -842,6 +848,8 @@ MAIN_PROXY_USER=Login to use the proxy server
 MAIN_PROXY_PASS=Password to use the proxy server
 DefineHereComplementaryAttributes=Define here all atributes, not already available by default, and that you want to be supported for %s.
 ExtraFields=Complementary attributes
+SendingMailSetup=Setup of sendings by email
+SendmailOptionNotComplete=Warning, on some Linux systems, to send email from your email, sendmail execution setup must conatins option -ba (parameter mail.force_extra_parameters into your php.ini file). If some recipients never receive emails, try to edit this PHP parameter with mail.force_extra_parameters = -ba).
 
 ##### Module password generation
 PasswordGenerationStandard=Return a password generated according to internal Dolibarr algorithm: 8 characters containing shared numbers and characters in lowercase.
@@ -1122,6 +1130,7 @@ BarcodeDescUPC=Barcode of type UPC
 BarcodeDescISBN=Barcode of type ISBN
 BarcodeDescC39=Barcode of type C39
 BarcodeDescC128=Barcode of type C128
+NoActivatedBarcode=No barcode type activated
 ##### Prelevements #####
 WithdrawalsSetup=Withdrawal module setup
 ##### ExternalRSS #####
@@ -1233,9 +1242,9 @@ ClickToDialDesc=This module allows to add an icon after phone numbers. A click o
 CashDesk=Point of sales
 CashDeskSetup=Point of sales module setup
 CashDeskThirdPartyForSell=Generic third party to use for sells
-CashDeskBankAccountForSell=Account to use to receive cash payments
-CashDeskBankAccountForCheque= Account to use to receive payments by cheque
-CashDeskBankAccountForCB= Account to use to receive cash payments by credit cards
+CashDeskBankAccountForSell=Default account to use to receive cash payments
+CashDeskBankAccountForCheque= Default account to use to receive payments by cheque
+CashDeskBankAccountForCB= Default account to use to receive cash payments by credit cards
 CashDeskIdWareHouse=Warehouse to use for sells
 ##### Bookmark #####
 BookmarkSetup=Bookmark module setup

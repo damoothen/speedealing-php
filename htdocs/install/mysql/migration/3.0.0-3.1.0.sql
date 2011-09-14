@@ -1,5 +1,5 @@
 --
--- $Id: 3.0.0-3.1.0.sql,v 1.79 2011/07/12 22:12:12 eldy Exp $
+-- $Id: 3.0.0-3.1.0.sql,v 1.88 2011/08/08 22:27:01 hregis Exp $
 --
 -- Be carefull to requests order.
 -- This file must be loaded by calling /install/index.php page
@@ -24,10 +24,26 @@ ALTER TABLE llx_c_ziptown ADD COLUMN fk_pays integer NOT NULL DEFAULT 0 after fk
 ALTER TABLE llx_c_ziptown MODIFY fk_county integer NULL; 
 
 ALTER TABLE llx_c_actioncomm ADD COLUMN position integer NOT NULL DEFAULT 0;
+alter table llx_c_actioncomm add priority       integer     NOT NULL;
+
 ALTER TABLE llx_propal ADD COLUMN fk_demand_reason integer NULL DEFAULT 0;
-ALTER TABLE llx_commande_fournisseur ADD COLUMN fk_cond_reglement integer NULL DEFAULT 0;
-ALTER TABLE llx_commande_fournisseur ADD COLUMN fk_mode_reglement integer NULL DEFAULT 0;
+ALTER TABLE llx_commande_fournisseur ADD COLUMN fk_cond_reglement integer NULL DEFAULT 0 after model_pdf;
+ALTER TABLE llx_commande_fournisseur ADD COLUMN fk_mode_reglement integer NULL DEFAULT 0 after fk_cond_reglement;
+ALTER TABLE llx_commande_fournisseur ADD COLUMN import_key varchar(14);
+
 --ALTER TABLE llx_c_currencies ADD COLUMN symbole varchar(3) NOT NULL default '';
+
+alter table llx_propal add fk_lead       integer     DEFAULT NULL;		-- affaire auquel est rattachee la propale
+alter table llx_facture add fk_lead       integer     DEFAULT NULL;		-- affaire auquel est rattachee la facture
+alter table llx_commande add fk_lead       integer     DEFAULT NULL;		-- affaire auquel est rattachee la commande
+alter table llx_facture_rec add fk_lead       integer     DEFAULT NULL;		-- affaire auquel est rattachee au modèle de facture
+alter table llx_commande_fournisseur  add fk_lead       integer     DEFAULT NULL;		-- affaire auquel est rattachee aux commandes fournisseurs
+alter table llx_facture_fourn add fk_lead       integer     DEFAULT NULL;		-- affaire auquel est rattachee aux factures fournisseurs
+alter table llx_contrat add fk_lead       integer     DEFAULT NULL;		-- affaire auquel est rattachee aux contrats
+alter table llx_fichinter add fk_lead       integer     DEFAULT NULL;		-- affaire auquel est rattachee aux interventions
+alter table llx_actioncomm add fk_lead       integer     DEFAULT NULL;		-- affaire auquel est rattachee aux actions
+alter table llx_deplacement add fk_lead       integer     DEFAULT NULL;		-- affaire auquel est rattachee des déplacements
+
 
 ALTER TABLE llx_commande_fournisseur MODIFY model_pdf varchar(255);
 ALTER TABLE llx_commande MODIFY model_pdf varchar(255);
@@ -44,8 +60,13 @@ ALTER TABLE llx_societe MODIFY siren varchar(32);
 ALTER TABLE llx_societe MODIFY siret varchar(32);
 ALTER TABLE llx_societe MODIFY ape varchar(32);
 ALTER TABLE llx_societe MODIFY idprof4 varchar(32);
+ALTER TABLE llx_societe MODIFY fk_stcomm smallint default 0 not null;
+alter table llx_societe add latitude       double     DEFAULT 0;
+alter table llx_societe add longitude       double     DEFAULT 0;
 
 ALTER TABLE llx_c_stcomm add type smallint DEFAULT 0;
+ALTER TABLE llx_c_stcomm drop isclient;
+ALTER TABLE llx_categorie add priority    integer     DEFAULT 0;
 
 -- Delete old constants
 DELETE FROM llx_const WHERE __DECRYPT('name')__ = 'MAIN_MENU_BARRETOP';
@@ -59,8 +80,6 @@ DELETE FROM llx_const WHERE __DECRYPT('name')__ = 'MAIN_CONFIRM_AJAX';
 ALTER TABLE llx_facture_fourn ADD COLUMN ref_ext varchar(30) AFTER entity;
 ALTER TABLE llx_commande_fournisseur ADD COLUMN ref_ext varchar(30) AFTER entity;
 ALTER TABLE llx_adherent ADD COLUMN ref_ext varchar(30) after entity;
-
-ALTER TABLE llx_commande ADD COLUMN fk_demand_reason integer AFTER fk_availability;
 
 ALTER TABLE llx_facturedet DROP INDEX uk_fk_remise_except;
 ALTER TABLE llx_facturedet ADD UNIQUE INDEX uk_fk_remise_except (fk_remise_except, fk_facture);
@@ -115,6 +134,8 @@ INSERT INTO llx_c_availability (rowid,code,label,active) VALUES (2, 'AV_1W',  '1
 INSERT INTO llx_c_availability (rowid,code,label,active) VALUES (3, 'AV_2W',  '2 weeks', 1);
 INSERT INTO llx_c_availability (rowid,code,label,active) VALUES (4, 'AV_3W',  '3 weeks', 1);
 
+ALTER TABLE llx_commande ADD COLUMN fk_demand_reason integer AFTER fk_availability;
+
 ALTER TABLE llx_propaldet ADD INDEX idx_propaldet_fk_product (fk_product);
 ALTER TABLE llx_commandedet ADD INDEX idx_commandedet_fk_product (fk_product);
 ALTER TABLE llx_facturedet ADD INDEX idx_facturedet_fk_product (fk_product);
@@ -126,8 +147,15 @@ ALTER TABLE llx_usergroup_user DROP INDEX fk_user;
 ALTER TABLE llx_usergroup_user DROP INDEX uk_user_group_entity;
 ALTER TABLE llx_usergroup_user ADD COLUMN entity integer DEFAULT 1 NOT NULL AFTER rowid;
 ALTER TABLE llx_usergroup_user ADD UNIQUE INDEX uk_usergroup_user (entity,fk_user,fk_usergroup);
+-- V4.1 DELETE FROM llx_usergroup_user WHERE fk_user NOT IN (SELECT rowid from llx_user);
 ALTER TABLE llx_usergroup_user ADD CONSTRAINT fk_usergroup_user_fk_user      FOREIGN KEY (fk_user)         REFERENCES llx_user (rowid);
+-- V4.1 DELETE FROM llx_usergroup_user WHERE fk_usergroup NOT IN (SELECT rowid from llx_usergroup);
 ALTER TABLE llx_usergroup_user ADD CONSTRAINT fk_usergroup_user_fk_usergroup FOREIGN KEY (fk_usergroup)    REFERENCES llx_usergroup (rowid);
+
+-- V4.1 DELETE FROM llx_product_fournisseur_price_log where fk_product_fournisseur NOT IN (SELECT pf.rowid from llx_product_fournisseur as pf, llx_product as p WHERE pf.fk_product = p.rowid);
+-- V4.1 DELETE FROM llx_product_fournisseur_price where fk_product_fournisseur NOT IN (SELECT pf.rowid from llx_product_fournisseur as pf, llx_product as p WHERE pf.fk_product = p.rowid);
+-- V4.1 DELETE FROM llx_product_fournisseur where fk_product NOT IN (SELECT rowid from llx_product);
+ALTER TABLE llx_product_fournisseur ADD CONSTRAINT fk_product_fournisseur_fk_product FOREIGN KEY (fk_product) REFERENCES llx_product (rowid);
 
 ALTER TABLE llx_commande ADD COLUMN ref_int	varchar(30) AFTER ref_ext;
 ALTER TABLE llx_facture ADD COLUMN ref_int varchar(30) AFTER ref_ext;
@@ -138,7 +166,6 @@ ALTER TABLE llx_livraison ADD COLUMN ref_ext varchar(30) AFTER fk_soc;
 ALTER TABLE llx_livraison ADD COLUMN ref_int varchar(30) AFTER ref_ext;
 
 INSERT INTO llx_c_shipment_mode (rowid,code,libelle,description,active) VALUES (4,'LETTREMAX','Lettre Max','Courrier Suivi et Lettre Max',0);
-INSERT INTO llx_c_actioncomm (id, code, type, libelle, module, position) VALUES ( 10, 'AC_SHIP', 'system', 'Send shipping by email'	,'shipping', 11);
 
 ALTER TABLE llx_actioncomm DROP INDEX idx_actioncomm_fk_facture;
 ALTER TABLE llx_actioncomm DROP INDEX idx_actioncomm_fk_supplier_order;
@@ -146,7 +173,14 @@ ALTER TABLE llx_actioncomm DROP INDEX idx_actioncomm_fk_supplier_invoice;
 ALTER TABLE llx_actioncomm ADD COLUMN entity integer DEFAULT 1 NOT NULL AFTER id;
 ALTER TABLE llx_actioncomm ADD COLUMN fk_element integer DEFAULT NULL AFTER note;
 ALTER TABLE llx_actioncomm ADD COLUMN elementtype varchar(16) DEFAULT NULL AFTER fk_element;
+ALTER TABLE llx_actioncomm ADD fk_task       integer     DEFAULT NULL;
 
+
+ALTER TABLE llx_c_regions MODIFY COLUMN cheflieu    varchar(50);
+ALTER TABLE llx_c_departements MODIFY COLUMN cheflieu    varchar(50);
+
+
+-- Table c_action_trigger
 DROP table llx_c_action_trigger;
 create table llx_c_action_trigger
 (
@@ -158,7 +192,6 @@ create table llx_c_action_trigger
   rang			integer		DEFAULT 0
   
 )ENGINE=innodb;
-
 ALTER TABLE llx_c_action_trigger ADD UNIQUE INDEX uk_action_trigger_code (code);
 
 INSERT INTO llx_c_action_trigger (rowid,code,label,description,elementtype,rang) VALUES (1,'FICHEINTER_VALIDATE','Validation fiche intervention','Executed when a intervention is validated','ficheinter',18);
@@ -290,7 +323,6 @@ INSERT INTO llx_c_departements ( code_departement, fk_region, cheflieu, tncc, nc
 INSERT INTO llx_c_departements ( code_departement, fk_region, cheflieu, tncc, ncc, nom, active) VALUES ('OAX', 15401, '', 0, 'OAX', 'Oaxaca', 1);
 INSERT INTO llx_c_departements ( code_departement, fk_region, cheflieu, tncc, ncc, nom, active) VALUES ('PUE', 15401, '', 0, 'PUE', 'Puebla', 1);
 INSERT INTO llx_c_departements ( code_departement, fk_region, cheflieu, tncc, ncc, nom, active) VALUES ('QRO', 15401, '', 0, 'QRO', 'Querétaro', 1);
-INSERT INTO llx_c_departements ( code_departement, fk_region, cheflieu, tncc, ncc, nom, active) VALUES ('HGO', 15401, '', 0, 'HGO', 'Hidalgo', 1);
 INSERT INTO llx_c_departements ( code_departement, fk_region, cheflieu, tncc, ncc, nom, active) VALUES ('ROO', 15401, '', 0, 'ROO', 'Quintana Roo', 1);
 INSERT INTO llx_c_departements ( code_departement, fk_region, cheflieu, tncc, ncc, nom, active) VALUES ('SLP', 15401, '', 0, 'SLP', 'San Luis Potosí', 1);
 INSERT INTO llx_c_departements ( code_departement, fk_region, cheflieu, tncc, ncc, nom, active) VALUES ('SIN', 15401, '', 0, 'SIN', 'Sinaloa', 1);
@@ -301,6 +333,13 @@ INSERT INTO llx_c_departements ( code_departement, fk_region, cheflieu, tncc, nc
 INSERT INTO llx_c_departements ( code_departement, fk_region, cheflieu, tncc, ncc, nom, active) VALUES ('VER', 15401, '', 0, 'VER', 'Veracruz', 1);
 INSERT INTO llx_c_departements ( code_departement, fk_region, cheflieu, tncc, ncc, nom, active) VALUES ('YUC', 15401, '', 0, 'YUC', 'Yucatán', 1);
 INSERT INTO llx_c_departements ( code_departement, fk_region, cheflieu, tncc, ncc, nom, active) VALUES ('ZAC', 15401, '', 0, 'ZAC', 'Zacatecas', 1);
+-- Formes juridiques Mexique
+INSERT INTO llx_c_forme_juridique (fk_pays, code, libelle, active) VALUES (154, '15401', 'Sociedad en nombre colectivo', 1);
+INSERT INTO llx_c_forme_juridique (fk_pays, code, libelle, active) VALUES (154, '15402', 'Sociedad en comandita simple', 1);
+INSERT INTO llx_c_forme_juridique (fk_pays, code, libelle, active) VALUES (154, '15403', 'Sociedad de responsabilidad limitada', 1);
+INSERT INTO llx_c_forme_juridique (fk_pays, code, libelle, active) VALUES (154, '15404', 'Sociedad anónima', 1);
+INSERT INTO llx_c_forme_juridique (fk_pays, code, libelle, active) VALUES (154, '15405', 'Sociedad en comandita por acciones', 1);
+INSERT INTO llx_c_forme_juridique (fk_pays, code, libelle, active) VALUES (154, '15406', 'Sociedad cooperativa', 1);
 
 --Add Colombie data (id pays=70)
 -- Regions Colombie 
@@ -376,6 +415,28 @@ insert into llx_c_tva(rowid,fk_pays,taux,recuperableonly,note,active) values (15
 insert into llx_c_tva(rowid,fk_pays,taux,recuperableonly,note,active) values (1543,154,     '10','0','VAT Frontero',1);
 
 
+--Add Barbados data (id pays=46)
+-- Region Barbados 
+INSERT INTO llx_c_regions (rowid, fk_pays, code_region, cheflieu, tncc, nom, active) VALUES (4601,  46, 4601, 'Bridgetown', 0, 'Barbados', 1);
+-- Parish Barbados
+INSERT INTO llx_c_departements ( code_departement, fk_region, cheflieu, tncc, ncc, nom, active) VALUES ('CC', 4601, 'Oistins', 0, 'CC', 'Christ Church', 1);
+INSERT INTO llx_c_departements ( code_departement, fk_region, cheflieu, tncc, ncc, nom, active) VALUES ('SA', 4601, 'Greenland', 0, 'SA', 'Saint Andrew', 1);
+INSERT INTO llx_c_departements ( code_departement, fk_region, cheflieu, tncc, ncc, nom, active) VALUES ('SG', 4601, 'Bulkeley', 0, 'SG', 'Saint George', 1);
+INSERT INTO llx_c_departements ( code_departement, fk_region, cheflieu, tncc, ncc, nom, active) VALUES ('JA', 4601, 'Holetown', 0, 'JA', 'Saint James', 1);
+INSERT INTO llx_c_departements ( code_departement, fk_region, cheflieu, tncc, ncc, nom, active) VALUES ('SJ', 4601, 'Four Roads', 0, 'SJ', 'Saint John', 1);
+INSERT INTO llx_c_departements ( code_departement, fk_region, cheflieu, tncc, ncc, nom, active) VALUES ('SB', 4601, 'Bathsheba', 0, 'SB', 'Saint Joseph', 1);
+INSERT INTO llx_c_departements ( code_departement, fk_region, cheflieu, tncc, ncc, nom, active) VALUES ('SL', 4601, 'Crab Hill', 0, 'SL', 'Saint Lucy', 1);
+INSERT INTO llx_c_departements ( code_departement, fk_region, cheflieu, tncc, ncc, nom, active) VALUES ('SM', 4601, 'Bridgetown', 0, 'SM', 'Saint Michael', 1);
+INSERT INTO llx_c_departements ( code_departement, fk_region, cheflieu, tncc, ncc, nom, active) VALUES ('SP', 4601, 'Speightstown', 0, 'SP', 'Saint Peter', 1);
+INSERT INTO llx_c_departements ( code_departement, fk_region, cheflieu, tncc, ncc, nom, active) VALUES ('SC', 4601, 'Crane', 0, 'SC', 'Saint Philip', 1);
+INSERT INTO llx_c_departements ( code_departement, fk_region, cheflieu, tncc, ncc, nom, active) VALUES ('ST', 4601, 'Hillaby', 0, 'ST', 'Saint Thomas', 1);
+-- Currency Barbados
+INSERT INTO llx_c_currencies ( code, code_iso, active, label ) VALUES ( 'BD', 'BBD', 1, 'Barbadian or Bajan Dollar');
+-- VAT Barbados
+INSERT INTO llx_c_tva(rowid,fk_pays,taux,recuperableonly,note,active) VALUES (461,46,     '0','0','No VAT',1);
+INSERT INTO llx_c_tva(rowid,fk_pays,taux,recuperableonly,note,active) VALUES (462,46,     '15','0','VAT 15%',1);
+INSERT INTO llx_c_tva(rowid,fk_pays,taux,recuperableonly,note,active) VALUES (463,46,     '7.5','0','VAT 7.5%',1);
+
 update llx_actioncomm set elementtype='invoice' where elementtype='facture';
 update llx_actioncomm set elementtype='order' where elementtype='commande';
 update llx_actioncomm set elementtype='contract' where elementtype='contrat';
@@ -444,3 +505,9 @@ ALTER TABLE llx_don ADD   phone_mobile    varchar(24) after email;
 ALTER TABLE llx_don ADD   phone           varchar(24) after email;
 
 ALTER TABLE llx_user ADD civilite varchar(6) after entity;
+
+ALTER TABLE llx_element_element MODIFY sourcetype varchar(32) NOT NULL;
+ALTER TABLE llx_element_element MODIFY targettype varchar(32) NOT NULL;
+
+ALTER TABLE llx_societe_prices MODIFY tms timestamp NULL;
+-- ALTER TABLE llx_societe_prices ALTER COLUMN tms DROP NOT NULL;

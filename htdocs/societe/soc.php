@@ -5,7 +5,8 @@
  * Copyright (C) 2005      Eric Seigne          <eric.seigne@ryxeo.com>
  * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2008	   Patrick Raguin       <patrick.raguin@auguria.net>
- * Copyright (C) 2010      Juanjo Menent        <jmenent@2byte.es>
+ * Copyright (C) 2010-2011 Juanjo Menent        <jmenent@2byte.es>
+ * Copyright (C) 2010-2011 Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,15 +19,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *  \file       htdocs/societe/soc.php
  *  \ingroup    societe
  *  \brief      Third party card page
- *  \version    $Id: soc.php,v 1.121 2011/07/04 08:00:53 eldy Exp $
+ *  \version    $Id: soc.php,v 1.132 2011/08/10 22:47:35 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -39,6 +39,7 @@ require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/extrafields.class.php");
 require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
 if ($conf->adherent->enabled) require_once(DOL_DOCUMENT_ROOT."/adherents/class/adherent.class.php");
+if ($conf->highcharts->enabled) require_once(DOL_DOCUMENT_ROOT_ALT."/highCharts/class/highCharts.class.php");
 
 $langs->load("companies");
 $langs->load("commercial");
@@ -76,11 +77,11 @@ else
     $result = restrictedArea($user, 'societe', $socid);
 }
 
-// Instantiate hooks of thirdparty module. Note that conf->hooks_modules contains array array
-if (is_array($conf->hooks_modules) && !empty($conf->hooks_modules))
-{
-    $object->callHooks('thirdpartycard');
-}
+// Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
+include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
+$hookmanager=new HookManager($db);
+// TODO: Remove callHooks and add page into executeHooks
+$hookmanager->callHooks(array('thirdpartycard','thirdparty_extrafields'));
 
 
 
@@ -88,35 +89,9 @@ if (is_array($conf->hooks_modules) && !empty($conf->hooks_modules))
  * Actions
  */
 
-$reshook=0;
+$parameters=array('socid'=>$socid);
+$reshook=$hookmanager->executeHooks('doActions',$parameters,$object,$action);    // Note that $action and $object may have been modified by some hooks
 
-// Hook of actions. After that, reshook is 0 if we need to process standard actions, >0 otherwise.
-if (! empty($object->hooks))
-{
-    foreach($object->hooks as $hook)
-    {
-        if (! empty($hook['modules']))
-        {
-            foreach($hook['modules'] as $module)
-            {
-                if (method_exists($module,'doActions'))
-                {
-                    $resaction+=$module->doActions($object,$action,$socid); // object is deprecated, action can be changed by method (to go back to other action for example), socid can be changed/set by method (during creation for example)
-                    if ($resaction < 0 || ! empty($module->error) || (! empty($module->errors) && sizeof($module->errors) > 0))
-                    {
-                        $error=$module->error; $errors=$module->errors;
-                        if ($action=='add')    $action='create';    // TODO this chnage must be inside the doActions
-                        if ($action=='update') $action='edit';      // TODO this chnage must be inside the doActions
-                    }
-                    else
-                    {
-                        $reshook+=$resaction;
-                    }
-                }
-            }
-        }
-    }
-}
 
 // ---------- start deprecated. Use hook to hook actions.
 // If canvas actions are defined, because on url, or because contact was created with canvas feature on, we use the canvas feature.
@@ -133,6 +108,7 @@ if (method_exists($objcanvas->control,'doActions'))
     }
 }
 // ---------- end deprecated.
+
 
 if (empty($reshook))
 {
@@ -231,6 +207,37 @@ if (empty($reshook))
                 $object->array_options[$key]=$_POST[$key];
             }
         }
+        
+        if($conf->map->enabled)
+        {
+            //Retire le CEDEX de la ville :
+            $town=$_POST["town"];
+            $town=strtolower($town);
+            $find="cedex";
+            $pos=strpos($town, $find);
+            if($pos!=false)
+            {
+                $town=substr($town, 0,$pos);
+            }
+            $apiUrl = "http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=".urlencode ($_POST["adresse"].",".$_POST["zipcode"].",".$town);
+            $c = curl_init();
+            curl_setopt($c, CURLOPT_URL, $apiUrl);
+            curl_setopt($c, CURLOPT_HEADER, false);
+            curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
+            // make the call
+            $json = curl_exec($c);
+            $response = json_decode($json);
+            curl_close($c);
+            if($response->status == "OK"){
+                $object->lat = $response->results[0]->geometry->location->lat;
+                $object->lng = $response->results[0]->geometry->location->lng;
+            }
+            else
+            {
+                $object->lat = 0;
+                $object->lng = 0;
+            }
+        }
 
         if (GETPOST('deletephoto')) $object->logo = '';
         else if (! empty($_FILES['photo']['name'])) $object->logo = dol_sanitizeFileName($_FILES['photo']['name']);
@@ -275,7 +282,7 @@ if (empty($reshook))
                         dol_syslog("This thirdparty is a personal people",LOG_DEBUG);
                         $contact=new Contact($db);
 
-                        $contact->civilite_id = $object->civilite_id;
+     					$contact->civilite_id=$object->civilite_id;
                         $contact->name=$object->nom_particulier;
                         $contact->firstname=$object->prenom;
                         $contact->address=$object->address;
@@ -283,10 +290,13 @@ if (empty($reshook))
                         $contact->cp=$object->cp;
                         $contact->town=$object->town;
                         $contact->ville=$object->ville;
-                        $contact->fk_pays=$object->fk_pays;
+                        $contact->fk_departement=$object->departement_id;
+                        $contact->fk_pays=$object->pays_id;
                         $contact->socid=$object->id;                   // fk_soc
                         $contact->status=1;
                         $contact->email=$object->email;
+						$contact->phone_pro=$object->tel;
+						$contact->fax=$object->fax;
                         $contact->priv=0;
 
                         $result=$contact->create($user);
@@ -359,7 +369,44 @@ if (empty($reshook))
                     exit;
                 }
 
+				$backtopage='';
+                if (! empty($_POST["backtopage"])) $backtopage=$_POST["backtopage"];
+
                 $object->oldcopy=dol_clone($object);
+                
+                ### Calcul des coordonnées GPS
+                if($conf->map->enabled)
+                {
+                    //Retire le CEDEX de la ville :
+                    $town=$_POST["town"];
+                    $town=strtolower($town);
+                    $find="cedex";
+                    $pos=strpos($town, $find);
+                    if($pos!=false)
+                    {
+                        $town=substr($town, 0,$pos);
+                        //print $town;exit;
+                    }
+                    $apiUrl = "http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=".urlencode ($_POST["adresse"].",".$_POST["zipcode"].",".$_POST["town"]);
+                    $c = curl_init();
+                    curl_setopt($c, CURLOPT_URL, $apiUrl);
+                    curl_setopt($c, CURLOPT_HEADER, false);
+                    curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
+                    // make the call
+                    $json = curl_exec($c);
+                    $response = json_decode($json);
+                    curl_close($c);
+                    if($response->status == "OK")
+                    {
+                        $object->lat = $response->results[0]->geometry->location->lat;
+                        $object->lng = $response->results[0]->geometry->location->lng;
+                    }
+                    else
+                    {
+                        $object->lat = 0;
+                        $object->lng = 0;
+                    }
+                }
 
                 // To not set code if third party is not concerned. But if it had values, we keep them.
                 if (empty($object->client) && empty($object->oldcopy->code_client))          $object->code_client='';
@@ -585,7 +632,8 @@ else
         if ($conf->fournisseur->enabled && (GETPOST("type")=='f' || GETPOST("type")==''))  { $object->fournisseur=1; }
         if (GETPOST("private")==1) { $object->particulier=1; }
 
-        $object->nom=$_POST["nom"];
+        $object->name=$_POST["nom"];
+        $object->nom=$_POST["nom"];    // deprecated
         $object->prenom=$_POST["prenom"];
         $object->particulier=$_REQUEST["private"];
         $object->prefix_comm=$_POST["prefix_comm"];
@@ -699,12 +747,14 @@ else
                                jQuery(".individualline").hide();
                                jQuery("#typent_id").val(0);
                                jQuery("#effectif_id").val(0);
+                               jQuery("#TypeName").html(document.formsoc.ThirdPartyName.value);
                                document.formsoc.private.value=0;
                          });
                           jQuery("#radioprivate").click(function() {
                                jQuery(".individualline").show();
                                jQuery("#typent_id").val(id_te_private);
                                jQuery("#effectif_id").val(id_ef15);
+                               jQuery("#TypeName").html(document.formsoc.LastName.value);
                                document.formsoc.private.value=1;
                          });
                          jQuery("#selectpays_id").change(function() {
@@ -735,14 +785,16 @@ else
         print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
         print '<input type="hidden" name="private" value='.$object->particulier.'>';
         print '<input type="hidden" name="type" value='.GETPOST("type").'>';
+        print '<input type="hidden" name="LastName" value="'.$langs->trans('LastName').'">';
+        print '<input type="hidden" name="ThirdPartyName" value="'.$langs->trans('ThirdPartyName').'">';
         if ($modCodeClient->code_auto || $modCodeFournisseur->code_auto) print '<input type="hidden" name="code_auto" value="1">';
 
         print '<table class="border" width="100%">';
 
         // Name, firstname
-        if ($object->particulier)
+        if ($object->particulier || GETPOST("private"))
         {
-            print '<tr><td><span class="fieldrequired">'.$langs->trans('LastName').'</span></td><td'.(empty($conf->global->SOCIETE_USEPREFIX)?' colspan="3"':'').'><input type="text" size="30" maxlength="60" name="nom" value="'.$object->nom.'"></td>';
+            print '<tr><td><span id="TypeName" class="fieldrequired">'.$langs->trans('LastName').'</span></td><td'.(empty($conf->global->SOCIETE_USEPREFIX)?' colspan="3"':'').'><input type="text" size="30" maxlength="60" name="nom" value="'.$object->nom.'"></td>';
             if (! empty($conf->global->SOCIETE_USEPREFIX))  // Old not used prefix field
             {
                 print '<td>'.$langs->trans('Prefix').'</td><td><input type="text" size="5" maxlength="5" name="prefix_comm" value="'.$object->prefix_comm.'"></td>';
@@ -751,7 +803,7 @@ else
         }
         else
         {
-            print '<tr><td><span class="fieldrequired">'.$langs->trans('ThirdPartyName').'</span></td><td'.(empty($conf->global->SOCIETE_USEPREFIX)?' colspan="3"':'').'><input type="text" size="30" maxlength="60" name="nom" value="'.$object->nom.'"></td>';
+            print '<tr><td><span span id="TypeName" class="fieldrequired">'.$langs->trans('ThirdPartyName').'</span></td><td'.(empty($conf->global->SOCIETE_USEPREFIX)?' colspan="3"':'').'><input type="text" size="30" maxlength="60" name="nom" value="'.$object->nom.'"></td>';
             if (! empty($conf->global->SOCIETE_USEPREFIX))  // Old not used prefix field
             {
                 print '<td>'.$langs->trans('Prefix').'</td><td><input type="text" size="5" maxlength="5" name="prefix_comm" value="'.$object->prefix_comm.'"></td>';
@@ -1018,12 +1070,17 @@ else
         }
 
         // Other attributes
-        foreach($extrafields->attribute_label as $key=>$label)
+        $parameters=array();
+        $reshook=$hookmanager->executeHooks('showInputFields',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+        if (empty($reshook))
         {
-            $value=(isset($_POST["options_".$key])?$_POST["options_".$key]:'');
-            print "<tr><td>".$label.'</td><td colspan="3">';
-            print $extrafields->showInputField($key,$value);
-            print '</td></tr>'."\n";
+            foreach($extrafields->attribute_label as $key=>$label)
+            {
+                $value=(isset($_POST["options_".$key])?$_POST["options_".$key]:'');
+                print "<tr><td>".$label.'</td><td colspan="3">';
+                print $extrafields->showInputField($key,$value);
+                print '</td></tr>'."\n";
+            }
         }
 
         // Ajout du logo
@@ -1054,7 +1111,7 @@ else
             $res=$object->fetch($socid);
             if ($res < 0) { dol_print_error($db,$object->error); exit; }
             $res=$object->fetch_optionals($socid,$extralabels);
-            if ($res < 0) { dol_print_error($db); exit; }
+            //if ($res < 0) { dol_print_error($db); exit; }
 
             // Load object modCodeTiers
             $module=$conf->global->SOCIETE_CODECLIENT_ADDON;
@@ -1087,7 +1144,8 @@ else
             if (! empty($_POST["nom"]))
             {
                 // We overwrite with values if posted
-                $object->nom=$_POST["nom"];
+                $object->name=$_POST["nom"];
+                $object->nom=$_POST["nom"];    // deprecated
                 $object->prefix_comm=$_POST["prefix_comm"];
                 $object->client=$_POST["client"];
                 $object->code_client=$_POST["code_client"];
@@ -1440,12 +1498,17 @@ else
             }
 
             // Other attributes
-            foreach($extrafields->attribute_label as $key=>$label)
+            $parameters=array();
+            $reshook=$hookmanager->executeHooks('showInputFields',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+            if (empty($reshook))
             {
-                $value=(isset($_POST["options_$key"])?$_POST["options_$key"]:$object->array_options["options_$key"]);
-                print "<tr><td>".$label."</td><td colspan=\"3\">";
-                print $extrafields->showInputField($key,$value);
-                print "</td></tr>\n";
+                foreach($extrafields->attribute_label as $key=>$label)
+                {
+                    $value=(isset($_POST["options_$key"])?$_POST["options_$key"]:$object->array_options["options_$key"]);
+                    print "<tr><td>".$label."</td><td colspan=\"3\">";
+                    print $extrafields->showInputField($key,$value);
+                    print "</td></tr>\n";
+                }
             }
 
             // Logo
@@ -1487,7 +1550,7 @@ else
         $res=$object->fetch($socid);
         if ($res < 0) { dol_print_error($db,$object->error); exit; }
         $res=$object->fetch_optionals($socid,$extralabels);
-        if ($res < 0) { dol_print_error($db); exit; }
+        //if ($res < 0) { dol_print_error($db); exit; }
 
 
         $head = societe_prepare_head($object);
@@ -1495,7 +1558,6 @@ else
         dol_fiche_head($head, 'card', $langs->trans("ThirdParty"),0,'company');
 
         $html = new Form($db);
-
 
         // Confirm delete third party
         if ($action == 'delete' || $conf->use_javascript_ajax)
@@ -1506,8 +1568,9 @@ else
         }
 
         dol_htmloutput_errors($error,$errors);
-
-        print '<table class="border" width="100%">';
+        
+        $var=true;
+        print '<table class="noborder" width="50%">';
 
         // Ref
         /*
@@ -1517,10 +1580,9 @@ else
         print '</td>';
         print '</tr>';
         */
-
+        
         // Name
-        print '<tr><td width="20%">'.$langs->trans('ThirdPartyName').'</td>';
-        print '<td colspan="3">';
+        print '<tr class="liste_titre"><td colspan="4">';
         print $form->showrefnav($object,'socid','',($user->societe_id?0:1),'rowid','nom');
         print '</td>';
         print '</tr>';
@@ -1539,89 +1601,118 @@ else
             $showlogo.=$html->showphoto('societe',$object,50);
             $showlogo.='</td>';
         }
+        
+         // Name
+	print '<tr '.$bc[$var].'><td id="label" width="20%">'.$langs->trans('ThirdPartyName').'</td>';
+	print '<td colspan="'.(2+($object->logo?0:1)).'" id="value">';
+	print $object->getNomUrl(1);
+	print '</td>';
+        print $showlogo; $showlogo='';
+        print '</tr>';
+        $var=!$var;
 
         if (! empty($conf->global->SOCIETE_USEPREFIX))  // Old not used prefix field
         {
-            print '<tr><td>'.$langs->trans('Prefix').'</td><td colspan="'.(2+($object->logo?0:1)).'">'.$object->prefix_comm.'</td>';
+            print '<tr '.$bc[$var].'><td id="label">'.$langs->trans('Prefix').'</td><td id="value" colspan="'.(2+($object->logo?0:1)).'">'.$object->prefix_comm.'</td>';
             print $showlogo; $showlogo='';
             print '</tr>';
+            $var=!$var;
         }
 
         if ($object->client)
         {
-            print '<tr><td>';
-            print $langs->trans('CustomerCode').'</td><td colspan="'.(2+($object->logo?0:1)).'">';
+            print '<tr '.$bc[$var].'><td id="label">';
+            print $langs->trans('CustomerCode').'</td><td id="value" colspan="'.(2+($object->logo?0:1)).'">';
             print $object->code_client;
             if ($object->check_codeclient() <> 0) print ' <font class="error">('.$langs->trans("WrongCustomerCode").')</font>';
             print '</td>';
             print $showlogo; $showlogo='';
             print '</tr>';
+            $var=!$var;
         }
 
         if ($conf->fournisseur->enabled && $object->fournisseur)
         {
-            print '<tr><td>';
-            print $langs->trans('SupplierCode').'</td><td colspan="'.(2+($object->logo?0:1)).'">';
+            print '<tr '.$bc[$var].'><td id="label">';
+            print $langs->trans('SupplierCode').'</td><td id="value" colspan="'.(2+($object->logo?0:1)).'">';
             print $object->code_fournisseur;
             if ($object->check_codefournisseur() <> 0) print ' <font class="error">('.$langs->trans("WrongSupplierCode").')</font>';
             print '</td>';
             print $showlogo; $showlogo='';
             print '</tr>';
+            $var=!$var;
         }
 
         // Status
-        print '<tr><td>'.$langs->trans("Status").'</td>';
-        print '<td colspan="'.(2+($object->logo?0:1)).'">';
+        print '<tr '.$bc[$var].'><td id="label">'.$langs->trans("Status").'</td>';
+        print '<td id="value" colspan="'.(2+($object->logo?0:1)).'">';
         print $object->getLibStatut(2);
         print '</td>';
         print $showlogo; $showlogo='';
         print '</tr>';
+        $var=!$var;
 
         // Barcode
         if ($conf->global->MAIN_MODULE_BARCODE)
         {
-            print '<tr><td>'.$langs->trans('Gencod').'</td><td colspan="'.(2+($object->logo?0:1)).'">'.$object->gencod.'</td></tr>';
+            print '<tr '.$bc[$var].'><td id="label">'.$langs->trans('Gencod').'</td><td id="value" colspan="'.(2+($object->logo?0:1)).'">'.$object->gencod.'</td></tr>';
         }
 
         // Address
-        print "<tr><td valign=\"top\">".$langs->trans('Address').'</td><td colspan="'.(2+($object->logo?0:1)).'">';
+        print '<tr '.$bc[$var].'><td id="label" valign=\"top\">'.$langs->trans('Address').'</td><td id="value" colspan="'.(2+($object->logo?0:1)).'">';
         dol_print_address($object->address,'gmap','thirdparty',$object->id);
         print "</td></tr>";
+        $var=!$var;
 
         // Zip / Town
-        print '<tr><td width="25%">'.$langs->trans('Zip').' / '.$langs->trans("Town").'</td><td colspan="'.(2+($object->logo?0:1)).'">';
+        print '<tr '.$bc[$var].'><td id="label" width="25%">'.$langs->trans('Zip').' / '.$langs->trans("Town").'</td><td id="value" colspan="'.(2+($object->logo?0:1)).'">';
         print $object->cp.($object->cp && $object->ville?" / ":"").$object->ville;
         print "</td>";
         print '</tr>';
+        $var=!$var;
 
         // Country
-        print '<tr><td>'.$langs->trans("Country").'</td><td colspan="'.(2+($object->logo?0:1)).'" nowrap="nowrap">';
+        print '<tr '.$bc[$var].'><td id="label">'.$langs->trans("Country").'</td><td id="value" nowrap="nowrap">';
         $img=picto_from_langcode($object->pays_code);
         if ($object->isInEEC()) print $form->textwithpicto(($img?$img.' ':'').$object->pays,$langs->trans("CountryIsInEEC"),1,0);
         else print ($img?$img.' ':'').$object->pays;
-        print '</td></tr>';
+        print '</td>';
+        
+        // MAP GPS
+        if($conf->map->enabled)
+            print '<td id="label" colspan="'.(1+($object->logo?0:1)).'">GPS '.img_picto(($object->lat.','.$object->lng),(($object->lat && $object->lng)?"statut4":"statut1")).'</td></tr>';
+        else
+            print '<td id="label" colspan="'.(1+($object->logo?0:1)).'"></td></tr>';
+        $var=!$var;
 
         // State
-        if (empty($conf->global->SOCIETE_DISABLE_STATE)) print '<tr><td>'.$langs->trans('State').'</td><td colspan="'.(2+($object->logo?0:1)).'">'.$object->departement.'</td>';
+        if (empty($conf->global->SOCIETE_DISABLE_STATE))
+        {
+            print '<tr  '.$bc[$var].'><td id="label">'.$langs->trans('State').'</td><td id="value" colspan="3">'.$object->departement.'</td></tr>';
+            $var=!$var;
+        }
 
-        print '<tr><td>'.$langs->trans('Phone').'</td><td style="min-width: 25%;">'.dol_print_phone($object->tel,$object->pays_code,0,$object->id,'AC_TEL').'</td>';
-        print '<td>'.$langs->trans('Fax').'</td><td style="min-width: 25%;">'.dol_print_phone($object->fax,$object->pays_code,0,$object->id,'AC_FAX').'</td></tr>';
+        // Phone
+        print '<tr '.$bc[$var].'><td id="label">'.$langs->trans('Phone').'</td><td id="value" style="min-width: 25%;">'.dol_print_phone($object->tel,$object->pays_code,0,$object->id,'AC_TEL').'</td>';
+        print '<td>'.$langs->trans('Fax').'</td><td id="value" style="min-width: 25%;">'.dol_print_phone($object->fax,$object->pays_code,0,$object->id,'AC_FAX').'</td></tr>';
+        $var=!$var;
 
         // EMail
-        print '<tr><td>'.$langs->trans('EMail').'</td><td width="25%">';
+        print '<tr '.$bc[$var].'><td id="label">'.$langs->trans('EMail').'</td><td id="value" width="25%">';
         print dol_print_email($object->email,0,$object->id,'AC_EMAIL');
         print '</td>';
 
         // Web
-        print '<td>'.$langs->trans('Web').'</td><td>';
+        print '<td id="label">'.$langs->trans('Web').'</td><td id="value">';
         print dol_print_url($object->url);
         print '</td></tr>';
+        $var=!$var;
 
         // ProfId1 (SIREN for France)
         $profid=$langs->transcountry('ProfId1',$object->pays_code);
         if ($profid!='-')
         {
-            print '<tr><td>'.$profid.'</td><td>';
+            print '<tr '.$bc[$var].'><td id="label">'.$profid.'</td><td id="value">';
             print $object->siren;
             if ($object->siren)
             {
@@ -1630,12 +1721,12 @@ else
             }
             print '</td>';
         }
-        else print '<tr><td>&nbsp;</td><td>&nbsp;</td>';
+        else print '<tr '.$bc[$var].'><td id="label">&nbsp;</td><td>&nbsp;</td>';
         // ProfId2 (SIRET for France)
         $profid=$langs->transcountry('ProfId2',$object->pays_code);
         if ($profid!='-')
         {
-            print '<td>'.$profid.'</td><td>';
+            print '<td>'.$profid.'</td><td id="value">';
             print $object->siret;
             if ($object->siret)
             {
@@ -1645,12 +1736,13 @@ else
             print '</td></tr>';
         }
         else print '<td>&nbsp;</td><td>&nbsp;</td></tr>';
+        $var=!$var;
 
         // ProfId3 (APE for France)
         $profid=$langs->transcountry('ProfId3',$object->pays_code);
         if ($profid!='-')
         {
-            print '<tr><td>'.$profid.'</td><td>';
+            print '<tr '.$bc[$var].'><td id="label">'.$profid.'</td><td id="value">';
             print $object->ape;
             if ($object->ape)
             {
@@ -1659,12 +1751,12 @@ else
             }
             print '</td>';
         }
-        else print '<tr><td>&nbsp;</td><td>&nbsp;</td>';
+        else print '<tr '.$bc[$var].'><td id="label">&nbsp;</td><td>&nbsp;</td>';
         // ProfId4 (NU for France)
         $profid=$langs->transcountry('ProfId4',$object->pays_code);
         if ($profid!='-')
         {
-            print '<td>'.$profid.'</td><td>';
+            print '<td id="label">'.$profid.'</td><td id="value">';
             print $object->idprof4;
             if ($object->idprof4)
             {
@@ -1673,18 +1765,19 @@ else
             }
             print '</td></tr>';
         }
-        else print '<td>&nbsp;</td><td>&nbsp;</td></tr>';
+        else print '<td id="label">&nbsp;</td><td id="value">&nbsp;</td></tr>';
+        $var=!$var;
 
         // VAT payers
         $html = new Form($db);
-        print '<tr><td>';
+        print '<tr '.$bc[$var].'><td id="label">';
         print $langs->trans('VATIsUsed');
-        print '</td><td>';
+        print '</td><td id="value">';
         print yn($object->tva_assuj);
         print '</td>';
 
         // VAT Code
-        print '<td nowrap="nowrpa">'.$langs->trans('VATIntra').'</td><td>';
+        print '<td id="label" nowrap="nowrpa">'.$langs->trans('VATIntra').'</td><td id="value">';
         if ($object->tva_intra)
         {
             $s='';
@@ -1720,6 +1813,7 @@ else
         }
         print '</td>';
         print '</tr>';
+        $var=!$var;
 
         // Local Taxes
         // TODO add specific function by country
@@ -1727,70 +1821,81 @@ else
         {
             if($mysoc->localtax1_assuj=="1" && $mysoc->localtax2_assuj=="1")
             {
-                print '<tr><td>'.$langs->trans("LocalTax1IsUsedES").'</td><td>';
+                print '<tr '.$bc[$var].'><td id="label">'.$langs->trans("LocalTax1IsUsedES").'</td><td id="value">';
                 print yn($object->localtax1_assuj);
-                print '</td><td>'.$langs->trans("LocalTax2IsUsedES").'</td><td>';
+                print '</td><td id="label">'.$langs->trans("LocalTax2IsUsedES").'</td><td  id="value">';
                 print yn($object->localtax2_assuj);
                 print '</td></tr>';
 
             }
             elseif($mysoc->localtax1_assuj=="1")
             {
-                print '<tr><td>'.$langs->trans("LocalTax1IsUsedES").'</td><td colspan="3">';
+                print '<tr '.$bc[$var].'><td id="label">'.$langs->trans("LocalTax1IsUsedES").'</td><td id="value" colspan="3">';
                 print yn($object->localtax1_assuj);
                 print '</td><tr>';
             }
             elseif($mysoc->localtax2_assuj=="1")
             {
-                print '<tr><td>'.$langs->trans("LocalTax2IsUsedES").'</td><td colspan="3">';
+                print '<tr '.$bc[$var].'><td id="label">'.$langs->trans("LocalTax2IsUsedES").'</td><td id="value" colspan="3">';
                 print yn($object->localtax2_assuj);
                 print '</td><tr>';
             }
+            $var=!$var;
         }
 
         // Type + Staff
         $arr = $formcompany->typent_array(1);
         $object->typent= $arr[$object->typent_code];
-        print '<tr><td>'.$langs->trans("ThirdPartyType").'</td><td>'.$object->typent.'</td><td>'.$langs->trans("Staff").'</td><td>'.$object->effectif.'</td></tr>';
+        print '<tr '.$bc[$var].'><td id="label">'.$langs->trans("ThirdPartyType").'</td><td id="value">'.$object->typent.'</td><td id="label">'.$langs->trans("Staff").'</td><td id="value">'.$object->effectif.'</td></tr>';
+        $var=!$var;
 
         // Legal
-        print '<tr><td>'.$langs->trans('JuridicalStatus').'</td><td colspan="3">'.$object->forme_juridique.'</td></tr>';
+        print '<tr '.$bc[$var].'><td id="label">'.$langs->trans('JuridicalStatus').'</td><td id="value" colspan="3">'.$object->forme_juridique.'</td></tr>';
+        $var=!$var;
 
         // Capital
-        print '<tr><td>'.$langs->trans('Capital').'</td><td colspan="3">';
+        print '<tr '.$bc[$var].'><td id="label">'.$langs->trans('Capital').'</td><td id="value" colspan="3">';
         if ($object->capital) print $object->capital.' '.$langs->trans("Currency".$conf->monnaie);
         else print '&nbsp;';
         print '</td></tr>';
+        $var=!$var;
 
         // Default language
         if ($conf->global->MAIN_MULTILANGS)
         {
             require_once(DOL_DOCUMENT_ROOT."/lib/functions2.lib.php");
-            print '<tr><td>'.$langs->trans("DefaultLang").'</td><td colspan="3">';
+            print '<tr '.$bc[$var].'><td id="label">'.$langs->trans("DefaultLang").'</td><td id="value" colspan="3">';
             //$s=picto_from_langcode($object->default_lang);
             //print ($s?$s.' ':'');
             $langs->load("languages");
             $labellang = ($object->default_lang?$langs->trans('Language_'.$object->default_lang):'');
             print $labellang;
             print '</td></tr>';
+            $var=!$var;
         }
 
         // Other attributes
-        foreach($extrafields->attribute_label as $key=>$label)
+        $parameters=array('socid'=>$socid);
+        $reshook=$hookmanager->executeHooks('showOutputFields',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+        if (empty($reshook))
         {
-            $value=$object->array_options["options_$key"];
-            print "<tr><td>".$label.'</td><td colspan="3">';
-            print $extrafields->showOutputField($key,$value);
-            print "</td></tr>\n";
+            foreach($extrafields->attribute_label as $key=>$label)
+            {
+                $value=$object->array_options["options_$key"];
+                print "<tr><td>".$label.'</td><td colspan="3">';
+                print $extrafields->showOutputField($key,$value);
+                print "</td></tr>\n";
+            }
         }
 
         // Ban
+        /*
         if (empty($conf->global->SOCIETE_DISABLE_BANKACCOUNT))
         {
-            print '<tr><td>';
-            print '<table width="100%" class="nobordernopadding"><tr><td>';
+            print '<tr '.$bc[$var].'><td>';
+            print '<table width="100%" class="nobordernopadding"><tr><td id="label">';
             print $langs->trans('RIB');
-            print '<td><td align="right">';
+            print '<td><td id="value" align="right">';
             if ($user->rights->societe->creer)
             print '<a href="'.DOL_URL_ROOT.'/societe/rib.php?socid='.$object->id.'">'.img_edit().'</a>';
             else
@@ -1800,15 +1905,16 @@ else
             print '<td colspan="3">';
             print $object->display_rib();
             print '</td></tr>';
-        }
+            $var=!$var;
+        }*/
 
         // Parent company
         if (empty($conf->global->SOCIETE_DISABLE_PARENTCOMPANY))
         {
-            print '<tr><td>';
-            print '<table width="100%" class="nobordernopadding"><tr><td>';
+            print '<tr '.$bc[$var].'><td>';
+            print '<table width="100%" class="nobordernopadding"><tr><td id="label">';
             print $langs->trans('ParentCompany');
-            print '<td><td align="right">';
+            print '<td><td id="value" align="right">';
             if ($user->rights->societe->creer)
             print '<a href="'.DOL_URL_ROOT.'/societe/lien.php?socid='.$object->id.'">'.img_edit() .'</a>';
             else
@@ -1827,13 +1933,15 @@ else
                 print $langs->trans("NoParentCompany");
             }
             print '</td></tr>';
+            $var=!$var;
         }
 
         // Commercial
-        print '<tr><td>';
-        print '<table width="100%" class="nobordernopadding"><tr><td>';
+        /*
+        print '<tr '.$bc[$var].'><td>';
+        print '<table width="100%" class="nobordernopadding"><tr><td id="label">';
         print $langs->trans('SalesRepresentatives');
-        print '<td><td align="right">';
+        print '<td><td  id="value" align="right">';
         if ($user->rights->societe->creer)
         print '<a href="'.DOL_URL_ROOT.'/societe/commerciaux.php?socid='.$object->id.'">'.img_edit().'</a>';
         else
@@ -1866,13 +1974,14 @@ else
         }
         else print $langs->trans("NoSalesRepresentativeAffected");
         print '</td></tr>';
+        $var=!$var;*/
 
         // Module Adherent
         if ($conf->adherent->enabled)
         {
             $langs->load("members");
-            print '<tr><td width="25%" valign="top">'.$langs->trans("LinkedToDolibarrMember").'</td>';
-            print '<td colspan="3">';
+            print '<tr '.$bc[$var].'><td id="label" width="25%" valign="top">'.$langs->trans("LinkedToDolibarrMember").'</td>';
+            print '<td id="value" colspan="3">';
             $adh=new Adherent($db);
             $result=$adh->fetch('','',$object->id);
             if ($result > 0)
@@ -1886,7 +1995,24 @@ else
             }
             print '</td>';
             print "</tr>\n";
+            $var=!$var;
         }
+
+	// Affichage des notes
+        print '<tr '.$bc[$var].'><td valign="top">';
+        print '<table width="100%" class="nobordernopadding"><tr><td id="label">';
+	print $langs->trans("Note");
+	print '</td><td align="right">';
+	if ($user->rights->societe->creer)
+                print '<a href="'.DOL_URL_ROOT.'/societe/socnote.php?socid='.$object->id.'&action=edit&backtopage='.DOL_URL_ROOT.'/societe/soc.php?socid='.$object->id.'">'.img_edit() .'</a>';
+	else
+                print '&nbsp;';
+	print '</td></tr></table>';
+        print '</td>';
+        print '<td colspan="3" id="value">';
+        print nl2br($object->note);
+        print "</td></tr>";
+        $var=!$var;
 
         print '</table>';
 
@@ -1918,7 +2044,7 @@ else
         print '</div>'."\n";
         print '<br>';
 
-        if (empty($conf->global->SOCIETE_DISABLE_BUILDDOC))
+        if ($conf->ecm->enabled && empty($conf->global->SOCIETE_DISABLE_BUILDDOC))
         {
             print '<table width="100%"><tr><td valign="top" width="50%">';
             print '<a name="builddoc"></a>'; // ancre
@@ -1943,6 +2069,8 @@ else
             print '<br>';
         }
 
+		print '<table width="100%"><tr><td valign="top" width="50%">';
+
         // Subsidiaries list
         $result=show_subsidiaries($conf,$langs,$db,$object);
 
@@ -1950,10 +2078,15 @@ else
         if (empty($conf->global->SOCIETE_DISABLE_CONTACTS))
         {
             $result=show_contacts($conf,$langs,$db,$object,$_SERVER["PHP_SELF"].'?socid='.$object->id);
+			print '</td>';
+			print '<td>';
         }
 
         // Projects list
         $result=show_projects($conf,$langs,$db,$object,$_SERVER["PHP_SELF"].'?socid='.$object->id);
+		print '</td>';
+		print '</tr>';
+		print '</table>';
     }
 
 }
@@ -1961,5 +2094,5 @@ else
 
 $db->close();
 
-llxFooter('$Date: 2011/07/04 08:00:53 $ - $Revision: 1.121 $');
+llxFooter('$Date: 2011/08/10 22:47:35 $ - $Revision: 1.132 $');
 ?>

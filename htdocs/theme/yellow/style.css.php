@@ -13,14 +13,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *		\file       htdocs/theme/yellow/style.css.php
  *		\brief      Fichier de style CSS du theme Yellow
- *		\version    $Id: style.css.php,v 1.42 2011/07/06 11:40:21 eldy Exp $
+ *		\version    $Id: style.css.php,v 1.46 2011/07/31 23:22:04 eldy Exp $
  */
 
 //if (! defined('NOREQUIREUSER')) define('NOREQUIREUSER','1');	// Not disabled cause need to load personalized language
@@ -64,7 +63,7 @@ body {
 <?php if (! empty($_GET["optioncss"]) && $_GET["optioncss"] == 'print') {  ?>
 	background-color: #FFFFFF;
 <?php } else { ?>
-	background-color: #ebebe0;
+	background-color: #fbfbf0;
 <?php } ?>
   font-size: 12px;
   font-family: helvetica, verdana, arial, sans-serif;
@@ -1038,6 +1037,12 @@ th {
 /*
  *  Boxes
  */
+
+.boxtable {
+-moz-box-shadow: 2px 4px 2px #AAA;
+-webkit-box-shadow: 2px 4px 2px #AAA;
+box-shadow: 2px 4px 2px #AAA;
+}
 
 .box {
 	padding-right: 4px;

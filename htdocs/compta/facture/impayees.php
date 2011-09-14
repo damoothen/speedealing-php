@@ -15,15 +15,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *		\file       htdocs/compta/facture/impayees.php
  *		\ingroup    facture
  *		\brief      Page to list and build liste of unpaid invoices
- *		\version    $Revision: 1.83 $
+ *		\version    $Revision: 1.85 $
  */
 
 require("../../main.inc.php");
@@ -53,10 +52,12 @@ if ($_POST["action"] == "builddoc" && $user->rights->facture->lire)
 {
 	if (is_array($_POST['toGenerate']))
 	{
-        require_once(DOL_DOCUMENT_ROOT."/includes/fpdf/fpdfi/fpdi.php");
+        require_once(FPDFI_PATH.'fpdi.php');
         require_once(DOL_DOCUMENT_ROOT.'/lib/pdf.lib.php');
 
-		$factures = dol_dir_list($conf->facture->dir_output,'all',1,implode('\.pdf|',$_POST['toGenerate']).'\.pdf','\.meta$|\.png','date',SORT_DESC) ;
+	    $arrayofexclusion=array();
+	    foreach($_POST['toGenerate'] as $tmppdf) $arrayofexclusion[]=preg_quote($tmppdf.'.pdf','/');
+		$factures = dol_dir_list($conf->facture->dir_output,'all',1,implode('|',$arrayofexclusion),'\.meta$|\.png','date',SORT_DESC);
 
 		// liste les fichiers
 		$files = array() ;
@@ -64,7 +65,7 @@ if ($_POST["action"] == "builddoc" && $user->rights->facture->lire)
 		foreach($_POST['toGenerate'] as $basename){
 			foreach($factures as $facture){
 				if(strstr($facture["name"],$basename)){
-					$files[] = $conf->facture->dir_output.'/'.$basename.'/'.$facture["name"] ;
+					$files[] = $conf->facture->dir_output.'/'.$basename.'/'.$facture["name"];
 				}
 			}
 		}
@@ -425,5 +426,5 @@ if ($result)
 
 $db->close();
 
-llxFooter('$Date: 2011/07/13 14:41:02 $ - $Revision: 1.83 $');
+llxFooter('$Date: 2011/08/10 23:21:13 $ - $Revision: 1.85 $');
 ?>

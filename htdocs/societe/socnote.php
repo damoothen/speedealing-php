@@ -3,6 +3,7 @@
  * Copyright (C) 2004-2011      Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2006      Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2010           Juanjo Menent        <jmenent@2byte.es>
+ * Copyright (C) 2010-2011      Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,15 +16,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *   \file       htdocs/societe/socnote.php
  *   \brief      Tab for notes on third party
  *   \ingroup    societe
- *   \version    $Id: socnote.php,v 1.22 2011/07/13 16:24:57 eldy Exp $
+ *   \version    $Id: socnote.php,v 1.23 2011/07/31 23:22:56 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -44,14 +44,28 @@ $result = restrictedArea($user, 'societe', $socid);
  * Actions
  */
 
-if ($action == 'add' && ! GETPOST('cancel'))
+if ($action == 'add')
 {
-    $sql = "UPDATE ".MAIN_DB_PREFIX."societe SET note='".$db->escape($_POST["note"])."' WHERE rowid=".$_POST["socid"];
-    $result = $db->query($sql);
+    $backtopage='';
+    if (! empty($GETPOST["backtopage"]))
+        $backtopage=$GETPOST["backtopage"];
+    else
+        $backtopage = DOL_URL_ROOT.'/societe/soc.php?socid='.$socid;
+
+    if (!GETPOST('cancel'))
+    {
+        $sql = "UPDATE ".MAIN_DB_PREFIX."societe SET note='".$db->escape($_POST["note"])."' WHERE rowid=".$_POST["socid"];
+    	$result = $db->query($sql);
+    }
 
     $_GET["socid"]=$_POST["socid"];   // Pour retour sur fiche
     $socid = $_GET["socid"];
+
+    dol_syslog("Back to ".$backtopage);
+    Header("Location: ".$backtopage);
 }
+
+
 
 
 /*
@@ -83,37 +97,41 @@ if ($socid > 0)
     print "<form method=\"post\" action=\"".DOL_URL_ROOT."/societe/socnote.php\">";
     print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 
-    print '<table class="border" width="100%">';
+    print '<table class="noborder" width="100%">';
 
-    print '<tr><td width="20%">'.$langs->trans('ThirdPartyName').'</td>';
+    $var=true;
+    print '<tr class="liste_titre"><td width="20%">'.$langs->trans('ThirdPartyName').'</td>';
     print '<td colspan="3">';
     print $form->showrefnav($societe,'socid','',($user->societe_id?0:1),'rowid','nom');
     print '</td></tr>';
 
     if (! empty($conf->global->SOCIETE_USEPREFIX))  // Old not used prefix field
     {
-        print '<tr><td>'.$langs->trans('Prefix').'</td><td colspan="3">'.$societe->prefix_comm.'</td></tr>';
+        print '<tr '.$bc[$var].'><td id="label">'.$langs->trans('Prefix').'</td><td colspan="3" id="value">'.$societe->prefix_comm.'</td></tr>';
+        $var=!$var;
     }
 
     if ($societe->client)
     {
-        print '<tr><td>';
+        print '<tr '.$bc[$var].'><td>';
         print $langs->trans('CustomerCode').'</td><td colspan="3">';
         print $societe->code_client;
         if ($societe->check_codeclient() <> 0) print ' <font class="error">('.$langs->trans("WrongCustomerCode").')</font>';
         print '</td></tr>';
+        $var=!$var;
     }
 
     if ($societe->fournisseur)
     {
-        print '<tr><td>';
+        print '<tr '.$bc[$var].'><td>';
         print $langs->trans('SupplierCode').'</td><td colspan="3">';
         print $societe->code_fournisseur;
         if ($societe->check_codefournisseur() <> 0) print ' <font class="error">('.$langs->trans("WrongSupplierCode").')</font>';
         print '</td></tr>';
+        $var=!$var;
     }
 
-    print '<tr><td valign="top">'.$langs->trans("Note").'</td>';
+    print '<tr '.$bc[$var].'><td valign="top">'.$langs->trans("Note").'</td>';
     print '<td valign="top">';
     if ($action == 'edit' && $user->rights->societe->creer)
     {
@@ -122,7 +140,7 @@ if ($socid > 0)
 
         // Editeur wysiwyg
         require_once(DOL_DOCUMENT_ROOT."/lib/doleditor.class.php");
-        $doleditor=new DolEditor('note',$societe->note,'',360,'dolibarr_notes','In',true,false,$conf->fckeditor->enabled && $conf->global->FCKEDITOR_ENABLE_SOCIETE,20,70);
+        $doleditor=new DolEditor('note',$societe->note,'',360,'dolibarr_notes','In',true,false,$conf->fckeditor->enabled && $conf->global->FCKEDITOR_ENABLE_SOCIETE,20,100);
         $doleditor->Create();
     }
     else
@@ -130,6 +148,7 @@ if ($socid > 0)
         print dol_textishtml($societe->note)?$societe->note:dol_nl2br($societe->note,1,true);
     }
     print "</td></tr>";
+    $var=!$var;
 
     if ($action == 'edit')
     {
@@ -167,5 +186,5 @@ if ($action != 'edit')
 
 $db->close();
 
-llxFooter('$Date: 2011/07/13 16:24:57 $ - $Revision: 1.22 $');
+llxFooter('$Date: 2011/07/31 23:22:56 $ - $Revision: 1.23 $');
 ?>

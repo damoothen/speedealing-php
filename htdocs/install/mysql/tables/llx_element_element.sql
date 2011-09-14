@@ -1,5 +1,6 @@
 -- ============================================================================
--- Copyright (C) 2008 Laurent Destailleur  <eldy@users.sourceforge.net>
+-- Copyright (C) 2008-2011	Laurent Destailleur	<eldy@users.sourceforge.net>
+-- Copyright (C) 2011		Regis Houssin		<regis@dolibarr.fr>
 --
 -- This program is free software; you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -12,10 +13,9 @@
 -- GNU General Public License for more details.
 --
 -- You should have received a copy of the GNU General Public License
--- along with this program; if not, write to the Free Software
--- Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+-- along with this program. If not, see <http://www.gnu.org/licenses/>.
 --
--- $Id$
+-- $Id: llx_element_element.sql,v 1.4 2011/08/03 01:25:28 eldy Exp $
 -- ============================================================================
 -- Table used for relations between elements of different types:
 -- invoice-propal, propal-order, etc...
@@ -25,8 +25,8 @@ create table llx_element_element
 (
   rowid           	integer AUTO_INCREMENT PRIMARY KEY,  
   fk_source			integer NOT NULL,
-  sourcetype		varchar(16) NOT NULL,
+  sourcetype		varchar(32) NOT NULL,
   fk_target			integer NOT NULL,
-  targettype		varchar(16) NOT NULL
+  targettype		varchar(32) NOT NULL
 ) ENGINE=innodb;
 

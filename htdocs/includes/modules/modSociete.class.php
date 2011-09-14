@@ -16,14 +16,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *	\defgroup   societe     Module societe
  *	\brief      Module to manage third parties (customers, prospects)
- *	\version	$Id: modSociete.class.php,v 1.118 2011/07/01 23:07:26 eldy Exp $
+ *	\version	$Id: modSociete.class.php,v 1.122 2011/08/10 00:50:18 eldy Exp $
  */
 
 /**
@@ -106,16 +105,6 @@ class modSociete extends DolibarrModules
 		$this->const[$r][3] = "";
 		$this->const[$r][4] = 0;
 		$r++;
-
-        /* Disabled (no hook by default). A module that wants to hook thirdparty or contact actions must add its own constant MAIN_MODULE_MYMODULE_HOOKS=thirdpartycard:contactcard)
-		$this->const[$r][0] = "MAIN_MODULE_SOCIETE_HOOKS";
-		$this->const[$r][1] = "chaine";
-		$this->const[$r][2] = "thirdpartycard:contactcard";
-		$this->const[$r][3] = "";
-		$this->const[$r][4] = 0;
-		$this->const[$r][4] = 'current';
-		$this->const[$r][4] = 1;
-		$r++; */
 
 		// Boxes
 		$this->boxes = array();
@@ -217,12 +206,15 @@ class modSociete extends DolibarrModules
         // Add extra fields
         $sql="SELECT name, label FROM ".MAIN_DB_PREFIX."extrafields WHERE elementtype = 'company'";
         $resql=$this->db->query($sql);
-        while ($obj=$this->db->fetch_object($resql))
+        if ($resql)    // This can fail when class is used on old database (during migration for example)
         {
-            $fieldname='extra.'.$obj->name;
-            $fieldlabel=ucfirst($obj->label);
-            $this->export_fields_array[$r][$fieldname]=$fieldlabel;
-            $this->export_entities_array[$r][$fieldname]='company';
+            while ($obj=$this->db->fetch_object($resql))
+            {
+                $fieldname='extra.'.$obj->name;
+                $fieldlabel=ucfirst($obj->label);
+                $this->export_fields_array[$r][$fieldname]=$fieldlabel;
+                $this->export_entities_array[$r][$fieldname]='company';
+            }
         }
         // End add axtra fields
 		$this->export_sql_start[$r]='SELECT DISTINCT ';
@@ -251,12 +243,15 @@ class modSociete extends DolibarrModules
         // Add extra fields
         $sql="SELECT name, label FROM ".MAIN_DB_PREFIX."extrafields WHERE elementtype = 'contact'";
         $resql=$this->db->query($sql);
-        while ($obj=$this->db->fetch_object($resql))
+        if ($resql)    // This can fail when class is used on old database (during migration for example)
         {
-            $fieldname='extra.'.$obj->name;
-            $fieldlabel=ucfirst($obj->label);
-            $this->export_fields_array[$r][$fieldname]=$fieldlabel;
-            $this->export_entities_array[$r][$fieldname]='contact';
+            while ($obj=$this->db->fetch_object($resql))
+            {
+                $fieldname='extra.'.$obj->name;
+                $fieldlabel=ucfirst($obj->label);
+                $this->export_fields_array[$r][$fieldname]=$fieldlabel;
+                $this->export_entities_array[$r][$fieldname]='contact';
+            }
         }
         // End add axtra fields
         $this->export_sql_start[$r]='SELECT DISTINCT ';

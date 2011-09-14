@@ -20,8 +20,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  * or see http://www.gnu.org/
  */
 
@@ -29,7 +28,7 @@
  *	\file			htdocs/lib/functions.lib.php
  *	\brief			A set of functions for Dolibarr
  *					This file contains all frequently used functions.
- *	\version		$Id: functions.lib.php,v 1.546 2011/07/09 11:24:32 eldy Exp $
+ *	\version		$Id: functions.lib.php,v 1.552 2011/08/04 22:01:23 eldy Exp $
  */
 
 // For compatibility during upgrade
@@ -1559,34 +1558,40 @@ function dol_trunc($string,$size=40,$trunc='right',$stringencoding='UTF-8')
 
 
 /**
- *	Show a picto according to module or object (generic function)
- *	@param      alt         Text of alt on image
- *	@param      object      Objet pour lequel il faut afficher le logo (example: user, group, action, bill, contract, propal, product, ...)
- *							Pour les modules externe utiliser nomimage@mymodule pour rechercher dans le repertoire "img" du module
- *  @param      options     Add more attribute on img tag
- *	@return     string      Return img tag
+ *	Show a picto called object_picto (generic function)
+ *	@param      alt                 Text of alt on image
+ *	@param      picto               Name of image to show object_picto (example: user, group, action, bill, contract, propal, product, ...)
+ *							        For external modules use imagename@mymodule to search into directory "img" of module.
+ *  @param      options             Add more attribute on img tag
+ *  @param      pictoisfullpath     If 1, image path is a full path
+ *	@return     string              Return img tag
  *  @see        img_picto, img_picto_common
  */
-function img_object($alt, $object, $options='')
+function img_object($alt, $picto, $options='', $pictoisfullpath=0)
 {
     global $conf,$langs;
 
-    $path =  'theme/'.$conf->theme;
+    $path = 'theme/'.$conf->theme;
     $url = DOL_URL_ROOT;
 
-    if (preg_match('/^([^@]+)@([^@]+)$/i',$object,$regs))
+    if (preg_match('/^([^@]+)@([^@]+)$/i',$picto,$regs))
     {
-        $object = $regs[1];
+        $picto = $regs[1];
         $path = $regs[2];
+        if (! preg_match('/(\.png|\.gif)$/i',$picto)) $picto.='.png';
         // If img file not into standard path, we use alternate path
-        if (defined('DOL_URL_ROOT_ALT') && DOL_URL_ROOT_ALT && ! file_exists(DOL_DOCUMENT_ROOT.'/'.$path.'/img/object_'.$object.'.png')) $url = DOL_URL_ROOT_ALT;
+        if (defined('DOL_URL_ROOT_ALT') && DOL_URL_ROOT_ALT && ! file_exists(DOL_DOCUMENT_ROOT.'/'.$path.'/img/object_'.$picto)) $url = DOL_URL_ROOT_ALT;
     }
-
-    return '<img src="'.$url.'/'.$path.'/img/object_'.$object.'.png" border="0" alt="'.dol_escape_htmltag($alt).'" title="'.dol_escape_htmltag($alt).'"'.($options?' '.$options:'').'>';
+    else
+    {
+        if (! preg_match('/(\.png|\.gif)$/i',$picto)) $picto.='.png';
+    }
+    if ($pictoisfullpath) return '<img src="'.$picto.'" border="0" alt="'.dol_escape_htmltag($alt).'" title="'.dol_escape_htmltag($alt).'"'.($options?' '.$options:'').'>';
+    return '<img src="'.$url.'/'.$path.'/img/object_'.$picto.'" border="0" alt="'.dol_escape_htmltag($alt).'" title="'.dol_escape_htmltag($alt).'"'.($options?' '.$options:'').'>';
 }
 
 /**
- *	Show picto (generic function)
+ *	Show picto whatever it's its name (generic function)
  *	@param      alt         		Text on alt and title of image
  *	@param      picto       		Name of image file to show (If no extension provided, we use '.png'). Image must be stored into img directory.
  *                                  Example: picto.png                  if picto.png is stored into htdocs/theme/mytheme/img
@@ -1612,8 +1617,10 @@ function img_picto($alt, $picto, $options='', $pictoisfullpath=0)
         // If img file not into standard path, we use alternate path
         if (defined('DOL_URL_ROOT_ALT') && DOL_URL_ROOT_ALT && ! file_exists(DOL_DOCUMENT_ROOT.'/'.$path.'/img/'.$picto)) $url = DOL_URL_ROOT_ALT;
     }
-
-    if (! preg_match('/(\.png|\.gif)$/i',$picto)) $picto.='.png';
+    else
+    {
+        if (! preg_match('/(\.png|\.gif)$/i',$picto)) $picto.='.png';
+    }
     if ($pictoisfullpath) return '<img src="'.$picto.'" border="0" alt="'.dol_escape_htmltag($alt).'" title="'.dol_escape_htmltag($alt).'"'.($options?' '.$options:'').'>';
     return '<img src="'.$url.'/'.$path.'/img/'.$picto.'" border="0" alt="'.dol_escape_htmltag($alt).'" title="'.dol_escape_htmltag($alt).'"'.($options?' '.$options:'').'>';
 }
@@ -1632,6 +1639,7 @@ function img_picto_common($alt, $picto, $options='', $pictoisfullpath=0)
     global $conf;
     if (! preg_match('/(\.png|\.gif)$/i',$picto)) $picto.='.png';
     if ($pictoisfullpath) return '<img src="'.$picto.'" border="0" alt="'.dol_escape_htmltag($alt).'" title="'.dol_escape_htmltag($alt).'"'.($options?' '.$options:'').'>';
+    if (! empty($conf->global->MAIN_MODULE_CAN_OVERWRITE_COMMONICONS) && file_exists(DOL_DOCUMENT_ROOT.'/theme/'.$conf->theme.'/'.$picto)) return '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/'.$picto.'" border="0" alt="'.dol_escape_htmltag($alt).'" title="'.dol_escape_htmltag($alt).'"'.($options?' '.$options:'').'>';
     return '<img src="'.DOL_URL_ROOT.'/theme/common/'.$picto.'" border="0" alt="'.dol_escape_htmltag($alt).'" title="'.dol_escape_htmltag($alt).'"'.($options?' '.$options:'').'>';
 }
 
@@ -2212,6 +2220,10 @@ function restrictedArea($user, $features='societe', $objectid=0, $dbtablename=''
             else if ($feature == 'ecm')
             {
                 if (! $user->rights->ecm->upload) $deleteok=0;
+            }
+            else if ($feature == 'ftp')
+            {
+                if (! $user->rights->ftp->write) $deleteok=0;
             }
             else if (! empty($feature2))	// This should be used for future changes
             {
@@ -3144,14 +3156,24 @@ function get_default_tva($societe_vendeuse, $societe_acheteuse, $idprod=0)
     dol_syslog("get_default_tva: seller use vat=".$societe_vendeuse->tva_assuj.", seller country=".$societe_vendeuse->pays_code.", seller in cee=".$societe_vendeuse->isInEEC().", buyer country=".$societe_acheteuse->pays_code.", buyer in cee=".$societe_acheteuse->isInEEC().", idprod=".$idprod.", SERVICE_ARE_ECOMMERCE_200238EC=".$conf->global->SERVICES_ARE_ECOMMERCE_200238EC);
 
     // Si vendeur non assujeti a TVA (tva_assuj vaut 0/1 ou franchise/reel)
-    if (is_numeric($societe_vendeuse->tva_assuj) && ! $societe_vendeuse->tva_assuj) return 0;
-    if (! is_numeric($societe_vendeuse->tva_assuj) && $societe_vendeuse->tva_assuj=='franchise') return 0;
+    if (is_numeric($societe_vendeuse->tva_assuj) && ! $societe_vendeuse->tva_assuj)
+    {
+        //print 'VATRULE 1';
+        return 0;
+    }
+    if (! is_numeric($societe_vendeuse->tva_assuj) && $societe_vendeuse->tva_assuj=='franchise')
+    {
+        //print 'VATRULE 2';
+        return 0;
+    }
 
-    // Si le (pays vendeur = pays acheteur) alors la TVA par defaut=TVA du produit vendu. Fin de regle.
     //if (is_object($societe_acheteuse) && ($societe_vendeuse->pays_id == $societe_acheteuse->pays_id) && ($societe_acheteuse->tva_assuj == 1 || $societe_acheteuse->tva_assuj == 'reel'))
     // Le test ci-dessus ne devrait pas etre necessaire. Me signaler l'exemple du cas juridique concerne si le test suivant n'est pas suffisant.
-    if ($societe_vendeuse->pays_code == $societe_acheteuse->pays_code) // Warning ->pays_id not always defined
+
+    // Si le (pays vendeur = pays acheteur) alors la TVA par defaut=TVA du produit vendu. Fin de regle.
+    if ($societe_vendeuse->pays_code == $societe_acheteuse->pays_code) // Warning ->pays_code not always defined
     {
+        //print 'VATRULE 3';
         return get_product_vat_for_country($idprod,$societe_vendeuse->pays_code);
     }
 
@@ -3165,10 +3187,12 @@ function get_default_tva($societe_vendeuse, $societe_acheteuse, $idprod=0)
         $isacompany=$societe_acheteuse->isACompany();
         if ($isacompany)
         {
+            //print 'VATRULE 4';
             return 0;
         }
         else
         {
+            //print 'VATRULE 5';
             return get_product_vat_for_country($idprod,$societe_vendeuse->pays_code);
         }
     }
@@ -3180,12 +3204,14 @@ function get_default_tva($societe_vendeuse, $societe_acheteuse, $idprod=0)
         //print "eee".$societe_acheteuse->isACompany();exit;
         if (! $societe_vendeuse->isInEEC() && $societe_acheteuse->isInEEC() && ! $societe_acheteuse->isACompany())
         {
+            //print 'VATRULE 6';
             return get_product_vat_for_country($idprod,$societe_acheteuse->pays_code);
         }
     }
 
     // Sinon la TVA proposee par defaut=0. Fin de regle.
     // Rem: Cela signifie qu'au moins un des 2 est hors Communaute europeenne et que le pays differe
+    //print 'VATRULE 7';
     return 0;
 }
 

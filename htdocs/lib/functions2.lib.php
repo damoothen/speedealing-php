@@ -13,8 +13,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  * or see http://www.gnu.org/
  */
 
@@ -22,9 +21,22 @@
  *	\file			htdocs/lib/functions2.lib.php
  *	\brief			A set of functions for Dolibarr
  *					This file contains all rare functions.
- *	\version		$Id: functions2.lib.php,v 1.75 2011/07/04 08:38:51 eldy Exp $
+ *	\version		$Id: functions2.lib.php,v 1.77 2011/08/11 01:34:55 eldy Exp $
  */
 
+
+/**
+ *  Return default paper format code
+ *	@return		string		Defautl paper format code
+ */
+function dol_getDefaultFormat()
+{
+    global $langs;
+    $selected='EUA4';
+    if ($langs->defaultlang == 'ca_CA') $selected='CAP4';        // Canada
+    if ($langs->defaultlang == 'en_US') $selected='USLetter';    // US
+    return $selected;
+}
 
 
 /**

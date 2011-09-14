@@ -16,15 +16,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *       \file       htdocs/comm/action/class/actioncomm.class.php
  *       \ingroup    commercial
  *       \brief      File of class to manage agenda events (actions)
- *       \version    $Id: actioncomm.class.php,v 1.42 2011/07/04 09:36:29 eldy Exp $
+ *       \version    $Id: actioncomm.class.php,v 1.43 2011/08/03 00:46:20 eldy Exp $
  */
 require_once(DOL_DOCUMENT_ROOT.'/comm/action/class/cactioncomm.class.php');
 require_once(DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php');
@@ -44,7 +43,8 @@ class ActionComm extends CommonObject
 
     var $type_id;
     var $type_code;
-    var $type;
+    var $type;			// 1=RDV, 2=TASK
+    var $type_label;
 
     var $id;
     var $label;
@@ -56,16 +56,14 @@ class ActionComm extends CommonObject
 
     var $datep;			// Date action start (datep)
     var $datef;			// Date action end (datep2)
-    var $durationp = -1;
+    var $durationp = 3600;
     //var $date;			// Date action realise debut (datea)	// deprecated
     //var $dateend; 		// Date action realise fin (datea2)		// deprecated
     //var $durationa = -1;	// Duration                             // deprecated
 	var $priority;
 	var $fulldayevent = 0;  // 1=Event on full day
 	var $punctual = 1;
-    var $location;
-
-    var $istask;                 // 1=RDV, 2=TASK
+    var $location;               
 
     var $usertodo;		// Object user that must do action
     var $userdone;	 	// Object user that did action
@@ -121,7 +119,7 @@ class ActionComm extends CommonObject
         if (empty($this->punctual))     $this->punctual = 0;
         if ($this->percentage > 100) $this->percentage = 100;
         if ($this->percentage == 100 && ! $this->dateend) $this->dateend = $this->date;
-        if ($this->datep && $this->datef && $this->istask==1)   $this->durationp=($this->datef - $this->datep);
+        if ($this->datep && $this->datef && $this->type==1)   $this->durationp=($this->datef - $this->datep);
 		if ($this->date  && $this->dateend) $this->durationa=($this->dateend - $this->date);
 		if ($this->datep && $this->datef && $this->datep > $this->datef) $this->datef=$this->datep;
 		if ($this->date  && $this->dateend && $this->date > $this->dateend) $this->dateend=$this->date;
@@ -132,7 +130,7 @@ class ActionComm extends CommonObject
         if ($this->elementtype=='commande') $this->elementtype='order';
         if ($this->elementtype=='contrat')  $this->elementtype='contract';
 
-        if($this->istask==2 && $this->percentage==100) //ACTION
+        if($this->type==2 && $this->percentage==100) //ACTION
                 $this->datef=dol_now();
 
 	if (! $this->type_id && $this->type_code)
@@ -253,7 +251,7 @@ class ActionComm extends CommonObject
 		$sql.= " a.datec,";
         $sql.= " a.durationp,";
 		$sql.= " a.tms as datem,";
-		$sql.= " a.note, a.label, a.fk_action as type_id,";
+		$sql.= " a.note, a.label, a.fk_action,";
 		$sql.= " a.fk_soc,";
 		$sql.= " a.fk_project,";
                 $sql.= " a.fk_lead,";
@@ -263,7 +261,7 @@ class ActionComm extends CommonObject
 		$sql.= " a.fk_contact, a.percent as percentage,";
 		$sql.= " a.fk_element, a.elementtype,";
 		$sql.= " a.priority, a.fulldayevent, a.location,";
-		$sql.= " c.id as type_id, c.code as type_code, c.libelle,";
+		$sql.= " c.id as type_id, c.code as type_code, c.libelle,c.type as type,";
 		$sql.= " s.nom as socname,";
 		$sql.= " u.firstname, u.name as lastname";
 		$sql.= " FROM (".MAIN_DB_PREFIX."c_actioncomm as c, ".MAIN_DB_PREFIX."actioncomm as a)";
@@ -285,8 +283,8 @@ class ActionComm extends CommonObject
 				$this->type_id   = $obj->type_id;
 				$this->type_code = $obj->type_code;
 				$transcode=$langs->trans("Action".$obj->type_code);
-				$type_libelle=($transcode!="Action".$obj->type_code?$transcode:$obj->libelle);
-				$this->type    = $type_libelle;
+				$this->type_label=($transcode!="Action".$obj->type_code?$transcode:$obj->libelle);
+				$this->type    = $obj->type;
 
 				$this->label				= $obj->label;
 				$this->datep				= $this->db->jdate($obj->datep);
@@ -305,8 +303,9 @@ class ActionComm extends CommonObject
 
 				$this->usertodo->id			= $obj->fk_user_action;
 				$this->userdone->id			= $obj->fk_user_done;
+                                
 				$this->priority				= $obj->priority;
-                $this->fulldayevent			= $obj->fulldayevent;
+                                $this->fulldayevent			= $obj->fulldayevent;
 				$this->location				= $obj->location;
 				$this->durationp = $obj->durationp;
 
@@ -314,9 +313,8 @@ class ActionComm extends CommonObject
 				$this->societe->id = $obj->fk_soc;
 				$this->contact->id = $obj->fk_contact;
 				$this->fk_project = $obj->fk_project;
-                $this->fk_lead = $obj->fk_lead;
-                $this->fk_task = $obj->fk_task;
-                $this->istask = $obj->type;
+                                $this->fk_lead = $obj->fk_lead;
+                                $this->fk_task = $obj->fk_task;
 
 				$this->fk_element			= $obj->fk_element;
 				$this->elementtype			= $obj->elementtype;
@@ -368,7 +366,7 @@ class ActionComm extends CommonObject
     {
         global $user;
 
-        if($this->istask==2) //ACTION
+        if($this->type==2) //ACTION
         {
             $sql = "UPDATE ".MAIN_DB_PREFIX."actioncomm";
             $sql.= " SET percent=100, fk_user_done=".$user->id.", datep2=".$this->db->idate(dol_now())." WHERE id=".$this->id;
@@ -400,17 +398,17 @@ class ActionComm extends CommonObject
         global $user;
 
         // Clean parameters
-		$this->label=trim($this->label);
+	$this->label=trim($this->label);
         $this->note=trim($this->note);
-		if (empty($this->percentage))    $this->percentage = 0;
+	if (empty($this->percentage))    $this->percentage = 0;
         if (empty($this->priority))      $this->priority = 0;
         if (empty($this->fulldayevent))  $this->fulldayevent = 0;
         if ($this->percentage > 100) $this->percentage = 100;
         if ($this->percentage == 100 && ! $this->dateend) $this->dateend = $this->date;
-		if ($this->datep && $this->datef)   $this->durationp=($this->datef - $this->datep);
-		if ($this->date  && $this->dateend) $this->durationa=($this->dateend - $this->date);
-		if ($this->datep && $this->datef && $this->datep > $this->datef) $this->datef=$this->datep;
-		if ($this->date  && $this->dateend && $this->date > $this->dateend) $this->dateend=$this->date;
+	if ($this->datep && $this->datef)   $this->durationp=($this->datef - $this->datep);
+	if ($this->date  && $this->dateend) $this->durationa=($this->dateend - $this->date);
+	if ($this->datep && $this->datef && $this->datep > $this->datef) $this->datef=$this->datep;
+	if ($this->date  && $this->dateend && $this->date > $this->dateend) $this->dateend=$this->date;
         if ($this->fk_project < 0) $this->fk_project = 0;
         if ($this->fk_lead < 0) $this->fk_lead = 0;
         if ($this->fk_task < 0) $this->fk_task = 0;
@@ -418,30 +416,31 @@ class ActionComm extends CommonObject
         if(empty($this->label))
                 $this->label=$cact->libelle;
 
-        if($this->istask==2 && $this->percentage==100) //ACTION
+        if($this->type==2 && $this->percentage==100) //ACTION
                 $this->datef=dol_now();
         
 
-		// Check parameters
-		if ($this->percentage == 0 && $this->userdone->id > 0)
-		{
-			$this->error="ErrorCantSaveADoneUserWithZeroPercentage";
-			return -1;
-		}
-                if ($this->percentage == 100 && !$this->userdone->id > 0)
-                {
-                    $this->userdone->id=$user->id;
-                }
+	// Check parameters
+	if ($this->percentage == 0 && $this->userdone->id > 0)
+	{
+		//$this->error="ErrorCantSaveADoneUserWithZeroPercentage";
+		//return -1;
+                $this->userdone->id = "";
+	}
+        if ($this->percentage == 100 && !$this->userdone->id > 0)
+        {
+                $this->userdone->id=$user->id;
+        }
 
-		//print 'eeea'.$this->datep.'-'.(strval($this->datep) != '').'-'.$this->db->idate($this->datep);
-		$sql = "UPDATE ".MAIN_DB_PREFIX."actioncomm ";
+	//print 'eeea'.$this->datep.'-'.(strval($this->datep) != '').'-'.$this->db->idate($this->datep);
+	$sql = "UPDATE ".MAIN_DB_PREFIX."actioncomm ";
         $sql.= " SET percent='".$this->percentage."'";
         $sql.= ", label = ".($this->label ? "'".$this->db->escape($this->label)."'":"null");
         $sql.= ", datep = ".(strval($this->datep)!='' ? "'".$this->db->idate($this->datep)."'" : 'null');
         $sql.= ", datep2 = ".(strval($this->datef)!='' ? "'".$this->db->idate($this->datef)."'" : 'null');
         //$sql.= ", datea = ".(strval($this->date)!='' ? "'".$this->db->idate($this->date)."'" : 'null');
         //$sql.= ", datea2 = ".(strval($this->dateend)!='' ? "'".$this->db->idate($this->dateend)."'" : 'null');
-		$sql.= ", durationp = ".($this->durationp ? "'".$this->durationp."'" : 'null');
+	$sql.= ", durationp = ".($this->durationp ? "'".$this->durationp."'" : 'null');
         $sql.= ", note = ".($this->note ? "'".$this->db->escape($this->note)."'":"null");
         $sql.= ", fk_soc =". ($this->societe->id > 0 ? "'".$this->societe->id."'":"null");
         $sql.= ", fk_project =". ($this->fk_project > 0 ? "'".$this->fk_project."'":"null");
@@ -452,11 +451,13 @@ class ActionComm extends CommonObject
         $sql.= ", fulldayevent = '".$this->fulldayevent."'";
         $sql.= ", location = ".($this->location ? "'".$this->db->escape($this->location)."'":"null");
         $sql.= ", fk_user_mod = '".$user->id."'";
-		$sql.= ", fk_user_action=".($this->usertodo->id > 0 ? "'".$this->usertodo->id."'":"null");
-		$sql.= ", fk_user_done=".($this->userdone->id > 0 ? "'".$this->userdone->id."'":"null");
+	$sql.= ", fk_user_action=".($this->usertodo->id > 0 ? "'".$this->usertodo->id."'":"null");
+	$sql.= ", fk_user_done=".($this->userdone->id > 0 ? "'".$this->userdone->id."'":"null");
         $sql.= " WHERE id=".$this->id;
+        
+        //print $sql;exit;
 
-		dol_syslog("ActionComm::update sql=".$sql);
+	dol_syslog("ActionComm::update sql=".$sql);
         if ($this->db->query($sql))
         {
             return 1;
@@ -464,7 +465,7 @@ class ActionComm extends CommonObject
         else
         {
         	$this->error=$this->db->error();
-			dol_syslog("ActionComm::update ".$this->error,LOG_ERR);
+		dol_syslog("ActionComm::update ".$this->error,LOG_ERR);
         	return -1;
     	}
     }
@@ -651,28 +652,28 @@ class ActionComm extends CommonObject
         }
         if ($mode == 3)
         {
-        	if ($percent==-1 && ! $hidenastatus) return img_picto($langs->trans("Status").': '.$langs->trans('StatusNotApplicable'),'statut9');
+        	if ($percent==-1 && ! $hidenastatus) return img_picto($langs->trans("Status").': '.$langs->trans('StatusNotApplicable'),'statut1');
         	if ($percent==0) return img_picto($langs->trans("Status").': '.$langs->trans('StatusActionToDo').' (0%)','statut1');
         	if ($percent > 0 && $percent < 100) return img_picto($langs->trans("Status").': '.$langs->trans('StatusActionInProcess').' ('.$percent.'%)','statut3');
         	if ($percent >= 100) return img_picto($langs->trans("Status").': '.$langs->trans('StatusActionDone').' (100%)','statut6');
         }
         if ($mode == 4)
         {
-            if ($percent==-1 && ! $hidenastatus) return img_picto($langs->trans('StatusNotApplicable'),'statut9').' '.$langs->trans('StatusNotApplicable');
+            if ($percent==-1 && ! $hidenastatus) return img_picto($langs->trans('StatusNotApplicable'),'statut1').' '.$langs->trans('StatusNotApplicable');
             if ($percent==0) return img_picto($langs->trans('StatusActionToDo'),'statut1').' '.$langs->trans('StatusActionToDo').' (0%)';
         	if ($percent > 0 && $percent < 100) return img_picto($langs->trans('StatusActionInProcess'),'statut3').' '.$langs->trans('StatusActionInProcess').' ('.$percent.'%)';;
         	if ($percent >= 100) return img_picto($langs->trans('StatusActionDone'),'statut6').' '.$langs->trans('StatusActionDone').' (100%)';
         }
         if ($mode == 5)
         {
-            if ($percent==-1 && ! $hidenastatus) return img_picto($langs->trans('StatusNotApplicable'),'statut9');
+            if ($percent==-1 && ! $hidenastatus) return img_picto($langs->trans('StatusNotApplicable'),'statut1');
             if ($percent==0) return '0% '.img_picto($langs->trans('StatusActionToDo'),'statut1');
         	if ($percent > 0 && $percent < 100) return $percent.'% '.img_picto($langs->trans('StatusActionInProcess').' - '.$percent.'%','statut3');
         	if ($percent >= 100) return $langs->trans('StatusActionDone').' '.img_picto($langs->trans('StatusActionDone'),'statut6');
         }
         if ($mode == 6)
         {
-            if ($percent==-1 && ! $hidenastatus) return img_picto($langs->trans('StatusNotApplicable'),'statut9');
+            if ($percent==-1 && ! $hidenastatus) return img_picto($langs->trans('StatusNotApplicable'),'statut1');
             if ($percent==0) return '0% '.img_picto($langs->trans('StatusActionToDo'),'statut1');
             if ($percent > 0 && $percent < 100) return $percent.'% '.img_picto($langs->trans('StatusActionInProcess').' - '.$percent.'%','statut3');
             if ($percent >= 100) return img_picto($langs->trans('StatusActionDone'),'statut6');
@@ -716,8 +717,8 @@ class ActionComm extends CommonObject
 
 		if ($withpicto)
 		{
-            $libelle.=(($this->type_code && $libelle!=$langs->trans("Action".$this->type_code) && $langs->trans("Action".$this->type_code)!="Action".$this->type_code)?' ('.$langs->trans("Action".$this->type_code).')':'');
-		    $result.=$lien.img_object($langs->trans("ShowAction").': '.$libelle,($overwritepicto?$overwritepicto:'action')).$lienfin;
+                    $libelle.=(($this->type_code && $libelle!=$langs->trans("Action".$this->type_code) && $langs->trans("Action".$this->type_code)!="Action".$this->type_code)?' ('.$langs->trans("Action".$this->type_code).')':'');
+		    $result.=$lien.img_object($langs->trans("ShowAction").': '.$libelle,($overwritepicto?$overwritepicto:($this->type=="1"?'event':'task'))).$lienfin;
 		}
 		if ($withpicto==1) $result.=' ';
 		$result.=$lien.$libelleshort.$lienfin;
@@ -747,7 +748,8 @@ class ActionComm extends CommonObject
             $this->contact=$contactid;
             $this->percentage=100;
             $this->userdone=$user;
-            $this->istask=2;
+            $this->usertodo=$user;
+            $this->type=2;
 
             $this->add($user);
         }

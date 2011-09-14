@@ -15,14 +15,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *       \file        htdocs/compta/stats/casoc.php
  *       \brief       Page reporting CA par societe
- *       \version     $Id$
+ *       \version     $Id: casoc.php,v 1.49 2011/07/31 22:23:14 eldy Exp $
  */
 
 require('../../main.inc.php');
@@ -289,9 +288,9 @@ if (sizeof($amount))
 
         // Other stats
         print '<td align="center">';
-        if ($conf->propal->enabled && $key>0) print '&nbsp;<a href="'.DOL_URL_ROOT.'/comm/propal/stats/index.php?userid='.$key.'">'.img_picto($langs->trans("ProposalStats"),"stats").'</a>&nbsp;';
-        if ($conf->commande->enabled && $key>0) print '&nbsp;<a href="'.DOL_URL_ROOT.'/commande/stats/index.php?userid='.$key.'">'.img_picto($langs->trans("OrderStats"),"stats").'</a>&nbsp;';
-        if ($conf->facture->enabled && $key>0) print '&nbsp;<a href="'.DOL_URL_ROOT.'/compta/facture/stats/index.php?userid='.$key.'">'.img_picto($langs->trans("InvoiceStats"),"stats").'</a>&nbsp;';
+        if ($conf->propal->enabled && $key>0) print '&nbsp;<a href="'.DOL_URL_ROOT.'/comm/propal/stats/index.php?socid='.$key.'">'.img_picto($langs->trans("ProposalStats"),"stats").'</a>&nbsp;';
+        if ($conf->commande->enabled && $key>0) print '&nbsp;<a href="'.DOL_URL_ROOT.'/commande/stats/index.php?socid='.$key.'">'.img_picto($langs->trans("OrderStats"),"stats").'</a>&nbsp;';
+        if ($conf->facture->enabled && $key>0) print '&nbsp;<a href="'.DOL_URL_ROOT.'/compta/facture/stats/index.php?socid='.$key.'">'.img_picto($langs->trans("InvoiceStats"),"stats").'</a>&nbsp;';
         print '</td>';
 
 		print "</tr>\n";
@@ -311,5 +310,5 @@ print '<br>';
 
 $db->close();
 
-llxFooter('$Date$ - $Revision$');
+llxFooter('$Date: 2011/07/31 22:23:14 $ - $Revision: 1.49 $');
 ?>

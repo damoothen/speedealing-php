@@ -1,4 +1,4 @@
-# Doxyfile 1.7.1
+# Doxyfile 1.7.3
 
 # This file describes the settings to be used by the documentation system
 # doxygen (www.doxygen.org) for a project
@@ -611,7 +611,7 @@ RECURSIVE = YES
 # excluded from the INPUT source files. This way you can easily exclude a
 # subdirectory from a directory tree whose root is specified with the INPUT tag.
 
-EXCLUDE = ../../mssql ../../mysql ../../pgsql ../../CVS ../../build ../../dev ../../doc ../../documents ../../htdocs/conf/conf.php ../../htdocs/includes/adodbtime ../../htdocs/includes/artichow ../../htdocs/includes/barcode ../../htdocs/includes/ckeditor ../../htdocs/includes/efc_xfss ../../htdocs/includes/fckeditor ../../htdocs/includes/flot ../../htdocs/includes/fpdf ../../htdocs/includes/geoip ../../htdocs/includes/jquery ../../htdocs/includes/magpierss ../../htdocs/includes/nusoap ../../htdocs/includes/odtphp ../../htdocs/includes/pear ../../htdocs/includes/phpexcel ../../htdocs/includes/php_writeexcel ../../htdocs/includes/phplot ../../htdocs/includes/phplot5 ../../htdocs/includes/pwc ../../htdocs/includes/scriptaculous ../../htdocs/includes/simplemail ../../htdocs/includes/smarty ../../htdocs/includes/smtps ../../htdocs/includes/tcpdf ../../htdocs/includes/vcard ../../htdocs/cashdesk/include/jscalendar ../../htdocs/avoir ../../htdocs/document ../../htdocs/documents ../../htdocs/lolix ../../htdocs/postnuke ../../htdocs/rapport ../../htdocs/telephonie ../../htdocs/voyage ../../htdocs/oscommerce_ws/ws_client_demo ../../htdocs/oscommerce_ws/ws_server ../../scripts/addons ../../scripts/courrier ../../scripts/lolix ../../scripts/energie
+EXCLUDE = ../../mssql ../../mysql ../../pgsql ../../CVS ../../build ../../dev ../../doc ../../documents ../../htdocs/conf/conf.php ../../htdocs/includes/adodbtime ../../htdocs/includes/artichow ../../htdocs/includes/barcode ../../htdocs/includes/ckeditor ../../htdocs/includes/efc_xfss ../../htdocs/includes/fckeditor ../../htdocs/includes/flot ../../htdocs/includes/fpdf ../../htdocs/includes/geoip ../../htdocs/includes/jquery ../../htdocs/includes/magpierss ../../htdocs/includes/nusoap ../../htdocs/includes/odtphp ../../htdocs/includes/pear ../../htdocs/includes/phpexcel ../../htdocs/includes/php_writeexcel ../../htdocs/includes/phplot ../../htdocs/includes/phplot5 ../../htdocs/includes/pwc ../../htdocs/includes/scriptaculous ../../htdocs/includes/smtps ../../htdocs/includes/tcpdf ../../htdocs/includes/vcard ../../htdocs/cashdesk/include/jscalendar ../../htdocs/avoir ../../htdocs/document ../../htdocs/documents ../../htdocs/lolix ../../htdocs/postnuke ../../htdocs/rapport ../../htdocs/telephonie ../../htdocs/voyage ../../htdocs/oscommerce_ws/ws_client_demo ../../htdocs/oscommerce_ws/ws_server ../../scripts/addons ../../scripts/courrier ../../scripts/lolix ../../scripts/energie
 
 # The EXCLUDE_SYMLINKS tag can be used select whether or not files or
 # directories that are symbolic links (a Unix filesystem feature) are excluded
@@ -796,13 +796,15 @@ HTML_FILE_EXTENSION = .html
 # each generated HTML page. If it is left blank doxygen will generate a
 # standard header.
 
-HTML_HEADER = 
+# Does not work with 1.7.3
+#HTML_HEADER = doxygen_header.html
 
 # The HTML_FOOTER tag can be used to specify a personal HTML footer for
 # each generated HTML page. If it is left blank doxygen will generate a
 # standard footer.
 
-HTML_FOOTER = 
+# Does not work with 1.7.3
+HTML_FOOTER = doxygen_footer.html
 
 # The HTML_STYLESHEET tag can be used to specify a user-defined cascading
 # style sheet that is used by each HTML page. It can be used to

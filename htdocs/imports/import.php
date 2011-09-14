@@ -1,5 +1,5 @@
 <?php
-/* Copyright (C) 2005-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
+/* Copyright (C) 2005-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -13,15 +13,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *      \file       htdocs/imports/import.php
  *      \ingroup    import
  *      \brief      Pages of import Wizard
- *      \version    $Id: import.php,v 1.67 2011/07/04 11:33:23 eldy Exp $
+ *      \version    $Id: import.php,v 1.69 2011/07/31 23:46:39 eldy Exp $
  */
 
 require_once("../main.inc.php");
@@ -424,13 +423,13 @@ if ($step == 2 && $datatoimport)
 	print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 	print '<input type="hidden" name="max_file_size" value="'.$conf->maxfilesize.'">';
 
+	print $langs->trans("ChooseFormatOfFileToImport",img_picto('','filenew')).'<br>';
 	print '<table class="noborder" width="100%" cellspacing="0" cellpadding="4">';
 
 	$filetoimport='';
 	$var=true;
 
 	// Add format informations and link to download example
-	print '<tr><td colspan="4">'.$langs->trans("ChooseFormatOfFileToImport",img_picto('','filenew')).'</td></tr>';
 	print '<tr class="liste_titre"><td colspan="6">';
 	print $langs->trans("FileMustHaveOneOfFollowingFormat");
 	print '</td></tr>';
@@ -1669,7 +1668,7 @@ print '<br>';
 
 $db->close();
 
-llxFooter('$Date: 2011/07/04 11:33:23 $ - $Revision: 1.67 $');
+llxFooter('$Date: 2011/07/31 23:46:39 $ - $Revision: 1.69 $');
 
 
 /*

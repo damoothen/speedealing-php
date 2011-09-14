@@ -15,14 +15,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**	    \file       htdocs/install/inc.php
  * 		\ingroup	core
  *		\brief      File that define environment for install pages
- *		\version    $Id: inc.php,v 1.135 2011/07/13 21:19:58 eldy Exp $
+ *		\version    $Id: inc.php,v 1.139 2011/08/05 23:47:34 eldy Exp $
  */
 
 define('DOL_VERSION','3.1.0-beta');	// Also defined in htdocs/master.inc.php (Ex: x.y.z-alpha, x.y.z)
@@ -69,7 +68,17 @@ else
 }
 
 $includeconferror='';
+
+
+# Define vars
+$conffiletoshowshort = "conf.php";
+# Define localization of conf file
 $conffile = "../conf/conf.php";
+$conffiletoshow = "htdocs/conf/conf.php";
+# For debian/redhat like systems
+#$conffile = "/etc/dolibarr/conf.php";
+#$conffiletoshow = "/etc/dolibarr/conf.php";
+
 
 if (! defined('DONOTLOADCONF') && file_exists($conffile))
 {
@@ -117,7 +126,6 @@ if (! defined('DONOTLOADCONF') && file_exists($conffile))
 	}
 }
 $conf->global->MAIN_LOGTOHTML=1;
-
 
 // Define prefix
 if (! isset($dolibarr_main_db_prefix) || ! $dolibarr_main_db_prefix) $dolibarr_main_db_prefix='llx_';
@@ -169,7 +177,8 @@ if (preg_match('/install.lock/i',$_SERVER["SCRIPT_FILENAME"]))
     }
 	exit;
 }
-if (file_exists('../../install.lock'))
+$lockfile=DOL_DATA_ROOT.'/install.lock';
+if (constant('DOL_DATA_ROOT') && file_exists($lockfile))
 {
 	print 'Install pages have been disabled for security reason (by lock file install.lock into dolibarr root directory).<br>';
 	if (! empty($dolibarr_main_url_root))

@@ -13,16 +13,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * or see http://www.gnu.org/
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *	\file			htdocs/paypal/lib/paypal.lib.php
  *  \ingroup		paypal
  *  \brief			Library for common paypal functions
- *  \version		$Id: paypal.lib.php,v 1.25 2011/07/13 16:55:34 eldy Exp $
+ *  \version		$Id: paypal.lib.php,v 1.27 2011/08/03 01:34:59 eldy Exp $
  */
 function llxHeaderPaypal($title, $head = "")
 {
@@ -237,6 +235,7 @@ function print_paypal_redirect($paymentAmount,$currencyCodeType,$paymentType,$re
         // Redirect to paypal.com here
         $payPalURL = $API_Url . $token;
         header("Location: ".$payPalURL);
+        exit;
     }
     else
     {
@@ -246,11 +245,11 @@ function print_paypal_redirect($paymentAmount,$currencyCodeType,$paymentType,$re
         $ErrorLongMsg = urldecode($resArray["L_LONGMESSAGE0"]);
         $ErrorSeverityCode = urldecode($resArray["L_SEVERITYCODE0"]);
 
-        echo "SetExpressCheckout API call failed. ";
-        echo "Detailed Error Message: " . $ErrorLongMsg;
-        echo "Short Error Message: " . $ErrorShortMsg;
-        echo "Error Code: " . $ErrorCode;
-        echo "Error Severity Code: " . $ErrorSeverityCode;
+        echo "SetExpressCheckout API call failed. \n";
+        echo "Detailed Error Message: " . $ErrorLongMsg." \n";
+        echo "Short Error Message: " . $ErrorShortMsg." \n";
+        echo "Error Code: " . $ErrorCode." \n";
+        echo "Error Severity Code: " . $ErrorSeverityCode." \n";
     }
 
 }

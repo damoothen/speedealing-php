@@ -16,14 +16,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *		\file       htdocs/theme/bureau2crea/style.css.php
  *		\brief      Fichier de style CSS du theme bureau2crea
- *		\version    $Id: style.css.php,v 1.38 2011/07/06 11:40:21 eldy Exp $
+ *		\version    $Id: style.css.php,v 1.42 2011/08/09 13:36:43 simnandez Exp $
  */
 
 //if (! defined('NOREQUIREUSER')) define('NOREQUIREUSER','1');	// Not disabled cause need to load personalized language
@@ -1217,11 +1216,12 @@ margin: 0px 0px 0px 0px;
 table.border {
 border: 2px solid #666666;
 border-collapse: collapse;
+clear: left;
 }
 
 table.border td {
 padding: 1px 2px;
-border: 1px solid #EFEFEF;
+/*border: 1px solid #EFEFEF;*/
 border-collapse: collapse;
 }
 
@@ -1235,6 +1235,9 @@ border-left: 1px solid #000000;
 /* Main boxes */
 
 table.noborder {
+	box-shadow: 2px 4px 2px #CCCCCC;
+	-moz-box-shadow: 2px 4px 2px #CCCCCC;
+	-webkit-box-shadow: 2px 4px 2px #CCCCCC;
 	border-collapse: collapse;
 	border: 1px solid #666;
 }
@@ -1452,10 +1455,6 @@ font-family: <?php print $fontlist ?>;
 .error   { color: #550000; font-weight: bold; }
 
 td.highlights { background: #f9c5c6; }
-
-td.warning {	/* Utilise par Smarty */
-  background: #FF99A9;
-}
 
 div.ok {
   color: #114466;

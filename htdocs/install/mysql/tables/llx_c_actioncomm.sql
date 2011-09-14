@@ -1,6 +1,7 @@
 -- ========================================================================
 -- Copyright (C) 2001-2002,2004 Rodolphe Quiedeville <rodolphe@quiedeville.org>
 -- Copyright (C) 2004-2010      Laurent Destailleur  <eldy@users.sourceforge.net>
+-- Copyright (C) 2010-2011      Herve Prot           <herve.prot@symeos.com>
 --
 -- This program is free software; you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -13,10 +14,9 @@
 -- GNU General Public License for more details.
 --
 -- You should have received a copy of the GNU General Public License
--- along with this program; if not, write to the Free Software
--- Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+-- along with this program. If not, see <http://www.gnu.org/licenses/>.
 --
--- $Id$
+-- $Id: llx_c_actioncomm.sql,v 1.5 2011/08/03 01:25:39 eldy Exp $
 -- ========================================================================
 
 create table llx_c_actioncomm
@@ -28,5 +28,6 @@ create table llx_c_actioncomm
   module	 varchar(16) DEFAULT NULL,
   active     tinyint DEFAULT 1 NOT NULL,
   todo       tinyint,
+  priority   integer NOT NULL DEFAULT 0,
   position   integer NOT NULL DEFAULT 0
 )ENGINE=innodb;

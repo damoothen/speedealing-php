@@ -1,6 +1,7 @@
 <?php
 /* Copyright (C) 2006-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2010      Regis Houssin		<regis@dolibarr.fr>
+ * Copyright (C) 2010-2011 Herve Prot       	<herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,15 +14,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  * or see http://www.gnu.org/
  */
 
 /**
  *	    \file       htdocs/lib/contact.lib.php
  *		\brief      Ensemble de fonctions de base pour les contacts
- *		\version    $Id$
+ *		\version    $Id: contact.lib.php,v 1.10 2011/07/31 23:25:22 eldy Exp $
  *
  *		Ensemble de fonctions de base de dolibarr sous forme d'include
  */
@@ -58,6 +58,11 @@ function contact_prepare_head($object)
 	$head[$h][1] = $langs->trans("PersonalInformations");
 	$head[$h][2] = 'perso';
 	$h++;
+
+	$head[$h][0] = DOL_URL_ROOT.'/categories/categorie.php?id='.$_GET["id"].'&type=5';
+    $head[$h][1] = $langs->trans("Categories");
+    $head[$h][2] = 'category';
+    $h++;
 
 	$head[$h][0] = DOL_URL_ROOT.'/contact/exportimport.php?id='.$object->id;
 	$head[$h][1] = $langs->trans("ExportImport");

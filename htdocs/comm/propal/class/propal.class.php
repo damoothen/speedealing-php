@@ -20,8 +20,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
@@ -30,7 +29,7 @@
  *	\author     Rodolphe Qiedeville
  *	\author	    Eric Seigne
  *	\author	    Laurent Destailleur
- *	\version    $Id: propal.class.php,v 1.109 2011/06/30 13:27:21 hregis Exp $
+ *	\version    $Id: propal.class.php,v 1.113 2011/08/10 22:47:35 eldy Exp $
  */
 
 require_once(DOL_DOCUMENT_ROOT ."/core/class/commonobject.class.php");
@@ -432,18 +431,20 @@ class Propal extends CommonObject
 
 
 	/**
-	 *    \brief      Mise a jour d'une ligne de produit
-	 *    \param      rowid              	Id de la ligne
-	 *    \param      pu		        	Prix unitaire (HT ou TTC selon price_base_type)
-	 *    \param      qty             	Quantity
-	 *    \param      remise_percent  	Remise effectuee sur le produit
-	 *    \param      txtva	          	Taux de TVA
-	 * 	  \param	  txlocaltax1		Local tax 1 rate
-	 *    \param	  txlocaltax2		Local tax 2 rate
-	 *    \param      desc            	Description
-	 *	\param		price_base_type		HT ou TTC
-	 *	\param     	info_bits        	Miscellanous informations
-	 *    \return     int             	0 en cas de succes
+	 *    Update a proposal line
+	 *    @param      rowid             Id de la ligne
+	 *    @param      pu		        Prix unitaire (HT ou TTC selon price_base_type)
+	 *    @param      qty             	Quantity
+	 *    @param      remise_percent  	Remise effectuee sur le produit
+	 *    @param      txtva	          	Taux de TVA
+	 * 	  @param	  txlocaltax1		Local tax 1 rate
+	 *    @param	  txlocaltax2		Local tax 2 rate
+	 *    @param      desc            	Description
+	 *	  @param	  price_base_type	HT ou TTC
+	 *	  @param      info_bits        	Miscellanous informations
+	 *	  @param      special_code      Set special code ('' = we don't change it)
+	 *	  @param      fk_parent_line    Id of line parent
+	 *    @return     int             	0 en cas de succes
 	 */
 	function updateline($rowid, $pu, $qty, $remise_percent=0, $txtva, $txlocaltax1=0, $txlocaltax2=0, $desc='', $price_base_type='HT', $info_bits=0, $special_code=0, $fk_parent_line=0, $skip_update_total=0)
 	{
@@ -459,6 +460,8 @@ class Propal extends CommonObject
 		$txtva = price2num($txtva);
 		$txlocaltax1=price2num($txlocaltax1);
 		$txlocaltax2=price2num($txlocaltax2);
+		if (empty($qty) && empty($special_code)) $special_code=3;    // Set option tag
+		if (! empty($qty) && $special_code == 3) $special_code=0;    // Remove option tag
 
 		if ($this->statut == 0)
 		{
@@ -508,8 +511,6 @@ class Propal extends CommonObject
 			$this->line->special_code=$special_code;
 			$this->line->fk_parent_line=$fk_parent_line;
 			$this->line->skip_update_total=$skip_update_total;
-
-			if (empty($qty) && empty($special_code)) $this->line->special_code=3;
 
 			// TODO deprecated
 			$this->line->price=$price;
@@ -825,7 +826,7 @@ class Propal extends CommonObject
 	 *		@param		socid			Id of thirdparty
 	 * 	 	@return		int				New id of clone
 	 */
-	function createFromClone($fromid,$invertdetail=0,$socid=0)
+	function createFromClone($fromid,$invertdetail=0,$socid=0,$hookmanager=false)
 	{
 		global $user,$langs,$conf;
 
@@ -834,12 +835,6 @@ class Propal extends CommonObject
 		$now=dol_now();
 
 		$object=new Propal($this->db);
-
-		// Instantiate hooks of thirdparty module
-		if (is_array($conf->hooks_modules) && !empty($conf->hooks_modules))
-		{
-			$object->callHooks('propalcard');
-		}
 
 		$this->db->begin();
 
@@ -905,24 +900,13 @@ class Propal extends CommonObject
 
 		if (! $error)
 		{
-			// Hook for external modules
-            if (! empty($object->hooks))
-            {
-            	foreach($object->hooks as $hook)
-            	{
-            		if (! empty($hook['modules']))
-            		{
-            			foreach($hook['modules'] as $module)
-            			{
-            				if (method_exists($module,'createfrom'))
-            				{
-            					$result = $module->createfrom($objFrom,$result,$object->element);
-            					if ($result < 0) $error++;
-            				}
-            			}
-            		}
-            	}
-            }
+			// Hook of thirdparty module
+			if (is_object($hookmanager))
+			{
+			    $parameters=array('objFrom'=>$objFrom);
+				$reshook=$hookmanager->executeHooks('createfrom',$parameters,$object,$action);    // Note that $action and $object may have been modified by some hooks
+				if ($reshook < 0) $error++;
+			}
 
 			// Appel des triggers
 			include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
@@ -2672,12 +2656,11 @@ class PropaleLigne
 		$sql.= " , marge_tx='".$this->marge_tx."'";
 		$sql.= " , marque_tx='".$this->marque_tx."'";
 		$sql.= " , info_bits=".$this->info_bits;
-		if ($this->special_code != '') $sql.= " , special_code=".$this->special_code;
+		if (strlen($this->special_code)) $sql.= " , special_code=".$this->special_code;
 		$sql.= " , fk_parent_line=".($this->fk_parent_line>0?$this->fk_parent_line:"null");
 		$sql.= " WHERE rowid = ".$this->rowid;
 
 		dol_syslog("PropaleLigne::update sql=$sql");
-
 		$resql=$this->db->query($sql);
 		if ($resql)
 		{

@@ -16,15 +16,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *	\file       htdocs/compta/paiement.php
  *	\ingroup    compta
  *	\brief      Page to create a payment
- *	\version    $Id: paiement.php,v 1.111 2011/07/13 08:57:21 eldy Exp $
+ *	\version    $Id: paiement.php,v 1.114 2011/08/08 01:01:46 eldy Exp $
  */
 
 require('../main.inc.php');
@@ -290,6 +289,7 @@ if ($action == 'create' || $action == 'confirm_paiement' || $action == 'add_paie
 		            	json["amountPayment"] = jQuery("#amountpayment").attr("value");
 		            	json["amounts"] = elemToJson(form.find("input[name*=\"amount_\"]"));
 		            	json["remains"] = elemToJson(form.find("input[name*=\"remain_\"]"));
+
 		            	if(imgId != null)json["imgClicked"] = imgId;
 
             			jQuery.post("ajaxpayment.php", json, function(data)
@@ -301,12 +301,13 @@ if ($action == 'create' || $action == 'confirm_paiement' || $action == 'add_paie
             				for(var key in json)
             				{
             					if(key == "result")	{
-            						jQuery("#"+key).text(json[key]);
-            						if(json[key] < 0) {
+            						if(json["makeRed"]) {
             							jQuery("#"+key).css("color", "red");
             						} else {
             							jQuery("#"+key).removeAttr("style");
             						}
+            						json[key]=json["label"]+" "+json[key];
+            						jQuery("#"+key).text(json[key]);
             					} else {
             						form.find("input[name*=\""+key+"\"]").each(function() {
             							jQuery(this).attr("value", json[key]);
@@ -360,7 +361,7 @@ if ($action == 'create' || $action == 'confirm_paiement' || $action == 'add_paie
         print '<td>'.$langs->trans('Comments').'</td></tr>';
 
         $rowspan=5;
-        if ($conf->use_javascript_ajax) $rowspan++;
+        if ($conf->use_javascript_ajax && !empty($conf->global->MAIN_JS_ON_PAYMENT)) $rowspan++;
 
         // Payment mode
         print '<tr><td><span class="fieldrequired">'.$langs->trans('PaymentMode').'</span></td><td>';
@@ -580,7 +581,7 @@ if ($action == 'create' || $action == 'confirm_paiement' || $action == 'add_paie
                 $langs->load("withdrawals");
                 if ($conf->global->WITHDRAW_DISABLE_AUTOCREATE_ONPAYMENTS) print '<br>'.$langs->trans("IfInvoiceNeedOnWithdrawPaymentWontBeClosed");
             }*/
-            print '<br><input type="submit" class="button" value="'.$langs->trans('Save').'"></center>';
+            print '<br><input type="submit" class="button" value="'.$langs->trans('Save').'"><br><br></center>';
             //			print '</td></tr>';
         }
 
@@ -671,5 +672,5 @@ if (! GETPOST('action'))
 
 $db->close();
 
-llxFooter('$Date: 2011/07/13 08:57:21 $ - $Revision: 1.111 $');
+llxFooter('$Date: 2011/08/08 01:01:46 $ - $Revision: 1.114 $');
 ?>

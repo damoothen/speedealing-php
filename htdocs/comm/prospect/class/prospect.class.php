@@ -15,15 +15,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *   	\file       htdocs/comm/prospect/class/prospect.class.php
  *		\ingroup    societe
  *		\brief      Fichier de la classe des prospects
- *		\version    $Id$
+ *		\version    $Id: prospect.class.php,v 1.4 2011/08/03 00:46:21 eldy Exp $
  */
 include_once(DOL_DOCUMENT_ROOT."/societe/class/societe.class.php");
 
@@ -61,10 +60,10 @@ class Prospect extends Societe
     {
         global $conf, $user;
 
-        $this->nb=array("customers" => 0,"prospects" => 0);
+        $this->nb=array("customers" => 0,"prospects" => 0, "suspects" => 0);
         $clause = "WHERE";
 
-        $sql = "SELECT count(s.rowid) as nb, s.client";
+        $sql = "SELECT count(s.rowid) as nb, st.type";
         $sql.= " FROM ".MAIN_DB_PREFIX."societe as s";
         $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."c_stcomm as st ON st.id = s.fk_stcomm";
         if (!$user->rights->societe->client->voir && !$user->societe_id)
@@ -75,16 +74,19 @@ class Prospect extends Societe
         }
         $sql.= " ".$clause." s.client in (1,2,3)";
         $sql.= " AND s.entity = ".$conf->entity;
-        $sql.= " AND st.type = 0";
-        $sql.= " GROUP BY s.client";
+        //$sql.= " AND st.type = 0";
+        $sql.= " GROUP BY st.type";
+        
+        //print $sql;
 
         $resql=$this->db->query($sql);
         if ($resql)
         {
             while ($obj=$this->db->fetch_object($resql))
             {
-                if ($obj->client == 1 || $obj->client == 3) $this->nb["customers"]+=$obj->nb;
-                if ($obj->client == 2 || $obj->client == 3) $this->nb["prospects"]+=$obj->nb;
+                if ($obj->type == 2) $this->nb["customers"]+=$obj->nb;
+                if ($obj->type == 1) $this->nb["prospects"]+=$obj->nb;
+                if ($obj->type == 0) $this->nb["suspects"]+=$obj->nb;
             }
             return 1;
         }
@@ -99,7 +101,7 @@ class Prospect extends Societe
     /**
      *     \brief      Return list icon of prospect
      */
-    function getIconList($backtopage='')
+    function getIconList($url)
     {
         global $langs;
 
@@ -107,13 +109,15 @@ class Prospect extends Societe
         $sql.= " FROM " .MAIN_DB_PREFIX."c_stcomm";
         $sql.= " WHERE id != ".$this->stcomm_id;
         $sql.= " AND active=1";
-        $sql.= " AND ( type=".($this->client==2?0:1);
-        if($this->client==3 || $this->stcomm_id==-1)
-            $sql.= " OR id IS NOT NULL ";
-        if($this->client==2)
-            $sql.= " OR id = 7 ";
-        $sql.= " OR id = -1 )";
+        $sql.= " AND ( ";
+        //if($this->type==0 || $this->stcomm_id==-1)
+            $sql.= " type >= ".$this->type;
+        //if($this->type==1)
+        //    $sql.= " OR type = ".($this->type+1);
+        $sql.= " OR type = -1 )";
         $sql.= " ORDER BY id";
+        
+        //print $sql;exit;
 
         $out='';
 
@@ -121,12 +125,15 @@ class Prospect extends Societe
         if ($resql)
         {
             $num = $this->db->num_rows($resql);
+            if($num>5)
+                $num=5;
             $i = 0;
             while ($i < $num)
             {
                 $obj = $this->db->fetch_object($resql);
 
-                $out.='<a href="'.DOL_URL_ROOT.'/comm/prospect/fiche.php?socid='.$this->id.'&amp;stcomm='.$obj->id.'&amp;action=cstc'.(empty($backtopage)?'':'&amp;backtopage='.$backtopage).'">'.img_action($obj->libelle,$obj->id).'</a>';
+                //$out.='<a href="'.DOL_URL_ROOT.'/comm/prospect/fiche.php?socid='.$this->id.'&amp;stcomm='.$obj->id.'&amp;action=cstc'.(empty($backtopage)?'':'&amp;backtopage='.$backtopage).'">'.img_action($obj->libelle,$obj->id).'</a>';
+                $out.='<a href="'.$url.'&amp;stcomm='.$obj->id.'">'.img_action($obj->libelle,$obj->id).'</a>';
                 $i++;
             }
         }
@@ -269,10 +276,7 @@ class Prospect extends Societe
 
                 for($i=0, $size=sizeof($array); $i < $size; $i++)
                 {
-                    if($array[$i]['type'])
-                        print '<tr '.$bc[$var].'><td><a href='.DOL_URL_ROOT.'/comm/clients.php?page=0&amp;stcomm='.$array[$i]['id'].'>';
-                    else
-                        print '<tr '.$bc[$var].'><td><a href='.DOL_URL_ROOT.'/comm/prospect/prospects.php?page=0&amp;stcomm='.$array[$i]['id'].'>';
+                    print '<tr '.$bc[$var].'><td><a href='.DOL_URL_ROOT.'/comm/list.php?pstcomm='.$array[$i]['id'].'>';
                     print img_action($langs->trans("Show"),$array[$i]['id']).' ';
                     print $langs->trans($array[$i]['libelle']);
 

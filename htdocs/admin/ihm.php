@@ -14,14 +14,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *       \file       htdocs/admin/ihm.php
  *       \brief      Page to setup GUI display options
- *       \version    $Id$
+ *       \version    $Id: ihm.php,v 1.131 2011/08/10 23:48:09 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -64,7 +63,7 @@ if (isset($_POST["action"]) && $_POST["action"] == 'update')
 	dolibarr_set_const($db, "MAIN_DISABLE_JAVASCRIPT", $_POST["main_disable_javascript"],'chaine',0,'',$conf->entity);
 	//dolibarr_set_const($db, "MAIN_CONFIRM_AJAX",       $_POST["MAIN_CONFIRM_AJAX"],'chaine',0,'',$conf->entity);
 	//dolibarr_set_const($db, "MAIN_POPUP_CALENDAR",     $_POST["MAIN_POPUP_CALENDAR"],'chaine',0,'',$conf->entity);
-	//dolibarr_set_const($db, "MAIN_USE_PREVIEW_TABS",   $_POST["main_use_preview_tabs"],'chaine',0,'',$conf->entity);
+	dolibarr_set_const($db, "MAIN_USE_PREVIEW_TABS",   $_POST["main_use_preview_tabs"],'chaine',0,'',$conf->entity);
 	dolibarr_set_const($db, "MAIN_START_WEEK",         $_POST["MAIN_START_WEEK"],'chaine',0,'',$conf->entity);
 	dolibarr_set_const($db, "MAIN_SHOW_LOGO",          $_POST["MAIN_SHOW_LOGO"],'chaine',0,'',$conf->entity);
 	dolibarr_set_const($db, "MAIN_FIRSTNAME_NAME_POSITION",          $_POST["MAIN_FIRSTNAME_NAME_POSITION"],'chaine',0,'',$conf->entity);
@@ -527,5 +526,5 @@ else	// Show
 
 $db->close();
 
-llxFooter('$Date$ - $Revision$');
+llxFooter('$Date: 2011/08/10 23:48:09 $ - $Revision: 1.131 $');
 ?>

@@ -1,7 +1,8 @@
 -- ============================================================================
 -- Copyright (C) 2005      Brice Davoleau    <e1davole@iu-vannes.fr>
 -- Copyright (C) 2005      Matthieu Valleton <mv@seeschloss.org>
--- Copyright (C) 2005-2009 Regis Houssin     <regis@dolibarr.fr>		
+-- Copyright (C) 2005-2009 Regis Houssin     <regis@dolibarr.fr>
+-- Copyright (C) 2010-2011 Herve Prot        <herve.prot@symeos.com>
 --
 -- This program is free software; you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -14,10 +15,9 @@
 -- GNU General Public License for more details.
 --
 -- You should have received a copy of the GNU General Public License
--- along with this program; if not, write to the Free Software
--- Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+-- along with this program. If not, see <http://www.gnu.org/licenses/>.
 --
--- $Id$
+-- $Id: llx_categorie.sql,v 1.4 2011/08/03 01:25:33 eldy Exp $
 -- ============================================================================
 
 create table llx_categorie
@@ -29,6 +29,7 @@ create table llx_categorie
 	description 	text,                               -- description of the category
 	fk_soc          integer DEFAULT NULL,					-- attribution of the category has a company (for product only)
 	visible         tinyint DEFAULT 1 NOT NULL,           -- determine if the products are visible or not
+    priority        integer     DEFAULT 0,              -- priority value for the category
     import_key      varchar(14)                  -- Import key
 )ENGINE=innodb;
 

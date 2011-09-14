@@ -16,15 +16,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *       \file       htdocs/contact/fiche.php
  *       \ingroup    societe
  *       \brief      Card of a contact
- *       \version    $Id: fiche.php,v 1.221 2011/07/04 08:00:52 eldy Exp $
+ *       \version    $Id: fiche.php,v 1.224 2011/08/10 22:47:34 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -68,43 +67,19 @@ else
     $result = restrictedArea($user, 'contact', $id, 'socpeople'); // If we create a contact with no company (shared contacts), no check on write permission
 }
 
-// Instantiate hooks of thirdparty module
-if (is_array($conf->hooks_modules) && !empty($conf->hooks_modules))
-{
-    $object->callHooks('contactcard');
-}
+// Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
+include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
+$hookmanager=new HookManager($db);
+$hookmanager->callHooks(array('contactcard'));
 
 
 /*
  *	Actions
  */
 
-$reshook=0;
+$parameters=array('id'=>$id);
+$reshook=$hookmanager->executeHooks('doActions',$parameters,$object,$action);    // Note that $action and $object may have been modified by some hooks
 
-// Hook of actions. After that, reshook is 0 if we need to process standard actions, >0 otherwise.
-if (! empty($object->hooks))
-{
-    foreach($object->hooks as $hook)
-    {
-        if (! empty($hook['modules']))
-        {
-            foreach($hook['modules'] as $module)
-            {
-                if (method_exists($module,'doActions'))
-                {
-                    $resaction+=$module->doActions($object,$action,$id); // object is deprecated, action can be changed by method (to go back to other action for example), id can be changed/set by method (during creation for example)
-                    if ($resaction < 0 || ! empty($module->error) || (! empty($module->errors) && sizeof($module->errors) > 0))
-                    {
-                        $error=$module->error; $errors=$module->errors;
-                        if ($action=='add')    $action='create';
-                        if ($action=='update') $action='edit';
-                    }
-                    else $reshook+=$resaction;
-                }
-            }
-        }
-    }
-}
 
 // ---------- start deprecated. Use hook to hook actions.
 // If canvas actions are defined, because on url, or because contact was created with canvas feature on, we use the canvas feature.
@@ -974,5 +949,5 @@ else
 
 $db->close();
 
-llxFooter('$Date: 2011/07/04 08:00:52 $ - $Revision: 1.221 $');
+llxFooter('$Date: 2011/08/10 22:47:34 $ - $Revision: 1.224 $');
 ?>

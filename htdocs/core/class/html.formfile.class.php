@@ -14,15 +14,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *	\file       htdocs/core/class/html.formfile.class.php
  *  \ingroup    core
  *	\brief      File of class to offer components to list and upload files
- *	\version	$Id: html.formfile.class.php,v 1.49 2011/07/13 14:41:03 eldy Exp $
+ *	\version	$Id: html.formfile.class.php,v 1.54 2011/08/10 22:47:34 eldy Exp $
  */
 
 
@@ -147,13 +146,13 @@ class FormFile
 	 * 		@param		title				Title to show on top of form
 	 * 		@param		buttonlabel			Label on submit button
 	 * 		@param		codelang			Default language code to use on lang combo box if multilang is enabled
-	 * 		@param		hooks				Object hook of external modules
+	 * 		@param		hookmanager			Object hook of external modules
 	 * 		@return		int					<0 if KO, number of shown files if OK
 	 */
-	function show_documents($modulepart,$filename,$filedir,$urlsource,$genallowed,$delallowed=0,$modelselected='',$allowgenifempty=1,$forcenomultilang=0,$iconPDF=0,$maxfilenamelength=28,$noform=0,$param='',$title='',$buttonlabel='',$codelang='',$hooks='')
+	function show_documents($modulepart,$filename,$filedir,$urlsource,$genallowed,$delallowed=0,$modelselected='',$allowgenifempty=1,$forcenomultilang=0,$iconPDF=0,$maxfilenamelength=28,$noform=0,$param='',$title='',$buttonlabel='',$codelang='',$hookmanager=false)
 	{
 	    $this->numoffiles=0;
-		print $this->showdocuments($modulepart,$filename,$filedir,$urlsource,$genallowed,$delallowed,$modelselected,$allowgenifempty,$forcenomultilang,$iconPDF,$maxfilenamelength,$noform,$param,$title,$buttonlabel,$codelang,$hooks);
+		print $this->showdocuments($modulepart,$filename,$filedir,$urlsource,$genallowed,$delallowed,$modelselected,$allowgenifempty,$forcenomultilang,$iconPDF,$maxfilenamelength,$noform,$param,$title,$buttonlabel,$codelang,$hookmanager);
 		return $this->numoffiles;
 	}
 
@@ -179,7 +178,7 @@ class FormFile
 	 * 		@param		hooks				Object hook of external modules
 	 * 		@return		string              Output string.
 	 */
-	function showdocuments($modulepart,$filename,$filedir,$urlsource,$genallowed,$delallowed=0,$modelselected='',$allowgenifempty=1,$forcenomultilang=0,$iconPDF=0,$maxfilenamelength=28,$noform=0,$param='',$title='',$buttonlabel='',$codelang='',$hooks='')
+	function showdocuments($modulepart,$filename,$filedir,$urlsource,$genallowed,$delallowed=0,$modelselected='',$allowgenifempty=1,$forcenomultilang=0,$iconPDF=0,$maxfilenamelength=28,$noform=0,$param='',$title='',$buttonlabel='',$codelang='',$hookmanager=false)
 	{
 		// filedir = conf->...dir_ouput."/".get_exdir(id)
 		include_once(DOL_DOCUMENT_ROOT.'/lib/files.lib.php');
@@ -452,19 +451,8 @@ class FormFile
 			$out.= '</tr>';
 
 			// Execute hooks
-			if (! empty($hooks) && is_array($hooks))
-			{
-				foreach($hooks as $hook)
-				{
-					if (! empty($hook['modules']))
-					{
-						foreach($hook['modules'] as $module)
-						{
-							if (method_exists($module,'formBuilddocOptions')) $out.= $module->formBuilddocOptions();
-						}
-					}
-				}
-			}
+			$parameters=array('socid'=>$GLOBALS['socid'],'id'=>$GLOBAL['id']);
+			if (is_object($hookmanager)) $out.= $hookmanager->executeHooks('formBuilddocOptions',$parameters);
 		}
 
 		// Get list of files
@@ -575,7 +563,7 @@ class FormFile
 		if (empty($useinecm)) print_titre($langs->trans("AttachedFiles"));
 		//else { $bc[true]=''; $bc[false]=''; };
 		$url=$_SERVER["PHP_SELF"];
-		print '<table width="100%" class="nobordernopadding">';
+		print '<table width="100%" class="'.($useinecm?'nobordernopadding':'liste').'">';
 		print '<tr class="liste_titre">';
 		print_liste_field_titre($langs->trans("Documents2"),$_SERVER["PHP_SELF"],"name","",$param,'align="left"',$sortfield,$sortorder);
 		print_liste_field_titre($langs->trans("Size"),$_SERVER["PHP_SELF"],"size","",$param,'align="right"',$sortfield,$sortorder);

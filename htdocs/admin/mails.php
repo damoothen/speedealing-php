@@ -13,14 +13,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *       \file       htdocs/admin/mails.php
  *       \brief      Page to setup emails sending
- *       \version    $Id: mails.php,v 1.73 2011/07/10 20:03:39 eldy Exp $
+ *       \version    $Id: mails.php,v 1.75 2011/07/31 22:23:22 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -592,8 +591,18 @@ else
 	print '</table>';
 
 
-	// Boutons actions
+    if ($linuxlike && $conf->global->MAIN_MAIL_SENDMODE == 'mail')
+    {
+       $sendmailoption=ini_get('mail.force_extra_parameters');
+       //print 'x'.$sendmailoption;
+       if (empty($sendmailoption) || ! preg_match('/ba/',$sendmailoption))
+       {
+            print '<br>'.info_admin($langs->trans("SendmailOptionNotComplete"));
+       }
+    }
 
+
+	// Boutons actions
 	print '<div class="tabsAction">';
 
 	print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?action=edit">'.$langs->trans("Modify").'</a>';
@@ -737,5 +746,5 @@ else
 
 $db->close();
 
-llxFooter('$Date: 2011/07/10 20:03:39 $ - $Revision: 1.73 $');
+llxFooter('$Date: 2011/07/31 22:23:22 $ - $Revision: 1.75 $');
 ?>

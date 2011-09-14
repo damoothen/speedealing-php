@@ -2,6 +2,7 @@
 /* Copyright (C) 2001-2006 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2010-2011 Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,15 +15,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *	\file       htdocs/societe/index.php
  *  \ingroup    societe
  *  \brief      Home page for third parties area
- *  \version    $Id$
+ *  \version    $Id: index.php,v 1.17 2011/07/31 23:22:57 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -77,8 +77,9 @@ print "</table></form><br>";
 $third = array();
 $total=0;
 
-$sql = "SELECT s.rowid, s.client, s.fournisseur";
+$sql = "SELECT s.rowid, s.client, s.fournisseur, st.type";
 $sql.= " FROM ".MAIN_DB_PREFIX."societe as s";
+$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."c_stcomm as st ON st.id = s.fk_stcomm";
 if (! $user->rights->societe->client->voir) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
 $sql.= " WHERE s.entity = ".$conf->entity;
 if (! $user->rights->societe->client->voir) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
@@ -89,8 +90,9 @@ if ($result)
     while ($objp = $db->fetch_object($result))
     {
         $found=0;
-        if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_CUSTOMERS_STATS) && ($objp->client == 1 || $objp->client == 3)) { $found=1; $third['customer']++; }
-        if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_PROSPECTS_STATS) && ($objp->client == 2 || $objp->client == 3)) { $found=1; $third['prospect']++; }
+        if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_CUSTOMERS_STATS) && ($objp->client == 1 || $objp->client == 3) && $objp->type==2) { $found=1; $third['customer']++; }
+        if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_PROSPECTS_STATS) && ($objp->client == 2 || $objp->client == 3) && $objp->type==1) { $found=1; $third['prospect']++; }
+        if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_SUSPECTS_STATS) && ($objp->client == 2 || $objp->client == 3) && $objp->type==0) { $found=1; $third['suspect']++; }
         if ($conf->fournisseur->enabled && empty($conf->global->SOCIETE_DISABLE_SUPPLIERS_STATS) && $objp->fournisseur) { $found=1; $third['supplier']++; }
 
         if ($found) $total++;
@@ -100,12 +102,13 @@ else dol_print_error($db);
 
 print '<table class="noborder" width="100%">';
 print '<tr class="liste_titre"><td colspan="2">'.$langs->trans("Statistics").'</td></tr>';
-if ($conf->use_javascript_ajax && ((round($third['prospect'])?1:0)+(round($third['customer'])?1:0)+(round($third['supplier'])?1:0) >= 2))
+if ($conf->use_javascript_ajax && empty($conf->global->DISABLE_NATIVE_CHARTS) && ((round($third['prospect'])?1:0)+(round($third['customer'])?1:0)+(round($third['supplier'])?1:0) >= 2))
 {
     print '<tr><td align="center">';
     $dataseries=array();
-    if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_PROSPECTS_STATS)) $dataseries[]=array('label'=>$langs->trans("Prospects"),'values'=>array(round($third['prospect'])));
     if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_CUSTOMERS_STATS)) $dataseries[]=array('label'=>$langs->trans("Customers"),'values'=>array(round($third['customer'])));
+    if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_PROSPECTS_STATS)) $dataseries[]=array('label'=>$langs->trans("Prospects"),'values'=>array(round($third['prospect'])));
+    if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_SUSPECTS_STATS)) $dataseries[]=array('label'=>$langs->trans("Suspects"),'values'=>array(round($third['suspect'])));
     if ($conf->fournisseur->enabled && empty($conf->global->SOCIETE_DISABLE_SUPPLIERS_STATS)) $dataseries[]=array('label'=>$langs->trans("Suppliers"),'values'=>array(round($third['supplier'])));
     $data=array('series'=>$dataseries);
     dol_print_graph('stats',300,180,$data,1,'pie',0);
@@ -113,21 +116,27 @@ if ($conf->use_javascript_ajax && ((round($third['prospect'])?1:0)+(round($third
 }
 else
 {
-    if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_PROSPECTS_STATS))
-    {
-        $statstring = "<tr $bc[0]>";
-        $statstring.= '<td><a href="'.DOL_URL_ROOT.'/comm/prospect/prospects.php">'.$langs->trans("Prospects").'</a></td><td align="right">'.round($third['prospect']).'</td>';
-        $statstring.= "</tr>";
-    }
     if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_CUSTOMERS_STATS))
     {
+        $statstring= "<tr $bc[0]>";
+        $statstring.= '<td><a href="'.DOL_URL_ROOT.'/comm/list.php?type=2">'.$langs->trans("Customers").'</a></td><td align="right">'.round($third['customer']).'</td>';
+        $statstring.= "</tr>";
+    }
+    if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_PROSPECTS_STATS))
+    {
         $statstring.= "<tr $bc[1]>";
-        $statstring.= '<td><a href="'.DOL_URL_ROOT.'/comm/clients.php">'.$langs->trans("Customers").'</a></td><td align="right">'.round($third['customer']).'</td>';
+        $statstring.= '<td><a href="'.DOL_URL_ROOT.'/comm/list.php?type=1">'.$langs->trans("Prospects").'</a></td><td align="right">'.round($third['prospect']).'</td>';
+        $statstring.= "</tr>";
+    }
+    if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_SUSPECTS_STATS))
+    {
+        $statstring.= "<tr $bc[0]>";
+        $statstring.= '<td><a href="'.DOL_URL_ROOT.'/comm/list.php?type=0">'.$langs->trans("Suspects").'</a></td><td align="right">'.round($third['suspect']).'</td>';
         $statstring.= "</tr>";
     }
     if ($conf->fournisseur->enabled && empty($conf->global->SOCIETE_DISABLE_SUPPLIERS_STATS))
     {
-        $statstring2 = "<tr $bc[0]>";
+        $statstring2 = "<tr $bc[1]>";
         $statstring2.= '<td><a href="'.DOL_URL_ROOT.'/fourn/liste.php">'.$langs->trans("Suppliers").'</a></td><td align="right">'.round($third['supplier']).'</td>';
         $statstring2.= "</tr>";
     }
@@ -228,7 +237,24 @@ if ($result)
 
         $db->free();
 
-        print "</table>";
+		print "</table><br>";
+                /* Print Graph */
+                if($conf->highcharts->enabled && $user->rights->highcharts->read && $conf->societe->enabled && $conf->categorie->enabled)
+                {
+                    dol_include_once("/highCharts/class/highCharts.class.php");
+                    $langs->load("highcharts@highCharts");
+
+                    $graph=new HighCharts($db);
+                    $graph->width="100%";
+                    $graph->height="300px";
+                    $graph->name="graphPriority";
+                    $graph->label=$langs->trans("graphPriorityTiers");
+
+                    if($user->rights->highcharts->all && $user->rights->societe->client->voir)
+                        $graph->mine=0;
+
+                    $graph->graphPriorityTiers();
+                }
     }
 }
 else
@@ -240,5 +266,5 @@ print '</td></tr></table>';
 
 $db->close();
 
-llxFooter('$Date$ - $Revision$');
+llxFooter('$Date: 2011/07/31 23:22:57 $ - $Revision: 1.17 $');
 ?>

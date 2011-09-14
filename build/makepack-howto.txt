@@ -15,14 +15,15 @@ beta version of Dolibarr, step by step.
 - Update version number with x.x.x-y in build/exe/doliwamp/doliwamp.iss
 - Update version number with x.x.x-y in htdocs/filefunc.inc.php
 - Update version number with x.x.x-y in htdocs/install/inc.php
+- Update version number with x.x.x-y in htdocs/support/inc.php
+- Update version number with x.x.x-y in htdocs/build/rpm/*.spec
 - Commit all changes.
 - Add a CVS Tag (DOLIBARR_x_y_BETA)
 - Create a branch (DOLIBARR_x_y_BRANCH).
 
-- Update the CVS on server that build automatically the tgz beta package
-  or build Dolibarr and DoliWamp with makepack-dolibarr.pl
-- Enable entries on joomla web site www.dolibarr.org with links
-  that point to that file ("Dolibarr CVS snapshot of current beta").
+- Run makepack-dolibarr.pl to generate all packages.
+- Enable the category that point to the beta files on joomla 
+  web site www.dolibarr.org
 
 - Post a news on dolibarr.org/dolibarr.fr
 - Send mail on mailings-list
@@ -38,6 +39,8 @@ complete release of Dolibarr, step by step.
 - Update version number with x.x.x-y in build/exe/doliwamp/doliwamp.iss
 - Update version number with x.x.x-y in htdocs/filefunc.inc.php
 - Update version number with x.x.x-y in htdocs/install/inc.php
+- Update version number with x.x.x-y in htdocs/support/inc.php
+- Update version number with x.x.x-y in htdocs/build/rpm/*.spec
 - Update PAD and DOAP files.
 - Commit all changes.
 - Add a CVS Tag (DOLIBARR_x_y)

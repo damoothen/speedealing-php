@@ -1,6 +1,6 @@
 --------------------------------------------------------------
 English Dolibarr ChangeLog
-$Id: ChangeLog,v 1.424 2011/07/13 14:16:39 eldy Exp $
+$Id:$
 --------------------------------------------------------------
 
 ***** ChangeLog for 3.1 compared to 3.0 *****
@@ -54,6 +54,9 @@ For users:
 - New: Use autocompletion on invoice select when creating replacement 
        or credit note invoice.
 - New: task #10885: Add a week view for calendar.
+- New: Modify propect workflow by a dictionnary
+- New: Add new client workflow 
+- New: fusion of clients.php and propects.php to liste.php
 - New: task #11018: Add a status "not applicable" on events.
 - New: Add subscriptions/country/region/town statistics for member module.
 - New: Can define a proxy for external web access.
@@ -74,6 +77,7 @@ For users:
 - New: Look: Minor enhancements into agenda view.
 - New: Look: Nicer tooltips with transparency and shadow.
 - New: task #11004: Create invoice from intervention.
+- New: task #10501: Can use point of sale with different bank accounts.
 - Fix: Better Postgresql compatibility.
 - Fix: Numbering module for invoices use same number for invoice 
        and credit note if mask is same.
