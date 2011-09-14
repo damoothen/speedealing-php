@@ -23,7 +23,6 @@
  *	\file       htdocs/product/stock/product.php
  *	\ingroup    product stock
  *	\brief      Page to list detailed stock of a product
- *	\version    $Id: product.php,v 1.109 2011/08/08 16:07:48 eldy Exp $
  */
 
 require("../../main.inc.php");
@@ -297,8 +296,15 @@ if ($_GET["id"] || $_GET["ref"])
 			dol_print_error($db);
 		}
 		print '<tr><td valign="top">'.$langs->trans("LastMovement").'</td><td colspan="3">';
-		if ($lastmovementdate) print dol_print_date($lastmovementdate,'dayhour').' ';
-		print '(<a href="'.DOL_URL_ROOT.'/product/stock/mouvement.php?idproduct='.$product->id.'">'.$langs->trans("FullList").'</a>)';
+		if ($lastmovementdate)
+		{
+		    print dol_print_date($lastmovementdate,'dayhour').' ';
+		    print '(<a href="'.DOL_URL_ROOT.'/product/stock/mouvement.php?idproduct='.$product->id.'">'.$langs->trans("FullList").'</a>)';
+		}
+		else
+		{
+		     print '<a href="'.DOL_URL_ROOT.'/product/stock/mouvement.php?idproduct='.$product->id.'">'.$langs->trans("None").'</a>';
+		}
 		print "</td></tr>";
 
 		print "</table>";
@@ -518,5 +524,5 @@ print "</table>";
 $db->close();
 
 
-llxFooter('$Date: 2011/08/08 16:07:48 $ - $Revision: 1.109 $');
+llxFooter();
 ?>

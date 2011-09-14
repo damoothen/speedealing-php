@@ -21,7 +21,6 @@
  *  \file       htdocs/product/stock/class/entrepot.class.php
  *  \ingroup    stock
  *  \brief      Fichier de la classe de gestion des entrepots
- *  \version    $Id: entrepot.class.php,v 1.11 2011/07/31 23:24:02 eldy Exp $
  */
 
 require_once(DOL_DOCUMENT_ROOT."/core/class/commonobject.class.php");
@@ -52,8 +51,9 @@ class Entrepot extends CommonObject
 	var $pays_id;
 
 	/**
-	 *    Constructor
-	 *    @param      DB      Database handler
+	 *  Constructor
+	 *
+	 *  @param      DoliDB		$DB      Database handler
 	 */
 	function Entrepot($DB)
 	{
@@ -66,6 +66,7 @@ class Entrepot extends CommonObject
 
 	/**
 	 *    Creation d'un entrepot en base
+	 *
 	 *    @param      Objet user qui cree l'entrepot
 	 */
 	function create($user)

@@ -23,7 +23,6 @@
  *   \file       htdocs/societe/socnote.php
  *   \brief      Tab for notes on third party
  *   \ingroup    societe
- *   \version    $Id: socnote.php,v 1.23 2011/07/31 23:22:56 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -81,7 +80,7 @@ llxHeader('',$langs->trans("ThirdParty").' - '.$langs->trans("Notes"),$help_url)
 
 if ($socid > 0)
 {
-    $societe = new Societe($db, $socid);
+    $societe = new Societe($db);
     $societe->fetch($socid);
 
     /*
@@ -186,5 +185,5 @@ if ($action != 'edit')
 
 $db->close();
 
-llxFooter('$Date: 2011/07/31 23:22:56 $ - $Revision: 1.23 $');
+llxFooter();
 ?>

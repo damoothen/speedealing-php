@@ -20,8 +20,7 @@
  *		\ingroup    export
  *		\brief      File of class to build export files with format TSV
  *		\author	    Laurent Destailleur
- *		\version    $Id: export_tsv.modules.php,v 1.14 2011/08/03 01:38:52 eldy Exp $
-*/
+ */
 
 require_once(DOL_DOCUMENT_ROOT ."/includes/modules/export/modules_export.php");
 
@@ -46,8 +45,9 @@ class ExportTsv extends ModeleExports
 
 
     /**
-     *		\brief      Constructeur
-     *		\param	    db      Database handler
+	 *	Constructor
+	 *
+	 *	@param	    DoliDB	$db      Database handler
      */
     function ExportTsv($db)
     {
@@ -59,8 +59,7 @@ class ExportTsv extends ModeleExports
         $this->desc='<b>Tab Separated Value</b> file format (.tsv)<br>This is a text file format where fields are separated by separator [tab].';
         $this->extension='tsv';         // Extension for generated file by this driver
         $this->picto='mime/other';		// Picto
-        $ver=explode(' ','$Revision: 1.14 $');
-        $this->version=$ver[2];         // Driver version
+        $this->version='1.15';         // Driver version
 
         // If driver use an external library, put its name here
         $this->label_lib='Dolibarr';
@@ -104,9 +103,11 @@ class ExportTsv extends ModeleExports
 
 
     /**
-	*	\brief		Open output file
-	*	\param		file		Path of filename
-	*	\return		int			<0 if KO, >=0 if OK
+	*	Open output file
+	*
+	 *	@param		string		$file			Path of filename to generate
+	*	@param		Translate	$outputlangs	Output language object
+	*	@return		int							<0 if KO, >=0 if OK
 	*/
 	function open_file($file,$outputlangs)
     {
@@ -129,8 +130,10 @@ class ExportTsv extends ModeleExports
     }
 
 	/**
-	 * 	\brief		Output header into file
-	 * 	\param		langs		Output language
+	 * 	Output header into file
+	 *
+	 * 	@param		Translate	$outputlangs		Output language object
+	 * 	@return		int								<0 if KO, >0 if OK
 	 */
     function write_header($outputlangs)
     {
@@ -139,10 +142,12 @@ class ExportTsv extends ModeleExports
 
 
 	/**
-     *     Output title line into file
-     *     @param      array_export_fields_label   Array with list of label of fields
-     *     @param      array_selected_sorted       Array with list of field to export
-     *     @param      outputlangs                 Object lang to translate values
+     *  Output title line into file
+     *
+     *  @param      array		$array_export_fields_label   	Array with list of label of fields
+     *  @param      array		$array_selected_sorted       	Array with list of field to export
+     *  @param      Translate	$outputlangs    				Object lang to translate values
+	 * 	@return		int											<0 if KO, >0 if OK
 	 */
     function write_title($array_export_fields_label,$array_selected_sorted,$outputlangs)
     {
@@ -159,10 +164,12 @@ class ExportTsv extends ModeleExports
 
 
 	/**
-	 * 	   Output record line into file
-	 *     @param      array_selected_sorted       Array with list of field to export
-	 *     @param      objp                        A record from a fetch with all fields from select
-	 *     @param      outputlangs                 Object lang to translate values
+	 * 	Output record line into file
+	 *
+	 *  @param      array		$array_selected_sorted      Array with list of field to export
+	 *  @param      resource	$objp                       A record from a fetch with all fields from select
+	 *  @param      Translate	$outputlangs                Object lang to translate values
+	 * 	@return		int										<0 if KO, >0 if OK
 	 */
     function write_record($array_selected_sorted,$objp,$outputlangs)
     {
@@ -189,8 +196,10 @@ class ExportTsv extends ModeleExports
     }
 
 	/**
-	 * 	\brief		Output footer into file
-	 * 	\param		outputlangs		Output language
+	 * 	Output footer into file
+	 *
+	 * 	@param		Translate	$outputlangs		Output language object
+	 * 	@return		int								<0 if KO, >0 if OK
 	 */
     function write_footer($outputlangs)
     {
@@ -198,7 +207,9 @@ class ExportTsv extends ModeleExports
     }
 
 	/**
-	 * 	\brief		Close file handle
+	 * 	Close file handle
+	 *
+	 * 	@return		int							<0 if KO, >0 if OK
 	 */
     function close_file()
     {
@@ -208,8 +219,9 @@ class ExportTsv extends ModeleExports
 
     /**
      * Clean a cell to respect rules of TSV file cells
-     * @param 	newvalue	String to clean
-     * @return 	string		Value cleaned
+     *
+     * @param 	string	$newvalue	String to clean
+     * @return 	string				Value cleaned
      */
     function tsv_clean($newvalue)
     {

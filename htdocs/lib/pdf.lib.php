@@ -24,20 +24,63 @@
  *	\file       htdocs/lib/pdf.lib.php
  *	\brief      Set of functions used for PDF generation
  *	\ingroup    core
- *	\version    $Id: pdf.lib.php,v 1.102 2011/08/10 22:47:35 eldy Exp $
  */
 
 
 /**
- *      Return a PDF instance object. We create a FPDI instance that instanciate TCPDF (or FPDF if MAIN_USE_FPDF is on)
- *      @param      format          Array(width,height)
+ *      Return array with format properties of default PDF format
+ *      @return     array		Array('width'=>w,'height'=>h,'unit'=>u);
+ */
+function pdf_getFormat()
+{
+    global $conf,$db;
+
+    // Default value if setup was not done and/or entry into c_paper_format not defined
+    $width=210; $height=297; $unit='mm';
+
+    if (empty($conf->global->MAIN_PDF_FORMAT))
+    {
+        include_once(DOL_DOCUMENT_ROOT.'/lib/functions2.lib.php');
+        $pdfformat=dol_getDefaultFormat();
+    }
+    else $pdfformat=$conf->global->MAIN_PDF_FORMAT;
+
+	$sql="SELECT code, label, width, height, unit FROM ".MAIN_DB_PREFIX."c_paper_format";
+    $sql.=" WHERE code = '".$pdfformat."'";
+    $resql=$db->query($sql);
+    if ($resql)
+    {
+        $obj=$db->fetch_object($resql);
+        if ($obj)
+        {
+            $width=(int) $obj->width;
+            $height=(int) $obj->height;
+            $unit=$obj->unit;
+        }
+    }
+
+    //print "pdfformat=".$pdfformat." width=".$width." height=".$height." unit=".$unit;
+    return array('width'=>$width,'height'=>$height,'unit'=>$unit);
+}
+
+/**
+ *      Return a PDF instance object. We create a FPDI instance that instanciate TCPDF.
+ *      @param      format          Array(width,height). Keep empty to use default setup.
  *      @param      metric          Unit of format ('mm')
  *      @param      pagetype        'P' or 'l'
  *      @return     PDF object
  */
-function pdf_getInstance($format,$metric='mm',$pagetype='P')
+function pdf_getInstance($format='',$metric='mm',$pagetype='P')
 {
     global $conf;
+
+    require_once(TCPDF_PATH.'tcpdf.php');
+    // We need to instantiate fpdi object (instead of tcpdf) to use merging features. But we can disable it.
+    if (empty($conf->global->MAIN_DISABLE_FPDI)) require_once(FPDFI_PATH.'fpdi.php');
+
+    //$arrayformat=pdf_getFormat();
+    //$format=array($arrayformat['width'],$arrayformat['height']);
+    //$metric=$arrayformat['unit'];
 
     // Protection et encryption du pdf
     if ($conf->global->PDF_SECURITY_ENCRYPTION)
@@ -53,15 +96,17 @@ function pdf_getInstance($format,$metric='mm',$pagetype='P')
         - print-high : Print the document to a representation from which a faithful digital copy of the PDF content could be generated. When this is not set, printing is limited to a low-level representation of the appearance, possibly of degraded quality.
         - owner : (inverted logic - only for public-key) when set permits change of encryption and enables all other permissions.
         */
-        if ($conf->global->MAIN_USE_FPDF)
+        if (! empty($conf->global->MAIN_USE_FPDF))
         {
+            require_once(FPDFI_PATH.'fpdi_protection.php');
             $pdf = new FPDI_Protection($pagetype,$metric,$format);
             // For FPDF, we specify permission we want to open
             $pdfrights = array('print');
         }
         else
         {
-            $pdf = new FPDI($pagetype,$metric,$format);
+            if (class_exists('FPDI')) $pdf = new FPDI($pagetype,$metric,$format);
+            else $pdf = new TCPDF($pagetype,$metric,$format);
             // For TCPDF, we specify permission we want to block
             $pdfrights = array('modify','copy');
         }
@@ -71,7 +116,8 @@ function pdf_getInstance($format,$metric='mm',$pagetype='P')
     }
     else
     {
-        $pdf=new FPDI($pagetype,$metric,$format);
+        if (class_exists('FPDI')) $pdf = new FPDI($pagetype,$metric,$format);
+        else $pdf = new TCPDF($pagetype,$metric,$format);
     }
     return $pdf;
 }
@@ -152,6 +198,7 @@ function pdf_format_address($outputlangs,$object)
 
 /**
  *   	Return a string with full address formated
+ *
  * 		@param		outputlangs		Output langs object
  *   	@param      sourcecompany	Source company object
  *   	@param      targetcompany	Target company object
@@ -171,8 +218,8 @@ function pdf_build_address($outputlangs,$sourcecompany,$targetcompany='',$target
     if ($mode == 'target' && ! is_object($targetcompany)) return -1;
     if ($mode == 'delivery' && ! is_object($deliverycompany)) return -1;
 
-    if ($sourcecompany->departement_id && empty($sourcecompany->departement)) $sourcecompany->departement=getState($sourcecompany->departement_id);
-    if ($targetcompany->departement_id && empty($targetcompany->departement)) $targetcompany->departement=getState($targetcompany->departement_id);
+    if ($sourcecompany->state_id && empty($sourcecompany->departement)) $sourcecompany->departement=getState($sourcecompany->state_id);
+    if ($targetcompany->state_id && empty($targetcompany->departement)) $targetcompany->departement=getState($targetcompany->state_id);
 
     if ($mode == 'source')
     {
@@ -250,9 +297,10 @@ function pdf_build_address($outputlangs,$sourcecompany,$targetcompany='',$target
 
 /**
  *   	Show header of page for PDF generation
- *   	@param      pdf     		Object PDF
- *      @param      outputlang		Object lang for output
- * 		@param		page_height
+ *
+ *   	@param      PDF			$pdf     		Object PDF
+ *      @param      Translate	$outputlangs	Object lang for output
+ * 		@param		int			$page_height	Height of page
  */
 function pdf_pagehead(&$pdf,$outputlangs,$page_height)
 {
@@ -268,10 +316,11 @@ function pdf_pagehead(&$pdf,$outputlangs,$page_height)
 
 /**
  *      Add a draft watermark on PDF files
+ *
  *      @param      pdf             Object PDF
  *      @param      outputlangs     Object lang
- *      @param      height          Height of PDF
- *      @param      width           Width of PDF
+ *      @param      h		        Height of PDF
+ *      @param      w		        Width of PDF
  *      @param      unit            Unit of height (mmn, pt, ...)
  *      @param      text            Text to show
  */
@@ -446,8 +495,9 @@ function pdf_bank(&$pdf,$outputlangs,$curx,$cury,$account,$onlynumber=0)
 
 /**
  *   	Show footer of page for PDF generation
+ *
  *   	@param      pdf     		The PDF factory
- *      @param      outputlang		Object lang for output
+ *      @param      outputlangs		Object lang for output
  * 		@param		paramfreetext	Constant name of free text
  * 		@param		fromcompany		Object company
  * 		@param		marge_basse		Margin bottom
@@ -642,17 +692,19 @@ function pdf_pagefoot(&$pdf,$outputlangs,$paramfreetext,$fromcompany,$marge_bass
 
 /**
  *	Output line description into PDF
- *  @param      pdf                 PDF object
- *	@param		object				Object
- *	@param		i					Current line number
- *  @param    	outputlang			Object lang for output
- *  @param      w
- *  @param      h
- *  @param      posx
- *  @param      posy
- *  @param    	hideref       		Hide reference
- *  @param      hidedesc            Hide description
- * 	@param		issupplierline		Is it a line for a supplier object ?
+ *
+ *  @param      PDF				$pdf                PDF object
+ *	@param		Object			$object				Object
+ *	@param		int				$i					Current line number
+ *  @param    	Translate		$outputlangs		Object lang for output
+ *  @param      int				$w					Width
+ *  @param      int				$h					Height
+ *  @param      int				$posx				Pos x
+ *  @param      int				$posy				Pos y
+ *  @param    	int				$hideref       		Hide reference
+ *  @param      int				$hidedesc            Hide description
+ * 	@param		int				$issupplierline		Is it a line for a supplier object ?
+ * 	@param		HookManager		$hookmanager		Instance of HookManager
  */
 function pdf_writelinedesc(&$pdf,$object,$i,$outputlangs,$w,$h,$posx,$posy,$hideref=0,$hidedesc=0,$issupplierline=0,$hookmanager=false)
 {
@@ -678,6 +730,7 @@ function pdf_writelinedesc(&$pdf,$object,$i,$outputlangs,$w,$h,$posx,$posy,$hide
 
 /**
  *  Return line description translated in outputlangs and encoded in UTF8
+ *
  *  @param      object              Object
  *  @param      i                   Current line number
  *  @param      outputlangs         Object langs for output
@@ -717,7 +770,7 @@ function pdf_getlinedesc($object,$i,$outputlangs,$hideref=0,$hidedesc=0,$issuppl
     // Description long of product line
     if ($desc && ($desc != $label))
     {
-        if ( $libelleproduitservice && empty($hidedesc) ) $libelleproduitservice.="<br />";
+        if ( $libelleproduitservice && empty($hidedesc) ) $libelleproduitservice.="<br>";
 
         if ($desc == '(CREDIT_NOTE)' && $object->lines[$i]->fk_remise_except)
         {
@@ -810,9 +863,12 @@ function pdf_getlinedesc($object,$i,$outputlangs,$hideref=0,$hidedesc=0,$issuppl
 
 /**
  *	Return line num
- *	@param		object				Object
- *	@param		$i					Current line number
- *  @param    	outputlangs			Object langs for output
+ *
+ *	@param		Object		$object				Object
+ *	@param		int			$i					Current line number
+ *  @param    	Translate	$outputlangs		Object langs for output
+ *  @param		int			$hidedetails		Hide details (0=no, 1=yes, 2=just special lines)
+ *  @param		HookManager	$hookmanager		Hook manager instance
  */
 function pdf_getlinenum($object,$i,$outputlangs,$hidedetails=0,$hookmanager=false)
 {
@@ -831,9 +887,12 @@ function pdf_getlinenum($object,$i,$outputlangs,$hidedetails=0,$hookmanager=fals
 
 /**
  *	Return line product ref
- *	@param		object				Object
- *	@param		$i					Current line number
- *  @param    	outputlang			Object lang for output
+ *
+ *	@param		Object		$object				Object
+ *	@param		int			$i					Current line number
+ *  @param    	Translate	$outputlangs		Object langs for output
+ *  @param		int			$hidedetails		Hide details (0=no, 1=yes, 2=just special lines)
+ *  @param		HookManager	$hookmanager		Hook manager instance
  */
 function pdf_getlineref($object,$i,$outputlangs,$hidedetails=0,$hookmanager=false)
 {
@@ -851,9 +910,12 @@ function pdf_getlineref($object,$i,$outputlangs,$hidedetails=0,$hookmanager=fals
 
 /**
  *	Return line ref_supplier
- *	@param		object				Object
- *	@param		i					Current line number
- *  @param    	outputlangs			Object langs for output
+ *
+ *	@param		Object		$object				Object
+ *	@param		int			$i					Current line number
+ *  @param    	Translate	$outputlangs		Object langs for output
+ *  @param		int			$hidedetails		Hide details (0=no, 1=yes, 2=just special lines)
+ *  @param		HookManager	$hookmanager		Hook manager instance
  */
 function pdf_getlineref_supplier($object,$i,$outputlangs,$hidedetails=0,$hookmanager=false)
 {
@@ -871,13 +933,12 @@ function pdf_getlineref_supplier($object,$i,$outputlangs,$hidedetails=0,$hookman
 
 /**
  *	Return line vat rate
- *	@param		object				Object
- *	@param		i					Current line number
- *  @param    	outputlangs			Object langs for output
- *  @param		hidedetails			Hide value
- *  								0 = no
- *  								1 = yes
- *  								2 = just special lines
+ *
+ *	@param		Object		$object				Object
+ *	@param		int			$i					Current line number
+ *  @param    	Translate	$outputlangs		Object langs for output
+ *  @param		int			$hidedetails		Hide details (0=no, 1=yes, 2=just special lines)
+ *  @param		HookManager	$hookmanager		Hook manager instance
  */
 function pdf_getlinevatrate($object,$i,$outputlangs,$hidedetails=0,$hookmanager=false)
 {
@@ -896,13 +957,12 @@ function pdf_getlinevatrate($object,$i,$outputlangs,$hidedetails=0,$hookmanager=
 
 /**
  *	Return line unit price excluding tax
- *	@param		object				Object
- *	@param		i					Current line number
- *  @param    	outputlangs			Object langs for output
- *  @param		hidedetails			Hide value
- *  								0 = no
- *  								1 = yes
- *  								2 = just special lines
+ *
+ *	@param		Object		$object				Object
+ *	@param		int			$i					Current line number
+ *  @param    	Translate	$outputlangs		Object langs for output
+ *  @param		int			$hidedetails		Hide details (0=no, 1=yes, 2=just special lines)
+ *  @param		HookManager	$hookmanager		Hook manager instance
  */
 function pdf_getlineupexcltax($object,$i,$outputlangs,$hidedetails=0,$hookmanager=false)
 {
@@ -921,13 +981,12 @@ function pdf_getlineupexcltax($object,$i,$outputlangs,$hidedetails=0,$hookmanage
 
 /**
  *	Return line quantity
- *	@param		object				Object
- *	@param		i					Current line number
- *  @param    	outputlangs			Object langs for output
- *  @param		hidedetails			Hide value
- *  								0 = no
- *  								1 = yes
- *  								2 = just special lines
+ *
+ *	@param		Object		$object				Object
+ *	@param		int			$i					Current line number
+ *  @param    	Translate	$outputlangs		Object langs for output
+ *  @param		int			$hidedetails		Hide details (0=no, 1=yes, 2=just special lines)
+ *  @param		HookManager	$hookmanager		Hook manager instance
  */
 function pdf_getlineqty($object,$i,$outputlangs,$hidedetails=0,$hookmanager=false)
 {
@@ -949,13 +1008,12 @@ function pdf_getlineqty($object,$i,$outputlangs,$hidedetails=0,$hookmanager=fals
 
 /**
  *	Return line quantity asked
- *	@param		object				Object
- *	@param		i					Current line number
- *  @param    	outputlangs			Object langs for output
- *  @param		hidedetails			Hide value
- *  								0 = no
- *  								1 = yes
- *  								2 = just special lines
+ *
+ *	@param		Object		$object				Object
+ *	@param		int			$i					Current line number
+ *  @param    	Translate	$outputlangs		Object langs for output
+ *  @param		int			$hidedetails		Hide details (0=no, 1=yes, 2=just special lines)
+ *  @param		HookManager	$hookmanager		Hook manager instance
  */
 function pdf_getlineqty_asked($object,$i,$outputlangs,$hidedetails=0,$hookmanager=false)
 {
@@ -977,13 +1035,12 @@ function pdf_getlineqty_asked($object,$i,$outputlangs,$hidedetails=0,$hookmanage
 
 /**
  *	Return line quantity shipped
- *	@param		object				Object
- *	@param		i					Current line number
- *  @param    	outputlangs			Object langs for output
- *  @param		hidedetails			Hide value
- *  								0 = no
- *  								1 = yes
- *  								2 = just special lines
+ *
+ *	@param		Object		$object				Object
+ *	@param		int			$i					Current line number
+ *  @param    	Translate	$outputlangs		Object langs for output
+ *  @param		int			$hidedetails		Hide details (0=no, 1=yes, 2=just special lines)
+ *  @param		HookManager	$hookmanager		Hook manager instance
  */
 function pdf_getlineqty_shipped($object,$i,$outputlangs,$hidedetails=0,$hookmanager=false)
 {
@@ -1005,13 +1062,12 @@ function pdf_getlineqty_shipped($object,$i,$outputlangs,$hidedetails=0,$hookmana
 
 /**
  *	Return line keep to ship quantity
- *	@param		object				Object
- *	@param		i					Current line number
- *  @param    	outputlangs			Object langs for output
- *  @param		hidedetails			Hide value
- *  								0 = no
- *  								1 = yes
- *  								2 = just special lines
+ *
+ *	@param		Object		$object				Object
+ *	@param		int			$i					Current line number
+ *  @param    	Translate	$outputlangs		Object langs for output
+ *  @param		int			$hidedetails		Hide details (0=no, 1=yes, 2=just special lines)
+ *  @param		HookManager	$hookmanager		Hook manager instance
  */
 function pdf_getlineqty_keeptoship($object,$i,$outputlangs,$hidedetails=0,$hookmanager=false)
 {
@@ -1033,13 +1089,12 @@ function pdf_getlineqty_keeptoship($object,$i,$outputlangs,$hidedetails=0,$hookm
 
 /**
  *	Return line remise percent
- *	@param		object				Object
- *	@param		i					Current line number
- *  @param    	outputlangs			Object langs for output
- *  @param		hidedetails			Hide value
- *  								0 = no
- *  								1 = yes
- *  								2 = just special lines
+ *
+ *	@param		Object		$object				Object
+ *	@param		int			$i					Current line number
+ *  @param    	Translate	$outputlangs		Object langs for output
+ *  @param		int			$hidedetails		Hide details (0=no, 1=yes, 2=just special lines)
+ *  @param		HookManager	$hookmanager		Hook manager instance
  */
 function pdf_getlineremisepercent($object,$i,$outputlangs,$hidedetails=0,$hookmanager=false)
 {
@@ -1063,13 +1118,12 @@ function pdf_getlineremisepercent($object,$i,$outputlangs,$hidedetails=0,$hookma
 
 /**
  *	Return line total excluding tax
- *	@param		object				Object
- *	@param		i					Current line number
- *  @param    	outputlangs			Object langs for output
- *  @param		hidedetails			Hide value
- *  								0 = no
- *  								1 = yes
- *  								2 = just special lines
+ *
+ *	@param		Object		$object				Object
+ *	@param		int			$i					Current line number
+ *  @param    	Translate	$outputlangs		Object langs for output
+ *  @param		int			$hidedetails		Hide details (0=no, 1=yes, 2=just special lines)
+ *  @param		HookManager	$hookmanager		Hook manager instance
  */
 function pdf_getlinetotalexcltax($object,$i,$outputlangs,$hidedetails=0,$hookmanager=false)
 {
@@ -1095,9 +1149,11 @@ function pdf_getlinetotalexcltax($object,$i,$outputlangs,$hidedetails=0,$hookman
 
 /**
  *	Return total quantity of products and/or services
- *	@param		object				Object
- *	@param		type				Type of line (all=all, 0=product, 1=service, 9=other)
- *  @param    	outputlangs			Object langs for output
+ *
+ *	@param		Object		$object				Object
+ *	@param		string		$type				Type
+ *  @param    	Translate	$outputlangs		Object langs for output
+ *  @param		HookManager	$hookmanager		Hook manager instance
  */
 function pdf_getTotalQty($object,$type='',$outputlangs,$hookmanager=false)
 {
@@ -1136,9 +1192,10 @@ function pdf_getTotalQty($object,$type='',$outputlangs,$hookmanager=false)
 
 /**
  *	Convert a currency code into its symbol
- *  @param      pdf                 PDF object
- *  @param		currency_code
- *  @param		string				Currency symbol encoded into UTF8
+ *
+ *  @param      PDF		$pdf                 PDF object
+ *  @param		string	$currency_code		Currency code
+ *  @return		string						Currency symbol encoded into UTF8
  */
 function pdf_getCurrencySymbol(&$pdf, $currency_code)
 {

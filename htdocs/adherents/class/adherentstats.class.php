@@ -21,7 +21,6 @@
  *	\file       htdocs/adherents/class/adherentstats.class.php
  *	\ingroup    member
  *	\brief      Fichier de la classe de gestion des stats des adhérents
- *	\version    $Id: adherentstats.class.php,v 1.3 2011/08/03 00:45:44 eldy Exp $
  */
 
 include_once DOL_DOCUMENT_ROOT . "/core/class/stats.class.php";
@@ -46,12 +45,12 @@ class AdherentStats extends Stats
 
 
 	/**
-	 * Constructor
+	 *	Constructor
 	 *
-	 * @param 	$DB		   Database handler
-	 * @param 	$socid	   Id third party
-     * @param   $userid    Id user for filter
-	 * @return 	AdherentStats
+	 *	@param 		DoliDB		$DB		Database handler
+	 * 	@param 		int			$socid	   Id third party
+     * 	@param   	int			$userid    Id user for filter
+	 * 	@return 	AdherentStats
 	 */
 	function AdherentStats($DB, $socid=0, $userid=0)
 	{

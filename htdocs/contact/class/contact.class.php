@@ -24,7 +24,6 @@
  *	\file       htdocs/contact/class/contact.class.php
  *	\ingroup    societe
  *	\brief      File of contacts class
- *	\version    $Id: contact.class.php,v 1.32 2011/07/31 23:54:12 eldy Exp $
  */
 require_once(DOL_DOCUMENT_ROOT ."/core/class/commonobject.class.php");
 
@@ -81,8 +80,9 @@ class Contact extends CommonObject
 
 
 	/**
-	 *      Constructor of class Contact
-	 *      @param      DB      Habler d'acces base
+	 *	Constructor
+	 *
+	 *  @param		DoliDB		$DB      Database handler
 	 */
 	function Contact($DB)
 	{
@@ -90,9 +90,10 @@ class Contact extends CommonObject
 	}
 
 	/**
-	 *      Add a contact into database
-	 *      @param      user        Object user that create
-	 *      @return     int         <0 if KO, >0 if OK
+	 *  Add a contact into database
+	 *
+	 *  @param      User	$user       Object user that create
+	 *  @return     int      			<0 if KO, >0 if OK
 	 */
 	function create($user)
 	{

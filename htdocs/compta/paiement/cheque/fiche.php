@@ -22,7 +22,6 @@
  *	\file       htdocs/compta/paiement/cheque/fiche.php
  *	\ingroup    bank, invoice
  *	\brief      Page for cheque deposits
- *	\version    $Id: fiche.php,v 1.78 2011/08/03 00:46:28 eldy Exp $
  */
 
 require("./pre.inc.php");	// We use pre.inc.php to have a dynamic menu
@@ -413,7 +412,7 @@ if ($action == 'new')
 			print '<td>'.$value["banque"]."</td>\n";
 			print '<td align="right">'.price($value["amount"]).'</td>';
 			print '<td align="center">';
-			print '<input id="'.$value["id"].'" class="flat checkforremise_'.$bid.'" checked="true" type="checkbox" name="toRemise[]" value="'.$value["id"].'">';
+			print '<input id="'.$value["id"].'" class="flat checkforremise_'.$bid.'" checked="checked" type="checkbox" name="toRemise[]" value="'.$value["id"].'">';
 			print '</td>' ;
 			print '</tr>';
 
@@ -619,5 +618,5 @@ if ($action != 'new')
 
 $db->close();
 
-llxFooter('$Date: 2011/08/03 00:46:28 $ - $Revision: 1.78 $');
+llxFooter();
 ?>

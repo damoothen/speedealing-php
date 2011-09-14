@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- * $Id: freeproductline_create.tpl.php,v 1.18 2011/08/10 22:47:33 eldy Exp $
  *
  * Need to have following variables defined:
  * $conf
@@ -50,7 +49,7 @@
 	if (is_object($hookmanager))
 	{
 	    $parameters=array();
-	    $hookmanager->executeHooks('formCreateProductOptions',$parameters,$object,$action);
+	    echo $hookmanager->executeHooks('formCreateProductOptions',$parameters,$object,$action);
 	}
 
 	// Editor wysiwyg

@@ -23,7 +23,6 @@
  *	\file       htdocs/compta/paiement.php
  *	\ingroup    compta
  *	\brief      Page to create a payment
- *	\version    $Id: paiement.php,v 1.114 2011/08/08 01:01:46 eldy Exp $
  */
 
 require('../main.inc.php');
@@ -378,7 +377,7 @@ if ($action == 'create' || $action == 'confirm_paiement' || $action == 'add_paie
             print '<td>';
             if ($action == 'add_paiement')
             {
-                print '<input id="amountpayment" name="amountpaymenthidden" size="8" type="text" value="'.(empty($_POST['amountpayment'])?'':$_POST['amountpayment']).'" disabled="true">';
+                print '<input id="amountpayment" name="amountpaymenthidden" size="8" type="text" value="'.(empty($_POST['amountpayment'])?'':$_POST['amountpayment']).'" disabled="disabled">';
                 print '<input name="amountpayment" type="hidden" value="'.(empty($_POST['amountpayment'])?'':$_POST['amountpayment']).'">';
             }
             else
@@ -522,7 +521,7 @@ if ($action == 'create' || $action == 'confirm_paiement' || $action == 'add_paie
                     }
                     else
                     {
-                        print '<input type="text" size="8" name="'.$namef.'_disabled" value="'.$_POST[$namef].'" disabled="true">';
+                        print '<input type="text" size="8" name="'.$namef.'_disabled" value="'.$_POST[$namef].'" disabled="disabled">';
                         print '<input type="hidden" name="'.$namef.'" value="'.$_POST[$namef].'">';
                     }
                     print "</td>";
@@ -672,5 +671,5 @@ if (! GETPOST('action'))
 
 $db->close();
 
-llxFooter('$Date: 2011/08/08 01:01:46 $ - $Revision: 1.114 $');
+llxFooter();
 ?>

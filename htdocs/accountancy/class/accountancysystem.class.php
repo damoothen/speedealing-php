@@ -19,7 +19,6 @@
  *	\file       htdocs/accountancy/class/accountancysystem.class.php
  * 	\ingroup    accounting
  * 	\brief      File of class to manage accountancy systems
- * 	\version    $Id: accountancysystem.class.php,v 1.3 2011/08/03 00:45:22 eldy Exp $
  */
 
 
@@ -41,21 +40,21 @@ class AccountancySystem
 
 
 	/**
-	 *    \brief  Constructor of class
-	 *    \param  DB          Database handler
-	 *    \param  id          Id compte (0 by default)
+	 *	Constructor
+	 *
+	 *  @param		DoliDB		$DB      Database handler
 	 */
-	function AccountancySystem($DB, $id=0)
+	function AccountancySystem($DB)
 	{
 		$this->db = $DB;
-		$this->id   = $id ;
 	}
 
 
 	/**
-	 *    \brief  	Insert accountancy system name into database
-	 *    \param  	user 	User making insert
-	 *    \return	int		<0 if KO, Id of line if OK
+	 *  Insert accountancy system name into database
+	 *
+	 *  @param  	User	$user 	User making insert
+	 *  @return		int				<0 if KO, Id of line if OK
 	 */
 	function create($user)
 	{

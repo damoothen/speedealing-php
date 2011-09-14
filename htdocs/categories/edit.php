@@ -1,7 +1,7 @@
 <?php
 /* Copyright (C) 2005      Matthieu Valleton    <mv@seeschloss.org>
  * Copyright (C) 2006-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2008 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2007      Patrick Raguin	  	<patrick.raguin@gmail.com>
  * Copyright (C) 2010-2011 Herve Prot	    	<herve.prot@symeos.com>
  *
@@ -23,18 +23,27 @@
  *      \file       htdocs/categories/edit.php
  *      \ingroup    category
  *      \brief      Page d'edition de categorie produit
- *      \version    $Id: edit.php,v 1.39 2011/08/03 00:46:31 eldy Exp $
  */
 
 require("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/categories/class/categorie.class.php");
 
 
-// Security check
-if (!$user->rights->categorie->lire)
-  accessforbidden();
+$id=GETPOST('id');
+$ref=GETPOST('ref');
+$type=GETPOST('type');
+$action=GETPOST('action');
+$confirm=GETPOST('confirm');
 
-$type=$_REQUEST['type'];
+if ($id == "")
+{
+	dol_print_error('','Missing parameter id');
+	exit();
+}
+
+// Security check
+$result = restrictedArea($user, 'categorie', $id);
+
 
 
 /*
@@ -42,10 +51,10 @@ $type=$_REQUEST['type'];
  */
 
 // Action mise a jour d'une categorie
-if ($_POST["action"] == 'update' && $user->rights->categorie->creer)
+if ($action == 'update' && $user->rights->categorie->creer)
 {
-	$categorie = new Categorie ($db);
-	$result=$categorie->fetch($_REQUEST['id']);
+	$categorie = new Categorie($db);
+	$result=$categorie->fetch($id);
 
 	$categorie->label          = $_POST["nom"];
 	$categorie->description    = $_POST["description"];
@@ -98,14 +107,10 @@ llxHeader("","",$langs->trans("Categories"));
 print_fiche_titre($langs->trans("ModifCat"));
 
 
-if ($mesg)
-{
-	print '<div class="error">';
-	print $mesg;
-	print '</div>';
-}
+dol_htmloutput_errors($mesg);
 
-$categorie = new Categorie ($db, $_REQUEST['id']);
+
+$categorie = new Categorie($db, $id);
 $html = new Form($db);
 
 print '<div class="tabBar">';
@@ -138,7 +143,7 @@ $doleditor->Create();
 print '</td></tr>';
 
 // Parent category
-print '<tr><td>'.$langs->trans ("In").'</td><td>';
+print '<tr><td>'.$langs->trans("In").'</td><td>';
 print $html->select_all_categories($type,$categorie->id_mere,'catMere',64,$categorie->id);
 print '</td></tr>';
 
@@ -161,5 +166,5 @@ print '</div>';
 
 $db->close();
 
-llxFooter('$Date: 2011/08/03 00:46:31 $ - $Revision: 1.39 $');
+llxFooter();
 ?>

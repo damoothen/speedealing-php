@@ -18,7 +18,6 @@
 /**
  *		\file       htdocs/admin/menus/menu.js.php
  *		\brief      File for js menu
- *		\version    $Id: menu.js.php,v 1.9 2011/07/31 22:23:15 eldy Exp $
  */
 
 
@@ -33,7 +32,7 @@ if (! defined('NOREQUIREMENU'))   define('NOREQUIREMENU',1);
 if (! defined('NOREQUIREHTML'))   define('NOREQUIREHTML',1);
 if (! defined('NOREQUIREAJAX'))   define('NOREQUIREAJAX','1');
 
-session_cache_limiter( FALSE );
+session_cache_limiter(FALSE);
 
 require_once("../../master.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/lib/functions.lib.php");

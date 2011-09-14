@@ -19,7 +19,6 @@
 /**
  *	\file			htdocs/lib/google.class.php
  *	\brief			A set of functions for using Google APIs
- *	\version		$Id: google.class.php,v 1.3 2011/07/31 23:25:23 eldy Exp $
  */
 class GoogleAPI
 {
@@ -31,8 +30,8 @@ class GoogleAPI
 	/**
 	 * Constructor
 	 *
-	 * @param 	db			Database handler
-	 * @param	string		Google key
+	 * @param 	DoliDB		$db			Database handler
+	 * @param	string		$key		Google key
 	 * @return GoogleAPI
 	 */
 	function GoogleAPI($DB,$key)

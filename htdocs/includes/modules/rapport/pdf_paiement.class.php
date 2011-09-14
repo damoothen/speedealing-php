@@ -21,9 +21,7 @@
  *	\file       htdocs/includes/modules/rapport/pdf_paiement.class.php
  *	\ingroup    banque
  *	\brief      File to build payment reports
- *	\version    $Id: pdf_paiement.class.php,v 1.65 2011/08/10 23:21:09 eldy Exp $
  */
-require_once(FPDFI_PATH.'fpdi_protection.php');
 require_once(DOL_DOCUMENT_ROOT.'/lib/pdf.lib.php');
 require_once(DOL_DOCUMENT_ROOT."/lib/company.lib.php");
 
@@ -49,8 +47,9 @@ class pdf_paiement
 
 		// Dimension page pour format A4
 		$this->type = 'pdf';
-		$this->page_largeur = 210;
-		$this->page_hauteur = 297;
+		$formatarray=pdf_getFormat();
+		$this->page_largeur = $formatarray['width'];
+		$this->page_hauteur = $formatarray['height'];
 		$this->format = array($this->page_largeur,$this->page_hauteur);
 		$this->marge_gauche=10;
 		$this->marge_droite=10;
@@ -81,7 +80,7 @@ class pdf_paiement
 
 		if (! is_object($outputlangs)) $outputlangs=$langs;
 		// For backward compatibility with FPDF, force output charset to ISO, because FPDF expect text to be encoded in ISO
-		if (!class_exists('TCPDF')) $outputlangs->charset_output='ISO-8859-1';
+		if (! empty($conf->global->MAIN_USE_FPDF)) $outputlangs->charset_output='ISO-8859-1';
 
 		$this->month=$month;
 		$this->year=$year;
@@ -206,12 +205,14 @@ class pdf_paiement
 	}
 
 	/**
-	 *	\brief  Generate Header
-	 *	\param  pdf pdf object
-	 *	\param  page current page number
-	 *	\param  pages number of pages
+	 *   	Show header of page
+	 *
+	 *   	@param      $pdf     		Object PDF
+	 *   	@param      $object     	Object
+	 *      @param      $showaddress    0=no, 1=yes
+	 *      @param      $outputlangs	Object lang for output
 	 */
-	function _pagehead(&$pdf, $page, $showadress=1, $outputlangs)
+	function _pagehead(&$pdf, $page, $showaddress=1, $outputlangs)
 	{
 		global $langs;
 

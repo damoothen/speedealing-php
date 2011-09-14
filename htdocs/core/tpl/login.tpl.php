@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- * $Id: login.tpl.php,v 1.19 2011/07/31 23:45:11 eldy Exp $
  */
 
 header('Cache-Control: Public, must-revalidate');
@@ -26,16 +25,14 @@ header("Content-type: text/html; charset=".$conf->file->character_set_client);
 <!-- <!DOCTYPE html> -->
 <!-- Ce DTD est KO car inhibe document.body.scrollTop -->
 <!-- <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> -->
-
 <!-- BEGIN PHP TEMPLATE -->
-
 <html>
-<!-- <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr"> -->
 <head>
 <meta name="robots" content="noindex,nofollow" />
 <title><?php echo $langs->trans('Login'); ?></title>
 <script type="text/javascript" src="<?php echo DOL_URL_ROOT ?>/includes/jquery/js/jquery-latest.min.js"></script>
 <link rel="stylesheet" type="text/css" href="<?php echo $conf_css; ?>" />
+<link rel="shortcut icon" type="image/x-icon" href="<?php echo DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/favicon.ico'; ?>" />
 <style type="text/css">
 <!--
 #login {
@@ -45,7 +42,7 @@ header("Content-type: text/html; charset=".$conf->file->character_set_client);
 	font: 12px arial,helvetica;
 }
 #login table {
-	width: 498px;
+	width: 512px;
 	border: 1px solid #C0C0C0;
 	background: #F0F0F0 url(<?php echo $login_background; ?>) repeat-x;
 	font-size: 12px;
@@ -98,7 +95,7 @@ jQuery(document).ready(function () {
 <table class="login" summary="<?php echo $title; ?>" cellpadding="0" cellspacing="0" border="0" align="center">
 <tr class="vmenu"><td align="center"><?php echo $title; ?></td></tr>
 </table>
-<br />
+<br>
 
 <table class="login" summary="Login area" cellpadding="2" align="center">
 
@@ -143,7 +140,7 @@ jQuery(document).ready(function () {
 
 <tr><td colspan="3">&nbsp;</td></tr>
 
-<tr><td colspan="3" style="text-align:center;"><br />
+<tr><td colspan="3" style="text-align:center;"><br>
 <input type="submit" class="button" value="&nbsp; <?php echo $langs->trans('Connection'); ?> &nbsp;" tabindex="5" />
 </td></tr>
 
@@ -186,7 +183,7 @@ jQuery(document).ready(function () {
 		<center><table summary="info" cellpadding="0" cellspacing="0" border="0" align="center" width="750">
 		<tr><td align="center">
 		<?php echo $main_home; ?>
-		</td></tr></table></center><br />
+		</td></tr></table></center><br>
 	<?php } ?>
 
 	<?php

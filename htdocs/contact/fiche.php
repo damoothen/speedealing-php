@@ -23,7 +23,6 @@
  *       \file       htdocs/contact/fiche.php
  *       \ingroup    societe
  *       \brief      Card of a contact
- *       \version    $Id: fiche.php,v 1.224 2011/08/10 22:47:34 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -38,34 +37,27 @@ $langs->load("users");
 $langs->load("other");
 $langs->load("commercial");
 
-$error=0; $errors=array();
+$mesg=''; $error=0; $errors=array();
 
 $action = GETPOST('action');
-$socid = GETPOST("socid");
 $id = GETPOST("id");
-
-// Security check
+$socid = GETPOST("socid");
 if ($user->societe_id) $socid=$user->societe_id;
 
 $object = new Contact($db);
 
 // Get object canvas (By default, this is not defined, so standard usage of dolibarr)
-if (!empty($id)) $object->getCanvas($id);
-$canvas = (!empty($object->canvas)?$object->canvas:GETPOST("canvas"));
+$object->getCanvas($id);
+$canvas = $object->canvas?$object->canvas:GETPOST("canvas");
 if (! empty($canvas))
 {
     require_once(DOL_DOCUMENT_ROOT."/core/class/canvas.class.php");
     $objcanvas = new Canvas($db,$action);
     $objcanvas->getCanvas('contact','contactcard',$canvas);
+}
 
-    // Security check
-    $result = $objcanvas->restrictedArea($user, 'contact', $id, 'socpeople');
-}
-else
-{
-    // Security check
-    $result = restrictedArea($user, 'contact', $id, 'socpeople'); // If we create a contact with no company (shared contacts), no check on write permission
-}
+// Security check
+$result = restrictedArea($user, 'contact', $id, 'socpeople', '', '', '', $objcanvas); // If we create a contact with no company (shared contacts), no check on write permission
 
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
 include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
@@ -214,7 +206,7 @@ if (empty($reshook))
         $result = $object->delete();
         if ($result > 0)
         {
-            Header("Location: index.php");
+            Header("Location: ".DOL_URL_ROOT.'/contact/list.php');
             exit;
         }
         else
@@ -295,6 +287,7 @@ if ($socid > 0)
     $objsoc->fetch($socid);
 }
 
+// TODO Mutualize this part of code (same than societe/soc.php and product/fiche.php)
 if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 {
     // -----------------------------------------
@@ -302,7 +295,6 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
     // -----------------------------------------
     if ($action == 'create')
     {
-        $objcanvas->assign_post();            // TODO: Put code of assign_post into assign_values to keep only assign_values
         $objcanvas->assign_values($action);   // Set value for templates
         $objcanvas->display_canvas($action);  // Show template
     }
@@ -315,7 +307,6 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
             $object->fetch($id,$user);
             $objcanvas->control->object=$object;
         }
-       	$objcanvas->assign_post();            // TODO: Put code of assign_post into assign_values to keep only assign_values
         $objcanvas->assign_values($action);   // Set value for templates
         $objcanvas->display_canvas($action);  // Show template
     }
@@ -544,7 +535,7 @@ else
             }
             print '</tr>';
 
-            print "</table><br>";
+            print "</table><br><br>";
 
 
             print '<center>';
@@ -762,7 +753,6 @@ else
             $generated_password='';
             if (! $ldap_sid) // TODO ldap_sid ?
             {
-				include_once(DOL_DOCUMENT_ROOT.'/lib/security.lib.php');
 	        	$generated_password=getRandomPassword('');
             }
             $password=$generated_password;
@@ -949,5 +939,5 @@ else
 
 $db->close();
 
-llxFooter('$Date: 2011/08/10 22:47:34 $ - $Revision: 1.224 $');
+llxFooter();
 ?>

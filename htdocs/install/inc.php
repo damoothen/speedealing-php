@@ -2,7 +2,7 @@
 /* Copyright (C) 2004      Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004      Benoit Mortier       <benoit.mortier@opensides.be>
  * Copyright (C) 2004      Sebastien DiCintio   <sdicintio@ressource-toi.org>
- * Copyright (C) 2007-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2007-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,17 +21,24 @@
 /**	    \file       htdocs/install/inc.php
  * 		\ingroup	core
  *		\brief      File that define environment for install pages
- *		\version    $Id: inc.php,v 1.139 2011/08/05 23:47:34 eldy Exp $
  */
 
-define('DOL_VERSION','3.1.0-beta');	// Also defined in htdocs/master.inc.php (Ex: x.y.z-alpha, x.y.z)
+define('DOL_VERSION','3.2.0-alpha');	// Also defined in htdocs/master.inc.php (Ex: x.y.z-alpha, x.y.z)
+
+// Define DOL_DOCUMENT_ROOT an ADODB_PATH used for install/upgrade process
+if (! defined('DOL_DOCUMENT_ROOT'))	    define('DOL_DOCUMENT_ROOT', '..');
+if (! defined('ADODB_PATH'))
+{
+    $foundpath=DOL_DOCUMENT_ROOT .'/includes/adodbtime/';
+    if (! is_dir($foundpath)) $foundpath='/usr/share/php/adodb/';
+    define('ADODB_PATH', $foundpath);
+}
 
 require_once('../core/class/translate.class.php');
 require_once('../lib/functions.lib.php');
 require_once('../lib/admin.lib.php');
 require_once('../lib/files.lib.php');
-
-// DOL_DOCUMENT_ROOT has been defined in function.inc.php to '..'
+require_once(ADODB_PATH.'adodb-time.inc.php');
 
 error_reporting(E_ALL);	// To have all errors without disabled E_STRICT
 

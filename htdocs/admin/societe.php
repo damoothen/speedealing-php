@@ -3,6 +3,7 @@
  * Copyright (C) 2004      Eric Seigne          <eric.seigne@ryxeo.com>
  * Copyright (C) 2005-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2010 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2011      Juanjo Menent        <jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +23,6 @@
  *	\file       htdocs/admin/societe.php
  *	\ingroup    company
  *	\brief      Third party module setup page
- *	\version    $Id: societe.php,v 1.61 2011/07/31 22:23:23 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -34,12 +34,16 @@ $langs->load("admin");
 if (!$user->admin)
 accessforbidden();
 
+$action=GETPOST("action");
+$value = GETPOST("value");
+
+
 /*
  * Actions
  */
-if ($_GET["action"] == 'setcodeclient')
+if ($action == 'setcodeclient')
 {
-	if (dolibarr_set_const($db, "SOCIETE_CODECLIENT_ADDON",$_GET["value"],'chaine',0,'',$conf->entity) > 0)
+	if (dolibarr_set_const($db, "SOCIETE_CODECLIENT_ADDON",$value,'chaine',0,'',$conf->entity) > 0)
 	{
 		Header("Location: ".$_SERVER["PHP_SELF"]);
 		exit;
@@ -50,9 +54,9 @@ if ($_GET["action"] == 'setcodeclient')
 	}
 }
 
-if ($_GET["action"] == 'setcodecompta')
+if ($action == 'setcodecompta')
 {
-	if (dolibarr_set_const($db, "SOCIETE_CODECOMPTA_ADDON",$_GET["value"],'chaine',0,'',$conf->entity) > 0)
+	if (dolibarr_set_const($db, "SOCIETE_CODECOMPTA_ADDON",$value,'chaine',0,'',$conf->entity) > 0)
 	{
 		Header("Location: ".$_SERVER["PHP_SELF"]);
 		exit;
@@ -63,42 +67,61 @@ if ($_GET["action"] == 'setcodecompta')
 	}
 }
 
-if ($_POST["action"] == 'COMPANY_USE_SEARCH_TO_SELECT')
+if ($action == 'COMPANY_USE_SEARCH_TO_SELECT')
 {
-	if (dolibarr_set_const($db, "COMPANY_USE_SEARCH_TO_SELECT", $_POST["activate_COMPANY_USE_SEARCH_TO_SELECT"],'chaine',0,'',$conf->entity))
-	{
-		Header("Location: ".$_SERVER["PHP_SELF"]);
-		exit;
-	}
-	else
-	{
-		dol_print_error($db);
+	$companysearch = GETPOST("activate_COMPANY_USE_SEARCH_TO_SELECT");
+	$res = dolibarr_set_const($db, "COMPANY_USE_SEARCH_TO_SELECT", $companysearch,'chaine',0,'',$conf->entity);
+	if (! $res > 0) $error++;
+	if (! $error)
+    {
+        $mesg = "<font class=\"ok\">".$langs->trans("SetupSaved")."</font>";
+    }
+    else
+    {
+        $mesg = "<font class=\"error\">".$langs->trans("Error")."</font>";
 	}
 }
 
-// define constants for models generator that need parameters
-if ($_POST["action"] == 'setModuleOptions')
+// Define constants for submodules that contains parameters (forms with param1, param2, ... and value1, value2, ...)
+if ($action == 'setModuleOptions')
 {
 	$post_size=count($_POST);
+
+	$db->begin();
+
 	for($i=0;$i < $post_size;$i++)
     {
     	if (array_key_exists('param'.$i,$_POST))
     	{
     		$param=$_POST["param".$i];
     		$value=$_POST["value".$i];
-    		if ($param) dolibarr_set_const($db,$param,$value,'chaine',0,'',$conf->entity);
+    		if ($param) $res = dolibarr_set_const($db,$param,$value,'chaine',0,'',$conf->entity);
+	    	if (! $res > 0) $error++;
     	}
     }
+	if (! $error)
+    {
+        $db->commit();
+        $mesg = "<font class=\"ok\">".$langs->trans("SetupSaved")."</font>";
+    }
+    else
+    {
+        $db->rollback();
+        $mesg = "<font class=\"error\">".$langs->trans("Error")."</font>";
+	}
 }
 
 // Activate a document generator module
-if ($_GET["action"] == 'set')
+if ($action == 'set')
 {
+	$label = GETPOST("label");
+	$scandir = GETPOST("scandir");
+
 	$type='company';
 	$sql = "INSERT INTO ".MAIN_DB_PREFIX."document_model (nom, type, entity, libelle, description)";
-	$sql.= " VALUES ('".$db->escape($_GET["value"])."','".$type."',".$conf->entity.", ";
-	$sql.= ($_GET["label"]?"'".$db->escape($_GET["label"])."'":'null').", ";
-	$sql.= (! empty($_GET["scandir"])?"'".$db->escape($_GET["scandir"])."'":"null");
+	$sql.= " VALUES ('".$db->escape($value)."','".$type."',".$conf->entity.", ";
+	$sql.= ($label?"'".$db->escape($label)."'":'null').", ";
+	$sql.= (! empty($scandir)?"'".$db->escape($scandir)."'":"null");
 	$sql.= ")";
 	if ($db->query($sql))
 	{
@@ -108,11 +131,11 @@ if ($_GET["action"] == 'set')
 }
 
 // Disable a document generator module
-if ($_GET["action"] == 'del')
+if ($action== 'del')
 {
 	$type='company';
 	$sql = "DELETE FROM ".MAIN_DB_PREFIX."document_model";
-	$sql.= " WHERE nom='".$db->escape($_GET["value"])."' AND type='".$type."' AND entity=".$conf->entity;
+	$sql.= " WHERE nom='".$db->escape($value)."' AND type='".$type."' AND entity=".$conf->entity;
 	if ($db->query($sql))
 	{
 
@@ -121,13 +144,16 @@ if ($_GET["action"] == 'del')
 }
 
 // Define default generator
-if ($_GET["action"] == 'setdoc')
+if ($action == 'setdoc')
 {
+	$label = GETPOST("label");
+	$scandir = GETPOST("scandir");
+
 	$db->begin();
 
-	if (dolibarr_set_const($db, "COMPANY_ADDON_PDF",$_GET["value"],'chaine',0,'',$conf->entity))
+	if (dolibarr_set_const($db, "COMPANY_ADDON_PDF",$value,'chaine',0,'',$conf->entity))
 	{
-		$conf->global->COMPANY_ADDON_PDF = $_GET["value"];
+		$conf->global->COMPANY_ADDON_PDF = $value;
 	}
 
 	// On active le modele
@@ -140,9 +166,9 @@ if ($_GET["action"] == 'setdoc')
 	$result1=$db->query($sql_del);
 
 	$sql = "INSERT INTO ".MAIN_DB_PREFIX."document_model (nom, type, entity, libelle, description)";
-	$sql.= " VALUES ('".$db->escape($_GET["value"])."', '".$type."', ".$conf->entity.", ";
-	$sql.= ($_GET["label"]?"'".$db->escape($_GET["label"])."'":'null').", ";
-	$sql.= (! empty($_GET["scandir"])?"'".$db->escape($_GET["scandir"])."'":"null");
+	$sql.= " VALUES ('".$db->escape($value)."', '".$type."', ".$conf->entity.", ";
+	$sql.= ($label?"'".$db->escape($label)."'":'null').", ";
+	$sql.= (! empty($scandir)?"'".$db->escape($scandir)."'":"null");
 	$sql.= ")";
     dol_syslog("societe.php ".$sql);
 	$result2=$db->query($sql);
@@ -157,6 +183,22 @@ if ($_GET["action"] == 'setdoc')
 	}
 }
 
+//Activate ProfId
+if ($action == 'setprofid')
+{
+	$status = GETPOST("status");
+
+	$idprof="SOCIETE_IDPROF".$value."_UNIQUE";
+	if (dolibarr_set_const($db, $idprof,$status,'chaine',0,'',$conf->entity) > 0)
+	{
+		Header("Location: ".$_SERVER["PHP_SELF"]);
+		exit;
+	}
+	else
+	{
+		dol_print_error($db);
+	}
+}
 
 
 /*
@@ -165,19 +207,21 @@ if ($_GET["action"] == 'setdoc')
 
 $form=new Form($db);
 
-$help_url='EN:Module Third Parties setup|FR:Paramétrage_du_module_Tiers';
+$help_url='EN:Module Third Parties setup|FR:Paramétrage_du_module_Tiers|ES:Configuración_del_módulo_terceros';
 llxHeader('',$langs->trans("CompanySetup"),$help_url);
 
 $linkback='<a href="'.DOL_URL_ROOT.'/admin/modules.php">'.$langs->trans("BackToModuleList").'</a>';
 print_fiche_titre($langs->trans("CompanySetup"),$linkback,'setup');
 
 
-$head = societe_admin_prepare_head($soc);
+$head = societe_admin_prepare_head(null);
 
 dol_fiche_head($head, 'general', $langs->trans("ThirdParty"), 0, 'company');
 
+dol_htmloutput_mesg($mesg);
 
-// Choix du module de gestion des codes clients / fournisseurs
+
+// Module to manage customer/supplier code
 
 print_titre($langs->trans("CompanyCodeChecker"));
 
@@ -186,7 +230,7 @@ print "<tr class=\"liste_titre\">\n";
 print '  <td>'.$langs->trans("Name").'</td>';
 print '  <td>'.$langs->trans("Description").'</td>';
 print '  <td>'.$langs->trans("Example").'</td>';
-print '  <td align="center">'.$langs->trans("Status").'</td>';
+print '  <td align="center" width="80">'.$langs->trans("Status").'</td>';
 print '  <td align="center" width="60">'.$langs->trans("Infos").'</td>';
 print "</tr>\n";
 
@@ -222,18 +266,18 @@ if (is_resource($handle))
 			if ($conf->global->SOCIETE_CODECLIENT_ADDON == "$file")
 			{
 				print "<td align=\"center\">\n";
-				print img_picto($langs->trans("Activated"),'on');
+				print img_picto($langs->trans("Activated"),'switch_on');
 				print "</td>\n";
 			}
 			else
 			{
 				print '<td align="center"><a href="'.$_SERVER['PHP_SELF'].'?action=setcodeclient&amp;value='.$file.'">';
-				print img_picto($langs->trans("Disabled"),'off');
+				print img_picto($langs->trans("Disabled"),'switch_off');
 				print '</a></td>';
 			}
 
 			print '<td align="center">';
-			$s=$modCodeTiers->getToolTip($langs,$soc,-1);
+			$s=$modCodeTiers->getToolTip($langs,null,-1);
 			print $form->textwithpicto('',$s,1);
 			print '</td>';
 
@@ -248,7 +292,7 @@ print '</table>';
 print "<br>";
 
 
-// Choix du module de gestion des codes compta
+// Select accountancy code numbering module
 
 print_titre($langs->trans("AccountCodeManager"));
 
@@ -257,7 +301,7 @@ print '<tr class="liste_titre">';
 print '<td width="140">'.$langs->trans("Name").'</td>';
 print '<td>'.$langs->trans("Description").'</td>';
 print '<td>'.$langs->trans("Example").'</td>';
-print '<td align="center">'.$langs->trans("Status").'</td>';
+print '<td align="center" width="80">'.$langs->trans("Status").'</td>';
 print '<td align="center" width="60">&nbsp;</td>';
 print "</tr>\n";
 
@@ -288,16 +332,19 @@ if (is_resource($handle))
 			if ($conf->global->SOCIETE_CODECOMPTA_ADDON == "$file")
 			{
 				print '<td align="center">';
-				print img_picto($langs->trans("Activated"),'on');
+				print img_picto($langs->trans("Activated"),'switch_on');
 				print '</td>';
 			}
 			else
 			{
 				print '<td align="center"><a href="'.$_SERVER['PHP_SELF'].'?action=setcodecompta&amp;value='.$file.'">';
-				print img_picto($langs->trans("Disabled"),'off');
+				print img_picto($langs->trans("Disabled"),'switch_off');
 				print '</a></td>';
 			}
-			print '<td>&nbsp;</td>';
+			print '<td align="center">';
+			$s=$modCodeCompta->getToolTip($langs,null,-1);
+			print $form->textwithpicto('',$s,1);
+			print '</td>';
 			print "</tr>\n";
 		}
 	}
@@ -339,8 +386,8 @@ print '<table class="noborder" width="100%">';
 print '<tr class="liste_titre">';
 print '<td width="140">'.$langs->trans("Name").'</td>';
 print '<td>'.$langs->trans("Description").'</td>';
-print '<td align="center">'.$langs->trans("Status").'</td>';
-print '<td align="center" width="60" colspan="2">'.$langs->trans("Infos").'</td>';
+print '<td align="center" width="80">'.$langs->trans("Status").'</td>';
+print '<td align="center" width="60">'.$langs->trans("Infos").'</td>';
 print "</tr>\n";
 
 clearstatcache();
@@ -387,7 +434,7 @@ foreach ($conf->file->dol_document_root as $dirroot)
 							//if ($conf->global->COMPANY_ADDON_PDF != "$name")
 							//{
 								print '<a href="'.$_SERVER["PHP_SELF"].'?action=del&amp;value='.$name.'&amp;scandir='.$module->scandir.'&amp;label='.urlencode($module->name).'">';
-								print img_picto($langs->trans("Enabled"),'on');
+								print img_picto($langs->trans("Enabled"),'switch_on');
 								print '</a>';
 							//}
 							//else
@@ -401,13 +448,13 @@ foreach ($conf->file->dol_document_root as $dirroot)
 							if (versioncompare($module->phpmin,versionphparray()) > 0)
 							{
 								print "<td align=\"center\">\n";
-								print img_picto(dol_escape_htmltag($langs->trans("ErrorModuleRequirePHPVersion",join('.',$module->phpmin))),'off');
+								print img_picto(dol_escape_htmltag($langs->trans("ErrorModuleRequirePHPVersion",join('.',$module->phpmin))),'switch_off');
 								print "</td>";
 							}
 							else
 							{
 								print "<td align=\"center\">\n";
-								print '<a href="'.$_SERVER["PHP_SELF"].'?action=set&amp;value='.$name.'&amp;scandir='.$module->scandir.'&amp;label='.urlencode($module->name).'">'.img_picto($langs->trans("Disabled"),'off').'</a>';
+								print '<a href="'.$_SERVER["PHP_SELF"].'?action=set&amp;value='.$name.'&amp;scandir='.$module->scandir.'&amp;label='.urlencode($module->name).'">'.img_picto($langs->trans("Disabled"),'switch_off').'</a>';
 								print "</td>";
 							}
 						}
@@ -423,20 +470,16 @@ foreach ($conf->file->dol_document_root as $dirroot)
 						$htmltooltip.='<br>'.$langs->trans("WatermarkOnDraft").': '.yn($module->option_draft_watermark,1,1);
 
 
-						print '<td align="center">';
-						print $form->textwithpicto('',$htmltooltip,1,0);
-						print '</td>';
-
-						// Preview
-						print '<td align="center">';
+						print '<td align="center" nowrap="nowrap">';
 						if ($modele->type == 'pdf')
 						{
-							print '<a href="'.$_SERVER["PHP_SELF"].'?action=specimen&module='.$name.'">'.img_object($langs->trans("Preview"),'bill').'</a>';
+							$linkspec='<a href="'.$_SERVER["PHP_SELF"].'?action=specimen&module='.$name.'">'.img_object($langs->trans("Preview"),'bill').'</a>';
 						}
 						else
 						{
-							print img_object($langs->trans("PreviewNotAvailable"),'generic');
+							$linkspec=img_object($langs->trans("PreviewNotAvailable"),'generic');
 						}
+						print $form->textwithpicto(' &nbsp; '.$linkspec,$htmltooltip,1,0);
 						print '</td>';
 
 						print "</tr>\n";
@@ -450,6 +493,73 @@ foreach ($conf->file->dol_document_root as $dirroot)
 print '</table>';
 
 print '<br>';
+
+//IDProf
+print_titre($langs->trans("CompanyIdProfChecker"));
+
+print '<table class="noborder" width="100%">';
+print '<tr class="liste_titre">';
+print '<td>'.$langs->trans("Name").'</td>';
+print '<td>'.$langs->trans("Description").'</td>';
+print '<td align="center">'.$langs->trans("MustBeUnique").'</td>';
+print "</tr>\n";
+
+$profid[0][0]=$langs->trans("ProfId1");
+$profid[0][1]=$langs->transcountry('ProfId1' ,$mysoc->pays_code);
+$profid[1][0]=$langs->trans("ProfId2");
+$profid[1][1]=$langs->transcountry('ProfId2' ,$mysoc->pays_code);
+$profid[2][0]=$langs->trans("ProfId3");
+$profid[2][1]=$langs->transcountry('ProfId3' ,$mysoc->pays_code);
+$profid[3][0]=$langs->trans("ProfId4");
+$profid[3][1]=$langs->transcountry('ProfId4' ,$mysoc->pays_code);
+
+$var = true;
+$i=0;
+
+$nbofloop=count($profid);
+while ($i < $nbofloop)
+{
+	$var = !$var;
+
+	print '<tr '.$bc[$var].'>';
+	print '<td>'.$profid[$i][0]."</td><td>\n";
+	print $profid[$i][1];
+	print '</td>';
+
+	switch($i)
+	{
+        case 0:
+        	$verif=(!$conf->global->SOCIETE_IDPROF1_UNIQUE?false:true);
+        	break;
+        case 1:
+        	$verif=(!$conf->global->SOCIETE_IDPROF2_UNIQUE?false:true);
+        	break;
+        case 2:
+        	$verif=(!$conf->global->SOCIETE_IDPROF3_UNIQUE?false:true);
+        	break;
+        case 3:
+        	$verif=(!$conf->global->SOCIETE_IDPROF4_UNIQUE?false:true);
+        	break;
+	}
+
+	if ($verif)
+	{
+		print '<td align="center"><a href="'.$_SERVER['PHP_SELF'].'?action=setprofid&amp;value='.($i+1).'&amp;status=0">';
+		print img_picto($langs->trans("Activated"),'switch_on');
+		print '</a></td>';
+	}
+	else
+	{
+		print '<td align="center"><a href="'.$_SERVER['PHP_SELF'].'?action=setprofid&amp;value='.($i+1).'&amp;status=1">';
+		print img_picto($langs->trans("Disabled"),'switch_off');
+		print '</a></td>';
+	}
+	print "</tr>\n";
+	$i++;
+}
+
+print "</table><br>\n";
+
 
 print_titre($langs->trans("Other"));
 
@@ -498,5 +608,5 @@ dol_fiche_end();
 
 $db->close();
 
-llxFooter('$Date: 2011/07/31 22:23:23 $ - $Revision: 1.61 $');
+llxFooter();
 ?>

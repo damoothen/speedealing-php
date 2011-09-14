@@ -19,7 +19,6 @@
  *	    \file       htdocs/admin/events.php
  *      \ingroup    core
  *      \brief      Log event setup page
- *		\version    $Id: events.php,v 1.21 2011/07/31 22:23:24 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -103,7 +102,7 @@ foreach ($eventstolog as $key => $arr)
 		print '<td>';
 		$key='MAIN_LOGEVENTS_'.$arr['id'];
 		$value=$conf->global->$key;
-		print '<input '.$bc[$var].' type="checkbox" name="'.$key.'" value="1"'.($value?' checked="true"':'').'>';
+		print '<input '.$bc[$var].' type="checkbox" name="'.$key.'" value="1"'.($value?' checked="checked"':'').'>';
 		print '</td></tr>'."\n";
 	}
 }
@@ -123,5 +122,5 @@ dol_htmloutput_mesg($mesg);
 
 $db->close();
 
-llxFooter('$Date: 2011/07/31 22:23:24 $ - $Revision: 1.21 $');
+llxFooter();
 ?>

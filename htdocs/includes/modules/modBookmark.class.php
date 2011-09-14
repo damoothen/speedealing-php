@@ -19,10 +19,6 @@
 /**
  *	\defgroup   bookmark    Module bookmarks
  *	\brief      Module to manage Bookmarks
- *	\version	$Id: modBookmark.class.php,v 1.26 2011/07/31 23:28:12 eldy Exp $
- */
-
-/**
  *	\file       htdocs/includes/modules/modBookmark.class.php
  *	\ingroup    bookmark
  *	\brief      Fichier de description et activation du module Bookmarks

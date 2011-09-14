@@ -1,6 +1,6 @@
 <?php
 /* Copyright (C) 2003-2005 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2008 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@
  *      \file       htdocs/core/class/notify.class.php
  *      \ingroup    notification
  *      \brief      File of class to manage notifications
- *      \version    $Id: notify.class.php,v 1.13 2011/07/31 23:45:14 eldy Exp $
  */
 require_once(DOL_DOCUMENT_ROOT ."/lib/CMailFile.class.php");
 
@@ -43,13 +42,11 @@ class Notify
     var $fk_project;
 
 	// Les codes actions sont definis dans la table llx_notify_def
-	// \todo utiliser des codes texte plutot que numerique
-	// 1 = Validation fiche inter
-	// 2 = Validation facture
 
     /**
-     *    \brief      Constructeur
-     *    \param      DB      Handler acces base
+	 *	Constructor
+	 *
+	 *	@param 		DoliDB		$DB		Database handler
      */
     function Notify($DB)
     {
@@ -58,11 +55,12 @@ class Notify
 
 
     /**
-     *    	\brief      Renvoie le message signalant les notifications qui auront lieu sur
-     *					un evenement pour affichage dans texte de confirmation evenement.
-     * 		\param		action		Id of action in llx_c_action_trigger
-     * 		\param		socid		Id of third party
-     *		\return		string		Message
+     *  Renvoie le message signalant les notifications qui auront lieu sur
+     *	un evenement pour affichage dans texte de confirmation evenement
+     *
+     * 	@param		action		Id of action in llx_c_action_trigger
+     * 	@param		socid		Id of third party
+     *	@return		string		Message
      */
 	function confirmMessage($action,$socid)
 	{

@@ -26,7 +26,6 @@
  *	\file       	htdocs/comm/propal.php
  *	\ingroup    	propale
  *	\brief      	Page of commercial proposals card and list
- *	\version		$Id: propal.php,v 1.620 2011/08/10 22:47:35 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -662,7 +661,7 @@ if ($_POST['action'] == "addline" && $user->rights->propale->creer)
 		// Ecrase $txtva par celui du produit
 		if ($_POST['idprod'])
 		{
-			$prod = new Product($db, $_POST['idprod']);
+			$prod = new Product($db);
 			$prod->fetch($_POST['idprod']);
 
 			$tva_tx = get_default_tva($mysoc,$object->client,$prod->id);
@@ -701,7 +700,7 @@ if ($_POST['action'] == "addline" && $user->rights->propale->creer)
 			}
 
 			$desc = $prod->description;
-			$desc.= ($prod->description && $_POST['np_desc']) ? ((dol_textishtml($prod->description) || dol_textishtml($_POST['np_desc']))?"<br />\n":"\n") : "";
+			$desc.= ($prod->description && $_POST['np_desc']) ? ((dol_textishtml($prod->description) || dol_textishtml($_POST['np_desc']))?"<br>\n":"\n") : "";
 			$desc.= $_POST['np_desc'];
 			$type = $prod->type;
 		}
@@ -1367,10 +1366,10 @@ if ($id > 0 || ! empty($ref))
 		print $langs->trans('Project').'</td>';
 		if ($user->rights->propale->creer)
 		{
-			if ($action != 'classer') print '<td align="right"><a href="'.$_SERVER['PHP_SELF'].'?action=classer&amp;id='.$object->id.'">'.img_edit($langs->trans('SetProject')).'</a></td>';
+			if ($action != 'classify') print '<td align="right"><a href="'.$_SERVER['PHP_SELF'].'?action=classify&amp;id='.$object->id.'">'.img_edit($langs->trans('SetProject')).'</a></td>';
 			print '</tr></table>';
 			print '</td><td colspan="3">';
-			if ($action == 'classer')
+			if ($action == 'classify')
 			{
 				$html->form_project($_SERVER['PHP_SELF'].'?id='.$object->id, $object->socid, $object->fk_project, 'projectid');
 			}
@@ -1399,6 +1398,10 @@ if ($id > 0 || ! empty($ref))
 		}
 		print '</tr>';
 	}
+
+	// Insert hooks
+	$parameters=array('colspan'=>' colspan="3"');
+	$reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
 
 	// Amount HT
 	print '<tr><td height="10">'.$langs->trans('AmountHT').'</td>';
@@ -1801,7 +1804,7 @@ else
 		print_liste_field_titre($langs->trans('Price'),$_SERVER["PHP_SELF"],'p.total_ht','',$param, 'align="right"',$sortfield,$sortorder);
 		print_liste_field_titre($langs->trans('Author'),$_SERVER["PHP_SELF"],'u.login','',$param,'align="right"',$sortfield,$sortorder);
 		print_liste_field_titre($langs->trans('Status'),$_SERVER["PHP_SELF"],'p.fk_statut','',$param,'align="right"',$sortfield,$sortorder);
-		print '<td class="liste_titre">&nbsp;</td>';
+		print_liste_field_titre('');
 		print "</tr>\n";
 		// Lignes des champs de filtre
 		print '<form method="get" action="'.$_SERVER["PHP_SELF"].'">';
@@ -1932,6 +1935,10 @@ else
 }
 $db->close();
 
+<<<<<<< HEAD
 llxFooter('$Date: 2011/08/10 22:47:35 $ - $Revision: 1.620 $');
+=======
+llxFooter();
+>>>>>>> a80ea15a6b37aed38b4a686f294b02bc70de978e
 
 ?>

@@ -21,7 +21,6 @@
  *      \file       htdocs/fourn/facture/info.php
  *      \ingroup    facture, fournisseur
  *		\brief      Page des informations d'une facture fournisseur
- *		\version    $Id: info.php,v 1.14 2011/07/31 23:57:00 eldy Exp $
  */
 
 require("../../main.inc.php");
@@ -49,7 +48,7 @@ llxHeader();
 $fac = new FactureFournisseur($db);
 $fac->fetch($_GET["facid"]);
 $fac->info($_GET["facid"]);
-$soc = new Societe($db, $fac->socid);
+$soc = new Societe($db);
 $soc->fetch($fac->socid);
 
 $head = facturefourn_prepare_head($fac);
@@ -64,5 +63,5 @@ print '</div>';
 
 $db->close();
 
-llxFooter('$Date: 2011/07/31 23:57:00 $ - $Revision: 1.14 $');
+llxFooter();
 ?>

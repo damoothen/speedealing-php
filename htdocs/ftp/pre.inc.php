@@ -19,13 +19,21 @@
  *		\file 		htdocs/ftp/pre.inc.php
  *		\ingroup    ftp
  *		\brief      File to manage left menu for FTP module
- *		\version    $Id: pre.inc.php,v 1.9 2011/08/01 00:01:02 eldy Exp $
  */
 
 require ("../main.inc.php");
 
 $user->getrights('ecm');
 
+/**
+ * Replace the default llxHeader function
+ *
+ * @param 	string $head		Optionnal head lines
+ * @param 	string $title		HTML title
+ * @param 	string $help_url	Link to online url help
+ * @param 	string $morehtml	More content into html header
+ * @return	none
+ */
 function llxHeader($head = '', $title='', $help_url='', $morehtml='')
 {
 	global $conf,$langs,$user;

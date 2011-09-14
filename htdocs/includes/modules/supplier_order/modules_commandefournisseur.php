@@ -26,10 +26,8 @@
  *      \ingroup    commande
  *      \brief      File that contain parent class for supplier orders models
  *                  and parent class for supplier orders numbering models
- *      \version    $Id: modules_commandefournisseur.php,v 1.23 2011/08/10 23:21:14 eldy Exp $
  */
-require_once(FPDFI_PATH.'fpdi_protection.php');
-require_once(DOL_DOCUMENT_ROOT.'/lib/pdf.lib.php');
+require_once(DOL_DOCUMENT_ROOT."/core/class/commondocgenerator.class.php");
 require_once(DOL_DOCUMENT_ROOT."/compta/bank/class/account.class.php");	// requis car utilise par les classes qui heritent
 
 
@@ -37,7 +35,7 @@ require_once(DOL_DOCUMENT_ROOT."/compta/bank/class/account.class.php");	// requi
  *	\class      ModelePDFSuppliersOrders
  *	\brief      Parent class for supplier orders models
  */
-class ModelePDFSuppliersOrders
+abstract class ModelePDFSuppliersOrders extends CommonDocGenerator
 {
 	var $error='';
 
@@ -72,6 +70,7 @@ class ModeleNumRefSuppliersOrders
 	var $error='';
 
 	/**  Return if a module can be used or not
+	 *
 	 *   @return		boolean     true if module can be used
 	 */
 	function isEnabled()
@@ -80,6 +79,7 @@ class ModeleNumRefSuppliersOrders
 	}
 
 	/**  Renvoie la description par defaut du modele de numerotation
+	 *
 	 *   @return     string      Texte descripif
 	 */
 	function info()
@@ -90,6 +90,7 @@ class ModeleNumRefSuppliersOrders
 	}
 
 	/**   Renvoie un exemple de numerotation
+	 *
 	 *    @return     string      Example
 	 */
 	function getExample()
@@ -100,6 +101,7 @@ class ModeleNumRefSuppliersOrders
 	}
 
 	/**  Test si les numeros deja en vigueur dans la base ne provoquent pas de conflits qui empecheraient cette numerotation de fonctionner.
+	 *
 	 *   @return     boolean     false si conflit, true si ok
 	 */
 	function canBeActivated()
@@ -108,6 +110,7 @@ class ModeleNumRefSuppliersOrders
 	}
 
 	/**  Renvoie prochaine valeur attribuee
+	 *
 	 *   @return     string      Valeur
 	 */
 	function getNextValue()
@@ -117,6 +120,7 @@ class ModeleNumRefSuppliersOrders
 	}
 
 	/**   Renvoie version du module numerotation
+	 *
 	 *    @return     string      Valeur
 	 */
 	function getVersion()
@@ -133,15 +137,16 @@ class ModeleNumRefSuppliersOrders
 
 
 /**
- *  Cree un bon de commande sur disque en fonction d'un modele
- *  @param	    db  			data base object
- *  @param	    object			object order
- *  @param	    modele			force le modele a utiliser ('' to not force)
- *  @param		outputlangs		objet lang a utiliser pour traduction
- *  @param      hidedetails     Hide details of lines
- *  @param      hidedesc        Hide description
- *  @param      hideref         Hide ref
- *  @return     int             0 if KO, 1 if OK
+ *  Create a document onto disk accordign to template module.
+ *
+ *  @param	    DoliDB		$db  			data base object
+ *  @param	    Object		$object			object order
+ *  @param	    string		$modele			force le modele a utiliser ('' to not force)
+ *  @param		Translate	$outputlangs	Objet lang a utiliser pour traduction
+ *  @param      int			$hidedetails    Hide details of lines
+ *  @param      int			$hidedesc       Hide description
+ *  @param      int			$hideref        Hide ref
+ *  @return     int          				0 if KO, 1 if OK
  */
 function supplier_order_pdf_create($db, $object, $model, $outputlangs, $hidedetails=0, $hidedesc=0, $hideref=0)
 {
@@ -172,8 +177,7 @@ function supplier_order_pdf_create($db, $object, $model, $outputlangs, $hidedeta
 	// Si model pas encore bon
 	if (! $modelisok)
 	{
-		$modele=new ModelePDFSuppliersOrders();
-		$liste=$modele->liste_modeles($db);
+		$liste=ModelePDFSuppliersOrders::liste_modeles($db);
 		$modele=key($liste);        // Renvoie la premiere valeur de cle trouvee dans le tableau
 		$file = "pdf_".$model.".modules.php";
 		// On verifie l'emplacement du modele

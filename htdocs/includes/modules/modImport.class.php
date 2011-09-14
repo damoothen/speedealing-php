@@ -16,12 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**     \defgroup   import      Module import
- *		\brief      Module to make generic import of data into dolibarr database
- *		\version	$Id: modImport.class.php,v 1.21 2011/07/31 23:28:12 eldy Exp $
- */
-
 /**
+ *  \defgroup   import      Module import
+ *  \brief      Module to make generic import of data into dolibarr database
  *	\file       htdocs/includes/modules/modImport.class.php
  *	\ingroup    import
  *	\brief      Fichier de description et activation du module Import

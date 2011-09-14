@@ -21,7 +21,6 @@
  *	\file       htdocs/includes/modules/supplier_invoice/pdf/pdf_canelle.modules.php
  *	\ingroup    fournisseur
  *	\brief      Class file to generate the supplier invoices with the canelle model
- *	\version    $Id: pdf_canelle.modules.php,v 1.35 2011/07/31 23:28:18 eldy Exp $
  */
 
 require_once(DOL_DOCUMENT_ROOT."/includes/modules/supplier_invoice/modules_facturefournisseur.php");
@@ -37,10 +36,29 @@ require_once(DOL_DOCUMENT_ROOT.'/lib/pdf.lib.php');
  */
 class pdf_canelle extends ModelePDFSuppliersInvoices
 {
+    var $db;
+    var $name;
+    var $description;
+    var $type;
+
+    var $phpmin = array(4,3,0); // Minimum version of PHP required by module
+    var $version = 'dolibarr';
+
+    var $page_largeur;
+    var $page_hauteur;
+    var $format;
+	var $marge_gauche;
+	var	$marge_droite;
+	var	$marge_haute;
+	var	$marge_basse;
+
+	var $emetteur;	// Objet societe qui emet
+
 
 	/**
-	 *	\brief      Constructor
-	 *	\param	    db		Handler access data base
+	 *	Constructor
+	 *
+	 *  @param		DoliDB		$DB      Database handler
 	 */
 	function pdf_canelle($db,$object)
 	{
@@ -55,8 +73,9 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 
 		// Dimension page pour format A4
 		$this->type = 'pdf';
-		$this->page_largeur = 210;
-		$this->page_hauteur = 297;
+		$formatarray=pdf_getFormat();
+		$this->page_largeur = $formatarray['width'];
+		$this->page_hauteur = $formatarray['height'];
 		$this->format = array($this->page_largeur,$this->page_hauteur);
 		$this->marge_gauche=10;
 		$this->marge_droite=10;
@@ -105,7 +124,7 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 
 		if (! is_object($outputlangs)) $outputlangs=$langs;
 		// For backward compatibility with FPDF, force output charset to ISO, because FPDF expect text to be encoded in ISO
-		if (!class_exists('TCPDF')) $outputlangs->charset_output='ISO-8859-1';
+		if (! empty($conf->global->MAIN_USE_FPDF)) $outputlangs->charset_output='ISO-8859-1';
 
 		$outputlangs->load("main");
 		$outputlangs->load("dict");
@@ -695,13 +714,14 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 	}
 
 	/**
-	 *   	\brief      Show header of page
-	 *    	\param      pdf     		Object PDF
-	 *      \param      object          Object invoice
-	 *      \param      showadress      0=no, 1=yes
-	 *      \param      outputlangs		Object lang for output
+	 *   	Show header of page
+	 *
+	 *   	@param      $pdf     		Object PDF
+	 *   	@param      $object     	Object order
+	 *      @param      $showaddress    0=no, 1=yes
+	 *      @param      $outputlangs	Object lang for output
 	 */
-	function _pagehead(&$pdf, $object, $showadress=1, $outputlangs)
+	function _pagehead(&$pdf, $object, $showaddress=1, $outputlangs)
 	{
 		global $langs,$conf,$mysoc;
 
@@ -718,6 +738,7 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 		$pdf->SetTextColor(0,0,60);
 		$pdf->SetFont('','B', $default_font_size + 3);
 
+        $posx=$this->page_largeur-$this->marge_droite-100;
 		$posy=$this->marge_haute;
 
 		$pdf->SetXY($this->marge_gauche,$posy);
@@ -746,13 +767,13 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 		//}
 
 		$pdf->SetFont('','B', $default_font_size + 3);
-		$pdf->SetXY(100,$posy);
+		$pdf->SetXY($posx,$posy);
 		$pdf->SetTextColor(0,0,60);
 		$pdf->MultiCell(100, 4, $outputlangs->transnoentities("SupplierInvoice")." ".$outputlangs->convToOutputCharset($object->ref), '' , 'R');
 		$pdf->SetFont('','', $default_font_size + 2);
 
 		$posy+=6;
-		$pdf->SetXY(100,$posy);
+		$pdf->SetXY($posx,$posy);
 		if ($object->date)
 		{
 			$pdf->SetTextColor(0,0,60);
@@ -764,51 +785,47 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 			$pdf->MultiCell(100, 4, strtolower($outputlangs->transnoentities("OrderToProcess")), '', 'R');
 		}
 
-		if ($showadress)
+		if ($showaddress)
 		{
-			// Receive email
+			// Sender properties
+			$carac_emetteur = pdf_build_address($outputlangs,$this->emetteur);
+
+			// Show sender
 			$posy=42;
+			$posx=$this->marge_gauche;
+			if (! empty($conf->global->MAIN_INVERT_SENDER_RECIPIENT)) $posx=$this->page_largeur-$this->marge_droite-80;
 			$hautcadre=40;
+
+			// Show sender frame
 			$pdf->SetTextColor(0,0,0);
 			$pdf->SetFont('','', $default_font_size - 2);
-			$pdf->SetXY($this->marge_gauche,$posy-5);
-			$pdf->MultiCell(66,5, $outputlangs->transnoentities("BillTo").":",0,"L");
-
-
-			$pdf->SetXY($this->marge_gauche,$posy);
+			$pdf->SetXY($posx,$posy-5);
+			$pdf->MultiCell(66,5, $outputlangs->transnoentities("BillFrom").":", 0, 'L');
+			$pdf->SetXY($posx,$posy);
 			$pdf->SetFillColor(230,230,230);
 			$pdf->MultiCell(82, $hautcadre, "", 0, 'R', 1);
-
-
-
-			// Nom emetteur
-			$carac_emetteur_name=$outputlangs->convToOutputCharset($mysoc->name);
 			$pdf->SetTextColor(0,0,60);
+
+			// Show sender name
+			$pdf->SetXY($posx+2,$posy+3);
 			$pdf->SetFont('','B', $default_font_size);
-			$pdf->SetXY($this->marge_gauche+2,$posy+3);
-			$pdf->MultiCell(80, 4, $carac_emetteur_name, 0, 'L');
+			$pdf->MultiCell(80, 4, $outputlangs->convToOutputCharset($this->emetteur->name), 0, 'L');
 
-			// Sender properties
-			$carac_emetteur = pdf_build_address($outputlangs,$mysoc);
-
+			// Show sender information
+			$pdf->SetXY($posx+2,$posy+8);
 			$pdf->SetFont('','', $default_font_size - 1);
-			$pdf->SetXY($this->marge_gauche+2,$posy+8);
 			$pdf->MultiCell(80, 4, $carac_emetteur, 0, 'L');
 
-			// Client destinataire
-			$posy=42;
-			$pdf->SetTextColor(0,0,0);
-			$pdf->SetFont('','', $default_font_size - 2);
-			$pdf->SetXY(100,$posy-5);
-			$pdf->MultiCell(96, 4, $outputlangs->transnoentities("Supplier").":");
-			//
-			$client = new Societe($this->db);
-			$client->fetch($object->socid);
-			$object->client = $client;
-			//
 
-			// Cadre client destinataire
-			$pdf->rect(100, $posy, 100, $hautcadre);
+
+			// If BILLING contact defined on invoice, we use it
+			$usecontact=false;
+			$arrayidcontact=$object->getIdContact('external','BILLING');
+			if (sizeof($arrayidcontact) > 0)
+			{
+				$usecontact=true;
+				$result=$object->fetch_contact($arrayidcontact[0]);
+			}
 
 			// Recipient name
 			if (! empty($usecontact))
@@ -825,14 +842,27 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 
 			$carac_client=pdf_build_address($outputlangs,$this->emetteur,$object->client,$object->contact,$usecontact,'target');
 
-			// Show customer/recipient
-			$pdf->SetXY(102,$posy+3);
+			// Show recipient
+			$posy=42;
+			$posx=$this->page_largeur-$this->marge_droite-100;
+			if (! empty($conf->global->MAIN_INVERT_SENDER_RECIPIENT)) $posx=$this->marge_gauche;
+
+			// Show recipient frame
+			$pdf->SetTextColor(0,0,0);
+			$pdf->SetFont('','', $default_font_size - 2);
+			$pdf->SetXY($posx+2,$posy-5);
+			$pdf->MultiCell(80,5, $outputlangs->transnoentities("BillTo").":",0,'L');
+			$pdf->rect($posx, $posy, 100, $hautcadre);
+
+			// Show recipient name
+			$pdf->SetXY($posx+2,$posy+3);
 			$pdf->SetFont('','B', $default_font_size);
 			$pdf->MultiCell(96,4, $carac_client_name, 0, 'L');
 
+			// Show recipient information
 			$pdf->SetFont('','', $default_font_size - 1);
-			$pdf->SetXY(102,$posy+8);
-			$pdf->MultiCell(96,4, $carac_client, 0, 'L');
+			$pdf->SetXY($posx+2,$posy+8);
+			$pdf->MultiCell(86,4, $carac_client, 0, 'L');
 		}
 	}
 

@@ -20,14 +20,13 @@
  *	\file       htdocs/societe/canvas/actions_card_common.class.php
  *	\ingroup    thirdparty
  *	\brief      Fichier de la classe Thirdparty card controller (common)
- *	\version    $Id: actions_card_common.class.php,v 1.24 2011/07/31 23:22:58 eldy Exp $
  */
 
 /**
  *	\class      ActionsCardCommon
  *	\brief      Classe permettant la gestion des tiers par defaut
  */
-class ActionsCardCommon
+abstract class ActionsCardCommon
 {
     var $db;
     var $targetmodule;
@@ -46,11 +45,12 @@ class ActionsCardCommon
 	var $errors=array();
 
     /**
-     *    Constructor
-     *    @param   DB              Handler acces base de donnees
-     *    @param   targetmodule    Name of directory of module where canvas is stored
-     *    @param   canvas          Name of canvas
-     *    @param   card            Name of tab (sub-canvas)
+	 *    Constructor
+	 *
+     *    @param   DoliDB	$DB             Database handler
+     *    @param   string	$targetmodule	Name of directory of module where canvas is stored
+     *    @param   string	$canvas         Name of canvas
+     *    @param   string	$card           Name of tab (sub-canvas)
 	 */
 	function ActionsCardCommon($DB,$targetmodule,$canvas,$card)
 	{
@@ -107,12 +107,15 @@ class ActionsCardCommon
                 $this->object->nom                   = $_POST["nom"];
             }
 
+            $this->object->adresse                  = $_POST["adresse"]; // TODO deprecated
             $this->object->address                  = $_POST["adresse"];
-            $this->object->adresse                  = $_POST["adresse"]; // TODO obsolete
-            $this->object->cp                       = $_POST["zipcode"];
-            $this->object->ville                    = $_POST["town"];
-            $this->object->pays_id                  = $_POST["pays_id"];
-            $this->object->departement_id           = $_POST["departement_id"];
+            $this->object->cp                       = $_POST["zipcode"]; // TODO deprecated
+            $this->object->zip                      = $_POST["zipcode"];
+            $this->object->ville                    = $_POST["town"];    // TODO deprecated
+            $this->object->town                     = $_POST["town"];
+            $this->object->pays_id                  = $_POST["pays_id"]; // TODO deprecated
+            $this->object->country_id               = $_POST["pays_id"];
+            $this->object->state_id                 = $_POST["departement_id"];
             $this->object->tel                      = $_POST["tel"];
             $this->object->fax                      = $_POST["fax"];
             $this->object->email                    = trim($_POST["email"]);
@@ -345,7 +348,7 @@ class ActionsCardCommon
     /**
      *  Return the title of card
      */
-    function getTitle($action)
+    private function getTitle($action)
     {
         global $langs;
 
@@ -360,13 +363,16 @@ class ActionsCardCommon
 
 	/**
      *    Assigne les valeurs par defaut pour le canvas
-     *    @param      action     Type of template
+     *    
+     *    @param      string	$action     Type of template
      */
-    function assign_values($action='')
+    function assign_values($action)
     {
         global $conf, $langs, $user, $mysoc, $canvas;
         global $form, $formadmin, $formcompany;
 
+        if ($action == 'create' || $action == 'edit') $this->assign_post();
+        
         if ($_GET["type"]=='f')  		{ $this->object->fournisseur=1; }
         if ($_GET["type"]=='c')  		{ $this->object->client=1; }
         if ($_GET["type"]=='p')  		{ $this->object->client=2; }
@@ -390,7 +396,7 @@ class ActionsCardCommon
 				jQuery(document).ready(function () {
 		              jQuery("#radiocompany").click(function() {
                             document.formsoc.action.value="create";
-                            document.formsoc.canvas.value="default";
+                            document.formsoc.canvas.value="company";
                             document.formsoc.private.value=0;
                             document.formsoc.submit();
 		              });
@@ -491,7 +497,7 @@ class ActionsCardCommon
             if ($user->admin) $this->tpl['info_admin'] = info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"),1);
 
             // State
-            if ($this->object->pays_id) $this->tpl['select_state'] = $formcompany->select_state($this->object->departement_id,$this->object->pays_code);
+            if ($this->object->pays_id) $this->tpl['select_state'] = $formcompany->select_state($this->object->state_id,$this->object->pays_code);
             else $this->tpl['select_state'] = $countrynotdefined;
 
             // Language
@@ -647,7 +653,7 @@ class ActionsCardCommon
     /**
      *    Assigne les valeurs POST dans l'objet
      */
-    function assign_post()
+    private function assign_post($action)
     {
         global $langs, $mysoc;
 
@@ -663,7 +669,8 @@ class ActionsCardCommon
         $this->object->zip					=	$_POST["zipcode"];
         $this->object->town					=	$_POST["town"];
         $this->object->pays_id				=	$_POST["pays_id"]?$_POST["pays_id"]:$mysoc->pays_id;
-        $this->object->departement_id		=	$_POST["departement_id"];
+        $this->object->country_id			=	$_POST["pays_id"]?$_POST["pays_id"]:$mysoc->pays_id;
+        $this->object->state_id		        =	$_POST["departement_id"];
         $this->object->tel					=	$_POST["tel"];
         $this->object->fax					=	$_POST["fax"];
         $this->object->email				=	$_POST["email"];

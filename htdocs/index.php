@@ -21,7 +21,6 @@
 /**
  *	\file       htdocs/index.php
  *	\brief      Dolibarr home page
- *	\version    $Id: index.php,v 1.201 2011/08/04 12:07:30 eldy Exp $
  */
 
 define('NOCSRFCHECK',1);	// This is login page. We must be able to go on it from another web site.
@@ -52,7 +51,7 @@ if (!isset($conf->global->MAIN_INFO_SOCIETE_NOM) || empty($conf->global->MAIN_IN
  * View
  */
 
-// If smartphone mode, we do no show main page, we show only menu
+// If smartphone mode, we do not show main page, we show only menu
 if (preg_match('/^smartphone/',$conf->smart_menu) && isset($conf->browser->phone))
 {
     $limitmenuto=GETPOST('limitmenuto')?GETPOST('limitmenuto'):0;
@@ -90,23 +89,13 @@ if (! empty($conf->global->MAIN_MOTD))
     }
 }
 
-print '<table width="100%" class="notopnoleftnoright">';
 
-print '<tr><td valign="top" class="notopnoleft">';
+print '<div class="fichecenter"><div class="fichethirdleft">';
 
 
 /*
  * Informations area
  */
-
-if (file_exists(DOL_DOCUMENT_ROOT.'/logo.png'))
-{
-    print '<table class="noborder" width="100%">';
-    print '<tr><td colspan="3" style="text-align:center;">';
-    print '<img src="/logo.png"></td></tr>';
-    print "</table><br>\n";
-}
-
 
 print '<table class="noborder" width="100%">';
 print '<tr class="liste_titre"><td colspan="2">'.$langs->trans("Informations").'</td></tr>';
@@ -280,7 +269,8 @@ if ($user->societe_id == 0)
 	print '</table>';
 }
 
-print '</td><td width="65%" valign="top" class="notopnoleftnoright">';
+
+print '</div><div class="fichetwothirdright"><div class="ficheaddleft">';
 
 
 /*
@@ -537,12 +527,10 @@ foreach($dashboardlines as $key => $board)
 }
 
 
-print '</table><br>';   // End table array
-print '</td></tr></table>';      // End table left area
-print '<br>';
+print '</table>';   // End table array
 
 
-/* Print Ensenhower */
+print '</div></div></div><div class="fichecenter"><br>';
 
 if ($conf->agenda->enabled && $user->rights->agenda->myactions->read && $conf->highcharts->enabled && $user->rights->highcharts->read)
 {
@@ -568,6 +556,7 @@ if ($conf->agenda->enabled && $user->rights->agenda->myactions->read && $conf->h
 printBoxesArea($user,"0");
 
 
+print '</div>';
 
 /*
  * Show security warnings
@@ -607,7 +596,7 @@ if ($user->admin && empty($conf->global->MAIN_REMOVE_INSTALL_WARNING))
 
 $db->close();
 
-llxFooter('$Date: 2011/08/04 12:07:30 $ - $Revision: 1.201 $');
+llxFooter();
 
 
 /**

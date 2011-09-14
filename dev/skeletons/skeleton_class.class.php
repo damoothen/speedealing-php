@@ -20,7 +20,6 @@
  *      \file       dev/skeletons/skeleton_class.class.php
  *      \ingroup    mymodule othermodule1 othermodule2
  *      \brief      This file is an example for a CRUD class file (Create/Read/Update/Delete)
- *		\version    $Id: skeleton_class.class.php,v 1.32 2011/07/31 22:21:58 eldy Exp $
  *		\author		Put author name here
  *		\remarks	Put here some comments
  */
@@ -32,11 +31,11 @@
 
 
 /**
- *      \class      Skeleton_class
+ *      \class      Skeleton_Class
  *      \brief      Put here description of your class
  *		\remarks	Put here some comments
  */
-class Skeleton_class // extends CommonObject
+class Skeleton_Class // extends CommonObject
 {
 	var $db;							//!< To store db handler
 	var $error;							//!< To return error code (or message)
@@ -52,9 +51,10 @@ class Skeleton_class // extends CommonObject
 
     /**
      *      Constructor
-     *      @param      DB      Database handler
+     *
+     *      @param      DoliDb		$DB      Database handler
      */
-    function Skeleton_class($DB)
+    function Skeleton_Class($DB)
     {
         $this->db = $DB;
         return 1;
@@ -63,9 +63,10 @@ class Skeleton_class // extends CommonObject
 
     /**
      *      Create object into database
-     *      @param      user        	User that create
-     *      @param      notrigger	    0=launch triggers after, 1=disable triggers
-     *      @return     int         	<0 if KO, Id of created object if OK
+     *
+     *      @param      User	$user        User that create
+     *      @param      int		$notrigger   0=launch triggers after, 1=disable triggers
+     *      @return     int      		   	 <0 if KO, Id of created object if OK
      */
     function create($user, $notrigger=0)
     {
@@ -136,8 +137,9 @@ class Skeleton_class // extends CommonObject
 
     /**
      *    Load object in memory from database
-     *    @param      id          id object
-     *    @return     int         <0 if KO, >0 if OK
+     *
+     *    @param      int	$id    Id object
+     *    @return     int          <0 if KO, >0 if OK
      */
     function fetch($id)
     {
@@ -178,9 +180,10 @@ class Skeleton_class // extends CommonObject
 
     /**
      *      Update object into database
-     *      @param      user        	User that modify
-     *      @param      notrigger	    0=launch triggers after, 1=disable triggers
-     *      @return     int         	<0 if KO, >0 if OK
+     *
+     *      @param      User	$user        User that modify
+     *      @param      int		$notrigger	 0=launch triggers after, 1=disable triggers
+     *      @return     int     		   	 <0 if KO, >0 if OK
      */
     function update($user=0, $notrigger=0)
     {
@@ -245,9 +248,10 @@ class Skeleton_class // extends CommonObject
 
  	/**
 	 *   Delete object in database
-     *	 @param     user        	User that delete
-     *   @param     notrigger	    0=launch triggers after, 1=disable triggers
-	 *   @return	int				<0 if KO, >0 if OK
+	 *
+     *	 @param     User	$user        User that delete
+     *   @param     int		$notrigger	 0=launch triggers after, 1=disable triggers
+	 *   @return	int					 <0 if KO, >0 if OK
 	 */
 	function delete($user, $notrigger=0)
 	{
@@ -301,8 +305,9 @@ class Skeleton_class // extends CommonObject
 
 	/**
 	 *		Load an object from its id and create a new one in database
-	 *		@param      fromid     		Id of object to clone
-	 * 	 	@return		int				New id of clone
+	 *
+	 *		@param      int		$fromid     Id of object to clone
+	 * 	 	@return		int					New id of clone
 	 */
 	function createFromClone($fromid)
 	{
@@ -310,7 +315,7 @@ class Skeleton_class // extends CommonObject
 
 		$error=0;
 
-		$object=new Skeleton_class($this->db);
+		$object=new Skeleton_Class($this->db);
 
 		$this->db->begin();
 
@@ -355,7 +360,9 @@ class Skeleton_class // extends CommonObject
 
 	/**
 	 *		Initialisz object with example values
-	 *		Id must be 0 if object instance is a specimen.
+	 *		Id must be 0 if object instance is a specimen
+	 *
+	 *		@return	none
 	 */
 	function initAsSpecimen()
 	{

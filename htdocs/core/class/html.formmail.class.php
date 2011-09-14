@@ -21,7 +21,6 @@
  *       \file       htdocs/core/class/html.formmail.class.php
  *       \ingroup    core
  *       \brief      Fichier de la classe permettant la generation du formulaire html d'envoi de mail unitaire
- *       \version    $Id: html.formmail.class.php,v 1.34 2011/07/31 23:45:13 eldy Exp $
  */
 require_once(DOL_DOCUMENT_ROOT ."/core/class/html.form.class.php");
 
@@ -190,6 +189,7 @@ class FormMail
     /**
      *	Show the form to input an email
      *  this->withfile: 0=No attaches files, 1=Show attached files, 2=Can add new attached files
+     *
      *	@param			addfileaction		Name of action when posting file attachments
      *	@param			removefileaction	Name of action when removing file attachments
      */
@@ -201,6 +201,7 @@ class FormMail
     /**
      *	Get the form to input an email
      *  this->withfile: 0=No attaches files, 1=Show attached files, 2=Can add new attached files
+     *
      *	@param			addfileaction		Name of action when posting file attachments
      *	@param			removefileaction	Name of action when removing file attachments
      */
@@ -357,7 +358,7 @@ class FormMail
                     $out.= ' &lt;'.$this->tomail.'&gt;';
                     if ($this->withtofree)
                     {
-                        $out.= '<br />'.$langs->trans("or").' <input size="'.(is_array($this->withto)?"30":"60").'" id="sendto" name="sendto" value="'.(! is_array($this->withto) && ! is_numeric($this->withto)? (isset($_REQUEST["sendto"])?$_REQUEST["sendto"]:$this->withto) :"").'" />';
+                        $out.= '<br>'.$langs->trans("or").' <input size="'.(is_array($this->withto)?"30":"60").'" id="sendto" name="sendto" value="'.(! is_array($this->withto) && ! is_numeric($this->withto)? (isset($_REQUEST["sendto"])?$_REQUEST["sendto"]:$this->withto) :"").'" />';
                     }
                 }
                 else
@@ -524,7 +525,7 @@ class FormMail
                         $out.= ' <input type="image" style="border: 0px;" src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/delete.png" value="'.($key+1).'" class="removedfile" id="removedfile_'.$key.'" name="removedfile_'.$key.'" />';
                         //$out.= ' <a href="'.$_SERVER["PHP_SELF"].'?removedfile='.($key+1).' id="removedfile_'.$key.'">'.img_delete($langs->trans("Delete").'</a>';
                     }
-                    $out.= '<br /></div>';
+                    $out.= '<br></div>';
                 }
             }
             else
@@ -564,12 +565,12 @@ class FormMail
 
                 if ($this->param["models"]=='order_send')
                 {
-                    $url=getPaypalPaymentUrl('order',$this->substit['__ORDERREF__']);
+                    $url=getPaypalPaymentUrl(0,'order',$this->substit['__ORDERREF__']);
                     $defaultmessage=$langs->transnoentities("PredefinedMailContentSendOrderWithPaypalLink",$url);
                 }
                 if ($this->param["models"]=='facture_send')
                 {
-                    $url=getPaypalPaymentUrl('invoice',$this->substit['__FACREF__']);
+                    $url=getPaypalPaymentUrl(0,'invoice',$this->substit['__FACREF__']);
                     $defaultmessage=$langs->transnoentities("PredefinedMailContentSendInvoiceWithPaypalLink",$url);
                 }
             }
@@ -631,58 +632,6 @@ class FormMail
 
         return $out;
     }
-
-
-    /**
-     *    \brief  Affiche la partie de formulaire pour saisie d'un mail
-     *    \param  withtopic   1 pour proposer a la saisie le sujet
-     *    \param  withbody    1 pour proposer a la saisie le corps du message
-     *    \param  withfile    1 pour proposer a la saisie l'ajout d'un fichier joint
-     *    \todo   Fonction a virer quand fichier /comm/mailing.php vire (= quand ecran dans /comm/mailing prets)
-     */
-    function mail_topicmessagefile($withtopic=1,$withbody=1,$withfile=1,$defaultbody)
-    {
-        global $langs;
-
-        $langs->load("other");
-
-        print "<table class=\"border\" width=\"100%\">";
-
-        // Topic
-        if ($withtopic)
-        {
-            print "<tr>";
-            print "<td width=\"180\">".$langs->trans("MailTopic")."</td>";
-            print "<td>";
-            print "<input type=\"text\" size=\"60\" name=\"subject\" value=\"\">";
-            print "</td></tr>";
-        }
-
-        // Message
-        if ($withbody)
-        {
-            print "<tr>";
-            print "<td width=\"180\" valign=\"top\">".$langs->trans("MailText")."</td>";
-            print "<td>";
-            print "<textarea rows=\"8\" cols=\"72\" name=\"message\">";
-            print $defaultbody;
-            print "</textarea>";
-            print "</td></tr>";
-        }
-
-        // Si fichier joint
-        if ($withfile)
-        {
-            print "<tr>";
-            print "<td width=\"180\">".$langs->trans("MailFile")."</td>";
-            print "<td>";
-            print "<input type=\"file\" name=\"addedfile\" value=\"".$langs->trans("Upload")."\"/>";
-            print "</td></tr>";
-        }
-
-        print "</table>";
-    }
-
 }
 
 ?>

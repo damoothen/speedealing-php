@@ -54,20 +54,8 @@ ErrorCantSaveADoneUserWithZeroPercentage=Не удается сохранить 
 ErrorRefAlreadyExists=Ссылки, используемые для создания, уже существует.
 ErrorPleaseTypeBankTransactionReportName=Введите название банка, где получение сделки (в формате ГГГГММ или ГГГГММДД)
 ErrorRecordHasChildren=Не удается удалить записи, поскольку он имеет некоторые хлеб.
-// Date 2009-01-19 21:30:52
-// STOP - Lines generated via parser
-
-
-// START - Lines generated via autotranslator.php tool (2009-08-13 21:14:36).
-// Reference language: en_US
 MenuManager=Меню менеджера
 ErrorUrlNotValid=Адрес веб-сайта, является неверным
-// STOP - Lines generated via autotranslator.php tool (2009-08-13 21:14:36).
-
-
-
-// START - Lines generated via autotranslator.php tool (2010-09-04 01:33:40).
-// Reference language: en_US -> ru_RU
 Error=Ошибка
 Errors=Ошибки
 ErrorBadEMail=EMail %s неправильно
@@ -92,4 +80,24 @@ WarningNoDocumentModelActivated=Ни одна из моделей, для ген
 ErrorDatabaseParameterWrong=База данных установки параметра <b>&quot;%s&quot;</b> имеет значение не совместимы с использованием Dolibarr (должно иметь значение <b>&#39;%s&#39;).</b>
 ErrorNumRefModel=Ссылка есть в базе данных (%s) и не совместимы с данным правилом нумерации. Удаление записей или переименован ссылкой для активации этого модуля.
 ErrorQtyTooLowForThisSupplier=Количество слишком мало для этого поставщика или не определена цена на этот продукт для этого поставщика
-// STOP - Lines generated via autotranslator.php tool (2010-09-04 01:42:17).
+ErrorFailedToSendPassword=Не удалось отправить пароль
+
+
+// START - Lines generated via autotranslator.php tool (2011-08-27 16:56:14).
+// Reference language: en_US -> ru_RU
+ErrorFailToRenameFile=Не удалось переименовать файл <b>&#39;%s</b> »в« <b>%s.</b>
+ErrorBadValueForParameter=Неверное значение &#39;%s для параметра неправильной &quot;%s&#39;
+ErrorBadImageFormat=Изображение файл не поддерживаемого формата
+ErrorBadDateFormat=&quot;%s &#39;Значение имеет неверный формат даты
+ErrorContactEMail=Техническая ошибка. Пожалуйста, обратитесь к администратору следующую электронную почту <b>%s</b> ан обеспечить <b>%s</b> код ошибки в ваше сообщение, или даже лучше, добавив экран копию этой страницы.
+ErrorFieldValueNotIn=Неверное значение для <b>%s</b> номер поля <b>(&#39;%s</b> &quot;значение не является значением доступны в поле <b>%s</b> таблицы <b>%s)</b>
+ErrorModuleSetupNotComplete=Установка модуля выглядит главы из. Продолжайте Настройка - Модули для завершения.
+ErrorBadMask=Ошибка на маску
+ErrorBadMaskFailedToLocatePosOfSequence=Ошибка, маска без порядкового номера
+ErrorBadMaskBadRazMonth=Ошибка, плохое значение сброса
+ErrorSelectAtLeastOne=Ошибка. Выберите хотя бы одну запись.
+ErrorProductWithRefNotExist=Изделие с <i>&quot;%s&quot;</i> ссылки не существуют
+ErrorDeleteNotPossibleLineIsConsolidated=Удаление невозможно, потому что запись связана с банком transation, который согласован
+ErrorProdIdAlreadyExist=%s назначается еще одна треть
+ErrorFailedToLoadRSSFile=Не в состоянии получить RSS-канал. Попробуйте добавить постоянные MAIN_SIMPLEXMLLOAD_DEBUG если сообщения об ошибках не предоставляет достаточно информации.
+// STOP - Lines generated via autotranslator.php tool (2011-08-27 16:59:12).

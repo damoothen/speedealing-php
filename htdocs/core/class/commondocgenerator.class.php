@@ -23,7 +23,6 @@
  *	    \file       htdocs/core/class/commondocgenerator.class.php
  *		\ingroup    core
  *		\brief      File of parent class for documents generators
- *		\version    $Id: commondocgenerator.class.php,v 1.7 2011/07/31 23:45:13 eldy Exp $
  */
 
 
@@ -31,7 +30,7 @@
  *	\class      CommonDocGenerator
  *	\brief      Parent class for documents generators
  */
-class CommonDocGenerator
+abstract class CommonDocGenerator
 {
 	var $error='';
 

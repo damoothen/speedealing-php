@@ -20,7 +20,6 @@
  *	\file       htdocs/contact/canvas/default/actions_contactcard_default.class.php
  *	\ingroup    thirdparty
  *	\brief      Fichier de la classe Thirdparty contact card controller (default canvas)
- *	\version    $Id: actions_contactcard_default.class.php,v 1.10 2011/07/31 23:54:11 eldy Exp $
  */
 include_once(DOL_DOCUMENT_ROOT.'/contact/canvas/actions_contactcard_common.class.php');
 
@@ -37,10 +36,11 @@ class ActionsContactCardDefault extends ActionsContactCardCommon
 
 	/**
      *    Constructor
-     *    @param   DB              Handler acces base de donnees
-     *    @param   targmetmodule   Name of directory of module where canvas is stored
-     *    @param   canvas          Name of canvas
-     *    @param   card            Name of tab (sub-canvas)
+     *
+     *    @param   DoliDB	$DB              Handler acces base de donnees
+     *    @param   string	$targetmodule    Name of directory of module where canvas is stored
+     *    @param   string	$canvas          Name of canvas
+     *    @param   string	$card            Name of tab (sub-canvas)
 	 */
 	function ActionsContactCardDefault($DB,$targetmodule,$canvas,$card)
 	{
@@ -50,43 +50,18 @@ class ActionsContactCardDefault extends ActionsContactCardCommon
         $this->card             = $card;
 	}
 
-    /**
-     *  Execute actions
-     *  @param      Id of object (may be empty for creation)
-     */
-    function doActions($id)
-    {
-        $return = parent::doActions($id);
-        return $return;
-    }
-
-
-	/**
-	 * 	Return the title of card
-	 */
-	function getTitle($action)
-	{
-		return parent::getTitle($action);
-	}
-
-	/**
-     *    Assigne les valeurs POST dans l'objet
-     */
-    function assign_post()
-    {
-    	parent::assign_post();
-    }
 
 	/**
 	 *    Assign custom values for canvas
-	 *    @param      action     Type of action
+	 *
+	 *    @param      string	$action     Type of action
 	 */
 	function assign_values($action='')
 	{
 		global $conf, $db, $langs, $user;
 		global $form;
 
-		parent::assign_values($action);
+        parent::assign_values($action);
 
         $this->tpl['title'] = $this->getTitle($action);
         $this->tpl['error'] = $this->error;
@@ -122,6 +97,7 @@ class ActionsContactCardDefault extends ActionsContactCardCommon
 	/**
 	 * 	Check permissions of a user to show a page and an object. Check read permission
 	 * 	If $_REQUEST['action'] defined, we also check write permission.
+	 *
 	 * 	@param      user      	  	User to check
 	 * 	@param      features	    Features to check (in most cases, it's module name)
 	 * 	@param      objectid      	Object ID if we want to check permission on a particular record (optionnal)

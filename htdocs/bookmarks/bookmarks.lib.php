@@ -19,14 +19,13 @@
  *	\file       htdocs/bookmarks/bookmarks.lib.php
  *	\ingroup	bookmarks
  *	\brief      File with library for bookmark module
- *	\version    $Id: bookmarks.lib.php,v 1.23 2011/08/03 00:45:45 eldy Exp $
  */
 
 /**
  * Add area with bookmarks in menu
  *
- * @param 	$aDb
- * @param 	$aLangs
+ * @param 	DoliDb		$aDb		Database handler
+ * @param 	Translate	$aLangs		Object lang
  * @return	string
  */
 function printBookmarksList ($aDb, $aLangs)

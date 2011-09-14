@@ -19,7 +19,6 @@
 /**
  *	\file       htdocs/includes/menus/smartphone/smartphone_frontoffice.php
  *	\brief      Gestionnaire nomme smartphone du menu smartphone
- *	\version    $Id: smartphone_frontoffice.php,v 1.4 2011/07/31 23:46:08 eldy Exp $
  */
 
 
@@ -35,8 +34,9 @@ class MenuSmart {
 
 
 	/**
-	 *    Constructor
-	 *    @param      db      Database handler
+	 *	Constructor
+	 *
+	 *  @param		DoliDB		$DB      Database handler
 	 */
 	function MenuSmart($db)
 	{
@@ -46,6 +46,7 @@ class MenuSmart {
 
 	/**
 	 *    Show menu
+	 *
 	 *    @param		limitmenuto		To limit menu to a top or left menu value
 	 */
 	function showmenu($limitmenuto)

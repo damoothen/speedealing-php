@@ -24,7 +24,6 @@
  *  \file       htdocs/product/composition/fiche.php
  *  \ingroup    product
  *  \brief      Page de la fiche produit
- *  \version    $Id: fiche.php,v 1.11 2011/08/10 11:53:25 eldy Exp $
  */
 
 require("../../main.inc.php");
@@ -201,6 +200,7 @@ if ($id || $ref)
 			print '</tr>';
 
 			// Number of subproducts
+			$prodsfather = $product->getFather(); //Parent Products
 			$product->get_sousproduits_arbo ();
 			print '<tr><td>'.$langs->trans("AssociatedProductsNumber").'</td><td>'.sizeof($product->get_arbo_each_prod()).'</td>';
 
@@ -225,8 +225,30 @@ if ($id || $ref)
 					//print $productstatic->getNomUrl(1).'<br>';
 					//print $value[0];	// This contains a tr line.
 					print '<tr>';
-					print '<td>'.$productstatic->getNomUrl(1).' ('.$value['nb'].') &nbsp &nbsp</td>';
+					print '<td>'.$productstatic->getNomUrl(1,'composition').' ('.$value['nb'].') &nbsp &nbsp</td>';
 					if ($conf->stock->enabled) print '<td>'.$langs->trans("Stock").' : <b>'.$productstatic->stock_reel.'</b></td>';
+					print '</tr>';
+				}
+				print '</table>';
+				print '</td></tr>';
+			}
+
+			// Number of parent products
+			print '<tr><td>'.$langs->trans("ParentProductsNumber").'</td><td>'.sizeof($prodsfather).'</td>';
+
+			if(sizeof($prodsfather) > 0)
+			{
+				print '<tr><td colspan="2">';
+				print '<b>'.$langs->trans("ProductParentList").'</b><br>';
+				print '<table class="nobordernopadding">';
+				foreach($prodsfather as $value)
+				{
+					$idprod= $value["id"];
+					$productstatic->id=$idprod;// $value["id"];
+					$productstatic->type=$value["fk_product_type"];
+					$productstatic->ref=$value['label'];
+					print '<tr>';
+					print '<td>'.$productstatic->getNomUrl(1,'composition').'</td>';;
 					print '</tr>';
 				}
 				print '</table>';
@@ -264,6 +286,7 @@ if ($id || $ref)
 		print '</tr>';
 
 		// Number of subproducts
+		$prodsfather = $product->getFather(); //Parent Products
 		$product->get_sousproduits_arbo ();
 		print '<tr><td>'.$langs->trans("AssociatedProductsNumber").'</td><td>'.sizeof($product->get_arbo_each_prod()).'</td>';
 		print '</tr>';
@@ -287,8 +310,30 @@ if ($id || $ref)
 				//print $productstatic->getNomUrl(1).'<br>';
 				//print $value[0];	// This contains a tr line.
 				print '<tr>';
-				print '<td>'.$productstatic->getNomUrl(1).' ('.$value['nb'].') &nbsp &nbsp</td>';
+				print '<td>'.$productstatic->getNomUrl(1,'composition').' ('.$value['nb'].') &nbsp &nbsp</td>';
 				if ($conf->stock->enabled) print '<td>'.$langs->trans("Stock").' : <b>'.$productstatic->stock_reel.'</b></td>';
+				print '</tr>';
+			}
+			print '</table>';
+			print '</td></tr>';
+		}
+
+		// Number of parent products
+		print '<tr><td>'.$langs->trans("ParentProductsNumber").'</td><td>'.sizeof($prodsfather).'</td>';
+
+		if(sizeof($prodsfather) > 0)
+		{
+			print '<tr><td colspan="2">';
+			print '<b>'.$langs->trans("ProductParentList").'</b><br>';
+			print '<table class="nobordernopadding">';
+			foreach($prodsfather as $value)
+			{
+				$idprod= $value["id"];
+				$productstatic->id=$idprod;// $value["id"];
+				$productstatic->type=$value["fk_product_type"];
+				$productstatic->ref=$value['label'];
+				print '<tr>';
+				print '<td>'.$productstatic->getNomUrl(1,'composition').'</td>';;
 				print '</tr>';
 			}
 			print '</table>';
@@ -301,10 +346,14 @@ if ($id || $ref)
 
 		print '<br>';
 
+		$rowspan=1;
+		if ($conf->categorie->enabled) $rowspan++;
+
         print_fiche_titre($langs->trans("ProductToAddSearch"),'','');
 		print '<form action="'.DOL_URL_ROOT.'/product/composition/fiche.php?id='.$id.'" method="post">';
 		print '<table class="border" width="100%"><tr><td>';
 		print '<table class="nobordernopadding">';
+
 		print '<tr><td>';
 		print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 		print $langs->trans("KeywordFilter").' &nbsp; ';
@@ -312,15 +361,16 @@ if ($id || $ref)
 		print '<td><input type="text" name="key" value="'.$key.'">';
 		print '<input type="hidden" name="action" value="search">';
 		print '<input type="hidden" name="id" value="'.$id.'">';
+		print '</td>';
+		print '<td rowspan="'.$rowspan.'" valign="middle">';
+		print '<input type="submit" class="button" value="'.$langs->trans("Search").'">';
 		print '</td></tr>';
-
-		if($conf->categorie->enabled)
+		if ($conf->categorie->enabled)
 		{
 			print '<tr><td>'.$langs->trans("CategoryFilter").' &nbsp; </td>';
 			print '<td>'.$html->select_all_categories(0,$catMere).'</td></tr>';
 		}
 
-		print '<tr><td colspan="2"><input type="submit" class="button" value="'.$langs->trans("Search").'"></td></tr>';
 		print '</table>';
 		print '</td></td></table>';
 		print '</form>';
@@ -334,10 +384,10 @@ if ($id || $ref)
 			print '<input type="hidden" name="id" value="'.$id.'">';
 			print '<table class="nobordernopadding" width="100%">';
 			print '<tr class="liste_titre">';
-			print '<td class="liste_titre">'.$langs->trans("Ref").'</td>';
-			print '<td class="liste_titre">'.$langs->trans("Label").'</td>';
-			print '<td class="liste_titre" align="center">'.$langs->trans("AddDel").'</td>';
-			print '<td class="liste_titre" align="right">'.$langs->trans("Quantity").'</td>';
+			print '<th class="liste_titre">'.$langs->trans("Ref").'</td>';
+			print '<th class="liste_titre">'.$langs->trans("Label").'</td>';
+			print '<th class="liste_titre" align="center">'.$langs->trans("AddDel").'</td>';
+			print '<th class="liste_titre" align="right">'.$langs->trans("Quantity").'</td>';
 			print '</tr>';
 			if ($resql)
 			{
@@ -390,7 +440,7 @@ if ($id || $ref)
 						print '<td>'.$labeltoshow.'</td>';
 						if($product->is_sousproduit($id, $objp->rowid))
 						{
-							$addchecked = ' checked="true"';
+							$addchecked = ' checked="checked"';
 							$qty=$product->is_sousproduit_qty;
 						}
 						else
@@ -451,5 +501,5 @@ print "\n</div>\n";
 
 $db->close();
 
-llxFooter('$Date: 2011/08/10 11:53:25 $ - $Revision: 1.11 $');
+llxFooter();
 ?>

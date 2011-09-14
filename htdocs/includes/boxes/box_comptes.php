@@ -21,7 +21,6 @@
  *      \file       htdocs/includes/boxes/box_comptes.php
  *      \ingroup    banque
  *      \brief      Module to generate box for bank accounts
- *		\version	$Id: box_comptes.php,v 1.21 2011/07/31 23:29:09 eldy Exp $
  */
 include_once(DOL_DOCUMENT_ROOT."/includes/boxes/modules_boxes.php");
 include_once(DOL_DOCUMENT_ROOT."/compta/bank/class/account.class.php");
@@ -42,7 +41,7 @@ class box_comptes extends ModeleBoxes {
 
 
 	/**
-	 *      \brief      Constructor for class
+	 *  Constructor
 	 */
 	function box_comptes()
 	{
@@ -53,8 +52,9 @@ class box_comptes extends ModeleBoxes {
 	}
 
 	/**
-	 *      \brief      Load data into info_box_contents array to show array later.
-	 *      \param      $max        Maximum number of records to load
+	 *  Load data into info_box_contents array to show array later.
+	 *
+	 *  @param      $max        Maximum number of records to load
 	 */
 	function loadBox($max=5)
 	{

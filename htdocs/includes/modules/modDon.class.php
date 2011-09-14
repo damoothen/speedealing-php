@@ -20,10 +20,6 @@
 /**
  *	\defgroup   don     Module donation
  *	\brief      Module pour gerer le suivi des dons
- *	\version	$Id: modDon.class.php,v 1.39 2011/07/31 23:28:11 eldy Exp $
- */
-
-/**
  *	\file       htdocs/includes/modules/modDon.class.php
  *	\ingroup    don
  *	\brief      Fichier de description et activation du module Don

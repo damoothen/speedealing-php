@@ -21,17 +21,15 @@
  *      \ingroup    project
  *      \brief      File that contain parent class for projects models
  *                  and parent class for projects numbering models
- *      \version    $Id: modules_project.php,v 1.13 2011/08/10 23:21:09 eldy Exp $
  */
-require_once(FPDFI_PATH.'fpdi_protection.php');
-require_once(DOL_DOCUMENT_ROOT.'/lib/pdf.lib.php');
+require_once(DOL_DOCUMENT_ROOT."/core/class/commondocgenerator.class.php");
 
 
 /**
  *	\class      ModelePDFProjects
  *	\brief      Parent class for projects models
  */
-class ModelePDFProjects
+abstract class ModelePDFProjects extends CommonDocGenerator
 {
 	var $error='';
 

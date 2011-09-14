@@ -20,7 +20,6 @@
  *      \file       dev/translation/autotranslator.php
  *		\ingroup    mymodule othermodule1 othermodule2
  *      \brief      This file is an example for a command line script
- *      \version    $Id: autotranslator.php,v 1.13 2011/07/31 22:21:59 eldy Exp $
  * 		\author		Put author name here
  *		\remarks	Put here some comments
  */
@@ -44,7 +43,7 @@ require_once($path.'../../htdocs/lib/files.lib.php');
 $langs->load("main");
 
 // Global variables
-$version='$Revision: 1.13 $';
+$version='1.14';
 $error=0;
 
 
@@ -86,7 +85,6 @@ if ($argv[2] != 'all')
 	}
 }
 
-// Examples for manipulating class skeleton_class
 require_once(DOL_DOCUMENT_ROOT."/../dev/translation/langAutoParser.class.php");
 
 $langParser = new langAutoParser($argv[2],$argv[1],$dir,$file);

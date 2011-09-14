@@ -22,13 +22,9 @@
 /**
  *	\defgroup   propale     Module commercial proposals
  *	\brief      Module pour gerer la tenue de propositions commerciales
- */
-
-/**
  *	\file       htdocs/includes/modules/modPropale.class.php
  *	\ingroup    propale
  *	\brief      Fichier de description et activation du module Propale
- * 	\version	$Id: modPropale.class.php,v 1.78 2011/07/31 23:28:11 eldy Exp $
  */
 
 include_once(DOL_DOCUMENT_ROOT ."/includes/modules/DolibarrModules.class.php");

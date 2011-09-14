@@ -20,12 +20,11 @@
  */
 
 /**
-	    \file       htdocs/compta/tva/quadri.php
-        \ingroup    tax
-		\brief      Trimestrial page
-		\version    $Id: quadri.php,v 1.16 2011/08/03 00:46:24 eldy Exp $
-		\todo 		Deal with recurrent invoices as well
-*/
+ * 	    \file       htdocs/compta/tva/quadri.php
+ *      \ingroup    tax
+ *      \brief      Trimestrial page
+ *      TODO 		Deal with recurrent invoices as well
+ */
 
 require('../../main.inc.php');
 require_once(DOL_DOCUMENT_ROOT."/compta/tva/class/tva.class.php");
@@ -115,10 +114,11 @@ function tva_coll($db,$y,$q)
 /**
  * Gets VAT to pay for the given month of the given year
  * The function gets the VAT in split results, as the VAT declaration asks
- * to report the amounts for different VAT rates as different lines.
- * @param		object		Database handler object
- * @param		y			Year
- * @param		q			Year quarter (1-4)
+ * to report the amounts for different VAT rates as different lines
+ *
+ * @param		DoliDB	$db			Database handler object
+ * @param		int		$y			Year
+ * @param		int		$q			Year quarter (1-4)
  */
 function tva_paye($db, $y,$q)
 {
@@ -314,5 +314,5 @@ echo '</table>';
 
 $db->close();
 
-llxFooter('$Date: 2011/08/03 00:46:24 $ - $Revision: 1.16 $');
+llxFooter();
 ?>

@@ -1,6 +1,7 @@
 <?php
 /* Copyright (C) 2004      Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2005-2009 Laurent Destailleur  <eldy@users.sourceforge.org>
+ * Copyright (C) 2005-2011 Laurent Destailleur  <eldy@users.sourceforge.org>
+ * Copyright (C) 2011 Juanjo Menent		   <jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,48 +21,58 @@
  *	    \file       htdocs/admin/mailing.php
  *		\ingroup    mailing
  *		\brief      Page to setup emailing module
- *		\version    $Id: mailing.php,v 1.14 2011/07/31 22:23:25 eldy Exp $
  */
 
 require("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/lib/admin.lib.php");
 
 $langs->load("admin");
+$langs->load("mails");
 
 if (!$user->admin)
   accessforbidden();
 
+$action = GETPOST("action");
 
 /*
  * Actions
  */
 
-if ($_POST["action"] == 'setvalue' && $user->admin)
+if ($action == 'setvalue' && $user->admin)
 {
-	$result1=dolibarr_set_const($db, "MAILING_EMAIL_FROM",$_POST["MAILING_EMAIL_FROM"],'chaine',0,'',$conf->entity);
-	$result2=dolibarr_set_const($db, "MAILING_EMAIL_ERRORSTO",$_POST["MAILING_EMAIL_ERRORSTO"],'chaine',0,'',$conf->entity);
-	if (($result1 + $result2) == 2)
-  	{
-  		$mesg='<div class="ok">'.$langs->trans("Success").'</div>';
-  	}
-  	else
-  	{
-		dol_print_error($db);
+	$db->begin();
+	
+	$mailfrom = GETPOST("MAILING_EMAIL_FROM");
+	$mailerror = GETPOST("MAILING_EMAIL_ERRORSTO");
+	
+	$res=dolibarr_set_const($db, "MAILING_EMAIL_FROM",$mailfrom,'chaine',0,'',$conf->entity);
+	if (! $res > 0) $error++;
+	$res=dolibarr_set_const($db, "MAILING_EMAIL_ERRORSTO",$mailerror,'chaine',0,'',$conf->entity);
+	if (! $res > 0) $error++;
+	
+ 	if (! $error)
+    {
+    	$db->commit();
+        $mesg = "<font class=\"ok\">".$langs->trans("SetupSaved")."</font>";
+    }
+    else
+    {
+    	$db->rollback();
+        $mesg = "<font class=\"error\">".$langs->trans("Error")."</font>";
     }
 }
-
 
 
 /*
  *	View
  */
 
-llxHeader();
+llxHeader('',$langs->trans("MailingSetup"));
 
 $linkback='<a href="'.DOL_URL_ROOT.'/admin/modules.php">'.$langs->trans("BackToModuleList").'</a>';
 print_fiche_titre($langs->trans("MailingSetup"),$linkback,'setup');
 
-if ($mesg) print '<br>'.$mesg;
+dol_htmloutput_mesg($mesg);
 
 print '<br>';
 print '<form method="post" action="'.$_SERVER["PHP_SELF"].'">';
@@ -80,21 +91,21 @@ $var=!$var;
 print '<tr '.$bc[$var].'><td>';
 print $langs->trans("MailingEMailFrom").'</td><td>';
 print '<input size="32" type="text" name="MAILING_EMAIL_FROM" value="'.$conf->global->MAILING_EMAIL_FROM.'">';
+if (!empty($conf->global->MAILING_EMAIL_FROM) && ! isValidEmail($conf->global->MAILING_EMAIL_FROM)) print ' '.img_warning($langs->trans("BadEMail"));
 print '</td></tr>';
 
 $var=!$var;
 print '<tr '.$bc[$var].'><td>';
 print $langs->trans("MailingEMailError").'</td><td>';
 print '<input size="32" type="text" name="MAILING_EMAIL_ERRORSTO" value="'.$conf->global->MAILING_EMAIL_ERRORSTO.'">';
+if (!empty($conf->global->MAILING_EMAIL_ERRORSTO) && ! isValidEmail($conf->global->MAILING_EMAIL_ERRORSTO)) print ' '.img_warning($langs->trans("BadEMail"));
 print '</td></tr>';
 
 print '<tr><td colspan="3" align="center"><input type="submit" class="button" value="'.$langs->trans("Modify").'"></td></tr>';
 print '</table></form>';
 
-
 $db->close();
 
-
-llxFooter('$Date: 2011/07/31 22:23:25 $ - $Revision: 1.14 $');
+llxFooter();
 
 ?>

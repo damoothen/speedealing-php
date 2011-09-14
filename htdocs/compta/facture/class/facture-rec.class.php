@@ -22,7 +22,6 @@
  *	\file       htdocs/compta/facture/class/facture-rec.class.php
  *	\ingroup    facture
  *	\brief      Fichier de la classe des factures recurentes
- *	\version    $Id: facture-rec.class.php,v 1.16 2011/08/03 00:46:25 eldy Exp $
  */
 
 require_once(DOL_DOCUMENT_ROOT."/core/class/notify.class.php");
@@ -69,7 +68,9 @@ class FactureRec extends Facture
 
 
 	/**
-	 * 		\brief		Initialisation de la classe
+	 *	Constructor
+	 *
+	 * 	@param		DoliDB		$DB		Database handler
 	 */
 	function FactureRec($DB)
 	{
@@ -77,10 +78,11 @@ class FactureRec extends Facture
 	}
 
 	/**
-	 * 		Create a predefined invoice
-	 * 		@param		user
-	 * 		@param		facid		Id of source invoice
-	 *		@return		int			<0 if KO, id of invoice if OK
+	 * 	Create a predefined invoice
+	 *
+	 * 	@param		User	$user
+	 * 	@param		int		$facid		Id of source invoice
+	 *	@return		int					<0 if KO, id of invoice if OK
 	 */
 	function create($user,$facid)
 	{

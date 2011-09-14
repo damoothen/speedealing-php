@@ -19,13 +19,9 @@
 /**
  *      \defgroup   category       Module categories
  *      \brief      Module to manage categories
- *		\version	$Id: modCategorie.class.php,v 1.39 2011/07/31 23:28:09 eldy Exp $
- */
-
-/**
- *       \file       htdocs/includes/modules/modCategorie.class.php
- *       \ingroup    category
- *       \brief      Fichier de description et activation du module Categorie
+ *      \file       htdocs/includes/modules/modCategorie.class.php
+ *      \ingroup    category
+ *      \brief      Fichier de description et activation du module Categorie
  */
 include_once(DOL_DOCUMENT_ROOT ."/includes/modules/DolibarrModules.class.php");
 

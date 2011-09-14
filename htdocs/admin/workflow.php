@@ -22,7 +22,6 @@
  *	\file       htdocs/admin/workflow.php
  *	\ingroup    company
  *	\brief      Workflows setup page
- *	\version    $Id: workflow.php,v 1.6 2011/08/08 16:00:18 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -87,7 +86,7 @@ print "<table class=\"noborder\" width=\"100%\">\n";
 print "<tr class=\"liste_titre\">\n";
 print '  <td>'.$langs->trans("Description").'</td>';
 print '  <td align="center">'.$langs->trans("Status").'</td>';
-print '  <td align="center" width="60">'.$langs->trans("Infos").'</td>';
+//print '  <td align="center" width="80">'.$langs->trans("Infos").'</td>';
 print "</tr>\n";
 
 clearstatcache();
@@ -96,7 +95,7 @@ $workflowcodes=array();
 if ($conf->propal->enabled && $conf->commande->enabled) $workflowcodes['WORKFLOW_PROPAL_AUTOCREATE_ORDER']='WORKFLOW_PROPAL_AUTOCREATE_ORDER';
 //if ($conf->propal->enabled && $conf->facture->enabled)  $workflowcodes['WORKFLOW_PROPAL_AUTOCREATE_INVOICE']='WORKFLOW_PROPAL_AUTOCREATE_INVOICE';
 //if ($conf->contrat->enabled && $conf->facture->enabled)  $workflowcodes['WORKFLOW_CONTRACT_AUTOCREATE_INVOICE']='WORKFLOW_CONTRACT_AUTOCREATE_INVOICE';
-//if ($conf->commande->enabled && $conf->facture->enabled) $workflowcodes['WORKFLOW_ORDER_AUTOCREATE_INVOICE']='WORKFLOW_ORDER_AUTOCREATE_INVOICE';
+if ($conf->commande->enabled && $conf->facture->enabled) $workflowcodes['WORKFLOW_ORDER_AUTOCREATE_INVOICE']='WORKFLOW_ORDER_AUTOCREATE_INVOICE';
 
 if (sizeof($workflowcodes) > 0)
 {
@@ -108,20 +107,20 @@ if (sizeof($workflowcodes) > 0)
     	if (! empty($conf->global->$code))
     	{
             print '<td align="center"><a href="'.$_SERVER['PHP_SELF'].'?action=del'.$code.'">';
-            print img_picto($langs->trans("Activated"),'on');
+            print img_picto($langs->trans("Activated"),'switch_on');
             print '</a></td>';
     	}
     	else
     	{
     		print '<td align="center"><a href="'.$_SERVER['PHP_SELF'].'?action=set'.$code.'">';
-    		print img_picto($langs->trans("Disabled"),'off');
+    		print img_picto($langs->trans("Disabled"),'switch_off');
     		print '</a></td>';
     	}
 
-    	print '<td align="center">';
+    	//print '<td align="center">';
     	//$s=$modCodeTiers->getToolTip($langs,$soc,-1);
     	//print $form->textwithpicto('',$s,1);
-    	print '</td>';
+    	//print '</td>';
 
     	print '</tr>';
     }
@@ -135,5 +134,5 @@ print '</table>';
 
 $db->close();
 
-llxFooter('$Date: 2011/08/08 16:00:18 $ - $Revision: 1.6 $');
+llxFooter();
 ?>

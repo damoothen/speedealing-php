@@ -18,15 +18,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- * $Id: modService.class.php,v 1.51 2011/07/31 23:28:10 eldy Exp $
  */
 
 /**
  *	\defgroup   service     Module services
  *	\brief      Module pour gerer le suivi de services predefinis
- */
-
-/**
  *	\file       htdocs/includes/modules/modService.class.php
  *	\ingroup    service
  *	\brief      Fichier de description et activation du module Service

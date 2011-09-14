@@ -13,7 +13,6 @@
  *	\file       htdocs/includes/modules/mailings/framboise.modules.php
  *	\ingroup    mailing
  *	\brief      Example file to provide a list of recipients for mailing module
- *	\version    $Revision$
  */
 
 include_once DOL_DOCUMENT_ROOT.'/includes/modules/mailings/modules_mailings.php';
@@ -38,7 +37,11 @@ class mailing_framboise extends MailingTargets
 	var $db;
 
 
-	// CHANGE THIS: Constructor name must be called mailing_xxx with xxx=name of your selector
+	/**
+	 *	Constructor
+	 *
+	 *  @param		DoliDB		$DB      Database handler
+	 */
 	function mailing_framboise($DB)
 	{
 		$this->db=$DB;

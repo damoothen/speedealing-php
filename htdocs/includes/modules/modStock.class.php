@@ -20,10 +20,6 @@
 /**
  *	\defgroup   	stock     Module stocks
  *	\brief      	Module pour gerer la tenue de stocks produits
- *	\version		$Id: modStock.class.php,v 1.36 2011/07/31 23:28:11 eldy Exp $
- */
-
-/**
  *	\file       htdocs/includes/modules/modStock.class.php
  *	\ingroup    stock
  *	\brief      Fichier de description et activation du module Stock

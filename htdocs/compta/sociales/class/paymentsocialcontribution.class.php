@@ -20,7 +20,6 @@
  *      \file       htdocs/compta/sociales/class/paymentsocialcontribution.class.php
  *		\ingroup    facture
  *		\brief      File of class to manage payment of social contributions
- *		\version    $Id: paymentsocialcontribution.class.php,v 1.6 2011/08/03 00:46:38 eldy Exp $
  */
 
 require_once(DOL_DOCUMENT_ROOT."/core/class/commonobject.class.php");
@@ -54,8 +53,9 @@ class PaymentSocialContribution extends CommonObject
 	var $fk_user_modif;
 
 	/**
-	 *      \brief      Constructor
-	 *      \param      DB      Database handler
+	 *	Constructor
+	 *
+	 *  @param		DoliDB		$DB      Database handler
 	 */
 	function PaymentSocialContribution($DB)
 	{
@@ -64,10 +64,11 @@ class PaymentSocialContribution extends CommonObject
 	}
 
 	/**
-	 *      Create payment of social contribution into database.
-     *      Use this->amounts to have list of lines for the payment
-	 *      @param      user    User making payment
-	 *      @return     int     <0 if KO, id of payment if OK
+	 *  Create payment of social contribution into database.
+     *  Use this->amounts to have list of lines for the payment
+     *
+	 *  @param      User		$user   User making payment
+	 *  @return     int     			<0 if KO, id of payment if OK
 	 */
 	function create($user)
 	{

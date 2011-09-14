@@ -19,7 +19,6 @@
  *      \file       htdocs/bookmarks/class/bookmark.class.php
  *      \ingroup    bookmark
  *      \brief      File of class to manage bookmarks
- *      \version    $Id: bookmark.class.php,v 1.7 2011/08/03 00:45:47 eldy Exp $
  */
 
 
@@ -42,19 +41,20 @@ class Bookmark
 
 
     /**
-     *    \brief      Manufacturer
-     *    \param      db          Handler for Database Access
-     *    \param      id          Bookmark Id
+	 *	Constructor
+	 *
+	 *  @param		DoliDB		$db      Database handler
      */
-    function Bookmark($db, $id=-1)
+    function Bookmark($db)
     {
         $this->db = $db;
-        $this->id = $id;
     }
 
     /**
-     *    \brief      Directs the bookmark
-     *    \param      id          Bookmark Id Loader
+     *    Directs the bookmark
+     *
+     *    @param    int		$id		Bookmark Id Loader
+     *    @return	int				<0 if KO, >0 if OK
      */
     function fetch($id)
     {
@@ -64,7 +64,7 @@ class Bookmark
         $sql.= " WHERE rowid = ".$id;
 
 		dol_syslog("Bookmark::fetch sql=".$sql, LOG_DEBUG);
-        $resql  = $this->db->query ($sql);
+        $resql  = $this->db->query($sql);
         if ($resql)
         {
             $obj = $this->db->fetch_object($resql);
@@ -91,8 +91,9 @@ class Bookmark
     }
 
     /**
-     *      \brief      Insere bookmark en base
-     *      \return     int     <0 si ko, rowid du bookmark cree si ok
+     *      Insert bookmark into database
+     *
+     *      @return     int     <0 si ko, rowid du bookmark cree si ok
      */
     function create()
     {
@@ -115,7 +116,7 @@ class Bookmark
         $sql.= ")";
 
         dol_syslog("Bookmark::update sql=".$sql, LOG_DEBUG);
-        $resql = $this->db->query ($sql);
+        $resql = $this->db->query($sql);
         if ($resql)
         {
             $id = $this->db->last_insert_id(MAIN_DB_PREFIX."bookmark");
@@ -143,8 +144,9 @@ class Bookmark
     }
 
     /**
-     *      \brief      Update bookmark record
-     *      \return     int         <0 si ko, >0 si ok
+     *      Update bookmark record
+     *
+     *      @return     int         <0 if KO, > if OK
      */
     function update()
     {
@@ -164,7 +166,7 @@ class Bookmark
         $sql.= " WHERE rowid = ".$this->id;
 
         dol_syslog("Bookmark::update sql=".$sql, LOG_DEBUG);
-        if ($this->db->query ($sql))
+        if ($this->db->query($sql))
         {
             return 1;
         }
@@ -176,9 +178,10 @@ class Bookmark
     }
 
     /**
-     *      \brief      Removes the bookmark
-     *      \param      id          Id removed bookmark
-     *      \return     int         <0 si ko, >0 si ok
+     *      Removes the bookmark
+     *
+     *      @param      int		$id     Id removed bookmark
+     *      @return     int         	<0 si ko, >0 si ok
      */
     function remove($id)
     {
@@ -186,7 +189,7 @@ class Bookmark
         $sql .= " WHERE rowid = ".$id;
 
         dol_syslog("Bookmark::remove sql=".$sql, LOG_DEBUG);
-        $resql=$this->db->query ($sql);
+        $resql=$this->db->query($sql);
         if ($resql)
         {
             return 1;

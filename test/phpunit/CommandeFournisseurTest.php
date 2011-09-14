@@ -20,7 +20,6 @@
  *      \file       test/phpunit/CommandeFournisseurTest.php
  *		\ingroup    test
  *      \brief      PHPUnit test
- *      \version    $Id$
  *		\remarks	To run this script as CLI:  phpunit filename.php
  */
 
@@ -41,6 +40,7 @@ $conf->global->MAIN_DISABLE_ALL_MAILS=1;
 
 
 /**
+ *
  * @xcovers CommandeFournisseur
  * @xcovers CommandeFournisseurLigne
  *

@@ -22,7 +22,6 @@
  *	\file       htdocs/includes/modules/expedition/pdf/pdf_expedition_rouget.modules.php
  *	\ingroup    expedition
  *	\brief      Fichier de la classe permettant de generer les bordereaux envoi au modele Rouget
- *	\version    $Id: pdf_expedition_rouget.modules.php,v 1.60 2011/07/31 23:28:13 eldy Exp $
  */
 
 require_once DOL_DOCUMENT_ROOT."/includes/modules/expedition/pdf/ModelePdfExpedition.class.php";
@@ -52,8 +51,9 @@ Class pdf_expedition_rouget extends ModelePdfExpedition
 		$this->description = $langs->trans("DocumentModelSimple");
 
 		$this->type = 'pdf';
-		$this->page_largeur = 210;
-		$this->page_hauteur = 297;
+		$formatarray=pdf_getFormat();
+		$this->page_largeur = $formatarray['width'];
+		$this->page_hauteur = $formatarray['height'];
 		$this->format = array($this->page_largeur,$this->page_hauteur);
 		$this->marge_gauche=10;
 		$this->marge_droite=10;
@@ -65,7 +65,7 @@ Class pdf_expedition_rouget extends ModelePdfExpedition
 		// Recupere emmetteur
 		$this->emetteur=$mysoc;
 		if (! $this->emetteur->pays_code) $this->emetteur->pays_code=substr($langs->defaultlang,-2);    // By default if not defined
-		
+
 		// Defini position des colonnes
 		$this->posxdesc=$this->marge_gauche+1;
 		$this->posxqtyordered=120;
@@ -87,7 +87,7 @@ Class pdf_expedition_rouget extends ModelePdfExpedition
 
 		if (! is_object($outputlangs)) $outputlangs=$langs;
 		// For backward compatibility with FPDF, force output charset to ISO, because FPDF expect text to be encoded in ISO
-		if (!class_exists('TCPDF')) $outputlangs->charset_output='ISO-8859-1';
+		if (! empty($conf->global->MAIN_USE_FPDF)) $outputlangs->charset_output='ISO-8859-1';
 
 		$outputlangs->load("main");
 		$outputlangs->load("dict");
@@ -159,11 +159,11 @@ Class pdf_expedition_rouget extends ModelePdfExpedition
 
 				$tab_top = 90;
 				$tab_height = 170;
-				
+
 				if (! empty($object->note_public) || ! empty($object->tracking_number))
 				{
 					$tab_top = 88;
-					
+
 					// Tracking number
 					if (! empty($object->tracking_number))
 					{
@@ -189,14 +189,14 @@ Class pdf_expedition_rouget extends ModelePdfExpedition
 						$pdf->SetXY ($this->posxdesc-1, $tab_top);
 						$pdf->MultiCell(190, 3, $outputlangs->convToOutputCharset($object->note_public), 0, 'L');
 					}
-					
+
 					$nexY = $pdf->GetY();
 					$height_note=$nexY-$tab_top;
 
 					// Rect prend une longueur en 3eme param
 					$pdf->SetDrawColor(192,192,192);
 					$pdf->Rect($this->marge_gauche, $tab_top-1, $this->page_largeur-$this->marge_gauche-$this->marge_droite, $height_note+1);
-					
+
 					$tab_height = $tab_height - $height_note;
 					$tab_top = $nexY+6;
 				}
@@ -204,7 +204,7 @@ Class pdf_expedition_rouget extends ModelePdfExpedition
 				{
 					$height_note=0;
 				}
-				
+
 				$this->_tableau($pdf, $tab_top, $tab_height, $nexY, $outputlangs);
 
 				$nexY = $tab_top + 7;
@@ -257,7 +257,7 @@ Class pdf_expedition_rouget extends ModelePdfExpedition
 		$this->error=$langs->transnoentities("ErrorUnknown");
 		return 0;   // Erreur par defaut
 	}
-	
+
 	/**
 	 *   Build table
 	 *   @param      pdf     objet PDF
@@ -265,7 +265,7 @@ Class pdf_expedition_rouget extends ModelePdfExpedition
 	function _tableau(&$pdf, $tab_top, $tab_height, $nexY, $outputlangs)
 	{
 		global $conf;
-		
+
 		$default_font_size = pdf_getPDFFontSize($outputlangs);
 
 		$pdf->SetTextColor(0,0,0);
@@ -280,11 +280,11 @@ Class pdf_expedition_rouget extends ModelePdfExpedition
 
 		$pdf->SetXY ($this->posxdesc-1, $tab_top+1);
 		$pdf->MultiCell(108, 2, $outputlangs->trans("Description"), '', 'L');
-		
+
 		$pdf->line($this->posxqtyordered-1, $tab_top, $this->posxqtyordered-1, $tab_top + $tab_height);
 		$pdf->SetXY ($this->posxqtyordered-1, $tab_top+1);
 		$pdf->MultiCell(40,2, $outputlangs->transnoentities("QtyOrdered"),'','C');
-		
+
 		$pdf->line($this->posxqtytoship-1, $tab_top, $this->posxqtytoship-1, $tab_top + $tab_height);
 		$pdf->SetXY ($this->posxqtytoship-1, $tab_top+1);
 		$pdf->MultiCell(40,2, $outputlangs->transnoentities("QtyToShip"),'','C');
@@ -292,6 +292,7 @@ Class pdf_expedition_rouget extends ModelePdfExpedition
 
 	/**
 	 *   	Show header of document
+	 *
 	 *   	@param      pdf     		Object PDF
 	 *   	@param      object			Object commercial proposal
 	 *      @param      showaddress     0=no, 1=yes
@@ -315,6 +316,7 @@ Class pdf_expedition_rouget extends ModelePdfExpedition
 		$pdf->SetTextColor(0,0,60);
 		$pdf->SetFont('','B', $default_font_size + 3);
 
+        $posx=$this->page_largeur-$this->marge_droite-100;
 		$posy=$this->marge_haute;
 
 		$pdf->SetXY($this->marge_gauche,$posy);
@@ -370,42 +372,42 @@ Class pdf_expedition_rouget extends ModelePdfExpedition
 		$posx=100;
 		$posy=$this->marge_haute;
 
-		$pdf->SetFont('','B', $default_font_size + 3);
-		$pdf->SetXY(100,$posy);
+		$pdf->SetFont('','B', $default_font_size + 2);
+		$pdf->SetXY($posx,$posy);
 		$pdf->SetTextColor(0,0,60);
 		$title=$outputlangs->transnoentities("SendingSheet");
 		$pdf->MultiCell(100, 4, $title, '' , 'R');
         $posy+=1;
 
-		$pdf->SetFont('','', $default_font_size + 2);
+		$pdf->SetFont('','', $default_font_size + 1);
 
-		$posy+=5;
-		$pdf->SetXY(100,$posy);
+		$posy+=4;
+		$pdf->SetXY($posx,$posy);
 		$pdf->SetTextColor(0,0,60);
 		$pdf->MultiCell(100, 4, $outputlangs->transnoentities("RefSending") ." : ".$object->ref, '', 'R');
 
 		//Date Expedition
-		$posy+=5;
-		$pdf->SetXY(100,$posy);
+		$posy+=4;
+		$pdf->SetXY($posx,$posy);
 		$pdf->SetTextColor(0,0,60);
-		$pdf->MultiCell(100, 4, $outputlangs->transnoentities("Date")." : ".dol_print_date($object->date_delivery,"%d %b %Y",false,$outputlangs,true), '', 'R');
+		$pdf->MultiCell(100, 4, $outputlangs->transnoentities("Date")." : ".dol_print_date($object->date_creation,"daytext",false,$outputlangs,true), '', 'R');
 
 		if (! empty($object->client->code_client))
 		{
-			$posy+=5;
-			$pdf->SetXY(100,$posy);
+			$posy+=4;
+			$pdf->SetXY($posx,$posy);
 			$pdf->SetTextColor(0,0,60);
 			$pdf->MultiCell(100, 3, $outputlangs->transnoentities("CustomerCode")." : " . $outputlangs->transnoentities($object->client->code_client), '', 'R');
 		}
 
 
-		$pdf->SetFont('','', $default_font_size + 4);
+		$pdf->SetFont('','', $default_font_size + 3);
 	    $Yoff=25;
 
 	    // Add list of linked orders
 	    // TODO possibility to use with other document (business module,...)
 	    //$object->load_object_linked();
-	    
+
 	    $origin 	= $object->origin;
 		$origin_id 	= $object->origin_id;
 
@@ -413,7 +415,7 @@ Class pdf_expedition_rouget extends ModelePdfExpedition
 		if ($conf->$origin->enabled)
 		{
 			$outputlangs->load('orders');
-			
+
 			$classname = ucfirst($origin);
 			$linkedobject = new $classname($this->db);
 			$result=$linkedobject->fetch($origin_id);
@@ -427,10 +429,10 @@ Class pdf_expedition_rouget extends ModelePdfExpedition
 				$pdf->MultiCell(60, 2, $outputlangs->transnoentities("RefOrder") ." : ".$outputlangs->transnoentities($text), 0, 'R');
 				$Yoff = $Yoff+4;
 				$pdf->SetXY($this->page_largeur - $this->marge_droite - 60,$Yoff);
-				$pdf->MultiCell(60, 2, $outputlangs->transnoentities("Date")." : ".dol_print_date($object->commande->date,"%d %b %Y",false,$outputlangs,true), 0, 'R');
+				$pdf->MultiCell(60, 2, $outputlangs->transnoentities("Date")." : ".dol_print_date($object->commande->date,"daytext",false,$outputlangs,true), 0, 'R');
 			}
 		}
-		
+
 		if ($showaddress)
 		{
 			// Sender properties

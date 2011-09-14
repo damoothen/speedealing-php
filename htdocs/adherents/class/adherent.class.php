@@ -24,7 +24,6 @@
  *	\file       htdocs/adherents/class/adherent.class.php
  *	\ingroup    member
  *	\brief      File of class to manage members of a foundation
- *	\version    $Id: adherent.class.php,v 1.49 2011/08/10 22:47:33 eldy Exp $
  */
 
 require_once(DOL_DOCUMENT_ROOT."/core/class/commonobject.class.php");
@@ -50,23 +49,32 @@ class Adherent extends CommonObject
     var $ref;
     var $civilite_id;
     var $firstname;
-    var $prenom;                // deprecated
+    var $prenom;                // TODO deprecated
     var $lastname;
-    var $nom;                   // deprecated
+    var $nom;                   // TODO deprecated
     var $login;
     var $pass;
     var $societe;
     var $adresse;
+    var $address;
     var $cp;
+    var $zip;
     var $ville;
+    var $town;
 
-    var $fk_departement;		// Id of department
-    var $departement_code;		// Code of department
-    var $departement;			// Label of department
+    var $state_id;              // Id of department
+    var $state_code;            // Code of department
+    var $state;                 // Label of department
+    var $fk_departement;		// TODO deprecated
+    var $departement_code;		// TODO deprecated
+    var $departement;			// TODO deprecated
 
-    var $pays_id;
-    var $pays_code;
-    var $pays;
+    var $country_id;
+    var $country_code;
+    var $country;
+    var $pays_id;              // TODO deprecated
+    var $pays_code;            // TODO deprecated
+    var $pays;                 // TODO deprecated
 
     var $email;
     var $phone;
@@ -108,8 +116,9 @@ class Adherent extends CommonObject
 
 
     /**
-     *	Adherent
-     *	@param DB		base de donnees
+	 *	Constructor
+	 *
+	 *	@param 		DoliDB		$DB		Database handler
      */
     function Adherent($DB)
     {
@@ -124,6 +133,7 @@ class Adherent extends CommonObject
 
     /**
      *  Fonction envoyant un email a l'adherent avec le texte fourni en parametre.
+     *
      *  @param	    text				contenu du message (not html entities encoded)
      *  @param	    subject				subject of message
      *  @param 		filename_list       tableau de fichiers attaches
@@ -133,7 +143,8 @@ class Adherent extends CommonObject
      *  @param 		addr_bcc            email bcc
      *  @param 		deliveryreceipt		demande accuse reception
      *  @param		msgishtml			1=String IS already html, 0=String IS NOT html, -1=Unknown need autodetection
-     *  @return		int					<0 si ko, >0 si ok
+     *  @param		errors_to			erros to
+     *  @return		int					<0 if KO, >0 if OK
      */
     function send_an_email($text, $subject, $filename_list=array(), $mimetype_list=array(), $mimefilename_list=array(), $addr_cc="", $addr_bcc="", $deliveryreceipt=0, $msgishtml=-1, $errors_to='')
     {
@@ -170,6 +181,7 @@ class Adherent extends CommonObject
 
     /**
      * Make substitution
+     *
      * @param       text        Text to make substitution to
      * @return      string      Value of input text string with substitutions done
      */
@@ -238,6 +250,7 @@ class Adherent extends CommonObject
 
     /**
      *	Create a member into database
+     *
      *	@param      user        	Objet user qui demande la creation
      *	@param      notrigger		1 ne declenche pas les triggers, 0 sinon
      *	@return		int				<0 if KO, >0 if OK
@@ -358,13 +371,15 @@ class Adherent extends CommonObject
 
     /**
      *	Update a member in database (standard information and password)
-     *	@param		user			User making update
-     *	@param		notrigger		1=disable trigger UPDATE (when called by create)
-     *	@param		nosyncuser		0=Synchronize linked user (standard info), 1=Do not synchronize linked user
-     *	@param		nosyncuserpass	0=Synchronize linked user (password), 1=Do not synchronize linked user
-     * 	@return		int				<0 si KO, >0 si OK
+     *
+     *	@param		user				User making update
+     *	@param		notrigger			1=disable trigger UPDATE (when called by create)
+     *	@param		nosyncuser			0=Synchronize linked user (standard info), 1=Do not synchronize linked user
+     *	@param		nosyncuserpass		0=Synchronize linked user (password), 1=Do not synchronize linked user
+     *	@param		nosyncthirdparty	0=Synchronize linked thirdparty (standard info), 1=Do not synchronize linked thirdparty
+     * 	@return		int					<0 if KO, >0 if OK
      */
-    function update($user,$notrigger=0,$nosyncuser=0,$nosyncuserpass=0)
+    function update($user,$notrigger=0,$nosyncuser=0,$nosyncuserpass=0,$nosyncthirdparty=0)
     {
         global $conf, $langs;
 
@@ -449,7 +464,7 @@ class Adherent extends CommonObject
                 }
             }
 
-            // Remove link to user
+            // Remove links to user and replace with new one
             if (! $error)
             {
                 dol_syslog(get_class($this)."::update update link to user");
@@ -469,14 +484,13 @@ class Adherent extends CommonObject
 
             if (! $error && $nbrowsaffected)	// If something has change in main data
             {
+                // Update information on linked user if it is an update
                 if ($this->user_id > 0 && ! $nosyncuser)
                 {
                     require_once(DOL_DOCUMENT_ROOT."/user/class/user.class.php");
 
                     dol_syslog(get_class($this)."::update update linked user");
 
-                    // This member is linked with a user, so we also update users informations
-                    // if this is an update.
                     $luser=new User($this->db);
                     $result=$luser->fetch($this->user_id);
 
@@ -508,6 +522,45 @@ class Adherent extends CommonObject
                     else
                     {
                         $this->error=$luser->error;
+                        $error++;
+                    }
+                }
+
+                // Update information on linked thirdparty if it is an update
+                if ($this->fk_soc > 0 && ! $nosyncthirdparty)
+                {
+                    require_once(DOL_DOCUMENT_ROOT."/societe/class/societe.class.php");
+
+                    dol_syslog(get_class($this)."::update update linked thirdparty");
+
+                    // This member is linked with a thirdparty, so we also update thirdparty informations
+                    // if this is an update.
+                    $lthirdparty=new Societe($this->db);
+                    $result=$lthirdparty->fetch($this->fk_soc);
+
+                    if ($result >= 0)
+                    {
+                        $lthirdparty->address=$this->address;
+                        $lthirdparty->zip=$this->zip;
+                        $lthirdparty->town=$this->town;
+                        $lthirdparty->email=$this->email;
+                        $lthirdparty->tel=$this->phone;
+                        $lthirdparty->state_id=$this->state_id;
+                        $lthirdparty->country_id=$this->country_id;
+                        $lthirdparty->pays_id=$this->pays_id;
+                        //$lthirdparty->phone_mobile=$this->phone_mobile;
+
+                        $result=$lthirdparty->update($this->fk_soc,$user,0,1,1,'update');	// Use sync to 0 to avoid cyclic updates
+                        if ($result < 0)
+                        {
+                            $this->error=$lthirdparty->error;
+                            dol_syslog(get_class($this)."::update ".$this->error,LOG_ERR);
+                            $error++;
+                        }
+                    }
+                    else
+                    {
+                        $this->error=$lthirdparty->error;
                         $error++;
                     }
                 }
@@ -702,16 +755,14 @@ class Adherent extends CommonObject
         // If new password not provided, we generate one
         if (! $password)
         {
-			include_once(DOL_DOCUMENT_ROOT.'/lib/security.lib.php');
 	        $password=getRandomPassword('');
         }
 
         // Cryptage mot de passe
         if ($isencrypted)
         {
-            // Crypte avec systeme encodage par defaut du PHP
-            //$sqlpass = crypt($password, makesalt());
-            $password_indatabase = md5($password);
+            // Encryption
+            $password_indatabase = dol_hash($password);
         }
         else
         {
@@ -787,8 +838,9 @@ class Adherent extends CommonObject
 
     /**
      *    Set link to a user
-     *    @param     userid           	Id of user to link to
-     *    @return    int				1=OK, -1=KO
+     *
+     *    @param     int	$userid        	Id of user to link to
+     *    @return    int					1=OK, -1=KO
      */
     function setUserId($userid)
     {
@@ -820,8 +872,9 @@ class Adherent extends CommonObject
 
     /**
      *    Set link to a third party
-     *    @param     userid           	Id of user to link to
-     *    @return    int				1=OK, -1=KO
+     *
+     *    @param     int	$thirdpartyid		Id of user to link to
+     *    @return    int						1=OK, -1=KO
      */
     function setThirdPartyId($thirdpartyid)
     {
@@ -891,6 +944,7 @@ class Adherent extends CommonObject
 
     /**
      *	Load member from database
+     *
      *	@param      rowid       Id of object to load
      * 	@param		ref			To load member from its ref
      * 	@param		fk_soc		To load member from its link to third party
@@ -950,12 +1004,17 @@ class Adherent extends CommonObject
                 $this->ville          = $obj->town;	    // TODO deprecated
                 $this->town           = $obj->town;
 
-                $this->fk_departement = $obj->fk_departement;
-                $this->departement_code = $obj->fk_departement?$obj->departement_code:'';
-                $this->departement	  = $obj->fk_departement?$obj->departement:'';
+                $this->state_id       = $obj->fk_departement;
+                $this->state_id       = $obj->fk_departement?$obj->departement_code:'';
+                $this->state_id       = $obj->fk_departement?$obj->departement:'';
+                $this->fk_departement = $obj->fk_departement;    // TODO deprecated
+                $this->departement_code = $obj->fk_departement?$obj->departement_code:'';    // TODO deprecated
+                $this->departement	  = $obj->fk_departement?$obj->departement:'';    // TODO deprecated
 
-                $this->pays_id        = $obj->pays_id;
-                $this->pays_code      = $obj->pays_code;
+                $this->country_id     = $obj->pays_id;
+                $this->country_code   = $obj->pays_code;
+                $this->pays_id        = $obj->pays_id;    // TODO deprecated
+                $this->pays_code      = $obj->pays_code;    // TODO deprecated
                 if ($langs->trans("Country".$obj->pays_code) != "Country".$obj->pays_code) $this->pays = $langs->trans("Country".$obj->pays_code);
                 elseif ($obj->pays_lib) $this->pays=$obj->pays_lib;
                 else $this->pays=$obj->pays;
@@ -1011,6 +1070,7 @@ class Adherent extends CommonObject
      *				first_subscription_amount
      *				last_subscription_date
      *				last_subscription_amount
+     *
      *	@return		int			<0 si KO, >0 si OK
      */
     function fetch_subscriptions()
@@ -1070,10 +1130,11 @@ class Adherent extends CommonObject
 
     /**
      *	Fonction qui insere la cotisation dans la base de donnees
-     *	et eventuellement liens dans banques, mailman, etc...
+     *	et eventuellement liens dans banques, mailman, etc.
+     *
      *	@param	    date        	Date d'effet de la cotisation
      *	@param	    montant     	Montant cotisation (accepte 0 pour les adherents non soumis e cotisation)
-     *	@param		account_id		Id compte bancaire
+     *	@param		accountid		Id compte bancaire
      *	@param		operation		Type operation (si Id compte bancaire fourni)
      *	@param		label			Label operation (si Id compte bancaire fourni)
      *	@param		num_chq			Numero cheque (si Id compte bancaire fourni)
@@ -1335,8 +1396,6 @@ class Adherent extends CommonObject
      */
     function add_to_spip()
     {
-        require_once(DOL_DOCUMENT_ROOT.'/lib/security.lib.php');
-
         dol_syslog(get_class($this)."::add_to_spip");
 
         if (defined("ADHERENT_USE_SPIP") && ADHERENT_USE_SPIP ==1 &&
@@ -1345,7 +1404,7 @@ class Adherent extends CommonObject
         defined('ADHERENT_SPIP_PASS') && ADHERENT_SPIP_PASS != '' &&
         defined('ADHERENT_SPIP_DB') && ADHERENT_SPIP_DB != ''
         ){
-            $mdpass=md5($this->pass);
+            $mdpass=dol_hash($this->pass);
             $htpass=crypt($this->pass,makesalt());
             $query = "INSERT INTO spip_auteurs (nom, email, login, pass, htpass, alea_futur, statut) VALUES(\"".$this->prenom." ".$this->nom."\",\"".$this->email."\",\"".$this->login."\",\"$mdpass\",\"$htpass\",FLOOR(32000*RAND()),\"1comite\")";
             //      $mydb=new Db('mysql',ADHERENT_SPIP_SERVEUR,ADHERENT_SPIP_USER,ADHERENT_SPIP_PASS,ADHERENT_SPIP_DB);
@@ -1395,6 +1454,7 @@ class Adherent extends CommonObject
 
     /**
      *  Fonction qui dit si cet utilisateur est un redacteur existant dans spip
+     *
      *  @return     int     1=existe, 0=n'existe pas, -1=erreur
      */
     function is_in_spip()
@@ -1417,20 +1477,19 @@ class Adherent extends CommonObject
                 {
                     if ($mydb->num_rows($result))
                     {
-                        # nous avons au moins une reponse
+                        // nous avons au moins une reponse
                         $mydb->close($result);
                         return 1;
                     }
                     else
                     {
-                        # nous n'avons pas de reponse => n'existe pas
+                        // nous n'avons pas de reponse => n'existe pas
                         $mydb->close($result);
                         return 0;
                     }
                 }
                 else
                 {
-                    # error
                     $this->error=$mydb->error();
                     return -1;
                 }
@@ -1443,6 +1502,7 @@ class Adherent extends CommonObject
 
     /**
      *  Subscribe an email to all mailing-lists
+     *
      *  @param      listes    To force mailing-list (string separated with ,)
      *  @return		int		  <=0 if KO, >0 if OK
      */
@@ -1485,7 +1545,7 @@ class Adherent extends CommonObject
 				$this->pass,
 				$conf->global->ADHERENT_MAILMAN_ADMINPW
 				);
-				$curl_url = preg_replace ($patterns, $replace, $conf->global->ADHERENT_MAILMAN_URL);
+				$curl_url = preg_replace($patterns, $replace, $conf->global->ADHERENT_MAILMAN_URL);
 
                 dol_syslog("Call URL to subscribe : ".$curl_url);
 				$ch = curl_init();
@@ -1499,7 +1559,7 @@ class Adherent extends CommonObject
 				//curl_setopt($ch, CURLOPT_POSTFIELDS, "a=3&b=5");
 				//--- Start buffering
 				//ob_start();
-				$result=curl_exec ($ch);
+				$result=curl_exec($ch);
 				dol_syslog($result);
 				//--- End buffering and clean output
 				//ob_end_clean();
@@ -1508,7 +1568,7 @@ class Adherent extends CommonObject
 				    // error
 				    return -2;
 				}
-				curl_close ($ch);
+				curl_close($ch);
 
             }
             return 1;
@@ -1523,6 +1583,7 @@ class Adherent extends CommonObject
     /**
      *  Unsubscribe an email from all mailing-lists
      *  Used when a user is resiliated
+     *
      *  @param      listes      To force mailing-list (string separated with ,)
      *  @return     int         <=0 if KO, >0 if OK
      */
@@ -1570,7 +1631,7 @@ class Adherent extends CommonObject
 				//curl_setopt($ch, CURLOPT_POSTFIELDS, "a=3&b=5");
 				//--- Start buffering
 				//ob_start();
-				$result=curl_exec ($ch);
+				$result=curl_exec($ch);
 				dol_syslog($result);
 				//--- End buffering and clean output
 				//ob_end_clean();
@@ -1581,7 +1642,7 @@ class Adherent extends CommonObject
 				    // error
 				    return -2;
 				}
-				curl_close ($ch);
+				curl_close($ch);
 
             }
             return 1;
@@ -1595,6 +1656,7 @@ class Adherent extends CommonObject
 
     /**
      *    	Return full name (civility+' '+name+' '+lastname)
+     *
      *		@param		langs			Language object for translation of civility
      *		@param		option			0=No option, 1=Add civility
      * 		@param		nameorder		-1=Auto, 0=Lastname+Firstname, 1=Firstname+Lastname
@@ -1632,6 +1694,7 @@ class Adherent extends CommonObject
 
     /**
      *    Return label of a civility of a contact
+     *
      *    @param        nohtmlentities      0=Encode with htmlentities for HTML output, 1=No htmlentities for memory translation
      *    @return       string              Name translated of civility
      */
@@ -1647,6 +1710,7 @@ class Adherent extends CommonObject
 
     /**
      *    	Renvoie nom clicable (avec eventuellement le picto)
+     *
      *		@param		withpicto		0=Pas de picto, 1=Inclut le picto dans le lien, 2=Picto seul
      *		@param		maxlen			length max libelle
      *		@param		option			Page lien
@@ -1681,6 +1745,7 @@ class Adherent extends CommonObject
 
     /**
      * 	Return full address of member
+     *
      * 	@param		withcountry		1=Add country into address string
      *  @param		sep				Separator to use to build string
      *	@return		string			Full address string
@@ -1706,6 +1771,7 @@ class Adherent extends CommonObject
 
     /**
      *    	Retourne le libelle du statut d'un adherent (brouillon, valide, resilie)
+     *
      *    	@param      mode        0=libelle long, 1=libelle court, 2=Picto + Libelle court, 3=Picto, 4=Picto + Libelle long, 5=Libelle court + Picto
      *    	@return     string		Libelle
      */
@@ -1716,6 +1782,7 @@ class Adherent extends CommonObject
 
     /**
      *    	Renvoi le libelle d'un statut donne
+     *
      *    	@param      statut      			Id statut
      *		@param		need_subscription		1 si type adherent avec cotisation, 0 sinon
      *		@param		date_end_subscription	Date fin adhesion
@@ -1797,6 +1864,7 @@ class Adherent extends CommonObject
 
     /**
      *      Charge indicateurs this->nb de tableau de bord
+     *
      *      @return     int         <0 si ko, >0 si ok
      */
     function load_state_board()
@@ -1830,6 +1898,7 @@ class Adherent extends CommonObject
 
     /**
      *      Load indicators for dashboard (this->nbtodo and this->nbtodolate)
+     *
      *      @param          user    Objet user
      *      @return         int     <0 if KO, >0 if OK
      */
@@ -1920,6 +1989,7 @@ class Adherent extends CommonObject
 
     /**
      *	Retourne chaine DN complete dans l'annuaire LDAP pour l'objet
+     *
      *	@param		info		Info string loaded by _load_ldap_info
      *	@param		mode		0=Return full DN (uid=qqq,ou=xxx,dc=aaa,dc=bbb)
      *							1=Return DN without key inside (ou=xxx,dc=aaa,dc=bbb)
@@ -1939,6 +2009,7 @@ class Adherent extends CommonObject
 
     /**
      *	Initialise tableau info (tableau des attributs LDAP)
+     *
      *	@return		array		Tableau info des attributs
      */
     function _load_ldap_info()
@@ -1985,7 +2056,8 @@ class Adherent extends CommonObject
 
     /**
      *      Charge les informations d'ordre info dans l'objet adherent
-     *      @param     id       Id du membre a charger
+     *
+     *      @param     int		$id       Id of member to load
      */
     function info($id)
     {

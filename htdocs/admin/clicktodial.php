@@ -1,6 +1,7 @@
 <?php
 /* Copyright (C) 2004      Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2005-2011 Laurent Destailleur  <eldy@users.sourceforge.org>
+ * Copyright (C) 2011 	    Juanjo Menent		<jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +21,6 @@
  *   \file       htdocs/admin/clicktodial.php
  *   \ingroup    clicktodial
  *   \brief      Page to setup module clicktodial
- *   \version    $Id: clicktodial.php,v 1.24 2011/07/31 22:23:24 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -31,24 +31,27 @@ $langs->load("admin");
 if (!$user->admin)
   accessforbidden();
 
+$action = getpost("action");
 
-if ($_POST["action"] == 'setvalue' && $user->admin)
+/*
+ *	Actions
+ */
+if ($action == 'setvalue' && $user->admin)
 {
-	$result=dolibarr_set_const($db, "CLICKTODIAL_URL",$_POST["url"],'chaine',0,'',$conf->entity);
+	$result=dolibarr_set_const($db, "CLICKTODIAL_URL",GETPOST("url"),'chaine',0,'',$conf->entity);
   	if ($result >= 0)
   	{
-  		$mesg='<div class="ok">'.$langs->trans("RecordModifiedSuccessfully").'</div>';
+  		$mesg = "<font class=\"ok\">".$langs->trans("SetupSaved")."</font>";
   	}
   	else
   	{
-		dol_print_error($db);
+		$mesg = "<font class=\"error\">".$langs->trans("Error")."</font>";
     }
 }
 
 
 /*
- *
- *
+ * View
  */
 
 $wikihelp='EN:Module_ClickToDial_En|FR:Module_ClickToDial|ES:Módulo_ClickTodial_Es';
@@ -58,9 +61,6 @@ $linkback='<a href="'.DOL_URL_ROOT.'/admin/modules.php">'.$langs->trans("BackToM
 print_fiche_titre($langs->trans("ClickToDialSetup"),$linkback,'setup');
 
 print $langs->trans("ClickToDialDesc")."<br>\n";
-
-
-if ($mesg) print '<br>'.$mesg;
 
 print '<br>';
 print '<form method="post" action="clicktodial.php">';
@@ -93,7 +93,9 @@ print '</table></form>';
 }
 */
 
+dol_htmloutput_mesg($mesg);
+
 $db->close();
 
-llxFooter('$Date: 2011/07/31 22:23:24 $ - $Revision: 1.24 $');
+llxFooter();
 ?>

@@ -22,7 +22,6 @@
  *  \file       htdocs/livraison/class/livraison.class.php
  *  \ingroup    delivery
  *  \brief      Fichier de la classe de gestion des bons de livraison
- *  \version    $Id: livraison.class.php,v 1.28 2011/07/31 23:24:38 eldy Exp $
  */
 
 require_once(DOL_DOCUMENT_ROOT."/core/class/commonobject.class.php");
@@ -399,7 +398,7 @@ class Livraison extends CommonObject
 								}
 							}
 						}
-						
+
 						// Set new ref and current status
 						if (! $error)
 						{
@@ -718,6 +717,8 @@ class Livraison extends CommonObject
 	{
 		global $user,$langs,$conf;
 
+		$now=dol_now();
+
 		// Charge tableau des produits prodids
 		$prodids = array();
 		$sql = "SELECT rowid";
@@ -739,10 +740,10 @@ class Livraison extends CommonObject
 
 		// Initialise parametres
 		$this->id=0;
-		$this->ref = 'SPECIMEN';
+		$this->ref = 'SPECIMEN_RECEIPT';
 		$this->specimen=1;
 		$this->socid = 1;
-		$this->date_delivery = time();
+		$this->date_delivery = $now;
 		$this->note_public='SPECIMEN';
 
 		$i=0;

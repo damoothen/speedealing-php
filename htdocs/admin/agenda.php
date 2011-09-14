@@ -1,6 +1,7 @@
 <?php
 /* Copyright (C) 2008-2010	Laurent Destailleur <eldy@users.sourceforge.net>
  * Copyright (C) 2011		Regis Houssin		<regis@dolibarr.fr>
+ * Copyright (C) 2011 	    Juanjo Menent		<jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +21,6 @@
  *	    \file       htdocs/admin/agenda.php
  *      \ingroup    agenda
  *      \brief      Autocreate actions for agenda module setup page
- *      \version    $Id: agenda.php,v 1.23 2011/07/31 22:23:23 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -32,7 +32,6 @@ if (!$user->admin)
 
 $langs->load("admin");
 $langs->load("other");
-$langs->load("agenda");
 
 $action=$_POST["action"];
 
@@ -54,7 +53,7 @@ if ($resql)
 		$triggers[$i]['code'] 		= $obj->code;
 		$triggers[$i]['element'] 	= $obj->elementtype;
 		$triggers[$i]['label']		= ($langs->trans("Notify_".$obj->code)!="Notify_".$obj->code?$langs->trans("Notify_".$obj->code):$obj->label);
-		
+
 		$i++;
 	}
 	$db->free($resql);
@@ -68,7 +67,7 @@ else
 /*
 *	Actions
 */
-if ($_POST["action"] == "save" && empty($_POST["cancel"]))
+if ($action == "save" && empty($_POST["cancel"]))
 {
     $i=0;
 
@@ -78,12 +77,21 @@ if ($_POST["action"] == "save" && empty($_POST["cancel"]))
 	{
 		$param='MAIN_AGENDA_ACTIONAUTO_'.$trigger['code'];
 		//print "param=".$param." - ".$_POST[$param];
-		if (! empty($_POST[$param])) dolibarr_set_const($db,$param,$_POST[$param],'chaine',0,'',$conf->entity);
-		else dolibarr_del_const($db,$param,$conf->entity);
+		if (! empty($_POST[$param])) $res = dolibarr_set_const($db,$param,$_POST[$param],'chaine',0,'',$conf->entity);
+		else $res = dolibarr_del_const($db,$param,$conf->entity);
+		if (! $res > 0) $error++;
 	}
-
-    $db->commit();
-    $mesg = '<font class="ok">'.$langs->trans("SetupSaved").'</font>';
+    
+ 	if (! $error)
+    {
+    	$db->commit();
+        $mesg = "<font class=\"ok\">".$langs->trans("SetupSaved")."</font>";
+    }
+    else
+    {
+    	$db->rollback();
+        $mesg = "<font class=\"error\">".$langs->trans("Error")."</font>";
+    }
 }
 
 
@@ -134,7 +142,7 @@ if (! empty($triggers))
 			print '<td align="right" width="40">';
 			$key='MAIN_AGENDA_ACTIONAUTO_'.$trigger['code'];
 			$value=$conf->global->$key;
-			print '<input '.$bc[$var].' type="checkbox" name="'.$key.'" value="1"'.((($_GET["action"]=='selectall'||$value) && $_GET["action"]!="selectnone")?' checked="true"':'').'>';
+			print '<input '.$bc[$var].' type="checkbox" name="'.$key.'" value="1"'.((($_GET["action"]=='selectall'||$value) && $_GET["action"]!="selectnone")?' checked="checked"':'').'>';
 			print '</td></tr>'."\n";
 		}
 	}
@@ -151,13 +159,11 @@ print "</form>\n";
 
 print '</div>';
 
-
-
-if ($mesg) print "<br>$mesg<br>";
 print "<br>";
 
+dol_htmloutput_mesg($mesg);
 
 $db->close();
 
-llxFooter('$Date: 2011/07/31 22:23:23 $ - $Revision: 1.23 $');
+llxFooter();
 ?>

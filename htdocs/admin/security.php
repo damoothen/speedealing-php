@@ -20,12 +20,10 @@
  *		\file       htdocs/admin/security.php
  *      \ingroup    setup
  *      \brief      Page de configuration du module securite
- *		\version    $Id: security.php,v 1.56 2011/07/31 22:23:24 eldy Exp $
  */
 
 require("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/lib/admin.lib.php");
-require_once(DOL_DOCUMENT_ROOT.'/lib/security.lib.php');
 
 $langs->load("users");
 $langs->load("admin");
@@ -75,10 +73,10 @@ if ($_GET["action"] == 'activate_encrypt')
         while ($i < $numrows)
         {
             $obj=$db->fetch_object($resql);
-            if (md5($obj->pass))
+            if (dol_hash($obj->pass))
             {
                 $sql = "UPDATE ".MAIN_DB_PREFIX."user";
-                $sql.= " SET pass_crypted = '".md5($obj->pass)."', pass = NULL";
+                $sql.= " SET pass_crypted = '".dol_hash($obj->pass)."', pass = NULL";
                 $sql.= " WHERE rowid=".$obj->rowid;
                 //print $sql;
 
@@ -268,8 +266,7 @@ foreach ($arrayhandler as $key => $module)
         print '<td width="100" align="center">';
         if ($conf->global->USER_PASSWORD_GENERATED == $key)
         {
-            $title='';
-            print img_tick($title);
+            print img_picto('','tick');
         }
         else
         {
@@ -302,7 +299,7 @@ print '<td colspan="3">'.$langs->trans("DoNotStoreClearPassword").'</td>';
 print '<td align="center" width="60">';
 if ($conf->global->DATABASE_PWD_ENCRYPTED)
 {
-	print img_tick();
+	print img_picto($langs->trans("Active"),'tick');
 }
 print '</td>';
 if (! $conf->global->DATABASE_PWD_ENCRYPTED)
@@ -336,7 +333,7 @@ print '<td colspan="3">'.$langs->trans("MainDbPasswordFileConfEncrypted").'</td>
 print '<td align="center" width="60">';
 if (preg_match('/crypted:/i',$dolibarr_main_db_pass) || ! empty($dolibarr_main_db_encrypted_pass))
 {
-	print img_tick();
+	print img_picto($langs->trans("Active"),'tick');
 }
 
 print '</td>';
@@ -374,7 +371,7 @@ print '</td>';
 print '<td align="center" width="60">';
 if($conf->global->PDF_SECURITY_ENCRYPTION == 1)
 {
-	print img_tick();
+	print img_picto($langs->trans("Active"),'tick');
 }
 
 print '</td>';
@@ -402,7 +399,7 @@ print '<td colspan="3">'.$langs->trans("DisableForgetPasswordLinkOnLogonPage").'
 print '<td align="center" width="60">';
 if($conf->global->MAIN_SECURITY_DISABLEFORGETPASSLINK == 1)
 {
-	print img_tick();
+	print img_picto($langs->trans("Active"),'tick');
 }
 print '</td>';
 if ($conf->global->MAIN_SECURITY_DISABLEFORGETPASSLINK == 0)
@@ -431,5 +428,5 @@ print '</div>';
 
 $db->close();
 
-llxFooter('$Date: 2011/07/31 22:23:24 $ - $Revision: 1.56 $');
+llxFooter();
 ?>

@@ -24,21 +24,18 @@
  *	\ingroup    facture
  *	\brief      Fichier contenant la classe mere de generation des factures en PDF
  * 				et la classe mere de numerotation des factures
- *	\version    $Id: modules_facture.php,v 1.95 2011/08/10 23:21:13 eldy Exp $
  */
 
-require_once(FPDFI_PATH.'fpdi_protection.php');
-require_once(DOL_DOCUMENT_ROOT.'/lib/pdf.lib.php');
+require_once(DOL_DOCUMENT_ROOT."/core/class/commondocgenerator.class.php");
 require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
 require_once(DOL_DOCUMENT_ROOT."/compta/bank/class/account.class.php");   // Requis car utilise dans les classes qui heritent
-require_once(DOL_DOCUMENT_ROOT."/core/class/commondocgenerator.class.php");
 
 
 /**
  *	\class      ModelePDFFactures
  *	\brief      Classe mere des modeles de facture
  */
-class ModelePDFFactures extends CommonDocGenerator
+abstract class ModelePDFFactures extends CommonDocGenerator
 {
 	var $error='';
 
@@ -133,16 +130,18 @@ class ModeleNumRefFactures
 
 
 /**
- *	Cree une facture sur le disque en fonction du modele de FACTURE_ADDON_PDF
- *	@param   	db  			objet base de donnees
- *	@param   	object			Object invoice
- *	@param	    message			message
- *	@param	    modele			force le modele a utiliser ('' to not force)
- *	@param		outputlangs		objet lang a utiliser pour traduction
- *  @param      hidedetails     Hide details of lines
- *  @param      hidedesc        Hide description
- *  @param      hideref         Hide ref
- *	@return  	int        		<0 if KO, >0 if OK
+ *  Create a document onto disk accordign to template module.
+ *
+ *	@param   	DoliDB		$db  			Database handler
+ *	@param   	Object		$object			Object invoice
+ *	@param	    string		$message		message
+ *	@param	    string		$modele			Force le modele a utiliser ('' to not force)
+ *	@param		Translate	$outputlangs	objet lang a utiliser pour traduction
+ *  @param      int			$hidedetails    Hide details of lines
+ *  @param      int			$hidedesc       Hide description
+ *  @param      int			$hideref        Hide ref
+ *  @param      HookManager	$hookmanager	Hook manager instance
+ *	@return  	int        					<0 if KO, >0 if OK
  */
 function facture_pdf_create($db, $object, $message, $modele, $outputlangs, $hidedetails=0, $hidedesc=0, $hideref=0, $hookmanager=false)
 {
@@ -245,7 +244,8 @@ function facture_pdf_create($db, $object, $message, $modele, $outputlangs, $hide
 
 /**
  *	Create a meta file with document file into same directory.
- *  This should allow rgrep search.
+ *  This should allow rgrep search
+ *
  *	@param	    db  		Objet base de donnee
  *	@param	    facid		Id de la facture a creer
  *	@param      message     Message
@@ -254,7 +254,7 @@ function facture_meta_create($db, $facid, $message="")
 {
 	global $langs,$conf;
 
-	$fac = new Facture($db,"",$facid);
+	$fac = new Facture($db);
 	$fac->fetch($facid);
 	$fac->fetch_thirdparty();
 
@@ -301,6 +301,7 @@ function facture_meta_create($db, $facid, $message="")
 
 /**
  *	Supprime l'image de previsualitation, pour le cas de regeneration de facture
+ *
  *	@param	   db  		objet base de donnee
  *	@param	   facid	id de la facture a creer
  */
@@ -309,7 +310,7 @@ function facture_delete_preview($db, $facid)
 	global $langs,$conf;
     require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
 
-	$fac = new Facture($db,"",$facid);
+	$fac = new Facture($db);
 	$fac->fetch($facid);
 
 	if ($conf->facture->dir_output)

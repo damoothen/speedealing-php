@@ -21,14 +21,13 @@
  *       \file       htdocs/comm/action/class/ical.class.php
  *       \ingroup    commercial
  *       \brief      File of class to parse ical calendars
- *       \version    $Id: ical.class.php,v 1.7 2011/08/08 15:47:16 eldy Exp $
  */
 class ical
 {
     var $file_text; // Text in file
     var $cal; // Array to save iCalendar parse data
     var $event_count; // Number of Events
-    var $todo_count; // Number of TODOs
+    var $todo_count; // Number of Todos
     var $last_key; //Help variable save last key (multiline string)
 
 

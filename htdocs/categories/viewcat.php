@@ -1,9 +1,9 @@
 <?php
-/* Copyright (C) 2005      Matthieu Valleton    <mv@seeschloss.org>
+/* Copyright (C) 2005      Matthieu Valleton	<mv@seeschloss.org>
  * Copyright (C) 2006-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2007      Patrick Raguin	  	  <patrick.raguin@gmail.com>
- * Copyright (C) 2005-2009 Regis Houssin	  	  <regis@dolibarr.fr>
- * Copyright (C) 2010-2011 Herve Prot   	  	  <herve.prot@symeos.com>
+ * Copyright (C) 2007      Patrick Raguin		<patrick.raguin@gmail.com>
+ * Copyright (C) 2005-2011 Regis Houssin		<regis@dolibarr.fr>
+ * Copyright (C) 2010-2011 Herve Prot   	  	<herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,6 @@
  *       \file       htdocs/categories/viewcat.php
  *       \ingroup    category
  *       \brief      Page to show a category card
- *       \version    $Revision: 1.53 $
  */
 
 require("../main.inc.php");
@@ -33,11 +32,6 @@ require_once(DOL_DOCUMENT_ROOT."/lib/categories.lib.php");
 $langs->load("categories");
 $langs->load("products");
 $langs->load("contacts");
-
-// Security check
-if (! $user->rights->categorie->lire) accessforbidden();
-
-$mesg = '';
 
 $mesg = '';
 $id=GETPOST('id');
@@ -51,6 +45,9 @@ if ($id == "")
 	dol_print_error('','Missing parameter id');
 	exit();
 }
+
+// Security check
+$result = restrictedArea($user, 'categorie', $id);
 
 $object = new Categorie($db);
 $result=$object->fetch($id);
@@ -88,7 +85,7 @@ if ($user->rights->categorie->supprimer && $action == 'confirm_delete' && $confi
 
 $html = new Form($db);
 
-llxHeader ("","",$langs->trans("Categories"));
+llxHeader("","",$langs->trans("Categories"));
 
 if ($mesg) print $mesg.'<br>';
 
@@ -117,7 +114,7 @@ print '<table border="0" width="100%" class="noborder">';
 
 // Path of category
 print '<tr><td width="20%" class="notopnoleft">';
-$ways = $object->print_all_ways ();
+$ways = $object->print_all_ways();
 print $langs->trans("Ref").'</td><td>';
 print '<a href="'.DOL_URL_ROOT.'/categories/index.php?leftmenu=cat&type='.$type.'">'.$langs->trans("Root").'</a> >> ';
 foreach ($ways as $way)
@@ -183,7 +180,7 @@ else
 	}
 	print "</td>";
 	print "</tr>\n";
-	if (sizeof ($cats) > 0)
+	if (count($cats) > 0)
 	{
 		$var=true;
 		foreach ($cats as $cat)
@@ -232,7 +229,7 @@ if ($object->type == 0)
 		print "<table class='noborder' width='100%'>\n";
 		print '<tr class="liste_titre"><td colspan="2">'.$langs->trans("ProductsAndServices")."</td></tr>\n";
 
-		if (sizeof ($prods) > 0)
+		if (count($prods) > 0)
 		{
 			$i = 0;
 			$var=true;
@@ -270,7 +267,7 @@ if ($object->type == 1)
 		print "<table class='noborder' width='100%'>\n";
 		print "<tr class='liste_titre'><td>".$langs->trans("Suppliers")."</td></tr>\n";
 
-		if (sizeof ($socs) > 0)
+		if (count($socs) > 0)
 		{
 			$i = 0;
 			$var=true;
@@ -289,7 +286,7 @@ if ($object->type == 1)
 		}
 		else
 		{
-			print "<tr ".$bc[false]."><td>".$langs->trans ("ThisCategoryHasNoSupplier")."</td></tr>";
+			print "<tr ".$bc[false]."><td>".$langs->trans("ThisCategoryHasNoSupplier")."</td></tr>";
 		}
 		print "</table>\n";
 	}
@@ -308,7 +305,7 @@ if($object->type == 2)
 		print "<table class='noborder' width='100%'>\n";
 		print "<tr class='liste_titre'><td>".$langs->trans("Customers")."</td></tr>\n";
 
-		if (sizeof ($socs) > 0)
+		if (count($socs) > 0)
 		{
 			$i = 0;
 			$var=true;
@@ -348,7 +345,7 @@ if ($object->type == 3)
 		print "<table class='noborder' width='100%'>\n";
 		print '<tr class="liste_titre"><td colspan="3">'.$langs->trans("Member")."</td></tr>\n";
 
-		if (sizeof ($prods) > 0)
+		if (count($prods) > 0)
 		{
 			$i = 0;
 			$var=true;
@@ -414,5 +411,5 @@ if ($object->type == 5)
 }
 $db->close();
 
-llxFooter('$Date: 2011/08/03 00:46:31 $ - $Revision: 1.53 $');
+llxFooter();
 ?>

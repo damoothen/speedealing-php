@@ -25,7 +25,6 @@
  *	\file       htdocs/expedition/fiche.php
  *	\ingroup    expedition
  *	\brief      Fiche descriptive d'une expedition
- *	\version    $Id: fiche.php,v 1.210 2011/07/10 20:03:39 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -469,6 +468,7 @@ if ($action == 'send' && ! $_POST['addfile'] && ! $_POST['removedfile'] && ! $_P
     }
 }
 
+
 /*
  * View
  */
@@ -479,11 +479,14 @@ $html = new Form($db);
 $formfile = new FormFile($db);
 $formproduct = new FormProduct($db);
 
-/*********************************************************************
- *
- * Mode creation
- *
- *********************************************************************/
+if ($action == 'create2')
+{
+	print_fiche_titre($langs->trans("CreateASending")).'<br>';
+    print $langs->trans("ShipmentCreationIsDoneFromOrder");
+    $action=''; $id=''; $ref='';
+}
+
+// Mode creation
 if ($action == 'create')
 {
 	$expe = new Expedition($db);
@@ -494,10 +497,7 @@ if ($action == 'create')
 		$mesg='<div class="error">'.$langs->trans("ErrorBadParameters").'</div>';
 	}
 
-	if ($mesg)
-	{
-		print $mesg.'<br>';
-	}
+	dol_htmloutput_mesg($mesg);
 
 	if ($origin)
 	{
@@ -1373,13 +1373,9 @@ else
 			show_list_sending_receive($object->origin,$object->origin_id);
 		}
 	}
-	else
-	{
-		print "Expedition inexistante ou acces refuse";
-	}
 }
 
 $db->close();
 
-llxFooter('$Date: 2011/07/10 20:03:39 $ - $Revision: 1.210 $');
+llxFooter();
 ?>

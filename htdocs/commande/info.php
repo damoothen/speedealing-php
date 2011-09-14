@@ -20,7 +20,6 @@
  *      \file       htdocs/commande/info.php
  *      \ingroup    commande
  *		\brief      Page des informations d'une commande
- *		\version    $Id: info.php,v 1.22 2011/07/31 22:23:15 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -50,7 +49,7 @@ llxHeader('',$langs->trans('Order'),'EN:Customers_Orders|FR:Commandes_Clients|ES
 $commande = new Commande($db);
 $commande->fetch($_GET["id"]);
 $commande->info($_GET["id"]);
-$soc = new Societe($db, $commande->socid);
+$soc = new Societe($db);
 $soc->fetch($commande->socid);
 
 $head = commande_prepare_head($commande);
@@ -66,5 +65,5 @@ print '</div>';
 
 $db->close();
 
-llxFooter('$Date: 2011/07/31 22:23:15 $ - $Revision: 1.22 $');
+llxFooter();
 ?>

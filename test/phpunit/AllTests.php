@@ -20,7 +20,6 @@
  *      \file       test/phpunit/AllTest.php
  *		\ingroup    test
  *      \brief      This file is a test suite to run all unit tests
- *      \version    $Id: AllTests.php,v 1.3 2011/07/08 11:18:00 eldy Exp $
  *		\remarks	To run this script as CLI:  phpunit filename.php
  */
 print "PHP Version: ".phpversion()."\n";
@@ -72,6 +71,9 @@ class AllTests
         require_once dirname(__FILE__).'/AdherentTest.php';
         $suite->addTestSuite('AdherentTest');
 
+        require_once dirname(__FILE__).'/DiscountTest.php';
+        $suite->addTestSuite('DiscountTest');
+
         require_once dirname(__FILE__).'/CommandeTest.php';
         $suite->addTestSuite('CommandeTest');
 		require_once dirname(__FILE__).'/CommandeFournisseurTest.php';
@@ -96,8 +98,12 @@ class AllTests
         require_once dirname(__FILE__).'/CategorieTest.php';
         $suite->addTestSuite('CategorieTest');
 
-        require_once dirname(__FILE__).'/WebservicesTest.php';  // At end because it's the longer
+        require_once dirname(__FILE__).'/WebservicesTest.php';
         $suite->addTestSuite('WebservicesTest');
+        require_once dirname(__FILE__).'/ExportTest.php';
+        $suite->addTestSuite('ExportTest');
+        require_once dirname(__FILE__).'/ImportTest.php';
+        $suite->addTestSuite('ImportTest');
 
         require_once dirname(__FILE__).'/ModulesTest.php';  // At end because it's the longer
         $suite->addTestSuite('ModulesTest');

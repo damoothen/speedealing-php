@@ -23,7 +23,6 @@
  *	\file       htdocs/comm/addpropal.php
  *	\ingroup    propal
  *	\brief      Page to add a new commercial proposal
- *	\version    $Id: addpropal.php,v 1.131 2011/08/03 00:46:26 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -41,6 +40,11 @@ $langs->load("companies");
 $langs->load("bills");
 $langs->load("orders");
 $langs->load("deliveries");
+
+// Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
+include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
+$hookmanager=new HookManager($db);
+$hookmanager->callHooks(array('propalcard'));
 
 /*
  * Actions
@@ -210,8 +214,7 @@ if ($_GET["action"] == 'create')
 	print '<tr>';
 	print '<td>'.$langs->trans("DefaultModel").'</td>';
 	print '<td colspan="2">';
-	$model=new ModelePDFPropales();
-	$liste=$model->liste_modeles($db);
+	$liste=ModelePDFPropales::liste_modeles($db);
 	print $html->selectarray('model',$liste,$conf->global->PROPALE_ADDON_PDF);
 	print "</td></tr>";
 
@@ -233,6 +236,10 @@ if ($_GET["action"] == 'create')
 		print '</tr>';
 	}
 
+	// Insert hooks
+	$parameters=array();
+	$reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+
 	print "</table>";
 	print '<br>';
 
@@ -240,12 +247,13 @@ if ($_GET["action"] == 'create')
 	 * Combobox pour la fonction de copie
 	 */
 
-	print '<table>';
 	if (empty($conf->global->PROPAL_CLONE_ON_CREATE_PAGE))
 	{
-		print '<tr><td colspan="3"><input type="hidden" name="createmode" value="empty"></td></tr>';
+		print '<input type="hidden" name="createmode" value="empty">';
 	}
-	else
+
+	print '<table>';
+	if (! empty($conf->global->PROPAL_CLONE_ON_CREATE_PAGE))
 	{
 		// For backward compatibility
 		print '<tr>';
@@ -285,11 +293,11 @@ if ($_GET["action"] == 'create')
 
 		if ($conf->global->PRODUCT_SHOW_WHEN_CREATE) print '<tr><td colspan="3">&nbsp;</td></tr>';
 
-		print '<tr><td valign="top"><input type="radio" name="createmode" value="empty" checked="true"></td>';
+		print '<tr><td valign="top"><input type="radio" name="createmode" value="empty" checked="checked"></td>';
 		print '<td valign="top" colspan="2">'.$langs->trans("CreateEmptyPropal").'</td></tr>';
 	}
 
-	if ($conf->global->PRODUCT_SHOW_WHEN_CREATE)
+	if (! empty($conf->global->PRODUCT_SHOW_WHEN_CREATE))
 	{
 		print '<tr><td colspan="3">';
 		if ($conf->product->enabled || $conf->service->enabled)
@@ -319,10 +327,6 @@ if ($_GET["action"] == 'create')
 			print "</table>";
 
 		}
-		else
-		{
-			print '&nbsp;';
-		}
 		print '</td></tr>';
 	}
 	print '</table>';
@@ -338,5 +342,5 @@ if ($_GET["action"] == 'create')
 
 $db->close();
 
-llxFooter('$Date: 2011/08/03 00:46:26 $ - $Revision: 1.131 $');
+llxFooter();
 ?>

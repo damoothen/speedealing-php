@@ -25,7 +25,6 @@
  *       \file       htdocs/comm/fiche.php
  *       \ingroup    commercial compta
  *       \brief      Page to show customer card of a third party
- *       \version    $Id: fiche.php,v 1.283 2011/08/08 16:15:05 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -86,14 +85,16 @@ if ($_POST['action'] == 'setcustomeraccountancycode')
 
 if ($_GET["action"] == 'attribute_prefix' && $user->rights->societe->creer)
 {
-	$societe = new Societe($db, $_GET["socid"]);
+	$societe = new Societe($db);
+	$societe->fetch($_GET["socid"]);
 	$societe->attribute_prefix($db, $_GET["socid"]);
 }
 // conditions de reglement
 if ($_POST["action"] == 'setconditions' && $user->rights->societe->creer)
 {
 
-	$societe = new Societe($db, $_GET["socid"]);
+	$societe = new Societe($db);
+	$societe->fetch($_GET["socid"]);
 	$societe->cond_reglement=$_POST['cond_reglement_id'];
 	$sql = "UPDATE ".MAIN_DB_PREFIX."societe SET cond_reglement='".$_POST['cond_reglement_id'];
 	$sql.= "' WHERE rowid='".$_GET["socid"]."'";
@@ -103,7 +104,8 @@ if ($_POST["action"] == 'setconditions' && $user->rights->societe->creer)
 // mode de reglement
 if ($_POST["action"] == 'setmode' && $user->rights->societe->creer)
 {
-	$societe = new Societe($db, $_GET["socid"]);
+	$societe = new Societe($db);
+	$societe->fetch($_GET["socid"]);
 	$societe->mode_reglement=$_POST['mode_reglement_id'];
 	$sql = "UPDATE ".MAIN_DB_PREFIX."societe SET mode_reglement='".$_POST['mode_reglement_id'];
 	$sql.= "' WHERE rowid='".$_GET["socid"]."'";
@@ -113,7 +115,8 @@ if ($_POST["action"] == 'setmode' && $user->rights->societe->creer)
 // assujetissement a la TVA
 if ($_POST["action"] == 'setassujtva' && $user->rights->societe->creer)
 {
-	$societe = new Societe($db, $_GET["socid"]);
+	$societe = new Societe($db);
+	$societe->fetch($_GET["socid"]);
 	$societe->tva_assuj=$_POST['assujtva_value'];
 	$sql = "UPDATE ".MAIN_DB_PREFIX."societe SET tva_assuj='".$_POST['assujtva_value']."' WHERE rowid='".$socid."'";
 	$result = $db->query($sql);
@@ -389,7 +392,7 @@ if ($socid > 0)
 		print '<a href="'.DOL_URL_ROOT.'/comm/remise.php?id='.$objsoc->id.'">'.img_edit($langs->trans("Modify")).'</a>';
 	}
 	print '</td></tr></table>';
-	print '</td><td colspan="3" id="value">'.($objsoc->remise_client?$objsoc->remise_client.'%':$langs->trans("DiscountNone")).'</td>';
+	print '</td><td colspan="3" id="value">'.($objsoc->remise_client?'<a href="'.DOL_URL_ROOT.'/comm/remise.php?id='.$objsoc->id.'">'.$objsoc->remise_client.'%</a>':$langs->trans("DiscountNone")).'</td>';
 	print '</tr>';
         $var=!$var;
 
@@ -408,7 +411,7 @@ if ($socid > 0)
 	print '<td colspan="3" id="value">';
 	$amount_discount=$objsoc->getAvailableDiscounts();
 	if ($amount_discount < 0) dol_print_error($db,$societe->error);
-	if ($amount_discount > 0) print price($amount_discount).'&nbsp;'.$langs->trans("Currency".$conf->monnaie);
+	if ($amount_discount > 0) print '<a href="'.DOL_URL_ROOT.'/comm/remx.php?id='.$objsoc->id.'&backtopage='.urlencode($_SERVER["PHP_SELF"].'?socid='.$objsoc->id).'">'.price($amount_discount).'</a>&nbsp;'.$langs->trans("Currency".$conf->monnaie);
 	else print $langs->trans("DiscountNone");
 	print '</td>';
 	print '</tr>';
@@ -706,7 +709,7 @@ if ($socid > 0)
 			{
                                 print '<table class="noborder" width="100%">';
 				print '<tr class="liste_titre">';
-				print '<td colspan="4"><table width="100%" class="nobordernopadding"><tr><td>'.$langs->trans("LastInterventions",($num<=$MAXLIST?"":$MAXLIST)).'</td><td align="right"><a href="'.DOL_URL_ROOT.'/fichinter/index.php?socid='.$objsoc->id.'">'.$langs->trans("AllInterventions").' ('.$num.')</td></tr></table></td>';
+				print '<td colspan="4"><table width="100%" class="nobordernopadding"><tr><td>'.$langs->trans("LastInterventions",($num<=$MAXLIST?"":$MAXLIST)).'</td><td align="right"><a href="'.DOL_URL_ROOT.'/fichinter/list.php?socid='.$objsoc->id.'">'.$langs->trans("AllInterventions").' ('.$num.')</td></tr></table></td>';
 				print '</tr>';
 				$var=!$var;
 			
@@ -805,50 +808,6 @@ if ($socid > 0)
 		{
 			dol_print_error($db);
 		}
-
-	}
-
-	/*
-	 * Last linked chronodocs
-	 */
-	// TODO add function to add an external module
-	if(!empty($conf->global->MAIN_MODULE_CHRONODOCS) && $user->rights->chronodocs->entries->read)
-	{
-
-		$chronodocs_static=new Chronodocs_entries($db);
-		$result=$chronodocs_static->get_list($MAXLIST,0,"f.date_c","DESC",$objsoc->id);
-		if (is_array($result))
-		{
-			$var=true;
-			$i = 0 ;
-			//$num = sizeOf($result);
-			$num=$chronodocs_static->get_nb_chronodocs($objsoc->id);
-
-			if ($num > 0)
-			{
-                            print '<table class="noborder" width=100%>';
-				print '<tr class="liste_titre">';
-				print '<td colspan="3"><table width="100%" class="nobordernopadding"><tr><td>'.$langs->trans("LastChronodocs",($num<=$MAXLIST?"":$MAXLIST)).'</td><td align="right"><a href="'.DOL_URL_ROOT.'/chronodocs/index.php?socid='.$objsoc->id.'">'.$langs->trans("AllChronodocs").' ('.$num.')</td></tr></table></td>';
-				print '</tr>';
-
-
-                            while ($i < $num && $i < $MAXLIST)
-                            {
-				$obj = array_shift($result);
-				$var = !$var;
-				print "<tr $bc[$var]>";
-				print '<td><a href="'.DOL_URL_ROOT.'/chronodocs/fiche.php?id='.$obj->fichid.'">'.img_object($langs->trans("ShowChronodocs"),"generic")." ".$obj->ref.'</a></td>';
-
-				print "<td align=\"left\">".dol_trunc($obj->title,30) ."</td>";
-				print "<td align=\"right\">".dol_print_date($db->jdate($obj->dp),'day')."</td>\n";
-				print "</tr>";
-
-				$i++;
-                            }
-                            print "</table>";
-                        }
-		}
-
 
 	}
 
@@ -972,5 +931,5 @@ else
 $db->close();
 
 
-llxFooter('$Date: 2011/08/08 16:15:05 $ - $Revision: 1.283 $');
+llxFooter();
 ?>

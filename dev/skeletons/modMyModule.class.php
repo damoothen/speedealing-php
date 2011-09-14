@@ -1,6 +1,6 @@
 <?php
 /* Copyright (C) 2003      Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2009 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2010 Regis Houssin        <regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,14 +20,10 @@
 /**
  * 		\defgroup   mymodule     Module MyModule
  *      \brief      Example of a module descriptor.
- *					Such a file must be copied into htdocs/includes/module directory.
- */
-
-/**
- *      \file       htdocs/includes/modules/modMyModule.class.php
+ *					Such a file must be copied into htdocs/mymodule/includes/modules directory.
+ *      \file       htdocs/mymodule/includes/modules/modMyModule.class.php
  *      \ingroup    mymodule
  *      \brief      Description and activation file for module MyModule
- *		\version	$Id: modMyModule.class.php,v 1.68 2011/08/10 23:30:20 eldy Exp $
  */
 include_once(DOL_DOCUMENT_ROOT ."/includes/modules/DolibarrModules.class.php");
 
@@ -39,8 +35,9 @@ include_once(DOL_DOCUMENT_ROOT ."/includes/modules/DolibarrModules.class.php");
 class modMyModule extends DolibarrModules
 {
 	/**
-	 *   \brief      Constructor. Define names, constants, directories, boxes, permissions
-	 *   \param      DB      Database handler
+	 *   Constructor. Define names, constants, directories, boxes, permissions
+	 *
+	 *   @param      DoliDB		$DB      Database handler
 	 */
 	function modMyModule($DB)
 	{
@@ -233,10 +230,12 @@ class modMyModule extends DolibarrModules
 	/**
 	 *		Function called when module is enabled.
 	 *		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
-	 *		It also creates data directories.
-	 *      @return     int             1 if OK, 0 if KO
+	 *		It also creates data directories
+	 *
+     *      @param      string	$options    Options when enabling module ('', 'noboxes')
+	 *      @return     int             	1 if OK, 0 if KO
 	 */
-	function init()
+	function init($options='')
 	{
 		$sql = array();
 
@@ -248,10 +247,12 @@ class modMyModule extends DolibarrModules
 	/**
 	 *		Function called when module is disabled.
 	 *      Remove from database constants, boxes and permissions from Dolibarr database.
-	 *		Data directories are not deleted.
-	 *      @return     int             1 if OK, 0 if KO
+	 *		Data directories are not deleted
+	 *
+     *      @param      string	$options    Options when enabling module ('', 'noboxes')
+	 *      @return     int             	1 if OK, 0 if KO
 	 */
-	function remove()
+	function remove($options='')
 	{
 		$sql = array();
 
@@ -260,11 +261,12 @@ class modMyModule extends DolibarrModules
 
 
 	/**
-	 *		\brief		Create tables, keys and data required by module
-	 * 					Files llx_table1.sql, llx_table1.key.sql llx_data.sql with create table, create keys
-	 * 					and create data commands must be stored in directory /mymodule/sql/
-	 *					This function is called by this->init.
-	 * 		\return		int		<=0 if KO, >0 if OK
+	 *		Create tables, keys and data required by module
+	 * 		Files llx_table1.sql, llx_table1.key.sql llx_data.sql with create table, create keys
+	 * 		and create data commands must be stored in directory /mymodule/sql/
+	 *		This function is called by this->init
+	 *
+	 * 		@return		int		<=0 if KO, >0 if OK
 	 */
 	function load_tables()
 	{

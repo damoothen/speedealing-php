@@ -20,7 +20,6 @@
  *      \file       htdocs/core/class/events.class.php
  *      \ingroup    core
  *		\brief      File of class to manage security events.
- *		\version    $Id: events.class.php,v 1.8 2011/07/31 23:45:14 eldy Exp $
  *		\author		Laurent Destailleur
  */
 
@@ -90,8 +89,9 @@ class Events // extends CommonObject
 
 
 	/**
-	 *      \brief      Constructor
-	 *      \param      DB      Database handler
+	 *	Constructor
+	 *
+	 *  @param		DoliDB		$DB      Database handler
 	 */
 	function Events($DB)
 	{
@@ -101,9 +101,9 @@ class Events // extends CommonObject
 
 
 	/**
-	 *      \brief      Create in database
-	 *      \param      user        User that create
-	 *      \return     int         <0 si ko, >0 si ok
+	 *   Create in database
+	 *   @param      User	$user       User that create
+	 *   @return     int     		    <0 if KO, >0 if OK
 	 */
 	function create($user)
 	{

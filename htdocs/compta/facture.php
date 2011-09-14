@@ -25,7 +25,6 @@
  *	\file       htdocs/compta/facture.php
  *	\ingroup    facture
  *	\brief      Page to create/see an invoice
- *	\version    $Id: facture.php,v 1.854 2011/08/10 22:47:34 eldy Exp $
  */
 
 require('../main.inc.php');
@@ -79,7 +78,6 @@ include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
 $hookmanager=new HookManager($db);
 $hookmanager->callHooks(array('invoicecard'));
 
-
 /******************************************************************************/
 /*                     Actions                                                */
 /******************************************************************************/
@@ -110,6 +108,7 @@ if ($action == 'confirm_clone' && $confirm == 'yes')
     }
 }
 
+// Change status of invoice
 if ($action == 'reopen' && $user->rights->facture->creer)
 {
     $result = $object->fetch($id);
@@ -129,7 +128,7 @@ if ($action == 'reopen' && $user->rights->facture->creer)
     }
 }
 
-// Suppression de la facture
+// Delete invoice
 if ($action == 'confirm_delete' && $confirm == 'yes' && $user->rights->facture->supprimer)
 {
     if ($user->rights->facture->supprimer)
@@ -148,9 +147,7 @@ if ($action == 'confirm_delete' && $confirm == 'yes' && $user->rights->facture->
     }
 }
 
-/*
- *  Supprime une ligne produit AVEC ou SANS confirmation
- */
+// Delete line
 if ($action == 'confirm_deleteline' && $confirm == 'yes')
 {
     if ($user->rights->facture->creer)
@@ -186,7 +183,7 @@ if ($action == 'confirm_deleteline' && $confirm == 'yes')
     }
 }
 
-// Supprime affectation d'un avoir a la facture
+// Delete link of credit note to invoice
 if ($action == 'unlinkdiscount')
 {
     if ($user->rights->facture->creer)
@@ -227,8 +224,8 @@ if ($action == 'set_thirdparty')
 {
     $object->updateObjectField('facture',$id,'fk_soc',$socid);
 
-        Header('Location: '.$_SERVER["PHP_SELF"].'?facid='.$id);
-        exit;
+    Header('Location: '.$_SERVER["PHP_SELF"].'?facid='.$id);
+    exit;
 }
 
 if ($action == 'classin')
@@ -729,8 +726,7 @@ if ($action == 'add' && $user->rights->facture->creer)
                                 $discountid=$discount->create($user);
                                 if ($discountid > 0)
                                 {
-                                    $result=$object->insert_discount($discountid);
-                                    //$result=$discount->link_to_invoice($lineid,$id);
+                                    $result=$object->insert_discount($discountid);    // This include link_to_invoice
                                 }
                                 else
                                 {
@@ -787,7 +783,7 @@ if ($action == 'add' && $user->rights->facture->creer)
                                 $fk_parent_line
                                 );
 
-                                                            if ($result > 0)
+                                if ($result > 0)
                                 {
                                     $lineid=$result;
                                 }
@@ -806,7 +802,7 @@ if ($action == 'add' && $user->rights->facture->creer)
                         }
 
                         // Hooks
-                        $parameters=array('srcobject'=>$srcobject);
+                        $parameters=array('objFrom'=>$srcobject);
                         $reshook=$hookmanager->executeHooks('createfrom',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
                         if ($reshook < 0) $error++;
                     }
@@ -906,7 +902,7 @@ if (($action == 'addline' || $action == 'addline_predef') && $user->rights->fact
         // Ecrase $base_price_type par celui du produit
         if ($_POST['idprod'])
         {
-            $prod = new Product($db, $_POST['idprod']);
+            $prod = new Product($db);
             $prod->fetch($_POST['idprod']);
 
             $tva_tx = get_default_tva($mysoc,$object->client,$prod->id);
@@ -1316,7 +1312,7 @@ if (($action == 'send' || $action == 'relance') && ! $_POST['addfile'] && ! $_PO
                         $object->actionmsg		= $actionmsg;  // Long text
                         $object->actionmsg2		= $actionmsg2; // Short text
                         $object->fk_element		= $object->id;
-						$object->elementtype	= $object->element;
+                        $object->elementtype	= $object->element;
 
                         // Appel des triggers
                         include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
@@ -1603,7 +1599,7 @@ if ($action == 'create')
 
     // Standard invoice
     print '<tr height="18"><td width="16px" valign="middle">';
-    print '<input type="radio" name="type" value="0"'.(GETPOST('type')==0?' checked="true"':'').'>';
+    print '<input type="radio" name="type" value="0"'.(GETPOST('type')==0?' checked="checked"':'').'>';
     print '</td><td valign="middle">';
     $desc=$html->textwithpicto($langs->trans("InvoiceStandardAsk"),$langs->transnoentities("InvoiceStandardDesc"),1);
     print $desc;
@@ -1611,7 +1607,7 @@ if ($action == 'create')
 
     // Deposit
     print '<tr height="18"><td width="16px" valign="middle">';
-    print '<input type="radio" name="type" value="3"'.(GETPOST('type')==3?' checked="true"':'').'>';
+    print '<input type="radio" name="type" value="3"'.(GETPOST('type')==3?' checked="checked"':'').'>';
     print '</td><td valign="middle">';
     $desc=$html->textwithpicto($langs->trans("InvoiceDeposit"),$langs->transnoentities("InvoiceDepositDesc"),1);
     print $desc;
@@ -1621,7 +1617,7 @@ if ($action == 'create')
     if ($conf->global->FACTURE_USE_PROFORMAT)
     {
         print '<tr height="18"><td width="16px" valign="middle">';
-        print '<input type="radio" name="type" value="4"'.(GETPOST('type')==4?' checked="true"':'').'>';
+        print '<input type="radio" name="type" value="4"'.(GETPOST('type')==4?' checked="checked"':'').'>';
         print '</td><td valign="middle">';
         $desc=$html->textwithpicto($langs->trans("InvoiceProForma"),$langs->transnoentities("InvoiceProFormaDesc"),1);
         print $desc;
@@ -1630,13 +1626,13 @@ if ($action == 'create')
 
     // Replacement
     print '<tr height="18"><td valign="middle">';
-    print '<input type="radio" name="type" value="1"'.(GETPOST('type')==1?' checked=true':'');
-    if (! $options) print ' disabled="true"';
+    print '<input type="radio" name="type" value="1"'.(GETPOST('type')==1?' checked="checked"':'');
+    if (! $options) print ' disabled="disabled"';
     print '>';
     print '</td><td valign="middle">';
     $text=$langs->trans("InvoiceReplacementAsk").' ';
     $text.='<select class="flat" name="fac_replacement" id="fac_replacement"';
-    if (! $options) $text.=' disabled="true"';
+    if (! $options) $text.=' disabled="disabled"';
     $text.='>';
     if ($options)
     {
@@ -1655,13 +1651,13 @@ if ($action == 'create')
     // Credit note
     print '<tr height="18"><td valign="middle">';
     print '<input type="radio" name="type" value="2"'.(GETPOST('type')==2?' checked=true':'');
-    if (! $optionsav) print ' disabled="true"';
+    if (! $optionsav) print ' disabled="disabled"';
     print '>';
     print '</td><td valign="middle">';
     $text=$langs->transnoentities("InvoiceAvoirAsk").' ';
     //	$text.='<input type="text" value="">';
     $text.='<select class="flat" name="fac_avoir" id="fac_avoir"';
-    if (! $optionsav) $text.=' disabled="true"';
+    if (! $optionsav) $text.=' disabled="disabled"';
     $text.='>';
     if ($optionsav)
     {
@@ -1683,11 +1679,14 @@ if ($action == 'create')
 
     // Discounts for third party
     print '<tr><td>'.$langs->trans('Discounts').'</td><td colspan="2">';
-    if ($soc->remise_client) print $langs->trans("CompanyHasRelativeDiscount",$soc->remise_client);
+    if ($soc->remise_client) print $langs->trans("CompanyHasRelativeDiscount",'<a href="'.DOL_URL_ROOT.'/comm/remise.php?id='.$soc->id.'&backtopage='.urlencode($_SERVER["PHP_SELF"].'?socid='.$soc->id.'&action='.$action.'&origin='.GETPOST('origin').'&originid='.GETPOST('originid')).'">'.$soc->remise_client.'</a>');
     else print $langs->trans("CompanyHasNoRelativeDiscount");
+    print ' <a href="'.DOL_URL_ROOT.'/comm/remise.php?id='.$soc->id.'&backtopage='.urlencode($_SERVER["PHP_SELF"].'?socid='.$soc->id.'&action='.$action.'&origin='.GETPOST('origin').'&originid='.GETPOST('originid')).'">('.$langs->trans("EditRelativeDiscount").')</a>';
     print '. ';
-    if ($absolute_discount) print $langs->trans("CompanyHasAbsoluteDiscount",price($absolute_discount),$langs->trans("Currency".$conf->monnaie));
+    print '<br>';
+    if ($absolute_discount) print $langs->trans("CompanyHasAbsoluteDiscount",'<a href="'.DOL_URL_ROOT.'/comm/remx.php?id='.$soc->id.'&backtopage='.urlencode($_SERVER["PHP_SELF"].'?socid='.$soc->id.'&action='.$action.'&origin='.GETPOST('origin').'&originid='.GETPOST('originid')).'">'.price($absolute_discount).'</a>',$langs->trans("Currency".$conf->monnaie));
     else print $langs->trans("CompanyHasNoAbsoluteDiscount");
+    print ' <a href="'.DOL_URL_ROOT.'/comm/remx.php?id='.$soc->id.'&backtopage='.urlencode($_SERVER["PHP_SELF"].'?socid='.$soc->id.'&action='.$action.'&origin='.GETPOST('origin').'&originid='.GETPOST('originid')).'">('.$langs->trans("EditGlobalDiscounts").')</a>';
     print '.';
     print '</td></tr>';
 
@@ -1715,12 +1714,15 @@ if ($action == 'create')
         print '</td></tr>';
     }
 
+    // Insert hooks
+    $parameters=array();
+    $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+
     // Modele PDF
     print '<tr><td>'.$langs->trans('Model').'</td>';
     print '<td>';
     include_once(DOL_DOCUMENT_ROOT.'/includes/modules/facture/modules_facture.php');
-    $model=new ModelePDFFactures();
-    $liste=$model->liste_modeles($db);
+    $liste=ModelePDFFactures::liste_modeles($db);
     print $html->selectarray('model',$liste,$conf->global->FACTURE_ADDON_PDF);
     print "</td></tr>";
 
@@ -1859,7 +1861,7 @@ if ($action == 'create')
 
         print '<table class="noborder" width="100%">';
 
-        $objectsrc->printOriginLinesList($object);
+        $objectsrc->printOriginLinesList($hookmanager);
 
         print '</table>';
     }
@@ -1881,7 +1883,7 @@ else
 
             $result=$object->fetch_thirdparty();
 
-            $soc = new Societe($db, $object->socid);
+            $soc = new Societe($db);
             $soc->fetch($object->socid);
 
             $totalpaye  = $object->getSommePaiement();
@@ -2091,24 +2093,24 @@ else
             print '</td></tr>';
 
             // Third party
-			print '<tr><td>';
+            print '<tr><td>';
             print '<table class="nobordernopadding" width="100%">';
             print '<tr><td>'.$langs->trans('Company').'</td>';
-			print '</td><td colspan="5">';
-			if ($conf->global->FACTURE_CHANGE_THIRDPARTY && $action != 'editthirdparty' && $object->brouillon && $user->rights->facture->creer)
+            print '</td><td colspan="5">';
+            if ($conf->global->FACTURE_CHANGE_THIRDPARTY && $action != 'editthirdparty' && $object->brouillon && $user->rights->facture->creer)
             print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editthirdparty&amp;facid='.$object->id.'">'.img_edit($langs->trans('SetLinkToThirdParty'),1).'</a></td>';
             print '</tr></table>';
             print '</td><td colspan="5">';
-			if ($action == 'editthirdparty')
+            if ($action == 'editthirdparty')
             {
                 $html->form_thirdparty($_SERVER['PHP_SELF'].'?facid='.$object->id,$object->socid,'socid');
             }
-			else
-			{
-			print ' &nbsp;'.$soc->getNomUrl(1,'compta');
-            print ' &nbsp; (<a href="'.DOL_URL_ROOT.'/compta/facture.php?socid='.$object->socid.'">'.$langs->trans('OtherBills').'</a>)';
-			}
-			print '</tr>';
+            else
+            {
+                print ' &nbsp;'.$soc->getNomUrl(1,'compta');
+                print ' &nbsp; (<a href="'.DOL_URL_ROOT.'/compta/facture.php?socid='.$object->socid.'">'.$langs->trans('OtherBills').'</a>)';
+            }
+            print '</tr>';
 
             // Type
             print '<tr><td>'.$langs->trans('Type').'</td><td colspan="5">';
@@ -2150,13 +2152,15 @@ else
             print '</td></tr>';
 
             // Relative and absolute discounts
-            $addabsolutediscount=' <a href="'.DOL_URL_ROOT.'/comm/remx.php?id='.$soc->id.'&backtopage='.urlencode($_SERVER["PHP_SELF"]).'?facid='.$object->id.'">'.$langs->trans("AddGlobalDiscount").'</a>';
-            $addcreditnote=' <a href="'.DOL_URL_ROOT.'/compta/facture.php?action=create&socid='.$soc->id.'&type=2&backtopage='.urlencode($_SERVER["PHP_SELF"]).'?facid='.$object->id.'">'.$langs->trans("AddCreditNote").'</a>';
+            $addrelativediscount='<a href="'.DOL_URL_ROOT.'/comm/remise.php?id='.$soc->id.'&backtopage='.urlencode($_SERVER["PHP_SELF"]).'?facid='.$object->id.'">'.$langs->trans("EditRelativeDiscounts").'</a>';
+            $addabsolutediscount='<a href="'.DOL_URL_ROOT.'/comm/remx.php?id='.$soc->id.'&backtopage='.urlencode($_SERVER["PHP_SELF"]).'?facid='.$object->id.'">'.$langs->trans("EditGlobalDiscounts").'</a>';
+            $addcreditnote='<a href="'.DOL_URL_ROOT.'/compta/facture.php?action=create&socid='.$soc->id.'&type=2&backtopage='.urlencode($_SERVER["PHP_SELF"]).'?facid='.$object->id.'">'.$langs->trans("AddCreditNote").'</a>';
 
             print '<tr><td>'.$langs->trans('Discounts');
             print '</td><td colspan="5">';
             if ($soc->remise_client) print $langs->trans("CompanyHasRelativeDiscount",$soc->remise_client);
             else print $langs->trans("CompanyHasNoRelativeDiscount");
+            //print ' ('.$addrelativediscount.')';
 
             if ($absolute_discount > 0)
             {
@@ -2188,14 +2192,14 @@ else
                     // Remise dispo de type remise fixe (not credit note)
                     $filter='fk_facture_source IS NULL';
                     print '<br>';
-                    $html->form_remise_dispo($_SERVER["PHP_SELF"].'?facid='.$object->id, 0,  'remise_id',$soc->id, $absolute_discount, $filter, $resteapayer, ' - '.$addabsolutediscount);
+                    $html->form_remise_dispo($_SERVER["PHP_SELF"].'?facid='.$object->id, 0,  'remise_id',$soc->id, $absolute_discount, $filter, $resteapayer, ' ('.$addabsolutediscount.')');
                 }
             }
             else
             {
                 if ($absolute_creditnote > 0)    // If not linke will be added later
                 {
-                    if ($object->statut == 0 && $object->type != 2 && $object->type != 3) print ' - '.$addabsolutediscount.'<br>';
+                    if ($object->statut == 0 && $object->type != 2 && $object->type != 3) print ' ('.$addabsolutediscount.')<br>';
                     else print '.';
                 }
                 else print '. ';
@@ -2226,7 +2230,7 @@ else
             if (! $absolute_discount && ! $absolute_creditnote)
             {
                 print $langs->trans("CompanyHasNoAbsoluteDiscount");
-                if ($object->statut == 0 && $object->type != 2 && $object->type != 3) print ' - '.$addabsolutediscount.'<br>';
+                if ($object->statut == 0 && $object->type != 2 && $object->type != 3) print ' ('.$addabsolutediscount.')<br>';
                 else print '. ';
             }
             /*if ($object->statut == 0 && $object->type != 2 && $object->type != 3)
@@ -2544,16 +2548,16 @@ else
                 print '<table class="nobordernopadding" width="100%"><tr><td>';
                 print $langs->trans('Project');
                 print '</td>';
-                if ($action != 'classin')
+                if ($action != 'classify')
                 {
-                    print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=classin&amp;facid='.$object->id.'">';
+                    print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=classify&amp;facid='.$object->id.'">';
                     print img_edit($langs->trans('SetProject'),1);
                     print '</a></td>';
                 }
                 print '</tr></table>';
 
                 print '</td><td colspan="3">';
-                if ($action == 'classin')
+                if ($action == 'classify')
                 {
                     $html->form_project($_SERVER['PHP_SELF'].'?facid='.$object->id,$object->socid,$object->fk_project,'projectid');
                 }
@@ -2564,6 +2568,10 @@ else
                 print '</td>';
                 print '</tr>';
             }
+
+            // Insert hooks
+            $parameters=array('colspan'=>' colspan="3"');
+            $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
 
             print '</table><br>';
 
@@ -3209,5 +3217,5 @@ else
 
 $db->close();
 
-llxFooter('$Date: 2011/08/10 22:47:34 $ - $Revision: 1.854 $');
+llxFooter();
 ?>

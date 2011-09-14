@@ -21,7 +21,6 @@
  *	\file       htdocs/compta/index.php
  *	\ingroup    compta
  *	\brief      Main page of accountancy area
- *	\version    $Id: index.php,v 1.185 2011/08/08 14:25:45 eldy Exp $
  */
 
 require('../main.inc.php');
@@ -621,7 +620,7 @@ if ($conf->deplacement->enabled && $user->rights->deplacement->lire)
 		}
 		else
 		{
-			print '<tr '.$bc[$var].'><td colspan="2">'.$langs->trans("None").'</td></tr>';
+			print '<tr '.$bc[$var].'><td colspan="5">'.$langs->trans("None").'</td></tr>';
 		}
 		print '</table><br>';
 	}
@@ -1031,5 +1030,5 @@ print '</table>';
 $db->close();
 
 
-llxFooter('$Date: 2011/08/08 14:25:45 $ - $Revision: 1.185 $');
+llxFooter();
 ?>

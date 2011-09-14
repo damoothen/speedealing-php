@@ -2,7 +2,7 @@
 /* Copyright (C) 2005      Matthieu Valleton    <mv@seeschloss.org>
  * Copyright (C) 2005      Davoleau Brice       <brice.davoleau@gmail.com>
  * Copyright (C) 2005      Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2006-2008 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2006-2011 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2006-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2007      Patrick Raguin	  	<patrick.raguin@gmail.com>
  * Copyright (C) 2010-2011 Herve Prot   	  	<herve.prot@symeos.com>
@@ -25,7 +25,6 @@
  *	\file       htdocs/categories/class/categorie.class.php
  *	\ingroup    categorie
  *	\brief      File of class to manage categories
- *	\version	$Id: categorie.class.php,v 1.18 2011/08/03 00:46:39 eldy Exp $
  */
 
 require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
@@ -41,7 +40,7 @@ class Categorie
 {
 	var $error;
 	var $db;
-	
+
 	var $element='category';
 	var $table_element='category';
 
@@ -59,10 +58,10 @@ class Categorie
 
 
 	/**
-	 * 	Constructor
-     *
-	 * 	@param	DB		acces base de donnees
-	 * 	@param	id		id de la categorie
+	 *	Constructor
+	 *
+	 *  @param		DoliDB		$DB     Database handler
+	 *  @param		int			$id		Id of category to fetch during init
 	 */
 	function Categorie($DB, $id=-1)
 	{
@@ -70,13 +69,13 @@ class Categorie
 		$this->id = $id;
                 $this->priority = 0;
 
-		if ($id != -1) $this->fetch ($this->id);
+		if ($id != -1) $this->fetch($this->id);
 	}
 
 	/**
 	 * 	Load category into memory from database
-
-	 * 	@param		id		id of category
+	 *
+	 * 	@param		int		$id		Id of category
 	 */
 	function fetch($id)
 	{
@@ -140,7 +139,7 @@ class Categorie
 
 		// Clean parameters
 		if (empty($this->visible)) $this->visible=0;
-		$this->parentId = ($this->id_mere) != "" ? intval($this->id_mere) : 0;		 
+		$this->parentId = ($this->id_mere) != "" ? intval($this->id_mere) : 0;
 
 		if ($this->already_exists())
 		{
@@ -157,6 +156,7 @@ class Categorie
 		$sql.= " visible,";
 		$sql.= " type,";
 		$sql.= " priority";
+		$sql.= " entity";
 		//$sql.= ", fk_parent_id";
 		$sql.= ")";
 		$sql.= " VALUES ('".$this->db->escape($this->label)."', '".$this->db->escape($this->description)."',";
@@ -165,6 +165,7 @@ class Categorie
 			$sql.= ($this->socid != -1 ? $this->socid : 'null').",";
 		}
 		$sql.= "'".$this->visible."','".$this->type."','".$this->priority."'";
+		$sql.= "'".$this->visible."',".$this->type.",".$conf->entity;
 		//$sql.= ",".$this->parentId;
 		$sql.= ")";
 
@@ -222,7 +223,7 @@ class Categorie
 		$this->description=trim($this->description);
 		$this->parentId = ($this->id_mere) != "" ? intval($this->id_mere) : 0;
 		$this->visible = ($this->visible) != "" ? intval($this->visible) : 0;
-		
+
 		if ($this->already_exists())
 		{
 			$this->error=$langs->trans("ImpossibleUpdateCat");
@@ -405,14 +406,13 @@ class Categorie
 
 	/**
 	 * 	Ajout d'une sous-categorie
-	 * 	@param	$fille		objet categorie
+	 *
 	 * 	@return	int			 1 : OK
 	 *          			-2 : $fille est deja dans la famille de $this
 	 *          			-3 : categorie ($this ou $fille) invalide
 	 */
 	function add_fille()
 	{
-
 		$sql = "INSERT INTO ".MAIN_DB_PREFIX."categorie_association (fk_categorie_mere, fk_categorie_fille)";
 		$sql.= " VALUES (".$this->id_mere.", ".$this->id.")";
 
@@ -429,6 +429,7 @@ class Categorie
 
 	/**
 	 * 	Suppression d'une sous-categorie (seulement "desassociation")
+	 *
 	 * 	@param	$fille		objet categorie
 	 *  @return	int			1 : OK
 	 *          		   -3 : categorie ($this ou $fille) invalide
@@ -455,10 +456,11 @@ class Categorie
 	}
 
 	/**
-	 * 	\brief			Link an object to the category
-	 *	\param			obj		Object to link to category
-	 * 	\param			type	Type of category
-	 * 	\return			int		1 : OK, -1 : erreur SQL, -2 : id non renseign, -3 : Already linked
+	 * 	Link an object to the category
+	 *
+	 *	@param			obj		Object to link to category
+	 * 	@param			type	Type of category
+	 * 	@return			int		1 : OK, -1 : erreur SQL, -2 : id non renseign, -3 : Already linked
 	 */
 	function add_type($obj,$type)
 	{
@@ -491,9 +493,10 @@ class Categorie
 
 	/**
 	 * Suppresion d'un produit de la categorie
-	 * @param $prod est un objet de type produit
-	 * retour :  1 : OK
-	 *          -1 : erreur SQL
+	 *
+	 * @param 	$obj	Object
+	 * @param	$type	Type
+	 * @return 	int		1 if OK, -1 if KO
 	 */
 	function del_type($obj,$type)
 	{
@@ -513,10 +516,11 @@ class Categorie
 	}
 
 	/**
-	 * 	\brief	Return list of contents of a category
-	 * 	\param	field	Field name for select in table. Full field name will be fk_field.
-	 * 	\param	class	PHP Class of object to store entity
-	 * 	\param	table	Table name for select in table. Full table name will be PREFIX_categorie_table.
+	 * 	Return list of contents of a category
+	 *
+	 * 	@param	field		Field name for select in table. Full field name will be fk_field.
+	 * 	@param	classname	PHP Class of object to store entity
+	 * 	@param	table		Table name for select in table. Full table name will be PREFIX_categorie_table.
 	 */
 	function get_type($field,$classname,$table='')
 	{
@@ -657,7 +661,10 @@ class Categorie
 
 
 	/**
-	 * retourne la description d'une categorie
+	 * Return category description
+	 *
+	 * @param	int		$cate		Category id
+	 * @return	string				Description
 	 */
 	function get_desc($cate)
 	{
@@ -672,6 +679,8 @@ class Categorie
 
 	/**
 	 * La categorie $fille est-elle une fille de cette categorie ?
+	 *
+	 * @param	Category	$fille		Object category
 	 */
 	function is_fille($fille)
 	{
@@ -695,17 +704,23 @@ class Categorie
 	 *				label = nom de la categorie
 	 *				fulllabel = nom avec chemin complet de la categorie
 	 *				fullpath = chemin complet compose des id
-	 *	@param      type		      Type of categories (0=product, 1=suppliers, 2=customers, 3=members)
-     *  @param      markafterid       Mark all categories after this leaf in category tree.
-	 *	@return		array		      Array of categories
+	 *
+	 *	@param      string	$type		      Type of categories (0=product, 1=suppliers, 2=customers, 3=members)
+     *  @param      int		$markafterid      Mark all categories after this leaf in category tree.
+	 *	@return		array		      		  Array of categories
 	 */
 	function get_full_arbo($type,$markafterid=0)
 	{
+		global $conf;
+
 		$this->cats = array();
 
 		// Charge tableau des meres
-		$sql = "SELECT fk_categorie_mere as id_mere, fk_categorie_fille as id_fille";
-		$sql.= " FROM ".MAIN_DB_PREFIX."categorie_association";
+		$sql = "SELECT ca.fk_categorie_mere as id_mere, ca.fk_categorie_fille as id_fille";
+		$sql.= " FROM ".MAIN_DB_PREFIX."categorie_association ca";
+		$sql.= ", ".MAIN_DB_PREFIX."categorie as c";
+		$sql.= " WHERE ca.fk_categorie_mere = c.rowid";
+		$sql.= " AND c.entity = ".$conf->entity;
 
 		// Load array this->motherof
 		dol_syslog("Categorie::get_full_arbo build motherof array sql=".$sql, LOG_DEBUG);
@@ -727,8 +742,9 @@ class Categorie
 		$sql = "SELECT DISTINCT c.rowid, c.label as label, ca.fk_categorie_fille as rowid_fille, c.priority";	// Distinct reduce pb with old tables with duplicates
 		$sql.= " FROM ".MAIN_DB_PREFIX."categorie as c";
 		$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."categorie_association as ca";
-		$sql.= " ON c.rowid=ca.fk_categorie_mere";
+		$sql.= " ON c.rowid = ca.fk_categorie_mere";
 		$sql.= " WHERE c.type = ".$type;
+		$sql.= " AND c.entity = ".$conf->entity;
 		$sql.= " ORDER BY c.label, c.rowid";
 
 		dol_syslog("Categorie::get_full_arbo get category list sql=".$sql, LOG_DEBUG);
@@ -795,6 +811,7 @@ class Categorie
 
 	/**
 	 *	For category id_categ and its childs available in this->cats, define property fullpath and fulllabel
+	 *
 	 * 	@param		id_categ		id_categ entry to update
 	 * 	@param		protection		Deep counter to avoid infinite loop
 	 */
@@ -845,7 +862,7 @@ class Categorie
 	}
 
 	/**
-	 *	\brief		Affiche contenu de $this->cats
+	 *	Affiche contenu de $this->cats
 	 */
 	function debug_cats()
 	{
@@ -864,8 +881,9 @@ class Categorie
 
 
 	/**
-	 * 		\brief		Retourne toutes les categories
-	 *		\return		array		Tableau d'objet Categorie
+	 * 	Retourne toutes les categories
+	 *
+	 *	@return		array		Tableau d'objet Categorie
 	 */
 	function get_all_categories ()
 	{
@@ -890,8 +908,9 @@ class Categorie
 	}
 
 	/**
-	 * 	\brief		Retourne le nombre total de categories
-	 *	\return		int		Nombre de categories
+	 * 	Retourne le nombre total de categories
+	 *
+	 *	@return		int		Nombre de categories
 	 */
 	function get_nb_categories ()
 	{
@@ -905,13 +924,14 @@ class Categorie
 		}
 		else
 		{
-			dol_print_error ($this->db);
+			dol_print_error($this->db);
 			return -1;
 		}
 	}
 
 	/**
 	 * 	Check if no category with same label already exists for this cat's parent or root and for this cat's type
+	 *
 	 * 	@return		boolean		1 if already exist, 0 otherwise, -1 if error
 	 */
 	function already_exists()
@@ -926,7 +946,7 @@ class Categorie
 			$sql.= " JOIN ".MAIN_DB_PREFIX."categorie_association as ca";
 			$sql.= " ON c.rowid=ca.fk_categorie_fille";
 			$sql.= " WHERE ca.fk_categorie_mere=".$this->id_mere;
-			$sql.= " AND c.label='".$this->db->escape($this->label)."'";	
+			$sql.= " AND c.label='".$this->db->escape($this->label)."'";
 		}
 		else 										// mother_id undefined (so it's root)
 		{
@@ -939,14 +959,14 @@ class Categorie
 			$sql.= " JOIN ".MAIN_DB_PREFIX."categorie_association as ca";
 			$sql.= " ON c.rowid!=ca.fk_categorie_fille";
 			$sql.= " WHERE c.type=".$this->type;
-			$sql.= " AND c.label='".$this->db->escape($this->label)."'";		
+			$sql.= " AND c.label='".$this->db->escape($this->label)."'";
 		}
 		dol_syslog("Categorie::already_exists sql=".$sql);
 		$res  = $this->db->query($sql);
 		if ($res)
-		{			
+		{
 			if($this->db->num_rows($resql) > 0)						// Checking for empty resql
-			{				
+			{
 				$obj = $this->db->fetch_array($res);
 				/* If object called create, obj cannot have is id.
 				 * If object called update, he mustn't have the same label as an other category for this mother.
@@ -954,7 +974,7 @@ class Categorie
 				 * update may be for label.
 				 */
 				if($obj[0] > 0 && $obj[0] != $this->id) return 1;
-			}				
+			}
 			return 0;
 		}
 		else
@@ -965,7 +985,7 @@ class Categorie
 	}
 
 	/**
-	 * 		\brief		Retourne les categories de premier niveau (qui ne sont pas filles)
+	 * 		Retourne les categories de premier niveau (qui ne sont pas filles)
 	 */
 	function get_main_categories()
 	{
@@ -986,9 +1006,6 @@ class Categorie
 			{
 				$maincats[] = $cat;
 			}
-			else
-			{
-			}
 		}
 
 		return $maincats;
@@ -1002,7 +1019,7 @@ class Categorie
 	{
 		$ways = array ();
 
-		foreach ($this->get_all_ways () as $way)
+		foreach ($this->get_all_ways() as $way)
 		{
 			$w = array ();
 			foreach ($way as $cat)
@@ -1016,7 +1033,7 @@ class Categorie
 					$w[] = "<a href='".DOL_URL_ROOT."/$url?catid=".$cat->id."'>".$cat->label."</a>";
 				}
 			}
-			$ways[] = implode ($sep, $w);
+			$ways[] = implode($sep, $w);
 		}
 
 		return $ways;
@@ -1024,7 +1041,10 @@ class Categorie
 
 
 	/**
-	 * get_primary_way() affiche le chemin le plus court pour se rendre a un produit
+	 * affiche le chemin le plus court pour se rendre a un produit
+	 *
+	 * @param	id
+	 * @param	type
 	 */
 	function get_primary_way($id, $type="")
 	{
@@ -1034,7 +1054,7 @@ class Categorie
 		{
 			foreach ($mere->get_all_ways() as $way)
 			{
-				if(sizeof($way)<$primary_way["taille"] || $primary_way["taille"]<0)
+				if(count($way) < $primary_way["taille"] || $primary_way["taille"] < 0)
 				{
 					$primary_way["taille"] = count($way);
 					$primary_way["chemin"] = $way;
@@ -1046,9 +1066,14 @@ class Categorie
 	}
 
 	/**
-	 * print_primary_way() affiche le chemin le plus court pour se rendre a un produit
+	 * Affiche le chemin le plus court pour se rendre a un produit
+	 *
+	 * @param	int		$id
+	 * @param	string	$sep
+	 * @param	string	$url
+	 * @param	string	$type
 	 */
-	function print_primary_way($id, $sep= " &gt;&gt; ", $url, $type="")
+	function print_primary_way($id, $sep= " &gt;&gt; ", $url="", $type="")
 	{
 		$primary_way = Array();
 		$way = $this->get_primary_way($id,$type);
@@ -1122,6 +1147,7 @@ class Categorie
 
 	/**
 	 * 		Return list of categories linked to element of type $type with id $typeid
+	 *
 	 * 		@param		id			Id of element
 	 * 		@param		typeid		Type id of link (0,1,2,3...)
 	 * 		@return		array		List of category objects
@@ -1162,8 +1188,14 @@ class Categorie
 
 
 	/**
-	 * 	\brief	Retourne les categories dont l'id ou le nom correspond
-	 * 			ajoute des wildcards au nom sauf si $exact = true
+	 * 	Retourne les categories dont l'id ou le nom correspond
+	 * 	ajoute des wildcards au nom sauf si $exact = true
+	 *
+	 * 	@param		id
+	 * 	@param		nom
+	 * 	@param		type
+	 * 	@param		exact
+	 * 	@return		int or array
 	 */
 	function rechercher($id, $nom, $type, $exact = false)
 	{
@@ -1204,11 +1236,12 @@ class Categorie
 	}
 
 	/**
-	 *	\brief      Return name and link of category (with picto)
-	 *	\param		withpicto		0=Pas de picto, 1=Inclut le picto dans le lien, 2=Picto seul
-	 *	\param		option			Sur quoi pointe le lien ('', 'xyz')
-	 * 	\param		maxlength		Max length of text
-	 *	\return		string			Chaine avec URL
+	 *	Return name and link of category (with picto)
+	 *
+	 *	@param		withpicto		0=Pas de picto, 1=Inclut le picto dans le lien, 2=Picto seul
+	 *	@param		option			Sur quoi pointe le lien ('', 'xyz')
+	 * 	@param		maxlength		Max length of text
+	 *	@return		string			Chaine avec URL
 	 */
 	function getNomUrl($withpicto=0,$option='',$maxlength=0)
 	{
@@ -1231,11 +1264,12 @@ class Categorie
 
 
 	/**
-	 *    \brief      Deplace fichier uploade sous le nom $files dans le repertoire sdir
-	 *    \param      sdir        Repertoire destination finale
-	 *    \param      $file       Nom du fichier uploade
-	 *    \param      maxWidth    Largeur maximum que dois faire la miniature (160 par defaut)
-	 *    \param      maxHeight   Hauteur maximum que dois faire la miniature (120 par defaut)
+	 *    Deplace fichier uploade sous le nom $files dans le repertoire sdir
+	 *
+	 *    @param      sdir        Repertoire destination finale
+	 *    @param      $file       Nom du fichier uploade
+	 *    @param      maxWidth    Largeur maximum que dois faire la miniature (160 par defaut)
+	 *    @param      maxHeight   Hauteur maximum que dois faire la miniature (120 par defaut)
 	 */
 	function add_photo($sdir, $file, $maxWidth = 160, $maxHeight = 120)
 	{
@@ -1265,11 +1299,11 @@ class Categorie
 	}
 
 	/**
-	 *    \brief      Build thumb
-	 *    \param      sdir           Repertoire destination finale
-	 *    \param      file           Chemin du fichier d'origine
-	 *    \param      maxWidth       Largeur maximum que dois faire la miniature (160 par defaut)
-	 *    \param      maxHeight      Hauteur maximum que dois faire la miniature (120 par defaut)
+	 *    Build thumb
+	 *
+	 *    @param      string	$file           Chemin du fichier d'origine
+	 *    @param      int		$maxWidth       Largeur maximum que dois faire la miniature (160 par defaut)
+	 *    @param      int		$maxHeight      Hauteur maximum que dois faire la miniature (120 par defaut)
 	 */
 	function add_thumb($file, $maxWidth = 160, $maxHeight = 120)
 	{
@@ -1283,10 +1317,11 @@ class Categorie
 
 
 	/**
-	 *    \brief      Retourne tableau de toutes les photos de la categorie
-	 *    \param      dir         Repertoire a scanner
-	 *    \param      nbmax       Nombre maximum de photos (0=pas de max)
-	 *    \return     array       Tableau de photos
+	 *    Return tableau de toutes les photos de la categorie
+	 *
+	 *    @param      string	$dir        Repertoire a scanner
+	 *    @param      int		$nbmax      Nombre maximum de photos (0=pas de max)
+	 *    @return     array       			Tableau de photos
 	 */
 	function liste_photos($dir,$nbmax=0)
 	{
@@ -1335,8 +1370,9 @@ class Categorie
 	}
 
 	/**
-	 *    \brief      Efface la photo de la categorie et sa vignette
-	 *    \param      file        Chemin de l'image
+	 *    Efface la photo de la categorie et sa vignette
+	 *
+	 *    @param      file        Chemin de l'image
 	 */
 	function delete_photo($file)
 	{
@@ -1361,8 +1397,9 @@ class Categorie
 	}
 
 	/**
-	 *    \brief      Load size of image file
-	 *    \param      file        Path to file
+	 *    Load size of image file
+	 *
+	 *    @param      file        Path to file
 	 */
 	function get_image_size($file)
 	{
@@ -1380,7 +1417,7 @@ class Categorie
     {
         global $user,$langs,$conf;
 
-        dol_syslog("Categorie::initAsSpecimen");
+        dol_syslog(get_class($this)."::initAsSpecimen");
 
         // Initialise parametres
         $this->id=0;

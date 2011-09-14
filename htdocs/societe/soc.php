@@ -26,7 +26,6 @@
  *  \file       htdocs/societe/soc.php
  *  \ingroup    societe
  *  \brief      Third party card page
- *  \version    $Id: soc.php,v 1.132 2011/08/10 22:47:35 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -48,34 +47,28 @@ $langs->load("banks");
 $langs->load("users");
 if ($conf->notification->enabled) $langs->load("mails");
 
-$error=0; $errors=array();
+$mesg=''; $error=0; $errors=array();
 
 $action = GETPOST('action');
 $confirm = GETPOST('confirm');
+$socid = GETPOST("socid");
+if ($user->societe_id) $socid=$user->societe_id;
 
 $object = new Societe($db);
 $extrafields = new ExtraFields($db);
 
-// Security check
-$socid = GETPOST("socid");
-if ($user->societe_id) $socid=$user->societe_id;
-
 // Get object canvas (By default, this is not defined, so standard usage of dolibarr)
-if (!empty($socid)) $object->getCanvas($socid);
-$canvas = (!empty($object->canvas)?$object->canvas:GETPOST("canvas"));
+$object->getCanvas($socid);
+$canvas = $object->canvas?$object->canvas:GETPOST("canvas");
 if (! empty($canvas))
 {
     require_once(DOL_DOCUMENT_ROOT."/core/class/canvas.class.php");
     $objcanvas = new Canvas($db,$action);
     $objcanvas->getCanvas('thirdparty','card',$canvas);
-    // Security check
-    $result = $objcanvas->restrictedArea($user, 'societe', $socid);
 }
-else
-{
-    // Security check
-    $result = restrictedArea($user, 'societe', $socid);
-}
+
+// Security check
+$result = restrictedArea($user, 'societe', $socid, '', '', '', '', $objcanvas);
 
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
 include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
@@ -91,23 +84,7 @@ $hookmanager->callHooks(array('thirdpartycard','thirdparty_extrafields'));
 
 $parameters=array('socid'=>$socid);
 $reshook=$hookmanager->executeHooks('doActions',$parameters,$object,$action);    // Note that $action and $object may have been modified by some hooks
-
-
-// ---------- start deprecated. Use hook to hook actions.
-// If canvas actions are defined, because on url, or because contact was created with canvas feature on, we use the canvas feature.
-// If canvas actions are not defined, we use standard feature.
-if (method_exists($objcanvas->control,'doActions'))
-{
-    $objcanvas->doActions($socid);
-
-    if (! empty($objcanvas->error) || (! empty($objcanvas->errors) && sizeof($objcanvas->errors) > 0))
-    {
-        $error=$objcanvas->error; $errors=$objcanvas->errors;
-        if ($action=='add')    { $objcanvas->action='create'; $action='create'; }
-        if ($action=='update') { $objcanvas->action='edit';   $action='edit'; }
-    }
-}
-// ---------- end deprecated.
+$error=$hookmanager->error; $errors=$hookmanager->errors;
 
 
 if (empty($reshook))
@@ -158,7 +135,8 @@ if (empty($reshook))
         $object->town                  = $_POST["town"];
         $object->ville                 = $_POST["town"];    // TODO obsolete
         $object->pays_id               = $_POST["pays_id"];
-        $object->departement_id        = $_POST["departement_id"];
+        $object->country_id            = $_POST["pays_id"];
+        $object->state_id              = $_POST["departement_id"];
         $object->tel                   = $_POST["tel"];
         $object->fax                   = $_POST["fax"];
         $object->email                 = trim($_POST["email"]);
@@ -263,8 +241,21 @@ if (empty($reshook))
                 $error++; $errors[] = $langs->trans("ErrorSupplierModuleNotEnabled");
                 $action = ($action=='add'?'create':'edit');
             }
-        }
 
+        	for ($i = 1; $i < 3; $i++)
+        	{
+    			$slabel="idprof".$i;
+        		if (($_POST[$slabel] && $object->id_prof_verifiable($i)))
+				{
+					if($object->id_prof_exists($i,$_POST["$slabel"],$object->id))
+					{
+						$langs->load("errors");
+                		$error++; $errors[] = $langs->transcountry('ProfId'.$i ,$object->pays_code)." ".$langs->trans("ErrorProdIdAlreadyExist",$_POST["$slabel"]);
+                		$action = ($action=='add'?'create':'edit');
+					}
+				}
+			}
+        }
         if (! $error)
         {
             if ($action == 'add')
@@ -290,7 +281,7 @@ if (empty($reshook))
                         $contact->cp=$object->cp;
                         $contact->town=$object->town;
                         $contact->ville=$object->ville;
-                        $contact->fk_departement=$object->departement_id;
+                        $contact->fk_departement=$object->state_id;
                         $contact->fk_pays=$object->pays_id;
                         $contact->socid=$object->id;                   // fk_soc
                         $contact->status=1;
@@ -485,9 +476,9 @@ if (empty($reshook))
         $object->fetch($socid);
         $result = $object->delete($socid);
 
-        if ($result >= 0)
+        if ($result > 0)
         {
-            Header("Location: ".DOL_URL_ROOT."/societe/societe.php?delsoc=".$object->nom."");
+            Header("Location: ".DOL_URL_ROOT."/societe/societe.php?delsoc=".urlencode($object->name));
             exit;
         }
         else
@@ -559,6 +550,8 @@ $formcompany = new FormCompany($db);
 
 $countrynotdefined=$langs->trans("ErrorSetACountryFirst").' ('.$langs->trans("SeeAbove").')';
 
+
+// TODO Mutualize this part of code (same than product/fiche.php and contact/fiche.php)
 if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 {
     // -----------------------------------------
@@ -566,7 +559,6 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
     // -----------------------------------------
     if ($action == 'create')
     {
-        $objcanvas->assign_post();              // TODO: Put code of assign_post into assign_values to keep only assign_values
         $objcanvas->assign_values($action);     // Set value for templates
         $objcanvas->display_canvas($action,0);  // Show template
     }
@@ -579,7 +571,6 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
             $object->fetch($socid);
             $objcanvas->control->object=$object;
         }
-        $objcanvas->assign_post();              // TODO: Put code of assign_post into assign_values to keep only assign_values
         $objcanvas->assign_values($action);     // Set value for templates
         $objcanvas->display_canvas($action);    // Show template
     }
@@ -626,14 +617,14 @@ else
         $modCodeFournisseur = new $module;
 
         //if ($_GET["type"]=='cp') { $object->client=3; }
-        if (GETPOST("type")!='f') $object->client=3;
+        if (GETPOST("type")!='f')  { $object->client=3; }
         if (GETPOST("type")=='c')  { $object->client=1; }
         if (GETPOST("type")=='p')  { $object->client=2; }
         if ($conf->fournisseur->enabled && (GETPOST("type")=='f' || GETPOST("type")==''))  { $object->fournisseur=1; }
         if (GETPOST("private")==1) { $object->particulier=1; }
 
         $object->name=$_POST["nom"];
-        $object->nom=$_POST["nom"];    // deprecated
+        $object->nom=$_POST["nom"];     // TODO obsolete
         $object->prenom=$_POST["prenom"];
         $object->particulier=$_REQUEST["private"];
         $object->prefix_comm=$_POST["prefix_comm"];
@@ -643,9 +634,11 @@ else
         $object->code_fournisseur=$_POST["code_fournisseur"];
         $object->adresse=$_POST["adresse"]; // TODO obsolete
         $object->address=$_POST["adresse"];
-        $object->cp=$_POST["zipcode"];
-        $object->ville=$_POST["town"];
-        $object->departement_id=$_POST["departement_id"];
+        $object->cp=$_POST["zipcode"]; // TODO obsolete
+        $object->zip=$_POST["zipcode"];
+        $object->ville=$_POST["town"]; // TODO obsolete
+        $object->town=$_POST["town"];
+        $object->state_id=$_POST["departement_id"];
         $object->tel=$_POST["tel"];
         $object->fax=$_POST["fax"];
         $object->email=$_POST["email"];
@@ -704,29 +697,19 @@ else
                 }
             }
         }
-        ### Gestion du logo de la société
 
-        // We set pays_id, pays_code and label for the selected country
-        $object->pays_id=$_POST["pays_id"]?$_POST["pays_id"]:$mysoc->pays_id;
+        // We set country_id, country_code and country for the selected country
+        $object->country_id=$_POST["pays_id"]?$_POST["pays_id"]:$mysoc->country_id;
+        $object->pays_id=$_POST["pays_id"]?$_POST["pays_id"]:$mysoc->country_id;
         if ($object->pays_id)
         {
-            $sql = "SELECT code, libelle";
-            $sql.= " FROM ".MAIN_DB_PREFIX."c_pays";
-            $sql.= " WHERE rowid = ".$object->pays_id;
-            $resql=$db->query($sql);
-            if ($resql)
-            {
-                $obj = $db->fetch_object($resql);
-            }
-            else
-            {
-                dol_print_error($db);
-            }
-            $object->pays_code=$obj->code;
-            $object->pays=$obj->libelle;
+            $tmparray=getCountry($object->pays_id,'all',$db,$langs,0);
+            $object->pays_code=$tmparray['code'];
+            $object->pays=$tmparray['label'];
+            $object->country_code=$tmparray['code'];
+            $object->country=$tmparray['label'];
         }
         $object->forme_juridique_code=$_POST['forme_juridique_code'];
-
         /* Show create form */
 
         print_fiche_titre($langs->trans("NewCompany"));
@@ -766,10 +749,10 @@ else
 
             print "<br>\n";
             print $langs->trans("ThirdPartyType").': &nbsp; ';
-            print '<input type="radio" id="radiocompany" class="flat" name="private" value="0"'.(! GETPOST("private")?' checked="true"':'');
+            print '<input type="radio" id="radiocompany" class="flat" name="private" value="0"'.(! GETPOST("private")?' checked="checked"':'');
             print '> '.$langs->trans("Company/Fundation");
             print ' &nbsp; &nbsp; ';
-            print '<input type="radio" id="radioprivate" class="flat" name="private" value="1"'.(! GETPOST("private")?'':' checked="true"');
+            print '<input type="radio" id="radioprivate" class="flat" name="private" value="1"'.(! GETPOST("private")?'':' checked="checked"');
             print '> '.$langs->trans("Individual");
             print ' ('.$langs->trans("ToCreateContactWithSameName").')';
             print "<br>\n";
@@ -883,9 +866,8 @@ else
         // Barcode
         if ($conf->global->MAIN_MODULE_BARCODE)
         {
-            print '<tr><td>'.$langs->trans('Gencod').'</td><td colspan="3"><input type="text" name="gencod">';
-            print $object->gencod;
-            print '</textarea></td></tr>';
+            print '<tr><td>'.$langs->trans('Gencod').'</td><td colspan="3"><input type="text" name="gencod" value="'.$object->gencod.'">';
+            print '</td></tr>';
         }
 
         // Address
@@ -895,14 +877,14 @@ else
 
         // Zip / Town
         print '<tr><td>'.$langs->trans('Zip').'</td><td>';
-        print $formcompany->select_ziptown($object->cp,'zipcode',array('town','selectpays_id','departement_id'),6);
+        print $formcompany->select_ziptown($object->zip,'zipcode',array('town','selectpays_id','departement_id'),6);
         print '</td><td>'.$langs->trans('Town').'</td><td>';
-        print $formcompany->select_ziptown($object->ville,'town',array('zipcode','selectpays_id','departement_id'));
+        print $formcompany->select_ziptown($object->town,'town',array('zipcode','selectpays_id','departement_id'));
         print '</td></tr>';
 
         // Country
         print '<tr><td width="25%">'.$langs->trans('Country').'</td><td colspan="3">';
-        $form->select_pays($object->pays_id,'pays_id');
+        $form->select_pays($object->country_id,'pays_id');
         if ($user->admin) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"),1);
         print '</td></tr>';
 
@@ -910,7 +892,7 @@ else
         if (empty($conf->global->SOCIETE_DISABLE_STATE))
         {
             print '<tr><td>'.$langs->trans('State').'</td><td colspan="3">';
-            if ($object->pays_id) $formcompany->select_departement($object->departement_id,$object->pays_code);
+            if ($object->country_id) $formcompany->select_departement($object->state_id,$object->country_code,'departement_id');
             else print $countrynotdefined;
             print '</td></tr>';
         }
@@ -1070,7 +1052,7 @@ else
         }
 
         // Other attributes
-        $parameters=array();
+        $parameters=array('colspan' => ' colspan="3"');
         $reshook=$hookmanager->executeHooks('showInputFields',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
         if (empty($reshook))
         {
@@ -1091,11 +1073,12 @@ else
         print '</td>';
         print '</tr>';
 
-        print '<tr><td colspan="4" align="center">';
-        print '<input type="submit" class="button" value="'.$langs->trans('AddThirdParty').'">';
-        print '</td></tr>'."\n";
-
         print '</table>'."\n";
+
+        print '<br><center>';
+        print '<input type="submit" class="button" value="'.$langs->trans('AddThirdParty').'">';
+        print '</center>'."\n";
+
         print '</form>'."\n";
     }
     elseif ($action == 'edit')
@@ -1145,18 +1128,16 @@ else
             {
                 // We overwrite with values if posted
                 $object->name=$_POST["nom"];
-                $object->nom=$_POST["nom"];    // deprecated
                 $object->prefix_comm=$_POST["prefix_comm"];
                 $object->client=$_POST["client"];
                 $object->code_client=$_POST["code_client"];
                 $object->fournisseur=$_POST["fournisseur"];
                 $object->code_fournisseur=$_POST["code_fournisseur"];
-                $object->adresse=$_POST["adresse"]; // TODO obsolete
                 $object->address=$_POST["adresse"];
-                $object->cp=$_POST["zipcode"];
-                $object->ville=$_POST["town"];
-                $object->pays_id=$_POST["pays_id"]?$_POST["pays_id"]:$mysoc->pays_id;
-                $object->departement_id=$_POST["departement_id"];
+                $object->zip=$_POST["zipcode"];
+                $object->town=$_POST["town"];
+                $object->country_id=$_POST["pays_id"]?$_POST["pays_id"]:$mysoc->pays_id;
+                $object->state_id=$_POST["departement_id"];
                 $object->tel=$_POST["tel"];
                 $object->fax=$_POST["fax"];
                 $object->email=$_POST["email"];
@@ -1355,7 +1336,7 @@ else
             if (empty($conf->global->SOCIETE_DISABLE_STATE))
             {
                 print '<tr><td>'.$langs->trans('State').'</td><td colspan="3">';
-                $formcompany->select_departement($object->departement_id,$object->pays_code);
+                $formcompany->select_departement($object->state_id,$object->pays_code);
                 print '</td></tr>';
             }
 
@@ -1498,7 +1479,7 @@ else
             }
 
             // Other attributes
-            $parameters=array();
+            $parameters=array('colspan' => ' colspan="3"');
             $reshook=$hookmanager->executeHooks('showInputFields',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
             if (empty($reshook))
             {
@@ -1686,11 +1667,7 @@ else
         $var=!$var;
 
         // State
-        if (empty($conf->global->SOCIETE_DISABLE_STATE))
-        {
-            print '<tr  '.$bc[$var].'><td id="label">'.$langs->trans('State').'</td><td id="value" colspan="3">'.$object->departement.'</td></tr>';
-            $var=!$var;
-        }
+        if (empty($conf->global->SOCIETE_DISABLE_STATE)) print '<tr><td>'.$langs->trans('State').'</td><td colspan="'.(2+($object->logo?0:1)).'">'.$object->state.'</td>';
 
         // Phone
         print '<tr '.$bc[$var].'><td id="label">'.$langs->trans('Phone').'</td><td id="value" style="min-width: 25%;">'.dol_print_phone($object->tel,$object->pays_code,0,$object->id,'AC_TEL').'</td>';
@@ -1875,7 +1852,7 @@ else
         }
 
         // Other attributes
-        $parameters=array('socid'=>$socid);
+        $parameters=array('socid'=>$socid, 'colspan' => ' colspan="3"');
         $reshook=$hookmanager->executeHooks('showOutputFields',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
         if (empty($reshook))
         {
@@ -2094,5 +2071,5 @@ else
 
 $db->close();
 
-llxFooter('$Date: 2011/08/10 22:47:35 $ - $Revision: 1.132 $');
+llxFooter();
 ?>

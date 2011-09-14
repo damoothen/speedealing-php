@@ -19,7 +19,6 @@
  *	    \file       htdocs/admin/agenda_xcal.php
  *      \ingroup    agenda
  *      \brief      Page to setup miscellaneous options of agenda module
- *		\version    $Id: agenda_xcal.php,v 1.23 2011/07/31 22:23:25 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -123,7 +122,7 @@ print '</div>';
 
 clearstatcache();
 
-if ($mesg) print "<br>$mesg<br>";
+//if ($mesg) print "<br>$mesg<br>";
 print "<br>";
 
 // Show message
@@ -147,7 +146,9 @@ $message.=$langs->trans("AgendaUrlOptions4",$user->login,$user->login).'<br>';
 $message.=$langs->trans("AgendaUrlOptions5",$user->login,$user->login);
 print info_admin($message);
 
+dol_htmloutput_mesg($mesg);
+
 $db->close();
 
-llxFooter('$Date: 2011/07/31 22:23:25 $ - $Revision: 1.23 $');
+llxFooter();
 ?>

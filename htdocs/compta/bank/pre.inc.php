@@ -22,7 +22,6 @@
  *		\file   	htdocs/compta/bank/pre.inc.php
  *		\ingroup    compta
  *		\brief  	Fichier gestionnaire du menu compta banque
- *		\version	$Id: pre.inc.php,v 1.52 2011/07/31 22:23:16 eldy Exp $
  */
 
 require_once("../../main.inc.php");
@@ -34,14 +33,16 @@ $langs->load("categories");
 
 /**
  * Replace the default llxHeader function
- * @param $head
- * @param $title
- * @param $help_url
- * @param $target
- * @param $disablejs
- * @param $disablehead
- * @param $arrayofjs
- * @param $arrayofcss
+ *
+ * @param 	string 	$head		Optionnal head lines
+ * @param 	string 	$title		HTML title
+ * @param 	string 	$help_url	Link to online url help to show on left menu
+ * @param 	string 	$target		Force target on menu links
+ * @param 	int    	$disablejs	More content into html header
+ * @param 	int    	$disablehead	More content into html header
+ * @param 	array  	$arrayofjs	Array of complementary js files
+ * @param 	array  	$arrayofcss	Array of complementary css files
+ * @return	none
  */
 function llxHeader($head = '', $title='', $help_url='', $target='', $disablejs=0, $disablehead=0, $arrayofjs='', $arrayofcss='')
 {

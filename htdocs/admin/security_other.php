@@ -20,7 +20,6 @@
  *	    \file       htdocs/admin/security_other.php
  *      \ingroup    core
  *      \brief      Security options setup
- *		\version    $Id: security_other.php,v 1.41 2011/07/31 22:23:22 eldy Exp $
  */
 
 require("../main.inc.php");
@@ -202,11 +201,11 @@ if (function_exists("imagecreatefrompng"))
 {
 	if ($conf->global->MAIN_SECURITY_ENABLECAPTCHA == 0)
 	{
-		print '<a href="security_other.php?action=activate_captcha">'.img_picto($langs->trans("Disabled"),'off').'</a>';
+		print '<a href="security_other.php?action=activate_captcha">'.img_picto($langs->trans("Disabled"),'switch_off').'</a>';
 	}
 	if($conf->global->MAIN_SECURITY_ENABLECAPTCHA == 1)
 	{
-		print '<a href="security_other.php?action=disable_captcha">'.img_picto($langs->trans("Enabled"),'on').'</a>';
+		print '<a href="security_other.php?action=disable_captcha">'.img_picto($langs->trans("Enabled"),'switch_on').'</a>';
 	}
 }
 else
@@ -227,11 +226,11 @@ print '<td colspan="3">'.$langs->trans("UseAdvancedPerms").'</td>';
 print '<td align="right">';
 if ($conf->global->MAIN_USE_ADVANCED_PERMS == 0)
 {
-	print '<a href="security_other.php?action=activate_advancedperms">'.img_picto($langs->trans("Disabled"),'off').'</a>';
+	print '<a href="security_other.php?action=activate_advancedperms">'.img_picto($langs->trans("Disabled"),'switch_off').'</a>';
 }
 if($conf->global->MAIN_USE_ADVANCED_PERMS == 1)
 {
-	print '<a href="security_other.php?action=disable_advancedperms">'.img_picto($langs->trans("Enabled"),'on').'</a>';
+	print '<a href="security_other.php?action=disable_advancedperms">'.img_picto($langs->trans("Enabled"),'switch_on').'</a>';
 }
 print "</td>";
 
@@ -294,7 +293,7 @@ print '<td colspan="2">'.$langs->trans("AntiVirusCommand").'<br>';
 print $langs->trans("AntiVirusCommandExample");
 // Check command in inside safe_mode
 print '</td>';
-print '<td align="center">';
+print '<td>';
 if (ini_get('safe_mode') && ! empty($conf->global->MAIN_ANTIVIRUS_COMMAND))
 {
 	$langs->load("errors");
@@ -322,7 +321,7 @@ print "<tr ".$bc[$var].">";
 print '<td colspan="2">'.$langs->trans("AntiVirusParam").'<br>';
 print $langs->trans("AntiVirusParamExample");
 print '</td>';
-print '<td align="center">';
+print '<td>';
 print '<input type="text" name="MAIN_ANTIVIRUS_PARAM" size="72" value="'.htmlentities($conf->global->MAIN_ANTIVIRUS_PARAM).'">';
 print "</td>";
 print '<td align="right">';
@@ -347,5 +346,5 @@ $formfile->form_attach_new_file(DOL_URL_ROOT.'/admin/security_other.php',$langs-
 
 $db->close();
 
-llxFooter('$Date: 2011/07/31 22:23:22 $ - $Revision: 1.41 $');
+llxFooter();
 ?>

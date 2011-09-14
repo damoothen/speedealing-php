@@ -24,7 +24,6 @@
  *	\file       htdocs/fourn/facture/fiche.php
  *	\ingroup    facture, fournisseur
  *	\brief      Page for supplier invoice card (view, edit, validate)
- *	\version    $Id: fiche.php,v 1.263 2011/08/04 21:46:50 eldy Exp $
  */
 
 require("../../main.inc.php");
@@ -375,7 +374,8 @@ if ($_POST['action'] == 'add' && $user->rights->fournisseur->facture->creer)
 
 if ($_GET['action'] == 'del_ligne')
 {
-    $facfou = new FactureFournisseur($db,'',$_GET['facid']);
+    $facfou = new FactureFournisseur($db);
+    $facfou->fetch($_GET['facid']);
     $facfou->deleteline($_GET['lineid']);
     $_GET['action'] = 'edit';
 }
@@ -433,7 +433,7 @@ if ($_REQUEST['action'] == 'update_line')
 
 if ($_GET['action'] == 'addline')
 {
-    $facfou = new FactureFournisseur($db, '', $_GET['facid']);
+    $facfou = new FactureFournisseur($db);
     $ret=$facfou->fetch($_GET['facid']);
     if ($ret < 0)
     {
@@ -541,7 +541,7 @@ if ($_GET['action'] == 'addline')
 
 if ($_POST['action'] == 'classin')
 {
-    $facture = new FactureFournisseur($db,'',$_GET['facid']);
+    $facture = new FactureFournisseur($db);
     $facture->fetch($_GET['facid']);
     $result=$facture->setProject($_POST['projectid']);
 }
@@ -969,7 +969,7 @@ if ($_GET['action'] == 'create')
 
 	// Standard invoice
 	print '<tr height="18"><td width="16px" valign="middle">';
-	print '<input type="radio" name="type" value="0"'.($_POST['type']==0?' checked="true"':'').'>';
+	print '<input type="radio" name="type" value="0"'.($_POST['type']==0?' checked="checked"':'').'>';
 	print '</td><td valign="middle">';
 	$desc=$html->textwithpicto($langs->trans("InvoiceStandardAsk"),$langs->transnoentities("InvoiceStandardDesc"),1);
 	print $desc;
@@ -978,7 +978,7 @@ if ($_GET['action'] == 'create')
 	/*
 	// Deposit
 	print '<tr height="18"><td width="16px" valign="middle">';
-	print '<input type="radio" name="type" value="3"'.($_POST['type']==3?' checked="true"':'').'>';
+	print '<input type="radio" name="type" value="3"'.($_POST['type']==3?' checked="checked"':'').'>';
 	print '</td><td valign="middle">';
 	$desc=$html->textwithpicto($langs->trans("InvoiceDeposit"),$langs->transnoentities("InvoiceDepositDesc"),1);
 	print $desc;
@@ -988,7 +988,7 @@ if ($_GET['action'] == 'create')
 	if ($conf->global->FACTURE_USE_PROFORMAT)
 	{
 		print '<tr height="18"><td width="16px" valign="middle">';
-		print '<input type="radio" name="type" value="4"'.($_POST['type']==4?' checked="true"':'').'>';
+		print '<input type="radio" name="type" value="4"'.($_POST['type']==4?' checked="checked"':'').'>';
 		print '</td><td valign="middle">';
 		$desc=$html->textwithpicto($langs->trans("InvoiceProForma"),$langs->transnoentities("InvoiceProFormaDesc"),1);
 		print $desc;
@@ -997,13 +997,13 @@ if ($_GET['action'] == 'create')
 
 	// Replacement
 	print '<tr height="18"><td valign="middle">';
-	print '<input type="radio" name="type" value="1"'.($_POST['type']==1?' checked=true':'');
-	if (! $options) print ' disabled="true"';
+	print '<input type="radio" name="type" value="1"'.($_POST['type']==1?' checked="checked"':'');
+	if (! $options) print ' disabled="disabled"';
 	print '>';
 	print '</td><td valign="middle">';
 	$text=$langs->trans("InvoiceReplacementAsk").' ';
 	$text.='<select class="flat" name="fac_replacement"';
-	if (! $options) $text.=' disabled="true"';
+	if (! $options) $text.=' disabled="disabled"';
 	$text.='>';
 	if ($options)
 	{
@@ -1022,13 +1022,13 @@ if ($_GET['action'] == 'create')
 		// Credit note
 	print '<tr height="18"><td valign="middle">';
 	print '<input type="radio" name="type" value="2"'.($_POST['type']==2?' checked=true':'');
-	if (! $optionsav) print ' disabled="true"';
+	if (! $optionsav) print ' disabled="disabled"';
 	print '>';
 	print '</td><td valign="middle">';
 	$text=$langs->transnoentities("InvoiceAvoirAsk").' ';
 	//	$text.='<input type="text" value="">';
 	$text.='<select class="flat" name="fac_avoir"';
-	if (! $optionsav) $text.=' disabled="true"';
+	if (! $optionsav) $text.=' disabled="disabled"';
 	$text.='>';
 	if ($optionsav)
 	{
@@ -1458,16 +1458,16 @@ else
                 print '<table class="nobordernopadding" width="100%"><tr><td>';
                 print $langs->trans('Project');
                 print '</td>';
-                if ($_GET['action'] != 'classer')
+                if ($_GET['action'] != 'classify')
                 {
-                    print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=classer&amp;facid='.$fac->id.'">';
+                    print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=classify&amp;facid='.$fac->id.'">';
                     print img_edit($langs->trans('SetProject'),1);
                     print '</a></td>';
                 }
                 print '</tr></table>';
 
                 print '</td><td colspan="3">';
-                if ($_GET['action'] == 'classer')
+                if ($_GET['action'] == 'classify')
                 {
                     $html->form_project($_SERVER['PHP_SELF'].'?facid='.$fac->id,$fac->socid,$fac->fk_project,'projectid');
                 }
@@ -1915,5 +1915,5 @@ else
 
 $db->close();
 
-llxFooter('$Date: 2011/08/04 21:46:50 $ - $Revision: 1.263 $');
+llxFooter();
 ?>
