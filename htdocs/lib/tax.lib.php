@@ -75,9 +75,11 @@ function vat_by_thirdparty($db, $y, $date_start, $date_end, $modetax, $direction
         {
             $sql = "SELECT s.rowid as socid, s.nom as nom, s.tva_intra as tva_intra, s.tva_assuj as assuj,";
             $sql.= " sum(fd.total_ht) as amount, sum(fd.".$total_tva.") as tva";
-            $sql.= " FROM ".MAIN_DB_PREFIX.$invoicetable." as f, ".MAIN_DB_PREFIX.$invoicedettable." as fd, ".MAIN_DB_PREFIX."societe as s";
-            $sql.= " WHERE ";
-            $sql.= " f.fk_statut in (1,2)"; // Validated or paid (partially or completely)
+            $sql.= " FROM ".MAIN_DB_PREFIX.$invoicetable." as f,";
+            $sql.= " ".MAIN_DB_PREFIX.$invoicedettable." as fd,";
+            $sql.= " ".MAIN_DB_PREFIX."societe as s";
+            $sql.= " WHERE f.entity = " . $conf->entity;
+            $sql.= " AND f.fk_statut in (1,2)"; // Validated or paid (partially or completely)
             $sql.= " AND (f.type = 0";      // Standard
             $sql.= " OR f.type = 1";        // Replacement
             $sql.= " OR f.type = 2)";       // Credit note
@@ -233,8 +235,8 @@ function vat_by_date($db, $y, $q, $date_start, $date_end, $modetax, $direction, 
             $sql.= " FROM ".MAIN_DB_PREFIX.$invoicetable." as f,";
             $sql.= " ".MAIN_DB_PREFIX.$invoicedettable." as d" ;
             $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product as p on d.fk_product = p.rowid";
-            $sql.= " WHERE ";
-            $sql.= " f.fk_statut in (1,2)"; // Validated or paid (partially or completely)
+            $sql.= " WHERE f.entity = " . $conf->entity;
+            $sql.= " AND f.fk_statut in (1,2)"; // Validated or paid (partially or completely)
             $sql.= " AND (f.type = 0";      // Standard
             $sql.= " OR f.type = 1";        // Replacement
             $sql.= " OR f.type = 2)";       // Credit note
@@ -282,8 +284,8 @@ function vat_by_date($db, $y, $q, $date_start, $date_end, $modetax, $direction, 
 //          $sql.= " ".MAIN_DB_PREFIX.$paymenttable." as pa,";
             $sql.= " ".MAIN_DB_PREFIX.$invoicedettable." as d" ;
             $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product as p on d.fk_product = p.rowid";
-            $sql.= " WHERE ";
-            $sql.= " f.fk_statut in (1,2)"; // Validated or paid (partially or completely)
+            $sql.= " WHERE f.entity = " . $conf->entity;
+            $sql.= " AND f.fk_statut in (1,2)"; // Validated or paid (partially or completely)
             $sql.= " AND (f.type = 0";      // Standard
             $sql.= " OR f.type = 1";        // Replacement
             $sql.= " OR f.type = 2)";       // Credit note
@@ -394,8 +396,8 @@ function vat_by_date($db, $y, $q, $date_start, $date_end, $modetax, $direction, 
             $sql.= " FROM ".MAIN_DB_PREFIX.$invoicetable." as f,";
             $sql.= " ".MAIN_DB_PREFIX.$invoicedettable." as d" ;
             $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product as p on d.fk_product = p.rowid";
-            $sql.= " WHERE ";
-            $sql.= " f.fk_statut in (1,2)"; // Validated or paid (partially or completely)
+            $sql.= " WHERE f.entity = " . $conf->entity;
+            $sql.= " AND f.fk_statut in (1,2)"; // Validated or paid (partially or completely)
             $sql.= " AND (f.type = 0";      // Standard
             $sql.= " OR f.type = 1";        // Replacement
             $sql.= " OR f.type = 2)";       // Credit note
@@ -443,8 +445,8 @@ function vat_by_date($db, $y, $q, $date_start, $date_end, $modetax, $direction, 
             $sql.= " ".MAIN_DB_PREFIX.$paymenttable." as pa,";
             $sql.= " ".MAIN_DB_PREFIX.$invoicedettable." as d";
             $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product as p on d.fk_product = p.rowid";
-            $sql.= " WHERE ";
-            $sql.= " f.fk_statut in (1,2)"; // Paid (partially or completely)
+            $sql.= " WHERE f.entity = " . $conf->entity;
+            $sql.= " AND f.fk_statut in (1,2)"; // Paid (partially or completely)
             $sql.= " AND (f.type = 0";      // Standard
             $sql.= " OR f.type = 1";        // Replacement
             $sql.= " OR f.type = 2)";       // Credit note
