@@ -723,8 +723,8 @@ class pdf_oursin extends ModelePDFFactures
 
 		$default_font_size = pdf_getPDFFontSize($outputlangs);
 
-		$pdf->line( $this->marges['g'], $tab_top+8, 210-$this->marges['d'], $tab_top+8 );
-		$pdf->line( $this->marges['g'], $tab_top + $tab_height, 210-$this->marges['d'], $tab_top + $tab_height );
+		$pdf->line($this->marges['g'], $tab_top+8, 210-$this->marges['d'], $tab_top+8);
+		$pdf->line($this->marges['g'], $tab_top + $tab_height, 210-$this->marges['d'], $tab_top + $tab_height);
 
 		$pdf->SetFont('','', $default_font_size - 1);
 
@@ -906,7 +906,7 @@ class pdf_oursin extends ModelePDFFactures
 		if ($object->type == 2) $title=$outputlangs->transnoentities("InvoiceAvoir");
 		if ($object->type == 3) $title=$outputlangs->transnoentities("InvoiceDeposit");
 		if ($object->type == 4) $title=$outputlangs->transnoentities("InvoiceProForma");
-		$pdf->MultiCell(100, 10, $title.' '.$outputlangs->transnoentities("Of").' '.dol_print_date($object->date,"day",false,$outputlangs,true), '' , 'L');
+		$pdf->MultiCell(100, 10, $title.' '.$outputlangs->transnoentities("Of").' '.dol_print_date($object->date,"day",false,$outputlangs,true), '', 'L');
 		$pdf->SetFont('','B', $default_font_size + 1);
 		$pdf->SetXY($this->marges['g'],$posy);
 		$pdf->SetTextColor(22,137,210);

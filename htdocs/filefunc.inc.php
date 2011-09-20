@@ -29,8 +29,8 @@
  *  \brief      File that include conf.php file and commons lib like functions.lib.php
  */
 
-define('DOL_VERSION','3.2.0-alpha');	// Also defined in htdocs/install/inc.php (Ex: x.y.z-alpha, x.y.z)
-define('EURO',chr(128));
+if (! defined('DOL_VERSION')) define('DOL_VERSION','3.2.0-alpha');	// Also defined in htdocs/install/inc.php (Ex: x.y.z-alpha, x.y.z)
+if (! defined('EURO')) define('EURO',chr(128));
 
 // Definition des constantes syslog
 if (function_exists("define_syslog_variables"))
@@ -59,14 +59,14 @@ error_reporting(E_ALL ^ E_NOTICE);
 //error_reporting(E_ALL);
 
 
-# Define vars
+// Define vars
 $conffiletoshowshort = "conf.php";
-# Define localization of conf file
+// Define localization of conf file
 $conffile = "conf/conf.php";
 $conffiletoshow = "htdocs/conf/conf.php";
-# For debian/redhat like systems
-#$conffile = "/etc/dolibarr/conf.php";
-#$conffiletoshow = "/etc/dolibarr/conf.php";
+// For debian/redhat like systems
+//$conffile = "/etc/dolibarr/conf.php";
+//$conffiletoshow = "/etc/dolibarr/conf.php";
 
 
 // Include configuration
