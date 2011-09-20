@@ -36,7 +36,7 @@ $micro_start_time=0;
 if (! empty($_SERVER['DOL_TUNING']))
 {
 	list($usec, $sec) = explode(" ", microtime());
-	$micro_start_time=((float)$usec + (float)$sec);
+	$micro_start_time=((float) $usec + (float) $sec);
 	// Add Xdebug code coverage
 	//define('XDEBUGCOVERAGE',1);
 	if (defined('XDEBUGCOVERAGE')) { xdebug_start_code_coverage(); }
@@ -1587,7 +1587,7 @@ function printSearchForm($urlaction,$urlobject,$title,$htmlmodesearch='search',$
 	$ret.='<form action="'.$urlaction.'" method="post">';
 	$ret.='<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 	$ret.='<input type="hidden" name="mode" value="search">';
-	$ret.='<input type="hidden" name="mode-search" value="'.$htmlmodesearch.'">';
+	$ret.='<input type="hidden" name="mode_search" value="'.$htmlmodesearch.'">';
 	$ret.='<input type="text" class="flat" ';
 	if (! empty($conf->global->MAIN_HTML5_PLACEHOLDER)) $ret.=' placeholder="'.$langs->trans("SearchOf").''.strip_tags($title).'"';
 	else $ret.=' title="'.$langs->trans("SearchOf").''.strip_tags($title).'"';
