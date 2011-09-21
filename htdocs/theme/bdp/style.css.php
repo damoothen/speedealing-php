@@ -37,7 +37,7 @@ if (! defined('NOREQUIREMENU'))   define('NOREQUIREMENU',1);
 if (! defined('NOREQUIREHTML'))   define('NOREQUIREHTML',1);
 if (! defined('NOREQUIREAJAX'))   define('NOREQUIREAJAX','1');
 
-session_cache_limiter( FALSE );
+session_cache_limiter(FALSE);
 
 require_once("../../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/lib/functions.lib.php");
@@ -204,6 +204,9 @@ div.float
 /* For hide object and add pointer cursor */
 
 .hideobject { display: none; }
+<?php if (! empty($conf->browser->phone)) { ?>
+.hideonsmartphone { display: none; }
+<?php } ?>
 .linkobject { cursor: pointer; }
 
 /* For dragging lines */
@@ -228,19 +231,35 @@ div.leftContent {
         background-color: #FFF;
 }
 
-
-td.vmenu {
-    margin-<?php print $right; ?>: 2px;
-    padding: 0px;
-    padding-bottom: 0px;
-    padding-top: 1px;
-    width: 200px;
-}
-
 div.fiche {
-        margin-<?php print $left; ?>: 5px;
-	margin-<?php print $right; ?>: 5px;*/
+	margin-<?php print $left; ?>: <?php print empty($conf->browser->phone)?'5':'2'; ?>px;
+	margin-<?php print $right; ?>: <?php print empty($conf->browser->phone)?'5':''; ?>px;
 }
+
+div.fichecenter {
+	width: 100%;
+	clear: both;	/* This is to have div fichecenter that are true rectangles */
+}
+div.fichethirdleft {
+	<?php if (empty($conf->browser->phone)) { print "float: ".$left.";\n"; } ?>
+	<?php if (empty($conf->browser->phone)) { print "width: 35%;\n"; } ?>
+}
+div.fichetwothirdright {
+	<?php if (empty($conf->browser->phone)) { print "float: ".$left.";\n"; } ?>
+	<?php if (empty($conf->browser->phone)) { print "width: 65%;\n"; } ?>
+}
+div.fichehalfleft {
+	<?php if (empty($conf->browser->phone)) { print "float: ".$left.";\n"; } ?>
+	<?php if (empty($conf->browser->phone)) { print "width: 50%;\n"; } ?>
+}
+div.fichehalfright {
+	<?php if (empty($conf->browser->phone)) { print "float: ".$left.";\n"; } ?>
+	<?php if (empty($conf->browser->phone)) { print "width: 50%;\n"; } ?>
+}
+div.ficheaddleft {
+	<?php if (empty($conf->browser->phone)) { print "padding-left: 6px;\n"; } ?>
+}
+
 
 /* ============================================================================== */
 /* Menu top et 1ere ligne tableau                                                 */
