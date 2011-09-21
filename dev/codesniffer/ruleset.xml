@@ -8,7 +8,7 @@
     <rule ref="Generic.CodeAnalysis.EmptyStatement" />
  
 	<rule ref="Generic.CodeAnalysis.EmptyStatement.NotAllowedWarning">
-		<severity>0</severity>	
+		<severity>0</severity>
 	</rule>
 
     <!-- <rule ref="Generic.CodeAnalysis.ForLoopShouldBeWhileLoop" /> -->
@@ -161,6 +161,9 @@
         <severity>0</severity>
     </rule>
     <rule ref="PEAR.Commenting.FunctionComment.ParameterCommentsNotAligned">
+        <severity>0</severity>
+    </rule>
+    <rule ref="PEAR.Commenting.FunctionComment.ParameterNamesNotAligned">
         <severity>0</severity>
     </rule>
 
