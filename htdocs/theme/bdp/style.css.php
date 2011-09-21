@@ -91,6 +91,10 @@ body {
 a:link, a:visited, a:active { font-family: <?php print $fontlist ?>; /*font-weight: bold;*/ color: #666666; text-decoration: none; }
 a:hover { font-family: <?php print $fontlist ?>; /*font-weight: bold;*/ color: #ae1b21; text-decoration: none; }
 
+input:focus, textarea:focus, button:focus, select:focus {
+    box-shadow: 0 0 4px #8091BF;
+}
+
 input {
     font-size: <?php print $fontsize ?>px;
     font-family: <?php print $fontlist ?>;
