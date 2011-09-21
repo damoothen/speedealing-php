@@ -109,7 +109,7 @@ if ($sall)
 {
 	$sql.= " AND (p.ref like '%".$db->escape($sall)."%' OR p.label like '%".$db->escape($sall)."%' OR p.description like '%".$db->escape($sall)."%' OR p.note like '%".$db->escape($sall)."%')";
 }
-# if the type is not 1, we show all products (type = 0,2,3)
+// if the type is not 1, we show all products (type = 0,2,3)
 if (dol_strlen($type))
 {
     if ($type==1) {
@@ -152,7 +152,7 @@ $sql.= " p.duration, p.tosell, p.tobuy, p.seuil_stock_alerte";
 if ($toolowstock) $sql.= " HAVING SUM(s.reel) < p.seuil_stock_alerte";    // Not used yet
 $sql.= $db->order($sortfield,$sortorder);
 $sql.= $db->plimit($limit + 1 ,$offset);
-$resql = $db->query($sql) ;
+$resql = $db->query($sql);
 
 if ($resql)
 {

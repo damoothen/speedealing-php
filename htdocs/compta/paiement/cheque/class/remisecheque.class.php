@@ -32,10 +32,8 @@ require_once(DOL_DOCUMENT_ROOT ."/core/class/commonobject.class.php");
  */
 class RemiseCheque extends CommonObject
 {
-	var $db;
-	var $error;
-	var $element='chequereceipt';
-	var $table_element='bordereau_cheque';
+	public $element='chequereceipt';
+	public $table_element='bordereau_cheque';
 
 	var $id;
 	var $num;
@@ -654,7 +652,7 @@ class RemiseCheque extends CommonObject
 		$sql.= " WHERE rowid < ".$this->id;
 		$sql.= " AND entity = ".$conf->entity;
 
-		$result = $this->db->query($sql) ;
+		$result = $this->db->query($sql);
 		if (! $result)
 		{
 			$this->errno = -1035;
@@ -667,7 +665,7 @@ class RemiseCheque extends CommonObject
 		$sql.= " WHERE rowid > ".$this->id;
 		$sql.= " AND entity = ".$conf->entity;
 
-		$result = $this->db->query($sql) ;
+		$result = $this->db->query($sql);
 		if (! $result)
 		{
 			$this->errno = -1035;

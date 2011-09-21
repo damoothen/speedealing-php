@@ -30,10 +30,8 @@ require_once(DOL_DOCUMENT_ROOT ."/core/class/commonobject.class.php");
  */
 class Paiement extends CommonObject
 {
-    var $db;
-    var $error;
-    var $element='payment';
-    var $table_element='paiement';
+    public $element='payment';
+    public $table_element='paiement';
 
     var $id;
 	var $ref;
@@ -271,7 +269,7 @@ class Paiement extends CommonObject
 		$billsarray=$this->getBillsArray('fk_statut > 1');
 		if (is_array($billsarray))
 		{
-			if (sizeof($billsarray))
+			if (count($billsarray))
 			{
 				$this->error="ErrorDeletePaymentLinkedToAClosedInvoiceNotPossible";
 				$this->db->rollback();

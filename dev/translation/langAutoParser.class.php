@@ -52,7 +52,7 @@ class langAutoParser {
 			$fileContent = null;
 			$refPath = $this->langDir.$this->refLang.self::DIR_SEPARATOR.$file;
 			$fileContent = file($refPath,FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
-			print "Processing file " . $file . ", with ".sizeof($fileContent)." lines<br>\n";
+			print "Processing file " . $file . ", with ".count($fileContent)." lines<br>\n";
 
 			// Define target dirs
 			$targetlangs=array($this->destLang);
@@ -193,12 +193,12 @@ class langAutoParser {
 
 	private function getLineKey($line){
 		$arraykey = explode('=',$line,2);
-		return trim( $arraykey[0] );
+		return trim($arraykey[0]);
 	}
 
 	private function getLineValue($line){
 		$arraykey = explode('=',$line,2);
-		return trim( $arraykey[1] );
+		return trim($arraykey[1]);
 	}
 
 	private function getTranslationFilesArray($lang){

@@ -636,7 +636,7 @@ function hash_call($methodName,$nvpStr)
     if (curl_errno($ch))
     {
         // moving to display page to display curl errors
-        $_SESSION['curl_error_no']=curl_errno($ch) ;
+        $_SESSION['curl_error_no']=curl_errno($ch);
         $_SESSION['curl_error_msg']=curl_error($ch);
 
         //Execute the Error handling module to display errors.
@@ -696,7 +696,7 @@ function deformatNVP($nvpstr)
         $keyval=substr($nvpstr,$intial,$keypos);
         $valval=substr($nvpstr,$keypos+1,$valuepos-$keypos-1);
         //decoding the respose
-        $nvpArray[urldecode($keyval)] =urldecode( $valval);
+        $nvpArray[urldecode($keyval)] =urldecode($valval);
         $nvpstr=substr($nvpstr,$valuepos+1,strlen($nvpstr));
     }
     return $nvpArray;

@@ -389,13 +389,13 @@ class FormFile
             {
                 $out.= '<td align="center" class="formdoc">';
                 $out.= $langs->trans('Model').' ';
-                if (is_array($modellist) && sizeof($modellist) == 1)    // If there is only one element
+                if (is_array($modellist) && count($modellist) == 1)    // If there is only one element
                 {
                     $arraykeys=array_keys($modellist);
                     $modelselected=$arraykeys[0];
                 }
                 $out.= $html->selectarray('model',$modellist,$modelselected,$showempty,0,0);
-                if (sizeof($cgvlist) > 0)
+                if (count($cgvlist) > 0)
                 {
                     $out.= $html->selectarray('cgv',$cgvlist,"-1",1,0,1);
                 }
@@ -410,7 +410,7 @@ class FormFile
 
             // Language code (if multilang)
             $out.= '<td align="center" class="formdoc">';
-            if (($allowgenifempty || (is_array($modellist) && sizeof($modellist) > 0)) && $conf->global->MAIN_MULTILANGS && ! $forcenomultilang)
+            if (($allowgenifempty || (is_array($modellist) && count($modellist) > 0)) && $conf->global->MAIN_MULTILANGS && ! $forcenomultilang)
             {
                 include_once(DOL_DOCUMENT_ROOT.'/core/class/html.formadmin.class.php');
                 $formadmin=new FormAdmin($this->db);
@@ -456,7 +456,7 @@ class FormFile
             $file_list=dol_dir_list($filedir,'files',0,$filter,'\.meta$'.($png?'|'.$png:''),'date',SORT_DESC);
 
             // Affiche en-tete tableau si non deja affiche
-            if (sizeof($file_list) && ! $headershown && !$iconPDF)
+            if (count($file_list) && ! $headershown && !$iconPDF)
             {
                 $headershown=1;
                 $out.= '<div class="titre">'.$titletoshow.'</div>';
@@ -561,7 +561,7 @@ class FormFile
         print_liste_field_titre('','','');
         print '</tr>';
 
-        $nboffiles=sizeof($filearray);
+        $nboffiles=count($filearray);
 
         if ($nboffiles > 0) include_once(DOL_DOCUMENT_ROOT.'/lib/images.lib.php');
 
@@ -719,7 +719,7 @@ class FormFile
                 print "</td></tr>\n";
             }
         }
-        if (sizeof($filearray) == 0)
+        if (count($filearray) == 0)
         {
             print '<tr '.$bc[$var].'><td colspan="4">';
             if (empty($textifempty)) print $langs->trans("NoFileFound");
@@ -741,12 +741,12 @@ class FormFile
         $post_max_size				= ini_get('post_max_size');
         $mul_post_max_size			= substr($post_max_size, -1);
         $mul_post_max_size			= ($mul_post_max_size == 'M' ? 1048576 : ($mul_post_max_size == 'K' ? 1024 : ($mul_post_max_size == 'G' ? 1073741824 : 1)));
-        $post_max_size				= $mul_post_max_size*(int)$post_max_size;
+        $post_max_size				= $mul_post_max_size * (int) $post_max_size;
         // PHP upload_max_filesize
         $upload_max_filesize		= ini_get('upload_max_filesize');
         $mul_upload_max_filesize	= substr($upload_max_filesize, -1);
         $mul_upload_max_filesize	= ($mul_upload_max_filesize == 'M' ? 1048576 : ($mul_upload_max_filesize == 'K' ? 1024 : ($mul_upload_max_filesize == 'G' ? 1073741824 : 1)));
-        $upload_max_filesize		= $mul_upload_max_filesize*(int)$upload_max_filesize;
+        $upload_max_filesize		= $mul_upload_max_filesize * (int) $upload_max_filesize;
         // Max file size
         $max_file_size 				= (($post_max_size < $upload_max_filesize) ? $post_max_size : $upload_max_filesize);
 

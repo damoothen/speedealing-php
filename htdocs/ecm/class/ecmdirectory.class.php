@@ -30,11 +30,8 @@
  */
 class EcmDirectory // extends CommonObject
 {
-	var $db;							//!< To store db handler
-	var $error;							//!< To return error code (or message)
-	var $errors=array();				//!< To return several error codes (or messages)
-	//var $element='ecm_directories';			//!< Id that identify managed objects
-	//var $table_element='ecm_directories';	//!< Name of table without prefix where object is stored
+	//public $element='ecm_directories';			//!< Id that identify managed objects
+	//public $table_element='ecm_directories';	//!< Name of table without prefix where object is stored
 
 	var $id;
 
@@ -377,8 +374,11 @@ class EcmDirectory // extends CommonObject
 
 
 	/**
-	 *		\brief		Initialise object with example values
-	 *		\remarks	id must be 0 if object instance is a specimen.
+     *  Initialise an instance with random values.
+     *  Used to build previews or test instances.
+     *	id must be 0 if object instance is a specimen.
+     *
+     *  @return	void
 	 */
 	function initAsSpecimen()
 	{
@@ -540,7 +540,7 @@ class EcmDirectory // extends CommonObject
 		$sql.= " ORDER BY c.label, c.rowid";
 
 		dol_syslog("EcmDirectory::get_full_arbo sql=".$sql);
-		$resql = $this->db->query ($sql);
+		$resql = $this->db->query($sql);
 		if ($resql)
 		{
 			$this->cats = array();
@@ -560,7 +560,7 @@ class EcmDirectory // extends CommonObject
 				{
 					if (is_array($this->cats[$obj->rowid]['id_children']))
 					{
-						$newelempos=sizeof($this->cats[$obj->rowid]['id_children']);
+						$newelempos=count($this->cats[$obj->rowid]['id_children']);
 						//print "this->cats[$i]['id_children'] est deja un tableau de $newelem elements<br>";
 						$this->cats[$obj->rowid]['id_children'][$newelempos]=$obj->rowid_fille;
 					}
@@ -653,7 +653,7 @@ class EcmDirectory // extends CommonObject
 
 		// Update request
 		$sql = "UPDATE ".MAIN_DB_PREFIX."ecm_directories SET";
-		$sql.= " cachenbofdoc = '".sizeof($filelist)."'";
+		$sql.= " cachenbofdoc = '".count($filelist)."'";
 		if (empty($all))  // By default
 		{
 			$sql.= " WHERE rowid = ".$this->id;
@@ -667,7 +667,7 @@ class EcmDirectory // extends CommonObject
 		$resql = $this->db->query($sql);
 		if ($resql)
 		{
-			$this->cachenbofdoc=sizeof($filelist);
+			$this->cachenbofdoc=count($filelist);
 			return $this->cachenbofdoc;
 		}
 		else

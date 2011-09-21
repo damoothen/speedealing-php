@@ -33,12 +33,9 @@ require_once(DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php');
  */
 class ActionComm extends CommonObject
 {
-	var $db;
-	var $error;
-	var $errors=array();
-	var $element='action';
-	var $table_element = 'actioncomm';
-	var $ismultientitymanaged = 2;	// 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
+	public $element='action';
+	public $table_element = 'actioncomm';
+	protected $ismultientitymanaged = 2;	// 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
 
     var $type_id;
     var $type_code;
@@ -134,7 +131,7 @@ class ActionComm extends CommonObject
 
 	if (! $this->type_id && $this->type_code)
 		{
-			# Get id from code
+			// Get id from code
 			$cactioncomm=new CActionComm($this->db);
 			$result=$cactioncomm->fetch($this->type_code);
 			if ($result)
@@ -772,7 +769,7 @@ class ActionComm extends CommonObject
 		require_once (DOL_DOCUMENT_ROOT ."/lib/xcal.lib.php");
 		require_once (DOL_DOCUMENT_ROOT ."/lib/date.lib.php");
 
-		dol_syslog("ActionComm::build_exportfile Build export file format=".$format.", type=".$type.", cachedelay=".$cachedelay.", filename=".$filename.", filters size=".sizeof($filters), LOG_DEBUG);
+		dol_syslog("ActionComm::build_exportfile Build export file format=".$format.", type=".$type.", cachedelay=".$cachedelay.", filename=".$filename.", filters size=".count($filters), LOG_DEBUG);
 
 		// Check parameters
 		if (empty($format)) return -1;

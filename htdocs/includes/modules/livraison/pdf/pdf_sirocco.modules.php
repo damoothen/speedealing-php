@@ -100,7 +100,7 @@ class pdf_sirocco extends ModelePDFDeliveryOrder
 		{
 			$object->fetch_thirdparty();
 
-			$nblines = sizeof($object->lines);
+			$nblines = count($object->lines);
 
 			$objectref = dol_sanitizeFileName($object->ref);
 			$dir = $conf->expedition->dir_output."/receipt";
@@ -184,23 +184,23 @@ class pdf_sirocco extends ModelePDFDeliveryOrder
 					$pdf->SetFont('','', $default_font_size - 1);   // Dans boucle pour gerer multi-page
 					$nexY = $pdf->GetY();
 
-					$pdf->SetXY (10, $curY );
+					$pdf->SetXY(10, $curY );
 
 					$pdf->MultiCell(20, 3, $outputlangs->convToOutputCharset($object->lines[$i]->ref), 0, 'C');
 
 					// TODO Field not yet saved in database
-					//$pdf->SetXY (133, $curY );
+					//$pdf->SetXY(133, $curY );
 					//$pdf->MultiCell(10, 5, $object->lines[$i]->tva_tx, 0, 'C');
 
-					$pdf->SetXY (145, $curY );
+					$pdf->SetXY(145, $curY );
 					$pdf->MultiCell(10, 3, $object->lines[$i]->qty_shipped, 0, 'C');
 
 					// TODO Field not yet saved in database
-					//$pdf->SetXY (156, $curY );
+					//$pdf->SetXY(156, $curY );
 					//$pdf->MultiCell(20, 3, price($object->lines[$i]->price), 0, 'R', 0);
 
 					// TODO Field not yet saved in database
-					//$pdf->SetXY (174, $curY );
+					//$pdf->SetXY(174, $curY );
 					//$total = price($object->lines[$i]->price * $object->lines[$i]->qty_shipped);
 					//$pdf->MultiCell(26, 3, $total, 0, 'R', 0);
 
@@ -359,7 +359,7 @@ class pdf_sirocco extends ModelePDFDeliveryOrder
 		// If SHIPPING contact defined on invoice, we use it
 		$usecontact=false;
 		$arrayidcontact=$object->commande->getIdContact('external','SHIPPING');
-		if (sizeof($arrayidcontact) > 0)
+		if (count($arrayidcontact) > 0)
 		{
 			$usecontact=true;
 			$result=$object->fetch_contact($arrayidcontact[0]);
@@ -422,7 +422,7 @@ class pdf_sirocco extends ModelePDFDeliveryOrder
 
 				foreach($object->linkedObjects as $elementtype => $objects)
 				{
-					$num=sizeof($objects);
+					$num=count($objects);
 					for ($i=0;$i<$num;$i++)
 					{
 						$order=new Commande($this->db);

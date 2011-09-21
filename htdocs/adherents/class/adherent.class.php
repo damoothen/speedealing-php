@@ -38,12 +38,9 @@ require_once(DOL_DOCUMENT_ROOT."/lib/date.lib.php");
  */
 class Adherent extends CommonObject
 {
-    var $db;
-    var $error;
-    var $errors=array();
-    var $element='member';
-    var $table_element='adherent';
-    var $ismultientitymanaged = 1;  // 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
+    public $element='member';
+    public $table_element='adherent';
+    protected $ismultientitymanaged = 1;  // 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
 
     var $id;
     var $ref;
@@ -339,7 +336,7 @@ class Adherent extends CommonObject
                     // Fin appel triggers
                 }
 
-                if (sizeof($this->errors))
+                if (count($this->errors))
                 {
                     dol_syslog(get_class($this)."::create ".join(',',$this->errors), LOG_ERR);
                     $this->db->rollback();
@@ -680,7 +677,7 @@ class Adherent extends CommonObject
         {
             $sql = "DELETE FROM ".MAIN_DB_PREFIX."cotisation WHERE fk_adherent = ".$rowid;
             dol_syslog(get_class($this)."::delete sql=".$sql);
-            $resql=$this->db->query( $sql);
+            $resql=$this->db->query($sql);
             if ($resql)
             {
                 $sql = "DELETE FROM ".MAIN_DB_PREFIX."adherent WHERE rowid = ".$rowid;
@@ -925,7 +922,7 @@ class Adherent extends CommonObject
         $sql.= " WHERE login='".$login."'";
         $sql.= " AND entity = ".$conf->entity;
 
-        $resql=$this->db->query( $sql);
+        $resql=$this->db->query($sql);
 
         if ($resql)
         {
@@ -1938,7 +1935,11 @@ class Adherent extends CommonObject
 
 
     /**
-     *		Initialise le membre avec valeurs fictives aleatoire
+     *  Initialise an instance with random values.
+     *  Used to build previews or test instances.
+     *	id must be 0 if object instance is a specimen.
+     *
+     *  @return	void
      */
     function initAsSpecimen()
     {

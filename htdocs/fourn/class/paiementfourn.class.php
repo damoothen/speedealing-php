@@ -32,10 +32,8 @@ require_once(DOL_DOCUMENT_ROOT.'/compta/paiement/class/paiement.class.php');
  */
 class PaiementFourn extends Paiement
 {
-    var $db;
-    var $error;
-    var $element='payment_supplier';
-    var $table_element='paiementfourn';
+    public $element='payment_supplier';
+    public $table_element='paiementfourn';
 
     var $id;
 	var $ref;
@@ -188,7 +186,7 @@ class PaiementFourn extends Paiement
 							dol_syslog('Paiement::Create Erreur INSERT dans paiement_facture '.$facid);
 							$error++;
 						}
-						
+
 					}
 					else
 					{
@@ -251,7 +249,7 @@ class PaiementFourn extends Paiement
 		$billsarray=$this->getBillsArray('paye=1');
 		if (is_array($billsarray))
 		{
-			if (sizeof($billsarray))
+			if (count($billsarray))
 			{
 				$this->error='Impossible de supprimer un paiement portant sur au moins une facture a l\'etat paye';
 				$this->db->rollback();

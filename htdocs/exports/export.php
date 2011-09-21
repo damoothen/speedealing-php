@@ -93,14 +93,14 @@ if ($action=='selectfield')
 		foreach($fieldsarray as $key=>$val)
 		{
 			if (! empty($array_selected[$key])) continue;		// If already selected, select next
-			$array_selected[$key]=sizeof($array_selected)+1;
+			$array_selected[$key]=count($array_selected)+1;
 		    //print_r($array_selected);
 		    $_SESSION["export_selected_fields"]=$array_selected;
 		}
     }
     else
     {
-		$array_selected[$_GET["field"]]=sizeof($array_selected)+1;
+		$array_selected[$_GET["field"]]=count($array_selected)+1;
 	    //print_r($array_selected);
 	    $_SESSION["export_selected_fields"]=$array_selected;
     }
@@ -281,7 +281,7 @@ if ($step == 1 || ! $datatoexport)
     print '<td>&nbsp;</td>';
     print '</tr>';
     $val=true;
-    if (sizeof($objexport->array_export_code))
+    if (count($objexport->array_export_code))
     {
         foreach ($objexport->array_export_code as $key => $value)
         {
@@ -395,13 +395,13 @@ if ($step == 2 && $datatoexport)
     // Select request if all fields are selected
     $sqlmaxforexport=$objexport->build_sql(0,array());
 
-#    $this->array_export_module[0]=$module;
-#    $this->array_export_code[0]=$module->export_code[$r];
-#    $this->array_export_label[0]=$module->export_label[$r];
-#    $this->array_export_sql[0]=$module->export_sql[$r];
-#    $this->array_export_fields[0]=$module->export_fields_array[$r];
-#    $this->array_export_entities[0]=$module->export_fields_entities[$r];
-#    $this->array_export_alias[0]=$module->export_fields_alias[$r];
+//    $this->array_export_module[0]=$module;
+//    $this->array_export_code[0]=$module->export_code[$r];
+//    $this->array_export_label[0]=$module->export_label[$r];
+//    $this->array_export_sql[0]=$module->export_sql[$r];
+//    $this->array_export_fields[0]=$module->export_fields_array[$r];
+//    $this->array_export_entities[0]=$module->export_fields_entities[$r];
+//    $this->array_export_alias[0]=$module->export_fields_alias[$r];
 
     $var=true;
     $i = 0;
@@ -420,7 +420,7 @@ if ($step == 2 && $datatoexport)
         print '<td nowrap="nowrap">';
         // If value of entityicon=entitylang='icon:Label'
         $tmparray=explode(':',$entityicon);
-        if (sizeof($tmparray) >=2)
+        if (count($tmparray) >=2)
         {
             $entityicon=$tmparray[0];
             $entitylang=$tmparray[1];
@@ -472,7 +472,7 @@ if ($step == 2 && $datatoexport)
      */
     print '<div class="tabsAction">';
 
-    if (sizeof($array_selected))
+    if (count($array_selected))
 	{
 		print '<a class="butAction" href="export.php?step=3&datatoexport='.$datatoexport.'">'.$langs->trans("NextStep").'</a>';
 	}
@@ -567,7 +567,7 @@ if ($step == 3 && $datatoexport)
         print '<td nowrap="nowrap">';
         // If value of entityicon=entitylang='icon:Label'
         $tmparray=explode(':',$entityicon);
-        if (sizeof($tmparray) >=2)
+        if (count($tmparray) >=2)
         {
             $entityicon=$tmparray[0];
             $entitylang=$tmparray[1];
@@ -587,7 +587,7 @@ if ($step == 3 && $datatoexport)
         print '<td align="right" width="100">';
         print $value.' ';
         print '</td><td align="center" width="20">';
-        if ($value < sizeof($array_selected)) print '<a href="'.$_SERVER["PHP_SELF"].'?step=3&datatoexport='.$datatoexport.'&action=downfield&field='.$code.'">'.img_down().'</a>';
+        if ($value < count($array_selected)) print '<a href="'.$_SERVER["PHP_SELF"].'?step=3&datatoexport='.$datatoexport.'&action=downfield&field='.$code.'">'.img_down().'</a>';
         if ($value > 1) print '<a href="'.$_SERVER["PHP_SELF"].'?step=3&datatoexport='.$datatoexport.'&action=upfield&field='.$code.'">'.img_up().'</a>';
         print '</td>';
 
@@ -610,7 +610,7 @@ if ($step == 3 && $datatoexport)
      */
     print '<div class="tabsAction">';
 
-    if (sizeof($array_selected))
+    if (count($array_selected))
     {
         print '<a class="butAction" href="export.php?step=4&datatoexport='.$datatoexport.'">'.$langs->trans("NextStep").'</a>';
     }
@@ -619,7 +619,7 @@ if ($step == 3 && $datatoexport)
 
 
 	// Area for profils export
-	if (sizeof($array_selected))
+	if (count($array_selected))
     {
 		print '<br>';
         print $langs->trans("SaveExportModel");

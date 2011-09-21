@@ -33,6 +33,8 @@
 
 /**
  *  This function output memory used by PHP and exit everything. Used for debugging purpose.
+ *
+ *  @return	void
  */
 function dol_stopwithmem()
 {
@@ -43,6 +45,8 @@ function dol_stopwithmem()
 
 /**
  *  Function called at end of web php process
+ *
+ *  @return	void
  */
 function dol_shutdown()
 {
@@ -55,10 +59,10 @@ function dol_shutdown()
 /**
  *  Return value of a param into GET or POST supervariable
  *
- *  @param          string	$paramname   Name of parameter to found
- *  @param			string	$check	     Type of check (''=no check,  'int'=check it's numeric, 'alpha'=check it's alpha only)
- *  @param			int		$method	     Type of method (0 = get then post, 1 = only get, 2 = only post, 3 = post then get)
- *  @return         string      		 Value found or '' if check fails
+ *  @param	string	$paramname   Name of parameter to found
+ *  @param	string	$check	     Type of check (''=no check,  'int'=check it's numeric, 'alpha'=check it's alpha only)
+ *  @param	int		$method	     Type of method (0 = get then post, 1 = only get, 2 = only post, 3 = post then get)
+ *  @return string      		 Value found or '' if check fails
  */
 function GETPOST($paramname,$check='',$method=0)
 {
@@ -85,7 +89,7 @@ function GETPOST($paramname,$check='',$method=0)
  *  This prefix is unique for instance and avoid conflict between multi-instances,
  *  even when having two instances with one root dir or two instances in virtual servers
  *
- *  @return         string      		A calculated prefix
+ *  @return	string      		A calculated prefix
  */
 function dol_getprefix()
 {
@@ -99,8 +103,8 @@ function dol_getprefix()
  *  To link to a module file from a module file, use include('./mymodulefile');
  *  To link to a module file from a core file, then this function can be used
  *
- * 	@param			string	$relpath	Relative path to file (Ie: mydir/myfile, ../myfile, ...)
- *  @return         int					false if include fails.
+ * 	@param	string	$relpath	Relative path to file (Ie: mydir/myfile, ../myfile, ...)
+ *  @return int					false if include fails.
  */
 function dol_include_once($relpath)
 {
@@ -112,9 +116,9 @@ function dol_include_once($relpath)
 /**
  *	Return path of url or filesystem. Return default_root or alternate root if file_exist fails
  *
- * 	@param			string	$path		Relative path to file (if mode=0, ie: mydir/myfile, ../myfile, ...) or relative url (if mode=1).
- *  @param			int		$type		0=Used for a Filesystem path, 1=Used for an URL path (output relative), 2=Used for an URL path (output full path)
- *  @return         string				Full filsystem path (if mode=0), Full url path (if mode=1)
+ * 	@param	string	$path		Relative path to file (if mode=0, ie: mydir/myfile, ../myfile, ...) or relative url (if mode=1).
+ *  @param	int		$type		0=Used for a Filesystem path, 1=Used for an URL path (output relative), 2=Used for an URL path (output full path)
+ *  @return string				Full filsystem path (if mode=0), Full url path (if mode=1)
  */
 function dol_buildpath($path,$type=0)
 {
@@ -165,8 +169,8 @@ function dol_buildpath($path,$type=0)
  *	Create a clone of instance of object (new instance with same properties)
  * 	This function works for both PHP4 and PHP5
  *
- * 	@param			object	$object		Object to clone
- *	@return         object				Object clone
+ * 	@param	object	$object		Object to clone
+ *	@return object				Object clone
  */
 function dol_clone($object)
 {
@@ -184,11 +188,11 @@ function dol_clone($object)
 /**
  *	Optimize a size for some browsers (phone, smarphone, ...)
  *
- * 	@param			int		$size		Size we want
- * 	@param			string	$type		Type of optimizing:
+ * 	@param	int		$size		Size we want
+ * 	@param	string	$type		Type of optimizing:
  * 										'' = function used to define a size for truncation
  * 										'width' = function is used to define a width
- *	@return         int					New size after optimizing
+ *	@return int					New size after optimizing
  */
 function dol_size($size,$type='')
 {
@@ -202,11 +206,11 @@ function dol_size($size,$type='')
 /**
  *	Return date for now. We should always use this function without parameters (that means GMT time)
  *
- * 	@param			mode		'gmt' => we return GMT timestamp,
+ * 	@param	string		$mode	'gmt' => we return GMT timestamp,
  * 								'tzserver' => we add the PHP server timezone
  *  							'tzref' => we add the company timezone
  * 								'tzuser' => we add the user timezone
- *	@return         date		Timestamp
+ *	@return timestamp   $date	Timestamp
  */
 function dol_now($mode='gmt')
 {
@@ -235,9 +239,10 @@ function dol_now($mode='gmt')
 /**
  *	Clean a string to use it as a file name
  *
- *	@param          str             String to clean
- * 	@param			newstr			String to replace bad chars with
- *	@return         string          String cleaned (a-zA-Z_)
+ *	@param	string	$str            String to clean
+ * 	@param	string	$newstr			String to replace bad chars with
+ *	@return string          		String cleaned (a-zA-Z_)
+ *
  * 	@see        	dol_string_nospecial, dol_string_unaccent
  */
 function dol_sanitizeFileName($str,$newstr='_')
@@ -249,8 +254,9 @@ function dol_sanitizeFileName($str,$newstr='_')
 /**
  *	Clean a string from all accent characters to be used as ref, login or by dol_sanitizeFileName
  *
- *	@param          str             String to clean
- *	@return         string          Cleaned string
+ *	@param	string	$str			String to clean
+ *	@return string   	       		Cleaned string
+ *
  * 	@see    		dol_sanitizeFilename, dol_string_nospecial
  */
 function dol_string_unaccent($str)
@@ -296,10 +302,11 @@ function dol_string_unaccent($str)
 /**
  *	Clean a string from all punctuation characters to use it as a ref or login
  *
- *	@param          str             String to clean
- * 	@param			newstr			String to replace forbidden chars with
- *  @param          badchars        List of forbidden characters
- * 	@return         string          Cleaned string
+ *	@param	string	$str            String to clean
+ * 	@param	string	$newstr			String to replace forbidden chars with
+ *  @param  array	$badchars       List of forbidden characters
+ * 	@return string          		Cleaned string
+ *
  * 	@see    		dol_sanitizeFilename, dol_string_unaccent
  */
 function dol_string_nospecial($str,$newstr='_',$badchars='')
@@ -467,11 +474,12 @@ function dol_syslog($message, $level=LOG_INFO)
 /**
  *	Show tab header of a card
  *
- *	@param	    links		Array of tabs
- *	@param	    active      Active tab name
- *	@param      title       Title
- *	@param      notab		0=Add tab header, 1=no tab header
- * 	@param		picto		Add a picto on tab title
+ *	@param	array	$links		Array of tabs
+ *	@param	int		$active     Active tab name
+ *	@param  string	$title      Title
+ *	@param  int		$notab		0=Add tab header, 1=no tab header
+ * 	@param	string	$picto		Add a picto on tab title
+ * 	@return	void
  */
 function dol_fiche_head($links=array(), $active='0', $title='', $notab=0, $picto='')
 {
@@ -481,11 +489,12 @@ function dol_fiche_head($links=array(), $active='0', $title='', $notab=0, $picto
 /**
  *  Show tab header of a card
  *
- *  @param      links       Array of tabs
- *  @param      active      Active tab name
- *  @param      title       Title
- *  @param      notab       0=Add tab header, 1=no tab header
- *  @param      picto       Add a picto on tab title
+ *	@param	array	$links		Array of tabs
+ *	@param	int		$active     Active tab name
+ *	@param  string	$title      Title
+ *	@param  int		$notab		0=Add tab header, 1=no tab header
+ * 	@param	string	$picto		Add a picto on tab title
+ * 	@return	void
  */
 function dol_get_fiche_head($links=array(), $active='0', $title='', $notab=0, $picto='')
 {
@@ -506,7 +515,7 @@ function dol_get_fiche_head($links=array(), $active='0', $title='', $notab=0, $p
     if (is_array($links))
     {
         $keys=array_keys($links);
-        if (sizeof($keys)) $maxkey=max($keys);
+        if (count($keys)) $maxkey=max($keys);
     }
 
     // Show tabs
@@ -548,7 +557,8 @@ function dol_get_fiche_head($links=array(), $active='0', $title='', $notab=0, $p
 /**
  *  Show tab footer of a card
  *
- *  @param      int		$notab       0=Add tab footer, 1=no tab footer
+ *  @param	int		$notab       0=Add tab footer, 1=no tab footer
+ *  @return	void
  */
 function dol_fiche_end($notab=0)
 {
@@ -558,7 +568,8 @@ function dol_fiche_end($notab=0)
 /**
  *	Return tab footer of a card
  *
- *	@param      int		$notab		0=Add tab footer, 1=no tab footer
+ *	@param  int		$notab		0=Add tab footer, 1=no tab footer
+ *  @return	void
  */
 function dol_get_fiche_end($notab=0)
 {
@@ -896,10 +907,11 @@ function dolibarr_date($fmt, $timestamp, $gm=false)
 /**
  *	Returns formated date
  *
- *	@param		fmt				Format (Exemple: 'Y-m-d H:i:s')
- *	@param		timestamp		Date. Example: If timestamp=0 and gm=1, return 01/01/1970 00:00:00
- *	@param		gm				1 if timestamp was built with gmmktime, 0 if timestamp was build with mktime
- *	@return		string			Formated date
+ *	@param		string		$fmt			Format (Exemple: 'Y-m-d H:i:s')
+ *	@param		timestamp	$timestamp		Date. Example: If timestamp=0 and gm=1, return 01/01/1970 00:00:00
+ *	@param		boolean		$gm				1 if timestamp was built with gmmktime, 0 if timestamp was build with mktime
+ *	@return		string						Formated date
+ *
  *  @deprecated Replaced by dol_print_date
  */
 function dol_date($fmt, $timestamp, $gm=false)
@@ -924,10 +936,10 @@ function dol_date($fmt, $timestamp, $gm=false)
 /**
  * Return string with formated size
  *
- * @param		size		Size to print
- * @param		shortvalue	Tell if we want long value to use another unit (Ex: 1.5Kb instead of 1500b)
- * @param		shortunit	Use short value of size unit
- * @return		string		Link
+ * @param	int		$size		Size to print
+ * @param	int		$shortvalue	Tell if we want long value to use another unit (Ex: 1.5Kb instead of 1500b)
+ * @param	int		$shortunit	Use short value of size unit
+ * @return	string				Link
  */
 function dol_print_size($size,$shortvalue=0,$shortunit=0)
 {
@@ -957,10 +969,10 @@ function dol_print_size($size,$shortvalue=0,$shortunit=0)
 /**
  * Show Url link
  *
- * @param		url			Url to show
- * @param		target		Target for link
- * @param		max			Max number of characters to show
- * @return		string		HTML Link
+ * @param	string		$url		Url to show
+ * @param	string		$target		Target for link
+ * @param	int			$max		Max number of characters to show
+ * @return	string					HTML Link
  */
 function dol_print_url($url,$target='_blank',$max=32)
 {
@@ -979,13 +991,13 @@ function dol_print_url($url,$target='_blank',$max=32)
 /**
  * Show EMail link
  *
- * @param		email		EMail to show (only email, without 'Name of recipient' before)
- * @param 		cid 		Id of contact if known
- * @param 		socid 		Id of third party if known
- * @param 		addlink		0=no link to create action
- * @param		max			Max number of characters to show
- * @param		showinvalid	Show warning if syntax email is wrong
- * @return		string		HTML Link
+ * @param	string		$email			EMail to show (only email, without 'Name of recipient' before)
+ * @param 	int			$cid 			Id of contact if known
+ * @param 	int			$socid 			Id of third party if known
+ * @param 	int			$addlink		0=no link to create action
+ * @param	int			$max			Max number of characters to show
+ * @param	int			$showinvalid	Show warning if syntax email is wrong
+ * @return	string						HTML Link
  */
 function dol_print_email($email,$cid=0,$socid=0,$addlink=0,$max=64,$showinvalid=1)
 {
@@ -1363,7 +1375,7 @@ function dol_print_graph($htmlid,$width,$height,$data,$showlegend=0,$type='pie',
             {
                 //print '{ label: "'.($showlegend?$serie['values'][0]:$serie['label'].'<br>'.$serie['values'][0]).'", data: '.$serie['values'][0].' }';
                 print '{ label: "'.dol_escape_js($serie['label']).'", data: '.$serie['values'][0].' }';
-                if ($i < sizeof($data['series'])) print ',';
+                if ($i < count($data['series'])) print ',';
                 print "\n";
                 $i++;
             }
@@ -1405,7 +1417,7 @@ function dol_print_graph($htmlid,$width,$height,$data,$showlegend=0,$type='pie',
                     },
                     ';
                     $i=0; $outputserie=0;
-            		if (sizeof($datacolor))
+            		if (count($datacolor))
             		{
 	                    print 'colors: [';
 	                    foreach($datacolor as $val)
@@ -1445,7 +1457,7 @@ function dol_print_graph($htmlid,$width,$height,$data,$showlegend=0,$type='pie',
                 foreach($serie['values'] as $val)
                 {
                     print '['.$j.','.$val.']';
-                    if ($j < sizeof($serie['values'])) print ', ';
+                    if ($j < count($serie['values'])) print ', ';
                     $j++;
                 }
                 print ']}'."\n";
@@ -1465,7 +1477,7 @@ function dol_print_graph($htmlid,$width,$height,$data,$showlegend=0,$type='pie',
                 foreach($serie['values'] as $val)
                 {
                     print '['.$j.','.$val.']';
-                    if ($j < sizeof($serie['values'])) print ', ';
+                    if ($j < count($serie['values'])) print ', ';
                     $j++;
                 }
                 print ']}'."\n";
@@ -1478,7 +1490,7 @@ function dol_print_graph($htmlid,$width,$height,$data,$showlegend=0,$type='pie',
             foreach($data['xlabel'] as $label)
             {
                 print '['.$i.',\''.$label.'\']';
-                if ($i < sizeof($data['xlabel'])) print ',';
+                if ($i < count($data['xlabel'])) print ',';
                 $i++;
             }
             print '];
@@ -1496,14 +1508,14 @@ function dol_print_graph($htmlid,$width,$height,$data,$showlegend=0,$type='pie',
                         interactive: true
                     },
                     ';
-                    if (sizeof($datacolor))
+                    if (count($datacolor))
                     {
                         print 'colors: [';
                         $j=0;
                         foreach($datacolor as $val)
                         {
                             print '"'.$val.'"';
-                            if ($j < sizeof($datacolor)) print ',';
+                            if ($j < count($datacolor)) print ',';
                             $j++;
                         }
                         print '], ';
@@ -2040,7 +2052,7 @@ function info_admin($text,$infoonimgalt=0)
  *	@param      feature2		Feature to check, second level of permission (optionnal)
  *  @param      dbt_keyfield    Field name for socid foreign key if not fk_soc (optionnal)
  *  @param      dbt_select      Field name for select if not rowid (optionnal)
- *  @param		objcanvas		Object canvas	
+ *  @param		objcanvas		Object canvas
  * 	@return		int				Always 1, die process if not allowed
  */
 function restrictedArea($user, $features='societe', $objectid=0, $dbtablename='', $feature2='', $dbt_keyfield='fk_soc', $dbt_select='rowid', $objcanvas=null)
@@ -2051,13 +2063,13 @@ function restrictedArea($user, $features='societe', $objectid=0, $dbtablename=''
     //print "user_id=".$user->id.", features=".$features.", feature2=".$feature2.", objectid=".$objectid;
     //print ", dbtablename=".$dbtablename.", dbt_socfield=".$dbt_keyfield.", dbt_select=".$dbt_select;
     //print ", perm: ".$features."->".$feature2."=".$user->rights->$features->$feature2->lire."<br>";
-    
+
     // If we use canvas, we try to use function that overlod restrictarea if provided with canvas
     if (is_object($objcanvas))
     {
 	    if (method_exists($objcanvas->control,'restrictedArea')) return $objcanvas->control->restrictedArea($user,$features,$objectid,$dbtablename,$feature2,$dbt_keyfield,$dbt_select);
     }
-    
+
     if ($dbt_select != 'rowid') $objectid = "'".$objectid."'";
 
     // More features to check
@@ -3356,7 +3368,8 @@ function dol_mkdir($dir)
 
     $ccdir = '';
     $cdir = explode("/",$dir);
-    for ($i = 0 ; $i < sizeof($cdir) ; $i++)
+    $num=count($cdir);
+    for ($i = 0; $i < $num; $i++)
     {
         if ($i > 0) $ccdir .= '/'.$cdir[$i];
         else $ccdir = $cdir[$i];
@@ -3598,7 +3611,7 @@ function dol_nboflines($s,$maxchar=0)
 {
     if ($s == '') return 0;
     $arraystring=explode("\n",$s);
-    $nb=sizeof($arraystring);
+    $nb=count($arraystring);
 
     return $nb;
 }
@@ -3649,7 +3662,7 @@ function dol_nboflines_bis($text,$maxlinesize=0,$charset='UTF-8')
 function dol_microtime_float()
 {
     list($usec, $sec) = explode(" ", microtime());
-    return ((float)$usec + (float)$sec);
+    return ((float) $usec + (float) $sec);
 }
 
 /**
@@ -3828,17 +3841,17 @@ function get_htmloutput_mesg($mesgstring='',$mesgarray='', $style='ok', $keepemb
         $divend='</div>';
     }
 
-    if ((is_array($mesgarray) && sizeof($mesgarray)) || $mesgstring)
+    if ((is_array($mesgarray) && count($mesgarray)) || $mesgstring)
     {
         $langs->load("errors");
         $out.=$divstart;
-        if (is_array($mesgarray) && sizeof($mesgarray))
+        if (is_array($mesgarray) && count($mesgarray))
         {
             foreach($mesgarray as $message)
             {
                 $ret++;
                 $out.= $langs->trans($message);
-                if ($ret < sizeof($mesgarray)) $out.= "<br>\n";
+                if ($ret < count($mesgarray)) $out.= "<br>\n";
             }
         }
         if ($mesgstring)
@@ -3914,7 +3927,7 @@ function get_htmloutput_errors($mesgstring='', $mesgarray='', $keepembedded=0)
  */
 function dol_htmloutput_mesg($mesgstring='',$mesgarray='', $style='ok', $keepembedded=0)
 {
-    if (empty($mesgstring) && (! is_array($mesgarray) || sizeof($mesgarray) == 0)) return;
+    if (empty($mesgstring) && (! is_array($mesgarray) || count($mesgarray) == 0)) return;
 
     $iserror=0;
     if (is_array($mesgarray))
@@ -4010,14 +4023,14 @@ function utf8_check($str)
     // We must use here a binary strlen function (so not dol_strlen)
     for ($i=0; $i<strlen($str); $i++)
     {
-        if (ord($str[$i]) < 0x80) continue; # 0bbbbbbb
-        elseif ((ord($str[$i]) & 0xE0) == 0xC0) $n=1; # 110bbbbb
-        elseif ((ord($str[$i]) & 0xF0) == 0xE0) $n=2; # 1110bbbb
-        elseif ((ord($str[$i]) & 0xF8) == 0xF0) $n=3; # 11110bbb
-        elseif ((ord($str[$i]) & 0xFC) == 0xF8) $n=4; # 111110bb
-        elseif ((ord($str[$i]) & 0xFE) == 0xFC) $n=5; # 1111110b
-        else return false; # Does not match any model
-        for ($j=0; $j<$n; $j++) { # n bytes matching 10bbbbbb follow ?
+        if (ord($str[$i]) < 0x80) continue; // 0bbbbbbb
+        elseif ((ord($str[$i]) & 0xE0) == 0xC0) $n=1; // 110bbbbb
+        elseif ((ord($str[$i]) & 0xF0) == 0xE0) $n=2; // 1110bbbb
+        elseif ((ord($str[$i]) & 0xF8) == 0xF0) $n=3; // 11110bbb
+        elseif ((ord($str[$i]) & 0xFC) == 0xF8) $n=4; // 111110bb
+        elseif ((ord($str[$i]) & 0xFE) == 0xFC) $n=5; // 1111110b
+        else return false; // Does not match any model
+        for ($j=0; $j<$n; $j++) { // n bytes matching 10bbbbbb follow ?
             if ((++$i == strlen($str)) || ((ord($str[$i]) & 0xC0) != 0x80))
             return false;
         }
@@ -4030,11 +4043,13 @@ function utf8_check($str)
  *      Return an UTF-8 string encoded into OS filesystem encoding. This function is used to define
  * 	    value to pass to filesystem PHP functions.
  *
- *      @param      $str        String to encode (UTF-8)
- * 		@return		string		Encoded string (UTF-8, ISO-8859-1)
+ *      @param      string	$str        String to encode (UTF-8)
+ * 		@return		string				Encoded string (UTF-8, ISO-8859-1)
  */
 function dol_osencode($str)
 {
+    global $conf;
+
     $tmp=ini_get("unicode.filesystem_encoding");						// Disponible avec PHP 6.0
     if (empty($tmp) && ! empty($_SERVER["WINDIR"])) $tmp='iso-8859-1';	// By default for windows
     if (empty($tmp)) $tmp='utf-8';										// By default for other
@@ -4181,18 +4196,18 @@ function picto_from_langcode($codelang)
  *                              'member'           to add a tab in fundation member view
  *                              'categories_x'	   to add a tab in category view ('x': type of category (0=product, 1=supplier, 2=customer, 3=member)
  *  @param      mode            'add' to complete head, 'remove' to remove entries
+ *	@return		void
  */
 function complete_head_from_modules($conf,$langs,$object,&$head,&$h,$type,$mode='add')
 {
     if (is_array($conf->tabs_modules[$type]))
     {
-        $i=0;
         foreach ($conf->tabs_modules[$type] as $value)
         {
             $values=explode(':',$value);
             if ($mode == 'add')
             {
-                if (sizeof($values) == 6)       // new declaration with permissions
+                if (count($values) == 6)       // new declaration with permissions
                 {
                     if ($values[0] != $type) continue;
                     if (verifCond($values[4]))
@@ -4204,7 +4219,7 @@ function complete_head_from_modules($conf,$langs,$object,&$head,&$h,$type,$mode=
                         $h++;
                     }
                 }
-                else if (sizeof($values) == 5)       // new declaration
+                else if (count($values) == 5)       // new declaration
                 {
                     if ($values[0] != $type) continue;
                     if ($values[3]) $langs->load($values[3]);
@@ -4213,7 +4228,7 @@ function complete_head_from_modules($conf,$langs,$object,&$head,&$h,$type,$mode=
                     $head[$h][2] = str_replace('+','',$values[1]);
                     $h++;
                 }
-                else if (sizeof($values) == 4)   // old declaration, for backward compatibility
+                else if (count($values) == 4)   // old declaration, for backward compatibility
                 {
                     if ($values[0] != $type) continue;
                     if ($values[2]) $langs->load($values[2]);

@@ -34,16 +34,12 @@ require_once(DOL_DOCUMENT_ROOT ."/core/class/commonobject.class.php");
  */
 class Product extends CommonObject
 {
-	var $db;
-	var $error;
-	var $errno = 0;
-
-	var $element='product';
-	var $table_element='product';
-	var $fk_element='fk_product';
-	var $childtables=array('propaldet','commandedet','facturedet','contratdet','product_fournisseur');
-	var $isnolinkedbythird = 1;     // No field fk_soc
-	var $ismultientitymanaged = 1;	// 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
+	public $element='product';
+	public $table_element='product';
+	public $fk_element='fk_product';
+	public $childtables=array('propaldet','commandedet','facturedet','contratdet','product_fournisseur');
+	protected $isnolinkedbythird = 1;     // No field fk_soc
+	protected $ismultientitymanaged = 1;	// 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
 
 	//! Identifiant unique
 	var $id ;
@@ -1135,7 +1131,7 @@ class Product extends CommonObject
 						$sql.= " fk_product = '".$this->id."'";
 						$sql.= " ORDER BY date_price DESC";
 						$sql.= " LIMIT 1";
-						$resql = $this->db->query($sql) ;
+						$resql = $this->db->query($sql);
 						if ($resql)
 						{
 							$result = $this->db->fetch_array($resql);
@@ -1197,7 +1193,7 @@ class Product extends CommonObject
 		//$sql.= " AND pr.fk_statut != 0";
 		if ($socid > 0)	$sql.= " AND p.fk_soc = ".$socid;
 
-		$result = $this->db->query($sql) ;
+		$result = $this->db->query($sql);
 		if ( $result )
 		{
 			$obj=$this->db->fetch_object($result);
@@ -1240,7 +1236,7 @@ class Product extends CommonObject
 		if ($socid > 0)	$sql.= " AND c.fk_soc = ".$socid;
 		if ($filtrestatut <> '') $sql.= " AND c.fk_statut in (".$filtrestatut.")";
 
-		$result = $this->db->query($sql) ;
+		$result = $this->db->query($sql);
 		if ( $result )
 		{
 			$obj=$this->db->fetch_object($result);
@@ -1282,7 +1278,7 @@ class Product extends CommonObject
 		if ($socid > 0) $sql.= " AND c.fk_soc = ".$socid;
 		if ($filtrestatut != '') $sql.= " AND c.fk_statut in (".$filtrestatut.")"; // Peut valoir 0
 
-		$result = $this->db->query($sql) ;
+		$result = $this->db->query($sql);
 		if ( $result )
 		{
 			$obj=$this->db->fetch_object($result);
@@ -1326,7 +1322,7 @@ class Product extends CommonObject
 		if ($socid > 0)	$sql.= " AND e.fk_soc = ".$socid;
 		if ($filtrestatut <> '') $sql.= " AND e.fk_statut in (".$filtrestatut.")";
 
-		$result = $this->db->query($sql) ;
+		$result = $this->db->query($sql);
 		if ( $result )
 		{
 			$obj=$this->db->fetch_object($result);
@@ -1368,7 +1364,7 @@ class Product extends CommonObject
 		//$sql.= " AND c.statut != 0";
 		if ($socid > 0)	$sql.= " AND c.fk_soc = ".$socid;
 
-		$result = $this->db->query($sql) ;
+		$result = $this->db->query($sql);
 		if ( $result )
 		{
 			$obj=$this->db->fetch_object($result);
@@ -1410,7 +1406,7 @@ class Product extends CommonObject
 		//$sql.= " AND f.fk_statut != 0";
 		if ($socid > 0)	$sql .= " AND f.fk_soc = ".$socid;
 
-		$result = $this->db->query($sql) ;
+		$result = $this->db->query($sql);
 		if ( $result )
 		{
 			$obj=$this->db->fetch_object($result);
@@ -1452,7 +1448,7 @@ class Product extends CommonObject
 		//$sql.= " AND f.fk_statut != 0";
 		if ($socid > 0)	$sql .= " AND f.fk_soc = ".$socid;
 
-		$result = $this->db->query($sql) ;
+		$result = $this->db->query($sql);
 		if ( $result )
 		{
 			$obj=$this->db->fetch_object($result);
@@ -1665,7 +1661,7 @@ class Product extends CommonObject
 			}
 			else
 			{
-				$result = $this->db->query($sql) ;
+				$result = $this->db->query($sql);
 				if ($result)
 				{
 					$num = $this->db->num_rows($result);
@@ -1876,7 +1872,7 @@ class Product extends CommonObject
 		include_once DOL_DOCUMENT_ROOT."/fourn/class/fournisseur.class.php";
 
 		$list = $this->list_suppliers();
-		if (sizeof($list) > 0)
+		if (count($list) > 0)
 		{
 			dol_syslog("Product::fastappro");
 			$fournisseur = new Fournisseur($this->db);
@@ -2038,7 +2034,7 @@ class Product extends CommonObject
 			// on est dans une sous-categorie
 			if(is_array($desc_pere))
 			$this->res[]= array($desc_pere[1],$desc_pere[0]);
-			if(sizeof($desc_pere) >1)
+			if(count($desc_pere) >1)
 			{
 				$this ->fetch_prods($desc_pere);
 			}
@@ -2076,7 +2072,7 @@ class Product extends CommonObject
 		{
 			foreach($this -> sousprods as $nom_pere => $desc_pere)
 			{
-				if(sizeof($desc_pere) >1)
+				if(count($desc_pere) >1)
 				$this ->fetch_prods($desc_pere);
 
 			}
@@ -2104,7 +2100,7 @@ class Product extends CommonObject
 		if ($res)
 		{
 			$prods = array ();
-			while ($record = $this->db->fetch_array ($res))
+			while ($record = $this->db->fetch_array($res))
 			{
 				$prods[$record['id']]['id'] =  $record['rowid'];
 				$prods[$record['id']]['label'] =  $this->db->escape($record['label']);
@@ -2138,7 +2134,7 @@ class Product extends CommonObject
 		if ($res)
 		{
 			$prods = array ();
-			while ($record = $this->db->fetch_array ($res))
+			while ($record = $this->db->fetch_array($res))
 			{
 				$prods[$this->db->escape($record['label'])] = array(0=>$record['id']);
 			}
@@ -2387,7 +2383,7 @@ class Product extends CommonObject
 		$sql.= " WHERE fk_product = '".$this->id."'";
 
 		dol_syslog("Product::load_stock sql=".$sql);
-		$result = $this->db->query($sql) ;
+		$result = $this->db->query($sql);
 		if ($result)
 		{
 			$num = $this->db->num_rows($result);

@@ -515,7 +515,7 @@ if ($action == 'add' && $user->rights->facture->creer)
     // Replacement invoice
     if ($_POST['type'] == 1)
     {
-        $datefacture = dol_mktime(12, 0 , 0, $_POST['remonth'], $_POST['reday'], $_POST['reyear']);
+        $datefacture = dol_mktime(12, 0, 0, $_POST['remonth'], $_POST['reday'], $_POST['reyear']);
         if (empty($datefacture))
         {
             $error++;
@@ -564,7 +564,7 @@ if ($action == 'add' && $user->rights->facture->creer)
             $mesg='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->trans("CorrectInvoice")).'</div>';
         }
 
-        $datefacture = dol_mktime(12, 0 , 0, $_POST['remonth'], $_POST['reday'], $_POST['reyear']);
+        $datefacture = dol_mktime(12, 0, 0, $_POST['remonth'], $_POST['reday'], $_POST['reyear']);
         if (empty($datefacture))
         {
             $error++;
@@ -574,7 +574,7 @@ if ($action == 'add' && $user->rights->facture->creer)
         if (! $error)
         {
             // Si facture avoir
-            $datefacture = dol_mktime(12, 0 , 0, $_POST['remonth'], $_POST['reday'], $_POST['reyear']);
+            $datefacture = dol_mktime(12, 0, 0, $_POST['remonth'], $_POST['reday'], $_POST['reyear']);
 
             //$result=$object->fetch($_POST['fac_avoir']);
 
@@ -605,8 +605,8 @@ if ($action == 'add' && $user->rights->facture->creer)
                 {
                     $product=new Product($db);
                     $product->fetch($_POST['idprod'.$i]);
-                    $startday=dol_mktime(12, 0 , 0, $_POST['date_start'.$i.'month'], $_POST['date_start'.$i.'day'], $_POST['date_start'.$i.'year']);
-                    $endday=dol_mktime(12, 0 , 0, $_POST['date_end'.$i.'month'], $_POST['date_end'.$i.'day'], $_POST['date_end'.$i.'year']);
+                    $startday=dol_mktime(12, 0, 0, $_POST['date_start'.$i.'month'], $_POST['date_start'.$i.'day'], $_POST['date_start'.$i.'year']);
+                    $endday=dol_mktime(12, 0, 0, $_POST['date_end'.$i.'month'], $_POST['date_end'.$i.'day'], $_POST['date_end'.$i.'year']);
                     $result=$object->addline($id,$product->description,$product->price, $_POST['qty'.$i], $product->tva_tx, $product->localtax1_tx, $product->localtax2_tx, $_POST['idprod'.$i], $_POST['remise_percent'.$i], $startday, $endday, 0, 0, '', $product->price_base_type, $product->price_ttc, $product->type);
                 }
             }
@@ -616,7 +616,7 @@ if ($action == 'add' && $user->rights->facture->creer)
     // Standard invoice or Deposit invoice created from a Predefined invoice
     if (($_POST['type'] == 0 || $_POST['type'] == 3) && $_POST['fac_rec'] > 0)
     {
-        $datefacture = dol_mktime(12, 0 , 0, $_POST['remonth'], $_POST['reday'], $_POST['reyear']);
+        $datefacture = dol_mktime(12, 0, 0, $_POST['remonth'], $_POST['reday'], $_POST['reyear']);
         if (empty($datefacture))
         {
             $error++;
@@ -645,7 +645,7 @@ if ($action == 'add' && $user->rights->facture->creer)
     // Standard or deposit or proforma invoice
     if (($_POST['type'] == 0 || $_POST['type'] == 3 || $_POST['type'] == 4) && $_POST['fac_rec'] <= 0)
     {
-        $datefacture = dol_mktime(12, 0 , 0, $_POST['remonth'], $_POST['reday'], $_POST['reyear']);
+        $datefacture = dol_mktime(12, 0, 0, $_POST['remonth'], $_POST['reday'], $_POST['reyear']);
         if (empty($datefacture))
         {
             $error++;
@@ -829,8 +829,8 @@ if ($action == 'add' && $user->rights->facture->creer)
                     {
                         $product=new Product($db);
                         $product->fetch($_POST['idprod'.$i]);
-                        $startday=dol_mktime(12, 0 , 0, $_POST['date_start'.$i.'month'], $_POST['date_start'.$i.'day'], $_POST['date_start'.$i.'year']);
-                        $endday=dol_mktime(12, 0 , 0, $_POST['date_end'.$i.'month'], $_POST['date_end'.$i.'day'], $_POST['date_end'.$i.'year']);
+                        $startday=dol_mktime(12, 0, 0, $_POST['date_start'.$i.'month'], $_POST['date_start'.$i.'day'], $_POST['date_start'.$i.'year']);
+                        $endday=dol_mktime(12, 0, 0, $_POST['date_end'.$i.'month'], $_POST['date_end'.$i.'day'], $_POST['date_end'.$i.'year']);
                         $result=$object->addline($id,$product->description,$product->price, $_POST['qty'.$i], $product->tva_tx, $product->localtax1_tx, $product->localtax2_tx, $_POST['idprod'.$i], $_POST['remise_percent'.$i], $startday, $endday, 0, 0, '', $product->price_base_type, $product->price_ttc, $product->type);
                     }
                 }
@@ -971,7 +971,7 @@ if (($action == 'addline' || $action == 'addline_predef') && $user->rights->fact
         {
             if($price_min && (price2num($pu_ht)*(1-price2num($_POST['remise_percent'])/100) < price2num($price_min)))
             {
-                $object->error = $langs->trans("CantBeLessThanMinPrice",price2num($price_min,'MU').' '.$langs->trans("Currency".$conf->monnaie)) ;
+                $object->error = $langs->trans("CantBeLessThanMinPrice",price2num($price_min,'MU').' '.$langs->trans("Currency".$conf->monnaie));
                 $result = -1 ;
             }
             else
@@ -1145,7 +1145,7 @@ if ($action == 'up' && $user->rights->facture->creer)
     }
     facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
 
-    Header ('Location: '.$_SERVER["PHP_SELF"].'?facid='.$object->id.'#'.$_GET['rowid']);
+    Header('Location: '.$_SERVER["PHP_SELF"].'?facid='.$object->id.'#'.$_GET['rowid']);
     exit;
 }
 // Modify line position (down)
@@ -1167,7 +1167,7 @@ if ($action == 'down' && $user->rights->facture->creer)
     }
     facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
 
-    Header ('Location: '.$_SERVER["PHP_SELF"].'?facid='.$object->id.'#'.$_GET['rowid']);
+    Header('Location: '.$_SERVER["PHP_SELF"].'?facid='.$object->id.'#'.$_GET['rowid']);
     exit;
 }
 
@@ -1406,7 +1406,7 @@ if (GETPOST('action') == 'builddoc')	// En get ou en post
     }
     else
     {
-        Header ('Location: '.$_SERVER["PHP_SELF"].'?facid='.$object->id.(empty($conf->global->MAIN_JUMP_TAG)?'':'#builddoc'));
+        Header('Location: '.$_SERVER["PHP_SELF"].'?facid='.$object->id.(empty($conf->global->MAIN_JUMP_TAG)?'':'#builddoc'));
         exit;
     }
 }
@@ -2129,7 +2129,7 @@ else
             }
 
             $facidavoir=$object->getListIdAvoirFromInvoice();
-            if (sizeof($facidavoir) > 0)
+            if (count($facidavoir) > 0)
             {
                 print ' ('.$langs->transnoentities("InvoiceHasAvoir");
                 $i=0;
@@ -2666,7 +2666,7 @@ else
                     }
 
                     // Validate
-                    if ($object->statut == 0 && sizeof($object->lines) > 0 &&
+                    if ($object->statut == 0 && count($object->lines) > 0 &&
                     (
                     (($object->type == 0 || $object->type == 1 || $object->type == 3 || $object->type == 4) && $object->total_ttc >= 0)
                     || ($object->type == 2 && $object->total_ttc <= 0))

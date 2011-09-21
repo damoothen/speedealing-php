@@ -38,11 +38,8 @@ require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
  */
 class Categorie
 {
-	var $error;
-	var $db;
-
-	var $element='category';
-	var $table_element='category';
+	public $element='category';
+	public $table_element='category';
 
 	var $id;
 	var $id_mere;
@@ -76,6 +73,7 @@ class Categorie
 	 * 	Load category into memory from database
 	 *
 	 * 	@param		int		$id		Id of category
+	 * 	@return		int				<0 if KO, >0 if OK
 	 */
 	function fetch($id)
 	{
@@ -298,7 +296,8 @@ class Categorie
 	/**
 	 * 	Delete a category from database
 	 *
-	 * 	@param		user		Object user that ask to delete
+	 * 	@param	User	$user		Object user that ask to delete
+	 *	@return	void
 	 */
 	function delete($user)
 	{
@@ -407,7 +406,7 @@ class Categorie
 	/**
 	 * 	Ajout d'une sous-categorie
 	 *
-	 * 	@return	int			 1 : OK
+	 * 	@return		int		 1 : OK
 	 *          			-2 : $fille est deja dans la famille de $this
 	 *          			-3 : categorie ($this ou $fille) invalide
 	 */
@@ -430,9 +429,9 @@ class Categorie
 	/**
 	 * 	Suppression d'une sous-categorie (seulement "desassociation")
 	 *
-	 * 	@param	$fille		objet categorie
-	 *  @return	int			1 : OK
-	 *          		   -3 : categorie ($this ou $fille) invalide
+	 * 	@param	Category	$fille		Objet category
+	 *  @return	int						1 : OK
+	 *          		   				-3 : categorie ($this ou $fille) invalide
 	 */
 	function del_fille($fille)
 	{
@@ -458,9 +457,9 @@ class Categorie
 	/**
 	 * 	Link an object to the category
 	 *
-	 *	@param			obj		Object to link to category
-	 * 	@param			type	Type of category
-	 * 	@return			int		1 : OK, -1 : erreur SQL, -2 : id non renseign, -3 : Already linked
+	 *	@param		Object	$obj	Object to link to category
+	 * 	@param		string	$type	Type of category
+	 * 	@return		int				1 : OK, -1 : erreur SQL, -2 : id non renseign, -3 : Already linked
 	 */
 	function add_type($obj,$type)
 	{
@@ -492,11 +491,11 @@ class Categorie
 	}
 
 	/**
-	 * Suppresion d'un produit de la categorie
+	 * Delete object from category
 	 *
-	 * @param 	$obj	Object
-	 * @param	$type	Type
-	 * @return 	int		1 if OK, -1 if KO
+	 * @param 	Object	$obj	Object
+	 * @param	string	$type	Type
+	 * @return 	int				1 if OK, -1 if KO
 	 */
 	function del_type($obj,$type)
 	{
@@ -518,9 +517,10 @@ class Categorie
 	/**
 	 * 	Return list of contents of a category
 	 *
-	 * 	@param	field		Field name for select in table. Full field name will be fk_field.
-	 * 	@param	classname	PHP Class of object to store entity
-	 * 	@param	table		Table name for select in table. Full table name will be PREFIX_categorie_table.
+	 * 	@param	string	$field		Field name for select in table. Full field name will be fk_field.
+	 * 	@param	string	$classname	PHP Class of object to store entity
+	 * 	@param	string	$table		Table name for select in table. Full table name will be PREFIX_categorie_table.
+	 *	@return	void
 	 */
 	function get_type($field,$classname,$table='')
 	{
@@ -634,8 +634,10 @@ class Categorie
 
 	/**
 	 * Retourne les filles de la categorie
+	 *
+	 * @return	void
 	 */
-	function get_filles ()
+	function get_filles()
 	{
 		$sql  = "SELECT fk_categorie_fille FROM ".MAIN_DB_PREFIX."categorie_association ";
 		$sql .= "WHERE fk_categorie_mere = ".$this->id;
@@ -674,13 +676,14 @@ class Categorie
 		$res  = $this->db->query($sql);
 		$n    = $this->db->fetch_array($res);
 
-		return ($n[0]);
+		return($n[0]);
 	}
 
 	/**
 	 * La categorie $fille est-elle une fille de cette categorie ?
 	 *
 	 * @param	Category	$fille		Object category
+	 * @return	void
 	 */
 	function is_fille($fille)
 	{
@@ -688,7 +691,6 @@ class Categorie
 		$sql .= "WHERE fk_categorie_mere = ".$this->id." AND fk_categorie_fille = ".$fille->id;
 
 		$res  = $this->db->query($sql);
-
 		$n    = $this->db->fetch_array($res);
 
 		return ($n[0] > 0);
@@ -812,8 +814,9 @@ class Categorie
 	/**
 	 *	For category id_categ and its childs available in this->cats, define property fullpath and fulllabel
 	 *
-	 * 	@param		id_categ		id_categ entry to update
-	 * 	@param		protection		Deep counter to avoid infinite loop
+	 * 	@param		int		$id_categ		id_categ entry to update
+	 * 	@param		int		$protection		Deep counter to avoid infinite loop
+	 *	@return		void
 	 */
 	function build_path_from_id_categ($id_categ,$protection=0)
 	{
@@ -863,6 +866,8 @@ class Categorie
 
 	/**
 	 *	Affiche contenu de $this->cats
+	 *
+	 *	@return	void
 	 */
 	function debug_cats()
 	{
@@ -912,7 +917,7 @@ class Categorie
 	 *
 	 *	@return		int		Nombre de categories
 	 */
-	function get_nb_categories ()
+	function get_nb_categories()
 	{
 		$sql = "SELECT count(rowid)";
 		$sql.= " FROM ".MAIN_DB_PREFIX."categorie";
@@ -985,7 +990,9 @@ class Categorie
 	}
 
 	/**
-	 * 		Retourne les categories de premier niveau (qui ne sont pas filles)
+	 *	Retourne les categories de premier niveau (qui ne sont pas filles)
+	 *
+	 *	@return		void
 	 */
 	function get_main_categories()
 	{
@@ -1014,6 +1021,10 @@ class Categorie
 	/**
 	 * Retourne les chemin de la categorie, avec les noms des categories
 	 * separes par $sep (" >> " par defaut)
+	 *
+	 * @param	string	$sep	Separator
+	 * @param	string	$url	Url
+	 * @return	void
 	 */
 	function print_all_ways ($sep = " &gt;&gt; ", $url='')
 	{
@@ -1041,10 +1052,11 @@ class Categorie
 
 
 	/**
-	 * affiche le chemin le plus court pour se rendre a un produit
+	 *	Affiche le chemin le plus court pour se rendre a un produit
 	 *
-	 * @param	id
-	 * @param	type
+	 *	@param	int		$id		Id of category
+	 *	@param	string	$type	Type of category
+	 *	@return	void
 	 */
 	function get_primary_way($id, $type="")
 	{
@@ -1066,12 +1078,13 @@ class Categorie
 	}
 
 	/**
-	 * Affiche le chemin le plus court pour se rendre a un produit
+	 *	Affiche le chemin le plus court pour se rendre a un produit
 	 *
-	 * @param	int		$id
-	 * @param	string	$sep
-	 * @param	string	$url
-	 * @param	string	$type
+	 *	@param	int		$id		Id of category
+	 *	@param	string	$sep	Separator
+	 *	@param	string	$url	Url
+	 *	@param	string	$type	Type
+	 *	@return	void
 	 */
 	function print_primary_way($id, $sep= " &gt;&gt; ", $url="", $type="")
 	{
@@ -1094,7 +1107,9 @@ class Categorie
 	}
 
 	/**
-	 * Retourne un tableau contenant la liste des categories meres
+	 *	Retourne un tableau contenant la liste des categories meres
+	 *
+	 *	@return		void
 	 */
 	function get_meres()
 	{
@@ -1121,8 +1136,10 @@ class Categorie
 	}
 
 	/**
-	 * Retourne dans un tableau tous les chemins possibles pour arriver a la categorie
-	 * en partant des categories principales, representes par des tableaux de categories
+	 * 	Retourne dans un tableau tous les chemins possibles pour arriver a la categorie
+	 * 	en partant des categories principales, representes par des tableaux de categories
+	 *
+	 *	@return		void
 	 */
 	function get_all_ways ()
 	{
@@ -1148,9 +1165,9 @@ class Categorie
 	/**
 	 * 		Return list of categories linked to element of type $type with id $typeid
 	 *
-	 * 		@param		id			Id of element
-	 * 		@param		typeid		Type id of link (0,1,2,3...)
-	 * 		@return		array		List of category objects
+	 * 		@param		int		$id			Id of element
+	 * 		@param		int		$typeid		Type id of link (0,1,2,3...)
+	 * 		@return		array				List of category objects
 	 */
 	function containing($id,$typeid)
 	{
@@ -1191,11 +1208,11 @@ class Categorie
 	 * 	Retourne les categories dont l'id ou le nom correspond
 	 * 	ajoute des wildcards au nom sauf si $exact = true
 	 *
-	 * 	@param		id
-	 * 	@param		nom
-	 * 	@param		type
-	 * 	@param		exact
-	 * 	@return		int or array
+	 * 	@param		int			$id			Id
+	 * 	@param		string		$nom		Name
+	 * 	@param		string		$type		Type
+	 * 	@param		boolean		$exact		Ture or false
+	 * 	@return		array		Array of category id
 	 */
 	function rechercher($id, $nom, $type, $exact = false)
 	{
@@ -1238,10 +1255,10 @@ class Categorie
 	/**
 	 *	Return name and link of category (with picto)
 	 *
-	 *	@param		withpicto		0=Pas de picto, 1=Inclut le picto dans le lien, 2=Picto seul
-	 *	@param		option			Sur quoi pointe le lien ('', 'xyz')
-	 * 	@param		maxlength		Max length of text
-	 *	@return		string			Chaine avec URL
+	 *	@param		int		$withpicto		0=Pas de picto, 1=Inclut le picto dans le lien, 2=Picto seul
+	 *	@param		string	$option			Sur quoi pointe le lien ('', 'xyz')
+	 * 	@param		int		$maxlength		Max length of text
+	 *	@return		string					Chaine avec URL
 	 */
 	function getNomUrl($withpicto=0,$option='',$maxlength=0)
 	{
@@ -1264,12 +1281,13 @@ class Categorie
 
 
 	/**
-	 *    Deplace fichier uploade sous le nom $files dans le repertoire sdir
+	 *  Deplace fichier uploade sous le nom $files dans le repertoire sdir
 	 *
-	 *    @param      sdir        Repertoire destination finale
-	 *    @param      $file       Nom du fichier uploade
-	 *    @param      maxWidth    Largeur maximum que dois faire la miniature (160 par defaut)
-	 *    @param      maxHeight   Hauteur maximum que dois faire la miniature (120 par defaut)
+	 *  @param      string	$sdir       Repertoire destination finale
+	 *  @param      string	$file		Nom du fichier uploade
+	 *  @param      int		$maxWidth   Largeur maximum que dois faire la miniature (160 par defaut)
+	 *  @param      int		$maxHeight  Hauteur maximum que dois faire la miniature (120 par defaut)
+	 *	@return		void
 	 */
 	function add_photo($sdir, $file, $maxWidth = 160, $maxHeight = 120)
 	{
@@ -1299,11 +1317,12 @@ class Categorie
 	}
 
 	/**
-	 *    Build thumb
+	 *  Build thumb
 	 *
-	 *    @param      string	$file           Chemin du fichier d'origine
-	 *    @param      int		$maxWidth       Largeur maximum que dois faire la miniature (160 par defaut)
-	 *    @param      int		$maxHeight      Hauteur maximum que dois faire la miniature (120 par defaut)
+	 *  @param      string	$file           Chemin du fichier d'origine
+	 *  @param      int		$maxWidth       Largeur maximum que dois faire la miniature (160 par defaut)
+	 *  @param      int		$maxHeight      Hauteur maximum que dois faire la miniature (120 par defaut)
+	 *	@return		void
 	 */
 	function add_thumb($file, $maxWidth = 160, $maxHeight = 120)
 	{
@@ -1372,7 +1391,8 @@ class Categorie
 	/**
 	 *    Efface la photo de la categorie et sa vignette
 	 *
-	 *    @param      file        Chemin de l'image
+	 *    @param	string		$file		Path to file
+	 *    @return	void
 	 */
 	function delete_photo($file)
 	{
@@ -1397,9 +1417,10 @@ class Categorie
 	}
 
 	/**
-	 *    Load size of image file
+	 *  Load size of image file
 	 *
-	 *    @param      file        Path to file
+	 *  @param    	string	$file        Path to file
+	 *  @return		void
 	 */
 	function get_image_size($file)
 	{
@@ -1410,8 +1431,11 @@ class Categorie
 
 
     /**
-     *      Initialise an example of instance with random values
-     *      Used to build previews or test instances
+     *  Initialise an instance with random values.
+     *  Used to build previews or test instances.
+     *	id must be 0 if object instance is a specimen.
+     *
+     *  @return	void
      */
     function initAsSpecimen()
     {

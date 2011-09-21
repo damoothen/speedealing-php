@@ -77,14 +77,14 @@ else
 $includeconferror='';
 
 
-# Define vars
+// Define vars
 $conffiletoshowshort = "conf.php";
-# Define localization of conf file
+// Define localization of conf file
 $conffile = "../conf/conf.php";
 $conffiletoshow = "htdocs/conf/conf.php";
-# For debian/redhat like systems
-#$conffile = "/etc/dolibarr/conf.php";
-#$conffiletoshow = "/etc/dolibarr/conf.php";
+// For debian/redhat like systems
+//$conffile = "/etc/dolibarr/conf.php";
+//$conffiletoshow = "/etc/dolibarr/conf.php";
 
 
 if (! defined('DONOTLOADCONF') && file_exists($conffile))
@@ -385,7 +385,7 @@ function pFooter($nonext=0,$setuplang='',$jscheckfunction='')
 	print '</form>'."\n";
 
 	// If there is some logs in buffer to show
-	if (isset($conf->logbuffer) && sizeof($conf->logbuffer))
+	if (isset($conf->logbuffer) && count($conf->logbuffer))
 	{
 		print "\n";
 		print "<!-- Start of log output\n";

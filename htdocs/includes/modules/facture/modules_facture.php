@@ -271,7 +271,7 @@ function facture_meta_create($db, $facid, $message="")
 
 		if (is_dir($dir))
 		{
-			$nblignes = sizeof($fac->lines);
+			$nblignes = count($fac->lines);
 			$client = $fac->client->nom . " " . $fac->client->address . " " . $fac->client->cp . " " . $fac->client->ville;
 			$meta = "REFERENCE=\"" . $fac->ref . "\"
 			DATE=\"" . dol_print_date($fac->date,'') . "\"
@@ -290,7 +290,7 @@ function facture_meta_create($db, $facid, $message="")
 				";
 			}
 		}
-		$fp = fopen ($file,"w");
+		$fp = fopen($file,"w");
 		fputs($fp,$meta);
 		fclose($fp);
 		if (! empty($conf->global->MAIN_UMASK))

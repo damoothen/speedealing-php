@@ -163,7 +163,7 @@ if ($action == 'confirm_deleteline' && $confirm == 'yes')
 		}
 		propale_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
 
-		Header ('Location: '.$_SERVER["PHP_SELF"].'?id='.$object->id);
+		Header('Location: '.$_SERVER["PHP_SELF"].'?id='.$object->id);
 		exit;
 	}
 	else
@@ -345,7 +345,7 @@ if ($_POST['action'] == 'add' && $user->rights->propale->creer)
 			}
 			propale_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
 
-			Header ('Location: '.$_SERVER["PHP_SELF"].'?id='.$id);
+			Header('Location: '.$_SERVER["PHP_SELF"].'?id='.$id);
 			exit;
 		}
 		else
@@ -803,8 +803,8 @@ if ($_POST['action'] == 'updateligne' && $user->rights->propale->creer && $_POST
 	$productid = $_POST['productid'] ;
 	if ($productid)
 	{
-		$product = new Product($db) ;
-		$res=$product->fetch($productid) ;
+		$product = new Product($db);
+		$res=$product->fetch($productid);
 		$price_min = $product->price_min;
 		if ($conf->global->PRODUIT_MULTIPRICES && $object->client->price_level)	$price_min = $product->multiprices_min[$object->client->price_level];
 	}
@@ -873,7 +873,7 @@ if ($action == 'builddoc' && $user->rights->propale->creer)
 	}
 	else
 	{
-		Header ('Location: '.$_SERVER["PHP_SELF"].'?id='.$object->id.(empty($conf->global->MAIN_JUMP_TAG)?'':'#builddoc'));
+		Header('Location: '.$_SERVER["PHP_SELF"].'?id='.$object->id.(empty($conf->global->MAIN_JUMP_TAG)?'':'#builddoc'));
 		exit;
 	}
 }
@@ -953,7 +953,7 @@ if ($action == 'up' && $user->rights->propale->creer)
 	}
 	propale_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
 
-	Header ('Location: '.$_SERVER["PHP_SELF"].'?id='.$id.'#'.GETPOST('rowid'));
+	Header('Location: '.$_SERVER["PHP_SELF"].'?id='.$id.'#'.GETPOST('rowid'));
 	exit;
 }
 
@@ -975,7 +975,7 @@ if ($action == 'down' && $user->rights->propale->creer)
 	}
 	propale_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
 
-	Header ('Location: '.$_SERVER["PHP_SELF"].'?id='.$id.'#'.GETPOST('rowid'));
+	Header('Location: '.$_SERVER["PHP_SELF"].'?id='.$id.'#'.GETPOST('rowid'));
 	exit;
 }
 
@@ -1531,7 +1531,7 @@ if ($id > 0 || ! empty($ref))
 			// Validate
 			if ($object->statut == 0 && $user->rights->propale->valider)
 			{
-			    if (sizeof($object->lines) > 0) print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=validate">'.$langs->trans('Validate').'</a>';
+			    if (count($object->lines) > 0) print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=validate">'.$langs->trans('Validate').'</a>';
 			    else print '<a class="butActionRefused" href="#">'.$langs->trans('Validate').'</a>';
 			}
 
@@ -1574,7 +1574,7 @@ if ($id > 0 || ! empty($ref))
 				}
 
 				$arraypropal=$object->getInvoiceArrayList();
-				if (is_array($arraypropal) && sizeof($arraypropal) > 0)
+				if (is_array($arraypropal) && count($arraypropal) > 0)
 				{
 					print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=classifybilled&amp;socid='.$object->socid.'">'.$langs->trans("ClassifyBilled").'</a>';
 				}

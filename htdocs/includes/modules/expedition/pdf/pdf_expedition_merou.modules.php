@@ -193,7 +193,7 @@ Class pdf_expedition_merou extends ModelePdfExpedition
 				//Generation du tableau
 				$this->_tableau($pdf, $tab_top, $tab_height, $nexY, $outputlangs);
 
-				$nblignes = sizeof($object->lines);
+				$nblignes = count($object->lines);
 
 				for ($i = 0 ; $i < $nblignes ; $i++)
 				{
@@ -203,22 +203,22 @@ Class pdf_expedition_merou extends ModelePdfExpedition
 					$pdf->rect(10+3, $curY+1, 3, 3);
 					$pdf->rect(20+3, $curY+1, 3, 3);
 					//Insertion de la reference du produit
-					$pdf->SetXY (30, $curY+1 );
+					$pdf->SetXY(30, $curY+1 );
 					$pdf->SetFont('','B', $default_font_size - 3);
 					$pdf->MultiCell(24, 3, $outputlangs->convToOutputCharset($object->lines[$i]->ref), 0, 'L', 0);
 					//Insertion du libelle
 					$pdf->SetFont('','', $default_font_size - 3);
-					$pdf->SetXY (50, $curY+1 );
+					$pdf->SetXY(50, $curY+1 );
                     //$libelleproduitservice=pdf_getlinedesc($object->$origin,$i,$outputlangs);
 					$libelleproduitservice = pdf_writelinedesc($pdf,$object->$origin,$i,$outputlangs,90,3,50,$curY+1,1);
 					//$pdf->writeHTMLCell(90, 3, 50, $curY+1, $outputlangs->convToOutputCharset($libelleproduitservice), 0, 'L', 0);
 					//Insertion de la quantite commandee
 					$pdf->SetFont('','', $default_font_size - 3);
-					$pdf->SetXY (140, $curY+1 );
+					$pdf->SetXY(140, $curY+1 );
 					$pdf->MultiCell(30, 3, $object->lines[$i]->qty_asked, 0, 'C', 0);
 					//Insertion de la quantite a envoyer
 					$pdf->SetFont('','', $default_font_size - 3);
-					$pdf->SetXY (170, $curY+1 );
+					$pdf->SetXY(170, $curY+1 );
 					$pdf->MultiCell(30, 3, $object->lines[$i]->qty_shipped, 0, 'C', 0);
 
 					//Generation de la page 2
@@ -311,11 +311,11 @@ Class pdf_expedition_merou extends ModelePdfExpedition
 		$default_font_size = pdf_getPDFFontSize($outputlangs);
 		$pdf->SetFont('','', $default_font_size - 2);
 		$pdf->SetY(-23);
-		$pdf->MultiCell(100, 3, $outputlangs->transnoentities("GoodStatusDeclaration") , 0, 'L');
+		$pdf->MultiCell(100, 3, $outputlangs->transnoentities("GoodStatusDeclaration"), 0, 'L');
 		$pdf->SetY(-13);
-		$pdf->MultiCell(100, 3, $outputlangs->transnoentities("ToAndDate") , 0, 'C');
+		$pdf->MultiCell(100, 3, $outputlangs->transnoentities("ToAndDate"), 0, 'C');
 		$pdf->SetXY(120,-23);
-		$pdf->MultiCell(100, 3, $outputlangs->transnoentities("NameAndSignature") , 0, 'C');
+		$pdf->MultiCell(100, 3, $outputlangs->transnoentities("NameAndSignature"), 0, 'C');
 
 		// Show page nb only on iso languages (so default Helvetica font)
         //if (pdf_getPDFFont($outputlangs) == 'Helvetica')
@@ -387,7 +387,7 @@ Class pdf_expedition_merou extends ModelePdfExpedition
 		$pdf->SetXY($Xoff,7);
 		$pdf->SetFont('','B', $default_font_size + 2);
 		$pdf->SetTextColor(0,0,0);
-		$pdf->MultiCell(0, 3, $outputlangs->transnoentities("SendingSheet"), '' , 'L');	// Bordereau expedition
+		$pdf->MultiCell(0, 3, $outputlangs->transnoentities("SendingSheet"), '', 'L');	// Bordereau expedition
 		//Num Expedition
 		$Yoff = $Yoff+7;
 		$Xoff = 142;
@@ -395,7 +395,7 @@ Class pdf_expedition_merou extends ModelePdfExpedition
 		$pdf->SetXY($Xoff,$Yoff);
 		$pdf->SetFont('','', $default_font_size - 2);
 		$pdf->SetTextColor(0,0,0);
-		$pdf->MultiCell(0, 3, $outputlangs->transnoentities("RefSending").': '.$outputlangs->convToOutputCharset($object->ref), '' , 'R');
+		$pdf->MultiCell(0, 3, $outputlangs->transnoentities("RefSending").': '.$outputlangs->convToOutputCharset($object->ref), '', 'R');
 		//$this->Code39($Xoff+43, $Yoff+1, $object->ref,$ext = true, $cks = false, $w = 0.4, $h = 4, $wide = true);
 
 		// Add list of linked elements
@@ -460,7 +460,7 @@ Class pdf_expedition_merou extends ModelePdfExpedition
 		$pdf->SetXY($blSocX-80,$blSocY+20);
 		$pdf->SetFont('','B', $default_font_size - 2);
 		$pdf->SetTextColor(0,0,0);
-		$pdf->MultiCell(50, 8, $outputlangs->transnoentities("Date")." : " . dol_print_date($object->date_delivery,'day',false,$outputlangs,true), '' , 'L');
+		$pdf->MultiCell(50, 8, $outputlangs->transnoentities("Date")." : " . dol_print_date($object->date_delivery,'day',false,$outputlangs,true), '', 'L');
 
 		// Deliverer
 		$pdf->SetXY($blSocX-80,$blSocY+23);
@@ -483,12 +483,12 @@ Class pdf_expedition_merou extends ModelePdfExpedition
 					$label=$outputlangs->transnoentities("Deliverer");
 				}
 
-				$pdf->writeHTMLCell(50, 8, '', '', $label." ".$object->tracking_url, '' , 'L');
+				$pdf->writeHTMLCell(50, 8, '', '', $label." ".$object->tracking_url, '', 'L');
 			}
 		}
 		else
 		{
-			$pdf->MultiCell(50, 8, $outputlangs->transnoentities("Deliverer")." ".$outputlangs->convToOutputCharset($this->livreur->getFullName($outputlangs)), '' , 'L');
+			$pdf->MultiCell(50, 8, $outputlangs->transnoentities("Deliverer")." ".$outputlangs->convToOutputCharset($this->livreur->getFullName($outputlangs)), '', 'L');
 		}
 
 
@@ -508,7 +508,7 @@ Class pdf_expedition_merou extends ModelePdfExpedition
 		// If SHIPPING contact defined on order, we use it
 		$usecontact=false;
 		$arrayidcontact=$object->$origin->getIdContact('external','SHIPPING');
-		if (sizeof($arrayidcontact) > 0)
+		if (count($arrayidcontact) > 0)
 		{
 			$usecontact=true;
 			$result=$object->fetch_contact($arrayidcontact[0]);

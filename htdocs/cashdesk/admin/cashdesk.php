@@ -1,10 +1,6 @@
 <?php
-<<<<<<< HEAD
-/* Copyright (C) 2008-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2011 	   Juanjo Menent		<jmenent@2byte.es>
-=======
 /* Copyright (C) 2008-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
->>>>>>> ed8d6e9185d8b72053f8be597e27710b29692175
+ * Copyright (C) 2011 	   Juanjo Menent		<jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

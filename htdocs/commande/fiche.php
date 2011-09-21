@@ -238,7 +238,7 @@ if ($action == 'add' && $user->rights->commande->creer)
                 if (empty($lines) && method_exists($srcobject,'fetch_lines'))  $lines = $srcobject->fetch_lines();
 
                 $fk_parent_line=0;
-                $num=sizeof($lines);
+                $num=count($lines);
 
                 for ($i=0;$i<$num;$i++)
                 {
@@ -821,7 +821,7 @@ if ($action == 'up' && $user->rights->commande->creer)
 
     commande_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
 
-    Header ('Location: '.$_SERVER["PHP_SELF"].'?id='.$id.'#'.$_GET['rowid']);
+    Header('Location: '.$_SERVER["PHP_SELF"].'?id='.$id.'#'.$_GET['rowid']);
     exit;
 }
 
@@ -843,7 +843,7 @@ if ($action == 'down' && $user->rights->commande->creer)
     }
     commande_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
 
-    Header ('Location: '.$_SERVER["PHP_SELF"].'?id='.$id.'#'.$_GET['rowid']);
+    Header('Location: '.$_SERVER["PHP_SELF"].'?id='.$id.'#'.$_GET['rowid']);
     exit;
 }
 
@@ -881,7 +881,7 @@ if ($action == 'builddoc')	// In get or post
     }
     else
     {
-        Header ('Location: '.$_SERVER["PHP_SELF"].'?id='.$object->id.(empty($conf->global->MAIN_JUMP_TAG)?'':'#builddoc'));
+        Header('Location: '.$_SERVER["PHP_SELF"].'?id='.$object->id.(empty($conf->global->MAIN_JUMP_TAG)?'':'#builddoc'));
         exit;
     }
 }

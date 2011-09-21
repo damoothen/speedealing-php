@@ -7,6 +7,7 @@
  * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2011      Philippe Grand       <philippe.grand@atoo-net.com>
  * Copyright (C) 2008      Matteli
+ * Copyright (C) 2011      Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +37,7 @@ $micro_start_time=0;
 if (! empty($_SERVER['DOL_TUNING']))
 {
 	list($usec, $sec) = explode(" ", microtime());
-	$micro_start_time=((float)$usec + (float)$sec);
+	$micro_start_time=((float) $usec + (float) $sec);
 	// Add Xdebug code coverage
 	//define('XDEBUGCOVERAGE',1);
 	if (defined('XDEBUGCOVERAGE')) { xdebug_start_code_coverage(); }
@@ -67,7 +68,7 @@ if (function_exists('get_magic_quotes_gpc'))	// magic_quotes_* removed in PHP6
  *
  * @param		string		$val		Value
  * @param		string		$get		1=GET, 0=POST
- * @return		boolean					true if ther is an injection
+ * @return		boolean					true if there is an injection
  */
 function test_sql_and_script_inject($val, $get)
 {
@@ -90,7 +91,7 @@ function test_sql_and_script_inject($val, $get)
 /**
  * Security: Return true if OK, false otherwise
  *
- * @param		string		$var		Variable name
+ * @param		string		&$var		Variable name
  * @param		string		$get		1=GET, 0=POST
  * @return		boolean					true if ther is an injection
  */
@@ -309,7 +310,7 @@ if (! defined('NOLOGIN'))
 	$authmode=explode(',',$dolibarr_main_authentication);
 
 	// No authentication mode
-	if (! sizeof($authmode) && empty($conf->login_method_modules))
+	if (! count($authmode) && empty($conf->login_method_modules))
 	{
 		$langs->load('main');
 		dol_print_error('',$langs->trans("ErrorConfigParameterNotDefined",'dolibarr_main_authentication'));
@@ -368,7 +369,7 @@ if (! defined('NOLOGIN'))
 		// Validation of login with a third party login module method
 		if (is_array($conf->login_method_modules) && !empty($conf->login_method_modules))
 		{
-			$login = getLoginMethod();
+			$login = getLoginMethod($_POST["username"],$_POST["password"],$_POST["entity"]);
 			if ($login)	$test=false;
 		}
 
@@ -771,7 +772,7 @@ if (!empty($conf->global->MAIN_MODULE_MULTICOMPANY))
 		if ($res)
 		{
 			$mc = new ActionsMulticompany($db);
-
+                        
 			if($mc->switchEntity(GETPOST('entity')) >= 0)
 			{
 				Header("Location: ".DOL_URL_ROOT.'/');
@@ -1098,7 +1099,7 @@ function top_menu($head, $title='', $target='', $disablejs=0, $disablehead=0, $a
 		{
 			print '<script type="text/javascript">
 				jQuery(document).ready(function () {
-					jQuery("body").layout( layoutSettings );
+					jQuery("body").layout(layoutSettings);
 				});
 				var layoutSettings = {
 					name: "mainlayout",
@@ -1587,7 +1588,7 @@ function printSearchForm($urlaction,$urlobject,$title,$htmlmodesearch='search',$
 	$ret.='<form action="'.$urlaction.'" method="post">';
 	$ret.='<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 	$ret.='<input type="hidden" name="mode" value="search">';
-	$ret.='<input type="hidden" name="mode-search" value="'.$htmlmodesearch.'">';
+	$ret.='<input type="hidden" name="mode_search" value="'.$htmlmodesearch.'">';
 	$ret.='<input type="text" class="flat" ';
 	if (! empty($conf->global->MAIN_HTML5_PLACEHOLDER)) $ret.=' placeholder="'.$langs->trans("SearchOf").''.strip_tags($title).'"';
 	else $ret.=' title="'.$langs->trans("SearchOf").''.strip_tags($title).'"';
@@ -1647,7 +1648,7 @@ if (! function_exists("llxFooter"))
 
 
 		// If there is some logs in buffer to show
-		if (sizeof($conf->logbuffer))
+		if (count($conf->logbuffer))
 		{
 			print "\n";
 			print "<!-- Start of log output\n";

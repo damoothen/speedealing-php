@@ -33,10 +33,8 @@ require_once(DOL_DOCUMENT_ROOT."/core/class/commonobject.class.php");
 
 class Entrepot extends CommonObject
 {
-	var $db;
-	var $error;
-	var $element='label';
-	var $table_element='entrepot';
+	public $element='label';
+	public $table_element='entrepot';
 
 	var $id;
 	var $libelle;
@@ -330,7 +328,7 @@ class Entrepot extends CommonObject
 		$sql.= " FROM ".MAIN_DB_PREFIX."entrepot";
 		$sql.= " WHERE statut = ".$status;
 
-		$result = $this->db->query($sql) ;
+		$result = $this->db->query($sql);
 		$i = 0;
 		$num = $this->db->num_rows($result);
 		if ( $result )
@@ -361,7 +359,7 @@ class Entrepot extends CommonObject
 		$sql .= " WHERE ps.fk_entrepot = ".$this->id." AND ps.fk_product=p.rowid";
 
 		//print $sql;
-		$result = $this->db->query($sql) ;
+		$result = $this->db->query($sql);
 		if ($result)
 		{
 			$obj = $this->db->fetch_object($result);

@@ -66,8 +66,8 @@ if ($_GET["ref"])
 }
 
 
-# Ce rapport de tresorerie est base sur llx_bank (car doit inclure les transactions sans facture)
-# plutot que sur llx_paiement + llx_paiementfourn
+// Ce rapport de tresorerie est base sur llx_bank (car doit inclure les transactions sans facture)
+// plutot que sur llx_paiement + llx_paiementfourn
 
 $sql = "SELECT SUM(b.amount)";
 $sql.= ", date_format(b.dateo,'%Y-%m') as dm";
@@ -151,7 +151,7 @@ if ($_GET["account"])
 			$bankaccount->fetch($id);
 			$bankaccount->label=$bankaccount->ref;
 			print $bankaccount->getNomUrl(1);
-			if ($key < (sizeof($listid)-1)) print ', ';
+			if ($key < (count($listid)-1)) print ', ';
 		}
 	}
 }

@@ -31,9 +31,10 @@
 
 abstract class CommonObject
 {
-	var $db;
-
-	var $canvas;                // Contains canvas name if it is
+	protected $db;
+	public $error;
+	public $errors;
+	public $canvas;                // Contains canvas name if it is
 
 
 	// No constructor as it is an abstract class
@@ -652,7 +653,7 @@ abstract class CommonObject
 		if ($this->ismultientitymanaged == 1) $sql.= ' AND te.entity IN (0,'.(! empty($conf->entities[$this->element]) ? $conf->entities[$this->element] : $conf->entity).')';
 
 		//print $sql."<br>";
-		$result = $this->db->query($sql) ;
+		$result = $this->db->query($sql);
 		if (! $result)
 		{
 			$this->error=$this->db->error();
@@ -674,7 +675,7 @@ abstract class CommonObject
 		// Rem: Bug in some mysql version: SELECT MIN(rowid) FROM llx_socpeople WHERE rowid > 1 when one row in database with rowid=1, returns 1 instead of null
 
 		//print $sql."<br>";
-		$result = $this->db->query($sql) ;
+		$result = $this->db->query($sql);
 		if (! $result)
 		{
 			$this->error=$this->db->error();
@@ -698,7 +699,7 @@ abstract class CommonObject
 	{
 		$contactAlreadySelected = array();
 		$tab = $this->liste_contact(-1,$source);
-		$num=sizeof($tab);
+		$num=count($tab);
 		$i = 0;
 		while ($i < $num)
 		{
@@ -1344,7 +1345,7 @@ abstract class CommonObject
 		            {
 			            dol_include_once('/'.$classpath.'/'.$classfile.'.class.php');
 
-						$num=sizeof($objectids);
+						$num=count($objectids);
 
 						for ($i=0;$i<$num;$i++)
 						{
@@ -1473,7 +1474,7 @@ abstract class CommonObject
         }
 
         // Request to get complementary values
-        if (sizeof($optionsArray) > 0)
+        if (count($optionsArray) > 0)
         {
             $sql = "SELECT rowid";
             foreach ($optionsArray as $name => $label)
@@ -1484,7 +1485,7 @@ abstract class CommonObject
             $sql.= " WHERE fk_object = ".$rowid;
 
             dol_syslog(get_class($this)."::fetch_optionals sql=".$sql, LOG_DEBUG);
-            $resql=$this->db->query( $sql);
+            $resql=$this->db->query($sql);
             if ($resql)
             {
                 if ($this->db->num_rows($resql))
@@ -1515,7 +1516,7 @@ abstract class CommonObject
 	 */
 	function insertExtraFields()
 	{
-	    if (sizeof($this->array_options) > 0)
+	    if (count($this->array_options) > 0)
         {
             $this->db->begin();
 
@@ -1608,7 +1609,7 @@ abstract class CommonObject
         }
         else return 0;
     }
-
+    
 
     // --------------------
     // TODO: All functions here must be redesigned and moved as they are not business functions but output functions
@@ -1618,6 +1619,7 @@ abstract class CommonObject
 	/**
 	 *
 	 * Enter description here ...
+	 * 
 	 * @param unknown_type $objectid
 	 * @param unknown_type $objecttype
 	 * @param unknown_type $withpicto
@@ -1677,7 +1679,7 @@ abstract class CommonObject
 
         $this->fetchObjectLinked();
 
-        $num = sizeof($this->linkedObjects);
+        $num = count($this->linkedObjects);
 
         foreach($this->linkedObjects as $objecttype => $objects)
         {

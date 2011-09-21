@@ -172,7 +172,7 @@ if ($action == "set")
 			$fp = fopen($dir.$file,"r");
 			if ($fp)
 			{
-				while (!feof ($fp))
+				while (!feof($fp))
 				{
 					$buf = fgets($fp, 4096);
 					if (substr($buf, 0, 2) <> '--')
@@ -286,7 +286,7 @@ if ($action == "set")
 			$fp = fopen($dir.$file,"r");
 			if ($fp)
 			{
-				while (!feof ($fp))
+				while (!feof($fp))
 				{
 					$buf = fgets($fp, 4096);
 
@@ -296,7 +296,7 @@ if ($action == "set")
 						$versioncommande=explode('.',$reg[1]);
 						//print var_dump($versioncommande);
 						//print var_dump($versionarray);
-						if (sizeof($versioncommande) && sizeof($versionarray)
+						if (count($versioncommande) && count($versionarray)
 						&& versioncompare($versioncommande,$versionarray) <= 0)
 						{
 							// Version qualified, delete SQL comments
@@ -309,7 +309,7 @@ if ($action == "set")
 						$versioncommande=explode('.',$reg[1]);
 						//print var_dump($versioncommande);
 						//print var_dump($versionarray);
-						if (sizeof($versioncommande) && sizeof($versionarray)
+						if (count($versioncommande) && count($versionarray)
 						&& versioncompare($versioncommande,$versionarray) <= 0)
 						{
 							// Version qualified, delete SQL comments
@@ -407,7 +407,7 @@ if ($action == "set")
 			if ($fp)
 			{
 				$buffer='';
-				while (!feof ($fp))
+				while (!feof($fp))
 				{
 					$buf = fgets($fp, 4096);
 					if (substr($buf, 0, 2) <> '--')
@@ -513,7 +513,7 @@ if ($action == "set")
                 $sizeofgroup=1; // Grouping request to have 1 query for several requests does not works with mysql, so we use 1.
 
 			    // Load all requests
-				while (!feof ($fp))
+				while (!feof($fp))
 				{
 					$buffer = fgets($fp, 4096);
 					$buffer = trim($buffer);
@@ -533,7 +533,7 @@ if ($action == "set")
                 }
                 fclose($fp);
 
-                dolibarr_install_syslog("Found ".$linefound." records, defined ".sizeof($arrayofrequests)." groups.",LOG_DEBUG);
+                dolibarr_install_syslog("Found ".$linefound." records, defined ".count($arrayofrequests)." groups.",LOG_DEBUG);
 
                 // We loop on each requests
                 foreach($arrayofrequests as $buffer)

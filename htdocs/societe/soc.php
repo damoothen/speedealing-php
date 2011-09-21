@@ -111,7 +111,6 @@ if (empty($reshook))
         {
             $object->fetch($socid);
         }
-        else if ($canvas) $object->canvas=$canvas;
 
         if (GETPOST("private") == 1)
         {
@@ -297,7 +296,7 @@ if (empty($reshook))
                         }
                     }
 
-                    ### Gestion du logo de la société
+                    // Gestion du logo de la société
                     $dir     = $conf->societe->dir_output."/".$object->id."/logos/";
                     $file_OK = is_uploaded_file($_FILES['photo']['tmp_name']);
                     if ($file_OK)
@@ -328,7 +327,7 @@ if (empty($reshook))
                             }
                         }
                     }
-                    ### Gestion du logo de la société
+                    // Gestion du logo de la société
                 }
                 else
                 {
@@ -410,7 +409,7 @@ if (empty($reshook))
                     $error = $object->error; $errors = $object->errors;
                 }
 
-                ### Gestion du logo de la société
+                // Gestion du logo de la société
                 $dir     = $conf->societe->dir_output."/".$object->id."/logos";
                 $file_OK = is_uploaded_file($_FILES['photo']['tmp_name']);
                 if ($file_OK)
@@ -453,9 +452,9 @@ if (empty($reshook))
                         $errors[] = "ErrorBadImageFormat";
                     }
                 }
-                ### Gestion du logo de la société
+                // Gestion du logo de la société
 
-                if (! $error && ! sizeof($errors))
+                if (! $error && ! count($errors))
                 {
 
                     Header("Location: ".$_SERVER["PHP_SELF"]."?socid=".$socid);
@@ -524,7 +523,7 @@ if (empty($reshook))
             }
             else
             {
-                Header ('Location: '.$_SERVER["PHP_SELF"].'?socid='.$object->id.(empty($conf->global->MAIN_JUMP_TAG)?'':'#builddoc'));
+                Header('Location: '.$_SERVER["PHP_SELF"].'?socid='.$object->id.(empty($conf->global->MAIN_JUMP_TAG)?'':'#builddoc'));
                 exit;
             }
         }
@@ -666,7 +665,7 @@ else
 
         $object->logo = dol_sanitizeFileName($_FILES['photo']['name']);
 
-        ### Gestion du logo de la société
+        // Gestion du logo de la société
         $dir     = $conf->societe->dir_output."/".$object->id."/logos";
         $file_OK = is_uploaded_file($_FILES['photo']['tmp_name']);
         if ($file_OK)
@@ -847,7 +846,7 @@ else
                 $load = $object->LoadSupplierCateg();
                 if ( $load == 0)
                 {
-                    if (sizeof($object->SupplierCategories) > 0)
+                    if (count($object->SupplierCategories) > 0)
                     {
                         print '<tr>';
                         print '<td>'.$langs->trans('SupplierCategory').'</td><td colspan="3">';
@@ -1291,7 +1290,7 @@ else
                     $load = $object->LoadSupplierCateg();
                     if ( $load == 0)
                     {
-                        if (sizeof($object->SupplierCategories) > 0)
+                        if (count($object->SupplierCategories) > 0)
                         {
                             print '<tr>';
                             print '<td>'.$langs->trans('SupplierCategory').'</td><td colspan="3">';
@@ -1928,7 +1927,7 @@ else
         print '<td colspan="3">';
 
         $listsalesrepresentatives=$object->getSalesRepresentatives($user);
-        $nbofsalesrepresentative=sizeof($listsalesrepresentatives);
+        $nbofsalesrepresentative=count($listsalesrepresentatives);
         if ($nbofsalesrepresentative > 3)   // We print only number
         {
             print '<a href="'.DOL_URL_ROOT.'/societe/commerciaux.php?socid='.$object->id.'">';

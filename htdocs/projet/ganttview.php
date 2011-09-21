@@ -55,9 +55,7 @@ $langs->load("projects");
  * View
  */
 
-$arrayofcss=array(
-'/includes/jsgantt/jsgantt.css'
-);
+$arrayofcss=array('/includes/jsgantt/jsgantt.css');
 
 if (! empty($conf->use_javascript_ajax))
 {
@@ -171,7 +169,7 @@ $tasksarray=$task->getTasksArray(0, 0, $project->id, $socid, 0);
 //var_dump($tasksrole);
 
 
-if (sizeof($tasksarray)>0)
+if (count($tasksarray)>0)
 {
 
 	// Show Gant diagram from $taskarray using JSGantt
@@ -199,7 +197,7 @@ if (sizeof($tasksarray)>0)
 		$idofusers=$task->getListContactId('internal');
 		$idofthirdparty=$task->getListContactId('external');
 		$s='';
-		if (sizeof($idofusers)>0)
+		if (count($idofusers)>0)
 		{
 			$s.=$langs->trans("Internals").': ';
 			$i=0;
@@ -211,8 +209,8 @@ if (sizeof($tasksarray)>0)
 				$i++;
 			}
 		}
-		if (sizeof($idofusers)>0 && (sizeof($idofthirdparty)>0)) $s.=' - ';
-		if (sizeof($idofthirdparty)>0)
+		if (count($idofusers)>0 && (count($idofthirdparty)>0)) $s.=' - ';
+		if (count($idofthirdparty)>0)
 		{
 			if ($s) $s.=' - ';
 			$s.=$langs->trans("Externals").': ';

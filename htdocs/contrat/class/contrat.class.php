@@ -37,12 +37,10 @@ require_once(DOL_DOCUMENT_ROOT."/lib/price.lib.php");
  */
 class Contrat extends CommonObject
 {
-	var $db;
-	var $error;
-	var $element='contrat';
-	var $table_element='contrat';
-	var $table_element_line='contratdet';
-	var $fk_element='fk_contrat';
+	public $element='contrat';
+	public $table_element='contrat';
+	public $table_element_line='contratdet';
+	public $fk_element='fk_contrat';
 
 	var $id;
 	var $ref;
@@ -203,7 +201,7 @@ class Contrat extends CommonObject
 		$sql.= " commentaire = '".$this->db->escape($comment)."'";
 		$sql.= " WHERE rowid = ".$line_id . " AND statut = 4";
 
-		$resql = $this->db->query($sql) ;
+		$resql = $this->db->query($sql);
 		if ($resql)
 		{
 			// Appel des triggers
@@ -287,7 +285,7 @@ class Contrat extends CommonObject
 		$sql = "UPDATE ".MAIN_DB_PREFIX."contrat SET statut = 1";
 		$sql .= " WHERE rowid = ".$this->id . " AND statut = 0";
 
-		$resql = $this->db->query($sql) ;
+		$resql = $this->db->query($sql);
 		if ($resql)
 		{
 			$this->use_webcal=($conf->global->PHPWEBCALENDAR_CONTRACTSTATUS=='always'?1:0);
@@ -327,7 +325,7 @@ class Contrat extends CommonObject
 		else $sql.= " WHERE rowid=".$id;
 
 		dol_syslog("Contrat::fetch sql=".$sql, LOG_DEBUG);
-		$resql = $this->db->query($sql) ;
+		$resql = $this->db->query($sql);
 		if ($resql)
 		{
 			$result = $this->db->fetch_array($resql);
@@ -584,7 +582,7 @@ class Contrat extends CommonObject
 			return -2;
 		}
 
-		$this->nbofservices=sizeof($this->lines);
+		$this->nbofservices=count($this->lines);
         $this->total_ttc = price2num($total_ttc);   // TODO For the moment value is false as value is not stored in database for line linked to products
         $this->total_vat = price2num($total_vat);   // TODO For the moment value is false as value is not stored in database for line linked to products
         $this->total_ht = price2num($total_ht);     // TODO For the moment value is false as value is not stored in database for line linked to products
@@ -896,7 +894,7 @@ class Contrat extends CommonObject
 			$sql.= " ".price2num($remise_percent).",".price2num($pu_ht).",";
 			$sql.= " ".price2num($total_ht).",".price2num($total_tva).",".price2num($total_localtax1).",".price2num($total_localtax2).",".price2num($total_ttc).",";
 			$sql.= " '".$info_bits."',";
-			$sql.= " ".price2num($price).",".price2num( $remise);	// TODO A virer
+			$sql.= " ".price2num($price).",".price2num($remise);	// TODO A virer
 			if ($date_start > 0) { $sql.= ",".$this->db->idate($date_start); }
 			if ($date_end > 0) { $sql.= ",".$this->db->idate($date_end); }
 			$sql.= ")";
@@ -1424,7 +1422,11 @@ class Contrat extends CommonObject
 
 
 	/**
-	 *		\brief		Initialise le membre avec valeurs fictives aleatoire
+     *  Initialise an instance with random values.
+     *  Used to build previews or test instances.
+     *	id must be 0 if object instance is a specimen.
+     *
+     *  @return	void
 	 */
 	function initAsSpecimen()
 	{

@@ -62,17 +62,20 @@ switch ($action)
 		}
 
 		if ( $mode_reglement != 'DIF') {
-			$obj_facturation->montant_encaisse ($montant);
+			$obj_facturation->montant_encaisse($montant);
 
 			//Determination de la somme rendue
 			$total = $obj_facturation->prix_total_ttc ();
 			$encaisse = $obj_facturation->montant_encaisse();
 
-			$obj_facturation->montant_rendu ( $encaisse - $total );
-
-
-		} else {
-			$obj_facturation->paiement_le ($_POST['txtDatePaiement']);
+			$obj_facturation->montant_rendu($encaisse - $total);
+		}
+		else
+		{
+		    //$txtDatePaiement=$_POST['txtDatePaiement'];
+		    $datePaiement=dol_mktime(0,0,0,$_POST['txtDatePaiementmonth'],$_POST['txtDatePaiementday'],$_POST['txtDatePaiementyear']);
+		    $txtDatePaiement=dol_print_date($datePaiement,'dayrfc');
+			$obj_facturation->paiement_le($txtDatePaiement);
 		}
 
 		$redirection = 'affIndex.php?menu=validation';
@@ -142,7 +145,7 @@ switch ($action)
 		$invoice=new Facture($db);
 
 		// Recuperation de la liste des articles du panier
-		$res=$db->query ('SELECT fk_article, qte, fk_tva, remise_percent, remise, total_ht, total_ttc
+		$res=$db->query('SELECT fk_article, qte, fk_tva, remise_percent, remise, total_ht, total_ttc
 				FROM '.MAIN_DB_PREFIX.'pos_tmp
 				WHERE 1');
 		$ret=array(); $i=0;
@@ -160,7 +163,7 @@ switch ($action)
 		for($i=0;$i < $tab_liste_size;$i++)
 		{
 			// Recuperation de l'article
-			$res = $db->query (
+			$res = $db->query(
 			'SELECT label, tva_tx, price
 					FROM '.MAIN_DB_PREFIX.'product
 					WHERE rowid = '.$tab_liste[$i]['fk_article']);
@@ -172,7 +175,7 @@ switch ($action)
 			}
 			$tab_article = $ret;
 
-			$res = $db->query (
+			$res = $db->query(
 			'SELECT taux
 					FROM '.MAIN_DB_PREFIX.'c_tva
 					WHERE rowid = '.$tab_liste[$i]['fk_tva']);

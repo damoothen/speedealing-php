@@ -34,7 +34,7 @@ if (! defined('NOREQUIREMENU'))   define('NOREQUIREMENU',1);
 if (! defined('NOREQUIREHTML'))   define('NOREQUIREHTML',1);
 if (! defined('NOREQUIREAJAX'))   define('NOREQUIREAJAX','1');
 
-session_cache_limiter( FALSE );
+session_cache_limiter(FALSE);
 
 require_once("../../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/lib/functions.lib.php");
@@ -1298,7 +1298,7 @@ white-space: nowrap;
 
 .impair {
 /* background: #d0d4d7; */
-background: #eaeaea;
+background: #f6f6f6;
 font-family: <?php print $fontlist ?>;
 border: 0px;
 margin-bottom: 1px;

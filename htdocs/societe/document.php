@@ -60,7 +60,7 @@ if (! $sortorder) $sortorder="ASC";
 if (! $sortfield) $sortfield="name";
 
 $upload_dir = $conf->societe->dir_output . "/" . $socid ;
-$courrier_dir = $conf->societe->dir_output . "/courrier/" . get_exdir($socid) ;
+$courrier_dir = $conf->societe->dir_output . "/courrier/" . get_exdir($socid);
 
 $object = new Societe($db);
 
@@ -188,7 +188,7 @@ if ($socid > 0)
 	    }
 
     	// Nbre fichiers
-		print '<tr><td>'.$langs->trans("NbOfAttachedFiles").'</td><td colspan="3">'.sizeof($filearray).'</td></tr>';
+		print '<tr><td>'.$langs->trans("NbOfAttachedFiles").'</td><td colspan="3">'.count($filearray).'</td></tr>';
 
 		//Total taille
 		print '<tr><td>'.$langs->trans("TotalSizeOfAttachedFiles").'</td><td colspan="3">'.$totalsize.' '.$langs->trans("bytes").'</td></tr>';

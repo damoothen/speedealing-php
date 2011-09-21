@@ -30,11 +30,8 @@ require_once(DOL_DOCUMENT_ROOT."/core/class/commonobject.class.php");
  */
 class Project extends CommonObject
 {
-	var $db;							//!< To store db handler
-	var $error;							//!< To return error code (or message)
-	var $errors=array();				//!< To return several error codes (or messages)
-	var $element='project';				//!< Id that identify managed objects
-	var $table_element='projet';		//!< Name of table without prefix where object is stored
+	public $element='project';				//!< Id that identify managed objects
+	public $table_element='projet';		//!< Name of table without prefix where object is stored
 
 	var $id;
 	var $ref;
@@ -163,8 +160,8 @@ class Project extends CommonObject
 	/**
 	 * Update a project
 	 *
-	 * @param  $user       User object of making update
-	 * @param  $notrigger  1=Disable all triggers
+	 * @param  User		$user       User object of making update
+	 * @param  int		$notrigger  1=Disable all triggers
 	 * @return int
 	 */
 	function update($user, $notrigger=0)
@@ -284,8 +281,9 @@ class Project extends CommonObject
 
 	/**
 	 *	Return list of projects
-	 * 	@param		socid			To filter on a particular third party
-	 * 	@return		array			Liste of projects
+	 *
+	 * 	@param		int		$socid		To filter on a particular third party
+	 * 	@return		array				List of projects
 	 */
 	function liste_array($socid='')
 	{
@@ -324,9 +322,10 @@ class Project extends CommonObject
 	}
 
 	/**
-	 * 	\brief		Return list of elements for type linked to project
-	 *	\param		type		'propal','order','invoice','order_supplier','invoice_supplier'
-	 *	\return		array		List of orders linked to project, <0 if error
+	 * 	Return list of elements for type linked to project
+	 *
+	 *	@param		string		$type		'propal','order','invoice','order_supplier','invoice_supplier'
+	 *	@return		array					List of orders linked to project, <0 if error
 	 */
 	function get_element_list($type)
 	{
@@ -376,9 +375,10 @@ class Project extends CommonObject
 
 	/**
 	 *    Delete a project from database
-	 *    @param       user            User
-	 *    @param       notrigger       Disable triggers
-     *    @return      int             <0 if KO, 0 if not possible, >0 if OK
+	 *
+	 *    @param       User		$user            User
+	 *    @param       int		$notrigger       Disable triggers
+     *    @return      int       			      <0 if KO, 0 if not possible, >0 if OK
 	 */
 	function delete($user, $notrigger=0)
 	{
@@ -469,8 +469,9 @@ class Project extends CommonObject
 
 	/**
 	 *		Validate a project
-	 *		@param		user		User that validate
-	 *		@return		int			<0 if KO, >0 if OK
+	 *
+	 *		@param		User	$user		User that validate
+	 *		@return		int					<0 if KO, >0 if OK
 	 */
 	function setValid($user)
 	{
@@ -521,8 +522,9 @@ class Project extends CommonObject
 
 	/**
 	 *		Close a project
-	 *		@param		user		User that validate
-	 *		@return		int			<0 if KO, >0 if OK
+	 *
+	 *		@param		User	$user		User that validate
+	 *		@return		int					<0 if KO, >0 if OK
 	 */
 	function setClose($user)
 	{
@@ -573,9 +575,10 @@ class Project extends CommonObject
 	}
 
 	/**
-	 *    \brief      Return status label of object
-	 *    \param      mode        0=long label, 1=short label, 2=Picto + short label, 3=Picto, 4=Picto + long label, 5=Short label + Picto
-	 * 	  \return     string      Label
+	 *  Return status label of object
+	 *
+	 *  @param  int			$mode       0=long label, 1=short label, 2=Picto + short label, 3=Picto, 4=Picto + long label, 5=Short label + Picto
+	 * 	@return string      			Label
 	 */
 	function getLibStatut($mode=0)
 	{
@@ -583,10 +586,11 @@ class Project extends CommonObject
 	}
 
 	/**
-	 *    \brief      Renvoi status label for a status
-	 *    \param      statut      id statut
-	 *    \param      mode        0=long label, 1=short label, 2=Picto + short label, 3=Picto, 4=Picto + long label, 5=Short label + Picto
-	 * 	  \return     string      Label
+	 *  Renvoi status label for a status
+	 *
+	 *  @param	int		$statut     id statut
+	 *  @param  int		$mode       0=long label, 1=short label, 2=Picto + short label, 3=Picto, 4=Picto + long label, 5=Short label + Picto
+	 * 	@return string				Label
 	 */
 	function LibStatut($statut,$mode=0)
 	{
@@ -627,10 +631,11 @@ class Project extends CommonObject
 	}
 
 	/**
-	 *	\brief      Renvoie nom clicable (avec eventuellement le picto)
-	 *	\param		withpicto		0=Pas de picto, 1=Inclut le picto dans le lien, 2=Picto seul
-	 *	\param		option			Variante ('', 'nolink')
-	 *	\return		string			Chaine avec URL
+	 *	Renvoie nom clicable (avec eventuellement le picto)
+	 *
+	 *	@param	int		$withpicto		0=Pas de picto, 1=Inclut le picto dans le lien, 2=Picto seul
+	 *	@param	string	$option			Variante ('', 'nolink')
+	 *	@return	string					Chaine avec URL
 	 */
 	function getNomUrl($withpicto=0,$option='')
 	{
@@ -658,7 +663,11 @@ class Project extends CommonObject
 	}
 
 	/**
-	 *		\brief		Initialise object with default value to be used as example
+     *  Initialise an instance with random values.
+     *  Used to build previews or test instances.
+     *	id must be 0 if object instance is a specimen.
+     *
+     *  @return	void
 	 */
 	function initAsSpecimen()
 	{
@@ -734,9 +743,11 @@ class Project extends CommonObject
 	}
 
 	/**
-	 *	\brief		Check if user has read permission on project
-	 * 	@param		user		Object user to evaluate
-	 * 	@param 		noprint		0=Print forbidden message if no permission, 1=Return -1 if no permission
+	 *	Check if user has read permission on project
+	 *
+	 * 	@param	User	$user		Object user to evaluate
+	 * 	@param 	int		$noprint	0=Print forbidden message if no permission, 1=Return -1 if no permission
+	 *	@return	void
 	 */
 	function restrictedProjectArea($user,$noprint=0)
 	{
@@ -755,7 +766,7 @@ class Project extends CommonObject
 			foreach(array('internal','external') as $source)
 			{
 				$userRole = $this->liste_contact(4,$source);
-				$num=sizeof($userRole);
+				$num=count($userRole);
 
 				$nblinks = 0;
 				while ($nblinks < $num)
@@ -795,11 +806,11 @@ class Project extends CommonObject
 	/**
 	 * Return array of projects a user has permission on, is affected to, or all projects
 	 *
-	 * @param 	user		User object
-	 * @param 	mode		0=All project I have permission on, 1=Projects affected to me only, 2=Will return list of all projects with no test on contacts
-	 * @param 	list		0=Return array,1=Return string list
-	 * @param	socid		0=No filter on third party, id of third party
-	 * @return 	array or string
+	 * @param 	User	$user		User object
+	 * @param 	int		$mode		0=All project I have permission on, 1=Projects affected to me only, 2=Will return list of all projects with no test on contacts
+	 * @param 	int		$list		0=Return array,1=Return string list
+	 * @param	int		$socid		0=No filter on third party, id of third party
+	 * @return 	array 				Array of projects
 	 */
 	function getProjectsAuthorizedForUser($user,$mode=0,$list=0,$socid=0)
 	{

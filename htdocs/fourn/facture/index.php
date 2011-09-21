@@ -44,6 +44,9 @@ if ($user->societe_id > 0)
 	$socid = $user->societe_id;
 }
 
+$mode=GETPOST("mode");
+$modesearch=GETPOST("mode_search");
+
 $page=$_GET["page"];
 $sortorder = $_GET["sortorder"];
 $sortfield = $_GET["sortfield"];
@@ -64,9 +67,9 @@ $year     =$_GET['year'];
  * Actions
  */
 
-if ($_POST["mode"] == 'search')
+if ($mode == 'search')
 {
-	if ($_POST["mode-search"] == 'soc')
+	if ($modesearch == 'soc')
 	{
 		$sql = "SELECT s.rowid FROM ".MAIN_DB_PREFIX."societe as s ";
 		$sql.= " WHERE s.nom like '%".$db->escape(strtolower($socname))."%'";
@@ -159,7 +162,7 @@ if ($_GET["search_montant_ttc"])
 }
 
 $sql.= $db->order($sortfield,$sortorder);
-$sql.= $db->plimit( $limit+1, $offset);
+$sql.= $db->plimit($limit+1, $offset);
 
 $resql = $db->query($sql);
 if ($resql)

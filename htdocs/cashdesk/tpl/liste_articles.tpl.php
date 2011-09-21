@@ -36,7 +36,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 			LEFT JOIN '.MAIN_DB_PREFIX.'product as p ON c.fk_article = p.rowid
 			ORDER BY id';
 	dol_syslog($request);
-	$res = $db->query ($request);
+	$res = $db->query($request);
 	if (! $res)
 	{
 	    dol_print_error($db);
@@ -97,7 +97,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 				$remise = $tab[$i]['remise'];
 
-				echo ('<p>'.$tab[$i]['qte'].' x '.price2num( $tab[$i]['price'], 'MT').$remise_percent.' = '.price2num($tab[$i]['total_ht'], 'MT').' '.$conf->monnaie.' '.$langs->trans("HT").' ('.price2num($tab[$i]['total_ttc'], 'MT').' '.$conf->monnaie.' '.$langs->trans("TTC").')</p>'."\n");
+				echo ('<p>'.$tab[$i]['qte'].' x '.price2num($tab[$i]['price'], 'MT').$remise_percent.' = '.price2num($tab[$i]['total_ht'], 'MT').' '.$conf->monnaie.' '.$langs->trans("HT").' ('.price2num($tab[$i]['total_ttc'], 'MT').' '.$conf->monnaie.' '.$langs->trans("TTC").')</p>'."\n");
 			echo ('</div>'."\n");
 
 		}

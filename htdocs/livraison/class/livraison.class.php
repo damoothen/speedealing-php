@@ -37,11 +37,9 @@ if ($conf->commande->enabled) require_once(DOL_DOCUMENT_ROOT."/commande/class/co
  */
 class Livraison extends CommonObject
 {
-	var $db;
-	var $error;
-	var $element="delivery";
-	var $fk_element="fk_livraison";
-	var $table_element="livraison";
+	public $element="delivery";
+	public $fk_element="fk_livraison";
+	public $table_element="livraison";
 
 	var $id;
 	var $brouillon;
@@ -142,7 +140,8 @@ class Livraison extends CommonObject
 				/*
 				 *  Insertion des produits dans la base
 				 */
-				for ($i = 0 ; $i < sizeof($this->lines) ; $i++)
+				$num=count($this->lines);
+				for ($i = 0; $i < $num; $i++)
 				{
 					$origin_id=$this->lines[$i]->origin_line_id;
 					if (! $origin_id) $origin_id=$this->lines[$i]->commande_ligne_id;	// For backward compatibility
@@ -250,7 +249,7 @@ class Livraison extends CommonObject
 		$sql.= " WHERE l.rowid = ".$id;
 
 		dol_syslog("Livraison::fetch sql=".$sql, LOG_DEBUG);
-		$result = $this->db->query($sql) ;
+		$result = $this->db->query($sql);
 		if ($result)
 		{
 			if ($this->db->num_rows($result))
@@ -456,7 +455,8 @@ class Livraison extends CommonObject
 
 		$this->lines = array();
 
-		for ($i = 0 ; $i < sizeof($expedition->lines) ; $i++)
+		$num=count($expedition->lines);
+		for ($i = 0; $i < $num; $i++)
 		{
 			$line = new LivraisonLigne($this->db);
 			$line->origin_line_id    = $expedition->lines[$i]->origin_line_id;
@@ -488,7 +488,7 @@ class Livraison extends CommonObject
 	 */
 	function addline( $id, $qty )
 	{
-		$num = sizeof($this->lines);
+		$num = count($this->lines);
 		$line = new LivraisonLigne($this->db);
 
 		$line->commande_ligne_id = $id;
@@ -711,7 +711,11 @@ class Livraison extends CommonObject
 
 
 	/**
-	 *		\brief		Initialise object with default value to be used as example
+     *  Initialise an instance with random values.
+     *  Used to build previews or test instances.
+     *	id must be 0 if object instance is a specimen.
+     *
+     *  @return	void
 	 */
 	function initAsSpecimen()
 	{

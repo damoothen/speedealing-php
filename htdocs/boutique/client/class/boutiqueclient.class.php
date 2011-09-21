@@ -33,23 +33,30 @@ class BoutiqueClient
     var $id ;
     var $nom;
 
-    function BoutiqueClient($DB, $id=0)
+
+	/**
+	 * 	Constructor
+	 *
+	 * 	@param		DoliDB	$DB		Database handler
+	 */
+    function BoutiqueClient($DB)
     {
         $this->db = $DB;
-        $this->id = $id ;
     }
 
     /**
-     *      \brief      Fonction permettant de recuperer les informations d'un clients de la boutique
-     *      \param      id			Id du client
+     *   Fonction permettant de recuperer les informations d'un clients de la boutique
+     *
+     *   @param		int		$id			Id du client
+     *   @return	int					<0 if KO, >0 if OK
      */
-    function fetch ($id)
+    function fetch($id)
     {
 		global $conf;
 
         $sql = "SELECT customers_id, customers_lastname, customers_firstname FROM ".$conf->global->OSC_DB_NAME.".".$conf->global->OSC_DB_TABLE_PREFIX."customers WHERE customers_id = ".$id;
 
-        $resql = $this->db->query($sql) ;
+        $resql = $this->db->query($sql);
         if ( $resql )
         {
             $result = $this->db->fetch_array($resql);

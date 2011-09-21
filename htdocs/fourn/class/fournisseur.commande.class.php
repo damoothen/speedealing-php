@@ -36,15 +36,11 @@ require_once(DOL_DOCUMENT_ROOT."/commande/class/commande.class.php");
  */
 class CommandeFournisseur extends Commande
 {
-    var $id ;
-    var $db ;
-    var $error;
-
-    var $element='order_supplier';
-    var $table_element='commande_fournisseur';
-    var $table_element_line = 'commande_fournisseurdet';
-    var $fk_element = 'fk_commande';
-    var $ismultientitymanaged = 1;	// 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
+    public $element='order_supplier';
+    public $table_element='commande_fournisseur';
+    public $table_element_line = 'commande_fournisseurdet';
+    public $fk_element = 'fk_commande';
+    protected $ismultientitymanaged = 1;	// 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
 
     var $ref;		 // TODO deprecated
     var $product_ref;
@@ -125,7 +121,7 @@ class CommandeFournisseur extends Commande
         else $sql.= " AND c.rowid=".$id;
 
         dol_syslog("CommandeFournisseur::fetch sql=".$sql,LOG_DEBUG);
-        $resql = $this->db->query($sql) ;
+        $resql = $this->db->query($sql);
         if ($resql)
         {
             $obj = $this->db->fetch_object($resql);
@@ -417,7 +413,8 @@ class CommandeFournisseur extends Commande
             {
                 require_once(DOL_DOCUMENT_ROOT."/product/stock/class/mouvementstock.class.php");
 
-                for ($i = 0 ; $i < sizeof($this->lines) ; $i++)
+                $num=count($this->lines);
+                for ($i = 0; $i < $num; $i++)
                 {
                     if ($this->lines[$i]->fk_product > 0)
                     {
@@ -643,7 +640,8 @@ class CommandeFournisseur extends Commande
                 {
                     require_once(DOL_DOCUMENT_ROOT."/product/stock/class/mouvementstock.class.php");
 
-                    for ($i = 0 ; $i < sizeof($this->lines) ; $i++)
+                    $num=count($this->lines);
+                    for ($i = 0; $i < $num; $i++)
                     {
                         // Product with reference
                         if ($this->lines[$i]->fk_product > 0)
@@ -1404,7 +1402,8 @@ class CommandeFournisseur extends Commande
 
         $this->lines = array();
 
-        for ($i = 0 ; $i < sizeof($comclient->lines) ; $i++)
+        $num=count($comclient->lines);
+        for ($i = 0; $i < $num; $i++)
         {
             $prod = new Product($this->db);
             if ($prod->fetch($comclient->lines[$i]->fk_product) > 0)
@@ -1418,7 +1417,7 @@ class CommandeFournisseur extends Commande
             $sql .= " VALUES (".$idc.", '" . $this->db->escape($libelle) . "','" . $this->db->escape($comclient->lines[$i]->desc) . "'";
             $sql .= ",".$comclient->lines[$i]->fk_product.",'".price2num($comclient->lines[$i]->price)."'";
             $sql .= ", '".$comclient->lines[$i]->qty."', ".$comclient->lines[$i]->tva_tx.", ".$comclient->lines[$i]->localtax1_tx.", ".$comclient->lines[$i]->localtax2_tx.", ".$comclient->lines[$i]->remise_percent;
-            $sql .= ", '".price2num($comclient->lines[$i]->subprice)."','0','".$ref."') ;";
+            $sql .= ", '".price2num($comclient->lines[$i]->subprice)."','0','".$ref."');";
             if ( $this->db->query( $sql) )
             {
                 $this->update_price();
@@ -1636,7 +1635,7 @@ class CommandeFournisseur extends Commande
             $sql.= " WHERE rowid = ".$rowid;
 
             dol_syslog("CommandeFournisseur::updateline sql=".$sql);
-            $result = $this->db->query( $sql);
+            $result = $this->db->query($sql);
             if ($result > 0)
             {
                 // Mise a jour info denormalisees au niveau facture
@@ -1663,8 +1662,11 @@ class CommandeFournisseur extends Commande
 
 
     /**
-     *		Initialise an example of instance with random values
-     *		Used to build previews or test instances
+     *  Initialise an instance with random values.
+     *  Used to build previews or test instances.
+     *	id must be 0 if object instance is a specimen.
+     *
+     *  @return	void
      */
     function initAsSpecimen()
     {

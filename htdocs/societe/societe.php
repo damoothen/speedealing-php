@@ -39,7 +39,7 @@ $result = restrictedArea($user,'societe',$socid,'');
 $search_nom=trim(GETPOST("search_nom"));
 $search_nom_only=trim(GETPOST("search_nom_only"));
 $search_all=trim(GETPOST("search_all"));
-$search_ville=trim(GETPOT("search_ville"));
+$search_ville=trim(GETPOST("search_ville"));
 $socname=trim(GETPOST("socname"));
 $search_idprof1=trim(GETPOST('search_idprof1'));
 $search_idprof2=trim(GETPOST('search_idprof2'));
@@ -48,7 +48,7 @@ $search_idprof4=trim(GETPOST('search_idprof4'));
 $search_sale=trim(GETPOST("search_sale"));
 $search_categ=trim(GETPOST("search_categ"));
 $mode=GETPOST("mode");
-$modesearch=GETPOST("mode-search");
+$modesearch=GETPOST("mode_search");
 
 $sortfield=GETPOST("sortfield");
 $sortorder=GETPOST("sortorder");

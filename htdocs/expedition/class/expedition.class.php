@@ -36,11 +36,9 @@ if ($conf->commande->enabled) require_once(DOL_DOCUMENT_ROOT."/commande/class/co
  */
 class Expedition extends CommonObject
 {
-	var $db;
-	var $error;
-	var $element="shipping";
-	var $fk_element="fk_expedition";
-	var $table_element="expedition";
+	public $element="shipping";
+	public $fk_element="fk_expedition";
+	public $table_element="expedition";
 
 	var $id;
 	var $socid;
@@ -210,7 +208,8 @@ class Expedition extends CommonObject
 			if ($this->db->query($sql))
 			{
 				// Insertion des lignes
-				for ($i = 0 ; $i < sizeof($this->lines) ; $i++)
+				$num=count($this->lines);
+				for ($i = 0; $i < $num; $i++)
 				{
 					if (! $this->create_line($this->lines[$i]->entrepot_id, $this->lines[$i]->origin_line_id, $this->lines[$i]->qty) > 0)
 					{
@@ -329,7 +328,7 @@ class Expedition extends CommonObject
         if ($ref_int) $sql.= " AND e.ref_int='".$this->db->escape($ref_int)."'";
 
 		dol_syslog("Expedition::fetch sql=".$sql);
-		$result = $this->db->query($sql) ;
+		$result = $this->db->query($sql);
 		if ($result)
 		{
 			if ($this->db->num_rows($result))
@@ -617,7 +616,7 @@ class Expedition extends CommonObject
 	 */
 	function addline( $entrepot_id, $id, $qty )
 	{
-		$num = sizeof($this->lines);
+		$num = count($this->lines);
 		$line = new ExpeditionLigne($this->db);
 
 		$line->entrepot_id = $entrepot_id;
@@ -972,8 +971,11 @@ class Expedition extends CommonObject
 	}
 
 	/**
-	 *		\brief		Initialise la facture avec valeurs fictives aleatoire
-	 *					Sert a generer une facture pour l'aperu des modeles ou dem
+     *  Initialise an instance with random values.
+     *  Used to build previews or test instances.
+     *	id must be 0 if object instance is a specimen.
+     *
+     *  @return	void
 	 */
 	function initAsSpecimen()
 	{

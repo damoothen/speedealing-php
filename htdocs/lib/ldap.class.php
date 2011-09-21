@@ -168,7 +168,7 @@ class Ldap
 				else
 				{
 					// Connected, now try binding anonymously
-					$this->result=@ldap_bind( $this->connection);
+					$this->result=@ldap_bind($this->connection);
 				}
 				return true;
 			}
@@ -837,8 +837,8 @@ class Ldap
 		// Get values
 		if (! $values = ldap_get_attributes( $this->connection, $entry))
 		{
-			$this->ldapErrorCode = ldap_errno( $this->connection);
-			$this->ldapErrorText = ldap_error( $this->connection);
+			$this->ldapErrorCode = ldap_errno($this->connection);
+			$this->ldapErrorText = ldap_error($this->connection);
 			return false; // No matching attributes
 		}
 
@@ -872,8 +872,8 @@ class Ldap
 		// Get values
 		if (! $values = @ldap_get_values( $this->connection, $entry, $attribute))
 		{
-			$this->ldapErrorCode = ldap_errno( $this->connection);
-			$this->ldapErrorText = ldap_error( $this->connection);
+			$this->ldapErrorCode = ldap_errno($this->connection);
+			$this->ldapErrorText = ldap_error($this->connection);
 			return false; // No matching attributes
 		}
 
@@ -954,7 +954,8 @@ class Ldap
 				$fulllist[$recordid][$useridentifier]=$recordid;
 
 				// Add to the array for each attribute in my list
-				for ($j = 0; $j < count($attributeArray); $j++)
+				$num = count($attributeArray);
+				for ($j = 0; $j < $num; $j++)
 				{
 					$keyattributelower=strtolower($attributeArray[$j]);
 					//print " Param ".$attributeArray[$j]."=".$info[$i][$keyattributelower][0]."<br>\n";

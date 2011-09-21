@@ -35,16 +35,14 @@ require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
  */
 class Commande extends CommonObject
 {
-    var $db;
-    var $error;
-    var $element='commande';
-    var $table_element='commande';
-    var $table_element_line = 'commandedet';
-    var $class_element_line = 'OrderLine';
-    var $fk_element = 'fk_commande';
-    var $ismultientitymanaged = 1;	// 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
+    public $element='commande';
+    public $table_element='commande';
+    public $table_element_line = 'commandedet';
+    public $class_element_line = 'OrderLine';
+    public $fk_element = 'fk_commande';
+    protected $ismultientitymanaged = 1;	// 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
 
-    var $id ;
+    var $id;
 
     var $socid;		// Id client
     var $client;		// Objet societe client (a charger par fetch_client)
@@ -241,7 +239,8 @@ class Commande extends CommonObject
                 $langs->load("agenda");
 
                 // Loop on each line
-                for ($i = 0 ; $i < sizeof($this->lines) ; $i++)
+                $num=count($this->lines);
+                for ($i = 0; $i < $num; $i++)
                 {
                     if ($this->lines[$i]->fk_product > 0)
                     {
@@ -352,7 +351,8 @@ class Commande extends CommonObject
                 require_once(DOL_DOCUMENT_ROOT."/product/stock/class/mouvementstock.class.php");
                 $langs->load("agenda");
 
-                for ($i = 0 ; $i < sizeof($this->lines) ; $i++)
+                $num=count($this->lines);
+                for ($i = 0; $i < $num; $i++)
                 {
                     if ($this->lines[$i]->fk_product > 0)
                     {
@@ -647,7 +647,7 @@ class Commande extends CommonObject
             if ($this->id)
             {
                 $fk_parent_line=0;
-                $num=sizeof($this->lines);
+                $num=count($this->lines);
 
                 /*
                  *  Insertion du detail des produits dans la base
@@ -874,7 +874,8 @@ class Commande extends CommonObject
             $this->date_commande = dol_now();
             $this->source = 0;
 
-            for ($i = 0 ; $i < sizeof($object->lines) ; $i++)
+            $num=count($object->lines);
+            for ($i = 0; $i < $num; $i++)
             {
                 $line = new OrderLine($this->db);
 
@@ -1014,7 +1015,7 @@ class Commande extends CommonObject
             // qty, pu, remise_percent et txtva
             // TRES IMPORTANT: C'est au moment de l'insertion ligne qu'on doit stocker
             // la part ht, tva et ttc, et ce au niveau de la ligne qui a son propre taux tva.
-            $tabprice = calcul_price_total($qty, $pu, $remise_percent, $txtva, $txlocaltax1 ,$txlocaltax2, 0, $price_base_type, $info_bits);
+            $tabprice = calcul_price_total($qty, $pu, $remise_percent, $txtva, $txlocaltax1, $txlocaltax2, 0, $price_base_type, $info_bits);
             $total_ht  = $tabprice[0];
             $total_tva = $tabprice[1];
             $total_ttc = $tabprice[2];
@@ -1161,7 +1162,7 @@ class Commande extends CommonObject
              $prod->fetch($idproduct);
              $prod -> get_sousproduits_arbo ();
              $prods_arbo = $prod->get_each_prod();
-             if(sizeof($prods_arbo) > 0)
+             if(count($prods_arbo) > 0)
              {
              foreach($prods_arbo as $key => $value)
              {
@@ -1217,7 +1218,7 @@ class Commande extends CommonObject
         if ($ref_int) $sql.= " AND c.ref_int='".$this->db->escape($ref_int)."'";
 
         dol_syslog("Commande::fetch sql=".$sql, LOG_DEBUG);
-        $result = $this->db->query($sql) ;
+        $result = $this->db->query($sql);
         if ($result)
         {
             $obj = $this->db->fetch_object($result);
@@ -1582,7 +1583,7 @@ class Commande extends CommonObject
 
 
         // Recherche total en stock pour chaque produit
-        if (sizeof($array_of_product))
+        if (count($array_of_product))
         {
             $sql = "SELECT fk_product, sum(ps.reel) as total";
             $sql.= " FROM ".MAIN_DB_PREFIX."product_stock as ps";
@@ -2329,9 +2330,9 @@ class Commande extends CommonObject
         {
             $dir = $conf->commande->dir_output . "/" . $comref ;
             $file = $conf->commande->dir_output . "/" . $comref . "/" . $comref . ".pdf";
-            if (file_exists($file))
+            if (file_exists($file))	// We must delete all files before deleting directory
             {
-                commande_delete_preview($this->db, $this->id, $this->ref);
+                dol_delete_preview($object);
 
                 if (!dol_delete_file($file))
                 {
@@ -2595,8 +2596,11 @@ class Commande extends CommonObject
 
 
     /**
-     *		Initialise an example of instance with random values
-     *		Used to build previews or test instances
+     *  Initialise an instance with random values.
+     *  Used to build previews or test instances.
+     *	id must be 0 if object instance is a specimen.
+     *
+     *  @return	void
      */
     function initAsSpecimen()
     {

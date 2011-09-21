@@ -152,7 +152,7 @@ if ($action=='show_week')
 
     $week = $prev['week'];
 
-    $day =(int)$day;
+    $day = (int) $day;
     $next = dol_get_next_week($day, $week, $month, $year);
     $next_year  = $next['year'];
     $next_month = $next['month'];
@@ -166,7 +166,7 @@ if ($action=='show_week')
 
     $tmpday = $first_day;
 }
-if ($action=='show_day')
+if ($action == 'show_day')
 {
     $prev = dol_get_prev_day($day, $month, $year);
     $prev_year  = $prev['year'];
@@ -504,7 +504,7 @@ if (empty($conf->global->AGENDA_DISABLE_EXT) && $conf->global->AGENDA_EXT_NB > 0
 	}
 }
 
-if (sizeof($listofextcals))
+if (count($listofextcals))
 {
     require_once(DOL_DOCUMENT_ROOT."/comm/action/class/ical.class.php");
     foreach($listofextcals as $extcal)
@@ -996,7 +996,7 @@ function show_day_events($db, $day, $month, $year, $monthshown, $style, &$eventa
                     print ($status?'&status='.$status:'').($filter?'&filter='.$filter:'');
                     print ($filtera?'&filtera='.$filtera:'').($filtert?'&filtert='.$filtert:'').($filterd?'&filterd='.$filterd:'');
                     print '">'.img_picto("all","1downarrow_selected.png").' ...';
-                    print ' +'.(sizeof($eventarray[$daykey])-$maxPrint);
+                    print ' +'.(count($eventarray[$daykey])-$maxPrint);
                     print '</a>';
                     break;
                     //$ok=false;        // To avoid to show twice the link

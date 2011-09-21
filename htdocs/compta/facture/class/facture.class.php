@@ -40,14 +40,11 @@ require_once(DOL_DOCUMENT_ROOT ."/societe/class/client.class.php");
  */
 class Facture extends CommonObject
 {
-    var $db;
-    var $error;
-    var $errors=array();
-    var $element='facture';
-    var $table_element='facture';
-    var $table_element_line = 'facturedet';
-    var $fk_element = 'fk_facture';
-    var $ismultientitymanaged = 1;	// 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
+    public $element='facture';
+    public $table_element='facture';
+    public $table_element_line = 'facturedet';
+    public $fk_element = 'fk_facture';
+    protected $ismultientitymanaged = 1;	// 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
 
     var $id;
     //! Id client
@@ -276,11 +273,11 @@ class Facture extends CommonObject
             /*
              *  Insert lines of invoices into database
              */
-            if (sizeof($this->lines) && is_object($this->lines[0]))
+            if (count($this->lines) && is_object($this->lines[0]))
             {
             	$fk_parent_line = 0;
 
-                dol_syslog("There is ".sizeof($this->lines)." lines that are invoice lines objects");
+                dol_syslog("There is ".count($this->lines)." lines that are invoice lines objects");
                 foreach ($this->lines as $i => $val)
                 {
                     $newinvoiceline=new FactureLigne($this->db);
@@ -313,7 +310,7 @@ class Facture extends CommonObject
             {
             	$fk_parent_line = 0;
 
-                dol_syslog("There is ".sizeof($this->lines)." lines that are array lines");
+                dol_syslog("There is ".count($this->lines)." lines that are array lines");
                 foreach ($this->lines as $i => $val)
                 {
                     if (($this->lines[$i]->info_bits & 0x01) == 0)	// We keep only lines with first bit = 0
@@ -496,7 +493,7 @@ class Facture extends CommonObject
             }
         }
 
-        dol_syslog("Facture::createFromCurrent invertdetail=".$invertdetail." socid=".$this->socid." nboflines=".sizeof($facture->lines));
+        dol_syslog("Facture::createFromCurrent invertdetail=".$invertdetail." socid=".$this->socid." nboflines=".count($facture->lines));
 
         $facid = $facture->create($user);
         if ($facid <= 0)
@@ -615,7 +612,8 @@ class Facture extends CommonObject
         $this->date = dol_now();
         $this->source = 0;
 
-        for ($i = 0 ; $i < sizeof($object->lines) ; $i++)
+        $num=count($object->lines);
+        for ($i = 0; $i < $num; $i++)
         {
             $line = new FactureLigne($this->db);
 
@@ -1209,7 +1207,7 @@ class Facture extends CommonObject
             }
 
             // Consumned discounts are freed
-            if (sizeof($list_rowid_det))
+            if (count($list_rowid_det))
             {
                 $sql = 'UPDATE '.MAIN_DB_PREFIX.'societe_remise_except';
                 $sql.= ' SET fk_facture = NULL';
@@ -1302,7 +1300,7 @@ class Facture extends CommonObject
         /* Definition de la date limite */
 
         // 1 : ajout du nombre de jours
-        $datelim = $this->date + ( $cdr_nbjour * 3600 * 24 );
+        $datelim = $this->date + ($cdr_nbjour * 3600 * 24);
 
         // 2 : application de la regle "fin de mois"
         if ($cdr_fdm)
@@ -1324,7 +1322,7 @@ class Facture extends CommonObject
         }
 
         // 3 : application du decalage
-        $datelim += ( $cdr_decalage * 3600 * 24);
+        $datelim += ($cdr_decalage * 3600 * 24);
 
         return $datelim;
     }
@@ -1634,7 +1632,8 @@ class Facture extends CommonObject
                     $langs->load("agenda");
 
                     // Loop on each line
-                    for ($i = 0 ; $i < sizeof($this->lines) ; $i++)
+                    $num=count($this->lines);
+                    for ($i = 0; $i < $num; $i++)
                     {
                         if ($this->lines[$i]->fk_product > 0)
                         {
@@ -1748,7 +1747,8 @@ class Facture extends CommonObject
                 require_once(DOL_DOCUMENT_ROOT."/product/stock/class/mouvementstock.class.php");
                 $langs->load("agenda");
 
-                for ($i = 0 ; $i < sizeof($this->lines) ; $i++)
+                $num=count($this->lines);
+                for ($i = 0; $i < $num; $i++)
                 {
                     if ($this->lines[$i]->fk_product > 0)
                     {
@@ -2743,7 +2743,8 @@ class Facture extends CommonObject
     {
         // On verifie si les lignes de factures ont ete exportees en compta et/ou ventilees
         $ventilExportCompta = 0 ;
-        for ($i = 0 ; $i < sizeof($this->lines) ; $i++)
+        $num=count($this->lines);
+        for ($i = 0; $i < $num; $i++)
         {
             if ($this->lines[$i]->export_compta <> 0 && $this->lines[$i]->code_ventilation <> 0)
             {
@@ -3058,8 +3059,11 @@ class Facture extends CommonObject
 
 
     /**
-     *		Initialise an example of invoice with random values
-     *		Used to build previews or test instances
+     *  Initialise an instance with random values.
+     *  Used to build previews or test instances.
+     *	id must be 0 if object instance is a specimen.
+     *
+     *  @return	void
      */
     function initAsSpecimen()
     {

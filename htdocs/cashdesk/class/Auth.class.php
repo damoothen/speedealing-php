@@ -20,8 +20,8 @@
 /**
  * Class ot manage authentication for pos module (cashdesk)
  */
-class Auth {
-
+class Auth
+{
 	var $db;
 
 	var $login;
@@ -30,35 +30,64 @@ class Auth {
 	var $reponse;
 
 	var $sqlQuery;
-
-
-	function Auth ($DB) {
+	
+	/**
+	 * Enter description here ...
+	 * 
+	 * @param unknown_type $DB
+	 */
+	function Auth($DB)
+	{
 
 		$this->db = $DB;
-		$this->reponse (null);
+		$this->reponse(null);
 
 	}
 
-	function login ($aLogin) {
+	/**
+	 * Enter description here ...
+	 * 
+	 * @param unknown_type $aLogin
+	 */
+	function login($aLogin)
+	{
 
 		$this->login = $aLogin;
 
 	}
-
-	function passwd ($aPasswd) {
+	
+	/**
+	 * Enter description here ...
+	 * 
+	 * @param unknown_type $aPasswd
+	 */
+	function passwd($aPasswd)
+	{
 
 		$this->passwd = $aPasswd;
 
 
 	}
-
-	function reponse ($aReponse) {
+	
+	/**
+	 * Enter description here ...
+	 * 
+	 * @param unknown_type $aReponse
+	 */
+	function reponse($aReponse)
+	{
 
 		$this->reponse = $aReponse;
 
 	}
 
-	function verif ($aLogin, $aPasswd)
+	/**
+	 * Enter description here ...
+	 * 
+	 * @param unknown_type $aLogin
+	 * @param unknown_type $aPasswd
+	 */
+	function verif($aLogin, $aPasswd)
 	{
 		global $conf,$dolibarr_main_authentication,$langs;
 
@@ -75,7 +104,7 @@ class Auth {
         $authmode=explode(',',$dolibarr_main_authentication);
 
         // No authentication mode
-        if (! sizeof($authmode) && empty($conf->login_method_modules))
+        if (! count($authmode) && empty($conf->login_method_modules))
         {
             $langs->load('main');
             dol_print_error('',$langs->trans("ErrorConfigParameterNotDefined",'dolibarr_main_authentication'));
@@ -89,7 +118,7 @@ class Auth {
         if (is_array($conf->login_method_modules) && !empty($conf->login_method_modules))
         {
             include_once(DOL_DOCUMENT_ROOT . "/lib/security.lib.php");
-            $login = getLoginMethod();
+            $login = getLoginMethod($_POST["username"],$_POST["password"],$_POST["entity"]);
             if ($login) $test=false;
         }
 
@@ -110,8 +139,8 @@ class Auth {
                     $result=include_once($authfile);
                     if ($result)
                     {
-                        $this->login ($aLogin);
-                        $this->passwd ($aPasswd);
+                        $this->login($aLogin);
+                        $this->passwd($aPasswd);
                         $entitytotest=$conf->entity;
 
                         $function='check_user_password_'.$mode;

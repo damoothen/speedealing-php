@@ -31,13 +31,11 @@ require_once(DOL_DOCUMENT_ROOT ."/core/class/commonobject.class.php");
  */
 class Deplacement extends CommonObject
 {
-	var $db;
-	var $error;
-	var $element='deplacement';
-	var $table_element='deplacement';
-	var $table_element_line = '';
-	var $fk_element = '';
-	var $ismultientitymanaged = 0;	// 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
+	public $element='deplacement';
+	public $table_element='deplacement';
+	public $table_element_line = '';
+	public $fk_element = '';
+	protected $ismultientitymanaged = 0;	// 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
 
 	var $id;
 
@@ -205,7 +203,7 @@ class Deplacement extends CommonObject
 		$sql.= " WHERE rowid = ".$id;
 
 		dol_syslog("Deplacement::fetch sql=".$sql, LOG_DEBUG);
-		$result = $this->db->query($sql) ;
+		$result = $this->db->query($sql);
 		if ( $result )
 		{
 			$obj = $this->db->fetch_object($result);
@@ -341,7 +339,7 @@ class Deplacement extends CommonObject
         $sql.= " WHERE active = ".$active;
 
         dol_syslog("Deplacement::listOfTypes sql=".$sql, LOG_DEBUG);
-        $result = $this->db->query($sql) ;
+        $result = $this->db->query($sql);
         if ( $result )
         {
             $num = $this->db->num_rows($result);

@@ -37,15 +37,11 @@ require_once(DOL_DOCUMENT_ROOT."/core/class/commonobject.class.php");
  */
 class Societe extends CommonObject
 {
-    var $db;
-    var $error;
-    var $errors=array();
-
-    var $element='societe';
-    var $table_element = 'societe';
-	var $fk_element='fk_soc';
-    var $childtables=array("propal","commande","facture","contrat","facture_fourn","commande_fournisseur");
-    var $ismultientitymanaged = 1;	// 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
+    public $element='societe';
+    public $table_element = 'societe';
+	public $fk_element='fk_soc';
+    public $childtables=array("propal","commande","facture","contrat","facture_fourn","commande_fournisseur");
+    protected $ismultientitymanaged = 1;	// 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
 
     var $id;
     var $name;     // TODO obsolete
@@ -138,8 +134,6 @@ class Societe extends CommonObject
     var $commercial_id; //Id du commercial affecte
     var $default_lang;
 
-    var $canvas;
-
     var $ref_int;
     var $import_key;
 
@@ -155,10 +149,9 @@ class Societe extends CommonObject
     /**
      *    Constructor
      *
-     *    @param  DB     handler acces base de donnees
-     *    @param  id     id societe (0 par defaut)
+     *    @param	DoliDB		$DB		Database handler
      */
-    function Societe($DB, $id=0)
+    public function Societe($DB)
     {
         global $conf;
 
@@ -851,7 +844,7 @@ class Societe extends CommonObject
         $sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_pays as p ON l.fk_pays = p.rowid";
         $sql .= " WHERE l.rowid = ".$id;
 
-        $result = $this->db->query($sql) ;
+        $result = $this->db->query($sql);
 
         if ( $result )
         {
@@ -1084,7 +1077,7 @@ class Societe extends CommonObject
         global $conf;
 
         $sql = "SELECT nom as name FROM ".MAIN_DB_PREFIX."societe WHERE rowid = '".$this->id."'";
-        $resql=$this->db->query( $sql);
+        $resql=$this->db->query($sql);
         if ($resql)
         {
             if ($this->db->num_rows($resql))
@@ -1151,7 +1144,7 @@ class Societe extends CommonObject
             $sql.= " WHERE prefix_comm = '".$prefix."'";
             $sql.= " AND entity = ".$conf->entity;
 
-            $resql=$this->db->query( $sql);
+            $resql=$this->db->query($sql);
             if ($resql)
             {
                 $obj=$this->db->fetch_object($resql);
@@ -1376,7 +1369,7 @@ class Societe extends CommonObject
         if ($this->id)
         {
         	$now=dol_now();
-        	
+
             $sql  = "UPDATE ".MAIN_DB_PREFIX."societe ";
             $sql .= " SET price_level = '".$price_level."'";
             $sql .= " WHERE rowid = " . $this->id;
@@ -1913,7 +1906,7 @@ class Societe extends CommonObject
             $mod = new $var;
 
             dol_syslog("Societe::check_codefournisseur code_fournisseur=".$this->code_fournisseur." module=".$var);
-            $result = $mod->verif($this->db, $this->code_fournisseur, $this ,1);
+            $result = $mod->verif($this->db, $this->code_fournisseur, $this, 1);
             return $result;
         }
         else
@@ -2118,7 +2111,7 @@ class Societe extends CommonObject
 
                 if ($ps > 9)
                 {
-                    $ps = substr($ps, 0,1) + substr($ps, 1 ,1);
+                    $ps = substr($ps, 0,1) + substr($ps, 1, 1);
                 }
                 $sum = $sum + $ps;
             }
@@ -2516,8 +2509,11 @@ class Societe extends CommonObject
 
 
     /**
-     *      Initialise an example of company with random values
-     *      Used to build previews or test instances
+     *  Initialise an instance with random values.
+     *  Used to build previews or test instances.
+     *	id must be 0 if object instance is a specimen.
+     *
+     *  @return	void
      */
     function initAsSpecimen()
     {

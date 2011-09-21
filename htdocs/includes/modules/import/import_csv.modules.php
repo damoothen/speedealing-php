@@ -167,8 +167,7 @@ class ImportCsv extends ModeleImports
 
 		ini_set('auto_detect_line_endings',1);	// For MAC compatibility
 
-		$newfile=utf8_check($file)?utf8_decode($file):$file;	// fopen need ISO file name
-		$this->handle = fopen($newfile, "r");
+		$this->handle = fopen(dol_osencode($file), "r");
 		if (! $this->handle)
 		{
 			$langs->load("errors");
@@ -246,7 +245,7 @@ class ImportCsv extends ModeleImports
 				}
 			}
 
-			$this->col=sizeof($newarrayres);
+			$this->col=count($newarrayres);
 		}
 
 		return $newarrayres;
@@ -289,8 +288,8 @@ class ImportCsv extends ModeleImports
 
 		//var_dump($sort_array_match_file_to_database);
 
-		if (sizeof($arrayrecord) == 0 ||
-		(sizeof($arrayrecord) == 1 && empty($arrayrecord[0]['val'])))
+		if (count($arrayrecord) == 0 ||
+		(count($arrayrecord) == 1 && empty($arrayrecord[0]['val'])))
 		{
 			//print 'W';
 			$this->warnings[$warning]['lib']=$langs->trans('EmptyLine');

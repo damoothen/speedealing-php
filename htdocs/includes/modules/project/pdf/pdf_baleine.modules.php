@@ -105,7 +105,7 @@ class pdf_baleine extends ModelePDFProjects
 
 		if ($conf->projet->dir_output)
 		{
-			$nblignes = sizeof($object->lines);
+			$nblignes = count($object->lines);
 
 			$default_font_size = pdf_getPDFFontsize($outputlangs);
 
@@ -139,7 +139,7 @@ class pdf_baleine extends ModelePDFProjects
 				$tasksarray = $task->getTasksArray(0,0,$object->id);
 
 				$object->lines=$tasksarray;
-				$nblignes=sizeof($object->lines);
+				$nblignes=count($object->lines);
 
 				$pdf->Open();
 				$pagenb=0;
@@ -172,7 +172,7 @@ class pdf_baleine extends ModelePDFProjects
 				if (! empty($object->note_public))
 				{
 					$pdf->SetFont('','', $default_font_size - 1);
-					$pdf->SetXY ($this->posxref-1, $tab_top-2);
+					$pdf->SetXY($this->posxref-1, $tab_top-2);
 					$pdf->MultiCell(190, 3, $outputlangs->convToOutputCharset($object->note_public), 0, 'L');
 					$nexY = $pdf->GetY();
 					$height_note=$nexY-($tab_top-2);
@@ -309,7 +309,7 @@ class pdf_baleine extends ModelePDFProjects
 		$pdf->SetTextColor(0,0,0);
 		$pdf->SetFont('','', $default_font_size);
 
-		$pdf->SetXY ($this->posxref-1, $tab_top+2);
+		$pdf->SetXY($this->posxref-1, $tab_top+2);
 		$pdf->MultiCell(80,2, $outputlangs->transnoentities("Tasks"),'','L');
 
 	}
@@ -359,7 +359,7 @@ class pdf_baleine extends ModelePDFProjects
 		$pdf->SetFont('','B', $default_font_size + 3);
 		$pdf->SetXY($posx,$posy);
 		$pdf->SetTextColor(0,0,60);
-		$pdf->MultiCell(100, 4, $outputlangs->transnoentities("Project")." ".$outputlangs->convToOutputCharset($object->ref), '' , 'R');
+		$pdf->MultiCell(100, 4, $outputlangs->transnoentities("Project")." ".$outputlangs->convToOutputCharset($object->ref), '', 'R');
 		$pdf->SetFont('','', $default_font_size + 2);
 
 		$posy+=6;
@@ -382,7 +382,7 @@ class pdf_baleine extends ModelePDFProjects
 	    	if ($objecttype == 'commande')
 	    	{
 	    		$outputlangs->load('orders');
-	    		$num=sizeof($objects);
+	    		$num=count($objects);
 	    		for ($i=0;$i<$num;$i++)
 	    		{
 	    			$posy+=4;

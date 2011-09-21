@@ -393,7 +393,7 @@ class ProductFournisseur extends Product
         $sql.= " AND entity = ".$conf->entity;
 
         dol_syslog(get_class($this)."::fetch_fourn_data sql=".$sql);
-        $result = $this->db->query($sql) ;
+        $result = $this->db->query($sql);
         if ($result)
         {
             $result = $this->db->fetch_array($result);
@@ -425,7 +425,7 @@ class ProductFournisseur extends Product
         $sql.= " AND pf.rowid = pfp.fk_product_fournisseur";
 
         dol_syslog(get_class($this)."::fetch_product_fournisseur_price sql=".$sql, LOG_DEBUG);
-        $resql = $this->db->query($sql) ;
+        $resql = $this->db->query($sql);
         if ($resql)
         {
             $obj = $this->db->fetch_object($resql);
@@ -489,7 +489,7 @@ class ProductFournisseur extends Product
         {
             $prod_fourn = array();
 
-            while ($record = $this->db->fetch_array ($resql))
+            while ($record = $this->db->fetch_array($resql))
             {
                 //define base attribute
                 $prodfourn = new ProductFournisseur($this->db);
@@ -571,7 +571,7 @@ class ProductFournisseur extends Product
         $resql = $this->db->query($sql);
         if ($resql)
         {
-            $record = $this->db->fetch_array ($resql);
+            $record = $this->db->fetch_array($resql);
             $this->product_fourn_price_id = $record["product_fourn_pri_id"];
             $this->product_fourn_id       = $record["product_fourn_id"];
             $this->fourn_ref              = $record["ref_fourn"];

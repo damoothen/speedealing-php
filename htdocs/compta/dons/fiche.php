@@ -38,7 +38,7 @@ $mesg="";
 $mesgs=array();
 
 $don = new Don($db);
-$donation_date=dol_mktime(12, 0 , 0, $_POST["remonth"], $_POST["reday"], $_POST["reyear"]);
+$donation_date=dol_mktime(12, 0, 0, $_POST["remonth"], $_POST["reday"], $_POST["reyear"]);
 
 
 /*
@@ -232,7 +232,7 @@ if ($_REQUEST['action'] == 'builddoc')
 	}
 	else
 	{
-		Header ('Location: '.$_SERVER["PHP_SELF"].'?rowid='.$donation->id.(empty($conf->global->MAIN_JUMP_TAG)?'':'#builddoc'));
+		Header('Location: '.$_SERVER["PHP_SELF"].'?rowid='.$donation->id.(empty($conf->global->MAIN_JUMP_TAG)?'':'#builddoc'));
 		exit;
 	}
 }
