@@ -4,6 +4,7 @@
  * Copyright (C) 2004-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2004      Eric Seigne          <eric.seigne@ryxeo.com>
  * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2011      Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -97,67 +98,66 @@ if ($id)
     $modules = array();
     $modulesdir = array();
 
-	foreach ($conf->file->dol_document_root as $type => $dirroot)
-	{
-		$modulesdir[] = $dirroot . "/includes/modules/";
+    foreach ($conf->file->dol_document_root as $type => $dirroot)
+    {
+	$modulesdir[] = $dirroot . "/includes/modules/";
 
-		if ($type == 'alt')
+	if ($type == 'alt')
+	{
+		$handle=@opendir($dirroot);
+		if (is_resource($handle))
 		{
-			$handle=@opendir($dirroot);
-			if (is_resource($handle))
+			while (($file = readdir($handle))!==false)
 			{
-				while (($file = readdir($handle))!==false)
-				{
-				    if (is_dir($dirroot.'/'.$file) && substr($file, 0, 1) <> '.' && substr($file, 0, 3) <> 'CVS' && $file != 'includes')
-				    {
-				    	if (is_dir($dirroot . '/' . $file . '/includes/modules/'))
-				    	{
-				    		$modulesdir[] = $dirroot . '/' . $file . '/includes/modules/';
-				    	}
-				    }
-				}
-				closedir($handle);
+			    if (is_dir($dirroot.'/'.$file) && substr($file, 0, 1) <> '.' && substr($file, 0, 3) <> 'CVS' && $file != 'includes')
+			    {
+			    	if (is_dir($dirroot . '/' . $file . '/includes/modules/'))
+			    	{
+			    		$modulesdir[] = $dirroot . '/' . $file . '/includes/modules/';
+			    	}
+			    }
 			}
+			closedir($handle);
 		}
 	}
+    }
 
-    foreach ($modulesdir as $dir)
+    foreach($modulesdir as $dir)
     {
-        // Load modules attributes in arrays (name, numero, orders) from dir directory
-        //print $dir."\n<br>";
-        $handle=@opendir($dir);
-        if (is_resource($handle))
-        {
-            while (($file = readdir($handle))!==false)
-            {
-                if (is_readable($dir.$file) && substr($file, 0, 3) == 'mod'  && substr($file, dol_strlen($file) - 10) == '.class.php')
-                {
-                    $modName = substr($file, 0, dol_strlen($file) - 10);
+	$handle=opendir($dir);
+    if (is_resource($handle))
+    {
+    	while (($file = readdir($handle))!==false)
+    	{
+    	    if (is_readable($dir.$file) && substr($file, 0, 3) == 'mod'  && substr($file, dol_strlen($file) - 10) == '.class.php')
+    	    {
+    	        $modName = substr($file, 0, dol_strlen($file) - 10);
 
-                    if ($modName)
-                    {
-                        include_once($dir."/".$file);
-                        $objMod = new $modName($db);
-                        // Load all lang files of module
-                        if (isset($objMod->langfiles) && is_array($objMod->langfiles))
-                        {
-                            foreach($objMod->langfiles as $domain)
-                            {
-                                $langs->load($domain);
-                            }
-                        }
-                        // Load all permissions
-                        if ($objMod->rights_class) {
+    	        if ($modName)
+    	        {
+    	            include_once($dir.$file);
+    	            $objMod = new $modName($db);
 
-                            $ret=$objMod->insert_permissions(0);
+    	            // Load all lang files of module
+    	            if (isset($objMod->langfiles) && is_array($objMod->langfiles))
+    	            {
+    	            	foreach($objMod->langfiles as $domain)
+    	            	{
+    	            		$langs->load($domain);
+    	            	}
+    	            }
+    	            // Load all permissions
+    	            if ($objMod->rights_class)
+    	            {
+    	                $ret=$objMod->insert_permissions(0);
 
-                            $modules[$objMod->rights_class]=$objMod;
-                            //print "modules[".$objMod->rights_class."]=$objMod;";
-                        }
-                    }
-                }
-            }
-        }
+    	                $modules[$objMod->rights_class]=$objMod;
+    	                //print "modules[".$objMod->rights_class."]=$objMod;";
+    	            }
+    	        }
+    	    }
+    	}
+    }
     }
 
     $db->commit();
@@ -169,8 +169,19 @@ if ($id)
     $sql.= " FROM ".MAIN_DB_PREFIX."rights_def as r";
     $sql.= ", ".MAIN_DB_PREFIX."usergroup_rights as ugr";
     $sql.= " WHERE ugr.fk_id = r.id";
-    $sql.= " AND r.entity = ".(empty($conf->multicompany->enabled) ? $conf->entity : $fgroup->entity);
+    if(!empty($conf->multicompany->enabled))
+    {
+        if(empty($conf->global->MULTICOMPANY_TRANSVERSE_MODE))
+            $sql.= " AND r.entity = ".$conf->entity;
+        else
+            $sql.= " AND r.entity in (0,1)";
+    }
+    else 
+        $sql.= " AND r.entity = ".$fgroup->entity;
+        
     $sql.= " AND ugr.fk_usergroup = ".$fgroup->id;
+    
+    //print $sql;exit;
 
     $result=$db->query($sql);
 
@@ -234,9 +245,21 @@ if ($id)
     $sql = "SELECT r.id, r.libelle, r.module";
     $sql.= " FROM ".MAIN_DB_PREFIX."rights_def as r";
     $sql.= " WHERE r.libelle NOT LIKE 'tou%'";    // On ignore droits "tous"
-    $sql.= " AND r.entity = ".(empty($conf->multicompany->enabled) ? $conf->entity : $fgroup->entity);
+    //$sql.= " AND r.entity = ".(empty($conf->multicompany->enabled) ? $conf->entity : $fgroup->entity);
+    if(!empty($conf->multicompany->enabled))
+    {
+        if(empty($conf->global->MULTICOMPANY_TRANSVERSE_MODE))
+            $sql.= " AND r.entity = ".$conf->entity;
+        else
+            $sql.= " AND r.entity in (0,1)";
+    }
+    else 
+        $sql.= " AND r.entity = ".$fgroup->entity;
+
     if (empty($conf->global->MAIN_USE_ADVANCED_PERMS)) $sql.= " AND r.perms NOT LIKE '%_advance'";  // Hide advanced perms if option is disable
     $sql.= " ORDER BY r.module, r.id";
+    
+    //print $sql;exit;
 
     $result=$db->query($sql);
     if ($result)

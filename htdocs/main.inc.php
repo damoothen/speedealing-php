@@ -7,6 +7,7 @@
  * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2011      Philippe Grand       <philippe.grand@atoo-net.com>
  * Copyright (C) 2008      Matteli
+ * Copyright (C) 2011      Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -771,7 +772,7 @@ if (!empty($conf->global->MAIN_MODULE_MULTICOMPANY))
 		if ($res)
 		{
 			$mc = new ActionsMulticompany($db);
-
+                        
 			if($mc->switchEntity(GETPOST('entity')) >= 0)
 			{
 				Header("Location: ".DOL_URL_ROOT.'/');
