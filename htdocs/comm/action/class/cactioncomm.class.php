@@ -56,10 +56,10 @@ class CActionComm
     }
 
     /**
-     *  Charge l'objet type d'action depuis la base
+     *  Load action type from database
      *
-     *  @param      id          id ou code du type d'action a recuperer
-     *  @return     int         1=ok, 0=aucune action, -1=erreur
+     *  @param	int		$id     id or code of action type to read
+     *  @return int 			1=ok, 0=not found, -1=error
      */
     function fetch($id)
     {
@@ -69,6 +69,7 @@ class CActionComm
         if (is_numeric($id)) $sql.= " WHERE id=".$id;
         else $sql.= " WHERE code='".$id."'";
 
+        dol_syslog(get_class($this)."::fetch sql=".$sql);
         $resql=$this->db->query($sql);
         if ($resql)
         {
@@ -99,16 +100,18 @@ class CActionComm
         }
     }
 
-	/*
-	*    \brief      Renvoi la liste des types d'actions existant
-	*    \param      active      1 ou 0 pour un filtre sur l'etat actif ou non ('' par defaut = pas de filtre)
-        *    \param      type        0 for graph, 1 rendez-vous, 2 task, 3 project task
-	*    \return     array       Tableau des types d'actions actifs si ok, <0 si erreur
-	*/
-	function liste_array($active='',$idorcode='id',$type='1,2')
-	{
-		global $langs,$conf;
-		$langs->load("commercial");
+    /**
+     *    Return list of event types
+     *
+     *    @param    int			$active     1 or 0 to filter on event state active or not ('' by default = no filter)
+     *    @param    type        0 for graph, 1 rendez-vous, 2 task, 3 project task
+     *    @param	string		$idorcode	'id' or 'code'
+     *    @return   array       			Array of all event types if OK, <0 if KO
+     */
+    function liste_array($active='',$idorcode='id')
+    {
+        global $langs,$conf;
+        $langs->load("commercial");
 
         $repid = array();
         $repcode = array();
@@ -122,7 +125,7 @@ class CActionComm
 		$sql.=" AND type in(".$type.")";
 		$sql.= " ORDER BY module, position";
 
-		dol_syslog("CActionComm::liste_array sql=".$sql);
+		dol_syslog(get_class($this)."::liste_array sql=".$sql);
 		$resql=$this->db->query($sql);
 		if ($resql)
 		{
@@ -165,15 +168,15 @@ class CActionComm
 	}
 
 
-	/**
-	*   \brief      Renvoie le nom sous forme d'un libelle traduit d'un type d'action
-	*	\param		withpicto		0=Pas de picto, 1=Inclut le picto dans le lien, 2=Picto seul
-	*	\param		option			Sur quoi pointe le lien
-	*   \return     string      	Libelle du type d'action
-	*/
-	function getNomUrl($withpicto=0)
-	{
-		global $langs;
+    /**
+     *  Return name of action type as a label translated
+     *
+     *	@param	int		$withpicto		0=No picto, 1=Include picto into link, 2=Picto only
+     *  @return string			      	Label of action type
+     */
+    function getNomUrl($withpicto=0)
+    {
+        global $langs;
 
 		// Check if translation available
 		$transcode=$langs->trans("Action".$this->code);
