@@ -161,11 +161,9 @@ class Import
 						}
 					}
 				}
+                                closedir($handle);
 			}
-                        closedir($handle);
 		}
-                print $dir."<br>";
-		
 	}
 
 
