@@ -163,6 +163,7 @@ class Import
 				}
 			}
 		}
+                print $handle."<br>";
 		closedir($handle);
 	}
 
