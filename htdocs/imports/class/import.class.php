@@ -162,9 +162,10 @@ class Import
 					}
 				}
 			}
+                        closedir($handle);
 		}
                 print $dir."<br>";
-		closedir($handle);
+		
 	}
 
 
