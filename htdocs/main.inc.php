@@ -28,7 +28,7 @@
  *	\version    $Id: main.inc.php,v 1.756 2011/07/31 23:19:05 eldy Exp $
  */
 
-@ini_set('memory_limit', '64M');	// This may be useless if memory is hard limited by your PHP
+@ini_set('memory_limit', '128M');	// This may be useless if memory is hard limited by your PHP
 
 // For optionnal tuning. Enabled if environment variable DOL_TUNING is defined.
 // A call first. Is the equivalent function dol_microtime_float not yet loaded.
