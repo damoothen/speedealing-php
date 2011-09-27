@@ -53,6 +53,7 @@ class Canvas
 	function __construct($DB, $actiontype='view')
 	{
 		$this->db = $DB;
+
 		$this->actiontype = $actiontype;
         if ($this->actiontype == 'add')    $this->actiontype='create';
 		if ($this->actiontype == 'update') $this->actiontype='edit';
