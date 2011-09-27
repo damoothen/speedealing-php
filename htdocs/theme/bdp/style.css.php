@@ -16,14 +16,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  *		\file       htdocs/theme/eldy/style.css.php
  *		\brief      Fichier de style CSS du theme bdp
- *		\version    $Id: style.css.php,v 1.6 2011/07/06 11:40:22 eldy Exp $
  */
 
 //if (! defined('NOREQUIREUSER')) define('NOREQUIREUSER','1');	// Not disabled cause need to load personalized language
@@ -201,7 +199,9 @@ div.float
     float:<?php print $left; ?>;
 }
 
-/* For hide object and add pointer cursor */
+/* ============================================================================== */
+/* Styles to hide objects                                                         */
+/* ============================================================================== */
 
 .hideobject { display: none; }
 <?php if (! empty($conf->browser->phone)) { ?>
@@ -209,7 +209,9 @@ div.float
 <?php } ?>
 .linkobject { cursor: pointer; }
 
-/* For dragging lines */
+/* ============================================================================== */
+/* Styles for dragging lines                                                      */
+/* ============================================================================== */
 
 .dragClass {
 	color: #002255;
@@ -331,7 +333,7 @@ a.tmenu:link, a.tmenu:visited, a.tmenu:hover, a.tmenu:active {
 	/* font-weight: bold; */
     font-family: <?php print $fontlist ?>;
 	white-space: nowrap;
-    /* height: 40px; */
+    /*height: 40px;*/
     -moz-border-radius-topleft:8px;
     -moz-border-radius-topright:8px;
     border-top-left-radius:8px;
@@ -591,8 +593,15 @@ img.login, img.printer, img.entity {
 /* Menu gauche                                                                    */
 /* ============================================================================== */
 
-<?php if ((GETPOST("optioncss") == 'print')
-|| (! empty($conf->browser->phone) && empty($conf->global->MAIN_SEARCHFORM_WITH_SMARTHPONE) && empty($conf->global->BOOKMARKS_SHOW_WITH_SMARTHPONE))) { ?>
+td.vmenu {
+    margin-<?php print $right; ?>: 2px;
+    padding: 0px;
+    padding-bottom: 0px;
+    padding-top: 1px;
+    width: 200px;
+}
+
+<?php if (GETPOST("optioncss") == 'print') { ?>
 .vmenu {
     display: none;
 }
@@ -666,6 +675,7 @@ div.menu_titre
     padding-left:0px;
     margin-top: 8px;
     margin: 0px;
+    height: 16px;
     text-align: left;
     font-size : 12px;
     color : #FFFFFF;
@@ -883,46 +893,42 @@ td.photo {
  *  RESIZER-BARS
  */
 .ui-layout-resizer  { /* all 'resizer-bars' */
-    background:     #FFF;
-    border:         1px solid #BBB;
-    border-width:   0;
+	width: 8px !important;
+}
+.ui-layout-resizer-hover    {   /* affects both open and closed states */
+}
+/* NOTE: It looks best when 'hover' and 'dragging' are set to the same color,
+    otherwise color shifts while dragging when bar can't keep up with mouse */
+/*.ui-layout-resizer-open-hover ,*/ /* hover-color to 'resize' */
+.ui-layout-resizer-dragging {   /* resizer beging 'dragging' */
+    background: #DDD;
+    width: 8px;
+}
+.ui-layout-resizer-dragging {   /* CLONED resizer being dragged */
+    border-left:  1px solid #BBB;
+    border-right: 1px solid #BBB;
+}
+/* NOTE: Add a 'dragging-limit' color to provide visual feedback when resizer hits min/max size limits */
+.ui-layout-resizer-dragging-limit { /* CLONED resizer at min or max size-limit */
+    background: #E1A4A4; /* red */
+}
+.ui-layout-resizer-closed:hover {
+    background-color: #EEDDDD;
+}
+.ui-layout-resizer-sliding {    /* resizer when pane is 'slid open' */
+    opacity: .10; /* show only a slight shadow */
+    filter:  alpha(opacity=10);
     }
-    .ui-layout-resizer-drag {       /* REAL resizer while resize in progress */
+    .ui-layout-resizer-sliding-hover {  /* sliding resizer - hover */
+        opacity: 1.00; /* on-hover, show the resizer-bar normally */
+        filter:  alpha(opacity=100);
     }
-    .ui-layout-resizer-hover    {   /* affects both open and closed states */
-    }
-    /* NOTE: It looks best when 'hover' and 'dragging' are set to the same color,
-        otherwise color shifts while dragging when bar can't keep up with mouse */
-    /*.ui-layout-resizer-open-hover ,*/ /* hover-color to 'resize' */
-    .ui-layout-resizer-dragging {   /* resizer beging 'dragging' */
-        background: #AAA;
-    }
-    .ui-layout-resizer-dragging {   /* CLONED resizer being dragged */
-        border-left:  1px solid #BBB;
-        border-right: 1px solid #BBB;
-    }
-    /* NOTE: Add a 'dragging-limit' color to provide visual feedback when resizer hits min/max size limits */
-    .ui-layout-resizer-dragging-limit { /* CLONED resizer at min or max size-limit */
-        background: #E1A4A4; /* red */
-    }
-
-    .ui-layout-resizer-closed-hover { /* hover-color to 'slide open' */
-        background: #EBD5AA;
-    }
-    .ui-layout-resizer-sliding {    /* resizer when pane is 'slid open' */
-        opacity: .10; /* show only a slight shadow */
-        filter:  alpha(opacity=10);
-        }
-        .ui-layout-resizer-sliding-hover {  /* sliding resizer - hover */
-            opacity: 1.00; /* on-hover, show the resizer-bar normally */
-            filter:  alpha(opacity=100);
-        }
-        /* sliding resizer - add 'outside-border' to resizer on-hover
-         * this sample illustrates how to target specific panes and states */
-        .ui-layout-resizer-north-sliding-hover  { border-bottom-width:  1px; }
-        .ui-layout-resizer-south-sliding-hover  { border-top-width:     1px; }
-        .ui-layout-resizer-west-sliding-hover   { border-right-width:   1px; }
-        .ui-layout-resizer-east-sliding-hover   { border-left-width:    1px; }
+/* sliding resizer - add 'outside-border' to resizer on-hover
+ * this sample illustrates how to target specific panes and states */
+.ui-layout-resizer-north-sliding-hover  { border-bottom-width:  1px; }
+.ui-layout-resizer-south-sliding-hover  { border-top-width:     1px; }
+.ui-layout-resizer-west-sliding-hover   { border-right-width:   1px; }
+.ui-layout-resizer-east-sliding-hover   { border-left-width:    1px; }
 
 /*
  *  TOGGLER-BUTTONS
