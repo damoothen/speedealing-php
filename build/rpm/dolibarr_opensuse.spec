@@ -11,7 +11,7 @@ Version: __VERSION__
 Release: __RELEASE__
 Summary: ERP and CRM software for small and medium companies or foundations 
 Summary(es): Software ERP y CRM para pequeñas y medianas empresas, asociaciones o autónomos
-Summary(fr): Logiciel ERP & CRM de gestion de PME/PMI, autoentrepreneurs ou associations
+Summary(fr): Logiciel ERP & CRM de gestion de PME/PMI, auto-entrepreneurs ou associations
 Summary(it): Programmo gestionale per piccole imprese, fondazioni e liberi professionisti
 
 License: GPLv2+
@@ -19,7 +19,7 @@ License: GPLv2+
 Vendor: Dolibarr dev team
 
 URL: http://www.dolibarr.org
-Source0: http://www.dolibarr.org/files/opensuse/%{name}-%{version}.tgz
+Source0: http://www.dolibarr.org/files/lastbuild/package_rpm_opensuse/%{name}-%{version}.tgz
 Patch0: %{name}-forrpm.patch
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-build
@@ -27,6 +27,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-build
 Group: Productivity/Office/Management
 Requires: apache2, apache2-mod_php5, php5 >= 5.3.0, php5-gd, php5-ldap, php5-imap, php5-mysql, php5-openssl, fonts-ttf-dejavu
 Requires: mysql-community-server, mysql-community-server-client 
+BuildRequires: update-desktop-files fdupes
 
 # Set yes to build test package, no for release (this disable need of /usr/bin/php not found by OpenSuse)
 AutoReqProv: no
@@ -118,7 +119,7 @@ done >%{name}.lang
 #%suse_update_desktop_file dolibarr
 
 # Enable this command to allow suse detection of duplicate files and create hardlinks instead
-#%fdupes
+#%fdupes $RPM_BUILD_ROOT%{_datadir}/%{name}/htdocs
 
 
 #---- clean

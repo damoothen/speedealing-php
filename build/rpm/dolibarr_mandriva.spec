@@ -11,7 +11,7 @@ Version: __VERSION__
 Release: __RELEASE__
 Summary: ERP and CRM software for small and medium companies or foundations 
 Summary(es): Software ERP y CRM para pequeñas y medianas empresas, asociaciones o autónomos
-Summary(fr): Logiciel ERP & CRM de gestion de PME/PMI, autoentrepreneurs ou associations
+Summary(fr): Logiciel ERP & CRM de gestion de PME/PMI, auto-entrepreneurs ou associations
 Summary(it): Programmo gestionale per piccole imprese, fondazioni e liberi professionisti
 
 License: GPLv2+
@@ -19,7 +19,7 @@ License: GPLv2+
 Vendor: Dolibarr dev team
 
 URL: http://www.dolibarr.org
-Source0: http://www.dolibarr.org/files/mandriva/%{name}-%{version}.tgz
+Source0: http://www.dolibarr.org/files/lastbuild/package_rpm_mandriva/%{name}-%{version}.tgz
 Patch0: %{name}-forrpm.patch
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-build

@@ -40,52 +40,57 @@ class ActionsCardProduct extends Product
     public $list_datas = array();
 
 
-	/**
+    /**
 	 *    Constructor
 	 *
-     *    @param   DoliDB	$DB             Handler acces base de donnees
-     *    @param   string	$targetmodule   Name of directory of module where canvas is stored
-     *    @param   string	$canvas         Name of canvas
-     *    @param   string	$card           Name of tab (sub-canvas)
+     *    @param	DoliDB	$DB             Database handler
+     *    @param	string	$dirmodule		Name of directory of module
+     *    @param	string	$targetmodule	Name of directory where canvas is stored
+     *    @param	string	$canvas         Name of canvas
+     *    @param	string	$card           Name of tab (sub-canvas)
 	 */
-	function ActionsCardProduct($DB,$targetmodule,$canvas,$card)
+	function __construct($DB, $dirmodule, $targetmodule, $canvas, $card)
 	{
-		$this->db 				= $DB;
-		$this->targetmodule     = $targetmodule;
+        $this->db               = $DB;
+        $this->dirmodule		= $dirmodule;
+        $this->targetmodule     = $targetmodule;
         $this->canvas           = $canvas;
         $this->card             = $card;
 
         $this->name 			= "product";
 		$this->definition 		= "Product canvas (défaut)";
 		$this->fieldListName    = "product_default";
-
-		$this->next_prev_filter = "canvas='default'";
+		$this->next_prev_filter = "canvas='product'";
 	}
 
-    /**
-     *  Return the title of card
-     *
-     *  @return	string		Label of card
-     */
-	private function getTitle()
-	{
-		global $langs;
-
-		return $langs->trans("Products");
-	}
 
 	/**
 	 *    Assign custom values for canvas (for example into this->tpl to be used by templates)
 	 *
-	 *    @param    string	$action     Type of action
+	 *    @param	string	&$action    Type of action
+	 *    @param	string	$id			Id of object
+	 *    @param	string	$ref		Ref of object
 	 *    @return	void
 	 */
-	function assign_values($action)
+	function assign_values(&$action, $id=0, $ref='')
 	{
-		global $conf,$langs,$user;
+        global $conf, $langs, $user, $mysoc, $canvas;
 		global $html, $formproduct;
 
-		// canvas
+   		$tmpobject = new Product($this->db);
+   		if (! empty($id) || ! empty($ref)) $tmpobject->fetch($id,$ref);
+        $this->object = $object;
+
+		//parent::assign_values($action);
+
+	    foreach($this->object as $key => $value)
+        {
+            $this->tpl[$key] = $value;
+        }
+
+        $this->tpl['error'] = get_htmloutput_errors($this->object->error,$this->object->errors);
+
+        // canvas
 		$this->tpl['canvas'] = $this->canvas;
 
 		// id
@@ -133,10 +138,16 @@ class ActionsCardProduct extends Product
 
 		if ($action == 'view')
 		{
-			// Ref
-			$this->tpl['ref'] = $html->showrefnav($this,'ref','',1,'ref');
+            $head = product_prepare_head($this->object,$user);
 
-			// Accountancy buy code
+            $this->tpl['showrefnav'] = $html->showrefnav($this->object,'ref','',1,'ref');
+
+    		$titre=$langs->trans("CardProduct".$this->object->type);
+    		$picto=($this->object->type==1?'service':'product');
+    		$this->tpl['showhead']=dol_get_fiche_head($head, 'card', $titre, 0, $picto);
+            $this->tpl['showend']=dol_get_fiche_end();
+
+            // Accountancy buy code
 			$this->tpl['accountancyBuyCodeKey'] = $html->editfieldkey("ProductAccountancyBuyCode",'productaccountancycodesell',$this->accountancy_code_sell,'id',$this->id,$user->rights->produit->creer);
 			$this->tpl['accountancyBuyCodeVal'] = $html->editfieldval("ProductAccountancyBuyCode",'productaccountancycodesell',$this->accountancy_code_sell,'id',$this->id,$user->rights->produit->creer);
 
@@ -196,11 +207,6 @@ class ActionsCardProduct extends Product
 
 		if ($action == 'view')
 		{
-    		$head=product_prepare_head($this->object, $user);
-    		$titre=$langs->trans("CardProduct".$this->object->type);
-    		$picto=($this->object->type==1?'service':'product');
-    		$this->tpl['fiche_head']=dol_get_fiche_head($head, 'card', $titre, 0, $picto);
-
     		// Status
     		$this->tpl['status'] = $this->object->getLibStatut(2,0);
     		$this->tpl['status_buy'] = $this->object->getLibStatut(2,1);
