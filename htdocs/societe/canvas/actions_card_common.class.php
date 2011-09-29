@@ -42,31 +42,15 @@ abstract class ActionsCardCommon
 	var $error;
 	//! Error array
 	var $errors=array();
-
-    /**
-	 *    Constructor
-	 *
-     *    @param	DoliDB	$DB             Database handler
-     *    @param	string	$dirmodule		Name of directory of module
-     *    @param	string	$targetmodule	Name of directory where canvas is stored
-     *    @param	string	$canvas         Name of canvas
-     *    @param	string	$card           Name of tab (sub-canvas)
-	 */
-	function __construct($DB, $dirmodule, $targetmodule, $canvas, $card)
-	{
-        $this->db               = $DB;
-        $this->dirmodule		= $dirmodule;
-        $this->targetmodule     = $targetmodule;
-        $this->canvas           = $canvas;
-        $this->card             = $card;
-	}
 	
+
 	/**
 	 * 	Instantiation of DAO class
-	 * 
+	 *  TODO This method is useless
+	 *
 	 * 	@return	void
 	 */
-	private function getInstanceDao()
+	protected function getInstanceDao()
 	{
 		if (! is_object($this->object))
 		{
@@ -84,25 +68,27 @@ abstract class ActionsCardCommon
 	        }
 		}
 	}
-	
+
 	/**
-     *  Get object
+     *  Get object from id or ref and save it into this->object
 	 *
      *  @param		int			Object id
+     *  @param		ref			Object ref
      *  @return		object		Object loaded
      */
-    function getObject($id)
+    protected function getObject($id,$ref='')
     {
     	$ret = $this->getInstanceDao();
-    	
+
     	if (is_object($this->object) && method_exists($this->object,'fetch'))
     	{
-    		if (! empty($id)) $this->object->fetch($id);
+    		if (! empty($id) || ! empty($ref)) $this->object->fetch($id,$ref);
     	}
     	else
     	{
+    	    // TODO Keep only this part of code. Previous in this method is useless
     		$object = new Societe($this->db);
-    		if (! empty($id)) $object->fetch($id);
+    		if (! empty($id) || ! empty($ref)) $object->fetch($id,$ref);
             $this->object = $object;
     	}
     }
@@ -297,7 +283,7 @@ abstract class ActionsCardCommon
                         Header("Location: ".$_SERVER["PHP_SELF"]."?socid=".$this->object->id);
                         exit;
                     }
-                    
+
                     $oldsoccanvas = dol_clone($this->object);
 
                     // To avoid setting code if third party is not concerned. But if it had values, we keep them.
@@ -379,12 +365,14 @@ abstract class ActionsCardCommon
     }
 
 	/**
-     *  Set content of ->tpl array, to use into template
-     *
-     *  @param      string		$action     Type of action
-     *  @return		string					HTML output
+	 *    Assign custom values for canvas (for example into this->tpl to be used by templates)
+	 *
+	 *    @param	string	&$action    Type of action
+	 *    @param	string	$id			Id of object
+	 *    @param	string	$ref		Ref of object
+	 *    @return	void
      */
-    function assign_values(&$action)
+    function assign_values(&$action, $id=0, $ref='')
     {
         global $conf, $langs, $user, $mysoc, $canvas;
         global $form, $formadmin, $formcompany;
@@ -711,21 +699,11 @@ abstract class ActionsCardCommon
         $this->object->localtax2_assuj		= 	$_POST["localtax2assuj_value"];
 
         // We set pays_id, and pays_code label of the chosen country
-        // TODO move in business class
-        if ($this->object->pays_id)
+        if ($this->object->country_id)
         {
-            $sql = "SELECT code, libelle FROM ".MAIN_DB_PREFIX."c_pays WHERE rowid = ".$this->object->pays_id;
-            $resql=$this->db->query($sql);
-            if ($resql)
-            {
-                $obj = $this->db->fetch_object($resql);
-            }
-            else
-            {
-                dol_print_error($this->db);
-            }
-            $this->object->pays_code	=	$obj->code;
-            $this->object->pays			=	$langs->trans("Country".$obj->code)?$langs->trans("Country".$obj->code):$obj->libelle;
+            $tmparray=getCountry($this->object->country_id,'all',$this->db,$langs,0);
+            $this->object->country_code	=	$tmparray['code'];
+            $this->object->country_label=	$tmparray['label'];
         }
     }
 

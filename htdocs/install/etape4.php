@@ -26,7 +26,6 @@
 
 
 include_once("./inc.php");
-require_once($dolibarr_main_document_root."/lib/databases/".$dolibarr_main_db_type.".lib.php");
 require_once($dolibarr_main_document_root."/core/class/conf.class.php");
 require_once($dolibarr_main_document_root."/lib/admin.lib.php");
 
@@ -70,39 +69,40 @@ print '<br>'.$langs->trans("LastStepDesc").'<br><br>';
 
 print '<table cellspacing="0" cellpadding="2" width="100%">';
 
-$db = new DoliDb($conf->db->type,$conf->db->host,$conf->db->user,$conf->db->pass,$conf->db->name,$conf->db->port);
+$db=getDoliDBInstance($conf->db->type,$conf->db->host,$conf->db->user,$conf->db->pass,$conf->db->name,$conf->db->port);
+
 if ($db->ok == 1)
 {
-	print '<tr><td>'.$langs->trans("DolibarrAdminLogin").' :</td><td>';
-	print '<input name="login" value="'.(! empty($_GET["login"])?$_GET["login"]:$force_install_dolibarrlogin).'"></td></tr>';
-	print '<tr><td>'.$langs->trans("Password").' :</td><td>';
-	print '<input type="password" name="pass"></td></tr>';
-	print '<tr><td>'.$langs->trans("PasswordAgain").' :</td><td>';
-	print '<input type="password" name="pass_verif"></td></tr>';
-	print '</table>';
+    print '<tr><td>'.$langs->trans("DolibarrAdminLogin").' :</td><td>';
+    print '<input name="login" value="'.(! empty($_GET["login"])?$_GET["login"]:$force_install_dolibarrlogin).'"></td></tr>';
+    print '<tr><td>'.$langs->trans("Password").' :</td><td>';
+    print '<input type="password" name="pass"></td></tr>';
+    print '<tr><td>'.$langs->trans("PasswordAgain").' :</td><td>';
+    print '<input type="password" name="pass_verif"></td></tr>';
+    print '</table>';
 
-	if (isset($_GET["error"]) && $_GET["error"] == 1)
-	{
-		print '<br>';
-		print '<div class="error">'.$langs->trans("PasswordsMismatch").'</div>';
-		$err=0;	// We show button
-	}
+    if (isset($_GET["error"]) && $_GET["error"] == 1)
+    {
+        print '<br>';
+        print '<div class="error">'.$langs->trans("PasswordsMismatch").'</div>';
+        $err=0;	// We show button
+    }
 
-	if (isset($_GET["error"]) && $_GET["error"] == 2)
-	{
-		print '<br>';
-		print '<div class="error">';
-		print $langs->trans("PleaseTypePassword");
-		print '</div>';
-		$err=0;	// We show button
-	}
+    if (isset($_GET["error"]) && $_GET["error"] == 2)
+    {
+        print '<br>';
+        print '<div class="error">';
+        print $langs->trans("PleaseTypePassword");
+        print '</div>';
+        $err=0;	// We show button
+    }
 
-	if (isset($_GET["error"]) && $_GET["error"] == 3)
-	{
-		print '<br>';
-		print '<div class="error">'.$langs->trans("PleaseTypeALogin").'</div>';
-		$err=0;	// We show button
-	}
+    if (isset($_GET["error"]) && $_GET["error"] == 3)
+    {
+        print '<br>';
+        print '<div class="error">'.$langs->trans("PleaseTypeALogin").'</div>';
+        $err=0;	// We show button
+    }
 
 }
 
