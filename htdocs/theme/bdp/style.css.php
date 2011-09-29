@@ -484,6 +484,10 @@ div.mainmenu.google {
 div.mainmenu.dropbox {
 	background-image: url(<?php echo DOL_URL_ROOT.'/theme/bdp/img/menus/dropbox.png' ?>);
 }
+
+div.mainmenu.docgen {
+	background-image: url(<?php echo DOL_URL_ROOT.'/theme/bdp/img/menus/docgen.png' ?>);
+}
 <?php
 // Add here more div for other menu entries. moduletomainmenu=array('module name'=>'name of class for div')
 
@@ -503,7 +507,7 @@ foreach($conf->modules as $key => $val)
 $mainmenuusedarray=array_unique(explode(',',$mainmenuused));
 
 $generic=1;
-$divalreadydefined=array('home','companies','products','commercial','accountancy','project','tools','members','shop','agenda','ecm','cashdesk','webcal','google','dropbox');
+$divalreadydefined=array('home','companies','products','commercial','accountancy','project','tools','members','shop','agenda','ecm','cashdesk','webcal','google','dropbox','docgen');
 foreach($mainmenuusedarray as $key => $val)
 {
 	if (empty($val) || in_array($val,$divalreadydefined)) continue;
