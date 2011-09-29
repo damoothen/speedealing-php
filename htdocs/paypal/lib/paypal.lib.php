@@ -304,8 +304,6 @@ $shipToName, $shipToStreet, $shipToCity, $shipToState, $shipToCountryCode, $ship
     //$nvpstr = $nvpstr . "&CUSTOMERSERVICENUMBER=" . urlencode($tag);
     $nvpstr = $nvpstr . "&INVNUM=" . urlencode($tag);
 
-
-
     $_SESSION["currencyCodeType"] = $currencyCodeType;
     $_SESSION["PaymentType"] = $paymentType;
 
