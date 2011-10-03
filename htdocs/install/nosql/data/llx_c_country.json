@@ -26,22 +26,23 @@
 
 {
 	"US" : "United States",
-	"district" : [
-					{
-						"name" : "United States",
-						"county" : [
-										{
-											"code" : "AL",
-											"nom" : "Alabama"
-										},
-										{
-											"code" : "AK",
-											"name" : "Alaska"
-										}
-									]
-					}
-				
-				]
+	"district" :
+	[
+		{
+			"name" : "United States",
+			"county" :
+			[
+				{
+					"code" : "AL",
+					"nom" : "Alabama"
+				},
+				{
+					"code" : "AK",
+					"name" : "Alaska"
+				}
+			]
+		}
+	]
 },
 {"CA":"Canada"},
 {"AF":"Afghanistan"},
@@ -114,39 +115,42 @@
 {"FO":"Faroe Islands"},
 {"FJ":"Fiji"},
 {
-	"FI":"Finland"
+	"FI" : "Finland"
 },
 {
-	"FR":"France",
-	"district" : [
-					{
-						"name" : "Alsace",
-						"tncc" : 1,
-						"county" : [
-										{
-											"code" : 67,
-											"tncc" : 2,
-											"name" : "Bas-Rhin"
-										},
-										{
-											"code" : 68,
-											"tncc" : 2,
-											"name" : "Haut-Rhin"
-										}
-									]
-					},
-					{
-						"name" : "Aquitaine",
-						"tncc" : 1,
-						"county" : [
-										{
-											"code" : 24,
-											"tncc" : 3,
-											"name" : "Dordogne"
-										}
-									]
-					}
-				]
+	"FR" : "France",
+	"district" :
+	[
+		{
+			"name" : "Alsace",
+			"tncc" : 1,
+			"county" :
+			[
+				{
+					"code" : 67,
+					"tncc" : 2,
+					"name" : "Bas-Rhin"
+				},
+				{
+					"code" : 68,
+					"tncc" : 2,
+					"name" : "Haut-Rhin"
+				}
+			]
+		},
+		{
+			"name" : "Aquitaine",
+			"tncc" : 1,
+			"county" :
+			[
+				{
+					"code" : 24,
+					"tncc" : 3,
+					"name" : "Dordogne"
+				}
+			]
+		}
+	]
 },
 {"FX":"France, Metropolitan"},
 {"GF":"French Guiana"},
