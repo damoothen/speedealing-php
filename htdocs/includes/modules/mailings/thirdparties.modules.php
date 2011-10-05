@@ -66,6 +66,7 @@ class mailing_thirdparties extends MailingTargets
 		if ($_POST['filter']) $sql.= " LEFT JOIN llx_categorie ON llx_categorie.rowid = llx_categorie_societe.fk_categorie";
 		$sql.= " WHERE s.email != ''";
 		$sql.= " AND s.entity = ".$conf->entity;
+                $sql.= " AND s.fk_stcomm >= 0";
 		if ($_POST['filter']) $sql.= " AND llx_categorie.rowid='".$_POST['filter']."'";
 		$sql.= " ORDER BY s.email";
 

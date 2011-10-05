@@ -64,6 +64,7 @@ class mailing_contacts1 extends MailingTargets
 		$statssql[0].= " AND s.entity = ".$conf->entity;
 		$statssql[0].= " AND c.entity = ".$conf->entity;
 		$statssql[0].= " AND s.client IN (1, 3)";
+                $statssql[0].= " AND s.fk_stcomm >= 0";
 		$statssql[0].= " AND c.email != ''";      // Note that null != '' is false
 
 		return $statssql;

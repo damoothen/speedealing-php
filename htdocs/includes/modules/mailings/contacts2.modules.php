@@ -79,6 +79,7 @@ class mailing_contacts2 extends MailingTargets
     	$sql.= " AND sp.email != ''";  // Note that null != '' is false
     	//$sql.= " AND sp.poste != ''";
     	$sql.= " AND sp.entity = ".$conf->entity;
+        $sql.= " AND s.fk_stcomm >= 0";
     	if ($filtersarray[0]<>'all') $sql.= " AND sp.poste ='".$filtersarray[0]."'";
     	$sql.= " ORDER BY sp.name, sp.firstname";
     	$resql = $this->db->query($sql);
