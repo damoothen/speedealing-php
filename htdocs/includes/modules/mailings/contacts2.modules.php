@@ -155,6 +155,7 @@ class mailing_contacts2 extends MailingTargets
     	$sql.= " FROM ".MAIN_DB_PREFIX."socpeople as sp,";
         $sql.= " ".MAIN_DB_PREFIX."societe as s";
         $sql.= " WHERE s.rowid = sp.fk_soc";
+        $sql.= " AND s.fk_stcomm >= 0";
         $sql.= " AND s.entity = ".$conf->entity;
         $sql.= " AND sp.entity = ".$conf->entity;
     	$sql.= " AND sp.email != ''";  // Note that null != '' is false

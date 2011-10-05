@@ -164,6 +164,7 @@ class mailing_contacts3 extends MailingTargets
         $sql.= " WHERE s.rowid = c.fk_soc";
         $sql.= " AND c.entity = ".$conf->entity;
         $sql.= " AND s.entity = ".$conf->entity;
+        $sql.= " AND s.fk_stcomm >= 0";
         $sql.= " AND c.email != ''"; // Note that null != '' is false
         /*
     	$sql = "SELECT count(distinct(sp.email)) as nb";
