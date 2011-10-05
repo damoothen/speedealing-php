@@ -64,6 +64,7 @@ class mailing_contacts1 extends MailingTargets
 		$statssql[0].= " AND s.entity = ".$conf->entity;
 		$statssql[0].= " AND c.entity = ".$conf->entity;
 		$statssql[0].= " AND s.client IN (1, 3)";
+                $statssql[0].= " AND s.fk_stcomm >= 0";
 		$statssql[0].= " AND c.email != ''";      // Note that null != '' is false
 
 		return $statssql;
@@ -84,6 +85,7 @@ class mailing_contacts1 extends MailingTargets
 		$sql .= " FROM ".MAIN_DB_PREFIX."socpeople as c,";
 		$sql .= " ".MAIN_DB_PREFIX."societe as s";
 		$sql .= " WHERE s.rowid = c.fk_soc";
+                $sql .= " AND s.fk_stcomm >= 0";
 		$sql .= " AND c.entity = ".$conf->entity;
 		$sql .= " AND s.entity = ".$conf->entity;
 		$sql .= " AND c.email != ''"; // Note that null != '' is false
