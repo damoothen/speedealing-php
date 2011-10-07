@@ -907,14 +907,15 @@ class Form
     /**
      *  Return list of products for customer in Ajax if Ajax activated or go to select_produits_do
      *
-     *  @param		selected				Preselected products
-     *  @param		htmlname				Name of HTML seletc field (must be unique in page)
-     *  @param		filtertype				Filter on product type (''=nofilter, 0=product, 1=service)
-     *  @param		limit					Limit on number of returned lines
-     *  @param		price_level				Level of price to show
-     *  @param		status					-1=Return all products, 0=Products not on sell, 1=Products on sell
-     *  @param		finished				2=all, 1=finished, 0=raw material
-     *  @param		$selected_input_value	Value of preselected input text (with ajax)
+     *  @param		int			$selected				Preselected products
+     *  @param		string		$htmlname				Name of HTML seletc field (must be unique in page)
+     *  @param		int			$filtertype				Filter on product type (''=nofilter, 0=product, 1=service)
+     *  @param		int			$limit					Limit on number of returned lines
+     *  @param		int			$price_level			Level of price to show
+     *  @param		int			$status					-1=Return all products, 0=Products not on sell, 1=Products on sell
+     *  @param		int			$finished				2=all, 1=finished, 0=raw material
+     *  @param		string		$selected_input_value	Value of preselected input text (with ajax)
+     *  @return		void
      */
     function select_produits($selected='',$htmlname='productid',$filtertype='',$limit=20,$price_level=0,$status=1,$finished=2,$selected_input_value='',$hidelabel=0)
     {
@@ -947,16 +948,16 @@ class Form
     /**
      *	Return list of products for a customer
      *
-     *	@param      selected        Preselected product
-     *	@param      htmlname        Name of select html
-     *  @param		filtertype      Filter on product type (''=nofilter, 0=product, 1=service)
-     *	@param      limit           Limite sur le nombre de lignes retournees
-     *	@param      price_level     Level of price to show
-     * 	@param      filterkey       Filter on product
-     *	@param		status          -1=Return all products, 0=Products not on sell, 1=Products on sell
-     *  @param      finished        Filter on finished field: 2=No filter
-     *  @param      disableout      Disable print output
-     *  @return     array           Array of keys for json
+     *	@param      int		$selected       Preselected product
+     *	@param      string	$htmlname       Name of select html
+     *  @param		string	$filtertype     Filter on product type (''=nofilter, 0=product, 1=service)
+     *	@param      int		$limit          Limite sur le nombre de lignes retournees
+     *	@param      int		$price_level    Level of price to show
+     * 	@param      string	$filterkey      Filter on product
+     *	@param		int		$status         -1=Return all products, 0=Products not on sell, 1=Products on sell
+     *  @param      int		$finished       Filter on finished field: 2=No filter
+     *  @param      int		$disableout     Disable print output
+     *  @return     array    				Array of keys for json
      */
     function select_produits_do($selected='',$htmlname='productid',$filtertype='',$limit=20,$price_level=0,$filterkey='',$status=1,$finished=2,$disableout=0)
     {
@@ -976,16 +977,16 @@ class Form
             $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product_lang as pl ON pl.fk_product = p.rowid AND pl.lang='". $langs->getDefaultLang() ."'";
         }
         $sql.= ' WHERE p.entity IN (0,'.(! empty($conf->entities['product']) ? $conf->entities['product'] : $conf->entity).')';
-        if($finished == 0)
+        if ($finished == 0)
         {
             $sql.= " AND p.finished = ".$finished;
         }
-        elseif($finished == 1)
+        elseif ($finished == 1)
         {
             $sql.= " AND p.finished = ".$finished;
             if ($status >= 0)  $sql.= " AND p.tosell = ".$status;
         }
-        elseif($status >= 0)
+        elseif ($status >= 0)
         {
             $sql.= " AND p.tosell = ".$status;
         }
@@ -1206,16 +1207,14 @@ class Form
         $langs->load('stocks');
 
         $sql = "SELECT p.rowid, p.label, p.ref, p.price, p.duration,";
-        $sql.= " pf.ref_fourn,";
-        $sql.= " pfp.rowid as idprodfournprice, pfp.price as fprice, pfp.quantity, pfp.unitprice,";
+        $sql.= " pfp.ref_fourn, pfp.rowid as idprodfournprice, pfp.price as fprice, pfp.quantity, pfp.unitprice,";
         $sql.= " s.nom";
         $sql.= " FROM ".MAIN_DB_PREFIX."product as p";
-        $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product_fournisseur as pf ON p.rowid = pf.fk_product";
-        $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."societe as s ON pf.fk_soc = s.rowid";
-        $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product_fournisseur_price as pfp ON pf.rowid = pfp.fk_product_fournisseur";
+        $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product_fournisseur_price as pfp ON p.rowid = pfp.fk_product";
+        $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."societe as s ON pfp.fk_soc = s.rowid";
         $sql.= " WHERE p.entity = ".$conf->entity;
         $sql.= " AND p.tobuy = 1";
-        if ($socid) $sql.= " AND pf.fk_soc = ".$socid;
+        if ($socid) $sql.= " AND pfp.fk_soc = ".$socid;
         if (strval($filtertype) != '') $sql.=" AND p.fk_product_type=".$filtertype;
         if (! empty($filtre)) $sql.=" ".$filtre;
         // Add criteria on ref/label
@@ -1223,14 +1222,14 @@ class Form
         {
 	        if (! empty($conf->global->PRODUCT_DONOTSEARCH_ANYWHERE))
 	        {
-	            $sql.=" AND (pf.ref_fourn LIKE '".$filterkey."%' OR p.ref LIKE '".$filterkey."%' OR p.label LIKE '".$filterkey."%')";
+	            $sql.=" AND (pfp.ref_fourn LIKE '".$filterkey."%' OR p.ref LIKE '".$filterkey."%' OR p.label LIKE '".$filterkey."%')";
 	        }
 	        else
 	        {
-	            $sql.=" AND (pf.ref_fourn LIKE '%".$filterkey."%' OR p.ref LIKE '%".$filterkey."%' OR p.label LIKE '%".$filterkey."%')";
+	            $sql.=" AND (pfp.ref_fourn LIKE '%".$filterkey."%' OR p.ref LIKE '%".$filterkey."%' OR p.label LIKE '%".$filterkey."%')";
 	        }
         }
-        $sql.= " ORDER BY pf.ref_fourn DESC";
+        $sql.= " ORDER BY pfp.ref_fourn DESC";
 
         // Build output string
         $outselect='';
@@ -1353,17 +1352,16 @@ class Form
         $langs->load('stocks');
 
         $sql = "SELECT p.rowid, p.label, p.ref, p.price, p.duration,";
-        $sql.= " pf.ref_fourn,";
-        $sql.= " pfp.rowid as idprodfournprice, pfp.price as fprice, pfp.quantity, pfp.unitprice,";
+        $sql.= " pfp.ref_fourn, pfp.rowid as idprodfournprice, pfp.price as fprice, pfp.quantity, pfp.unitprice,";
         $sql.= " s.nom";
         $sql.= " FROM ".MAIN_DB_PREFIX."product as p";
-        $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product_fournisseur as pf ON p.rowid = pf.fk_product";
-        $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."societe as s ON s.rowid = pf.fk_soc";
-        $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product_fournisseur_price as pfp ON pf.rowid = pfp.fk_product_fournisseur";
-        $sql.= " WHERE p.tobuy = 1";
+        $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product_fournisseur_price as pfp ON p.rowid = pfp.fk_product";
+        $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."societe as s ON pfp.fk_soc = s.rowid";
+        $sql.= " WHERE p.entity = ".$conf->entity;
+        $sql.= " AND p.tobuy = 1";
         $sql.= " AND s.fournisseur = 1";
         $sql.= " AND p.rowid = ".$productid;
-        $sql.= " ORDER BY s.nom, pf.ref_fourn DESC";
+        $sql.= " ORDER BY s.nom, pfp.ref_fourn DESC";
 
         dol_syslog("Form::select_product_fourn_price sql=".$sql,LOG_DEBUG);
         $result=$this->db->query($sql);
