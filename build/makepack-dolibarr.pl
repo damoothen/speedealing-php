@@ -262,11 +262,8 @@ if ($nboftargetok) {
         $ret=`rm -f  $BUILDROOT/$PROJECT/pom.xml`;
         $ret=`rm -f  $BUILDROOT/$PROJECT/default.properties`;
         $ret=`rm -f  $BUILDROOT/$PROJECT/git2cvs.sh`;
-<<<<<<< HEAD
+        $ret=`rm -f  $BUILDROOT/$PROJECT/README.md`;
         
-=======
-
->>>>>>> 1c89b1f92ef30e7d9fb2f831a33854af1de99b9a
 	    $ret=`rm -fr $BUILDROOT/$PROJECT/build/html`;
         $ret=`rm -f  $BUILDROOT/$PROJECT/build/DoliW*-*`;
         $ret=`rm -f  $BUILDROOT/$PROJECT/build/DoliM*-*`;

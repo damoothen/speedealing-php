@@ -78,9 +78,9 @@ include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
 $hookmanager=new HookManager($db);
 $hookmanager->callHooks(array('invoicecard'));
 
-/******************************************************************************/
-/*                     Actions                                                */
-/******************************************************************************/
+/*
+ * Actions
+ */
 
 $parameters=array('socid'=>$socid);
 $reshook=$hookmanager->executeHooks('doActions',$parameters,$object,$action);    // Note that $action and $object may have been modified by some hooks
@@ -238,7 +238,7 @@ if ($action == 'setmode')
 {
     $object->fetch($id);
     $result=$object->mode_reglement($_POST['mode_reglement_id']);
-    if ($result < 0) dol_print_error($object->db,$object->error);
+    if ($result < 0) dol_print_error($db,$object->error);
 }
 
 if ($action == 'setinvoicedate')
@@ -247,7 +247,7 @@ if ($action == 'setinvoicedate')
     $object->date=dol_mktime(12,0,0,$_POST['invoicedatemonth'],$_POST['invoicedateday'],$_POST['invoicedateyear']);
     if ($object->date_lim_reglement < $object->date) $object->date_lim_reglement=$object->date;
     $result=$object->update($user);
-    if ($result < 0) dol_print_error($object->db,$object->error);
+    if ($result < 0) dol_print_error($db,$object->error);
 }
 
 if ($action == 'setpaymentterm')
@@ -255,14 +255,14 @@ if ($action == 'setpaymentterm')
     $object->fetch($id);
     $date_lim_reglement=dol_mktime(12,0,0,$_POST['paymenttermmonth'],$_POST['paymenttermday'],$_POST['paymenttermyear']);
     $result=$object->cond_reglement($object->cond_reglement_id,$date_lim_reglement);
-    if ($result < 0) dol_print_error($object->db,$object->error);
+    if ($result < 0) dol_print_error($db,$object->error);
 }
 
 if ($action == 'setconditions')
 {
     $object->fetch($id);
     $result=$object->cond_reglement($_POST['cond_reglement_id']);
-    if ($result < 0) dol_print_error($object->db,$object->error);
+    if ($result < 0) dol_print_error($db,$object->error);
 }
 
 if ($action == 'setremisepercent' && $user->rights->facture->creer)
@@ -498,7 +498,6 @@ if ($action == 'confirm_converttoreduc' && $confirm == 'yes' && $user->rights->f
         }
     }
 }
-
 
 
 /*
