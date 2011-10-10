@@ -71,9 +71,9 @@ else if ($_GET["action"] == 'set')
 	if ($_GET["value"]) dolibarr_set_const($db, $const, $_GET["value"],'chaine',0,'',$conf->entity);
 	else dolibarr_del_const($db, $const,$conf->entity);
 }
-else if ($_POST["action"] == 'useecotaxe')
+else if ($_POST["action"] == 'useecotax')
 {
-	dolibarr_set_const($db, "PRODUCT_USE_ECOTAXE", $_POST["activate_useecotaxe"],'chaine',0,'',$conf->entity);
+	dolibarr_set_const($db, "PRODUCT_USE_ECOTAX", $_POST["activate_useecotax"],'chaine',0,'',$conf->entity);
 }
 
 
@@ -159,11 +159,11 @@ print '</form>';
 $var=!$var;
 print "<form method=\"post\" action=\"produit.php\">";
 print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-print "<input type=\"hidden\" name=\"action\" value=\"useecotaxe\">";
+print "<input type=\"hidden\" name=\"action\" value=\"useecotax\">";
 print "<tr ".$bc[$var].">";
-print '<td>'.$langs->trans("UseEcotaxe").'</td>';
+print '<td>'.$langs->trans("UseEcotax").'</td>';
 print '<td width="60" align="right">';
-print $html->selectyesno("activate_useecotaxe",$conf->global->PRODUCT_USE_ECOTAXE,1);
+print $html->selectyesno("activate_useecotax",$conf->global->PRODUCT_USE_ECOTAX,1);
 print '</td><td align="right">';
 print '<input type="submit" class="button" value="'.$langs->trans("Modify").'">';
 print "</td>";

@@ -30,7 +30,7 @@ create table llx_product_price
   price_ttc       double(24,8) DEFAULT NULL,
   price_min              double(24,8) default NULL,
   price_min_ttc          double(24,8) default NULL,
-  ecotaxe_ttc            double(24,8) default NULL,
+  ecotax_ttc            double(24,8) default NULL,
   price_base_type varchar(3) DEFAULT 'HT',
   tva_tx          double(6,3) NOT NULL,
   recuperableonly integer NOT NULL DEFAULT '0',  

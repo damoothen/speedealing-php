@@ -441,8 +441,8 @@ ALTER TABLE llx_product_extrafields ADD INDEX idx_product_extrafields (fk_object
 ALTER TABLE llx_societe_extrafields ADD INDEX idx_societe_extrafields (fk_object);
 
 -- ecotaxe
-alter table llx_product_price add ecotaxe_ttc double (24,8) default 0;
-alter table llx_product add ecotaxe_ttc double (24,8) default 0;
+alter table llx_product_price add ecotax_ttc double (24,8) default 0;
+alter table llx_product add ecotax_ttc double (24,8) default 0;
 
 alter table llx_adherent_options_label drop index uk_adherent_options_label_name;
 alter table llx_adherent_options_label rename to llx_extrafields; 
