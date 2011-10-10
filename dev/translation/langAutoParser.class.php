@@ -11,8 +11,11 @@
  * http://code.google.com/intl/fr/apis/ajaxlanguage/documentation/#SupportedPairs
  */
 
-class langAutoParser {
-
+/**
+ * Class to parse language files and translate them
+ */
+class langAutoParser
+{
 	private $translatedFiles = array();
 	private $destLang = '';
 	private $refLang = '';
@@ -24,6 +27,7 @@ class langAutoParser {
 	//private $outputpagecode = 'ISO-8859-1';
 	const DIR_SEPARATOR = '/';
 
+	
 	function __construct($destLang,$refLang,$langDir,$limittofile){
 
 		// Set enviorment variables
@@ -40,6 +44,11 @@ class langAutoParser {
 
 	}
 
+	/**
+	 * 	Parse file
+	 * 
+	 * 	@return	void
+	 */
 	private function parseRefLangTranslationFiles()
 	{
 
@@ -86,7 +95,8 @@ class langAutoParser {
 
 				$destPath = $this->langDir.$mydestLang.self::DIR_SEPARATOR.$file;
 				// Check destination file presence
-				if ( ! file_exists( $destPath ) ){
+				if (! file_exists($destPath))
+				{
 					// No file present, we generate file
 					echo "File not found: " . $destPath . ". We generate it.<br>\n";
 					$this->createTranslationFile($destPath,$mydestLang);
@@ -110,12 +120,19 @@ class langAutoParser {
 
 				$this->updateTranslationFile($destPath,$file,$mydestLang);
 				echo "New translated lines: " . $newlines . "<br>\n";
-				#if ($counter ==3) die('fim');
+				//if ($counter ==3) die('fim');
 			}
 		}
 	}
 
-
+	/**
+	 * Update file with new translations
+	 * 
+	 * @param 	string	$destPath		Target path
+	 * @param 	string	$file			File
+	 * @param 	string	$mydestLang		Target language code
+	 * @return	void
+	 */
 	private function updateTranslationFile($destPath,$file,$mydestLang)
 	{
 		$this->time_end = date('Y-m-d H:i:s');
@@ -136,7 +153,15 @@ class langAutoParser {
 		return;
 	}
 
-	private function createTranslationFile($path,$mydestlang){
+	/**
+	 * Create a new translation file
+	 * 
+	 * @param 	string	$path			Path
+	 * @param 	string	$mydestlang		Target language code
+	 * @return	void
+	 */
+	private function createTranslationFile($path,$mydestlang)
+	{
 		$fp = fopen($path, 'w+');
 		fwrite($fp, "/*\r\n");
 		fwrite($fp, " * Language code: {$mydestlang}\r\n");
@@ -150,12 +175,12 @@ class langAutoParser {
 	/**
 	 * Put in array translatedFiles[$file], line of a new tranlated pair
 	 *
-	 * @param 	$content		Existing content of dest file
-	 * @param 	$file			Target file name translated (xxxx.lang)
-	 * @param 	$key			Key to translate
-	 * @param 	$value			Existing value in source file
-	 * @param	string			Language code (ie: fr_FR)
-	 * @return	int				0=Nothing translated, 1=Record translated
+	 * @param 	string	$content		Existing content of dest file
+	 * @param 	string	$file			Target file name translated (xxxx.lang)
+	 * @param 	string	$key			Key to translate
+	 * @param 	string	$value			Existing value in source file
+	 * @param	string	$mydestLang		Language code (ie: fr_FR)
+	 * @return	int						0=Nothing translated, 1=Record translated
 	 */
 	private function translateFileLine($content,$file,$key,$value,$mydestLang)
 	{
@@ -190,18 +215,35 @@ class langAutoParser {
 		return 1;
 	}
 
-
-	private function getLineKey($line){
+	/**
+	 * 
+	 * @param 	string 	$line	Line found into file
+	 * @return	string	Key
+	 */
+	private function getLineKey($line)
+	{
 		$arraykey = explode('=',$line,2);
 		return trim($arraykey[0]);
 	}
 
-	private function getLineValue($line){
+	/**
+	 * 
+	 * @param 	string 	$line	Line found into file
+	 * @return	string	Value
+	 */
+	private function getLineValue($line)
+	{
 		$arraykey = explode('=',$line,2);
 		return trim($arraykey[1]);
 	}
 
-	private function getTranslationFilesArray($lang){
+	/**
+	 * 
+	 * @param 	string 	$lang	Language code
+	 * @return	array	Array
+	 */
+	private function getTranslationFilesArray($lang)
+	{
 		$dir = new DirectoryIterator($this->langDir.$lang);
 		while($dir->valid()) {
 			if(!$dir->isDot() && $dir->isFile() && ! preg_match('/^\./',$dir->getFilename())) {
@@ -215,13 +257,13 @@ class langAutoParser {
 	/**
 	 * Return translation of a value
 	 *
-	 * @param 	$src_texts		Array with one value
-	 * @param 	$src_lang
-	 * @param 	$dest_lang
-	 * @return 	string			Value translated
+	 * @param 	array	$src_texts		Array with one value
+	 * @param 	string	$src_lang		Language code source
+	 * @param 	string	$dest_lang		Language code target
+	 * @return 	string					Value translated
 	 */
-	private function translateTexts($src_texts = array(), $src_lang, $dest_lang){
-
+	private function translateTexts($src_texts, $src_lang, $dest_lang)
+	{
 		$tmp=explode('_',$src_lang);
 		if ($tmp[0] == $tmp[1]) $src_lang=$tmp[0];
 
@@ -233,11 +275,11 @@ class langAutoParser {
 
 		$src_texts_query = "";
 		$src_text_to_translate=preg_replace('/%s/','SSSSS',join('',$src_texts));
-
+		$src_text_to_translate=preg_replace('/'.preg_quote('\n\n').'/',' NNNNN ',$src_text_to_translate);
+		
 		$src_texts_query .= "&q=".urlencode($src_text_to_translate);
 
-		$url =
-"http://ajax.googleapis.com/ajax/services/language/translate?v=1.0".$src_texts_query."&langpair=".urlencode($lang_pair);
+		$url = "http://ajax.googleapis.com/ajax/services/language/translate?v=1.0".$src_texts_query."&langpair=".urlencode($lang_pair);
 
 		// sendRequest
 		// note how referer is set manually
@@ -253,21 +295,25 @@ class langAutoParser {
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_REFERER, "http://www.YOURWEBSITE.com");
+		curl_setopt($ch, CURLOPT_REFERER, "Mozilla");
 		$body = curl_exec($ch);
 		curl_close($ch);
+		sleep(6);	// This is to avoid to overload server. Best value is 6.
 
 		// now, process the JSON string
 		$json = json_decode($body, true);
 
-		if ($json['responseStatus'] != 200){
+		if ($json['responseStatus'] != 200)
+		{
 			print "Error: ".$json['responseStatus']." ".$url."\n";
 			return false;
 		}
 
 		$rep=$json['responseData']['translatedText'];
-		$rep=preg_replace('/SSSSS/','%s',$rep);
-
+		$rep=preg_replace('/SSSSS/i','%s',$rep);
+		$rep=preg_replace('/NNNNN/i','\n\n',$rep);
+		$rep=preg_replace('/&#39;/i','\'',$rep);
+		
 		//print "OK ".join('',$src_texts).' => '.$rep."\n";
 
 		return $rep;
