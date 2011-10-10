@@ -635,7 +635,9 @@ if ($_GET["action"] == 'create')
 	print '<td>';
 	// Editeur wysiwyg
 	require_once(DOL_DOCUMENT_ROOT."/lib/doleditor.class.php");
-	$doleditor=new DolEditor('body',$_POST['body'],'',320,'dolibarr_mailings','',true,true,$conf->fckeditor->enabled && $conf->global->FCKEDITOR_ENABLE_MAILING,20,70);
+        if(empty($_POST['body'])) $body='<br /><br /><br /><font face="Verdana, Helvetica, sans-serif" size="1">Si vous ne souhaitez plus recevoir de messages de notre part, <a href="mailto:'.$conf->global->MAILING_EMAIL_FROM.'" target="_blank"> cliquer ici</a>. </font>';
+        else $body=$_POST['body'];
+	$doleditor=new DolEditor('body',$body,'',320,'dolibarr_mailings','',true,true,$conf->fckeditor->enabled && $conf->global->FCKEDITOR_ENABLE_MAILING,20,70);
 	$doleditor->Create();
 	print '</td></tr>';
 	print '</table>';

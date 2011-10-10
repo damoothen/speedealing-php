@@ -2837,7 +2837,7 @@ function print_fleche_navigation($page,$file,$options='',$nextpage,$betweenarrow
  *	@param		info_bits		Miscellanous information on vat
  *  @return		string			Chaine avec montant formate (19,6 ou 19,6% ou 8.5% *)
  */
-function vatrate($rate,$addpercent=false,$info_bits=0)
+function vatrate($rate,$addpercent=false,$info_bits=0,$usestarfornpr=0)
 {
     // Test for compatibility
     if (preg_match('/%/',$rate))
@@ -2852,7 +2852,7 @@ function vatrate($rate,$addpercent=false,$info_bits=0)
     }
 
     $ret=price($rate,0,'',0,0).($addpercent?'%':'');
-    if ($info_bits & 1) $ret.=' '.MAIN_LABEL_MENTION_NPR;
+    if ($info_bits & 1) $ret.=' '.($usestarfornpr?'*':MAIN_LABEL_MENTION_NPR);
     return $ret;
 }
 

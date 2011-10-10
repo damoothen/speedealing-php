@@ -79,6 +79,7 @@ class mailing_contacts2 extends MailingTargets
     	$sql.= " AND sp.email != ''";  // Note that null != '' is false
     	//$sql.= " AND sp.poste != ''";
     	$sql.= " AND sp.entity = ".$conf->entity;
+        $sql.= " AND s.fk_stcomm >= 0";
     	if ($filtersarray[0]<>'all') $sql.= " AND sp.poste ='".$filtersarray[0]."'";
     	$sql.= " ORDER BY sp.name, sp.firstname";
     	$resql = $this->db->query($sql);
@@ -154,6 +155,7 @@ class mailing_contacts2 extends MailingTargets
     	$sql.= " FROM ".MAIN_DB_PREFIX."socpeople as sp,";
         $sql.= " ".MAIN_DB_PREFIX."societe as s";
         $sql.= " WHERE s.rowid = sp.fk_soc";
+        $sql.= " AND s.fk_stcomm >= 0";
         $sql.= " AND s.entity = ".$conf->entity;
         $sql.= " AND sp.entity = ".$conf->entity;
     	$sql.= " AND sp.email != ''";  // Note that null != '' is false
