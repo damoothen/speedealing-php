@@ -4,6 +4,7 @@
  * Copyright (C) 2005      Eric Seigne          <eric.seigne@ryxeo.com>
  * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2006      Andre Cianfarani     <acianfa@free.fr>
+ * Copyright (C) 2011      Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,6 +72,7 @@ if ($_POST["action"] == 'update_price' && ! $_POST["cancel"] && ($user->rights->
 				$newpricebase=$_POST["multiprices_base_type_".$i];
 				$newnpr=(preg_match('/\*/',$_POST["tva_tx_".$i]) ? 1 : 0);
 				$newvat=str_replace('*','',$_POST["tva_tx_".$i]);
+                                $newecotaxe_ttc=price2num($_POST["ecotaxe_ttc".$i],'MU');
 				break;	// We found submited price
 			}
 		}
@@ -83,9 +85,10 @@ if ($_POST["action"] == 'update_price' && ! $_POST["cancel"] && ($user->rights->
 		$newpricebase=$_POST["price_base_type"];
 		$newnpr=(preg_match('/\*/',$_POST["tva_tx"]) ? 1 : 0);
 		$newvat=str_replace('*','',$_POST["tva_tx"]);
+                $newecotaxe_ttc=price2num($_POST["ecotaxe_ttc"],'MU');
 	}
 
-	if ($product->update_price($product->id, $newprice, $newpricebase, $user, $newvat, $newprice_min, $level, $newnpr) > 0)
+	if ($product->update_price($product->id, $newprice, $newpricebase, $user, $newvat, $newprice_min, $newecotaxe_ttc, $level, $newnpr) > 0)
 	{
 		$_GET["action"] = '';
 		$mesg = '<div class="ok">'.$langs->trans("RecordSaved").'</div>';
@@ -223,6 +226,14 @@ if ($conf->global->PRODUIT_MULTIPRICES)
 				print ' '.$langs->trans($product->price_base_type);
 			}
 			print '</td></tr>';
+                        
+                        // Ecotaxe
+                        if($conf->global->PRODUCT_USE_ECOTAXE)
+                        {
+                            print '<tr><td>'.$langs->trans("Ecotaxe").'</td><td>';
+                            print price($product->ecotaxe_ttc).' '.$langs->trans('TTC');
+                            print '</td></tr>';
+                        }
 
 			// Prix mini
 			print '<tr><td>'.$langs->trans("MinPrice").' '.$i.'</td><td>';
@@ -254,6 +265,14 @@ else
 		print price($product->price).' '.$langs->trans($product->price_base_type);
 	}
 	print '</td></tr>';
+        
+        // Ecotaxe
+        if($conf->global->PRODUCT_USE_ECOTAXE)
+        {
+            print '<tr><td>'.$langs->trans("Ecotaxe").'</td><td>';
+            print price($product->ecotaxe_ttc).' '.$langs->trans('TTC');
+            print '</td></tr>';
+        }
 
 	// Price minimum
 	print '<tr><td>'.$langs->trans("MinPrice").'</td><td>';
@@ -315,10 +334,10 @@ if ($_GET["action"] == 'edit_price' && ($user->rights->produit->creer || $user->
 		print '<input type="hidden" name="id" value="'.$product->id.'">';
 		print '<table class="border" width="100%">';
 
-        // VAT
-        print '<tr><td>'.$langs->trans("VATRate").'</td><td>';
-        print $html->load_tva("tva_tx",$product->tva_tx,$mysoc,'',$product->id);
-        print '</td></tr>';
+                // VAT
+                print '<tr><td>'.$langs->trans("VATRate").'</td><td>';
+                print $html->load_tva("tva_tx",$product->tva_tx,$mysoc,'',$product->id);
+                print '</td></tr>';
 
 		// Price base
 		print '<tr><td width="15%">';
@@ -343,6 +362,16 @@ if ($_GET["action"] == 'edit_price' && ($user->rights->produit->creer || $user->
 			print '<input name="price" size="10" value="'.price($product->price).'">';
 		}
 		print '</td></tr>';
+                
+                // EcoTaxe
+                if($conf->global->PRODUCT_USE_ECOTAXE)
+                {
+                    print '<tr><td>';
+                    $text=$langs->trans("Ecotaxe");
+                    print $html->textwithpicto($text,$langs->trans("PrecisionUnitIsLimitedToXDecimals",$conf->global->MAIN_MAX_DECIMALS_UNIT),$direction=1,$usehelpcursor=1);
+                    print '<td><input name="ecotaxe_ttc" size="10" value="'.price($product->ecotaxe_ttc).'">';
+                    print '</td></tr>';
+                }
 
 		// Price minimum
 		print '<tr><td>' ;
@@ -357,7 +386,7 @@ if ($_GET["action"] == 'edit_price' && ($user->rights->produit->creer || $user->
 			print '<td><input name="price_min" size="10" value="'.price($product->price_min).'">';
 		}
 		print '</td></tr>';
-
+                
 		print '<tr><td colspan="2" align="center"><input type="submit" class="button" value="'.$langs->trans("Save").'">&nbsp;';
 		print '<input type="submit" class="button" name="cancel" value="'.$langs->trans("Cancel").'"></td></tr>';
 		print '</table>';
@@ -427,7 +456,7 @@ if ($_GET["action"] == 'edit_price' && ($user->rights->produit->creer || $user->
 
 // Liste des evolutions du prix
 $sql = "SELECT p.rowid, p.price, p.price_ttc, p.price_base_type, p.tva_tx, p.recuperableonly,";
-$sql.= " p.price_level, p.price_min, p.price_min_ttc,";
+$sql.= " p.price_level, p.price_min, p.price_min_ttc, p.ecotaxe_ttc,";
 $sql.= " p.date_price as dp, u.rowid as user_id, u.login";
 $sql.= " FROM ".MAIN_DB_PREFIX."product_price as p,";
 $sql.= " ".MAIN_DB_PREFIX."user as u";
@@ -472,6 +501,8 @@ if ($result)
 		print '<td align="right">'.$langs->trans("VAT").'</td>';
 		print '<td align="right">'.$langs->trans("HT").'</td>';
 		print '<td align="right">'.$langs->trans("TTC").'</td>';
+                if($conf->global->PRODUCT_USE_ECOTAXE)
+                    print '<td align="right">'.$langs->trans("Ecotaxe").'</td>';
 		print '<td align="right">'.$langs->trans("MinPrice").' '.$langs->trans("HT").'</td>';
 		print '<td align="right">'.$langs->trans("MinPrice").' '.$langs->trans("TTC").'</td>';
 		print '<td align="right">'.$langs->trans("ChangedBy").'</td>';
@@ -498,6 +529,8 @@ if ($result)
 			print '<td align="right">'.vatrate($objp->tva_tx,true,$objp->recuperableonly)."</td>";
 			print '<td align="right">'.price($objp->price)."</td>";
 			print '<td align="right">'.price($objp->price_ttc)."</td>";
+                        if($conf->global->PRODUCT_USE_ECOTAXE)
+                            print '<td align="right">'.price($objp->ecotaxe_ttc)."</td>";
 			print '<td align="right">'.price($objp->price_min).'</td>';
 			print '<td align="right">'.price($objp->price_min_ttc).'</td>';
 
