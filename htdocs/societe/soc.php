@@ -276,8 +276,8 @@ if (empty($reshook))
                         $contact->socid=$object->id;                   // fk_soc
                         $contact->status=1;
                         $contact->email=$object->email;
-						$contact->phone_pro=$object->tel;
-						$contact->fax=$object->fax;
+			$contact->phone_pro=$object->tel;
+			$contact->fax=$object->fax;
                         $contact->priv=0;
 
                         $result=$contact->create($user);

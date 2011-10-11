@@ -67,7 +67,7 @@ class HookManager
 
 		// Test if ther is hooks to manage
         if (! is_array($conf->hooks_modules) || empty($conf->hooks_modules)) return;
-
+        
         // For backward compatibility
 		if (! is_array($arraytype)) $arraytype=array($arraytype);
 
@@ -127,9 +127,9 @@ class HookManager
 	function executeHooks($method, $parameters=false, &$object='', &$action='')
 	{
 		global $var;
-
+ 
         if (! is_array($this->hooks) || empty($this->hooks)) return '';
-
+        
         dol_syslog(get_class($this).'::executeHooks method='.$method." action=".$action);
 
         // Loop on each hook
@@ -141,7 +141,6 @@ class HookManager
                 foreach($hook['modules'] as $module => $actioninstance)
                 {
                 	$var=!$var;
-
                     // Hooks that return int
                     if ($method == 'doActions' && method_exists($actioninstance,$method))
                     {
