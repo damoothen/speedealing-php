@@ -301,7 +301,7 @@ class Propal extends CommonObject
 	 *					par l'appelant par la methode get_default_tva(societe_vendeuse,societe_acheteuse,'',produit)
 	 *					et le desc doit deja avoir la bonne valeur (a l'appelant de gerer le multilangue)
 	 */
-	function addline($propalid, $desc, $pu_ht, $qty, $txtva, $txlocaltax1=0, $txlocaltax2=0, $fk_product=0, $remise_percent=0, $price_base_type='HT', $pu_ttc=0, $info_bits=0, $type=0, $rang=-1, $special_code=0, $fk_parent_line=0)
+	function addline($propalid, $desc, $pu_ht, $qty, $txtva, $txlocaltax1=0, $txlocaltax2=0, $fk_product=0, $remise_percent=0, $price_base_type='HT', $pu_ttc=0, $info_bits=0, $type=0, $ecotax_ttc=0, $rang=-1, $special_code=0, $fk_parent_line=0)
 	{
 		global $conf;
 
@@ -348,6 +348,12 @@ class Propal extends CommonObject
 			$total_ttc = $tabprice[2];
 			$total_localtax1 = $tabprice[9];
 			$total_localtax2 = $tabprice[10];
+                        
+                        if($conf->global->PRODUCT_USE_ECOTAX)
+                        {
+                            $total_ttc+=$ecotax_ttc*$qty;
+                            $total_tva=$total_ttc-$total_ht-price2num(($ecotax_ttc/(1 + ( $txtva / 100)))*$qty,'MT');
+                        }
 
 			// Rang to use
 			$rangtouse = $rang;
@@ -446,7 +452,7 @@ class Propal extends CommonObject
 	 *	  @param      fk_parent_line    Id of line parent
 	 *    @return     int             	0 en cas de succes
 	 */
-	function updateline($rowid, $pu, $qty, $remise_percent=0, $txtva, $txlocaltax1=0, $txlocaltax2=0, $desc='', $price_base_type='HT', $info_bits=0, $special_code=0, $fk_parent_line=0, $skip_update_total=0)
+	function updateline($rowid, $pu, $qty, $remise_percent=0, $txtva, $txlocaltax1=0, $txlocaltax2=0, $desc='', $price_base_type='HT', $info_bits=0, $ecotax_ttc=0, $special_code=0, $fk_parent_line=0, $skip_update_total=0)
 	{
 		global $conf,$user,$langs;
 
@@ -477,6 +483,12 @@ class Propal extends CommonObject
 			$total_ttc = $tabprice[2];
 			$total_localtax1 = $tabprice[9];
 			$total_localtax2 = $tabprice[10];
+                        
+                        if($conf->global->PRODUCT_USE_ECOTAX)
+                        {
+                            $total_ttc+=$ecotax_ttc*$qty;
+                            $total_tva=$total_ttc-$total_ht-price2num(($ecotax_ttc/(1 + ( $txtva / 100)))*$qty,'MT');
+                        }
 
 			// Anciens indicateurs: $price, $remise (a ne plus utiliser)
 			$price = $pu;

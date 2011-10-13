@@ -2554,12 +2554,12 @@ else
 
             // Amount
             print '<tr><td>'.$langs->trans('AmountHT').'</td>';
-            print '<td align="right" colspan="2" nowrap>'.price($object->total_ht).'</td>';
+            print '<td align="right" colspan="2" nowrap><b>'.price($object->total_ht).'</b></td>';
             print '<td>'.$langs->trans('Currency'.$conf->monnaie).'</td></tr>';
             if($conf->global->PRODUCT_USE_ECOTAX)
             {
                 print '<tr><td>'.$langs->trans('AmountEcotax').'</td>';
-                print '<td align="right" colspan="2" nowrap>'.price(price2num($object->total_ttc-$object->total_tva-$object->total_ht, 'MT')).'</td>';
+                print '<td align="right" colspan="2" nowrap><b>'.price(price2num($object->total_ttc-$object->total_tva-$object->total_ht, 'MT')).'</b></td>';
                 print '<td>'.$langs->trans('Currency'.$conf->monnaie);
                 print'</td></tr>';
             }

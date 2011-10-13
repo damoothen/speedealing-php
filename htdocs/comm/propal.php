@@ -762,6 +762,7 @@ if ($_POST['action'] == "addline" && $user->rights->propale->creer)
 			$pu_ttc,
 			$info_bits,
 			$type,
+                        $prod->ecotax_ttc,
 			-1,
 			0,
 			$_POST['fk_parent_line']
@@ -847,6 +848,7 @@ if ($_POST['action'] == 'updateligne' && $user->rights->propale->creer && $_POST
 		$_POST['desc'],
 		'HT',
 		$info_bits,
+                $product->ecotax_ttc,
 		$special_code,
 		$_POST['fk_parent_line']
 		);
@@ -1219,6 +1221,7 @@ if ($id > 0 || ! empty($ref))
 
 	if ($conf->projet->enabled) $rowspan++;
 	if ($conf->global->PROPALE_ADD_DELIVERY_ADDRESS) $rowspan++;
+        if ($conf->global->PRODUCT_USE_ECOTAX) $rowspan++;
 
 	//Local taxes
 	if ($mysoc->pays_code=='ES')
@@ -1438,6 +1441,15 @@ if ($id > 0 || ! empty($ref))
 	print '<tr><td height="10">'.$langs->trans('AmountHT').'</td>';
 	print '<td align="right" colspan="2" nowrap><b>'.price($object->total_ht).'</b></td>';
 	print '<td>'.$langs->trans("Currency".$conf->monnaie).'</td></tr>';
+        
+        // Amount EcoTax
+        if($conf->global->PRODUCT_USE_ECOTAX)
+        {
+            print '<tr><td>'.$langs->trans('AmountEcotax').'</td>';
+            print '<td align="right" colspan="2" nowrap><b>'.price(price2num($object->total_ttc-$object->total_tva-$object->total_ht, 'MT')).'</b></td>';
+            print '<td>'.$langs->trans('Currency'.$conf->monnaie);
+            print'</td></tr>';
+        }
 
 	// Amount VAT
 	print '<tr><td height="10">'.$langs->trans('AmountVAT').'</td>';
