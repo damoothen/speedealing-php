@@ -1828,7 +1828,7 @@ else
             if($conf->global->PRODUCT_USE_ECOTAX)
             {
                 print '<tr><td>'.$langs->trans('AmountEcotax').'</td>';
-                print '<td align="right"><b>'.price2num($object->total_ttc-$object->total_tva-$object->total_ht, 'MT').'</b></td>';
+                print '<td align="right"><b>'.price(price2num($object->total_ttc-$object->total_tva-$object->total_ht, 'MT')).'</b></td>';
                 print '<td>'.$langs->trans('Currency'.$conf->monnaie);
                 print'</td></tr>';
             }

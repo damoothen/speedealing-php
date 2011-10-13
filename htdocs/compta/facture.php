@@ -1036,6 +1036,7 @@ if (($action == 'addline' || $action == 'addline_predef') && $user->rights->fact
                 $price_base_type,
                 $pu_ttc,
                 $type,
+                $prod->ecotax_ttc,
                 -1,
                 0,
                 '',
@@ -1143,6 +1144,7 @@ if ($action == 'updateligne' && $user->rights->facture->creer && $_POST['save'] 
 		'HT',
         $info_bits,
         $type,
+        $product->ecotax_ttc,
         GETPOST('fk_parent_line')
         );
 
@@ -2317,6 +2319,7 @@ else
 
             $nbrows=8;
             if ($conf->projet->enabled) $nbrows++;
+            if ($conf->global->PRODUCT_USE_ECOTAX) $nbrow++;
 
             //Local taxes
             if ($mysoc->pays_code=='ES')
@@ -2553,6 +2556,14 @@ else
             print '<tr><td>'.$langs->trans('AmountHT').'</td>';
             print '<td align="right" colspan="2" nowrap>'.price($object->total_ht).'</td>';
             print '<td>'.$langs->trans('Currency'.$conf->monnaie).'</td></tr>';
+            if($conf->global->PRODUCT_USE_ECOTAX)
+            {
+                print '<tr><td>'.$langs->trans('AmountEcotax').'</td>';
+                print '<td align="right" colspan="2" nowrap>'.price(price2num($object->total_ttc-$object->total_tva-$object->total_ht, 'MT')).'</td>';
+                print '<td>'.$langs->trans('Currency'.$conf->monnaie);
+                print'</td></tr>';
+            }
+            
             print '<tr><td>'.$langs->trans('AmountVAT').'</td><td align="right" colspan="2" nowrap>'.price($object->total_tva).'</td>';
             print '<td>'.$langs->trans('Currency'.$conf->monnaie).'</td></tr>';
 
