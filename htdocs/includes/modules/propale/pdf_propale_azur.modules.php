@@ -2,7 +2,8 @@
 /* Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2008      Raphael Bertrand     <raphael.bertrand@resultic.fr>
- * Copyright (C) 2010-2011 Juanjo Menent	    <jmenent@2byte.es>
+ * Copyright (C) 2010-2011 Juanjo Menent	<jmenent@2byte.es>
+ * Copyright (C) 2011      Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -601,6 +602,17 @@ class pdf_propale_azur extends ModelePDFPropales
 		$pdf->MultiCell($largcol2, $tab2_hl, price($object->total_ht + $object->remise), 0, 'R', 1);
 
 		$index = 0;
+                
+                // Total Ecotax
+                if($conf->global->PRODUCT_USE_ECOTAX)
+                {
+                    $index++;
+                    $pdf->SetFillColor(255,255,255);
+                    $pdf->SetXY ($col1x, $tab2_top + $tab2_hl * $index);
+                    $pdf->MultiCell($col2x-$col1x, $tab2_hl, $outputlangs->transnoentities("EcotaxHT"), 0, 'L', 1);
+                    $pdf->SetXY ($col2x, $tab2_top + $tab2_hl * $index);
+                    $pdf->MultiCell($largcol2, $tab2_hl, price(price2num($object->total_ttc-$object->total_tva-$object->total_ht, 'MT')), 0, 'R', 1);
+                }
 
 		// Show VAT by rates and total
 		$pdf->SetFillColor(248,248,248);

@@ -4,6 +4,7 @@
  * Copyright (C) 2006-2007 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2007      Auguria SARL         <info@auguria.org>
  * Copyright (C) 2005-2010 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2011      Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,9 +71,9 @@ else if ($_GET["action"] == 'set')
 	if ($_GET["value"]) dolibarr_set_const($db, $const, $_GET["value"],'chaine',0,'',$conf->entity);
 	else dolibarr_del_const($db, $const,$conf->entity);
 }
-else if ($_POST["action"] == 'useecotaxe')
+else if ($_POST["action"] == 'useecotax')
 {
-	dolibarr_set_const($db, "PRODUIT_USE_ECOTAXE", $_POST["activate_useecotaxe"],'chaine',0,'',$conf->entity);
+	dolibarr_set_const($db, "PRODUCT_USE_ECOTAX", $_POST["activate_useecotax"],'chaine',0,'',$conf->entity);
 }
 
 
@@ -148,6 +149,21 @@ print "<tr ".$bc[$var].">";
 print '<td>'.$langs->trans("AssociatedProductsAbility").'</td>';
 print '<td width="60" align="right">';
 print $html->selectyesno("activate_sousproduits",$conf->global->PRODUIT_SOUSPRODUITS,1);
+print '</td><td align="right">';
+print '<input type="submit" class="button" value="'.$langs->trans("Modify").'">';
+print "</td>";
+print '</tr>';
+print '</form>';
+
+// sousproduits activation/desactivation
+$var=!$var;
+print "<form method=\"post\" action=\"produit.php\">";
+print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+print "<input type=\"hidden\" name=\"action\" value=\"useecotax\">";
+print "<tr ".$bc[$var].">";
+print '<td>'.$langs->trans("UseEcotax").'</td>';
+print '<td width="60" align="right">';
+print $html->selectyesno("activate_useecotax",$conf->global->PRODUCT_USE_ECOTAX,1);
 print '</td><td align="right">';
 print '<input type="submit" class="button" value="'.$langs->trans("Modify").'">';
 print "</td>";
