@@ -4,6 +4,7 @@
  * Copyright (C) 2007      Patrick Raguin       <patrick.raguin@gmail.com>
  * Copyright (C) 2010-2011 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2010      Juanjo Menent        <jmenent@2byte.es>
+ * Copyright (C) 2011      Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -669,9 +670,15 @@ function pdf_writelinedesc(&$pdf,$object,$i,$outputlangs,$w,$h,$posx,$posy,$hide
     {
         $labelproductservice=pdf_getlinedesc($object,$i,$outputlangs,$hideref,$hidedesc,$issupplierline);
 
+        if($conf->global->PRODUCT_USE_ECOTAX && $object->lines[$i]->ecotax_ttc > 0)
+        {
+            $langs->load('product');
+            $labelproductservice.="<div><i>".$langs->trans('AmountEcotax')." : ".price(price2num($object->lines[$i]->ecotax_ttc/(1+($object->lines[$i]->tva_tx/100)),'MT'))." * ".$object->lines[$i]->qty." = ".price(price2num(($object->lines[$i]->ecotax_ttc/(1+($object->lines[$i]->tva_tx/100))*$object->lines[$i]->qty),'MT'))." ".$langs->trans('Currency'.$conf->monnaie)." HT</i></div>";
+        }
+        
         // Description
         $pdf->writeHTMLCell($w, $h, $posx, $posy, $outputlangs->convToOutputCharset($labelproductservice), 0, 1);
-
+        
         return $labelproductservice;
     }
 }

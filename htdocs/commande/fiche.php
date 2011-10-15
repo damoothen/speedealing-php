@@ -6,6 +6,7 @@
  * Copyright (C) 2006      Andre Cianfarani      <acianfa@free.fr>
  * Copyright (C) 2010      Juanjo Menent         <jmenent@2byte.es>
  * Copyright (C) 2011      Philippe Grand        <philippe.grand@atoo-net.com>
+ * Copyright (C) 2011      Herve Prot            <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -596,6 +597,7 @@ if ($action == 'addline' && $user->rights->commande->creer)
                 $date_start,
                 $date_end,
                 $type,
+                $prod->ecotax_ttc,
                 -1,
                 '',
                 $_POST['fk_parent_line']
@@ -706,6 +708,7 @@ if ($action == 'updateligne' && $user->rights->commande->creer && $_POST['save']
         $date_start,
         $date_end,
         $type,
+        $product->ecotax_ttc,
         $_POST['fk_parent_line']
         );
 
@@ -1514,6 +1517,7 @@ else
              */
             $nbrow=9;
             if ($conf->projet->enabled) $nbrow++;
+            if ($conf->global->PRODUCT_USE_ECOTAX) $nbrow++;
 
             //Local taxes
             if ($mysoc->pays_code=='ES')
@@ -1774,11 +1778,21 @@ else
             // Total HT
             print '<tr><td>'.$langs->trans('AmountHT').'</td>';
             print '<td align="right"><b>'.price($object->total_ht).'</b></td>';
-            print '<td>'.$langs->trans('Currency'.$conf->monnaie).'</td></tr>';
-
+            print '<td>'.$langs->trans('Currency'.$conf->monnaie);
+            print'</td></tr>';
+            
+            if($conf->global->PRODUCT_USE_ECOTAX)
+            {
+                print '<tr><td>'.$langs->trans('AmountEcotax').'</td>';
+                print '<td align="right"><b>'.price(price2num($object->total_ttc-$object->total_tva-$object->total_ht, 'MT')).'</b></td>';
+                print '<td>'.$langs->trans('Currency'.$conf->monnaie);
+                print'</td></tr>';
+            }
+           
             // Total TVA
             print '<tr><td>'.$langs->trans('AmountVAT').'</td><td align="right">'.price($object->total_tva).'</td>';
-            print '<td>'.$langs->trans('Currency'.$conf->monnaie).'</td></tr>';
+            print '<td>'.$langs->trans('Currency'.$conf->monnaie);
+            print '</td></tr>';
 
             // Amount Local Taxes
             if ($mysoc->pays_code=='ES')
@@ -1799,7 +1813,8 @@ else
 
             // Total TTC
             print '<tr><td>'.$langs->trans('AmountTTC').'</td><td align="right">'.price($object->total_ttc).'</td>';
-            print '<td>'.$langs->trans('Currency'.$conf->monnaie).'</td></tr>';
+            print '<td>'.$langs->trans('Currency'.$conf->monnaie);
+            print '</td></tr>';
 
             // Statut
             print '<tr><td>'.$langs->trans('Status').'</td>';
