@@ -703,7 +703,7 @@ class pdf_crabe extends ModelePDFFactures
 		$pdf->MultiCell($largcol2, $tab2_hl, price($object->total_ht + $object->remise), 0, 'R', 1);
                 
                 // Total Ecotax
-                if($conf->global->PRODUCT_USE_ECOTAX)
+                if($conf->global->PRODUCT_USE_ECOTAX && $object->total_ttc-$object->total_tva-$object->total_ht != 0)
                 {
                     $index++;
                     $pdf->SetFillColor(255,255,255);
