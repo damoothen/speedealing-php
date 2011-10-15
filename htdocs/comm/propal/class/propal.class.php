@@ -721,6 +721,7 @@ class Propal extends CommonObject
 						0,
 						0,
 						$this->lines[$i]->product_type,
+                                                $this->lines[$i]->ecotax_ttc,
 						$this->lines[$i]->rang,
 						$this->lines[$i]->special_code,
 						$fk_parent_line

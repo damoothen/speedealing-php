@@ -300,6 +300,7 @@ if ($action == 'add' && $user->rights->commande->creer)
                     $datestart,
                     $dateend,
                     $product_type,
+                    $lines[$i]->ecotax_ttc,
                     $lines[$i]->rang,
                     $lines[$i]->special_code,
                     $fk_parent_line
