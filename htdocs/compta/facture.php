@@ -804,6 +804,7 @@ if ($action == 'add' && $user->rights->facture->creer)
     							'HT',
                                 0,
                                 $product_type,
+                                $lines[$i]->ecotax_ttc,
                                 $lines[$i]->rang,
                                 $lines[$i]->special_code,
                                 $object->origin,
