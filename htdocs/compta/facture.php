@@ -6,6 +6,7 @@
  * Copyright (C) 2005-2011 Regis Houssin         <regis@dolibarr.fr>
  * Copyright (C) 2006      Andre Cianfarani      <acianfa@free.fr>
  * Copyright (C) 2010      Juanjo Menent         <jmenent@2byte.es>
+ * Copyright (C) 2011      Herve Prot            <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2319,7 +2320,7 @@ else
 
             $nbrows=8;
             if ($conf->projet->enabled) $nbrows++;
-            if ($conf->global->PRODUCT_USE_ECOTAX) $nbrow++;
+            if ($conf->global->PRODUCT_USE_ECOTAX) $nbrows++;
 
             //Local taxes
             if ($mysoc->pays_code=='ES')

@@ -8,6 +8,7 @@
  * Copyright (C) 2008      Raphael Bertrand (Resultic)   <raphael.bertrand@resultic.fr>
  * Copyright (C) 2010-2011 Juanjo Menent         <jmenent@2byte.es>
  * Copyright (C) 2010-2011 Philippe Grand        <philippe.grand@atoo-net.com>
+ * Copyright (C) 2011      Herve Prot            <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1069,7 +1070,7 @@ class Propal extends CommonObject
 				 */
 				$sql = "SELECT d.rowid, d.fk_propal, d.fk_parent_line, d.description, d.price, d.tva_tx, d.localtax1_tx, d.localtax2_tx, d.qty, d.fk_remise_except, d.remise_percent, d.subprice, d.fk_product,";
 				$sql.= " d.info_bits, d.total_ht, d.total_tva, d.total_localtax1, d.total_localtax2, d.total_ttc, d.marge_tx, d.marque_tx, d.special_code, d.rang, d.product_type,";
-                $sql.= ' p.ref as product_ref, p.description as product_desc, p.fk_product_type, p.label as product_label';
+                $sql.= ' p.ref as product_ref, p.description as product_desc, p.fk_product_type, p.label as product_label, p.ecotax_ttc';
 				$sql.= " FROM ".MAIN_DB_PREFIX."propaldet as d";
 				$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product as p ON d.fk_product = p.rowid";
 				$sql.= " WHERE d.fk_propal = ".$this->id;
@@ -1121,6 +1122,8 @@ class Propal extends CommonObject
                         $line->product_label	= $objp->product_label;
 						$line->product_desc     = $objp->product_desc; 		// Description produit
                         $line->fk_product_type  = $objp->fk_product_type;
+                                                $line->ecotax_ttc  = $objp->ecotax_ttc;
+                        
 
 						$this->lines[$i]        = $line;
 						//dol_syslog("1 ".$line->fk_product);
@@ -2336,7 +2339,7 @@ class Propal extends CommonObject
 		$sql.= ' pt.qty, pt.tva_tx, pt.remise_percent, pt.subprice, pt.info_bits,';
 		$sql.= ' pt.total_ht, pt.total_tva, pt.total_ttc, pt.marge_tx, pt.marque_tx, pt.pa_ht, pt.special_code,';
 		$sql.= ' pt.date_start, pt.date_end, pt.product_type, pt.rang,';
-		$sql.= ' p.label as product_label, p.ref, p.fk_product_type, p.rowid as prodid,';
+		$sql.= ' p.label as product_label, p.ref, p.fk_product_type, p.rowid as prodid,p.ecotax_ttc';
 		$sql.= ' p.description as product_desc';
 		$sql.= ' FROM '.MAIN_DB_PREFIX.'propaldet as pt';
 		$sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'product as p ON pt.fk_product=p.rowid';
@@ -2377,6 +2380,7 @@ class Propal extends CommonObject
 				$this->lines[$i]->rang				= $obj->rang;
 				$this->lines[$i]->date_start		= $this->db->jdate($obj->date_start);
 				$this->lines[$i]->date_end			= $this->db->jdate($obj->date_end);
+                                $this->lines[$i]->ecotax_ttc		= $obj->ecotax_ttc;
 
 				$i++;
 			}
@@ -2450,6 +2454,7 @@ class PropaleLigne
 	var $localtax2_tx;
 	var $total_localtax1;
 	var $total_localtax2;
+        var $ecotax_ttc;
 
 	var $skip_update_total; // Skip update price total for special lines
 
@@ -2471,7 +2476,7 @@ class PropaleLigne
 		$sql = 'SELECT pd.rowid, pd.fk_propal, pd.fk_parent_line, pd.fk_product, pd.description, pd.price, pd.qty, pd.tva_tx,';
 		$sql.= ' pd.remise, pd.remise_percent, pd.fk_remise_except, pd.subprice,';
 		$sql.= ' pd.info_bits, pd.total_ht, pd.total_tva, pd.total_ttc, pd.marge_tx, pd.marque_tx, pd.special_code, pd.rang,';
-		$sql.= ' p.ref as product_ref, p.label as product_libelle, p.description as product_desc';
+		$sql.= ' p.ref as product_ref, p.label as product_libelle, p.description as product_desc, p.ecotax_ttc';
 		$sql.= ' FROM '.MAIN_DB_PREFIX.'propaldet as pd';
 		$sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'product as p ON pd.fk_product = p.rowid';
 		$sql.= ' WHERE pd.rowid = '.$rowid;
@@ -2508,6 +2513,7 @@ class PropaleLigne
             $this->libelle			= $objp->product_libelle;  // deprecated
             $this->product_label	= $objp->product_libelle;
 			$this->product_desc		= $objp->product_desc;
+                        $this->ecotax_ttc               = $objp->ecotax_ttc;
 
 			$this->db->free($result);
 		}

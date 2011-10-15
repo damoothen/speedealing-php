@@ -8,6 +8,7 @@
  * Copyright (C) 2006      Andre Cianfarani      <acianfa@free.fr>
  * Copyright (C) 2007      Franky Van Liedekerke <franky.van.liedekerke@telenet.be>
  * Copyright (C) 2010-2011 Juanjo Menent         <jmenent@2byte.es>
+ * Copyright (C) 2011      Herve Prot            <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -887,7 +888,7 @@ class Facture extends CommonObject
         $sql.= ' l.rang, l.special_code,';
         $sql.= ' l.date_start as date_start, l.date_end as date_end,';
         $sql.= ' l.info_bits, l.total_ht, l.total_tva, l.total_localtax1, l.total_localtax2, l.total_ttc, l.fk_code_ventilation, l.fk_export_compta,';
-        $sql.= ' p.ref as product_ref, p.fk_product_type as fk_product_type, p.label as label, p.description as product_desc';
+        $sql.= ' p.ref as product_ref, p.fk_product_type as fk_product_type, p.label as label, p.description as product_desc, p.ecotax_ttc';
         $sql.= ' FROM '.MAIN_DB_PREFIX.'facturedet as l';
         $sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'product as p ON l.fk_product = p.rowid';
         $sql.= ' WHERE l.fk_facture = '.$this->id;
@@ -921,8 +922,6 @@ class Facture extends CommonObject
                 $line->fk_product       = $objp->fk_product;
                 $line->date_start       = $this->db->jdate($objp->date_start);
                 $line->date_end         = $this->db->jdate($objp->date_end);
-                $line->date_start       = $this->db->jdate($objp->date_start);
-                $line->date_end         = $this->db->jdate($objp->date_end);
                 $line->info_bits        = $objp->info_bits;
                 $line->total_ht         = $objp->total_ht;
                 $line->total_tva        = $objp->total_tva;
@@ -934,6 +933,7 @@ class Facture extends CommonObject
                 $line->rang				= $objp->rang;
                 $line->special_code		= $objp->special_code;
                 $line->fk_parent_line	= $objp->fk_parent_line;
+                $line->ecotax_ttc       = $objp->ecotax_ttc;
 
                 // Ne plus utiliser
                 $line->price            = $objp->price;

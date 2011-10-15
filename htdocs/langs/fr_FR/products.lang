@@ -116,6 +116,7 @@ AssociatedProducts=Composition
 AssociatedProductsNumber=Nbre de sous-produits composant ce produit
 UseEcotax=Utilisation de l'ecotaxe
 Ecotax=Ecotaxe TTC
+EcotaxHT=Total Ecotaxe HT
 EcotaxIncluded=Ecotaxe incluse
 AmountEcotax=Montant Ecotaxe
 EditAssociate=Composer
