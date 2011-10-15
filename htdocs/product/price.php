@@ -228,7 +228,7 @@ if ($conf->global->PRODUIT_MULTIPRICES)
 			print '</td></tr>';
                         
                         // Ecotaxe
-                        if($conf->global->PRODUCT_USE_ECOTAX)
+                        if($conf->global->PRODUCT_USE_ECOTAX && $product->type=0)
                         {
                             print '<tr><td>'.$langs->trans("Ecotax").'</td><td>';
                             print price($product->ecotax_ttc).' '.$langs->trans('TTC');
@@ -267,7 +267,7 @@ else
 	print '</td></tr>';
         
         // Ecotaxe
-        if($conf->global->PRODUCT_USE_ECOTAX)
+        if($conf->global->PRODUCT_USE_ECOTAX && $product->type=0)
         {
             print '<tr><td>'.$langs->trans("Ecotax").'</td><td>';
             print price($product->ecotax_ttc).' '.$langs->trans('TTC');
@@ -364,7 +364,7 @@ if ($_GET["action"] == 'edit_price' && ($user->rights->produit->creer || $user->
 		print '</td></tr>';
                 
                 // EcoTax
-                if($conf->global->PRODUCT_USE_ECOTAX)
+                if($conf->global->PRODUCT_USE_ECOTAX && $product->type=0)
                 {
                     print '<tr><td>';
                     $text=$langs->trans("Ecotax");
@@ -501,7 +501,7 @@ if ($result)
 		print '<td align="right">'.$langs->trans("VAT").'</td>';
 		print '<td align="right">'.$langs->trans("HT").'</td>';
 		print '<td align="right">'.$langs->trans("TTC").'</td>';
-                if($conf->global->PRODUCT_USE_ECOTAX)
+                if($conf->global->PRODUCT_USE_ECOTAX && $product->type = 0)
                     print '<td align="right">'.$langs->trans("Ecotax").'</td>';
 		print '<td align="right">'.$langs->trans("MinPrice").' '.$langs->trans("HT").'</td>';
 		print '<td align="right">'.$langs->trans("MinPrice").' '.$langs->trans("TTC").'</td>';
@@ -529,7 +529,7 @@ if ($result)
 			print '<td align="right">'.vatrate($objp->tva_tx,true,$objp->recuperableonly)."</td>";
 			print '<td align="right">'.price($objp->price)."</td>";
 			print '<td align="right">'.price($objp->price_ttc)."</td>";
-                        if($conf->global->PRODUCT_USE_ECOTAX)
+                        if($conf->global->PRODUCT_USE_ECOTAX && $product->type = 0)
                             print '<td align="right">'.price($objp->ecotax_ttc)."</td>";
 			print '<td align="right">'.price($objp->price_min).'</td>';
 			print '<td align="right">'.price($objp->price_min_ttc).'</td>';
