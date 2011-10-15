@@ -604,7 +604,7 @@ class pdf_propale_azur extends ModelePDFPropales
 		$index = 0;
                 
                 // Total Ecotax
-                if($conf->global->PRODUCT_USE_ECOTAX)
+                if($conf->global->PRODUCT_USE_ECOTAX && $object->total_ttc-$object->total_tva-$object->total_ht != 0)
                 {
                     $index++;
                     $pdf->SetFillColor(255,255,255);
