@@ -2323,7 +2323,7 @@ class Propal extends CommonObject
 		$sql.= ' pt.qty, pt.tva_tx, pt.remise_percent, pt.subprice, pt.info_bits,';
 		$sql.= ' pt.total_ht, pt.total_tva, pt.total_ttc, pt.marge_tx, pt.marque_tx, pt.pa_ht, pt.special_code,';
 		$sql.= ' pt.date_start, pt.date_end, pt.product_type, pt.rang,';
-		$sql.= ' p.label as product_label, p.ref, p.fk_product_type, p.rowid as prodid,p.ecotax_ttc';
+		$sql.= ' p.label as product_label, p.ref, p.fk_product_type, p.rowid as prodid,p.ecotax_ttc,';
 		$sql.= ' p.description as product_desc';
 		$sql.= ' FROM '.MAIN_DB_PREFIX.'propaldet as pt';
 		$sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'product as p ON pt.fk_product=p.rowid';
