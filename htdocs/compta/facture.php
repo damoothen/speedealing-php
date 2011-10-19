@@ -168,8 +168,8 @@ if ($action == 'confirm_deleteline' && $confirm == 'yes')
                 $outputlangs = new Translate("",$conf);
                 $outputlangs->setDefaultLang($newlang);
             }
-            $result=facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
-            if ($result > 0)
+            if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) $result=facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+            if ($result >= 0)
             {
                 Header('Location: '.$_SERVER["PHP_SELF"].'?facid='.$id);
                 exit;
@@ -329,7 +329,7 @@ if ($action == 'confirm_valid' && $confirm == 'yes' && $user->rights->facture->v
             $outputlangs = new Translate("",$conf);
             $outputlangs->setDefaultLang($newlang);
         }
-        facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+        if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
     }
     else
     {
@@ -386,7 +386,7 @@ if ($action == 'modif' && ((empty($conf->global->MAIN_USE_ADVANCED_PERMS) && $us
             $outputlangs = new Translate("",$conf);
             $outputlangs->setDefaultLang($newlang);
         }
-        facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+        if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
     }
 }
 
@@ -758,28 +758,28 @@ if ($action == 'add' && $user->rights->facture->creer)
                                 }
 
                                 $result = $object->addline(
-                                $id,
-                                $desc,
-                                $lines[$i]->subprice,
-                                $lines[$i]->qty,
-                                $lines[$i]->tva_tx,
-                                $lines[$i]->localtax1_tx,
-                                $lines[$i]->localtax2_tx,
-                                $lines[$i]->fk_product,
-                                $lines[$i]->remise_percent,
-                                $date_start,
-                                $date_end,
-                                0,
-                                $lines[$i]->info_bits,
-                                $lines[$i]->fk_remise_except,
-    							'HT',
-                                0,
-                                $product_type,
-                                $lines[$i]->rang,
-                                $lines[$i]->special_code,
-                                $object->origin,
-                                $lines[$i]->rowid,
-                                $fk_parent_line
+                                    $id,
+                                    $desc,
+                                    $lines[$i]->subprice,
+                                    $lines[$i]->qty,
+                                    $lines[$i]->tva_tx,
+                                    $lines[$i]->localtax1_tx,
+                                    $lines[$i]->localtax2_tx,
+                                    $lines[$i]->fk_product,
+                                    $lines[$i]->remise_percent,
+                                    $date_start,
+                                    $date_end,
+                                    0,
+                                    $lines[$i]->info_bits,
+                                    $lines[$i]->fk_remise_except,
+        							'HT',
+                                    0,
+                                    $product_type,
+                                    $lines[$i]->rang,
+                                    $lines[$i]->special_code,
+                                    $object->origin,
+                                    $lines[$i]->rowid,
+                                    $fk_parent_line
                                 );
 
                                 if ($result > 0)
@@ -977,28 +977,28 @@ if (($action == 'addline' || $action == 'addline_predef') && $user->rights->fact
             {
                 // Insert line
                 $result = $object->addline(
-                $id,
-                $desc,
-                $pu_ht,
-                $_POST['qty'],
-                $tva_tx,
-                $localtax1_tx,
-                $localtax2_tx,
-                $_POST['idprod'],
-                $_POST['remise_percent'],
-                $date_start,
-                $date_end,
-                0,
-                $info_bits,
-				'',
-                $price_base_type,
-                $pu_ttc,
-                $type,
-                -1,
-                0,
-                '',
-                0,
-                GETPOST('fk_parent_line')
+                    $id,
+                    $desc,
+                    $pu_ht,
+                    $_POST['qty'],
+                    $tva_tx,
+                    $localtax1_tx,
+                    $localtax2_tx,
+                    $_POST['idprod'],
+                    $_POST['remise_percent'],
+                    $date_start,
+                    $date_end,
+                    0,
+                    $info_bits,
+    				'',
+                    $price_base_type,
+                    $pu_ttc,
+                    $type,
+                    -1,
+                    0,
+                    '',
+                    0,
+                    GETPOST('fk_parent_line')
                 );
             }
         }
@@ -1016,7 +1016,7 @@ if (($action == 'addline' || $action == 'addline_predef') && $user->rights->fact
             $outputlangs = new Translate("",$conf);
             $outputlangs->setDefaultLang($newlang);
         }
-        facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+        if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
 
         unset($_POST['qty']);
         unset($_POST['type']);
@@ -1088,20 +1088,21 @@ if ($action == 'updateligne' && $user->rights->facture->creer && $_POST['save'] 
     // Update line
     if ($result >= 0)
     {
-        $result = $object->updateline(GETPOST('lineid'),
-        $description,
-        $up_ht,
-        GETPOST('qty'),
-        GETPOST('remise_percent'),
-        $date_start,
-        $date_end,
-        $vat_rate,
-        $localtax1_rate,
-        $localtax2_rate,
-		'HT',
-        $info_bits,
-        $type,
-        GETPOST('fk_parent_line')
+        $result = $object->updateline(
+            GETPOST('lineid'),
+            $description,
+            $up_ht,
+            GETPOST('qty'),
+            GETPOST('remise_percent'),
+            $date_start,
+            $date_end,
+            $vat_rate,
+            $localtax1_rate,
+            $localtax2_rate,
+    		'HT',
+            $info_bits,
+            $type,
+            GETPOST('fk_parent_line')
         );
 
         // Define output language
@@ -1114,7 +1115,7 @@ if ($action == 'updateligne' && $user->rights->facture->creer && $_POST['save'] 
             $outputlangs = new Translate("",$conf);
             $outputlangs->setDefaultLang($newlang);
         }
-        facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+        if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
     }
 }
 
@@ -1142,7 +1143,7 @@ if ($action == 'up' && $user->rights->facture->creer)
         $outputlangs = new Translate("",$conf);
         $outputlangs->setDefaultLang($newlang);
     }
-    facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+    if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
 
     Header('Location: '.$_SERVER["PHP_SELF"].'?facid='.$object->id.'#'.$_GET['rowid']);
     exit;
@@ -1164,7 +1165,7 @@ if ($action == 'down' && $user->rights->facture->creer)
         $outputlangs = new Translate("",$conf);
         $outputlangs->setDefaultLang($newlang);
     }
-    facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+    if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
 
     Header('Location: '.$_SERVER["PHP_SELF"].'?facid='.$object->id.'#'.$_GET['rowid']);
     exit;
