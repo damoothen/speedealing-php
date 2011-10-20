@@ -297,7 +297,56 @@ class pdf_propale_azur extends ModelePDFPropales
 					$this->tva[$vatrate] += $tvaligne;
 					$this->localtax1[$localtax1rate]+=$localtax1ligne;
 					$this->localtax2[$localtax2rate]+=$localtax2ligne;
+                                        
+                                        if($conf->global->PRODUCT_USE_ECOTAX && $object->lines[$i]->ecotax > 0)
+                                        {
+                                            $curY = $nexY;
 
+                                            $pdf->SetFont('','', $default_font_size - 3);   // Dans boucle pour gerer multi-page
+
+                                            // Description de la ligne produit
+                                            $curX = $this->posxdesc-1;
+                                            $pdf->SetXY ($curX, $curY);
+                                            
+                                            $pdf->MultiCell($this->posxtva-$curX, 4, $langs->trans('Ecotax'), 0, 'L');
+                                            $pdf->SetFont('','', $default_font_size - 3);   // On repositionne la police par defaut
+                                            $nexY = $pdf->GetY();
+
+                                            // TVA
+                                            if (empty($conf->global->MAIN_GENERATE_DOCUMENTS_WITHOUT_VAT))
+                                            {
+						$vat_rate = pdf_getlinevatrate($object, $i, $outputlangs, $hidedetails);
+						$pdf->SetXY ($this->posxtva, $curY);
+						$pdf->MultiCell($this->posxup-$this->posxtva-1, 4, $vat_rate, 0, 'R');
+                                            }
+
+                                            // Prix unitaire HT avant remise
+                                            $up_excl_tax = price($object->lines[$i]->ecotax);
+                                            $pdf->SetXY ($this->posxup, $curY);
+                                            $pdf->MultiCell($this->posxqty-$this->posxup-1, 4, $up_excl_tax, 0, 'R', 0);
+
+                                            // Quantity
+                                            $qty = pdf_getlineqty($object, $i, $outputlangs, $hidedetails);
+                                            $pdf->SetXY ($this->posxqty, $curY);
+                                            $pdf->MultiCell($this->posxdiscount-$this->posxqty-1, 4, $qty, 0, 'R');
+                                            
+                                            // Remise sur ligne
+                                            $pdf->SetXY ($this->posxdiscount, $curY);
+                                            if ($object->lines[$i]->remise_percent)
+                                            {
+						$remise_percent = '';
+						$pdf->MultiCell($this->postotalht-$this->posxdiscount-1, 4, $remise_percent, 0, 'R');
+                                            }
+
+                                            // Total HT ligne
+                                            $total_excl_tax = $object->lines[$i]->ecotax*$object->lines[$i]->qty;
+                                            $pdf->SetXY ($this->postotalht, $curY);
+                                            $pdf->MultiCell(26, 4, price($total_excl_tax), 0, 'R', 0);
+                                            $object->total_ecotax+=$total_excl_tax;
+                                            
+                                            $pdf->SetFont('','', $default_font_size - 1);   // On repositionne la police par defaut
+                                        }
+                                        
 					$nexY+=2;    // Passe espace entre les lignes
 
 					// Cherche nombre de lignes a venir pour savoir si place suffisante
@@ -599,19 +648,21 @@ class pdf_propale_azur extends ModelePDFPropales
 		$pdf->MultiCell($col2x-$col1x, $tab2_hl, $outputlangs->transnoentities("TotalHT"), 0, 'L', 1);
 
 		$pdf->SetXY ($col2x, $tab2_top + 0);
-		$pdf->MultiCell($largcol2, $tab2_hl, price($object->total_ht + $object->remise), 0, 'R', 1);
+		$pdf->MultiCell($largcol2, $tab2_hl, price($object->total_ht + $object->remise + $object->total_ecotax), 0, 'R', 1);
 
 		$index = 0;
                 
                 // Total Ecotax
-                if($conf->global->PRODUCT_USE_ECOTAX && $object->total_ttc-$object->total_tva-$object->total_ht != 0)
+                if($conf->global->PRODUCT_USE_ECOTAX && $object->total_ecotax != 0)
                 {
                     $index++;
+                    $pdf->SetFont('','', $default_font_size - 3);
                     $pdf->SetFillColor(255,255,255);
                     $pdf->SetXY ($col1x, $tab2_top + $tab2_hl * $index);
-                    $pdf->MultiCell($col2x-$col1x, $tab2_hl, $outputlangs->transnoentities("EcotaxHT"), 0, 'L', 1);
+                    $pdf->MultiCell($col2x-$col1x, $tab2_hl, $outputlangs->transnoentities("AmountEcotaxHT"), 0, 'L', 1);
                     $pdf->SetXY ($col2x, $tab2_top + $tab2_hl * $index);
-                    $pdf->MultiCell($largcol2, $tab2_hl, price(price2num($object->total_ttc-$object->total_tva-$object->total_ht, 'MT')), 0, 'R', 1);
+                    $pdf->MultiCell($largcol2, $tab2_hl, price(price2num($object->total_ecotax, 'MT')), 0, 'R', 1);
+                    $pdf->SetFont('','', $default_font_size - 1);
                 }
 
 		// Show VAT by rates and total

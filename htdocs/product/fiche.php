@@ -176,7 +176,7 @@ if ($action == 'add' && ($user->rights->produit->creer || $user->rights->service
 		$product->volume_units       	= $_POST["volume_units"];
 		$product->finished           	= $_POST["finished"];
 		$product->hidden             	= $_POST["hidden"]=='yes'?1:0;
-                $product->ecotax_ttc            = empty($_POST["ecotax_ttc"])?0:$_POST["ecotax_ttc"];
+                $product->ecotax                = empty($_POST["ecotax"])?0:$_POST["ecotax"];
 
 		// MultiPrix
 		if($conf->global->PRODUIT_MULTIPRICES)
@@ -794,7 +794,7 @@ if ($action == 'create' && ($user->rights->produit->creer || $user->rights->serv
                             print '<tr><td>';
                             $text=$langs->trans("Ecotax");
                             print $html->textwithpicto($text,$langs->trans("PrecisionUnitIsLimitedToXDecimals",$conf->global->MAIN_MAX_DECIMALS_UNIT),$direction=1,$usehelpcursor=1);
-                            print '<td><input name="ecotax_ttc" size="10" value="'.$product->ecotax_ttc.'">';
+                            print '<td><input name="ecotax" size="10" value="'.$product->ecotax.'">';
                             print '</td></tr>';
                         }
 

@@ -676,7 +676,7 @@ class Commande extends CommonObject
 					$this->lines[$i]->date_start,
 					$this->lines[$i]->date_end,
 					$this->lines[$i]->product_type,
-                                        $this->lines[$i]->ecotax_ttc,
+                                        $this->lines[$i]->ecotax,
 					$this->lines[$i]->rang,
 					$this->lines[$i]->special_code,
 					$fk_parent_line
@@ -967,7 +967,7 @@ class Commande extends CommonObject
 	 *	   par l'appelant par la methode get_default_tva(societe_vendeuse,societe_acheteuse,produit)
 	 *	   et le desc doit deja avoir la bonne valeur (a l'appelant de gerer le multilangue)
 	 */
-	function addline($commandeid, $desc, $pu_ht, $qty, $txtva, $txlocaltax1=0, $txlocaltax2=0, $fk_product=0, $remise_percent=0, $info_bits=0, $fk_remise_except=0, $price_base_type='HT', $pu_ttc=0, $date_start='', $date_end='', $type=0, $ecotax_ttc=0, $rang=-1, $special_code=0, $fk_parent_line=0)
+	function addline($commandeid, $desc, $pu_ht, $qty, $txtva, $txlocaltax1=0, $txlocaltax2=0, $fk_product=0, $remise_percent=0, $info_bits=0, $fk_remise_except=0, $price_base_type='HT', $pu_ttc=0, $date_start='', $date_end='', $type=0, $ecotax=0, $rang=-1, $special_code=0, $fk_parent_line=0)
 	{
             global $conf;
             
@@ -992,6 +992,8 @@ class Commande extends CommonObject
 		$txtva = price2num($txtva);
 		$txlocaltax1 = price2num($txlocaltax1);
 		$txlocaltax2 = price2num($txlocaltax2);
+                $ecotax=price2num($ecotax);
+                
 		if ($price_base_type=='HT')
 		{
 			$pu=$pu_ht;
@@ -1008,7 +1010,7 @@ class Commande extends CommonObject
 		if ($this->statut == 0)
 		{
 			$this->db->begin();
-
+                        
 			// Calcul du total TTC et de la TVA pour la ligne a partir de
 			// qty, pu, remise_percent et txtva
 			// TRES IMPORTANT: C'est au moment de l'insertion ligne qu'on doit stocker
@@ -1019,11 +1021,11 @@ class Commande extends CommonObject
 			$total_ttc = $tabprice[2];
 			$total_localtax1 = $tabprice[9];
 			$total_localtax2 = $tabprice[10];
-                        
+
                         if($conf->global->PRODUCT_USE_ECOTAX)
                         {
-                            $total_ttc+=$ecotax_ttc*$qty;
-                            $total_tva=$total_ttc-$total_ht-price2num(($ecotax_ttc/(1 + ( $txtva / 100)))*$qty,'MT');
+                            $total_ttc+=price2num($ecotax*(1 + ( $txtva / 100))*$qty,'MT');
+                            $total_tva=$total_ttc-$total_ht-$ecotax*$qty;
                         }
 
 			// Rang to use
@@ -1401,7 +1403,7 @@ class Commande extends CommonObject
 		$sql = 'SELECT l.rowid, l.fk_product, l.fk_parent_line, l.product_type, l.fk_commande, l.description, l.price, l.qty, l.tva_tx,';
 		$sql.= ' l.localtax1_tx, l.localtax2_tx, l.fk_remise_except, l.remise_percent, l.subprice, l.marge_tx, l.marque_tx, l.rang, l.info_bits, l.special_code,';
 		$sql.= ' l.total_ht, l.total_ttc, l.total_tva, l.total_localtax1, l.total_localtax2, l.date_start, l.date_end,';
-		$sql.= ' p.ref as product_ref, p.description as product_desc, p.fk_product_type, p.label as product_label, p.ecotax_ttc';
+		$sql.= ' p.ref as product_ref, p.description as product_desc, p.fk_product_type, p.label as product_label, p.ecotax_ttc, p.ecotax';
 		$sql.= ' FROM '.MAIN_DB_PREFIX.'commandedet as l';
 		$sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'product as p ON (p.rowid = l.fk_product)';
 		$sql.= ' WHERE l.fk_commande = '.$this->id;
@@ -1457,6 +1459,7 @@ class Commande extends CommonObject
 
 				$line->date_start       = $this->db->jdate($objp->date_start);
 				$line->date_end         = $this->db->jdate($objp->date_end);
+                                $line->ecotax           = $objp->ecotax;
                                 $line->ecotax_ttc       = $objp->ecotax_ttc;
 
 				$this->lines[$i] = $line;
@@ -2161,7 +2164,7 @@ class Commande extends CommonObject
 	 * 	\param		type				Type of line (0=product, 1=service)
 	 *  \return   	int              	< 0 si erreur, > 0 si ok
 	 */
-	function updateline($rowid, $desc, $pu, $qty, $remise_percent=0, $txtva, $txlocaltax1=0,$txlocaltax2=0, $price_base_type='HT', $info_bits=0, $date_start='', $date_end='', $type=0, $ecotax_ttc=0, $fk_parent_line=0, $skip_update_total=0)
+	function updateline($rowid, $desc, $pu, $qty, $remise_percent=0, $txtva, $txlocaltax1=0,$txlocaltax2=0, $price_base_type='HT', $info_bits=0, $date_start='', $date_end='', $type=0, $ecotax=0, $fk_parent_line=0, $skip_update_total=0)
 	{
 		global $conf;
 
@@ -2186,6 +2189,7 @@ class Commande extends CommonObject
 			$txtva=price2num($txtva);
 			$txlocaltax1=price2num($txtlocaltax1);
 			$txlocaltax2=price2num($txtlocaltax2);
+                        $ecotax=price2num($ecotax);
 
 			// Calcul du total TTC et de la TVA pour la ligne a partir de
 			// qty, pu, remise_percent et txtva
@@ -2200,8 +2204,8 @@ class Commande extends CommonObject
                         
                         if($conf->global->PRODUCT_USE_ECOTAX)
                         {
-                            $total_ttc+=$ecotax_ttc*$qty;
-                            $total_tva=$total_ttc-$total_ht-price2num(($ecotax_ttc/(1 + ( $txtva / 100)))*$qty,'MT');
+                            $total_ttc+=price2num($ecotax*(1 + ( $txtva / 100))*$qty,'MT');
+                            $total_tva=$total_ttc-$total_ht-$ecotax*$qty;
                         }
 
 			// Anciens indicateurs: $price, $subprice, $remise (a ne plus utiliser)
