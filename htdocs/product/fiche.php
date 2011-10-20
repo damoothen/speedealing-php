@@ -176,6 +176,7 @@ if ($action == 'add' && ($user->rights->produit->creer || $user->rights->service
 		$product->volume_units       	= $_POST["volume_units"];
 		$product->finished           	= $_POST["finished"];
 		$product->hidden             	= $_POST["hidden"]=='yes'?1:0;
+                $product->ecotax_ttc            = empty($_POST["ecotax_ttc"])?0:$_POST["ecotax_ttc"];
 
 		// MultiPrix
 		if($conf->global->PRODUIT_MULTIPRICES)
@@ -237,8 +238,8 @@ if ($action == 'update' && ($user->rights->produit->creer || $user->rights->serv
 			$product->libelle            = $_POST["libelle"];
 			$product->description        = dol_htmlcleanlastbr($_POST["desc"]);
 			$product->note               = dol_htmlcleanlastbr($_POST["note"]);
-            $product->customcode         = $_POST["customcode"];
-            $product->country_id         = $_POST["country_id"];
+                        $product->customcode         = $_POST["customcode"];
+                        $product->country_id         = $_POST["country_id"];
 			$product->status             = $_POST["statut"];
 			$product->status_buy         = $_POST["statut_buy"];
 			$product->seuil_stock_alerte = $_POST["seuil_stock_alerte"];
@@ -752,8 +753,8 @@ if ($action == 'create' && ($user->rights->produit->creer || $user->rights->serv
 			print '</td></tr>';
 		}
 
-        // Custom code
-        print '<tr><td>'.$langs->trans("CustomCode").'</td><td><input name="customcode" size="10" value="'.$_POST["customcode"].'"></td></tr>';
+                // Custom code
+                print '<tr><td>'.$langs->trans("CustomCode").'</td><td><input name="customcode" size="10" value="'.$_POST["customcode"].'"></td></tr>';
 
         // Origin country
         print '<tr><td>'.$langs->trans("CountryOrigin").'</td><td>';
@@ -786,6 +787,16 @@ if ($action == 'create' && ($user->rights->produit->creer || $user->rights->serv
 			print '<td><input name="price" size="10" value="'.$product->price.'">';
 			print $html->select_PriceBaseType($product->price_base_type, "price_base_type");
 			print '</td></tr>';
+                        
+                        // EcoTax
+                        if($conf->global->PRODUCT_USE_ECOTAX && $_GET["type"]==0)
+                        {
+                            print '<tr><td>';
+                            $text=$langs->trans("Ecotax");
+                            print $html->textwithpicto($text,$langs->trans("PrecisionUnitIsLimitedToXDecimals",$conf->global->MAIN_MAX_DECIMALS_UNIT),$direction=1,$usehelpcursor=1);
+                            print '<td><input name="ecotax_ttc" size="10" value="'.$product->ecotax_ttc.'">';
+                            print '</td></tr>';
+                        }
 
 			// MIN PRICE
 			print '<tr><td>'.$langs->trans("MinPrice").'</td>';

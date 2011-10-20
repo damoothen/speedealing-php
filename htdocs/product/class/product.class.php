@@ -210,6 +210,7 @@ class Product extends CommonObject
 		$this->price=price2num($this->price);
 		$this->price_min_ttc=price2num($this->price_min_ttc);
 		$this->price_min=price2num($this->price_min);
+                $this->ecotax_ttc=price2num($this->ecotax_ttc);
 		if (empty($this->tva_tx))    	$this->tva_tx = 0;
 		if (empty($this->tva_npr))      $this->tva_npr = 0;
 		//Local taxes
@@ -294,6 +295,7 @@ class Product extends CommonObject
 				$sql.= ", canvas";
 				$sql.= ", finished";
 				$sql.= ", hidden";
+                                $sql.= ", ecotax_ttc";
 				$sql.= ") VALUES (";
 				$sql.= $this->db->idate(mktime());
 				$sql.= ", ".$conf->entity;
@@ -311,6 +313,7 @@ class Product extends CommonObject
 				$sql.= ", '".$this->canvas."'";
 				$sql.= ", ".$this->finished;
 				$sql.= ", ".$this->hidden;
+                                $sql.= ", ".$this->ecotax_ttc;
 				$sql.= ")";
 
 				dol_syslog("Product::Create sql=".$sql);
