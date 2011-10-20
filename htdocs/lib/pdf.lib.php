@@ -669,12 +669,6 @@ function pdf_writelinedesc(&$pdf,$object,$i,$outputlangs,$w,$h,$posx,$posy,$hide
     else
     {
         $labelproductservice=pdf_getlinedesc($object,$i,$outputlangs,$hideref,$hidedesc,$issupplierline);
-
-        if($conf->global->PRODUCT_USE_ECOTAX && $object->lines[$i]->ecotax_ttc > 0)
-        {
-            $langs->load('product');
-            $labelproductservice.="<div><i>".$langs->trans('AmountEcotax')." : ".price(price2num($object->lines[$i]->ecotax_ttc/(1+($object->lines[$i]->tva_tx/100)),'MT'))." * ".$object->lines[$i]->qty." = ".price(price2num(($object->lines[$i]->ecotax_ttc/(1+($object->lines[$i]->tva_tx/100))*$object->lines[$i]->qty),'MT'))." ".$langs->trans('Currency'.$conf->monnaie)." HT</i></div>";
-        }
         
         // Description
         $pdf->writeHTMLCell($w, $h, $posx, $posy, $outputlangs->convToOutputCharset($labelproductservice), 0, 1);

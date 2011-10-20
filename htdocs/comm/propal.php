@@ -741,7 +741,7 @@ if ($_POST['action'] == "addline" && $user->rights->propale->creer)
 			$pu_ttc,
 			$info_bits,
 			$type,
-                        $prod->ecotax_ttc,
+                        $prod->ecotax,
 			-1,
 			0,
 			$_POST['fk_parent_line']
@@ -827,7 +827,7 @@ if ($_POST['action'] == 'updateligne' && $user->rights->propale->creer && $_POST
 		$_POST['desc'],
 		'HT',
 		$info_bits,
-                $product->ecotax_ttc,
+                $product->ecotax,
 		$special_code,
 		$_POST['fk_parent_line']
 		);
