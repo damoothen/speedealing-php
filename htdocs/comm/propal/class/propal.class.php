@@ -340,6 +340,11 @@ class Propal extends CommonObject
 		if ($this->statut == 0)
 		{
 			$this->db->begin();
+                        
+                        if($conf->global->PRODUCT_USE_ECOTAX)
+                        {
+                            $pu+=$ecotax;
+                        }
 
 			// Calcul du total TTC et de la TVA pour la ligne a partir de
 			// qty, pu, remise_percent et txtva
@@ -354,8 +359,7 @@ class Propal extends CommonObject
                         
                         if($conf->global->PRODUCT_USE_ECOTAX)
                         {
-                            $total_ttc+=price2num($ecotax*(1 + ( $txtva / 100))*$qty,'MT');
-                            $total_tva=$total_ttc-$total_ht-$ecotax*$qty;
+                            $total_ht-=$qty*$ecotax;
                         }
 
 			// Rang to use
@@ -477,6 +481,11 @@ class Propal extends CommonObject
 		if ($this->statut == 0)
 		{
 			$this->db->begin();
+                        
+                        if($conf->global->PRODUCT_USE_ECOTAX)
+                        {
+                            $pu+=$ecotax;
+                        }
 
 			// Calcul du total TTC et de la TVA pour la ligne a partir de
 			// qty, pu, remise_percent et txtva
@@ -491,8 +500,7 @@ class Propal extends CommonObject
                         
                         if($conf->global->PRODUCT_USE_ECOTAX)
                         {
-                            $total_ttc+=price2num($ecotax*(1 + ( $txtva / 100))*$qty,'MT');
-                            $total_tva=$total_ttc-$total_ht-$ecotax*$qty;
+                            $total_ht-=$qty*$ecotax;
                         }
 
 			// Anciens indicateurs: $price, $remise (a ne plus utiliser)
