@@ -1861,6 +1861,11 @@ class Facture extends CommonObject
         if ($this->brouillon)
         {
             $this->db->begin();
+            
+            if($conf->global->PRODUCT_USE_ECOTAX)
+            {
+                $pu+=$ecotax;
+            }
 
             // Calcul du total TTC et de la TVA pour la ligne a partir de
             // qty, pu, remise_percent et txtva
@@ -1876,8 +1881,7 @@ class Facture extends CommonObject
             
             if($conf->global->PRODUCT_USE_ECOTAX)
             {
-                $total_ttc+=price2num($ecotax*(1 + ( $txtva / 100))*$qty,'MT');
-                $total_tva=$total_ttc-$total_ht-$ecotax*$qty;
+                $total_ht-=$qty*$ecotax;
             }
 
             // Rang to use
@@ -2010,6 +2014,11 @@ class Facture extends CommonObject
             
             // Check parameters
             if ($type < 0) return -1;
+            
+            if($conf->global->PRODUCT_USE_ECOTAX)
+            {
+                $pu+=$ecotax;
+            }
 
             // Calculate total with, without tax and tax from qty, pu, remise_percent and txtva
             // TRES IMPORTANT: C'est au moment de l'insertion ligne qu'on doit stocker
@@ -2026,8 +2035,7 @@ class Facture extends CommonObject
             
             if($conf->global->PRODUCT_USE_ECOTAX)
             {
-                $total_ttc+=price2num($ecotax*(1 + ( $txtva / 100))*$qty,'MT');
-                $total_tva=$total_ttc-$total_ht-$ecotax*$qty;
+                $total_ht-=$qty*$ecotax;
             }
 
             // Old properties: $price, $remise (deprecated)
