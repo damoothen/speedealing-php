@@ -300,7 +300,7 @@ if ($action == 'add' && $user->rights->commande->creer)
                     $datestart,
                     $dateend,
                     $product_type,
-                    $lines[$i]->ecotax_ttc,
+                    $lines[$i]->ecotax,
                     $lines[$i]->rang,
                     $lines[$i]->special_code,
                     $fk_parent_line
@@ -568,6 +568,7 @@ if ($action == 'addline' && $user->rights->commande->creer)
                 $pu_ttc = $prod->price_ttc;
                 $price_min = $prod->price_min;
                 $price_base_type = $prod->price_base_type;
+                $ecotax_ht = $prod->ecotax;
             }
 
             // On reevalue prix selon taux tva car taux tva transaction peut etre different
@@ -634,7 +635,7 @@ if ($action == 'addline' && $user->rights->commande->creer)
                 $date_start,
                 $date_end,
                 $type,
-                $prod->ecotax_ttc,
+                $ecotax_ht,
                 -1,
                 '',
                 $_POST['fk_parent_line']
@@ -745,7 +746,7 @@ if ($action == 'updateligne' && $user->rights->commande->creer && $_POST['save']
         $date_start,
         $date_end,
         $type,
-        $product->ecotax_ttc,
+        $product->ecotax,
         $_POST['fk_parent_line']
         );
 

@@ -43,7 +43,7 @@ create table llx_product
   price_ttc					double(24,8) DEFAULT 0,
   price_min					double(24,8) DEFAULT 0,
   price_min_ttc                                 double(24,8) DEFAULT 0,
-  ecotax_ttc					double(24,8) DEFAULT 0,
+  ecotax					double(24,8) DEFAULT 0,
   price_base_type			varchar(3)   DEFAULT 'HT',
   tva_tx					double(6,3),
   recuperableonly           integer NOT NULL DEFAULT '0',   -- French NPR VAT

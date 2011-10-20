@@ -804,7 +804,7 @@ if ($action == 'add' && $user->rights->facture->creer)
     							'HT',
                                 0,
                                 $product_type,
-                                $lines[$i]->ecotax_ttc,
+                                $lines[$i]->ecotax,
                                 $lines[$i]->rang,
                                 $lines[$i]->special_code,
                                 $object->origin,
@@ -1038,7 +1038,7 @@ if (($action == 'addline' || $action == 'addline_predef') && $user->rights->fact
                 $price_base_type,
                 $pu_ttc,
                 $type,
-                $prod->ecotax_ttc,
+                $prod->ecotax,
                 -1,
                 0,
                 '',
@@ -1146,7 +1146,7 @@ if ($action == 'updateligne' && $user->rights->facture->creer && $_POST['save'] 
 		'HT',
         $info_bits,
         $type,
-        $product->ecotax_ttc,
+        $product->ecotax,
         GETPOST('fk_parent_line')
         );
 

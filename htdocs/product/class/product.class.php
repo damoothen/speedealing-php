@@ -71,6 +71,7 @@ class Product extends CommonObject
 	var $localtax1_tx;
 	var $localtax2_tx;
         //! EcoTaxe
+        var $ecotax;
         var $ecotax_ttc;
 	//! Type 0 for regular product, 1 for service (Advanced feature: 2 for assembly kit, 3 for stock kit)
 	var $type;
@@ -210,6 +211,7 @@ class Product extends CommonObject
 		$this->price=price2num($this->price);
 		$this->price_min_ttc=price2num($this->price_min_ttc);
 		$this->price_min=price2num($this->price_min);
+                $this->ecotax=price2num($this->ecotax);
                 $this->ecotax_ttc=price2num($this->ecotax_ttc);
 		if (empty($this->tva_tx))    	$this->tva_tx = 0;
 		if (empty($this->tva_npr))      $this->tva_npr = 0;
@@ -228,6 +230,8 @@ class Product extends CommonObject
 		$price_ttc=0;
 		$price_min_ht=0;
 		$price_min_ttc=0;
+                $ecotax_ht=0;
+                $ecotax_ttc=0;
 		if ($this->price_base_type == 'TTC' && $this->price_ttc > 0)
 		{
 			$price_ttc = price2num($this->price_ttc,'MU');
@@ -237,6 +241,16 @@ class Product extends CommonObject
 		{
 			$price_ht = price2num($this->price,'MU');
 			$price_ttc = price2num($this->price * (1 + ($this->tva_tx / 100)),'MU');
+		}
+                if ($this->price_base_type == 'TTC' && $this->ecotax_ttc > 0)
+		{
+			$ecotax_ttc = price2num($this->ecotax_ttc,'MU');
+			$ecotax_ht = price2num($this->ecotax_ttc / (1 + ($this->tva_tx / 100)),'MU');
+		}
+                if ($this->price_base_type != 'TTC' && $this->ecotax > 0)
+		{
+			$ecotax_ht = price2num($this->ecotax,'MU');
+			$ecotax_ttc = price2num($this->ecotax * (1 + ($this->tva_tx / 100)),'MU');
 		}
 		if (($this->price_min_ttc > 0) && ($this->price_base_type == 'TTC'))
 		{
@@ -295,6 +309,7 @@ class Product extends CommonObject
 				$sql.= ", canvas";
 				$sql.= ", finished";
 				$sql.= ", hidden";
+                                $sql.= ", ecotax";
                                 $sql.= ", ecotax_ttc";
 				$sql.= ") VALUES (";
 				$sql.= $this->db->idate(mktime());
@@ -313,7 +328,8 @@ class Product extends CommonObject
 				$sql.= ", '".$this->canvas."'";
 				$sql.= ", ".$this->finished;
 				$sql.= ", ".$this->hidden;
-                                $sql.= ", ".$this->ecotax_ttc;
+                                $sql.= ", ".price2num($ecotax_ht);
+                                $sql.= ", ".price2num($ecotax_ttc);
 				$sql.= ")";
 
 				dol_syslog("Product::Create sql=".$sql);
@@ -724,9 +740,9 @@ class Product extends CommonObject
 		$now=dol_now();
 
 		// Add new price
-		$sql = "INSERT INTO ".MAIN_DB_PREFIX."product_price(price_level,date_price,fk_product,fk_user_author,price,price_ttc,ecotax_ttc,price_base_type,tosell,tva_tx,recuperableonly,";
+		$sql = "INSERT INTO ".MAIN_DB_PREFIX."product_price(price_level,date_price,fk_product,fk_user_author,price,price_ttc,ecotax,ecotax_ttc,price_base_type,tosell,tva_tx,recuperableonly,";
 		$sql.= " localtax1_tx, localtax2_tx, price_min,price_min_ttc) ";
-		$sql.= " VALUES(".($level?$level:1).", ".$this->db->idate($now).",".$this->id.",".$user->id.",".$this->price.",".$this->price_ttc.",".$this->ecotax_ttc.",'".$this->price_base_type."',".$this->status.",".$this->tva_tx.",".$this->tva_npr.",";
+		$sql.= " VALUES(".($level?$level:1).", ".$this->db->idate($now).",".$this->id.",".$user->id.",".$this->price.",".$this->price_ttc.",".$this->ecotax.",".$this->ecotax_ttc.",'".$this->price_base_type."',".$this->status.",".$this->tva_tx.",".$this->tva_npr.",";
 		$sql.= " ".$this->localtax1_tx.",".$this->localtax2_tx.",".$this->price_min.",".$this->price_min_ttc;
 		$sql.= ")";
 
@@ -864,7 +880,7 @@ class Product extends CommonObject
 	 *  @param     newnpr          0=Standard vat rate, 1=Special vat rate for French NPR VAT
 	 * 	@return		int				<0 if KO, >0 if OK
 	 */
-	function update_price($id, $newprice, $newpricebase, $user, $newvat='',$newminprice='',$newecotax_ttc=0, $level=0, $newnpr=0)
+	function update_price($id, $newprice, $newpricebase, $user, $newvat='',$newminprice='',$newecotax=0, $level=0, $newnpr=0)
 	{
 		global $conf,$langs;
 
@@ -896,6 +912,10 @@ class Product extends CommonObject
 					$price_min=0;
 					$price_min_ttc=0;
 				}
+                                
+                                $ecotax_ttc = price2num($newecotax,'MU');
+				$ecotax = price2num($newecotax) / (1 + ($newvat / 100));
+				$ecotax = price2num($ecotax,'MU');
 			}
 			else
 			{
@@ -915,6 +935,10 @@ class Product extends CommonObject
 					$price_min=0;
 					$price_min_ttc=0;
 				}
+                                
+                                $ecotax = price2num($newecotax,'MU');
+				$ecotax_ttc = price2num($newecotax) * (1 + ($newvat / 100));
+				$ecotax_ttc = price2num($ecotax_ttc,'MU');
 			}
 			//print 'x'.$id.'-'.$newprice.'-'.$newpricebase.'-'.$price.'-'.$price_ttc.'-'.$price_min.'-'.$price_min_ttc;
 
@@ -932,7 +956,8 @@ class Product extends CommonObject
 			$sql.= " price_ttc=".$price_ttc.",";
 			$sql.= " price_min=".$price_min.",";
 			$sql.= " price_min_ttc=".$price_min_ttc.",";
-                        $sql.= " ecotax_ttc=".$newecotax_ttc.",";
+                        $sql.= " ecotax=".$ecotax.",";
+                        $sql.= " ecotax_ttc=".$ecotax_ttc.",";
 			$sql.= " localtax1_tx=".($localtax1>=0?$localtax1:'NULL').",";
 			$sql.= " localtax2_tx=".($localtax2>=0?$localtax2:'NULL').",";
 			$sql.= " tva_tx='".price2num($newvat)."',";
@@ -953,7 +978,8 @@ class Product extends CommonObject
 				//Local taxes
 				$this->localtax1_tx = $localtax1;
 				$this->localtax2_tx = $localtax2;
-                                $this->ecotax_ttc   = $newecotax_ttc;
+                                $this->ecotax   = $ecotax;
+                                $this->ecotax_ttc   = $ecotax_ttc;
 
 				$this->_log_price($user,$level);
 			}
@@ -991,7 +1017,7 @@ class Product extends CommonObject
 		}
 
 		$sql = "SELECT rowid, ref, label, description, note, customcode, fk_country, price, price_ttc,";
-		$sql.= " price_min, price_min_ttc, price_base_type, tva_tx, recuperableonly as tva_npr, localtax1_tx, localtax2_tx, tosell, ecotax_ttc,";
+		$sql.= " price_min, price_min_ttc, price_base_type, tva_tx, recuperableonly as tva_npr, localtax1_tx, localtax2_tx, tosell, ecotax, ecotax_ttc,";
 		$sql.= " tobuy, fk_product_type, duration, seuil_stock_alerte, canvas,";
 		$sql.= " weight, weight_units, length, length_units, surface, surface_units, volume, volume_units, barcode, fk_barcode_type, finished, hidden,";
 		$sql.= " accountancy_code_buy, accountancy_code_sell, stock, pmp,";
@@ -1021,6 +1047,7 @@ class Product extends CommonObject
 				$this->price_ttc			= $object->price_ttc;
 				$this->price_min			= $object->price_min;
                                 //! ecotaxe
+                                $this->ecotax			= $object->ecotax;
                                 $this->ecotax_ttc			= $object->ecotax_ttc;
 				$this->price_min_ttc                    = $object->price_min_ttc;
 				$this->price_base_type                  = $object->price_base_type;
