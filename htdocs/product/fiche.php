@@ -176,7 +176,8 @@ if ($action == 'add' && ($user->rights->produit->creer || $user->rights->service
 		$product->volume_units       	= $_POST["volume_units"];
 		$product->finished           	= $_POST["finished"];
 		$product->hidden             	= $_POST["hidden"]=='yes'?1:0;
-                $product->ecotax                = empty($_POST["ecotax"])?0:$_POST["ecotax"];
+                if ($product->price_base_type == 'TTC') $product->ecotax_ttc = $_POST["ecotax"];
+		else $product->ecotax = $_POST["ecotax"];
 
 		// MultiPrix
 		if($conf->global->PRODUIT_MULTIPRICES)
