@@ -212,7 +212,7 @@ class Product extends CommonObject
 		$this->price_min_ttc=price2num($this->price_min_ttc);
 		$this->price_min=price2num($this->price_min);
                 $this->ecotax=price2num($this->ecotax);
-                $this->ecotax_ttc=price2num($this->ecotax_ttc);
+                
 		if (empty($this->tva_tx))    	$this->tva_tx = 0;
 		if (empty($this->tva_npr))      $this->tva_npr = 0;
 		//Local taxes
@@ -242,10 +242,10 @@ class Product extends CommonObject
 			$price_ht = price2num($this->price,'MU');
 			$price_ttc = price2num($this->price * (1 + ($this->tva_tx / 100)),'MU');
 		}
-                if ($this->price_base_type == 'TTC' && $this->ecotax_ttc > 0)
+                if ($this->price_base_type == 'TTC' && $this->ecotax > 0)
 		{
-			$ecotax_ttc = price2num($this->ecotax_ttc,'MU');
-			$ecotax_ht = price2num($this->ecotax_ttc / (1 + ($this->tva_tx / 100)),'MU');
+			$ecotax_ttc = price2num($this->ecotax,'MU');
+			$ecotax_ht = price2num($this->ecotax / (1 + ($this->tva_tx / 100)),'MU');
 		}
                 if ($this->price_base_type != 'TTC' && $this->ecotax > 0)
 		{
