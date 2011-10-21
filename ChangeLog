@@ -22,8 +22,11 @@ For users:
 - New: Can export into Excel 2007 format.
 - New: Add hidden option CASHDESK_FORCE_STOCK_ON_BILL
 - New: Can search on part of barcode into POS module.
+- Fix: Can use POS module with several concurrent users.
 
 For developers:
+- New: Add webservice to get or create a product, service.
+- New: Add webservice to get a user.
 - New: Add hooks to change way of showing/editing lines into dictionnaries.
 - New: Add webservice to get or create a prodcut or service.
 - New: Log module outputs can be setup with "or" rule (not only "xor").
@@ -112,6 +115,9 @@ For users:
 - Fix: Numbering module for invoices use same number for invoice 
        and credit note if mask is same.
 - Fix: Debug and clean withdraw module.
+- Fix: Allow access permission for point of sale module.
+- Fix: Permissions issues with suppliers.
+- Fix: Admin dict data is showing with active language 
 
 For developers:
 - New: External modules can add tabs on agenda views.

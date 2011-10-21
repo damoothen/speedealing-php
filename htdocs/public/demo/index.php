@@ -334,29 +334,16 @@ if (! empty($conf->global->MAIN_GOOGLE_AD_CLIENT) && ! empty($conf->global->MAIN
 	print '</div>'."\n";
 }
 
-// Google Analytics (need Google module)
-if (! empty($conf->global->MAIN_GOOGLE_AN_ID))
-{
-    print "\n";
-    print '<script type="text/javascript">'."\n";
-    print '  var _gaq = _gaq || [];'."\n";
-    print '  _gaq.push([\'_setAccount\', \''.$conf->global->MAIN_GOOGLE_AN_ID.'\']);'."\n";
-    print '  _gaq.push([\'_trackPageview\']);'."\n";
-    print ''."\n";
-    print '  (function() {'."\n";
-    print '    var ga = document.createElement(\'script\'); ga.type = \'text/javascript\'; ga.async = true;'."\n";
-    print '    ga.src = (\'https:\' == document.location.protocol ? \'https://ssl\' : \'http://www\') + \'.google-analytics.com/ga.js\';'."\n";
-    print '    var s = document.getElementsByTagName(\'script\')[0]; s.parentNode.insertBefore(ga, s);'."\n";
-    print '  })();'."\n";
-    print '</script>'."\n";
-}
-
-
 llxFooterVierge();
 
 
-
-
+/**
+ * Show header for demo
+ *
+ * @param 	string		$title
+ * @param 	string		$head
+ * @return	void
+ */
 function llxHeaderVierge($title, $head = "")
 {
     global $user, $conf, $langs;
@@ -386,8 +373,15 @@ function llxHeaderVierge($title, $head = "")
     print '<body style="margin: 20px;">'."\n";
 }
 
+/**
+ * Show footer for demo
+ *
+ * @return	void
+ */
 function llxFooterVierge()
 {
+    printCommonFooter('public');
+
     print "\n";
     print "</body>\n";
     print "</html>\n";
