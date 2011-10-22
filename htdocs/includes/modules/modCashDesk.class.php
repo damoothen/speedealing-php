@@ -82,6 +82,15 @@ class modCashDesk extends DolibarrModules
 
 		// Permissions
 		$this->rights = array();
+		$this->rights_class = 'cashdesk';
+		$r=0;
+
+		$r++;
+		$this->rights[$r][0] = 50101;
+		$this->rights[$r][1] = 'Use point of sale';
+		$this->rights[$r][2] = 'a';
+		$this->rights[$r][3] = 1;
+		$this->rights[$r][4] = 'use';
 
 		// Main menu entries
 		$this->menus = array();			// List of menus to add
@@ -97,7 +106,7 @@ class modCashDesk extends DolibarrModules
 									'langs'=>'cashdesk',	// Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 									'position'=>100,
                                     'enabled'=>'$conf->cashdesk->enabled',
-		                            'perms'=>1,		// Use 'perms'=>'1' if you want your menu with no permission rules
+		                            'perms'=>'$user->rights->cashdesk->use',		// Use 'perms'=>'1' if you want your menu with no permission rules
 									'target'=>'pointofsale',
 									'user'=>0);				// 0=Menu for internal users, 1=external users, 2=both
 
@@ -118,32 +127,35 @@ class modCashDesk extends DolibarrModules
 	}
 
 
-	/**
-     *		\brief      Function called when module is enabled.
-     *					The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
-     *					It also creates data directories.
-	 *      \return     int             1 if OK, 0 if KO
+    /**
+     *      Function called when module is enabled.
+     *      The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
+     *      It also creates data directories.
+     *
+     *      @return     int             1 if OK, 0 if KO
      */
-	function init()
+	function init($options='')
   	{
     	$sql = array();
 
-		//$result=$this->load_tables();
+		// Remove permissions and default values
+		$this->remove($options);
 
-    	return $this->_init($sql);
+    	return $this->_init($sql,$options);
   	}
 
-	/**
-	 *		\brief		Function called when module is disabled.
- 	 *              	Remove from database constants, boxes and permissions from Dolibarr database.
- 	 *					Data directories are not deleted.
-	 *      \return     int             1 if OK, 0 if KO
- 	 */
-	function remove()
+    /**
+     *      Function called when module is disabled.
+     *      Remove from database constants, boxes and permissions from Dolibarr database.
+     *      Data directories are not deleted.
+     *
+     *      @return     int             1 if OK, 0 if KO
+     */
+  	function remove($options='')
 	{
     	$sql = array();
 
-    	return $this->_remove($sql);
+    	return $this->_remove($sql,$options);
   	}
 
 }

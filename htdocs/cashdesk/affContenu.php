@@ -28,14 +28,14 @@ require_once('class/Facturation.class.php');
 if ( $_GET['id'] == 'NOUV' )
 {
 	unset($_SESSION['serObjFacturation']);
-	$db->query('DELETE FROM '.MAIN_DB_PREFIX.'pos_tmp');
+	unset($_SESSION['poscart']);
 }
 
 // Recuperation, s'il existe, de l'objet contenant les infos de la vente en cours ...
-if ( isset ($_SESSION['serObjFacturation']) )
+if (isset($_SESSION['serObjFacturation']))
 {
 	$obj_facturation = unserialize($_SESSION['serObjFacturation']);
-	unset ($_SESSION['serObjFacturation']);
+	unset($_SESSION['serObjFacturation']);
 }
 else
 {
@@ -44,7 +44,12 @@ else
 }
 
 print '<div class="liste_articles">';
-include('liste_articles.php');
+
+require ('tpl/liste_articles.tpl.php');
+
+$obj_facturation->prix_total_ht($lst_total_ht);
+$obj_facturation->prix_total_ttc($lst_total_ttc);
+
 print '</div>';
 
 print '<div class="principal">';
@@ -55,11 +60,11 @@ if ( $_GET['menu'] )
 }
 else
 {
-	include ('facturation.php');
+	include('facturation.php');
 }
 
 print '</div>';
 
-$_SESSION['serObjFacturation'] = serialize ($obj_facturation);
+$_SESSION['serObjFacturation'] = serialize($obj_facturation);
 
 ?>

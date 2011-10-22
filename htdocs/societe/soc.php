@@ -73,8 +73,7 @@ $result = restrictedArea($user, 'societe', $socid, '', '', '', '', $objcanvas);
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
 include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
 $hookmanager=new HookManager($db);
-// TODO: Remove callHooks and add page into executeHooks
-$hookmanager->callHooks(array('thirdpartycard','thirdparty_extrafields'));
+$hookmanager->callHooks(array('thirdpartycard'));
 
 
 /*
@@ -786,7 +785,7 @@ else
 
         print '</td></tr>';
 
-        if ($conf->fournisseur->enabled)
+        if ($conf->fournisseur->enabled && ! empty($user->rights->fournisseur->lire))
         {
             // Supplier
             print '<tr>';
@@ -1217,7 +1216,7 @@ else
             print '</td></tr>';
 
             // Supplier
-            if ($conf->fournisseur->enabled)
+            if ($conf->fournisseur->enabled && ! empty($user->rights->fournisseur->lire))
             {
                 print '<tr>';
                 print '<td><span class="fieldrequired">'.$langs->trans('Supplier').'</span></td><td>';
@@ -1535,7 +1534,7 @@ else
         $rowspan=4;
         if (! empty($conf->global->SOCIETE_USEPREFIX)) $rowspan++;
         if ($object->client) $rowspan++;
-        if ($conf->fournisseur->enabled && $object->fournisseur) $rowspan++;
+        if ($conf->fournisseur->enabled && $object->fournisseur && ! empty($user->rights->fournisseur->lire)) $rowspan++;
         if ($conf->global->MAIN_MODULE_BARCODE) $rowspan++;
         if (empty($conf->global->SOCIETE_DISABLE_STATE)) $rowspan++;
         $showlogo='';
@@ -1575,7 +1574,7 @@ else
             $var=!$var;
         }
 
-        if ($conf->fournisseur->enabled && $object->fournisseur)
+        if ($conf->fournisseur->enabled && $object->fournisseur && ! empty($user->rights->fournisseur->lire))
         {
             print '<tr '.$bc[$var].'><td id="label">';
             print $langs->trans('SupplierCode').'</td><td id="value" colspan="'.(2+($object->logo?0:1)).'">';

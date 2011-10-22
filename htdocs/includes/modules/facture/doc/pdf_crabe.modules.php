@@ -121,7 +121,7 @@ class pdf_crabe extends ModelePDFFactures
 
 	/**
      *  Function to build pdf onto disk
-     *  
+     *
      *  @param		int		$object				Id of object to generate
      *  @param		object	$outputlangs		Lang output object
      *  @param		string	$srctemplatepath	Full path of source filename for generator using a template file
@@ -297,7 +297,7 @@ class pdf_crabe extends ModelePDFFactures
 					// Total HT ligne
 					$total_excl_tax = pdf_getlinetotalexcltax($object, $i, $outputlangs, $hidedetails, $hookmanager);
 					$pdf->SetXY($this->postotalht, $curY);
-					$pdf->MultiCell(26, 3, $total_excl_tax, 0, 'R', 0);
+					$pdf->MultiCell($this->page_largeur-$this->marge_droite-$this->postotalht, 3, $total_excl_tax, 0, 'R', 0);
 
 					// Collecte des totaux par valeur de tva dans $this->tva["taux"]=total_tva
 					$tvaligne=$object->lines[$i]->total_tva;
@@ -405,6 +405,15 @@ class pdf_crabe extends ModelePDFFactures
 				$pdf->Close();
 
 				$pdf->Output($file,'F');
+
+				// Actions on extra fields (by external module or standard code)
+				include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
+				$hookmanager=new HookManager($this->db);
+				$hookmanager->callHooks(array('pdfgeneration'));
+				$parameters=array('file'=>$file,'object'=>$object,'outputlangs'=>$outputlangs);
+				global $action;
+				$reshook=$hookmanager->executeHooks('afterPDFCreation',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
+
 				if (! empty($conf->global->MAIN_UMASK))
 				@chmod($file, octdec($conf->global->MAIN_UMASK));
 

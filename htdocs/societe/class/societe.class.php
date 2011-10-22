@@ -564,7 +564,7 @@ class Societe extends CommonObject
                 // Actions on extra fields (by external module or standard code)
                 include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
                 $hookmanager=new HookManager($this->db);
-                $hookmanager->callHooks(array('thirdparty_extrafields'));
+                $hookmanager->callHooks(array('thirdpartydao'));
                 $parameters=array('socid'=>$socid);
                 $reshook=$hookmanager->executeHooks('insertExtraFields',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
                 if (empty($reshook))
@@ -979,7 +979,7 @@ class Societe extends CommonObject
             	// Additionnal action by hooks
                 include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
                 $hookmanager=new HookManager($this->db);
-                $hookmanager->callHooks(array('thirdparty'));
+                $hookmanager->callHooks(array('thirdpartydao'));
                 $parameters=array(); $action='delete';
                 $reshook=$hookmanager->executeHooks('deleteThirdparty',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
                 if (! empty($hookmanager->error))

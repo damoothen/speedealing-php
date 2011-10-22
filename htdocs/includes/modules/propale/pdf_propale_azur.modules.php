@@ -102,7 +102,7 @@ class pdf_propale_azur extends ModelePDFPropales
 
 	/**
      *  Function to build pdf onto disk
-     *  
+     *
      *  @param		int		$object				Id of object to generate
      *  @param		object	$outputlangs		Lang output object
      *  @param		string	$srctemplatepath	Full path of source filename for generator using a template file
@@ -279,7 +279,7 @@ class pdf_propale_azur extends ModelePDFPropales
 					// Total HT ligne
 					$total_excl_tax = pdf_getlinetotalexcltax($object, $i, $outputlangs, $hidedetails, $hookmanager);
 					$pdf->SetXY($this->postotalht, $curY);
-					$pdf->MultiCell(26, 4, $total_excl_tax, 0, 'R', 0);
+					$pdf->MultiCell($this->page_largeur-$this->marge_droite-$this->postotalht, 4, $total_excl_tax, 0, 'R', 0);
 
 					// Collecte des totaux par valeur de tva dans $this->tva["taux"]=total_tva
 					$tvaligne=$object->lines[$i]->total_tva;
@@ -383,15 +383,17 @@ class pdf_propale_azur extends ModelePDFPropales
 				$pdf->Close();
 
 				$pdf->Output($file,'F');
+
+				// Actions on extra fields (by external module or standard code)
+				include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
+				$hookmanager=new HookManager($this->db);
+				$hookmanager->callHooks(array('pdfgeneration'));
+				$parameters=array('file'=>$file,'object'=>$object,'outputlangs'=>$outputlangs);
+				global $action;
+				$reshook=$hookmanager->executeHooks('afterPDFCreation',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
+
 				if (! empty($conf->global->MAIN_UMASK))
 				@chmod($file, octdec($conf->global->MAIN_UMASK));
-
-				// Add external file
-				//$pdfConcat = new concat_pdf();
-				//$pdfConcat->setFiles(array($file, DOL_DOCUMENT_ROOT."/includes/modules/propale/morefile.pdf"));
-				//$pdfConcat->concat();
-				//$pdf->AliasNbPages();
-				//$pdfConcat->Output($file,'F');
 
 				$outputlangs->charset_output=$sav_charset_output;
 				return 1;   // Pas d'erreur

@@ -7,3 +7,4 @@ default.properties
 .buildpath
 .gitmodules
 dolibarr_install.log
+/.project

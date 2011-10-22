@@ -73,7 +73,7 @@ $result=restrictedArea($user,'produit|service',$value,'product','','',$type, $ob
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
 include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
 $hookmanager=new HookManager($db);
-$hookmanager->callHooks(array('product'));
+$hookmanager->callHooks(array('productcard'));
 
 
 
@@ -158,7 +158,8 @@ if (empty($reshook))
             else $product->price = $_POST["price"];
             if ($product->price_base_type == 'TTC') $product->price_min_ttc = $_POST["price_min"];
             else $product->price_min = $_POST["price_min"];
-            $product->tva_tx             = $_POST["tva_tx"];
+            $product->tva_tx             = str_replace('*','',$_POST['tva_tx']);
+            $product->tva_npr            = preg_match('/\*/',$_POST['tva_tx'])?1:0;
 
             // local taxes.
             $product->localtax1_tx 			= get_localtax($product->tva_tx,1);

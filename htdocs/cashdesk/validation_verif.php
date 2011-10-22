@@ -51,7 +51,7 @@ switch ($action)
 
 		$obj_facturation->num_facture($num);
 
-		$obj_facturation->mode_reglement ($_POST['hdnChoix']);
+		$obj_facturation->mode_reglement($_POST['hdnChoix']);
 
 		// Si paiement autre qu'en especes, montant encaisse = prix total
 		$mode_reglement = $obj_facturation->mode_reglement();
@@ -65,7 +65,7 @@ switch ($action)
 			$obj_facturation->montant_encaisse($montant);
 
 			//Determination de la somme rendue
-			$total = $obj_facturation->prix_total_ttc ();
+			$total = $obj_facturation->prix_total_ttc();
 			$encaisse = $obj_facturation->montant_encaisse();
 
 			$obj_facturation->montant_rendu($encaisse - $total);
@@ -144,29 +144,15 @@ switch ($action)
 
 		$invoice=new Facture($db);
 
-		// Recuperation de la liste des articles du panier
-		$res=$db->query('SELECT fk_article, qte, fk_tva, remise_percent, remise, total_ht, total_ttc
-				FROM '.MAIN_DB_PREFIX.'pos_tmp
-				WHERE 1');
-		$ret=array(); $i=0;
-		while ($tab = $db->fetch_array($res))
-		{
-			foreach ($tab as $cle => $valeur)
-			{
-				$ret[$i][$cle] = $valeur;
-			}
-			$i++;
-		}
-		$tab_liste = $ret;
+		// Get content of cart
+		$tab_liste = $_SESSION['poscart'];
+
 		// Loop on each product
 		$tab_liste_size=count($tab_liste);
-		for($i=0;$i < $tab_liste_size;$i++)
+		for ($i=0;$i < $tab_liste_size;$i++)
 		{
 			// Recuperation de l'article
-			$res = $db->query(
-			'SELECT label, tva_tx, price
-					FROM '.MAIN_DB_PREFIX.'product
-					WHERE rowid = '.$tab_liste[$i]['fk_article']);
+			$res = $db->query('SELECT label, tva_tx, price FROM '.MAIN_DB_PREFIX.'product WHERE rowid = '.$tab_liste[$i]['fk_article']);
 			$ret=array();
 			$tab = $db->fetch_array($res);
 			foreach ( $tab as $cle => $valeur )
@@ -175,10 +161,7 @@ switch ($action)
 			}
 			$tab_article = $ret;
 
-			$res = $db->query(
-			'SELECT taux
-					FROM '.MAIN_DB_PREFIX.'c_tva
-					WHERE rowid = '.$tab_liste[$i]['fk_tva']);
+			$res = $db->query('SELECT taux FROM '.MAIN_DB_PREFIX.'c_tva WHERE rowid = '.$tab_liste[$i]['fk_tva']);
 			$ret=array();
 			$tab = $db->fetch_array($res);
 			foreach ( $tab as $cle => $valeur )
@@ -250,20 +233,6 @@ switch ($action)
 				$paiement_id = $payment->create($user);
 				if ($paiement_id > 0)
 				{
-
-                    /*if ( $obj_facturation->mode_reglement() == 'ESP' )
-                    {
-                        $bankaccountid=$conf_fkaccount_cash;
-                    }
-                    if ( $obj_facturation->mode_reglement() == 'CHQ' )
-                    {
-                        $bankaccountid=$conf_fkaccount_cheque;
-                    }
-                    if ( $obj_facturation->mode_reglement() == 'CB' )
-                    {
-                        $bankaccountid=$conf_fkaccount_cb;
-                    }*/
-
                     if (! $error)
                     {
                         $result=$payment->addPaymentToBank($user,'payment','(CustomerInvoicePayment)',$bankaccountid,'','');
@@ -314,7 +283,7 @@ switch ($action)
 
 
 
-$_SESSION['serObjFacturation'] = serialize ($obj_facturation);
+$_SESSION['serObjFacturation'] = serialize($obj_facturation);
 
-header ('Location: '.$redirection);
+header('Location: '.$redirection);
 ?>
