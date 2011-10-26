@@ -66,7 +66,7 @@ class modContrat extends DolibarrModules
 		$this->requiredby = array();
 
 		// Config pages
-		$this->config_page_url = array("contract.php");
+		$this->config_page_url = array("contract.php@contrat");
 
 		// Constantes
 		$this->const = array();
@@ -75,6 +75,7 @@ class modContrat extends DolibarrModules
 		$this->const[0][2] = "mod_contract_serpis";
 		$this->const[0][3] = 'Nom du gestionnaire de numerotation des contrats';
 		$this->const[0][4] = 0;
+                $this->const[1]  = array("CONTRAT_ADDON_PDF_ODT_PATH","chaine","DOL_DATA_ROOT/doctemplates/contracts","Directory models");
 
 		// Boxes
 		$this->boxes = array();

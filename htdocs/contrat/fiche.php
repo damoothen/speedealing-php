@@ -26,6 +26,7 @@
  */
 
 require ("../main.inc.php");
+require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/date.lib.php");
 require_once(DOL_DOCUMENT_ROOT.'/core/lib/contract.lib.php');
 require_once(DOL_DOCUMENT_ROOT."/core/modules/contract/modules_contract.php");
@@ -51,6 +52,12 @@ $result=restrictedArea($user,'contrat',$contratid,'contrat');
 $usehm=$conf->global->MAIN_USE_HOURMIN_IN_DATE_RANGE;
 
 $object = new Contrat($db);
+
+
+// Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
+include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
+$hookmanager=new HookManager($db);
+$hookmanager->callHooks(array('contrat_extrafields'));
 
 
 /*
@@ -156,6 +163,15 @@ if ($action == 'add')
     $object->fk_project     = trim($_POST["projectid"]);
     $object->remise_percent = trim($_POST["remise_percent"]);
     $object->ref            = trim($_POST["ref"]);
+    
+    // Get extra fields
+    foreach($_POST as $key => $value)
+    {
+        if (preg_match("/^options_/",$key))
+        {
+            $object->array_options[$key]=$_POST[$key];
+        }
+    }
 
     // Check
     if (empty($datecontrat))
@@ -179,6 +195,47 @@ if ($action == 'add')
         }
         $_GET["socid"]=$_POST["socid"];
         $action='create';
+    }
+}
+
+if ($action == 'update')
+{
+    if ($_POST["cancel"])
+    {
+        Header("Location: ".$_SERVER["PHP_SELF"]."?id=".$contratid);
+        exit;
+    }
+
+    $object->commercial_suivi_id      = $_POST["commercial_suivi_id"];
+    $object->commercial_signature_id  = $_POST["commercial_signature_id"];
+
+    $object->note           = trim($_POST["note"]);
+    $object->fk_project     = trim($_POST["projectid"]);
+    $object->remise_percent = trim($_POST["remise_percent"]);
+    $object->ref            = trim($_POST["ref"]);
+    
+    // Get extra fields
+    foreach($_POST as $key => $value)
+    {
+        if (preg_match("/^options_/",$key))
+        {
+            $object->array_options[$key]=$_POST[$key];
+        }
+    }
+
+    if (! $error)
+    {
+        $result = $object->update($user,$langs,$conf);
+        if ($result > 0)
+        {
+            Header("Location: fiche.php?id=".$object->id);
+            exit;
+        }
+        else {
+            $mesg='<div class="error">'.$object->error.'</div>';
+        }
+        $_GET["id"]=$_POST["id"];
+        $action='edit';
     }
 }
 
@@ -465,6 +522,7 @@ llxHeader('',$langs->trans("ContractCard"),"Contrat");
 
 $form = new Form($db);
 $html = new Form($db);
+$formfile = new FormFile($db);
 
 $objectlignestatic=new ContratLigne($db);
 
@@ -514,7 +572,7 @@ if ($action == 'create')
     else print $langs->trans("CompanyHasNoAbsoluteDiscount");
     print '.';
     print '</td></tr>';
-
+    
     // Commercial suivi
     print '<tr><td width="20%" nowrap><span class="fieldrequired">'.$langs->trans("TypeContact_contrat_internal_SALESREPFOLL").'</span></td><td>';
     print $form->select_users(GETPOST("commercial_suivi_id")?GETPOST("commercial_suivi_id"):$user->id,'commercial_suivi_id',1,'');
@@ -556,6 +614,105 @@ if ($action == 'create')
     print "</form>\n";
 
     dol_fiche_end();
+}
+elseif ($action == 'edit')
+{
+        /*
+         * Edition
+         */
+        print_fiche_titre($langs->trans("EditContract"));
+
+        if ($contratid)
+        {
+            dol_fiche_head($head, $a, $langs->trans("AddContract"), 0, 'contract');
+
+    dol_htmloutput_errors($mesg,'');
+
+    $object->date_contrat = dol_now();
+    $object->fetch($contratid);
+    
+    $soc=new Societe($db);
+    $soc->fetch($object->socid);
+
+    print '<form name="contrat" action="'.$_SERVER["PHP_SELF"].'" method="post">';
+    print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+
+    print '<input type="hidden" name="action" value="update">';
+    print '<input type="hidden" name="id" value="'.$object->id.'">'."\n";
+    print '<input type="hidden" name="remise_percent" value="0">';
+
+    print '<table class="border" width="100%">';
+
+    // Ref
+    print '<tr><td>'.$langs->trans("Ref").'</td>';
+    print '<td>'.$object->ref.'</td></tr>';
+
+    // Customer
+    print '<tr><td>'.$langs->trans("Customer").'</td><td>'.$soc->getNomUrl(1).'</td></tr>';
+
+    // Ligne info remises tiers
+    print '<tr><td>'.$langs->trans('Discount').'</td><td>';
+    if ($soc->remise_client) print $langs->trans("CompanyHasRelativeDiscount",$soc->remise_client);
+    else print $langs->trans("CompanyHasNoRelativeDiscount");
+    $absolute_discount=$soc->getAvailableDiscounts();
+    print '. ';
+    if ($absolute_discount) print $langs->trans("CompanyHasAbsoluteDiscount",price($absolute_discount),$langs->trans("Currency".$conf->monnaie));
+    else print $langs->trans("CompanyHasNoAbsoluteDiscount");
+    print '.';
+    print '</td></tr>';
+    
+    // Commercial suivi
+    print '<tr><td width="20%" nowrap><span class="fieldrequired">'.$langs->trans("TypeContact_contrat_internal_SALESREPFOLL").'</span></td><td>';
+    print $form->select_users(GETPOST("commercial_suivi_id")?GETPOST("commercial_suivi_id"):$user->id,'commercial_suivi_id',1,'');
+    print '</td></tr>';
+
+    // Commercial signature
+    print '<tr><td width="20%" nowrap><span class="fieldrequired">'.$langs->trans("TypeContact_contrat_internal_SALESREPSIGN").'</span></td><td>';
+    print $form->select_users(GETPOST("commercial_signature_id")?GETPOST("commercial_signature_id"):$user->id,'commercial_signature_id',1,'');
+    print '</td></tr>';
+
+    print '<tr><td><span class="fieldrequired">'.$langs->trans("Date").'</span></td><td>';
+    $form->select_date($datecontrat,'',0,0,'',"contrat");
+    print "</td></tr>";
+    
+    // Other attributes
+    $object->element='contract';
+    $parameters=array('colspan' => ' colspan="3"');
+    $reshook=$hookmanager->executeHooks('showInputFields',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+
+    if ($conf->projet->enabled)
+    {
+        print '<tr><td>'.$langs->trans("Project").'</td><td>';
+        select_projects($soc->id,GETPOST("projectid"),"projectid");
+        print "</td></tr>";
+    }
+
+    print '<tr><td>'.$langs->trans("NotePublic").'</td><td valign="top">';
+    print '<textarea name="note_public" wrap="soft" cols="70" rows="'.ROWS_3.'">';
+    print GETPOST("note_public");
+    print '</textarea></td></tr>';
+
+    if (! $user->societe_id)
+    {
+        print '<tr><td>'.$langs->trans("NotePrivate").'</td><td valign="top">';
+        print '<textarea name="note" wrap="soft" cols="70" rows="'.ROWS_3.'">';
+        print GETPOST("note");
+        print '</textarea></td></tr>';
+    }
+
+    print "</table>\n";
+
+    print '<br>';
+
+    print '<center>';
+    print '<input type="submit" class="button" name="save" value="'.$langs->trans("Save").'">';
+    print ' &nbsp; &nbsp; ';
+    print '<input type="submit" class="button" name="cancel" value="'.$langs->trans("Cancel").'">';
+    print '</center>';
+
+    print "</form>\n";
+
+    }
 }
 else
 /* *************************************************************************** */
@@ -671,6 +828,12 @@ else
         // Date
         print '<tr><td>'.$langs->trans("Date").'</td>';
         print '<td colspan="3">'.dol_print_date($object->date_contrat,"dayhour")."</td></tr>\n";
+        
+        // Other attributes                
+        $object->element='contract';
+        $parameters=array('id'=>$object->id, 'colspan' => ' colspan="3"');
+        $reshook=$hookmanager->executeHooks('showOutputFields',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+
 
         // Projet
         if ($conf->projet->enabled)
@@ -1055,7 +1218,7 @@ else
                 print '<td>'.$langs->trans("DateEndPlanned").'</td><td>';
                 print $html->select_date($dateactend,"end",$usehm,$usehm,'',"active");
                 print '</td>';
-
+                
                 print '<td align="center" rowspan="2" valign="middle">';
                 print '<input type="submit" class="button" name="activate" value="'.$langs->trans("Activate").'"><br>';
                 print '<input type="submit" class="button" name="cancel" value="'.$langs->trans("Cancel").'">';
@@ -1265,6 +1428,7 @@ else
             // - Droit de supprimer
             if (($user->rights->contrat->creer && $object->statut == 0) || $user->rights->contrat->supprimer)
             {
+                print '<a class="butAction" href="fiche.php?id='.$id.'&amp;action=edit">'.$langs->trans("Modify").'</a>';
                 print '<a class="butActionDelete" href="fiche.php?id='.$id.'&amp;action=delete">'.$langs->trans("Delete").'</a>';
             }
 
@@ -1273,6 +1437,17 @@ else
         }
 
         print '<table width="100%"><tr><td width="50%" valign="top">';
+        
+        /*
+         * Documents generes
+         */
+        $filename=dol_sanitizeFileName($object->ref);
+        $filedir=$conf->contrat->dir_output . '/' . dol_sanitizeFileName($object->ref);
+        $urlsource=$_SERVER['PHP_SELF'].'?id='.$object->id;
+        $genallowed=$user->rights->contrat->creer;
+        $delallowed=$user->rights->contrat->supprimer;
+
+        $somethingshown=$formfile->show_documents('contract',$filename,$filedir,$urlsource,$genallowed,$delallowed,$object->modelpdf,1,0,0,28,0,'','','',$soc->default_lang,$hookmanager);
 
         /*
          * Linked object block

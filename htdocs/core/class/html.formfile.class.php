@@ -261,7 +261,7 @@ class FormFile
                     $modellist=ModelePDFDeliveryOrder::liste_modeles($this->db);
                 }
             }
-            else if ($modulepart == 'ficheinter')
+            elseif ($modulepart == 'ficheinter')
             {
                 if (is_array($genallowed)) $modellist=$genallowed;
                 else

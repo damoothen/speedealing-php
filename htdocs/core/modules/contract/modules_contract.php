@@ -27,6 +27,8 @@
  *  \brief      File of class to manage contract numbering
  */
 
+require_once(DOL_DOCUMENT_ROOT."/core/class/commondocgenerator.class.php");
+
 class ModelNumRefContracts
 {
 	var $error='';
@@ -94,6 +96,31 @@ class ModelNumRefContracts
 		if ($this->version == 'experimental') return $langs->trans("VersionExperimental");
 		if ($this->version == 'dolibarr') return DOL_VERSION;
 		return $langs->trans("NotAvailable");
+	}
+}
+/**
+ *	\class      ModelePDFFactures
+ *	\brief      Classe mere des modeles de facture
+ */
+abstract class ModeleContract extends CommonDocGenerator
+{
+	var $error='';
+
+	/**
+	 *  Return list of active generation modules
+	 * 	@param		$db		Database handler
+	 */
+	function liste_modeles($db)
+	{
+		global $conf;
+
+		$type='contrat';
+		$liste=array();
+
+		include_once(DOL_DOCUMENT_ROOT.'/lib/functions2.lib.php');
+		$liste=getListOfModels($db,$type,'');
+
+		return $liste;
 	}
 }
 ?>

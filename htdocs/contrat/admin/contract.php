@@ -21,8 +21,9 @@
  *	\brief      Setup page of module Contracts
  */
 
-require("../main.inc.php");
+require("../../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/contract.lib.php");
 require_once(DOL_DOCUMENT_ROOT.'/contrat/class/contrat.class.php');
 
 $langs->load("admin");
@@ -78,13 +79,21 @@ if ($action == 'setmod')
  * View
  */
 
-llxHeader();
+clearstatcache();
 
 $dir=DOL_DOCUMENT_ROOT."/core/modules/contract/";
 $html=new Form($db);
 
+$help_url='EN:Module Third Parties setup|FR:Paramétrage_du_module_Tiers|ES:Configuración_del_módulo_terceros';
+llxHeader('',$langs->trans("ContractSetup"),$help_url);
+
 $linkback='<a href="'.DOL_URL_ROOT.'/admin/modules.php">'.$langs->trans("BackToModuleList").'</a>';
 print_fiche_titre($langs->trans("ContractsSetup"),$linkback,'setup');
+
+$head = contract_admin_prepare_head(null);
+
+dol_fiche_head($head, 'general', $langs->trans("Contract"), 0, 'contract');
+
 
 print "<br>";
 
@@ -101,7 +110,6 @@ print "</tr>\n";
 
 clearstatcache();
 
-$dir = "../core/modules/contract/";
 $handle = opendir($dir);
 if (is_resource($handle))
 {

@@ -23,6 +23,7 @@
  */
 
 require ("../main.inc.php");
+require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 require_once(DOL_DOCUMENT_ROOT.'/core/lib/contract.lib.php');
 require_once(DOL_DOCUMENT_ROOT."/contrat/class/contrat.class.php");
 require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
@@ -112,6 +113,7 @@ $html = new Form($db);
 $formcompany= new FormCompany($db);
 $contactstatic=new Contact($db);
 $userstatic=new User($db);
+$formfile = new FormFile($db);
 
 dol_htmloutput_mesg($mesg);
 
@@ -349,7 +351,24 @@ if ($id > 0)
 			}
 		}
 		print "</table>";
+                
+                
+                print '<table width="100%"><tr><td width="50%" valign="top">';
+                /*
+                 * Documents generes
+                 */
+                $filename=dol_sanitizeFileName($contrat->ref);
+                $filedir=$conf->contrat->dir_output . '/' . dol_sanitizeFileName($contrat->ref);
+                $urlsource=$_SERVER['PHP_SELF'].'?id='.$contrat->id;
+                $genallowed=$user->rights->contrat->creer;
+                $delallowed=$user->rights->contrat->supprimer;
+                
+                print "<br>";
 
+                $somethingshown=$formfile->show_documents('contract',$filename,$filedir,$urlsource,$genallowed,$delallowed,$contrat->modelpdf,1,0,0,28,0,'','','',$soc->default_lang,$hookmanager);
+
+                print '</td><td valign="top" width="50%">';
+                print '</td></tr></table>';
 
 	}
 	else

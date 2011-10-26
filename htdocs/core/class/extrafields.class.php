@@ -371,7 +371,7 @@ class ExtraFields
 		$sql.= " WHERE entity = ".$conf->entity;
 		if ($elementtype) $sql.= " AND elementtype = '".$elementtype."'";
 		$sql.= " ORDER BY pos";
-                
+
 		dol_syslog(get_class($this)."::fetch_name_optionals_label sql=".$sql);
 		$resql=$this->db->query($sql);
 		if ($resql)

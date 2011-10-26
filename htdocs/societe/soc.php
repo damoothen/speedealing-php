@@ -73,7 +73,7 @@ $result = restrictedArea($user, 'societe', $socid, '', '', '', '', $objcanvas);
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
 include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
 $hookmanager=new HookManager($db);
-$hookmanager->callHooks(array('thirdpartycard'));
+$hookmanager->callHooks(array('thirdparty_extrafields'));
 
 
 /*
@@ -1821,9 +1821,10 @@ else
             foreach($extrafields->attribute_label as $key=>$label)
             {
                 $value=$object->array_options["options_$key"];
-                print "<tr><td>".$label.'</td><td colspan="3">';
+                print "<tr ".$bc[$var]."><td>".$label.'</td><td colspan="3">';
                 print $extrafields->showOutputField($key,$value);
                 print "</td></tr>\n";
+                $var=!$var;
             }
         }
 
