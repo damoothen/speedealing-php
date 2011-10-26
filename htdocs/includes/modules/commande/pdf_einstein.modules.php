@@ -625,19 +625,17 @@ class pdf_einstein extends ModelePDFCommandes
 		$pdf->MultiCell($col2x-$col1x, $tab2_hl, $outputlangs->transnoentities("TotalHT"), 0, 'L', 1);
 
 		$pdf->SetXY ($col2x, $tab2_top + 0);
-		$pdf->MultiCell($largcol2, $tab2_hl, price($object->total_ht + $object->remise + $object->total_ecotax), 0, 'R', 1);
+		$pdf->MultiCell($largcol2, $tab2_hl, price($object->total_ht + $object->remise), 0, 'R', 1);
                 
                 // Total Ecotax
                 if($conf->global->PRODUCT_USE_ECOTAX && + $object->total_ecotax != 0)
                 {
                     $index++;
-                    $pdf->SetFont('','', $default_font_size - 3);
                     $pdf->SetFillColor(255,255,255);
                     $pdf->SetXY ($col1x, $tab2_top + $tab2_hl * $index);
                     $pdf->MultiCell($col2x-$col1x, $tab2_hl, $outputlangs->transnoentities("AmountEcotaxHT"), 0, 'L', 1);
                     $pdf->SetXY ($col2x, $tab2_top + $tab2_hl * $index);
                     $pdf->MultiCell($largcol2, $tab2_hl, price(price2num($object->total_ecotax, 'MT')), 0, 'R', 1);
-                    $pdf->SetFont('','', $default_font_size - 1);
                 }
 
 		// Show VAT by rates and total
