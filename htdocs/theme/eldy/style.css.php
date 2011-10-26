@@ -37,7 +37,7 @@ if (! defined('NOREQUIREAJAX'))   define('NOREQUIREAJAX','1');
 session_cache_limiter(FALSE);
 
 require_once("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/functions.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/functions.lib.php");
 
 // Define css type
 header('Content-type: text/css');
@@ -1710,39 +1710,13 @@ table.cal_event td { border: 0px; padding-<?php print $left; ?>: 0px; padding-<?
 	     }
 
 /* ============================================================================== */
-/*  Ajax - In place editor                                                        */
+/*  jQuery - jeditable                                                            */
 /* ============================================================================== */
 
-form.inplaceeditor-form { /* The form */
+.edit_area:hover, .edit_text:hover, .edit_numeric:hover {
+	background: white url(<?php echo dol_buildpath($path.'/theme/eldy/img/edit.png',1) ?>) right top no-repeat;
+	cursor: pointer;
 }
-
-form.inplaceeditor-form input[type="text"] { /* Input box */
-}
-
-form.inplaceeditor-form textarea { /* Textarea, if multiple columns */
-background: #FAF8E8;
-color: black;
-}
-
-form.inplaceeditor-form input[type="submit"] { /* The submit button */
-  font-size: 100%;
-  font-weight:normal;
-	border: 0px;
-	background-image : url(<?php echo $img_button ?>);
-	background-position : bottom;
-	cursor:pointer;
-}
-
-form.inplaceeditor-form a { /* The cancel link */
-  margin-left: 5px;
-  font-size: 11px;
-	font-weight:normal;
-	border: 0px;
-	background-image : url(<?php echo $img_button ?>);
-	background-position : bottom;
-	cursor:pointer;
-}
-
 
 
 /* ============================================================================== */
