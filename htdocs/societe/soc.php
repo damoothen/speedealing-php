@@ -29,9 +29,9 @@
  */
 
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/company.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/images.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/images.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formadmin.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formcompany.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
@@ -103,7 +103,7 @@ if (empty($reshook))
     if ((! $_POST["getcustomercode"] && ! $_POST["getsuppliercode"])
     && ($action == 'add' || $action == 'update') && $user->rights->societe->creer)
     {
-        require_once(DOL_DOCUMENT_ROOT."/lib/functions2.lib.php");
+        require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
 
         if ($action == 'update') $object->fetch($socid);
 		else $object->canvas=$canvas;
@@ -490,7 +490,7 @@ if (empty($reshook))
         }
         else
         {
-            require_once(DOL_DOCUMENT_ROOT.'/includes/modules/societe/modules_societe.class.php');
+            require_once(DOL_DOCUMENT_ROOT.'/core/modules/societe/modules_societe.class.php');
 
             $object->fetch($socid);
             $object->fetch_thirdparty();
@@ -571,7 +571,7 @@ else
         {
             $module = substr($module, 0, dol_strlen($module)-4);
         }
-        require_once(DOL_DOCUMENT_ROOT ."/includes/modules/societe/".$module.".php");
+        require_once(DOL_DOCUMENT_ROOT ."/core/modules/societe/".$module.".php");
         $modCodeClient = new $module;
         $module=$conf->global->SOCIETE_CODEFOURNISSEUR_ADDON;
         if (! $module) $module=$conf->global->SOCIETE_CODECLIENT_ADDON;
@@ -579,7 +579,7 @@ else
         {
             $module = substr($module, 0, dol_strlen($module)-4);
         }
-        require_once(DOL_DOCUMENT_ROOT ."/includes/modules/societe/".$module.".php");
+        require_once(DOL_DOCUMENT_ROOT ."/core/modules/societe/".$module.".php");
         $modCodeFournisseur = new $module;
 
         //if ($_GET["type"]=='cp') { $object->client=3; }
@@ -761,7 +761,7 @@ else
             print '<tr class="individualline"><td>'.$langs->trans('FirstName').'</td><td><input type="text" size="30" name="prenom" value="'.$object->firstname.'"></td>';
             print '<td colspan=2>&nbsp;</td></tr>';
             print '<tr class="individualline"><td>'.$langs->trans("UserTitle").'</td><td>';
-            print $formcompany->select_civilite($contact->civilite_id).'</td>';
+            print $formcompany->select_civility($contact->civilite_id).'</td>';
             print '<td colspan=2>&nbsp;</td></tr>';
         }
 
@@ -1065,7 +1065,7 @@ else
             {
                 $module = substr($module, 0, dol_strlen($module)-4);
             }
-            require_once(DOL_DOCUMENT_ROOT ."/includes/modules/societe/".$module.".php");
+            require_once(DOL_DOCUMENT_ROOT ."/core/modules/societe/".$module.".php");
             $modCodeClient = new $module;
             // We verified if the tag prefix is used
             if ($modCodeClient->code_auto)
@@ -1078,7 +1078,7 @@ else
             {
                 $module = substr($module, 0, dol_strlen($module)-4);
             }
-            require_once(DOL_DOCUMENT_ROOT ."/includes/modules/societe/".$module.".php");
+            require_once(DOL_DOCUMENT_ROOT ."/core/modules/societe/".$module.".php");
             $modCodeFournisseur = new $module;
             // On verifie si la balise prefix est utilisee
             if ($modCodeFournisseur->code_auto)
@@ -1802,7 +1802,7 @@ else
         // Default language
         if ($conf->global->MAIN_MULTILANGS)
         {
-            require_once(DOL_DOCUMENT_ROOT."/lib/functions2.lib.php");
+            require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
             print '<tr '.$bc[$var].'><td id="label">'.$langs->trans("DefaultLang").'</td><td id="value" colspan="3">';
             //$s=picto_from_langcode($object->default_lang);
             //print ($s?$s.' ':'');

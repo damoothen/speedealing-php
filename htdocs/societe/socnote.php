@@ -26,7 +26,7 @@
  */
 
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/company.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
 
 $action = isset($_GET["action"])?$_GET["action"]:$_POST["action"];
 
@@ -138,8 +138,8 @@ if ($socid > 0)
         print "<input type=\"hidden\" name=\"socid\" value=\"".$societe->id."\">";
 
         // Editeur wysiwyg
-        require_once(DOL_DOCUMENT_ROOT."/lib/doleditor.class.php");
-        $doleditor=new DolEditor('note',$societe->note,'',360,'dolibarr_notes','In',true,false,$conf->fckeditor->enabled && $conf->global->FCKEDITOR_ENABLE_SOCIETE,20,100);
+        require_once(DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php");
+        $doleditor=new DolEditor('note',$societe->note,'',360,'dolibarr_notes','In',true,false,$conf->fckeditor->enabled && $conf->global->FCKEDITOR_ENABLE_SOCIETE,20,70);
         $doleditor->Create();
     }
     else

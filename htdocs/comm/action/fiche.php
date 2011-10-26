@@ -27,7 +27,7 @@
  */
 
 require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/agenda.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/agenda.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
 require_once(DOL_DOCUMENT_ROOT."/user/class/user.class.php");
 require_once(DOL_DOCUMENT_ROOT."/comm/action/class/cactioncomm.class.php");
@@ -35,7 +35,7 @@ require_once(DOL_DOCUMENT_ROOT."/comm/action/class/actioncomm.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formactions.class.php");
 require_once(DOL_DOCUMENT_ROOT.'/comm/propal/class/propal.class.php');
 require_once(DOL_DOCUMENT_ROOT."/projet/class/project.class.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/project.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/project.lib.php");
 if($conf->lead->enabled) dol_include_once("/lead/class/lead.class.php");
 if($conf->lead->enabled) dol_include_once("/lead/lib/lead.lib.php");
 
@@ -52,7 +52,6 @@ $action=GETPOST("action");
 $socid = GETPOST('socid');
 $id = GETPOST('id');
 if ($user->societe_id) $socid=$user->societe_id;
-// TODO: revoir les droits car pas clair
 //$result = restrictedArea($user, 'agenda', $id, 'actioncomm', 'actions', '', 'id');
 
 if (isset($_GET["error"])) $error=$_GET["error"];
@@ -774,7 +773,7 @@ if ($action == 'create')
 
     // Description
     print '<tr><td valign="top">'.$langs->trans("Description").'</td><td>';
-    require_once(DOL_DOCUMENT_ROOT."/lib/doleditor.class.php");
+    require_once(DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php");
     $doleditor=new DolEditor('note',($_POST["note"]?$_POST["note"]:$actioncomm->note),'',280,'dolibarr_notes','In',true,true,$conf->fckeditor->enabled,ROWS_7,90);
     $doleditor->Create();
     print '</td></tr>';
@@ -1059,7 +1058,7 @@ if ($id)
         // Description
         print '<tr><td valign="top">'.$langs->trans("Description").'</td><td colspan="3">';
         // Editeur wysiwyg
-        require_once(DOL_DOCUMENT_ROOT."/lib/doleditor.class.php");
+        require_once(DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php");
         $doleditor=new DolEditor('note',$act->note,'',240,'dolibarr_notes','In',true,true,$conf->fckeditor->enabled,ROWS_5,90);
         $doleditor->Create();
         print '</td></tr>';

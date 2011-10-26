@@ -25,11 +25,11 @@
  */
 
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/admin.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/company.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/date.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/images.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/functions2.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/date.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/images.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formother.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formcompany.class.php");
 
@@ -47,9 +47,9 @@ if (!$user->admin && !$user->rights->multicompany->read)
 if ( (isset($_POST["action"]) && $_POST["action"] == 'update' && empty($_POST["cancel"]))
 || (isset($_POST["action"]) && $_POST["action"] == 'updateedit') )
 {
-    require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
-    
-    if (!$user->admin && !$user->rights->multicompany->write)
+    require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
+
+	if (!$user->admin && !$user->rights->multicompany->write)
         accessforbidden();
 
     $new_pays_id=$_POST["pays_id"];
@@ -204,7 +204,7 @@ if ($_GET["action"] == 'addthumb')
 
 if ($_GET["action"] == 'removelogo')
 {
-    require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
+    require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
 
     $logofile=$conf->mycompany->dir_output.'/logos/'.$mysoc->logo;
     dol_delete_file($logofile);
