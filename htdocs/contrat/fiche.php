@@ -59,6 +59,13 @@ include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
 $hookmanager=new HookManager($db);
 $hookmanager->callHooks(array('contrat_extrafields'));
 
+/*
+ * Actions
+ */
+
+$parameters=array('id'=>$contratid);
+$reshook=$hookmanager->executeHooks('doActions',$parameters,$object,$action);    // Note that $action and $object may have been modified by some hooks
+$error=$hookmanager->error; $errors=$hookmanager->errors;
 
 /*
  * Actions
@@ -206,13 +213,12 @@ if ($action == 'update')
         exit;
     }
 
-    $object->commercial_suivi_id      = $_POST["commercial_suivi_id"];
-    $object->commercial_signature_id  = $_POST["commercial_signature_id"];
+    $object->date_contrat   = $datecontrat;
 
     $object->note           = trim($_POST["note"]);
     $object->fk_project     = trim($_POST["projectid"]);
     $object->remise_percent = trim($_POST["remise_percent"]);
-    $object->ref            = trim($_POST["ref"]);
+    $object->id             = $contratid;
     
     // Get extra fields
     foreach($_POST as $key => $value)
@@ -223,8 +229,6 @@ if ($action == 'update')
         }
     }
 
-    if (! $error)
-    {
         $result = $object->update($user,$langs,$conf);
         if ($result > 0)
         {
@@ -236,7 +240,6 @@ if ($action == 'update')
         }
         $_GET["id"]=$_POST["id"];
         $action='edit';
-    }
 }
 
 if ($action == 'classin')
@@ -586,6 +589,10 @@ if ($action == 'create')
     print '<tr><td><span class="fieldrequired">'.$langs->trans("Date").'</span></td><td>';
     $form->select_date($datecontrat,'',0,0,'',"contrat");
     print "</td></tr>";
+    
+    // Other attributes
+    $parameters=array('colspan' => ' colspan="3"');
+    $reshook=$hookmanager->executeHooks('showInputFields',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
 
     if ($conf->projet->enabled)
     {
@@ -662,21 +669,20 @@ elseif ($action == 'edit')
     print '</td></tr>';
     
     // Commercial suivi
-    print '<tr><td width="20%" nowrap><span class="fieldrequired">'.$langs->trans("TypeContact_contrat_internal_SALESREPFOLL").'</span></td><td>';
-    print $form->select_users(GETPOST("commercial_suivi_id")?GETPOST("commercial_suivi_id"):$user->id,'commercial_suivi_id',1,'');
-    print '</td></tr>';
+    //print '<tr><td width="20%" nowrap><span class="fieldrequired">'.$langs->trans("TypeContact_contrat_internal_SALESREPFOLL").'</span></td><td>';
+    //print $form->select_users(GETPOST("commercial_suivi_id")?GETPOST("commercial_suivi_id"):$user->id,'commercial_suivi_id',1,'');
+    //print '</td></tr>';
 
     // Commercial signature
-    print '<tr><td width="20%" nowrap><span class="fieldrequired">'.$langs->trans("TypeContact_contrat_internal_SALESREPSIGN").'</span></td><td>';
-    print $form->select_users(GETPOST("commercial_signature_id")?GETPOST("commercial_signature_id"):$user->id,'commercial_signature_id',1,'');
-    print '</td></tr>';
+    //print '<tr><td width="20%" nowrap><span class="fieldrequired">'.$langs->trans("TypeContact_contrat_internal_SALESREPSIGN").'</span></td><td>';
+    //print $form->select_users(GETPOST("commercial_signature_id")?GETPOST("commercial_signature_id"):$user->id,'commercial_signature_id',1,'');
+    //print '</td></tr>';
 
     print '<tr><td><span class="fieldrequired">'.$langs->trans("Date").'</span></td><td>';
     $form->select_date($datecontrat,'',0,0,'',"contrat");
     print "</td></tr>";
     
     // Other attributes
-    $object->element='contract';
     $parameters=array('colspan' => ' colspan="3"');
     $reshook=$hookmanager->executeHooks('showInputFields',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
 
@@ -830,7 +836,6 @@ else
         print '<td colspan="3">'.dol_print_date($object->date_contrat,"dayhour")."</td></tr>\n";
         
         // Other attributes                
-        $object->element='contract';
         $parameters=array('id'=>$object->id, 'colspan' => ' colspan="3"');
         $reshook=$hookmanager->executeHooks('showOutputFields',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
 

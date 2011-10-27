@@ -353,7 +353,6 @@ if (empty($reshook))
                 if (! empty($_POST["backtopage"])) $backtopage=$_POST["backtopage"];
 
                 $object->oldcopy=dol_clone($object);
-                
                 ### Calcul des coordonnées GPS
                 if($conf->map->enabled)
                 {

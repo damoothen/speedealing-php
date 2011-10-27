@@ -43,7 +43,7 @@ $type2label=array(
 );
 
 $action=GETPOST("action");
-$elementtype='contract';
+$elementtype='contrat';
 
 if (!$user->admin) accessforbidden();
 
