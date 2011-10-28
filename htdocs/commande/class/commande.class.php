@@ -1029,6 +1029,7 @@ class Commande extends CommonObject
 
                         if($conf->global->PRODUCT_USE_ECOTAX)
                         {
+                            $pu-=$ecotax;
                             $total_ht-=$qty*$ecotax;
                         }
 
