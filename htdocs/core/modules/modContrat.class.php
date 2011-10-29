@@ -128,6 +128,11 @@ class modContrat extends DolibarrModules
 
 		// Nettoyage avant activation
 		$this->remove();
+                
+                $sql = array(
+			 "DELETE FROM ".MAIN_DB_PREFIX."document_model WHERE nom = 'generic_contract_odt' AND entity = ".$conf->entity,
+			 "INSERT INTO ".MAIN_DB_PREFIX."document_model (nom, type, entity,libelle,description) VALUES('generic_contract_odt','contrat',".$conf->entity.",'ODT templates','CONTRAT_ADDON_PDF_ODT_PATH')",
+		);
 
 		return $this->_init($sql);
 	}
