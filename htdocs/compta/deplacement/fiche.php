@@ -356,7 +356,7 @@ else if ($id)
 
 			// Date
 			print '<tr><td>'.$langs->trans("Date").'</td><td>';
-			print dol_print_date($object->date,'day');
+			print $form->editInPlace($object->date, 'dated', $user->rights->deplacement->creer, 'datepicker');
 			print '</td></tr>';
 
 			// Km/Price
@@ -405,7 +405,7 @@ else if ($id)
 			// Public note
 			print '<tr><td valign="top">'.$langs->trans("NotePublic").'</td>';
 			print '<td valign="top" colspan="3">';
-			print $form->editInPlace($object->note_public, 'note_public', $user->rights->deplacement->creer, 'area');
+			print $form->editInPlace($object->note_public, 'note_public', $user->rights->deplacement->creer, 'textarea');
 			print "</td></tr>";
 			
 			// Private note
@@ -413,7 +413,7 @@ else if ($id)
 			{
 				print '<tr><td valign="top">'.$langs->trans("NotePrivate").'</td>';
 				print '<td valign="top" colspan="3">';
-				print $form->editInPlace($object->note_private, 'note', $user->rights->deplacement->creer, 'area');
+				print $form->editInPlace($object->note_private, 'note', $user->rights->deplacement->creer, 'textarea');
 				print "</td></tr>";
 			}
 
