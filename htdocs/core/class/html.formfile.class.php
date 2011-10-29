@@ -354,12 +354,13 @@ class FormFile
                 $file=dol_buildpath('/core/modules/'.$modulepart.'/modules_'.$modulepart.'.php',0);
                 if (file_exists($file))
                 {
+                    print $file;
                     $res=include_once($file);
                 }
                 $class='Modele'.ucfirst($modulepart);
                 if (class_exists($class))
                 {
-                    //$modellist=call_user_func($class.'::liste_modeles',$this->db);
+                    $modellist=call_user_func($class.'::liste_modeles',$this->db);
                 }
                 else
                 {
