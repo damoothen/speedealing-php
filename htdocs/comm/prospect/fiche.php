@@ -79,7 +79,7 @@ if ($_GET["action"] == 'cstc')
             dol_print_error($db);
 	}
 
-	$sql = "UPDATE ".MAIN_DB_PREFIX."societe SET fk_stcomm = ".$_GET["stcomm"].", client=".($obj->type==1?2:1);
+	$sql = "UPDATE ".MAIN_DB_PREFIX."societe SET fk_stcomm = ".$_GET["stcomm"].", client=".($obj->type==2?1:2);
 	$sql .= " WHERE rowid = ".$_GET["socid"];
 	$db->query($sql);
 
