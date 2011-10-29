@@ -110,7 +110,7 @@ abstract class ModeleContract extends CommonDocGenerator
 	 *  Return list of active generation modules
 	 * 	@param		$db		Database handler
 	 */
-	function liste_modeles($db)
+	function liste_modeles($db,$maxfilenamelength=0)
 	{
 		global $conf;
 
@@ -118,7 +118,7 @@ abstract class ModeleContract extends CommonDocGenerator
 		$liste=array();
 
 		include_once(DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php');
-		$liste=getListOfModels($db,$type,'');
+		$liste=getListOfModels($db,$type,$maxfilenamelength);
 
 		return $liste;
 	}
