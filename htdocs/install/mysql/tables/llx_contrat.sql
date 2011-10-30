@@ -39,6 +39,7 @@ create table llx_contrat
   fk_user_author          integer NOT NULL default 0,
   fk_user_mise_en_service integer,
   fk_user_cloture         integer,
+  model_pdf               varchar(255),
   note                    text,
   note_public             text
   

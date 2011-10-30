@@ -83,3 +83,6 @@ CREATE TABLE IF NOT EXISTS `llx_localtax` (
   `fk_user_modif` int(11) DEFAULT NULL,
   PRIMARY KEY (`rowid`)
 ) ENGINE=InnoDB;
+
+-- Add models for contract
+alter table llx_contrat add model_pdf varchar(255);

@@ -4,6 +4,7 @@
  * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2006      Andre Cianfarani     <acianfa@free.fr>
  * Copyright (C) 2010-2011 Juanjo Menent        <jmenent@2byte.es>
+ * Copyright (C) 2011      Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -513,6 +514,42 @@ if ($action == 'confirm_move' && $_REQUEST["confirm"] == 'yes')
         {
             $mesg='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->transnoentities("RefNewContract")).'</div>';
         }
+    }
+}
+
+/*
+ * Generate document
+ */
+if (GETPOST('action') == 'builddoc')	// En get ou en post
+{
+    $object->fetch($contratid);
+    $object->fetch_thirdparty();
+
+    if (GETPOST('model'))
+    {
+        $object->setDocModel($user, GETPOST('model'));
+    }
+
+    // Define output language
+    $outputlangs = $langs;
+    $newlang='';
+    if ($conf->global->MAIN_MULTILANGS && empty($newlang) && GETPOST('lang_id')) $newlang=GETPOST('lang_id');
+    if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$object->client->default_lang;
+    if (! empty($newlang))
+    {
+        $outputlangs = new Translate("",$conf);
+        $outputlangs->setDefaultLang($newlang);
+    }
+    $result=contrat_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+    if ($result <= 0)
+    {
+        dol_print_error($db,$result);
+        exit;
+    }
+    else
+    {
+        Header('Location: '.$_SERVER["PHP_SELF"].'?id='.$object->id.(empty($conf->global->MAIN_JUMP_TAG)?'':'#builddoc'));
+        exit;
     }
 }
 
