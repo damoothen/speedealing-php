@@ -8,6 +8,7 @@
  * Copyright (C) 2011      Philippe Grand       <philippe.grand@atoo-net.com>
  * Copyright (C) 2008      Matteli
  * Copyright (C) 2011      Herve Prot           <herve.prot@symeos.com>
+ * Copyright (C) 2011      Juanjo Menent		<jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -348,7 +349,7 @@ if (! defined('NOLOGIN'))
 			{
 				dol_syslog('Bad value for code, connexion refused');
 				$langs->load('main');
-				$langs->load('other');
+				$langs->load('errors');
 
 				$user->trigger_mesg='ErrorBadValueForCode - login='.$_POST["username"];
 				$_SESSION["dol_loginmesg"]=$langs->trans("ErrorBadValueForCode");
@@ -381,7 +382,18 @@ if (! defined('NOLOGIN'))
 			{
 				$dol_authmode=$conf->authmode;	// This properties is defined only when logged to say what mode was successfully used
 				$dol_tz=$_POST["tz"];
-				$dol_dst=$_POST["dst"];
+				$dol_dst=0;
+				if (isset($_POST["dst_first"]) && isset($_POST["dst_second"]))
+				{
+                    $datenow=dol_now();
+                    $datefirst=dol_stringtotime($_POST["dst_first"]);
+                    $datesecond=dol_stringtotime($_POST["dst_second"]);
+                    if ($datenow >= $datefirst && $datenow < $datesecond) $dol_dst=1;
+				}
+				//print $datefirst.'-'.$datesecond.'-'.$datenow; exit;
+				$dol_dst_observed=$_POST["dst_observed"];
+				$dol_dst_first=$_POST["dst_first"];
+				$dol_dst_second=$_POST["dst_second"];
 				$dol_screenwidth=$_POST["screenwidth"];
 				$dol_screenheight=$_POST["screenheight"];
 			}
@@ -390,7 +402,7 @@ if (! defined('NOLOGIN'))
 			{
 				dol_syslog('Bad password, connexion refused',LOG_DEBUG);
 				$langs->load('main');
-				$langs->load('other');
+				$langs->load('errors');
 
 				// Bad password. No authmode has found a good password.
 				$user->trigger_mesg=$langs->trans("ErrorBadLoginPassword").' - login='.$_POST["username"];
@@ -429,7 +441,7 @@ if (! defined('NOLOGIN'))
 			if ($resultFetchUser == 0)
 			{
 				$langs->load('main');
-				$langs->load('other');
+				$langs->load('errors');
 
 				$user->trigger_mesg='ErrorCantLoadUserFromDolibarrDatabase - login='.$login;
 				$_SESSION["dol_loginmesg"]=$langs->trans("ErrorCantLoadUserFromDolibarrDatabase",$login);
@@ -469,7 +481,7 @@ if (! defined('NOLOGIN'))
 			if ($resultFetchUser == 0)
 			{
 				$langs->load('main');
-				$langs->load('other');
+				$langs->load('errors');
 
 				$user->trigger_mesg='ErrorCantLoadUserFromDolibarrDatabase - login='.$login;
 				$_SESSION["dol_loginmesg"]=$langs->trans("ErrorCantLoadUserFromDolibarrDatabase",$login);
@@ -515,6 +527,9 @@ if (! defined('NOLOGIN'))
 		$_SESSION["dol_authmode"]=isset($dol_authmode)?$dol_authmode:'';
 		$_SESSION["dol_tz"]=isset($dol_tz)?$dol_tz:'';
 		$_SESSION["dol_dst"]=isset($dol_dst)?$dol_dst:'';
+		$_SESSION["dol_dst_observed"]=isset($dol_dst_observed)?$dol_dst_observed:'';
+		$_SESSION["dol_dst_first"]=isset($dol_dst_first)?$dol_dst_first:'';
+		$_SESSION["dol_dst_second"]=isset($dol_dst_second)?$dol_dst_second:'';
 		$_SESSION["dol_screenwidth"]=isset($dol_screenwidth)?$dol_screenwidth:'';
 		$_SESSION["dol_screenheight"]=isset($dol_screenheight)?$dol_screenheight:'';
 		$_SESSION["dol_company"]=$conf->global->MAIN_INFO_SOCIETE_NOM;
@@ -741,7 +756,7 @@ if (!empty($conf->global->MAIN_MODULE_MULTICOMPANY))
 		if ($res)
 		{
 			$mc = new ActionsMulticompany($db);
-                        
+
 			if($mc->switchEntity(GETPOST('entity')) >= 0)
 			{
 				Header("Location: ".DOL_URL_ROOT.'/');
@@ -845,7 +860,7 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
 		else print "<title>".$appli."</title>";
 		print "\n";
 
-        if (! defined('DISABLE_JQUERY'))
+        if (! defined('DISABLE_JQUERY') && ! $disablejs && $conf->use_javascript_ajax)
         {
             print '<!-- Includes for JQuery (Ajax library) -->'."\n";
             $jquerytheme = 'smoothness';
@@ -928,22 +943,6 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
 				print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/jnotify/jquery.jnotify.min.js"></script>'."\n";
 				print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/core/js/jnotify.js"></script>'."\n";
 			}
-            // jQuery jeditable
-			if (! empty($conf->global->MAIN_USE_JQUERY_JEDITABLE))
-			{
-				print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/jeditable/jquery.jeditable.min'.$ext.'"></script>'."\n";
-				print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/jeditable/jquery.jeditable.ui-datepicker.js"></script>'."\n";
-				print '<script type="text/javascript">'."\n";
-				print 'var urlSaveInPlace = \''.DOL_URL_ROOT.'/core/ajax/saveinplace.php\';'."\n";
-				print 'var urlLoadInPlace = \''.DOL_URL_ROOT.'/core/ajax/loadinplace.php\';'."\n";
-				print 'var tooltipInPlace = \''.$langs->transnoentities('ClickToEdit').'\';'."\n";
-				print 'var placeholderInPlace = \''.$langs->trans('ClickToEdit').'\';'."\n";
-				print 'var cancelInPlace = \''.$langs->trans('Cancel').'\';'."\n";
-				print 'var submitInPlace = \''.$langs->trans('Ok').'\';'."\n";
-				print 'var indicatorInPlace = \'<img src="'.DOL_URL_ROOT."/theme/".$conf->theme."/img/working.gif".'">\';'."\n";
-				print '</script>'."\n";
-				print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/core/js/editinplace.js"></script>'."\n";
-			}
 			// Flot
 			if (empty($conf->global->MAIN_DISABLE_JQUERY_FLOT))
 			{
@@ -958,6 +957,25 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
                 print '<!-- Includes JS for CKEditor -->'."\n";
                 print '<script type="text/javascript">var CKEDITOR_BASEPATH = \''.DOL_URL_ROOT.'/includes/ckeditor/\';</script>'."\n";
                 print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/ckeditor/ckeditor_basic.js"></script>'."\n";
+            }
+            // jQuery jeditable
+            if (! empty($conf->global->MAIN_USE_JQUERY_JEDITABLE))
+            {
+            	print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/jeditable/jquery.jeditable.min'.$ext.'"></script>'."\n";
+            	print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/jeditable/jquery.jeditable.ui-datepicker.js"></script>'."\n";
+            	print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/jeditable/jquery.jeditable.ui-autocomplete.js"></script>'."\n";
+            	print '<script type="text/javascript">'."\n";
+            	print 'var urlSaveInPlace = \''.DOL_URL_ROOT.'/core/ajax/saveinplace.php\';'."\n";
+            	print 'var urlLoadInPlace = \''.DOL_URL_ROOT.'/core/ajax/loadinplace.php\';'."\n";
+            	print 'var tooltipInPlace = \''.$langs->transnoentities('ClickToEdit').'\';'."\n";
+            	print 'var placeholderInPlace = \''.$langs->trans('ClickToEdit').'\';'."\n";
+            	print 'var cancelInPlace = \''.$langs->trans('Cancel').'\';'."\n";
+            	print 'var submitInPlace = \''.$langs->trans('Ok').'\';'."\n";
+            	print 'var indicatorInPlace = \'<img src="'.DOL_URL_ROOT."/theme/".$conf->theme."/img/working.gif".'">\';'."\n";
+            	print 'var ckeditorConfig = \''.dol_buildpath('/theme/'.$conf->theme.'/ckeditor/config.js',1).'\';'."\n";
+            	print '</script>'."\n";
+            	print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/core/js/editinplace.js"></script>'."\n";
+            	print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/jeditable/jquery.jeditable.ckeditor.js"></script>'."\n";
             }
             // File Upload
             if (! empty($conf->global->MAIN_USE_JQUERY_FILEUPLOAD))
@@ -975,51 +993,32 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
             	print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/ColVis/js/ColVis.min'.$ext.'"></script>'."\n";
             	print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/TableTools/js/TableTools.min'.$ext.'"></script>'."\n";
             }
+
             // Global js function
             print '<!-- Includes JS of Dolibarr -->'."\n";
             print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/core/js/lib_head.js"></script>'."\n";
-		}
 
-		// Output module javascript
-		if (is_array($arrayofjs))
-		{
-			print '<!-- Includes JS specific to page -->'."\n";
-			foreach($arrayofjs as $jsfile)
-			{
-				if (preg_match('/^http/i',$jsfile))
-				{
-					print '<script type="text/javascript" src="'.$jsfile.'"></script>'."\n";
-				}
-				else
-				{
-					if (! preg_match('/^\//',$jsfile)) $jsfile='/'.$jsfile;	// For backward compatibility
-					print '<script type="text/javascript" src="'.dol_buildpath($jsfile,1).'"></script>'."\n";
-				}
-			}
-		}
+            // Add datepicker default options
+            print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/core/js/datepicker.js.php?lang='.$langs->defaultlang.'"></script>'."\n";
 
-		// Define tradMonths javascript array (we define this in datepicker AND in parent page to avoid errors with IE8)
-        print '<script type="text/javascript">'."\n";
-		$tradMonths=array($langs->trans("January"),
-		$langs->trans("February"),
-		$langs->trans("March"),
-		$langs->trans("April"),
-		$langs->trans("May"),
-		$langs->trans("June"),
-		$langs->trans("July"),
-		$langs->trans("August"),
-		$langs->trans("September"),
-		$langs->trans("October"),
-		$langs->trans("November"),
-		$langs->trans("December")
-		);
-		print 'var tradMonths = '.json_encode($tradMonths).';'."\n";
-		print '</script>'."\n";
-		
-		// Add datepicker default options
-		print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/core/js/datepicker.js"></script>'."\n";
-		// Add datepicker i18n for current language
-		print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/langs/'.$langs->defaultlang.'/js/jquery.ui.datepicker.js"></script>'."\n";
+            // Output module javascript
+            if (is_array($arrayofjs))
+            {
+            	print '<!-- Includes JS specific to page -->'."\n";
+            	foreach($arrayofjs as $jsfile)
+            	{
+            		if (preg_match('/^http/i',$jsfile))
+            		{
+            			print '<script type="text/javascript" src="'.$jsfile.'"></script>'."\n";
+            		}
+            		else
+            		{
+            			if (! preg_match('/^\//',$jsfile)) $jsfile='/'.$jsfile;	// For backward compatibility
+            			print '<script type="text/javascript" src="'.dol_buildpath($jsfile,1).'"></script>'."\n";
+            		}
+            	}
+            }
+		}
 
 		if (! empty($head)) print $head."\n";
 		if (! empty($conf->global->MAIN_HTML_HEADER)) print $conf->global->MAIN_HTML_HEADER."\n";
@@ -1439,7 +1438,7 @@ function left_menu($menu_array_before, $helppagename='', $moresearchform='', $me
 
 	// Execute hook printLeftBlock
 	$parameters=array();
-    $leftblock.=$hookmanager->executeHooks('printLeftBlock',$parameters);    // Note that $action and $object may have been modified by some hooks
+    $leftblock=$hookmanager->executeHooks('printLeftBlock',$parameters);    // Note that $action and $object may have been modified by some hooks
     print $leftblock;
 
 	if ($conf->use_javascript_ajax && $conf->global->MAIN_MENU_USE_JQUERY_LAYOUT) print '</div> <!-- End left layout -->'."\n";

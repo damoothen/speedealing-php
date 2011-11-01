@@ -248,7 +248,7 @@ else if ($id)
 
 		dol_fiche_head($head, 'card', $langs->trans("TripCard"), 0, 'trip');
 
-		if ($action == 'edit')
+		if ($action == 'edit' && $user->rights->deplacement->creer)
 		{
 			$soc = new Societe($db);
 			if ($object->socid)
@@ -339,13 +339,14 @@ else if ($id)
 			print '<table class="border" width="100%">';
 
 			// Ref
-			print "<tr>";
-			print '<td width="20%">'.$langs->trans("Ref").'</td><td>';
+			print '<tr><td width="20%">'.$langs->trans("Ref").'</td><td>';
 			print $form->showrefnav($object,'id','',1,'rowid','ref','');
 			print '</td></tr>';
 			
 			// Type
-			print '<tr><td>'.$langs->trans("Type").'</td><td>'.$langs->trans($object->type).'</td></tr>';
+			print '<tr><td>'.$langs->trans("Type").'</td><td>';
+			print $form->editInPlace($langs->trans($object->type), 'type', $user->rights->deplacement->creer, 'select', 'types_fees');
+			print '</td></tr>';
 
 			// Who
 			print '<tr><td>'.$langs->trans("Person").'</td><td>';
@@ -405,7 +406,7 @@ else if ($id)
 			// Public note
 			print '<tr><td valign="top">'.$langs->trans("NotePublic").'</td>';
 			print '<td valign="top" colspan="3">';
-			print $form->editInPlace($object->note_public, 'note_public', $user->rights->deplacement->creer, 'textarea');
+			print $form->editInPlace($object->note_public, 'note_public', $user->rights->deplacement->creer, 'ckeditor', 'dolibarr_notes');
 			print "</td></tr>";
 			
 			// Private note
@@ -413,7 +414,7 @@ else if ($id)
 			{
 				print '<tr><td valign="top">'.$langs->trans("NotePrivate").'</td>';
 				print '<td valign="top" colspan="3">';
-				print $form->editInPlace($object->note_private, 'note', $user->rights->deplacement->creer, 'textarea');
+				print $form->editInPlace($object->note_private, 'note', $user->rights->deplacement->creer, 'ckeditor', 'dolibarr_notes');
 				print "</td></tr>";
 			}
 

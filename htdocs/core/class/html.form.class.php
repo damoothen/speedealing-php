@@ -49,6 +49,7 @@ class Form
     var $cache_conditions_paiements=array();
     var $cache_availability=array();
 	var $cache_demand_reason=array();
+	var $cache_type_fees=array();
 
     var $tva_taux_value;
     var $tva_taux_libelle;
@@ -141,33 +142,51 @@ class Form
         }
         return $ret;
     }
-    
+
     /**
      *	Output edit in place form
      *
      *	@param		string	$value			Value to show/edit
      *	@param		string	$htmlname		DIV ID (field name)
      *	@param		int		$condition		Condition to edit
-     *	@param		string	$area			Type of edit
+     *	@param		string	$inputType		Type of input
+     *	@param		string	$inputOption	Input option
      *	@return     string   		      	HTML edit in place
      */
-    function editInPlace($value, $htmlname, $condition, $type='textarea')
+    function editInPlace($value, $htmlname, $condition, $inputType='textarea', $inputOption='')
     {
     	global $conf;
-    	
+
     	$out='';
-    	
+
     	// Check parameters
-    	if ($type == 'textarea') $value = dol_nl2br($value);
-    	else if ($type == 'numeric') $value = price($value);
-    	else if ($type == 'datepicker') $value = dol_print_date($value, 'day');
-    	
+    	if ($inputType == 'textarea') $value = dol_nl2br($value);
+    	else if ($inputType == 'numeric') $value = price($value);
+    	else if ($inputType == 'datepicker') $value = dol_print_date($value, 'day');
+
     	if (! empty($conf->global->MAIN_USE_JQUERY_JEDITABLE) && $condition)
     	{
-    		// Use for timestamp format
-    		if ($type == 'datepicker') $out.= '<input id="timeStamp" type="hidden"/>';
-    		
-    		$out.= '<div class="edit_'.$type.'" id="'.$htmlname.'">';
+    		if ($inputType == 'datepicker')
+    		{
+    			$out.= '<input id="timeStamp" type="hidden"/>'; // Use for timestamp format
+    		}
+    		else if ($inputType == 'select' && ! empty($inputOption))
+    		{
+    			$out.= '<input id="loadmethod" value="'.$inputOption.'" type="hidden"/>';
+    		}
+    		else if ($inputType == 'ckeditor' && ! empty($inputOption))
+    		{
+    			if (! empty($conf->fckeditor->enabled))
+    			{
+    				$out.= '<input id="toolbar" value="'.$inputOption.'" type="hidden"/>';
+    			}
+    			else
+    			{
+    				$inputType = 'textarea';
+    			}
+    		}
+
+    		$out.= '<div class="edit_'.$inputType.'" id="'.$htmlname.'">';
     		$out.= $value;
     		$out.= '</div>';
     	}
@@ -175,7 +194,7 @@ class Form
     	{
     		$out = $value;
     	}
-    	
+
     	return $out;
     }
 
@@ -336,11 +355,11 @@ class Form
                 }
 
                 array_multisort($label, SORT_ASC, $countryArray);
-                
+
                 foreach ($countryArray as $row)
                 {
 					//print 'rr'.$selected.'-'.$row['label'].'-'.$row['code_iso'].'<br>';
-                	if ($selected && $selected != '-1' && ($selected == $row['rowid'] || $selected == $row['code_iso'] || $selected == $row['label']) ) 
+                	if ($selected && $selected != '-1' && ($selected == $row['rowid'] || $selected == $row['code_iso'] || $selected == $row['label']) )
                 	{
                 		$foundselected=true;
                         $out.= '<option value="'.$row['rowid'].'" selected="selected">';
@@ -520,16 +539,63 @@ class Form
     }
 
     /**
-     *		Return list of types of notes
+     *	Load into cache cache_types_fees, array of types of fees
      *
-     *		@param      selected        Preselected type
-     *		@param      htmlname        Name of field in form
-     * 		@param		showempty		Add an empty field
+     *	@return     int             Nb of lines loaded, 0 if already loaded, <0 if ko
+     *	TODO move in DAO class
+     */
+    function load_cache_types_fees()
+    {
+    	global $langs;
+
+    	$langs->load("trips");
+
+    	if (count($this->cache_types_fees)) return 0;    // Cache already load
+
+    	$sql = "SELECT c.code, c.libelle as label";
+    	$sql.= " FROM ".MAIN_DB_PREFIX."c_type_fees as c";
+    	$sql.= " ORDER BY lower(c.libelle) ASC";
+
+    	dol_syslog(get_class($this).'::load_cache_types_fees sql='.$sql, LOG_DEBUG);
+    	$resql=$this->db->query($sql);
+    	if ($resql)
+    	{
+    		$num = $this->db->num_rows($resql);
+    		$i = 0;
+
+    		while ($i < $num)
+    		{
+    			$obj = $this->db->fetch_object($resql);
+
+    			// Si traduction existe, on l'utilise, sinon on prend le libelle par defaut
+    			$label=($obj->code != $langs->trans($obj->code) ? $langs->trans($obj->code) : $langs->trans($obj->label));
+    			$this->cache_types_fees[$obj->code] = $label;
+    			$i++;
+    		}
+    		return $num;
+    	}
+    	else
+    	{
+    		dol_print_error($this->db);
+    		return -1;
+    	}
+    }
+
+    /**
+     *	Return list of types of notes
+     *
+     *	@param      string		$selected		Preselected type
+     *	@param      string		$htmlname		Name of field in form
+     * 	@param		int			$showempty		Add an empty field
+     * 	@return		void
      */
     function select_type_fees($selected='',$htmlname='type',$showempty=0)
     {
-        global $db,$langs,$user;
-        $langs->load("trips");
+        global $user, $langs;
+
+        dol_syslog(get_class($this)."::select_type_fees ".$selected.", ".$htmlname, LOG_DEBUG);
+
+        $this->load_cache_types_fees();
 
         print '<select class="flat" name="'.$htmlname.'">';
         if ($showempty)
@@ -539,25 +605,15 @@ class Form
             print '>&nbsp;</option>';
         }
 
-        $sql = "SELECT c.code, c.libelle as type FROM ".MAIN_DB_PREFIX."c_type_fees as c";
-        $sql.= " ORDER BY lower(c.libelle) ASC";
-        $resql=$db->query($sql);
-        if ($resql)
+        foreach($this->cache_types_fees as $key => $value)
         {
-            $num = $db->num_rows($resql);
-            $i = 0;
-
-            while ($i < $num)
-            {
-                $obj = $db->fetch_object($resql);
-                print '<option value="'.$obj->code.'"';
-                if ($obj->code == $selected) print ' selected="selected"';
-                print '>';
-                if ($obj->code != $langs->trans($obj->code)) print $langs->trans($obj->code);
-                else print $langs->trans($obj->type);
-                $i++;
-            }
+        	print '<option value="'.$key.'"';
+        	if ($key == $selected) print ' selected="selected"';
+        	print '>';
+        	print $value;
+        	print '</option>';
         }
+
         print '</select>';
         if ($user->admin) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"),1);
     }
@@ -1744,7 +1800,8 @@ class Form
             }
             return $num;
         }
-        else {
+        else
+        {
             dol_print_error($this->db);
             return -1;
         }
