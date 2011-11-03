@@ -1225,7 +1225,9 @@ class User extends CommonObject
 		// Mise a jour
 		if (! $changelater)
 		{
-			$sql = "UPDATE ".MAIN_DB_PREFIX."user";
+		    if (! is_object($this->oldcopy)) $this->oldcopy=dol_clone($this);
+
+		    $sql = "UPDATE ".MAIN_DB_PREFIX."user";
 			$sql.= " SET pass_crypted = '".$this->db->escape($password_crypted)."',";
 			$sql.= " pass_temp = null";
 			if (! empty($conf->global->DATABASE_PWD_ENCRYPTED))
@@ -1243,7 +1245,7 @@ class User extends CommonObject
 			$result = $this->db->query($sql);
 			if ($result)
 			{
-				if ($this->db->affected_rows($result))
+			    if ($this->db->affected_rows($result))
 				{
 					$this->pass=$password;
 					$this->pass_indatabase=$password;
