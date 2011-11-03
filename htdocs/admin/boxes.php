@@ -28,23 +28,27 @@ include_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
 
 $langs->load("admin");
 
-if (!$user->admin)
-  accessforbidden();
+if (!$user->admin) accessforbidden();
+
+$rowid = GETPOST('rowid','int');
+$action = GETPOST('action');
 
 // Definition des positions possibles pour les boites
 $pos_array = array(0);                             // Positions possibles pour une boite (0,1,2,...)
 $pos_name = array(0=>$langs->trans("Home"));       // Nom des positions 0=Homepage, 1=...
 $boxes = array();
 
+
 /*
  * Actions
  */
-if ((isset($_POST["action"]) && $_POST["action"] == 'addconst'))
+if ($action == 'addconst')
+
 {
     dolibarr_set_const($db, "MAIN_BOXES_MAXLINES",$_POST["MAIN_BOXES_MAXLINES"],'',0,'',$conf->entity);
 }
 
-if ($_POST["action"] == 'add')
+if ($action == 'add')
 {
 	$sql = "SELECT rowid";
 	$sql.= " FROM ".MAIN_DB_PREFIX."boxes";
@@ -95,12 +99,12 @@ if ($_POST["action"] == 'add')
 	}
 }
 
-if ($_GET["action"] == 'delete')
+if ($action == 'delete')
 {
 	$db->begin();
 
 	$sql = "DELETE FROM ".MAIN_DB_PREFIX."boxes";
-	$sql.= " WHERE rowid=".$_GET["rowid"];
+	$sql.= " WHERE rowid=".$rowid;
 	$resql = $db->query($sql);
 
 	// Remove all personalized setup when a box is activated or disabled
@@ -111,7 +115,7 @@ if ($_GET["action"] == 'delete')
 	$db->commit();
 }
 
-if ($_GET["action"] == 'switch')
+if ($action == 'switch')
 {
 	// On permute les valeur du champ box_order des 2 lignes de la table boxes
 	$db->begin();
@@ -145,7 +149,11 @@ if ($_GET["action"] == 'switch')
 }
 
 
-llxHeader();
+/*
+ * View
+ */
+
+llxHeader('',$langs->trans("Boxes"));
 
 print_fiche_titre($langs->trans("Boxes"),'','setup');
 
@@ -287,7 +295,7 @@ if ($resql)
 
 		dol_include_once($sourcefile);
 		$box=new $boxname($db,$obj->note);
-		
+
 		$enabled=true;
 		if ($box->depends && count($box->depends) > 0)
 		{
@@ -296,7 +304,7 @@ if ($resql)
 				if (empty($conf->$module->enabled)) $enabled=false;
 			}
 		}
-		
+
 		if ($enabled)
 		{
 			//if (in_array($obj->rowid, $actives) && $box->box_multiple <> 1)
@@ -307,7 +315,7 @@ if ($resql)
 			else
 			{
 				$var=!$var;
-	
+
 				if (preg_match('/^([^@]+)@([^@]+)$/i',$box->boximg))
 				{
 					$logo = $box->boximg;
@@ -316,14 +324,14 @@ if ($resql)
 				{
 					$logo=preg_replace("/^object_/i","",$box->boximg);
 				}
-	
+
 				print '<form action="'.$_SERVER["PHP_SELF"].'" method="POST">';
 				print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 				print '<tr '.$bc[$var].'>';
 				print '<td>'.img_object("",$logo).' '.$box->boxlabel.'</td>';
 				print '<td>' . ($obj->note?$obj->note:'&nbsp;') . '</td>';
 				print '<td>' . $sourcefile . '</td>';
-	
+
 				// Pour chaque position possible, on affiche un lien
 				// d'activation si boite non deja active pour cette position
 				print '<td>';
@@ -332,11 +340,11 @@ if ($resql)
 				print '<input type="hidden" name="boxid" value="'.$obj->rowid.'">';
 				print ' <input type="submit" class="button" name="button" value="'.$langs->trans("Activate").'">';
 				print '</td>';
-	
+
 				print '</tr></form>';
 			}
 		}
-		
+
 		$i++;
 	}
 
