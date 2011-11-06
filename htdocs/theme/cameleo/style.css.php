@@ -38,7 +38,6 @@ if (! defined('NOREQUIREAJAX'))   define('NOREQUIREAJAX','1');
 session_cache_limiter(FALSE);
 
 require_once("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/functions.lib.php");
 
 // Define css type
 header('Content-type: text/css');
@@ -92,62 +91,32 @@ input:focus, textarea:focus, button:focus, select:focus {
     box-shadow: 0 0 4px #8091BF;
 }
 
-input {
+input, input.flat, textarea, textarea.flat, form.flat select, select.flat {
     font-size: <?php print $fontsize ?>px;
-    font-family: <?php print $fontlist ?>;
-    background: #FDFDFD;
+	font-family: <?php print $fontlist ?>;
+	background: #FDFDFD;
     border: 1px solid #ACBCBB;
-    padding: 0px 0px 0px 0px;
+    padding: 1px 1px 1px 1px;
     margin: 0px 0px 0px 0px;
 }
-input.flat {
-	font-size: <?php print $fontsize ?>px;
-	font-family: <?php print $fontlist ?>;
-    background: #FDFDFD;
-    border: 1px solid #ACBCBB;
-    padding: 0px 0px 0px 0px;
-    margin: 0px 0px 0px 0px;
+select.flat, form.flat select {
+	font-weight: normal;
 }
 input:disabled {
-background:#ddd;
-}
-textarea  {
-	font-size: <?php print $fontsize ?>px;
-	font-family: <?php print $fontlist ?>;
-    background: #FDFDFD;
-    border: 1px solid #ACBCBB;
-    padding: 0px 0px 0px 0px;
-    margin: 0px 0px 0px 0px;
-}
-textarea.flat {
-	font-size: <?php print $fontsize ?>px;
-	font-family: <?php print $fontlist ?>;
-    background: #FDFDFD;
-    border: 1px solid #ACBCBB;
-    padding: 0px 0px 0px 0px;
-    margin: 0px 0px 0px 0px;
+	background:#ddd;
 }
 textarea:disabled {
-background:#ddd;
-}
-select.flat {
-	background: #FDFDFD;
-    font-size: <?php print $fontsize ?>px;
-	font-family: <?php print $fontlist ?>;
-	font-weight: normal;
-    border: 1px solid #ACBCBB;
-    padding: 0px 0px 0px 0px;
-    margin: 0px 0px 0px 0px;
+	background:#ddd;
 }
 
 input.button[type=submit] {
-    background: #A51B00;
-        -moz-border-radius:8px;
-        border-radius:8px;
-        border-right: 1px solid #555555;
-        border-bottom: 1px solid #555555;
-        border-left: 1px solid #D0D0D0;
-        border-top: 1px solid #D8D8D8;
+	background: #A51B00;
+	-moz-border-radius:8px;
+	border-radius:8px;
+	border-right: 1px solid #555555;
+	border-bottom: 1px solid #555555;
+	border-left: 1px solid #D0D0D0;
+	border-top: 1px solid #D8D8D8;
 	/*border: 2px solid #063953;*/
 	color: #FFF;
 	padding: 0px 10px 0px 10px;
@@ -1605,6 +1574,12 @@ border-radius:6px;
 /* ============================================================================== */
 /* Calendar                                                                       */
 /* ============================================================================== */
+
+.ui-datepicker-trigger {
+	vertical-align: middle;
+	cursor: pointer;
+}
+
 .bodyline {
 	padding: 0px;
 	margin-bottom: 5px;
@@ -1813,8 +1788,13 @@ table.cal_event td { border: 0px; padding-<?php print $left; ?>: 0px; padding-<?
 /*  jQuery - jeditable                                                            */
 /* ============================================================================== */
 
-.edit_area:hover, .edit_text:hover, .edit_numeric:hover {
+.edit_textarea:hover, .edit_ckeditor:hover, .edit_text:hover, .edit_numeric:hover, .edit_select:hover {
 	background: white url(<?php echo dol_buildpath($path.'/theme/cameleo/img/edit.png',1) ?>) right center no-repeat;
+	cursor: pointer;
+}
+
+.edit_datepicker:hover {
+	background: white url(<?php echo dol_buildpath($path.'/theme/cameleo/img/calendar.png',1) ?>) right center no-repeat;
 	cursor: pointer;
 }
 

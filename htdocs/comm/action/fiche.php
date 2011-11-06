@@ -105,6 +105,14 @@ if ($action == 'add_action')
 	$_POST["p2day"],
 	$_POST["p2year"]);
 
+	// Check parameters
+	if (! $datef && $_POST["percentage"] == 100)
+	{
+		$error=1;
+		$action = 'create';
+		$mesg='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->trans("DateEnd")).'</div>';
+	}
+
 	// Initialisation objet cactioncomm
 	if (! $_POST["actioncode"])
 	{
@@ -766,7 +774,7 @@ if ($action == 'create')
 
 	// Priority
 	print '<tr><td nowrap>'.$langs->trans("Priority").'</td><td colspan="3">';
-	print '<input type="text" name="priority" value="'.($_POST["priority"]?$_POST["priority"]:$actioncomm->priority).'" size="5">';
+	print '<input type="text" name="priority" value="'.($_POST["priority"]?$_POST["priority"]:($actioncomm->priority?$actioncomm->priority:'')).'" size="5">';
 	print '</td></tr>';
 
 	add_row_for_calendar_link();
@@ -923,7 +931,8 @@ if ($id)
 		print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 		print '<input type="hidden" name="action" value="update">';
 		print '<input type="hidden" name="id" value="'.$id.'">';
-                print '<input type="hidden" name="fk_task" value="'.$act->fk_task.'">';
+		print '<input type="hidden" name="ref_ext" value="'.$act->ref_ext.'">';
+		print '<input type="hidden" name="fk_task" value="'.$act->fk_task.'">';
 		if (GETPOST("backtopage")) print '<input type="hidden" name="backtopage" value="'.(GETPOST("backtopage") ? GETPOST("backtopage") : $_SERVER["HTTP_REFERER"]).'">';
 
 		print '<table class="border" width="100%">';
@@ -1045,7 +1054,7 @@ if ($id)
 
 		// Priority
 		print '<tr><td nowrap>'.$langs->trans("Priority").'</td><td colspan="3">';
-		print '<input type="text" name="priority" value="'.$act->priority.'" size="5">';
+		print '<input type="text" name="priority" value="'.($act->priority?$act->priority:'').'" size="5">';
 		print '</td></tr>';
 
 		// Object linked
@@ -1252,7 +1261,12 @@ if ($id)
 			print '</td></tr>';
                         $var=!$var;
 		}
-                
+
+		// Priority
+		print '<tr><td nowrap>'.$langs->trans("Priority").'</td><td colspan="3">';
+		print ($act->priority?$act->priority:'');
+		print '</td></tr>';
+
 		// Object linked
 		if (! empty($act->fk_element) && ! empty($act->elementtype))
 		{

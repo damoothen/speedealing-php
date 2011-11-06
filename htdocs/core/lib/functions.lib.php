@@ -7,7 +7,7 @@
  * Copyright (C) 2004      Christophe Combelles <ccomb@free.fr>
  * Copyright (C) 2005-2010 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2008      Raphael Bertrand (Resultic)       <raphael.bertrand@resultic.fr>
- * Copyright (C) 2010      Juanjo Menent        <jmenent@2byte.es>
+ * Copyright (C) 2010-2011 Juanjo Menent        <jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,7 +74,7 @@ function dol_shutdown()
     global $conf,$user,$langs,$db;
     $disconnectdone=false;
     if (is_object($db) && ! empty($db->connected)) $disconnectdone=$db->close();
-    dol_syslog("--- End access to ".$_SERVER["PHP_SELF"].($disconnectdone?' (Warn: db disconnection forced)':''));
+    dol_syslog("--- End access to ".$_SERVER["PHP_SELF"].($disconnectdone?' (Warn: db disconnection forced)':''), ($disconnectdone?LOG_WARNING:LOG_DEBUG));
 }
 
 /**
@@ -98,7 +98,8 @@ function GETPOST($paramname,$check='',$method=0)
         if ($check == 'int' && ! preg_match('/^[\.,0-9]+$/i',trim($out))) $out='';
         // Check if alpha
         //if ($check == 'alpha' && ! preg_match('/^[ =:@#\/\\\(\)\-\._a-z0-9]+$/i',trim($out))) $out='';
-        if ($check == 'alpha' && preg_match('/"/',trim($out))) $out='';    // Only " is dangerous because param in url can close the href= or src= and add javascript functions
+        // '"' is dangerous because param in url can close the href= or src= and add javascript functions.
+        if ($check == 'alpha' && preg_match('/"/',trim($out))) $out='';
     }
 
     return $out;
@@ -491,12 +492,16 @@ function dol_syslog($message, $level=LOG_INFO)
             {
                 // Warning FirePHPCore must be into PHP include path. It is not possible to use into require_once() a constant from
                 // database or config file because we must be able to log data before database or config file read.
+			    $oldinclude=get_include_path();
                 set_include_path('/usr/share/php/');
                 require_once('FirePHPCore/FirePHP.class.php');
-                restore_include_path();
+                set_include_path($oldinclude);
                 ob_start();
                 $firephp = FirePHP::getInstance(true);
-                $firephp->log($message);
+                if ($level == LOG_ERR) $firephp->error($message);
+                elseif ($level == LOG_WARNING) $firephp->warn($message);
+                elseif ($level == LOG_INFO) $firephp->log($message);
+                else $firephp->log($message);
             }
             catch(Exception $e)
             {
@@ -585,7 +590,7 @@ function dol_get_fiche_head($links=array(), $active='0', $title='', $notab=0, $p
     $out.="</div>\n";
 
     if (! $notab) $out.="\n".'<div class="tabBar">'."\n";
-    
+
     // Parameters for edit in place
     if (! empty($GLOBALS['object']))
     {
@@ -824,11 +829,11 @@ function dol_print_date($time,$format='',$tzoutput='tzserver',$outputlangs='',$e
  *								YYYY-MM-DDTHH:MM:SSZ (RFC3339)
  *		                		DD/MM/YY or DD/MM/YYYY (this format should not be used anymore)
  *		                		DD/MM/YY HH:MM:SS or DD/MM/YYYY HH:MM:SS (this format should not be used anymore)
- *		                		19700101020000 -> 7200
  *  @param	int		$gm         1=Input date is GM date, 0=Input date is local date
+ *		                		19700101020000 -> 7200 with gm=1
  *  @return	date				Date
  *
- *  @see        dol_print_date, dol_mktime, dol_getdate
+ *  @see    dol_print_date, dol_mktime, dol_getdate
  */
 function dol_stringtotime($string, $gm=1)
 {
@@ -2494,7 +2499,7 @@ function accessforbidden($message='',$printheader=1,$printfooter=1,$showonlymess
         $langs=new Translate('',$conf);
     }
 
-    $langs->load("other");
+    $langs->load("errors");
 
     if ($printheader)
     {
@@ -2658,6 +2663,7 @@ function dol_print_error_email()
 
 /**
  *	Show title line of an array
+ *
  *	@param	    name        Label of field
  *	@param	    file        Url used when we click on sort picto
  *	@param	    field       Field to use for new sorting
@@ -3848,10 +3854,10 @@ function complete_substitutions_array(&$substitutionarray,$outputlangs,$object='
 /**
  *    Format output for start and end date
  *
- *    @param      	date_start    Start date
- *    @param      	date_end      End date
- *    @param      	format        Output format
- *    @param		outputlangs   Output language
+ *    @param	timestamp	$date_start    Start date
+ *    @param    timestamp	$date_end      End date
+ *    @param    string		$format        Output format
+ *    @param	Translate	$outputlangs   Output language
  *    @return	void
  */
 function print_date_range($date_start,$date_end,$format = '',$outputlangs='')
@@ -3862,11 +3868,11 @@ function print_date_range($date_start,$date_end,$format = '',$outputlangs='')
 /**
  *    Format output for start and end date
  *
- *    @param      	date_start    Start date
- *    @param      	date_end      End date
- *    @param      	format        Output format
- *    @param		outputlangs   Output language
- *    @return	string			String
+ *    @param	timestamp	$date_start    Start date
+ *    @param    timestamp	$date_end      End date
+ *    @param    string		$format        Output format
+ *    @param	Translate	$outputlangs   Output language
+ *    @return	string						String
  */
 function get_date_range($date_start,$date_end,$format = '',$outputlangs='')
 {
@@ -4271,24 +4277,26 @@ function picto_from_langcode($codelang)
 /**
  *  Complete or removed entries into a head array (used to build tabs) with value added by external modules
  *
- *  @param      conf            Object conf
- *  @param      langs           Object langs
- *  @param      object          Object object
- *  @param      head            Object head
- *  @param      h               New position to fill
- *  @param      type            Value for object where objectvalue can be
- *                              'thirdparty'       to add a tab in third party view
- *                              'intervention'     to add a tab in intervention view
- *                              'supplier_order'   to add a tab in supplier order view
- *                              'supplier_invoice' to add a tab in supplier invoice view
- *                              'invoice'          to add a tab in customer invoice view
- *                              'order'            to add a tab in customer order view
- *                              'product'          to add a tab in product view
- *                              'propal'           to add a tab in propal view
- *                              'member'           to add a tab in fundation member view
- *                              'categories_x'	   to add a tab in category view ('x': type of category (0=product, 1=supplier, 2=customer, 3=member)
- *  @param      mode            'add' to complete head, 'remove' to remove entries
- *	@return		void
+ *  @param	Conf		$conf           Object conf
+ *  @param  Translate	$langs          Object langs
+ *  @param  Object		$object         Object object
+ *  @param  array		$head           Object head
+ *  @param  int			$h              New position to fill
+ *  @param  string		$type           Value for object where objectvalue can be
+ *                              		'thirdparty'       to add a tab in third party view
+ *		                              	'intervention'     to add a tab in intervention view
+ *     		                         	'supplier_order'   to add a tab in supplier order view
+ *          		                    'supplier_invoice' to add a tab in supplier invoice view
+ *                  		            'invoice'          to add a tab in customer invoice view
+ *                          		    'order'            to add a tab in customer order view
+ *                      		        'product'          to add a tab in product view
+ *                              		'propal'           to add a tab in propal view
+ *                              		'user'             to add a tab in user view
+ *                              		'group'            to add a tab in group view
+ * 		        	                    'member'           to add a tab in fundation member view
+ *      		                        'categories_x'	   to add a tab in category view ('x': type of category (0=product, 1=supplier, 2=customer, 3=member)
+ *  @param  string		$mode  	        'add' to complete head, 'remove' to remove entries
+ *	@return	void
  */
 function complete_head_from_modules($conf,$langs,$object,&$head,&$h,$type,$mode='add')
 {
@@ -4297,11 +4305,13 @@ function complete_head_from_modules($conf,$langs,$object,&$head,&$h,$type,$mode=
         foreach ($conf->tabs_modules[$type] as $value)
         {
             $values=explode(':',$value);
+
             if ($mode == 'add')
             {
                 if (count($values) == 6)       // new declaration with permissions
                 {
                     if ($values[0] != $type) continue;
+                    //print 'ee'.$values[4];
                     if (verifCond($values[4]))
                     {
                         if ($values[3]) $langs->load($values[3]);

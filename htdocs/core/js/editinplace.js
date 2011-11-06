@@ -11,7 +11,7 @@ $(document).ready(function() {
 	var table_element = $('#table_element').html();
 	var fk_element = $('#fk_element').html();
 	
-	$('.edit_area').editable(urlSaveInPlace, {
+	$('.edit_textarea').editable(urlSaveInPlace, {
 		type		: 'textarea',
 		rows		: 4,
 		id			: 'field',
@@ -29,6 +29,36 @@ $(document).ready(function() {
 		},
 		submitdata	: {
 			type: 'textarea',
+			element: element,
+			table_element: table_element,
+			fk_element: fk_element
+		},
+		callback : function(result, settings) {
+			var obj = $.parseJSON(result);
+			
+			if (obj.error) {
+				$(this).html(this.revert);
+				$.jnotify(obj.error, "error", true);
+			} else {
+				$(this).html(obj.value);
+			}
+		}
+	});
+	$('.edit_ckeditor').editable(urlSaveInPlace, {
+		type		: 'ckeditor',
+		id			: 'field',
+		onblur		: 'ignore',
+		tooltip		: tooltipInPlace,
+		placeholder	: placeholderInPlace,
+		cancel		: cancelInPlace,
+		submit		: submitInPlace,
+		indicator	: indicatorInPlace,
+		ckeditor	: {
+			customConfig: ckeditorConfig,
+			toolbar: $('#toolbar').val()
+		},
+		submitdata	: {
+			type: 'ckeditor',
 			element: element,
 			table_element: table_element,
 			fk_element: fk_element
@@ -94,6 +124,81 @@ $(document).ready(function() {
 			} else {
 				$(this).html(obj.value);
 			}
+		}
+	});
+	$('.edit_datepicker').editable(urlSaveInPlace, {
+		type		: 'datepicker',
+		id			: 'field',
+		onblur		: 'ignore',
+		tooltip		: tooltipInPlace,
+		placeholder	: placeholderInPlace,
+		cancel		: cancelInPlace,
+		submit		: submitInPlace,
+		indicator	: indicatorInPlace,
+		submitdata	: function(value, settings) {
+			return {
+				type: 'datepicker',
+				element: element,
+				table_element: table_element,
+				fk_element: fk_element,
+				timestamp: $('#timeStamp').val()
+			};
+		},
+		callback : function(result, settings) {
+			var obj = $.parseJSON(result);
+			
+			if (obj.error) {
+				$(this).html(this.revert);
+				$.jnotify(obj.error, "error", true);
+			} else {
+				$(this).html(obj.value);
+			}
+		}
+	});
+	$('.edit_select').editable(urlSaveInPlace, {
+		type		: 'select',
+		id			: 'field',
+		onblur		: 'ignore',
+		cssclass	: 'flat',
+		tooltip		: tooltipInPlace,
+		placeholder	: placeholderInPlace,
+		cancel		: cancelInPlace,
+		submit		: submitInPlace,
+		indicator	: indicatorInPlace,
+		loadurl		: urlLoadInPlace,
+		loaddata	: {
+			type: 'select',
+			method: $('#loadmethod').val(),
+			element: element,
+			table_element: table_element,
+			fk_element: fk_element
+		},
+		submitdata	: {
+			type: 'select',
+			method: $('#loadmethod').val(),
+			element: element,
+			table_element: table_element,
+			fk_element: fk_element
+		},
+		callback : function(result, settings) {
+			var obj = $.parseJSON(result);
+			
+			if (obj.error) {
+				$(this).html(this.revert);
+				$.jnotify(obj.error, "error", true);
+			} else {
+				$(this).html(obj.value);
+			}
+		}
+	});
+	$('.edit_autocomplete').editable(urlSaveInPlace, {
+		type		: 'autocomplete',
+		id			: 'field',
+		onblur		: 'submit',
+		tooltip		: tooltipInPlace,
+		indicator	: indicatorInPlace,
+		autocomplete : {
+			data : ["Aberdeen", "Ada", "Adamsville", "Addyston", "Adelphi", "Adena", "Adrian", "Akron"]
 		}
 	});
 });

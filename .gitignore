@@ -6,4 +6,5 @@ default.properties
 .settings/
 .buildpath
 dolibarr_install.log
+doxygen_warnings.log
 /.project

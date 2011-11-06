@@ -37,7 +37,6 @@ if (! defined('NOREQUIREAJAX'))   define('NOREQUIREAJAX','1');
 
 
 require_once("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/functions.lib.php");
 
 // Define css type
 header('Content-type: text/css');
@@ -121,46 +120,22 @@ body {
 
 a:link, a:visited, a:hover, a:active { font-family: <?php print $fontlist ?>; font-weight: bold; color: #000000; text-decoration: none; }
 
-input {
+input, input.flat, textarea, textarea.flat, form.flat select, select.flat {
     font-size: <?php print $fontsize ?>px;
-    font-family: <?php print $fontlist ?>;
-    background: #FDFDFD;
-    border: 1px solid #ACBCBB;
-    padding: 0px 0px 0px 0px;
-    margin: 0px 0px 0px 0px;
-}
-input.flat {
-	font-size: <?php print $fontsize ?>px;
 	font-family: <?php print $fontlist ?>;
-    background: #FDFDFD;
-    border: 1px solid #ACBCBB;
-    padding: 0px 0px 0px 0px;
-    margin: 0px 0px 0px 0px;
-}
-textarea  {
-	font-size: <?php print $fontsize ?>px;
-	font-family: <?php print $fontlist ?>;
-    background: #FDFDFD;
-    border: 1px solid #ACBCBB;
-    padding: 0px 0px 0px 0px;
-    margin: 0px 0px 0px 0px;
-}
-textarea.flat {
-	font-size: <?php print $fontsize ?>px;
-	font-family: <?php print $fontlist ?>;
-    background: #FDFDFD;
-    border: 1px solid #ACBCBB;
-    padding: 0px 0px 0px 0px;
-    margin: 0px 0px 0px 0px;
-}
-select.flat {
 	background: #FDFDFD;
-    font-size: <?php print $fontsize ?>px;
-	font-family: <?php print $fontlist ?>;
-	font-weight: normal;
     border: 1px solid #ACBCBB;
     padding: 0px 0px 0px 0px;
     margin: 0px 0px 0px 0px;
+}
+select.flat, form.flat select {
+	font-weight: normal;
+}
+input:disabled {
+	background:#ddd;
+}
+textarea:disabled {
+	background:#ddd;
 }
 
 input.button[type=submit] {
@@ -1705,6 +1680,12 @@ opacity: 1;
 /* ============================================================================== */
 /* Calendar                                                                       */
 /* ============================================================================== */
+
+.ui-datepicker-trigger {
+	vertical-align: middle;
+	cursor: pointer;
+}
+
 .bodyline {
 	-moz-border-radius:8px;
 	border: 1px #E4ECEC outset;
@@ -1863,8 +1844,13 @@ table.cal_event td { border: 0px; padding-<?php print $left; ?>: 0px; padding-<?
 /*  jQuery - jeditable                                                            */
 /* ============================================================================== */
 
-.edit_area:hover, .edit_text:hover, .edit_numeric:hover {
+.edit_textarea:hover, .edit_ckeditor:hover, .edit_text:hover, .edit_numeric:hover, .edit_select:hover {
 	background: white url(<?php echo dol_buildpath($path.'/theme/bureau2crea/img/edit.png',1) ?>) right center no-repeat;
+	cursor: pointer;
+}
+
+.edit_datepicker:hover {
+	background: white url(<?php echo dol_buildpath($path.'/theme/bureau2crea/img/calendar.png',1) ?>) right center no-repeat;
 	cursor: pointer;
 }
 

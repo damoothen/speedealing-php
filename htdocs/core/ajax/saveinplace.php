@@ -22,7 +22,7 @@
 
 if (! defined('NOTOKENRENEWAL')) define('NOTOKENRENEWAL','1'); // Disables token renewal
 if (! defined('NOREQUIREMENU'))  define('NOREQUIREMENU','1');
-if (! defined('NOREQUIREHTML'))  define('NOREQUIREHTML','1');
+//if (! defined('NOREQUIREHTML'))  define('NOREQUIREHTML','1');
 if (! defined('NOREQUIREAJAX'))  define('NOREQUIREAJAX','1');
 if (! defined('NOREQUIRESOC'))   define('NOREQUIRESOC','1');
 //if (! defined('NOREQUIRETRAN'))  define('NOREQUIRETRAN','1');
@@ -52,6 +52,7 @@ if((isset($_POST['field']) && ! empty($_POST['field']))
 	$value			= GETPOST('value');
 	$type			= GETPOST('type');
 	
+	$format='text';
 	$return=array();
 	$error=0;
 	
@@ -62,26 +63,46 @@ if((isset($_POST['field']) && ! empty($_POST['field']))
 		$object = new GenericObject($db);
 		
 		// Clean parameters
-		$value = trim($value);
+		$newvalue = trim($value);
+		
 		if ($type == 'numeric')
 		{
-			$value = price2num($value);
+			$newvalue = price2num($newvalue);
 		
 			// Check parameters
-			if (! is_numeric($value))
+			if (! is_numeric($newvalue))
 			{
 				$error++;
 				$return['error'] = $langs->trans('ErrorBadValue');
 			}
 		}
+		else if ($type == 'datepicker')
+		{
+			$timestamp	= GETPOST('timestamp');
+			$format		= 'date';
+			$newvalue	= ($timestamp / 1000);
+		}
+		else if ($type == 'select')
+		{
+			$methodname	= 'load_cache_'.GETPOST('method');
+			$cachename	= 'cache_'.GETPOST('method');
+				
+			$form = new Form($db);
+			$ret = $form->$methodname();
+			if ($ret > 0)
+			{
+				$cache = $form->$cachename;
+				$value = $cache[$newvalue];
+			}
+		}
 		
 		if (! $error)
 		{
-			$ret=$object->setValueFrom($table_element, $fk_element, $field, $value);
+			$ret=$object->setValueFrom($table_element, $fk_element, $field, $newvalue, $format);
 			if ($ret > 0)
 			{
-				if ($type == 'numeric') $value = price($value);
-				else if ($type == 'textarea') $value = dol_nl2br($value);
+				if ($type == 'numeric') $value = price($newvalue);
+				else if ($type == 'textarea') $value = dol_nl2br($newvalue);
 				
 				$return['value'] = $value;
 			}

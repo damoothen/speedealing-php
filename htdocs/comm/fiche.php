@@ -548,10 +548,17 @@ if ($socid > 0)
                     
 			$var=true;
 			$num = $db->num_rows($resql);
-                        print '<table class="noborder" width="100%">';
-			print '<tr class="liste_titre">';
-			print '<td colspan="4"><table width="100%" class="nobordernopadding"><tr><td>'.$langs->trans("LastPropals",($num<=$MAXLIST?"":$MAXLIST)).'</td><td align="right"><a href="'.DOL_URL_ROOT.'/comm/propal.php?socid='.$objsoc->id.'">'.$langs->trans("AllPropals").' ('.$num.')</a></td></tr></table></td>';
-			print '</tr>';
+
+            if ($num > 0)
+            {
+		        print '<table class="noborder" width="100%">';
+
+                print '<tr class="liste_titre">';
+    			print '<td colspan="4"><table width="100%" class="nobordernopadding"><tr><td>'.$langs->trans("LastPropals",($num<=$MAXLIST?"":$MAXLIST)).'</td><td align="right"><a href="'.DOL_URL_ROOT.'/comm/propal.php?socid='.$objsoc->id.'">'.$langs->trans("AllPropals").' ('.$num.')</a></td>';
+                print '<td width="20px" align="right"><a href="'.DOL_URL_ROOT.'/comm/propal/stats/index.php?socid='.$objsoc->id.'">'.img_picto($langs->trans("Statistics"),'stats').'</a></td>';
+    			print '</tr></table></td>';
+    			print '</tr>';
+            }
 
 			$i = 0;
 			while ($i < $num && $i < $MAXLIST)
@@ -572,12 +579,12 @@ if ($socid > 0)
                         print "</table>";
 			$db->free($resql);
 
+			if ($num > 0) print "</table>";
 		}
 		else
 		{
 			dol_print_error($db);
 		}
-		
 	}
 
 	/*
@@ -600,10 +607,17 @@ if ($socid > 0)
 		{
 			$var=true;
 			$num = $db->num_rows($resql);
-                        print '<table class="noborder" width="100%">';
-			print '<tr class="liste_titre">';
-			print '<td colspan="4"><table width="100%" class="nobordernopadding"><tr><td>'.$langs->trans("LastOrders",($num<=$MAXLIST?"":$MAXLIST)).'</td><td align="right"><a href="'.DOL_URL_ROOT.'/commande/liste.php?socid='.$objsoc->id.'">'.$langs->trans("AllOrders").' ('.$num.')</a></td></tr></table></td>';
-			print '</tr>';
+
+			if ($num > 0)
+			{
+        		print '<table class="noborder" width="100%">';
+
+			    print '<tr class="liste_titre">';
+    			print '<td colspan="4"><table width="100%" class="nobordernopadding"><tr><td>'.$langs->trans("LastOrders",($num<=$MAXLIST?"":$MAXLIST)).'</td><td align="right"><a href="'.DOL_URL_ROOT.'/commande/liste.php?socid='.$objsoc->id.'">'.$langs->trans("AllOrders").' ('.$num.')</a></td>';
+                print '<td width="20px" align="right"><a href="'.DOL_URL_ROOT.'/commande/stats/index.php?socid='.$objsoc->id.'">'.img_picto($langs->trans("Statistics"),'stats').'</a></td>';
+    			print '</tr></table></td>';
+    			print '</tr>';
+			}
 
 			$i = 0;
 			while ($i < $num && $i < $MAXLIST)
@@ -619,12 +633,13 @@ if ($socid > 0)
 			}
                         print "</table>";
 			$db->free($resql);
+
+			if ($num >0) print "</table>";
 		}
 		else
 		{
 			dol_print_error($db);
 		}
-
 	}
 
 	/*
@@ -633,8 +648,6 @@ if ($socid > 0)
 	if ($conf->contrat->enabled && $user->rights->contrat->lire)
 	{
 		$contratstatic=new Contrat($db);
-
-
 
 		$sql = "SELECT s.nom, s.rowid, c.rowid as id, c.ref as ref, c.statut, c.datec as dc";
 		$sql .= " FROM ".MAIN_DB_PREFIX."societe as s, ".MAIN_DB_PREFIX."contrat as c";
@@ -649,8 +662,9 @@ if ($socid > 0)
 			$num = $db->num_rows($resql);
 			if ($num >0 )
 			{
-                print '<table class="noborder" width="100%">';
-				print '<tr class="liste_titre">';
+		        print '<table class="noborder" width="100%">';
+
+			    print '<tr class="liste_titre">';
 				print '<td colspan="4"><table width="100%" class="nobordernopadding"><tr><td>'.$langs->trans("LastContracts",($num<=$MAXLIST?"":$MAXLIST)).'</td>';
 				print '<td align="right"><a href="'.DOL_URL_ROOT.'/contrat/liste.php?socid='.$objsoc->id.'">'.$langs->trans("AllContracts").' ('.$num.')</a></td></tr></table></td>';
 				print '</tr>';
@@ -680,12 +694,13 @@ if ($socid > 0)
                             print "</table>";
                         }
 			$db->free($resql);
+
+			if ($num > 0) print "</table>";
 		}
 		else
 		{
 			dol_print_error($db);
 		}
-
 	}
 
 	/*
@@ -693,8 +708,6 @@ if ($socid > 0)
 	 */
 	if ($conf->ficheinter->enabled && $user->rights->ficheinter->lire)
 	{
-
-
 		$sql = "SELECT s.nom, s.rowid, f.rowid as id, f.ref, f.duree as duration, f.datei as startdate";
 		$sql .= " FROM ".MAIN_DB_PREFIX."societe as s, ".MAIN_DB_PREFIX."fichinter as f";
 		$sql .= " WHERE f.fk_soc = s.rowid";
@@ -710,8 +723,9 @@ if ($socid > 0)
 			$num = $db->num_rows($resql);
 			if ($num > 0)
 			{
-                                print '<table class="noborder" width="100%">';
-				print '<tr class="liste_titre">';
+		        print '<table class="noborder" width="100%">';
+
+			    print '<tr class="liste_titre">';
 				print '<td colspan="4"><table width="100%" class="nobordernopadding"><tr><td>'.$langs->trans("LastInterventions",($num<=$MAXLIST?"":$MAXLIST)).'</td><td align="right"><a href="'.DOL_URL_ROOT.'/fichinter/list.php?socid='.$objsoc->id.'">'.$langs->trans("AllInterventions").' ('.$num.')</td></tr></table></td>';
 				print '</tr>';
 				$var=!$var;
@@ -730,16 +744,15 @@ if ($socid > 0)
 				print '</tr>';
 				$var=!$var;
 				$i++;
-                            }
-                            print "</table>";
-                        }
+			}
 			$db->free($resql);
+
+			if ($num > 0) print "</table>";
 		}
 		else
 		{
 			dol_print_error($db);
 		}
-
 	}
 
 	/*
@@ -748,7 +761,6 @@ if ($socid > 0)
 	if ($conf->facture->enabled && $user->rights->facture->lire)
 	{
 		$facturestatic = new Facture($db);
-
 
 		$sql = 'SELECT f.rowid as facid, f.facnumber, f.type, f.amount, f.total, f.total_ttc,';
 		$sql.= ' f.datef as df, f.datec as dc, f.paye as paye, f.fk_statut as statut,';
@@ -770,8 +782,9 @@ if ($socid > 0)
 			$i = 0;
 			if ($num > 0)
 			{
-				$tableaushown=1;
-                                print '<table class="noborder" width="100%">';
+		        print '<table class="noborder" width="100%">';
+
+			    $tableaushown=1;
 				print '<tr class="liste_titre">';
 				print '<td colspan="4"><table width="100%" class="nobordernopadding"><tr><td>'.$langs->trans("LastCustomersBills",($num<=$MAXLIST?"":$MAXLIST)).'</td><td align="right"><a href="'.DOL_URL_ROOT.'/compta/facture.php?socid='.$objsoc->id.'">'.$langs->trans("AllBills").' ('.$num.')</a></td>';
                 print '<td width="20px" align="right"><a href="'.DOL_URL_ROOT.'/compta/facture/stats/index.php?socid='.$objsoc->id.'">'.img_picto($langs->trans("Statistics"),'stats').'</a></td>';
@@ -802,16 +815,15 @@ if ($socid > 0)
 				print '<td align="right" nowrap="nowrap">'.($facturestatic->LibStatut($objp->paye,$objp->statut,5,$objp->am))."</td>\n";
 				print "</tr>\n";
 				$i++;
-                            }
-                            print "</table>";
-                        }
+			}
 			$db->free($resql);
+
+			if ($num > 0) print "</table>";
 		}
 		else
 		{
 			dol_print_error($db);
 		}
-
 	}
 
 	print "</td></tr>";
@@ -898,11 +910,15 @@ if ($socid > 0)
 
 	if (! empty($conf->global->MAIN_REPEATCONTACTONEACHTAB))
 	{
-	    print '<table width="100%" class="notopnoleftnoright">';
-        print '<tr><td valign="top" width="50%" class="notopnoleft">';
+	    print '<br>';
 		// List of contacts
 		show_contacts($conf,$langs,$db,$objsoc,$_SERVER["PHP_SELF"].'?socid='.$objsoc->id);
+	}
 
+    if (! empty($conf->global->MAIN_REPEATTASKONEACHTAB))
+    {
+		// List of todo actions
+		show_actions_todo($conf,$langs,$db,$objsoc);
 
             print '<br>';
 
@@ -924,7 +940,6 @@ if ($socid > 0)
             print "</tr>\n";
             print "</table>\n";
 	}
-        
 }
 else
 {
