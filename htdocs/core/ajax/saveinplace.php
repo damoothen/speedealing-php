@@ -47,28 +47,34 @@ if((isset($_POST['field']) && ! empty($_POST['field']))
 {
 	$element		= GETPOST('element');
 	$table_element	= GETPOST('table_element');
-	$field			= GETPOST('field');
+	$field			= substr(GETPOST('field'), 4); // remove prefix val_
 	$fk_element		= GETPOST('fk_element');
 	$value			= GETPOST('value');
 	$type			= GETPOST('type');
-	
+
 	$format='text';
 	$return=array();
 	$error=0;
-	
+
+	if (preg_match('/^([^_]+)_([^_]+)/i',$element,$regs))
+	{
+		$element = $regs[1];
+		$subelement = $regs[2];
+	}
+
 	if ($element == 'fichinter') $element = 'ficheinter';
-	
+
 	if ($user->rights->$element->creer || $user->rights->$element->write)
 	{
 		$object = new GenericObject($db);
-		
+
 		// Clean parameters
 		$newvalue = trim($value);
-		
+
 		if ($type == 'numeric')
 		{
 			$newvalue = price2num($newvalue);
-		
+
 			// Check parameters
 			if (! is_numeric($newvalue))
 			{
@@ -86,7 +92,7 @@ if((isset($_POST['field']) && ! empty($_POST['field']))
 		{
 			$methodname	= 'load_cache_'.GETPOST('method');
 			$cachename	= 'cache_'.GETPOST('method');
-				
+
 			$form = new Form($db);
 			$ret = $form->$methodname();
 			if ($ret > 0)
@@ -95,15 +101,15 @@ if((isset($_POST['field']) && ! empty($_POST['field']))
 				$value = $cache[$newvalue];
 			}
 		}
-		
+
 		if (! $error)
 		{
-			$ret=$object->setValueFrom($table_element, $fk_element, $field, $newvalue, $format);
+			$ret=$object->setValueFrom($field, $newvalue, $table_element, $fk_element, $format);
 			if ($ret > 0)
 			{
 				if ($type == 'numeric') $value = price($newvalue);
 				else if ($type == 'textarea') $value = dol_nl2br($newvalue);
-				
+
 				$return['value'] = $value;
 			}
 			else
@@ -111,7 +117,7 @@ if((isset($_POST['field']) && ! empty($_POST['field']))
 				$return['error'] = $object->error;
 			}
 		}
-		
+
 		echo json_encode($return);
 	}
 	else

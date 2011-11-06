@@ -31,6 +31,115 @@
  */
 
 
+if (! function_exists('json_encode'))
+{
+    /**
+     * Implement json_encode for PHP that does not support it
+     *
+     * @param	mixed	$elements		PHP Object to json encode
+     * @return 	string					Json encoded string
+     */
+    function json_encode($elements)
+    {
+    	$num = count($elements);
+    	
+    	// determine type
+    	if (is_numeric(key($elements)))
+    	{
+    		// indexed (list)
+    		$output = '[';
+    		for ($i = 0, $last = ($num - 1); isset($elements[$i]); ++$i)
+    		{
+    			if (is_array($elements[$i])) $output.= json_encode($elements[$i]);
+    			else $output .= _val($elements[$i]);
+    			if($i !== $last) $output.= ',';
+    		}
+    		$output.= ']';
+    	}
+    	else
+    	{
+    		// associative (object)
+    		$output = '{';
+    		$last = $num - 1;
+    		$i = 0;
+    		foreach($elements as $key => $value)
+    		{
+    			$output .= '"'.$key.'":';
+    			if (is_array($value)) $output.= json_encode($value);
+    			else $output .= _val($value);
+    			if ($i !== $last) $output.= ',';
+    			++$i;
+    		}
+    		$output.= '}';
+    	}
+    	
+    	// return
+    	return $output;
+    }
+    
+    function _val($val)
+    {
+    	if (is_string($val)) return '"'.rawurlencode($val).'"';
+    	elseif (is_int($val)) return sprintf('%d', $val);
+    	elseif (is_float($val)) return sprintf('%F', $val);
+    	elseif (is_bool($val)) return ($val ? 'true' : 'false');
+    	else  return 'null';
+    }
+}
+
+if (! function_exists('json_decode'))
+{
+	/**
+	 * Implement json_decode for PHP that does not support it
+	 *
+	 * @param	string	$json		Json encoded to PHP Object or Array
+	 * @param	bool	$assoc		False return an object, true return an array
+	 * @return 	mixed				Object or Array
+	 */
+	function json_decode($json, $assoc=false)
+	{
+		$comment = false;
+		
+		$strLength = dol_strlen($json);
+		for ($i=0; $i<$strLength; $i++)
+		{
+			if (! $comment)
+			{
+				if (($json[$i] == '{') || ($json[$i] == '[')) $out.= 'array(';
+				else if (($json[$i] == '}') || ($json[$i] == ']')) $out.= ')';
+				else if ($json[$i] == ':') $out.= ' => ';
+				else $out.= $json[$i];
+			}
+			else $out.= $json[$i];
+			if ($json[$i] == '"' && $json[($i-1)]!="\\") $comment = !$comment;
+		}
+		
+		// Return an array
+		eval('$array = '.$out.';');
+		
+		// Return an object
+		if (! $assoc)
+		{
+			if (! empty($array))
+			{
+				$object = false;
+				
+				foreach ($array as $key => $value)
+				{
+					$object->{$key} = $value;
+				}
+				
+				return $object;
+			}
+			
+			return false;
+		}
+		
+		return $array;
+	}
+}
+
+
 /**
  * Return a DoliDB instance (database handler).
  *
@@ -53,18 +162,6 @@ function getDoliDBInstance($type, $host, $user, $pass, $name, $port)
 
 
 /**
- *  This function output memory used by PHP and exit everything. Used for debugging purpose.
- *
- *  @return	void
- */
-function dol_stopwithmem()
-{
-    print memory_get_usage();
-    llxFooter();
-    exit;
-}
-
-/**
  *  Function called at end of web php process
  *
  *  @return	void
@@ -76,6 +173,7 @@ function dol_shutdown()
     if (is_object($db) && ! empty($db->connected)) $disconnectdone=$db->close();
     dol_syslog("--- End access to ".$_SERVER["PHP_SELF"].($disconnectdone?' (Warn: db disconnection forced)':''), ($disconnectdone?LOG_WARNING:LOG_DEBUG));
 }
+
 
 /**
  *  Return value of a param into GET or POST supervariable
@@ -594,9 +692,9 @@ function dol_get_fiche_head($links=array(), $active='0', $title='', $notab=0, $p
     // Parameters for edit in place
     if (! empty($GLOBALS['object']))
     {
-    	$out.='<div id="element" class="hidden">'.$GLOBALS['object']->element.'</div>'."\n";
-    	$out.='<div id="table_element" class="hidden">'.$GLOBALS['object']->table_element.'</div>'."\n";
-    	$out.='<div id="fk_element" class="hidden">'.$GLOBALS['object']->id.'</div>'."\n";
+    	$out.='<div id="jeditable_element" class="hidden">'.$GLOBALS['object']->element.'</div>'."\n";
+    	$out.='<div id="jeditable_table_element" class="hidden">'.$GLOBALS['object']->table_element.'</div>'."\n";
+    	$out.='<div id="jeditable_fk_element" class="hidden">'.$GLOBALS['object']->id.'</div>'."\n";
     }
 
     return $out;
@@ -1369,8 +1467,6 @@ function isValidPhone($address)
  */
 function dol_strlen($string,$stringencoding='UTF-8')
 {
-    //    print $stringencoding."xxx";
-    //    $stringencoding='rrr';
     if (function_exists('mb_strlen')) return mb_strlen($string,$stringencoding);
     else return strlen($string);
 }
@@ -4108,7 +4204,8 @@ function dol_sort_array(&$array, $index, $order='asc', $natsort=0, $case_sensiti
 function utf8_check($str)
 {
     // We must use here a binary strlen function (so not dol_strlen)
-    for ($i=0; $i<strlen($str); $i++)
+    $strLength = dol_strlen($str);
+    for ($i=0; $i<$strLength; $i++)
     {
         if (ord($str[$i]) < 0x80) continue; // 0bbbbbbb
         elseif ((ord($str[$i]) & 0xE0) == 0xC0) $n=1; // 110bbbbb

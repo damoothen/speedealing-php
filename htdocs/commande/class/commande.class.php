@@ -418,8 +418,6 @@ class Commande extends CommonObject
         $resql = $this->db->query($sql);
         if ($resql)
         {
-            $this->use_webcal=($conf->global->PHPWEBCALENDAR_BILLSTATUS=='always'?1:0);
-
             // Appel des triggers
             include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
             $interface=new Interfaces($this->db);
@@ -2342,7 +2340,7 @@ class Commande extends CommonObject
             $file = $conf->commande->dir_output . "/" . $comref . "/" . $comref . ".pdf";
             if (file_exists($file))	// We must delete all files before deleting directory
             {
-                dol_delete_preview($object);
+                dol_delete_preview($this);
 
                 if (!dol_delete_file($file))
                 {

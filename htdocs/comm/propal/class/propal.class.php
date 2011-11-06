@@ -1159,8 +1159,6 @@ class Propal extends CommonObject
 
 			if ($this->db->query($sql))
 			{
-				$this->use_webcal=($conf->global->PHPWEBCALENDAR_PROPALSTATUS=='always'?1:0);
-
 				if (! $notrigger)
 				{
 					// Appel des triggers
@@ -1497,8 +1495,6 @@ class Propal extends CommonObject
 					return -2;
 				}
 
-				$this->use_webcal=($conf->global->PHPWEBCALENDAR_PROPALSTATUS=='always'?1:0);
-
 				// Appel des triggers
 				include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
 				$interface=new Interfaces($this->db);
@@ -1508,8 +1504,6 @@ class Propal extends CommonObject
 			}
 			else
 			{
-				$this->use_webcal=($conf->global->PHPWEBCALENDAR_PROPALSTATUS=='always'?1:0);
-
 				// Appel des triggers
 				include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
 				$interface=new Interfaces($this->db);
@@ -1763,7 +1757,7 @@ class Propal extends CommonObject
 					$file = $conf->propale->dir_output . "/" . $propalref . "/" . $propalref . ".pdf";
 					if (file_exists($file))
 					{
-						propale_delete_preview($this->db, $this->id, $this->ref);
+						dol_delete_preview($this);
 
 						if (!dol_delete_file($file))
 						{
