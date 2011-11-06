@@ -1943,10 +1943,6 @@ else
 }
 $db->close();
 
-<<<<<<< HEAD
-llxFooter('$Date: 2011/08/10 22:47:35 $ - $Revision: 1.620 $');
-=======
 llxFooter();
->>>>>>> a80ea15a6b37aed38b4a686f294b02bc70de978e
 
 ?>

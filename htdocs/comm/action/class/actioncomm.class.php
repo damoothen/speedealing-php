@@ -786,7 +786,7 @@ if($this->type==2 && $this->percentage==100) //ACTION
         if ($withpicto==1) $result.=' ';
         $result.=$lien.$libelleshort.$lienfin;
         return $result;
-
+    }
         /*
          * Ajouter une tache automatisé suite a une action. Exemple validation d'une facture, création d'une commande, ...
          * param    type
