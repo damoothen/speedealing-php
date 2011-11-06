@@ -10,3 +10,6 @@
 [submodule "htdocs/custom/multicompany"]
 	path = htdocs/custom/multicompany
 	url = hepr@doliforge.org:/gitroot/multicompany/multicompany.git
+[submodule "htdocs/custom/memcache"]
+	path = htdocs/custom/memcache
+	url = git@git.symeos.com:module-memcache.git
