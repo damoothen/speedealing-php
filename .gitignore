@@ -5,6 +5,5 @@ nbproject
 default.properties
 .settings/
 .buildpath
-.gitmodules
 dolibarr_install.log
 /.project
