@@ -13,3 +13,6 @@
 [submodule "htdocs/custom/memcache"]
 	path = htdocs/custom/memcache
 	url = git@git.symeos.com:module-memcache.git
+[submodule "htdocs/custom/dropbox"]
+        path = htdocs/custom/dropbox
+        url = hepr@doliforge.org:/gitroot/dropbox/dropbox.git
