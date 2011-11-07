@@ -42,121 +42,33 @@
  <!-- Generate pmd-cpd.xml -->
  <target name="phpcpd">
   <exec executable="phpcpd">
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 1c89b1f92ef30e7d9fb2f831a33854af1de99b9a
-   <arg line="--log-pmd '${basedir}/hudson/logs/pmd-cpd.xml'
-              --exclude '${basedir}/htdocs/includes/adodbtime'
-              --exclude '${basedir}/htdocs/includes/artichow'
-              --exclude '${basedir}/htdocs/includes/barcode/php-barcode'
-              --exclude '${basedir}/htdocs/includes/ckeditor'
-<<<<<<< HEAD
-              --exclude '${basedir}/htdocs/includes/fpdfi'
-              --exclude '${basedir}/htdocs/includes/geoip'
-              --exclude '${basedir}/htdocs/includes/jquery'
-              --exclude '${basedir}/htdocs/includes/jsgantt'
-              --exclude '${basedir}/htdocs/includes/nusoap'
-              --exclude '${basedir}/htdocs/includes/odtphp'
-              --exclude '${basedir}/htdocs/includes/phpexcel'
-              --exclude '${basedir}/htdocs/includes/tcpdf'
-              htdocs
-              " />
-=======
    <arg line="	--log-pmd '${basedir}/hudson/logs/pmd-cpd.xml'
    				--exclude '${basedir}/htdocs/core/filemanagerdol'
    				--exclude '${basedir}/htdocs/includes'
    				--exclude '**/PEAR/*,**/NET/*,**/HTTP/*'
    				htdocs
    				" />
->>>>>>> bd8e788b611228fcefdaa48226a5d0a8716a58b6
-=======
-              --exclude '${basedir}/htdocs/includes/efc_xfss'
-              --exclude '${basedir}/htdocs/includes/fckeditor'
-              --exclude '${basedir}/htdocs/includes/fpdf'
-              --exclude '${basedir}/htdocs/includes/geoip'
-              --exclude '${basedir}/htdocs/includes/jquery'
-              --exclude '${basedir}/htdocs/includes/jsgantt'
-              --exclude '${basedir}/htdocs/includes/magpierss'
-              --exclude '${basedir}/htdocs/includes/nusoap'
-              --exclude '${basedir}/htdocs/includes/odtphp'
-              --exclude '${basedir}/htdocs/includes/php_writeexcel'
-              --exclude '${basedir}/htdocs/includes/phpexcel'
-              --exclude '${basedir}/htdocs/includes/smarty'
-              --exclude '${basedir}/htdocs/includes/smtps'
-              --exclude '${basedir}/htdocs/includes/tcpdf'
-              --exclude '${basedir}/htdocs/includes/vcard'
-              htdocs
-              " />
->>>>>>> 1c89b1f92ef30e7d9fb2f831a33854af1de99b9a
   </exec>
  </target>
  
  <!-- Generate phploc.csv -->
  <target name="phploc">
   <exec executable="phploc">
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 1c89b1f92ef30e7d9fb2f831a33854af1de99b9a
-   <arg line="--log-csv '${basedir}/hudson/logs/phploc.csv'
-              --exclude '${basedir}/htdocs/includes/adodbtime'
-              --exclude '${basedir}/htdocs/includes/artichow'
-              --exclude '${basedir}/htdocs/includes/barcode/php-barcode'
-              --exclude '${basedir}/htdocs/includes/ckeditor'
-<<<<<<< HEAD
-              --exclude '${basedir}/htdocs/includes/fpdfi'
-              --exclude '${basedir}/htdocs/includes/geoip'
-              --exclude '${basedir}/htdocs/includes/jquery'
-              --exclude '${basedir}/htdocs/includes/jsgantt'
-              --exclude '${basedir}/htdocs/includes/nusoap'
-              --exclude '${basedir}/htdocs/includes/odtphp'
-              --exclude '${basedir}/htdocs/includes/phpexcel'
-              --exclude '${basedir}/htdocs/includes/tcpdf'
-              htdocs
-              " />
-=======
    <arg line="	--log-csv '${basedir}/hudson/logs/phploc.csv'
    				--exclude '${basedir}/htdocs/core/filemanagerdol'
    				--exclude '${basedir}/htdocs/includes'
    				--exclude '**/PEAR/*,**/NET/*,**/HTTP/*'
    				htdocs
    				" />
->>>>>>> bd8e788b611228fcefdaa48226a5d0a8716a58b6
-=======
-              --exclude '${basedir}/htdocs/includes/efc_xfss'
-              --exclude '${basedir}/htdocs/includes/fckeditor'
-              --exclude '${basedir}/htdocs/includes/fpdf'
-              --exclude '${basedir}/htdocs/includes/geoip'
-              --exclude '${basedir}/htdocs/includes/jquery'
-              --exclude '${basedir}/htdocs/includes/jsgantt'
-              --exclude '${basedir}/htdocs/includes/magpierss'
-              --exclude '${basedir}/htdocs/includes/nusoap'
-              --exclude '${basedir}/htdocs/includes/odtphp'
-              --exclude '${basedir}/htdocs/includes/php_writeexcel'
-              --exclude '${basedir}/htdocs/includes/phpexcel'
-              --exclude '${basedir}/htdocs/includes/smarty'
-              --exclude '${basedir}/htdocs/includes/smtps'
-              --exclude '${basedir}/htdocs/includes/tcpdf'
-              --exclude '${basedir}/htdocs/includes/vcard'
-              htdocs
-              " />
->>>>>>> 1c89b1f92ef30e7d9fb2f831a33854af1de99b9a
   </exec>
  </target>
    
  <!-- Generate checkstyle.xml -->
  <target name="phpcs">
   <exec executable="phpcs" dir="${basedir}" output="${basedir}/hudson/logs/checkstyle.xml">
-<<<<<<< HEAD
     <arg line=" --standard=${basedir}/dev/codesniffer/ruleset.xml
     			--report=checkstyle
                 --ignore=${ignorepaths},${ignoreregexp}
-=======
-    <arg line=" --standard=${basedir}/test/codesniffer/ruleset.xml
-    			--report=checkstyle
-                --ignore=${ignorepaths}
->>>>>>> 1c89b1f92ef30e7d9fb2f831a33854af1de99b9a
                 htdocs
                 "/>
   </exec>
@@ -172,12 +84,8 @@
  <!-- Run unit tests and generate junit.xml and clover.xml -->
  <target name="phpunit">
   <exec executable="phpunit" dir="${basedir}" failonerror="true">
-<<<<<<< HEAD
    <arg line="	--configuration ${basedir}/test/phpunit/hudson_phpunittest.xml
 				--log-junit ${basedir}/hudson/logs/junit.xml
-=======
-   <arg line="	--log-junit ${basedir}/hudson/logs/junit.xml
->>>>>>> 1c89b1f92ef30e7d9fb2f831a33854af1de99b9a
 				--coverage-clover ${basedir}/hudson/coverage/clover.xml
   				--coverage-html ${basedir}/hudson/coverage/
   				test/phpunit/AllTests.php
@@ -186,8 +94,4 @@
  </target>
 
  <target name="hudson" depends="clean,parallelTasks,phpunit"/>
-<<<<<<< HEAD
 </project>
-=======
-</project>
->>>>>>> 1c89b1f92ef30e7d9fb2f831a33854af1de99b9a
