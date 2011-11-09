@@ -395,7 +395,7 @@ if ($mil->fetch($_REQUEST["id"]) >= 0)
 
 		// Statut
 		print_liste_field_titre($langs->trans("Status"),$_SERVER["PHP_SELF"],"mc.statut",$parm,'','align="right"',$sortfield,$sortorder);
-
+      
 		print '</tr>';
 
 		// Ligne des champs de filtres
@@ -486,7 +486,10 @@ if ($mil->fetch($_REQUEST["id"]) >= 0)
 					print '<td align="right" nowrap="nowrap">';
 					if ($obj->statut==-1) print $langs->trans("MailingStatusError").' '.img_error();
 					if ($obj->statut==1) print $langs->trans("MailingStatusSent").' '.img_picto($langs->trans("MailingStatusSent"),'statut6');
-					print '</td>';
+					if ($obj->statut==4) print $langs->trans("Open").' '.img_picto($langs->trans("MailingStatusSent"),'statut6'); // open
+					if ($obj->statut==5) print $langs->trans("Clické").' '.img_picto($langs->trans("MailingStatusSent"),'statut2'); // clické
+					
+                                        print '</td>';
 				}
 				print '</tr>';
 
