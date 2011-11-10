@@ -1,11 +1,10 @@
 htdocs/conf/conf.php
 htdocs/conf/conf.php.old
-documents/
 nbproject
 default.properties
 .settings/
 .buildpath
 dolibarr_install.log
 doxygen_warnings.log
-/.project
+.project
 .DS_Store
