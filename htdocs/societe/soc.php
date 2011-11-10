@@ -1628,7 +1628,11 @@ else
         $var=!$var;
 
         // State
-        if (empty($conf->global->SOCIETE_DISABLE_STATE)) print '<tr><td>'.$langs->trans('State').'</td><td colspan="'.(2+($object->logo?0:1)).'">'.$object->state.'</td>';
+        if (empty($conf->global->SOCIETE_DISABLE_STATE))
+        {
+            print '<tr '.$bc[$var].'><td id="label">'.$langs->trans('State').'</td><td id="value" colspan="'.(2+($object->logo?0:1)).'">'.$object->state.'</td>';
+            $var=!$var;
+        }
 
         // Phone
         print '<tr '.$bc[$var].'><td id="label">'.$langs->trans('Phone').'</td><td id="value" style="min-width: 25%;">'.dol_print_phone($object->tel,$object->pays_code,0,$object->id,'AC_TEL').'</td>';

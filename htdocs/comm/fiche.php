@@ -576,7 +576,6 @@ if ($socid > 0)
 				$var=!$var;
 				$i++;
 			}
-                        print "</table>";
 			$db->free($resql);
 
 			if ($num > 0) print "</table>";
@@ -631,7 +630,6 @@ if ($socid > 0)
 				print '<td align="right" width="100">'.$commande_static->LibStatut($objp->fk_statut,$objp->facture,5).'</td></tr>';
 				$i++;
 			}
-                        print "</table>";
 			$db->free($resql);
 
 			if ($num >0) print "</table>";
@@ -691,7 +689,6 @@ if ($socid > 0)
 				print '</tr>';
 				$i++;
                             }
-                            print "</table>";
                         }
 			$db->free($resql);
 
@@ -731,21 +728,21 @@ if ($socid > 0)
 				$var=!$var;
                         
 			
-			$i = 0;
-			while ($i < $num && $i < $MAXLIST)
-			{
-                $fichinter_static->id=$objp->id;
+                            $i = 0;
+                            while ($i < $num && $i < $MAXLIST)
+                            {
+                                $fichinter_static->id=$objp->id;
 
 				$objp = $db->fetch_object($resql);
 				print "<tr ".$bc[$var].">";
 				print '<td nowrap="nowrap"><a href="'.DOL_URL_ROOT.'/fichinter/fiche.php?id='.$objp->id.'">'.img_object($langs->trans("ShowPropal"),"propal").' '.$objp->ref.'</a></td>'."\n";
-                //print '<td align="right">'.dol_print_date($db->jdate($objp->startdate)).'</td>'."\n";
+                                //print '<td align="right">'.dol_print_date($db->jdate($objp->startdate)).'</td>'."\n";
 				print '<td align="right">'.ConvertSecondToTime($objp->duration).'</td>'."\n";
 				print '<td align="right">'.$fichinter_static->getLibStatut(3).'</td>'."\n";
 				print '</tr>';
 				$var=!$var;
 				$i++;
-			}
+                            }
                         }
 			$db->free($resql);
 
@@ -918,10 +915,8 @@ if ($socid > 0)
 		show_contacts($conf,$langs,$db,$objsoc,$_SERVER["PHP_SELF"].'?socid='.$objsoc->id);
 	}
 
-    if (! empty($conf->global->MAIN_REPEATTASKONEACHTAB))
-    {
-		// List of todo actions
-		show_actions_todo($conf,$langs,$db,$objsoc);
+        if (! empty($conf->global->MAIN_REPEATTASKONEACHTAB))
+        {
 
             print '<br>';
 
@@ -931,25 +926,27 @@ if ($socid > 0)
                 $result=show_leads($conf,$langs,$db,$objsoc);
             }
 
-            print "</td>\n";
-            print '<td valign="top" width="50%" class="notopnoleft">';
+            //print "</td>\n";
+            //print '<td valign="top" width="50%" class="notopnoleft">';
 	
             // List of todo actions
             show_actions_todo($conf,$langs,$db,$objsoc);
 
             // List of done actions
             //show_actions_done($conf,$langs,$db,$objsoc);
-            print "</td>\n";
-            print "</tr>\n";
+            //print "</td>\n";
+            //print "</tr>\n";
+        }
             print "</table>\n";
-    }
-    else
-    {
-	dol_print_error($db,'Bad value for socid parameter');
-    }
+        
+}
+else
+{
+    dol_print_error($db,'Bad value for socid parameter');
+}
 
 $db->close();
-}
+
 
 llxFooter();
 ?>

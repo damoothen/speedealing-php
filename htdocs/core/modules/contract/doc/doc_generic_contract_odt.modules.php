@@ -183,20 +183,9 @@ class doc_generic_contract_odt extends ModeleContract
 
 		if ($conf->contrat->dir_output)
 		{
-			// If $object is id instead of object
-			if (! is_object($object))
-			{
-				$id = $object;
-				$object = new Societe($this->db);
-				$object->fetch($id);
-
-				if ($result < 0)
-				{
-					dol_print_error($db,$object->error);
-					return -1;
-				}
-			}
-
+                        $soc = new Societe($this->db);
+			$soc->fetch($object->socid);
+                    
 			$dir = $conf->contrat->dir_output;
 			$objectref = dol_sanitizeFileName($object->ref);
 			if (! preg_match('/specimen/i',$objectref)) $dir.= "/" . $objectref;
@@ -224,6 +213,40 @@ class doc_generic_contract_odt extends ModeleContract
 				//print "conf->societe->dir_temp=".$conf->societe->dir_temp;
 
 				create_exdir($conf->contrat->dir_temp);
+                                
+                                // If BILLING contact defined on invoice, we use it
+                $usecontact=false;
+                $arrayidcontact=$object->getIdContact('external','SALESREPSIGN');
+                if (count($arrayidcontact) > 0)
+                {
+                    $usecontact=true;
+                    $result=$soc->fetch_contact($arrayidcontact[0]);
+                }
+
+                // Recipient name
+                if (! empty($usecontact))
+                {
+                    // On peut utiliser le nom de la societe du contact
+                    if ($conf->global->MAIN_USE_COMPANY_NAME_OF_CONTACT) $socobject = $object->contact;
+                    else $socobject = $soc->client;
+                }
+                else
+                {
+                    $socobject=$soc->client;
+                }
+                
+                // Make substitution
+                $substitutionarray=array(
+                    '__FROM_NAME__' => $this->emetteur->nom,
+                    '__FROM_EMAIL__' => $this->emetteur->email,
+                    '__TOTAL_TTC__' => $object->total_ttc,
+                    '__TOTAL_HT__' => $object->total_ht,
+                    '__TOTAL_VAT__' => $object->total_vat,
+                    'date' => dol_print_date($object->date_contrat,"%d %b %Y")
+                );
+                complete_substitutions_array($substitutionarray, $langs, $object);
+                
+                	
 
 				// Open and load template
 				require_once(ODTPHP_PATH.'odf.php');
@@ -233,9 +256,29 @@ class doc_generic_contract_odt extends ModeleContract
 						'DELIMITER_LEFT'  => '{',
 						'DELIMITER_RIGHT' => '}')
 				);
-
+                                
 				//print $odfHandler->__toString()."\n";
-
+                                //
+                             
+                foreach($substitutionarray as $key=>$value)
+                {
+                    try {
+                        if (preg_match('/logo$/',$key)) // Image
+                        {
+                            //var_dump($value);exit;
+                            if (file_exists($value)) $odfHandler->setImage($key, $value);
+                            else $odfHandler->setVars($key, 'ErrorFileNotFound', true, 'UTF-8');
+                        }
+                        else    // Text
+                        {
+                            //print $key.' '.$value;exit;
+                            $odfHandler->setVars($key, $value, true, 'UTF-8');
+                        }
+                    }
+                    catch(OdfException $e)
+                    {
+                    }
+                }
 				// Make substitutions into odt of user info
 			    $tmparray=$this->get_substitutionarray_user($user,$outputlangs);
                 //var_dump($tmparray); exit;
@@ -280,8 +323,8 @@ class doc_generic_contract_odt extends ModeleContract
 					}
 				}
                 // Make substitutions into odt of thirdparty + external modules
-				$tmparray=$this->get_substitutionarray_thirdparty($object,$outputlangs);
-                complete_substitutions_array($tmparray, $langs, $object);
+				$tmparray=$this->get_substitutionarray_thirdparty($soc,$outputlangs);
+                //complete_substitutions_array($tmparray, $langs, $object);
                 //var_dump($object->id); exit;
 				foreach($tmparray as $key=>$value)
 				{
@@ -294,6 +337,45 @@ class doc_generic_contract_odt extends ModeleContract
 						else	// Text
 						{
 							$odfHandler->setVars($key, $value, true, 'UTF-8');
+						}
+					}
+					catch(OdfException $e)
+					{
+					}
+				}
+                                 // Get extra fields for contractid
+                                include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
+                                $hookmanager=new HookManager($this->db);
+                                $hookmanager->callHooks(array('contrat_extrafields'));
+                                $parameters=array('id'=>$object->id);
+                                $values=$hookmanager->executeHooks('getFields',$parameters,$object,GETPOST('action'));    // Note that $action and $object may have been modified by hook
+				foreach($values as $key => $value)
+				{
+					try {
+						if (preg_match("/^options_/",$key))
+						{
+                                                    $var=substr($key, 8,strlen($key)); // retire options_
+                                                    $odfHandler->setVars($var, $values[$key], true, 'UTF-8');
+						}
+					}
+					catch(OdfException $e)
+					{
+					}
+				}
+                                
+                                // Get extra fields for socid
+                                include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
+                                $hookmanager=new HookManager($this->db);
+                                $hookmanager->callHooks(array('thirdparty_extrafields'));
+                                $parameters=array('id'=>$soc->id);
+                                $values=$hookmanager->executeHooks('getFields',$parameters,$soc,GETPOST('action'));    // Note that $action and $object may have been modified by hook
+				foreach($values as $key => $value)
+				{
+					try {
+						if (preg_match("/^options_/",$key))
+						{
+                                                    $var=substr($key, 8,strlen($key)); // retire options_
+                                                    $odfHandler->setVars($var, $values[$key], true, 'UTF-8');
 						}
 					}
 					catch(OdfException $e)
