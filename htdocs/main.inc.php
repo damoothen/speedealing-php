@@ -62,23 +62,40 @@ if (function_exists('get_magic_quotes_gpc'))	// magic_quotes_* removed in PHP6
 	}
 }
 
-// Security: SQL Injection and XSS Injection (scripts) protection (Filters on GET, POST)
-function test_sql_and_script_inject($val,$get)
+
+/**
+ * Security: SQL Injection and XSS Injection (scripts) protection (Filters on GET, POST, PHP_SELF)
+ *
+ * @param		string		$val		Value
+ * @param		string		$type		1=GET, 0=POST, 2=PHP_SELF
+ * @return		boolean					true if there is an injection
+ */
+function test_sql_and_script_inject($val, $type)
 {
 	$sql_inj = 0;
-	// For SQL Injection
-	$sql_inj += preg_match('/delete[\s]+from/i', $val);
-	$sql_inj += preg_match('/create[\s]+table/i', $val);
-	$sql_inj += preg_match('/update.+set.+=/i', $val);
-	$sql_inj += preg_match('/insert[\s]+into/i', $val);
-	$sql_inj += preg_match('/select.+from/i', $val);
-	$sql_inj += preg_match('/union.+select/i', $val);
-	$sql_inj += preg_match('/(\.\.%2f)+/i', $val);
+	// For SQL Injection (onyl GET and POST are used to be included into bad escaped SQL requests)
+	if ($type != 2)
+	{
+    	$sql_inj += preg_match('/delete[\s]+from/i', $val);
+    	$sql_inj += preg_match('/create[\s]+table/i', $val);
+    	$sql_inj += preg_match('/update.+set.+=/i', $val);
+    	$sql_inj += preg_match('/insert[\s]+into/i', $val);
+    	$sql_inj += preg_match('/select.+from/i', $val);
+    	$sql_inj += preg_match('/union.+select/i', $val);
+    	$sql_inj += preg_match('/(\.\.%2f)+/i', $val);
+	}
 	// For XSS Injection done by adding javascript with script
-	$sql_inj += preg_match('/<script/i', $val);
-	if ($get) $sql_inj += preg_match('/javascript:/i', $val);
-	// For XSS Injection done by adding javascript with onmousemove, etc... (closing a src or href tag with not cleaned param)
-	if ($get) $sql_inj += preg_match('/"/i', $val);	// We refused " in GET parameters value
+    $sql_inj += preg_match('/<script/i', $val);
+    $sql_inj += preg_match('/base[\s]+href/i', $val);
+    if ($type == 1)
+    {
+        $sql_inj += preg_match('/img[\s]+src/i', $val);
+        $sql_inj += preg_match('/style[\s]*=/i', $val);
+	    $sql_inj += preg_match('/javascript:/i', $val);
+    }
+	// For XSS Injection done by adding javascript closing html tags like with onmousemove, etc... (closing a src or href tag with not cleaned param)
+	if ($type == 1) $sql_inj += preg_match('/"/i', $val);      // We refused " in GET parameters value
+	if ($type == 2) $sql_inj += preg_match('/[\s;"]/', $val);    // PHP_SELF is an url and must match url syntax
 	return $sql_inj;
 }
 // Security: Return true if OK, false otherwise
@@ -109,7 +126,7 @@ function analyse_sql_and_script(&$var,$get)
 if (! empty($_SERVER["PHP_SELF"]))
 {
     $morevaltochecklikepost=array($_SERVER["PHP_SELF"]);
-    analyse_sql_and_script($morevaltochecklikepost,0);
+    analyse_sql_and_script($morevaltochecklikepost,2);
 }
 // Sanity check on GET parameters
 if (! empty($_SERVER["QUERY_STRING"]))
@@ -324,7 +341,7 @@ if (! defined('NOLOGIN'))
         }
 
 		// Verification security graphic code
-		if (isset($_POST["username"]) && ! empty($conf->global->MAIN_SECURITY_ENABLECAPTCHA))
+		if (GETPOST("username","alpha",2) && ! empty($conf->global->MAIN_SECURITY_ENABLECAPTCHA))
 		{
 			require_once DOL_DOCUMENT_ROOT.'/includes/artichow/Artichow.cfg.php';
 			require_once ARTICHOW."/AntiSpam.class.php";
@@ -339,7 +356,7 @@ if (! defined('NOLOGIN'))
 				$langs->load('main');
 				$langs->load('other');
 
-				$user->trigger_mesg='ErrorBadValueForCode - login='.$_POST["username"];
+				$user->trigger_mesg='ErrorBadValueForCode - login='.GETPOST("username","alpha",2);
 				$_SESSION["dol_loginmesg"]=$langs->trans("ErrorBadValueForCode");
 				$test=false;
 
@@ -365,7 +382,7 @@ if (! defined('NOLOGIN'))
 		// If error, we will put error message in session under the name dol_loginmesg
 		$goontestloop=false;
 		if (isset($_SERVER["REMOTE_USER"]) && in_array('http',$authmode)) $goontestloop=true;
-		if (isset($_POST["username"]) || GETPOST('openid_mode','alpha',1)) $goontestloop=true;
+		if (GETPOST("username","alpha",2) || GETPOST('openid_mode','alpha',1)) $goontestloop=true;
 
 		if ($test && $goontestloop)
 		{
@@ -378,7 +395,7 @@ if (! defined('NOLOGIN'))
 					if ($result)
 					{
 						// Call function to check user/password
-						$usertotest=$_POST["username"];
+						$usertotest=GETPOST("username","alpha",2);
 						$passwordtotest=$_POST["password"];
 						$entitytotest=$_POST["entity"];
 						$function='check_user_password_'.$mode;
@@ -411,7 +428,7 @@ if (! defined('NOLOGIN'))
 				$langs->load('other');
 
 				// Bad password. No authmode has found a good password.
-				$user->trigger_mesg=$langs->trans("ErrorBadLoginPassword").' - login='.$_POST["username"];
+				$user->trigger_mesg=$langs->trans("ErrorBadLoginPassword").' - login='.GETPOST("username","alpha",2);
 				$_SESSION["dol_loginmesg"]=$langs->trans("ErrorBadLoginPassword");
 
 				// Appel des triggers
