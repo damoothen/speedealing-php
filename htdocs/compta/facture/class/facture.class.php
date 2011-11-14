@@ -1861,7 +1861,7 @@ class Facture extends CommonObject
             
             if($conf->global->PRODUCT_USE_ECOTAX)
             {
-                $pu-=$ecotax;
+                $pu_ht-=$ecotax;
                 $total_ht-=$qty*$ecotax;
             }
 
@@ -1998,7 +1998,10 @@ class Facture extends CommonObject
             
             if($conf->global->PRODUCT_USE_ECOTAX)
             {
-                $pu+=$ecotax;
+                if($pu>=0)
+                    $pu+=$ecotax;
+                else
+                    $pu-=$ecotax;
             }
 
             // Calculate total with, without tax and tax from qty, pu, remise_percent and txtva
@@ -2016,8 +2019,16 @@ class Facture extends CommonObject
             
             if($conf->global->PRODUCT_USE_ECOTAX)
             {
-                $pu-=$ecotax;
-                $total_ht-=$qty*$ecotax;
+                if($pu>=0)
+                {
+                    $pu-=$ecotax;
+                    $total_ht-=$qty*$ecotax;
+                }
+                else
+                {
+                    $pu+=$ecotax;
+                    $total_ht+=$qty*$ecotax;
+                }
             }
 
             // Old properties: $price, $remise (deprecated)
