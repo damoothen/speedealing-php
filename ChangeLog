@@ -24,13 +24,16 @@ For users:
 - New: Can search on part of barcode into POS module.
 - New: Cheques into cheques receipts are ordered by operation date.
 - New: Add hidden option MAIN_DISABLE_PDF_AUTOUPDATE to avoid generating pdf each time data change.
+- New: Add hidden option PROJECT_HIDE_UNSELECTABLES to hide project you can't select into combo list.
+- New: Add option INVOICE_POSITIVE_CREDIT_NOTE.
+- New: Support zip/town autocompletion into warehouses.
 - Fix: Can use POS module with several concurrent users.
 
 For developers:
 - New: Add webservice to get or create a product, service.
 - New: Add webservice to get a user.
 - New: Add hooks to change way of showing/editing lines into dictionnaries.
-- New: Add webservice to get or create a prodcut or service.
+- New: Add webservice to get or create a product or service.
 - New: Log module outputs can be setup with "or" rule (not only "xor").
 - New: Add FirePHP output for logging module.
 - New: Add trigger ACTION_DELETE and ACTION_MODIFY

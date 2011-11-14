@@ -94,9 +94,10 @@ class CommandeFournisseur extends Commande
 
     /**
      *	Get object and lines from database
-     * 	@param		id			Id of order to load
-     * 	@param		ref			Ref of object
-     *	@return     int         >0 if OK, <0 if KO
+     *
+     * 	@param	int		$id			Id of order to load
+     * 	@param	string	$ref		Ref of object
+     *	@return int 		        >0 if OK, <0 if KO
      */
     function fetch($id,$ref='')
     {
@@ -267,7 +268,9 @@ class CommandeFournisseur extends Commande
 
     /**
      *	Validate an order
-     *	@param		user		Utilisateur qui valide
+     *
+     *	@param	User	$user		Utilisateur qui valide
+     *	@return	int					<0 if KO, >0 if OK
      */
     function valid($user)
     {
@@ -377,8 +380,9 @@ class CommandeFournisseur extends Commande
 
     /**
      *	Set draft status
-     *	@param		user		Object user that modify
-     *	@return		int			<0 if KO, >0 if OK
+     *
+     *	@param	User	$user		Object user that modify
+     *	@return	int					<0 if KO, >0 if OK
      */
     function set_draft($user)
     {
@@ -421,7 +425,7 @@ class CommandeFournisseur extends Commande
                         $mouvP = new MouvementStock($this->db);
                         // We increment stock of product (and sub-products)
                         $entrepot_id = "1"; // TODO ajouter possibilite de choisir l'entrepot
-                        $result=$mouvP->reception($user, $this->lines[$i]->fk_product, $entrepot_id, $this->lines[$i]->qty, $this->lines[$i]->subprice);
+                        $result=$mouvP->reception($user, $this->lines[$i]->fk_product, $entrepot_id, $this->lines[$i]->qty, $this->lines[$i]->subprice, $langs->trans("OrderBackToDraftInDolibarr",$this->ref));
                         if ($result < 0) { $error++; }
                     }
                 }
@@ -612,16 +616,18 @@ class CommandeFournisseur extends Commande
 
     /**
      * 	Accept an order
-     *	@param		user		Object user
-     *	@return		int			<0 if KO, >0 if OK
+     *
+     *	@param	User	$user			Object user
+     *	@param	int		$idwarehouse	Id of warhouse for stock change
+     *	@return	int						<0 if KO, >0 if OK
      */
-    function approve($user)
+    function approve($user, $idwarehouse=0)
     {
         global $langs,$conf;
 
         $error=0;
 
-        dol_syslog("CommandeFournisseur::Approve");
+        dol_syslog(get_class($this)."::Approve");
 
         if ($user->rights->fournisseur->commande->approuver)
         {
@@ -632,30 +638,29 @@ class CommandeFournisseur extends Commande
 
             if ($this->db->query($sql))
             {
-                $result = 0;
                 $this->log($user, 2, time());	// Statut 2
 
                 // If stock is incremented on validate order, we must increment it
-                if ($result >= 0 && $conf->stock->enabled && $conf->global->STOCK_CALCULATE_ON_SUPPLIER_VALIDATE_ORDER)
+                if (! $error && $conf->stock->enabled && $conf->global->STOCK_CALCULATE_ON_SUPPLIER_VALIDATE_ORDER)
                 {
                     require_once(DOL_DOCUMENT_ROOT."/product/stock/class/mouvementstock.class.php");
+                    $langs->load("agenda");
 
-                    $num=count($this->lines);
-                    for ($i = 0; $i < $num; $i++)
+                    $cpt=count($this->lines);
+                    for ($i = 0; $i < $cpt; $i++)
                     {
                         // Product with reference
                         if ($this->lines[$i]->fk_product > 0)
                         {
                             $mouvP = new MouvementStock($this->db);
                             // We decrement stock of product (and sub-products)
-                            $entrepot_id = "1"; // TODO ajouter possibilite de choisir l'entrepot
-                            $result=$mouvP->reception($user, $this->lines[$i]->fk_product, $entrepot_id, $this->lines[$i]->qty, $this->lines[$i]->subprice);
+                            $result=$mouvP->reception($user, $this->lines[$i]->fk_product, $idwarehouse, $this->lines[$i]->qty, $this->lines[$i]->subprice, $langs->trans("OrderApprovedInDolibarr",$this->ref));
                             if ($result < 0) { $error++; }
                         }
                     }
                 }
 
-                if ($error == 0)
+                if (! $error)
                 {
                     // Appel des triggers
                     include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
@@ -665,7 +670,7 @@ class CommandeFournisseur extends Commande
                     // Fin appel triggers
                 }
 
-                if ($error == 0)
+                if (! $error)
                 {
                     $this->db->commit();
                     return 1;
@@ -1074,6 +1079,7 @@ class CommandeFournisseur extends Commande
 
     /**
      * Add a product into a stock warehouse.
+     *
      * @param 	$user		User object making change
      * @param 	$product	Id of product to dispatch
      * @param 	$qty		Qty to dispatch
@@ -1150,7 +1156,8 @@ class CommandeFournisseur extends Commande
 
     /**
      * 	Delete line
-     *	@param		idligne
+     *
+     *	@param	int		$idligne	Id of line to delete
      */
     function deleteline($idligne)
     {
@@ -1159,7 +1166,7 @@ class CommandeFournisseur extends Commande
             $sql = "DELETE FROM ".MAIN_DB_PREFIX."commande_fournisseurdet WHERE rowid = ".$idligne;
             $resql=$this->db->query($sql);
 
-            dol_syslog("Fournisseur.commande.class::deleteline sql=".$sql);
+            dol_syslog(get_class($this)."::deleteline sql=".$sql);
             if ($resql)
             {
                 $result=$this->update_price();
@@ -1178,8 +1185,9 @@ class CommandeFournisseur extends Commande
     }
 
     /**
-     * 		Delete an order
-     *		@return		int		<0 if KO, >0 if OK
+     *  Delete an order
+     *
+     *	@return	int		<0 if KO, >0 if OK
      */
     function delete()
     {

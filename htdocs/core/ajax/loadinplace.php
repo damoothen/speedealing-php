@@ -44,11 +44,15 @@ if((isset($_GET['field']) && ! empty($_GET['field']))
 	&& (isset($_GET['table_element']) && ! empty($_GET['table_element']))
 	&& (isset($_GET['fk_element']) && ! empty($_GET['fk_element'])))
 {
-	$element		= GETPOST('element');
-	$table_element	= GETPOST('table_element');
-	$field			= substr(GETPOST('field'), 4); // remove prefix val_
-	$fk_element		= GETPOST('fk_element');
-	$type			= GETPOST('type');
+	$element			= GETPOST('element');
+	$table_element		= GETPOST('table_element');
+	$fk_element			= GETPOST('fk_element');
+	$ext_element		= GETPOST('ext_element');
+	//$ext_table_element	= GETPOST('ext_table_element');
+	//$ext_fk_element		= GETPOST('ext_fk_element');
+	$field				= substr(GETPOST('field'), 4); // remove prefix val_
+	$type				= GETPOST('type');
+	$loadmethod			= (GETPOST('loadmethod') ? GETPOST('loadmethod') : 'getValueFrom');
 	
 	if (preg_match('/^([^_]+)_([^_]+)/i',$element,$regs))
 	{
@@ -58,21 +62,33 @@ if((isset($_GET['field']) && ! empty($_GET['field']))
 	
 	if ($element == 'fichinter') $element = 'ficheinter';
 	
-	if ($user->rights->$element->lire || $user->rights->$element->read)
+	if ($user->rights->$element->lire || $user->rights->$element->read
+	|| $user->rights->$element->$subelement->lire || $user->rights->$element->$subelement->read)
 	{
 		if ($type == 'select')
 		{
-			$methodname	= 'load_cache_'.GETPOST('method');
-			$cachename = 'cache_'.GETPOST('method');
+			$methodname	= 'load_cache_'.$loadmethod;
+			$cachename = 'cache_'.GETPOST('loadmethod');
 			
 			$form = new Form($db);
-			$ret = $form->$methodname();
-			if ($ret > 0) echo json_encode($form->$cachename);
+			if (method_exists($form, $methodname))
+			{
+				$ret = $form->$methodname();
+				if ($ret > 0) echo json_encode($form->$cachename);
+			}
+			else if (! empty($ext_element))
+			{
+				dol_include_once('/'.$ext_element.'/class/actions_'.$ext_element.'.class.php');
+				$classname = 'Actions'.ucfirst($ext_element);
+				$object = new $classname($db);
+				$ret = $object->$methodname();
+				if ($ret > 0) echo json_encode($object->$cachename);
+			}
 		}
 		else
 		{
 			$object = new GenericObject($db);
-			$value=$object->getValueFrom($table_element, $fk_element, $field);
+			$value=$object->$loadmethod($table_element, $fk_element, $field);
 			echo $value;
 		}
 	}

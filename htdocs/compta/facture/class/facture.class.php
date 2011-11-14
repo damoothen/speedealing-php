@@ -129,10 +129,10 @@ class Facture extends CommonObject
      *	Create invoice in database
      *  Note: this->ref can be set or empty. If empty, we will use "(PROV)"
      *
-     *	@param     	user       		Object user that create
-     *	@param      notrigger		1=Does not execute triggers, 0 otherwise
-     * 	@param		forceduedate	1=Do not recalculate due date from payment condition but force it with value
-     *	@return		int				<0 if KO, >0 if OK
+     *	@param	User	$user      		Object user that create
+     *	@param  int		$notrigger		1=Does not execute triggers, 0 otherwise
+     * 	@param	int		$forceduedate	1=Do not recalculate due date from payment condition but force it with value
+     *	@return	int						<0 if KO, >0 if OK
      */
     function create($user,$notrigger=0,$forceduedate=0)
     {
@@ -1474,12 +1474,14 @@ class Facture extends CommonObject
     }
 
     /**
-     *      Tag invoice as validated + call trigger BILL_VALIDATE
-     *      @param     	user            Object user that validate
-     *      @param     	force_number	Reference to force on invoice
-     *	    @return		int				<0 if KO, >0 if OK
+     * Tag invoice as validated + call trigger BILL_VALIDATE
+     *
+     * @param	User	$user           Object user that validate
+     * @param   string	$force_number	Reference to force on invoice
+     * @param	int		$idwarehouse	Id of warehouse to use for stock decrease
+     * @return	int						<0 if KO, >0 if OK
      */
-    function validate($user, $force_number='')
+    function validate($user, $force_number='', $idwarehouse=0)
     {
         global $conf,$langs;
         require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
@@ -1489,14 +1491,14 @@ class Facture extends CommonObject
         // Protection
         if (! $this->brouillon)
         {
-            dol_syslog("Facture::validate no draft status", LOG_WARNING);
+            dol_syslog(get_class($this)."::validate no draft status", LOG_WARNING);
             return 0;
         }
 
         if (! $user->rights->facture->valider)
         {
             $this->error='Permission denied';
-            dol_syslog("Facture::validate ".$this->error, LOG_ERR);
+            dol_syslog(get_class($this)."::validate ".$this->error, LOG_ERR);
             return -1;
         }
 
@@ -1579,11 +1581,11 @@ class Facture extends CommonObject
             }
             $sql.= ' WHERE rowid = '.$this->id;
 
-            dol_syslog("Facture::validate sql=".$sql);
+            dol_syslog(get_class($this)."::validate sql=".$sql);
             $resql=$this->db->query($sql);
             if (! $resql)
             {
-                dol_syslog("Facture::validate Echec update - 10 - sql=".$sql, LOG_ERR);
+                dol_syslog(get_class($this)."::validate Echec update - 10 - sql=".$sql, LOG_ERR);
                 dol_print_error($this->db);
                 $error++;
             }
@@ -1606,15 +1608,14 @@ class Facture extends CommonObject
                     $langs->load("agenda");
 
                     // Loop on each line
-                    $num=count($this->lines);
-                    for ($i = 0; $i < $num; $i++)
+                    $cpt=count($this->lines);
+                    for ($i = 0; $i < $cpt; $i++)
                     {
                         if ($this->lines[$i]->fk_product > 0)
                         {
                             $mouvP = new MouvementStock($this->db);
                             // We decrease stock for product
-                            $entrepot_id = "1"; // TODO ajouter possibilite de choisir l'entrepot
-                            $result=$mouvP->livraison($user, $this->lines[$i]->fk_product, $entrepot_id, $this->lines[$i]->qty, $this->lines[$i]->subprice, $langs->trans("InvoiceValidatedInDolibarr",$num));
+                            $result=$mouvP->livraison($user, $this->lines[$i]->fk_product, $idwarehouse, $this->lines[$i]->qty, $this->lines[$i]->subprice, $langs->trans("InvoiceValidatedInDolibarr",$num));
                             if ($result < 0) { $error++; }
                         }
                     }
@@ -1636,7 +1637,7 @@ class Facture extends CommonObject
                     $dirdest = $conf->facture->dir_output.'/'.$snumfa;
                     if (file_exists($dirsource))
                     {
-                        dol_syslog("Facture::validate rename dir ".$dirsource." into ".$dirdest);
+                        dol_syslog(get_class($this)."::validate rename dir ".$dirsource." into ".$dirdest);
 
                         if (@rename($dirsource, $dirdest))
                         {
@@ -1688,11 +1689,13 @@ class Facture extends CommonObject
     }
 
     /**
-     *		\brief		Set draft status
-     *		\param		user		Object user that modify
-     *		\param		int			<0 if KO, >0 if OK
+     *	Set draft status
+     *
+     *	@param	User	$user			Object user that modify
+     *	@param	int		$idwarehouse	Id warehouse to use for stock change
+     *	@return	int						<0 if KO, >0 if OK
      */
-    function set_draft($user)
+    function set_draft($user,$idwarehouse=0)
     {
         global $conf,$langs;
 
@@ -1700,7 +1703,7 @@ class Facture extends CommonObject
 
         if ($this->statut == 0)
         {
-            dol_syslog("Facture::set_draft already draft status", LOG_WARNING);
+            dol_syslog(get_class($this)."::set_draft already draft status", LOG_WARNING);
             return 0;
         }
 
@@ -1710,7 +1713,7 @@ class Facture extends CommonObject
         $sql.= " SET fk_statut = 0";
         $sql.= " WHERE rowid = ".$this->id;
 
-        dol_syslog("Facture::set_draft sql=".$sql, LOG_DEBUG);
+        dol_syslog(get_class($this)."::set_draft sql=".$sql, LOG_DEBUG);
         if ($this->db->query($sql))
         {
             // Si on decremente le produit principal et ses composants a la validation de facture, on réincrement
@@ -1941,20 +1944,23 @@ class Facture extends CommonObject
     {
         include_once(DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php');
 
-        dol_syslog("Facture::UpdateLine $rowid, $desc, $pu, $qty, $remise_percent, $date_start, $date_end, $txtva, $txlocaltax1, $txlocaltax2, $price_base_type, $info_bits, $type", LOG_DEBUG);
+        dol_syslog("Facture::UpdateLine $rowid, $desc, $pu, $qty, $remise_percent, $date_start, $date_end, $txtva, $txlocaltax1, $txlocaltax2, $price_base_type, $info_bits, $type, $fk_parent_line", LOG_DEBUG);
 
         if ($this->brouillon)
         {
             $this->db->begin();
 
             // Clean parameters
-            $remise_percent=price2num($remise_percent);
-            $qty=price2num($qty);
-            if (! $qty) $qty=0;
-            $pu = price2num($pu);
-            $txtva=price2num($txtva);
-            $txlocaltax1=price2num($txlocaltax1);
-            $txlocaltax2=price2num($txlocaltax2);
+            if (empty($qty)) $qty=0;
+            if (empty($fk_parent_line) || $fk_parent_line < 0) $fk_parent_line=0;
+
+            $remise_percent	= price2num($remise_percent);
+            $qty			= price2num($qty);
+            $pu 			= price2num($pu);
+            $txtva			= price2num($txtva);
+            $txlocaltax1	= price2num($txlocaltax1);
+            $txlocaltax2	= price2num($txlocaltax2);
+
             // Check parameters
             if ($type < 0) return -1;
 
@@ -3593,7 +3599,6 @@ class FactureLigne
         if ($this->date_end) { $sql.= ",date_end='".$this->db->idate($this->date_end)."'"; }
         else { $sql.=',date_end=null'; }
         $sql.= ",product_type=".$this->product_type;
-        $sql.= ",rang='".$this->rang."'";
         $sql.= ",info_bits='".$this->info_bits."'";
         if (empty($this->skip_update_total))
         {
