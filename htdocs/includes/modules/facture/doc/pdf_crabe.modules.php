@@ -302,7 +302,7 @@ class pdf_crabe extends ModelePDFFactures
 					$this->localtax1[$localtax1rate]+=$localtax1ligne;
 					$this->localtax2[$localtax2rate]+=$localtax2ligne;
                                         
-                                        if($conf->global->PRODUCT_USE_ECOTAX && $object->lines[$i]->ecotax > 0)
+                                        if($conf->global->PRODUCT_USE_ECOTAX && $object->lines[$i]->ecotax != 0)
                                         {
                                             $curY = $nexY;
 
@@ -325,7 +325,7 @@ class pdf_crabe extends ModelePDFFactures
                                             }
 
                                             // Prix unitaire HT avant remise
-                                            $up_excl_tax = price($object->lines[$i]->ecotax);
+                                            $up_excl_tax = price(($object->type==2?-1:1)*abs($object->lines[$i]->ecotax));
                                             $pdf->SetXY ($this->posxup, $curY);
                                             $pdf->MultiCell($this->posxqty-$this->posxup-1, 4, $up_excl_tax, 0, 'R', 0);
 
@@ -343,7 +343,7 @@ class pdf_crabe extends ModelePDFFactures
                                             }
 
                                             // Total HT ligne
-                                            $total_excl_tax = $object->lines[$i]->ecotax*$object->lines[$i]->qty;
+                                            $total_excl_tax = ($object->type==2?-1:1)*abs($object->lines[$i]->ecotax*$object->lines[$i]->qty);
                                             $pdf->SetXY ($this->postotalht, $curY);
                                             $pdf->MultiCell(26, 4, price($total_excl_tax), 0, 'R', 0);
                                             $object->total_ecotax+=$total_excl_tax;
