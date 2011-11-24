@@ -24,6 +24,7 @@
  */
 
 require("../../main.inc.php");
+require_once(DOL_DOCUMENT_ROOT."/lib/admin.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/lib/emailing.lib.php");
 require_once(DOL_DOCUMENT_ROOT.'/lib/files.lib.php');
 require_once(DOL_DOCUMENT_ROOT."/lib/CMailFile.class.php");
@@ -31,8 +32,9 @@ require_once(DOL_DOCUMENT_ROOT."/lib/functions2.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/comm/mailing/class/mailing.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formother.class.php");
 @include_once (DOL_DOCUMENT_ROOT.'/custom/mailjet/lib/APImailjet.class.php');    
-@include_once (DOL_DOCUMENT_ROOT.'/custom/mailjet/lib/Public_api.php');				
+@include_once (DOL_DOCUMENT_ROOT.'/custom/mailjet/lib/Public_api.php');	
 
+                        
 $langs->load("mails");
 
 if (! $user->rights->mailing->lire || $user->societe_id > 0)
@@ -267,7 +269,10 @@ if ($_REQUEST["action"] == 'sendallconfirmed' && $_REQUEST['confirm'] == 'yes')
 					$i++;
 				}
                                 // recup element sous mailjet 
-                                $mailj = new APImailjet($db,$_GET['id'],$num);
+                                $ident =  dolibarr_get_const($db, "MAIN_MAIL_SMTPS_ID",0);
+                                $cle = dolibarr_get_const($db,"MAIN_MAIL_SMTPS_PW",0);
+                                
+                                $mailj = new APImailjet($db,$_GET['id'],$num,$ident,$cle);
                                 $mailj->getIdMailJet();
                                 $mailj->synchronize($db);    
                                 

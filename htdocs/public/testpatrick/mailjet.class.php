@@ -30,9 +30,6 @@ class Mailjet extends Mailing
           
     }
     function updateStatut($event,$idSource){
-        $verif = "INSERT INTO testjson values ('$event','$idSource')";
-        $this->db->query($verif);
-        
                 $sql = "UPDATE ".MAIN_DB_PREFIX."mailing_cibles";
 		$sql.= " SET statut =".$event;
 		$sql.= " WHERE source_id= ".$idSource;        
