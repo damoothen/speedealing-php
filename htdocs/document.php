@@ -250,7 +250,7 @@ if ($modulepart)
 		{
 			$accessallowed=1;
 		}
-		$original_file=$conf->compta->dir_output.'/'.$original_file;
+		$original_file=$conf->comptabilite->dir_output.'/'.$original_file;
 	}
 
 	// Wrapping pour les societe

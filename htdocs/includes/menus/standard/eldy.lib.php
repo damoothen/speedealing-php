@@ -988,6 +988,12 @@ function print_left_eldy_menu($db,$menu_array_before,$menu_array_after)
                 $newmenu->add("/compta/paiement/rapport.php?leftmenu=customers_bills_payments",$langs->trans("Reportings"),2,$user->rights->facture->lire);
 
                 $newmenu->add("/compta/facture/stats/index.php?leftmenu=customers_bills", $langs->trans("Statistics"),1,$user->rights->facture->lire);
+                
+                /* Export Symeos */
+                $newmenu->add("/compta/export/?leftmenu=export_bills",$langs->trans("Ventilation"),0,$user->rights->facture->lire);
+                $newmenu->add("/compta/export/?leftmenu=export_bills",$langs->trans("Export"),1,$user->rights->facture->lire);
+                $newmenu->add("/compta/export/index.php?action=export&leftmenu=export_bills",$langs->trans("New"),2,$user->rights->facture->lire);
+                $newmenu->add("/compta/export/liste.php?leftmenu=export_bills",$langs->trans("Liste"),2,$user->rights->facture->lire);
             }
 
             // Suppliers
@@ -1007,6 +1013,8 @@ function print_left_eldy_menu($db,$menu_array_before,$menu_array_after)
                     $newmenu->add("/compta/facture/stats/index.php?leftmenu=suppliers_bills&mode=supplier", $langs->trans("Statistics"),1,$user->rights->fournisseur->facture->lire);
                 }
             }
+            
+            
 
             // Orders
             if ($conf->commande->enabled)
