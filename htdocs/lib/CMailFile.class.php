@@ -322,17 +322,19 @@ class CMailFile
 				{
 					if (empty($this->addr_from)) $this->addr_from = 'robot@mydomain.com';
 					@ini_set('sendmail_from',$this->getValidAddress($this->addr_from,2));
+					
 				}
 
 				// Forcage parametres
 				if (! empty($conf->global->MAIN_MAIL_SMTP_SERVER)) ini_set('SMTP',$conf->global->MAIN_MAIL_SMTP_SERVER);
 				if (! empty($conf->global->MAIN_MAIL_SMTP_PORT))   ini_set('smtp_port',$conf->global->MAIN_MAIL_SMTP_PORT);
-
+				
 				$dest=$this->getValidAddress($this->addr_to,2);
+				
 				if (! $dest)
 				{
 					$this->error="Failed to send mail with php mail to HOST=".ini_get('SMTP').", PORT=".ini_get('smtp_port')."<br>Recipient address '$dest' invalid";
-					dol_syslog("CMailFile::sendfile: mail end error=".$this->error, LOG_ERR);
+					dol_syslog("CMailFile::sendfile: mail end error=".$this->error, LOG_ERROR);
 				}
 				else
 				{
@@ -361,7 +363,7 @@ class CMailFile
 					if (! $res)
 					{
 						$this->error="Failed to send mail with php mail to HOST=".ini_get('SMTP').", PORT=".ini_get('smtp_port')."<br>Check your server logs and your firewalls setup";
-						dol_syslog("CMailFile::sendfile: mail end error=".$this->error, LOG_ERR);
+						dol_syslog("CMailFile::sendfile: mail end error=".$this->error, LOG_ERROR);
 					}
 					else
 					{

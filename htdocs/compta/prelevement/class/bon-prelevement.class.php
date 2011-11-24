@@ -1029,7 +1029,7 @@ class BonPrelevement extends CommonObject
 			else
 			{
 				$this->db->rollback();
-				dol_syslog("Error",LOG_ERR);
+				dol_syslog("Error",LOG_ERROR);
 			}
 
 			return sizeof($factures_prev);

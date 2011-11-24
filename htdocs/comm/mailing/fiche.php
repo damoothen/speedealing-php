@@ -30,6 +30,8 @@ require_once(DOL_DOCUMENT_ROOT."/lib/CMailFile.class.php");
 require_once(DOL_DOCUMENT_ROOT."/lib/functions2.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/comm/mailing/class/mailing.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formother.class.php");
+@include_once (DOL_DOCUMENT_ROOT.'/custom/mailjet/lib/APImailjet.class.php');    
+@include_once (DOL_DOCUMENT_ROOT.'/custom/mailjet/lib/Public_api.php');				
 
 $langs->load("mails");
 
@@ -245,7 +247,7 @@ if ($_REQUEST["action"] == 'sendallconfirmed' && $_REQUEST['confirm'] == 'yes')
 						{
 							dol_print_error($db);
 						}
-					}
+                                 	}
 					else
 					{
 						// Mail failed
@@ -264,6 +266,12 @@ if ($_REQUEST["action"] == 'sendallconfirmed' && $_REQUEST['confirm'] == 'yes')
 
 					$i++;
 				}
+                                // recup element sous mailjet 
+                                $mailj = new APImailjet($db,$_GET['id'],$num);
+                                $mailj->getIdMailJet();
+                                $mailj->synchronize($db);    
+                                
+                                  
 			}
 
 			// Loop finished, set global statut of mail
@@ -296,12 +304,12 @@ if ($_REQUEST["action"] == 'sendallconfirmed' && $_REQUEST['confirm'] == 'yes')
 	}
 }
 
-// Action send test emailing
+// Action send test emailing 
 if ($_POST["action"] == 'send' && empty($_POST["cancel"]))
 {
 	$mil = new Mailing($db);
 	$result=$mil->fetch($_POST["mailid"]);
-
+        
 	$error=0;
 
 	$upload_dir = $conf->mailing->dir_output . "/" . get_exdir($mil->id,2,0,1);
@@ -315,7 +323,9 @@ if ($_POST["action"] == 'send' && empty($_POST["cancel"]))
 
 	if (! $error)
 	{
-		// Le message est-il en html
+          
+		
+	// Le message est-il en html
 		$msgishtml=-1;	// Inconnu par defaut
 		if (preg_match('/[\s\t]*<html>/i',$message)) $msgishtml=1;
 
@@ -359,7 +369,9 @@ if ($_POST["action"] == 'send' && empty($_POST["cancel"]))
 
 		$_GET["action"]='';
 		$_GET["id"]=$mil->id;
-	}
+	
+        }
+      
 }
 
 // Action add emailing
@@ -854,6 +866,7 @@ else
 
 			// Affichage formulaire de TEST
 			if ($_GET["action"] == 'test')
+                        echo'toto ici';    
 			{
 				print_titre($langs->trans("TestMailing"));
 
