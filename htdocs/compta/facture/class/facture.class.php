@@ -1178,8 +1178,8 @@ class Facture extends CommonObject
             if (sizeof($list_rowid_det))
             {
                 $sql = 'UPDATE '.MAIN_DB_PREFIX.'societe_remise_except';
-                $sql.= ' SET fk_facture = NULL';
-                $sql.= ' WHERE fk_facture IN ('.join(',',$list_rowid_det).')';
+                $sql.= ' SET fk_facture = NULL, fk_facture_line = NULL';
+                $sql.= ' WHERE fk_facture_line IN ('.join(',',$list_rowid_det).')';
 
                 dol_syslog("Facture.class::delete sql=".$sql);
                 if (! $this->db->query($sql))
@@ -1885,7 +1885,7 @@ class Facture extends CommonObject
             $this->line->total_tva=      (($this->type==2||$qty<0)?-abs($total_tva):$total_tva);
             $this->line->total_localtax1=(($this->type==2||$qty<0)?-abs($total_localtax1):$total_localtax1);
             $this->line->total_localtax2=(($this->type==2||$qty<0)?-abs($total_localtax2):$total_localtax2);
-            $this->line->total_ttc=      (($this->type==2||$qty<0)?-abs($total_ttc):$total_ttc);            
+            $this->line->total_ttc=      (($this->type==2||$qty<0)?-abs($total_ttc):$total_ttc);
             $this->line->special_code=$special_code;
             $this->line->fk_parent_line=$fk_parent_line;
             $this->line->origin=$origin;
@@ -2035,7 +2035,7 @@ class Facture extends CommonObject
             $this->line->total_tva=      (($this->type==2||$qty<0)?-abs($total_tva):$total_tva);
             $this->line->total_localtax1=(($this->type==2||$qty<0)?-abs($total_localtax1):$total_localtax1);
             $this->line->total_localtax2=(($this->type==2||$qty<0)?-abs($total_localtax2):$total_localtax2);
-            $this->line->total_ttc=      (($this->type==2||$qty<0)?-abs($total_ttc):$total_ttc);            
+            $this->line->total_ttc=      (($this->type==2||$qty<0)?-abs($total_ttc):$total_ttc);
             $this->line->info_bits			= $info_bits;
             $this->line->product_type		= $type;
             $this->line->fk_parent_line		= $fk_parent_line;
