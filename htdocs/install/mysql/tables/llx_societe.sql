@@ -89,5 +89,6 @@ create table llx_societe
   canvas				   varchar(32),			                        -- type of canvas if used (null by default)
   import_key               varchar(14),                          		-- import key
   latitude       double     DEFAULT 0,                                          -- coordonnees GPS
-  longitude       double     DEFAULT 0                                         -- coordonnees GPS
+  longitude       double     DEFAULT 0,                                      -- coordonnees GPS
+  newsletter                tinyint                                             -- desabonnement mailing/newsletter
 )ENGINE=innodb;

@@ -531,3 +531,6 @@ insert into llx_c_actioncomm (id, code, type, libelle, module, position) values 
 insert into llx_c_actioncomm (id, code, type, libelle, module, position) values  (31, 'AC_SUP_INV', 'system', 'Send supplier invoice by email'        ,'invoice_supplier', 7);
 insert into llx_c_actioncomm (id, code, type, libelle, module, position) values ( 50, 'AC_OTH',     'system', 'Other'                                ,NULL, 5);
 
+-- Désabonnement mailing
+alter table llx_societe add newsletter tinyint DEFAULT NULL; --desabonnement mailing and newsletter
+alter table llx_socpeople add newsletter tinyint DEFAULT NULL; --desabonnement mailing and newsletter
