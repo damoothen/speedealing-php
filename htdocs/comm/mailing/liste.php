@@ -90,7 +90,6 @@ else
 }
 
 dol_syslog("sql=".$sql);
-//print $sql;
 $result = $db->query($sql);
 if ($result)
 {
@@ -176,7 +175,9 @@ if ($result)
 		{
 			if ($obj->sendstatut==-1) print $langs->trans("MailingStatusError").' '.img_error();
 			if ($obj->sendstatut==1) print $langs->trans("MailingStatusSent").' '.img_picto($langs->trans("MailingStatusSent"),'statut6');
-		}
+                        
+                        
+                }
 		else
 		{
 			print $email->LibStatut($obj->statut,5);

@@ -486,7 +486,8 @@ if ($mil->fetch($_REQUEST["id"]) >= 0)
 					print '<td align="right" nowrap="nowrap">';
 					if ($obj->statut==-1) print $langs->trans("MailingStatusError").' '.img_error();
 					if ($obj->statut==1) print $langs->trans("MailingStatusSent").' '.img_picto($langs->trans("MailingStatusSent"),'statut6');
-					print '</td>';
+					if ($obj->statut==4) print $langs->trans("Open").' '.img_picto($langs->trans("Open"),'statut6');
+                                        print '</td>';
 				}
 				print '</tr>';
 

@@ -55,7 +55,7 @@ class CMailFile
 	var $error='';
 
 	var $smtps;			// Contains SMTPs object (if this method is used)
-
+        
 	//CSS
 	var $css;
 	//! Defined css style for body background
@@ -78,7 +78,7 @@ class CMailFile
                            'tif'  => 'image/tiff',
                            'tiff' => 'image/tiff');
 
-
+        var $campagne;
 	/**
 	 *	CMailFile
 	 *
@@ -96,11 +96,12 @@ class CMailFile
 	 *	@param 	errors_to      		Email errors
 	 *	@param	css			        Css option
 	 */
-	function CMailFile($subject,$to,$from,$msg,
+	function CMailFile($campagne,$subject,$to,$from,$msg,
 	$filename_list=array(),$mimetype_list=array(),$mimefilename_list=array(),
 	$addr_cc="",$addr_bcc="",$deliveryreceipt=0,$msgishtml=0,$errors_to='',$css='')
 	{
-		global $conf;
+            $this->campagne = $campagne;
+            global $conf;
 
 		// We define end of line (RFC 822bis section 2.3)
 		$this->eol="\r\n";
@@ -242,7 +243,8 @@ class CMailFile
 			$smtps->setSubject($this->encodetorfc2822($subject));
 			$smtps->setTO($this->getValidAddress($to,0,1));
 			$smtps->setFrom($this->getValidAddress($from,0,1));
-
+                       
+                        $smtps->setXheader("X-Mailjet-Campaign: ".$this->campagne); //ici
 			if (! empty($this->html))
 			{
 				if (!empty($css))
@@ -605,7 +607,7 @@ class CMailFile
 
 		$out.= "Content-Type: multipart/mixed; boundary=\"".$this->mixed_boundary."\"".$this->eol;
 		$out.= "Content-Transfer-Encoding: 8bit".$this->eol;
-
+                
 		dol_syslog("CMailFile::write_smtpheaders smtp_header=\n".$out);
 		return $out;
 	}

@@ -31,8 +31,6 @@ require_once(DOL_DOCUMENT_ROOT."/lib/CMailFile.class.php");
 require_once(DOL_DOCUMENT_ROOT."/lib/functions2.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/comm/mailing/class/mailing.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formother.class.php");
-@include_once (DOL_DOCUMENT_ROOT.'/custom/mailjet/lib/APImailjet.class.php');    
-@include_once (DOL_DOCUMENT_ROOT.'/custom/mailjet/lib/Public_api.php');	
 
                         
 $langs->load("mails");
@@ -215,9 +213,9 @@ if ($_REQUEST["action"] == 'sendallconfirmed' && $_REQUEST['confirm'] == 'yes')
 					}
 
 					// Fabrication du mail
-					$mail = new CMailFile($newsubject, $sendto, $from, $newmessage,
+					$mail = new CMailFile($_GET['id'],$newsubject, $sendto, $from, $newmessage,
 											$arr_file, $arr_mime, $arr_name,
-		            						'', '', 0, $msgishtml, $errorsto, $arr_css);
+		            						'', '', 0, $msgishtml, $errorsto, $arr_css,$campagne);
 
 					if ($mail->error)
 					{
@@ -233,6 +231,7 @@ if ($_REQUEST["action"] == 'sendallconfirmed' && $_REQUEST['confirm'] == 'yes')
 					if ($res)
 					{
 						$res=$mail->sendfile();
+                                                
 					}
 
 					if ($res)
@@ -268,14 +267,7 @@ if ($_REQUEST["action"] == 'sendallconfirmed' && $_REQUEST['confirm'] == 'yes')
 
 					$i++;
 				}
-                                // recup element sous mailjet 
-                                $ident =  dolibarr_get_const($db, "MAIN_MAIL_SMTPS_ID",0);
-                                $cle = dolibarr_get_const($db,"MAIN_MAIL_SMTPS_PW",0);
-                                
-                                $mailj = new APImailjet($db,$_GET['id'],$num,$ident,$cle);
-                                $mailj->getIdMailJet();
-                                $mailj->synchronize($db);    
-                                
+                              
                                   
 			}
 
@@ -871,7 +863,7 @@ else
 
 			// Affichage formulaire de TEST
 			if ($_GET["action"] == 'test')
-                        echo'toto ici';    
+                         
 			{
 				print_titre($langs->trans("TestMailing"));
 
