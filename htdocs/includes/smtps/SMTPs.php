@@ -798,9 +798,13 @@ class SMTPs
                 // with any custom headers...
                 // This is the last response code we look for until the end of the message.
                  $this->socket_send_str('DATA','354'); // ici
-                 $tab=$this->getXheader();
-                 $value = $tab[0];
-                 $this->socket_send_str($value); 
+                 
+                 if((dolibarr_get_const($db,'mailjet'))==1){
+                     $tab=$this->getXheader();
+                     $value = $tab[0];
+                     $this->socket_send_str($value);
+                 }
+                  
 
                 // Now we are ready for the message...
                 // Ok, all the ingredients are mixed in let's cook this puppy...
