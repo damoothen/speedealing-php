@@ -21,12 +21,11 @@
  *       \file       htdocs/comm/mailing/fiche.php
  *       \ingroup    mailing
  *       \brief      Fiche mailing, onglet general
- *       \version    $Id: fiche.php,v 1.123 2011/08/03 00:46:33 eldy Exp $
- *       \author     Patrick Mary.
+ *       \version    $Id: fiche.php,v 1.123 2011/08/03 00:46:33 synry63 Exp $
+ *       
  */
 
 require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/admin.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/lib/emailing.lib.php");
 require_once(DOL_DOCUMENT_ROOT.'/lib/files.lib.php');
 require_once(DOL_DOCUMENT_ROOT."/lib/CMailFile.class.php");
