@@ -1,6 +1,7 @@
 <?PHP
 /* Copyright (C) 2004      Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2005-2011 Laurent Destailleur  <eldy@uers.sourceforge.net>
+ * Copyright (C) 2010-2011 Patrick Mary  <laube@hotmail.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +22,7 @@
  *       \ingroup    mailing
  *       \brief      Fiche mailing, onglet general
  *       \version    $Id: fiche.php,v 1.123 2011/08/03 00:46:33 eldy Exp $
+ *       \author     Patrick Mary.
  */
 
 require("../../main.inc.php");
