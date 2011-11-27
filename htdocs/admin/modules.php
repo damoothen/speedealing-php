@@ -380,7 +380,7 @@ if ($mode != 4)
                 	print '<a href="modules.php?id='.$objMod->numero.'&amp;action=reset&amp;value=' . $modName . '&amp;mode=' . $mode . '">';
                 	print img_picto($langs->trans("Activated"),'switch_on');
                 	print '</a></td>'."\n";
-                        if($modName=='modMailJet') dolibarr_set_const($db,'mailjet', 1);
+                        
                             
                         
                 }

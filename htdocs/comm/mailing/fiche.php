@@ -31,7 +31,6 @@ require_once(DOL_DOCUMENT_ROOT."/lib/CMailFile.class.php");
 require_once(DOL_DOCUMENT_ROOT."/lib/functions2.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/comm/mailing/class/mailing.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formother.class.php");
-
                         
 $langs->load("mails");
 
@@ -213,9 +212,10 @@ if ($_REQUEST["action"] == 'sendallconfirmed' && $_REQUEST['confirm'] == 'yes')
 					}
 
 					// Fabrication du mail
-					$mail = new CMailFile($_GET['id'],$newsubject, $sendto, $from, $newmessage,
+                                        
+					$mail = new CMailFile($newsubject, $sendto, $from, $newmessage,
 											$arr_file, $arr_mime, $arr_name,
-		            						'', '', 0, $msgishtml, $errorsto, $arr_css,$campagne);
+		            						'', '', 0, $msgishtml, $errorsto, $arr_css,$_GET['id']);
 
 					if ($mail->error)
 					{

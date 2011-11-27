@@ -28,6 +28,7 @@
  *      \author     Dan Potter.
  *      \author	    Eric Seigne
  *      \author	    Laurent Destailleur.
+ *      \author     Patrick Mary.
  */
 
 /**
@@ -78,7 +79,7 @@ class CMailFile
                            'tif'  => 'image/tiff',
                            'tiff' => 'image/tiff');
 
-        var $campagne;
+        
 	/**
 	 *	CMailFile
 	 *
@@ -96,11 +97,11 @@ class CMailFile
 	 *	@param 	errors_to      		Email errors
 	 *	@param	css			        Css option
 	 */
-	function CMailFile($campagne,$subject,$to,$from,$msg,
+	function CMailFile($subject,$to,$from,$msg,
 	$filename_list=array(),$mimetype_list=array(),$mimefilename_list=array(),
-	$addr_cc="",$addr_bcc="",$deliveryreceipt=0,$msgishtml=0,$errors_to='',$css='')
+	$addr_cc="",$addr_bcc="",$deliveryreceipt=0,$msgishtml=0,$errors_to='',$css='',$campagne=null)
 	{
-            $this->campagne = $campagne;
+            
             global $conf;
 
 		// We define end of line (RFC 822bis section 2.3)
@@ -243,8 +244,11 @@ class CMailFile
 			$smtps->setSubject($this->encodetorfc2822($subject));
 			$smtps->setTO($this->getValidAddress($to,0,1));
 			$smtps->setFrom($this->getValidAddress($from,0,1));
-                       
-                        $smtps->setXheader("X-Mailjet-Campaign: ".$this->campagne); //ici
+                        
+                        // add custum header X-campaign for mailjet
+                        if($conf->mailjet->enabled){
+                            $smtps->setXheader("X-Mailjet-Campaign: ".$campagne); 
+                        }
 			if (! empty($this->html))
 			{
 				if (!empty($css))

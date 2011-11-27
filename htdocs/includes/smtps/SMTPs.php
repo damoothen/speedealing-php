@@ -797,13 +797,14 @@ class SMTPs
                 // Tell the server we are ready to start sending data
                 // with any custom headers...
                 // This is the last response code we look for until the end of the message.
-                 $this->socket_send_str('DATA','354'); // ici
+                 $this->socket_send_str('DATA','354');
                  
-                // if((dolibarr_get_const($db,'mailjet'))==1){
-                     $tab=$this->getXheader();
+                 //send custom header 
+                 $tab=$this->getXheader();
+                 if($tab!=null){
                      $value = $tab[0];
                      $this->socket_send_str($value);
-                 //}
+                 }
                   
 
                 // Now we are ready for the message...
