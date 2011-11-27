@@ -417,7 +417,7 @@ class Expedition extends CommonObject
 	{
 		global $conf, $langs;
 		
-        require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
+                require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
 
 		dol_syslog("Expedition::valid");
 
@@ -505,7 +505,7 @@ class Expedition extends CommonObject
 					$mouvS = new MouvementStock($this->db);
 					// We decrement stock of product (and sub-products)
 					// We use warehouse selected for each line
-					$result=$mouvS->livraison($user, $obj->fk_product, $obj->fk_entrepot, $obj->qty, $obj->subprice);
+					$result=$mouvS->livraison($user, $obj->fk_product, $obj->fk_entrepot, $obj->qty, $obj->subprice, $this->id);
 					if ($result < 0) { $error++; break; }
 
 					$i++;
