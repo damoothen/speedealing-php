@@ -2,6 +2,7 @@
 /* Copyright (C) 2001-2006 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2009 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2010-2011 Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +32,8 @@ require_once(DOL_DOCUMENT_ROOT."/core/class/html.formother.class.php");
 require_once(DOL_DOCUMENT_ROOT."/lib/stock.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/lib/product.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/lib/date.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/expedition/class/expedition.class.php");
+require_once(DOL_DOCUMENT_ROOT."/compta/facture/class/facture.class.php");
 
 $langs->load("products");
 $langs->load("stocks");
@@ -44,6 +47,8 @@ $search_movement = isset($_REQUEST["search_movement"])?$_REQUEST["search_movemen
 $search_product = isset($_REQUEST["search_product"])?$_REQUEST["search_product"]:'';
 $search_warehouse = isset($_REQUEST["search_warehouse"])?$_REQUEST["search_warehouse"]:'';
 $search_user = isset($_REQUEST["search_user"])?$_REQUEST["search_user"]:'';
+$search_bl = isset($_REQUEST["search_bl"])?$_REQUEST["search_bl"]:'';
+$search_fac = isset($_REQUEST["search_fac"])?$_REQUEST["search_fac"]:'';
 $page = $_GET["page"];
 $sortfield = $_GET["sortfield"];
 $sortorder = $_GET["sortorder"];
@@ -77,12 +82,16 @@ $formother=new FormOther($db);
 
 $sql = "SELECT p.rowid, p.label as produit, p.fk_product_type as type,";
 $sql.= " s.label as stock, s.rowid as entrepot_id,";
-$sql.= " m.rowid as mid, m.value, m.datem, m.fk_user_author, m.label,";
+$sql.= " m.rowid as mid, m.value, m.datem, m.fk_user_author, m.label, m.fk_expedition, link.fk_target as factureid,";
 $sql.= " u.login";
 $sql.= " FROM (".MAIN_DB_PREFIX."entrepot as s,";
 $sql.= " ".MAIN_DB_PREFIX."stock_mouvement as m,";
 $sql.= " ".MAIN_DB_PREFIX."product as p)";
 $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."user as u ON m.fk_user_author = u.rowid";
+$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."expeditiondet as ed ON ed.fk_expedition = m.fk_expedition";
+$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."commandedet as cdet ON ed.fk_origin_line=cdet.rowid";
+$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."element_element as link ON (link.sourcetype='commande' AND link.targettype='facture' AND link.fk_source = cdet.fk_commande)";
+
 $sql.= " WHERE m.fk_product = p.rowid";
 $sql.= " AND m.fk_entrepot = s.rowid";
 $sql.= " AND s.entity = ".$conf->entity;
@@ -118,10 +127,19 @@ if (! empty($search_user))
 {
 	$sql.= " AND u.login LIKE '%".$db->escape($search_user)."%'";
 }
+if (! empty($search_bl))
+{
+	$sql.= " AND m.fk_expedition LIKE '%".$db->escape($search_bl)."%'";
+}
+if (! empty($search_fac))
+{
+	//$sql.= " AND u.login LIKE '%".$db->escape($search_user)."%'";
+}
 if (! empty($_GET['idproduct']))
 {
 	$sql.= " AND p.rowid = '".$_GET['idproduct']."'";
 }
+$sql.= " GROUP BY m.rowid";
 $sql.= $db->order($sortfield,$sortorder);
 $sql.= $db->plimit($conf->liste_limit + 1 ,$offset);
 
@@ -235,6 +253,8 @@ if ($resql)
 	if ($_GET["id"]) $param.='&id='.$_GET["id"];
 	if ($search_movement)   $param.='&search_movement='.urlencode($search_movement);
 	if ($search_product)   $param.='&search_product='.urlencode($search_product);
+        if ($search_bl)   $param.='&search_bl='.urlencode($search_bl);
+        if ($search_fac)   $param.='&search_fac='.urlencode($search_fac);
 	if ($search_warehouse) $param.='&search_warehouse='.urlencode($search_warehouse);
 	if ($sref) $param.='&sref='.urlencode($sref);
 	if ($snom) $param.='&snom='.urlencode($snom);
@@ -248,6 +268,8 @@ if ($resql)
 	//print_liste_field_titre($langs->trans("Id"),$_SERVER["PHP_SELF"], "m.rowid","",$param,"",$sortfield,$sortorder);
 	print_liste_field_titre($langs->trans("Date"),$_SERVER["PHP_SELF"], "m.datem","",$param,"",$sortfield,$sortorder);
 	print_liste_field_titre($langs->trans("Label"),$_SERVER["PHP_SELF"], "m.label","",$param,"",$sortfield,$sortorder);
+        print_liste_field_titre($langs->trans("Bon de livraison"),$_SERVER["PHP_SELF"], "m.fk_expedition","",$param,"",$sortfield,$sortorder);
+        print_liste_field_titre($langs->trans("Facture"),$_SERVER["PHP_SELF"], "m.factid","",$param,"",$sortfield,$sortorder);
 	print_liste_field_titre($langs->trans("Product"),$_SERVER["PHP_SELF"], "p.ref","",$param,"",$sortfield,$sortorder);
 	print_liste_field_titre($langs->trans("Warehouse"),$_SERVER["PHP_SELF"], "s.label","",$param,"",$sortfield,$sortorder);
 	print_liste_field_titre($langs->trans("Author"),$_SERVER["PHP_SELF"], "m.fk_user_author","",$param,"",$sortfield,$sortorder);
@@ -269,6 +291,14 @@ if ($resql)
 	print '<td class="liste_titre" align="left">';
 	print '<input class="flat" type="text" size="12" name="search_movement" value="'.$search_movement.'">';
 	print '</td>';
+        // Numéro bon de livraison
+	print '<td class="liste_titre" align="left">';
+	print '<input class="flat" type="text" size="12" name="search_bl" value="'.$search_bl.'">';
+	print '</td>';
+        // Numéro de la facture
+	print '<td class="liste_titre" align="left">';
+	print '<input class="flat" type="text" size="12" name="search_bl" value="'.$search_fac.'">';
+	print '</td>';
 	// Product
 	print '<td class="liste_titre" align="left">';
 	print '<input class="flat" type="text" size="12" name="search_product" value="'.($idproduct?$product->libelle:$search_product).'">';
@@ -281,8 +311,8 @@ if ($resql)
 	print '</td>';
 	print '<td class="liste_titre" align="right">';
 	print '<input type="image" class="liste_titre" src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/search.png" name="button_search" value="'.dol_escape_htmltag($langs->trans("Search")).'" title="'.dol_escape_htmltag($langs->trans("Search")).'">';
-    print '&nbsp; ';
-    print '<input type="image" class="liste_titre" src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/searchclear.png" name="button_removefilter" value="'.dol_escape_htmltag($langs->trans("RemoveFilter")).'" title="'.dol_escape_htmltag($langs->trans("RemoveFilter")).'">';
+        print '&nbsp; ';
+        print '<input type="image" class="liste_titre" src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/searchclear.png" name="button_removefilter" value="'.dol_escape_htmltag($langs->trans("RemoveFilter")).'" title="'.dol_escape_htmltag($langs->trans("RemoveFilter")).'">';
 	print '</td>';
 	print "</tr>\n";
 	print '</form>';
@@ -299,6 +329,14 @@ if ($resql)
 		print '<td>'.dol_print_date($db->jdate($objp->datem),'dayhour').'</td>';
 		// Label of movement
 		print '<td>'.$objp->label.'</td>';
+                // Bon de livraison
+                $expedition = new Expedition($db);
+                $expedition->fetch($objp->fk_expedition);
+		print '<td>'.$expedition->getNomUrl().'</td>';
+                // Facture
+                $facture = new Facture($db);
+                $facture->fetch($objp->factureid);
+                print '<td>'.$facture->getNomUrl().'</td>';
 		// Product
 		print '<td>';
 		$productstatic->id=$objp->rowid;
