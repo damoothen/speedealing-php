@@ -84,7 +84,7 @@ require("../../main.inc.php");
         
         if($error==0)
         {
-                $alert = 'D&eacutesinscription effectu&eacutee; avec succ&egrave;s';
+                $alert = 'D&eacutesinscription effectu&eacute;e avec succ&egrave;s';
                 
                 /* On détruit la variable $_POST */
                 unset($_POST);

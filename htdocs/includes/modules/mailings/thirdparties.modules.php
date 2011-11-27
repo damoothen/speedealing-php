@@ -65,6 +65,7 @@ class mailing_thirdparties extends MailingTargets
 		if ($_POST['filter']) $sql.= " LEFT JOIN llx_categorie_societe ON llx_categorie_societe.fk_societe=s.rowid";
 		if ($_POST['filter']) $sql.= " LEFT JOIN llx_categorie ON llx_categorie.rowid = llx_categorie_societe.fk_categorie";
 		$sql.= " WHERE s.email != ''";
+                $sql.= " AND s.newsletter != 0";      // Not unsubcribe
 		$sql.= " AND s.entity = ".$conf->entity;
                 $sql.= " AND s.fk_stcomm >= 0";
 		if ($_POST['filter']) $sql.= " AND llx_categorie.rowid='".$_POST['filter']."'";
@@ -144,6 +145,7 @@ class mailing_thirdparties extends MailingTargets
 		$sql = "SELECT count(distinct(s.email)) as nb";
 		$sql.= " FROM ".MAIN_DB_PREFIX."societe as s";
 		$sql.= " WHERE s.email != ''";
+                $sql.= " AND s.newsletter != 0";      // Not unsubcribe
 		$sql.= " AND s.entity = ".$conf->entity;
                 $sql.= " AND s.fk_stcomm >= 0";
 
