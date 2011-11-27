@@ -195,7 +195,7 @@ class mailing_contacts1 extends MailingTargets
 		$sql.= " AND c.entity = ".$conf->entity;
 		$sql.= " AND s.entity = ".$conf->entity;
 		$sql.= " AND c.email != ''";
-                $sql.= " AND c.newletter != 0";
+                $sql.= " AND c.newsletter != 0";
 		foreach($filtersarray as $key)
 		{
 			if ($key == 'prospects') $sql.= " AND s.client=2";

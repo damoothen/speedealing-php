@@ -90,5 +90,5 @@ create table llx_societe
   import_key               varchar(14),                          		-- import key
   latitude       double     DEFAULT 0,                                          -- coordonnees GPS
   longitude       double     DEFAULT 0,                                      -- coordonnees GPS
-  newsletter                tinyint                                             -- desabonnement mailing/newsletter
+  newsletter      tinyint   DEFAULT 1 NOT NULL                                          -- desabonnement mailing/newsletter
 )ENGINE=innodb;

@@ -61,6 +61,22 @@ require("../../main.inc.php");
 	{
 		echo '<p>Variable mail non d&eacute;termin&eacute;e</p>';
 	}
+        // vérification du champ id passé en paramétre dans l'url (email de l'entreprise)
+	if(isset($_GET['id']))		
+	{
+		if (is_string($_GET['id']))	
+		{
+			$id = stripslashes(htmlentities($_GET['id']));
+		}
+		else
+		{
+			echo '<p>L\'id n\'est pas de type string</p>';
+		}
+	}
+	else 
+	{
+		echo '<p>Variable id non d&eacute;termin&eacute;e</p>';
+	}
 
     /* Si le formulaire est envoyé alors on fait les traitements */
     if (isset($_POST['envoye']))
@@ -69,14 +85,16 @@ require("../../main.inc.php");
         
         $sql = "UPDATE ".MAIN_DB_PREFIX."societe SET";
 	$sql.= " newsletter=0";
-	$sql.= " WHERE email = '".$_GET['mail']."'";
+	$sql.= " WHERE rowid = ".$_GET['id'];
+        $sql.= " AND email = '".$_GET['mail']."'";
         
         if (!$db->query($sql) )
             $error++;
         
         $sql = "UPDATE ".MAIN_DB_PREFIX."socpeople SET";
 	$sql.= " newsletter=0";
-	$sql.= " WHERE email = '".$_GET['mail']."'";
+	$sql.= " WHERE rowid = ".$_GET['id'];
+        $sql.= " AND email = '".$_GET['mail']."'";
 
 	dol_syslog("Desincription::Update sql=".$sql,LOG_DEBUG);
 	if (!$db->query($sql) )
@@ -121,7 +139,7 @@ require("../../main.inc.php");
                     echo '<p style="color:red">'.$alert.'</p>';
                 }
                
-                print '<form action="desinscription.php?nom='.$nomEts.'&amp;mail='.$mail.'"" method="post" id="formulaire" >';
+                print '<form action="desinscription.php?nom='.$nomEts.'&amp;mail='.$mail.'&amp;id='.$id.'"" method="post" id="formulaire" >';
                     print '<p>Votre email : '.$mail.'</p>';
                     print '<p>';
                     print '</p>';
