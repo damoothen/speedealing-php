@@ -22,8 +22,8 @@
  *       \file       htdocs/comm/mailing/cibles.php
  *       \ingroup    mailing
  *       \brief      Page to define emailing targets
- *       \version    $Id: cibles.php,v 1.76 2011/08/03 00:46:33 eldy Exp $
- *       \author     Patrick Mary.
+ *       \version    $Id: cibles.php,v 1.76 2011/08/03 00:46:33 synry63 Exp $
+ *       
  */
 
 require("../../main.inc.php");

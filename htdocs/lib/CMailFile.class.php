@@ -25,11 +25,11 @@
 /**
  *      \file       htdocs/lib/CMailFile.class.php
  *      \brief      File of class to send emails (with attachments or not)
- *		\version    $Id: CMailFile.class.php,v 1.148 2011/07/31 23:25:43 eldy Exp $
+ *		\version    $Id: CMailFile.class.php,v 1.148 2011/07/31 23:25:43 synry63 Exp $
  *      \author     Dan Potter.
  *      \author	    Eric Seigne
  *      \author	    Laurent Destailleur.
- *      \author     Patrick Mary.
+ *      
  */
 
 /**
