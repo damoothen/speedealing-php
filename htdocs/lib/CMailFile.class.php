@@ -3,6 +3,7 @@
  * Copyright (C) 2003      Jean-Louis Bergamo   <jlb@j1b.org>
  * Copyright (C) 2004-2009 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2010-2011 Patrick Mary        <laube@hotmail.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +29,7 @@
  *      \author     Dan Potter.
  *      \author	    Eric Seigne
  *      \author	    Laurent Destailleur.
+ *      \author     Patrick Mary.
  */
 
 /**
@@ -55,7 +57,7 @@ class CMailFile
 	var $error='';
 
 	var $smtps;			// Contains SMTPs object (if this method is used)
-
+        
 	//CSS
 	var $css;
 	//! Defined css style for body background
@@ -78,7 +80,7 @@ class CMailFile
                            'tif'  => 'image/tiff',
                            'tiff' => 'image/tiff');
 
-
+        
 	/**
 	 *	CMailFile
 	 *
@@ -98,9 +100,10 @@ class CMailFile
 	 */
 	function CMailFile($subject,$to,$from,$msg,
 	$filename_list=array(),$mimetype_list=array(),$mimefilename_list=array(),
-	$addr_cc="",$addr_bcc="",$deliveryreceipt=0,$msgishtml=0,$errors_to='',$css='')
+	$addr_cc="",$addr_bcc="",$deliveryreceipt=0,$msgishtml=0,$errors_to='',$css='',$campagne=null)
 	{
-		global $conf;
+            
+            global $conf;
 
 		// We define end of line (RFC 822bis section 2.3)
 		$this->eol="\r\n";
@@ -242,7 +245,11 @@ class CMailFile
 			$smtps->setSubject($this->encodetorfc2822($subject));
 			$smtps->setTO($this->getValidAddress($to,0,1));
 			$smtps->setFrom($this->getValidAddress($from,0,1));
-
+                        
+                        // add custum header X-campaign for mailjet
+                        if($conf->mailjet->enabled){
+                            $smtps->setXheader("X-Mailjet-Campaign: ".$campagne); 
+                        }
 			if (! empty($this->html))
 			{
 				if (!empty($css))
@@ -322,17 +329,19 @@ class CMailFile
 				{
 					if (empty($this->addr_from)) $this->addr_from = 'robot@mydomain.com';
 					@ini_set('sendmail_from',$this->getValidAddress($this->addr_from,2));
+					
 				}
 
 				// Forcage parametres
 				if (! empty($conf->global->MAIN_MAIL_SMTP_SERVER)) ini_set('SMTP',$conf->global->MAIN_MAIL_SMTP_SERVER);
 				if (! empty($conf->global->MAIN_MAIL_SMTP_PORT))   ini_set('smtp_port',$conf->global->MAIN_MAIL_SMTP_PORT);
-
+				
 				$dest=$this->getValidAddress($this->addr_to,2);
+				
 				if (! $dest)
 				{
 					$this->error="Failed to send mail with php mail to HOST=".ini_get('SMTP').", PORT=".ini_get('smtp_port')."<br>Recipient address '$dest' invalid";
-					dol_syslog("CMailFile::sendfile: mail end error=".$this->error, LOG_ERR);
+					dol_syslog("CMailFile::sendfile: mail end error=".$this->error, LOG_ERROR);
 				}
 				else
 				{
@@ -361,7 +370,7 @@ class CMailFile
 					if (! $res)
 					{
 						$this->error="Failed to send mail with php mail to HOST=".ini_get('SMTP').", PORT=".ini_get('smtp_port')."<br>Check your server logs and your firewalls setup";
-						dol_syslog("CMailFile::sendfile: mail end error=".$this->error, LOG_ERR);
+						dol_syslog("CMailFile::sendfile: mail end error=".$this->error, LOG_ERROR);
 					}
 					else
 					{
@@ -603,7 +612,7 @@ class CMailFile
 
 		$out.= "Content-Type: multipart/mixed; boundary=\"".$this->mixed_boundary."\"".$this->eol;
 		$out.= "Content-Transfer-Encoding: 8bit".$this->eol;
-
+                
 		dol_syslog("CMailFile::write_smtpheaders smtp_header=\n".$out);
 		return $out;
 	}

@@ -79,7 +79,9 @@ class DolibarrModules
         $this->db->begin();
 
         // Insert line in module table
-        if (! $err) $err+=$this->_dbactive();
+        if (! $err){
+            $err+=$this->_dbactive();
+        }
 
         // Insert activation module constant
         if (! $err) $err+=$this->_active();
