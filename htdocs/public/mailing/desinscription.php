@@ -1,6 +1,27 @@
-<!--  Copyright (C) 2011 Frédérique GUYOT       -->
-<!--  Copyright (C) 2011 Hervé Prot             -->
 <?php
+/* Copyright (C) 2011 Frédérique GUYOT
+ * Copyright (C) 2011 Herve Prot     <herve.prot@symeos.com>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ *       \file       htdocs/public/mailing/desincription.php
+ *       \ingroup    mailing
+ *       \brief      Fiche mailing, desincription
+ *       \version    $Id: fiche.php,v 1.123 2011/11/25 00:46:33 hepr Exp $
+ */
 
 define("NOLOGIN",1);		// This means this output page does not require to be logged.
 define("NOCSRFCHECK",1);	// We accept to go on this page from external web site.
@@ -40,7 +61,7 @@ require("../../main.inc.php");
 	{
 		echo '<p>Variable mail non d&eacute;termin&eacute;e</p>';
 	}
-        // vérification du champ mail passé en paramétre dans l'url (email de l'entreprise)
+        // vérification du champ id passé en paramétre dans l'url (email de l'entreprise)
 	if(isset($_GET['id']))		
 	{
 		if (is_string($_GET['id']))	
@@ -81,7 +102,7 @@ require("../../main.inc.php");
         
         if($error==0)
         {
-                $alert = 'D&eacutesinscription effectu&eacutee; avec succ&egrave;s';
+                $alert = 'D&eacutesinscription effectu&eacute;e avec succ&egrave;s';
                 
                 /* On détruit la variable $_POST */
                 unset($_POST);

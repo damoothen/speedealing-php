@@ -101,6 +101,7 @@ class mailing_thirdparties_services_expired extends MailingTargets
 		$sql.= " from ".MAIN_DB_PREFIX."societe as s, ".MAIN_DB_PREFIX."contrat as c,";
 		$sql.= " ".MAIN_DB_PREFIX."contratdet as cd, ".MAIN_DB_PREFIX."product as p";
 		$sql.= " where s.rowid = c.fk_soc AND cd.fk_contrat = c.rowid AND s.email != ''";
+                $sql.= " AND s.newsletter != 0";      // Not unsubcribe
 		$sql.= " AND cd.statut= 4 AND cd.fk_product=p.rowid AND p.ref = '".$product."'";
 		$sql.= " AND cd.date_fin_validite < '".$this->db->idate($now)."'";
 		$sql.= " ORDER BY s.email";
@@ -185,6 +186,7 @@ class mailing_thirdparties_services_expired extends MailingTargets
 		$sql.= " from ".MAIN_DB_PREFIX."societe as s, ".MAIN_DB_PREFIX."contrat as c,";
 		$sql.= " ".MAIN_DB_PREFIX."contratdet as cd, ".MAIN_DB_PREFIX."product as p";
 		$sql.= " where s.rowid = c.fk_soc AND cd.fk_contrat = c.rowid AND s.email != ''";
+                $sql.= " AND s.newsletter != 0";      // Not unsubcribe
 		$sql.= " AND cd.statut= 4 AND cd.fk_product=p.rowid";
                 $sql.= " AND s.fk_stcomm >= 0";
 		$sql.= " AND p.ref in ('".join("','",$this->arrayofproducts)."')";
