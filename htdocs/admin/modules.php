@@ -442,7 +442,6 @@ if ($mode != 4)
                	print '<a href="modules.php?id='.$objMod->numero.'&amp;action=set&amp;value=' . $modName . '&amp;mode=' . $mode . '">';
                	print img_picto($langs->trans("Disabled"),'switch_off');
                	print "</a></td>\n  <td>&nbsp;</td>\n";
-                if($modName=='modMailJet') dolibarr_set_const($db,'mailjet', 0);
             }
 
             print "</tr>\n";
