@@ -88,8 +88,6 @@ require("../../main.inc.php");
 	$sql.= " WHERE rowid = ".$_GET['id'];
         $sql.= " AND email = '".$_GET['mail']."'";
         
-        print $sql;exit;
-        
         if (!$db->query($sql) )
             $error++;
         
