@@ -20,7 +20,7 @@
  *		\ingroup    core
  *		\brief      Get the json objet for triggers.
  *		\author	    Patrick Mary
- *		\version    $Id: evenements.php,v 1 2011/11/27 13:44:21 eldy Exp $
+ *		\version    $Id: evenements.php,v 1 2011/11/27 13:44:21 synry63 Exp $
  */
 
 define("NOLOGIN",1);
