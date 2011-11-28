@@ -489,6 +489,11 @@ if ($mil->fetch($_REQUEST["id"]) >= 0)
 					if ($obj->statut==-1) print $langs->trans("MailingStatusError").' '.img_error();
 					if ($obj->statut==1) print $langs->trans("MailingStatusSent").' '.img_picto($langs->trans("MailingStatusSent"),'statut6');
 					if ($obj->statut==4) print $langs->trans("Open").' '.img_picto($langs->trans("Open"),'statut6');
+                                        if ($obj->statut==5) print $langs->trans("Click").' '.img_picto($langs->trans("Click"),'statut6');
+                                        if ($obj->statut==6) print $langs->trans("Spam").' '.img_error();
+                                        if ($obj->statut==7) print $langs->trans("Bounce").' '.img_error();
+                                        if ($obj->statut==8) print $langs->trans("Blocked").' '.img_error();
+                                      
                                         print '</td>';
 				}
 				print '</tr>';
