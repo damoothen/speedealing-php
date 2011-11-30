@@ -84,7 +84,7 @@ class MouvementStock
 			$sql.= " ".$user->id.",";
 			$sql.= " '".$this->db->escape($label)."',";
 			$sql.= " '".price2num($price)."',".(empty($fk_expedition)?"''":$fk_expedition).")";
-
+                        
 			dol_syslog("MouvementStock::_create sql=".$sql, LOG_DEBUG);
 			$resql = $this->db->query($sql);
 			if ($resql)
@@ -97,7 +97,6 @@ class MouvementStock
 				dol_syslog("MouvementStock::_create ".$this->error, LOG_ERR);
 				$error = -1;
 			}
-
 			// Define current values for qty and pmp
 			$oldqty=$product->stock_reel;
 			$oldqtywarehouse=0;
