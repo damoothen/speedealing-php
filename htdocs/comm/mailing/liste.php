@@ -1,6 +1,7 @@
 <?php
 /* Copyright (C) 2005-2009 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2010 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2010-2011 Patrick Mary        <laube@hotmail.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,14 +21,13 @@
  *       \file       htdocs/comm/mailing/liste.php
  *       \ingroup    mailing
  *       \brief      Liste des mailings
- *       \version    $Id: liste.php,v 1.23 2011/08/03 00:46:33 eldy Exp $
+ *       \version    $Id: liste.php,v 1.23 2011/08/03 00:46:33 synry63 Exp $
  */
 
 require("../../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/comm/mailing/class/mailing.class.php");
 
 $langs->load("mails");
-
 if (!$user->rights->mailing->lire) accessforbidden();
 
 // Securite acces client
@@ -90,7 +90,6 @@ else
 }
 
 dol_syslog("sql=".$sql);
-//print $sql;
 $result = $db->query($sql);
 if ($result)
 {
@@ -99,7 +98,7 @@ if ($result)
 	$title=$langs->trans("ListOfEMailings");
 	if ($filteremail) $title.=' ('.$langs->trans("SentTo",$filteremail).')';
 	print_barre_liste($title, $page, "liste.php","",$sortfield,$sortorder,"",$num);
-
+        
 	$i = 0;
 
 	$param = "&amp;sall=".$sall;
@@ -108,13 +107,19 @@ if ($result)
 	print '<table class="liste">';
 	print '<tr class="liste_titre">';
 	print_liste_field_titre($langs->trans("Ref"),"liste.php","m.rowid",$param,"","",$sortfield,$sortorder);
-	print_liste_field_titre($langs->trans("Title"),"liste.php","m.titre",$param,"","",$sortfield,$sortorder);
+        print_liste_field_titre($langs->trans("Title"),"liste.php","m.titre",$param,"","",$sortfield,$sortorder);
 	print_liste_field_titre($langs->trans("DateCreation"),"liste.php","m.date_creat",$param,"",'align="center"',$sortfield,$sortorder);
 	if (! $filteremail) print_liste_field_titre($langs->trans("NbOfEMails"),"liste.php","m.nbemail",$param,"",'align="center"',$sortfield,$sortorder);
 	if (! $filteremail) print_liste_field_titre($langs->trans("DateLastSend"),"liste.php","m.date_envoi",$param,"",'align="center"',$sortfield,$sortorder);
 	else print_liste_field_titre($langs->trans("DateSending"),"liste.php","mc.date_envoi",$param,"",'align="center"',$sortfield,$sortorder);
 	print_liste_field_titre($langs->trans("Status"),"liste.php",($filteremail?"mc.statut":"m.statut"),$param,"",'align="right"',$sortfield,$sortorder);
-	print "</tr>\n";
+	//add column title for open/clic
+        if($conf->mailjet->enabled){
+            $langs->load("mailjet@mailjet"); 
+            print_liste_field_titre($langs->trans("EMails Open"));
+            print_liste_field_titre($langs->trans("Emails Clicked"));  
+        }
+        print "</tr>\n";
 
 	print '<form method="get" action="'.$_SERVER["PHP_SELF"].'">';
 	print '<tr class="liste_titre">';
@@ -136,9 +141,9 @@ if ($result)
 	$var=True;
 
 	$email=new Mailing($db);
-
+        
 	while ($i < min($num,$conf->liste_limit))
-	{
+	{       
 		$obj = $db->fetch_object($result);
 
 		$var=!$var;
@@ -151,6 +156,7 @@ if ($result)
 		print '<td align="center">';
 		print dol_print_date($db->jdate($obj->datec),'day');
 		print '</td>';
+                
 		// Nb of email
 		if (! $filteremail)
 		{
@@ -170,18 +176,42 @@ if ($result)
 		// Last send
 		print '<td align="center" nowrap="nowrap">'.dol_print_date($db->jdate($obj->date_envoi),'day').'</td>';
 		print '</td>';
-		// Status
+                
+		// Status 
 		print '<td align="right" nowrap="nowrap">';
 		if ($filteremail)
 		{
 			if ($obj->sendstatut==-1) print $langs->trans("MailingStatusError").' '.img_error();
 			if ($obj->sendstatut==1) print $langs->trans("MailingStatusSent").' '.img_picto($langs->trans("MailingStatusSent"),'statut6');
-		}
+                        
+                        
+                }
 		else
 		{
 			print $email->LibStatut($obj->statut,5);
 		}
+
 		print '</td>';
+                //view number of mails, open and click
+                if($conf->mailjet->enabled){
+                    //open
+                    $requete = "SELECT * FROM llx_mailing_cibles WHERE fk_mailing=".$obj->rowid;
+                    $requete.= " AND statut=4";
+                    $dataRequete=$db->query($requete);
+                    $nbMailOpen=$db->num_rows($dataRequete);
+                    print '<td align="center">';
+                    print $nbMailOpen;
+                    print '</td>';
+                    
+                    //click
+                    $requete = "SELECT * FROM llx_mailing_cibles WHERE fk_mailing=".$obj->rowid;
+                    $requete.= " AND statut=5";
+                    $dataRequete=$db->query($requete);
+                    $nbMailClicked=$db->num_rows($dataRequete);
+                    print '<td align="center">';
+                    print $nbMailClicked;
+                    print '</td>';
+                }
 		print "</tr>\n";
 		$i++;
 	}

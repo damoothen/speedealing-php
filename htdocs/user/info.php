@@ -30,7 +30,7 @@ require_once(DOL_DOCUMENT_ROOT."/user/class/user.class.php");
 $langs->load("users");
 
 // Security check
-$id = GETPOST('id','int');
+$id = isset($_GET["id"])?$_GET["id"]:'';
 $fuser = new User($db);
 $fuser->fetch($id);
 

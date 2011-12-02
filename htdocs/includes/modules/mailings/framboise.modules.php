@@ -66,7 +66,7 @@ class mailing_framboise extends MailingTargets
 		if ($_POST['filter']) $sql.= " LEFT JOIN llx_categorie_member ON llx_categorie_member.fk_member=s.rowid";
 		if ($_POST['filter']) $sql.= " LEFT JOIN llx_categorie ON llx_categorie.rowid = llx_categorie_member.fk_categorie";
 		$sql.= " WHERE s.email != ''";
-                $sql.= " AND s.newsletter != 0";      // Not unsubcribe
+                $sql.= " AND s.newsletter = 1";      // Not unsubcribe
 		$sql.= " AND s.entity = ".$conf->entity;
 		if ($_POST['filter']) $sql.= " AND llx_categorie.rowid='".$_POST['filter']."'";
 		$sql.= " ORDER BY s.email";
@@ -145,7 +145,7 @@ class mailing_framboise extends MailingTargets
 		$sql = "SELECT count(distinct(s.email)) as nb";
 		$sql.= " FROM ".MAIN_DB_PREFIX."adherent as s";
 		$sql.= " WHERE s.email != ''";
-                $sql.= " AND s.newsletter != 0";      // Not unsubcribe
+                $sql.= " AND s.newsletter = 1";      // Not unsubcribe
 		$sql.= " AND s.entity = ".$conf->entity;
 
 		// La requete doit retourner un champ "nb" pour etre comprise

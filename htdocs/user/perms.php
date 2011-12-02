@@ -32,9 +32,8 @@ $langs->load("users");
 $langs->load("admin");
 
 $module=isset($_GET["module"])?$_GET["module"]:$_POST["module"];
-$id = GETPOST('id','int');
 
-if (! $id) accessforbidden();
+if (! isset($_GET["id"]) || empty($_GET["id"])) accessforbidden();
 
 // Defini si peux lire les permissions
 $canreaduser=($user->admin || $user->rights->user->user->lire);
@@ -44,7 +43,7 @@ $caneditperms=($user->admin || $user->rights->user->user->creer);
 if (! empty($conf->global->MAIN_USE_ADVANCED_PERMS))
 {
 	$canreaduser=($user->admin || ($user->rights->user->user->lire && $user->rights->user->user_advance->readperms));
-	$caneditselfperms=($user->id == $id && $user->rights->user->self_advance->writeperms);
+	$caneditselfperms=($user->id == $_GET["id"] && $user->rights->user->self_advance->writeperms);
 	$caneditperms = '('.$caneditperms.' || '.$caneditselfperms.')';
 }
 
@@ -52,12 +51,12 @@ if (! empty($conf->global->MAIN_USE_ADVANCED_PERMS))
 $socid=0;
 if ($user->societe_id > 0) $socid = $user->societe_id;
 $feature2 = (($socid && $user->rights->user->self->creer)?'':'user');
-if ($user->id == $id)	// A user can always read its own card
+if ($user->id == $_GET["id"])	// A user can always read its own card
 {
 	$feature2='';
 	$canreaduser=1;
 }
-$result = restrictedArea($user, 'user', $id, '', $feature2);
+$result = restrictedArea($user, 'user', $_GET["id"], '', $feature2);
 if ($user->id <> $_REQUEST["id"] && ! $canreaduser) accessforbidden();
 
 
@@ -67,11 +66,11 @@ if ($user->id <> $_REQUEST["id"] && ! $canreaduser) accessforbidden();
 if ($_GET["action"] == 'addrights' && $caneditperms)
 {
     $edituser = new User($db);
-	$edituser->fetch($id);
+	$edituser->fetch($_GET["id"]);
     $edituser->addrights($_GET["rights"],$module);
 
 	// Si on a touche a ses propres droits, on recharge
-	if ($id == $user->id)
+	if ($_GET["id"] == $user->id)
 	{
 		$user->clearrights();
 		$user->getrights();
@@ -81,11 +80,11 @@ if ($_GET["action"] == 'addrights' && $caneditperms)
 if ($_GET["action"] == 'delrights' && $caneditperms)
 {
     $edituser = new User($db);
-	$edituser->fetch($id);
+	$edituser->fetch($_GET["id"]);
     $edituser->delrights($_GET["rights"],$module);
 
 	// Si on a touche a ses propres droits, on recharge
-	if ($id == $user->id)
+	if ($_GET["id"] == $user->id)
 	{
 		$user->clearrights();
 		$user->getrights();
@@ -105,7 +104,7 @@ llxHeader('',$langs->trans("Permissions"));
 $form=new Form($db);
 
 $fuser = new User($db);
-$fuser->fetch($id);
+$fuser->fetch($_GET["id"]);
 $fuser->getrights();
 
 /*
@@ -126,9 +125,9 @@ $modulesdir = array();
 foreach ($conf->file->dol_document_root as $type => $dirroot)
 {
 	$modulesdir[] = $dirroot . "/includes/modules/";
-
+	
 	if ($type == 'alt')
-	{
+	{	
 		$handle=@opendir($dirroot);
 		if (is_resource($handle))
 		{

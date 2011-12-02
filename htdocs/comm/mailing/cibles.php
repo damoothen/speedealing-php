@@ -2,6 +2,7 @@
 /* Copyright (C) 2004      Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2005-2010 Laurent Destailleur  <eldy@uers.sourceforge.net>
  * Copyright (C) 2005-2010 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2010-2011 Patrick Mary        <laube@hotmail.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +22,8 @@
  *       \file       htdocs/comm/mailing/cibles.php
  *       \ingroup    mailing
  *       \brief      Page to define emailing targets
- *       \version    $Id: cibles.php,v 1.76 2011/08/03 00:46:33 eldy Exp $
+ *       \version    $Id: cibles.php,v 1.76 2011/08/03 00:46:33 synry63 Exp $
+ *       
  */
 
 require("../../main.inc.php");
@@ -482,11 +484,19 @@ if ($mil->fetch($_REQUEST["id"]) >= 0)
 				}
 				else
 				{
+                                        $langs->load("mailjet@mailjet"); // for translate status (open,click,bounce,spam,blocked)
 					print '<td align="center">'.$obj->date_envoi.'</td>';
 					print '<td align="right" nowrap="nowrap">';
 					if ($obj->statut==-1) print $langs->trans("MailingStatusError").' '.img_error();
 					if ($obj->statut==1) print $langs->trans("MailingStatusSent").' '.img_picto($langs->trans("MailingStatusSent"),'statut6');
-					print '</td>';
+                                        if ($obj->statut==3) print $langs->trans("MailingDesincription").' '.img_picto($langs->trans("MailingDesinscription"),'statut2');
+					if ($obj->statut==4) print $langs->trans("Open").' '.img_picto($langs->trans("Open"),'statut7');
+                                        if ($obj->statut==5) print $langs->trans("Click").' '.img_picto($langs->trans("Click"),'statut8');
+                                        if ($obj->statut==6) print $langs->trans("Spam").' '.img_picto($langs->trans("Spam"),'statut5');
+                                        if ($obj->statut==7) print $langs->trans("Bounce").' '.img_picto($langs->trans("Click"),'statut3');
+                                        if ($obj->statut==8) print $langs->trans("Blocked").' '.img_picto($langs->trans("Click"),'statut9');
+                                      
+                                        print '</td>';
 				}
 				print '</tr>';
 
