@@ -53,7 +53,7 @@ complete_substitutions_array($substitutionarrayfortest, $langs);
 if (isset($_POST["action"]) && $_POST["action"] == 'update' && empty($_POST["cancel"]))
 {
 	dolibarr_set_const($db, "MAIN_DISABLE_ALL_MAILS",   $_POST["MAIN_DISABLE_ALL_MAILS"],'chaine',0,'',$conf->entity);
-
+        //dolibarr_ge
 	dolibarr_set_const($db, "MAIN_MAIL_SENDMODE",       $_POST["MAIN_MAIL_SENDMODE"],'chaine',0,'',0);
 	dolibarr_set_const($db, "MAIN_MAIL_SMTP_PORT",      $_POST["MAIN_MAIL_SMTP_PORT"],'chaine',0,'',0);
 	dolibarr_set_const($db, "MAIN_MAIL_SMTP_SERVER",    $_POST["MAIN_MAIL_SMTP_SERVER"],'chaine',0,'',0);

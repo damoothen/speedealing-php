@@ -93,10 +93,14 @@ function ajax_autocompleter($selected='',$htmlname,$url,$option='',$minLength=2,
  */
 function ajax_multiautocompleter($htmlname,$fields,$url,$option='',$minLength=2,$autoselect=0)
 {
-	$script = '<!-- Autocomplete -->'."\n";
+	$script='';
+
+	$fields = php2js($fields);
+
+	$script.= '<!-- Autocomplete -->'."\n";
 	$script.= '<script type="text/javascript">';
 	$script.= 'jQuery(document).ready(function() {
-					var fields = '.json_encode($fields).';
+					var fields = '.$fields.';
 					var length = fields.length;
 					var autoselect = '.$autoselect.';
 					//alert(fields + " " + length);
@@ -272,5 +276,34 @@ function ajax_constantonoff($code,$input=array())
 
 	return $out;
 }
+
+/**
+ * Convert a PHP array into a js array
+ * @param       $var
+ * @return      String with js array or false if error
+ */
+function php2js($var)
+{
+    if (is_array($var)) {
+        $res = "[";
+        $array = array();
+        foreach ($var as $a_var) {
+            $array[] = php2js($a_var);
+        }
+        return "[" . join(",", $array) . "]";
+    }
+    elseif (is_bool($var)) {
+        return $var ? "true" : "false";
+    }
+    elseif (is_int($var) || is_integer($var) || is_double($var) || is_float($var)) {
+        return $var;
+    }
+    elseif (is_string($var)) {
+        return "\"" . addslashes(stripslashes($var)) . "\"";
+    }
+    // autres cas: objets, on ne les gère pas
+    return false;
+}
+
 
 ?>

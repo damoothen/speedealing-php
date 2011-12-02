@@ -1,6 +1,7 @@
 <?PHP
 /* Copyright (C) 2004      Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2005-2011 Laurent Destailleur  <eldy@uers.sourceforge.net>
+ * Copyright (C) 2010-2011 Patrick Mary  <laube@hotmail.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +21,8 @@
  *       \file       htdocs/comm/mailing/fiche.php
  *       \ingroup    mailing
  *       \brief      Fiche mailing, onglet general
- *       \version    $Id: fiche.php,v 1.123 2011/08/03 00:46:33 eldy Exp $
+ *       \version    $Id: fiche.php,v 1.123 2011/08/03 00:46:33 synry63 Exp $
+ *       
  */
 
 require("../../main.inc.php");
@@ -30,7 +32,7 @@ require_once(DOL_DOCUMENT_ROOT."/lib/CMailFile.class.php");
 require_once(DOL_DOCUMENT_ROOT."/lib/functions2.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/comm/mailing/class/mailing.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formother.class.php");
-
+                        
 $langs->load("mails");
 
 if (! $user->rights->mailing->lire || $user->societe_id > 0)
@@ -211,9 +213,10 @@ if ($_REQUEST["action"] == 'sendallconfirmed' && $_REQUEST['confirm'] == 'yes')
 					}
 
 					// Fabrication du mail
+                                        
 					$mail = new CMailFile($newsubject, $sendto, $from, $newmessage,
 											$arr_file, $arr_mime, $arr_name,
-		            						'', '', 0, $msgishtml, $errorsto, $arr_css);
+		            						'', '', 0, $msgishtml, $errorsto, $arr_css,$_GET['id']);
 
 					if ($mail->error)
 					{
@@ -229,6 +232,7 @@ if ($_REQUEST["action"] == 'sendallconfirmed' && $_REQUEST['confirm'] == 'yes')
 					if ($res)
 					{
 						$res=$mail->sendfile();
+                                                
 					}
 
 					if ($res)
@@ -245,7 +249,7 @@ if ($_REQUEST["action"] == 'sendallconfirmed' && $_REQUEST['confirm'] == 'yes')
 						{
 							dol_print_error($db);
 						}
-					}
+                                 	}
 					else
 					{
 						// Mail failed
@@ -264,6 +268,8 @@ if ($_REQUEST["action"] == 'sendallconfirmed' && $_REQUEST['confirm'] == 'yes')
 
 					$i++;
 				}
+                              
+                                  
 			}
 
 			// Loop finished, set global statut of mail
@@ -296,12 +302,12 @@ if ($_REQUEST["action"] == 'sendallconfirmed' && $_REQUEST['confirm'] == 'yes')
 	}
 }
 
-// Action send test emailing
+// Action send test emailing 
 if ($_POST["action"] == 'send' && empty($_POST["cancel"]))
 {
 	$mil = new Mailing($db);
 	$result=$mil->fetch($_POST["mailid"]);
-
+        
 	$error=0;
 
 	$upload_dir = $conf->mailing->dir_output . "/" . get_exdir($mil->id,2,0,1);
@@ -315,7 +321,9 @@ if ($_POST["action"] == 'send' && empty($_POST["cancel"]))
 
 	if (! $error)
 	{
-		// Le message est-il en html
+          
+		
+	// Le message est-il en html
 		$msgishtml=-1;	// Inconnu par defaut
 		if (preg_match('/[\s\t]*<html>/i',$message)) $msgishtml=1;
 
@@ -359,7 +367,9 @@ if ($_POST["action"] == 'send' && empty($_POST["cancel"]))
 
 		$_GET["action"]='';
 		$_GET["id"]=$mil->id;
-	}
+	
+        }
+      
 }
 
 // Action add emailing
@@ -861,6 +871,7 @@ else
 
 			// Affichage formulaire de TEST
 			if ($_GET["action"] == 'test')
+                         
 			{
 				print_titre($langs->trans("TestMailing"));
 
@@ -1066,6 +1077,71 @@ else
 	}
 
 }
+
+
+//mailjet statistic array
+if($conf->mailjet->enabled && isset ($_GET['id'])){
+    // verif if campaign sent
+    $sql = "SELECT * FROM llx_mailing WHERE rowid =".$_GET['id'];
+    $sql.=" AND (statut =3 OR statut =2)";
+    $result=$db->query($sql);
+    if($db->num_rows($result)==1){
+    $langs->load("mailjet@mailjet");    
+        
+    $mailsType = array('sent'=>0,'open'=>0,'click'=>0,'error'=>0);    
+    echo '<link rel="stylesheet" href="../../custom/mailjet/css/mailjettab.css" />';
+    //get addressees
+    $sql = "SELECT * FROM llx_mailing_cibles WHERE fk_mailing =".$_GET['id'];
+    $result=$db->query($sql); 
+    $destinataires = $db->num_rows($result);
+    //get mails of the status "sent"
+    $sql = "SELECT * FROM llx_mailing_cibles WHERE fk_mailing =".$_GET['id'];
+    $sql.=" AND statut !=0";
+    $result=$db->query($sql); 
+    $num = $db->num_rows($result);
+    $mailsType['sent'] = $num;
+    //get mails of the status "open"   
+    $sql = "SELECT * FROM llx_mailing_cibles WHERE fk_mailing =".$_GET['id'];
+    $sql.=" AND statut = 4";
+    $result=$db->query($sql); 
+    $num = $db->num_rows($result);
+    $mailsType['open'] = $num;
+    //get mails of the status "click"
+    $sql = "SELECT * FROM llx_mailing_cibles WHERE fk_mailing =".$_GET['id'];
+    $sql.=" AND statut = 5";
+    $result=$db->query($sql); 
+    $num = $db->num_rows($result);
+    $mailsType['click'] = $num;
+    //get mails of the status "spam,error,bounce"
+    $sql = "SELECT * FROM llx_mailing_cibles WHERE fk_mailing =".$_GET['id'];
+    $sql.=" AND statut != 1 AND statut != 4 AND statut != 5 AND statut !=0";
+    $result=$db->query($sql); 
+    $num = $db->num_rows($result);
+    $mailsType['error'] =$num;
+        
+    //view statistic status
+    print '<table class="statistique" style="border-collapse:collapse;">';
+        print'<caption>'.$langs->trans("Emails statistics").'</caption>';
+        print '<tr>';
+            print '<th>'.$langs->trans("Sent").'</th><th>'.$langs->trans("Open").'</th><th>'.$langs->trans("Click").'</th><th>'.$langs->trans("Error").'</th>';           
+        print '</tr>';
+        print '<tr>';
+            print '<td>'.$mailsType['sent'].'</td>';
+            print '<td>'.$mailsType['open'].'</td>';
+            print '<td>'.$mailsType['click'].'</td>';
+            print '<td>'.$mailsType['error'].'</td>';   
+        print '</tr>';
+        print '<tr>';
+            print '<td>'.($mailsType['sent']*100/$destinataires).' %'.'</td>';
+            print '<td>'.($mailsType['open']*100/$mailsType['sent']).' %'.'</td>';
+            print '<td>'.($mailsType['click']*100/$mailsType['sent']).' %'.'</td>';
+            print '<td>'.($mailsType['error']*100/$mailsType['sent']).' %'.'</td>';   
+        print '</tr>';
+         
+    print '</table>';
+  }
+}
+
 
 $db->close();
 

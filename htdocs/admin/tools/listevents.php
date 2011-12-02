@@ -1,5 +1,5 @@
 <?php
-/* Copyright (C) 2004-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
+/* Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -88,12 +88,13 @@ if ($_REQUEST['action'] == 'confirm_purge' && $_REQUEST['confirm'] == 'yes' && $
 	$result=$securityevent->create($user);
 	if ($result > 0)
 	{
-		dol_syslog($text, LOG_WARNING);
+	    $db->commit();
+	    dol_syslog($text, LOG_WARNING);
 	}
 	else
 	{
 		$error++;
-		dol_syslog($securityevent->error, LOG_ERR);
+		dol_syslog($securityevent->error, LOG_ERROR);
 		$db->rolback();
 	}
 }
