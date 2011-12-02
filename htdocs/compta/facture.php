@@ -195,6 +195,7 @@ if ($action == 'confirm_deleteline' && $confirm == 'yes')
                 $outputlangs = new Translate("",$conf);
                 $outputlangs->setDefaultLang($newlang);
             }
+			$object->fetch($id);
             $result=facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'));
             if ($result > 0)
             {
@@ -356,6 +357,7 @@ if ($action == 'confirm_valid' && $confirm == 'yes' && $user->rights->facture->v
             $outputlangs = new Translate("",$conf);
             $outputlangs->setDefaultLang($newlang);
         }
+		$object->fetch($id);
         facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'));
     }
     else
@@ -413,6 +415,7 @@ if ($action == 'modif' && ((empty($conf->global->MAIN_USE_ADVANCED_PERMS) && $us
             $outputlangs = new Translate("",$conf);
             $outputlangs->setDefaultLang($newlang);
         }
+		$object->fetch($id);
         facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'));
     }
 }
@@ -1067,6 +1070,7 @@ if (($action == 'addline' || $action == 'addline_predef') && $user->rights->fact
             $outputlangs = new Translate("",$conf);
             $outputlangs->setDefaultLang($newlang);
         }
+		$object->fetch($id);
         facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'));
 
         unset($_POST['qty']);
@@ -1166,6 +1170,7 @@ if ($action == 'updateligne' && $user->rights->facture->creer && $_POST['save'] 
             $outputlangs = new Translate("",$conf);
             $outputlangs->setDefaultLang($newlang);
         }
+		$object->fetch($id);
         facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'));
     }
 }
