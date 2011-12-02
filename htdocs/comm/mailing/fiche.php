@@ -43,6 +43,7 @@ $message = '';
 // Tableau des substitutions possibles
 $substitutionarray=array(
 '__ID__' => 'IdRecord',
+'__CAMPAGNEID__' => 'IdCampagne',
 '__EMAIL__' => 'EMail',
 '__LASTNAME__' => 'Lastname',
 '__FIRSTNAME__' => 'Firstname',
@@ -54,6 +55,7 @@ $substitutionarray=array(
 );
 $substitutionarrayfortest=array(
 '__ID__' => 'TESTIdRecord',
+'__CAMPAGNEID' => 'TESTIdCampagne',
 '__EMAIL__' => 'TESTEMail',
 '__LASTNAME__' => 'TESTLastname',
 '__FIRSTNAME__' => 'TESTFirstname',
@@ -175,12 +177,13 @@ if ($_REQUEST["action"] == 'sendallconfirmed' && $_REQUEST['confirm'] == 'yes')
 					// Make substitutions on topic and body. From (AA=YY;BB=CC;...) we keep YY, CC, ...
 					$other=explode(';',$obj->other);
 					$tmpfield=explode('=',$other[0],2); $other1=(isset($tmpfield[1])?$tmpfield[1]:$tmpfield[0]);
-                    $tmpfield=explode('=',$other[1],2); $other2=(isset($tmpfield[1])?$tmpfield[1]:$tmpfield[0]);
-                    $tmpfield=explode('=',$other[2],2); $other3=(isset($tmpfield[1])?$tmpfield[1]:$tmpfield[0]);
-                    $tmpfield=explode('=',$other[3],2); $other4=(isset($tmpfield[1])?$tmpfield[1]:$tmpfield[0]);
-                    $tmpfield=explode('=',$other[4],2); $other5=(isset($tmpfield[1])?$tmpfield[1]:$tmpfield[0]);
+                                        $tmpfield=explode('=',$other[1],2); $other2=(isset($tmpfield[1])?$tmpfield[1]:$tmpfield[0]);
+                                        $tmpfield=explode('=',$other[2],2); $other3=(isset($tmpfield[1])?$tmpfield[1]:$tmpfield[0]);
+                                        $tmpfield=explode('=',$other[3],2); $other4=(isset($tmpfield[1])?$tmpfield[1]:$tmpfield[0]);
+                                        $tmpfield=explode('=',$other[4],2); $other5=(isset($tmpfield[1])?$tmpfield[1]:$tmpfield[0]);
 					$substitutionarray=array(
 						'__ID__' => $obj->source_id,
+                                                '__CAMPAGNEID__'=> $id,
 						'__EMAIL__' => $obj->email,
 						'__LASTNAME__' => $obj->nom,
 						'__FIRSTNAME__' => $obj->prenom,
@@ -650,7 +653,7 @@ if ($_GET["action"] == 'create')
 	print '<td>';
 	// Editeur wysiwyg
 	require_once(DOL_DOCUMENT_ROOT."/lib/doleditor.class.php");
-        if(empty($_POST['body'])) $body='<br /><br /><br /><font face="Verdana, Helvetica, sans-serif" size="1">Pour ne plus recevoir de mailing, <a href="'.DOL_MAIN_URL_ROOT.'/public/mailing/desinscription?nom='.$conf->global->MAIN_INFO_SOCIETE_NOM.'&mail=__EMAIL__&id=__ID__'.'" target="_blank">désinscrivez vous</a> de la newsletter. (__EMAIL__) </font>';
+        if(empty($_POST['body'])) $body='<br /><br /><br /><font face="Verdana, Helvetica, sans-serif" size="1">Pour ne plus recevoir de mailing, <a href="'.DOL_MAIN_URL_ROOT.'/public/mailing/desinscription?nom='.$conf->global->MAIN_INFO_SOCIETE_NOM.'&mail=__EMAIL__&id=__ID__&rowid=__CAMPAGNEID__'.'" target="_blank">désinscrivez vous</a> de la newsletter. (__EMAIL__) </font>';
         else $body=$_POST['body'];
 	$doleditor=new DolEditor('body',$body,'',320,'dolibarr_mailings','',true,true,$conf->fckeditor->enabled && $conf->global->FCKEDITOR_ENABLE_MAILING,20,70);
 	$doleditor->Create();

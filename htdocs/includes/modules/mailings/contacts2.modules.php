@@ -79,7 +79,7 @@ class mailing_contacts2 extends MailingTargets
     	$sql.= " AND sp.email != ''";  // Note that null != '' is false
     	//$sql.= " AND sp.poste != ''";
     	$sql.= " AND sp.entity = ".$conf->entity;
-        $sql.= " AND sp.newsletter != 0";      // Not unsubcribe
+        $sql.= " AND sp.newsletter = 1";      // Not unsubcribe
         $sql.= " AND s.fk_stcomm >= 0";
     	if ($filtersarray[0]<>'all') $sql.= " AND sp.poste ='".$filtersarray[0]."'";
     	$sql.= " ORDER BY sp.name, sp.firstname";
@@ -160,7 +160,7 @@ class mailing_contacts2 extends MailingTargets
         $sql.= " AND s.entity = ".$conf->entity;
         $sql.= " AND sp.entity = ".$conf->entity;
     	$sql.= " AND sp.email != ''";  // Note that null != '' is false
-        $sql.= " AND sp.newsletter != 0";      // Not unsubcribe
+        $sql.= " AND sp.newsletter = 1";      // Not unsubcribe
     	//$sql.= " AND sp.poste != ''";
     	// La requete doit retourner un champ "nb" pour etre comprise
     	// par parent::getNbOfRecipients
@@ -184,7 +184,7 @@ class mailing_contacts2 extends MailingTargets
         $sql.= " WHERE s.rowid = sp.fk_soc";
         $sql.= " AND sp.entity = ".$conf->entity;
         $sql.= " AND sp.email != ''";    // Note that null != '' is false
-        $sql.= " AND sp.newsletter != 0";      // Not unsubcribe
+        $sql.= " AND sp.newsletter = 1";      // Not unsubcribe
         $sql.= " AND (sp.poste IS NOT NULL AND sp.poste != '')";
         $sql.= " GROUP BY sp.poste";
         $sql.= " ORDER BY sp.poste";

@@ -77,6 +77,22 @@ require("../../main.inc.php");
 	{
 		echo '<p>Variable id non d&eacute;termin&eacute;e</p>';
 	}
+        // vérification du champ id passé en paramétre dans l'url (email de l'entreprise)
+	if(isset($_GET['rowid']))		
+	{
+		if (is_string($_GET['rowid']))	
+		{
+			$rowid = stripslashes(htmlentities($_GET['rowid']));
+		}
+		else
+		{
+			echo '<p>Le rowid n\'est pas de type string</p>';
+		}
+	}
+	else 
+	{
+		echo '<p>Variable rowid non d&eacute;termin&eacute;e</p>';
+	}
 
     /* Si le formulaire est envoyé alors on fait les traitements */
     if (isset($_POST['envoye']))
@@ -84,7 +100,7 @@ require("../../main.inc.php");
         $error=0;
         
         $sql = "UPDATE ".MAIN_DB_PREFIX."societe SET";
-	$sql.= " newsletter=0";
+	$sql.= " newsletter=3";
 	$sql.= " WHERE rowid = ".$_GET['id'];
         $sql.= " AND email = '".$_GET['mail']."'";
         
@@ -92,8 +108,16 @@ require("../../main.inc.php");
             $error++;
         
         $sql = "UPDATE ".MAIN_DB_PREFIX."socpeople SET";
-	$sql.= " newsletter=0";
+	$sql.= " newsletter=3";
 	$sql.= " WHERE rowid = ".$_GET['id'];
+        $sql.= " AND email = '".$_GET['mail']."'";
+        
+        if (!$db->query($sql) )
+            $error++;
+        
+        $sql = "UPDATE ".MAIN_DB_PREFIX."mailing_cibles SET";
+	$sql.= " statut=3";
+	$sql.= " WHERE fk_mailing = ".$_GET['rowid'];
         $sql.= " AND email = '".$_GET['mail']."'";
 
 	dol_syslog("Desincription::Update sql=".$sql,LOG_DEBUG);
@@ -139,7 +163,7 @@ require("../../main.inc.php");
                     echo '<p style="color:red">'.$alert.'</p>';
                 }
                
-                print '<form action="desinscription.php?nom='.$nomEts.'&amp;mail='.$mail.'&amp;id='.$id.'"" method="post" id="formulaire" >';
+                print '<form action="desinscription.php?nom='.$nomEts.'&amp;mail='.$mail.'&amp;id='.$id.'&amp;rowid='.$rowid.'"" method="post" id="formulaire" >';
                     print '<p>Votre email : '.$mail.'</p>';
                     print '<p>';
                     print '</p>';
