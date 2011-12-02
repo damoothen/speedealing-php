@@ -484,6 +484,7 @@ if ($mil->fetch($_REQUEST["id"]) >= 0)
 				}
 				else
 				{
+                                        $langs->load("mailjet@mailjet"); // for translate status (open,click,bounce,spam,blocked)
 					print '<td align="center">'.$obj->date_envoi.'</td>';
 					print '<td align="right" nowrap="nowrap">';
 					if ($obj->statut==-1) print $langs->trans("MailingStatusError").' '.img_error();
