@@ -1091,7 +1091,7 @@ if($conf->mailjet->enabled && isset ($_GET['id'])){
     if($db->num_rows($result)==1){
     $langs->load("mailjet@mailjet");    
         
-    $mailsType = array('sent'=>0,'open'=>0,'click'=>0,'error'=>0);    
+    $mailsType = array('sent'=>0,'open'=>0,'click'=>0,'error'=>0,'desab'=>0,'spam'=>0);    
     echo '<link rel="stylesheet" href="../../custom/mailjet/css/mailjettab.css" />';
     //get addressees
     $sql = "SELECT * FROM llx_mailing_cibles WHERE fk_mailing =".$_GET['id'];
@@ -1115,9 +1115,21 @@ if($conf->mailjet->enabled && isset ($_GET['id'])){
     $result=$db->query($sql); 
     $num = $db->num_rows($result);
     $mailsType['click'] = $num;
-    //get mails of the status "spam,error,bounce"
+    //get mails of the status "spam"
     $sql = "SELECT * FROM llx_mailing_cibles WHERE fk_mailing =".$_GET['id'];
-    $sql.=" AND statut != 1 AND statut != 4 AND statut != 5 AND statut !=0";
+    $sql.=" AND statut = 6";
+    $result=$db->query($sql); 
+    $num = $db->num_rows($result);
+    $mailsType['spam'] = $num;
+    //get mails of the status "desabonnement"
+    $sql = "SELECT * FROM llx_mailing_cibles WHERE fk_mailing =".$_GET['id'];
+    $sql.=" AND statut = 3";
+    $result=$db->query($sql); 
+    $num = $db->num_rows($result);
+    $mailsType['desab'] = $num;
+    //get mails of the status "error,bounce"
+    $sql = "SELECT * FROM llx_mailing_cibles WHERE fk_mailing =".$_GET['id'];
+    $sql.=" AND (statut = 7 OR statut = 8)";
     $result=$db->query($sql); 
     $num = $db->num_rows($result);
     $mailsType['error'] =$num;
@@ -1126,19 +1138,28 @@ if($conf->mailjet->enabled && isset ($_GET['id'])){
     print '<table class="statistique" style="border-collapse:collapse;">';
         print'<caption>'.$langs->trans("Emails statistics").'</caption>';
         print '<tr>';
-            print '<th>'.$langs->trans("Sent").'</th><th>'.$langs->trans("Open").'</th><th>'.$langs->trans("Click").'</th><th>'.$langs->trans("Error").'</th>';           
+            print '<th>'.$langs->trans("Sent").'</th>';
+            print '<th>'.$langs->trans("Open").'</th>';
+            print '<th>'.$langs->trans("Click").'</th>';
+            print '<th>'.$langs->trans("Error").'</th>';
+            print '<th>'.$langs->trans("Spam").'</th>';
+            print '<th>'.$langs->trans("Desabon").'</th>';
         print '</tr>';
         print '<tr>';
             print '<td>'.$mailsType['sent'].'</td>';
             print '<td>'.$mailsType['open'].'</td>';
             print '<td>'.$mailsType['click'].'</td>';
-            print '<td>'.$mailsType['error'].'</td>';   
+            print '<td>'.$mailsType['error'].'</td>';
+            print '<td>'.$mailsType['spam'].'</td>';
+            print '<td>'.$mailsType['desab'].'</td>';
         print '</tr>';
         print '<tr>';
             print '<td>'.($mailsType['sent']*100/$destinataires).' %'.'</td>';
             print '<td>'.($mailsType['open']*100/$mailsType['sent']).' %'.'</td>';
             print '<td>'.($mailsType['click']*100/$mailsType['sent']).' %'.'</td>';
             print '<td>'.($mailsType['error']*100/$mailsType['sent']).' %'.'</td>';   
+            print '<td>'.($mailsType['spam']*100/$mailsType['sent']).' %'.'</td>';
+            print '<td>'.($mailsType['desab']*100/$mailsType['sent']).' %'.'</td>';
         print '</tr>';
          
     print '</table>';
