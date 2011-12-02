@@ -19,12 +19,12 @@
  */
 
 /**
- *	\file       htdocs/core/modules/expedition/pdf/pdf_expedition_merou.modules.php
+ *	\file       htdocs/core/modules/expedition/doc/pdf_expedition_merou.modules.php
  *	\ingroup    expedition
  *	\brief      Fichier de la classe permettant de generer les bordereaux envoi au modele Merou
  */
 
-require_once DOL_DOCUMENT_ROOT."/core/modules/expedition/pdf/ModelePdfExpedition.class.php";
+require_once DOL_DOCUMENT_ROOT."/core/modules/expedition/doc/ModelePdfExpedition.class.php";
 require_once DOL_DOCUMENT_ROOT."/contact/class/contact.class.php";
 require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
 require_once(DOL_DOCUMENT_ROOT.'/core/lib/pdf.lib.php');
@@ -428,9 +428,9 @@ Class pdf_expedition_merou extends ModelePdfExpedition
 		//Definition Emplacement du bloc Societe
 		$Xoff = 110;
 		$blSocX=90;
-		$blSocY=21;
+		$blSocY=24;
 		$blSocW=50;
-		$blSocX2=$blSocW+$blSocXs;
+		$blSocX2=$blSocW+$blSocX;
 
 		// Sender name
 		$pdf->SetTextColor(0,0,60);
@@ -495,7 +495,6 @@ Class pdf_expedition_merou extends ModelePdfExpedition
 		/**********************************/
 		//Emplacement Informations Expediteur (My Company)
 		/**********************************/
-		$Ydef = $Yoff;
 		$blExpX=$Xoff-20;
 		$blW=52;
 		$Yoff = $Yoff+5;

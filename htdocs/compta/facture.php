@@ -2934,6 +2934,13 @@ else
                  */
                 $somethingshown=$object->showLinkedObjectBlock();
 
+                // Link for paypal payment
+                if ($conf->paypal->enabled)
+                {
+                    include_once(DOL_DOCUMENT_ROOT.'/paypal/lib/paypal.lib.php');
+                    print showPaypalPaymentUrl('invoice',$object->ref);
+                }
+
                 print '</td><td valign="top" width="50%">';
 
                 print '<br>';
