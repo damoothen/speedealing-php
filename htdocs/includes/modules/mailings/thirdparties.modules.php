@@ -62,7 +62,7 @@ class mailing_thirdparties extends MailingTargets
 		    $sql = "SELECT s.rowid as id, s.email as email, s.nom as name, null as fk_contact, null as firstname, null as label";
 		    $sql.= " FROM ".MAIN_DB_PREFIX."societe as s";
 		    $sql.= " WHERE s.email != ''";
-			$sql.= " AND s.newsletter != 0";
+			$sql.= " AND s.newsletter = 1";
 		    $sql.= " AND s.entity = ".$conf->entity;
 		}
 		else
@@ -78,7 +78,7 @@ class mailing_thirdparties extends MailingTargets
 		    $sql.= "SELECT s.rowid as id, s.email as email, s.nom as name, null as fk_contact, null as firstname, c.label as label";
 		    $sql.= " FROM ".MAIN_DB_PREFIX."societe as s, ".MAIN_DB_PREFIX."categorie_fournisseur as cs, ".MAIN_DB_PREFIX."categorie as c";
 		    $sql.= " WHERE s.email != ''";
-			$sql.= " AND s.newsletter != 0";
+			$sql.= " AND s.newsletter = 1";
 		    $sql.= " AND s.entity = ".$conf->entity;
 		    $sql.= " AND cs.fk_societe = s.rowid";
 		    $sql.= " AND c.rowid = cs.fk_categorie";
@@ -160,7 +160,7 @@ class mailing_thirdparties extends MailingTargets
 		$sql = "SELECT count(distinct(s.email)) as nb";
 		$sql.= " FROM ".MAIN_DB_PREFIX."societe as s";
 		$sql.= " WHERE s.email != ''";
-                $sql.= " AND s.newsletter != 0";      // Not unsubcribe
+                $sql.= " AND s.newsletter = 1";      // Not unsubcribe
 		$sql.= " AND s.entity = ".$conf->entity;
                 $sql.= " AND s.fk_stcomm >= 0";
 
