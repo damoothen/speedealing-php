@@ -1088,40 +1088,32 @@ if($conf->mailjet->enabled && isset ($_GET['id'])){
     $sql = "SELECT * FROM llx_mailing WHERE rowid =".$_GET['id'];
     $sql.=" AND (statut =3 OR statut =2)";
     $result=$db->query($sql);
-    if($db->num_rows($result)==1){
-    $langs->load("mailjet@mailjet");    
-        
-    $mailsType = array('sent'=>0,'open'=>0,'click'=>0,'error'=>0);    
-    echo '<link rel="stylesheet" href="../../custom/mailjet/css/mailjettab.css" />';
-    //get addressees
-    $sql = "SELECT * FROM llx_mailing_cibles WHERE fk_mailing =".$_GET['id'];
-    $result=$db->query($sql); 
-    $destinataires = $db->num_rows($result);
-    //get mails of the status "sent"
-    $sql = "SELECT * FROM llx_mailing_cibles WHERE fk_mailing =".$_GET['id'];
-    $sql.=" AND statut !=0";
-    $result=$db->query($sql); 
-    $num = $db->num_rows($result);
-    $mailsType['sent'] = $num;
-    //get mails of the status "open"   
-    $sql = "SELECT * FROM llx_mailing_cibles WHERE fk_mailing =".$_GET['id'];
-    $sql.=" AND statut = 4";
-    $result=$db->query($sql); 
-    $num = $db->num_rows($result);
-    $mailsType['open'] = $num;
-    //get mails of the status "click"
-    $sql = "SELECT * FROM llx_mailing_cibles WHERE fk_mailing =".$_GET['id'];
-    $sql.=" AND statut = 5";
-    $result=$db->query($sql); 
-    $num = $db->num_rows($result);
-    $mailsType['click'] = $num;
-    //get mails of the status "spam,error,bounce"
-    $sql = "SELECT * FROM llx_mailing_cibles WHERE fk_mailing =".$_GET['id'];
-    $sql.=" AND statut != 1 AND statut != 4 AND statut != 5 AND statut !=0";
-    $result=$db->query($sql); 
-    $num = $db->num_rows($result);
-    $mailsType['error'] =$num;
-        
+    if($db->num_rows($result)==1){     
+        $langs->load("mailjet@mailjet");    
+        $mailsType = array('sent'=>0,'open'=>0,'click'=>0,'error'=>0);
+        $sql = "SELECT count(*) as nb,statut FROM llx_mailing_cibles WHERE fk_mailing =".$_GET['id'];
+        $sql .= " GROUP BY statut";
+        $result =$db->query($sql);
+        $nbRows = $db->num_rows($result);
+        //get status numbers  
+        for($i=0;$i<$nbRows;$i++){
+            $uneCible =  $db->fetch_object($result);
+            $destinataires=$destinataires+$uneCible->nb;
+            if($uneCible->statut==4){            
+               $mailsType['open']=$uneCible->nb;
+            }
+            if($uneCible->statut==5){
+               $mailsType['click']=$uneCible->nb;
+            }
+            if($uneCible->statut==6 || $uneCible->statut==7 || $uneCible->statut==8 || $uneCible->statut==-1){
+               $mailsType['error']=$mailsType['error']+$uneCible->nb;
+            }
+            if($uneCible->statut!=0){
+               $mailsType['sent']=$mailsType['sent']+$uneCible->nb;
+            }
+
+        }
+     echo '<link rel="stylesheet" href="../../custom/mailjet/css/mailjettab.css" />';
     //view statistic status
     print '<table class="statistique" style="border-collapse:collapse;">';
         print'<caption>'.$langs->trans("Emails statistics").'</caption>';
