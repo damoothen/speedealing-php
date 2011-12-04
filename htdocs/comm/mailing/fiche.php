@@ -1081,62 +1081,18 @@ else
 
 }
 
-
 //mailjet statistic array
 if($conf->mailjet->enabled && isset ($_GET['id'])){
     // verif if campaign sent
     $sql = "SELECT * FROM llx_mailing WHERE rowid =".$_GET['id'];
     $sql.=" AND (statut =3 OR statut =2)";
     $result=$db->query($sql);
-    if($db->num_rows($result)==1){     
-        $langs->load("mailjet@mailjet");    
-        $mailsType = array('sent'=>0,'open'=>0,'click'=>0,'error'=>0);
-        $sql = "SELECT count(*) as nb,statut FROM llx_mailing_cibles WHERE fk_mailing =".$_GET['id'];
-        $sql .= " GROUP BY statut";
-        $result =$db->query($sql);
-        $nbRows = $db->num_rows($result);
-        //get status numbers  
-        for($i=0;$i<$nbRows;$i++){
-            $uneCible =  $db->fetch_object($result);
-            $destinataires=$destinataires+$uneCible->nb;
-            if($uneCible->statut==4){            
-               $mailsType['open']=$uneCible->nb;
-            }
-            if($uneCible->statut==5){
-               $mailsType['click']=$uneCible->nb;
-            }
-            if($uneCible->statut==6 || $uneCible->statut==7 || $uneCible->statut==8 || $uneCible->statut==-1){
-               $mailsType['error']=$mailsType['error']+$uneCible->nb;
-            }
-            if($uneCible->statut!=0){
-               $mailsType['sent']=$mailsType['sent']+$uneCible->nb;
-            }
-
-        }
-     echo '<link rel="stylesheet" href="../../custom/mailjet/css/mailjettab.css" />';
-    //view statistic status
-    print '<table class="statistique" style="border-collapse:collapse;">';
-        print'<caption>'.$langs->trans("Emails statistics").'</caption>';
-        print '<tr>';
-            print '<th>'.$langs->trans("Sent").'</th><th>'.$langs->trans("Open").'</th><th>'.$langs->trans("Click").'</th><th>'.$langs->trans("Error").'</th>';           
-        print '</tr>';
-        print '<tr>';
-            print '<td>'.$mailsType['sent'].'</td>';
-            print '<td>'.$mailsType['open'].'</td>';
-            print '<td>'.$mailsType['click'].'</td>';
-            print '<td>'.$mailsType['error'].'</td>';   
-        print '</tr>';
-        print '<tr>';
-            print '<td>'.($mailsType['sent']*100/$destinataires).' %'.'</td>';
-            print '<td>'.($mailsType['open']*100/$mailsType['sent']).' %'.'</td>';
-            print '<td>'.($mailsType['click']*100/$mailsType['sent']).' %'.'</td>';
-            print '<td>'.($mailsType['error']*100/$mailsType['sent']).' %'.'</td>';   
-        print '</tr>';
-         
-    print '</table>';
-  }
+    if($db->num_rows($result)==1){
+        dol_include_once('/mailjet/class/mailjet.class.php');
+        $mailJet = new Mailjet($db);
+        $mailJet->statistique($langs);
+    }
 }
-
 
 $db->close();
 
