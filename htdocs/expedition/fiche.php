@@ -33,6 +33,7 @@ require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 require_once(DOL_DOCUMENT_ROOT."/product/class/html.formproduct.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/product.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/sendings.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/modules/expedition/doc/ModelePdfExpedition.class.php");
 if ($conf->product->enabled || $conf->service->enabled)  require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
 if ($conf->propal->enabled)   require_once(DOL_DOCUMENT_ROOT."/comm/propal/class/propal.class.php");
 if ($conf->commande->enabled) require_once(DOL_DOCUMENT_ROOT."/commande/class/commande.class.php");
@@ -164,7 +165,11 @@ if ($action == 'confirm_valid' && $confirm == 'yes' && $user->rights->expedition
 		$outputlangs = new Translate("",$conf);
 		$outputlangs->setDefaultLang($newlang);
 	}
-	if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) $result=expedition_pdf_create($db,$object,$object->modelpdf,$outputlangs);
+	if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE))
+	{
+        $ret=$object->fetch($id);    // Reload to get new records
+	    $result=expedition_pdf_create($db,$object,$object->modelpdf,$outputlangs);
+	}
 	if ($result < 0)
 	{
 		dol_print_error($db,$result);
@@ -252,7 +257,6 @@ if ($action == 'settrackingnumber' || $action == 'settrackingurl'
  */
 if ($action == 'builddoc')	// En get ou en post
 {
-	require_once(DOL_DOCUMENT_ROOT."/core/modules/expedition/doc/ModelePdfExpedition.class.php");
 
 	// Sauvegarde le dernier modele choisi pour generer un document
 	$shipment = new Expedition($db);

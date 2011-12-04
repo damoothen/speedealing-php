@@ -193,7 +193,7 @@ $sql.= ",".MAIN_DB_PREFIX."facture as f";
 $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."paiement_facture as pf ON f.rowid=pf.fk_facture ";
 $sql.= " WHERE f.fk_soc = s.rowid";
 $sql.= " AND s.entity = ".$conf->entity;
-$sql.= " AND f.type IN (0,1) AND f.fk_statut = 1";
+$sql.= " AND f.type IN (0,1,3) AND f.fk_statut = 1";
 $sql.= " AND f.paye = 0";
 if ($option == 'late') $sql.=" AND f.date_lim_reglement < '".$db->idate(dol_now() - $conf->facture->client->warning_delay)."'";
 if (! $user->rights->societe->client->voir && ! $socid) $sql .= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
@@ -300,7 +300,7 @@ if ($resql)
 		$total_ht=0;
 		$total_ttc=0;
 		$total_paid=0;
-		
+
 		$facturestatic=new Facture($db);
 
 		print '<form id="form_generate_pdf" method="POST" action="'.$_SERVER["PHP_SELF"].'?sortfield='. $sortfield .'&sortorder='. $sortorder .'">';
@@ -309,6 +309,7 @@ if ($resql)
 		while ($i < $num)
 		{
 			$objp = $db->fetch_object($resql);
+			$date_limit=$db->jdate($objp->datelimite);
 
 			$var=!$var;
 
@@ -330,7 +331,7 @@ if ($resql)
 
 			// Warning picto
 			print '<td width="20" class="nobordernopadding" nowrap="nowrap">';
-			if ($objp->datelimite < ($now - $conf->facture->client->warning_delay) && ! $objp->paye && $objp->fk_statut == 1) print img_warning($langs->trans("Late"));
+			if ($date_limit < ($now - $conf->facture->client->warning_delay) && ! $objp->paye && $objp->fk_statut == 1) print img_warning($langs->trans("Late"));
 			print '</td>';
 
 			// PDF Picto

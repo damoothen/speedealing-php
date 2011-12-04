@@ -171,7 +171,11 @@ if ($action == 'confirm_deleteline' && $confirm == 'yes')
                 $outputlangs = new Translate("",$conf);
                 $outputlangs->setDefaultLang($newlang);
             }
-            if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) $result=facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+            if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE))
+            {
+                $ret=$object->fetch($id);    // Reload to get new records
+                $result=facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+            }
             if ($result >= 0)
             {
                 Header('Location: '.$_SERVER["PHP_SELF"].'?facid='.$id);
@@ -348,7 +352,11 @@ if ($action == 'confirm_valid' && $confirm == 'yes' && $user->rights->facture->v
                 $outputlangs = new Translate("",$conf);
                 $outputlangs->setDefaultLang($newlang);
             }
-            if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+            if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE))
+            {
+                $ret=$object->fetch($id);    // Reload to get new records
+                facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+            }
         }
         else
         {
@@ -421,7 +429,11 @@ if ($action == 'confirm_modif' && ((empty($conf->global->MAIN_USE_ADVANCED_PERMS
 	            $outputlangs = new Translate("",$conf);
 	            $outputlangs->setDefaultLang($newlang);
 	        }
-	        if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+	        if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE))
+	        {
+                $ret=$object->fetch($id);    // Reload to get new records
+	            facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+	        }
 	    }
     }
 }
@@ -1059,8 +1071,11 @@ if (($action == 'addline' || $action == 'addline_predef') && $user->rights->fact
             $outputlangs = new Translate("",$conf);
             $outputlangs->setDefaultLang($newlang);
         }
-        if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
-
+        if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE))
+        {
+            $ret=$object->fetch($id);    // Reload to get new records
+            facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+        }
         unset($_POST['qty']);
         unset($_POST['type']);
         unset($_POST['idprod']);
@@ -1158,7 +1173,11 @@ if ($action == 'updateligne' && $user->rights->facture->creer && $_POST['save'] 
             $outputlangs = new Translate("",$conf);
             $outputlangs->setDefaultLang($newlang);
         }
-        if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+        if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE))
+        {
+            $ret=$object->fetch($id);    // Reload to get new records
+            facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+        }
     }
 }
 
