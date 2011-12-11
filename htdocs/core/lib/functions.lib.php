@@ -199,7 +199,7 @@ function GETPOST($paramname,$check='',$method=0)
 	if (! empty($check))
 	{
 		// Check if numeric
-		if ($check == 'int' && ! preg_match('/^[\.,0-9]+$/i',trim($out))) $out='';
+		if ($check == 'int' && ! preg_match('/^[-\.,0-9]+$/i',trim($out))) $out='';
 		// Check if alpha
 		//if ($check == 'alpha' && ! preg_match('/^[ =:@#\/\\\(\)\-\._a-z0-9]+$/i',trim($out))) $out='';
 		// '"' is dangerous because param in url can close the href= or src= and add javascript functions.
@@ -735,34 +735,33 @@ function dolibarr_print_date($time,$format='',$to_gmt=false,$outputlangs='',$enc
 /**
  *      Return a formated address (part address/zip/town/state) according to country rules
  *
- *      @param      outputlangs     Output langs object
- *      @param      object          A company or contact object
- *      @return     string          Formated string
+ *      @param  Object		$object         A company or contact object
+ *      @return string          			Formated string
  */
-function dol_format_address($outputlangs,$object)
+function dol_format_address($object)
 {
 	$ret='';
 	$countriesusingstate=array('US','IN');
 
 	// Address
-	$ret .= $outputlangs->convToOutputCharset($object->address);
+	$ret .= $object->address;
 	// Zip/Town/State
 	if (in_array($object->country_code,array('US')))   // US: town, state, zip
 	{
-		$ret .= ($ret ? "\n" : '' ).$outputlangs->convToOutputCharset($object->town);
+		$ret .= ($ret ? "\n" : '' ).$object->town;
 		if ($object->state && in_array($object->country_code,$countriesusingstate))
 		{
-			$ret.=", ".$outputlangs->convToOutputCharset($object->departement);
+			$ret.=", ".$object->departement;
 		}
-		if ($object->zip) $ret .= ', '.$outputlangs->convToOutputCharset($object->zip);
+		if ($object->zip) $ret .= ', '.$object->zip;
 	}
 	else                                        // Other: zip town, state
 	{
-		$ret .= ($ret ? "\n" : '' ).$outputlangs->convToOutputCharset($object->zip);
-		$ret .= ' '.$outputlangs->convToOutputCharset($object->town);
+		$ret .= ($ret ? "\n" : '' ).$object->zip;
+		$ret .= ' '.$object->town;
 		if ($object->state && in_array($object->country_code,$countriesusingstate))
 		{
-			$ret.=", ".$outputlangs->convToOutputCharset($object->state);
+			$ret.=", ".$object->state;
 		}
 	}
 
@@ -1838,11 +1837,11 @@ function img_action($alt = "default", $numaction)
 {
     global $conf,$langs;
     if ($alt=="default") {
-        if ($numaction == -1) $alt=$langs->trans("ChangeDoNotContact");
-        if ($numaction == 0)  $alt=$langs->trans("ChangeNeverContacted");
-        if ($numaction == 1)  $alt=$langs->trans("ChangeToContact");
-        if ($numaction == 2)  $alt=$langs->trans("ChangeContactInProcess");
-        if ($numaction == 3)  $alt=$langs->trans("ChangeContactDone");
+        if ($numaction == -1) $alt=$langs->transnoentitiesnoconv("ChangeDoNotContact");
+        if ($numaction == 0)  $alt=$langs->transnoentitiesnoconv("ChangeNeverContacted");
+        if ($numaction == 1)  $alt=$langs->transnoentitiesnoconv("ChangeToContact");
+        if ($numaction == 2)  $alt=$langs->transnoentitiesnoconv("ChangeContactInProcess");
+        if ($numaction == 3)  $alt=$langs->transnoentitiesnoconv("ChangeContactDone");
     }
     return '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/stcomm'.$numaction.'.png" border="0" alt="'.dol_escape_htmltag($alt).'" title="'.dol_escape_htmltag($alt).'">';
 }
@@ -3619,9 +3618,9 @@ function dol_nl2br($stringtoencode,$nl2brmode=0,$forxml=false)
  *              Because writeHTMLCell convert also \n into <br>, if function
  *              is used to build PDF, nl2brmode must be 1
  *
- *	@param		stringtoencode		String to encode
- *	@param		nl2brmode			0=Adding br before \n, 1=Replacing \n by br (for use with FPDF writeHTMLCell function for example)
- *  @param      pagecodefrom        Pagecode stringtoencode is encoded
+ *	@param	string	$stringtoencode		String to encode
+ *	@param	int		$nl2brmode			0=Adding br before \n, 1=Replacing \n by br (for use with FPDF writeHTMLCell function for example)
+ *  @param  string	$pagecodefrom       Pagecode stringtoencode is encoded
  */
 function dol_htmlentitiesbr($stringtoencode,$nl2brmode=0,$pagecodefrom='UTF-8')
 {
@@ -3635,11 +3634,12 @@ function dol_htmlentitiesbr($stringtoencode,$nl2brmode=0,$pagecodefrom='UTF-8')
         $newstring=strtr($newstring,array('__and__'=>'&','__lt__'=>'<','__gt__'=>'>','__dquot__'=>'"'));
         //$newstring=strtr($newstring,array('__li__'=>"<li>\n")); // Restore <li>\n
     }
-    else {
+    else
+    {
         $newstring=dol_nl2br(dol_htmlentities($stringtoencode,ENT_COMPAT,$pagecodefrom),$nl2brmode);
     }
     // Other substitutions that htmlentities does not do
-    $newstring=str_replace(chr(128),'&euro;',$newstring);	// 128 = 0x80. Not in html entity table.
+    //$newstring=str_replace(chr(128),'&euro;',$newstring);	// 128 = 0x80. Not in html entity table.     // Seems useles with TCPDF. Make bug with UTF8 languages
     return $newstring;
 }
 
@@ -3977,7 +3977,7 @@ function get_htmloutput_mesg($mesgstring='',$mesgarray='', $style='ok', $keepemb
     }
 
     // If inline message with no format, we add it.
-    if ((! empty($conf->global->MAIN_DISABLE_JQUERY_JNOTIFY) || $keepembedded) && ! preg_match('/<div class=".*">/i',$out))
+    if ((empty($conf->use_javascript_ajax) || ! empty($conf->global->MAIN_DISABLE_JQUERY_JNOTIFY) || $keepembedded) && ! preg_match('/<div class=".*">/i',$out))
     {
         $divstart='<div class="'.$style.'">';
         $divend='</div>';
@@ -4007,7 +4007,7 @@ function get_htmloutput_mesg($mesgstring='',$mesgarray='', $style='ok', $keepemb
 
     if ($out)
     {
-        if (empty($conf->global->MAIN_DISABLE_JQUERY_JNOTIFY) && empty($keepembedded))
+        if ($conf->use_javascript_ajax && empty($conf->global->MAIN_DISABLE_JQUERY_JNOTIFY) && empty($keepembedded))
         {
             $return = '<script type="text/javascript">
     				jQuery(document).ready(function() {
@@ -4046,7 +4046,7 @@ function get_htmloutput_errors($mesgstring='', $mesgarray='', $keepembedded=0)
 /**
  *	Print formated messages to output (Used to show messages on html output).
  *
- *	@param	string	$mesgstring		Message
+ *	@param	string	$mesgstring		 Message
  *	@param	array	$mesgarray       Messages array
  *  @param  string	$style           Which style to use ('ok', 'error')
  *  @param  int		$keepembedded    Set to 1 if message must be kept embedded into its html place (this disable jnotify)
@@ -4417,6 +4417,7 @@ function complete_head_from_modules($conf,$langs,$object,&$head,&$h,$type,$mode=
 function printCommonFooter($zone='private')
 {
     global $conf;
+	global $micro_start_time;
 
     if ($zone == 'private') print "\n".'<!-- Common footer for private page -->'."\n";
     else print "\n".'<!-- Common footer for public page -->'."\n";

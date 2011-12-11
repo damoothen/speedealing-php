@@ -121,21 +121,21 @@ class Conf
 		}
 		$sql.= " ORDER BY entity";	// This is to have entity 0 first, then entity 1 that overwrite.
 
-		$result = $db->query($sql);
-		if ($result)
+		$resql = $db->query($sql);
+		if ($resql)
 		{
 			$multicompany_sharing=array();
 			
 			$i = 0;
-			$numr = $db->num_rows($result);
+			$numr = $db->num_rows($resql);
 			while ($i < $numr)
 			{
-				$objp = $db->fetch_object($result);
+				$objp = $db->fetch_object($resql);
 				$key=$objp->name;
 				$value=$objp->value;
 				if ($key)
 				{
-					if (! defined("$key")) define ("$key", $value);	// In some cases, the constant might be already forced (Example: SYSLOG_FILE_ON and SYSLOG_FILE during install)
+					if (! defined("$key")) define("$key", $value);	// In some cases, the constant might be already forced (Example: SYSLOG_FILE_ON and SYSLOG_FILE during install)
 					$this->global->$key=$value;
 
 					if ($value && preg_match('/^MAIN_MODULE_/',$key))
@@ -150,7 +150,6 @@ class Conf
 						{
 							$params=explode(':',$value,2);
 							$this->tabs_modules[$params[0]][]=$value;
-							//print 'xxx'.$params[0].'-'.$value;
 						}
 						// If this is constant for triggers activated by a module
 						elseif (preg_match('/^MAIN_MODULE_([A-Z_]+)_TRIGGERS$/i',$key,$reg))
@@ -217,7 +216,7 @@ class Conf
 				}
 			}
 		}
-		$db->free($result);
+		$db->free($resql);
 		//var_dump($this->modules);
 
 		// Clean some variables
@@ -255,15 +254,15 @@ class Conf
 			$this->$module->dir_temp=$rootfordata."/".$module."/temp";
 		}
 
-		// For mycompany setup
+		// For mycompany storage
 		$this->mycompany->dir_output=$rootfordata."/mycompany";
 		$this->mycompany->dir_temp=$rootfordata."/mycompany/temp";
 
-		// For admin features
+		// For admin storage
 		$this->admin->dir_output=$rootfordata.'/admin';
 		$this->admin->dir_temp=$rootfordata.'/admin/temp';
 
-		// Module user
+		// For user storage
 		$this->user->dir_output=$rootforuser."/users";
 		$this->user->dir_temp=$rootforuser."/users/temp";
 
@@ -290,9 +289,7 @@ class Conf
 		$this->contrat->dir_temp  =$rootfordata."/contracts/temp";
 
 
-		/*
-		 * Set some default values
-		 */
+		// Set some default values
 
 		// societe
 		if (empty($this->global->SOCIETE_CODECLIENT_ADDON))       $this->global->SOCIETE_CODECLIENT_ADDON="mod_codeclient_leopard";
@@ -309,47 +306,39 @@ class Conf
 		$this->use_javascript_ajax=1;
 		if (isset($this->global->MAIN_DISABLE_JAVASCRIPT)) $this->use_javascript_ajax=! $this->global->MAIN_DISABLE_JAVASCRIPT;
 		// If no javascript_ajax, Ajax features are disabled.
-		if (! $this->use_javascript_ajax)
-		{
-			$this->global->PRODUIT_USE_SEARCH_TO_SELECT=0;
-		}
+		if (! $this->use_javascript_ajax) $this->global->PRODUIT_USE_SEARCH_TO_SELECT=0;
 
 		// conf->currency
 		if (empty($this->global->MAIN_MONNAIE)) $this->global->MAIN_MONNAIE='EUR';
 		$this->currency=$this->global->MAIN_MONNAIE;
 
-		// $this->global->COMPTA_MODE = Option des modules Comptabilites (simple ou expert). Defini le mode de calcul des etats comptables (CA,...)
+		// conf->global->COMPTA_MODE = Option des modules Comptabilites (simple ou expert). Defini le mode de calcul des etats comptables (CA,...)
         if (empty($this->global->COMPTA_MODE)) $this->global->COMPTA_MODE='RECETTES-DEPENSES';  // By default. Can be 'RECETTES-DEPENSES' ou 'CREANCES-DETTES'
 
-		// $this->liste_limit = constante de taille maximale des listes
+		// conf->liste_limit = constante de taille maximale des listes
 		if (empty($this->global->MAIN_SIZE_LISTE_LIMIT)) $this->global->MAIN_SIZE_LISTE_LIMIT=25;
 		$this->liste_limit=$this->global->MAIN_SIZE_LISTE_LIMIT;
 
-		// $this->product->limit_size = constante de taille maximale des select de produit
+		// conf->product->limit_size = constante de taille maximale des select de produit
 		if (! isset($this->global->PRODUIT_LIMIT_SIZE)) $this->global->PRODUIT_LIMIT_SIZE=100;
 		$this->product->limit_size=$this->global->PRODUIT_LIMIT_SIZE;
 
-		// $this->theme et $this->css
+		// conf->theme et $this->css
 		if (empty($this->global->MAIN_THEME)) $this->global->MAIN_THEME="eldy";
 		$this->theme=$this->global->MAIN_THEME;
 		$this->css  = "/theme/".$this->theme."/style.css.php";
 
-		// $this->email_from = email pour envoi par dolibarr des mails automatiques
+		// conf->email_from = email pour envoi par dolibarr des mails automatiques
 		$this->email_from = "dolibarr-robot@domain.com";
 		if (! empty($this->global->MAIN_MAIL_EMAIL_FROM)) $this->email_from = $this->global->MAIN_MAIL_EMAIL_FROM;
 
-		// $this->notification->email_from = email pour envoi par Dolibarr des notifications
+		// conf->notification->email_from = email pour envoi par Dolibarr des notifications
 		$this->notification->email_from=$this->email_from;
 		if (! empty($this->global->NOTIFICATION_EMAIL_FROM)) $this->notification->email_from=$this->global->NOTIFICATION_EMAIL_FROM;
 
-		// $this->mailing->email_from = email pour envoi par Dolibarr des mailings
+		// conf->mailing->email_from = email pour envoi par Dolibarr des mailings
 		$this->mailing->email_from=$this->email_from;
 		if (! empty($this->global->MAILING_EMAIL_FROM))	$this->mailing->email_from=$this->global->MAILING_EMAIL_FROM;
-
-		// Defini MAIN_GRAPH_LIBRARY
-		if (empty($this->global->MAIN_GRAPH_LIBRARY)) $this->global->MAIN_GRAPH_LIBRARY = 'artichow';
-
-        if (! isset($this->global->FCKEDITOR_EDITORNAME)) $this->global->FCKEDITOR_EDITORNAME='ckeditor';  // fckeditor to switch
 
         // Format for date (used by default when not found or searched in lang)
         $this->format_date_short="%d/%m/%Y";            // Format of day with PHP/C tags (strftime functions)
