@@ -489,9 +489,9 @@ if ($mil->fetch($_REQUEST["id"]) >= 0)
 					print '<td align="right" nowrap="nowrap">';
 					if ($obj->statut==-1) print $langs->trans("MailingStatusError").' '.img_error();
 					if ($obj->statut==1) print $langs->trans("MailingStatusSent").' '.img_picto($langs->trans("MailingStatusSent"),'statut6');
-                                        if ($obj->statut==3) print $langs->trans("MailingDesincription").' '.img_picto($langs->trans("MailingDesinscription"),'statut2');
-					if ($obj->statut==4) print $langs->trans("Open").' '.img_picto($langs->trans("Open"),'statut7');
-                                        if ($obj->statut==5) print $langs->trans("Click").' '.img_picto($langs->trans("Click"),'statut8');
+                                        if ($obj->statut==3) print $langs->trans("Desabo").' '.img_picto($langs->trans("MailingDesinscription"),'statut2');
+					if ($obj->statut==4) print $langs->trans("Open").' '.img_picto($langs->trans("Open"),'stcomm8');
+                                        if ($obj->statut==5) print $langs->trans("Click").' '.img_picto($langs->trans("Click"),'stcomm9');
                                         if ($obj->statut==6) print $langs->trans("Spam").' '.img_picto($langs->trans("Spam"),'statut5');
                                         if ($obj->statut==7) print $langs->trans("Bounce").' '.img_picto($langs->trans("Click"),'statut3');
                                         if ($obj->statut==8) print $langs->trans("Blocked").' '.img_picto($langs->trans("Click"),'statut9');
