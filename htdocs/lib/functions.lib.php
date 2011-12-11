@@ -35,6 +35,115 @@
 if (! defined('DOL_DOCUMENT_ROOT'))	    define('DOL_DOCUMENT_ROOT', '..');
 if (! defined('ADODB_DATE_VERSION'))    include_once(DOL_DOCUMENT_ROOT."/includes/adodbtime/adodb-time.inc.php");
 
+
+if (! function_exists('json_encode'))
+{
+    /**
+     * Implement json_encode for PHP that does not support it
+     *
+     * @param	mixed	$elements		PHP Object to json encode
+     * @return 	string					Json encoded string
+     */
+    function json_encode($elements)
+    {
+    	$num = count($elements);
+
+    	// determine type
+    	if (is_numeric(key($elements)))
+    	{
+    		// indexed (list)
+    		$output = '[';
+    		for ($i = 0, $last = ($num - 1); isset($elements[$i]); ++$i)
+    		{
+    			if (is_array($elements[$i])) $output.= json_encode($elements[$i]);
+    			else $output .= _val($elements[$i]);
+    			if($i !== $last) $output.= ',';
+    		}
+    		$output.= ']';
+    	}
+    	else
+    	{
+    		// associative (object)
+    		$output = '{';
+    		$last = $num - 1;
+    		$i = 0;
+    		foreach($elements as $key => $value)
+    		{
+    			$output .= '"'.$key.'":';
+    			if (is_array($value)) $output.= json_encode($value);
+    			else $output .= _val($value);
+    			if ($i !== $last) $output.= ',';
+    			++$i;
+    		}
+    		$output.= '}';
+    	}
+
+    	// return
+    	return $output;
+    }
+
+    function _val($val)
+    {
+    	if (is_string($val)) return '"'.rawurlencode($val).'"';
+    	elseif (is_int($val)) return sprintf('%d', $val);
+    	elseif (is_float($val)) return sprintf('%F', $val);
+    	elseif (is_bool($val)) return ($val ? 'true' : 'false');
+    	else  return 'null';
+    }
+}
+
+if (! function_exists('json_decode'))
+{
+	/**
+	 * Implement json_decode for PHP that does not support it
+	 *
+	 * @param	string	$json		Json encoded to PHP Object or Array
+	 * @param	bool	$assoc		False return an object, true return an array
+	 * @return 	mixed				Object or Array
+	 */
+	function json_decode($json, $assoc=false)
+	{
+		$comment = false;
+
+		for ($i=0; $i<strlen($json); $i++)
+		{
+			if (! $comment)
+			{
+				if (($json[$i] == '{') || ($json[$i] == '[')) $out.= 'array(';
+				else if (($json[$i] == '}') || ($json[$i] == ']')) $out.= ')';
+				else if ($json[$i] == ':') $out.= ' => ';
+				else $out.= $json[$i];
+			}
+			else $out.= $json[$i];
+			if ($json[$i] == '"' && $json[($i-1)]!="\\") $comment = !$comment;
+		}
+
+		// Return an array
+		eval('$array = '.$out.';');
+
+		// Return an object
+		if (! $assoc)
+		{
+			if (! empty($array))
+			{
+				$object = false;
+
+				foreach ($array as $key => $value)
+				{
+					$object->{$key} = $value;
+				}
+
+				return $object;
+			}
+
+			return false;
+		}
+
+		return $array;
+	}
+}
+
+
 /**
  *  This function output memory used by PHP and exit everything. Used for debugging purpose.
  */
@@ -73,7 +182,7 @@ function GETPOST($paramname,$check='',$method=0)
     if (!empty($check))
     {
         // Check if numeric
-        if ($check == 'int' && ! preg_match('/^[\.,0-9]+$/i',trim($out))) $out='';
+        if ($check == 'int' && ! preg_match('/^[-\.,0-9]+$/i',trim($out))) $out='';
         // Check if alpha
         //if ($check == 'alpha' && ! preg_match('/^[ =:@#\/\\\(\)\-\._a-z0-9]+$/i',trim($out))) $out='';
         if ($check == 'alpha' && preg_match('/"/',trim($out))) $out='';    // Only " is dangerous because param in url can close the href= or src= and add javascript functions
@@ -1653,11 +1762,11 @@ function img_action($alt = "default", $numaction)
 {
     global $conf,$langs;
     if ($alt=="default") {
-        if ($numaction == -1) $alt=$langs->trans("ChangeDoNotContact");
-        if ($numaction == 0)  $alt=$langs->trans("ChangeNeverContacted");
-        if ($numaction == 1)  $alt=$langs->trans("ChangeToContact");
-        if ($numaction == 2)  $alt=$langs->trans("ChangeContactInProcess");
-        if ($numaction == 3)  $alt=$langs->trans("ChangeContactDone");
+        if ($numaction == -1) $alt=$langs->transnoentitiesnoconv("ChangeDoNotContact");
+        if ($numaction == 0)  $alt=$langs->transnoentitiesnoconv("ChangeNeverContacted");
+        if ($numaction == 1)  $alt=$langs->transnoentitiesnoconv("ChangeToContact");
+        if ($numaction == 2)  $alt=$langs->transnoentitiesnoconv("ChangeContactInProcess");
+        if ($numaction == 3)  $alt=$langs->transnoentitiesnoconv("ChangeContactDone");
     }
     return '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/stcomm'.$numaction.'.png" border="0" alt="'.dol_escape_htmltag($alt).'" title="'.dol_escape_htmltag($alt).'">';
 }
@@ -2267,8 +2376,7 @@ function restrictedArea($user, $features='societe', $objectid=0, $dbtablename=''
                 $sql = "SELECT dbt.".$dbt_select;
                 $sql.= " FROM ".MAIN_DB_PREFIX.$dbtablename." as dbt";
                 $sql.= " WHERE dbt.".$dbt_select." = ".$objectid;
-                if($conf->entity > 0)
-                        $sql.= " AND dbt.entity IN (0,".(! empty($conf->entities[$dbtablename]) ? $conf->entities[$dbtablename] : $conf->entity).")";
+                $sql.= " AND dbt.entity IN (0,".(! empty($conf->entities[$dbtablename]) ? $conf->entities[$dbtablename] : $conf->entity).")";
             }
             else if (in_array($feature,$checksoc))
             {
@@ -2286,8 +2394,7 @@ function restrictedArea($user, $features='societe', $objectid=0, $dbtablename=''
                     $sql.= " WHERE sc.fk_soc = ".$objectid;
                     $sql.= " AND sc.fk_user = ".$user->id;
                     $sql.= " AND sc.fk_soc = s.rowid";
-                    if($conf->entity > 0)
-                        $sql.= " AND s.entity IN (0,".(! empty($conf->entities[$dbtablename]) ? $conf->entities[$dbtablename] : $conf->entity).")";
+                    $sql.= " AND s.entity IN (0,".(! empty($conf->entities[$dbtablename]) ? $conf->entities[$dbtablename] : $conf->entity).")";
                 }
                 // If multicompany and internal users with all permissions, check user is in correct entity
                 else if ($conf->global->MAIN_MODULE_MULTICOMPANY)
@@ -2295,8 +2402,7 @@ function restrictedArea($user, $features='societe', $objectid=0, $dbtablename=''
                     $sql = "SELECT s.rowid";
                     $sql.= " FROM ".MAIN_DB_PREFIX."societe as s";
                     $sql.= " WHERE s.rowid = ".$objectid;
-                    if($conf->entity > 0)
-                        $sql.= " AND s.entity IN (0,".(! empty($conf->entities[$dbtablename]) ? $conf->entities[$dbtablename] : $conf->entity).")";
+                    $sql.= " AND s.entity IN (0,".(! empty($conf->entities[$dbtablename]) ? $conf->entities[$dbtablename] : $conf->entity).")";
                 }
             }
             else if (in_array($feature,$checkother))
@@ -2317,8 +2423,7 @@ function restrictedArea($user, $features='societe', $objectid=0, $dbtablename=''
                     $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."societe_commerciaux as sc ON dbt.fk_soc = sc.fk_soc AND sc.fk_user = '".$user->id."'";
                     $sql.= " WHERE dbt.rowid = ".$objectid;
                     $sql.= " AND (dbt.fk_soc IS NULL OR sc.fk_soc IS NOT NULL)";	// Contact not linked to a company or to a company of user
-                    if($conf->entity > 0)
-                        $sql.= " AND dbt.entity IN (0,".(! empty($conf->entities[$dbtablename]) ? $conf->entities[$dbtablename] : $conf->entity).")";
+                    $sql.= " AND dbt.entity IN (0,".(! empty($conf->entities[$dbtablename]) ? $conf->entities[$dbtablename] : $conf->entity).")";
                 }
                 // If multicompany and internal users with all permissions, check user is in correct entity
                 else if ($conf->global->MAIN_MODULE_MULTICOMPANY)
@@ -2326,8 +2431,7 @@ function restrictedArea($user, $features='societe', $objectid=0, $dbtablename=''
                     $sql = "SELECT dbt.rowid";
                     $sql.= " FROM ".MAIN_DB_PREFIX.$dbtablename." as dbt";
                     $sql.= " WHERE dbt.rowid = ".$objectid;
-                    if($conf->entity > 0)
-                        $sql.= " AND dbt.entity IN (0,".(! empty($conf->entities[$dbtablename]) ? $conf->entities[$dbtablename] : $conf->entity).")";
+                    $sql.= " AND dbt.entity IN (0,".(! empty($conf->entities[$dbtablename]) ? $conf->entities[$dbtablename] : $conf->entity).")";
                 }
             }
             else if (in_array($feature,$checkproject))
@@ -2361,8 +2465,7 @@ function restrictedArea($user, $features='societe', $objectid=0, $dbtablename=''
                     $sql.= " WHERE dbt.".$dbt_select." = ".$objectid;
                     $sql.= " AND sc.fk_soc = dbt.".$dbt_keyfield;
                     $sql.= " AND dbt.".$dbt_keyfield." = s.rowid";
-                    if($conf->entity > 0)
-                        $sql.= " AND s.entity IN (0,".(! empty($conf->entities[$dbtablename]) ? $conf->entities[$dbtablename] : $conf->entity).")";
+                    $sql.= " AND s.entity IN (0,".(! empty($conf->entities[$dbtablename]) ? $conf->entities[$dbtablename] : $conf->entity).")";
                     $sql.= " AND sc.fk_user = ".$user->id;
                 }
                 // If multicompany and internal users with all permissions, check user is in correct entity
@@ -2371,8 +2474,7 @@ function restrictedArea($user, $features='societe', $objectid=0, $dbtablename=''
                     $sql = "SELECT dbt.".$dbt_select;
                     $sql.= " FROM ".MAIN_DB_PREFIX.$dbtablename." as dbt";
                     $sql.= " WHERE dbt.".$dbt_select." = ".$objectid;
-                    if($conf->entity > 0)
-                        $sql.= " AND dbt.entity IN (0,".(! empty($conf->entities[$dbtablename]) ? $conf->entities[$dbtablename] : $conf->entity).")";
+                    $sql.= " AND dbt.entity IN (0,".(! empty($conf->entities[$dbtablename]) ? $conf->entities[$dbtablename] : $conf->entity).")";
                 }
             }
 
@@ -3835,7 +3937,8 @@ function get_htmloutput_mesg($mesgstring='',$mesgarray='', $style='ok', $keepemb
     	unset($_SESSION['mesgarray']);
     }
 
-    if (! empty($conf->global->MAIN_DISABLE_JQUERY_JNOTIFY) && ! preg_match('/<div class=".*">/i',$out))
+    // If inline message with no format, we add it.
+    if ((empty($conf->use_javascript_ajax) || ! empty($conf->global->MAIN_DISABLE_JQUERY_JNOTIFY) || $keepembedded) && ! preg_match('/<div class=".*">/i',$out))
     {
         $divstart='<div class="'.$style.'">';
         $divend='</div>';
@@ -3865,7 +3968,7 @@ function get_htmloutput_mesg($mesgstring='',$mesgarray='', $style='ok', $keepemb
 
     if ($out)
     {
-        if (empty($conf->global->MAIN_DISABLE_JQUERY_JNOTIFY) && empty($keepembedded))
+        if ($conf->use_javascript_ajax && empty($conf->global->MAIN_DISABLE_JQUERY_JNOTIFY) && empty($keepembedded))
         {
             $return = '<script type="text/javascript">
     				jQuery(document).ready(function() {
