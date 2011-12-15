@@ -152,9 +152,10 @@ if ($resql)
             $substitutionisok=true;
 
             // Fabrication du mail
+                        
 			$mail = new CMailFile($newsubject, $sendto, $from, $newmessage,
 			array(), array(), array(),
-            						'', '', 0, $msgishtml, $errorsto);
+            						'', '', 0, $msgishtml, $errorsto,'',$id);
 
 			if ($mail->error)
 			{
