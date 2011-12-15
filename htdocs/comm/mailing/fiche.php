@@ -1099,6 +1099,7 @@ if($conf->mailjet->enabled && isset ($_GET['id'])){
     if($db->num_rows($result)==1){
         dol_include_once('/mailjet/class/mailjet.class.php');
         $mailJet = new Mailjet($db);
+
         $out = $mailJet->statistic($_GET['id']);
          print $out;
     }
