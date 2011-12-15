@@ -4,7 +4,9 @@
  * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2010-2011 Herve Prot           <herve.prot@symeos.com>
- *
+ * Copyright (C) 2010-2011 Patrick Mary           <laube@hotmail.fr>
+ 
+ * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -23,12 +25,12 @@
  *	    \file       htdocs/contact/index.php
  *      \ingroup    societe
  *		\brief      Page to list all contacts
- *		\version    $Id: index.php,v 1.106 2011/07/31 23:54:12 eldy Exp $
+ *		\version    $Id: index.php,v 1.106 2011/12/14 23:54:12 synry63 Exp $
  */
-
 require("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
-
+echo'<link rel="stylesheet" type="text/css" href="lib/datatables/css/datatable.css"/>';
+echo'<link rel="stylesheet" type="text/css" href="lib/datatables/css/TableTools.css"/>';
 $langs->load("companies");
 $langs->load("suppliers");
 $langs->load('commercial');
@@ -117,7 +119,6 @@ if ($search_priv < 0) $search_priv='';
 
 llxHeader('',$langs->trans("ContactsAddresses"),'EN:Module_Third_Parties|FR:Module_Tiers|ES:M&oacute;dulo_Empresas');
 
-$form=new Form($db);
 
 $sql = "SELECT s.rowid as socid, s.nom,";
 $sql.= " s.cp as cpost, p.rowid as cidp, p.name, p.firstname, p.poste, p.email,";
@@ -149,74 +150,6 @@ else
 	if ($search_priv == '1') $sql .= " AND (p.priv='1' AND p.fk_user_creat=".$user->id.")";
 }
 
-if ($search_nom)        // filtre sur le nom
-{
-    $sql .= " AND p.name like '%".$db->escape($search_nom)."%'";
-}
-if ($search_prenom)     // filtre sur le prenom
-{
-    $sql .= " AND p.firstname like '%".$db->escape($search_prenom)."%'";
-}
-if ($search_societe)    // filtre sur la societe
-{
-    $sql .= " AND s.nom like '%".$db->escape($search_societe)."%'";
-}
-if (strlen($search_poste))    // filtre sur la societe
-{
-    $sql .= " AND p.poste like '%".$db->escape($search_poste)."%'";
-}
-if ($search_cp)      // filtre sur le code postal
-{
-    $sql .= " AND s.cp like '".$db->escape($search_cp)."%'";
-}
-if (strlen($search_phone))
-{
-    $sql .= " AND (p.phone like '%".$db->escape($search_phone)."%' OR p.phone_perso like '%".$db->escape($search_phone)."%' OR p.phone_mobile like '%".$db->escape($search_phone)."%')";
-}
-if (strlen($search_phoneper))
-{
-    $sql .= " AND p.phone like '%".$db->escape($search_phoneper)."%'";
-}
-if (strlen($search_phonepro))
-{
-    $sql .= " AND p.phone_perso like '%".$db->escape($search_phonepro)."%'";
-}
-if (strlen($search_phonemob))
-{
-    $sql .= " AND p.phone_mobile like '%".$db->escape($search_phonemob)."%'";
-}
-if (strlen($search_fax))
-{
-    $sql .= " AND p.fax like '%".$db->escape($search_fax)."%'";
-}
-if (strlen($search_email))      // filtre sur l'email
-{
-    $sql .= " AND p.email like '%".$db->escape($search_email)."%'";
-}
-if ($type == "o")        // filtre sur type
-{
-    $sql .= " AND p.fk_soc IS NULL";
-}
-if ($type == "f")        // filtre sur type
-{
-    $sql .= " AND fournisseur = 1";
-}
-if ($type == "c")        // filtre sur type
-{
-    $sql .= " AND client IN (1, 3)";
-}
-if ($type == "p")        // filtre sur type
-{
-    $sql .= " AND client IN (2, 3)";
-}
-if ($sall)
-{
-    $sql .= " AND (p.name like '%".$db->escape($sall)."%' OR p.firstname like '%".$db->escape($sall)."%' OR p.email like '%".$db->escape($sall)."%') ";
-}
-if ($socid)
-{
-    $sql .= " AND s.rowid = ".$socid;
-}
 // Count total nb of records
 $nbtotalofrecords = 0;
 if (empty($conf->global->MAIN_DISABLE_FULL_SCANLIST))
@@ -253,98 +186,93 @@ if ($result)
 
     print_barre_liste($titre ,$page, "index.php", $param, $sortfield, $sortorder,'',$num,$nbtotalofrecords);
 
-    print '<form method="post" action="index.php">';
-    print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-    print '<input type="hidden" name="view" value="'.$view.'">';
-    print '<input type="hidden" name="sortfield" value="'.$sortfield.'">';
-    print '<input type="hidden" name="sortorder" value="'.$sortorder.'">';
-
-    if ($sall)
-    {
-        print $langs->trans("Filter")." (".$langs->trans("Lastname").", ".$langs->trans("Firstname")." ".$langs->trans("or")." ".$langs->trans("EMail")."): ".$sall;
-    }
-
-    print '<table class="liste" width="100%">';
-
-    // Ligne des titres
-    print '<tr class="liste_titre">';
-    print_liste_field_titre($langs->trans("Lastname"),"index.php","p.name", $begin, $param, '', $sortfield,$sortorder);
-    print_liste_field_titre($langs->trans("Firstname"),"index.php","p.firstname", $begin, $param, '', $sortfield,$sortorder);
-    print_liste_field_titre($langs->trans("PostOrFunction"),"index.php","p.poste", $begin, $param, '', $sortfield,$sortorder);
-    if (empty($conf->global->SOCIETE_DISABLE_CONTACTS)) print_liste_field_titre($langs->trans("Company"),"index.php","s.nom", $begin, $param, '', $sortfield,$sortorder);
-    if ($view == 'phone')
-    {
-        print_liste_field_titre($langs->trans("Phone"),"index.php","p.phone", $begin, $param, '', $sortfield,$sortorder);
-        print_liste_field_titre($langs->trans("Mobile"),"index.php","p.phone_mob", $begin, $param, '', $sortfield,$sortorder);
-        print_liste_field_titre($langs->trans("Fax"),"index.php","p.fax", $begin, $param, '', $sortfield,$sortorder);
-    }
-    else
-    {
-        print_liste_field_titre($langs->trans("Phone"),"index.php","p.phone", $begin, $param, '', $sortfield,$sortorder);
-        print_liste_field_titre($langs->trans("EMail"),"index.php","p.email", $begin, $param, '', $sortfield,$sortorder);
-    }
+ 
+    //links for hide/show
+    print '<table cellpadding="2" cellspacing="1" border="1">';
+        print'<tr>';
+            print'<td>';
+                 print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(0);">'.$langs->trans("Lastname").'</a>';
+           print'</td>';
+            print'<td>';
+                 print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(1);">'.$langs->trans("Firstname").'</a>';
+            print'</td>';
+            print'<td>';
+                 print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(2);">'.$langs->trans("PostOrFunction").'</a>';
+            print'</td>';
+             print'<td>';
+                 print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(3);">'.$langs->trans("Company").'</a>';
+            print'</td>';
+            print'<td>';
+                 print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(4);">'.$langs->trans("Phone").'</a>';
+            print'</td>';
+            print'<td>';
+                 print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(5);">'.$langs->trans("EMail").'</a>';
+            print'</td>';
+            print'<td>';
+                 print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(6);">'.$langs->trans("Zip").'</a>';
+            print'</td>';
+            print'<td>';
+                 print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(7);">'.$langs->trans("DateModificationShort").'</a>';
+            print'</td>';
+            print'<td>';
+                 print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(8);">'.$langs->trans("ContactVisibility").'</a>';
+            print'</td>';
+            
+        print'</tr>';
+        print'</table>';        
     
-    print_liste_field_titre($langs->trans("Zip"),"index.php","p.tms", $begin, $param, 'align="center"', $sortfield,$sortorder);
-    print_liste_field_titre($langs->trans("DateModificationShort"),"index.php","p.tms", $begin, $param, 'align="center"', $sortfield,$sortorder);
-    print_liste_field_titre($langs->trans("ContactVisibility"),"index.php","p.priv", $begin, $param, 'align="center"', $sortfield,$sortorder);
-    print '<td class="liste_titre">&nbsp;</td>';
+    print '<table cellpadding="0" cellspacing="0" border="0" class="display" id="liste">';     
+    // Ligne des titres 
+    print'<thead>';
+    print '<tr>';
+    print'<th class="sorting">';
+    print $langs->trans("Lastname");
+    print'</th>';
+    print'<th class="sorting">';
+    print $langs->trans("Firstname");
+    print'</th>';
+    print'<th class="sorting">';
+    print $langs->trans("PostOrFunction");
+    print'</th>';
+    if (empty($conf->global->SOCIETE_DISABLE_CONTACTS)){
+        print'<th class="sorting">';
+        print $langs->trans("Company");
+        print'</th>';
+    }
+    if($view == 'phone'){
+        print'<th class="sorting">';
+        print $langs->trans("Phone");
+        print'</th>';
+        print'<th class="sorting">';
+        print $langs->trans("Mobile");
+        print'</th>';
+        print'<th class="sorting">';
+        print $langs->trans("Fax");
+        print'</th>';
+    }
+    else{
+        print'<th class="sorting">';
+        print $langs->trans("Phone");
+        print'</th>';
+        print'<th class="sorting">';
+        print $langs->trans("EMail");
+        print'</th>';
+    }
+    print'<th class="sorting">';
+    print $langs->trans("Zip");
+    print'</th>';
+    print'<th class="sorting">';
+    print $langs->trans("DateModificationShort");
+    print'</th>';
+    print'<th class="sorting">';
+    print $langs->trans("ContactVisibility");
+    print'</th>';
+  
+    print '<th>&nbsp;</th>';
     print "</tr>\n";
+    print'</thead>';
 
-    // Ligne des champs de filtres
-    print '<tr class="liste_titre">';
-    print '<td class="liste_titre">';
-    print '<input class="flat" type="text" name="search_nom" size="9" value="'.$search_nom.'">';
-    print '</td>';
-    print '<td class="liste_titre">';
-    print '<input class="flat" type="text" name="search_prenom" size="9" value="'.$search_prenom.'">';
-    print '</td>';
-    print '<td class="liste_titre">';
-    print '<input class="flat" type="text" name="search_poste" size="9" value="'.$search_poste.'">';
-    print '</td>';
-    if (empty($conf->global->SOCIETE_DISABLE_CONTACTS))
-    {
-        print '<td class="liste_titre">';
-        print '<input class="flat" type="text" name="search_societe" size="9" value="'.$search_societe.'">';
-        print '</td>';
-    }
-    if ($view == 'phone')
-    {
-        print '<td class="liste_titre">';
-        print '<input class="flat" type="text" name="search_phonepro" size="9" value="'.$search_phonepro.'">';
-        print '</td>';
-        print '<td class="liste_titre">';
-        print '<input class="flat" type="text" name="search_phonemob" size="9" value="'.$search_phonemob.'">';
-        print '</td>';
-        print '<td class="liste_titre">';
-        print '<input class="flat" type="text" name="search_fax" size="9" value="'.$search_fax.'">';
-        print '</td>';
-    }
-    else
-    {
-        print '<td class="liste_titre">';
-        print '<input class="flat" type="text" name="search_phone" size="9" value="'.$search_phone.'">';
-        print '</td>';
-        print '<td class="liste_titre">';
-        print '<input class="flat" type="text" name="search_email" size="9" value="'.$search_email.'">';
-        print '</td>';
-    }
-	//CP
-        print '<td class="liste_titre" align="center">';
-        print '<input class="flat" type="text" name="search_cp" size="7" value="'.$search_cp.'">';
-        print '</td>';
-	print '<td class="liste_titre">&nbsp;</td>';
-	print '<td class="liste_titre" align="center">';
-	$selectarray=array('0'=>$langs->trans("ContactPublic"),'1'=>$langs->trans("ContactPrivate"));
-	print $form->selectarray('search_priv',$selectarray,$search_priv,1);
-	print '</td>';
-    print '<td class="liste_titre" align="right">';
-    print '<input type="image" value="button_search" class="liste_titre" src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/search.png" name="button_search" value="'.dol_escape_htmltag($langs->trans("Search")).'" title="'.dol_escape_htmltag($langs->trans("Search")).'">';
-    print '&nbsp; ';
-    print '<input type="image" value="button_removefilter" class="liste_titre" src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/searchclear.png" name="button_removefilter" value="'.dol_escape_htmltag($langs->trans("RemoveFilter")).'" title="'.dol_escape_htmltag($langs->trans("RemoveFilter")).'">';
-    print '</td>';
-    print '</tr>';
-
-    $var=True;
+    print'<tbody>';
     while ($i < min($num,$limit))
     {
         $obj = $db->fetch_object($result);
@@ -420,10 +348,8 @@ if ($result)
         print "</tr>\n";
         $i++;
     }
-
+    print'</tbody>';
     print "</table>";
-
-    print '</form>';
 
     if ($num > $limit) print_barre_liste('' ,$page, "index.php", '&amp;begin='.$begin.'&amp;view='.$view.'&amp;userid='.$_GET["userid"], $sortfield, $sortorder,'',$num,$nbtotalofrecords, '');
 
@@ -435,8 +361,55 @@ else
 }
 
 print '<br>';
-
 $db->close();
 
 llxFooter('$Date: 2011/07/31 23:54:12 $ - $Revision: 1.106 $');
 ?>
+<script type="text/javascript" src="lib/datatables/js/jquery.dataTables.js"></script>           
+<script type="text/javascript" src="lib/datatables/js/TableTools.js"></script>           
+<script type="text/javascript" src="lib/datatables/js/ZeroClipboard.js"></script>           
+
+<script  type="text/javascript">
+  
+				/* Init DataTables */
+				 
+                                 $(document).ready(function() {
+                                     
+                                    $('#liste').dataTable( {
+                                    "sDom": 'T<"clear">lfrtip',
+                                    "bPaginate": false,
+                                    "oTableTools": {
+                                            "sSwfPath": "lib/datatables/swf/copy_cvs_xls_pdf.swf",
+                                            "aButtons": [
+                                                    "xls"	
+                                            ]
+                                    }     
+                                    });
+                                 });    
+                              
+                              // color for hide/display
+                                $("a.visibility").toggle(
+                                function()
+                                {$(this).css("color", "gray");
+                                   $(this).text();
+                                   
+                                },
+                                function()
+                                {
+                                    $(this).css("color", "blue");
+                                    $(this).text(origin);
+                                }
+                                );
+                             //show/hide by column num        
+                            function fnShowHide( iCol )
+                            {
+                                // Get the DataTables object again - this is not a recreation, just a get of the object 
+                                var oTable = $('#liste').dataTable();
+                                var test = oTable.fnSettings(iCol).get;
+                                var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
+                                 oTable.fnSetColumnVis( iCol, bVis ? false : true );
+                                 
+                            }
+			
+</script>
+   
