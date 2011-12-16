@@ -27,13 +27,17 @@ $(document).ready(function() {
     $('#liste').dataTable( {
         "sDom": 'T<"clear">lfrtip',
         "bPaginate": false,
+
+        "oLanguage": { "sUrl": "../lib/datatables/langs/datatable_fr.txt" },
         "oTableTools": {
             "sSwfPath": "../lib/datatables/swf/copy_cvs_xls_pdf.swf",
             "aButtons": [
             "xls"	
             ]
-        }     
+        }
+       
     });
+    
 });    
                               
 // color for hide/display
@@ -54,7 +58,8 @@ function fnShowHide( iCol )
     var oTable = $('#liste').dataTable();
     var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
     oTable.fnSetColumnVis( iCol, bVis ? false : true );
-}   
+}
+
 
 
 
