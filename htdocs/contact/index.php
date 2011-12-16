@@ -34,7 +34,6 @@ echo'<link rel="stylesheet" type="text/css" href="'.dol_buildpath("/lib/datatabl
 $langs->load("companies");
 $langs->load("suppliers");
 $langs->load('commercial');
-
 // Security check
 $contactid = isset($_GET["id"])?$_GET["id"]:'';
 if ($user->societe_id) $socid=$user->societe_id;
@@ -50,7 +49,7 @@ $sall=GETPOST("contactname");
 $sortfield = GETPOST("sortfield");
 $sortorder = GETPOST("sortorder");
 $page = GETPOST("page");
-
+$t = $conf->global->MAIN_LANG_DEFAULT; //ici 
 if (! $sortorder) $sortorder="ASC";
 if (! $sortfield) $sortfield="p.name";
 if ($page < 0) { $page = 0 ; }
@@ -144,15 +143,15 @@ $result = $db->query($sql);
 if ($result)
 {
 	$contactstatic=new Contact($db);
-
+    
     $begin=$_GET["begin"];
-    $param ='&begin='.urlencode($begin).'&view='.urlencode($view).'&userid='.urlencode($_GET["userid"]).'&contactname='.urlencode($sall);
+    $param ='&lang='.urlencode($_GET['lang']); // add lang for the datatable
+    $param.='&begin='.urlencode($begin).'&view='.urlencode($view).'&userid='.urlencode($_GET["userid"]).'&contactname='.urlencode($sall);
     $param.='&type='.urlencode($type).'&view='.urlencode($view);
 	if ($search_priv == '0' || $search_priv == '1') $param.="&search_priv=".urlencode($search_priv);
 
 	$num = $db->num_rows($result);
     $i = 0;
-
     print_barre_liste($titre ,$page, "index.php",$param, $sortfield, $sortorder,'',$num,$nbtotalofrecords);
 
  
@@ -339,6 +338,6 @@ print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/jq
 print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/TableTools.js",1).'"></script>';           
 print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/ZeroClipboard.js",1).'"></script>';           
 print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/initDatatables.js",1).'"></script>';    
-        
+      
 ?>
    

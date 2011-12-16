@@ -23,11 +23,14 @@
  */	 
 
 $(document).ready(function() {
-                        
+     //get the lang 
+     var tabs = location.search.substring(1).split("&");
+     lang = tabs[1].substr(5,5);
+    //init dataTable
     $('#liste').dataTable( {
         "sDom": 'T<"clear">lfrtip',
         "bPaginate": false,
-        "oLanguage": { "sUrl": "../lib/datatables/langs/datatable_fr.txt" },
+        "oLanguage": {"sUrl": "../lib/datatables/langs/"+lang+".txt"},
         "oTableTools": {
             "sSwfPath": "../lib/datatables/swf/copy_cvs_xls_pdf.swf",
             "aButtons": [
