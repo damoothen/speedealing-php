@@ -29,8 +29,8 @@
  */
 require("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
-echo'<link rel="stylesheet" type="text/css" href="lib/datatables/css/datatable.css"/>';
-echo'<link rel="stylesheet" type="text/css" href="lib/datatables/css/TableTools.css"/>';
+echo'<link rel="stylesheet" type="text/css" href="'.dol_buildpath("/lib/datatables/css/datatable.css",1).'"/>';
+echo'<link rel="stylesheet" type="text/css" href="'.dol_buildpath("/lib/datatables/css/TableTools.css",1).'"/>';
 $langs->load("companies");
 $langs->load("suppliers");
 $langs->load('commercial');
@@ -39,6 +39,7 @@ $langs->load('commercial');
 $contactid = isset($_GET["id"])?$_GET["id"]:'';
 if ($user->societe_id) $socid=$user->societe_id;
 $result = restrictedArea($user, 'contact', $contactid,'');
+
 
 $search_nom=GETPOST("search_nom");
 $search_prenom=GETPOST("search_prenom");
@@ -51,13 +52,11 @@ $search_phonemob=GETPOST("search_phonemob");
 $search_fax=GETPOST("search_fax");
 $search_email=GETPOST("search_email");
 $search_priv=GETPOST("search_priv");
-$search_cp=GETPOST("search_cp");
-
 
 $type=GETPOST("type");
 $view=GETPOST("view");
-
 $sall=GETPOST("contactname");
+// for pagination
 $sortfield = GETPOST("sortfield");
 $sortorder = GETPOST("sortorder");
 $page = GETPOST("page");
@@ -92,26 +91,6 @@ if ($view == 'phone')  { $text=" (Vue Telephones)"; }
 if ($view == 'mail')   { $text=" (Vue EMail)"; }
 if ($view == 'recent') { $text=" (Recents)"; }
 $titre = $titre." $text";
-
-if ($_POST["button_removefilter"])
-{
-    $search_nom="";
-    $search_prenom="";
-    $search_societe="";
-    $search_poste="";
-    $search_phone="";
-    $search_phoneper="";
-    $search_phonepro="";
-    $search_phonemob="";
-    $search_fax="";
-    $search_email="";
-    $search_priv="";
-    $search_cp="";
-    $sall="";
-}
-if ($search_priv < 0) $search_priv='';
-
-
 
 /*
  * View
@@ -184,7 +163,7 @@ if ($result)
 	$num = $db->num_rows($result);
     $i = 0;
 
-    print_barre_liste($titre ,$page, "index.php", $param, $sortfield, $sortorder,'',$num,$nbtotalofrecords);
+    print_barre_liste($titre ,$page, "index.php",$param, $sortfield, $sortorder,'',$num,$nbtotalofrecords);
 
  
     //links for hide/show
@@ -279,10 +258,10 @@ if ($result)
 
         $var=!$var;
 
-        print "<tr $bc[$var]>";
+        print "<tr>";
 
 		// Name
-		print '<td valign="middle">';
+		print '<td>';
 		$contactstatic->name=$obj->name;
 		$contactstatic->firstname='';
 		$contactstatic->id=$obj->cidp;
@@ -328,14 +307,14 @@ if ($result)
             print '<td>'.dol_print_email($obj->email,$obj->cidp,$obj->socid,'AC_EMAIL',18).'</td>';
         }
 
-		// CP
-		print '<td align="center">'.$obj->cpost.'</td>';
+	// CP
+	print '<td align="center">'.$obj->cpost.'</td>';
 
-		// Date
-		print '<td align="center">'.dol_print_date($db->jdate($obj->tms),"day").'</td>';
+	// Date
+	print '<td align="center">'.dol_print_date($db->jdate($obj->tms),"day").'</td>';
 
-		// Private/Public
-		print '<td align="center">'.$contactstatic->LibPubPriv($obj->priv).'</td>';
+	// Private/Public
+	print '<td align="center">'.$contactstatic->LibPubPriv($obj->priv).'</td>';
 
 		// Links Add action and Export vcard
         print '<td align="right">';
@@ -364,52 +343,11 @@ print '<br>';
 $db->close();
 
 llxFooter('$Date: 2011/07/31 23:54:12 $ - $Revision: 1.106 $');
-?>
-<script type="text/javascript" src="lib/datatables/js/jquery.dataTables.js"></script>           
-<script type="text/javascript" src="lib/datatables/js/TableTools.js"></script>           
-<script type="text/javascript" src="lib/datatables/js/ZeroClipboard.js"></script>           
 
-<script  type="text/javascript">
-  
-				/* Init DataTables */
-				 
-                                 $(document).ready(function() {
-                                     
-                                    $('#liste').dataTable( {
-                                    "sDom": 'T<"clear">lfrtip',
-                                    "bPaginate": false,
-                                    "oTableTools": {
-                                            "sSwfPath": "lib/datatables/swf/copy_cvs_xls_pdf.swf",
-                                            "aButtons": [
-                                                    "xls"	
-                                            ]
-                                    }     
-                                    });
-                                 });    
-                              
-                              // color for hide/display
-                                $("a.visibility").toggle(
-                                function()
-                                {$(this).css("color", "gray");
-                                   $(this).text();
-                                   
-                                },
-                                function()
-                                {
-                                    $(this).css("color", "blue");
-                                    $(this).text(origin);
-                                }
-                                );
-                             //show/hide by column num        
-                            function fnShowHide( iCol )
-                            {
-                                // Get the DataTables object again - this is not a recreation, just a get of the object 
-                                var oTable = $('#liste').dataTable();
-                                var test = oTable.fnSettings(iCol).get;
-                                var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
-                                 oTable.fnSetColumnVis( iCol, bVis ? false : true );
-                                 
-                            }
-			
-</script>
+//import datatables lib
+print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/jquery.dataTables.js",1).'"></script>';           
+print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/TableTools.js",1).'"></script>';           
+print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/ZeroClipboard.js",1).'"></script>';           
+print'<script type="text/javascript" src="js/initDatatables.js"></script>';           
+?>
    
