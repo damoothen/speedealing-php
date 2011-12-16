@@ -1762,6 +1762,26 @@ class ContratLigne
 	{
 		global $conf, $langs;
 
+                // Calcul du total TTC et de la TVA pour la ligne a partir de
+		// qty, pu, remise_percent et txtva
+		// TRES IMPORTANT: C'est au moment de l'insertion ligne qu'on doit stocker
+		// la part ht, tva et ttc, et ce au niveau de la ligne qui a son propre taux tva.
+		$tabprice=calcul_price_total($this->qty, $this->price_ht, $this->remise_percent, $this->tva_tx, $this->localtax1_tx, $this->localtax2_tx, 0, 'HT', 0);
+		$this->total_ht  = $tabprice[0];
+		$this->total_tva = $tabprice[1];
+		$this->total_ttc = $tabprice[2];
+		$this->total_localtax1= $tabprice[9];
+		$this->total_localtax2= $tabprice[10];
+		// TODO A virer
+		// Anciens indicateurs: $price, $remise (a ne plus utiliser)
+		//$remise = 0;
+		//$price = price2num(round($pu_ht, 2));
+		//if (dol_strlen($remise_percent) > 0)
+		//{
+		//	$remise = round(($pu_ht * $remise_percent / 100), 2);
+		//	$price = $pu_ht - $remise;
+		//}
+                
 		// Clean parameters
 		$this->fk_contrat=trim($this->fk_contrat);
 		$this->fk_product=trim($this->fk_product);
