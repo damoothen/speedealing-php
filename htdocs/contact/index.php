@@ -41,17 +41,7 @@ if ($user->societe_id) $socid=$user->societe_id;
 $result = restrictedArea($user, 'contact', $contactid,'');
 
 
-$search_nom=GETPOST("search_nom");
-$search_prenom=GETPOST("search_prenom");
-$search_societe=GETPOST("search_societe");
-$search_poste=GETPOST("search_poste");
-$search_phone=GETPOST("search_phone");
-$search_phoneper=GETPOST("search_phoneper");
-$search_phonepro=GETPOST("search_phonepro");
-$search_phonemob=GETPOST("search_phonemob");
-$search_fax=GETPOST("search_fax");
-$search_email=GETPOST("search_email");
-$search_priv=GETPOST("search_priv");
+
 
 $type=GETPOST("type");
 $view=GETPOST("view");
@@ -157,7 +147,7 @@ if ($result)
 
     $begin=$_GET["begin"];
     $param ='&begin='.urlencode($begin).'&view='.urlencode($view).'&userid='.urlencode($_GET["userid"]).'&contactname='.urlencode($sall);
-    $param.='&type='.urlencode($type).'&view='.urlencode($view).'&search_nom='.urlencode($search_nom).'&search_prenom='.urlencode($search_prenom).'&search_societe='.urlencode($search_societe).'&search_email='.urlencode($search_email).'&search_cp='.urlencode($search_cp);
+    $param.='&type='.urlencode($type).'&view='.urlencode($view);
 	if ($search_priv == '0' || $search_priv == '1') $param.="&search_priv=".urlencode($search_priv);
 
 	$num = $db->num_rows($result);
@@ -348,6 +338,7 @@ llxFooter('$Date: 2011/07/31 23:54:12 $ - $Revision: 1.106 $');
 print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/jquery.dataTables.js",1).'"></script>';           
 print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/TableTools.js",1).'"></script>';           
 print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/ZeroClipboard.js",1).'"></script>';           
-print'<script type="text/javascript" src="js/initDatatables.js"></script>';           
+print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/initDatatables.js",1).'"></script>';    
+        
 ?>
    

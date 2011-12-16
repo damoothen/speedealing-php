@@ -21,6 +21,7 @@
  *		\brief      Page to list all contacts
  *		\version    $Id: index.php,v 1.106 2011/12/14 23:54:12 synry63 Exp $
  */	 
+
 $(document).ready(function() {
                                      
     $('#liste').dataTable( {
