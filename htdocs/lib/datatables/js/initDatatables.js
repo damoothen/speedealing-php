@@ -27,7 +27,6 @@ $(document).ready(function() {
     $('#liste').dataTable( {
         "sDom": 'T<"clear">lfrtip',
         "bPaginate": false,
-
         "oLanguage": { "sUrl": "../lib/datatables/langs/datatable_fr.txt" },
         "oTableTools": {
             "sSwfPath": "../lib/datatables/swf/copy_cvs_xls_pdf.swf",
