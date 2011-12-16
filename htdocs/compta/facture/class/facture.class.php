@@ -1991,14 +1991,14 @@ class Facture extends CommonObject
             
             if($conf->global->PRODUCT_USE_ECOTAX)
             {
-                if($pu>=0)
+                if($pu_ht>=0)
                 {
-                    $pu-=$ecotax;
+                    $pu_ht-=$ecotax;
                     $total_ht-=$qty*$ecotax;
                 }
                 else
                 {
-                    $pu+=$ecotax;
+                    $pu_ht+=$ecotax;
                     $total_ht+=$qty*$ecotax;
                 }
             }

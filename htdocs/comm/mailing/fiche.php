@@ -177,10 +177,10 @@ if ($_REQUEST["action"] == 'sendallconfirmed' && $_REQUEST['confirm'] == 'yes')
 					// Make substitutions on topic and body. From (AA=YY;BB=CC;...) we keep YY, CC, ...
 					$other=explode(';',$obj->other);
 					$tmpfield=explode('=',$other[0],2); $other1=(isset($tmpfield[1])?$tmpfield[1]:$tmpfield[0]);
-                                        $tmpfield=explode('=',$other[1],2); $other2=(isset($tmpfield[1])?$tmpfield[1]:$tmpfield[0]);
-                                        $tmpfield=explode('=',$other[2],2); $other3=(isset($tmpfield[1])?$tmpfield[1]:$tmpfield[0]);
-                                        $tmpfield=explode('=',$other[3],2); $other4=(isset($tmpfield[1])?$tmpfield[1]:$tmpfield[0]);
-                                        $tmpfield=explode('=',$other[4],2); $other5=(isset($tmpfield[1])?$tmpfield[1]:$tmpfield[0]);
+                    $tmpfield=explode('=',$other[1],2); $other2=(isset($tmpfield[1])?$tmpfield[1]:$tmpfield[0]);
+                    $tmpfield=explode('=',$other[2],2); $other3=(isset($tmpfield[1])?$tmpfield[1]:$tmpfield[0]);
+                    $tmpfield=explode('=',$other[3],2); $other4=(isset($tmpfield[1])?$tmpfield[1]:$tmpfield[0]);
+                    $tmpfield=explode('=',$other[4],2); $other5=(isset($tmpfield[1])?$tmpfield[1]:$tmpfield[0]);
 					$substitutionarray=array(
 						'__ID__' => $obj->source_id,
                                                 '__CAMPAGNEID__'=> $id,
@@ -440,38 +440,24 @@ if ($_REQUEST["action"] == 'setdesc' || $_REQUEST["action"] == 'setfrom' || $_RE
 	$_GET["id"]=$_REQUEST["id"];
 }
 
-/*
- * Add file in email form
- */
-if (! empty($_POST['addfile']))
-{
-	$mil = new Mailing($db);
-	$mil->fetch($_POST["id"]);
-
-	$upload_dir = $conf->mailing->dir_output . "/" . get_exdir($mil->id,2,0,1);
-	
-	require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
-
-    // Set tmp user directory
-    $mesg=dol_add_file_process($upload_dir,0,0);
-
-	$_POST["action"]=$_GET["action"]="edit";
-	$_GET["id"]=$_POST["id"];
-}
-
 // Action update emailing
-if (! empty($_POST["removedfile"]))
+if (! empty($_POST["removedfileid"]))
 {
 	$mil = new Mailing($db);
 	$mil->fetch($_POST["id"]);
 
 	$upload_dir = $conf->mailing->dir_output . "/" . get_exdir($mil->id,2,0,1);
 
-	require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
+	$listofpaths=dol_dir_list($upload_dir,'all',0,'','','name',SORT_ASC,0);
 
-    $mesg=dol_remove_file_process($_POST['removedfile'],0);
+	// Remove file
+	$filenb=($_POST["removedfileid"]-1);
+	if (isset($listofpaths[$filenb]))
+	{
+		$result=dol_delete_file($listofpaths[$filenb]['fullname'],1);
+	}
 
-	$_POST["action"]=$_GET["action"]="edit";
+	$_GET["action"]="edit";
 	$_GET["id"]=$_POST["id"];
 }
 
@@ -484,6 +470,15 @@ if ($_POST["action"] == 'update' && empty($_POST["removedfile"]) && empty($_POST
 	$mil->fetch($_POST["id"]);
 
 	$isupload=0;
+
+	// If upload file
+	if (! empty($_POST["addfile"]) && ! empty($conf->global->MAIN_UPLOAD_DOC))
+	{
+		$isupload=1;
+		$upload_dir = $conf->mailing->dir_output."/".get_exdir($mil->id,2,0,1);
+
+		$mesg=dol_add_file_process($upload_dir,0,1);
+	}
 
 	if (! $isupload)
 	{
@@ -653,8 +648,8 @@ if ($_GET["action"] == 'create')
 	print '<td>';
 	// Editeur wysiwyg
 	require_once(DOL_DOCUMENT_ROOT."/lib/doleditor.class.php");
-        if(empty($_POST['body'])) $body='<br /><br /><br /><font face="Verdana, Helvetica, sans-serif" size="1">Pour ne plus recevoir de mailing, <a href="'.DOL_MAIN_URL_ROOT.'/public/mailing/desinscription?nom='.$conf->global->MAIN_INFO_SOCIETE_NOM.'&mail=__EMAIL__&id=__ID__&rowid=__CAMPAGNEID__'.'" target="_blank">désinscrivez vous</a> de la newsletter. (__EMAIL__) </font>';
-        else $body=$_POST['body'];
+    if(empty($_POST['body'])) $body='<br /><br /><br /><font face="Verdana, Helvetica, sans-serif" size="1">Pour ne plus recevoir de mailing, <a href="'.DOL_MAIN_URL_ROOT.'/public/mailing/desinscription?nom='.$conf->global->MAIN_INFO_SOCIETE_NOM.'&mail=__EMAIL__&id=__ID__&rowid=__CAMPAGNEID__'.'" target="_blank">désinscrivez vous</a> de la newsletter. (__EMAIL__) </font>';
+    else $body=$_POST['body'];
 	$doleditor=new DolEditor('body',$body,'',320,'dolibarr_mailings','',true,true,$conf->fckeditor->enabled && $conf->global->FCKEDITOR_ENABLE_MAILING,20,70);
 	$doleditor->Create();
 	print '</td></tr>';
@@ -674,7 +669,7 @@ else
 
 		dol_fiche_head($head, 'card', $langs->trans("Mailing"), 0, 'email');
 
-		dol_htmloutput_mesg($message);
+		if ($message) print $message."<br>";
 
 		// Confirmation de la validation du mailing
 		if ($_GET["action"] == 'valid')
@@ -764,7 +759,7 @@ else
 			print '<tr><td width="25%">';
 			print $langs->trans("TotalNbOfDistinctRecipients");
 			print '</td><td colspan="3">';
-			$nbemail = ($mil->nbemail?$mil->nbemail:img_warning('').' <font class="warning">'.$langs->trans("NoTargetYet").'</font>');
+			$nbemail = ($mil->nbemail?$mil->nbemail:'<font class="error">'.$langs->trans("NoTargetYet").'</font>');
 			if (!empty($conf->global->MAILING_LIMIT_SENDBYWEB) && is_numeric($nbemail) && $conf->global->MAILING_LIMIT_SENDBYWEB < $nbemail)
 			{
 				if ($conf->global->MAILING_LIMIT_SENDBYWEB > 0)
@@ -839,11 +834,11 @@ else
 				{
 					if ($mil->nbemail <= 0)
 					{
-						print '<a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->transnoentitiesnoconv("NoTargetYet")).'">'.$langs->trans("ValidMailing").'</a>';
+						print '<a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NoTargetYet")).'">'.$langs->trans("ValidMailing").'</a>';
 					}
 					else if (empty($user->rights->mailing->valider))
 					{
-						print '<a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->transnoentitiesnoconv("NotEnoughPermissions")).'">'.$langs->trans("ValidMailing").'</a>';
+						print '<a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("ValidMailing").'</a>';
 					}
 					else
 					{
@@ -855,7 +850,7 @@ else
 				{
 					if ($conf->global->MAILING_LIMIT_SENDBYWEB < 0)
 					{
-						print '<a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->transnoentitiesnoconv("NotEnoughPermissions")).'">'.$langs->trans("SendMailing").'</a>';
+						print '<a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("SendMailing").'</a>';
 					}
 					else
 					{
@@ -912,6 +907,12 @@ else
 				$formmail->param["mailid"]=$mil->id;
 				$formmail->param["returnurl"]=DOL_URL_ROOT."/comm/mailing/fiche.php?id=".$mil->id;
 
+				// Init list of files
+				if (! empty($_REQUEST["mode"]) && $_REQUEST["mode"]=='init')
+				{
+					$formmail->clear_attached_files();
+				}
+
 				$formmail->show_form();
 
 				print '<br>';
@@ -925,22 +926,29 @@ else
 			print '<tr><td width="25%">'.$langs->trans("MailTopic").'</td><td colspan="3">'.$mil->sujet.'</td></tr>';
 
 			// Joined files
-			print '<tr><td>'.$langs->trans("MailFile").'</td><td colspan="3">';
-			// List of files
-			$listofpaths=dol_dir_list($upload_dir,'all',0,'','','name',SORT_ASC,0);
-			if (count($listofpaths))
-			{
-				foreach($listofpaths as $key => $val)
+			$i='';
+			//$i=0;
+			//while ($i < 4)
+			//{
+			//	$i++;
+				//$property='joined_file'.$i;
+				print '<tr><td>'.$langs->trans("MailFile").' '.$i.'</td><td colspan="3">';
+				// List of files
+				$listofpaths=dol_dir_list($upload_dir,'all',0,'','','name',SORT_ASC,0);
+				if (sizeof($listofpaths))
 				{
-					print img_mime($listofpaths[$key]['name']).' '.$listofpaths[$key]['name'];
-					print '<br>';
+					foreach($listofpaths as $key => $val)
+					{
+						print img_mime($listofpaths[$key]['name']).' '.$listofpaths[$key]['name'];
+						print '<br>';
+					}
 				}
-			}
-			else
-			{
-				print $langs->trans("NoAttachedFiles").'<br>';
-			}
-			print '</td></tr>';
+				else
+				{
+					print $langs->trans("NoAttachedFiles").'<br>';
+				}
+				print '</td></tr>';
+			//}
 
             // Background color
             /*print '<tr><td width="25%">'.$langs->trans("BackgroundColorByDefault").'</td><td colspan="3">';
@@ -1008,43 +1016,40 @@ else
 			// Subject
 			print '<tr><td width="25%" class="fieldrequired">'.$langs->trans("MailTopic").'</td><td colspan="3"><input class="flat" type="text" size=60 name="sujet" value="'.$mil->sujet.'"></td></tr>';
 
-			dol_init_file_process($upload_dir);
-			
 			// Joined files
-			$addfileaction='addfile';
-			print '<tr><td>'.$langs->trans("MailFile").'</td>';
-			print '<td colspan="3">';
-			// List of files
-			$listofpaths=dol_dir_list($upload_dir,'all',0,'','','name',SORT_ASC,0);
-			// TODO Trick to have param removedfile containing nb of image to delete. But this does not works without javascript
-			$out.= '<input type="hidden" class="removedfilehidden" name="removedfile" value="">'."\n";
-			$out.= '<script type="text/javascript" language="javascript">';
-			$out.= 'jQuery(document).ready(function () {';
-			$out.= '    jQuery(".removedfile").click(function() {';
-			$out.= '        jQuery(".removedfilehidden").val(jQuery(this).val());';
-			$out.= '    });';
-			$out.= '})';
-			$out.= '</script>'."\n";
-			if (count($listofpaths))
-			{
-				foreach($listofpaths as $key => $val)
+			$i='';
+			//$i=0;
+			//while ($i < 4)
+			//{
+			//	$i++;
+				//$property='joined_file'.$i;
+				print '<tr><td>'.$langs->trans("MailFile").' '.$i.'</td>';
+				print '<td colspan="3">';
+				// List of files
+				$listofpaths=dol_dir_list($upload_dir,'all',0,'','','name',SORT_ASC,0);
+				if (sizeof($listofpaths))
 				{
-					$out.= '<div id="attachfile_'.$key.'">';
-					$out.= img_mime($listofpaths[$key]['name']).' '.$listofpaths[$key]['name'];
-					$out.= ' <input type="image" style="border: 0px;" src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/delete.png" value="'.($key+1).'" class="removedfile" id="removedfile_'.$key.'" name="removedfile_'.$key.'" />';
-					$out.= '<br></div>';
+					foreach($listofpaths as $key => $val)
+					{
+						print img_mime($listofpaths[$key]['name']).' '.$listofpaths[$key]['name'];
+						print ' <input type="image" style="border: 0px;" src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/delete.png" value="removedfile" name="removedfile" />';
+						print '<input type="hidden" name="removedfileid" value="'.($key+1).'" />';
+						print '<br>';
+					}
 				}
-			}
-			else
-			{
-				$out.= $langs->trans("NoAttachedFiles").'<br>';
-			}
-			// Add link to add file
-			$out.= '<input type="file" class="flat" id="addedfile" name="addedfile" value="'.$langs->trans("Upload").'" />';
-			$out.= ' ';
-			$out.= '<input type="submit" class="button" id="'.$addfileaction.'" name="'.$addfileaction.'" value="'.$langs->trans("MailingAddFile").'" />';
-			print $out;
-			print '</td></tr>';
+				else
+				{
+					print $langs->trans("NoAttachedFiles").'<br>';
+				}
+				// Add link to add file
+				print '<input type="file" class="flat" name="addedfile'.$i.'" value="'.$langs->trans("Upload").'"/>';
+				print ' ';
+				print '<input type="submit" class="button" name="addfile'.$i.'" value="'.$langs->trans("MailingAddFile").'">';
+				//print $mil->$property?'<br>'.$mil->$property:'';
+
+
+				print '</td></tr>';
+			//}
 
 		    // Background color
 			print '<tr><td width="25%">'.$langs->trans("BackgroundColorByDefault").'</td><td colspan="3">';
@@ -1088,22 +1093,8 @@ else
 		dol_print_error($db,$mil->error);
 	}
 
- }
-
-//mailjet statistic array
-if($conf->mailjet->enabled && isset ($_GET['id'])){
-    // verif if campaign sent
-    $sql = "SELECT * FROM llx_mailing WHERE rowid =".$_GET['id'];
-    $sql.=" AND (statut =3 OR statut =2)";
-    $result=$db->query($sql);
-    if($db->num_rows($result)==1){
-        dol_include_once('/mailjet/class/mailjet.class.php');
-        $mailJet = new Mailjet($db);
-       
-    }
-}
 
 $db->close();
-
+}
 llxFooter('$Date: 2011/08/03 00:46:33 $ - $Revision: 1.123 $');
 ?>
