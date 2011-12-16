@@ -23,7 +23,7 @@
  */	 
 
 $(document).ready(function() {
-                                     
+                        
     $('#liste').dataTable( {
         "sDom": 'T<"clear">lfrtip',
         "bPaginate": false,
@@ -55,5 +55,6 @@ function fnShowHide( iCol )
     var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
     oTable.fnSetColumnVis( iCol, bVis ? false : true );
 }   
+
 
 

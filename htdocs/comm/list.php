@@ -4,6 +4,7 @@
  * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2011      Philippe Grand       <philippe.grand@atoo-net.com>
  * Copyright (C) 2011      Herve Prot           <herve.prot@symeos.com>
+ * Copyright (C) 2011      Patrick Mary           <laube@hotmail.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +30,9 @@
 require("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/comm/prospect/class/prospect.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formother.class.php");
+echo'<link rel="stylesheet" type="text/css" href="'.dol_buildpath("/lib/datatables/css/datatable.css",1).'"/>';
+echo'<link rel="stylesheet" type="text/css" href="'.dol_buildpath("/lib/datatables/css/TableTools.css",1).'"/>';
+
 
 $langs->load("companies");
 $langs->load("customers");
@@ -40,13 +44,9 @@ $socid = GETPOST("socid");
 if ($user->societe_id) $socid=$user->societe_id;
 $result = restrictedArea($user, 'societe',$socid,'');
 
-$socname            = GETPOST("socname",'alpha');
 $pstcomm            = GETPOST("pstcomm");
 $type               = GETPOST("type",'int');
 $search_nom         = GETPOST("search_nom");
-$search_ville       = GETPOST("search_ville");
-$search_departement = GETPOST("search_departement");
-$search_datec       = GETPOST("search_datec");
 
 $sortfield = GETPOST("sortfield",'alpha');
 $sortorder = GETPOST("sortorder",'alpha');
@@ -191,9 +191,6 @@ if ($search_categ) $sql.= " AND s.rowid = cs.fk_societe";	// Join for the needed
 if (isset($pstcomm) && $pstcomm != '') $sql.= " AND s.fk_stcomm=".$pstcomm;
 
 if ($search_nom)   $sql .= " AND s.nom like '%".$db->escape(strtolower($search_nom))."%'";
-if ($search_ville) $sql .= " AND s.ville like '%".$db->escape(strtolower($search_ville))."%'";
-if ($search_departement) $sql .= " AND d.nom like '%".$db->escape(strtolower($search_departement))."%'";
-if ($search_datec) $sql .= " AND s.datec LIKE '%".$db->escape($search_datec)."%'";
 // Insert levels filters
 if ($search_levels)
 {
@@ -209,16 +206,7 @@ if ($search_categ)
 {
 	$sql .= " AND cs.fk_categorie = ".$db->escape($search_categ);
 }
-if ($search_cp)
-{
-        $sql .= " AND s.cp LIKE '".$db->escape($search_cp)."%'";
-}
-if ($socname)
-{
-	$sql .= " AND s.nom like '%".$db->escape($socname)."%'";
-	$sortfield = "s.nom";
-	$sortorder = "ASC";
-}
+
 
 // Count total nb of records
 $nbtotalofrecords = 0;
@@ -287,13 +275,12 @@ if ($resql)
                 
         
 	print_barre_liste($titre, $page, $_SERVER["PHP_SELF"],$param,$sortfield,$sortorder,'',$num,$nbtotalofrecords);
-
+        
 
  	// Print the search-by-sale and search-by-categ filters
  	print '<form method="get" action="list.php" id="formulaire_recherche">';
-
-	print '<table class="liste" width="100%">';
-
+        
+        print '<table cellpadding="2" cellspacing="1" border="0">';
 	// Filter on categories
  	$moreforfilter='';
 	if ($conf->categorie->enabled)
@@ -315,20 +302,77 @@ if ($resql)
 	    print $moreforfilter;
 	    print '</td></tr>';
 	}
+        print'</table>';
+        
+          //links for hide/show
+    print '<table cellpadding="2" cellspacing="1" border="1">';
+        print'<tr>';
+            print'<td>';
+                 print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(0);">'.$langs->trans("Company").'</a>';
+           print'</td>';
+            print'<td>';
+                 print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(1);">'.$langs->trans("Town").'</a>';
+            print'</td>';
+            if(empty($conf->global->SOCIETE_DISABLE_STATE)){
+                print'<td>';
+                     print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(2);">'.$langs->trans("State").'</a>';
+                print'</td>';
+            }
+             print'<td>';
+                 print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(3);">'.$langs->trans("Zip").'</a>';
+            print'</td>';
+            print'<td>';
+                 print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(4);">'.$langs->trans("DateCreation").'</a>';
+            print'</td>';
+            print'<td>';
+                 print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(5);">'.$langs->trans("ProspectLevelShort").'</a>';
+            print'</td>';
+            print'<td>';
+                 print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(6);">'.$langs->trans("StatusProsp").'</a>';
+            print'</td>';
+            print'<td>';
+                 print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(7);">'.$langs->trans("Status").'</a>';
+            print'</td>';
+            
+        print'</tr>';
+        print'</table>';        
+  
+        
+    print '<table cellpadding="0" cellspacing="0" border="0" class="display" id="liste">';    
+    // Ligne des titres 
+    print'<thead>';
+    print '<tr>';
+    print'<th class="sorting">';
+    print $langs->trans("Company");
+    print'</th>';
+    print'<th class="sorting">';
+    print $langs->trans("Town");
+    print'</th>';
+    if(empty($conf->global->SOCIETE_DISABLE_STATE)){
+         print'<th class="sorting">';
+         print $langs->trans("State");
+         print'</th>';
+    }
+    print'<th class="sorting">';
+    print $langs->trans("Zip");
+    print'</th>';
+    print'<th class="sorting">';
+    print $langs->trans("DateCreation");
+    print'</th>';
+    print'<th class="sorting">';
+    print $langs->trans("ProspectLevelShort");
+    print'</th>';
+    print'<th class="sorting">';
+    print $langs->trans("StatusProsp");
+    print'</th>';
+    print'<th class="sorting">';
+    print $langs->trans("Status");
+    print'</th>';
+    print'<th class="sorting">';
+    print '&nbsp;';
+    print'</th>';
 
-	print '<tr class="liste_titre">';
-	print_liste_field_titre($langs->trans("Company"),"list.php","s.nom","",$param,'',$sortfield,$sortorder);
-	print_liste_field_titre($langs->trans("Town"),"list.php","s.ville","",$param,"",$sortfield,$sortorder);
-        if (empty($conf->global->SOCIETE_DISABLE_STATE))
-            print_liste_field_titre($langs->trans("State"),"list.php","s.fk_departement","",$param,'align="center"',$sortfield,$sortorder);
-	print_liste_field_titre($langs->trans("Zip"),"list.php","cp","",$param,"align=\"left\"",$sortfield,$sortorder);
-	print_liste_field_titre($langs->trans("DateCreation"),"list.php","s.datec","",$param,'align="center"',$sortfield,$sortorder);
-	print_liste_field_titre($langs->trans("ProspectLevelShort"),"list.php","s.fk_prospectlevel","",$param,'align="center"',$sortfield,$sortorder);
-	print_liste_field_titre($langs->trans("StatusProsp"),"list.php","s.fk_stcomm","",$param,'align="center"',$sortfield,$sortorder);
-	print '<td class="liste_titre">&nbsp;</td>';
-        print_liste_field_titre($langs->trans("Status"),$_SERVER["PHP_SELF"],"s.status","",$params,'align="right"',$sortfield,$sortorder);
-	print "</tr>\n";
-
+    /*
 	print '<tr class="liste_titre">';
 	print '<td class="liste_titre">';
 	print '<input type="text" class="flat" name="search_nom" size="10" value="'.$search_nom.'">';
@@ -370,19 +414,19 @@ if ($resql)
  		$options_to .= $langs->trans($tab_level_label);
  		$options_to .= '</option>';
  	}
-
+        
  	// Print these two select
  	print $langs->trans("From").' <select class="flat" name="search_level_from">'.$options_from.'</select>';
  	print ' ';
  	print $langs->trans("To").' <select class="flat" name="search_level_to">'.$options_to.'</select>';
+ print '</td>';
 
-    print '</td>';
-
+   
     print '<td class="liste_titre" align="center">';
     print '<input type="hidden" class="flat" name="type" size="10" value="'.$type.'">';
     print $htmlother->select_stcomm($type,$pstcomm,'pstcomm');
     print '</td>';
-
+    
     print '<td class="liste_titre" align="center">';
     print '&nbsp;';
     print '</td>';
@@ -393,19 +437,19 @@ if ($resql)
     print '</td>';
 
     print "</tr>\n";
-
+*/
 	$i = 0;
 	$var=true;
 
 	$prospectstatic=new Prospect($db);
-
+        print'<tbody>';
 	while ($i < min($num,$conf->liste_limit))
 	{
 		$obj = $db->fetch_object($resql);
 
 		$var=!$var;
 
-		print '<tr '.$bc[$var].'>';
+		print '<tr>';
 		print '<td>';
 		$prospectstatic->id=$obj->rowid;
 		$prospectstatic->nom=$obj->nom;
@@ -444,9 +488,10 @@ if ($resql)
         print "</tr>\n";
 		$i++;
 	}
+        
 
 	if ($num > $conf->liste_limit || $page > 0) print_barre_liste('', $page, $_SERVER["PHP_SELF"],$param,$sortfield,$sortorder,'',$num,$nbtotalofrecords);
-
+        print'</tbody>';
 	print "</table>";
 
 	print "</form>";
@@ -461,4 +506,9 @@ else
 $db->close();
 
 llxFooter('$Date: 2011/08/08 16:15:05 $ - $Revision: 1.80 $');
+print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/jquery.dataTables.js",1).'"></script>';           
+print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/TableTools.js",1).'"></script>';           
+print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/ZeroClipboard.js",1).'"></script>';           
+print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/initDatatables.js",1).'"></script>';    
+
 ?>
