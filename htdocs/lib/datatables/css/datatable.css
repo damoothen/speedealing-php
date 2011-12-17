@@ -34,7 +34,6 @@
 .dataTables_wrapper {
 	position: relative;
 	min-height: 302px;
-        margin-top: -10px;
 	clear: both;
 	_height: 200px;
 	zoom: 1; /* Feeling sorry for IE */
@@ -65,11 +64,19 @@
 	width: 50%;
 	float: right;
 	text-align: right;
+        margin-bottom:2px;
+        color:#842F00;
+        font-size: 12px;
+        font-family:"Trebuchet MS",Arial,Helvetica,sans-serif;
+        font-weight: bold;
 }
 
 .dataTables_info {
 	width: 60%;
 	float: left;
+        font-size: 12px;
+        font-family:"Trebuchet MS",Arial,Helvetica,sans-serif;
+        font-weight: bold;
 }
 
 .dataTables_paginate {
@@ -108,8 +115,13 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * DataTables display
  */
-table.display {
-	margin: 0 auto;
+table.display { 
+        background-image: url('../../../theme/cameleo/img/bg_liste_titremenu.jpg');
+        background-position: top right;
+        background-repeat: repeat-x;
+        font-size: 12px;
+        border-radius : 10px 10px 10px 10px;
+        border : 1px solid #D0D0D0;
 	clear: both;
 	width: 100%;
 	
@@ -126,12 +138,36 @@ table.display {
 	 * then filling in the gaps with other borders.
 	 */
 }
+/* table hide/show column */
+table.hideshow{
+background-image: url('../../../theme/cameleo/img/bg_liste_titremenu.jpg');
+background-position: top right;
+background-repeat: repeat-x;
+border-radius : 10px 10px 10px 10px;
+border:1px solid #D0D0D0;
+    
+}
+
+table.hideshow tbody tr a{
+font-size: 12px;
+color:#842F00;
+font-family:"Trebuchet MS",Arial,Helvetica,sans-serif;
+}
+table.hideshow tbody tr td{
+border-radius : 10px 10px 10px 10px;
+padding : 1px 5px 1px 5px;
+}
+ /* END Table hide/show */
 
 table.display thead th {
 	padding: 3px 18px 3px 10px;
 	border-bottom: 1px solid black;
+        border-width:0px 0px 0px 0px;
 	font-weight: bold;
 	cursor: pointer;
+        color:#842F00;
+        font-family:"Trebuchet MS",Arial,Helvetica,sans-serif;
+
 	
 }
 
@@ -219,14 +255,27 @@ table.display tr.even.gradeU {
 }
 
 
-tr.odd {
-	background-color: #E2E4FF;
+tr.odd {    
+font-family:arial,tahoma,verdana,helvetica;
+background-color: #EAEAEA;
 }
 
+tr.odd:hover {    
+background-color: #C0C4C7;
+}
+tr.even:hover {    
+background-color: #C0C4C7;
+}
 tr.even {
-	background-color: white;
+font-family:arial,tahoma,verdana,helvetica;	
+background-color: white;
 }
-
+tr.odd a{
+font-family:arial,tahoma,verdana,helvetica;
+}
+tr.even a{
+font-family:arial,tahoma,verdana,helvetica;
+}
 
 
 
@@ -327,30 +376,6 @@ table.display tr.odd.row_selected td {
 /*
  * Sorting classes for columns
  */
-/* For the standard odd/even */
-tr.odd td.sorting_1 {
-	background-color: #D3D6FF;
-}
-
-tr.odd td.sorting_2 {
-	background-color: #DADCFF;
-}
-
-tr.odd td.sorting_3 {
-	background-color: #E0E2FF;
-}
-
-tr.even td.sorting_1 {
-	background-color: #EAEBFF;
-}
-
-tr.even td.sorting_2 {
-	background-color: #F2F3FF;
-}
-
-tr.even td.sorting_3 {
-	background-color: #F9F9FF;
-}
 
 
 /* For the Conditional-CSS grading rows */

@@ -156,7 +156,7 @@ if ($result)
 
  
     //links for hide/show
-    print '<table cellpadding="2" cellspacing="1" border="1">';
+    print '<table class="hideshow">';
         print'<tr>';
             print'<td>';
                  print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(0);">'.$langs->trans("Lastname").'</a>';
@@ -236,7 +236,7 @@ if ($result)
     print $langs->trans("ContactVisibility");
     print'</th>';
   
-    print '<th>&nbsp;</th>';
+    print '<th id="last">&nbsp;</th>';
     print "</tr>\n";
     print'</thead>';
 

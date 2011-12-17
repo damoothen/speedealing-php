@@ -50,7 +50,7 @@ $("a.visibility").toggle(
     },
     function()
     {
-        $(this).css("color", "blue");
+        $(this).css("color", "#842F00");
     }
     );
 //show/hide by column num        
