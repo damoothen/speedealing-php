@@ -56,8 +56,10 @@ if (! isset($argv[1]) || ! $argv[1]) {
             if($obj->id)
                 $id=$obj->id;
             else
+            {
                 print "Usage: ".$script_file." ID_MAILING\n";
-            exit;
+                exit;
+            }
         }
     
         else
@@ -66,7 +68,6 @@ if (! isset($argv[1]) || ! $argv[1]) {
             exit;
         }
     }
-    print "toto";exit;
 }
 else
     $id=$argv[1];
