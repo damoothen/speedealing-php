@@ -53,8 +53,11 @@ if (! isset($argv[1]) || ! $argv[1]) {
 	if ($num == 1)
         {
             $obj = $db->fetch_object($resql);
-            $id=$obj->id;
-            print "totoid".$id;exit;
+            if($obj->id)
+                $id=$obj->id;
+            else
+                print "Usage: ".$script_file." ID_MAILING\n";
+            exit;
         }
     
         else
