@@ -120,10 +120,11 @@ table.display {
         background-position: top right;
         background-repeat: repeat-x;
         font-size: 12px;
-        border-radius : 10px 10px 10px 10px;
+        border-radius : 8px 8px 8px 8px;
         border : 1px solid #D0D0D0;
 	clear: both;
 	width: 100%;
+       
 	
 	/* Note Firefox 3.5 and before have a bug with border-collapse
 	 * ( https://bugzilla.mozilla.org/show%5Fbug.cgi?id=155955 ) 
@@ -143,8 +144,9 @@ table.hideshow{
 background-image: url('../../../theme/cameleo/img/bg_liste_titremenu.jpg');
 background-position: top right;
 background-repeat: repeat-x;
-border-radius : 10px 10px 10px 10px;
+border-radius : 8px 8px 8px 8px;
 border:1px solid #D0D0D0;
+margin-top: 1px;
     
 }
 
@@ -154,7 +156,6 @@ color:#842F00;
 font-family:"Trebuchet MS",Arial,Helvetica,sans-serif;
 }
 table.hideshow tbody tr td{
-border-radius : 10px 10px 10px 10px;
 padding : 1px 5px 1px 5px;
 }
  /* END Table hide/show */

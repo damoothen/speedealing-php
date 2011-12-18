@@ -145,7 +145,7 @@ if ($result)
 	$contactstatic=new Contact($db);
     
     $begin=$_GET["begin"];
-    $param ='&lang='.urlencode($_GET['lang']); // add lang for the datatable
+    $param ='&lang='.urlencode($_GET['lang']); // add lang to url when pagination
     $param.='&begin='.urlencode($begin).'&view='.urlencode($view).'&userid='.urlencode($_GET["userid"]).'&contactname='.urlencode($sall);
     $param.='&type='.urlencode($type).'&view='.urlencode($view);
 	if ($search_priv == '0' || $search_priv == '1') $param.="&search_priv=".urlencode($search_priv);
@@ -319,7 +319,7 @@ if ($result)
     print'</tbody>';
     print "</table>";
 
-    if ($num > $limit) print_barre_liste('' ,$page, "index.php", '&amp;begin='.$begin.'&amp;view='.$view.'&amp;userid='.$_GET["userid"], $sortfield, $sortorder,'',$num,$nbtotalofrecords, '');
+    if ($num > $limit) print_barre_liste('' ,$page, "index.php",$param, $sortfield, $sortorder,'',$num,$nbtotalofrecords, '');
 
     $db->free($result);
 }
