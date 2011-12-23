@@ -29,8 +29,6 @@
  */
 require("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
-echo'<link rel="stylesheet" type="text/css" href="'.dol_buildpath("/lib/datatables/css/datatable.css",1).'"/>';
-echo'<link rel="stylesheet" type="text/css" href="'.dol_buildpath("/lib/datatables/css/TableTools.css",1).'"/>';
 $langs->load("companies");
 $langs->load("suppliers");
 $langs->load('commercial');
@@ -49,7 +47,6 @@ $sall=GETPOST("contactname");
 $sortfield = GETPOST("sortfield");
 $sortorder = GETPOST("sortorder");
 $page = GETPOST("page");
-$t = $conf->global->MAIN_LANG_DEFAULT; //ici 
 if (! $sortorder) $sortorder="ASC";
 if (! $sortfield) $sortfield="p.name";
 if ($page < 0) { $page = 0 ; }
@@ -155,39 +152,6 @@ if ($result)
     print_barre_liste($titre ,$page, "index.php",$param, $sortfield, $sortorder,'',$num,$nbtotalofrecords);
 
  
-    //links for hide/show
-    print '<table class="hideshow">';
-        print'<tr>';
-            print'<td>';
-                 print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(0);">'.$langs->trans("Lastname").'</a>';
-           print'</td>';
-            print'<td>';
-                 print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(1);">'.$langs->trans("Firstname").'</a>';
-            print'</td>';
-            print'<td>';
-                 print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(2);">'.$langs->trans("PostOrFunction").'</a>';
-            print'</td>';
-             print'<td>';
-                 print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(3);">'.$langs->trans("Company").'</a>';
-            print'</td>';
-            print'<td>';
-                 print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(4);">'.$langs->trans("Phone").'</a>';
-            print'</td>';
-            print'<td>';
-                 print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(5);">'.$langs->trans("EMail").'</a>';
-            print'</td>';
-            print'<td>';
-                 print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(6);">'.$langs->trans("Zip").'</a>';
-            print'</td>';
-            print'<td>';
-                 print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(7);">'.$langs->trans("DateModificationShort").'</a>';
-            print'</td>';
-            print'<td>';
-                 print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(8);">'.$langs->trans("ContactVisibility").'</a>';
-            print'</td>';
-            
-        print'</tr>';
-        print'</table>';        
     
     print '<table cellpadding="0" cellspacing="0" border="0" class="display" id="liste">';     
     // Ligne des titres 
@@ -236,7 +200,7 @@ if ($result)
     print $langs->trans("ContactVisibility");
     print'</th>';
   
-    print '<th id="last">&nbsp;</th>';
+    print '<th id="last">&nbsp;&nbsp;&nbsp;&nbsp;</th>';
     print "</tr>\n";
     print'</thead>';
 
@@ -247,7 +211,7 @@ if ($result)
 
         $var=!$var;
 
-        print "<tr>";
+        print '<tr id="'.$obj->cidp.'">';
 
 		// Name
 		print '<td>';
@@ -308,7 +272,7 @@ if ($result)
 		// Links Add action and Export vcard
         print '<td align="right">';
         print '<a href="'.DOL_URL_ROOT.'/comm/action/fiche.php?action=create&amp;backtopage=1&amp;contactid='.$obj->cidp.'&amp;socid='.$obj->socid.'">'.img_object($langs->trans("AddAction"),"action").'</a>';
-        print ' &nbsp; ';
+        print ' &nbsp;';
         print '<a href="'.DOL_URL_ROOT.'/contact/vcard.php?id='.$obj->cidp.'">';
         print img_picto($langs->trans("VCard"),'vcard.png').' ';
         print '</a></td>';
@@ -333,10 +297,12 @@ $db->close();
 
 llxFooter('$Date: 2011/07/31 23:54:12 $ - $Revision: 1.106 $');
 
-//import datatables lib
+//import datatables js lib
 print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/jquery.dataTables.js",1).'"></script>';           
 print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/TableTools.js",1).'"></script>';           
 print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/ZeroClipboard.js",1).'"></script>';           
+print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/initXHR.js",1).'"></script>';    
+print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/request.js",1).'"></script>';    
 print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/initDatatables.js",1).'"></script>';    
       
 ?>

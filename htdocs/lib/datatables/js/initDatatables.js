@@ -23,14 +23,29 @@
  */	 
 
 $(document).ready(function() {
-     //get the lang 
-     var tabs = location.search.substring(1).split("&");
-     lang = tabs[1].substr(5,5);
-    //init dataTable
-    $('#liste').dataTable( {
+     /* Get the lang :desactived */
+     // var tabs = location.search.substring(1).split("&");
+     // lang = tabs[1].substr(5,5);
+    
+    /* Insert a 'details' column to the table */
+    var nCloneTh = document.createElement( 'th' );
+    var nCloneTd = document.createElement( 'td' );
+    nCloneTd.innerHTML = '<img id="plus" src="../theme/cameleo/img/details_open.png">';
+    nCloneTd.className = "center";
+     
+    $('#liste thead tr').each( function () {
+        this.insertBefore( nCloneTh, this.childNodes[0] );
+    } );
+     
+    $('#liste tbody tr').each( function () {
+        this.insertBefore(  nCloneTd.cloneNode( true ), this.childNodes[0] );
+    } );
+    
+    /* init dataTable */
+    oTable = $('#liste').dataTable( {
         "sDom": 'T<"clear">lfrtip',
         "bPaginate": false,
-        "oLanguage": {"sUrl": "../lib/datatables/langs/"+lang+".txt"},
+      //  "oLanguage": {"sUrl": "../lib/datatables/langs/"+lang+".txt"}, lang desactived
         "oTableTools": {
             "sSwfPath": "../lib/datatables/swf/copy_cvs_xls_pdf.swf",
             "aButtons": [
@@ -40,27 +55,32 @@ $(document).ready(function() {
        
     });
     
+     /* Add event listener for opening and closing details
+     * Note that the indicator for showing which row is open is not controlled by DataTables,
+     * rather it is done here
+     */
+     $('#liste tbody td img#plus').live('click', function () {
+                                    var nTr = this.parentNode.parentNode;
+                                    var id =  nTr.getAttribute('id');
+                                    if ( this.src.match('details_close') )
+                                    {
+                                        
+                                        /* This row is already open - close it */
+                                        this.src = "../theme/cameleo/img/details_open.png";
+                                        oTable.fnClose( nTr );
+                                    }
+                                    else
+                                    {
+                                     /* Open this row */
+                                        request(id,nTr);
+                                        this.src = "../theme/cameleo/img/details_close.png";
+                                        
+                                    }
+                } );
+    
+    
 });    
-                              
-// color for hide/display
-$("a.visibility").toggle(
-    function()
-    {
-        $(this).css("color", "gray");
-    },
-    function()
-    {
-        $(this).css("color", "#842F00");
-    }
-    );
-//show/hide by column num        
-function fnShowHide( iCol )
-{
-    // Get the DataTables object again - this is not a recreation, just a get of the object 
-    var oTable = $('#liste').dataTable();
-    var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
-    oTable.fnSetColumnVis( iCol, bVis ? false : true );
-}
+
 
 
 

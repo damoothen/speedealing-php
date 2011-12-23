@@ -30,14 +30,14 @@
 require("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/comm/prospect/class/prospect.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formother.class.php");
-echo'<link rel="stylesheet" type="text/css" href="'.dol_buildpath("/lib/datatables/css/datatable.css",1).'"/>';
-echo'<link rel="stylesheet" type="text/css" href="'.dol_buildpath("/lib/datatables/css/TableTools.css",1).'"/>';
 
 
 $langs->load("companies");
 $langs->load("customers");
 $langs->load("suppliers");
 $langs->load("commercial");
+
+
 
 // Security check
 $socid = GETPOST("socid");
@@ -199,39 +199,7 @@ if ($resql)
 	}
         print'</table>';
         
-          //links for hide/show
-    print '<table class="hideshow">';
-        print'<tr>';
-            print'<td>';
-                 print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(0);">'.$langs->trans("Company").'</a>';
-           print'</td>';
-            print'<td>';
-                 print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(1);">'.$langs->trans("Town").'</a>';
-            print'</td>';
-            if(empty($conf->global->SOCIETE_DISABLE_STATE)){
-                print'<td>';
-                     print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(2);">'.$langs->trans("State").'</a>';
-                print'</td>';
-            }
-             print'<td>';
-                 print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(3);">'.$langs->trans("Zip").'</a>';
-            print'</td>';
-            print'<td>';
-                 print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(4);">'.$langs->trans("DateCreation").'</a>';
-            print'</td>';
-            print'<td>';
-                 print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(5);">'.$langs->trans("ProspectLevelShort").'</a>';
-            print'</td>';
-            print'<td>';
-                 print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(6);">'.$langs->trans("StatusProsp").'</a>';
-            print'</td>';
-            print'<td>';
-                 print'<a class="visibility" href="javascript:void(0);" onclick="fnShowHide(7);">'.$langs->trans("Status").'</a>';
-            print'</td>';
-            
-        print'</tr>';
-        print'</table>';        
-  
+   
         
     print '<table cellpadding="0" cellspacing="0" border="0" class="display" id="liste">';    
     // Ligne des titres 
@@ -277,10 +245,10 @@ if ($resql)
 	while ($i < min($num,$conf->liste_limit))
 	{
 		$obj = $db->fetch_object($resql);
-
+                
 		$var=!$var;
 
-		print '<tr>';
+		print '<tr id="'.$obj->rowid.'">';
 		print '<td>';
 		$prospectstatic->id=$obj->rowid;
 		$prospectstatic->nom=$obj->nom;
@@ -337,9 +305,12 @@ else
 $db->close();
 
 llxFooter('$Date: 2011/08/08 16:15:05 $ - $Revision: 1.80 $');
+//import datatables js lib
 print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/jquery.dataTables.js",1).'"></script>';           
 print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/TableTools.js",1).'"></script>';           
 print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/ZeroClipboard.js",1).'"></script>';           
+print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/initXHR.js",1).'"></script>';    
+print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/request.js",1).'"></script>';    
 print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/initDatatables.js",1).'"></script>';    
 
 ?>

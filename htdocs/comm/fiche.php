@@ -65,6 +65,26 @@ $pagenext = $page + 1;
 if (! $sortorder) $sortorder="ASC";
 if (! $sortfield) $sortfield="nom";
 
+/* ajax fiche to response */ 
+if(isset($_GET['requestfiche']))
+{
+    $id = $_GET['requestfiche'];
+    $object= new Societe($db);
+    $object->fetch($id);
+    $info = array($langs->trans("Firstname")=>$object->prenom,$langs->trans("Lastname")=>$object->name,
+                  $langs->trans("Company")=>$object->socname,$langs->trans("UserTitle")=>$object->civilite_id,
+                  $langs->trans("PostOrFunction")=>$object->poste,$langs->trans("Address")=>$object->address,
+                  $langs->trans("Zip")=>$object->zip,$langs->trans("Town")=>$object->town,
+                  $langs->trans("Country")=>$object->pays,$langs->trans('State')=>$object->fk_departement,
+                  $langs->trans("PhonePro")=>$object->phone_pro,$langs->trans("PhonePerso")=>$object->phone_pro,
+                  $langs->trans("Fax")=>$object->fax,$langs->trans("Email")=>$object->email,
+                  $langs->trans("ContactVisibility")=>$object->priv,$langs->trans("Note")=>$object->note
+                  );
+    header('Content-type: application/json');
+    echo json_encode($info);
+    return;
+}
+
 
 /*
  * Actions
