@@ -1095,19 +1095,6 @@ else
 
 }
 
-//mailjet statistic array
-if($conf->mailjet->enabled && isset ($_GET['id'])){
-    // verif if campaign sent
-    $sql = "SELECT * FROM llx_mailing WHERE rowid =".$_GET['id'];
-    $sql.=" AND (statut =3 OR statut =2)";
-    $result=$db->query($sql);
-    if($db->num_rows($result)==1){
-        dol_include_once('/mailjet/class/mailjet.class.php');
-        $mailJet = new Mailjet($db);
-        $mailJet->statistique($langs);
-    }
-}
-
 $db->close();
 
 llxFooter('$Date: 2011/08/03 00:46:33 $ - $Revision: 1.123 $');

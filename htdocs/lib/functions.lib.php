@@ -3499,12 +3499,13 @@ function picto_required()
  *	Clean a string from all HTML tags and entities
  *	@param   	StringHtml			String to clean
  *	@param		removelinefeed		Replace also all lines feeds by a space
+ *  @param      pagecodeto      	Encoding of input string
  *	@return  	string	    		String cleaned
  */
-function dol_string_nohtmltag($StringHtml,$removelinefeed=1)
+function dol_string_nohtmltag($StringHtml,$removelinefeed=1,$pagecodeto='UTF-8')
 {
     $pattern = "/<[^>]+>/";
-    $temp = dol_entity_decode($StringHtml);
+    $temp = dol_entity_decode($StringHtml,$pagecodeto);
     $temp = preg_replace($pattern,"",$temp);
 
     // Supprime aussi les retours
@@ -3575,7 +3576,7 @@ function dol_htmlentitiesbr($stringtoencode,$nl2brmode=0,$pagecodefrom='UTF-8')
         $newstring=dol_nl2br(dol_htmlentities($stringtoencode,ENT_COMPAT,$pagecodefrom),$nl2brmode);
     }
     // Other substitutions that htmlentities does not do
-    $newstring=str_replace(chr(128),'&euro;',$newstring);	// 128 = 0x80. Not in html entity table.
+    //$newstring=str_replace(chr(128),'&euro;',$newstring);	// 128 = 0x80. Not in html entity table.
     return $newstring;
 }
 
@@ -4370,7 +4371,7 @@ function complete_head_from_modules($conf,$langs,$object,&$head,&$h,$type,$mode=
         foreach ($conf->tabs_modules[$type] as $value)
         {
             $values=explode(':',$value);
-            if ($mode == 'add')
+            if ($mode == 'add' && ! preg_match('/^\-/',$values[1]))
             {
                 if (sizeof($values) == 6)       // new declaration with permissions
                 {
@@ -4403,7 +4404,7 @@ function complete_head_from_modules($conf,$langs,$object,&$head,&$h,$type,$mode=
                     $h++;
                 }
             }
-            else if ($mode == 'remove')
+            else if ($mode == 'remove' && preg_match('/^\-/',$values[1]))
             {
                 if ($values[0] != $type) continue;
                 $tabname=str_replace('-','',$values[1]);
