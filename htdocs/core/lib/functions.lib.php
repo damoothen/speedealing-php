@@ -804,13 +804,13 @@ function dol_print_date($time,$format='',$tzoutput='tzserver',$outputlangs='',$e
                 $to_gmt=false;
                 $offsettz=$offsetdst=0;
             }
-            if ($tzoutput == 'tzuser')
+            elseif ($tzoutput == 'tzuser')
             {
                 $to_gmt=true;
                 $offsettz=(empty($_SESSION['dol_tz'])?0:$_SESSION['dol_tz'])*60*60;
                 $offsetdst=(empty($_SESSION['dol_dst'])?0:$_SESSION['dol_dst'])*60*60;
             }
-            if ($tzoutput == 'tzcompany')
+            elseif ($tzoutput == 'tzcompany')
             {
                 $to_gmt=false;
                 $offsettz=$offsetdst=0;	// TODO Define this and use it later
@@ -1082,41 +1082,6 @@ function dol_mktime($hour,$minute,$second,$month,$day,$year,$gm=false,$check=1,$
         $date=mktime($hour,$minute,$second,$month,$day,$year);
     }
     return $date;
-}
-
-
-/* For backward compatibility */
-function dolibarr_date($fmt, $timestamp, $gm=false)
-{
-    return dol_date($fmt, $timestamp, $gm);
-}
-
-/**
- *	Returns formated date
- *
- *	@param		string		$fmt			Format (Exemple: 'Y-m-d H:i:s')
- *	@param		timestamp	$timestamp		Date. Example: If timestamp=0 and gm=1, return 01/01/1970 00:00:00
- *	@param		boolean		$gm				1 if timestamp was built with gmmktime, 0 if timestamp was build with mktime
- *	@return		string						Formated date
- *
- *  @deprecated Replaced by dol_print_date
- */
-function dol_date($fmt, $timestamp, $gm=false)
-{
-    $usealternatemethod=false;
-    if ($timestamp <= 0) $usealternatemethod=true;
-    if ($timestamp >= 2145913200) $usealternatemethod=true;
-
-    if ($usealternatemethod || $gm)	// Si time gm, seule adodb peut convertir
-    {
-        $string=adodb_date($fmt,$timestamp,$gm);
-    }
-    else
-    {
-        $string=date($fmt,$timestamp);
-    }
-
-    return $string;
 }
 
 
@@ -1671,60 +1636,56 @@ function dol_print_graph($htmlid,$width,$height,$data,$showlegend=0,$type='pie',
  *  MAIN_DISABLE_TRUNC=1 can disable all truncings
  *
  *	@param	string	$string				String to truncate
- *	@param  int		$size				Max string size. 0 for no limit.
- *	@param	string	$trunc				Where to trunc: right, left, middle, wrap
+ *	@param  int		$size				Max string size visible. 0 for no limit. finale string size can be 1 more (if size was max+1) or 3 more (if we added ...)
+ *	@param	string	$trunc				Where to trunc: right, left, middle (size must be a 2 power), wrap
  * 	@param	string	$stringencoding		Tell what is source string encoding
+ *  @param	int		$nodot				Truncation do not add ... after truncation. So it's an exact truncation.
  *	@return string						Truncated string
  */
-function dol_trunc($string,$size=40,$trunc='right',$stringencoding='UTF-8')
+function dol_trunc($string,$size=40,$trunc='right',$stringencoding='UTF-8',$nodot=0)
 {
     global $conf;
 
-    if ($size==0) return $string;
-    if (empty($conf->global->MAIN_DISABLE_TRUNC))
+    if ($size==0 || ! empty($conf->global->MAIN_DISABLE_TRUNC)) return $string;
+
+    // We go always here
+    if ($trunc == 'right')
     {
-        // We go always here
-        if ($trunc == 'right')
-        {
-            $newstring=dol_textishtml($string)?dol_string_nohtmltag($string,1):$string;
-            if (dol_strlen($newstring,$stringencoding) > ($size+1))
-            return dol_substr($newstring,0,$size,$stringencoding).'...';
-            else
-            return $string;
-        }
-        if ($trunc == 'middle')
-        {
-            $newstring=dol_textishtml($string)?dol_string_nohtmltag($string,1):$string;
-            if (dol_strlen($newstring,$stringencoding) > 2 && dol_strlen($newstring,$stringencoding) > ($size+1))
-            {
-                $size1=round($size/2);
-                $size2=round($size/2);
-                return dol_substr($newstring,0,$size1,$stringencoding).'...'.dol_substr($newstring,dol_strlen($newstring,$stringencoding) - $size2,$size2,$stringencoding);
-            }
-            else
-            return $string;
-        }
-        if ($trunc == 'left')
-        {
-            $newstring=dol_textishtml($string)?dol_string_nohtmltag($string,1):$string;
-            if (dol_strlen($newstring,$stringencoding) > ($size+1))
-            return '...'.dol_substr($newstring,dol_strlen($newstring,$stringencoding) - $size,$size,$stringencoding);
-            else
-            return $string;
-        }
-        if ($trunc == 'wrap')
-        {
-            $newstring=dol_textishtml($string)?dol_string_nohtmltag($string,1):$string;
-            if (dol_strlen($newstring,$stringencoding) > ($size+1))
-            return dol_substr($newstring,0,$size,$stringencoding)."\n".dol_trunc(dol_substr($newstring,$size,dol_strlen($newstring,$stringencoding)-$size,$stringencoding),$size,$trunc);
-            else
-            return $string;
-        }
-    }
-    else
-    {
+        $newstring=dol_textishtml($string)?dol_string_nohtmltag($string,1):$string;
+        if (dol_strlen($newstring,$stringencoding) > ($size+($nodot?0:1)))
+        return dol_substr($newstring,0,$size,$stringencoding).($nodot?'':'...');
+        else
         return $string;
     }
+    elseif ($trunc == 'middle')
+    {
+        $newstring=dol_textishtml($string)?dol_string_nohtmltag($string,1):$string;
+        if (dol_strlen($newstring,$stringencoding) > 2 && dol_strlen($newstring,$stringencoding) > ($size+1))
+        {
+            $size1=round($size/2);
+            $size2=round($size/2);
+            return dol_substr($newstring,0,$size1,$stringencoding).'...'.dol_substr($newstring,dol_strlen($newstring,$stringencoding) - $size2,$size2,$stringencoding);
+        }
+        else
+        return $string;
+    }
+    elseif ($trunc == 'left')
+    {
+        $newstring=dol_textishtml($string)?dol_string_nohtmltag($string,1):$string;
+        if (dol_strlen($newstring,$stringencoding) > ($size+1))
+        return '...'.dol_substr($newstring,dol_strlen($newstring,$stringencoding) - $size,$size,$stringencoding);
+        else
+        return $string;
+    }
+    elseif ($trunc == 'wrap')
+    {
+        $newstring=dol_textishtml($string)?dol_string_nohtmltag($string,1):$string;
+        if (dol_strlen($newstring,$stringencoding) > ($size+1))
+        return dol_substr($newstring,0,$size,$stringencoding)."\n".dol_trunc(dol_substr($newstring,$size,dol_strlen($newstring,$stringencoding)-$size,$stringencoding),$size,$trunc);
+        else
+        return $string;
+    }
+    else return 'BadParam3CallingDolTrunc';
 }
 
 
@@ -3563,12 +3524,13 @@ function picto_required()
  *
  *	@param   	StringHtml			String to clean
  *	@param		removelinefeed		Replace also all lines feeds by a space
+ *  @param      pagecodeto      	Encoding of input string
  *	@return  	string	    		String cleaned
  */
-function dol_string_nohtmltag($StringHtml,$removelinefeed=1)
+function dol_string_nohtmltag($StringHtml,$removelinefeed=1,$pagecodeto='UTF-8')
 {
     $pattern = "/<[^>]+>/";
-    $temp = dol_entity_decode($StringHtml);
+    $temp = dol_entity_decode($StringHtml,$pagecodeto);
     $temp = preg_replace($pattern,"",$temp);
 
     // Supprime aussi les retours
@@ -4321,7 +4283,8 @@ function picto_from_langcode($codelang)
 }
 
 /**
- *  Complete or removed entries into a head array (used to build tabs) with value added by external modules
+ *  Complete or removed entries into a head array (used to build tabs) with value added by external modules.
+ *  Such values are declared into $conf->tabs_modules.
  *
  *  @param	Conf		$conf           Object conf
  *  @param  Translate	$langs          Object langs
@@ -4346,62 +4309,62 @@ function picto_from_langcode($codelang)
  */
 function complete_head_from_modules($conf,$langs,$object,&$head,&$h,$type,$mode='add')
 {
-    if (is_array($conf->tabs_modules[$type]))
-    {
-        foreach ($conf->tabs_modules[$type] as $value)
-        {
-            $values=explode(':',$value);
+	if (is_array($conf->tabs_modules[$type]))
+	{
+		foreach ($conf->tabs_modules[$type] as $value)
+		{
+			$values=explode(':',$value);
 
-            if ($mode == 'add')
-            {
-                if (count($values) == 6)       // new declaration with permissions
-                {
-                    if ($values[0] != $type) continue;
-                    //print 'ee'.$values[4];
-                    if (verifCond($values[4]))
-                    {
-                        if ($values[3]) $langs->load($values[3]);
-                        $head[$h][0] = dol_buildpath(preg_replace('/__ID__/i',$object->id,$values[5]),1);
-                        $head[$h][1] = $langs->trans($values[2]);
-                        $head[$h][2] = str_replace('+','',$values[1]);
-                        $h++;
-                    }
-                }
-                else if (count($values) == 5)       // new declaration
-                {
-                    if ($values[0] != $type) continue;
-                    if ($values[3]) $langs->load($values[3]);
-                    $head[$h][0] = dol_buildpath(preg_replace('/__ID__/i',$object->id,$values[4]),1);
-                    $head[$h][1] = $langs->trans($values[2]);
-                    $head[$h][2] = str_replace('+','',$values[1]);
-                    $h++;
-                }
-                else if (count($values) == 4)   // old declaration, for backward compatibility
-                {
-                    if ($values[0] != $type) continue;
-                    if ($values[2]) $langs->load($values[2]);
-                    $head[$h][0] = dol_buildpath(preg_replace('/__ID__/i',$object->id,$values[3]),1);
-                    $head[$h][1] = $langs->trans($values[1]);
-                    $head[$h][2] = 'tab'.$values[1];
-                    $h++;
-                }
-            }
-            else if ($mode == 'remove')
-            {
-                if ($values[0] != $type) continue;
-                $tabname=str_replace('-','',$values[1]);
-                foreach($head as $key => $val)
-                {
-                    if ($head[$key][2]==$tabname)
-                    {
-                        //print 'on vire '.$tabname.' key='.$key;
-                        unset($head[$key]);
-                        break;
-                    }
-                }
-            }
-        }
-    }
+			if ($mode == 'add' && ! preg_match('/^\-/',$values[1]))
+			{
+				if (count($values) == 6)       // new declaration with permissions:  $value='objecttype:+tabname1:Title1:langfile@mymodule:$user->rights->mymodule->read:/mymodule/mynewtab1.php?id=__ID__'
+				{
+					if ($values[0] != $type) continue;
+
+					if (verifCond($values[4]))
+					{
+						if ($values[3]) $langs->load($values[3]);
+						$head[$h][0] = dol_buildpath(preg_replace('/__ID__/i',$object->id,$values[5]),1);
+						$head[$h][1] = $langs->trans($values[2]);
+						$head[$h][2] = str_replace('+','',$values[1]);
+						$h++;
+					}
+				}
+				else if (count($values) == 5)       // new declaration
+				{
+					if ($values[0] != $type) continue;
+					if ($values[3]) $langs->load($values[3]);
+					$head[$h][0] = dol_buildpath(preg_replace('/__ID__/i',$object->id,$values[4]),1);
+					$head[$h][1] = $langs->trans($values[2]);
+					$head[$h][2] = str_replace('+','',$values[1]);
+					$h++;
+				}
+				else if (count($values) == 4)   // old declaration, for backward compatibility
+				{
+					if ($values[0] != $type) continue;
+					if ($values[2]) $langs->load($values[2]);
+					$head[$h][0] = dol_buildpath(preg_replace('/__ID__/i',$object->id,$values[3]),1);
+					$head[$h][1] = $langs->trans($values[1]);
+					$head[$h][2] = 'tab'.$values[1];
+					$h++;
+				}
+			}
+			else if ($mode == 'remove' && preg_match('/^\-/',$values[1]))
+			{
+				if ($values[0] != $type) continue;
+				$tabname=str_replace('-','',$values[1]);
+				foreach($head as $key => $val)
+				{
+					$condition = (! empty($values[3]) ? verifCond($values[3]) : 1);
+					if ($head[$key][2]==$tabname && $condition)
+					{
+						unset($head[$key]);
+						break;
+					}
+				}
+			}
+		}
+	}
 }
 
 /**

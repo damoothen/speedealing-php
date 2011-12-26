@@ -32,12 +32,16 @@
  */
 class DoliDBPgsql
 {
-	var $db;                      // Database handler
-	var $type='pgsql';            // Name of manager
-	var $label='PostgreSQL';      // Label of manager
+    //! Database handler
+    var $db;
+    //! Database type
+	public $type='pgsql';            // Name of manager
+    //! Database label
+	static $label='PostgreSQL';      // Label of manager
 	//! Charset
-	var $forcecharset='latin1';
-	var $versionmin=array(8,4,0);	// Version min database
+	static $forcecharset='latin1';
+	//! Version min database
+	static $versionmin=array(8,4,0);	// Version min database
 
 	var $results;                 // Resultset de la derniere requete
 
@@ -87,7 +91,7 @@ class DoliDBPgsql
 			$this->connected = 0;
 			$this->ok = 0;
 			$this->error="Pgsql PHP functions are not available in this version of PHP";
-			dol_syslog("DoliDB::DoliDB : Pgsql PHP functions are not available in this version of PHP",LOG_ERR);
+			dol_syslog(get_class($this)."::DoliDBPgsql : Pgsql PHP functions are not available in this version of PHP",LOG_ERR);
 			return $this->ok;
 		}
 
@@ -96,7 +100,7 @@ class DoliDBPgsql
 			$this->connected = 0;
 			$this->ok = 0;
 			$this->error=$langs->trans("ErrorWrongHostParameter");
-			dol_syslog("DoliDB::DoliDB : Erreur Connect, wrong host parameters",LOG_ERR);
+			dol_syslog(get_class($this)."::DoliDBPgsql : Erreur Connect, wrong host parameters",LOG_ERR);
 			return $this->ok;
 		}
 
@@ -114,7 +118,7 @@ class DoliDBPgsql
 			$this->connected = 0;
 			$this->ok = 0;
 			$this->error='Host, login or password incorrect';
-			dol_syslog("DoliDB::DoliDB : Erreur Connect ".$this->error,LOG_ERR);
+			dol_syslog(get_class($this)."::DoliDBPgsql : Erreur Connect ".$this->error,LOG_ERR);
 		}
 
 		// Si connexion serveur ok et si connexion base demandee, on essaie connexion base
@@ -132,7 +136,7 @@ class DoliDBPgsql
 				$this->database_name = '';
 				$this->ok = 0;
 				$this->error=$this->error();
-				dol_syslog("DoliDB::DoliDB : Erreur Select_db ".$this->error,LOG_ERR);
+				dol_syslog(get_class($this)."::DoliDBPgsql : Erreur Select_db ".$this->error,LOG_ERR);
 			}
 		}
 		else
@@ -412,7 +416,7 @@ class DoliDBPgsql
     {
         if ($this->db)
         {
-          //dol_syslog("DoliDB::disconnect",LOG_DEBUG);
+          //dol_syslog(get_class($this)."::disconnect",LOG_DEBUG);
           $this->connected=0;
           return pg_close($this->db);
         }
@@ -531,7 +535,7 @@ class DoliDBPgsql
 				$this->lastqueryerror = $query;
 				$this->lasterror = $this->error();
 				$this->lasterrno = $this->errno();
-				dol_syslog("Pgsql.lib::query SQL error: ".$query." ".$this->lasterrno, LOG_WARNING);
+				dol_syslog(get_class($this)."::query SQL error: ".$query." ".$this->lasterrno, LOG_WARNING);
 				//print "\n>> ".$query."<br>\n";
 				//print '>> '.$this->lasterrno.' - '.$this->lasterror.' - '.$this->lastqueryerror."<br>\n";
 
@@ -693,20 +697,20 @@ class DoliDBPgsql
 	 *   Convert (by PHP) a GM Timestamp date into a GM string date to insert into a date field.
 	 *   Function to use to build INSERT, UPDATE or WHERE predica
 	 *
-	 *   @param	    param       Date TMS to convert
-	 *   @return	string      Date in a string YYYYMMDDHHMMSS
+	 *   @param	    string	$param      Date TMS to convert
+	 *   @return	string   			Date in a string YYYYMMDDHHMMSS
 	 */
 	function idate($param)
 	{
-		return adodb_strftime("%Y-%m-%d %H:%M:%S",$param);
+		return dol_print_date($param,"%Y-%m-%d %H:%M:%S");
 	}
 
 	/**
 	 *	Convert (by PHP) a PHP server TZ string date into a GM Timestamps date
 	 * 	19700101020000 -> 3600 with TZ+1
 	 *
-	 * 	@param		string			Date in a string (YYYYMMDDHHMMSS, YYYYMMDD, YYYY-MM-DD HH:MM:SS)
-	 *	@return		date			Date TMS
+	 * 	@param		string	$string		Date in a string (YYYYMMDDHHMMSS, YYYYMMDD, YYYY-MM-DD HH:MM:SS)
+	 *	@return		date				Date TMS
 	 */
 	function jdate($string)
 	{
@@ -849,8 +853,9 @@ class DoliDBPgsql
 	/**
 	 * Get last ID after an insert INSERT
 	 *
-	 * @param     	tab     Table name concerned by insert. Ne sert pas sous MySql mais requis pour compatibilite avec Postgresql
-	 * @return     	int     id
+	 * @param   string	$tab    	Table name concerned by insert. Ne sert pas sous MySql mais requis pour compatibilite avec Postgresql
+	 * @param	string	$fieldid	Field name
+	 * @return  int     			Id of row
 	 */
 	function last_insert_id($tab,$fieldid='rowid')
 	{
@@ -1078,7 +1083,7 @@ class DoliDBPgsql
 	{
 		$sql = "create user \"".addslashes($dolibarr_main_db_user)."\" with password '".addslashes($dolibarr_main_db_pass)."'";
 
-		dol_syslog("pgsql.lib::DDLCreateUser", LOG_DEBUG);	// No sql to avoid password in log
+		dol_syslog(get_class($this)."::DDLCreateUser", LOG_DEBUG);	// No sql to avoid password in log
 		$resql=$this->query($sql);
 		if (! $resql)
 		{

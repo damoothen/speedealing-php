@@ -239,6 +239,18 @@ if (! empty($force_install_message))
 		<h3><?php echo $langs->trans("DolibarrDatabase"); ?></h3>
 		</td>
 	</tr>
+
+	<tr>
+	<td class="label" valign="top"><b> <?php echo $langs->trans("DatabaseName"); ?>
+	</b></td>
+
+	<td class="label" valign="top"><input type="text" id="db_name"
+				name="db_name"
+				value="<?php echo (! empty($dolibarr_main_db_name))?$dolibarr_main_db_name:($force_install_database?$force_install_database:'dolibarr'); ?>"></td>
+	<td class="comment"><?php echo $langs->trans("DatabaseName"); ?></td>
+	</tr>
+
+
 	<?php
 	if (!isset($dolibarr_main_db_host))
 	{
@@ -268,33 +280,30 @@ if (! empty($force_install_message))
 		        if (is_readable($dir."/".$file) && preg_match('/^(.*)\.class\.php/i',$file,$reg))
 		        {
 		            $type=$reg[1];
+                    $class='DoliDB'.ucfirst($type);
+                    include_once($dir."/".$file);
 
-		            // Version min de la base
-		            $versionbasemin=array();
-		            if ($type=='mysql')  { $versionbasemin=array(3,1,0); $testfunction='mysql_connect'; }
-		            if ($type=='mysqli') { $versionbasemin=array(4,1,0); $testfunction='mysqli_connect'; }
-		            if ($type=='pgsql')  { $versionbasemin=array(8,4,0); $testfunction='pg_connect'; }
-		            if ($type=='mssql')  { $versionbasemin=array(2000);  $testfunction='mssql_connect'; }
-
-		            // Remarques
-		            $note='';
-		            if ($type=='mysql') 	$note='(Mysql >= '.versiontostring($versionbasemin).')';
-		            if ($type=='mysqli') 	$note='(Mysql >= '.versiontostring($versionbasemin).')';
-		            if ($type=='pgsql') 	$note='(Postgresql >= '.versiontostring($versionbasemin).')';
-		            if ($type=='mssql') 	$note='(SQL Server >= '.versiontostring($versionbasemin).')';
+		            // Version min of database
+                    $versionbasemin=$class::$versionmin;
+                    $note='('.$class::$label.' >= '.versiontostring($versionbasemin).')';
 
 		            // Switch to mysql if mysqli is not present
 		            if ($defaultype=='mysqli' && !function_exists('mysqli_connect')) $defaultype = 'mysql';
 
-		            // Affiche ligne dans liste
+		            // Show line into list
+		            if ($type=='mysql')  { $testfunction='mysql_connect'; }
+		            if ($type=='mysqli') { $testfunction='mysqli_connect'; }
+		            if ($type=='pgsql')  { $testfunction='pg_connect'; }
+		            if ($type=='mssql')  { $testfunction='mssql_connect'; }
+		            if ($type=='sqlite') { $testfunction='notyetready'; }
 		            $option.='<option value="'.$type.'"'.($defaultype == $type?' selected="selected"':'');
 		            if (! function_exists($testfunction)) $option.=' disabled="disabled"';
 		            $option.='>';
 		            $option.=$type.'&nbsp; &nbsp;';
 		            if ($note) $option.=' '.$note;
 		            // Experimental
-		            if ($type=='pgsql')     $option.=' '.$langs->trans("Experimental");
-		            elseif ($type=='mssql') $option.=' '.$langs->trans("Experimental");
+		            if ($type=='mssql')  $option.=' '.$langs->trans("Experimental");
+		            elseif ($type=='sqlite') $option.=' '.$langs->trans("Experimental");
 		            // No available
 		            elseif (! function_exists($testfunction)) $option.=' - '.$langs->trans("FunctionNotAvailableInThisPHP");
 		            $option.='</option>';
@@ -340,18 +349,8 @@ if (! empty($force_install_message))
 	</tr>
 
 	<tr>
-		<td class="label" valign="top"><b> <?php echo $langs->trans("DatabaseName"); ?>
-		</b></td>
-
-		<td class="label" valign="top"><input type="text" id="db_name"
-			name="db_name"
-			value="<?php echo (! empty($dolibarr_main_db_name))?$dolibarr_main_db_name:($force_install_database?$force_install_database:'dolibarr'); ?>"></td>
-		<td class="comment"><?php echo $langs->trans("DatabaseName"); ?></td>
-	</tr>
-	
-	<tr>
-		<td class="label" valign="top"><b> <?php echo $langs->trans("DatabasePrefix"); ?>
-		</b></td>
+		<td class="label" valign="top"><?php echo $langs->trans("DatabasePrefix"); ?>
+		</td>
 
 		<td class="label" valign="top"><input type="text" id="db_prefix"
 			name="db_prefix"
@@ -442,6 +441,12 @@ if (! empty($force_install_message))
 
 <script type="text/javascript">
 jQuery(document).ready(function() {
+
+	jQuery("#db_type").change(function() {
+		if (jQuery("#db_type").val()=='sqlite') { jQuery(".hidesqlite").hide(); }
+		else  { jQuery(".hidesqlite").show(); }
+	});
+
 	function init_needroot()
 	{
 		/*alert(jQuery("#db_create_database").attr("checked")); */
@@ -454,6 +459,7 @@ jQuery(document).ready(function() {
 			jQuery(".needroot").attr('disabled','disabled');
 		}
 	}
+
 	init_needroot();
 	jQuery("#db_create_database").click(function() {
 		init_needroot();

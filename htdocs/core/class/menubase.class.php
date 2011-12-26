@@ -48,7 +48,7 @@ class Menubase
     var $titre;
     var $langs;
     var $level;
-    var $leftmenu;		//<! 0=Left menu in pre.inc.php files must not be overwrite by database menu, 1=Must be
+    var $leftmenu;		//<! Not used
     var $perms;
     var $enabled;
     var $user;
@@ -58,13 +58,13 @@ class Menubase
     /**
 	 *	Constructor
 	 *
-	 *  @param		DoliDB		$DB 		    Database handler
+	 *  @param		DoliDB		$db 		    Database handler
      *  @param     	string		$menu_handler	Menu handler
      *  @param     	string		$type			Type
      */
-    function Menubase($DB,$menu_handler='',$type='')
+    function Menubase($db,$menu_handler='',$type='')
     {
-        $this->db = $DB;
+        $this->db = $db;
         $this->menu_handler = $menu_handler;
         $this->type = $type;
         return 1;
@@ -101,14 +101,26 @@ class Menubase
         if (! $this->level) $this->level=0;
 
         // Check parameters
-        // Put here code to add control on parameters values
+        if (empty($this->menu_handler)) return -1;
 
-        // FIXME
-        // Get the max rowid in llx_menu and use it as rowid in insert because postgresql
+        // For PGSQL, we must first found the max rowid and use it as rowid in insert because postgresql
         // may use an already used value because its internal cursor does not increase when we do
         // an insert with a forced id.
-        // Two solution: Disable menu handler using database when database is postgresql or update counter when
-        // enabling such menus.
+        if (in_array($this->db->type,array('pgsql')))
+        {
+			$sql = "SELECT MAX(rowid) as maxrowid FROM ".MAIN_DB_PREFIX."menu";
+        	$resqlrowid=$this->db->query($sql);
+        	if ($resqlrowid)
+        	{
+        		$obj=$this->db->fetch_object($resqlrowid);
+        		$maxrowid=$obj->maxrowid;
+
+        		$sql = "SELECT setval('".MAIN_DB_PREFIX."menu_rowid_seq', ".($maxrowid).")";
+	        	$resqlrowidset=$this->db->query($sql);
+	     		if (! $resqlrowidset) dol_print_error($this->db);
+        	}
+        	else dol_print_error($this->db);
+        }
 
         // Insert request
         $sql = "INSERT INTO ".MAIN_DB_PREFIX."menu(";
@@ -149,19 +161,19 @@ class Menubase
         $sql.= " '".$this->user."'";
         $sql.= ")";
 
-        dol_syslog("Menubase::create sql=".$sql, LOG_DEBUG);
+        dol_syslog(get_class($this)."::create sql=".$sql, LOG_DEBUG);
         $resql=$this->db->query($sql);
         if ($resql)
         {
             $this->id = $this->db->last_insert_id(MAIN_DB_PREFIX."menu");
-            dol_syslog("Menubase::create record added has rowid=".$this->id, LOG_DEBUG);
+            dol_syslog(get_class($this)."::create record added has rowid=".$this->id, LOG_DEBUG);
 
             return $this->id;
         }
         else
         {
             $this->error="Error ".$this->db->lasterror();
-            dol_syslog("Menubase::create ".$this->error, LOG_ERR);
+            dol_syslog(get_class($this)."::create ".$this->error, LOG_ERR);
             return -1;
         }
     }
@@ -456,9 +468,9 @@ class Menubase
     /**
      * 	Load entries found in database in a menu array.
      *
-     * 	@param	array	$newmenu        Menu array to complete
-     * 	@param	string	$mainmenu       Value for mainmenu that defined top menu of left menu
-     * 	@param 	string	$myleftmenu     Value that defined leftmenu
+     * 	@param	array	$newmenu        Menu array to complete (in most cases, it's empty, may be already initialized with some menu manager like eldy)
+     * 	@param	string	$mainmenu       Value for mainmenu that defines top menu of left menu
+     * 	@param 	string	$myleftmenu     Value that defines leftmenu
      * 	@param  int		$type_user		0=Internal,1=External,2=All
      * 	@param  string	$menu_handler   Name of menu_handler used (auguria, eldy...)
      * 	@param  array	&$tabMenu       If array with menu entries already loaded, we put this array here (in most cases, it's empty)

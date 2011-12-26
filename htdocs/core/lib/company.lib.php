@@ -89,39 +89,36 @@ function societe_prepare_head($object)
     // $this->tabs = array('entity:-tabname:Title:@mymodule:/mymodule/mypage.php?id=__ID__');   to remove a tab
     complete_head_from_modules($conf,$langs,$object,$head,$h,'thirdparty');
 
-    // Notes
     if ($user->societe_id == 0)
     {
+    	// Notes
         $head[$h][0] = DOL_URL_ROOT.'/societe/socnote.php?socid='.$object->id;
         $head[$h][1] = $langs->trans("Note");
         $head[$h][2] = 'note';
         $h++;
-    }
-    // Attached files
-    if ($user->societe_id == 0)
-    {
+
+        // Attached files
         $head[$h][0] = DOL_URL_ROOT.'/societe/document.php?socid='.$object->id;
         $head[$h][1] = $langs->trans("Documents");
         $head[$h][2] = 'document';
         $h++;
-    }
-    // Notifications
-    if (! empty($conf->notification->enabled) && $user->societe_id == 0)
-    {
-        $head[$h][0] = DOL_URL_ROOT.'/societe/notify/fiche.php?socid='.$object->id;
-        $head[$h][1] = $langs->trans("Notifications");
-        $head[$h][2] = 'notify';
-        $h++;
+
+        // Notifications
+        if (! empty($conf->notification->enabled))
+        {
+        	$head[$h][0] = DOL_URL_ROOT.'/societe/notify/fiche.php?socid='.$object->id;
+        	$head[$h][1] = $langs->trans("Notifications");
+        	$head[$h][2] = 'notify';
+        	$h++;
+        }
+
     }
 
     // Log
-    if ($user->societe_id == 0)
-    {
-        $head[$h][0] = DOL_URL_ROOT.'/societe/info.php?socid='.$object->id;
-        $head[$h][1] = $langs->trans("Info");
-        $head[$h][2] = 'info';
-        $h++;
-    }
+    $head[$h][0] = DOL_URL_ROOT.'/societe/info.php?socid='.$object->id;
+    $head[$h][1] = $langs->trans("Info");
+    $head[$h][2] = 'info';
+    $h++;
 
     complete_head_from_modules($conf,$langs,$object,$head,$h,'thirdparty','remove');
 
@@ -480,7 +477,7 @@ function show_projects($conf,$langs,$db,$object,$backtopage='')
 
 /**
  * 		Show html area for list of contacts
- * 
+ *
  *		@param	Conf		$conf		Object conf
  * 		@param	Translate	$langs		Object langs
  * 		@param	DoliDB		$db			Database handler
@@ -744,7 +741,7 @@ function show_actions_todo($conf,$langs,$db,$object,$objcon='',$noprint=0)
 
 /**
  *    	Show html area with actions done
- * 
+ *
  * 		@param		conf		Object conf
  * 		@param		langs		Object langs
  * 		@param		db			Object db

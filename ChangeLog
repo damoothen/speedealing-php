@@ -5,6 +5,7 @@ English Dolibarr ChangeLog
 ***** ChangeLog for 3.2 compared to 3.1 *****
 
 For users:
+- New: Can open back a closed commercial proposal.
 - New: show thirdparty barcode on main tab.
 - New: Can input note (private and public) during note and expenses creation.
 - New: Print ticket show invoice ref into POS module.
@@ -29,6 +30,8 @@ For users:
 - New: Add option INVOICE_POSITIVE_CREDIT_NOTE.
 - New: Support zip/town autocompletion into warehouses.
 - New: Add box for last expired services.
+- New: Reduce seriously size of packages.
+- New: Can define country code for import.
 - Fix: Can use POS module with several concurrent users.
 
 For developers:
