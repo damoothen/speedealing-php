@@ -188,13 +188,15 @@ if ($action == "set")
                 {
                     $buffer=preg_replace('/type=innodb/i','ENGINE=innodb',$buffer);
                 }
+                
+                // Replace the prefix tables
+                if ($dolibarr_main_db_prefix != 'llx_')
+                {
+                	$buffer=preg_replace('/llx_/i',$dolibarr_main_db_prefix,$buffer);
+                }
 
                 //print "<tr><td>Creation de la table $name/td>";
                 $requestnb++;
-                if ($conf->file->character_set_client == "UTF-8")
-                {
-                    $buffer=utf8_encode($buffer);
-                }
 
                 dolibarr_install_syslog("Request: ".$buffer,LOG_DEBUG);
                 $resql=$db->query($buffer,0,'dml');
@@ -330,12 +332,14 @@ if ($action == "set")
                     $buffer=trim($req);
                     if ($buffer)
                     {
+                    	// Replace the prefix tables
+                    	if ($dolibarr_main_db_prefix != 'llx_')
+                    	{
+                    		$buffer=preg_replace('/llx_/i',$dolibarr_main_db_prefix,$buffer);
+                    	}
+                    	
                         //print "<tr><td>Creation des cles et index de la table $name: '$buffer'</td>";
                         $requestnb++;
-                        if ($conf->file->character_set_client == "UTF-8")
-                        {
-                            $buffer=utf8_encode($buffer);
-                        }
 
                         dolibarr_install_syslog("Request: ".$buffer,LOG_DEBUG);
                         $resql=$db->query($buffer,0,'dml');
@@ -538,6 +542,12 @@ if ($action == "set")
                 // We loop on each requests
                 foreach($arrayofrequests as $buffer)
                 {
+                	// Replace the prefix tables
+                	if ($dolibarr_main_db_prefix != 'llx_')
+                	{
+                		$buffer=preg_replace('/llx_/i',$dolibarr_main_db_prefix,$buffer);
+                	}
+                	
                     //dolibarr_install_syslog("Request: ".$buffer,LOG_DEBUG);
                     $resql=$db->query($buffer);
                     if ($resql)

@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * or see http://www.gnu.org/
  */
 
 /**
@@ -43,15 +43,15 @@ require_once dirname(__FILE__).'/../../htdocs/core/modules/propale/pdf_propale_a
 require_once dirname(__FILE__).'/../../htdocs/core/modules/propale/pdf_propale_jaune.modules.php';
 require_once dirname(__FILE__).'/../../htdocs/core/modules/project/pdf/pdf_baleine.modules.php';
 require_once dirname(__FILE__).'/../../htdocs/core/modules/fichinter/pdf_soleil.modules.php';
-require_once dirname(__FILE__).'/../../htdocs/core/modules/expedition/pdf/pdf_expedition_merou.modules.php';
-require_once dirname(__FILE__).'/../../htdocs/core/modules/expedition/pdf/pdf_expedition_rouget.modules.php';
+require_once dirname(__FILE__).'/../../htdocs/core/modules/expedition/doc/pdf_expedition_merou.modules.php';
+require_once dirname(__FILE__).'/../../htdocs/core/modules/expedition/doc/pdf_expedition_rouget.modules.php';
 // Mother classes of pdf generators
 require_once dirname(__FILE__).'/../../htdocs/core/modules/facture/modules_facture.php';
 require_once dirname(__FILE__).'/../../htdocs/core/modules/commande/modules_commande.php';
 require_once dirname(__FILE__).'/../../htdocs/core/modules/propale/modules_propale.php';
 require_once dirname(__FILE__).'/../../htdocs/core/modules/project/modules_project.php';
 require_once dirname(__FILE__).'/../../htdocs/core/modules/fichinter/modules_fichinter.php';
-require_once dirname(__FILE__).'/../../htdocs/core/modules/expedition/pdf/ModelePdfExpedition.class.php';
+require_once dirname(__FILE__).'/../../htdocs/core/modules/expedition/modules_expedition.php';
 
 if (empty($user->id))
 {

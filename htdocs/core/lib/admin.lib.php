@@ -114,7 +114,7 @@ function run_sql($sqlfile,$silent=1,$entity='',$usesavepoint=1,$handler='')
 {
     global $db, $conf, $langs, $user;
 
-    dol_syslog("Admin.lib::run_sql run sql file ".$sqlfile, LOG_DEBUG);
+    dol_syslog("Admin.lib::run_sql run sql file ".$sqlfile." silent=".$silent." entity=".$entity." usesavepoint=".$usesavepoint." handler=".$handler, LOG_DEBUG);
 
     $ok=0;
     $error=0;
@@ -132,17 +132,33 @@ function run_sql($sqlfile,$silent=1,$entity='',$usesavepoint=1,$handler='')
         {
             $buf = fgets($fp, 4096);
 
-            // Cas special de lignes autorisees pour certaines versions uniquement
-            if (preg_match('/^--\sV([0-9\.]+)/i',$buf,$reg))
+            // Test if request must be ran only for particular database or version (if yes, we must remove the -- comment)
+            if (preg_match('/^--\sV(MYSQL|PGSQL|)([0-9\.]+)/i',$buf,$reg))
             {
-                $versioncommande=explode('.',$reg[1]);
-                //print var_dump($versioncommande);
-                //print var_dump($versionarray);
-                if (count($versioncommande) && count($versionarray)
-                && versioncompare($versioncommande,$versionarray) <= 0)
+            	$qualified=1;
+
+            	// restrict on database type
+            	if (! empty($reg[1]))
+            	{
+            		if (strtolower($reg[1]) != $db->type) $qualified=0;
+            	}
+
+            	// restrict on version
+            	if ($qualified)
+            	{
+	                $versionrequest=explode('.',$reg[2]);
+	                //print var_dump($versionrequest);
+	                //print var_dump($versionarray);
+	                if (! count($versionrequest) || ! count($versionarray) || versioncompare($versionrequest,$versionarray) > 0)
+	                {
+	                	$qualified=0;
+	                }
+            	}
+
+                if ($qualified)
                 {
                     // Version qualified, delete SQL comments
-                    $buf=preg_replace('/^--\sV([0-9\.]+)/i','',$buf);
+                    $buf=preg_replace('/^--\sV(MYSQL|PGSQL|)([0-9\.]+)/i','',$buf);
                     //print "Ligne $i qualifi?e par version: ".$buf.'<br>';
                 }
             }
@@ -220,6 +236,12 @@ function run_sql($sqlfile,$silent=1,$entity='',$usesavepoint=1,$handler='')
     {
         if ($sql)
         {
+        	// Replace the prefix tables
+        	if (MAIN_DB_PREFIX != 'llx_')
+        	{
+        		$sql=preg_replace('/llx_/i',MAIN_DB_PREFIX,$sql);
+        	}
+
             if (!empty($handler)) $sql=preg_replace('/__HANDLER__/i',"'".$handler."'",$sql);
 
             $newsql=preg_replace('/__ENTITY__/i',(!empty($entity)?$entity:$conf->entity),$sql);
@@ -448,7 +470,7 @@ function dolibarr_set_const($db, $name, $value, $type='chaine', $visible=0, $not
 
     if (strcmp($value,''))	// true if different. Must work for $value='0' or $value=0
     {
-        $sql = "INSERT INTO llx_const(name,value,type,visible,note,entity)";
+        $sql = "INSERT INTO ".MAIN_DB_PREFIX."const(name,value,type,visible,note,entity)";
         $sql.= " VALUES (";
         $sql.= $db->encrypt($name,1);
         $sql.= ", ".$db->encrypt($value,1);
@@ -630,16 +652,13 @@ function Activate($value,$withdeps=1)
     $ret='';
     $modName = $value;
     $modFile = $modName . ".class.php";
-    $modulesdir = array();
 
-    // Loop on each directory
-    $found=false;
+    // Loop on each directory to fill $modulesdir
+    $modulesdir = array();
     foreach ($conf->file->dol_document_root as $type => $dirroot)
     {
         $modulesdir[] = $dirroot."/core/modules/";
 
-        if ($type == 'alt')
-        {
             $handle=@opendir(dol_osencode($dirroot));
             if (is_resource($handle))
             {
@@ -655,9 +674,10 @@ function Activate($value,$withdeps=1)
                 }
                 closedir($handle);
             }
-        }
     }
 
+    // Loop on each directory
+    $found=false;
     foreach ($modulesdir as $dir)
     {
         if (file_exists($dir.$modFile))
@@ -745,16 +765,13 @@ function UnActivate($value, $requiredby=1)
     $ret='';
     $modName = $value;
     $modFile = $modName . ".class.php";
-    $modulesdir=array();
 
-    // Loop on each directory
-    $found=false;
+    // Loop on each directory to fill $modulesdir
+    $modulesdir = array();
     foreach ($conf->file->dol_document_root as $type => $dirroot)
     {
         $modulesdir[] = $dirroot."/core/modules/";
 
-        if ($type == 'alt')
-        {
             $handle=@opendir(dol_osencode($dirroot));
             if (is_resource($handle))
             {
@@ -770,9 +787,10 @@ function UnActivate($value, $requiredby=1)
                 }
                 closedir($handle);
             }
-        }
     }
 
+    // Loop on each directory
+    $found=false;
     foreach ($modulesdir as $dir)
     {
         if (file_exists($dir.$modFile))
@@ -838,19 +856,40 @@ function complete_dictionnary_with_modules(&$taborder,&$tabname,&$tablib,&$tabsq
     $orders = array();
     $categ = array();
     $dirmod = array();
+    $modulesdir = array();
     $i = 0; // is a sequencer of modules found
     $j = 0; // j is module number. Automatically affected if module number not defined.
-    foreach ($conf->file->dol_document_root as $dirroot)
-    {
-        $dir = $dirroot . "/core/modules/";
 
-        // Load modules attributes in arrays (name, numero, orders) from dir directory
-        //print $dir."\n<br>";
-        dol_syslog("Scan directory ".$dir." for modules");
+    foreach ($conf->file->dol_document_root as $type => $dirroot)
+    {
+        $modulesdir[$dirroot . '/core/modules/'] = $dirroot . '/core/modules/';
+
+        $handle=@opendir($dirroot);
+        if (is_resource($handle))
+        {
+            while (($file = readdir($handle))!==false)
+            {
+                if (is_dir($dirroot.'/'.$file) && substr($file, 0, 1) <> '.' && substr($file, 0, 3) <> 'CVS' && $file != 'includes')
+                {
+                    if (is_dir($dirroot . '/' . $file . '/core/modules/'))
+                    {
+                        $modulesdir[$dirroot . '/' . $file . '/core/modules/'] = $dirroot . '/' . $file . '/core/modules/';
+                    }
+                }
+            }
+            closedir($handle);
+        }
+    }
+    //var_dump($modulesdir);
+
+    foreach ($modulesdir as $dir)
+    {
+    	// Load modules attributes in arrays (name, numero, orders) from dir directory
+    	//print $dir."\n<br>";
+    	dol_syslog("Scan directory ".$dir." for modules");
         $handle=@opendir(dol_osencode($dir));
         if (is_resource($handle))
         {
-
             while (($file = readdir($handle))!==false)
             {
                 //print "$i ".$file."\n<br>";

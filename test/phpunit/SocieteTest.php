@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * or see http://www.gnu.org/
  */
 
 /**
@@ -226,10 +226,6 @@ class SocieteTest extends PHPUnit_Framework_TestCase
 		$user=$this->savuser;
 		$langs=$this->savlangs;
 		$db=$this->savdb;
-
-    	$result=$localobject->factures_impayes();
-    	print __METHOD__." id=".$localobject->id." result=".join(',',$result)."\n";
-    	//$this->assertLessThan($result, 0);
 
         $result=$localobject->set_as_client();
         print __METHOD__." id=".$localobject->id." result=".$result."\n";

@@ -35,6 +35,7 @@ $langs->setDefaultLang($setuplang);
 
 $langs->load("admin");
 $langs->load("install");
+$langs->load("errors");
 
 // Recuparation des information de connexion
 $userroot=isset($_POST["db_user_root"])?$_POST["db_user_root"]:"";
@@ -94,6 +95,11 @@ if (! empty($_POST["db_port"]) && ! is_numeric($_POST["db_port"]))
     print '<div class="error">'.$langs->trans("ErrorBadValueForParameter",$_POST["db_port"],$langs->transnoentities("Port")).'</div>';
     $error++;
 }
+if (! empty($_POST["db_prefix"]) && ! preg_match('/^[a-z0-9]+_$/i', $_POST["db_prefix"]))
+{
+	print '<div class="error">'.$langs->trans("ErrorBadValueForParameter",$_POST["db_prefix"],$langs->transnoentities("DatabasePrefix")).'</div>';
+	$error++;
+}
 
 
 // Remove last / into dans main_dir
@@ -119,12 +125,12 @@ if (! $error)
     $result=@include_once($main_dir."/core/db/".$_POST["db_type"].".class.php");
     if ($result)
     {
-        // If we ask database or user creation we need to connect as root
+        // If we ask database or user creation we need to connect as root, so we need root login
         if (! empty($_POST["db_create_database"]) && ! $userroot)
         {
             print '<div class="error">'.$langs->trans("YouAskDatabaseCreationSoDolibarrNeedToConnect",$_POST["db_name"]).'</div>';
             print '<br>';
-            if (empty($db->connected)) print $langs->trans("BecauseConnectionFailedParametersMayBeWrong").'<br><br>';
+            print $langs->trans("BecauseConnectionFailedParametersMayBeWrong").'<br><br>';
             print $langs->trans("ErrorGoBackAndCorrectParameters");
             $error++;
         }
@@ -132,7 +138,7 @@ if (! $error)
         {
             print '<div class="error">'.$langs->trans("YouAskLoginCreationSoDolibarrNeedToConnect",$_POST["db_user"]).'</div>';
             print '<br>';
-            if (! $db->connected) print $langs->trans("BecauseConnectionFailedParametersMayBeWrong").'<br><br>';
+            print $langs->trans("BecauseConnectionFailedParametersMayBeWrong").'<br><br>';
             print $langs->trans("ErrorGoBackAndCorrectParameters");
             $error++;
         }
@@ -161,7 +167,7 @@ if (! $error)
             $db=getDoliDBInstance($_POST["db_type"],$_POST["db_host"],$userroot,$passroot,$databasefortest,$_POST["db_port"]);
 
             dol_syslog("databasefortest=".$databasefortest." connected=".$db->connected." database_selected=".$db->database_selected, LOG_DEBUG);
-            //print "databasefortest=".$databasefortest." connected=".$db->connected." database_selected=".$db->database_selected;
+            print "databasefortest=".$databasefortest." connected=".$db->connected." database_selected=".$db->database_selected;
 
             if (empty($_POST["db_create_database"]) && $db->connected && ! $db->database_selected)
             {
@@ -366,11 +372,14 @@ if (! $error && $db->connected && $action == "set")
         }
     }
 
+    // Table prefix
+    $main_db_prefix = ((GETPOST("db_prefix") && GETPOST("db_prefix") != '') ? GETPOST("db_prefix") : 'llx_');
+
     // Force https
-    $main_force_https = ((GETPOST("main_force_https") && ( GETPOST("main_force_https") == "on" || GETPOST("main_force_https") == 1) ) ? '1' : '0');
+    $main_force_https = ((GETPOST("main_force_https") && (GETPOST("main_force_https") == "on" || GETPOST("main_force_https") == 1)) ? '1' : '0');
 
     // Use alternative directory
-    $main_use_alt_dir = ((GETPOST("main_use_alt_dir") && ( GETPOST("main_use_alt_dir") == "on" || GETPOST("main_use_alt_dir") == 1) ) ? '' : '#');
+    $main_use_alt_dir = ((GETPOST("main_use_alt_dir") && (GETPOST("main_use_alt_dir") == "on" || GETPOST("main_use_alt_dir") == 1)) ? '' : '#');
 
     // Alternative root directory name
     $main_alt_dir_name = ((GETPOST("main_alt_dir_name") && GETPOST("main_alt_dir_name") != '') ? GETPOST("main_alt_dir_name") : 'custom');
@@ -650,7 +659,7 @@ if (! $error && $db->connected && $action == "set")
 
 ?>
 
-<script type="text/javascript" language="javascript">
+<script type="text/javascript">
 function jsinfo()
 {
 	ok=true;
@@ -724,7 +733,7 @@ function write_master_file($masterfile,$main_dir)
 function write_conf_file($conffile)
 {
     global $conf,$langs;
-    global $_POST,$main_dir,$main_data_dir,$main_force_https,$main_use_alt_dir,$main_alt_dir_name;
+    global $_POST,$main_dir,$main_data_dir,$main_force_https,$main_use_alt_dir,$main_alt_dir_name,$main_db_prefix;
     global $dolibarr_main_url_root,$dolibarr_main_document_root,$dolibarr_main_data_root,$dolibarr_main_db_host;
     global $dolibarr_main_db_port,$dolibarr_main_db_name,$dolibarr_main_db_user,$dolibarr_main_db_pass;
     global $dolibarr_main_db_type,$dolibarr_main_db_character_set,$dolibarr_main_db_collation,$dolibarr_main_authentication;
@@ -776,6 +785,9 @@ function write_conf_file($conffile)
 		fputs($fp,"\n");
 
 		fputs($fp, '$dolibarr_main_db_name=\''.addslashes($_POST["db_name"]).'\';');
+		fputs($fp,"\n");
+
+		fputs($fp, '$dolibarr_main_db_prefix=\''.addslashes($main_db_prefix).'\';');
 		fputs($fp,"\n");
 
 		fputs($fp, '$dolibarr_main_db_user=\''.addslashes($_POST["db_user"]).'\';');

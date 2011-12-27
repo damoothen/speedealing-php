@@ -82,6 +82,7 @@ class modContrat extends DolibarrModules
 		// Boxes
 		$this->boxes = array();
 		$this->boxes[0][1] = "box_contracts.php";
+		$this->boxes[1][1] = "box_services_expired.php";
 
 		// Permissions
 		$this->rights = array();
@@ -135,6 +136,8 @@ class modContrat extends DolibarrModules
 			 "DELETE FROM ".MAIN_DB_PREFIX."document_model WHERE nom = 'generic_contract_odt' AND entity = ".$conf->entity,
 			 "INSERT INTO ".MAIN_DB_PREFIX."document_model (nom, type, entity,libelle,description) VALUES('generic_contract_odt','contrat',".$conf->entity.",'ODT templates','CONTRAT_ADDON_PDF_ODT_PATH')",
 		);
+
+		$sql = array();
 
 		return $this->_init($sql);
 	}

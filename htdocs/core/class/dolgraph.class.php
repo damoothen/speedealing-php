@@ -1,6 +1,6 @@
 <?php
 /* Copyright (c) 2003-2006 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (c) 2004-2008 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (c) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 /**
  *	\file       htdocs/core/class/dolgraph.class.php
  *  \ingroup    core
- *	\brief      Fichier de la classe mere de gestion des graph
+ *	\brief      File for class to generate graph
  *
  *	Usage:
  *	$graph_data = array(array('labelA',yA),array('labelB',yB));
@@ -48,6 +48,7 @@ class DolGraph
 
 	//! Tableau de donnees
 	var $data;				// array(array('abs1',valA1,valB1), array('abs2',valA2,valB2), ...)
+	var $title;
 	var $width=380;
 	var $height=200;
 	var $MaxValue=0;
@@ -66,15 +67,17 @@ class DolGraph
 	var $Legend=array();
 	var $LegendWidthMin=0;
 
-	var $graph;     		// Objet Graph (Artichow, Phplot...)
+	var $graph;     			// Objet Graph (Artichow, Phplot...)
 	var $error;
 
-	var $library='';		// Par defaut on utiliser PHPlot
+	var $library='artichow';	// Graphic library to use
 
-	var $bordercolor;		// array(R,G,B)
-	var $bgcolor;			// array(R,G,B)
-	var $bgcolorgrid;		// array(R,G,B)
-	var $datacolor;			// array(array(R,G,B),...)
+	var $bordercolor;			// array(R,G,B)
+	var $bgcolor;				// array(R,G,B)
+	var $bgcolorgrid;			// array(R,G,B)
+	var $datacolor;				// array(array(R,G,B),...)
+
+	private $stringtoshow;      // To store string to output graph into HTML page
 
 
 	/**
@@ -84,7 +87,6 @@ class DolGraph
 	{
 		global $conf;
 		global $theme_bordercolor, $theme_datacolor, $theme_bgcolor, $theme_bgcoloronglet;
-
 
 		// Test si module GD present
 		$modules_list = get_loaded_extensions();
@@ -99,15 +101,11 @@ class DolGraph
 			return -1;
 		}
 
-
-		// Defini proprietes de l'objet graphe
-		$this->library=$conf->global->MAIN_GRAPH_LIBRARY;
-
 		$this->bordercolor = array(235,235,224);
 		$this->datacolor = array(array(120,130,150), array(160,160,180), array(190,190,220));
 		$this->bgcolor = array(235,235,224);
 
-		$color_file = DOL_DOCUMENT_ROOT."/theme/".$conf->theme."/graph-color.php";
+		$color_file = DOL_DOCUMENT_ROOT.'/theme/'.$conf->theme.'/graph-color.php';
 		if (is_readable($color_file))
 		{
 			include_once($color_file);
@@ -122,7 +120,7 @@ class DolGraph
 
 	/**
 	 * Set Y precision
-	 * 
+	 *
 	 * @param 	float	$which_prec
 	 * @return 	string
 	 */
@@ -134,7 +132,7 @@ class DolGraph
 
 	/**
 	 * Utiliser SetNumTicks ou SetHorizTickIncrement mais pas les 2
-	 * 
+	 *
 	 * @param float $xi
 	 */
 	function SetHorizTickIncrement($xi)
@@ -145,7 +143,7 @@ class DolGraph
 
 	/**
 	 * Utiliser SetNumTicks ou SetHorizTickIncrement mais pas les 2
-	 * 
+	 *
 	 * @param float $xt
 	 */
 	function SetNumXTicks($xt)
@@ -156,7 +154,7 @@ class DolGraph
 
 	/**
 	 * Set label interval to reduce number of labels
-	 * 
+	 *
 	 * @param float $x
 	 */
 	function SetLabelInterval($x)
@@ -184,7 +182,7 @@ class DolGraph
 	}
 
 	/**
-	 * 
+	 *
 	 * @param unknown_type $label
 	 */
 	function SetYLabel($label)
@@ -193,7 +191,7 @@ class DolGraph
 	}
 
 	/**
-	 * 
+	 *
 	 * @param $w
 	 */
 	function SetWidth($w)
@@ -202,7 +200,7 @@ class DolGraph
 	}
 
 	/**
-	 * 
+	 *
 	 * @param $title
 	 */
 	function SetTitle($title)
@@ -211,7 +209,7 @@ class DolGraph
 	}
 
 	/**
-	 * 
+	 *
 	 * @param $data
 	 */
 	function SetData($data)
@@ -220,7 +218,7 @@ class DolGraph
 	}
 
 	/**
-	 * 
+	 *
 	 * @param $type
 	 */
 	function SetType($type)
@@ -229,16 +227,16 @@ class DolGraph
 	}
 
 	/**
-	 * 
+	 *
 	 * @param $legend
 	 */
 	function SetLegend($legend)
 	{
 		$this->Legend = $legend;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param $legendwidthmin
 	 */
 	function SetLegendWidthMin($legendwidthmin)
@@ -247,16 +245,16 @@ class DolGraph
 	}
 
 	/**
-	 * 
+	 *
 	 * @param $max
 	 */
 	function SetMaxValue($max)
 	{
 		$this->MaxValue = $max;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	function GetMaxValue()
 	{
@@ -264,16 +262,16 @@ class DolGraph
 	}
 
 	/**
-	 * 
+	 *
 	 * @param $min
 	 */
 	function SetMinValue($min)
 	{
 		$this->MinValue = $min;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	function GetMinValue()
 	{
@@ -281,7 +279,7 @@ class DolGraph
 	}
 
 	/**
-	 * 
+	 *
 	 * @param $h
 	 */
 	function SetHeight($h)
@@ -290,7 +288,7 @@ class DolGraph
 	}
 
 	/**
-	 * 
+	 *
 	 * @param $s
 	 */
 	function SetShading($s)
@@ -299,7 +297,7 @@ class DolGraph
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	function ResetBgColor()
 	{
@@ -307,7 +305,7 @@ class DolGraph
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	function ResetBgColorGrid()
 	{
@@ -315,7 +313,7 @@ class DolGraph
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	function isGraphKo()
 	{
@@ -325,7 +323,7 @@ class DolGraph
 
 	/**
 	 * Definie la couleur de fond de l'image complete
-	 * 
+	 *
 	 * @param	array	$bg_color		array(R,G,B) ou 'onglet' ou 'default'
 	 * @return	void
 	 */
@@ -352,7 +350,7 @@ class DolGraph
 
 	/**
 	 * Definie la couleur de fond de la grille
-	 * 
+	 *
 	 * @param	array	$bg_colorgrid		array(R,G,B) ou 'onglet' ou 'default'
 	 */
 	function SetBgColorGrid($bg_colorgrid = array(255,255,255))
@@ -377,7 +375,7 @@ class DolGraph
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	function ResetDataColor()
 	{
@@ -385,7 +383,7 @@ class DolGraph
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	function GetMaxValueInData()
 	{
@@ -408,7 +406,7 @@ class DolGraph
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	function GetMinValueInData()
 	{
@@ -477,34 +475,36 @@ class DolGraph
 
 	/**
 	 * Build a graph onto disk using correct library
-	 * 
-	 * @param	string	$file    Image file name on disk to generate
+	 *
+	 * @param	string	$file    	Image file name to use if we save onto disk
+	 * @param	string	$fileurl	Url path to show image if saved onto disk
 	 * @return	void
 	 */
-	function draw($file)
+	function draw($file,$fileurl='')
 	{
 		if (! is_array($this->data) || count($this->data) < 1)
 		{
 			$this->error="Call to draw method was made but SetData was not called or called with an empty dataset for parameters";
-			dol_syslog("DolGraph::draw ".$this->error, LOG_ERR);
+			dol_syslog(get_class($this)."::draw ".$this->error, LOG_ERR);
 			return -1;
 		}
 		$call = "draw_".$this->library;
-		$this->$call($file);
+		$this->$call($file,$fileurl);
 	}
 
 
 	/**
 	 * Build a graph onto disk using Artichow library
-	 * 
-	 * @param	string	$file    Image file name on disk to generate
+	 *
+	 * @param	string	$file    	Image file name to use if we save onto disk
+	 * @param	string	$fileurl	Url path to show image if saved onto disk
 	 * @return	void
 	 */
-	private function draw_artichow($file)
+	private function draw_artichow($file,$fileurl)
 	{
 	    global $artichow_defaultfont;
-	    
-		dol_syslog("DolGraph.class::draw_artichow this->type=".$this->type);
+
+		dol_syslog(get_class($this)."::draw_artichow this->type=".$this->type);
 
 		if (! defined('SHADOW_RIGHT_TOP'))  define('SHADOW_RIGHT_TOP',3);
 		if (! defined('LEGEND_BACKGROUND')) define('LEGEND_BACKGROUND',2);
@@ -544,7 +544,7 @@ class DolGraph
 		$paddleft=50;
 		$paddright=10;
 		$strl=dol_strlen(max(abs($this->MaxValue),abs($this->MinValue)));
-		if ($strl > 6) $paddleft += ($strln * 4);
+		if ($strl > 6) $paddleft += ($strl * 4);
 		$group->setPadding($paddleft, $paddright);		// Width on left and right for Y axis values
 		$group->legend->setSpace(0);
 		$group->legend->setPadding(2,2,2,2);
@@ -667,8 +667,20 @@ class DolGraph
 
 		// Generate file
 		$graph->draw($file);
+
+		$this->stringtoshow='<img src="'.$fileurl.'" title="'.dol_escape_htmltag($this->title?$this->title:$this->YLabel).'" alt="'.dol_escape_htmltag($this->title?$this->title:$this->YLabel).'">';
 	}
 
+
+	/**
+	* Output HTML string to show graph
+	*
+	* @return	string		HTML string to show graph
+	*/
+	function show()
+	{
+	    return $this->stringtoshow;
+	}
 }
 
 ?>

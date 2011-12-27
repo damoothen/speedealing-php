@@ -56,7 +56,7 @@ $result = restrictedArea($user, 'societe', $socid);
 
 $contactstatic = new Contact($db);
 
-$html = new Form($db);
+$form = new Form($db);
 
 /*
  * Fiche categorie de client et/ou fournisseur
@@ -82,8 +82,8 @@ if ($_GET["socid"])
         print '<table width="100%"><tr><td valign="top" width="50%">';
 	print '<table class="noborder" width="100%">';
 
-	print '<tr class="liste_titre"><td colspan="4">';
-	print $html->showrefnav($soc,'socid','',($user->societe_id?0:1),'rowid','nom');
+	print '<tr class="liste_titre"><td width="25%">'.$langs->trans("ThirdPartyName").'</td><td colspan="3">';
+	print $form->showrefnav($soc,'socid','',($user->societe_id?0:1),'rowid','nom');
 	print '</td></tr>';
 
 	// Name
@@ -122,8 +122,7 @@ if ($_GET["socid"])
 
 	if ($conf->global->MAIN_MODULE_BARCODE)
 	{
-		print '<tr '.$bc[$var].'><td id="label">'.$langs->trans('Gencod').'</td><td colspan="3" id="value">'.$soc->gencod.'</td></tr>';
-                $var=!$var;
+		print '<tr '.$bc[$var].'><td id="label">'.$langs->trans('Gencod').'</td><td colspan="3" id="value">'.$soc->barcode.'</td></tr>';
 	}
 
         // Address

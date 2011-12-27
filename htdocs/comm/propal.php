@@ -52,6 +52,10 @@ $action=GETPOST('action');
 $confirm=GETPOST('confirm');
 $lineid=GETPOST('lineid');
 
+$search_ref=GETPOST('sf_ref')?GETPOST('sf_ref','alpha'):GETPOST('search_ref','alpha');
+$search_societe=GETPOST('search_societe','alpha');
+$search_montant_ht=GETPOST('search_montant_ht','alpha');
+
 $sall=GETPOST("sall");
 $mesg=(GETPOST("msg") ? GETPOST("msg") : GETPOST("mesg"));
 $year=GETPOST("year");
@@ -85,6 +89,7 @@ $hookmanager=new HookManager($db);
 $hookmanager->callHooks(array('propalcard'));
 
 
+
 /******************************************************************************/
 /*                     Actions                                                */
 /******************************************************************************/
@@ -95,23 +100,25 @@ $reshook=$hookmanager->executeHooks('doActions',$parameters,$object,$action);   
 // Action clone object
 if ($action == 'confirm_clone' && $confirm == 'yes')
 {
-	if (1==0 &&  ! GETPOST('clone_content') && ! GETPOST('clone_receivers') )
+	if (1==0 &&  ! GETPOST('clone_content') && ! GETPOST('clone_receivers'))
 	{
 		$mesg='<div class="error">'.$langs->trans("NoCloneOptionsSpecified").'</div>';
 	}
 	else
 	{
-		$result=$object->createFromClone($id,0,GETPOST('socid'),$hookmanager);
-		if ($result > 0)
+		if ($object->fetch($id) > 0)
 		{
-			header("Location: ".$_SERVER['PHP_SELF'].'?id='.$result);
-			exit;
-		}
-		else
-		{
-			$mesg=$object->error;
-			$action='';
-			//$_GET['id']=$_REQUEST['id'];
+			$result=$object->createFromClone($socid, $hookmanager);
+			if ($result > 0)
+			{
+				header("Location: ".$_SERVER['PHP_SELF'].'?id='.$result);
+				exit;
+			}
+			else
+			{
+				$mesg=$object->error;
+				$action='';
+			}
 		}
 	}
 }
@@ -161,7 +168,11 @@ if ($action == 'confirm_deleteline' && $confirm == 'yes')
 			$outputlangs = new Translate("",$conf);
 			$outputlangs->setDefaultLang($newlang);
 		}
-		if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE))	propale_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+		if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE))
+		{
+            $ret=$object->fetch($id);    // Reload to get new records
+		    propale_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+		}
 
 		Header('Location: '.$_SERVER["PHP_SELF"].'?id='.$object->id);
 		exit;
@@ -191,7 +202,11 @@ if ($action == 'confirm_validate' && $confirm == 'yes' && $user->rights->propale
 			$outputlangs = new Translate("",$conf);
 			$outputlangs->setDefaultLang($newlang);
 		}
-		if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) propale_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+		if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE))
+		{
+            $ret=$object->fetch($id);    // Reload to get new records
+		    propale_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+		}
 	}
 	else
 	{
@@ -232,9 +247,7 @@ if ($_POST['action'] == 'set_ref_client' && $user->rights->propale->creer)
 	$object->set_ref_client($user, $_POST['ref_client']);
 }
 
-/*
- * Creation propale
- */
+// Create proposal
 if ($_POST['action'] == 'add' && $user->rights->propale->creer)
 {
 	$object->socid=$_POST['socid'];
@@ -368,31 +381,42 @@ if ($action == 'classifybilled')
 	$object->cloture($user, 4, '');
 }
 
-/*
- *  Cloture de la propale
- */
-if (GETPOST('action') == 'setstatut' && $user->rights->propale->cloturer)
+// Reopen proposal
+if ($action == 'confirm_reopen' && $user->rights->propale->cloturer)
 {
 	if (! $_POST['cancel'])
 	{
-		if (! GETPOST('statut'))
+		$object->fetch($id);
+		// prevent browser refresh from reopening proposal several times
+		if ($object->statut==2 || $object->statut==3)
 		{
-			$mesg='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->transnoentities("CloseAs")).'</div>';
-			$action='statut';
-			$action='statut';
-		}
-		else
-		{
-			$object->fetch($id);
-			// prevent browser refresh from closing proposal several times
-			if ($object->statut==1)
-			{
-				$object->cloture($user, $_REQUEST['statut'], $_REQUEST['note']);
-			}
+			$object->setStatut(1);
 		}
 	}
 }
 
+// Close proposal
+if ($action == 'setstatut' && $user->rights->propale->cloturer)
+{
+    if (! $_POST['cancel'])
+    {
+        if (! GETPOST('statut'))
+        {
+            $mesg='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->transnoentities("CloseAs")).'</div>';
+            $action='statut';
+            $action='statut';
+        }
+        else
+        {
+            $object->fetch($id);
+            // prevent browser refresh from closing proposal several times
+            if ($object->statut==1)
+            {
+                $object->cloture($user, $_REQUEST['statut'], $_REQUEST['note']);
+            }
+        }
+    }
+}
 
 /*
  * Add file in email form
@@ -720,7 +744,7 @@ if ($_POST['action'] == "addline" && $user->rights->propale->creer)
 
 		if ($price_min && (price2num($pu_ht)*(1-price2num($_POST['remise_percent'])/100) < price2num($price_min)))
 		{
-			$mesg = '<div class="error">'.$langs->trans("CantBeLessThanMinPrice",price2num($price_min,'MU').' '.$langs->trans("Currency".$conf->monnaie)).'</div>' ;
+			$mesg = '<div class="error">'.$langs->trans("CantBeLessThanMinPrice",price2num($price_min,'MU').' '.$langs->trans("Currency".$conf->currency)).'</div>' ;
 		}
 		else
 		{
@@ -756,7 +780,11 @@ if ($_POST['action'] == "addline" && $user->rights->propale->creer)
 					$outputlangs = new Translate("",$conf);
 					$outputlangs->setDefaultLang($newlang);
 				}
-				if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) propale_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+				if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE))
+				{
+                    $ret=$object->fetch($id);    // Reload to get new records
+				    propale_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+				}
 
 				unset($_POST['qty']);
 				unset($_POST['type']);
@@ -810,7 +838,7 @@ if ($_POST['action'] == 'updateligne' && $user->rights->propale->creer && $_POST
 	}
 	if ($productid && $price_min && (price2num($up_ht)*(1-price2num($_POST['remise_percent'])/100) < price2num($price_min)))
 	{
-		$mesg = '<div class="error">'.$langs->trans("CantBeLessThanMinPrice",price2num($price_min,'MU').' '.$langs->trans("Currency".$conf->monnaie)).'</div>' ;
+		$mesg = '<div class="error">'.$langs->trans("CantBeLessThanMinPrice",price2num($price_min,'MU').' '.$langs->trans("Currency".$conf->currency)).'</div>' ;
 	}
 	else
 	{
@@ -839,7 +867,11 @@ if ($_POST['action'] == 'updateligne' && $user->rights->propale->creer && $_POST
 			$outputlangs = new Translate("",$conf);
 			$outputlangs->setDefaultLang($newlang);
 		}
-		if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) propale_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+		if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE))
+		{
+            $ret=$object->fetch($id);    // Reload to get new records
+		    propale_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+		}
 	}
 }
 
@@ -987,7 +1019,7 @@ if ($action == 'down' && $user->rights->propale->creer)
 
 llxHeader('',$langs->trans('Proposal'),'EN:Commercial_Proposals|FR:Proposition_commerciale|ES:Presupuestos');
 
-$html = new Form($db);
+$form = new Form($db);
 $htmlother = new FormOther($db);
 $formfile = new FormFile($db);
 $companystatic=new Societe($db);
@@ -1023,31 +1055,31 @@ if ($id > 0 || ! empty($ref))
 		//'text' => $langs->trans("ConfirmClone"),
 		//array('type' => 'checkbox', 'name' => 'clone_content',   'label' => $langs->trans("CloneMainAttributes"),   'value' => 1),
 		//array('type' => 'checkbox', 'name' => 'update_prices',   'label' => $langs->trans("PuttingPricesUpToDate"),   'value' => 1),
-		array('type' => 'other', 'name' => 'socid',   'label' => $langs->trans("SelectThirdParty"),   'value' => $html->select_company(GETPOST('socid'),'socid','(s.client=1 OR s.client=3)'))
+		array('type' => 'other', 'name' => 'socid',   'label' => $langs->trans("SelectThirdParty"),   'value' => $form->select_company(GETPOST('socid'),'socid','(s.client=1 OR s.client=3)'))
 		);
 		// Paiement incomplet. On demande si motif = escompte ou autre
-		$formconfirm=$html->formconfirm($_SERVER["PHP_SELF"].'?id='.$object->id,$langs->trans('ClonePropal'),$langs->trans('ConfirmClonePropal',$object->ref),'confirm_clone',$formquestion,'yes',1);
+		$formconfirm=$form->formconfirm($_SERVER["PHP_SELF"].'?id='.$object->id,$langs->trans('ClonePropal'),$langs->trans('ConfirmClonePropal',$object->ref),'confirm_clone',$formquestion,'yes',1);
 	}
 
-	/*
-	 * Confirmation de la suppression de la propale
-	 */
+	// Confirm delete
 	if ($action == 'delete')
 	{
-		$formconfirm=$html->formconfirm($_SERVER["PHP_SELF"].'?id='.$object->id, $langs->trans('DeleteProp'), $langs->trans('ConfirmDeleteProp'), 'confirm_delete','',0,1);
+		$formconfirm=$form->formconfirm($_SERVER["PHP_SELF"].'?id='.$object->id, $langs->trans('DeleteProp'), $langs->trans('ConfirmDeleteProp',$object->ref), 'confirm_delete','',0,1);
 	}
 
-	/*
-	 * Confirmation de la suppression d'une ligne produit/service
-	 */
+	// Confirm reopen
+	if ($action == 'reopen')
+	{
+		$formconfirm=$form->formconfirm($_SERVER["PHP_SELF"].'?id='.$object->id, $langs->trans('ReOpen'), $langs->trans('ConfirmReOpenProp',$object->ref), 'confirm_reopen','',0,1);
+	}
+
+	// Confirmation delete product/service line
 	if ($action == 'ask_deleteline')
 	{
-		$formconfirm=$html->formconfirm($_SERVER["PHP_SELF"].'?id='.$object->id.'&lineid='.$lineid, $langs->trans('DeleteProductLine'), $langs->trans('ConfirmDeleteProductLine'), 'confirm_deleteline','',0,1);
+		$formconfirm=$form->formconfirm($_SERVER["PHP_SELF"].'?id='.$object->id.'&lineid='.$lineid, $langs->trans('DeleteProductLine'), $langs->trans('ConfirmDeleteProductLine'), 'confirm_deleteline','',0,1);
 	}
 
-	/*
-	 * Confirmation de la validation de la propale
-	 */
+	// Confirm validate proposal
 	if ($action == 'validate')
 	{
 	    $error=0;
@@ -1077,7 +1109,7 @@ if ($id > 0 || ! empty($ref))
 			$text.=$notify->confirmMessage('NOTIFY_VAL_PROPAL',$object->socid);
 		}
 
-		if (! $error) $formconfirm=$html->formconfirm($_SERVER["PHP_SELF"].'?id='.$object->id, $langs->trans('ValidateProp'), $text, 'confirm_validate','',0,1);
+		if (! $error) $formconfirm=$form->formconfirm($_SERVER["PHP_SELF"].'?id='.$object->id, $langs->trans('ValidateProp'), $text, 'confirm_validate','',0,1);
 	}
 
 	if (! $formconfirm)
@@ -1096,7 +1128,7 @@ if ($id > 0 || ! empty($ref))
 
 	// Ref
 	print '<tr><td>'.$langs->trans('Ref').'</td><td colspan="5">';
-	print $html->showrefnav($object,'ref',$linkback,1,'ref','ref','');
+	print $form->showrefnav($object,'ref',$linkback,1,'ref','ref','');
 	print '</td></tr>';
 
 	// Ref client
@@ -1142,19 +1174,19 @@ if ($id > 0 || ! empty($ref))
 	{
 		if ($object->statut > 0)
 		{
-			print $langs->trans("CompanyHasAbsoluteDiscount",price($absolute_discount),$langs->transnoentities("Currency".$conf->monnaie));
+			print $langs->trans("CompanyHasAbsoluteDiscount",price($absolute_discount),$langs->transnoentities("Currency".$conf->currency));
 		}
 		else
 		{
 			// Remise dispo de type non avoir
 			$filter='fk_facture_source IS NULL';
 			print '<br>';
-			$html->form_remise_dispo($_SERVER["PHP_SELF"].'?id='.$object->id,0,'remise_id',$soc->id,$absolute_discount,$filter);
+			$form->form_remise_dispo($_SERVER["PHP_SELF"].'?id='.$object->id,0,'remise_id',$soc->id,$absolute_discount,$filter);
 		}
 	}
 	if ($absolute_creditnote)
 	{
-		print $langs->trans("CompanyHasCreditNote",price($absolute_creditnote),$langs->transnoentities("Currency".$conf->monnaie)).'. ';
+		print $langs->trans("CompanyHasCreditNote",price($absolute_creditnote),$langs->transnoentities("Currency".$conf->currency)).'. ';
 	}
 	if (! $absolute_discount && ! $absolute_creditnote) print $langs->trans("CompanyHasNoAbsoluteDiscount").'.';
 	print '</td></tr>';
@@ -1173,7 +1205,7 @@ if ($id > 0 || ! empty($ref))
 		print '<form name="editdate" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'" method="post">';
 		print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 		print '<input type="hidden" name="action" value="setdate">';
-		$html->select_date($object->date,'re','','',0,"editdate");
+		$form->select_date($object->date,'re','','',0,"editdate");
 		print '<input type="submit" class="button" value="'.$langs->trans('Modify').'">';
 		print '</form>';
 	}
@@ -1218,7 +1250,7 @@ if ($id > 0 || ! empty($ref))
 		print '<form name="editecheance" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'" method="post">';
 		print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 		print '<input type="hidden" name="action" value="setecheance">';
-		$html->select_date($object->fin_validite,'ech','','','',"editecheance");
+		$form->select_date($object->fin_validite,'ech','','','',"editecheance");
 		print '<input type="submit" class="button" value="'.$langs->trans('Modify').'">';
 		print '</form>';
 	}
@@ -1242,16 +1274,16 @@ if ($id > 0 || ! empty($ref))
     print '<table class="nobordernopadding" width="100%"><tr><td>';
     print $langs->trans('PaymentConditionsShort');
     print '</td>';
-    if ($action != 'editconditions' && $object->brouillon) print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editconditions&amp;id='.$object->id.'">'.img_edit($langs->trans('SetConditions'),1).'</a></td>';
+    if ($action != 'editconditions' && $object->brouillon) print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editconditions&amp;id='.$object->id.'">'.img_edit($langs->transnoentitiesnoconv('SetConditions'),1).'</a></td>';
     print '</tr></table>';
     print '</td><td colspan="3">';
     if ($action == 'editconditions')
     {
-        $html->form_conditions_reglement($_SERVER['PHP_SELF'].'?id='.$object->id,$object->cond_reglement_id,'cond_reglement_id');
+        $form->form_conditions_reglement($_SERVER['PHP_SELF'].'?id='.$object->id,$object->cond_reglement_id,'cond_reglement_id');
     }
     else
     {
-        $html->form_conditions_reglement($_SERVER['PHP_SELF'].'?id='.$object->id,$object->cond_reglement_id,'none');
+        $form->form_conditions_reglement($_SERVER['PHP_SELF'].'?id='.$object->id,$object->cond_reglement_id,'none');
     }
     print '</td>';
     print '</tr>';
@@ -1262,7 +1294,7 @@ if ($id > 0 || ! empty($ref))
 	print '<table class="nobordernopadding" width="100%"><tr><td>';
 	print $langs->trans('DeliveryDate');
 	print '</td>';
-	if ($action != 'editdate_livraison' && $object->brouillon) print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editdate_livraison&amp;id='.$object->id.'">'.img_edit($langs->trans('SetDeliveryDate'),1).'</a></td>';
+	if ($action != 'editdate_livraison' && $object->brouillon) print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editdate_livraison&amp;id='.$object->id.'">'.img_edit($langs->transnoentitiesnoconv('SetDeliveryDate'),1).'</a></td>';
 	print '</tr></table>';
 	print '</td><td colspan="3">';
 	if ($action == 'editdate_livraison')
@@ -1270,7 +1302,7 @@ if ($id > 0 || ! empty($ref))
 		print '<form name="editdate_livraison" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'" method="post">';
 		print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 		print '<input type="hidden" name="action" value="setdate_livraison">';
-		$html->select_date($object->date_livraison,'liv_','','','',"editdate_livraison");
+		$form->select_date($object->date_livraison,'liv_','','','',"editdate_livraison");
 		print '<input type="submit" class="button" value="'.$langs->trans('Modify').'">';
 		print '</form>';
 	}
@@ -1289,17 +1321,17 @@ if ($id > 0 || ! empty($ref))
 		print $langs->trans('DeliveryAddress');
 		print '</td>';
 
-		if ($action != 'editdelivery_address' && $object->brouillon) print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editdelivery_address&amp;socid='.$object->socid.'&amp;id='.$object->id.'">'.img_edit($langs->trans('SetDeliveryAddress'),1).'</a></td>';
+		if ($action != 'editdelivery_address' && $object->brouillon) print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editdelivery_address&amp;socid='.$object->socid.'&amp;id='.$object->id.'">'.img_edit($langs->transnoentitiesnoconv('SetDeliveryAddress'),1).'</a></td>';
 		print '</tr></table>';
 		print '</td><td colspan="3">';
 
 		if ($action == 'editdelivery_address')
 		{
-			$html->form_address($_SERVER['PHP_SELF'].'?id='.$object->id,$object->fk_delivery_address,GETPOST('socid'),'fk_address','propal',$object->id);
+			$form->form_address($_SERVER['PHP_SELF'].'?id='.$object->id,$object->fk_delivery_address,GETPOST('socid'),'fk_address','propal',$object->id);
 		}
 		else
 		{
-			$html->form_address($_SERVER['PHP_SELF'].'?id='.$object->id,$object->fk_delivery_address,GETPOST('socid'),'none','propal',$object->id);
+			$form->form_address($_SERVER['PHP_SELF'].'?id='.$object->id,$object->fk_delivery_address,GETPOST('socid'),'none','propal',$object->id);
 		}
 		print '</td></tr>';
 	}
@@ -1310,16 +1342,16 @@ if ($id > 0 || ! empty($ref))
 	print $langs->trans('AvailabilityPeriod');
 	if ($conf->commande->enabled) print ' ('.$langs->trans('AfterOrder').')';
 	print '</td>';
-	if ($action != 'editavailability' && $object->brouillon) print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editavailability&amp;id='.$object->id.'">'.img_edit($langs->trans('SetAvailability'),1).'</a></td>';
+	if ($action != 'editavailability' && $object->brouillon) print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editavailability&amp;id='.$object->id.'">'.img_edit($langs->transnoentitiesnoconv('SetAvailability'),1).'</a></td>';
 	print '</tr></table>';
 	print '</td><td colspan="3">';
 	if ($action == 'editavailability')
 	{
-		$html->form_availability($_SERVER['PHP_SELF'].'?id='.$object->id,$object->availability_id,'availability_id',1);
+		$form->form_availability($_SERVER['PHP_SELF'].'?id='.$object->id,$object->availability_id,'availability_id',1);
 	}
 	else
 	{
-		$html->form_availability($_SERVER['PHP_SELF'].'?id='.$object->id,$object->availability_id,'none',1);
+		$form->form_availability($_SERVER['PHP_SELF'].'?id='.$object->id,$object->availability_id,'none',1);
 	}
 
 	print '</td>';
@@ -1330,17 +1362,17 @@ if ($id > 0 || ! empty($ref))
 	print '<table class="nobordernopadding" width="100%"><tr><td>';
 	print $langs->trans('Source');
 	print '</td>';
-	if ($action != 'editdemandreason' && $object->brouillon) print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editdemandreason&amp;id='.$object->id.'">'.img_edit($langs->trans('SetDemandReason'),1).'</a></td>';
+	if ($action != 'editdemandreason' && $object->brouillon) print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editdemandreason&amp;id='.$object->id.'">'.img_edit($langs->transnoentitiesnoconv('SetDemandReason'),1).'</a></td>';
 	print '</tr></table>';
 	print '</td><td colspan="3">';
 	//print $object->demand_reason_id;
 	if ($action == 'editdemandreason')
 	{
-		$html->form_demand_reason($_SERVER['PHP_SELF'].'?id='.$object->id,$object->demand_reason_id,'demand_reason_id',1);
+		$form->form_demand_reason($_SERVER['PHP_SELF'].'?id='.$object->id,$object->demand_reason_id,'demand_reason_id',1);
 	}
 	else
 	{
-		$html->form_demand_reason($_SERVER['PHP_SELF'].'?id='.$object->id,$object->demand_reason_id,'none');
+		$form->form_demand_reason($_SERVER['PHP_SELF'].'?id='.$object->id,$object->demand_reason_id,'none');
 	}
 
 	print '</td>';
@@ -1352,16 +1384,16 @@ if ($id > 0 || ! empty($ref))
 	print '<table class="nobordernopadding" width="100%"><tr><td>';
 	print $langs->trans('PaymentMode');
 	print '</td>';
-	if ($action != 'editmode' && $object->brouillon) print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editmode&amp;id='.$object->id.'">'.img_edit($langs->trans('SetMode'),1).'</a></td>';
+	if ($action != 'editmode' && $object->brouillon) print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editmode&amp;id='.$object->id.'">'.img_edit($langs->transnoentitiesnoconv('SetMode'),1).'</a></td>';
 	print '</tr></table>';
 	print '</td><td colspan="3">';
 	if ($action == 'editmode')
 	{
-		$html->form_modes_reglement($_SERVER['PHP_SELF'].'?id='.$object->id,$object->mode_reglement_id,'mode_reglement_id');
+		$form->form_modes_reglement($_SERVER['PHP_SELF'].'?id='.$object->id,$object->mode_reglement_id,'mode_reglement_id');
 	}
 	else
 	{
-		$html->form_modes_reglement($_SERVER['PHP_SELF'].'?id='.$object->id,$object->mode_reglement_id,'none');
+		$form->form_modes_reglement($_SERVER['PHP_SELF'].'?id='.$object->id,$object->mode_reglement_id,'none');
 	}
 	print '</td></tr>';
 
@@ -1374,16 +1406,16 @@ if ($id > 0 || ! empty($ref))
 		print $langs->trans('Project').'</td>';
 		if ($user->rights->propale->creer)
 		{
-			if ($action != 'classify') print '<td align="right"><a href="'.$_SERVER['PHP_SELF'].'?action=classify&amp;id='.$object->id.'">'.img_edit($langs->trans('SetProject')).'</a></td>';
+			if ($action != 'classify') print '<td align="right"><a href="'.$_SERVER['PHP_SELF'].'?action=classify&amp;id='.$object->id.'">'.img_edit($langs->transnoentitiesnoconv('SetProject')).'</a></td>';
 			print '</tr></table>';
 			print '</td><td colspan="3">';
 			if ($action == 'classify')
 			{
-				$html->form_project($_SERVER['PHP_SELF'].'?id='.$object->id, $object->socid, $object->fk_project, 'projectid');
+				$form->form_project($_SERVER['PHP_SELF'].'?id='.$object->id, $object->socid, $object->fk_project, 'projectid');
 			}
 			else
 			{
-				$html->form_project($_SERVER['PHP_SELF'].'?id='.$object->id, $object->socid, $object->fk_project, 'none');
+				$form->form_project($_SERVER['PHP_SELF'].'?id='.$object->id, $object->socid, $object->fk_project, 'none');
 			}
 			print '</td></tr>';
 		}
@@ -1414,12 +1446,12 @@ if ($id > 0 || ! empty($ref))
 	// Amount HT
 	print '<tr><td height="10">'.$langs->trans('AmountHT').'</td>';
 	print '<td align="right" colspan="2" nowrap><b>'.price($object->total_ht).'</b></td>';
-	print '<td>'.$langs->trans("Currency".$conf->monnaie).'</td></tr>';
+	print '<td>'.$langs->trans("Currency".$conf->currency).'</td></tr>';
 
 	// Amount VAT
 	print '<tr><td height="10">'.$langs->trans('AmountVAT').'</td>';
 	print '<td align="right" colspan="2" nowrap>'.price($object->total_tva).'</td>';
-	print '<td>'.$langs->trans("Currency".$conf->monnaie).'</td></tr>';
+	print '<td>'.$langs->trans("Currency".$conf->currency).'</td></tr>';
 
 	// Amount Local Taxes
 	if ($mysoc->pays_code=='ES')
@@ -1428,20 +1460,20 @@ if ($id > 0 || ! empty($ref))
 		{
 			print '<tr><td height="10">'.$langs->transcountry("AmountLT1",$mysoc->pays_code).'</td>';
 			print '<td align="right" colspan="2" nowrap>'.price($object->total_localtax1).'</td>';
-			print '<td>'.$langs->trans("Currency".$conf->monnaie).'</td></tr>';
+			print '<td>'.$langs->trans("Currency".$conf->currency).'</td></tr>';
 		}
 		if ($mysoc->localtax2_assuj=="1") //Localtax2 IRPF
 		{
 			print '<tr><td height="10">'.$langs->transcountry("AmountLT2",$mysoc->pays_code).'</td>';
 			print '<td align="right" colspan="2" nowrap>'.price($object->total_localtax2).'</td>';
-			print '<td>'.$langs->trans("Currency".$conf->monnaie).'</td></tr>';
+			print '<td>'.$langs->trans("Currency".$conf->currency).'</td></tr>';
 		}
 	}
 
 	// Amount TTC
 	print '<tr><td height="10">'.$langs->trans('AmountTTC').'</td>';
 	print '<td align="right" colspan="2" nowrap>'.price($object->total_ttc).'</td>';
-	print '<td>'.$langs->trans("Currency".$conf->monnaie).'</td></tr>';
+	print '<td>'.$langs->trans("Currency".$conf->currency).'</td></tr>';
 
 	// Statut
 	print '<tr><td height="10">'.$langs->trans('Status').'</td><td align="left" colspan="3">'.$object->getLibStatut(4).'</td></tr>';
@@ -1549,8 +1581,15 @@ if ($id > 0 || ! empty($ref))
 				print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=modif">'.$langs->trans('Modify').'</a>';
 			}
 
+			// ReOpen
+			if (($object->statut == 2 || $object->statut == 3) && $user->rights->propale->cloturer)
+			{
+				print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;action=reopen'.(empty($conf->global->MAIN_JUMP_TAG)?'':'#reopen').'"';
+				print '>'.$langs->trans('ReOpen').'</a>';
+			}
+
 			// Send
-			if ($object->statut == 1)
+			if ($object->statut == 1 || $object->statut == 2)
 			{
 				$propref = dol_sanitizeFileName($object->ref);
 				$file = $conf->propale->dir_output . '/'.$propref.'/'.$propref.'.pdf';
@@ -1574,9 +1613,9 @@ if ($id > 0 || ! empty($ref))
             }
 
             // Create an invoice and classify billed
-			if ($conf->facture->enabled && $object->statut == 2 && $user->societe_id == 0)
+			if ($object->statut == 2 && $user->societe_id == 0)
 			{
-				if ($user->rights->facture->creer)
+				if ($conf->facture->enabled && $user->rights->facture->creer)
 				{
 					print '<a class="butAction" href="'.DOL_URL_ROOT.'/compta/facture.php?action=create&amp;origin='.$object->element.'&amp;originid='.$object->id.'&amp;socid='.$object->socid.'">'.$langs->trans("AddBill").'</a>';
 				}
@@ -1746,23 +1785,23 @@ else
 	{
 		$sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
 	}
-	if (GETPOST('search_ref'))
+	if ($search_ref)
 	{
-		$sql.= " AND p.ref LIKE '%".$db->escape(GETPOST('search_ref'))."%'";
+		$sql.= " AND p.ref LIKE '%".$db->escape(trim($search_ref))."%'";
 	}
-	if (!empty($_GET['search_societe']))
+	if ($search_societe)
 	{
-		$sql.= " AND s.nom LIKE '%".$db->escape(GETPOST('search_societe'))."%'";
+		$sql.= " AND s.nom LIKE '%".$db->escape(trim($search_societe))."%'";
 	}
-	if (!empty($_GET['search_montant_ht']))
+	if ($search_montant_ht)
 	{
-		$sql.= " AND p.total_ht='".$db->escape(GETPOST('search_montant_ht'))."'";
+		$sql.= " AND p.total_ht='".$db->escape(trim($search_montant_ht))."'";
 	}
-	if ($sall) $sql.= " AND (s.nom like '%".$db->escape($sall)."%' OR p.note like '%".$db->escape($sall)."%' OR pd.description like '%".$db->escape($sall)."%')";
+	if ($sall) $sql.= " AND (s.nom LIKE '%".$db->escape($sall)."%' OR p.note LIKE '%".$db->escape($sall)."%' OR pd.description LIKE '%".$db->escape($sall)."%')";
 	if ($socid) $sql.= ' AND s.rowid = '.$socid;
 	if ($viewstatut <> '')
 	{
-		$sql.= ' AND p.fk_statut in ('.$viewstatut.')';
+		$sql.= ' AND p.fk_statut IN ('.$viewstatut.')';
 	}
 	if ($month > 0)
 	{
@@ -1774,10 +1813,6 @@ else
 	if ($year > 0)
 	{
 		$sql.= " AND date_format(p.datep, '%Y') = '".$year."'";
-	}
-	if (dol_strlen($_POST['sf_ref']) > 0)
-	{
-		$sql.= " AND p.ref like '%".$db->escape($_POST["sf_ref"]) . "%'";
 	}
 
 	$sql.= ' ORDER BY '.$sortfield.' '.$sortorder.', p.ref DESC';
@@ -1819,10 +1854,10 @@ else
 
 		print '<tr class="liste_titre">';
 		print '<td class="liste_titre">';
-		print '<input class="flat" size="10" type="text" name="search_ref" value="'.GETPOST('search_ref').'">';
+		print '<input class="flat" size="10" type="text" name="search_ref" value="'.$search_ref.'">';
 		print '</td>';
 		print '<td class="liste_titre" align="left">';
-		print '<input class="flat" type="text" size="16" name="search_societe" value="'.GETPOST('search_societe').'">';
+		print '<input class="flat" type="text" size="16" name="search_societe" value="'.$search_societe.'">';
 		print '</td>';
 		print '<td class="liste_titre" colspan="1" align="center">';
 		print $langs->trans('Month').': <input class="flat" type="text" size="1" maxlength="2" name="month" value="'.$month.'">';
@@ -1833,11 +1868,11 @@ else
 		print '</td>';
 		print '<td class="liste_titre" colspan="1">&nbsp;</td>';
 		print '<td class="liste_titre" align="right">';
-		print '<input class="flat" type="text" size="10" name="search_montant_ht" value="'.GETPOST('search_montant_ht').'">';
+		print '<input class="flat" type="text" size="10" name="search_montant_ht" value="'.$search_montant_ht.'">';
 		print '</td>';
 		print '<td class="liste_titre">&nbsp;</td>';
 		print '<td class="liste_titre" align="right">';
-		$html->select_propal_statut($viewstatut,1);
+		$form->select_propal_statut($viewstatut,1);
 		print '</td>';
 		print '<td class="liste_titre" align="right"><input class="liste_titre" type="image" src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/search.png" value="'.dol_escape_htmltag($langs->trans("Search")).'" title="'.dol_escape_htmltag($langs->trans("Search")).'">';
 		print '</td>';

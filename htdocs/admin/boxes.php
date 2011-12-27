@@ -42,6 +42,7 @@ $boxes = array();
 /*
  * Actions
  */
+
 if ($action == 'addconst')
 
 {
@@ -217,13 +218,13 @@ if ($resql)
 					if (preg_match("/[13579]{1}/",substr($record['box_order'],-1)))
 					{
 						$box_order = "A0".$record['box_order'];
-						$sql="update llx_boxes set box_order = '".$box_order."' where box_order = ".$record['box_order'];
+						$sql="UPDATE ".MAIN_DB_PREFIX."boxes SET box_order = '".$box_order."' WHERE box_order = ".$record['box_order'];
 						$resql = $db->query($sql);
 					}
 					else if (preg_match("/[02468]{1}/",substr($record['box_order'],-1)))
 					{
 						$box_order = "B0".$record['box_order'];
-						$sql="update llx_boxes set box_order = '".$box_order."' where box_order = ".$record['box_order'];
+						$sql="UPDATE ".MAIN_DB_PREFIX."boxes SET box_order = '".$box_order."' WHERE box_order = ".$record['box_order'];
 						$resql = $db->query($sql);
 					}
 				}
@@ -232,13 +233,13 @@ if ($resql)
 					if (preg_match("/[13579]{1}/",substr($record['box_order'],-1)))
 					{
 						$box_order = "A".$record['box_order'];
-						$sql="update llx_boxes set box_order = '".$box_order."' where box_order = ".$record['box_order'];
+						$sql="UPDATE ".MAIN_DB_PREFIX."boxes SET box_order = '".$box_order."' WHERE box_order = ".$record['box_order'];
 						$resql = $db->query($sql);
 					}
 					else if (preg_match("/[02468]{1}/",substr($record['box_order'],-1)))
 					{
 						$box_order = "B".$record['box_order'];
-						$sql="update llx_boxes set box_order = '".$box_order."' where box_order = ".$record['box_order'];
+						$sql="UPDATE ".MAIN_DB_PREFIX."boxes SET box_order = '".$box_order."' WHERE box_order = ".$record['box_order'];
 						$resql = $db->query($sql);
 					}
 				}
@@ -249,9 +250,8 @@ if ($resql)
 }
 
 
-/*
- * Boites disponibles
- */
+// Available boxes
+
 print "<br>\n";
 print_titre($langs->trans("BoxesAvailable"));
 
@@ -267,11 +267,11 @@ $sql = "SELECT rowid, file, note, tms";
 $sql.= " FROM ".MAIN_DB_PREFIX."boxes_def";
 $sql.= " WHERE entity = ".$conf->entity;
 $resql = $db->query($sql);
-$var=True;
+$var=true;
 
 if ($resql)
 {
-	$html=new Form($db);
+	$form=new Form($db);
 
 	$num = $db->num_rows($resql);
 	$i = 0;
@@ -325,6 +325,7 @@ if ($resql)
 					$logo=preg_replace("/^object_/i","",$box->boximg);
 				}
 
+				print "\n".'<!-- Box '.$box->boxcode.' -->'."\n";
 				print '<form action="'.$_SERVER["PHP_SELF"].'" method="POST">';
 				print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 				print '<tr '.$bc[$var].'>';
@@ -335,7 +336,7 @@ if ($resql)
 				// Pour chaque position possible, on affiche un lien
 				// d'activation si boite non deja active pour cette position
 				print '<td>';
-				print $html->selectarray("pos",$pos_name);
+				print $form->selectarray("pos",$pos_name);
 				print '<input type="hidden" name="action" value="add">';
 				print '<input type="hidden" name="boxid" value="'.$obj->rowid.'">';
 				print ' <input type="submit" class="button" name="button" value="'.$langs->trans("Activate").'">';
@@ -353,10 +354,8 @@ if ($resql)
 
 print '</table>';
 
-/*
- * Boites activees
- *
- */
+
+// Activated boxes
 
 print "<br>\n\n";
 print_titre($langs->trans("BoxesActivated"));
@@ -421,6 +420,7 @@ if ($resql)
 			$logo=preg_replace("/^object_/i","",$box->boximg);
 		}
 
+        print "\n".'<!-- Box '.$box->boxcode.' -->'."\n";
 		print '<tr '.$bc[$var].'>';
 		print '<td>'.img_object("",$logo).' '.$box->boxlabel.'</td>';
 		print '<td>' . ($obj->note?$obj->note:'&nbsp;') . '</td>';
@@ -455,6 +455,7 @@ print '</table><br>';
 
 
 // Other parameters
+
 print_titre($langs->trans("Other"));
 print '<table class="noborder" width="100%">';
 
@@ -462,11 +463,19 @@ $var=false;
 print '<form action="'.$_SERVER["PHP_SELF"].'" method="POST">';
 print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 print '<input type="hidden" name="action" value="addconst">';
-print '<tr '.$bc[$var].'><td>';
-print $langs->trans("MaxNbOfLinesForBoxes")."</td>\n";
+print '<tr class="liste_titre">';
+print '<td class="liste_titre">'.$langs->trans("Parameter").'</td>';
+print '<td class="liste_titre">'.$langs->trans("Value").'</td>';
+print '<td class="liste_titre"></td>';
+print '</tr>';
+print '<tr '.$bc[$var].'>';
+print '<td>';
+print $langs->trans("MaxNbOfLinesForBoxes");
+print '</td>'."\n";
 print '<td>';
 print '<input type="text" class="flat" size="6" name="MAIN_BOXES_MAXLINES" value="'.$conf->global->MAIN_BOXES_MAXLINES.'">';
-print '</td><td align="right">';
+print '</td>';
+print '<td align="right">';
 print '<input type="submit" class="button" value="'.$langs->trans("Save").'" name="Button">';
 print '</td>'."\n";
 print '</tr>';

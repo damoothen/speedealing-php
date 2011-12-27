@@ -34,15 +34,15 @@ class DoliDBMysql
 	//! Database handler
 	var $db;
 	//! Database type
-	var $type='mysql';
+	public $type='mysql';
 	//! Database label
-	var $label='MySQL';
+	static $label='MySQL';
 	//! Charset used to force charset when creating database
-	var $forcecharset='utf8';	// latin1, utf8
+	static $forcecharset='utf8';	// latin1, utf8
 	//! Collate used to force collate when creating database
-	var $forcecollate='utf8_general_ci';	// latin1_swedish_ci, utf8_general_ci
+	static $forcecollate='utf8_general_ci';	// latin1_swedish_ci, utf8_general_ci
 	//! Version min database
-	var $versionmin=array(3,1,0);
+	static $versionmin=array(3,1,0);
 	//! Resultset of last request
 	var $results;
 	//! 1 if connected, 0 else
@@ -98,7 +98,7 @@ class DoliDBMysql
 			$this->connected = 0;
 			$this->ok = 0;
 			$this->error="Mysql PHP functions for using MySql driver are not available in this version of PHP. Try to use another driver.";
-			dol_syslog("DoliDB::DoliDB : Mysql PHP functions for using Mysql driver are not available in this version of PHP. Try to use another driver.",LOG_ERR);
+			dol_syslog(get_class($this)."::DoliDBMysql : Mysql PHP functions for using Mysql driver are not available in this version of PHP. Try to use another driver.",LOG_ERR);
 			return $this->ok;
 		}
 
@@ -107,7 +107,7 @@ class DoliDBMysql
 			$this->connected = 0;
 			$this->ok = 0;
 			$this->error=$langs->trans("ErrorWrongHostParameter");
-			dol_syslog("DoliDB::DoliDB : Erreur Connect, wrong host parameters",LOG_ERR);
+			dol_syslog(get_class($this)."::DoliDBMysql : Erreur Connect, wrong host parameters",LOG_ERR);
 			return $this->ok;
 		}
 
@@ -124,7 +124,7 @@ class DoliDBMysql
 			$this->connected = 0;
 			$this->ok = 0;
 			$this->error=mysql_error();
-			dol_syslog("DoliDB::DoliDB : Erreur Connect mysql_error=".$this->error,LOG_ERR);
+			dol_syslog(get_class($this)."::DoliDBMysql : Erreur Connect mysql_error=".$this->error,LOG_ERR);
 		}
 
 		// Si connexion serveur ok et si connexion base demandee, on essaie connexion base
@@ -152,7 +152,7 @@ class DoliDBMysql
 				$this->database_name = '';
 				$this->ok = 0;
 				$this->error=$this->error();
-				dol_syslog("DoliDB::DoliDB : Erreur Select_db ".$this->error,LOG_ERR);
+				dol_syslog(get_class($this)."::DoliDBMysql : Erreur Select_db ".$this->error,LOG_ERR);
 			}
 		}
 		else
@@ -198,7 +198,7 @@ class DoliDBMysql
 	 */
 	function select_db($database)
 	{
-		dol_syslog("DoliDB::select_db database=".$database, LOG_DEBUG);
+		dol_syslog(get_class($this)."::select_db database=".$database, LOG_DEBUG);
 		return mysql_select_db($database, $this->db);
 	}
 
@@ -215,7 +215,7 @@ class DoliDBMysql
 	 */
 	function connect($host, $login, $passwd, $name, $port=0)
 	{
-		dol_syslog("DoliDB::connect host=$host, port=$port, login=$login, passwd=--hidden--, name=$name",LOG_DEBUG);
+		dol_syslog(get_class($this)."::connect host=$host, port=$port, login=$login, passwd=--hidden--, name=$name",LOG_DEBUG);
 
 		$newhost=$host;
 
@@ -269,7 +269,7 @@ class DoliDBMysql
     {
         if ($this->db)
         {
-          //dol_syslog("DoliDB::disconnect",LOG_DEBUG);
+          //dol_syslog(get_class($this)."::disconnect",LOG_DEBUG);
           $this->connected=0;
           return mysql_close($this->db);
         }
@@ -380,7 +380,7 @@ class DoliDBMysql
 				$this->lastqueryerror = $query;
 				$this->lasterror = $this->error();
 				$this->lasterrno = $this->errno();
-                dol_syslog("Mysql.lib::query SQL error: ".$query." ".$this->lasterrno, LOG_WARNING);
+                dol_syslog(get_class($this)."::query SQL error: ".$query." ".$this->lasterrno, LOG_WARNING);
 			}
 			$this->lastquery=$query;
 			$this->results = $ret;
@@ -537,20 +537,20 @@ class DoliDBMysql
 	 *   Convert (by PHP) a GM Timestamp date into a string date with PHP server TZ to insert into a date field.
 	 *   Function to use to build INSERT, UPDATE or WHERE predica
 	 *
-	 *   @param	    param       Date TMS to convert
-	 *   @return	string      Date in a string YYYYMMDDHHMMSS
+	 *   @param	    string	$param      Date TMS to convert
+	 *   @return	string      		Date in a string YYYYMMDDHHMMSS
 	 */
 	function idate($param)
 	{
-		return adodb_strftime("%Y%m%d%H%M%S",$param);
+		return dol_print_date($param,"%Y%m%d%H%M%S");
 	}
 
 	/**
 	 *	Convert (by PHP) a PHP server TZ string date into a GM Timestamps date
 	 * 	19700101020000 -> 3600 with TZ+1
 	 *
-	 * 	@param		string			Date in a string (YYYYMMDDHHMMSS, YYYYMMDD, YYYY-MM-DD HH:MM:SS)
-	 *	@return		date			Date TMS
+	 * 	@param		string	$string		Date in a string (YYYYMMDDHHMMSS, YYYYMMDD, YYYY-MM-DD HH:MM:SS)
+	 *	@return		date				Date TMS
 	 */
 	function jdate($string)
 	{
@@ -675,11 +675,13 @@ class DoliDBMysql
 	}
 
 	/**
-	 \brief     Recupere l'id genere par le dernier INSERT.
-	 \param     tab     Nom de la table concernee par l'insert. Ne sert pas sous MySql mais requis pour compatibilite avec Postgresql
-	 \return    int     id
+	 * Get last ID after an insert INSERT
+	 *
+	 * @param   string	$tab    	Table name concerned by insert. Ne sert pas sous MySql mais requis pour compatibilite avec Postgresql
+	 * @param	string	$fieldid	Field name
+	 * @return  int     			Id of row
 	 */
-	function last_insert_id($tab)
+	function last_insert_id($tab,$fieldid='rowid')
 	{
 		return mysql_insert_id($this->db);
 	}
@@ -1032,11 +1034,11 @@ class DoliDBMysql
 		$sql.= " VALUES ('".addslashes($dolibarr_main_db_host)."','".addslashes($dolibarr_main_db_user)."',password('".addslashes($dolibarr_main_db_pass)."')";
 		$sql.= ",'Y','Y','Y','Y','Y','Y','Y','Y','Y')";
 
-		dol_syslog("mysql.lib::DDLCreateUser", LOG_DEBUG);	// No sql to avoid password in log
+		dol_syslog(get_class($this)."::DDLCreateUser", LOG_DEBUG);	// No sql to avoid password in log
 		$resql=$this->query($sql);
 		if (! $resql)
 		{
-			dol_syslog("mysqli.lib::DDLCreateUser sql=".$sql, LOG_ERR);
+			dol_syslog(get_class($this)."::DDLCreateUser sql=".$sql, LOG_ERR);
 			return -1;
 		}
 
@@ -1045,21 +1047,21 @@ class DoliDBMysql
 		$sql.= " VALUES ('".addslashes($dolibarr_main_db_host)."','".addslashes($dolibarr_main_db_name)."','".addslashes($dolibarr_main_db_user)."'";
 		$sql.= ",'Y','Y','Y','Y','Y','Y','Y','Y','Y')";
 
-		dol_syslog("mysql.lib::DDLCreateUser sql=".$sql,LOG_DEBUG);
+		dol_syslog(get_class($this)."::DDLCreateUser sql=".$sql,LOG_DEBUG);
 		$resql=$this->query($sql);
 		if (! $resql)
 		{
-			dol_syslog("mysqli.lib::DDLCreateUser sql=".$sql, LOG_ERR);
+			dol_syslog(get_class($this)."::DDLCreateUser sql=".$sql, LOG_ERR);
 			return -1;
 		}
 
 		$sql="FLUSH Privileges";
 
-		dol_syslog("mysql.lib::DDLCreateUser sql=".$sql,LOG_DEBUG);
+		dol_syslog(get_class($this)."::DDLCreateUser sql=".$sql,LOG_DEBUG);
 		$resql=$this->query($sql);
 		if (! $resql)
 		{
-			dol_syslog("mysqli.lib::DDLCreateUser sql=".$sql, LOG_ERR);
+			dol_syslog(get_class($this)."::DDLCreateUser sql=".$sql, LOG_ERR);
 			return -1;
 		}
 
@@ -1193,7 +1195,7 @@ class DoliDBMysql
 		$result=array();
 
 		$sql='SHOW VARIABLES';
-		if ($filter) $sql.=" LIKE '".addslashes($key)."'";
+		if ($filter) $sql.=" LIKE '".addslashes($filter)."'";
 		$resql=$this->query($sql);
 		if ($resql)
 		{
@@ -1209,12 +1211,12 @@ class DoliDBMysql
 	 * 	\param		filter		Filter list on a particular value
 	 * 	\return		string		Value for parameter
 	 */
-	function getServerStatusValues($key,$filter='')
+	function getServerStatusValues($filter='')
 	{
 		$result=array();
 
 		$sql='SHOW STATUS';
-		if ($filter) $sql.=" LIKE '".addslashes($key)."'";
+		if ($filter) $sql.=" LIKE '".addslashes($filter)."'";
 		$resql=$this->query($sql);
 		if ($resql)
 		{

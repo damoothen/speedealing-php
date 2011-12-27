@@ -191,7 +191,7 @@ $countrynotdefined=$langs->trans("ErrorSetACountryFirst").' ('.$langs->trans("Se
 llxHeader();
 
 $form = new Form($db);
-$htmlcompany = new FormCompany($db);
+$formcompany = new FormCompany($db);
 
 /* ************************************************************************** */
 /*                                                                            */
@@ -244,10 +244,10 @@ if ($action == 'create')
 	print '<tr><td valign="top" class="fieldrequired">'.$langs->trans("Currency").'</td>';
 	print '<td colspan="3">';
 	$selectedcode=$account->account_currency_code;
-	if (! $selectedcode) $selectedcode=$conf->monnaie;
+	if (! $selectedcode) $selectedcode=$conf->currency;
 	$form->select_currency((isset($_POST["account_currency_code"])?$_POST["account_currency_code"]:$selectedcode), 'account_currency_code');
-	//print $langs->trans("Currency".$conf->monnaie);
-	//print '<input type="hidden" name="account_currency_code" value="'.$conf->monnaie.'">';
+	//print $langs->trans("Currency".$conf->currency);
+	//print '<input type="hidden" name="account_currency_code" value="'.$conf->currency.'">';
 	print '</td></tr>';
 
 	// Status
@@ -273,7 +273,7 @@ if ($action == 'create')
 	print '<tr><td>'.$langs->trans('State').'</td><td colspan="3">';
 	if ($selectedcode)
 	{
-		$htmlcompany->select_departement(isset($_POST["account_departement_id"])?$_POST["account_departement_id"]:'',$selectedcode,'account_departement_id');
+		$formcompany->select_departement(isset($_POST["account_departement_id"])?$_POST["account_departement_id"]:'',$selectedcode,'account_departement_id');
 	}
 	else
 	{
@@ -386,7 +386,7 @@ else
 		print '<tr><td valign="top">'.$langs->trans("Currency").'</td>';
 		print '<td colspan="3">';
 		$selectedcode=$account->account_currency_code;
-		if (! $selectedcode) $selectedcode=$conf->monnaie;
+		if (! $selectedcode) $selectedcode=$conf->currency;
 		print $langs->trans("Currency".$selectedcode);
 		print '</td></tr>';
 
@@ -517,10 +517,10 @@ else
 		print '</td>';
 		print '<td colspan="3">';
 		$selectedcode=$account->account_currency_code;
-		if (! $selectedcode) $selectedcode=$conf->monnaie;
+		if (! $selectedcode) $selectedcode=$conf->currency;
 		$form->select_currency((isset($_POST["account_currency_code"])?$_POST["account_currency_code"]:$selectedcode), 'account_currency_code');
-		//print $langs->trans("Currency".$conf->monnaie);
-		//print '<input type="hidden" name="account_currency_code" value="'.$conf->monnaie.'">';
+		//print $langs->trans("Currency".$conf->currency);
+		//print '<input type="hidden" name="account_currency_code" value="'.$conf->currency.'">';
 		print '</td></tr>';
 
 		// Status
@@ -544,7 +544,7 @@ else
 		print '<tr><td>'.$langs->trans('State').'</td><td colspan="3">';
 		if ($selectedcode)
 		{
-			$htmlcompany->select_departement(isset($_POST["account_departement_id"])?$_POST["account_departement_id"]:$account->fk_departement,$selectedcode,'account_departement_id');
+			$formcompany->select_departement(isset($_POST["account_departement_id"])?$_POST["account_departement_id"]:$account->fk_departement,$selectedcode,'account_departement_id');
 		}
 		else
 		{

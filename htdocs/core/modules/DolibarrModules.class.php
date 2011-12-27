@@ -409,7 +409,7 @@ abstract class DolibarrModules
 
         $sql = "DELETE FROM ".MAIN_DB_PREFIX."dolibarr_modules";
         $sql.= " WHERE numero = ".$this->numero;
-        $sql.= " AND entity in (0, ".$conf->entity.")";
+        $sql.= " AND entity IN (0, ".$conf->entity.")";
 
         dol_syslog(get_class($this)."::_dbunactive sql=".$sql, LOG_DEBUG);
         $this->db->query($sql);
@@ -1090,6 +1090,8 @@ abstract class DolibarrModules
      */
     function insert_menus()
     {
+    	global $user;
+    	
         require_once(DOL_DOCUMENT_ROOT."/core/class/menubase.class.php");
 
         $err=0;
@@ -1150,7 +1152,7 @@ abstract class DolibarrModules
 
             if (! $err)
             {
-                $result=$menu->create();
+                $result=$menu->create($user);
                 if ($result > 0)
                 {
                     $this->menu[$key]['rowid']=$result;

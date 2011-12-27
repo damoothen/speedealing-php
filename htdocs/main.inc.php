@@ -59,53 +59,64 @@ if (function_exists('get_magic_quotes_gpc'))	// magic_quotes_* removed in PHP6
 		}
 		$_GET     = array_map('stripslashes_deep', $_GET);
 		$_POST    = array_map('stripslashes_deep', $_POST);
-		$_COOKIE  = array_map('stripslashes_deep', $_COOKIE);
+		//$_COOKIE  = array_map('stripslashes_deep', $_COOKIE); // Useless because a cookie should never be outputed on screen nor used into sql
 		@set_magic_quotes_runtime(0);
 	}
 }
 
 /**
- * Security: SQL Injection and XSS Injection (scripts) protection (Filters on GET, POST)
+ * Security: SQL Injection and XSS Injection (scripts) protection (Filters on GET, POST, PHP_SELF).
  *
  * @param		string		$val		Value
- * @param		string		$get		1=GET, 0=POST
+ * @param		string		$type		1=GET, 0=POST, 2=PHP_SELF
  * @return		boolean					true if there is an injection
  */
-function test_sql_and_script_inject($val, $get)
+function test_sql_and_script_inject($val, $type)
 {
 	$sql_inj = 0;
-	// For SQL Injection
-	$sql_inj += preg_match('/delete[\s]+from/i', $val);
-	$sql_inj += preg_match('/create[\s]+table/i', $val);
-	$sql_inj += preg_match('/update.+set.+=/i', $val);
-	$sql_inj += preg_match('/insert[\s]+into/i', $val);
-	$sql_inj += preg_match('/select.+from/i', $val);
-	$sql_inj += preg_match('/union.+select/i', $val);
-	$sql_inj += preg_match('/(\.\.%2f)+/i', $val);
+	// For SQL Injection (only GET and POST are used to be included into bad escaped SQL requests)
+	if ($type != 2)
+	{
+    	$sql_inj += preg_match('/delete[\s]+from/i', $val);
+    	$sql_inj += preg_match('/create[\s]+table/i', $val);
+    	$sql_inj += preg_match('/update.+set.+=/i', $val);
+    	$sql_inj += preg_match('/insert[\s]+into/i', $val);
+    	$sql_inj += preg_match('/select.+from/i', $val);
+    	$sql_inj += preg_match('/union.+select/i', $val);
+    	$sql_inj += preg_match('/(\.\.%2f)+/i', $val);
+	}
 	// For XSS Injection done by adding javascript with script
+	// This is all cases a browser consider text is javascript:
+	// When it found '<script', 'javascript:', '<style', 'onload\s=' on body tag, '="&' on a tag size with old browsers
+	// All examples on page: http://ha.ckers.org/xss.html#XSScalc
     $sql_inj += preg_match('/<script/i', $val);
-    $sql_inj += preg_match('/img[\s]src/i', $val);
-    $sql_inj += preg_match('/base[\s]href/i', $val);
-	if ($get) $sql_inj += preg_match('/javascript:/i', $val);
-	// For XSS Injection done by adding javascript with onmousemove, etc... (closing a src or href tag with not cleaned param)
-	if ($get) $sql_inj += preg_match('/"/i', $val);	// We refused " in GET parameters value
+    $sql_inj += preg_match('/<style/i', $val);
+    $sql_inj += preg_match('/base[\s]+href/i', $val);
+    if ($type == 1)
+    {
+	    $sql_inj += preg_match('/javascript:/i', $val);
+	    $sql_inj += preg_match('/vbscript:/i', $val);
+    }
+	// For XSS Injection done by adding javascript closing html tags like with onmousemove, etc... (closing a src or href tag with not cleaned param)
+	if ($type == 1) $sql_inj += preg_match('/"/i', $val);      // We refused " in GET parameters value
+	if ($type == 2) $sql_inj += preg_match('/[\s;"]/', $val);    // PHP_SELF is an url and must match url syntax
 	return $sql_inj;
 }
 
 /**
- * Security: Return true if OK, false otherwise
+ * Security: Return true if OK, false otherwise.
  *
  * @param		string		&$var		Variable name
- * @param		string		$get		1=GET, 0=POST
+ * @param		string		$type		1=GET, 0=POST, 2=PHP_SELF
  * @return		boolean					true if ther is an injection
  */
-function analyse_sql_and_script(&$var, $get)
+function analyse_sql_and_script(&$var, $type)
 {
 	if (is_array($var))
 	{
 		foreach ($var as $key => $value)
 		{
-			if (analyse_sql_and_script($value,$get))
+			if (analyse_sql_and_script($value,$type))
 			{
 				$var[$key] = $value;
 			}
@@ -119,7 +130,7 @@ function analyse_sql_and_script(&$var, $get)
 	}
 	else
 	{
-		return (test_sql_and_script_inject($var,$get) <= 0);
+		return (test_sql_and_script_inject($var,$type) <= 0);
 	}
 }
 
@@ -127,7 +138,7 @@ function analyse_sql_and_script(&$var, $get)
 if (! empty($_SERVER["PHP_SELF"]))
 {
     $morevaltochecklikepost=array($_SERVER["PHP_SELF"]);
-    analyse_sql_and_script($morevaltochecklikepost,0);
+    analyse_sql_and_script($morevaltochecklikepost,2);
 }
 // Sanity check on GET parameters
 if (! empty($_SERVER["QUERY_STRING"]))
@@ -298,10 +309,7 @@ $login='';
 if (! defined('NOLOGIN'))
 {
 	// $authmode lists the different means of identification to be tested in order of preference.
-	// Example: 'http'
-	// Example: 'dolibarr'
-	// Example: 'ldap'
-	// Example: 'http,forceuser'
+	// Example: 'http', 'dolibarr', 'ldap', 'http,forceuser'
 
 	// Authentication mode
 	if (empty($dolibarr_main_authentication)) $dolibarr_main_authentication='http,dolibarr';
@@ -339,7 +347,7 @@ if (! defined('NOLOGIN'))
         }
 
 		// Verification security graphic code
-		if (isset($_POST["username"]) && ! empty($conf->global->MAIN_SECURITY_ENABLECAPTCHA))
+		if (GETPOST("username","alpha",2) && ! empty($conf->global->MAIN_SECURITY_ENABLECAPTCHA))
 		{
 			require_once(ARTICHOW_PATH.'Artichow.cfg.php');
 			require_once(ARTICHOW.'/AntiSpam.class.php');
@@ -353,7 +361,7 @@ if (! defined('NOLOGIN'))
 				$langs->load('main');
 				$langs->load('errors');
 
-				$user->trigger_mesg='ErrorBadValueForCode - login='.$_POST["username"];
+				$user->trigger_mesg='ErrorBadValueForCode - login='.GETPOST("username","alpha",2);
 				$_SESSION["dol_loginmesg"]=$langs->trans("ErrorBadValueForCode");
 				$test=false;
 
@@ -366,7 +374,7 @@ if (! defined('NOLOGIN'))
 			}
 		}
 
-		$usertotest		= (! empty($_COOKIE['login_dolibarr']) ? $_COOKIE['login_dolibarr'] : $_POST["username"]);
+		$usertotest		= (! empty($_COOKIE['login_dolibarr']) ? $_COOKIE['login_dolibarr'] : GETPOST("username","alpha",2));
 		$passwordtotest	= (! empty($_COOKIE['password_dolibarr']) ? $_COOKIE['password_dolibarr'] : $_POST["password"]);
 		$entitytotest	= (! empty($_POST["entity"]) ? $_POST["entity"] : 1);
 
@@ -375,7 +383,7 @@ if (! defined('NOLOGIN'))
 		// If error, we will put error message in session under the name dol_loginmesg
 		$goontestloop=false;
 		if (isset($_SERVER["REMOTE_USER"]) && in_array('http',$authmode)) $goontestloop=true;
-		if (isset($_POST["username"]) || ! empty($_COOKIE['login_dolibarr']) || GETPOST('openid_mode','alpha',1)) $goontestloop=true;
+		if (GETPOST("username","alpha",2) || ! empty($_COOKIE['login_dolibarr']) || GETPOST('openid_mode','alpha',1)) $goontestloop=true;
 
 		if ($test && $goontestloop)
 		{
@@ -407,13 +415,13 @@ if (! defined('NOLOGIN'))
 				$langs->load('errors');
 
 				// Bad password. No authmode has found a good password.
-				$user->trigger_mesg=$langs->trans("ErrorBadLoginPassword").' - login='.$_POST["username"];
+				$user->trigger_mesg=$langs->trans("ErrorBadLoginPassword").' - login='.GETPOST("username","alpha",2);
 				$_SESSION["dol_loginmesg"]=$langs->trans("ErrorBadLoginPassword");
 
 				// Appel des triggers
 				include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
 				$interface=new Interfaces($db);
-				$result=$interface->run_triggers('USER_LOGIN_FAILED',$user,$user,$langs,$conf,$_POST["entity"]);
+				$result=$interface->run_triggers('USER_LOGIN_FAILED',$user,$user,$langs,$conf,GETPOST("username","alpha",2));
 				if ($result < 0) { $error++; }
 				// Fin appel triggers
 			}
@@ -535,7 +543,7 @@ if (! defined('NOLOGIN'))
 		$_SESSION["dol_screenwidth"]=isset($dol_screenwidth)?$dol_screenwidth:'';
 		$_SESSION["dol_screenheight"]=isset($dol_screenheight)?$dol_screenheight:'';
 		$_SESSION["dol_company"]=$conf->global->MAIN_INFO_SOCIETE_NOM;
-		if (! empty($conf->multicompany->enabled)) $_SESSION["dol_entity"]=$conf->entity;
+		$_SESSION["dol_entity"]=$conf->entity;
 		dol_syslog("This is a new started user session. _SESSION['dol_login']=".$_SESSION["dol_login"].' Session id='.session_id());
 
 		$db->begin();
@@ -934,7 +942,7 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
 				print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/flot/jquery.flot.stack.min.js"></script>'."\n";
 			}
             // CKEditor
-            if (! empty($conf->fckeditor->enabled) && ! empty($conf->global->FCKEDITOR_EDITORNAME) && $conf->global->FCKEDITOR_EDITORNAME == 'ckeditor')
+            if (! empty($conf->fckeditor->enabled) && (empty($conf->global->FCKEDITOR_EDITORNAME) || $conf->global->FCKEDITOR_EDITORNAME == 'ckeditor'))
             {
                 print '<!-- Includes JS for CKEditor -->'."\n";
                 print '<script type="text/javascript">var CKEDITOR_BASEPATH = \''.DOL_URL_ROOT.'/includes/ckeditor/\';</script>'."\n";
@@ -1029,7 +1037,7 @@ function top_menu($head, $title='', $target='', $disablejs=0, $disablehead=0, $a
 {
 	global $user, $conf, $langs, $db, $dolibarr_main_authentication;
 
-	$html=new Form($db);
+	$form=new Form($db);
 
 	if (! $conf->top_menu)  $conf->top_menu ='eldy_backoffice.php';
 
@@ -1210,7 +1218,7 @@ function top_menu($head, $title='', $target='', $disablejs=0, $disablehead=0, $a
 	print '<div class="login_block">'."\n";
     print '<table class="nobordernopadding" summary=""><tr>';
 
-	print $html->textwithtooltip('',$loginhtmltext,2,1,$logintext,'',1);
+	print $form->textwithtooltip('',$loginhtmltext,2,1,$logintext,'',1);
 
 	// Select entity
 	if (! empty($conf->global->MAIN_MODULE_MULTICOMPANY))
@@ -1224,7 +1232,7 @@ function top_menu($head, $title='', $target='', $disablejs=0, $disablehead=0, $a
 		}
 	}
 
-	print $html->textwithtooltip('',$logouthtmltext,2,1,$logouttext,'',1);
+	print $form->textwithtooltip('',$logouthtmltext,2,1,$logouttext,'',1);
 
 	// Link to print main content area
 	if (empty($conf->global->MAIN_PRINT_DISABLELINK) && empty($conf->browser->phone))
@@ -1234,7 +1242,7 @@ function top_menu($head, $title='', $target='', $disablejs=0, $disablehead=0, $a
 		$text.='<img class="printer" border="0" width="14" height="14" src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/printer.png"';
 		$text.=' title="" alt="">';
 		$text.='</a>';
-		print $html->textwithtooltip('',$langs->trans("PrintContentArea"),2,1,$text,'',1);
+		print $form->textwithtooltip('',$langs->trans("PrintContentArea"),2,1,$text,'',1);
 	}
 
 	print '</tr></table>'."\n";
@@ -1553,7 +1561,7 @@ if (! function_exists("llxFooter"))
 {
     /**
      * Show HTML footer
-     * Close div /DIV data-role=page + /DIV class=fiche + /DIV /DIV main layout + /BODY + /HTML
+     * Close div /DIV data-role=page + /DIV class=fiche + /DIV /DIV main layout + /BODY + /HTML.
      *
      * @param	string	$foot    		A text to add in HTML generated page
      * @return	void

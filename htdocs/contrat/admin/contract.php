@@ -83,7 +83,7 @@ if ($action == 'setmod')
 clearstatcache();
 
 $dir=DOL_DOCUMENT_ROOT."/core/modules/contract/";
-$html=new Form($db);
+$form=new Form($db);
 
 $help_url='EN:Module Third Parties setup|FR:Paramétrage_du_module_Tiers|ES:Configuración_del_módulo_terceros';
 llxHeader('',$langs->trans("ContractSetup"),$help_url);
@@ -181,7 +181,7 @@ if (is_resource($handle))
                 }
 
                 print '<td align="center">';
-                print $html->textwithpicto('',$htmltooltip,1,0);
+                print $form->textwithpicto('',$htmltooltip,1,0);
                 print '</td>';
 
                 print '</tr>';

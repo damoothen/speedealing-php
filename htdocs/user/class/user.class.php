@@ -654,6 +654,8 @@ class User extends CommonObject
 	{
 		global $user,$conf,$langs;
 
+		$error=0;
+		
 		$this->db->begin();
 
 		$this->fetch($this->id);
@@ -730,7 +732,7 @@ class User extends CommonObject
 			return -1;
 		}
 
-		$now=dol_now();
+		$this->datec = dol_now();
 
 		$error=0;
 		$this->db->begin();
@@ -756,7 +758,7 @@ class User extends CommonObject
 			else
 			{
 				$sql = "INSERT INTO ".MAIN_DB_PREFIX."user (datec,login,ldap_sid,entity)";
-				$sql.= " VALUES('".$this->db->idate($now)."','".$this->db->escape($this->login)."','".$this->ldap_sid."',".$this->entity.")";
+				$sql.= " VALUES('".$this->db->idate($this->datec)."','".$this->db->escape($this->login)."','".$this->ldap_sid."',".$this->entity.")";
 				$result=$this->db->query($sql);
 
 				dol_syslog(get_class($this)."::create sql=".$sql, LOG_DEBUG);
@@ -845,6 +847,8 @@ class User extends CommonObject
 	{
 		global $conf,$user,$langs;
 
+		$error=0;
+		
 		// Positionne parametres
 		$this->admin = 0;
 		$this->nom = $contact->nom;			// TODO deprecated
@@ -1133,8 +1137,6 @@ class User extends CommonObject
 						$adh->user_id=$this->id;
 						$adh->user_login=$this->login;
 
-						//$adh->entity=$this->entity;
-
 						$result=$adh->update($user,0,1);
 						if ($result < 0)
 						{
@@ -1358,7 +1360,8 @@ class User extends CommonObject
 	function send_password($user, $password='', $changelater=0)
 	{
 		global $conf,$langs;
-
+		global $dolibarr_main_url_root;
+		
 		require_once DOL_DOCUMENT_ROOT."/core/class/CMailFile.class.php";
 
 		$subject = $langs->trans("SubjectNewPassword");

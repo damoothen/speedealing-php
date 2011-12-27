@@ -34,15 +34,15 @@ class DoliDBMssql
 	//! Database handler
 	var $db;
 	//! Database type
-	var $type='mssql';
+	public $type='mssql';
 	//! Database label
-	var $label='MSSQL';
+	static $label='MSSQL';
 	//! Charset used to force charset when creating database
-	var $forcecharset='latin1';
+	static $forcecharset='latin1';
 	//! Collate used to force collate when creating database
-	var $forcecollate='latin1_swedish_ci';
+	static $forcecollate='latin1_swedish_ci';
 	//! Version min database
-	var $versionmin=array(2000);
+	static $versionmin=array(2000);
 	//! Resultset de la derniere requete
 	var $results;
 	//! 1 si connecte, 0 sinon
@@ -92,7 +92,7 @@ class DoliDBMssql
 			$this->connected = 0;
 			$this->ok = 0;
 			$this->error="Mssql PHP functions for using MSSql driver are not available in this version of PHP";
-			dol_syslog("DoliDB::DoliDB : MSsql PHP functions for using MSsql driver are not available in this version of PHP",LOG_ERR);
+			dol_syslog(get_class($this)."::DoliDBMssql : MSsql PHP functions for using MSsql driver are not available in this version of PHP",LOG_ERR);
 			return $this->ok;
 		}
 
@@ -101,7 +101,7 @@ class DoliDBMssql
 			$this->connected = 0;
 			$this->ok = 0;
 			$this->error=$langs->trans("ErrorWrongHostParameter");
-			dol_syslog("DoliDB::DoliDB : Erreur Connect, wrong host parameters",LOG_ERR);
+			dol_syslog(get_class($this)."::DoliDBMssql : Erreur Connect, wrong host parameters",LOG_ERR);
 			return $this->ok;
 		}
 
@@ -120,7 +120,7 @@ class DoliDBMssql
 			$this->connected = 0;
 			$this->ok = 0;
 			$this->error=mssql_get_last_message();
-			dol_syslog("DoliDB::DoliDB : Erreur Connect mssql_get_last_message=".$this->error,LOG_ERR);
+			dol_syslog(get_class($this)."::DoliDBMssql : Erreur Connect mssql_get_last_message=".$this->error,LOG_ERR);
 		}
 
 		// Si connexion serveur ok et si connexion base demandee, on essaie connexion base
@@ -138,7 +138,7 @@ class DoliDBMssql
 				$this->database_name = '';
 				$this->ok = 0;
 				$this->error=$this->error();
-				dol_syslog("DoliDB::DoliDB : Erreur Select_db ".$this->error,LOG_ERR);
+				dol_syslog(get_class($this)."::DoliDBMssql : Erreur Select_db ".$this->error,LOG_ERR);
 			}
 		}
 		else
@@ -186,7 +186,7 @@ class DoliDBMssql
 	 */
 	function connect($host, $login, $passwd, $name, $port=0)
 	{
-		dol_syslog("DoliDB::connect host=$host, port=$port, login=$login, passwd=--hidden--, name=$name");
+		dol_syslog(get_class($this)."::connect host=$host, port=$port, login=$login, passwd=--hidden--, name=$name");
 		$newhost=$host;
 		if ($port) $newhost.=':'.$port;
 		$this->db  = @mssql_connect($newhost, $login, $passwd);
@@ -242,7 +242,7 @@ class DoliDBMssql
     {
         if ($this->db)
         {
-          //dol_syslog("DoliDB::disconnect",LOG_DEBUG);
+          //dol_syslog(get_class($this)."::disconnect",LOG_DEBUG);
           $this->connected=0;
           return mssql_close($this->db);
         }
@@ -403,7 +403,7 @@ class DoliDBMssql
                 $this->lastqueryerror = $query;
 				$this->lasterror = $this->error();
 				$this->lasterrno = $row["code"];
-                dol_syslog("Mssql.lib::query SQL error: ".$query, LOG_WARNING);
+                dol_syslog(get_class($this)."::query SQL error: ".$query, LOG_WARNING);
 			}
 			$this->lastquery=$query;
 			$this->results = $ret;
@@ -542,6 +542,7 @@ class DoliDBMssql
 
 	/**
 	 *     Escape a string to insert data.
+	 *
 	 *     @param	    stringtoencode		String to escape
 	 *     @return	    string				String escaped
 	 */
@@ -554,19 +555,21 @@ class DoliDBMssql
 	/**
 	 *   Convert (by PHP) a GM Timestamp date into a PHP server TZ to insert into a date field.
 	 *   Function to use to build INSERT, UPDATE or WHERE predica
-	 *   @param	    param       Date TMS to convert
-	 *   @return	string      Date in a string YYYYMMDDHHMMSS
+	 *
+	 *   @param	    string	$param      Date TMS to convert
+	 *   @return	string      		Date in a string YYYYMMDDHHMMSS
 	 */
 	function idate($param)
 	{
-		return adodb_strftime("%Y-%m-%d %H:%M:%S",$param);
+		return dol_print_date($param,"%Y-%m-%d %H:%M:%S");
 	}
 
 	/**
 	 *	Convert (by PHP) a PHP server TZ string date into a GM Timestamps date
 	 * 	19700101020000 -> 3600 with TZ+1
-	 * 	@param		string			Date in a string (YYYYMMDDHHMMSS, YYYYMMDD, YYYY-MM-DD HH:MM:SS)
-	 *	@return		date			Date TMS
+	 *
+	 * 	@param		string	$string		Date in a string (YYYYMMDDHHMMSS, YYYYMMDD, YYYY-MM-DD HH:MM:SS)
+	 *	@return		date				Date TMS
 	 */
 	function jdate($string)
 	{
@@ -690,11 +693,13 @@ class DoliDBMssql
 	}
 
 	/**
-	 \brief     Recupere l'id genere par le dernier INSERT.
-	 \param     tab     Nom de la table concernee par l'insert. Ne sert pas sous mssql mais requis pour compatibilite avec Postgresql
-	 \return    int     id
+	 * Get last ID after an insert INSERT
+	 *
+	 * @param   string	$tab    	Table name concerned by insert. Ne sert pas sous MySql mais requis pour compatibilite avec Postgresql
+	 * @param	string	$fieldid	Field name
+	 * @return  int     			Id of row
 	 */
-	function last_insert_id($tab)
+	function last_insert_id($tab,$fieldid='rowid')
 	{
 		$res = $this->query("SELECT @@IDENTITY as id");
 		if ($data = $this->fetch_array($res))
@@ -769,7 +774,7 @@ class DoliDBMssql
 	 * 	\param			collation		Charset used to sort data
 	 * 	\return	        resource		resource defined if OK, null if KO
 	 * 	\remarks        Ne pas utiliser les fonctions xxx_create_db (xxx=mssql, ...) car elles sont deprecated
-	 *					On force creation de la base avec le charset forcecharset
+	 *					We force to create database with charset this->forcecharset and collate this->forcecollate
 	 */
 	function DDLCreateDb($database,$charset='',$collation='')
 	{

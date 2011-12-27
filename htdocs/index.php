@@ -34,6 +34,10 @@ require_once(DOL_DOCUMENT_ROOT."/boxes.php");
 if (! isset($_GET["mainmenu"])) $_GET["mainmenu"]="home";
 
 
+include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
+$hookmanager=new HookManager($db);
+$hookmanager->callHooks(array('index'));
+
 
 /*
  * Actions
@@ -234,40 +238,45 @@ if ($user->societe_id == 0)
                     "lead@lead",
                     "orders",
                     "bills",
-		    "Contracts");
+					"Contracts");
 
-	//print memory_get_usage()."<br>";
+    //print memory_get_usage()."<br>";
 
-	// Loop and displays each line of table
-	foreach ($keys as $key=>$val)
-	{
-		if ($conditions[$key])
-		{
-			$classe=$classes[$key];
-			// Search in cache if load_state_board is already realized
-			if (! isset($boardloaded[$classe]) || ! is_object($boardloaded[$classe]))
-			{
-				dol_include_once($includes[$key]);
+    // Loop and displays each line of table
+    foreach ($keys as $key=>$val)
+    {
+        if ($conditions[$key])
+        {
+            $classe=$classes[$key];
+            // Search in cache if load_state_board is already realized
+            if (! isset($boardloaded[$classe]) || ! is_object($boardloaded[$classe]))
+            {
+                dol_include_once($includes[$key]);
 
-				$board=new $classe($db);
-				$board->load_state_board($user);
-				$boardloaded[$classe]=$board;
-			}
-			else $board=$boardloaded[$classe];
+                $board=new $classe($db);
+                $board->load_state_board($user);
+                $boardloaded[$classe]=$board;
+            }
+            else $board=$boardloaded[$classe];
 
-			$var=!$var;
-			if ($langfile[$key]) $langs->load($langfile[$key]);
-			$title=$langs->trans($titres[$key]);
-			print '<tr '.$bc[$var].'><td width="16"><a href="'.dol_buildpath($links[$key],1).'">'.img_object($title,$icons[$key]).'</a></td>';
-			print '<td><a href="'.dol_buildpath($links[$key],1).'">'.$title.'</a></td>';
-			print '<td align="right"><a href="'.dol_buildpath($links[$key],1).'">'.$board->nb[$val].'</a></td>';
-			print '</tr>';
+            $var=!$var;
+            if ($langfile[$key]) $langs->load($langfile[$key]);
+            $title=$langs->trans($titres[$key]);
+            print '<tr '.$bc[$var].'><td width="16"><a href="'.dol_buildpath($links[$key],1).'">'.img_object($title,$icons[$key]).'</a></td>';
+            print '<td>'.$title.'</td>';
+            print '<td align="right"><a href="'.dol_buildpath($links[$key],1).'">'.$board->nb[$val].'</a></td>';
+            print '</tr>';
 
-			//print $includes[$key].' '.memory_get_usage()."<br>";
-		}
-	}
+            //print $includes[$key].' '.memory_get_usage()."<br>";
+        }
+    }
 
-	print '</table>';
+    $object=(object) array();
+    $parameters=array();
+    $action='';
+    $reshook=$hookmanager->executeHooks('addStatisticLine',$parameters,$object,$action);    // Note that $action and $object may have been modified by some hooks
+
+    print '</table>';
 }
 
 
@@ -594,10 +603,9 @@ if ($user->admin && empty($conf->global->MAIN_REMOVE_INSTALL_WARNING))
     }
 }
 
+llxFooter();
 
 $db->close();
-
-llxFooter();
 
 
 /**

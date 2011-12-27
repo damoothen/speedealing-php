@@ -320,7 +320,7 @@ class BonPrelevement extends CommonObject
     {
         global $user,$conf;
 
-        $error == 0;
+        $error = 0;
 
         if ($this->db->begin())
         {
@@ -401,7 +401,7 @@ class BonPrelevement extends CommonObject
     {
         global $conf,$langs;
 
-        $error == 0;
+        $error = 0;
 
         if ($this->_fetched == 1)
         {
@@ -525,7 +525,8 @@ class BonPrelevement extends CommonObject
     {
         global $conf,$langs;
 
-        $error == 0;
+        $error = 0;
+        
         dol_syslog("bon-prelevement::set_infotrans Start",LOG_INFO);
         if ($this->db->begin())
         {
@@ -715,15 +716,15 @@ class BonPrelevement extends CommonObject
      *	Create a withdraw
      *
      *	@param 	int		$banque		code of bank
-     *	@param	int		$guichet	code of banck office
+     *	@param	int		$agence		code of bank office (guichet)
      *	@param	string	$mode		real=do action, simu=test only
      *	@return	int					<0 if KO, nbre of invoice withdrawed if OK
      */
-    function Create($banque=0, $guichet=0, $mode='real')
+    function Create($banque=0, $agence=0, $mode='real')
     {
         global $conf,$langs;
 
-        dol_syslog("BonPrelevement::Create banque=$banque guichet=$guichet");
+        dol_syslog("BonPrelevement::Create banque=$banque agence=$agence");
 
         require_once (DOL_DOCUMENT_ROOT."/compta/facture/class/facture.class.php");
         require_once (DOL_DOCUMENT_ROOT."/societe/class/societe.class.php");

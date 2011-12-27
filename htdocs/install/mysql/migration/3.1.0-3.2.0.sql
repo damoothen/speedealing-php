@@ -1,13 +1,19 @@
 --
 -- Be carefull to requests order.
 -- This file must be loaded by calling /install/index.php page
--- when current version is 2.8.0 or higher. 
+-- when current version is 3.1.0 or higher. 
 --
 -- To rename a table:       ALTER TABLE llx_table RENAME TO llx_table_new;
 -- To add a column:         ALTER TABLE llx_table ADD COLUMN newcol varchar(60) NOT NULL DEFAULT '0' AFTER existingcol;
 -- To rename a column:      ALTER TABLE llx_table CHANGE COLUMN oldname newname varchar(60);
 -- To change type of field: ALTER TABLE llx_table MODIFY name varchar(60);
---
+-- To restrict request to Mysql version x.y use -- VMYSQLx.y
+-- To restrict request to Pgsql version x.y use -- VPGSQLx.y
+
+
+-- V4.1      DELETE FROM llx_product_fournisseur WHERE fk_product   NOT IN (SELECT rowid from llx_product);
+-- VPGSQL8.2 DELETE FROM llx_usergroup_user      WHERE fk_user      NOT IN (SELECT rowid from llx_user);
+-- VMYSQL4.1 DELETE FROM llx_usergroup_user      WHERE fk_usergroup NOT IN (SELECT rowid from llx_usergroup);
 
 UPDATE llx_c_paper_format SET active=1 WHERE active=0;
 
@@ -24,7 +30,11 @@ ALTER TABLE llx_user ADD COLUMN ref_int varchar(50) AFTER ref_ext;
 ALTER TABLE llx_societe MODIFY code_client varchar(24);
 ALTER TABLE llx_societe MODIFY code_fournisseur varchar(24);
 
+ALTER TABLE llx_chargesociales ADD COLUMN tms                   timestamp;
+ALTER TABLE llx_chargesociales ADD COLUMN date_creation         datetime; 
+ALTER TABLE llx_chargesociales ADD COLUMN date_valid            datetime;
 
+  
 -- Europe
 INSERT INTO llx_c_paper_format (rowid, code, label, width, height, unit, active) VALUES (1,   'EU4A0',       'Format 4A0',                '1682', '2378', 'mm', 1);
 INSERT INTO llx_c_paper_format (rowid, code, label, width, height, unit, active) VALUES (2,   'EU2A0',       'Format 2A0',                '1189', '1682', 'mm', 1);
@@ -57,7 +67,8 @@ ALTER TABLE llx_product_fournisseur_price ADD COLUMN fk_soc integer after fk_pro
 ALTER TABLE llx_product_fournisseur_price ADD COLUMN ref_fourn varchar(30) after fk_soc;
 ALTER TABLE llx_product_fournisseur_price ADD COLUMN entity integer DEFAULT 1 NOT NULL;
 
-UPDATE llx_product_fournisseur_price as a, llx_product_fournisseur as b SET a.fk_product = b.fk_product, a.fk_soc = b.fk_soc, a.ref_fourn = b.ref_fourn, a.entity = b.entity WHERE a.fk_product_fournisseur = b.rowid AND (a.fk_product IS NULL OR a.fk_soc IS NULL OR a.fk_product = 0 OR a.fk_soc = 0);
+-- VMYSQL4.1 UPDATE llx_product_fournisseur_price as a, llx_product_fournisseur as b SET a.fk_product = b.fk_product, a.fk_soc = b.fk_soc, a.ref_fourn = b.ref_fourn, a.entity = b.entity WHERE a.fk_product_fournisseur = b.rowid AND (a.fk_product IS NULL OR a.fk_soc IS NULL OR a.fk_product = 0 OR a.fk_soc = 0);
+-- VPGSQL8.1 UPDATE llx_product_fournisseur_price as a SET fk_product = b.fk_product, fk_soc = b.fk_soc, ref_fourn = b.ref_fourn, entity = b.entity FROM llx_product_fournisseur as b WHERE a.fk_product_fournisseur = b.rowid AND (a.fk_product IS NULL OR a.fk_soc IS NULL OR a.fk_product = 0 OR a.fk_soc = 0);
 
 ALTER TABLE llx_product_fournisseur_price DROP INDEX uk_product_fournisseur_price_ref;
 ALTER TABLE llx_product_fournisseur_price ADD UNIQUE INDEX uk_product_fournisseur_price_ref (ref_fourn, fk_soc, quantity, entity);
@@ -71,7 +82,7 @@ DROP TABLE IF EXISTS llx_pos_tmp;
 
 ALTER TABLE llx_deplacement ADD COLUMN fk_user_modif integer AFTER fk_user_author;
 
-CREATE TABLE IF NOT EXISTS llx_localtax
+CREATE TABLE llx_localtax
 (
 	rowid			integer		AUTO_INCREMENT PRIMARY KEY,
 	entity			integer			NOT NULL DEFAULT '1',
@@ -99,5 +110,16 @@ ALTER TABLE llx_facture MODIFY ref_int varchar(255);
 ALTER TABLE llx_facture MODIFY ref_ext varchar(255);
 ALTER TABLE llx_facture MODIFY ref_client varchar(255);
 
+
+UPDATE llx_societe SET fk_stcomm = 0 WHERE fk_stcomm IS NULL;
+ALTER TABLE llx_societe MODIFY COLUMN fk_stcomm integer NOT NULL;
+
+ALTER TABLE llx_societe CHANGE COLUMN gencod barcode varchar(255);
+ALTER TABLE llx_societe ADD COLUMN fk_barcode_type integer DEFAULT 0;
+
+UPDATE llx_menu SET leftmenu = NULL where leftmenu in ('', '0', '1');
+
 -- Add models for contract
 alter table llx_contrat add model_pdf varchar(255);
+
+

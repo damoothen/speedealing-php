@@ -91,7 +91,6 @@ a:link, a:visited, a:hover, a:active { font-family: <?php print $fontlist ?>; fo
 input:focus, textarea:focus, button:focus, select:focus {
     box-shadow: 0 0 4px #8091BF;
 }
-
 input, input.flat, textarea, textarea.flat, form.flat select, select.flat {
     font-size: <?php print $fontsize ?>px;
 	font-family: <?php print $fontlist ?>;
@@ -106,6 +105,7 @@ select.flat, form.flat select {
 input:disabled {
 	background:#ddd;
 }
+input:-webkit-autofill { background-color: #FCFEFA !important; background-image:none !important; }
 textarea:disabled {
 	background:#ddd;
 }
@@ -133,6 +133,9 @@ textarea:disabled {
 .button:hover   {
 	background: #dee7ec;
 }
+.button:disabled {
+	background: #ddd;
+}
 .buttonajax {
     font-family: <?php print $fontlist ?>;
 	border: 0px;
@@ -155,6 +158,14 @@ div.float
 {
     float:<?php print $left; ?>;
 }
+th .button {
+    -moz-box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+	-moz-border-radius:0px !important;
+	-webkit-border-radius:0px !important;
+	border-radius:0px !important;
+}
 
 /* ============================================================================== */
 /* Styles to hide objects                                                         */
@@ -165,6 +176,7 @@ div.float
 .hideonsmartphone { display: none; }
 <?php } ?>
 .linkobject { cursor: pointer; }
+
 
 /* ============================================================================== */
 /* Styles for dragging lines                                                      */
@@ -502,6 +514,12 @@ foreach($mainmenuusedarray as $key => $val)
 
 
 /* Login */
+
+table.login {
+    -moz-box-shadow: 4px 4px 4px #CCC;
+    -webkit-box-shadow: 4px 4px 4px #CCC;
+    box-shadow: 4px 4px 4px #CCC;
+}
 
 div.login_block {
 	position: absolute;
@@ -947,10 +965,6 @@ a.tabTitle {
     margin: 0px 6px;
     text-decoration: none;
     white-space: nowrap;
-
-    border-<?php print $right; ?>: 1px solid #555555;
-    border-<?php print $left; ?>: 1px solid #D8D8D8;
-    border-top: 1px solid #D8D8D8;
 }
 
 a.tab:link {
@@ -1115,7 +1129,14 @@ background-repeat: repeat-x;
 }
 */
 
-
+.paddingrightonly {
+	border-collapse: collapse;
+	border: 0px;
+	margin-left: 0px;
+	spacing-left: 0px;
+	padding-left: 0px;
+	padding-right: 4px;
+}
 .nocellnopadd {
 list-style-type:none;
 margin: 0px;
@@ -1539,6 +1560,9 @@ table.dp {
     border-<?php print $left; ?>: solid 2px #DDDDDD;
     border-<?php print $right; ?>: solid 1px #222222;
     border-bottom: solid 1px #222222;
+    padding: 0px;
+	border-spacing: 0px;
+	border-collapse: collapse;
 }
 .dp td, .tpHour td, .tpMinute td{padding:2px; font-size:10px;}
 /* Barre titre */
@@ -1555,7 +1579,6 @@ table.dp {
 	background-color:#617389;
 	color:#FFFFFF;
 	font-weight:bold;
-	border: 1px outset black;
 	cursor:pointer;
 }
 .dpButtons:Active,.tpButtons:Active{border: 1px outset black;}
