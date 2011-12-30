@@ -6,3 +6,4 @@ nbproject
 .buildpath
 default.properties
 dolibarr_install.log
+htdocs/contact/index.bak.php
