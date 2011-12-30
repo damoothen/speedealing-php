@@ -1922,11 +1922,10 @@ span.cke_skin_kama { padding: 0 !important; }
  * DataTables display
  */     
 table.display{
-        background-image: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/bg_liste_titremenu.jpg'?>);
-        background-position: top right;
-        background-repeat: repeat-x;
+        background-image: url(<?php echo DOL_URL_ROOT.'/theme/eldy/img/liste_titre2.png'?>);
+        background-repeat: repeat-x scroll 0 0 #7699A9;
+        border-bottom: 1px solid #FDFFFF;
         font-size: 12px;
-        border-radius : 8px 8px 8px 8px;
         border : 1px solid #D0D0D0;
 	clear: both;
 	width: 100%;
@@ -1934,12 +1933,11 @@ table.display{
 
 table.display thead th {
 	padding: 3px 18px 3px 10px;
-	border-bottom: 1px solid black;
+        border-bottom: 1px solid black;
         border-width:0px 0px 0px 0px;
-	font-weight: bold;
 	cursor: pointer;
-        color:#842F00;
-        font-family:"Trebuchet MS",Arial,Helvetica,sans-serif;
+        font-weight: normal;
+        font-family: arial,tahoma,verdana,helvetica;
 
 	
 }
@@ -1947,7 +1945,7 @@ table.display thead th {
 table.display tfoot th {
 	padding: 3px 18px 3px 10px;
 	border-top: 1px solid black;
-	font-weight: bold;
+	
 }
 
 table.display tr.heading2 td {
@@ -1966,12 +1964,6 @@ font-family:arial,tahoma,verdana,helvetica;
 background-color: #EAEAEA;
 }
 
-tr.odd:hover {    
-background-color: #C0C4C7;
-}
-tr.even:hover {    
-background-color: #C0C4C7;
-}
 tr.even {
 font-family:arial,tahoma,verdana,helvetica;	
 background-color: white;
@@ -1986,17 +1978,19 @@ font-family:arial,tahoma,verdana,helvetica;
  /* DataTables sorting */
  
 .sorting {
-	background: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/sort_both.png'?>) no-repeat center right;
+	color: #334444;
+        background: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/sort_both.png'?>) no-repeat center right;
 }
  
 .sorting_asc {
-         
-	background: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/sort_asc.png'?>) no-repeat center right;
+        color: white;
+        background: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/sort_asc.png'?>) no-repeat center right;
 }
 
 .sorting_desc {
 	background: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/sort_desc.png'?>) no-repeat center right;
-}
+        color: white;
+        }
 /* search input */
 
 .dataTables_filter {
@@ -2005,9 +1999,9 @@ font-family:arial,tahoma,verdana,helvetica;
 	float: right;
 	text-align: right;
         margin-bottom:2px;
-        color:#842F00;
+        color: #334444;
         font-size: 12px;
-        font-family:"Trebuchet MS",Arial,Helvetica,sans-serif;
+        font-family: arial,tahoma,verdana,helvetica;
         font-weight: bold;
 }
 
@@ -2028,7 +2022,11 @@ button.DTTT_button {
 	background-color: #fff;
 	cursor: pointer;
 }
-
+.dataTables_length {
+    float: left;
+    width: 40%;
+    margin-top:5px;
+}
 
 /*
  * BUTTON_STYLES
@@ -2056,3 +2054,35 @@ td.details {
     border: 2px solid #A19B9E;
 }
 
+.dataTables_paginate {
+	width: 44px;
+	* width: 50px;
+	float: right;
+	text-align: right;
+}
+
+
+/* Pagination nested */
+.paginate_disabled_previous, .paginate_enabled_previous, .paginate_disabled_next, .paginate_enabled_next {
+	height: 19px;
+	width: 19px;
+	margin-left: 3px;
+	float: left;
+}
+
+.paginate_disabled_previous {
+	background-image: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/back_disabled.jpg'?>);
+}
+
+.paginate_enabled_previous {
+	background-image: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/back_enabled.jpg'?>);
+}
+
+.paginate_disabled_next {
+	background-image: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/forward_disabled.jpg'?>);
+}
+
+.paginate_enabled_next {
+	background-image: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/forward_enabled.jpg'?>);
+}
+    

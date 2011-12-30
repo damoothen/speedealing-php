@@ -83,76 +83,6 @@ $titre = $titre." $text";
  */
 
 llxHeader('',$langs->trans("ContactsAddresses"),'EN:Module_Third_Parties|FR:Module_Tiers|ES:M&oacute;dulo_Empresas');
-
-
-$sql = "SELECT s.rowid as socid, s.nom,";
-$sql.= " s.cp as cpost, p.rowid as cidp, p.name, p.firstname, p.poste, p.email,";
-$sql.= " p.phone, p.phone_mobile, p.fax, p.fk_pays, p.priv,";
-$sql.= " p.tms,";
-$sql.= " cp.code as pays_code";
-$sql.= " FROM ".MAIN_DB_PREFIX."socpeople as p";
-$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."c_pays as cp ON cp.rowid = p.fk_pays";
-$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."societe as s ON s.rowid = p.fk_soc";
-if (!$user->rights->societe->client->voir && !$socid) $sql .= " LEFT JOIN ".MAIN_DB_PREFIX."societe_commerciaux as sc ON s.rowid = sc.fk_soc";
-$sql.= " WHERE p.entity = ".$conf->entity;
-if (!$user->rights->societe->client->voir && !$socid) //restriction
-{
-	$sql .= " AND (sc.fk_user = " .$user->id." OR p.fk_soc IS NULL)";
-}
-if ($_GET["userid"])    // propre au commercial
-{
-    $sql .= " AND p.fk_user_creat=".$_GET["userid"];
-}
-
-// Filter to exclude not owned private contacts
-if ($search_priv != '0' && $search_priv != '1')
-{
-	$sql .= " AND (p.priv='0' OR (p.priv='1' AND p.fk_user_creat=".$user->id."))";
-}
-else
-{
-	if ($search_priv == '0') $sql .= " AND p.priv='0'";
-	if ($search_priv == '1') $sql .= " AND (p.priv='1' AND p.fk_user_creat=".$user->id.")";
-}
-
-// Count total nb of records
-$nbtotalofrecords = 0;
-if (empty($conf->global->MAIN_DISABLE_FULL_SCANLIST))
-{
-    $result = $db->query($sql);
-    $nbtotalofrecords = $db->num_rows($result);
-}
-// Add order and limit
-if($view == "recent")
-{
-    $sql.= " ORDER BY p.datec DESC ";
-	$sql.= " ".$db->plimit($conf->liste_limit+1, $offset);
-}
-else
-{
-    $sql.= " ORDER BY $sortfield $sortorder ";
-	$sql.= " ".$db->plimit($conf->liste_limit+1, $offset);
-}
-
-//print $sql;
-dol_syslog("contact/index.php sql=".$sql);
-$result = $db->query($sql);
-if ($result)
-{
-	$contactstatic=new Contact($db);
-    
-    $begin=$_GET["begin"];
-    $param ='&lang='.urlencode($_GET['lang']); // add lang to url when pagination
-    $param.='&begin='.urlencode($begin).'&view='.urlencode($view).'&userid='.urlencode($_GET["userid"]).'&contactname='.urlencode($sall);
-    $param.='&type='.urlencode($type).'&view='.urlencode($view);
-	if ($search_priv == '0' || $search_priv == '1') $param.="&search_priv=".urlencode($search_priv);
-
-	$num = $db->num_rows($result);
-    $i = 0;
-    print_barre_liste($titre ,$page, "index.php",$param, $sortfield, $sortorder,'',$num,$nbtotalofrecords);
-
- 
-    
     print '<table cellpadding="0" cellspacing="0" border="0" class="display" id="liste">';     
     // Ligne des titres 
     print'<thead>';
@@ -199,101 +129,18 @@ if ($result)
     print'<th class="sorting">';
     print $langs->trans("ContactVisibility");
     print'</th>';
-  
-    print '<th id="last">&nbsp;&nbsp;&nbsp;&nbsp;</th>';
+    print '<th>&nbsp;&nbsp;&nbsp;&nbsp;</th>';
     print "</tr>\n";
+    
+  
     print'</thead>';
 
     print'<tbody>';
-    while ($i < min($num,$limit))
-    {
-        $obj = $db->fetch_object($result);
-
-        $var=!$var;
-
-        print '<tr id="'.$obj->cidp.'">';
-
-		// Name
-		print '<td>';
-		$contactstatic->name=$obj->name;
-		$contactstatic->firstname='';
-		$contactstatic->id=$obj->cidp;
-		print $contactstatic->getNomUrl(1,'',20);
-		print '</td>';
-
-		// Firstname
-        print '<td>'.dol_trunc($obj->firstname,20).'</td>';
-
-		// Function
-        print '<td>'.dol_trunc($obj->poste,20).'</td>';
-
-        // Company
-        if (empty($conf->global->SOCIETE_DISABLE_CONTACTS))
-        {
-    		print '<td>';
-            if ($obj->socid)
-            {
-                print '<a href="'.DOL_URL_ROOT.'/comm/fiche.php?socid='.$obj->socid.'">';
-                print img_object($langs->trans("ShowCompany"),"company").' '.dol_trunc($obj->nom,20).'</a>';
-            }
-            else
-            {
-                print '&nbsp;';
-            }
-            print '</td>';
-        }
-
-        if ($view == 'phone')
-        {
-            // Phone
-            print '<td>'.dol_print_phone($obj->phone,$obj->pays_code,$obj->cidp,$obj->socid,'AC_TEL').'</td>';
-            // Phone mobile
-            print '<td>'.dol_print_phone($obj->phone_mobile,$obj->pays_code,$obj->cidp,$obj->socid,'AC_TEL').'</td>';
-            // Fax
-            print '<td>'.dol_print_phone($obj->fax,$obj->pays_code,$obj->cidp,$obj->socid,'AC_TEL').'</td>';
-        }
-        else
-        {
-            // Phone
-            print '<td>'.dol_print_phone($obj->phone,$obj->pays_code,$obj->cidp,$obj->socid,'AC_TEL').'</td>';
-            // EMail
-            print '<td>'.dol_print_email($obj->email,$obj->cidp,$obj->socid,'AC_EMAIL',18).'</td>';
-        }
-
-	// CP
-	print '<td align="center">'.$obj->cpost.'</td>';
-
-	// Date
-	print '<td align="center">'.dol_print_date($db->jdate($obj->tms),"day").'</td>';
-
-	// Private/Public
-	print '<td align="center">'.$contactstatic->LibPubPriv($obj->priv).'</td>';
-
-		// Links Add action and Export vcard
-        print '<td align="right">';
-        print '<a href="'.DOL_URL_ROOT.'/comm/action/fiche.php?action=create&amp;backtopage=1&amp;contactid='.$obj->cidp.'&amp;socid='.$obj->socid.'">'.img_object($langs->trans("AddAction"),"action").'</a>';
-        print ' &nbsp;';
-        print '<a href="'.DOL_URL_ROOT.'/contact/vcard.php?id='.$obj->cidp.'">';
-        print img_picto($langs->trans("VCard"),'vcard.png').' ';
-        print '</a></td>';
-
-        print "</tr>\n";
-        $i++;
-    }
-    print'</tbody>';
+        print'<td colspan="5" class="dataTables_empty">Loading data from server</td>';
+    print'</tbody>';   
     print "</table>";
-
-    if ($num > $limit) print_barre_liste('' ,$page, "index.php",$param, $sortfield, $sortorder,'',$num,$nbtotalofrecords, '');
-
-    $db->free($result);
-}
-else
-{
-    dol_print_error($db);
-}
-
 print '<br>';
-$db->close();
+
 
 llxFooter('$Date: 2011/07/31 23:54:12 $ - $Revision: 1.106 $');
 
@@ -304,6 +151,5 @@ print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/Ze
 print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/initXHR.js",1).'"></script>';    
 print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/request.js",1).'"></script>';    
 print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/initDatatables.js",1).'"></script>';    
-      
 ?>
    

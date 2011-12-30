@@ -30,8 +30,6 @@ $(document).ready(function() {
     /* Insert a 'details' column to the table */
     var nCloneTh = document.createElement( 'th' );
     var nCloneTd = document.createElement( 'td' );
-    nCloneTd.innerHTML = '<img id="plus" src="../theme/cameleo/img/details_open.png">';
-    nCloneTd.className = "center";
      
     $('#liste thead tr').each( function () {
         this.insertBefore( nCloneTh, this.childNodes[0] );
@@ -44,8 +42,11 @@ $(document).ready(function() {
     /* init dataTable */
     oTable = $('#liste').dataTable( {
         "sDom": 'T<"clear">lfrtip',
-        "bPaginate": false,
-      //  "oLanguage": {"sUrl": "../lib/datatables/langs/"+lang+".txt"}, lang desactived
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "serverprocess.php",
+        "bPaginate": true,
+       //  "oLanguage": {"sUrl": "../lib/datatables/langs/"+lang+".txt"}, lang desactived
         "oTableTools": {
             "sSwfPath": "../lib/datatables/swf/copy_cvs_xls_pdf.swf",
             "aButtons": [
@@ -59,9 +60,10 @@ $(document).ready(function() {
      * Note that the indicator for showing which row is open is not controlled by DataTables,
      * rather it is done here
      */
-     $('#liste tbody td img#plus').live('click', function () {
+     $('#liste tbody td img.plus').live('click', function () {
                                     var nTr = this.parentNode.parentNode;
-                                    var id =  nTr.getAttribute('id');
+                                    var id =  $(this).attr("id");
+                                    nTr.setAttribute("id",id);
                                     if ( this.src.match('details_close') )
                                     {
                                         
@@ -72,7 +74,7 @@ $(document).ready(function() {
                                     else
                                     {
                                      /* Open this row */
-                                        request(id,nTr);
+                                        request(nTr);
                                         this.src = "../theme/cameleo/img/details_close.png";
                                         
                                     }

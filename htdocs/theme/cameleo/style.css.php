@@ -2092,7 +2092,7 @@ table.display{
 }
 
 table.display thead th {
-	padding: 3px 18px 3px 10px;
+	padding: 0px 18px 3px 10px;
 	border-bottom: 1px solid black;
         border-width:0px 0px 0px 0px;
 	font-weight: bold;
@@ -2187,7 +2187,11 @@ button.DTTT_button {
 	background-color: #fff;
 	cursor: pointer;
 }
-
+.dataTables_length {
+    float: left;
+    width: 40%;
+    margin-top:5px;
+}
 
 /*
  * BUTTON_STYLES
@@ -2217,4 +2221,35 @@ td.details {
 }
 
 
+}
+.dataTables_paginate {
+	width: 44px;
+	* width: 50px;
+	float: right;
+	text-align: right;
+}
+
+
+/* Pagination nested */
+.paginate_disabled_previous, .paginate_enabled_previous, .paginate_disabled_next, .paginate_enabled_next {
+	height: 19px;
+	width: 19px;
+	margin-left: 3px;
+	float: left;
+}
+
+.paginate_disabled_previous {
+	background-image: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/back_disabled.jpg'?>);
+}
+
+.paginate_enabled_previous {
+	background-image: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/back_enabled.jpg'?>);
+}
+
+.paginate_disabled_next {
+	background-image: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/forward_disabled.jpg'?>);
+}
+
+.paginate_enabled_next {
+	background-image: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/forward_enabled.jpg'?>);
 }

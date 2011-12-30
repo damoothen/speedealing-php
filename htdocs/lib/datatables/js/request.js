@@ -21,7 +21,7 @@
  *       \version    $Id: request.js,v 1.224 2011/08/10 22:47:34 synry63 Exp $
  */
 
-function request(id,nTr) {
+function request(nTr) {
 	var xhr = getXMLHttpRequest();
 	
 	xhr.onreadystatechange = function() {
@@ -31,8 +31,7 @@ function request(id,nTr) {
                 }
                 
       };
-    
-	xhr.open("GET", "fiche.php?requestfiche="+id, true);
+	xhr.open("GET", "fiche.php?requestfiche="+nTr.getAttribute('id'), true);
         xhr.send(null);
         
 }
