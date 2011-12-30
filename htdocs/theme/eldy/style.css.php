@@ -2047,6 +2047,7 @@ button.DTTT_button_text {
 }
 /* detail */ 
 table.display td {
+    font-size:12px;
     padding: 3px 10px;
 }
 td.details {

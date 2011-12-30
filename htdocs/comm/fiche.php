@@ -71,14 +71,18 @@ if(isset($_GET['requestfiche']))
     $id = $_GET['requestfiche'];
     $object= new Societe($db);
     $object->fetch($id);
-    $info = array($langs->trans("Firstname")=>$object->prenom,$langs->trans("Lastname")=>$object->name,
-                  $langs->trans("Company")=>$object->socname,$langs->trans("UserTitle")=>$object->civilite_id,
+    $info = array($langs->trans("Lastname")=>$object->name,
+                  $langs->trans("Company")=>$object->socname,     
                   $langs->trans("PostOrFunction")=>$object->poste,$langs->trans("Address")=>$object->address,
                   $langs->trans("Zip")=>$object->zip,$langs->trans("Town")=>$object->town,
                   $langs->trans("Country")=>$object->pays,$langs->trans('State')=>$object->fk_departement,
                   $langs->trans("PhonePro")=>$object->phone_pro,$langs->trans("PhonePerso")=>$object->phone_pro,
+                  $langs->trans("Phone")=>$object->tel,
                   $langs->trans("Fax")=>$object->fax,$langs->trans("Email")=>$object->email,
-                  $langs->trans("ContactVisibility")=>$object->priv,$langs->trans("Note")=>$object->note
+                  $langs->trans('Web')=>$object->url,$langs->transcountry('ProfId1',$object->pays_code)=>$object->siren,
+                  $langs->transcountry('ProfId2',$object->pays_code)=>$object->siret,$langs->transcountry('ProfId3',$object->pays_code)=> $object->ape,
+                  $langs->transcountry('ProfId4',$object->pays_code)=>$object->idprof4,$langs->trans("comm")=>$object->prefix_comm,
+                  $langs->trans("Capital")=>$object->capital.' '.$langs->trans("Currency".$conf->monnaie),$langs->trans('Gencod')=>$object->gencod
                   );
     header('Content-type: application/json');
     echo json_encode($info);

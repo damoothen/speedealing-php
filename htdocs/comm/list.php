@@ -83,77 +83,9 @@ if ($_GET["action"] == 'cstc')
 
 $htmlother=new FormOther($db);
 
-$sql = "SELECT s.rowid, s.nom, s.ville, s.datec, s.datea, s.status as status,";
-$sql.= " st.libelle as stcomm, s.prefix_comm, s.fk_stcomm, s.fk_prospectlevel,st.type,";
-$sql.= " d.nom as departement, s.cp as cp";
-// Updated by Matelli 
-// We'll need these fields in order to filter by sale (including the case where the user can only see his prospects)
-if ($search_sale) $sql .= ", sc.fk_soc, sc.fk_user";
-// We'll need these fields in order to filter by categ
-if ($search_categ) $sql .= ", cs.fk_categorie, cs.fk_societe";
-$sql .= " FROM (".MAIN_DB_PREFIX."societe as s";
-// We'll need this table joined to the select in order to filter by sale
-if ($search_sale || !$user->rights->societe->client->voir) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
-// We'll need this table joined to the select in order to filter by categ
-if ($search_categ) $sql.= ", ".MAIN_DB_PREFIX."categorie_societe as cs";
-$sql.= " ) ";
-$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."c_departements as d on (d.rowid = s.fk_departement)";
-$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."c_stcomm as st ON st.id = s.fk_stcomm";
-$sql.= " WHERE s.client in (1,2,3)";
-if($type!='')
-    $sql.= " AND st.type=".$type;
-$sql.= " AND s.entity = ".$conf->entity;
 
-// Count total nb of records
-$nbtotalofrecords = 0;
-if (empty($conf->global->MAIN_DISABLE_FULL_SCANLIST))
-{
-	$result = $db->query($sql);
-	$nbtotalofrecords = $db->num_rows($result);
-}
-
-$sql.= " ORDER BY $sortfield $sortorder, s.nom ASC";
-$sql.= $db->plimit($conf->liste_limit+1, $offset);
-
-$resql = $db->query($sql);
-if ($resql)
-{
-	$num = $db->num_rows($resql);
-
-	if ($num == 1 && $socname)
-	{
-		$obj = $db->fetch_object($resql);
-		Header("Location: list.php?socid=".$obj->rowid);
-		exit;
-	}
-	else
-	{
-        $help_url='EN:Module_Third_Parties|FR:Module_Tiers|ES:Empresas';
-        llxHeader('',$langs->trans("ThirdParty"),$help_url);
-	}
-        $param ='&lang='.urlencode($_GET['lang']); // add lang to url when pagination
-	// Added by Matelli 
- 	// Store the status filter in the URL
- 	if (isset($search_cstc))
- 	{
- 		foreach ($search_cstc as $key => $value)
- 		{
- 			if ($value == 'true')
- 				$param.='&amp;search_cstc['.((int) $key).']=true';
- 			else
- 				$param.='&amp;search_cstc['.((int) $key).']=false';
- 		}
- 	}
- 	if ($search_level_from != '') $param.='&amp;search_level_from='.$search_level_from;
- 	if ($search_level_to != '') $param.='&amp;search_level_to='.$search_level_to;
- 	if ($search_categ != '') $param.='&amp;search_categ='.$search_categ;
- 	if ($search_sale != '') $param.='&amp;search_sale='.$search_sale;
-        if ($search_cp != '') $param.='&amp;search_cp='.$search_cp;
-        if ($pstcomm != '') $param.='&amp;pstcomm='.$pstcomm;
-        if ($type != '') $param.='&amp;type='.$type;
- 	// $param and $urladd should have the same value
- 	$urladd = $param;
-
+	llxHeader('',$langs->trans("ThirdParty"),$help_url);
+	
         if($type!='')
         {   
             if($type==0)
@@ -166,10 +98,9 @@ if ($resql)
         else
             $titre=$langs->trans("ListOfAll");
         
-            
+          print_barre_liste($titre, $page,'','','','','',0,0);
                 
         
-	print_barre_liste($titre, $page, $_SERVER["PHP_SELF"],$param,$sortfield,$sortorder,'',$num,$nbtotalofrecords);
         
 
  	// Print the search-by-sale and search-by-categ filters
@@ -230,6 +161,7 @@ if ($resql)
     print'</th>';
     print'<th class="sorting">';
     print $langs->trans("Status");
+    print'&nbsp; &nbsp; &nbsp;';
     print'</th>';
     print'<th>';
     print '&nbsp;';
@@ -237,70 +169,13 @@ if ($resql)
     print '</tr>';   
     print'</thead>';
     
-    	$i = 0;
-	$var=true;
+    print'<tbody>';
+        print'<td colspan="5" class="dataTables_empty">Loading data from server</td>';
+    print'</tbody>';
+    print "</table>";
 
-	$prospectstatic=new Prospect($db);
-        print'<tbody>';
-	while ($i < min($num,$conf->liste_limit))
-	{
-		$obj = $db->fetch_object($resql);
-                
-		$var=!$var;
+    print "</form>";
 
-		print '<tr id="'.$obj->rowid.'">';
-		print '<td>';
-		$prospectstatic->id=$obj->rowid;
-		$prospectstatic->nom=$obj->nom;
-                $prospectstatic->status=$obj->status;
-                if($obj->type==2)
-                    print $prospectstatic->getNomUrl(1,'customer');
-                else
-                    print $prospectstatic->getNomUrl(1,'prospect');
-                print '</td>';
-		print "<td>".$obj->ville."&nbsp;</td>";
-                if (empty($conf->global->SOCIETE_DISABLE_STATE))
-                    print "<td align=\"center\">$obj->departement</td>";
-		print "<td align=\"left\">$obj->cp</td>";
-		// Creation date
-		print "<td align=\"center\">".dol_print_date($db->jdate($obj->datec))."</td>";
-		// Level
-		print "<td align=\"center\">";
-		print $prospectstatic->LibLevel($obj->fk_prospectlevel);
-		print "</td>";
-		// Statut
-		print '<td align="left" nowrap="nowrap">';
-		print $prospectstatic->LibProspStatut($obj->fk_stcomm,2);
-		print "</td>";
-
-		// icone action
-		print '<td align="center" nowrap>';
-                $prospectstatic->stcomm_id=$obj->fk_stcomm;
-		$prospectstatic->type=$obj->type;
-                print $prospectstatic->getIconList(DOL_URL_ROOT."/comm/list.php?socid=".$obj->rowid.$param.'&action=cstc&amp;'.($page?'&amp;page='.$page:''));
-		print '</td>';
-
-                print '<td align="right">';
-		print $prospectstatic->getLibStatut(3);
-                print '</td>';
-
-        print "</tr>\n";
-		$i++;
-	}
-        
-
-	if ($num > $conf->liste_limit || $page > 0) print_barre_liste('', $page, $_SERVER["PHP_SELF"],$param,$sortfield,$sortorder,'',$num,$nbtotalofrecords);
-        print'</tbody>';
-	print "</table>";
-
-	print "</form>";
-
-	$db->free($resql);
-}
-else
-{
-	dol_print_error($db);
-}
 
 $db->close();
 

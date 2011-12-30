@@ -3,12 +3,14 @@
 
 require("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT . "/contact/class/contact.class.php");
-
+$langs->load("companies");
+$langs->load("suppliers");
+$langs->load('commercial');
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
  * you want to insert a non-database field (for example a counter or static image)
  */
 $aColumns = array('', 'name', 'firstname', 'poste', 'nom', 'phone', 'email', 'cpost', 'tms', 'priv', '');
-$aColumnsSql = array('p.name', 'p.firstname', 'p.poste', 's.nom', 'p.phone', 'p.email', 's.cp', 'p.tms', 'p.priv');
+$aColumnsSql = array('','p.name', 'p.firstname', 'p.poste', 's.nom', 'p.phone', 'p.email', 's.cp', 'p.tms', 'p.priv','');
 /*
  * Paging
  */
@@ -28,7 +30,7 @@ if (isset($_GET['iSortCol_0'])) {
     for ($i = 0; $i < intval($_GET['iSortingCols']); $i++) {
         if ($_GET['bSortable_' . intval($_GET['iSortCol_' . $i])] == "true") {
             $Cols = intval($_GET['iSortCol_' . $i]);
-            $sOrder .= $aColumns[intval($_GET['iSortCol_' . $i])] . "
+            $sOrder .= $aColumnsSql[intval($_GET['iSortCol_' . $i])] . "
 				 	" . ($_GET['sSortDir_' . $i]) . ", ";
         }
     }
@@ -51,7 +53,8 @@ $sWhere = "";
 if ($_GET['sSearch'] != "") {
     $sWhere = " AND (";
     for ($i = 0; $i < count($aColumnsSql); $i++) {
-        $sWhere .= $aColumnsSql[$i] . " LIKE '%" . $_GET['sSearch'] . "%' OR ";
+          if($aColumnsSql[$i]!='')  
+            $sWhere .= $aColumnsSql[$i] . " LIKE '%" . $_GET['sSearch'] . "%' OR ";
     }
     $sWhere = substr_replace($sWhere, "", -3);
     $sWhere .= ')';
