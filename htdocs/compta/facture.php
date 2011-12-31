@@ -2946,6 +2946,8 @@ else
                 $urlsource=$_SERVER['PHP_SELF'].'?facid='.$object->id;
                 $genallowed=$user->rights->facture->creer;
                 $delallowed=$user->rights->facture->supprimer;
+                
+                print $filedir;exit;
 
                 print '<br>';
                 print $formfile->showdocuments('facture',$filename,$filedir,$urlsource,$genallowed,$delallowed,$object->modelpdf,1,0,0,28,0,'','','',$soc->default_lang,$hookmanager);
