@@ -1047,7 +1047,7 @@ function getListOfModels($db,$type,$maxfilenamelength=0)
     $sql.= " WHERE type = '".$type."'";
     $sql.= " AND entity in (0,".$conf->entity.")";
     
-    print $sql;
+    //print $sql;
 
     $resql = $db->query($sql);
     if ($resql)
