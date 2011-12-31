@@ -141,7 +141,7 @@ if ($_GET["socid"])
 	// Country
     print '<tr '.$bc[$var].'><td id="label">'.$langs->trans("Country").'</td><td id="value" nowrap="nowrap">';
     $img=picto_from_langcode($soc->pays_code);
-    if ($soc->isInEEC()) print $html->textwithpicto(($img?$img.' ':'').$soc->pays,$langs->trans("CountryIsInEEC"),1,0);
+    if ($soc->isInEEC()) print $form->textwithpicto(($img?$img.' ':'').$soc->pays,$langs->trans("CountryIsInEEC"),1,0);
     else print ($img?$img.' ':'').$soc->pays;
     print '</td>';
         

@@ -508,6 +508,10 @@ class FormCompany
 				$sql.= " WHERE rowid in (".join(',',$limitto).")";
 			}
 		}
+                if($conf->multicompany->enabled)
+                {
+                    $sql.= " WHERE s.entity = (".$conf->entity.")";
+                }
 		$sql .= " ORDER BY nom ASC";
 
 		//print $sql;

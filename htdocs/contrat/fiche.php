@@ -54,16 +54,14 @@ $usehm=$conf->global->MAIN_USE_HOURMIN_IN_DATE_RANGE;
 
 $object = new Contrat($db);
 
-
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
 include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
 $hookmanager=new HookManager($db);
 $hookmanager->callHooks(array('contrat_extrafields'));
 
 /*
- * Actions
+ * Actions Extrafields
  */
-
 $parameters=array('id'=>$contratid);
 $reshook=$hookmanager->executeHooks('doActions',$parameters,$object,$action);    // Note that $action and $object may have been modified by some hooks
 $error=$hookmanager->error; $errors=$hookmanager->errors;
@@ -214,6 +212,7 @@ if ($action == 'update')
         exit;
     }
 
+    $object->fetch($contratid);
     $object->date_contrat   = $datecontrat;
 
     $object->note           = trim($_POST["note"]);
@@ -631,9 +630,9 @@ if ($action == 'create')
     print "</td></tr>";
     
     // Other attributes
-    $parameters=array('colspan' => ' colspan="3"');
-    $reshook=$hookmanager->executeHooks('showInputFields',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
-
+    //$parameters=array('colspan' => ' colspan="3"');
+    //$reshook=$hookmanager->executeHooks('showInputFields',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+    
     if ($conf->projet->enabled)
     {
         print '<tr><td>'.$langs->trans("Project").'</td><td>';

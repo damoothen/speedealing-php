@@ -325,11 +325,11 @@ class Contrat extends CommonObject
 		$sql.= " fk_user_author,";
 		$sql.= " fk_projet,";
 		$sql.= " fk_commercial_signature, fk_commercial_suivi,";
-		$sql.= " note, note_public";
+		$sql.= " note, note_public,model_pdf";
 		$sql.= " FROM ".MAIN_DB_PREFIX."contrat";
 		if ($ref) $sql.= " WHERE ref='".$ref."'";
 		else $sql.= " WHERE rowid=".$id;
-
+                
 		dol_syslog("Contrat::fetch sql=".$sql, LOG_DEBUG);
 		$resql = $this->db->query($sql);
 		if ($resql)
@@ -363,6 +363,14 @@ class Contrat extends CommonObject
 				$this->socid             = $result["fk_soc"];
 				$this->fk_soc            = $result["fk_soc"];
 				$this->societe->fetch($result["fk_soc"]);	// TODO A virer car la societe doit etre chargee par appel de fetch_client()
+                                $this->modelpdf          = $result["model_pdf"];
+                                
+                                //recupère le nom du model odt
+                                $model=strrchr($this->modelpdf,"/");
+                                if($model!=false)
+                                {
+                                    $this->element=substr($model,1)."@contrat"; //for extrafeilds
+                                }
 
 				$this->db->free($resql);
 
@@ -627,13 +635,14 @@ class Contrat extends CommonObject
 		// Insert contract
 		$sql = "INSERT INTO ".MAIN_DB_PREFIX."contrat (datec, fk_soc, fk_user_author, date_contrat,";
 		$sql.= " fk_commercial_signature, fk_commercial_suivi, fk_projet,";
-		$sql.= " ref)";
+		$sql.= " ref,entity)";
 		$sql.= " VALUES (".$this->db->idate(mktime()).",".$this->socid.",".$user->id;
 		$sql.= ",".$this->db->idate($this->date_contrat);
 		$sql.= ",".($this->commercial_signature_id>0?$this->commercial_signature_id:"NULL");
 		$sql.= ",".($this->commercial_suivi_id>0?$this->commercial_suivi_id:"NULL");
 		$sql.= ",".($this->fk_projet>0?$this->fk_projet:"NULL");
-		$sql .= ", " . (dol_strlen($this->ref)<=0 ? "null" : "'".$this->ref."'");
+		$sql.= ",".(dol_strlen($this->ref)<=0 ? "null" : "'".$this->ref."'");
+                $sql.= ",".$conf->entity;
 		$sql.= ")";
 		$resql=$this->db->query($sql);
 		if ($resql)

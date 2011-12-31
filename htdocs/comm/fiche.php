@@ -203,7 +203,7 @@ if ($id > 0)
         // Name
 	print '<tr '.$bc[$var].'><td id="label" width="20%">'.$langs->trans('ThirdPartyName').'</td>';
 	print '<td colspan="3" id="value">';
-	print $objsoc->getNomUrl(1);
+	print $object->getNomUrl(1);
 	print '</td>';
         print '</tr>';
         $var=!$var;
@@ -253,31 +253,31 @@ if ($id > 0)
 
         // Country
         print '<tr '.$bc[$var].'><td id="label">'.$langs->trans("Country").'</td><td id="value" nowrap="nowrap">';
-        $img=picto_from_langcode($objsoc->country_code);
-        if ($object->isInEEC()) print $form->textwithpicto(($img?$img.' ':'').$objsoc->pays,$langs->trans("CountryIsInEEC"),1,0);
+        $img=picto_from_langcode($object->country_code);
+        if ($object->isInEEC()) print $form->textwithpicto(($img?$img.' ':'').$object->pays,$langs->trans("CountryIsInEEC"),1,0);
         else print ($img?$img.' ':'').$object->country;
         print '</td>';
         
         // MAP GPS
         if($conf->map->enabled)
-            print '<td id="label" colspan="2">GPS '.img_picto(($objsoc->lat.','.$objsoc->lng),(($objsoc->lat && $objsoc->lng)?"statut4":"statut1")).'</td></tr>';
+            print '<td id="label" colspan="2">GPS '.img_picto(($object->lat.','.$object->lng),(($object->lat && $object->lng)?"statut4":"statut1")).'</td></tr>';
         else
             print '<td id="label" colspan="2"></td></tr>';
         $var=!$var;
         
 	// Phone
-	print '<tr '.$bc[$var].'><td>'.$langs->trans('Phone').'</td><td style="min-width: 25%;">'.dol_print_phone($objsoc->tel,$objsoc->pays_code,0,$objsoc->id,'AC_TEL').'</td>';
+	print '<tr '.$bc[$var].'><td>'.$langs->trans('Phone').'</td><td style="min-width: 25%;">'.dol_print_phone($object->tel,$object->pays_code,0,$object->id,'AC_TEL').'</td>';
 
 	// Fax
-	print '<td>'.$langs->trans('Fax').'</td><td style="min-width: 25%;">'.dol_print_phone($objsoc->fax,$objsoc->pays_code,0,$objsoc->id,'AC_FAX').'</td></tr>';
+	print '<td>'.$langs->trans('Fax').'</td><td style="min-width: 25%;">'.dol_print_phone($object->fax,$object->pays_code,0,$object->id,'AC_FAX').'</td></tr>';
         $var=!$var;
 
 	// EMail
-	print '<tr '.$bc[$var].'><td>'.$langs->trans('EMail').'</td><td colspan="3">'.dol_print_email($objsoc->email,0,$objsoc->id,'AC_EMAIL').'</td></tr>';
+	print '<tr '.$bc[$var].'><td>'.$langs->trans('EMail').'</td><td colspan="3">'.dol_print_email($object->email,0,$object->id,'AC_EMAIL').'</td></tr>';
         $var=!$var;
 
 	// Web
-	print '<tr '.$bc[$var].'><td>'.$langs->trans("Web").'</td><td colspan="3">'.dol_print_url($objsoc->url,'_blank').'</td></tr>';
+	print '<tr '.$bc[$var].'><td>'.$langs->trans("Web").'</td><td colspan="3">'.dol_print_url($object->url,'_blank').'</td></tr>';
         $var=!$var;
 
 	// Assujeti a TVA ou pas
@@ -331,7 +331,7 @@ if ($id > 0)
             print $langs->trans('RIB');
             print '<td><td id="value" align="right">';
             if ($user->rights->societe->creer)
-            print '<a href="'.DOL_URL_ROOT.'/societe/rib.php?socid='.$objsoc->id.'">'.img_edit().'</a>';
+            print '<a href="'.DOL_URL_ROOT.'/societe/rib.php?socid='.$object->id.'">'.img_edit().'</a>';
             else
             print '&nbsp;';
             print '</td></tr></table>';
@@ -744,7 +744,6 @@ if ($id > 0)
 				print '</tr>';
 				$var=!$var;
 				$i++;
-                            }
                         }
 			$db->free($resql);
 
@@ -924,7 +923,7 @@ if ($id > 0)
             if ($conf->lead->enabled)
             {
             // Leads list
-                $result=show_leads($conf,$langs,$db,$objsoc);
+                $result=show_leads($conf,$langs,$db,$object);
             }
 
 		// List of todo actions

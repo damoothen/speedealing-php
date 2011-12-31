@@ -353,6 +353,7 @@ if (empty($reshook))
                 if (! empty($_POST["backtopage"])) $backtopage=$_POST["backtopage"];
 
                 $object->oldcopy=dol_clone($object);
+                
                 ### Calcul des coordonnées GPS
                 if($conf->map->enabled)
                 {
@@ -1516,7 +1517,7 @@ else
         $showbarcode=($conf->barcode->enabled && $user->rights->barcode->lire);
 
 		$var=true;
-        print '<table class="border" width="100%">';
+        print '<table class="noborder" width="50%">';
 
         // Ref
         /*
@@ -1562,7 +1563,7 @@ else
         // Prefix
         if (! empty($conf->global->SOCIETE_USEPREFIX))  // Old not used prefix field
         {
-            print '<tr '.$bc[$var].'><td>'.$langs->trans('Prefix').'</td><td colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'">'.$object->prefix_comm.'</td>';
+            print '<tr '.$bc[$var].'><td  id="label">'.$langs->trans('Prefix').'</td><td  id="value" colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'">'.$object->prefix_comm.'</td>';
             print $htmllogobar; $htmllogobar='';
             print '</tr>';
             $var=!$var;
@@ -1571,8 +1572,8 @@ else
         // Customer code
         if ($object->client)
         {
-            print '<tr '.$bc[$var].'><td>';
-            print $langs->trans('CustomerCode').'</td><td colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'">';
+            print '<tr '.$bc[$var].'><td id="label">';
+            print $langs->trans('CustomerCode').'</td><td id="value" colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'">';
             print $object->code_client;
             if ($object->check_codeclient() <> 0) print ' <font class="error">('.$langs->trans("WrongCustomerCode").')</font>';
             print '</td>';
@@ -1584,8 +1585,8 @@ else
         // Supplier code
         if ($conf->fournisseur->enabled && $object->fournisseur && ! empty($user->rights->fournisseur->lire))
         {
-            print '<tr '.$bc[$var].'><td>';
-            print $langs->trans('SupplierCode').'</td><td colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'">';
+            print '<tr '.$bc[$var].'><td id="label">';
+            print $langs->trans('SupplierCode').'</td><td id="value" colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'">';
             print $object->code_fournisseur;
             if ($object->check_codefournisseur() <> 0) print ' <font class="error">('.$langs->trans("WrongSupplierCode").')</font>';
             print '</td>';
@@ -1601,8 +1602,8 @@ else
         }
 
         // Status
-        print '<tr><td '.$bc[$var].'>'.$langs->trans("Status").'</td>';
-        print '<td colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'">';
+        print '<tr '.$bc[$var].'><td id="label">'.$langs->trans("Status").'</td>';
+        print '<td id="value" colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'">';
         print $object->getLibStatut(2);
         print '</td>';
         print $htmllogobar; $htmllogobar='';
@@ -1610,20 +1611,20 @@ else
         $var=!$var;
 
         // Address
-        print "<tr '.$bc[$var].'><td valign=\"top\">".$langs->trans('Address').'</td><td colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'">';
+        print '<tr '.$bc[$var].'><td id="label" valign=\"top\">'.$langs->trans('Address').'</td><td id="value" colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'">';
         dol_print_address($object->address,'gmap','thirdparty',$object->id);
         print "</td></tr>";
         $var=!$var;
 
         // Zip / Town
-        print '<tr '.$bc[$var].'><td width="25%">'.$langs->trans('Zip').' / '.$langs->trans("Town").'</td><td colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'">';
+        print '<tr '.$bc[$var].'><td id="label" width="25%">'.$langs->trans('Zip').' / '.$langs->trans("Town").'</td><td id="value" colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'">';
         print $object->cp.($object->cp && $object->ville?" / ":"").$object->ville;
         print "</td>";
         print '</tr>';
         $var=!$var;
 
         // Country
-        print '<tr><td '.$bc[$var].'>'.$langs->trans("Country").'</td><td colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'" nowrap="nowrap">';
+        print '<tr '.$bc[$var].'><td id="label">'.$langs->trans("Country").'</td><td id="value" nowrap="nowrap">';
         $img=picto_from_langcode($object->pays_code);
         if ($object->isInEEC()) print $form->textwithpicto(($img?$img.' ':'').$object->pays,$langs->trans("CountryIsInEEC"),1,0);
         else print ($img?$img.' ':'').$object->pays;
@@ -1631,13 +1632,17 @@ else
         
         // MAP GPS
         if($conf->map->enabled)
-            print '<td id="label" colspan="'.(1+($object->logo?0:1)).'">GPS '.img_picto(($object->lat.','.$object->lng),(($object->lat && $object->lng)?"statut4":"statut1")).'</td></tr>';
+            print '<td id="label" colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'">GPS '.img_picto(($object->lat.','.$object->lng),(($object->lat && $object->lng)?"statut4":"statut1")).'</td></tr>';
         else
-            print '<td id="label" colspan="'.(1+($object->logo?0:1)).'"></td></tr>';
+            print '<td id="label" colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'"></td></tr>';
         $var=!$var;
 
         // State
-        if (empty($conf->global->SOCIETE_DISABLE_STATE)) print '<tr><td>'.$langs->trans('State').'</td><td colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'">'.$object->state.'</td>';
+        if (empty($conf->global->SOCIETE_DISABLE_STATE))
+		{
+			print '<tr  '.$bc[$var].'><td id="label">'.$langs->trans('State').'</td><td id="value" colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'">'.$object->state.'</td></tr>';
+			$var=!$var;
+		}
 
         // Phone
         print '<tr '.$bc[$var].'><td id="label">'.$langs->trans('Phone').'</td><td id="value" style="min-width: 25%;">'.dol_print_phone($object->tel,$object->pays_code,0,$object->id,'AC_TEL').'</td>';
@@ -1717,7 +1722,7 @@ else
 
         // VAT payers
         $form = new Form($db);
-        print '<tr '.$bc[$var].'><td>';
+        print '<tr '.$bc[$var].'><td id="label">';
         print $langs->trans('VATIsUsed');
         print '</td><td id="value">';
         print yn($object->tva_assuj);
@@ -1801,7 +1806,7 @@ else
         $var=!$var;
 
         // Capital
-        print '<tr '.$bc[$var].'><td>'.$langs->trans('Capital').'</td><td colspan="3">';
+        print '<tr '.$bc[$var].'><td id="label">'.$langs->trans('Capital').'</td><td id="value" colspan="3">';
         if ($object->capital) print $object->capital.' '.$langs->trans("Currency".$conf->currency);
         else print '&nbsp;';
         print '</td></tr>';
@@ -1829,7 +1834,7 @@ else
             foreach($extrafields->attribute_label as $key=>$label)
             {
                 $value=$object->array_options["options_$key"];
-                print "<tr ".$bc[$var]."><td>".$label.'</td><td colspan="3">';
+                print '<tr '.$bc[$var].'><td id="label">'.$label.'</td><td id="value" colspan="3">';
                 print $extrafields->showOutputField($key,$value);
                 print "</td></tr>\n";
                 $var=!$var;

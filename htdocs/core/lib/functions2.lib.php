@@ -1045,7 +1045,7 @@ function getListOfModels($db,$type,$maxfilenamelength=0)
     $sql = "SELECT nom as id, nom as lib, libelle as label, description as description";
     $sql.= " FROM ".MAIN_DB_PREFIX."document_model";
     $sql.= " WHERE type = '".$type."'";
-    $sql.= " AND entity = ".$conf->entity;
+    $sql.= " AND entity in (0,".$conf->entity.")";
 
     $resql = $db->query($sql);
     if ($resql)
