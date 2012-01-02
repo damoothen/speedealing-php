@@ -371,8 +371,10 @@ class doc_generic_contract_odt extends ModeleContract
                                 $hookmanager->callHooks(array('thirdparty_extrafields'));
                                 $parameters=array('id'=>$soc->id);
                                 $values=$hookmanager->executeHooks('getFields',$parameters,$soc,GETPOST('action'));    // Note that $action and $object may have been modified by hook
-				foreach($values as $key => $value)
-				{
+                                if(is_array($values))
+                                {
+                                    foreach($values as $key => $value)
+                                    {
 					try {
 						if (preg_match("/^options_/",$key))
 						{
@@ -383,7 +385,8 @@ class doc_generic_contract_odt extends ModeleContract
 					catch(OdfException $e)
 					{
 					}
-				}
+                                    }
+                                }
 
 				// Write new file
 				//$result=$odfHandler->exportAsAttachedFile('toto');
