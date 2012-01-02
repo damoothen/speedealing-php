@@ -349,7 +349,7 @@ class doc_generic_contract_odt extends ModeleContract
                                 $hookmanager->callHooks(array('contrat_extrafields'));
                                 $parameters=array('id'=>$object->id);
                                 $values=$hookmanager->executeHooks('getFields',$parameters,$object,GETPOST('action'));    // Note that $action and $object may have been modified by hook
-                                if(!empty($values))
+                                print $values;exit;
                                 {
                                     foreach($values as $key => $value)
                                     {
