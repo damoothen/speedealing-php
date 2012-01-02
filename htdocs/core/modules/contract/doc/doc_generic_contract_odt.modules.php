@@ -349,8 +349,10 @@ class doc_generic_contract_odt extends ModeleContract
                                 $hookmanager->callHooks(array('contrat_extrafields'));
                                 $parameters=array('id'=>$object->id);
                                 $values=$hookmanager->executeHooks('getFields',$parameters,$object,GETPOST('action'));    // Note that $action and $object may have been modified by hook
-				foreach($values as $key => $value)
-				{
+                                if(!empty($values))
+                                {
+                                    foreach($values as $key => $value)
+                                    {
 					try {
 						if (preg_match("/^options_/",$key))
 						{
@@ -361,8 +363,8 @@ class doc_generic_contract_odt extends ModeleContract
 					catch(OdfException $e)
 					{
 					}
-				}
-                                
+                                    }
+                                }
                                 // Get extra fields for socid
                                 include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
                                 $hookmanager=new HookManager($this->db);
