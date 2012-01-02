@@ -38,23 +38,9 @@ if ($user->societe_id) $socid=$user->societe_id;
 $result = restrictedArea($user, 'contact', $contactid,'');
 
 
-
-
 $type=GETPOST("type");
 $view=GETPOST("view");
 $sall=GETPOST("contactname");
-// for pagination
-$sortfield = GETPOST("sortfield");
-$sortorder = GETPOST("sortorder");
-$page = GETPOST("page");
-if (! $sortorder) $sortorder="ASC";
-if (! $sortfield) $sortfield="p.name";
-if ($page < 0) { $page = 0 ; }
-$limit = $conf->liste_limit;
-$offset = $limit * $page ;
-
-$langs->load("companies");
-$titre=$langs->trans("ListOfContacts");
 if ($type == "c")
 {
 	$titre=$langs->trans("ListOfContacts").'  ('.$langs->trans("ThirdPartyCustomers").')';
@@ -78,9 +64,12 @@ if ($view == 'mail')   { $text=" (Vue EMail)"; }
 if ($view == 'recent') { $text=" (Recents)"; }
 $titre = $titre." $text";
 
+
 /*
  * View
  */
+
+
 
 llxHeader('',$langs->trans("ContactsAddresses"),'EN:Module_Third_Parties|FR:Module_Tiers|ES:M&oacute;dulo_Empresas');
     print '<table cellpadding="0" cellspacing="0" border="0" class="display" id="liste">';     

@@ -138,6 +138,7 @@ $htmlother=new FormOther($db);
     print '<tr>';
     print'<th class="sorting">';
     print $langs->trans("Company");
+    print '&nbsp; &nbsp;';
     print'</th>';
     print'<th class="sorting">';
     print $langs->trans("Town");

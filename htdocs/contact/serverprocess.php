@@ -6,6 +6,7 @@ require_once(DOL_DOCUMENT_ROOT . "/contact/class/contact.class.php");
 $langs->load("companies");
 $langs->load("suppliers");
 $langs->load('commercial');
+
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
  * you want to insert a non-database field (for example a counter or static image)
  */
@@ -38,7 +39,7 @@ if (isset($_GET['iSortCol_0'])) {
     if ($sOrder == "ORDER BY") {
         $sOrder = "";
     }
-    if ($Cols == 10 || $Cols == 0) {
+    if ($Cols == 10 || $Cols == 0) { // no ordering on colum unname
         $sOrder = "";
     }
 }
