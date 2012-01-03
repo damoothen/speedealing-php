@@ -551,7 +551,7 @@ class Societe extends CommonObject
                 // Si le fournisseur est classe on l'ajoute
                 $this->AddFournisseurInCategory($this->fournisseur_categorie);
 
-                $result=$this->insertExtraFields();
+                $result=$this->insertExtraFields($this);
                 if ($result < 0)
                 {
                     $error++;
