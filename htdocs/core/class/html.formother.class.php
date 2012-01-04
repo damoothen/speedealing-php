@@ -321,6 +321,9 @@ class FormOther
  		{
  			dol_print_error($this->db);
  		}
+                $moreforfilter.='<option value="NULL"';
+                if ($selected=='NULL') $moreforfilter.=' selected="selected"';
+                $moreforfilter.='>Non affecté';
  		$moreforfilter.='</select>';
 
  		return $moreforfilter;
