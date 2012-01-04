@@ -175,18 +175,20 @@ if ($search_sale) $sql .= ", sc.fk_soc, sc.fk_user";
 if ($search_categ) $sql .= ", cs.fk_categorie, cs.fk_societe";
 $sql .= " FROM (".MAIN_DB_PREFIX."societe as s";
 // We'll need this table joined to the select in order to filter by sale
-if ($search_sale || !$user->rights->societe->client->voir) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
+//if ($search_sale || !$user->rights->societe->client->voir) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
 // We'll need this table joined to the select in order to filter by categ
 if ($search_categ) $sql.= ", ".MAIN_DB_PREFIX."categorie_societe as cs";
 $sql.= " ) ";
 $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."c_departements as d on (d.rowid = s.fk_departement)";
 $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."c_stcomm as st ON st.id = s.fk_stcomm";
+if ($search_sale && $search_sale!='NULL' || !$user->rights->societe->client->voir) $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."societe_commerciaux as sc ON (s.rowid = sc.fk_soc AND sc.fk_user = ".$db->escape($search_sale).")";
+if ($search_sale && $search_sale=='NULL') $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."societe_commerciaux as sc ON (s.rowid = sc.fk_soc)";
 $sql.= " WHERE s.client in (1,2,3)";
 if($type!='')
     $sql.= " AND st.type=".$type;
 $sql.= " AND s.entity = ".$conf->entity;
 if ($user->societe_id) $sql.= " AND s.rowid = " .$user->societe_id;
-if ($search_sale) $sql.= " AND s.rowid = sc.fk_soc";		// Join for the needed table to filter by sale
+//if ($search_sale) $sql.= " AND s.rowid = sc.fk_soc";		// Join for the needed table to filter by sale
 if ($search_categ) $sql.= " AND s.rowid = cs.fk_societe";	// Join for the needed table to filter by categ
 if (isset($pstcomm) && $pstcomm != '') $sql.= " AND s.fk_stcomm=".$pstcomm;
 
@@ -202,6 +204,9 @@ if ($search_levels)
 // Insert sale filter
 if ($search_sale)
 {
+    if($search_sale=='NULL')
+        $sql .= " AND sc.fk_user is null";
+    else
 	$sql .= " AND sc.fk_user = ".$db->escape($search_sale);
 }
 // Insert categ filter
@@ -230,6 +235,8 @@ if (empty($conf->global->MAIN_DISABLE_FULL_SCANLIST))
 
 $sql.= " ORDER BY $sortfield $sortorder, s.nom ASC";
 $sql.= $db->plimit($conf->liste_limit+1, $offset);
+
+//print $sql;
 
 $resql = $db->query($sql);
 if ($resql)
