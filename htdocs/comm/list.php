@@ -44,7 +44,18 @@ $socid = GETPOST("socid");
 if ($user->societe_id) $socid=$user->societe_id;
 $result = restrictedArea($user, 'societe',$socid,'');
 
+
 $type               = GETPOST("type",'int');
+
+/*
+ * Actions
+ */
+if ($_GET["action"] == 'cstc')
+{
+	$sql = "UPDATE ".MAIN_DB_PREFIX."societe SET fk_stcomm = ".$_GET["stcomm"];
+	$sql .= " WHERE rowid = ".$_GET["socid"];
+	$result=$db->query($sql);
+}
 
 
 
