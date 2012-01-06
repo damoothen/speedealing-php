@@ -134,7 +134,7 @@ if ($result) {
             } else if ($aColumns[$i] == "etat") {
                 $prospectstatic->stcomm_id = $aRow->fk_stcomm;
                 $prospectstatic->type = $aRow->type;
-                $row[] = $prospectstatic->getIconList(DOL_URL_ROOT . "/comm/list.php?socid=" . $aRow->rowid . $param . '&action=cstc&amp;' . ($page ? '&amp;page=' . $page : ''));
+                $row[] = $prospectstatic->getIconList(DOL_URL_ROOT . "/comm/list.php?socid=" . $aRow->rowid . $param . '&lang='.$langs->defaultlang.'&action=cstc&amp;' . ($page ? '&amp;page=' . $page : ''));
             } else if ($aColumns[$i] == "fk_prospectlevel") { // Level
                 $row[] = $prospectstatic->LibLevel($aRow->fk_prospectlevel);
             } else if ($aColumns[$i] == "fk_stcomm") { //status

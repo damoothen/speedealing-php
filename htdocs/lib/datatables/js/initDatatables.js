@@ -23,9 +23,9 @@
  */	 
 
 $(document).ready(function() {
-     /* Get the lang :desactived */
-     // var tabs = location.search.substring(1).split("&");
-     // lang = tabs[1].substr(5,5);
+     /* Get the lang */
+      var tabs = location.search.substring(1).split("&");
+      lang = tabs[1].substr(5,5);
     
     /* Insert a 'details' column to the table */
     var nCloneTh = document.createElement( 'th' );
@@ -46,7 +46,7 @@ $(document).ready(function() {
         "bServerSide": true,
         "sAjaxSource": "serverprocess.php",
         "bPaginate": true,
-       //  "oLanguage": {"sUrl": "../lib/datatables/langs/"+lang+".txt"}, lang desactived
+         "oLanguage": {"sUrl": "../lib/datatables/langs/"+lang+".txt"},
         "oTableTools": {
             "sSwfPath": "../lib/datatables/swf/copy_cvs_xls_pdf.swf",
             "aButtons": [

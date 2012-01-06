@@ -144,7 +144,7 @@ $htmlother=new FormOther($db);
     print'</th>';
     print'<th class="sorting">';
     print $langs->trans("Status");
-    print'&nbsp; &nbsp; &nbsp;';
+    print'&nbsp; &nbsp; &nbsp; &nbsp;';
     print'</th>';
     print'<th>';
     print '&nbsp;';
