@@ -12,7 +12,7 @@ $langs->load("commercial");
  * you want to insert a non-database field (for example a counter or static image)
  */
 $aColumns = array('', 'company', 'ville', 'departement', 'cp', 'datec', 'fk_prospectlevel', 'fk_stcomm', 'etat', 'priv');
-$aColumnsSql = array('','s.nom', 's.ville', 'd.nom', 's.cp', 's.datec', 's.fk_prospectlevel', 'fk_stcomm','','');
+$aColumnsSql = array('', 's.nom', 's.ville', 'd.nom', 's.cp', 's.datec', 's.fk_prospectlevel', 'fk_stcomm', '', '');
 /*
  * Paging
  */
@@ -55,13 +55,16 @@ $sWhere = "";
 if ($_GET['sSearch'] != "") {
     $sWhere = " AND (";
     for ($i = 0; $i < count($aColumnsSql); $i++) {
-        if($aColumnsSql[$i]!=''){
+        if ($aColumnsSql[$i] != '') {
             $sWhere .= $aColumnsSql[$i] . " LIKE '%" . $_GET['sSearch'] . "%' OR ";
         }
     }
     $sWhere = substr_replace($sWhere, "", -3);
     $sWhere .= ')';
 }
+// If the user must only see his prospect, force searching by him
+if (!$user->rights->societe->client->voir && !$socid)
+    $search_sale = $user->id;
 
 /* sql query */
 $sql = "SELECT s.rowid, s.nom, s.ville, s.datec, s.datea, s.status as status,";
@@ -71,23 +74,26 @@ $sql.= " d.nom as departement, s.cp as cp";
 // We'll need these fields in order to filter by sale (including the case where the user can only see his prospects)
 if ($search_sale)
     $sql .= ", sc.fk_soc, sc.fk_user";
-// We'll need these fields in order to filter by categ
-if ($search_categ)
-    $sql .= ", cs.fk_categorie, cs.fk_societe";
 $sql .= " FROM (" . MAIN_DB_PREFIX . "societe as s";
 // We'll need this table joined to the select in order to filter by sale
-if ($search_sale || !$user->rights->societe->client->voir)
+if (!$user->rights->societe->client->voir)
     $sql.= ", " . MAIN_DB_PREFIX . "societe_commerciaux as sc";
-// We'll need this table joined to the select in order to filter by categ
-if ($search_categ)
-    $sql.= ", " . MAIN_DB_PREFIX . "categorie_societe as cs";
+
 $sql.= " ) ";
 $sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "c_departements as d on (d.rowid = s.fk_departement)";
 $sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "c_stcomm as st ON st.id = s.fk_stcomm";
 $sql.= " WHERE s.client in (1,2,3)";
 if ($type != '')
     $sql.= " AND st.type=" . $type;
+
 $sql.= " AND s.entity = " . $conf->entity;
+if ($search_sale) {
+    $sql.= " AND s.rowid = sc.fk_soc";  // Join for the needed table to filter by sale
+}
+// Insert sale filter
+if ($search_sale) {
+    $sql .= " AND sc.fk_user = " . $db->escape($search_sale);
+}
 
 //print $sql;
 $result = $db->query($sql);

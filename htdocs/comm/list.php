@@ -44,37 +44,8 @@ $socid = GETPOST("socid");
 if ($user->societe_id) $socid=$user->societe_id;
 $result = restrictedArea($user, 'societe',$socid,'');
 
-$pstcomm            = GETPOST("pstcomm");
 $type               = GETPOST("type",'int');
 
-$sortfield = GETPOST("sortfield",'alpha');
-$sortorder = GETPOST("sortorder",'alpha');
-$page      = GETPOST("page",'int');
-if ($page == -1) { $page = 0; }
-$offset = $conf->liste_limit * $page;
-$pageprev = $page - 1;
-$pagenext = $page + 1;
-if (! $sortorder) $sortorder="ASC";
-if (! $sortfield) $sortfield="s.nom";
-
-$search_level_from = GETPOST("search_level_from","alpha");
-$search_level_to   = GETPOST("search_level_to","alpha");
-
-// Load sale and categ filters
-$search_sale = isset($_GET["search_sale"])?$_GET["search_sale"]:$_POST["search_sale"];
-$search_categ = isset($_GET["search_categ"])?$_GET["search_categ"]:$_POST["search_categ"];
-// If the user must only see his prospect, force searching by him
-if (!$user->rights->societe->client->voir && !$socid) $search_sale = $user->id;
-
-/*
- * Actions
- */
-if ($_GET["action"] == 'cstc')
-{
-	$sql = "UPDATE ".MAIN_DB_PREFIX."societe SET fk_stcomm = ".$_GET["stcomm"];
-	$sql .= " WHERE rowid = ".$_GET["socid"];
-	$result=$db->query($sql);
-}
 
 
 /*
@@ -171,7 +142,7 @@ $htmlother=new FormOther($db);
     print'</thead>';
     
     print'<tbody>';
-        print'<td colspan="5" class="dataTables_empty">Loading data from server</td>';
+        print'<td colspan="5" class="dataTables_empty">'.$langs->trans("Loading data from server").'</td>';
     print'</tbody>';
     print "</table>";
 
