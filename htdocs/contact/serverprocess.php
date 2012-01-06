@@ -11,7 +11,7 @@ $langs->load('commercial');
  * you want to insert a non-database field (for example a counter or static image)
  */
 $aColumns = array('', 'name', 'firstname', 'poste', 'nom', 'phone', 'email', 'cpost', 'tms', 'priv', '');
-$aColumnsSql = array('','p.name', 'p.firstname', 'p.poste', 's.nom', 'p.phone', 'p.email', 's.cp', 'p.tms', 'p.priv','');
+$aColumnsSql = array('', 'p.name', 'p.firstname', 'p.poste', 's.nom', 'p.phone', 'p.email', 's.cp', 'p.tms', 'p.priv', '');
 /*
  * Paging
  */
@@ -54,7 +54,7 @@ $sWhere = "";
 if ($_GET['sSearch'] != "") {
     $sWhere = " AND (";
     for ($i = 0; $i < count($aColumnsSql); $i++) {
-          if($aColumnsSql[$i]!='')  
+        if ($aColumnsSql[$i] != '')
             $sWhere .= $aColumnsSql[$i] . " LIKE '%" . $_GET['sSearch'] . "%' OR ";
     }
     $sWhere = substr_replace($sWhere, "", -3);
@@ -70,26 +70,18 @@ $sql.= " cp.code as pays_code";
 $sql.= " FROM " . MAIN_DB_PREFIX . "socpeople as p";
 $sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "c_pays as cp ON cp.rowid = p.fk_pays";
 $sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "societe as s ON s.rowid = p.fk_soc";
-if (!$user->rights->societe->client->voir && !$socid)
+
+if (!$user->rights->societe->client->voir) {
     $sql .= " LEFT JOIN " . MAIN_DB_PREFIX . "societe_commerciaux as sc ON s.rowid = sc.fk_soc";
+}
 $sql.= " WHERE p.entity = " . $conf->entity . ' ';
-if (!$user->rights->societe->client->voir && !$socid) { //restriction
+if (!$user->rights->societe->client->voir) { //restriction
     $sql .= " AND (sc.fk_user = " . $user->id . " OR p.fk_soc IS NULL)";
 }
 
-if ($_GET["userid"]) {    // propre au commercial
-    $sql .= " AND p.fk_user_creat=" . $_GET["userid"];
-}
-
 // Filter to exclude not owned private contacts
-if ($search_priv != '0' && $search_priv != '1') {
-    $sql .= " AND (p.priv='0' OR (p.priv='1' AND p.fk_user_creat=" . $user->id . "))";
-} else {
-    if ($search_priv == '0')
-        $sql .= " AND p.priv='0'";
-    if ($search_priv == '1')
-        $sql .= " AND (p.priv='1' AND p.fk_user_creat=" . $user->id . ")";
-}
+$sql .= " AND (p.priv='0' OR (p.priv='1' AND p.fk_user_creat=" . $user->id . "))";
+
 
 //print $sql;
 
@@ -122,31 +114,23 @@ if ($result) {
                 $contactstatic->firstname = '';
                 $contactstatic->id = $aRow->cidp;
                 $row[] = $contactstatic->getNomUrl(1, '', 20);
-                
-            }
-            else if($aColumns[$i]=="tms"){
-                 
-                 $row[] = dol_print_date($db->jdate($aRow->tms),"day");
-            }
-            else if($aColumns[$i]=="email"){
-                 $row[] = dol_print_email($aRow->email,$aRow->cidp,$aRow->socid,'AC_EMAIL',18);
-            }
-            else if ($aColumns[$i] == "priv") {             
+            } else if ($aColumns[$i] == "tms") {
+
+                $row[] = dol_print_date($db->jdate($aRow->tms), "day");
+            } else if ($aColumns[$i] == "email") {
+                $row[] = dol_print_email($aRow->email, $aRow->cidp, $aRow->socid, 'AC_EMAIL', 18);
+            } else if ($aColumns[$i] == "priv") {
                 $row[] = $contactstatic->LibPubPriv($aRow->priv);
-            
-            }
-            else if ($i == 0) {
+            } else if ($i == 0) {
                 $row[] = '<img id="' . $aRow->cidp . '" class="plus" src="../theme/cameleo/img/details_open.png">';
-            }
-            else if ($i == (count($aColumns) - 1)) { //last
+            } else if ($i == (count($aColumns) - 1)) { //last
                 $row[] = '<a href="' . DOL_URL_ROOT . '/comm/action/fiche.php?action=create&amp;backtopage=1&amp;contactid=' . $aRow->cidp . '&amp;socid=' . $aRow->socid . '">' . img_object($langs->trans("AddAction"), "action") . '</a>'
                         . ' &nbsp;'
                         . ' &nbsp;' .
                         '<a href="' . DOL_URL_ROOT . '/contact/vcard.php?id=' . $aRow->cidp . '">' .
                         img_picto($langs->trans("VCard"), 'vcard.png') . ' ' .
                         '</a>';
-            }
-            else if ($aColumns[$i] != ' ') {
+            } else if ($aColumns[$i] != ' ') {
                 /* General output */
                 $attribut = $aColumns[$i];
                 $row[] = $aRow->$attribut;
@@ -158,8 +142,7 @@ if ($result) {
     $db->free($result);
     header('Content-type: application/json');
     echo json_encode($output);
-}
-else {
+} else {
     dol_print_error($db);
 }
 ?>
