@@ -701,6 +701,8 @@ class Categorie
 	 */
 	function get_full_arbo($type,$markafterid=0)
 	{
+		global $conf;
+		
 		$this->cats = array();
 
 		// Charge tableau des meres
@@ -729,6 +731,7 @@ class Categorie
 		$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."categorie_association as ca";
 		$sql.= " ON c.rowid=ca.fk_categorie_mere";
 		$sql.= " WHERE c.type = ".$type;
+		$sql.= " AND c.entity = ".$conf->entity;
 		$sql.= " ORDER BY c.label, c.rowid";
 
 		dol_syslog("Categorie::get_full_arbo get category list sql=".$sql, LOG_DEBUG);
@@ -869,7 +872,10 @@ class Categorie
 	 */
 	function get_all_categories ()
 	{
+		global $conf;
+		
 		$sql = "SELECT rowid FROM ".MAIN_DB_PREFIX."categorie";
+		$sql.= " WHERE entity = ".$conf->entity;
 
 		$res = $this->db->query($sql);
 		if ($res)
@@ -895,8 +901,12 @@ class Categorie
 	 */
 	function get_nb_categories ()
 	{
+		global $conf;
+		
 		$sql = "SELECT count(rowid)";
 		$sql.= " FROM ".MAIN_DB_PREFIX."categorie";
+		$sql.= " WHERE entity = ".$conf->entity;
+		
 		$res = $this->db->query($sql);
 		if ($res)
 		{

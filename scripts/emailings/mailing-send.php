@@ -36,14 +36,42 @@ if (substr($sapi_type, 0, 3) == 'cgi') {
     exit;
 }
 
-if (! isset($argv[1]) || ! $argv[1]) {
-	print "Usage: ".$script_file." ID_MAILING\n";
-	exit;
-}
-$id=$argv[1];
-
 require_once ($path."../../htdocs/master.inc.php");
 require_once (DOL_DOCUMENT_ROOT."/lib/CMailFile.class.php");
+
+if (! isset($argv[1]) || ! $argv[1]) {
+    $sql = "SELECT max(m.rowid) as id";
+    $sql.= " FROM ".MAIN_DB_PREFIX."mailing as m";
+    $sql.= " WHERE m.statut = 1";
+    
+    $resql=$db->query($sql);
+    if ($resql)
+    {
+	$num = $db->num_rows($resql);
+	$i = 0;
+
+	if ($num == 1)
+        {
+            $obj = $db->fetch_object($resql);
+            if($obj->id)
+                $id=$obj->id;
+            else
+            {
+                print "Usage: ".$script_file." ID_MAILING\n";
+                exit;
+            }
+        }
+    
+        else
+        {
+            print "Usage: ".$script_file." ID_MAILING\n";
+            exit;
+        }
+    }
+}
+else
+    $id=$argv[1];
+
 
 
 $error = 0;
@@ -135,6 +163,7 @@ if ($resql)
 			$other5=$other[4];
 			$substitutionarray=array(
 				'__ID__' => $obj->source_id,
+                                '__CAMPAGNEID__'=> $id,
 				'__EMAIL__' => $obj->email,
 				'__LASTNAME__' => $obj->nom,
 				'__FIRSTNAME__' => $obj->prenom,
@@ -149,10 +178,9 @@ if ($resql)
 			$newsubject=make_substitutions($subject,$substitutionarray);
 			$newmessage=make_substitutions($message,$substitutionarray);
 
-            $substitutionisok=true;
+                        $substitutionisok=true;
 
-            // Fabrication du mail
-                        
+                        // Fabrication du mail
 			$mail = new CMailFile($newsubject, $sendto, $from, $newmessage,
 			array(), array(), array(),
             						'', '', 0, $msgishtml, $errorsto,'',$id);

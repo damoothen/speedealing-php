@@ -517,7 +517,7 @@ class Societe extends CommonObject
             //end Symeos
 
 
-            if ($allowmodcodeclient)
+            if ($allowmodcodeclient && $this->client)
             {
                 //$this->check_codeclient();
 
@@ -529,7 +529,7 @@ class Societe extends CommonObject
                 $sql .= ", code_compta = ".($this->code_compta?"'".$this->db->escape($this->code_compta)."'":"null");
             }
 
-            if ($allowmodcodefournisseur)
+            if ($allowmodcodefournisseur && $this->fournisseur)
             {
                 //$this->check_codefournisseur();
 
@@ -551,21 +551,11 @@ class Societe extends CommonObject
                 // Si le fournisseur est classe on l'ajoute
                 $this->AddFournisseurInCategory($this->fournisseur_categorie);
 
-                // Actions on extra fields (by external module or standard code)
-                include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
-                $hookmanager=new HookManager($this->db);
-                $hookmanager->callHooks(array('thirdparty_extrafields'));
-                $parameters=array('socid'=>$socid);
-                $reshook=$hookmanager->executeHooks('insertExtraFields',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
-                if (empty($reshook))
+                $result=$this->insertExtraFields($this);
+                if ($result < 0)
                 {
-                    $result=$this->insertExtraFields($this);
-                    if ($result < 0)
-                    {
-                        $error++;
-                    }
+                    $error++;
                 }
-                else if ($reshook < 0) $error++;
 
                 if (! $error && $call_trigger)
                 {
@@ -1368,7 +1358,7 @@ class Societe extends CommonObject
         if ($this->id)
         {
         	$now=dol_now();
-        	
+
             $sql  = "UPDATE ".MAIN_DB_PREFIX."societe ";
             $sql .= " SET price_level = '".$price_level."'";
             $sql .= " WHERE rowid = " . $this->id;
@@ -1520,22 +1510,22 @@ class Societe extends CommonObject
         }
         if ($mode == 2)
         {
-            if ($statut==0) return img_picto($langs->trans("ActivityCeased"),'statut5').' '.$langs->trans("ActivityCeased");
+            if ($statut==0) return img_picto($langs->trans("ActivityCeased"),'statut6').' '.$langs->trans("ActivityCeased");
             if ($statut==1) return img_picto($langs->trans("InActivity"),'statut4').' '.$langs->trans("InActivity");
         }
         if ($mode == 3)
         {
-            if ($statut==0) return img_picto($langs->trans("ActivityCeased"),'statut5');
+            if ($statut==0) return img_picto($langs->trans("ActivityCeased"),'statut6');
             if ($statut==1) return img_picto($langs->trans("InActivity"),'statut4');
         }
         if ($mode == 4)
         {
-            if ($statut==0) return img_picto($langs->trans("ActivityCeased"),'statut5').' '.$langs->trans("ActivityCeased");
+            if ($statut==0) return img_picto($langs->trans("ActivityCeased"),'statut6').' '.$langs->trans("ActivityCeased");
             if ($statut==1) return img_picto($langs->trans("InActivity"),'statut4').' '.$langs->trans("InActivity");
         }
         if ($mode == 5)
         {
-            if ($statut==0) return $langs->trans("ActivityCeased").' '.img_picto($langs->trans("ActivityCeased"),'statut5');
+            if ($statut==0) return $langs->trans("ActivityCeased").' '.img_picto($langs->trans("ActivityCeased"),'statut6');
             if ($statut==1) return $langs->trans("InActivity").' '.img_picto($langs->trans("InActivity"),'statut4');
         }
     }

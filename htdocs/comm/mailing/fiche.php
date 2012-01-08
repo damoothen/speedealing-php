@@ -1093,8 +1093,9 @@ else
 		dol_print_error($db,$mil->error);
 	}
 
+}
 
 $db->close();
-}
+
 llxFooter('$Date: 2011/08/03 00:46:33 $ - $Revision: 1.123 $');
 ?>
