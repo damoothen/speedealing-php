@@ -1,27 +1,29 @@
 <?php
+/* Copyright (C) 2007-2008	Jeremie Ollivier	<jeremie.o@laposte.net>
+ * Copyright (C) 2011		Laurent Destailleur	<eldy@users.sourceforge.net>
+ * Copyright (C) 2011		Juanjo Menent		<jmenent@2byte.es>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 $langs->load("main");
 $langs->load("bills");
 $langs->load("cashdesk");
+
 ?>
-<!--
-Copyright (C) 2007-2008 Jeremie Ollivier 	<jeremie.o@laposte.net>
-Copyright (C) 2011      Laurent Destailleur <eldy@users.sourceforge.net>
-Copyright (C) 2011		Juanjo Menent 		<jmenent@2byte.es>
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program. If not, see <http://www.gnu.org/licenses/>.
-
--->
 <script type="text/javascript" src="javascript/facturation1.js"></script>
 <script type="text/javascript" src="javascript/dhtml.js"></script>
 
@@ -167,7 +169,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 			<tr><th class="label1"><?php echo $langs->trans("TotalTicket"); ?></th><th class="label1"><?php echo $langs->trans("Received"); ?></th><th class="label1"><?php echo $langs->trans("Change"); ?></th></tr>
 			<tr>
 			<!-- Affichage du montant du -->
-			<td><input class="texte2_off" type="text" name="txtDu" value="<?php echo price2num($obj_facturation->prix_total_ttc (), 'MT'); ?>" disabled="disabled" /></td>
+			<td><input class="texte2_off" type="text" name="txtDu" value="<?php echo price2num($obj_facturation->prix_total_ttc(), 'MT'); ?>" disabled="disabled" /></td>
 			<!-- Choix du montant encaisse -->
 			<td><input class="texte2" type="text" name="txtEncaisse" value="" onkeyup="javascript: verifDifference();" onfocus="javascript: this.select();" /></td>
 			<!-- Affichage du montant rendu -->

@@ -11,21 +11,11 @@
     <directory suffix=".php">../../test/</directory>
     <directory suffix=".php">../../htdocs/custom/</directory>
     <directory suffix=".php">../../htdocs/custom2/</directory>
+    <directory suffix=".php">../../htdocs/core/menus/smartphone/</directory>
     <directory suffix=".php">../../htdocs/products/canvas/</directory>
     <directory suffix=".php">../../htdocs/contact/canvas/</directory>
     <directory suffix=".php">../../htdocs/societe/canvas/</directory>
-    <directory suffix=".php">../../htdocs/includes/adodbtime/</directory>
-    <directory suffix=".php">../../htdocs/includes/artichow/</directory>
-    <directory suffix=".php">../../htdocs/includes/ckeditor/</directory>
-    <directory suffix=".php">../../htdocs/includes/fpdfi/</directory>
-    <directory suffix=".php">../../htdocs/includes/geoip/</directory>
-    <directory suffix=".php">../../htdocs/includes/jquery/</directory>
-    <directory suffix=".php">../../htdocs/includes/jsgantt/</directory>
-    <directory suffix=".php">../../htdocs/core/menus/smartphone/</directory>
-    <directory suffix=".php">../../htdocs/includes/nusoap/</directory>
-    <directory suffix=".php">../../htdocs/includes/odtphp/</directory>
-    <directory suffix=".php">../../htdocs/includes/phpexcel/</directory>
-    <directory suffix=".php">../../htdocs/includes/tcpdf/</directory>
+    <directory suffix=".php">../../htdocs/includes/</directory>
   </blacklist>
   <whitelist>
     <directory suffix=".class.php">../../htdocs/</directory>
@@ -46,21 +36,11 @@
     <directory suffix=".php">../../test/</directory>
     <directory suffix=".php">../../htdocs/custom/</directory>
     <directory suffix=".php">../../htdocs/custom2/</directory>
+    <directory suffix=".php">../../htdocs/core/menus/smartphone</directory>
     <directory suffix=".php">../../htdocs/products/canvas/</directory>
     <directory suffix=".php">../../htdocs/contact/canvas/</directory>
     <directory suffix=".php">../../htdocs/societe/canvas/</directory>
-    <directory suffix=".php">../../htdocs/includes/adodbtime/</directory>
-    <directory suffix=".php">../../htdocs/includes/artichow/</directory>
-    <directory suffix=".php">../../htdocs/includes/ckeditor/</directory>
-    <directory suffix=".php">../../htdocs/includes/fpdfi/</directory>
-    <directory suffix=".php">../../htdocs/includes/geoip/</directory>
-    <directory suffix=".php">../../htdocs/includes/jquery/</directory>
-    <directory suffix=".php">../../htdocs/includes/jsgantt/</directory>
-    <directory suffix=".php">../../htdocs/core/menus/smartphone</directory>
-    <directory suffix=".php">../../htdocs/includes/nusoap/</directory>
-    <directory suffix=".php">../../htdocs/includes/odtphp/</directory>
-    <directory suffix=".php">../../htdocs/includes/phpexcel/</directory>
-    <directory suffix=".php">../../htdocs/includes/tcpdf/</directory>
+    <directory suffix=".php">../../htdocs/includes/</directory>
     </exclude>
   </whitelist>
 </filter>

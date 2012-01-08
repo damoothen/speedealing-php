@@ -48,7 +48,8 @@ $element = GETPOST('element');
 
 
 /**
- *
+ *       \file       htdocs/core/ajax/fileupload.php
+ *       \brief      This class is used to manage file upload using ajax
  */
 class UploadHandler
 {
@@ -56,7 +57,16 @@ class UploadHandler
     private $fk_elment;
     private $element;
 
-    function __construct($options=null,$fk_element=null,$element=null) {
+
+    /**
+     * Constructor
+     *
+     * @param array		$options		Options array
+     * @param int		$fk_element		fk_element
+     * @param string	$element		element
+     */
+    function __construct($options=null,$fk_element=null,$element=null)
+    {
 
     	global $conf;
 
@@ -96,9 +106,17 @@ class UploadHandler
         }
     }
 
-    private function get_file_object($file_name) {
+    /**
+     * Enter description here ...
+     *
+     * @param	string		$file_name		Filename
+     * @return 	stdClass|NULL
+     */
+    private function get_file_object($file_name)
+    {
         $file_path = $this->options['upload_dir'].$file_name;
-        if (is_file($file_path) && $file_name[0] !== '.') {
+        if (is_file($file_path) && $file_name[0] !== '.')
+        {
             $file = new stdClass();
             $file->name = $file_name;
             $file->mime = dol_mimetype($file_name,'',2);
@@ -118,18 +136,25 @@ class UploadHandler
         return null;
     }
 
-    private function get_file_objects() {
-        return array_values(array_filter(array_map(
-            array($this, 'get_file_object'),
-            scandir($this->options['upload_dir'])
-        )));
+    /**
+     * Enter description here ...
+     *
+     * @return	void
+     */
+    private function get_file_objects()
+    {
+        return array_values(array_filter(array_map(array($this, 'get_file_object'), scandir($this->options['upload_dir']))));
     }
 
     /**
      *  Create thumbs
-     *  options is array('max_width', 'max_height')
+     *
+     *  @param	string	$file_name		Filename
+     *  @param	string	$options 		is array('max_width', 'max_height')
+     *  @return	void
      */
-    private function create_scaled_image($file_name, $options) {
+    private function create_scaled_image($file_name, $options)
+    {
         global $maxwidthmini, $maxheightmini;
         $file_path = $this->options['upload_dir'].$file_name;
         $new_file_path = $options['upload_dir'].$file_name;
@@ -153,7 +178,16 @@ class UploadHandler
         }
     }
 
-    private function has_error($uploaded_file, $file, $error) {
+    /**
+     * Enter description here ...
+     *
+     * @param 	string	$uploaded_file		Uploade file
+     * @param 	string	$file				File
+     * @param 	string	$error				Error
+     * @return unknown|string
+     */
+    private function has_error($uploaded_file, $file, $error)
+    {
         if ($error) {
             return $error;
         }
@@ -183,7 +217,18 @@ class UploadHandler
         return $error;
     }
 
-    private function handle_file_upload($uploaded_file, $name, $size, $type, $error) {
+    /**
+     * Enter description here ...
+     *
+     * @param 	string		$uploaded_file		Uploade file
+     * @param 	string		$name				Name
+     * @param 	int			$size				Size
+     * @param 	string		$type				Type
+     * @param 	string		$error				Error
+     * @return stdClass
+     */
+    private function handle_file_upload($uploaded_file, $name, $size, $type, $error)
+    {
         $file = new stdClass();
         $file->name = basename(stripslashes($name));
         $file->mime = dol_mimetype($file->name,'',2);
@@ -242,7 +287,13 @@ class UploadHandler
         return $file;
     }
 
-    public function get() {
+    /**
+     * Output data
+     *
+     * @return	void
+     */
+    public function get()
+    {
         $file_name = isset($_REQUEST['file']) ?
             basename(stripslashes($_REQUEST['file'])) : null;
         if ($file_name) {
@@ -254,7 +305,13 @@ class UploadHandler
         echo json_encode($info);
     }
 
-    public function post() {
+    /**
+     * Output data
+     *
+     * @return	void
+     */
+    public function post()
+    {
         $upload = isset($_FILES[$this->options['param_name']]) ?
             $_FILES[$this->options['param_name']] : array(
                 'tmp_name' => null,
@@ -268,24 +325,18 @@ class UploadHandler
             foreach ($upload['tmp_name'] as $index => $value) {
                 $info[] = $this->handle_file_upload(
                     $upload['tmp_name'][$index],
-                    isset($_SERVER['HTTP_X_FILE_NAME']) ?
-                        $_SERVER['HTTP_X_FILE_NAME'] : $upload['name'][$index],
-                    isset($_SERVER['HTTP_X_FILE_SIZE']) ?
-                        $_SERVER['HTTP_X_FILE_SIZE'] : $upload['size'][$index],
-                    isset($_SERVER['HTTP_X_FILE_TYPE']) ?
-                        $_SERVER['HTTP_X_FILE_TYPE'] : $upload['type'][$index],
+                    isset($_SERVER['HTTP_X_FILE_NAME']) ? $_SERVER['HTTP_X_FILE_NAME'] : $upload['name'][$index],
+                    isset($_SERVER['HTTP_X_FILE_SIZE']) ? $_SERVER['HTTP_X_FILE_SIZE'] : $upload['size'][$index],
+                    isset($_SERVER['HTTP_X_FILE_TYPE']) ? $_SERVER['HTTP_X_FILE_TYPE'] : $upload['type'][$index],
                     $upload['error'][$index]
                 );
             }
         } else {
             $info[] = $this->handle_file_upload(
                 $upload['tmp_name'],
-                isset($_SERVER['HTTP_X_FILE_NAME']) ?
-                    $_SERVER['HTTP_X_FILE_NAME'] : $upload['name'],
-                isset($_SERVER['HTTP_X_FILE_SIZE']) ?
-                    $_SERVER['HTTP_X_FILE_SIZE'] : $upload['size'],
-                isset($_SERVER['HTTP_X_FILE_TYPE']) ?
-                    $_SERVER['HTTP_X_FILE_TYPE'] : $upload['type'],
+                isset($_SERVER['HTTP_X_FILE_NAME']) ? $_SERVER['HTTP_X_FILE_NAME'] : $upload['name'],
+                isset($_SERVER['HTTP_X_FILE_SIZE']) ? $_SERVER['HTTP_X_FILE_SIZE'] : $upload['size'],
+                isset($_SERVER['HTTP_X_FILE_TYPE']) ? $_SERVER['HTTP_X_FILE_TYPE'] : $upload['type'],
                 $upload['error']
             );
         }
@@ -299,7 +350,13 @@ class UploadHandler
         echo json_encode($info);
     }
 
-    public function delete() {
+    /**
+     * Delete uploaded file
+     *
+     * @return	void
+     */
+    public function delete()
+    {
         $file_name = isset($_REQUEST['file']) ?
             basename(stripslashes($_REQUEST['file'])) : null;
         $file_path = $this->options['upload_dir'].$file_name;

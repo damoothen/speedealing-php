@@ -513,7 +513,7 @@ class Form
 
     /**
      *		Return list of social contributions.
-     * 		Use mysoc->pays_id or mysoc->pays_code so they must be defined.
+     * 		Use mysoc->country_id or mysoc->country_code so they must be defined.
      *
      *		@param      selected        Preselected type
      *		@param      htmlname        Name of field in form
@@ -525,18 +525,18 @@ class Form
     {
         global $db,$langs,$user,$mysoc;
 
-        if (empty($mysoc->pays_id) && empty($mysoc->pays_code))
+        if (empty($mysoc->country_id) && empty($mysoc->country_code))
         {
             dol_print_error('','Call to select_type_socialcontrib with mysoc country not yet defined');
             exit;
         }
 
-        if (! empty($mysoc->pays_id))
+        if (! empty($mysoc->country_id))
         {
             $sql = "SELECT c.id, c.libelle as type";
             $sql.= " FROM ".MAIN_DB_PREFIX."c_chargesociales as c";
             $sql.= " WHERE c.active = 1";
-            $sql.= " AND c.fk_pays = ".$mysoc->pays_id;
+            $sql.= " AND c.fk_pays = ".$mysoc->country_id;
             $sql.= " ORDER BY c.libelle ASC";
         }
         else
@@ -544,7 +544,7 @@ class Form
             $sql = "SELECT c.id, c.libelle as type";
             $sql.= " FROM ".MAIN_DB_PREFIX."c_chargesociales as c, ".MAIN_DB_PREFIX."c_pays as p";
             $sql.= " WHERE c.active = 1 AND c.fk_pays = p.rowid";
-            $sql.= " AND p.code = '".$mysoc->pays_code."'";
+            $sql.= " AND p.code = '".$mysoc->country_code."'";
             $sql.= " ORDER BY c.libelle ASC";
         }
 
@@ -572,7 +572,7 @@ class Form
             }
             else
             {
-                print $langs->trans("ErrorNoSocialContributionForSellerCountry",$mysoc->pays_code);
+                print $langs->trans("ErrorNoSocialContributionForSellerCountry",$mysoc->country_code);
             }
         }
         else
@@ -3018,7 +3018,7 @@ class Form
         $defaulttx=str_replace('*','',$selectedrate);
 
         // Check parameters
-        if (is_object($societe_vendeuse) && ! $societe_vendeuse->pays_code)
+        if (is_object($societe_vendeuse) && ! $societe_vendeuse->country_code)
         {
             if ($societe_vendeuse->id == $mysoc->id)
             {
@@ -3032,18 +3032,18 @@ class Form
         }
 
         //var_dump($societe_acheteuse);
-        //print "name=$name, selectedrate=$selectedrate, seller=".$societe_vendeuse->pays_code." buyer=".$societe_acheteuse->pays_code." buyer is company=".$societe_acheteuse->isACompany()." idprod=$idprod, info_bits=$info_bits type=$type";
+        //print "name=$name, selectedrate=$selectedrate, seller=".$societe_vendeuse->country_code." buyer=".$societe_acheteuse->country_code." buyer is company=".$societe_acheteuse->isACompany()." idprod=$idprod, info_bits=$info_bits type=$type";
         //exit;
 
         // Get list of all VAT rates to show
         // First we defined code_pays to use to find list
         if (is_object($societe_vendeuse))
         {
-            $code_pays="'".$societe_vendeuse->pays_code."'";
+            $code_pays="'".$societe_vendeuse->country_code."'";
         }
         else
         {
-            $code_pays="'".$mysoc->pays_code."'";   // Pour compatibilite ascendente
+            $code_pays="'".$mysoc->country_code."'";   // Pour compatibilite ascendente
         }
         if (! empty($conf->global->SERVICE_ARE_ECOMMERCE_200238EC))    // If option to have vat for end customer for services is on
         {
@@ -3054,12 +3054,12 @@ class Form
                 {
                     if ($type == 1) // We know product is a service
                     {
-                        $code_pays.=",'".$societe_acheteuse->pays_code."'";
+                        $code_pays.=",'".$societe_acheteuse->country_code."'";
                     }
                 }
                 else if (! $idprod)  // We don't know type of product
                 {
-                    $code_pays.=",'".$societe_acheteuse->pays_code."'";
+                    $code_pays.=",'".$societe_acheteuse->country_code."'";
                 }
                 else
                 {
@@ -3067,7 +3067,7 @@ class Form
                     $prodstatic->fetch($idprod);
                     if ($prodstatic->type == 1)   // We know product is a service
                     {
-                        $code_pays.=",'".$societe_acheteuse->pays_code."'";
+                        $code_pays.=",'".$societe_acheteuse->country_code."'";
                     }
                 }
             }
@@ -3236,7 +3236,7 @@ class Form
                     {
                         $retstring.='<button id="'.$prefix.'Button" type="button" class="dpInvisibleButtons"';
                         $base=DOL_URL_ROOT.'/core/';
-                        $retstring.=' onClick="showDP(\''.$base.'\',\''.$prefix.'\',\''.$langs->trans("FormatDateShortJava").'\',\''.$langs->defaultlang.'\');">'.img_object($langs->trans("SelectDate"),'calendarday').'</button>';
+                        $retstring.=' onClick="showDP(\''.$base.'\',\''.$prefix.'\',\''.$langs->trans("FormatDateShortJava").'\',\''.$langs->defaultlang.'\');">'.img_object($langs->trans("SelectDate"),'calendarday','class="datecallink"').'</button>';
                     }
 
                     $retstring.='<input type="hidden" id="'.$prefix.'day"   name="'.$prefix.'day"   value="'.$sday.'">'."\n";
@@ -3401,7 +3401,7 @@ class Form
             // If reset_scripts is not empty, print the button with the reset_scripts in OnClick
             if ($reset_scripts)
             {
-                $retstring.='<button class="dpInvisibleButtons" id="'.$prefix.'ButtonNow" type="button" name="_useless" value="Now" onClick="'.$reset_scripts.'">';
+                $retstring.='<button class="dpInvisibleButtons datenowlink" id="'.$prefix.'ButtonNow" type="button" name="_useless" value="Now" onClick="'.$reset_scripts.'">';
                 $retstring.=$langs->trans("Now");
                 $retstring.='</button> ';
             }
@@ -3528,14 +3528,15 @@ class Form
 
 
     /**
-     *    	Return an html string with a select combo box to choose yes or no
+     *	Return an html string with a select combo box to choose yes or no
      *
-     *    	@param      name            Name of html select field
-     *    	@param      value           Pre-selected value
-     *  	@param      option          0 return yes/no, 1 return 1/0
-     * 		@return		int or string	See option
+     *	@param	string	$name			Name of html select field
+     *	@param	string	$value			Pre-selected value
+     *	@param	int		$option			0 return yes/no, 1 return 1/0
+     *	@param	bool	$disabled		true or false
+     *	@return	mixed					See option
      */
-    function selectyesno($htmlname,$value='',$option=0)
+    function selectyesno($htmlname,$value='',$option=0,$disabled=false)
     {
         global $langs;
 
@@ -3547,7 +3548,9 @@ class Form
             $no="0";
         }
 
-        $resultyesno = '<select class="flat" id="'.$htmlname.'" name="'.$htmlname.'">'."\n";
+        $disabled = ($disabled ? ' disabled="disabled"' : '');
+
+        $resultyesno = '<select class="flat" id="'.$htmlname.'" name="'.$htmlname.'"'.$disabled.'>'."\n";
         if (("$value" == 'yes') || ($value == 1))
         {
             $resultyesno .= '<option value="'.$yes.'" selected="selected">'.$langs->trans("Yes").'</option>'."\n";

@@ -283,6 +283,8 @@ if (! empty($force_install_message))
                     $class='DoliDB'.ucfirst($type);
                     include_once($dir."/".$file);
 
+                    if ($type == 'sqlite') continue;    // We hide sqlite because support can't be complete unti sqlit does not manage foreign key creation after table creation
+
 		            // Version min of database
                     $versionbasemin=getStaticMember($class, 'versionmin');
                     $note='('.getStaticMember($class, 'label').' >= '.versiontostring($versionbasemin).')';
@@ -291,13 +293,14 @@ if (! empty($force_install_message))
 		            if ($defaultype=='mysqli' && !function_exists('mysqli_connect')) $defaultype = 'mysql';
 
 		            // Show line into list
-		            if ($type=='mysql')  { $testfunction='mysql_connect'; }
-		            if ($type=='mysqli') { $testfunction='mysqli_connect'; }
-		            if ($type=='pgsql')  { $testfunction='pg_connect'; }
-		            if ($type=='mssql')  { $testfunction='mssql_connect'; }
-		            if ($type=='sqlite') { $testfunction='notyetready'; }
+		            if ($type=='mysql')  { $testfunction='mysql_connect'; $testclass=''; }
+		            if ($type=='mysqli') { $testfunction='mysqli_connect'; $testclass=''; }
+		            if ($type=='pgsql')  { $testfunction='pg_connect'; $testclass=''; }
+		            if ($type=='mssql')  { $testfunction='mssql_connect'; $testclass=''; }
+		            if ($type=='sqlite') { $testfunction=''; $testclass='PDO'; }
 		            $option.='<option value="'.$type.'"'.($defaultype == $type?' selected="selected"':'');
-		            if (! function_exists($testfunction)) $option.=' disabled="disabled"';
+		            if ($testfunction && ! function_exists($testfunction)) $option.=' disabled="disabled"';
+		            if ($testclass && ! class_exists($testclass)) $option.=' disabled="disabled"';
 		            $option.='>';
 		            $option.=$type.'&nbsp; &nbsp;';
 		            if ($note) $option.=' '.$note;
@@ -321,7 +324,7 @@ if (! empty($force_install_message))
 
 	</tr>
 
-	<tr>
+	<tr class="hidesqlite">
 		<td valign="top" class="label"><b> <?php echo $langs->trans("Server"); ?>
 		</b></td>
 		<td valign="top" class="label"><input type="text"
@@ -335,7 +338,7 @@ if (! empty($force_install_message))
 
 	</tr>
 
-	<tr>
+	<tr class="hidesqlite">
 		<td valign="top" class="label"><?php echo $langs->trans("Port"); ?></td>
 		<td valign="top" class="label"><input type="text"
 			name="db_port<?php print ($force_install_noedit==2 && $force_install_port)?'_bis':''; ?>"
@@ -348,7 +351,7 @@ if (! empty($force_install_message))
 
 	</tr>
 
-	<tr>
+	<tr class="hidesqlite">
 		<td class="label" valign="top"><?php echo $langs->trans("DatabasePrefix"); ?>
 		</td>
 
@@ -358,7 +361,7 @@ if (! empty($force_install_message))
 		<td class="comment"><?php echo $langs->trans("DatabasePrefix"); ?></td>
 	</tr>
 
-	<tr>
+	<tr class="hidesqlite">
 		<td class="label" valign="top"><?php echo $langs->trans("CreateDatabase"); ?>
 		</td>
 
@@ -369,7 +372,7 @@ if (! empty($force_install_message))
 		</td>
 	</tr>
 
-	<tr>
+	<tr class="hidesqlite">
 		<td class="label" valign="top"><b><?php echo $langs->trans("Login"); ?></b>
 		</td>
 		<td class="label" valign="top"><input type="text" id="db_user"
@@ -378,7 +381,7 @@ if (! empty($force_install_message))
 		<td class="comment"><?php echo $langs->trans("AdminLogin"); ?></td>
 	</tr>
 
-	<tr>
+	<tr class="hidesqlite">
 		<td class="label" valign="top"><b><?php echo $langs->trans("Password"); ?></b>
 		</td>
 		<td class="label" valign="top"><input type="password" id="db_pass"
@@ -387,7 +390,7 @@ if (! empty($force_install_message))
 		<td class="comment"><?php echo $langs->trans("AdminPassword"); ?></td>
 	</tr>
 
-	<tr>
+	<tr class="hidesqlite">
 		<td class="label" valign="top"><?php echo $langs->trans("CreateUser"); ?>
 		</td>
 
@@ -404,13 +407,13 @@ if (! empty($force_install_message))
 	$force_install_databaserootlogin=preg_replace('/__SUPERUSERLOGIN__/','root',$force_install_databaserootlogin);
 	$force_install_databaserootpass=preg_replace('/__SUPERUSERPASSWORD__/','',$force_install_databaserootpass);
 	?>
-	<tr>
+	<tr class="hidesqlite">
 		<td colspan="3" class="label" align="center"><br>
 		<h3><?php echo $langs->trans("DatabaseSuperUserAccess"); ?></h3>
 		</td>
 	</tr>
 
-	<tr>
+	<tr class="hidesqlite">
 		<td class="label" valign="top"><?php echo $langs->trans("Login"); ?></td>
 		<td class="label" valign="top"><input type="text" id="db_user_root"
 			name="db_user_root" class="needroot"
@@ -427,7 +430,7 @@ if (! empty($force_install_message))
 
 	</tr>
 
-	<tr>
+	<tr class="hidesqlite">
 		<td class="label" valign="top"><?php echo $langs->trans("Password"); ?>
 		</td>
 		<td class="label" valign="top"><input type="password"

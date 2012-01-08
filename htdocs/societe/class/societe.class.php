@@ -43,10 +43,8 @@ class Societe extends CommonObject
     protected $ismultientitymanaged = 1;	// 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
 
     var $id;
-    var $name;     // TODO obsolete
-    var $nom;
-    var $nom_particulier;
-    var $prenom;
+    var $name;
+    var $nom;      // TODO obsolete
     var $particulier;
     var $address;
     var $adresse;  // TODO obsolete
@@ -82,14 +80,11 @@ class Societe extends CommonObject
 	var $barcode_type_label;    // label (loaded by fetch_barcode)
 	var $barcode_type_coder;    // coder (loaded by fetch_barcode)
 
-    // 4 identifiants professionnels (leur utilisation depend du pays)
-    var $siren;		// IdProf1 - Deprecated
-    var $siret;		// IdProf2 - Deprecated
-    var $ape;		// IdProf3 - Deprecated
-    var $idprof1;	// IdProf1
-    var $idprof2;	// IdProf2
-    var $idprof3;	// IdProf3
-    var $idprof4;	// IdProf4
+    // 4 professional id (usage depend on country)
+    var $idprof1;	// IdProf1 (Ex: Siren in France)
+    var $idprof2;	// IdProf2 (Ex: Siret in France)
+    var $idprof3;	// IdProf3 (Ex: Ape in France)
+    var $idprof4;	// IdProf4 (Ex: RCS in France)
 
     var $prefix_comm;
 
@@ -118,8 +113,6 @@ class Societe extends CommonObject
     var $prospect;					// 0=no prospect, 1=prospect
     var $fournisseur;				// 0=no supplier, 1=supplier
 
-    var $prefixCustomerIsRequired;
-    var $prefixSupplierIsRequired;
     var $code_client;
     var $code_fournisseur;
     var $code_compta;
@@ -162,8 +155,6 @@ class Societe extends CommonObject
         $this->typent_id  = 0;
         $this->effectif_id  = 0;
         $this->forme_juridique_code  = 0;
-        $this->prefixCustomerIsRequired = 0;
-        $this->prefixSupplierIsRequired = 0;
         $this->tva_assuj = 1;
         $this->status = 1;
 
@@ -191,7 +182,7 @@ class Societe extends CommonObject
         if (empty($this->client))      $this->client=0;
         if (empty($this->fournisseur)) $this->fournisseur=0;
 
-        dol_syslog("Societe::create ".$this->name);
+        dol_syslog(get_class($this)."::create ".$this->name);
 
         // Check parameters
         if (! empty($conf->global->SOCIETE_MAIL_REQUIRED) && ! isValidEMail($this->email))
@@ -215,15 +206,15 @@ class Societe extends CommonObject
 
         if ($result >= 0)
         {
-            $sql = "INSERT INTO ".MAIN_DB_PREFIX."societe (nom, entity, datec, datea, fk_user_creat, canvas, status, ref_int)";
+            $sql = "INSERT INTO ".MAIN_DB_PREFIX."societe (nom, entity, datec, datea, fk_user_creat, canvas, status, ref_int, fk_stcomm)";
             $sql.= " VALUES ('".$this->db->escape($this->name)."', ".$conf->entity.", '".$this->db->idate($now)."', '".$this->db->idate($now)."'";
             $sql.= ", ".($user->id > 0 ? "'".$user->id."'":"null");
             $sql.= ", ".($this->canvas ? "'".$this->canvas."'":"null");
             $sql.= ", ".$this->status;
             $sql.= ", ".($this->ref_int ? "'".$this->ref_int."'":"null");
-            $sql.= ")";
+            $sql.= ", 0)";
 
-            dol_syslog("Societe::create sql=".$sql);
+            dol_syslog(get_class($this)."::create sql=".$sql);
             $result=$this->db->query($sql);
             if ($result)
             {
@@ -254,13 +245,13 @@ class Societe extends CommonObject
                     if ($result < 0) { $error++; $this->errors=$interface->errors; }
                     // Fin appel triggers
 
-                    dol_syslog("Societe::Create success id=".$this->id);
+                    dol_syslog(get_class($this)."::Create success id=".$this->id);
                     $this->db->commit();
                     return $this->id;
                 }
                 else
                 {
-                    dol_syslog("Societe::Create echec update ".$this->error, LOG_ERR);
+                    dol_syslog(get_class($this)."::Create echec update ".$this->error, LOG_ERR);
                     $this->db->rollback();
                     return -3;
                 }
@@ -276,7 +267,7 @@ class Societe extends CommonObject
                 else
                 {
                     $this->error=$this->db->lasterror();
-                    dol_syslog("Societe::Create fails insert sql=".$sql, LOG_ERR);
+                    dol_syslog(get_class($this)."::Create fails insert sql=".$sql, LOG_ERR);
                     $result=-2;
                 }
                 $this->db->rollback();
@@ -287,7 +278,7 @@ class Societe extends CommonObject
         else
         {
             $this->db->rollback();
-            dol_syslog("Societe::Create fails verify ".join(',',$this->errors), LOG_WARNING);
+            dol_syslog(get_class($this)."::Create fails verify ".join(',',$this->errors), LOG_WARNING);
             return -3;
         }
     }
@@ -386,7 +377,7 @@ class Societe extends CommonObject
 
 		$error=0;
 
-        dol_syslog("Societe::Update id=".$id." call_trigger=".$call_trigger." allowmodcodeclient=".$allowmodcodeclient." allowmodcodefournisseur=".$allowmodcodefournisseur);
+        dol_syslog(get_class($this)."::Update id=".$id." call_trigger=".$call_trigger." allowmodcodeclient=".$allowmodcodeclient." allowmodcodefournisseur=".$allowmodcodefournisseur);
 
         // For triggers
         if ($call_trigger)
@@ -409,8 +400,8 @@ class Societe extends CommonObject
         $this->town=$this->town?trim($this->town):trim($this->ville);
         $this->ville=$this->town;       // TODO obsolete
         $this->state_id=trim($this->state_id);
-        $this->pays_id=trim($this->pays_id);
-        $this->country_id	= trim($this->country_id);
+        $this->country_id	= ($this->country_id > 0)?$this->country_id:$this->pays_id;
+        $this->pays_id      = $this->country_id;
         $this->tel			= trim($this->tel);
         $this->fax			= trim($this->fax);
         $this->tel			= preg_replace("/\s/","",$this->tel);
@@ -419,9 +410,6 @@ class Societe extends CommonObject
         $this->fax			= preg_replace("/\./","",$this->fax);
         $this->email		= trim($this->email);
         $this->url			= $this->url?clean_url($this->url,0):'';
-        $this->siren=trim($this->siren);	// TODO obsolete
-        $this->siret=trim($this->siret);	// TODO obsolete
-        $this->ape=trim($this->ape);		// TODO obsolete
         $this->idprof1		= trim($this->idprof1);
         $this->idprof2		= trim($this->idprof2);
         $this->idprof3		= trim($this->idprof3);
@@ -468,7 +456,7 @@ class Societe extends CommonObject
 
         if ($result >= 0)
         {
-            dol_syslog("Societe::Update verify ok");
+            dol_syslog(get_class($this)."::Update verify ok");
 
             $sql = "UPDATE ".MAIN_DB_PREFIX."societe";
             $sql.= " SET nom = '" . $this->db->escape($this->name) ."'"; // Champ obligatoire
@@ -546,6 +534,11 @@ class Societe extends CommonObject
             $resql=$this->db->query($sql);
             if ($resql)
             {
+                unset($this->country_code);
+                unset($this->country);
+                unset($this->state_code);
+                unset($this->state);
+
                 // Si le fournisseur est classe on l'ajoute
                 $this->AddFournisseurInCategory($this->fournisseur_categorie);
 
@@ -645,12 +638,12 @@ class Societe extends CommonObject
         $sql .= ', s.fk_effectif as effectif_id';
         $sql .= ', s.fk_forme_juridique as forme_juridique_code';
         $sql .= ', s.code_client, s.code_fournisseur, s.code_compta, s.code_compta_fournisseur, s.parent, s.barcode';
-        $sql .= ', s.fk_departement, s.fk_pays, s.fk_stcomm, s.remise_client, s.mode_reglement, s.cond_reglement, s.tva_assuj';
+        $sql .= ', s.fk_departement, s.fk_pays as country_id, s.fk_stcomm, s.remise_client, s.mode_reglement, s.cond_reglement, s.tva_assuj';
         $sql .= ', s.localtax1_assuj, s.localtax2_assuj, s.fk_prospectlevel, s.default_lang, s.logo';
         $sql .= ', s.import_key';
         $sql .= ', fj.libelle as forme_juridique';
         $sql .= ', e.libelle as effectif';
-        $sql .= ', p.code as pays_code, p.libelle as pays';
+        $sql .= ', p.code as country_code, p.libelle as country';
         $sql .= ', d.code_departement as departement_code, d.nom as departement';
         $sql .= ', st.libelle as stcomm';
         $sql .= ', te.code as typent_code';
@@ -671,7 +664,7 @@ class Societe extends CommonObject
         if ($idprof4) $sql .= " WHERE s.idprof4 = '".$this->db->escape($idprof4)."' AND s.entity = ".$conf->entity;
 
         $resql=$this->db->query($sql);
-        dol_syslog("Societe::fetch ".$sql);
+        dol_syslog(get_class($this)."::fetch ".$sql);
         if ($resql)
         {
             $num=$this->db->num_rows($resql);
@@ -704,12 +697,13 @@ class Societe extends CommonObject
                 $this->town 		= $obj->town;
                 $this->ville        = $obj->town;		// TODO obsolete
 
-                $this->pays_id 		= $obj->fk_pays;	// TODO obsolete
-                $this->country_id   = $obj->fk_pays;
-                $this->pays_code 	= $obj->fk_pays?$obj->pays_code:'';		// TODO obsolete
-                $this->country_code = $obj->fk_pays?$obj->pays_code:'';
-                $this->pays 		= $obj->fk_pays?($langs->trans('Country'.$obj->pays_code)!='Country'.$obj->pays_code?$langs->trans('Country'.$obj->pays_code):$obj->pays):''; // TODO obsolete
-                $this->country 		= $obj->fk_pays?($langs->trans('Country'.$obj->pays_code)!='Country'.$obj->pays_code?$langs->trans('Country'.$obj->pays_code):$obj->pays):'';
+                $this->pays_id 		= $obj->country_id;	// TODO obsolete
+                $this->country_id   = $obj->country_id;
+                $this->pays_code 	= $obj->country_id?$obj->country_code:'';		// TODO obsolete
+                $this->country_code = $obj->country_id?$obj->country_code:'';
+                $this->pays 		= $obj->country_id?($langs->trans('Country'.$obj->country_code)!='Country'.$obj->country_code?$langs->trans('Country'.$obj->country_code):$obj->country):''; // TODO obsolete
+                $this->country 		= $obj->country_id?($langs->trans('Country'.$obj->country_code)!='Country'.$obj->country_code?$langs->trans('Country'.$obj->country_code):$obj->country):'';
+
                 $this->state_id     = $obj->fk_departement;
                 $this->state_code   = $obj->departement_code;
                 $this->state        = $obj->departement;
@@ -727,11 +721,8 @@ class Societe extends CommonObject
 
                 $this->parent    = $obj->parent;
 
-                $this->siren		= $obj->idprof1;	// TODO obsolete
                 $this->idprof1		= $obj->idprof1;
-                $this->siret		= $obj->idprof2;	// TODO obsolete
                 $this->idprof2		= $obj->idprof2;
-                $this->ape			= $obj->idprof3;	// TODO obsolete
                 $this->idprof3		= $obj->idprof3;
                 $this->idprof4		= $obj->idprof4;
 
@@ -1099,7 +1090,7 @@ class Societe extends CommonObject
             return -2;
         }
 
-        dol_syslog("Societe::set_remise_client ".$remise.", ".$note.", ".$user->id);
+        dol_syslog(get_class($this)."::set_remise_client ".$remise.", ".$note.", ".$user->id);
 
         if ($this->id)
         {
@@ -1305,7 +1296,7 @@ class Societe extends CommonObject
 
             if (! $this->db->query($sql) )
             {
-                dol_syslog("Societe::add_commercial Erreur");
+                dol_syslog(get_class($this)."::add_commercial Erreur");
             }
 
         }
@@ -1325,7 +1316,7 @@ class Societe extends CommonObject
 
             if (! $this->db->query($sql) )
             {
-                dol_syslog("Societe::del_commercial Erreur");
+                dol_syslog(get_class($this)."::del_commercial Erreur");
             }
 
         }
@@ -1440,24 +1431,33 @@ class Societe extends CommonObject
 
     /**
      * 	Return full address of third party
-     * 	@param		withcountry		1=Add country into address string
-     *  @param		sep				Separator to use to build string
-     *	@return		string			Full address string
+     *
+     * 	@param		int			$withcountry		1=Add country into address string
+     *  @param		string		$sep				Separator to use to build string
+     *	@return		string							Full address string
      */
     function getFullAddress($withcountry=0,$sep="\n")
     {
         $ret='';
-        if (in_array($this->country,array('us')))
+        if ($withcountry && $this->country_id && (empty($this->country_code) || empty($this->country)))
         {
-            $ret.=($this->address?$this->address.$sep:'');
-            $ret.=trim($this->zip.' '.$this->town);
-            if ($withcountry) $ret.=($this->country?$sep.$this->country:'');
+            require_once(DOL_DOCUMENT_ROOT ."/core/lib/company.lib.php");
+            $tmparray=getCountry($this->country_id,'all');
+            $this->country_code=$tmparray['code'];
+            $this->country     =$tmparray['label'];
+        }
+
+        if (in_array($this->country_code,array('US')))
+        {
+	        $ret.=($this->address?$this->address.$sep:'');
+	        $ret.=trim($this->zip.' '.$this->town);
+	        if ($withcountry) $ret.=($this->country?$sep.$this->country:'');
         }
         else
         {
-            $ret.=($this->address?$this->address.$sep:'');
-            $ret.=trim($this->zip.' '.$this->town);
-            if ($withcountry) $ret.=($this->country?$sep.$this->country:'');
+	        $ret.=($this->address?$this->address.$sep:'');
+	        $ret.=trim($this->zip.' '.$this->town);
+	        if ($withcountry) $ret.=($this->country?$sep.$this->country:'');
         }
         return trim($ret);
     }
@@ -1673,7 +1673,7 @@ class Societe extends CommonObject
             $this->code_client = $mod->getNextValue($objsoc,$type);
             $this->prefixCustomerIsRequired = $mod->prefixIsRequired;
 
-            dol_syslog("Societe::get_codeclient code_client=".$this->code_client." module=".$var);
+            dol_syslog(get_class($this)."::get_codeclient code_client=".$this->code_client." module=".$var);
         }
     }
 
@@ -1691,9 +1691,8 @@ class Societe extends CommonObject
             $mod = new $var;
 
             $this->code_fournisseur = $mod->getNextValue($objsoc,$type);
-            $this->prefixSupplierIsRequired = $mod->prefixIsRequired;
 
-            dol_syslog("Societe::get_codefournisseur code_fournisseur=".$this->code_fournisseur." module=".$var);
+            dol_syslog(get_class($this)."::get_codefournisseur code_fournisseur=".$this->code_fournisseur." module=".$var);
         }
     }
 
@@ -1713,7 +1712,7 @@ class Societe extends CommonObject
 
             $mod = new $var;
 
-            dol_syslog("Societe::codeclient_modifiable code_client=".$this->code_client." module=".$var);
+            dol_syslog(get_class($this)."::codeclient_modifiable code_client=".$this->code_client." module=".$var);
             if ($mod->code_modifiable_null && ! $this->code_client) return 1;
             if ($mod->code_modifiable_invalide && $this->check_codeclient() < 0) return 1;
             if ($mod->code_modifiable) return 1;	// A mettre en dernier
@@ -1741,7 +1740,7 @@ class Societe extends CommonObject
 
             $mod = new $var;
 
-            dol_syslog("Societe::codefournisseur_modifiable code_founisseur=".$this->code_fournisseur." module=".$var);
+            dol_syslog(get_class($this)."::codefournisseur_modifiable code_founisseur=".$this->code_fournisseur." module=".$var);
             if ($mod->code_modifiable_null && ! $this->code_fournisseur) return 1;
             if ($mod->code_modifiable_invalide && $this->check_codefournisseur() < 0) return 1;
             if ($mod->code_modifiable) return 1;	// A mettre en dernier
@@ -1773,7 +1772,7 @@ class Societe extends CommonObject
 
             $mod = new $var;
 
-            dol_syslog("Societe::check_codeclient code_client=".$this->code_client." module=".$var);
+            dol_syslog(get_class($this)."::check_codeclient code_client=".$this->code_client." module=".$var);
             $result = $mod->verif($this->db, $this->code_client, $this, 0);
             return $result;
         }
@@ -1802,7 +1801,7 @@ class Societe extends CommonObject
 
             $mod = new $var;
 
-            dol_syslog("Societe::check_codefournisseur code_fournisseur=".$this->code_fournisseur." module=".$var);
+            dol_syslog(get_class($this)."::check_codefournisseur code_fournisseur=".$this->code_fournisseur." module=".$var);
             $result = $mod->verif($this->db, $this->code_fournisseur, $this, 1);
             return $result;
         }
@@ -1928,10 +1927,11 @@ class Societe extends CommonObject
 
 	/**
      *    Verify if a profid exists into database for others thirds
-     *    @param      	idprof		1,2,3,4 (Exemple: 1=siren,2=siret,3=naf,4=rcs/rm)
-     *    @param		value		value of profid
-     *    @param		socid		id of society if update
-     *    @return     	boolean		true if exists, false if not
+     *
+     *    @param	int		$idprof		1,2,3,4 (Example: 1=siren,2=siret,3=naf,4=rcs/rm)
+     *    @param	string	$value		Value of profid
+     *    @param	int		$socid		Id of society if update
+     *    @return   boolean				true if exists, false if not
      */
     function id_prof_exists($idprof,$value,$socid=0)
     {
@@ -1988,9 +1988,9 @@ class Societe extends CommonObject
         if (! empty($conf->global->MAIN_DISABLEPROFIDRULES)) return 1;
 
         // Verifie SIREN si pays FR
-        if ($idprof == 1 && $soc->pays_code == 'FR')
+        if ($idprof == 1 && $soc->country_code == 'FR')
         {
-            $chaine=trim($this->siren);
+            $chaine=trim($this->idprof1);
             $chaine=preg_replace('/(\s)/','',$chaine);
 
             if (dol_strlen($chaine) != 9) return -1;
@@ -1999,12 +1999,12 @@ class Societe extends CommonObject
 
             for ($i = 0 ; $i < 10 ; $i = $i+2)
             {
-                $sum = $sum + substr($this->siren, (8 - $i), 1);
+                $sum = $sum + substr($this->idprof1, (8 - $i), 1);
             }
 
             for ($i = 1 ; $i < 9 ; $i = $i+2)
             {
-                $ps = 2 * substr($this->siren, (8 - $i), 1);
+                $ps = 2 * substr($this->idprof1, (8 - $i), 1);
 
                 if ($ps > 9)
                 {
@@ -2017,9 +2017,9 @@ class Societe extends CommonObject
         }
 
         // Verifie SIRET si pays FR
-        if ($idprof == 2 && $soc->pays_code == 'FR')
+        if ($idprof == 2 && $soc->country_code == 'FR')
         {
-            $chaine=trim($this->siret);
+            $chaine=trim($this->idprof1);
             $chaine=preg_replace('/(\s)/','',$chaine);
 
             if (dol_strlen($chaine) != 14) return -1;
@@ -2027,9 +2027,9 @@ class Societe extends CommonObject
 
         //Verify CIF/NIF/NIE if pays ES
         //Returns: 1 if NIF ok, 2 if CIF ok, 3 if NIE ok, -1 if NIF bad, -2 if CIF bad, -3 if NIE bad, 0 if unexpected bad
-        if ($idprof == 1 && $soc->pays_code == 'ES')
+        if ($idprof == 1 && $soc->country_code == 'ES')
         {
-            $string=trim($this->siren);
+            $string=trim($this->idprof1);
             $string=preg_replace('/(\s)/','',$string);
             $string = strtoupper($string);
 
@@ -2103,9 +2103,9 @@ class Societe extends CommonObject
 
         $url='';
 
-        if ($idprof == 1 && $soc->pays_code == 'FR') $url='http://www.societe.com/cgi-bin/recherche?rncs='.$soc->siren;
-        if ($idprof == 1 && $soc->pays_code == 'GB') $url='http://www.companieshouse.gov.uk/WebCHeck/findinfolink/';
-        if ($idprof == 1 && $soc->pays_code == 'ES') $url='http://www.e-informa.es/servlet/app/portal/ENTP/screen/SProducto/prod/ETIQUETA_EMPRESA/nif/'.$soc->siren;
+        if ($idprof == 1 && $soc->country_code == 'FR') $url='http://www.societe.com/cgi-bin/recherche?rncs='.$soc->idprof1;
+        if ($idprof == 1 && $soc->country_code == 'GB') $url='http://www.companieshouse.gov.uk/WebCHeck/findinfolink/';
+        if ($idprof == 1 && $soc->country_code == 'ES') $url='http://www.e-informa.es/servlet/app/portal/ENTP/screen/SProducto/prod/ETIQUETA_EMPRESA/nif/'.$soc->idprof1;
 
         if ($url) return '<a target="_blank" href="'.$url.'">['.$langs->trans("Check").']</a>';
         return '';
@@ -2258,8 +2258,8 @@ class Societe extends CommonObject
 			'SI',	// Slovenia
         //'CH',	// Switzerland - No. Swizerland in not in EEC
         );
-        //print "dd".$this->pays_code;
-        return in_array($this->pays_code,$country_code_in_EEC);
+        //print "dd".$this->country_code;
+        return in_array($this->country_code,$country_code_in_EEC);
     }
 
     /**
@@ -2332,10 +2332,10 @@ class Societe extends CommonObject
         $this->zip=$member->cp;
         $this->ville=$member->ville;	// TODO obsolete
         $this->town=$member->ville;
-        $this->pays_code=$member->pays_code;	// TODO obsolete
-        $this->country_code=$member->pays_code;
-        $this->pays_id=$member->pays_id;	// TODO obsolete
-        $this->country_id=$member->pays_id;
+        $this->pays_code=$member->country_code;	// TODO obsolete
+        $this->country_code=$member->country_code;
+        $this->pays_id=$member->country_id;	// TODO obsolete
+        $this->country_id=$member->country_id;
         $this->tel=$member->phone;				// Prof phone
         $this->email=$member->email;
 
@@ -2353,7 +2353,7 @@ class Societe extends CommonObject
             $sql.= " SET fk_soc=".$this->id;
             $sql.= " WHERE rowid=".$member->id;
 
-            dol_syslog("Societe::create_from_member sql=".$sql, LOG_DEBUG);
+            dol_syslog(get_class($this)."::create_from_member sql=".$sql, LOG_DEBUG);
             $resql=$this->db->query($sql);
             if ($resql)
             {
@@ -2363,7 +2363,7 @@ class Societe extends CommonObject
             else
             {
                 $this->error=$this->db->error();
-                dol_syslog("Societe::create_from_member - 1 - ".$this->error, LOG_ERR);
+                dol_syslog(get_class($this)."::create_from_member - 1 - ".$this->error, LOG_ERR);
 
                 $this->db->rollback();
                 return -1;
@@ -2372,7 +2372,7 @@ class Societe extends CommonObject
         else
         {
             // $this->error deja positionne
-            dol_syslog("Societe::create_from_member - 2 - ".$this->error." - ".join(',',$this->errors), LOG_ERR);
+            dol_syslog(get_class($this)."::create_from_member - 2 - ".$this->error." - ".join(',',$this->errors), LOG_ERR);
 
             $this->db->rollback();
             return $result;
@@ -2398,19 +2398,13 @@ class Societe extends CommonObject
         $this->name = 'THIRDPARTY SPECIMEN '.dol_print_date($now,'dayhourlog');
         $this->nom = $this->name;   // For backward compatibility
         $this->specimen=1;
-        $this->cp='99999';
         $this->zip='99999';
-        $this->ville='MyTown';
         $this->town='MyTown';
-        $this->pays_id=1;
         $this->country_id=1;
-        $this->pays_code='FR';
         $this->country_code='FR';
 
         $this->code_client='CC-'.dol_print_date($now,'dayhourlog');
         $this->code_fournisseur='SC-'.dol_print_date($now,'dayhourlog');
-        $this->siren='123456789';
-        $this->siret='ABCDE';
         $this->capital=10000;
         $this->client=1;
         $this->prospect=1;

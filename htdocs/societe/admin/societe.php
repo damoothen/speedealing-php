@@ -235,7 +235,7 @@ $var = true;
 foreach ($conf->file->dol_document_root as $dirroot)
 {
 	$dir = $dirroot . "/core/modules/societe/";
-    $handle = opendir($dir);
+    $handle = @opendir($dir);
     if (is_resource($handle))
     {
     	// Loop on each module find in opened directory
@@ -312,7 +312,7 @@ $var = true;
 foreach ($conf->file->dol_document_root as $dirroot)
 {
 	$dir = $dirroot . "/core/modules/societe/";
-    $handle = opendir($dir);
+    $handle = @opendir($dir);
     if (is_resource($handle))
     {
     	while (($file = readdir($handle))!==false)
@@ -506,13 +506,13 @@ print '<td align="center">'.$langs->trans("MustBeUnique").'</td>';
 print "</tr>\n";
 
 $profid[0][0]=$langs->trans("ProfId1");
-$profid[0][1]=$langs->transcountry('ProfId1', $mysoc->pays_code);
+$profid[0][1]=$langs->transcountry('ProfId1', $mysoc->country_code);
 $profid[1][0]=$langs->trans("ProfId2");
-$profid[1][1]=$langs->transcountry('ProfId2', $mysoc->pays_code);
+$profid[1][1]=$langs->transcountry('ProfId2', $mysoc->country_code);
 $profid[2][0]=$langs->trans("ProfId3");
-$profid[2][1]=$langs->transcountry('ProfId3', $mysoc->pays_code);
+$profid[2][1]=$langs->transcountry('ProfId3', $mysoc->country_code);
 $profid[3][0]=$langs->trans("ProfId4");
-$profid[3][1]=$langs->transcountry('ProfId4', $mysoc->pays_code);
+$profid[3][1]=$langs->transcountry('ProfId4', $mysoc->country_code);
 
 $var = true;
 $i=0;
