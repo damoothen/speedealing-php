@@ -681,9 +681,6 @@ class Commande extends CommonObject
 					$this->lines[$i]->special_code,
 					$fk_parent_line
 					);
-                                        print $this->lines[$i]->ecotax;
-                                        $this->db->rollback();
-                                        exit;
 					if ($result < 0)
 					{
 						$this->error=$this->db->lasterror();
