@@ -38,7 +38,7 @@ if (substr($sapi_type, 0, 3) == 'cgi') {
 }
 
 // Include Dolibarr environment
-require_once("../../htdocs/master.inc.php");
+require_once($path."../../htdocs/master.inc.php");
 
 // After this $db is a defined handler to database.
 dol_include_once("/ecommerce/class/ecom_site.class.php");
@@ -46,7 +46,7 @@ dol_include_once("/ecommerce/class/ecom_order.class.php");
 dol_include_once("/ecommerce/class/E_product.class.php");
 dol_include_once("/ecommerce/class/E_order.class.php");
 dol_include_once("/ecommerce/class/ecom_log.class.php");
-require_once("../../htdocs/product/class/product.class.php");
+require_once($path."../../htdocs/product/class/product.class.php");
 
 //includes 
 dol_include_once("/ecommerce/includes/orders.inc.php");
