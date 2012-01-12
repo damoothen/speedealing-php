@@ -1766,7 +1766,6 @@ class ContratLigne
 		// qty, pu, remise_percent et txtva
 		// TRES IMPORTANT: C'est au moment de l'insertion ligne qu'on doit stocker
 		// la part ht, tva et ttc, et ce au niveau de la ligne qui a son propre taux tva.
-                $this->price_ht=price2num($this->price_ht);
                 $this->fk_contrat=trim($this->fk_contrat);
 		$this->fk_product=trim($this->fk_product);
 		$this->statut=trim($this->statut);
@@ -1780,6 +1779,7 @@ class ContratLigne
 		$this->remise=trim($this->remise);
 		$this->fk_remise_except=trim($this->fk_remise_except);
 		$this->subprice=price2num($this->subprice);
+		$this->price_ht=price2num($this->price_ht);
                 
 		$tabprice=calcul_price_total($this->qty, $this->price_ht, $this->remise_percent, $this->tva_tx, $this->localtax1_tx, $this->localtax2_tx, 0, 'HT', 0);
 		$this->total_ht  = $tabprice[0];
