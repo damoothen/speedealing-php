@@ -1,7 +1,7 @@
 
 <?php
 
-require("../main.inc.php");
+require_once("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT . "/comm/prospect/class/prospect.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/class/html.formother.class.php");
 $langs->load("companies");
@@ -13,6 +13,10 @@ $langs->load("commercial");
  */
 $aColumns = array('', 'company', 'ville', 'departement', 'cp', 'datec', 'fk_prospectlevel', 'fk_stcomm', 'etat', 'priv');
 $aColumnsSql = array('', 's.nom', 's.ville', 'd.nom', 's.cp', 's.datec', 's.fk_prospectlevel', 'fk_stcomm', '', '');
+
+/* get Type */
+ $type = $_GET['type']; 
+
 /*
  * Paging
  */
@@ -25,7 +29,6 @@ if (isset($_GET['iDisplayStart']) && $_GET['iDisplayLength'] != '-1') {
 /*
  * Ordering
  */
-
 
 if (isset($_GET['iSortCol_0'])) {
     $sOrder = " ORDER BY  ";
@@ -134,7 +137,7 @@ if ($result) {
             } else if ($aColumns[$i] == "etat") {
                 $prospectstatic->stcomm_id = $aRow->fk_stcomm;
                 $prospectstatic->type = $aRow->type;
-                $row[] = $prospectstatic->getIconList(DOL_URL_ROOT . "/comm/list.php?socid=" . $aRow->rowid . $param . '&lang='.$langs->defaultlang.'&action=cstc&amp;' . ($page ? '&amp;page=' . $page : ''));
+                $row[] = $prospectstatic->getIconList(DOL_URL_ROOT . "/comm/list.php?socid=" . $aRow->rowid . $param . '&lang='.$langs->defaultlang.'&type='.$type.'&action=cstc&amp;' . ($page ? '&amp;page=' . $page : ''));
             } else if ($aColumns[$i] == "fk_prospectlevel") { // Level
                 $row[] = $prospectstatic->LibLevel($aRow->fk_prospectlevel);
             } else if ($aColumns[$i] == "fk_stcomm") { //status
