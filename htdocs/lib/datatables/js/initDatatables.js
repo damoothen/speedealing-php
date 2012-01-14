@@ -25,7 +25,12 @@
 $(document).ready(function() {
      /* Get the lang */
       var tabs = location.search.substring(1).split("&");
-      lang = tabs[1].substr(5,5);
+      var lang = tabs[1].substr(5,5);
+      var type='';
+      if(tabs[2]){
+          type = tabs[2].substr(5,1);
+      }
+      
     
     /* Insert a 'details' column to the table */
     var nCloneTh = document.createElement( 'th' );
@@ -44,7 +49,7 @@ $(document).ready(function() {
         "sDom": 'T<"clear">lfrtip',
         "bProcessing": true,
         "bServerSide": true,
-        "sAjaxSource": "serverprocess.php",
+        "sAjaxSource": "serverprocess.php?type="+type,
         "bPaginate": true,
          "oLanguage": {"sUrl": "../lib/datatables/langs/"+lang+".txt"},
         "oTableTools": {
