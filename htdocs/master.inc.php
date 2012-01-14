@@ -4,7 +4,7 @@
  * Copyright (C) 2004-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2004      Sebastien Di Cintio  <sdicintio@ressource-toi.org>
  * Copyright (C) 2004      Benoit Mortier       <benoit.mortier@opensides.be>
- * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2005 	   Simon Tosser         <simon@kornog-computing.com>
  * Copyright (C) 2006 	   Andre Cianfarani     <andre.cianfarani@acdeveloppement.net>
  * Copyright (C) 2010      Juanjo Menent        <jmenent@2byte.es>
@@ -93,7 +93,7 @@ if (! defined('NOREQUIRETRAN'))
 }
 
 /*
- * Creation objet $db
+ * Object $db
  */
 if (! defined('NOREQUIREDB'))
 {
@@ -111,7 +111,7 @@ if (! defined('NOREQUIREDB'))
 unset($conf->db->pass);				// This is to avoid password to be shown in memory/swap dump
 
 /*
- * Creation objet $user
+ * Object $user
  */
 if (! defined('NOREQUIREUSER'))
 {
@@ -129,28 +129,13 @@ if (! defined('NOREQUIREDB'))
 	{
 		$conf->entity = $_SESSION["dol_entity"];
 	}
-	elseif (! empty($_ENV["dol_entity"]))							// Entity inside a CLI script
+	else if (! empty($_ENV["dol_entity"]))							// Entity inside a CLI script
 	{
 		$conf->entity = $_ENV["dol_entity"];
 	}
-	elseif (isset($_POST["loginfunction"]) && GETPOST("entity"))	// Just after a login page
+	else if (isset($_POST["loginfunction"]) && GETPOST("entity"))	// Just after a login page
 	{
 		$conf->entity = GETPOST("entity",'int');
-	}
-	else	// TODO Does this "else" still usefull ?
-	{
-		$prefix=dol_getprefix();
-	    $entityCookieName = 'DOLENTITYID_'.$prefix;
-		if (! empty($_COOKIE[$entityCookieName]) && ! empty($conf->file->cookie_cryptkey)) 	// Just for view specific login page
-		{
-			include_once(DOL_DOCUMENT_ROOT."/core/class/cookie.class.php");
-			$lastuser = '';
-			$lastentity = '';
-			$entityCookie = new DolCookie($conf->file->cookie_cryptkey);
-			$cookieValue = $entityCookie->_getCookie($entityCookieName);
-			list($lastuser, $lastentity) = explode('|', $cookieValue);
-			$conf->entity = $lastentity;
-		}
 	}
 
 	//print "Will work with data into entity instance number '".$conf->entity."'";

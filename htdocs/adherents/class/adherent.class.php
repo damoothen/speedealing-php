@@ -1202,7 +1202,10 @@ class Adherent extends CommonObject
                 $result=$interface->run_triggers('MEMBER_SUBSCRIPTION',$this,$user,$langs,$conf);
                 if ($result < 0) { $error++; $this->errors=$interface->errors; }
                 // Fin appel triggers
+            }
 
+            if (! $error)
+            {
                 $this->db->commit();
                 return $rowid;
             }
@@ -1345,7 +1348,7 @@ class Adherent extends CommonObject
         }
 
         // spip
-        if ($conf->global->ADHERENT_USE_SPIP && $conf->global->ADHERENT_USE_SPIP_AUTO)
+        if ($conf->global->ADHERENT_USE_SPIP && $conf->mailmanspip->enabled)
         {
             $result=$this->add_to_spip();
             if ($result < 0)
@@ -1386,7 +1389,7 @@ class Adherent extends CommonObject
             }
         }
 
-        if ($conf->global->ADHERENT_USE_SPIP && $conf->global->ADHERENT_USE_SPIP_AUTO)
+        if ($conf->global->ADHERENT_USE_SPIP && $conf->mailmanspip->enabled)
         {
             $result=$this->del_to_spip();
             if ($result < 0)

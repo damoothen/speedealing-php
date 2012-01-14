@@ -1,7 +1,7 @@
 <?php
 /* Copyright (C) 2005      Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2005-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2011      Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -43,13 +43,13 @@ if (! empty($conf->global->MAIN_USE_ADVANCED_PERMS))
 $langs->load("users");
 $langs->load("other");
 
-$id=GETPOST("id");
-$action=GETPOST("action");
-$confirm=GETPOST("confirm");
-$userid=GETPOST("user","int");
+$id=GETPOST('id', 'int');
+$action=GETPOST('action', 'alpha');
+$confirm=GETPOST('confirm', 'alpha');
+$userid=GETPOST('user', 'int');
 
 // Security check
-$result = restrictedArea($user, 'user', $_GET["id"], 'usergroup', 'user');
+$result = restrictedArea($user, 'user', $id, 'usergroup&usergroup', 'user');
 
 if(! empty($conf->multicompany->enabled) && $conf->entity > 1 && $conf->multicompany->transverse_mode)
 {
@@ -66,7 +66,7 @@ if ($action == 'confirm_delete' && $confirm == "yes")
 {
     if ($caneditperms)
     {
-        $object->fetch($_GET["id"]);
+        $object->fetch($id);
         $object->delete();
         Header("Location: index.php");
         exit;
@@ -95,11 +95,10 @@ if ($action == 'add')
 		if (! $message)
 		{
 			$object->nom	= trim($_POST["nom"]);
-			if($conf->multicompany->enabled && !empty($conf->multicompany->transverse_mode))
-				$object->entity = 0;
-			else
-				$object->entity = $_POST["entity"];
 			$object->note	= trim($_POST["note"]);
+			
+			if($conf->multicompany->enabled && ! empty($conf->multicompany->transverse_mode)) $object->entity = 0;
+			else $object->entity = $_POST["entity"];
 
             $db->begin();
 
@@ -176,11 +175,10 @@ if ($action == 'update')
         $object->oldcopy=dol_clone($object);
 
 		$object->nom	= trim($_POST["group"]);
-		if($conf->multicompany->enabled && !empty($conf->multicompany->transverse_mode))
-                            $object->entity = 0;
-                        else
-                            $object->entity = $_POST["entity"];
 		$object->note	= dol_htmlcleanlastbr($_POST["note"]);
+		
+		if($conf->multicompany->enabled && !empty($conf->multicompany->transverse_mode)) $object->entity = 0;
+		else $object->entity = $_POST["entity"];
 
         $ret=$object->update();
 
@@ -233,7 +231,6 @@ if ($action == 'create')
 	{
 		if (empty($conf->multicompany->transverse_mode) && $conf->entity == 1 && $user->admin && ! $user->entity)
 		{
-			$mc = new ActionsMulticompany($db);
 			print "<tr>".'<td valign="top">'.$langs->trans("Entity").'</td>';
 			print "<td>".$mc->select_entities($conf->entity);
 			print "</td></tr>\n";
@@ -311,7 +308,6 @@ else
 			// Multicompany
 			if (! empty($conf->multicompany->enabled) && empty($conf->multicompany->transverse_mode) && $conf->entity == 1 && $user->admin && ! $user->entity)
 			{
-				$mc = new ActionsMulticompany($db);
 				$mc->getInfo($object->entity);
 				print "<tr>".'<td valign="top">'.$langs->trans("Entity").'</td>';
 				print '<td width="75%" class="valeur">'.$mc->label;
@@ -382,7 +378,6 @@ else
                 {
                     if ($conf->entity == 1 && $conf->multicompany->transverse_mode)
                     {
-                        $mc = new ActionsMulticompany($db);
                         print '</td><td valign="top">'.$langs->trans("Entity").'</td>';
                         print "<td>".$mc->select_entities($conf->entity);
                     }
@@ -435,7 +430,6 @@ else
             		print '<td>'.$useringroup->firstname.'</td>';
             		if(! empty($conf->multicompany->enabled) && $conf->entity == 1)
             		{
-            			$mc = new ActionsMulticompany($db);
             			$mc->getInfo($useringroup->usergroup_entity);
             			print '<td class="valeur">'.$mc->label."</td>";
             		}
@@ -480,7 +474,6 @@ else
             {
                 if (empty($conf->multicompany->transverse_mode) && $conf->entity == 1 && $user->admin && ! $user->entity)
                 {
-                    $mc = new ActionsMulticompany($db);
                     print "<tr>".'<td valign="top">'.$langs->trans("Entity").'</td>';
                     print "<td>".$mc->select_entities($object->entity);
                     print "</td></tr>\n";
@@ -512,5 +505,6 @@ else
 
 llxFooter();
 
-if (is_object($db)) $db->close();
+$db->close();
+
 ?>
