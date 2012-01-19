@@ -64,14 +64,19 @@ if ($view == 'mail')   { $text=" (Vue EMail)"; }
 if ($view == 'recent') { $text=" (Recents)"; }
 $titre = $titre." $text";
 
+/*import datatable js */
+$arrayjs=array();
+$arrayjs[0]="/lib/datatables/js/jquery.dataTables.js";
+$arrayjs[1]="/lib/datatables/js/TableTools.js";
+$arrayjs[2]="/lib/datatables/js/ZeroClipboard.js";
+$arrayjs[3]="/lib/datatables/js/initXHR.js";
+$arrayjs[4]="/lib/datatables/js/request.js";
+$arrayjs[5]="/lib/datatables/js/initDatatables.js";
+llxHeader('',$langs->trans("ContactsAddresses"),'EN:Module_Third_Parties|FR:Module_Tiers|ES:M&oacute;dulo_Empresas','','','',$arrayjs);
 
 /*
  * View
  */
-
-
-
-llxHeader('',$langs->trans("ContactsAddresses"),'EN:Module_Third_Parties|FR:Module_Tiers|ES:M&oacute;dulo_Empresas');
     print '<table cellpadding="0" cellspacing="0" border="0" class="display" id="liste">';     
     // Ligne des titres 
     print'<thead>';
@@ -118,14 +123,14 @@ llxHeader('',$langs->trans("ContactsAddresses"),'EN:Module_Third_Parties|FR:Modu
     print'<th class="sorting">';
     print $langs->trans("ContactVisibility");
     print'</th>';
-    print '<th>&nbsp;&nbsp;&nbsp;&nbsp;</th>';
+    print '<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>';
     print "</tr>\n";
     
   
     print'</thead>';
 
     print'<tbody>';
-        print'<td colspan="5" class="dataTables_empty">Loading data from server</td>';
+        print'<td colspan="5" class="dataTables_empty">'.$langs->trans("Loading data from server").'</td>';
     print'</tbody>';   
     print "</table>";
 print '<br>';
@@ -133,12 +138,5 @@ print '<br>';
 
 llxFooter('$Date: 2011/07/31 23:54:12 $ - $Revision: 1.106 $');
 
-//import datatables js lib
-print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/jquery.dataTables.js",1).'"></script>';           
-print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/TableTools.js",1).'"></script>';           
-print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/ZeroClipboard.js",1).'"></script>';           
-print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/initXHR.js",1).'"></script>';    
-print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/request.js",1).'"></script>';    
-print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/initDatatables.js",1).'"></script>';    
 ?>
    

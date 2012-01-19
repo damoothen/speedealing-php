@@ -1,5 +1,26 @@
 <?php
+/* Copyright (C) 2012      Patrick Mary           <laube@hotmail.fr>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
+/**
+ *	\file       htdocs/contact/serverprocess.php
+ *	\ingroup    societe
+ *	\brief      load data to display
+ *	\version    $Id: serverprocess.php,v 1.5 2012/01/19 16:15:05 synry63 Exp $
+ */
 require_once("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT . "/contact/class/contact.class.php");
 $langs->load("companies");
@@ -24,7 +45,6 @@ if (isset($_GET['iDisplayStart']) && $_GET['iDisplayLength'] != '-1') {
  * Ordering
  */
 
-
 if (isset($_GET['iSortCol_0'])) {
     $sOrder = " ORDER BY  ";
     for ($i = 0; $i < intval($_GET['iSortingCols']); $i++) {
@@ -45,9 +65,6 @@ if (isset($_GET['iSortCol_0'])) {
 
 /*
  * Filtering
- * NOTE this does not match the built-in DataTables filtering which does it
- * word by word on any field. It's possible to do here, but concerned about efficiency
- * on very large tables, and MySQL's regex functionality is very limited
  */
 $sWhere = "";
 if ($_GET['sSearch'] != "") {

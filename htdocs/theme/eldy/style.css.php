@@ -2086,4 +2086,19 @@ td.details {
 .paginate_enabled_next {
 	background-image: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/forward_enabled.jpg'?>);
 }
-    
+table.display tfoot th {
+        border-top: 0px solid black;
+        background-color:#fff;
+	padding: 3px 5px 3px 5px;
+	font-weight: bold;
+}
+
+tfoot input {
+	margin: 0.5em 0;
+	width: 100%;
+	color: #444;
+}
+
+tfoot input.search_init {
+	color: #999;
+}    

@@ -16,16 +16,17 @@
  */
 
 /**
- *	    \file       htdocs/contact/js/initDatatables.js
- *      \ingroup    societe
- *		\brief      Page to list all contacts
- *		\version    $Id: index.php,v 1.106 2011/12/14 23:54:12 synry63 Exp $
+ *	    \file       htdocs/lib/datatables/js/initDatatables.js
+ *      
+ *		\brief      Page to int lib datatable
+ *		\version    $Id: initDatatables.js,v 1.5 2011/12/14 20:54:12 synry63 Exp $
  */	 
 
 $(document).ready(function() {
      /* Get the lang */
       var tabs = location.search.substring(1).split("&");
       var lang = tabs[1].substr(5,5);
+      /* Get the type */
       var type='';
       if(tabs[2]){
           type = tabs[2].substr(5,1);
@@ -47,11 +48,15 @@ $(document).ready(function() {
     /* init dataTable */
     oTable = $('#liste').dataTable( {
         "sDom": 'T<"clear">lfrtip',
+         "iDisplayLength": 10,
+        "aLengthMenu": [[10,25, 50, 100, -1], [10,25, 50, 100, "All"]],
         "bProcessing": true,
         "bServerSide": true,
         "sAjaxSource": "serverprocess.php?type="+type,
         "bPaginate": true,
-         "oLanguage": {"sUrl": "../lib/datatables/langs/"+lang+".txt"},
+         "oLanguage": {"sUrl": "../lib/datatables/langs/"+lang+".txt"
+                        
+                      },
         "oTableTools": {
             "sSwfPath": "../lib/datatables/swf/copy_cvs_xls_pdf.swf",
             "aButtons": [
@@ -86,7 +91,8 @@ $(document).ready(function() {
                 } );
     
     
-});    
+});
+
 
 
 

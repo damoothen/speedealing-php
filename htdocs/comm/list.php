@@ -24,7 +24,7 @@
  *	\file       htdocs/comm/list.php
  *	\ingroup    commercial societe
  *	\brief      List of customers
- *	\version    $Id: list.php,v 1.80 2011/08/08 16:15:05 eldy Exp $
+ *	\version    $Id: list.php,v 1.80 2012/01/12 16:15:05 synry63 Exp $
  */
 
 require("../main.inc.php");
@@ -57,6 +57,15 @@ if ($_GET["action"] == 'cstc')
 	$result=$db->query($sql);
 }
 
+/*active datatable js */
+$arrayjs=array();
+$arrayjs[0]="/lib/datatables/js/jquery.dataTables.js";
+$arrayjs[1]="/lib/datatables/js/TableTools.js";
+$arrayjs[2]="/lib/datatables/js/ZeroClipboard.js";
+$arrayjs[3]="/lib/datatables/js/initXHR.js";
+$arrayjs[4]="/lib/datatables/js/request.js";
+$arrayjs[5]="/lib/datatables/js/initDatatables.js";
+$arrayjs[6]="/lib/datatables/js/footerSearch.js";
 
 
 /*
@@ -66,7 +75,7 @@ if ($_GET["action"] == 'cstc')
 $htmlother=new FormOther($db);
 
 
-	llxHeader('',$langs->trans("ThirdParty"),$help_url);
+	llxHeader('',$langs->trans("ThirdParty"),$help_url,'','','',$arrayjs);
 	
         if($type!='')
         {   
@@ -85,33 +94,7 @@ $htmlother=new FormOther($db);
         
         
 
- 	// Print the search-by-sale and search-by-categ filters
- 	print '<form method="get" action="list.php" id="formulaire_recherche">';
-        
-        print '<table cellpadding="0" cellspacing="0" border="0">';
-	// Filter on categories
- 	$moreforfilter='';
-	if ($conf->categorie->enabled)
-	{
-	 	$moreforfilter.=$langs->trans('Categories'). ': ';
-		$moreforfilter.=$htmlother->select_categories(2,$search_categ,'search_categ');
-	 	$moreforfilter.=' &nbsp; &nbsp; &nbsp; ';
-	}
- 	// If the user can view prospects other than his'
- 	if ($user->rights->societe->client->voir || $socid)
- 	{
-	 	$moreforfilter.=$langs->trans('SalesRepresentatives'). ': ';
-		$moreforfilter.=$htmlother->select_salesrepresentatives($search_sale,'search_sale',$user);
- 	}
- 	if ($moreforfilter)
-	{
-		print '<tr class="liste_titre">';
-		print '<td class="liste_titre" colspan="9">';
-	    print $moreforfilter;
-	    print '</td></tr>';
-	}
-        print'</table>';
-        
+ 	
    
         
     print '<table cellpadding="0" cellspacing="0" border="0" class="display" id="liste">';    
@@ -137,6 +120,12 @@ $htmlother=new FormOther($db);
     print $langs->trans("DateCreation");
     print'</th>';
     print'<th class="sorting">';
+    print $langs->trans('Categories');
+    print'</th>';
+    print'<th class="sorting">';
+    print $langs->trans('SalesRepresentatives');
+    print'</th>';
+    print'<th class="sorting">';
     print $langs->trans("ProspectLevelShort");
     print'</th>';
     print'<th class="sorting">';
@@ -155,20 +144,27 @@ $htmlother=new FormOther($db);
     print'<tbody>';
         print'<td colspan="5" class="dataTables_empty">'.$langs->trans("Loading data from server").'</td>';
     print'</tbody>';
+    print '<tfoot>';
+		print'<tr>';
+                        print'<th></th>';
+			print'<th></th>';
+			print'<th></th>';
+			print'<th></th>';
+			print'<th></th>';
+			print'<th></th>';
+                        print'<th><input type="text" value="'.$langs->trans("Search categories").'" name="search_cate" class="search_init" /></th>';
+			print'<th><input type="text" value="'.$langs->trans("Search sales").'" name="search_sales"  class="search_init" /></th>';
+                        print'<th></th>';
+                        print'<th></th>';
+                        print'<th></th>';
+                        print'<th></th>';
+               print'</tr>';
+	print'</tfoot>';
     print "</table>";
 
     print "</form>";
 
-
-$db->close();
-
 llxFooter('$Date: 2011/08/08 16:15:05 $ - $Revision: 1.80 $');
-//import datatables js lib
-print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/jquery.dataTables.js",1).'"></script>';           
-print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/TableTools.js",1).'"></script>';           
-print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/ZeroClipboard.js",1).'"></script>';           
-print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/initXHR.js",1).'"></script>';    
-print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/request.js",1).'"></script>';    
-print'<script type="text/javascript" src="'.dol_buildpath("/lib/datatables/js/initDatatables.js",1).'"></script>';    
 
 ?>
+ 

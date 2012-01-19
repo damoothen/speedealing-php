@@ -20,7 +20,7 @@
  */
 
 /**
- *		\file       htdocs/theme/eldy/style.css.php
+ *		\file       htdocs/theme/cameleo/style.css.php
  *		\brief      Fichier de style CSS du theme Cameleo
  *		\version    $Id: style.css.php,v 1.9 2011/07/31 23:22:05 eldy Exp $
  */
@@ -2253,4 +2253,21 @@ td.details {
 
 .paginate_enabled_next {
 	background-image: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/forward_enabled.jpg'?>);
+}
+
+table.display tfoot th {
+        border-top: 0px solid black;
+        background-color:#fff;
+	padding: 3px 5px 3px 5px;
+	font-weight: bold;
+}
+
+tfoot input {
+	margin: 0.5em 0;
+	width: 100%;
+	color: #444;
+}
+
+tfoot input.search_init {
+	color: #999;
 }
