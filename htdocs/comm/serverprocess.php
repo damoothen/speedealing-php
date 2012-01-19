@@ -32,9 +32,15 @@ $langs->load("commercial");
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
  * you want to insert a non-database field (for example a counter or static image)
  */
-$aColumns = array('', 'company', 'ville', 'departement', 'cp', 'datec','categorie','sale','fk_prospectlevel', 'fk_stcomm', 'etat', 'priv');
-$aColumnsSql = array('', 's.nom', 's.ville', 'd.nom', 's.cp', 's.datec','c.label','u.name','s.fk_prospectlevel', 'fk_stcomm', '', '');
+if(empty($conf->global->SOCIETE_DISABLE_STATE)){
+    $aColumns = array('', 'company', 'ville', 'departement', 'cp', 'datec','categorie','sale','fk_prospectlevel', 'fk_stcomm', 'etat', 'priv');
+    $aColumnsSql = array('', 's.nom', 's.ville', 'd.nom', 's.cp', 's.datec','c.label','u.name','s.fk_prospectlevel', 'fk_stcomm', '', ''); 
+}
+else{
+    $aColumns = array('', 'company', 'ville', 'cp', 'datec','categorie','sale','fk_prospectlevel', 'fk_stcomm', 'etat', 'priv');
+    $aColumnsSql = array('', 's.nom', 's.ville','s.cp', 's.datec','c.label','u.name','s.fk_prospectlevel', 'fk_stcomm', '', ''); 
 
+}
 /* get Type */
 $type = $_GET['type']; 
 
@@ -64,7 +70,7 @@ if (isset($_GET['iSortCol_0'])) {
     if ($sOrder == "ORDER BY") {
         $sOrder = "";
     }
-    if ($Cols == 10 || $Cols == 0 || $Cols == 11) {
+    if ($Cols == 0 || $Cols ==($_GET['iColumns']-1) ||  $Cols == ($_GET['iColumns']-2)) {
         $sOrder = "";
     }
 }

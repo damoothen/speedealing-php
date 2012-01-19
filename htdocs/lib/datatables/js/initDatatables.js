@@ -49,7 +49,7 @@ $(document).ready(function() {
     oTable = $('#liste').dataTable( {
         "sDom": 'T<"clear">lfrtip',
          "iDisplayLength": 10,
-        "aLengthMenu": [[10,25, 50, 100, -1], [10,25, 50, 100, "All"]],
+        "aLengthMenu": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,"All"]],
         "bProcessing": true,
         "bServerSide": true,
         "sAjaxSource": "serverprocess.php?type="+type,

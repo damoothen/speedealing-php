@@ -44,7 +44,6 @@ $socid = GETPOST("socid");
 if ($user->societe_id) $socid=$user->societe_id;
 $result = restrictedArea($user, 'societe',$socid,'');
 
-
 $type               = GETPOST("type",'int');
 
 /*
@@ -138,6 +137,7 @@ $htmlother=new FormOther($db);
     print'<th>';
     print '&nbsp;';
     print'</th>';
+    
     print '</tr>';   
     print'</thead>';
     
@@ -151,7 +151,8 @@ $htmlother=new FormOther($db);
 			print'<th></th>';
 			print'<th></th>';
 			print'<th></th>';
-			print'<th></th>';
+                        if(empty($conf->global->SOCIETE_DISABLE_STATE))
+                            print'<th></th>';
                         print'<th><input type="text" value="'.$langs->trans("Search categories").'" name="search_cate" class="search_init" /></th>';
 			print'<th><input type="text" value="'.$langs->trans("Search sales").'" name="search_sales"  class="search_init" /></th>';
                         print'<th></th>';
