@@ -2086,3 +2086,19 @@ td.details {
 .paginate_enabled_next {
 	background-image: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/forward_enabled.jpg'?>);
 }
+/* processing msg */
+.dataTables_processing {
+	position: fixed;
+	top: 40%;
+	left: 50%;
+	width: 250px;
+	height: 30px;
+	margin-left: -125px;
+	margin-top: -15px;
+	padding: 14px 0 2px 0;
+	border: 1px solid #ddd;
+	text-align: center;
+	color: #999;
+	font-size: 14px;
+	background-color: white;
+}
