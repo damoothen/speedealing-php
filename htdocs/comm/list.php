@@ -64,8 +64,7 @@ $arrayjs[2]="/lib/datatables/js/ZeroClipboard.js";
 $arrayjs[3]="/lib/datatables/js/initXHR.js";
 $arrayjs[4]="/lib/datatables/js/request.js";
 $arrayjs[5]="/lib/datatables/js/initDatatables.js";
-$arrayjs[6]="/lib/datatables/js/footerSearch.js";
-
+$arrayjs[6]="/lib/datatables/js/searchColumns.js";
 
 /*
  * View
@@ -137,33 +136,26 @@ $htmlother=new FormOther($db);
     print'<th>';
     print '&nbsp;';
     print'</th>';
-    
     print '</tr>';   
-    print'</thead>';
-    
+    print'</thead>';    
     print'<tbody>';
+        print'<tr>';
         print'<td colspan="5" class="dataTables_empty">'.$langs->trans("Loading data from server").'</td>';
+        print'</tr>';
     print'</tbody>';
-    print '<tfoot>';
-		print'<tr>';
-                        print'<th></th>';
-			print'<th></th>';
-			print'<th></th>';
-			print'<th></th>';
-			print'<th></th>';
-                        if(empty($conf->global->SOCIETE_DISABLE_STATE))
-                            print'<th></th>';
-                        print'<th><input type="text" value="'.$langs->trans("Search categories").'" name="search_cate" class="search_init" /></th>';
-			print'<th><input type="text" value="'.$langs->trans("Search sales").'" name="search_sales"  class="search_init" /></th>';
-                        print'<th></th>';
-                        print'<th></th>';
-                        print'<th></th>';
-                        print'<th></th>';
-               print'</tr>';
-	print'</tfoot>';
+    print'<tbody>'; 
+      print'<tr>';
+        print'<td></td>';
+        print'<td></td>';
+        if(empty($conf->global->SOCIETE_DISABLE_STATE))
+          print'<td></td>';
+        print'<td></td>';
+        print'<td></td>';
+        print'<td><input id="0" style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search categories").'" name="search_cate" class="search_init" /></td>';     
+        print'<td><input id="1" style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search sales").'" name="search_sales"  class="search_init" /></td>';       
+      print'</tr>'; 
+   print'</tbody>';
     print "</table>";
-
-    print "</form>";
 
 llxFooter('$Date: 2011/08/08 16:15:05 $ - $Revision: 1.80 $');
 

@@ -23,29 +23,9 @@
  */	 
 
 $(document).ready(function() {
-var asInitVals = new Array();
-$("tfoot input").keyup( function () {
+$("tbody input").keyup( function () {
 	/* Filter on the column */
-        oTable.fnFilter( this.value, $("tfoot input").index(this) );
+        var id = $(this).attr("id");
+        oTable.fnFilter( this.value, id);
         } );
-        
-   $("tfoot input").each( function (i) {
-        asInitVals[i] = this.value;
-    } );
-     
-    $("tfoot input").focus( function () {
-        if ( this.className == "search_init" )
-        {
-            this.className = "";
-            this.value = "";
-        }
-    } );
-    
-    $("tfoot input").blur( function (i) {
-        if ( this.value == "" )
-        {
-            this.className = "search_init";
-            this.value = asInitVals[$("tfoot input").index(this)];
-        }
-    } );
 });
