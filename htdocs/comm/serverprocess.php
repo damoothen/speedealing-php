@@ -1,4 +1,5 @@
 <?php
+
 /* Copyright (C) 2012      Patrick Mary           <laube@hotmail.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -16,12 +17,11 @@
  */
 
 /**
- *	\file       htdocs/comm/serverprocess.php
- *	\ingroup    commercial societe
- *	\brief      load data to display
- *	\version    $Id: serverprocess.php,v 1.5 2012/01/19 16:15:05 synry63 Exp $
+ * 	\file       htdocs/comm/serverprocess.php
+ * 	\ingroup    commercial societe
+ * 	\brief      load data to display
+ * 	\version    $Id: serverprocess.php,v 1.6 2012/01/27 16:15:05 synry63 Exp $
  */
-
 require_once("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT . "/comm/prospect/class/prospect.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/class/html.formother.class.php");
@@ -32,17 +32,15 @@ $langs->load("commercial");
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
  * you want to insert a non-database field (for example a counter or static image)
  */
-if(empty($conf->global->SOCIETE_DISABLE_STATE)){
-    $aColumns = array('', 'company', 'ville', 'departement', 'cp', 'datec','categorie','sale','fk_prospectlevel', 'fk_stcomm', 'etat', 'priv');
-    $aColumnsSql = array('', 's.nom', 's.ville', 'd.nom', 's.cp', 's.datec','c.label','u.name','s.fk_prospectlevel', 'fk_stcomm', '', ''); 
-}
-else{
-    $aColumns = array('', 'company', 'ville', 'cp', 'datec','categorie','sale','fk_prospectlevel', 'fk_stcomm', 'etat', 'priv');
-    $aColumnsSql = array('', 's.nom', 's.ville','s.cp', 's.datec','c.label','u.name','s.fk_prospectlevel', 'fk_stcomm', '', ''); 
-
+if (empty($conf->global->SOCIETE_DISABLE_STATE)) {
+    $aColumns = array('', 'company', 'ville', 'departement', 'cp', 'datec', 'categorie', 'sale', 'fk_prospectlevel', 'fk_stcomm', 'etat', 'priv');
+    $aColumnsSql = array('', 's.nom', 's.ville', 'd.nom', 's.cp', 's.datec', 'c.label', 'u.name', 's.fk_prospectlevel', 'fk_stcomm', '', '');
+} else {
+    $aColumns = array('', 'company', 'ville', 'cp', 'datec', 'categorie', 'sale', 'fk_prospectlevel', 'fk_stcomm', 'etat', 'priv');
+    $aColumnsSql = array('', 's.nom', 's.ville', 's.cp', 's.datec', 'c.label', 'u.name', 's.fk_prospectlevel', 'fk_stcomm', '', '');
 }
 /* get Type */
-$type = $_GET['type']; 
+$type = $_GET['type'];
 
 /*
  * Paging
@@ -70,7 +68,7 @@ if (isset($_GET['iSortCol_0'])) {
     if ($sOrder == "ORDER BY") {
         $sOrder = "";
     }
-    if ($Cols == 0 || $Cols ==($_GET['iColumns']-1) ||  $Cols == ($_GET['iColumns']-2)) {
+    if ($Cols == 0 || $Cols == ($_GET['iColumns'] - 1) || $Cols == ($_GET['iColumns'] - 2)) {
         $sOrder = "";
     }
 }
@@ -80,77 +78,123 @@ $sWhere = "";
 if ($_GET['sSearch'] != "") {
     $sWhere = " AND (";
     for ($i = 0; $i < count($aColumnsSql); $i++) {
-        if ($aColumnsSql[$i] != '') {
+        if ($aColumnsSql[$i] != '' && $aColumnsSql[$i] != "c.label" && $aColumnsSql[$i] != "u.name") {
             $sWhere .= $aColumnsSql[$i] . " LIKE '%" . $_GET['sSearch'] . "%' OR ";
         }
     }
     $sWhere = substr_replace($sWhere, "", -3);
     $sWhere .= ')';
 }
-/*search on categories */
+/* search on categories */
 if ($_GET['sSearch_0'] != "") {
     $sWhere .= " AND (";
     $sWhere .= "c.label " . " LIKE '%" . $_GET['sSearch_0'] . "%'";
     $sWhere .= ')';
 }
-/*search on sales */
+/* search on sales */
 if ($_GET['sSearch_1'] != "") {
     $sWhere .= " AND (";
     $sWhere .= "u.name " . " LIKE '%" . $_GET['sSearch_1'] . "%'";
     $sWhere .= ')';
 }
 // If the user must only see his prospect, force searching by him
-if (!$user->rights->societe->client->voir && !$socid){
-        $search_sale = $user->id;
+if (!$user->rights->societe->client->voir && !$socid) {
+    $search_sale = $user->id;
 }
-
-
-/* sql query */
+/*basic companies request query */
 $sql = "SELECT s.rowid, s.nom, s.ville, s.datec, s.datea, s.status as status,";
 $sql.= " st.libelle as stcomm, s.prefix_comm, s.fk_stcomm, s.fk_prospectlevel,st.type,";
-$sql.= " d.nom as departement, s.cp as cp,c.label,u.name "; 
-
+$sql.= " d.nom as departement, s.cp as cp";
+$r = stristr($sOrder, 'c.label');
+if ($r != false || $_GET['sSearch_0'] != "") {
+    $sql.=",c.label";
+}
+$r = stristr($sOrder, 'u.name');
+if ($r != false || $_GET['sSearch_1'] != "") {
+    $sql.=",u.name";
+}
 $sql .= " FROM (" . MAIN_DB_PREFIX . "societe as s";
 $sql.= " ) ";
 $sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "c_departements as d on (d.rowid = s.fk_departement)";
 $sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "c_stcomm as st ON st.id = s.fk_stcomm";
-$sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "societe_commerciaux as sc ON sc.fk_soc = s.rowid";
-$sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "user AS u ON u.rowid = sc.fk_user";
-$sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "categorie_societe as cs ON cs.fk_societe = s.rowid";
-$sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "categorie as c ON c.rowid=cs.fk_categorie";
+
+/* requesting data on categorie filter  */
+$r = stristr($sOrder, 'c.label');
+if ($r != false || $_GET['sSearch_0'] != "") {
+    $sql.=" LEFT JOIN llx_categorie_societe as cs ON cs.fk_societe = s.rowid ";
+    $sql.=" LEFT JOIN llx_categorie as c ON c.rowid=cs.fk_categorie ";
+}
+/* requesting data on sales filter */
+$r = stristr($sOrder, 'u.name');
+if ($r != false || $_GET['sSearch_1'] != "" || $search_sale!=0) {
+    $sql.=" LEFT JOIN llx_societe_commerciaux as sc ON sc.fk_soc = s.rowid";
+    $sql.=" LEFT JOIN llx_user AS u ON u.rowid = sc.fk_user ";
+}
 $sql.= " WHERE s.client in (1,2,3)";
 
 if ($type != '')
     $sql.= " AND st.type=" . $type;
-
 $sql.= " AND s.entity = " . $conf->entity;
 
 // Insert sale filter
 if ($search_sale) {
     $sql .= " AND u.rowid= " . $db->escape($search_sale);
 }
-$result = $db->query($sql);
-if ($result) {
-    $iTotal = $db->num_rows($result); 
-    $sql.= $sWhere;
-    $sql.= $sOrder;
-    $sql.= $sLimit;
-    $result = $db->query($sql);
-    $prospectstatic = new Prospect($db);
+/* get the total of entries */
+$resultTotal = $db->query($sql);
+$iTotal = $db->num_rows($resultTotal);
 
-    /*
-     * Output
-     */
-    $output = array(
-        "sEcho" => intval($_GET['sEcho']),
-        "iTotalRecords" => $iTotal,
-        "iTotalDisplayRecords" => $iTotal,
-        "aaData" => array()
-    );
+$sql.= $sWhere;
+/* usefull to regroup by the sale needed */
+if($search_sale || $_GET['sSearch_1']!=""){
+    $sql.= " GROUP BY s.rowid";
+}
+$sql.= $sOrder;
+$sql.= $sLimit;
+$resultSocietes = $db->query($sql);
 
-    while ($aRow = $db->fetch_object($result)) {
+/*get companies. usefull to get their sales and categories */
+while ($aRow = $db->fetch_object($resultSocietes)) {
+    $valueR = $valueR . $aRow->rowid . ',';
+    $col[] = $aRow;
+}
+$companies = '""';
+if ($valueR != '') {
+    $companies = substr_replace($valueR, '', -1);
+}
+/* sql query get sales */
+$sql = " SELECT fk_soc,name FROM (llx_societe_commerciaux as sc,llx_user as u) 
+where sc.fk_soc in ($companies) and sc.fk_user=u.rowid";
+$resultCommerciaux = $db->query($sql);
+
+/* sql query get categories */
+$sql = " SELECT fk_societe,label FROM (llx_categorie_societe as cs,llx_categorie as c) 
+where cs.fk_societe in ($companies) and cs.fk_categorie=c.rowid";
+$resultCate = $db->query($sql);
+
+$prospectstatic = new Prospect($db);
+$commerciauxDeChaqueSociete = array();
+$categoriesDeChaqueSociete = array();
+$output = array(
+    "sEcho" => intval($_GET['sEcho']),
+    "iTotalRecords" => $iTotal,
+    "iTotalDisplayRecords" => $iTotal,
+    "aaData" => array()
+);
+/* init society sales array  */
+while ($aRow = $db->fetch_object($resultCommerciaux)) {
+    $commerciauxDeChaqueSociete[$aRow->fk_soc] = $commerciauxDeChaqueSociete[$aRow->fk_soc] . $aRow->name . ', ';
+}
+/* init society categories array */
+while ($aRow = $db->fetch_object($resultCate)) {
+    $categoriesDeChaqueSociete[$aRow->fk_societe] = $categoriesDeChaqueSociete[$aRow->fk_societe] . $aRow->label . ', ';
+}
+
+/* output data */
+if ($col != null) {
+
+    foreach ($col as $aRow) {
         $row = array();
-
         for ($i = 0; $i < count($aColumns); $i++) {
 
             if ($aColumns[$i] == "company") {
@@ -162,18 +206,16 @@ if ($result) {
                 else
                     $row[] = $prospectstatic->getNomUrl(1, 'prospect');
             }
-            else if($aColumns[$i]=="categorie"){
-                $row[] = $aRow->label;
-            }
-            else if($aColumns[$i]=="sale"){
-                $row[] = $aRow->name;
-            }
-            else if ($aColumns[$i] == "datec") {
+            else if ($aColumns[$i] == "categorie") {
+                $row[] = $categoriesDeChaqueSociete[$aRow->rowid];
+            } else if ($aColumns[$i] == "sale") {
+                $row[] = $commerciauxDeChaqueSociete[$aRow->rowid];
+            } else if ($aColumns[$i] == "datec") {
                 $row[] = dol_print_date($db->jdate($aRow->datec));
             } else if ($aColumns[$i] == "etat") {
                 $prospectstatic->stcomm_id = $aRow->fk_stcomm;
                 $prospectstatic->type = $aRow->type;
-                $row[] = $prospectstatic->getIconList(DOL_URL_ROOT . "/comm/list.php?socid=" . $aRow->rowid . $param . '&lang='.$langs->defaultlang.'&type='.$type.'&action=cstc&amp;' . ($page ? '&amp;page=' . $page : ''));
+                $row[] = $prospectstatic->getIconList(DOL_URL_ROOT . "/comm/list.php?socid=" . $aRow->rowid . $param . '&lang=' . $langs->defaultlang . '&type=' . $type . '&action=cstc&amp;' . ($page ? '&amp;page=' . $page : ''));
             } else if ($aColumns[$i] == "fk_prospectlevel") { // Level
                 $row[] = $prospectstatic->LibLevel($aRow->fk_prospectlevel);
             } else if ($aColumns[$i] == "fk_stcomm") { //status
@@ -188,13 +230,14 @@ if ($result) {
                 $row[] = $aRow->$attribut;
             }
         }
-
         $output['aaData'][] = $row;
     }
-    $db->free($result);
-    header('Content-type: application/json');
-    echo json_encode($output);
-} else {
-    dol_print_error($db);
 }
+
+$db->free($resultCate);
+$db->free($resultCommerciaux);
+$db->free($resultSocietes);
+$db->free($resultTotal);
+header('Content-type: application/json');
+echo json_encode($output);
 ?>
