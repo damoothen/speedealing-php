@@ -1,7 +1,7 @@
 <?php
 /* Copyright (C) 2001-2006 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2011      Philippe Grand       <philippe.grand@atoo-net.com>
  * Copyright (C) 2011      Herve Prot           <herve.prot@symeos.com>
  *
@@ -184,7 +184,7 @@ $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."c_stcomm as st ON st.id = s.fk_stcomm";
 $sql.= " WHERE s.client in (1,2,3)";
 if($type!='')
     $sql.= " AND st.type=".$type;
-$sql.= " AND s.entity = ".$conf->entity;
+$sql.= ' AND s.entity IN ('.getEntity('societe', 1).')';
 if ($user->societe_id) $sql.= " AND s.rowid = " .$user->societe_id;
 if ($search_sale) $sql.= " AND s.rowid = sc.fk_soc";		// Join for the needed table to filter by sale
 if ($search_categ) $sql.= " AND s.rowid = cs.fk_societe";	// Join for the needed table to filter by categ

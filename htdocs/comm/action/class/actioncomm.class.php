@@ -528,11 +528,13 @@ if($this->type==2 && $this->percentage==100) //ACTION
     }
 
     /**
-     *    Load all objects with filters
-     *    @param		socid			Filter by thirdparty
-     * 	 @param		fk_element		Id of element action is linked to
-     *  	 @param		elementtype		Type of element action is linked to
-     *    @param		filter			Other filter
+     *   Load all objects with filters
+     *
+     *   @param		int		$socid			Filter by thirdparty
+     * 	 @param		int		$fk_element		Id of element action is linked to
+     *   @param		string	$elementtype	Type of element action is linked to
+     *   @param		string	$filter			Other filter
+     *   @return	int						<0 if KO, >0 if OK
      */
     function getActions($socid=0, $fk_element=0, $elementtype='', $filter='')
     {
@@ -577,8 +579,9 @@ if($this->type==2 && $this->percentage==100) //ACTION
 
     /**
      *      Load indicators for dashboard (this->nbtodo and this->nbtodolate)
-     *      @param          user    Objet user
-     *      @return         int     <0 if KO, >0 if OK
+     *
+     *      @param	User	$user   Objet user
+     *      @return int     		<0 if KO, >0 if OK
      */
     function load_board($user)
     {
@@ -669,9 +672,9 @@ if($this->type==2 && $this->percentage==100) //ACTION
     /**
      *    	Return label of status
      *
-     *    	@param      mode            0=libelle long, 1=libelle court, 2=Picto + Libelle court, 3=Picto, 4=Picto + Libelle long, 5=Libelle court + Picto
-     *      @param      hidenastatus    1=Show nothing if status is "Not applicable"
-     *    	@return     string          String with status
+     *    	@param	int		$mode           0=libelle long, 1=libelle court, 2=Picto + Libelle court, 3=Picto, 4=Picto + Libelle long, 5=Libelle court + Picto
+     *      @param  int		$hidenastatus   1=Show nothing if status is "Not applicable"
+     *    	@return string          		String with status
      */
     function getLibStatut($mode,$hidenastatus=0)
     {
@@ -681,10 +684,10 @@ if($this->type==2 && $this->percentage==100) //ACTION
     /**
      *		Return label of action status
      *
-     *    	@param      percent         Percent
-     *    	@param      mode            0=Long label, 1=Short label, 2=Picto+Short label, 3=Picto, 4=Picto+Short label, 5=Short label+Picto, 6=Very short label+Picto
-     *      @param      hidenastatus    1=Show nothing if status is "Not applicable"
-     *    	@return     string		    Label
+     *    	@param	int		$percent        Percent
+     *    	@param  int		$mode           0=Long label, 1=Short label, 2=Picto+Short label, 3=Picto, 4=Picto+Short label, 5=Short label+Picto, 6=Very short label+Picto
+     *      @param  int		$hidenastatus   1=Show nothing if status is "Not applicable"
+     *    	@return string		    		Label
      */
     function LibStatut($percent,$mode,$hidenastatus=0)
     {
@@ -746,12 +749,12 @@ if($this->type==2 && $this->percentage==100) //ACTION
      *    	Renvoie nom clicable (avec eventuellement le picto)
      *      Utilise $this->id, $this->code et $this->label
      *
-     * 		@param		withpicto		0=Pas de picto, 1=Inclut le picto dans le lien, 2=Picto seul
-     *		@param		maxlength		Nombre de caracteres max dans libelle
-     *		@param		classname		Force style class on a link
-     * 		@param		option			''=Link to action,'birthday'=Link to contact
-     * 		@param		overwritepicto	1=Overwrite picto
-     *		@return		string			Chaine avec URL
+     * 		@param	int		$withpicto			0=Pas de picto, 1=Inclut le picto dans le lien, 2=Picto seul
+     *		@param	int		$maxlength			Nombre de caracteres max dans libelle
+     *		@param	string	$classname			Force style class on a link
+     * 		@param	string	$option				''=Link to action,'birthday'=Link to contact
+     * 		@param	int		$overwritepicto		1=Overwrite picto
+     *		@return	string						Chaine avec URL
      */
     function getNomUrl($withpicto=0,$maxlength=0,$classname='',$option='',$overwritepicto='')
     {
@@ -820,12 +823,12 @@ if($this->type==2 && $this->percentage==100) //ACTION
     /**
      *		Export events from database into a cal file.
      *
-     *		@param		format			'vcal', 'ical/ics', 'rss'
-     *		@param		type			'event' or 'journal'
-     *		@param		cachedelay		Do not rebuild file if date older than cachedelay seconds
-     *		@param		filename		Force filename
-     *		@param		filters			Array of filters
-     *		@return     int     		<0 if error, nb of events in new file if ok
+     *		@param	string		$format			'vcal', 'ical/ics', 'rss'
+     *		@param	string		$type			'event' or 'journal'
+     *		@param	int			$cachedelay		Do not rebuild file if date older than cachedelay seconds
+     *		@param	string		$filename		Force filename
+     *		@param	array		$filters		Array of filters
+     *		@return int     					<0 if error, nb of events in new file if ok
      */
     function build_exportfile($format,$type,$cachedelay,$filename,$filters)
     {

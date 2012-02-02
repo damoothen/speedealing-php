@@ -303,15 +303,15 @@ if ($socid)
 	if ($soc->pays)
 	{
 		print '<tr><td>'.$langs->trans('Country').'</td><td colspan="3">';
-		$img=picto_from_langcode($soc->pays_code);
+		$img=picto_from_langcode($soc->country_code);
 		print ($img?$img.' ':'');
 		print $soc->pays;
 		print '</td></tr>';
 	}
 
 	// Phone
-	print '<tr '.$bc[$var].'><td id="label">'.$langs->trans('Phone').'</td><td id="value">'.dol_print_phone($soc->tel,$soc->pays_code,0,$soc->id,'AC_TEL').'</td>';
-	print '<td id="label">'.$langs->trans('Fax').'</td><td id="value">'.dol_print_phone($soc->fax,$soc->pays_code,0,$soc->id,'AC_FAX').'</td></tr>';
+	print '<tr '.$bc[$var].'><td id="label">'.$langs->trans('Phone').'</td><td id="value">'.dol_print_phone($soc->tel,$soc->country_code,0,$soc->id,'AC_TEL').'</td>';
+	print '<td id="label">'.$langs->trans('Fax').'</td><td id="value">'.dol_print_phone($soc->fax,$soc->country_code,0,$soc->id,'AC_FAX').'</td></tr>';
     $var=!$var;
 
 	// EMail

@@ -26,8 +26,7 @@ require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 
 $langs->load("admin");
 
-if (! $user->admin)
-accessforbidden();
+if (! $user->admin) accessforbidden();
 
 
 $form=new Form($db);
@@ -38,7 +37,8 @@ $formfile = new FormFile($db);
  * View
  */
 
-llxHeader('','','EN:Backups|FR:Sauvegardes|ES:Copias_de_seguridad');
+$help_url='EN:Backups|FR:Sauvegardes|ES:Copias_de_seguridad';
+llxHeader('','',$help_url);
 
 ?>
 <script type="text/javascript">
@@ -83,6 +83,9 @@ if ($_GET["msg"])
 	print "\n";
 }
 
+
+$label=getStaticMember($db, 'label');
+
 ?>
 
 <!-- Dump of a server -->
@@ -99,20 +102,23 @@ if ($_GET["msg"])
 		<div id="div_container_exportoptions">
 		<fieldset id="exportoptions"><legend><?php echo $langs->trans("ExportMethod"); ?></legend>
 		<?php
-		if ($db::$label == 'MySQL')
+		if ($label == 'MySQL')
 		{
 			?>
 			<div class="formelementrow"><input type="radio" name="what" value="mysql" id="radio_dump_mysql" />
 			<label for="radio_dump_mysql">MySQL	Dump (mysqldump)</label>
 			</div>
-			<?php if (! empty($conf->global->MAIN_FEATURES_LEVEL)) { ?>
+			<?php
+			if (! empty($conf->global->MAIN_FEATURES_LEVEL))
+			{
+			?>
 			<div class="formelementrow"><input type="radio" name="what" value="mysqlnobin" id="radio_dump_mysql_nobin" />
 			<label for="radio_dump_mysql">MySQL	Dump (php) <?php print img_warning('Backup can\'t be guaranted with this method. Prefer previous one'); ?></label>
 			</div>
 			<?php
 			}
 		}
-		else if ($db::$label == 'PostgreSQL')
+		else if ($label == 'PostgreSQL')
 		{
 			?>
 			<div class="formelementrow"><input type="radio" name="what"	value="postgresql" id="radio_dump_postgresql" />
@@ -122,7 +128,7 @@ if ($_GET["msg"])
 		}
 		else
 		{
-			print 'No method available with database '.$db::$label;
+			print 'No method available with database '.$label;
 		}
 		?>
 		</fieldset>
@@ -134,7 +140,7 @@ if ($_GET["msg"])
 
 		<div id="div_container_sub_exportoptions">
 		<?php
-		if ($db::$label == 'MySQL')
+		if ($label == 'MySQL')
 		{
 			?> <!--  Fieldset mysqldump -->
 			<fieldset id="mysql_options"><legend><?php echo $langs->trans("MySqlExportParameters"); ?></legend>
@@ -217,7 +223,7 @@ if ($_GET["msg"])
 		<?php
 		}
 
-		if ($db::$label == 'PostgreSQL')
+		if ($label == 'PostgreSQL')
 		{
 			?> <!--  Fieldset pg_dump -->
 			<fieldset id="postgresql_options"><legend><?php echo $langs->trans("PostgreSqlExportParameters"); ?></legend>
@@ -281,8 +287,8 @@ if ($_GET["msg"])
 	id="filename_template"
 	value="<?php
 $prefix='dump';
-if ($db::$label == 'MySQL')      $prefix='mysqldump';
-if ($db::$label == 'PostgreSQL') $prefix='pg_dump';
+if ($label == 'MySQL')      $prefix='mysqldump';
+if ($label == 'PostgreSQL') $prefix='pg_dump';
 $file=$prefix.'_'.$dolibarr_main_db_name.'_'.dol_sanitizeFileName(DOL_VERSION).'_'.strftime("%Y%m%d%H%M").'.sql';
 echo $file;
 ?>" /> <br>
@@ -296,7 +302,7 @@ $compression=array(
 //	'zip'  => array('function' => 'zip_open', 'id' => 'radio_compression_zip',  'label' => $langs->trans("Zip")),		Not open source
 	'gz'   => array('function' => 'gzopen',   'id' => 'radio_compression_gzip', 'label' => $langs->trans("Gzip")),
 );
-if ($db::$label == 'MySQL')
+if ($label == 'MySQL')
 {
 	$compression['bz']=array('function' => 'bzopen',  'id' => 'radio_compression_bzip', 'label' => $langs->trans("Bzip2"));
 }
@@ -339,10 +345,10 @@ print "\n";
 </form>
 
 <?php
-
 $result=$formfile->show_documents('systemtools','backup',$conf->admin->dir_output.'/backup',$_SERVER['PHP_SELF'],0,1,'',1,0,0,54,0,'',$langs->trans("PreviousDumpFiles"));
 //if ($result) print '<br><br>';
 
 llxFooter();
 
 $db->close();
+?>

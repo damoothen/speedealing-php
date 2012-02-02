@@ -1,6 +1,6 @@
 <?php
 /* Copyright (C) 2001-2005 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005      Simon TOSSER         <simon@kornog-computing.com>
  * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2010      Juanjo Menent        <jmenent@2byte.es>
@@ -68,7 +68,7 @@ $contact = new Contact($db);
 if ($action == 'add_action')
 {
 	$error=0;
-	
+
     $backtopage='';
     if (! empty($_POST["backtopage"])) $backtopage=$_POST["backtopage"];
     if (! $backtopage)
@@ -91,21 +91,8 @@ if ($action == 'add_action')
     $fulldayevent=$_POST["fullday"];
 
     // Clean parameters
-	$datep=dol_mktime(
-	$fulldayevent?'00':$_POST["aphour"],
-	$fulldayevent?'00':$_POST["apmin"],
-	0,
-	$_POST["apmonth"],
-	$_POST["apday"],
-	$_POST["apyear"]);
-
-	$datef=dol_mktime(
-	$fulldayevent?'23':$_POST["p2hour"],
-	$fulldayevent?'59':$_POST["p2min"],
-	$fulldayevent?'59':'0',
-	$_POST["p2month"],
-	$_POST["p2day"],
-	$_POST["p2year"]);
+	$datep=dol_mktime($fulldayevent?'00':$_POST["aphour"], $fulldayevent?'00':$_POST["apmin"], 0, $_POST["apmonth"], $_POST["apday"], $_POST["apyear"]);
+	$datef=dol_mktime($fulldayevent?'23':$_POST["p2hour"], $fulldayevent?'59':$_POST["p2min"], $fulldayevent?'59':'0', $_POST["p2month"], $_POST["p2day"], $_POST["p2year"]);
 
 	// Check parameters
 	if (! $datef && $_POST["percentage"] == 100)
@@ -356,24 +343,9 @@ if ($action == 'update')
 
 		$actioncomm = new Actioncomm($db);
 		$actioncomm->fetch($id);
-                
-                $result=$cactioncomm->fetch($actioncomm->type_id);
-                
-		$datep=dol_mktime(
-                $fulldayevent?'00':$_POST["aphour"],
-                $fulldayevent?'00':$_POST["apmin"],
-		0,
-		$_POST["apmonth"],
-		$_POST["apday"],
-		$_POST["apyear"]);
 
-		$datef=dol_mktime(
-                $fulldayevent?'23':$_POST["p2hour"],
-                $fulldayevent?'59':$_POST["p2min"],
-		$fulldayevent?'59':'0',
-		$_POST["p2month"],
-		$_POST["p2day"],
-		$_POST["p2year"]);
+		$datep=dol_mktime($fulldayevent?'00':$_POST["aphour"], $fulldayevent?'00':$_POST["apmin"], 0, $_POST["apmonth"], $_POST["apday"], $_POST["apyear"]);
+		$datef=dol_mktime($fulldayevent?'23':$_POST["p2hour"], $fulldayevent?'59':$_POST["p2min"], $fulldayevent?'59':'0', $_POST["p2month"], $_POST["p2day"], $_POST["p2year"]);
 
 		$actioncomm->label       = $_POST["label"];
 		$actioncomm->datep       = $datep;
@@ -610,9 +582,8 @@ if ($action == 'create')
         print '<input type="hidden" name="fk_task" value="'.$actioncomm->fk_task.'">';
 	if (GETPOST("backtopage")) print '<input type="hidden" name="backtopage" value="'.(GETPOST("backtopage") != 1 ? GETPOST("backtopage") : $_SERVER["HTTP_REFERER"]).'">';
 
-	//if (GETPOST("actioncode") == 'AC_RDV') print_fiche_titre ($langs->trans("AddActionRendezVous"));
-	//else 
-	print_fiche_titre ($langs->trans("AddAnAction"));
+	if (GETPOST("actioncode") == 'AC_RDV') print_fiche_titre($langs->trans("AddActionRendezVous"));
+	else print_fiche_titre($langs->trans("AddAnAction"));
 
 	dol_htmloutput_mesg($mesg);
 
@@ -1378,8 +1349,9 @@ llxFooter();
 
 
 /**
- *  \brief      Ajoute une ligne de tableau a 2 colonnes pour avoir l'option synchro calendrier
- *  \return     int     Retourne le nombre de lignes ajoutees
+ *  Ajoute une ligne de tableau a 2 colonnes pour avoir l'option synchro calendrier
+ *
+ *  @return     int     Retourne le nombre de lignes ajoutees
  */
 function add_row_for_calendar_link()
 {

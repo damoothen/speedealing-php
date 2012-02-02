@@ -5,7 +5,7 @@
  * Copyright (C) 2004      Sebastien Di Cintio  <sdicintio@ressource-toi.org>
  * Copyright (C) 2004      Benoit Mortier       <benoit.mortier@opensides.be>
  * Copyright (C) 2004      Christophe Combelles <ccomb@free.fr>
- * Copyright (C) 2005-2010 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2008      Raphael Bertrand (Resultic)       <raphael.bertrand@resultic.fr>
  * Copyright (C) 2010-2011 Juanjo Menent        <jmenent@2byte.es>
  *
@@ -145,6 +145,33 @@ if (! function_exists('json_decode'))
 	}
 }
 
+/**
+ * Function to return value of a static property when class
+ * name is dynamically defined (not hard coded).
+ * This is because $myclass::$myvar works from PHP 5.3.0+ only
+ *
+ * @param	string 	$class		Class name
+ * @param 	string 	$member		Name of property
+ * @return 	string				Return value of static property.
+ */
+function getStaticMember($class, $member)
+{
+	if (is_object($class)) $class = get_class($class);
+	$classObj = new ReflectionClass($class);
+	$result = null;
+
+	foreach($classObj->getStaticProperties() as $prop => $value)
+	{
+		if($prop == $member)
+		{
+			$result = $value;
+			break;
+		}
+	}
+
+	return $result;
+}
+
 
 /**
  * Return a DoliDB instance (database handler).
@@ -166,6 +193,33 @@ function getDoliDBInstance($type, $host, $user, $pass, $name, $port)
     return $dolidb;
 }
 
+/**
+ * 	Get entity to use
+ * 
+ * 	@param	string	$element	Current element
+ * 	@param	int		$shared		1=Return shared entities
+ * 	@return	mixed				Entity id(s) to use
+ */
+function getEntity($element=false, $shared=false)
+{
+	global $conf, $mc;
+	
+	if (is_object($mc))
+	{
+		return $mc->getEntity($element, $shared);
+	}
+	else
+	{
+		$out='';
+		
+		$addzero = array('user', 'usergroup');
+		if (in_array($element, $addzero)) $out.= '0,';
+		
+		$out.= $conf->entity;
+		
+		return $out;
+	}
+}
 
 /**
  *  Function called at end of web php process
@@ -1695,7 +1749,7 @@ function dol_trunc($string,$size=40,$trunc='right',$stringencoding='UTF-8',$nodo
  *	@param      string		$alt           		Text of alt on image
  *	@param      string		$picto         		Name of image to show object_picto (example: user, group, action, bill, contract, propal, product, ...)
  *							 		       		For external modules use imagename@mymodule to search into directory "img" of module.
- *  @param      string		$options       		Add more attribute on img tag
+ *  @param      string		$options       		Add more attribute on img tag (ie: class="datecallink")
  *  @param      int			$pictoisfullpath    If 1, image path is a full path
  *	@return     string      					Return img tag
  *  @see        #img_picto, #img_picto_common
@@ -2169,7 +2223,9 @@ function restrictedArea($user, $features='societe', $objectid=0, $dbtablename=''
 
     // More features to check
     $features = explode("&",$features);
-    //var_dump($features);
+    
+    // More parameters
+    list($dbtablename, $sharedelement) = explode('&', $dbtablename);
 
     // Check read permission from module
     // TODO Replace "feature" param into caller by first level of permission
@@ -2363,7 +2419,7 @@ function restrictedArea($user, $features='societe', $objectid=0, $dbtablename=''
                 }
                 else
                 {
-                	$sql.= " AND dbt.entity IN (0,".(! empty($conf->entities[$dbtablename]) ? $conf->entities[$dbtablename] : $conf->entity).")";
+                	$sql.= " AND dbt.entity IN (".getEntity($sharedelement, 1).")";
                 }
             }
             else if (in_array($feature,$checksoc))
@@ -2382,7 +2438,7 @@ function restrictedArea($user, $features='societe', $objectid=0, $dbtablename=''
                     $sql.= " WHERE sc.fk_soc = ".$objectid;
                     $sql.= " AND sc.fk_user = ".$user->id;
                     $sql.= " AND sc.fk_soc = s.rowid";
-                    $sql.= " AND s.entity IN (0,".(! empty($conf->entities[$dbtablename]) ? $conf->entities[$dbtablename] : $conf->entity).")";
+                    $sql.= " AND s.entity IN (".getEntity($sharedelement, 1).")";
                 }
                 // If multicompany and internal users with all permissions, check user is in correct entity
                 else if (! empty($conf->multicompany->enabled))
@@ -2390,7 +2446,7 @@ function restrictedArea($user, $features='societe', $objectid=0, $dbtablename=''
                     $sql = "SELECT s.rowid";
                     $sql.= " FROM ".MAIN_DB_PREFIX."societe as s";
                     $sql.= " WHERE s.rowid = ".$objectid;
-                    $sql.= " AND s.entity IN (0,".(! empty($conf->entities[$dbtablename]) ? $conf->entities[$dbtablename] : $conf->entity).")";
+                    $sql.= " AND s.entity IN (".getEntity($sharedelement, 1).")";
                 }
             }
             else if (in_array($feature,$checkother))
@@ -2411,7 +2467,7 @@ function restrictedArea($user, $features='societe', $objectid=0, $dbtablename=''
                     $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."societe_commerciaux as sc ON dbt.fk_soc = sc.fk_soc AND sc.fk_user = '".$user->id."'";
                     $sql.= " WHERE dbt.rowid = ".$objectid;
                     $sql.= " AND (dbt.fk_soc IS NULL OR sc.fk_soc IS NOT NULL)";	// Contact not linked to a company or to a company of user
-                    $sql.= " AND dbt.entity IN (0,".(! empty($conf->entities[$dbtablename]) ? $conf->entities[$dbtablename] : $conf->entity).")";
+                    $sql.= " AND dbt.entity IN (".getEntity($sharedelement, 1).")";
                 }
                 // If multicompany and internal users with all permissions, check user is in correct entity
                 else if (! empty($conf->multicompany->enabled))
@@ -2419,7 +2475,7 @@ function restrictedArea($user, $features='societe', $objectid=0, $dbtablename=''
                     $sql = "SELECT dbt.rowid";
                     $sql.= " FROM ".MAIN_DB_PREFIX.$dbtablename." as dbt";
                     $sql.= " WHERE dbt.rowid = ".$objectid;
-                    $sql.= " AND dbt.entity IN (0,".(! empty($conf->entities[$dbtablename]) ? $conf->entities[$dbtablename] : $conf->entity).")";
+                    $sql.= " AND dbt.entity IN (".getEntity($sharedelement, 1).")";
                 }
             }
             else if (in_array($feature,$checkproject))
@@ -2453,7 +2509,7 @@ function restrictedArea($user, $features='societe', $objectid=0, $dbtablename=''
                     $sql.= " WHERE dbt.".$dbt_select." = ".$objectid;
                     $sql.= " AND sc.fk_soc = dbt.".$dbt_keyfield;
                     $sql.= " AND dbt.".$dbt_keyfield." = s.rowid";
-                    $sql.= " AND s.entity IN (0,".(! empty($conf->entities[$dbtablename]) ? $conf->entities[$dbtablename] : $conf->entity).")";
+                    $sql.= " AND s.entity IN (".getEntity($sharedelement, 1).")";
                     $sql.= " AND sc.fk_user = ".$user->id;
                 }
                 // If multicompany and internal users with all permissions, check user is in correct entity
@@ -2462,7 +2518,7 @@ function restrictedArea($user, $features='societe', $objectid=0, $dbtablename=''
                     $sql = "SELECT dbt.".$dbt_select;
                     $sql.= " FROM ".MAIN_DB_PREFIX.$dbtablename." as dbt";
                     $sql.= " WHERE dbt.".$dbt_select." = ".$objectid;
-                    $sql.= " AND dbt.entity IN (0,".(! empty($conf->entities[$dbtablename]) ? $conf->entities[$dbtablename] : $conf->entity).")";
+                    $sql.= " AND dbt.entity IN (".getEntity($sharedelement, 1).")";
                 }
             }
 
@@ -3292,14 +3348,14 @@ function get_default_tva($societe_vendeuse, $societe_acheteuse, $idprod=0)
         return 0;
     }
 
-    //if (is_object($societe_acheteuse) && ($societe_vendeuse->pays_id == $societe_acheteuse->pays_id) && ($societe_acheteuse->tva_assuj == 1 || $societe_acheteuse->tva_assuj == 'reel'))
+    //if (is_object($societe_acheteuse) && ($societe_vendeuse->country_id == $societe_acheteuse->country_id) && ($societe_acheteuse->tva_assuj == 1 || $societe_acheteuse->tva_assuj == 'reel'))
     // Le test ci-dessus ne devrait pas etre necessaire. Me signaler l'exemple du cas juridique concerne si le test suivant n'est pas suffisant.
 
     // Si le (pays vendeur = pays acheteur) alors la TVA par defaut=TVA du produit vendu. Fin de regle.
-    if ($societe_vendeuse->pays_code == $societe_acheteuse->pays_code) // Warning ->pays_code not always defined
+    if ($societe_vendeuse->country_code == $societe_acheteuse->country_code) // Warning ->country_code not always defined
     {
         //print 'VATRULE 3';
-        return get_product_vat_for_country($idprod,$societe_vendeuse->pays_code);
+        return get_product_vat_for_country($idprod,$societe_vendeuse->country_code);
     }
 
     // Si (vendeur et acheteur dans Communaute europeenne) et (bien vendu = moyen de transports neuf comme auto, bateau, avion) alors TVA par defaut=0 (La TVA doit etre paye par l'acheteur au centre d'impots de son pays et non au vendeur). Fin de regle.
@@ -3318,7 +3374,7 @@ function get_default_tva($societe_vendeuse, $societe_acheteuse, $idprod=0)
         else
         {
             //print 'VATRULE 5';
-            return get_product_vat_for_country($idprod,$societe_vendeuse->pays_code);
+            return get_product_vat_for_country($idprod,$societe_vendeuse->country_code);
         }
     }
 
@@ -3330,7 +3386,7 @@ function get_default_tva($societe_vendeuse, $societe_acheteuse, $idprod=0)
         if (! $societe_vendeuse->isInEEC() && $societe_acheteuse->isInEEC() && ! $societe_acheteuse->isACompany())
         {
             //print 'VATRULE 6';
-            return get_product_vat_for_country($idprod,$societe_acheteuse->pays_code);
+            return get_product_vat_for_country($idprod,$societe_acheteuse->country_code);
         }
     }
 
@@ -3368,7 +3424,7 @@ function get_default_localtax($societe_vendeuse, $societe_acheteuse, $local, $id
     if (!is_object($societe_vendeuse)) return -1;
     if (!is_object($societe_acheteuse)) return -1;
 
-    if ($societe_vendeuse->pays_id=='ES' || $societe_vendeuse->pays_code=='ES')
+    if ($societe_vendeuse->country_id=='ES' || $societe_vendeuse->country_code=='ES')
     {
         if ($local==1) //RE
         {
@@ -3383,7 +3439,7 @@ function get_default_localtax($societe_vendeuse, $societe_acheteuse, $local, $id
             if (! is_numeric($societe_vendeuse->localtax2_assuj) && $societe_vendeuse->localtax2_assuj=='localtax2off') return 0;
         } else return -1;
 
-        if ($idprod) return get_product_localtax_for_country($idprod, $local, $societe_vendeuse->pays_code);
+        if ($idprod) return get_product_localtax_for_country($idprod, $local, $societe_vendeuse->country_code);
         else return -1;
     }
     return 0;
@@ -3522,10 +3578,10 @@ function picto_required()
 /**
  *	Clean a string from all HTML tags and entities
  *
- *	@param   	StringHtml			String to clean
- *	@param		removelinefeed		Replace also all lines feeds by a space
- *  @param      pagecodeto      	Encoding of input string
- *	@return  	string	    		String cleaned
+ *	@param	string	$StringHtml			String to clean
+ *	@param	string	$removelinefeed		Replace also all lines feeds by a space
+ *  @param  string	$pagecodeto      	Encoding of input string
+ *	@return string	    				String cleaned
  */
 function dol_string_nohtmltag($StringHtml,$removelinefeed=1,$pagecodeto='UTF-8')
 {
@@ -3549,10 +3605,10 @@ function dol_string_nohtmltag($StringHtml,$removelinefeed=1,$pagecodeto='UTF-8')
 /**
  *	Replace CRLF in string with a HTML BR tag
  *
- *	@param		stringtoencode		String to encode
- *	@param		nl2brmode			0=Adding br before \n, 1=Replacing \n by br
- *  @param      forxml              false=Use <br>, true=Use <br />
- *	@return		string				String encoded
+ *	@param	string	$stringtoencode		String to encode
+ *	@param	string	$nl2brmode			0=Adding br before \n, 1=Replacing \n by br
+ *  @param  string	$forxml             false=Use <br>, true=Use <br />
+ *	@return	string						String encoded
  */
 function dol_nl2br($stringtoencode,$nl2brmode=0,$forxml=false)
 {
@@ -3583,6 +3639,7 @@ function dol_nl2br($stringtoencode,$nl2brmode=0,$forxml=false)
  *	@param	string	$stringtoencode		String to encode
  *	@param	int		$nl2brmode			0=Adding br before \n, 1=Replacing \n by br (for use with FPDF writeHTMLCell function for example)
  *  @param  string	$pagecodefrom       Pagecode stringtoencode is encoded
+ *  @return	string						String encoded
  */
 function dol_htmlentitiesbr($stringtoencode,$nl2brmode=0,$pagecodefrom='UTF-8')
 {
@@ -3608,8 +3665,9 @@ function dol_htmlentitiesbr($stringtoencode,$nl2brmode=0,$pagecodefrom='UTF-8')
 /**
  *	This function is called to decode a HTML string (it decodes entities and br tags)
  *
- *	@param		stringtodecode		String to decode
- *	@param		pagecodeto			Page code for result
+ *	@param	string	$stringtodecode		String to decode
+ *	@param	string	$pagecodeto			Page code for result
+ *	@return	string						String decoded
  */
 function dol_htmlentitiesbr_decode($stringtodecode,$pagecodeto='UTF-8')
 {
@@ -3624,7 +3682,8 @@ function dol_htmlentitiesbr_decode($stringtodecode,$pagecodeto='UTF-8')
 /**
  *	This function remove all ending \n and br at end
  *
- *	@param		stringtodecode		String to decode
+ *	@param	string	$stringtodecode		String to decode
+ *	@return	string						String decoded
  */
 function dol_htmlcleanlastbr($stringtodecode)
 {
@@ -3635,9 +3694,9 @@ function dol_htmlcleanlastbr($stringtodecode)
 /**
  *	This function is called to decode a string with HTML entities (it decodes entities tags)
  *
- * 	@param   	stringhtml      stringhtml
- *  @param      pagecodeto      Encoding of input string
- * 	@return  	string	  	    decodestring
+ * 	@param	string	$stringhtml     stringhtml
+ *  @param  string	$pagecodeto     Encoding of input string
+ * 	@return string	  	    		decodestring
  */
 function dol_entity_decode($stringhtml,$pagecodeto='UTF-8')
 {
@@ -3648,10 +3707,10 @@ function dol_entity_decode($stringhtml,$pagecodeto='UTF-8')
 /**
  * Replace html_entity_decode functions to manage errors
  *
- * @param   a
- * @param   b
- * @param   c
- * @return  string      String decoded
+ * @param   string	$a		Operand a
+ * @param   string	$b		Operand b
+ * @param   string	$c		Operand c
+ * @return  string			String decoded
  */
 function dol_html_entity_decode($a,$b,$c)
 {
@@ -3663,10 +3722,10 @@ function dol_html_entity_decode($a,$b,$c)
 /**
  * Replace htmlentities functions to manage errors
  *
- * @param   a
- * @param   b
- * @param   c
- * @return  string      String encoded
+ * @param   string	$a		Operand a
+ * @param   string	$b		Operand b
+ * @param   string	$c		Operand c
+ * @return  string      	String encoded
  */
 function dol_htmlentities($a,$b,$c)
 {
@@ -3681,8 +3740,8 @@ function dol_htmlentities($a,$b,$c)
  *	If not, it will we considered not HTML encoded even if it is by FPDF.
  *	Example, if string contains euro symbol that has ascii code 128
  *
- *	@param       s       String to check
- *	@return	     int     0 if bad iso, 1 if good iso
+ *	@param	string	$s      String to check
+ *	@return	int     		0 if bad iso, 1 if good iso
  */
 function dol_string_is_good_iso($s)
 {
@@ -3915,8 +3974,8 @@ function get_date_range($date_start,$date_end,$format = '',$outputlangs='')
  *  @param  int			$keepembedded   Set to 1 in error message must be kept embedded into its html place (this disable jnotify)
  *	@return	string						Return html output
  *
- *  @see        dol_print_error
- *  @see        dol_htmloutput_errors
+ *  @see    dol_print_error
+ *  @see    dol_htmloutput_errors
  */
 function get_htmloutput_mesg($mesgstring='',$mesgarray='', $style='ok', $keepembedded=0)
 {
@@ -3997,8 +4056,8 @@ function get_htmloutput_mesg($mesgstring='',$mesgarray='', $style='ok', $keepemb
  *  @param  int		$keepembedded       Set to 1 in error message must be kept embedded into its html place (this disable jnotify)
  *  @return string                		Return html output
  *
- *  @see        dol_print_error
- *  @see        dol_htmloutput_mesg
+ *  @see    dol_print_error
+ *  @see    dol_htmloutput_mesg
  */
 function get_htmloutput_errors($mesgstring='', $mesgarray='', $keepembedded=0)
 {
@@ -4014,8 +4073,8 @@ function get_htmloutput_errors($mesgstring='', $mesgarray='', $keepembedded=0)
  *  @param  int		$keepembedded    Set to 1 if message must be kept embedded into its html place (this disable jnotify)
  *  @return	void
  *
- *  @see        dol_print_error
- *  @see        dol_htmloutput_errors
+ *  @see    dol_print_error
+ *  @see    dol_htmloutput_errors
  */
 function dol_htmloutput_mesg($mesgstring='',$mesgarray='', $style='ok', $keepembedded=0)
 {
@@ -4064,8 +4123,8 @@ function dol_htmloutput_mesg($mesgstring='',$mesgarray='', $style='ok', $keepemb
  *  @param  int		$keepembedded        Set to 1 in error message must be kept embedded into its html place (this disable jnotify)
  *  @return	void
  *
- *  @see        dol_print_error
- *  @see        dol_htmloutput_mesg
+ *  @see    dol_print_error
+ *  @see    dol_htmloutput_mesg
  */
 function dol_htmloutput_errors($mesgstring='', $mesgarray='', $keepembedded=0)
 {
@@ -4229,8 +4288,8 @@ function verifCond($strRights)
  * Replace eval function to add more security.
  * This function is called by verifCond()
  *
- * @param 	string	$s
- * @return	void
+ * @param 	string	$s		String to evaluate
+ * @return	mixed			Result of eval
  */
 function dol_eval($s)
 {

@@ -4,7 +4,7 @@
  * Copyright (C) 2004-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2004      Sebastien Di Cintio  <sdicintio@ressource-toi.org>
  * Copyright (C) 2004      Benoit Mortier       <benoit.mortier@opensides.be>
- * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2005 	   Simon Tosser         <simon@kornog-computing.com>
  * Copyright (C) 2006 	   Andre Cianfarani     <andre.cianfarani@acdeveloppement.net>
  * Copyright (C) 2010      Juanjo Menent        <jmenent@2byte.es>
@@ -93,7 +93,7 @@ if (! defined('NOREQUIRETRAN'))
 }
 
 /*
- * Creation objet $db
+ * Object $db
  */
 if (! defined('NOREQUIREDB'))
 {
@@ -111,7 +111,7 @@ if (! defined('NOREQUIREDB'))
 unset($conf->db->pass);				// This is to avoid password to be shown in memory/swap dump
 
 /*
- * Creation objet $user
+ * Object $user
  */
 if (! defined('NOREQUIREUSER'))
 {
@@ -129,30 +129,15 @@ if (! defined('NOREQUIREDB'))
 	{
 		$conf->entity = $_SESSION["dol_entity"];
 	}
-	elseif (! empty($_ENV["dol_entity"]))							// Entity inside a CLI script
+	else if (! empty($_ENV["dol_entity"]))							// Entity inside a CLI script
 	{
 		$conf->entity = $_ENV["dol_entity"];
 	}
-	elseif (isset($_POST["loginfunction"]) && GETPOST("entity"))	// Just after a login page
+	else if (isset($_POST["loginfunction"]) && GETPOST("entity"))	// Just after a login page
 	{
 		$conf->entity = GETPOST("entity",'int');
 	}
-	else	// TODO Does this "else" still usefull ?
-	{
-		$prefix=dol_getprefix();
-	    $entityCookieName = 'DOLENTITYID_'.$prefix;
-		if (! empty($_COOKIE[$entityCookieName]) && ! empty($conf->file->cookie_cryptkey)) 	// Just for view specific login page
-		{
-			include_once(DOL_DOCUMENT_ROOT."/core/class/cookie.class.php");
-			$lastuser = '';
-			$lastentity = '';
-			$entityCookie = new DolCookie($conf->file->cookie_cryptkey);
-			$cookieValue = $entityCookie->_getCookie($entityCookieName);
-			list($lastuser, $lastentity) = explode('|', $cookieValue);
-			$conf->entity = $lastentity;
-		}
-	}
-	
+
 	//print "Will work with data into entity instance number '".$conf->entity."'";
 
 	// Here we read database (llx_const table) and define $conf->global->XXX var.
@@ -218,7 +203,7 @@ if (! defined('NOREQUIREDB') && ! defined('NOREQUIRESOC'))
 	$mysoc->state_id=$conf->global->MAIN_INFO_SOCIETE_DEPARTEMENT;
 	$mysoc->note=empty($conf->global->MAIN_INFO_SOCIETE_NOTE)?'':$conf->global->MAIN_INFO_SOCIETE_NOTE;
 
-    // We define pays_id, pays_code and pays_label
+    // We define pays_id, pays_code and country
     $tmp=explode(':',$conf->global->MAIN_INFO_SOCIETE_PAYS);
     $country_id=$tmp[0];
     if (! empty($tmp[1]))   // If $conf->global->MAIN_INFO_SOCIETE_PAYS is "id:code:label"
@@ -245,11 +230,6 @@ if (! defined('NOREQUIREDB') && ! defined('NOREQUIRESOC'))
     $mysoc->phone=empty($conf->global->MAIN_INFO_SOCIETE_TEL)?'':$conf->global->MAIN_INFO_SOCIETE_TEL;
 	$mysoc->fax=empty($conf->global->MAIN_INFO_SOCIETE_FAX)?'':$conf->global->MAIN_INFO_SOCIETE_FAX;
 	$mysoc->url=empty($conf->global->MAIN_INFO_SOCIETE_WEB)?'':$conf->global->MAIN_INFO_SOCIETE_WEB;
-	// Anciens id prof
-	$mysoc->siren=empty($conf->global->MAIN_INFO_SIREN)?'':$conf->global->MAIN_INFO_SIREN;
-	$mysoc->siret=empty($conf->global->MAIN_INFO_SIRET)?'':$conf->global->MAIN_INFO_SIRET;
-	$mysoc->ape=empty($conf->global->MAIN_INFO_APE)?'':$conf->global->MAIN_INFO_APE;
-	$mysoc->rcs=empty($conf->global->MAIN_INFO_RCS)?'':$conf->global->MAIN_INFO_RCS;
 	// Id prof generiques
 	$mysoc->idprof1=empty($conf->global->MAIN_INFO_SIREN)?'':$conf->global->MAIN_INFO_SIREN;
 	$mysoc->idprof2=empty($conf->global->MAIN_INFO_SIRET)?'':$conf->global->MAIN_INFO_SIRET;
@@ -272,7 +252,7 @@ if (! defined('NOREQUIREDB') && ! defined('NOREQUIRESOC'))
 	$mysoc->localtax2_assuj=((isset($conf->global->FACTURE_LOCAL_TAX2_OPTION) && $conf->global->FACTURE_LOCAL_TAX2_OPTION=='localtax2on')?1:0);
 
 	// For some countries, we need to invert our address with customer address
-	if ($mysoc->pays_code == 'DE' && ! isset($conf->global->MAIN_INVERT_SENDER_RECIPIENT)) $conf->global->MAIN_INVERT_SENDER_RECIPIENT=1;
+	if ($mysoc->country_code == 'DE' && ! isset($conf->global->MAIN_INVERT_SENDER_RECIPIENT)) $conf->global->MAIN_INVERT_SENDER_RECIPIENT=1;
 }
 
 

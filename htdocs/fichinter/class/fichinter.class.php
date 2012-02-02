@@ -207,9 +207,9 @@ class Fichinter extends CommonObject
 	/**
 	 *	Fetch a intervention
 	 *
-	 *	@param		int		$id		Id of intervention
-	 *	@param		string	$ref	Ref of intervention
-	 *	@return		int			<0 if ko, >0 if ok
+	 *	@param		int		$rowid		Id of intervention
+	 *	@param		string	$ref		Ref of intervention
+	 *	@return		int					<0 if KO, >0 if OK
 	 */
 	function fetch($rowid,$ref='')
 	{
@@ -312,9 +312,9 @@ class Fichinter extends CommonObject
 	function setValid($user, $outputdir)
 	{
 		global $langs, $conf;
-		
+
 		$error=0;
-		
+
 		if ($this->statut != 1)
 		{
 			$this->db->begin();
@@ -363,7 +363,7 @@ class Fichinter extends CommonObject
 
 	/**
 	 * 	Set intervetnion as billed
-	 * 
+	 *
 	 *  @return int     <0 si ko, >0 si ok
 	 */
 	function setBilled()
@@ -389,6 +389,7 @@ class Fichinter extends CommonObject
 
 	/**
 	 *	Returns the label status
+	 *
 	 *	@param      int		$mode       0=long label, 1=short label, 2=Picto + short label, 3=Picto, 4=Picto + long label, 5=Short label + Picto
 	 *	@return     string      		Label
 	 */
@@ -445,8 +446,8 @@ class Fichinter extends CommonObject
 	/**
 	 *	Return clicable name (with picto eventually)
 	 *
-	 *	@param		int			withpicto		0=_No picto, 1=Includes the picto in the linkn, 2=Picto only
-	 *	@return		string					String with URL
+	 *	@param		int			$withpicto		0=_No picto, 1=Includes the picto in the linkn, 2=Picto only
+	 *	@return		string						String with URL
 	 */
 	function getNomUrl($withpicto=0)
 	{
@@ -519,8 +520,9 @@ class Fichinter extends CommonObject
 
 	/**
 	 * 	Information sur l'objet fiche intervention
-	 * 
-	 *	@param	int		$id      id de la fiche d'intervention
+	 *
+	 *	@param	int		$id      Id de la fiche d'intervention
+	 *	@return	void
 	 */
 	function info($id)
 	{
@@ -570,7 +572,8 @@ class Fichinter extends CommonObject
 	/**
 	 *	Delete intervetnion
 	 *
-	 *	@param      User	$user	Object user who deletes
+	 *	@param      User	$user	Object user who delete
+	 *	@return		int				<0 if KO, >0 if OK
 	 */
 	function delete($user)
 	{
@@ -875,8 +878,9 @@ class FichinterLigne
 
 
 	/**
-	 *	Constructeur d'objets ligne d'intervention
-	 *	@param     DoliDB	$DB      handler d'acces base de donnee
+	 *	Constructor
+	 *
+	 *	@param     DoliDB	$DB      Database handler
 	 */
 	function FichinterLigne($DB)
 	{
@@ -886,7 +890,8 @@ class FichinterLigne
 	/**
 	 *	Retrieve the line of intervention
 	 *
-	 *	@param     int	$rowid	line id
+	 *	@param  int		$rowid		Line id
+	 *	@return	int					<0 if KO, >0 if OK
 	 */
 	function fetch($rowid)
 	{
@@ -1091,12 +1096,12 @@ class FichinterLigne
 	{
 		if ($this->statut == 0)
 		{
-			dol_syslog("FichinterLigne::deleteline lineid=".$this->rowid);
+			dol_syslog(get_class($this)."::deleteline lineid=".$this->rowid);
 			$this->db->begin();
 
 			$sql = "DELETE FROM ".MAIN_DB_PREFIX."fichinterdet WHERE rowid = ".$this->rowid;
 			$resql = $this->db->query($sql);
-			dol_syslog("FichinterLigne::deleteline sql=".$sql);
+			dol_syslog(get_class($this)."::deleteline sql=".$sql);
 
 			if ($resql)
 			{
@@ -1115,7 +1120,7 @@ class FichinterLigne
 			else
 			{
 				$this->error=$this->db->error()." sql=".$sql;
-				dol_syslog("FichinterLigne::deleteline Error ".$this->error, LOG_ERR);
+				dol_syslog(get_class($this)."::deleteline Error ".$this->error, LOG_ERR);
 				$this->db->rollback();
 				return -1;
 			}

@@ -4,7 +4,7 @@
  * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2004      Sebastien Di Cintio  <sdicintio@ressource-toi.org>
  * Copyright (C) 2004      Benoit Mortier       <benoit.mortier@opensides.be>
- * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2011      Philippe Grand       <philippe.grand@atoo-net.com>
  * Copyright (C) 2008      Matteli
  * Copyright (C) 2011      Herve Prot           <herve.prot@symeos.com>
@@ -349,13 +349,11 @@ if (! defined('NOLOGIN'))
 		// Verification security graphic code
 		if (GETPOST("username","alpha",2) && ! empty($conf->global->MAIN_SECURITY_ENABLECAPTCHA))
 		{
-			require_once(ARTICHOW_PATH.'Artichow.cfg.php');
-			require_once(ARTICHOW.'/AntiSpam.class.php');
-
-			$object = new AntiSpam();
+            $sessionkey = 'dol_antispam_value';
+            $ok=(array_key_exists($sessionkey, $_SESSION) === TRUE && (strtolower($_SESSION[$sessionkey]) == strtolower($_POST['code'])));
 
 			// Verifie code
-			if (! $object->check('dol_antispam_value',$_POST['code'],true))
+			if (! $ok)
 			{
 				dol_syslog('Bad value for code, connexion refused');
 				$langs->load('main');
@@ -570,7 +568,7 @@ if (! defined('NOLOGIN'))
 		}
 
 		// Create entity cookie, just used for login page
-		if (!empty($conf->global->MAIN_MODULE_MULTICOMPANY) && !empty($conf->global->MAIN_MULTICOMPANY_COOKIE) && isset($_POST["entity"]))
+		if (! empty($conf->multicompany->enabled) && ! empty($conf->global->MULTICOMPANY_COOKIE_ENABLED) && isset($_POST["entity"]))
 		{
 			include_once(DOL_DOCUMENT_ROOT."/core/class/cookie.class.php");
 
@@ -579,7 +577,7 @@ if (! defined('NOLOGIN'))
 			$prefix=dol_getprefix();
 			$entityCookieName = 'DOLENTITYID_'.$prefix;
 			// TTL : is defined in the config page multicompany
-			$ttl = (! empty($conf->global->MAIN_MULTICOMPANY_COOKIE_TTL) ? $conf->global->MAIN_MULTICOMPANY_COOKIE_TTL : time()+60*60*8 );
+			$ttl = (! empty($conf->global->MULTICOMPANY_COOKIE_TTL) ? dol_now()+$conf->global->MULTICOMPANY_COOKIE_TTL : dol_now()+60*60*8 );
 			// Cryptkey : will be created randomly in the config page multicompany
 			$cryptkey = (! empty($conf->file->cookie_cryptkey) ? $conf->file->cookie_cryptkey : '' );
 
@@ -737,22 +735,12 @@ else
 $heightforframes=48;
 
 // Switch to another entity
-if (!empty($conf->global->MAIN_MODULE_MULTICOMPANY))
+if (! empty($conf->multicompany->enabled) && GETPOST('action') == 'switchentity')
 {
-	if (GETPOST('action') == 'switchentity')
+	if ($mc->switchEntity(GETPOST('entity')) >= 0)
 	{
-		$res = @dol_include_once("/multicompany/class/actions_multicompany.class.php");
-
-		if ($res)
-		{
-			$mc = new ActionsMulticompany($db);
-
-			if($mc->switchEntity(GETPOST('entity')) >= 0)
-			{
-				Header("Location: ".DOL_URL_ROOT.'/');
-				exit;
-			}
-		}
+		Header("Location: ".DOL_URL_ROOT.'/');
+		exit;
 	}
 }
 
@@ -945,8 +933,16 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
             if (! empty($conf->fckeditor->enabled) && (empty($conf->global->FCKEDITOR_EDITORNAME) || $conf->global->FCKEDITOR_EDITORNAME == 'ckeditor'))
             {
                 print '<!-- Includes JS for CKEditor -->'."\n";
-                print '<script type="text/javascript">var CKEDITOR_BASEPATH = \''.DOL_URL_ROOT.'/includes/ckeditor/\';</script>'."\n";
-                print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/ckeditor/ckeditor_basic.js"></script>'."\n";
+                if (constant('JS_CKEDITOR'))
+                {
+                    print '<script type="text/javascript">var CKEDITOR_BASEPATH = \''.JS_CKEDITOR.'\';</script>'."\n";
+                    print '<script type="text/javascript" src="'.JS_CKEDITOR.'ckeditor_basic.js"></script>'."\n";
+                }
+                else
+                {
+                    print '<script type="text/javascript">var CKEDITOR_BASEPATH = \''.DOL_URL_ROOT.'/includes/ckeditor/\';</script>'."\n";
+                    print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/ckeditor/ckeditor_basic.js"></script>'."\n";
+                }
             }
             // jQuery jeditable
             if (! empty($conf->global->MAIN_USE_JQUERY_JEDITABLE))
@@ -1035,7 +1031,9 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
  */
 function top_menu($head, $title='', $target='', $disablejs=0, $disablehead=0, $arrayofjs='', $arrayofcss='', $morequerystring='')
 {
-	global $user, $conf, $langs, $db, $dolibarr_main_authentication;
+	global $user, $conf, $langs, $db;
+	global $dolibarr_main_authentication;
+	global $mc;
 
 	$form=new Form($db);
 
@@ -1220,16 +1218,10 @@ function top_menu($head, $title='', $target='', $disablejs=0, $disablehead=0, $a
 
 	print $form->textwithtooltip('',$loginhtmltext,2,1,$logintext,'',1);
 
-	// Select entity
-	if (! empty($conf->global->MAIN_MODULE_MULTICOMPANY))
+	// Show entity info
+	if (! empty($conf->multicompany->enabled))
 	{
-		$res=@dol_include_once('/multicompany/class/actions_multicompany.class.php');
-
-		if ($res)
-		{
-			$mc = new ActionsMulticompany($db);
-			$mc->showInfo($conf->entity);
-		}
+		$mc->showInfo($conf->entity);
 	}
 
 	print $form->textwithtooltip('',$logouthtmltext,2,1,$logouttext,'',1);

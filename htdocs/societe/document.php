@@ -1,7 +1,7 @@
 <?php
 /* Copyright (C) 2002-2007 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2010      Juanjo Menent        <jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -46,7 +46,7 @@ if ($user->societe_id > 0)
 	$action='';
 	$socid = $user->societe_id;
 }
-$result = restrictedArea($user, 'societe', $socid);
+$result = restrictedArea($user, 'societe', $socid, '&societe');
 
 // Get parameters
 $sortfield = GETPOST("sortfield",'alpha');
@@ -211,14 +211,7 @@ if ($socid > 0)
 		$formfile=new FormFile($db);
 
         // Show upload form
-		if ($conf->global->MAIN_USE_JQUERY_FILEUPLOAD)
-		{
-			$formfile->form_ajaxfileupload($object);
-		}
-		else
-		{
-			$formfile->form_attach_new_file($_SERVER["PHP_SELF"].'?socid='.$socid,'',0,0,$user->rights->societe->creer);
-        }
+		$formfile->form_attach_new_file($_SERVER["PHP_SELF"].'?socid='.$socid,'',0,0,$user->rights->societe->creer,50,$object);
 
 		// List of document
 		$param='&socid='.$object->id;

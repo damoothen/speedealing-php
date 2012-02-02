@@ -465,6 +465,7 @@ ALTER TABLE llx_extrafields ADD COLUMN elementtype varchar(64) NOT NULL DEFAULT 
 ALTER TABLE llx_extrafields ADD UNIQUE INDEX uk_extrafields_name (name, entity, elementtype);
 ALTER TABLE llx_adherent_options rename to llx_adherent_extrafields;
 ALTER TABLE llx_adherent_extrafields CHANGE COLUMN fk_member fk_object integer NOT NULL;
+alter table llx_extrafields add column type varchar(8);
 
 -- drop tables renamed into llx_advanced_extra_xxx
 drop table llx_extra_fields_options;
@@ -497,7 +498,7 @@ ALTER TABLE llx_c_type_contact    ADD COLUMN module        varchar(32) NULL;
 ALTER TABLE llx_c_type_fees       ADD COLUMN module        varchar(32) NULL;
 ALTER TABLE llx_c_typent          ADD COLUMN module        varchar(32) NULL;
 
-ALTER TABLE llx_user ADD ref_ext varchar(30) AFTER entity
+ALTER TABLE llx_user ADD ref_ext varchar(30) AFTER entity;
 ALTER TABLE llx_user ADD civilite varchar(6) AFTER pass_temp;
 ALTER TABLE llx_user ADD signature text DEFAULT NULL AFTER email;
 

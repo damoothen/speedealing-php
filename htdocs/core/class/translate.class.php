@@ -1,6 +1,6 @@
 <?php
 /* Copyright (C) 2001      Eric Seigne         <erics@rycks.com>
- * Copyright (C) 2004-2010 Destailleur Laurent <eldy@users.sourceforge.net>
+ * Copyright (C) 2004-2012 Destailleur Laurent <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2010 Regis Houssin       <regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -40,9 +40,9 @@ class Translate {
 	var $charset_output='UTF-8';	// Codage used by "trans" method outputs
 
 	var $tab_translate=array();		// Array of all translations key=>value
-	var $tab_loaded=array();		// Array to store result after loading each language file
+	private $_tab_loaded=array();	// Array to store result after loading each language file
 
-	var $cache_labels=array();		// Cache for labels return by trans method
+	var $cache_labels=array();		// Cache for labels return by getLabelFromKey method
 
 
 
@@ -81,7 +81,7 @@ class Translate {
 				$newdir=$dir.$conf->global->MAIN_FORCELANGDIR;
 				if (! in_array($newdir,$this->dir))
 				{
-				    $more['module_'.$i]=$newdir; $i++;
+				    $more['module_'.$i]=$newdir; $i++; // We add the forced dir into the array $more. Just after, we add entries into $more to list of lang dir $this->dir.
 				}
 			}
 			$this->dir=array_merge($more,$this->dir);
@@ -179,7 +179,7 @@ class Translate {
 		}
 
         // Check cache
-		if (! empty($this->tab_loaded[$newdomain]))	// File already loaded for this domain
+		if (! empty($this->_tab_loaded[$newdomain]))	// File already loaded for this domain
 		{
 			//dol_syslog("Translate::Load already loaded for newdomain=".$newdomain);
 			return 0;
@@ -192,7 +192,6 @@ class Translate {
 		$langarray=explode('_',$langofdir);
 		if ($alt < 1 && strtolower($langarray[0]) == strtolower($langarray[1])) $alt=1;
 		if ($alt < 2 && (strtolower($langofdir) == 'en_us' || strtolower($langofdir) == 'fr_fr' || strtolower($langofdir) == 'es_es')) $alt=2;
-
 
 		foreach($this->dir as $keydir => $searchdir)
 		{
@@ -250,7 +249,7 @@ class Translate {
 								$tab=explode('=',$line,2);
 								$key=trim($tab[0]);
 								//print "Domain=$domain, found a string for $tab[0] with value $tab[1]<br>";
-								if (empty($this->tab_translate[$key]) && isset($tab[1]))
+								if ((! empty($conf->global->MAIN_FORCELANGDIR) || empty($this->tab_translate[$key])) && isset($tab[1]))
 								{
 									$value=trim(preg_replace('/\\n/',"\n",$tab[1]));
 
@@ -314,9 +313,9 @@ class Translate {
 
 		if ($alt == 2)
 		{
-			if ($fileread) $this->tab_loaded[$newdomain]=1;	// Set domain file as loaded
+			if ($fileread) $this->_tab_loaded[$newdomain]=1;	// Set domain file as loaded
 
-			if (empty($this->tab_loaded[$newdomain])) $this->tab_loaded[$newdomain]=2;           // Marque ce fichier comme non trouve
+			if (empty($this->_tab_loaded[$newdomain])) $this->_tab_loaded[$newdomain]=2;           // Marque ce fichier comme non trouve
 		}
 
 		// Check to be sure that SeparatorDecimal differs from SeparatorThousand

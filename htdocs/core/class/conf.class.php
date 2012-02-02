@@ -2,7 +2,7 @@
 /* Copyright (C) 2003-2007 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2003      Xavier Dutoit        <doli@sydesy.com>
  * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2011 Regis Houssin      	<regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin      	<regis@dolibarr.fr>
  * Copyright (C) 2006 	   Jean Heimburger    	<jean@tiaris.info>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -123,9 +123,7 @@ class Conf
 
 		$resql = $db->query($sql);
 		if ($resql)
-		{
-			$multicompany_sharing=array();
-			
+		{	
 			$i = 0;
 			$numr = $db->num_rows($resql);
 			while ($i < $numr)
@@ -191,28 +189,20 @@ class Conf
 							$this->modules[]=$module;
 						}
 					}
-					// Sharings between entities
-					else if ($value && preg_match('/^MULTICOMPANY_([A-Z_]+)_SHARING$/',$key,$reg))
-					{
-						$module=strtolower($reg[1]);
-						$multicompany_sharing[$module]=$value;
-					}
 				}
 				$i++;
 			}
-
-			// Sharings between entities
-			if (! empty($this->multicompany->enabled) && ! empty($multicompany_sharing))
+			
+			// Object $mc
+			if (! defined('NOREQUIREMC') && ! empty($this->multicompany->enabled))
 			{
+				global $mc;
+				
 				$ret = @dol_include_once('/multicompany/class/actions_multicompany.class.php');
 				if ($ret)
 				{
 					$mc = new ActionsMulticompany($db);
-
-					foreach($multicompany_sharing as $key => $value)
-					{
-						$this->entities[$key]=$mc->check_entity($value);
-					}
+					$mc->setValues($this);
 				}
 			}
 		}

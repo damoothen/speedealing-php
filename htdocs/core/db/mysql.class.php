@@ -304,8 +304,8 @@ class DoliDBMysql
 	/**
      * Validate a database transaction
      *
-     * @param       $log        Add more log to default log line
-     * @return      int         1 if validation is OK or transaction level no started, 0 if ERROR
+     * @param	string	$log        Add more log to default log line
+     * @return  int         		1 if validation is OK or transaction level no started, 0 if ERROR
 	 */
 	function commit($log='')
 	{
@@ -329,8 +329,8 @@ class DoliDBMysql
 	/**
 	 *	Annulation d'une transaction et retour aux anciennes valeurs
 	 *
-	 * 	@param		$log		Add more log to default log line
-	 * 	@return	    int         1 si annulation ok ou transaction non ouverte, 0 en cas d'erreur
+	 * 	@param	string	$log		Add more log to default log line
+	 * 	@return	int         		1 si annulation ok ou transaction non ouverte, 0 en cas d'erreur
 	 */
 	function rollback($log='')
 	{
@@ -351,11 +351,11 @@ class DoliDBMysql
 	/**
 	 * Execute a SQL request and return the resultset
 	 *
-	 * @param		query			SQL query string
-	 * @param		usesavepoint	0=Default mode, 1=Run a savepoint before and a rollbock to savepoint if error (this allow to have some request with errors inside global transactions).
-	 * 								Note that with Mysql, this parameter is not used as Myssql can already commit a transaction even if one request is in error, without using savepoints.
-     * @param       type            Type of SQL order ('ddl' for insert, update, select, delete or 'dml' for create, alter...)
-	 * @return	    resource    	Resultset of answer
+	 * @param	string	$query			SQL query string
+	 * @param	int		$usesavepoint	0=Default mode, 1=Run a savepoint before and a rollbock to savepoint if error (this allow to have some request with errors inside global transactions).
+	 * 									Note that with Mysql, this parameter is not used as Myssql can already commit a transaction even if one request is in error, without using savepoints.
+     * @param   string	$type           Type of SQL order ('ddl' for insert, update, select, delete or 'dml' for create, alter...)
+	 * @return	resource    			Resultset of answer
 	 */
 	function query($query,$usesavepoint=0,$type='auto')
 	{
@@ -392,8 +392,8 @@ class DoliDBMysql
 	/**
 	 *	Renvoie la ligne courante (comme un objet) pour le curseur resultset
 	 *
-	 *	@param      resultset   Curseur de la requete voulue
-	 *	@return	    object		Object result line or false if KO or end of cursor
+	 *	@param	Resultset	$resultset  Curseur de la requete voulue
+	 *	@return	Object					Object result line or false if KO or end of cursor
 	 */
 	function fetch_object($resultset)
 	{
@@ -403,10 +403,10 @@ class DoliDBMysql
 	}
 
 	/**
-	 *	Renvoie les donnees dans un tableau
-	 *
-	 *	@param      resultset   Curseur de la requete voulue
-	 *	@return	    array
+     *	Return datas as an array
+     *
+     *	@param	Resultset	$resultset  Resultset of request
+     *	@return	array					Array
 	 */
 	function fetch_array($resultset)
 	{
@@ -417,10 +417,10 @@ class DoliDBMysql
 
 
 	/**
-	 *	Renvoie les donnees comme un tableau
-	 *
-	 *	@param      resultset   Curseur de la requete voulue
-	 *	@return	    array
+     *	Return datas as an array
+     *
+     *	@param	Resultset	$resultset  Resultset of request
+     *	@return	array					Array
 	 */
 	function fetch_row($resultset)
 	{
@@ -430,11 +430,11 @@ class DoliDBMysql
 	}
 
 	/**
-	 *	Renvoie le nombre de lignes dans le resultat d'une requete SELECT
-	 *
-	 *	@see    	affected_rows
-	 *	@param      resultset   Curseur de la requete voulue
-	 *	@return     int		    Nombre de lignes
+     *	Return number of lines for result of a SELECT
+     *
+     *	@param	Resultset	$resultset  Resulset of requests
+     *	@return int		    			Nb of lines
+     *	@see    affected_rows
 	 */
 	function num_rows($resultset)
 	{
@@ -802,10 +802,11 @@ class DoliDBMysql
 	}
 
 	/**
-	 *	\brief     	List tables into a database.
-	 *	\param	    database		Name of database
-	 *	\param	    table   		Filter on some tables
-	 *	\return	    array			Array list of tables
+	 *  List tables into a database
+	 *
+	 *  @param	string		$database	Name of database
+	 *  @param	string		$table		Nmae of table filter ('xxx%')
+	 *  @return	resource				Resource
 	 */
 	function DDLListTables($database, $table='')
 	{
@@ -824,9 +825,10 @@ class DoliDBMysql
 	}
 
 	/**
-	 *	\brief     	Liste les informations des champs d'une table.
-	 *	\param	    table			Nom de la table
-	 *	\return	    array			Tableau des informations des champs de la table
+	 *	List information of columns into a table.
+	 *
+	 *	@param	string	$table		Name of table
+	 *	@return	array				Tableau des informations des champs de la table
 	 */
 	function DDLInfoTable($table)
 	{
@@ -921,10 +923,11 @@ class DoliDBMysql
 	}
 
 	/**
-     *  Return a pointer on fields describing table
-     *  @param      table   Nom de la table
-     *  @param      field   Optionnel : Nom du champ si l'on veut la desc d'un champ
-     *  @return     resource
+	 *	Return a pointer of line with description of a table or field
+	 *
+	 *	@param	string		$table	Name of table
+	 *	@param	string		$field	Optionnel : Name of field if we want description of field
+	 *	@return	resource			Resource
 	 */
 	function DDLDescTable($table,$field="")
 	{
@@ -936,12 +939,13 @@ class DoliDBMysql
 	}
 
     /**
-     *  Insert a new field in table
-     *  @param      table           Table name
-     *  @param      field_name      Name of field
-     *  @param      field_desc      Array with properties describing new field
-     *  @param      field_position  Optionnal ie.: "after fielddummy"
-     *  @return     int             <0 if KO, >0 if OK
+	 *	Create a new field into table
+	 *
+	 *	@param	string	$table 				Name of table
+	 *	@param	string	$field_name 		Name of field to add
+	 *	@param	string	$field_desc 		Tableau associatif de description du champ a inserer[nom du parametre][valeur du parametre]
+	 *	@param	string	$field_position 	Optionnel ex.: "after champtruc"
+	 *	@return	int							<0 if KO, >0 if OK
      */
     function DDLAddField($table,$field_name,$field_desc,$field_position="")
     {
@@ -982,10 +986,11 @@ class DoliDBMysql
 
 	/**
 	 *	Update format of a field into a table
-	 *	@param	    table 			Name of table
-	 *	@param		field_name 		Name of field to modify
-	 *	@param	    field_desc 		Array with description of field format
-	 *	@return	    int				<0 if KO, >0 if OK
+	 *
+	 *	@param	string	$table 				Name of table
+	 *	@param	string	$field_name 		Name of field to modify
+	 *	@param	string	$field_desc 		Array with description of field format
+	 *	@return	int							<0 if KO, >0 if OK
 	 */
 	function DDLUpdateField($table,$field_name,$field_desc)
 	{
@@ -1001,10 +1006,11 @@ class DoliDBMysql
 	}
 
 	/**
-	 *	Drop a field in table
-	 *	@param	    table 			Nom de la table
-	 *	@param		field_name 		Nom du champ a inserer
-	 *	@return	    int				<0 si KO, >0 si OK
+	 *	Drop a field from table
+	 *
+	 *	@param	string	$table 			Name of table
+	 *	@param	string	$field_name 	Name of field to drop
+	 *	@return	int						<0 if KO, >0 if OK
 	 */
 	function DDLDropField($table,$field_name)
 	{
@@ -1020,12 +1026,13 @@ class DoliDBMysql
 
 
 	/**
-	 *	\brief      Create a user and privileges to connect to database (even if database does not exists yet)
-	 *	\param	    dolibarr_main_db_host 		Ip server
-	 *	\param	    dolibarr_main_db_user 		Username to create
-	 *	\param	    dolibarr_main_db_pass 		Password
-	 *	\param		dolibarr_main_db_name		Database name where user must be granted
-	 *	\return	    int							<0 if KO, >=0 if OK
+	 * 	Create a user and privileges to connect to database (even if database does not exists yet)
+	 *
+	 *	@param	string	$dolibarr_main_db_host 		Ip serveur
+	 *	@param	string	$dolibarr_main_db_user 		Nom user a creer
+	 *	@param	string	$dolibarr_main_db_pass 		Mot de passe user a creer
+	 *	@param	string	$dolibarr_main_db_name		Database name where user must be granted
+	 *	@return	int									<0 if KO, >=0 if OK
 	 */
 	function DDLCreateUser($dolibarr_main_db_host,$dolibarr_main_db_user,$dolibarr_main_db_pass,$dolibarr_main_db_name)
 	{
@@ -1069,8 +1076,9 @@ class DoliDBMysql
 	}
 
 	/**
-	 *	\brief		Return charset used to store data in database
-	 *	\return		string		Charset
+	 *	Return charset used to store data in database
+	 *
+	 *	@return		string		Charset
 	 */
 	function getDefaultCharacterSetDatabase()
 	{
@@ -1085,8 +1093,9 @@ class DoliDBMysql
 	}
 
 	/**
-	 *	\brief		Return list of available charset that can be used to store data in database
-	 *	\return		array		List of Charset
+	 *	Return list of available charset that can be used to store data in database
+	 *
+	 *	@return		array		List of Charset
 	 */
 	function getListOfCharacterSet()
 	{
@@ -1110,8 +1119,9 @@ class DoliDBMysql
 	}
 
 	/**
-	 *	\brief		Return collation used in database
-	 *	\return		string		Collation value
+	 *	Return collation used in database
+	 *
+	 *	@return		string		Collation value
 	 */
 	function getDefaultCollationDatabase()
 	{
@@ -1126,8 +1136,9 @@ class DoliDBMysql
 	}
 
 	/**
-	 *	\brief		Return list of available collation that can be used for database
-	 *	\return		array		Liste of Collation
+	 *	Return list of available collation that can be used for database
+	 *
+	 *	@return		array		Liste of Collation
 	 */
 	function getListOfCollation()
 	{
@@ -1151,6 +1162,7 @@ class DoliDBMysql
 
 	/**
 	 *	Return full path of dump program
+	 *
 	 *	@return		string		Full path of dump program
 	 */
 	function getPathOfDump()
@@ -1168,8 +1180,9 @@ class DoliDBMysql
 	}
 
 	/**
-	 *	\brief		Return full path of restore program
-	 *	\return		string		Full path of restore program
+	 *	Return full path of restore program
+	 *
+	 *	@return		string		Full path of restore program
 	 */
 	function getPathOfRestore()
 	{
@@ -1186,9 +1199,10 @@ class DoliDBMysql
 	}
 
 	/**
-	 *	\brief		Return value of server parameters
-	 * 	\param		filter		Filter list on a particular value
-	 * 	\return		string		Value for parameter
+	 *	Return value of server parameters
+	 *
+	 *  @param	string	$filter		Filter list on a particular value
+	 * 	@return	string				Value for parameter
 	 */
 	function getServerParametersValues($filter='')
 	{
@@ -1207,9 +1221,10 @@ class DoliDBMysql
 	}
 
 	/**
-	 *	\brief		Return value of server status
-	 * 	\param		filter		Filter list on a particular value
-	 * 	\return		string		Value for parameter
+	 *	Return value of server status
+	 *
+	 * 	@param	string	$filter		Filter list on a particular value
+	 * 	@return	string				Value for parameter
 	 */
 	function getServerStatusValues($filter='')
 	{

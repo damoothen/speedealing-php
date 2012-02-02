@@ -3,7 +3,7 @@
  * Copyright (C) 2002-2003 Jean-Louis Bergamo   <jlb@j1b.org>
  * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2004      Eric Seigne          <eric.seigne@ryxeo.com>
- * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2005      Lionel Cousteix      <etm_ltd@tiscali.co.uk>
  * Copyright (C) 2011      Herve Prot           <herve.prot@symeos.com>
  *
@@ -64,7 +64,7 @@ if ($id)
 }
 
 //Multicompany in mode transversal
-if(! empty($conf->multicompany->enabled) && $conf->entity > 1 && $conf->multicompany->transverse_mode)
+if (! empty($conf->multicompany->enabled) && $conf->entity > 1 && $conf->multicompany->transverse_mode)
 {
     accessforbidden();
 }
@@ -74,7 +74,7 @@ $socid=0;
 if ($user->societe_id > 0) $socid = $user->societe_id;
 $feature2='user';
 if ($user->id == $id) { $feature2=''; $canreaduser=1; } // A user can always read its own card
-$result = restrictedArea($user, 'user', $id, '', $feature2);
+$result = restrictedArea($user, 'user', $id, '&user', $feature2);
 if ($user->id <> $id && ! $canreaduser) accessforbidden();
 
 $langs->load("users");
@@ -746,7 +746,6 @@ if (($action == 'create') || ($action == 'adduserldap'))
     {
         if (empty($conf->multicompany->transverse_mode) && $conf->entity == 1 && $user->admin && ! $user->entity)
         {
-            $mc = new ActionsMulticompany($db);
             print "<tr>".'<td valign="top">'.$langs->trans("Entity").'</td>';
             print "<td>".$mc->select_entities($conf->entity);
             print "</td></tr>\n";
@@ -1076,7 +1075,6 @@ else
             	}
             	else
             	{
-            		$mc = new ActionsMulticompany($db);
             		$mc->getInfo($fuser->entity);
             		print $mc->label;
             	}
@@ -1327,7 +1325,6 @@ else
                     {
                         if ($conf->entity == 1 && $conf->multicompany->transverse_mode)
                         {
-                            $mc = new ActionsMulticompany($db);
                             print '</td><td valign="top">'.$langs->trans("Entity").'</td>';
                             print "<td>".$mc->select_entities($conf->entity);
                         }
@@ -1378,9 +1375,8 @@ else
                             print img_object($langs->trans("ShowGroup"),"group").' '.$group->nom;
                         }
                         print '</td>';
-                        if(! empty($conf->multicompany->enabled) && !empty($conf->multicompany->transverse_mode) && $conf->entity == 1 && $user->admin && ! $user->entity)
+                        if (! empty($conf->multicompany->enabled) && ! empty($conf->multicompany->transverse_mode) && $conf->entity == 1 && $user->admin && ! $user->entity)
                         {
-                            $mc = new ActionsMulticompany($db);
                             $mc->getInfo($group->usergroup_entity);
                             print '<td class="valeur">'.$mc->label."</td>";
                         }
@@ -1594,9 +1590,8 @@ else
             //Multicompany
             if (! empty($conf->multicompany->enabled))
             {
-            	if(empty($conf->multicompany->transverse_mode) && $conf->entity == 1 && $user->admin && ! $user->entity)
+            	if (empty($conf->multicompany->transverse_mode) && $conf->entity == 1 && $user->admin && ! $user->entity)
             	{
-            		$mc = new ActionsMulticompany($db);
             		print "<tr>".'<td valign="top">'.$langs->trans("Entity").'</td>';
             		print "<td>".$mc->select_entities($conf->entity);
             		print "</td></tr>\n";

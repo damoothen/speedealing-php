@@ -3,7 +3,7 @@
  * Copyright (C) 2003      Brian Fraval         <brian@fraval.org>
  * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005      Eric Seigne          <eric.seigne@ryxeo.com>
- * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2008	   Patrick Raguin       <patrick.raguin@auguria.net>
  * Copyright (C) 2010-2011 Juanjo Menent        <jmenent@2byte.es>
  * Copyright (C) 2010-2011 Herve Prot           <herve.prot@symeos.com>
@@ -68,7 +68,7 @@ if (! empty($canvas))
 }
 
 // Security check
-$result = restrictedArea($user, 'societe', $socid, '', '', '', '', $objcanvas);
+$result = restrictedArea($user, 'societe', $socid, '&societe', '', '', '', $objcanvas);
 
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
 include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
@@ -113,9 +113,10 @@ if (empty($reshook))
             $object->particulier       = GETPOST("private");
 
             $object->name              = empty($conf->global->MAIN_FIRSTNAME_NAME_POSITION)?trim($_POST["prenom"].' '.$_POST["nom"]):trim($_POST["nom"].' '.$_POST["prenom"]);
-            $object->nom_particulier   = $_POST["nom"];
-            $object->prenom            = $_POST["prenom"];
             $object->civilite_id       = $_POST["civilite_id"];
+            // Add non official properties
+            $object->name_bis          = $_POST["nom"];
+            $object->firstname         = $_POST["prenom"];
         }
         else
         {
@@ -239,7 +240,7 @@ if (empty($reshook))
 					if($object->id_prof_exists($i,$_POST["$slabel"],$object->id))
 					{
 						$langs->load("errors");
-                		$error++; $errors[] = $langs->transcountry('ProfId'.$i ,$object->pays_code)." ".$langs->trans("ErrorProdIdAlreadyExist",$_POST["$slabel"]);
+                		$error++; $errors[] = $langs->transcountry('ProfId'.$i ,$object->country_code)." ".$langs->trans("ErrorProdIdAlreadyExist",$_POST["$slabel"]);
                 		$action = ($action=='add'?'create':'edit');
 					}
 				}
@@ -263,15 +264,13 @@ if (empty($reshook))
                         $contact=new Contact($db);
 
      					$contact->civilite_id		= $object->civilite_id;
-                        $contact->name				= $object->nom_particulier;
-                        $contact->firstname			= $object->prenom;
+                        $contact->name				= $object->name_bis;
+                        $contact->firstname			= $object->firstname;
                         $contact->address			= $object->address;
                         $contact->zip				= $object->zip;
-                        $contact->cp				= $object->cp;		// TODO obsolete
                         $contact->town				= $object->town;
-                        $contact->ville				= $object->ville;	// TODO obsolete
-                        $contact->fk_departement	= $object->state_id;
-                        $contact->fk_pays			= $object->country_id;
+                        $contact->state_id      	= $object->state_id;
+                        $contact->country_id		= $object->country_id;
                         $contact->socid				= $object->id;	// fk_soc
                         $contact->status			= 1;
                         $contact->email				= $object->email;
@@ -665,7 +664,7 @@ else
         $object->pays_id=$_POST["country_id"]?$_POST["country_id"]:$mysoc->country_id;
         if ($object->country_id)
         {
-            $tmparray=getCountry($object->country_id,'all',$db,$langs,0);
+            $tmparray=getCountry($object->country_id,'all');
             $object->pays_code=$tmparray['code'];
             $object->pays=$tmparray['label'];
             $object->country_code=$tmparray['code'];
@@ -846,7 +845,7 @@ else
 
         // Country
         print '<tr><td width="25%">'.$langs->trans('Country').'</td><td colspan="3">';
-        $form->select_pays($object->country_id,'country_id');
+        print $form->select_country($object->country_id,'country_id');
         if ($user->admin) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"),1);
         print '</td></tr>';
 
@@ -868,40 +867,40 @@ else
 
         print '<tr>';
         // IdProf1 (SIREN for France)
-        $idprof=$langs->transcountry('ProfId1',$object->pays_code);
+        $idprof=$langs->transcountry('ProfId1',$object->country_code);
         if ($idprof!='-')
         {
             print '<td>'.$idprof.'</td><td>';
-            print $formcompany->get_input_id_prof(1,'idprof1',$object->siren,$object->pays_code);
+            print $formcompany->get_input_id_prof(1,'idprof1',$object->idprof1,$object->country_code);
             print '</td>';
         }
         else print '<td>&nbsp;</td><td>&nbsp;</td>';
         // IdProf2 (SIRET for France)
-        $idprof=$langs->transcountry('ProfId2',$object->pays_code);
+        $idprof=$langs->transcountry('ProfId2',$object->country_code);
         if ($idprof!='-')
         {
             print '<td>'.$idprof.'</td><td>';
-            print $formcompany->get_input_id_prof(2,'idprof2',$object->siret,$object->pays_code);
+            print $formcompany->get_input_id_prof(2,'idprof2',$object->idprof2,$object->country_code);
             print '</td>';
         }
         else print '<td>&nbsp;</td><td>&nbsp;</td>';
         print '</tr>';
         print '<tr>';
         // IdProf3 (APE for France)
-        $idprof=$langs->transcountry('ProfId3',$object->pays_code);
+        $idprof=$langs->transcountry('ProfId3',$object->country_code);
         if ($idprof!='-')
         {
             print '<td>'.$idprof.'</td><td>';
-            print $formcompany->get_input_id_prof(3,'idprof3',$object->ape,$object->pays_code);
+            print $formcompany->get_input_id_prof(3,'idprof3',$object->idprof3,$object->country_code);
             print '</td>';
         }
         else print '<td>&nbsp;</td><td>&nbsp;</td>';
         // IdProf4 (NU for France)
-        $idprof=$langs->transcountry('ProfId4',$object->pays_code);
+        $idprof=$langs->transcountry('ProfId4',$object->country_code);
         if ($idprof!='-')
         {
             print '<td>'.$idprof.'</td><td>';
-            print $formcompany->get_input_id_prof(4,'idprof4',$object->idprof4,$object->pays_code);
+            print $formcompany->get_input_id_prof(4,'idprof4',$object->idprof4,$object->country_code);
             print '</td>';
         }
         else print '<td>&nbsp;</td><td>&nbsp;</td>';
@@ -957,7 +956,7 @@ else
         print '<td colspan="3">';
         if ($object->country_id)
         {
-            $formcompany->select_forme_juridique($object->forme_juridique_code,$object->pays_code);
+            $formcompany->select_forme_juridique($object->forme_juridique_code,$object->country_code);
         }
         else
         {
@@ -970,7 +969,7 @@ else
 
         // Local Taxes
         // TODO add specific function by country
-        if($mysoc->pays_code=='ES')
+        if($mysoc->country_code=='ES')
         {
             if($mysoc->localtax1_assuj=="1" && $mysoc->localtax2_assuj=="1")
             {
@@ -1098,16 +1097,16 @@ else
                 $object->address				= $_POST["adresse"];
                 $object->zip					= $_POST["zipcode"];
                 $object->town					= $_POST["town"];
-                $object->country_id				= $_POST["country_id"]?$_POST["country_id"]:$mysoc->pays_id;
+                $object->country_id				= $_POST["country_id"]?$_POST["country_id"]:$mysoc->country_id;
                 $object->state_id				= $_POST["departement_id"];
                 $object->tel					= $_POST["tel"];
                 $object->fax					= $_POST["fax"];
                 $object->email					= $_POST["email"];
                 $object->url					= $_POST["url"];
                 $object->capital				= $_POST["capital"];
-                $object->siren					= $_POST["idprof1"];
-                $object->siret					= $_POST["idprof2"];
-                $object->ape					= $_POST["idprof3"];
+                $object->idprof1				= $_POST["idprof1"];
+                $object->idprof2				= $_POST["idprof2"];
+                $object->idprof3				= $_POST["idprof3"];
                 $object->idprof4				= $_POST["idprof4"];
                 $object->typent_id				= $_POST["typent_id"];
                 $object->effectif_id			= $_POST["effectif_id"];
@@ -1291,7 +1290,7 @@ else
 
             // Country
             print '<tr><td>'.$langs->trans('Country').'</td><td colspan="3">';
-            $form->select_pays($object->country_id,'country_id');
+            print $form->select_country($object->country_id,'country_id');
             if ($user->admin) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"),1);
             print '</td></tr>';
 
@@ -1317,7 +1316,7 @@ else
             if ($idprof!='-')
             {
                 print '<td>'.$idprof.'</td><td>';
-                print $formcompany->get_input_id_prof(1,'idprof1',$object->siren,$object->country_code);
+                print $formcompany->get_input_id_prof(1,'idprof1',$object->idprof1,$object->country_code);
                 print '</td>';
             }
             else print '<td>&nbsp;</td><td>&nbsp;</td>';
@@ -1326,7 +1325,7 @@ else
             if ($idprof!='-')
             {
                 print '<td>'.$idprof.'</td><td>';
-                print $formcompany->get_input_id_prof(2,'idprof2',$object->siret,$object->country_code);
+                print $formcompany->get_input_id_prof(2,'idprof2',$object->idprof2,$object->country_code);
                 print '</td>';
             }
             else print '<td>&nbsp;</td><td>&nbsp;</td>';
@@ -1337,7 +1336,7 @@ else
             if ($idprof!='-')
             {
                 print '<td>'.$idprof.'</td><td>';
-                print $formcompany->get_input_id_prof(3,'idprof3',$object->ape,$object->country_code);
+                print $formcompany->get_input_id_prof(3,'idprof3',$object->idprof3,$object->country_code);
                 print '</td>';
             }
             else print '<td>&nbsp;</td><td>&nbsp;</td>';
@@ -1426,7 +1425,7 @@ else
             print '</td></tr>';
 
             print '<tr><td>'.$langs->trans('JuridicalStatus').'</td><td colspan="3">';
-            $formcompany->select_forme_juridique($object->forme_juridique_code,$object->pays_code);
+            $formcompany->select_forme_juridique($object->forme_juridique_code,$object->country_code);
             print '</td></tr>';
 
             // Capital
@@ -1625,7 +1624,7 @@ else
 
         // Country
         print '<tr '.$bc[$var].'><td id="label">'.$langs->trans("Country").'</td><td id="value" nowrap="nowrap">';
-        $img=picto_from_langcode($object->pays_code);
+        $img=picto_from_langcode($object->country_code);
         if ($object->isInEEC()) print $form->textwithpicto(($img?$img.' ':'').$object->pays,$langs->trans("CountryIsInEEC"),1,0);
         else print ($img?$img.' ':'').$object->pays;
         print '</td>';
@@ -1645,8 +1644,8 @@ else
 		}
 
         // Phone
-        print '<tr '.$bc[$var].'><td id="label">'.$langs->trans('Phone').'</td><td id="value" style="min-width: 25%;">'.dol_print_phone($object->tel,$object->pays_code,0,$object->id,'AC_TEL').'</td>';
-        print '<td>'.$langs->trans('Fax').'</td><td id="value" style="min-width: 25%;">'.dol_print_phone($object->fax,$object->pays_code,0,$object->id,'AC_FAX').'</td></tr>';
+        print '<tr '.$bc[$var].'><td id="label">'.$langs->trans('Phone').'</td><td id="value" style="min-width: 25%;">'.dol_print_phone($object->tel,$object->country_code,0,$object->id,'AC_TEL').'</td>';
+        print '<td>'.$langs->trans('Fax').'</td><td id="value" style="min-width: 25%;">'.dol_print_phone($object->fax,$object->country_code,0,$object->id,'AC_FAX').'</td></tr>';
         $var=!$var;
 
         // EMail
@@ -1661,12 +1660,12 @@ else
         $var=!$var;
 
         // ProfId1 (SIREN for France)
-        $profid=$langs->transcountry('ProfId1',$object->pays_code);
+        $profid=$langs->transcountry('ProfId1',$object->country_code);
         if ($profid!='-')
         {
             print '<tr '.$bc[$var].'><td id="label">'.$profid.'</td><td id="value">';
-            print $object->siren;
-            if ($object->siren)
+            print $object->idprof1;
+            if ($object->idprof1)
             {
                 if ($object->id_prof_check(1,$object) > 0) print ' &nbsp; '.$object->id_prof_url(1,$object);
                 else print ' <font class="error">('.$langs->trans("ErrorWrongValue").')</font>';
@@ -1675,12 +1674,12 @@ else
         }
         else print '<tr '.$bc[$var].'><td id="label">&nbsp;</td><td>&nbsp;</td>';
         // ProfId2 (SIRET for France)
-        $profid=$langs->transcountry('ProfId2',$object->pays_code);
+        $profid=$langs->transcountry('ProfId2',$object->country_code);
         if ($profid!='-')
         {
             print '<td>'.$profid.'</td><td id="value">';
-            print $object->siret;
-            if ($object->siret)
+            print $object->idprof2;
+            if ($object->idprof2)
             {
                 if ($object->id_prof_check(2,$object) > 0) print ' &nbsp; '.$object->id_prof_url(2,$object);
                 else print ' <font class="error">('.$langs->trans("ErrorWrongValue").')</font>';
@@ -1691,12 +1690,12 @@ else
         $var=!$var;
 
         // ProfId3 (APE for France)
-        $profid=$langs->transcountry('ProfId3',$object->pays_code);
+        $profid=$langs->transcountry('ProfId3',$object->country_code);
         if ($profid!='-')
         {
             print '<tr '.$bc[$var].'><td id="label">'.$profid.'</td><td id="value">';
-            print $object->ape;
-            if ($object->ape)
+            print $object->idprof3;
+            if ($object->idprof3)
             {
                 if ($object->id_prof_check(3,$object) > 0) print ' &nbsp; '.$object->id_prof_url(3,$object);
                 else print ' <font class="error">('.$langs->trans("ErrorWrongValue").')</font>';
@@ -1705,7 +1704,7 @@ else
         }
         else print '<tr '.$bc[$var].'><td id="label">&nbsp;</td><td>&nbsp;</td>';
         // ProfId4 (NU for France)
-        $profid=$langs->transcountry('ProfId4',$object->pays_code);
+        $profid=$langs->transcountry('ProfId4',$object->country_code);
         if ($profid!='-')
         {
             print '<td id="label">'.$profid.'</td><td id="value">';
@@ -1769,7 +1768,7 @@ else
 
         // Local Taxes
         // TODO add specific function by country
-        if($mysoc->pays_code=='ES')
+        if($mysoc->country_code=='ES')
         {
             if($mysoc->localtax1_assuj=="1" && $mysoc->localtax2_assuj=="1")
             {

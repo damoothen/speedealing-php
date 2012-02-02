@@ -261,7 +261,7 @@ ThisIsProcessToFollow= Voici la procédure à suivre:
 StepNb= Etape %s
 FindPackageFromWebSite=Recherche le package qui répond à votre besoin (par exemple sur le site web %s).
 DownloadPackageFromWebSite= Télécharger le package.
-UnpackPackageInDolibarrRoot= Décompresser le package dans le répertoire document de Dolibarr <b>%s</b> par dessus les fichiers existants (sans déplacer ou effacer cet existant sous peine de perdre sa configuration ou les modules non officiels installés)
+UnpackPackageInDolibarrRoot= Décompresser le package dans le répertoire racine de Dolibarr <b>%s</b> par dessus les fichiers existants (sans déplacer ou effacer cet existant sous peine de perdre sa configuration ou les modules non officiels installés)
 SetupIsReadyForUse= L'installation est terminée et Dolibarr est prêt à être utilisé avec le nouveau composant.
 CurrentVersion= Version en cours de Dolibarr
 CallUpdatePage= Appeler la page de l'outil de mise à jour de la structure et données de la base: %s.
@@ -1116,12 +1116,15 @@ LDAPDescGroups= Cette page permet de définir le nom des attributs de l'arbre LD
 LDAPDescMembers= Cette page permet de définir le nom des attributs de l'arbre LDAP pour chaque information des membres du module adhérents Dolibarr.
 LDAPDescValues= Les valeurs exemples sont adaptées à <b>OpenLDAP</b> avec les schémas suivant chargés: <b>core.schema, cosine.schema, inetorgperson.schema</b>). Si vous utilisez les valeurs suggérées et OpenLDAP, modifiez votre fichier de configuration LDAP <b>slapd.conf</b> pour avoir tous ces schémas actifs.
 ForANonAnonymousAccess= Pour un accès authentifié (pour accès en écriture par exemple)
-##### Products #####
+##### Products/Services #####
 ProductSetup= Configuration du module Produits
+ServiceSetup= Configuration du module Services
+ProductServiceSetup= Configuration des modules Produits et Services
 NumberOfProductShowInSelect= Nombre de produits max dans les listes déroulantes (0=aucune limite)
 ConfirmDeleteProductLineAbility= Confirmation de suppression d'une ligne produit dans les formulaires
 ModifyProductDescAbility= Personnalisation des descriptions produits dans les formulaires
 ViewProductDescInFormAbility= Visualisation des descriptions produits dans les formulaires (sinon en tant que tooltip)
+ViewProductDescInThirdpartyLanguageAbility= Visualisation des descriptions produits dans la langue du tiers
 UseSearchToSelectProduct= Utiliser un formulaire de recherche pour le choix d'un produit (plutôt qu'une liste déroulante).<br>Notez que si vous avez un nombre important de produits ou services (> 100 000), vous pouvez améliorer les performances en définissant la constante PRODUCT_DONOTSEARCH_ANYWHERE à 1 dans Configuration->Divers. La recherche sera alors limitée au début de la chaine.
 UseEcoTaxeAbility= Prise en charge des éco-taxes (DEEE)
 SetDefaultBarcodeTypeProducts= Type de code-barres utilisé par défaut pour les produits
@@ -1284,6 +1287,8 @@ BankOrderGlobal=Général
 BankOrderGlobalDesc=Ordre d'affichage général
 BankOrderES=Espagnol
 BankOrderESDesc=Ordre d'affichage Espagnol
+##### MailmanSpip #####
+MailmanSpipSetup=Configuration du module Mailman et Spip
 ##### Multicompany #####
 MultiCompanySetup=Configuration du module Multi-société
 ##### Suppliers #####

@@ -112,7 +112,6 @@ function societe_prepare_head($object)
         	$head[$h][2] = 'notify';
         	$h++;
         }
-
     }
 
     // Log
@@ -141,7 +140,7 @@ function societe_prepare_head($object)
  * Return array of tabs to used on page
  *
  * @param	Object	$object		Object for tabs
- * @return
+ * @return	array				Array of tabs
  */
 function societe_prepare_head2($object)
 {

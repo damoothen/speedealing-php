@@ -1,7 +1,7 @@
 <?php
 /* Copyright (C) 2001-2005 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2010-2011 Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -43,7 +43,7 @@ $langs->load('commercial');
 // Security check
 $socid = GETPOST("socid");
 if ($user->societe_id) $socid=$user->societe_id;
-$result = restrictedArea($user, 'societe',$socid,'');
+$result = restrictedArea($user, 'societe', $socid, '&societe');
 
 
 /*
@@ -191,9 +191,9 @@ if ($socid > 0)
 
 	// Country
         print '<tr '.$bc[$var].'><td id="label">'.$langs->trans("Country").'</td><td id="value" nowrap="nowrap">';
-        $img=picto_from_langcode($societe->pays_code);
+        $img=picto_from_langcode($societe->country_code);
         if ($societe->isInEEC()) print $form->textwithpicto(($img?$img.' ':'').$societe->pays,$langs->trans("CountryIsInEEC"),1,0);
-        else print ($img?$img.' ':'').$societe->pays;
+        else print ($img?$img.' ':'').$societe->country;
         print '</td>';
         
         // MAP GPS
