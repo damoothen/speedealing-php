@@ -108,7 +108,7 @@ class CActionComm
      *    @param	string		$idorcode	'id' or 'code'
      *    @return   array       			Array of all event types if OK, <0 if KO
      */
-    function liste_array($active='',$idorcode='id')
+    function liste_array($active='',$idorcode='id',$type=0)
     {
         global $langs,$conf;
         $langs->load("commercial");
@@ -124,6 +124,8 @@ class CActionComm
 		}
 		$sql.=" AND type in(".$type.")";
 		$sql.= " ORDER BY module, position";
+                
+                //print $sql;exit;
 
 		dol_syslog(get_class($this)."::liste_array sql=".$sql);
 		$resql=$this->db->query($sql);

@@ -1045,12 +1045,12 @@ function fieldList($fieldlist,$obj='',$tabname='')
             print $formadmin->select_language($conf->global->MAIN_LANG_DEFAULT,'lang');
             print '</td>';
         }
-		if ($fieldlist[$field] == 'priority') {
-                        $priority=array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
-			print '<td>';
-                        print $html->selectarray("priority",$priority,$obj->priority);
-			print '</td>';
-		}
+	elseif ($fieldlist[$field] == 'priority') {
+            $priority=array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+            print '<td>';
+            print $form->selectarray("priority",$priority,$obj->$fieldlist[$field]);
+            print '</td>';
+	}
         // Le type de l'element (pour les type de contact).'
         elseif ($fieldlist[$field] == 'element')
         {

@@ -178,7 +178,7 @@ class FormActions
 
         $arraylist=array();
         $arraylist=$caction->liste_array($active,$idorcode,$type);
-        $arraylist[0]='&nbps;';
+        $arraylist[0]='&nbsp;';
         asort($arraylist);
 
         print $form->selectarray($htmlname, $arraylist, $selected);
