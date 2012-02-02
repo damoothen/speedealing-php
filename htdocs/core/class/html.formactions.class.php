@@ -177,7 +177,7 @@ class FormActions
         $form=new Form($this->db);
 
         $arraylist=$caction->liste_array($active,$idorcode,$type);
-        $arraylist[0]='&nbsp;';
+        $arraylist[0]='';
         asort($arraylist);
 
         print $form->selectarray($htmlname, $arraylist, $selected);
