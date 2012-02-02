@@ -176,8 +176,9 @@ class FormActions
         $caction=new CActionComm($this->db);
         $form=new Form($this->db);
 
+        $arraylist=array();
         $arraylist=$caction->liste_array($active,$idorcode,$type);
-        $arraylist[0]='';
+        $arraylist[0]='&nbps;';
         asort($arraylist);
 
         print $form->selectarray($htmlname, $arraylist, $selected);
