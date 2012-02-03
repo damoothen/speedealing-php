@@ -1,4 +1,5 @@
 <?php
+
 /* Copyright (C) 2012      Patrick Mary           <laube@hotmail.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -16,10 +17,10 @@
  */
 
 /**
- *	\file       htdocs/contact/serverprocess.php
- *	\ingroup    societe
- *	\brief      load data to display
- *	\version    $Id: serverprocess.php,v 1.5 2012/01/19 16:15:05 synry63 Exp $
+ * 	\file       htdocs/contact/serverprocess.php
+ * 	\ingroup    societe
+ * 	\brief      load data to display
+ * 	\version    $Id: serverprocess.php,v 1.5 2012/01/19 16:15:05 synry63 Exp $
  */
 require_once("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT . "/contact/class/contact.class.php");
@@ -30,8 +31,28 @@ $langs->load('commercial');
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
  * you want to insert a non-database field (for example a counter or static image)
  */
-$aColumns = array('', 'name', 'firstname', 'poste', 'nom', 'phone', 'email', 'cpost', 'tms', 'priv', '');
-$aColumnsSql = array('', 'p.name', 'p.firstname', 'p.poste', 's.nom', 'p.phone', 'p.email', 's.cp', 'p.tms', 'p.priv', '');
+
+if (empty($conf->global->SOCIETE_DISABLE_CONTACTS)){
+    $aColumns = array('', 'name', 'firstname', 'poste', 'nom', 'phone', 'email', 'cpost', 'categorie', 'tms', 'priv', '');
+    $aColumnsSql = array('', 'p.name', 'p.firstname', 'p.poste', 's.nom', 'p.phone', 'p.email', 's.cp', 'c.label', 'p.tms', 'p.priv', '');
+     
+}
+else {
+    $aColumns = array('', 'name', 'firstname', 'poste', 'phone', 'email', 'cpost', 'categorie', 'tms', 'priv', '');
+    $aColumnsSql = array('', 'p.name', 'p.firstname', 'p.poste', 'p.phone', 'p.email', 's.cp', 'c.label', 'p.tms', 'p.priv', '');
+  
+}
+
+/* get Type */
+$type = $_GET['type'];
+if ($type != "") {
+    if ($type == "p")
+        $type = '1';
+    else if ($type == "c")
+        $type = '2';
+    else if ($type == "o")
+        $type = '0';
+}
 /*
  * Paging
  */
@@ -63,9 +84,7 @@ if (isset($_GET['iSortCol_0'])) {
     }
 }
 
-/*
- * Filtering
- */
+/* search basic */
 $sWhere = "";
 if ($_GET['sSearch'] != "") {
     $sWhere = " AND (";
@@ -76,16 +95,84 @@ if ($_GET['sSearch'] != "") {
     $sWhere = substr_replace($sWhere, "", -3);
     $sWhere .= ')';
 }
-
+/* search on Lastname */
+if ($_GET['sSearch_0'] != "") {
+    $sWhere .= " AND (";
+    $sWhere .= "p.name " . " LIKE '%" . $_GET['sSearch_0'] . "%'";
+    $sWhere .= ')';
+}
+/* search on Firstname*/
+if ($_GET['sSearch_1'] != "") {
+    $sWhere .= " AND (";
+    $sWhere .= "p.firstname " . " LIKE '%" . $_GET['sSearch_1'] . "%'";
+    $sWhere .= ')';
+}
+/* search on PostOrFunction */
+if ($_GET['sSearch_2'] != "") {
+    $sWhere .= " AND (";
+    $sWhere .= "p.poste " . " LIKE '%" . $_GET['sSearch_2'] . "%'";
+    $sWhere .= ')';
+}
+/* search on company*/
+if ($_GET['sSearch_3'] != "") {
+    $sWhere .= " AND (";
+    $sWhere .= "s.nom " . " LIKE '%" . $_GET['sSearch_3'] . "%'";
+    $sWhere .= ')';
+}
+/* search on phone*/
+if ($_GET['sSearch_4'] != "") {
+    $sWhere .= " AND (";
+    $sWhere .= "p.phone " . " LIKE '%" . $_GET['sSearch_4'] . "%'";
+    $sWhere .= ')';
+}
+/* search on mail*/
+if ($_GET['sSearch_5'] != "") {
+    $sWhere .= " AND (";
+    $sWhere .= "p.email " . " LIKE '%" . $_GET['sSearch_5'] . "%'";
+    $sWhere .= ')';
+}
+/* search on zip */
+if ($_GET['sSearch_6'] != "") {
+    $sWhere .= " AND (";
+    $sWhere .= "s.cp " . " LIKE '%" . $_GET['sSearch_6'] . "%'";
+    $sWhere .= ')';
+}
+/* search on categorie */
+if ($_GET['sSearch_7'] != "") {
+    $sWhere .= " AND (";
+    $sWhere .= "c.label " . " LIKE '%" . $_GET['sSearch_7'] . "%'";
+    $sWhere .= ')';
+}
+/* search on date */
+if ($_GET['sSearch_8'] != "") {
+    $sWhere .= " AND (";
+    $sWhere .= "p.tms " . " LIKE '%" . $_GET['sSearch_8'] . "%'";
+    $sWhere .= ')';
+}
 /* sql query */
 $sql = "SELECT s.rowid as socid, s.nom,";
 $sql.= " s.cp as cpost, p.rowid as cidp, p.name, p.firstname, p.poste, p.email,";
 $sql.= " p.phone, p.phone_mobile, p.fax, p.fk_pays, p.priv,";
 $sql.= " p.tms,";
 $sql.= " cp.code as pays_code";
+$r = stristr($sOrder, 'c.label');
+if ($r != false || $_GET['sSearch_7'] != "") {
+    $sql.=",c.label";
+}
 $sql.= " FROM " . MAIN_DB_PREFIX . "socpeople as p";
 $sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "c_pays as cp ON cp.rowid = p.fk_pays";
 $sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "societe as s ON s.rowid = p.fk_soc";
+
+/* requesting data on categorie filter  */
+$r = stristr($sOrder, 'c.label');
+if ($r != false || $_GET['sSearch_7'] != "") {
+    $sql.=" LEFT JOIN llx_categorie_contact as cc ON cc.fk_contact = p.rowid ";
+    $sql.=" LEFT JOIN llx_categorie as c ON c.rowid=cc.fk_categorie ";
+}
+
+
+if ($type != "")
+    $sql.= " LEFT JOIN llx_c_stcomm as cs ON cs.id=s.fk_stcomm";
 
 if (!$user->rights->societe->client->voir) {
     $sql .= " LEFT JOIN " . MAIN_DB_PREFIX . "societe_commerciaux as sc ON s.rowid = sc.fk_soc";
@@ -97,30 +184,53 @@ if (!$user->rights->societe->client->voir) { //restriction
 
 // Filter to exclude not owned private contacts
 $sql .= " AND (p.priv='0' OR (p.priv='1' AND p.fk_user_creat=" . $user->id . "))";
-
-
+if ($type != '') {
+    $sql.= " AND cs.type=" . $type;
+}
 //print $sql;
 
 $result = $db->query($sql);
-if ($result) {
-    $iTotal = $db->num_rows($result);
-    $sql.= $sWhere;
-    $sql.= $sOrder;
-    $sql.= $sLimit;
-    $result = $db->query($sql);
-    $contactstatic = new Contact($db);
+$iTotal = $db->num_rows($result);
+$sql.= $sWhere;
+$sql.= $sOrder;
+$sql.= $sLimit;
+$resultContact = $db->query($sql);
 
-    /*
-     * Output
-     */
-    $output = array(
-        "sEcho" => intval($_GET['sEcho']),
-        "iTotalRecords" => $iTotal,
-        "iTotalDisplayRecords" => $iTotal,
-        "aaData" => array()
-    );
+/* get contacts. usefull to get their categories */
+while ($aRow = $db->fetch_object($resultContact)) {
+    if($ancinneValeur!=$aRow->socid){//do not insert the (next on the result query) same contact
+        $valueR = $valueR . $aRow->cidp . ',';
+        $col[] = $aRow;
+        $ancinneValeur = $aRow->socid;
+    }
+    
+}
+$contacts = '""';
+if ($valueR != '') {
+    $contacts = substr_replace($valueR, '', -1);
+}
+/* query get categories */
+$sql = "SELECT cs.fk_contact,c.label FROM (llx_categorie_contact as cs,llx_categorie as c) 
+WHERE cs.fk_contact in ($contacts) AND cs.fk_categorie=c.rowid";
+$resultCate = $db->query($sql);
+$categoriesDeChaqueContact = array();
+$contactstatic = new Contact($db);
 
-    while ($aRow = $db->fetch_object($result)) {
+/* init contact categories array */
+while ($aRow = $db->fetch_object($resultCate)) {
+    $categoriesDeChaqueContact[$aRow->fk_contact] = $categoriesDeChaqueContact[$aRow->fk_contact] . $aRow->label . ', ';
+}
+/*
+ * Output
+ */
+$output = array(
+    "sEcho" => intval($_GET['sEcho']),
+    "iTotalRecords" => $iTotal,
+    "iTotalDisplayRecords" => $iTotal,
+    "aaData" => array()
+);
+if ($col != null) {
+    foreach ($col as $aRow) {
         $row = array();
 
         for ($i = 0; $i < count($aColumns); $i++) {
@@ -131,8 +241,9 @@ if ($result) {
                 $contactstatic->id = $aRow->cidp;
                 $row[] = $contactstatic->getNomUrl(1, '', 20);
             } else if ($aColumns[$i] == "tms") {
-
                 $row[] = dol_print_date($db->jdate($aRow->tms), "day");
+            } else if ($aColumns[$i] == "categorie") {
+                $row[] = $categoriesDeChaqueContact[$aRow->cidp];
             } else if ($aColumns[$i] == "email") {
                 $row[] = dol_print_email($aRow->email, $aRow->cidp, $aRow->socid, 'AC_EMAIL', 18);
             } else if ($aColumns[$i] == "priv") {
@@ -155,10 +266,8 @@ if ($result) {
 
         $output['aaData'][] = $row;
     }
-    $db->free($result);
-    header('Content-type: application/json');
-    echo json_encode($output);
-} else {
-    dol_print_error($db);
 }
+//$db->free($result);
+header('Content-type: application/json');
+echo json_encode($output);
 ?>

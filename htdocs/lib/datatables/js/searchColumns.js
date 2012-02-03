@@ -16,16 +16,23 @@
  */
 
 /**
- *	    \file       htdocs/lib/datatables/js/footerSearch.js
+ *	    \file       htdocs/lib/datatables/js/searchColumns.js
  *      
  *		\brief      Page to init filter on column
  *		\version    $Id: footerSearch.js,v 1 2012/01/19 23:54:12 synry63 Exp $
  */	 
-
+/* send input value to server */
 $(document).ready(function() {
 $("tbody input").keyup( function () {
 	/* Filter on the column */
-        var id = $(this).attr("id");
+        var id = $(this).parent().attr("id");
         oTable.fnFilter( this.value, id);
         } );
-});
+/*send selected level/prospect value to server */        
+$("tbody .level").change( function () {
+	/* Filter on the column */
+        var id = $(this).parent().attr("id");
+        var value = $(this).val();
+        oTable.fnFilter( value, id);
+        } );        
+})

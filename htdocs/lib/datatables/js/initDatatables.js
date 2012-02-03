@@ -92,9 +92,27 @@ $(document).ready(function() {
     
     
 });
+function fnShowHide( iCol )
+{
+ $(document).ready(function() {   
+    var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
+    oTable.fnSetColumnVis( iCol, bVis ? false : true );
+    if(bVis==true){
+       // $("table tbody.recherche").css("display","none");
+        $("td#"+iCol).css("display", "none");
+    }
+    else {
+       $("td#"+iCol).css("display", "");   
+        //$("table tbody.recherche").css("display","block");
+    }
+});    
+   
+}
 
-
-
-
-
-
+$(document).ready(function() {     
+        $("a.hideshow").toggle(function (){
+             $(this).css("color","grey");
+         },function () {   
+             $(this).css("color","blue");
+        })
+});

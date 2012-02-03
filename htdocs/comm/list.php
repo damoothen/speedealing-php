@@ -91,10 +91,27 @@ $htmlother=new FormOther($db);
                 
         
         
+   /*hide/show */   
+    
+    print'<a class="hideshow" href="javascript:void(0);" onclick="fnShowHide(0);">'.$langs->trans("Detail").'&nbsp;</a>';    
+    print'<a class="hideshow" href="javascript:void(0);" onclick="fnShowHide(1);">'.$langs->trans("Company").'&nbsp;</a>';    
+    print'<a class="hideshow" href="javascript:void(0);" onclick="fnShowHide(2);">'.$langs->trans("Town").'&nbsp;</a>';    
+    if(empty($conf->global->SOCIETE_DISABLE_STATE))
+        print'<a href="javascript:void(0);" onclick="fnShowHide(3);">'.$langs->trans("State").'&nbsp;</a>';    
+    print'<a class="hideshow" href="javascript:void(0);" onclick="fnShowHide(4);">'.$langs->trans("Zip").'&nbsp;</a>';    
+    print'<a class="hideshow" href="javascript:void(0);" onclick="fnShowHide(5);">'.$langs->trans("DateCreation").'&nbsp;</a>';    
+    print'<a class="hideshow" href="javascript:void(0);" onclick="fnShowHide(6);">'.$langs->trans('Categories').'&nbsp;</a>';    
+    print'<a class="hideshow" href="javascript:void(0);" onclick="fnShowHide(7);">'.$langs->trans('SalesRepresentatives').'&nbsp;</a>';    
+    print'<a class="hideshow" href="javascript:void(0);" onclick="fnShowHide(8);">'.$langs->trans('Siren').'&nbsp;</a>';    
+    print'<a class="hideshow" href="javascript:void(0);" onclick="fnShowHide(9);">'.$langs->trans('Siret').'&nbsp;</a>';    
+    print'<a class="hideshow" href="javascript:void(0);" onclick="fnShowHide(10);">'.$langs->trans('Ape').'&nbsp;</a>';    
+    print'<a class="hideshow" href="javascript:void(0);" onclick="fnShowHide(11);">'.$langs->trans('idprof4').'&nbsp;</a>';    
+    print'<a class="hideshow" href="javascript:void(0);" onclick="fnShowHide(12);">'.$langs->trans("ProspectLevelShort").'&nbsp;</a>';	
+    print'<a class="hideshow" href="javascript:void(0);" onclick="fnShowHide(13),test(13);">'.$langs->trans("StatusProsp").'&nbsp;</a>';	
+    print'<a class="hideshow" href="javascript:void(0);" onclick="fnShowHide(14);">'.$langs->trans("Status").'&nbsp;</a>';	
+    print'<a class="hideshow" href="javascript:void(0);" onclick="fnShowHide(15);">'.$langs->trans("Actif").'&nbsp;</a>';	
 
- 	
-   
-        
+    
     print '<table cellpadding="0" cellspacing="0" border="0" class="display" id="liste">';    
     // Ligne des titres 
     print'<thead>';
@@ -124,6 +141,18 @@ $htmlother=new FormOther($db);
     print $langs->trans('SalesRepresentatives');
     print'</th>';
     print'<th class="sorting">';
+    print $langs->trans('Siren');
+    print'</th>';
+    print'<th class="sorting">';
+    print $langs->trans('Siret');
+    print'</th>';
+    print'<th class="sorting">';
+    print $langs->trans('Ape');
+    print'</th>';
+    print'<th class="sorting">';
+    print $langs->trans('idprof4');
+    print'</th>';
+    print'<th class="sorting">';
     print $langs->trans("ProspectLevelShort");
     print'</th>';
     print'<th class="sorting">';
@@ -138,18 +167,41 @@ $htmlother=new FormOther($db);
     print'</th>';
     print '</tr>';   
     print'</thead>';    
-    print'<tbody>';
+    print'<tbody class="contenu">'; 
     print'</tbody>';
-    print'<tbody>'; 
+    print'<tbody class="recherche">'; 
       print'<tr>';
-        print'<td></td>';
-        print'<td></td>';
+        print'<td id="1"><input style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search Company").'" class="inputSearch"/></td>';
+        print'<td id="2"><input style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search Town").'" class="inputSearch" /></td>';
         if(empty($conf->global->SOCIETE_DISABLE_STATE))
-          print'<td></td>';
-        print'<td></td>';
-        print'<td></td>';
-        print'<td><input id="0" style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search categories").'" name="search_cate" class="search_init" /></td>';     
-        print'<td><input id="1" style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search sales").'" name="search_sales"  class="search_init" /></td>';       
+          print'<td id="3"><input  style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search State").'"class="inputSearch"/></td>';
+        print'<td id="4"><input  style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search Zip").'"class="inputSearch" /></td>';
+        print'<td id="5"><input  style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search DateCreation").'" class="inputSearch" /></td>';
+        print'<td id="6"><input  style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search categories").'" class="inputSearch" /></td>';     
+        print'<td id="7"><input  style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search sales").'" class="inputSearch" /></td>';       
+        print'<td id="8"><input  style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search siren").'" class="inputSearch" /></td>';       
+        print'<td id="9"><input  style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search siret").'" class="inputSearch" /></td>';       
+        print'<td id="10"><input  style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search ape").'" class="inputSearch" /></td>';       
+        print'<td id="11"><input  style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search idprof4").'" class="inputSearch" /></td>';       
+   
+        print'<td id="12"><select class="level">
+            <option  value="">&nbsp;</option>
+            <option  value="PL_LOW">'.$langs->trans("Low").'</option>
+            <option  value="PL_MEDIUM">'.$langs->trans("Medium").'</option>
+            <option  value="PL_HIGH">'.$langs->trans("High").'</option>
+              </select></td>';
+        
+        print'<td id="13"><select class="level">
+            <option  value="">&nbsp;</option>
+            <option  value="-1">'.$langs->trans("Don't contact").'</option>
+            <option  value="0">'.$langs->trans("Never contact").'</option>    
+            <option  value="4">'.$langs->trans("Cold prospect").'</option>
+            <option  value="6">'.$langs->trans("Cold prospect").'</option>
+            <option  value="7">'.$langs->trans("1 order").'</option>
+            <option  value="8">'.$langs->trans("+2 order").'</option>
+            <option  value="9">'.$langs->trans("Customer regular").'</option>    
+            </select></td>';     
+        
       print'</tr>'; 
    print'</tbody>';
     print "</table>";

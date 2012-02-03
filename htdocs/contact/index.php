@@ -4,7 +4,7 @@
  * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2010-2011 Herve Prot           <herve.prot@symeos.com>
- * Copyright (C) 2010-2011 Patrick Mary           <laube@hotmail.fr>
+ * Copyright (C) 2011-2012 Patrick Mary           <laube@hotmail.fr>
  
  * 
  * This program is free software; you can redistribute it and/or modify
@@ -32,11 +32,11 @@ require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
 $langs->load("companies");
 $langs->load("suppliers");
 $langs->load('commercial');
+
 // Security check
 $contactid = isset($_GET["id"])?$_GET["id"]:'';
 if ($user->societe_id) $socid=$user->societe_id;
 $result = restrictedArea($user, 'contact', $contactid,'');
-
 
 $type=GETPOST("type");
 $view=GETPOST("view");
@@ -72,8 +72,9 @@ $arrayjs[2]="/lib/datatables/js/ZeroClipboard.js";
 $arrayjs[3]="/lib/datatables/js/initXHR.js";
 $arrayjs[4]="/lib/datatables/js/request.js";
 $arrayjs[5]="/lib/datatables/js/initDatatables.js";
+$arrayjs[6]="/lib/datatables/js/searchColumns.js";
 llxHeader('',$langs->trans("ContactsAddresses"),'EN:Module_Third_Parties|FR:Module_Tiers|ES:M&oacute;dulo_Empresas','','','',$arrayjs);
-
+ print_barre_liste($titre ,'','','', '','','','','');
 /*
  * View
  */
@@ -118,6 +119,9 @@ llxHeader('',$langs->trans("ContactsAddresses"),'EN:Module_Third_Parties|FR:Modu
     print $langs->trans("Zip");
     print'</th>';
     print'<th class="sorting">';
+    print $langs->trans("Categories");
+    print'</th>';
+    print'<th class="sorting">';
     print $langs->trans("DateModificationShort");
     print'</th>';
     print'<th class="sorting">';
@@ -130,8 +134,24 @@ llxHeader('',$langs->trans("ContactsAddresses"),'EN:Module_Third_Parties|FR:Modu
     print'</thead>';
 
     print'<tbody>';
-        print'<td colspan="5" class="dataTables_empty">'.$langs->trans("Loading data from server").'</td>';
-    print'</tbody>';   
+    print'</tbody>';
+    
+    print'<tbody>'; 
+      print'<tr>';
+        print'<td id="0"><input  style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search Lastname").'" class="inputSearch" /></td>';
+        print'<td id="1"><input  style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search Firstname").'"class="inputSearch"/></td>';
+        print'<td id="2"><input  style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search PostOrFunction").'"class="inputSearch"/></td>';
+        if(empty($conf->global->SOCIETE_DISABLE_CONTACTS))
+            print'<td id="3"><input  style="margin-top:1px;" type="text" placeholder="'.$langs->trans("Search Company").'" class="inputSearch"/></td>';
+        print'<td id="4"><input  style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search Phone").'" class="inputSearch"/></td>';
+        print'<td id="5"><input  style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search EMail").'" class="inputSearch"/></td>';     
+        print'<td id="6"><input  style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search Zip").'" class="inputSearch"/></td>';       
+        print'<td id="7"><input  style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search categories").'" class="inputSearch"/></td>';       
+        print'<td id="8"><input  style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search DateModificationShort").'" class="inputSearch"/></td>';       
+        
+      print'</tr>'; 
+   print'</tbody>';
+    
     print "</table>";
 print '<br>';
 

@@ -2271,3 +2271,6 @@ td.details {
 	font-size: 14px;
 	background-color: white;
 }
+.inputSearch{
+width: 80px;
+}
