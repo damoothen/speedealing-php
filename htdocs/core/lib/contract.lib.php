@@ -79,12 +79,17 @@ function contract_admin_prepare_head($object)
     $head[$h][1] = $langs->trans("Miscellanous");
     $head[$h][2] = 'general';
     $h++;
+    
+    $head[$h][0] = DOL_URL_ROOT.'/contrat/admin/document.php';
+    $head[$h][1] = $langs->trans("Documents");
+    $head[$h][2] = 'files';
+    $h++;
 
     // Show more tabs from modules
     // Entries must be declared in modules descriptor with line
     // $this->tabs = array('entity:+tabname:Title:@mymodule:/mymodule/mypage.php?id=__ID__');   to add new tab
     // $this->tabs = array('entity:-tabname:Title:@mymodule:/mymodule/mypage.php?id=__ID__');   to remove a tab
-    complete_head_from_modules($conf,$langs,$object,$head,$h,'contrat_admin');
+    //complete_head_from_modules($conf,$langs,$object,$head,$h,'contrat_admin');
     
     //configuration des modèles de contrat odt
     $dirtoscan.=($dirtoscan?',':'').preg_replace('/[\r\n]+/',',',trim($conf->global->CONTRAT_ADDON_PDF_ODT_PATH));
