@@ -27,7 +27,6 @@ require_once(DOL_DOCUMENT_ROOT . "/contact/class/contact.class.php");
 $langs->load("companies");
 $langs->load("suppliers");
 $langs->load('commercial');
-
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
  * you want to insert a non-database field (for example a counter or static image)
  */
@@ -96,57 +95,57 @@ if ($_GET['sSearch'] != "") {
     $sWhere .= ')';
 }
 /* search on Lastname */
-if ($_GET['sSearch_0'] != "") {
+if ($_GET['sSearch_1'] != "") {
     $sWhere .= " AND (";
-    $sWhere .= "p.name " . " LIKE '%" . $_GET['sSearch_0'] . "%'";
+    $sWhere .= "p.name " . " LIKE '%" . $_GET['sSearch_1'] . "%'";
     $sWhere .= ')';
 }
 /* search on Firstname*/
-if ($_GET['sSearch_1'] != "") {
+if ($_GET['sSearch_2'] != "") {
     $sWhere .= " AND (";
-    $sWhere .= "p.firstname " . " LIKE '%" . $_GET['sSearch_1'] . "%'";
+    $sWhere .= "p.firstname " . " LIKE '%" . $_GET['sSearch_2'] . "%'";
     $sWhere .= ')';
 }
 /* search on PostOrFunction */
-if ($_GET['sSearch_2'] != "") {
+if ($_GET['sSearch_3'] != "") {
     $sWhere .= " AND (";
-    $sWhere .= "p.poste " . " LIKE '%" . $_GET['sSearch_2'] . "%'";
+    $sWhere .= "p.poste " . " LIKE '%" . $_GET['sSearch_3'] . "%'";
     $sWhere .= ')';
 }
 /* search on company*/
-if ($_GET['sSearch_3'] != "") {
+if ($_GET['sSearch_4'] != "") {
     $sWhere .= " AND (";
-    $sWhere .= "s.nom " . " LIKE '%" . $_GET['sSearch_3'] . "%'";
+    $sWhere .= "s.nom " . " LIKE '%" . $_GET['sSearch_4'] . "%'";
     $sWhere .= ')';
 }
 /* search on phone*/
-if ($_GET['sSearch_4'] != "") {
+if ($_GET['sSearch_5'] != "") {
     $sWhere .= " AND (";
-    $sWhere .= "p.phone " . " LIKE '%" . $_GET['sSearch_4'] . "%'";
+    $sWhere .= "p.phone " . " LIKE '%" . $_GET['sSearch_5'] . "%'";
     $sWhere .= ')';
 }
 /* search on mail*/
-if ($_GET['sSearch_5'] != "") {
+if ($_GET['sSearch_6'] != "") {
     $sWhere .= " AND (";
-    $sWhere .= "p.email " . " LIKE '%" . $_GET['sSearch_5'] . "%'";
+    $sWhere .= "p.email " . " LIKE '%" . $_GET['sSearch_6'] . "%'";
     $sWhere .= ')';
 }
 /* search on zip */
-if ($_GET['sSearch_6'] != "") {
+if ($_GET['sSearch_7'] != "") {
     $sWhere .= " AND (";
-    $sWhere .= "s.cp " . " LIKE '%" . $_GET['sSearch_6'] . "%'";
+    $sWhere .= "s.cp " . " LIKE '%" . $_GET['sSearch_7'] . "%'";
     $sWhere .= ')';
 }
 /* search on categorie */
-if ($_GET['sSearch_7'] != "") {
+if ($_GET['sSearch_8'] != "") {
     $sWhere .= " AND (";
-    $sWhere .= "c.label " . " LIKE '%" . $_GET['sSearch_7'] . "%'";
+    $sWhere .= "c.label " . " LIKE '%" . $_GET['sSearch_8'] . "%'";
     $sWhere .= ')';
 }
 /* search on date */
-if ($_GET['sSearch_8'] != "") {
+if ($_GET['sSearch_9'] != "") {
     $sWhere .= " AND (";
-    $sWhere .= "p.tms " . " LIKE '%" . $_GET['sSearch_8'] . "%'";
+    $sWhere .= "p.tms " . " LIKE '%" . $_GET['sSearch_9'] . "%'";
     $sWhere .= ')';
 }
 /* sql query */
@@ -155,8 +154,9 @@ $sql.= " s.cp as cpost, p.rowid as cidp, p.name, p.firstname, p.poste, p.email,"
 $sql.= " p.phone, p.phone_mobile, p.fax, p.fk_pays, p.priv,";
 $sql.= " p.tms,";
 $sql.= " cp.code as pays_code";
-$r = stristr($sOrder, 'c.label');
-if ($r != false || $_GET['sSearch_7'] != "") {
+$ro = stristr($sOrder, 'c.label');
+$rs = stristr($sWhere, 'c.label');
+if ($ro != false || $rs!=false) {
     $sql.=",c.label";
 }
 $sql.= " FROM " . MAIN_DB_PREFIX . "socpeople as p";
@@ -164,8 +164,8 @@ $sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "c_pays as cp ON cp.rowid = p.fk_pays";
 $sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "societe as s ON s.rowid = p.fk_soc";
 
 /* requesting data on categorie filter  */
-$r = stristr($sOrder, 'c.label');
-if ($r != false || $_GET['sSearch_7'] != "") {
+
+if ($ro != false  || $rs!=false) {
     $sql.=" LEFT JOIN llx_categorie_contact as cc ON cc.fk_contact = p.rowid ";
     $sql.=" LEFT JOIN llx_categorie as c ON c.rowid=cc.fk_categorie ";
 }

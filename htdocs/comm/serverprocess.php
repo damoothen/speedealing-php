@@ -172,12 +172,16 @@ if (!$user->rights->societe->client->voir && !$socid) {
 $sql = "SELECT s.rowid, s.nom, s.ville, s.datec, s.datea, s.status as status,";
 $sql.= " st.libelle as stcomm, s.prefix_comm, s.fk_stcomm, s.fk_prospectlevel,st.type,";
 $sql.= " d.nom as departement, s.cp as cp,s.siren,s.siret,s.ape,s.idprof4";
-$r = stristr($sOrder, 'c.label');
-if ($r != false || $_GET['sSearch_6'] != "") {
+/*looking for categories ? */
+$roc = stristr($sOrder, 'c.label');
+$rsc = stristr($sWhere, 'c.label');
+if ($roc != false || $rsc!=false) {
     $sql.=",c.label";
 }
-$r = stristr($sOrder, 'u.name');
-if ($r != false || $_GET['sSearch_7'] != "") {
+/* looking for sales ? */
+$rou = stristr($sOrder, 'u.name');
+$rsu = stristr($sWhere, 'u.name');
+if ($rou != false || $rsu!=false) {
     $sql.=",u.name";
 }
 $sql .= " FROM (" . MAIN_DB_PREFIX . "societe as s";
@@ -186,14 +190,12 @@ $sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "c_departements as d on (d.rowid = s.fk_
 $sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "c_stcomm as st ON st.id = s.fk_stcomm";
 
 /* requesting data on categorie filter  */
-$r = stristr($sOrder, 'c.label');
-if ($r != false || $_GET['sSearch_6'] != "") {
+if ($roc != false || rsc!=false) {
     $sql.=" LEFT JOIN llx_categorie_societe as cs ON cs.fk_societe = s.rowid ";
     $sql.=" LEFT JOIN llx_categorie as c ON c.rowid=cs.fk_categorie ";
 }
 /* requesting data on sales filter */
-$r = stristr($sOrder, 'u.name');
-if ($r != false || $_GET['sSearch_7'] != "" || $search_sale!=0) {
+if ($rou != false || $rsu!=false || $search_sale!=0) {
     $sql.=" LEFT JOIN llx_societe_commerciaux as sc ON sc.fk_soc = s.rowid";
     $sql.=" LEFT JOIN llx_user AS u ON u.rowid = sc.fk_user ";
 }

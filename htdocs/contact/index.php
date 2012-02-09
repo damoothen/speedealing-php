@@ -32,7 +32,6 @@ require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
 $langs->load("companies");
 $langs->load("suppliers");
 $langs->load('commercial');
-
 // Security check
 $contactid = isset($_GET["id"])?$_GET["id"]:'';
 if ($user->societe_id) $socid=$user->societe_id;
@@ -46,18 +45,21 @@ if ($type == "c")
 	$titre=$langs->trans("ListOfContacts").'  ('.$langs->trans("ThirdPartyCustomers").')';
 	$urlfiche="fiche.php";
 }
-if ($type == "p")
+else if ($type == "p")
 {
 	$titre=$langs->trans("ListOfContacts").'  ('.$langs->trans("ThirdPartyProspects").')';
 	$urlfiche="prospect/fiche.php";
 }
-if ($type == "f") {
+else if ($type == "f") {
 	$titre=$langs->trans("ListOfContacts").' ('.$langs->trans("ThirdPartySuppliers").')';
 	$urlfiche="fiche.php";
 }
-if ($type == "o") {
+else if ($type == "o") {
 	$titre=$langs->trans("ListOfContacts").' ('.$langs->trans("OthersNotLinkedToThirdParty").')';
 	$urlfiche="";
+}
+else{
+    $titre=$langs->trans("ListOfContacts");
 }
 if ($view == 'phone')  { $text=" (Vue Telephones)"; }
 if ($view == 'mail')   { $text=" (Vue EMail)"; }
@@ -74,8 +76,83 @@ $arrayjs[4]="/lib/datatables/js/request.js";
 $arrayjs[5]="/lib/datatables/js/initDatatables.js";
 $arrayjs[6]="/lib/datatables/js/searchColumns.js";
 llxHeader('',$langs->trans("ContactsAddresses"),'EN:Module_Third_Parties|FR:Module_Tiers|ES:M&oacute;dulo_Empresas','','','',$arrayjs);
- print_barre_liste($titre ,'','','', '','','','','');
-/*
+print_barre_liste($titre ,'','','', '','','','','');
+
+ /*hide/show */   
+    print'<table class ="hideshow">';
+    print'<tbody>';
+    print'<tr>';
+    print'<td>';
+    // print'<a  href="javascript:void(0);" onclick="fnShowHide(0);">'.$langs->trans("Detail").'&nbsp;</a>';    
+    print '<p>'.$langs->trans("Visibility").' : '.'</p>';
+    print'</td>';
+    print'<td>';
+    print'<a  href="javascript:void(0);" onclick="fnShowHide(1);">'.$langs->trans("Lastname").'&nbsp;</a>';    
+    print'</td>';
+    print'<td>';
+    print'<a  href="javascript:void(0);" onclick="fnShowHide(2);">'.$langs->trans("Firstname").'&nbsp;</a>';    
+    print'</td>';
+    print'<td>';
+    print'<a  href="javascript:void(0);" onclick="fnShowHide(3);">'.$langs->trans("PostOrFunction").'&nbsp;</a>';    
+    print'</td>';
+    
+    if(empty($conf->global->SOCIETE_DISABLE_CONTACTS))
+    {
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(4);">'.$langs->trans("Company").'&nbsp;</a>';    
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(5);">'.$langs->trans("Phone").'&nbsp;</a>';    
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(6);">'.$langs->trans("EMail").'&nbsp;</a>';    
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(7);">'.$langs->trans("Zip").'&nbsp;</a>';    
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(8);">'.$langs->trans("Categories").'&nbsp;</a>';    
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(9);">'.$langs->trans("DateModificationShort").'&nbsp;</a>';    
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(10);">'.$langs->trans("ContactVisibility").'&nbsp;</a>';    
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(11);">'.$langs->trans("Action").'&nbsp;</a>';	
+        print'</td>';
+    }
+    else {
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(4);">'.$langs->trans("Phone").'&nbsp;</a>';    
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(5);">'.$langs->trans("EMail").'&nbsp;</a>';    
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(6);">'.$langs->trans("Zip").'&nbsp;</a>';    
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(7);">'.$langs->trans("Categories").'&nbsp;</a>';    
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(8);">'.$langs->trans("DateModificationShort").'&nbsp;</a>';    
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(9);">'.$langs->trans("ContactVisibility").'&nbsp;</a>';    
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(10);">'.$langs->trans("Action").'&nbsp;</a>';    
+        print'</td>';
+       
+    }
+    print'</tr>';
+    print'</tbody>';
+    print'</table>';
+   
+ 
+ /*
  * View
  */
     print '<table cellpadding="0" cellspacing="0" border="0" class="display" id="liste">';     
@@ -138,16 +215,16 @@ llxHeader('',$langs->trans("ContactsAddresses"),'EN:Module_Third_Parties|FR:Modu
     
     print'<tbody>'; 
       print'<tr>';
-        print'<td id="0"><input  style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search Lastname").'" class="inputSearch" /></td>';
-        print'<td id="1"><input  style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search Firstname").'"class="inputSearch"/></td>';
-        print'<td id="2"><input  style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search PostOrFunction").'"class="inputSearch"/></td>';
+        print'<td id="1"><input  style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search Lastname").'" class="inputSearch" /></td>';
+        print'<td id="2"><input  style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search Firstname").'"class="inputSearch"/></td>';
+        print'<td id="3"><input  style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search PostOrFunction").'"class="inputSearch"/></td>';
         if(empty($conf->global->SOCIETE_DISABLE_CONTACTS))
-            print'<td id="3"><input  style="margin-top:1px;" type="text" placeholder="'.$langs->trans("Search Company").'" class="inputSearch"/></td>';
-        print'<td id="4"><input  style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search Phone").'" class="inputSearch"/></td>';
-        print'<td id="5"><input  style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search EMail").'" class="inputSearch"/></td>';     
-        print'<td id="6"><input  style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search Zip").'" class="inputSearch"/></td>';       
-        print'<td id="7"><input  style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search categories").'" class="inputSearch"/></td>';       
-        print'<td id="8"><input  style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search DateModificationShort").'" class="inputSearch"/></td>';       
+            print'<td id="4"><input  style="margin-top:1px;" type="text" placeholder="'.$langs->trans("Search Company").'" class="inputSearch"/></td>';
+        print'<td id="5"><input  style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search Phone").'" class="inputSearch"/></td>';
+        print'<td id="6"><input  style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search EMail").'" class="inputSearch"/></td>';     
+        print'<td id="7"><input  style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search Zip").'" class="inputSearch"/></td>';       
+        print'<td id="8"><input  style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search categories").'" class="inputSearch"/></td>';       
+        print'<td id="9"><input  style="margin-top:1px;"  type="text" placeholder="'.$langs->trans("Search DateModificationShort").'" class="inputSearch"/></td>';       
         
       print'</tr>'; 
    print'</tbody>';

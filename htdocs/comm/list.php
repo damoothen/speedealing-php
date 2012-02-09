@@ -31,7 +31,6 @@ require("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/comm/prospect/class/prospect.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formother.class.php");
 
-
 $langs->load("companies");
 $langs->load("customers");
 $langs->load("suppliers");
@@ -92,25 +91,104 @@ $htmlother=new FormOther($db);
         
         
    /*hide/show */   
-    
-    print'<a class="hideshow" href="javascript:void(0);" onclick="fnShowHide(0);">'.$langs->trans("Detail").'&nbsp;</a>';    
-    print'<a class="hideshow" href="javascript:void(0);" onclick="fnShowHide(1);">'.$langs->trans("Company").'&nbsp;</a>';    
-    print'<a class="hideshow" href="javascript:void(0);" onclick="fnShowHide(2);">'.$langs->trans("Town").'&nbsp;</a>';    
+    print'<table class ="hideshow">';
+    print'<tbody>';
+    print'<tr>';
+    print'<td>';
+    // print'<a  href="javascript:void(0);" onclick="fnShowHide(0);">'.$langs->trans("Detail").'&nbsp;</a>';    
+    print '<p>'.$langs->trans("Visibility").' : '.'</p>';
+    print'</td>';
+    print'<td>';
+    print'<a  href="javascript:void(0);" onclick="fnShowHide(1);">'.$langs->trans("Company").'&nbsp;</a>';    
+    print'</td>';
+    print'<td>';
+    print'<a  href="javascript:void(0);" onclick="fnShowHide(2);">'.$langs->trans("Town").'&nbsp;</a>';    
+    print'</td>';
     if(empty($conf->global->SOCIETE_DISABLE_STATE))
-        print'<a href="javascript:void(0);" onclick="fnShowHide(3);">'.$langs->trans("State").'&nbsp;</a>';    
-    print'<a class="hideshow" href="javascript:void(0);" onclick="fnShowHide(4);">'.$langs->trans("Zip").'&nbsp;</a>';    
-    print'<a class="hideshow" href="javascript:void(0);" onclick="fnShowHide(5);">'.$langs->trans("DateCreation").'&nbsp;</a>';    
-    print'<a class="hideshow" href="javascript:void(0);" onclick="fnShowHide(6);">'.$langs->trans('Categories').'&nbsp;</a>';    
-    print'<a class="hideshow" href="javascript:void(0);" onclick="fnShowHide(7);">'.$langs->trans('SalesRepresentatives').'&nbsp;</a>';    
-    print'<a class="hideshow" href="javascript:void(0);" onclick="fnShowHide(8);">'.$langs->trans('Siren').'&nbsp;</a>';    
-    print'<a class="hideshow" href="javascript:void(0);" onclick="fnShowHide(9);">'.$langs->trans('Siret').'&nbsp;</a>';    
-    print'<a class="hideshow" href="javascript:void(0);" onclick="fnShowHide(10);">'.$langs->trans('Ape').'&nbsp;</a>';    
-    print'<a class="hideshow" href="javascript:void(0);" onclick="fnShowHide(11);">'.$langs->trans('idprof4').'&nbsp;</a>';    
-    print'<a class="hideshow" href="javascript:void(0);" onclick="fnShowHide(12);">'.$langs->trans("ProspectLevelShort").'&nbsp;</a>';	
-    print'<a class="hideshow" href="javascript:void(0);" onclick="fnShowHide(13),test(13);">'.$langs->trans("StatusProsp").'&nbsp;</a>';	
-    print'<a class="hideshow" href="javascript:void(0);" onclick="fnShowHide(14);">'.$langs->trans("Status").'&nbsp;</a>';	
-    print'<a class="hideshow" href="javascript:void(0);" onclick="fnShowHide(15);">'.$langs->trans("Actif").'&nbsp;</a>';	
-
+    {
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(3);">'.$langs->trans("State").'&nbsp;</a>';    
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(4);">'.$langs->trans("Zip").'&nbsp;</a>';    
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(5);">'.$langs->trans("DateCreation").'&nbsp;</a>';    
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(6);">'.$langs->trans('Categories').'&nbsp;</a>';    
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(7);">'.$langs->trans('SalesRepresentatives').'&nbsp;</a>';    
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(8);">'.$langs->trans('Siren').'&nbsp;</a>';    
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(9);">'.$langs->trans('Siret').'&nbsp;</a>';    
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(10);">'.$langs->trans('Ape').'&nbsp;</a>';    
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(11);">'.$langs->trans('idprof4').'&nbsp;</a>';    
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(12);">'.$langs->trans("ProspectLevelShort").'&nbsp;</a>';	
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(13);">'.$langs->trans("StatusProsp").'&nbsp;</a>';	
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(14);">'.$langs->trans("Status").'&nbsp;</a>';	
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(15);">'.$langs->trans("Actif").'&nbsp;</a>';	
+        print'</td>';
+    }
+    else {
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(3);">'.$langs->trans("Zip").'&nbsp;</a>';    
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(4);">'.$langs->trans("DateCreation").'&nbsp;</a>';    
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(5);">'.$langs->trans('Categories').'&nbsp;</a>';    
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(6);">'.$langs->trans('SalesRepresentatives').'&nbsp;</a>';    
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(7);">'.$langs->trans('Siren').'&nbsp;</a>';    
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(8);">'.$langs->trans('Siret').'&nbsp;</a>';    
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(9);">'.$langs->trans('Ape').'&nbsp;</a>';    
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(10);">'.$langs->trans('idprof4').'&nbsp;</a>';    
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(11);">'.$langs->trans("ProspectLevelShort").'&nbsp;</a>';	
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(12);">'.$langs->trans("StatusProsp").'&nbsp;</a>';	
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(13);">'.$langs->trans("Status").'&nbsp;</a>';	
+        print'</td>';
+        print'<td>';
+        print'<a  href="javascript:void(0);" onclick="fnShowHide(14);">'.$langs->trans("Actif").'&nbsp;</a>';	
+        print'</td>';
+    }
+    print'</tr>';
+    print'</tbody>';
+    print'</table>';
+    
+    
     
     print '<table cellpadding="0" cellspacing="0" border="0" class="display" id="liste">';    
     // Ligne des titres 

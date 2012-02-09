@@ -2274,3 +2274,25 @@ td.details {
 .inputSearch{
 width: 80px;
 }
+
+/* hide/show table */
+table.hideshow
+{
+font-size: 12px;
+padding : 0px; 
+margin:0px;
+}
+table.hideshow td a
+{
+font-size: 12px;
+color:#000;
+font-weight: normal;
+font-family:"Trebuchet MS",Arial,Helvetica,sans-serif;
+}
+table.hideshow td p
+{
+font-size: 12px;
+font-weight: bold;
+color:#000;
+font-family:"Trebuchet MS",Arial,Helvetica,sans-serif;
+}
