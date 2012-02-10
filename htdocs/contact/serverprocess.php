@@ -32,14 +32,30 @@ $langs->load('commercial');
  */
 
 if (empty($conf->global->SOCIETE_DISABLE_CONTACTS)){
-    $aColumns = array('', 'name', 'firstname', 'poste', 'nom', 'phone', 'email', 'cpost', 'categorie', 'tms', 'priv', '');
+    if($conf->categorie->enabled){
+     $aColumns = array('', 'name', 'firstname', 'poste', 'nom', 'phone', 'email', 'cpost', 'categorie', 'tms', 'priv', '');
     $aColumnsSql = array('', 'p.name', 'p.firstname', 'p.poste', 's.nom', 'p.phone', 'p.email', 's.cp', 'c.label', 'p.tms', 'p.priv', '');
-     
+        
+    }
+    else{
+      $aColumns = array('', 'name', 'firstname', 'poste', 'nom', 'phone', 'email', 'cpost', 'tms', 'priv', '');
+    $aColumnsSql = array('', 'p.name', 'p.firstname', 'p.poste', 's.nom', 'p.phone', 'p.email','s.cp', 'p.tms', 'p.priv', '');
+       
+    }
+    
 }
 else {
-    $aColumns = array('', 'name', 'firstname', 'poste', 'phone', 'email', 'cpost', 'categorie', 'tms', 'priv', '');
-    $aColumnsSql = array('', 'p.name', 'p.firstname', 'p.poste', 'p.phone', 'p.email', 's.cp', 'c.label', 'p.tms', 'p.priv', '');
+    if($conf->categorie->enabled){
+        $aColumns = array('', 'name', 'firstname', 'poste', 'phone', 'email', 'cpost', 'categorie', 'tms', 'priv', '');
+        $aColumnsSql = array('', 'p.name', 'p.firstname', 'p.poste', 'p.phone', 'p.email', 's.cp', 'c.label', 'p.tms', 'p.priv', '');
   
+    }
+    else{
+       $aColumns = array('', 'name', 'firstname', 'poste', 'phone', 'email', 'cpost', 'tms', 'priv', '');
+       $aColumnsSql = array('', 'p.name', 'p.firstname', 'p.poste', 'p.phone', 'p.email','s.cp', 'p.tms', 'p.priv', '');
+    
+    }
+   
 }
 
 /* get Type */
@@ -94,58 +110,58 @@ if ($_GET['sSearch'] != "") {
     $sWhere = substr_replace($sWhere, "", -3);
     $sWhere .= ')';
 }
-/* search on Lastname */
+
 if ($_GET['sSearch_1'] != "") {
     $sWhere .= " AND (";
-    $sWhere .= "p.name " . " LIKE '%" . $_GET['sSearch_1'] . "%'";
+    $sWhere .= $aColumnsSql[1] . " LIKE '%" . $_GET['sSearch_1'] . "%'";
     $sWhere .= ')';
 }
-/* search on Firstname*/
+
 if ($_GET['sSearch_2'] != "") {
     $sWhere .= " AND (";
-    $sWhere .= "p.firstname " . " LIKE '%" . $_GET['sSearch_2'] . "%'";
+    $sWhere .= $aColumnsSql[2] . " LIKE '%" . $_GET['sSearch_2'] . "%'";
     $sWhere .= ')';
 }
-/* search on PostOrFunction */
+
 if ($_GET['sSearch_3'] != "") {
     $sWhere .= " AND (";
-    $sWhere .= "p.poste " . " LIKE '%" . $_GET['sSearch_3'] . "%'";
+    $sWhere .= $aColumnsSql[3]. " LIKE '%" . $_GET['sSearch_3'] . "%'";
     $sWhere .= ')';
 }
-/* search on company*/
+
 if ($_GET['sSearch_4'] != "") {
     $sWhere .= " AND (";
-    $sWhere .= "s.nom " . " LIKE '%" . $_GET['sSearch_4'] . "%'";
+    $sWhere .= $aColumnsSql[4]. " LIKE '%" . $_GET['sSearch_4'] . "%'";
     $sWhere .= ')';
 }
-/* search on phone*/
+
 if ($_GET['sSearch_5'] != "") {
     $sWhere .= " AND (";
-    $sWhere .= "p.phone " . " LIKE '%" . $_GET['sSearch_5'] . "%'";
+    $sWhere .= $aColumnsSql[5] . " LIKE '%" . $_GET['sSearch_5'] . "%'";
     $sWhere .= ')';
 }
-/* search on mail*/
+
 if ($_GET['sSearch_6'] != "") {
     $sWhere .= " AND (";
-    $sWhere .= "p.email " . " LIKE '%" . $_GET['sSearch_6'] . "%'";
+    $sWhere .= $aColumnsSql[6] . " LIKE '%" . $_GET['sSearch_6'] . "%'";
     $sWhere .= ')';
 }
-/* search on zip */
+
 if ($_GET['sSearch_7'] != "") {
     $sWhere .= " AND (";
-    $sWhere .= "s.cp " . " LIKE '%" . $_GET['sSearch_7'] . "%'";
+    $sWhere .= $aColumnsSql[7] . " LIKE '%" . $_GET['sSearch_7'] . "%'";
     $sWhere .= ')';
 }
-/* search on categorie */
+
 if ($_GET['sSearch_8'] != "") {
     $sWhere .= " AND (";
-    $sWhere .= "c.label " . " LIKE '%" . $_GET['sSearch_8'] . "%'";
+    $sWhere .= $aColumnsSql[8] . " LIKE '%" . $_GET['sSearch_8'] . "%'";
     $sWhere .= ')';
 }
-/* search on date */
+
 if ($_GET['sSearch_9'] != "") {
     $sWhere .= " AND (";
-    $sWhere .= "p.tms " . " LIKE '%" . $_GET['sSearch_9'] . "%'";
+    $sWhere .= $aColumnsSql[9] . " LIKE '%" . $_GET['sSearch_9'] . "%'";
     $sWhere .= ')';
 }
 /* sql query */
@@ -198,10 +214,10 @@ $resultContact = $db->query($sql);
 
 /* get contacts. usefull to get their categories */
 while ($aRow = $db->fetch_object($resultContact)) {
-    if($ancinneValeur!=$aRow->socid){//do not insert the (next on the result query) same contact
+    if($ancienneValeur!=$aRow->socid){//do not insert the (next on the result query) same contact
         $valueR = $valueR . $aRow->cidp . ',';
         $col[] = $aRow;
-        $ancinneValeur = $aRow->socid;
+        $ancienneValeur = $aRow->socid;
     }
     
 }

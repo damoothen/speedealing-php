@@ -1,3 +1,4 @@
+<?php
 /* Copyright (C) 2010-2011 Patrick Mary           <laube@hotmail.fr>
  
  * 
@@ -21,18 +22,17 @@
  *		\brief      Page to int lib datatable
  *		\version    $Id: initDatatables.js,v 1.5 2011/12/14 20:54:12 synry63 Exp $
  */	 
-
-$(document).ready(function() {
+print'<script>';
+print "$(document).ready(function() {
      /* Get the lang */
-      var tabs = location.search.substring(1).split("&");
+      var tabs = location.search.substring(1).split(\"&\");
       var lang = tabs[1].substr(5,5);
+      var exportright ='".$user->rights->societe->contact->export."';
+  
       /* Get the type */
       var type='';
-      if(tabs[2]){
-          type = tabs[2].substr(5,1);
-      }
-      
-    
+      if(tabs[2])
+        type = tabs[2].substr(5,1);
     /* Insert a 'details' column to the table */
     var nCloneTh = document.createElement( 'th' );
     var nCloneTd = document.createElement( 'td' );
@@ -44,52 +44,71 @@ $(document).ready(function() {
     $('#liste tbody tr').each( function () {
         this.insertBefore(  nCloneTd.cloneNode( true ), this.childNodes[0] );
     } );
-    
-    /* init dataTable */
+    if(exportright==1){
+      /* init dataTable */
     oTable = $('#liste').dataTable( {
-        "sDom": 'T<"clear">lfrtip',
-         "iDisplayLength": 10,
-        "aLengthMenu": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,"All"]],
-        "bProcessing": true,
-        "bServerSide": true,
-        "sAjaxSource": "serverprocess.php?type="+type,
-        "bPaginate": true,
-         "oLanguage": {"sUrl": "../lib/datatables/langs/"+lang+".txt"
+         
+         \"iDisplayLength\": 10,
+        \"aLengthMenu\": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,\"All\"]],
+        \"bProcessing\": true,
+        \"bServerSide\": true,
+        \"sAjaxSource\": \"serverprocess.php?type=\"+type,
+        \"bPaginate\": true,
+         \"oLanguage\": {\"sUrl\": \"../lib/datatables/langs/\"+lang+\".txt\"
                         
                       },
-        "oTableTools": {
-            "sSwfPath": "../lib/datatables/swf/copy_cvs_xls_pdf.swf",
-            "aButtons": [
-            "xls"	
+                      
+         \"sDom\": 'T<\"clear\">lfrtip',      
+         \"oTableTools\": {
+            \"sSwfPath\": \"../lib/datatables/swf/copy_cvs_xls_pdf.swf\",
+            \"aButtons\": [
+            \"xls\"	
             ]
         }
-       
-    });
+    });   
+    }
+    else{
+         /* init dataTable */
+    oTable = $('#liste').dataTable( {
+         
+         \"iDisplayLength\": 10,
+        \"aLengthMenu\": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,\"All\"]],
+        \"bProcessing\": true,
+        \"bServerSide\": true,
+        \"sAjaxSource\": \"serverprocess.php?type=\"+type,
+        \"bPaginate\": true,
+         \"oLanguage\": {\"sUrl\": \"../lib/datatables/langs/\"+lang+\".txt\"
+                        
+                      }
+    });     
+    }
+   
+
+   
     
-     /* Add event listener for opening and closing details
+         /* Add event listener for opening and closing details
      * Note that the indicator for showing which row is open is not controlled by DataTables,
      * rather it is done here
      */
      $('#liste tbody td img.plus').live('click', function () {
                                     var nTr = this.parentNode.parentNode;
-                                    var id =  $(this).attr("id");
-                                    nTr.setAttribute("id",id);
+                                    var id =  $(this).attr(\"id\");
+                                    nTr.setAttribute(\"id\",id);
                                     if ( this.src.match('details_close') )
                                     {
                                         
                                         /* This row is already open - close it */
-                                        this.src = "../theme/cameleo/img/details_open.png";
+                                        this.src = \"../theme/cameleo/img/details_open.png\";
                                         oTable.fnClose( nTr );
                                     }
                                     else
                                     {
                                      /* Open this row */
                                         request(nTr);
-                                        this.src = "../theme/cameleo/img/details_close.png";
+                                        this.src = \"../theme/cameleo/img/details_close.png\";
                                         
                                     }
                 } );
-    
     
 });
 function fnShowHide( iCol )
@@ -98,19 +117,25 @@ function fnShowHide( iCol )
     var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
     oTable.fnSetColumnVis( iCol, bVis ? false : true );
     if(bVis==true){
-      $("td#"+iCol).css("display", "none");
+      $(\"td#\"+iCol).css(\"display\", \"none\");
     }
     else {
-      $("td#"+iCol).css("display", "");   
+      $(\"td#\"+iCol).css(\"display\", \"\");   
     }
 });    
    
 }
-
 $(document).ready(function() {     
-        $("table.hideshow a").toggle(function (){
-             $(this).css("color","grey");
-         },function () {   
-             $(this).css("color","#000");
+        $(\"table.hideshow a\").click(function (){
+             if($(this).css(\"color\")==\"rgb(128, 128, 128)\"){ // grey
+                $(this).css(\"color\",\"#000\"); 
+             }
+             else{
+                $(this).css(\"color\",\"rgb(128, 128, 128)\");
+             }
         })
 });
+";
+//print 'var idi ='.$user->rights->societe->contact->export.';';
+//print 'alert(idi);';
+print'</script>';

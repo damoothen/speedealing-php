@@ -1,3 +1,4 @@
+
 /* Copyright (C) 2012 Patrick Mary           <laube@hotmail.fr>
  
  * 
@@ -34,5 +35,6 @@ $("tbody .level").change( function () {
         var id = $(this).parent().attr("id");
         var value = $(this).val();
         oTable.fnFilter( value, id);
-        } );        
-})
+        } );
+
+});

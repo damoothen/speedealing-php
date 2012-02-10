@@ -33,11 +33,26 @@ $langs->load("commercial");
  * you want to insert a non-database field (for example a counter or static image)
  */
 if (empty($conf->global->SOCIETE_DISABLE_STATE)) {
-    $aColumns = array('', 'company', 'ville', 'departement', 'cp', 'datec', 'categorie', 'sale','siren','siret','ape','idprof4', 'fk_prospectlevel', 'fk_stcomm', 'etat', 'priv');
-    $aColumnsSql = array('', 's.nom', 's.ville', 'd.nom', 's.cp', 's.datec', 'c.label', 'u.name','s.siren','s.siret','s.ape','s.idprof4','s.fk_prospectlevel', 'fk_stcomm', '', '');
-} else {
-    $aColumns = array('', 'company', 'ville', 'cp', 'datec', 'categorie', 'sale','siren','siret','ape','idprof4', 'fk_prospectlevel', 'fk_stcomm', 'etat', 'priv');
-    $aColumnsSql = array('', 's.nom', 's.ville', 's.cp', 's.datec', 'c.label', 'u.name','s.siren','s.siret','s.ape','s.idprof4','s.fk_prospectlevel', 'fk_stcomm', '', '');
+    if($conf->categorie->enabled){
+         $aColumns = array('', 'company', 'ville', 'departement', 'cp', 'datec', 'categorie', 'sale','siren','siret','ape','idprof4', 'fk_prospectlevel', 'fk_stcomm', 'etat', 'priv');
+         $aColumnsSql = array('', 's.nom', 's.ville', 'd.nom', 's.cp', 's.datec', 'c.label', 'u.name','s.siren','s.siret','s.ape','s.idprof4','s.fk_prospectlevel', 'fk_stcomm', '', '');
+    }
+    else {
+         $aColumns = array('', 'company', 'ville', 'departement', 'cp', 'datec', 'sale','siren','siret','ape','idprof4', 'fk_prospectlevel', 'fk_stcomm', 'etat', 'priv');
+         $aColumnsSql = array('', 's.nom', 's.ville', 'd.nom', 's.cp', 's.datec', 'u.name','s.siren','s.siret','s.ape','s.idprof4','s.fk_prospectlevel', 'fk_stcomm', '', '');
+    }
+}
+else {
+    if($conf->categorie->enabled){
+        $aColumns = array('', 'company', 'ville', 'cp', 'datec', 'categorie', 'sale','siren','siret','ape','idprof4', 'fk_prospectlevel', 'fk_stcomm', 'etat', 'priv');
+        $aColumnsSql = array('', 's.nom', 's.ville', 's.cp', 's.datec', 'c.label', 'u.name','s.siren','s.siret','s.ape','s.idprof4','s.fk_prospectlevel', 'fk_stcomm', '', '');
+    
+    }
+    else{
+        $aColumns = array('', 'company', 'ville', 'cp', 'datec', 'sale','siren','siret','ape','idprof4', 'fk_prospectlevel', 'fk_stcomm', 'etat', 'priv');
+        $aColumnsSql = array('', 's.nom', 's.ville', 's.cp', 's.datec', 'u.name','s.siren','s.siret','s.ape','s.idprof4','s.fk_prospectlevel', 'fk_stcomm', '', '');
+
+    }
 }
 /* get Type */
 $type = $_GET['type'];
@@ -85,82 +100,82 @@ if ($_GET['sSearch'] != "") {
     $sWhere = substr_replace($sWhere, "", -3);
     $sWhere .= ')';
 }
-/* search on company */
+
 if ($_GET['sSearch_1'] != "") {
     $sWhere .= " AND (";
-    $sWhere .= "s.nom " . " LIKE '%" . $_GET['sSearch_1'] . "%'";
+    $sWhere .= $aColumnsSql[1]. " LIKE '%" . $_GET['sSearch_1'] . "%'";
     $sWhere .= ')';
 }
-/* search on town */
+
 if ($_GET['sSearch_2'] != "") {
     $sWhere .= " AND (";
-    $sWhere .= "s.ville " . " LIKE '%" . $_GET['sSearch_2'] . "%'";
+    $sWhere .= $aColumnsSql[2] . " LIKE '%" . $_GET['sSearch_2'] . "%'";
     $sWhere .= ')';
 }
-/* search on state */
+
 if ($_GET['sSearch_3'] != "") {
     $sWhere .= " AND (";
-    $sWhere .= "d.nom " . " LIKE '%" . $_GET['sSearch_3'] . "%'";
+    $sWhere .= $aColumnsSql[3] . " LIKE '%" . $_GET['sSearch_3'] . "%'";
     $sWhere .= ')';
 }
-/* search on  zip*/
+
 if ($_GET['sSearch_4'] != "") {
     $sWhere .= " AND (";
-    $sWhere .= "s.cp " . " LIKE '%" . $_GET['sSearch_4'] . "%'";
+    $sWhere .= $aColumnsSql[4] . " LIKE '%" . $_GET['sSearch_4'] . "%'";
     $sWhere .= ')';
 }
-/* search on  date*/
+
 if ($_GET['sSearch_5'] != "") {
     $sWhere .= " AND (";
-    $sWhere .= "s.datec " . " LIKE '%" . $_GET['sSearch_5'] . "%'";
+    $sWhere .= $aColumnsSql[5] . " LIKE '%" . $_GET['sSearch_5'] . "%'";
     $sWhere .= ')';
 }
-/* search on  cate*/
+
 if ($_GET['sSearch_6'] != "") {
     $sWhere .= " AND (";
-    $sWhere .= "c.label " . " LIKE '%" . $_GET['sSearch_6'] . "%'";
+    $sWhere .= $aColumnsSql[6] . " LIKE '%" . $_GET['sSearch_6'] . "%'";
     $sWhere .= ')';
 }
-/* search on sales */
+
 if ($_GET['sSearch_7'] != "") {
     $sWhere .= " AND (";
-    $sWhere .= "u.name " . " LIKE '%" . $_GET['sSearch_7'] . "%'";
+    $sWhere .= $aColumnsSql[7] . " LIKE '%" . $_GET['sSearch_7'] . "%'";
     $sWhere .= ')';
 }
-/* search on sales */
+
 if ($_GET['sSearch_8'] != "") {
     $sWhere .= " AND (";
-    $sWhere .= "s.siren " . " LIKE '%" . $_GET['sSearch_8'] . "%'";
+    $sWhere .= $aColumnsSql[8] . " LIKE '%" . $_GET['sSearch_8'] . "%'";
     $sWhere .= ')';
 }
-/* search on sales */
+
 if ($_GET['sSearch_9'] != "") {
     $sWhere .= " AND (";
-    $sWhere .= "s.siret " . " LIKE '%" . $_GET['sSearch_9'] . "%'";
+    $sWhere .= $aColumnsSql[9] . " LIKE '%" . $_GET['sSearch_9'] . "%'";
     $sWhere .= ')';
 }
-/* search on sales */
+
 if ($_GET['sSearch_10'] != "") {
     $sWhere .= " AND (";
-    $sWhere .= "s.ape " . " LIKE '%" . $_GET['sSearch_10'] . "%'";
+    $sWhere .= $aColumnsSql[10] . " LIKE '%" . $_GET['sSearch_10'] . "%'";
     $sWhere .= ')';
 }
-/* search on sales */
+
 if ($_GET['sSearch_11'] != "") {
     $sWhere .= " AND (";
-    $sWhere .= "s.idprof4 " . " LIKE '%" . $_GET['sSearch_11'] . "%'";
+    $sWhere .= $aColumnsSql[11] . " LIKE '%" . $_GET['sSearch_11'] . "%'";
     $sWhere .= ')';
 }
-/* search on level */
+
 if ($_GET['sSearch_12'] != "") {
     $sWhere .= " AND (";
-    $sWhere .= "s.fk_prospectlevel " . " LIKE '%" . $_GET['sSearch_12'] . "%'";
+    $sWhere .= $aColumnsSql[12] . " LIKE '%" . $_GET['sSearch_12'] . "%'";
     $sWhere .= ')';
 }
-/* search on status */
+
 if ($_GET['sSearch_13'] != "") {
     $sWhere .= " AND (";
-    $sWhere .= "fk_stcomm " . " LIKE '%" . $_GET['sSearch_13'] . "%'";
+    $sWhere .= $aColumnsSql[13]. " LIKE '%" . $_GET['sSearch_13'] . "%'";
     $sWhere .= ')';
 }
 
@@ -190,7 +205,7 @@ $sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "c_departements as d on (d.rowid = s.fk_
 $sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "c_stcomm as st ON st.id = s.fk_stcomm";
 
 /* requesting data on categorie filter  */
-if ($roc != false || rsc!=false) {
+if ($roc != false || $rsc!=false) {
     $sql.=" LEFT JOIN llx_categorie_societe as cs ON cs.fk_societe = s.rowid ";
     $sql.=" LEFT JOIN llx_categorie as c ON c.rowid=cs.fk_categorie ";
 }

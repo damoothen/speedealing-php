@@ -9,3 +9,6 @@ dolibarr_install.log
 htdocs/contact/index.bak.php
 htdocs/comm/list.bak.php
 htdocs/comm/serverprocess.bak.php
+htdocs/lib/datatables/js/initDatatablesCompte.bak.js
+htdocs/lib/datatables/js/initDatatablesContact.bak.js
+
