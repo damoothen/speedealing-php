@@ -136,6 +136,4 @@ $(document).ready(function() {
         })
 });
 ";
-//print 'var idi ='.$user->rights->societe->contact->export.';';
-//print 'alert(idi);';
 print'</script>';

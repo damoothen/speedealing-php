@@ -48,8 +48,8 @@ print '$(document).ready(function() {
     } );
     if(state!=\'\'){
         if(cate!=\'\'){
-            
-            /* init dataTable with cate*/ 
+            if(exportright==1){
+                /* init dataTable with cate*/ 
             oTable = $(\'#liste\').dataTable( {
                 "aoColumnDefs": [ 
                 {"bVisible": false, "aTargets": [ 4 ]},{"bVisible": false, "aTargets": [ 7 ]},
@@ -80,16 +80,14 @@ print '$(document).ready(function() {
             $("td#"+9).css("display", "none");
             $("td#"+10).css("display", "none");
             
-        }
-        else{
-            /* init dataTable without cate*/ 
+            }else{
+                /* init dataTable with cate*/ 
             oTable = $(\'#liste\').dataTable( {
                 "aoColumnDefs": [ 
-                {"bVisible": false, "aTargets": [ 4 ]},{"bVisible": false, "aTargets": [ 6 ]},
-                {"bVisible": false, "aTargets": [ 7 ]},{"bVisible": false, "aTargets": [ 8 ]},
-                {"bVisible": false, "aTargets": [ 9 ]},
+                {"bVisible": false, "aTargets": [ 4 ]},{"bVisible": false, "aTargets": [ 7 ]},
+                {"bVisible": false, "aTargets": [ 8 ]},{"bVisible": false, "aTargets": [ 9 ]},
+                {"bVisible": false, "aTargets": [ 10 ]}
                 ],
-                
                 "iDisplayLength": 10,
                 "aLengthMenu": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,"All"]],
                 "bProcessing": true,
@@ -99,26 +97,84 @@ print '$(document).ready(function() {
                 "oLanguage": {
                     "sUrl": "../lib/datatables/langs/"+lang+".txt"
                         
-                },
-                "sDom": \'T<"clear">lfrtip\',
-                "oTableTools": {
-                    "sSwfPath": "../lib/datatables/swf/copy_cvs_xls_pdf.swf",
-                    "aButtons": [
-                    "xls"	
-                    ]
                 }
             });
             $("td#"+4).css("display", "none");
-            $("td#"+6).css("display", "none");
             $("td#"+7).css("display", "none");
             $("td#"+8).css("display", "none");
-            $("td#"+9).css("display", "none"); 
+            $("td#"+9).css("display", "none");
+            $("td#"+10).css("display", "none");
+            
+            }
+            
+        }
+        if(cate==\'\'){
+              if(exportright==1){
+                /* init dataTable without cate*/ 
+                oTable = $(\'#liste\').dataTable( {
+                    "aoColumnDefs": [ 
+                    {"bVisible": false, "aTargets": [ 4 ]},{"bVisible": false, "aTargets": [ 6 ]},
+                    {"bVisible": false, "aTargets": [ 7 ]},{"bVisible": false, "aTargets": [ 8 ]},
+                    {"bVisible": false, "aTargets": [ 9 ]},
+                    ],
+
+                    "iDisplayLength": 10,
+                    "aLengthMenu": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,"All"]],
+                    "bProcessing": true,
+                    "bServerSide": true,
+                    "sAjaxSource": "serverprocess.php?type="+type,
+                    "bPaginate": true,
+                    "oLanguage": {
+                        "sUrl": "../lib/datatables/langs/"+lang+".txt"
+
+                    },
+                    "sDom": \'T<"clear">lfrtip\',
+                    "oTableTools": {
+                        "sSwfPath": "../lib/datatables/swf/copy_cvs_xls_pdf.swf",
+                        "aButtons": [
+                        "xls"	
+                        ]
+                    }
+                });
+                $("td#"+4).css("display", "none");
+                $("td#"+6).css("display", "none");
+                $("td#"+7).css("display", "none");
+                $("td#"+8).css("display", "none");
+                $("td#"+9).css("display", "none");          
+              }
+              else{
+                /* init dataTable without cate*/ 
+                oTable = $(\'#liste\').dataTable( {
+                    "aoColumnDefs": [ 
+                    {"bVisible": false, "aTargets": [ 4 ]},{"bVisible": false, "aTargets": [ 6 ]},
+                    {"bVisible": false, "aTargets": [ 7 ]},{"bVisible": false, "aTargets": [ 8 ]},
+                    {"bVisible": false, "aTargets": [ 9 ]},
+                    ],
+
+                    "iDisplayLength": 10,
+                    "aLengthMenu": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,"All"]],
+                    "bProcessing": true,
+                    "bServerSide": true,
+                    "sAjaxSource": "serverprocess.php?type="+type,
+                    "bPaginate": true,
+                    "oLanguage": {
+                        "sUrl": "../lib/datatables/langs/"+lang+".txt"
+
+                    }
+                });
+                $("td#"+4).css("display", "none");
+                $("td#"+6).css("display", "none");
+                $("td#"+7).css("display", "none");
+                $("td#"+8).css("display", "none");
+                $("td#"+9).css("display", "none"); 
+              }    
         }
     }
     else{
         if(cate!=\'\'){
-            /* init dataTable with cate*/ 
-            oTable = $(\'#liste\').dataTable( {
+            if(exportright==1){
+                /* init dataTable with cate*/ 
+                oTable = $(\'#liste\').dataTable( {
                 "aoColumnDefs": [ 
                 {"bVisible": false,"aTargets": [ 5 ]},{"bVisible": false, "aTargets": [ 8 ]},
                 {"bVisible": false,"aTargets": [ 9 ]},{"bVisible": false, "aTargets": [ 10 ]},
@@ -143,15 +199,44 @@ print '$(document).ready(function() {
                     ]
                 }
             });
-            $("td#"+5).css("display", "none");
-            $("td#"+8).css("display", "none");
-            $("td#"+9).css("display", "none");
-            $("td#"+10).css("display", "none");
-            $("td#"+11).css("display", "none");
+               $("td#"+5).css("display", "none");
+               $("td#"+8).css("display", "none");
+               $("td#"+9).css("display", "none");
+               $("td#"+10).css("display", "none");
+               $("td#"+11).css("display", "none");
+            }
+            else{
+                /* init dataTable with cate*/ 
+                oTable = $(\'#liste\').dataTable( {
+                "aoColumnDefs": [ 
+                {"bVisible": false,"aTargets": [ 5 ]},{"bVisible": false, "aTargets": [ 8 ]},
+                {"bVisible": false,"aTargets": [ 9 ]},{"bVisible": false, "aTargets": [ 10 ]},
+                {"bVisible": false, "aTargets": [ 11 ]}
+                ],
+                
+                "iDisplayLength": 10,
+                "aLengthMenu": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,"All"]],
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "serverprocess.php?type="+type,
+                "bPaginate": true,
+                "oLanguage": {
+                    "sUrl": "../lib/datatables/langs/"+lang+".txt"
+                        
+                }
+            });
+               $("td#"+5).css("display", "none");
+               $("td#"+8).css("display", "none");
+               $("td#"+9).css("display", "none");
+               $("td#"+10).css("display", "none");
+               $("td#"+11).css("display", "none");
+            }
+            
         }
-        else{
-            /* init dataTable without cate*/ 
-            oTable = $(\'#liste\').dataTable( {
+        if(cate==\'\'){
+            if(exportright==1){
+                /* init dataTable without cate*/ 
+                  oTable = $(\'#liste\').dataTable( {
                 "aoColumnDefs": [ 
                 {"bVisible": false, "aTargets": [ 5 ]},{"bVisible": false, "aTargets": [ 7 ]},
                 {"bVisible": false, "aTargets": [ 8 ]},{"bVisible": false, "aTargets": [ 9 ]},
@@ -181,6 +266,34 @@ print '$(document).ready(function() {
             $("td#"+8).css("display", "none");
             $("td#"+9).css("display", "none");
             $("td#"+10).css("display", "none"); 
+            }
+            else{
+            /* init dataTable without cate*/ 
+                  oTable = $(\'#liste\').dataTable( {
+                "aoColumnDefs": [ 
+                {"bVisible": false, "aTargets": [ 5 ]},{"bVisible": false, "aTargets": [ 7 ]},
+                {"bVisible": false, "aTargets": [ 8 ]},{"bVisible": false, "aTargets": [ 9 ]},
+                {"bVisible": false, "aTargets": [ 10 ]},
+                ],
+                
+                "iDisplayLength": 10,
+                "aLengthMenu": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,"All"]],
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "serverprocess.php?type="+type,
+                "bPaginate": true,
+                "oLanguage": {
+                    "sUrl": "../lib/datatables/langs/"+lang+".txt"
+                        
+                }
+            });
+            $("td#"+5).css("display", "none");
+            $("td#"+7).css("display", "none");
+            $("td#"+8).css("display", "none");
+            $("td#"+9).css("display", "none");
+            $("td#"+10).css("display", "none");    
+            }
+            
         }  
     }
 
