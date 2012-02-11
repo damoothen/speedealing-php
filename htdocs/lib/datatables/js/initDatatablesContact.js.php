@@ -27,8 +27,10 @@ print "$(document).ready(function() {
      /* Get the lang */
       var tabs = location.search.substring(1).split(\"&\");
       var lang = tabs[1].substr(5,5);
-      var exportright ='".$user->rights->societe->contact->export."';
-  
+      var cate='';
+      var exportright='';
+      exportright ='".$user->rights->societe->contact->export."';      
+      cate = '".$conf->categorie->enabled."';    
       /* Get the type */
       var type='';
       if(tabs[2])
@@ -44,44 +46,101 @@ print "$(document).ready(function() {
     $('#liste tbody tr').each( function () {
         this.insertBefore(  nCloneTd.cloneNode( true ), this.childNodes[0] );
     } );
-    if(exportright==1){
-      /* init dataTable */
-    oTable = $('#liste').dataTable( {
-         
-         \"iDisplayLength\": 10,
-        \"aLengthMenu\": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,\"All\"]],
-        \"bProcessing\": true,
-        \"bServerSide\": true,
-        \"sAjaxSource\": \"serverprocess.php?type=\"+type,
-        \"bPaginate\": true,
-         \"oLanguage\": {\"sUrl\": \"../lib/datatables/langs/\"+lang+\".txt\"
-                        
-                      },
-                      
-         \"sDom\": 'T<\"clear\">lfrtip',      
-         \"oTableTools\": {
-            \"sSwfPath\": \"../lib/datatables/swf/copy_cvs_xls_pdf.swf\",
-            \"aButtons\": [
-            \"xls\"	
-            ]
+    if(cate==1){
+    
+        if(exportright==1){
+            /* init dataTable */
+            oTable = $('#liste').dataTable( {
+                \"aoColumnDefs\": [ 
+                        {\"bVisible\": false, \"aTargets\": [ 9 ]},{\"bVisible\": false, \"aTargets\": [ 10 ]}
+                        ], 
+                \"iDisplayLength\": 10,
+                \"aLengthMenu\": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,\"All\"]],
+                \"bProcessing\": true,
+                \"bServerSide\": true,
+                \"sAjaxSource\": \"serverprocess.php?type=\"+type,
+                \"bPaginate\": true,
+                \"oLanguage\": {\"sUrl\": \"../lib/datatables/langs/\"+lang+\".txt\"
+
+                            },
+
+                \"sDom\": 'T<\"clear\">lfrtip',      
+                \"oTableTools\": {
+                    \"sSwfPath\": \"../lib/datatables/swf/copy_cvs_xls_pdf.swf\",
+                    \"aButtons\": [
+                    \"xls\"	
+                    ]
+                }
+            });
+            $(\"td#\"+9).css(\"display\", \"none\");
+            $(\"td#\"+10).css(\"display\", \"none\");    
         }
-    });   
-    }
-    else{
-         /* init dataTable */
-    oTable = $('#liste').dataTable( {
-         
-         \"iDisplayLength\": 10,
-        \"aLengthMenu\": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,\"All\"]],
-        \"bProcessing\": true,
-        \"bServerSide\": true,
-        \"sAjaxSource\": \"serverprocess.php?type=\"+type,
-        \"bPaginate\": true,
-         \"oLanguage\": {\"sUrl\": \"../lib/datatables/langs/\"+lang+\".txt\"
-                        
-                      }
-    });     
-    }
+        else{
+            /* init dataTable */
+        oTable = $('#liste').dataTable( {
+            \"aoColumnDefs\": [ 
+                        {\"bVisible\": false, \"aTargets\": [ 9 ]},{\"bVisible\": false, \"aTargets\": [ 10 ]}
+                        ], 
+            \"iDisplayLength\": 10,
+            \"aLengthMenu\": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,\"All\"]],
+            \"bProcessing\": true,
+            \"bServerSide\": true,
+            \"sAjaxSource\": \"serverprocess.php?type=\"+type,
+            \"bPaginate\": true,
+            \"oLanguage\": {\"sUrl\": \"../lib/datatables/langs/\"+lang+\".txt\"}
+        });     
+        $(\"td#\"+9).css(\"display\", \"none\");
+        $(\"td#\"+10).css(\"display\", \"none\");    
+        }
+     }
+     if(cate==''){
+         if(exportright==1){
+             /* init dataTable */
+            oTable = $('#liste').dataTable( {
+                \"aoColumnDefs\": [ 
+                        {\"bVisible\": false, \"aTargets\": [ 8 ]},{\"bVisible\": false, \"aTargets\": [ 9 ]}
+                        ], 
+                \"iDisplayLength\": 10,
+                \"aLengthMenu\": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,\"All\"]],
+                \"bProcessing\": true,
+                \"bServerSide\": true,
+                \"sAjaxSource\": \"serverprocess.php?type=\"+type,
+                \"bPaginate\": true,
+                \"oLanguage\": {\"sUrl\": \"../lib/datatables/langs/\"+lang+\".txt\"
+
+                            },
+
+                \"sDom\": 'T<\"clear\">lfrtip',      
+                \"oTableTools\": {
+                    \"sSwfPath\": \"../lib/datatables/swf/copy_cvs_xls_pdf.swf\",
+                    \"aButtons\": [
+                    \"xls\"	
+                    ]
+                }
+            });
+            $(\"td#\"+8).css(\"display\", \"none\");
+            $(\"td#\"+9).css(\"display\", \"none\");  
+         }
+         else{
+            /* init dataTable */
+            oTable = $('#liste').dataTable( {
+                \"aoColumnDefs\": [ 
+                        {\"bVisible\": false, \"aTargets\": [ 8 ]},{\"bVisible\": false, \"aTargets\": [ 9 ]}
+                        ], 
+                \"iDisplayLength\": 10,
+                \"aLengthMenu\": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,\"All\"]],
+                \"bProcessing\": true,
+                \"bServerSide\": true,
+                \"sAjaxSource\": \"serverprocess.php?type=\"+type,
+                \"bPaginate\": true,
+                \"oLanguage\": {\"sUrl\": \"../lib/datatables/langs/\"+lang+\".txt\"
+
+                            }
+            });
+            $(\"td#\"+8).css(\"display\", \"none\");
+            $(\"td#\"+9).css(\"display\", \"none\");  
+         }
+     }
    
 
    

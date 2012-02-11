@@ -31,7 +31,7 @@ print '$(document).ready(function() {
     var type=\'\';
     type = tabs[2].substr(5,1);
     var cate=\'\';
-    cate = tabs[3].substr(5,1);
+    var cate = "'.$conf->categorie->enabled.'";    
     var state=\'\';
     state = tabs[4].substr(6,1);
     var exportright ="'.$user->rights->societe->contact->export.'";  
