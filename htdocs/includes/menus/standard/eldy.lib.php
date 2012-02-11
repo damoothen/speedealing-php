@@ -778,7 +778,7 @@ function print_left_eldy_menu($db,$menu_array_before,$menu_array_after)
             if ($conf->societe->enabled && $conf->fournisseur->enabled)
             {
                 $langs->load("suppliers");
-                $newmenu->add("/fourn/liste.php?leftmenu=suppliers", $langs->trans("ListSuppliersShort"), 1, $user->rights->societe->lire && $user->rights->fournisseur->lire);
+                $newmenu->add("/fourn/liste.php?leftmenu=suppliers&lang=".$langs->defaultlang, $langs->trans("ListSuppliersShort"), 1, $user->rights->societe->lire && $user->rights->fournisseur->lire);
 
                 if ($user->societe_id == 0)
                 {
@@ -811,7 +811,7 @@ function print_left_eldy_menu($db,$menu_array_before,$menu_array_after)
             $newmenu->add("/contact/index.php?leftmenu=contacts&lang=".$langs->defaultlang."&type=", $langs->trans("List"), 1, $user->rights->societe->contact->lire);
             if (empty($conf->global->SOCIETE_DISABLE_PROSPECTS)) $newmenu->add("/contact/index.php?leftmenu=contacts&lang=".$langs->defaultlang."&type=p", $langs->trans("Prospects"), 2, $user->rights->societe->contact->lire);
             $newmenu->add("/contact/index.php?leftmenu=contacts&lang=".$langs->defaultlang."&type=c", $langs->trans("Customers"), 2, $user->rights->societe->contact->lire);
-            if ($conf->fournisseur->enabled) $newmenu->add("/contact/index.php?leftmenu=contacts&type=f", $langs->trans("Suppliers"), 2, $user->rights->societe->contact->lire);
+            if ($conf->fournisseur->enabled) $newmenu->add("/contact/index.php?leftmenu=contacts&lang=".$langs->defaultlang."&type=f", $langs->trans("Suppliers"), 2, $user->rights->societe->contact->lire);
             $newmenu->add("/contact/index.php?leftmenu=contacts&lang=".$langs->defaultlang."&type=o", $langs->trans("Others"), 2, $user->rights->societe->contact->lire);
             //$newmenu->add("/contact/index.php?userid=$user->id", $langs->trans("MyContacts"), 1, $user->rights->societe->contact->lire);
 
