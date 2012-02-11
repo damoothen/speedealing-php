@@ -33,10 +33,33 @@ require_once(DOL_DOCUMENT_ROOT."/lib/contact.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/lib/company.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formcompany.class.php");
 
+
+
 $langs->load("companies");
 $langs->load("users");
 $langs->load("other");
 $langs->load("commercial");
+
+/* ajax fiche to response */ 
+if(isset($_GET['requestfiche']))
+{
+    $id = $_GET['requestfiche'];
+    $object = new Contact($db);
+    $object->fetch($id);
+    $info = array($langs->trans("Firstname")=>$object->prenom,$langs->trans("Lastname")=>$object->name,
+                  $langs->trans("Company")=>$object->socname,$langs->trans("UserTitle")=>$object->civilite_id,
+                  $langs->trans("PostOrFunction")=>$object->poste,$langs->trans("Address")=>$object->address,
+                  $langs->trans("Zip")=>$object->zip,$langs->trans("Town")=>$object->town,
+                  $langs->trans("Country")=>$object->pays,$langs->trans('State')=>$object->fk_departement,
+                  $langs->trans("PhonePro")=>$object->phone_pro,$langs->trans("PhonePerso")=>$object->phone_pro,
+                  $langs->trans("Fax")=>$object->fax,$langs->trans("Email")=>$object->mail,
+                  $langs->trans("ContactVisibility")=>$object->priv,$langs->trans("Note")=>$object->note
+                  );
+    header('Content-type: application/json');
+    echo json_encode($info);
+    return;
+}
+
 
 $error=0; $errors=array();
 
@@ -946,6 +969,7 @@ else
         print show_actions_done($conf,$langs,$db,$objsoc,$object);
     }
 }
+
 
 $db->close();
 

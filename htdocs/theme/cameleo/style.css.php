@@ -20,7 +20,7 @@
  */
 
 /**
- *		\file       htdocs/theme/eldy/style.css.php
+ *		\file       htdocs/theme/cameleo/style.css.php
  *		\brief      Fichier de style CSS du theme Cameleo
  *		\version    $Id: style.css.php,v 1.9 2011/07/31 23:22:05 eldy Exp $
  */
@@ -2071,4 +2071,228 @@ span.cke_skin_kama { padding: 0 !important; }
 
 .template-upload {
     height: 72px !important;
+}
+/* ============================================================================== */
+/* DataTable                                                                     */
+/* ============================================================================== */
+
+/*
+ * DataTables display
+ */     
+table.display{
+        background-image: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/bg_liste_titremenu.jpg'?>);
+        background-position: top right;
+        background-repeat: repeat-x;
+        font-size: 12px;
+        border-radius : 8px 8px 8px 8px;
+        padding : 0 0px 8px 0px;   
+        border : 1px solid #D0D0D0;
+	clear: both;
+	width: 100%;
+}
+
+table.display thead th {
+	padding: 0px 18px 3px 10px;
+	border-bottom: 1px solid black;
+        border-width:0px 0px 0px 0px;
+	font-weight: bold;
+	cursor: pointer;
+        color:#842F00;
+        font-family:"Trebuchet MS",Arial,Helvetica,sans-serif;
+
+	
+}
+
+table.display tfoot th {
+	padding: 3px 18px 3px 10px;
+	border-top: 1px solid black;
+	font-weight: bold;
+}
+
+table.display tr.heading2 td {
+	border-bottom: 1px solid #aaa;
+}
+
+table.display td {
+	padding: 3px 3px;
+}
+
+table.display td.center {
+	text-align: center;
+}
+tr.odd {    
+font-family:arial,tahoma,verdana,helvetica;
+background-color: #EAEAEA;
+}
+
+tr.odd:hover {    
+background-color: #C0C4C7;
+}
+tr.even:hover {    
+background-color: #C0C4C7;
+}
+tr.even {
+font-family:arial,tahoma,verdana,helvetica;	
+background-color: white;
+}
+tr.odd a{
+font-family:arial,tahoma,verdana,helvetica;
+}
+tr.even a{
+font-family:arial,tahoma,verdana,helvetica;
+}
+
+ /* DataTables sorting */
+ 
+.sorting {
+	background: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/sort_both.png'?>) no-repeat center right;
+}
+ 
+.sorting_asc {
+         
+	background: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/sort_asc.png'?>) no-repeat center right;
+}
+
+.sorting_desc {
+	background: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/sort_desc.png'?>) no-repeat center right;
+}
+/* search input */
+
+.dataTables_filter {
+	margin-top:10px;
+        width: 50%;
+	float: right;
+	text-align: right;
+        margin-bottom:2px;
+        color:#842F00;
+        font-size: 12px;
+        font-family:"Trebuchet MS",Arial,Helvetica,sans-serif;
+        font-weight: bold;
+}
+
+/*
+ * CONTAINER
+ * TableTools container element and styles applying to all components
+ */
+div.DTTT_container {
+	float: left;
+	margin-bottom: 1em;
+}
+button.DTTT_button {
+	position: relative;
+	height: 30px;
+	margin-right: 3px;
+	padding: 3px 5px;
+	border: 1px solid #d0d0d0;
+	background-color: #fff;
+	cursor: pointer;
+}
+.dataTables_length {
+    float: left;
+    width: 40%;
+    margin-top:5px;
+}
+
+/*
+ * BUTTON_STYLES
+ * Action specific button styles
+ */
+
+button.DTTT_button_xls {
+	padding-right: 30px;
+	background: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/xls.png'?>) no-repeat center right;
+}
+
+button.DTTT_button_xls_hover {
+	padding-right: 30px;
+	border: 1px solid #999;
+	background: #f0f0f0 url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/xls_hover.png'?>) no-repeat center right;
+}
+button.DTTT_button_text {
+}
+
+/* detail */ 
+table.display td {
+    font-size:12px;
+    padding: 3px 10px;
+}
+td.details {
+    background-color: #D1CFD0;
+    border: 2px solid #A19B9E;
+}
+
+
+}
+.dataTables_paginate {
+	width: 44px;
+	* width: 50px;
+	float: right;
+	text-align: right;
+}
+
+
+/* Pagination nested */
+.paginate_disabled_previous, .paginate_enabled_previous, .paginate_disabled_next, .paginate_enabled_next {
+	height: 19px;
+	width: 19px;
+	margin-left: 3px;
+	float: left;
+}
+
+.paginate_disabled_previous {
+	background-image: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/back_disabled.jpg'?>);
+}
+
+.paginate_enabled_previous {
+	background-image: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/back_enabled.jpg'?>);
+}
+
+.paginate_disabled_next {
+	background-image: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/forward_disabled.jpg'?>);
+}
+
+.paginate_enabled_next {
+	background-image: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/forward_enabled.jpg'?>);
+}
+
+/* processing msg */
+.dataTables_processing {
+	position: fixed;
+	top: 40%;
+	left: 50%;
+	width: 250px;
+	height: 30px;
+	margin-left: -125px;
+	margin-top: -15px;
+	padding: 14px 0 2px 0;
+	border: 1px solid #ddd;
+	text-align: center;
+	color: #999;
+	font-size: 14px;
+	background-color: white;
+}
+.inputSearch{
+width: 80px;
+}
+
+/* hide/show table */
+table.hideshow
+{
+font-size: 12px;
+padding : 0px; 
+margin:0px;
+}
+table.hideshow td a
+{
+font-size: 12px;
+color:#000;
+font-weight: normal;
+font-family:"Trebuchet MS",Arial,Helvetica,sans-serif;
+}
+table.hideshow td p
+{
+font-size: 12px;
+font-weight: bold;
+color:#000;
+font-family:"Trebuchet MS",Arial,Helvetica,sans-serif;
 }
