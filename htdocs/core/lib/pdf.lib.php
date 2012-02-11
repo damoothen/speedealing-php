@@ -4,6 +4,7 @@
  * Copyright (C) 2007      Patrick Raguin       <patrick.raguin@gmail.com>
  * Copyright (C) 2010-2011 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2010      Juanjo Menent        <jmenent@2byte.es>
+ * Copyright (C) 2012      Christophe Battarel  <christophe.battarel@altairis.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -320,12 +321,12 @@ function pdf_watermark(&$pdf, $outputlangs, $h, $w, $unit, $text)
 /**
  *   	Show bank informations for PDF generation
  *
- *      @param      pdf             Object PDF
- *      @param      outputlangs     Object lang
- *      @param      curx            X
- *      @param      cury            Y
- *      @param      account         Bank account object
- *      @param      onlynumber      Output only number
+ *      @param	PDF			&$pdf            Object PDF
+ *      @param  Translate	$outputlangs     Object lang
+ *      @param  int			$curx            X
+ *      @param  int			$cury            Y
+ *      @param  Account		$account         Bank account object
+ *      @param  int			$onlynumber      Output only number
  *      @return	void
  */
 function pdf_bank(&$pdf,$outputlangs,$curx,$cury,$account,$onlynumber=0)
@@ -359,7 +360,7 @@ function pdf_bank(&$pdf,$outputlangs,$curx,$cury,$account,$onlynumber=0)
 			$cury+=3;
 		}
 
-		if (empty($onlynumber)) $pdf->line($curx+1, $cury+1, $curx+1, $cury+8 );
+		if (empty($onlynumber)) $pdf->line($curx+1, $cury+1, $curx+1, $cury+8);
 
 		if ($usedetailedbban == 1)
 		{
@@ -383,7 +384,7 @@ function pdf_bank(&$pdf,$outputlangs,$curx,$cury,$account,$onlynumber=0)
 				$pdf->SetXY($curx, $cury+1);
 				$curx+=$tmplength;
 				$pdf->SetFont('','B',6);$pdf->MultiCell($tmplength, 3, $outputlangs->transnoentities("BankCode"), 0, 'C', 0);
-				if (empty($onlynumber)) $pdf->line($curx, $cury+1, $curx, $cury+8 );
+				if (empty($onlynumber)) $pdf->line($curx, $cury+1, $curx, $cury+8);
 			}
 			if ($val == 'desk')
 			{
@@ -394,7 +395,7 @@ function pdf_bank(&$pdf,$outputlangs,$curx,$cury,$account,$onlynumber=0)
 				$pdf->SetXY($curx, $cury+1);
 				$curx+=$tmplength;
 				$pdf->SetFont('','B',6);$pdf->MultiCell($tmplength, 3, $outputlangs->transnoentities("DeskCode"), 0, 'C', 0);
-				if (empty($onlynumber)) $pdf->line($curx, $cury+1, $curx, $cury+8 );
+				if (empty($onlynumber)) $pdf->line($curx, $cury+1, $curx, $cury+8);
 			}
 			if ($val == 'number')
 			{
@@ -405,7 +406,7 @@ function pdf_bank(&$pdf,$outputlangs,$curx,$cury,$account,$onlynumber=0)
 				$pdf->SetXY($curx, $cury+1);
 				$curx+=$tmplength;
 				$pdf->SetFont('','B',6);$pdf->MultiCell($tmplength, 3, $outputlangs->transnoentities("BankAccountNumber"), 0, 'C', 0);
-				if (empty($onlynumber)) $pdf->line($curx, $cury+1, $curx, $cury+8 );
+				if (empty($onlynumber)) $pdf->line($curx, $cury+1, $curx, $cury+8);
 			}
 			if ($val == 'key')
 			{
@@ -416,7 +417,7 @@ function pdf_bank(&$pdf,$outputlangs,$curx,$cury,$account,$onlynumber=0)
 				$pdf->SetXY($curx, $cury+1);
 				$curx+=$tmplength;
 				$pdf->SetFont('','B',6);$pdf->MultiCell($tmplength, 3, $outputlangs->transnoentities("BankAccountNumberKey"), 0, 'C', 0);
-				if (empty($onlynumber)) $pdf->line($curx, $cury+1, $curx, $cury+8 );
+				if (empty($onlynumber)) $pdf->line($curx, $cury+1, $curx, $cury+8);
 			}
 		}
 
@@ -468,14 +469,14 @@ function pdf_bank(&$pdf,$outputlangs,$curx,$cury,$account,$onlynumber=0)
  *  Show footer of page for PDF generation
  *
  *	@param	PDF			&$pdf     		The PDF factory
- *  @param  Translate	$outputlangs		Object lang for output
+ *  @param  Translate	$outputlangs	Object lang for output
  * 	@param	string		$paramfreetext	Constant name of free text
- * 	@param	Societe		$fromcompany		Object company
- * 	@param	int			$marge_basse		Margin bottom
+ * 	@param	Societe		$fromcompany	Object company
+ * 	@param	int			$marge_basse	Margin bottom
  * 	@param	int			$marge_gauche	Margin left
  * 	@param	int			$page_hauteur	Page height
  * 	@param	Object		$object			Object shown in PDF
- * 	@param	int			$showdetails		Show company details
+ * 	@param	int			$showdetails	Show company details
  * 	@return	void
  */
 function pdf_pagefoot(&$pdf,$outputlangs,$paramfreetext,$fromcompany,$marge_basse,$marge_gauche,$page_hauteur,$object,$showdetails=0)
@@ -665,7 +666,7 @@ function pdf_pagefoot(&$pdf,$outputlangs,$paramfreetext,$fromcompany,$marge_bass
 /**
  *	Output line description into PDF
  *
- *  @param  PDF				$pdf                PDF object
+ *  @param  PDF				&$pdf               PDF object
  *	@param	Object			$object				Object
  *	@param	int				$i					Current line number
  *  @param  Translate		$outputlangs		Object lang for output
@@ -731,9 +732,9 @@ function pdf_getlinedesc($object,$i,$outputlangs,$hideref=0,$hidedesc=0,$issuppl
 		// If a predefined product and multilang and on other lang, we renamed label with label translated
 		if ($conf->global->MAIN_MULTILANGS && ($outputlangs->defaultlang != $langs->defaultlang))
 		{
-			if (! empty($prodser->multilangs[$outputlangs->defaultlang]["libelle"]))     $label=$prodser->multilangs[$outputlangs->defaultlang]["libelle"];
-			if (! empty($prodser->multilangs[$outputlangs->defaultlang]["description"])) $desc=$prodser->multilangs[$outputlangs->defaultlang]["description"];
-			if (! empty($prodser->multilangs[$outputlangs->defaultlang]["note"]))        $note=$prodser->multilangs[$outputlangs->defaultlang]["note"];
+			if (! empty($prodser->multilangs[$outputlangs->defaultlang]["libelle"]) && $label == $prodser->label)     $label=$prodser->multilangs[$outputlangs->defaultlang]["libelle"];
+			if (! empty($prodser->multilangs[$outputlangs->defaultlang]["description"]) && $desc == $prodser->description) $desc=$prodser->multilangs[$outputlangs->defaultlang]["description"];
+			if (! empty($prodser->multilangs[$outputlangs->defaultlang]["note"]) && $note == $prodser->note)        $note=$prodser->multilangs[$outputlangs->defaultlang]["note"];
 		}
 	}
 
@@ -1228,7 +1229,7 @@ function pdf_getlinetotalwithtax($object,$i,$outputlangs,$hidedetails=0)
  *  @param	HookManager	$hookmanager		Hook manager instance
  * 	@return	void
  */
-function pdf_getTotalQty($object,$type='',$outputlangs,$hookmanager=false)
+function pdf_getTotalQty($object,$type,$outputlangs,$hookmanager=false)
 {
 	$total=0;
 	$nblignes=count($object->lines);
@@ -1266,7 +1267,7 @@ function pdf_getTotalQty($object,$type='',$outputlangs,$hookmanager=false)
 /**
  *	Convert a currency code into its symbol
  *
- *  @param      PDF		$pdf          		PDF object
+ *  @param      PDF		&$pdf          		PDF object
  *  @param		string	$currency_code		Currency code
  *  @return		string						Currency symbol encoded into UTF8
  */

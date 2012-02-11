@@ -862,6 +862,7 @@ MAIN_PROXY_USER=Login del servidor proxy
 MAIN_PROXY_PASS=Contraseña del servidor proxy
 DefineHereComplementaryAttributes=Defina aquí la lista de atributos adicionales, no disponibles en estándar, y que desea gestionar para %s.
 ExtraFields=Atributos adicionales
+ExtraFieldHasWrongValue=El atributo %s tiene un valor incorrecto.
 SendingMailSetup=Configuració de l'enviament per mail
 SendmailOptionNotComplete=Atención, en algunos sistemas Linux, con este método de envio, para poder enviar mails en su nombre, la configuración de sendmail debe contener la opción <b>-ba</b> (parámetro <b>mail.force_extra_parameters</b> en el archivo <b>php.ini</b>). Si algunos de sus destinatarios no reciben sus mensajes, pruebe a modificar este parámetro PHP con <b>mail.force_extra_parameters=-ba</b>.
 PathToDocuments=Rutas de acceso a documentos
@@ -1117,6 +1118,7 @@ NumberOfProductShowInSelect=Nº de productos máx. en las listas (0=sin límite)
 ConfirmDeleteProductLineAbility=Confirmación de eliminación de una línea de producido en los formularios
 ModifyProductDescAbility=Personalización de las descripciones de los productos en los formularios
 ViewProductDescInFormAbility=Visualización de las descripciones de los productos en los formularios
+ViewProductDescInThirdpartyLanguageAbility=Visualización de las descripciones de productos en el idioma del tercero
 UseSearchToSelectProduct=Utilizar un formulario de búsqueda para la selección de un producto (en vez de la lista desplegable). Tenga en cuenta que si tiene un número importante de productos o servicios (> 100 000), puede mejorar el rendimiento definiendo la constante PRODUCT_DONOTSEARCH_ANYWHERE a 1 en Configuración->Varios. La búsqueda quedará limitada al inicio de la cadena.
 UseEcoTaxeAbility=Asumir ecotasa (DEEE)
 SetDefaultBarcodeTypeProducts=Tipo de código de barras utilizado por defecto para los productos
@@ -1279,6 +1281,8 @@ BankOrderGlobal=General
 BankOrderGlobalDesc=Orden de visualización general
 BankOrderES=Español
 BankOrderESDesc=Orden de visualización español
+##### MailmanSpip #####
+MailmanSpipSetup=Configuración del módulo Mailman y Spip
 ##### Multicompany #####
 MultiCompanySetup=Configuración del módulo Multi-empresa
 ##### Suppliers #####
@@ -1292,9 +1296,6 @@ NoteOnPathLocation=Tenga en cuenta que este archivo debe estar en un directorio 
 YouCanDownloadFreeDatFileTo=Puede descargarse una <b>versión demo gratuita</b> del archivo de países Maxmind GeoIP en la dirección %s.
 YouCanDownloadAdvancedDatFileTo=También puede descargarse una <b>versión más completa</b> del archivo de países Maxmind GeoIP en la dirección %s.
 TestGeoIPResult=Test de conversión IP -> País
-##### NumberWords #####
-NumberWordsSetup=Configuración del módulo NumberWords
-DescNumberWords=Este módulo le ofrece convertir números o importes en cualquier cadena. También realiza la sustitución de las variables genéricas __TOTAL_TTC_WORDS__, __TOTAL_HT_WORDS__ o __TOTAL_VAT_WORDS__ por el valor de importes totales, base o del IVA, en cadena dentro del texto al que hacen referencia (texto libre de facturas, ...)
 ##### Projects #####
 ProjectsNumberingModules=Módulo de numeración para las referencias de los proyectos
 ProjectsSetup=Configuración del módulo Proyectos

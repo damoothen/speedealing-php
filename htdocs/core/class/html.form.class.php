@@ -1,10 +1,10 @@
 <?php
 /* Copyright (c) 2002-2007 Rodolphe Quiedeville  <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2011 Laurent Destailleur   <eldy@users.sourceforge.net>
+ * Copyright (C) 2004-2012 Laurent Destailleur   <eldy@users.sourceforge.net>
  * Copyright (C) 2004      Benoit Mortier        <benoit.mortier@opensides.be>
  * Copyright (C) 2004      Sebastien Di Cintio   <sdicintio@ressource-toi.org>
  * Copyright (C) 2004      Eric Seigne           <eric.seigne@ryxeo.com>
- * Copyright (C) 2005-2011 Regis Houssin         <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin         <regis@dolibarr.fr>
  * Copyright (C) 2006      Andre Cianfarani      <acianfa@free.fr>
  * Copyright (C) 2006      Marc Barilley/Ocebo   <marc@ocebo.com>
  * Copyright (C) 2007      Franky Van Liedekerke <franky.van.liedekerker@telenet.be>
@@ -353,13 +353,13 @@ class Form
     /**
      *	Show a text with a picto and a tooltip on picto
      *
-     *	@param     	text				Text to show
-     *	@param   	htmltooltip     	Content of tooltip
-     *	@param		direction			1=Icon is after text, -1=Icon is before text, 0=no icon
-     * 	@param		type				Type of picto (info, help, warning, superadmin...)
-     *  @param  	extracss            Add a CSS style to td tags
-     *  @param      noencodehtmltext    Do not encode into html entity the htmltext
-     * 	@return		string				HTML code of text, picto, tooltip
+     *	@param	string	$text				Text to show
+     *	@param  string	$htmltooltip     	Content of tooltip
+     *	@param	int		$direction			1=Icon is after text, -1=Icon is before text, 0=no icon
+     * 	@param	string	$type				Type of picto (info, help, warning, superadmin...)
+     *  @param  string	$extracss           Add a CSS style to td tags
+     *  @param  int		$noencodehtmltext   Do not encode into html entity the htmltext
+     * 	@return	string						HTML code of text, picto, tooltip
      */
     function textwithpicto($text,$htmltext,$direction=1,$type='help',$extracss='',$noencodehtmltext=0)
     {
@@ -745,7 +745,7 @@ class Form
         $sql = "SELECT s.rowid, s.nom, s.client, s.fournisseur, s.code_client, s.code_fournisseur";
         $sql.= " FROM ".MAIN_DB_PREFIX ."societe as s";
         if (!$user->rights->societe->client->voir && !$user->societe_id) $sql .= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
-        $sql.= " WHERE s.entity = ".$conf->entity;
+        $sql.= " WHERE s.entity IN (".getEntity('societe', 1).")";
         if ($filter) $sql.= " AND ".$filter;
         if (!$user->rights->societe->client->voir && !$user->societe_id) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
         $sql.= " ORDER BY nom ASC";
@@ -885,13 +885,13 @@ class Form
         global $conf,$langs;
 
         // On recherche les societes
-        $sql = "SELECT s.rowid, s.name, s.firstname, s.poste FROM";
-        $sql.= " ".MAIN_DB_PREFIX ."socpeople as s";
-        $sql.= " WHERE entity = ".$conf->entity;
-        if ($socid > 0) $sql.= " AND fk_soc=".$socid;
-        $sql.= " ORDER BY s.name ASC";
+        $sql = "SELECT sp.rowid, sp.name as name, sp.firstname, sp.poste";
+        $sql.= " FROM ".MAIN_DB_PREFIX ."socpeople as sp";
+        $sql.= " WHERE sp.entity IN (".getEntity('societe', 1).")";
+        if ($socid > 0) $sql.= " AND sp.fk_soc=".$socid;
+        $sql.= " ORDER BY sp.name ASC";
 
-        dol_syslog("Form::select_contacts sql=".$sql);
+        dol_syslog(get_class($this)."::select_contacts sql=".$sql);
         $resql=$this->db->query($sql);
         if ($resql)
         {
@@ -913,6 +913,7 @@ class Form
 
                     $contactstatic->id=$obj->rowid;
                     $contactstatic->name=$obj->name;
+                    $contactstatic->lastname=$obj->name;
                     $contactstatic->firstname=$obj->firstname;
 
                     if ($htmlname != 'none')
@@ -1262,7 +1263,7 @@ class Form
                     $sql.= "WHERE fk_product='".$objp->rowid."'";
                     $sql.= " AND price_level=".$price_level;
                     $sql.= " ORDER BY date_price";
-                    $sql.= " DESC limit 1";
+                    $sql.= " DESC LIMIT 1";
 
                     dol_syslog("Form::select_produits_do search price for level '.$price_level.' sql=".$sql);
                     $result2 = $this->db->query($sql);
@@ -1404,7 +1405,7 @@ class Form
         $sql.= " FROM ".MAIN_DB_PREFIX."product as p";
         $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product_fournisseur_price as pfp ON p.rowid = pfp.fk_product";
         $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."societe as s ON pfp.fk_soc = s.rowid";
-        $sql.= " WHERE p.entity = ".$conf->entity;
+        $sql.= " WHERE p.entity IN (".getEntity('product', 1).")";
         $sql.= " AND p.tobuy = 1";
         if ($socid) $sql.= " AND pfp.fk_soc = ".$socid;
         if (strval($filtertype) != '') $sql.=" AND p.fk_product_type=".$filtertype;
@@ -1546,7 +1547,7 @@ class Form
         $sql.= " FROM ".MAIN_DB_PREFIX."product as p";
         $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product_fournisseur_price as pfp ON p.rowid = pfp.fk_product";
         $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."societe as s ON pfp.fk_soc = s.rowid";
-        $sql.= " WHERE p.entity = ".$conf->entity;
+        $sql.= " WHERE p.entity IN (".getEntity('product', 1).")";
         $sql.= " AND p.tobuy = 1";
         $sql.= " AND s.fournisseur = 1";
         $sql.= " AND p.rowid = ".$productid;
@@ -3434,8 +3435,8 @@ class Form
         {
             require_once(DOL_DOCUMENT_ROOT."/core/lib/date.lib.php");
 
-            $hourSelected = ConvertSecondToTime($iSecond,'hour');
-            $minSelected = ConvertSecondToTime($iSecond,'min');
+            $hourSelected = convertSecondToTime($iSecond,'hour');
+            $minSelected = convertSecondToTime($iSecond,'min');
         }
 
         print '<select class="flat" name="'.$prefix.'hour"'.($disabled?' disabled="disabled"':'').'>';

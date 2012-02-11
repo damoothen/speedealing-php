@@ -1,6 +1,6 @@
 <?php
 /* Copyright (C) 2001-2007 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005      Eric Seigne          <eric.seigne@ryxeo.com>
  * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2006      Andre Cianfarani     <acianfa@free.fr>
@@ -45,8 +45,8 @@ if ($conf->facture->enabled) $langs->load("bills");
 
 $mesg=''; $error=0; $errors=array();
 
-$id=GETPOST('id');
-$ref=GETPOST('ref');
+$id = GETPOST('id', 'int');
+$ref = GETPOST('ref', 'alpha');
 $action=(GETPOST('action') ? GETPOST('action') : 'view');
 $confirm=GETPOST('confirm');
 $socid=GETPOST("socid");
@@ -66,9 +66,9 @@ if (! empty($canvas))
 }
 
 // Security check
-$value = $ref?$ref:$id;
-$type = $ref?'ref':'rowid';
-$result=restrictedArea($user,'produit|service',$value,'product','','',$type, $objcanvas);
+$fieldvalue = (! empty($id) ? $id : (! empty($ref) ? $ref : ''));
+$fieldtype = (! empty($ref) ? 'ref' : 'rowid');
+$result=restrictedArea($user,'produit|service',$fieldvalue,'product&product','','',$fieldtype,$objcanvas);
 
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
 include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
@@ -771,7 +771,7 @@ else
             print '</td></tr>';
         }
 
-        // Custom code
+        // Customs code
         print '<tr><td>'.$langs->trans("CustomCode").'</td><td><input name="customcode" size="10" value="'.$_POST["customcode"].'"></td></tr>';
 
         // Origin country
@@ -780,7 +780,21 @@ else
         if ($user->admin) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"),1);
         print '</td></tr>';
 
-        // Note (invisible sur facture, propales...)
+        // Other attributes
+        $parameters=array('colspan' => ' colspan="2"');
+        $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+        if (empty($reshook) && ! empty($extrafields->attribute_label))
+        {
+            foreach($extrafields->attribute_label as $key=>$label)
+            {
+                $value=(isset($_POST["options_".$key])?$_POST["options_".$key]:$object->array_options["options_".$key]);
+                print '<tr><td>'.$label.'</td><td colspan="3">';
+                print $extrafields->showInputField($key,$value);
+                print '</td></tr>'."\n";
+            }
+        }
+
+        // Note (private, no output on invoices, propales...)
         print '<tr><td valign="top">'.$langs->trans("NoteNotVisibleOnBill").'</td><td>';
         require_once(DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php");
         $doleditor=new DolEditor('note',$_POST["note"],'',180,'dolibarr_notes','',false,true,$conf->global->FCKEDITOR_ENABLE_PRODUCTDESC,8,70);
@@ -961,7 +975,7 @@ else
                 print '</td></tr>';
             }
 
-            // Custom code
+            // Customs code
             print '<tr><td>'.$langs->trans("CustomCode").'</td><td colspan="2"><input name="customcode" size="10" value="'.$object->customcode.'"></td></tr>';
 
             // Origin country
@@ -969,6 +983,20 @@ else
             print $form->select_country($object->country_id,'country_id');
             if ($user->admin) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"),1);
             print '</td></tr>';
+
+            // Other attributes
+            $parameters=array('colspan' => ' colspan="2"');
+            $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+            if (empty($reshook) && ! empty($extrafields->attribute_label))
+            {
+                foreach($extrafields->attribute_label as $key=>$label)
+                {
+                    $value=(isset($_POST["options_".$key])?$_POST["options_".$key]:$object->array_options["options_".$key]);
+                    print '<tr><td>'.$label.'</td><td colspan="3">';
+                    print $extrafields->showInputField($key,$value);
+                    print '</td></tr>'."\n";
+                }
+            }
 
             // Note
             print '<tr><td valign="top">'.$langs->trans("NoteNotVisibleOnBill").'</td><td colspan="2">';
@@ -1177,12 +1205,25 @@ else
                 print "</td></tr>\n";
             }
 
-            // Custom code
+            // Customs code
             print '<tr><td>'.$langs->trans("CustomCode").'</td><td colspan="2">'.$object->customcode.'</td>';
 
             // Origin country code
             print '<tr><td>'.$langs->trans("CountryOrigin").'</td><td colspan="2">'.getCountry($object->country_id,0,$db).'</td>';
 
+            // Other attributes
+            $parameters=array('colspan' => ' colspan="2"');
+            $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+            if (empty($reshook) && ! empty($extrafields->attribute_label))
+            {
+                foreach($extrafields->attribute_label as $key=>$label)
+                {
+                    $value=(isset($_POST["options_".$key])?$_POST["options_".$key]:$object->array_options["options_".$key]);
+                    print '<tr><td>'.$label.'</td><td colspan="3">';
+                    print $extrafields->showInputField($key,$value);
+                    print '</td></tr>'."\n";
+                }
+            }
 
             // Note
             print '<tr><td valign="top">'.$langs->trans("Note").'</td><td colspan="2">'.(dol_textishtml($object->note)?$object->note:dol_nl2br($object->note,1,true)).'</td></tr>';

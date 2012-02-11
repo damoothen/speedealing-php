@@ -1,5 +1,6 @@
 <?php
-/* Copyright (C) 2010 Laurent Destailleur  <eldy@users.sourceforge.net>
+/* Copyright (C) 2010-2012	Laurent Destailleur	<eldy@users.sourceforge.net>
+ * Copyright (C) 2012		Regis Houssin 		<regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,10 +40,10 @@ require_once dirname(__FILE__).'/../../htdocs/core/modules/facture/doc/pdf_crabe
 require_once dirname(__FILE__).'/../../htdocs/core/modules/facture/doc/pdf_oursin.modules.php';
 require_once dirname(__FILE__).'/../../htdocs/core/modules/propale/doc/pdf_azur.modules.php';
 require_once dirname(__FILE__).'/../../htdocs/core/modules/propale/doc/pdf_jaune.modules.php';
-require_once dirname(__FILE__).'/../../htdocs/core/modules/commande/pdf_edison.modules.php';
-require_once dirname(__FILE__).'/../../htdocs/core/modules/commande/pdf_einstein.modules.php';
+require_once dirname(__FILE__).'/../../htdocs/core/modules/commande/doc/pdf_edison.modules.php';
+require_once dirname(__FILE__).'/../../htdocs/core/modules/commande/doc/pdf_einstein.modules.php';
 require_once dirname(__FILE__).'/../../htdocs/core/modules/project/pdf/pdf_baleine.modules.php';
-require_once dirname(__FILE__).'/../../htdocs/core/modules/fichinter/pdf_soleil.modules.php';
+require_once dirname(__FILE__).'/../../htdocs/core/modules/fichinter/doc/pdf_soleil.modules.php';
 require_once dirname(__FILE__).'/../../htdocs/core/modules/expedition/doc/pdf_expedition_merou.modules.php';
 require_once dirname(__FILE__).'/../../htdocs/core/modules/expedition/doc/pdf_expedition_rouget.modules.php';
 // Mother classes of pdf generators
@@ -120,6 +121,9 @@ class BuildDocTest extends PHPUnit_Framework_TestCase
     }
 
 	/**
+	 * Init phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function setUp()
     {
@@ -132,6 +136,9 @@ class BuildDocTest extends PHPUnit_Framework_TestCase
 		print __METHOD__."\n";
     }
 	/**
+	 * End phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function tearDown()
     {
@@ -155,14 +162,14 @@ class BuildDocTest extends PHPUnit_Framework_TestCase
 
     	// Crabe
     	$localobject->modelpdf='crabe';
-    	$result=facture_pdf_create($db, $localobject, '', $localobject->modelpdf, $langs);
+    	$result=facture_pdf_create($db, $localobject, $localobject->modelpdf, $langs);
 
     	$this->assertLessThan($result, 0);
     	print __METHOD__." result=".$result."\n";
 
     	// Oursin
     	$localobject->modelpdf='oursin';
-    	$result=facture_pdf_create($db, $localobject, '', $localobject->modelpdf, $langs);
+    	$result=facture_pdf_create($db, $localobject, $localobject->modelpdf, $langs);
 
     	$this->assertLessThan($result, 0);
     	print __METHOD__." result=".$result."\n";

@@ -1,7 +1,7 @@
 <?php
 /* Copyright (C) 2001-2007 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2006      Andre Cianfarani     <acianfa@free.fr>
  * Copyright (C) 2007-2011 Jean Heimburger      <jean@tiaris.info>
  * Copyright (C) 2010-2011 Juanjo Menent        <jmenent@2byte.es>
@@ -88,7 +88,7 @@ class Product extends CommonObject
 	// Statut indique si le produit est un produit fini '1' ou une matiere premiere '0'
 	var $finished;
 
-	var $customcode;       // Custom code
+	var $customcode;       // Customs code
     var $country_id;       // Country origin id
 	var $country_code;     // Country origin code (US, FR, ...)
 
@@ -254,7 +254,7 @@ class Product extends CommonObject
 		    return -2;
 		}
 
-		dol_syslog("Product::Create ref=".$this->ref." price=".$this->price." price_ttc=".$this->price_ttc." tva_tx=".$this->tva_tx." price_base_type=".$this->price_base_type." Category : ".$this->catid, LOG_DEBUG);
+		dol_syslog(get_class($this)."::Create ref=".$this->ref." price=".$this->price." price_ttc=".$this->price_ttc." tva_tx=".$this->tva_tx." price_base_type=".$this->price_base_type." Category : ".$this->catid, LOG_DEBUG);
 
         $now=dol_now();
 
@@ -262,8 +262,8 @@ class Product extends CommonObject
 
 		$sql = "SELECT count(*) as nb";
 		$sql.= " FROM ".MAIN_DB_PREFIX."product";
-		$sql.= " WHERE ref = '" .$this->ref."'";
-		$sql.= " AND entity = ".$conf->entity;
+		$sql.= " WHERE entity IN (".getEntity('product', 1).")";
+		$sql.= " AND ref = '" .$this->ref."'";
 
 		$result = $this->db->query($sql);
 		if ($result)
@@ -306,7 +306,7 @@ class Product extends CommonObject
 				$sql.= ", ".$this->finished;
 				$sql.= ")";
 
-				dol_syslog("Product::Create sql=".$sql);
+				dol_syslog(get_class($this)."::Create sql=".$sql);
 				$result = $this->db->query($sql);
 				if ( $result )
 				{
@@ -323,7 +323,7 @@ class Product extends CommonObject
 						$result = $this->_log_price($user);
 						if ($result > 0)
 						{
-							if ( $this->update($id, $user) > 0)
+							if ( $this->update($id, $user, true) > 0)
 							{
 								if ($this->catid > 0)
 								{
@@ -396,9 +396,10 @@ class Product extends CommonObject
 	 *
 	 *	@param	int		$id         Id of product
 	 *	@param  User	$user       Object user making update
+	 *	@param	int		$notrigger	Disable triggers
 	 *	@return int         		1 if OK, -1 if ref already exists, -2 if other error
 	 */
-	function update($id, $user)
+	function update($id, $user, $notrigger=false)
 	{
 		global $langs, $conf;
 
@@ -479,12 +480,15 @@ class Product extends CommonObject
 				}
 			}
 
-			// Appel des triggers
-			include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
-			$interface=new Interfaces($this->db);
-			$result=$interface->run_triggers('PRODUCT_MODIFY',$this,$user,$langs,$conf);
-			if ($result < 0) { $error++; $this->errors=$interface->errors; }
-			// Fin appel triggers
+			if (! $notrigger)
+			{
+				// Appel des triggers
+				include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+				$interface=new Interfaces($this->db);
+				$result=$interface->run_triggers('PRODUCT_MODIFY',$this,$user,$langs,$conf);
+				if ($result < 0) { $error++; $this->errors=$interface->errors; }
+				// Fin appel triggers
+			}
 
 			return 1;
 		}
@@ -521,23 +525,6 @@ class Product extends CommonObject
 			if (empty($objectisused))
 			{
 			    $this->db->begin();
-
-			    // Delete supplier prices log
-                /*if (! $error)
-                {
-    			    $sql = 'DELETE pfpl';
-    				$sql.= ' FROM '.MAIN_DB_PREFIX.'product_fournisseur_price_log as pfpl, '.MAIN_DB_PREFIX.'product_fournisseur_price as pfp';
-    				$sql.= ' WHERE pfpl.fk_product_fournisseur = pfp.rowid';
-    				$sql.= ' AND pf.fk_product = '.$id;
-                    dol_syslog(get_class($this).'::delete sql='.$sql, LOG_DEBUG);
-    				$result = $this->db->query($sql);
-    				if (! $result)
-    				{
-    				    $error++;
-    					$this->error = $this->db->lasterror();
-    				    dol_syslog(get_class($this).'::delete error '.$this->error, LOG_ERR);
-    				}
-                }*/
 
 			    // Delete supplier prices
                 if (! $error)
@@ -635,6 +622,7 @@ class Product extends CommonObject
 				return 0;
 			}
 		}
+		return 0;
 	}
 
 	/**
@@ -1014,13 +1002,13 @@ class Product extends CommonObject
 
 		global $langs, $conf;
 
-		dol_syslog("Product::fetch id=$id ref=$ref ref_ext=$ref_ext");
+		dol_syslog(get_class($this)."::fetch id=".$id." ref=".$ref." ref_ext=".$ref_ext);
 
 		// Check parameters
 		if (! $id && ! $ref && ! $ref_ext)
 		{
 			$this->error=$langs->trans('ErrorWrongParameters');
-			dol_print_error("Product::fetch ".$this->error, LOG_ERR);
+			dol_print_error(get_class($this)."::fetch ".$this->error, LOG_ERR);
 			return -1;
 		}
 
@@ -1032,10 +1020,14 @@ class Product extends CommonObject
 		$sql.= " datec, tms, import_key";
 		$sql.= " FROM ".MAIN_DB_PREFIX."product";
 		if ($id) $sql.= " WHERE rowid = '".$id."'";
-		else if ($ref) $sql.= " WHERE ref = '".$this->db->escape($ref)."'";
-		else if ($ref_ext) $sql.= " WHERE ref_ext = '".$this->db->escape($ref_ext)."'";
+		else
+		{
+			$sql.= " WHERE p.entity IN (".getEntity($this->element, 1).")";
+			if ($ref) $sql.= " AND ref = '".$this->db->escape($ref)."'";
+			else if ($ref_ext) $sql.= " AND ref_ext = '".$this->db->escape($ref_ext)."'";
+		}
 
-		dol_syslog("Product::fetch sql=".$sql);
+		dol_syslog(get_class($this)."::fetch sql=".$sql);
 		$resql = $this->db->query($sql);
 		if ( $resql )
 		{
@@ -1109,8 +1101,8 @@ class Product extends CommonObject
 						$sql = "SELECT price, price_ttc, price_min, price_min_ttc,";
 						$sql.= " price_base_type, tva_tx, tosell";
 						$sql.= " FROM ".MAIN_DB_PREFIX."product_price";
-						$sql.= " where price_level=".$i." and";
-						$sql.= " fk_product = '".$this->id."'";
+						$sql.= " WHERE price_level=".$i;
+						$sql.= " AND fk_product = '".$this->id."'";
 						$sql.= " ORDER BY date_price DESC";
 						$sql.= " LIMIT 1";
 						$resql = $this->db->query($sql);
@@ -1169,7 +1161,7 @@ class Product extends CommonObject
 		if (!$user->rights->societe->client->voir && !$socid) $sql .= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
 		$sql.= " WHERE p.rowid = pd.fk_propal";
 		$sql.= " AND p.fk_soc = s.rowid";
-		$sql.= " AND s.entity = ".$conf->entity;
+		$sql.= " AND p.entity = ".$conf->entity;
 		$sql.= " AND pd.fk_product = ".$this->id;
 		if (!$user->rights->societe->client->voir && !$socid) $sql .= " AND p.fk_soc = sc.fk_soc AND sc.fk_user = " .$user->id;
 		//$sql.= " AND pr.fk_statut != 0";
@@ -1212,7 +1204,7 @@ class Product extends CommonObject
 		if (!$user->rights->societe->client->voir && !$socid) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
 		$sql.= " WHERE c.rowid = cd.fk_commande";
 		$sql.= " AND c.fk_soc = s.rowid";
-		$sql.= " AND s.entity = ".$conf->entity;
+		$sql.= " AND c.entity = ".$conf->entity;
 		$sql.= " AND cd.fk_product = ".$this->id;
 		if (!$user->rights->societe->client->voir && !$socid) $sql.= " AND c.fk_soc = sc.fk_soc AND sc.fk_user = " .$user->id;
 		if ($socid > 0)	$sql.= " AND c.fk_soc = ".$socid;
@@ -1254,7 +1246,7 @@ class Product extends CommonObject
 		if (!$user->rights->societe->client->voir && !$socid) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
 		$sql.= " WHERE c.rowid = cd.fk_commande";
 		$sql.= " AND c.fk_soc = s.rowid";
-		$sql.= " AND s.entity = ".$conf->entity;
+		$sql.= " AND c.entity = ".$conf->entity;
 		$sql.= " AND cd.fk_product = ".$this->id;
 		if (!$user->rights->societe->client->voir && !$socid) $sql.= " AND c.fk_soc = sc.fk_soc AND sc.fk_user = " .$user->id;
 		if ($socid > 0) $sql.= " AND c.fk_soc = ".$socid;
@@ -1297,7 +1289,7 @@ class Product extends CommonObject
 		if (!$user->rights->societe->client->voir && !$socid) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
 		$sql.= " WHERE e.rowid = ed.fk_expedition";
 		$sql.= " AND e.fk_soc = s.rowid";
-		$sql.= " AND s.entity = ".$conf->entity;
+		$sql.= " AND e.entity = ".$conf->entity;
 		$sql.= " AND ed.fk_origin_line = cd.rowid";
 		$sql.= " AND cd.fk_product = ".$this->id;
 		if (!$user->rights->societe->client->voir && !$socid) $sql.= " AND e.fk_soc = sc.fk_soc AND sc.fk_user = " .$user->id;
@@ -1340,7 +1332,7 @@ class Product extends CommonObject
 		if (!$user->rights->societe->client->voir && !$socid) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
 		$sql.= " WHERE c.rowid = cd.fk_contrat";
 		$sql.= " AND c.fk_soc = s.rowid";
-		$sql.= " AND s.entity = ".$conf->entity;
+		$sql.= " AND c.entity = ".$conf->entity;
 		$sql.= " AND cd.fk_product = ".$this->id;
 		if (!$user->rights->societe->client->voir && !$socid) $sql.= " AND c.fk_soc = sc.fk_soc AND sc.fk_user = " .$user->id;
 		//$sql.= " AND c.statut != 0";
@@ -1382,7 +1374,7 @@ class Product extends CommonObject
 		if (!$user->rights->societe->client->voir && !$socid) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
 		$sql.= " WHERE f.rowid = fd.fk_facture";
 		$sql.= " AND f.fk_soc = s.rowid";
-		$sql.= " AND s.entity = ".$conf->entity;
+		$sql.= " AND f.entity = ".$conf->entity;
 		$sql.= " AND fd.fk_product = ".$this->id;
 		if (!$user->rights->societe->client->voir && !$socid) $sql.= " AND f.fk_soc = sc.fk_soc AND sc.fk_user = " .$user->id;
 		//$sql.= " AND f.fk_statut != 0";
@@ -1424,7 +1416,7 @@ class Product extends CommonObject
 		if (!$user->rights->societe->client->voir && !$socid) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
 		$sql.= " WHERE f.rowid = fd.fk_facture_fourn";
 		$sql.= " AND f.fk_soc = s.rowid";
-		$sql.= " AND s.entity = ".$conf->entity;
+		$sql.= " AND f.entity = ".$conf->entity;
 		$sql.= " AND fd.fk_product = ".$this->id;
 		if (!$user->rights->societe->client->voir && !$socid) $sql.= " AND f.fk_soc = sc.fk_soc AND sc.fk_user = " .$user->id;
 		//$sql.= " AND f.fk_statut != 0";
@@ -1522,7 +1514,7 @@ class Product extends CommonObject
 		$sql.= " WHERE f.rowid = d.fk_facture";
 		$sql.= " AND d.fk_product =".$this->id;
 		$sql.= " AND f.fk_soc = s.rowid";
-		$sql.= " AND s.entity = ".$conf->entity;
+		$sql.= " AND f.entity = ".$conf->entity;
 		if (!$user->rights->societe->client->voir && !$socid) $sql.= " AND f.fk_soc = sc.fk_soc AND sc.fk_user = " .$user->id;
 		if ($socid > 0)	$sql.= " AND f.fk_soc = $socid";
 		$sql.= " GROUP BY date_format(f.datef,'%Y%m')";
@@ -1551,7 +1543,7 @@ class Product extends CommonObject
 		$sql.= " WHERE f.rowid = d.fk_facture_fourn";
 		$sql.= " AND d.fk_product =".$this->id;
 		$sql.= " AND f.fk_soc = s.rowid";
-		$sql.= " AND s.entity = ".$conf->entity;
+		$sql.= " AND f.entity = ".$conf->entity;
 		if (!$user->rights->societe->client->voir && !$socid) $sql.= " AND f.fk_soc = sc.fk_soc AND sc.fk_user = " .$user->id;
 		if ($socid > 0)	$sql.= " AND f.fk_soc = $socid";
 		$sql.= " GROUP BY date_format(f.datef,'%Y%m')";
@@ -1580,7 +1572,7 @@ class Product extends CommonObject
 		$sql.= " WHERE p.rowid = d.fk_propal";
 		$sql.= " AND d.fk_product =".$this->id;
 		$sql.= " AND p.fk_soc = s.rowid";
-		$sql.= " AND s.entity = ".$conf->entity;
+		$sql.= " AND p.entity = ".$conf->entity;
 		if (!$user->rights->societe->client->voir && !$socid) $sql.= " AND p.fk_soc = sc.fk_soc AND sc.fk_user = " .$user->id;
 		if ($socid > 0)	$sql.= " AND p.fk_soc = ".$socid;
 		$sql.= " GROUP BY date_format(p.datep,'%Y%m')";
@@ -1607,7 +1599,7 @@ class Product extends CommonObject
 		$sql.= " WHERE c.rowid = d.fk_commande";
 		$sql.= " AND d.fk_product =".$this->id;
 		$sql.= " AND c.fk_soc = s.rowid";
-		$sql.= " AND s.entity = ".$conf->entity;
+		$sql.= " AND c.entity = ".$conf->entity;
 		if (!$user->rights->societe->client->voir && !$socid) $sql.= " AND c.fk_soc = sc.fk_soc AND sc.fk_user = " .$user->id;
 		if ($socid > 0)	$sql.= " AND c.fk_soc = ".$socid;
 		$sql.= " GROUP BY date_format(c.date_commande,'%Y%m')";
@@ -1626,8 +1618,8 @@ class Product extends CommonObject
 	 */
 	function add_sousproduit($id_pere, $id_fils,$qty)
 	{
-		$sql = 'delete from '.MAIN_DB_PREFIX.'product_association';
-		$sql .= ' WHERE fk_product_pere  = "'.$id_pere.'" and fk_product_fils = "'.$id_fils.'"';
+		$sql = 'DELETE from '.MAIN_DB_PREFIX.'product_association';
+		$sql .= ' WHERE fk_product_pere  = "'.$id_pere.'" AND fk_product_fils = "'.$id_fils.'"';
 		if (! $this->db->query($sql))
 		{
 			dol_print_error($this->db);
@@ -1635,8 +1627,8 @@ class Product extends CommonObject
 		}
 		else
 		{
-			$sql = 'select fk_product_pere from '.MAIN_DB_PREFIX.'product_association';
-			$sql .= ' WHERE fk_product_pere  = "'.$id_fils.'" and fk_product_fils = "'.$id_pere.'"';
+			$sql = 'SELECT fk_product_pere from '.MAIN_DB_PREFIX.'product_association';
+			$sql .= ' WHERE fk_product_pere  = "'.$id_fils.'" AND fk_product_fils = "'.$id_pere.'"';
 			if (! $this->db->query($sql))
 			{
 				dol_print_error($this->db);
@@ -1655,7 +1647,7 @@ class Product extends CommonObject
 					}
 					else
 					{
-						$sql = 'insert into '.MAIN_DB_PREFIX.'product_association(fk_product_pere,fk_product_fils,qty)';
+						$sql = 'INSERT INTO '.MAIN_DB_PREFIX.'product_association(fk_product_pere,fk_product_fils,qty)';
 						$sql .= ' VALUES ("'.$id_pere.'","'.$id_fils.'","'.$qty.'")';
 						if (! $this->db->query($sql))
 						{
@@ -2367,7 +2359,7 @@ class Product extends CommonObject
 	/**
 	 *    Load information about stock of a product into stock_warehouse[] and stock_reel
 	 *
-	 *    @return     int             < 0 si erreur, > 0 si ok
+	 *    @return     int             < 0 if KO, > 0 if OK
 	 */
 	function load_stock()
 	{
@@ -2377,7 +2369,7 @@ class Product extends CommonObject
 		$sql.= " FROM ".MAIN_DB_PREFIX."product_stock";
 		$sql.= " WHERE fk_product = '".$this->id."'";
 
-		dol_syslog("Product::load_stock sql=".$sql);
+		dol_syslog(get_class($this)."::load_stock sql=".$sql);
 		$result = $this->db->query($sql);
 		if ($result)
 		{
@@ -2399,7 +2391,7 @@ class Product extends CommonObject
 		}
 		else
 		{
-			$this->error=$this->db->error();
+			$this->error=$this->db->lasterror();
 			return -1;
 		}
 	}
@@ -2803,8 +2795,8 @@ class Product extends CommonObject
 
 		$sql = "SELECT count(p.rowid) as nb";
 		$sql.= " FROM ".MAIN_DB_PREFIX."product as p";
-		$sql.= " WHERE p.fk_product_type <> 1";
-		$sql.= ' AND p.entity IN ('.getEntity($this->element, 1).')';
+		$sql.= ' WHERE p.entity IN ('.getEntity($this->element, 1).')';
+		$sql.= " AND p.fk_product_type <> 1";
 
 		$resql=$this->db->query($sql);
 		if ($resql)

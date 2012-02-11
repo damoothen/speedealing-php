@@ -132,18 +132,18 @@ if ($action == 'search')
 	$sql.= ' FROM '.MAIN_DB_PREFIX.'product as p';
 	$sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'categorie_product as cp ON p.rowid = cp.fk_product';
 	if ($conf->global->MAIN_MULTILANGS) $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product_lang as pl ON pl.fk_product = p.rowid AND lang='".($current_lang)."'";
-	$sql.= " WHERE p.entity = ".$conf->entity;
-	if($key != "")
+	$sql.= ' WHERE p.entity IN ('.getEntity("product", 1).')';
+	if ($key != "")
 	{
 		if ($conf->global->MAIN_MULTILANGS)
 		{
-			$sql.= " AND (p.ref like '%".$key."%'";
-			$sql.= " OR pl.label like '%".$key."%')";
+			$sql.= " AND (p.ref LIKE '%".$key."%'";
+			$sql.= " OR pl.label LIKE '%".$key."%')";
 		}
 		else
 		{
-			$sql.= " AND (p.ref like '%".$key."%'";
-			$sql.= " OR p.label like '%".$key."%')";
+			$sql.= " AND (p.ref LIKE '%".$key."%'";
+			$sql.= " OR p.label LIKE '%".$key."%')";
 		}
 	}
 	if ($conf->categorie->enabled && $catMere != -1 and $catMere)
@@ -201,7 +201,7 @@ if ($id || $ref)
 
 			// Number of subproducts
 			$prodsfather = $product->getFather(); //Parent Products
-			$product->get_sousproduits_arbo ();
+			$product->get_sousproduits_arbo();
 			print '<tr><td>'.$langs->trans("AssociatedProductsNumber").'</td><td>'.count($product->get_arbo_each_prod()).'</td>';
 
 			dol_fiche_end();
@@ -287,7 +287,7 @@ if ($id || $ref)
 
 		// Number of subproducts
 		$prodsfather = $product->getFather(); //Parent Products
-		$product->get_sousproduits_arbo ();
+		$product->get_sousproduits_arbo();
 		print '<tr><td>'.$langs->trans("AssociatedProductsNumber").'</td><td>'.count($product->get_arbo_each_prod()).'</td>';
 		print '</tr>';
 

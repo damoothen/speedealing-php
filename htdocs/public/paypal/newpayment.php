@@ -194,9 +194,10 @@ if (GETPOST("action") == 'dopayment')
 		dol_syslog("newpayment.php call paypal api and do redirect", LOG_DEBUG);
 
 		// Other
-		$PAYPAL_API_DEVISE="EUR";
-		if ($CURRENCY == 'EUR') $PAYPAL_API_DEVISE="EUR";
-		if ($CURRENCY == 'USD') $PAYPAL_API_DEVISE="USD";
+		$PAYPAL_API_DEVISE="USD";
+		//if ($currency == 'EUR') $PAYPAL_API_DEVISE="EUR";
+		//if ($currency == 'USD') $PAYPAL_API_DEVISE="USD";
+        if (! empty($currency)) $PAYPAL_API_DEVISE=$currency;
 
 	    dol_syslog("Submit Paypal form", LOG_DEBUG);
 	    dol_syslog("PAYPAL_API_USER: $PAYPAL_API_USER", LOG_DEBUG);
@@ -384,8 +385,8 @@ if (GETPOST("source") == 'order' && $valid)
     if (GETPOST("amount",'int')) $amount=GETPOST("amount",'int');
     $amount=price2num($amount);
 
-	$fulltag='ORD='.$order->ref.'.CUS='.$order->client->id;
-	//$fulltag.='.NAM='.strtr($order->client->nom,"-"," ");
+	$fulltag='ORD='.$order->ref.'.CUS='.$order->thirdparty->id;
+	//$fulltag.='.NAM='.strtr($order->thirdparty->name,"-"," ");
 	if (! empty($TAG)) { $tag=$TAG; $fulltag.='.TAG='.$TAG; }
 	$fulltag=dol_string_unaccent($fulltag);
 
@@ -399,7 +400,7 @@ if (GETPOST("source") == 'order' && $valid)
 	// Debitor
 	$var=!$var;
 	print '<tr><td class="CTableRow'.($var?'1':'2').'">'.$langs->trans("ThirdParty");
-	print '</td><td class="CTableRow'.($var?'1':'2').'"><b>'.$order->client->nom.'</b>';
+	print '</td><td class="CTableRow'.($var?'1':'2').'"><b>'.$order->thirdparty->name.'</b>';
 
 	// Object
 	$var=!$var;
@@ -435,14 +436,14 @@ if (GETPOST("source") == 'order' && $valid)
 	print '</td></tr>'."\n";
 
 	// Shipping address
-	$shipToName=$order->client->nom;
-    $shipToStreet=$order->client->address;
-    $shipToCity=$order->client->ville;
-    $shipToState=$order->client->departement_code;
-    $shipToCountryCode=$order->client->country_code;
-    $shipToZip=$order->client->cp;
+	$shipToName=$order->thirdparty->name;
+    $shipToStreet=$order->thirdparty->address;
+    $shipToCity=$order->thirdparty->town;
+    $shipToState=$order->thirdparty->state_code;
+    $shipToCountryCode=$order->thirdparty->country_code;
+    $shipToZip=$order->thirdparty->zip;
     $shipToStreet2='';
-    $phoneNum=$order->client->tel;
+    $phoneNum=$order->thirdparty->tel;
     if ($shipToName && $shipToStreet && $shipToCity && $shipToCountryCode && $shipToZip)
     {
         print '<input type="hidden" name="shipToName" value="'.$shipToName.'">'."\n";
@@ -458,7 +459,7 @@ if (GETPOST("source") == 'order' && $valid)
     {
         print '<!-- Shipping address not complete, so we don t use it -->'."\n";
     }
-    print '<input type="hidden" name="email" value="'.$order->client->email.'">'."\n";
+    print '<input type="hidden" name="email" value="'.$order->thirdparty->email.'">'."\n";
     print '<input type="hidden" name="desc" value="'.$langs->trans("Order").' '.$order->ref.'">'."\n";
 }
 
@@ -487,8 +488,8 @@ if (GETPOST("source") == 'invoice' && $valid)
     if (GETPOST("amount",'int')) $amount=GETPOST("amount",'int');
     $amount=price2num($amount);
 
-	$fulltag='INV='.$invoice->ref.'.CUS='.$invoice->client->id;
-	//$fulltag.='.NAM='.strtr($invoice->client->nom,"-"," ");
+	$fulltag='INV='.$invoice->ref.'.CUS='.$invoice->thirdparty->id;
+	//$fulltag.='.NAM='.strtr($invoice->thirdparty->name,"-"," ");
 	if (! empty($TAG)) { $tag=$TAG; $fulltag.='.TAG='.$TAG; }
 	$fulltag=dol_string_unaccent($fulltag);
 
@@ -502,7 +503,7 @@ if (GETPOST("source") == 'invoice' && $valid)
 	// Debitor
 	$var=!$var;
 	print '<tr><td class="CTableRow'.($var?'1':'2').'">'.$langs->trans("ThirdParty");
-	print '</td><td class="CTableRow'.($var?'1':'2').'"><b>'.$invoice->client->nom.'</b>';
+	print '</td><td class="CTableRow'.($var?'1':'2').'"><b>'.$invoice->thirdparty->name.'</b>';
 
 	// Object
 	$var=!$var;
@@ -538,14 +539,14 @@ if (GETPOST("source") == 'invoice' && $valid)
 	print '</td></tr>'."\n";
 
     // Shipping address
-    $shipToName=$invoice->client->nom;
-    $shipToStreet=$invoice->client->address;
-    $shipToCity=$invoice->client->ville;
-    $shipToState=$invoice->client->departement_code;
-    $shipToCountryCode=$invoice->client->country_code;
-    $shipToZip=$invoice->client->cp;
+    $shipToName=$invoice->thirdparty->name;
+    $shipToStreet=$invoice->thirdparty->address;
+    $shipToCity=$invoice->thirdparty->town;
+    $shipToState=$invoice->thirdparty->state_code;
+    $shipToCountryCode=$invoice->thirdparty->country_code;
+    $shipToZip=$invoice->thirdparty->zip;
     $shipToStreet2='';
-    $phoneNum=$invoice->client->tel;
+    $phoneNum=$invoice->thirdparty->tel;
     if ($shipToName && $shipToStreet && $shipToCity && $shipToCountryCode && $shipToZip)
     {
         print '<input type="hidden" name="shipToName" value="'.$shipToName.'">'."\n";
@@ -561,7 +562,7 @@ if (GETPOST("source") == 'invoice' && $valid)
     {
         print '<!-- Shipping address not complete, so we don t use it -->'."\n";
     }
-    print '<input type="hidden" name="email" value="'.$invoice->client->email.'">'."\n";
+    print '<input type="hidden" name="email" value="'.$invoice->thirdparty->email.'">'."\n";
     print '<input type="hidden" name="desc" value="'.$langs->trans("Invoice").' '.$invoice->ref.'">'."\n";
 }
 
@@ -612,9 +613,9 @@ if (GETPOST("source") == 'contractline' && $valid)
 		// We define price for product (TODO Put this in a method in product class)
 		if ($conf->global->PRODUIT_MULTIPRICES)
 		{
-			$pu_ht = $product->multiprices[$contract->client->price_level];
-			$pu_ttc = $product->multiprices_ttc[$contract->client->price_level];
-			$price_base_type = $product->multiprices_base_type[$contract->client->price_level];
+			$pu_ht = $product->multiprices[$contract->thirdparty->price_level];
+			$pu_ttc = $product->multiprices_ttc[$contract->thirdparty->price_level];
+			$price_base_type = $product->multiprices_base_type[$contract->thirdparty->price_level];
 		}
 		else
 		{
@@ -633,8 +634,8 @@ if (GETPOST("source") == 'contractline' && $valid)
     if (GETPOST("amount",'int')) $amount=GETPOST("amount",'int');
     $amount=price2num($amount);
 
-	$fulltag='COL='.$contractline->ref.'.CON='.$contract->ref.'.CUS='.$contract->client->id.'.DAT='.dol_print_date(dol_now(),'%Y%m%d%H%M');
-	//$fulltag.='.NAM='.strtr($contract->client->nom,"-"," ");
+	$fulltag='COL='.$contractline->ref.'.CON='.$contract->ref.'.CUS='.$contract->thirdparty->id.'.DAT='.dol_print_date(dol_now(),'%Y%m%d%H%M');
+	//$fulltag.='.NAM='.strtr($contract->thirdparty->name,"-"," ");
 	if (! empty($TAG)) { $tag=$TAG; $fulltag.='.TAG='.$TAG; }
 	$fulltag=dol_string_unaccent($fulltag);
 
@@ -651,7 +652,7 @@ if (GETPOST("source") == 'contractline' && $valid)
 	// Debitor
 	$var=!$var;
 	print '<tr><td class="CTableRow'.($var?'1':'2').'">'.$langs->trans("ThirdParty");
-	print '</td><td class="CTableRow'.($var?'1':'2').'"><b>'.$contract->client->nom.'</b>';
+	print '</td><td class="CTableRow'.($var?'1':'2').'"><b>'.$contract->thirdparty->name.'</b>';
 
 	// Object
 	$var=!$var;
@@ -729,14 +730,14 @@ if (GETPOST("source") == 'contractline' && $valid)
 	print '</td></tr>'."\n";
 
     // Shipping address
-    $shipToName=$contract->client->nom;
-    $shipToStreet=$contract->client->address;
-    $shipToCity=$contract->client->ville;
-    $shipToState=$contract->client->departement_code;
-    $shipToCountryCode=$contract->client->pays_code;
-    $shipToZip=$contract->client->cp;
+    $shipToName=$contract->thirdparty->name;
+    $shipToStreet=$contract->thirdparty->address;
+    $shipToCity=$contract->thirdparty->town;
+    $shipToState=$contract->thirdparty->state_code;
+    $shipToCountryCode=$contract->thirdparty->pays_code;
+    $shipToZip=$contract->thirdparty->zip;
     $shipToStreet2='';
-    $phoneNum=$contract->client->tel;
+    $phoneNum=$contract->thirdparty->tel;
     if ($shipToName && $shipToStreet && $shipToCity && $shipToCountryCode && $shipToZip)
     {
         print '<input type="hidden" name="shipToName" value="'.$shipToName.'">'."\n";
@@ -752,7 +753,7 @@ if (GETPOST("source") == 'contractline' && $valid)
     {
         print '<!-- Shipping address not complete, so we don t use it -->'."\n";
     }
-    print '<input type="hidden" name="email" value="'.$contract->client->email.'">'."\n";
+    print '<input type="hidden" name="email" value="'.$contract->thirdparty->email.'">'."\n";
     print '<input type="hidden" name="desc" value="'.$langs->trans("Contract").' '.$contract->ref.'">'."\n";
 }
 
@@ -850,10 +851,10 @@ if (GETPOST("source") == 'membersubscription' && $valid)
     // Shipping address
     $shipToName=$member->getFullName($langs);
     $shipToStreet=$member->address;
-    $shipToCity=$member->ville;
-    $shipToState=$member->departement_code;
+    $shipToCity=$member->town;
+    $shipToState=$member->state_code;
     $shipToCountryCode=$member->country_code;
-    $shipToZip=$member->cp;
+    $shipToZip=$member->zip;
     $shipToStreet2='';
     $phoneNum=$member->tel;
     if ($shipToName && $shipToStreet && $shipToCity && $shipToCountryCode && $shipToZip)
@@ -913,7 +914,7 @@ print '<br>';
 
 html_print_paypal_footer($mysoc,$langs);
 
-$db->close();
-
 llxFooterPaypal();
+
+$db->close();
 ?>

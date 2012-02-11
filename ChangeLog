@@ -3,6 +3,9 @@ English Dolibarr ChangeLog
 --------------------------------------------------------------
 
 ***** ChangeLog for 3.2 compared to 3.1 *****
+WARNING: PHP lower than 5.x are no more supported.
+WARNING: Because of a major datastructure change onto supplier prices tabkes, be aware
+to make a backup of your datbase before making upgrade.
 
 For users:
 - New: Can attach files on social contributions.
@@ -21,6 +24,7 @@ For users:
 - New: task #10606 : more comprehensive message error.
 - New: task #11278 : Option into point of sale module to add services in list.
 - New: task #11261 : Add an entry into menu called "New shipment".
+- New: [ task #187 ] Gerer les evenement recurrents dans les imports ical
 - New: Make option MAIN_GENERATE_DOCUMENTS_WITHOUT_VAT available by default.
 - New: Can build PDF in USLetter format or canada format (change paper size).
 - New: Can export into Excel 2007 format.
@@ -38,6 +42,14 @@ For users:
 - New: [ task #181 ] Hide password of click2dial in user card
 - New: Chart are faster to build
 - New: Value of data into charts are visible on mouse hover.
+- New: Import wizard can import contacts.
+- New: Install process is now two times faster.
+- New: Can sort files into backup tool.
+- New: Default output charset are utf8 into backup tool.
+- New: Extra fields support int type.
+- New: Add brazilian states.
+- New: Automtic list of documents in ECM module is ok for customers,
+       suppliers invoice, orders, customers orders, proposals and social contributions.
 - Fix: Can use POS module with several concurrent users.
 
 For developers:
@@ -48,9 +60,12 @@ For developers:
 - New: Log module outputs can be setup with "or" rule (not only "xor").
 - New: Add FirePHP output for logging module.
 - New: Add trigger ACTION_DELETE and ACTION_MODIFY.
+- New: Trigger now have a priority to define sort execution order.
 - New: Can define different requests according to database type into migration files.
 - New: Add "canvas" feature to overwrite page of thirdparty, contact, product with yours.
 - New: Removed artichow deprecated libraries.
+- New: A page can force reload of css style sheet
+- New: A module can add import description for import wizard, even for tables with foreign keys.
 - Qual: Add a lot of more PHPUnit tests.
 - Qual: Data structure for supplier prices is simpler.
 - Qual: Removed no more used external libraries.
@@ -59,6 +74,19 @@ For developers:
 - Qual: Fix a lot of checkstyle warnings.
 - Qual: task #216 : Move /lib into /core/lib directory
 - Qual: task #217 : Move core files into core directory (login, menus, triggers, boxes, modules)
+
+
+***** ChangeLog for 3.1.1 compared to 3.1.0 *****
+
+- New: Add option FACTURE_DEPOSITS_ARE_JUST_PAYMENTS. With this option added, 
+       credit notes are not removed from total amount of invoice but are just 
+       payments used to reducs remain to pay.
+- Fix: Removed warnings during install.
+- Fix: State into address of paypal payments were lost
+- Fix: Removed Bare LF from emails sent with smtps method.
+- Fix: Can show report on selected period.
+- Fix: product removed from list after deleted into order.
+- Fix: pgsql can connect using socket.
 
 
 ***** ChangeLog for 3.1 compared to 3.0 *****

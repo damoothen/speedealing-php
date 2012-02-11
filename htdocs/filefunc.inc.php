@@ -32,7 +32,7 @@
 if (! defined('DOL_VERSION')) define('DOL_VERSION','3.2.0-alpha');	// Also defined in htdocs/install/inc.php (Ex: x.y.z-alpha, x.y.z)
 if (! defined('EURO')) define('EURO',chr(128));
 
-// Definition des constantes syslog
+// Define syslog constants
 if (! defined('LOG_DEBUG'))
 {
     if (function_exists("define_syslog_variables"))
@@ -204,7 +204,7 @@ if (! defined('DOL_DEFAULT_TTF_BOLD')) { define('DOL_DEFAULT_TTF_BOLD', (!isset(
  * Include functions
  */
 
-if (! defined('ADODB_DATE_VERSION'))    include_once(ADODB_PATH.'adodb-time.inc.php');
+if (! defined('ADODB_DATE_VERSION')) include_once(ADODB_PATH.'adodb-time.inc.php');
 
 if (! file_exists(DOL_DOCUMENT_ROOT ."/core/lib/functions.lib.php"))
 {

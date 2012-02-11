@@ -1,6 +1,6 @@
 <?php
 /* Copyright (C) 2003      Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -45,7 +45,7 @@ accessforbidden();
 
 // Define modecompta ('CREANCES-DETTES' or 'RECETTES-DEPENSES')
 $modecompta = $conf->global->COMPTA_MODE;
-if ($_GET["modecompta"]) $modecompta=$_GET["modecompta"];
+if (GETPOST("modecompta")) $modecompta=GETPOST("modecompta");
 
 
 
@@ -79,7 +79,7 @@ else {
 	$builddate=time();
 	//$exportlink=$langs->trans("NotYetAvailable");
 }
-report_header($nom,$nomlink,$period,$periodlink,$description,$builddate,$exportlink);
+report_header($nom,$nomlink,$period,$periodlink,$description,$builddate,$exportlink,array('modecompta'=>$modecompta));
 
 
 /*
@@ -346,23 +346,23 @@ $subtotal_ht = 0;
 $subtotal_ttc = 0;
 if ($modecompta == 'CREANCES-DETTES')
 {
-	$sql = "SELECT c.libelle as nom, date_format(s.date_ech,'%Y-%m') as dm, sum(s.amount) as amount_ht, sum(s.amount) as amount_ttc";
+	$sql = "SELECT c.libelle as nom, date_format(cs.date_ech,'%Y-%m') as dm, sum(cs.amount) as amount_ht, sum(cs.amount) as amount_ttc";
 	$sql.= " FROM ".MAIN_DB_PREFIX."c_chargesociales as c";
-	$sql.= ", ".MAIN_DB_PREFIX."chargesociales as s";
-	$sql.= " WHERE s.fk_type = c.id";
+	$sql.= ", ".MAIN_DB_PREFIX."chargesociales as cs";
+	$sql.= " WHERE cs.fk_type = c.id";
 	$sql.= " AND c.deductible = 0";
 }
 else
 {
 	$sql = "SELECT c.libelle as nom, date_format(p.datep,'%Y-%m') as dm, sum(p.amount) as amount_ht, sum(p.amount) as amount_ttc";
 	$sql.= " FROM ".MAIN_DB_PREFIX."c_chargesociales as c";
-	$sql.= ", ".MAIN_DB_PREFIX."chargesociales as s";
+	$sql.= ", ".MAIN_DB_PREFIX."chargesociales as cs";
 	$sql.= ", ".MAIN_DB_PREFIX."paiementcharge as p";
-	$sql.= " WHERE p.fk_charge = s.rowid";
-	$sql.= " AND s.fk_type = c.id";
+	$sql.= " WHERE p.fk_charge = cs.rowid";
+	$sql.= " AND cs.fk_type = c.id";
 	$sql.= " AND c.deductible = 0";
 }
-$sql.= " AND s.entity = ".$conf->entity;
+$sql.= " AND cs.entity = ".$conf->entity;
 $sql.= " GROUP BY c.libelle, dm";
 
 dol_syslog("get social contributions deductible=0  sql=".$sql);
@@ -403,13 +403,13 @@ else
 {
 	$sql = "SELECT c.libelle as nom, date_format(p.datep,'%Y-%m') as dm, sum(p.amount) as amount_ht, sum(p.amount) as amount_ttc";
 	$sql.= " FROM ".MAIN_DB_PREFIX."c_chargesociales as c";
-	$sql.= ", ".MAIN_DB_PREFIX."chargesociales as s";
+	$sql.= ", ".MAIN_DB_PREFIX."chargesociales as cs";
 	$sql.= ", ".MAIN_DB_PREFIX."paiementcharge as p";
-	$sql.= " WHERE p.fk_charge = s.rowid";
-	$sql.= " AND s.fk_type = c.id";
+	$sql.= " WHERE p.fk_charge = cs.rowid";
+	$sql.= " AND cs.fk_type = c.id";
 	$sql.= " AND c.deductible = 1";
 }
-$sql.= " AND s.entity = ".$conf->entity;
+$sql.= " AND cs.entity = ".$conf->entity;
 $sql.= " GROUP BY c.libelle, dm";
 
 dol_syslog("get social contributions paid deductible=1 sql=".$sql);
@@ -442,7 +442,7 @@ $totentrees=array();
 $totsorties=array();
 
 print '<table class="noborder" width="100%">';
-print '<tr class="liste_titre"><td rowspan=2>'.$langs->trans("Month").'</td>';
+print '<tr class="liste_titre"><td class="liste_titre">&nbsp;</td>';
 
 for ($annee = $year_start ; $annee <= $year_end ; $annee++)
 {
@@ -453,7 +453,7 @@ for ($annee = $year_start ; $annee <= $year_end ; $annee++)
 	print '</a></td>';
 }
 print '</tr>';
-print '<tr class="liste_titre">';
+print '<tr class="liste_titre"><td class="liste_titre">'.$langs->trans("Month").'</td>';
 for ($annee = $year_start ; $annee <= $year_end ; $annee++)
 {
 	print '<td align="right">'.$langs->trans("Outcome").'</td>';

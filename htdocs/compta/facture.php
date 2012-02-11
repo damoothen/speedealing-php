@@ -6,7 +6,8 @@
  * Copyright (C) 2005-2011 Regis Houssin         <regis@dolibarr.fr>
  * Copyright (C) 2006      Andre Cianfarani      <acianfa@free.fr>
  * Copyright (C) 2010-2011 Juanjo Menent         <jmenent@2byte.es>
- *
+ * Copyright (C) 2012      Christophe Battarel   <christophe.battarel@altairis.fr>
+**
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -177,7 +178,7 @@ if ($action == 'confirm_deleteline' && $confirm == 'yes')
             if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE))
             {
                 $ret=$object->fetch($id);    // Reload to get new records
-                $result=facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+                $result=facture_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
             }
             if ($result >= 0)
             {
@@ -358,7 +359,7 @@ if ($action == 'confirm_valid' && $confirm == 'yes' && $user->rights->facture->v
             if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE))
             {
                 $ret=$object->fetch($id);    // Reload to get new records
-                facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+                facture_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
             }
         }
         else
@@ -435,7 +436,7 @@ if ($action == 'confirm_modif' && ((empty($conf->global->MAIN_USE_ADVANCED_PERMS
 	        if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE))
 	        {
                 $ret=$object->fetch($id);    // Reload to get new records
-	            facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+	            facture_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
 	        }
 	    }
     }
@@ -854,7 +855,7 @@ if ($action == 'add' && $user->rights->facture->creer)
 
                         // Hooks
                         $parameters=array('objFrom'=>$srcobject);
-                        $reshook=$hookmanager->executeHooks('createfrom',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+                        $reshook=$hookmanager->executeHooks('createFrom',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
                         if ($reshook < 0) $error++;
                     }
                     else
@@ -994,9 +995,9 @@ if (($action == 'addline' || $action == 'addline_predef') && $user->rights->fact
                     $pu_ttc = price2num($pu_ht * (1 + ($tva_tx/100)), 'MU');
                 }
             }
-            
+
             // Define output language
-			if (! empty($conf->global->MAIN_MULTILANGS) && ! empty($conf->global->PRODUIT_DESC_IN_THIRDPARTY_LANGUAGE))
+			if (! empty($conf->global->MAIN_MULTILANGS) && ! empty($conf->global->PRODUIT_TEXTS_IN_THIRDPARTY_LANGUAGE))
 			{
 				$outputlangs = $langs;
 				$newlang='';
@@ -1007,7 +1008,7 @@ if (($action == 'addline' || $action == 'addline_predef') && $user->rights->fact
 					$outputlangs = new Translate("",$conf);
 					$outputlangs->setDefaultLang($newlang);
 				}
-				
+
 				$desc = (! empty($prod->multilangs[$outputlangs->defaultlang]["description"])) ? $prod->multilangs[$outputlangs->defaultlang]["description"] : $prod->description;
 			}
 			else
@@ -1096,7 +1097,7 @@ if (($action == 'addline' || $action == 'addline_predef') && $user->rights->fact
         if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE))
         {
             $ret=$object->fetch($id);    // Reload to get new records
-            facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+            facture_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
         }
         unset($_POST['qty']);
         unset($_POST['type']);
@@ -1198,7 +1199,7 @@ if ($action == 'updateligne' && $user->rights->facture->creer && $_POST['save'] 
         if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE))
         {
             $ret=$object->fetch($id);    // Reload to get new records
-            facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+            facture_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
         }
     }
 }
@@ -1227,7 +1228,7 @@ if ($action == 'up' && $user->rights->facture->creer)
         $outputlangs = new Translate("",$conf);
         $outputlangs->setDefaultLang($newlang);
     }
-    if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+    if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) facture_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
 
     Header('Location: '.$_SERVER["PHP_SELF"].'?facid='.$object->id.'#'.$_GET['rowid']);
     exit;
@@ -1249,7 +1250,7 @@ if ($action == 'down' && $user->rights->facture->creer)
         $outputlangs = new Translate("",$conf);
         $outputlangs->setDefaultLang($newlang);
     }
-    if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+    if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) facture_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
 
     Header('Location: '.$_SERVER["PHP_SELF"].'?facid='.$object->id.'#'.$_GET['rowid']);
     exit;
@@ -1483,7 +1484,7 @@ if (GETPOST('action') == 'builddoc')	// En get ou en post
         $outputlangs = new Translate("",$conf);
         $outputlangs->setDefaultLang($newlang);
     }
-    $result=facture_pdf_create($db, $object, '', $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+    $result=facture_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
     if ($result <= 0)
     {
         dol_print_error($db,$result);
@@ -1756,7 +1757,6 @@ if ($action == 'create')
     }
     $text.='</select>';
     $desc=$form->textwithpicto($text,$langs->transnoentities("InvoiceAvoirDesc"),1);
-    //.' ('.$langs->trans("FeatureNotYetAvailable").')',$langs->transnoentities("InvoiceAvoirDesc"),1);
     print $desc;
     print '</td></tr>'."\n";
 
@@ -1800,9 +1800,19 @@ if ($action == 'create')
         print '</td></tr>';
     }
 
-    // Insert hooks
-    $parameters=array();
+    // Other attributes
+    $parameters=array('colspan' => ' colspan="3"');
     $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+    if (empty($reshook) && ! empty($extrafields->attribute_label))
+    {
+        foreach($extrafields->attribute_label as $key=>$label)
+        {
+            $value=(isset($_POST["options_".$key])?$_POST["options_".$key]:$object->array_options["options_".$key]);
+            print '<tr><td>'.$label.'</td><td colspan="3">';
+            print $extrafields->showInputField($key,$value);
+            print '</td></tr>'."\n";
+        }
+    }
 
     // Modele PDF
     print '<tr><td>'.$langs->trans('Model').'</td>';
@@ -2196,7 +2206,7 @@ else
             if (! $formconfirm)
             {
                 $parameters=array('lineid'=>$lineid);
-                $formconfirm=$hookmanager->executeHooks('formconfirm',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+                $formconfirm=$hookmanager->executeHooks('formConfirm',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
             }
 
             // Print form confirm
@@ -2699,9 +2709,19 @@ else
                 print '</tr>';
             }
 
-            // Insert hooks
-            $parameters=array('colspan'=>' colspan="3"');
+            // Other attributes
+            $parameters=array('colspan' => ' colspan="3"');
             $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+            if (empty($reshook) && ! empty($extrafields->attribute_label))
+            {
+                foreach($extrafields->attribute_label as $key=>$label)
+                {
+                    $value=(isset($_POST["options_".$key])?$_POST["options_".$key]:$object->array_options["options_".$key]);
+                    print '<tr><td>'.$label.'</td><td colspan="3">';
+                    print $extrafields->showInputField($key,$value);
+                    print '</td></tr>'."\n";
+                }
+            }
 
             print '</table><br>';
 
@@ -3036,7 +3056,7 @@ else
                         $outputlangs = new Translate("",$conf);
                         $outputlangs->setDefaultLang($newlang);
                     }
-                    $result=facture_pdf_create($db, $object, '', $_REQUEST['model'], $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+                    $result=facture_pdf_create($db, $object, $_REQUEST['model'], $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
                     if ($result <= 0)
                     {
                         dol_print_error($db,$result);

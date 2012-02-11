@@ -5,7 +5,8 @@
  * Copyright (C) 2007      Auguria SARL         <info@auguria.org>
  * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2011 	   Juanjo Menent        <jmenent@2byte.es>
- *
+ * Copyright (C) 2012      Christophe Battarel   <christophe.battarel@altairis.fr>
+**
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -69,10 +70,10 @@ else if ($action == 'viewProdDescInForm')
 	$view = GETPOST("activate_viewProdDescInForm");
 	$res = dolibarr_set_const($db, "PRODUIT_DESC_IN_FORM", $view,'chaine',0,'',$conf->entity);
 }
-else if ($action == 'viewProdDescInThirdpartyLanguage')
+else if ($action == 'viewProdTextsInThirdpartyLanguage')
 {
-	$view = GETPOST("activate_viewProdDescInThirdpartyLanguage");
-	$res = dolibarr_set_const($db, "PRODUIT_DESC_IN_THIRDPARTY_LANGUAGE", $view,'chaine',0,'',$conf->entity);
+	$view = GETPOST("activate_viewProdTextsInThirdpartyLanguage");
+	$res = dolibarr_set_const($db, "PRODUIT_TEXTS_IN_THIRDPARTY_LANGUAGE", $view,'chaine',0,'',$conf->entity);
 }
 else if ($action == 'usesearchtoselectproduct')
 {
@@ -260,11 +261,11 @@ if (! empty($conf->global->MAIN_MULTILANGS))
 	$var=!$var;
 	print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
 	print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-	print '<input type="hidden" name="action" value="viewProdDescInThirdpartyLanguage">';
+	print '<input type="hidden" name="action" value="viewProdTextsInThirdpartyLanguage">';
 	print '<tr '.$bc[$var].'>';
 	print '<td>'.$langs->trans("ViewProductDescInThirdpartyLanguageAbility").'</td>';
 	print '<td width="60" align="right">';
-	print $form->selectyesno("activate_viewProdDescInThirdpartyLanguage",$conf->global->PRODUIT_DESC_IN_THIRDPARTY_LANGUAGE,1);
+	print $form->selectyesno("activate_viewProdTextsInThirdpartyLanguage",$conf->global->PRODUIT_TEXTS_IN_THIRDPARTY_LANGUAGE,1);
 	print '</td><td align="right">';
 	print '<input type="submit" class="button" value="'.$langs->trans("Modify").'">';
 	print '</td>';

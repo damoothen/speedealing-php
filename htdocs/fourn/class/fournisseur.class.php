@@ -88,9 +88,12 @@ class Fournisseur extends Societe
 	 */
 	function nbOfProductRefs()
 	{
+		global $conf;
+		
 		$sql = "SELECT count(pfp.rowid) as nb";
 		$sql.= " FROM ".MAIN_DB_PREFIX."product_fournisseur_price as pfp";
-		$sql .= " WHERE pfp.fk_soc = ".$this->id;
+		$sql.= " WHERE pfp.entity = ".$conf->entity;
+		$sql.= " AND pfp.fk_soc = ".$this->id;
 
 		$resql = $this->db->query($sql);
 		if ( $resql )
@@ -103,47 +106,6 @@ class Fournisseur extends Societe
 			return -1;
 		}
 	}
-
-    /**
-     *  Create the order from an existing
-     *
-     *  @param      User	$user            	Creator user
-     *  @param      int		$idc				Id source
-     *  @param		int		$comclientid		Id thirdparty
-     */
-	function updateFromCommandeClient($user, $idc, $comclientid)
-	{
-		$comm = new CommandeFournisseur($this->db);
-		$comm->socid = $this->id;
-
-		$comm->updateFromCommandeClient($user, $idc, $comclientid);
-	}
-
-	/**
-	 *	Create the order with draft status
-
-	 *	@param      User	$user		Creator user
-	 *	@return     int         		<0 if ko, id of order if ok
-	 */
-	function create_commande($user)
-	{
-		dol_syslog("Fournisseur::Create_Commande");
-		$comm = new CommandeFournisseur($this->db);
-		$comm->socid = $this->id;
-
-		if ($comm->create($user) > 0)
-		{
-			$this->single_open_commande = $comm->id;
-			return $comm->id;
-		}
-		else
-		{
-			$this->error=$comm->error;
-			dol_syslog("Fournisseur::Create_Commande Failed ".$this->error, LOG_ERR);
-			return -1;
-		}
-	}
-
 
 	/**
 	 * Load statistics indicators
@@ -166,7 +128,7 @@ class Fournisseur extends Societe
 			$clause = "AND";
 		}
 		$sql.= " ".$clause." s.fournisseur = 1";
-		$sql.= " AND s.entity = ".$conf->entity;
+		$sql.= " AND s.entity IN (".getEntity('societe', 1).")";
 
 		$resql=$this->db->query($sql);
 		if ($resql)
@@ -229,7 +191,7 @@ class Fournisseur extends Societe
 		$sql.= " FROM ".MAIN_DB_PREFIX."societe as s";
 		if (!$this->user->rights->societe->client->voir && !$this->user->societe_id) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
 		$sql.= " WHERE s.fournisseur = 1";
-		$sql.= " AND s.entity = ".$conf->entity;
+		$sql.= " AND s.entity IN (".getEntity('societe', 1).")";
 		if (!$this->user->rights->societe->client->voir && !$this->user->societe_id) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$this->user->id;
 
 		$resql=$this->db->query($sql);

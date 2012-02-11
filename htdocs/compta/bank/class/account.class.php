@@ -64,13 +64,19 @@ class Account extends CommonObject
     var $adresse_proprio;
 
 
-    var $fk_departement;
-    var $departement_code;
-    var $departement;
+    var $fk_departement;    // deprecated
+    var $departement_code;    // deprecated
+    var $departement;        // deprecated
+    var $state_id;
+    var $state_code;
+    var $state;
 
-    var $fk_pays;
-    var $pays_code;
-    var $pays;
+    var $fk_pays;            // deprecated
+    var $pays_code;            // deprecated
+    var $pays;                // deprecated
+    var $country_id;
+    var $country_code;
+    var $country;
 
     var $type_lib=array();
 
@@ -83,13 +89,15 @@ class Account extends CommonObject
 
 
     /**
-     *  Constructeur
+     *  Constructor
+     *
+     *  @param	DoliDB		$db		Database handler
      */
-    function Account($DB)
+    function Account($db)
     {
         global $langs;
 
-        $this->db = $DB;
+        $this->db = $db;
 
         $this->clos = 0;
         $this->solde = 0;
@@ -107,6 +115,7 @@ class Account extends CommonObject
 
     /**
      *  Return if a bank account need to be conciliated
+     *
      *  @return     int         1 if need to be concialiated, < 0 otherwise.
      */
     function canBeConciliated()
@@ -120,6 +129,7 @@ class Account extends CommonObject
 
     /**
      *      Add a link between bank line record and its source
+     *
      *      @param      line_id     Id ecriture bancaire
      *      @param      url_id      Id parametre url
      *      @param      url         Url
@@ -160,6 +170,7 @@ class Account extends CommonObject
     /**
      * 		TODO Move this into AccountLine
      *      Return array with links from llx_bank_url
+     *
      *      @param      fk_bank         To search using bank transaction id
      *      @param		url_id          To search using link to
      *      @param      type            To search using type
@@ -212,6 +223,7 @@ class Account extends CommonObject
 
     /**
      *  Add an entry into table ".MAIN_DB_PREFIX."bank
+     *
      *  @param		$date			Date operation
      *  @param		$oper			1,2,3,4... (deprecated) or TYP,VIR,PRE,LIQ,VAD,CB,CHQ...
      *  @param		$label			Descripton
@@ -330,6 +342,7 @@ class Account extends CommonObject
 
     /**
      *      Create bank account into database
+     *
      *      @param      user        Object user making action
      *      @return     int        < 0 if KO, > 0 if OK
      */
@@ -438,6 +451,7 @@ class Account extends CommonObject
 
     /**
      *    	Update bank account card
+     *
      *    	@param      user        Object user making action
      *		@return		int			<0 si ko, >0 si ok
      */
@@ -502,6 +516,7 @@ class Account extends CommonObject
 
     /**
      *    	Update BBAN (RIB) account fields
+     *
      *    	@param      user        Object user making update
      *		@return		int			<0 if KO, >0 if OK
      */
@@ -555,6 +570,7 @@ class Account extends CommonObject
 
     /**
      *      Load a bank account into memory from database
+     *
      *      @param      id      	Id of bank account to get
      *      @param      ref     	Ref of bank account to get
      *      @param		ref_ext		External ref of bank account to get
@@ -575,7 +591,7 @@ class Account extends CommonObject
         $sql.= " ba.account_number, ba.currency_code,";
         $sql.= " ba.min_allowed, ba.min_desired, ba.comment,";
         $sql.= ' p.code as country_code, p.libelle as country,';
-        $sql.= ' d.code_departement as departement_code, d.nom as departement';
+        $sql.= ' d.code_departement as state_code, d.nom as state';
         $sql.= " FROM ".MAIN_DB_PREFIX."bank_account as ba";
         $sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'c_pays as p ON ba.fk_pays = p.rowid';
         $sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'c_departements as d ON ba.fk_departement = d.rowid';
@@ -613,13 +629,16 @@ class Account extends CommonObject
                 $this->proprio       = $obj->proprio;
                 $this->adresse_proprio = $obj->adresse_proprio;
 
-                $this->fk_departement  = $obj->fk_departement;
-                $this->departement_code= $obj->departement_code;
-                $this->departement     = $obj->departement;
+                $this->fk_departement  = $obj->fk_departement;    // deprecated
+                $this->departement_code= $obj->state_code;        // deprecated
+                $this->departement     = $obj->state;             // deprecated
+                $this->state_id        = $obj->fk_departement;
+                $this->state_code      = $obj->state_code;
+                $this->state           = $obj->state;
 
-                $this->fk_pays       = $obj->country_id;
-                $this->pays_code     = $obj->country_code;
-                $this->pays          = $obj->country;
+                $this->fk_pays       = $obj->country_id;          // deprecated
+                $this->pays_code     = $obj->country_code;        // deprecated
+                $this->pays          = $obj->country;             // deprecated
                 $this->country_id    = $obj->country_id;
                 $this->country_code  = $obj->country_code;
                 $this->country       = $obj->country;
@@ -649,6 +668,7 @@ class Account extends CommonObject
 
     /**
      *    Delete bank account from database
+     *
      *    @return      int         <0 if KO, >0 if OK
      */
     function delete()
@@ -673,6 +693,7 @@ class Account extends CommonObject
 
     /**
      *    Retourne le libelle du statut d'une facture (brouillon, validee, abandonnee, payee)
+     *
      *    @param      mode          0=libelle long, 1=libelle court, 2=Picto + Libelle court, 3=Picto, 4=Picto + Libelle long
      *    @return     string        Libelle
      */

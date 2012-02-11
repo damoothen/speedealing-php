@@ -557,7 +557,7 @@ class Facture extends CommonObject
 			{
 			    $parameters=array('objFrom'=>$objFrom);
 			    $action='';
-				$reshook=$hookmanager->executeHooks('createfrom',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
+				$reshook=$hookmanager->executeHooks('createFrom',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
 				if ($reshook < 0) $error++;
 			}
 
@@ -653,7 +653,7 @@ class Facture extends CommonObject
 
             $parameters=array('objFrom'=>$object);
             $action='';
-			$reshook=$hookmanager->executeHooks('createfrom',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
+			$reshook=$hookmanager->executeHooks('createFrom',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
 			if ($reshook < 0) $error++;
 
             if (! $error)
@@ -712,7 +712,7 @@ class Facture extends CommonObject
      * 	@param		string	$ref			Reference of invoice
      * 	@param		string	$ref_ext		External reference of invoice
      * 	@param		int		$ref_int		Internal reference of other object
-     *	@return     int         			>0 if OK, <0 if KO
+     *	@return     int         			>0 if OK, <0 if KO, 0 if not found
      */
     function fetch($rowid, $ref='', $ref_ext='', $ref_int='')
     {
@@ -808,7 +808,7 @@ class Facture extends CommonObject
             {
                 $this->error='Bill with id '.$rowid.' or ref '.$ref.' not found sql='.$sql;
                 dol_syslog(get_class($this)."::fetch Error ".$this->error, LOG_ERR);
-                return -2;
+                return 0;
             }
         }
         else
@@ -1131,11 +1131,11 @@ class Facture extends CommonObject
         $error=0;
         $this->db->begin();
 
-        $sql = "DELETE FROM ".MAIN_DB_PREFIX."element_element";
-        $sql.= " WHERE fk_target = ".$rowid;
-        $sql.= " AND targettype = '".$this->element."'";
+        // Delete linked object
+        $res = $this->deleteObjectLinked();
+        if ($res < 0) $error++;
 
-        if ($this->db->query($sql))
+        if (! $error)
         {
         	// If invoice was converted into a discount not yet consumed, we remove discount
             $sql = 'DELETE FROM '.MAIN_DB_PREFIX.'societe_remise_except';
@@ -1188,7 +1188,7 @@ class Facture extends CommonObject
                 }
                 else
                 {
-                    $this->error=$this->db->error()." sql=".$sql;
+                    $this->error=$this->db->lasterror()." sql=".$sql;
                     dol_syslog(get_class($this)."::delete ".$this->error, LOG_ERR);
                     $this->db->rollback();
                     return -6;
@@ -1196,7 +1196,7 @@ class Facture extends CommonObject
             }
             else
             {
-                $this->error=$this->db->error()." sql=".$sql;
+                $this->error=$this->db->lasterror()." sql=".$sql;
                 dol_syslog(get_class($this)."::delete ".$this->error, LOG_ERR);
                 $this->db->rollback();
                 return -4;
@@ -1204,7 +1204,7 @@ class Facture extends CommonObject
         }
         else
         {
-            $this->error=$this->db->error()." sql=".$sql;
+            $this->error=$this->db->lasterror();
             dol_syslog(get_class($this)."::delete ".$this->error, LOG_ERR);
             $this->db->rollback();
             return -2;
@@ -3084,7 +3084,7 @@ class Facture extends CommonObject
         $prodids = array();
         $sql = "SELECT rowid";
         $sql.= " FROM ".MAIN_DB_PREFIX."product";
-        $sql.= " WHERE entity = ".$conf->entity;
+        $sql.= " WHERE entity IN (".getEntity('product', 1).")";
         $resql = $this->db->query($sql);
         if ($resql)
         {
@@ -3123,7 +3123,6 @@ class Facture extends CommonObject
                 $line->desc=$langs->trans("Description")." ".$xnbp;
                 $line->qty=1;
                 $line->subprice=100;
-                //$line->price=100;
                 $line->tva_tx=19.6;
                 $line->localtax1_tx=0;
                 $line->localtax2_tx=0;
@@ -3177,7 +3176,6 @@ class Facture extends CommonObject
             $line->desc=$langs->trans("Description")." (offered line)";
             $line->qty=1;
             $line->subprice=100;
-            //$line->price=100;
             $line->tva_tx=19.6;
             $line->localtax1_tx=0;
             $line->localtax2_tx=0;

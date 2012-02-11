@@ -1,5 +1,5 @@
 <?php
-/* Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
+/* Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2007      Patrick Raguin 		<patrick.raguin@gmail.com>
  *
@@ -25,8 +25,7 @@
 
 
 /**
- *       \class      FormAdmin
- *       \brief      Class to generate html code for admin pages
+ *      Class to generate html code for admin pages
  */
 class FormAdmin
 {
@@ -42,19 +41,19 @@ class FormAdmin
 	function FormAdmin($db)
 	{
 		$this->db = $db;
-
 		return 1;
 	}
 
 	/**
 	 *    	Output list with available languages
 	 *
-	 *      @deprecated                 Use select_language instead
-	 *    	@param      selected        Langue pre-selectionnee
-	 *    	@param      htmlname        Nom de la zone select
-	 *    	@param      showauto        Affiche choix auto
-	 * 		@param		filter			Array of keys to exclude in list
-	 * 		@param		showempty		Add empty value
+	 *    	@param		string		$selected       Langue pre-selectionnee
+	 *    	@param  	string		$htmlname       Nom de la zone select
+	 *    	@param  	int			$showauto       Affiche choix auto
+	 * 		@param		int			$filter			Array of keys to exclude in list
+	 * 		@param		int			$showempty		Add empty value
+	 * 		@return		void
+	 *      @deprecated                 		Use select_language instead
 	 */
 	function select_lang($selected='',$htmlname='lang_id',$showauto=0,$filter=0,$showempty=0)
 	{
@@ -126,12 +125,14 @@ class FormAdmin
 
 	/**
      *    Return list of available menus (eldy_backoffice, ...)
-     *    @param      selected        Preselected menu value
-     *    @param      htmlname        Name of html select
-     *    @param      dirmenu         Directory to scan or array of directories to scan
-     *    @param      moreattrib      More attributes on html select tag
+     *
+     *    @param	string		$selected        Preselected menu value
+     *    @param    string		$htmlname        Name of html select
+     *    @param    string		$dirmenu         Directory to scan or array of directories to scan
+     *    @param    string		$moreattrib      More attributes on html select tag
+     *    @return	void
      */
-    function select_menu($selected='', $htmlname, $dirmenu, $moreattrib='')
+    function select_menu($selected, $htmlname, $dirmenu, $moreattrib='')
     {
         global $langs,$conf;
 
@@ -210,8 +211,9 @@ class FormAdmin
      *  @param	string	$selected        Menu pre-selected
      *  @param  string	$htmlname        Name of html select
      *  @param	string	$dirmenuarray    Directories to scan
+     *  @return	void
      */
-    function select_menu_families($selected='',$htmlname,$dirmenuarray)
+    function select_menu_families($selected, $htmlname, $dirmenuarray)
     {
 		global $langs,$conf;
 
@@ -275,11 +277,13 @@ class FormAdmin
 
 
     /**
-     *    \brief      Retourne la liste deroulante des menus disponibles (eldy)
-     *    \param      selected        Menu pre-selectionnee
-     *    \param      htmlname        Nom de la zone select
+     *  Return a HTML select list of timezones
+     *
+     *  @param	string		$selected        Menu pre-selectionnee
+     *  @param  string		$htmlname        Nom de la zone select
+     *  @return	void
      */
-    function select_timezone($selected='',$htmlname)
+    function select_timezone($selected,$htmlname)
     {
 		global $langs,$conf;
 

@@ -112,8 +112,8 @@ class Commande extends CommonObject
 
         $this->products = array();
     }
-    
-    /**  
+
+    /**
 	 *  Returns the reference to the following non used Order depending on the active numbering module
 	 *  defined into COMMANDE_ADDON
 	 *
@@ -448,7 +448,7 @@ class Commande extends CommonObject
 
     /**
      *  Close order
-     * 
+     *
      * 	@param      User	$user       Objet user that close
      *	@return		int					<0 if KO, >0 if OK
      */
@@ -504,7 +504,7 @@ class Commande extends CommonObject
     /**
      * 	Cancel an order
      * 	If stock is decremented on order validation, we must reincrement it
-     * 
+     *
      *	@param	int		$idwarehouse	Id warehouse to use for stock change.
      *	@return	int						<0 if KO, >0 if OK
      */
@@ -531,7 +531,7 @@ class Commande extends CommonObject
                 {
 	                require_once(DOL_DOCUMENT_ROOT."/product/stock/class/mouvementstock.class.php");
 	                $langs->load("agenda");
-	
+
 	                $num=count($this->lines);
 	                for ($i = 0; $i < $num; $i++)
 	                {
@@ -581,7 +581,7 @@ class Commande extends CommonObject
     /**
      *	Create order
      *	Note that this->ref can be set or empty. If empty, we will use "(PROV)"
-     *	
+     *
      *	@param		User	$user 		Objet user that make creation
      *	@param		int		notrigger	Disable all triggers
      *	@return 	int					<0 if KO, >0 if OK
@@ -825,7 +825,7 @@ class Commande extends CommonObject
             {
                 $parameters=array('objFrom'=>$objFrom);
                 $action='';
-                $reshook=$hookmanager->executeHooks('createfrom',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
+                $reshook=$hookmanager->executeHooks('createFrom',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
                 if ($reshook < 0) $error++;
             }
 
@@ -921,7 +921,7 @@ class Commande extends CommonObject
 
                 $parameters=array('objFrom'=>$object);
                 $action='';
-                $reshook=$hookmanager->executeHooks('createfrom',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
+                $reshook=$hookmanager->executeHooks('createFrom',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
                 if ($reshook < 0) $error++;
 
                 if (! $error)
@@ -944,7 +944,7 @@ class Commande extends CommonObject
 
     /**
      *	Add an order line into database (linked to product/service or not)
-     *     
+     *
      *	@param      int				$commandeid      	Id of line
      *	@param      string			$desc            	Description of line
      *	@param      double			$pu_ht    	        Unit price (without tax)
@@ -1112,7 +1112,7 @@ class Commande extends CommonObject
      * 	@param    	timestamp		$date_start         Start date of the line - Added by Matelli (See http://matelli.fr/showcases/patchs-dolibarr/add-dates-in-order-lines.html)
      * 	@param    	timestamp		$date_end           End date of the line - Added by Matelli (See http://matelli.fr/showcases/patchs-dolibarr/add-dates-in-order-lines.html)
      * 	@return    	void
-     * 
+     *
      *	TODO	Remplacer les appels a cette fonction par generation objet Ligne
      *			insere dans tableau $this->products
      */
@@ -1188,7 +1188,7 @@ class Commande extends CommonObject
      * 	@param		string		$ref			Ref of object
      * 	@param		string		$ref_ext		External reference of object
      * 	@param		string		$ref_int		Internal reference of other object
-     *	@return     int         				>0 if OK, <0 if KO
+     *	@return     int         				>0 if OK, <0 if KO, 0 if not found
      */
     function fetch($id, $ref='', $ref_ext='', $ref_int='')
     {
@@ -1220,7 +1220,7 @@ class Commande extends CommonObject
         if ($ref_ext) $sql.= " AND c.ref_ext='".$this->db->escape($ref_ext)."'";
         if ($ref_int) $sql.= " AND c.ref_int='".$this->db->escape($ref_int)."'";
 
-        dol_syslog("Commande::fetch sql=".$sql, LOG_DEBUG);
+        dol_syslog(get_class($this)."::fetch sql=".$sql, LOG_DEBUG);
         $result = $this->db->query($sql);
         if ($result)
         {
@@ -1289,7 +1289,7 @@ class Commande extends CommonObject
                 }
 
                 /*
-                 * Lignes
+                 * Lines
                  */
                 $result=$this->fetch_lines();
                 if ($result < 0)
@@ -1300,14 +1300,14 @@ class Commande extends CommonObject
             }
             else
             {
-                dol_syslog('Commande::Fetch Error rowid='.$id.' numrows=0 sql='.$sql);
                 $this->error='Order with id '.$id.' not found sql='.$sql;
-                return -2;
+                dol_syslog(get_class($this).'::fetch '.$this->error);
+                return 0;
             }
         }
         else
         {
-            dol_syslog('Commande::Fetch Error rowid='.$id.' Erreur dans fetch de la commande');
+            dol_syslog(get_class($this).'::fetch Error rowid='.$id, LOG_ERR);
             $this->error=$this->db->error();
             return -1;
         }
@@ -1316,7 +1316,7 @@ class Commande extends CommonObject
 
     /**
      *	Adding line of fixed discount in the order in DB
-     *    
+     *
      *	@param     int	$idremise			Id de la remise fixe
      *	@return    int          			>0 si ok, <0 si ko
      */
@@ -1392,7 +1392,7 @@ class Commande extends CommonObject
 
     /**
      *	Load array lines
-     *      
+     *
      *	@param		int		$only_product	Return only physical products
      *	@return		int						<0 if KO, >0 if OK
      */
@@ -1494,10 +1494,10 @@ class Commande extends CommonObject
 
     /**
      *	Load array this->expeditions of nb of products sent by line in order
-     *      
+     *
      *	@param      int		$filtre_statut      Filter on status
      * 	@return     int                			<0 if KO, Nb of lines found if OK
-     *	
+     *
      *	TODO deprecated, move to Shipping class
      */
     function loadExpeditions($filtre_statut=-1)
@@ -1544,7 +1544,7 @@ class Commande extends CommonObject
 
     /**
      * Returns a array with expeditions lines number
-     * 
+     *
      * TODO deprecated, move to Shipping class
      */
     function nb_expedition()
@@ -1567,7 +1567,7 @@ class Commande extends CommonObject
 
     /**
      *	Return a array with sendings by line
-     *      
+     *
      *	@param      int		$filtre_statut      Filtre sur statut
      *	@return     int                 		0 si OK, <0 si KO
      *
@@ -1582,10 +1582,10 @@ class Commande extends CommonObject
 
     /**
      *	Return a array with the pending stock by product
-     *      
+     *
      *	@param      int		$filtre_statut      Filtre sur statut
      *	@return     int                 		0 si OK, <0 si KO
-     *      
+     *
      *	TODO		FONCTION NON FINIE A FINIR
      */
     function stock_array($filtre_statut=-1)
@@ -1594,14 +1594,14 @@ class Commande extends CommonObject
 
         // Tableau des id de produit de la commande
 		$array_of_product=array();
-		
 
         // Recherche total en stock pour chaque produit
+        // TODO $array_of_product est défini vide juste au dessus !!
         if (count($array_of_product))
         {
             $sql = "SELECT fk_product, sum(ps.reel) as total";
             $sql.= " FROM ".MAIN_DB_PREFIX."product_stock as ps";
-            $sql.= " WHERE ps.fk_product in (".join(',',$array_of_product).")";
+            $sql.= " WHERE ps.fk_product IN (".join(',',$array_of_product).")";
             $sql.= ' GROUP BY fk_product ';
             $result = $this->db->query($sql);
             if ($result)
@@ -1622,7 +1622,7 @@ class Commande extends CommonObject
 
     /**
      *  Delete an order line
-     *  
+     *
      *  @param      int		$lineid		Id of line to delete
      *  @return     int        		 	>0 if OK, 0 if nothing to do, <0 if KO
      */
@@ -2038,7 +2038,7 @@ class Commande extends CommonObject
 
     /**
      *	Change le delai de livraison
-     *   
+     *
      *	@param      int		$availability_id	Id du nouveau mode
      *	@return     int         				>0 if OK, <0 if KO
      */
@@ -2320,38 +2320,26 @@ class Commande extends CommonObject
         dol_syslog("Commande::delete sql=".$sql);
         if (! $this->db->query($sql) )
         {
-            dol_syslog("CustomerOrder::delete error", LOG_ERR);
+            dol_syslog(get_class($this)."::delete error", LOG_ERR);
             $error++;
         }
 
         // Delete order
         $sql = 'DELETE FROM '.MAIN_DB_PREFIX."commande WHERE rowid = ".$this->id;
-        dol_syslog("Commande::delete sql=".$sql);
+        dol_syslog(get_class($this)."::delete sql=".$sql, LOG_DEBUG);
         if (! $this->db->query($sql) )
         {
-            dol_syslog("CustomerOrder::delete error", LOG_ERR);
+            dol_syslog(get_class($this)."::delete error", LOG_ERR);
             $error++;
         }
 
         // Delete linked object
-        // TODO deplacer dans le common
-        $sql = "DELETE FROM ".MAIN_DB_PREFIX."element_element";
-        $sql.= " WHERE fk_target = ".$this->id;
-        $sql.= " AND targettype = '".$this->element."'";
-        dol_syslog("Commande::delete sql=".$sql);
-        if (! $this->db->query($sql) )
-        {
-            dol_syslog("CustomerOrder::delete error", LOG_ERR);
-            $error++;
-        }
+        $res = $this->deleteObjectLinked();
+        if ($res < 0) $error++;
 
         // Delete linked contacts
         $res = $this->delete_linked_contact();
-        if ($res < 0)
-        {
-            dol_syslog("CustomerOrder::delete error", LOG_ERR);
-            $error++;
-        }
+        if ($res < 0) $error++;
 
         // On efface le repertoire de pdf provisoire
         $comref = dol_sanitizeFileName($this->ref);
@@ -2381,7 +2369,7 @@ class Commande extends CommonObject
             }
         }
 
-        if ($error == 0)
+        if (! $error)
         {
             // Appel des triggers
             include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
@@ -2403,7 +2391,7 @@ class Commande extends CommonObject
 
     /**
      *	Load indicators for dashboard (this->nbtodo and this->nbtodolate)
-     * 
+     *
      *	@param		User	$user   Object user
      *	@return     int     		<0 if KO, >0 if OK
      */
@@ -2647,7 +2635,7 @@ class Commande extends CommonObject
         $prodids = array();
         $sql = "SELECT rowid";
         $sql.= " FROM ".MAIN_DB_PREFIX."product";
-        $sql.= " WHERE entity = ".$conf->entity;
+        $sql.= " WHERE entity IN (".getEntity('product', 1).")";
         $resql = $this->db->query($sql);
         if ($resql)
         {
@@ -2756,7 +2744,7 @@ class Commande extends CommonObject
 
     /**
      * 	Return an array of order lines
-     * 
+     *
      * @return	array		Lines of order
      */
     function getLinesArray()
@@ -2960,7 +2948,7 @@ class OrderLine
         global $conf, $user, $langs;
 
 		$error=0;
-		
+
         $sql = 'DELETE FROM '.MAIN_DB_PREFIX."commandedet WHERE rowid='".$this->rowid."';";
 
         dol_syslog("OrderLine::delete sql=".$sql);
@@ -2995,7 +2983,7 @@ class OrderLine
         global $langs, $conf, $user;
 
 		$error=0;
-		
+
         dol_syslog("OrderLine::insert rang=".$this->rang);
 
         // Clean parameters
@@ -3095,7 +3083,7 @@ class OrderLine
         global $conf,$langs,$user;
 
 		$error=0;
-		
+
         // Clean parameters
         if (empty($this->tva_tx)) $this->tva_tx=0;
         if (empty($this->localtax1_tx)) $this->localtax1_tx=0;

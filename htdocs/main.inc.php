@@ -393,6 +393,7 @@ if (! defined('NOLOGIN'))
 				$dol_dst=0;
 				if (isset($_POST["dst_first"]) && isset($_POST["dst_second"]))
 				{
+				    include_once(DOL_DOCUMENT_ROOT."/core/lib/date.lib.php");
                     $datenow=dol_now();
                     $datefirst=dol_stringtotime($_POST["dst_first"]);
                     $datesecond=dol_stringtotime($_POST["dst_second"]);
@@ -417,7 +418,7 @@ if (! defined('NOLOGIN'))
 				$_SESSION["dol_loginmesg"]=$langs->trans("ErrorBadLoginPassword");
 
 				// Appel des triggers
-				include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+				include_once(DOL_DOCUMENT_ROOT."/core/class/interfaces.class.php");
 				$interface=new Interfaces($db);
 				$result=$interface->run_triggers('USER_LOGIN_FAILED',$user,$user,$langs,$conf,GETPOST("username","alpha",2));
 				if ($result < 0) { $error++; }
@@ -865,16 +866,18 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
         print '<!-- Includes for Dolibarr, modules or specific pages-->'."\n";
         // Output style sheets (optioncss='print' or '')
         $themepath=dol_buildpath((empty($conf->global->MAIN_FORCETHEMEDIR)?'':$conf->global->MAIN_FORCETHEMEDIR).$conf->css,1);
-        //print 'themepath='.$themepath;exit;
-		print '<link rel="stylesheet" type="text/css" title="default" href="'.$themepath.'?lang='.$langs->defaultlang.'&theme='.$conf->theme.(GETPOST('optioncss')?'&optioncss='.GETPOST('optioncss','alpha',1):'').'">'."\n";
+        $themeparam='?lang='.$langs->defaultlang.'&theme='.$conf->theme.(GETPOST('optioncss')?'&optioncss='.GETPOST('optioncss','alpha',1):'');
+        if (! empty($_SESSION['dol_resetcache'])) $themeparam.='&dol_resetcache='.$_SESSION['dol_resetcache'];
+        //print 'themepath='.$themepath.' themeparam='.$themeparam;exit;
+		print '<link rel="stylesheet" type="text/css" title="default" href="'.$themepath.$themeparam.'">'."\n";
 		// CSS forced by modules (relative url starting with /)
 		if (is_array($conf->css_modules))
 		{
 			foreach($conf->css_modules as $cssfile)
 			{	// cssfile is an absolute path
 				print '<link rel="stylesheet" type="text/css" title="default" href="'.dol_buildpath($cssfile,1);
-                // We add params only if page is not static, because some web server setup does not return content type text/css if url has parameters and browser cache is not used.
-				if (!preg_match('/\.css$/i',$cssfile)) print '?lang='.$langs->defaultlang.'&theme='.$conf->theme.(GETPOST('optioncss')?'&optioncss='.GETPOST('optioncss','alpha',1):'');
+                // We add params only if page is not static, because some web server setup does not return content type text/css if url has parameters, so browser cache is not used.
+				if (!preg_match('/\.css$/i',$cssfile)) print $themeparam;
 				print '">'."\n";
 			}
 		}
@@ -885,7 +888,7 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
 			{
 				print '<link rel="stylesheet" type="text/css" title="default" href="'.dol_buildpath($cssfile,1);
                 // We add params only if page is not static, because some web server setup does not return content type text/css if url has parameters and browser cache is not used.
-				if (!preg_match('/\.css$/i',$cssfile)) print '?lang='.$langs->defaultlang.'&theme='.$conf->theme.(GETPOST('optioncss')?'&optioncss='.GETPOST('optioncss','alpha',1):'');
+				if (!preg_match('/\.css$/i',$cssfile)) print $themeparam;
 				print '">'."\n";
 			}
 		}

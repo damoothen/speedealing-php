@@ -379,11 +379,12 @@ function getFormeJuridiqueLabel($code)
 /**
  * 		Show html area for list of projects
  *
- *		@param		conf		Object conf
- * 		@param		langs		Object langs
- * 		@param		db			Database handler
- * 		@param		object		Third party object
- *      @param      backtopage  Url to go once contact is created
+ *		@param	Conf		$conf			Object conf
+ * 		@param	Translate	$langs			Object langs
+ * 		@param	DoliDB		$db				Database handler
+ * 		@param	Object		$object			Third party object
+ *      @param  string		$backtopage		Url to go once contact is created
+ *      @return	void
  */
 function show_projects($conf,$langs,$db,$object,$backtopage='')
 {
@@ -434,7 +435,7 @@ function show_projects($conf,$langs,$db,$object,$backtopage='')
                     $projectstatic->fetch($obj->rowid);
 
                     // To verify role of users
-                    $userAccess = $projectstatic->restrictedProjectArea($user,1);
+                    $userAccess = $projectstatic->restrictedProjectArea($user);
 
                     if ($user->rights->projet->lire && $userAccess > 0)
                     {
@@ -482,6 +483,7 @@ function show_projects($conf,$langs,$db,$object,$backtopage='')
  * 		@param	DoliDB		$db			Database handler
  * 		@param	Object		$object		Third party object
  *      @param  string		$backtopage	Url to go once contact is created
+ *      @return	void
  */
 function show_contacts($conf,$langs,$db,$object,$backtopage='')
 {
@@ -594,12 +596,14 @@ function show_contacts($conf,$langs,$db,$object,$backtopage='')
 
 /**
  *    	Show html area with actions to do
- * 		@param		conf		Object conf
- * 		@param		langs		Object langs
- * 		@param		db			Object db
- * 		@param		object		Object third party
- * 		@param		objcon		Object contact
- *      @param      noprint     Return string but does not output it
+ *
+ * 		@param	Conf		$conf		Object conf
+ * 		@param	Translate	$langs		Object langs
+ * 		@param	DoliDB		$db			Object db
+ * 		@param	Object		$object		Object third party
+ * 		@param	Contact		$objcon		Object contact
+ *      @param  int			$noprint     Return string but does not output it
+ *      @return	void
  */
 function show_actions_todo($conf,$langs,$db,$object,$objcon='',$noprint=0)
 {
@@ -646,6 +650,7 @@ function show_actions_todo($conf,$langs,$db,$object,$objcon='',$noprint=0)
         $sql.= " FROM ".MAIN_DB_PREFIX."c_actioncomm as c, ".MAIN_DB_PREFIX."user as u, ".MAIN_DB_PREFIX."actioncomm as a";
         $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."socpeople as sp ON a.fk_contact = sp.rowid";
         $sql.= " WHERE u.rowid = a.fk_user_author";
+        $sql.= " AND u.entity = ".$conf->entity;
         if ($object->id) $sql.= " AND a.fk_soc = ".$object->id;
         if (is_object($objcon) && $objcon->id) $sql.= " AND a.fk_contact = ".$objcon->id;
         $sql.= " AND c.id=a.fk_action";
@@ -741,12 +746,13 @@ function show_actions_todo($conf,$langs,$db,$object,$objcon='',$noprint=0)
 /**
  *    	Show html area with actions done
  *
- * 		@param		conf		Object conf
- * 		@param		langs		Object langs
- * 		@param		db			Object db
- * 		@param		object		Object third party
- * 		@param		objcon		Object contact
- *      @param      noprint     Return string but does not output it
+ * 		@param	Conf		$conf		Object conf
+ * 		@param	Translate	$langs		Object langs
+ * 		@param	DoliDB		$db			Object db
+ * 		@param	Object		$object		Object third party
+ * 		@param	Contact		$objcon		Object contact
+ *      @param  int			$noprint     Return string but does not output it
+ *      @return	void
  */
 function show_actions_done($conf,$langs,$db,$object,$objcon='',$noprint=0)
 {
@@ -772,6 +778,7 @@ function show_actions_done($conf,$langs,$db,$object,$objcon='',$noprint=0)
         $sql.= " FROM ".MAIN_DB_PREFIX."c_actioncomm as c, ".MAIN_DB_PREFIX."user as u, ".MAIN_DB_PREFIX."actioncomm as a";
         $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."socpeople as sp ON a.fk_contact = sp.rowid";
         $sql.= " WHERE u.rowid = a.fk_user_author";
+        $sql.= " AND u.entity = ".$conf->entity;
         if ($object->id) $sql.= " AND a.fk_soc = ".$object->id;
         if (is_object($objcon) && $objcon->id) $sql.= " AND a.fk_contact = ".$objcon->id;
         $sql.= " AND c.id=a.fk_action";
@@ -974,10 +981,12 @@ function show_actions_done($conf,$langs,$db,$object,$objcon='',$noprint=0)
 
 /**
  * 		Show html area for list of subsidiaries
- *		@param		conf		Object conf
- * 		@param		langs		Object langs
- * 		@param		db			Database handler
- * 		@param		object		Third party object
+ *
+ *		@param	Conf		$conf		Object conf
+ * 		@param	Translate	$langs		Object langs
+ * 		@param	DoliDB		$db			Database handler
+ * 		@param	Societe		$object		Third party object
+ * 		@return	void
  */
 function show_subsidiaries($conf,$langs,$db,$object)
 {
@@ -989,7 +998,7 @@ function show_subsidiaries($conf,$langs,$db,$object)
 	$sql = "SELECT s.rowid, s.nom as name, s.address, s.cp as zip, s.ville as town, s.code_client, s.canvas";
 	$sql.= " FROM ".MAIN_DB_PREFIX."societe as s";
 	$sql.= " WHERE s.parent = ".$object->id;
-	$sql.= " AND s.entity = ".$conf->entity;
+	$sql.= " AND s.entity IN (".getEntity('societe', 1).")";
 	$sql.= " ORDER BY s.nom";
 
 	$result = $db->query($sql);

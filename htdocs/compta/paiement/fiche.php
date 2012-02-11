@@ -112,7 +112,7 @@ if ($action == 'confirm_valide' && GETPOST('confirm') == 'yes' && $user->rights-
 				$outputlangs = new Translate("",$conf);
 				$outputlangs->setDefaultLang($_REQUEST['lang_id']);
 			}
-			if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) facture_pdf_create($db, $fac, '', $fac->modelpdf, $outputlangs, $hookmanager);
+			if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) facture_pdf_create($db, $fac, $fac->modelpdf, $outputlangs, $hookmanager);
 		}
 
 		Header('Location: fiche.php?id='.$paiement->id);
@@ -269,7 +269,7 @@ $sql = 'SELECT f.rowid as facid, f.facnumber, f.type, f.total_ttc, f.paye, f.fk_
 $sql.= ' FROM '.MAIN_DB_PREFIX.'paiement_facture as pf,'.MAIN_DB_PREFIX.'facture as f,'.MAIN_DB_PREFIX.'societe as s';
 $sql.= ' WHERE pf.fk_facture = f.rowid';
 $sql.= ' AND f.fk_soc = s.rowid';
-$sql.= ' AND s.entity = '.$conf->entity;
+$sql.= ' AND f.entity = '.$conf->entity;
 $sql.= ' AND pf.fk_paiement = '.$paiement->id;
 $resql=$db->query($sql);
 if ($resql)

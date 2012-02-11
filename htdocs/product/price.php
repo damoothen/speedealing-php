@@ -1,6 +1,6 @@
 <?php
 /* Copyright (C) 2001-2007	Rodolphe Quiedeville	<rodolphe@quiedeville.org>
- * Copyright (C) 2004-2011	Laurent Destailleur		<eldy@users.sourceforge.net>
+ * Copyright (C) 2004-2012	Laurent Destailleur		<eldy@users.sourceforge.net>
  * Copyright (C) 2005		Eric Seigne				<eric.seigne@ryxeo.com>
  * Copyright (C) 2005-2012	Regis Houssin			<regis@dolibarr.fr>
  * Copyright (C) 2006		Andre Cianfarani		<acianfa@free.fr>
@@ -37,10 +37,10 @@ $ref	= GETPOST('ref', 'alpha');
 $action	= GETPOST('action', 'alpha');
 
 // Security check
-$fieldid	= (! empty($id) ? $id : (! empty($ref) ? $ref : ''));
-$fieldtype	= (! empty($ref) ? 'ref' : 'rowid');
-$socid		= ($user->societe_id ? $user->societe_id : 0);
-$result=restrictedArea($user,'produit|service',$fieldid,'product','','',$fieldtype);
+$fieldvalue = (! empty($id) ? $id : (! empty($ref) ? $ref : ''));
+$fieldtype = (! empty($ref) ? 'ref' : 'rowid');
+if ($user->societe_id) $socid=$user->societe_id;
+$result=restrictedArea($user,'produit|service',$fieldvalue,'product&product','','',$fieldtype);
 
 $object = new Product($db);
 
@@ -264,7 +264,7 @@ else
 }
 
 // Status (to sell)
-print '<tr><td>'.$langs->trans("Status").' ('.$langs->trans("Sell").')'.'</td><td>';
+print '<tr><td>'.$langs->trans("Status").' ('.$langs->trans("Sell").')</td><td>';
 print $object->getLibStatut(2,0);
 print '</td></tr>';
 
@@ -272,7 +272,8 @@ print "</table>\n";
 
 print "</div>\n";
 
-if ($mesg) print $mesg;
+
+dol_htmloutput_mesg($mesg);
 
 
 /* ************************************************************************** */
@@ -281,7 +282,7 @@ if ($mesg) print $mesg;
 /*                                                                            */
 /* ************************************************************************** */
 
-if ($action == 'delete')
+if (! $action || $action == 'delete')
 {
 	print "\n".'<div class="tabsAction">'."\n";
 
@@ -327,7 +328,7 @@ if ($action == 'edit_price' && ($user->rights->produit->creer || $user->rights->
 		// Price
 		print '<tr><td width="20%">';
 		$text=$langs->trans('SellingPrice');
-		print $form->textwithpicto($text,$langs->trans("PrecisionUnitIsLimitedToXDecimals",$conf->global->MAIN_MAX_DECIMALS_UNIT),$direction=1,$usehelpcursor=1);
+		print $form->textwithpicto($text,$langs->trans("PrecisionUnitIsLimitedToXDecimals",$conf->global->MAIN_MAX_DECIMALS_UNIT),1,1);
 		print '</td><td>';
 		if ($object->price_base_type == 'TTC')
 		{
@@ -342,7 +343,7 @@ if ($action == 'edit_price' && ($user->rights->produit->creer || $user->rights->
 		// Price minimum
 		print '<tr><td>' ;
 		$text=$langs->trans('MinPrice');
-		print $form->textwithpicto($text,$langs->trans("PrecisionUnitIsLimitedToXDecimals",$conf->global->MAIN_MAX_DECIMALS_UNIT),$direction=1,$usehelpcursor=1);
+		print $form->textwithpicto($text,$langs->trans("PrecisionUnitIsLimitedToXDecimals",$conf->global->MAIN_MAX_DECIMALS_UNIT),1,1);
 		if ($object->price_base_type == 'TTC')
 		{
 			print '<td><input name="price_min" size="10" value="'.price($object->price_min_ttc).'">';
@@ -385,7 +386,7 @@ if ($action == 'edit_price' && ($user->rights->produit->creer || $user->rights->
 			// Selling price
 			print '<tr><td width="20%">';
 			$text=$langs->trans('SellingPrice').' '.$i;
-			print $form->textwithpicto($text,$langs->trans("PrecisionUnitIsLimitedToXDecimals",$conf->global->MAIN_MAX_DECIMALS_UNIT),$direction=1,$usehelpcursor=1);
+			print $form->textwithpicto($text,$langs->trans("PrecisionUnitIsLimitedToXDecimals",$conf->global->MAIN_MAX_DECIMALS_UNIT),1,1);
 			print '</td><td>';
 			if ($object->multiprices_base_type["$i"] == 'TTC')
 			{
@@ -401,7 +402,7 @@ if ($action == 'edit_price' && ($user->rights->produit->creer || $user->rights->
             // Min price
 			print '<tr><td>';
 			$text=$langs->trans('MinPrice').' '.$i;
-			print $form->textwithpicto($text,$langs->trans("PrecisionUnitIsLimitedToXDecimals",$conf->global->MAIN_MAX_DECIMALS_UNIT),$direction=1,$usehelpcursor=1);
+			print $form->textwithpicto($text,$langs->trans("PrecisionUnitIsLimitedToXDecimals",$conf->global->MAIN_MAX_DECIMALS_UNIT),1,1);
 			if ($object->multiprices_base_type["$i"] == 'TTC')
 			{
 				print '<td><input name="price_min_'.$i.'" size="10" value="'.price($object->multiprices_min_ttc["$i"]).'">';
@@ -531,5 +532,4 @@ else
 llxFooter();
 
 $db->close();
-
 ?>

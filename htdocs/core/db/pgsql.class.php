@@ -44,13 +44,15 @@ class DoliDBPgsql
 	//! Version min database
 	static $versionmin=array(8,4,0);	// Version min database
 
-	var $results;                 // Resultset de la derniere requete
+	//! Resultset of last request
+	private $results;
 
 	var $connected;               // 1 si connecte, 0 sinon
 	var $database_selected;       // 1 si base selectionne, 0 sinon
 	var $database_name;			//! Nom base selectionnee
 	var $database_user;	   		//! Nom user base
-	var $transaction_opened;      // 1 si une transaction est en cours, 0 sinon
+	//! >=1 if a transaction is opened, 0 otherwise
+	var $transaction_opened;
 	var $lastquery;
 	var $lastqueryerror;		// Ajout d'une variable en cas d'erreur
 
@@ -438,7 +440,7 @@ class DoliDBPgsql
     {
         if ($this->db)
         {
-          //dol_syslog(get_class($this)."::disconnect",LOG_DEBUG);
+          if ($this->transaction_opened > 0) dol_syslog(get_class($this)."::close Closing a connection with an opened transaction depth=".$this->transaction_opened,LOG_ERR);
           $this->connected=0;
           return pg_close($this->db);
         }
@@ -555,9 +557,12 @@ class DoliDBPgsql
 		{
 			if (! $ret)
 			{
-				$this->lastqueryerror = $query;
-				$this->lasterror = $this->error();
-				$this->lasterrno = $this->errno();
+			    if ($this->errno() != 'DB_ERROR_25P02')
+			    {
+    				$this->lastqueryerror = $query;
+    				$this->lasterror = $this->error();
+    				$this->lasterrno = $this->errno();
+			    }
 				dol_syslog(get_class($this)."::query SQL error: ".$query." ".$this->lasterrno, LOG_WARNING);
 				//print "\n>> ".$query."<br>\n";
 				//print '>> '.$this->lasterrno.' - '.$this->lasterror.' - '.$this->lastqueryerror."<br>\n";
@@ -939,12 +944,8 @@ class DoliDBPgsql
 	}
 
 
-	// Next function are not required. Only minor features use them.
-	//--------------------------------------------------------------
-
-
 	/**
-	 * Renvoie l'id de la connexion
+	 * Return connexion ID
 	 *
 	 * @return	        string      Id connexion
 	 */
@@ -957,13 +958,14 @@ class DoliDBPgsql
 
 	/**
 	 *	Create a new database
-	 *  Ne pas utiliser les fonctions xxx_create_db (xxx=mysql, ...) car elles sont deprecated
+	 *	Do not use function xxx_create_db (xxx=mysql, ...) as they are deprecated
+	 *	We force to create database with charset this->forcecharset and collate this->forcecollate
 	 *
 	 *	@param	string	$database		Database name to create
 	 * 	@param	string	$charset		Charset used to store data
 	 * 	@param	string	$collation		Charset used to sort data
 	 * 	@param	string	$owner			Username of database owner
-	 * 	@return	resource				Resource defined if OK, null if KO
+	 * 	@return	resource				resource defined if OK, null if KO
 	 */
 	function DDLCreateDb($database,$charset='',$collation='',$owner='')
 	{

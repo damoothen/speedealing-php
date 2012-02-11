@@ -394,12 +394,10 @@ if ($id > 0 || ! empty($ref))
 		$sql.= " FROM ".MAIN_DB_PREFIX."commandedet as cd";
 		$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product as p ON cd.fk_product = p.rowid";
 		$sql.= " WHERE cd.fk_commande = ".$commande->id;
-		// $sql.= " AND p.fk_product_type <> 1";		Why this line ?
-		//$sql.= " GROUP by cd.rowid, cd.fk_product";
 		$sql.= " ORDER BY cd.rang, cd.rowid";
 
 		//print $sql;
-		dol_syslog("commande.php sql=".$sql, LOG_DEBUG);
+		dol_syslog("shipment.php sql=".$sql, LOG_DEBUG);
 		$resql = $db->query($sql);
 		if ($resql)
 		{
@@ -440,6 +438,26 @@ if ($id > 0 || ! empty($ref))
 				// Product label
 				if ($objp->fk_product > 0)
 				{
+          // Define output language
+          if (! empty($conf->global->MAIN_MULTILANGS) && ! empty($conf->global->PRODUIT_TEXTS_IN_THIRDPARTY_LANGUAGE))
+			    { 
+            $commande->fetch_thirdparty();
+      			$prod = new Product($db, $objp->fk_product);
+      			$outputlangs = $langs;
+            $newlang='';
+            if (empty($newlang) && ! empty($_REQUEST['lang_id'])) $newlang=$_REQUEST['lang_id'];
+            if (empty($newlang)) $newlang=$commande->client->default_lang;
+            if (! empty($newlang))
+            {
+                $outputlangs = new Translate("",$conf);
+                $outputlangs->setDefaultLang($newlang);
+            }
+    
+            $label = (! empty($prod->multilangs[$outputlangs->defaultlang]["libelle"])) ? $prod->multilangs[$outputlangs->defaultlang]["libelle"] : $objp->product_label;
+          }
+          else
+            $label = $objp->product_label;
+
 					print '<td>';
 					print '<a name="'.$objp->rowid.'"></a>'; // ancre pour retourner sur la ligne
 
@@ -447,9 +465,9 @@ if ($id > 0 || ! empty($ref))
 					$product_static->type=$objp->fk_product_type;
 					$product_static->id=$objp->fk_product;
 					$product_static->ref=$objp->ref;
-					$product_static->libelle=$objp->product_label;
+					$product_static->libelle=$label;
 					$text=$product_static->getNomUrl(1);
-					$text.= ' - '.$objp->product_label;
+					$text.= ' - '.$label;
 					$description=($conf->global->PRODUIT_DESC_IN_FORM?'':dol_htmlentitiesbr($objp->description));
 					print $form->textwithtooltip($text,$description,3,'','',$i);
 

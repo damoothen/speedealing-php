@@ -1,6 +1,6 @@
-# DOLIBARR ERP/CRM
+# DOLIBARR ERP & CRM
 
-Dolibarr ERP/CRM is a modern software to manage your company or foundation activity (contacts, suppliers, invoices, orders, stocks, agenda, ...).It's an opensource software (wrote with PHP language) designed for small and medium companies, foundation and freelances. You can freely install, use and distribute it as a standalone application or as a web application to use it from every internet access and media.
+Dolibarr ERP & CRM is a modern software to manage your company or foundation activity (contacts, suppliers, invoices, orders, stocks, agenda, ...).It's an opensource software (wrote with PHP language) designed for small and medium companies, foundation and freelances. You can freely install, use and distribute it as a standalone application or as a web application to use it from every internet access and media.
 
 
 ## INSTALL
@@ -24,6 +24,9 @@ Url depends on choice made on first step:
 	http://localhost/dolibarr/htdocs/install/
 or
 
+	http://localhost/dolibarr/install/
+or
+
 	http://yourdolibarrvirtualhost/install/
    
 - Follow instructions provided by installer...
@@ -45,7 +48,10 @@ This URL should looks like:
 	http://localhost/dolibarr/htdocs/install/
 or
 
-	http://yourdolibarrhost/install/index.php
+	http://localhost/dolibarr/install/
+or
+
+	http://yourdolibarrhost/install/
 
 Then choose the "update" option according to your case.
 Note: Migrate process can be ran safely several times.

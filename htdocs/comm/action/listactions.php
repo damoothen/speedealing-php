@@ -47,7 +47,7 @@ $filter=GETPOST("filter");
 $filtera = GETPOST("userasked","int")?GETPOST("userasked","int"):GETPOST("filtera","int");
 $filtert = GETPOST("usertodo","int")?GETPOST("usertodo","int"):GETPOST("filtert","int");
 $filterd = GETPOST("userdone","int")?GETPOST("userdone","int"):GETPOST("filterd","int");
-$showbirthday = GETPOST("showbirthday","int");
+$showbirthday = empty($conf->use_javascript_ajax)?GETPOST("showbirthday","int"):1;
 
 $sortfield = GETPOST("sortfield",'alpha');
 $sortorder = GETPOST("sortorder",'alpha');
@@ -113,6 +113,25 @@ llxHeader('',$langs->trans("Agenda"),$help_url);
 
 $form=new Form($db);
 
+// Define list of all external calendars
+$listofextcals=array();
+/*if (empty($conf->global->AGENDA_DISABLE_EXT) && $conf->global->AGENDA_EXT_NB > 0)
+{
+    $i=0;
+    while($i < $conf->global->AGENDA_EXT_NB)
+    {
+        $i++;
+        $paramkey='AGENDA_EXT_SRC'.$i;
+        $url=$conf->global->$paramkey;
+        $paramkey='AGENDA_EXT_NAME'.$i;
+        $namecal = $conf->global->$paramkey;
+        $paramkey='AGENDA_EXT_COLOR'.$i;
+        $colorcal = $conf->global->$paramkey;
+        if ($url && $namecal) $listofextcals[]=array('src'=>$url,'name'=>$namecal,'color'=>$colorcal);
+    }
+}
+*/
+
 $param='';
 if ($status) $param="&status=".$status;
 if ($filter) $param.="&filter=".$filter;
@@ -134,10 +153,10 @@ $sql.= " ut.login as logintodo, ut.rowid as useridtodo,";
 $sql.= " ud.login as logindone, ud.rowid as useriddone,";
 $sql.= " sp.name, sp.firstname";
 $sql.= " FROM (".MAIN_DB_PREFIX."c_actioncomm as c,";
-if (!$user->rights->societe->client->voir && !$socid) $sql.= " ".MAIN_DB_PREFIX."societe_commerciaux as sc,";
+if (! $user->rights->societe->client->voir && ! $socid) $sql.= " ".MAIN_DB_PREFIX."societe_commerciaux as sc,";
 $sql.= " ".MAIN_DB_PREFIX.'user as u,';
 $sql.= " ".MAIN_DB_PREFIX."actioncomm as a)";
-$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."societe as s ON a.fk_soc = s.rowid AND s.entity IN (0, ".$conf->entity.")";
+$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."societe as s ON a.fk_soc = s.rowid";
 $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."socpeople as sp ON a.fk_contact = sp.rowid";
 $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."user as ua ON a.fk_user_author = ua.rowid";
 $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."user as ut ON a.fk_user_action = ut.rowid";
@@ -147,7 +166,7 @@ $sql.= ' AND a.fk_user_author = u.rowid';
 $sql.= ' AND a.entity = '.$conf->entity;	// To limit to entity
 if ($actioncode) $sql.=" AND c.code='".$db->escape($actioncode)."'";
 if ($pid) $sql.=" AND a.fk_project=".$db->escape($pid);
-if (!$user->rights->societe->client->voir && !$socid) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
+if (! $user->rights->societe->client->voir && ! $socid) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
 if ($socid) $sql.= " AND s.rowid = ".$socid;
 if ($_GET["type"]) $sql.= " AND c.id = ".$_GET["type"];
 if ($status == 'done') { $sql.= " AND (a.percent = 100 OR (a.percent = -1 AND a.datep2 <= '".$db->idate($now)."'))"; }
@@ -192,21 +211,24 @@ if ($resql)
     $head = calendars_prepare_head('');
 
     dol_fiche_head($head, 'card', $langs->trans('Events'), 0, 'list');
-    print_actions_filter($form,$canedit,$status,$year,$month,$day,$showbirthday,$filtera,$filtert,$filterd,$pid,$socid);
+    print_actions_filter($form,$canedit,$status,$year,$month,$day,$showbirthday,$filtera,$filtert,$filterd,$pid,$socid,-1);
     dol_fiche_end();
 
     // Add link to show birthdays
     $link='';
     /*
-    $newparam=$param;   // newparam is for birthday links
-    $newparam=preg_replace('/showbirthday=[0-1]/i','showbirthday='.(empty($showbirthday)?1:0),$newparam);
-    if (! preg_match('/showbirthday=/i',$newparam)) $newparam.='&showbirthday=1';
-    $link='<a href="'.$_SERVER['PHP_SELF'];
-    $link.='?'.$newparam;
-    $link.='">';
-    if (empty($showbirthday)) $link.=$langs->trans("AgendaShowBirthdayEvents");
-    else $link.=$langs->trans("AgendaHideBirthdayEvents");
-    $link.='</a>';
+    if (empty($conf->use_javascript_ajax))
+    {
+        $newparam=$param;   // newparam is for birthday links
+        $newparam=preg_replace('/showbirthday=[0-1]/i','showbirthday='.(empty($showbirthday)?1:0),$newparam);
+        if (! preg_match('/showbirthday=/i',$newparam)) $newparam.='&showbirthday=1';
+        $link='<a href="'.$_SERVER['PHP_SELF'];
+        $link.='?'.$newparam;
+        $link.='">';
+        if (empty($showbirthday)) $link.=$langs->trans("AgendaShowBirthdayEvents");
+        else $link.=$langs->trans("AgendaHideBirthdayEvents");
+        $link.='</a>';
+    }
     */
 
     print_barre_liste($newtitle, $page, $_SERVER["PHP_SELF"], $param,$sortfield,$sortorder,$link,$num,0,'');

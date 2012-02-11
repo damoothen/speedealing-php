@@ -84,11 +84,12 @@ class User extends CommonObject
 	//! Liste des entrepots auquel a acces l'utilisateur
 	var $entrepots;
 
-	var $rights;               // Array of permissions user->rights->permx
-	var $all_permissions_are_loaded;         /**< \private all_permissions_are_loaded */
+	var $rights;                        // Array of permissions user->rights->permx
+	var $all_permissions_are_loaded;	/**< \private all_permissions_are_loaded */
 	private $_tab_loaded=array();		// Array of cache of already loaded permissions
 
-	var $oldcopy;		// To contains a clone of this when we need to save old properties of object
+	var $conf;           // To store personal config
+	var $oldcopy;        // To contains a clone of this when we need to save old properties of object
 
 
 
@@ -237,19 +238,19 @@ class User extends CommonObject
 			$sql = "SELECT param, value FROM ".MAIN_DB_PREFIX."user_param";
 			$sql.= " WHERE fk_user = ".$this->id;
 			$sql.= " AND entity = ".$conf->entity;
-			$result=$this->db->query($sql);
-			if ($result)
+			$resql=$this->db->query($sql);
+			if ($resql)
 			{
-				$num = $this->db->num_rows($result);
+				$num = $this->db->num_rows($resql);
 				$i = 0;
 				while ($i < $num)
 				{
-					$obj = $this->db->fetch_object($result);
+					$obj = $this->db->fetch_object($resql);
 					$p=$obj->param;
 					if ($p) $this->conf->$p = $obj->value;
 					$i++;
 				}
-				$this->db->free($result);
+				$this->db->free($resql);
 			}
 			else
 			{
@@ -1703,45 +1704,6 @@ class User extends CommonObject
 		$result.=$lien.$this->login.$lienfin;
 		return $result;
 	}
-
-	/**
-	 *  Return full name (civility+' '+name+' '+lastname)
-	 *
-	 *	@param	Translate	$langs			Language object for translation of civility
-	 *	@param	int			$option			0=No option, 1=Add civility
-	 * 	@param	int			$nameorder		-1=Auto, 0=Lastname+Firstname, 1=Firstname+Lastname
-	 * 	@return	string						String with full name
-	 */
-	function getFullName($langs,$option=0,$nameorder=-1)
-	{
-		global $conf;
-
-		$ret='';
-		if ($option && $this->civilite_id)
-		{
-			if ($langs->transnoentitiesnoconv("Civility".$this->civilite_id)!="Civility".$this->civilite_id) $ret.=$langs->transnoentitiesnoconv("Civility".$this->civilite_id).' ';
-			else $ret.=$this->civilite_id.' ';
-		}
-
-		// If order not defined, we use the setup
-		if ($nameorder < 0) $nameorder=(! $conf->global->MAIN_FIRSTNAME_NAME_POSITION);
-
-		if ($nameorder)
-		{
-			if ($this->firstname) $ret.=$this->firstname;
-			if ($this->firstname && $this->lastname) $ret.=' ';
-			if ($this->lastname)      $ret.=$this->lastname;
-		}
-		else
-		{
-			if ($this->lastname)      $ret.=$this->lastname;
-			if ($this->firstname && $this->lastname) $ret.=' ';
-			if ($this->firstname) $ret.=$this->firstname;
-		}
-
-		return trim($ret);
-	}
-
 
 	/**
 	 *  Retourne le libelle du statut d'un user (actif, inactif)

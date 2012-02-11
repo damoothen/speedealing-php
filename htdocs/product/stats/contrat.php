@@ -32,14 +32,14 @@ $langs->load("contracts");
 $langs->load("products");
 $langs->load("companies");
 
+$id = GETPOST('id', 'int');
+$ref = GETPOST('ref', 'alpha');
+
 // Security check
-if (isset($_GET["id"]) || isset($_GET["ref"]))
-{
-	$id = isset($_GET["id"])?$_GET["id"]:(isset($_GET["ref"])?$_GET["ref"]:'');
-}
-$fieldid = isset($_GET["ref"])?'ref':'rowid';
+$fieldvalue = (! empty($id) ? $id : (! empty($ref) ? $ref : ''));
+$fieldtype = (! empty($ref) ? 'ref' : 'rowid');
 if ($user->societe_id) $socid=$user->societe_id;
-$result=restrictedArea($user,'produit|service',$id,'product','','',$fieldid);
+$result=restrictedArea($user,'produit|service',$fieldvalue,'product&product','','',$fieldtype);
 
 $mesg = '';
 
@@ -97,12 +97,12 @@ if ($_GET["id"] || $_GET["ref"])
 		print '</tr>';
 
 		// Status (to sell)
-		print '<tr><td>'.$langs->trans("Status").' ('.$langs->trans("Sell").')'.'</td><td colspan="3">';
+		print '<tr><td>'.$langs->trans("Status").' ('.$langs->trans("Sell").')</td><td colspan="3">';
 		print $product->getLibStatut(2,0);
 		print '</td></tr>';
 
 		// Status (to buy)
-		print '<tr><td>'.$langs->trans("Status").' ('.$langs->trans("Buy").')'.'</td><td colspan="3">';
+		print '<tr><td>'.$langs->trans("Status").' ('.$langs->trans("Buy").')</td><td colspan="3">';
 		print $product->getLibStatut(2,1);
 		print '</td></tr>';
 
@@ -127,7 +127,7 @@ if ($_GET["id"] || $_GET["ref"])
 		$sql.= ", ".MAIN_DB_PREFIX."contratdet as cd";
 		$sql.= " WHERE c.rowid = cd.fk_contrat";
 		$sql.= " AND c.fk_soc = s.rowid";
-		$sql.= " AND s.entity = ".$conf->entity;
+		$sql.= " AND c.entity = ".$conf->entity;
 		$sql.= " AND cd.fk_product =".$product->id;
 		if (!$user->rights->societe->client->voir && !$socid) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
 		if ($socid) $sql.= " AND s.rowid = ".$socid;

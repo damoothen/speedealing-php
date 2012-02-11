@@ -148,9 +148,9 @@ else
     	if ($type == 1) $sql.= " AND p.fk_product_type = '1'";
     	else $sql.= " AND p.fk_product_type <> '1'";
     }
-    if ($sref)     $sql.= " AND p.ref like '%".$sref."%'";
-    if ($sbarcode) $sql.= " AND p.barcode like '%".$sbarcode."%'";
-    if ($snom)     $sql.= " AND p.label like '%".$db->escape($snom)."%'";
+    if ($sref)     $sql.= " AND p.ref LIKE '%".$sref."%'";
+    if ($sbarcode) $sql.= " AND p.barcode LIKE '%".$sbarcode."%'";
+    if ($snom)     $sql.= " AND p.label LIKE '%".$db->escape($snom)."%'";
     if (isset($tosell) && dol_strlen($tosell) > 0) $sql.= " AND p.tosell = ".$db->escape($tosell);
     if (isset($tobuy) && dol_strlen($tobuy) > 0)   $sql.= " AND p.tobuy = ".$db->escape($tobuy);
     if (dol_strlen($canvas) > 0)                   $sql.= " AND p.canvas = '".$db->escape($canvas)."'";
@@ -162,7 +162,7 @@ else
     $sql.= " p.duration, p.tosell, p.tobuy, p.seuil_stock_alerte";
     //if (GETPOST("toolowstock")) $sql.= " HAVING SUM(s.reel) < p.seuil_stock_alerte";    // Not used yet
     $sql.= $db->order($sortfield,$sortorder);
-    $sql.= $db->plimit($limit + 1 ,$offset);
+    $sql.= $db->plimit($limit + 1, $offset);
 
     dol_syslog("sql=".$sql);
     $resql = $db->query($sql);
@@ -202,7 +202,7 @@ else
     	if (isset($catid))
     	{
     		print "<div id='ways'>";
-    		$c = new Categorie ($db, $catid);
+    		$c = new Categorie($db, $catid);
     		$ways = $c->print_all_ways(' &gt; ','product/liste.php');
     		print " &gt; ".$ways[0]."<br>\n";
     		print "</div><br>";

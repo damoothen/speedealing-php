@@ -303,6 +303,24 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 
 					$nexY+=2;    // Passe espace entre les lignes
 
+					// Cherche nombre de lignes a venir pour savoir si place suffisante
+					if ($i < ($nblignes - 1) && empty($hidedesc))	// If it's not last line
+					{
+						//on recupere la description du produit suivant
+						$follow_descproduitservice = $object->lines[$i+1]->desc;
+						//on compte le nombre de ligne afin de verifier la place disponible (largeur de ligne 52 caracteres)
+						$nblineFollowDesc = dol_nboflines_bis($follow_descproduitservice,52,$outputlangs->charset_output)*4;
+						// Et si on affiche dates de validite, on ajoute encore une ligne
+						if ($object->lines[$i]->date_start && $object->lines[$i]->date_end)
+						{
+							$nblineFollowDesc += 4;
+						}
+					}
+					else	// If it's last line
+					{
+						$nblineFollowDesc = 0;
+					}
+
 					// Test if a new page is required
 					if ($pagenb == 1)
 					{
@@ -357,7 +375,7 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 
 				$amount_credit_notes_included=0;
 				$amount_deposits_included=0;
-				
+
 				if ($deja_regle || $amount_credit_notes_included || $amount_deposits_included)
 				{
 					$posy=$this->_tableau_versements($pdf, $object, $posy, $outputlangs);
@@ -370,6 +388,15 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 				$pdf->Close();
 
 				$pdf->Output($file,'F');
+
+				// Actions on extra fields (by external module or standard code)
+				include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
+				$hookmanager=new HookManager($this->db);
+				$hookmanager->callHooks(array('pdfgeneration'));
+				$parameters=array('file'=>$file,'object'=>$object,'outputlangs'=>$outputlangs);
+				global $action;
+				$reshook=$hookmanager->executeHooks('afterPDFCreation',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
+
 				if (! empty($conf->global->MAIN_UMASK))
 				@chmod($file, octdec($conf->global->MAIN_UMASK));
 
@@ -391,11 +418,14 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 	}
 
 	/**
-	 *   \brief      Show total to pay
-	 *   \param      pdf         	Object PDF
-	 *   \param      object        	Object invoice
-	 *   \param      deja_regle  	Amount payed
-	 *   \return     y              Next position
+	 *	Show total to pay
+	 *
+	 *	@param	PDF			&$pdf           Object PDF
+	 *	@param  Facture		$object         Object invoice
+	 *	@param  int			$deja_regle     Montant deja regle
+	 *	@param	int			$posy			Position depart
+	 *	@param	Translate	$outputlangs	Objet langs
+	 *	@return int							Position pour suite
 	 */
 	function _tableau_tot(&$pdf, $object, $deja_regle, $posy, $outputlangs)
 	{
@@ -579,8 +609,14 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 	}
 
 	/**
-	 *   Show the lines of invoice
-	 *   @param      pdf     object PDF
+	 *   Show table for lines
+	 *
+	 *   @param		PDF			&$pdf     		Object PDF
+	 *   @param		string		$tab_top		Top position of table
+	 *   @param		string		$tab_height		Height of table (rectangle)
+	 *   @param		int			$nexY			Y
+	 *   @param		Translate	$outputlangs	Langs object
+	 *   @return	void
 	 */
 	function _tableau(&$pdf, $tab_top, $tab_height, $nexY, $outputlangs)
 	{
@@ -718,14 +754,15 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 	}
 
 	/**
-	 *   	Show header of page
+	 *  Show top header of page.
 	 *
-	 *   	@param      $pdf     		Object PDF
-	 *   	@param      $object     	Object order
-	 *      @param      $showaddress    0=no, 1=yes
-	 *      @param      $outputlangs	Object lang for output
+	 *  @param	PDF			&$pdf     		Object PDF
+	 *  @param  Object		$object     	Object to show
+	 *  @param  int	    	$showaddress    0=no, 1=yes
+	 *  @param  Translate	$outputlangs	Object lang for output
+	 *  @return	void
 	 */
-	function _pagehead(&$pdf, $object, $showaddress=1, $outputlangs)
+	function _pagehead(&$pdf, $object, $showaddress, $outputlangs)
 	{
 		global $langs,$conf,$mysoc;
 
@@ -871,11 +908,12 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 	}
 
 	/**
-	 *   	\brief      Show footer of page
-	 *   	\param      pdf     		PDF factory
-	 * 		\param		object			Object invoice
-	 *      \param      outputlang		Object lang for output
-	 * 		\remarks	Need this->emetteur object
+	 *   	Show footer of page. Need this->emetteur object
+     *
+	 *   	@param	PDF			&$pdf     			PDF
+	 * 		@param	Object		$object				Object to show
+	 *      @param	Translate	$outputlangs		Object lang for output
+	 *      @return	void
 	 */
 	function _pagefoot(&$pdf, $object, $outputlangs)
 	{

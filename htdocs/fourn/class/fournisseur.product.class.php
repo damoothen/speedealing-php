@@ -152,16 +152,17 @@ class ProductFournisseur extends Product
 
         $error=0;
         $this->db->begin();
-
-        // Supprime prix courant du fournisseur pour cette quantite
-        $sql = "DELETE FROM  ".MAIN_DB_PREFIX."product_fournisseur_price";
+        
         if ($this->product_fourn_price_id)
         {
-            $sql.= " WHERE rowid = ".$this->product_fourn_price_id;
+        	// Supprime prix courant du fournisseur pour cette quantite
+        	$sql = "DELETE FROM  ".MAIN_DB_PREFIX."product_fournisseur_price";
+        	$sql.= " WHERE rowid = ".$this->product_fourn_price_id;
+        	$resql=$this->db->query($sql);
+        	if ($resql < 0) $error++;
         }
 
-        $resql=$this->db->query($sql);
-        if ($resql)
+        if (! $error)
         {
             if ($price_base_type == 'TTC')
             {
@@ -331,7 +332,7 @@ class ProductFournisseur extends Product
         $sql.= " FROM ".MAIN_DB_PREFIX."societe as s";
         $sql.= " INNER JOIN ".MAIN_DB_PREFIX."product_fournisseur_price as pfp";
         $sql.= " ON pfp.fk_soc = s.rowid";
-        $sql.= " WHERE s.entity = ".$conf->entity;
+        $sql.= " WHERE s.entity IN (".getEntity('societe', 1).")";
         $sql.= " AND pfp.fk_product = ".$prodid;
         $sql.= " ORDER BY s.nom, pfp.quantity, pfp.price";
 
@@ -408,7 +409,7 @@ class ProductFournisseur extends Product
         $sql.= " pfp.rowid as product_fourn_price_id, pfp.ref_fourn,";
         $sql.= " pfp.price, pfp.quantity, pfp.unitprice";
         $sql.= " FROM ".MAIN_DB_PREFIX."societe as s, ".MAIN_DB_PREFIX."product_fournisseur_price as pfp";
-        $sql.= " WHERE s.entity = ".$conf->entity;
+        $sql.= " WHERE s.entity IN (".getEntity('societe', 1).")";
         $sql.= " AND pfp.fk_product = ".$prodid;
         $sql.= " AND pfp.fk_soc = s.rowid";
         $sql.= " ORDER BY pfp.unitprice";

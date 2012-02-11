@@ -206,7 +206,7 @@ if (empty($reshook))
 					if($object->id_prof_exists($i,$_POST["$slabel"],$object->id))
 					{
 						$langs->load("errors");
-                		$error++; $errors[] = $langs->transcountry('ProfId'.$i ,$object->country_code)." ".$langs->trans("ErrorProdIdAlreadyExist",$_POST["$slabel"]);
+                		$error++; $errors[] = $langs->transcountry('ProfId'.$i, $object->country_code)." ".$langs->trans("ErrorProdIdAlreadyExist", $_POST[$slabel]);
                 		$action = ($action=='add'?'create':'edit');
 					}
 				}
@@ -518,7 +518,7 @@ else
         if (GETPOST("private")==1) { $object->particulier=1; }
 
         $object->name				= $_POST["nom"];
-        $object->prenom				= $_POST["prenom"];
+        $object->firstname			= $_POST["prenom"];
         $object->particulier		= GETPOST('private', 'int');
         $object->prefix_comm		= $_POST["prefix_comm"];
         $object->client				= $_POST["client"]?$_POST["client"]:$object->client;
@@ -541,6 +541,7 @@ else
         $object->idprof4			= $_POST["idprof4"];
         $object->typent_id			= $_POST["typent_id"];
         $object->effectif_id		= $_POST["effectif_id"];
+        $object->civility_id		= $_POST["civilite_id"];
 
         $object->tva_assuj			= $_POST["assujtva_value"];
         $object->status				= $_POST["status"];
@@ -590,12 +591,9 @@ else
 
         // We set country_id, country_code and country for the selected country
         $object->country_id=$_POST["country_id"]?$_POST["country_id"]:$mysoc->country_id;
-        $object->pays_id=$_POST["country_id"]?$_POST["country_id"]:$mysoc->country_id;
         if ($object->country_id)
         {
             $tmparray=getCountry($object->country_id,'all');
-            $object->pays_code=$tmparray['code'];
-            $object->pays=$tmparray['label'];
             $object->country_code=$tmparray['code'];
             $object->country=$tmparray['label'];
         }
@@ -667,7 +665,7 @@ else
         // Name, firstname
         if ($object->particulier || GETPOST("private"))
         {
-            print '<tr><td><span id="TypeName" class="fieldrequired">'.$langs->trans('LastName').'</span></td><td'.(empty($conf->global->SOCIETE_USEPREFIX)?' colspan="3"':'').'><input type="text" size="30" maxlength="60" name="nom" value="'.$object->nom.'"></td>';
+            print '<tr><td><span id="TypeName" class="fieldrequired">'.$langs->trans('LastName').'</span></td><td'.(empty($conf->global->SOCIETE_USEPREFIX)?' colspan="3"':'').'><input type="text" size="30" maxlength="60" name="nom" value="'.$object->name.'"></td>';
             if (! empty($conf->global->SOCIETE_USEPREFIX))  // Old not used prefix field
             {
                 print '<td>'.$langs->trans('Prefix').'</td><td><input type="text" size="5" maxlength="5" name="prefix_comm" value="'.$object->prefix_comm.'"></td>';
@@ -676,7 +674,7 @@ else
         }
         else
         {
-            print '<tr><td><span span id="TypeName" class="fieldrequired">'.$langs->trans('ThirdPartyName').'</span></td><td'.(empty($conf->global->SOCIETE_USEPREFIX)?' colspan="3"':'').'><input type="text" size="30" maxlength="60" name="nom" value="'.$object->nom.'"></td>';
+            print '<tr><td><span span id="TypeName" class="fieldrequired">'.$langs->trans('ThirdPartyName').'</span></td><td'.(empty($conf->global->SOCIETE_USEPREFIX)?' colspan="3"':'').'><input type="text" size="30" maxlength="60" name="nom" value="'.$object->name.'"></td>';
             if (! empty($conf->global->SOCIETE_USEPREFIX))  // Old not used prefix field
             {
                 print '<td>'.$langs->trans('Prefix').'</td><td><input type="text" size="5" maxlength="5" name="prefix_comm" value="'.$object->prefix_comm.'"></td>';
@@ -689,7 +687,7 @@ else
             print '<tr class="individualline"><td>'.$langs->trans('FirstName').'</td><td><input type="text" size="30" name="prenom" value="'.$object->firstname.'"></td>';
             print '<td colspan=2>&nbsp;</td></tr>';
             print '<tr class="individualline"><td>'.$langs->trans("UserTitle").'</td><td>';
-            print $formcompany->select_civility($contact->civilite_id).'</td>';
+            print $formcompany->select_civility($object->civility_id).'</td>';
             print '<td colspan=2>&nbsp;</td></tr>';
         }
 
@@ -943,13 +941,13 @@ else
 
         // Other attributes
         $parameters=array('colspan' => ' colspan="3"');
-        $reshook=$hookmanager->executeHooks('showInputFields',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
-        if (empty($reshook))
+        $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+        if (empty($reshook) && ! empty($extrafields->attribute_label))
         {
             foreach($extrafields->attribute_label as $key=>$label)
             {
-                $value=(isset($_POST["options_".$key])?$_POST["options_".$key]:'');
-                print "<tr><td>".$label.'</td><td colspan="3">';
+                $value=(isset($_POST["options_".$key])?$_POST["options_".$key]:$object->array_options["options_".$key]);
+                print '<tr><td>'.$label.'</td><td colspan="3">';
                 print $extrafields->showInputField($key,$value);
                 print '</td></tr>'."\n";
             }
@@ -1212,9 +1210,9 @@ else
 
             // Zip / Town
             print '<tr><td>'.$langs->trans('Zip').'</td><td>';
-            print $formcompany->select_ziptown($object->cp,'zipcode',array('town','selectcountry_id','departement_id'),6);
+            print $formcompany->select_ziptown($object->zip,'zipcode',array('town','selectcountry_id','departement_id'),6);
             print '</td><td>'.$langs->trans('Town').'</td><td>';
-            print $formcompany->select_ziptown($object->ville,'town',array('zipcode','selectcountry_id','departement_id'));
+            print $formcompany->select_ziptown($object->town,'town',array('zipcode','selectcountry_id','departement_id'));
             print '</td></tr>';
 
             // Country
@@ -1371,13 +1369,13 @@ else
 
             // Other attributes
             $parameters=array('colspan' => ' colspan="3"');
-            $reshook=$hookmanager->executeHooks('showInputFields',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
-            if (empty($reshook))
+            $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+            if (empty($reshook) && ! empty($extrafields->attribute_label))
             {
                 foreach($extrafields->attribute_label as $key=>$label)
                 {
-                    $value=(isset($_POST["options_$key"])?$_POST["options_$key"]:$object->array_options["options_$key"]);
-                    print "<tr><td>".$label."</td><td colspan=\"3\">";
+                    $value=(isset($_POST["options_".$key])?$_POST["options_".$key]:$object->array_options["options_".$key]);
+                    print '<tr><td>'.$label.'</td><td colspan="3">';
                     print $extrafields->showInputField($key,$value);
                     print "</td></tr>\n";
                 }
@@ -1533,15 +1531,15 @@ else
 
         // Zip / Town
         print '<tr><td width="25%">'.$langs->trans('Zip').' / '.$langs->trans("Town").'</td><td colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'">';
-        print $object->cp.($object->cp && $object->ville?" / ":"").$object->ville;
+        print $object->zip.($object->zip && $object->town?" / ":"").$object->town;
         print "</td>";
         print '</tr>';
 
         // Country
         print '<tr><td>'.$langs->trans("Country").'</td><td colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'" nowrap="nowrap">';
         $img=picto_from_langcode($object->country_code);
-        if ($object->isInEEC()) print $form->textwithpicto(($img?$img.' ':'').$object->pays,$langs->trans("CountryIsInEEC"),1,0);
-        else print ($img?$img.' ':'').$object->pays;
+        if ($object->isInEEC()) print $form->textwithpicto(($img?$img.' ':'').$object->country,$langs->trans("CountryIsInEEC"),1,0);
+        else print ($img?$img.' ':'').$object->country;
         print '</td></tr>';
 
         // State
@@ -1720,13 +1718,13 @@ else
 
         // Other attributes
         $parameters=array('socid'=>$socid, 'colspan' => ' colspan="3"');
-        $reshook=$hookmanager->executeHooks('showOutputFields',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
-        if (empty($reshook))
+        $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+        if (empty($reshook) && ! empty($extrafields->attribute_label))
         {
             foreach($extrafields->attribute_label as $key=>$label)
             {
-                $value=$object->array_options["options_$key"];
-                print "<tr><td>".$label.'</td><td colspan="3">';
+                $value=(isset($_POST["options_".$key])?$_POST["options_".$key]:$object->array_options["options_".$key]);
+                print '<tr><td>'.$label.'</td><td colspan="3">';
                 print $extrafields->showOutputField($key,$value);
                 print "</td></tr>\n";
             }
@@ -1769,7 +1767,7 @@ else
                 $socm = new Societe($db);
                 $socm->fetch($object->parent);
                 print $socm->getNomUrl(1).' '.($socm->code_client?"(".$socm->code_client.")":"");
-                print $socm->ville?' - '.$socm->ville:'';
+                print $socm->town?' - '.$socm->town:'';
             }
             else {
                 print $langs->trans("NoParentCompany");
@@ -1805,8 +1803,8 @@ else
             foreach($listsalesrepresentatives as $val)
             {
                 $userstatic->id=$val['id'];
-                $userstatic->nom=$val['name'];
-                $userstatic->prenom=$val['firstname'];
+                $userstatic->lastname=$val['name'];
+                $userstatic->firstname=$val['firstname'];
                 print $userstatic->getNomUrl(1);
                 $i++;
                 if ($i < $nbofsalesrepresentative) print ', ';

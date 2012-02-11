@@ -7,7 +7,8 @@
  * Copyright (C) 2006      Andre Cianfarani      <acianfa@free.fr>
  * Copyright (C) 2010-2011 Juanjo Menent         <jmenent@2byte.es>
  * Copyright (C) 2010-2011 Philippe Grand        <philippe.grand@atoo-net.com>
- *
+ * Copyright (C) 2012      Christophe Battarel   <christophe.battarel@altairis.fr>
+*
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -72,7 +73,7 @@ if (isset($socid))
 {
 	$objectid=$socid;
 	$module='societe';
-	$dbtable='';
+	$dbtable='&societe';
 }
 else if (isset($id) &&  $id > 0)
 {
@@ -744,9 +745,9 @@ else if ($action == "addline" && $user->rights->propale->creer)
 					$pu_ttc = price2num($pu_ht * (1 + ($tva_tx/100)), 'MU');
 				}
 			}
-			
+
 			// Define output language
-			if (! empty($conf->global->MAIN_MULTILANGS) && ! empty($conf->global->PRODUIT_DESC_IN_THIRDPARTY_LANGUAGE))
+			if (! empty($conf->global->MAIN_MULTILANGS) && ! empty($conf->global->PRODUIT_TEXTS_IN_THIRDPARTY_LANGUAGE))
 			{
 				$outputlangs = $langs;
 				$newlang='';
@@ -757,7 +758,7 @@ else if ($action == "addline" && $user->rights->propale->creer)
 					$outputlangs = new Translate("",$conf);
 					$outputlangs->setDefaultLang($newlang);
 				}
-				
+
 				$desc = (! empty($prod->multilangs[$outputlangs->defaultlang]["description"])) ? $prod->multilangs[$outputlangs->defaultlang]["description"] : $prod->description;
 			}
 			else
@@ -1143,7 +1144,7 @@ if ($id > 0 || ! empty($ref))
 	if (! $formconfirm)
 	{
 	    $parameters=array('lineid'=>$lineid);
-	    $formconfirm=$hookmanager->executeHooks('formconfirm',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+	    $formconfirm=$hookmanager->executeHooks('formConfirm',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
 	}
 
 	// Print form confirm
@@ -1467,9 +1468,19 @@ if ($id > 0 || ! empty($ref))
 		print '</tr>';
 	}
 
-	// Insert hooks
-	$parameters=array('colspan'=>' colspan="3"');
-	$reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+    // Other attributes
+    $parameters=array('colspan' => ' colspan="3"');
+    $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+    if (empty($reshook) && ! empty($extrafields->attribute_label))
+    {
+        foreach($extrafields->attribute_label as $key=>$label)
+        {
+            $value=(isset($_POST["options_".$key])?$_POST["options_".$key]:$object->array_options["options_".$key]);
+            print "<tr><td>".$label.'</td><td colspan="3">';
+            print $extrafields->showInputField($key,$value);
+            print '</td></tr>'."\n";
+        }
+    }
 
 	// Amount HT
 	print '<tr><td height="10">'.$langs->trans('AmountHT').'</td>';
@@ -1807,7 +1818,7 @@ else
 	if ($sall) $sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'propaldet as pd ON p.rowid=pd.fk_propal';
 	$sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'user as u ON p.fk_user_author = u.rowid';
 	$sql.= ' WHERE p.fk_soc = s.rowid';
-	$sql.= ' AND s.entity = '.$conf->entity;
+	$sql.= ' AND p.entity = '.$conf->entity;
 
 	if (!$user->rights->societe->client->voir && !$socid) //restriction
 	{

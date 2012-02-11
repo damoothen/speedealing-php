@@ -62,8 +62,8 @@ $sql = "SELECT e.label, e.rowid, e.statut";
 $sql.= " FROM ".MAIN_DB_PREFIX."entrepot as e";
 $sql.= " WHERE e.statut in (0,1)";
 $sql.= " AND e.entity = ".$conf->entity;
-$sql.= " ORDER BY e.statut DESC ";
-$sql.= $db->plimit(15 ,0);
+$sql.= $db->order('e.statut','DESC');
+$sql.= $db->plimit(15, 0);
 
 $result = $db->query($sql);
 
@@ -106,14 +106,14 @@ print '</td><td valign="top" width="70%" class="notopnoleftnoright">';
 // Last movements
 $max=10;
 $sql = "SELECT p.rowid, p.label as produit,";
-$sql.= " s.label as stock, s.rowid as entrepot_id,";
+$sql.= " e.label as stock, e.rowid as entrepot_id,";
 $sql.= " m.value, m.datem";
-$sql.= " FROM ".MAIN_DB_PREFIX."entrepot as s";
+$sql.= " FROM ".MAIN_DB_PREFIX."entrepot as e";
 $sql.= ", ".MAIN_DB_PREFIX."stock_mouvement as m";
 $sql.= ", ".MAIN_DB_PREFIX."product as p";
 $sql.= " WHERE m.fk_product = p.rowid";
-$sql.= " AND m.fk_entrepot = s.rowid";
-$sql.= " AND s.entity = ".$conf->entity;
+$sql.= " AND m.fk_entrepot = e.rowid";
+$sql.= " AND e.entity = ".$conf->entity;
 if (empty($conf->global->STOCK_SUPPORTS_SERVICES)) $sql.= " AND p.fk_product_type = 0";
 $sql.= $db->order("datem","DESC");
 $sql.= $db->plimit($max,0);
@@ -159,7 +159,8 @@ if ($resql)
 
 print '</td></tr></table>';
 
+llxFooter();
+
 $db->close();
 
-llxFooter();
 ?>

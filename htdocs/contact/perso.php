@@ -45,11 +45,11 @@ $object = new Contact($db);
 if ($action == 'update' && ! $_POST["cancel"] && $user->rights->societe->contact->creer)
 {
 	$ret = $object->fetch($id);
-	
+
 	// Note: Correct date should be completed with location to have exact GM time of birth.
 	$object->birthday = dol_mktime(0,0,0,$_POST["birthdaymonth"],$_POST["birthdayday"],$_POST["birthdayyear"]);
 	$object->birthday_alert = $_POST["birthday_alert"];
-	
+
 	$result = $object->update_perso($id, $user);
 	if ($result > 0)
 	{
@@ -84,12 +84,13 @@ if ($action == 'edit')
 	/*
 	 * Fiche en mode edition
 	 */
-    print '<table class="border" width="100%">';
 
     print '<form name="perso" method="POST" action="'.$_SERVER['PHP_SELF'].'?id='.$object->id.'">';
     print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
     print '<input type="hidden" name="action" value="update">';
     print '<input type="hidden" name="id" value="'.$object->id.'">';
+
+    print '<table class="border" width="100%">';
 
     // Ref
     print '<tr><td width="20%">'.$langs->trans("Ref").'</td><td colspan="3">';
@@ -191,17 +192,17 @@ else
     print '</td></tr>';
 
     // Date To Birth
+    print '<tr>';
     if ($object->birthday != '')
     {
         include_once(DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php');
 
-        print '<tr><td>'.$langs->trans("DateToBirth").'</td><td colspan="3">'.dol_print_date($object->birthday,"day");
+        print '<td>'.$langs->trans("DateToBirth").'</td><td colspan="3">'.dol_print_date($object->birthday,"day");
 
         print ' &nbsp; ';
         //var_dump($birthdatearray);
-        //print ($now-$birthdate).' - '.ConvertSecondToTime($now-$birthdate,'year').'<br>';
-        $ageyear=ConvertSecondToTime($now-$object->birthday,'year')-1970;
-        $agemonth=ConvertSecondToTime($now-$object->birthday,'month')-1;
+        $ageyear=convertSecondToTime($now-$object->birthday,'year')-1970;
+        $agemonth=convertSecondToTime($now-$object->birthday,'month')-1;
         if ($ageyear >= 2) print '('.$ageyear.' '.$langs->trans("DurationYears").')';
         else if ($agemonth >= 2) print '('.$agemonth.' '.$langs->trans("DurationMonths").')';
         else print '('.$agemonth.' '.$langs->trans("DurationMonth").')';
@@ -214,15 +215,19 @@ else
     }
     else
     {
-        print '<tr><td>'.$langs->trans("DateToBirth").'</td><td colspan="3">'.$langs->trans("Unknown")."</td>";
+        print '<td>'.$langs->trans("DateToBirth").'</td><td colspan="3">'.$langs->trans("Unknown")."</td>";
     }
     print "</tr>";
 
     print "</table>";
 
-    print "</div>";
+}
+
+dol_fiche_end();
 
 
+if ($action != 'edit')
+{
     // Barre d'actions
     if ($user->societe_id == 0)
     {
@@ -235,11 +240,10 @@ else
 
         print "</div>";
     }
-
 }
+
 
 llxFooter();
 
 $db->close();
-
 ?>

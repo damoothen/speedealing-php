@@ -1,18 +1,19 @@
 <?php
-/* Copyright (C) 2006-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
+/* Copyright (C) 2006-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2010-2011 Juanjo Menent        <jmenent@2byte.es>
+ * Copyright (C) 2012      Christophe Battarel   <christophe.battarel@altairis.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -25,10 +26,8 @@
 
 
 /**
- *	\class 		CommonObject
- *	\brief 		Parent class of all other business classes (invoices, contracts, proposals, orders, ...)
+ *	Parent class of all other business classes (invoices, contracts, proposals, orders, ...)
  */
-
 abstract class CommonObject
 {
     protected $db;
@@ -39,6 +38,49 @@ abstract class CommonObject
 
     // No constructor as it is an abstract class
 
+
+    /**
+     *	Return full name (civility+' '+name+' '+lastname)
+     *
+     *	@param	Translate	$langs			Language object for translation of civility
+     *	@param	int			$option			0=No option, 1=Add civility
+     * 	@param	int			$nameorder		-1=Auto, 0=Lastname+Firstname, 1=Firstname+Lastname
+     * 	@param	int			$maxlen			Maximum length
+     * 	@return	string						String with full name
+     */
+    function getFullName($langs,$option=0,$nameorder=-1,$maxlen=0)
+    {
+        global $conf;
+
+        $lastname=$this->lastname;
+        $firstname=$this->firstname;
+        if (empty($lastname))  $lastname=($this->name?$this->name:$this->nom);
+        if (empty($firstname)) $firstname=$this->prenom;
+
+        $ret='';
+        if ($option && $this->civilite_id)
+        {
+            if ($langs->transnoentitiesnoconv("Civility".$this->civilite_id)!="Civility".$this->civilite_id) $ret.=$langs->transnoentitiesnoconv("Civility".$this->civilite_id).' ';
+            else $ret.=$this->civilite_id.' ';
+        }
+
+        // If order not defined, we use the setup
+        if ($nameorder < 0) $nameorder=(! $conf->global->MAIN_FIRSTNAME_NAME_POSITION);
+
+        if ($nameorder)
+        {
+            $ret.=$firstname;
+            if ($firstname && $lastname) $ret.=' ';
+            $ret.=$lastname;
+        }
+        else
+        {
+            $ret.=$lastname;
+            if ($firstname && $lastname) $ret.=' ';
+            $ret.=$firstname;
+        }
+        return dol_trunc($ret,$maxlen);
+    }
 
     /**
      *  Check if ref is used.
@@ -71,11 +113,11 @@ abstract class CommonObject
     /**
      *  Add a link between element $this->element and a contact
      *
-     *  @param      fk_socpeople        Id of contact to link
-     *  @param 		type_contact 		Type of contact (code or id)
-     *  @param      source              external=Contact extern (llx_socpeople), internal=Contact intern (llx_user)
-     *  @param      notrigger			Disable all triggers
-     *  @return     int                 <0 if KO, >0 if OK
+     *  @param	int		$fk_socpeople       Id of contact to link
+     *  @param 	int		$type_contact 		Type of contact (code or id)
+     *  @param  int		$source             external=Contact extern (llx_socpeople), internal=Contact intern (llx_user)
+     *  @param  int		$notrigger			Disable all triggers
+     *  @return int                 		<0 if KO, >0 if OK
      */
     function add_contact($fk_socpeople, $type_contact, $source='external',$notrigger=0)
     {
@@ -167,10 +209,10 @@ abstract class CommonObject
     /**
      *      Update a link to contact line
      *
-     *      @param      rowid               Id of line contact-element
-     * 		@param		statut	            New status of link
-     *      @param      type_contact_id     Id of contact type (not modified if 0)
-     *      @return     int                 <0 if KO, >= 0 if OK
+     *      @param	int		$rowid              Id of line contact-element
+     * 		@param	int		$statut	            New status of link
+     *      @param  int		$type_contact_id    Id of contact type (not modified if 0)
+     *      @return int                 		<0 if KO, >= 0 if OK
      */
     function update_contact($rowid, $statut, $type_contact_id=0)
     {
@@ -194,9 +236,9 @@ abstract class CommonObject
     /**
      *    Delete a link to contact line
      *
-     *    @param      	rowid			Id of contact link line to delete
-     *    @param		notrigger		Disable all triggers
-     *    @return     	int				>0 if OK, <0 if KO
+     *    @param	int		$rowid			Id of contact link line to delete
+     *    @param	int		$notrigger		Disable all triggers
+     *    @return   int						>0 if OK, <0 if KO
      */
     function delete_contact($rowid, $notrigger=0)
     {
@@ -252,7 +294,7 @@ abstract class CommonObject
         $sql.= " WHERE element_id =".$this->id;
         $sql.= " AND fk_c_type_contact IN (".$listId.")";
 
-        dol_syslog(get_class($this)."::delete_linked_contact sql=".$sql);
+        dol_syslog(get_class($this)."::delete_linked_contact sql=".$sql, LOG_DEBUG);
         if ($this->db->query($sql))
         {
             return 1;
@@ -268,10 +310,10 @@ abstract class CommonObject
     /**
      *    Get array of all contacts for an object
      *
-     *    @param		int			$statut		Status of lines to get (-1=all)
-     *    @param		string		$source		Source of contact: external or thirdparty (llx_socpeople) or internal (llx_user)
-     *    @param		int         $list       0:Return array contains all properties, 1:Return array contains just id
-     *    @return		array		            Array of contacts
+     *    @param	int			$statut		Status of lines to get (-1=all)
+     *    @param	string		$source		Source of contact: external or thirdparty (llx_socpeople) or internal (llx_user)
+     *    @param	int         $list       0:Return array contains all properties, 1:Return array contains just id
+     *    @return	array		            Array of contacts
      */
     function liste_contact($statut=-1,$source='external',$list=0)
     {
@@ -338,8 +380,8 @@ abstract class CommonObject
     /**
      * 		Update status of a contact linked to object
      *
-     * 		@param		$rowid		Id of link between object and contact
-     * 		@return		int			<0 if KO, >=0 if OK
+     * 		@param	int		$rowid		Id of link between object and contact
+     * 		@return	int					<0 if KO, >=0 if OK
      */
     function swapContactStatus($rowid)
     {
@@ -374,10 +416,10 @@ abstract class CommonObject
     /**
      *      Return array with list of possible values for type of contacts
      *
-     *      @param      source      internal, external or all if not defined
-     *      @param		order		Sort order by : code or rowid
-     *      @param      option      0=Return array id->label, 1=Return array code->label
-     *      @return     array       Array list of type of contacts (id->label if option=0, code->label if option=1)
+     *      @param	string	$source     'internal', 'external' or 'all'
+     *      @param	string	$order		Sort order by : 'code' or 'rowid'
+     *      @param  string	$option     0=Return array id->label, 1=Return array code->label
+     *      @return array       		Array list of type of contacts (id->label if option=0, code->label if option=1)
      */
     function liste_type_contact($source='internal', $order='code', $option=0)
     {
@@ -422,10 +464,10 @@ abstract class CommonObject
      *      Example: contact client de livraison ('external', 'SHIPPING')
      *      Example: contact interne suivi paiement ('internal', 'SALESREPFOLL')
      *
-     *		@param		source		'external' or 'internal'
-     *		@param		code		'BILLING', 'SHIPPING', 'SALESREPFOLL', ...
-     *		@param		status		limited to a certain status
-     *      @return     array       List of id for such contacts
+     *		@param	string	$source		'external' or 'internal'
+     *		@param	string	$code		'BILLING', 'SHIPPING', 'SALESREPFOLL', ...
+     *		@param	int		$status		limited to a certain status
+     *      @return array       		List of id for such contacts
      */
     function getIdContact($source,$code,$status=0)
     {
@@ -441,7 +483,8 @@ abstract class CommonObject
         $sql.= " ".MAIN_DB_PREFIX."c_type_contact as tc";
         $sql.= " WHERE ec.element_id = ".$this->id;
         $sql.= " AND ec.fk_socpeople = c.rowid";
-        $sql.= " AND c.entity IN (0,".$conf->entity.")";
+        if ($source == 'internal') $sql.= " AND c.entity IN (0,".$conf->entity.")";
+        if ($source == 'external') $sql.= " AND c.entity IN (".getEntity('societe', 1).")";
         $sql.= " AND ec.fk_c_type_contact = tc.rowid";
         $sql.= " AND tc.element = '".$this->element."'";
         $sql.= " AND tc.source = '".$source."'";
@@ -472,8 +515,8 @@ abstract class CommonObject
     /**
      *		Charge le contact d'id $id dans this->contact
      *
-     *		@param      contactid          Id du contact
-     *		@return		int			<0 if KO, >0 if OK
+     *		@param	int		$contactid      Id du contact
+     *		@return	int						<0 if KO, >0 if OK
      */
     function fetch_contact($contactid)
     {
@@ -487,7 +530,7 @@ abstract class CommonObject
     /**
      *    	Load the third party of object from id $this->socid into this->thirdpary
      *
-     *		@return		int			<0 if KO, >0 if OK
+     *		@return		int					<0 if KO, >0 if OK
      */
     function fetch_thirdparty()
     {
@@ -576,8 +619,8 @@ abstract class CommonObject
     /**
      *		Charge le user d'id userid dans this->user
      *
-     *		@param      userid 		Id du contact
-     *		@return		int			<0 if KO, >0 if OK
+     *		@param	int		$userid 		Id du contact
+     *		@return	int						<0 if KO, >0 if OK
      */
     function fetch_user($userid)
     {
@@ -588,7 +631,9 @@ abstract class CommonObject
     }
 
     /**
-     *		Read linked origin object
+     *	Read linked origin object
+     *
+     *	@return		void
      */
     function fetch_origin()
     {
@@ -606,10 +651,10 @@ abstract class CommonObject
     /**
      *    	Load object from specific field
      *
-     *    	@param		table		Table element or element line
-     *    	@param		field		Field selected
-     *    	@param		key			Import key
-     *		@return		int			<0 if KO, >0 if OK
+     *    	@param	string	$table		Table element or element line
+     *    	@param	string	$field		Field selected
+     *    	@param	string	$key		Import key
+     *		@return	int					<0 if KO, >0 if OK
      */
     function fetchObjectFrom($table,$field,$key)
     {
@@ -697,11 +742,11 @@ abstract class CommonObject
     /**
      *      Load properties id_previous and id_next
      *
-     *      @param      filter		Optional filter
-     *	 	@param      fieldid   	Name of field to use for the select MAX and MIN
-     *      @return     int         <0 if KO, >0 if OK
+     *      @param	string	$filter		Optional filter
+     *	 	@param  int		$fieldid   	Name of field to use for the select MAX and MIN
+     *      @return int         		<0 if KO, >0 if OK
      */
-    function load_previous_next_ref($filter='',$fieldid)
+    function load_previous_next_ref($filter,$fieldid)
     {
         global $conf, $user;
 
@@ -765,9 +810,9 @@ abstract class CommonObject
     /**
      *      Return list of id of contacts of project
      *
-     *      @param      source      Source of contact: external (llx_socpeople) or internal (llx_user) or thirdparty (llx_societe)
-     *      @return     array		Array of id of contacts (if source=external or internal)
-     * 								Array of id of third parties with at least one contact on project (if source=thirdparty)
+     *      @param	string	$source     Source of contact: external (llx_socpeople) or internal (llx_user) or thirdparty (llx_societe)
+     *      @return array				Array of id of contacts (if source=external or internal)
+     * 									Array of id of third parties with at least one contact on project (if source=thirdparty)
      */
     function getListContactId($source='external')
     {
@@ -821,9 +866,9 @@ abstract class CommonObject
     /**
      *		Set last model used by doc generator
      *
-     *		@param		user		User object that make change
-     *		@param		modelpdf	Modele name
-     *		@return		int			<0 if KO, >0 if OK
+     *		@param		User	$user		User object that make change
+     *		@param		string	$modelpdf	Modele name
+     *		@return		int					<0 if KO, >0 if OK
      */
     function setDocModel($user, $modelpdf)
     {
@@ -861,6 +906,7 @@ abstract class CommonObject
      *
      * 	@param		boolean		$renum			true to renum all already ordered lines, false to renum only not already ordered lines.
      * 	@param		string		$rowidorder		ASC or DESC
+     * 	@return		void
      */
     function line_order($renum=false, $rowidorder='ASC')
     {
@@ -889,30 +935,82 @@ abstract class CommonObject
 		}
 		if ($nl > 0)
 		{
+			$rows=array();
+
 			$sql = 'SELECT rowid FROM '.MAIN_DB_PREFIX.$this->table_element_line;
 			$sql.= ' WHERE '.$this->fk_element.' = '.$this->id;
+			$sql.= ' AND fk_parent_line IS NULL';
 			$sql.= ' ORDER BY rang ASC, rowid '.$rowidorder;
 
 			dol_syslog(get_class($this)."::line_order sql=".$sql, LOG_DEBUG);
 			$resql = $this->db->query($sql);
 			if ($resql)
 			{
+				$i=0;
 				$num = $this->db->num_rows($resql);
-				$i = 0;
 				while ($i < $num)
 				{
 					$row = $this->db->fetch_row($resql);
-					$this->updateRangOfLine($row[0], ($i+1));
+					$rows[] = $row[0];
+					$childrens = $this->getChildrensOfLine($row[0]);
+					if (! empty($childrens))
+					{
+						foreach($childrens as $child)
+						{
+							array_push($rows, $child);
+						}
+					}
 					$i++;
+				}
+
+				if (! empty($rows))
+				{
+					foreach($rows as $key => $row)
+					{
+						$this->updateRangOfLine($row, ($key+1));
+					}
 				}
 			}
 		}
 	}
 
+	/**
+	 * 	Get childrens of line
+	 *
+	 * 	@param	int		$id		Id of parent line
+	 * 	@return	array			Array with list of child lines id
+	 */
+	function getChildrensOfLine($id)
+	{
+		$rows=array();
+
+		$sql = 'SELECT rowid FROM '.MAIN_DB_PREFIX.$this->table_element_line;
+		$sql.= ' WHERE '.$this->fk_element.' = '.$this->id;
+		$sql.= ' AND fk_parent_line = '.$id;
+		$sql.= ' ORDER BY rang ASC';
+
+		dol_syslog(get_class($this)."::getChildrenOfLines sql=".$sql, LOG_DEBUG);
+		$resql = $this->db->query($sql);
+		if ($resql)
+		{
+			$i=0;
+			$num = $this->db->num_rows($resql);
+			while ($i < $num)
+			{
+				$row = $this->db->fetch_row($resql);
+				$rows[$i] = $row[0];
+				$i++;
+			}
+		}
+
+		return $rows;
+	}
+
     /**
      * 	Update a line to have a lower rank
      *
-     * 	@param 		int		$rowid
+     * 	@param 	int		$rowid		Id of line
+     * 	@return	void
      */
     function line_up($rowid)
     {
@@ -928,7 +1026,8 @@ abstract class CommonObject
     /**
      * 	Update a line to have a higher rank
      *
-     * 	@param		int		$rowid
+     * 	@param	int		$rowid		Id of line
+     * 	@return	void
      */
     function line_down($rowid)
     {
@@ -947,8 +1046,9 @@ abstract class CommonObject
 	/**
 	 * 	Update position of line (rang)
 	 *
-	 * 	@param		int		$rowid
-	 * 	@param		int		$rang
+	 * 	@param	int		$rowid		Id of line
+	 * 	@param	int		$rang		Position
+	 * 	@return	void
 	 */
 	function updateRangOfLine($rowid,$rang)
 	{
@@ -965,13 +1065,12 @@ abstract class CommonObject
     /**
      * 	Update position of line with ajax (rang)
      *
-     * 	@param		int		$roworder
+     * 	@param	array	$rows	Array of rows
+     * 	@return	void
      */
-    function line_ajaxorder($roworder)
+    function line_ajaxorder($rows)
     {
-        $rows = explode(',',$roworder);
         $num = count($rows);
-
         for ($i = 0 ; $i < $num ; $i++)
         {
             $this->updateRangOfLine($rows[$i], ($i+1));
@@ -981,8 +1080,9 @@ abstract class CommonObject
     /**
      * 	Update position of line up (rang)
      *
-     * 	@param		int		$rowid
-     * 	@param		int		$rang
+     * 	@param	int		$rowid		Id of line
+     * 	@param	int		$rang		Position
+     * 	@return	void
      */
     function updateLineUp($rowid,$rang)
     {
@@ -1010,9 +1110,10 @@ abstract class CommonObject
     /**
      * 	Update position of line down (rang)
      *
-     * 	@param	int		$rowid
-     * 	@param	int		$rang
-     * 	@param	int		$max
+     * 	@param	int		$rowid		Id of line
+     * 	@param	int		$rang		Position
+     * 	@param	int		$max		Max
+     * 	@return	void
      */
     function updateLineDown($rowid,$rang,$max)
     {
@@ -1414,10 +1515,10 @@ abstract class CommonObject
         if (! empty($sourceid) && ! empty($sourcetype) && empty($targetid) && empty($targettype)) $justsource=true;
         if (empty($sourceid) && empty($sourcetype) && ! empty($targetid) && ! empty($targettype)) $justtarget=true;
 
-        $sourceid = (! empty($sourceid) ? $sourceid : $this->id );
-        $targetid = (! empty($targetid) ? $targetid : $this->id );
-        $sourcetype = (! empty($sourcetype) ? $sourcetype : (! empty($this->origin) ? $this->origin : $this->element ) );
-        $targettype = (! empty($targettype) ? $targettype : $this->element );
+        $sourceid = (! empty($sourceid) ? $sourceid : $this->id);
+        $targetid = (! empty($targetid) ? $targetid : $this->id);
+        $sourcetype = (! empty($sourcetype) ? $sourcetype : (! empty($this->origin) ? $this->origin : $this->element));
+        $targettype = (! empty($targettype) ? $targettype : $this->element);
 
         // Links beetween objects are stored in this table
         $sql = 'SELECT fk_source, sourcetype, fk_target, targettype';
@@ -1529,14 +1630,84 @@ abstract class CommonObject
             dol_print_error($this->db);
         }
     }
-
+    
+    /**
+     *	Update object linked of a current object
+     * 
+     *	@param	int		$sourceid		Object source id
+     *	@param  string	$sourcetype		Object source type
+     *	@param  int		$targetid		Object target id
+     *	@param  string	$targettype		Object target type
+     *	@return							int	>0 if OK, <0 if KO
+     */
+    function updateObjectLinked($sourceid='', $sourcetype='', $targetid='', $targettype='')
+    {
+    	$updatesource=false;
+    	$updatetarget=false;
+    	
+    	if (! empty($sourceid) && ! empty($sourcetype) && empty($targetid) && empty($targettype)) $updatesource=true;
+    	else if (empty($sourceid) && empty($sourcetype) && ! empty($targetid) && ! empty($targettype)) $updatetarget=true;
+    	
+    	$sql = "UPDATE ".MAIN_DB_PREFIX."element_element SET ";
+    	if ($updatesource)
+    	{
+    		$sql.= "fk_source = ".$sourceid;
+    		$sql.= ", sourcetype = '".$sourcetype."'";
+    		$sql.= " WHERE fk_target = ".$this->id;
+    		$sql.= " AND targettype = '".$this->element."'";
+    	}
+    	else if ($updatetarget)
+    	{
+    		$sql.= "fk_target = ".$targetid;
+    		$sql.= ", targettype = '".$targettype."'";
+    		$sql.= " WHERE fk_source = ".$this->id;
+    		$sql.= " AND sourcetype = '".$this->element."'";
+    	}
+    
+    	dol_syslog(get_class($this)."::updateObjectLinked sql=".$sql, LOG_DEBUG);
+    	if ($this->db->query($sql))
+    	{
+    		return 1;
+    	}
+    	else
+    	{
+    		$this->error=$this->db->lasterror();
+    		dol_syslog(get_class($this)."::updateObjectLinked error=".$this->error, LOG_ERR);
+    		return -1;
+    	}
+    }
+    
+	/**
+	 *	Delete all links between an object $this
+	 *
+	 *	@return     int	>0 if OK, <0 if KO
+	 */
+	function deleteObjectLinked()
+	{
+		$sql = "DELETE FROM ".MAIN_DB_PREFIX."element_element";
+		$sql.= " WHERE fk_target = ".$this->id;
+		$sql.= " AND targettype = '".$this->element."'";
+		
+		dol_syslog(get_class($this)."::deleteObjectLinked sql=".$sql, LOG_DEBUG);
+		if ($this->db->query($sql))
+		{
+			return 1;
+		}
+		else
+		{
+			$this->error=$this->db->lasterror();
+			dol_syslog(get_class($this)."::deleteObjectLinked error=".$this->error, LOG_ERR);
+			return -1;
+		}
+	}
+    
     /**
      *      Set statut of an object
      *
-     *      @param		statut			Statut to set
-     *      @param		elementId		Id of element to force (use this->id by default)
-     *      @param		elementType		Type of element to force (use ->this->element by default)
-     *      @return     int				<0 if ko, >0 if ok
+     *      @param	int		$statut			Statut to set
+     *      @param	int		$elementId		Id of element to force (use this->id by default)
+     *      @param	string	$elementType	Type of element to force (use ->this->element by default)
+     *      @return int						<0 if KO, >0 if OK
      */
     function setStatut($statut,$elementId='',$elementType='')
     {
@@ -1606,7 +1777,8 @@ abstract class CommonObject
     /**
      * 	Get special code of line
      *
-     * 	@param		lineid		Id of line
+     * 	@param	int		$lineid		Id of line
+     * 	@return	int					Special code
      */
     function getSpecialCode($lineid)
     {
@@ -1624,8 +1796,9 @@ abstract class CommonObject
     /**
      *  Function to get extra fields of a member into $this->array_options
      *
-     *  @param      rowid
-     *  @param      optionsArray    Array resulting of call of extrafields->fetch_name_optionals_label()
+     *  @param	int		$rowid			Id of line
+     *  @param  array	$optionsArray   Array resulting of call of extrafields->fetch_name_optionals_label()
+     *  @return	void
      */
     function fetch_optionals($rowid,$optionsArray='')
     {
@@ -1676,12 +1849,47 @@ abstract class CommonObject
 
 
     /**
-     *     Add/Update extra fields
+     *	Add/Update all extra fields values for the current object.
+     *  All data to describe values to insert are stored into $this->array_options=array('keyextrafield'=>'valueextrafieldtoadd')
+     *
+     *  @return	void
      */
     function insertExtraFields()
     {
+        global $langs;
+
+		$error=0;
+		
         if (count($this->array_options) > 0)
         {
+            // Check parameters
+            $langs->load('admin');
+            require_once(DOL_DOCUMENT_ROOT."/core/class/extrafields.class.php");
+            $extrafields = new ExtraFields($this->db);
+            $optionsArray = $extrafields->fetch_name_optionals_label($this->elementType);
+
+            foreach($this->array_options as $key => $value)
+            {
+               	$attributeKey = substr($key,8);   // Remove 'options_' prefix
+               	$attributeType  = $extrafields->attribute_type[$attributeKey];
+               	$attributeSize  = $extrafields->attribute_size[$attributeKey];
+               	$attributeLabel = $extrafields->attribute_label[$attributeKey];
+               	switch ($attributeType)
+               	{
+               		case 'int':
+              			if (!is_numeric($value) && $value!='')
+               			{
+               				$error++; $this->errors[]=$langs->trans("ExtraFieldHasWrongValue",$attributeLabel);
+               				return -1;
+              			}
+               			elseif ($value=='')
+               			{
+               				$this->array_options[$key] = null;
+               			}
+             			break;
+                  	}
+            }
+
             $this->db->begin();
 
             $sql_del = "DELETE FROM ".MAIN_DB_PREFIX.$this->table_element."_extrafields WHERE fk_object = ".$this->id;
@@ -1809,10 +2017,11 @@ abstract class CommonObject
     /**
      * List urls of elemùent
      *
-     * @param unknown_type $objectid
-     * @param unknown_type $objecttype
-     * @param unknown_type $withpicto
-     * @param unknown_type $option
+     * @param 	int		$objectid		Id of record
+     * @param 	string	$objecttype		Type of object
+     * @param 	int		$withpicto		Picto to show
+     * @param 	string	$option			More options
+     * @return	void
      */
     function getElementUrl($objectid,$objecttype,$withpicto=0,$option='')
     {
@@ -1883,6 +2092,8 @@ abstract class CommonObject
      *  Show linked object block
      *  TODO Move this into html.class.php
      *  But for the moment we don't know if it's possible as we keep a method available on overloaded objects.
+     *
+     *  @return	void
      */
     function showLinkedObjectBlock()
     {
@@ -1907,19 +2118,19 @@ abstract class CommonObject
             if ($objecttype == 'facture')          {
                 $tplpath = 'compta/'.$element;
             }
-            if ($objecttype == 'propal')           {
+            else if ($objecttype == 'propal')           {
                 $tplpath = 'comm/'.$element;
             }
-            if ($objecttype == 'shipping')         {
+            else if ($objecttype == 'shipping')         {
                 $tplpath = 'expedition';
             }
-            if ($objecttype == 'delivery')         {
+            else if ($objecttype == 'delivery')         {
                 $tplpath = 'livraison';
             }
-            if ($objecttype == 'invoice_supplier') {
+            else if ($objecttype == 'invoice_supplier') {
                 $tplpath = 'fourn/facture';
             }
-            if ($objecttype == 'order_supplier')   {
+            else if ($objecttype == 'order_supplier')   {
                 $tplpath = 'fourn/commande';
             }
 
@@ -1941,10 +2152,11 @@ abstract class CommonObject
      *  TODO Edit templates to use global variables and include them directly in controller call
      *  But for the moment we don't know if it's possible as we keep a method available on overloaded objects.
      *
-     *  @param      int	    		$dateSelector       1=Show also date range input fields
-     *  @param		Societe			$seller				Object thirdparty who sell
-     *  @param		Societe			$buyer				Object thirdparty who buy
-	 *	@param		HookManager		$hookmanager		Hook manager instance
+     *  @param  int	    		$dateSelector       1=Show also date range input fields
+     *  @param	Societe			$seller				Object thirdparty who sell
+     *  @param	Societe			$buyer				Object thirdparty who buy
+	 *	@param	HookManager		$hookmanager		Hook manager instance
+	 *	@return	void
 	 */
 	function formAddPredefinedProduct($dateSelector,$seller,$buyer,$hookmanager=false)
 	{
@@ -1960,10 +2172,11 @@ abstract class CommonObject
      *  TODO Edit templates to use global variables and include them directly in controller call
      *  But for the moment we don't know if it'st possible as we keep a method available on overloaded objects.
      *
-     *  @param		int		        $dateSelector       1=Show also date range input fields
-     *  @param		Societe			$seller				Object thirdparty who sell
-     *  @param		Societe			$buyer				Object thirdparty who buy
-     *	@param		HookManager		$hookmanager		Hook manager instance
+     *  @param	int		        $dateSelector       1=Show also date range input fields
+     *  @param	Societe			$seller				Object thirdparty who sell
+     *  @param	Societe			$buyer				Object thirdparty who buy
+     *	@param	HookManager		$hookmanager		Hook manager instance
+     *	@return	void
      */
 	function formAddFreeProduct($dateSelector,$seller,$buyer,$hookmanager=false)
 	{
@@ -1985,13 +2198,15 @@ abstract class CommonObject
      *  If lines are into a template, title must also be into a template
      *  But for the moment we don't know if it'st possible as we keep a method available on overloaded objects.
      *
-     *  @param      $action				Action code
-     *  @param      $seller            	Object of seller third party
-     *  @param      $buyer             	Object of buyer third party
-     *  @param		$selected		   	Object line selected
-     *  @param      $dateSelector      	1=Show also date range input fields
+     *  @param	string		$action				Action code
+     *  @param  string		$seller            	Object of seller third party
+     *  @param  string  	$buyer             	Object of buyer third party
+     *  @param	string		$selected		   	Object line selected
+     *  @param  int	    	$dateSelector      	1=Show also date range input fields
+     *  @param	HookManager	$hookmanager		Hookmanager
+     *  @return	void
      */
-    function printObjectLines($action='viewline',$seller,$buyer,$selected=0,$dateSelector=0,$hookmanager=false)
+    function printObjectLines($action,$seller,$buyer,$selected=0,$dateSelector=0,$hookmanager=false)
     {
         global $conf,$langs;
 
@@ -2063,17 +2278,19 @@ abstract class CommonObject
      *  If lines are into a template, title must also be into a template
      *  But for the moment we don't know if it's possible as we keep a method available on overloaded objects.
      *
-     *  @param		$action			   GET/POST action
-     * 	@param	    $line		       Selected object line to output
-     *  @param      $var               Is it a an odd line
-     *  @param      $num               Number of line
-     *  @param      $i
-     *  @param      $dateSelector      1=Show also date range input fields
-     *  @param      $seller            Object of seller third party
-     *  @param      $buyer             Object of buyer third party
-     *  @param		$selected		   Object line selected
+     *  @param	string		$action				GET/POST action
+     * 	@param	array	    $line		       	Selected object line to output
+     *  @param  string	    $var               	Is it a an odd line
+     *  @param  int		    $num               	Number of line
+     *  @param  int		    $i					I
+     *  @param  int		    $dateSelector      	1=Show also date range input fields
+     *  @param  string	    $seller            	Object of seller third party
+     *  @param  string	    $buyer             	Object of buyer third party
+     *  @param	string		$selected		   	Object line selected
+     *  @param	HookManager	$hookmanager		Hook manager
+     *  @return	void
 	 */
-	function printLine($action='viewline',$line,$var=true,$num=0,$i=0,$dateSelector=0,$seller,$buyer,$selected=0,$hookmanager=false)
+	function printLine($action,$line,$var=true,$num=0,$i=0,$dateSelector=0,$seller,$buyer,$selected=0,$hookmanager=false)
 	{
 		global $conf,$langs,$user;
 		global $form,$bc,$bcdd;
@@ -2096,12 +2313,34 @@ abstract class CommonObject
             {
                 $product_static = new Product($this->db);
 
-                $product_static->type=$line->fk_product_type;
-                $product_static->id=$line->fk_product;
-                $product_static->ref=$line->ref;
-                $product_static->libelle=$line->product_label;
-                $text=$product_static->getNomUrl(1);
-                $text.= ' - '.$line->product_label;
+                // Define output language
+           			if (! empty($conf->global->MAIN_MULTILANGS) && ! empty($conf->global->PRODUIT_TEXTS_IN_THIRDPARTY_LANGUAGE))
+			          {
+                  $this->fetch_thirdparty();
+            			$prod = new Product($this->db, $line->fk_product);
+
+          				$outputlangs = $langs;
+          				$newlang='';
+          				if (empty($newlang) && GETPOST('lang_id')) $newlang=GETPOST('lang_id');
+          				if (empty($newlang)) $newlang=$this->client->default_lang;
+          				if (! empty($newlang))
+          				{
+          					$outputlangs = new Translate("",$conf);
+          					$outputlangs->setDefaultLang($newlang);
+          				}
+
+                  $label = (! empty($prod->multilangs[$outputlangs->defaultlang]["libelle"])) ? $prod->multilangs[$outputlangs->defaultlang]["libelle"] : $line->product_label;
+                }
+                else {
+                  $label = $line->product_label;
+                }
+
+        				$product_static->type=$line->fk_product_type;
+        				$product_static->id=$line->fk_product;
+        				$product_static->ref=$line->ref;
+        				$product_static->libelle=$label;
+        				$text=$product_static->getNomUrl(1);
+        				$text.= ' - '.$label;
                 $description=($conf->global->PRODUIT_DESC_IN_FORM?'':dol_htmlentitiesbr($line->description));
 
                 // Use global variables + $seller and $buyer
@@ -2140,6 +2379,9 @@ abstract class CommonObject
      *  TODO Move this and previous function into output html class file (htmlline.class.php).
      *  If lines are into a template, title must also be into a template
      *  But for the moment we don't know if it's possible as we keep a method available on overloaded objects.
+     *
+     *  @param	HookManager	$hookmanager		Hook manager
+     *  @return	void
      */
     function printOriginLinesList($hookmanager=false)
     {
@@ -2184,8 +2426,10 @@ abstract class CommonObject
      *  TODO Move this and previous function into output html class file (htmlline.class.php).
      *  If lines are into a template, title must also be into a template
      *  But for the moment we don't know if it's possible as we keep a method available on overloaded objects.
-     * 	@param		line
-     * 	@param		var
+     *
+     * 	@param	array	$line		Line
+     * 	@param	string	$var		Var
+     * 	@return	void
      */
     function printOriginLine($line,$var)
     {

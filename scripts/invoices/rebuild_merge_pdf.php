@@ -1,7 +1,7 @@
 #!/usr/bin/php
 <?php
 /*
- * Copyright (C) 2009-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2009-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,7 @@ require_once(DOL_DOCUMENT_ROOT."/cron/functions_cron.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/compta/facture/class/facture.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/modules/facture/modules_facture.php");
 require_once(DOL_DOCUMENT_ROOT.'/core/lib/pdf.lib.php');
+require_once(DOL_DOCUMENT_ROOT."/core/lib/date.lib.php");
 
 
 // Load main language strings
@@ -269,7 +270,7 @@ if ( $resql=$db->query($sql) )
 					}
 				}
             	print "Build PDF for invoice ".$obj->facnumber." - Lang = ".$outputlangs->defaultlang."\n";
-				$result=facture_pdf_create($db, $fac, '', $newmodel?$newmodel:$fac->modelpdf, $outputlangs);
+				$result=facture_pdf_create($db, $fac, $newmodel?$newmodel:$fac->modelpdf, $outputlangs);
 
 				// Add file into files array
 				$files[] = $conf->facture->dir_output.'/'.$fac->ref.'/'.$fac->ref.'.pdf';
