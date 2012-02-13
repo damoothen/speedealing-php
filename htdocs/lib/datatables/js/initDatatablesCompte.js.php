@@ -27,7 +27,7 @@ print '$(document).ready(function() {
     /* Get the lang */
     var lang = "fr_FR";
     var cate = "'.$conf->categorie->enabled.'";    
-    var state='.$conf->global->SOCIETE_DISABLE_STATE.';
+    var state='.($conf->global->SOCIETE_DISABLE_STATE?0:1).';
     var exportright ="'.$user->rights->societe->contact->export.'";  
     /* Insert a \'details\' column to the table */
     var nCloneTh = document.createElement( \'th\' );
