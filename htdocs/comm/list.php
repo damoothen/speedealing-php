@@ -45,6 +45,8 @@ if ($user->societe_id)
 $result = restrictedArea($user, 'societe', $socid, '');
 
 $type = GETPOST("type", 'int');
+$pstcomm = GETPOST("pstcomm");
+$search_sale = GETPOST("search_sale");
 
 /*
  * Actions
