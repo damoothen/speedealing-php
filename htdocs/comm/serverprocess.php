@@ -56,6 +56,9 @@ else {
 }
 /* get Type */
 $type = $_GET['type'];
+$pstcomm = $_GET['pstcomm'];
+$search_sale = $_GET['search_sale'];
+
 
 /*
  * Paging
@@ -223,6 +226,10 @@ $sql.= " AND s.entity = " . $conf->entity;
 // Insert sale filter
 if ($search_sale) {
     $sql .= " AND u.rowid= " . $db->escape($search_sale);
+}
+// Insert stcomm filter
+if ($pstcomm) {
+    $sql .= " AND st.id= " . $db->escape($pstcomm);
 }
 /* get the total of entries */
 $resultTotal = $db->query($sql);

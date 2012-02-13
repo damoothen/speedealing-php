@@ -25,15 +25,9 @@
 print'<script>';
 print '$(document).ready(function() {
     /* Get the lang */
-    var tabs = location.search.substring(1).split("&");
-    var lang = tabs[1].substr(5,5);
-    /* Get the type */
-    var type=\'\';
-    type = tabs[2].substr(5,1);
-    var cate=\'\';
+    var lang = "fr_FR";
     var cate = "'.$conf->categorie->enabled.'";    
-    var state=\'\';
-    state = tabs[4].substr(6,1);
+    var state='.$conf->global->SOCIETE_DISABLE_STATE.';
     var exportright ="'.$user->rights->societe->contact->export.'";  
     /* Insert a \'details\' column to the table */
     var nCloneTh = document.createElement( \'th\' );
@@ -60,7 +54,7 @@ print '$(document).ready(function() {
                 "aLengthMenu": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,"All"]],
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "serverprocess.php?type="+type,
+                "sAjaxSource": "serverprocess.php?type='.$type.'&pstcomm='.$pstcomm.'&search_sale='.$search_sale.'",
                 "bPaginate": true,
                 "oLanguage": {
                     "sUrl": "../lib/datatables/langs/"+lang+".txt"
@@ -92,7 +86,7 @@ print '$(document).ready(function() {
                 "aLengthMenu": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,"All"]],
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "serverprocess.php?type="+type,
+                "sAjaxSource": "serverprocess.php?type='.$type.'&pstcomm='.$pstcomm.'&search_sale='.$search_sale.'",
                 "bPaginate": true,
                 "oLanguage": {
                     "sUrl": "../lib/datatables/langs/"+lang+".txt"
@@ -122,7 +116,7 @@ print '$(document).ready(function() {
                     "aLengthMenu": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,"All"]],
                     "bProcessing": true,
                     "bServerSide": true,
-                    "sAjaxSource": "serverprocess.php?type="+type,
+                    "sAjaxSource": "serverprocess.php?type='.$type.'&pstcomm='.$pstcomm.'&search_sale='.$search_sale.'",
                     "bPaginate": true,
                     "oLanguage": {
                         "sUrl": "../lib/datatables/langs/"+lang+".txt"
@@ -155,7 +149,7 @@ print '$(document).ready(function() {
                     "aLengthMenu": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,"All"]],
                     "bProcessing": true,
                     "bServerSide": true,
-                    "sAjaxSource": "serverprocess.php?type="+type,
+                    "sAjaxSource": "serverprocess.php?type='.$type.'&pstcomm='.$pstcomm.'&search_sale='.$search_sale.'",
                     "bPaginate": true,
                     "oLanguage": {
                         "sUrl": "../lib/datatables/langs/"+lang+".txt"
@@ -185,7 +179,7 @@ print '$(document).ready(function() {
                 "aLengthMenu": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,"All"]],
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "serverprocess.php?type="+type,
+                "sAjaxSource": "serverprocess.php?type='.$type.'&pstcomm='.$pstcomm.'&search_sale='.$search_sale.'",
                 "bPaginate": true,
                 "oLanguage": {
                     "sUrl": "../lib/datatables/langs/"+lang+".txt"
@@ -218,7 +212,7 @@ print '$(document).ready(function() {
                 "aLengthMenu": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,"All"]],
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "serverprocess.php?type="+type,
+                "sAjaxSource": "serverprocess.php?type='.$type.'&pstcomm='.$pstcomm.'&search_sale='.$search_sale.'",
                 "bPaginate": true,
                 "oLanguage": {
                     "sUrl": "../lib/datatables/langs/"+lang+".txt"
@@ -247,7 +241,7 @@ print '$(document).ready(function() {
                 "aLengthMenu": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,"All"]],
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "serverprocess.php?type="+type,
+                "sAjaxSource": "serverprocess.php?type='.$type.'&pstcomm='.$pstcomm.'&search_sale='.$search_sale.'",
                 "bPaginate": true,
                 "oLanguage": {
                     "sUrl": "../lib/datatables/langs/"+lang+".txt"
@@ -280,7 +274,7 @@ print '$(document).ready(function() {
                 "aLengthMenu": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,"All"]],
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "serverprocess.php?type="+type,
+                "sAjaxSource": "serverprocess.php?type='.$type.'&pstcomm='.$pstcomm.'&search_sale='.$search_sale.'",
                 "bPaginate": true,
                 "oLanguage": {
                     "sUrl": "../lib/datatables/langs/"+lang+".txt"
