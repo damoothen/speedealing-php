@@ -736,7 +736,7 @@ function print_left_eldy_menu($db,$menu_array_before,$menu_array_after)
             if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_SUSPECTS))
             {
                 $langs->load("commercial");
-                $newmenu->add("/comm/list.php?leftmenu=suspects&lang=".$langs->defaultlang."&type=0&cate=".$conf->categorie->enabled."&state=".$conf->global->SOCIETE_DISABLE_STATE, $langs->trans("ListSuspectsShort"), 1, $user->rights->societe->lire);
+                $newmenu->add("/comm/list.php?leftmenu=suspects&type=0", $langs->trans("ListSuspectsShort"), 1, $user->rights->societe->lire);
 
                 //if ($leftmenu=="prospects") $newmenu->add("/comm/prospect/prospects.php?sortfield=s.datec&amp;sortorder=desc&amp;begin=&amp;stcomm=-1", $langs->trans("LastProspectDoNotContact"), 2, $user->rights->societe->lire);
                 //if ($leftmenu=="prospects") $newmenu->add("/comm/prospect/prospects.php?sortfield=s.datec&amp;sortorder=desc&amp;begin=&amp;stcomm=0", $langs->trans("LastProspectNeverContacted"), 2, $user->rights->societe->lire);
@@ -752,7 +752,7 @@ function print_left_eldy_menu($db,$menu_array_before,$menu_array_after)
             if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_PROSPECTS))
             {
                 $langs->load("commercial");
-                $newmenu->add("/comm/list.php?leftmenu=prospects&lang=".$langs->defaultlang."&type=1&cate=".$conf->categorie->enabled."&state=".$conf->global->SOCIETE_DISABLE_STATE, $langs->trans("ListProspectsShort"), 1, $user->rights->societe->lire);
+                $newmenu->add("/comm/list.php?leftmenu=prospects&type=1", $langs->trans("ListProspectsShort"), 1, $user->rights->societe->lire);
 
                 //if ($leftmenu=="prospects") $newmenu->add("/comm/prospect/prospects.php?sortfield=s.datec&amp;sortorder=desc&amp;begin=&amp;stcomm=-1", $langs->trans("LastProspectDoNotContact"), 2, $user->rights->societe->lire);
                 //if ($leftmenu=="prospects") $newmenu->add("/comm/prospect/prospects.php?sortfield=s.datec&amp;sortorder=desc&amp;begin=&amp;stcomm=0", $langs->trans("LastProspectNeverContacted"), 2, $user->rights->societe->lire);
@@ -768,7 +768,7 @@ function print_left_eldy_menu($db,$menu_array_before,$menu_array_after)
             if ($conf->societe->enabled)
             {
                 $langs->load("commercial");
-                $newmenu->add("/comm/list.php?leftmenu=customers&lang=".$langs->defaultlang."&type=2&cate=".$conf->categorie->enabled."&state=".$conf->global->SOCIETE_DISABLE_STATE, $langs->trans("ListCustomersShort"), 1, $user->rights->societe->lire);
+                $newmenu->add("/comm/list.php?leftmenu=customers&type=2", $langs->trans("ListCustomersShort"), 1, $user->rights->societe->lire);
 
                 $newmenu->add("/societe/soc.php?leftmenu=customers&amp;action=create&amp;type=c", $langs->trans("MenuNewCustomer"), 2, $user->rights->societe->creer);
                 //$newmenu->add("/contact/index.php?leftmenu=customers&amp;type=c", $langs->trans("Contacts"), 2, $user->rights->societe->contact->lire);
@@ -778,7 +778,7 @@ function print_left_eldy_menu($db,$menu_array_before,$menu_array_after)
             if ($conf->societe->enabled && $conf->fournisseur->enabled)
             {
                 $langs->load("suppliers");
-                $newmenu->add("/fourn/liste.php?leftmenu=suppliers&lang=".$langs->defaultlang, $langs->trans("ListSuppliersShort"), 1, $user->rights->societe->lire && $user->rights->fournisseur->lire);
+                $newmenu->add("/fourn/liste.php?leftmenu=suppliers", $langs->trans("ListSuppliersShort"), 1, $user->rights->societe->lire && $user->rights->fournisseur->lire);
 
                 if ($user->societe_id == 0)
                 {
@@ -791,7 +791,7 @@ function print_left_eldy_menu($db,$menu_array_before,$menu_array_after)
             if ($conf->societe->enabled)
             {
                 $langs->load("commercial");
-                $newmenu->add("/comm/list.php?leftmenu=all&lang=".$langs->defaultlang."&type=&cate=".$conf->categorie->enabled."&state=".$conf->global->SOCIETE_DISABLE_STATE, $langs->trans("ListAllShort"), 1, $user->rights->societe->lire);
+                $newmenu->add("/comm/list.php?leftmenu=all", $langs->trans("ListAllShort"), 1, $user->rights->societe->lire);
 
                 //if ($leftmenu=="prospects") $newmenu->add("/comm/prospect/prospects.php?sortfield=s.datec&amp;sortorder=desc&amp;begin=&amp;stcomm=-1", $langs->trans("LastProspectDoNotContact"), 2, $user->rights->societe->lire);
                 //if ($leftmenu=="prospects") $newmenu->add("/comm/prospect/prospects.php?sortfield=s.datec&amp;sortorder=desc&amp;begin=&amp;stcomm=0", $langs->trans("LastProspectNeverContacted"), 2, $user->rights->societe->lire);
