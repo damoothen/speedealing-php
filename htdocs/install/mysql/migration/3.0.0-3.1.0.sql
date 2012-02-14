@@ -551,3 +551,17 @@ insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (7, 'ST_CINF3', 'C
 insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (8, 'ST_CREC', 'Client récurrent', 0, 2);
 insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (9, 'ST_CFID', 'Client fidèle', 1, 2);
 insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (10, 'ST_CPAR', 'Client partenaire', 0, 2);
+
+create table llx_categorie_contact
+(
+  fk_categorie  integer NOT NULL,
+  fk_contact    integer NOT NULL
+)type=innodb;
+
+ALTER TABLE llx_categorie_contact ADD PRIMARY KEY (fk_categorie, fk_contact);
+ALTER TABLE llx_categorie_contact ADD INDEX idx_categorie_contact_fk_categorie (fk_categorie);
+ALTER TABLE llx_categorie_contact ADD INDEX idx_categorie_contact_fk_contact (fk_contact);
+
+ALTER TABLE llx_categorie_contact ADD CONSTRAINT fk_categorie_contact_categorie_rowid FOREIGN KEY (fk_categorie) REFERENCES llx_categorie (rowid);
+ALTER TABLE llx_categorie_contact ADD CONSTRAINT fk_categorie_contact_product_rowid   FOREIGN KEY (fk_contact) REFERENCES llx_contact (rowid);
+

@@ -54,7 +54,7 @@ print '$(document).ready(function() {
                 "aLengthMenu": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,"All"]],
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "serverprocess.php?type='.$type.'&pstco  mm='.$pstcomm.'&search_sale='.$search_sale.'",
+                "sAjaxSource": "serverprocess.php?type='.$type.'&pstcomm='.$pstcomm.'&search_sale='.$search_sale.'",
                 "bPaginate": true,
                 "oLanguage": {
                     "sUrl": "../lib/datatables/langs/"+lang+".txt"
