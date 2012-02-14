@@ -25,16 +25,13 @@
 print'<script>';
 print "$(document).ready(function() {
      /* Get the lang */
-      var tabs = location.search.substring(1).split(\"&\");
-      var lang = tabs[1].substr(5,5);
+      var lang = \"fr_FR\";
       var cate='';
       var exportright='';
       exportright ='".$user->rights->societe->contact->export."';      
       cate = '".$conf->categorie->enabled."';    
       /* Get the type */
-      var type='';
-      if(tabs[2])
-        type = tabs[2].substr(5,1);
+      var type='".$_GET['type']."';
     /* Insert a 'details' column to the table */
     var nCloneTh = document.createElement( 'th' );
     var nCloneTd = document.createElement( 'td' );
