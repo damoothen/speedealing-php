@@ -68,6 +68,7 @@ if ($type != "") {
     else if ($type == "o")
         $type = '0';
 }
+$contactname = $_GET['sall'];
 /*
  * Paging
  */
@@ -197,12 +198,13 @@ $sql.= " WHERE p.entity = " . $conf->entity . ' ';
 if (!$user->rights->societe->client->voir) { //restriction
     $sql .= " AND (sc.fk_user = " . $user->id . " OR p.fk_soc IS NULL)";
 }
-
 // Filter to exclude not owned private contacts
 $sql .= " AND (p.priv='0' OR (p.priv='1' AND p.fk_user_creat=" . $user->id . "))";
 if ($type != '') {
     $sql.= " AND cs.type=" . $type;
 }
+if ($contactname != '')
+    $sql.= " AND (p.name LIKE '%".$contactname."%' OR p.firstname LIKE '%".$contactname."%')";
 //print $sql;
 
 $result = $db->query($sql);
