@@ -21,11 +21,17 @@
  *      
  *		\brief      Page to int lib datatable
  *		\version    $Id: initDatatables.js,v 1.5 2011/12/14 20:54:12 synry63 Exp $
- */	 
+ */
+$path = "../lib/datatables/langs/".$langs->defaultlang.".txt";
+$result = file($path);
 print'<script>';
 print '$(document).ready(function() {
     /* Get the lang */
-    var lang = "fr_FR";
+    var lang="en_US"; 
+    ';
+if($result!=false)
+    print'lang = "'.$langs->defaultlang.'"';
+print'
     var cate = "'.$conf->categorie->enabled.'";    
     var state='.($conf->global->SOCIETE_DISABLE_STATE?0:1).';
     var exportright ="'.$user->rights->societe->contact->export.'";  
