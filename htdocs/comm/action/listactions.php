@@ -39,14 +39,14 @@ $action=GETPOST('action','alpha');
 $year=GETPOST("year",'int');
 $month=GETPOST("month",'int');
 $day=GETPOST("day",'int');
-$actioncode=GETPOST('actioncode');
-$pid=GETPOST("projectid",'int');
+$actioncode=GETPOST("actioncode","alpha",3);
+$pid=GETPOST("projectid",'int',3);
 $status=GETPOST("status",'alpha');
 
-$filter=GETPOST("filter");
-$filtera = GETPOST("userasked","int")?GETPOST("userasked","int"):GETPOST("filtera","int");
-$filtert = GETPOST("usertodo","int")?GETPOST("usertodo","int"):GETPOST("filtert","int");
-$filterd = GETPOST("userdone","int")?GETPOST("userdone","int"):GETPOST("filterd","int");
+$filter=GETPOST("filter",'',3);
+$filtera = GETPOST("userasked","int",3)?GETPOST("userasked","int",3):GETPOST("filtera","int",3);
+$filtert = GETPOST("usertodo","int",3)?GETPOST("usertodo","int",3):GETPOST("filtert","int",3);
+$filterd = GETPOST("userdone","int",3)?GETPOST("userdone","int",3):GETPOST("filterd","int",3);
 $showbirthday = empty($conf->use_javascript_ajax)?GETPOST("showbirthday","int"):1;
 
 $sortfield = GETPOST("sortfield",'alpha');
@@ -163,7 +163,7 @@ $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."user as ut ON a.fk_user_action = ut.rowid";
 $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."user as ud ON a.fk_user_done = ud.rowid";
 $sql.= " WHERE c.id = a.fk_action";
 $sql.= ' AND a.fk_user_author = u.rowid';
-$sql.= ' AND a.entity = '.$conf->entity;	// To limit to entity
+$sql.= ' AND a.entity IN ('.getEntity().')';	// To limit to entity
 if ($actioncode) $sql.=" AND c.code='".$db->escape($actioncode)."'";
 if ($pid) $sql.=" AND a.fk_project=".$db->escape($pid);
 if (! $user->rights->societe->client->voir && ! $socid) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
