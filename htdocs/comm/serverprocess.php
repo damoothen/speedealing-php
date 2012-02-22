@@ -35,22 +35,22 @@ $langs->load("commercial");
 if (empty($conf->global->SOCIETE_DISABLE_STATE)) {
     if($conf->categorie->enabled){
          $aColumns = array('', 'company', 'ville', 'departement', 'cp', 'datec', 'categorie', 'sale','siren','siret','ape','idprof4', 'fk_prospectlevel', 'fk_stcomm', 'etat', 'priv');
-         $aColumnsSql = array('', 's.nom', 's.ville', 'd.nom', 's.cp', 's.datec', 'c.label', 'u.name','s.siren','s.siret','s.ape','s.idprof4','s.fk_prospectlevel', 'fk_stcomm', '', '');
+         $aColumnsSql = array('', 's.nom', 's.ville', 'd.nom', 's.cp', 's.datec', 'c.label', 'u.login','s.siren','s.siret','s.ape','s.idprof4','s.fk_prospectlevel', 'fk_stcomm', '', '');
     }
     else {
          $aColumns = array('', 'company', 'ville', 'departement', 'cp', 'datec', 'sale','siren','siret','ape','idprof4', 'fk_prospectlevel', 'fk_stcomm', 'etat', 'priv');
-         $aColumnsSql = array('', 's.nom', 's.ville', 'd.nom', 's.cp', 's.datec', 'u.name','s.siren','s.siret','s.ape','s.idprof4','s.fk_prospectlevel', 'fk_stcomm', '', '');
+         $aColumnsSql = array('', 's.nom', 's.ville', 'd.nom', 's.cp', 's.datec', 'u.login','s.siren','s.siret','s.ape','s.idprof4','s.fk_prospectlevel', 'fk_stcomm', '', '');
     }
 }
 else {
     if($conf->categorie->enabled){
         $aColumns = array('', 'company', 'ville', 'cp', 'datec', 'categorie', 'sale','siren','siret','ape','idprof4', 'fk_prospectlevel', 'fk_stcomm', 'etat', 'priv');
-        $aColumnsSql = array('', 's.nom', 's.ville', 's.cp', 's.datec', 'c.label', 'u.name','s.siren','s.siret','s.ape','s.idprof4','s.fk_prospectlevel', 'fk_stcomm', '', '');
+        $aColumnsSql = array('', 's.nom', 's.ville', 's.cp', 's.datec', 'c.label', 'u.login','s.siren','s.siret','s.ape','s.idprof4','s.fk_prospectlevel', 'fk_stcomm', '', '');
     
     }
     else{
         $aColumns = array('', 'company', 'ville', 'cp', 'datec', 'sale','siren','siret','ape','idprof4', 'fk_prospectlevel', 'fk_stcomm', 'etat', 'priv');
-        $aColumnsSql = array('', 's.nom', 's.ville', 's.cp', 's.datec', 'u.name','s.siren','s.siret','s.ape','s.idprof4','s.fk_prospectlevel', 'fk_stcomm', '', '');
+        $aColumnsSql = array('', 's.nom', 's.ville', 's.cp', 's.datec', 'u.login','s.siren','s.siret','s.ape','s.idprof4','s.fk_prospectlevel', 'fk_stcomm', '', '');
 
     }
 }
@@ -96,7 +96,7 @@ $sWhere = "";
 if ($_GET['sSearch'] != "") {
     $sWhere = " AND (";
     for ($i = 0; $i < count($aColumnsSql); $i++) {
-        if ($aColumnsSql[$i] != '' && $aColumnsSql[$i] != "c.label" && $aColumnsSql[$i] != "u.name") {
+        if ($aColumnsSql[$i] != '' && $aColumnsSql[$i] != "c.label" && $aColumnsSql[$i] != "u.login") {
             $sWhere .= $aColumnsSql[$i] . " LIKE '%" . $_GET['sSearch'] . "%' OR ";
         }
     }
@@ -197,10 +197,10 @@ if ($roc != false || $rsc!=false) {
     $sql.=",c.label";
 }
 /* looking for sales ? */
-$rou = stristr($sOrder, 'u.name');
-$rsu = stristr($sWhere, 'u.name');
+$rou = stristr($sOrder, 'u.login');
+$rsu = stristr($sWhere, 'u.login');
 if ($rou != false || $rsu!=false) {
-    $sql.=",u.name";
+    $sql.=",u.login";
 }
 $sql .= " FROM (" . MAIN_DB_PREFIX . "societe as s";
 $sql.= " ) ";
@@ -257,7 +257,7 @@ if ($valueR != '') {
     $companies = substr_replace($valueR, '', -1);
 }
 /* sql query get sales */
-$sql = " SELECT fk_soc,name FROM (llx_societe_commerciaux as sc,llx_user as u) 
+$sql = " SELECT fk_soc,login FROM (llx_societe_commerciaux as sc,llx_user as u) 
 where sc.fk_soc in ($companies) and sc.fk_user=u.rowid";
 $resultCommerciaux = $db->query($sql);
 
@@ -277,7 +277,7 @@ $output = array(
 );
 /* init society sales array  */
 while ($aRow = $db->fetch_object($resultCommerciaux)) {
-    $commerciauxDeChaqueSociete[$aRow->fk_soc] = $commerciauxDeChaqueSociete[$aRow->fk_soc] . $aRow->name . ', ';
+    $commerciauxDeChaqueSociete[$aRow->fk_soc] = $commerciauxDeChaqueSociete[$aRow->fk_soc] . $aRow->login . ', ';
 }
 /* init society categories array */
 while ($aRow = $db->fetch_object($resultCate)) {
