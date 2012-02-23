@@ -789,7 +789,7 @@ if ($action == 'create')
     if ($conf->societe->enabled)
     {
         print '<tr><td>'.$langs->trans("LinkedToDolibarrThirdParty").'</td><td class="valeur">';
-        print $form->select_societes($object->fk_soc,'socid','',1);
+        print $form->select_company($object->fk_soc,'socid','',1);
         print '</td></tr>';
     }
 
@@ -1305,7 +1305,7 @@ if ($rowid && $action != 'edit')
 
     // Other attributes
     $parameters=array();
-    $reshook=$hookmanager->executeHooks('showOutputField',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+    $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
     if (empty($reshook) && ! empty($extrafields->attribute_label))
     {
         foreach($extrafields->attribute_label as $key=>$label)
@@ -1336,7 +1336,7 @@ if ($rowid && $action != 'edit')
 			print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 			print '<table class="nobordernopadding" cellpadding="0" cellspacing="0">';
 			print '<tr><td>';
-			print $form->select_societes($object->fk_soc,'socid','',1);
+			print $form->select_company($object->fk_soc,'socid','',1);
 			print '</td>';
 			print '<td align="left"><input type="submit" class="button" value="'.$langs->trans("Modify").'"></td>';
 			print '</tr></table></form>';

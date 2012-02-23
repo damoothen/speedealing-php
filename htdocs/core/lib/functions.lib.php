@@ -502,10 +502,10 @@ function dol_escape_htmltag($stringtoescape,$keepb=0)
  *	Write log message into outputs. Possible outputs can be:
  *	A file if SYSLOG_FILE_ON defined:   	file name is then defined by SYSLOG_FILE
  *	Syslog if SYSLOG_SYSLOG_ON defined:    	facility is then defined by SYSLOG_FACILITY
- * 	Warning, les fonctions syslog sont buggues sous Windows et generent des
- *	fautes de protection memoire. Pour resoudre, utiliser le loggage fichier,
- *	au lieu du loggage syslog (configuration du module).
- *	Note: If SYSLOG_FILE_NO_ERROR defined, we never output error message when writing to log fails.
+ * 	Warning, syslog functions are bugged on Windows, generating memory protection faults. To solve
+ *	this, use logging to files instead of syslog (see setup of module).
+ *	Note: If SYSLOG_FILE_NO_ERROR defined, we never output any error message when writing to log fails.
+ *  Note: You can get log message into html sources by adding parameter &logtohtml=1 (constant MAIN_LOGTOHTML must be set)
  *
  *	This function works only if syslog module is enabled.
  * 	This must not use any call to other function calling dol_syslog (avoid infinite loop).
@@ -621,7 +621,7 @@ function dol_syslog($message, $level=LOG_INFO)
                 // database or config file because we must be able to log data before database or config file read.
 			    $oldinclude=get_include_path();
                 set_include_path('/usr/share/php/');
-                require_once('FirePHPCore/FirePHP.class.php');
+                include_once('FirePHPCore/FirePHP.class.php');
                 set_include_path($oldinclude);
                 ob_start();
                 $firephp = FirePHP::getInstance(true);
@@ -744,14 +744,6 @@ function dol_get_fiche_end($notab=0)
     if (! $notab) return "\n</div>\n";
     else return '';
 }
-
-
-/* For backward compatibility */
-function dolibarr_print_date($time,$format='',$to_gmt=false,$outputlangs='',$encodetooutput=false)
-{
-    return dol_print_date($time,$format,$to_gmt,$outputlangs,$encodetooutput);
-}
-
 
 /**
  *      Return a formated address (part address/zip/town/state) according to country rules
@@ -990,12 +982,6 @@ function dol_getdate($timestamp,$fast=false)
     return $arrayinfo;
 }
 
-/* For backward compatibility */
-function dolibarr_mktime($hour,$minute,$second,$month,$day,$year,$gm=false,$check=1)
-{
-    return dol_mktime($hour,$minute,$second,$month,$day,$year,$gm,$check);
-}
-
 /**
  *	Return a timestamp date built from detailed informations (by default a local PHP server timestamp)
  * 	Replace function mktime not available under Windows if year < 1970
@@ -1201,12 +1187,6 @@ function dol_print_email($email,$cid=0,$socid=0,$addlink=0,$max=64,$showinvalid=
         }
     }
     return $newemail;
-}
-
-/* For backward compatibility */
-function dolibarr_print_phone($phone,$country="FR",$cid=0,$socid=0,$addlink=0,$separ="&nbsp;")
-{
-    return dol_print_phone($phone,$country,$cid,$socid,$addlink,$separ);
 }
 
 /**
@@ -1429,7 +1409,7 @@ function isValidEmail($address)
  *  @param      string		$address    phone (Ex: "0601010101")
  *  @return     boolean     			true if phone syntax is OK, false if KO or empty string
  */
-function isValidPhone($address)
+function isValidPhone($phone)
 {
     return true;
 }
@@ -1476,15 +1456,9 @@ function dol_substr($string,$start,$length,$stringencoding='')
 }
 
 
-/* For backward compatibility */
-function dolibarr_trunc($string,$size=40,$trunc='right',$stringencoding='')
-{
-    return dol_trunc($string,$size,$trunc,$stringencoding);
-}
-
-
 /**
- *  Show a javascript graph
+ *  Show a javascript graph.
+ *  Do not use this function anymore. Use DolGraph class instead.
  *
  *  @param		string	$htmlid			Html id name
  *  @param		int		$width			Width in pixel
@@ -1495,6 +1469,7 @@ function dolibarr_trunc($string,$size=40,$trunc='right',$stringencoding='')
  *  @param		int		$showpercent	Show percent (with type='pie' only)
  *  @param		string	$url			Param to add an url to click values
  *  @return		void
+ *  @deprecated
  */
 function dol_print_graph($htmlid,$width,$height,$data,$showlegend=0,$type='pie',$showpercent=0,$url='')
 {
@@ -2151,12 +2126,6 @@ function info_admin($text,$infoonimgalt=0)
 }
 
 
-/* For backward compatibility */
-function dolibarr_print_error($db='',$error='')
-{
-    return dol_print_error($db, $error);
-}
-
 /**
  *	Affiche message erreur system avec toutes les informations pour faciliter le diagnostic et la remontee des bugs.
  *	On doit appeler cette fonction quand une erreur technique bloquante est rencontree.
@@ -2310,7 +2279,7 @@ function print_liste_field_titre($name, $file="", $field="", $begin="", $morepar
  *	Get title line of an array
  *
  *	@param	string	$name        Label of field
- *	@param	int		$thead		For thead format
+ *	@param	int		$thead		 For thead format
  *	@param	string	$file        Url used when we click on sort picto
  *	@param	string	$field       Field to use for new sorting
  *	@param	string	$begin       ("" by defaut)
@@ -3070,12 +3039,6 @@ function get_exdir($num,$level=3,$alpha=0,$withoutslash=0)
     return $path;
 }
 
-// For backward compatibility
-function create_exdir($dir)
-{
-    dol_mkdir($dir);
-}
-
 /**
  *	Creation of a directory (this can create recursive subdir)
  *
@@ -3086,7 +3049,7 @@ function dol_mkdir($dir)
 {
     global $conf;
 
-    dol_syslog("functions.lib::create_exdir: dir=".$dir,LOG_INFO);
+    dol_syslog("functions.lib::dol_mkdir: dir=".$dir,LOG_INFO);
 
     $dir_osencoded=dol_osencode($dir);
     if (@is_dir($dir_osencoded)) return 0;
@@ -3110,7 +3073,7 @@ function dol_mkdir($dir)
             $ccdir_osencoded=dol_osencode($ccdir);
             if (! @is_dir($ccdir_osencoded))
             {
-                dol_syslog("functions.lib::create_exdir: Directory '".$ccdir."' does not exists or is outside open_basedir PHP setting.",LOG_DEBUG);
+                dol_syslog("functions.lib::dol_mkdir: Directory '".$ccdir."' does not exists or is outside open_basedir PHP setting.",LOG_DEBUG);
 
                 umask(0);
                 $dirmaskdec=octdec('0755');
@@ -3119,12 +3082,12 @@ function dol_mkdir($dir)
                 if (! @mkdir($ccdir_osencoded, $dirmaskdec))
                 {
                     // Si le is_dir a renvoye une fausse info, alors on passe ici.
-                    dol_syslog("functions.lib::create_exdir: Fails to create directory '".$ccdir."' or directory already exists.",LOG_WARNING);
+                    dol_syslog("functions.lib::dol_mkdir: Fails to create directory '".$ccdir."' or directory already exists.",LOG_WARNING);
                     $nberr++;
                 }
                 else
                 {
-                    dol_syslog("functions.lib::create_exdir: Directory '".$ccdir."' created",LOG_DEBUG);
+                    dol_syslog("functions.lib::dol_mkdir: Directory '".$ccdir."' created",LOG_DEBUG);
                     $nberr=0;	// On remet a zero car si on arrive ici, cela veut dire que les echecs precedents peuvent etre ignore
                     $nbcreated++;
                 }
@@ -3434,14 +3397,15 @@ function dol_textishtml($msg,$option=0)
 }
 
 /**
- *    	Make substition into a string
- *      There is two type of substitions:
- * 		- From $substitutionarray (oldval=>newval)
- * 		- From special constants (__XXX__=>f(objet->xxx)) by substitutions modules
+ *  Make substition into a string
+ *  There is two type of substitions:
+ * 	- From $substitutionarray (oldval=>newval)
+ * 	- From special constants (__XXX__=>f(objet->xxx)) by substitutions modules
  *
- *    	@param	string	$chaine      			Source string in which we must do substitution
- *    	@param  array	$substitutionarray		Array with key->val to substitute
- *    	@return string  		    			Output string after subsitutions
+ *  @param	string	$chaine      			Source string in which we must do substitution
+ *  @param  array	$substitutionarray		Array with key->val to substitute
+ * 	@return string  		    			Output string after subsitutions
+ *  @see	make_substitutions
  */
 function make_substitutions($chaine,$substitutionarray)
 {
@@ -3458,10 +3422,11 @@ function make_substitutions($chaine,$substitutionarray)
 /**
  *  Complete the $substitutionarray with more entries
  *
- *  @param  array		&$substitutionarray       Array substitution old value => new value value
- *  @param  Translate	$outputlangs             If we want substitution from special constants, we provide a language
- *  @param  Object		$object                  If we want substitution from special constants, we provide data in a source object
+ *  @param  array		&$substitutionarray		Array substitution old value => new value value
+ *  @param  Translate	$outputlangs            If we want substitution from special constants, we provide a language
+ *  @param  Object		$object                 If we want substitution from special constants, we provide data in a source object
  *  @return	void
+ *  @see 	make_substitutions
  */
 function complete_substitutions_array(&$substitutionarray,$outputlangs,$object='')
 {
@@ -3470,23 +3435,26 @@ function complete_substitutions_array(&$substitutionarray,$outputlangs,$object='
     require_once(DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php');
 
     // Check if there is external substitution to do asked by plugins
-    // We look files into the core/modules/substitutions directory
-    // By default, there is no such external plugins.
-    foreach ($conf->file->dol_document_root as $dirroot)
+    $dirsubstitutions=array_merge(array(),$conf->substitutions_modules);
+
+    foreach($dirsubstitutions as $reldir)
     {
-        $substitfiles=dol_dir_list($dirroot.'/core/modules/substitutions','files',0,'functions_');
+        $dir=dol_buildpath($reldir,0);
+
+        // Check if directory exists
+        if (! dol_is_dir($dir)) continue;
+
+        $substitfiles=dol_dir_list($dir,'files',0,'functions_');
         foreach($substitfiles as $substitfile)
         {
             if (preg_match('/functions_(.*)\.lib\.php/i',$substitfile['name'],$reg))
             {
                 $module=$reg[1];
-                if (! empty($conf->$module->enabled))   // If module enabled
-                {
-                    dol_syslog("Library functions_".$module.".lib.php found into ".$dirroot);
-                    require_once($dirroot."/core/modules/substitutions/functions_".$module.".lib.php");
-                    $function_name=$module."_completesubstitutionarray";
-                    $function_name($substitutionarray,$outputlangs,$object);
-                }
+
+                dol_syslog("Library functions_".$substitfile['name']." found into ".$dir);
+                require_once($dir.$substitfile['name']);
+                $function_name=$module."_completesubstitutionarray";
+                $function_name($substitutionarray,$outputlangs,$object);
             }
         }
     }

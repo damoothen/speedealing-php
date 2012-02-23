@@ -62,7 +62,7 @@ $dir=$conf->deplacement->dir_temp;
 
 print_fiche_titre($title, $mesg);
 
-create_exdir($dir);
+dol_mkdir($dir);
 
 $stats = new DeplacementStats($db, $socid, $userid);
 
@@ -224,6 +224,8 @@ print $form->select_users($userid,'userid',1);
 print '</td></tr>';
 // Year
 print '<tr><td>'.$langs->trans("Year").'</td><td>';
+if (! in_array($year,$arrayyears)) $arrayyears[$year]=$year;
+arsort($arrayyears);
 print $form->selectarray('year',$arrayyears,$year,0);
 print '</td></tr>';
 print '<tr><td align="center" colspan="2"><input type="submit" name="submit" class="button" value="'.$langs->trans("Refresh").'"></td></tr>';

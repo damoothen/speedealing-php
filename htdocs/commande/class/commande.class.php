@@ -1,7 +1,7 @@
 <?php
 /* Copyright (C) 2003-2006 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2006      Andre Cianfarani     <acianfa@free.fr>
  * Copyright (C) 2010-2011 Juanjo Menent        <jmenent@2byte.es>
  * Copyright (C) 2011      Jean Heimburger      <jean@tiaris.info>
@@ -86,6 +86,7 @@ class Commande extends CommonObject
 
     var $origin;
     var $origin_id;
+    var $linked_objects=array();
 
     var $user_author_id;
 
@@ -706,37 +707,44 @@ class Commande extends CommonObject
                     if ($this->id)
                     {
                         $this->ref="(PROV".$this->id.")";
-
-                        // Add linked object
-                        if ($this->origin && $this->origin_id)
+                        
+                        // Add object linked
+                        if (is_array($this->linked_objects) && ! empty($this->linked_objects))
                         {
-                            $ret = $this->add_object_linked();
-                            if (! $ret)	dol_print_error($this->db);
-                        }
-
-                        // TODO mutualiser
-                        if ($this->origin == 'propal' && $this->origin_id)
-                        {
-                            // On recupere les differents contact interne et externe
-                            $prop = new Propal($this->db, $this->socid, $this->origin_id);
-
-                            // On recupere le commercial suivi propale
-                            $this->userid = $prop->getIdcontact('internal', 'SALESREPFOLL');
-
-                            if ($this->userid)
-                            {
-                                //On passe le commercial suivi propale en commercial suivi commande
-                                $this->add_contact($this->userid[0], 'SALESREPFOLL', 'internal');
-                            }
-
-                            // On recupere le contact client suivi propale
-                            $this->contactid = $prop->getIdcontact('external', 'CUSTOMER');
-
-                            if ($this->contactid)
-                            {
-                                //On passe le contact client suivi propale en contact client suivi commande
-                                $this->add_contact($this->contactid[0], 'CUSTOMER', 'external');
-                            }
+                        	foreach($this->linked_objects as $origin => $origin_id)
+                        	{
+                        		$ret = $this->add_object_linked($origin, $origin_id);
+                        		if (! $ret)
+                        		{
+                        			dol_print_error($this->db);
+                        			$error++;
+                        		}
+                        		
+                        		// TODO mutualiser
+                        		if ($origin == 'propal' && $origin_id)
+                        		{
+                        			// On recupere les differents contact interne et externe
+                        			$prop = new Propal($this->db, $this->socid, $origin_id);
+                        		
+                        			// On recupere le commercial suivi propale
+                        			$this->userid = $prop->getIdcontact('internal', 'SALESREPFOLL');
+                        		
+                        			if ($this->userid)
+                        			{
+                        				//On passe le commercial suivi propale en commercial suivi commande
+                        				$this->add_contact($this->userid[0], 'SALESREPFOLL', 'internal');
+                        			}
+                        		
+                        			// On recupere le contact client suivi propale
+                        			$this->contactid = $prop->getIdcontact('external', 'CUSTOMER');
+                        		
+                        			if ($this->contactid)
+                        			{
+                        				//On passe le contact client suivi propale en contact client suivi commande
+                        				$this->add_contact($this->contactid[0], 'CUSTOMER', 'external');
+                        			}
+                        		}
+                        	}
                         }
                     }
 
@@ -2315,69 +2323,74 @@ class Commande extends CommonObject
         $error = 0;
 
         $this->db->begin();
-
-        // Delete order details
-        $sql = 'DELETE FROM '.MAIN_DB_PREFIX."commandedet WHERE fk_commande = ".$this->id;
-        dol_syslog("Commande::delete sql=".$sql);
-        if (! $this->db->query($sql) )
-        {
-            dol_syslog(get_class($this)."::delete error", LOG_ERR);
-            $error++;
-        }
-
-        // Delete order
-        $sql = 'DELETE FROM '.MAIN_DB_PREFIX."commande WHERE rowid = ".$this->id;
-        dol_syslog(get_class($this)."::delete sql=".$sql, LOG_DEBUG);
-        if (! $this->db->query($sql) )
-        {
-            dol_syslog(get_class($this)."::delete error", LOG_ERR);
-            $error++;
-        }
-
-        // Delete linked object
-        $res = $this->deleteObjectLinked();
-        if ($res < 0) $error++;
-
-        // Delete linked contacts
-        $res = $this->delete_linked_contact();
-        if ($res < 0) $error++;
-
-        // On efface le repertoire de pdf provisoire
-        $comref = dol_sanitizeFileName($this->ref);
-        if ($conf->commande->dir_output)
-        {
-            $dir = $conf->commande->dir_output . "/" . $comref ;
-            $file = $conf->commande->dir_output . "/" . $comref . "/" . $comref . ".pdf";
-            if (file_exists($file))	// We must delete all files before deleting directory
-            {
-                dol_delete_preview($this);
-
-                if (!dol_delete_file($file))
-                {
-                    $this->error=$langs->trans("ErrorCanNotDeleteFile",$file);
-                    $this->db->rollback();
-                    return 0;
-                }
-            }
-            if (file_exists($dir))
-            {
-                if (!dol_delete_dir($dir))
-                {
-                    $this->error=$langs->trans("ErrorCanNotDeleteDir",$dir);
-                    $this->db->rollback();
-                    return 0;
-                }
-            }
-        }
-
+        
         if (! $error && ! $notrigger)
         {
-            // Appel des triggers
-            include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
-            $interface=new Interfaces($this->db);
-            $result=$interface->run_triggers('ORDER_DELETE',$this,$user,$langs,$conf);
-            if ($result < 0) { $error++; $this->errors=$interface->errors; }
-            // Fin appel triggers
+        	// Appel des triggers
+        	include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+        	$interface=new Interfaces($this->db);
+        	$result=$interface->run_triggers('ORDER_DELETE',$this,$user,$langs,$conf);
+        	if ($result < 0) {
+        		$error++; $this->errors=$interface->errors;
+        	}
+        	// Fin appel triggers
+        }
+        
+        if (! $error)
+        {
+        	// Delete order details
+        	$sql = 'DELETE FROM '.MAIN_DB_PREFIX."commandedet WHERE fk_commande = ".$this->id;
+        	dol_syslog("Commande::delete sql=".$sql);
+        	if (! $this->db->query($sql) )
+        	{
+        		dol_syslog(get_class($this)."::delete error", LOG_ERR);
+        		$error++;
+        	}
+        	
+        	// Delete order
+        	$sql = 'DELETE FROM '.MAIN_DB_PREFIX."commande WHERE rowid = ".$this->id;
+        	dol_syslog(get_class($this)."::delete sql=".$sql, LOG_DEBUG);
+        	if (! $this->db->query($sql) )
+        	{
+        		dol_syslog(get_class($this)."::delete error", LOG_ERR);
+        		$error++;
+        	}
+        	
+        	// Delete linked object
+        	$res = $this->deleteObjectLinked();
+        	if ($res < 0) $error++;
+        	
+        	// Delete linked contacts
+        	$res = $this->delete_linked_contact();
+        	if ($res < 0) $error++;
+        	
+        	// On efface le repertoire de pdf provisoire
+        	$comref = dol_sanitizeFileName($this->ref);
+        	if ($conf->commande->dir_output)
+        	{
+        		$dir = $conf->commande->dir_output . "/" . $comref ;
+        		$file = $conf->commande->dir_output . "/" . $comref . "/" . $comref . ".pdf";
+        		if (file_exists($file))	// We must delete all files before deleting directory
+        		{
+        			dol_delete_preview($this);
+        	
+        			if (!dol_delete_file($file))
+        			{
+        				$this->error=$langs->trans("ErrorCanNotDeleteFile",$file);
+        				$this->db->rollback();
+        				return 0;
+        			}
+        		}
+        		if (file_exists($dir))
+        		{
+        			if (!dol_delete_dir($dir))
+        			{
+        				$this->error=$langs->trans("ErrorCanNotDeleteDir",$dir);
+        				$this->db->rollback();
+        				return 0;
+        			}
+        		}
+        	}
         }
         
         if (! $error)

@@ -183,6 +183,7 @@ insert into llx_c_chargesociales (id, libelle, deductible, active, code, fk_pays
 insert into llx_c_chargesociales (id, libelle, deductible, active, code, fk_pays) values (13, 'Cotisation sur la valeur ajoutée des entreprises', 0, 1, 'TAXCVAE', '1');
 
 ALTER TABLE llx_paiement ADD COLUMN entity integer DEFAULT 1 NOT NULL AFTER rowid;
+ALTER TABLE llx_product_price ADD COLUMN entity integer DEFAULT 1 NOT NULL AFTER rowid;
 
 -- Restore foreign key (on llx_expedition_methode before) on correct table (llx_c_shipment_mode)
 ALTER TABLE llx_expedition DROP FOREIGN KEY fk_expedition_fk_expedition_methode;
@@ -198,5 +199,6 @@ ALTER TABLE llx_actioncomm DROP COLUMN fk_commande;
 ALTER TABLE llx_product_stock DROP COLUMN location;
 -- DROP TABLE llx_c_methode_commande_fournisseur;
 -- DROP TABLE llx_c_source;
+-- DROP TABLE llx_cond_reglement;
 -- DROP TABLE llx_expedition_methode;
-
+-- DROP TABLE llx_product_fournisseur;

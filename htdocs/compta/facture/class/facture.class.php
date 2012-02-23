@@ -4,7 +4,7 @@
  * Copyright (C) 2004      Sebastien Di Cintio   <sdicintio@ressource-toi.org>
  * Copyright (C) 2004      Benoit Mortier        <benoit.mortier@opensides.be>
  * Copyright (C) 2005      Marc Barilley / Ocebo <marc@ocebo.com>
- * Copyright (C) 2005-2011 Regis Houssin         <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin         <regis@dolibarr.fr>
  * Copyright (C) 2006      Andre Cianfarani      <acianfa@free.fr>
  * Copyright (C) 2007      Franky Van Liedekerke <franky.van.liedekerke@telenet.be>
  * Copyright (C) 2010-2011 Juanjo Menent         <jmenent@2byte.es>
@@ -90,6 +90,7 @@ class Facture extends CommonObject
     var $fk_facture_source;
     var $origin;
     var $origin_id;
+    var $linked_objects=array();
     var $fk_project;
     var $date_lim_reglement;
     var $cond_reglement_id;			// Id in llx_c_paiement
@@ -242,14 +243,17 @@ class Facture extends CommonObject
             if (! $resql) $error++;
 
             // Add object linked
-            if (! $error && $this->id && $this->origin && $this->origin_id)
+            if (! $error && $this->id && is_array($this->linked_objects) && ! empty($this->linked_objects))
             {
-                $ret = $this->add_object_linked();
-                if (! $ret)
-                {
-                    dol_print_error($this->db);
-                    $error++;
-                }
+            	foreach($this->linked_objects as $origin => $origin_id)
+            	{
+            		$ret = $this->add_object_linked($origin, $origin_id);
+            		if (! $ret)
+            		{
+            			dol_print_error($this->db);
+            			$error++;
+            		}
+            	}
             }
 
             /*
@@ -856,6 +860,7 @@ class Facture extends CommonObject
                 $line->product_type     = $objp->product_type;	// Type of line
                 $line->product_ref      = $objp->product_ref;     // Ref product
                 $line->libelle          = $objp->label;           // Label product
+                $line->product_label	= $objp->product_label;
                 $line->product_desc     = $objp->product_desc;    // Description product
                 $line->fk_product_type  = $objp->fk_product_type;	// Type of product
                 $line->qty              = $objp->qty;
@@ -1116,10 +1121,10 @@ class Facture extends CommonObject
      *	Delete invoice
      *
      *	@param     	int		$rowid      	Id of invoice to delete. If empty, we delete current instance of invoice
-     *	@param		int		$notrigger		1=Does not execute triggers, 0= execuete triggers
+     *	@param		int		$notrigger		1=Does not execute triggers, 0= execute triggers
      *	@return		int						<0 if KO, >0 if OK
      */
-    function delete($rowid, $notrigger=0)
+    function delete($rowid=0, $notrigger=0)
     {
         global $user,$langs,$conf;
 
@@ -1132,9 +1137,24 @@ class Facture extends CommonObject
         $error=0;
         $this->db->begin();
 
-        // Delete linked object
-        $res = $this->deleteObjectLinked();
-        if ($res < 0) $error++;
+        if (! $error && ! $notrigger)
+        {
+        	// Appel des triggers
+        	include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+        	$interface=new Interfaces($this->db);
+        	$result=$interface->run_triggers('BILL_DELETE',$this,$user,$langs,$conf);
+        	if ($result < 0) {
+        		$error++; $this->errors=$interface->errors;
+        	}
+        	// Fin appel triggers
+        }
+
+        if (! $error)
+        {
+        	// Delete linked object
+        	$res = $this->deleteObjectLinked();
+        	if ($res < 0) $error++;
+        }
 
         if (! $error)
         {
@@ -1177,16 +1197,6 @@ class Facture extends CommonObject
                 $resql=$this->db->query($sql);
                 if ($resql)
                 {
-                	if (! $notrigger)
-                	{
-                		// Appel des triggers
-                		include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
-                		$interface=new Interfaces($this->db);
-                		$result=$interface->run_triggers('BILL_DELETE',$this,$user,$langs,$conf);
-                		if ($result < 0) { $error++; $this->errors=$interface->errors; }
-                		// Fin appel triggers
-                	}
-
                     $this->db->commit();
                     return 1;
                 }

@@ -1,7 +1,7 @@
 <?php
 /* Copyright (C) 2003      Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2010 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,19 +18,18 @@
  */
 
 /**
- * 		\defgroup   mymodule     Module MyModule
- *      \brief      Example of a module descriptor.
- *					Such a file must be copied into htdocs/mymodule/core/modules directory.
- *      \file       htdocs/mymodule/core/modules/modMyModule.class.php
- *      \ingroup    mymodule
- *      \brief      Description and activation file for module MyModule
+ * 	\defgroup   mymodule     Module MyModule
+ *  \brief      Example of a module descriptor.
+ *				Such a file must be copied into htdocs/mymodule/core/modules directory.
+ *  \file       htdocs/mymodule/core/modules/modMyModule.class.php
+ *  \ingroup    mymodule
+ *  \brief      Description and activation file for module MyModule
  */
 include_once(DOL_DOCUMENT_ROOT ."/core/modules/DolibarrModules.class.php");
 
 
 /**
- * 		\class      modMyModule
- *      \brief      Description and activation class for module MyModule
+ *  Description and activation class for module MyModule
  */
 class modMyModule extends DolibarrModules
 {
@@ -69,8 +68,18 @@ class modMyModule extends DolibarrModules
 		// If file is in module/img directory under name object_pictovalue.png, use this->picto='pictovalue@module'
 		$this->picto='generic';
 
-		// Defined if the directory /mymodule/core/triggers/ contains triggers or not
-		$this->triggers = 0;
+		// Defined all module parts (triggers, login, substitutions, menus, css, etc...)
+		// for default path (eg: /mymodule/core/triggers) (0=disable, 1=enable)
+		// for specific path of parts (eg: /core/modules/barcode)
+		// for specific css file (eg: /css/mymodule.css.php)
+		//$this->module_parts = array(	'triggers' => 1,
+		//								'login' => 0,
+		//								'substitutions' => 0,
+		//								'menus' => 0,
+		//								'css' => '/css/mymodule.css.php',
+		//								'barcode' => '/path/to/your/parts',
+		//								'hooks' => array('hookcontext1','hookcontext2'));
+		$this->module_parts = array();
 
 		// Data directories to create when module is enabled.
 		// Example: this->dirs = array("/mymodule/temp");
@@ -94,7 +103,6 @@ class modMyModule extends DolibarrModules
 		// List of particular constants to add when module is enabled (key, 'chaine', value, desc, visible, 'current' or 'allentities', deleteonunactive)
 		// Example: $this->const=array(0=>array('MYMODULE_MYNEWCONST1','chaine','myvalue','This is a constant to add',1),
 		//                             1=>array('MYMODULE_MYNEWCONST2','chaine','myvalue','This is another constant to add',0)
-		//                             2=>array('MAIN_MODULE_MYMODULE_HOOKS','chaine','hookcontext1:hookcontext2','To say: This module manage hooks in hookcontext1 and hookcontext2',1,'current',1)
 		// );
 		$this->const = array();
 
@@ -172,46 +180,46 @@ class modMyModule extends DolibarrModules
 		// Add here entries to declare new menus
 		//
 		// Example to declare a new Top Menu entry and its Left menu entry:
-		// $this->menu[$r]=array(	'fk_menu'=>0,			// Put 0 if this is a top menu
-		//							'type'=>'top',			// This is a Top menu entry
+		// $this->menu[$r]=array(	'fk_menu'=>0,			                // Put 0 if this is a top menu
+		//							'type'=>'top',			                // This is a Top menu entry
 		//							'titre'=>'MyModule top menu',
 		//							'mainmenu'=>'mymodule',
 		//							'leftmenu'=>'mymodule',
 		//							'url'=>'/mymodule/pagetop.php',
-		//							'langs'=>'mylangfile',	// Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
+		//							'langs'=>'mylangfile',	                // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 		//							'position'=>100,
-		//							'enabled'=>'1',			// Define condition to show or hide menu entry. Use '$conf->mymodule->enabled' if entry must be visible if module is enabled.
-		//							'perms'=>'1',			// Use 'perms'=>'$user->rights->mymodule->level1->level2' if you want your menu with a permission rules
+		//							'enabled'=>'$conf->mymodule->enabled',	// Define condition to show or hide menu entry. Use '$conf->mymodule->enabled' if entry must be visible if module is enabled.
+		//							'perms'=>'1',			                // Use 'perms'=>'$user->rights->mymodule->level1->level2' if you want your menu with a permission rules
 		//							'target'=>'',
-		//							'user'=>2);				// 0=Menu for internal users, 1=external users, 2=both
+		//							'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
 		// $r++;
-		// $this->menu[$r]=array(	'fk_menu'=>'r=0',		// Use r=value where r is index key used for the parent menu entry (higher parent must be a top menu entry)
-		//							'type'=>'left',			// This is a Left menu entry
+		// $this->menu[$r]=array(	'fk_menu'=>'r=0',		                // Use r=value where r is index key used for the parent menu entry (higher parent must be a top menu entry)
+		//							'type'=>'left',			                // This is a Left menu entry
 		//							'titre'=>'MyModule left menu',
 		//							'mainmenu'=>'mymodule',
 		//							'leftmenu'=>'mymodule',
 		//							'url'=>'/mymodule/pagelevel1.php',
-		//							'langs'=>'mylangfile',	// Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
+		//							'langs'=>'mylangfile',	                // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 		//							'position'=>100,
-		//							'enabled'=>'1',			// Define condition to show or hide menu entry. Use '$conf->mymodule->enabled' if entry must be visible if module is enabled.
-		//							'perms'=>'1',			// Use 'perms'=>'$user->rights->mymodule->level1->level2' if you want your menu with a permission rules
+		//							'enabled'=>'$conf->mymodule->enabled',	// Define condition to show or hide menu entry. Use '$conf->mymodule->enabled' if entry must be visible if module is enabled.
+		//							'perms'=>'1',			                // Use 'perms'=>'$user->rights->mymodule->level1->level2' if you want your menu with a permission rules
 		//							'target'=>'',
-		//							'user'=>2);				// 0=Menu for internal users, 1=external users, 2=both
+		//							'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
 		// $r++;
 		//
 		// Example to declare a Left Menu entry into an existing Top menu entry:
-		// $this->menu[$r]=array(	'fk_menu'=>'fk_mainmenu=mainmenucode',		// Use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy'
-		//							'type'=>'left',			// This is a Left menu entry
+		// $this->menu[$r]=array(	'fk_menu'=>'fk_mainmenu=mainmenucode',	// Use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy'
+		//							'type'=>'left',			                // This is a Left menu entry
 		//							'titre'=>'MyModule left menu',
 		//							'mainmenu'=>'mainmenucode',
 		//							'leftmenu'=>'mymodule',
 		//							'url'=>'/mymodule/pagelevel2.php',
-		//							'langs'=>'mylangfile',	// Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
+		//							'langs'=>'mylangfile',	                // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 		//							'position'=>100,
-		//							'enabled'=>'1',			// Define condition to show or hide menu entry. Use '$conf->mymodule->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
-		//							'perms'=>'1',			// Use 'perms'=>'$user->rights->mymodule->level1->level2' if you want your menu with a permission rules
+		//							'enabled'=>'$conf->mymodule->enabled',  // Define condition to show or hide menu entry. Use '$conf->mymodule->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
+		//							'perms'=>'1',			                // Use 'perms'=>'$user->rights->mymodule->level1->level2' if you want your menu with a permission rules
 		//							'target'=>'',
-		//							'user'=>2);				// 0=Menu for internal users, 1=external users, 2=both
+		//							'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
 		// $r++;
 
 

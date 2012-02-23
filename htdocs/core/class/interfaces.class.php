@@ -46,7 +46,7 @@ class Interfaces
     /**
      *   Function called when a Dolibarr business event occurs
      *   This function call all qualified triggers.
-     * 
+     *
      *   @param		string		$action     Trigger event code
      *   @param     Object		$object     Objet concern
      *   @param     User		$user       Objet user
@@ -68,31 +68,33 @@ class Interfaces
         }
 
         $nbfile = $nbtotal = $nbok = $nbko = 0;
-        
+
         $files = array();
         $modules = array();
         $orders = array();
 		$i=0;
 
-        foreach($conf->triggers_modules as $reldir)
+		$dirtriggers=array_merge(array('/core/triggers'),$conf->triggers_modules);
+        foreach($dirtriggers as $reldir)
         {
             $dir=dol_buildpath($reldir,0);
+            $newdir=dol_osencode($dir);
             //print "xx".$dir;exit;
 
-            // Check if directory exists
-            if (!is_dir($dir)) continue;
+            // Check if directory exists (we do not use dol_is_dir to avoir loading files.lib.php at each call)
+            if (! is_dir($newdir)) continue;
 
-            $handle=opendir($dir);
+            $handle=opendir($newdir);
             if (is_resource($handle))
             {
                 while (($file = readdir($handle))!==false)
                 {
-                    if (is_readable($dir."/".$file) && preg_match('/^interface_([0-9]+)_([^_]+)_(.+)\.class\.php$/i',$file,$reg))
+                    if (is_readable($newdir."/".$file) && preg_match('/^interface_([0-9]+)_([^_]+)_(.+)\.class\.php$/i',$file,$reg))
                     {
 						$part1=$reg[1];
 						$part2=$reg[2];
 						$part3=$reg[3];
-                    	
+
                         $nbfile++;
 
                         $modName = "Interface".ucfirst($reg[3]);
@@ -105,7 +107,7 @@ class Interfaces
                         }
                         else
                         {
-                            include_once($dir.'/'.$file);
+                            include_once($newdir.'/'.$file);
                         }
 
                         // Check if trigger file is disabled by name
@@ -124,17 +126,17 @@ class Interfaces
                             dol_syslog(get_class($this)."::run_triggers action=".$action." Triggers for file '".$file."' need module to be enabled",LOG_INFO);
                             continue;
                         }
-                        
+
                         $modules[$i] = $modName;
                         $files[$i] = $file;
                         $orders[$i] = $part1.'_'.$part2.'_'.$part3;   // Set sort criteria value
-                        
+
                         $i++;
                     }
                 }
             }
         }
-                
+
         asort($orders);
 
         // Loop on each trigger
@@ -189,39 +191,39 @@ class Interfaces
     /**
      *  Return list of triggers. Function used by admin page htdoc/admin/triggers.
      *  List is sorted by trigger filename so by priority to run.
-     * 
+     *
      * 	@return	array					Array list of triggers
      */
     function getTriggersList()
     {
         global $conf, $langs;
 
-        $form = new Form($this->db);
-
         $files = array();
         $modules = array();
         $orders = array();
         $i = 0;
 
-        foreach($conf->triggers_modules as $reldir)
+        $dirtriggers=array_merge(array('/core/triggers/'),$conf->triggers_modules);
+        foreach($dirtriggers as $reldir)
         {
             $dir=dol_buildpath($reldir,0);
+            $newdir=dol_osencode($dir);
             //print "xx".$dir;exit;
 
-            // Check if directory exists
-            if (!is_dir($dir)) continue;
+            // Check if directory exists (we do not use dol_is_dir to avoid loading files.lib.php at each call)
+            if (! is_dir($newdir)) continue;
 
-            $handle=opendir($dir);
+            $handle=opendir($newdir);
             if (is_resource($handle))
             {
                 while (($file = readdir($handle))!==false)
                 {
-                    if (is_readable($dir.'/'.$file) && preg_match('/^interface_([0-9]+)_([^_]+)_(.+)\.class\.php/',$file,$reg))
+                    if (is_readable($newdir.'/'.$file) && preg_match('/^interface_([0-9]+)_([^_]+)_(.+)\.class\.php/',$file,$reg))
                     {
 						$part1=$reg[1];
 						$part2=$reg[2];
 						$part3=$reg[3];
-                    	
+
                         $modName = 'Interface'.ucfirst($reg[3]);
                         //print "file=$file"; print "modName=$modName"; exit;
                         if (in_array($modName,$modules))
@@ -231,13 +233,13 @@ class Interfaces
                         }
                         else
                         {
-                            include_once($dir.'/'.$file);
+                            include_once($newdir.'/'.$file);
                         }
 
                         $files[$i] = $file;
                         $modules[$i] = $modName;
                         $orders[$i] = $part1.'_'.$part2.'_'.$part3;   // Set sort criteria value
-                        
+
                         $i++;
                     }
                 }
@@ -296,7 +298,7 @@ class Interfaces
                 if ($disabledbymodule == 2) $text.=$langs->trans("TriggerDisabledAsModuleDisabled",$module).'<br>';
             }
 
-            $triggers[$j]['info'] = $form->textwithpicto('',$text);
+            $triggers[$j]['info'] = $text;
             $j++;
         }
         return $triggers;
