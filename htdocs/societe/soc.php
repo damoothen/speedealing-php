@@ -256,6 +256,7 @@ if (empty($reshook))
                 if (empty($object->fournisseur)) $object->code_fournisseur='';
 
                 $result = $object->create($user);
+                print "toto";exit;
                 if ($result >= 0)
                 {
                     if ($object->particulier)

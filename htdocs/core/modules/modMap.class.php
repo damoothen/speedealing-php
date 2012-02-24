@@ -29,7 +29,7 @@
  *		\version	$Id: modMap.class.php,v 1.76 2010/10/01 23:37:37 eldy Exp $
  */
 
-include_once(DOL_DOCUMENT_ROOT ."/includes/modules/DolibarrModules.class.php");
+include_once(DOL_DOCUMENT_ROOT ."/core/modules/DolibarrModules.class.php");
 
 /**
  *       \class      modAdherent
