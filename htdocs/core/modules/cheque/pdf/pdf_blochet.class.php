@@ -103,7 +103,7 @@ class BordereauChequeBlochet extends ModeleChequeReceipts
 
 		if (! is_dir($dir))
 		{
-			$result=create_exdir($dir);
+			$result=dol_mkdir($dir);
 
 			if ($result < 0)
 			{
@@ -333,11 +333,12 @@ class BordereauChequeBlochet extends ModeleChequeReceipts
 
 
 	/**
-	 *   	\brief      Show footer of page
-	 *   	\param      pdf     		Object PDF
-	 * 		\param		object			Object cheque receipt
-	 *      \param      outputlangs		Object lang for output
-	 * 		\remarks	Need this->emetteur object
+	 *   	Show footer of page. Need this->emetteur object
+     *
+	 *   	@param	PDF			&$pdf     			PDF
+	 * 		@param	Object		$object				Object to show
+	 *      @param	Translate	$outputlangs		Object lang for output
+	 *      @return	void
 	 */
 	function _pagefoot(&$pdf,$object,$outputlangs)
 	{

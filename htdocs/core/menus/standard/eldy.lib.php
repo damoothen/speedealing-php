@@ -27,9 +27,10 @@
 /**
  * Core function to output top menu eldy
  *
- * @param $db
- * @param $atarget
- * @param $type_user     0=Internal,1=External,2=All
+ * @param 	DoliDB	$db				Database handler
+ * @param 	string	$atarget		Target
+ * @param 	int		$type_user     	0=Internal,1=External,2=All
+ * @return	void
  */
 function print_eldy_menu($db,$atarget,$type_user)
 {
@@ -162,7 +163,7 @@ function print_eldy_menu($db,$atarget,$type_user)
     if (! empty($conf->fournisseur->enabled)) $menuqualified++;
     if (! empty($conf->contrat->enabled)) $menuqualified++;
     if (! empty($conf->ficheinter->enabled)) $menuqualified++;
-    if ($menuqualified && !$conf->lead->enabled)
+    if ($menuqualified)
     {
 		$langs->load("commercial");
 
@@ -551,6 +552,7 @@ function print_end_menu_array()
  * @param	DoliDB		$db                  Database handler
  * @param 	array		$menu_array_before   Table of menu entries to show before entries of menu handler
  * @param   array		$menu_array_after    Table of menu entries to show after entries of menu handler
+ * @return	void
  */
 function print_left_eldy_menu($db,$menu_array_before,$menu_array_after)
 {

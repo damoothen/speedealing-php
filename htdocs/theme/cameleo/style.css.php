@@ -1372,14 +1372,11 @@ background: #c0c4c7;
 border: 0px;
 }
 
-
 .pair	{
 background: #FFFFFF;
 font-family: <?php print $fontlist ?>;
 border: 0px;
 }
-
-
 
 .pair:hover {
 background: #c0c4c7;
@@ -1390,23 +1387,29 @@ border: 0px;
 	padding: 2px;
 }
 
+.noshadow {
+	-moz-box-shadow: 0px 0px 0px #CCC !important;
+	-webkit-box-shadow: 0px 0px 0px #CCC !important;
+	box-shadow: 0px 0px 0px #CCC !important;
+}
+
+
 /*
  *  Boxes
  */
 
 .box {
-padding-right: 0px;
-padding-left: 0px;
-padding-bottom: 4px;
+	padding-right: 0px;
+	padding-left: 0px;
+	padding-bottom: 4px;
 }
 
 tr.box_titre {
-/*background-image: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/liste_titre2.png' ?>);*/
-background-repeat: repeat-x;
-color: #842F00;
-font-weight: normal;
-font-family: "Trebuchet MS",Arial,Helvetica,sans-serif;
-white-space: nowrap;
+	background-repeat: repeat-x;
+	color: #842F00;
+	font-weight: normal;
+	font-family: "Trebuchet MS",Arial,Helvetica,sans-serif;
+	white-space: nowrap;
   -moz-border-radius-topleft:6px;
   -moz-border-radius-topright:6px;
     border-top-left-radius:6px;
@@ -1792,7 +1795,7 @@ table.cal_event td { border: 0px; padding-<?php print $left; ?>: 0px; padding-<?
 /*  jQuery - jeditable                                                            */
 /* ============================================================================== */
 
-.editkey_textarea, .editkey_ckeditor, .editkey_text, .editkey_numeric, .editkey_select {
+.editkey_textarea, .editkey_ckeditor, .editkey_string, .editkey_email, .editkey_numeric, .editkey_select {
 	background: url(<?php echo dol_buildpath($path.'/theme/cameleo/img/edit.png',1) ?>) right top no-repeat;
 	cursor: pointer;
 }
@@ -1802,12 +1805,17 @@ table.cal_event td { border: 0px; padding-<?php print $left; ?>: 0px; padding-<?
 	cursor: pointer;
 }
 
-.editval_textarea:hover, .editval_ckeditor:hover, .editval_text:hover, .editval_numeric:hover, .editval_select:hover, .editval_datepicker:hover {
+.editval_textarea.active:hover, .editval_ckeditor.active:hover, .editval_string.active:hover, .editval_email.active:hover, .editval_numeric.active:hover, .editval_select.active:hover, .editval_datepicker.active:hover {
 	background: white;
 	cursor: pointer;
 }
 
-.editval_hover {
+.viewval_textarea.active:hover, .viewval_ckeditor.active:hover, .viewval_string.active:hover, .viewval_email.active:hover, .viewval_numeric.active:hover, .viewval_select.active:hover, .viewval_datepicker.active:hover {
+	background: white;
+	cursor: pointer;
+}
+
+.viewval_hover {
 	background: white;
 }
 

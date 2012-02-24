@@ -21,17 +21,14 @@
  *   	\file       htdocs/core/class/translate.class.php
  *      \ingroup    core
  *		\brief      File for Tanslate class
- *		\author	    Eric Seigne
- *		\author	    Laurent Destailleur
  */
 
 
 /**
- *      \class      Translate
- *		\brief      Class to manage translations
+ *		Class to manage translations
  */
-class Translate {
-
+class Translate
+{
 	var $dir;						// Directories that contains /langs subdirectory
 
 	var $defaultlang;				// Current language for current user
@@ -52,7 +49,7 @@ class Translate {
 	 *  @param	string	$dir            Force directory that contains /langs subdirectory (value is sometine '..' like into install/* pages or support/* pages).
 	 *  @param  Conf	$conf			Object with Dolibarr configuration
 	 */
-	function Translate($dir = "",$conf)
+	function Translate($dir,$conf)
 	{
 		if (! empty($conf->file->character_set_client)) $this->charset_output=$conf->file->character_set_client;	// If charset output is forced
 		if ($dir) $this->dir=array($dir);
@@ -64,12 +61,13 @@ class Translate {
 	 *  Set accessor for this->defaultlang
 	 *
 	 *  @param	string	$srclang     	Language to use
+	 *  @return	void
 	 */
-	function setDefaultLang($srclang='fr_FR')
+	function setDefaultLang($srclang='en_US')
 	{
 		global $conf;
 
-		//dol_syslog("Translate::setDefaultLang srclang=".$srclang,LOG_DEBUG);
+		//dol_syslog(get_class($this)."::setDefaultLang srclang=".$srclang,LOG_DEBUG);
 
 		// If a module ask to force a priority on langs directories (to use its own lang files)
 		if (! empty($conf->global->MAIN_FORCELANGDIR))
@@ -78,13 +76,13 @@ class Translate {
 			$i=0;
 			foreach($conf->file->dol_document_root as $dir)
 			{
-				$newdir=$dir.$conf->global->MAIN_FORCELANGDIR;
+				$newdir=$dir.$conf->global->MAIN_FORCELANGDIR;    // For example $conf->global->MAIN_FORCELANGDIR is '/mymodule' meaning we search files into '/mymodule/langs/xx_XX'
 				if (! in_array($newdir,$this->dir))
 				{
-				    $more['module_'.$i]=$newdir; $i++; // We add the forced dir into the array $more. Just after, we add entries into $more to list of lang dir $this->dir.
+				    $more['module_'.$i]=$newdir; $i++;   // We add the forced dir into the array $more. Just after, we add entries into $more to list of lang dir $this->dir.
 				}
 			}
-			$this->dir=array_merge($more,$this->dir);
+			$this->dir=array_merge($more,$this->dir);    // Forced dir ($more) are before standard dirs ($this->dir)
 		}
 
 		$this->origlang=$srclang;
@@ -102,7 +100,7 @@ class Translate {
 		// We redefine $srclang
 		$langpart=explode("_",$codetouse);
 		//print "Short before _ : ".$langpart[0].'/ Short after _ : '.$langpart[1].'<br>';
-		if (isset($langpart[1]))	// If it's for a codetouse that is a long code xx_YY
+		if (! empty($langpart[1]))	// If it's for a codetouse that is a long code xx_YY
 		{
 			// Array force long code from first part, even if long code is defined
 			$longforshort=array('ar'=>'ar_SA');
@@ -117,11 +115,12 @@ class Translate {
     	    // Array to convert short lang code into long code.
 	        $longforshort=array('ar'=>'ar_SA', 'el'=>'el_GR', 'ca'=>'ca_ES', 'en'=>'en_US', 'nb'=>'nb_NO', 'no'=>'nb_NO');
 			if (isset($longforshort[strtolower($langpart[0])])) $srclang=$longforshort[strtolower($langpart[0])];
-			else $srclang=strtolower($langpart[0])."_".strtoupper($langpart[0]);
+			else if (! empty($langpart[0])) $srclang=strtolower($langpart[0])."_".strtoupper($langpart[0]);
+			else $srclang='en_US';
 		}
 
 		$this->defaultlang=$srclang;
-		//print $this->defaultlang;
+		//print 'this->defaultlang='.$this->defaultlang;
 	}
 
 
@@ -162,9 +161,10 @@ class Translate {
 		// Check parameters
 		if (empty($domain))
 		{
-			dol_print_error('',"Translate::Load ErrorWrongParameters");
+			dol_print_error('',get_class($this)."::Load ErrorWrongParameters");
 			exit;
 		}
+		if ($this->defaultlang == 'none_NONE') return;    // Special language code to not translate keys
 
 		//dol_syslog("Translate::Load Start domain=".$domain." alt=".$alt." forcelangdir=".$forcelangdir." this->defaultlang=".$this->defaultlang);
 
@@ -249,7 +249,7 @@ class Translate {
 								$tab=explode('=',$line,2);
 								$key=trim($tab[0]);
 								//print "Domain=$domain, found a string for $tab[0] with value $tab[1]<br>";
-								if ((! empty($conf->global->MAIN_FORCELANGDIR) || empty($this->tab_translate[$key])) && isset($tab[1]))
+								if ((! empty($conf->global->MAIN_USE_CUSTOM_TRANSLATION) || empty($this->tab_translate[$key])) && isset($tab[1]))    // If data was already found, we must not enter here, even if MAIN_FORCELANGDIR is set (MAIN_FORCELANGDIR is to replace lang dir, not to overwrite)
 								{
 									$value=trim(preg_replace('/\\n/',"\n",$tab[1]));
 
@@ -285,7 +285,7 @@ class Translate {
 							}
 						}
 
-						if (empty($conf->global->MAIN_FORCELANGDIR)) break;		// Break loop on each root dir. If a module has forced dir, we do not stop loop.
+						if (empty($conf->global->MAIN_FORCELANGDIR) && empty($conf->global->MAIN_USE_CUSTOM_TRANSLATION)) break;		// Break loop on each root dir. If a module has forced dir, we do not stop loop.
 					}
 				}
 			}
@@ -476,9 +476,9 @@ class Translate {
 	/**
 	 *  Return translation of a key depending on country
 	 *
-	 *  @param       str            string root to translate
-	 *  @param       countrycode    country code (FR, ...)
-	 *  @return      string         translated string
+	 *  @param	string	$str            string root to translate
+	 *  @param  string	$countrycode    country code (FR, ...)
+	 *  @return	string         			translated string
 	 */
 	function transcountry($str, $countrycode)
 	{
@@ -490,9 +490,9 @@ class Translate {
 	/**
 	 *  Retourne la version traduite du texte passe en parametre complete du code pays
 	 *
-	 *  @param       str            string root to translate
-	 *  @param       countrycode    country code (FR, ...)
-	 *  @return      string         translated string
+	 *  @param	string	$str            string root to translate
+	 *  @param  string	$countrycode    country code (FR, ...)
+	 *  @return string         			translated string
 	 */
 	function transcountrynoentities($str, $countrycode)
 	{
@@ -504,9 +504,9 @@ class Translate {
 	/**
 	 *  Convert a string into output charset (this->charset_output that should be defined to conf->file->character_set_client)
 	 *
-	 *  @param      str            	String to convert
-	 *  @param		pagecodefrom	Page code of src string
-	 *  @return     string         	Converted string
+	 *  @param	string	$str            String to convert
+	 *  @param	string	$pagecodefrom	Page code of src string
+	 *  @return string         			Converted string
 	 */
 	function convToOutputCharset($str,$pagecodefrom='UTF-8')
 	{
@@ -519,10 +519,10 @@ class Translate {
 	/**
 	 *  Return list of all available languages
 	 *
-	 * 	@param		langdir		Directory to scan
-	 *  @param      maxlength   Max length for each value in combo box (will be truncated)
-	 *  @param		usecode		Show code instead of country name for language variant
-	 *  @return     array     	List of languages
+	 * 	@param	string	$langdir		Directory to scan
+	 *  @param  string	$maxlength   	Max length for each value in combo box (will be truncated)
+	 *  @param	int		$usecode		Show code instead of country name for language variant
+	 *  @return array     				List of languages
 	 */
 	function get_available_languages($langdir=DOL_DOCUMENT_ROOT,$maxlength=0,$usecode=0)
 	{
@@ -554,9 +554,9 @@ class Translate {
 	/**
 	 *  Return if a filename $filename exists for current language (or alternate language)
 	 *
-	 *  @param      filename        Language filename to search
-	 *  @param      searchalt       Search also alernate language file
-	 *  @return     boolean         true if exists and readable
+	 *  @param	string	$filename       Language filename to search
+	 *  @param  string	$searchalt      Search also alernate language file
+	 *  @return boolean         		true if exists and readable
 	 */
 	function file_exists($filename,$searchalt=0)
 	{
@@ -583,31 +583,31 @@ class Translate {
      *      This function need module "numberwords" to be installed. If not it will return
      *      same number (this module is not provided by default as it use non GPL source code).
 	 *
-	 *		@param		number		Number to encode in full text
-	 * 		@param		isamount	1=It's an amount, 0=it's just a number
-	 *      @return     string		Label translated in UTF8 (but without entities)
-	 * 								10 if setDefaultLang was en_US => ten
-	 * 								123 if setDefaultLang was fr_FR => cent vingt trois
+	 *		@param	int		$number		Number to encode in full text
+	 * 		@param	int		$isamount	1=It's an amount, 0=it's just a number
+	 *      @return string				Label translated in UTF8 (but without entities)
+	 * 									10 if setDefaultLang was en_US => ten
+	 * 									123 if setDefaultLang was fr_FR => cent vingt trois
 	 */
 	function getLabelFromNumber($number,$isamount=0)
 	{
 		global $conf;
 
-		/*
-		$outlang=$this->defaultlang;	// Output language we want
-		$outlangarray=explode('_',$outlang,2);
-		// If lang is xx_XX, then we use xx
-		if (strtolower($outlangarray[0]) == strtolower($outlangarray[1])) $outlang=$outlangarray[0];
-		*/
-
 		$newnumber=$number;
-		foreach ($conf->file->dol_document_root as $dirroot)
+
+		$dirsubstitutions=array_merge(array(),$conf->substitutions_modules);
+		foreach($dirsubstitutions as $reldir)
 		{
-			$dir=$dirroot."/core/modules/substitutions";
+		    $dir=dol_buildpath($reldir,0);
+		    $newdir=dol_osencode($dir);
+
+		    // Check if directory exists
+		    if (! dol_is_dir($dir)) continue;
+
 			$fonc='numberwords';
-			if (file_exists($dir.'/functions_'.$fonc.'.lib.php'))
+			if (file_exists($newdir.'/functions_'.$fonc.'.lib.php'))
 			{
-				include_once($dir.'/functions_'.$fonc.'.lib.php');
+				include_once($newdir.'/functions_'.$fonc.'.lib.php');
 				$newnumber=numberwords_getLabelFromNumber($this,$number,$isamount);
 				break;
 			}
@@ -621,12 +621,12 @@ class Translate {
 	 *      Return a label for a key. Store key-label into cache variable $this->cache_labels to save SQL requests to get labels.
 	 *      This function can be used to get label in database but more often to get code from key id.
 	 *
-	 * 		@param		db			Database handler
-	 * 		@param		key			Key to get label (key in language file)
-	 * 		@param		tablename	Table name without prefix
-	 * 		@param		fieldkey	Field for key
-	 * 		@param		fieldlabel	Field for label
-	 *      @return     string		Label in UTF8 (but without entities)
+	 * 		@param	DoliBD	$db			Database handler
+	 * 		@param	string	$key		Key to get label (key in language file)
+	 * 		@param	string	$tablename	Table name without prefix
+	 * 		@param	string	$fieldkey	Field for key
+	 * 		@param	string	$fieldlabel	Field for label
+	 *      @return string				Label in UTF8 (but without entities)
 	 */
 	function getLabelFromKey($db,$key,$tablename,$fieldkey,$fieldlabel)
 	{

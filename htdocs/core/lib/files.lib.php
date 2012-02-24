@@ -21,19 +21,6 @@
  *  \brief		Library for file managing functions
  */
 
-/**
- *  Return user/group account of web server
- *
- *  @param	string	$mode       'user' or 'group'
- *  @return string				Return user or group of web server
- */
-function dol_getwebuser($mode)
-{
-    $t='?';
-    if ($mode=='user')  $t=getenv('APACHE_RUN_USER');   // $_ENV['APACHE_RUN_USER'] is empty
-    if ($mode=='group') $t=getenv('APACHE_RUN_GROUP');
-    return $t;
-}
 
 /**
  *  Scan a directory and return a list of files/directories.
@@ -44,7 +31,7 @@ function dol_getwebuser($mode)
  *  @param	int		$recursive		Determines whether subdirectories are searched
  *  @param	string	$filter        	Regex for include filter
  *  @param	string	$excludefilter  Array of Regex for exclude filter (example: array('\.meta$','^\.')
- *  @param	string	$sortcriteria	Sort criteria ("","name","date","size")
+ *  @param	string	$sortcriteria	Sort criteria ("","fullname","name","date","size")
  *  @param	string	$sortorder		Sort order (SORT_ASC, SORT_DESC)
  *	@param	int		$mode			0=Return array minimum keys loaded (faster), 1=Force all keys like date and size to be loaded (slower), 2=Force load of date only, 3=Force load of size only
  *  @return	array					Array of array('name'=>'xxx','fullname'=>'/abc/xxx','date'=>'yyy','size'=>99,'type'=>'dir|file')
@@ -136,15 +123,18 @@ function dol_dir_list($path, $types="all", $recursive=0, $filter="", $excludefil
 		closedir($dir);
 
 		// Obtain a list of columns
-		$myarray=array();
-		foreach ($file_list as $key => $row)
+		if ($sortcriteria)
 		{
-			$myarray[$key]  = $row[$sortcriteria];
+    		$myarray=array();
+    		foreach ($file_list as $key => $row)
+    		{
+    			$myarray[$key]  = $row[$sortcriteria];
+    		}
+    		// Sort the data
+    		if ($sortorder) array_multisort($myarray, $sortorder, $file_list);
 		}
-		// Sort the data
-		if ($sortorder) array_multisort($myarray, $sortorder, $file_list);
-                
-                return $file_list;
+
+		return $file_list;
 	}
 	else
 	{
@@ -329,7 +319,7 @@ function dol_is_file($pathoffile)
  */
 function dol_is_url($url)
 {
-    $tmpprot=array('file','http','ftp','zlib','data','ssh2','ogg','expect');
+    $tmpprot=array('file','http','https','ftp','zlib','data','ssh','ssh2','ogg','expect');
     foreach($tmpprot as $prot)
     {
         if (preg_match('/^'.$prot.':/i',$url)) return true;
@@ -350,7 +340,7 @@ function dol_dir_is_emtpy($folder)
 	if (is_dir($newfolder))
 	{
 		$handle = opendir($newfolder);
-		while ((gettype( $name = readdir($handle)) != "boolean"))
+		while ((gettype($name = readdir($handle)) != "boolean"))
 		{
 			$name_array[] = $name;
 		}
@@ -383,7 +373,8 @@ function dol_count_nb_of_line($file)
 		while (!feof($fp))
 		{
 			$line=fgets($fp);
-			$nb++;
+            // We increase count only if read was success. We need test because feof return true only after fgets so we do n+1 fgets for a file with n lines.
+			if (! $line === false) $nb++;
 		}
 		fclose($fp);
 	}
@@ -421,32 +412,48 @@ function dol_filemtime($pathoffile)
 }
 
 /**
- * Copy a file to another file
- * @param	$srcfile			Source file (can't be a directory)
- * @param	$destfile			Destination file (can't be a directory)
- * @param	$newmask			Mask for new file (0 by default means $conf->global->MAIN_UMASK)
- * @param 	$overwriteifexists	Overwrite file if exists (1 by default)
- * @return	boolean				True if OK, false if KO
+ * Copy a file to another file.
+ *
+ * @param	string	$srcfile			Source file (can't be a directory)
+ * @param	string	$destfile			Destination file (can't be a directory)
+ * @param	int		$newmask			Mask for new file (0 by default means $conf->global->MAIN_UMASK)
+ * @param 	int		$overwriteifexists	Overwrite file if exists (1 by default)
+ * @return	int							<0 if error, 0 if nothing done (dest file already exists and overwriteifexists=0), >0 if OK
  */
 function dol_copy($srcfile, $destfile, $newmask=0, $overwriteifexists=1)
 {
 	global $conf;
-	$result=false;
 
 	dol_syslog("files.lib.php::dol_copy srcfile=".$srcfile." destfile=".$destfile." newmask=".$newmask." overwritifexists=".$overwriteifexists);
-	if ($overwriteifexists || ! dol_is_file($destfile))
+	$destexists=dol_is_file($destfile);
+	if (! $overwriteifexists && $destexists) return 0;
+
+	$newpathofsrcfile=dol_osencode($srcfile);
+    $newpathofdestfile=dol_osencode($destfile);
+    $newdirdestfile=dirname($newpathofdestfile);
+
+    if ($destexists && ! is_writable($newpathofdestfile))
+    {
+        dol_syslog("files.lib.php::dol_copy failed Permission denied to overwrite target file", LOG_WARNING);
+        return -1;
+    }
+    if (! is_writable($newdirdestfile))
+    {
+        dol_syslog("files.lib.php::dol_copy failed Permission denied to write into target directory ".$newdirdestfile, LOG_WARNING);
+        return -2;
+    }
+    // Copy with overwriting if exists
+    $result=@copy($newpathofsrcfile, $newpathofdestfile);
+	//$result=copy($newpathofsrcfile, $newpathofdestfile);	// To see errors, remove @
+	if (! $result)
 	{
-        $newpathofsrcfile=dol_osencode($srcfile);
-        $newpathofdestfile=dol_osencode($destfile);
-
-        $result=@copy($newpathofsrcfile, $newpathofdestfile);
-		//$result=copy($srcfile, $destfile);	// To see errors, remove @
-		if (! $result) dol_syslog("files.lib.php::dol_copy failed", LOG_WARNING);
-		if (empty($newmask) && ! empty($conf->global->MAIN_UMASK)) $newmask=$conf->global->MAIN_UMASK;
-		@chmod($newpathofdestfile, octdec($newmask));
+	    dol_syslog("files.lib.php::dol_copy failed to copy", LOG_WARNING);
+	    return -3;
 	}
+	if (empty($newmask) && ! empty($conf->global->MAIN_UMASK)) $newmask=$conf->global->MAIN_UMASK;
+	@chmod($newpathofdestfile, octdec($newmask));
 
-	return $result;
+	return 1;
 }
 
 /**
@@ -535,7 +542,7 @@ function dol_move_uploaded_file($src_file, $dest_file, $allowoverwrite, $disable
 		if ($result < 0)	// If virus or error, we stop here
 		{
 			$reterrors=$antivir->errors;
-			dol_syslog('Functions.lib::dol_move_uploaded_file File "'.$src_file.'" (target name "'.$file_name.'") KO with antivirus: result='.$result.' errors='.join(',',$antivir->errors), LOG_WARNING);
+			dol_syslog('Files.lib::dol_move_uploaded_file File "'.$src_file.'" (target name "'.$file_name.'") KO with antivirus: result='.$result.' errors='.join(',',$antivir->errors), LOG_WARNING);
 			return 'ErrorFileIsInfectedWithAVirus: '.join(',',$reterrors);
 		}
 	}
@@ -577,7 +584,7 @@ function dol_move_uploaded_file($src_file, $dest_file, $allowoverwrite, $disable
 	{
 		if (file_exists($file_name_osencoded))
 		{
-			dol_syslog("Functions.lib::dol_move_uploaded_file File ".$file_name." already exists", LOG_WARNING);
+			dol_syslog("Files.lib::dol_move_uploaded_file File ".$file_name." already exists. Return 'ErrorFileAlreadyExists'", LOG_WARNING);
 			return 'ErrorFileAlreadyExists';
 		}
 	}
@@ -587,7 +594,7 @@ function dol_move_uploaded_file($src_file, $dest_file, $allowoverwrite, $disable
 	if ($return)
 	{
 		if (! empty($conf->global->MAIN_UMASK)) @chmod($file_name_osencoded, octdec($conf->global->MAIN_UMASK));
-		dol_syslog("Functions.lib::dol_move_uploaded_file Success to move ".$src_file." to ".$file_name." - Umask=".$conf->global->MAIN_UMASK, LOG_DEBUG);
+		dol_syslog("Files.lib::dol_move_uploaded_file Success to move ".$src_file." to ".$file_name." - Umask=".$conf->global->MAIN_UMASK, LOG_DEBUG);
 
 		if (! $notrigger && is_object($object))
 		{
@@ -605,7 +612,7 @@ function dol_move_uploaded_file($src_file, $dest_file, $allowoverwrite, $disable
 	}
 	else
 	{
-		dol_syslog("Functions.lib::dol_move_uploaded_file Failed to move ".$src_file." to ".$file_name, LOG_ERR);
+		dol_syslog("Files.lib::dol_move_uploaded_file Failed to move ".$src_file." to ".$file_name, LOG_ERR);
 		return -3;	// Unknown error
 	}
 }
@@ -681,10 +688,11 @@ function dol_delete_dir($dir,$nophperrors=0)
 
 /**
  *  Remove a directory $dir and its subdirectories
- *  @param      dir             Dir to delete
- *  @param      count           Counter to count nb of deleted elements
- *  @param      nophperrors     Disable all PHP output errors
- *  @return     int             Number of files and directory removed
+ *
+ *  @param	string	$dir            Dir to delete
+ *  @param  int		$count          Counter to count nb of deleted elements
+ *  @param  int		$nophperrors    Disable all PHP output errors
+ *  @return int             		Number of files and directory removed
  */
 function dol_delete_dir_recursive($dir,$count=0,$nophperrors=0)
 {
@@ -800,7 +808,7 @@ function dol_meta_create($object)
 
 		if (! is_dir($dir))
 		{
-			create_exdir($dir);
+			dol_mkdir($dir);
 		}
 
 		if (is_dir($dir))
@@ -977,8 +985,9 @@ function dol_remove_file_process($filenb,$donotupdatesession=0,$donotdeletefile=
  * 	Convert an image file into antoher format.
  *  This need Imagick php extension.
  *
- *  @param	string	$file        Input file name
- *  @param  string	$ext         Extension of target file
+ *  @param	string	$file       Input file name
+ *  @param  string	$ext        Extension of target file
+ *  @return	int					<0 if KO, >0 if OK
  */
 function dol_convert_file($file,$ext='png')
 {
@@ -1011,9 +1020,10 @@ function dol_convert_file($file,$ext='png')
 /**
  * Compress a file
  *
- * @param string	$inputfile		Source file name
- * @param string	$outputfile		Target file name
- * @param string	$mode			'gz' or 'bz'
+ * @param 	string	$inputfile		Source file name
+ * @param 	string	$outputfile		Target file name
+ * @param 	string	$mode			'gz' or 'bz'
+ * @return	int						<0 if KO, >0 if OK
  */
 function dol_compress_file($inputfile, $outputfile, $mode="gz")
 {

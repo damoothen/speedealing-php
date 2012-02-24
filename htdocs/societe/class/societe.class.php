@@ -40,13 +40,15 @@ class Societe extends CommonObject
     public $element='societe';
     public $table_element = 'societe';
 	public $fk_element='fk_soc';
-    protected $childtables=array("propal","commande","facture","contrat","facture_fourn","commande_fournisseur");
+    protected $childtables=array("propal","commande","facture","contrat","facture_fourn","commande_fournisseur");    // To test if we can delete object
     protected $ismultientitymanaged = 1;	// 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
 
     var $id;
     var $name;
     var $nom;      // TODO obsolete
+    var $firstname;
     var $particulier;
+    var $civility_id;
     var $address;
     var $adresse;  // TODO obsolete
     var $cp;       // TODO obsolete
@@ -58,13 +60,13 @@ class Societe extends CommonObject
     var $state_id;
     var $state_code;
     var $state;
-    var $departement_id;
-    var $departement_code;
-    var $departement;
+    var $departement_id;     // deprecated
+    var $departement_code;   // deprecated
+    var $departement;        // deprecated
 
-    var $pays_id;   // TODO obsolete
-    var $pays_code; // TODO obsolete
-    var $pays;	    // TODO obsolete
+    var $pays_id;   // deprecated
+    var $pays_code; // deprecated
+    var $pays;	    // deprecated
     var $country_id;
     var $country_code;
     var $country;
@@ -256,7 +258,6 @@ class Societe extends CommonObject
                     $result=$interface->run_triggers('COMPANY_CREATE',$this,$user,$langs,$conf);
                     if ($result < 0) { $error++; $this->errors=$interface->errors; }
                     // Fin appel triggers
-print "toto2";exit;
                     dol_syslog(get_class($this)."::Create success id=".$this->id);
                     $this->db->commit();
                     return $this->id;
@@ -623,15 +624,15 @@ print "toto2";exit;
     /**
      *    Load a third party from database into memory
      *
-     *    @param      rowid			Id of third party to load
-     *    @param      ref			Reference of third party, name (Warning, this can return several records)
-     *    @param      ref_ext       External reference of third party (Warning, this information is a free field not provided by Dolibarr)
-     *    @param      ref_int       Internal reference of third party
-     *    @param      idprof1		Prof id 1 of third party (Warning, this can return several records)
-     *    @param      idprof2		Prof id 2 of third party (Warning, this can return several records)
-     *    @param      idprof3		Prof id 3 of third party (Warning, this can return several records)
-     *    @param      idprof4		Prof id 4 of third party (Warning, this can return several records)
-     *    @return     int			>0 if OK, <0 if KO or if two records found for same ref or idprof.
+     *    @param	int		$rowid			Id of third party to load
+     *    @param    string	$ref			Reference of third party, name (Warning, this can return several records)
+     *    @param    string	$ref_ext       	External reference of third party (Warning, this information is a free field not provided by Dolibarr)
+     *    @param    string	$ref_int       	Internal reference of third party
+     *    @param    string	$idprof1		Prof id 1 of third party (Warning, this can return several records)
+     *    @param    string	$idprof2		Prof id 2 of third party (Warning, this can return several records)
+     *    @param    string	$idprof3		Prof id 3 of third party (Warning, this can return several records)
+     *    @param    string	$idprof4		Prof id 4 of third party (Warning, this can return several records)
+     *    @return   int						>0 if OK, <0 if KO or if two records found for same ref or idprof.
      */
     function fetch($rowid, $ref='', $ref_ext='', $ref_int='', $idprof1='',$idprof2='',$idprof3='',$idprof4='')
     {
@@ -661,7 +662,7 @@ print "toto2";exit;
         $sql .= ', fj.libelle as forme_juridique';
         $sql .= ', e.libelle as effectif';
         $sql .= ', p.code as country_code, p.libelle as country';
-        $sql .= ', d.code_departement as departement_code, d.nom as departement';
+        $sql .= ', d.code_departement as state_code, d.nom as state';
         $sql .= ', st.libelle as stcomm, st.type as type';
         $sql .= ', te.code as typent_code';
         $sql .= ' FROM '.MAIN_DB_PREFIX.'societe as s';
@@ -672,13 +673,13 @@ print "toto2";exit;
         $sql .= ' LEFT JOIN '.MAIN_DB_PREFIX.'c_departements as d ON s.fk_departement = d.rowid';
         $sql .= ' LEFT JOIN '.MAIN_DB_PREFIX.'c_typent as te ON s.fk_typent = te.id';
         if ($rowid) $sql .= ' WHERE s.rowid = '.$rowid;
-        if ($ref)   $sql .= " WHERE s.nom = '".$this->db->escape($ref)."' AND s.entity = ".$conf->entity;
-        if ($ref_ext) $sql .= " WHERE s.ref_ext = '".$this->db->escape($ref_ext)."' AND s.entity = ".$conf->entity;
-        if ($ref_int) $sql .= " WHERE s.ref_int = '".$this->db->escape($ref_int)."' AND s.entity = ".$conf->entity;
-        if ($idprof1) $sql .= " WHERE s.siren = '".$this->db->escape($idprof1)."' AND s.entity = ".$conf->entity;
-        if ($idprof2) $sql .= " WHERE s.siret = '".$this->db->escape($idprof2)."' AND s.entity = ".$conf->entity;
-        if ($idprof3) $sql .= " WHERE s.ape = '".$this->db->escape($idprof3)."' AND s.entity = ".$conf->entity;
-        if ($idprof4) $sql .= " WHERE s.idprof4 = '".$this->db->escape($idprof4)."' AND s.entity = ".$conf->entity;
+        if ($ref)   $sql .= " WHERE s.nom = '".$this->db->escape($ref)."' AND s.entity IN (".getEntity($this->element, 1).")";
+        if ($ref_ext) $sql .= " WHERE s.ref_ext = '".$this->db->escape($ref_ext)."' AND s.entity IN (".getEntity($this->element, 1).")";
+        if ($ref_int) $sql .= " WHERE s.ref_int = '".$this->db->escape($ref_int)."' AND s.entity IN (".getEntity($this->element, 1).")";
+        if ($idprof1) $sql .= " WHERE s.siren = '".$this->db->escape($idprof1)."' AND s.entity IN (".getEntity($this->element, 1).")";
+        if ($idprof2) $sql .= " WHERE s.siret = '".$this->db->escape($idprof2)."' AND s.entity IN (".getEntity($this->element, 1).")";
+        if ($idprof3) $sql .= " WHERE s.ape = '".$this->db->escape($idprof3)."' AND s.entity IN (".getEntity($this->element, 1).")";
+        if ($idprof4) $sql .= " WHERE s.idprof4 = '".$this->db->escape($idprof4)."' AND s.entity IN (".getEntity($this->element, 1).")";
 
         $resql=$this->db->query($sql);
         dol_syslog(get_class($this)."::fetch ".$sql);
@@ -700,7 +701,7 @@ print "toto2";exit;
 
                 $this->ref          = $obj->rowid;
                 $this->name 		= $obj->name;
-                $this->nom          = $obj->name;		// TODO obsolete
+                $this->nom          = $obj->name;		// deprecated
                 $this->ref_ext      = $obj->ref_ext;
                 $this->ref_int      = $obj->ref_int;
 
@@ -722,8 +723,8 @@ print "toto2";exit;
                 $this->country 		= $obj->country_id?($langs->trans('Country'.$obj->country_code)!='Country'.$obj->country_code?$langs->trans('Country'.$obj->country_code):$obj->country):'';
 
                 $this->state_id     = $obj->fk_departement;
-                $this->state_code   = $obj->departement_code;
-                $this->state        = $obj->departement;
+                $this->state_code   = $obj->state_code;
+                $this->state        = $obj->state;
 
                 $transcode=$langs->trans('StatusProspect'.$obj->fk_stcomm);
                 $libelle=($transcode!='StatusProspect'.$obj->fk_stcomm?$transcode:$obj->stcomm);
@@ -978,6 +979,8 @@ print "toto2";exit;
 
     /**
      *    Update record to set prefix
+     *
+     *    @return	void
      */
     function attribute_prefix()
     {
@@ -1008,7 +1011,7 @@ print "toto2";exit;
                     {
                         $sql = "UPDATE ".MAIN_DB_PREFIX."societe set prefix_comm='".$prefix."' WHERE rowid='".$this->id."'";
 
-                        if ( $this->db->query( $sql) )
+                        if ( $this->db->query($sql) )
                         {
 
                         }
@@ -1032,10 +1035,11 @@ print "toto2";exit;
     }
 
     /**
-     *    \brief      Genere le prefix de la societe
-     *    \param      nom         nom de la societe
-     *    \param      taille      taille du prefix a retourner
-     *    \param      mot         l'indice du mot a utiliser
+     *  Genere le prefix de la societe
+     *
+     *  @param      nom         nom de la societe
+     *  @param      taille      taille du prefix a retourner
+     *  @param      mot         l'indice du mot a utiliser
      */
     function genprefix($nom, $taille=4, $mot=0)
     {
@@ -1358,6 +1362,8 @@ print "toto2";exit;
     {
         global $conf,$langs;
 
+        $name=$this->name?$this->name:$this->nom;
+
         $result='';
         $lien=$lienfin='';
 
@@ -1389,8 +1395,6 @@ print "toto2";exit;
         // Add type of canvas
         $lien.=(!empty($this->canvas)?'&amp;canvas='.$this->canvas:'').'">';
         $lienfin='</a>';
-
-        $name=$this->name?$this->name:$this->nom;
 
         if ($withpicto) $result.=($lien.img_object($langs->trans("ShowCompany").': '.$name,'company').$lienfin);
         if ($withpicto && $withpicto != 2) $result.=' ';
@@ -2042,7 +2046,7 @@ print "toto2";exit;
         // Verifie SIRET si pays FR
         if ($idprof == 2 && $soc->country_code == 'FR')
         {
-            $chaine=trim($this->idprof1);
+            $chaine=trim($this->idprof2);
             $chaine=preg_replace('/(\s)/','',$chaine);
 
             if (dol_strlen($chaine) != 14) return -1;
@@ -2113,9 +2117,10 @@ print "toto2";exit;
 
     /**
      *   Renvoi url de verification d'un identifiant professionnal
-     *   @param      idprof          1,2,3,4 (Exemple: 1=siren,2=siret,3=naf,4=rcs/rm)
-     *   @param      soc             Objet societe
-     *   @return     string          url ou chaine vide si aucune url connue
+     *
+     *   @param		int		$idprof         1,2,3,4 (Exemple: 1=siren,2=siret,3=naf,4=rcs/rm)
+     *   @param 	Societe	$soc            Objet societe
+     *   @return	string          		url ou chaine vide si aucune url connue
      *   TODO not in business class
      */
     function id_prof_url($idprof,$soc)
@@ -2135,8 +2140,9 @@ print "toto2";exit;
     }
 
     /**
-     *      \brief      Indique si la societe a des projets
-     *      \return     bool	   true si la societe a des projets, false sinon
+     *   Indique si la societe a des projets
+     *
+     *   @return     bool	   true si la societe a des projets, false sinon
      */
     function has_projects()
     {
@@ -2159,28 +2165,10 @@ print "toto2";exit;
 
 
     /**
-     * Add permissions
-     * @param   user_id
-     * @param   read
-     * @param   write
-     * @param   perms
-     */
-    function AddPerms($user_id, $read, $write, $perms)
-    {
-        $sql = "INSERT INTO ".MAIN_DB_PREFIX."societe_perms";
-        $sql .= " (fk_soc, fk_user, pread, pwrite, pperms) ";
-        $sql .= " VALUES (".$this->id.",".$user_id.",".$read.",".$write.",".$perms.");";
-
-        $resql=$this->db->query($sql);
-        if ($resql)
-        {
-
-        }
-    }
-
-    /**
-     *       Charge les informations d'ordre info dans l'objet societe
-     *       @param     id     Id de la societe a charger
+     *  Charge les informations d'ordre info dans l'objet societe
+     *
+     *  @param  int		$id     Id de la societe a charger
+     *  @return	void
      */
     function info($id)
     {

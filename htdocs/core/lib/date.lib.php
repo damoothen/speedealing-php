@@ -31,50 +31,125 @@
  */
 function get_tz_array()
 {
-    $tzarray=array( -11=>"Pacific/Midway",
-                    -10=>"Pacific/Fakaofo",
-                    -9=>"America/Anchorage",
-                    -8=>"America/Los_Angeles",
-                    -7=>"America/Dawson_Creek",
-                    -6=>"America/Chicago",
-                    -5=>"America/Bogota",
-                    -4=>"America/Anguilla",
-                    -3=>"America/Araguaina",
-                    -2=>"America/Noronha",
-                    -1=>"Atlantic/Azores",
-                    0=>"Africa/Abidjan",
-                    1=>"Europe/Paris",
-                    2=>"Europe/Helsinki",
-                    3=>"Europe/Moscow",
-                    4=>"Asia/Dubai",
-                    5=>"Asia/Karachi",
-                    6=>"Indian/Chagos",
-                    7=>"Asia/Jakarta",
-                    8=>"Asia/Hong_Kong",
-                    9=>"Asia/Tokyo",
-                    10=>"Australia/Sydney",
-                    11=>"Pacific/Noumea",
-                    12=>"Pacific/Auckland",
-                    13=>"Pacific/Enderbury"
-                    );
+    $tzarray=array(
+        -11=>"Pacific/Midway",
+        -10=>"Pacific/Fakaofo",
+        -9=>"America/Anchorage",
+        -8=>"America/Los_Angeles",
+        -7=>"America/Dawson_Creek",
+        -6=>"America/Chicago",
+        -5=>"America/Bogota",
+        -4=>"America/Anguilla",
+        -3=>"America/Araguaina",
+        -2=>"America/Noronha",
+        -1=>"Atlantic/Azores",
+        0=>"Africa/Abidjan",
+        1=>"Europe/Paris",
+        2=>"Europe/Helsinki",
+        3=>"Europe/Moscow",
+        4=>"Asia/Dubai",
+        5=>"Asia/Karachi",
+        6=>"Indian/Chagos",
+        7=>"Asia/Jakarta",
+        8=>"Asia/Hong_Kong",
+        9=>"Asia/Tokyo",
+        10=>"Australia/Sydney",
+        11=>"Pacific/Noumea",
+        12=>"Pacific/Auckland",
+        13=>"Pacific/Enderbury"
+    );
     return $tzarray;
 }
 
 
 /**
- * Return server timezone
+ * Return server timezone string
  *
- * @return string	TimeZone
+ * @return string			PHP server timezone string ('Europe/Paris')
  */
-function getCurrentTimeZone()
+function getServerTimeZoneString()
 {
-    // Method 1
-    //$tzstring=date_default_timezone_get(); // Then convert into tz
+    if (function_exists('date_default_timezone_get')) return date_default_timezone_get();
+    else return '';
+}
 
-    // Method 2
-    $tmp=dol_mktime(0,0,0,1,1,1970);
-    $tz=($tmp<0?'+':'-').sprintf("%02d",abs($tmp/3600));
+/**
+ * Return server timezone int.
+ * If $conf->global->MAIN_NEW_DATE is set, we use new behaviour: All convertions take care of dayling saving time.
+ *
+ * @param	string	$refgmtdate		Reference date for timezone (timezone differs on winter and summer)
+ * @return 	int						An offset in hour (+1 for Europe/Paris on winter and +2 for Europe/Paris on summer)
+ */
+function getServerTimeZoneInt($refgmtdate='now')
+{
+    global $conf;
+    if (class_exists('DateTime') && ! empty($conf->global->MAIN_NEW_DATE))
+    {
+        // Method 1 (include daylight)
+        $localtz = new DateTimeZone(getServerTimeZoneString());
+        $localdt = new DateTime($refgmtdate, $localtz);
+        $tmp=-1*$localtz->getOffset($localdt);
+    }
+    else
+    {
+        // Method 2 (does not include daylight)
+        $tmp=dol_mktime(0,0,0,1,1,1970);
+    }
+    $tz=($tmp<0?1:-1)*abs($tmp/3600);
     return $tz;
+}
+
+/**
+ * Return server timezone string
+ *
+ * @return string			Parent company timezone string ('Europe/Paris')
+ */
+/*function getParentCompanyTimeZoneString()
+{
+    if (function_exists('date_default_timezone_get')) return date_default_timezone_get();
+    else return '';
+}
+*/
+
+/**
+ * Return parent company timezone int.
+ * If $conf->global->MAIN_NEW_DATE is set, we use new behaviour: All convertions take care of dayling saving time.
+ *
+ * @param	string	$refdate	Reference date for timezone (timezone differs on winter and summer)
+ * @return 	int					An offset in hour (+1 for Europe/Paris on winter and +2 for Europe/Paris on summer)
+ */
+/*function getParentCompanyTimeZoneInt($refgmtdate='now')
+{
+    global $conf;
+    if (class_exists('DateTime') && ! empty($conf->global->MAIN_NEW_DATE))
+    {
+        // Method 1 (include daylight)
+        $localtz = new DateTimeZone(getParentCompanyTimeZoneString());
+        $localdt = new DateTime($refgmtdate, $localtz);
+        $tmp=-1*$localtz->getOffset($localdt);
+    }
+    else
+    {
+        // Method 2 (does not include daylight)
+        $tmp=dol_mktime(0,0,0,1,1,1970);
+    }
+    $tz=($tmp<0?1:-1)*abs($tmp/3600);
+    return $tz;
+}*/
+
+
+/**
+ *  Add a delay of a timezone to a date
+ *
+ *  @param      timestamp	$time               Date timestamp
+ *  @param      string		$timezone			Timezone
+ *  @return     timestamp      			        New timestamp
+ */
+function dol_time_plus_timezone($time,$timezone)
+{
+    // TODO Finish function
+
+    return $time;
 }
 
 
@@ -83,12 +158,13 @@ function getCurrentTimeZone()
  *
  *  @param      timestamp	$time               Date timestamp (or string with format YYYY-MM-DD)
  *  @param      int			$duration_value     Value of delay to add
- *  @param      int			$duration_unit      Unit of added delay (d, m, y)
+ *  @param      int			$duration_unit      Unit of added delay (d, m, y, w)
  *  @return     timestamp      			        New timestamp
  */
 function dol_time_plus_duree($time,$duration_value,$duration_unit)
 {
-	if ($duration_value == 0) return $time;
+	if ($duration_value == 0)  return $time;
+	if ($duration_unit == 'w') return $time + (3600*24*7*$duration_value);
 	if ($duration_value > 0) $deltastring="+".abs($duration_value);
 	if ($duration_value < 0) $deltastring="-".abs($duration_value);
 	if ($duration_unit == 'd') { $deltastring.=" day"; }
@@ -98,14 +174,15 @@ function dol_time_plus_duree($time,$duration_value,$duration_unit)
 }
 
 
-/**   Converti les heures et minutes en secondes
+/**
+ * Convert hours and minutes into seconds
  *
- *    @param      int		$iHours      Heures
- *    @param      int		$iMinutes    Minutes
- *    @param      int		$iSeconds    Secondes
- *    @return     int		$iResult	 Temps en secondes
+ * @param      int		$iHours     	Hours
+ * @param      int		$iMinutes   	Minutes
+ * @param      int		$iSeconds   	Seconds
+ * @return     int						Time into seconds
  */
-function ConvertTime2Seconds($iHours=0,$iMinutes=0,$iSeconds=0)
+function convertTime2Seconds($iHours=0,$iMinutes=0,$iSeconds=0)
 {
 	$iResult=($iHours*3600)+($iMinutes*60)+$iSeconds;
 	return $iResult;
@@ -121,7 +198,7 @@ function ConvertTime2Seconds($iHours=0,$iMinutes=0,$iSeconds=0)
  *    	@return     sTime		 		 	Formated text of duration
  * 	                                		Example: 0 return 00:00, 3600 return 1:00, 86400 return 1d, 90000 return 1 Day 01:00
  */
-function ConvertSecondToTime($iSecond,$format='all',$lengthOfDay=86400,$lengthOfWeek=7)
+function convertSecondToTime($iSecond,$format='all',$lengthOfDay=86400,$lengthOfWeek=7)
 {
 	global $langs;
 
@@ -195,6 +272,77 @@ function ConvertSecondToTime($iSecond,$format='all',$lengthOfDay=86400,$lengthOf
         $sTime=dol_print_date($iSecond,'%Y',true);
     }
     return trim($sTime);
+}
+
+
+/**
+ *	Convert a string date into a GM Timestamps date
+ *
+ *	@param	string	$string		Date in a string
+ *				     	        YYYYMMDD
+ *	                 			YYYYMMDDHHMMSS
+ *								YYYYMMDDTHHMMSSZ
+ *								YYYY-MM-DDTHH:MM:SSZ (RFC3339)
+ *		                		DD/MM/YY or DD/MM/YYYY (this format should not be used anymore)
+ *		                		DD/MM/YY HH:MM:SS or DD/MM/YYYY HH:MM:SS (this format should not be used anymore)
+ *  @param	int		$gm         1 =Input date is GM date,
+ *                              0 =Input date is local date using PHP server timezone
+ *                              -1=Input date is local date using timezone provided as third parameter
+ *	@param	string	$tz			Timezone to use. This means param $gm=-1
+ *  @return	date				Date
+ *		                		19700101020000 -> 7200 with gm=1
+ *
+ *  @see    dol_print_date, dol_mktime, dol_getdate
+ */
+function dol_stringtotime($string, $gm=1, $tz='')
+{
+    // Convert date with format DD/MM/YYY HH:MM:SS. This part of code should not be used.
+    if (preg_match('/^([0-9]+)\/([0-9]+)\/([0-9]+)\s?([0-9]+)?:?([0-9]+)?:?([0-9]+)?/i',$string,$reg))
+    {
+        dol_syslog("dol_stringtotime call to function with deprecated parameter", LOG_WARNING);
+        // Date est au format 'DD/MM/YY' ou 'DD/MM/YY HH:MM:SS'
+        // Date est au format 'DD/MM/YYYY' ou 'DD/MM/YYYY HH:MM:SS'
+        $sday = $reg[1];
+        $smonth = $reg[2];
+        $syear = $reg[3];
+        $shour = $reg[4];
+        $smin = $reg[5];
+        $ssec = $reg[6];
+        if ($syear < 50) $syear+=1900;
+        if ($syear >= 50 && $syear < 100) $syear+=2000;
+        $string=sprintf("%04d%02d%02d%02d%02d%02d",$syear,$smonth,$sday,$shour,$smin,$ssec);
+    }
+    // Convert date with format RFC3339
+    else if (preg_match('/^([0-9]{4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2})Z$/i',$string,$reg))
+    {
+        $syear = $reg[1];
+        $smonth = $reg[2];
+        $sday = $reg[3];
+        $shour = $reg[4];
+        $smin = $reg[5];
+        $ssec = $reg[6];
+        $string=sprintf("%04d%02d%02d%02d%02d%02d",$syear,$smonth,$sday,$shour,$smin,$ssec);
+    }
+    // Convert date with format YYYYMMDDTHHMMSSZ
+    else if (preg_match('/^([0-9]{4})([0-9]{2})([0-9]{2})T([0-9]{2})([0-9]{2})([0-9]{2})Z$/i',$string,$reg))
+    {
+        $syear = $reg[1];
+        $smonth = $reg[2];
+        $sday = $reg[3];
+        $shour = $reg[4];
+        $smin = $reg[5];
+        $ssec = $reg[6];
+        $string=sprintf("%04d%02d%02d%02d%02d%02d",$syear,$smonth,$sday,$shour,$smin,$ssec);
+    }
+
+    $string=preg_replace('/([^0-9])/i','',$string);
+    $tmp=$string.'000000';
+    $date=dol_mktime(substr($tmp,8,2),substr($tmp,10,2),substr($tmp,12,2),substr($tmp,4,2),substr($tmp,6,2),substr($tmp,0,4),($gm?1:0));
+    if ($gm == -1)
+    {
+        $date=dol_time_plus_timezone($date,$tz);
+    }
+    return $date;
 }
 
 
@@ -609,45 +757,27 @@ function num_open_day($timestampStart, $timestampEnd,$inhour=0,$lastday=0)
 /**
  *	Return array of translated months or selected month
  *
- *	@param   int		$selected		-1 to return array of all months or motnh to select
- *	@return  mixed						Month string or array if selected < 0
+ *	@param	Translate	$outputlangs	Object langs
+ *	@return array						Month string or array if selected < 0
  */
-function monthArrayOrSelected($selected=0)
+function monthArray($outputlangs)
 {
-    global $langs;
-
-    $month = array (
-    1  => $langs->trans("January"),
-    2  => $langs->trans("February"),
-    3  => $langs->trans("March"),
-    4  => $langs->trans("April"),
-    5  => $langs->trans("May"),
-    6  => $langs->trans("June"),
-    7  => $langs->trans("July"),
-    8  => $langs->trans("August"),
-    9  => $langs->trans("September"),
-    10 => $langs->trans("October"),
-    11 => $langs->trans("November"),
-    12 => $langs->trans("December")
+    $montharray = array (
+	    1  => $outputlangs->trans("January"),
+	    2  => $outputlangs->trans("February"),
+	    3  => $outputlangs->trans("March"),
+	    4  => $outputlangs->trans("April"),
+	    5  => $outputlangs->trans("May"),
+	    6  => $outputlangs->trans("June"),
+	    7  => $outputlangs->trans("July"),
+	    8  => $outputlangs->trans("August"),
+	    9  => $outputlangs->trans("September"),
+	    10 => $outputlangs->trans("October"),
+	    11 => $outputlangs->trans("November"),
+	    12 => $outputlangs->trans("December")
     );
 
-    if ($selected >=0)
-    {
-        $return='';
-        foreach ($month as $key => $val)
-        {
-            if ($selected == $key)
-            {
-                $return = $val;
-                break;
-            }
-        }
-        return $return;
-    }
-    else
-    {
-        return $month;
-    }
+    return $montharray;
 }
 
 ?>

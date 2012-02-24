@@ -89,6 +89,9 @@ class FactureFournisseurTest extends PHPUnit_Framework_TestCase
     }
 
 	/**
+	 * Init phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function setUp()
     {
@@ -101,6 +104,9 @@ class FactureFournisseurTest extends PHPUnit_Framework_TestCase
 		print __METHOD__."\n";
     }
 	/**
+	 * End phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function tearDown()
     {
@@ -108,6 +114,9 @@ class FactureFournisseurTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testFactureFournisseurCreate
+     *
+     * @return int
      */
     public function testFactureFournisseurCreate()
     {
@@ -127,6 +136,11 @@ class FactureFournisseurTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testFactureFournisseurFetch
+     *
+     * @param	int		$id		If supplier invoice
+     * @return	void
+     *
      * @depends	testFactureFournisseurCreate
      * The depends says test is run only if previous is ok
      */
@@ -147,6 +161,11 @@ class FactureFournisseurTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testFactureFournisseurUpdate
+     *
+     * @param	Object	$localobject	Supplier invoice
+     * @return	int
+     *
      * @depends	testFactureFournisseurFetch
      * The depends says test is run only if previous is ok
      */
@@ -167,6 +186,11 @@ class FactureFournisseurTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testFactureFournisseurValid
+     *
+     * @param	Object	$localobject	Supplier invoice
+     * @return	void
+     *
      * @depends	testFactureFournisseurUpdate
      * The depends says test is run only if previous is ok
      */
@@ -186,6 +210,11 @@ class FactureFournisseurTest extends PHPUnit_Framework_TestCase
     }
 
    /**
+     * testFactureFournisseurOther
+     *
+     * @param	Object	$localobject		Supplier invoice
+     * @return	void
+     *
      * @depends testFactureFournisseurValid
      * The depends says test is run only if previous is ok
      */
@@ -210,6 +239,11 @@ class FactureFournisseurTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testFactureFournisseurDelete
+     *
+     * @param	int		$id		Id of supplier invoice
+     * @return	void
+     *
      * @depends	testFactureFournisseurOther
      * The depends says test is run only if previous is ok
      */

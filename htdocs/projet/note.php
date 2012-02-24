@@ -27,7 +27,9 @@ require_once(DOL_DOCUMENT_ROOT."/core/lib/project.lib.php");
 
 $langs->load('projects');
 
-$id = isset($_GET["id"])?$_GET["id"]:'';
+$action=GETPOST('action');
+$id = GETPOST('id');
+$ref= GETPOST('ref');
 
 $mine = $_REQUEST['mode']=='mine' ? 1 : 0;
 //if (! $user->rights->projet->all->lire) $mine=1;	// Special for projects
@@ -43,7 +45,7 @@ $result = restrictedArea($user, 'projet', $id);
 /*                     Actions                                                */
 /******************************************************************************/
 
-if ($_POST["action"] == 'update_public' && $user->rights->projet->creer)
+if ($action == 'update_public' && $user->rights->projet->creer)
 {
 	$project = new Project($db);
 	$project->fetch($_GET['id']);
@@ -62,7 +64,7 @@ if ($_POST["action"] == 'update_public' && $user->rights->projet->creer)
 	}
 }
 
-if ($_POST['action'] == 'update_private' && $user->rights->projet->creer)
+if ($action == 'update_private' && $user->rights->projet->creer)
 {
 	$project = new Project($db);
 	$project->fetch($_GET['id']);
@@ -86,29 +88,29 @@ if ($_POST['action'] == 'update_private' && $user->rights->projet->creer)
  * View
  */
 
-llxHeader();
+$help_url="EN:Module_Projects|FR:Module_Projets|ES:M&oacute;dulo_Proyectos";
+llxHeader("",$langs->trans("Tasks"),$help_url);
 
 $form = new Form($db);
-
 $userstatic=new User($db);
+$project = new Project($db);
 
+$now=dol_now();
 
-$id = $_GET['id'];
-$ref= $_GET['ref'];
 if ($id > 0 || ! empty($ref))
 {
 	if ($mesg) print $mesg;
 
-	$now=gmmktime();
-
-	$project = new Project($db);
 
 	if ($project->fetch($id, $ref))
 	{
 		if ($project->societe->id > 0)  $result=$project->societe->fetch($project->societe->id);
 
-		// To verify role of users
-		$userAccess = $project->restrictedProjectArea($user);
+        // To verify role of users
+        //$userAccess = $project->restrictedProjectArea($user,'read');
+        $userWrite  = $project->restrictedProjectArea($user,'write');
+        //$userDelete = $project->restrictedProjectArea($user,'delete');
+        //print "userAccess=".$userAccess." userWrite=".$userWrite." userDelete=".$userDelete;
 
 		$head = project_prepare_head($project);
 		dol_fiche_head($head, 'note', $langs->trans('Project'), 0, ($project->public?'projectpub':'project'));
@@ -120,8 +122,11 @@ if ($id > 0 || ! empty($ref))
 		// Ref
 		print '<tr><td width="30%">'.$langs->trans("Ref").'</td><td>';
 		// Define a complementary filter for search of next/prev ref.
-		$projectsListId = $project->getProjectsAuthorizedForUser($user,$mine,1);
-		$project->next_prev_filter=" rowid in (".$projectsListId.")";
+	    if (! $user->rights->projet->all->lire)
+        {
+            $projectsListId = $project->getProjectsAuthorizedForUser($user,$mine,0);
+            $project->next_prev_filter=" rowid in (".(count($projectsListId)?join(',',array_keys($projectsListId)):'0').")";
+        }
 		print $form->showrefnav($project,'ref','',1,'ref','ref');
 		print '</td></tr>';
 
@@ -193,7 +198,7 @@ if ($id > 0 || ! empty($ref))
 		print '<div class="tabsAction">';
 		if ($user->rights->projet->creer && $_GET['action'] <> 'edit')
 		{
-			if ($userAccess)
+			if ($userWrite > 0)
 			{
 				print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$project->id.'&amp;action=edit">'.$langs->trans('Modify').'</a>';
 			}
@@ -205,7 +210,8 @@ if ($id > 0 || ! empty($ref))
 		print '</div>';
 	}
 }
-$db->close();
 
 llxFooter();
+
+$db->close();
 ?>

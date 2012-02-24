@@ -41,6 +41,8 @@ if (! defined("NOLOGIN"))        define("NOLOGIN",'1');       // If this page is
 
 
 /**
+ * Class to test core functions
+ *
  * @backupGlobals disabled
  * @backupStaticAttributes enabled
  * @remarks	backupGlobals must be disabled to have db,conf,user and lang not erased.
@@ -89,6 +91,9 @@ class CoreTest extends PHPUnit_Framework_TestCase
     }
 
 	/**
+	 * Init phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function setUp()
     {
@@ -101,6 +106,9 @@ class CoreTest extends PHPUnit_Framework_TestCase
 		print __METHOD__."\n";
     }
 	/**
+	 * End phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function tearDown()
     {
@@ -109,6 +117,9 @@ class CoreTest extends PHPUnit_Framework_TestCase
 
 
     /**
+     * testDetectURLROOT
+     *
+     * @return	void
      */
     public function testDetectURLROOT()
     {

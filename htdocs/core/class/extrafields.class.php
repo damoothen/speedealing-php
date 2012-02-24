@@ -27,8 +27,7 @@
  */
 
 /**
- * 	\class 		ExtraFields
- *	\brief      Class to manage standard extra fields
+ *	Class to manage standard extra fields
  */
 class ExtraFields
 {
@@ -46,11 +45,11 @@ class ExtraFields
 	/**
 	 *	Constructor
 	 *
-	 *  @param		DoliDB		$DB      Database handler
+	 *  @param		DoliDB		$db      Database handler
 	 */
-	function ExtraFields($DB)
+	function ExtraFields($db)
 	{
-		$this->db = $DB ;
+		$this->db = $db;
 		$this->error = array();
 		$this->attribute_type = array();
 		$this->attribute_label = array();
@@ -60,13 +59,14 @@ class ExtraFields
 
     /**
      *  Add a new extra field parameter
-     *  @param  attrname            code of attribute
-     *  @param  label               label of attribute
-     *  @param  type                Type of attribute ('int', 'text', 'varchar', 'date', 'datehour')
-     *  @param  pos                 Position of attribute
-     *  @param  size                Size/length of attribute
-     *  @param  elementtype         Element type ('member', 'product', 'company', ...)
-     *  @return int                 <=0 if KO, >0 if OK
+     *
+     *  @param	string	$attrname           Code of attribute
+     *  @param  string	$label              label of attribute
+     *  @param  int		$type               Type of attribute ('int', 'text', 'varchar', 'date', 'datehour')
+     *  @param  int		$pos                Position of attribute
+     *  @param  int		$size               Size/length of attribute
+     *  @param  string	$elementtype        Element type ('member', 'product', 'company', ...)
+     *  @return int      					<=0 if KO, >0 if OK
      */
     function addExtraField($attrname,$label,$type='',$pos=0,$size=0, $elementtype='member')
 	{
@@ -88,11 +88,12 @@ class ExtraFields
 
 	/**
 	 *	Add a new optionnal attribute
-	 *	@param	attrname			code of attribute
-	 *  @param	type				Type of attribute ('int', 'text', 'varchar', 'date', 'datehour')
-	 *  @param	length				Size/length of attribute
-     *  @param  elementtype         Element type ('member', 'product', 'company', ...)
-     *  @return int                 <=0 if KO, >0 if OK
+	 *
+	 *	@param	string	$attrname			code of attribute
+	 *  @param	int		$type				Type of attribute ('int', 'text', 'varchar', 'date', 'datehour')
+	 *  @param	int		$length				Size/length of attribute
+     *  @param  string	$elementtype        Element type ('member', 'product', 'company', ...)
+     *  @return int      	           		<=0 if KO, >0 if OK
 	 */
 	function create($attrname,$type='varchar',$length=255,$elementtype='member')
 	{
@@ -129,13 +130,14 @@ class ExtraFields
 
 	/**
 	 *	Add description of a new optionnal attribute
-	 *	@param	attrname			code of attribute
-	 *	@param	label				label of attribute
-	 *  @param	type				Type of attribute ('int', 'text', 'varchar', 'date', 'datehour')
-	 *  @param	pos					Position of attribute
-	 *  @param	size				Size/length of attribute
-	 *  @param  elementtype         Element type ('member', 'product', 'company', ...)
-	 *  @return	int					<=0 if KO, >0 if OK
+	 *
+	 *	@param	string	$attrname			code of attribute
+	 *	@param	string	$label				label of attribute
+	 *  @param	int		$type				Type of attribute ('int', 'text', 'varchar', 'date', 'datehour')
+	 *  @param	int		$pos				Position of attribute
+	 *  @param	int		$size				Size/length of attribute
+	 *  @param  string	$elementtype        Element type ('member', 'product', 'company', ...)
+	 *  @return	int							<=0 if KO, >0 if OK
 	 */
 	function create_label($attrname,$label='',$type='',$pos=0,$size=0, $elementtype='member')
 	{
@@ -172,9 +174,10 @@ class ExtraFields
 
 	/**
 	 *	Delete an optionnal attribute
-	 *	@param	   attrname			Code of attribute to delete
-	 *  @param     elementtype      Element type ('member', 'product', 'company', ...)
-	 *  @return    int              < 0 if KO, 0 if nothing is done, 1 if OK
+	 *
+	 *	@param	string	$attrname		Code of attribute to delete
+	 *  @param  string	$elementtype    Element type ('member', 'product', 'company', ...)
+	 *  @return int              		< 0 if KO, 0 if nothing is done, 1 if OK
 	 */
 	function delete($attrname,$elementtype='member')
 	{
@@ -211,9 +214,10 @@ class ExtraFields
 
 	/**
 	 *	Delete description of an optionnal attribute
-	 *	@param	attrname			Code of attribute to delete
-     *  @param  elementtype         Element type ('member', 'product', 'company', ...)
-     *  @return    int              < 0 if KO, 0 if nothing is done, 1 if OK
+	 *
+	 *	@param	string	$attrname			Code of attribute to delete
+     *  @param  string	$elementtype        Element type ('member', 'product', 'company', ...)
+     *  @return int              			< 0 if KO, 0 if nothing is done, 1 if OK
 	 */
 	function delete_label($attrname,$elementtype='member')
 	{
@@ -227,7 +231,8 @@ class ExtraFields
             $sql.= " AND elementtype = '".$elementtype."'";
 
 			dol_syslog(get_class($this)."::delete_label sql=".$sql);
-			if ( $this->db->query( $sql) )
+			$resql=$this->db->query($sql);
+			if ($resql)
 			{
 				return 1;
 			}
@@ -246,11 +251,12 @@ class ExtraFields
 
 	/**
 	 * 	Modify type of a personalized attribute
-	 *  @param		attrname			name of attribute
-	 *  @param		type				type of attribute
-	 *  @param		length				length of attribute
-     *  @param      elementtype         Element type ('member', 'product', 'company', ...)
-	 * 	@return		int					>0 if OK, <=0 if KO
+	 *
+	 *  @param	string	$attrname			Name of attribute
+	 *  @param	string	$type				Type of attribute
+	 *  @param	int		$length				Length of attribute
+     *  @param  string	$elementtype        Element type ('member', 'product', 'company', ...)
+	 * 	@return	int							>0 if OK, <=0 if KO
 	 */
 	function update($attrname,$type='varchar',$length=255,$elementtype='member')
 	{
@@ -288,11 +294,13 @@ class ExtraFields
 
 	/**
 	 *  Modify description of personalized attribute
-	 *  @param	    attrname			name of attribute
-	 *  @param	    label				label of attribute
-     *  @param      type                type of attribute
-     *  @param      length              length of attribute
-     *  @param      elementtype         Element type ('member', 'product', 'company', ...)
+	 *
+	 *  @param	string	$attrname			Name of attribute
+	 *  @param	string	$label				Label of attribute
+     *  @param  string	$type               Type of attribute
+     *  @param  int		$size		        Length of attribute
+     *  @param  string	$elementtype		Element type ('member', 'product', 'company', ...)
+     *  @return	int							<0 if KO, >0 if OK
      */
 	function update_label($attrname,$label,$type,$size,$elementtype='member')
 	{
@@ -350,6 +358,8 @@ class ExtraFields
 
 	/**
 	 *  Load array of labels
+	 *
+	 *  @return	void
 	 */
 	function fetch_optionals()
 	{
@@ -359,6 +369,9 @@ class ExtraFields
 
 	/**
 	 * 	Load array this->attribute_label
+	 *
+	 * 	@param	string		$elementtype		Type of element
+	 * 	@return	array							Array of attributes for all extra fields
 	 */
 	function fetch_name_optionals_label($elementtype='member')
 	{
@@ -398,10 +411,12 @@ class ExtraFields
 
 
 	/**
-	 *     Return HTML string to put an input field into a page
-	 *     @param      key             Key of attribute
-	 *     @param      value           Value to show
-	 *     @param      moreparam       To add more parametes on html input tag
+	 *  Return HTML string to put an input field into a page
+	 *
+	 *  @param	string	$key             Key of attribute
+	 *  @param  string	$value           Value to show
+	 *  @param  string	$moreparam       To add more parametes on html input tag
+	 *  @return	void
 	 */
 	function showInputField($key,$value,$moreparam='')
 	{
@@ -429,7 +444,11 @@ class ExtraFields
             if ($showsize > 48) $showsize=48;
         }
 
-	    if ($type == 'varchar')
+		if ($type == 'int')
+        {
+        	$out='<input type="text" name="options_'.$key.'" size="'.$showsize.'" maxlength="'.$size.'" value="'.$value.'"'.($moreparam?$moreparam:'').'>';
+        }
+        else if ($type == 'varchar')
         {
         	$out='<input type="text" name="options_'.$key.'" size="'.$showsize.'" maxlength="'.$size.'" value="'.$value.'"'.($moreparam?$moreparam:'').'>';
         }
@@ -445,9 +464,12 @@ class ExtraFields
 	}
 
     /**
-     *     Return HTML string to put an output field into a page
-     *     @param      key             Key of attribute
-     *     @param      value           Value to show
+     * Return HTML string to put an output field into a page
+     *
+     * @param   string	$key            Key of attribute
+     * @param   string	$value          Value to show
+     * @param	string	$moreparam		More param
+     * @return	string					Formated value
      */
     function showOutputField($key,$value,$moreparam='')
     {

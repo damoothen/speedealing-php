@@ -1,6 +1,6 @@
 <?php
 /* Copyright (c) 2002-2007 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2004      Benoit Mortier       <benoit.mortier@opensides.be>
  * Copyright (C) 2004      Sebastien Di Cintio  <sdicintio@ressource-toi.org>
  * Copyright (C) 2004      Eric Seigne          <eric.seigne@ryxeo.com>
@@ -33,9 +33,8 @@
 
 
 /**
- *	\class      FormOther
- *	\brief      Classe permettant la generation de composants html autre
- *	\remarks	Only common components must be here.
+ *	Classe permettant la generation de composants html autre
+ *	Only common components are here.
  */
 class FormOther
 {
@@ -58,7 +57,7 @@ class FormOther
 
 	/**
      *    Return HTML select list of export models
-     *    
+     *
 	 *    @param    string	$selected          Id modele pre-selectionne
 	 *    @param    string	$htmlname          Nom de la zone select
 	 *    @param    string	$type              Type des modeles recherches
@@ -107,7 +106,7 @@ class FormOther
 
 	/**
      *    Return list of export models
-     *    
+     *
 	 *    @param    string	$selected          Id modele pre-selectionne
 	 *    @param    string	$htmlname          Nom de la zone select
 	 *    @param    string	$type              Type des modeles recherches
@@ -156,7 +155,7 @@ class FormOther
 
 	/**
 	 *    Retourne la liste des ecotaxes avec tooltip sur le libelle
-	 *    
+	 *
 	 *    @param	string	$selected    code ecotaxes pre-selectionne
 	 *    @param    string	$htmlname    nom de la liste deroulante
 	 *    @return	void
@@ -210,13 +209,13 @@ class FormOther
 
 	/**
 	 *    Return a HTML select list to select a percent
-	 *    
-	 *    @param     selected      pourcentage pre-selectionne
-	 *    @param     htmlname      nom de la liste deroulante
-	 *    @param     increment     increment value
-	 *    @param     start         start value
-	 *    @param     end           end value
-	 *    @return    return        combo
+	 *
+	 *    @param	string	$selected      	pourcentage pre-selectionne
+	 *    @param    string	$htmlname      	nom de la liste deroulante
+	 *    @param    int		$increment     	increment value
+	 *    @param    int		$start         	start value
+	 *    @param    int		$end           	end value
+	 *    @return   string					HTML select string
 	 */
 	function select_percent($selected=0,$htmlname='percent',$disabled=0,$increment=5,$start=0,$end=100)
 	{
@@ -243,11 +242,11 @@ class FormOther
 
 	/**
 	 *  Return select list for categories (to use in form search selectors)
-	 *  
-	 *	@param    	type			Type of categories (0=product, 1=suppliers, 2=customers, 3=members)
-	 *  @param     	selected     	Preselected value
-	 *  @param     	htmlname      	Name of combo list
-	 *  @return    	return        	Html combo list code
+	 *
+	 *	@param	int		$type			Type of categories (0=product, 1=suppliers, 2=customers, 3=members)
+	 *  @param  string	$selected     	Preselected value
+	 *  @param  string	$htmlname      	Name of combo list
+	 *  @return string		        	Html combo list code
 	 */
 	function select_categories($type,$selected=0,$htmlname='search_categ')
 	{
@@ -279,11 +278,11 @@ class FormOther
 
 	/**
 	 *  Return select list for categories (to use in form search selectors)
-	 *  
-	 *  @param     	selected     	Preselected value
-	 *  @param     	htmlname      	Name of combo list
-	 *  @param      user            Object user
-	 *  @return    	return        	Html combo list code
+	 *
+	 *  @param	string	$selected     	Preselected value
+	 *  @param  string	$htmlname      	Name of combo list
+	 *  @param  User	$user           Object user
+	 *  @return string					Html combo list code
 	 */
 	function select_salesrepresentatives($selected=0,$htmlname='search_sale',$user)
 	{
@@ -374,11 +373,11 @@ class FormOther
 	/**
 	 *		Output a HTML code to select a color
 	 *
-	 *		@param	set_color		Pre-selected color
-	 *		@param	prefix			Name of HTML field
-	 *		@param	form_name		Name of form
-	 * 		@param	showcolorbox	1=Show color code and color box, 0=Show only color code
-	 * 		@param 	arrayofcolors	Array of colors. Example: array('29527A','5229A3','A32929','7A367A','B1365F','0D7813')
+	 *		@param	string		$set_color		Pre-selected color
+	 *		@param	string		$prefix			Name of HTML field
+	 *		@param	string		$form_name		Name of form
+	 * 		@param	int			$showcolorbox	1=Show color code and color box, 0=Show only color code
+	 * 		@param 	array		$arrayofcolors	Array of colors. Example: array('29527A','5229A3','A32929','7A367A','B1365F','0D7813')
 	 * 		@return	void
 	 */
 	function select_color($set_color='', $prefix='f_color', $form_name='objForm', $showcolorbox=1, $arrayofcolors='')
@@ -420,7 +419,7 @@ class FormOther
                       title: \''.dol_escape_js($langs->trans("SelectAColor")).'\',
                       newColor: \''.dol_escape_js($langs->trans("New")).'\',
                       currentColor: \''.dol_escape_js($langs->trans("Current")).'\',
-                      ok: \''.dol_escape_js($langs->trans("Change")).'\',
+                      ok: \''.dol_escape_js($langs->trans("Save")).'\',
                       cancel: \''.dol_escape_js($langs->trans("Cancel")).'\'
                     }
                   }
@@ -472,7 +471,7 @@ class FormOther
 		// On cree le repertoire contenant les icones
 		if (! file_exists($conf->$module->dir_temp))
 		{
-			create_exdir($conf->$module->dir_temp);
+			dol_mkdir($conf->$module->dir_temp);
 		}
 
 		// On cree l'image en vraies couleurs
@@ -494,7 +493,7 @@ class FormOther
 
     /**
      *    	Return HTML combo list of week
-     *    
+     *
      *    	@param	string		$selected          Preselected value
      *    	@param  string		$htmlname          Nom de la zone select
      *    	@param  int			$useempty          Affiche valeur vide dans liste
@@ -535,7 +534,7 @@ class FormOther
 
     /**
      *    	Return HTML combo list of month
-     *    
+     *
      *    	@param	string		$selected          Preselected value
      *    	@param  string		$htmlname          Nom de la zone select
      *    	@param  int			$useempty          Affiche valeur vide dans liste
@@ -543,16 +542,18 @@ class FormOther
      */
     function select_month($selected='',$htmlname='monthid',$useempty=0)
     {
+    	global $langs;
+
         require_once(DOL_DOCUMENT_ROOT."/core/lib/date.lib.php");
 
-        $month = monthArrayOrSelected(-1);	// Get array
+        $montharray = monthArray($langs);	// Get array
 
         $select_month = '<select class="flat" name="'.$htmlname.'">';
         if ($useempty)
         {
             $select_month .= '<option value="0">&nbsp;</option>';
         }
-        foreach ($month as $key => $val)
+        foreach ($montharray as $key => $val)
         {
             if ($selected == $key)
             {
@@ -570,7 +571,7 @@ class FormOther
 
     /**
      *    	Return HTML combo list of years
-     *    
+     *
      *      @param  string		$selected       Preselected value (''=current year, -1=none, year otherwise)
      *    	@param  string		$htmlname       Name of HTML select object
      *    	@param  int			$useempty       Affiche valeur vide dans liste
@@ -585,7 +586,7 @@ class FormOther
 
     /**
      *    	Return HTML combo list of years
-     *    
+     *
      *      @param  string	$selected       Preselected value (''=current year, -1=none, year otherwise)
      *    	@param  string	$htmlname       Name of HTML select object
      *    	@param  int	    $useempty       Affiche valeur vide dans liste
@@ -688,7 +689,7 @@ class FormOther
 
 /**
  * Write all lines of a project (if parent = 0)
- * 
+ *
  * @param 	int		&$inc					Cursor counter
  * @param 	int		$parent					Id parent
  * @param 	Object	$lines					Line object
@@ -765,6 +766,52 @@ function PLineSelect(&$inc, $parent, $lines, $level=0, $selectedtask=0, $selecte
 			$level--;
 		}
 	}
+
+
+	/**
+	 *  Show form to select addresse
+	 *
+	 *  @param	int		$page        	Page
+	 *  @param  string	$selected    	Id condition pre-selectionne
+	 *  @param  string	$htmlname    	Nom du formulaire select
+	 *  @param	string	$origin        	Origine de l'appel pour pouvoir creer un retour
+ 	 *  @param  int		$originid      	Id de l'origine
+ 	 *  @return	void
+	 *  @deprecated
+	 */
+	function form_address($page, $selected='', $socid, $htmlname='address_id', $origin='', $originid='')
+	{
+	    global $langs,$conf;
+	    if ($htmlname != "none")
+	    {
+	        print '<form method="post" action="'.$page.'">';
+	        print '<input type="hidden" name="action" value="setaddress">';
+	        print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+	        print '<table class="nobordernopadding" cellpadding="0" cellspacing="0">';
+	        print '<tr><td>';
+	        $this->select_address($selected, $socid, $htmlname, 1);
+	        print '</td>';
+	        print '<td align="left"><input type="submit" class="button" value="'.$langs->trans("Modify").'">';
+	        $langs->load("companies");
+	        print ' &nbsp; <a href='.DOL_URL_ROOT.'/comm/address.php?socid='.$socid.'&action=create&origin='.$origin.'&originid='.$originid.'>'.$langs->trans("AddAddress").'</a>';
+	        print '</td></tr></table></form>';
+	    }
+	    else
+	    {
+	        if ($selected)
+	        {
+	            require_once(DOL_DOCUMENT_ROOT ."/societe/class/address.class.php");
+	            $address=new Address($this->db);
+	            $result=$address->fetch_address($selected);
+	            print '<a href='.DOL_URL_ROOT.'/comm/address.php?socid='.$address->socid.'&id='.$address->id.'&action=edit&origin='.$origin.'&originid='.$originid.'>'.$address->label.'</a>';
+	        }
+	        else
+	        {
+	            print "&nbsp;";
+	        }
+	    }
+	}
+
 }
 
 ?>

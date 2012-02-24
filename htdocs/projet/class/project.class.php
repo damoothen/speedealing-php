@@ -100,6 +100,7 @@ class Project extends CommonObject
         $sql.= ", datec";
         $sql.= ", dateo";
         $sql.= ", datee";
+        $sql.= ", entity";
         $sql.= ") VALUES (";
         $sql.= "'" . $this->db->escape($this->ref) . "'";
         $sql.= ", '" . $this->db->escape($this->title) . "'";
@@ -111,6 +112,7 @@ class Project extends CommonObject
         $sql.= ", " . ($this->datec != '' ? $this->db->idate($this->datec) : 'null');
         $sql.= ", " . ($this->dateo != '' ? $this->db->idate($this->dateo) : 'null');
         $sql.= ", " . ($this->datee != '' ? $this->db->idate($this->datee) : 'null');
+        $sql.= ", ".$conf->entity;
         $sql.= ")";
 
         dol_syslog("Project::create sql=" . $sql, LOG_DEBUG);
@@ -170,9 +172,9 @@ class Project extends CommonObject
     function update($user, $notrigger=0)
     {
         global $langs, $conf;
-		
+
 		$error=0;
-		
+
         // Clean parameters
         $this->title = trim($this->title);
         $this->description = trim($this->description);
@@ -499,7 +501,7 @@ class Project extends CommonObject
         global $langs, $conf;
 
 		$error=0;
-		
+
         if ($this->statut != 1)
         {
             $this->db->begin();
@@ -558,7 +560,7 @@ class Project extends CommonObject
         global $langs, $conf;
 
 		$error=0;
-		
+
         if ($this->statut != 2)
         {
             $this->db->begin();
@@ -789,21 +791,21 @@ class Project extends CommonObject
     }
 
     /**
-     * 	Check if user has read permission on project
+     * 	Check if user has permission on current project
      *
      * 	@param	User	$user		Object user to evaluate
-     * 	@param 	int		$noprint	0=Print forbidden message if no permission, 1=Return -1 if no permission
-     * 	@return	void
+     * 	@param  string	$mode		Type of permission we want to know: 'read', 'write'
+     * 	@return	int					>0 if user has permission, <0 if user has no permission
      */
-    function restrictedProjectArea($user, $noprint=0)
+    function restrictedProjectArea($user, $mode='read')
     {
         // To verify role of users
         $userAccess = 0;
-        if ($user->rights->projet->all->lire)
+        if (($mode == 'read' && $user->rights->projet->all->lire) || ($mode == 'write' && $user->rights->projet->all->creer) || ($mode == 'delete' && $user->rights->projet->all->supprimer))
         {
             $userAccess = 1;
         }
-        else if ($this->public && $user->rights->projet->lire)
+        else if ($this->public && (($mode == 'read' && $user->rights->projet->lire) || ($mode == 'write' && $user->rights->projet->creer) || ($mode == 'delete' && $user->rights->projet->supprimer)))
         {
             $userAccess = 1;
         }
@@ -819,7 +821,9 @@ class Project extends CommonObject
                 {
                     if (preg_match('/PROJECT/', $userRole[$nblinks]['code']) && $user->id == $userRole[$nblinks]['id'])
                     {
-                        $userAccess++;
+                        if ($mode == 'read'   && $user->rights->projet->lire)      $userAccess++;
+                        if ($mode == 'write'  && $user->rights->projet->creer)     $userAccess++;
+                        if ($mode == 'delete' && $user->rights->projet->supprimer) $userAccess++;
                     }
                     $nblinks++;
                 }
@@ -833,19 +837,7 @@ class Project extends CommonObject
             //}
         }
 
-        if (!$userAccess)
-        {
-            if (!$noprint)
-            {
-                accessforbidden('', 0);
-            }
-            else
-            {
-                return -1;
-            }
-        }
-
-        return $userAccess;
+        return ($userAccess?$userAccess:-1);
     }
 
     /**

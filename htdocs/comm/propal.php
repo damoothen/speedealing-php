@@ -7,7 +7,8 @@
  * Copyright (C) 2006      Andre Cianfarani      <acianfa@free.fr>
  * Copyright (C) 2010-2011 Juanjo Menent         <jmenent@2byte.es>
  * Copyright (C) 2010-2011 Philippe Grand        <philippe.grand@atoo-net.com>
- *
+ * Copyright (C) 2012      Christophe Battarel   <christophe.battarel@altairis.fr>
+*
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -29,11 +30,12 @@
  */
 
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT.'/comm/propal/class/propal.class.php');
-require_once(DOL_DOCUMENT_ROOT."/core/modules/propale/modules_propale.php");
-require_once(DOL_DOCUMENT_ROOT.'/comm/action/class/actioncomm.class.php');
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formother.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
+require_once(DOL_DOCUMENT_ROOT."/core/class/html.formpropal.class.php");
+require_once(DOL_DOCUMENT_ROOT.'/comm/propal/class/propal.class.php');
+require_once(DOL_DOCUMENT_ROOT.'/comm/action/class/actioncomm.class.php');
+require_once(DOL_DOCUMENT_ROOT."/core/modules/propale/modules_propale.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/propal.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
 if ($conf->projet->enabled)   require_once(DOL_DOCUMENT_ROOT.'/projet/class/project.class.php');
@@ -72,7 +74,7 @@ if (isset($socid))
 {
 	$objectid=$socid;
 	$module='societe';
-	$dbtable='';
+	$dbtable='&societe';
 }
 else if (isset($id) &&  $id > 0)
 {
@@ -90,9 +92,9 @@ $hookmanager->callHooks(array('propalcard'));
 
 
 
-/******************************************************************************/
-/*                     Actions                                                */
-/******************************************************************************/
+/*
+ * Actions
+ */
 
 $parameters=array('socid'=>$socid);
 $reshook=$hookmanager->executeHooks('doActions',$parameters,$object,$action);    // Note that $action and $object may have been modified by some hooks
@@ -124,26 +126,20 @@ if ($action == 'confirm_clone' && $confirm == 'yes')
 }
 
 // Suppression de la propale
-else if ($action == 'confirm_delete' && $confirm == 'yes')
+else if ($action == 'confirm_delete' && $confirm == 'yes' && $user->rights->propale->supprimer)
 {
-	if ($user->rights->propale->supprimer)
+	$object->fetch($id);
+	$result=$object->delete($user);
+	if ($result > 0)
 	{
-		$object->fetch($id);
-		$result=$object->delete($user);
-		$id = 0;
-		$brouillon = 1;
-
-		if ($result > 0)
-		{
-			Header('Location: '.$_SERVER["PHP_SELF"]);
-			exit;
-		}
-		else
-		{
-			$langs->load("errors");
-			if ($object->error == 'ErrorFailToDeleteDir') $mesg='<div class="error">'.$langs->trans('ErrorFailedToDeleteJoinedFiles').'</div>';
-			else $mesg='<div class="error">'.$object->error.'</div>';
-		}
+		Header('Location: '.$_SERVER["PHP_SELF"]);
+		exit;
+	}
+	else
+	{
+		$langs->load("errors");
+		if ($object->error == 'ErrorFailToDeleteDir') $mesg='<div class="error">'.$langs->trans('ErrorFailedToDeleteJoinedFiles').'</div>';
+		else $mesg='<div class="error">'.$object->error.'</div>';
 	}
 }
 
@@ -744,9 +740,9 @@ else if ($action == "addline" && $user->rights->propale->creer)
 					$pu_ttc = price2num($pu_ht * (1 + ($tva_tx/100)), 'MU');
 				}
 			}
-			
+
 			// Define output language
-			if (! empty($conf->global->MAIN_MULTILANGS) && ! empty($conf->global->PRODUIT_DESC_IN_THIRDPARTY_LANGUAGE))
+			if (! empty($conf->global->MAIN_MULTILANGS) && ! empty($conf->global->PRODUIT_TEXTS_IN_THIRDPARTY_LANGUAGE))
 			{
 				$outputlangs = $langs;
 				$newlang='';
@@ -757,7 +753,7 @@ else if ($action == "addline" && $user->rights->propale->creer)
 					$outputlangs = new Translate("",$conf);
 					$outputlangs->setDefaultLang($newlang);
 				}
-				
+
 				$desc = (! empty($prod->multilangs[$outputlangs->defaultlang]["description"])) ? $prod->multilangs[$outputlangs->defaultlang]["description"] : $prod->description;
 			}
 			else
@@ -1051,8 +1047,9 @@ else if ($action == 'down' && $user->rights->propale->creer)
 llxHeader('',$langs->trans('Proposal'),'EN:Commercial_Proposals|FR:Proposition_commerciale|ES:Presupuestos');
 
 $form = new Form($db);
-$htmlother = new FormOther($db);
+$formother = new FormOther($db);
 $formfile = new FormFile($db);
+$formpropal = new FormPropal($db);
 $companystatic=new Societe($db);
 
 $now=dol_now();
@@ -1143,7 +1140,7 @@ if ($id > 0 || ! empty($ref))
 	if (! $formconfirm)
 	{
 	    $parameters=array('lineid'=>$lineid);
-	    $formconfirm=$hookmanager->executeHooks('formconfirm',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+	    $formconfirm=$hookmanager->executeHooks('formConfirm',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
 	}
 
 	// Print form confirm
@@ -1355,11 +1352,11 @@ if ($id > 0 || ! empty($ref))
 
 		if ($action == 'editdelivery_address')
 		{
-			$form->form_address($_SERVER['PHP_SELF'].'?id='.$object->id,$object->fk_delivery_address,GETPOST('socid'),'fk_address','propal',$object->id);
+			$formother->form_address($_SERVER['PHP_SELF'].'?id='.$object->id,$object->fk_delivery_address,GETPOST('socid'),'fk_address','propal',$object->id);
 		}
 		else
 		{
-			$form->form_address($_SERVER['PHP_SELF'].'?id='.$object->id,$object->fk_delivery_address,GETPOST('socid'),'none','propal',$object->id);
+			$formother->form_address($_SERVER['PHP_SELF'].'?id='.$object->id,$object->fk_delivery_address,GETPOST('socid'),'none','propal',$object->id);
 		}
 		print '</td></tr>';
 	}
@@ -1467,9 +1464,19 @@ if ($id > 0 || ! empty($ref))
 		print '</tr>';
 	}
 
-	// Insert hooks
-	$parameters=array('colspan'=>' colspan="3"');
-	$reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+    // Other attributes
+    $parameters=array('colspan' => ' colspan="3"');
+    $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+    if (empty($reshook) && ! empty($extrafields->attribute_label))
+    {
+        foreach($extrafields->attribute_label as $key=>$label)
+        {
+            $value=(isset($_POST["options_".$key])?$_POST["options_".$key]:$object->array_options["options_".$key]);
+            print "<tr><td>".$label.'</td><td colspan="3">';
+            print $extrafields->showInputField($key,$value);
+            print '</td></tr>'."\n";
+        }
+    }
 
 	// Amount HT
 	print '<tr><td height="10">'.$langs->trans('AmountHT').'</td>';
@@ -1807,7 +1814,7 @@ else
 	if ($sall) $sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'propaldet as pd ON p.rowid=pd.fk_propal';
 	$sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'user as u ON p.fk_user_author = u.rowid';
 	$sql.= ' WHERE p.fk_soc = s.rowid';
-	$sql.= ' AND s.entity = '.$conf->entity;
+	$sql.= ' AND p.entity = '.$conf->entity;
 
 	if (!$user->rights->societe->client->voir && !$socid) //restriction
 	{
@@ -1872,7 +1879,7 @@ else
 		print_liste_field_titre($langs->trans('Company'),$_SERVER["PHP_SELF"],'s.nom','',$param,'',$sortfield,$sortorder);
 		print_liste_field_titre($langs->trans('Date'),$_SERVER["PHP_SELF"],'p.datep','',$param, 'align="center"',$sortfield,$sortorder);
 		print_liste_field_titre($langs->trans('DateEndPropalShort'),$_SERVER["PHP_SELF"],'dfv','',$param, 'align="center"',$sortfield,$sortorder);
-		print_liste_field_titre($langs->trans('Price'),$_SERVER["PHP_SELF"],'p.total_ht','',$param, 'align="right"',$sortfield,$sortorder);
+		print_liste_field_titre($langs->trans('AmountHT'),$_SERVER["PHP_SELF"],'p.total_ht','',$param, 'align="right"',$sortfield,$sortorder);
 		print_liste_field_titre($langs->trans('Author'),$_SERVER["PHP_SELF"],'u.login','',$param,'align="right"',$sortfield,$sortorder);
 		print_liste_field_titre($langs->trans('Status'),$_SERVER["PHP_SELF"],'p.fk_statut','',$param,'align="right"',$sortfield,$sortorder);
 		print_liste_field_titre('');
@@ -1892,7 +1899,7 @@ else
 		print '&nbsp;'.$langs->trans('Year').': ';
 		$syear = $year;
 		//if($syear == '') $syear = date("Y");
-		$htmlother->select_year($syear,'year',1, 20, 5);
+		$formother->select_year($syear,'year',1, 20, 5);
 		print '</td>';
 		print '<td class="liste_titre" colspan="1">&nbsp;</td>';
 		print '<td class="liste_titre" align="right">';
@@ -1900,7 +1907,7 @@ else
 		print '</td>';
 		print '<td class="liste_titre">&nbsp;</td>';
 		print '<td class="liste_titre" align="right">';
-		$form->select_propal_statut($viewstatut,1);
+		$formpropal->select_propal_statut($viewstatut,1);
 		print '</td>';
 		print '<td class="liste_titre" align="right"><input class="liste_titre" type="image" src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/search.png" value="'.dol_escape_htmltag($langs->trans("Search")).'" title="'.dol_escape_htmltag($langs->trans("Search")).'">';
 		print '</td>';
@@ -2004,8 +2011,9 @@ else
 		dol_print_error($db);
 	}
 }
-$db->close();
+
 
 llxFooter();
 
+$db->close();
 ?>

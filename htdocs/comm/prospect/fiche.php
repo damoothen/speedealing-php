@@ -514,7 +514,8 @@ if ($socid > 0)
     
 }
 
-$db->close();
 
 llxFooter();
+
+$db->close();
 ?>

@@ -28,8 +28,9 @@
  */
 
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/expedition/class/expedition.class.php");
+require_once(DOL_DOCUMENT_ROOT."/core/class/html.formother.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
+require_once(DOL_DOCUMENT_ROOT."/expedition/class/expedition.class.php");
 require_once(DOL_DOCUMENT_ROOT."/product/class/html.formproduct.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/product.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/sendings.lib.php");
@@ -482,6 +483,7 @@ if ($action == 'send' && ! $_POST['addfile'] && ! $_POST['removedfile'] && ! $_P
 llxHeader('',$langs->trans('Sending'),'Expedition');
 
 $form = new Form($db);
+$formother = new FormOther($db);
 $formfile = new FormFile($db);
 $formproduct = new FormProduct($db);
 
@@ -580,7 +582,7 @@ if ($action == 'create')
 				print '<td colspan="3">';
 				if (!empty($object->fk_delivery_address))
 				{
-					$form->form_address($_SERVER['PHP_SELF'].'?id='.$object->id,$object->fk_delivery_address,$_GET['socid'],'none','commande',$object->id);
+					$formother->form_address($_SERVER['PHP_SELF'].'?id='.$object->id,$object->fk_delivery_address,$_GET['socid'],'none','commande',$object->id);
 				}
 				print '</td></tr>'."\n";
 			}
@@ -850,7 +852,7 @@ else
 			$head=shipping_prepare_head($object);
 			dol_fiche_head($head, 'shipping', $langs->trans("Sending"), 0, 'sending');
 
-			if ($mesg) print $mesg;
+			dol_htmloutput_mesg($mesg);
 
 			/*
 			 * Confirmation de la suppression
@@ -970,7 +972,7 @@ else
 
 			// Date creation
 			print '<tr><td>'.$langs->trans("DateCreation").'</td>';
-			print '<td colspan="3">'.dol_print_date($object->date_creation,"daytext")."</td>\n";
+			print '<td colspan="3">'.dol_print_date($object->date_creation,"day")."</td>\n";
 			print '</tr>';
 
 			// Delivery date planed
@@ -1006,7 +1008,7 @@ else
 				print '<td colspan="3">';
 				if (!empty($object->fk_delivery_address))
 				{
-					$form->form_address($_SERVER['PHP_SELF'].'?id='.$object->id,$object->fk_delivery_address,$object->deliveryaddress->socid,'none','shipment',$object->id);
+					$formother->form_address($_SERVER['PHP_SELF'].'?id='.$object->id,$object->fk_delivery_address,$object->deliveryaddress->socid,'none','shipment',$object->id);
 				}
 				print '</td></tr>'."\n";
 			}
@@ -1145,6 +1147,26 @@ else
 				// Predefined product or service
 				if ($lines[$i]->fk_product > 0)
 				{
+          // Define output language
+          if (! empty($conf->global->MAIN_MULTILANGS) && ! empty($conf->global->PRODUIT_TEXTS_IN_THIRDPARTY_LANGUAGE))
+			    {
+            $object->fetch_thirdparty();
+      			$prod = new Product($db, $lines[$i]->fk_product);
+      			$outputlangs = $langs;
+            $newlang='';
+            if (empty($newlang) && ! empty($_REQUEST['lang_id'])) $newlang=$_REQUEST['lang_id'];
+            if (empty($newlang)) $newlang=$object->client->default_lang;
+            if (! empty($newlang))
+            {
+                $outputlangs = new Translate("",$conf);
+                $outputlangs->setDefaultLang($newlang);
+            }
+
+            $label = ( ! empty($prod->multilangs[$outputlangs->defaultlang]["libelle"])) ? $prod->multilangs[$outputlangs->defaultlang]["libelle"] : $lines[$i]->product_label;
+          }
+          else
+            $label = $lines[$i]->product_label;
+
 					print '<td>';
 
 					// Affiche ligne produit
@@ -1152,7 +1174,7 @@ else
 					if ($lines[$i]->fk_product_type==1) $text.= img_object($langs->trans('ShowService'),'service');
 					else $text.= img_object($langs->trans('ShowProduct'),'product');
 					$text.= ' '.$lines[$i]->ref.'</a>';
-					$text.= ' - '.$lines[$i]->label;
+					$text.= ' - '.$label;
 					$description=($conf->global->PRODUIT_DESC_IN_FORM?'':dol_htmlentitiesbr($lines[$i]->description));
 					//print $description;
 					print $form->textwithtooltip($text,$description,3,'','',$i);

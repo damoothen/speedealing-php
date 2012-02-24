@@ -1,5 +1,5 @@
 <?php
-/* Copyright (C) 2010-2011 Regis Houssin  <regis@dolibarr.fr>
+/* Copyright (C) 2010-2012 Regis Houssin  <regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,38 +35,28 @@ require_once(DOL_DOCUMENT_ROOT."/core/class/genericobject.class.php");
  * View
  */
 
-// Ajout directives pour resoudre bug IE
-//header('Cache-Control: Public, must-revalidate');
-//header('Pragma: public');
-
-//top_htmlhead("", "", 1);  // Replaced with top_httphead. An ajax page does not need html header.
 top_httphead();
 
 print '<!-- Ajax page called with url '.$_SERVER["PHP_SELF"].'?'.$_SERVER["QUERY_STRING"].' -->'."\n";
 
 // Registering the location of boxes
-if((isset($_GET['roworder']) && !empty($_GET['roworder'])) && (isset($_GET['table_element_line']) && !empty($_GET['table_element_line']))
-	&& (isset($_GET['fk_element']) && !empty($_GET['fk_element'])) && (isset($_GET['element_id']) && !empty($_GET['element_id'])) )
+if ((isset($_POST['roworder']) && ! empty($_POST['roworder'])) && (isset($_POST['table_element_line']) && ! empty($_POST['table_element_line']))
+	&& (isset($_POST['fk_element']) && ! empty($_POST['fk_element'])) && (isset($_POST['element_id']) && ! empty($_POST['element_id'])) )
 {
-	$roworder = explode(',',$_GET['roworder']);
+	$roworder = explode(',',GETPOST('roworder','alpha',2));
 
 	foreach($roworder as $value)
 	{
-		if (!empty($value))
-		{
-			$newroworder[] = $value;
-		}
+		if (! empty($value)) $newroworder[] = $value;
 	}
 
-	$roworder = implode(',',$newroworder);
-
-	dol_syslog("AjaxRow roworder=".$_GET['roworder']." neworder=".$roworder." element=".$_GET['element'], LOG_DEBUG);
+	dol_syslog("AjaxRow roworder=".GETPOST('roworder','alpha',2)." fk_element=".GETPOST('fk_element','int',2), LOG_DEBUG);
 
 	$row=new GenericObject($db);
-	$row->table_element_line = $_GET['table_element_line'];
-	$row->fk_element = $_GET['fk_element'];
-	$row->id = $_GET['element_id'];
-	$result=$row->line_ajaxorder($roworder);
+	$row->table_element_line = GETPOST('table_element_line','alpha',2);
+	$row->fk_element = GETPOST('fk_element','int',2);
+	$row->id = GETPOST('element_id','int',2);
+	$result=$row->line_ajaxorder($newroworder);
 	$result=$row->line_order(true);
 }
 

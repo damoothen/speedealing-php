@@ -1,7 +1,7 @@
 <?php
 /* Copyright (C) 2004      Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2006      Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2006-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2011      Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -36,16 +36,15 @@ class Prospect extends Societe
 
 
     /**
-     *    \brief  Constructeur de la classe
-     *    \param  DB     handler acces base de donnees
-     *    \param  id     id societe (0 par defaut)
+     *	Constructor
+     *
+     *	@param	DoliDB	$db		Databas handler
      */
-    function Prospect($DB, $id=0)
+    function Prospect($db)
     {
         global $config;
 
-        $this->db = $DB;
-        $this->id = $id;
+        $this->db = $db;
 
         return 0;
     }
@@ -72,7 +71,7 @@ class Prospect extends Societe
         	$clause = "AND";
         }
         $sql.= " ".$clause." s.client in (1,2,3)";
-        $sql.= " AND s.entity = ".$conf->entity;
+        $sql.= " AND s.entity IN (".getEntity($this->element, 1).")";
         //$sql.= " AND st.type = 0";
         $sql.= " GROUP BY st.type";
         

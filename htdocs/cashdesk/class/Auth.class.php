@@ -102,7 +102,7 @@ class Auth
         $authmode=explode(',',$dolibarr_main_authentication);
 
         // No authentication mode
-        if (! count($authmode) && empty($conf->login_method_modules))
+        if (! count($authmode) && empty($conf->login_modules))
         {
             $langs->load('main');
             dol_print_error('',$langs->trans("ErrorConfigParameterNotDefined",'dolibarr_main_authentication'));
@@ -122,6 +122,7 @@ class Auth
 
         if ($test && $goontestloop)
         {
+            include_once(DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php');
 			$login = checkLoginPassEntity($usertotest,$passwordtotest,$entitytotest,$authmode);
             if ($login)
             {

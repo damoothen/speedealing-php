@@ -27,14 +27,14 @@ require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
 
 
 /**
- *	\class      pdf_paiement
- *	\brief      Classe permettant de generer les rapports de paiement
+ *	Classe permettant de generer les rapports de paiement
  */
 class pdf_paiement
 {
 	/**
-	 *	\brief  Constructeur
-	 *	\param	db		handler acces base de donnee
+     *  Constructor
+     *
+     *  @param      DoliDb		$db      Database handler
 	 */
 	function pdf_paiement($db)
 	{
@@ -66,11 +66,12 @@ class pdf_paiement
 
 
 	/**
-	 *	\brief  Fonction generant le rapport sur le disque
-	 *	\param	_dir		repertoire
-	 *	\param	month		mois du rapport
-	 *	\param	year		annee du rapport
-	 *	\param	outputlangs		Lang output object
+	 *	Fonction generant la rapport sur le disque
+	 *
+	 *	@param	string	$_dir			repertoire
+	 *	@param	int		$month			mois du rapport
+	 *	@param	int		$year			annee du rapport
+	 *	@param	string	$outputlangs	Lang output object
 	 */
 	function write_file($_dir, $month, $year, $outputlangs)
 	{
@@ -89,7 +90,7 @@ class pdf_paiement
 
 		if (! is_dir($dir))
 		{
-			$result=create_exdir($dir);
+			$result=dol_mkdir($dir);
 			if ($result < 0)
 			{
 				$this->error=$langs->transnoentities("ErrorCanNotCreateDir",$dir);
@@ -115,18 +116,19 @@ class pdf_paiement
 
 		$sql = "SELECT p.datep as dp, f.facnumber";
 		//$sql .= ", c.libelle as paiement_type, p.num_paiement";
-		$sql .= ", c.code as paiement_code, p.num_paiement";
-		$sql .= ", p.amount as paiement_amount, f.total_ttc as facture_amount ";
-		$sql .= ", pf.amount as pf_amount ";
-		$sql .= ", p.rowid as prowid";
-		$sql .= " FROM ".MAIN_DB_PREFIX."paiement as p, ".MAIN_DB_PREFIX."facture as f,";
-		$sql .= " ".MAIN_DB_PREFIX."c_paiement as c, ".MAIN_DB_PREFIX."paiement_facture as pf";
-		$sql .= " WHERE pf.fk_facture = f.rowid AND pf.fk_paiement = p.rowid";
-		$sql .= " AND p.fk_paiement = c.id ";
-		$sql .= " AND p.datep BETWEEN '".$this->db->idate(dol_get_first_day($year,$month))."' AND '".$this->db->idate(dol_get_last_day($year,$month))."'";
-		$sql .= " ORDER BY p.datep ASC, pf.fk_paiement ASC";
+		$sql.= ", c.code as paiement_code, p.num_paiement";
+		$sql.= ", p.amount as paiement_amount, f.total_ttc as facture_amount ";
+		$sql.= ", pf.amount as pf_amount ";
+		$sql.= ", p.rowid as prowid";
+		$sql.= " FROM ".MAIN_DB_PREFIX."paiement as p, ".MAIN_DB_PREFIX."facture as f,";
+		$sql.= " ".MAIN_DB_PREFIX."c_paiement as c, ".MAIN_DB_PREFIX."paiement_facture as pf";
+		$sql.= " WHERE pf.fk_facture = f.rowid AND pf.fk_paiement = p.rowid";
+		$sql.= " AND f.entity = ".$conf->entity;
+		$sql.= " AND p.fk_paiement = c.id ";
+		$sql.= " AND p.datep BETWEEN '".$this->db->idate(dol_get_first_day($year,$month))."' AND '".$this->db->idate(dol_get_last_day($year,$month))."'";
+		$sql.= " ORDER BY p.datep ASC, pf.fk_paiement ASC";
 
-		dol_syslog("pdf_paiement::write_file sql=".$sql);
+		dol_syslog(get_class($this)."::write_file sql=".$sql);
 		$result = $this->db->query($sql);
 		if ($result)
 		{
@@ -205,14 +207,15 @@ class pdf_paiement
 	}
 
 	/**
-	 *   	Show header of page
+	 *  Show top header of page.
 	 *
-	 *   	@param      $pdf     		Object PDF
-	 *   	@param      $object     	Object
-	 *      @param      $showaddress    0=no, 1=yes
-	 *      @param      $outputlangs	Object lang for output
+	 *  @param	PDF			&$pdf     		Object PDF
+	 *  @param  Object		$object     	Object to show
+	 *  @param  int	    	$showaddress    0=no, 1=yes
+	 *  @param  Translate	$outputlangs	Object lang for output
+	 *  @return	void
 	 */
-	function _pagehead(&$pdf, $page, $showaddress=1, $outputlangs)
+	function _pagehead(&$pdf, $page, $showaddress, $outputlangs)
 	{
 		global $langs;
 
@@ -261,7 +264,13 @@ class pdf_paiement
 
 
 	/**
+	 *	Output body
 	 *
+	 *	@param	PDF			&$pdf		PDF object
+	 *	@param	string		$page		Page
+	 *	@param	array		$lines		Array of lines
+	 *	@param	Translate	$langs		Object langs
+	 *	@return	void
 	 */
 	function Body(&$pdf, $page, $lines, $outputlangs)
 	{

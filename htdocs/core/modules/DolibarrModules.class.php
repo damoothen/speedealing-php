@@ -3,8 +3,8 @@
  * Copyright (C) 2004      Sebastien Di Cintio  <sdicintio@ressource-toi.org>
  * Copyright (C) 2004      Benoit Mortier       <benoit.mortier@opensides.be>
  * Copyright (C) 2004      Eric Seigne          <eric.seigne@ryxeo.com>
- * Copyright (C) 2005-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2011      Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -83,6 +83,9 @@ abstract class DolibarrModules
 
         // Insert activation login method
         if (! $err) $err+=$this->insert_login_method();
+        
+        // Insert activation of module's parts
+        if (! $err) $err+=$this->insert_module_parts();
 
         // Insert constant defined by modules, into llx_const
         if (! $err) $err+=$this->insert_const();
@@ -99,41 +102,38 @@ abstract class DolibarrModules
         // Create module's directories
         if (! $err) $err+=$this->create_dirs();
 
-        // Execute les requetes sql complementaires
-        if (! $err)
+        // Execute addons requests
+        $num=count($array_sql);
+    	for ($i = 0; $i < $num; $i++)
         {
-            $num=count($array_sql);
-        	for ($i = 0; $i < $num; $i++)
+            if (! $err)
             {
-                if (! $err)
+                $val=$array_sql[$i];
+                $sql='';
+                $ignoreerror=0;
+                if (is_array($val))
                 {
-                    $val=$array_sql[$i];
-                    $sql='';
-                    $ignoreerror=0;
-                    if (is_array($val))
+                    $sql=$val['sql'];
+                    $ignoreerror=$val['ignoreerror'];
+                }
+                else
+                {
+                    $sql=$val;
+                }
+
+                dol_syslog(get_class($this)."::_init ignoreerror=".$ignoreerror." sql=".$sql, LOG_DEBUG);
+                $result=$this->db->query($sql);
+                if (! $result)
+                {
+                    if (! $ignoreerror)
                     {
-                        $sql=$val['sql'];
-                        $ignoreerror=$val['ignoreerror'];
+                        $this->error=$this->db->lasterror();
+                        dol_syslog(get_class($this)."::_init Error ".$this->error, LOG_ERR);
+                        $err++;
                     }
                     else
                     {
-                        $sql=$val;
-                    }
-
-                    dol_syslog(get_class($this)."::_init ignoreerror=".$ignoreerror." sql=".$sql, LOG_DEBUG);
-                    $result=$this->db->query($sql);
-                    if (! $result)
-                    {
-                        if (! $ignoreerror)
-                        {
-                            $this->error=$this->db->lasterror();
-                            dol_syslog(get_class($this)."::_init Error ".$this->error, LOG_ERR);
-                            $err++;
-                        }
-                        else
-                        {
-                            dol_syslog(get_class($this)."::_init Warning ".$this->db->lasterror(), LOG_WARNING);
-                        }
+                        dol_syslog(get_class($this)."::_init Warning ".$this->db->lasterror(), LOG_WARNING);
                     }
                 }
             }
@@ -181,8 +181,11 @@ abstract class DolibarrModules
         // Remove activation of module's triggers (MAIN_MODULE_MYMODULE_TRIGGERS in llx_const)
         if (! $err) $err+=$this->delete_triggers();
 
-        // Remove activation of module's authentification method (MAIN_MODULE_MYMODULE_LOGIN_METHOD in llx_const)
+        // Remove activation of module's authentification method (MAIN_MODULE_MYMODULE_LOGIN in llx_const)
         if (! $err) $err+=$this->delete_login_method();
+        
+        // Remove activation of module's parts (MAIN_MODULE_MYMODULE_XXX in llx_const)
+        if (! $err) $err+=$this->delete_module_parts();
 
         // Remove constants defined by modules
         if (! $err) $err+=$this->delete_const();
@@ -434,10 +437,11 @@ abstract class DolibarrModules
 
         $sql = "DELETE FROM ".MAIN_DB_PREFIX."const";
         $sql.= " WHERE ".$this->db->decrypt('name')." = '".$this->const_name."'";
-        $sql.= " AND entity in (0, ".$entity.")";
+        $sql.= " AND entity IN (0, ".$entity.")";
 
         dol_syslog(get_class($this)."::_active sql=".$sql, LOG_DEBUG);
-        $this->db->query($sql);
+        $resql=$this->db->query($sql);
+        if (! $resql) $err++;
 
         $sql = "INSERT INTO ".MAIN_DB_PREFIX."const (name,value,visible,entity) VALUES";
         $sql.= " (".$this->db->encrypt($this->const_name,1);
@@ -445,10 +449,8 @@ abstract class DolibarrModules
         $sql.= ",0,".$entity.")";
 
         dol_syslog(get_class($this)."::_active sql=".$sql, LOG_DEBUG);
-        if (!$this->db->query($sql))
-        {
-            $err++;
-        }
+        $resql=$this->db->query($sql);
+        if (! $resql) $err++;
 
         return $err;
     }
@@ -470,7 +472,7 @@ abstract class DolibarrModules
 
         $sql = "DELETE FROM ".MAIN_DB_PREFIX."const";
         $sql.= " WHERE ".$this->db->decrypt('name')." = '".$this->const_name."'";
-        $sql.= " AND entity in (0, ".$entity.")";
+        $sql.= " AND entity IN (0, ".$entity.")";
 
         dol_syslog(get_class($this)."::_unactive sql=".$sql);
         $this->db->query($sql);
@@ -1145,7 +1147,7 @@ abstract class DolibarrModules
                 }
             }
             $menu->type=$this->menu[$key]['type'];
-            $menu->mainmenu=$this->menu[$key]['mainmenu'];
+            $menu->mainmenu=isset($this->menu[$key]['mainmenu'])?$this->menu[$key]['mainmenu']:(isset($menu->fk_mainmenu)?$menu->fk_mainmenu:'');
             $menu->leftmenu=isset($this->menu[$key]['leftmenu'])?$this->menu[$key]['leftmenu']:'';
             $menu->titre=$this->menu[$key]['titre'];
             $menu->url=$this->menu[$key]['url'];
@@ -1251,7 +1253,7 @@ abstract class DolibarrModules
                 // Create dir if it does not exists
                 if ($fulldir && ! file_exists($fulldir))
                 {
-                    if (create_exdir($fulldir) < 0)
+                    if (dol_mkdir($fulldir) < 0)
                     {
                         $this->error = $langs->trans("ErrorCanNotCreateDir",$fulldir);
                         dol_syslog(get_class($this)."::_init ".$this->error, LOG_ERR);
@@ -1341,9 +1343,87 @@ abstract class DolibarrModules
     }
 
     /**
+     * Insert activation of generic parts from modules in llx_const
+     * 
+     * @return     int     Nb of errors (0 if OK)
+     */
+    function insert_module_parts()
+    {
+    	global $conf;
+    
+    	$err=0;
+    
+    	if (is_array($this->module_parts) && ! empty($this->module_parts))
+    	{
+    		foreach($this->module_parts as $key => $value)
+    		{
+    			$sql = "INSERT INTO ".MAIN_DB_PREFIX."const (";
+    			$sql.= "name";
+    			$sql.= ", type";
+    			$sql.= ", value";
+    			$sql.= ", note";
+    			$sql.= ", visible";
+    			$sql.= ", entity";
+    			$sql.= ")";
+    			$sql.= " VALUES (";
+    			$sql.= $this->db->encrypt($this->const_name."_".strtoupper($key),1);
+    			$sql.= ", 'chaine'";
+    			$sql.= ", ".$this->db->encrypt($value,1);
+    			$sql.= ", null";
+    			$sql.= ", '0'";
+    			$sql.= ", ".$conf->entity;
+    			$sql.= ")";
+    			
+    			dol_syslog(get_class($this)."::insert_".$key." sql=".$sql);
+    			$resql=$this->db->query($sql);
+    			if (! $resql)
+    			{
+    				$this->error=$this->db->lasterror();
+    				dol_syslog(get_class($this)."::insert_".$key." ".$this->error);
+    			}
+    		}
+    	}
+    	return $err;
+    }
+    
+    /**
+     * Remove activation of generic parts from modules in llx_const
+     * 
+     * @return     int     Nb of errors (0 if OK)
+     */
+    function delete_module_parts()
+    {
+    	global $conf;
+    
+    	$err=0;
+    	
+    	if (is_array($this->module_parts) && ! empty($this->module_parts))
+    	{
+    		foreach($this->module_parts as $key => $value)
+    		{
+    			$sql = "DELETE FROM ".MAIN_DB_PREFIX."const";
+    			$sql.= " WHERE ".$this->db->decrypt('name')." LIKE '".$this->const_name."_".strtoupper($key)."'";
+    			$sql.= " AND entity = ".$conf->entity;
+    			
+    			dol_syslog(get_class($this)."::delete_".$key." sql=".$sql);
+    			if (! $this->db->query($sql))
+    			{
+    				$this->error=$this->db->lasterror();
+    				dol_syslog(get_class($this)."::delete_".$key." ".$this->error, LOG_ERR);
+    				$err++;
+    			}
+    		}
+    	}
+    
+    	return $err;
+    }
+    
+    /**
      *  Insert activation triggers from modules in llx_const
      *
      *  @return     int     Nb of errors (0 if OK)
+     *  @deprecated
+     *  @see insert_module_parts()
      */
     function insert_triggers()
     {
@@ -1385,6 +1465,8 @@ abstract class DolibarrModules
      *  Remove activation triggers from modules in llx_const
      *
      *  @return     int     Nb of errors (0 if OK)
+     *  @deprecated
+     *  @see delete_module_parts()
      */
     function delete_triggers()
     {
@@ -1411,6 +1493,8 @@ abstract class DolibarrModules
      *  Insert activation login method from modules in llx_const
      *
      *  @return     int             Number of errors (0 if ok)
+     *  @deprecated
+     *  @see insert_module_parts()
      */
     function insert_login_method()
     {
@@ -1429,7 +1513,7 @@ abstract class DolibarrModules
             $sql.= ", entity";
             $sql.= ")";
             $sql.= " VALUES (";
-            $sql.= $this->db->encrypt($this->const_name."_LOGIN_METHOD",1);
+            $sql.= $this->db->encrypt($this->const_name."_LOGIN",1);
             $sql.= ", 'chaine'";
             $sql.= ", ".$this->db->encrypt($this->login_method,1);
             $sql.= ", null";
@@ -1452,6 +1536,8 @@ abstract class DolibarrModules
      *  Remove activation login method from modules in llx_const
      *
      *  @return     int     Nombre d'erreurs (0 si ok)
+     *  @deprecated
+     *  @see delete_module_parts()
      */
     function delete_login_method()
     {
@@ -1460,7 +1546,7 @@ abstract class DolibarrModules
         $err=0;
 
         $sql = "DELETE FROM ".MAIN_DB_PREFIX."const";
-        $sql.= " WHERE ".$this->db->decrypt('name')." LIKE '".$this->const_name."_LOGIN_METHOD'";
+        $sql.= " WHERE ".$this->db->decrypt('name')." LIKE '".$this->const_name."_LOGIN'";
         $sql.= " AND entity = ".$conf->entity;
 
         dol_syslog(get_class($this)."::delete_login_method sql=".$sql);

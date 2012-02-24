@@ -864,7 +864,8 @@ MAIN_PROXY_USER=Login del servidor proxy
 MAIN_PROXY_PASS=Contrasenya del servidor proxy
 DefineHereComplementaryAttributes=Definiu aquí la llista d'atributs addicionals, no disponibles a estàndard, i que vol gestionar per %s.
 ExtraFields=Atributs addicionals
-SendingMailSetup=Configuración del envío por mail
+ExtraFieldHasWrongValue=L'atribut %s te un valor incorrecte.
+SendingMailSetup=Configuració de l'enviament per mail
 SendmailOptionNotComplete=Atenció, en alguns sistemes Linux, amb aquest mètode d'enviament, per poder enviar mails en nom seu, la configuració de sendmail ha de contenir l'opció <b>-ba</b> (paràmetre <b>mail.force_extra_parameters</b> a l'arxiu <b>php.ini</b>). Si alguns dels seus destinataris no reben els seus missatges, proveu de modificar aquest paràmetre PHP amb <b>mail.force_extra_parameters =-ba </b>.
 ##### Module password generation
 PasswordGenerationStandard=Retorna una contrasenya generada per l'algoritme intern Dolibarr: 8 caràcters, números i caràcters en minúscules barrejades.
@@ -1119,6 +1120,7 @@ NumberOfProductShowInSelect=Nº de productes màx a les llistes (0= sense límit
 ConfirmDeleteProductLineAbility=Confirmació d'eliminació d'una línia de producte en els formularis
 ModifyProductDescAbility=Personalització de les descripcions dels productes en els formularis
 ViewProductDescInFormAbility=Visualització de les descripcions dels productes en els formularis
+ViewProductDescInThirdpartyLanguageAbility=Visualització de les descripcions de productes en l'idioma del tercer
 UseSearchToSelectProduct=Utilitzar un formulari de cerca per a la selecció d'un producte (en lloc de la llista desplegable). Tingueu en compte que si té un nombre important de productes o serveis (> 100 000), pot millorar el rendiment definint la constant PRODUCT_DONOTSEARCH_ANYWHERE a 1 a Configuració->Varis. La cerca quedarà limitada a l'inici de la cadena.
 UseEcoTaxeAbility=Assumir ecotaxa (DEEE)
 SetDefaultBarcodeTypeProducts=Tipus de codi de barres utilitzat per defecte per als productes
@@ -1150,7 +1152,6 @@ BarcodeDescUPC=Codis de barra tipus UPC
 BarcodeDescISBN=Codis de barra tipus ISBN
 BarcodeDescC39=Codis de barra tipus C39
 BarcodeDescC128=Codis de barra tipus C128
-NoActivatedBarcode=Cap tipus de codi de barres activat
 ##### Prelevements #####
 WithdrawalsSetup=Configuració del mòdul domiciliacions
 ##### ExternalRSS #####
@@ -1285,6 +1286,8 @@ BankOrderGlobal=General
 BankOrderGlobalDesc=Ordre de visualització general
 BankOrderES=Espanyol
 BankOrderESDesc=Ordre de visualització espanyol
+##### MailmanSpip #####
+MailmanSpipSetup=Configuració del mòdul Mailman i Spip
 ##### Multicompany #####
 MultiCompanySetup=Configuració del mòdul Multi-empresa
 ##### Suppliers #####
@@ -1298,9 +1301,6 @@ NoteOnPathLocation=Tingueu en compte que aquest arxiu ha d'estar en una carpeta 
 YouCanDownloadFreeDatFileTo=Pot descarregar-se una <b>versió demo gratuïta</b> de l'arxiu de països  Maxmind GeoIP a l'adreça %s.
 YouCanDownloadAdvancedDatFileTo=També pot descarregar-se una <b>versió més completa</b> de l'arxiu de països Maxmind GeoIP a l'adreça %s.
 TestGeoIPResult=Test de conversió IP -> País
-##### NumberWords #####
-NumberWordsSetup=Configuració del mòdul NumberWords
-DescNumberWords=Aquest mòdul us ofereix convertir números o imports en qualsevol cadena. També realitza la substitució de les variables genèriques __TOTAL_TTC_WORDS__, __TOTAL_HT_WORDS__ o __TOTAL_VAT_WORDS__ pel valor d'imports totals, base o de l'IVA, en cadena dins el text al qual fan referència (text lliure de factures, ...)
 ##### Projects #####
 ProjectsNumberingModules=Mòdul de numeració per a les referències dels projectes
 ProjectsSetup=Configuració del mòdul Projectes

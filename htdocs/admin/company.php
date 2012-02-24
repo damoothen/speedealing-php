@@ -79,7 +79,7 @@ if ( (isset($_POST["action"]) && $_POST["action"] == 'update' && empty($_POST["c
                 dol_syslog("Move file ".$_FILES["logo"]["tmp_name"]." to ".$conf->mycompany->dir_output.'/logos/'.$original_file);
                 if (! is_dir($conf->mycompany->dir_output.'/logos/'))
                 {
-                    create_exdir($conf->mycompany->dir_output.'/logos/');
+                    dol_mkdir($conf->mycompany->dir_output.'/logos/');
                 }
                 $result=dol_move_uploaded_file($_FILES["logo"]["tmp_name"],$conf->mycompany->dir_output.'/logos/'.$original_file,1,0,$_FILES['logo']['error']);
                 if ($result > 0)
@@ -354,7 +354,7 @@ if ((isset($_GET["action"]) && $_GET["action"] == 'edit')
     // Logo
     $var=!$var;
     print '<tr '.$bc[$var].'><td>'.$langs->trans("Logo").' (png,jpg)</td><td>';
-    print '<table width="100%" class="nocellnopadd"><tr><td valign="center">';
+    print '<table width="100%" class="nocellnopadd"><tr class="nocellnopadd"><td valign="middle" class="nocellnopadd">';
     print '<input type="file" class="flat" name="logo" size="50">';
     print '</td><td valign="middle" align="right">';
     if ($mysoc->logo_mini)
@@ -709,7 +709,7 @@ else
     $var=!$var;
     print '<tr '.$bc[$var].'><td width="35%">'.$langs->trans("Logo").'</td><td>';
 
-    print '<table width="100%" class="nocellnopadd"><tr><td valign="center">';
+    print '<table width="100%" class="nocellnopadd"><tr class="nocellnopadd"><td valign="middle" class="nocellnopadd">';
     print $mysoc->logo;
     print '</td><td valign="center" align="right">';
 
@@ -872,7 +872,7 @@ else
     $var=!$var;
     print '<tr '.$bc[$var].'><td width="35%">'.$langs->trans("FiscalMonthStart").'</td><td>';
     $monthstart=(! empty($conf->global->SOCIETE_FISCAL_MONTH_START)) ? $conf->global->SOCIETE_FISCAL_MONTH_START : 1;
-    print monthArrayOrSelected($monthstart) . '</td></tr>';
+    print dol_print_date(dol_mktime(12,0,0,$monthstart,1,2000,1),'%B','gm') . '</td></tr>';
 
     print "</table>";
 

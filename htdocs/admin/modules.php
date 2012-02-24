@@ -44,7 +44,7 @@ if (!$user->admin) accessforbidden();
 
 if (isset($_GET["action"]) && $_GET["action"] == 'set' && $user->admin)
 {
-    $result=Activate($_GET["value"]);
+    $result=activateModule($_GET["value"]);
     $mesg='';
     if ($result) $mesg=$result;
     Header("Location: modules.php?mode=".$mode."&mesg=".urlencode($mesg));
@@ -53,7 +53,7 @@ if (isset($_GET["action"]) && $_GET["action"] == 'set' && $user->admin)
 
 if (isset($_GET["action"]) && $_GET["action"] == 'reset' && $user->admin)
 {
-    $result=UnActivate($_GET["value"]);
+    $result=unActivateModule($_GET["value"]);
     $mesg='';
     if ($result) $mesg=$result;
     Header("Location: modules.php?mode=".$mode."&mesg=".urlencode($mesg));
@@ -73,16 +73,8 @@ llxHeader('',$langs->trans("Setup"),$help_url);
 print_fiche_titre($langs->trans("ModulesSetup"),'','setup');
 
 
-// Search modules
-$filename = array();
-$modules = array();
-$orders = array();
-$categ = array();
-$dirmod = array();
+// Search modules dirs
 $modulesdir = array();
-$i = 0;	// is a sequencer of modules found
-$j = 0;	// j is module number. Automatically affected if module number not defined.
-
 foreach ($conf->file->dol_document_root as $type => $dirroot)
 {
 	$modulesdir[$dirroot . '/core/modules/'] = $dirroot . '/core/modules/';
@@ -104,6 +96,15 @@ foreach ($conf->file->dol_document_root as $type => $dirroot)
 	}
 }
 //var_dump($modulesdir);
+
+
+$filename = array();
+$modules = array();
+$orders = array();
+$categ = array();
+$dirmod = array();
+$i = 0;	// is a sequencer of modules found
+$j = 0;	// j is module number. Automatically affected if module number not defined.
 
 foreach ($modulesdir as $dir)
 {
@@ -472,7 +473,7 @@ dol_fiche_end();
 print '<div class="tabsAction">';
 print '</div>';
 
-$db->close();
-
 llxFooter();
+
+$db->close();
 ?>

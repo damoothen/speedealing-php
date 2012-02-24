@@ -72,9 +72,9 @@ abstract class ActionsCardCommon
 	/**
      *  Get object from id or ref and save it into this->object
 	 *
-     *  @param		int			Object id
-     *  @param		ref			Object ref
-     *  @return		object		Object loaded
+     *  @param		int		$id			Object id
+     *  @param		ref		$ref		Object ref
+     *  @return		object				Object loaded
      */
     protected function getObject($id,$ref='')
     {
@@ -603,8 +603,8 @@ abstract class ActionsCardCommon
             	foreach($listsalesrepresentatives as $val)
             	{
             		$userstatic->id=$val['id'];
-            		$userstatic->nom=$val['name'];
-            		$userstatic->prenom=$val['firstname'];
+            		$userstatic->lastname=$val['name'];
+            		$userstatic->firstname=$val['firstname'];
             		$this->tpl['sales_representatives'].= $userstatic->getNomUrl(1);
             		$i++;
             		if ($i < $nbofsalesrepresentative) $this->tpl['sales_representatives'].= ', ';

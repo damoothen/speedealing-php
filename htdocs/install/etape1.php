@@ -167,7 +167,7 @@ if (! $error)
             $db=getDoliDBInstance($_POST["db_type"],$_POST["db_host"],$userroot,$passroot,$databasefortest,$_POST["db_port"]);
 
             dol_syslog("databasefortest=".$databasefortest." connected=".$db->connected." database_selected=".$db->database_selected, LOG_DEBUG);
-            print "databasefortest=".$databasefortest." connected=".$db->connected." database_selected=".$db->database_selected;
+            //print "databasefortest=".$databasefortest." connected=".$db->connected." database_selected=".$db->database_selected;
 
             if (empty($_POST["db_create_database"]) && $db->connected && ! $db->database_selected)
             {
@@ -345,7 +345,7 @@ if (! $error && $db->connected && $action == "set")
                 }
                 else
                 {
-                    if (create_exdir($dir[$i]) < 0)
+                    if (dol_mkdir($dir[$i]) < 0)
                     {
                         print "<tr><td>";
                         print "Failed to create directory: ".$dir[$i];
@@ -392,7 +392,7 @@ if (! $error && $db->connected && $action == "set")
         {
             // We must ignore errors as an existing old file may already exists and not be replacable or
             // the installer (like for ubuntu) may not have permission to create another file than conf.php.
-            // Also no other process must be able to read file or we expose the new file so content with password.
+            // Also no other process must be able to read file or we expose the new file, so content with password.
             @dol_copy($conffile, $conffile.'.old', '0400');
         }
 
@@ -467,7 +467,8 @@ if (! $error && $db->connected && $action == "set")
                     else
                     {
                         if ($db->errno() == 'DB_ERROR_RECORD_ALREADY_EXISTS'
-                        || $db->errno() == 'DB_ERROR_KEY_NAME_ALREADY_EXISTS')
+                        || $db->errno() == 'DB_ERROR_KEY_NAME_ALREADY_EXISTS'
+                        || $db->errno() == 'DB_ERROR_USER_ALREADY_EXISTS')
                         {
                             dolibarr_install_syslog("etape1: User already exists");
                             print '<tr><td>';
@@ -483,7 +484,7 @@ if (! $error && $db->connected && $action == "set")
                             print $langs->trans("UserCreation").' : ';
                             print $dolibarr_main_db_user;
                             print '</td>';
-                            print '<td>'.$langs->trans("Error").' '.$db->error()."</td></tr>";
+                            print '<td>'.$langs->trans("Error").': '.$db->errno().' '.$db->error()."</td></tr>";
                         }
                     }
 
@@ -689,7 +690,7 @@ pFooter($error,$setuplang,'jsinfo');
  */
 function write_main_file($mainfile,$main_dir)
 {
-    $fp = fopen("$mainfile", "w");
+    $fp = @fopen("$mainfile", "w");
     if($fp)
     {
         clearstatcache();
@@ -711,7 +712,7 @@ function write_main_file($mainfile,$main_dir)
  */
 function write_master_file($masterfile,$main_dir)
 {
-    $fp = fopen("$masterfile", "w");
+    $fp = @fopen("$masterfile", "w");
     if($fp)
     {
         clearstatcache();
@@ -742,7 +743,7 @@ function write_conf_file($conffile)
     global $force_dolibarr_lib_TCPDF_PATH, $force_dolibarr_lib_FPDI_PATH;
     global $force_dolibarr_lib_PHPEXCEL_PATH, $force_dolibarr_lib_GEOIP_PATH;
     global $force_dolibarr_lib_ODTPHP_PATH, $force_dolibarr_lib_ODTPHP_PATHTOPCLZIP;
-    global $force_dolibarr_js_CKEDITOR;
+    global $force_dolibarr_js_CKEDITOR, $force_dolibarr_js_JQUERY, $force_dolibarr_js_JQUERY_UI, $force_dolibarr_js_JQUERY_FLOT;
     global $force_dolibarr_font_DOL_DEFAULT_TTF, $force_dolibarr_font_DOL_DEFAULT_TTF_BOLD;
 
     $error=0;
@@ -827,32 +828,41 @@ function write_conf_file($conffile)
 
         // Write params to overwrites default lib path
         fputs($fp,"\n");
-        if (empty($force_dolibarr_lib_ADODB_PATH)) { fputs($fp, '#'); $force_dolibarr_lib_ADODB_PATH=''; }
+        if (empty($force_dolibarr_lib_ADODB_PATH)) { fputs($fp, '//'); $force_dolibarr_lib_ADODB_PATH=''; }
         fputs($fp, '$dolibarr_lib_ADODB_PATH=\''.$force_dolibarr_lib_ADODB_PATH.'\';');
         fputs($fp,"\n");
-        if (empty($force_dolibarr_lib_NUSOAP_PATH)) { fputs($fp, '#'); $force_dolibarr_lib_NUSOAP_PATH=''; }
-        fputs($fp, '$dolibarr_lib_NUSOAP_PATH=\''.$force_dolibarr_lib_NUSOAP_PATH.'\';');
-        fputs($fp,"\n");
-        if (empty($force_dolibarr_lib_TCPDF_PATH)) { fputs($fp, '#'); $force_dolibarr_lib_TCPDF_PATH=''; }
-        fputs($fp, '$dolibarr_lib_TCPDF_PATH=\''.$force_dolibarr_lib_TCPDF_PATH.'\';');
-        fputs($fp,"\n");
-        if (empty($force_dolibarr_lib_FPDI_PATH)) { fputs($fp, '#'); $force_dolibarr_lib_FPDI_PATH=''; }
-        fputs($fp, '$dolibarr_lib_FPDI_PATH=\''.$force_dolibarr_lib_FPDI_PATH.'\';');
-        fputs($fp,"\n");
-        if (empty($force_dolibarr_lib_PHPEXCEL_PATH)) { fputs($fp, '#'); $force_dolibarr_lib_PHPEXCEL_PATH=''; }
-        fputs($fp, '$dolibarr_lib_PHPEXCEL_PATH=\''.$force_dolibarr_lib_PHPEXCEL_PATH.'\';');
-        fputs($fp,"\n");
-        if (empty($force_dolibarr_lib_GEOIP_PATH)) { fputs($fp, '#'); $force_dolibarr_lib_GEOIP_PATH=''; }
+        if (empty($force_dolibarr_lib_GEOIP_PATH)) { fputs($fp, '//'); $force_dolibarr_lib_GEOIP_PATH=''; }
         fputs($fp, '$dolibarr_lib_GEOIP_PATH=\''.$force_dolibarr_lib_GEOIP_PATH.'\';');
         fputs($fp,"\n");
-        if (empty($force_dolibarr_lib_ODTPHP_PATH)) { fputs($fp, '#'); $force_dolibarr_lib_ODTPHP_PATH=''; }
+        if (empty($force_dolibarr_lib_NUSOAP_PATH)) { fputs($fp, '//'); $force_dolibarr_lib_NUSOAP_PATH=''; }
+        fputs($fp, '$dolibarr_lib_NUSOAP_PATH=\''.$force_dolibarr_lib_NUSOAP_PATH.'\';');
+        fputs($fp,"\n");
+        if (empty($force_dolibarr_lib_FPDI_PATH)) { fputs($fp, '//'); $force_dolibarr_lib_FPDI_PATH=''; }
+        fputs($fp, '$dolibarr_lib_FPDI_PATH=\''.$force_dolibarr_lib_FPDI_PATH.'\';');
+        fputs($fp,"\n");
+        if (empty($force_dolibarr_lib_PHPEXCEL_PATH)) { fputs($fp, '//'); $force_dolibarr_lib_PHPEXCEL_PATH=''; }
+        fputs($fp, '$dolibarr_lib_PHPEXCEL_PATH=\''.$force_dolibarr_lib_PHPEXCEL_PATH.'\';');
+        fputs($fp,"\n");
+        if (empty($force_dolibarr_lib_ODTPHP_PATH)) { fputs($fp, '//'); $force_dolibarr_lib_ODTPHP_PATH=''; }
         fputs($fp, '$dolibarr_lib_ODTPHP_PATH=\''.$force_dolibarr_lib_ODTPHP_PATH.'\';');
         fputs($fp,"\n");
-        if (empty($force_dolibarr_lib_ODTPHP_PATHTOPCLZIP)) { fputs($fp, '#'); $force_dolibarr_lib_ODTPHP_PATHTOPCLZIP=''; }
+        if (empty($force_dolibarr_lib_ODTPHP_PATHTOPCLZIP)) { fputs($fp, '//'); $force_dolibarr_lib_ODTPHP_PATHTOPCLZIP=''; }
         fputs($fp, '$dolibarr_lib_ODTPHP_PATHTOPCLZIP=\''.$force_dolibarr_lib_ODTPHP_PATHTOPCLZIP.'\';');
         fputs($fp,"\n");
-        if (empty($force_dolibarr_js_CKEDITOR)) { fputs($fp, '#'); $force_dolibarr_js_CKEDITOR=''; }
-        fputs($fp, '$dolibarr_ks_CKEDITOR=\''.$force_dolibarr_js_CKEDITOR.'\';');
+        if (empty($force_dolibarr_lib_TCPDF_PATH)) { fputs($fp, '//'); $force_dolibarr_lib_TCPDF_PATH=''; }
+        fputs($fp, '$dolibarr_lib_TCPDF_PATH=\''.$force_dolibarr_lib_TCPDF_PATH.'\';');
+        fputs($fp,"\n");
+        if (empty($force_dolibarr_js_CKEDITOR)) { fputs($fp, '//'); $force_dolibarr_js_CKEDITOR=''; }
+        fputs($fp, '$dolibarr_js_CKEDITOR=\''.$force_dolibarr_js_CKEDITOR.'\';');
+        fputs($fp,"\n");
+        if (empty($force_dolibarr_js_JQUERY)) { fputs($fp, '//'); $force_dolibarr_js_JQUERY=''; }
+        fputs($fp, '$dolibarr_js_JQUERY=\''.$force_dolibarr_js_JQUERY.'\';');
+        fputs($fp,"\n");
+        if (empty($force_dolibarr_js_JQUERY_UI)) { fputs($fp, '//'); $force_dolibarr_js_JQUERY_UI=''; }
+        fputs($fp, '$dolibarr_js_JQUERY_UI=\''.$force_dolibarr_js_JQUERY_UI.'\';');
+        fputs($fp,"\n");
+        if (empty($force_dolibarr_js_JQUERY_FLOT)) { fputs($fp, '//'); $force_dolibarr_js_JQUERY_FLOT=''; }
+        fputs($fp, '$dolibarr_js_JQUERY_FLOT=\''.$force_dolibarr_js_JQUERY_FLOT.'\';');
         fputs($fp,"\n");
 
         // Write params to overwrites default font path

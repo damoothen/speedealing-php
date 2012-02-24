@@ -1,6 +1,6 @@
 <?php
 /* Copyright (C) 2007-2011 Regis Houssin        <regis@dolibarr.fr>
- * Copyright (C) 2008-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2008-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -24,8 +24,7 @@
 
 
 /**
- *       \class      Form
- *       \brief      Classe permettant la generation de composants html
+ *      Class to manage barcode HTML
  */
 class FormBarCode
 {
@@ -41,7 +40,6 @@ class FormBarCode
     function FormBarCode($db)
     {
         $this->db = $db;
-
         return 1;
     }
 
@@ -129,8 +127,9 @@ class FormBarCode
             }
             else
             {
+                $langs->load("errors");
                 print '<select disabled="disabled" class="flat" name="'.$htmlname.'">';
-                print '<option value="0" selected="selected">'.$langs->trans('NoActivatedBarcode').'</option>';
+                print '<option value="0" selected="selected">'.$langs->trans('ErrorNoActivatedBarcode').'</option>';
             }
 
             while ($i < $num)

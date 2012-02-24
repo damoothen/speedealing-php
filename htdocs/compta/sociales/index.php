@@ -24,7 +24,8 @@
  */
 
 require('../../main.inc.php');
-require(DOL_DOCUMENT_ROOT."/compta/sociales/class/chargesociales.class.php");
+require_once(DOL_DOCUMENT_ROOT."/compta/sociales/class/chargesociales.class.php");
+require_once(DOL_DOCUMENT_ROOT."/core/class/html.formsocialcontrib.class.php");
 
 // Security check
 $socid = isset($_GET["socid"])?$_GET["socid"]:'';
@@ -40,7 +41,7 @@ $offset = $conf->liste_limit * $page;
 $pageprev = $page - 1;
 $pagenext = $page + 1;
 $limit = $conf->liste_limit;
-if (! $sortfield) $sortfield="s.date_ech";
+if (! $sortfield) $sortfield="cs.date_ech";
 if (! $sortorder) $sortorder="DESC";
 
 $year=$_GET["year"];
@@ -53,7 +54,7 @@ if (empty($_REQUEST['typeid']))
 	foreach($filterarray as $val)
 	{
 		$part=explode(':',$val);
-		if ($part[0] == 's.fk_type') $typeid=$part[1];
+		if ($part[0] == 'cs.fk_type') $typeid=$part[1];
 	}
 }
 else
@@ -66,26 +67,27 @@ else
  *	View
  */
 
+$form = new Form($db);
+$formsocialcontrib = new FormSocialContrib($db);
+$chargesociale_static=new ChargeSociales($db);
+
 llxHeader();
 
-$form = new Form($db);
-
-
-$sql = "SELECT s.rowid as id, s.fk_type as type, ";
-$sql.= " s.amount, s.date_ech, s.libelle, s.paye, s.periode,";
+$sql = "SELECT cs.rowid as id, cs.fk_type as type, ";
+$sql.= " cs.amount, cs.date_ech, cs.libelle, cs.paye, cs.periode,";
 $sql.= " c.libelle as type_lib";
 $sql.= " FROM ".MAIN_DB_PREFIX."c_chargesociales as c";
-$sql.= ", ".MAIN_DB_PREFIX."chargesociales as s";
-$sql.= " WHERE s.fk_type = c.id";
-$sql.= " AND s.entity = ".$conf->entity;
-if (GETPOST("search_label")) $sql.=" AND s.libelle like '%".GETPOST("search_label")."%'";
+$sql.= ", ".MAIN_DB_PREFIX."chargesociales as cs";
+$sql.= " WHERE cs.fk_type = c.id";
+$sql.= " AND cs.entity = ".$conf->entity;
+if (GETPOST("search_label")) $sql.=" AND cs.libelle LIKE '%".GETPOST("search_label")."%'";
 if ($year > 0)
 {
     $sql .= " AND (";
     // Si period renseignee on l'utilise comme critere de date, sinon on prend date echeance,
     // ceci afin d'etre compatible avec les cas ou la periode n'etait pas obligatoire
-    $sql .= "   (s.periode is not null and date_format(s.periode, '%Y') = '".$year."') ";
-    $sql .= "or (s.periode is null     and date_format(s.date_ech, '%Y') = '".$year."')";
+    $sql .= "   (cs.periode IS NOT NULL AND date_format(cs.periode, '%Y') = '".$year."') ";
+    $sql .= "OR (cs.periode IS NULL AND date_format(cs.date_ech, '%Y') = '".$year."')";
     $sql .= ")";
 }
 if ($filtre) {
@@ -93,13 +95,11 @@ if ($filtre) {
     $sql .= " AND ".$filtre;
 }
 if ($typeid) {
-    $sql .= " AND s.fk_type=".$typeid;
+    $sql .= " AND cs.fk_type=".$typeid;
 }
 $sql.= $db->order($sortfield,$sortorder);
 $sql.= $db->plimit($limit+1,$offset);
 
-
-$chargesociale_static=new ChargeSociales($db);
 
 $resql=$db->query($sql);
 if ($resql)
@@ -142,12 +142,12 @@ if ($resql)
 
 		print "<tr class=\"liste_titre\">";
 		print_liste_field_titre($langs->trans("Ref"),"index.php","id","",$param,"",$sortfield,$sortorder);
-		print_liste_field_titre($langs->trans("Label"),"index.php","s.libelle","",$param,'align="left"',$sortfield,$sortorder);
+		print_liste_field_titre($langs->trans("Label"),"index.php","cs.libelle","",$param,'align="left"',$sortfield,$sortorder);
 		print_liste_field_titre($langs->trans("Type"),"index.php","type","",$param,'align="left"',$sortfield,$sortorder);
 		print_liste_field_titre($langs->trans("PeriodEndDate"),"index.php","periode","",$param,'align="center"',$sortfield,$sortorder);
-		print_liste_field_titre($langs->trans("Amount"),"index.php","s.amount","",$param,'align="right"',$sortfield,$sortorder);
-		print_liste_field_titre($langs->trans("DateDue"),"index.php","s.date_ech","",$param,'align="center"',$sortfield,$sortorder);
-		print_liste_field_titre($langs->trans("Status"),"index.php","s.paye","",$param,'align="right"',$sortfield,$sortorder);
+		print_liste_field_titre($langs->trans("Amount"),"index.php","cs.amount","",$param,'align="right"',$sortfield,$sortorder);
+		print_liste_field_titre($langs->trans("DateDue"),"index.php","cs.date_ech","",$param,'align="center"',$sortfield,$sortorder);
+		print_liste_field_titre($langs->trans("Status"),"index.php","cs.paye","",$param,'align="right"',$sortfield,$sortorder);
 		print "</tr>\n";
 
 		print '<tr class="liste_titre">';
@@ -155,7 +155,7 @@ if ($resql)
 		print '<td class="liste_titre"><input type="text" class="flat" size="8" name="search_label" value="'.GETPOST("search_label").'"></td>';
 		// Type
 		print '<td class="liste_titre" align="left">';
-	    $form->select_type_socialcontrib($typeid,'typeid',1,16,0);
+	    $formsocialcontrib->select_type_socialcontrib($typeid,'typeid',1,16,0);
 	    print '</td>';
 		// Period end date
 		print '<td class="liste_titre">&nbsp;</td>';

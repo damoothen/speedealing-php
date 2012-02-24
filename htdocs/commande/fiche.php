@@ -2,11 +2,12 @@
 /* Copyright (C) 2003-2006 Rodolphe Quiedeville  <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2011 Laurent Destailleur   <eldy@users.sourceforge.net>
  * Copyright (C) 2005      Marc Barilley / Ocebo <marc@ocebo.com>
- * Copyright (C) 2005-2011 Regis Houssin         <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin         <regis@dolibarr.fr>
  * Copyright (C) 2006      Andre Cianfarani      <acianfa@free.fr>
  * Copyright (C) 2010-2011 Juanjo Menent         <jmenent@2byte.es>
  * Copyright (C) 2011      Philippe Grand        <philippe.grand@atoo-net.com>
- *
+ * Copyright (C) 2012      Christophe Battarel   <christophe.battarel@altairis.fr>
+**
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -28,6 +29,7 @@
  */
 
 require("../main.inc.php");
+require_once(DOL_DOCUMENT_ROOT."/core/class/html.formother.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formorder.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/modules/commande/modules_commande.php");
@@ -227,6 +229,13 @@ if ($action == 'add' && $user->rights->commande->creer)
 
         $object->origin    = $_POST['origin'];
         $object->origin_id = $_POST['originid'];
+        
+        // Possibility to add external linked objects with hooks
+        $object->linked_objects[$object->origin] = $object->origin_id;
+        if (is_array($_POST['other_linked_objects']) && ! empty($_POST['other_linked_objects']))
+        {
+        	$object->linked_objects = array_merge($object->linked_objects, $_POST['other_linked_objects']);
+        }
 
         $object_id = $object->create($user);
 
@@ -302,7 +311,7 @@ if ($action == 'add' && $user->rights->commande->creer)
 
                 // Hooks
                 $parameters=array('objFrom'=>$srcobject);
-                $reshook=$hookmanager->executeHooks('createfrom',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+                $reshook=$hookmanager->executeHooks('createFrom',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
                 if ($reshook < 0) $error++;
             }
             else
@@ -551,9 +560,9 @@ if ($action == 'addline' && $user->rights->commande->creer)
                     $pu_ttc = price2num($pu_ht * (1 + ($tva_tx/100)), 'MU');
                 }
             }
-            
+
             // Define output language
-			if (! empty($conf->global->MAIN_MULTILANGS) && ! empty($conf->global->PRODUIT_DESC_IN_THIRDPARTY_LANGUAGE))
+			if (! empty($conf->global->MAIN_MULTILANGS) && ! empty($conf->global->PRODUIT_TEXTS_IN_THIRDPARTY_LANGUAGE))
 			{
 				$outputlangs = $langs;
 				$newlang='';
@@ -564,7 +573,7 @@ if ($action == 'addline' && $user->rights->commande->creer)
 					$outputlangs = new Translate("",$conf);
 					$outputlangs->setDefaultLang($newlang);
 				}
-				
+
 				$desc = (! empty($prod->multilangs[$outputlangs->defaultlang]["description"])) ? $prod->multilangs[$outputlangs->defaultlang]["description"] : $prod->description;
 			}
 			else
@@ -1184,6 +1193,7 @@ llxHeader('',$langs->trans('Order'),'EN:Customers_Orders|FR:Commandes_Clients|ES
 
 $form = new Form($db);
 $formfile = new FormFile($db);
+$formother = new FormOther($db);
 $formorder = new FormOrder($db);
 
 
@@ -1323,9 +1333,8 @@ if ($action == 'create' && $user->rights->commande->creer)
     // Delivery address
     if ($conf->global->COMMANDE_ADD_DELIVERY_ADDRESS)
     {
-        // Link to edit: $form->form_address($_SERVER['PHP_SELF'].'?action=create','',$soc->id,'adresse_livraison_id','commande','');
         print '<tr><td nowrap="nowrap">'.$langs->trans('DeliveryAddress').'</td><td colspan="2">';
-        $numaddress = $form->select_address($soc->fk_delivery_address, $socid,'fk_address',1);
+        $numaddress = $formother->select_address($soc->fk_delivery_address, $socid,'fk_address',1);
         print ' &nbsp; <a href="../comm/address.php?socid='.$soc->id.'&action=create">'.$langs->trans("AddAddress").'</a>';
         print '</td></tr>';
     }
@@ -1365,13 +1374,23 @@ if ($action == 'create' && $user->rights->commande->creer)
         print '</td></tr>';
     }
 
-    // Insert hooks
-    $parameters=array();
+    // Other attributes
+    $parameters=array('objectsrc' => $objectsrc, 'colspan' => ' colspan="3"');
     $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+    if (empty($reshook) && ! empty($extrafields->attribute_label))
+    {
+        foreach($extrafields->attribute_label as $key=>$label)
+        {
+            $value=(isset($_POST["options_".$key])?$_POST["options_".$key]:$object->array_options["options_".$key]);
+            print "<tr><td>".$label.'</td><td colspan="3">';
+            print $extrafields->showInputField($key,$value);
+            print '</td></tr>'."\n";
+        }
+    }
 
+    // Template to use by default
     print '<tr><td>'.$langs->trans('Model').'</td>';
     print '<td colspan="2">';
-    // pdf
     include_once(DOL_DOCUMENT_ROOT.'/core/modules/commande/modules_commande.php');
     $liste=ModelePDFCommandes::liste_modeles($db);
     print $form->selectarray('model',$liste,$conf->global->COMMANDE_ADDON_PDF);
@@ -1642,7 +1661,7 @@ else
             if (! $formconfirm)
             {
                 $parameters=array('lineid'=>$lineid);
-                $formconfirm=$hookmanager->executeHooks('formconfirm',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+                $formconfirm=$hookmanager->executeHooks('formConfirm',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
             }
 
             // Print form confirm
@@ -1907,11 +1926,19 @@ else
                 print '</td></tr>';
             }
 
-            // Insert hooks
-            $parameters=array('colspan'=>' colspan="2"');
+            // Other attributes
+            $parameters=array('colspan' => ' colspan="2"');
             $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
-
-            // Lignes de 3 colonnes
+            if (empty($reshook) && ! empty($extrafields->attribute_label))
+            {
+                foreach($extrafields->attribute_label as $key=>$label)
+                {
+                    $value=(isset($_POST["options_".$key])?$_POST["options_".$key]:$object->array_options["options_".$key]);
+                    print '<tr><td>'.$label.'</td><td colspan="3">';
+                    print $extrafields->showInputField($key,$value);
+                    print '</td></tr>'."\n";
+                }
+            }
 
             // Total HT
             print '<tr><td>'.$langs->trans('AmountHT').'</td>';

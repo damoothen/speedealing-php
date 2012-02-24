@@ -1,7 +1,7 @@
 <?php
-/* Copyright (C) 2010-2011 	Laurent Destailleur <eldy@users.sourceforge.net>
+/* Copyright (C) 2010-2012 	Laurent Destailleur <eldy@users.sourceforge.net>
  * Copyright (C) 2012		Juanjo Menent		<jmenent@2byte.es>
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -28,24 +28,24 @@ require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/doc.lib.php");
 
 
 /**
- *	\class      doc_generic_iproposal_odt
- *	\brief      Class to build documents using ODF templates generator
+ *	Class to build documents using ODF templates generator
  */
 class doc_generic_proposal_odt extends ModelePDFPropales
 {
 	var $emetteur;	// Objet societe qui emet
 
 	var $phpmin = array(5,2,0);	// Minimum version of PHP required by module
-	var $version = 'development';
+	var $version = 'dolibarr';
 
 
 	/**
 	 *	Constructor
 	 *
-	 *  @param		DoliDB		$DB      Database handler
+	 *  @param		DoliDB		$db      Database handler
 	 */
 	function doc_generic_proposal_odt($db)
 	{
@@ -102,11 +102,11 @@ class doc_generic_proposal_odt extends ModelePDFPropales
             'object_ref_ext'=>$object->ref_ext,
         	'object_ref_customer'=>$object->ref_client,
         	'object_date'=>dol_print_date($object->date,'day'),
-        	'object_fin_validite'=>dol_print_date($object->fin_validite,'dayhour'),
+        	'object_date_end'=>dol_print_date($object->fin_validite,'day'),
         	'object_date_creation'=>dol_print_date($object->date_creation,'day'),
             'object_date_modification'=>dol_print_date($object->date_modification,'day'),
             'object_date_validation'=>dol_print_date($object->date_validation,'dayhour'),
-            'object_payment_mode'=>$object->mode_reglement,
+            'object_payment_mode'=>($object->mode_reglement!='-'?$object->mode_reglement:''),
             'object_payment_term'=>$object->cond_reglement,
         	'object_total_ht'=>price($object->total_ht,0,$outputlangs),
             'object_total_vat'=>price($object->total_tva,0,$outputlangs),
@@ -128,8 +128,9 @@ class doc_generic_proposal_odt extends ModelePDFPropales
         global $conf;
 
         return array(
-            'line_fulldesc'=>$line->product_ref.(($line->product_ref && $line->desc)?' - ':'').$line->desc,
+            'line_fulldesc'=>doc_getlinedesc($line),
             'line_product_ref'=>$line->product_ref,
+            'line_product_label'=>$line->product_label,
             'line_desc'=>$line->desc,
             'line_vatrate'=>vatrate($line->tva_tx,true,$line->info_bits),
             'line_up'=>price($line->subprice, 0, $outputlangs),
@@ -143,7 +144,7 @@ class doc_generic_proposal_odt extends ModelePDFPropales
         );
     }
 
-	/**		
+	/**
 	 *	Return description of a module
      *	@param      langs        Lang object to use for output
 	 *	@return     string       Description
@@ -270,7 +271,7 @@ class doc_generic_proposal_odt extends ModelePDFPropales
 
 			if (! file_exists($dir))
 			{
-				if (create_exdir($dir) < 0)
+				if (dol_mkdir($dir) < 0)
 				{
 					$this->error=$langs->transnoentities("ErrorCanNotCreateDir",$dir);
 					return -1;
@@ -292,7 +293,7 @@ class doc_generic_proposal_odt extends ModelePDFPropales
 				//print "file=".$file;
 				//print "conf->societe->dir_temp=".$conf->societe->dir_temp;
 
-				create_exdir($conf->propale->dir_temp);
+				dol_mkdir($conf->propale->dir_temp);
 
 
                 // If BILLING contact defined on invoice, we use it

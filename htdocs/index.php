@@ -1,7 +1,7 @@
 <?php
 /* Copyright (C) 2001-2004	Rodolphe Quiedeville	<rodolphe@quiedeville.org>
- * Copyright (C) 2004-2011	Laurent Destailleur		<eldy@users.sourceforge.net>
- * Copyright (C) 2005-2011	Regis Houssin			<regis@dolibarr.fr>
+ * Copyright (C) 2004-2012	Laurent Destailleur		<eldy@users.sourceforge.net>
+ * Copyright (C) 2005-2012	Regis Houssin			<regis@dolibarr.fr>
  * Copyright (C) 2011       Herve Prot              <herve.prot@symeos.com>
  * Copyright (C) 2011   	Juanjo Menent			<jmenent@2byte.es>
  *
@@ -240,7 +240,6 @@ if ($user->societe_id == 0)
                     "bills",
 					"Contracts");
 
-    //print memory_get_usage()."<br>";
 
     // Loop and displays each line of table
     foreach ($keys as $key=>$val)
@@ -266,8 +265,6 @@ if ($user->societe_id == 0)
             print '<td>'.$title.'</td>';
             print '<td align="right"><a href="'.dol_buildpath($links[$key],1).'">'.$board->nb[$val].'</a></td>';
             print '</tr>';
-
-            //print $includes[$key].' '.memory_get_usage()."<br>";
         }
     }
 
@@ -520,7 +517,7 @@ foreach($dashboardlines as $key => $board)
     print '</td>';
     if ($showweather)
     {
-        print '<td rowspan="'.$rowspan.'" width="80" style="border-left: 1px solid #DDDDDD" align="center">';
+        print '<td class="nohover" rowspan="'.$rowspan.'" width="80" style="border-left: 1px solid #DDDDDD" align="center">';
         $text='';
         if ($totallate > 0) $text=$langs->transnoentitiesnoconv("WarningYouHaveAtLeastOneTaskLate").' ('.$langs->transnoentitiesnoconv("NActionsLate",$totallate).')';
         $options='height="64px"';

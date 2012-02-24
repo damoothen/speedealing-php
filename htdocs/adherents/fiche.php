@@ -137,7 +137,7 @@ if ($_POST['action'] == 'setsocid')
 					$thirdparty=new Societe($db);
 					$thirdparty->fetch($_POST["socid"]);
 					$error++;
-					$errmsg='<div class="error">'.$langs->trans("ErrorMemberIsAlreadyLinkedToThisThirdParty",$othermember->getFullName($langs),$othermember->login,$thirdparty->nom).'</div>';
+					$errmsg='<div class="error">'.$langs->trans("ErrorMemberIsAlreadyLinkedToThisThirdParty",$othermember->getFullName($langs),$othermember->login,$thirdparty->name).'</div>';
 				}
 			}
 
@@ -223,8 +223,10 @@ if ($_REQUEST["action"] == 'update' && ! $_POST["cancel"] && $user->rights->adhe
 
 		// Change values
 		$object->civilite_id = trim($_POST["civilite_id"]);
-		$object->prenom      = trim($_POST["prenom"]);
-		$object->nom         = trim($_POST["nom"]);
+		$object->prenom      = trim($_POST["prenom"]);     // deprecated
+		$object->nom         = trim($_POST["nom"]);        // deprecated
+		$object->firstname   = trim($_POST["prenom"]);
+		$object->lastname    = trim($_POST["nom"]);
 		$object->login       = trim($_POST["login"]);
 		$object->pass        = trim($_POST["pass"]);
 
@@ -380,8 +382,10 @@ if ($_POST["action"] == 'add' && $user->rights->adherent->creer)
     $socid=$_POST["socid"];
 
     $object->civilite_id = $civilite_id;
-    $object->prenom      = $prenom;
-    $object->nom         = $nom;
+    $object->prenom      = $prenom;    // deprecated
+    $object->nom         = $nom;       // deprecated
+    $object->firstname   = $prenom;
+    $object->lastname    = $nom;
     $object->societe     = $societe;
     $object->adresse     = $address; // deprecated
     $object->address     = $address;
@@ -580,7 +584,8 @@ if ($user->rights->adherent->supprimer && $_POST["action"] == 'confirm_del_spip'
 {
 	if (! count($object->errors))
 	{
-	    if(!$object->del_to_spip()){
+	    if(!$object->del_to_spip())
+	    {
 	        $errmsg.="Echec de la suppression de l'utilisateur dans spip: ".$object->error."<BR>\n";
 	    }
 	}
@@ -692,17 +697,18 @@ if ($action == 'create')
     print '</tr>';
 
     // Lastname
-    print '<tr><td><span class="fieldrequired">'.$langs->trans("Lastname").'</span></td><td><input type="text" name="nom" value="'.(isset($_POST["nom"])?$_POST["nom"]:$object->nom).'" size="40"></td>';
+    print '<tr><td><span class="fieldrequired">'.$langs->trans("Lastname").'</span></td><td><input type="text" name="nom" value="'.(isset($_POST["nom"])?$_POST["nom"]:$object->lastname).'" size="40"></td>';
     print '</tr>';
 
     // Firstname
-    print '<tr><td><span class="fieldrequired">'.$langs->trans("Firstname").'</td><td><input type="text" name="prenom" size="40" value="'.(isset($_POST["prenom"])?$_POST["prenom"]:$object->prenom).'"></td>';
+    print '<tr><td><span class="fieldrequired">'.$langs->trans("Firstname").'</td><td><input type="text" name="prenom" size="40" value="'.(isset($_POST["prenom"])?$_POST["prenom"]:$object->firstname).'"></td>';
     print '</tr>';
 
     // Password
     if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
     {
-	    $generated_password=getRandomPassword('');
+        require_once(DOL_DOCUMENT_ROOT."/core/lib/security2.lib.php");
+        $generated_password=getRandomPassword('');
         print '<tr><td><span class="fieldrequired">'.$langs->trans("Password").'</span></td><td>';
         print '<input size="30" maxsize="32" type="text" name="password" value="'.$generated_password.'">';
         print '</td></tr>';
@@ -766,24 +772,24 @@ if ($action == 'create')
 
     // Other attributes
     $parameters=array();
-    $reshook=$hookmanager->executeHooks('showInputFields',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
-    if (empty($reshook))
+    $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+    if (empty($reshook) && ! empty($extrafields->attribute_label))
     {
         foreach($extrafields->attribute_label as $key=>$label)
         {
-            $value=(isset($_POST["options_".$key])?$_POST["options_".$key]:'');
-            print "<tr><td>".$label.'</td><td>';
+            $value=(isset($_POST["options_".$key])?$_POST["options_".$key]:$object->array_options["options_".$key]);
+            print '<tr><td>'.$label.'</td><td>';
             print $extrafields->showInputField($key,$value);
             print '</td></tr>'."\n";
         }
     }
 
-/*
+	/*
     // Third party Dolibarr
     if ($conf->societe->enabled)
     {
         print '<tr><td>'.$langs->trans("LinkedToDolibarrThirdParty").'</td><td class="valeur">';
-        print $form->select_societes($object->fk_soc,'socid','',1);
+        print $form->select_company($object->fk_soc,'socid','',1);
         print '</td></tr>';
     }
 
@@ -791,7 +797,8 @@ if ($action == 'create')
     print '<tr><td>'.$langs->trans("LinkedToDolibarrUser").'</td><td class="valeur">';
     print $form->select_users($object->user_id,'userid',1);
     print '</td></tr>';
-*/
+	*/
+
     print "</table>\n";
     print '<br>';
 
@@ -844,8 +851,7 @@ if ($action == 'edit')
 	dol_fiche_head($head, 'general', $langs->trans("Member"), 0, 'user');
 
 	dol_htmloutput_errors($errmsg,$errmsgs);
-
-	if ($mesg) print '<div class="ok">'.$mesg.'</div>';
+	dol_htmloutput_mesg($mesg);
 
 	if ($conf->use_javascript_ajax)
 	{
@@ -923,11 +929,11 @@ if ($action == 'edit')
 	print '</tr>';
 
 	// Name
-	print '<tr><td><span class="fieldrequired">'.$langs->trans("Lastname").'</span></td><td><input type="text" name="nom" size="40" value="'.(isset($_POST["nom"])?$_POST["nom"]:$object->nom).'"></td>';
+	print '<tr><td><span class="fieldrequired">'.$langs->trans("Lastname").'</span></td><td><input type="text" name="nom" size="40" value="'.(isset($_POST["nom"])?$_POST["nom"]:$object->lastname).'"></td>';
 	print '</tr>';
 
 	// Firstname
-	print '<tr><td><span class="fieldrequired">'.$langs->trans("Firstname").'</td><td><input type="text" name="prenom" size="40" value="'.(isset($_POST["prenom"])?$_POST["prenom"]:$object->prenom).'"></td>';
+	print '<tr><td><span class="fieldrequired">'.$langs->trans("Firstname").'</td><td><input type="text" name="prenom" size="40" value="'.(isset($_POST["prenom"])?$_POST["prenom"]:$object->firstname).'"></td>';
 	print '</tr>';
 
 	// Password
@@ -987,15 +993,15 @@ if ($action == 'edit')
 
 	// Other attributes
 	$parameters=array();
-    $reshook=$hookmanager->executeHooks('showInputFields',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
-    if (empty($reshook))
+    $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+    if (empty($reshook) && ! empty($extrafields->attribute_label))
     {
     	foreach($extrafields->attribute_label as $key=>$label)
     	{
-    	    $value=(isset($_POST["options_$key"])?$_POST["options_$key"]:$object->array_options["options_$key"]);
-    		print "<tr><td>".$label."</td><td>";
+    	    $value=(isset($_POST["options_".$key])?$_POST["options_".$key]:$object->array_options["options_".$key]);
+    		print '<tr><td>'.$label.'</td><td>';
             print $extrafields->showInputField($key,$value);
-    		print "</td></tr>\n";
+    		print '</td></tr>'."\n";
     	}
     }
 
@@ -1074,9 +1080,9 @@ if ($rowid && $action != 'edit')
 		{
 			// Full firstname and name separated with a dot : firstname.name
 			include_once(DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php');
-			$login=dol_buildlogin($object->nom,$object->prenom);
+			$login=dol_buildlogin($object->lastname,$object->firstname);
 		}
-		if (empty($login)) $login=strtolower(substr($object->prenom, 0, 4)) . strtolower(substr($object->nom, 0, 4));
+		if (empty($login)) $login=strtolower(substr($object->firstname, 0, 4)) . strtolower(substr($object->lastname, 0, 4));
 
 		// Create a form array
 		$formquestion=array(
@@ -1246,11 +1252,11 @@ if ($rowid && $action != 'edit')
 	print '</tr>';
 
     // Name
-    print '<tr><td>'.$langs->trans("Lastname").'</td><td class="valeur">'.$object->nom.'&nbsp;</td>';
+    print '<tr><td>'.$langs->trans("Lastname").'</td><td class="valeur">'.$object->lastname.'&nbsp;</td>';
 	print '</tr>';
 
     // Firstname
-    print '<tr><td>'.$langs->trans("Firstname").'</td><td class="valeur">'.$object->prenom.'&nbsp;</td></tr>';
+    print '<tr><td>'.$langs->trans("Firstname").'</td><td class="valeur">'.$object->firstname.'&nbsp;</td></tr>';
 
 	// Password
     if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
@@ -1299,8 +1305,8 @@ if ($rowid && $action != 'edit')
 
     // Other attributes
     $parameters=array();
-    $reshook=$hookmanager->executeHooks('showOutputField',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
-    if (empty($reshook))
+    $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+    if (empty($reshook) && ! empty($extrafields->attribute_label))
     {
         foreach($extrafields->attribute_label as $key=>$label)
         {
@@ -1330,7 +1336,7 @@ if ($rowid && $action != 'edit')
 			print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 			print '<table class="nobordernopadding" cellpadding="0" cellspacing="0">';
 			print '<tr><td>';
-			print $form->select_societes($object->fk_soc,'socid','',1);
+			print $form->select_company($object->fk_soc,'socid','',1);
 			print '</td>';
 			print '<td align="left"><input type="submit" class="button" value="'.$langs->trans("Modify").'"></td>';
 			print '</tr></table></form>';
@@ -1511,8 +1517,9 @@ if ($rowid && $action != 'edit')
 	        {
 	            print "<a class=\"butAction\" href=\"fiche.php?rowid=$object->id&action=add_spip\">".$langs->trans("AddIntoSpip")."</a>\n";
 	        }
-	        if ($isinspip == -1) {
-	            print '<br><font class="error">Failed to connect to SPIP: '.$object->error.'</font>';
+	        if ($isinspip == -1)
+	        {
+	            print '<br><br><font class="error">Failed to connect to SPIP: '.$object->error.'</font>';
 	        }
 	    }
 
@@ -1524,7 +1531,7 @@ if ($rowid && $action != 'edit')
 }
 
 
-$db->close();
-
 llxFooter();
+
+$db->close();
 ?>

@@ -36,6 +36,7 @@ if (empty($user->id))
 	$user->fetch(1);
 	$user->getrights();
 }
+
 $conf->global->MAIN_DISABLE_ALL_MAILS=1;
 
 
@@ -91,6 +92,9 @@ class ContactTest extends PHPUnit_Framework_TestCase
     }
 
 	/**
+	 * Init phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function setUp()
     {
@@ -103,6 +107,9 @@ class ContactTest extends PHPUnit_Framework_TestCase
 		print __METHOD__."\n";
     }
 	/**
+	 * End phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function tearDown()
     {
@@ -110,6 +117,9 @@ class ContactTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testContactCreate
+     *
+     * @return	int
      */
     public function testContactCreate()
     {
@@ -130,6 +140,10 @@ class ContactTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testContactFetch
+     *
+     * @param	int		$id		Id of contact
+     * @return	int
      * @depends	testContactCreate
      * The depends says test is run only if previous is ok
      */
@@ -143,7 +157,7 @@ class ContactTest extends PHPUnit_Framework_TestCase
 
 		$localobject=new Contact($this->savdb);
     	$result=$localobject->fetch($id);
-    	
+
         print __METHOD__." id=".$id." result=".$result."\n";
     	$this->assertLessThan($result, 0);
 
@@ -151,6 +165,11 @@ class ContactTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testContactUpdate
+     *
+     * @param	Contact		$localobject	Contact
+     * @return	int
+     *
      * @depends	testContactFetch
      * The depends says test is run only if previous is ok
      */
@@ -232,6 +251,11 @@ class ContactTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testContactOther
+     *
+     * @param	Contact		$localobject		Contact
+     * @return	void
+     *
      * @depends	testContactUpdate
      * The depends says test is run only if previous is ok
      */
@@ -261,6 +285,11 @@ class ContactTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testContactDelete
+     *
+     * @param	int		$id		Id of contact
+     * @return	void
+     *
      * @depends	testContactOther
      * The depends says test is run only if previous is ok
      */
@@ -283,6 +312,9 @@ class ContactTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+	 *	testContactStatic
+	 *
+	 *	@return	void
      */
     public function testContactStatic()
     {

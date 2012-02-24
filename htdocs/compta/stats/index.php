@@ -26,7 +26,7 @@ require('../../main.inc.php');
 require_once(DOL_DOCUMENT_ROOT."/core/lib/report.lib.php");
 
 
-$year_start=isset($_GET["year_start"])?$_GET["year_start"]:$_POST["year_start"];
+$year_start=GETPOST("year_start");
 $year_current = strftime("%Y",time());
 $nbofyear=4;
 if (! $year_start) {
@@ -78,7 +78,9 @@ else {
 	$builddate=time();
 	//$exportlink=$langs->trans("NotYetAvailable");
 }
-report_header($nom,$nomlink,$period,$periodlink,$description,$builddate,$exportlink);
+$moreparam=array();
+if (! empty($modecompta)) $moreparam['modecompta']=$modecompta;
+report_header($nom,$nomlink,$period,$periodlink,$description,$builddate,$exportlink,$moreparam);
 
 
 if ($modecompta == 'CREANCES-DETTES')

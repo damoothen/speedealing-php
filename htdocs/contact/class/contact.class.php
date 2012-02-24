@@ -50,19 +50,19 @@ class Contact extends CommonObject
 	var $ville;	       // TODO deprecated
 	var $town;
 
-	var $fk_departement;		// Id of department
-	var $departement_code;		// Code of department
-	var $departement;			// Label of department
+	var $fk_departement;		// deprecated
+	var $departement_code;		// deprecated
+	var $departement;			// deprecated
 	var $state_id;	        	// Id of department
 	var $state_code;		    // Code of department
 	var $state;			        // Label of department
 
-	var $fk_pays;				// Id of country
-	var $pays_code;				// Code of country
-	var $pays;					// Label of country
-	var $country_id;				// Id of country
-	var $country_code;				// Code of country
-	var $country;					// Label of country
+	var $fk_pays;				// deprecated
+	var $pays_code;				// deprecated
+	var $pays;					// deprecated
+	var $country_id;			// Id of country
+	var $country_code;			// Code of country
+	var $country;				// Label of country
 
 	var $socid;					// fk_soc
 	var $status;				// 0=brouillon, 1=4=actif, 5=inactif
@@ -80,6 +80,7 @@ class Contact extends CommonObject
 
 	var $user_id;
 	var $user_login;
+	var $import_key;
 
 	var $oldcopy;		// To contains a clone of this when we need to save old properties of object
 
@@ -396,11 +397,11 @@ class Contact extends CommonObject
 	    $result=false;
 
 		// Mis a jour contact
-		$sql = "UPDATE ".MAIN_DB_PREFIX."socpeople SET rowid=".$id;
-		$sql .= ", birthday=".($this->birthday ? "'".$this->db->idate($this->birthday)."'" : "null");
+		$sql = "UPDATE ".MAIN_DB_PREFIX."socpeople SET";
+		$sql.= " birthday=".($this->birthday ? "'".$this->db->idate($this->birthday)."'" : "null");
 		if ($user) $sql .= ", fk_user_modif=".$user->id;
-		$sql .= " WHERE rowid=".$id;
-		//print "update_perso: ".$this->birthday.'-'.$this->db->idate($this->birthday);
+		$sql.= " WHERE rowid=".$id;
+
 		dol_syslog(get_class($this)."::update_perso this->birthday=".$this->birthday." - sql=".$sql);
 		$resql = $this->db->query($sql);
 		if (! $resql)
@@ -468,8 +469,9 @@ class Contact extends CommonObject
 		$sql.= " c.birthday,";
 		$sql.= " c.poste, c.phone, c.phone_perso, c.phone_mobile, c.fax, c.email, c.jabberid,";
 		$sql.= " c.priv, c.note, c.default_lang, c.canvas,";
+		$sql.= " c.import_key,";
 		$sql.= " p.libelle as country, p.code as country_code,";
-		$sql.= " d.nom as departement, d.code_departement as departement_code,";
+		$sql.= " d.nom as state, d.code_departement as state_code,";
 		$sql.= " u.rowid as user_id, u.login as user_login,";
 		$sql.= " s.nom as socname, s.address as socaddress, s.cp as soccp, s.ville as soccity, s.default_lang as socdefault_lang";
 		$sql.= " FROM ".MAIN_DB_PREFIX."socpeople as c";
@@ -503,12 +505,12 @@ class Contact extends CommonObject
 				$this->ville			= $obj->town;			// TODO deprecated
 				$this->town				= $obj->town;
 
-				$this->fk_departement	= $obj->fk_departement;
+				$this->fk_departement	= $obj->fk_departement;    // deprecated
 				$this->state_id			= $obj->fk_departement;
-				$this->departement_code = $obj->departement_code;	// TODO deprecated
-				$this->state_code       = $obj->departement_code;
-				$this->departement		= $obj->departement;	    // TODO deprecated
-				$this->state			= $obj->departement;
+				$this->departement_code = $obj->state_code;	       // deprecated
+				$this->state_code       = $obj->state_code;
+				$this->departement		= $obj->state;	           // deprecated
+				$this->state			= $obj->state;
 
 				$this->fk_pays			= $obj->country_id;
 				$this->country_id 		= $obj->country_id;
@@ -531,14 +533,15 @@ class Contact extends CommonObject
 				$this->priv				= $obj->priv;
 				$this->mail				= $obj->email;
 
-				$this->birthday			= dol_stringtotime($obj->birthday);
-				//print "fetch: ".$obj->birthday.'-'.$this->birthday;
+				$this->birthday			= $this->db->jdate($obj->birthday);
 				$this->birthday_alert 	= $obj->birthday_alert;
 				$this->note				= $obj->note;
 				$this->default_lang		= $obj->default_lang;
 				$this->user_id			= $obj->user_id;
 				$this->user_login		= $obj->user_login;
 				$this->canvas			= $obj->canvas;
+
+				$this->import_key		= $obj->import_key;
 
 				// Recherche le user Dolibarr lie a ce contact
 				$sql = "SELECT u.rowid ";
@@ -896,45 +899,6 @@ class Contact extends CommonObject
 		$code=$this->civilite_id;
         return $langs->trans("Civility".$code)!="Civility".$code ? $langs->trans("Civility".$code) : '';
 	}
-
-
-	/**
-	 *    	Return full name (civility+' '+name+' '+lastname)
-	 *
-	 *		@param		Translate	$langs			Language object for translation of civility
-	 *		@param		string		$option			0=No option, 1=Add civility
-	 * 		@param		int			$nameorder		-1=Auto, 0=Lastname+Firstname, 1=Firstname+Lastname
-	 * 		@return		string						String with full name
-	 */
-	function getFullName($langs,$option=0,$nameorder=-1)
-	{
-		global $conf;
-
-		$ret='';
-		if ($option && $this->civilite_id)
-		{
-			if ($langs->transnoentitiesnoconv("Civility".$this->civilite_id)!="Civility".$this->civilite_id) $ret.=$langs->transnoentitiesnoconv("Civility".$this->civilite_id).' ';
-			else $ret.=$this->civilite_id.' ';
-		}
-
-		// If order not defined, we use the setup
-		if ($nameorder < 0) $nameorder=(! $conf->global->MAIN_FIRSTNAME_NAME_POSITION);
-
-		if ($nameorder)
-		{
-			if ($this->firstname) $ret.=$this->firstname;
-			if ($this->firstname && $this->name) $ret.=' ';
-			if ($this->name)      $ret.=$this->name;
-		}
-		else
-		{
-			if ($this->name)      $ret.=$this->name;
-			if ($this->firstname && $this->name) $ret.=' ';
-			if ($this->firstname) $ret.=$this->firstname;
-		}
-		return trim($ret);
-	}
-
 
 	/**
 	 *  Retourne le libelle du statut du contact

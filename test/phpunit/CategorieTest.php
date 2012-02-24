@@ -90,6 +90,9 @@ class CategorieTest extends PHPUnit_Framework_TestCase
     }
 
 	/**
+	 * Init phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function setUp()
     {
@@ -102,6 +105,9 @@ class CategorieTest extends PHPUnit_Framework_TestCase
 		print __METHOD__."\n";
     }
 	/**
+	 * End phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function tearDown()
     {
@@ -109,6 +115,9 @@ class CategorieTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testCategorieCreate
+     *
+     * @return int
      */
     public function testCategorieCreate()
     {
@@ -132,6 +141,11 @@ class CategorieTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testCategorieProduct
+     *
+     * @param	int		$id		Id of category
+     * @return	int
+     *
      * @depends	testCategorieCreate
      * The depends says test is run only if previous is ok
      */
@@ -167,6 +181,11 @@ class CategorieTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testCategorieFetch
+     *
+     * @param	int		$id		Id of category
+     * @return	int
+     *
      * @depends	testCategorieProduct
      * The depends says test is run only if previous is ok
      */
@@ -187,6 +206,11 @@ class CategorieTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testCategorieUpdate
+     *
+     * @param	Category		$localobject		Category
+     * @return	int
+
      * @depends	testCategorieFetch
      * The depends says test is run only if previous is ok
      */
@@ -207,25 +231,11 @@ class CategorieTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @depends	testCategorieUpdate
-     * The depends says test is run only if previous is ok
-     */
-    /*public function testCategorieXXX($localobject)
-    {
-    	global $conf,$user,$langs,$db;
-		$conf=$this->savconf;
-		$user=$this->savuser;
-		$langs=$this->savlangs;
-		$db=$this->savdb;
-
-    	$result=$localobject->delete(0);
-    	print __METHOD__." id=".$localobject->id." result=".$result."\n";
-
-    	$this->assertLessThan($result, 0);
-    	return $localobject;
-    }*/
-
-    /**
+     * testCategorieOther
+     *
+     * @param	Category	$localobject	Category
+     * @return	int
+     *
      * @depends testCategorieUpdate
      * The depends says test is run only if previous is ok
      */
@@ -256,6 +266,11 @@ class CategorieTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testCategorieDelete
+     *
+     * @param	int		$id		Id of category
+     * @return	int
+     *
      * @depends	testCategorieOther
      * The depends says test is run only if previous is ok
      */
@@ -277,6 +292,10 @@ class CategorieTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testCategorieStatic
+     *
+     * @return	void
+     *
      * @depends  testCategorieDelete
      */
     public function testCategorieStatic()

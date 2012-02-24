@@ -104,7 +104,7 @@ class CommActionRapport
 
 		if (! file_exists($dir))
 		{
-			if (create_exdir($dir) < 0)
+			if (dol_mkdir($dir) < 0)
 			{
 				$this->error=$langs->trans("ErrorCanNotCreateDir",$dir);
 				return 0;
@@ -233,12 +233,12 @@ class CommActionRapport
 	}
 
 	/**
-	 *  Show page head
+	 *  Show top header of page.
 	 *
-	 *  @param  PDF			&$pdf           Object PDF
-	 *  @param  Translate	$outputlangs	Object langs
+	 * 	@param	PDF			&$pdf     		Object PDF
+	 *  @param  Translate	$outputlangs	Object lang for output
 	 * 	@param	int			$pagenb			Page nb
-	 * 	@return	int							Pos y
+	 *  @return	void
 	 */
 	function _pagehead(&$pdf, $outputlangs, $pagenb)
 	{

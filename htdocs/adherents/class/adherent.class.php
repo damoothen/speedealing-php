@@ -509,8 +509,10 @@ class Adherent extends CommonObject
                     if ($result >= 0)
                     {
                         $luser->civilite_id=$this->civilite_id;
-                        $luser->prenom=$this->prenom;
-                        $luser->nom=$this->nom;
+                        $luser->firstname=$this->firstname;
+                        $luser->lastname=$this->lastname;
+                        $luser->prenom=$this->firstname;    // deprecated
+                        $luser->nom=$this->lastname;        // deprecated
                         $luser->login=$this->user_login;
                         $luser->pass=$this->pass;
                         $luser->societe_id=$this->societe;
@@ -765,7 +767,8 @@ class Adherent extends CommonObject
         // If new password not provided, we generate one
         if (! $password)
         {
-	        $password=getRandomPassword('');
+            require_once(DOL_DOCUMENT_ROOT."/core/lib/security2.lib.php");
+            $password=getRandomPassword('');
         }
 
         // Cryptage mot de passe
@@ -976,7 +979,7 @@ class Adherent extends CommonObject
         $sql.= " d.pays,";
         $sql.= " d.fk_departement,";
         $sql.= " p.rowid as country_id, p.code as country_code, p.libelle as country,";
-        $sql.= " dep.nom as departement, dep.code_departement as departement_code,";
+        $sql.= " dep.nom as state, dep.code_departement as state_code,";
         $sql.= " t.libelle as type, t.cotisation as cotisation,";
         $sql.= " u.rowid as user_id, u.login as user_login";
         $sql.= " FROM ".MAIN_DB_PREFIX."adherent_type as t, ".MAIN_DB_PREFIX."adherent as d";
@@ -1000,35 +1003,35 @@ class Adherent extends CommonObject
                 $this->ref            = $obj->rowid;
                 $this->id             = $obj->rowid;
                 $this->civilite_id    = $obj->civilite;
-                $this->prenom         = $obj->firstname;
+                $this->prenom         = $obj->firstname;   // deprecated
                 $this->firstname      = $obj->firstname;
-                $this->nom            = $obj->lastname;
+                $this->nom            = $obj->lastname;    // deprecated
                 $this->lastname       = $obj->lastname;
                 $this->login          = $obj->login;
                 $this->pass           = $obj->pass;
                 $this->societe        = $obj->societe;
                 $this->fk_soc         = $obj->fk_soc;
-                $this->adresse        = $obj->address;	// TODO deprecated
+                $this->adresse        = $obj->address;	// deprecated
                 $this->address        = $obj->address;
-                $this->cp             = $obj->zip;		// TODO deprecated
+                $this->cp             = $obj->zip;		// deprecated
                 $this->zip            = $obj->zip;
-                $this->ville          = $obj->town;	    // TODO deprecated
+                $this->ville          = $obj->town;	    // deprecated
                 $this->town           = $obj->town;
 
                 $this->state_id       = $obj->fk_departement;
-                $this->state_code     = $obj->fk_departement?$obj->departement_code:'';
-                $this->state          = $obj->fk_departement?$obj->departement:'';
-                $this->fk_departement = $obj->fk_departement;    // TODO deprecated
-                $this->departement_code = $obj->fk_departement?$obj->departement_code:'';    // TODO deprecated
-                $this->departement	  = $obj->fk_departement?$obj->departement:'';    // TODO deprecated
+                $this->state_code     = $obj->fk_departement?$obj->state_code:'';
+                $this->state          = $obj->fk_departement?$obj->state:'';
+                $this->fk_departement   = $obj->fk_departement;                        // deprecated
+                $this->departement_code = $obj->fk_departement?$obj->state_code:'';    // deprecated
+                $this->departement	    = $obj->fk_departement?$obj->state:'';         // deprecated
 
                 $this->country_id     = $obj->country_id;
                 $this->country_code   = $obj->country_code;
-                $this->pays_id        = $obj->country_id;    // TODO deprecated
-                $this->pays_code      = $obj->country_code;    // TODO deprecated
                 if ($langs->trans("Country".$obj->country_code) != "Country".$obj->country_code) $this->country = $langs->transnoentitiesnoconv("Country".$obj->country_code);
                 else $this->country=$obj->country;
-				$this->pays           = $this->country;     // TODO deprecated
+                $this->pays_id        = $obj->country_id;      // deprecated
+                $this->pays_code      = $obj->country_code;    // deprecated
+                $this->pays           = $this->country;        // deprecated
 
                 $this->phone          = $obj->phone;
                 $this->phone_perso    = $obj->phone_perso;
@@ -1425,9 +1428,10 @@ class Adherent extends CommonObject
         defined('ADHERENT_SPIP_DB') && ADHERENT_SPIP_DB != ''
         )
         {
+            require_once(DOL_DOCUMENT_ROOT."/core/lib/security2.lib.php");
             $mdpass=dol_hash($this->pass);
             $htpass=crypt($this->pass,makesalt());
-            $query = "INSERT INTO spip_auteurs (nom, email, login, pass, htpass, alea_futur, statut) VALUES(\"".$this->prenom." ".$this->nom."\",\"".$this->email."\",\"".$this->login."\",\"$mdpass\",\"$htpass\",FLOOR(32000*RAND()),\"1comite\")";
+            $query = "INSERT INTO spip_auteurs (nom, email, login, pass, htpass, alea_futur, statut) VALUES(\"".$this->firstname." ".$this->lastname."\",\"".$this->email."\",\"".$this->login."\",\"$mdpass\",\"$htpass\",FLOOR(32000*RAND()),\"1comite\")";
 
             $mydb=getDoliDBInstance('mysql',ADHERENT_SPIP_SERVEUR,ADHERENT_SPIP_USER,ADHERENT_SPIP_PASS,ADHERENT_SPIP_DB,ADHERENT_SPIP_PORT);
 
@@ -1676,44 +1680,6 @@ class Adherent extends CommonObject
             return -1;
         }
     }
-
-    /**
-     *    	Return full name (civility+' '+name+' '+lastname)
-     *
-     *		@param	Translate	$langs			Language object for translation of civility
-     *		@param	int			$option			0=No option, 1=Add civility
-     * 		@param	int			$nameorder		-1=Auto, 0=Lastname+Firstname, 1=Firstname+Lastname
-     * 		@return	string						String with full name
-     */
-    function getFullName($langs,$option=0,$nameorder=-1)
-    {
-        global $conf;
-
-        $ret='';
-        if ($option && $this->civilite_id)
-        {
-            if ($langs->transnoentitiesnoconv("Civility".$this->civilite_id)!="Civility".$this->civilite_id) $ret.=$langs->transnoentitiesnoconv("Civility".$this->civilite_id).' ';
-            else $ret.=$this->civilite_id.' ';
-        }
-
-        // If order not defined, we use the setup
-        if ($nameorder < 0) $nameorder=(! $conf->global->MAIN_FIRSTNAME_NAME_POSITION);
-
-        if ($nameorder)
-        {
-            if ($this->prenom) $ret.=$this->prenom;
-            if ($this->prenom && $this->nom) $ret.=' ';
-            if ($this->nom)      $ret.=$this->nom;
-        }
-        else
-        {
-            if ($this->nom)      $ret.=$this->nom;
-            if ($this->prenom && $this->nom) $ret.=' ';
-            if ($this->prenom) $ret.=$this->prenom;
-        }
-        return trim($ret);
-    }
-
 
     /**
      *    Return label of a civility of a contact
@@ -1983,8 +1949,8 @@ class Adherent extends CommonObject
         $this->id=0;
         $this->specimen=1;
         $this->civilite_id = 0;
-        $this->nom = 'DOLIBARR';
-        $this->prenom = 'SPECIMEN';
+        $this->lastname = 'DOLIBARR';
+        $this->firstname = 'SPECIMEN';
         $this->login='dolibspec';
         $this->pass='dolibspec';
         $this->societe = 'Societe ABC';

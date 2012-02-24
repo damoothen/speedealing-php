@@ -91,6 +91,9 @@ class ImportTest extends PHPUnit_Framework_TestCase
     }
 
 	/**
+	 * Init phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function setUp()
     {
@@ -103,6 +106,9 @@ class ImportTest extends PHPUnit_Framework_TestCase
 		print __METHOD__."\n";
     }
 	/**
+	 * End phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function tearDown()
     {
@@ -111,10 +117,13 @@ class ImportTest extends PHPUnit_Framework_TestCase
 
 
     /**
+     * testImportSample1
+     *
+     * @return boolean
      */
     public function testImportSample1()
     {
-
+        $file=dirname(__FILE__).'/Example_import_company_1.csv';
 
 
 		return true;

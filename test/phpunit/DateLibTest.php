@@ -89,6 +89,9 @@ class DateLibTest extends PHPUnit_Framework_TestCase
     }
 
 	/**
+	 * Init phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function setUp()
     {
@@ -101,13 +104,19 @@ class DateLibTest extends PHPUnit_Framework_TestCase
 		print __METHOD__."\n";
     }
 	/**
+	 * End phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function tearDown()
     {
     	print __METHOD__."\n";
     }
 
-   /**
+    /**
+     * testConvertTime2Seconds
+     *
+     * @return	void
      */
     public function testConvertTime2Seconds()
     {
@@ -117,7 +126,7 @@ class DateLibTest extends PHPUnit_Framework_TestCase
 		$langs=$this->savlangs;
 		$db=$this->savdb;
 
-		$result=ConvertTime2Seconds(1,1,2);
+		$result=convertTime2Seconds(1,1,2);
     	print __METHOD__." result=".$result."\n";
 		$this->assertEquals(3662,$result);
 
@@ -125,6 +134,9 @@ class DateLibTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testConvertSecondToTime
+     *
+     * @return void
      */
     public function testConvertSecondToTime()
     {
@@ -134,11 +146,11 @@ class DateLibTest extends PHPUnit_Framework_TestCase
 		$langs=$this->savlangs;
 		$db=$this->savdb;
 
-		$result=ConvertSecondToTime(0,'all',86400);
+		$result=convertSecondToTime(0,'all',86400);
     	print __METHOD__." result=".$result."\n";
 		$this->assertEquals('0',$result);
 
-		$result=ConvertSecondToTime(86400,'all',86400);
+		$result=convertSecondToTime(86400,'all',86400);
     	print __METHOD__." result=".$result."\n";
 		$this->assertSame('1 '.$langs->trans("Day"),$result);
 
@@ -147,7 +159,10 @@ class DateLibTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-    */
+     * testDolPrintDate
+     *
+     * @return void
+     */
     public function testDolPrintDate()
     {
         global $conf,$user,$langs,$db;
@@ -188,7 +203,10 @@ class DateLibTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-    */
+     * testDolTimePlusDuree
+     *
+     * @return int
+     */
     public function testDolTimePlusDuree()
     {
         global $conf,$user,$langs,$db;
@@ -210,7 +228,46 @@ class DateLibTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-    */
+     * testDolStringToTime
+     *
+     * @return int
+     */
+    public function testDolStringToTime()
+    {
+        global $conf,$user,$langs,$db;
+        $conf=$this->savconf;
+        $user=$this->savuser;
+        $langs=$this->savlangs;
+        $db=$this->savdb;
+
+        $stime='1970-01-01T02:00:00Z';
+        $result=dol_stringtotime($stime);
+    	print __METHOD__." result=".$result."\n";
+		$this->assertEquals(7200,$result);
+
+        $stime='19700101T020000Z';
+        $result=dol_stringtotime($stime);
+    	print __METHOD__." result=".$result."\n";
+		$this->assertEquals(7200,$result);
+
+		$stime='19700101020000';
+		$result=dol_stringtotime($stime);
+		print __METHOD__." result=".$result."\n";
+		$this->assertEquals(7200,$result);
+
+		$stime='19700101';
+		$result=dol_stringtotime($stime);
+		print __METHOD__." result=".$result."\n";
+		$this->assertEquals(0,$result);
+
+        return $result;
+    }
+
+    /**
+	 *	testDolGetFirstDay
+	 *
+	 *	@return	void
+     */
     public function testDolGetFirstDay()
     {
         global $conf,$user,$langs,$db;

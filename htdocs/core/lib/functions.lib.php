@@ -1,7 +1,7 @@
 <?php
 /* Copyright (C) 2000-2007 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2003      Jean-Louis Bergamo   <jlb@j1b.org>
- * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2004      Sebastien Di Cintio  <sdicintio@ressource-toi.org>
  * Copyright (C) 2004      Benoit Mortier       <benoit.mortier@opensides.be>
  * Copyright (C) 2004      Christophe Combelles <ccomb@free.fr>
@@ -195,7 +195,7 @@ function getDoliDBInstance($type, $host, $user, $pass, $name, $port)
 
 /**
  * 	Get entity to use
- * 
+ *
  * 	@param	string	$element	Current element
  * 	@param	int		$shared		1=Return shared entities
  * 	@return	mixed				Entity id(s) to use
@@ -203,7 +203,7 @@ function getDoliDBInstance($type, $host, $user, $pass, $name, $port)
 function getEntity($element=false, $shared=false)
 {
 	global $conf, $mc;
-	
+
 	if (is_object($mc))
 	{
 		return $mc->getEntity($element, $shared);
@@ -211,12 +211,12 @@ function getEntity($element=false, $shared=false)
 	else
 	{
 		$out='';
-		
+
 		$addzero = array('user', 'usergroup');
 		if (in_array($element, $addzero)) $out.= '0,';
-		
+
 		$out.= $conf->entity;
-		
+
 		return $out;
 	}
 }
@@ -229,9 +229,9 @@ function getEntity($element=false, $shared=false)
 function dol_shutdown()
 {
     global $conf,$user,$langs,$db;
-    $disconnectdone=false;
-    if (is_object($db) && ! empty($db->connected)) $disconnectdone=$db->close();
-    dol_syslog("--- End access to ".$_SERVER["PHP_SELF"].($disconnectdone?' (Warn: db disconnection forced)':''), ($disconnectdone?LOG_WARNING:LOG_DEBUG));
+    $disconnectdone=false; $depth=0;
+    if (is_object($db) && ! empty($db->connected)) { $depth=$db->transaction_opened; $disconnectdone=$db->close(); }
+    dol_syslog("--- End access to ".$_SERVER["PHP_SELF"].($disconnectdone?' (Warn: db disconnection forced, transaction depth was '.$depth.')':''), ($disconnectdone?LOG_WARNING:LOG_DEBUG));
 }
 
 
@@ -384,39 +384,6 @@ function dol_size($size,$type='')
 
 
 /**
- *	Return date for now. We should always use this function without parameters (that means GMT time)
- *
- * 	@param	string		$mode	'gmt' => we return GMT timestamp,
- * 								'tzserver' => we add the PHP server timezone
- *  							'tzref' => we add the company timezone
- * 								'tzuser' => we add the user timezone
- *	@return timestamp   $date	Timestamp
- */
-function dol_now($mode='gmt')
-{
-    // Note that gmmktime and mktime return same value (GMT) whithout parameters
-    if ($mode == 'gmt') $ret=gmmktime();	// Time for now at greenwich.
-    else if ($mode == 'tzserver')			// Time for now with PHP server timezone added
-    {
-        $tzsecond=-dol_mktime(0,0,0,1,1,1970);
-        $ret=gmmktime()+$tzsecond;
-    }
-    else if ($mode == 'tzref')				// Time for now where parent company timezone is added
-    {
-        // TODO Should add the company timezone
-        $ret=gmmktime();
-    }
-    else if ($mode == 'tzuser')				// Time for now where user timezone is added
-    {
-        //print 'eeee'.time().'-'.mktime().'-'.gmmktime();
-        $tzhour=isset($_SESSION['dol_tz'])?$_SESSION['dol_tz']:0;
-        $ret=gmmktime()+($tzhour*60*60);
-    }
-    return $ret;
-}
-
-
-/**
  *	Clean a string to use it as a file name
  *
  *	@param	string	$str            String to clean
@@ -535,10 +502,10 @@ function dol_escape_htmltag($stringtoescape,$keepb=0)
  *	Write log message into outputs. Possible outputs can be:
  *	A file if SYSLOG_FILE_ON defined:   	file name is then defined by SYSLOG_FILE
  *	Syslog if SYSLOG_SYSLOG_ON defined:    	facility is then defined by SYSLOG_FACILITY
- * 	Warning, les fonctions syslog sont buggues sous Windows et generent des
- *	fautes de protection memoire. Pour resoudre, utiliser le loggage fichier,
- *	au lieu du loggage syslog (configuration du module).
- *	Note: If SYSLOG_FILE_NO_ERROR defined, we never output error message when writing to log fails.
+ * 	Warning, syslog functions are bugged on Windows, generating memory protection faults. To solve
+ *	this, use logging to files instead of syslog (see setup of module).
+ *	Note: If SYSLOG_FILE_NO_ERROR defined, we never output any error message when writing to log fails.
+ *  Note: You can get log message into html sources by adding parameter &logtohtml=1 (constant MAIN_LOGTOHTML must be set)
  *
  *	This function works only if syslog module is enabled.
  * 	This must not use any call to other function calling dol_syslog (avoid infinite loop).
@@ -654,7 +621,7 @@ function dol_syslog($message, $level=LOG_INFO)
                 // database or config file because we must be able to log data before database or config file read.
 			    $oldinclude=get_include_path();
                 set_include_path('/usr/share/php/');
-                require_once('FirePHPCore/FirePHP.class.php');
+                include_once('FirePHPCore/FirePHP.class.php');
                 set_include_path($oldinclude);
                 ob_start();
                 $firephp = FirePHP::getInstance(true);
@@ -676,7 +643,7 @@ function dol_syslog($message, $level=LOG_INFO)
  *	Show tab header of a card
  *
  *	@param	array	$links		Array of tabs
- *	@param	int		$active     Active tab name
+ *	@param	string	$active     Active tab name (document', 'info', 'ldap', ....)
  *	@param  string	$title      Title
  *	@param  int		$notab		0=Add tab header, 1=no tab header
  * 	@param	string	$picto		Add a picto on tab title
@@ -778,14 +745,6 @@ function dol_get_fiche_end($notab=0)
     else return '';
 }
 
-
-/* For backward compatibility */
-function dolibarr_print_date($time,$format='',$to_gmt=false,$outputlangs='',$encodetooutput=false)
-{
-    return dol_print_date($time,$format,$to_gmt,$outputlangs,$encodetooutput);
-}
-
-
 /**
  *      Return a formated address (part address/zip/town/state) according to country rules
  *
@@ -825,9 +784,9 @@ function dol_format_address($object)
 
 /**
  *	Output date in a string format according to outputlangs (or langs if not defined).
- * 	Return charset is always UTF-8, except if encodetoouput is defined. In this cas charset is output charset
+ * 	Return charset is always UTF-8, except if encodetoouput is defined. In this case charset is output charset
  *
- *	@param	timestamp	$time        	GM Timestamps date (or deprecated strings 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM:SS')
+ *	@param	timestamp	$time        	GM Timestamps date
  *	@param	string		$format      	Output date format
  *										"%d %b %Y",
  *										"%d/%m/%Y %H:%M",
@@ -973,60 +932,11 @@ function dol_print_date($time,$format='',$tzoutput='tzserver',$outputlangs='',$e
 
 
 /**
- *	Convert a string date into a GM Timestamps date
- *
- *	@param	string	$string		Date in a string
- *				     	        YYYYMMDD
- *	                 			YYYYMMDDHHMMSS
- *								YYYY-MM-DDTHH:MM:SSZ (RFC3339)
- *		                		DD/MM/YY or DD/MM/YYYY (this format should not be used anymore)
- *		                		DD/MM/YY HH:MM:SS or DD/MM/YYYY HH:MM:SS (this format should not be used anymore)
- *  @param	int		$gm         1=Input date is GM date, 0=Input date is local date
- *		                		19700101020000 -> 7200 with gm=1
- *  @return	date				Date
- *
- *  @see    dol_print_date, dol_mktime, dol_getdate
- */
-function dol_stringtotime($string, $gm=1)
-{
-    if (preg_match('/^([0-9]+)\/([0-9]+)\/([0-9]+)\s?([0-9]+)?:?([0-9]+)?:?([0-9]+)?/i',$string,$reg))
-    {
-        // This part of code should not be used.
-        dol_syslog("Functions.lib::dol_stringtotime call to function with deprecated parameter", LOG_WARNING);
-        // Date est au format 'DD/MM/YY' ou 'DD/MM/YY HH:MM:SS'
-        // Date est au format 'DD/MM/YYYY' ou 'DD/MM/YYYY HH:MM:SS'
-        $sday = $reg[1];
-        $smonth = $reg[2];
-        $syear = $reg[3];
-        $shour = $reg[4];
-        $smin = $reg[5];
-        $ssec = $reg[6];
-        if ($syear < 50) $syear+=1900;
-        if ($syear >= 50 && $syear < 100) $syear+=2000;
-        $string=sprintf("%04d%02d%02d%02d%02d%02d",$syear,$smonth,$sday,$shour,$smin,$ssec);
-    }
-    // Convert date RFC3339
-    else if (preg_match('/^([0-9]{4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2})Z$/i',$string,$reg))
-    {
-        $syear = $reg[1];
-        $smonth = $reg[2];
-        $sday = $reg[3];
-        $shour = $reg[4];
-        $smin = $reg[5];
-        $ssec = $reg[6];
-        $string=sprintf("%04d%02d%02d%02d%02d%02d",$syear,$smonth,$sday,$shour,$smin,$ssec);
-    }
-
-    $string=preg_replace('/([^0-9])/i','',$string);
-    $tmp=$string.'000000';
-    $date=dol_mktime(substr($tmp,8,2),substr($tmp,10,2),substr($tmp,12,2),substr($tmp,4,2),substr($tmp,6,2),substr($tmp,0,4),$gm);
-    return $date;
-}
-
-
-/**
- *	Return an array with date info
+ *	Return an array with locale date info.
  *  PHP getdate is restricted to the years 1901-2038 on Unix and 1970-2038 on Windows
+ *
+ *  WARNING: This function always use PHP server timezone to return locale informations.
+ *  Usage must be avoid.
  *
  *	@param	timestamp	$timestamp		Timestamp
  *	@param	boolean		$fast			Fast mode
@@ -1052,6 +962,7 @@ function dol_stringtotime($string, $gm=1)
  *										'yday' => floor($secsInYear/$_day_power),
  *										'leap' => $leaf,
  *										'ndays' => $ndays
+ * 	@see 								dol_print_date, dol_stringtotime, dol_mktime
  */
 function dol_getdate($timestamp,$fast=false)
 {
@@ -1071,31 +982,25 @@ function dol_getdate($timestamp,$fast=false)
     return $arrayinfo;
 }
 
-/* For backward compatibility */
-function dolibarr_mktime($hour,$minute,$second,$month,$day,$year,$gm=false,$check=1)
-{
-    return dol_mktime($hour,$minute,$second,$month,$day,$year,$gm,$check);
-}
-
 /**
  *	Return a timestamp date built from detailed informations (by default a local PHP server timestamp)
  * 	Replace function mktime not available under Windows if year < 1970
  *	PHP mktime is restricted to the years 1901-2038 on Unix and 1970-2038 on Windows
  *
- * 	@param	int		$hour			Hour	(can be -1 for undefined)
- *	@param	int		$minute			Minute	(can be -1 for undefined)
- *	@param	int		$second			Second	(can be -1 for undefined)
- *	@param	int		$month			Month (1 to 12)
- *	@param	int		$day			Day (1 to 31)
- *	@param	int		$year			Year
- *	@param	int		$gm				1=Input informations are GMT values, otherwise local to server TZ
- *	@param	int		$check			0=No check on parameters (Can use day 32, etc...)
- *  @param	int		$isdst			Dayling saving time
- *	@return	timestamp				Date as a timestamp, '' if error
- * 	@see 							dol_print_date, dol_stringtotime
+ * 	@param	int			$hour			Hour	(can be -1 for undefined)
+ *	@param	int			$minute			Minute	(can be -1 for undefined)
+ *	@param	int			$second			Second	(can be -1 for undefined)
+ *	@param	int			$month			Month (1 to 12)
+ *	@param	int			$day			Day (1 to 31)
+ *	@param	int			$year			Year
+ *	@param	int			$gm				1=Input informations are GMT values, otherwise local to server TZ
+ *	@param	int			$check			0=No check on parameters (Can use day 32, etc...)
+ *	@return	timestamp					Date as a timestamp, '' if error
+ * 	@see 								dol_print_date, dol_stringtotime, dol_getdate
  */
-function dol_mktime($hour,$minute,$second,$month,$day,$year,$gm=false,$check=1,$isdst=true)
+function dol_mktime($hour,$minute,$second,$month,$day,$year,$gm=false,$check=1)
 {
+    global $conf;
     //print "- ".$hour.",".$minute.",".$second.",".$month.",".$day.",".$year.",".$_SERVER["WINDIR"]." -";
 
     // Clean parameters
@@ -1114,28 +1019,67 @@ function dol_mktime($hour,$minute,$second,$month,$day,$year,$gm=false,$check=1,$
         if ($second< 0 || $second > 60) return '';
     }
 
-    $usealternatemethod=false;
-    if ($year <= 1970) $usealternatemethod=true;		// <= 1970
-    if ($year >= 2038) $usealternatemethod=true;		// >= 2038
-
-    if ($usealternatemethod || $gm)	// Si time gm, seule adodb peut convertir
+    if (class_exists('DateTime') && ! empty($conf->global->MAIN_NEW_DATE))
     {
-        /*
-         // On peut utiliser strtotime pour obtenir la traduction.
-         // strtotime is ok for range: Friday 13 December 1901 20:45:54 GMT to Tuesday 19 January 2038 03:14:07 GMT.
-         $montharray=array(1=>'january',2=>'february',3=>'march',4=>'april',5=>'may',6=>'june',
-         7=>'july',8=>'august',9=>'september',10=>'october',11=>'november',12=>'december');
-         $string=$day." ".$montharray[0+$month]." ".$year." ".$hour.":".$minute.":".$second." GMT";
-         $date=strtotime($string);
-         print "- ".$string." ".$date." -";
-         */
-        $date=adodb_mktime($hour,$minute,$second,$month,$day,$year,$isdst,$gm);
+        if (empty($gm)) $localtz = new DateTimeZone(date_default_timezone_get());
+        else $localtz = new DateTimeZone('UTC');
+        $dt = new DateTime(null,$localtz);
+        $dt->setDate($year,$month,$day);
+        $dt->setTime($hour,$minute,$second);
+        $date=$dt->getTimestamp();
     }
     else
     {
-        $date=mktime($hour,$minute,$second,$month,$day,$year);
+        $usealternatemethod=false;
+        if ($year <= 1970) $usealternatemethod=true;		// <= 1970
+        if ($year >= 2038) $usealternatemethod=true;		// >= 2038
+
+        if ($usealternatemethod || $gm)	// Si time gm, seule adodb peut convertir
+        {
+            $date=adodb_mktime($hour,$minute,$second,$month,$day,$year,0,$gm);
+        }
+        else
+        {
+            $date=mktime($hour,$minute,$second,$month,$day,$year);
+        }
     }
     return $date;
+}
+
+
+/**
+ *	Return date for now. We should always use this function without parameters (that means GMT time)
+ *
+ * 	@param	string		$mode	'gmt' => we return GMT timestamp,
+ * 								'tzserver' => we add the PHP server timezone
+ *  							'tzref' => we add the company timezone
+ * 								'tzuser' => we add the user timezone
+ *	@return timestamp   $date	Timestamp
+ */
+function dol_now($mode='gmt')
+{
+    // Note that gmmktime and mktime return same value (GMT) whithout parameters
+    if ($mode == 'gmt') $ret=gmmktime();	// Time for now at greenwich.
+    else if ($mode == 'tzserver')			// Time for now with PHP server timezone added
+    {
+        require_once(DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php');
+        $tzsecond=getServerTimeZoneInt();    // Contains tz+dayling saving time
+        $ret=dol_now('gmt')+($tzsecond*3600);
+    }
+    /*else if ($mode == 'tzref')				// Time for now with parent company timezone is added
+    {
+        require_once(DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php');
+        $tzsecond=getParentCompanyTimeZoneInt();    // Contains tz+dayling saving time
+        $ret=dol_now('gmt')+($tzsecond*3600);
+    }*/
+    else if ($mode == 'tzuser')				// Time for now with user timezone is added
+    {
+        //print 'eeee'.time().'-'.mktime().'-'.gmmktime();
+        $offsettz=(empty($_SESSION['dol_tz'])?0:$_SESSION['dol_tz'])*60*60;
+        $offsetdst=(empty($_SESSION['dol_dst'])?0:$_SESSION['dol_dst'])*60*60;
+        $ret=dol_now('gmt')+($offsettz+$offsetdst);
+    }
+    return $ret;
 }
 
 
@@ -1245,12 +1189,6 @@ function dol_print_email($email,$cid=0,$socid=0,$addlink=0,$max=64,$showinvalid=
     return $newemail;
 }
 
-/* For backward compatibility */
-function dolibarr_print_phone($phone,$country="FR",$cid=0,$socid=0,$addlink=0,$separ="&nbsp;")
-{
-    return dol_print_phone($phone,$country,$cid,$socid,$addlink,$separ);
-}
-
 /**
  * 	Format phone numbers according to country
  *
@@ -1334,7 +1272,7 @@ function dol_print_phone($phone,$country="FR",$cid=0,$socid=0,$addlink=0,$separ=
  * 	Return an IP formated to be shown on screen
  *
  * 	@param	string	$ip			IP
- * 	@param	int		$mode		1=return only country/flag,2=return only IP
+ * 	@param	int		$mode		0=return IP + country/flag, 1=return only country/flag, 2=return only IP
  * 	@return string 				Formated IP, with country if GeoIP module is enabled
  */
 function dol_print_ip($ip,$mode=0)
@@ -1471,7 +1409,7 @@ function isValidEmail($address)
  *  @param      string		$address    phone (Ex: "0601010101")
  *  @return     boolean     			true if phone syntax is OK, false if KO or empty string
  */
-function isValidPhone($address)
+function isValidPhone($phone)
 {
     return true;
 }
@@ -1518,15 +1456,9 @@ function dol_substr($string,$start,$length,$stringencoding='')
 }
 
 
-/* For backward compatibility */
-function dolibarr_trunc($string,$size=40,$trunc='right',$stringencoding='')
-{
-    return dol_trunc($string,$size,$trunc,$stringencoding);
-}
-
-
 /**
- *  Show a javascript graph
+ *  Show a javascript graph.
+ *  Do not use this function anymore. Use DolGraph class instead.
  *
  *  @param		string	$htmlid			Html id name
  *  @param		int		$width			Width in pixel
@@ -1537,6 +1469,7 @@ function dolibarr_trunc($string,$size=40,$trunc='right',$stringencoding='')
  *  @param		int		$showpercent	Show percent (with type='pie' only)
  *  @param		string	$url			Param to add an url to click values
  *  @return		void
+ *  @deprecated
  */
 function dol_print_graph($htmlid,$width,$height,$data,$showlegend=0,$type='pie',$showpercent=0,$url='')
 {
@@ -1844,14 +1777,15 @@ function img_picto_common($alt, $picto, $options='', $pictoisfullpath=0)
 /**
  *	Show logo action
  *
- *	@param	string	$alt         	Text for image alt and title
+ *	@param	string	$alt         	Text for image alt and title ('default', ...)
  *	@param  int		$numaction   	Action to show
  *	@return string      			Return an img tag
  */
-function img_action($alt = "default", $numaction)
+function img_action($alt, $numaction)
 {
     global $conf,$langs;
-    if ($alt=="default") {
+    if ($alt=="default")
+    {
         if ($numaction == -1) $alt=$langs->transnoentitiesnoconv("ChangeDoNotContact");
         if ($numaction == 0)  $alt=$langs->transnoentitiesnoconv("ChangeNeverContacted");
         if ($numaction == 1)  $alt=$langs->transnoentitiesnoconv("ChangeToContact");
@@ -1878,8 +1812,8 @@ function img_pdf($alt = "default",$size=3)
 /**
  *	Show logo +
  *
- *	@param      alt         Texte sur le alt de l'image
- *	@return     string      Retourne tag img
+ *	@param	string	$alt        Texte sur le alt de l'image
+ *	@return string      		Return tag img
  */
 function img_edit_add($alt = "default")
 {
@@ -1890,8 +1824,8 @@ function img_edit_add($alt = "default")
 /**
  *	Show logo -
  *
- *	@param      alt         Texte sur le alt de l'image
- *	@return     string      Retourne tag img
+ *	@param	string	$alt         Texte sur le alt de l'image
+ *	@return string      Retourne tag img
  */
 function img_edit_remove($alt = "default")
 {
@@ -1903,10 +1837,10 @@ function img_edit_remove($alt = "default")
 /**
  *	Show logo editer/modifier fiche
  *
- *	@param      alt         Texte sur le alt de l'image
- *	@param      float       Si il faut y mettre le style "float: right"
- *	@param      other		Add more attributes on img
- *	@return     string      Retourne tag img
+ *	@param  string	$alt        Texte sur le alt de l'image
+ *	@param  float	$float      Si il faut y mettre le style "float: right"
+ *	@param  string	$other		Add more attributes on img
+ *	@return string      		Retourne tag img
  */
 function img_edit($alt = "default", $float=0, $other='')
 {
@@ -1922,10 +1856,10 @@ function img_edit($alt = "default", $float=0, $other='')
 /**
  *	Show logo view card
  *
- *	@param      alt         Texte sur le alt de l'image
- *	@param      float       Si il faut y mettre le style "float: right"
- *	@param      other		Add more attributes on img
- *	@return     string      Retourne tag img
+ *	@param	string	$alt         Texte sur le alt de l'image
+ *	@param  float	$float       Si il faut y mettre le style "float: right"
+ *	@param  string	$other		Add more attributes on img
+ *	@return string      Retourne tag img
  */
 function img_view($alt = "default", $float=0, $other='')
 {
@@ -1941,9 +1875,9 @@ function img_view($alt = "default", $float=0, $other='')
 /**
  *  Show delete logo
  *
- *  @param      alt         Texte sur le alt de l'image
- *	@param     other      Add more attributes on img
- *  @return     string      Retourne tag img
+ *  @param	string	$alt        Text on alt image
+ *	@param  string	$other      Add more attributes on img
+ *  @return string      		Retourne tag img
  */
 function img_delete($alt = "default", $other='')
 {
@@ -1956,9 +1890,9 @@ function img_delete($alt = "default", $other='')
 /**
  *	Show help logo with cursor "?"
  *
- * 	@param		usehelpcursor
- * 	@param		usealttitle		Texte to use as alt title
- * 	@return     string      	Retourne tag img
+ * 	@param	string	$usehelpcursor		Use help cursor
+ * 	@param	string	$usealttitle		Text to use as alt title
+ * 	@return string      				Retourne tag img
  */
 function img_help($usehelpcursor=1,$usealttitle=1)
 {
@@ -1979,8 +1913,8 @@ function img_help($usehelpcursor=1,$usealttitle=1)
 /**
  *	Affiche logo info
  *
- *	@param      alt         Texte sur le alt de l'image
- *	@return     string      Retourne tag img
+ *	@param	string	$alt        Text to show on alt image
+ *	@return string      		Return img tag
  */
 function img_info($alt = "default")
 {
@@ -1990,11 +1924,11 @@ function img_info($alt = "default")
 }
 
 /**
- *	Affiche logo warning
+ *	Show logo warning
  *
- *	@param      alt         Texte sur le alt de l'image
- *	@param      float       Si il faut afficher le style "float: right"
- *	@return     string      Retourne tag img
+ *	@param	string	$alt        Text to show on alt image
+ *	@param  int		$float      If we must add style "float: right"
+ *	@return string      		Return img tag
  */
 function img_warning($alt = "default",$float=0)
 {
@@ -2006,8 +1940,8 @@ function img_warning($alt = "default",$float=0)
 /**
  *  Affiche logo error
  *
- *  @param      alt         Texte sur le alt de l'image
- *  @return     string      Retourne tag img
+ *	@param	string	$alt        Text to show on alt image
+ *	@return string      		Return img tag
  */
 function img_error($alt = "default")
 {
@@ -2019,9 +1953,9 @@ function img_error($alt = "default")
 /**
  *	Affiche logo telephone
  *
- *	@param      alt         Texte sur le alt de l'image
- *	@param		option		Choose of logo
- *	@return     string      Retourne tag img
+ *	@param	string	$alt        Text to show on alt image
+ *	@param  int		$option		Option
+ *	@return string      		Return img tag
  */
 function img_phone($alt = "default",$option=0)
 {
@@ -2037,8 +1971,8 @@ function img_phone($alt = "default",$option=0)
 /**
  *	Affiche logo suivant
  *
- *	@param      alt         Texte sur le alt de l'image
- *	@return     string      Retourne tag img
+ *	@param	string	$alt        Text to show on alt image
+ *	@return string      		Return img tag
  */
 function img_next($alt = "default")
 {
@@ -2052,8 +1986,8 @@ function img_next($alt = "default")
 /**
  *	Affiche logo precedent
  *
- *	@param      alt     Texte sur le alt de l'image
- *	@return     string      Retourne tag img
+ *	@param	string	$alt        Text to show on alt image
+ *	@return string      		Return img tag
  */
 function img_previous($alt = "default")
 {
@@ -2065,9 +1999,9 @@ function img_previous($alt = "default")
 /**
  *	Show logo down arrow
  *
- *	@param      alt         Texte sur le alt de l'image
- *	@param      selected    Affiche version "selected" du logo
- *	@return     string      Retourne tag img
+ *	@param	string	$alt        Text to show on alt image
+ *	@param  int		$selected   Selected
+ *	@return string      		Return img tag
  */
 function img_down($alt = "default", $selected=0)
 {
@@ -2080,9 +2014,9 @@ function img_down($alt = "default", $selected=0)
 /**
  *	Show logo top arrow
  *
- *	@param      alt         Texte sur le alt de l'image
- *	@param      selected    Affiche version "selected" du logo
- *	@return     string      Retourne tag img
+ *	@param	string	$alt        Text to show on alt image
+ *	@param  int		$selected	Selected
+ *	@return string      		Return img tag
  */
 function img_up($alt = "default", $selected=0)
 {
@@ -2095,9 +2029,9 @@ function img_up($alt = "default", $selected=0)
 /**
  *	Affiche logo gauche
  *
- *	@param      alt         Texte sur le alt de l'image
- *	@param      selected    Affiche version "selected" du logo
- *	@return     string      Retourne tag img
+ *	@param	string	$alt        Text to show on alt image
+ *	@param  int		$selected	Selected
+ *	@return string      		Return img tag
  */
 function img_left($alt = "default", $selected=0)
 {
@@ -2110,9 +2044,9 @@ function img_left($alt = "default", $selected=0)
 /**
  *	Affiche logo droite
  *
- *	@param      alt         Texte sur le alt de l'image
- *	@param      selected    Affiche version "selected" du logo
- *	@return     string      Retourne tag img
+ *	@param	string	$alt        Text to show on alt image
+ *	@param  int		$selected	Selected
+ *	@return string      		Return img tag
  */
 function img_right($alt = "default", $selected=0)
 {
@@ -2125,9 +2059,9 @@ function img_right($alt = "default", $selected=0)
 /**
  *	Affiche le logo tick si allow
  *
- *	@param      allow       Authorise ou non
- *	@param      alt			Alt text for img
- *	@return     string      Retourne tag img
+ *	@param	string	$allow		Allow
+ *	@param	string	$alt        Text to show on alt image
+ *	@return string      		Return img tag
  */
 function img_allow($allow,$alt='default')
 {
@@ -2147,9 +2081,10 @@ function img_allow($allow,$alt='default')
 
 /**
  *	Show MIME img of a file
- *	@param      file		Filename
- * 	@param		alt			Alternate text to show on img mous hover
- *	@return     string     	Return img tag
+ *
+ *	@param	string	$file		Filename
+ * 	@param	string	$alt		Alternate text to show on img mous hover
+ *	@return string     			Return img tag
  */
 function img_mime($file,$alt='')
 {
@@ -2166,9 +2101,10 @@ function img_mime($file,$alt='')
 
 /**
  *	Show information for admin users
- *	@param      text			Text info
- *	@param      infoonimgalt	Info is shown only on alt of star picto, otherwise it is show on output after the star picto
- *	@return		string			String with info text
+ *
+ *	@param	string	$text			Text info
+ *	@param  string	$infoonimgalt	Info is shown only on alt of star picto, otherwise it is show on output after the star picto
+ *	@return	string					String with info text
  */
 function info_admin($text,$infoonimgalt=0)
 {
@@ -2191,418 +2127,15 @@ function info_admin($text,$infoonimgalt=0)
 
 
 /**
- *	Check permissions of a user to show a page and an object. Check read permission.
- * 	If GETPOST('action') defined, we also check write and delete permission.
- *
- *	@param      user      	  	User to check
- *	@param      features	    Features to check (in most cases, it's module name)
- *	@param      objectid      	Object ID if we want to check permission on a particular record (optionnal)
- *	@param      dbtablename    	Table name where object is stored. Not used if objectid is null (optionnal)
- *	@param      feature2		Feature to check, second level of permission (optionnal)
- *  @param      dbt_keyfield    Field name for socid foreign key if not fk_soc (optionnal)
- *  @param      dbt_select      Field name for select if not rowid (optionnal)
- *  @param		objcanvas		Object canvas
- * 	@return		int				Always 1, die process if not allowed
- */
-function restrictedArea($user, $features='societe', $objectid=0, $dbtablename='', $feature2='', $dbt_keyfield='fk_soc', $dbt_select='rowid', $objcanvas=null)
-{
-    global $db, $conf;
-
-    //dol_syslog("functions.lib:restrictedArea $feature, $objectid, $dbtablename,$feature2,$dbt_socfield,$dbt_select");
-    //print "user_id=".$user->id.", features=".$features.", feature2=".$feature2.", objectid=".$objectid;
-    //print ", dbtablename=".$dbtablename.", dbt_socfield=".$dbt_keyfield.", dbt_select=".$dbt_select;
-    //print ", perm: ".$features."->".$feature2."=".$user->rights->$features->$feature2->lire."<br>";
-
-    // If we use canvas, we try to use function that overlod restrictarea if provided with canvas
-    if (is_object($objcanvas))
-    {
-	    if (method_exists($objcanvas->control,'restrictedArea')) return $objcanvas->control->restrictedArea($user,$features,$objectid,$dbtablename,$feature2,$dbt_keyfield,$dbt_select);
-    }
-
-    if ($dbt_select != 'rowid') $objectid = "'".$objectid."'";
-
-    // More features to check
-    $features = explode("&",$features);
-    
-    // More parameters
-    list($dbtablename, $sharedelement) = explode('&', $dbtablename);
-
-    // Check read permission from module
-    // TODO Replace "feature" param into caller by first level of permission
-    $readok=1;
-    foreach ($features as $feature)
-    {
-        if ($feature == 'societe')
-        {
-            if (! $user->rights->societe->lire && ! $user->rights->fournisseur->lire) $readok=0;
-        }
-        else if ($feature == 'contact')
-        {
-            if (! $user->rights->societe->contact->lire) $readok=0;
-        }
-        else if ($feature == 'produit|service')
-        {
-            if (! $user->rights->produit->lire && ! $user->rights->service->lire) $readok=0;
-        }
-        else if ($feature == 'prelevement')
-        {
-            if (! $user->rights->prelevement->bons->lire) $readok=0;
-        }
-        else if ($feature == 'commande_fournisseur')
-        {
-            if (! $user->rights->fournisseur->commande->lire) $readok=0;
-        }
-        else if ($feature == 'cheque')
-        {
-            if (! $user->rights->banque->cheque) $readok=0;
-        }
-        else if ($feature == 'projet')
-        {
-            if (! $user->rights->projet->lire && ! $user->rights->projet->all->lire) $readok=0;
-        }
-        else if (! empty($feature2))	// This should be used for future changes
-        {
-            if (empty($user->rights->$feature->$feature2->lire)
-            && empty($user->rights->$feature->$feature2->read)) $readok=0;
-        }
-        else if (! empty($feature) && ($feature!='user' && $feature!='usergroup'))		// This is for old permissions
-        {
-            if (empty($user->rights->$feature->lire)
-            && empty($user->rights->$feature->read)
-            && empty($user->rights->$feature->run)) $readok=0;
-        }
-    }
-
-    if (! $readok)
-    {
-        //print "Read access is down";
-        accessforbidden();
-    }
-    //print "Read access is ok";
-
-    // Check write permission from module
-    $createok=1;
-    if (GETPOST("action") && GETPOST("action")  == 'create')
-    {
-        foreach ($features as $feature)
-        {
-            if ($feature == 'contact')
-            {
-                if (! $user->rights->societe->contact->creer) $createok=0;
-            }
-            else if ($feature == 'produit|service')
-            {
-                if (! $user->rights->produit->creer && ! $user->rights->service->creer) $createok=0;
-            }
-            else if ($feature == 'prelevement')
-            {
-                if (! $user->rights->prelevement->bons->creer) $createok=0;
-            }
-            else if ($feature == 'commande_fournisseur')
-            {
-                if (! $user->rights->fournisseur->commande->creer) $createok=0;
-            }
-            else if ($feature == 'banque')
-            {
-                if (! $user->rights->banque->modifier) $createok=0;
-            }
-            else if ($feature == 'cheque')
-            {
-                if (! $user->rights->banque->cheque) $createok=0;
-            }
-            else if (! empty($feature2))	// This should be used for future changes
-            {
-                if (empty($user->rights->$feature->$feature2->creer)
-                && empty($user->rights->$feature->$feature2->write)) $createok=0;
-            }
-            else if (! empty($feature))		// This is for old permissions
-            {
-                //print '<br>feature='.$feature.' creer='.$user->rights->$feature->creer.' write='.$user->rights->$feature->write;
-                if (empty($user->rights->$feature->creer)
-                && empty($user->rights->$feature->write)) $createok=0;
-            }
-        }
-
-        if (! $createok) accessforbidden();
-        //print "Write access is ok";
-    }
-
-    // Check create user permission
-    $createuserok=1;
-    if ( GETPOST("action") && (GETPOST("action") == 'confirm_create_user' && GETPOST("confirm") == 'yes') )
-    {
-        if (! $user->rights->user->user->creer) $createuserok=0;
-
-        if (! $createuserok) accessforbidden();
-        //print "Create user access is ok";
-    }
-
-    // Check delete permission from module
-    $deleteok=1;
-    if ( GETPOST("action") && ( (GETPOST("action")  == 'confirm_delete' && GETPOST("confirm") && GETPOST("confirm") == 'yes') || GETPOST("action")  == 'delete') )
-    {
-        foreach ($features as $feature)
-        {
-            if ($feature == 'contact')
-            {
-                if (! $user->rights->societe->contact->supprimer) $deleteok=0;
-            }
-            else if ($feature == 'produit|service')
-            {
-                if (! $user->rights->produit->supprimer && ! $user->rights->service->supprimer) $deleteok=0;
-            }
-            else if ($feature == 'commande_fournisseur')
-            {
-                if (! $user->rights->fournisseur->commande->supprimer) $deleteok=0;
-            }
-            else if ($feature == 'banque')
-            {
-                if (! $user->rights->banque->modifier) $deleteok=0;
-            }
-            else if ($feature == 'cheque')
-            {
-                if (! $user->rights->banque->cheque) $deleteok=0;
-            }
-            else if ($feature == 'ecm')
-            {
-                if (! $user->rights->ecm->upload) $deleteok=0;
-            }
-            else if ($feature == 'ftp')
-            {
-                if (! $user->rights->ftp->write) $deleteok=0;
-            }
-            else if (! empty($feature2))	// This should be used for future changes
-            {
-                if (empty($user->rights->$feature->$feature2->supprimer)
-                && empty($user->rights->$feature->$feature2->delete)) $deleteok=0;
-            }
-            else if (! empty($feature))		// This is for old permissions
-            {
-                //print '<br>feature='.$feature.' creer='.$user->rights->$feature->supprimer.' write='.$user->rights->$feature->delete;
-                if (empty($user->rights->$feature->supprimer)
-                && empty($user->rights->$feature->delete)) $deleteok=0;
-            }
-        }
-
-        //print "Delete access is ko";
-        if (! $deleteok) accessforbidden();
-        //print "Delete access is ok";
-    }
-
-    // If we have a particular object to check permissions on, we check this object
-    // is linked to a company allowed to $user.
-    if (! empty($objectid) && $objectid > 0)
-    {
-        foreach ($features as $feature)
-        {
-            $sql='';
-
-            $check = array('banque','user','usergroup','produit','service','produit|service','categorie'); // Test on entity only (Objects with no link to company)
-            $checksoc = array('societe');	 // Test for societe object
-            $checkother = array('contact');	 // Test on entity and link to societe. Allowed if link is empty (Ex: contacts...).
-            $checkproject = array('projet'); // Test for project object
-            $nocheck = array('barcode','stock','fournisseur');	// No test
-            $checkdefault = 'all other not already defined'; // Test on entity and link to third party. Not allowed if link is empty (Ex: invoice, orders...).
-
-            // If dbtable not defined, we use same name for table than module name
-            if (empty($dbtablename)) $dbtablename = $feature;
-
-            // Check permission for object with entity
-            if (in_array($feature,$check))
-            {
-                $sql = "SELECT dbt.".$dbt_select;
-                $sql.= " FROM ".MAIN_DB_PREFIX.$dbtablename." as dbt";
-                $sql.= " WHERE dbt.".$dbt_select." = ".$objectid;
-                if (($feature == 'user' || $feature == 'usergroup') && ! empty($conf->multicompany->enabled) && $conf->entity == 1 && $user->admin && ! $user->entity)
-                {
-                	$sql.= " AND dbt.entity IS NOT NULL";
-                }
-                else
-                {
-                	$sql.= " AND dbt.entity IN (".getEntity($sharedelement, 1).")";
-                }
-            }
-            else if (in_array($feature,$checksoc))
-            {
-                // If external user: Check permission for external users
-                if ($user->societe_id > 0)
-                {
-                    if ($user->societe_id <> $objectid) accessforbidden();
-                }
-                // If internal user: Check permission for internal users that are restricted on their objects
-                else if (! $user->rights->societe->client->voir)
-                {
-                    $sql = "SELECT sc.fk_soc";
-                    $sql.= " FROM (".MAIN_DB_PREFIX."societe_commerciaux as sc";
-                    $sql.= ", ".MAIN_DB_PREFIX."societe as s)";
-                    $sql.= " WHERE sc.fk_soc = ".$objectid;
-                    $sql.= " AND sc.fk_user = ".$user->id;
-                    $sql.= " AND sc.fk_soc = s.rowid";
-                    $sql.= " AND s.entity IN (".getEntity($sharedelement, 1).")";
-                }
-                // If multicompany and internal users with all permissions, check user is in correct entity
-                else if (! empty($conf->multicompany->enabled))
-                {
-                    $sql = "SELECT s.rowid";
-                    $sql.= " FROM ".MAIN_DB_PREFIX."societe as s";
-                    $sql.= " WHERE s.rowid = ".$objectid;
-                    $sql.= " AND s.entity IN (".getEntity($sharedelement, 1).")";
-                }
-            }
-            else if (in_array($feature,$checkother))
-            {
-                // If external user: Check permission for external users
-                if ($user->societe_id > 0)
-                {
-                    $sql = "SELECT dbt.rowid";
-                    $sql.= " FROM ".MAIN_DB_PREFIX.$dbtablename." as dbt";
-                    $sql.= " WHERE dbt.rowid = ".$objectid;
-                    $sql.= " AND dbt.fk_soc = ".$user->societe_id;
-                }
-                // If internal user: Check permission for internal users that are restricted on their objects
-                else if (! $user->rights->societe->client->voir)
-                {
-                    $sql = "SELECT dbt.rowid";
-                    $sql.= " FROM ".MAIN_DB_PREFIX.$dbtablename." as dbt";
-                    $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."societe_commerciaux as sc ON dbt.fk_soc = sc.fk_soc AND sc.fk_user = '".$user->id."'";
-                    $sql.= " WHERE dbt.rowid = ".$objectid;
-                    $sql.= " AND (dbt.fk_soc IS NULL OR sc.fk_soc IS NOT NULL)";	// Contact not linked to a company or to a company of user
-                    $sql.= " AND dbt.entity IN (".getEntity($sharedelement, 1).")";
-                }
-                // If multicompany and internal users with all permissions, check user is in correct entity
-                else if (! empty($conf->multicompany->enabled))
-                {
-                    $sql = "SELECT dbt.rowid";
-                    $sql.= " FROM ".MAIN_DB_PREFIX.$dbtablename." as dbt";
-                    $sql.= " WHERE dbt.rowid = ".$objectid;
-                    $sql.= " AND dbt.entity IN (".getEntity($sharedelement, 1).")";
-                }
-            }
-            else if (in_array($feature,$checkproject))
-            {
-                if (! $user->rights->projet->all->lire)
-                {
-                    include_once(DOL_DOCUMENT_ROOT."/projet/class/project.class.php");
-                    $projectstatic=new Project($db);
-                    $tmps=$projectstatic->getProjectsAuthorizedForUser($user,0,1,$user->societe_id);
-                    $tmparray=explode(',',$tmps);
-                    if (! in_array($objectid,$tmparray)) accessforbidden();
-                }
-            }
-            else if (! in_array($feature,$nocheck))	// By default we check with link to third party
-            {
-                // If external user: Check permission for external users
-                if ($user->societe_id > 0)
-                {
-                    $sql = "SELECT dbt.".$dbt_keyfield;
-                    $sql.= " FROM ".MAIN_DB_PREFIX.$dbtablename." as dbt";
-                    $sql.= " WHERE dbt.rowid = ".$objectid;
-                    $sql.= " AND dbt.".$dbt_keyfield." = ".$user->societe_id;
-                }
-                // If internal user: Check permission for internal users that are restricted on their objects
-                else if (! $user->rights->societe->client->voir)
-                {
-                    $sql = "SELECT sc.fk_soc";
-                    $sql.= " FROM ".MAIN_DB_PREFIX.$dbtablename." as dbt";
-                    $sql.= ", ".MAIN_DB_PREFIX."societe as s";
-                    $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
-                    $sql.= " WHERE dbt.".$dbt_select." = ".$objectid;
-                    $sql.= " AND sc.fk_soc = dbt.".$dbt_keyfield;
-                    $sql.= " AND dbt.".$dbt_keyfield." = s.rowid";
-                    $sql.= " AND s.entity IN (".getEntity($sharedelement, 1).")";
-                    $sql.= " AND sc.fk_user = ".$user->id;
-                }
-                // If multicompany and internal users with all permissions, check user is in correct entity
-                else if (! empty($conf->multicompany->enabled))
-                {
-                    $sql = "SELECT dbt.".$dbt_select;
-                    $sql.= " FROM ".MAIN_DB_PREFIX.$dbtablename." as dbt";
-                    $sql.= " WHERE dbt.".$dbt_select." = ".$objectid;
-                    $sql.= " AND dbt.entity IN (".getEntity($sharedelement, 1).")";
-                }
-            }
-
-            //print $sql."<br>";
-            if ($sql)
-            {
-                $resql=$db->query($sql);
-                if ($resql)
-                {
-                    if ($db->num_rows($resql) == 0)	accessforbidden();
-                }
-                else
-                {
-                    dol_syslog("functions.lib:restrictedArea sql=".$sql, LOG_ERR);
-                    accessforbidden();
-                }
-            }
-        }
-    }
-
-    return 1;
-}
-
-
-/**
- *	Show a message to say access is forbidden and stop program
- *	Calling this function terminate execution of PHP.
- *	@param		message			    Force error message
- *	@param		printheader		    Show header before
- *  @param      printfooter         Show footer after
- *  @param      showonlymessage     Show only message parameter. Otherwise add more information.
- */
-function accessforbidden($message='',$printheader=1,$printfooter=1,$showonlymessage=0)
-{
-    global $conf, $db, $user, $langs;
-    if (! is_object($langs))
-    {
-        include_once(DOL_DOCUMENT_ROOT.'/core/class/translate.class.php');
-        $langs=new Translate('',$conf);
-    }
-
-    $langs->load("errors");
-
-    if ($printheader)
-    {
-        if (function_exists("llxHeader")) llxHeader('');
-        else if (function_exists("llxHeaderVierge")) llxHeaderVierge('');
-    }
-    print '<div class="error">';
-    if (! $message) print $langs->trans("ErrorForbidden");
-    else print $message;
-    print '</div>';
-    print '<br>';
-    if (empty($showonlymessage))
-    {
-        if ($user->login)
-        {
-            print $langs->trans("CurrentLogin").': <font class="error">'.$user->login.'</font><br>';
-            print $langs->trans("ErrorForbidden2",$langs->trans("Home"),$langs->trans("Users"));
-        }
-        else
-        {
-            print $langs->trans("ErrorForbidden3");
-        }
-    }
-    if ($printfooter && function_exists("llxFooter")) llxFooter();
-    exit(0);
-}
-
-
-/* For backward compatibility */
-function dolibarr_print_error($db='',$error='')
-{
-    return dol_print_error($db, $error);
-}
-
-/**
  *	Affiche message erreur system avec toutes les informations pour faciliter le diagnostic et la remontee des bugs.
  *	On doit appeler cette fonction quand une erreur technique bloquante est rencontree.
  *	Toutefois, il faut essayer de ne l'appeler qu'au sein de pages php, les classes devant
  *	renvoyer leur erreur par l'intermediaire de leur propriete "error".
- *	@param      db      	Database handler
- *	@param      error		String or array of errors strings to show
- *  @see        dol_htmloutput_errors
+ *
+ *	@param	DoliDB	$db      	Database handler
+ *	@param  string	$error		String or array of errors strings to show
+ *	@return	void
+ *  @see    dol_htmloutput_errors
  */
 function dol_print_error($db='',$error='')
 {
@@ -2713,6 +2246,8 @@ function dol_print_error($db='',$error='')
 
 /**
  * Show email to contact if technical error
+ *
+ * @return	void
  */
 function dol_print_error_email()
 {
@@ -2725,14 +2260,15 @@ function dol_print_error_email()
 /**
  *	Show title line of an array
  *
- *	@param	    name        Label of field
- *	@param	    file        Url used when we click on sort picto
- *	@param	    field       Field to use for new sorting
- *	@param	    begin       ("" by defaut)
- *	@param	    moreparam   Add more parameters on sort url links ("" by default)
- *	@param      td          Options of attribute td ("" by defaut)
- *	@param      sortfield   Current field used to sort
- *	@param      sortorder   Current sort order
+ *	@param	string	$name        Label of field
+ *	@param	string	$file        Url used when we click on sort picto
+ *	@param	string	$field       Field to use for new sorting
+ *	@param	string	$begin       ("" by defaut)
+ *	@param	string	$moreparam   Add more parameters on sort url links ("" by default)
+ *	@param  string	$td          Options of attribute td ("" by defaut)
+ *	@param  string	$sortfield   Current field used to sort
+ *	@param  string	$sortorder   Current sort order
+ *	@return	void
  */
 function print_liste_field_titre($name, $file="", $field="", $begin="", $moreparam="", $td="", $sortfield="", $sortorder="")
 {
@@ -2742,15 +2278,16 @@ function print_liste_field_titre($name, $file="", $field="", $begin="", $morepar
 /**
  *	Get title line of an array
  *
- *	@param	    name        Label of field
- *	@param		thead		For thead format
- *	@param	    file        Url used when we click on sort picto
- *	@param	    field       Field to use for new sorting
- *	@param	    begin       ("" by defaut)
- *	@param	    moreparam   Add more parameters on sort url links ("" by default)
- *	@param      moreattrib  Add more attributes on th ("" by defaut)
- *	@param      sortfield   Current field used to sort
- *	@param      sortorder   Current sort order
+ *	@param	string	$name        Label of field
+ *	@param	int		$thead		 For thead format
+ *	@param	string	$file        Url used when we click on sort picto
+ *	@param	string	$field       Field to use for new sorting
+ *	@param	string	$begin       ("" by defaut)
+ *	@param	string	$moreparam   Add more parameters on sort url links ("" by default)
+ *	@param  string	$moreattrib  Add more attributes on th ("" by defaut)
+ *	@param  string	$sortfield   Current field used to sort
+ *	@param  string	$sortorder   Current sort order
+ *	@return	void
  */
 function getTitleFieldOfList($name, $thead=0, $file="", $field="", $begin="", $moreparam="", $moreattrib="", $sortfield="", $sortorder="")
 {
@@ -2811,20 +2348,24 @@ function getTitleFieldOfList($name, $thead=0, $file="", $field="", $begin="", $m
 
 /**
  *	Show a title (deprecated. use print_fiche_titre instrad)
- *	@param	titre			Title to show
+ *
+ *	@param	string	$title			Title to show
+ *	@return	string					Title to show
  */
-function print_titre($titre)
+function print_titre($title)
 {
-    print '<div class="titre">'.$titre.'</div>';
+    print '<div class="titre">'.$title.'</div>';
 }
 
 /**
  *	Show a title with picto
- *	@param	titre				Title to show
- *	@param	mesg				Added message to show on right
- *	@param	picto				Icon to use before title (should be a 32x32 transparent png file)
- *	@param	pictoisfullpath		1=Icon name is a full absolute url of image
- * 	@param	id					To force an id on html objects
+ *
+ *	@param	string	$titre				Title to show
+ *	@param	string	$mesg				Added message to show on right
+ *	@param	string	$picto				Icon to use before title (should be a 32x32 transparent png file)
+ *	@param	int		$pictoisfullpath	1=Icon name is a full absolute url of image
+ * 	@param	int		$id					To force an id on html objects
+ * 	@return	void
  */
 function print_fiche_titre($titre, $mesg='', $picto='title.png', $pictoisfullpath=0, $id='')
 {
@@ -2834,11 +2375,12 @@ function print_fiche_titre($titre, $mesg='', $picto='title.png', $pictoisfullpat
 /**
  *	Load a title with picto
  *
- *	@param	titre				Title to show
- *	@param	mesg				Added message to show on right
- *	@param	picto				Icon to use before title (should be a 32x32 transparent png file)
- *	@param	pictoisfullpath		1=Icon name is a full absolute url of image
- * 	@param	id					To force an id on html objects
+ *	@param	string	$titre				Title to show
+ *	@param	string	$mesg				Added message to show on right
+ *	@param	string	$picto				Icon to use before title (should be a 32x32 transparent png file)
+ *	@param	int		$pictoisfullpath		1=Icon name is a full absolute url of image
+ * 	@param	int		$id					To force an id on html objects
+ * 	@return	void
  */
 function load_fiche_titre($titre, $mesg='', $picto='title.png', $pictoisfullpath=0, $id='')
 {
@@ -2867,17 +2409,17 @@ function load_fiche_titre($titre, $mesg='', $picto='title.png', $pictoisfullpath
 /**
  *	Print a title with navigation controls for pagination
  *
- *	@param	titre				Title to show (required)
- *	@param	page				Numero of page (required)
- *	@param	file				Url of page (required)
- *	@param	options         	parametres complementaires lien ('' par defaut)
- *	@param	sortfield       	champ de tri ('' par defaut)
- *	@param	sortorder       	ordre de tri ('' par defaut)
- *	@param	center          	chaine du centre ('' par defaut)
- *	@param	num					number of records found by select with limit+1
- *	@param	totalnboflines		Total number of records/lines for all pages (if known)
- *	@param	picto				Icon to use before title (should be a 32x32 transparent png file)
- *	@param	pictoisfullpath		1=Icon name is a full absolute url of image
+ *	@param	string	$titre				Title to show (required)
+ *	@param	string	$page				Numero of page (required)
+ *	@param	string	$file				Url of page (required)
+ *	@param	string	$options         	parametres complementaires lien ('' par defaut)
+ *	@param	string	$sortfield       	champ de tri ('' par defaut)
+ *	@param	string	$sortorder       	ordre de tri ('' par defaut)
+ *	@param	string	$center          	chaine du centre ('' par defaut)
+ *	@param	int		$num				number of records found by select with limit+1
+ *	@param	int		$totalnboflines		Total number of records/lines for all pages (if known)
+ *	@param	string	$picto				Icon to use before title (should be a 32x32 transparent png file)
+ *	@param	int		$pictoisfullpath		1=Icon name is a full absolute url of image
  *	@return	void
  */
 function print_barre_liste($titre, $page, $file, $options='', $sortfield='', $sortorder='', $center='', $num=-1, $totalnboflines=0, $picto='title.png', $pictoisfullpath=0)
@@ -2985,7 +2527,7 @@ function print_barre_liste($titre, $page, $file, $options='', $sortfield='', $so
  *	@param	string	$betweenarrows		HTML Content to show between arrows
  *	@return	void
  */
-function print_fleche_navigation($page,$file,$options='',$nextpage,$betweenarrows='')
+function print_fleche_navigation($page,$file,$options='',$nextpage=0,$betweenarrows='')
 {
     global $conf, $langs;
     if ($page > 0)
@@ -3294,10 +2836,10 @@ function get_product_vat_for_country($idprod, $countrycode)
 /**
  *	Return localtax rate of a product in a particular selling country
  *
- *  @param      idprod          Id of product
- *  @package    local           1 for localtax1, 2 for localtax 2
- *  @param      countrycode     Country code (FR, US, IT, ...)
- *  @return     int             <0 if KO, Vat rate if OK
+ *  @param	int		$idprod         Id of product
+ *  @param  int		$local          1 for localtax1, 2 for localtax 2
+ *  @param  string	$countrycode    Country code (FR, US, IT, ...)
+ *  @return int             		<0 if KO, Vat rate if OK
  *	TODO May be this should be better as a method of product class
  */
 function get_product_localtax_for_country($idprod, $local, $countrycode)
@@ -3448,9 +2990,10 @@ function get_default_localtax($societe_vendeuse, $societe_acheteuse, $local, $id
 /**
  *	Return yes or no in current language
  *
- *	@param	yesno			Value to test (1, 'yes', 'true' or 0, 'no', 'false')
- *	@param	case			1=Yes/No, 0=yes/no
- *	@param	color			0=texte only, 1=Text is formated with a color font style ('ok' or 'error'), 2=Text is formated with 'ok' color.
+ *	@param	string	$yesno			Value to test (1, 'yes', 'true' or 0, 'no', 'false')
+ *	@param	string	$case			1=Yes/No, 0=yes/no
+ *	@param	int		$color			0=texte only, 1=Text is formated with a color font style ('ok' or 'error'), 2=Text is formated with 'ok' color.
+ *	@return	string					HTML string
  */
 function yn($yesno, $case=1, $color=0)
 {
@@ -3477,10 +3020,11 @@ function yn($yesno, $case=1, $color=0)
  *  Examples:       '001' with level 3->"0/0/1/", '015' with level 3->"0/1/5/"
  *  Examples:       'ABC-1' with level 3 ->"0/0/1/", '015' with level 1->"5/"
  *
- *	@param      $num            Id to develop
- *	@param      $level		    Level of development (1, 2 or 3 level)
- * 	@param		$alpha		    Use alpha ref
- *  @param      withoutslash    0=With slash at end, 1=without slash at end
+ *	@param	string	$num            Id to develop
+ *	@param  int		$level		    Level of development (1, 2 or 3 level)
+ * 	@param	int		$alpha		    Use alpha ref
+ *  @param  int		$withoutslash   0=With slash at end, 1=without slash at end
+ *  @return	string					Dir to use
  */
 function get_exdir($num,$level=3,$alpha=0,$withoutslash=0)
 {
@@ -3495,12 +3039,6 @@ function get_exdir($num,$level=3,$alpha=0,$withoutslash=0)
     return $path;
 }
 
-// For backward compatibility
-function create_exdir($dir)
-{
-    dol_mkdir($dir);
-}
-
 /**
  *	Creation of a directory (this can create recursive subdir)
  *
@@ -3511,7 +3049,7 @@ function dol_mkdir($dir)
 {
     global $conf;
 
-    dol_syslog("functions.lib::create_exdir: dir=".$dir,LOG_INFO);
+    dol_syslog("functions.lib::dol_mkdir: dir=".$dir,LOG_INFO);
 
     $dir_osencoded=dol_osencode($dir);
     if (@is_dir($dir_osencoded)) return 0;
@@ -3535,7 +3073,7 @@ function dol_mkdir($dir)
             $ccdir_osencoded=dol_osencode($ccdir);
             if (! @is_dir($ccdir_osencoded))
             {
-                dol_syslog("functions.lib::create_exdir: Directory '".$ccdir."' does not exists or is outside open_basedir PHP setting.",LOG_DEBUG);
+                dol_syslog("functions.lib::dol_mkdir: Directory '".$ccdir."' does not exists or is outside open_basedir PHP setting.",LOG_DEBUG);
 
                 umask(0);
                 $dirmaskdec=octdec('0755');
@@ -3544,12 +3082,12 @@ function dol_mkdir($dir)
                 if (! @mkdir($ccdir_osencoded, $dirmaskdec))
                 {
                     // Si le is_dir a renvoye une fausse info, alors on passe ici.
-                    dol_syslog("functions.lib::create_exdir: Fails to create directory '".$ccdir."' or directory already exists.",LOG_WARNING);
+                    dol_syslog("functions.lib::dol_mkdir: Fails to create directory '".$ccdir."' or directory already exists.",LOG_WARNING);
                     $nberr++;
                 }
                 else
                 {
-                    dol_syslog("functions.lib::create_exdir: Directory '".$ccdir."' created",LOG_DEBUG);
+                    dol_syslog("functions.lib::dol_mkdir: Directory '".$ccdir."' created",LOG_DEBUG);
                     $nberr=0;	// On remet a zero car si on arrive ici, cela veut dire que les echecs precedents peuvent etre ignore
                     $nbcreated++;
                 }
@@ -3761,9 +3299,9 @@ function dol_string_is_good_iso($s)
 /**
  *	Return nb of lines of a clear text
  *
- *	@param		s			String to check
- * 	@param		maxchar		Not yet used
- *	@return		int			Number of lines
+ *	@param	string	$s			String to check
+ * 	@param	string	$maxchar	Not yet used
+ *	@return	int					Number of lines
  */
 function dol_nboflines($s,$maxchar=0)
 {
@@ -3778,10 +3316,10 @@ function dol_nboflines($s,$maxchar=0)
 /**
  *	Return nb of lines of a formated text with \n and <br>
  *
- *	@param	   	text      		Text
- *	@param	   	maxlinesize  	Largeur de ligne en caracteres (ou 0 si pas de limite - defaut)
- * 	@param		charset			Give the charset used to encode the $text variable in memory.
- *	@return    	int				Number of lines
+ *	@param	string	$text      		Text
+ *	@param	int		$maxlinesize  	Largeur de ligne en caracteres (ou 0 si pas de limite - defaut)
+ * 	@param	string	$charset		Give the charset used to encode the $text variable in memory.
+ *	@return int						Number of lines
  */
 function dol_nboflines_bis($text,$maxlinesize=0,$charset='UTF-8')
 {
@@ -3859,14 +3397,15 @@ function dol_textishtml($msg,$option=0)
 }
 
 /**
- *    	Make substition into a string
- *      There is two type of substitions:
- * 		- From $substitutionarray (oldval=>newval)
- * 		- From special constants (__XXX__=>f(objet->xxx)) by substitutions modules
+ *  Make substition into a string
+ *  There is two type of substitions:
+ * 	- From $substitutionarray (oldval=>newval)
+ * 	- From special constants (__XXX__=>f(objet->xxx)) by substitutions modules
  *
- *    	@param	string	$chaine      			Source string in which we must do substitution
- *    	@param  array	$substitutionarray		Array with key->val to substitute
- *    	@return string  		    			Output string after subsitutions
+ *  @param	string	$chaine      			Source string in which we must do substitution
+ *  @param  array	$substitutionarray		Array with key->val to substitute
+ * 	@return string  		    			Output string after subsitutions
+ *  @see	make_substitutions
  */
 function make_substitutions($chaine,$substitutionarray)
 {
@@ -3881,12 +3420,13 @@ function make_substitutions($chaine,$substitutionarray)
 }
 
 /**
- *      Complete the $substitutionarray with more entries
+ *  Complete the $substitutionarray with more entries
  *
- *      @param  array		$substitutionarray       Array substitution old value => new value value
- *      @param  Translate	$outputlangs             If we want substitution from special constants, we provide a language
- *      @param  Object		$object                  If we want substitution from special constants, we provide data in a source object
- *      @return	void
+ *  @param  array		&$substitutionarray		Array substitution old value => new value value
+ *  @param  Translate	$outputlangs            If we want substitution from special constants, we provide a language
+ *  @param  Object		$object                 If we want substitution from special constants, we provide data in a source object
+ *  @return	void
+ *  @see 	make_substitutions
  */
 function complete_substitutions_array(&$substitutionarray,$outputlangs,$object='')
 {
@@ -3895,23 +3435,26 @@ function complete_substitutions_array(&$substitutionarray,$outputlangs,$object='
     require_once(DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php');
 
     // Check if there is external substitution to do asked by plugins
-    // We look files into the core/modules/substitutions directory
-    // By default, there is no such external plugins.
-    foreach ($conf->file->dol_document_root as $dirroot)
+    $dirsubstitutions=array_merge(array(),$conf->substitutions_modules);
+
+    foreach($dirsubstitutions as $reldir)
     {
-        $substitfiles=dol_dir_list($dirroot.'/core/modules/substitutions','files',0,'functions_');
+        $dir=dol_buildpath($reldir,0);
+
+        // Check if directory exists
+        if (! dol_is_dir($dir)) continue;
+
+        $substitfiles=dol_dir_list($dir,'files',0,'functions_');
         foreach($substitfiles as $substitfile)
         {
             if (preg_match('/functions_(.*)\.lib\.php/i',$substitfile['name'],$reg))
             {
                 $module=$reg[1];
-                if (! empty($conf->$module->enabled))   // If module enabled
-                {
-                    dol_syslog("Library functions_".$module.".lib.php found into ".$dirroot);
-                    require_once($dirroot."/core/modules/substitutions/functions_".$module.".lib.php");
-                    $function_name=$module."_completesubstitutionarray";
-                    $function_name($substitutionarray,$outputlangs,$object);
-                }
+
+                dol_syslog("Library functions_".$substitfile['name']." found into ".$dir);
+                require_once($dir.$substitfile['name']);
+                $function_name=$module."_completesubstitutionarray";
+                $function_name($substitutionarray,$outputlangs,$object);
             }
         }
     }
@@ -4069,7 +3612,7 @@ function get_htmloutput_errors($mesgstring='', $mesgarray='', $keepembedded=0)
  *
  *	@param	string	$mesgstring		 Message
  *	@param	array	$mesgarray       Messages array
- *  @param  string	$style           Which style to use ('ok', 'error')
+ *  @param  string	$style           Which style to use ('ok', 'warning', 'error')
  *  @param  int		$keepembedded    Set to 1 if message must be kept embedded into its html place (this disable jnotify)
  *  @return	void
  *
@@ -4081,21 +3624,25 @@ function dol_htmloutput_mesg($mesgstring='',$mesgarray='', $style='ok', $keepemb
     if (empty($mesgstring) && (! is_array($mesgarray) || count($mesgarray) == 0)) return;
 
     $iserror=0;
+    $iswarning=0;
     if (is_array($mesgarray))
     {
         foreach($mesgarray as $val)
         {
             if ($val && preg_match('/class="error"/i',$val)) { $iserror++; break; }
+            if ($val && preg_match('/class="warning"/i',$val)) { $iswarning++; break; }
         }
     }
     else if ($mesgstring && preg_match('/class="error"/i',$mesgstring)) $iserror++;
+    else if ($mesgstring && preg_match('/class="warning"/i',$mesgstring)) $iswarning++;
     if ($style=='error') $iserror++;
+    if ($style=='warning') $iswarning++;
 
-    if ($iserror)
+    if ($iserror || $iswarning)
     {
         // Remove div from texts
-        $mesgstring=preg_replace('/<\/div><div class="error">/','<br>',$mesgstring);
-        $mesgstring=preg_replace('/<div class="error">/','',$mesgstring);
+        $mesgstring=preg_replace('/<\/div><div class="(error|warning)">/','<br>',$mesgstring);
+        $mesgstring=preg_replace('/<div class="(error|warning)">/','',$mesgstring);
         $mesgstring=preg_replace('/<\/div>/','',$mesgstring);
         // Remove div from texts array
         if (is_array($mesgarray))
@@ -4103,14 +3650,14 @@ function dol_htmloutput_mesg($mesgstring='',$mesgarray='', $style='ok', $keepemb
             $newmesgarray=array();
             foreach($mesgarray as $val)
             {
-                $tmpmesgstring=preg_replace('/<\/div><div class="error">/','<br>',$val);
-                $tmpmesgstring=preg_replace('/<div class="error">/','',$tmpmesgstring);
+                $tmpmesgstring=preg_replace('/<\/div><div class="(error|warning)">/','<br>',$val);
+                $tmpmesgstring=preg_replace('/<div class="(error|warning)">/','',$tmpmesgstring);
                 $tmpmesgstring=preg_replace('/<\/div>/','',$tmpmesgstring);
                 $newmesgarray[]=$tmpmesgstring;
             }
             $mesgarray=$newmesgarray;
         }
-        print get_htmloutput_mesg($mesgstring,$mesgarray,'error',$keepembedded);
+        print get_htmloutput_mesg($mesgstring,$mesgarray,($iserror?'error':'warning'),$keepembedded);
     }
     else print get_htmloutput_mesg($mesgstring,$mesgarray,'ok',$keepembedded);
 }
@@ -4136,7 +3683,7 @@ function dol_htmloutput_errors($mesgstring='', $mesgarray='', $keepembedded=0)
  *  or descending output and uses optionally natural case insensitive sorting (which
  *  can be optionally case sensitive as well).
  *
- *  @param      array		$array      		Array to sort
+ *  @param      array		&$array      		Array to sort
  *  @param      string		$index				Key in array to use for sorting criteria
  *  @param      int			$order				Sort order
  *  @param      int			$natsort			1=use "natural" sort (natsort), 0=use "standard sort (asort)
@@ -4261,7 +3808,7 @@ function dol_getIdFromCode($db,$key,$tablename,$fieldkey='code',$fieldid='id')
  * Verify if condition in string is ok or not
  *
  * @param 	string		$strRights		String with condition to check
- * @return 	boolean						true or false
+ * @return 	boolean						True or False. Return true if strRights is ''
  */
 function verifCond($strRights)
 {
@@ -4348,8 +3895,8 @@ function picto_from_langcode($codelang)
  *  @param	Conf		$conf           Object conf
  *  @param  Translate	$langs          Object langs
  *  @param  Object		$object         Object object
- *  @param  array		$head           Object head
- *  @param  int			$h              New position to fill
+ *  @param  array		&$head          Object head
+ *  @param  int			&$h             New position to fill
  *  @param  string		$type           Value for object where objectvalue can be
  *                              		'thirdparty'       to add a tab in third party view
  *		                              	'intervention'     to add a tab in intervention view
@@ -4467,7 +4014,8 @@ function printCommonFooter($zone='private')
     if (! empty($_SERVER['DOL_TUNING']))
     {
         $micro_end_time=dol_microtime_float(true);
-        print "\n".'<script type="text/javascript">console.log("';
+        print "\n".'<script type="text/javascript">'."\n";
+        print 'console.log("';
         if (! empty($conf->global->MEMCACHED_SERVER)) print 'MEMCACHED_SERVER='.$conf->global->MEMCACHED_SERVER.' - ';
         print 'MAIN_OPTIMIZE_SPEED='.(isset($conf->global->MAIN_OPTIMIZE_SPEED)?$conf->global->MAIN_OPTIMIZE_SPEED:'off');
         print ' - Build time: '.ceil(1000*($micro_end_time-$micro_start_time)).' ms';
@@ -4485,7 +4033,8 @@ function printCommonFooter($zone='private')
         {
             print ' - Zend encoded file: '.(zend_loader_file_encoded()?'yes':'no');
         }
-        print '")</script>'."\n";
+        print '")'."\n";
+        print '</script>'."\n";
 
         // Add Xdebug coverage of code
         if (defined('XDEBUGCOVERAGE')) {

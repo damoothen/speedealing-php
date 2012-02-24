@@ -90,6 +90,9 @@ class CommonObjectTest extends PHPUnit_Framework_TestCase
     }
 
 	/**
+	 * Init phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function setUp()
     {
@@ -102,6 +105,9 @@ class CommonObjectTest extends PHPUnit_Framework_TestCase
 		print __METHOD__."\n";
     }
 	/**
+	 * End phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function tearDown()
     {
@@ -110,7 +116,9 @@ class CommonObjectTest extends PHPUnit_Framework_TestCase
 
 
     /**
+     *	testVerifyNumRef
      *
+     *	@return	void
      */
     public function testVerifyNumRef()
     {
@@ -130,7 +138,9 @@ class CommonObjectTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     *	testFetchUser
      *
+     *	@return	void
      */
     public function testFetchUser()
     {
@@ -151,7 +161,9 @@ class CommonObjectTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     *	testFetchProjet
      *
+     *	@return	void
      */
     public function testFetchProjet()
     {
@@ -171,7 +183,9 @@ class CommonObjectTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     *	testFetchThirdParty
      *
+     *	@return	void
      */
     public function testFetchThirdParty()
     {

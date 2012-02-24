@@ -390,11 +390,12 @@ function getFormeJuridiqueLabel($code)
 /**
  * 		Show html area for list of projects
  *
- *		@param		conf		Object conf
- * 		@param		langs		Object langs
- * 		@param		db			Database handler
- * 		@param		object		Third party object
- *      @param      backtopage  Url to go once contact is created
+ *		@param	Conf		$conf			Object conf
+ * 		@param	Translate	$langs			Object langs
+ * 		@param	DoliDB		$db				Database handler
+ * 		@param	Object		$object			Third party object
+ *      @param  string		$backtopage		Url to go once contact is created
+ *      @return	void
  */
 function show_projects($conf,$langs,$db,$object,$backtopage='')
 {
@@ -445,7 +446,7 @@ function show_projects($conf,$langs,$db,$object,$backtopage='')
                     $projectstatic->fetch($obj->rowid);
 
                     // To verify role of users
-                    $userAccess = $projectstatic->restrictedProjectArea($user,1);
+                    $userAccess = $projectstatic->restrictedProjectArea($user);
 
                     if ($user->rights->projet->lire && $userAccess > 0)
                     {
@@ -493,6 +494,7 @@ function show_projects($conf,$langs,$db,$object,$backtopage='')
  * 		@param	DoliDB		$db			Database handler
  * 		@param	Object		$object		Third party object
  *      @param  string		$backtopage	Url to go once contact is created
+ *      @return	void
  */
 function show_contacts($conf,$langs,$db,$object,$backtopage='')
 {
@@ -605,16 +607,21 @@ function show_contacts($conf,$langs,$db,$object,$backtopage='')
 
 /**
  *    	Show html area with actions to do
- * 		@param		conf		Object conf
- * 		@param		langs		Object langs
- * 		@param		db			Object db
- * 		@param		object		Object third party
- * 		@param		objcon		Object contact
- *      @param      noprint     Return string but does not output it
+ *
+ * 		@param	Conf		$conf		Object conf
+ * 		@param	Translate	$langs		Object langs
+ * 		@param	DoliDB		$db			Object db
+ * 		@param	Object		$object		Object third party or member
+ * 		@param	Contact		$objcon		Object contact
+ *      @param  int			$noprint	Return string but does not output it
+ *      @return	void
  */
 function show_actions_todo($conf,$langs,$db,$object,$objcon='',$noprint=0)
 {
     global $bc,$user;
+
+    // Check parameters
+    if (! is_object($object)) dol_print_error('','BadParameter');
 
     $now=dol_now();
     $out='';
@@ -627,17 +634,20 @@ function show_actions_todo($conf,$langs,$db,$object,$objcon='',$noprint=0)
         $contactstatic = new Contact($db);
 
         $out.="\n";
-        if (is_object($objcon) && $objcon->id) $out.=load_fiche_titre($langs->trans("TasksHistoryForThisContact"),'','');
-        else $out.=load_fiche_titre($langs->trans("ActionsOnCompany"),'','');
-
         $out.='<table width="100%" class="noborder">';
         $out.='<tr class="liste_titre">';
-        $out.='<td colspan="2"><a href="'.DOL_URL_ROOT.'/comm/action/listactions.php?socid='.$object->id.'&amp;status=todo">'.$langs->trans("ActionsToDoShort").'</a></td>';
+        $out.='<td colspan="2">';
+        if (get_class($object) == 'Societe') $out.='<a href="'.DOL_URL_ROOT.'/comm/action/listactions.php?socid='.$object->id.'&amp;status=todo">';
+        $out.=$langs->trans("ActionsToDoShort");
+        if (get_class($object) == 'Societe') $out.='</a>';
+        $out.='</td>';
         $out.='<td colspan="5" align="right">';
 		$permok=$user->rights->agenda->myactions->create;
         if (($object->id || $objcon->id) && $permok)
 		{
-            $out.='<a href="'.DOL_URL_ROOT.'/comm/action/fiche.php?action=create&amp;socid='.$object->id.'&amp;contactid='.$objcon->id.'&amp;backtopage=1&amp;percentage=-1">';
+            $out.='<a href="'.DOL_URL_ROOT.'/comm/action/fiche.php?action=create';
+            if (get_class($object) == 'Societe') $out.='&amp;socid='.$object->id;
+            $out.='&amp;contactid='.$objcon->id.'&amp;backtopage=1&amp;percentage=-1">';
     		$out.=$langs->trans("AddAnAction").' ';
     		$out.=img_picto($langs->trans("AddAnAction"),'filenew');
     		$out.="</a>";
@@ -652,12 +662,17 @@ function show_actions_todo($conf,$langs,$db,$object,$objcon='',$noprint=0)
         $sql.= " a.fk_user_author, a.fk_contact,";
         $sql.= " a.fk_element, a.elementtype,";
         $sql.= " c.code as acode, c.libelle,";
-        $sql.= " u.login, u.rowid,";
-        $sql.= " sp.name, sp.firstname";
+        $sql.= " u.login, u.rowid";
+        if (get_class($object) == 'Adherent') $sql.= ", m.nom as name, m.prenom as firstname";
+        if (get_class($object) == 'Societe')  $sql.= ", sp.name, sp.firstname";
         $sql.= " FROM ".MAIN_DB_PREFIX."c_actioncomm as c, ".MAIN_DB_PREFIX."user as u, ".MAIN_DB_PREFIX."actioncomm as a";
-        $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."socpeople as sp ON a.fk_contact = sp.rowid";
+        if (get_class($object) == 'Adherent') $sql.= ", ".MAIN_DB_PREFIX."adherent as m";
+        if (get_class($object) == 'Societe')  $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."socpeople as sp ON a.fk_contact = sp.rowid";
         $sql.= " WHERE u.rowid = a.fk_user_author";
-        if ($object->id) $sql.= " AND a.fk_soc = ".$object->id;
+        $sql.= " AND a.entity IN (".getEntity('actioncomm').")";
+        if (get_class($object) == 'Adherent') $sql.= " AND a.fk_element = m.rowid AND a.elementtype = 'member'";
+        if (get_class($object) == 'Adherent' && $object->id) $sql.= " AND a.fk_element = ".$object->id;
+        if (get_class($object) == 'Societe'  && $object->id) $sql.= " AND a.fk_soc = ".$object->id;
         if (is_object($objcon) && $objcon->id) $sql.= " AND a.fk_contact = ".$objcon->id;
         $sql.= " AND c.id=a.fk_action";
         $sql.= " AND ((a.percent >= 0 AND a.percent < 100) OR (a.percent = -1 AND a.datep > '".$db->idate($now)."'))";
@@ -752,16 +767,21 @@ function show_actions_todo($conf,$langs,$db,$object,$objcon='',$noprint=0)
 /**
  *    	Show html area with actions done
  *
- * 		@param		conf		Object conf
- * 		@param		langs		Object langs
- * 		@param		db			Object db
- * 		@param		object		Object third party
- * 		@param		objcon		Object contact
- *      @param      noprint     Return string but does not output it
+ * 		@param	Conf		$conf		Object conf
+ * 		@param	Translate	$langs		Object langs
+ * 		@param	DoliDB		$db			Object db
+ * 		@param	Object		$object		Object third party or member
+ * 		@param	Contact		$objcon		Object contact
+ *      @param  int			$noprint    Return string but does not output it
+ *      @return	void
+ * TODO change function to be able to list event linked to an object.
  */
 function show_actions_done($conf,$langs,$db,$object,$objcon='',$noprint=0)
 {
     global $bc,$user;
+
+    // Check parameters
+    if (! is_object($object)) dol_print_error('','BadParameter');
 
     $out='';
     $histo=array();
@@ -778,12 +798,17 @@ function show_actions_done($conf,$langs,$db,$object,$objcon='',$noprint=0)
         $sql.= " a.fk_element, a.elementtype,";
         $sql.= " a.fk_user_author, a.fk_contact,";
         $sql.= " c.code as acode, c.libelle,";
-        $sql.= " u.login, u.rowid as user_id,";
-        $sql.= " sp.name, sp.firstname";
+        $sql.= " u.login, u.rowid as user_id";
+        if (get_class($object) == 'Adherent') $sql.= ", m.nom as name, m.prenom as firstname";
+        if (get_class($object) == 'Societe')  $sql.= ", sp.name, sp.firstname";
         $sql.= " FROM ".MAIN_DB_PREFIX."c_actioncomm as c, ".MAIN_DB_PREFIX."user as u, ".MAIN_DB_PREFIX."actioncomm as a";
-        $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."socpeople as sp ON a.fk_contact = sp.rowid";
+        if (get_class($object) == 'Adherent') $sql.= ", ".MAIN_DB_PREFIX."adherent as m";
+        if (get_class($object) == 'Societe')  $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."socpeople as sp ON a.fk_contact = sp.rowid";
         $sql.= " WHERE u.rowid = a.fk_user_author";
-        if ($object->id) $sql.= " AND a.fk_soc = ".$object->id;
+        $sql.= " AND a.entity IN (".getEntity('actioncomm').")";
+        if (get_class($object) == 'Adherent') $sql.= " AND a.fk_element = m.rowid AND a.elementtype = 'member'";
+        if (get_class($object) == 'Adherent' && $object->id) $sql.= " AND a.fk_element = ".$object->id;
+        if (get_class($object) == 'Societe'  && $object->id) $sql.= " AND a.fk_soc = ".$object->id;
         if (is_object($objcon) && $objcon->id) $sql.= " AND a.fk_contact = ".$objcon->id;
         $sql.= " AND c.id=a.fk_action";
         $sql.= " AND (a.percent = 100 OR (a.percent = -1 AND a.datep <= '".$db->idate($now)."'))";
@@ -814,7 +839,7 @@ function show_actions_done($conf,$langs,$db,$object,$objcon='',$noprint=0)
         }
     }
 
-    if ($conf->mailing->enabled && $objcon->email)
+    if ($conf->mailing->enabled && ! empty($objcon->email))
     {
         $langs->load("mails");
 
@@ -855,7 +880,7 @@ function show_actions_done($conf,$langs,$db,$object,$objcon='',$noprint=0)
     }
 
 
-    if ($conf->agenda->enabled || ($conf->mailing->enabled && $objcon->email))
+    if ($conf->agenda->enabled || ($conf->mailing->enabled && ! empty($objcon->email)))
     {
         require_once(DOL_DOCUMENT_ROOT."/comm/action/class/actioncomm.class.php");
         require_once(DOL_DOCUMENT_ROOT."/comm/propal/class/propal.class.php");
@@ -873,12 +898,18 @@ function show_actions_done($conf,$langs,$db,$object,$objcon='',$noprint=0)
         $out.="\n";
         $out.='<table class="noborder" width="100%">';
         $out.='<tr class="liste_titre">';
-        $out.='<td colspan="2"><a href="'.DOL_URL_ROOT.'/comm/action/listactions.php?socid='.$object->id.'&amp;status=done">'.$langs->trans("ActionsDoneShort").'</a></td>';
+        $out.='<td colspan="2">';
+        if (get_class($object) == 'Societe') $out.='<a href="'.DOL_URL_ROOT.'/comm/action/listactions.php?socid='.$object->id.'&amp;status=done">';
+        $out.=$langs->trans("ActionsDoneShort");
+        if (get_class($object) == 'Societe') $out.='</a>';
+        $out.='</td>';
         $out.='<td colspan="5" align="right">';
 		$permok=$user->rights->agenda->myactions->create;
         if (($object->id || $objcon->id) && $permok)
 		{
-            $out.='<a href="'.DOL_URL_ROOT.'/comm/action/fiche.php?action=create&amp;socid='.$object->id.'&amp;contactid='.$objcon->id.'&amp;backtopage=1&amp;percentage=-1">';
+            $out.='<a href="'.DOL_URL_ROOT.'/comm/action/fiche.php?action=create';
+            if (get_class($object) == 'Societe') $out.='&amp;socid='.$object->id;
+            $out.='&amp;contactid='.$objcon->id.'&amp;backtopage=1&amp;percentage=-1">';
     		$out.=$langs->trans("AddAnAction").' ';
     		$out.=img_picto($langs->trans("AddAnAction"),'filenew');
     		$out.="</a>";
@@ -985,10 +1016,12 @@ function show_actions_done($conf,$langs,$db,$object,$objcon='',$noprint=0)
 
 /**
  * 		Show html area for list of subsidiaries
- *		@param		conf		Object conf
- * 		@param		langs		Object langs
- * 		@param		db			Database handler
- * 		@param		object		Third party object
+ *
+ *		@param	Conf		$conf		Object conf
+ * 		@param	Translate	$langs		Object langs
+ * 		@param	DoliDB		$db			Database handler
+ * 		@param	Societe		$object		Third party object
+ * 		@return	void
  */
 function show_subsidiaries($conf,$langs,$db,$object)
 {
@@ -1000,7 +1033,7 @@ function show_subsidiaries($conf,$langs,$db,$object)
 	$sql = "SELECT s.rowid, s.nom as name, s.address, s.cp as zip, s.ville as town, s.code_client, s.canvas";
 	$sql.= " FROM ".MAIN_DB_PREFIX."societe as s";
 	$sql.= " WHERE s.parent = ".$object->id;
-	$sql.= " AND s.entity = ".$conf->entity;
+	$sql.= " AND s.entity IN (".getEntity('societe', 1).")";
 	$sql.= " ORDER BY s.nom";
 
 	$result = $db->query($sql);

@@ -87,7 +87,7 @@ else
 
 // Define modecompta ('CREANCES-DETTES' or 'RECETTES-DEPENSES')
 $modecompta = $conf->global->COMPTA_MODE;
-if ($_GET["modecompta"]) $modecompta=$_GET["modecompta"];
+if (GETPOST("modecompta")) $modecompta=GETPOST("modecompta");
 
 
 
@@ -122,7 +122,7 @@ else {
     $builddate=time();
     //$exportlink=$langs->trans("NotYetAvailable");
 }
-report_header($nom,$nomlink,$period,$periodlink,$description,$builddate,$exportlink);
+report_header($nom,$nomlink,$period,$periodlink,$description,$builddate,$exportlink,array('modecompta'=>$modecompta));
 
 // Show report array
 print '<table class="noborder" width="100%">';
@@ -272,13 +272,13 @@ if ($modecompta == 'CREANCES-DETTES')
 else
 {
     $sql = "SELECT s.nom, s.rowid as socid, date_format(p.datep,'%Y-%m') as dm, sum(pf.amount) as amount_ttc";
-    $sql .= " FROM ".MAIN_DB_PREFIX."paiementfourn as p";
+    $sql.= " FROM ".MAIN_DB_PREFIX."paiementfourn as p";
     $sql.= ", ".MAIN_DB_PREFIX."paiementfourn_facturefourn as pf";
-    $sql .= " LEFT JOIN ".MAIN_DB_PREFIX."facture_fourn as f";
-    $sql .= " ON pf.fk_facturefourn = f.rowid";
-    $sql .= " LEFT JOIN ".MAIN_DB_PREFIX."societe as s";
-    $sql .= " ON f.fk_soc = s.rowid";
-    $sql .= " WHERE p.rowid = pf.fk_paiementfourn ";
+    $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."facture_fourn as f";
+    $sql.= " ON pf.fk_facturefourn = f.rowid";
+    $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."societe as s";
+    $sql.= " ON f.fk_soc = s.rowid";
+    $sql.= " WHERE p.rowid = pf.fk_paiementfourn ";
     if ($date_start && $date_end) $sql.= " AND p.datep >= '".$db->idate($date_start)."' AND p.datep <= '".$db->idate($date_end)."'";
 }
 $sql.= " AND f.entity = ".$conf->entity;
@@ -344,26 +344,27 @@ print '<tr><td colspan="4">'.$langs->trans("SocialContributions").'</td></tr>';
 
 if ($modecompta == 'CREANCES-DETTES')
 {
-    $sql = "SELECT c.libelle as nom, sum(s.amount) as amount";
+    $sql = "SELECT c.libelle as nom, sum(cs.amount) as amount";
     $sql.= " FROM ".MAIN_DB_PREFIX."c_chargesociales as c";
-    $sql.= ", ".MAIN_DB_PREFIX."chargesociales as s";
-    $sql.= " WHERE s.fk_type = c.id";
+    $sql.= ", ".MAIN_DB_PREFIX."chargesociales as cs";
+    $sql.= " WHERE cs.fk_type = c.id";
     $sql.= " AND c.deductible = 0";
-    if ($date_start && $date_end) $sql.= " AND s.date_ech >= '".$db->idate($date_start)."' AND s.date_ech <= '".$db->idate($date_end)."'";
+    if ($date_start && $date_end) $sql.= " AND cs.date_ech >= '".$db->idate($date_start)."' AND cs.date_ech <= '".$db->idate($date_end)."'";
 }
 else
 {
     $sql = "SELECT c.libelle as nom, sum(p.amount) as amount";
     $sql.= " FROM ".MAIN_DB_PREFIX."c_chargesociales as c";
-    $sql.= ", ".MAIN_DB_PREFIX."chargesociales as s";
+    $sql.= ", ".MAIN_DB_PREFIX."chargesociales as cs";
     $sql.= ", ".MAIN_DB_PREFIX."paiementcharge as p";
-    $sql.= " WHERE p.fk_charge = s.rowid";
-    $sql.= " AND s.fk_type = c.id";
+    $sql.= " WHERE p.fk_charge = cs.rowid";
+    $sql.= " AND cs.fk_type = c.id";
     $sql.= " AND c.deductible = 0";
     if ($date_start && $date_end) $sql.= " AND p.datep >= '".$db->idate($date_start)."' AND p.datep <= '".$db->idate($date_end)."'";
 }
-$sql.= " AND s.entity = ".$conf->entity;
+$sql.= " AND cs.entity = ".$conf->entity;
 $sql.= " GROUP BY c.libelle";
+$sql.= " ORDER BY c.libelle";
 
 dol_syslog("get social contributions deductible=0 sql=".$sql);
 $result=$db->query($sql);
@@ -414,27 +415,29 @@ print '<tr><td colspan="4">'.$langs->trans("SocialContributions").'</td></tr>';
 
 if ($modecompta == 'CREANCES-DETTES')
 {
-    $sql = "SELECT c.libelle as nom, sum(s.amount) as amount";
+    $sql = "SELECT c.libelle as nom, sum(cs.amount) as amount";
     $sql.= " FROM ".MAIN_DB_PREFIX."c_chargesociales as c";
-    $sql.= ", ".MAIN_DB_PREFIX."chargesociales as s";
-    $sql.= " WHERE s.fk_type = c.id";
+    $sql.= ", ".MAIN_DB_PREFIX."chargesociales as cs";
+    $sql.= " WHERE cs.fk_type = c.id";
     $sql.= " AND c.deductible = 1";
-    if ($date_start && $date_end) $sql.= " AND s.date_ech >= '".$db->idate($date_start)."' AND s.date_ech <= '".$db->idate($date_end)."'";
-    $sql.= " AND s.entity = ".$conf->entity;
-    $sql.= " GROUP BY c.libelle DESC";
+    if ($date_start && $date_end) $sql.= " AND cs.date_ech >= '".$db->idate($date_start)."' AND cs.date_ech <= '".$db->idate($date_end)."'";
+    $sql.= " AND cs.entity = ".$conf->entity;
+    $sql.= " GROUP BY c.libelle";
+    $sql.= " ORDER BY c.libelle";
 }
 else
 {
     $sql = "SELECT c.libelle as nom, sum(p.amount) as amount";
-    $sql .= " FROM ".MAIN_DB_PREFIX."c_chargesociales as c";
-    $sql.= ", ".MAIN_DB_PREFIX."chargesociales as s";
+    $sql.= " FROM ".MAIN_DB_PREFIX."c_chargesociales as c";
+    $sql.= ", ".MAIN_DB_PREFIX."chargesociales as cs";
     $sql.= ", ".MAIN_DB_PREFIX."paiementcharge as p";
-    $sql .= " WHERE p.fk_charge = s.rowid";
-    $sql.= " AND s.fk_type = c.id";
+    $sql.= " WHERE p.fk_charge = cs.rowid";
+    $sql.= " AND cs.fk_type = c.id";
     $sql.= " AND c.deductible = 1";
     if ($date_start && $date_end) $sql.= " AND p.datep >= '".$db->idate($date_start)."' AND p.datep <= '".$db->idate($date_end)."'";
-    $sql.= " AND s.entity = ".$conf->entity;
+    $sql.= " AND cs.entity = ".$conf->entity;
     $sql.= " GROUP BY c.libelle";
+    $sql.= " ORDER BY c.libelle";
 }
 
 dol_syslog("get social contributions deductible=1 sql=".$sql);
@@ -593,7 +596,7 @@ else
     if ($date_start && $date_end) $sql.= " AND t.datev >= '".$db->idate($date_start)."' AND t.datev <= '".$db->idate($date_end)."'";
     $sql.= " AND t.entity = ".$conf->entity;
     $sql.= " GROUP BY dm";
-    $sql.= " ORDER BY dm DESC";
+    $sql.= " ORDER BY dm";
 
     dol_syslog("get vat really paid sql=".$sql);
     $result=$db->query($sql);
@@ -632,7 +635,7 @@ else
     if ($date_start && $date_end) $sql.= " AND t.datev >= '".$db->idate($date_start)."' AND t.datev <= '".$db->idate($date_end)."'";
     $sql.= " AND t.entity = ".$conf->entity;
     $sql.= " GROUP BY dm";
-    $sql.= " ORDER BY dm DESC";
+    $sql.= " ORDER BY dm";
 
     dol_syslog("get vat really received back sql=".$sql);
     $result=$db->query($sql);

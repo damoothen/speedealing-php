@@ -89,6 +89,9 @@ class AdherentTest extends PHPUnit_Framework_TestCase
     }
 
 	/**
+	 * Init phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function setUp()
     {
@@ -101,6 +104,9 @@ class AdherentTest extends PHPUnit_Framework_TestCase
 		print __METHOD__."\n";
     }
 	/**
+	 * End phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function tearDown()
     {
@@ -108,6 +114,9 @@ class AdherentTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testAdherentCreate
+     *
+     * @return void
      */
     public function testAdherentCreate()
     {
@@ -127,6 +136,11 @@ class AdherentTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testAdherentFetch
+     *
+     * @param	int		$id		Id of object to fecth
+     * @return	object			Fetched object
+     *
      * @depends	testAdherentCreate
      * The depends says test is run only if previous is ok
      */
@@ -147,6 +161,11 @@ class AdherentTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testAdherentUpdate
+     *
+     * @param	Adherent	$localobject	Member instance
+     * @return	Adherent
+     *
      * @depends	testAdherentFetch
      * The depends says test is run only if previous is ok
      */
@@ -209,6 +228,11 @@ class AdherentTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testAdherentValid
+     *
+     * @param	Adherent	$localobject	Member instance
+     * @return	Adherent
+     *
      * @depends	testAdherentUpdate
      * The depends says test is run only if previous is ok
      */
@@ -228,6 +252,11 @@ class AdherentTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testAdherentOther
+     *
+     * @param	Adherent	$localobject	Member instance
+     * @return	int							Id of object
+     *
      * @depends testAdherentValid
      * The depends says test is run only if previous is ok
      */
@@ -252,6 +281,11 @@ class AdherentTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testAdherentDelete
+     *
+     * @param	int		$id		Id of object to delete
+     * @return	void
+     *
      * @depends	testAdherentOther
      * The depends says test is run only if previous is ok
      */
@@ -272,24 +306,5 @@ class AdherentTest extends PHPUnit_Framework_TestCase
 		return $result;
     }
 
-    /**
-     *
-     */
-    /*public function testVerifyNumRef()
-    {
-    	global $conf,$user,$langs,$db;
-		$conf=$this->savconf;
-		$user=$this->savuser;
-		$langs=$this->savlangs;
-		$db=$this->savdb;
-
-		$localobject=new Adherent($this->savdb);
-    	$result=$localobject->ref='refthatdoesnotexists';
-		$result=$localobject->VerifyNumRef();
-		print __METHOD__." result=".$result."\n";
-    	$this->assertEquals($result, 0);
-
-    	return $result;
-    }*/
 }
 ?>

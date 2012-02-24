@@ -1202,8 +1202,6 @@ SupposedToBeInvoiceDate=Kullanılan Fatura tarihinden
 InvoiceDateUsed=Kullanılan Fatura tarihinden
 AccountancyCode=Muhasebe Kodu
 PastDelayVCalExport=Daha olayı büyük vermeyin
-NumberWordsSetup=NumberWords modülü kurulumu
-DescNumberWords=Bu modül tam karakter sayısı ya da miktarı dönüştürmek için işlevler sağlar. Ayrıca __TOTAL_TTC_WORDS__ __TOTAL_HT_WORDS__ veya __TOTAL_VAT_WORDS__ toplam dahil aşağıdaki dize olaylar yerini alacak. vergisi, toplam vergi, net ve KDV toplam bunları kullanan bütün textes içine (faturalar ücretsiz metin, ...)
 ProjectsNumberingModules=Projeler modülü numaralandırma
 ProjectsSetup=Proje modülü kurulumu
 // STOP - Lines generated via autotranslator.php tool (2011-10-10 11:45:12).
@@ -1277,7 +1275,6 @@ ExtraFields=Tamamlayıcı öznitelikleri
 SendingMailSetup=E-posta ile gönderilenlerin Kurulumu
 SendmailOptionNotComplete=Uyarı, bazı Linux sistemleri, e-posta, e-posta göndermek için, sendmail yürütme kurulum conatins-ba seçeneği (parametre mail.force_extra_parameters php.ini dosyasının içine). Bazı alıcılar e-postalar almak hiç mail.force_extra_parameters =-BA) ile PHP parametre düzenlemek için deneyin.
 UsersSetup=Modülü kurulum Kullanıcılar
-NoActivatedBarcode=Aktive yok barkod tipi
 MailingEMailError=Hataları ile e-postalar için e-posta (Hatalar-)
 ListOfAvailableNotifications=Mevcut bildirimlerin Listesi (Bu liste aktive modülleri bağlıdır)
 SendingsNumberingModules=Modülleri numaralandırma gönderilenlerin

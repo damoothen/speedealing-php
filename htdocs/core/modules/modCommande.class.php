@@ -5,6 +5,7 @@
  * Copyright (C) 2004      Benoit Mortier       <benoit.mortier@opensides.be>
  * Copyright (C) 2004      Eric Seigne          <eric.seigne@ryxeo.com>
  * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2012      Juanjo Menent		<jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,6 +89,13 @@ class modCommande extends DolibarrModules
 		$this->const[$r][1] = "chaine";
 		$this->const[$r][2] = "mod_commande_marbre";
 		$this->const[$r][3] = 'Nom du gestionnaire de numerotation des commandes';
+		$this->const[$r][4] = 0;
+
+		$r++;
+		$this->const[$r][0] = "COMMANDE_ADDON_PDF_ODT_PATH";
+		$this->const[$r][1] = "chaine";
+		$this->const[$r][2] = "DOL_DATA_ROOT/doctemplates/orders";
+		$this->const[$r][3] = "";
 		$this->const[$r][4] = 0;
 
 		// Boites
@@ -187,14 +195,27 @@ class modCommande extends DolibarrModules
 	 */
 	function init($options='')
 	{
-		global $conf;
+		global $conf,$langs;
 
 		// Permissions
 		$this->remove();
 
+		//ODT template
+		require_once(DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php');
+		$dirodt=DOL_DATA_ROOT.'/doctemplates/orders';
+		dol_mkdir($dirodt);
+		$src=DOL_DOCUMENT_ROOT.'/install/doctemplates/orders/template_order.odt'; $dest=$dirodt.'/template_order.odt';
+		$result=dol_copy($src,$dest,0,0);
+		if ($result < 0)
+		{
+		    $langs->load("errors");
+		    $this->error=$langs->trans('ErrorFailToCopyFile',$src,$dest);
+		    return 0;
+		}
+
 		$sql = array(
-		 "DELETE FROM ".MAIN_DB_PREFIX."document_model WHERE nom = '".$this->const[0][2]."'",
-		 "INSERT INTO ".MAIN_DB_PREFIX."document_model (nom,type) VALUES('".$this->const[0][2]."','order')"
+		 "DELETE FROM ".MAIN_DB_PREFIX."document_model WHERE nom = '".$this->const[0][2]."' AND entity = ".$conf->entity,
+		 "INSERT INTO ".MAIN_DB_PREFIX."document_model (nom, type, entity) VALUES('".$this->const[0][2]."','order',".$conf->entity.")"
 		 );
 
 		 return $this->_init($sql,$options);
@@ -202,8 +223,12 @@ class modCommande extends DolibarrModules
 
 
 	/**
-	 *    \brief      Fonction appelee lors de la desactivation d'un module.
-	 *                Supprime de la base les constantes, boites et permissions du module.
+	 *		Function called when module is disabled.
+	 *      Remove from database constants, boxes and permissions from Dolibarr database.
+	 *		Data directories are not deleted
+	 *
+     *      @param      string	$options    Options when enabling module ('', 'noboxes')
+	 *      @return     int             	1 if OK, 0 if KO
 	 */
 	function remove()
 	{

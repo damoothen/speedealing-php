@@ -1,6 +1,6 @@
 <?php
-/* Copyright (C) 2010 Laurent Destailleur	<eldy@users.sourceforge.net>
- * Copyright (C) 2011 Regis Houssin			<regis@dolibarr.fr>
+/* Copyright (C) 2010-2012	Laurent Destailleur	<eldy@users.sourceforge.net>
+ * Copyright (C) 2011-2012	Regis Houssin		<regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,12 @@ global $conf,$user,$langs,$db;
 require_once 'PHPUnit/Autoload.php';
 require_once dirname(__FILE__).'/../../htdocs/master.inc.php';
 
+if ($langs->defaultlang != 'en_US')
+{
+    print "Error: Default language for company to run tests must be set to en_US or auto. Current is ".$langs->defaultlang."\n";
+    exit;
+}
+
 if (empty($user->id))
 {
 	print "Load permissions for admin user nb 1\n";
@@ -58,8 +64,12 @@ class AllTests
         //$suite->addTestSuite('CoreTest');
 		require_once dirname(__FILE__).'/DateLibTest.php';
 		$suite->addTestSuite('DateLibTest');
-        require_once dirname(__FILE__).'/FunctionsTest.php';
-        $suite->addTestSuite('FunctionsTest');
+		require_once dirname(__FILE__).'/FilesLibTest.php';
+		$suite->addTestSuite('FilesLibTest');
+		require_once dirname(__FILE__).'/FunctionsTest.php';
+		$suite->addTestSuite('FunctionsTest');
+		require_once dirname(__FILE__).'/PdfDocTest.php';
+		$suite->addTestSuite('PdfDocTest');
 
         require_once dirname(__FILE__).'/SecurityTest.php';
         $suite->addTestSuite('SecurityTest');
@@ -94,7 +104,9 @@ class AllTests
         require_once dirname(__FILE__).'/ContratTest.php';
         $suite->addTestSuite('ContratTest');
         require_once dirname(__FILE__).'/FactureTest.php';
-        $suite->addTestSuite('FactureTest');    // This one covers also triggers
+        $suite->addTestSuite('FactureTest');
+        require_once dirname(__FILE__).'/FactureTestRounding.php';
+        $suite->addTestSuite('FactureTestRounding');
         require_once dirname(__FILE__).'/FactureFournisseurTest.php';
         $suite->addTestSuite('FactureFournisseurTest');
         require_once dirname(__FILE__).'/PropalTest.php';

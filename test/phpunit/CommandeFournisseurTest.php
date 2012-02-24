@@ -90,6 +90,9 @@ class CommandeFournisseurTest extends PHPUnit_Framework_TestCase
     }
 
 	/**
+	 * Init phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function setUp()
     {
@@ -103,6 +106,9 @@ class CommandeFournisseurTest extends PHPUnit_Framework_TestCase
 		//print $db->getVersion()."\n";
     }
 	/**
+	 * End phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function tearDown()
     {
@@ -110,6 +116,9 @@ class CommandeFournisseurTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testCommandeFournisseurCreate
+     * 
+     * @return	void
      */
     public function testCommandeFournisseurCreate()
     {
@@ -129,6 +138,11 @@ class CommandeFournisseurTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testCommandeFournisseurFetch
+     * 
+     * @param	int		$id		Id of supplier order
+     * @return 	void
+     * 
      * @depends	testCommandeFournisseurCreate
      * The depends says test is run only if previous is ok
      */
@@ -147,28 +161,13 @@ class CommandeFournisseurTest extends PHPUnit_Framework_TestCase
         $this->assertLessThan($result, 0);
     	return $localobject;
     }
-
+  
     /**
-     * @depends	testCommandeFournisseurFetch
-     * The depends says test is run only if previous is ok
-     */
-/*    public function testCommandeFournisseurUpdate($localobject)
-    {
-    	global $conf,$user,$langs,$db;
-		$conf=$this->savconf;
-		$user=$this->savuser;
-		$langs=$this->savlangs;
-		$db=$this->savdb;
-
-		$localobject->note='New note after update';
-    	$result=$localobject->update($user);
-
-	   	print __METHOD__." id=".$localobject->id." result=".$result."\n";
-    	$this->assertLessThan($result, 0);
-    	return $localobject->id;
-    }
-*/
-    /**
+     * testCommandeFournisseurValid
+     * 
+     * @param	Object	$localobject	Supplier order
+     * @return	void
+     * 
      * @depends	testCommandeFournisseurFetch
      * The depends says test is run only if previous is ok
      */
@@ -188,6 +187,11 @@ class CommandeFournisseurTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testCommandeFournisseurCancel
+     * 
+     * @param	Object	$localobject		Supplier order
+     * @return	void
+     * 
      * @depends	testCommandeFournisseurValid
      * The depends says test is run only if previous is ok
      */
@@ -207,6 +211,11 @@ class CommandeFournisseurTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testCommandeFournisseurOther
+     * 
+     * @param	Object		$localobject	Supplier order
+     * @return	void
+     * 
      * @depends testCommandeFournisseurCancel
      * The depends says test is run only if previous is ok
      */
@@ -232,6 +241,11 @@ class CommandeFournisseurTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testCommandeFournisseurDelete
+     * 
+     * @param	int		$id		Id of order
+     * @return	void
+     * 
      * @depends	testCommandeFournisseurOther
      * The depends says test is run only if previous is ok
      */
@@ -253,7 +267,9 @@ class CommandeFournisseurTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     *	testVerifyNumRef
      *
+     *	@return	void
      */
     public function testVerifyNumRef()
     {

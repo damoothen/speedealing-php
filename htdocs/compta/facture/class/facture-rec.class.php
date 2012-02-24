@@ -337,6 +337,7 @@ class FactureRec extends Facture
 				$line->product_type     = $objp->product_type;	// Type of line
 				$line->product_ref      = $objp->product_ref;     // Ref product
 				$line->libelle          = $objp->label;           // Label product
+				$line->product_label	= $objp->product_label;
 				$line->product_desc     = $objp->product_desc;    // Description product
 				$line->fk_product_type  = $objp->fk_product_type;	// Type of product
 				$line->qty              = $objp->qty;
@@ -493,14 +494,14 @@ class FactureRec extends Facture
 			$sql.= ") VALUES (";
 			$sql.= "'".$facid."'";
 			$sql.= ", '".$this->db->escape($desc)."'";
-			$sql.= ", ".price2num($price);
+			$sql.= ", ".price2num($pu_ht);
 			$sql.= ", ".price2num($qty);
 			$sql.= ", ".price2num($txtva);
 			$sql.= ", ".($fk_product?"'".$fk_product."'":"null");
 			$sql.= ", ".$product_type;
 			$sql.= ", '".price2num($remise_percent)."'";
 			$sql.= ", '".price2num($pu_ht)."'";
-			$sql.= ", '".price2num($remise)."'";
+			$sql.= ", null";
 			$sql.= ", '".price2num($total_ht)."'";
 			$sql.= ", '".price2num($total_tva)."'";
 			$sql.= ", '".price2num($total_ttc)."'";

@@ -1,5 +1,5 @@
 <?php
-/* Copyright (C) 2004-2009 Laurent Destailleur   <eldy@users.sourceforge.net>
+/* Copyright (C) 2004-2012 Laurent Destailleur   <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2011 Regis Houssin         <regis@dolibarr.fr>
  * Copyright (C) 2007      Franky Van Liedekerke <franky.van.liedekerke@telenet.be>
  * Copyright (C) 2010      Juanjo Menent         <jmenent@2byte.es>
@@ -163,7 +163,7 @@ class pdf_muscadet extends ModelePDFSuppliersOrders
 
 			if (! file_exists($dir))
 			{
-				if (create_exdir($dir) < 0)
+				if (dol_mkdir($dir) < 0)
 				{
 					$this->error=$langs->trans("ErrorCanNotCreateDir",$dir);
 					return 0;
@@ -427,13 +427,13 @@ class pdf_muscadet extends ModelePDFSuppliersOrders
 
 
 	/**
-	 *	Show other information
+	 *   Show miscellaneous information (payment mode, payment term, ...)
 	 *
-	 *	@param	PDF			&$pdf           Object PDF
-	 *	@param  Facture		$object         Object invoice
-	 *	@param	int			$posy			Position start
-	 *	@param	Translate	$outputlangs	Object langs
-	 *	@return int							Position pour suite
+	 *   @param		PDF			&$pdf     		Object PDF
+	 *   @param		Object		$object			Object to show
+	 *   @param		int			$posy			Y
+	 *   @param		Translate	$outputlangs	Langs object
+	 *   @return	void
 	 */
 	function _tableau_info(&$pdf, $object, $posy, $outputlangs)
 	{
@@ -571,12 +571,12 @@ class pdf_muscadet extends ModelePDFSuppliersOrders
 	 *	@param  int			$deja_regle     Montant deja regle
 	 *	@param	int			$posy			Position depart
 	 *	@param	Translate	$outputlangs	Objet langs
-	 *  @return	int							Position pour suite
+	 *	@return int							Position pour suite
 	 */
 	function _tableau_tot(&$pdf, $object, $deja_regle, $posy, $outputlangs)
 	{
 		global $conf,$mysoc;
-        
+
 		$default_font_size = pdf_getPDFFontSize($outputlangs);
 
         $tab2_top = $posy;
@@ -588,7 +588,7 @@ class pdf_muscadet extends ModelePDFSuppliersOrders
 
 		$useborder=0;
 		$index = 0;
-		
+
 		// Total HT
 		$pdf->SetFillColor(255,255,255);
 		$pdf->SetXY($col1x, $tab2_top + 0);
@@ -733,7 +733,7 @@ class pdf_muscadet extends ModelePDFSuppliersOrders
 		//print "x".$creditnoteamount."-".$depositsamount;exit;
 		$resteapayer = price2num($object->total_ttc - $deja_regle - $creditnoteamount - $depositsamount, 'MT');
 		if ($object->paye) $resteapayer=0;
-		
+
 		if ($deja_regle > 0)
 		{
 			$index++;
@@ -761,9 +761,14 @@ class pdf_muscadet extends ModelePDFSuppliersOrders
 	}
 
     /**
-     *   Show the lines of order
-
-     *   @param		PDF		$pdf     object PDF
+	 *   Show table for lines
+	 *
+	 *   @param		PDF			&$pdf     		Object PDF
+	 *   @param		string		$tab_top		Top position of table
+	 *   @param		string		$tab_height		Height of table (rectangle)
+	 *   @param		int			$nexY			Y
+	 *   @param		Translate	$outputlangs	Langs object
+	 *   @return	void
      */
 	function _tableau(&$pdf, $tab_top, $tab_height, $nexY, $outputlangs)
 	{
@@ -822,14 +827,15 @@ class pdf_muscadet extends ModelePDFSuppliersOrders
 	}
 
 	/**
-	 *   	Show header of page
+	 *  Show top header of page.
 	 *
-	 *   	@param      $pdf     		Object PDF
-	 *   	@param      $object     	Object order
-	 *      @param      $showaddress    0=no, 1=yes
-	 *      @param      $outputlangs	Object lang for output
+	 *  @param	PDF			&$pdf     		Object PDF
+	 *  @param  Object		$object     	Object to show
+	 *  @param  int	    	$showaddress    0=no, 1=yes
+	 *  @param  Translate	$outputlangs	Object lang for output
+	 *  @return	void
 	 */
-	function _pagehead(&$pdf, $object, $showaddress=1, $outputlangs)
+	function _pagehead(&$pdf, $object, $showaddress, $outputlangs)
 	{
 		global $langs,$conf,$mysoc;
 
@@ -880,7 +886,7 @@ class pdf_muscadet extends ModelePDFSuppliersOrders
 		$pdf->MultiCell(100, 3, $title, '', 'R');
 
 		$pdf->SetFont('','B',$default_font_size);
-		
+
 		$posy+=5;
 		$pdf->SetXY($posx,$posy);
 		$pdf->SetTextColor(0,0,60);
@@ -888,7 +894,7 @@ class pdf_muscadet extends ModelePDFSuppliersOrders
 
 		$posy+=1;
 		$pdf->SetFont('','', $default_font_size -1);
-		
+
         $posy+=4;
 		$pdf->SetXY($posx,$posy);
 		if ($object->date_commande)
@@ -984,16 +990,16 @@ class pdf_muscadet extends ModelePDFSuppliersOrders
 	}
 
 	/**
-	 *   Show footer of page
+	 *   	Show footer of page. Need this->emetteur object
      *
-	 *   	\param      pdf     		PDF factory
-	 * 		\param		object			Object invoice
-	 *      \param      outputlang		Object lang for output
-	 * 		\remarks	Need this->emetteur object
+	 *   	@param	PDF			&$pdf     			PDF
+	 * 		@param	Object		$object				Object to show
+	 *      @param	Translate	$outputlangs		Object lang for output
+	 *      @return	void
 	 */
 	function _pagefoot(&$pdf, $object, $outputlangs)
 	{
-		return pdf_pagefoot($pdf,$outputlangs,'FACTURESUPPLIER_FREE_TEXT',$this->emetteur,$this->marge_basse,$this->marge_gauche,$this->page_hauteur,$object);
+		return pdf_pagefoot($pdf,$outputlangs,'SUPPLIER_INVOICE_FREE_TEXT',$this->emetteur,$this->marge_basse,$this->marge_gauche,$this->page_hauteur,$object);
 	}
 
 }

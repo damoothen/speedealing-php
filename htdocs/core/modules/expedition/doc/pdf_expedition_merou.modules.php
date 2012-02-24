@@ -136,7 +136,7 @@ Class pdf_expedition_merou extends ModelePdfExpedition
 
 			if (! file_exists($dir))
 			{
-				if (create_exdir($dir) < 0)
+				if (dol_mkdir($dir) < 0)
 				{
 					$this->error=$outputlangs->transnoentities("ErrorCanNotCreateDir",$dir);
 					return 0;
@@ -270,9 +270,16 @@ Class pdf_expedition_merou extends ModelePdfExpedition
 
 	}
 
-	//********************************
-	// Generation du tableau
-	//********************************
+	/**
+	 *   Show table for lines
+	 *
+	 *   @param		PDF			&$pdf     		Object PDF
+	 *   @param		string		$tab_top		Top position of table
+	 *   @param		string		$tab_height		Height of table (rectangle)
+	 *   @param		int			$nexY			Y
+	 *   @param		Translate	$outputlangs	Langs object
+	 *   @return	void
+	 */
 	function _tableau(&$pdf, $tab_top, $tab_height, $nexY, $outputlangs)
 	{
 		global $langs;
@@ -300,11 +307,12 @@ Class pdf_expedition_merou extends ModelePdfExpedition
 	}
 
 	/**
-	 *   	Show footer of page
-	 *
-	 *   	@param      pdf     		PDF factory
-	 * 		@param		object			Object invoice
-	 *      @param      outputlangs		Object lang for output
+	 *   	Show footer of page. Need this->emetteur object
+     *
+	 *   	@param	PDF			&$pdf     			PDF
+	 * 		@param	Object		$object				Object to show
+	 *      @param	Translate	$outputlangs		Object lang for output
+	 *      @return	void
 	 */
 	function _pagefoot(&$pdf, $object, $outputlangs)
 	{
@@ -327,14 +335,15 @@ Class pdf_expedition_merou extends ModelePdfExpedition
 
 
 	/**
-	 *   	Show header of page
+	 *  Show top header of page.
 	 *
-	 *      @param      pdf             Object PDF
-	 *      @param      object          Object invoice
-	 *      @param      showaddress     0=no, 1=yes
-	 *      @param      outputlang		Object lang for output
+	 *  @param	PDF			&$pdf     		Object PDF
+	 *  @param  Object		$object     	Object to show
+	 *  @param  int	    	$showaddress    0=no, 1=yes
+	 *  @param  Translate	$outputlangs	Object lang for output
+	 *  @return	void
 	 */
-	function _pagehead(&$pdf, $object, $showaddress=1, $outputlangs)
+	function _pagehead(&$pdf, $object, $showaddress, $outputlangs)
 	{
 		global $conf, $langs;
 
@@ -433,8 +442,9 @@ Class pdf_expedition_merou extends ModelePdfExpedition
 		$blSocX2=$blSocW+$blSocX;
 
 		// Sender name
-		$pdf->SetTextColor(0,0,60);
-		$pdf->SetXY($blSocX,$blSocY);
+		$pdf->SetTextColor(0,0,0);
+		$pdf->SetFont('','B', $default_font_size - 3);
+		$pdf->SetXY($blSocX,$blSocY+1);
 		$pdf->MultiCell(80, 3, $outputlangs->convToOutputCharset($this->emetteur->name), 0, 'L');
 		$pdf->SetTextColor(0,0,0);
 
@@ -442,7 +452,7 @@ Class pdf_expedition_merou extends ModelePdfExpedition
 		$carac_emetteur = pdf_build_address($outputlangs,$this->emetteur);
 
 		$pdf->SetFont('','', $default_font_size - 3);
-		$pdf->SetXY($blSocX,$blSocY+3);
+		$pdf->SetXY($blSocX,$blSocY+4);
 		$pdf->MultiCell(80, 2, $carac_emetteur, 0, 'L');
 
 
@@ -495,12 +505,11 @@ Class pdf_expedition_merou extends ModelePdfExpedition
 		/**********************************/
 		//Emplacement Informations Expediteur (My Company)
 		/**********************************/
+		$Yoff = $blSocY;
 		$blExpX=$Xoff-20;
 		$blW=52;
-		$Yoff = $Yoff+5;
 		$Ydef = $Yoff;
-		$blSocY = 1;
-		$pdf->Rect($blExpX, $Yoff, $blW, 20);
+		$pdf->Rect($blExpX, $Yoff, $blW, 26);
 
 		$object->fetch_thirdparty();
 
@@ -533,7 +542,7 @@ Class pdf_expedition_merou extends ModelePdfExpedition
 		$blW=50;
 		$Yoff = $Ydef +1;
 
-		$pdf->Rect($blDestX, $Yoff-1, $blW, 20);
+		$pdf->Rect($blDestX, $Yoff-1, $blW, 26);
 
 		//Titre
 		$pdf->SetFont('','B', $default_font_size - 3);

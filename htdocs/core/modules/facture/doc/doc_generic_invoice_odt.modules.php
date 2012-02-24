@@ -1,5 +1,5 @@
 <?php
-/* Copyright (C) 2010-2011 Laurent Destailleur <ely@users.sourceforge.net>
+/* Copyright (C) 2010-2012 Laurent Destailleur <ely@users.sourceforge.net>
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@
  *	\file       htdocs/core/modules/facture/doc/doc_generic_invoice_odt.modules.php
  *	\ingroup    societe
  *	\brief      File of class to build ODT documents for third parties
- *	\author	    Laurent Destailleur
  */
 
 require_once(DOL_DOCUMENT_ROOT."/core/modules/facture/modules_facture.php");
@@ -28,11 +27,11 @@ require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/doc.lib.php");
 
 
 /**
- *	\class      doc_generic_invoice_odt
- *	\brief      Class to build documents using ODF templates generator
+ *	Class to build documents using ODF templates generator
  */
 class doc_generic_invoice_odt extends ModelePDFFactures
 {
@@ -45,7 +44,7 @@ class doc_generic_invoice_odt extends ModelePDFFactures
 	/**
 	 *	Constructor
 	 *
-	 *  @param		DoliDB		$DB      Database handler
+	 *  @param		DoliDB		$db      Database handler
 	 */
 	function doc_generic_invoice_odt($db)
 	{
@@ -115,7 +114,7 @@ class doc_generic_invoice_odt extends ModelePDFFactures
         	'object_date_creation'=>dol_print_date($object->date_creation,'day'),
             'object_date_modification'=>dol_print_date($object->date_modification,'day'),
             'object_date_validation'=>dol_print_date($object->date_validation,'dayhour'),
-            'object_payment_mode'=>$object->mode_reglement,
+            'object_payment_mode'=>($object->mode_reglement!='-'?$object->mode_reglement:''),
             'object_payment_term'=>$object->cond_reglement,
         	'object_total_ht'=>price($object->total_ht,0,$outputlangs),
             'object_total_vat'=>price($object->total_tva,0,$outputlangs),
@@ -140,9 +139,10 @@ class doc_generic_invoice_odt extends ModelePDFFactures
         global $conf;
 
         return array(
-            'line_fulldesc'=>$line->product_ref.(($line->product_ref && $line->desc)?' - ':'').$line->desc,
+            'line_fulldesc'=>doc_getlinedesc($line),
             'line_product_ref'=>$line->product_ref,
-            'line_desc'=>$line->desc,
+            'line_product_label'=>$line->product_label,
+        	'line_desc'=>$line->desc,
             'line_vatrate'=>vatrate($line->tva_tx,true,$line->info_bits),
             'line_up'=>price($line->subprice, 0, $outputlangs),
             'line_qty'=>$line->qty,
@@ -155,9 +155,11 @@ class doc_generic_invoice_odt extends ModelePDFFactures
         );
     }
 
-	/**		Return description of a module
-     *      @param      langs        Lang object to use for output
-	 *      @return     string       Description
+	/**
+	 * Return description of a module
+	 *
+     * @param      langs        Lang object to use for output
+	 * @return     string       Description
 	 */
 	function info($langs)
 	{
@@ -281,7 +283,7 @@ class doc_generic_invoice_odt extends ModelePDFFactures
 
 			if (! file_exists($dir))
 			{
-				if (create_exdir($dir) < 0)
+				if (dol_mkdir($dir) < 0)
 				{
 					$this->error=$langs->transnoentities("ErrorCanNotCreateDir",$dir);
 					return -1;
@@ -303,7 +305,7 @@ class doc_generic_invoice_odt extends ModelePDFFactures
 				//print "file=".$file;
 				//print "conf->societe->dir_temp=".$conf->societe->dir_temp;
 
-				create_exdir($conf->facture->dir_temp);
+				dol_mkdir($conf->facture->dir_temp);
 
 
                 // If BILLING contact defined on invoice, we use it

@@ -27,8 +27,8 @@
 
 /**
  * Show filter form in agenda view
- * 
- * @param	string	$form			Form name
+ *
+ * @param	Object	$form			Form object
  * @param	int		$canedit		Can edit filter fields
  * @param	int		$status			Status
  * @param 	int		$year			Year
@@ -40,8 +40,10 @@
  * @param 	string	$filterd		Filter of done by user
  * @param 	int		$pid			Product id
  * @param 	int		$socid			Third party id
+ * @param	array	$showextcals	Array with list of external calendars, or -1 to show no legend
+ * @return	void
  */
-function print_actions_filter($form,$canedit,$status,$year,$month,$day,$showbirthday,$filtera,$filtert,$filterd,$pid,$socid)
+function print_actions_filter($form,$canedit,$status,$year,$month,$day,$showbirthday,$filtera,$filtert,$filterd,$pid,$socid,$showextcals=array())
 {
 	global $conf,$langs,$db;
 
@@ -85,14 +87,14 @@ function print_actions_filter($form,$canedit,$status,$year,$month,$day,$showbirt
 				print ' &nbsp;</td><td nowrap="nowrap">';
 				print $form->select_dolusers($filterd,'userdone',1,'',!$canedit);
 				print '</td></tr>';
-				
+
 				include_once(DOL_DOCUMENT_ROOT.'/core/class/html.formactions.class.php');
-				$htmlactions=new FormActions($db);
+				$formactions=new FormActions($db);
 				print '<tr>';
 				print '<td nowrap="nowrap">';
 				print $langs->trans("Type");
 				print ' &nbsp;</td><td nowrap="nowrap">';
-				print $htmlactions->select_type_actions(GETPOST('actioncode'), "actioncode");
+				print $formactions->select_type_actions(GETPOST('actioncode'), "actioncode");
 				print '</td></tr>';
 			}
 
@@ -102,7 +104,7 @@ function print_actions_filter($form,$canedit,$status,$year,$month,$day,$showbirt
 				print '<td nowrap="nowrap">';
 				print $langs->trans("Project").' &nbsp; ';
 				print '</td><td nowrap="nowrap">';
-				select_projects($socid?$socid:-1,$pid,'projectid');
+				select_projects($socid?$socid:-1, $pid, 'projectid', 64);
 				print '</td></tr>';
 			}
 
@@ -119,6 +121,41 @@ function print_actions_filter($form,$canedit,$status,$year,$month,$day,$showbirt
 			print '<br>';
 			print img_picto($langs->trans("ViewList"),'object_list').' <input type="submit" class="button" style="width:120px" name="viewlist" value="'.$langs->trans("ViewList").'">';
 			print '</td>';
+
+			// Legend
+			if ($conf->use_javascript_ajax && is_array($showextcals))
+			{
+    			print '<td align="center" valign="middle" nowrap="nowrap">';
+                print '<script type="text/javascript">'."\n";
+                print 'jQuery(document).ready(function () {'."\n";
+                print 'jQuery("#check_mytasks").click(function() { jQuery(".family_mytasks").toggle(); jQuery(".family_other").toggle(); });'."\n";
+                print 'jQuery("#check_birthday").click(function() { jQuery(".family_birthday").toggle(); });'."\n";
+                print 'jQuery(".family_birthday").toggle();'."\n";
+                print '});'."\n";
+                print '</script>'."\n";
+                print '<table>';
+                if (! empty($conf->global->MAIN_JS_SWITCH_AGENDA))
+                {
+                    if (count($showextcals) > 0)
+                    {
+                        print '<tr><td><input type="checkbox" id="check_mytasks" name="check_mytasks" checked="true" disabled="disabled"> '.$langs->trans("LocalAgenda").'</td></tr>';
+                        foreach($showextcals as $val)
+                        {
+                            $htmlname=dol_string_nospecial($val['name']);
+                            print '<script type="text/javascript">'."\n";
+                            print 'jQuery(document).ready(function () {'."\n";
+                            print 'jQuery("#check_'.$htmlname.'").click(function() { jQuery(".family_'.$htmlname.'").toggle(); });'."\n";
+                            print '});'."\n";
+                            print '</script>'."\n";
+                            print '<tr><td><input type="checkbox" id="check_'.$htmlname.'" name="check_'.$htmlname.'" checked="true"> '.$val['name'].'</td></tr>';
+                        }
+                    }
+                }
+                print '<tr><td><input type="checkbox" id="check_birthday" name="check_birthday checked="false"> '.$langs->trans("AgendaShowBirthdayEvents").'</td></tr>';
+                print '</table>';
+                print '</td>';
+			}
+
 			print '</tr>';
 		}
 		print '</table>';
@@ -128,9 +165,10 @@ function print_actions_filter($form,$canedit,$status,$year,$month,$day,$showbirt
 
 
 /**
- *  \brief     	Show actions to do array
- *  \param		max		Max nb of records
- *  \param      fk_task     Action lié à cette tache
+ *  Show actions to do array
+ *
+ *  @param	int		$max		Max nb of records
+ *  @return	void
  */
 function show_array_actions_to_do($max=5, $fk_task=0)
 {
@@ -227,11 +265,12 @@ function show_array_actions_to_do($max=5, $fk_task=0)
 
 
 /**
-   \brief      	Show last actions array
-   \param		max		Max nb of records
-   \param       fk_task             Taches liés à cette tache
-*/
-function show_array_last_actions_done($max=5, $fk_task=0)
+ *  Show last actions array
+ *
+ *  @param	int		$max		Max nb of records
+ *  @return	void
+ */
+function show_array_last_actions_done($max=5)
 {
 	global $langs, $conf, $user, $db, $bc, $socid;
 
@@ -314,8 +353,9 @@ function show_array_last_actions_done($max=5, $fk_task=0)
 
 
 /**
- *  Define head array for tabs of agenda setup pages
- *  @return		Array of head
+ * Prepare array with list of tabs
+ *
+ * @return  array				Array of tabs to shoc
  */
 function agenda_prepare_head()
 {
@@ -329,7 +369,7 @@ function agenda_prepare_head()
 	$h++;
 
 	$head[$h][0] = DOL_URL_ROOT."/admin/agenda_xcal.php";
-	$head[$h][1] = $langs->trans("Export");
+	$head[$h][1] = $langs->trans("ExportCal");
 	$head[$h][2] = 'xcal';
 	$h++;
 
@@ -343,31 +383,32 @@ function agenda_prepare_head()
 }
 
 /**
- *  Define head array for tabs of agenda setup pages
- *  @param      action              Object action
- *  @return		Array of head
+ * Prepare array with list of tabs
+ *
+ * @param   Object	$object		Object related to tabs
+ * @return  array				Array of tabs to shoc
  */
-function actions_prepare_head($action)
+function actions_prepare_head($object)
 {
 	global $langs, $conf, $user;
 
 	$h = 0;
 	$head = array();
 
-	$head[$h][0] = DOL_URL_ROOT.'/comm/action/fiche.php?id='.$action->id;
+	$head[$h][0] = DOL_URL_ROOT.'/comm/action/fiche.php?id='.$object->id;
 	$head[$h][1] = $langs->trans("CardAction");
 	$head[$h][2] = 'card';
 	$h++;
 
         if($conf->ecm->enabled)
         {
-	$head[$h][0] = DOL_URL_ROOT.'/comm/action/document.php?id='.$action->id;
+	$head[$h][0] = DOL_URL_ROOT.'/comm/action/document.php?id='.$object->id;
 	$head[$h][1] = $langs->trans('Documents');
 	$head[$h][2] = 'documents';
 	$h++;
         }
 
-	$head[$h][0] = DOL_URL_ROOT.'/comm/action/info.php?id='.$action->id;
+	$head[$h][0] = DOL_URL_ROOT.'/comm/action/info.php?id='.$object->id;
 	$head[$h][1] = $langs->trans('Info');
 	$head[$h][2] = 'info';
 	$h++;
@@ -378,8 +419,9 @@ function actions_prepare_head($action)
 
 /**
  *  Define head array for tabs of agenda setup pages
- * 
- *  @return     Array of head
+ *
+ *  @param	string	$param		Parameters to add to url
+ *  @return array			    Array of head
  */
 function calendars_prepare_head($param)
 {
@@ -394,7 +436,7 @@ function calendars_prepare_head($param)
     $h++;
 
 	$object=(object) array();
-	
+
     // Show more tabs from modules
     // Entries must be declared in modules descriptor with line
     // $this->tabs = array('entity:+tabname:Title:@mymodule:/mymodule/mypage.php?id=__ID__');   to add new tab

@@ -182,7 +182,7 @@ class modFacture extends DolibarrModules
 		$this->export_sql_end[$r]  =' FROM ('.MAIN_DB_PREFIX.'societe as s, '.MAIN_DB_PREFIX.'facture as f, '.MAIN_DB_PREFIX.'facturedet as fd)';
 		$this->export_sql_end[$r] .=' LEFT JOIN '.MAIN_DB_PREFIX.'product as p on (fd.fk_product = p.rowid)';
 		$this->export_sql_end[$r] .=' WHERE f.fk_soc = s.rowid AND f.rowid = fd.fk_facture';
-		$this->export_sql_end[$r] .=' AND s.entity = '.$conf->entity;
+		$this->export_sql_end[$r] .=' AND f.entity = '.$conf->entity;
 		$r++;
 
 		$this->export_code[$r]=$this->rights_class.'_'.$r;
@@ -212,19 +212,26 @@ class modFacture extends DolibarrModules
 	 */
 	function init($options='')
 	{
-		global $conf;
+		global $conf,$langs;
 
 		// Remove permissions and default values
 		$this->remove($options);
 
 		require_once(DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php');
 		$dirodt=DOL_DATA_ROOT.'/doctemplates/invoices';
-		create_exdir($dirodt);
-		dol_copy(DOL_DOCUMENT_ROOT.'/install/doctemplates/invoices/template_invoice.odt',$dirodt.'/template_invoice.odt',0,0);
+		dol_mkdir($dirodt);
+		$src=DOL_DOCUMENT_ROOT.'/install/doctemplates/invoices/template_invoice.odt'; $dest=$dirodt.'/template_invoice.odt';
+		$result=dol_copy($src,$dest,0,0);
+		if ($result < 0)
+		{
+		    $langs->load("errors");
+		    $this->error=$langs->trans('ErrorFailToCopyFile',$src,$dest);
+		    return 0;
+		}
 
 		$sql = array(
 			 "DELETE FROM ".MAIN_DB_PREFIX."document_model WHERE nom = '".$this->const[0][2]."' AND entity = ".$conf->entity,
-			 "INSERT INTO ".MAIN_DB_PREFIX."document_model (nom, type, entity) VALUES('".$this->const[0][2]."','invoice',".$conf->entity.")",
+			 "INSERT INTO ".MAIN_DB_PREFIX."document_model (nom, type, entity) VALUES('".$this->const[0][2]."','invoice',".$conf->entity.")"
 		);
 
 		return $this->_init($sql,$options);

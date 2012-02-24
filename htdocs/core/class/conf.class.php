@@ -28,8 +28,7 @@
 
 
 /**
- *  \class      Conf
- *  \brief      Class to stock current configuration
+ *  Class to stock current configuration
  */
 class Conf
 {
@@ -43,7 +42,6 @@ class Conf
 
 	//! To store if javascript/ajax is enabked
 	public $use_javascript_ajax;
-
 	//! Used to store current currency
 	public $currency;
 	//! Used to store current css (from theme)
@@ -53,21 +51,27 @@ class Conf
 	public $top_menu;
 	public $smart_menu;
 
+	public $modules					= array();	// List of activated modules
+
+	public $css_modules				= array();
+	public $tabs_modules			= array();
+	public $triggers_modules		= array();
+	public $menus_modules			= array();
+	public $hooks_modules			= array();
+	public $login_modules			= array();
+	public $sms_engine_modules		= array();
+	public $barcode_modules			= array();
+	public $substitutions_modules	= array();
+
+	var $logbuffer					= array();
+
 	//! To store properties of multi-company
 	public $multicompany;
 	//! Used to store running instance for multi-company (default 1)
-	public $entity=1;
+	public $entity					= 1;
 	//! Used to store list of entities to use for each element
-	public $entities		 	 = array();
-	
-	public $modules				 = array();	// List of modules	
-	public $css_modules			 = array();
-	public $tabs_modules		 = array();
-	public $triggers_modules	 = array('/core/triggers');
-	public $hooks_modules		 = array();
-	public $login_method_modules = array();
-	
-	var $logbuffer = array();
+	public $entities				= array();
+
 
 
 	/**
@@ -124,9 +128,10 @@ class Conf
 
 		$resql = $db->query($sql);
 		if ($resql)
-		{	
+		{
 			$i = 0;
 			$numr = $db->num_rows($resql);
+                        $this->varname=array();
 			while ($i < $numr)
 			{
 				$objp = $db->fetch_object($resql);
@@ -140,29 +145,20 @@ class Conf
 					if ($value && preg_match('/^MAIN_MODULE_/',$key))
 					{
 						// If this is constant for a css file activated by a module
-						if (preg_match('/^MAIN_MODULE_([A-Z_]+)_CSS$/i',$key))
+						// TODO obsolete (see generic parts)
+						if (preg_match('/^MAIN_MODULE_([A-Z_]+)_CSS$/i',$key,$reg))
 						{
-							$this->css_modules[]=$value;
+							$modulename = strtolower($reg[1]);
+							$this->css_modules[$modulename]=$value;
 						}
-						// If this is constant for a new tab page activated by a module
+						// If this is constant for a new tab page activated by a module.
 						elseif (preg_match('/^MAIN_MODULE_([A-Z_]+)_TABS_/i',$key))
 						{
 							$params=explode(':',$value,2);
 							$this->tabs_modules[$params[0]][]=$value;
 						}
-						// If this is constant for triggers activated by a module
-						elseif (preg_match('/^MAIN_MODULE_([A-Z_]+)_TRIGGERS$/i',$key,$reg))
-						{
-							$modulename = strtolower($reg[1]);
-							$this->triggers_modules[] = '/'.$modulename.'/core/triggers/';
-						}
-						// If this is constant for login method activated by a module
-						elseif (preg_match('/^MAIN_MODULE_([A-Z_]+)_LOGIN_METHOD$/i',$key,$reg))
-						{
-							$modulename = strtolower($reg[1]);
-							$this->login_method_modules[] = dol_buildpath('/'.$modulename.'/core/login/');
-						}
-						// If this is constant for hook activated by a module. Value is list of hooked tabs separated with :
+						// If this is constant for hook activated by a module. Value is list of hooked tabs separated with ':'
+						// TODO obsolete (see generic parts)
 						elseif (preg_match('/^MAIN_MODULE_([A-Z_]+)_HOOKS$/i',$key,$reg))
 						{
 							$modulename = strtolower($reg[1]);
@@ -172,33 +168,77 @@ class Conf
 								$this->hooks_modules[$modulename][]=$value;
 							}
 						}
-					    // If this is constant for a sms engine
-                        elseif (preg_match('/^MAIN_MODULE_([A-Z_]+)_SMS$/i',$key,$reg))
-                        {
-                            $module=strtolower($reg[1]);
-                            // Add this module in list of modules that provide SMS
-                            $this->sms_engine[$module]=$module;
-                        }
-						// If this is a module constant
+						// If this is constant for a sms engine
+						elseif (preg_match('/^MAIN_MODULE_([A-Z_]+)_SMS$/i',$key,$reg))
+						{
+						    $module=strtolower($reg[1]);
+						    $this->sms_engine_modules[$module]=$module;    // Add this module in list of modules that provide SMS
+						}
+						// If this is constant for triggers activated by a module
+						// TODO obsolete (see generic parts)
+						elseif (preg_match('/^MAIN_MODULE_([A-Z_]+)_BARCODE$/i',$key,$reg))
+						{
+						    $modulename = strtolower($reg[1]);
+						    $this->barcode_modules[$modulename] = '/'.$modulename.'/core/modules/barcode/';
+						}
+						// If this is constant for all generic part activated by a module
+						elseif (preg_match('/^MAIN_MODULE_([A-Z_]+)_([A-Z]+)$/i',$key,$reg))
+						{
+							$modulename = strtolower($reg[1]);
+							$partname = strtolower($reg[2]);
+							$varname = $partname.'_modules';
+							$arrValue = unserialize($value);
+							if (is_array($arrValue) && ! empty($arrValue)) $value = $arrValue;
+							else $value = ($value === 1 ? '/'.$modulename.'/core/'.$partname.'/' : '/'.$modulename.'/'.$value);
+							$this->varname = array_merge($this->varname, array($modulename => $value));
+						}
+
+                        // TODO All of this part could be mutualized into one generic part
+                        /*
+						// If this is constant for login method activated by a module
+						elseif (preg_match('/^MAIN_MODULE_([A-Z_]+)_LOGIN$/i',$key,$reg))
+						{
+							$modulename = strtolower($reg[1]);
+							$this->login_modules[$modulename] = '/'.$modulename.'/core/login/';
+						}
+						// If this is constant for a new tab page activated by a module
+						elseif (preg_match('/^MAIN_MODULE_([A-Z_]+)_MENUS$/i',$key,$reg))
+						{
+							$modulename = strtolower($reg[1]);
+							$this->menus_modules[$modulename] = '/'.$modulename.'/core/menus/';
+						}
+						// If this is constant for triggers activated by a module
+						elseif (preg_match('/^MAIN_MODULE_([A-Z_]+)_TRIGGERS$/i',$key,$reg))
+						{
+							$modulename = strtolower($reg[1]);
+							$this->triggers_modules[$modulename] = '/'.$modulename.'/core/triggers/';
+						}
+						// If this is constant for triggers activated by a module
+						elseif (preg_match('/^MAIN_MODULE_([A-Z_]+)_SUBSTITUTIONS$/i',$key,$reg))
+						{
+						    $modulename = strtolower($reg[1]);
+						    $this->substitutions_modules[$modulename] = '/'.$modulename.'/core/substitutions/';
+						}
+						*/
+
+                        // If this is a module constant (must be at end)
 						elseif (preg_match('/^MAIN_MODULE_([A-Z_]+)$/i',$key,$reg))
 						{
 							$module=strtolower($reg[1]);
-							//print "Module ".$module." is enabled<br>\n";
 							$this->$module=(object) array();
 							$this->$module->enabled=true;
-							// Add this module in list of enabled modules
-							$this->modules[]=$module;
+							$this->modules[]=$module;              // Add this module in list of enabled modules
 						}
 					}
 				}
 				$i++;
 			}
-			
+
 			// Object $mc
 			if (! defined('NOREQUIREMC') && ! empty($this->multicompany->enabled))
 			{
 				global $mc;
-				
+
 				$ret = @dol_include_once('/multicompany/class/actions_multicompany.class.php');
 				if ($ret)
 				{
@@ -206,8 +246,8 @@ class Conf
 					$mc->setValues($this);
 				}
 			}
+		    $db->free($resql);
 		}
-		$db->free($resql);
 		//var_dump($this->modules);
 
 		// Clean some variables
@@ -232,8 +272,14 @@ class Conf
 		$rootfordata = DOL_DATA_ROOT;
 		$rootforuser = DOL_DATA_ROOT;
 		// If multicompany module is enabled, we redefine the root of data
-		if (! empty($this->global->MAIN_MODULE_MULTICOMPANY) && ! empty($this->entity) && $this->entity > 1) $rootfordata.='/'.$this->entity;
-                
+		if (! empty($this->global->MAIN_MODULE_MULTICOMPANY) && ! empty($this->entity) && $this->entity > 1)
+		{
+			$rootfordata.='/'.$this->entity;
+			//var_dump($mc->sharings);
+			//var_dump($mc->referent);
+			//var_dump($mc->entities);
+		}
+
 		// For backward compatibility
 		// TODO Replace this->xxx->enabled by this->modulename->enabled to remove this code
 		if (isset($this->propale->enabled)) $this->propal->enabled=$this->propale->enabled;
@@ -286,8 +332,6 @@ class Conf
 		if (empty($this->global->SOCIETE_CODECLIENT_ADDON))       $this->global->SOCIETE_CODECLIENT_ADDON="mod_codeclient_leopard";
 		if (empty($this->global->SOCIETE_CODEFOURNISSEUR_ADDON))  $this->global->SOCIETE_CODEFOURNISSEUR_ADDON=$this->global->SOCIETE_CODECLIENT_ADDON;
 		if (empty($this->global->SOCIETE_CODECOMPTA_ADDON))       $this->global->SOCIETE_CODECOMPTA_ADDON="mod_codecompta_panicum";
-        if (empty($this->global->COMPANY_AQUARIUM_MASK_SUPPLIER)) $this->global->COMPANY_AQUARIUM_MASK_SUPPLIER='401';
-		if (empty($this->global->COMPANY_AQUARIUM_MASK_CUSTOMER)) $this->global->COMPANY_AQUARIUM_MASK_CUSTOMER='411';
 
         // Security
 		if (empty($this->global->USER_PASSWORD_GENERATED)) $this->global->USER_PASSWORD_GENERATED='standard'; // Default password generator
