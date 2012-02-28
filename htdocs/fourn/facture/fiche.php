@@ -440,12 +440,7 @@ if ($_GET['action'] == 'addline')
         dol_print_error($db,$facfou->error);
         exit;
     }
-
-    if ($facfou->socid)
-    {
-        $societe=new Societe($db);
-        $societe->fetch($facfou->socid);
-    }
+    $ret=$facfou->fetch_thirdparty();
 
     if ($_POST['idprodfournprice'])	// > 0 or -1
     {
@@ -459,10 +454,10 @@ if ($_GET['action'] == 'addline')
             // $label = '['.$product->ref.'] - '. $product->libelle;
             $label = $product->description;
 
-            $tvatx=get_default_tva($societe,$mysoc,$product->id);
+            $tvatx=get_default_tva($facfou->thirdparty,$mysoc,$product->id);
 
-            $localtax1tx= get_localtax($tvatx, 1, $societe);
-            $localtax2tx= get_localtax($tvatx, 2, $societe);
+            $localtax1tx= get_localtax($tvatx, 1, $mysoc);
+            $localtax2tx= get_localtax($tvatx, 2, $mysoc);
 
             $type = $product->type;
 
@@ -478,8 +473,8 @@ if ($_GET['action'] == 'addline')
     else
     {
         $tauxtva = price2num($_POST['tauxtva']);
-        $localtax1tx= get_localtax($tauxtva, 1, $societe);
-        $localtax2tx= get_localtax($tauxtva, 2, $societe);
+        $localtax1tx= get_localtax($tauxtva, 1, $facfou->thirdparty);
+        $localtax2tx= get_localtax($tauxtva, 2, $facfou->thirdparty);
 
         if (! $_POST['label'])
         {
@@ -509,12 +504,16 @@ if ($_GET['action'] == 'addline')
     //print "xx".$tva_tx; exit;
     if ($result > 0)
     {
-        $outputlangs = $langs;
-        if (! empty($_REQUEST['lang_id']))
-        {
-            $outputlangs = new Translate("",$conf);
-            $outputlangs->setDefaultLang($_REQUEST['lang_id']);
-        }
+    	// Define output language
+    	$outputlangs = $langs;
+    	$newlang='';
+    	if ($conf->global->MAIN_MULTILANGS && empty($newlang) && GETPOST('lang_id','int')) $newlang=GETPOST('lang_id','int');
+    	if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$facfou->client->default_lang;
+    	if (! empty($newlang))
+    	{
+    		$outputlangs = new Translate("",$conf);
+    		$outputlangs->setDefaultLang($newlang);
+    	}
         //supplier_invoice_pdf_create($db, $fac->id, $fac->modelpdf, $outputlangs);
 
         unset($_POST['qty']);
@@ -1853,7 +1852,7 @@ else
                 $delallowed=$user->rights->fournisseur->facture->supprimer;
 
                 print '<br>';
-                $somethingshown=$formfile->show_documents('facture_fournisseur',$subdir,$filedir,$urlsource,$genallowed,$delallowed,$fac->modelpdf);
+                $somethingshown=$formfile->show_documents('facture_fournisseur',$subdir,$filedir,$urlsource,$genallowed,$delallowed,$fac->modelpdf,1,0,0,0,0,'','','',$societe->default_lang);
 
                 $object=$fac;
 
