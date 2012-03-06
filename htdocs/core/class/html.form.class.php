@@ -49,6 +49,7 @@ class Form
     var $cache_availability=array();
     var $cache_demand_reason=array();
     var $cache_type_fees=array();
+    var $cache_currencies=array();
 
     var $tva_taux_value;
     var $tva_taux_libelle;
@@ -80,8 +81,9 @@ class Form
         global $conf,$langs;
 
         $ret='';
-
-        if (! empty($conf->global->MAIN_USE_JQUERY_JEDITABLE))
+        
+        // TODO change for compatibility
+        if (! empty($conf->global->MAIN_USE_JQUERY_JEDITABLE) && ! preg_match('/^select;/',$typeofdata))
         {
             if ($perm)
             {
@@ -128,7 +130,8 @@ class Form
         $ret='';
 
         // When option to edit inline is activated
-        if (! empty($conf->global->MAIN_USE_JQUERY_JEDITABLE))
+        // TODO change for compatibility
+        if (! empty($conf->global->MAIN_USE_JQUERY_JEDITABLE) && ! preg_match('/^select;/',$typeofdata))
         {
             $ret.=$this->editInPlace($object, $value, $htmlname, $perm, $typeofdata, $editvalue, $extObject, $success);
         }
@@ -156,6 +159,16 @@ class Form
                 {
                     $ret.=$this->form_date($_SERVER['PHP_SELF'].'?id='.$object->id,$value,$htmlname);
                 }
+                else if (preg_match('/^select;/',$typeofdata))
+                {
+                     $arraydata=explode(',',preg_replace('/^select;/','',$typeofdata));
+                     foreach($arraydata as $val)
+                     {
+                         $tmp=explode(':',$val);
+                         $arraylist[$tmp[0]]=$tmp[1];
+                     }
+                     $ret.=$this->selectarray($htmlname,$arraylist,$value);
+                }
                 else if (preg_match('/^ckeditor/',$typeofdata))
                 {
                     $tmp=explode(':',$typeofdata);
@@ -173,6 +186,16 @@ class Form
                 if ($typeofdata == 'email')   $ret.=dol_print_email($value,0,0,0,0,1);
                 elseif ($typeofdata == 'day' || $typeofdata == 'datepicker') $ret.=dol_print_date($value,'day');
                 elseif ($typeofdata == 'text' || $typeofdata == 'textarea')  $ret.=dol_htmlentitiesbr($value);
+                else if (preg_match('/^select;/',$typeofdata))
+                {
+                    $arraydata=explode(',',preg_replace('/^select;/','',$typeofdata));
+                    foreach($arraydata as $val)
+                    {
+                        $tmp=explode(':',$val);
+                        $arraylist[$tmp[0]]=$tmp[1];
+                    }
+                    $ret.=$arraylist[$value];
+                }
                 else if (preg_match('/^ckeditor/',$typeofdata))
                 {
                     $tmpcontent=dol_htmlentitiesbr($value);
@@ -196,7 +219,7 @@ class Form
      * @param	string	$inputType		Type of input ('numeric', 'datepicker', 'textarea', 'ckeditor:dolibarr_zzz', 'select:xxx')
      * @param	string	$editvalue		When in edit mode, use this value as $value instead of value
      * @param	object	$extObject		External object
-     * @param	string	$success		Success message		
+     * @param	string	$success		Success message
      * @return	string   		      	HTML edit in place
      */
     private function editInPlace($object, $value, $htmlname, $condition, $inputType='textarea', $editvalue=null, $extObject=null, $success=null)
@@ -284,7 +307,7 @@ class Form
             if (! empty($success)) $out.= '<input id="success_'.$htmlname.'" value="'.$success.'" type="hidden"/>'."\n";
             //$out.= '<input id="ext_table_element_'.$htmlname.'" value="'.$ext_table_element.'" type="hidden"/>'."\n";
             //$out.= '<input id="ext_fk_element_'.$htmlname.'" value="'.$ext_fk_element.'" type="hidden"/>'."\n";
-            
+
             $out.= '<div id="viewval_'.$htmlname.'" class="viewval_'.$inputType.($button_only ? ' inactive' : ' active').'">'.$value.'</div>'."\n";
             $out.= '<div id="editval_'.$htmlname.'" class="editval_'.$inputType.($button_only ? ' inactive' : ' active').' hideobject">'.(! empty($editvalue) ? $editvalue : $value).'</div>'."\n";
         }
@@ -2691,6 +2714,52 @@ class Form
     {
         print $this->selectcurrency($selected,$htmlname);
     }
+    
+    /**
+     *      Charge dans cache la liste des devises
+     *
+     *      @return     int             Nb lignes chargees, 0 si deja chargees, <0 si ko
+     */
+    function load_cache_currencies()
+    {
+    	global $langs;
+    	
+    	$langs->load("dict");
+    
+    	if (count($this->cache_currencies)) return 0;    // Cache deja charge
+    
+    	$sql = "SELECT code, code_iso, label";
+        $sql.= " FROM ".MAIN_DB_PREFIX."c_currencies";
+        $sql.= " WHERE active = 1";
+        $sql.= " ORDER BY code_iso ASC";
+        
+    	dol_syslog('Form::load_cache_currencies sql='.$sql, LOG_DEBUG);
+    	$resql = $this->db->query($sql);
+    	if ($resql)
+    	{
+    		$num = $this->db->num_rows($resql);
+    		$i = 0;
+    		while ($i < $num)
+    		{
+    			$obj = $this->db->fetch_object($resql);
+    
+    			// Si traduction existe, on l'utilise, sinon on prend le libelle par defaut
+    			$this->cache_currencies[$obj->code]['code_iso'] = $obj->code_iso;
+    			$this->cache_currencies[$obj->code]['label'] = ($obj->code_iso && $langs->trans("Currency".$obj->code_iso)!="Currency".$obj->code_iso?$langs->trans("Currency".$obj->code_iso):($obj->label!='-'?$obj->label:''));
+    			$label[$obj->code] = $this->cache_currencies[$obj->code]['label'];
+    			$i++;
+    		}
+    		
+    		array_multisort($label, SORT_ASC, $this->cache_currencies);
+    		
+    		return $num;
+    	}
+    	else
+    	{
+    		dol_print_error($this->db);
+    		return -1;
+    	}
+    }
 
     /**
      *    Retourne la liste des devises, dans la langue de l'utilisateur
@@ -2703,58 +2772,31 @@ class Form
         global $conf,$langs,$user;
 
         $langs->load("dict");
+        
+        $this->load_cache_currencies();
 
         $out='';
-        $currencyArray=array();
-        $label=array();
 
         if ($selected=='euro' || $selected=='euros') $selected='EUR';   // Pour compatibilite
 
-        $sql = "SELECT code_iso, label";
-        $sql.= " FROM ".MAIN_DB_PREFIX."c_currencies";
-        $sql.= " WHERE active = 1";
-        $sql.= " ORDER BY code_iso ASC";
-
-        $resql=$this->db->query($sql);
-        if ($resql)
+        $out.= '<select class="flat" name="'.$htmlname.'">';
+        foreach ($this->cache_currencies as $currency)
         {
-            $out.= '<select class="flat" name="'.$htmlname.'">';
-            $num = $this->db->num_rows($resql);
-            $i = 0;
-            if ($num)
-            {
-                $foundselected=false;
-
-                while ($i < $num) {
-                    $obj = $this->db->fetch_object($resql);
-                    $currencyArray[$i]['code_iso'] 	= $obj->code_iso;
-                    $currencyArray[$i]['label']		= ($obj->code_iso && $langs->trans("Currency".$obj->code_iso)!="Currency".$obj->code_iso?$langs->trans("Currency".$obj->code_iso):($obj->label!='-'?$obj->label:''));
-                    $label[$i] 	= $currencyArray[$i]['label'];
-                    $i++;
-                }
-
-                array_multisort($label, SORT_ASC, $currencyArray);
-
-                foreach ($currencyArray as $row) {
-                    if ($selected && $selected == $row['code_iso']) {
-                        $foundselected=true;
-                        $out.= '<option value="'.$row['code_iso'].'" selected="selected">';
-                    } else {
-                        $out.= '<option value="'.$row['code_iso'].'">';
-                    }
-                    $out.= $row['label'];
-                    if ($row['code_iso']) $out.= ' ('.$row['code_iso'] . ')';
-                    $out.= '</option>';
-                }
-            }
-            $out.= '</select>';
-            if ($user->admin) $out.= info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"),1);
-            return $out;
+        	if ($selected && $selected == $currency['code_iso'])
+        	{
+        		$out.= '<option value="'.$currency['code_iso'].'" selected="selected">';
+        	}
+        	else
+        	{
+        		$out.= '<option value="'.$currency['code_iso'].'">';
+        	}
+        	$out.= $currency['label'];
+        	if ($currency['code_iso']) $out.= ' ('.$currency['code_iso'].')';
+        	$out.= '</option>';
         }
-        else
-        {
-            dol_print_error($this->db);
-        }
+        $out.= '</select>';
+        if ($user->admin) $out.= info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"),1);
+        return $out;
     }
 
     /**

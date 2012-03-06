@@ -1277,12 +1277,12 @@ abstract class DolibarrModules
     				// Can defined other parameters
     				if (is_array($value['data']) && ! empty($value['data']))
     				{
-    					$newvalue = serialize($value['data']);
+    					$newvalue = dol_json_encode($value['data']);
     					if (isset($value['entity'])) $entity = $value['entity'];
     				}
     				else
     				{
-    					$newvalue = serialize($value);
+    					$newvalue = dol_json_encode($value);
     				}
     			}
 
@@ -1325,14 +1325,18 @@ abstract class DolibarrModules
     	global $conf;
 
     	$err=0;
+    	$entity=$conf->entity;
 
     	if (is_array($this->module_parts) && ! empty($this->module_parts))
     	{
     		foreach($this->module_parts as $key => $value)
     		{
+    			// If entity is defined
+    			if (is_array($value) && isset($value['entity'])) $entity = $value['entity'];
+    			
     			$sql = "DELETE FROM ".MAIN_DB_PREFIX."const";
     			$sql.= " WHERE ".$this->db->decrypt('name')." LIKE '".$this->const_name."_".strtoupper($key)."'";
-    			$sql.= " AND entity = ".$conf->entity;
+    			$sql.= " AND entity = ".$entity;
 
     			dol_syslog(get_class($this)."::delete_const_".$key." sql=".$sql);
     			if (! $this->db->query($sql))
