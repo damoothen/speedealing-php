@@ -657,7 +657,7 @@ class Contrat extends CommonObject
                         // Actions on extra fields (by external module or standard code)
                         include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
                         $hookmanager=new HookManager($this->db);
-                        $hookmanager->callHooks(array('contrat_extrafields'));
+                        $hookmanager->initHooks(array('contrat_extrafields'));
                         $parameters=array('id'=>$this->id);
                         $action='add';
                         $reshook=$hookmanager->executeHooks('insertExtraFields',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
@@ -740,7 +740,7 @@ class Contrat extends CommonObject
                         // Actions on extra fields (by external module or standard code)
                         include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
                         $hookmanager=new HookManager($this->db);
-                        $hookmanager->callHooks(array('contrat_extrafields'));
+                        $hookmanager->initHooks(array('contrat_extrafields'));
                         $parameters=array('id'=>$this->id);
                         $action='update';
                         $reshook=$hookmanager->executeHooks('insertExtraFields',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks

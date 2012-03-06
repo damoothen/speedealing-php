@@ -72,10 +72,20 @@ class UploadHandler
 
     	$this->_fk_element=$fk_element;
     	$this->_element=$element;
+        if ($element=='model_contract')
+        {   
+            $tmpdir=trim($conf->global->CONTRAT_ADDON_PDF_ODT_PATH);
+            if($conf->multicompany->enabled && $conf->entity > 1)
+                $upload_dir=preg_replace('/DOL_DATA_ROOT/',DOL_DATA_ROOT."/".$conf->entity,$tmpdir);
+            else
+                $upload_dir=preg_replace('/DOL_DATA_ROOT/',DOL_DATA_ROOT,$tmpdir);
+        }
+        else
+            $upload_dir=$conf->$element->dir_output . '/' . $fk_element ;
 
         $this->_options = array(
             'script_url' => $_SERVER['PHP_SELF'],
-            'upload_dir' => $conf->$element->dir_output . '/' . $fk_element . '/',
+            'upload_dir' => $upload_dir. '/',
             'upload_url' => DOL_URL_ROOT.'/document.php?modulepart='.$element.'&attachment=1&file=/'.$fk_element.'/',
             'param_name' => 'files',
             // The php.ini settings upload_max_filesize and post_max_size
@@ -96,7 +106,7 @@ class UploadHandler
                 ),
                 */
                 'thumbs' => array(
-                    'upload_dir' => $conf->$element->dir_output . '/' . $fk_element . '/thumbs/',
+                    'upload_dir' => $upload_dir . '/thumbs/',
                     'upload_url' => DOL_URL_ROOT.'/document.php?modulepart='.$element.'&attachment=1&file=/'.$fk_element.'/thumbs/'
                 )
             )
