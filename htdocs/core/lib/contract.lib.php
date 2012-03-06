@@ -120,7 +120,7 @@ function contract_admin_prepare_head($object)
             if (count($tmpfiles)) $listoffiles=array_merge($listoffiles,$tmpfiles);
         }
     }
-    if (count($listoffiles) && $conf->extrafields->enabled)
+    /*if (count($listoffiles) && $conf->extrafields->enabled)
     {
         foreach($listoffiles as $record)
         {
@@ -136,7 +136,7 @@ function contract_admin_prepare_head($object)
             $head[$h][1] = $langs->trans("ExtraFields");
             $head[$h][2] = 'attributes';
             $h++;
-    }
+    }*/
 
     complete_head_from_modules($conf,$langs,$object,$head,$h,'contrat_admin','remove');
 
