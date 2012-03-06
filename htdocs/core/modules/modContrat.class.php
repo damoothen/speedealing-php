@@ -3,7 +3,7 @@
  * Copyright (C) 2004-2008 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2010 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2011      Juanjo Menent	    <jmenent@2byte.es>
- * Copyright (C) 2010-2011 Herve Prot          <herve.prot@symeos.com>
+ * Copyright (C) 2010-2012 Herve Prot          <herve.prot@symeos.com>
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -134,28 +134,27 @@ class modContrat extends DolibarrModules
 		global $conf;
 
 		// Nettoyage avant activation
-		$this->remove();
-                
-                $sql = array(
-			 "DELETE FROM ".MAIN_DB_PREFIX."document_model WHERE nom = 'generic_contract_odt' AND entity = ".$conf->entity,
-			 "INSERT INTO ".MAIN_DB_PREFIX."document_model (nom, type, entity,libelle,description) VALUES('generic_contract_odt','contrat',".$conf->entity.",'ODT templates','CONTRAT_ADDON_PDF_ODT_PATH')",
-		);
+		$this->remove($options);
 
 		$sql = array();
 
 		return $this->_init($sql,$options);
 	}
 
-	/**
-	 *    \brief      Fonction appelee lors de la desactivation d'un module.
-	 *                Supprime de la base les constantes, boites et permissions du module.
-	 */
-	function remove()
-	{
+    /**
+	 *		Function called when module is disabled.
+	 *      Remove from database constants, boxes and permissions from Dolibarr database.
+	 *		Data directories are not deleted
+	 *
+     *      @param      string	$options    Options when enabling module ('', 'noboxes')
+	 *      @return     int             	1 if OK, 0 if KO
+     */
+    function remove($options='')
+    {
 		$sql = array();
 
-		return $this->_remove($sql);
+		return $this->_remove($sql,$options);
+    }
 
-	}
 }
 ?>

@@ -47,17 +47,22 @@ $langs->load('deliveries');
 $langs->load('products');
 $langs->load('stocks');
 
-$id 			= GETPOST("id");
+$id 			= GETPOST('id','int');
 $ref 			= GETPOST("ref");
 $action 		= GETPOST("action");
 $confirm		= GETPOST("confirm");
 $comclientid 	= GETPOST("comid");
-$socid			= GETPOST("socid");
+$socid			= GETPOST('socid','int');
 $projectid		= GETPOST("projectid");
 
 // Security check
 if ($user->societe_id) $socid=$user->societe_id;
 $result = restrictedArea($user, 'commande_fournisseur', $id,'');
+
+// Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
+include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
+$hookmanager=new HookManager($db);
+$hookmanager->initHooks(array('ordersuppliercard'));
 
 $mesg='';
 
@@ -157,8 +162,8 @@ if ($action == 'addline' && $user->rights->fournisseur->commande->creer)
                 $type = $productsupplier->type;
 
                 // Local Taxes
-                $localtax1_tx= get_localtax($tva_tx, 1, $object->thirdparty);
-                $localtax2_tx= get_localtax($tva_tx, 2, $object->thirdparty);
+                $localtax1_tx= get_localtax($tva_tx, 1, $mysoc);
+                $localtax2_tx= get_localtax($tva_tx, 2, $mysoc);
 
                 $result=$object->addline(
                     $desc,
@@ -217,14 +222,18 @@ if ($action == 'addline' && $user->rights->fournisseur->commande->creer)
         //print "xx".$tva_tx; exit;
         if ($result > 0)
         {
-            $outputlangs = $langs;
-            if (! empty($_REQUEST['lang_id']))
-            {
-                $outputlangs = new Translate("",$conf);
-                $outputlangs->setDefaultLang($_REQUEST['lang_id']);
-            }
             if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE))
             {
+            	// Define output language
+            	$outputlangs = $langs;
+                $newlang=GETPOST('lang_id','alpha');
+                if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$object->client->default_lang;
+            	if (! empty($newlang))
+            	{
+            		$outputlangs = new Translate("",$conf);
+            		$outputlangs->setDefaultLang($newlang);
+            	}
+
                 $ret=$object->fetch($id);    // Reload to get new records
                 supplier_order_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'));
             }
@@ -1317,6 +1326,12 @@ if ($id > 0 || ! empty($ref))
                 $form->select_produits_fournisseurs($object->fourn_id,'','idprodfournprice','',$filtre);
 
                 if (! $conf->global->PRODUIT_USE_SEARCH_TO_SELECT) print '<br>';
+
+				if (is_object($hookmanager))
+				{
+			        $parameters=array('filtre'=>$filtre);
+				    echo $hookmanager->executeHooks('formCreateProductSupplierOptions',$parameters,$object,$action);
+				}
 
                 // Editor wysiwyg
                 require_once(DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php");

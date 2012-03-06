@@ -1,6 +1,6 @@
 <?php
-/* Copyright (C) 2006-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
+/* Copyright (C) 2010-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2010-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2010-2011 Juanjo Menent        <jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -37,15 +37,18 @@ class HookManager
 
 	// Array with instantiated classes
 	var $hooks=array();
+	
+	// Array result
+	var $resArray=array();
 
 	/**
 	 * Constructor
 	 *
 	 * @param	DoliDB	$DB		Handler acces base de donnees
 	 */
-	function HookManager($DB)
+	function __construct($db)
 	{
-		$this->db = $DB;
+		$this->db = $db;
 	}
 
 
@@ -55,14 +58,14 @@ class HookManager
 	 *  First, a hook is declared by a module by adding a constant MAIN_MODULE_MYMODULENAME_HOOKS
 	 *  with value 'nameofcontext1:nameofcontext2:...' into $this->const of module descriptor file.
 	 *  This make conf->hooks_modules loaded with an entry ('modulename'=>array(nameofcontext1,nameofcontext2,...))
-	 *  When callHooks function is called, with callHooks(list_of_contexts), an array this->hooks is defined with instance of controler
+	 *  When initHooks function is called, with initHooks(list_of_contexts), an array this->hooks is defined with instance of controler
 	 *  class found into file /mymodule/class/actions_mymodule.class.php (if module has declared the context as a managed context).
 	 *  Then when a hook is executeHook('aMethod'...) is called, the method aMethod found into class will be executed.
 	 *
-	 *	@param	array	$arraytype	    Array list of searched hooks tab/features. For example: 'thirdpartycard' (for hook methods into page card thirdparty), 'thirdpartydao' (for hook methods into Societe), ...
-	 *	@return	int						Always 1
+	 *	@param	array	$arraycontext	    Array list of searched hooks tab/features. For example: 'thirdpartycard' (for hook methods into page card thirdparty), 'thirdpartydao' (for hook methods into Societe), ...
+	 *	@return	int							Always 1
 	 */
-	function callHooks($arraytype)
+	function initHooks($arraycontext)
 	{
 		global $conf;
 
@@ -70,24 +73,27 @@ class HookManager
         if (! is_array($conf->hooks_modules) || empty($conf->hooks_modules)) return;
 
         // For backward compatibility
-		if (! is_array($arraytype)) $arraytype=array($arraytype);
+		if (! is_array($arraycontext)) $arraycontext=array($arraycontext);
 
-		$this->contextarray=array_merge($arraytype,$this->contextarray);
+		$this->contextarray=array_merge($arraycontext,$this->contextarray);    // All contexts are concatenated
 
 		$i=0;
 		foreach($conf->hooks_modules as $module => $hooks)
 		{
 			if ($conf->$module->enabled)
 			{
-				foreach($arraytype as $type)
+				foreach($arraycontext as $context)
 				{
-					if (in_array($type,$hooks))    // We instantiate action class only if hook is required
+				    if (is_array($hooks)) $arrayhooks=$hooks;    // New system
+				    else $arrayhooks=explode(':',$hooks);        // Old system (for backward compatibility)
+
+					if (in_array($context,$arrayhooks))    // We instantiate action class only if hook is required
 					{
 						$path 		= '/'.$module.'/class/';
 						$actionfile = 'actions_'.$module.'.class.php';
 						$pathroot	= '';
 
-						$this->hooks[$i]['type']=$type;
+						$this->hooks[$i]['type']=$context;
 
 						// Include actions class overwriting hooks
 						$resaction=dol_include_once($path.$actionfile);
@@ -169,7 +175,9 @@ class HookManager
                     else if (method_exists($actioninstance,$method))
                     {
                         if (is_array($parameters) && $parameters['special_code'] > 3 && $parameters['special_code'] != $actioninstance->module_number) continue;
-                    	$resprint.=$actioninstance->$method($parameters, $object, $action, $this);
+                    	$result = $actioninstance->$method($parameters, $object, $action, $this);
+                    	if (is_array($result)) $this->resArray = array_merge($this->resArray, $result);
+                    	else $resprint.=$result;
                     }
                 }
             }

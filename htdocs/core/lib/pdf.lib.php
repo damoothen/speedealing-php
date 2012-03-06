@@ -223,25 +223,25 @@ function pdf_build_address($outputlangs,$sourcecompany,$targetcompany='',$target
 		if ($targetcompany->tva_intra) $stringaddress.="\n".$outputlangs->transnoentities("VATIntraShort").': '.$outputlangs->convToOutputCharset($targetcompany->tva_intra);
 
 		// Professionnal Ids
-		if ($conf->global->MAIN_PROFID1_IN_ADDRESS)
+		if (! empty($conf->global->MAIN_PROFID1_IN_ADDRESS) && ! empty($targetcompany->idprof1))
 		{
 			$tmp=$outputlangs->transcountrynoentities("ProfId1",$targetcompany->country_code);
 			if (preg_match('/\((.+)\)/',$tmp,$reg)) $tmp=$reg[1];
 			$stringaddress.="\n".$tmp.': '.$outputlangs->convToOutputCharset($targetcompany->idprof1);
 		}
-		if ($conf->global->MAIN_PROFID2_IN_ADDRESS)
+		if (! empty($conf->global->MAIN_PROFID2_IN_ADDRESS) && ! empty($targetcompany->idprof2))
 		{
 			$tmp=$outputlangs->transcountrynoentities("ProfId2",$targetcompany->country_code);
 			if (preg_match('/\((.+)\)/',$tmp,$reg)) $tmp=$reg[1];
 			$stringaddress.="\n".$tmp.': '.$outputlangs->convToOutputCharset($targetcompany->idprof2);
 		}
-		if ($conf->global->MAIN_PROFID3_IN_ADDRESS)
+		if (! empty($conf->global->MAIN_PROFID3_IN_ADDRESS) && ! empty($targetcompany->idprof3))
 		{
 			$tmp=$outputlangs->transcountrynoentities("ProfId3",$targetcompany->country_code);
 			if (preg_match('/\((.+)\)/',$tmp,$reg)) $tmp=$reg[1];
 			$stringaddress.="\n".$tmp.': '.$outputlangs->convToOutputCharset($targetcompany->idprof3);
 		}
-		if ($conf->global->MAIN_PROFID4_IN_ADDRESS)
+		if (! empty($conf->global->MAIN_PROFID4_IN_ADDRESS) && ! empty($targetcompany->idprof4))
 		{
 			$tmp=$outputlangs->transcountrynoentities("ProfId4",$targetcompany->country_code);
 			if (preg_match('/\((.+)\)/',$tmp,$reg)) $tmp=$reg[1];
@@ -281,7 +281,6 @@ function pdf_pagehead(&$pdf,$outputlangs,$page_height)
 		$pdf->Image($conf->mycompany->dir_output.'/logos/'.$conf->global->MAIN_USE_BACKGROUND_ON_PDF, 0, 0, 0, $page_height);
 	}
 }
-
 
 /**
  *      Add a draft watermark on PDF files
@@ -662,6 +661,39 @@ function pdf_pagefoot(&$pdf,$outputlangs,$paramfreetext,$fromcompany,$marge_bass
 	}
 }
 
+/**
+ *	Show linked objects for PDF generation
+ *
+ *	@param	PDF			&$pdf			Object PDF
+ *	@param	object		$object			Object
+ *	@param  Translate	$outputlangs	Object lang
+ *	@param  int			$curx			X
+ *	@param  int			$cury			Y
+ *	@return	void
+ */
+function pdf_writeLinkedObjects(&$pdf,$object,$outputlangs,$posx,$posy,$align,$default_font_size,$hookmanager=false)
+{
+	$linkedobjects = pdf_getLinkedObjects($object,$outputlangs,$hookmanager);
+	if (! empty($linkedobjects))
+	{
+		foreach($linkedobjects as $linkedobject)
+		{
+			$posy+=3;
+			$pdf->SetXY($posx,$posy);
+			$pdf->SetFont('','', $default_font_size - 2);
+			$pdf->MultiCell(100, 3, $linkedobject["ref_title"].' : '.$linkedobject["ref_value"], '', $align);
+			
+			if (! empty($linkedobject["date_title"]) && ! empty($linkedobject["date_value"]))
+			{
+				$posy+=3;
+				$pdf->SetXY($posx,$posy);
+				$pdf->MultiCell(100, 3, $linkedobject["date_title"].' : '.$linkedobject["date_value"], '', $align);
+			}
+		}
+	}
+	
+	return $pdf->getY();
+}
 
 /**
  *	Output line description into PDF
@@ -1250,7 +1282,6 @@ function pdf_getTotalQty($object,$type,$outputlangs,$hookmanager=false)
 	return $total;
 }
 
-
 /**
  *	Convert a currency code into its symbol
  *
@@ -1605,6 +1636,60 @@ function pdf_getCurrencySymbol(&$pdf, $currency_code)
 			break;
 	}
 	return $currency_sign;
+}
+
+/**
+ * 	Return linked objects
+ * 
+ * 	@param	object		$object			Object
+ * 	@param	Translate	$outputlangs	Object lang for output
+ *	@param	HookManager	$hookmanager	Hook manager instance
+ * 	@return	void
+ */
+function pdf_getLinkedObjects($object,$outputlangs,$hookmanager=false)
+{
+	$linkedobjects=array();
+	
+	$object->fetchObjectLinked();
+
+	foreach($object->linkedObjects as $objecttype => $objects)
+	{
+		if ($objecttype == 'propal')
+		{
+			$outputlangs->load('propal');
+			$num=count($objects);
+			for ($i=0;$i<$num;$i++)
+			{
+				$linkedobjects[$objecttype]['ref_title'] = $outputlangs->transnoentities("RefProposal");
+				$linkedobjects[$objecttype]['ref_value'] = $outputlangs->transnoentities($objects[$i]->ref);
+				$linkedobjects[$objecttype]['date_title'] = $outputlangs->transnoentities("DatePropal");
+				$linkedobjects[$objecttype]['date_value'] = dol_print_date($objects[$i]->date,'day','',$outputlangs);
+			}
+		}
+		else if ($objecttype == 'commande')
+		{
+			$outputlangs->load('orders');
+			$num=count($objects);
+			for ($i=0;$i<$num;$i++)
+			{
+				$linkedobjects[$objecttype]['ref_title'] = $outputlangs->transnoentities("RefOrder");
+				$linkedobjects[$objecttype]['ref_value'] = $outputlangs->transnoentities($objects[$i]->ref) . ($objects[$i]->ref_client ? ' ('.$objects[$i]->ref_client.')' : '');
+				$linkedobjects[$objecttype]['date_title'] = $outputlangs->transnoentities("OrderDate");
+				$linkedobjects[$objecttype]['date_value'] = dol_print_date($objects[$i]->date,'day','',$outputlangs);
+			}
+		}
+	}
+	
+	// For add external linked objects
+	if (is_object($hookmanager))
+	{
+		$parameters = array('linkedobjects' => $linkedobjects, 'outputlangs'=>$outputlangs);
+		$action='';
+		$hookmanager->executeHooks('pdf_getLinkedObjects',$parameters,$object,$action);    // Note that $action and $object may have been modified by some hooks
+		if (! empty($hookmanager->resArray)) $linkedobjects = $hookmanager->resArray;
+	}
+
+	return $linkedobjects;
 }
 
 ?>

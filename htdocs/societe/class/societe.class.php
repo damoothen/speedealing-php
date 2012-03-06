@@ -7,7 +7,7 @@
  * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2008      Patrick Raguin       <patrick.raguin@auguria.net>
  * Copyright (C) 2010-2011 Juanjo Menent        <jmenent@2byte.es>
- * Copyright (C) 2010-2011 Herve Prot           <herve.prot@symeos.com>
+ * Copyright (C) 2010-2012 Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -559,7 +559,7 @@ class Societe extends CommonObject
                 // Actions on extra fields (by external module or standard code)
                 include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
                 $hookmanager=new HookManager($this->db);
-                $hookmanager->callHooks(array('thirdparty_extrafields'));
+                $hookmanager->initHooks(array('thirdpartydao'));
                 $parameters=array('socid'=>$this->id);
                 $reshook=$hookmanager->executeHooks('insertExtraFields',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
                 if (empty($reshook))
@@ -920,7 +920,7 @@ class Societe extends CommonObject
             	// Additionnal action by hooks
                 include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
                 $hookmanager=new HookManager($this->db);
-                $hookmanager->callHooks(array('thirdparty_extrafields'));
+                $hookmanager->initHooks(array('thirdpartydao'));
                 $parameters=array(); $action='delete';
                 $reshook=$hookmanager->executeHooks('deleteThirdparty',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
                 if (! empty($hookmanager->error))
@@ -1685,15 +1685,24 @@ class Societe extends CommonObject
     }
 
     /**
-     *    \brief      Attribut un code client a partir du module de controle des codes.
-     *    \return     code_client		Code client automatique
+     *  Attribut un code client a partir du module de controle des codes.
+     *  Return value is stored into this->code_client
+     *
+     *	@param	Societe		$objsoc		Object thirdparty
+     *	@param	int			$type		Should be 0 to say customer
+     *  @return void
      */
     function get_codeclient($objsoc=0,$type=0)
     {
         global $conf;
         if ($conf->global->SOCIETE_CODECLIENT_ADDON)
         {
-            require_once DOL_DOCUMENT_ROOT.'/core/modules/societe/'.$conf->global->SOCIETE_CODECLIENT_ADDON.'.php';
+            $dirsociete=array_merge(array('/core/modules/societe/'),$conf->societe_modules);
+            foreach ($dirsociete as $dirroot)
+            {
+                $res=dol_include_once($dirroot.$conf->global->SOCIETE_CODECLIENT_ADDON.".php");
+                if ($res) break;
+            }
             $var = $conf->global->SOCIETE_CODECLIENT_ADDON;
             $mod = new $var;
 
@@ -1705,15 +1714,24 @@ class Societe extends CommonObject
     }
 
     /**
-     *    \brief      Attribut un code fournisseur a partir du module de controle des codes.
-     *    \return     code_fournisseur		Code fournisseur automatique
+     *  Attribut un code fournisseur a partir du module de controle des codes.
+     *  Return value is stored into this->code_fournisseur
+     *
+     *	@param	Societe		$objsoc		Object thirdparty
+     *	@param	int			$type		Should be 1 to say supplier
+     *  @return void
      */
     function get_codefournisseur($objsoc=0,$type=1)
     {
         global $conf;
         if ($conf->global->SOCIETE_CODEFOURNISSEUR_ADDON)
         {
-            require_once DOL_DOCUMENT_ROOT.'/core/modules/societe/'.$conf->global->SOCIETE_CODEFOURNISSEUR_ADDON.'.php';
+            $dirsociete=array_merge(array('/core/modules/societe/'),$conf->societe_modules);
+            foreach ($dirsociete as $dirroot)
+            {
+                $res=dol_include_once($dirroot.$conf->global->SOCIETE_FOURNISSEUR_ADDON.".php");
+                if ($res) break;
+            }
             $var = $conf->global->SOCIETE_CODEFOURNISSEUR_ADDON;
             $mod = new $var;
 
@@ -1724,16 +1742,22 @@ class Societe extends CommonObject
     }
 
     /**
-     *    \brief      Verifie si un code client est modifiable en fonction des parametres
-     *                du module de controle des codes.
-     *    \return     int		0=Non, 1=Oui
+     *    Verifie si un code client est modifiable en fonction des parametres
+     *    du module de controle des codes.
+     *
+     *    @return     int		0=Non, 1=Oui
      */
     function codeclient_modifiable()
     {
         global $conf;
         if ($conf->global->SOCIETE_CODECLIENT_ADDON)
         {
-            require_once DOL_DOCUMENT_ROOT.'/core/modules/societe/'.$conf->global->SOCIETE_CODECLIENT_ADDON.'.php';
+            $dirsociete=array_merge(array('/core/modules/societe/'),$conf->societe_modules);
+            foreach ($dirsociete as $dirroot)
+            {
+                $res=dol_include_once($dirroot.$conf->global->SOCIETE_CODECLIENT_ADDON.".php");
+                if ($res) break;
+            }
 
             $var = $conf->global->SOCIETE_CODECLIENT_ADDON;
 
@@ -1753,15 +1777,21 @@ class Societe extends CommonObject
 
 
     /**
-     *    \brief      Verifie si un code fournisseur est modifiable dans configuration du module de controle des codes
-     *    \return     int		0=Non, 1=Oui
+     *    Verifie si un code fournisseur est modifiable dans configuration du module de controle des codes
+     *
+     *    @return     int		0=Non, 1=Oui
      */
     function codefournisseur_modifiable()
     {
         global $conf;
         if ($conf->global->SOCIETE_CODEFOURNISSEUR_ADDON)
         {
-            require_once DOL_DOCUMENT_ROOT.'/core/modules/societe/'.$conf->global->SOCIETE_CODEFOURNISSEUR_ADDON.'.php';
+            $dirsociete=array_merge(array('/core/modules/societe/'),$conf->societe_modules);
+            foreach ($dirsociete as $dirroot)
+            {
+                $res=dol_include_once($dirroot.$conf->global->SOCIETE_CODEFOURNISSEUR_ADDON.".php");
+                if ($res) break;
+            }
 
             $var = $conf->global->SOCIETE_CODEFOURNISSEUR_ADDON;
 
@@ -1781,8 +1811,9 @@ class Societe extends CommonObject
 
 
     /**
-     *    \brief      Check customer code
-     *    \return     int		0 if OK
+     *    Check customer code
+     *
+     *    @return     int		0 if OK
      * 							-1 ErrorBadCustomerCodeSyntax
      * 							-2 ErrorCustomerCodeRequired
      * 							-3 ErrorCustomerCodeAlreadyUsed
@@ -1793,7 +1824,12 @@ class Societe extends CommonObject
         global $conf;
         if ($conf->global->SOCIETE_CODECLIENT_ADDON)
         {
-            require_once DOL_DOCUMENT_ROOT.'/core/modules/societe/'.$conf->global->SOCIETE_CODECLIENT_ADDON.'.php';
+            $dirsociete=array_merge(array('/core/modules/societe/'),$conf->societe_modules);
+            foreach ($dirsociete as $dirroot)
+            {
+                $res=dol_include_once($dirroot.$conf->global->SOCIETE_CODECLIENT_ADDON.".php");
+                if ($res) break;
+            }
 
             $var = $conf->global->SOCIETE_CODECLIENT_ADDON;
 
@@ -1810,8 +1846,9 @@ class Societe extends CommonObject
     }
 
     /**
-     *    \brief      Check supplier code
-     *    \return     int		0 if OK
+     *    Check supplier code
+     *
+     *    @return     int		0 if OK
      * 							-1 ErrorBadCustomerCodeSyntax
      * 							-2 ErrorCustomerCodeRequired
      * 							-3 ErrorCustomerCodeAlreadyUsed
@@ -1822,7 +1859,12 @@ class Societe extends CommonObject
         global $conf;
         if ($conf->global->SOCIETE_CODEFOURNISSEUR_ADDON)
         {
-            require_once DOL_DOCUMENT_ROOT.'/core/modules/societe/'.$conf->global->SOCIETE_CODEFOURNISSEUR_ADDON.'.php';
+            $dirsociete=array_merge(array('/core/modules/societe/'),$conf->societe_modules);
+            foreach ($dirsociete as $dirroot)
+            {
+                $res=dol_include_once($dirroot.$conf->global->SOCIETE_CODEFOURNISSEUR_ADDON.".php");
+                if ($res) break;
+            }
 
             $var = $conf->global->SOCIETE_CODEFOURNISSEUR_ADDON;
 
@@ -1839,11 +1881,12 @@ class Societe extends CommonObject
     }
 
     /**
-     *    	\brief  	Renvoie un code compta, suivant le module de code compta.
-     *            		Peut etre identique a celui saisit ou genere automatiquement.
-     *            		A ce jour seule la generation automatique est implementee
-     *    	\param      type			Type de tiers ('customer' ou 'supplier')
-     *		\return		string			Code compta si ok, 0 si aucun, <0 si ko
+     *    	Renvoie un code compta, suivant le module de code compta.
+     *      Peut etre identique a celui saisit ou genere automatiquement.
+     *      A ce jour seule la generation automatique est implementee
+     *
+     *    	@param      type			Type of thirdparty ('customer' or 'supplier')
+     *		@return		string			Code compta si ok, 0 si aucun, <0 si ko
      */
     function get_codecompta($type)
     {
@@ -1851,10 +1894,14 @@ class Societe extends CommonObject
 
         if ($conf->global->SOCIETE_CODECOMPTA_ADDON)
         {
-            require_once DOL_DOCUMENT_ROOT.'/core/modules/societe/'.$conf->global->SOCIETE_CODECOMPTA_ADDON.'.php';
+            $dirsociete=array_merge(array('/core/modules/societe/'),$conf->societe_modules);
+            foreach ($dirsociete as $dirroot)
+            {
+                $res=dol_include_once($dirroot.$conf->global->SOCIETE_CODECOMPTA_ADDON.".php");
+                if ($res) break;
+            }
 
             $var = $conf->global->SOCIETE_CODECOMPTA_ADDON;
-
             $mod = new $var;
 
             // Defini code compta dans $mod->code
@@ -1875,9 +1922,10 @@ class Societe extends CommonObject
     }
 
     /**
-     *    \brief      Defini la societe mere pour les filiales
-     *    \param      id      id compagnie mere a positionner
-     *    \return     int     <0 si ko, >0 si ok
+     *    Defini la societe mere pour les filiales
+     *
+     *    @param      id      id compagnie mere a positionner
+     *    @return     int     <0 si ko, >0 si ok
      */
     function set_parent($id)
     {

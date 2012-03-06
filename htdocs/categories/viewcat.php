@@ -34,7 +34,7 @@ $langs->load("products");
 $langs->load("contacts");
 
 $mesg = '';
-$id=GETPOST('id');
+$id=GETPOST('id','int');
 $ref=GETPOST('ref');
 $type=GETPOST('type');
 $action=GETPOST('action');

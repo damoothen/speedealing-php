@@ -170,6 +170,12 @@ class pdf_jaune extends ModelePDFPropales
                     $pdf->setPrintFooter(false);
                 }
                 $pdf->SetFont(pdf_getPDFFont($outputlangs));
+                // Set path to the background PDF File
+                if (empty($conf->global->MAIN_DISABLE_FPDI) && ! empty($conf->global->MAIN_ADD_PDF_BACKGROUND))
+                {
+                    $pagecount = $pdf->setSourceFile($conf->mycompany->dir_output.'/'.$conf->global->MAIN_ADD_PDF_BACKGROUND);
+                    $tplidx = $pdf->importPage(1);
+                }
 
 				$pdf->Open();
 				$pagenb=0;
@@ -196,6 +202,7 @@ class pdf_jaune extends ModelePDFPropales
 
 				// New page
 				$pdf->AddPage();
+				if (! empty($tplidx)) $pdf->useTemplate($tplidx);
 				$pagenb++;
 				$this->_pagehead($pdf, $object, 1, $outputlangs);
 				$pdf->SetFont('','', $default_font_size - 1);
@@ -341,6 +348,7 @@ class pdf_jaune extends ModelePDFPropales
 
 						// New page
 						$pdf->AddPage();
+				        if (! empty($tplidx)) $pdf->useTemplate($tplidx);
 						$pagenb++;
 						$this->_pagehead($pdf, $object, 0, $outputlangs);
 						$pdf->SetFont('','', $default_font_size - 1);
@@ -385,9 +393,12 @@ class pdf_jaune extends ModelePDFPropales
 				$pdf->Output($file,'F');
 
 				// Actions on extra fields (by external module or standard code)
-				include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
-				$hookmanager=new HookManager($this->db);
-				$hookmanager->callHooks(array('pdfgeneration'));
+				if (! is_object($hookmanager))
+				{
+					include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
+					$hookmanager=new HookManager($this->db);
+				}
+				$hookmanager->initHooks(array('pdfgeneration'));
 				$parameters=array('file'=>$file,'object'=>$object,'outputlangs'=>$outputlangs);
 				global $action;
 				$reshook=$hookmanager->executeHooks('afterPDFCreation',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
@@ -1031,7 +1042,7 @@ class pdf_jaune extends ModelePDFPropales
 			$pdf->SetFont('','', $default_font_size - 2);
 			$pdf->SetXY($posx,$posy-5);
 			$pdf->MultiCell(100, 4, $outputlangs->transnoentities("BillTo").":", 0, 'L');
-			$pdf->rect($posx, $posy, 100, $hautcadre);
+			$pdf->Rect($posx, $posy, 100, $hautcadre);
 			$pdf->SetTextColor(0,0,0);
 
 			// Show recipient name
@@ -1041,7 +1052,7 @@ class pdf_jaune extends ModelePDFPropales
 
 			// Show recipient information
 			$pdf->SetFont('','', $default_font_size - 1);
-			$pdf->SetXY($posx+2,$posy+8);
+			$pdf->SetXY($posx+2,$posy+4+(dol_nboflines_bis($carac_client_name,50)*4));
 			$pdf->MultiCell(100,4, $carac_client, 0, 'L');
 		}
 	}

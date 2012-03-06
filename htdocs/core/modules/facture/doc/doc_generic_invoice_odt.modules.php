@@ -110,7 +110,7 @@ class doc_generic_invoice_odt extends ModelePDFFactures
             'object_ref_supplier'=>$object->ref_fournisseur,
             'object_source_invoice_ref'=>$invoice_source->ref,
         	'object_date'=>dol_print_date($object->date,'day'),
-        	'object_date_limit'=>dol_print_date($object->date_lim_reglement,'dayhour'),
+        	'object_date_limit'=>dol_print_date($object->date_lim_reglement,'day'),
         	'object_date_creation'=>dol_print_date($object->date_creation,'day'),
             'object_date_modification'=>dol_print_date($object->date_modification,'day'),
             'object_date_validation'=>dol_print_date($object->date_validation,'dayhour'),
@@ -139,7 +139,7 @@ class doc_generic_invoice_odt extends ModelePDFFactures
         global $conf;
 
         return array(
-            'line_fulldesc'=>doc_getlinedesc($line),
+            'line_fulldesc'=>doc_getlinedesc($line,$outputlangs),
             'line_product_ref'=>$line->product_ref,
             'line_product_label'=>$line->product_label,
         	'line_desc'=>$line->desc,

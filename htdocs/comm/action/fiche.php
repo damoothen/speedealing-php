@@ -2,7 +2,7 @@
 /* Copyright (C) 2001-2005 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005      Simon TOSSER         <simon@kornog-computing.com>
- * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2010      Juanjo Menent        <jmenent@2byte.es>
  * Copyright (C) 2010-2011 Herve Prot           <herve.prot@symeos.com>
  *
@@ -48,11 +48,12 @@ $langs->load("bills");
 $langs->load("orders");
 $langs->load("agenda");
 
-$action=GETPOST("action");
+$action=GETPOST('action','alpha');
+$backtopage=GETPOST('backtopage','alpha');
 
 // Security check
-$socid = GETPOST('socid');
-$id = GETPOST('id');
+$socid = GETPOST('socid','int');
+$id = GETPOST('id','int');
 if ($user->societe_id) $socid=$user->societe_id;
 //$result = restrictedArea($user, 'agenda', $id, 'actioncomm', 'actions', '', 'id');
 
@@ -71,9 +72,7 @@ if ($action == 'add_action')
 {
 	$error=0;
 
-    $backtopage='';
-    if (! empty($_POST["backtopage"])) $backtopage=$_POST["backtopage"];
-    if (! $backtopage)
+    if (empty($backtopage))
     {
         if ($socid > 0) $backtopage = DOL_URL_ROOT.'/societe/agenda.php?socid='.$socid;
         else $backtopage=DOL_URL_ROOT.'/comm/action/index.php';
@@ -197,10 +196,10 @@ if ($action == 'add_action')
 
 	$actioncomm->note = trim($_POST["note"]);
 	if (isset($_POST["contactid"])) $actioncomm->contact = $contact;
-	if (GETPOST("socid") > 0)
+	if (GETPOST('socid','int') > 0)
 	{
 		$societe = new Societe($db);
-		$societe->fetch(GETPOST("socid"));
+		$societe->fetch(GETPOST('socid','int'));
 		$actioncomm->societe = $societe;
                 $actioncomm->socid=$actioncomm->societe->id;
 	}
@@ -410,24 +409,19 @@ if ($action == 'update')
 			}
 		}
 	}
-        
-        if (!$error)
+
+	if ($result < 0)
 	{
-		if (! empty($_POST["from"]))  // deprecated. Use backtopage instead
-		{
-			header("Location: ".$_POST["from"]);
-			exit;
-		}
-                if (! empty($_POST["backtopage"]))
-                {
-                header("Location: ".$_POST["backtopage"]);
-                exit;
-                }
-                else
-                {
-                    Header("Location: ".DOL_URL_ROOT.'/comm/action/fiche.php?id='.$id);
-                    exit;
-                }
+		$langs->load("errors");
+		$mesg='<div class="error">'.$langs->trans($actioncomm->error).'</div>';
+	}
+	else
+	{
+        if (! empty($backtopage))
+        {
+            header("Location: ".$backtopage);
+            exit;
+        }
 	}
 }
 
@@ -581,8 +575,7 @@ if ($action == 'create')
 	print '<form name="formaction" action="'.DOL_URL_ROOT.'/comm/action/fiche.php" method="POST">';
 	print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 	print '<input type="hidden" name="action" value="add_action">';
-        print '<input type="hidden" name="fk_task" value="'.$actioncomm->fk_task.'">';
-	if (GETPOST("backtopage")) print '<input type="hidden" name="backtopage" value="'.(GETPOST("backtopage") != 1 ? GETPOST("backtopage") : $_SERVER["HTTP_REFERER"]).'">';
+	print '<input type="hidden" name="backtopage" value="'.(! empty($backtopage) ? $backtopage : $_SERVER["HTTP_REFERER"]).'">';
 
 	if (GETPOST("actioncode") == 'AC_RDV') print_fiche_titre($langs->trans("AddActionRendezVous"));
 	else print_fiche_titre($langs->trans("AddAnAction"));
@@ -679,12 +672,12 @@ if ($action == 'create')
 
 	// Societe, contact
 	print '<tr><td width="30%" nowrap="nowrap">'.$langs->trans("ActionOnCompany").'</td><td>';
-	if (GETPOST("socid") > 0)
+	if (GETPOST('socid','int') > 0)
 	{
 		$societe = new Societe($db);
-		$societe->fetch(GETPOST("socid"));
+		$societe->fetch(GETPOST('socid','int'));
 		print $societe->getNomUrl(1);
-		print '<input type="hidden" name="socid" value="'.GETPOST("socid").'">';
+		print '<input type="hidden" name="socid" value="'.GETPOST('socid','int').'">';
 	}
 	else
 	{
@@ -693,10 +686,10 @@ if ($action == 'create')
 	print '</td></tr>';
 
 	// If company is forced, we propose contacts (may be contact is also forced)
-	if (GETPOST("contactid") > 0 || GETPOST("socid") > 0)
+	if (GETPOST("contactid") > 0 || GETPOST('socid','int') > 0)
 	{
 		print '<tr><td nowrap>'.$langs->trans("ActionOnContact").'</td><td>';
-		$form->select_contacts(GETPOST("socid"),GETPOST('contactid'),'contactid',1);
+		$form->select_contacts(GETPOST('socid','int'),GETPOST('contactid'),'contactid',1);
 		print '</td></tr>';
 	}
 
@@ -908,8 +901,7 @@ if ($id)
 		print '<input type="hidden" name="action" value="update">';
 		print '<input type="hidden" name="id" value="'.$id.'">';
 		print '<input type="hidden" name="ref_ext" value="'.$act->ref_ext.'">';
-		print '<input type="hidden" name="fk_task" value="'.$act->fk_task.'">';
-		if (GETPOST("backtopage")) print '<input type="hidden" name="backtopage" value="'.(GETPOST("backtopage") ? GETPOST("backtopage") : $_SERVER["HTTP_REFERER"]).'">';
+		print '<input type="hidden" name="backtopage" value="'.(! empty($backtopage) ? $backtopage : $_SERVER["HTTP_REFERER"]).'">';
 
 		print '<table class="border" width="100%">';
 
