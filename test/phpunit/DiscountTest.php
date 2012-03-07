@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * or see http://www.gnu.org/
  */
 
 /**
@@ -89,6 +89,9 @@ class DiscountTest extends PHPUnit_Framework_TestCase
     }
 
 	/**
+	 * Init phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function setUp()
     {
@@ -102,6 +105,9 @@ class DiscountTest extends PHPUnit_Framework_TestCase
 		//print $db->getVersion()."\n";
     }
 	/**
+	 * End phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function tearDown()
     {
@@ -109,6 +115,9 @@ class DiscountTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testDiscountCreate
+     *
+     * @return	int
      */
     public function testDiscountCreate()
     {
@@ -128,6 +137,11 @@ class DiscountTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testDiscountFetch
+     *
+     * @param	int	$id		Id of discount
+     * @return	int
+     *
      * @depends	testDiscountCreate
      * The depends says test is run only if previous is ok
      */
@@ -148,6 +162,11 @@ class DiscountTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testDiscountDelete
+     *
+     * @param	int		$id		Id of discount
+     * @return	int
+     *
      * @depends	testDiscountFetch
      * The depends says test is run only if previous is ok
      */

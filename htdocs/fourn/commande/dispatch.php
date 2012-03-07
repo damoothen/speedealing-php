@@ -16,8 +16,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59	Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * or see http://www.gnu.org/
  */
 
 /**
@@ -27,9 +27,9 @@
  */
 
 require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT.'/includes/modules/supplier_order/modules_commandefournisseur.php');
+require_once(DOL_DOCUMENT_ROOT.'/core/modules/supplier_order/modules_commandefournisseur.php');
 require_once(DOL_DOCUMENT_ROOT."/product/stock/class/entrepot.class.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/fourn.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/fourn.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/fourn/class/fournisseur.commande.class.php");
 if ($conf->projet->enabled)	require_once(DOL_DOCUMENT_ROOT.'/projet/class/project.class.php');
 
@@ -103,7 +103,7 @@ if ($_POST["action"] ==	'dispatch' && $user->rights->fournisseur->commande->rece
 
 llxHeader('',$langs->trans("OrderCard"),"CommandeFournisseur");
 
-$html =	new Form($db);
+$form =	new Form($db);
 $warehouse_static = new Entrepot($db);
 
 $now=dol_now();
@@ -138,7 +138,7 @@ if ($id > 0 || ! empty($ref))
 		// Ref
 		print '<tr><td width="20%">'.$langs->trans("Ref").'</td>';
 		print '<td colspan="2">';
-		print $html->showrefnav($commande,'ref','',1,'ref','ref');
+		print $form->showrefnav($commande,'ref','',1,'ref','ref');
 		print '</td>';
 		print '</tr>';
 
@@ -217,8 +217,7 @@ if ($id > 0 || ! empty($ref))
 				$db->free($resql);
 			}
 
-			$sql = "SELECT l.ref,l.fk_product,l.description, l.subprice, sum(l.qty) as qty";
-			$sql.= ", l.rowid";
+			$sql = "SELECT l.rowid, l.ref, l.fk_product, l.description, l.subprice, sum(l.qty) as qty";
 			$sql.= ", p.label";
 			$sql.= " FROM ".MAIN_DB_PREFIX."commande_fournisseurdet as l";
 			$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product as p ON l.fk_product=p.rowid";
@@ -284,7 +283,7 @@ if ($id > 0 || ! empty($ref))
 						print '<td align="right">';
 						if (count($listwarehouses))
 						{
-							print $html->selectarray("entrepot_".$i, $listwarehouses, '', $disabled, 0, 0, '', 0, 0, $disabled);
+							print $form->selectarray("entrepot_".$i, $listwarehouses, '', $disabled, 0, 0, '', 0, 0, $disabled);
 						}
 						else
 						{

@@ -34,9 +34,9 @@ require_once($dolibarr_main_document_root . '/comm/propal/class/propal.class.php
 require_once($dolibarr_main_document_root . '/contrat/class/contrat.class.php');
 require_once($dolibarr_main_document_root . '/commande/class/commande.class.php');
 require_once($dolibarr_main_document_root . '/fourn/class/fournisseur.commande.class.php');
-require_once($dolibarr_main_document_root . '/lib/price.lib.php');
+require_once($dolibarr_main_document_root . '/core/lib/price.lib.php');
 require_once($dolibarr_main_document_root . '/core/class/menubase.class.php');
-require_once($dolibarr_main_document_root . '/lib/files.lib.php');
+require_once($dolibarr_main_document_root . '/core/lib/files.lib.php');
 
 $grant_query='';
 $etape = 2;
@@ -87,7 +87,7 @@ if (! GETPOST("action") || preg_match('/upgrade/i',GETPOST('action')))
     // If password is encoded, we decode it
     if (preg_match('/crypted:/i',$dolibarr_main_db_pass) || ! empty($dolibarr_main_db_encrypted_pass))
     {
-        require_once($dolibarr_main_document_root."/lib/security.lib.php");
+        require_once($dolibarr_main_document_root."/core/lib/security.lib.php");
         if (preg_match('/crypted:/i',$dolibarr_main_db_pass))
         {
             $dolibarr_main_db_pass = preg_replace('/crypted:/i', '', $dolibarr_main_db_pass);
@@ -308,6 +308,8 @@ if (! GETPOST("action") || preg_match('/upgrade/i',GETPOST('action')))
         $beforeversionarray=explode('.','3.2.9');
         if (versioncompare($versiontoarray,$afterversionarray) >= 0 && versioncompare($versiontoarray,$beforeversionarray) <= 0)
         {
+        	migrate_mode_reglement($db,$langs,$conf);
+
             // Reload modules
             migrate_reload_modules($db,$langs,$conf);
 
@@ -704,21 +706,14 @@ function migrate_paiements_orphelins_2($db,$langs,$conf)
     print '</td></tr>';
 }
 
-function migrate_paiements_orphelins_3($db,$langs,$conf)
-{
 
-    /*
-     select p.rowid from llx_paiement as p left join llx_paiement_facture as pf on pf.fk_paiement=p.rowid WHERE pf.rowid IS NULL AND (p.fk_facture = 0 OR p.fk_facture IS NULL)
-     Poru chaque rep, test si
-     select count(*) from llx_bank where rowid = obj->fk_bank
-     select count(*) from llx_bank_url where url_id = 128 and type='payment'
-     Si partout 0, on efface ligne de llx_paiement
-     */
-
-}
-
-/*
+/**
  * Mise a jour des contrats (gestion du contrat + detail de contrat)
+ *
+ * @param	DoliDB		$db		Database handler
+ * @param	Translate	$langs	Object langs
+ * @param	Conf		$conf	Object conf
+ * @return	void
  */
 function migrate_contracts_det($db,$langs,$conf)
 {
@@ -810,6 +805,13 @@ function migrate_contracts_det($db,$langs,$conf)
     print '</td></tr>';
 }
 
+/**
+ *
+ * @param	DoliDB		$db		Database handler
+ * @param	Translate	$langs	Object langs
+ * @param	Conf		$conf	Object conf
+ * @return	void
+ */
 function migrate_links_transfert($db,$langs,$conf)
 {
     print '<tr><td colspan="4">';
@@ -886,8 +888,13 @@ function migrate_links_transfert($db,$langs,$conf)
     print '</td></tr>';
 }
 
-/*
+/**
  * Mise a jour des date de contrats non renseignees
+ *
+ * @param	DoliDB		$db		Database handler
+ * @param	Translate	$langs	Object langs
+ * @param	Conf		$conf	Object conf
+ * @return	void
  */
 function migrate_contracts_date1($db,$langs,$conf)
 {
@@ -981,8 +988,13 @@ function migrate_contracts_date2($db,$langs,$conf)
     print '</td></tr>';
 }
 
-/*
+/**
  * Mise a jour des dates de creation de contrat
+ *
+ * @param	DoliDB		$db		Database handler
+ * @param	Translate	$langs	Object langs
+ * @param	Conf		$conf	Object conf
+ * @return	void
  */
 function migrate_contracts_date3($db,$langs,$conf)
 {
@@ -1003,8 +1015,13 @@ function migrate_contracts_date3($db,$langs,$conf)
     print '</td></tr>';
 }
 
-/*
+/**
  * Reouverture des contrats qui ont au moins une ligne non fermee
+ *
+ * @param	DoliDB		$db		Database handler
+ * @param	Translate	$langs	Object langs
+ * @param	Conf		$conf	Object conf
+ * @return	void
  */
 function migrate_contracts_open($db,$langs,$conf)
 {
@@ -1174,8 +1191,13 @@ function migrate_paiementfourn_facturefourn($db,$langs,$conf)
     }
 }
 
-/*
+/**
  * Mise a jour des totaux lignes de facture
+ *
+ * @param	DoliDB		$db		Database handler
+ * @param	Translate	$langs	Object langs
+ * @param	Conf		$conf	Object conf
+ * @return	void
  */
 function migrate_price_facture($db,$langs,$conf)
 {
@@ -1285,8 +1307,13 @@ function migrate_price_facture($db,$langs,$conf)
     print '</td></tr>';
 }
 
-/*
+/**
  * Mise a jour des totaux lignes de propal
+ *
+ * @param	DoliDB		$db		Database handler
+ * @param	Translate	$langs	Object langs
+ * @param	Conf		$conf	Object conf
+ * @return	void
  */
 function migrate_price_propal($db,$langs,$conf)
 {
@@ -1354,13 +1381,11 @@ function migrate_price_propal($db,$langs,$conf)
                  else
                  {
                  print "Error id=".$propal->id;
-                 $err++;
                  }
                  }
                  else
                  {
                  print "Error #3";
-                 $err++;
                  }
                  */
                 $i++;
@@ -1378,7 +1403,6 @@ function migrate_price_propal($db,$langs,$conf)
     else
     {
         print "Error #1 ".$db->error();
-        $err++;
 
         $db->rollback();
     }
@@ -1388,8 +1412,13 @@ function migrate_price_propal($db,$langs,$conf)
     print '</td></tr>';
 }
 
-/*
+/**
  * Mise a jour des totaux lignes de propal
+ *
+ * @param	DoliDB		$db		Database handler
+ * @param	Translate	$langs	Object langs
+ * @param	Conf		$conf	Object conf
+ * @return	void
  */
 function migrate_price_contrat($db,$langs,$conf)
 {
@@ -1458,13 +1487,11 @@ function migrate_price_contrat($db,$langs,$conf)
                  else
                  {
                  print "Error id=".$propal->id;
-                 $err++;
                  }
                  }
                  else
                  {
                  print "Error #3";
-                 $err++;
                  }
                  */
                 $i++;
@@ -1482,7 +1509,6 @@ function migrate_price_contrat($db,$langs,$conf)
     else
     {
         print "Error #1 ".$db->error();
-        $err++;
 
         $db->rollback();
     }
@@ -1492,8 +1518,13 @@ function migrate_price_contrat($db,$langs,$conf)
     print '</td></tr>';
 }
 
-/*
+/**
  * Mise a jour des totaux lignes de commande
+ *
+ * @param	DoliDB		$db		Database handler
+ * @param	Translate	$langs	Object langs
+ * @param	Conf		$conf	Object conf
+ * @return	void
  */
 function migrate_price_commande($db,$langs,$conf)
 {
@@ -1560,13 +1591,11 @@ function migrate_price_commande($db,$langs,$conf)
                  else
                  {
                  print "Error id=".$commande->id;
-                 $err++;
                  }
                  }
                  else
                  {
                  print "Error #3";
-                 $err++;
                  }
                  */
                 $i++;
@@ -1594,7 +1623,6 @@ function migrate_price_commande($db,$langs,$conf)
     else
     {
         print "Error #1 ".$db->error();
-        $err++;
 
         $db->rollback();
     }
@@ -1604,8 +1632,13 @@ function migrate_price_commande($db,$langs,$conf)
     print '</td></tr>';
 }
 
-/*
+/**
  * Mise a jour des totaux lignes de commande fournisseur
+ *
+ * @param	DoliDB		$db		Database handler
+ * @param	Translate	$langs	Object langs
+ * @param	Conf		$conf	Object conf
+ * @return	void
  */
 function migrate_price_commande_fournisseur($db,$langs,$conf)
 {
@@ -1672,13 +1705,11 @@ function migrate_price_commande_fournisseur($db,$langs,$conf)
                  else
                  {
                  print "Error id=".$commande->id;
-                 $err++;
                  }
                  }
                  else
                  {
                  print "Error #3";
-                 $err++;
                  }
                  */
                 $i++;
@@ -1706,7 +1737,6 @@ function migrate_price_commande_fournisseur($db,$langs,$conf)
     else
     {
         print "Error #1 ".$db->error();
-        $err++;
 
         $db->rollback();
     }
@@ -1716,8 +1746,13 @@ function migrate_price_commande_fournisseur($db,$langs,$conf)
     print '</td></tr>';
 }
 
-/*
+/**
  * Mise a jour des modeles selectionnes
+ *
+ * @param	DoliDB		$db		Database handler
+ * @param	Translate	$langs	Object langs
+ * @param	Conf		$conf	Object conf
+ * @return	void
  */
 function migrate_modeles($db,$langs,$conf)
 {
@@ -1728,7 +1763,7 @@ function migrate_modeles($db,$langs,$conf)
 
     if (! empty($conf->facture->enabled))
     {
-        include_once(DOL_DOCUMENT_ROOT.'/includes/modules/facture/modules_facture.php');
+        include_once(DOL_DOCUMENT_ROOT.'/core/modules/facture/modules_facture.php');
         $modellist=ModelePDFFactures::liste_modeles($db);
         if (count($modellist)==0)
         {
@@ -1741,7 +1776,7 @@ function migrate_modeles($db,$langs,$conf)
 
     if (! empty($conf->commande->enabled))
     {
-        include_once(DOL_DOCUMENT_ROOT.'/includes/modules/commande/modules_commande.php');
+        include_once(DOL_DOCUMENT_ROOT.'/core/modules/commande/modules_commande.php');
         $modellist=ModelePDFCommandes::liste_modeles($db);
         if (count($modellist)==0)
         {
@@ -1754,7 +1789,7 @@ function migrate_modeles($db,$langs,$conf)
 
     if (! empty($conf->expedition->enabled))
     {
-        include_once(DOL_DOCUMENT_ROOT.'/includes/modules/expedition/pdf/ModelePdfExpedition.class.php');
+        include_once(DOL_DOCUMENT_ROOT.'/core/modules/expedition/modules_expedition.php');
         $modellist=ModelePDFExpedition::liste_modeles($db);
         if (count($modellist)==0)
         {
@@ -1769,8 +1804,13 @@ function migrate_modeles($db,$langs,$conf)
 }
 
 
-/*
+/**
  * Correspondance des expeditions et des commandes clients dans la table llx_co_exp
+ *
+ * @param	DoliDB		$db		Database handler
+ * @param	Translate	$langs	Object langs
+ * @param	Conf		$conf	Object conf
+ * @return	void
  */
 function migrate_commande_expedition($db,$langs,$conf)
 {
@@ -1841,8 +1881,13 @@ function migrate_commande_expedition($db,$langs,$conf)
     print '</td></tr>';
 }
 
-/*
+/**
  * Correspondance des livraisons et des commandes clients dans la table llx_co_liv
+ *
+ * @param	DoliDB		$db		Database handler
+ * @param	Translate	$langs	Object langs
+ * @param	Conf		$conf	Object conf
+ * @return	void
  */
 function migrate_commande_livraison($db,$langs,$conf)
 {
@@ -1929,8 +1974,13 @@ function migrate_commande_livraison($db,$langs,$conf)
     print '</td></tr>';
 }
 
-/*
+/**
  * Migration des details commandes dans les details livraisons
+ *
+ * @param	DoliDB		$db		Database handler
+ * @param	Translate	$langs	Object langs
+ * @param	Conf		$conf	Object conf
+ * @return	void
  */
 function migrate_detail_livraison($db,$langs,$conf)
 {
@@ -2046,8 +2096,13 @@ function migrate_detail_livraison($db,$langs,$conf)
     print '</td></tr>';
 }
 
-/*
+/**
  * Migration du champ stock dans produits
+ *
+ * @param	DoliDB		$db		Database handler
+ * @param	Translate	$langs	Object langs
+ * @param	Conf		$conf	Object conf
+ * @return	void
  */
 function migrate_stocks($db,$langs,$conf)
 {
@@ -2115,8 +2170,14 @@ function migrate_stocks($db,$langs,$conf)
     print '</td></tr>';
 }
 
-/*
+/**
  * Migration of menus (use only 1 table instead of 3)
+ * 2.6 -> 2.7
+ *
+ * @param	DoliDB		$db		Database handler
+ * @param	Translate	$langs	Object langs
+ * @param	Conf		$conf	Object conf
+ * @return	void
  */
 function migrate_menus($db,$langs,$conf)
 {
@@ -2191,9 +2252,14 @@ function migrate_menus($db,$langs,$conf)
     print '</td></tr>';
 }
 
-/*
+/**
  * Migration du champ fk_adresse_livraison dans expedition
  * 2.6 -> 2.7
+ *
+ * @param	DoliDB		$db		Database handler
+ * @param	Translate	$langs	Object langs
+ * @param	Conf		$conf	Object conf
+ * @return	void
  */
 function migrate_commande_deliveryaddress($db,$langs,$conf)
 {
@@ -2270,9 +2336,14 @@ function migrate_commande_deliveryaddress($db,$langs,$conf)
     print '</td></tr>';
 }
 
-/*
+/**
  * Migration du champ fk_remise_except dans llx_facturedet doit correspondre a
  * lien dans llx_societe_remise_except vers llx_facturedet
+ *
+ * @param	DoliDB		$db		Database handler
+ * @param	Translate	$langs	Object langs
+ * @param	Conf		$conf	Object conf
+ * @return	void
  */
 function migrate_restore_missing_links($db,$langs,$conf)
 {
@@ -2424,8 +2495,13 @@ function migrate_restore_missing_links($db,$langs,$conf)
     print '</td></tr>';
 }
 
-/*
+/**
  * Migration du champ fk_user_resp de llx_projet vers llx_element_contact
+ *
+ * @param	DoliDB		$db		Database handler
+ * @param	Translate	$langs	Object langs
+ * @param	Conf		$conf	Object conf
+ * @return	void
  */
 function migrate_project_user_resp($db,$langs,$conf)
 {
@@ -2516,8 +2592,13 @@ function migrate_project_user_resp($db,$langs,$conf)
     print '</td></tr>';
 }
 
-/*
+/**
  * Migration de la table llx_projet_task_actors vers llx_element_contact
+ *
+ * @param	DoliDB		$db		Database handler
+ * @param	Translate	$langs	Object langs
+ * @param	Conf		$conf	Object conf
+ * @return	void
  */
 function migrate_project_task_actors($db,$langs,$conf)
 {
@@ -2603,8 +2684,13 @@ function migrate_project_task_actors($db,$langs,$conf)
     print '</td></tr>';
 }
 
-/*
+/**
  * Migration des tables de relation
+ *
+ * @param	DoliDB		$db		Database handler
+ * @param	Translate	$langs	Object langs
+ * @param	Conf		$conf	Object conf
+ * @return	void
  */
 function migrate_relationship_tables($db,$langs,$conf,$table,$fk_source,$sourcetype,$fk_target,$targettype)
 {
@@ -2694,8 +2780,13 @@ function migrate_relationship_tables($db,$langs,$conf,$table,$fk_source,$sourcet
     print '</td></tr>';
 }
 
-/*
+/**
  * Migrate duration in seconds
+ *
+ * @param	DoliDB		$db		Database handler
+ * @param	Translate	$langs	Object langs
+ * @param	Conf		$conf	Object conf
+ * @return	void
  */
 function migrate_project_task_time($db,$langs,$conf)
 {
@@ -2810,8 +2901,13 @@ function migrate_project_task_time($db,$langs,$conf)
     print '</td></tr>';
 }
 
-/*
+/**
  * Migrate order ref_customer and date_delivery fields to llx_expedition
+ *
+ * @param	DoliDB		$db		Database handler
+ * @param	Translate	$langs	Object langs
+ * @param	Conf		$conf	Object conf
+ * @return	void
  */
 function migrate_customerorder_shipping($db,$langs,$conf)
 {
@@ -2906,8 +3002,13 @@ function migrate_customerorder_shipping($db,$langs,$conf)
     print '</td></tr>';
 }
 
-/*
+/**
  * Migrate link stored into fk_expedition into llx_element_element
+ *
+ * @param	DoliDB		$db		Database handler
+ * @param	Translate	$langs	Object langs
+ * @param	Conf		$conf	Object conf
+ * @return	void
  */
 function migrate_shipping_delivery($db,$langs,$conf)
 {
@@ -3012,9 +3113,14 @@ function migrate_shipping_delivery($db,$langs,$conf)
     print '</td></tr>';
 }
 
-/*
+/**
  * We try to complete field ref_customer and date_delivery that are empty into llx_livraison.
  * We set them with value from llx_expedition.
+ *
+ * @param	DoliDB		$db		Database handler
+ * @param	Translate	$langs	Object langs
+ * @param	Conf		$conf	Object conf
+ * @return	void
  */
 function migrate_shipping_delivery2($db,$langs,$conf)
 {
@@ -3092,64 +3198,162 @@ function migrate_shipping_delivery2($db,$langs,$conf)
     print '</td></tr>';
 }
 
-/*
+/**
  * Migrate link stored into fk_xxxx into fk_element and elementtype
+ *
+ * @param	DoliDB		$db		Database handler
+ * @param	Translate	$langs	Object langs
+ * @param	Conf		$conf	Object conf
+ * @return	void
  */
 function migrate_actioncomm_element($db,$langs,$conf)
 {
-    print '<tr><td colspan="4">';
+	print '<tr><td colspan="4">';
 
-    print '<br>';
-    print '<b>'.$langs->trans('MigrationActioncommElement')."</b><br>\n";
+	print '<br>';
+	print '<b>'.$langs->trans('MigrationActioncommElement')."</b><br>\n";
 
-    $elements = array(	'propal' => 'propalrowid',
-						'order' => 'fk_commande',
-						'invoice' => 'fk_facture',
-						'contract' => 'fk_contract',
-						'order_supplier' => 'fk_supplier_order',
-						'invoice_supplier' => 'fk_supplier_invoice'
-						);
+	$elements = array(
+		'propal' => 'propalrowid',
+		'order' => 'fk_commande',
+		'invoice' => 'fk_facture',
+		'contract' => 'fk_contract',
+		'order_supplier' => 'fk_supplier_order',
+		'invoice_supplier' => 'fk_supplier_invoice'
+	);
 
-						foreach($elements as $type => $field)
+	foreach($elements as $type => $field)
+	{
+		$result = $db->DDLDescTable(MAIN_DB_PREFIX."actioncomm",$field);
+		$obj = $db->fetch_object($result);
+		if ($obj)
+		{
+			dolibarr_install_syslog("upgrade2::migrate_actioncomm_element field=".$field);
+
+			$db->begin();
+
+			$sql = "UPDATE ".MAIN_DB_PREFIX."actioncomm SET ";
+			$sql.= "fk_element = ".$field.", elementtype = '".$type."'";
+			$sql.= " WHERE ".$field." IS NOT NULL";
+			$sql.= " AND fk_element IS NULL";
+			$sql.= " AND elementtype IS NULL";
+
+			$resql = $db->query($sql);
+			if ($resql)
+			{
+				$db->commit();
+
+				// DDL commands must not be inside a transaction
+				// We will drop at next version because a migrate should be runnable several times if it fails.
+				//$sqlDrop = "ALTER TABLE ".MAIN_DB_PREFIX."actioncomm DROP COLUMN ".$field;
+				//$db->query($sqlDrop);
+				//print ". ";
+			}
+			else
+			{
+				dol_print_error($db);
+				$db->rollback();
+			}
+		}
+		else
+		{
+			print $langs->trans('AlreadyDone')."<br>\n";
+		}
+	}
+
+	print '</td></tr>';
+}
+
+/**
+ * Migrate link stored into fk_mode_reglement
+ *
+ * @param	DoliDB		$db		Database handler
+ * @param	Translate	$langs	Object langs
+ * @param	Conf		$conf	Object conf
+ * @return	void
+ */
+function migrate_mode_reglement($db,$langs,$conf)
+{
+	print '<tr><td colspan="4">';
+
+	print '<br>';
+	print '<b>'.$langs->trans('MigrationPaymentMode')."</b><br>\n";
+
+	$elements = array(
+		'old_id' => array(5,8,9,10,11),
+		'new_id' => array(50,51,52,53,54),
+		'code' => array('VAD','TRA','LCR','FAC','PRO'),
+		'tables' => array('commande_fournisseur','commande','facture_rec','facture','propal')
+	);
+	$count=0;
+
+	foreach($elements['old_id'] as $key => $old_id)
+	{
+		$error=0;
+
+		dolibarr_install_syslog("upgrade2::migrate_mode_reglement code=".$elements['code'][$key]);
+
+		$sqlSelect = "SELECT id";
+		$sqlSelect.= " FROM ".MAIN_DB_PREFIX."c_paiement";
+		$sqlSelect.= " WHERE id = ".$old_id;
+		$sqlSelect.= " AND code = '".$elements['code'][$key]."'";
+
+		$resql = $db->query($sqlSelect);
+		if ($resql)
+		{
+			$num = $db->num_rows($resql);
+			if ($num)
+			{
+				$count++;
+
+				$db->begin();
+
+				$sql = "UPDATE ".MAIN_DB_PREFIX."c_paiement SET ";
+				$sql.= "id = ".$elements['new_id'][$key];
+				$sql.= " WHERE id = ".$old_id;
+				$sql.= " AND code = '".$elements['code'][$key]."'";
+
+				$resql = $db->query($sql);
+				if ($resql)
+				{
+					foreach($elements['tables'] as $table)
+					{
+						$sql = "UPDATE ".MAIN_DB_PREFIX.$table." SET ";
+						$sql.= "fk_mode_reglement = ".$elements['new_id'][$key];
+						$sql.= " WHERE fk_mode_reglement = ".$old_id;
+
+						$resql = $db->query($sql);
+						if (! $resql)
 						{
-						    $result = $db->DDLDescTable(MAIN_DB_PREFIX."actioncomm",$field);
-						    $obj = $db->fetch_object($result);
-						    if ($obj)
-						    {
-						        dolibarr_install_syslog("upgrade2::migrate_actioncomm_element field=".$field);
-
-						        $db->begin();
-
-						        $sql = "UPDATE ".MAIN_DB_PREFIX."actioncomm SET ";
-						        $sql.= "fk_element = ".$field.", elementtype = '".$type."'";
-						        $sql.= " WHERE ".$field." IS NOT NULL";
-						        $sql.= " AND fk_element IS NULL";
-						        $sql.= " AND elementtype IS NULL";
-
-						        $resql = $db->query($sql);
-						        if ($resql)
-						        {
-						            $db->commit();
-
-						            // DDL commands must not be inside a transaction
-						            // We will drop at next version because a migrate should be runnable several times if it fails.
-						            //$sqlDrop = "ALTER TABLE ".MAIN_DB_PREFIX."actioncomm DROP COLUMN ".$field;
-						            //$db->query($sqlDrop);
-						            //print ". ";
-						        }
-						        else
-						        {
-						            dol_print_error($db);
-						            $db->rollback();
-						        }
-						    }
-						    else
-						    {
-						        print $langs->trans('AlreadyDone')."<br>\n";
-						    }
+							dol_print_error($db);
+							$error++;
 						}
+						print ". ";
+					}
 
-						print '</td></tr>';
+					if (! $error)
+					{
+						$db->commit();
+					}
+					else
+					{
+						dol_print_error($db);
+						$db->rollback();
+					}
+				}
+				else
+				{
+					dol_print_error($db);
+					$db->rollback();
+				}
+			}
+		}
+	}
+
+	if ($count == 0) print $langs->trans('AlreadyDone')."<br>\n";
+
+
+	print '</td></tr>';
 }
 
 
@@ -3191,26 +3395,26 @@ function migrate_delete_old_files($db,$langs,$conf)
 
     // List of files to delete
     $filetodeletearray=array(
-    DOL_DOCUMENT_ROOT.'/includes/triggers/interface_demo.class.php',
-    DOL_DOCUMENT_ROOT.'/includes/menus/barre_left/default.php',
-    DOL_DOCUMENT_ROOT.'/includes/menus/barre_top/default.php',
-    DOL_DOCUMENT_ROOT.'/includes/modules/modComptabiliteExpert.class.php',
-    DOL_DOCUMENT_ROOT.'/includes/modules/modCommercial.class.php',
-    DOL_DOCUMENT_ROOT.'/includes/modules/modProduit.class.php',
+    DOL_DOCUMENT_ROOT.'/core/triggers/interface_demo.class.php',
+    DOL_DOCUMENT_ROOT.'/core/menus/barre_left/default.php',
+    DOL_DOCUMENT_ROOT.'/core/menus/barre_top/default.php',
+    DOL_DOCUMENT_ROOT.'/core/modules/modComptabiliteExpert.class.php',
+    DOL_DOCUMENT_ROOT.'/core/modules/modCommercial.class.php',
+    DOL_DOCUMENT_ROOT.'/core/modules/modProduit.class.php',
     DOL_DOCUMENT_ROOT.'/phenix/inc/triggers/interface_modPhenix_Phenixsynchro.class.php',
     DOL_DOCUMENT_ROOT.'/webcalendar/inc/triggers/interface_modWebcalendar_webcalsynchro.class.php',
-    DOL_DOCUMENT_ROOT.'/includes/triggers/interface_modWebcalendar_Webcalsynchro.class.php',
-    DOL_DOCUMENT_ROOT.'/includes/triggers/interface_modCommande_Ecotax.class.php',
-    DOL_DOCUMENT_ROOT.'/includes/triggers/interface_modCommande_fraisport.class.php',
-    DOL_DOCUMENT_ROOT.'/includes/triggers/interface_modPropale_PropalWorkflow.class.php',
-    DOL_DOCUMENT_ROOT.'/includes/menus/smartphone/iphone.lib.php',
-    DOL_DOCUMENT_ROOT.'/includes/menus/smartphone/iphone_backoffice.php',
-    DOL_DOCUMENT_ROOT.'/includes/menus/smartphone/iphone_frontoffice.php',
-    DOL_DOCUMENT_ROOT.'/includes/modules/mailings/dolibarr_services_expired.modules.php',
-    DOL_DOCUMENT_ROOT.'/includes/modules/mailings/poire.modules.php',
-    DOL_DOCUMENT_ROOT.'/includes/modules/mailings/kiwi.modules.php',
-    DOL_DOCUMENT_ROOT.'/includes/modules/facture/pdf_crabe.modules.php',
-    DOL_DOCUMENT_ROOT.'/includes/modules/facture/pdf_oursin.modules.php'
+    DOL_DOCUMENT_ROOT.'/core/triggers/interface_modWebcalendar_Webcalsynchro.class.php',
+    DOL_DOCUMENT_ROOT.'/core/triggers/interface_modCommande_Ecotax.class.php',
+    DOL_DOCUMENT_ROOT.'/core/triggers/interface_modCommande_fraisport.class.php',
+    DOL_DOCUMENT_ROOT.'/core/triggers/interface_modPropale_PropalWorkflow.class.php',
+    DOL_DOCUMENT_ROOT.'/core/menus/smartphone/iphone.lib.php',
+    DOL_DOCUMENT_ROOT.'/core/menus/smartphone/iphone_backoffice.php',
+    DOL_DOCUMENT_ROOT.'/core/menus/smartphone/iphone_frontoffice.php',
+    DOL_DOCUMENT_ROOT.'/core/modules/mailings/dolibarr_services_expired.modules.php',
+    DOL_DOCUMENT_ROOT.'/core/modules/mailings/poire.modules.php',
+    DOL_DOCUMENT_ROOT.'/core/modules/mailings/kiwi.modules.php',
+    DOL_DOCUMENT_ROOT.'/core/modules/facture/pdf_crabe.modules.php',
+    DOL_DOCUMENT_ROOT.'/core/modules/facture/pdf_oursin.modules.php'
     );
 
     foreach ($filetodeletearray as $filetodelete)
@@ -3251,8 +3455,8 @@ function migrate_delete_old_dir($db,$langs,$conf)
 
     // List of files to delete
     $filetodeletearray=array(
-    DOL_DOCUMENT_ROOT.'/includes/modules/facture/terre',
-    DOL_DOCUMENT_ROOT.'/includes/modules/facture/mercure'
+    DOL_DOCUMENT_ROOT.'/core/modules/facture/terre',
+    DOL_DOCUMENT_ROOT.'/core/modules/facture/mercure'
     );
 
     foreach ($filetodeletearray as $filetodelete)
@@ -3290,47 +3494,17 @@ function migrate_reload_modules($db,$langs,$conf)
     if (! empty($conf->global->MAIN_MODULE_AGENDA))
     {
         dolibarr_install_syslog("upgrade2::migrate_reload_modules Reactivate module Agenda");
-        $res=@include_once(DOL_DOCUMENT_ROOT.'/includes/modules/modAgenda.class.php');
+        $res=@include_once(DOL_DOCUMENT_ROOT.'/core/modules/modAgenda.class.php');
         if ($res) {
             $mod=new modAgenda($db);
             $mod->remove('noboxes');
             $mod->init('noboxes');
         }
     }
-    if (! empty($conf->global->MAIN_MODULE_PHENIX))
-    {
-        dolibarr_install_syslog("upgrade2::migrate_reload_modules Reactivate module Phenix");
-        $res=@include_once(DOL_DOCUMENT_ROOT.'/includes/modules/modPhenix.class.php');
-        if ($res) {
-            $mod=new modPhenix($db);
-            $mod->remove('noboxes');
-            $mod->init();
-        }
-    }
-    if (! empty($conf->global->MAIN_MODULE_WEBCALENDAR))
-    {
-        dolibarr_install_syslog("upgrade2::migrate_reload_modules Reactivate module Webcalendar");
-        $res=@include_once(DOL_DOCUMENT_ROOT.'/includes/modules/modWebcalendar.class.php');
-        if ($res) {
-            $mod=new modWebcalendar($db);
-            $mod->remove('noboxes');
-            $mod->init();
-        }
-    }
-    if (! empty($conf->global->MAIN_MODULE_MANTIS))
-    {
-        dolibarr_install_syslog("upgrade2::migrate_reload_modules Reactivate module Mantis");
-        $res=@include_once(DOL_DOCUMENT_ROOT.'/includes/modules/modMantis.class.php');
-        if ($res) {
-            $mod=new modMantis($db);
-            $mod->remove('noboxes');
-            $mod->init();
-        }
-    }
     if (! empty($conf->global->MAIN_MODULE_SOCIETE))
     {
         dolibarr_install_syslog("upgrade2::migrate_reload_modules Reactivate module Societe");
-        $res=@include_once(DOL_DOCUMENT_ROOT.'/includes/modules/modSociete.class.php');
+        $res=@include_once(DOL_DOCUMENT_ROOT.'/core/modules/modSociete.class.php');
         if ($res) {
             $mod=new modSociete($db);
             $mod->remove('noboxes');
@@ -3340,102 +3514,102 @@ function migrate_reload_modules($db,$langs,$conf)
     if (! empty($conf->global->MAIN_MODULE_PRODUIT))    // Permission has changed into 2.7
     {
         dolibarr_install_syslog("upgrade2::migrate_reload_modules Reactivate module Produit");
-        $res=@include_once(DOL_DOCUMENT_ROOT.'/includes/modules/modProduct.class.php');
+        $res=@include_once(DOL_DOCUMENT_ROOT.'/core/modules/modProduct.class.php');
         if ($res) {
             $mod=new modProduct($db);
             //$mod->remove('noboxes');
-            $mod->init();
+            $mod->init('noboxes');
         }
     }
     if (! empty($conf->global->MAIN_MODULE_SERVICE))    // Permission has changed into 2.7
     {
         dolibarr_install_syslog("upgrade2::migrate_reload_modules Reactivate module Service");
         if ($res) {
-            $res=@include_once(DOL_DOCUMENT_ROOT.'/includes/modules/modService.class.php');
+            $res=@include_once(DOL_DOCUMENT_ROOT.'/core/modules/modService.class.php');
             $mod=new modService($db);
             //$mod->remove('noboxes');
-            $mod->init();
+            $mod->init('noboxes');
         }
     }
     if (! empty($conf->global->MAIN_MODULE_COMMANDE))   // Permission has changed into 2.9
     {
         dolibarr_install_syslog("upgrade2::migrate_reload_modules Reactivate module Commande");
         if ($res) {
-            $res=@include_once(DOL_DOCUMENT_ROOT.'/includes/modules/modCommande.class.php');
+            $res=@include_once(DOL_DOCUMENT_ROOT.'/core/modules/modCommande.class.php');
             $mod=new modCommande($db);
             //$mod->remove('noboxes');
-            $mod->init();
+            $mod->init('noboxes');
         }
     }
     if (! empty($conf->global->MAIN_MODULE_FACTURE))    // Permission has changed into 2.9
     {
         dolibarr_install_syslog("upgrade2::migrate_reload_modules Reactivate module Facture");
         if ($res) {
-            $res=@include_once(DOL_DOCUMENT_ROOT.'/includes/modules/modFacture.class.php');
+            $res=@include_once(DOL_DOCUMENT_ROOT.'/core/modules/modFacture.class.php');
             $mod=new modFacture($db);
             //$mod->remove('noboxes');
-            $mod->init();
+            $mod->init('noboxes');
         }
     }
     if (! empty($conf->global->MAIN_MODULE_FOURNISSEUR))    // Permission has changed into 2.9
     {
         dolibarr_install_syslog("upgrade2::migrate_reload_modules Reactivate module Fournisseur");
-        $res=@include_once(DOL_DOCUMENT_ROOT.'/includes/modules/modFournisseur.class.php');
+        $res=@include_once(DOL_DOCUMENT_ROOT.'/core/modules/modFournisseur.class.php');
         if ($res) {
             $mod=new modFournisseur($db);
             //$mod->remove('noboxes');
-            $mod->init();
+            $mod->init('noboxes');
         }
     }
 
     if (! empty($conf->global->MAIN_MODULE_USER))    // Permission has changed into 3.0
     {
         dolibarr_install_syslog("upgrade2::migrate_reload_modules Reactivate module User");
-        $res=@include_once(DOL_DOCUMENT_ROOT.'/includes/modules/modUser.class.php');
+        $res=@include_once(DOL_DOCUMENT_ROOT.'/core/modules/modUser.class.php');
         if ($res) {
             $mod=new modUser($db);
             //$mod->remove('noboxes');  // We need to remove because id of module has changed
-            $mod->init();
+            $mod->init('noboxes');
         }
     }
     if (! empty($conf->global->MAIN_MODULE_DEPLACEMENT))    // Permission has changed into 3.0
     {
         dolibarr_install_syslog("upgrade2::migrate_reload_modules Reactivate module Deplacement");
-        $res=@include_once(DOL_DOCUMENT_ROOT.'/includes/modules/modDeplacement.class.php');
+        $res=@include_once(DOL_DOCUMENT_ROOT.'/core/modules/modDeplacement.class.php');
         if ($res) {
             $mod=new modDeplacement($db);
             //$mod->remove('noboxes');	// We need to remove because a permission id has been removed
-            $mod->init();
+            $mod->init('noboxes');
         }
     }
     if (! empty($conf->global->MAIN_MODULE_DON))    // Permission has changed into 3.0
     {
         dolibarr_install_syslog("upgrade2::migrate_reload_modules Reactivate module Don");
-        $res=@include_once(DOL_DOCUMENT_ROOT.'/includes/modules/modDon.class.php');
+        $res=@include_once(DOL_DOCUMENT_ROOT.'/core/modules/modDon.class.php');
         if ($res) {
             $mod=new modDon($db);
             //$mod->remove('noboxes');	// We need to remove because a permission id has been removed
-            $mod->init();
+            $mod->init('noboxes');
         }
     }
     if (! empty($conf->global->MAIN_MODULE_ECM))    // Permission has changed into 3.0 and 3.1
     {
         dolibarr_install_syslog("upgrade2::migrate_reload_modules Reactivate module ECM");
         if ($res) {
-            $res=@include_once(DOL_DOCUMENT_ROOT.'/includes/modules/modECM.class.php');
+            $res=@include_once(DOL_DOCUMENT_ROOT.'/core/modules/modECM.class.php');
             $mod=new modECM($db);
             $mod->remove('noboxes');	// We need to remove because a permission id has been removed
-            $mod->init();
+            $mod->init('noboxes');
         }
     }
     if (! empty($conf->global->MAIN_MODULE_PAYBOX))    // Permission has changed into 3.0
     {
         dolibarr_install_syslog("upgrade2::migrate_reload_modules Reactivate module Paybox");
-        $res=@include_once(DOL_DOCUMENT_ROOT.'/includes/modules/modPaybox.class.php');
+        $res=@include_once(DOL_DOCUMENT_ROOT.'/core/modules/modPaybox.class.php');
         if ($res) {
             $mod=new modPaybox($db);
             $mod->remove('noboxes');  // We need to remove because id of module has changed
-            $mod->init();
+            $mod->init('noboxes');
         }
     }
 
@@ -3487,11 +3661,11 @@ function migrate_reload_menu($db,$langs,$conf,$versionto)
         print '<b>'.$langs->trans('Upgrade').'</b>: '.$langs->trans('MenuHandler')." ".$key."<br>\n";
 
         // Load sql ini_menu_handler.sql file
-        $dir = DOL_DOCUMENT_ROOT."/includes/menus/";
+        $dir = DOL_DOCUMENT_ROOT."/core/menus/";
         $file='init_menu_'.$key.'.sql';
         if (file_exists($dir.$file))
         {
-            $result=run_sql($dir.$file,1,'',1);
+            $result=run_sql($dir.$file,1,'',1,$key);
         }
 
         print '</td></tr>';

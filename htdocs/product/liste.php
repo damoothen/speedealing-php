@@ -96,7 +96,7 @@ if ($conf->categorie->enabled && GETPOST('catid'))
  */
 
 $htmlother=new FormOther($db);
-$html=new Form($db);
+$form=new Form($db);
 
 if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 {
@@ -127,42 +127,36 @@ else
     $sql.= ' p.fk_product_type, p.tms as datem,';
     $sql.= ' p.duration, p.tosell, p.tobuy, p.seuil_stock_alerte,';
     $sql.= ' MIN(pfp.unitprice) as minsellprice';
-    $sql.= ' FROM ('.MAIN_DB_PREFIX.'product as p';
+    $sql.= ' FROM (';
     // We'll need this table joined to the select in order to filter by categ
-    if ($search_categ) $sql.= ", ".MAIN_DB_PREFIX."categorie_product as cp";
+    if ($search_categ) $sql.= MAIN_DB_PREFIX."categorie_product as cp, ";
+    $sql.= MAIN_DB_PREFIX.'product as p';
     $sql.= ') ';
-    //if ($fourn_id > 0)  // The DISTINCT is used to avoid duplicate from this link
-    //{
-    	$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product_fournisseur as pf ON p.rowid = pf.fk_product";
-    	$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product_fournisseur_price as pfp ON pf.rowid = pfp.fk_product_fournisseur";
-    //}
-    $sql.= ' WHERE p.entity IN (0,'.(! empty($conf->entities['product']) ? $conf->entities['product'] : $conf->entity).')';
+   	$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product_fournisseur_price as pfp ON p.rowid = pfp.fk_product";
+    $sql.= ' WHERE p.entity IN ('.getEntity('product', 1).')';
     if ($search_categ) $sql.= " AND p.rowid = cp.fk_product";	// Join for the needed table to filter by categ
-    if ($sall)
-    {
-    	$sql.= " AND (p.ref LIKE '%".$db->escape($sall)."%' OR p.label LIKE '%".$db->escape($sall)."%' OR p.description LIKE '%".$db->escape($sall)."%' OR p.note LIKE '%".$db->escape($sall)."%')";
-    }
+    if ($sall) $sql.= " AND (p.ref LIKE '%".$db->escape($sall)."%' OR p.label LIKE '%".$db->escape($sall)."%' OR p.description LIKE '%".$db->escape($sall)."%' OR p.note LIKE '%".$db->escape($sall)."%')";
     // if the type is not 1, we show all products (type = 0,2,3)
     if (dol_strlen($type))
     {
     	if ($type == 1) $sql.= " AND p.fk_product_type = '1'";
     	else $sql.= " AND p.fk_product_type <> '1'";
     }
-    if ($sref)     $sql.= " AND p.ref like '%".$sref."%'";
-    if ($sbarcode) $sql.= " AND p.barcode like '%".$sbarcode."%'";
-    if ($snom)     $sql.= " AND p.label like '%".$db->escape($snom)."%'";
+    if ($sref)     $sql.= " AND p.ref LIKE '%".$sref."%'";
+    if ($sbarcode) $sql.= " AND p.barcode LIKE '%".$sbarcode."%'";
+    if ($snom)     $sql.= " AND p.label LIKE '%".$db->escape($snom)."%'";
     if (isset($tosell) && dol_strlen($tosell) > 0) $sql.= " AND p.tosell = ".$db->escape($tosell);
     if (isset($tobuy) && dol_strlen($tobuy) > 0)   $sql.= " AND p.tobuy = ".$db->escape($tobuy);
     if (dol_strlen($canvas) > 0)                   $sql.= " AND p.canvas = '".$db->escape($canvas)."'";
     if ($catid)        $sql.= " AND cp.fk_categorie = ".$catid;
     if ($search_categ) $sql.= " AND cp.fk_categorie = ".$search_categ;
-    if ($fourn_id > 0) $sql.= " AND pf.fk_soc = ".$fourn_id;
+    if ($fourn_id > 0) $sql.= " AND pfp.fk_soc = ".$fourn_id;
     $sql.= " GROUP BY p.rowid, p.ref, p.label, p.barcode, p.price, p.price_ttc, p.price_base_type,";
     $sql.= " p.fk_product_type, p.tms,";
     $sql.= " p.duration, p.tosell, p.tobuy, p.seuil_stock_alerte";
     //if (GETPOST("toolowstock")) $sql.= " HAVING SUM(s.reel) < p.seuil_stock_alerte";    // Not used yet
     $sql.= $db->order($sortfield,$sortorder);
-    $sql.= $db->plimit($limit + 1 ,$offset);
+    $sql.= $db->plimit($limit + 1, $offset);
 
     dol_syslog("sql=".$sql);
     $resql = $db->query($sql);
@@ -202,7 +196,7 @@ else
     	if (isset($catid))
     	{
     		print "<div id='ways'>";
-    		$c = new Categorie ($db, $catid);
+    		$c = new Categorie($db, $catid);
     		$ways = $c->print_all_ways(' &gt; ','product/liste.php');
     		print " &gt; ".$ways[0]."<br>\n";
     		print "</div><br>";
@@ -213,7 +207,6 @@ else
     		$fieldlist = $object->field_list;
     		$datas = $object->list_datas;
     		$picto='title.png';
-    		if (empty($conf->browser->firefox)) $picto='title.gif';
     		$title_picto = img_picto('',$picto);
     		$title_text = $title;
 
@@ -405,7 +398,7 @@ else
         			    if ($product_fourn->product_fourn_price_id > 0)
         			    {
         			        $htmltext=$product_fourn->display_price_product_fournisseur();
-                            if ($conf->fournisseur->enabled && $user->rights->fournisseur->lire) print $html->textwithpicto(price($product_fourn->fourn_unitprice).' '.$langs->trans("HT"),$htmltext);
+                            if ($conf->fournisseur->enabled && $user->rights->fournisseur->lire) print $form->textwithpicto(price($product_fourn->fourn_unitprice).' '.$langs->trans("HT"),$htmltext);
                             else print price($product_fourn->fourn_unitprice).' '.$langs->trans("HT");
         			    }
         			}

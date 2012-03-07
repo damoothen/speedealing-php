@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * or see http://www.gnu.org/
  */
 
 /**
@@ -88,6 +88,9 @@ class ModulesTest extends PHPUnit_Framework_TestCase
     }
 
 	/**
+	 * Init phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function setUp()
     {
@@ -100,6 +103,9 @@ class ModulesTest extends PHPUnit_Framework_TestCase
 		print __METHOD__."\n";
     }
 	/**
+	 * End phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function tearDown()
     {
@@ -107,6 +113,9 @@ class ModulesTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testModulesInit
+     *
+     * @return int
      */
     public function testModulesInit()
     {
@@ -118,13 +127,13 @@ class ModulesTest extends PHPUnit_Framework_TestCase
 
 		$modulelist=array('Accounting','Adherent','Agenda','Banque','Barcode','Bookmark','Boutique',
 		'CashDesk','Categorie','ClickToDial','Commande','Comptabilite','Contrat','Deplacement','Document','Don',
-		'ECM','Expedition','Export','ExternalRss','ExternalSite','FTP','Facture',
-		'Fckeditor','Ficheinter','Fournisseur','GeoIPMaxmind','Gravatar','Import','Label','Ldap','Mailing',
+		'ECM','Expedition','Export','ExternalRss','ExternalSite','Facture',
+		'Fckeditor','Ficheinter','Fournisseur','FTP','GeoIPMaxmind','Gravatar','Import','Label','Ldap','Mailing',
 		'Notification','Paybox','Paypal','Prelevement','Product','Projet','Propale',
-		'Service','Societe','Stock','Syslog','Tax','User','WebServices');
+		'Service','Societe','Stock','Syslog','Tax','User','WebServices','Workflow');
 		foreach($modulelist as $modlabel)
 		{
-    		require_once(DOL_DOCUMENT_ROOT.'/includes/modules/mod'.$modlabel.'.class.php');
+    		require_once(DOL_DOCUMENT_ROOT.'/core/modules/mod'.$modlabel.'.class.php');
             $class='mod'.$modlabel;
     		$mod=new $class($db);
             $result=$mod->remove();

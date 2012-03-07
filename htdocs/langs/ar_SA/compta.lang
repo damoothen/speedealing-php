@@ -138,3 +138,41 @@ VATReportBuildWithOptionDefinedInModule=المبالغ المبينة هنا ي�
 SocialContributionsPayments=المساهمات الاجتماعية المدفوعات
 ThirdPartyMustBeEditAsCustomer=ويجب تحديد الطرف الثالث كزبون
 // STOP - Lines generated via autotranslator.php tool (2010-07-17 11:17:37).
+
+
+// START - Lines generated via autotranslator.php tool (2011-10-10 02:45:33).
+// Reference language: en_US -> ar_SA
+RemainingAmountPayment=دفع المبلغ المتبقي :
+AmountToBeCharged=المبلغ الإجمالي للدفع :
+ProposalStats=إحصاءات بشأن المقترحات
+OrderStats=إحصاءات عن أوامر
+CodeNotDef=لم يتم تعريف
+AddRemind=ارسال المبلغ المتاح
+RemainToDivide=يبقى أن يوفد :
+WarningDepositsNotIncluded=لا يتم تضمين فواتير الودائع في هذا الإصدار مع هذه الوحدة المحاسبة.
+// STOP - Lines generated via autotranslator.php tool (2011-10-10 05:35:22).
+
+
+// START - Lines generated via autotranslator.php tool (2012-02-29 15:55:27).
+// Reference language: en_US -> ar_SA
+LT2SummaryES=IRPF الرصيد
+LT2PaidES=مدفوع IRPF
+LT2CustomerES=مبيعات IRPF
+LT2SupplierES=مشتريات IRPF
+newLT2PaymentES=جديد IRPF دفع
+LT2PaymentES=IRPF الدفع
+LT2PaymentsES=الدفعات IRPF
+DepositsAreNotIncluded=- يتم ولا تشمل ودائع الفواتير
+DepositsAreIncluded=- وترد الفواتير ودائع
+LT2ReportByCustomersInInputOutputModeES=تقرير من قبل طرف ثالث IRPF
+RulesVATInServices=- للحصول على الخدمات، ويشتمل هذا التقرير على لوائح ضريبة القيمة المضافة وردت فعلا أو الصادرة على أساس من تاريخ الدفع. <br> - للحصول على الأصول المادية، فإنه يشمل ضريبة القيمة المضافة على الفواتير على أساس من تاريخ الفاتورة.
+RulesVATInProducts=- للحصول على الأصول المادية، فإنه يشمل ضريبة القيمة المضافة على الفواتير على أساس من تاريخ الفاتورة.
+RulesVATDueServices=- للحصول على الخدمات، ويتضمن التقرير فواتير ضريبة القيمة المضافة المستحقة، مدفوعة الأجر أم لا، بناء على تاريخ الفاتورة.
+RulesVATDueProducts=- للحصول على الأصول المادية، فإنه يشمل ضريبة القيمة المضافة على الفواتير، بناء على تاريخ الفاتورة.
+InvoiceStats=إحصاءات عن فواتير
+SellsJournal=مبيعات المجلة
+PurchasesJournal=شراء مجلة
+DescSellsJournal=مبيعات المجلة
+DescPurchasesJournal=شراء مجلة
+InvoiceRef=فاتورة المرجع.
+// STOP - Lines generated via autotranslator.php tool (2012-02-29 15:55:33).

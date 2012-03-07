@@ -32,6 +32,7 @@ ErrorConnectedButDatabaseNotFound=Connection to server successfull but database 
 ErrorDatabaseAlreadyExists=Database '%s' already exists.
 IfDatabaseNotExistsGoBackAndUncheckCreate=If database does not exists, go back and check option "Create database".
 IfDatabaseExistsGoBackAndCheckCreate=If database already exists, go back and uncheck "Create database" option.
+WarningBrowserTooOld=Too old version of browser. Upgrading your browser to a recent version of Firefox, Chrome or Opera is highly recommanded.
 PHPVersion=PHP Version
 YouCanContinue=You can continue...
 PleaseBePatient=Please be patient...
@@ -51,6 +52,7 @@ ServerAddressDescription=Name or ip address for database server, usually 'localh
 ServerPortDescription=Database server port. Keep empty if unknown.
 DatabaseServer=Database server
 DatabaseName=Database name
+DatabasePrefix=Database prefix table
 Login=Login
 AdminLogin=Login for Dolibarr database owner.
 Password=Password
@@ -151,6 +153,7 @@ MigrationShippingDelivery=Upgrade storage of shipping
 MigrationShippingDelivery2=Upgrade storage of shipping 2 
 MigrationFinished=Migration finished
 LastStepDesc=<strong>Last step</strong>: Define here login and password you plan to use to connect to software. Do not loose this as it is the account to administer all others.
+ActivateModule=Activate module %s
 
 #########
 # upgrade
@@ -231,3 +234,6 @@ MigrationProjectTaskTime=Update time spent in seconds
 
 # Migration Acctioncom
 MigrationActioncommElement=Update data on actions
+
+# Migration payment mode
+MigrationPaymentMode=Data migration for payment mode

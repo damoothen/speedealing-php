@@ -1,15 +1,17 @@
-# DOLIBARR ERP/CRM
+# DOLIBARR ERP & CRM
 
-Dolibarr ERP/CRM is a modern software to manage your company or foundation activity (contacts, suppliers, invoices, orders, stocks, agenda, ...).It's an opensource software (wrote with PHP language) designed for small and medium companies, foundation and freelances. You can freely install, use and distribute it as a standalone application or as a web application to use it from every internet access and media.
+Dolibarr ERP & CRM is a modern software to manage your company or foundation activity (contacts, suppliers, invoices, orders, stocks, agenda, ...).It's an opensource software (wrote with PHP language) designed for small and medium companies, foundation and freelances. You can freely install, use and distribute it as a standalone application or as a web application to use it from every internet access and media.
 
 
 ## INSTALL
 
-If you have no technical knowledge, use Windows and you are looking for an autoinstaller to install Dolibarr ERP/CRM in few clicks, you must download DoliWamp (the all-in-one package of Dolibarr for Windows).
+If you have no technical knowledge, and you are looking for an autoinstaller to install Dolibarr ERP/CRM in few clicks, you must download DoliWamp (the all-in-one package of Dolibarr for Windows), DoliDeb (the all-in-one package of Dolibarr for Debian or Ubuntu) or DoliRpm (the all-in-one package of Dolibarr for Fedora, Redhat, Opensue, Mandriva or Mageia).
 
-You can download it at: [Official Website] (http://www.dolibarr.org/downloads/cat_view/62-stable-versions)
+You can download this at: [Official website] (http://www.dolibarr.org/downloads/)
 
-If you already have installed a Web server and a Mysql database, you can install this version like this:
+If you already have installed a Web server and a Mysql database, you can install the standard version like this:
+
+- Uncompress the downloaded archive.
 
 - Copy directory "dolibarr" and all its files inside your web server root, or copy directory anywhere and set up your web server to use "dolibarr/htdocs" as root for a new web server virtual host (second choice need to be server administrator).
   
@@ -20,6 +22,9 @@ If you already have installed a Web server and a Mysql database, you can install
 Url depends on choice made on first step:
 
 	http://localhost/dolibarr/htdocs/install/
+or
+
+	http://localhost/dolibarr/install/
 or
 
 	http://yourdolibarrvirtualhost/install/
@@ -43,7 +48,10 @@ This URL should looks like:
 	http://localhost/dolibarr/htdocs/install/
 or
 
-	http://yourdolibarrhost/install/index.php
+	http://localhost/dolibarr/install/
+or
+
+	http://yourdolibarrhost/install/
 
 Then choose the "update" option according to your case.
 Note: Migrate process can be ran safely several times.
@@ -52,7 +60,7 @@ Note: Migrate process can be ran safely several times.
 
 ## WHAT'S NEW
 
-See ChangeLog file.
+See ChangeLog file found into package.
 
 
 
@@ -96,8 +104,8 @@ See ChangeLog file.
 - Optional WYSIWYG forms, optional Ajax forms.
 - Several skins.
 - Code is highly customizable (a lot of use of modules and submodules).
-- Works with Mysql 3.1 or higher, experimental support for PostgreSql.
-- Works with PHP 4.3 or higher.
+- Works with Mysql 4.1 or higher, or PostgreSql 8.14 or higher.
+- Works with PHP 5.0 or higher.
 - An easy to understand and maintain code (PHP with no heavy frameworks).
 - A trigger architecture to allow you to make Dolibarr business events run PHP code to update your own information system.
 - "NPR VAT Rate" (French particularity for managing VAT in DOM-TOM called "Non Perçue Récupérable").
@@ -108,9 +116,11 @@ See ChangeLog file.
 
 This is features that Dolibarr does not support completely yet:
 
-- Accountancy.
-- Dolibarr can manage only one currency.
-- Dolibarr does not support the double Canadian Tax.
-- Dolibarr does not make coffee (not yet).
-- Stock management with option increase/decrease on invoice works on warehouse number one only (no way to choose warehouse).
-- Stock management with option increase/decrease on orders works on warehouse number one only (no way to choose warehouse).
+- No accountancy (only bank management).
+- Dolibarr manage one currency at once (mono-currency).
+- Dolibarr manage one company/foundation (mono-company). If you want to manage several companies or foundations, you must install several time the software (on same server or not). Another solution is to extend Dolibarr with the addon Module MultiCompany that allows to manage several companies in one Dolibarr instance (one database but with a logical isolation of datas).
+- Does not support double VAT (Federal / provincial) for Canada.
+- Dolibarr does not contains Payroll module.
+- Tasks on module project can't have dependencies between each other.
+- Dolibarr does not include any Webmail.
+- Dolibarr can't do coffee (not yet).

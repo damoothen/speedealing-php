@@ -1,5 +1,5 @@
 <?php
-/* Copyright (C) 2007-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
+/* Copyright (C) 2007-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2009-2011 Regis Houssin        <regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -22,8 +22,8 @@
  */
 
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/admin.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
 
 $langs->load("companies");
 $langs->load("products");
@@ -32,8 +32,7 @@ $langs->load("mails");
 $langs->load("other");
 $langs->load("errors");
 
-if (!$user->admin)
-accessforbidden();
+if (!$user->admin) accessforbidden();
 
 $substitutionarrayfortest=array(
 '__LOGIN__' => $user->login,
@@ -44,25 +43,27 @@ $substitutionarrayfortest=array(
 );
 complete_substitutions_array($substitutionarrayfortest, $langs);
 
+$action=GETPOST('action');
+
 
 /*
  * Actions
  */
 
-if (isset($_POST["action"]) && $_POST["action"] == 'update' && empty($_POST["cancel"]))
+if ($action == 'update' && empty($_POST["cancel"]))
 {
-	dolibarr_set_const($db, "MAIN_DISABLE_ALL_MAILS",   $_POST["MAIN_DISABLE_ALL_MAILS"],'chaine',0,'',$conf->entity);
-
-	dolibarr_set_const($db, "MAIN_MAIL_SENDMODE",       $_POST["MAIN_MAIL_SENDMODE"],'chaine',0,'',0);
-	dolibarr_set_const($db, "MAIN_MAIL_SMTP_PORT",      $_POST["MAIN_MAIL_SMTP_PORT"],'chaine',0,'',0);
-	dolibarr_set_const($db, "MAIN_MAIL_SMTP_SERVER",    $_POST["MAIN_MAIL_SMTP_SERVER"],'chaine',0,'',0);
-	if (isset($_POST["MAIN_MAIL_SMTPS_ID"]))  dolibarr_set_const($db, "MAIN_MAIL_SMTPS_ID",  $_POST["MAIN_MAIL_SMTPS_ID"],'chaine',0,'',0);
-	if (isset($_POST["MAIN_MAIL_SMTPS_PW"]))  dolibarr_set_const($db, "MAIN_MAIL_SMTPS_PW",  $_POST["MAIN_MAIL_SMTPS_PW"],'chaine',0,'',0);
-	if (isset($_POST["MAIN_MAIL_EMAIL_TLS"])) dolibarr_set_const($db, "MAIN_MAIL_EMAIL_TLS", $_POST["MAIN_MAIL_EMAIL_TLS"],'chaine',0,'',0);
-
-	dolibarr_set_const($db, "MAIN_MAIL_EMAIL_FROM",     $_POST["MAIN_MAIL_EMAIL_FROM"],'chaine',0,'',$conf->entity);
-	dolibarr_set_const($db, "MAIN_MAIL_ERRORS_TO",		$_POST["MAIN_MAIL_ERRORS_TO"],'chaine',0,'',$conf->entity);
-	dolibarr_set_const($db, "MAIN_MAIL_AUTOCOPY_TO",    $_POST["MAIN_MAIL_AUTOCOPY_TO"],'chaine',0,'',$conf->entity);
+	dolibarr_set_const($db, "MAIN_DISABLE_ALL_MAILS",   GETPOST("MAIN_DISABLE_ALL_MAILS"),'chaine',0,'',$conf->entity);
+    // Send mode parameters
+	dolibarr_set_const($db, "MAIN_MAIL_SENDMODE",       GETPOST("MAIN_MAIL_SENDMODE"),'chaine',0,'',0);
+	if (isset($_POST["MAIN_MAIL_SMTP_PORT"]))   dolibarr_set_const($db, "MAIN_MAIL_SMTP_PORT",   GETPOST("MAIN_MAIL_SMTP_PORT"),'chaine',0,'',0);
+	if (isset($_POST["MAIN_MAIL_SMTP_SERVER"])) dolibarr_set_const($db, "MAIN_MAIL_SMTP_SERVER", GETPOST("MAIN_MAIL_SMTP_SERVER"),'chaine',0,'',0);
+	if (isset($_POST["MAIN_MAIL_SMTPS_ID"]))    dolibarr_set_const($db, "MAIN_MAIL_SMTPS_ID",    GETPOST("MAIN_MAIL_SMTPS_ID"), 'chaine',0,'',0);
+	if (isset($_POST["MAIN_MAIL_SMTPS_PW"]))    dolibarr_set_const($db, "MAIN_MAIL_SMTPS_PW",    GETPOST("MAIN_MAIL_SMTPS_PW"), 'chaine',0,'',0);
+	if (isset($_POST["MAIN_MAIL_EMAIL_TLS"]))   dolibarr_set_const($db, "MAIN_MAIL_EMAIL_TLS",   GETPOST("MAIN_MAIL_EMAIL_TLS"),'chaine',0,'',0);
+    // Content parameters
+	dolibarr_set_const($db, "MAIN_MAIL_EMAIL_FROM",     GETPOST("MAIN_MAIL_EMAIL_FROM"), 'chaine',0,'',$conf->entity);
+	dolibarr_set_const($db, "MAIN_MAIL_ERRORS_TO",		GETPOST("MAIN_MAIL_ERRORS_TO"),  'chaine',0,'',$conf->entity);
+	dolibarr_set_const($db, "MAIN_MAIL_AUTOCOPY_TO",    GETPOST("MAIN_MAIL_AUTOCOPY_TO"),'chaine',0,'',$conf->entity);
 
 	Header("Location: ".$_SERVER["PHP_SELF"]."?mainmenu=home&leftmenu=setup");
 	exit;
@@ -74,15 +75,15 @@ if (isset($_POST["action"]) && $_POST["action"] == 'update' && empty($_POST["can
  */
 if ($_POST['addfile'] || $_POST['addfilehtml'])
 {
-	require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
+	require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
 
 	// Set tmp user directory
 	$vardir=$conf->user->dir_output."/".$user->id;
 	$upload_dir = $vardir.'/temp';
 
-	if (create_exdir($upload_dir) >= 0)
+	if (dol_mkdir($upload_dir) >= 0)
 	{
-		$resupload=dol_move_uploaded_file($_FILES['addedfile']['tmp_name'], $upload_dir . "/" . $_FILES['addedfile']['name'],0,0,$_FILES['addedfile']['error']);
+		$resupload=dol_move_uploaded_file($_FILES['addedfile']['tmp_name'], $upload_dir . "/" . $_FILES['addedfile']['name'], 1, 0, $_FILES['addedfile']['error']);
 		if (is_numeric($resupload) && $resupload > 0)
 		{
 			$mesg = '<div class="ok">'.$langs->trans("FileTransferComplete").'</div>';
@@ -114,8 +115,8 @@ if ($_POST['addfile'] || $_POST['addfilehtml'])
 		$mesg = '<div class="error">'.$langs->trans("ErrorFailToCreateDir",$upload_dir).'</div>';
 	}
 
-	if ($_POST['addfile'])     $_GET["action"]='test';
-	if ($_POST['addfilehtml']) $_GET["action"]='testhtml';
+	if ($_POST['addfile'])     $action='test';
+	if ($_POST['addfilehtml']) $action='testhtml';
 }
 
 /*
@@ -152,14 +153,14 @@ if (! empty($_POST['removedfile']) || ! empty($_POST['removedfilehtml']))
 			$formmail->remove_attached_files($keytodelete);
 		}
 	}
-	if ($_POST['removedfile'])     $_GET["action"]='test';
-	if ($_POST['removedfilehtml']) $_GET["action"]='testhtml';
+	if ($_POST['removedfile'] || $action='send')     $action='test';
+	if ($_POST['removedfilehtml'] || $action='sendhtml') $action='testhtml';
 }
 
 /*
  * Send mail
  */
-if (($_POST['action'] == 'send' || $_POST['action'] == 'sendhtml')
+if (($action == 'send' || $action == 'sendhtml')
 && ! $_POST['addfile'] && ! $_POST['addfilehtml'] && ! $_POST["removedfile"] && ! $_POST['cancel'])
 {
 	$error=0;
@@ -188,26 +189,26 @@ if (($_POST['action'] == 'send' || $_POST['action'] == 'sendhtml')
 	if (empty($_POST["frommail"]))
 	{
 		$message='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->transnoentities("MailFrom")).'</div>';
-		$_GET["action"]='test';
+		$action='test';
 		$error++;
 	}
 	if (empty($sendto))
 	{
 		$message='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->transnoentities("MailTo")).'</div>';
-		$_GET["action"]='test';
+		$action='test';
 		$error++;
 	}
 	if (! $error)
 	{
 		// Le message est-il en html
 		$msgishtml=0;	// Message is not HTML
-		if ($_POST['action'] == 'sendhtml') $msgishtml=1;	// Force message to HTML
+		if ($action == 'sendhtml') $msgishtml=1;	// Force message to HTML
 
 		// Pratique les substitutions sur le sujet et message
 		$subject=make_substitutions($subject,$substitutionarrayfortest);
 		$body=make_substitutions($body,$substitutionarrayfortest);
 
-		require_once(DOL_DOCUMENT_ROOT."/lib/CMailFile.class.php");
+		require_once(DOL_DOCUMENT_ROOT."/core/class/CMailFile.class.php");
 		$mailfile = new CMailFile(
 			$subject, $sendto, $email_from, $body,
 			$filepath, $mimetype, $filename,
@@ -225,7 +226,7 @@ if (($_POST['action'] == 'send' || $_POST['action'] == 'sendhtml')
 			$message='<div class="error">'.$langs->trans("ResultKo").'<br>'.$mailfile->error.' '.$result.'</div>';
 		}
 
-		$_GET["action"]='';
+		$action='';
 	}
 }
 
@@ -259,7 +260,7 @@ print_fiche_titre($langs->trans("EMailsSetup"),'','setup');
 print $langs->trans("EMailsDesc")."<br>\n";
 print "<br>\n";
 
-if ($message) print $message.'<br>';
+dol_htmloutput_mesg($message);
 
 // List of sending methods
 $listofmethods=array();
@@ -268,9 +269,9 @@ $listofmethods['mail']='PHP mail function';
 $listofmethods['smtps']='SMTP/SMTPS socket library';
 
 
-if (isset($_GET["action"]) && $_GET["action"] == 'edit')
+if ($action == 'edit')
 {
-	$html=new Form($db);
+	$form=new Form($db);
 
 	if ($conf->use_javascript_ajax)
 	{
@@ -321,7 +322,7 @@ if (isset($_GET["action"]) && $_GET["action"] == 'edit')
 	// Disable
 	$var=!$var;
 	print '<tr '.$bc[$var].'><td>'.$langs->trans("MAIN_DISABLE_ALL_MAILS").'</td><td>';
-	print $html->selectyesno('MAIN_DISABLE_ALL_MAILS',$conf->global->MAIN_DISABLE_ALL_MAILS,1);
+	print $form->selectyesno('MAIN_DISABLE_ALL_MAILS',$conf->global->MAIN_DISABLE_ALL_MAILS,1);
 	print '</td></tr>';
 
 	// Separator
@@ -335,14 +336,14 @@ if (isset($_GET["action"]) && $_GET["action"] == 'edit')
 	// SuperAdministrator access only
 	if ((empty($conf->global->MAIN_MODULE_MULTICOMPANY)) || ($user->admin && !$user->entity))
 	{
-		print $html->selectarray('MAIN_MAIL_SENDMODE',$listofmethods,$conf->global->MAIN_MAIL_SENDMODE);
+		print $form->selectarray('MAIN_MAIL_SENDMODE',$listofmethods,$conf->global->MAIN_MAIL_SENDMODE);
 	}
 	else
 	{
 		$text = $listofmethods[$conf->global->MAIN_MAIL_SENDMODE];
 		if (empty($text)) $text = $langs->trans("Undefined");
 		$htmltext = $langs->trans("ContactSuperAdminForChange");
-		print $html->textwithpicto($text,$htmltext,1,'superadmin');
+		print $form->textwithpicto($text,$htmltext,1,'superadmin');
 		print '<input type="hidden" name="MAIN_MAIL_SENDMODE" value="'.$conf->global->MAIN_MAIL_SENDMODE.'">';
 	}
 	print '</td></tr>';
@@ -350,7 +351,7 @@ if (isset($_GET["action"]) && $_GET["action"] == 'edit')
 	// Server
 	$var=!$var;
 	print '<tr '.$bc[$var].'><td>';
-	if (! $conf->use_javascript_ajax && $linuxlike && ($conf->global->MAIN_MAIL_SENDMODE == 'mail' || $conf->global->MAIN_MAIL_SENDMODE == 'simplemail'))
+	if (! $conf->use_javascript_ajax && $linuxlike && $conf->global->MAIN_MAIL_SENDMODE == 'mail')
 	{
 		print $langs->trans("MAIN_MAIL_SMTP_SERVER_NotAvailableOnLinuxLike");
 		print '</td><td>';
@@ -366,12 +367,13 @@ if (isset($_GET["action"]) && $_GET["action"] == 'edit')
 		if ((empty($conf->global->MAIN_MODULE_MULTICOMPANY)) || ($user->admin && !$user->entity))
 		{
 			print '<input class="flat" id="MAIN_MAIL_SMTP_SERVER" name="MAIN_MAIL_SMTP_SERVER" size="18" value="' . $conf->global->MAIN_MAIL_SMTP_SERVER . '">';
+			print '<input type="hidden" id="MAIN_MAIL_SMTP_SERVER_sav" name="MAIN_MAIL_SMTP_SERVER_sav" value="' . $conf->global->MAIN_MAIL_SMTP_SERVER . '">';
 		}
 		else
 		{
 			$text = $conf->global->MAIN_MAIL_SMTP_SERVER ? $conf->global->MAIN_MAIL_SMTP_SERVER : $smtpserver;
 			$htmltext = $langs->trans("ContactSuperAdminForChange");
-			print $html->textwithpicto($text,$htmltext,1,'superadmin');
+			print $form->textwithpicto($text,$htmltext,1,'superadmin');
 			print '<input type="hidden" id="MAIN_MAIL_SMTP_SERVER" name="MAIN_MAIL_SMTP_SERVER" value="'.$conf->global->MAIN_MAIL_SMTP_SERVER.'">';
 		}
 	}
@@ -380,7 +382,7 @@ if (isset($_GET["action"]) && $_GET["action"] == 'edit')
 	// Port
 	$var=!$var;
 	print '<tr '.$bc[$var].'><td>';
-	if (! $conf->use_javascript_ajax && $linuxlike && ($conf->global->MAIN_MAIL_SENDMODE == 'mail' || $conf->global->MAIN_MAIL_SENDMODE == 'simplemail'))
+	if (! $conf->use_javascript_ajax && $linuxlike && $conf->global->MAIN_MAIL_SENDMODE == 'mail')
 	{
 		print $langs->trans("MAIN_MAIL_SMTP_PORT_NotAvailableOnLinuxLike");
 		print '</td><td>';
@@ -396,12 +398,13 @@ if (isset($_GET["action"]) && $_GET["action"] == 'edit')
 		if ((empty($conf->global->MAIN_MODULE_MULTICOMPANY)) || ($user->admin && !$user->entity))
 		{
 			print '<input class="flat" id="MAIN_MAIL_SMTP_PORT" name="MAIN_MAIL_SMTP_PORT" size="3" value="' . $conf->global->MAIN_MAIL_SMTP_PORT . '">';
+			print '<input type="hidden" id="MAIN_MAIL_SMTP_PORT_sav" name="MAIN_MAIL_SMTP_PORT_sav" value="' . $conf->global->MAIN_MAIL_SMTP_PORT . '">';
 		}
 		else
 		{
 			$text = $conf->global->MAIN_MAIL_SMTP_PORT ? $conf->global->MAIN_MAIL_SMTP_PORT : $smtpport;
 			$htmltext = $langs->trans("ContactSuperAdminForChange");
-			print $html->textwithpicto($text,$htmltext,1,'superadmin');
+			print $form->textwithpicto($text,$htmltext,1,'superadmin');
 			print '<input type="hidden" id="MAIN_MAIL_SMTP_PORT" name="MAIN_MAIL_SMTP_PORT" value="'.$conf->global->MAIN_MAIL_SMTP_PORT.'">';
 		}
 	}
@@ -420,7 +423,7 @@ if (isset($_GET["action"]) && $_GET["action"] == 'edit')
 		else
 		{
 			$htmltext = $langs->trans("ContactSuperAdminForChange");
-			print $html->textwithpicto($conf->global->MAIN_MAIL_SMTPS_ID,$htmltext,1,'superadmin');
+			print $form->textwithpicto($conf->global->MAIN_MAIL_SMTPS_ID,$htmltext,1,'superadmin');
 			print '<input type="hidden" name="MAIN_MAIL_SMTPS_ID" value="'.$conf->global->MAIN_MAIL_SMTPS_ID.'">';
 		}
 		print '</td></tr>';
@@ -439,7 +442,7 @@ if (isset($_GET["action"]) && $_GET["action"] == 'edit')
 		else
 		{
 			$htmltext = $langs->trans("ContactSuperAdminForChange");
-			print $html->textwithpicto($conf->global->MAIN_MAIL_SMTPS_PW,$htmltext,1,'superadmin');
+			print $form->textwithpicto($conf->global->MAIN_MAIL_SMTPS_PW,$htmltext,1,'superadmin');
 			print '<input type="hidden" name="MAIN_MAIL_SMTPS_PW" value="'.$conf->global->MAIN_MAIL_SMTPS_PW.'">';
 		}
 		print '</td></tr>';
@@ -452,7 +455,7 @@ if (isset($_GET["action"]) && $_GET["action"] == 'edit')
 	{
 		if (function_exists('openssl_open'))
 		{
-			print $html->selectyesno('MAIN_MAIL_EMAIL_TLS',$conf->global->MAIN_MAIL_EMAIL_TLS,1);
+			print $form->selectyesno('MAIN_MAIL_EMAIL_TLS',$conf->global->MAIN_MAIL_EMAIL_TLS,1);
 		}
 		else print yn(0).' ('.$langs->trans("YourPHPDoesNotHaveSSLSupport").')';
 	}
@@ -516,7 +519,7 @@ else
 
 	// Server
 	$var=!$var;
-	if ($linuxlike && ($conf->global->MAIN_MAIL_SENDMODE == 'mail' || $conf->global->MAIN_MAIL_SENDMODE == 'simplemail'))
+	if ($linuxlike && $conf->global->MAIN_MAIL_SENDMODE == 'mail')
 	{
 		print '<tr '.$bc[$var].'><td>'.$langs->trans("MAIN_MAIL_SMTP_SERVER_NotAvailableOnLinuxLike").'</td><td>'.$langs->trans("SeeLocalSendMailSetup").'</td></tr>';
 	}
@@ -527,7 +530,7 @@ else
 
 	// Port
 	$var=!$var;
-	if ($linuxlike && ($conf->global->MAIN_MAIL_SENDMODE == 'mail' || $conf->global->MAIN_MAIL_SENDMODE == 'simplemail'))
+	if ($linuxlike && $conf->global->MAIN_MAIL_SENDMODE == 'mail')
 	{
 		print '<tr '.$bc[$var].'><td>'.$langs->trans("MAIN_MAIL_SMTP_PORT_NotAvailableOnLinuxLike").'</td><td>'.$langs->trans("SeeLocalSendMailSetup").'</td></tr>';
 	}
@@ -547,7 +550,7 @@ else
 	$var=!$var;
 	if ($conf->global->MAIN_MAIL_SENDMODE == 'smtps')
 	{
-		print '<tr '.$bc[$var].'><td>'.$langs->trans("MAIN_MAIL_SMTPS_PW").'</td><td>'.$conf->global->MAIN_MAIL_SMTPS_PW.'</td></tr>';
+		print '<tr '.$bc[$var].'><td>'.$langs->trans("MAIN_MAIL_SMTPS_PW").'</td><td>'.preg_replace('/./','*',$conf->global->MAIN_MAIL_SMTPS_PW).'</td></tr>';
 	}
 
 	// TLS
@@ -591,17 +594,22 @@ else
 
 	print '</table>';
 
-
-	if ($linuxlike && $conf->global->MAIN_MAIL_SENDMODE == 'mail')
-	{
-		$sendmailoption=ini_get('mail.force_extra_parameters');
-		//print 'x'.$sendmailoption;
-		if (empty($sendmailoption) || ! preg_match('/ba/',$sendmailoption))
-		{
-			print '<br>'.info_admin($langs->trans("SendmailOptionNotComplete"));
-		}
-	}
-
+    // Warning 1
+    if ($conf->global->MAIN_MAIL_SENDMODE == 'mail')
+    {
+        print '<br>';
+    	if ($linuxlike)
+    	{
+    		$sendmailoption=ini_get('mail.force_extra_parameters');
+    		//print 'x'.$sendmailoption;
+    		if (empty($sendmailoption) || ! preg_match('/ba/',$sendmailoption))
+    		{
+    			print info_admin($langs->trans("SendmailOptionNotComplete"));
+    		}
+    	}
+    	// Warning 2
+   	    print info_admin($langs->trans("SendmailOptionMayHurtBuggedMTA"));
+    }
 
 	// Boutons actions
 	print '<div class="tabsAction">';
@@ -631,7 +639,7 @@ else
 
 
 	// Run the test to connect
-	if ($_GET["action"] == 'testconnect')
+	if ($action == 'testconnect')
 	{
 		print '<br>';
 		print_titre($langs->trans("DoTestServerAvailability"));
@@ -639,21 +647,21 @@ else
 		// If we use SSL/TLS
 		if (! empty($conf->global->MAIN_MAIL_EMAIL_TLS) && function_exists('openssl_open')) $server='ssl://'.$server;
 
-		include_once(DOL_DOCUMENT_ROOT."/lib/CMailFile.class.php");
+		include_once(DOL_DOCUMENT_ROOT."/core/class/CMailFile.class.php");
 		$mail = new CMailFile('','','','');
 		$result=$mail->check_server_port($server,$port);
 		if ($result) print '<div class="ok">'.$langs->trans("ServerAvailableOnIPOrPort",$server,$port).'</div>';
 		else
 		{
 			print '<div class="error">'.$langs->trans("ServerNotAvailableOnIPOrPort",$server,$port);
-			if ($mail->error) print ' - '.$langs->convToOutputCharset($mail->error,'ISO-8859-1');
+			if ($mail->error) print ' - '.$mail->error;
 			print '</div>';
 		}
 		print '<br>';
 	}
 
 	// Affichage formulaire de TEST simple
-	if ($_GET["action"] == 'test')
+	if ($action == 'test')
 	{
 		print '<br>';
 		print_titre($langs->trans("DoTestSend"));
@@ -698,7 +706,7 @@ else
 	}
 
 	// Affichage formulaire de TEST HTML
-	if ($_GET["action"] == 'testhtml')
+	if ($action == 'testhtml')
 	{
 		print '<br>';
 		print_titre($langs->trans("DoTestSendHTML"));
@@ -745,7 +753,7 @@ else
 }
 
 
-$db->close();
-
 llxFooter();
+
+$db->close();
 ?>

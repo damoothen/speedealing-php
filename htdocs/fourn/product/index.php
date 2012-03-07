@@ -1,6 +1,6 @@
 <?php
 /* Copyright (C) 2001-2005 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2005 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,7 +58,10 @@ print "</table></form><br>\n";
  * Nombre de produits et/ou services
  */
 $prodser = array();
-$sql = "SELECT count(*), fk_product_type  FROM ".MAIN_DB_PREFIX."product as p GROUP BY fk_product_type";
+$sql = "SELECT count(*), p.fk_product_type";
+$sql.= " FROM ".MAIN_DB_PREFIX."product as p";
+$sql.= " WHERE p.entity IN (".getEntity('product', 1).")";
+$sql.= " GROUP BY p.fk_product_type";
 $resql=$db->query($sql);
 if ($resql)
 {
@@ -96,10 +99,11 @@ print '</td><td valign="top" width="70%">';
  * Derniers produits en vente
  */
 $sql = "SELECT p.rowid, p.label, p.price, p.ref, p.type";
-$sql .= " FROM ".MAIN_DB_PREFIX."product as p ";
-$sql .= " WHERE p.fk_product_type <> 1";
-$sql .= " ORDER BY p.datec DESC ";
-$sql .= $db->plimit(15 ,0);
+$sql.= " FROM ".MAIN_DB_PREFIX."product as p ";
+$sql.= " WHERE p.entity IN (".getEntity('product', 1).")";
+$sql.= " AND p.fk_product_type <> 1";
+$sql.= " ORDER BY p.datec DESC ";
+$sql.= $db->plimit(15, 0);
 
 $resql = $db->query($sql);
 

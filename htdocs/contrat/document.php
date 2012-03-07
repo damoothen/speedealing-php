@@ -26,9 +26,9 @@
  */
 
 require ("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/contract.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/contract.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/contrat/class/contrat.class.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 
 $langs->load("other");
@@ -69,9 +69,9 @@ $modulepart='contract';
  */
 if ($_POST["sendit"] && ! empty($conf->global->MAIN_UPLOAD_DOC))
 {
-	require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
+	require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
 
-	if (create_exdir($upload_dir) >= 0)
+	if (dol_mkdir($upload_dir) >= 0)
 	{
 		$resupload=dol_move_uploaded_file($_FILES['userfile']['tmp_name'], $upload_dir . "/" . $_FILES['userfile']['name'],0,0,$_FILES['userfile']['error']);
 		if (is_numeric($resupload) && $resupload > 0)
@@ -102,7 +102,7 @@ if ($_POST["sendit"] && ! empty($conf->global->MAIN_UPLOAD_DOC))
  *
  */
 
-$html = new Form($db);
+$form = new Form($db);
 
 llxHeader("","",$langs->trans("CardProduct".$product->type));
 

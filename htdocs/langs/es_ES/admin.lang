@@ -19,6 +19,7 @@ ConfirmLockNewSessions=¿Está seguro de querer restringir el acceso a Dolibarr 
 UnlockNewSessions=Eliminar bloqueo de conexiones
 YourSession=Su sesión
 Sessions=Sesiones de usuarios
+WebUserGroup=Servidor web usuario/grupo
 NoSessionFound=Parece que su PHP no puede listar las sesiones activas. El directorio de salvaguardado de sesiones (<b>%s</b>) puede estar protegido (por ejemplo, por los permisos del sistema operativo o por la directiva open_basedir de su PHP).
 HTMLCharset=Charset de las páginas HTML
 DBStoringCharset=Charset base de datos para almacenamiento de datos
@@ -167,6 +168,7 @@ AddDropTable=Añadir órdenes DROP TABLE
 Datas=Datos
 NameColumn=Nombre las columnas
 ExtendedInsert=Instrucciones INSERT extendidas
+NoLockBeforeInsert=Sin intrucción LOCK antes del INSERT 
 DelayedInsert=Inserciones con retraso
 EncodeBinariesInHexa=Codificar los campos binarios en hexadecimal
 IgnoreDuplicateRecords=Ignorar los errores de duplicación (INSERT IGNORE)
@@ -317,7 +319,7 @@ UrlGenerationParameters=Seguridad de las URLs
 SecurityTokenIsUnique=¿Usar un parámetro securekey único para cada URL?
 EnterRefToBuildUrl=Introduzca la referencia del objeto %s
 GetSecuredUrl=Obtener la URL calculada
-# Modules
+# Modules= undefined=
 Module0Name=Usuarios y grupos
 Module0Desc=Gestión de usuarios y grupos
 Module1Name=Terceros
@@ -339,7 +341,7 @@ Module30Desc=Gestión de facturas y abonos a clientes. Gestión facturas de prov
 Module40Name=Proveedores
 Module40Desc=Gestión de proveedores
 Module42Name=Syslog
-Module42Desc=Utilización de logs (syslog)
+Module42Desc=Generación de logs (archivos, syslog,...)
 Module49Name=Editores
 Module49Desc=Gestión de editores
 Module50Name=Productos
@@ -370,8 +372,10 @@ Module80Name=Expediciones
 Module80Desc=Gestión de expediciones y recepciones 
 Module85Name=Bancos y cajas
 Module85Desc=Gestión de las cuentas financieras de tipo cuentas bancarias, postales o efectivo
-Module100Name=ExternalSite
+Module100Name=External site
 Module100Desc=Incluye cualquier sitio web externo en los menús de Dolibarr, viéndolo en un frame
+Module105Name=Mailman y Sip
+Module105Desc=Interface con Mailman o Spip para el módulo Miembros
 Module200Name=LDAP
 Module200Desc=sincronización con un anuario LDAP
 Module210Name=PostNuke
@@ -641,6 +645,7 @@ Permission2515=Configuración directorios de documentos
 Permission8555=Uso del módulo
 Permission8556=Establecer sitios e-commerce
 Permission8557=Importar datos
+Permission50001=Usar TPV
 Permission50201=Consultar las transacciones
 Permission50202=Importar las transacciones
 DictionnaryCompanyType=Tipos de empresa
@@ -795,18 +800,19 @@ LogEvents=Auditoría de la seguridad de eventos
 Audit=Auditoría
 ListEvents=Auditoría de eventos
 ListOfSecurityEvents=Listado de eventos de seguridad Dolibarr
+SecurityEventsPurged=Eventos de seguridad purgados
 LogEventDesc=Puede habilitar el registro de eventos de seguridad Dolibarr aquí. Los administradores pueden ver su contenido a través de menú <b>Herramientas del sistema - Auditoría</b>.Atención, esta característica puede consumir una gran cantidad de datos en la base de datos.
 AreaForAdminOnly=Estas funciones solo son accesibles a un usuario administrador.
 SystemInfoDesc=La información del sistema es información técnica accesible solamente en solo lectura a los administradores.
 SystemAreaForAdminOnly=Esta área solo es accesible a los usuarios de tipo administradores. Ningún permiso Dolibarr permite extender el círculo de usuarios autorizados a esta área.
-CompanyFundationDesc=Editar en esta página toda la información conocida sobre la empresa o asociación a administrar
+CompanyFundationDesc=Editar en esta página toda la información conocida sobre la empresa o asociación a administrar (para ello haga clic en el botón "Modificar" a pié de página)
 DisplayDesc=Puede encontrar aquí todos los parámetros relacionados con la apariencia de Dolibarr
 AvailableModules=Módulos disponibles
 ToActivateModule=Para activar los módulos, vaya al área de Configuración (Inicio->Configuración->Módulos).
 SessionTimeOut=Time out de sesiones
 SessionExplanation=Asegura que el período de sesiones no expirará antes de este momento. Sin embargo, la gestión del período de sesiones de PHP no garantiza que el período de sesiones expira después de este período: Este será el caso si un sistema de limpieza del caché de sesiones es activo. <br> Nota: Sin mecanismo especial, el mecanismo interno para limpiar el período de sesiones de PHP todos los accesos <b>%s/%s</b>, pero sólo en torno al acceso de otros períodos de sesiones.
 TriggersAvailable=Triggers disponibles
-TriggersDesc=Los triggers son archivos que, une vez depositados en el directorio <b>htdocs/includes/triggers</b>, modifican el comportamiento del workflow de Dolibarr. Realizan acciones suplementarias, desencadenadas por los eventos Dolibarr (creación de empresa, validación factura, cierre contrato, etc).
+TriggersDesc=Los triggers son archivos que, une vez depositados en el directorio <b>htdocs/core/triggers</b>, modifican el comportamiento del workflow de Dolibarr. Realizan acciones suplementarias, desencadenadas por los eventos Dolibarr (creación de empresa, validación factura, cierre contrato, etc).
 TriggerDisabledByName=Triggers de este archivo desactivados por el sufijo <b>-NORUN</b> en el nombre del archivo.
 TriggerDisabledAsModuleDisabled=Triggers de este archivo desactivados ya que el módulo <b>%s</b> no está activado.
 TriggerAlwaysActive=Triggers de este archivo siempre activos, ya que los módulos Dolibarr relacionados están activados
@@ -860,8 +866,12 @@ MAIN_PROXY_USER=Login del servidor proxy
 MAIN_PROXY_PASS=Contraseña del servidor proxy
 DefineHereComplementaryAttributes=Defina aquí la lista de atributos adicionales, no disponibles en estándar, y que desea gestionar para %s.
 ExtraFields=Atributos adicionales
+ExtraFieldHasWrongValue=El atributo %s tiene un valor incorrecto.
 SendingMailSetup=Configuració de l'enviament per mail
 SendmailOptionNotComplete=Atención, en algunos sistemas Linux, con este método de envio, para poder enviar mails en su nombre, la configuración de sendmail debe contener la opción <b>-ba</b> (parámetro <b>mail.force_extra_parameters</b> en el archivo <b>php.ini</b>). Si algunos de sus destinatarios no reciben sus mensajes, pruebe a modificar este parámetro PHP con <b>mail.force_extra_parameters=-ba</b>.
+PathToDocuments=Rutas de acceso a documentos
+PathDirectory=Directorio
+SendmailOptionMayHurtBuggedMTA=La funcionalidad de enviar correo electrónico a través del "correo directo PHP" genera una solicitud que puede ser mal interpretado por algunos servidores de correo. Esto se traduce en mensajes de correo electrónico ilegibles para las personas alojadas en  estas plataformas. Este es el caso de clientes en ciertos proveedores de servicios de Internet (Ej: Orange). Esto no es un problema ni de Dolibarr ni de PHP, pero sí del servidor de correo. Sin embargo, puede agregar la opción MAIN_FIX_FOR_BUGGED_MTA con valor 1 en configuración-varios para tratar que Dolibarr evite el error. Otra solución (recomendada) es utilizar el método de envío por SMTP que no tiene este inconveniente. 
 ##### Module password generation
 PasswordGenerationStandard=Devuelve una contraseña generada por el algoritmo interno Dolibarr: 8 caracteres, números y caracteres en minúsculas mezcladas.
 PasswordGenerationNone=No ofrece contraseñas. La contraseña se introduce manualmente.
@@ -934,8 +944,6 @@ WatermarkOnDraftInvoices=Marca de agua en las facturas borrador (en caso de esta
 PropalSetup=Configuración del módulo Presupuestos
 CreateForm=Creación formulario
 NumberOfProductLines=Numero de líneas de productos
-PathToDocuments=Rutas de acceso a documentos
-PathDirectory=Catálogo
 ProposalsNumberingModules=Módulos de numeración de presupuestos
 ProposalsPDFModules=Modelos de documentos de presupuestos
 ClassifiedInvoiced=Clasificar facturado
@@ -1107,12 +1115,15 @@ LDAPDescGroups=Esta página permite definir el nombre de los atributos del árbo
 LDAPDescMembers=Esta página permite definir el nombre de los atributos del árbol LDAP para cada información de los miembros del módulo Asociaciones Dolibarr.
 LDAPDescValues=Los valores de ejemplos se adaptan a <b>OpenLDAP</b> con los schemas cargados: <b>core.schema, cosine.schema, inetorgperson.schema</b>). Si usted utiliza los a valores sugeridos y OpenLDAP, modifique su archivo de configuración LDAP <b>slapd.conf</b> para tener todos estos schemas activos.
 ForANonAnonymousAccess=Para un acceso autentificado
-##### Products #####
+##### Products/Services #####
 ProductSetup=Configuración del módulo Productos
+ServiceSetup=Configuración del módulo Servicios
+ProductServiceSetup=Configuración de los módulos Productos y Servicios
 NumberOfProductShowInSelect=Nº de productos máx. en las listas (0=sin límite)
 ConfirmDeleteProductLineAbility=Confirmación de eliminación de una línea de producido en los formularios
 ModifyProductDescAbility=Personalización de las descripciones de los productos en los formularios
 ViewProductDescInFormAbility=Visualización de las descripciones de los productos en los formularios
+ViewProductDescInThirdpartyLanguageAbility=Visualización de las descripciones de productos en el idioma del tercero
 UseSearchToSelectProduct=Utilizar un formulario de búsqueda para la selección de un producto (en vez de la lista desplegable). Tenga en cuenta que si tiene un número importante de productos o servicios (> 100 000), puede mejorar el rendimiento definiendo la constante PRODUCT_DONOTSEARCH_ANYWHERE a 1 en Configuración->Varios. La búsqueda quedará limitada al inicio de la cadena.
 UseEcoTaxeAbility=Asumir ecotasa (DEEE)
 SetDefaultBarcodeTypeProducts=Tipo de código de barras utilizado por defecto para los productos
@@ -1144,7 +1155,6 @@ BarcodeDescUPC=Códigos de barra tipo UPC
 BarcodeDescISBN=Códigos de barra tipo ISBN
 BarcodeDescC39=Códigos de barra tipo C39
 BarcodeDescC128=Códigos de barra tipo C128
-NoActivatedBarcode=Ningún tipo de código de barra activado
 ##### Prelevements #####
 WithdrawalsSetup=Configuración del módulo domiciliaciones
 ##### ExternalRSS #####
@@ -1173,12 +1183,9 @@ FreeLegalTextOnDeliveryReceipts=Texto libre en las notas de recepción
 ##### FCKeditor #####
 AdvancedEditor=Editor avanzado
 ActivateFCKeditor=Activar editor avanzado para :
-FCKeditorForUsers=Creación/edición WYSIWIG de la descripción y notas de los usuarios
 FCKeditorForCompany=Creación/edición WYSIWIG de la descripción y notas de los terceros
 FCKeditorForProduct=Creación/edición WYSIWIG de la descripción y notas de los productos/servicios
-FCKeditorForMembers=Creación/edición WYSIWIG de la descripción y notas de los miembros
 FCKeditorForProductDetails=Creación/edición WYSIWIG de las líneas de detalle de los productos (en pedidos, presupuestos, facturas, etc.)
-FCKeditorForProductDetailsPerso=Creación/edición WYSIWIG de las líneas de detalle en los productos personalizadas (en pedidos, presupuestos, facturas, etc.)<font class="warning">Advertencia: El uso para este caso no es aconsejable ya que puede causar problemas en la gestión de los caracteres y el diseño de los archivos PDF generados.</font>
 FCKeditorForMailing=Creación/edición WYSIWIG de los E-Mails
 ##### OSCommerce 1 #####
 OSCommerceErrorConnectOkButWrongDatabase=La conexión se ha establecido, pero la base de datos no parece de OSCommerce.
@@ -1278,6 +1285,8 @@ BankOrderGlobal=General
 BankOrderGlobalDesc=Orden de visualización general
 BankOrderES=Español
 BankOrderESDesc=Orden de visualización español
+##### MailmanSpip #####
+MailmanSpipSetup=Configuración del módulo Mailman y Spip
 ##### Multicompany #####
 MultiCompanySetup=Configuración del módulo Multi-empresa
 ##### Suppliers #####
@@ -1291,9 +1300,6 @@ NoteOnPathLocation=Tenga en cuenta que este archivo debe estar en un directorio 
 YouCanDownloadFreeDatFileTo=Puede descargarse una <b>versión demo gratuita</b> del archivo de países Maxmind GeoIP en la dirección %s.
 YouCanDownloadAdvancedDatFileTo=También puede descargarse una <b>versión más completa</b> del archivo de países Maxmind GeoIP en la dirección %s.
 TestGeoIPResult=Test de conversión IP -> País
-##### NumberWords #####
-NumberWordsSetup=Configuración del módulo NumberWords
-DescNumberWords=Este módulo le ofrece convertir números o importes en cualquier cadena. También realiza la sustitución de las variables genéricas __TOTAL_TTC_WORDS__, __TOTAL_HT_WORDS__ o __TOTAL_VAT_WORDS__ por el valor de importes totales, base o del IVA, en cadena dentro del texto al que hacen referencia (texto libre de facturas, ...)
 ##### Projects #####
 ProjectsNumberingModules=Módulo de numeración para las referencias de los proyectos
 ProjectsSetup=Configuración del módulo Proyectos

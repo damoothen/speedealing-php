@@ -381,6 +381,7 @@ class Task extends CommonObject
      */
     function hasChildren()
     {
+    	$error=0;
         $ret=0;
 
         $sql = "SELECT COUNT(*) as nb";
@@ -420,7 +421,7 @@ class Task extends CommonObject
 
         $result='';
 
-        $lien = '<a href="'.DOL_URL_ROOT.'/projet/tasks/task.php?id='.$this->id.'">';
+        $lien = '<a href="'.DOL_URL_ROOT.'/projet/tasks/task.php?id='.$this->id.($option=='withproject'?'&withproject=1':'').'">';
         $lienfin='</a>';
 
         $picto='projecttask';
@@ -664,6 +665,7 @@ class Task extends CommonObject
     {
         global $conf,$langs;
 
+		$error=0;
         $ret = 0;
 
         // Clean parameters
@@ -781,6 +783,9 @@ class Task extends CommonObject
      */
     function updateTimeSpent($user, $notrigger=0)
     {
+    	global $conf,$langs;
+
+    	$error=0;
         $ret = 0;
 
         // Clean parameters

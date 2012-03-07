@@ -18,13 +18,13 @@
  */
 
 /**
- *      \file       htdocs/admin/societe_extrafields.php
+ *      \file       htdocs/societe/admin/societe_extrafields.php
  *		\ingroup    societe
  *		\brief      Page to setup extra fields of third party
  */
 
 require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/company.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/extrafields.class.php");
 
 $langs->load("companies");
@@ -52,7 +52,7 @@ if (!$user->admin) accessforbidden();
  * Actions
  */
 
-require(DOL_DOCUMENT_ROOT."/lib/admin_extrafields.inc.php");
+require(DOL_DOCUMENT_ROOT."/core/admin_extrafields.inc.php");
 
 
 
@@ -70,7 +70,7 @@ $linkback='<a href="'.DOL_URL_ROOT.'/admin/modules.php">'.$langs->trans("BackToM
 print_fiche_titre($langs->trans("CompanySetup"),$linkback,'setup');
 
 
-$head = societe_admin_prepare_head($adh);
+$head = societe_admin_prepare_head(null);
 
 dol_fiche_head($head, 'attributes', $langs->trans("ThirdParty"), 0, 'company');
 
@@ -144,7 +144,7 @@ if ($action == 'create')
     // Label
     print '<tr><td class="fieldrequired" required>'.$langs->trans("Label").'</td><td class="valeur"><input type="text" name="label" size="40" value="'.GETPOST('label').'"></td></tr>';
     // Code
-    print '<tr><td class="fieldrequired" required>'.$langs->trans("AttributeCode").' ('.$langs->trans("AlphaNumOnlyCharsAndNoSpace").')</td><td class="valeur"><input type="text" name="attrname" size="10" value"'.GETPOST('attrname').'"></td></tr>';
+    print '<tr><td class="fieldrequired" required>'.$langs->trans("AttributeCode").' ('.$langs->trans("AlphaNumOnlyCharsAndNoSpace").')</td><td class="valeur"><input type="text" name="attrname" size="10" value="'.GETPOST('attrname').'"></td></tr>';
     // Type
     print '<tr><td class="fieldrequired" required>'.$langs->trans("Type").'</td><td class="valeur">';
     print $form->selectarray('type',$type2label,GETPOST('type'));
@@ -208,7 +208,7 @@ if ($_GET["attrname"] && $action == 'edit')
 
 }
 
-$db->close();
-
 llxFooter();
+
+$db->close();
 ?>

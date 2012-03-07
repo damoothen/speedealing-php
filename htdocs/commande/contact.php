@@ -26,7 +26,7 @@
 require("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/commande/class/commande.class.php");
 require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/order.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/order.lib.php");
 require_once(DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php');
 
 $langs->load("orders");
@@ -79,7 +79,7 @@ if ($_POST["action"] == 'addcontact' && $user->rights->commande->creer)
 if ($_GET["action"] == 'swapstatut' && $user->rights->commande->creer)
 {
 	$commande = new Commande($db);
-	if ($commande->fetch(GETPOST("id")))
+	if ($commande->fetch(GETPOST('id','int')))
 	{
 	    $result=$commande->swapContactStatus(GETPOST('ligne'));
 	}
@@ -113,7 +113,7 @@ if ($_GET["action"] == 'deleteline' && $user->rights->commande->creer)
 
 llxHeader('',$langs->trans('Order'),'EN:Customers_Orders|FR:Commandes_Clients|ES:Pedidos de clientes');
 
-$html = new Form($db);
+$form = new Form($db);
 $formcompany = new FormCompany($db);
 $contactstatic=new Contact($db);
 $userstatic=new User($db);
@@ -149,7 +149,7 @@ if ($id > 0 || ! empty($ref))
 
 		// Ref
 		print '<tr><td width="18%">'.$langs->trans("Ref").'</td><td colspan="3">';
-		print $html->showrefnav($commande,'ref','',1,'ref','ref');
+		print $form->showrefnav($commande,'ref','',1,'ref','ref');
 		print "</td></tr>";
 
 		// Ref commande client
@@ -214,7 +214,7 @@ if ($id > 0 || ! empty($ref))
 
 			print '<td colspan="1">';
 			//$userAlreadySelected = $commande->getListContactId('internal');	// On ne doit pas desactiver un contact deja selectionne car on doit pouvoir le selectionner une deuxieme fois pour un autre type
-			$html->select_users($user->id,'contactid',0,$userAlreadySelected);
+			$form->select_users($user->id,'contactid',0,$userAlreadySelected);
 			print '</td>';
 			print '<td>';
 			$formcompany->selectTypeContact($commande, '', 'type','internal');
@@ -244,7 +244,7 @@ if ($id > 0 || ! empty($ref))
 			print '</td>';
 
 			print '<td colspan="1">';
-			$nbofcontacts=$html->select_contacts($selectedCompany, '', 'contactid');
+			$nbofcontacts=$form->select_contacts($selectedCompany, '', 'contactid');
 			if ($nbofcontacts == 0) print $langs->trans("NoContactDefined");
 			print '</td>';
 			print '<td>';
@@ -313,14 +313,14 @@ if ($id > 0 || ! empty($ref))
                 if ($tab[$i]['source']=='internal')
                 {
                     $userstatic->id=$tab[$i]['id'];
-                    $userstatic->nom=$tab[$i]['nom'];
-                    $userstatic->prenom=$tab[$i]['firstname'];
+                    $userstatic->lastname=$tab[$i]['lastname'];
+                    $userstatic->firstname=$tab[$i]['firstname'];
                     print $userstatic->getNomUrl(1);
                 }
                 if ($tab[$i]['source']=='external')
                 {
                     $contactstatic->id=$tab[$i]['id'];
-                    $contactstatic->name=$tab[$i]['nom'];
+                    $contactstatic->lastname=$tab[$i]['lastname'];
                     $contactstatic->firstname=$tab[$i]['firstname'];
                     print $contactstatic->getNomUrl(1);
                 }

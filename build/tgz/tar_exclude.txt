@@ -33,6 +33,8 @@ htdocs/conf/conf.php.postgres
 htdocs/avoir
 htdocs/custom
 htdocs/custom2
+htdocs/customleave
+htdocs/customgoogle
 htdocs/document
 htdocs/documents
 htdocs/includes/jpgraph2
@@ -45,15 +47,6 @@ htdocs/includes/treemenu/docs
 htdocs/includes/treemenu/images
 htdocs/includes/treemenu/imagesAlt
 htdocs/includes/treemenu/imagesAlt2
-htdocs/includes/modules/modBookmark4u.class.php
-htdocs/includes/modules/modDocument.class.php
-htdocs/includes/modules/modDroitPret.class.php
-htdocs/includes/modules/modEditeur.class.php
-htdocs/includes/modules/modPostnuke.class.php
-htdocs/includes/modules/modTelephonie.class.php
-htdocs/includes/triggers/interface_user.class.php
-htdocs/includes/triggers/interface_contractfrombill.class.php-NORUN
-htdocs/includes/triggers/interface_modEditeur_Editeur.class.php-NORUN
 htdocs/includes/tcpdf/fonts/utils
 htdocs/includes/tcpdf/fonts/free*.ctg.z
 htdocs/includes/tcpdf/fonts/free*.z
@@ -63,7 +56,6 @@ htdocs/postnuke
 htdocs/public/bplc
 htdocs/rapport
 htdocs/theme/rodolphe
-htdocs/theme/eldy/img/menus/tango*
 htdocs/telephonie
 htdocs/voyage
 mssql
@@ -107,5 +99,3 @@ huitre
 pdf_huitre.modules.php
 doxygen_warnings.log
 dolibarr_install.log
-doc_generic_invoice_odt.modules.php
-htdocs/theme/bureau2crea

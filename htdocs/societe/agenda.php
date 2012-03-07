@@ -35,7 +35,7 @@ $langs->load("companies");
 $mesg=isset($_GET["mesg"])?'<div class="ok">'.$_GET["mesg"].'</div>':'';
 
 // Security check
-$socid = isset($_GET["socid"])?$_GET["socid"]:'';
+$socid = GETPOST('socid','int');
 if ($user->societe_id) $socid=$user->societe_id;
 $result = restrictedArea($user, 'societe', $socid);
 
@@ -54,22 +54,22 @@ $result = restrictedArea($user, 'societe', $socid);
 
 $contactstatic = new Contact($db);
 
-$html = new Form($db);
+$form = new Form($db);
 
 /*
  * Fiche categorie de client et/ou fournisseur
  */
-if ($_GET["socid"])
+if ($socid)
 {
-	require_once(DOL_DOCUMENT_ROOT."/lib/company.lib.php");
+	require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
 	require_once(DOL_DOCUMENT_ROOT."/societe/class/societe.class.php");
 
 	$langs->load("companies");
 
 
 	$soc = new Societe($db);
-	$result = $soc->fetch($_GET["socid"]);
-	llxHeader("",$langs->trans("Agenda"),$langs->trans("Category"));
+	$result = $soc->fetch($socid);
+	llxHeader("",$langs->trans("Agenda"),'');
 
 	if ($conf->notification->enabled) $langs->load("mails");
 	$head = societe_prepare_head($soc);
@@ -79,7 +79,7 @@ if ($_GET["socid"])
 	print '<table class="border" width="100%">';
 
 	print '<tr><td width="25%">'.$langs->trans("ThirdPartyName").'</td><td colspan="3">';
-	print $html->showrefnav($soc,'socid','',($user->societe_id?0:1),'rowid','nom');
+	print $form->showrefnav($soc,'socid','',($user->societe_id?0:1),'rowid','nom');
 	print '</td></tr>';
 
     if (! empty($conf->global->SOCIETE_USEPREFIX))  // Old not used prefix field
@@ -107,7 +107,7 @@ if ($_GET["socid"])
 
 	if ($conf->global->MAIN_MODULE_BARCODE)
 	{
-		print '<tr><td>'.$langs->trans('Gencod').'</td><td colspan="3">'.$soc->gencod.'</td></tr>';
+		print '<tr><td>'.$langs->trans('Gencod').'</td><td colspan="3">'.$soc->barcode.'</td></tr>';
 	}
 
 	print "<tr><td valign=\"top\">".$langs->trans('Address')."</td><td colspan=\"3\">";
@@ -121,14 +121,14 @@ if ($_GET["socid"])
 	// Country
 	if ($soc->pays) {
 		print '<tr><td>'.$langs->trans('Country').'</td><td colspan="3">';
-		$img=picto_from_langcode($soc->pays_code);
+		$img=picto_from_langcode($soc->country_code);
 		print ($img?$img.' ':'');
 		print $soc->pays;
 		print '</td></tr>';
 	}
 
-	print '<tr><td>'.$langs->trans('Phone').'</td><td>'.dol_print_phone($soc->tel,$soc->pays_code,0,$soc->id,'AC_TEL').'</td>';
-	print '<td>'.$langs->trans('Fax').'</td><td>'.dol_print_phone($soc->fax,$soc->pays_code,0,$soc->id,'AC_FAX').'</td></tr>';
+	print '<tr><td>'.$langs->trans('Phone').'</td><td>'.dol_print_phone($soc->tel,$soc->country_code,0,$soc->id,'AC_TEL').'</td>';
+	print '<td>'.$langs->trans('Fax').'</td><td>'.dol_print_phone($soc->fax,$soc->country_code,0,$soc->id,'AC_FAX').'</td></tr>';
 
 	// EMail
 	print '<tr><td>'.$langs->trans('EMail').'</td><td>';
@@ -144,7 +144,9 @@ if ($_GET["socid"])
 
 	print '</div>';
 
-	if ($mesg) print($mesg);
+
+	dol_htmloutput_mesg($mesg);
+
 
     /*
      * Barre d'action
@@ -161,31 +163,17 @@ if ($_GET["socid"])
 
     print '<br>';
 
-/*
-    if ($conf->global->MAIN_REPEATCONTACTONEACHTAB)
-    {
-        // List of contacts
-        show_contacts($conf,$langs,$db,$societe);
-    }
+    print load_fiche_titre($langs->trans("ActionsOnCompany"),'','');
 
-    if ($conf->global->MAIN_REPEATTASKONEACHTAB)
-    {
-*/
-        // List of todo actions
-        show_actions_todo($conf,$langs,$db,$soc);
+    // List of todo actions
+    show_actions_todo($conf,$langs,$db,$soc);
 
-        // List of done actions
-        show_actions_done($conf,$langs,$db,$soc);
-//    }
-
+    // List of done actions
+    show_actions_done($conf,$langs,$db,$soc);
 }
 
 
-
-
-
+llxFooter();
 
 $db->close();
-
-llxFooter();
 ?>

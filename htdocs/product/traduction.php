@@ -1,7 +1,7 @@
 <?php
-/* Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
+/* Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2007      Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2010      Destailleur Laurent <eldy@users.sourceforge.net>
+ * Copyright (C) 2010-2012 Destailleur Laurent <eldy@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,22 +25,22 @@
  */
 
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/product.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/functions2.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/product.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formadmin.class.php");
 
 $langs->load("products");
 $langs->load("languages");
 
+$id = GETPOST('id', 'int');
+$ref = GETPOST('ref', 'alpha');
+
 // Security check
-if (isset($_GET["id"]) || isset($_GET["ref"]))
-{
-	$id = isset($_GET["id"])?$_GET["id"]:(isset($_GET["ref"])?$_GET["ref"]:'');
-}
-$fieldid = isset($_GET["ref"])?'ref':'rowid';
+$fieldvalue = (! empty($id) ? $id : (! empty($ref) ? $ref : ''));
+$fieldtype = (! empty($ref) ? 'ref' : 'rowid');
 if ($user->societe_id) $socid=$user->societe_id;
-$result=restrictedArea($user,'produit|service',$id,'product','','',$fieldid);
+$result=restrictedArea($user,'produit|service',$fieldvalue,'product&product','','',$fieldtype);
 
 
 /*
@@ -63,7 +63,7 @@ $_POST["cancel"] != $langs->trans("Cancel") &&
 	$current_lang = $langs->getDefaultLang();
 
 	// update de l'objet
-	if ( $_POST["lang"] == $current_lang )
+	if ( $_POST["forcelangprod"] == $current_lang )
 	{
 		$product->libelle		= $_POST["libelle"];
 		$product->description	= dol_htmlcleanlastbr($_POST["desc"]);
@@ -71,9 +71,9 @@ $_POST["cancel"] != $langs->trans("Cancel") &&
 	}
 	else
 	{
-		$product->multilangs[$_POST["lang"]]["libelle"]		= $_POST["libelle"];
-		$product->multilangs[$_POST["lang"]]["description"]	= dol_htmlcleanlastbr($_POST["desc"]);
-		$product->multilangs[$_POST["lang"]]["note"]		= dol_htmlcleanlastbr($_POST["note"]);
+		$product->multilangs[$_POST["forcelangprod"]]["libelle"]		= $_POST["libelle"];
+		$product->multilangs[$_POST["forcelangprod"]]["description"]	= dol_htmlcleanlastbr($_POST["desc"]);
+		$product->multilangs[$_POST["forcelangprod"]]["note"]		= dol_htmlcleanlastbr($_POST["note"]);
 	}
 
 	// sauvegarde en base
@@ -135,7 +135,7 @@ if ($_GET["id"]) $result = $product->fetch($_GET["id"]);
 
 llxHeader("","",$langs->trans("Translation"));
 
-$html = new Form($db);
+$form = new Form($db);
 $formadmin=new FormAdmin($db);
 
 $head=product_prepare_head($product, $user);
@@ -150,7 +150,7 @@ print '<table class="border" width="100%">';
 // Reference
 print '<tr>';
 print '<td width="15%">'.$langs->trans("Ref").'</td><td colspan="2">';
-print $html->showrefnav($product,'ref','',1,'ref');
+print $form->showrefnav($product,'ref','',1,'ref');
 print '</td>';
 print '</tr>';
 print '</table>';
@@ -168,13 +168,13 @@ if ($_GET["action"] == 'edit')
 		print '<table class="border" width="100%">';
 		print '<tr><td valign="top" width="15%" class="fieldrequired">'.$langs->trans('Label').'</td><td><input name="libelle-'.$key.'" size="40" value="'.$product->multilangs[$key]["libelle"].'"></td></tr>';
 		print '<tr><td valign="top" width="15%">'.$langs->trans('Description').'</td><td>';
-		require_once(DOL_DOCUMENT_ROOT."/lib/doleditor.class.php");
-		$doleditor=new DolEditor('desc-'.$key.'',$product->multilangs[$key]["description"],'',160,'dolibarr_notes','',false,true,$conf->fckeditor->enabled && $conf->global->FCKEDITOR_ENABLE_PRODUCTDESC,3,80);
+		require_once(DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php");
+		$doleditor=new DolEditor('desc-'.$key.'',$product->multilangs[$key]["description"],'',160,'dolibarr_notes','',false,true,$conf->global->FCKEDITOR_ENABLE_PRODUCTDESC,3,80);
 		$doleditor->Create();
 		print '</td></tr>';
 		print '<tr><td valign="top" width="15%">'.$langs->trans('Note').'</td><td>';
-		require_once(DOL_DOCUMENT_ROOT."/lib/doleditor.class.php");
-		$doleditor=new DolEditor('note-'.$key.'',$product->multilangs[$key]["note"],'',160,'dolibarr_notes','',false,true,$conf->fckeditor->enabled && $conf->global->FCKEDITOR_ENABLE_PRODUCTDESC,3,80);
+		require_once(DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php");
+		$doleditor=new DolEditor('note-'.$key.'',$product->multilangs[$key]["note"],'',160,'dolibarr_notes','',false,true,$conf->global->FCKEDITOR_ENABLE_PRODUCTDESC,3,80);
 		$doleditor->Create();
 		print '</td></tr>';
 		print '</tr>';
@@ -240,17 +240,17 @@ if ($_GET["action"] == 'add' && ($user->rights->produit->creer || $user->rights-
 
 	print '<table class="border" width="100%">';
 	print '<tr><td valign="top" width="15%" class="fieldrequired">'.$langs->trans('Translation').'</td><td>';
-    print $formadmin->select_language('','lang',0,$product->multilangs);
+    print $formadmin->select_language('','forcelangprod',0,$product->multilangs);
 	print '</td></tr>';
 	print '<tr><td valign="top" width="15%" class="fieldrequired">'.$langs->trans('Label').'</td><td><input name="libelle" size="40"></td></tr>';
 	print '<tr><td valign="top" width="15%">'.$langs->trans('Description').'</td><td>';
-	require_once(DOL_DOCUMENT_ROOT."/lib/doleditor.class.php");
-	$doleditor=new DolEditor('desc','','',160,'dolibarr_notes','',false,true,$conf->fckeditor->enabled && $conf->global->FCKEDITOR_ENABLE_PRODUCTDESC,3,80);
+	require_once(DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php");
+	$doleditor=new DolEditor('desc','','',160,'dolibarr_notes','',false,true,$conf->global->FCKEDITOR_ENABLE_PRODUCTDESC,3,80);
 	$doleditor->Create();
 	print '</td></tr>';
 	print '<tr><td valign="top" width="15%">'.$langs->trans('Note').'</td><td>';
-	require_once(DOL_DOCUMENT_ROOT."/lib/doleditor.class.php");
-	$doleditor=new DolEditor('note','','',160,'dolibarr_notes','',false,true,$conf->fckeditor->enabled && $conf->global->FCKEDITOR_ENABLE_PRODUCTDESC,3,80);
+	require_once(DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php");
+	$doleditor=new DolEditor('note','','',160,'dolibarr_notes','',false,true,$conf->global->FCKEDITOR_ENABLE_PRODUCTDESC,3,80);
 	$doleditor->Create();
 	print '</td></tr>';
 	print '</tr>';

@@ -1,6 +1,6 @@
 <?php
-/* Copyright (C) 2006-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2006      Regis Houssin        <regis@dolibarr.fr>
+/* Copyright (C) 2006-2010	Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2006-2012	Regis Houssin        <regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,9 +24,9 @@
 
 require("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/contact.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/ldap.class.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/ldap.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/contact.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/class/ldap.class.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/ldap.lib.php");
 
 $langs->load("companies");
 $langs->load("ldap");
@@ -35,7 +35,7 @@ $langs->load("admin");
 // Security check
 $contactid = isset($_GET["id"])?$_GET["id"]:'';
 if ($user->societe_id) $socid=$user->societe_id;
-$result = restrictedArea($user, 'contact', $contactid, 'socpeople');
+$result = restrictedArea($user, 'contact', $contactid, 'socpeople&societe');
 
 $contact = new Contact($db);
 $contact->fetch($_GET["id"], $user);

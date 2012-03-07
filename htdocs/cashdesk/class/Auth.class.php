@@ -34,51 +34,46 @@ class Auth
 	/**
 	 * Enter description here ...
 	 *
-	 * @param unknown_type $DB
+	 * @param	DoliDB	$DB			Database handler
+	 * @return	void
 	 */
 	function Auth($DB)
 	{
-
 		$this->db = $DB;
 		$this->reponse(null);
-
 	}
 
 	/**
 	 * Enter description here ...
 	 *
-	 * @param unknown_type $aLogin
+	 * @param 	string	$aLogin		Login
+	 * @return	void
 	 */
 	function login($aLogin)
 	{
-
 		$this->login = $aLogin;
-
 	}
 
 	/**
 	 * Enter description here ...
 	 *
-	 * @param unknown_type $aPasswd
+	 * @param 	string	$aPasswd	Password
+	 * @return	void
 	 */
 	function passwd($aPasswd)
 	{
-
 		$this->passwd = $aPasswd;
-
-
 	}
 
 	/**
 	 * Enter description here ...
 	 *
-	 * @param unknown_type $aReponse
+	 * @param 	string 	$aReponse	Response
+	 * @return	void
 	 */
 	function reponse($aReponse)
 	{
-
 		$this->reponse = $aReponse;
-
 	}
 
 	/**
@@ -86,6 +81,7 @@ class Auth
 	 *
 	 * @param	string	$aLogin		Login
 	 * @param	string	$aPasswd	Password
+	 * @return	int					0 or 1
 	 */
 	function verif($aLogin, $aPasswd)
 	{
@@ -106,7 +102,7 @@ class Auth
         $authmode=explode(',',$dolibarr_main_authentication);
 
         // No authentication mode
-        if (! count($authmode) && empty($conf->login_method_modules))
+        if (! count($authmode) && empty($conf->login_modules))
         {
             $langs->load('main');
             dol_print_error('',$langs->trans("ErrorConfigParameterNotDefined",'dolibarr_main_authentication'));
@@ -126,6 +122,7 @@ class Auth
 
         if ($test && $goontestloop)
         {
+            include_once(DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php');
 			$login = checkLoginPassEntity($usertotest,$passwordtotest,$entitytotest,$authmode);
             if ($login)
             {

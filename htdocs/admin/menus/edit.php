@@ -30,14 +30,12 @@ require_once(DOL_DOCUMENT_ROOT."/core/class/menubase.class.php");
 
 $langs->load("admin");
 
-if (! $user->admin)
-accessforbidden();
+if (! $user->admin) accessforbidden();
 
-$dirtop = "/includes/menus/standard";
-$dirleft = "/includes/menus/standard";
-$dirsmartphone = "/includes/menus/smartphone";
+$dirstandard = "/core/menus/standard";
+$dirsmartphone = "/core/menus/smartphone";
 
-$dirmenu = array($dirleft,$dirsmartphone);
+$dirmenu = array($dirstandard,$dirsmartphone);
 
 $action=GETPOST('action');
 $mesg=GETPOST('mesg');
@@ -216,8 +214,8 @@ if ($action == 'confirm_delete' && $_POST["confirm"] == 'yes')
  * View
  */
 
-$html=new Form($db);
-$htmladmin=new FormAdmin($db);
+$form=new Form($db);
+$formadmin=new FormAdmin($db);
 
 llxHeader('',$langs->trans("Menu"));
 
@@ -274,7 +272,7 @@ if ($action == 'create')
     // Handler
     print '<tr><td class="fieldrequired">'.$langs->trans('MenuHandler').'</td>';
     print '<td>';
-    print $htmladmin->select_menu_families($menu_handler,'menu_handler',$dirmenu);
+    print $formadmin->select_menu_families($menu_handler,'menu_handler',$dirmenu);
     print '</td>';
     print '<td>'.$langs->trans('DetailMenuHandler').'</td></tr>';
 

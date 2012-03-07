@@ -28,7 +28,7 @@
 
 require("../../main.inc.php");
 
-require_once(DOL_DOCUMENT_ROOT."/lib/product.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/product.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
 require_once(DOL_DOCUMENT_ROOT."/categories/class/categorie.class.php");
 
@@ -123,7 +123,7 @@ if ($cancel == $langs->trans("Cancel"))
  */
 
 // action recherche des produits par mot-cle et/ou par categorie
-if($action == 'search' )
+if ($action == 'search')
 {
 	$current_lang = $langs->getDefaultLang();
 
@@ -132,18 +132,18 @@ if($action == 'search' )
 	$sql.= ' FROM '.MAIN_DB_PREFIX.'product as p';
 	$sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'categorie_product as cp ON p.rowid = cp.fk_product';
 	if ($conf->global->MAIN_MULTILANGS) $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product_lang as pl ON pl.fk_product = p.rowid AND lang='".($current_lang)."'";
-	$sql.= " WHERE p.entity = ".$conf->entity;
-	if($key != "")
+	$sql.= ' WHERE p.entity IN ('.getEntity("product", 1).')';
+	if ($key != "")
 	{
 		if ($conf->global->MAIN_MULTILANGS)
 		{
-			$sql.= " AND (p.ref like '%".$key."%'";
-			$sql.= " OR pl.label like '%".$key."%')";
+			$sql.= " AND (p.ref LIKE '%".$key."%'";
+			$sql.= " OR pl.label LIKE '%".$key."%')";
 		}
 		else
 		{
-			$sql.= " AND (p.ref like '%".$key."%'";
-			$sql.= " OR p.label like '%".$key."%')";
+			$sql.= " AND (p.ref LIKE '%".$key."%'";
+			$sql.= " OR p.label LIKE '%".$key."%')";
 		}
 	}
 	if ($conf->categorie->enabled && $catMere != -1 and $catMere)
@@ -157,10 +157,10 @@ if($action == 'search' )
 //print $sql;
 
 $productstatic = new Product($db);
-$html = new Form($db);
+$form = new Form($db);
 
 llxHeader("","",$langs->trans("CardProduct".$product->type));
-$html = new Form($db);
+$form = new Form($db);
 
 
 dol_htmloutput_errors($mesg);
@@ -174,9 +174,9 @@ dol_fiche_head($head, 'subproduct', $titre, 0, $picto);
 
 if ($id || $ref)
 {
-	if ( $result )
+	if ($result)
 	{
-		if ($action <> 'edit' &&$action <> 'search' && $action <> 're-edit')
+		if ($action <> 'edit' && $action <> 'search' && $action <> 're-edit')
 		{
 			/*
 			 *  En mode visu
@@ -192,7 +192,7 @@ if ($id || $ref)
 
 			// Reference
 			print '<td width="25%">'.$langs->trans("Ref").'</td><td>';
-			print $html->showrefnav($product,'ref','',1,'ref');
+			print $form->showrefnav($product,'ref','',1,'ref');
 			print '</td></tr>';
 
 			// Libelle
@@ -201,7 +201,7 @@ if ($id || $ref)
 
 			// Number of subproducts
 			$prodsfather = $product->getFather(); //Parent Products
-			$product->get_sousproduits_arbo ();
+			$product->get_sousproduits_arbo();
 			print '<tr><td>'.$langs->trans("AssociatedProductsNumber").'</td><td>'.count($product->get_arbo_each_prod()).'</td>';
 
 			dol_fiche_end();
@@ -209,7 +209,7 @@ if ($id || $ref)
 
 			// List of subproducts
 			$prods_arbo = $product->get_arbo_each_prod();
-			if(count($prods_arbo) > 0)
+			if (count($prods_arbo) > 0)
 			{
 				print '<tr><td colspan="2">';
 				print '<b>'.$langs->trans("ProductAssociationList").'</b><br>';
@@ -236,7 +236,7 @@ if ($id || $ref)
 			// Number of parent products
 			print '<tr><td>'.$langs->trans("ParentProductsNumber").'</td><td>'.count($prodsfather).'</td>';
 
-			if(count($prodsfather) > 0)
+			if (count($prodsfather) > 0)
 			{
 				print '<tr><td colspan="2">';
 				print '<b>'.$langs->trans("ProductParentList").'</b><br>';
@@ -276,7 +276,7 @@ if ($id || $ref)
 
 			// Reference
 			print '<td width="25%">'.$langs->trans("Ref").'</td><td>';
-			print $html->showrefnav($product,'ref','',1,'ref');
+			print $form->showrefnav($product,'ref','',1,'ref');
 			print '</td>';
 
 		print '</tr>';
@@ -287,7 +287,7 @@ if ($id || $ref)
 
 		// Number of subproducts
 		$prodsfather = $product->getFather(); //Parent Products
-		$product->get_sousproduits_arbo ();
+		$product->get_sousproduits_arbo();
 		print '<tr><td>'.$langs->trans("AssociatedProductsNumber").'</td><td>'.count($product->get_arbo_each_prod()).'</td>';
 		print '</tr>';
 
@@ -321,7 +321,7 @@ if ($id || $ref)
 		// Number of parent products
 		print '<tr><td>'.$langs->trans("ParentProductsNumber").'</td><td>'.count($prodsfather).'</td>';
 
-		if(count($prodsfather) > 0)
+		if (count($prodsfather) > 0)
 		{
 			print '<tr><td colspan="2">';
 			print '<b>'.$langs->trans("ProductParentList").'</b><br>';
@@ -368,14 +368,14 @@ if ($id || $ref)
 		if ($conf->categorie->enabled)
 		{
 			print '<tr><td>'.$langs->trans("CategoryFilter").' &nbsp; </td>';
-			print '<td>'.$html->select_all_categories(0,$catMere).'</td></tr>';
+			print '<td>'.$form->select_all_categories(0,$catMere).'</td></tr>';
 		}
 
 		print '</table>';
 		print '</td></td></table>';
 		print '</form>';
 
-		if($action == 'search')
+		if ($action == 'search')
 		{
 			print '<br>';
 			print '<form action="'.DOL_URL_ROOT.'/product/composition/fiche.php?id='.$id.'" method="post">';
@@ -408,7 +408,7 @@ if ($id || $ref)
 						if ($prod_arbo->type==2 || $prod_arbo->type==3)
 						{
 							$is_pere=0;
-							$prod_arbo->get_sousproduits_arbo ();
+							$prod_arbo->get_sousproduits_arbo();
 							// associations sousproduits
 							$prods_arbo = $prod_arbo->get_arbo_each_prod();
 							if (count($prods_arbo) > 0)
@@ -421,7 +421,8 @@ if ($id || $ref)
 									}
 								}
 							}
-							if ($is_pere==1) {
+							if ($is_pere==1)
+							{
 								$i++;
 								continue;
 							}
@@ -498,8 +499,8 @@ if ($action == '')
 print "\n</div>\n";
 
 
+llxFooter();
 
 $db->close();
 
-llxFooter();
 ?>

@@ -53,10 +53,10 @@ QtyDispatched=Afsendte mængde
 OrderDispatch=Bestil lastfordelingen
 RuleForStockManagementDecrease=Reglen for lagerstyring fald
 RuleForStockManagementIncrease=Reglen for lagerstyring stigning
-DeStockOnBill=Fraførsel reelle bestande på fakturaer / kreditnotaer (advarsel, i denne version, er det kun i oplag nummer 1, at bestanden er ændret)
-DeStockOnValidateOrder=Fraførsel reelle bestande om ordrer noter (advarsel, i denne version, er det kun i oplag nummer 1, at bestanden er ændret)
-ReStockOnBill=Forhøjelse reelle bestande på fakturaer / kreditnotaer (advarsel, i denne version, er det kun i oplag nummer 1, at bestanden er ændret)
-ReStockOnValidateOrder=Forhøjelse reelle bestande om ordrer noter (advarsel, i denne version, er det kun i oplag nummer 1, at bestanden er ændret)
+DeStockOnBill=Fraførsel reelle bestande på fakturaer / kreditnotaer
+DeStockOnValidateOrder=Fraførsel reelle bestande om ordrer noter
+ReStockOnBill=Forhøjelse reelle bestande på fakturaer / kreditnotaer
+ReStockOnValidateOrder=Forhøjelse reelle bestande om ordrer noter
 StockLimitShort=Limit
 StockLimit=Stock grænse for indberetninger
 PhysicalStock=Fysiske lager
@@ -99,3 +99,13 @@ ConfirmDeleteWarehouse=Er du sikker på du vil slette lageret <b>%s?</b>
 PersonalStock=Personligt lager %s
 ThisWarehouseIsPersonalStock=Denne lagerhal er personlig status over %s %s
 // STOP - Lines generated via autotranslator.php tool (2010-07-17 11:19:46).
+
+
+// START - Lines generated via autotranslator.php tool (2012-02-29 15:59:19).
+// Reference language: en_US -> da_DK
+SellPriceMin=Salgsenhed Pris
+EstimatedStockValueSellShort=Value at sælge
+EstimatedStockValueSell=Værdi til Sælg
+SelectWarehouseForStockDecrease=Vælg lageret skal bruges til lager fald
+SelectWarehouseForStockIncrease=Vælg lageret skal bruges til lager stigning
+// STOP - Lines generated via autotranslator.php tool (2012-02-29 15:59:41).

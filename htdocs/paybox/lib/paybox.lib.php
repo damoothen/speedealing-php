@@ -21,6 +21,16 @@
  *	\ingroup		paybox
  *  \brief			Library for common paybox functions
  */
+
+
+
+/**
+ * Show header
+ *
+ * @param 	string	$title		Title of page
+ * @param 	string	$head		Head string to add int head section
+ * @return	void
+ */
 function llxHeaderPaybox($title, $head = "")
 {
 	global $user, $conf, $langs;
@@ -50,6 +60,11 @@ function llxHeaderPaybox($title, $head = "")
 	print '<body style="margin: 20px;">'."\n";
 }
 
+/**
+ * Show footer
+ *
+ * @return	void
+ */
 function llxFooterPayBox()
 {
 	print "</body>\n";
@@ -60,13 +75,13 @@ function llxFooterPayBox()
 /**
  * Create a redirect form to paybox form
  *
- * @param   $PRICE
- * @param   $CURRENCY
- * @param   $EMAIL
- * @param   $urlok
- * @param   $urlko
- * @param   $TAG
- * @return  int              1 if OK, -1 if ERROR
+ * @param	int   	$PRICE		Price
+ * @param   string	$CURRENCY	Currency
+ * @param   string	$EMAIL		EMail
+ * @param   string	$urlok		Url to go back if payment is OK
+ * @param   string	$urlko		Url to go back if payment is KO
+ * @param   string	$TAG		Tag
+ * @return  int              	1 if OK, -1 if ERROR
  */
 function print_paybox_redirect($PRICE,$CURRENCY,$EMAIL,$urlok,$urlko,$TAG)
 {
@@ -231,8 +246,9 @@ function print_paybox_redirect($PRICE,$CURRENCY,$EMAIL,$urlok,$urlko,$TAG)
 /**
  * Show footer of company in HTML pages
  *
- * @param   $fromcompany
- * @param   $langs
+ * @param   Societe		$fromcompany	Third party
+ * @param   Translate	$langs			Output language
+ * @return	void
  */
 function html_print_paybox_footer($fromcompany,$langs)
 {
@@ -242,26 +258,26 @@ function html_print_paybox_footer($fromcompany,$langs)
 	$line1="";
 	if ($fromcompany->forme_juridique_code)
 	{
-		$line1.=($line1?" - ":"").$langs->convToOutputCharset(getFormeJuridiqueLabel($fromcompany->forme_juridique_code));
+		$line1.=($line1?" - ":"").getFormeJuridiqueLabel($fromcompany->forme_juridique_code);
 	}
 	// Capital
 	if ($fromcompany->capital)
 	{
-		$line1.=($line1?" - ":"").$langs->transnoentities("CapitalOf",$fromcompany->capital)." ".$langs->transnoentities("Currency".$conf->monnaie);
+		$line1.=($line1?" - ":"").$langs->transnoentities("CapitalOf",$fromcompany->capital)." ".$langs->transnoentities("Currency".$conf->currency);
 	}
 	// Prof Id 1
-	if ($fromcompany->idprof1 && ($fromcompany->pays_code != 'FR' || ! $fromcompany->idprof2))
+	if ($fromcompany->idprof1 && ($fromcompany->country_code != 'FR' || ! $fromcompany->idprof2))
 	{
-		$field=$langs->transcountrynoentities("ProfId1",$fromcompany->pays_code);
+		$field=$langs->transcountrynoentities("ProfId1",$fromcompany->country_code);
 		if (preg_match('/\((.*)\)/i',$field,$reg)) $field=$reg[1];
-		$line1.=($line1?" - ":"").$field.": ".$langs->convToOutputCharset($fromcompany->idprof1);
+		$line1.=($line1?" - ":"").$field.": ".$fromcompany->idprof1;
 	}
 	// Prof Id 2
 	if ($fromcompany->idprof2)
 	{
-		$field=$langs->transcountrynoentities("ProfId2",$fromcompany->pays_code);
+		$field=$langs->transcountrynoentities("ProfId2",$fromcompany->country_code);
 		if (preg_match('/\((.*)\)/i',$field,$reg)) $field=$reg[1];
-		$line1.=($line1?" - ":"").$field.": ".$langs->convToOutputCharset($fromcompany->idprof2);
+		$line1.=($line1?" - ":"").$field.": ".$fromcompany->idprof2;
 	}
 
 	// Second line of company infos
@@ -269,21 +285,21 @@ function html_print_paybox_footer($fromcompany,$langs)
 	// Prof Id 3
 	if ($fromcompany->idprof3)
 	{
-		$field=$langs->transcountrynoentities("ProfId3",$fromcompany->pays_code);
+		$field=$langs->transcountrynoentities("ProfId3",$fromcompany->country_code);
 		if (preg_match('/\((.*)\)/i',$field,$reg)) $field=$reg[1];
-		$line2.=($line2?" - ":"").$field.": ".$langs->convToOutputCharset($fromcompany->idprof3);
+		$line2.=($line2?" - ":"").$field.": ".$fromcompany->idprof3;
 	}
 	// Prof Id 4
 	if ($fromcompany->idprof4)
 	{
-		$field=$langs->transcountrynoentities("ProfId4",$fromcompany->pays_code);
+		$field=$langs->transcountrynoentities("ProfId4",$fromcompany->country_code);
 		if (preg_match('/\((.*)\)/i',$field,$reg)) $field=$reg[1];
-		$line2.=($line2?" - ":"").$field.": ".$langs->convToOutputCharset($fromcompany->idprof4);
+		$line2.=($line2?" - ":"").$field.": ".$fromcompany->idprof4;
 	}
 	// IntraCommunautary VAT
 	if ($fromcompany->tva_intra != '')
 	{
-		$line2.=($line2?" - ":"").$langs->transnoentities("VATIntraShort").": ".$langs->convToOutputCharset($fromcompany->tva_intra);
+		$line2.=($line2?" - ":"").$langs->transnoentities("VATIntraShort").": ".$fromcompany->tva_intra;
 	}
 
 	print '<br><br><hr>'."\n";

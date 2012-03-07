@@ -41,11 +41,11 @@ QtyDispatched=Antall sendt
 OrderDispatch=Ordre sendt
 RuleForStockManagementDecrease=Regel for lagerreduksjon
 RuleForStockManagementIncrease=Regel for lagerøkning
-DeStockOnBill=Reduser virkelig beholdning ut fra faktura/kreditnota (obs! i denne versjonen blir kun lager nummer 1 endret)
-DeStockOnValidateOrder=Reduser virkelig beholdning ut fra ordre (obs! i denne versjonen blir kun lager nummer 1 endret)
+DeStockOnBill=Reduser virkelig beholdning ut fra faktura/kreditnota
+DeStockOnValidateOrder=Reduser virkelig beholdning ut fra ordre
 DeStockOnShipment=reduser virkelig beholdning ved forsendelse (anbefalt)
-ReStockOnBill=Øk virkelig beholdning ut fra faktura/kreditnota (obs! i denne versjonen blir kun lager nummer 1 endret)
-ReStockOnValidateOrder=Øk virkelig beholdning ut fra ordre (obs! i denne versjonen blir kun lager nummer 1 endret)
+ReStockOnBill=Øk virkelig beholdning ut fra faktura/kreditnota
+ReStockOnValidateOrder=Øk virkelig beholdning ut fra ordre
 StockDiffPhysicTeoric=Årsak til forskjell mellom fysisk og teoretisk beholdning
 StockLimitShort=Grense
 StockLimit=Minimumsbeholdning for varselmeldinger
@@ -81,3 +81,13 @@ ConfirmDeleteWarehouse=Er du sikker på at du vil slette lageret <b>%s?</b>
 PersonalStock=Personlig lager %s
 ThisWarehouseIsPersonalStock=Dette lageret representerer personlige lager av %s %s
 // STOP - Lines generated via autotranslator.php tool (2010-07-17 11:46:31).
+
+
+// START - Lines generated via autotranslator.php tool (2012-02-29 17:06:43).
+// Reference language: en_US -> nb_NO
+SellPriceMin=Selge Enhetspris
+EstimatedStockValueSellShort=Verdi å selge
+EstimatedStockValueSell=Verdi å selge
+SelectWarehouseForStockDecrease=Velg lageret til bruk for lager nedgang
+SelectWarehouseForStockIncrease=Velg lageret til bruk for lager økning
+// STOP - Lines generated via autotranslator.php tool (2012-02-29 17:07:05).

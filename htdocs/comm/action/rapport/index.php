@@ -25,10 +25,10 @@
  */
 
 require("../../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
 require_once(DOL_DOCUMENT_ROOT."/comm/action/class/actioncomm.class.php");
-require_once(DOL_DOCUMENT_ROOT."/includes/modules/action/rapport.pdf.php");
+require_once(DOL_DOCUMENT_ROOT."/core/modules/action/rapport.pdf.php");
 
 $sortfield = GETPOST("sortfield",'alpha');
 $sortorder = GETPOST("sortorder",'alpha');
@@ -40,7 +40,7 @@ if (! $sortorder) $sortorder="DESC";
 if (! $sortfield) $sortfield="a.datep";
 
 // Security check
-$socid = GETPOST("socid");
+$socid = GETPOST('socid','int');
 if ($user->societe_id) $socid=$user->societe_id;
 $result = restrictedArea($user, 'agenda', $socid, '', 'myactions');
 
@@ -53,7 +53,7 @@ $langs->load("commercial");
 if ($_GET["action"] == 'builddoc')
 {
 	$cat = new CommActionRapport($db, $_GET["month"], $_GET["year"]);
-	$result=$cat->write_file(GETPOST("id"));
+	$result=$cat->write_file(GETPOST('id','int'));
 	if ($result < 0)
 	{
 		$mesg=$cat->error;

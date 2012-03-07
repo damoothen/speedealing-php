@@ -2,7 +2,7 @@
 /* Copyright (C) 2004-2005 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2004      Benoit Mortier       <benoit.mortier@opensides.be>
- * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2007      Franky Van Liedekerke <franky.van.liedekerke@telenet.be>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -28,8 +28,8 @@
 require("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/comm/action/class/actioncomm.class.php");
 require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/contact.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/company.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/contact.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formcompany.class.php");
 
 $langs->load("companies");
@@ -39,10 +39,11 @@ $langs->load("commercial");
 
 $mesg=''; $error=0; $errors=array();
 
-$action		= (GETPOST('action') ? GETPOST('action') : 'view');
-$confirm	= GETPOST('confirm');
-$id			= GETPOST("id");
-$socid		= GETPOST("socid");
+$action		= (GETPOST('action','alpha') ? GETPOST('action','alpha') : 'view');
+$confirm	= GETPOST('confirm','alpha');
+$backtopage = GETPOST('backtopage','alpha');
+$id			= GETPOST('id','int');
+$socid		= GETPOST('socid','int');
 if ($user->societe_id) $socid=$user->societe_id;
 
 $object = new Contact($db);
@@ -58,12 +59,12 @@ if (! empty($canvas))
 }
 
 // Security check
-$result = restrictedArea($user, 'contact', $id, 'socpeople', '', '', '', $objcanvas); // If we create a contact with no company (shared contacts), no check on write permission
+$result = restrictedArea($user, 'contact', $id, 'socpeople&societe', '', '', '', $objcanvas); // If we create a contact with no company (shared contacts), no check on write permission
 
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
 include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
 $hookmanager=new HookManager($db);
-$hookmanager->callHooks(array('contactcard'));
+$hookmanager->initHooks(array('contactcard'));
 
 
 /*
@@ -76,9 +77,9 @@ $reshook=$hookmanager->executeHooks('doActions',$parameters,$object,$action);   
 if (empty($reshook))
 {
     // Cancel
-    if (GETPOST("cancel") && GETPOST('backtopage'))
+    if (GETPOST("cancel") && ! empty($backtopage))
     {
-        header("Location: ".GETPOST('backtopage'));
+        header("Location: ".$backtopage);
         exit;
     }
 
@@ -86,7 +87,7 @@ if (empty($reshook))
     if ($action == 'confirm_create_user' && $confirm == 'yes' && $user->rights->user->user->creer)
     {
         // Recuperation contact actuel
-        $result = $object->fetch($_GET["id"]);
+        $result = $object->fetch($id);
 
         if ($result > 0)
         {
@@ -98,7 +99,7 @@ if (empty($reshook))
 
             if ($result > 0)
             {
-                $result2=$nuser->setPassword($user,$_POST["password"],0,1,1);
+                $result2=$nuser->setPassword($user,$_POST["password"],0,0,1);
                 if ($result2)
                 {
                     $db->commit();
@@ -136,8 +137,10 @@ if (empty($reshook))
         $object->address		= $_POST["address"];
         $object->zip			= $_POST["zipcode"];
         $object->town			= $_POST["town"];
-        $object->fk_pays		= $_POST["pays_id"];
+        $object->fk_pays		= $_POST["country_id"];
         $object->fk_departement = $_POST["departement_id"];
+        $object->country_id		= $_POST["country_id"];
+        $object->state_id       = $_POST["departement_id"];
         $object->email			= $_POST["email"];
         $object->phone_pro		= $_POST["phone_pro"];
         $object->phone_perso	= $_POST["phone_perso"];
@@ -154,7 +157,7 @@ if (empty($reshook))
         if (! $_POST["name"])
         {
             $error++; $errors[]=$langs->trans("ErrorFieldRequired",$langs->transnoentities("Lastname").' / '.$langs->transnoentities("Label"));
-            $_GET["action"] = $_POST["action"] = 'create';
+            $action = 'create';
         }
 
         if ($_POST["name"])
@@ -163,14 +166,14 @@ if (empty($reshook))
             if ($id <= 0)
             {
                 $error++; $errors[]=($object->error?array($object->error):$object->errors);
-                $_GET["action"] = $_POST["action"] = 'create';
+                $action = 'create';
             }
         }
 
         if (! $error && $id > 0)
         {
             $db->commit();
-            if (GETPOST('backtopage')) $url=GETPOST('backtopage');
+            if (! empty($backtopage)) $url=$backtopage;
             else $url='fiche.php?id='.$id;
             Header("Location: ".$url);
             exit;
@@ -227,7 +230,9 @@ if (empty($reshook))
             $object->zip			= $_POST["zipcode"];
             $object->town			= $_POST["town"];
             $object->fk_departement	= $_POST["departement_id"];
-            $object->fk_pays		= $_POST["pays_id"];
+            $object->fk_pays		= $_POST["country_id"];
+            $object->state_id   	= $_POST["departement_id"];
+            $object->country_id		= $_POST["country_id"];
 
             $object->email			= $_POST["email"];
             $object->phone_pro		= $_POST["phone_pro"];
@@ -244,10 +249,12 @@ if (empty($reshook))
             {
                 $object->old_name='';
                 $object->old_firstname='';
+                $action = 'view';
             }
             else
             {
                 $error=$object->error; $errors=$object->errors;
+                $action = 'edit';
             }
         }
     }
@@ -272,7 +279,7 @@ if ($socid > 0)
     $objsoc->fetch($socid);
 }
 
-if (is_object($objcanvas) && $objcanvas->displayCanvasExists())
+if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 {
     // -----------------------------------------
     // When used with CANVAS
@@ -283,7 +290,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists())
 	     $object->fetch($id);                   // For use with "pure canvas" (canvas that contains templates only)
  	}
 	$objcanvas->assign_values($action, $id);	// Set value for templates
-	$objcanvas->display_canvas();				// Show template
+	$objcanvas->display_canvas($action);		// Show template
 }
 else
 {
@@ -332,24 +339,15 @@ else
 
             $object->fk_departement = $_POST["departement_id"];
 
-            // We set pays_id, pays_code and label for the selected country
-            $object->fk_pays=$_POST["pays_id"]?$_POST["pays_id"]:$mysoc->pays_id;
-            if ($object->fk_pays)
+            // We set country_id, country_code and label for the selected country
+            $object->country_id=$_POST["country_id"]?$_POST["country_id"]:$mysoc->country_id;
+            if ($object->country_id)
             {
-                $sql = "SELECT code, libelle";
-                $sql.= " FROM ".MAIN_DB_PREFIX."c_pays";
-                $sql.= " WHERE rowid = ".$object->fk_pays;
-                $resql=$db->query($sql);
-                if ($resql)
-                {
-                    $obj = $db->fetch_object($resql);
-                }
-                else
-                {
-                    dol_print_error($db);
-                }
-                $object->pays_code=$obj->code;
-                $object->pays=$obj->libelle;
+            	$tmparray=getCountry($object->country_id,'all');
+                $object->pays_code    = $tmparray['code'];
+                $object->pays         = $tmparray['label'];
+                $object->country_code = $tmparray['code'];
+                $object->country      = $tmparray['label'];
             }
 
             print_fiche_titre($langs->trans("AddContact"));
@@ -361,7 +359,7 @@ else
             {
                 print "\n".'<script type="text/javascript" language="javascript">';
                 print 'jQuery(document).ready(function () {
-							jQuery("#selectpays_id").change(function() {
+							jQuery("#selectcountry_id").change(function() {
 								document.formsoc.action.value="create";
 								document.formsoc.submit();
                         	});
@@ -373,7 +371,7 @@ else
             print '<form method="post" name="formsoc" action="'.$_SERVER["PHP_SELF"].'">';
             print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
             print '<input type="hidden" name="action" value="add">';
-            print '<input type="hidden" name="backtopage" value="'.GETPOST('backtopage').'">';
+            print '<input type="hidden" name="backtopage" value="'.$backtopage.'">';
             print '<table class="border" width="100%">';
 
             // Name
@@ -394,16 +392,14 @@ else
                 }
                 else {
                     print '<tr><td>'.$langs->trans("Company").'</td><td colspan="3">';
-                    print $form->select_societes(isset($_POST["socid"])?$_POST["socid"]:'','socid','',1);
-                    //print $form->select_societes('','socid','');
-                    //print $langs->trans("ContactNotLinkedToCompany");
+                    print $form->select_company(GETPOST('socid','int'),'socid','',1);
                     print '</td></tr>';
                 }
             }
 
             // Civility
             print '<tr><td width="15%">'.$langs->trans("UserTitle").'</td><td colspan="3">';
-            print $formcompany->select_civilite(isset($_POST["civilite_id"])?$_POST["civilite_id"]:$object->civilite_id);
+            print $formcompany->select_civility(isset($_POST["civilite_id"])?$_POST["civilite_id"]:$object->civilite_id);
             print '</td></tr>';
 
             print '<tr><td>'.$langs->trans("PostOrFunction").'</td><td colspan="3"><input name="poste" type="text" size="50" maxlength="80" value="'.(isset($_POST["poste"])?$_POST["poste"]:$object->poste).'"></td>';
@@ -416,14 +412,14 @@ else
             if (($objsoc->typent_code == 'TE_PRIVATE' || ! empty($conf->global->CONTACT_USE_COMPANY_ADDRESS)) && dol_strlen(trim($object->zip)) == 0) $object->zip = $objsoc->zip;			// Predefined with third party
             if (($objsoc->typent_code == 'TE_PRIVATE' || ! empty($conf->global->CONTACT_USE_COMPANY_ADDRESS)) && dol_strlen(trim($object->town)) == 0) $object->town = $objsoc->town;	// Predefined with third party
             print '<tr><td>'.$langs->trans("Zip").' / '.$langs->trans("Town").'</td><td colspan="3">';
-            print $formcompany->select_ziptown((isset($_POST["zipcode"])?$_POST["zipcode"]:$object->zip),'zipcode',array('town','selectpays_id','departement_id'),6).'&nbsp;';
-            print $formcompany->select_ziptown((isset($_POST["town"])?$_POST["town"]:$object->town),'town',array('zipcode','selectpays_id','departement_id'));
+            print $formcompany->select_ziptown((isset($_POST["zipcode"])?$_POST["zipcode"]:$object->zip),'zipcode',array('town','selectcountry_id','departement_id'),6).'&nbsp;';
+            print $formcompany->select_ziptown((isset($_POST["town"])?$_POST["town"]:$object->town),'town',array('zipcode','selectcountry_id','departement_id'));
             print '</td></tr>';
 
             // Country
-            if (dol_strlen(trim($object->fk_pays)) == 0) $object->fk_pays = $objsoc->pays_id;	// Predefined with third party
+            if (dol_strlen(trim($object->fk_pays)) == 0) $object->fk_pays = $objsoc->country_id;	// Predefined with third party
             print '<tr><td>'.$langs->trans("Country").'</td><td colspan="3">';
-            $form->select_pays((isset($_POST["pays_id"])?$_POST["pays_id"]:$object->fk_pays),'pays_id');
+            print $form->select_country((isset($_POST["country_id"])?$_POST["country_id"]:$object->country_id),'country_id');
             if ($user->admin) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"),1);
             print '</td></tr>';
 
@@ -431,9 +427,9 @@ else
             if (empty($conf->global->SOCIETE_DISABLE_STATE))
             {
                 print '<tr><td>'.$langs->trans('State').'</td><td colspan="3">';
-                if ($object->fk_pays)
+                if ($object->country_id)
                 {
-                    $formcompany->select_departement(isset($_POST["departement_id"])?$_POST["departement_id"]:$object->fk_departement,$object->pays_code);
+                    print $formcompany->select_state(isset($_POST["departement_id"])?$_POST["departement_id"]:$object->fk_departement,$object->country_code);
                 }
                 else
                 {
@@ -477,14 +473,14 @@ else
 
             // Date To Birth
             print '<tr><td width="20%">'.$langs->trans("DateToBirth").'</td><td width="30%">';
-            $html=new Form($db);
+            $form=new Form($db);
             if ($object->birthday)
             {
-                print $html->select_date($object->birthday,'birthday',0,0,0,"perso");
+                print $form->select_date($object->birthday,'birthday',0,0,0,"perso");
             }
             else
             {
-                print $html->select_date('','birthday',0,0,1,"perso");
+                print $form->select_date('','birthday',0,0,1,"perso");
             }
             print '</td>';
 
@@ -504,7 +500,7 @@ else
 
             print '<center>';
             print '<input type="submit" class="button" name="add" value="'.$langs->trans("Add").'">';
-            if (GETPOST('backtopage'))
+            if (! empty($backtopage))
             {
                 print ' &nbsp; &nbsp; ';
                 print '<input type="submit" class="button" name="cancel" value="'.$langs->trans("Cancel").'">';
@@ -519,21 +515,14 @@ else
              * Fiche en mode edition
              */
 
-            // We set pays_id, and pays_code label of the chosen country
-            if (isset($_POST["pays_id"]) || $object->fk_pays)
+            // We set country_id, and country_code label of the chosen country
+            if (isset($_POST["country_id"]) || $object->country_id)
             {
-                $sql = "SELECT code, libelle from ".MAIN_DB_PREFIX."c_pays where rowid = ".(isset($_POST["pays_id"])?$_POST["pays_id"]:$object->fk_pays);
-                $resql=$db->query($sql);
-                if ($resql)
-                {
-                    $obj = $db->fetch_object($resql);
-                }
-                else
-                {
-                    dol_print_error($db);
-                }
-                $object->pays_code=$obj->code;
-                $object->pays=$langs->trans("Country".$obj->code)?$langs->trans("Country".$obj->code):$obj->libelle;
+	            $tmparray=getCountry($object->country_id,'all');
+	            $object->pays_code    =	$tmparray['code'];
+	            $object->pays         =	$tmparray['label'];
+	            $object->country_code =	$tmparray['code'];
+	            $object->country      =	$tmparray['label'];
             }
 
             // Affiche les erreurs
@@ -543,7 +532,7 @@ else
             {
                 print '<script type="text/javascript" language="javascript">';
                 print 'jQuery(document).ready(function () {
-							jQuery("#selectpays_id").change(function() {
+							jQuery("#selectcountry_id").change(function() {
 								document.formsoc.action.value="edit";
 								document.formsoc.submit();
 							});
@@ -551,11 +540,11 @@ else
                 print '</script>';
             }
 
-            print '<form method="post" action="'.$_SERVER["PHP_SELF"].'?id='.GETPOST("id").'" name="formsoc">';
+            print '<form method="post" action="'.$_SERVER["PHP_SELF"].'?id='.$id.'" name="formsoc">';
             print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-            print '<input type="hidden" name="id" value="'.GETPOST("id").'">';
+            print '<input type="hidden" name="id" value="'.$id.'">';
             print '<input type="hidden" name="action" value="update">';
-            print '<input type="hidden" name="backtopage" value="'.GETPOST('backtopage').'">';
+            print '<input type="hidden" name="backtopage" value="'.$backtopage.'">';
             print '<input type="hidden" name="contactid" value="'.$object->id.'">';
             print '<input type="hidden" name="old_name" value="'.$object->name.'">';
             print '<input type="hidden" name="old_firstname" value="'.$object->firstname.'">';
@@ -575,14 +564,14 @@ else
             {
                 print '<tr><td>'.$langs->trans("Company").'</td>';
                 print '<td colspan="3">';
-                print $form->select_societes(isset($_POST["socid"])?$_POST["socid"]:($object->socid?$object->socid:-1),'socid','',1);
+                print $form->select_company(GETPOST('socid','int')?GETPOST('socid','int'):($object->socid?$object->socid:-1),'socid','',1);
                 print '</td>';
                 print '</tr>';
             }
 
             // Civility
             print '<tr><td>'.$langs->trans("UserTitle").'</td><td colspan="3">';
-            print $formcompany->select_civilite(isset($_POST["civilite_id"])?$_POST["civilite_id"]:$object->civilite_id);
+            print $formcompany->select_civility(isset($_POST["civilite_id"])?$_POST["civilite_id"]:$object->civilite_id);
             print '</td></tr>';
 
             print '<tr><td>'.$langs->trans("PostOrFunction" ).'</td><td colspan="3"><input name="poste" type="text" size="50" maxlength="80" value="'.(isset($_POST["poste"])?$_POST["poste"]:$object->poste).'"></td></tr>';
@@ -592,13 +581,13 @@ else
 
             // Zip / Town
             print '<tr><td>'.$langs->trans("Zip").' / '.$langs->trans("Town").'</td><td colspan="3">';
-            print $formcompany->select_ziptown((isset($_POST["zipcode"])?$_POST["zipcode"]:$object->zip),'zipcode',array('town','selectpays_id','departement_id'),6).'&nbsp;';
-            print $formcompany->select_ziptown((isset($_POST["town"])?$_POST["town"]:$object->town),'town',array('zipcode','selectpays_id','departement_id'));
+            print $formcompany->select_ziptown((isset($_POST["zipcode"])?$_POST["zipcode"]:$object->zip),'zipcode',array('town','selectcountry_id','departement_id'),6).'&nbsp;';
+            print $formcompany->select_ziptown((isset($_POST["town"])?$_POST["town"]:$object->town),'town',array('zipcode','selectcountry_id','departement_id'));
             print '</td></tr>';
 
             // Country
             print '<tr><td>'.$langs->trans("Country").'</td><td colspan="3">';
-            $form->select_pays(isset($_POST["pays_id"])?$_POST["pays_id"]:$object->fk_pays,'pays_id');
+            print $form->select_country(isset($_POST["country_id"])?$_POST["country_id"]:$object->country_id,'country_id');
             if ($user->admin) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"),1);
             print '</td></tr>';
 
@@ -606,7 +595,7 @@ else
             if (empty($conf->global->SOCIETE_DISABLE_STATE))
             {
                 print '<tr><td>'.$langs->trans('State').'</td><td colspan="3">';
-                $formcompany->select_departement($object->fk_departement,$object->pays_code);
+                print $formcompany->select_state($object->fk_departement,isset($_POST["country_id"])?$_POST["country_id"]:$object->country_id);
                 print '</td></tr>';
             }
 
@@ -711,13 +700,14 @@ else
         if ($action == 'create_user')
         {
             // Full firstname and name separated with a dot : firstname.name
-            include_once(DOL_DOCUMENT_ROOT.'/lib/functions2.lib.php');
+            include_once(DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php');
             $login=dol_buildlogin($object->nom,$object->prenom);
 
             $generated_password='';
             if (! $ldap_sid) // TODO ldap_sid ?
             {
-	        	$generated_password=getRandomPassword('');
+                require_once(DOL_DOCUMENT_ROOT."/core/lib/security2.lib.php");
+                $generated_password=getRandomPassword('');
             }
             $password=$generated_password;
 
@@ -785,7 +775,7 @@ else
 
         // Country
         print '<tr><td>'.$langs->trans("Country").'</td><td colspan="3">';
-        $img=picto_from_langcode($object->pays_code);
+        $img=picto_from_langcode($object->country_code);
         if ($img) print $img.' ';
         print $object->pays;
         print '</td></tr>';
@@ -797,11 +787,11 @@ else
         }
 
         // Phone
-        print '<tr><td>'.$langs->trans("PhonePro").'</td><td>'.dol_print_phone($object->phone_pro,$object->pays_code,$object->id,$object->socid,'AC_TEL').'</td>';
-        print '<td>'.$langs->trans("PhonePerso").'</td><td>'.dol_print_phone($object->phone_perso,$object->pays_code,$object->id,$object->socid,'AC_TEL').'</td></tr>';
+        print '<tr><td>'.$langs->trans("PhonePro").'</td><td>'.dol_print_phone($object->phone_pro,$object->country_code,$object->id,$object->socid,'AC_TEL').'</td>';
+        print '<td>'.$langs->trans("PhonePerso").'</td><td>'.dol_print_phone($object->phone_perso,$object->country_code,$object->id,$object->socid,'AC_TEL').'</td></tr>';
 
-        print '<tr><td>'.$langs->trans("PhoneMobile").'</td><td>'.dol_print_phone($object->phone_mobile,$object->pays_code,$object->id,$object->socid,'AC_TEL').'</td>';
-        print '<td>'.$langs->trans("Fax").'</td><td>'.dol_print_phone($object->fax,$object->pays_code,$object->id,$object->socid,'AC_FAX').'</td></tr>';
+        print '<tr><td>'.$langs->trans("PhoneMobile").'</td><td>'.dol_print_phone($object->phone_mobile,$object->country_code,$object->id,$object->socid,'AC_TEL').'</td>';
+        print '<td>'.$langs->trans("Fax").'</td><td>'.dol_print_phone($object->fax,$object->country_code,$object->id,$object->socid,'AC_FAX').'</td></tr>';
 
         // Email
         print '<tr><td>'.$langs->trans("EMail").'</td><td>'.dol_print_email($object->email,$object->id,$object->socid,'AC_EMAIL').'</td>';
@@ -895,13 +885,16 @@ else
             print "</div><br>";
         }
 
+        print load_fiche_titre($langs->trans("TasksHistoryForThisContact"),'','');
+
         print show_actions_todo($conf,$langs,$db,$objsoc,$object);
 
         print show_actions_done($conf,$langs,$db,$objsoc,$object);
     }
 }
 
-$db->close();
 
 llxFooter();
+
+$db->close();
 ?>

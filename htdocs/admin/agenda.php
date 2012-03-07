@@ -24,8 +24,8 @@
  */
 
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/admin.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/agenda.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/agenda.lib.php");
 
 if (!$user->admin)
     accessforbidden();
@@ -35,8 +35,7 @@ $langs->load("other");
 
 $action=$_POST["action"];
 
-// Load array of all events supported by triggers
-// TODO add function
+// Get list of triggers available
 $sql = "SELECT a.rowid, a.code, a.label, a.elementtype";
 $sql.= " FROM ".MAIN_DB_PREFIX."c_action_trigger as a";
 $sql.= " ORDER BY a.rang ASC";
@@ -81,7 +80,7 @@ if ($action == "save" && empty($_POST["cancel"]))
 		else $res = dolibarr_del_const($db,$param,$conf->entity);
 		if (! $res > 0) $error++;
 	}
-    
+
  	if (! $error)
     {
     	$db->commit();

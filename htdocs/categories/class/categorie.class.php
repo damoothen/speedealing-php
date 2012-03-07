@@ -3,7 +3,7 @@
  * Copyright (C) 2005      Davoleau Brice       <brice.davoleau@gmail.com>
  * Copyright (C) 2005      Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2006-2011 Regis Houssin        <regis@dolibarr.fr>
- * Copyright (C) 2006-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2006-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2007      Patrick Raguin	  	<patrick.raguin@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -54,12 +54,12 @@ class Categorie
 	/**
 	 *	Constructor
 	 *
-	 *  @param		DoliDB		$DB     Database handler
+	 *  @param		DoliDB		$db     Database handler
 	 *  @param		int			$id		Id of category to fetch during init
 	 */
-	function Categorie($DB, $id=-1)
+	function Categorie($db, $id=-1)
 	{
-		$this->db = $DB;
+		$this->db = $db;
 		$this->id = $id;
 
 		if ($id != -1) $this->fetch($this->id);
@@ -121,14 +121,17 @@ class Categorie
 	/**
 	 * 	Add category into database
 	 *
-	 * 	@return	int 	-1 : erreur SQL
-	 *          		-2 : nouvel ID inconnu
-	 *          		-3 : categorie invalide
+	 * 	@param	User	$user		Object user
+	 * 	@return	int 				-1 : erreur SQL
+	 *          					-2 : nouvel ID inconnu
+	 *          					-3 : categorie invalide
 	 */
-	function create()
+	function create($user='')
 	{
 		global $conf,$langs;
 		$langs->load('categories');
+
+		$error=0;
 
 		// Clean parameters
 		if (empty($this->visible)) $this->visible=0;
@@ -201,13 +204,16 @@ class Categorie
 	/**
 	 * 	Update category
 	 *
-	 * 	@return	int		 1 : OK
-	 *          		-1 : SQL error
-	 *          		-2 : invalid category
+	 *	@param	User	$user		Object user
+	 * 	@return	int		 			1 : OK
+	 *          					-1 : SQL error
+	 *          					-2 : invalid category
 	 */
-	function update()
+	function update($user='')
 	{
 		global $conf, $langs;
+
+		$error=0;
 
 		// Clean parameters
 		$this->label=trim($this->label);
@@ -879,12 +885,12 @@ class Categorie
 			$sql.= " AND c.label='".$this->db->escape($this->label)."'";
 		}
 		dol_syslog("Categorie::already_exists sql=".$sql);
-		$res  = $this->db->query($sql);
-		if ($res)
+		$resql = $this->db->query($sql);
+		if ($resql)
 		{
-			if($this->db->num_rows($resql) > 0)						// Checking for empty resql
+			if ($this->db->num_rows($resql) > 0)						// Checking for empty resql
 			{
-				$obj = $this->db->fetch_array($res);
+				$obj = $this->db->fetch_array($resql);
 				/* If object called create, obj cannot have is id.
 				 * If object called update, he mustn't have the same label as an other category for this mother.
 				 * So if the result have the same id, update is not for label, and if result have an other one,
@@ -1201,14 +1207,14 @@ class Categorie
 	 */
 	function add_photo($sdir, $file, $maxWidth = 160, $maxHeight = 120)
 	{
-		require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
+		require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
 
 		$dir = $sdir .'/'. get_exdir($this->id,2) . $this->id ."/";
 		$dir .= "photos/";
 
 		if (! file_exists($dir))
 		{
-			create_exdir($dir);
+			dol_mkdir($dir);
 		}
 
 		if (file_exists($dir))
@@ -1236,7 +1242,7 @@ class Categorie
 	 */
 	function add_thumb($file, $maxWidth = 160, $maxHeight = 120)
 	{
-		require_once(DOL_DOCUMENT_ROOT ."/lib/images.lib.php");
+		require_once(DOL_DOCUMENT_ROOT ."/core/lib/images.lib.php");
 
 		if (file_exists($file))
 		{
@@ -1306,7 +1312,7 @@ class Categorie
 	 */
 	function delete_photo($file)
 	{
-        require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
+        require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
 
 	    $dir = dirname($file).'/'; // Chemin du dossier contenant l'image d'origine
 		$dirthumb = $dir.'/thumbs/'; // Chemin du dossier contenant la vignette

@@ -22,18 +22,17 @@
  */
 
 require("../../main.inc.php");
-include_once $dolibarr_main_document_root."/lib/files.lib.php";
+include_once $dolibarr_main_document_root."/core/lib/files.lib.php";
 
 $langs->load("admin");
 $langs->load("other");
 
-if (! $user->admin)
-accessforbidden();
+if (! $user->admin) accessforbidden();
 
 if ($_GET["msg"]) $message='<div class="error">'.$_GET["msg"].'</div>';
 
 
-$urldolibarr='http://www.dolibarr.org/downloads/cat_view/62-stable-versions';
+$urldolibarr='http://www.dolibarr.org/downloads/';
 //$urldolibarrmodules='http://www.dolibarr.org/downloads/cat_view/65-modulesaddon';
 $urldolibarrmodules='http://www.dolistore.com/';
 //$urldolibarrthemes='http://www.dolibarr.org/';
@@ -70,7 +69,7 @@ if ($_POST["action"]=='install')
 	if (! $error)
 	{
 		@dol_delete_dir_recursive($conf->admin->dir_temp.'/'.$original_file);
-		create_exdir($conf->admin->dir_temp.'/'.$original_file);
+		dol_mkdir($conf->admin->dir_temp.'/'.$original_file);
 
 		$result=dol_move_uploaded_file($_FILES["fileinstall"]["tmp_name"],$newfile,1,0,$_FILES['fileinstall']['error']);
 		if ($result > 0)

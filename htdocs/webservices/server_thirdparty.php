@@ -25,7 +25,7 @@ set_include_path($_SERVER['DOCUMENT_ROOT'].'/htdocs');
 
 require_once("../master.inc.php");
 require_once(NUSOAP_PATH.'/nusoap.php');        // Include SOAP
-require_once(DOL_DOCUMENT_ROOT."/lib/ws.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/ws.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/user/class/user.class.php");
 
 require_once(DOL_DOCUMENT_ROOT."/societe/class/societe.class.php");
@@ -180,8 +180,8 @@ function getThirdParty($authentication,$id='',$ref='',$ref_ext='')
 			   			'ref' => $thirdparty->name,
 			   			'ref_ext' => $thirdparty->ref_ext,
 			    		'fk_user_author' => $thirdparty->fk_user_author,
-//			    		'date_creation' => $thirdparty->
-//			    		'date_modification' => $thirdparty->
+			    		'date_creation' => dol_print_date($thirdparty->datec,'dayhourrfc'),
+			    		'date_modification' => dol_print_date($thirdparty->date_update,'dayhourrfc'),
 			            'address' => $thirdparty->address,
 				        'zip' => $thirdparty->zip,
 				        'town' => $thirdparty->town,
@@ -193,9 +193,9 @@ function getThirdParty($authentication,$id='',$ref='',$ref_ext='')
 				        'fax' => $thirdparty->fax,
 				        'email' => $thirdparty->email,
 				        'url' => $thirdparty->url,
-				        'profid1' => $thirdparty->siren,
-				        'profid2' => $thirdparty->siret,
-				        'profid3' => $thirdparty->ape,
+				        'profid1' => $thirdparty->idprof1,
+				        'profid2' => $thirdparty->idprof2,
+				        'profid3' => $thirdparty->idprof3,
 				        'profid4' => $thirdparty->idprof4,
 				        'prefix' => $thirdparty->prefix_comm,
 				        'vat_used' => $thirdparty->tva_assuj,

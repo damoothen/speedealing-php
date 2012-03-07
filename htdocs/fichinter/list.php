@@ -2,7 +2,7 @@
 /* Copyright (C) 2002-2003 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
- * Copyright (C) 2011      Juanjo Menent        <jmenent@2byte.es>
+ * Copyright (C) 2011-2012 Juanjo Menent        <jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,26 +27,27 @@
 require("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
 require_once(DOL_DOCUMENT_ROOT."/fichinter/class/fichinter.class.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/date.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/date.lib.php");
 
 $langs->load("companies");
 $langs->load("interventions");
 
-$sortfield = GETPOST("sortfield",'alpha');
-$sortorder = GETPOST("sortorder",'alpha');
-$page = GETPOST("page",'int');
-if ($page == -1) { $page = 0; }
+$socid=GETPOST('socid','int');
+
+// Security check
+$fichinterid = GETPOST('id','int');
+if ($user->societe_id) $socid=$user->societe_id;
+$result = restrictedArea($user, 'ficheinter', $fichinterid,'fichinter');
+
+$sortfield = GETPOST('sortfield','alpha');
+$sortorder = GETPOST('sortorder','alpha');
+$page = GETPOST('page','int');
+if ($page == -1) {
+	$page = 0;
+}
 $offset = $conf->liste_limit * $page;
 $pageprev = $page - 1;
 $pagenext = $page + 1;
-
-$socid=GETPOST("socid");
-$page=GETPOST("page");
-
-// Security check
-$fichinterid = GETPOST("id");
-if ($user->societe_id) $socid=$user->societe_id;
-$result = restrictedArea($user, 'ficheinter', $fichinterid,'fichinter');
 
 if (! $sortorder) $sortorder="DESC";
 if (! $sortfield) $sortfield="fd.date";
@@ -57,9 +58,9 @@ $offset = $limit * $page ;
 $pageprev = $page - 1;
 $pagenext = $page + 1;
 
-$search_ref=GETPOST("search_ref");
-$search_company=GETPOST("search_company");
-$search_desc=GETPOST("search_desc");
+$search_ref=GETPOST('search_ref','alpha');
+$search_company=GETPOST('search_company','alpha');
+$search_desc=GETPOST('search_desc','alpha');
 
 
 /*
@@ -85,7 +86,7 @@ if ($search_desc)    $sql .= " AND (f.description like '%".$db->escape($search_d
 if (!$user->rights->societe->client->voir && !$socid) $sql .= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
 if ($socid)	$sql.= " AND s.rowid = " . $socid;
 $sql.= " ORDER BY ".$sortfield." ".$sortorder;
-$sql.= $db->plimit($limit + 1 ,$offset);
+$sql.= $db->plimit($limit+1, $offset);
 
 $result=$db->query($sql);
 if ($result)
@@ -148,7 +149,7 @@ if ($result)
         print '<td>'.dol_htmlentitiesbr(dol_trunc($objp->description,20)).'</td>';
 		print '<td>'.dol_htmlentitiesbr(dol_trunc($objp->descriptiondetail,20)).'</td>';
 		print '<td align="center">'.dol_print_date($db->jdate($objp->dp),'dayhour')."</td>\n";
-		print '<td align="right">'.ConvertSecondToTime($objp->duree).'</td>';
+		print '<td align="right">'.convertSecondToTime($objp->duree).'</td>';
 		print '<td align="right">'.$interventionstatic->LibStatut($objp->fk_statut,5).'</td>';
 
 		print "</tr>\n";
@@ -157,7 +158,7 @@ if ($result)
 		$i++;
 	}
 	print '<tr class="liste_total"><td colspan="5" class="liste_total">'.$langs->trans("Total").'</td>';
-	print '<td align="right" nowrap="nowrap" class="liste_total">'.ConvertSecondToTime($total).'</td><td>&nbsp;</td>';
+	print '<td align="right" nowrap="nowrap" class="liste_total">'.convertSecondToTime($total).'</td><td>&nbsp;</td>';
 	print '</tr>';
 
 	print '</table>';

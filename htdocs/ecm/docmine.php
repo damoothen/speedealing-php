@@ -26,8 +26,8 @@
 require("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 require_once(DOL_DOCUMENT_ROOT."/ecm/class/ecmdirectory.class.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/ecm.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/ecm.lib.php");
 
 
 // Load traductions files
@@ -62,7 +62,7 @@ if (! $section)
 
 
 // Load ecm object
-$ecmdir = new ECMDirectory($db);
+$ecmdir = new EcmDirectory($db);
 $result=$ecmdir->fetch(GETPOST("section"));
 if (! $result > 0)
 {
@@ -83,9 +83,9 @@ $upload_dir = $conf->ecm->dir_output.'/'.$relativepath;
 // Upload file
 if (GETPOST("sendit") && ! empty($conf->global->MAIN_UPLOAD_DOC))
 {
-	require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
+	require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
 
-	if (create_exdir($upload_dir) >= 0)
+	if (dol_mkdir($upload_dir) >= 0)
 	{
 		$resupload = dol_move_uploaded_file($_FILES['userfile']['tmp_name'], $upload_dir . "/" . $_FILES['userfile']['name'],0,0,$_FILES['userfile']['error']);
 		if (is_numeric($resupload) && $resupload > 0)
@@ -232,7 +232,7 @@ if ($_GET["action"] == 'edit')
 print '<table class="border" width="100%">';
 print '<tr><td width="30%">'.$langs->trans("Ref").'</td><td>';
 $s='';
-$tmpecmdir=new ECMDirectory($db);	// Need to create a new one
+$tmpecmdir=new EcmDirectory($db);	// Need to create a new one
 $tmpecmdir->fetch($ecmdir->id);
 $result = 1;
 $i=0;

@@ -54,15 +54,15 @@ class BonPrelevement extends CommonObject
     /**
      *	Constructor
      *
-     *  @param		DoliDB		$DB      	Database handler
+     *  @param		DoliDB		$db      	Database handler
      *  @param		string		$filename	Filename of withdraw receipt
      */
-    function BonPrelevement($DB, $filename='')
+    function BonPrelevement($db, $filename='')
     {
         global $conf,$langs;
 
         $error = 0;
-        $this->db = $DB;
+        $this->db = $db;
 
         $this->filename=$filename;
 
@@ -320,7 +320,7 @@ class BonPrelevement extends CommonObject
     {
         global $user,$conf;
 
-        $error == 0;
+        $error = 0;
 
         if ($this->db->begin())
         {
@@ -401,7 +401,7 @@ class BonPrelevement extends CommonObject
     {
         global $conf,$langs;
 
-        $error == 0;
+        $error = 0;
 
         if ($this->_fetched == 1)
         {
@@ -525,7 +525,8 @@ class BonPrelevement extends CommonObject
     {
         global $conf,$langs;
 
-        $error == 0;
+        $error = 0;
+
         dol_syslog("bon-prelevement::set_infotrans Start",LOG_INFO);
         if ($this->db->begin())
         {
@@ -715,15 +716,15 @@ class BonPrelevement extends CommonObject
      *	Create a withdraw
      *
      *	@param 	int		$banque		code of bank
-     *	@param	int		$guichet	code of banck office
+     *	@param	int		$agence		code of bank office (guichet)
      *	@param	string	$mode		real=do action, simu=test only
      *	@return	int					<0 if KO, nbre of invoice withdrawed if OK
      */
-    function Create($banque=0, $guichet=0, $mode='real')
+    function Create($banque=0, $agence=0, $mode='real')
     {
         global $conf,$langs;
 
-        dol_syslog("BonPrelevement::Create banque=$banque guichet=$guichet");
+        dol_syslog("BonPrelevement::Create banque=$banque agence=$agence");
 
         require_once (DOL_DOCUMENT_ROOT."/compta/facture/class/facture.class.php");
         require_once (DOL_DOCUMENT_ROOT."/societe/class/societe.class.php");
@@ -912,7 +913,7 @@ class BonPrelevement extends CommonObject
 
                     $dir=$conf->prelevement->dir_output.'/receipts';
                     $file=$filebonprev;
-                    if (! is_dir($dir)) create_exdir($dir);
+                    if (! is_dir($dir)) dol_mkdir($dir);
 
                     $bonprev = new BonPrelevement($this->db, $dir."/".$file);
                     $bonprev->id = $prev_id;
@@ -1036,7 +1037,7 @@ class BonPrelevement extends CommonObject
             else
             {
                 $this->db->rollback();
-                dol_syslog("Error",LOG_ERROR);
+                dol_syslog("Error",LOG_ERR);
             }
 
             return count($factures_prev);
@@ -1111,7 +1112,7 @@ class BonPrelevement extends CommonObject
         $result = 0;
 
         $sql = "DELETE FROM ".MAIN_DB_PREFIX."notify_def";
-        $sql .= " WHERE fk_user=".$user." AND fk_action=".$action;
+        $sql .= " WHERE fk_user=".$user." AND fk_action='".$action."'";
 
         if ($this->db->query($sql))
         {
@@ -1138,7 +1139,7 @@ class BonPrelevement extends CommonObject
         if ($this->DeleteNotification($user, $action) == 0)
         {
             $sql = "INSERT INTO ".MAIN_DB_PREFIX."notify_def (datec,fk_user, fk_soc, fk_contact, fk_action)";
-            $sql .= " VALUES (".$db->idate(mktime()).",".$user.", 'NULL', 'NULL', ".$action.")";
+            $sql .= " VALUES (".$db->idate(mktime()).",".$user.", 'NULL', 'NULL', '".$action."')";
 
             dol_syslog("adnotiff: ".$sql);
             if ($this->db->query($sql))
@@ -1177,7 +1178,7 @@ class BonPrelevement extends CommonObject
         $this->file = fopen($this->filename,"w");
 
         //Build file for Spain
-        if ($mysoc->pays_code=='ES')
+        if ($mysoc->country_code=='ES')
         {
             if ($conf->esaeb->enabled)
             {
@@ -1208,14 +1209,14 @@ class BonPrelevement extends CommonObject
                         $obj = $this->db->fetch_object($resql);
 
                         $esaeb19->agregaRecibo(
-                        $idOrdenante,
+                            $idOrdenante,
     	                	"idcliente".$i+1,
-                        $obj->client_nom,
-                        $obj->code_banque,
-                        $obj->code_guichet,
-                        $obj->cle_rib,
-                        $obj->number,
-                        $obj->amount,
+                            $obj->client_nom,
+                            $obj->code_banque,
+                            $obj->code_guichet,
+                            $obj->cle_rib,
+                            $obj->number,
+                            $obj->amount,
     	                	"Fra.".$obj->facnumber." ".$obj->amount
                         );
 
@@ -1269,7 +1270,7 @@ class BonPrelevement extends CommonObject
         }
 
         //Build file for France
-        elseif ($mysoc->pays_code=='FR')
+        elseif ($mysoc->country_code=='FR')
         {
             /*
              * En-tete Emetteur
@@ -1302,16 +1303,7 @@ class BonPrelevement extends CommonObject
                 {
                     $row = $this->db->fetch_row($resql);
 
-                    $this->EnregDestinataire(
-                    $row[0],
-                    $row[1],
-                    $row[2],
-                    $row[3],
-                    $row[4],
-                    $row[5],
-                    $row[6],
-                    $row[7]
-                    );
+                    $this->EnregDestinataire($row[0],$row[1],$row[2],$row[3],$row[4],$row[5],$row[6],$row[7]);
 
                     $this->total = $this->total + $row[5];
 

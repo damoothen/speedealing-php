@@ -32,6 +32,7 @@ ErrorConnectedButDatabaseNotFound=Connexion au serveur réussi mais base '%s' in
 ErrorDatabaseAlreadyExists=La base de données '%s' existe déjà.
 IfDatabaseNotExistsGoBackAndUncheckCreate=Si la base n'existe pas, revenez en arrière et cochez l'option "Créer la base de données".
 IfDatabaseExistsGoBackAndCheckCreate=Si la base existe déjà, revenez en arrière et désactiver l'option "Créer la base de données".
+WarningBrowserTooOld=Version de navigateur trop ancienne. Nous vous recommandons de mettre à jour vers un version récente de Firefox, Chrome ou Opera.
 PHPVersion=Version PHP
 YouCanContinue=Vous pouvez continuer...
 PleaseBePatient=Merci de patienter...
@@ -51,6 +52,7 @@ ServerAddressDescription=Nom ou adresse ip du serveur de base de données, gén�
 ServerPortDescription=Port du serveur. Ne rien mettre si inconnu.
 DatabaseServer=Serveur de la base de données
 DatabaseName=Nom de la base de données
+DatabasePrefix=Préfixe des tables
 Login=Login
 AdminLogin=Login du propriétaire de la base de données Dolibarr.
 Password=Mot de passe
@@ -152,7 +154,8 @@ MigrationShippingDelivery=Mise à jour stockage des expéditions
 MigrationShippingDelivery2=Mise à jour stockage des expéditions 2 
 MigrationFinished=Migration terminée
 LastStepDesc=<strong>Dernière étape</strong>: Définissez ici le compte et mot de passe du premier utilisateur que vous allez utiliser pour vous connecter à l'application. Ne perdez pas ces identifiants, il s'agit du compte permettant d'administrer les autres.
- 
+ActivateModule=Activation du module %s
+
 
 #########
 # upgrade
@@ -234,3 +237,6 @@ MigrationProjectTaskTime=Mise à jour du temps consommé en secondes
 
 # Migration Acctioncom
 MigrationActioncommElement=Mise à jour des données des actions des éléments
+
+# Migration payment mode
+MigrationPaymentMode=Migration des modes de paiement

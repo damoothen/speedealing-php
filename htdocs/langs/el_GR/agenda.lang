@@ -60,13 +60,26 @@ AgendaHideBirthdayEvents=Απόκρυψη γενεθλίων των προσώπ
 ViewDay=Προβολή ημέρας
 ViewWeek=Προβολή εβδομάδας
 AgendaExtSitesDesc=Αυτή η σελίδα σας επιτρέπει να ρυθμίσετε εξωτερικά ημερολόγια.
-InvoiceBackToDraftInDolibarr=Τιμολόγιο sssss να επιστρέψετε στην κατάσταση του σχεδίου
-ShippingSentByEMail=Αποστολές sssss αποστέλλονται με ηλεκτρονικό ταχυδρομείο
+InvoiceBackToDraftInDolibarr=Τιμολόγιο %s να επιστρέψετε στην κατάσταση του σχεδίου
+ShippingSentByEMail=Αποστολές %s αποστέλλονται με ηλεκτρονικό ταχυδρομείο
 ExtSites=Εξωτερικές ημερολόγια
 ExtSites=Εξωτερικές Ημερολόγια
 ExtSitesEnableThisTool=πώς εξωτερικά ημερολόγια σε ημερήσια διάταξη
 ExtSitesNbOfAgenda=Αριθμός των ημερολογίων
-AgendaExtNb=Ημερολόγιο nb sssss
+AgendaExtNb=Ημερολόγιο nb %s
 ExtSiteUrlAgenda=URL για να αποκτήσετε πρόσβαση. ICal αρχείο
 ExtSiteNoLabel=Χωρίς Περιγραφή
 // STOP - Lines generated via autotranslator.php tool (2011-06-26 15:36:34).
+
+
+// START - Lines generated via autotranslator.php tool (2012-02-29 16:06:57).
+// Reference language: en_US -> el_GR
+LocalAgenda=Τοπικό ημερολόγιο
+MyEvents=Εκδηλώσεις μου
+OtherEvents=Άλλες εκδηλώσεις
+OrderApprovedInDolibarr=%s Παραγγελία εγκριθεί
+OrderBackToDraftInDolibarr=%s Τάξης να επιστρέψετε στην κατάσταση σχέδιο
+OrderCanceledInDolibarr=%s για ακυρώσεις
+InterventionSentByEMail=Παρέμβαση %s αποστέλλονται με ηλεκτρονικό ταχυδρομείο
+ExportCal=Εξαγωγή ημερολογίου
+// STOP - Lines generated via autotranslator.php tool (2012-02-29 16:08:30).

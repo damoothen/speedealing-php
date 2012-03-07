@@ -32,10 +32,10 @@ $langs->load("products");
 $langs->load("contracts");
 $langs->load("companies");
 
-$mode = isset($_GET["mode"])?$_GET["mode"]:$_POST["mode"];
-$sortfield = isset($_GET["sortfield"])?$_GET["sortfield"]:$_POST["sortfield"];
-$sortorder = isset($_GET["sortorder"])?$_GET["sortorder"]:$_POST["sortorder"];
-$page = isset($_GET["page"])?$_GET["page"]:$_POST["page"];
+$mode = GETPOST("mode");
+$sortfield = GETPOST("sortfield",'alpha');
+$sortorder = GETPOST("sortorder",'alpha');
+$page = GETPOST("page");
 if ($page == -1) { $page = 0 ; }
 $limit = $conf->liste_limit;
 $offset = $limit * $page ;
@@ -43,15 +43,15 @@ $offset = $limit * $page ;
 if (! $sortfield) $sortfield="c.rowid";
 if (! $sortorder) $sortorder="ASC";
 
-$filter=isset($_GET["filter"])?$_GET["filter"]:$_POST["filter"];
-$search_nom=isset($_GET["search_nom"])?$_GET["search_nom"]:$_POST["search_nom"];
-$search_contract=isset($_GET["search_contract"])?$_GET["search_contract"]:$_POST["search_contract"];
-$search_service=isset($_GET["search_service"])?$_GET["search_service"]:$_POST["search_service"];
+$filter=GETPOST("filter");
+$search_nom=GETPOST("search_nom");
+$search_contract=GETPOST("search_contract");
+$search_service=GETPOST("search_service");
 $statut=isset($_GET["statut"])?$_GET["statut"]:1;
-$socid=$_GET["socid"];
+$socid=GETPOST('socid','int');
 
 // Security check
-$contratid = isset($_GET["id"])?$_GET["id"]:'';
+$contratid = GETPOST('id','int');
 if ($user->societe_id) $socid=$user->societe_id;
 $result = restrictedArea($user, 'contrat',$contratid,'');
 
@@ -64,7 +64,7 @@ $companystatic=new Societe($db);
  * View
  */
 
-$now=dol_now('tzref');
+$now=dol_now();
 
 $form=new Form($db);
 
@@ -84,10 +84,9 @@ $sql.= " ".MAIN_DB_PREFIX."societe as s,";
 if (!$user->rights->societe->client->voir && !$socid) $sql .= " ".MAIN_DB_PREFIX."societe_commerciaux as sc,";
 $sql.= " ".MAIN_DB_PREFIX."contratdet as cd";
 $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product as p ON cd.fk_product = p.rowid";
-$sql.= " WHERE";
-$sql.= " c.rowid = cd.fk_contrat";
+$sql.= " WHERE c.entity = ".$conf->entity;
+$sql.= " AND c.rowid = cd.fk_contrat";
 $sql.= " AND c.fk_soc = s.rowid";
-$sql.= " AND s.entity = ".$conf->entity;
 if (!$user->rights->societe->client->voir && !$socid) $sql .= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
 if ($mode == "0") $sql.= " AND cd.statut = 0";
 if ($mode == "4") $sql.= " AND cd.statut = 4";
@@ -152,15 +151,15 @@ if ($resql)
 	print '<td class="liste_titre">';
 	print '<input type="hidden" name="filter" value="'.$filter.'">';
 	print '<input type="hidden" name="mode" value="'.$mode.'">';
-	print '<input type="text" class="flat" size="3" name="search_contract" value="'.$search_contract.'">';
+	print '<input type="text" class="flat" size="3" name="search_contract" value="'.dol_escape_htmltag($search_contract).'">';
 	print '</td>';
 	// Service label
 	print '<td class="liste_titre">';
-	print '<input type="text" class="flat" size="18" name="search_service" value="'.$search_service.'">';
+	print '<input type="text" class="flat" size="18" name="search_service" value="'.dol_escape_htmltag($search_service).'">';
 	print '</td>';
 	// Third party
 	print '<td class="liste_titre">';
-	print '<input type="text" class="flat" size="24" name="search_nom" value="'.$search_nom.'">';
+	print '<input type="text" class="flat" size="24" name="search_nom" value="'.dol_escape_htmltag($search_nom).'">';
 	print '</td>';
 	print '<td class="liste_titre" align="center">';
 	$arrayofoperators=array('<'=>'<','>'=>'>');

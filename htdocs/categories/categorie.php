@@ -1,7 +1,7 @@
 <?php
 /* Copyright (C) 2001-2007 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2005      Brice Davoleau       <brice.davoleau@gmail.com>
- * Copyright (C) 2005-2010 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2006-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2007      Patrick Raguin  		<patrick.raguin@gmail.com>
  * Copyright (C) 2010      Juanjo Menent        <jmenent@2byte.es>
@@ -32,50 +32,47 @@ require_once(DOL_DOCUMENT_ROOT."/categories/class/categorie.class.php");
 $langs->load("categories");
 $langs->load("products");
 
-$socid=GETPOST('socid');
-$id=GETPOST('id');
-$ref=GETPOST('ref');
-$mesg=GETPOST('mesg');
+$socid	= GETPOST('socid','int');
+$id		= GETPOST('id','int');
+$ref	= GETPOST('ref');
+$type	= GETPOST('type');
+$mesg	= GETPOST('mesg');
 
 $dbtablename = '';
 
 
 // For categories on third parties
-if (! empty($_REQUEST["socid"])) {
-	$_REQUEST["id"]=$_REQUEST["socid"];
-	$id=$socid;
-}
-if (! isset($_REQUEST["type"])) $_REQUEST["type"]=0;
-if ($_REQUEST["type"] == 1) $socid=$id;
-if ($_REQUEST["type"] == 2) $socid=$id;
+if (! empty($socid)) $id = $socid;
+if (! isset($type)) $type = 0;
+if ($type == 1 || $type == 2) $socid = $id;
 
-if ($_REQUEST["id"] || $_REQUEST["ref"])
+if ($id || $ref)
 {
-	if ($_REQUEST["type"] == 0) {
-		$type = 'product';
+	if ($type == 0) {
+		$elementtype = 'product';
 		$objecttype = 'produit|service&categorie';
-		$objectid = isset($_REQUEST["id"])?$_REQUEST["id"]:(isset($_REQUEST["ref"])?$_REQUEST["ref"]:'');
+		$objectid = isset($id)?$id:(isset($ref)?$ref:'');
 		$dbtablename = 'product';
-		$fieldid = isset($_REQUEST["ref"])?'ref':'rowid';
+		$fieldid = isset($ref)?'ref':'rowid';
 	}
-	if ($_REQUEST["type"] == 1) {
-		$type = 'fournisseur';
+	if ($type == 1) {
+		$elementtype = 'fournisseur';
 		$objecttype = 'societe&categorie';
-		$objectid = isset($_REQUEST["id"])?$_REQUEST["id"]:(isset($_REQUEST["socid"])?$_REQUEST["socid"]:'');
+		$objectid = isset($id)?$id:(isset($socid)?$socid:'');
 		$fieldid = 'rowid';
 	}
-	if ($_REQUEST["type"] == 2) {
-		$type = 'societe';
+	if ($type == 2) {
+		$elementtype = 'societe';
 		$objecttype = 'societe&categorie';
-		$objectid = isset($_REQUEST["id"])?$_REQUEST["id"]:(isset($_REQUEST["socid"])?$_REQUEST["socid"]:'');
+		$objectid = isset($id)?$id:(isset($socid)?$socid:'');
 		$fieldid = 'rowid';
 	}
-	if ($_REQUEST["type"] == 3) {
-		$type = 'member';
+	if ($type == 3) {
+		$elementtype = 'member';
 		$objecttype = 'adherent&categorie';
-		$objectid = isset($_REQUEST["id"])?$_REQUEST["id"]:(isset($_REQUEST["ref"])?$_REQUEST["ref"]:'');
+		$objectid = isset($id)?$id:(isset($ref)?$ref:'');
 		$dbtablename = 'adherent';
-		$fieldid = isset($_REQUEST["ref"])?'ref':'rowid';
+		$fieldid = isset($ref)?'ref':'rowid';
 	}
 }
 
@@ -91,25 +88,24 @@ $result = restrictedArea($user,$objecttype,$objectid,$dbtablename,'','',$fieldid
 //Suppression d'un objet d'une categorie
 if ($_REQUEST["removecat"])
 {
-	if ($_REQUEST["type"]==0 && ($user->rights->produit->creer || $user->rights->service->creer))
+	if ($type==0 && ($user->rights->produit->creer || $user->rights->service->creer))
 	{
 		require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
 		$object = new Product($db);
-		if ($_REQUEST["ref"]) $result = $object->fetch('',$_REQUEST["ref"]);
-		if ($_REQUEST["id"])  $result = $object->fetch($_REQUEST["id"]);
-		$type = 'product';
+		$result = $object->fetch($id, $ref);
+		$elementtype = 'product';
 	}
-	if ($_REQUEST["type"]==1 && $user->rights->societe->creer)
+	if ($type==1 && $user->rights->societe->creer)
 	{
 		$object = new Societe($db);
 		$result = $object->fetch($objectid);
 	}
-	if ($_REQUEST["type"]==2 && $user->rights->societe->creer)
+	if ($type==2 && $user->rights->societe->creer)
 	{
 		$object = new Societe($db);
 		$result = $object->fetch($objectid);
 	}
-	if ($_REQUEST["type"] == 3 && $user->rights->adherent->creer)
+	if ($type == 3 && $user->rights->adherent->creer)
 	{
 		require_once(DOL_DOCUMENT_ROOT."/adherents/class/adherent.class.php");
 		$object = new Adherent($db);
@@ -118,46 +114,42 @@ if ($_REQUEST["removecat"])
 	$cat = new Categorie($db);
 	$result=$cat->fetch($_REQUEST["removecat"]);
 
-	$result=$cat->del_type($object,$type);
+	$result=$cat->del_type($object,$elementtype);
 }
 
 // Add object into a category
 if (isset($_REQUEST["catMere"]) && $_REQUEST["catMere"]>=0)
 {
-	$_GET["id"]=$_REQUEST["id"];
-	$_GET["type"]=$_REQUEST["type"];
-
-	if ($_REQUEST["type"]==0 && ($user->rights->produit->creer || $user->rights->service->creer))
+	if ($type==0 && ($user->rights->produit->creer || $user->rights->service->creer))
 	{
 		require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
 		$object = new Product($db);
-		if ($_REQUEST["ref"]) $result = $object->fetch('',$_REQUEST["ref"]);
-		if ($_REQUEST["id"])  $result = $object->fetch($_REQUEST["id"]);
-		$type = 'product';
+		$result = $object->fetch($id, $ref);
+		$elementtype = 'product';
 	}
-	if ($_REQUEST["type"]==1 && $user->rights->societe->creer)
+	if ($type==1 && $user->rights->societe->creer)
 	{
 		$object = new Societe($db);
 		$result = $object->fetch($objectid);
-		$type = 'fournisseur';
+		$elementtype = 'fournisseur';
 	}
-	if ($_REQUEST["type"]==2 && $user->rights->societe->creer)
+	if ($type==2 && $user->rights->societe->creer)
 	{
 		$object = new Societe($db);
 		$result = $object->fetch($objectid);
-		$type = 'societe';
+		$elementtype = 'societe';
 	}
-	if ($_REQUEST["type"]==3 && $user->rights->adherent->creer)
+	if ($type==3 && $user->rights->adherent->creer)
 	{
 		require_once(DOL_DOCUMENT_ROOT."/adherents/class/adherent.class.php");
 		$object = new Adherent($db);
 		$result = $object->fetch($objectid);
-		$type = 'member';
+		$elementtype = 'member';
 	}
 	$cat = new Categorie($db);
 	$result=$cat->fetch($_REQUEST["catMere"]);
 
-	$result=$cat->add_type($object,$type);
+	$result=$cat->add_type($object,$elementtype);
 	if ($result >= 0)
 	{
 		$mesg='<div class="ok">'.$langs->trans("WasAddedSuccessfully",$cat->label).'</div>';
@@ -175,7 +167,7 @@ if (isset($_REQUEST["catMere"]) && $_REQUEST["catMere"]>=0)
  *	View
  */
 
-$html = new Form($db);
+$form = new Form($db);
 
 
 /*
@@ -183,7 +175,7 @@ $html = new Form($db);
  */
 if ($socid)
 {
-	require_once(DOL_DOCUMENT_ROOT."/lib/company.lib.php");
+	require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
 	require_once(DOL_DOCUMENT_ROOT."/societe/class/societe.class.php");
 
 	$langs->load("companies");
@@ -202,7 +194,7 @@ if ($socid)
 	print '<table class="border" width="100%">';
 
 	print '<tr><td width="25%">'.$langs->trans("ThirdPartyName").'</td><td colspan="3">';
-	print $html->showrefnav($soc,'socid','',($user->societe_id?0:1),'rowid','nom');
+	print $form->showrefnav($soc,'socid','',($user->societe_id?0:1),'rowid','nom','','&type='.$type);
 	print '</td></tr>';
 
     if (! empty($conf->global->SOCIETE_USEPREFIX))  // Old not used prefix field
@@ -230,28 +222,29 @@ if ($socid)
 
 	if ($conf->global->MAIN_MODULE_BARCODE)
 	{
-		print '<tr><td>'.$langs->trans('Gencod').'</td><td colspan="3">'.$soc->gencod.'</td></tr>';
+		print '<tr><td>'.$langs->trans('Gencod').'</td><td colspan="3">'.$soc->barcode.'</td></tr>';
 	}
 
 	// Address
-	print "<tr><td valign=\"top\">".$langs->trans('Address')."</td><td colspan=\"3\">".nl2br($soc->address)."</td></tr>";
+	print '<tr><td valign="top">'.$langs->trans('Address').'</td><td colspan="3">'.nl2br($soc->address).'</td></tr>';
 
 	// Zip / Town
 	print '<tr><td width="25%">'.$langs->trans('Zip').'</td><td width="25%">'.$soc->cp."</td>";
 	print '<td width="25%">'.$langs->trans('Town').'</td><td width="25%">'.$soc->ville."</td></tr>";
 
 	// Country
-	if ($soc->pays) {
+	if ($soc->pays)
+	{
 		print '<tr><td>'.$langs->trans('Country').'</td><td colspan="3">';
-		$img=picto_from_langcode($soc->pays_code);
+		$img=picto_from_langcode($soc->country_code);
 		print ($img?$img.' ':'');
 		print $soc->pays;
 		print '</td></tr>';
 	}
 
 	// Phone
-	print '<tr><td>'.$langs->trans('Phone').'</td><td>'.dol_print_phone($soc->tel,$soc->pays_code,0,$soc->id,'AC_TEL').'</td>';
-	print '<td>'.$langs->trans('Fax').'</td><td>'.dol_print_phone($soc->fax,$soc->pays_code,0,$soc->id,'AC_FAX').'</td></tr>';
+	print '<tr><td>'.$langs->trans('Phone').'</td><td>'.dol_print_phone($soc->tel,$soc->country_code,0,$soc->id,'AC_TEL').'</td>';
+	print '<td>'.$langs->trans('Fax').'</td><td>'.dol_print_phone($soc->fax,$soc->country_code,0,$soc->id,'AC_FAX').'</td></tr>';
 
 	// EMail
 	print '<tr><td>'.$langs->trans('EMail').'</td><td>';
@@ -282,22 +275,21 @@ if ($socid)
 
 	if ($soc->fournisseur) formCategory($db,$soc,1);
 }
-else if ($_GET["id"] || $_GET["ref"])
+else if ($id || $ref)
 {
-	if ($_GET["type"] == 0)
+	if ($type == 0)
 	{
 		$langs->load("products");
 
 		/*
 		 * Fiche categorie de produit
 		 */
-		require_once(DOL_DOCUMENT_ROOT."/lib/product.lib.php");
+		require_once(DOL_DOCUMENT_ROOT."/core/lib/product.lib.php");
 		require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
 
 		// Produit
 		$product = new Product($db);
-		if ($_GET["ref"]) $result = $product->fetch('',$_GET["ref"]);
-		if ($_GET["id"]) $result = $product->fetch($_GET["id"]);
+		$result = $product->fetch($id, $ref);
 
 		llxHeader("","",$langs->trans("CardProduct".$product->type));
 
@@ -313,7 +305,7 @@ else if ($_GET["id"] || $_GET["ref"])
 		// Ref
 		print "<tr>";
 		print '<td width="15%">'.$langs->trans("Ref").'</td><td>';
-		print $html->showrefnav($product,'ref','',1,'ref');
+		print $form->showrefnav($product,'ref','',1,'ref');
 		print '</td>';
 		print '</tr>';
 
@@ -340,21 +332,20 @@ else if ($_GET["id"] || $_GET["ref"])
 		formCategory($db,$product,0);
 	}
 
-	if ($_GET["type"] == 3)
+	if ($type == 3)
 	{
 		$langs->load("members");
 
 		/*
 		 * Fiche categorie d'adherent
 		 */
-		require_once(DOL_DOCUMENT_ROOT."/lib/member.lib.php");
+		require_once(DOL_DOCUMENT_ROOT."/core/lib/member.lib.php");
 		require_once(DOL_DOCUMENT_ROOT."/adherents/class/adherent.class.php");
 		require_once(DOL_DOCUMENT_ROOT."/adherents/class/adherent_type.class.php");
 
 		// Produit
 		$member = new Adherent($db);
-		if ($_GET["ref"]) $result = $member->fetch('',$_GET["ref"]);
-		if ($_GET["id"]) $result = $member->fetch($_GET["id"]);
+		$result = $member->fetch($id, $ref);
 
 		$membert = new AdherentType($db);
 		$membert->fetch($member->typeid);
@@ -376,7 +367,7 @@ else if ($_GET["id"] || $_GET["ref"])
 		// Ref
 		print '<tr><td width="20%">'.$langs->trans("Ref").'</td>';
 		print '<td class="valeur">';
-		print $html->showrefnav($member,'rowid');
+		print $form->showrefnav($member,'rowid');
 		print '</td></tr>';
 
         // Login
@@ -388,7 +379,7 @@ else if ($_GET["id"] || $_GET["ref"])
         // Morphy
         print '<tr><td>'.$langs->trans("Nature").'</td><td class="valeur" >'.$member->getmorphylib().'</td>';
         /*print '<td rowspan="'.$rowspan.'" align="center" valign="middle" width="25%">';
-        print $html->showphoto('memberphoto',$member);
+        print $form->showphoto('memberphoto',$member);
         print '</td>';*/
         print '</tr>';
 
@@ -434,7 +425,7 @@ else if ($_GET["id"] || $_GET["ref"])
  */
 function formCategory($db,$object,$typeid)
 {
-	global $user,$langs,$html,$bc;
+	global $user,$langs,$form,$bc;
 
 	if ($typeid == 0) $title = $langs->trans("ProductsCategoriesShort");
 	if ($typeid == 1) $title = $langs->trans("SuppliersCategoriesShort");
@@ -452,7 +443,7 @@ function formCategory($db,$object,$typeid)
 	print '<table class="noborder" width="100%">';
 	print '<tr class="liste_titre"><td width="40%">';
 	print $langs->trans("ClassifyInCategory").' &nbsp;';
-	print $html->select_all_categories($typeid);
+	print $form->select_all_categories($typeid);
 	print '</td><td>';
 	print '<input type="submit" class="button" value="'.$langs->trans("Classify").'"></td>';
 	if ($user->rights->categorie->creer)

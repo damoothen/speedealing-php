@@ -23,7 +23,7 @@
  */
 
 require ("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT.'/lib/contract.lib.php');
+require_once(DOL_DOCUMENT_ROOT.'/core/lib/contract.lib.php');
 require_once(DOL_DOCUMENT_ROOT."/contrat/class/contrat.class.php");
 require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
 require_once(DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php');
@@ -77,7 +77,7 @@ if ($_POST["action"] == 'addcontact' && $user->rights->contrat->creer)
 if ($_GET["action"] == 'swapstatut' && $user->rights->contrat->creer)
 {
 	$contrat = new Contrat($db);
-	if ($contrat->fetch(GETPOST("id")))
+	if ($contrat->fetch(GETPOST('id','int')))
 	{
 	    $result=$contrat->swapContactStatus(GETPOST('ligne'));
 	}
@@ -108,7 +108,7 @@ if ($_GET["action"] == 'deleteline' && $user->rights->contrat->creer)
 
 llxHeader('', $langs->trans("ContractCard"), "Contrat");
 
-$html = new Form($db);
+$form = new Form($db);
 $formcompany= new FormCompany($db);
 $contactstatic=new Contact($db);
 $userstatic=new User($db);
@@ -157,7 +157,7 @@ if ($id > 0)
 		else print $langs->trans("CompanyHasNoRelativeDiscount");
 		$absolute_discount=$contrat->societe->getAvailableDiscounts();
 		print '. ';
-		if ($absolute_discount) print $langs->trans("CompanyHasAbsoluteDiscount",$absolute_discount,$langs->trans("Currency".$conf->monnaie));
+		if ($absolute_discount) print $langs->trans("CompanyHasAbsoluteDiscount",$absolute_discount,$langs->trans("Currency".$conf->currency));
 		else print $langs->trans("CompanyHasNoAbsoluteDiscount");
 		print '.';
 		print '</td></tr>';
@@ -208,7 +208,7 @@ if ($id > 0)
 
 			print '<td colspan="1">';
 			//$userAlreadySelected = $contrat->getListContactId('internal'); 	// On ne doit pas desactiver un contact deja selectionner car on doit pouvoir le seclectionner une deuxieme fois pour un autre type
-			$html->select_users($user->id,'contactid',0,$userAlreadySelected);
+			$form->select_users($user->id,'contactid',0,$userAlreadySelected);
 			print '</td>';
 			print '<td>';
 			$formcompany->selectTypeContact($contrat, '', 'type','internal');
@@ -238,7 +238,7 @@ if ($id > 0)
 			print '</td>';
 
 			print '<td colspan="1">';
-			$nbofcontacts=$html->select_contacts($selectedCompany, '', 'contactid');
+			$nbofcontacts=$form->select_contacts($selectedCompany, '', 'contactid');
 			if ($nbofcontacts == 0) print $langs->trans("NoContactDefined");
 			print '</td>';
 			print '<td>';
@@ -308,14 +308,14 @@ if ($id > 0)
                 if ($tab[$i]['source']=='internal')
                 {
                     $userstatic->id=$tab[$i]['id'];
-                    $userstatic->nom=$tab[$i]['nom'];
-                    $userstatic->prenom=$tab[$i]['firstname'];
+                    $userstatic->lastname=$tab[$i]['lastname'];
+                    $userstatic->firstname=$tab[$i]['firstname'];
                     print $userstatic->getNomUrl(1);
                 }
                 if ($tab[$i]['source']=='external')
                 {
                     $contactstatic->id=$tab[$i]['id'];
-                    $contactstatic->name=$tab[$i]['nom'];
+                    $contactstatic->lastname=$tab[$i]['lastname'];
                     $contactstatic->firstname=$tab[$i]['firstname'];
                     print $contactstatic->getNomUrl(1);
                 }

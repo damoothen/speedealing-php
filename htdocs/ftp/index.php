@@ -25,8 +25,8 @@
 
 require("./pre.inc.php");	// We use pre.inc.php to have a dynamic menu
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/treeview.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/treeview.lib.php");
 
 // Load traductions files
 $langs->load("ftp");
@@ -82,7 +82,7 @@ $conn_id=0;	// FTP connection ID
 // Envoie fichier
 if ( $_POST["sendit"] && ! empty($conf->global->MAIN_UPLOAD_DOC))
 {
-	require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
+	require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
 
 	$result=$ecmdir->fetch($_REQUEST["section"]);
 	if (! $result > 0)
@@ -93,7 +93,7 @@ if ( $_POST["sendit"] && ! empty($conf->global->MAIN_UPLOAD_DOC))
 	$relativepath=$ecmdir->getRelativePath();
 	$upload_dir = $conf->ecm->dir_output.'/'.$relativepath;
 
-	if (create_exdir($upload_dir) >= 0)
+	if (dol_mkdir($upload_dir) >= 0)
 	{
 		$resupload = dol_move_uploaded_file($_FILES['userfile']['tmp_name'], $upload_dir . "/" . $_FILES['userfile']['name'],0);
 		if (is_numeric($resupload) && $resupload > 0)
@@ -361,7 +361,7 @@ llxHeader();
 if ($conf->use_javascript_ajax)
 {
 ?>
-<script type="text/javascript" language="javascript">
+<script type="text/javascript">
 jQuery(document).ready(function() {
 	jQuery("#delconst").hide();
 	jQuery(".checkboxfordelete").click(function() {

@@ -130,8 +130,8 @@ ErrorDiscountAlreadyUsed=错误，已经使用优惠
 ErrorInvoiceAvoirMustBeNegative=错误的，正确的发票必须有一个负数
 ErrorInvoiceOfThisTypeMustBePositive=错误，这种类型的发票必须有一个正数
 ErrorCantCancelIfReplacementInvoiceNotValidated=错误，无法取消一个已经被另一个发票仍处于草案状态取代发票
-BillFrom=从
-BillTo=条例草案
+BillFrom=From
+BillTo=Bill To
 ActionsOnBill=行动对发票
 NewBill=新发票
 Prélèvements=长期订单
@@ -184,7 +184,7 @@ File=文件
 AlreadyPaid=已支付
 AlreadyPaidNoCreditNotesNoDeposits=已支付（无信用票据及存款）
 Abandoned=弃
-RemainderToPay=其余部分支付
+RemainderToPay=未支付
 RemainderToTake=其余部分采取
 AmountExpected=索赔额
 ExcessReceived=收到过剩
@@ -317,8 +317,8 @@ BankAccountNumberKey=关键
 Residence=Domiciliation
 IBANNumber=IBAN号码
 IBAN=银行IBAN
-BIC=的BIC / SWIFT的
-BICNumber=的BIC / SWIFT的号码
+BIC=BIC号码 / SWIFT号码
+BICNumber=BIC号码 / SWIFT号码
 ExtraInfos=额外的新闻电台
 RegulatedOn=规范了
 ChequeNumber=检查ñ °
@@ -334,8 +334,8 @@ IntracommunityVATNumber=社区内数增值税
 PaymentByChequeOrderedTo=支票付款是支付到％s发送到
 PaymentByChequeOrderedToShort=支票付款，须付予
 SendTo=发送到
-PaymentByTransferOnThisBankAccount=通过转移支付对下列银行帐户
-VATIsNotUsedForInvoice=*不适用增值税艺术293B的CGI
+PaymentByTransferOnThisBankAccount=付款至以下帐户
+VATIsNotUsedForInvoice=* 不得包含VAT, 详见CGI-293B
 LawApplicationPart1=通过对应用的12/05/80法80.335
 LawApplicationPart2=货物仍然是财产
 LawApplicationPart3=卖方直到完全兑现
@@ -397,3 +397,24 @@ PlutonNumRefModelDesc1=返回一个可定制的发票号码，按确定的面具
 // Reference language: en_US -> zh_CN
 InvoiceReplacement=更换发票
 // STOP - Lines generated via autotranslator.php tool (2010-09-04 01:41:53).
+
+
+// START - Lines generated via autotranslator.php tool (2012-02-29 17:37:09).
+// Reference language: en_US -> zh_CN
+BillsCustomer=客户的发票
+BillsSuppliersUnpaidForCompany=%s未付供应商的发票
+BillsLate=逾期付款
+DisabledBecauseNotErasable=禁用，因为不能被擦除
+ConfirmUnvalidateBill=你确定你要更改发票<b>%s</b>草案的地位吗？
+UnvalidateBill=Unvalidate发票
+NumberOfBillsByMonth=铌，按月发票
+AmountOfBillsByMonthHT=通过一个月的发票金额（税后）
+AddRelativeDiscount=建立相对折扣
+EditRelativelDiscount=编辑relatvie折扣
+EditGlobalDiscounts=编辑绝对折扣
+AddCreditNote=创建信用票据
+InvoiceNotChecked=选择无发票
+ShowUnpaidAll=显示所有未付发票
+ClosePaidInvoicesAutomatically=分类“支付最高”的所有entierely支付最高标准或更换发票。
+AllCompletelyPayedInvoiceWillBeClosed=所有发票仍然没有支付将被自动关闭状态“支付最高”。
+// STOP - Lines generated via autotranslator.php tool (2012-02-29 17:38:07).

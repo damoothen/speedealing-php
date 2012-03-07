@@ -1,7 +1,7 @@
 <?php
 /* Copyright (C) 2003      Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2010 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,32 +18,31 @@
  */
 
 /**
- * 		\defgroup   mymodule     Module MyModule
- *      \brief      Example of a module descriptor.
- *					Such a file must be copied into htdocs/mymodule/includes/modules directory.
- *      \file       htdocs/mymodule/includes/modules/modMyModule.class.php
- *      \ingroup    mymodule
- *      \brief      Description and activation file for module MyModule
+ * 	\defgroup   mymodule     Module MyModule
+ *  \brief      Example of a module descriptor.
+ *				Such a file must be copied into htdocs/mymodule/core/modules directory.
+ *  \file       htdocs/mymodule/core/modules/modMyModule.class.php
+ *  \ingroup    mymodule
+ *  \brief      Description and activation file for module MyModule
  */
-include_once(DOL_DOCUMENT_ROOT ."/includes/modules/DolibarrModules.class.php");
+include_once(DOL_DOCUMENT_ROOT ."/core/modules/DolibarrModules.class.php");
 
 
 /**
- * 		\class      modMyModule
- *      \brief      Description and activation class for module MyModule
+ *  Description and activation class for module MyModule
  */
 class modMyModule extends DolibarrModules
 {
 	/**
 	 *   Constructor. Define names, constants, directories, boxes, permissions
 	 *
-	 *   @param      DoliDB		$DB      Database handler
+	 *   @param      DoliDB		$db      Database handler
 	 */
-	function modMyModule($DB)
+	function modMyModule($db)
 	{
         global $langs,$conf;
 
-        $this->db = $DB;
+        $this->db = $db;
 
 		// Id for module (must be unique).
 		// Use here a free id (See in Home -> System information -> Dolibarr for list of used modules id).
@@ -69,8 +68,21 @@ class modMyModule extends DolibarrModules
 		// If file is in module/img directory under name object_pictovalue.png, use this->picto='pictovalue@module'
 		$this->picto='generic';
 
-		// Defined if the directory /mymodule/includes/triggers/ contains triggers or not
-		$this->triggers = 0;
+		// Defined all module parts (triggers, login, substitutions, menus, css, etc...)
+		// for default path (eg: /mymodule/core/xxxxx) (0=disable, 1=enable)
+		// for specific path of parts (eg: /mymodule/core/modules/barcode)
+		// for specific css file (eg: /mymodule/css/mymodule.css.php)
+		//$this->module_parts = array(
+		//                        	'triggers' => 0,                                 // Set this to 1 if module has its own trigger directory
+		//							'login' => 0,                                    // Set this to 1 if module has its own login method directory
+		//							'substitutions' => 0,                            // Set this to 1 if module has its own substitution function file
+		//							'menus' => 0,                                    // Set this to 1 if module has its own menus handler directory
+		//							'barcode' => 0,                                  // Set this to 1 if module has its own barcode directory
+		//							'models' => 0,                                   // Set this to 1 if module has its own models directory
+		//							'css' => '/mymodule/css/mymodule.css.php',       // Set this to relative path of css if module has its own css file
+		//							'hooks' => array('hookcontext1','hookcontext2')  // Set here all hooks context managed by module
+		//                        );
+		$this->module_parts = array();
 
 		// Data directories to create when module is enabled.
 		// Example: this->dirs = array("/mymodule/temp");
@@ -80,8 +92,8 @@ class modMyModule extends DolibarrModules
 		// Relative path to module style sheet if exists. Example: '/mymodule/css/mycss.css'.
 		//$this->style_sheet = '/mymodule/mymodule.css.php';
 
-		// Config pages. Put here list of php page names stored in admmin directory used to setup module.
-		$this->config_page_url = array("mymodulesetuppage.php");
+		// Config pages. Put here list of php page, stored into mymodule/admin directory, to use to setup module.
+		$this->config_page_url = array("mysetuppage.php@mymodule");
 
 		// Dependencies
 		$this->depends = array();		// List of modules id that must be enabled if this module is enabled
@@ -93,12 +105,13 @@ class modMyModule extends DolibarrModules
 		// Constants
 		// List of particular constants to add when module is enabled (key, 'chaine', value, desc, visible, 'current' or 'allentities', deleteonunactive)
 		// Example: $this->const=array(0=>array('MYMODULE_MYNEWCONST1','chaine','myvalue','This is a constant to add',1),
-		//                             1=>array('MYMODULE_MYNEWCONST2','chaine','myvalue','This is another constant to add',0) );
+		//                             1=>array('MYMODULE_MYNEWCONST2','chaine','myvalue','This is another constant to add',0)
+		// );
 		$this->const = array();
 
 		// Array to add new pages in new tabs
-		// Example: $this->tabs = array('objecttype:+tabname1:Title1:@mymodule:$user->rights->mymodule->read:/mymodule/mynewtab1.php?id=__ID__',  // To add a new tab identified by code tabname1
-        //                              'objecttype:+tabname2:Title2:@mymodule:$user->rights->othermodule->read:/mymodule/mynewtab2.php?id=__ID__',  // To add another new tab identified by code tabname2
+		// Example: $this->tabs = array('objecttype:+tabname1:Title1:langfile@mymodule:$user->rights->mymodule->read:/mymodule/mynewtab1.php?id=__ID__',  // To add a new tab identified by code tabname1
+        //                              'objecttype:+tabname2:Title2:langfile@mymodule:$user->rights->othermodule->read:/mymodule/mynewtab2.php?id=__ID__',  // To add another new tab identified by code tabname2
         //                              'objecttype:-tabname');                                                     // To remove an existing tab identified by code tabname
 		// where objecttype can be
 		// 'thirdparty'       to add a tab in third party view
@@ -119,24 +132,26 @@ class modMyModule extends DolibarrModules
         $this->tabs = array();
 
         // Dictionnaries
-        $this->dictionnaries=array();
-        /*
+        if (! isset($conf->mymodule->enabled)) $conf->mymodule->enabled=0;
+		$this->dictionnaries=array();
+        /* Example:
+        if (! isset($conf->mymodule->enabled)) $conf->mymodule->enabled=0;	// This is to avoid warnings
         $this->dictionnaries=array(
-            'langs'=>'cabinetmed@cabinetmed',
-            'tabname'=>array(MAIN_DB_PREFIX."cabinetmed_diaglec",MAIN_DB_PREFIX."cabinetmed_examenprescrit",MAIN_DB_PREFIX."cabinetmed_motifcons"),
-            'tablib'=>array("DiagnostiqueLesionnel","ExamenPrescrit","MotifConsultation"),
-            'tabsql'=>array('SELECT f.rowid as rowid, f.code, f.label, f.active FROM '.MAIN_DB_PREFIX.'cabinetmed_diaglec as f','SELECT f.rowid as rowid, f.code, f.label, f.active FROM '.MAIN_DB_PREFIX.'cabinetmed_examenprescrit as f','SELECT f.rowid as rowid, f.code, f.label, f.active FROM '.MAIN_DB_PREFIX.'cabinetmed_motifcons as f'),
-            'tabsqlsort'=>array("label ASC","label ASC","label ASC"),
-            'tabfield'=>array("code,label","code,label","code,label"),
-            'tabfieldvalue'=>array("code,label","code,label","code,label"),
-            'tabfieldinsert'=>array("code,label","code,label","code,label"),
-            'tabrowid'=>array("rowid","rowid","rowid"),
-            'tabcond'=>array($conf->cabinetmed->enabled,$conf->cabinetmed->enabled,$conf->cabinetmed->enabled)
+            'langs'=>'mymodule@mymodule',
+            'tabname'=>array(MAIN_DB_PREFIX."table1",MAIN_DB_PREFIX."table2",MAIN_DB_PREFIX."table3"),		// List of tables we want to see into dictonnary editor
+            'tablib'=>array("Table1","Table2","Table3"),													// Label of tables
+            'tabsql'=>array('SELECT f.rowid as rowid, f.code, f.label, f.active FROM '.MAIN_DB_PREFIX.'table1 as f','SELECT f.rowid as rowid, f.code, f.label, f.active FROM '.MAIN_DB_PREFIX.'table2 as f','SELECT f.rowid as rowid, f.code, f.label, f.active FROM '.MAIN_DB_PREFIX.'table3 as f'),	// Request to select fields
+            'tabsqlsort'=>array("label ASC","label ASC","label ASC"),																					// Sort order
+            'tabfield'=>array("code,label","code,label","code,label"),																					// List of fields (result of select to show dictionnary)
+            'tabfieldvalue'=>array("code,label","code,label","code,label"),																				// List of fields (list of fields to edit a record)
+            'tabfieldinsert'=>array("code,label","code,label","code,label"),																			// List of fields (list of fields for insert)
+            'tabrowid'=>array("rowid","rowid","rowid"),																									// Name of columns with primary key (try to always name it 'rowid')
+            'tabcond'=>array($conf->mymodule->enabled,$conf->mymodule->enabled,$conf->mymodule->enabled)												// Condition to show each dictionnary
         );
         */
 
         // Boxes
-		// Add here list of php file(s) stored in includes/boxes that contains class to show a box.
+		// Add here list of php file(s) stored in core/boxes that contains class to show a box.
         $this->boxes = array();			// List of boxes
 		$r=0;
 		// Example:
@@ -166,47 +181,48 @@ class modMyModule extends DolibarrModules
 		$r=0;
 
 		// Add here entries to declare new menus
-		// Example to declare the Top Menu entry:
-		// $this->menu[$r]=array(	'fk_menu'=>0,			// Put 0 if this is a top menu
-		//							'type'=>'top',			// This is a Top menu entry
+		//
+		// Example to declare a new Top Menu entry and its Left menu entry:
+		// $this->menu[$r]=array(	'fk_menu'=>0,			                // Put 0 if this is a top menu
+		//							'type'=>'top',			                // This is a Top menu entry
 		//							'titre'=>'MyModule top menu',
 		//							'mainmenu'=>'mymodule',
-		//							'leftmenu'=>'1',		// Use 1 if you also want to add left menu entries using this descriptor.
+		//							'leftmenu'=>'mymodule',
 		//							'url'=>'/mymodule/pagetop.php',
-		//							'langs'=>'mylangfile',	// Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
+		//							'langs'=>'mylangfile',	                // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 		//							'position'=>100,
-		//							'enabled'=>'1',			// Define condition to show or hide menu entry. Use '$conf->mymodule->enabled' if entry must be visible if module is enabled.
-		//							'perms'=>'1',			// Use 'perms'=>'$user->rights->mymodule->level1->level2' if you want your menu with a permission rules
+		//							'enabled'=>'$conf->mymodule->enabled',	// Define condition to show or hide menu entry. Use '$conf->mymodule->enabled' if entry must be visible if module is enabled.
+		//							'perms'=>'1',			                // Use 'perms'=>'$user->rights->mymodule->level1->level2' if you want your menu with a permission rules
 		//							'target'=>'',
-		//							'user'=>2);				// 0=Menu for internal users, 1=external users, 2=both
+		//							'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
 		// $r++;
-		//
-		// Example to declare a Left Menu entry:
-		// $this->menu[$r]=array(	'fk_menu'=>'r=0',		// Use r=value where r is index key used for the parent menu entry (higher parent must be a top menu entry)
-		//							'type'=>'left',			// This is a Left menu entry
-		//							'titre'=>'MyModule left menu 1',
+		// $this->menu[$r]=array(	'fk_menu'=>'r=0',		                // Use r=value where r is index key used for the parent menu entry (higher parent must be a top menu entry)
+		//							'type'=>'left',			                // This is a Left menu entry
+		//							'titre'=>'MyModule left menu',
 		//							'mainmenu'=>'mymodule',
+		//							'leftmenu'=>'mymodule',
 		//							'url'=>'/mymodule/pagelevel1.php',
-		//							'langs'=>'mylangfile',	// Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
+		//							'langs'=>'mylangfile',	                // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 		//							'position'=>100,
-		//							'enabled'=>'1',			// Define condition to show or hide menu entry. Use '$conf->mymodule->enabled' if entry must be visible if module is enabled.
-		//							'perms'=>'1',			// Use 'perms'=>'$user->rights->mymodule->level1->level2' if you want your menu with a permission rules
+		//							'enabled'=>'$conf->mymodule->enabled',	// Define condition to show or hide menu entry. Use '$conf->mymodule->enabled' if entry must be visible if module is enabled.
+		//							'perms'=>'1',			                // Use 'perms'=>'$user->rights->mymodule->level1->level2' if you want your menu with a permission rules
 		//							'target'=>'',
-		//							'user'=>2);				// 0=Menu for internal users, 1=external users, 2=both
+		//							'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
 		// $r++;
 		//
-		// Example to declare another Left Menu entry:
-		// $this->menu[$r]=array(	'fk_menu'=>'r=1',		// Use r=value where r is index key used for the parent menu entry (higher parent must be a top menu entry)
-		//							'type'=>'left',			// This is a Left menu entry
-		//							'titre'=>'MyModule left menu 2',
-		//							'mainmenu'=>'mymodule',
+		// Example to declare a Left Menu entry into an existing Top menu entry:
+		// $this->menu[$r]=array(	'fk_menu'=>'fk_mainmenu=mainmenucode',	// Use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy'
+		//							'type'=>'left',			                // This is a Left menu entry
+		//							'titre'=>'MyModule left menu',
+		//							'mainmenu'=>'mainmenucode',
+		//							'leftmenu'=>'mymodule',
 		//							'url'=>'/mymodule/pagelevel2.php',
-		//							'langs'=>'mylangfile',	// Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
+		//							'langs'=>'mylangfile',	                // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 		//							'position'=>100,
-		//							'enabled'=>'1',			// Define condition to show or hide menu entry. Use '$conf->mymodule->enabled' if entry must be visible if module is enabled.
-		//							'perms'=>'1',			// Use 'perms'=>'$user->rights->mymodule->level1->level2' if you want your menu with a permission rules
+		//							'enabled'=>'$conf->mymodule->enabled',  // Define condition to show or hide menu entry. Use '$conf->mymodule->enabled' if entry must be visible if module is enabled. Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
+		//							'perms'=>'1',			                // Use 'perms'=>'$user->rights->mymodule->level1->level2' if you want your menu with a permission rules
 		//							'target'=>'',
-		//							'user'=>2);				// 0=Menu for internal users, 1=external users, 2=both
+		//							'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
 		// $r++;
 
 
@@ -241,7 +257,7 @@ class modMyModule extends DolibarrModules
 
 		$result=$this->load_tables();
 
-		return $this->_init($sql);
+		return $this->_init($sql, $options);
 	}
 
 	/**
@@ -256,7 +272,7 @@ class modMyModule extends DolibarrModules
 	{
 		$sql = array();
 
-		return $this->_remove($sql);
+		return $this->_remove($sql, $options);
 	}
 
 

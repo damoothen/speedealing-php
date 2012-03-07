@@ -1,5 +1,5 @@
 /*
- * Language code: de_AT
+ * Language code: de_DE
  * Manually translated by eCleaners.at
  * Generation date 2010-11-12 10:09:12
  */
@@ -145,3 +145,19 @@ AllAccounts=Alle Finanzkonten
 BackToAccount=Zurück zum Konto
 ShowAllAccounts=Alle Finanzkonten
 BankAccountCountry=Bankkonto Land
+
+
+// START - Lines generated via autotranslator.php tool (2011-10-10 02:45:33).
+// Reference language: en_US -> de_DE
+WithdrawalPayment=Widerrufsrecht Zahlung
+// STOP - Lines generated via autotranslator.php tool (2011-10-10 06:41:37).
+
+
+// START - Lines generated via autotranslator.php tool (2012-02-29 16:03:27).
+// Reference language: en_US -> de_DE
+ShowCheckReceipt=Zeigen Sie überprüfen Einzahlungsbeleg
+Graph=Grafik
+TransactionWithOtherAccount=Kontoübertrag
+FutureTransaction=Transaction in futur. Kein Weg zu versöhnen.
+SelectChequeTransactionAndGenerate=Wählen / Filter prüft, in die Scheckeinreichung Erhalt gehören und klicken Sie auf &quot;Erstellen&quot;.
+// STOP - Lines generated via autotranslator.php tool (2012-02-29 16:03:37).

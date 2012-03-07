@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * or see http://www.gnu.org/
  */
 
 /**
@@ -40,6 +40,8 @@ if (! defined("NOLOGIN"))        define("NOLOGIN",'1');       // If this page is
 
 
 /**
+ * Class to test core functions
+ *
  * @backupGlobals disabled
  * @backupStaticAttributes enabled
  * @remarks	backupGlobals must be disabled to have db,conf,user and lang not erased.
@@ -88,6 +90,9 @@ class CoreTest extends PHPUnit_Framework_TestCase
     }
 
 	/**
+	 * Init phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function setUp()
     {
@@ -100,6 +105,9 @@ class CoreTest extends PHPUnit_Framework_TestCase
 		print __METHOD__."\n";
     }
 	/**
+	 * End phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function tearDown()
     {
@@ -108,6 +116,9 @@ class CoreTest extends PHPUnit_Framework_TestCase
 
 
     /**
+     * testDetectURLROOT
+     *
+     * @return	void
      */
     public function testDetectURLROOT()
     {

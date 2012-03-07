@@ -3,7 +3,7 @@
  * Copyright (C) 2002-2003 Jean-Louis Bergamo   <jlb@j1b.org>
  * Copyright (C) 2004-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2004      Eric Seigne          <eric.seigne@ryxeo.com>
- * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,15 +25,15 @@
  */
 
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/usergroups.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/usergroups.lib.php");
 
 $langs->load("users");
 $langs->load("admin");
 
-$id=GETPOST("id");
-$action=GETPOST("action");
-$confirm=GETPOST("confirm");
-$module=GETPOST("module");
+$id=GETPOST('id', 'int');
+$action=GETPOST('action', 'alpha');
+$confirm=GETPOST('confirm', 'alpha');
+$module=GETPOST('module');
 
 if (! isset($id) || empty($id)) accessforbidden();
 
@@ -58,7 +58,7 @@ if ($user->id == $id)	// A user can always read its own card
 	$feature2='';
 	$canreaduser=1;
 }
-$result = restrictedArea($user, 'user', $id, '', $feature2);
+$result = restrictedArea($user, 'user', $id, '&user', $feature2);
 if ($user->id <> $id && ! $canreaduser) accessforbidden();
 
 
@@ -126,7 +126,7 @@ $modulesdir = array();
 
 foreach ($conf->file->dol_document_root as $type => $dirroot)
 {
-	$modulesdir[] = $dirroot . "/includes/modules/";
+	$modulesdir[] = $dirroot . "/core/modules/";
 
 	if ($type == 'alt')
 	{
@@ -137,9 +137,9 @@ foreach ($conf->file->dol_document_root as $type => $dirroot)
 			{
 			    if (is_dir($dirroot.'/'.$file) && substr($file, 0, 1) <> '.' && substr($file, 0, 3) <> 'CVS' && $file != 'includes')
 			    {
-			    	if (is_dir($dirroot . '/' . $file . '/includes/modules/'))
+			    	if (is_dir($dirroot . '/' . $file . '/core/modules/'))
 			    	{
-			    		$modulesdir[] = $dirroot . '/' . $file . '/includes/modules/';
+			    		$modulesdir[] = $dirroot . '/' . $file . '/core/modules/';
 			    	}
 			    }
 			}
@@ -150,7 +150,7 @@ foreach ($conf->file->dol_document_root as $type => $dirroot)
 
 foreach($modulesdir as $dir)
 {
-	$handle=opendir($dir);
+	$handle=@opendir($dir);
     if (is_resource($handle))
     {
     	while (($file = readdir($handle))!==false)

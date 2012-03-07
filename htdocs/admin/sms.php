@@ -22,7 +22,7 @@
  */
 
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/admin.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
 
 $langs->load("companies");
 $langs->load("products");
@@ -85,6 +85,12 @@ if ($action == 'send' && ! $_POST['cancel'])
 	include_once(DOL_DOCUMENT_ROOT.'/core/class/html.formsms.class.php');
 	$formsms = new FormSms($db);
 
+	if (! empty($formsms->error))
+	{
+	    $message='<div class="error">'.$formsms->error.'</div>';
+	    $action='test';
+	    $error++;
+	}
     if (empty($body))
     {
         $message='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->transnoentities("Message")).'</div>';
@@ -109,7 +115,7 @@ if ($action == 'send' && ! $_POST['cancel'])
         complete_substitutions_array($substitutionarrayfortest, $langs);
 	    $body=make_substitutions($body,$substitutionarrayfortest);
 
-		require_once(DOL_DOCUMENT_ROOT."/lib/CSMSFile.class.php");
+		require_once(DOL_DOCUMENT_ROOT."/core/class/CSMSFile.class.php");
 
 		$smsfile = new CSMSFile($sendto, $smsfrom, $body, $deliveryreceipt, $deferred, $priority, $class);  // This define OvhSms->login, pass, session and account
 		$result=$smsfile->sendfile(); // This send SMS
@@ -151,15 +157,15 @@ print_fiche_titre($langs->trans("SmsSetup"),'','setup');
 print $langs->trans("SmsDesc")."<br>\n";
 print "<br>\n";
 
-if ($message) print $message.'<br>';
+dol_htmloutput_mesg($message);
 
 // List of sending methods
-$listofmethods=(is_array($conf->sms_engine)?$conf->sms_engine:array());
+$listofmethods=(is_array($conf->sms_engine_modules)?$conf->sms_engine_modules:array());
 asort($listofmethods);
 
 if ($action == 'edit')
 {
-	$html=new Form($db);
+	$form=new Form($db);
 
 	if (! count($listofmethods)) print '<div class="error">'.$langs->trans("NoSmsEngine").'</div>';
 
@@ -176,7 +182,7 @@ if ($action == 'edit')
 	// Disable
 	$var=!$var;
 	print '<tr '.$bc[$var].'><td>'.$langs->trans("MAIN_DISABLE_ALL_SMS").'</td><td>';
-	print $html->selectyesno('MAIN_DISABLE_ALL_SMS',$conf->global->MAIN_DISABLE_ALL_SMS,1);
+	print $form->selectyesno('MAIN_DISABLE_ALL_SMS',$conf->global->MAIN_DISABLE_ALL_SMS,1);
 	print '</td></tr>';
 
 	// Separator
@@ -186,7 +192,7 @@ if ($action == 'edit')
 	// Method
 	$var=!$var;
 	print '<tr '.$bc[$var].'><td>'.$langs->trans("MAIN_SMS_SENDMODE").'</td><td>';
-	if (count($listofmethods)) print $html->selectarray('MAIN_SMS_SENDMODE',$listofmethods,$conf->global->MAIN_SMS_SENDMODE,1);
+	if (count($listofmethods)) print $form->selectarray('MAIN_SMS_SENDMODE',$listofmethods,$conf->global->MAIN_SMS_SENDMODE,1);
 	else print '<font class="error">'.$langs->trans("None").'</font>';
     print '</td></tr>';
 
@@ -293,14 +299,14 @@ else
 		// If we use SSL/TLS
 		if (! empty($conf->global->MAIN_MAIL_EMAIL_TLS) && function_exists('openssl_open')) $server='ssl://'.$server;
 
-		include_once(DOL_DOCUMENT_ROOT."/lib/CMailFile.class.php");
+		include_once(DOL_DOCUMENT_ROOT."/core/class/CMailFile.class.php");
 		$mail = new CSMSFile('','','','');
 		$result=$mail->check_server_port($server,$port);
 		if ($result) print '<div class="ok">'.$langs->trans("ServerAvailableOnIPOrPort",$server,$port).'</div>';
 		else
 		{
 			print '<div class="error">'.$langs->trans("ServerNotAvailableOnIPOrPort",$server,$port);
-			if ($mail->error) print ' - '.$langs->convToOutputCharset($mail->error,'ISO-8859-1');
+			if ($mail->error) print ' - '.$mail->error;
 			print '</div>';
 		}
 		print '<br>';

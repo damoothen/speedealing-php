@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * or see http://www.gnu.org/
  */
 
 /**
@@ -28,6 +28,7 @@ global $conf,$user,$langs,$db;
 require_once 'PHPUnit/Autoload.php';
 require_once dirname(__FILE__).'/../../htdocs/master.inc.php';
 require_once dirname(__FILE__).'/../../htdocs/societe/class/societe.class.php';
+$langs->load("dict");
 
 if (empty($user->id))
 {
@@ -92,6 +93,9 @@ class SocieteTest extends PHPUnit_Framework_TestCase
     }
 
 	/**
+	 * Init phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function setUp()
     {
@@ -103,7 +107,11 @@ class SocieteTest extends PHPUnit_Framework_TestCase
 
 		print __METHOD__."\n";
     }
+
 	/**
+	 * End phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function tearDown()
     {
@@ -111,6 +119,9 @@ class SocieteTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testSocieteCreate
+     *
+     * @return int
      */
     public function testSocieteCreate()
     {
@@ -131,6 +142,11 @@ class SocieteTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testSocieteFetch
+     *
+     * @param	int		$id				Company id
+     * @return	Societe	$localobject	Company
+	 *
      * @depends	testSocieteCreate
      * The depends says test is run only if previous is ok
      */
@@ -155,6 +171,11 @@ class SocieteTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testSocieteUpdate
+     *
+     * @param	Societe	$localobject	Company
+     * @return	Societe	$localobject	Company
+	 *
      * @depends	testSocieteFetch
      * The depends says test is run only if previous is ok
      */
@@ -167,15 +188,119 @@ class SocieteTest extends PHPUnit_Framework_TestCase
 		$db=$this->savdb;
 
 		$localobject->note='New note after update';
-    	$result=$localobject->update($localobject->id,$user);
+		//$localobject->note_public='New note public after update';
+		$localobject->name='New name';
+		$localobject->address='New address';
+		$localobject->zip='New zip';
+		$localobject->town='New town';
+		$localobject->country_id=2;
+		$localobject->status=0;
+		$localobject->tel='New tel';
+		$localobject->fax='New fax';
+		$localobject->email='newemail@newemail.com';
+		$localobject->url='New url';
+		$localobject->idprof1='new idprof1';
+		$localobject->idprof2='new idprof2';
+		$localobject->idprof3='new idprof3';
+		$localobject->idprof4='new idprof4';
+		$result=$localobject->update($localobject->id,$user);
     	print __METHOD__." id=".$localobject->id." result=".$result."\n";
     	$this->assertLessThan($result, 0);
+		$result=$localobject->update_note($localobject->note);
+    	print __METHOD__." id=".$localobject->id." result=".$result."\n";
+    	$this->assertLessThan($result, 0);
+		//$result=$localobject->update_note_public($localobject->note_public);
+    	//print __METHOD__." id=".$localobject->id." result=".$result."\n";
+    	//$this->assertLessThan($result, 0);
+
+		$newobject=new Societe($this->savdb);
+    	$result=$newobject->fetch($localobject->id);
+        print __METHOD__." id=".$localobject->id." result=".$result."\n";
+    	$this->assertLessThan($result, 0);
+
+    	$this->assertEquals($localobject->note, $newobject->note);
+    	//$this->assertEquals($localobject->note_public, $newobject->note_public);
+    	$this->assertEquals($localobject->name, $newobject->name);
+    	$this->assertEquals($localobject->address, $newobject->address);
+    	$this->assertEquals($localobject->zip, $newobject->zip);
+    	$this->assertEquals($localobject->town, $newobject->town);
+    	$this->assertEquals($localobject->country_id, $newobject->country_id);
+    	$this->assertEquals('BE', $newobject->country_code);
+    	$this->assertEquals($localobject->status, $newobject->status);
+    	$this->assertEquals($localobject->tel, $newobject->tel);
+    	$this->assertEquals($localobject->fax, $newobject->fax);
+    	$this->assertEquals($localobject->email, $newobject->email);
+    	$this->assertEquals($localobject->url, $newobject->url);
+    	$this->assertEquals($localobject->idprof1, $newobject->idprof1);
+    	$this->assertEquals($localobject->idprof2, $newobject->idprof2);
+    	$this->assertEquals($localobject->idprof3, $newobject->idprof3);
+    	$this->assertEquals($localobject->idprof4, $newobject->idprof4);
 
     	return $localobject;
     }
 
     /**
+     * testIdProfCheck
+     *
+     * @param	Societe	$localobject	Company
+     * @return	Societe	$localobject	Company
+     *
      * @depends	testSocieteUpdate
+     * The depends says test is run only if previous is ok
+     */
+    public function testIdProfCheck($localobject)
+    {
+        // OK FR
+        $localobject->country_code='FR';
+        $localobject->idprof1=493861496;
+        $localobject->idprof2=49386149600021;
+        $result=$localobject->id_prof_check(1,$localobject);    // Must be > 0
+        print __METHOD__." OK FR idprof1 result=".$result."\n";
+        $this->assertGreaterThanOrEqual(1, $result);
+        $result=$localobject->id_prof_check(2,$localobject);    // Must be > 0
+        print __METHOD__." OK FR idprof2 result=".$result."\n";
+        $this->assertGreaterThanOrEqual(1, $result);
+
+        // KO FR
+        $localobject->country_code='FR';
+        $localobject->idprof1='id1ko';
+        $localobject->idprof2='id2ko';
+        $result=$localobject->id_prof_check(1,$localobject);    // Must be <= 0
+        print __METHOD__." KO FR idprof1 result=".$result."\n";
+        $this->assertLessThan(1, $result);
+        $result=$localobject->id_prof_check(2,$localobject);    // Must be <= 0
+        print __METHOD__." KO FR idprof2 result=".$result."\n";
+        $this->assertLessThan(1, $result);
+
+        // KO ES
+        $localobject->country_code='ES';
+        $localobject->idprof1='id1ko';
+        $result=$localobject->id_prof_check(1,$localobject);    // Must be <= 0
+        print __METHOD__." KO ES idprof1 result=".$result."\n";
+        $this->assertLessThan(1, $result);
+
+        // OK AR
+        $localobject->country_code='AR';
+        $localobject->idprof1='id1ko';
+        $localobject->idprof2='id2ko';
+        $result=$localobject->id_prof_check(1,$localobject);    // Must be > 0
+        print __METHOD__." OK AR idprof1 result=".$result."\n";
+        $this->assertGreaterThanOrEqual(0, $result);
+        $result=$localobject->id_prof_check(2,$localobject);    // Must be > 0
+        print __METHOD__." OK AR idprof2 result=".$result."\n";
+        $this->assertGreaterThanOrEqual(1, $result);
+
+        return $localobject;
+    }
+
+
+    /**
+     * testSocieteOther
+     *
+     * @param	Societe	$localobject	Company
+     * @return	int		$id				Id of company
+     *
+     * @depends	testIdProfCheck
      * The depends says test is run only if previous is ok
      */
     public function testSocieteOther($localobject)
@@ -185,10 +310,6 @@ class SocieteTest extends PHPUnit_Framework_TestCase
 		$user=$this->savuser;
 		$langs=$this->savlangs;
 		$db=$this->savdb;
-
-    	$result=$localobject->factures_impayes();
-    	print __METHOD__." id=".$localobject->id." result=".join(',',$result)."\n";
-    	//$this->assertLessThan($result, 0);
 
         $result=$localobject->set_as_client();
         print __METHOD__." id=".$localobject->id." result=".$result."\n";
@@ -206,12 +327,12 @@ class SocieteTest extends PHPUnit_Framework_TestCase
         print __METHOD__." id=".$localobject->id." result=".$result."\n";
         $this->assertNotEquals($result, '');
 
-        $result=$localobject->getFullAddress();
+        $result=$localobject->getFullAddress(1);
         print __METHOD__." id=".$localobject->id." result=".$result."\n";
-        $this->assertContains('MyTown', $result);
+        $this->assertContains("New address\nNew zip New town\nBelgium", $result);
 
         $result=$localobject->isInEEC();
-        print __METHOD__." id=".$localobject->id." pays_code=".$this->pays_code." result=".$result."\n";
+        print __METHOD__." id=".$localobject->id." country_code=".$this->country_code." result=".$result."\n";
         $this->assertTrue(true, $result);
 
         $localobject->info($localobject->id);
@@ -222,6 +343,11 @@ class SocieteTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testSocieteDelete
+     *
+     * @param	int		$id		Id of company
+     * @return	int
+     *
      * @depends	testSocieteOther
      * The depends says test is run only if previous is ok
      */
@@ -244,27 +370,9 @@ class SocieteTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     *
-     */
-    /*public function testVerifyNumRef()
-    {
-    	global $conf,$user,$langs,$db;
-		$conf=$this->savconf;
-		$user=$this->savuser;
-		$langs=$this->savlangs;
-		$db=$this->savdb;
-
-		$localobject=new Adherent($this->savdb);
-    	$result=$localobject->ref='refthatdoesnotexists';
-		$result=$localobject->VerifyNumRef();
-
-		print __METHOD__." result=".$result."\n";
-    	$this->assertEquals($result, 0);
-    	return $result;
-    }*/
-
-
-    /**
+	 * testSocieteStatic
+	 *
+	 * @return	void
      */
     public function testSocieteStatic()
     {

@@ -25,10 +25,10 @@ set_include_path($_SERVER['DOCUMENT_ROOT'].'/htdocs');
 
 require_once("../master.inc.php");
 require_once(NUSOAP_PATH.'/nusoap.php');        // Include SOAP
-require_once(DOL_DOCUMENT_ROOT."/lib/ws.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/ws.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/user/class/user.class.php");
 
-require_once(DOL_DOCUMENT_ROOT."/lib/functions2.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
 
 
 dol_syslog("Call Dolibarr webservices interfaces");
@@ -92,16 +92,17 @@ $styleuse='encoded';   // encoded/literal/literal wrapped
 // Better choice is document/literal wrapped but literal wrapped not supported by nusoap.
 
 // Register WSDL
-$server->register('getVersions',
-// Entry values
-array('authentication'=>'tns:authentication'),
-// Exit values
-array('result'=>'tns:result','dolibarr'=>'xsd:string','os'=>'xsd:string','php'=>'xsd:string','webserver'=>'xsd:string'),
-$ns,
-$ns.'#getVersions',
-$styledoc,
-$styleuse,
-'WS to get Versions'
+$server->register(
+    'getVersions',
+    // Entry values
+    array('authentication'=>'tns:authentication'),
+    // Exit values
+    array('result'=>'tns:result','dolibarr'=>'xsd:string','os'=>'xsd:string','php'=>'xsd:string','webserver'=>'xsd:string'),
+    $ns,
+    $ns.'#getVersions',
+    $styledoc,
+    $styleuse,
+    'WS to get Versions'
 );
 
 

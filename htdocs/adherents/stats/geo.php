@@ -22,8 +22,7 @@
  */
 
 require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/dolgraph.class.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/member.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/member.lib.php");
 
 $graphwidth = 700;
 $mapratio = 0.5;
@@ -61,7 +60,7 @@ if ($mode == 'memberbytown') $title=$langs->trans("MembersStatisticsByTown");
 
 print_fiche_titre($title, $mesg);
 
-create_exdir($dir);
+dol_mkdir($dir);
 
 if ($mode)
 {

@@ -42,7 +42,7 @@ if (! isset($argv[1]) || ! $argv[1]) {
 $id=$argv[1];
 
 require_once ($path."../../htdocs/master.inc.php");
-require_once (DOL_DOCUMENT_ROOT."/lib/CMailFile.class.php");
+require_once (DOL_DOCUMENT_ROOT."/core/class/CMailFile.class.php");
 
 
 $error = 0;
@@ -93,7 +93,7 @@ $nbok=0; $nbko=0;
 
 // On choisit les mails non deja envoyes pour ce mailing (statut=0)
 // ou envoyes en erreur (statut=-1)
-$sql = "SELECT mc.rowid, mc.nom, mc.prenom, mc.email, mc.other, mc.source_url, mc.source_id, mc.source_type";
+$sql = "SELECT mc.rowid, mc.nom as lastname, mc.prenom as firstname, mc.email, mc.other, mc.source_url, mc.source_id, mc.source_type, mc.tag";
 $sql .= " FROM ".MAIN_DB_PREFIX."mailing_cibles as mc";
 $sql .= " WHERE mc.statut < 1 AND mc.fk_mailing = ".$id;
 
@@ -123,7 +123,7 @@ if ($resql)
 			$obj = $db->fetch_object($resql);
 
 			// sendto en RFC2822
-			$sendto = str_replace(',',' ',$obj->prenom." ".$obj->nom) ." <".$obj->email.">";
+			$sendto = str_replace(',',' ',$obj->firstname." ".$obj->lastname) ." <".$obj->email.">";
 
 			// Make subtsitutions on topic and body
 			$other=explode(';',$obj->other);
@@ -135,8 +135,10 @@ if ($resql)
 			$substitutionarray=array(
 				'__ID__' => $obj->source_id,
 				'__EMAIL__' => $obj->email,
-				'__LASTNAME__' => $obj->nom,
-				'__FIRSTNAME__' => $obj->prenom,
+				'__CHECK_READ__' => '<img src="'.DOL_MAIN_URL_ROOT.'/public/emailing/mailing-read.php?tag='.$obj->tag.'" style="width:0px;height:0px" border="0"/>',
+				'__UNSUSCRIBE__' => '<a href="'.DOL_MAIN_URL_ROOT.'/public/emailing/mailing-usubscribe.php?tag='.$obj->tag.'&unsuscrib=1" target="_blank"/>'.$langs->trans("MailUnsubcribe").'</a>',
+				'__LASTNAME__' => $obj->lastname,
+				'__FIRSTNAME__' => $obj->firstname,
 				'__OTHER1__' => $other1,
 				'__OTHER2__' => $other2,
 				'__OTHER3__' => $other3,

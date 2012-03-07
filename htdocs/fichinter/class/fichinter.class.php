@@ -1,7 +1,7 @@
 <?php
 /* Copyright (C) 2002-2003 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2010 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2011	   Juanjo Menent        <jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -60,11 +60,11 @@ class Fichinter extends CommonObject
 	/**
 	 *	Constructor
 	 *
-	 *  @param		DoliDB		$DB      Database handler
+	 *  @param	DoliDB	$db		Database handler
 	 */
-	function Fichinter($DB)
+	function __construct($db)
 	{
-		$this->db = $DB ;
+		$this->db = $db ;
 		$this->products = array();
 		$this->fk_project = 0;
 		$this->statut = 0;
@@ -80,21 +80,22 @@ class Fichinter extends CommonObject
 
 
 	/**
-	 *	Create a intervention into data base
+	 *	Create an intervention into data base
+	 *
 	 *	@return		int		<0 if KO, >0 if OK
 	 */
 	function create()
 	{
 		global $conf;
 
-		dol_syslog("Fichinter.class::create ref=".$this->ref);
+		dol_syslog(get_class($this)."::create ref=".$this->ref);
 
 		// Check parameters
 		if (! is_numeric($this->duree)) { $this->duree = 0; }
 		if ($this->socid <= 0)
 		{
 			$this->error='ErrorBadParameterForFunc';
-			dol_syslog("Fichinter::create ".$this->error,LOG_ERR);
+			dol_syslog(get_class($this)."::create ".$this->error,LOG_ERR);
 			return -1;
 		}
 		// on verifie si la ref n'est pas utilisee
@@ -106,14 +107,14 @@ class Fichinter extends CommonObject
 			if ($result > 0)
 			{
 				$this->error='ErrorRefAlreadyExists';
-				dol_syslog("Fichinter::create ".$this->error,LOG_WARNING);
+				dol_syslog(get_class($this)."::create ".$this->error,LOG_WARNING);
 				$this->db->rollback();
 				return -3;
 			}
 			else if ($result < 0)
 			{
 				$this->error=$this->db->error();
-				dol_syslog("Fichinter::create ".$this->error,LOG_ERR);
+				dol_syslog(get_class($this)."::create ".$this->error,LOG_ERR);
 				$this->db->rollback();
 				return -2;
 			}
@@ -133,6 +134,8 @@ class Fichinter extends CommonObject
 		$sql.= ", model_pdf";
 		$sql.= ", fk_projet";
 		$sql.= ", fk_statut";
+		$sql.= ", note_private";
+		$sql.= ", note_public";
 		$sql.= ") ";
 		$sql.= " VALUES (";
 		$sql.= $this->socid;
@@ -144,9 +147,11 @@ class Fichinter extends CommonObject
 		$sql.= ", '".$this->modelpdf."'";
 		$sql.= ", ".($this->fk_project ? $this->fk_project : 0);
 		$sql.= ", ".$this->statut;
+		$sql.= ", ".($this->note_private?"'".$this->db->escape($this->note_private)."'":"null");
+		$sql.= ", ".($this->note_public?"'".$this->db->escape($this->note_public)."'":"null");
 		$sql.= ")";
 
-		dol_syslog("Fichinter::create sql=".$sql);
+		dol_syslog(get_class($this)."::create sql=".$sql, LOG_DEBUG);
 		$result=$this->db->query($sql);
 		if ($result)
 		{
@@ -157,7 +162,7 @@ class Fichinter extends CommonObject
 		else
 		{
 			$this->error=$this->db->error();
-			dol_syslog("Fichinter::create ".$this->error,LOG_ERR);
+			dol_syslog(get_class($this)."::create ".$this->error, LOG_ERR);
 			$this->db->rollback();
 			return -1;
 		}
@@ -165,42 +170,46 @@ class Fichinter extends CommonObject
 	}
 
 	/**
-	 *	Update a intervention
+	 *	Update an intervention
+	 *
 	 *	@return		int		<0 if KO, >0 if OK
 	 */
-	function update($user)
+	function update()
 	{
-		global $conf;
-
 		if (! is_numeric($this->duree)) { $this->duree = 0; }
 		if (! dol_strlen($this->fk_project)) { $this->fk_project = 0; }
 
-		/*
-		 *  Insertion dans la base
-		 */
+		$this->db->begin();
+
 		$sql = "UPDATE ".MAIN_DB_PREFIX."fichinter SET ";
 		$sql.= ", description  = '".$this->db->escape($this->description)."'";
 		$sql.= ", duree = ".$this->duree;
 		$sql.= ", fk_projet = ".$this->fk_project;
+		$sql.= ", note_private = ".($this->note_private?"'".$this->db->escape($this->note_private)."'":"null");
+		$sql.= ", note_public = ".($this->note_public?"'".$this->db->escape($this->note_public)."'":"null");
 		$sql.= " WHERE rowid = ".$this->id;
-		$sql.= " AND entity = ".$conf->entity;
 
-		dol_syslog("Fichinter::update sql=".$sql);
-		if (! $this->db->query($sql))
+		dol_syslog(get_class($this)."::update sql=".$sql, LOG_DEBUG);
+		if ($this->db->query($sql))
+		{
+			$this->db->commit();
+			return 1;
+		}
+		else
 		{
 			$this->error=$this->db->error();
-			dol_syslog("Fichinter::update error ".$this->error,LOG_ERR);
+			dol_syslog(get_class($this)."::update error ".$this->error, LOG_ERR);
+			$this->db->rollback();
 			return -1;
 		}
-
-		return 1;
 	}
 
 	/**
 	 *	Fetch a intervention
-	 *	@param		rowid		Id of intervention
-	 *	@param		ref			Ref of intervention
-	 *	@return		int			<0 if ko, >0 if ok
+	 *
+	 *	@param		int		$rowid		Id of intervention
+	 *	@param		string	$ref		Ref of intervention
+	 *	@return		int					<0 if KO, >0 if OK
 	 */
 	function fetch($rowid,$ref='')
 	{
@@ -213,7 +222,7 @@ class Fichinter extends CommonObject
 		if ($ref) $sql.= " WHERE f.ref='".$ref."'";
 		else $sql.= " WHERE f.rowid=".$rowid;
 
-		dol_syslog("Fichinter::fetch sql=".$sql);
+		dol_syslog(get_class($this)."::fetch sql=".$sql, LOG_DEBUG);
 		$resql=$this->db->query($sql);
 		if ($resql)
 		{
@@ -252,13 +261,15 @@ class Fichinter extends CommonObject
 		else
 		{
 			$this->error=$this->db->error();
-			dol_syslog("Fichinter::fetch ".$this->error,LOG_ERR);
+			dol_syslog(get_class($this)."::fetch ".$this->error,LOG_ERR);
 			return -1;
 		}
 	}
 
 	/**
 	 *	Set status to draft
+	 *
+	 *	@param		User	$user	User that set draft
 	 *	@return		int			<0 if KO, >0 if OK
 	 */
 	function setDraft($user)
@@ -293,13 +304,16 @@ class Fichinter extends CommonObject
 
 	/**
 	 *	Validate a intervention
-	 *	@param		user		User that validate
-	 *	@param		outputdir
+	 *
+	 *	@param		User		$user		User that validate
+	 *	@param		string		$outputdir	Output directory
 	 *	@return		int			<0 if KO, >0 if OK
 	 */
 	function setValid($user, $outputdir)
 	{
 		global $langs, $conf;
+
+		$error=0;
 
 		if ($this->statut != 1)
 		{
@@ -349,6 +363,7 @@ class Fichinter extends CommonObject
 
 	/**
 	 * 	Set intervetnion as billed
+	 *
 	 *  @return int     <0 si ko, >0 si ok
 	 */
 	function setBilled()
@@ -374,8 +389,9 @@ class Fichinter extends CommonObject
 
 	/**
 	 *	Returns the label status
-	 *	@param      mode        0=long label, 1=short label, 2=Picto + short label, 3=Picto, 4=Picto + long label, 5=Short label + Picto
-	 *	@return     string      Label
+	 *
+	 *	@param      int		$mode       0=long label, 1=short label, 2=Picto + short label, 3=Picto, 4=Picto + long label, 5=Short label + Picto
+	 *	@return     string      		Label
 	 */
 	function getLibStatut($mode=0)
 	{
@@ -384,9 +400,10 @@ class Fichinter extends CommonObject
 
 	/**
 	 *	Returns the label of a statut
-	 *	@param      statut      id statut
-	 *	@param      mode        0=long label, 1=short label, 2=Picto + short label, 3=Picto, 4=Picto + long label, 5=Short label + Picto
-	 *	@return     string      Label
+	 *
+	 *	@param      int		$statut     id statut
+	 *	@param      int		$mode       0=long label, 1=short label, 2=Picto + short label, 3=Picto, 4=Picto + long label, 5=Short label + Picto
+	 *	@return     string      		Label
 	 */
 	function LibStatut($statut,$mode=0)
 	{
@@ -428,8 +445,9 @@ class Fichinter extends CommonObject
 
 	/**
 	 *	Return clicable name (with picto eventually)
-	 *	@param		withpicto		0=_No picto, 1=Includes the picto in the linkn, 2=Picto only
-	 *	@return		string			String with URL
+	 *
+	 *	@param		int			$withpicto		0=_No picto, 1=Includes the picto in the linkn, 2=Picto only
+	 *	@return		string						String with URL
 	 */
 	function getNomUrl($withpicto=0)
 	{
@@ -454,15 +472,16 @@ class Fichinter extends CommonObject
 	/**
 	 *	Returns the next non used reference of intervention
 	 *	depending on the module numbering assets within FICHEINTER_ADDON
-	 *	@param	    soc		Object society
-	 *	@return     string	Free reference for intervention
+	 *
+	 *	@param	    Societe		$soc		Object society
+	 *	@return     string					Free reference for intervention
 	 */
 	function getNextNumRef($soc)
 	{
 		global $conf, $db, $langs;
 		$langs->load("interventions");
 
-		$dir = DOL_DOCUMENT_ROOT . "/includes/modules/fichinter/";
+		$dir = DOL_DOCUMENT_ROOT . "/core/modules/fichinter/";
 
 		if (! empty($conf->global->FICHEINTER_ADDON))
 		{
@@ -501,7 +520,9 @@ class Fichinter extends CommonObject
 
 	/**
 	 * 	Information sur l'objet fiche intervention
-	 *	@param      id      id de la fiche d'intervention
+	 *
+	 *	@param	int		$id      Id de la fiche d'intervention
+	 *	@return	void
 	 */
 	function info($id)
 	{
@@ -550,27 +571,22 @@ class Fichinter extends CommonObject
 
 	/**
 	 *	Delete intervetnion
-	 *	@param      user	Object user who deletes
+	 *
+	 *	@param      User	$user	Object user who delete
+	 *	@return		int				<0 if KO, >0 if OK
 	 */
 	function delete($user)
 	{
 		global $conf;
-        require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
+        require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
 
 		$error=0;
 
 		$this->db->begin();
 
 		// Delete linked object
-		$sql = "DELETE FROM ".MAIN_DB_PREFIX."element_element";
-		$sql.= " WHERE fk_target = ".$this->id;
-		$sql.= " AND targettype = '".$this->element."'";
-		dol_syslog("Fichinter::delete sql=".$sql);
-		if (! $this->db->query($sql) )
-		{
-			dol_syslog("Fichinter::delete error", LOG_ERR);
-			$error++;
-		}
+        $res = $this->deleteObjectLinked();
+        if ($res < 0) $error++;
 
 		// Delete linked contacts
 		$res = $this->delete_linked_contact();
@@ -580,7 +596,7 @@ class Fichinter extends CommonObject
 			$error++;
 		}
 
-		if ($err > 0)
+		if ($error)
 		{
 			$this->db->rollback();
 			return -1;
@@ -608,7 +624,7 @@ class Fichinter extends CommonObject
 					$file = $conf->ficheinter->dir_output . "/" . $fichinterref . "/" . $fichinterref . ".pdf";
 					if (file_exists($file))
 					{
-						fichinter_delete_preview($this->db, $this->id, $this->ref);
+						dol_delete_preview($this);
 
 						if (!dol_delete_file($file))
 						{
@@ -646,9 +662,10 @@ class Fichinter extends CommonObject
 
 	/**
 	 *	Defines a delivery date of intervention
-	 *	@param      user			Object user who define
-	 *	@param      date_delivery   date of delivery
-	 *	@return     int				<0 if ko, >0 if ok
+	 *
+	 *	@param      User	$user				Object user who define
+	 *	@param      date	$date_delivery   	date of delivery
+	 *	@return     int							<0 if ko, >0 if ok
 	 */
 	function set_date_delivery($user, $date_delivery)
 	{
@@ -678,9 +695,10 @@ class Fichinter extends CommonObject
 
 	/**
 	 *	Define the label of the intervention
-	 *	@param      user			Object user who modify
-	 *	@param      description     description
-	 *	@return     int				<0 if ko, >0 if ok
+	 *
+	 *	@param      User	$user			Object user who modify
+	 *	@param      string	$description    description
+	 *	@return     int						<0 if ko, >0 if ok
 	 */
 	function set_description($user, $description)
 	{
@@ -710,11 +728,12 @@ class Fichinter extends CommonObject
 
 	/**
 	 *	Adding a line of intervention into data base
-	 *	@param    	fichinterid			Id of intervention
-	 *	@param    	desc				Line description
-	 *	@param      date_intervention  	Intervention date
-	 *	@param      duration            Intervention duration
-	 *	@return    	int             	>0 if ok, <0 if ko
+	 *
+	 *	@param    	int		$fichinterid			Id of intervention
+	 *	@param    	string	$desc					Line description
+	 *	@param      date	$date_intervention  	Intervention date
+	 *	@param      int		$duration            	Intervention duration
+	 *	@return    	int             				>0 if ok, <0 if ko
 	 */
 	function addline($fichinterid, $desc, $date_intervention, $duration)
 	{
@@ -788,15 +807,16 @@ class Fichinter extends CommonObject
 
 	/**
 	 *	Load array lines
+	 *
 	 *	@return		int		<0 if Ko,	>0 if OK
 	 */
 	function fetch_lines()
 	{
 		$sql = 'SELECT rowid, description, duree, date, rang';
 		$sql.= ' FROM '.MAIN_DB_PREFIX.'fichinterdet';
-		$sql.= ' where fk_fichinter = '.$this->id;
+		$sql.= ' WHERE fk_fichinter = '.$this->id;
 
-		dol_syslog("Fichinter::fetch_lines sql=".$sql);
+		dol_syslog(get_class($this)."::fetch_lines sql=".$sql);
 		$resql=$this->db->query($sql);
 		if ($resql)
 		{
@@ -850,17 +870,20 @@ class FichinterLigne
 
 
 	/**
-	 *      \brief     Constructeur d'objets ligne d'intervention
-	 *      \param     DB      handler d'acces base de donnee
+	 *	Constructor
+	 *
+	 *	@param	DoliDB	$db		Database handler
 	 */
-	function FichinterLigne($DB)
+	function __construct($db)
 	{
-		$this->db= $DB;
+		$this->db = $db;
 	}
 
 	/**
 	 *	Retrieve the line of intervention
-	 *	@param     rowid	line id
+	 *
+	 *	@param  int		$rowid		Line id
+	 *	@return	int					<0 if KO, >0 if OK
 	 */
 	function fetch($rowid)
 	{
@@ -894,6 +917,7 @@ class FichinterLigne
 
 	/**
 	 *	Insert the line into database
+	 *
 	 *	@return		int		<0 if ko, >0 if ok
 	 */
 	function insert()
@@ -961,6 +985,7 @@ class FichinterLigne
 
 	/**
 	 *	Update intervention into database
+	 *
 	 *	@return		int		<0 if ko, >0 if ok
 	 */
 	function update()
@@ -1004,6 +1029,7 @@ class FichinterLigne
 
 	/**
 	 *	Update total duration into llx_fichinter
+	 *
 	 *	@return		int		<0 si ko, >0 si ok
 	 */
 	function update_total()
@@ -1055,18 +1081,19 @@ class FichinterLigne
 
 	/**
 	 *	Delete a intervention line
+	 *
 	 *	@return     int		>0 if ok, <0 if ko
 	 */
 	function deleteline()
 	{
 		if ($this->statut == 0)
 		{
-			dol_syslog("FichinterLigne::deleteline lineid=".$this->rowid);
+			dol_syslog(get_class($this)."::deleteline lineid=".$this->rowid);
 			$this->db->begin();
 
 			$sql = "DELETE FROM ".MAIN_DB_PREFIX."fichinterdet WHERE rowid = ".$this->rowid;
 			$resql = $this->db->query($sql);
-			dol_syslog("FichinterLigne::deleteline sql=".$sql);
+			dol_syslog(get_class($this)."::deleteline sql=".$sql);
 
 			if ($resql)
 			{
@@ -1085,7 +1112,7 @@ class FichinterLigne
 			else
 			{
 				$this->error=$this->db->error()." sql=".$sql;
-				dol_syslog("FichinterLigne::deleteline Error ".$this->error, LOG_ERR);
+				dol_syslog(get_class($this)."::deleteline Error ".$this->error, LOG_ERR);
 				$this->db->rollback();
 				return -1;
 			}

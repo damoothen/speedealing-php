@@ -52,11 +52,11 @@ QtyDispatched=Kvantitet sänds
 OrderDispatch=Stock avsändning
 RuleForStockManagementDecrease=Regel för lagerhantering minska
 RuleForStockManagementIncrease=Regel för lagerhantering öka
-DeStockOnBill=Minska riktiga lager kunder fakturor / kreditnotor validering (varning, i denna version, det är bara i lager nummer 1 att materielen är modifierad)
-DeStockOnValidateOrder=Minska riktiga lager på kunder order validering (varning, i denna version, det är bara i lager nummer 1 att materielen är modifierad)
+DeStockOnBill=Minska riktiga lager kunder fakturor / kreditnotor validering
+DeStockOnValidateOrder=Minska riktiga lager på kunder order validering
 DeStockOnShipment=Minska riktiga lager på transporten validering
-ReStockOnBill=Reell ökning av lager på leverantörer fakturor / kreditnotor validering (varning, i denna version, det är bara i lager nummer 1 att materielen är modifierad)
-ReStockOnValidateOrder=Reell ökning av lagren av leverantörer order gillande (varning, i denna version, det är bara i lager nummer 1 att materielen är modifierad)
+ReStockOnBill=Reell ökning av lager på leverantörer fakturor / kreditnotor validering
+ReStockOnValidateOrder=Reell ökning av lagren av leverantörer order gillande
 ReStockOnDispatchOrder=Reell ökning av lagren på manuell distributionscentraler i lager, efter leverantör för mottagande
 OrderStatusNotReadyToDispatch=Beställ ännu inte eller inte mer en ställning som innebär sändningar av produkter i lager lager.
 StockDiffPhysicTeoric=Orsak till skillnad lager fysiska och teoretiska
@@ -85,3 +85,13 @@ ConfirmDeleteWarehouse=Är du säker på att du vill ta bort lagret <b>%s?</b>
 PersonalStock=Personlig lager %s
 ThisWarehouseIsPersonalStock=Detta lager representerar personliga beståndet av %s %s
 // STOP - Lines generated via autotranslator.php tool (2010-08-27 08:49:30).
+
+
+// START - Lines generated via autotranslator.php tool (2012-02-29 17:32:03).
+// Reference language: en_US -> sv_SE
+SellPriceMin=Sälja Enhetspris
+EstimatedStockValueSellShort=Värde att sälja
+EstimatedStockValueSell=Värde att sälja
+SelectWarehouseForStockDecrease=Välj lagret som ska användas för beståndet minskar
+SelectWarehouseForStockIncrease=Välj lagret som ska användas för lagerökningen
+// STOP - Lines generated via autotranslator.php tool (2012-02-29 17:32:27).

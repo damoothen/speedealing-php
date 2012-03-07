@@ -42,10 +42,10 @@ abstract class ActionsContactCardCommon
 	//! Error array
 	var $errors=array();
 
-	
+
 	/**
 	 * 	Instantiation of DAO class
-	 * 
+	 *
 	 * 	@return	void
 	 */
 	private function getInstanceDao()
@@ -66,7 +66,7 @@ abstract class ActionsContactCardCommon
 	        }
 		}
 	}
-	
+
 	/**
      *  Get object
 	 *
@@ -76,7 +76,7 @@ abstract class ActionsContactCardCommon
     function getObject($id)
     {
     	$ret = $this->getInstanceDao();
-    	
+
     	if (is_object($this->object) && method_exists($this->object,'fetch'))
     	{
     		if (! empty($id)) $this->object->fetch($id);
@@ -92,10 +92,11 @@ abstract class ActionsContactCardCommon
     /**
      *  Load data control
      *
-     *	@param	int		$id		Id of object
+	 *  @param	string	&$action    Type of action
+	 *  @param	int		$id			Id of object
      *	@return	void
      */
-    function doActions(&$action)
+    function doActions(&$action, $id)
     {
         global $conf, $user, $langs;
 
@@ -191,7 +192,7 @@ abstract class ActionsContactCardCommon
         		Header("Location: ".$_SERVER["PHP_SELF"]."?id=".$this->object->id);
         		exit;
         	}
-        	
+
             if (empty($_POST["name"]))
             {
                 $this->error=array($langs->trans("ErrorFieldRequired",$langs->transnoentities("Name").' / '.$langs->transnoentities("Label")));
@@ -249,7 +250,7 @@ abstract class ActionsContactCardCommon
 			{
 				$this->tpl['ajax_selectcountry'] = "\n".'<script type="text/javascript" language="javascript">
 				jQuery(document).ready(function () {
-						jQuery("#selectpays_id").change(function() {
+						jQuery("#selectcountry_id").change(function() {
 							document.formsoc.action.value="'.$action.'";
 							document.formsoc.canvas.value="'.$canvas.'";
 							document.formsoc.submit();
@@ -283,21 +284,21 @@ abstract class ActionsContactCardCommon
         	}
 
             // Zip
-            $this->tpl['select_zip'] = $formcompany->select_ziptown($this->object->zip,'zipcode',array('town','selectpays_id','departement_id'),6);
+            $this->tpl['select_zip'] = $formcompany->select_ziptown($this->object->zip,'zipcode',array('town','selectcountry_id','departement_id'),6);
 
             // Town
-            $this->tpl['select_town'] = $formcompany->select_ziptown($this->object->town,'town',array('zipcode','selectpays_id','departement_id'));
+            $this->tpl['select_town'] = $formcompany->select_ziptown($this->object->town,'town',array('zipcode','selectcountry_id','departement_id'));
 
-            if (dol_strlen(trim($this->object->fk_pays)) == 0) $this->object->fk_pays = $objsoc->pays_id;
+            if (dol_strlen(trim($this->object->country_id)) == 0) $this->object->country_id = $objsoc->country_id;
 
             // Country
-            $this->tpl['select_country'] = $form->select_country($this->object->fk_pays,'pays_id');
+            $this->tpl['select_country'] = $form->select_country($this->object->country_id,'country_id');
             $countrynotdefined = $langs->trans("ErrorSetACountryFirst").' ('.$langs->trans("SeeAbove").')';
 
             if ($user->admin) $this->tpl['info_admin'] = info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"),1);
 
             // State
-            if ($this->object->fk_pays) $this->tpl['select_state'] = $formcompany->select_state($this->object->fk_departement,$this->object->pays_code);
+            if ($this->object->country_id) $this->tpl['select_state'] = $formcompany->select_state($this->object->fk_departement,$this->object->country_code);
             else $this->tpl['select_state'] = $countrynotdefined;
 
             // Public or private
@@ -377,38 +378,35 @@ abstract class ActionsContactCardCommon
 
             $this->tpl['zip'] = ($this->object->zip?$this->object->zip.'&nbsp;':'');
 
-            $img=picto_from_langcode($this->object->pays_code);
-            $this->tpl['country'] = ($img?$img.' ':'').$this->object->pays;
+            $img=picto_from_langcode($this->object->country_code);
+            $this->tpl['country'] = ($img?$img.' ':'').$this->object->country;
 
-            $this->tpl['phone_pro'] 	= dol_print_phone($this->object->phone_pro,$this->object->pays_code,0,$this->object->id,'AC_TEL');
-            $this->tpl['phone_perso'] 	= dol_print_phone($this->object->phone_perso,$this->object->pays_code,0,$this->object->id,'AC_TEL');
-            $this->tpl['phone_mobile'] 	= dol_print_phone($this->object->phone_mobile,$this->object->pays_code,0,$this->object->id,'AC_TEL');
-            $this->tpl['fax'] 			= dol_print_phone($this->object->fax,$this->object->pays_code,0,$this->object->id,'AC_FAX');
+            $this->tpl['phone_pro'] 	= dol_print_phone($this->object->phone_pro,$this->object->country_code,0,$this->object->id,'AC_TEL');
+            $this->tpl['phone_perso'] 	= dol_print_phone($this->object->phone_perso,$this->object->country_code,0,$this->object->id,'AC_TEL');
+            $this->tpl['phone_mobile'] 	= dol_print_phone($this->object->phone_mobile,$this->object->country_code,0,$this->object->id,'AC_TEL');
+            $this->tpl['fax'] 			= dol_print_phone($this->object->fax,$this->object->country_code,0,$this->object->id,'AC_FAX');
             $this->tpl['email'] 		= dol_print_email($this->object->email,0,$this->object->id,'AC_EMAIL');
 
             $this->tpl['visibility'] = $this->object->LibPubPriv($this->object->priv);
 
             $this->tpl['note'] = nl2br($this->object->note);
         }
-        
+
         if ($action == 'create_user')
         {
         	// Full firstname and name separated with a dot : firstname.name
-        	include_once(DOL_DOCUMENT_ROOT.'/lib/functions2.lib.php');
+        	include_once(DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php');
+            require_once(DOL_DOCUMENT_ROOT."/core/lib/security2.lib.php");
         	$login=dol_buildlogin($this->object->nom, $this->object->prenom);
-        	
-        	$generated_password='';
-        	if (! $ldap_sid)
-        	{
-        		$generated_password=getRandomPassword('');
-        	}
+
+       		$generated_password=getRandomPassword('');
         	$password=$generated_password;
-        	
+
         	// Create a form array
         	$formquestion=array(
         	array('label' => $langs->trans("LoginToCreate"), 'type' => 'text', 'name' => 'login', 'value' => $login),
         	array('label' => $langs->trans("Password"), 'type' => 'text', 'name' => 'password', 'value' => $password));
-        	
+
         	$this->tpl['action_create_user'] = $form->formconfirm($_SERVER["PHP_SELF"]."?id=".$this->object->id,$langs->trans("CreateDolibarrLogin"),$langs->trans("ConfirmCreateContact"),"confirm_create_user",$formquestion,'no');
         }
     }
@@ -433,8 +431,10 @@ abstract class ActionsContactCardCommon
         $this->object->address				=	$_POST["address"];
         $this->object->zip					=	$_POST["zipcode"];
         $this->object->town					=	$_POST["town"];
-        $this->object->fk_pays				=	$_POST["pays_id"]?$_POST["pays_id"]:$mysoc->pays_id;
+        $this->object->fk_pays				=	$_POST["country_id"]?$_POST["country_id"]:$mysoc->country_id;
         $this->object->fk_departement		=	$_POST["departement_id"];
+        $this->object->country_id			=	$_POST["country_id"]?$_POST["country_id"]:$mysoc->country_id;
+        $this->object->state_id        		=	$_POST["departement_id"];
         $this->object->phone_pro			= 	$_POST["phone_pro"];
         $this->object->phone_perso			= 	$_POST["phone_perso"];
         $this->object->phone_mobile			= 	$_POST["phone_mobile"];
@@ -445,10 +445,10 @@ abstract class ActionsContactCardCommon
         $this->object->note					=	$_POST["note"];
         $this->object->canvas				=	$_POST["canvas"];
 
-        // We set pays_id, and pays_code label of the chosen country
-        if ($this->object->fk_pays)
+        // We set country_id, and country_code label of the chosen country
+        if ($this->object->country_id)
         {
-            $sql = "SELECT code, libelle FROM ".MAIN_DB_PREFIX."c_pays WHERE rowid = ".$this->object->fk_pays;
+            $sql = "SELECT code, libelle FROM ".MAIN_DB_PREFIX."c_pays WHERE rowid = ".$this->object->country_id;
             $resql=$this->db->query($sql);
             if ($resql)
             {
@@ -460,6 +460,8 @@ abstract class ActionsContactCardCommon
             }
             $this->object->pays_code	=	$obj->code;
             $this->object->pays			=	$langs->trans("Country".$obj->code)?$langs->trans("Country".$obj->code):$obj->libelle;
+            $this->object->country_code	=	$obj->code;
+            $this->object->country		=	$langs->trans("Country".$obj->code)?$langs->trans("Country".$obj->code):$obj->libelle;
         }
     }
 

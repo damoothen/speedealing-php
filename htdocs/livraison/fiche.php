@@ -27,9 +27,9 @@
 
 require("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/livraison/class/livraison.class.php");
-require_once(DOL_DOCUMENT_ROOT."/includes/modules/livraison/modules_livraison.php");
+require_once(DOL_DOCUMENT_ROOT."/core/modules/livraison/modules_livraison.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/sendings.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/sendings.lib.php");
 if ($conf->product->enabled || $conf->service->enabled) require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
 if ($conf->expedition_bon->enabled) require_once(DOL_DOCUMENT_ROOT."/expedition/class/expedition.class.php");
 if ($conf->stock->enabled) require_once(DOL_DOCUMENT_ROOT."/product/stock/class/entrepot.class.php");
@@ -101,37 +101,41 @@ if ($_POST["action"] == 'add')
 
 if ($_REQUEST["action"] == 'confirm_valid' && $_REQUEST["confirm"] == 'yes' && $user->rights->expedition->livraison->valider)
 {
-	$delivery = new Livraison($db);
-	$delivery->fetch($_GET["id"]);
-	$delivery->fetch_thirdparty();
+	$object = new Livraison($db);
+	$object->fetch($_GET["id"]);
+	$object->fetch_thirdparty();
 
-	$result = $delivery->valid($user);
+	$result = $object->valid($user);
 
 	// Define output language
 	$outputlangs = $langs;
 	$newlang='';
 	if ($conf->global->MAIN_MULTILANGS && empty($newlang) && ! empty($_REQUEST['lang_id'])) $newlang=$_REQUEST['lang_id'];
-	if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$delivery->client->default_lang;
+	if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$object->client->default_lang;
 	if (! empty($newlang))
 	{
 		$outputlangs = new Translate("",$conf);
 		$outputlangs->setDefaultLang($newlang);
 	}
-	$result=delivery_order_pdf_create($db, $delivery,$_REQUEST['model'],$outputlangs);
-	if ($result <= 0)
+	if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE))
 	{
-		dol_print_error($db,$result);
-		exit;
+        $ret=$object->fetch($id);    // Reload to get new records
+	    $result=delivery_order_pdf_create($db, $object,$_REQUEST['model'],$outputlangs);
+	}
+   	if ($result < 0)
+   	{
+   		dol_print_error($db,$result);
+   		exit;
 	}
 }
 
 if ($_REQUEST["action"] == 'confirm_delete' && $_REQUEST["confirm"] == 'yes' && $user->rights->expedition->livraison->supprimer)
 {
-	$delivery = new Livraison($db);
-	$delivery->fetch($_GET["id"]);
+	$object = new Livraison($db);
+	$object->fetch($_GET["id"]);
 
 	$db->begin();
-	$result=$delivery->delete();
+	$result=$object->delete();
 
 	if ($result > 0)
 	{
@@ -150,27 +154,30 @@ if ($_REQUEST["action"] == 'confirm_delete' && $_REQUEST["confirm"] == 'yes' && 
  */
 if ($_REQUEST['action'] == 'builddoc')	// En get ou en post
 {
-	$delivery = new Livraison($db);
-	$delivery->fetch($_REQUEST['id']);
+	$object = new Livraison($db);
+	$object->fetch($_REQUEST['id']);
 
 	if ($_REQUEST['model'])
 	{
-		$delivery->setDocModel($user, $_REQUEST['model']);
+		$object->setDocModel($user, $_REQUEST['model']);
 	}
 
 	// Define output language
 	$outputlangs = $langs;
 	$newlang='';
 	if ($conf->global->MAIN_MULTILANGS && empty($newlang) && ! empty($_REQUEST['lang_id'])) $newlang=$_REQUEST['lang_id'];
-	if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$delivery->client->default_lang;
+	if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang=$object->client->default_lang;
 	if (! empty($newlang))
 	{
 		$outputlangs = new Translate("",$conf);
 		$outputlangs->setDefaultLang($newlang);
 	}
-
-	$result=delivery_order_pdf_create($db, $delivery,$_REQUEST['model'],$outputlangs);
-	if ($result <= 0)
+	if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE))
+	{
+	    $ret=$object->fetch($id);    // Reload to get new records
+    	$result=delivery_order_pdf_create($db, $object, $object->modelpdf, $outputlangs);
+	}
+	if ($result < 0)
 	{
 		dol_print_error($db,$result);
 		exit;
@@ -184,7 +191,7 @@ if ($_REQUEST['action'] == 'builddoc')	// En get ou en post
 
 llxHeader('',$langs->trans('Delivery'),'Livraison');
 
-$html = new Form($db);
+$form = new Form($db);
 $formfile = new FormFile($db);
 
 /*********************************************************************
@@ -301,8 +308,27 @@ if ($_GET["action"] == 'create')
 				$product->fetch($line->fk_product);
 				$product->load_stock();
 
+        // Define output language
+        if (! empty($conf->global->MAIN_MULTILANGS) && ! empty($conf->global->PRODUIT_TEXTS_IN_THIRDPARTY_LANGUAGE))
+			  {
+          $commande->fetch_thirdparty();
+    			$outputlangs = $langs;
+          $newlang='';
+          if (empty($newlang) && ! empty($_REQUEST['lang_id'])) $newlang=$_REQUEST['lang_id'];
+          if (empty($newlang)) $newlang=$commande->client->default_lang;
+          if (! empty($newlang))
+          {
+              $outputlangs = new Translate("",$conf);
+              $outputlangs->setDefaultLang($newlang);
+          }
+  
+          $label = (! empty($product->multilangs[$outputlangs->defaultlang]["libelle"])) ? $product->multilangs[$outputlangs->defaultlang]["libelle"] : $product->libelle;
+        }
+        else
+          $label = $product->libelle;
+
 				print '<td>';
-				print '<a href="'.DOL_URL_ROOT.'/product/fiche.php?id='.$line->fk_product.'">'.img_object($langs->trans("ShowProduct"),"product").' '.$product->ref.'</a> - '.$product->libelle;
+				print '<a href="'.DOL_URL_ROOT.'/product/fiche.php?id='.$line->fk_product.'">'.img_object($langs->trans("ShowProduct"),"product").' '.$product->ref.'</a> - '.$label;
 				if ($line->description) print nl2br($line->description);
 				print '</td>';
 			}
@@ -409,7 +435,7 @@ else
 			if ($_GET["action"] == 'delete')
 			{
 				$expedition_id = $_GET["expid"];
-				$ret=$html->form_confirm($_SERVER['PHP_SELF'].'?id='.$delivery->id.'&amp;expid='.$expedition_id,$langs->trans("DeleteDeliveryReceipt"),$langs->trans("DeleteDeliveryReceiptConfirm",$delivery->ref),'confirm_delete','','',1);
+				$ret=$form->form_confirm($_SERVER['PHP_SELF'].'?id='.$delivery->id.'&amp;expid='.$expedition_id,$langs->trans("DeleteDeliveryReceipt"),$langs->trans("DeleteDeliveryReceiptConfirm",$delivery->ref),'confirm_delete','','',1);
 				if ($ret == 'html') print '<br>';
 			}
 
@@ -419,7 +445,7 @@ else
 			 */
 			if ($_GET["action"] == 'valid')
 			{
-				$ret=$html->form_confirm($_SERVER['PHP_SELF'].'?id='.$delivery->id,$langs->trans("ValidateDeliveryReceipt"),$langs->trans("ValidateDeliveryReceiptConfirm",$delivery->ref),'confirm_valid','','',1);
+				$ret=$form->form_confirm($_SERVER['PHP_SELF'].'?id='.$delivery->id,$langs->trans("ValidateDeliveryReceipt"),$langs->trans("ValidateDeliveryReceiptConfirm",$delivery->ref),'confirm_valid','','',1);
 				if ($ret == 'html') print '<br>';
 			}
 
@@ -523,6 +549,25 @@ else
 					$product = new Product($db);
 					$product->fetch($delivery->lines[$i]->fk_product);
 
+          // Define output language
+          if (! empty($conf->global->MAIN_MULTILANGS) && ! empty($conf->global->PRODUIT_TEXTS_IN_THIRDPARTY_LANGUAGE))
+			    { 
+            $delivery->fetch_thirdparty();
+      			$outputlangs = $langs;
+            $newlang='';
+            if (empty($newlang) && ! empty($_REQUEST['lang_id'])) $newlang=$_REQUEST['lang_id'];
+            if (empty($newlang)) $newlang=$delivery->client->default_lang;
+            if (! empty($newlang))
+            {
+                $outputlangs = new Translate("",$conf);
+                $outputlangs->setDefaultLang($newlang);
+            }
+    
+            $label = (! empty($product->multilangs[$outputlangs->defaultlang]["libelle"])) ? $product->multilangs[$outputlangs->defaultlang]["libelle"] : $delivery->lines[$i]->product_label;
+          }
+          else
+            $label = $delivery->lines[$i]->product_label;
+
 					print '<td>';
 
 					// Affiche ligne produit
@@ -530,10 +575,10 @@ else
 					if ($delivery->lines[$i]->fk_product_type==1) $text.= img_object($langs->trans('ShowService'),'service');
 					else $text.= img_object($langs->trans('ShowProduct'),'product');
 					$text.= ' '.$delivery->lines[$i]->ref.'</a>';
-					$text.= ' - '.$delivery->lines[$i]->label;
+					$text.= ' - '.$label;
 					$description=($conf->global->PRODUIT_DESC_IN_FORM?'':dol_htmlentitiesbr($delivery->lines[$i]->description));
 					//print $description;
-					print $html->textwithtooltip($text,$description,3,'','',$i);
+					print $form->textwithtooltip($text,$description,3,'','',$i);
 					print_date_range($delivery->lines[$i]->date_start,$delivery->lines[$i]->date_end);
 					if ($conf->global->PRODUIT_DESC_IN_FORM)
 					{

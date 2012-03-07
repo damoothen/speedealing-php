@@ -23,12 +23,11 @@
  */
 
 require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT.'/lib/admin.lib.php');
+require_once(DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php');
 
 $langs->load("install");
 
-if (! $user->admin)
-  accessforbidden();
+if (! $user->admin) accessforbidden();
 
 // Security check
 if ($user->societe_id > 0)

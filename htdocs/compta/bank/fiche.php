@@ -25,9 +25,10 @@
  */
 
 require("./pre.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/bank.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/company.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/bank.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formcompany.class.php");
+require_once(DOL_DOCUMENT_ROOT."/core/class/html.formbank.class.php");
 
 $langs->load("banks");
 $langs->load("companies");
@@ -173,9 +174,10 @@ if ($_POST["action"] == 'update' && ! $_POST["cancel"])
 
 if ($_POST["action"] == 'confirm_delete' && $_POST["confirm"] == "yes" && $user->rights->banque->configurer)
 {
-    // Modification
-    $account = new Account($db, $_GET["id"]);
-    $account->delete($_GET["id"]);
+    // Delete
+    $account = new Account($db);
+    $account->fetch($_GET["id"]);
+    $account->delete();
 
     header("Location: ".DOL_URL_ROOT."/compta/bank/index.php");
     exit;
@@ -186,18 +188,16 @@ if ($_POST["action"] == 'confirm_delete' && $_POST["confirm"] == "yes" && $user-
  * View
  */
 
+$form = new Form($db);
+$formbank = new FormBank($db);
+$formcompany = new FormCompany($db);
+
 $countrynotdefined=$langs->trans("ErrorSetACountryFirst").' ('.$langs->trans("SeeAbove").')';
 
 llxHeader();
 
-$form = new Form($db);
-$htmlcompany = new FormCompany($db);
 
-/* ************************************************************************** */
-/*                                                                            */
-/* Affichage page en mode creation                                            */
-/*                                                                            */
-/* ************************************************************************** */
+// Creation
 
 if ($action == 'create')
 {
@@ -237,17 +237,17 @@ if ($action == 'create')
 	// Type
 	print '<tr><td valign="top" class="fieldrequired">'.$langs->trans("AccountType").'</td>';
 	print '<td colspan="3">';
-	print $form->select_type_comptes_financiers(isset($_POST["type"])?$_POST["type"]:1,"type");
+	print $formbank->select_type_comptes_financiers(isset($_POST["type"])?$_POST["type"]:1,"type");
 	print '</td></tr>';
 
 	// Currency
 	print '<tr><td valign="top" class="fieldrequired">'.$langs->trans("Currency").'</td>';
 	print '<td colspan="3">';
 	$selectedcode=$account->account_currency_code;
-	if (! $selectedcode) $selectedcode=$conf->monnaie;
+	if (! $selectedcode) $selectedcode=$conf->currency;
 	$form->select_currency((isset($_POST["account_currency_code"])?$_POST["account_currency_code"]:$selectedcode), 'account_currency_code');
-	//print $langs->trans("Currency".$conf->monnaie);
-	//print '<input type="hidden" name="account_currency_code" value="'.$conf->monnaie.'">';
+	//print $langs->trans("Currency".$conf->currency);
+	//print '<input type="hidden" name="account_currency_code" value="'.$conf->currency.'">';
 	print '</td></tr>';
 
 	// Status
@@ -262,10 +262,10 @@ if ($action == 'create')
 	$selectedcode='';
 	if (isset($_POST["account_country_id"]))
 	{
-		$selectedcode=$_POST["account_country_id"]?$_POST["account_country_id"]:$account->pays_code;
+		$selectedcode=$_POST["account_country_id"]?$_POST["account_country_id"]:$account->country_code;
 	}
-	else if (empty($selectedcode)) $selectedcode=$mysoc->pays_code;
-	$form->select_pays($selectedcode,'account_country_id');
+	else if (empty($selectedcode)) $selectedcode=$mysoc->country_code;
+	print $form->select_country($selectedcode,'account_country_id');
 	if ($user->admin) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"),1);
 	print '</td></tr>';
 
@@ -273,7 +273,7 @@ if ($action == 'create')
 	print '<tr><td>'.$langs->trans('State').'</td><td colspan="3">';
 	if ($selectedcode)
 	{
-		$htmlcompany->select_departement(isset($_POST["account_departement_id"])?$_POST["account_departement_id"]:'',$selectedcode,'account_departement_id');
+		$formcompany->select_departement(isset($_POST["account_departement_id"])?$_POST["account_departement_id"]:'',$selectedcode,'account_departement_id');
 	}
 	else
 	{
@@ -301,8 +301,8 @@ if ($action == 'create')
 	print '<tr><td valign="top">'.$langs->trans("Comment").'</td>';
 	print '<td colspan="3">';
     // Editor wysiwyg
-	require_once(DOL_DOCUMENT_ROOT."/lib/doleditor.class.php");
-	$doleditor=new DolEditor('account_comment',$account->comment,'',200,'dolibarr_notes','',false,true,$conf->fckeditor->enabled && $conf->global->FCKEDITOR_ENABLE_SOCIETE,10,70);
+	require_once(DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php");
+	$doleditor=new DolEditor('account_comment',$account->comment,'',200,'dolibarr_notes','',false,true,$conf->global->FCKEDITOR_ENABLE_SOCIETE,10,70);
 	$doleditor->Create();
 	print '</td></tr>';
 
@@ -324,9 +324,9 @@ if ($action == 'create')
 	print '<td colspan="3"><input size="12" type="text" class="flat" name="account_min_desired" value="'.($_POST["account_min_desired"]?$_POST["account_min_desired"]:$account->account_min_desired).'"></td></tr>';
 
 	print '</table>';
-	
+
 	print '<center><br><input value="'.$langs->trans("CreateAccount").'" type="submit" class="button"></center>';
-	
+
 	print '</form>';
 }
 /* ************************************************************************** */
@@ -386,7 +386,7 @@ else
 		print '<tr><td valign="top">'.$langs->trans("Currency").'</td>';
 		print '<td colspan="3">';
 		$selectedcode=$account->account_currency_code;
-		if (! $selectedcode) $selectedcode=$conf->monnaie;
+		if (! $selectedcode) $selectedcode=$conf->currency;
 		print $langs->trans("Currency".$selectedcode);
 		print '</td></tr>';
 
@@ -398,7 +398,7 @@ else
 		print '<tr><td>'.$langs->trans("Country").'</td><td>';
 		if ($account->fk_pays > 0)
 		{
-			$img=picto_from_langcode($account->pays_code);
+			$img=picto_from_langcode($account->country_code);
 			print $img?$img.' ':'';
 			print getCountry($account->getCountryCode(),0,$db);
 		}
@@ -468,10 +468,10 @@ else
     /*                                                                            */
     /* ************************************************************************** */
 
-    if (GETPOST("id") && $action == 'edit' && $user->rights->banque->configurer)
+    if (GETPOST('id','int') && $action == 'edit' && $user->rights->banque->configurer)
     {
         $account = new Account($db);
-        $account->fetch(GETPOST("id"));
+        $account->fetch(GETPOST('id','int'));
 
         print_fiche_titre($langs->trans("EditFinancialAccount"));
         print "<br>";
@@ -517,10 +517,10 @@ else
 		print '</td>';
 		print '<td colspan="3">';
 		$selectedcode=$account->account_currency_code;
-		if (! $selectedcode) $selectedcode=$conf->monnaie;
+		if (! $selectedcode) $selectedcode=$conf->currency;
 		$form->select_currency((isset($_POST["account_currency_code"])?$_POST["account_currency_code"]:$selectedcode), 'account_currency_code');
-		//print $langs->trans("Currency".$conf->monnaie);
-		//print '<input type="hidden" name="account_currency_code" value="'.$conf->monnaie.'">';
+		//print $langs->trans("Currency".$conf->currency);
+		//print '<input type="hidden" name="account_currency_code" value="'.$conf->currency.'">';
 		print '</td></tr>';
 
 		// Status
@@ -530,13 +530,13 @@ else
         print '</td></tr>';
 
 		// Country
-		$account->pays_id=$account->pays_id?$account->pays_id:$mysoc->pays_id;
+		$account->country_id=$account->country_id?$account->country_id:$mysoc->country_id;
 		print '<tr><td valign="top" class="fieldrequired">'.$langs->trans("Country").'</td>';
 		print '<td colspan="3">';
-		$selectedcode=$account->pays_code;
+		$selectedcode=$account->country_code;
 		if (isset($_POST["account_country_id"])) $selectedcode=$_POST["account_country_id"];
-		else if (empty($selectedcode)) $selectedcode=$mysoc->pays_code;
-		$form->select_pays($selectedcode,'account_country_id');
+		else if (empty($selectedcode)) $selectedcode=$mysoc->country_code;
+		print $form->select_country($selectedcode,'account_country_id');
 		if ($user->admin) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"),1);
 		print '</td></tr>';
 
@@ -544,7 +544,7 @@ else
 		print '<tr><td>'.$langs->trans('State').'</td><td colspan="3">';
 		if ($selectedcode)
 		{
-			$htmlcompany->select_departement(isset($_POST["account_departement_id"])?$_POST["account_departement_id"]:$account->fk_departement,$selectedcode,'account_departement_id');
+			print $formcompany->select_state(isset($_POST["account_departement_id"])?$_POST["account_departement_id"]:$account->fk_departement,$selectedcode,'account_departement_id');
 		}
 		else
 		{
@@ -589,8 +589,8 @@ else
 		print '<tr><td valign="top">'.$langs->trans("Comment").'</td>';
 		print '<td colspan="3">';
 	   // Editor wysiwyg
-		require_once(DOL_DOCUMENT_ROOT."/lib/doleditor.class.php");
-		$doleditor=new DolEditor('account_comment',(isset($_POST["account_comment"])?$_POST["account_comment"]:$account->comment),'',200,'dolibarr_notes','',false,true,$conf->fckeditor->enabled && $conf->global->FCKEDITOR_ENABLE_SOCIETE,10,70);
+		require_once(DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php");
+		$doleditor=new DolEditor('account_comment',(isset($_POST["account_comment"])?$_POST["account_comment"]:$account->comment),'',200,'dolibarr_notes','',false,true,$conf->global->FCKEDITOR_ENABLE_SOCIETE,10,70);
 		$doleditor->Create();
 		print '</td></tr>';
 

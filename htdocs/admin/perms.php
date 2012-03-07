@@ -25,7 +25,7 @@
  */
 
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/admin.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
 
 $langs->load("admin");
 $langs->load("users");
@@ -83,7 +83,7 @@ $modulesdir = array();
 
 foreach ($conf->file->dol_document_root as $type => $dirroot)
 {
-    $modulesdir[] = $dirroot . "/includes/modules/";
+    $modulesdir[] = $dirroot . "/core/modules/";
 
     if ($type == 'alt')
     {
@@ -94,9 +94,9 @@ foreach ($conf->file->dol_document_root as $type => $dirroot)
             {
                 if (is_dir($dirroot.'/'.$file) && substr($file, 0, 1) <> '.' && substr($file, 0, 3) <> 'CVS' && $file != 'includes')
                 {
-                    if (is_dir($dirroot . '/' . $file . '/includes/modules/'))
+                    if (is_dir($dirroot . '/' . $file . '/core/modules/'))
                     {
-                        $modulesdir[] = $dirroot . '/' . $file . '/includes/modules/';
+                        $modulesdir[] = $dirroot . '/' . $file . '/core/modules/';
                     }
                 }
             }
@@ -120,15 +120,25 @@ foreach ($modulesdir as $dir)
 
                 if ($modName)
                 {
-                    include_once($dir."/".$file);
-                    $objMod = new $modName($db);
-                    if ($objMod->rights_class) {
+                	include_once($dir.$file);
+    	            $objMod = new $modName($db);
 
-                        $ret=$objMod->insert_permissions(0);
+    	            // Load all lang files of module
+    	            if (isset($objMod->langfiles) && is_array($objMod->langfiles))
+    	            {
+    	            	foreach($objMod->langfiles as $domain)
+    	            	{
+    	            		$langs->load($domain);
+    	            	}
+    	            }
+    	            // Load all permissions
+    	            if ($objMod->rights_class)
+    	            {
+    	                $ret=$objMod->insert_permissions(0);
 
-                        $modules[$objMod->rights_class]=$objMod;
-                        //print "modules[".$objMod->rights_class."]=$objMod;";
-                    }
+    	                $modules[$objMod->rights_class]=$objMod;
+    	                //print "modules[".$objMod->rights_class."]=$objMod;";
+    	            }
                 }
             }
         }
@@ -137,22 +147,22 @@ foreach ($modulesdir as $dir)
 
 $db->commit();
 
-
 // Affiche lignes des permissions
 $sql = "SELECT r.id, r.libelle, r.module, r.perms, r.subperms, r.bydefault";
 $sql.= " FROM ".MAIN_DB_PREFIX."rights_def as r";
 $sql.= " WHERE r.libelle NOT LIKE 'tou%'";    // On ignore droits "tous"
-$sql.= " AND entity in (".(!empty($conf->global->MULTICOMPANY_TRANSVERSE_MODE)?"1,":"").$conf->entity.")";
+$sql.= " AND entity in (".(!empty($conf->multicompany->transverse_mode)?"1,":"").$conf->entity.")";
 if (empty($conf->global->MAIN_USE_ADVANCED_PERMS)) $sql.= " AND r.perms NOT LIKE '%_advance'";  // Hide advanced perms if option is not enabled
 $sql.= " ORDER BY r.module, r.id";
 
 $result = $db->query($sql);
 if ($result)
 {
-    $num = $db->num_rows($result);
-    $i = 0;
-    $var=True;
-    $old = "";
+    $num	= $db->num_rows($result);
+    $i		= 0;
+    $var	= True;
+    $oldmod	= "";
+    
     while ($i < $num)
     {
         $obj = $db->fetch_object($result);
@@ -166,7 +176,7 @@ if ($result)
 
         // Check if permission we found is inside a module definition. If not, we discard it.
         $found=false;
-        foreach($objMod->rights as $key => $val)
+        foreach($modules[$obj->module]->rights as $key => $val)
         {
         	$rights_class=$objMod->rights_class;
         	if ($val[4] == $obj->perms && (empty($val[5]) || $val[5] == $obj->subperms)) 
@@ -180,12 +190,13 @@ if ($result)
 			$i++;
 			continue;	
 		}
-		
+
         // Break found, it's a new module to catch
-        if ($old <> $obj->module)
+        if ($oldmod <> $obj->module)
         {
-            $objMod=$modules[$obj->module];
-            $picto=($objMod->picto?$objMod->picto:'generic');
+        	$oldmod	= $obj->module;
+            $objMod	= $modules[$obj->module];
+            $picto	= ($objMod->picto?$objMod->picto:'generic');
 
             print '<tr class="liste_titre">';
             print '<td>'.$langs->trans("Module").'</td>';
@@ -193,7 +204,6 @@ if ($result)
             print '<td align="center">'.$langs->trans("Default").'</td>';
             print '<td align="center">&nbsp;</td>';
             print "</tr>\n";
-            $old = $obj->module;
         }
 
         $var=!$var;

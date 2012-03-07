@@ -1,7 +1,7 @@
 <?php
 /* Copyright (C) 2003-2007 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2009 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
  */
 
 require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/product.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/product.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/commande/class/commande.class.php");
 require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
 
@@ -32,14 +32,14 @@ $langs->load("orders");
 $langs->load("products");
 $langs->load("companies");
 
+$id = GETPOST('id', 'int');
+$ref = GETPOST('ref', 'alpha');
+
 // Security check
-if (isset($_GET["id"]) || isset($_GET["ref"]))
-{
-	$id = isset($_GET["id"])?$_GET["id"]:(isset($_GET["ref"])?$_GET["ref"]:'');
-}
-$fieldid = isset($_GET["ref"])?'ref':'rowid';
+$fieldvalue = (! empty($id) ? $id : (! empty($ref) ? $ref : ''));
+$fieldtype = (! empty($ref) ? 'ref' : 'rowid');
 if ($user->societe_id) $socid=$user->societe_id;
-$result=restrictedArea($user,'produit|service',$id,'product','','',$fieldid);
+$result=restrictedArea($user,'produit|service',$fieldvalue,'product&product','','',$fieldtype);
 
 $mesg = '';
 
@@ -58,7 +58,7 @@ if (! $sortfield) $sortfield="c.date_commande";
  * View
  */
 
-$html = new Form($db);
+$form = new Form($db);
 
 if ($_GET["id"] || $_GET["ref"])
 {
@@ -85,19 +85,19 @@ if ($_GET["id"] || $_GET["ref"])
 		// Reference
 		print '<tr>';
 		print '<td width="30%">'.$langs->trans("Ref").'</td><td colspan="3">';
-		print $html->showrefnav($product,'ref','',1,'ref');
+		print $form->showrefnav($product,'ref','',1,'ref');
 		print '</td></tr>';
 
 		// Libelle
 		print '<tr><td>'.$langs->trans("Label").'</td><td colspan="3">'.$product->libelle.'</td></tr>';
 
 		// Status (to sell)
-		print '<tr><td>'.$langs->trans("Status").' ('.$langs->trans("Sell").')'.'</td><td colspan="3">';
+		print '<tr><td>'.$langs->trans("Status").' ('.$langs->trans("Sell").')</td><td colspan="3">';
 		print $product->getLibStatut(2,0);
 		print '</td></tr>';
 
 		// Status (to buy)
-		print '<tr><td>'.$langs->trans("Status").' ('.$langs->trans("Buy").')'.'</td><td colspan="3">';
+		print '<tr><td>'.$langs->trans("Status").' ('.$langs->trans("Buy").')</td><td colspan="3">';
 		print $product->getLibStatut(2,1);
 		print '</td></tr>';
 
@@ -115,7 +115,7 @@ if ($_GET["id"] || $_GET["ref"])
 		$sql.= ", ".MAIN_DB_PREFIX."commande_fournisseurdet as d";
 		if (!$user->rights->societe->client->voir && !$socid) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
 		$sql.= " WHERE c.fk_soc = s.rowid";
-		$sql.= " AND s.entity = ".$conf->entity;
+		$sql.= " AND c.entity = ".$conf->entity;
 		$sql.= " AND d.fk_commande = c.rowid";
 		$sql.= " AND d.fk_product =".$product->id;
 		if (!$user->rights->societe->client->voir && !$socid) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;

@@ -25,7 +25,7 @@ set_include_path($_SERVER['DOCUMENT_ROOT'].'/htdocs');
 
 require_once("../master.inc.php");
 require_once(NUSOAP_PATH.'/nusoap.php');        // Include SOAP
-require_once(DOL_DOCUMENT_ROOT."/lib/ws.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/ws.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/user/class/user.class.php");
 
 require_once(DOL_DOCUMENT_ROOT."/fourn/class/fournisseur.facture.class.php");
@@ -215,6 +215,12 @@ $server->register(
 
 /**
  * Get invoice from id, ref or ref_ext
+ *
+ * @param	array		$authentication		Array of authentication information
+ * @param	int			$id					Id
+ * @param	string		$ref				Ref
+ * @param	string		$ref_ext			Ref_ext
+ * @return	array							Array result
  */
 function getSupplierInvoice($authentication,$id='',$ref='',$ref_ext='')
 {
@@ -320,6 +326,11 @@ function getSupplierInvoice($authentication,$id='',$ref='',$ref_ext='')
 
 /**
  * Get list of invoices for third party
+ *
+ * @param	array		$authentication		Array of authentication information
+ * @param	int			$idthirdparty		Id thirdparty
+ * @return	array							Array result
+ *
  */
 function getSupplierInvoicesForThirdParty($authentication,$idthirdparty)
 {

@@ -2,6 +2,7 @@
 /* Copyright (C) 2002-2005 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2005 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2011-2012 Juanjo Menent        <jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,8 +25,8 @@
  */
 
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/fichinter.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/fichinter.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
 require_once(DOL_DOCUMENT_ROOT.'/fichinter/class/fichinter.class.php');
 if ($conf->projet->enabled)	require_once(DOL_DOCUMENT_ROOT."/projet/class/project.class.php");
 
@@ -34,14 +35,14 @@ $langs->load('interventions');
 
 // Security check
 $socid=0;
-$id = GETPOST("id");
-$ref = GETPOST("ref");
+$id = GETPOST('id','int');
+$ref = GETPOST('ref','alpha');
 if ($user->societe_id) $socid=$user->societe_id;
 $result = restrictedArea($user, 'ficheinter', $id, 'fichinter');
 
 llxHeader();
 
-$html = new Form($db);
+$form = new Form($db);
 
 /* *************************************************************************** */
 /*                                                                             */
@@ -126,7 +127,7 @@ if ($id > 0 || ! empty($ref))
 				}
 				else
 				{
-					$langs->load("other");
+					$langs->load("errors");
 					print '<font class="error">'.$langs->trans("ErrorNoImagickReadimage").'</font>';
 				}
 			}

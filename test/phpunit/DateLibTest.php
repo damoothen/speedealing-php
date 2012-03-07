@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * or see http://www.gnu.org/
  */
 
 /**
@@ -27,7 +27,7 @@ global $conf,$user,$langs,$db;
 //define('TEST_DB_FORCE_TYPE','mysql');	// This is to force using mysql driver
 require_once 'PHPUnit/Autoload.php';
 require_once dirname(__FILE__).'/../../htdocs/master.inc.php';
-require_once dirname(__FILE__).'/../../htdocs/lib/date.lib.php';
+require_once dirname(__FILE__).'/../../htdocs/core/lib/date.lib.php';
 
 if (empty($user->id))
 {
@@ -89,6 +89,9 @@ class DateLibTest extends PHPUnit_Framework_TestCase
     }
 
 	/**
+	 * Init phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function setUp()
     {
@@ -101,13 +104,19 @@ class DateLibTest extends PHPUnit_Framework_TestCase
 		print __METHOD__."\n";
     }
 	/**
+	 * End phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function tearDown()
     {
     	print __METHOD__."\n";
     }
 
-   /**
+    /**
+     * testConvertTime2Seconds
+     *
+     * @return	void
      */
     public function testConvertTime2Seconds()
     {
@@ -117,7 +126,7 @@ class DateLibTest extends PHPUnit_Framework_TestCase
 		$langs=$this->savlangs;
 		$db=$this->savdb;
 
-		$result=ConvertTime2Seconds(1,1,2);
+		$result=convertTime2Seconds(1,1,2);
     	print __METHOD__." result=".$result."\n";
 		$this->assertEquals(3662,$result);
 
@@ -125,6 +134,9 @@ class DateLibTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testConvertSecondToTime
+     *
+     * @return void
      */
     public function testConvertSecondToTime()
     {
@@ -134,11 +146,11 @@ class DateLibTest extends PHPUnit_Framework_TestCase
 		$langs=$this->savlangs;
 		$db=$this->savdb;
 
-		$result=ConvertSecondToTime(0,'all',86400);
+		$result=convertSecondToTime(0,'all',86400);
     	print __METHOD__." result=".$result."\n";
 		$this->assertEquals('0',$result);
 
-		$result=ConvertSecondToTime(86400,'all',86400);
+		$result=convertSecondToTime(86400,'all',86400);
     	print __METHOD__." result=".$result."\n";
 		$this->assertSame('1 '.$langs->trans("Day"),$result);
 
@@ -146,5 +158,124 @@ class DateLibTest extends PHPUnit_Framework_TestCase
 		return $result;
     }
 
+    /**
+     * testDolPrintDate
+     *
+     * @return void
+     */
+    public function testDolPrintDate()
+    {
+        global $conf,$user,$langs,$db;
+        $conf=$this->savconf;
+        $user=$this->savuser;
+        $langs=$this->savlangs;
+        $db=$this->savdb;
+
+    	// Check %Y-%m-%d %H:%M:%S format
+        $result=dol_print_date(0,'%Y-%m-%d %H:%M:%S',true);
+       	print __METHOD__." result=".$result."\n";
+    	$this->assertEquals('1970-01-01 00:00:00',$result);
+
+    	// Check dayhour format for fr_FR
+    	$outputlangs=new Translate('',$conf);
+    	$outputlangs->setDefaultLang('fr_FR');
+    	$outputlangs->load("main");
+
+    	$result=dol_print_date(0+24*3600,'dayhour',true,$outputlangs);
+    	print __METHOD__." result=".$result."\n";
+    	$this->assertEquals('02/01/1970 00:00',$result);
+
+    	// Check day format for en_US
+    	$outputlangs=new Translate('',$conf);
+    	$outputlangs->setDefaultLang('en_US');
+    	$outputlangs->load("main");
+
+    	$result=dol_print_date(0+24*3600,'day',true,$outputlangs);
+    	print __METHOD__." result=".$result."\n";
+    	$this->assertEquals('01/02/1970',$result);
+
+    	// Check %a and %b format for en_US
+    	$result=dol_print_date(0,'%a %b',true,$outputlangs);
+    	print __METHOD__." result=".$result."\n";
+    	$this->assertEquals('Thu jan',$result);
+
+    	return $result;
+    }
+
+    /**
+     * testDolTimePlusDuree
+     *
+     * @return int
+     */
+    public function testDolTimePlusDuree()
+    {
+        global $conf,$user,$langs,$db;
+        $conf=$this->savconf;
+        $user=$this->savuser;
+        $langs=$this->savlangs;
+        $db=$this->savdb;
+
+        // Check dayhour format for fr_FR
+        $outputlangs=new Translate('',$conf);
+        $outputlangs->setDefaultLang('fr_FR');
+        $outputlangs->load("main");
+
+        $result=dol_print_date(dol_time_plus_duree(dol_time_plus_duree(dol_time_plus_duree(0,1,'m'),1,'y'),1,'d'),'dayhour',true,$outputlangs);
+       	print __METHOD__." result=".$result."\n";
+    	$this->assertEquals('02/02/1971 00:00',$result);
+
+    	return $result;
+    }
+
+    /**
+     * testDolStringToTime
+     *
+     * @return int
+     */
+    public function testDolStringToTime()
+    {
+        global $conf,$user,$langs,$db;
+        $conf=$this->savconf;
+        $user=$this->savuser;
+        $langs=$this->savlangs;
+        $db=$this->savdb;
+
+        $stime='1970-01-01T02:00:00Z';
+        $result=dol_stringtotime($stime);
+    	print __METHOD__." result=".$result."\n";
+		$this->assertEquals(7200,$result);
+
+        $stime='19700101T020000Z';
+        $result=dol_stringtotime($stime);
+    	print __METHOD__." result=".$result."\n";
+		$this->assertEquals(7200,$result);
+
+		$stime='19700101020000';
+		$result=dol_stringtotime($stime);
+		print __METHOD__." result=".$result."\n";
+		$this->assertEquals(7200,$result);
+
+		$stime='19700101';
+		$result=dol_stringtotime($stime);
+		print __METHOD__." result=".$result."\n";
+		$this->assertEquals(0,$result);
+
+        return $result;
+    }
+
+    /**
+	 *	testDolGetFirstDay
+	 *
+	 *	@return	void
+     */
+    public function testDolGetFirstDay()
+    {
+        global $conf,$user,$langs,$db;
+        $conf=$this->savconf;
+        $user=$this->savuser;
+        $langs=$this->savlangs;
+        $db=$this->savdb;
+
+    }
 }
 ?>

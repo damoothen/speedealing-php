@@ -41,13 +41,14 @@ require_once(DOL_DOCUMENT_ROOT.'/cashdesk/include/environnement.php');
 header("Content-type: text/html; charset=".$conf->file->character_set_client);
 
 // Search from criteria
-if ( dol_strlen ($_GET["code"]) >= 0 )	// If search criteria is on char length at least
+if (dol_strlen($_GET["code"]) >= 0)	// If search criteria is on char length at least
 {
 	$sql = "SELECT p.rowid, p.ref, p.label, p.tva_tx";
 	if ($conf->stock->enabled && !empty($conf_fkentrepot)) $sql.= ", ps.reel";
 	$sql.= " FROM ".MAIN_DB_PREFIX."product as p";
 	if ($conf->stock->enabled && !empty($conf_fkentrepot)) $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product_stock as ps ON p.rowid = ps.fk_product AND ps.fk_entrepot = '".$conf_fkentrepot."'";
-	$sql.= " WHERE p.tosell = 1";
+	$sql.= " WHERE p.entity IN (".getEntity('product', 1).")";
+	$sql.= " AND p.tosell = 1";
 	$sql.= " AND p.fk_product_type = 0";
 	// Add criteria on ref/label
 	if (! empty($conf->global->PRODUCT_DONOTSEARCH_ANYWHERE))

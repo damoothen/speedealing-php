@@ -24,15 +24,15 @@
  */
 
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/admin.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/includes/barcode/html.formbarcode.class.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/class/html.formbarcode.class.php");
 
 $langs->load("admin");
 
-if (!$user->admin)
-	accessforbidden();
+if (!$user->admin) accessforbidden();
 
 $action = GETPOST("action");
+
 
 /*
  * Actions
@@ -77,9 +77,9 @@ else if ($action == 'GENBARCODE_BARCODETYPE_THIRDPARTY')
 if($action && $action!='setcoder')
 {
 	if (! $res > 0) $error++;
-    
+
 	if (! $error)
-    {   
+    {
         $mesg = "<font class=\"ok\">".$langs->trans("SetupSaved")."</font>";
     }
     else
@@ -92,7 +92,7 @@ if($action && $action!='setcoder')
  * View
  */
 
-$html = new Form($db);
+$form = new Form($db);
 $formbarcode = new FormBarCode($db);
 
 llxHeader('',$langs->trans("BarcodeSetup"),'BarcodeConfiguration');
@@ -106,25 +106,32 @@ $barcodelist=array();
 clearstatcache();
 
 
-foreach ($conf->file->dol_document_root as $dirroot)
-{
-	$dir = $dirroot . "/includes/modules/barcode/";
+// Check if there is external substitution to do asked by plugins
+$dirbarcode=array_merge(array("/core/modules/barcode/"),$conf->barcode_modules);
 
-	$handle=@opendir($dir);
+foreach($dirbarcode as $reldir)
+{
+    $dir=dol_buildpath($reldir,0);
+    $newdir=dol_osencode($dir);
+
+    // Check if directory exists (we do not use dol_is_dir to avoid loading files.lib.php)
+    if (! is_dir($newdir)) continue;
+
+	$handle=@opendir($newdir);
 	if (is_resource($handle))
 	{
 		while (($file = readdir($handle))!==false)
 		{
 			if (substr($file, 0, 1) <> '.' && substr($file, 0, 3) <> 'CVS')
 			{
-				if (is_readable($dir.$file))
+				if (is_readable($newdir.$file))
 				{
 					if (preg_match('/(.*)\.modules\.php$/i',$file,$reg))
 					{
 						$filebis=$reg[1];
 
 						// Chargement de la classe de codage
-						require_once($dir.$file);
+						require_once($newdir.$file);
 						$classname = "mod".ucfirst($filebis);
 						$module = new $classname($db);
 
@@ -190,12 +197,16 @@ if ($resql)
 		if ($obj->coder && $obj->coder != -1)
 		{
 			$result=0;
-			// Chargement de la classe de codage
-			foreach ($conf->file->dol_document_root as $dirroot)
+
+			foreach($dirbarcode as $reldir)
 			{
-				$dir=$dirroot . "/includes/modules/barcode/";
-				$result=@include_once($dir.$obj->coder.".modules.php");
-				//print $dir.$obj->coder.".modules.php - ".$result;
+			    $dir=dol_buildpath($reldir,0);
+			    $newdir=dol_osencode($dir);
+
+			    // Check if directory exists (we do not use dol_is_dir to avoid loading files.lib.php)
+			    if (! is_dir($newdir)) continue;
+
+				$result=@include_once($newdir.$obj->coder.".modules.php");
 				if ($result) break;
 			}
 			if ($result)
@@ -207,8 +218,7 @@ if ($resql)
 					if ($module->encodingIsSupported($obj->encoding))
 					{
 						// Build barcode on disk (not used, this is done to make debug easier)
-						$result=$module->writeBarCode($obj->example,$obj->encoding,'Y');
-
+					    $result=$module->writeBarCode($obj->example,$obj->encoding,'Y');
 						// Generate on the fly and output barcode with generator
 						$url=DOL_URL_ROOT.'/viewimage.php?modulepart=barcode&generator='.urlencode($obj->coder).'&code='.urlencode($obj->example).'&encoding='.urlencode($obj->encoding);
 						//print $url;

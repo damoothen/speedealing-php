@@ -23,14 +23,13 @@
  */
 
 require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/functions2.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
 
 $langs->load("admin");
 $langs->load("user");
 $langs->load("install");
 
-if (!$user->admin)
-  accessforbidden();
+if (! $user->admin) accessforbidden();
 
 
 /*
@@ -101,13 +100,6 @@ if ($db->type == 'pgsql')
 		$langs->load("errors");
 		//print '<div class="error">'.$langs->trans("ErrorDatabaseParameterWrong",'standard_conforming_strings','on').'</div>';
 	}
-	// Check option backslash_quote is on
-	/*$paramarray=$db->getServerParametersValues('backslash_quote');
-	if ($paramarray['backslash_quote'] != 'on' && $paramarray['backslash_quote'] != 1)
-	{
-		$langs->load("errors");
-		print '<div class="error">'.$langs->trans("ErrorDatabaseParameterWrong",'backslash_quote','on').'</div>';
-	}*/
 }
 print '<br>';
 
@@ -123,6 +115,8 @@ print '<br>';
 //print "<br>\n";
 print info_admin($langs->trans("SystemInfoDesc")).'<br>';
 
-
 llxFooter();
+
+$db->close();
+
 ?>

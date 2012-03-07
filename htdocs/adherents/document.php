@@ -25,8 +25,8 @@
  */
 
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/member.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/member.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 require_once(DOL_DOCUMENT_ROOT."/adherents/class/adherent.class.php");
 require_once(DOL_DOCUMENT_ROOT."/adherents/class/adherent_type.class.php");
@@ -37,7 +37,7 @@ $langs->load('other');
 $mesg = "";
 
 // Security check
-$id = GETPOST('id');
+$id = GETPOST('id','int');
 if ($user->societe_id > 0)
 {
 	$id = $user->societe_id;
@@ -67,9 +67,9 @@ $upload_dir = $conf->adherent->dir_output . "/" . get_exdir($id,2,0,1) . '/' . $
 // Envoie fichier
 if ( $_POST["sendit"] && ! empty($conf->global->MAIN_UPLOAD_DOC))
 {
-	require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
+	require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
 
-	if (create_exdir($upload_dir) >= 0)
+	if (dol_mkdir($upload_dir) >= 0)
 	{
 		$resupload=dol_move_uploaded_file($_FILES['userfile']['tmp_name'], $upload_dir . "/" . $_FILES['userfile']['name'],0,0,$_FILES['userfile']['error']);
 		if (is_numeric($resupload) && $resupload > 0)
@@ -126,7 +126,7 @@ if ($id > 0)
 		if ($conf->notification->enabled) $langs->load("mails");
 		$head = member_prepare_head($member);
 
-		$html=new Form($db);
+		$form=new Form($db);
 
 		dol_fiche_head($head, 'document', $langs->trans("Member"),0,'user');
 
@@ -145,7 +145,7 @@ if ($id > 0)
         // Ref
         print '<tr><td width="20%">'.$langs->trans("Ref").'</td>';
         print '<td class="valeur">';
-        print $html->showrefnav($member,'rowid');
+        print $form->showrefnav($member,'rowid');
         print '</td></tr>';
 
         // Login
@@ -157,7 +157,7 @@ if ($id > 0)
         // Morphy
         print '<tr><td>'.$langs->trans("Nature").'</td><td class="valeur" >'.$member->getmorphylib().'</td>';
         /*print '<td rowspan="'.$rowspan.'" align="center" valign="middle" width="25%">';
-        print $html->showphoto('memberphoto',$member);
+        print $form->showphoto('memberphoto',$member);
         print '</td>';*/
         print '</tr>';
 
@@ -172,11 +172,11 @@ if ($id > 0)
         print '</tr>';
 
         // Nom
-        print '<tr><td>'.$langs->trans("Lastname").'</td><td class="valeur">'.$member->nom.'&nbsp;</td>';
+        print '<tr><td>'.$langs->trans("Lastname").'</td><td class="valeur">'.$member->lastname.'&nbsp;</td>';
         print '</tr>';
 
         // Prenom
-        print '<tr><td>'.$langs->trans("Firstname").'</td><td class="valeur">'.$member->prenom.'&nbsp;</td>';
+        print '<tr><td>'.$langs->trans("Firstname").'</td><td class="valeur">'.$member->firstname.'&nbsp;</td>';
         print '</tr>';
 
         // Status
@@ -199,7 +199,7 @@ if ($id > 0)
 		 */
 		if ($_GET['action'] == 'delete')
 		{
-			$ret=$html->form_confirm($_SERVER["PHP_SELF"].'?id='.$_GET["id"].'&urlfile='.urldecode($_GET["urlfile"]), $langs->trans('DeleteFile'), $langs->trans('ConfirmDeleteFile'), 'confirm_deletefile', '', 0, 1);
+			$ret=$form->form_confirm($_SERVER["PHP_SELF"].'?id='.$_GET["id"].'&urlfile='.urldecode($_GET["urlfile"]), $langs->trans('DeleteFile'), $langs->trans('ConfirmDeleteFile'), 'confirm_deletefile', '', 0, 1);
 			if ($ret == 'html') print '<br>';
 		}
 

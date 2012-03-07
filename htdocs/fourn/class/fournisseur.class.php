@@ -2,6 +2,7 @@
 /* Copyright (C) 2004-2007 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2006      Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2011	   Juanjo Menent		<jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,18 +37,15 @@ class Fournisseur extends Societe
 	var $db;
 
 	/**
-	 *    \brief  Constructeur de la classe
-	 *    \param  DB     handler acces base de donnees
-	 *    \param  id     id societe (0 par defaut)
+	 *	Constructor
+	 *
+	 *  @param	DoliDB	$db		Database handler
 	 */
-
-	function Fournisseur($DB, $id=0, $user=0)
+	function Fournisseur($db)
 	{
 		global $config;
 
-		$this->db = $DB;
-		$this->id = $id;
-		$this->user = $user;
+		$this->db = $db;
 		$this->client = 0;
 		$this->fournisseur = 0;
 		$this->effectif_id  = 0;
@@ -57,7 +55,12 @@ class Fournisseur extends Societe
 	}
 
 
-	function nb_open_commande()
+	/**
+	 * Return nb of orders
+	 *
+	 * @return 	int		Nb of orders
+	 */
+	function getNbOfOrders()
 	{
 		$sql = "SELECT rowid";
 		$sql .= " FROM ".MAIN_DB_PREFIX."commande_fournisseur as cf";
@@ -78,18 +81,25 @@ class Fournisseur extends Societe
 		return $num;
 	}
 
-	function NbProduct()
+	/**
+	 * Returns number of ref prices (not number of products).
+	 *
+	 * @return	int		Nb of ref prices, or <0 if error
+	 */
+	function nbOfProductRefs()
 	{
-		$sql = "SELECT count(pf.rowid)";
-		$sql.= " FROM ".MAIN_DB_PREFIX."product_fournisseur as pf,";
-		$sql.= " ".MAIN_DB_PREFIX."product_fournisseur_price as ppf";
-		$sql .= " WHERE fk_soc = ".$this->id." AND ppf.fk_product_fournisseur = pf.rowid";
+		global $conf;
+		
+		$sql = "SELECT count(pfp.rowid) as nb";
+		$sql.= " FROM ".MAIN_DB_PREFIX."product_fournisseur_price as pfp";
+		$sql.= " WHERE pfp.entity = ".$conf->entity;
+		$sql.= " AND pfp.fk_soc = ".$this->id;
 
 		$resql = $this->db->query($sql);
 		if ( $resql )
 		{
-			$row = $this->db->fetch_row($resql);
-			return $row[0];
+			$obj = $this->db->fetch_object($resql);
+			return $obj->nb;
 		}
 		else
 		{
@@ -98,81 +108,9 @@ class Fournisseur extends Societe
 	}
 
 	/**
-	 *      \brief      Cree la commande au statut brouillon
-	 *      \param      user        Utilisateur qui cree
-	 *      \return     int         <0 si ko, id de la commande creee si ok
-	 */
-	function updateFromCommandeClient($user, $idc, $comclientid)
-	{
-		$comm = new CommandeFournisseur($this->db);
-		$comm->socid = $this->id;
-
-		$comm->updateFromCommandeClient($user, $idc, $comclientid);
-	}
-
-	/**
-	 *      \brief      Cree la commande au statut brouillon
-	 *      \param      user        Utilisateur qui cree
-	 *      \return     int         <0 si ko, id de la commande creee si ok
-	 */
-	function create_commande($user)
-	{
-		dol_syslog("Fournisseur::Create_Commande");
-		$comm = new CommandeFournisseur($this->db);
-		$comm->socid = $this->id;
-
-		if ($comm->create($user) > 0)
-		{
-			$this->single_open_commande = $comm->id;
-			return $comm->id;
-		}
-		else
-		{
-			$this->error=$comm->error;
-			dol_syslog("Fournisseur::Create_Commande Failed ".$this->error, LOG_ERR);
-			return -1;
-		}
-	}
-
-
-	function ProductCommande($user, $fk_product)
-	{
-		include_once(DOL_DOCUMENT_ROOT."/fourn/fournisseur.commande.class.php");
-		include_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
-
-		$commf = new CommandeFournisseur($this->db);
-
-		$nbc = $this->nb_open_commande();
-
-		dol_syslog("Fournisseur::ProductCommande : nbc = ".$nbc);
-
-		if ($nbc == 0)
-		{
-			if ( $this->create_commande($user) == 0 )
-			{
-				$idc = $this->single_open_commande;
-			}
-		}
-		elseif ($nbc == 1)
-		{
-
-			$idc = $this->single_open_commande;
-		}
-
-		if ($idc > 0)
-		{
-			$prod = new ProductFournisseur($this->db);
-			$prod->fetch($fk_product);
-			$prod->fetch_fourn_data($this->id);
-
-			$commf->fetch($idc);
-			$commf->addline("Toto",120,1,$prod->tva, $prod->id, 0, $prod->ref_fourn);
-		}
-	}
-
-	/**
-	 *      \brief      Charge indicateurs this->nb de tableau de bord
-	 *      \return     int         <0 si ko, >0 si ok
+	 * Load statistics indicators
+	 *
+	 * @return     int         <0 if KO, >0 if OK
 	 */
 	function load_state_board()
 	{
@@ -190,7 +128,7 @@ class Fournisseur extends Societe
 			$clause = "AND";
 		}
 		$sql.= " ".$clause." s.fournisseur = 1";
-		$sql.= " AND s.entity = ".$conf->entity;
+		$sql.= " AND s.entity IN (".getEntity('societe', 1).")";
 
 		$resql=$this->db->query($sql);
 		if ($resql)
@@ -211,10 +149,11 @@ class Fournisseur extends Societe
 	}
 
 	/**
-	 *    	\brief      Create a supplier category
-	 *    	\param      user        User asking creation
-	 *		\param		name		Nom categorie
-	 *    	\return     int         <0 si ko, 0 si ok
+	 *  Create a supplier category
+	 *
+	 *  @param      User	$user       User asking creation
+	 *	@param		string	$name		Category name
+	 *  @return     int         		<0 if KO, 0 if OK
 	 */
 	function CreateCategory($user, $name)
 	{
@@ -238,9 +177,9 @@ class Fournisseur extends Societe
 	}
 
 	/**
-	 * Retourne la liste des fournisseurs
+	 * 	Return the suppliers list
 	 *
-	 *
+	 *	@return		array		Array of suppliers
 	 */
 	function ListArray()
 	{
@@ -252,7 +191,7 @@ class Fournisseur extends Societe
 		$sql.= " FROM ".MAIN_DB_PREFIX."societe as s";
 		if (!$this->user->rights->societe->client->voir && !$this->user->societe_id) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
 		$sql.= " WHERE s.fournisseur = 1";
-		$sql.= " AND s.entity = ".$conf->entity;
+		$sql.= " AND s.entity IN (".getEntity('societe', 1).")";
 		if (!$this->user->rights->societe->client->voir && !$this->user->societe_id) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$this->user->id;
 
 		$resql=$this->db->query($sql);
@@ -275,11 +214,12 @@ class Fournisseur extends Societe
 	}
 
 	/**
-	 *    	\brief      Renvoie nom clicable (avec eventuellement le picto)
-	 *		\param		withpicto		Inclut le picto dans le lien
-	 *		\param		option			Sur quoi pointe le lien
-	 *		\param		maxlen			Longueur max libelle
-	 *		\return		string			Chaine avec URL
+	 *	Return a link on thirdparty (with picto)
+	 *
+	 *	@param		int		$withpicto		Add picto into link (0=No picto, 1=Include picto with link, 2=Picto only)
+	 *	@param		string	$option			Target of link ('', 'customer', 'prospect', 'supplier')
+	 *	@param		int		$maxlen			Max length of text
+	 *	@return		string					String with URL
 	 */
 	function getNomUrl($withpicto=0,$option='supplier',$maxlen=0)
 	{

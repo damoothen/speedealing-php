@@ -2,7 +2,7 @@
 /* Copyright (C) 2005      Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2005-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2010 Regis Houssin        <regis@dolibarr.fr>
- * Copyright (C) 2010-2011 Juanjo Menent        <jmenent@2byte.es>
+ * Copyright (C) 2010-2012 Juanjo Menent        <jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
 
 require('../main.inc.php');
 require_once(DOL_DOCUMENT_ROOT."/compta/prelevement/class/bon-prelevement.class.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/admin.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/compta/bank/class/account.class.php");
 
 $langs->load("admin");
@@ -47,11 +47,11 @@ if ($action == "set")
     $db->begin();
     for ($i = 0 ; $i < 2 ; $i++)
     {
-        $res = dolibarr_set_const($db, $_POST["nom$i"], $_POST["value$i"],'chaine',0,'',$conf->entity);
+    	$res = dolibarr_set_const($db, GETPOST("nom$i",'alpha'), GETPOST("value$i",'alpha'),'chaine',0,'',$conf->entity);
         if (! $res > 0) $error++;
     }
 
-    $id=$_POST["PRELEVEMENT_ID_BANKACCOUNT"];
+    $id=GETPOST('PRELEVEMENT_ID_BANKACCOUNT','int');
     $account = new Account($db, $id);
 
     if($account->fetch($id)>0)
@@ -90,7 +90,7 @@ if ($action == "set")
 if ($action == "addnotif")
 {
     $bon = new BonPrelevement($db);
-    $bon->AddNotification($db,$_POST["user"],$_POST["action"]);
+    $bon->AddNotification($db,GETPOST('user','int'),$action);
 
     Header("Location: prelevement.php");
     exit;
@@ -99,7 +99,7 @@ if ($action == "addnotif")
 if ($action == "deletenotif")
 {
     $bon = new BonPrelevement($db);
-    $bon->DeleteNotificationById($_GET["notif"]);
+    $bon->DeleteNotificationById(GETPOST('notif','int'));
 
     Header("Location: prelevement.php");
     exit;
@@ -110,7 +110,7 @@ if ($action == "deletenotif")
  *	View
  */
 
-$html=new Form($db);
+$form=new Form($db);
 
 llxHeader('',$langs->trans("WithdrawalsSetup"));
 
@@ -131,12 +131,12 @@ print "</tr>";
 print '<tr class="impair"><td>'.$langs->trans("ResponsibleUser").'</td>';
 print '<td align="left">';
 print '<input type="hidden" name="nom0" value="PRELEVEMENT_USER">';
-print $html->select_users($conf->global->PRELEVEMENT_USER,'value0',1);
+print $form->select_users($conf->global->PRELEVEMENT_USER,'value0',1);
 print '</td>';
 print '</tr>';
 
 //Profid1 of Transmitter
-print '<tr class="pair"><td>'.$langs->trans("NumeroNationalEmetter").' - '.$langs->transcountry('ProfId1',$mysoc->pays_code).'</td>';
+print '<tr class="pair"><td>'.$langs->trans("NumeroNationalEmetter").' - '.$langs->transcountry('ProfId1',$mysoc->country_code).'</td>';
 print '<td align="left">';
 print '<input type="hidden" name="nom1" value="PRELEVEMENT_NUMERO_NATIONAL_EMETTEUR">';
 print '<input type="text"   name="value1" value="'.$conf->global->PRELEVEMENT_NUMERO_NATIONAL_EMETTEUR.'" size="9" ></td>';
@@ -145,7 +145,7 @@ print '</tr>';
 // Bank account (from Banks module)
 print '<tr class="impair"><td>'.$langs->trans("BankToReceiveWithdraw").'</td>';
 print '<td align="left">';
-print $html->select_comptes($conf->global->PRELEVEMENT_ID_BANKACCOUNT,'PRELEVEMENT_ID_BANKACCOUNT',0,"courant=1",1);
+print $form->select_comptes($conf->global->PRELEVEMENT_ID_BANKACCOUNT,'PRELEVEMENT_ID_BANKACCOUNT',0,"courant=1",1);
 print '</td></tr>';
 print '</table>';
 print '<br>';
@@ -190,6 +190,7 @@ if ($conf->global->MAIN_MODULE_NOTIFICATION)
         $db->free($resql);
     }
 
+    // Get list of triggers for module withdraw
     $sql = "SELECT rowid, code, label";
     $sql.= " FROM ".MAIN_DB_PREFIX."c_action_trigger";
     $sql.= " WHERE elementtype = 'withdraw'";
@@ -222,11 +223,11 @@ if ($conf->global->MAIN_MODULE_NOTIFICATION)
     print "</tr>\n";
 
     print '<tr class="impair"><td align="left">';
-    print $html->selectarray('user',$internalusers);//  select_users(0,'user',0);
+    print $form->selectarray('user',$internalusers);//  select_users(0,'user',0);
     print '</td>';
 
     print '<td>';
-    print $html->selectarray('action',$actions);//  select_users(0,'user',0);
+    print $form->selectarray('action',$actions);//  select_users(0,'user',0);
     print '</td>';
 
     print '<td align="right"><input type="submit" class="button" value="'.$langs->trans("Add").'"></td></tr>';

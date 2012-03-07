@@ -51,10 +51,10 @@ QtyDispatched=Määrä lähetysolosuhteita
 OrderDispatch=Tilaa lähetyskeskukset
 RuleForStockManagementDecrease=Sääntö varaston hallintaan lasku
 RuleForStockManagementIncrease=Sääntö varaston hallintaan lisätä
-DeStockOnBill=Decrease todellinen varastot laskuista / hyvityslaskuja (varoitus, tässä versiossa, se on vain varasto numero 1, että varastossa on muutettu)
-DeStockOnValidateOrder=Decrease todellinen varastot tilaukset toteaa (varoitus, tässä versiossa, se on vain varasto numero 1, että varastossa on muutettu)
-ReStockOnBill=Lisäys todellinen varastot laskuista / hyvityslaskuja (varoitus, tässä versiossa, se on vain varasto numero 1, että varastossa on muutettu)
-ReStockOnValidateOrder=Lisäys todellinen varastot tilaukset toteaa (varoitus, tässä versiossa, se on vain varasto numero 1, että varastossa on muutettu)
+DeStockOnBill=Decrease todellinen varastot laskuista / hyvityslaskuja
+DeStockOnValidateOrder=Decrease todellinen varastot tilaukset toteaa
+ReStockOnBill=Lisäys todellinen varastot laskuista / hyvityslaskuja
+ReStockOnValidateOrder=Lisäys todellinen varastot tilaukset toteaa
 StockLimitShort=Limit
 StockLimit=Kanta raja hälytykset
 PhysicalStock=Varasto
@@ -97,3 +97,13 @@ ConfirmDeleteWarehouse=Oletko varma että haluat poistaa varastoon <b>%s?</b>
 PersonalStock=Henkilökohtainen varastossa %s
 ThisWarehouseIsPersonalStock=Tämä varasto edustaa henkilökohtainen kanta %s %s
 // STOP - Lines generated via autotranslator.php tool (2010-07-17 11:26:30).
+
+
+// START - Lines generated via autotranslator.php tool (2012-02-29 16:10:23).
+// Reference language: en_US -> fi_FI
+SellPriceMin=Myynnin Yksikköhinta
+EstimatedStockValueSellShort=Arvo myydä
+EstimatedStockValueSell=Arvo Myy
+SelectWarehouseForStockDecrease=Valitse varasto käyttää varastossa laskua
+SelectWarehouseForStockIncrease=Valitse varasto käyttää varastossa lisätä
+// STOP - Lines generated via autotranslator.php tool (2012-02-29 16:10:46).

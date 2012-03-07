@@ -19,6 +19,7 @@ ConfirmLockNewSessions=Esteu segur de voler restringir l'accés a Dolibarr al se
 UnlockNewSessions=Eliminar bloqueig de connexions
 YourSession=La seva sessió
 Sessions=Sessions d'usuaris
+WebUserGroup=Servidor web usuari/grup
 NoSessionFound=Sembla que el seu PHP no pot llistar les sessions actives. El directori de salvaguardat de sessions (<b>%s</b>) pot estar protegit (per exemple, pels permisos del sistema operatiu o per la directiva open_basedir del seu PHP)
 HTMLCharset=Charset de les pàgines HTML
 DBStoringCharset=Charset base de dades per emmagatzematge de dades
@@ -168,6 +169,7 @@ Datas=Dades
 NameColumn=Nom de les columnes
 ExtendedInsert=Instruccions INSERT esteses
 DelayedInsert=Insercions amb retard
+NoLockBeforeInsert=Sense intrucció LOCK abans del INSERT 
 EncodeBinariesInHexa=Codificar els camps binaris en hexacesimal
 IgnoreDuplicateRecords=Ignorar els errors de duplicació (INSERT IGNORE)
 Yes=Sí
@@ -339,7 +341,7 @@ Module30Desc=Gestió de factures i abonaments de clients. Gestió factures de pr
 Module40Name=Proveïdors
 Module40Desc=Gestió de proveïdors
 Module42Name=Syslog
-Module42Desc=Utilització de logs (syslog)
+Module42Desc=Generació de logs (arxius, syslog,...)
 Module49Name=Editors
 Module49Desc=Gestió d'editors
 Module50Name=Productes
@@ -370,8 +372,10 @@ Module80Name=Expedicions
 Module80Desc=Gestió d'expedicions i recepcions
 Module85Name=Bancs i caixes
 Module85Desc=Gestió dels comptes financers de tipus comptes bancaris, postals o efectiu
-Module100Name=ExternalSite
+Module100Name=External site
 Module100Desc=Inclou qualsevol lloc web extern en els menús de Dolibarr, veient-lo en un frame
+Module105Name=Mailman i Sip
+Module105Desc=Interface amb Mailman o Spip per al mòdul Membres
 Module200Name=LDAP
 Module200Desc=sincronització amb un anuari LDAP
 Module210Name=PostNuke
@@ -641,6 +645,7 @@ Permission2515=Configuració carpetes de documents
 Permission8555=Ús del mòdul
 Permission8556=Establir llocs ecommerce
 Permission8557=Importar dades
+Permission50001=Utilitzar TPV
 Permission50201=Consultar les transaccions
 Permission50202=Importar les transaccions
 DictionnaryCompanyType=Tipus d'empresa
@@ -795,18 +800,19 @@ LogEvents=Auditoria de la seguretat d'esdeveniments
 Audit=Auditoria
 ListEvents=Auditoria d'esdeveniments
 ListOfSecurityEvents=Llistat d'esdeveniments de seguretat Dolibarr
+SecurityEventsPurged=Esdeveniments de seguretat purgats
 LogEventDesc=Podeu habilitar el registre d'esdeveniments de seguretat Dolibarr aquí. Els administradors poden veure el seu contingut a través de menú <b>Eines del sistema->Auditoria</b>. Atenció, aquesta característica pot consumir una gran quantitat de dades a la base de dades.
 AreaForAdminOnly=Aquestes funcions només són accessibles a un usuari administrador.
 SystemInfoDesc=La informació del sistema és informació tècnica accessible només en només lectura als administradors.
 SystemAreaForAdminOnly=Aquesta àrea només és accessible als usuaris de tipus administradors. Cap permís Dolibarr permet estendre el cercle de usuaris autoritzats a aquesta áera.
-CompanyFundationDesc=Edita en aquesta pàgina tota la informació coneguda sobre l'empresa o associació a administrar
+CompanyFundationDesc=Edita en aquesta pàgina tota la informació coneguda sobre l'empresa o associació a administrar  (per això feu clic al botó "Modificar" a peu de pàgina)
 DisplayDesc=Podeu trobar aquí tots els paràmetres relacionats amb l'aparença d'Dolibarr
 AvailableModules=Mòduls disponibles
 ToActivateModule=Per activar els mòduls, aneu a l'àrea de Configuració (Inici->Configuració->Mòduls).
 SessionTimeOut=Time out de sesions
 SessionExplanation=Assegura que el període de sessions no expirarà abans d'aquest moment. Tanmateix, la gestió del període de sessions de PHP no garanteix que el període de sessions expirar després d'aquest període: Aquest serà el cas si un sistema de neteja del cau de sessions és actiu. <br>Nota: Sense mecanisme especial, el mecanisme intern per netejar el període de sessions de PHP tots els accessos <b>%s /%s</b>, però només al voltant de l'accés d'altres períodes de sessions.
 TriggersAvailable=Triggers disponibles
-TriggersDesc=Els triggers són arxius que, une vegada dipositats a la carpeta <b>htdocs/includes/triggers</b>, modifiquen el comportament del workflow d'Dolibarr. Realitzen accions suplementàries, desencadenades pels esdeveniments Dolibarr (creació d'empresa, validació factura, tancament de contracte, etc).
+TriggersDesc=Els triggers són arxius que, une vegada dipositats a la carpeta <b>htdocs/core/triggers</b>, modifiquen el comportament del workflow d'Dolibarr. Realitzen accions suplementàries, desencadenades pels esdeveniments Dolibarr (creació d'empresa, validació factura, tancament de contracte, etc).
 TriggerDisabledByName=Triggers d'aquest arxiu desactivador pel sufix <b>-NORUN</b> en el nom de l'arxiu.
 TriggerDisabledAsModuleDisabled=Triggers d'aquest arxiu desactivats ja que el mòdul <b>%s</b> no està activat.
 TriggerAlwaysActive=Triggers d'aquest arxiu sempre actius, ja que els mòduls Dolibarr relacionats estan activats
@@ -860,8 +866,13 @@ MAIN_PROXY_USER=Login del servidor proxy
 MAIN_PROXY_PASS=Contrasenya del servidor proxy
 DefineHereComplementaryAttributes=Definiu aquí la llista d'atributs addicionals, no disponibles a estàndard, i que vol gestionar per %s.
 ExtraFields=Atributs addicionals
+ExtraFieldHasWrongValue=L'atribut %s te un valor incorrecte.
 SendingMailSetup=Configuració de l'enviament per mail
 SendmailOptionNotComplete=Atenció, en alguns sistemes Linux, amb aquest mètode d'enviament, per poder enviar mails en nom seu, la configuració de sendmail ha de contenir l'opció <b>-ba</b> (paràmetre <b>mail.force_extra_parameters</b> a l'arxiu <b>php.ini</b>). Si alguns dels seus destinataris no reben els seus missatges, proveu de modificar aquest paràmetre PHP amb <b>mail.force_extra_parameters =-ba </b>.
+PathToDocuments=Rutes d'accés a documents
+PathDirectory=Directori
+SendmailOptionMayHurtBuggedMTA=La funcionalitat d'enviar correu electrònic a través del "correu directe PHP" genera una sol·licitud que pot ser mal interpretada per alguns servidors de correu. Això es tradueix en missatges de correu electrònic il·legibles per a les persones allotjades en aquestes plataformes. Aquest és el cas de clients en certs proveïdors de serveis d'Internet (Ex: Orange). Això no és un problema ni de Dolibarr ni de PHP, però sí del servidor de correu. No obstant això, podeu afegir l'opció MAIN_FIX_FOR_BUGGED_MTA amb valor 1 en configuració-varis per tractar que Dolibarr eviti l'error. Una altra solució (recomanada) és utilitzar el mètode d'enviament per SMTP que no té aquest inconvenient.
+
 ##### Module password generation
 PasswordGenerationStandard=Retorna una contrasenya generada per l'algoritme intern Dolibarr: 8 caràcters, números i caràcters en minúscules barrejades.
 PasswordGenerationNone=No ofereix contrasenyes. La contrasenya s'introdueix manualment.
@@ -1107,12 +1118,15 @@ LDAPDescGroups=Aquesta pàgina permet definir el nom dels atributs de l'arbre LD
 LDAPDescMembers=Aquesta pàgina permet definir el nom dels atributs de l'arbre LDAP per a cada informació dels membres del mòdul Associacions Dolibarr.
 LDAPDescValues=Els valors d'exemples s'adapten a <b>OpenLDAP</b> amb els schemas carregats: <b>core.schema, cosine.schema, inetorgperson.schema </b>). Si vostè utilitza els a valors suggerits i OpenLDAP, modifiqui el seu fitxer de configuració LDAP <b>slapd.conf </b> per a tenir tots aquests schemas actius.
 ForANonAnonymousAccess=Per un accés autentificat
-##### Products #####
+##### Products/Services #####
 ProductSetup=Configuració del mòdul Productes
+ServiceSetup=Configuració del mòdul Serveis
+ProductServiceSetup= Configuración dels mòduls Productos i Serveis
 NumberOfProductShowInSelect=Nº de productes màx a les llistes (0= sense límit)
 ConfirmDeleteProductLineAbility=Confirmació d'eliminació d'una línia de producte en els formularis
 ModifyProductDescAbility=Personalització de les descripcions dels productes en els formularis
 ViewProductDescInFormAbility=Visualització de les descripcions dels productes en els formularis
+ViewProductDescInThirdpartyLanguageAbility=Visualització de les descripcions de productes en l'idioma del tercer
 UseSearchToSelectProduct=Utilitzar un formulari de cerca per a la selecció d'un producte (en lloc de la llista desplegable). Tingueu en compte que si té un nombre important de productes o serveis (> 100 000), pot millorar el rendiment definint la constant PRODUCT_DONOTSEARCH_ANYWHERE a 1 a Configuració->Varis. La cerca quedarà limitada a l'inici de la cadena.
 UseEcoTaxeAbility=Assumir ecotaxa (DEEE)
 SetDefaultBarcodeTypeProducts=Tipus de codi de barres utilitzat per defecte per als productes
@@ -1144,7 +1158,6 @@ BarcodeDescUPC=Codis de barra tipus UPC
 BarcodeDescISBN=Codis de barra tipus ISBN
 BarcodeDescC39=Codis de barra tipus C39
 BarcodeDescC128=Codis de barra tipus C128
-NoActivatedBarcode=Cap tipus de codi de barres activat
 ##### Prelevements #####
 WithdrawalsSetup=Configuració del mòdul domiciliacions
 ##### ExternalRSS #####
@@ -1278,6 +1291,8 @@ BankOrderGlobal=General
 BankOrderGlobalDesc=Ordre de visualització general
 BankOrderES=Espanyol
 BankOrderESDesc=Ordre de visualització espanyol
+##### MailmanSpip #####
+MailmanSpipSetup=Configuració del mòdul Mailman i Spip
 ##### Multicompany #####
 MultiCompanySetup=Configuració del mòdul Multi-empresa
 ##### Suppliers #####
@@ -1291,9 +1306,6 @@ NoteOnPathLocation=Tingueu en compte que aquest arxiu ha d'estar en una carpeta 
 YouCanDownloadFreeDatFileTo=Pot descarregar-se una <b>versió demo gratuïta</b> de l'arxiu de països  Maxmind GeoIP a l'adreça %s.
 YouCanDownloadAdvancedDatFileTo=També pot descarregar-se una <b>versió més completa</b> de l'arxiu de països Maxmind GeoIP a l'adreça %s.
 TestGeoIPResult=Test de conversió IP -> País
-##### NumberWords #####
-NumberWordsSetup=Configuració del mòdul NumberWords
-DescNumberWords=Aquest mòdul us ofereix convertir números o imports en qualsevol cadena. També realitza la substitució de les variables genèriques __TOTAL_TTC_WORDS__, __TOTAL_HT_WORDS__ o __TOTAL_VAT_WORDS__ pel valor d'imports totals, base o de l'IVA, en cadena dins el text al qual fan referència (text lliure de factures, ...)
 ##### Projects #####
 ProjectsNumberingModules=Mòdul de numeració per a les referències dels projectes
 ProjectsSetup=Configuració del mòdul Projectes

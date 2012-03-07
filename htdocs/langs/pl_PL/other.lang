@@ -11,23 +11,6 @@
 // START - Lines generated via autotranslator.php tool.
 // Reference language: en_US
 CHARSET=UTF-8
-ErrorPasswordDiffers=Hasła różni, wpisz je ponownie.
-ErrorForbidden=Dostęp zabroniony. <br> Podczas próby dostępu do strony, na powierzchni lub funkcji bez poświadczoną sesji lub które nie są dopuszczone do użytkownika.
-ErrorForbidden2=Wykorzystanie tej nazwie może być zdefiniowana przez administratora z menu Dolibarr %s-> %s.
-ErrorForbidden3=Wydaje się, że Dolibarr nie jest używany przez uwierzytelniane sesji. Rzuć okiem na Dolibarr konfiguracji dokumentacji wiedzieć, jak zarządzać authentications (htaccess, mod_auth lub innych ...).
-ErrorNoImagickReadimage=Funkcja imagick_readimage nie jest w tej PHP. Podgląd może być dostępny. Administratorzy mogą wyłączyć tę zakładkę z menu Ustawienia - Ekran.
-ErrorRecordAlreadyExists=Zapis już istnieje
-ErrorCantReadFile=Nie można odczytać pliku ' %s'
-ErrorCantReadDir=Nie można odczytać katalogu ' %s'
-ErrorFailedToFindEntity=Nie można odczytać jednostki " %s"
-ErrorBadLoginPassword=Zła wartość dla loginu lub hasła
-ErrorLoginDisabled=Twoje konto zostało zablokowane
-ErrorFailedToRunExternalCommand=Nie można uruchomić polecenia zewnętrznych. Zameldowanie jest ona dostępna i runnable przez serwer PHP. Jeśli PHP <b>safe mode</b> jest włączony, czy polecenie wewnątrz katalogu określonym przez parametr <b>safe_mode_exec_dir.</b>
-ErrorFailedToChangePassword=Nie można zmienić hasła
-ErrorLoginDoesNotExists=Użytkownik z <b>logowania %s</b> nie może zostać znaleziony.
-ErrorLoginHasNoEmail=Ten użytkownik nie ma adresu e-mail. Proces przerwany.
-ErrorBadValueForCode=Zła wartość typy kodu. Spróbuj ponownie z nową wartość ...
-ErrorFileIsInfectedWith=Ten plik jest zainfekowany %s
 SecurityCode=Kod zabezpieczający
 Calendar=Kalendarz
 AddTrip=Dodaj podróż
@@ -44,12 +27,6 @@ AttachANewFile=Załącz nowy plik / dokument
 LinkedObject=Związany obiektu
 Miscellanous=Miscellaneous
 NbOfActiveNotifications=Liczba zgłoszeń
-WarningInstallDirExists=Ostrzeżenie zainstalować katalog ( %s), nadal istnieje. Jest to poważne dziury bezpieczeństwa. Należy usunąć go jak najszybciej.
-WarningUntilDirRemoved=To ostrzeżenie pozostanie aktywne, dopóki ten katalog jest obecny (Widoczne tylko admin użytkowników).
-PredefinedMailContentSendInvoice=Veuillez trouver ci-joint la faktura __FACREF__ \ n \ nCordialement \ n \ n
-PredefinedMailContentSendInvoiceReminder=Nous apportons votre connaissance que la faktura __FACREF__ ne semble pas avoir t rgle. La voici donc, pour rappel, pl cena jointe. \ N \ nCordialement \ n \ n
-PredefinedMailContentSendProposal=Veuillez trouver ci-joint la proposition commerciale __PROPREF__ \ n \ nCordialement \ n \ n
-PredefinedMailContentSendOrder=Veuillez trouver ci-joint la Commande __ORDERREF__ \ n \ nCordialement \ n \ n
 ChooseYourDemoProfil=Wybierz demo, które pasują do profilu działalności ...
 DemoFundation=Zarządzanie użytkowników o fundacji
 DemoFundation2=Zarządzanie użytkowników i konta bankowego z fundacji
@@ -244,20 +221,20 @@ SurfaceUnitm2=m2
 SurfaceUnitdm2=dm2
 SurfaceUnitcm2=cm2
 SurfaceUnitmm2=mm2
-EMailTextProposalValidated=Het voorstel is gevalideerd sssss.
-EMailTextOrderValidated=De volgorde sssss is gevalideerd.
+EMailTextProposalValidated=Het voorstel is gevalideerd %s.
+EMailTextOrderValidated=De volgorde %s is gevalideerd.
 ResizeDesc=Voer een nieuwe breedte <b>of</b> hoogte van nieuwe. Ratio zullen worden gehouden gedurende resizen ...
 NewLength=Nieuwe breedte
 NewHeight=Nieuwe hoogte
 NewSizeAfterCropping=Nieuwe grootte na bijsnijden
 DefineNewAreaToPick=Definieer nieuwe ruimte op de afbeelding om uit te kiezen (klik links op de afbeelding en sleep totdat u bij de tegenoverliggende hoek)
 CurrentInformationOnImage=Informatie over de huidige afbeelding
-YouReceiveMailBecauseOfNotification=U ontvangt dit bericht omdat uw e-mail is toegevoegd aan de lijst van doelstellingen te worden geïnformeerd over bepaalde gebeurtenissen in de software van sssss sssss.
+YouReceiveMailBecauseOfNotification=U ontvangt dit bericht omdat uw e-mail is toegevoegd aan de lijst van doelstellingen te worden geïnformeerd over bepaalde gebeurtenissen in de software van %s %s.
 YouReceiveMailBecauseOfNotification2=Dit evenement is de volgende:
 ExternalSites=Externe sites
 CalculatedWeight=Berekend gewicht
 CalculatedVolume=Berekende volume
-YouReceiveMailBecauseOfNotification=U ontvangt dit bericht omdat uw e-mail is toegevoegd aan de lijst van doelstellingen te worden geïnformeerd over bepaalde gebeurtenissen in de software van sssss sssss.
+YouReceiveMailBecauseOfNotification=U ontvangt dit bericht omdat uw e-mail is toegevoegd aan de lijst van doelstellingen te worden geïnformeerd over bepaalde gebeurtenissen in de software van %s %s.
 YouReceiveMailBecauseOfNotification2=Dit evenement is de volgende:
 Notify_ORDER_VALIDATE=Aby Klient zatwierdzone
 Notify_PROPAL_VALIDATE=wniosek Klienta zatwierdzone
@@ -276,15 +253,15 @@ SurfaceUnitdm2=dm2
 SurfaceUnitcm2=cm2
 SurfaceUnitmm2=mm2
 NumberOfUnitsProposals=Liczba jednostek na propozycje dotyczące ostatnich 12 miesięcy
-EMailTextProposalValidated=Sssss wniosek został zatwierdzony.
-EMailTextOrderValidated=Aby sssss został zatwierdzony.
+EMailTextProposalValidated=%s wniosek został zatwierdzony.
+EMailTextOrderValidated=Aby %s został zatwierdzony.
 ResizeDesc=Wpisz nową szerokość <b>lub</b> nowy wysokości. Stosunek będą przechowywane w zmianie rozmiaru ...
 NewLength=Nowa szerokość
 NewHeight=Nowa wysokość
 NewSizeAfterCropping=Nowy rozmiar po przycięciu
 DefineNewAreaToPick=Określenia nowego obszaru na zdjęcie, aby wybrać (z lewej kliknąć na zdjęcie, a następnie przeciągnąć aż do przeciwnego rogu)
 CurrentInformationOnImage=Informacje na temat bieżącego obrazu
-YouReceiveMailBecauseOfNotification=Pojawieniu się tego komunikatu, ponieważ e-mail został dodany do listy celów do informacji o wydarzeniach w szczególności z sssss sssss oprogramowania.
+YouReceiveMailBecauseOfNotification=Pojawieniu się tego komunikatu, ponieważ e-mail został dodany do listy celów do informacji o wydarzeniach w szczególności z %s %s oprogramowania.
 YouReceiveMailBecauseOfNotification2=To wydarzenie jest następujące:
 ExternalSites=tereny zewnętrzne
 // STOP - Lines generated via autotranslator.php tool (2010-07-17 12:40:00).
@@ -301,3 +278,59 @@ SizeUnitinch=cal
 SizeUnitfoot=stopa
 ImageEditor=Edytor obrazów
 // STOP - Lines generated via autotranslator.php tool (2010-09-04 01:57:06).
+
+
+// START - Lines generated via autotranslator.php tool (2011-10-10 02:45:33).
+// Reference language: en_US -> pl_PL
+Notify_WITHDRAW_EMIT=Wycofanie Isue
+Notify_ORDER_SENTBYMAIL=Zamówienie klienta wysyłane pocztą
+Notify_COMPANY_CREATE=Trzeciej stworzone
+Notify_PROPAL_SENTBYMAIL=Gospodarczy wniosek przesłany pocztą
+Notify_ORDER_SENTBYMAIL=Darmowa wysyłka pedido por e-mail
+Notify_BILL_PAYED=Klient zapłaci faktury
+Notify_BILL_CANCEL=Faktury klienta odwołany
+Notify_BILL_SENTBYMAIL=Faktury klienta wysyłane pocztą
+Notify_ORDER_SUPPLIER_VALIDATE=Aby zatwierdzone Dostawca
+Notify_ORDER_SUPPLIER_SENTBYMAIL=Aby dostawca wysłane pocztą
+Notify_SHIPPING_SENTBYMAIL=Wysyłka wysłane pocztą
+Notify_MEMBER_VALIDATE=Członek zatwierdzone
+Notify_MEMBER_SUBSCRIPTION=Członek subskrybowanych
+Notify_MEMBER_RESILIATE=Członek resiliated
+Notify_MEMBER_DELETE=Członek usunięte
+PredefinedMailContentSendSupplierInvoice=Znajdziecie tu Państwo fakturę __FACREF__ \ n \ nSincerely \ n \ n
+PredefinedMailContentSendShipping=Znajdziesz tu wysyłki __SHIPPINGREF__ \ n \ nSincerely \ n \ n
+PredefinedMailContentSendFichInter=Znajdziesz tu interwencji __FICHINTERREF__ \ n \ nSincerely \ n \ n
+Top=Top
+Bottom=Dno
+FileFormat=Format pliku
+SelectAColor=Wybierz kolor
+AddFiles=Dodaj pliki
+StartUpload=Rozpocznij przesyłanie
+CancelUpload=Anuluj przesyłanie
+FileIsTooBig=Plików jest zbyt duży
+Export=Eksport
+// STOP - Lines generated via autotranslator.php tool (2011-10-10 04:25:37).
+
+
+// START - Lines generated via autotranslator.php tool (2012-02-29 17:18:29).
+// Reference language: en_US -> pl_PL
+ToolsDesc=Obszar ten jest poświęcony grupie różnorodnych nie dostępnych narzędzi do innych pozycji w menu. <br><br> Narzędzia te mogą zostać osiągnięte z menu na stronie.
+Notify_WITHDRAW_TRANSMIT=Wycofanie transmisja
+Notify_WITHDRAW_CREDIT=Wycofanie kredyt
+Notify_BILL_SUPPLIER_VALIDATE=Faktura dostawca zatwierdzone
+Notify_BILL_SUPPLIER_PAYED=Dostawca zapłaci faktury
+Notify_BILL_SUPPLIER_SENTBYMAIL=Faktura dostawca wysłane pocztą
+Notify_CONTRACT_VALIDATE=Umowa zatwierdzona
+Notify_FICHEINTER_VALIDATE=Interwencja zatwierdzone
+Notify_SHIPPING_VALIDATE=Wysyłka zatwierdzone
+PredefinedMailContentSendInvoice=Znajdziecie tu Państwo faktury __ FACREF__ \n\n poważaniem \n\n
+PredefinedMailContentSendInvoiceReminder=Pragniemy ostrzec, że faktura FACREF__ __ wydaje się nie być wypłacana. Więc to jest faktura w załączniku ponownie, jako przypomnienie. \n\n poważaniem \n\n
+PredefinedMailContentSendProposal=Znajdziecie tu komercyjnego propoal __ PROPREF__ \n\n poważaniem \n\n
+PredefinedMailContentSendOrder=Znajdziecie tutaj aby __ ORDERREF__ \n\n poważaniem \n\n
+Left=W lewo
+Right=Prawo
+ThisIsListOfModules=To jest lista modułów selekcjonowane przez tego profilu demo (tylko najczęściej moduły są widoczne w tym demo). Zmodyfikować, aby mieć bardziej spersonalizowany demo i kliknij &quot;Start&quot;.
+ClickHere=Kliknij tutaj
+UseAdvancedPerms=Korzystać z zaawansowanych uprawnień niektórych modułów
+ShipmentValidatedInDolibarr=%s wysyłki zatwierdzone w Dolibarr
+// STOP - Lines generated via autotranslator.php tool (2012-02-29 17:18:34).

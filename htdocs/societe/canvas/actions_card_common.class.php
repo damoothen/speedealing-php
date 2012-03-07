@@ -42,7 +42,7 @@ abstract class ActionsCardCommon
 	var $error;
 	//! Error array
 	var $errors=array();
-	
+
 
 	/**
 	 * 	Instantiation of DAO class
@@ -72,9 +72,9 @@ abstract class ActionsCardCommon
 	/**
      *  Get object from id or ref and save it into this->object
 	 *
-     *  @param		int			Object id
-     *  @param		ref			Object ref
-     *  @return		object		Object loaded
+     *  @param		int		$id			Object id
+     *  @param		ref		$ref		Object ref
+     *  @return		object				Object loaded
      */
     protected function getObject($id,$ref='')
     {
@@ -119,17 +119,18 @@ abstract class ActionsCardCommon
         if ((! $_POST["getcustomercode"] && ! $_POST["getsuppliercode"])
         && ($action == 'add' || $action == 'update'))
         {
-            require_once(DOL_DOCUMENT_ROOT."/lib/functions2.lib.php");
+            require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
             $error=0;
 
             if (GETPOST("private") == 1)
             {
                 $this->object->particulier		= GETPOST("private");
 
-                $this->object->nom				= empty($conf->global->MAIN_FIRSTNAME_NAME_POSITION)?trim($_POST["prenom"].' '.$_POST["nom"]):trim($_POST["nom"].' '.$_POST["prenom"]);
-                $this->object->nom_particulier	= $_POST["nom"];
-                $this->object->prenom			= $_POST["prenom"];
+                $this->object->name				= empty($conf->global->MAIN_FIRSTNAME_NAME_POSITION)?trim($_POST["prenom"].' '.$_POST["nom"]):trim($_POST["nom"].' '.$_POST["prenom"]);
                 $this->object->civilite_id		= $_POST["civilite_id"];
+                // Add non official properties
+                $this->object->name_bis        	= $_POST["nom"];
+                $this->object->firstname		= $_POST["prenom"];
             }
             else
             {
@@ -153,7 +154,7 @@ abstract class ActionsCardCommon
             $this->object->code_client			= $_POST["code_client"];
             $this->object->code_fournisseur		= $_POST["code_fournisseur"];
             $this->object->capital				= $_POST["capital"];
-            $this->object->gencod				= $_POST["gencod"];
+            $this->object->barcode				= $_POST["barcode"];
             $this->object->canvas				= GETPOST("canvas");
 
             $this->object->tva_assuj			= $_POST["assujtva_value"];
@@ -220,16 +221,16 @@ abstract class ActionsCardCommon
                     {
                         if ($this->object->particulier)
                         {
-                            dol_syslog("This thirdparty is a personal people",LOG_DEBUG);
+                            dol_syslog(get_class($this)."::doActions This thirdparty is a personal people",LOG_DEBUG);
                             $contact=new Contact($this->db);
 
                             $contact->civilite_id   = $this->object->civilite_id;
-                            $contact->name          = $this->object->nom_particulier;
-                            $contact->firstname     = $this->object->prenom;
+                            $contact->name          = $this->object->name_bis;
+                            $contact->firstname     = $this->object->firstname;
                             $contact->address       = $this->object->address;
-                            $contact->cp            = $this->object->cp;
-                            $contact->ville         = $this->object->ville;
-                            $contact->fk_pays       = $this->object->fk_pays;
+                            $contact->zip           = $this->object->zip;
+                            $contact->town          = $this->object->town;
+                            $contact->country_id    = $this->object->country_id;
                             $contact->socid         = $this->object->id;                // fk_soc
                             $contact->status        = 1;
                             $contact->email         = $this->object->email;
@@ -335,7 +336,7 @@ abstract class ActionsCardCommon
             }
             else
             {
-                require_once(DOL_DOCUMENT_ROOT.'/includes/modules/societe/modules_societe.class.php');
+                require_once(DOL_DOCUMENT_ROOT.'/core/modules/societe/modules_societe.class.php');
 
                 $this->object->fetch_thirdparty();
 
@@ -421,7 +422,7 @@ abstract class ActionsCardCommon
 			{
 				$this->tpl['ajax_selectcountry'] = "\n".'<script type="text/javascript" language="javascript">
 				jQuery(document).ready(function () {
-						jQuery("#selectpays_id").change(function() {
+						jQuery("#selectcountry_id").change(function() {
 							document.formsoc.action.value="'.$action.'";
 							document.formsoc.canvas.value="'.$canvas.'";
 							document.formsoc.submit();
@@ -437,7 +438,12 @@ abstract class ActionsCardCommon
             {
                 $module = substr($module, 0, dol_strlen($module)-4);
             }
-            require_once(DOL_DOCUMENT_ROOT ."/includes/modules/societe/".$module.".php");
+            $dirsociete=array_merge(array('/core/modules/societe/'),$conf->societe_modules);
+            foreach ($dirsociete as $dirroot)
+            {
+                $res=dol_include_once($dirroot.$module.".php");
+                if ($res) break;
+            }
             $modCodeClient = new $module;
             $this->tpl['auto_customercode'] = $modCodeClient->code_auto;
             // We verified if the tag prefix is used
@@ -469,7 +475,12 @@ abstract class ActionsCardCommon
             	{
             		$module = substr($module, 0, dol_strlen($module)-4);
             	}
-            	require_once(DOL_DOCUMENT_ROOT ."/includes/modules/societe/".$module.".php");
+                $dirsociete=array_merge(array('/core/modules/societe/'),$conf->societe_modules);
+                foreach ($dirsociete as $dirroot)
+                {
+                    $res=dol_include_once($dirroot.$module.".php");
+                    if ($res) break;
+                }
             	$modCodeFournisseur = new $module;
             	$this->tpl['auto_suppliercode'] = $modCodeFournisseur->code_auto;
             	// We verified if the tag prefix is used
@@ -489,19 +500,21 @@ abstract class ActionsCardCommon
             }
 
             // Zip
-            $this->tpl['select_zip'] = $formcompany->select_ziptown($this->object->zip,'zipcode',array('town','selectpays_id','departement_id'),6);
+            $this->tpl['select_zip'] = $formcompany->select_ziptown($this->object->zip,'zipcode',array('town','selectcountry_id','departement_id'),6);
 
             // Town
-            $this->tpl['select_town'] = $formcompany->select_ziptown($this->object->town,'town',array('zipcode','selectpays_id','departement_id'));
+            $this->tpl['select_town'] = $formcompany->select_ziptown($this->object->town,'town',array('zipcode','selectcountry_id','departement_id'));
 
             // Country
-            $this->tpl['select_country'] = $form->select_country($this->object->pays_id,'pays_id');
+            $this->object->country_id = ($this->object->country_id ? $this->object->country_id : $mysoc->country_id);
+            $this->object->country_code = ($this->object->country_code ? $this->object->country_code : $mysoc->country_code);
+            $this->tpl['select_country'] = $form->select_country($this->object->country_id,'country_id');
             $countrynotdefined = $langs->trans("ErrorSetACountryFirst").' ('.$langs->trans("SeeAbove").')';
 
             if ($user->admin) $this->tpl['info_admin'] = info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"),1);
 
             // State
-            if ($this->object->pays_id) $this->tpl['select_state'] = $formcompany->select_state($this->object->state_id,$this->object->pays_code);
+            if ($this->object->country_id) $this->tpl['select_state'] = $formcompany->select_state($this->object->state_id,$this->object->country_code);
             else $this->tpl['select_state'] = $countrynotdefined;
 
             // Language
@@ -515,7 +528,7 @@ abstract class ActionsCardCommon
 
             // Local Tax
             // TODO mettre dans une classe propre au pays
-            if($mysoc->pays_code=='ES')
+            if($mysoc->country_code=='ES')
             {
                 $this->tpl['localtax'] = '';
 
@@ -546,7 +559,7 @@ abstract class ActionsCardCommon
         {
             $head = societe_prepare_head($this->object);
 
-            $this->tpl['showhead']=dol_get_fiche_head($head, 'card', $title, 0, 'company');
+            $this->tpl['showhead']=dol_get_fiche_head($head, 'card', '', 0, 'company');
             $this->tpl['showend']=dol_get_fiche_end();
 
             $this->tpl['showrefnav'] 		= $form->showrefnav($this->object,'socid','',($user->societe_id?0:1),'rowid','nom');
@@ -559,8 +572,8 @@ abstract class ActionsCardCommon
             if ($this->object->isInEEC()) $this->tpl['country'] = $form->textwithpicto(($img?$img.' ':'').$this->object->country,$langs->trans("CountryIsInEEC"),1,0);
             $this->tpl['country'] = ($img?$img.' ':'').$this->object->country;
 
-            $this->tpl['phone'] 	= dol_print_phone($this->object->tel,$this->object->pays_code,0,$this->object->id,'AC_TEL');
-            $this->tpl['fax'] 		= dol_print_phone($this->object->fax,$this->object->pays_code,0,$this->object->id,'AC_FAX');
+            $this->tpl['phone'] 	= dol_print_phone($this->object->tel,$this->object->country_code,0,$this->object->id,'AC_TEL');
+            $this->tpl['fax'] 		= dol_print_phone($this->object->fax,$this->object->country_code,0,$this->object->id,'AC_FAX');
             $this->tpl['email'] 	= dol_print_email($this->object->email,0,$this->object->id,'AC_EMAIL');
             $this->tpl['url'] 		= dol_print_url($this->object->url);
 
@@ -572,7 +585,7 @@ abstract class ActionsCardCommon
 
             if ($conf->global->MAIN_MULTILANGS)
             {
-                require_once(DOL_DOCUMENT_ROOT."/lib/functions2.lib.php");
+                require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
                 //$s=picto_from_langcode($this->default_lang);
                 //print ($s?$s.' ':'');
                 $langs->load("languages");
@@ -595,13 +608,13 @@ abstract class ActionsCardCommon
             }
             else if ($nbofsalesrepresentative > 0)
             {
-            	$userstatic=new User($db);
+            	$userstatic=new User($this->db);
             	$i=0;
             	foreach($listsalesrepresentatives as $val)
             	{
             		$userstatic->id=$val['id'];
-            		$userstatic->nom=$val['name'];
-            		$userstatic->prenom=$val['firstname'];
+            		$userstatic->lastname=$val['name'];
+            		$userstatic->firstname=$val['firstname'];
             		$this->tpl['sales_representatives'].= $userstatic->getNomUrl(1);
             		$i++;
             		if ($i < $nbofsalesrepresentative) $this->tpl['sales_representatives'].= ', ';
@@ -628,7 +641,7 @@ abstract class ActionsCardCommon
 
             // Local Tax
             // TODO mettre dans une classe propre au pays
-            if($mysoc->pays_code=='ES')
+            if($mysoc->country_code=='ES')
             {
                 $this->tpl['localtax'] = '';
 
@@ -673,7 +686,7 @@ abstract class ActionsCardCommon
         $this->object->address				=	$_POST["adresse"];
         $this->object->zip					=	$_POST["zipcode"];
         $this->object->town					=	$_POST["town"];
-        $this->object->country_id			=	$_POST["pays_id"]?$_POST["pays_id"]:$mysoc->country_id;
+        $this->object->country_id			=	$_POST["country_id"]?$_POST["country_id"]:$mysoc->country_id;
         $this->object->state_id		        =	$_POST["departement_id"];
         $this->object->tel					=	$_POST["tel"];
         $this->object->fax					=	$_POST["fax"];
@@ -686,7 +699,7 @@ abstract class ActionsCardCommon
         $this->object->idprof4				=	$_POST["idprof4"];
         $this->object->typent_id			=	$_POST["typent_id"];
         $this->object->effectif_id			=	$_POST["effectif_id"];
-        $this->object->gencod				=	$_POST["gencod"];
+        $this->object->barcode				=	$_POST["barcode"];
         $this->object->forme_juridique_code	=	$_POST["forme_juridique_code"];
         $this->object->default_lang			=	$_POST["default_lang"];
         $this->object->commercial_id		=	$_POST["commercial_id"];

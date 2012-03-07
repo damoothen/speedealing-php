@@ -2,6 +2,7 @@
 /* Copyright (C) 2003-2006 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2008 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2011	   Juanjo Menent        <jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,10 +28,8 @@ require_once(DOL_DOCUMENT_ROOT."/core/class/commonobject.class.php");
 
 
 /**
- *  \class      Entrepot
- *  \brief      Classe permettant la gestion des entrepots
+ *  Class to manage warehouses
  */
-
 class Entrepot extends CommonObject
 {
 	public $element='label';
@@ -51,11 +50,11 @@ class Entrepot extends CommonObject
 	/**
 	 *  Constructor
 	 *
-	 *  @param      DoliDB		$DB      Database handler
+	 *  @param      DoliDB		$db      Database handler
 	 */
-	function Entrepot($DB)
+	function __construct($db)
 	{
-		$this->db = $DB;
+		$this->db = $db;
 
 		// List of short language codes for status
 		$this->statuts[0] = 'Closed2';
@@ -63,9 +62,10 @@ class Entrepot extends CommonObject
 	}
 
 	/**
-	 *    Creation d'un entrepot en base
+	 *	Creation d'un entrepot en base
 	 *
-	 *    @param      Objet user qui cree l'entrepot
+	 *	@param		User	$user       Object user that create the warehouse
+	 *	@return		int					>0 if OK, =<0 if KO
 	 */
 	function create($user)
 	{
@@ -76,12 +76,14 @@ class Entrepot extends CommonObject
 			return 0;
 		}
 
+		$now=dol_now();
+
 		$this->db->begin();
 
 		$sql = "INSERT INTO ".MAIN_DB_PREFIX."entrepot (datec, fk_user_author, label)";
-		$sql .= " VALUES (".$this->db->idate(mktime()).",".$user->id.",'".$this->db->escape($this->libelle)."')";
+		$sql .= " VALUES (".$this->db->idate($now).",".$user->id.",'".$this->db->escape($this->libelle)."')";
 
-		dol_syslog("Entrepot::create sql=".$sql);
+		dol_syslog(get_class($this)."::create sql=".$sql);
 		$result=$this->db->query($sql);
 		if ($result)
 		{
@@ -97,21 +99,21 @@ class Entrepot extends CommonObject
 				}
 				else
 				{
-					dol_syslog("Entrepot::Create return -3");
+					dol_syslog(get_class($this)."::create return -3");
 					$this->db->rollback();
 					return -3;
 				}
 			}
 			else {
 				$this->error="Failed to get insert id";
-				dol_syslog("Entrepot::Create return -2");
+				dol_syslog(get_class($this)."::create return -2");
 				return -2;
 			}
 		}
 		else
 		{
 			$this->error=$this->db->error();
-			dol_syslog("Entrepot::Create Error ".$this->db->error());
+			dol_syslog(get_class($this)."::create Error ".$this->db->error());
 			$this->db->rollback();
 			return -1;
 		}
@@ -119,9 +121,11 @@ class Entrepot extends CommonObject
 	}
 
 	/**
-	 *    \brief      Update properties of a warehouse
-	 *    \param      id      id of warehouse to modify
-	 *    \param      user
+	 *	Update properties of a warehouse
+	 *
+	 *	@param		int		$id     id of warehouse to modify
+	 *	@param      User	$user	User object
+	 *	@return		int				>0 if OK, <0 if KO
 	 */
 	function update($id, $user)
 	{
@@ -132,7 +136,9 @@ class Entrepot extends CommonObject
 		$this->address=$this->db->escape(trim($this->address));
 		$this->cp=trim($this->cp);
 		$this->ville=$this->db->escape(trim($this->ville));
-		$this->pays_id=trim($this->pays_id?$this->pays_id:0);
+		$this->zip=trim($this->cp);
+		$this->town=$this->db->escape(trim($this->ville));
+		$this->country_id=($this->country_id > 0 ? $this->country_id:$this->pays_id);
 
 		$sql = "UPDATE ".MAIN_DB_PREFIX."entrepot ";
 		$sql .= " SET label = '" . $this->libelle ."'";
@@ -140,14 +146,14 @@ class Entrepot extends CommonObject
 		$sql .= ",statut = " . $this->statut ;
 		$sql .= ",lieu = '" . $this->lieu ."'";
 		$sql .= ",address = '" . $this->address ."'";
-		$sql .= ",cp = '" . $this->cp ."'";
-		$sql .= ",ville = '" . $this->ville ."'";
-		$sql .= ",fk_pays = " . $this->pays_id;
+		$sql .= ",cp = '" . $this->zip ."'";
+		$sql .= ",ville = '" . $this->town ."'";
+		$sql .= ",fk_pays = " . $this->country_id;
 		$sql .= " WHERE rowid = " . $id;
 
 		$this->db->begin();
 
-		dol_syslog("Entrepot::update sql=".$sql);
+		dol_syslog(get_class($this)."::update sql=".$sql);
 		$resql=$this->db->query($sql);
 		if ($resql)
 		{
@@ -158,16 +164,17 @@ class Entrepot extends CommonObject
 		{
 			$this->db->rollback();
 			$this->error=$this->db->lasterror();
-			dol_syslog("Entrepot::update ".$this->error, LOG_ERR);
+			dol_syslog(get_class($this)."::update ".$this->error, LOG_ERR);
 			return -1;
 		}
 	}
 
 
 	/**
-	 *    	\brief      Delete a warehouse
-	 *    	\param      user
-	 * 		\return		int		<0 if KO, >0 if OK
+	 *	Delete a warehouse
+	 *
+	 *	@param		User	$user		Object user that made deletion
+	 *	@return		int					<0 if KO, >0 if OK
 	 */
 	function delete($user)
 	{
@@ -189,7 +196,7 @@ class Entrepot extends CommonObject
 			$sql = "DELETE FROM ".MAIN_DB_PREFIX."entrepot";
 			$sql.= " WHERE rowid = " . $this->id;
 
-			dol_syslog("Entrepot::delete sql=".$sql);
+			dol_syslog(get_class($this)."::delete sql=".$sql);
 			$resql=$this->db->query($sql);
 			if ($resql)
 			{
@@ -200,7 +207,7 @@ class Entrepot extends CommonObject
 			{
 				$this->db->rollback();
 				$this->error=$this->db->lasterror();
-				dol_syslog("Entrepot::delete ".$this->error, LOG_ERR);
+				dol_syslog(get_class($this)."::delete ".$this->error, LOG_ERR);
 				return -1;
 			}
 		}
@@ -208,7 +215,7 @@ class Entrepot extends CommonObject
 		{
 			$this->db->rollback();
 			$this->error=$this->db->lasterror();
-			dol_syslog("Entrepot::delete ".$this->error, LOG_ERR);
+			dol_syslog(get_class($this)."::delete ".$this->error, LOG_ERR);
 			return -1;
 		}
 
@@ -216,16 +223,18 @@ class Entrepot extends CommonObject
 
 
 	/**
-	 *    \brief      Recuperation de la base d'un entrepot
-	 *    \param      id      id de l'entrepot a recuperer
+	 *	Load warehouse data
+	 *
+	 *	@param		int		$id     Warehouse id
+	 *	@return		int				>0 if OK, <0 if KO
 	 */
 	function fetch($id)
 	{
-		$sql  = "SELECT rowid, label, description, statut, lieu, address, cp, ville, fk_pays";
+		$sql  = "SELECT rowid, label, description, statut, lieu, address, cp as zip, ville as town, fk_pays as country_id";
 		$sql .= " FROM ".MAIN_DB_PREFIX."entrepot";
 		$sql .= " WHERE rowid = ".$id;
 
-		dol_syslog("Entrepot::fetch sql=".$sql);
+		dol_syslog(get_class($this)."::fetch sql=".$sql);
 		$result = $this->db->query($sql);
 		if ($result)
 		{
@@ -238,27 +247,20 @@ class Entrepot extends CommonObject
 			$this->statut         = $obj->statut;
 			$this->lieu           = $obj->lieu;
 			$this->address        = $obj->address;
-			$this->cp             = $obj->cp;
-			$this->ville          = $obj->ville;
-			$this->pays_id        = $obj->fk_pays;
+			$this->cp             = $obj->zip;
+			$this->ville          = $obj->town;
+			$this->pays_id        = $obj->country_id;
+			$this->zip            = $obj->zip;
+			$this->town           = $obj->town;
+			$this->country_id     = $obj->country_id;
 
-			if ($this->pays_id)
-			{
-				$sqlp = "SELECT code,libelle from ".MAIN_DB_PREFIX."c_pays where rowid = ".$this->pays_id;
-				$resql=$this->db->query($sqlp);
-				if ($resql)
-				{
-					$objp = $this->db->fetch_object($resql);
-				}
-				else
-				{
-					dol_print_error($db);
-				}
-				$this->pays=$objp->libelle;
-				$this->pays_code=$objp->code;
-			}
+			include_once(DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php');
+            $tmp=getCountry($this->country_id,'all');
+			$this->pays=$tmp['label'];
+			$this->pays_code=$tmp['code'];
+			$this->country=$tmp['label'];
+			$this->country_code=$tmp['code'];
 
-			$this->db->free($result);
 			return 1;
 		}
 		else
@@ -269,9 +271,11 @@ class Entrepot extends CommonObject
 	}
 
 
-	/*
-	 * \brief     Charge les informations d'ordre info dans l'objet entrepot
-	 * \param     id      id de l'entrepot a charger
+	/**
+	 * 	Load warehouse info data
+	 *
+	 *  @param	int		$id      warehouse id
+	 *  @return	void
 	 */
 	function info($id)
 	{
@@ -279,7 +283,7 @@ class Entrepot extends CommonObject
 		$sql.= " FROM ".MAIN_DB_PREFIX."entrepot as e";
 		$sql.= " WHERE e.rowid = ".$id;
 
-		dol_syslog("Entrepot::info sql=".$sql);
+		dol_syslog(get_class($this)."::info sql=".$sql);
 		$result=$this->db->query($sql);
 		if ($result)
 		{
@@ -311,14 +315,16 @@ class Entrepot extends CommonObject
 		}
 		else
 		{
-	  dol_print_error($this->db);
+	        dol_print_error($this->db);
 		}
 	}
 
 
 	/**
 	 *  Return list of all warehouses
-	 * 	@return 	array		Array list of warehouses
+	 *
+	 *	@param	int		$status		Status
+	 * 	@return array				Array list of warehouses
 	 */
 	function list_array($status=1)
 	{
@@ -345,8 +351,9 @@ class Entrepot extends CommonObject
 	}
 
 	/**
-	 *    	\brief      Renvoie le stock (nombre de produits) et valorisation de l'entrepot
-	 * 		\return		Array		Array('nb'=>Nb, 'value'=>Value)
+	 *	Return stock and value of warehosue
+	 *
+	 * 	@return		Array		Array('nb'=>Nb, 'value'=>Value)
 	 */
 	function nb_products()
 	{
@@ -377,10 +384,10 @@ class Entrepot extends CommonObject
 	}
 
 	/**
-	 *    	Return label of status of object
-	 *    	@param      mode        0=long label, 1=short label, 2=Picto + short label, 3=Picto, 4=Picto + long label, 5=Short label + Picto
-	 *      @param      type        0=Closed, 1=Opened
-	 *    	@return     string      Label of status
+	 *	Return label of status of object
+	 *
+	 *	@param      int		$mode       0=long label, 1=short label, 2=Picto + short label, 3=Picto, 4=Picto + long label, 5=Short label + Picto
+	 *	@return     string      		Label of status
 	 */
 	function getLibStatut($mode=0)
 	{
@@ -388,11 +395,11 @@ class Entrepot extends CommonObject
 	}
 
 	/**
-	 *     Return label of a given status
-	 *     @param      status      Statut
-	 *     @param      mode        0=long label, 1=short label, 2=Picto + short label, 3=Picto, 4=Picto + long label, 5=Short label + Picto
-	 *     @param      type        0=Status "closed", 1=Status "opened"
-	 *     @return     string      Label of status
+	 *	Return label of a given status
+	 *
+	 *	@param	int		$statut     Status
+	 *	@param  int		$mode       0=long label, 1=short label, 2=Picto + short label, 3=Picto, 4=Picto + long label, 5=Short label + Picto
+	 *	@return string      		Label of status
 	 */
 	function LibStatut($statut,$mode=0)
 	{
@@ -438,10 +445,11 @@ class Entrepot extends CommonObject
 
 
 	/**
-	 *    	\brief      Renvoie nom clicable (avec eventuellement le picto)
-	 *		\param		withpicto		Inclut le picto dans le lien
-	 *		\param		option			Sur quoi pointe le lien
-	 *		\return		string			Chaine avec URL
+	 *	Return clickable name (possibility with the pictogram)
+	 *
+	 *	@param		int		$withpicto		with pictogram
+	 *	@param		string	$option			What point the link
+	 *	@return		string					String with URL
 	 */
 	function getNomUrl($withpicto=0,$option='')
 	{

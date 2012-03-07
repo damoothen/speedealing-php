@@ -23,8 +23,8 @@
  *		\brief      Page with sells journal
  */
 require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/report.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/date.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/report.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/date.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/compta/facture/class/facture.class.php");
 
 
@@ -54,7 +54,7 @@ if ($user->societe_id > 0)
 
 llxHeader('','','');
 
-$html=new Form($db);
+$form=new Form($db);
 
 // Put here content of your page
 // ...
@@ -80,20 +80,20 @@ $nom=$langs->trans("SellsJournal");
 //$nomlink=;
 $builddate=time();
 $description=$langs->trans("DescSellsJournal");
-$period=$html->select_date($date_start,'date_start',0,0,0,'',1,0,1).' - '.$html->select_date($date_end,'date_end',0,0,0,'',1,0,1);
+$period=$form->select_date($date_start,'date_start',0,0,0,'',1,0,1).' - '.$form->select_date($date_end,'date_end',0,0,0,'',1,0,1);
 report_header($nom,$nomlink,$period,$periodlink,$description,$builddate,$exportlink);
 
 $p = explode(":", $conf->global->MAIN_INFO_SOCIETE_PAYS);
 $idpays = $p[0];
 
 $sql = "SELECT f.rowid, f.facnumber, f.type, f.datef, f.ref_client , fd.product_type, fd.total_ht, fd.total_tva, fd.tva_tx, fd.total_ttc,";
-$sql .= " p.accountancy_code_sell, s.code_compta , ct.accountancy_code";
-$sql .= " FROM ".MAIN_DB_PREFIX."facturedet fd ";
-$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."product p ON p.rowid = fd.fk_product ";
-$sql .= " JOIN ".MAIN_DB_PREFIX."facture f ON f.rowid = fd.fk_facture ";
-$sql .= " JOIN ".MAIN_DB_PREFIX."societe s ON s.rowid = f.fk_soc";
-$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_tva ct ON fd.tva_tx = ct.taux AND ct.fk_pays = '".$idpays."'";
-$sql .= " WHERE f.fk_statut > 0 AND f.entity IN (0,".$conf->entity.")";
+$sql.= " p.accountancy_code_sell, s.code_compta , ct.accountancy_code";
+$sql.= " FROM ".MAIN_DB_PREFIX."facturedet fd";
+$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product p ON p.rowid = fd.fk_product";
+$sql.= " JOIN ".MAIN_DB_PREFIX."facture f ON f.rowid = fd.fk_facture";
+$sql.= " JOIN ".MAIN_DB_PREFIX."societe s ON s.rowid = f.fk_soc";
+$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."c_tva ct ON fd.tva_tx = ct.taux AND ct.fk_pays = '".$idpays."'";
+$sql.= " WHERE f.fk_statut > 0 AND f.entity = ".$conf->entity;
 if ($date_start && $date_end) $sql .= " AND f.datef >= '".$db->idate($date_start)."' AND f.datef <= '".$db->idate($date_end)."'";
 $sql .= " order by f.rowid";
 
@@ -196,7 +196,7 @@ foreach ($tabfac as $key => $val)
     		//print "<td>".$conf->global->COMPTA_JOURNAL_SELL."</td>";
     		print "<td>".$val["date"]."</td>";
     		print "<td>".$invoicestatic->getNomUrl(1)."</td>";
-    		print "<td>".$k."</td><td>".$langs->trans("VAT")." ".$key."</td><td align='right'>".($mt<0?price(-$mt):'')."</td><td align='right'>".($mt>=0?price($mt):'')."</td></tr>";
+    		print "<td>".$k."</td><td>".$langs->trans("VAT")."</td><td align='right'>".($mt<0?price(-$mt):'')."</td><td align='right'>".($mt>=0?price($mt):'')."</td></tr>";
 	    }
 	}
 

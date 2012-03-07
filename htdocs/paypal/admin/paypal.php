@@ -1,8 +1,8 @@
 <?php
-/* Copyright (C) 2004      Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2005-2011 Laurent Destailleur  <eldy@users.sourceforge.org>
- * Copyright (C) 2011      Regis Houssin        <regis@dolibarr.fr>
- * Copyright (C) 2011 	   Juanjo Menent		<jmenent@2byte.es>
+/* Copyright (C) 2004		Rodolphe Quiedeville	<rodolphe@quiedeville.org>
+ * Copyright (C) 2005-2011	Laurent Destailleur		<eldy@users.sourceforge.org>
+ * Copyright (C) 2011-2012	Regis Houssin			<regis@dolibarr.fr>
+ * Copyright (C) 2011		Juanjo Menent			<jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,8 +26,8 @@
 
 require("../../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/paypal/lib/paypal.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/admin.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/doleditor.class.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php");
 
 $servicename='PayPal';
 
@@ -112,7 +112,7 @@ if ($conf->use_javascript_ajax)
             });
 
             $("#generate_token").click(function() {
-            	$.get( "'.DOL_URL_ROOT.'/core/ajaxsecurity.php", {
+            	$.get( "'.DOL_URL_ROOT.'/core/ajax/security.php", {
             		action: \'getrandompassword\',
             		generic: true
 				},

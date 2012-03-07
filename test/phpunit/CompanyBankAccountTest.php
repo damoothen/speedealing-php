@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * or see http://www.gnu.org/
  */
 
 /**
@@ -89,6 +89,9 @@ class CompanyBankAccountTest extends PHPUnit_Framework_TestCase
     }
 
 	/**
+	 * Init phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function setUp()
     {
@@ -102,6 +105,9 @@ class CompanyBankAccountTest extends PHPUnit_Framework_TestCase
 		//print $db->getVersion()."\n";
     }
 	/**
+	 * End phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function tearDown()
     {
@@ -109,6 +115,9 @@ class CompanyBankAccountTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testCompanyBankAccountCreate
+     *
+     * @return	int
      */
     public function testCompanyBankAccountCreate()
     {
@@ -128,6 +137,11 @@ class CompanyBankAccountTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testCompanyBankAccountFetch
+     *
+     * @param	int		$id		Id of bank account
+     * @return	void
+     *
      * @depends	testCompanyBankAccountCreate
      * The depends says test is run only if previous is ok
      */
@@ -148,6 +162,11 @@ class CompanyBankAccountTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testCompanyBankAccountUpdate
+     *
+     * @param	Object	$localobject	Bank account object
+     * @return	int
+     *
      * @depends	testCompanyBankAccountFetch
      * The depends says test is run only if previous is ok
      */
@@ -168,6 +187,11 @@ class CompanyBankAccountTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testCompanyBankAccountOther
+     *
+     * @param	Object	$localobject	Bank account
+     * @return	int
+     *
      * @depends testCompanyBankAccountFetch
      * The depends says test is run only if previous is ok
      */
@@ -187,26 +211,5 @@ class CompanyBankAccountTest extends PHPUnit_Framework_TestCase
         return $localobject->id;
     }
 
-    /**
-     * @depends	testCompanyBankAccountOther
-     * The depends says test is run only if previous is ok
-     */
-/*    public function testCompanyBankAccountDelete($id)
-    {
-    	global $conf,$user,$langs,$db;
-		$conf=$this->savconf;
-		$user=$this->savuser;
-		$langs=$this->savlangs;
-		$db=$this->savdb;
-
-		$localobject=new CompanyBankAccount($this->savdb);
-    	$result=$localobject->fetch($id);
-		$result=$localobject->delete($user);
-
-		print __METHOD__." id=".$id." result=".$result."\n";
-    	$this->assertLessThan($result, 0);
-    	return $result;
-    }
-*/
 }
 ?>

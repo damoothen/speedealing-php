@@ -31,7 +31,7 @@ require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
 $langs->load('bills');
 
 // Security check
-$facid=GETPOST("facid");
+$facid=GETPOST('facid','int');
 $action=GETPOST("action");
 if ($user->societe_id) $socid=$user->societe_id;
 $objecttype = 'facture_rec';
@@ -81,7 +81,7 @@ if ($_POST["action"] == 'add')
 if ($_REQUEST["action"] == 'delete' && $user->rights->facture->supprimer)
 {
 	$facrec = new FactureRec($db);
-	$facrec->fetch(GETPOST("facid"));
+	$facrec->fetch(GETPOST('facid','int'));
 	$facrec->delete();
 	$facid = 0 ;
 }
@@ -94,7 +94,7 @@ if ($_REQUEST["action"] == 'delete' && $user->rights->facture->supprimer)
 
 llxHeader('',$langs->trans("RepeatableInvoices"),'ch-facture.html#s-fac-facture-rec');
 
-$html = new Form($db);
+$form = new Form($db);
 
 /*
  * Create mode
@@ -135,11 +135,11 @@ if ($_GET["action"] == 'create')
 		print "<tr><td>".$langs->trans("Author")."</td><td>".$user->getFullName($langs)."</td></tr>";
 
 		print "<tr><td>".$langs->trans("PaymentConditions")."</td><td>";
-		$html->form_conditions_reglement($_SERVER['PHP_SELF'].'?facid='.$facture->id,$facture->cond_reglement_id,'none');
+		$form->form_conditions_reglement($_SERVER['PHP_SELF'].'?facid='.$facture->id,$facture->cond_reglement_id,'none');
 		print "</td></tr>";
 
 		print "<tr><td>".$langs->trans("PaymentMode")."</td><td>";
-		$html->form_modes_reglement($_SERVER['PHP_SELF'].'?facid='.$facture->id,$facture->mode_reglement_id,'none');
+		$form->form_modes_reglement($_SERVER['PHP_SELF'].'?facid='.$facture->id,$facture->mode_reglement_id,'none');
 		print "</td></tr>";
 
 		if ($conf->projet->enabled)
@@ -234,7 +234,7 @@ if ($_GET["action"] == 'create')
 					$text=$product_static->getNomUrl(1);
 					$text.= ' - '.$objp->product_label;
 					$description=($conf->global->PRODUIT_DESC_IN_FORM?'':dol_htmlentitiesbr($objp->description));
-					print $html->textwithtooltip($text,$description,3,'','',$i);
+					print $form->textwithtooltip($text,$description,3,'','',$i);
 
 					// Show range
 					print_date_range($db->jdate($objp->date_start),$db->jdate($objp->date_end));
@@ -353,7 +353,7 @@ else
 			print '<tr><td>'.$langs->trans("Customer").'</td>';
 			print '<td colspan="3">'.$soc->getNomUrl(1).'</td>';
 			print "<td>". $langs->trans("PaymentConditions") ." : ";
-			$html->form_conditions_reglement($_SERVER['PHP_SELF'].'?facid='.$fac->id,$fac->cond_reglement_id,'none');
+			$form->form_conditions_reglement($_SERVER['PHP_SELF'].'?facid='.$fac->id,$fac->cond_reglement_id,'none');
 			print "</td></tr>";
 
 			print "<tr><td>".$langs->trans("Author")."</td><td colspan=\"3\">".$author->getFullName($langs)."</td>";
@@ -368,17 +368,17 @@ else
 			}
 
 			print $langs->trans("PaymentMode") ." : ";
-			$html->form_modes_reglement($_SERVER['PHP_SELF'].'?facid='.$fac->id,$fac->mode_reglement_id,'none');
+			$form->form_modes_reglement($_SERVER['PHP_SELF'].'?facid='.$fac->id,$fac->mode_reglement_id,'none');
 			print "</td></tr>";
 
 			print '<tr><td>'.$langs->trans("AmountHT").'</td>';
 			print '<td align="right" colspan="2"><b>'.price($fac->total_ht).'</b></td>';
-			print '<td>'.$langs->trans("Currency".$conf->monnaie).'</td></tr>';
+			print '<td>'.$langs->trans("Currency".$conf->currency).'</td></tr>';
 
 			print '<tr><td>'.$langs->trans("AmountVAT").'</td><td align="right" colspan="2">'.price($fac->total_tva).'</td>';
-			print '<td>'.$langs->trans("Currency".$conf->monnaie).'</td></tr>';
+			print '<td>'.$langs->trans("Currency".$conf->currency).'</td></tr>';
 			print '<tr><td>'.$langs->trans("AmountTTC").'</td><td align="right" colspan="2">'.price($fac->total_ttc).'</td>';
-			print '<td>'.$langs->trans("Currency".$conf->monnaie).'</td></tr>';
+			print '<td>'.$langs->trans("Currency".$conf->currency).'</td></tr>';
 			if ($fac->note)
 			{
 				print '<tr><td colspan="5">'.$langs->trans("Note").' : '.nl2br($fac->note)."</td></tr>";
@@ -435,7 +435,7 @@ else
 					$text=$product_static->getNomUrl(1);
 					$text.= ' - '.$fac->lines[$i]->libelle;
 					$description=($conf->global->PRODUIT_DESC_IN_FORM?'':dol_htmlentitiesbr($fac->lines[$i]->desc));
-					print $html->textwithtooltip($text,$description,3,'','',$i);
+					print $form->textwithtooltip($text,$description,3,'','',$i);
 
 					// Show range
 					print_date_range($fac->lines[$i]->date_start,$fac->lines[$i]->date_end);
@@ -474,7 +474,7 @@ else
 
 			if ($fac->statut == 0 && $user->rights->facture->supprimer)
 			{
-				print '<a class="butActionDelete" href="fiche-rec.php?action=delete&facid='.$fac->id.'">'.$langs->trans('Delete').'</a>';
+				print '<a class="butActionDelete" href="'.$_SERVER['PHP_SELF'].'?action=delete&facid='.$fac->id.'">'.$langs->trans('Delete').'</a>';
 			}
 
 			print '</div>';
@@ -496,7 +496,7 @@ else
 			$sql = "SELECT s.nom, s.rowid as socid, f.titre, f.total, f.rowid as facid";
 			$sql.= " FROM ".MAIN_DB_PREFIX."societe as s,".MAIN_DB_PREFIX."facture_rec as f";
 			$sql.= " WHERE f.fk_soc = s.rowid";
-			$sql.= " AND s.entity = ".$conf->entity;
+			$sql.= " AND f.entity = ".$conf->entity;
 			if ($socid)	$sql .= " AND s.rowid = ".$socid;
 
 			//$sql .= " ORDER BY $sortfield $sortorder, rowid DESC ";
@@ -507,13 +507,13 @@ else
 		if ($result)
 		{
 			$num = $db->num_rows($result);
-			print_barre_liste($langs->trans("RepeatableInvoices"),$page,"fiche-rec.php","&socid=$socid",$sortfield,$sortorder,'',$num);
+			print_barre_liste($langs->trans("RepeatableInvoices"),$page,$_SERVER['PHP_SELF'],"&socid=$socid",$sortfield,$sortorder,'',$num);
 
 			$i = 0;
-			print "<table class=\"noborder\" width=\"100%\">";
+			print '<table class="noborder" width="100%">';
 			print '<tr class="liste_titre">';
 			print '<td>'.$langs->trans("Ref").'</td>';
-			print_liste_field_titre($langs->trans("Company"),"fiche-rec.php","s.nom","","&socid=$socid","",$sortfiled,$sortorder);
+			print_liste_field_titre($langs->trans("Company"),$_SERVER['PHP_SELF'],"s.nom","","&socid=$socid","",$sortfiled,$sortorder);
 			print '</td><td align="right">'.$langs->trans("Amount").'</td>';
 			print '<td>&nbsp;</td>';
 			print "</td>\n";
@@ -528,11 +528,11 @@ else
 
 					print "<tr $bc[$var]>";
 
-					print '<td><a href="fiche-rec.php?facid='.$objp->facid.'">'.img_object($langs->trans("ShowBill"),"bill").' '.$objp->titre;
+					print '<td><a href="'.$_SERVER['PHP_SELF'].'?facid='.$objp->facid.'">'.img_object($langs->trans("ShowBill"),"bill").' '.$objp->titre;
 					print "</a></td>\n";
 					print '<td><a href="../fiche.php?socid='.$objp->socid.'">'.$objp->nom.'</a></td>';
 
-					print "<td align=\"right\">".price($objp->total)."</td>\n";
+					print '<td align="right">'.price($objp->total).'</td>'."\n";
 
 					if (! $objp->paye)
 					{
@@ -566,7 +566,8 @@ else
 
 }
 
+llxFooter();
+
 $db->close();
 
-llxFooter();
 ?>

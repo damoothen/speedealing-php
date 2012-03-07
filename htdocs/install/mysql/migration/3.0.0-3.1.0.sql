@@ -1,7 +1,7 @@
 --
 -- Be carefull to requests order.
 -- This file must be loaded by calling /install/index.php page
--- when current version is 2.8.0 or higher. 
+-- when current version is 3.0.0 or higher. 
 --
 -- To rename a table:       ALTER TABLE llx_table RENAME TO llx_table_new;
 -- To add a column:         ALTER TABLE llx_table ADD COLUMN newcol varchar(60) NOT NULL DEFAULT '0' AFTER existingcol;
@@ -27,7 +27,7 @@ ALTER TABLE llx_commande_fournisseur ADD COLUMN fk_cond_reglement integer NULL D
 ALTER TABLE llx_commande_fournisseur ADD COLUMN fk_mode_reglement integer NULL DEFAULT 0 after fk_cond_reglement;
 ALTER TABLE llx_commande_fournisseur ADD COLUMN import_key varchar(14);
 
---ALTER TABLE llx_c_currencies ADD COLUMN symbole varchar(3) NOT NULL default '';
+-- ALTER TABLE llx_c_currencies ADD COLUMN symbole varchar(3) NOT NULL default '';
 
 ALTER TABLE llx_commande_fournisseur MODIFY model_pdf varchar(255);
 ALTER TABLE llx_commande MODIFY model_pdf varchar(255);
@@ -201,7 +201,7 @@ INSERT INTO llx_c_action_trigger (rowid,code,label,description,elementtype,rang)
 
 DROP table llx_action_def;
 
---Add Chile data (id pays=67)
+-- Add Chile data (id pays=67)
 -- Regions Chile
 INSERT INTO llx_c_regions (rowid, code_region, fk_pays, cheflieu, tncc, nom, active) VALUES (6701, 6701, 67, NULL, NULL, 'Tarapacá', 1);
 INSERT INTO llx_c_regions (rowid, code_region, fk_pays, cheflieu, tncc, nom, active) VALUES (6702, 6702, 67, NULL, NULL, 'Antofagasta', 1);
@@ -274,7 +274,7 @@ INSERT INTO llx_c_departements ( code_departement, fk_region, cheflieu, tncc, nc
 INSERT INTO llx_c_departements ( code_departement, fk_region, cheflieu, tncc, ncc, nom, active) VALUES ('135', 6713, '', 0, '135', 'Melipilla', 1);
 INSERT INTO llx_c_departements ( code_departement, fk_region, cheflieu, tncc, ncc, nom, active) VALUES ('136', 6713, '', 0, '136', 'Talagante', 1);
 
---Add Mexique data (id pays=154)
+-- Add Mexique data (id pays=154)
 -- Regions Mexique
 INSERT INTO llx_c_regions (rowid, fk_pays, code_region, cheflieu, tncc, nom, active) VALUES (15401,  154, 15401, '', 0, 'Mexique', 1);
 -- Provinces Mexique
@@ -318,7 +318,7 @@ INSERT INTO llx_c_forme_juridique (fk_pays, code, libelle, active) VALUES (154, 
 INSERT INTO llx_c_forme_juridique (fk_pays, code, libelle, active) VALUES (154, '15405', 'Sociedad en comandita por acciones', 1);
 INSERT INTO llx_c_forme_juridique (fk_pays, code, libelle, active) VALUES (154, '15406', 'Sociedad cooperativa', 1);
 
---Add Colombie data (id pays=70)
+-- Add Colombie data (id pays=70)
 -- Regions Colombie 
 INSERT INTO llx_c_regions (rowid, fk_pays, code_region, cheflieu, tncc, nom, active) VALUES (7001,  70, 7001, '', 0, 'Colombie', 1);
 -- Provinces Colombie
@@ -356,7 +356,7 @@ INSERT INTO llx_c_departements ( code_departement, fk_region, cheflieu, tncc, nc
 INSERT INTO llx_c_departements ( code_departement, fk_region, cheflieu, tncc, ncc, nom, active) VALUES ('CES', 7001, '', 0, 'CES', 'Cesar', 1);
 INSERT INTO llx_c_departements ( code_departement, fk_region, cheflieu, tncc, ncc, nom, active) VALUES ('MAG', 7001, '', 0, 'MAG', 'Magdalena', 1);
 
---Add Honduras data (id pays=114)
+-- Add Honduras data (id pays=114)
 -- Regions Honduras 
 INSERT INTO llx_c_regions (rowid, fk_pays, code_region, cheflieu, tncc, nom, active) VALUES (11401,  114, 11401, '', 0, 'Honduras', 1);
 -- Provinces Honduras
@@ -392,7 +392,7 @@ insert into llx_c_tva(rowid,fk_pays,taux,recuperableonly,note,active) values (15
 insert into llx_c_tva(rowid,fk_pays,taux,recuperableonly,note,active) values (1543,154,     '10','0','VAT Frontero',1);
 
 
---Add Barbados data (id pays=46)
+-- Add Barbados data (id pays=46)
 -- Region Barbados 
 INSERT INTO llx_c_regions (rowid, fk_pays, code_region, cheflieu, tncc, nom, active) VALUES (4601,  46, 4601, 'Bridgetown', 0, 'Barbados', 1);
 -- Parish Barbados
@@ -444,6 +444,7 @@ ALTER TABLE llx_extrafields ADD COLUMN elementtype varchar(64) NOT NULL DEFAULT 
 ALTER TABLE llx_extrafields ADD UNIQUE INDEX uk_extrafields_name (name, entity, elementtype);
 ALTER TABLE llx_adherent_options rename to llx_adherent_extrafields;
 ALTER TABLE llx_adherent_extrafields CHANGE COLUMN fk_member fk_object integer NOT NULL;
+alter table llx_extrafields add column type varchar(8);
 
 -- drop tables renamed into llx_advanced_extra_xxx
 drop table llx_extra_fields_options;
@@ -476,15 +477,28 @@ ALTER TABLE llx_c_type_contact    ADD COLUMN module        varchar(32) NULL;
 ALTER TABLE llx_c_type_fees       ADD COLUMN module        varchar(32) NULL;
 ALTER TABLE llx_c_typent          ADD COLUMN module        varchar(32) NULL;
 
+ALTER TABLE llx_user ADD ref_ext varchar(30) AFTER entity;
+ALTER TABLE llx_user ADD civilite varchar(6) AFTER pass_temp;
 ALTER TABLE llx_user ADD signature text DEFAULT NULL AFTER email;
 
 ALTER TABLE llx_don ADD   phone_mobile    varchar(24) after email;
 ALTER TABLE llx_don ADD   phone           varchar(24) after email;
-
-ALTER TABLE llx_user ADD civilite varchar(6) after entity;
 
 ALTER TABLE llx_element_element MODIFY sourcetype varchar(32) NOT NULL;
 ALTER TABLE llx_element_element MODIFY targettype varchar(32) NOT NULL;
 
 ALTER TABLE llx_societe_prices MODIFY tms timestamp NULL;
 -- ALTER TABLE llx_societe_prices ALTER COLUMN tms DROP NOT NULL;
+
+-- Fix: It seems this is missing for some users
+insert into llx_c_actioncomm (id, code, type, libelle, module, position) values ( 1,  'AC_TEL',     'system', 'Phone call'                            ,NULL, 2);
+insert into llx_c_actioncomm (id, code, type, libelle, module, position) values ( 2,  'AC_FAX',     'system', 'Send Fax'                            ,NULL, 3);
+insert into llx_c_actioncomm (id, code, type, libelle, module, position) values ( 3,  'AC_PROP',    'system', 'Send commercial proposal by email'    ,'propal',  10);
+insert into llx_c_actioncomm (id, code, type, libelle, module, position) values ( 4,  'AC_EMAIL',   'system', 'Send Email'                            ,NULL, 4);
+insert into llx_c_actioncomm (id, code, type, libelle, module, position) values ( 5,  'AC_RDV',     'system', 'Rendez-vous'                            ,NULL, 1);
+insert into llx_c_actioncomm (id, code, type, libelle, module, position) values ( 8,  'AC_COM',     'system', 'Send customer order by email'        ,'order',   8);
+insert into llx_c_actioncomm (id, code, type, libelle, module, position) values ( 9,  'AC_FAC',     'system', 'Send customer invoice by email'        ,'invoice', 6);
+insert into llx_c_actioncomm (id, code, type, libelle, module, position) values ( 10, 'AC_SHIP',    'system', 'Send shipping by email'                ,'shipping', 11);
+insert into llx_c_actioncomm (id, code, type, libelle, module, position) values ( 30, 'AC_SUP_ORD', 'system', 'Send supplier order by email'        ,'order_supplier',    9);
+insert into llx_c_actioncomm (id, code, type, libelle, module, position) values  (31, 'AC_SUP_INV', 'system', 'Send supplier invoice by email'        ,'invoice_supplier', 7);
+insert into llx_c_actioncomm (id, code, type, libelle, module, position) values ( 50, 'AC_OTH',     'system', 'Other'                                ,NULL, 5);

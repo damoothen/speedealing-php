@@ -51,11 +51,11 @@ QtyDispatched=Magn send
 OrderDispatch=Kauphöll dispatching
 RuleForStockManagementDecrease=Regla fyrir lager stjórnun lækka
 RuleForStockManagementIncrease=Regla fyrir lager stjórnun aukast
-DeStockOnBill=Minnka raunverulegur birgðir á viðskiptavini reikningum / kredit athugasemdir löggilding (aðvörun, í þessari útgáfu, er það aðeins í fjölda vöruhús 1 sem birgðir er breytt)
-DeStockOnValidateOrder=Minnka raunverulegur birgðir á viðskiptavini pantanir löggilding (aðvörun, í þessari útgáfu, er það aðeins í fjölda vöruhús 1 sem birgðir er breytt)
+DeStockOnBill=Minnka raunverulegur birgðir á viðskiptavini reikningum / kredit athugasemdir löggilding
+DeStockOnValidateOrder=Minnka raunverulegur birgðir á viðskiptavini pantanir löggilding
 DeStockOnShipment=Minnka alvöru stofnum á sendingunni löggilding
-ReStockOnBill=Auka raunverulegur birgðir birgja reikningum / kredit athugasemdir löggilding (aðvörun í þessari útgáfu er það aðeins í fjölda vöruhús 1 sem birgðir er breytt)
-ReStockOnValidateOrder=Auka raunverulegur birgðir birgja pantanir approbation (aðvörun í þessari útgáfu er það aðeins í fjölda vöruhús 1 sem birgðir er breytt)
+ReStockOnBill=Auka raunverulegur birgðir birgja reikningum / kredit athugasemdir löggilding
+ReStockOnValidateOrder=Auka raunverulegur birgðir birgja pantanir approbation
 ReStockOnDispatchOrder=Auka raunverulegur birgðir á handbók dispatching í vöruhús, eftir röð birgja sem fá
 OrderStatusNotReadyToDispatch=Panta hefur ekki enn eða ekki meira stöðu sem gerir dispatching af vörum í vöruhús lager.
 StockDiffPhysicTeoric=Ástæða fyrir lager munur líkamlega og fræðilegum
@@ -90,3 +90,13 @@ ThisWarehouseIsPersonalStock=Þetta vöruhús táknar persónulegt birgðir af %
 // Reference language: en_US
 WarehouseEdit=Breyta vörugeymsla
 // STOP - Lines generated via autotranslator.php tool (2010-07-10 01:17:12).
+
+
+// START - Lines generated via autotranslator.php tool (2012-02-29 16:26:19).
+// Reference language: en_US -> is_IS
+SellPriceMin=Selja Unit verð
+EstimatedStockValueSellShort=Gildi til að selja
+EstimatedStockValueSell=Gildi til að selja
+SelectWarehouseForStockDecrease=Veldu vöruhús að nota til lækkunar hlutabréfa
+SelectWarehouseForStockIncrease=Veldu vöruhús að nota fyrir hækkun hlutabréfa
+// STOP - Lines generated via autotranslator.php tool (2012-02-29 16:26:43).

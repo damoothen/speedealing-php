@@ -27,9 +27,9 @@
  */
 
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/admin.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/ldap.class.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/ldap.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/class/ldap.class.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/ldap.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
 
 $langs->load("admin");
@@ -113,7 +113,7 @@ print '<br>';
 print '<form method="post" action="'.$_SERVER["PHP_SELF"].'?action=setvalue">';
 print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 
-$html=new Form($db);
+$form=new Form($db);
 
 print '<table class="noborder" width="100%">';
 $var=true;

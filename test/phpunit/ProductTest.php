@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * or see http://www.gnu.org/
  */
 
 /**
@@ -77,6 +77,8 @@ class ProductTest extends PHPUnit_Framework_TestCase
     {
     	global $conf,$user,$langs,$db;
 
+    	if (empty($conf->produit->enabled)) { print __METHOD__." Module Product must be enabled.\n"; die(); }
+
         $db->begin();	// This is to have all actions inside a transaction even if test launched without suite.
 
     	print __METHOD__."\n";
@@ -90,6 +92,9 @@ class ProductTest extends PHPUnit_Framework_TestCase
     }
 
 	/**
+	 * Init phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function setUp()
     {
@@ -101,7 +106,11 @@ class ProductTest extends PHPUnit_Framework_TestCase
 
 		print __METHOD__."\n";
     }
+
 	/**
+	 * End phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function tearDown()
     {
@@ -109,6 +118,9 @@ class ProductTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testProductCreate
+     *
+     * @return	void
      */
     public function testProductCreate()
     {
@@ -129,6 +141,11 @@ class ProductTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testProductFetch
+     *
+     * @param	int		$id		Id product
+     * @return	Product
+     *
      * @depends	testProductCreate
      * The depends says test is run only if previous is ok
      */
@@ -149,6 +166,11 @@ class ProductTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testProductUpdate
+     *
+     * @param	Product	$localobject	Product
+     * @return	void
+     *
      * @depends	testProductFetch
      * The depends says test is run only if previous is ok
      */
@@ -169,6 +191,11 @@ class ProductTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testProductOther
+     *
+     * @param	Product	$localobject	Product
+     * @return	void
+     *
      * @depends	testProductUpdate
      * The depends says test is run only if previous is ok
      */
@@ -185,6 +212,11 @@ class ProductTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testProductDelete
+     *
+     * @param		int		$id		Id of product
+     * @return		void
+     *
      * @depends	testProductOther
      * The depends says test is run only if previous is ok
      */
@@ -207,27 +239,9 @@ class ProductTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testProductStatic
      *
-     */
-    /*public function testVerifyNumRef()
-    {
-    	global $conf,$user,$langs,$db;
-		$conf=$this->savconf;
-		$user=$this->savuser;
-		$langs=$this->savlangs;
-		$db=$this->savdb;
-
-		$localobject=new Adherent($this->savdb);
-    	$result=$localobject->ref='refthatdoesnotexists';
-		$result=$localobject->VerifyNumRef();
-
-		print __METHOD__." result=".$result."\n";
-    	$this->assertEquals($result, 0);
-    	return $result;
-    }*/
-
-
-    /**
+     * @return	void
      */
     public function testProductStatic()
     {

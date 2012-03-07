@@ -30,9 +30,9 @@ require_once(DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php');
 $langs->load("bills");
 
 // Security check
-$facid =GETPOST("facid");
-$socid =GETPOST("socid");
-$userid=GETPOST('userid');
+$facid =GETPOST('facid','int');
+$socid =GETPOST('socid','int');
+$userid=GETPOST('userid','int');
 if ($user->societe_id) $socid=$user->societe_id;
 $result = restrictedArea($user, 'facture',$facid,'');
 
@@ -73,6 +73,7 @@ if (GETPOST("orphelins"))
     $sql.= " ".MAIN_DB_PREFIX."c_paiement as c)";
     $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."paiement_facture as pf ON p.rowid = pf.fk_paiement";
     $sql.= " WHERE p.fk_paiement = c.id";
+    $sql.= " AND p.entity = ".$conf->entity;
     $sql.= " AND pf.fk_facture IS NULL";
 }
 else
@@ -95,8 +96,8 @@ else
         $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."societe_commerciaux as sc ON s.rowid = sc.fk_soc";
     }
     $sql.= " WHERE p.fk_paiement = c.id";
-    $sql.= " AND s.entity = ".$conf->entity;
-    if (!$user->rights->societe->client->voir && !$socid)
+    $sql.= " AND p.entity = ".$conf->entity;
+    if (! $user->rights->societe->client->voir && ! $socid)
     {
         $sql.= " AND sc.fk_user = " .$user->id;
     }

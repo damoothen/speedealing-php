@@ -1,7 +1,7 @@
 <?php
-/* Copyright (C) 2003      Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
+/* Copyright (C) 2003		Rodolphe Quiedeville	<rodolphe@quiedeville.org>
+ * Copyright (C) 2004-2011	Laurent Destailleur		<eldy@users.sourceforge.net>
+ * Copyright (C) 2005-2011	Regis Houssin			<regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,12 +46,14 @@ function printBoxesArea($user,$areacode)
 		print '<table width="100%" class="notopnoleftnoright">';
 		print '<tr><td class="notopnoleftnoright">'."\n";
 
-
         print '<div class="fichehalfleft">';
-
 
 		print "\n<!-- Box left container -->\n";
 		print '<div id="left" class="connectedSortable">'."\n";
+
+		// Define $box_max_lines
+		$box_max_lines=5;
+		if (! empty($conf->global->MAIN_BOXES_MAXLINES)) $box_max_lines=$conf->global->MAIN_BOXES_MAXLINES;
 
 		$ii=0;
 		foreach ($boxarray as $key => $box)
@@ -62,7 +64,7 @@ function printBoxesArea($user,$areacode)
 				//print 'box_id '.$boxarray[$ii]->box_id.' ';
 				//print 'box_order '.$boxarray[$ii]->box_order.'<br>';
 				// Affichage boite key
-				$box->loadBox($conf->box_max_lines);
+				$box->loadBox($box_max_lines);
 				$box->showBox();
 			}
 		}
@@ -90,7 +92,7 @@ function printBoxesArea($user,$areacode)
 				//print 'box_id '.$boxarray[$ii]->box_id.' ';
 				//print 'box_order '.$boxarray[$ii]->box_order.'<br>';
 				// Affichage boite key
-				$box->loadBox($conf->box_max_lines);
+				$box->loadBox($box_max_lines);
 				$box->showBox();
 			}
 		}
@@ -135,7 +137,7 @@ function printBoxesArea($user,$areacode)
 		    print 'var boxorder = \'A:\' + left_list + \'-B:\' + right_list;'."\n";
 		    //print 'alert(\'boxorder=\' + boxorder);';
 		    print 'var userid = \''.$user->id.'\';'."\n";
-		    print 'jQuery.get(\'core/ajaxbox.php?boxorder=\'+boxorder+\'&userid=\'+'.$user->id.');'."\n";
+		    print 'jQuery.get(\'core/ajax/box.php?boxorder=\'+boxorder+\'&userid=\'+'.$user->id.');'."\n";
 		  	print '}'."\n";
 			print '</script>'."\n";
 		}
@@ -156,11 +158,11 @@ class InfoBox
 	/**
 	 *      Constructor
 	 *
-	 *      @param      DoliDb     $DB        Database handler
+	 *      @param      DoliDb     $db        Database handler
 	 */
-	function InfoBox($DB)
+	function InfoBox($db)
 	{
-		$this->db=$DB;
+		$this->db=$db;
 	}
 
 
@@ -204,36 +206,40 @@ class InfoBox
 					{
 						$boxname = $regs[1];
 						$module = $regs[2];
-						$sourcefile = dol_buildpath("/".$module."/includes/boxes/".$boxname.".php");
+						$sourcefile = dol_buildpath("/".$module."/core/boxes/".$boxname.".php");
 					}
 					else
 					{
-						$boxname=preg_replace('/.php$/i','',$obj->file);
-						$sourcefile = DOL_DOCUMENT_ROOT."/includes/boxes/".$boxname.".php";
+						$boxname=preg_replace('/\.php$/i','',$obj->file);
+						$sourcefile = "/core/boxes/".$boxname.".php";
 					}
 
-					include_once($sourcefile);
-					$box=new $boxname($this->db,$obj->note);
-
-					$box->rowid=$obj->rowid;
-					$box->box_id=$obj->box_id;
-					$box->position=$obj->position;
-					$box->box_order=$obj->box_order;
-					$box->fk_user=$obj->fk_user;
-					$enabled=true;
-					if ($box->depends && count($box->depends) > 0)
+					dol_include_once($sourcefile);    // Do not use dol_include_once here because sourcefile is already good fullpath
+					if (class_exists($boxname))
 					{
-						foreach($box->depends as $module)
-						{
-							//print $module.'<br>';
-							if (empty($conf->$module->enabled)) $enabled=false;
-						}
+    					$box=new $boxname($this->db,$obj->note);
+
+    					$box->rowid=$obj->rowid;
+    					$box->box_id=$obj->box_id;
+    					$box->position=$obj->position;
+    					$box->box_order=$obj->box_order;
+    					$box->fk_user=$obj->fk_user;
+    					$enabled=true;
+    					if ($box->depends && count($box->depends) > 0)
+    					{
+    						foreach($box->depends as $module)
+    						{
+    							//print $module.'<br>';
+    							if (empty($conf->$module->enabled)) $enabled=false;
+    						}
+    					}
+    					if ($enabled) $boxes[]=$box;
 					}
-					if ($enabled) $boxes[]=$box;
 					$j++;
 				}
 			}
-			else {
+			else
+			{
 				$this->error=$this->db->error();
 				dol_syslog("InfoBox::listBoxes Error ".$this->error, LOG_ERR);
 				return array();
@@ -265,41 +271,45 @@ class InfoBox
 					{
 						$boxname = $regs[1];
 						$module = $regs[2];
-						$sourcefile = "/".$module."/includes/boxes/".$boxname.".php";
+						$relsourcefile = "/".$module."/core/boxes/".$boxname.".php";
 					}
 					else
 					{
 						$boxname=preg_replace('/.php$/i','',$obj->file);
-						$sourcefile = "/includes/boxes/".$boxname.".php";
+						$relsourcefile = "/core/boxes/".$boxname.".php";
 					}
 
-					dol_include_once($sourcefile);
-					$box=new $boxname($db,$obj->note);
+					dol_include_once($relsourcefile);
+					if (class_exists($boxname))
+					{
+    					$box=new $boxname($this->db,$obj->note);
 
-					$box->rowid=$obj->rowid;
-					$box->box_id=$obj->box_id;
-					$box->position=$obj->position;
-					$box->box_order=$obj->box_order;
-					if (is_numeric($box->box_order))
-					{
-						if ($box->box_order % 2 == 1) $box->box_order='A'.$box->box_order;
-						elseif ($box->box_order % 2 == 0) $box->box_order='B'.$box->box_order;
+    					$box->rowid=$obj->rowid;
+    					$box->box_id=$obj->box_id;
+    					$box->position=$obj->position;
+    					$box->box_order=$obj->box_order;
+    					if (is_numeric($box->box_order))
+    					{
+    						if ($box->box_order % 2 == 1) $box->box_order='A'.$box->box_order;
+    						elseif ($box->box_order % 2 == 0) $box->box_order='B'.$box->box_order;
+    					}
+    					$box->fk_user=$obj->fk_user;
+    					$enabled=true;
+    					if ($box->depends && count($box->depends) > 0)
+    					{
+    						foreach($box->depends as $module)
+    						{
+    							//print $boxname.'-'.$module.'<br>';
+    							if (empty($conf->$module->enabled)) $enabled=false;
+    						}
+    					}
+    					if ($enabled) $boxes[]=$box;
 					}
-					$box->fk_user=$obj->fk_user;
-					$enabled=true;
-					if ($box->depends && count($box->depends) > 0)
-					{
-						foreach($box->depends as $module)
-						{
-							//print $boxname.'-'.$module.'<br>';
-							if (empty($conf->$module->enabled)) $enabled=false;
-						}
-					}
-					if ($enabled) $boxes[]=$box;
 					$j++;
 				}
 			}
-			else {
+			else
+			{
 				$this->error=$this->db->error();
 				dol_syslog("InfoBox::listBoxes Error ".$this->error, LOG_ERR);
 				return array();
@@ -323,7 +333,9 @@ class InfoBox
 	{
 		global $conf;
 
-		require_once(DOL_DOCUMENT_ROOT."/lib/functions2.lib.php");
+		$error=0;
+
+		require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
 
 		dol_syslog("InfoBoxes::saveboxorder zone=".$zone." user=".$userid);
 

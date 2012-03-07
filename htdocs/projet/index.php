@@ -25,7 +25,7 @@
 
 require("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/projet/class/project.class.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/project.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/project.lib.php");
 
 
 $langs->load("projects");
@@ -37,6 +37,9 @@ $mine = $_REQUEST['mode']=='mine' ? 1 : 0;
 $socid=0;
 if ($user->societe_id > 0) $socid=$user->societe_id;
 if (!$user->rights->projet->lire) accessforbidden();
+
+$sortfield = GETPOST("sortfield",'alpha');
+$sortorder = GETPOST("sortorder",'alpha');
 
 
 /*
@@ -127,7 +130,7 @@ print "</table>";
 
 print '</td></tr></table>';
 
-$db->close();
-
 llxFooter();
+
+$db->close();
 ?>

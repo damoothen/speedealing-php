@@ -24,8 +24,8 @@
 
 require("../../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT ."/comm/mailing/class/mailing.class.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/functions2.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/emailing.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/emailing.lib.php");
 
 $langs->load("mails");
 
@@ -41,7 +41,7 @@ accessforbidden();
 
 llxHeader('',$langs->trans("Mailing"),'EN:Module_EMailing|FR:Module_Mailing|ES:M&oacute;dulo_Mailing');
 
-$html = new Form($db);
+$form = new Form($db);
 
 $mil = new Mailing($db);
 

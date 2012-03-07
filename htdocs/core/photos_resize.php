@@ -34,11 +34,12 @@
 //if (! defined("NOLOGIN"))        define("NOLOGIN",'1');       // If this page is public (can be called outside logged session)
 
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/product.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/images.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/product.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/images.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
 
 $langs->load("products");
+$langs->load("other");
 
 $modulepart=$_REQUEST['modulepart']?$_REQUEST['modulepart']:'produit|service';
 if (isset($_GET["id"]))
@@ -130,7 +131,7 @@ if ($_POST["action"] == 'confirm_crop')
  * View
  */
 
-llxHeader($head, $langs->trans("Image"), '', '', 0, 0, array('/includes/jquery/plugins/jcrop/js/jquery.Jcrop.min.js','/lib/lib_photosresize.js'), array('/includes/jquery/plugins/jcrop/css/jquery.Jcrop.css'));
+llxHeader($head, $langs->trans("Image"), '', '', 0, 0, array('/includes/jquery/plugins/jcrop/js/jquery.Jcrop.min.js','/core/js/lib_photosresize.js'), array('/includes/jquery/plugins/jcrop/css/jquery.Jcrop.css'));
 
 
 print_fiche_titre($langs->trans("ImageEditor"));

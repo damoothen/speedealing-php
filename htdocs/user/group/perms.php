@@ -3,7 +3,7 @@
  * Copyright (C) 2002-2003 Jean-Louis Bergamo   <jlb@j1b.org>
  * Copyright (C) 2004-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2004      Eric Seigne          <eric.seigne@ryxeo.com>
- * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,11 +26,11 @@
 
 require("../../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT.'/user/class/usergroup.class.php');
-require_once(DOL_DOCUMENT_ROOT."/lib/usergroups.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/usergroups.lib.php");
 
 $langs->load("users");
 
-$id=GETPOST("id");
+$id=GETPOST('id','int');
 $action=GETPOST("action");
 $confirm=GETPOST("confirm");
 $module=GETPOST("module");
@@ -99,7 +99,7 @@ if ($id)
 
 	foreach ($conf->file->dol_document_root as $type => $dirroot)
 	{
-		$modulesdir[] = $dirroot . "/includes/modules/";
+		$modulesdir[] = $dirroot . "/core/modules/";
 
 		if ($type == 'alt')
 		{
@@ -110,9 +110,9 @@ if ($id)
 				{
 				    if (is_dir($dirroot.'/'.$file) && substr($file, 0, 1) <> '.' && substr($file, 0, 3) <> 'CVS' && $file != 'includes')
 				    {
-				    	if (is_dir($dirroot . '/' . $file . '/includes/modules/'))
+				    	if (is_dir($dirroot . '/' . $file . '/core/modules/'))
 				    	{
-				    		$modulesdir[] = $dirroot . '/' . $file . '/includes/modules/';
+				    		$modulesdir[] = $dirroot . '/' . $file . '/core/modules/';
 				    	}
 				    }
 				}
@@ -133,7 +133,7 @@ if ($id)
                 if (is_readable($dir.$file) && substr($file, 0, 3) == 'mod'  && substr($file, dol_strlen($file) - 10) == '.class.php')
                 {
                     $modName = substr($file, 0, dol_strlen($file) - 10);
-
+                    
                     if ($modName)
                     {
                         include_once($dir."/".$file);
@@ -147,12 +147,10 @@ if ($id)
                             }
                         }
                         // Load all permissions
-                        if ($objMod->rights_class) {
-
+                        if ($objMod->rights_class)
+                        {
                             $ret=$objMod->insert_permissions(0);
-
                             $modules[$objMod->rights_class]=$objMod;
-                            //print "modules[".$objMod->rights_class."]=$objMod;";
                         }
                     }
                 }
@@ -169,15 +167,21 @@ if ($id)
     $sql.= " FROM ".MAIN_DB_PREFIX."rights_def as r";
     $sql.= ", ".MAIN_DB_PREFIX."usergroup_rights as ugr";
     $sql.= " WHERE ugr.fk_id = r.id";
-    if(!empty($conf->multicompany->enabled))
+    if(! empty($conf->multicompany->enabled))
     {
-        if(empty($conf->global->MULTICOMPANY_TRANSVERSE_MODE))
-            $sql.= " AND r.entity = ".$conf->entity;
+        if(empty($conf->multicompany->transverse_mode))
+        {
+        	$sql.= " AND r.entity = ".$conf->entity;
+        }
         else
-            $sql.= " AND r.entity in (0,1)";
+        {
+        	$sql.= " AND r.entity IN (0,1)";
+        }
     }
-    else 
-        $sql.= " AND r.entity = ".$fgroup->entity;
+    else
+    {
+    	$sql.= " AND r.entity IN (0,".$conf->entity.")";
+    }
         
     $sql.= " AND ugr.fk_usergroup = ".$fgroup->id;
 
@@ -244,15 +248,21 @@ if ($id)
     $sql.= " FROM ".MAIN_DB_PREFIX."rights_def as r";
     $sql.= " WHERE r.libelle NOT LIKE 'tou%'";    // On ignore droits "tous"
     //$sql.= " AND r.entity = ".(empty($conf->multicompany->enabled) ? $conf->entity : $fgroup->entity);
-    if(!empty($conf->multicompany->enabled))
+    if(! empty($conf->multicompany->enabled))
     {
-        if(empty($conf->global->MULTICOMPANY_TRANSVERSE_MODE))
-            $sql.= " AND r.entity = ".$conf->entity;
+        if(empty($conf->multicompany->transverse_mode))
+        {
+        	$sql.= " AND r.entity = ".$conf->entity;
+        }
         else
-            $sql.= " AND r.entity in (0,1)";
+        {
+        	$sql.= " AND r.entity IN (0,1)";
+        }
     }
-    else 
-        $sql.= " AND r.entity = ".$fgroup->entity;
+    else
+    {
+    	$sql.= " AND r.entity = ".$conf->entity;
+    }
 
     if (empty($conf->global->MAIN_USE_ADVANCED_PERMS)) $sql.= " AND r.perms NOT LIKE '%_advance'";  // Hide advanced perms if option is disable
     $sql.= " ORDER BY r.module, r.id";
@@ -260,9 +270,12 @@ if ($id)
     $result=$db->query($sql);
     if ($result)
     {
-        $num = $db->num_rows($result);
         $i = 0;
-        $var = True;
+        $var = true;
+        $oldmod = '';
+        
+        $num = $db->num_rows($result);
+
         while ($i < $num)
         {
             $obj = $db->fetch_object($result);

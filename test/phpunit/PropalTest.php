@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * or see http://www.gnu.org/
  */
 
 /**
@@ -89,6 +89,9 @@ class PropalTest extends PHPUnit_Framework_TestCase
     }
 
 	/**
+	 * Init phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function setUp()
     {
@@ -102,6 +105,9 @@ class PropalTest extends PHPUnit_Framework_TestCase
 		//print $db->getVersion()."\n";
     }
 	/**
+	 * End phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function tearDown()
     {
@@ -109,6 +115,9 @@ class PropalTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testPropalCreate
+     * 
+     * @return	void
      */
     public function testPropalCreate()
     {
@@ -128,6 +137,11 @@ class PropalTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testPropalFetch
+     * 
+     * @param	int		$id		Id of object
+     * @return	void
+     * 	
      * @depends	testPropalCreate
      * The depends says test is run only if previous is ok
      */
@@ -148,26 +162,11 @@ class PropalTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @depends	testPropalFetch
-     * The depends says test is run only if previous is ok
-     */
-/*    public function testPropalUpdate($localobject)
-    {
-    	global $conf,$user,$langs,$db;
-		$conf=$this->savconf;
-		$user=$this->savuser;
-		$langs=$this->savlangs;
-		$db=$this->savdb;
-
-		$localobject->note='New note after update';
-    	$result=$localobject->update($user);
-
-    	print __METHOD__." id=".$localobject->id." result=".$result."\n";
-    	$this->assertLessThan($result, 0);
-    	return $localobject->id;
-    }
-*/
-    /**
+     * testPropalValid
+     * 
+     * @param	Proposal	$localobject	Proposal
+     * @return	Proposal
+     * 
      * @depends	testPropalFetch
      * The depends says test is run only if previous is ok
      */
@@ -187,6 +186,11 @@ class PropalTest extends PHPUnit_Framework_TestCase
     }
 
    /**
+     * testPropalOther
+     * 
+     * @param	Proposal	$localobject	Proposal
+     * @return	int
+     * 
      * @depends testPropalValid
      * The depends says test is run only if previous is ok
      */
@@ -211,6 +215,11 @@ class PropalTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testPropalDelete
+     * 
+     * @param	int		$id		Id of proposal
+     * @return	void
+     * 
      * @depends	testPropalOther
      * The depends says test is run only if previous is ok
      */
@@ -232,7 +241,9 @@ class PropalTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     *	testVerifyNumRef
      *
+     *	@return	void
      */
     public function testVerifyNumRef()
     {

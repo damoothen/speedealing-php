@@ -8,22 +8,6 @@
 // START - Lines generated via autotranslator.php tool (2010-08-28 13:09:36).
 // Reference language: en_US
 CHARSET=UTF-8
-ErrorPasswordDiffers=Lösenord skiljer skriver du in dem igen.
-ErrorForbidden=Åtkomst nekad. <br> Du försöker få tillgång till en sida, område eller funktion utan att en bestyrkt session eller som inte får ditt användarnamn.
-ErrorForbidden2=Tillstånd för den här inloggningen kan definieras av din Dolibarr administratör från menyn %s-&gt; %s.
-ErrorForbidden3=Det verkar som Dolibarr inte används genom en bestyrkt session. Ta en titt på Dolibarr setup dokumentation för att veta hur man ska hantera verifieringar (htaccess, mod_auth eller andra ...).
-ErrorNoImagickReadimage=Funktion imagick_readimage finns inte i denna PHP. Ingen förhandsgranskning kan vara tillgängliga. Administratörer kan inaktivera den här fliken från menyn Setup - Display.
-ErrorRecordAlreadyExists=Record finns redan
-ErrorCantReadFile=Misslyckades med att läsa filen &quot;%s&quot;
-ErrorCantReadDir=Misslyckades att läsa katalogen &quot;%s&quot;
-ErrorFailedToFindEntity=Misslyckades med att läsa enheten &quot;%s&quot;
-ErrorBadLoginPassword=Felaktigt värde för inloggning eller lösenord
-ErrorLoginDisabled=Ditt konto har inaktiverats
-ErrorFailedToRunExternalCommand=Misslyckades med att köra externa kommandot. Kontrollera den är tillgänglig och körbar av din PHP-server. Om PHP <b>Safe Mode</b> är aktiverat, kontrollera att kommandot är inne i en katalog definieras av parameter <b>safe_mode_exec_dir.</b>
-ErrorFailedToChangePassword=Det gick inte att ändra lösenord
-ErrorLoginDoesNotExists=Användaren med inloggning <b>%s</b> kunde inte hittas.
-ErrorLoginHasNoEmail=Denna användare har inga e-postadress. Process avbruten.
-ErrorBadValueForCode=Dåligt värde typer för kod. Försök igen med ett nytt värde ...
 SecurityCode=Säkerhetskod
 Calendar=Kalender
 AddTrip=Lägg resa
@@ -46,15 +30,8 @@ AttachANewFile=Bifoga en ny fil / dokument
 LinkedObject=Länkat objekt
 Miscellanous=Diverse
 NbOfActiveNotifications=Antal anmälningar
-WarningInstallDirExists=Varning, installera katalog <b>(htdocs / install)</b> fortfarande existerar. Detta är ett allvarligt säkerhetshål. Du bör avlägsnas så fort som möjligt.
-WarningUntilDirRemoved=Alla säkerhetsvarningar (synlig av admin-användare) förblir aktiv så länge sårbarheten är närvarande (eller att konstant MAIN_REMOVE_INSTALL_WARNING läggs i Start-&gt; Other Setup).
 PredefinedMailTest=Detta är en test post. \ NDet två linjerna är åtskilda av en vagnretur.
 PredefinedMailTestHtml=Detta är en <b>test</b> post (ordet Provningen skall i fetstil). <br> De två linjerna är åtskilda av en vagnretur.
-PredefinedMailContentSendInvoice=Här finner du en faktura __FACREF__ \ n \ nSincerely \ n \ n
-PredefinedMailContentSendInvoiceReminder=Vi vill varna er om att fakturan __FACREF__ verkar inte betalt. Så detta är fakturan i bilagan igen, som en påminnelse. \ N \ nSincerely \ n \ n
-PredefinedMailContentSendProposal=Här finner du den kommersiella propoal n __PROPREF__ \ \ nSincerely \ n \ n
-PredefinedMailContentSendOrder=Hittar du här ordern __ORDERREF__ \ n \ nSincerely \ n \ n
-PredefinedMailContentSendSupplierOrder=Här hittar du vårt syfte __ORDERREF__ \ n \ nSincerely \ n \ n
 DemoDesc=Dolibarr är en kompakt ERP / CRM består av flera funktionella moduler. En demo som inkluderar alla moduler inte betyder något som detta inträffar aldrig. Så, flera demo profiler finns tillgängliga.
 ChooseYourDemoProfil=Välj demo profil som matchar din aktivitet ...
 DemoFundation=Hantera medlemmar av en stiftelse
@@ -200,3 +177,59 @@ ToExport=Export
 NewExport=Nya exportmöjligheter
 ExternalSites=Externa webbplatser
 // STOP - Lines generated via autotranslator.php tool (2010-08-28 13:13:55).
+
+
+// START - Lines generated via autotranslator.php tool (2011-10-10 02:45:33).
+// Reference language: en_US -> sv_SE
+ToolsDesc=Detta område är avsedd för gruppen diverse verktyg som inte finns i andra menyposter. <br><br> Dessa verktyg kan nås från menyn på sidan.
+Notify_WITHDRAW_TRANSMIT=Överföring tillbakadragande
+Notify_WITHDRAW_CREDIT=Credit tillbakadragande
+Notify_WITHDRAW_EMIT=Isue tillbakadragande
+Notify_ORDER_SENTBYMAIL=Kundorder skickas per post
+Notify_COMPANY_CREATE=Tredje part som skapats
+Notify_ORDER_SUPPLIER_VALIDATE=Leverantör för validerade
+Notify_ORDER_SUPPLIER_SENTBYMAIL=Leverantör beställning skickas per post
+Notify_BILL_SUPPLIER_VALIDATE=Leverantörsfaktura validerade
+Notify_BILL_SUPPLIER_PAYED=Leverantörsfaktura betalas
+Notify_BILL_SUPPLIER_SENTBYMAIL=Leverantör faktura skickas per post
+Notify_CONTRACT_VALIDATE=Kontrakt validerade
+Notify_FICHEINTER_VALIDATE=Intervention validerade
+Notify_SHIPPING_VALIDATE=Frakt validerade
+Notify_SHIPPING_SENTBYMAIL=Leverans skickas per post
+Notify_MEMBER_VALIDATE=Medlem validerade
+Top=Topp
+Bottom=Botten
+Left=Vänster
+Right=Höger
+ThisIsListOfModules=Detta är en lista över moduler förvalda genom denna demo profil (endast vanligaste modulerna är synas i denna demo). Redigera den här att ha en mer personlig demo och klicka på &quot;Start&quot;.
+ClickHere=Klicka här
+UseAdvancedPerms=Använd den avancerade behörigheter för vissa moduler
+FileFormat=Filformat
+SelectAColor=Välj en färg
+AddFiles=Lägg till filer
+// STOP - Lines generated via autotranslator.php tool (2011-10-10 05:08:05).
+
+
+// START - Lines generated via autotranslator.php tool (2012-02-29 17:32:03).
+// Reference language: en_US -> sv_SE
+Notify_PROPAL_SENTBYMAIL=Kommersiell förslag skickas per post
+Notify_BILL_PAYED=Kundfaktura betalade
+Notify_BILL_CANCEL=Kundfaktura avbryts
+Notify_BILL_SENTBYMAIL=Kundfaktura skickas per post
+Notify_MEMBER_SUBSCRIPTION=Medlem tecknat
+Notify_MEMBER_RESILIATE=Medlem resiliated
+Notify_MEMBER_DELETE=Elementet bort
+PredefinedMailContentSendInvoice=Här hittar du fakturan __ FACREF__ \n\n Sincerely \n\n
+PredefinedMailContentSendInvoiceReminder=Vi vill varna dig för att fakturan __ FACREF__ verkar inte betalt. Så detta är fakturan i bilagan igen, som en påminnelse. \n\n Sincerely \n\n
+PredefinedMailContentSendProposal=Här hittar du den kommersiella propoal __ PROPREF__ \n\n Sincerely \n\n
+PredefinedMailContentSendOrder=Här hittar du den ordning __ ORDERREF__ \n\n Sincerely \n\n
+PredefinedMailContentSendSupplierOrder=Här hittar du vårt beställningsformulär __ ORDERREF__ \n\n Sincerely \n\n
+PredefinedMailContentSendSupplierInvoice=Här hittar du fakturan __ FACREF__ \n\n Sincerely \n\n
+PredefinedMailContentSendShipping=Här hittar du sjöfarten __ SHIPPINGREF__ \n\n Sincerely \n\n
+PredefinedMailContentSendFichInter=Här hittar du insatsen __ FICHINTERREF__ \n\n Sincerely \n\n
+StartUpload=Starta upp
+CancelUpload=Avbryt upp
+FileIsTooBig=Filer är för stor
+ShipmentValidatedInDolibarr=Transport %s validerats i Dolibarr
+Export=Exportera
+// STOP - Lines generated via autotranslator.php tool (2012-02-29 17:32:07).

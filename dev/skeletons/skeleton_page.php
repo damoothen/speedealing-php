@@ -20,8 +20,7 @@
  *   	\file       dev/skeletons/skeleton_page.php
  *		\ingroup    mymodule othermodule1 othermodule2
  *		\brief      This file is an example of a php page
- *		\author		Put author name here
- *		\remarks	Put here some comments
+ *					Put here some comments
  */
 
 //if (! defined('NOREQUIREUSER'))  define('NOREQUIREUSER','1');
@@ -52,8 +51,9 @@ $langs->load("companies");
 $langs->load("other");
 
 // Get parameters
-$action = GETPOST('action');
-$myparam = GETPOST('myparam');
+$id			= GETPOST('id','int');
+$action		= GETPOST('action','alpha');
+$myparam	= GETPOST('myparam','alpha');
 
 // Protection if external user
 if ($user->societe_id > 0)

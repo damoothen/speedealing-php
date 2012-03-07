@@ -121,6 +121,7 @@ ExportDataset_member_1=Adhérents et adhésions
 ImportDataset_member_1=Adhérents
 LastMembers=Les %s derniers adhérents
 LastMembersModified=Les %s derniers adhérents modifiés
+LastSubscriptionsModified=Les %s dernières adhésions modifiées
 AttributeName=Nom de l'attribut
 FieldEdition=Édition du champ %s
 AlphaNumOnlyCharsAndNoSpace=uniquement caractères alphanumériques sans espace
@@ -182,7 +183,7 @@ MembersStatisticsDesc=Choisissez les statistiques que vous désirez consulter...
 MenuMembersStats=Statistiques
 LastMemberDate=Date dernier adhérent
 Nature=Nature
-Public=Informations publiques (no=privées)
+Public=Informations publiques
 Exports=Exports
 NewMemberbyWeb=Nouvel Adherent ajoute. En attente de validation
 NewMemberForm=Nouvel Adherent form

@@ -31,16 +31,15 @@ $langs->load("categories");
 
 
 // Security check
-$socid=GETPOST('socid');
+$socid=GETPOST('socid','int');
 if (!$user->rights->categorie->lire) accessforbidden();
 
-$action		= GETPOST('action');
-$cancel		= GETPOST('cancel');
-$origin		= GETPOST('origin');
-$catorigin	= GETPOST('catorigin');
-$nbcats 	= (GETPOST('choix') ? GETPOST('choix') : 1);
-$type 		= GETPOST('type');
-$urlfrom	= GETPOST("urlfrom");
+$action		= GETPOST('action','alpha');
+$cancel		= GETPOST('cancel','alpha');
+$origin		= GETPOST('origin','alpha');
+$catorigin	= GETPOST('catorigin','int');
+$type 		= GETPOST('type','alpha');
+$urlfrom	= GETPOST('urlfrom','alpha');
 
 if ($origin)
 {
@@ -176,7 +175,7 @@ if (($action == 'add' || $action == 'confirmed') && $user->rights->categorie->cr
  */
 
 llxHeader("","",$langs->trans("Categories"));
-$html = new Form($db);
+$form = new Form($db);
 
 if ($user->rights->categorie->creer)
 {
@@ -209,14 +208,14 @@ if ($user->rights->categorie->creer)
 
 		// Description
 		print '<tr><td valign="top">'.$langs->trans("Description").'</td><td>';
-		require_once(DOL_DOCUMENT_ROOT."/lib/doleditor.class.php");
-		$doleditor=new DolEditor('description',$object->description,'',200,'dolibarr_notes','',false,true,$conf->fckeditor->enabled && $conf->global->FCKEDITOR_ENABLE_PRODUCTDESC,ROWS_6,50);
+		require_once(DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php");
+		$doleditor=new DolEditor('description',$object->description,'',200,'dolibarr_notes','',false,true,$conf->global->FCKEDITOR_ENABLE_PRODUCTDESC,ROWS_6,50);
 		$doleditor->Create();
 		print '</td></tr>';
 
 		// Parent category
 		print '<tr><td>'.$langs->trans("AddIn").'</td><td>';
-		print $html->select_all_categories($type,$catorigin);
+		print $form->select_all_categories($type,$catorigin);
 		print '</td></tr>';
 
 		print '</table>';

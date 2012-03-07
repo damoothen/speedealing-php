@@ -27,7 +27,7 @@ require("../../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.class.php');
 require_once(DOL_DOCUMENT_ROOT."/fourn/class/fournisseur.facture.class.php");
 require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
-require_once(DOL_DOCUMENT_ROOT.'/lib/fourn.lib.php');
+require_once(DOL_DOCUMENT_ROOT.'/core/lib/fourn.lib.php');
 require_once(DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php');
 
 $langs->load("bills");
@@ -80,7 +80,7 @@ if ($_POST["action"] == 'addcontact' && $user->rights->fournisseur->facture->cre
 if ($_GET["action"] == 'swapstatut' && $user->rights->fournisseur->facture->creer)
 {
 	$facture = new FactureFournisseur($db);
-	if ($facture->fetch(GETPOST("facid")))
+	if ($facture->fetch(GETPOST('facid','int')))
 	{
 	    $result=$facture->swapContactStatus(GETPOST('ligne'));
 	}
@@ -114,7 +114,7 @@ if ($_GET["action"] == 'deleteline' && $user->rights->fournisseur->facture->cree
 
 llxHeader('', $langs->trans("Bill"), "Facture");
 
-$html = new Form($db);
+$form = new Form($db);
 $formcompany = new FormCompany($db);
 $contactstatic=new Contact($db);
 $userstatic=new User($db);
@@ -146,7 +146,7 @@ if ($id > 0)
 
 		// Reference du facture
 		print '<tr><td width="20%">'.$langs->trans("Ref").'</td><td colspan="3">';
-		print $html->showrefnav($facture,'facid','',1,'rowid','ref',$morehtmlref);
+		print $form->showrefnav($facture,'facid','',1,'rowid','ref',$morehtmlref);
 		print "</td></tr>";
 
         // Ref supplier
@@ -200,7 +200,7 @@ if ($id > 0)
 
 			print '<td colspan="1">';
 			//$userAlreadySelected = $facture->getListContactId('internal');	// On ne doit pas desactiver un contact deja selectionner car on doit pouvoir le seclectionner une deuxieme fois pour un autre type
-			$html->select_users($user->id,'contactid',0,$userAlreadySelected);
+			$form->select_users($user->id,'contactid',0,$userAlreadySelected);
 			print '</td>';
 			print '<td>';
 			$formcompany->selectTypeContact($facture, '', 'type','internal');
@@ -230,7 +230,7 @@ if ($id > 0)
 			print '</td>';
 
 			print '<td colspan="1">';
-			$nbofcontacts=$html->select_contacts($selectedCompany, '', 'contactid');
+			$nbofcontacts=$form->select_contacts($selectedCompany, '', 'contactid');
 			if ($nbofcontacts == 0) print $langs->trans("NoContactDefined");
 			print '</td>';
 			print '<td>';
@@ -299,14 +299,14 @@ if ($id > 0)
                 if ($tab[$i]['source']=='internal')
                 {
                     $userstatic->id=$tab[$i]['id'];
-                    $userstatic->nom=$tab[$i]['nom'];
-                    $userstatic->prenom=$tab[$i]['firstname'];
+                    $userstatic->lastname=$tab[$i]['lastname'];
+                    $userstatic->firstname=$tab[$i]['firstname'];
                     print $userstatic->getNomUrl(1);
                 }
                 if ($tab[$i]['source']=='external')
                 {
                     $contactstatic->id=$tab[$i]['id'];
-                    $contactstatic->name=$tab[$i]['nom'];
+                    $contactstatic->lastname=$tab[$i]['lastname'];
                     $contactstatic->firstname=$tab[$i]['firstname'];
                     print $contactstatic->getNomUrl(1);
                 }

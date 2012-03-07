@@ -44,11 +44,11 @@ QtyDispatched=Mennyiség kiküldése
 OrderDispatch=Készlet kiküldése
 RuleForStockManagementDecrease=Készlet kerezelés szabály csökkentése
 RuleForStockManagementIncrease=Készlet kerezelés szabály emelése
-DeStockOnBill=Tényleges készlet csökkentése számla/hitel jóváhagyásakor (Figyelem, ebben a verzióban, csak az 1-es számú raktár készlete módosúl)
-DeStockOnValidateOrder=Tényleges készlet csökkentése ügyfél rendelés jóváhagyásakor (Figyelem, ebben a verzióban, csak az 1-es számú raktár készlete módosúl)
+DeStockOnBill=Tényleges készlet csökkentése számla/hitel jóváhagyásakor
+DeStockOnValidateOrder=Tényleges készlet csökkentése ügyfél rendelés jóváhagyásakor
 DeStockOnShipment=Tényleges készlet csökkentése szállítás jóváhagyásakor
-ReStockOnBill=Tényleges készlet növelése számla/hitel jóváhagyásakor (Figyelem, ebben a verzióban, csak az 1-es számú raktár készlete módosúl)
-ReStockOnValidateOrder=Tényleges készlet növelése beszállítótól való rendelés jóváhagyásakor (Figyelem, ebben a verzióban, csak az 1-es számú raktár készlete módosúl)
+ReStockOnBill=Tényleges készlet növelése számla/hitel jóváhagyásakor
+ReStockOnValidateOrder=Tényleges készlet növelése beszállítótól való rendelés jóváhagyásakor
 ReStockOnDispatchOrder=Tényleges készlet növelése manuális raktárba való feladáskor miután a beszállítói rendelés beérkezett
 OrderStatusNotReadyToDispatch=A rendelés még nincs olyan állapotban, hogy kiküldhető legyen a raktárba.
 StockDiffPhysicTeoric=Az eltérés oka a gyakorlati és az elméleti készlet
@@ -76,3 +76,12 @@ DeleteAWarehouse=Raktár törlése
 ConfirmDeleteWarehouse=Biztos törölni akarja a(z) <b>%s</b> raktárat?
 PersonalStock=Személyes készlet %s
 ThisWarehouseIsPersonalStock=Ez a raktár %s %s személyes készletet képvisel
+
+// START - Lines generated via autotranslator.php tool (2012-02-29 16:13:31).
+// Reference language: en_US -> hu_HU
+SellPriceMin=Értékesítés Egységár
+EstimatedStockValueSellShort=Érték eladni
+EstimatedStockValueSell=Érték Eladás
+SelectWarehouseForStockDecrease=Válassza ki a raktár használni állomány csökkenése
+SelectWarehouseForStockIncrease=Válassza ki a raktár használni állomány növekedése
+// STOP - Lines generated via autotranslator.php tool (2012-02-29 16:15:18).

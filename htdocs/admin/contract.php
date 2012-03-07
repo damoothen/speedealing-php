@@ -22,7 +22,7 @@
  */
 
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/admin.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
 require_once(DOL_DOCUMENT_ROOT.'/contrat/class/contrat.class.php');
 
 $langs->load("admin");
@@ -80,8 +80,8 @@ if ($action == 'setmod')
 
 llxHeader();
 
-$dir=DOL_DOCUMENT_ROOT."/includes/modules/contract/";
-$html=new Form($db);
+$dir=DOL_DOCUMENT_ROOT."/core/modules/contract/";
+$form=new Form($db);
 
 $linkback='<a href="'.DOL_URL_ROOT.'/admin/modules.php">'.$langs->trans("BackToModuleList").'</a>';
 print_fiche_titre($langs->trans("ContractsSetup"),$linkback,'setup');
@@ -101,7 +101,7 @@ print "</tr>\n";
 
 clearstatcache();
 
-$dir = "../includes/modules/contract/";
+$dir = "../core/modules/contract/";
 $handle = opendir($dir);
 if (is_resource($handle))
 {
@@ -113,7 +113,7 @@ if (is_resource($handle))
         {
             $file = substr($file, 0, dol_strlen($file)-4);
 
-            require_once(DOL_DOCUMENT_ROOT ."/includes/modules/contract/".$file.".php");
+            require_once(DOL_DOCUMENT_ROOT ."/core/modules/contract/".$file.".php");
 
             $module = new $file;
 
@@ -132,7 +132,8 @@ if (is_resource($handle))
                 // Show example of numbering module
                 print '<td nowrap="nowrap">';
                 $tmp=$module->getExample();
-                if (preg_match('/^Error/',$tmp)) print $langs->trans($tmp);
+                if (preg_match('/^Error/',$tmp)) { $langs->load("errors"); print '<div class="error">'.$langs->trans($tmp).'</div>'; }
+                elseif ($tmp=='NotConfigured') print $langs->trans($tmp);
                 else print $tmp;
                 print '</td>'."\n";
 
@@ -171,7 +172,7 @@ if (is_resource($handle))
                 }
 
                 print '<td align="center">';
-                print $html->textwithpicto('',$htmltooltip,1,0);
+                print $form->textwithpicto('',$htmltooltip,1,0);
                 print '</td>';
 
                 print '</tr>';

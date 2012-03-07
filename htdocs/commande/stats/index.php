@@ -1,6 +1,6 @@
 <?php
 /* Copyright (C) 2001-2003 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (c) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (c) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,8 +34,8 @@ $mode=GETPOST("mode")?GETPOST("mode"):'customer';
 if ($mode == 'customer' && ! $user->rights->commande->lire) accessforbidden();
 if ($mode == 'supplier' && ! $user->rights->fournisseur->commande->lire) accessforbidden();
 
-$userid=GETPOST('userid'); if ($userid < 0) $userid=0;
-$socid=GETPOST('socid'); if ($socid < 0) $socid=0;
+$userid=GETPOST('userid','int'); if ($userid < 0) $userid=0;
+$socid=GETPOST('socid','int'); if ($socid < 0) $socid=0;
 // Security check
 if ($user->societe_id > 0)
 {
@@ -43,8 +43,10 @@ if ($user->societe_id > 0)
     $socid = $user->societe_id;
 }
 
-$year = strftime("%Y", time());
-$startyear=$year-2;
+$nowyear=strftime("%Y", dol_now());
+$year = GETPOST('year')>0?GETPOST('year'):$nowyear;
+//$startyear=$year-2;
+$startyear=$year-1;
 $endyear=$year;
 
 $langs->load("orders");
@@ -71,7 +73,7 @@ if ($mode == 'supplier')
 
 print_fiche_titre($title, $mesg);
 
-create_exdir($dir);
+dol_mkdir($dir);
 
 $stats = new CommandeStats($db, $socid, $mode, $userid);
 
@@ -94,30 +96,31 @@ else
     if ($mode == 'supplier') $fileurlnb = DOL_URL_ROOT.'/viewimage.php?modulepart=orderstatssupplier&file=ordersnbinyear-'.$year.'.png';
 }
 
-$px = new DolGraph();
-$mesg = $px->isGraphKo();
+$px1 = new DolGraph();
+$mesg = $px1->isGraphKo();
 if (! $mesg)
 {
-    $px->SetData($data);
-    $px->SetPrecisionY(0);
-    $i=$startyear;
+    $px1->SetData($data);
+    $px1->SetPrecisionY(0);
+    $i=$startyear;$legend=array();
     while ($i <= $endyear)
     {
         $legend[]=$i;
         $i++;
     }
-    $px->SetLegend($legend);
-    $px->SetMaxValue($px->GetCeilMaxValue());
-    $px->SetMinValue(min(0,$px->GetFloorMinValue()));
-    $px->SetWidth($WIDTH);
-    $px->SetHeight($HEIGHT);
-    $px->SetYLabel($langs->trans("NbOfOrder"));
-    $px->SetShading(3);
-    $px->SetHorizTickIncrement(1);
-    $px->SetPrecisionY(0);
-    $px->mode='depth';
-    $px->SetTitle($langs->trans("NumberOfOrdersByMonth"));
-    $px->draw($filenamenb);
+    $px1->SetLegend($legend);
+    $px1->SetMaxValue($px1->GetCeilMaxValue());
+    $px1->SetMinValue(min(0,$px1->GetFloorMinValue()));
+    $px1->SetWidth($WIDTH);
+    $px1->SetHeight($HEIGHT);
+    $px1->SetYLabel($langs->trans("NbOfOrder"));
+    $px1->SetShading(3);
+    $px1->SetHorizTickIncrement(1);
+    $px1->SetPrecisionY(0);
+    $px1->mode='depth';
+    $px1->SetTitle($langs->trans("NumberOfOrdersByMonth"));
+
+    $px1->draw($filenamenb,$fileurlnb);
 }
 
 // Build graphic amount of object
@@ -138,54 +141,133 @@ else
     if ($mode == 'supplier') $fileurlamount = DOL_URL_ROOT.'/viewimage.php?modulepart=orderstatssupplier&file=ordersamountinyear-'.$year.'.png';
 }
 
-$px = new DolGraph();
-$mesg = $px->isGraphKo();
+$px2 = new DolGraph();
+$mesg = $px2->isGraphKo();
 if (! $mesg)
 {
-    $px->SetData($data);
-    $i=$startyear;
+    $px2->SetData($data);
+    $i=$startyear;$legend=array();
     while ($i <= $endyear)
     {
         $legend[]=$i;
         $i++;
     }
-    $px->SetLegend($legend);
-    $px->SetMaxValue($px->GetCeilMaxValue());
-    $px->SetMinValue(min(0,$px->GetFloorMinValue()));
-    $px->SetWidth($WIDTH);
-    $px->SetHeight($HEIGHT);
-    $px->SetYLabel($langs->trans("AmountOfOrders"));
-    $px->SetShading(3);
-    $px->SetHorizTickIncrement(1);
-    $px->SetPrecisionY(0);
-    $px->mode='depth';
-    $px->SetTitle($langs->trans("AmountOfOrdersByMonthHT"));
+    $px2->SetLegend($legend);
+    $px2->SetMaxValue($px2->GetCeilMaxValue());
+    $px2->SetMinValue(min(0,$px2->GetFloorMinValue()));
+    $px2->SetWidth($WIDTH);
+    $px2->SetHeight($HEIGHT);
+    $px2->SetYLabel($langs->trans("AmountOfOrders"));
+    $px2->SetShading(3);
+    $px2->SetHorizTickIncrement(1);
+    $px2->SetPrecisionY(0);
+    $px2->mode='depth';
+    $px2->SetTitle($langs->trans("AmountOfOrdersByMonthHT"));
 
-    $px->draw($filenameamount);
+    $px2->draw($filenameamount,$fileurlamount);
 }
+
+
+$res = $stats->getAverageByMonth($year);
+$data = array();
+for ($i = 1 ; $i < 13 ; $i++)
+{
+    $data[$i-1] = array(ucfirst(dol_substr(dol_print_date(dol_mktime(12,0,0,$i,1,$year),"%b"),0,3)), $res[$i]);
+}
+
+if (!$user->rights->societe->client->voir || $user->societe_id)
+{
+    $filename_avg = $dir.'/ordersaverage-'.$user->id.'-'.$year.'.png';
+    if ($mode == 'customer') $fileurl_avg = DOL_URL_ROOT.'/viewimage.php?modulepart=orderstats&file=ordersaverage-'.$user->id.'-'.$year.'.png';
+    if ($mode == 'supplier') $fileurl_avg = DOL_URL_ROOT.'/viewimage.php?modulepart=orderstatssupplier&file=ordersaverage-'.$user->id.'-'.$year.'.png';
+}
+else
+{
+    $filename_avg = $dir.'/ordersaverage-'.$year.'.png';
+    if ($mode == 'customer') $fileurl_avg = DOL_URL_ROOT.'/viewimage.php?modulepart=orderstats&file=ordersaverage-'.$year.'.png';
+    if ($mode == 'supplier') $fileurl_avg = DOL_URL_ROOT.'/viewimage.php?modulepart=orderstatssupplier&file=ordersaverage-'.$year.'.png';
+}
+
+$px3 = new DolGraph();
+$mesg = $px3->isGraphKo();
+if (! $mesg)
+{
+    $px3->SetData($data);
+    //$i=$startyear;$legend=array();
+    $i=$endyear;$legend=array();
+    while ($i <= $endyear)
+    {
+        $legend[]=$i;
+        $i++;
+    }
+    $px3->SetLegend($legend);
+    $px3->SetYLabel($langs->trans("AmountAverage"));
+    $px3->SetMaxValue($px3->GetCeilMaxValue());
+    $px3->SetMinValue($px3->GetFloorMinValue());
+    $px3->SetWidth($WIDTH);
+    $px3->SetHeight($HEIGHT);
+    $px3->SetShading(3);
+    $px3->SetHorizTickIncrement(1);
+    $px3->SetPrecisionY(0);
+    $px3->mode='depth';
+    $px3->SetTitle($langs->trans("AmountAverage"));
+
+    $px3->draw($filename_avg,$fileurl_avg);
+}
+
+
+
+// Show array
+$data = $stats->getAllByYear();
+$arrayyears=array();
+foreach($data as $val) {
+    $arrayyears[$val['year']]=$val['year'];
+}
+if (! count($arrayyears)) $arrayyears[$nowyear]=$nowyear;
+
+
+$h=0;
+$head = array();
+$head[$h][0] = DOL_URL_ROOT . '/commande/stats/index.php?mode='.$mode;
+$head[$h][1] = $langs->trans("ByMonthYear");
+$head[$h][2] = 'byyear';
+$h++;
+
+if ($mode == 'customer') $type='order_stats';
+if ($mode == 'supplier') $type='supplier_order_stats';
+
+complete_head_from_modules($conf,$langs,$object,$head,$h,$type);
+
+dol_fiche_head($head,'byyear',$langs->trans("Statistics"));
 
 print '<table class="notopnoleftnopadd" width="100%"><tr>';
 print '<td align="center" valign="top">';
 
 // Show filter box
 print '<form name="stats" method="POST" action="'.$_SERVER["PHP_SELF"].'">';
+print '<input type="hidden" name="mode" value="'.$mode.'">';
 print '<table class="border" width="100%">';
 print '<tr><td class="liste_titre" colspan="2">'.$langs->trans("Filter").'</td></tr>';
+// Company
 print '<tr><td>'.$langs->trans("ThirdParty").'</td><td>';
 if ($mode == 'customer') $filter='s.client in (1,2,3)';
 if ($mode == 'supplier') $filter='s.fournisseur = 1';
 print $form->select_company($socid,'socid',$filter,1);
 print '</td></tr>';
-print '<tr><td>'.$langs->trans("User").'</td><td>';
+// User
+print '<tr><td>'.$langs->trans("User").'/'.$langs->trans("SalesRepresentative").'</td><td>';
 print $form->select_users($userid,'userid',1);
+print '</td></tr>';
+// Year
+print '<tr><td>'.$langs->trans("Year").'</td><td>';
+if (! in_array($year,$arrayyears)) $arrayyears[$year]=$year;
+arsort($arrayyears);
+print $form->selectarray('year',$arrayyears,$year,0);
 print '</td></tr>';
 print '<tr><td align="center" colspan="2"><input type="submit" name="submit" class="button" value="'.$langs->trans("Refresh").'"></td></tr>';
 print '</table>';
 print '</form>';
 print '<br><br>';
-
-// Show array
-$data = $stats->getAllByYear();
 
 print '<table class="border" width="100%">';
 print '<tr height="24">';
@@ -203,14 +285,14 @@ foreach ($data as $val)
     {	// If we have empty year
         $oldyear--;
         print '<tr height="24">';
-        print '<td align="center"><a href="month.php?year='.$oldyear.'&amp;mode='.$mode.'">'.$oldyear.'</a></td>';
+        print '<td align="center"><a href="'.$_SERVER["PHP_SELF"].'?year='.$oldyear.'&amp;mode='.$mode.'">'.$oldyear.'</a></td>';
         print '<td align="right">0</td>';
         print '<td align="right">0</td>';
         print '<td align="right">0</td>';
         print '</tr>';
     }
     print '<tr height="24">';
-    print '<td align="center"><a href="month.php?year='.$year.'&amp;mode='.$mode.'">'.$year.'</a></td>';
+    print '<td align="center"><a href="'.$_SERVER["PHP_SELF"].'?year='.$year.'&amp;mode='.$mode.'">'.$year.'</a></td>';
     print '<td align="right">'.$val['nb'].'</td>';
     print '<td align="right">'.price(price2num($val['total'],'MT'),1).'</td>';
     print '<td align="right">'.price(price2num($val['avg'],'MT'),1).'</td>';
@@ -228,15 +310,20 @@ print '<td align="center" valign="top">';
 print '<table class="border" width="100%"><tr valign="top"><td align="center">';
 if ($mesg) { print $mesg; }
 else {
-    print '<img src="'.$fileurlnb.'" title="'.$langs->trans("NbOfOrders").'" alt="'.$langs->trans("NbOfProposals").'">';
+    print $px1->show();
     print "<br>\n";
-    print '<img src="'.$fileurlamount.'" title="'.$langs->trans("AmountTotal").'" alt="'.$langs->trans("AmountTotal").'">';
+    print $px2->show();
+    print "<br>\n";
+    print $px3->show();
 }
 print '</td></tr></table>';
 
 print '</td></tr></table>';
 
-$db->close();
+dol_fiche_end();
+
 
 llxFooter();
+
+$db->close();
 ?>

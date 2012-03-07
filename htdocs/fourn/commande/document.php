@@ -25,9 +25,9 @@
  */
 
 require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT.'/lib/order.lib.php');
-require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/fourn.lib.php");
+require_once(DOL_DOCUMENT_ROOT.'/core/lib/order.lib.php');
+require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/fourn.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 require_once DOL_DOCUMENT_ROOT."/fourn/class/fournisseur.commande.class.php";
 
@@ -74,11 +74,11 @@ if ($commande->fetch($_GET['id'],$_GET['ref']) < 0)
 // Envoi fichier
 if ($_POST["sendit"] && ! empty($conf->global->MAIN_UPLOAD_DOC))
 {
-	require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
+	require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
 
 	$upload_dir = $conf->fournisseur->dir_output . "/commande/" . dol_sanitizeFileName($commande->ref);
 
-	if (create_exdir($upload_dir) >= 0)
+	if (dol_mkdir($upload_dir) >= 0)
 	{
 		$resupload=dol_move_uploaded_file($_FILES['userfile']['tmp_name'], $upload_dir . "/" . $_FILES['userfile']['name'],0,0,$_FILES['userfile']['error']);
 		if (is_numeric($resupload) && $resupload > 0)
@@ -118,7 +118,7 @@ if ($action=='delete')
  * View
  */
 
-$html =	new	Form($db);
+$form =	new	Form($db);
 
 $id = $_GET['id'];
 $ref= $_GET['ref'];
@@ -153,7 +153,7 @@ if ($id > 0 || ! empty($ref))
 	// Ref
 	print '<tr><td width="35%">'.$langs->trans("Ref").'</td>';
 	print '<td colspan="2">';
-	print $html->showrefnav($commande,'ref','',1,'ref','ref');
+	print $form->showrefnav($commande,'ref','',1,'ref','ref');
 	print '</td>';
 	print '</tr>';
 

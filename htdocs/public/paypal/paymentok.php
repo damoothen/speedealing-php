@@ -31,7 +31,7 @@ define("NOCSRFCHECK",1);	// We accept to go on this page from external web site.
 require("../../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/paypal/lib/paypal.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/paypal/lib/paypalfunctions.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/company.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
 
 // Security check
 if (empty($conf->paypal->enabled)) accessforbidden('',1,1,1);
@@ -118,17 +118,17 @@ if ($PAYPALTOKEN)
     if (! empty($paymentType))
     {
         dol_syslog("We call GetExpressCheckoutDetails");
-        $resArray=GetDetails($token);
+        $resArray=getDetails($token);
         //var_dump($resarray);
 
         dol_syslog("We call DoExpressCheckoutPayment token=".$token." paymentType=".$paymentType." currencyCodeType=".$currencyCodeType." payerID=".$payerID." ipaddress=".$ipaddress." FinalPaymentAmt=".$FinalPaymentAmt." fulltag=".$fulltag);
-        $resArray=ConfirmPayment($token, $paymentType, $currencyCodeType, $payerID, $ipaddress, $FinalPaymentAmt, $fulltag);
+        $resArray=confirmPayment($token, $paymentType, $currencyCodeType, $payerID, $ipaddress, $FinalPaymentAmt, $fulltag);
 
         $ack = strtoupper($resArray["ACK"]);
         if($ack=="SUCCESS" || $ack=="SUCCESSWITHWARNING")
         {
         	$object = (object) 'paypal';
-        	
+
         	$object->source		= $source;
         	$object->ref		= $ref;
         	$object->payerID	= $payerID;
@@ -144,7 +144,7 @@ if ($PAYPALTOKEN)
             print $langs->trans("YourPaymentHasBeenRecorded")."<br>\n";
             print $langs->trans("ThisIsTransactionId",$TRANSACTIONID)."<br>\n";
             if (! empty($conf->global->PAYPAL_MESSAGE_OK)) print $conf->global->PAYPAL_MESSAGE_OK;
-            
+
             // Appel des triggers
             include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
             $interface=new Interfaces($db);

@@ -1,6 +1,7 @@
 -- ============================================================================
--- Copyright (C) 2003 Rodolphe Quiedeville <rodolphe@quiedeville.org>
--- Copyright (C) 2009 Laurent Destailleur  <eldy@users.sourceforge.net>
+-- Copyright (C) 2003		Rodolphe Quiedeville	<rodolphe@quiedeville.org>
+-- Copyright (C) 2009-2011	Laurent Destailleur		<eldy@users.sourceforge.net>
+-- Copyright (C) 2009-2011	Regis Houssin			<regis@dolibarr.fr>
 --
 -- This program is free software; you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -20,13 +21,16 @@
 create table llx_product_fournisseur_price
 (
   rowid                       integer AUTO_INCREMENT PRIMARY KEY,
+  entity				      integer DEFAULT 1 NOT NULL,	   -- multi company id
   datec                       datetime,
   tms                         timestamp,
-  fk_product_fournisseur      integer      NOT NULL,
+  fk_product_fournisseur      integer      NOT NULL,	-- deprecated
+  fk_product				  integer,
+  fk_soc                      integer,
+  ref_fourn                   varchar(30),
   fk_availability             integer,	   
   price                       double(24,8) DEFAULT 0,
   quantity                    double,
   unitprice                   double(24,8) DEFAULT 0,
   fk_user                     integer
-
 )ENGINE=innodb;

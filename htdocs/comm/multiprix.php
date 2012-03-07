@@ -24,7 +24,7 @@
  */
 
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/company.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
 
 $langs->load("orders");
@@ -152,7 +152,7 @@ if ($_socid > 0)
 			print '<td>'.dol_print_date($db->jdate($obj->dc),"dayhour").'</td>';
 			print '<td>'.$obj->price_level.' </td>';
 			$userstatic->id=$obj->uid;
-			$userstatic->nom=$obj->login;
+			$userstatic->lastname=$obj->login;
 			print '<td align="right">'.$userstatic->getNomUrl(1).'</td>';
 			print '</tr>';
 			$i++;

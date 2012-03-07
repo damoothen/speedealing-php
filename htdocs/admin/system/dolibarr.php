@@ -1,5 +1,5 @@
 <?php
-/* Copyright (C) 2005-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
+/* Copyright (C) 2005-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2007      Rodolphe Quiedeville <rodolphe@quiedeville.org>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -22,8 +22,8 @@
  */
 
 require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/memory.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/date.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/memory.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/date.lib.php");
 
 $langs->load("admin");
 $langs->load("install");
@@ -87,7 +87,7 @@ $var=!$var;
 print '<tr '.$bc[$var].'><td width="300">'.$langs->trans("CurrentTheme").'</td><td colspan="2">'.$conf->theme.'</td></tr>'."\n";
 $var=!$var;
 print '<tr '.$bc[$var].'><td width="300">'.$langs->trans("CurrentMenuHandler").'</td><td colspan="2">';
-if (preg_match('/^smartphone/',$conf->smart_menu) && isset($conf->browser->phone)) print $conf->smart_menu;
+if (preg_match('/^smartphone/',$conf->smart_menu) && ! empty($conf->browser->phone)) print $conf->smart_menu;
 else print $conf->top_menu;
 print '</td></tr>'."\n";
 print '</table>';
@@ -141,59 +141,52 @@ $dec=$langs->trans("SeparatorDecimal");
 print '<tr '.$bc[$var].'><td width="300">'.$langs->trans("CurrentValueSeparatorDecimal").'</td><td>'.$dec.'</td></tr>'."\n";
 // Show results of functions to see if everything works
 $var=!$var;
-print '<tr '.$bc[$var].'><td width="300">=> price2num(1233.56+1)</td><td>'.price2num(1233.56+1,'2').'</td></tr>';
+print '<tr '.$bc[$var].'><td width="300">&nbsp; => price2num(1233.56+1)</td><td>'.price2num(1233.56+1,'2').'</td></tr>';
 $var=!$var;
-print "<tr ".$bc[$var].'><td width=\"300\">=> price2num('."'1".$thousand."234".$dec."56')</td><td>".price2num("1".$thousand."234".$dec."56",'2')."</td>";
+print "<tr ".$bc[$var].'><td width=\"300\">&nbsp; => price2num('."'1".$thousand."234".$dec."56')</td><td>".price2num("1".$thousand."234".$dec."56",'2')."</td>";
 if (($thousand != ',' && $thousand != '.') || ($thousand != ' '))
 {
 	$var=!$var;
-	print "<tr ".$bc[$var].'><td width=\"300\">=> price2num('."'1 234.56')</td><td>".price2num("1 234.56",'2')."</td>";
+	print "<tr ".$bc[$var].'><td width=\"300\">&nbsp; => price2num('."'1 234.56')</td><td>".price2num("1 234.56",'2')."</td>";
 	print "</tr>\n";
 }
 $var=!$var;
-print '<tr '.$bc[$var].'><td width="300">=> price(1234.56)</td><td>'.price(1234.56).'</td>';
+print '<tr '.$bc[$var].'><td width="300">&nbsp; => price(1234.56)</td><td>'.price(1234.56).'</td>';
 // Timezone
 $txt =$langs->trans("OSTZ").' (variable system TZ): '.($_ENV["TZ"]?$_ENV["TZ"]:$langs->trans("NotDefined")).'<br>'."\n";
 $txt.=$langs->trans("PHPTZ").' (php.ini date.timezone): '.(ini_get("date.timezone")?ini_get("date.timezone"):$langs->trans("NotDefined")).''."\n"; // date.timezone must be in valued defined in http://fr3.php.net/manual/en/timezones.europe.php
-if (function_exists('date_default_timezone_get'))
-{
-	$var=!$var;
-	print '<tr '.$bc[$var].'><td width="300">'.$langs->trans("CurrentTimeZone").'</td><td>';	// Timezone server PHP
-	$a=date_default_timezone_get();
-	$a.=' ('.(-dol_mktime(0,0,0,1,1,1970)>0?'+':'').(-dol_mktime(0,0,0,1,1,1970)).')';
-    print $form->textwithtooltip($a,$txt,2,1,img_info(''));
-	print '</td></tr>'."\n";	// value defined in http://fr3.php.net/manual/en/timezones.europe.php
-}
-else
-{
-    $var=!$var;
-    print '<tr '.$bc[$var].'><td width="300">'.$langs->trans("PHPServerOffsetWithGreenwich").'</td><td>';
-    $a=(-dol_mktime(0,0,0,1,1,1970)>0?'+':'').(-dol_mktime(0,0,0,1,1,1970));
-    print $form->textwithtooltip($a,$txt,2,1,img_info(''));
-    print '</td></tr>'."\n";
-}
 $var=!$var;
-print '<tr '.$bc[$var].'><td width="300">=> '.$langs->trans("CurrentHour").'</td><td>'.dol_print_date(dol_now(),'dayhour','tzserver').'</td></tr>'."\n";
+print '<tr '.$bc[$var].'><td width="300">'.$langs->trans("CurrentTimeZone").'</td><td>';	// Timezone server PHP
+$a=getServerTimeZoneString();
+$a.=' '.(getServerTimeZoneInt()>=0?'+':'').getServerTimeZoneInt();
+$a.=' ('.(getServerTimeZoneInt()>=0?'+':'').(getServerTimeZoneInt()*3600).')';
+print $form->textwithtooltip($a,$txt,2,1,img_info(''));
+print '</td></tr>'."\n";	// value defined in http://fr3.php.net/manual/en/timezones.europe.php
 $var=!$var;
-print '<tr '.$bc[$var].'><td width="300">=> dol_print_date(0,"dayhourtext")</td><td>'.dol_print_date(0,"dayhourtext").'</td>';
+print '<tr '.$bc[$var].'><td width="300">&nbsp; => '.$langs->trans("CurrentHour").'</td><td>'.dol_print_date(dol_now(),'dayhour','tzserver').'</td></tr>'."\n";
 $var=!$var;
-print '<tr '.$bc[$var].'><td width="300">=> dol_get_first_day(1970,1,false)</td><td>'.dol_get_first_day(1970,1,false).' &nbsp; &nbsp; (=> dol_print_date() or idate() of this value = '.dol_print_date(dol_get_first_day(1970,1,false),'dayhour').')</td>';
+print '<tr '.$bc[$var].'><td width="300">&nbsp; => dol_print_date(0,"dayhourtext")</td><td>'.dol_print_date(0,"dayhourtext").'</td>';
 $var=!$var;
-print '<tr '.$bc[$var].'><td width="300">=> dol_get_first_day(1970,1,true)</td><td>'.dol_get_first_day(1970,1,true).' &nbsp; &nbsp; (=> dol_print_date() or idate() of this value = '.dol_print_date(dol_get_first_day(1970,1,true),'dayhour').')</td>';
+print '<tr '.$bc[$var].'><td width="300">&nbsp; => dol_get_first_day(1970,1,false)</td><td>'.dol_get_first_day(1970,1,false).' &nbsp; &nbsp; (=> dol_print_date() or idate() of this value = '.dol_print_date(dol_get_first_day(1970,1,false),'dayhour').')</td>';
+$var=!$var;
+print '<tr '.$bc[$var].'><td width="300">&nbsp; => dol_get_first_day(1970,1,true)</td><td>'.dol_get_first_day(1970,1,true).' &nbsp; &nbsp; (=> dol_print_date() or idate() of this value = '.dol_print_date(dol_get_first_day(1970,1,true),'dayhour').')</td>';
 // Parent company
 $var=!$var;
 print '<tr '.$bc[$var].'><td width="300">'.$langs->trans("CompanyTZ").'</td><td>'.$langs->trans("FeatureNotYetAvailable").'</td></tr>'."\n";
 $var=!$var;
-print '<tr '.$bc[$var].'><td width="300">=> '.$langs->trans("CompanyHour").'</td><td>'.$langs->trans("FeatureNotYetAvailable").'</td></tr>'."\n";
+print '<tr '.$bc[$var].'><td width="300">&nbsp; => '.$langs->trans("CompanyHour").'</td><td>'.$langs->trans("FeatureNotYetAvailable").'</td></tr>'."\n";
 // Client
 $var=!$var;
-print '<tr '.$bc[$var].'><td width="300">'.$langs->trans("ClientTZ").'</td><td>'.($_SESSION['dol_tz']!=''?($_SESSION['dol_tz']>=0?'+':'').$_SESSION['dol_tz']:'').' ('.($_SESSION['dol_tz']>=0?'+':'').($_SESSION['dol_tz']*60*60).')</td></tr>'."\n";
-//$var=!$var;
-//print '<tr '.$bc[$var].'><td width="300">=> '.$langs->trans("ClientOffsetWithGreenwich").'</td><td>'..'</td></tr>'."\n";
+$tz=(int) $_SESSION['dol_tz'] + (int) $_SESSION['dol_dst'];
+print '<tr '.$bc[$var].'><td width="300">'.$langs->trans("ClientTZ").'</td><td>'.($tz?($tz>=0?'+':'').$tz:'').' ('.($tz>=0?'+':'').($tz*60*60).')';
+print ' &nbsp; &nbsp; &nbsp; '.$langs->trans("DaylingSavingTime").': ';
+if ($_SESSION['dol_dst']>0) print yn(1);
+else print yn(0);
+if (! empty($_SESSION['dol_dst_first'])) print ' &nbsp; &nbsp; ('.dol_print_date(dol_stringtotime($_SESSION['dol_dst_first']),'dayhour','gmt').' - '.dol_print_date(dol_stringtotime($_SESSION['dol_dst_second']),'dayhour','gmt').')';
+print '</td></tr>'."\n";
+print '</td></tr>'."\n";
 $var=!$var;
-print '<tr '.$bc[$var].'><td width="300">'.$langs->trans("DaylingSavingTime").'</td><td>'.($_SESSION['dol_dst']>=0?yn(1):yn(0)).' ('.($_SESSION['dol_dst']>=0?'+':'').($_SESSION['dol_dst']*60*60).')</td></tr>'."\n";
-$var=!$var;
-print '<tr '.$bc[$var].'><td width="300">=> '.$langs->trans("ClientHour").'</td><td>'.dol_print_date(dol_now(),'dayhour','tzuser').'</td></tr>'."\n";
+print '<tr '.$bc[$var].'><td width="300">&nbsp; => '.$langs->trans("ClientHour").'</td><td>'.dol_print_date(dol_now(),'dayhour','tzuser').'</td></tr>'."\n";
 
 $var=!$var;
 $filesystemencoding=ini_get("unicode.filesystem_encoding");	// Disponible avec PHP 6.0
@@ -204,10 +197,12 @@ $tmp=ini_get("unicode.filesystem_encoding");						// Disponible avec PHP 6.0
 if (empty($tmp) && ! empty($_SERVER["WINDIR"])) $tmp='iso-8859-1';	// By default for windows
 if (empty($tmp)) $tmp='utf-8';										// By default for other
 if (! empty($conf->global->MAIN_FILESYSTEM_ENCODING)) $tmp=$conf->global->MAIN_FILESYSTEM_ENCODING;
-print '<tr '.$bc[$var].'><td width="300">=> '.$langs->trans("File encoding").'</td><td>'.$tmp.'</td></tr>'."\n";	// date.timezone must be in valued defined in http://fr3.php.net/manual/en/timezones.europe.php
+print '<tr '.$bc[$var].'><td width="300">&nbsp; => '.$langs->trans("File encoding").'</td><td>'.$tmp.'</td></tr>'."\n";	// date.timezone must be in valued defined in http://fr3.php.net/manual/en/timezones.europe.php
 
 print '</table>';
 print '<br>';
 
 llxFooter();
+
+$db->close();
 ?>

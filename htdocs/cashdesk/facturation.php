@@ -33,7 +33,8 @@ if ( $_GET['filtre'] ) {
 	if ($conf->stock->enabled && !empty($conf_fkentrepot)) $sql.= ", ps.reel";
 	$sql.= " FROM ".MAIN_DB_PREFIX."product as p";
 	if ($conf->stock->enabled && !empty($conf_fkentrepot)) $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product_stock as ps ON p.rowid = ps.fk_product AND ps.fk_entrepot = '".$conf_fkentrepot."'";
-	$sql.= " WHERE p.tosell = 1";
+	$sql.= " WHERE p.entity IN (".getEntity('product', 1).")";
+	$sql.= " AND p.tosell = 1";
 	if(!$conf->global->CASHDESK_SERVICES) $sql.= " AND p.fk_product_type = 0";
 	$sql.= " AND (p.ref LIKE '%".$_GET['filtre']."%' OR p.label LIKE '%".$_GET['filtre']."%' ";
 	if ($conf->barcode->enabled) $sql.= " OR p.barcode LIKE '%".$_GET['filtre']."%')";
@@ -69,7 +70,8 @@ if ( $_GET['filtre'] ) {
 	if ($conf->stock->enabled && !empty($conf_fkentrepot)) $sql.= ", ps.reel";
 	$sql.= " FROM ".MAIN_DB_PREFIX."product as p";
 	if ($conf->stock->enabled && !empty($conf_fkentrepot)) $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product_stock as ps ON p.rowid = ps.fk_product AND ps.fk_entrepot = '".$conf_fkentrepot."'";
-	$sql.= " WHERE p.tosell = 1";
+	$sql.= " WHERE p.entity IN (".getEntity('product', 1).")";
+	$sql.= " AND p.tosell = 1";
 	if(!$conf->global->CASHDESK_SERVICES) $sql.= " AND p.fk_product_type = 0";
 	$sql.= " ORDER BY p.label";
 
@@ -93,28 +95,27 @@ if ( $_GET['filtre'] ) {
 	$tab_designations=$ret;
 }
 
-$nbr_enreg = count ($tab_designations);
+$nbr_enreg = count($tab_designations);
 
-if ( $nbr_enreg > 1 ) {
-
-	if ( $nbr_enreg > $conf_taille_listes ) {
-
+if ( $nbr_enreg > 1 )
+{
+	if ( $nbr_enreg > $conf_taille_listes )
+	{
 		$top_liste_produits = '----- '.$conf_taille_listes.' '.$langs->transnoentitiesnoconv("CashDeskProducts").' '.$langs->trans("CashDeskOn").' '.$nbr_enreg.' -----';
-
-	} else {
-
+	}
+	else
+	{
 		$top_liste_produits = '----- '.$nbr_enreg.' '.$langs->transnoentitiesnoconv("CashDeskProducts").' '.$langs->trans("CashDeskOn").' '.$nbr_enreg.' -----';
-
 	}
 
-} else if ( $nbr_enreg == 1 ) {
-
+}
+else if ( $nbr_enreg == 1 )
+{
 	$top_liste_produits = '----- 1 '.$langs->transnoentitiesnoconv("ProductFound"). ' -----';
-
-} else {
-
+}
+else
+{
 	$top_liste_produits = '----- '.$langs->transnoentitiesnoconv("NoProductFound"). ' -----';
-
 }
 
 
@@ -129,7 +130,7 @@ $sql.= " FROM ".MAIN_DB_PREFIX."c_tva as t";
 $sql.= ", ".MAIN_DB_PREFIX."c_pays as p";
 $sql.= " WHERE t.fk_pays = p.rowid";
 $sql.= " AND t.active = 1";
-$sql.= " AND p.code = '".$mysoc->pays_code."'";
+$sql.= " AND p.code = '".$mysoc->country_code."'";
 //print $request;
 
 $res = $db->query($sql);
@@ -152,10 +153,10 @@ $tab_tva = $ret;
 
 
 // Reinitialisation du mode de paiement, en cas de retour aux achats apres validation
-$obj_facturation->mode_reglement ('RESET');
-$obj_facturation->montant_encaisse ('RESET');
-$obj_facturation->montant_rendu ('RESET');
-$obj_facturation->paiement_le ('RESET');
+$obj_facturation->getSetPaymentMode('RESET');
+$obj_facturation->montant_encaisse('RESET');
+$obj_facturation->montant_rendu('RESET');
+$obj_facturation->paiement_le('RESET');
 
 
 // Affichage des templates

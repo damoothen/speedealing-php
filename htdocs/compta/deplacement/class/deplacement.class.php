@@ -44,29 +44,31 @@ class Deplacement extends CommonObject
 	var $fk_user_author;
 	var $fk_user;
 	var $km;
-	var $note;
+	var $note;			// TODO obsolete
+	var $note_private;
 	var $note_public;
 	var $socid;
 	var $statut;		// 0=draft, 1=validated
 	var $fk_project;
 
    /**
-	*  \brief  Constructeur de la classe
-	*  \param  DB          handler acces base de donnees
+	* Constructor
+	*
+	* @param	DoliDB		$db		Database handler
 	*/
-	function Deplacement($DB)
+	function __construct($db)
 	{
-		$this->db = $DB;
+		$this->db = $db;
 
 		return 1;
 	}
 
 	/**
 	 * Create object in database
-	 *
-	 * @param 	$user	User that creates
-	 * @return 	int		<0 if KO, >0 if OK
 	 * TODO Add ref number
+	 *
+	 * @param	User	$user	User that creates
+	 * @return 	int				<0 if KO, >0 if OK
 	 */
 	function create($user)
 	{
@@ -105,13 +107,13 @@ class Deplacement extends CommonObject
 		$sql.= ", ".$user->id;
 		$sql.= ", ".$this->fk_user;
 		$sql.= ", '".$this->type."'";
-		$sql.= ", ".($this->note?"'".$this->db->escape($this->note)."'":"null");
+		$sql.= ", ".($this->note_private?"'".$this->db->escape($this->note_private)."'":"null");
 		$sql.= ", ".($this->note_public?"'".$this->db->escape($this->note_public)."'":"null");
 		$sql.= ", ".($this->fk_project > 0? $this->fk_project : 0);
 		$sql.= ", ".($this->fk_soc > 0? $this->fk_soc : "null");
 		$sql.= ")";
 
-		dol_syslog("Deplacement::create sql=".$sql, LOG_DEBUG);
+		dol_syslog(get_class($this)."::create sql=".$sql, LOG_DEBUG);
 		$result = $this->db->query($sql);
 		if ($result)
 		{
@@ -124,6 +126,7 @@ class Deplacement extends CommonObject
 			}
 			else
 			{
+				$this->error=$this->db->error();
 				$this->db->rollback();
 				return $result;
 			}
@@ -138,7 +141,10 @@ class Deplacement extends CommonObject
 	}
 
 	/**
+	 *	Update record
 	 *
+	 *	@param	User	$user		User making update
+	 *	@return	int					<0 if KO, >0 if OK
 	 */
 	function update($user)
 	{
@@ -171,14 +177,16 @@ class Deplacement extends CommonObject
 		$sql .= " SET km = ".$this->km;		// This is a distance or amount
 		$sql .= " , dated = '".$this->db->idate($this->date)."'";
 		$sql .= " , type = '".$this->type."'";
+		$sql .= " , fk_statut = '".$this->statut."'";
 		$sql .= " , fk_user = ".$this->fk_user;
+		$sql .= " , fk_user_modif = ".$user->id;
 		$sql .= " , fk_soc = ".($this->socid > 0?$this->socid:'null');
-		$sql .= " , note = ".($this->note?"'".$this->db->escape($this->note)."'":"null");
+		$sql .= " , note = ".($this->note_private?"'".$this->db->escape($this->note_private)."'":"null");
 		$sql .= " , note_public = ".($this->note_public?"'".$this->db->escape($this->note_public)."'":"null");
 		$sql .= " , fk_projet = ".($this->fk_project>0?$this->fk_project:0);
 		$sql .= " WHERE rowid = ".$this->id;
 
-		dol_syslog("Deplacement::update sql=".$sql, LOG_DEBUG);
+		dol_syslog(get_class($this)."::update sql=".$sql, LOG_DEBUG);
 		$result = $this->db->query($sql);
 		if ($result)
 		{
@@ -187,14 +195,17 @@ class Deplacement extends CommonObject
 		}
 		else
 		{
-			$this->db->rollback();
 			$this->error=$this->db->lasterror();
+			$this->db->rollback();
 			return -1;
 		}
 	}
 
    /**
-	*	Load an object from database
+	* Load an object from database
+	*
+	* @param	int		$id		Id of record to load
+	* @return	int				<0 if KO, >0 if OK
 	*/
 	function fetch($id)
 	{
@@ -202,23 +213,23 @@ class Deplacement extends CommonObject
 		$sql.= " FROM ".MAIN_DB_PREFIX."deplacement";
 		$sql.= " WHERE rowid = ".$id;
 
-		dol_syslog("Deplacement::fetch sql=".$sql, LOG_DEBUG);
+		dol_syslog(get_class($this)."::fetch sql=".$sql, LOG_DEBUG);
 		$result = $this->db->query($sql);
 		if ( $result )
 		{
 			$obj = $this->db->fetch_object($result);
 
-			$this->id          = $obj->rowid;
-			$this->ref         = $obj->rowid;
-			$this->date        = $this->db->jdate($obj->dated);
-			$this->fk_user     = $obj->fk_user;
-			$this->socid       = $obj->fk_soc;
-			$this->km          = $obj->km;
-			$this->type        = $obj->type;
-			$this->fk_statut   = $obj->fk_statut;
-			$this->note        = $obj->note;
-			$this->note_public = $obj->note_public;
-			$this->fk_project  = $obj->fk_projet;
+			$this->id			= $obj->rowid;
+			$this->ref			= $obj->rowid;
+			$this->date			= $this->db->jdate($obj->dated);
+			$this->fk_user		= $obj->fk_user;
+			$this->socid		= $obj->fk_soc;
+			$this->km			= $obj->km;
+			$this->type			= $obj->type;
+			$this->statut	    = $obj->fk_statut;
+			$this->note_private	= $obj->note;
+			$this->note_public	= $obj->note_public;
+			$this->fk_project	= $obj->fk_projet;
 
 			return 1;
 		}
@@ -230,30 +241,38 @@ class Deplacement extends CommonObject
 	}
 
    /**
+	*	Delete record
 	*
+	*	@param	int		$id		Id of record to delete
+	*	@return	int				<0 if KO, >0 if OK
 	*/
 	function delete($id)
 	{
+		$this->db->begin();
+
 		$sql = "DELETE FROM ".MAIN_DB_PREFIX."deplacement WHERE rowid = ".$id;
 
-		dol_syslog("Deplacement::delete sql=".$sql, LOG_DEBUG);
+		dol_syslog(get_class($this)."::delete sql=".$sql, LOG_DEBUG);
 		$result = $this->db->query($sql);
 		if ($result)
 		{
+			$this->db->commit();
 			return 1;
 		}
 		else
 		{
 			$this->error=$this->db->error();
+			$this->db->rollback();
 			return -1;
 		}
 	}
 
 
 	/**
-	 *    \brief      Retourne le libelle du statut
-	 *    \param      mode        0=long label, 1=short label, 2=Picto + short label, 3=Picto, 4=Picto + long label, 5=Short label + Picto
-	 * 	  \return     string      Libelle
+	 * Retourne le libelle du statut
+	 *
+	 * @param	int		$mode   	0=long label, 1=short label, 2=Picto + short label, 3=Picto, 4=Picto + long label, 5=Short label + Picto
+	 * @return  string   		   	Libelle
 	 */
 	function getLibStatut($mode=0)
 	{
@@ -261,10 +280,11 @@ class Deplacement extends CommonObject
 	}
 
 	/**
-	 *    \brief      Renvoi le libelle d'un statut donne
-	 *    \param      statut      id statut
-	 *    \param      mode        0=long label, 1=short label, 2=Picto + short label, 3=Picto, 4=Picto + long label, 5=Short label + Picto
-	 *    \return     string      Libelle
+	 *  Renvoi le libelle d'un statut donne
+	 *
+	 *  @param	int		$statut     Id status
+	 *  @param  int		$mode       0=long label, 1=short label, 2=Picto + short label, 3=Picto, 4=Picto + long label, 5=Short label + Picto
+	 *  @return string      		Libelle
 	 */
 	function LibStatut($statut,$mode=0)
 	{
@@ -280,30 +300,32 @@ class Deplacement extends CommonObject
 		}
 		if ($mode == 2)
 		{
-			//if ($statut==0) return img_picto($langs->trans($this->statuts_short[$statut]),'statut0').' '.$langs->trans($this->statuts_short[$statut]);
-			if ($statut==0 || $statut==1) return img_picto($langs->trans($this->statuts_short[$statut]),'statut4').' '.$langs->trans($this->statuts_short[$statut]);
+			if ($statut==0) return img_picto($langs->trans($this->statuts_short[$statut]),'statut0').' '.$langs->trans($this->statuts_short[$statut]);
+			if ($statut==1) return img_picto($langs->trans($this->statuts_short[$statut]),'statut4').' '.$langs->trans($this->statuts_short[$statut]);
 		}
 		if ($mode == 3)
 		{
-			//if ($statut==0) return img_picto($langs->trans($this->statuts_short[$statut]),'statut0');
-			if ($statut==0 || $statut==1) return img_picto($langs->trans($this->statuts_short[$statut]),'statut4');
+			if ($statut==0) return img_picto($langs->trans($this->statuts_short[$statut]),'statut0');
+			if ($statut==1) return img_picto($langs->trans($this->statuts_short[$statut]),'statut4');
 		}
 		if ($mode == 4)
 		{
 			//if ($statut==0) return img_picto($langs->trans($this->statuts_short[$statut]),'statut0').' '.$langs->trans($this->statuts[$statut]);
-			if ($statut==0 || $statut==1) return img_picto($langs->trans($this->statuts_short[$statut]),'statut4').' '.$langs->trans($this->statuts[$statut]);
+			if ($statut==0) return img_picto($langs->trans($this->statuts_short[$statut]),'statut0').' '.$langs->trans($this->statuts[$statut]);
+			if ($statut==1) return img_picto($langs->trans($this->statuts_short[$statut]),'statut4').' '.$langs->trans($this->statuts[$statut]);
 		}
 		if ($mode == 5)
 		{
-			//if ($statut==0) return $langs->trans($this->statuts_short[$statut]).' '.img_picto($langs->trans($this->statuts_short[$statut]),'statut0');
-			if ($statut==0 || $statut==1) return $langs->trans($this->statuts_short[$statut]).' '.img_picto($langs->trans($this->statuts_short[$statut]),'statut4');
+			if ($statut==0) return $langs->trans($this->statuts_short[$statut]).' '.img_picto($langs->trans($this->statuts_short[$statut]),'statut0');
+			if ($statut==1) return $langs->trans($this->statuts_short[$statut]).' '.img_picto($langs->trans($this->statuts_short[$statut]),'statut4');
 		}
 	}
 
 	/**
-	 *	\brief      Return clicable name (with picto eventually)
-	 *	\param		withpicto		0=Pas de picto, 1=Inclut le picto dans le lien, 2=Picto seul
-	 *	\return		string			Chaine avec URL
+	 *	Return clicable name (with picto eventually)
+	 *
+	 *	@param		int		$withpicto		0=Pas de picto, 1=Inclut le picto dans le lien, 2=Picto seul
+	 *	@return		string					Chaine avec URL
 	 */
 	function getNomUrl($withpicto=0)
 	{
@@ -327,6 +349,9 @@ class Deplacement extends CommonObject
 
 	/**
 	 * List of types
+	 *
+	 * @param	int		$active		Active or not
+	 * @return	void
 	 */
 	function listOfTypes($active=1)
 	{
@@ -338,7 +363,7 @@ class Deplacement extends CommonObject
         $sql.= " FROM ".MAIN_DB_PREFIX."c_type_fees";
         $sql.= " WHERE active = ".$active;
 
-        dol_syslog("Deplacement::listOfTypes sql=".$sql, LOG_DEBUG);
+        dol_syslog(get_class($this)."::listOfTypes sql=".$sql, LOG_DEBUG);
         $result = $this->db->query($sql);
         if ( $result )
         {
@@ -347,13 +372,61 @@ class Deplacement extends CommonObject
             while ($i < $num)
             {
                 $obj = $this->db->fetch_object($result);
-                $ret[$obj->id]=array('code'=>$obj->code, 'label'=>(($langs->trans($obj->code)!=$obj->code)?$langs->trans($obj->code):$obj->label));
+                $ret[$obj->code]=(($langs->trans($obj->code)!=$obj->code)?$langs->trans($obj->code):$obj->label);
                 $i++;
             }
         }
-        else dol_print_error($this->db);
+        else
+        {
+        	dol_print_error($this->db);
+        }
 
         return $ret;
+	}
+
+	/**
+	 * Information on record
+	 *
+	 * @param	int		$id      Id of record
+	 * @return	void
+	 */
+	function info($id)
+	{
+		$sql = 'SELECT c.rowid, c.datec, c.fk_user_author, c.fk_user_modif,';
+		$sql.= ' c.tms';
+		$sql.= ' FROM '.MAIN_DB_PREFIX.'deplacement as c';
+		$sql.= ' WHERE c.rowid = '.$id;
+
+		dol_syslog(get_class($this).'::info sql='.$sql);
+		$result = $this->db->query($sql);
+
+		if ($result)
+		{
+			if ($this->db->num_rows($result))
+			{
+				$obj = $this->db->fetch_object($result);
+				$this->id = $obj->rowid;
+				if ($obj->fk_user_author)
+				{
+					$cuser = new User($this->db);
+					$cuser->fetch($obj->fk_user_author);
+					$this->user_creation = $cuser;
+				}
+				if ($obj->fk_user_modif)
+				{
+					$muser = new User($this->db);
+					$muser->fetch($obj->fk_user_modif);
+					$this->user_modification = $muser;
+				}
+				$this->date_creation     = $this->db->jdate($obj->datec);
+				$this->date_modification = $this->db->jdate($obj->tms);
+			}
+			$this->db->free($result);
+		}
+		else
+		{
+			dol_print_error($this->db);
+		}
 	}
 
 }

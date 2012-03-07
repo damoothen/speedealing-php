@@ -1,6 +1,6 @@
 <?php
 /* Copyright (C) 2007      Patrick Raguin       <patrick.raguin@gmail.com>
- * Copyright (C) 2007-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2007-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2009-2011 Regis Houssin        <regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -25,19 +25,20 @@
 
 require("../../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formadmin.class.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/treeview.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/treeview.lib.php");
 
 $langs->load("other");
 $langs->load("admin");
 
-if (! $user->admin)
-  accessforbidden();
+if (! $user->admin) accessforbidden();
 
-$dirtop = "/includes/menus/standard";
-$dirleft = "/includes/menus/standard";
-$dirsmartphone = "/includes/menus/smartphone";
-
-$dirmenu = array($dirleft,$dirsmartphone);
+$dirstandard = array("/core/menus/standard");
+$dirsmartphone = array("/core/menus/smartphone");
+foreach($conf->menus_modules as $dir)
+{
+    $dirstandard[]=$dir.'standard';
+    $dirsmartphone[]=$dir.'standard';
+}
 
 $mesg=$_GET["mesg"];
 
@@ -198,8 +199,8 @@ if ($_POST["action"] == 'confirm_delete' && $_POST["confirm"] == 'yes')
  * View
  */
 
-$html=new Form($db);
-$htmladmin=new FormAdmin($db);
+$form=new Form($db);
+$formadmin=new FormAdmin($db);
 $arrayofjs=array('/admin/menus/menu.js.php?lang='.$langs->defaultlang);
 
 llxHeader('',$langs->trans("Menus"),'','',0,0,$arrayofjs);
@@ -207,10 +208,8 @@ llxHeader('',$langs->trans("Menus"),'','',0,0,$arrayofjs);
 
 print_fiche_titre($langs->trans("Menus"),'','setup');
 
-print $langs->trans("MenusEditorDesc")."<br>\n";
-print "<br>\n";
 
-if ($mesg) print '<div class="ok">'.$mesg.'.</div><br>';
+dol_htmloutput_mesg($mesg);
 
 
 $h = 0;
@@ -232,6 +231,10 @@ $h++;
 
 dol_fiche_head($head, 'editor', $langs->trans("Menus"));
 
+print $langs->trans("MenusEditorDesc")."<br>\n";
+print "<br>\n";
+
+
 // Confirmation for remove menu entry
 if ($_GET["action"] == 'delete')
 {
@@ -241,7 +244,7 @@ if ($_GET["action"] == 'delete')
 	$result = $db->query($sql);
 	$obj = $db->fetch_object($result);
 
-    $ret=$html->form_confirm("index.php?menu_handler=".$menu_handler."&menuId=".$_GET['menuId'],$langs->trans("DeleteMenu"),$langs->trans("ConfirmDeleteMenu",$obj->titre),"confirm_delete");
+    $ret=$form->form_confirm("index.php?menu_handler=".$menu_handler."&menuId=".$_GET['menuId'],$langs->trans("DeleteMenu"),$langs->trans("ConfirmDeleteMenu",$obj->titre),"confirm_delete");
     if ($ret == 'html') print '<br>';
 }
 
@@ -249,7 +252,7 @@ if ($_GET["action"] == 'delete')
 print '<form name="newmenu" class="nocellnopadd" action="'.$_SERVER["PHP_SELF"].'">';
 print '<input type="hidden" action="change_menu_handler">';
 print $langs->trans("MenuHandler").': ';
-print $htmladmin->select_menu_families($menu_handler,'menu_handler',$dirmenu);
+print $formadmin->select_menu_families($menu_handler,'menu_handler',array_merge($dirstandard,$dirsmartphone));
 print ' &nbsp; <input type="submit" class="button" value="'.$langs->trans("Refresh").'">';
 print '</form>';
 

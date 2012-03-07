@@ -25,21 +25,21 @@
 
 
 require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/product.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/product.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/comm/propal/class/propal.class.php");
 require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
 
 $langs->load("products");
 $langs->load("companies");
 
+$id = GETPOST('id', 'int');
+$ref = GETPOST('ref', 'alpha');
+
 // Security check
-if (isset($_GET["id"]) || isset($_GET["ref"]))
-{
-	$id = isset($_GET["id"])?$_GET["id"]:(isset($_GET["ref"])?$_GET["ref"]:'');
-}
-$fieldid = isset($_GET["ref"])?'ref':'rowid';
+$fieldvalue = (! empty($id) ? $id : (! empty($ref) ? $ref : ''));
+$fieldtype = (! empty($ref) ? 'ref' : 'rowid');
 if ($user->societe_id) $socid=$user->societe_id;
-$result=restrictedArea($user,'produit|service',$id,'product','','',$fieldid);
+$result=restrictedArea($user,'produit|service',$fieldvalue,'product&product','','',$fieldtype);
 
 $mesg = '';
 
@@ -57,7 +57,7 @@ if (! $sortfield) $sortfield="p.datep";
 /*
  * View
  */
-$html = new Form($db);
+$form = new Form($db);
 
 if ($_GET["id"] || $_GET["ref"])
 {
@@ -85,7 +85,7 @@ if ($_GET["id"] || $_GET["ref"])
 		// Reference
 		print '<tr>';
 		print '<td width="30%">'.$langs->trans("Ref").'</td><td colspan="3">';
-		print $html->showrefnav($product,'ref','',1,'ref');
+		print $form->showrefnav($product,'ref','',1,'ref');
 		print '</td>';
 		print '</tr>';
 
@@ -94,12 +94,12 @@ if ($_GET["id"] || $_GET["ref"])
 		print '</tr>';
 
 		// Status (to sell)
-		print '<tr><td>'.$langs->trans("Status").' ('.$langs->trans("Sell").')'.'</td><td colspan="3">';
+		print '<tr><td>'.$langs->trans("Status").' ('.$langs->trans("Sell").')</td><td colspan="3">';
 		print $product->getLibStatut(2,0);
 		print '</td></tr>';
 
 		// Status (to buy)
-		print '<tr><td>'.$langs->trans("Status").' ('.$langs->trans("Buy").')'.'</td><td colspan="3">';
+		print '<tr><td>'.$langs->trans("Status").' ('.$langs->trans("Buy").')</td><td colspan="3">';
 		print $product->getLibStatut(2,1);
 		print '</td></tr>';
 
@@ -118,7 +118,7 @@ if ($_GET["id"] || $_GET["ref"])
 		$sql.= ", ".MAIN_DB_PREFIX."propaldet as d";
 		if (!$user->rights->societe->client->voir && !$socid) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
 		$sql.= " WHERE p.fk_soc = s.rowid";
-		$sql.= " AND s.entity = ".$conf->entity;
+		$sql.= " AND p.entity = ".$conf->entity;
 		$sql.= " AND d.fk_propal = p.rowid";
 		$sql.= " AND d.fk_product =".$product->id;
 		if (!$user->rights->societe->client->voir && !$socid) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;

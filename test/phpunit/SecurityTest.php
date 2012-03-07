@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * or see http://www.gnu.org/
  */
 
 /**
@@ -27,8 +27,8 @@ global $conf,$user,$langs,$db;
 //define('TEST_DB_FORCE_TYPE','mysql');	// This is to force using mysql driver
 require_once 'PHPUnit/Autoload.php';
 require_once dirname(__FILE__).'/../../htdocs/master.inc.php';
-require_once dirname(__FILE__).'/../../htdocs/lib/functions.lib.php';
-require_once dirname(__FILE__).'/../../htdocs/lib/security.lib.php';
+require_once dirname(__FILE__).'/../../htdocs/core/lib/security.lib.php';
+require_once dirname(__FILE__).'/../../htdocs/core/lib/security2.lib.php';
 
 if (! defined('NOREQUIREUSER'))  define('NOREQUIREUSER','1');
 if (! defined('NOREQUIREDB'))    define('NOREQUIREDB','1');
@@ -40,6 +40,14 @@ if (! defined('NOREQUIREMENU'))  define('NOREQUIREMENU','1'); // If there is no 
 if (! defined('NOREQUIREHTML'))  define('NOREQUIREHTML','1'); // If we don't need to load the html.form.class.php
 if (! defined('NOREQUIREAJAX'))  define('NOREQUIREAJAX','1');
 if (! defined("NOLOGIN"))        define("NOLOGIN",'1');       // If this page is public (can be called outside logged session)
+
+if (empty($user->id))
+{
+    print "Load permissions for admin user nb 1\n";
+    $user->fetch(1);
+    $user->getrights();
+}
+$conf->global->MAIN_DISABLE_ALL_MAILS=1;
 
 
 /**
@@ -93,6 +101,9 @@ class SecurityTest extends PHPUnit_Framework_TestCase
     }
 
 	/**
+	 * Init phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function setUp()
     {
@@ -106,6 +117,9 @@ class SecurityTest extends PHPUnit_Framework_TestCase
     }
 
 	/**
+	 * End phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function tearDown()
     {
@@ -113,6 +127,9 @@ class SecurityTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testGETPOST
+     *
+     * @return string
      */
     public function testGETPOST()
     {
@@ -127,8 +144,9 @@ class SecurityTest extends PHPUnit_Framework_TestCase
         $_POST["param1"]="333";
 		$_GET["param2"]='a/b#e(pr)qq-rr\cc';
         $_GET["param3"]='"a/b#e(pr)qq-rr\cc';    // Same than param2 + "
+        $_GET["param4"]='../dir';
 
-        $result=GETPOST("id");              // Must return nothing
+        $result=GETPOST('id','int');              // Must return nothing
         print __METHOD__." result=".$result."\n";
         $this->assertEquals($result,'');
 
@@ -144,14 +162,21 @@ class SecurityTest extends PHPUnit_Framework_TestCase
         print __METHOD__." result=".$result."\n";
         $this->assertEquals($result,$_GET["param2"]);
 
-        $result=GETPOST("param3",'alpha');  // Must return '' as there is a forbidden char
+        $result=GETPOST("param3",'alpha');  // Must return '' as there is a forbidden char "
         print __METHOD__." result=".$result."\n";
         $this->assertEquals($result,'');
 
-    	return $result;
+        $result=GETPOST("param4",'alpha');  // Must return '' as there is a forbidden char ../
+        print __METHOD__." result=".$result."\n";
+        $this->assertEquals($result,'');
+
+        return $result;
     }
 
     /**
+     * testCheckLoginPassEntity
+     *
+     * @return	void
      */
     public function testCheckLoginPassEntity()
     {
@@ -177,6 +202,9 @@ class SecurityTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testEncodeDecode
+     *
+     * @return number
      */
     public function testEncodeDecode()
     {
@@ -187,10 +215,13 @@ class SecurityTest extends PHPUnit_Framework_TestCase
         print __METHOD__." encodedstring=".$encodedstring." ".base64_encode($stringtotest)."\n";
         $this->assertEquals($stringtotest,$decodedstring);
 
-        return $result;
+        return 0;
     }
 
     /**
+     * testGetRandomPassword
+     *
+     * @return number
      */
     public function testGetRandomPassword()
     {
@@ -210,7 +241,28 @@ class SecurityTest extends PHPUnit_Framework_TestCase
         print __METHOD__." genpass3=".$genpass3."\n";
         $this->assertEquals(strlen($genpass3),8);
 
-        return $result;
+        return 0;
     }
+
+    /**
+     * testRestrictedArea
+     *
+     * @return void
+     */
+    public function testRestrictedArea()
+    {
+    	global $conf,$user,$langs,$db;
+		$conf=$this->savconf;
+		$user=$this->savuser;
+		$langs=$this->savlangs;
+		$db=$this->savdb;
+
+		//$dummyuser=new User($db);
+		//$result=restrictedArea($dummyuser,'societe');
+
+		$result=restrictedArea($user,'societe');
+		$this->assertEquals(1,$result);
+    }
+
 }
 ?>

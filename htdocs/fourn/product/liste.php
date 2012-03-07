@@ -1,6 +1,6 @@
 <?php
 /* Copyright (C) 2001-2005 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2007 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2010	   Juanjo Menent        <jmenent@2byte.es>
  *
@@ -88,54 +88,47 @@ if ($fourn_id)
 }
 
 $sql = "SELECT p.rowid, p.label, p.ref, p.fk_product_type,";
-$sql .= " pf.fk_soc, pf.ref_fourn,";
-$sql .= " ppf.price as price, ppf.quantity as qty, ppf.unitprice,";
-$sql .= " s.rowid as socid, s.nom";
-$sql .= " FROM ".MAIN_DB_PREFIX."product as p";
-if ($catid)
-{
-	$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."categorie_product as cp ON cp.fk_product = p.rowid";
-}
-$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."product_fournisseur as pf ON p.rowid = pf.fk_product";
-$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."societe as s ON s.rowid = pf.fk_soc";
-$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."product_fournisseur_price as ppf ON ppf.fk_product_fournisseur = pf.rowid";
-
+$sql.= " ppf.fk_soc, ppf.ref_fourn, ppf.price as price, ppf.quantity as qty, ppf.unitprice,";
+$sql.= " s.rowid as socid, s.nom";
+$sql.= " FROM ".MAIN_DB_PREFIX."product as p";
+if ($catid) $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."categorie_product as cp ON cp.fk_product = p.rowid";
+$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product_fournisseur_price as ppf ON p.rowid = ppf.fk_product";
+$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."societe as s ON ppf.fk_soc = s.rowid";
+$sql.= " WHERE p.entity IN (".getEntity('product', 1).")";
 if ($_POST["mode"] == 'search')
 {
-	$sql .= " WHERE p.ref like '%".$_POST["sall"]."%'";
-	$sql .= " OR p.label like '%".$_POST["sall"]."%'";
+	$sql .= " AND (p.ref LIKE '%".$_POST["sall"]."%'";
+	$sql .= " OR p.label LIKE '%".$_POST["sall"]."%')";
 }
 else
 {
-	$sql .= " WHERE 1=1";
 	if ($_GET["type"] || $_POST["type"])
 	{
 		$sql .= " AND p.fk_product_type = ".(isset($_GET["type"])?$_GET["type"]:$_POST["type"]);
 	}
 	if ($sref)
 	{
-		$sql .= " AND p.ref like '%".$sref."%'";
+		$sql .= " AND p.ref LIKE '%".$sref."%'";
 	}
 	if ($sRefSupplier)
 	{
-		$sql .= " AND pf.ref_fourn like '%".$sRefSupplier."%'";
+		$sql .= " AND ppf.ref_fourn LIKE '%".$sRefSupplier."%'";
 	}
 	if ($snom)
 	{
-		$sql .= " AND p.label like '%".$snom."%'";
+		$sql .= " AND p.label LIKE '%".$snom."%'";
 	}
 	if($catid)
 	{
 		$sql .= " AND cp.fk_categorie = ".$catid;
 	}
-
 }
 if ($fourn_id > 0)
 {
-	$sql .= " AND p.rowid = pf.fk_product AND pf.fk_soc = ".$fourn_id;
+	$sql .= " AND ppf.fk_soc = ".$fourn_id;
 }
 $sql .= " ORDER BY ".$sortfield." ".$sortorder;
-$sql .= $db->plimit($limit + 1 ,$offset);
+$sql .= $db->plimit($limit + 1, $offset);
 
 
 dol_syslog("fourn/product/liste: sql=".$sql);
@@ -167,7 +160,7 @@ if ($resql)
 	if (isset($catid))
 	{
 		print "<div id='ways'>";
-		$c = new Categorie ($db, $catid);
+		$c = new Categorie($db, $catid);
 		$ways = $c->print_all_ways(' &gt; ','fourn/product/liste.php');
 		print " &gt; ".$ways[0]."<br>\n";
 		print "</div><br>";

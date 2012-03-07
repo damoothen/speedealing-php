@@ -26,8 +26,8 @@
 require ("../../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/projet/class/project.class.php");
 require_once(DOL_DOCUMENT_ROOT."/projet/class/task.class.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/project.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/date.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/project.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/date.lib.php");
 
 $mine = $_REQUEST['mode']=='mine' ? 1 : 0;
 
@@ -105,7 +105,7 @@ if ( $resql )
 		$projectstatic->ref=$row->ref;
 		print $projectstatic->getNomUrl(1);
 		print '</td>';
-		print '<td align="right">'.ConvertSecondToTime($row->nb).'</td>';
+		print '<td align="right">'.convertSecondToTime($row->nb).'</td>';
 		print "</tr>\n";
 		$total += $row->nb;
 	}
@@ -118,7 +118,7 @@ else
 }
 print '<tr class="liste_total">';
 print '<td>'.$langs->trans('Total').'</td>';
-print '<td align="right">'.ConvertSecondToTime($total).'</td>';
+print '<td align="right">'.convertSecondToTime($total).'</td>';
 print "</tr>\n";
 print "</table>";
 
@@ -160,7 +160,7 @@ if ( $resql )
 		$projectstatic->ref=$row->ref;
 		print $projectstatic->getNomUrl(1);
 		print '</td>';
-		print '<td align="right">'.ConvertSecondToTime($row->nb).'</td>';
+		print '<td align="right">'.convertSecondToTime($row->nb).'</td>';
 		print "</tr>\n";
 		$total += $row->nb;
 	}
@@ -173,7 +173,7 @@ else
 }
 print '<tr class="liste_total">';
 print '<td>'.$langs->trans('Total').'</td>';
-print '<td align="right">'.ConvertSecondToTime($total).'</td>';
+print '<td align="right">'.convertSecondToTime($total).'</td>';
 print "</tr>\n";
 print "</table>";
 
@@ -220,7 +220,7 @@ if ( $resql )
 		$projectstatic->ref=$row->ref;
 		print $projectstatic->getNomUrl(1);
 		print '</td>';
-		print '<td align="right">'.ConvertSecondToTime($row->nb).'</td>';
+		print '<td align="right">'.convertSecondToTime($row->nb).'</td>';
 		print "</tr>\n";
 		$total += $row->nb;
 	}
@@ -233,7 +233,7 @@ else
 }
 print '<tr class="liste_total">';
 print '<td>'.$langs->trans('Total').'</td>';
-print '<td align="right">'.ConvertSecondToTime($total).'</td>';
+print '<td align="right">'.convertSecondToTime($total).'</td>';
 print "</tr>\n";
 print "</table><br>";
 
@@ -271,7 +271,7 @@ if ( $resql )
 		$projectstatic->ref=$row->ref;
 		print $projectstatic->getNomUrl(1);
 		print '</td>';
-		print '<td align="right">'.ConvertSecondToTime($row->nb).'</td>';
+		print '<td align="right">'.convertSecondToTime($row->nb).'</td>';
 		print "</tr>\n";
 		$var=!$var;
 	}
@@ -314,7 +314,7 @@ if ( $resql )
 		$projectstatic->ref=$row->ref;
 		print $projectstatic->getNomUrl(1);
 		print '</td>';
-		print '<td align="right">'.ConvertSecondToTime($row->nb).'</td>';
+		print '<td align="right">'.convertSecondToTime($row->nb).'</td>';
 		print "</tr>\n";
 		$var=!$var;
 	}
@@ -328,7 +328,7 @@ print "</table>";
 
 print '</td></tr></table>';
 
-$db->close();
-
 llxFooter();
+
+$db->close();
 ?>

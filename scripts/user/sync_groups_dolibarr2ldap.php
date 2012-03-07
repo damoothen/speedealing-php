@@ -44,7 +44,7 @@ $now=$argv[1];
 $version='1.10';
 
 require_once($path."../../htdocs/master.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/ldap.class.php");
+require_once(DOL_DOCUMENT_ROOT."/core/class/ldap.class.php");
 require_once(DOL_DOCUMENT_ROOT."/user/class/usergroup.class.php");
 
 $error=0;
@@ -82,7 +82,7 @@ if ($resql)
 		$fgroup->id = $obj->rowid;
 		$fgroup->fetch($fgroup->id);
 
-		print $langs->trans("UpdateGroup")." rowid=".$fgroup->id." ".$fgroup->nom;
+		print $langs->trans("UpdateGroup")." rowid=".$fgroup->id." ".$fgroup->name;
 
 		$oldobject=$fgroup;
 

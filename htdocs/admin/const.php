@@ -1,7 +1,7 @@
 <?php
-/* Copyright (C) 2003      Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
+/* Copyright (C) 2003		Rodolphe Quiedeville	<rodolphe@quiedeville.org>
+ * Copyright (C) 2004-2011	Laurent Destailleur		<eldy@users.sourceforge.net>
+ * Copyright (C) 2005-2012	Regis Houssin			<regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,13 +24,14 @@
  */
 
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/admin.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
 
 $langs->load("admin");
 
-if (!$user->admin)
-accessforbidden();
-//var_dump($_POST);
+if (! $user->admin) accessforbidden();
+
+$action = GETPOST('action');
+$debug = GETPOST('debug');
 
 $typeconst=array('yesno','texte','chaine');
 
@@ -39,7 +40,7 @@ $typeconst=array('yesno','texte','chaine');
  * Actions
  */
 
-if ($_POST["action"] == 'add')
+if ($action == 'add')
 {
 	$error=0;
 
@@ -58,7 +59,7 @@ if ($_POST["action"] == 'add')
 	{
 		if (dolibarr_set_const($db, $_POST["constname"],$_POST["constvalue"],$typeconst[$_POST["consttype"]],1,isset($_POST["constnote"])?$_POST["constnote"]:'',$_POST["entity"]) < 0)
 		{
-			dolibarr_print_error($db);
+			dol_print_error($db);
 		}
 	}
 }
@@ -71,7 +72,7 @@ if (($_POST["const"] && isset($_POST["update"]) && $_POST["update"] == $langs->t
 		{
 			if (dolibarr_set_const($db, $const["name"],$const["value"],$const["type"],1,$const["note"],$const["entity"]) < 0)
 			{
-				dolibarr_print_error($db);
+				dol_print_error($db);
 			}
 		}
 	}
@@ -86,18 +87,18 @@ if ($_POST["const"] && $_POST["delete"] && $_POST["delete"] == $langs->trans("De
 		{
 			if (dolibarr_del_const($db, $const["rowid"], -1) < 0)
 			{
-				dolibarr_print_error($db);
+				dol_print_error($db);
 			}
 		}
 	}
 }
 
 // Delete line from delete picto
-if ($_GET["action"] == 'delete')
+if ($action == 'delete')
 {
-	if (dolibarr_del_const($db, $_GET["rowid"],$_GET["entity"]) < 0)
+	if (dolibarr_del_const($db, $_GET["rowid"], $_GET["entity"]) < 0)
 	{
-		dolibarr_print_error($db);
+		dol_print_error($db);
 	}
 }
 
@@ -112,7 +113,7 @@ llxHeader('',$langs->trans("OtherSetup"));
 if ($conf->use_javascript_ajax)
 {
 ?>
-<script type="text/javascript" language="javascript">
+<script type="text/javascript">
 jQuery(document).ready(function() {
 	jQuery("#updateconst").hide();
 	jQuery("#delconst").hide();
@@ -182,7 +183,7 @@ print '</tr>';
 print '</form>';
 print "\n";
 
-print '<form action="'.$_SERVER["PHP_SELF"].'" method="POST">';
+print '<form action="'.$_SERVER["PHP_SELF"].((empty($user->entity) && $debug)?'?debug=1':'').'" method="POST">';
 print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 
 // Show constants
@@ -195,7 +196,8 @@ $sql.= ", note";
 $sql.= ", entity";
 $sql.= " FROM ".MAIN_DB_PREFIX."const";
 $sql.= " WHERE entity IN (".$user->entity.",".$conf->entity.")";
-if ($user->entity || empty($conf->multicompany->enabled)) $sql.= " AND visible = 1";
+if (empty($user->entity) && $debug) {} // to force for superadmin
+elseif ($user->entity || empty($conf->multicompany->enabled)) $sql.= " AND visible = 1";
 $sql.= " ORDER BY entity, name ASC";
 
 dol_syslog("Const::listConstant sql=".$sql);
@@ -249,7 +251,7 @@ if ($result)
 		}
 		else
 		{
-			print '<a href="const.php?rowid='.$obj->rowid.'&entity='.$obj->entity.'&action=delete">'.img_delete().'</a>';
+			print '<a href="'.$_SERVER['PHP_SELF'].'?rowid='.$obj->rowid.'&entity='.$obj->entity.'&action=delete'.((empty($user->entity) && $debug)?'&debug=1':'').'">'.img_delete().'</a>';
 		}
 
 		print "</td></tr>\n";
@@ -275,8 +277,7 @@ if ($conf->use_javascript_ajax)
 
 print "</form>\n";
 
+llxFooter();
 
 $db->close();
-
-llxFooter();
 ?>

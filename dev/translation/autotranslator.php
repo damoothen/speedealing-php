@@ -1,6 +1,6 @@
 #!/usr/bin/php
 <?php
-/* Copyright (C) 2009 Laurent Destailleur  <eldy@users.sourceforge.net>
+/* Copyright (C) 2009-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,10 +18,12 @@
 
 /**
  *      \file       dev/translation/autotranslator.php
- *		\ingroup    mymodule othermodule1 othermodule2
- *      \brief      This file is an example for a command line script
- * 		\author		Put author name here
- *		\remarks	Put here some comments
+ *		\ingroup    dev
+ * 		\brief      This script uses google language ajax api as the translator engine
+ *                  The main translator function can be found at:
+ *                  http://code.google.com/intl/fr/apis/language/translate/overview.html
+ *                  http://translate.google.com/translate_tools
+ *                  https://code.google.com/apis/console
  */
 
 $sapi_type = php_sapi_name();
@@ -36,7 +38,7 @@ if (substr($sapi_type, 0, 3) == 'cgi') {
 
 // Include Dolibarr environment
 require_once($path.'../../htdocs/master.inc.php');
-require_once($path.'../../htdocs/lib/files.lib.php');
+require_once($path.'../../htdocs/core/lib/files.lib.php');
 // After this $db is an opened handler to database. We close it at end of file.
 
 // Load main language strings
@@ -54,8 +56,8 @@ $dir=DOL_DOCUMENT_ROOT."/langs";
 
 // Check parameters
 if (! isset($argv[2])) {
-    print "Usage:   ".$script_file."  lang_code_src lang_code_dest|all [langfile.lang]\n";
-    print "Example: ".$script_file."  en_US         pt_PT\n";
+    print "Usage:   ".$script_file."  lang_code_src lang_code_dest|all APIKEY [langfile.lang]\n";
+    print "Example: ".$script_file."  en_US         pt_PT              123456\n";
     print "Rem:     lang_code to use can be found on http://www.google.com/language_tools\n";
     exit;
 }
@@ -63,11 +65,12 @@ if (! isset($argv[2])) {
 // Show parameters
 print 'Argument 1='.$argv[1]."\n";
 print 'Argument 2='.$argv[2]."\n";
+print 'Argument 3='.$argv[3]."\n";
 $file='';
-if (isset($argv[3]))
+if (isset($argv[4]))
 {
-	$file=$argv[3];
-	print 'Argument 3='.$argv[3]."\n";
+	$file=$argv[4];
+	print 'Argument 4='.$argv[4]."\n";
 }
 print 'Files will be generated/updated in directory '.$dir."\n";
 
@@ -85,9 +88,9 @@ if ($argv[2] != 'all')
 	}
 }
 
-require_once(DOL_DOCUMENT_ROOT."/../dev/translation/langAutoParser.class.php");
+require_once(DOL_DOCUMENT_ROOT."/../dev/translation/autotranslator.class.php");
 
-$langParser = new langAutoParser($argv[2],$argv[1],$dir,$file);
+$langParser = new autoTranslator($argv[2],$argv[1],$dir,$file,$argv[3]);
 
 print "***** Finished *****\n";
 

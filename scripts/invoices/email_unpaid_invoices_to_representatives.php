@@ -42,12 +42,12 @@ if (! isset($argv[1]) || ! $argv[1]) {
 
 
 require($path."../../htdocs/master.inc.php");
-require_once (DOL_DOCUMENT_ROOT."/lib/CMailFile.class.php");
+require_once (DOL_DOCUMENT_ROOT."/core/class/CMailFile.class.php");
 
 
 $error = 0;
 
-$sql = "SELECT f.facnumber, f.total_ttc, s.nom, u.name, u.firstname, u.email";
+$sql = "SELECT f.facnumber, f.total_ttc, s.nom as name, u.name, u.firstname, u.email";
 $sql .= " FROM ".MAIN_DB_PREFIX."facture as f";
 $sql .= " , ".MAIN_DB_PREFIX."societe as s";
 $sql .= " , ".MAIN_DB_PREFIX."societe_commerciaux as sc";
@@ -85,7 +85,7 @@ if ($resql)
                 $total = 0;
             }
 
-            $message .= "Facture ".$obj->facnumber." : ".price($obj->total_ttc)." : ".$obj->nom."\n";
+            $message .= "Facture ".$obj->facnumber." : ".price($obj->total_ttc)." : ".$obj->name."\n";
             $total += $obj->total_ttc;
 
             dol_syslog("email_unpaid_invoices_to_representatives.php: ".$obj->email);
@@ -124,6 +124,7 @@ function envoi_mail($oldemail,$message,$total)
     $subject = "[Dolibarr] List of unpaid invoices";
     $sendto = $oldemail;
     $from = $conf->global->MAIN_EMAIL_FROM;
+    $errorsto = $conf->global->MAIN_MAIL_ERRORS_TO;
 	$msgishtml = 0;
 
     print "Envoi mail pour $oldemail, total: $total\n";

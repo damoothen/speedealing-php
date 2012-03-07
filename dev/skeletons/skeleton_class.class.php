@@ -1,5 +1,5 @@
 <?php
-/* Copyright (C) 2007-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
+/* Copyright (C) 2007-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) ---Put here your own copyright and developer email---
  *
  * This program is free software; you can redistribute it and/or modify
@@ -17,11 +17,10 @@
  */
 
 /**
- *      \file       dev/skeletons/skeleton_class.class.php
- *      \ingroup    mymodule othermodule1 othermodule2
- *      \brief      This file is an example for a CRUD class file (Create/Read/Update/Delete)
- *		\author		Put author name here
- *		\remarks	Put here some comments
+ *  \file       dev/skeletons/skeleton_class.class.php
+ *  \ingroup    mymodule othermodule1 othermodule2
+ *  \brief      This file is an example for a CRUD class file (Create/Read/Update/Delete)
+ *				Put here some comments
  */
 
 // Put here all includes required by your class file
@@ -31,9 +30,7 @@
 
 
 /**
- *      \class      Skeleton_Class
- *      \brief      Put here description of your class
- *		\remarks	Put here some comments
+ *	Put here description of your class
  */
 class Skeleton_Class // extends CommonObject
 {
@@ -52,11 +49,11 @@ class Skeleton_Class // extends CommonObject
     /**
      *  Constructor
      *
-     *  @param      DoliDb		$DB      Database handler
+     *  @param	DoliDb		$db      Database handler
      */
-    function Skeleton_Class($DB)
+    function __construct($db)
     {
-        $this->db = $DB;
+        $this->db = $db;
         return 1;
     }
 
@@ -64,9 +61,9 @@ class Skeleton_Class // extends CommonObject
     /**
      *  Create object into database
      *
-     *  @param      User	$user        User that create
-     *  @param      int		$notrigger   0=launch triggers after, 1=disable triggers
-     *  @return     int      		   	 <0 if KO, Id of created object if OK
+     *  @param	User	$user        User that create
+     *  @param  int		$notrigger   0=launch triggers after, 1=disable triggers
+     *  @return int      		   	 <0 if KO, Id of created object if OK
      */
     function create($user, $notrigger=0)
     {
@@ -138,8 +135,8 @@ class Skeleton_Class // extends CommonObject
     /**
      *  Load object in memory from database
      *
-     *  @param      int	$id    Id object
-     *  @return     int          <0 if KO, >0 if OK
+     *  @param	int		$id    Id object
+     *  @return int          	<0 if KO, >0 if OK
      */
     function fetch($id)
     {
@@ -181,9 +178,9 @@ class Skeleton_Class // extends CommonObject
     /**
      *  Update object into database
      *
-     *  @param      User	$user        User that modify
-     *  @param      int		$notrigger	 0=launch triggers after, 1=disable triggers
-     *  @return     int     		   	 <0 if KO, >0 if OK
+     *  @param	User	$user        User that modify
+     *  @param  int		$notrigger	 0=launch triggers after, 1=disable triggers
+     *  @return int     		   	 <0 if KO, >0 if OK
      */
     function update($user=0, $notrigger=0)
     {
@@ -249,8 +246,8 @@ class Skeleton_Class // extends CommonObject
  	/**
 	 *  Delete object in database
 	 *
-     *	@param     User	$user        User that delete
-     *  @param     int		$notrigger	 0=launch triggers after, 1=disable triggers
+     *	@param  User	$user        User that delete
+     *  @param  int		$notrigger	 0=launch triggers after, 1=disable triggers
 	 *  @return	int					 <0 if KO, >0 if OK
 	 */
 	function delete($user, $notrigger=0)
@@ -258,14 +255,7 @@ class Skeleton_Class // extends CommonObject
 		global $conf, $langs;
 		$error=0;
 
-		$sql = "DELETE FROM ".MAIN_DB_PREFIX."mytable";
-		$sql.= " WHERE rowid=".$this->id;
-
 		$this->db->begin();
-
-		dol_syslog(get_class($this)."::delete sql=".$sql);
-		$resql = $this->db->query($sql);
-    	if (! $resql) { $error++; $this->errors[]="Error ".$this->db->lasterror(); }
 
 		if (! $error)
 		{
@@ -281,6 +271,16 @@ class Skeleton_Class // extends CommonObject
 		        //if ($result < 0) { $error++; $this->errors=$interface->errors; }
 		        //// End call triggers
 			}
+		}
+
+		if (! $error)
+		{
+    		$sql = "DELETE FROM ".MAIN_DB_PREFIX."mytable";
+    		$sql.= " WHERE rowid=".$this->id;
+
+    		dol_syslog(get_class($this)."::delete sql=".$sql);
+    		$resql = $this->db->query($sql);
+        	if (! $resql) { $error++; $this->errors[]="Error ".$this->db->lasterror(); }
 		}
 
         // Commit or rollback
@@ -306,8 +306,8 @@ class Skeleton_Class // extends CommonObject
 	/**
 	 *	Load an object from its id and create a new one in database
 	 *
-	 *	@param      int		$fromid     Id of object to clone
-	 * 	@return		int					New id of clone
+	 *	@param	int		$fromid     Id of object to clone
+	 * 	@return	int					New id of clone
 	 */
 	function createFromClone($fromid)
 	{
@@ -339,7 +339,6 @@ class Skeleton_Class // extends CommonObject
 
 		if (! $error)
 		{
-
 
 
 		}

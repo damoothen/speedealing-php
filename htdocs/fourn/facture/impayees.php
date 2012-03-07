@@ -1,7 +1,8 @@
 <?php
-/* Copyright (C) 2002-2005 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004      Eric Seigne          <eric.seigne@ryxeo.com>
- * Copyright (C) 2004-2009 Laurent Destailleur  <eldy@users.sourceforge.net>
+/* Copyright (C) 2002-2005	Rodolphe Quiedeville	<rodolphe@quiedeville.org>
+ * Copyright (C) 2004		Eric Seigne				<eric.seigne@ryxeo.com>
+ * Copyright (C) 2004-2009	Laurent Destailleur		<eldy@users.sourceforge.net>
+ * Copyright (C) 2005-2012	Regis Houssin			<regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,15 +29,13 @@ require_once(DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.class.php');
 require_once(DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.facture.class.php');
 require_once(DOL_DOCUMENT_ROOT."/compta/paiement/class/paiement.class.php");
 
-if (!$user->rights->facture->lire)
-accessforbidden();
+if (! $user->rights->facture->lire) accessforbidden();
 
 $langs->load("companies");
 $langs->load("bills");
 
 
-
-if ($_GET["socid"]) { $socid=$_GET["socid"]; }
+$socid=GETPOST('socid','int');
 
 // Security check
 if ($user->societe_id > 0)
@@ -76,7 +75,7 @@ if (! $sortorder) $sortorder="ASC";
 
 if ($user->rights->fournisseur->facture->lire)
 {
-	$sql = "SELECT s.nom, s.rowid as socid,";
+	$sql = "SELECT s.rowid as socid, s.nom,";
 	$sql.= " f.rowid as ref, f.facnumber, f.total_ht, f.total_ttc,";
 	$sql.= " f.datef as df, f.date_lim_reglement as datelimite, ";
 	$sql.= " f.paye as paye, f.rowid as facid, f.fk_statut";
@@ -127,20 +126,19 @@ if ($user->rights->fournisseur->facture->lire)
 
 	if (dol_strlen($_POST["sf_ref"]) > 0)
 	{
-		$sql .= " AND f.facnumber like '%".$_POST["sf_ref"] . "%'";
+		$sql .= " AND f.facnumber like '%".$_POST["sf_ref"]."%'";
 	}
-	$sql.= " GROUP BY f.facnumber";
+	$sql.= " GROUP BY f.facnumber, f.rowid, f.total_ht, f.total_ttc, f.datef, f.date_lim_reglement, f.paye, f.fk_statut, s.rowid, s.nom";
 
 	$sql.= " ORDER BY ";
 	$listfield=explode(',',$sortfield);
 	foreach ($listfield as $key => $value) $sql.=$listfield[$key]." ".$sortorder.",";
 	$sql.= " f.facnumber DESC";
 
-	$result = $db->query($sql);
-
-	if ($result)
+	$resql = $db->query($sql);
+	if ($resql)
 	{
-		$num = $db->num_rows($result);
+		$num = $db->num_rows($resql);
 
 		if ($socid)
 		{
@@ -196,11 +194,11 @@ if ($user->rights->fournisseur->facture->lire)
 
 			while ($i < $num)
 			{
-				$objp = $db->fetch_object($result);
+				$objp = $db->fetch_object($resql);
 
 				$var=!$var;
 
-				print "<tr $bc[$var]>";
+				print "<tr ".$bc[$var].">";
 				$classname = "impayee";
 
 				print '<td nowrap>';
@@ -249,7 +247,7 @@ if ($user->rights->fournisseur->facture->lire)
 		}
 
 		print "</table>";
-		$db->free();
+		$db->free($resql);
 	}
 	else
 	{
@@ -258,10 +256,7 @@ if ($user->rights->fournisseur->facture->lire)
 
 }
 
-
-
-
+// End of page
 $db->close();
-
 llxFooter();
 ?>

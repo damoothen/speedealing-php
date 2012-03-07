@@ -1,6 +1,6 @@
 <?php
 /* Copyright (C) 2001-2005 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -26,17 +26,19 @@
 require("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/projet/class/project.class.php");
 require_once(DOL_DOCUMENT_ROOT."/projet/class/task.class.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/project.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/project.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
-require_once(DOL_DOCUMENT_ROOT."/includes/modules/project/modules_project.php");
+require_once(DOL_DOCUMENT_ROOT."/core/modules/project/modules_project.php");
 
 $langs->load("projects");
 $langs->load('companies');
 
-$projectid = GETPOST('id','int');
-$projectref = GETPOST('ref');
+$id=GETPOST('id','int');
+$ref = GETPOST('ref','alpha');
+$action=GETPOST('action','alpha');
+$backtopage=GETPOST('backtopage','alpha');
 
-if ($projectid == '' && $projectref == '' && ($_GET['action'] != "create" && $_POST['action'] != "add" && $_POST["action"] != "update" && !$_POST["cancel"])) accessforbidden();
+if ($id == '' && $ref == '' && ($action != "create" && $action != "add" && $action != "update" && ! $_POST["cancel"])) accessforbidden();
 
 $mine = GETPOST('mode')=='mine' ? 1 : 0;
 //if (! $user->rights->projet->all->lire) $mine=1;	// Special for projects
@@ -44,7 +46,7 @@ $mine = GETPOST('mode')=='mine' ? 1 : 0;
 // Security check
 $socid=0;
 if ($user->societe_id > 0) $socid=$user->societe_id;
-$result = restrictedArea($user, 'projet', $projectid);
+$result = restrictedArea($user, 'projet', $id);
 
 
 
@@ -54,13 +56,13 @@ $result = restrictedArea($user, 'projet', $projectid);
  */
 
 // Cancel
-if (GETPOST("cancel") && GETPOST('backtopage'))
+if (GETPOST("cancel") && ! empty($backtopage))
 {
-    header("Location: ".GETPOST('backtopage'));
+    header("Location: ".$backtopage);
     exit;
 }
 
-if ($_POST["action"] == 'add' && $user->rights->projet->creer)
+if ($action == 'add' && $user->rights->projet->creer)
 {
     $error=0;
     if (empty($_POST["ref"]))
@@ -121,20 +123,20 @@ if ($_POST["action"] == 'add' && $user->rights->projet->creer)
         {
             $db->rollback();
 
-            $_GET["action"] = 'create';
+            $action = 'create';
         }
     }
     else
     {
-        $_GET["action"] = 'create';
+        $action = 'create';
     }
 }
 
-if ($_POST["action"] == 'update' && ! $_POST["cancel"] && $user->rights->projet->creer)
+if ($action == 'update' && ! $_POST["cancel"] && $user->rights->projet->creer)
 {
     $error=0;
 
-    if (empty($_POST["ref"]))
+    if (empty($ref))
     {
         $error++;
         //$_GET["id"]=$_POST["id"]; // On retourne sur la fiche projet
@@ -161,20 +163,19 @@ if ($_POST["action"] == 'update' && ! $_POST["cancel"] && $user->rights->projet-
 
         $result=$project->update($user);
 
-        $_GET["id"]=$project->id;  // On retourne sur la fiche projet
+        $id=$project->id;  // On retourne sur la fiche projet
     }
     else
     {
-        $_GET["id"]=$_POST["id"];
-        $_GET['action']='edit';
+        $action='edit';
     }
 }
 
 // Build doc
-if (GETPOST('action') == 'builddoc' && $user->rights->projet->creer)
+if ($action == 'builddoc' && $user->rights->projet->creer)
 {
     $project = new Project($db);
-    $project->fetch($_GET['id']);
+    $project->fetch($id);
     if (GETPOST('model'))
     {
         $project->setDocModel($user, GETPOST('model'));
@@ -199,10 +200,10 @@ if (GETPOST('action') == 'builddoc' && $user->rights->projet->creer)
     }
 }
 
-if (GETPOST('action') == 'confirm_validate' && GETPOST('confirm') == 'yes')
+if ($action == 'confirm_validate' && GETPOST('confirm') == 'yes')
 {
     $project = new Project($db);
-    $project->fetch(GETPOST("id"));
+    $project->fetch($id);
 
     $result = $project->setValid($user);
     if ($result <= 0)
@@ -211,10 +212,10 @@ if (GETPOST('action') == 'confirm_validate' && GETPOST('confirm') == 'yes')
     }
 }
 
-if (GETPOST('action') == 'confirm_close' && GETPOST('confirm') == 'yes')
+if ($action == 'confirm_close' && GETPOST('confirm') == 'yes')
 {
     $project = new Project($db);
-    $project->fetch(GETPOST("id"));
+    $project->fetch($id);
     $result = $project->setClose($user);
     if ($result <= 0)
     {
@@ -222,10 +223,10 @@ if (GETPOST('action') == 'confirm_close' && GETPOST('confirm') == 'yes')
     }
 }
 
-if (GETPOST('action') == 'confirm_reopen' && GETPOST('confirm') == 'yes')
+if ($action == 'confirm_reopen' && GETPOST('confirm') == 'yes')
 {
     $project = new Project($db);
-    $project->fetch(GETPOST("id"));
+    $project->fetch($id);
     $result = $project->setValid($user);
     if ($result <= 0)
     {
@@ -233,10 +234,10 @@ if (GETPOST('action') == 'confirm_reopen' && GETPOST('confirm') == 'yes')
     }
 }
 
-if (GETPOST("action") == 'confirm_delete' && GETPOST("confirm") == "yes" && $user->rights->projet->supprimer)
+if ($action == 'confirm_delete' && GETPOST("confirm") == "yes" && $user->rights->projet->supprimer)
 {
     $project = new Project($db);
-    $project->fetch(GETPOST("id"));
+    $project->fetch($id);
     $result=$project->delete($user);
     if ($result > 0)
     {
@@ -255,7 +256,7 @@ if (GETPOST("action") == 'confirm_delete' && GETPOST("confirm") == "yes" && $use
  *	View
  */
 
-$html = new Form($db);
+$form = new Form($db);
 $formfile = new FormFile($db);
 $userstatic = new User($db);
 
@@ -264,29 +265,29 @@ $help_url="EN:Module_Projects|FR:Module_Projets|ES:M&oacute;dulo_Proyectos";
 llxHeader("",$langs->trans("Projects"),$help_url);
 
 
-if ($_GET["action"] == 'create' && $user->rights->projet->creer)
+if ($action == 'create' && $user->rights->projet->creer)
 {
     /*
      * Create
      */
     print_fiche_titre($langs->trans("NewProject"));
 
-    if ($mesg) print $mesg.'<br>';
+    dol_htmloutput_mesg($mesg);
 
     print '<form action="'.$_SERVER["PHP_SELF"].'" method="POST">';
     print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
     print '<input type="hidden" name="action" value="add">';
-    print '<input type="hidden" name="backtopage" value="'.GETPOST('backtopage').'">';
-    
+    print '<input type="hidden" name="backtopage" value="'.$backtopage.'">';
+
     print '<table class="border" width="100%">';
 
     $project = new Project($db);
 
     $defaultref='';
     $obj = empty($conf->global->PROJECT_ADDON)?'mod_project_simple':$conf->global->PROJECT_ADDON;
-    if (! empty($conf->global->PROJECT_ADDON) && is_readable(DOL_DOCUMENT_ROOT ."/includes/modules/project/".$conf->global->PROJECT_ADDON.".php"))
+    if (! empty($conf->global->PROJECT_ADDON) && is_readable(DOL_DOCUMENT_ROOT ."/core/modules/project/".$conf->global->PROJECT_ADDON.".php"))
     {
-        require_once(DOL_DOCUMENT_ROOT ."/includes/modules/project/".$conf->global->PROJECT_ADDON.".php");
+        require_once(DOL_DOCUMENT_ROOT ."/core/modules/project/".$conf->global->PROJECT_ADDON.".php");
         $modProject = new $obj;
         $defaultref = $modProject->getNextValue($soc,$project);
     }
@@ -301,25 +302,25 @@ if ($_GET["action"] == 'create' && $user->rights->projet->creer)
 
     // Customer
     print '<tr><td>'.$langs->trans("ThirdParty").'</td><td>';
-    $text=$html->select_company(GETPOST("socid"),'socid','',1,1);
+    $text=$form->select_company(GETPOST('socid','int'),'socid','',1,1);
     $texthelp=$langs->trans("IfNeedToUseOhterObjectKeepEmpty");
-    print $html->textwithtooltip($text.' '.img_help(),$texthelp,1);
+    print $form->textwithtooltip($text.' '.img_help(),$texthelp,1);
     print '</td></tr>';
 
     // Public
     print '<tr><td>'.$langs->trans("Visibility").'</td><td>';
     $array=array(0 => $langs->trans("PrivateProject"),1 => $langs->trans("SharedProject"));
-    print $html->selectarray('public',$array,$project->public);
+    print $form->selectarray('public',$array,$project->public);
     print '</td></tr>';
 
     // Date start
     print '<tr><td>'.$langs->trans("DateStart").'</td><td>';
-    print $html->select_date('','project');
+    print $form->select_date('','project');
     print '</td></tr>';
 
     // Date end
     print '<tr><td>'.$langs->trans("DateEnd").'</td><td>';
-    print $html->select_date(-1,'projectend');
+    print $form->select_date(-1,'projectend');
     print '</td></tr>';
 
     // Description
@@ -332,7 +333,7 @@ if ($_GET["action"] == 'create' && $user->rights->projet->creer)
 
     print '<br><center>';
     print '<input type="submit" class="button" value="'.$langs->trans("Create").'">';
-    if (GETPOST('backtopage'))
+    if (! empty($backtopage))
     {
         print ' &nbsp; &nbsp; ';
 	    print '<input type="submit" class="button" name="cancel" value="'.$langs->trans("Cancel").'">';
@@ -347,51 +348,55 @@ else
      * Show or edit
      */
 
-    if ($mesg) print $mesg;
+    dol_htmloutput_mesg($mesg);
 
     $project = new Project($db);
-    $project->fetch($projectid,$projectref);
+    $project->fetch($id,$ref);
 
     if ($project->societe->id > 0)  $result=$project->societe->fetch($project->societe->id);
 
     // To verify role of users
-    $userAccess = $project->restrictedProjectArea($user);
+    $userAccess = $project->restrictedProjectArea($user,'read');
+    $userWrite  = $project->restrictedProjectArea($user,'write');
+    $userDelete = $project->restrictedProjectArea($user,'delete');
+    //print "userAccess=".$userAccess." userWrite=".$userWrite." userDelete=".$userDelete;
+
 
     $head=project_prepare_head($project);
     dol_fiche_head($head, 'project', $langs->trans("Project"),0,($project->public?'projectpub':'project'));
 
     // Confirmation validation
-    if ($_GET['action'] == 'validate')
+    if ($action == 'validate')
     {
-        $ret=$html->form_confirm($_SERVER["PHP_SELF"].'?id='.$project->id, $langs->trans('ValidateProject'), $langs->trans('ConfirmValidateProject'), 'confirm_validate','',0,1);
+        $ret=$form->form_confirm($_SERVER["PHP_SELF"].'?id='.$project->id, $langs->trans('ValidateProject'), $langs->trans('ConfirmValidateProject'), 'confirm_validate','',0,1);
         if ($ret == 'html') print '<br>';
     }
     // Confirmation close
-    if ($_GET["action"] == 'close')
+    if ($action == 'close')
     {
-        $ret=$html->form_confirm($_SERVER["PHP_SELF"]."?id=".$project->id,$langs->trans("CloseAProject"),$langs->trans("ConfirmCloseAProject"),"confirm_close",'','',1);
+        $ret=$form->form_confirm($_SERVER["PHP_SELF"]."?id=".$project->id,$langs->trans("CloseAProject"),$langs->trans("ConfirmCloseAProject"),"confirm_close",'','',1);
         if ($ret == 'html') print '<br>';
     }
     // Confirmation reopen
-    if ($_GET["action"] == 'reopen')
+    if ($action == 'reopen')
     {
-        $ret=$html->form_confirm($_SERVER["PHP_SELF"]."?id=".$project->id,$langs->trans("ReOpenAProject"),$langs->trans("ConfirmReOpenAProject"),"confirm_reopen",'','',1);
+        $ret=$form->form_confirm($_SERVER["PHP_SELF"]."?id=".$project->id,$langs->trans("ReOpenAProject"),$langs->trans("ConfirmReOpenAProject"),"confirm_reopen",'','',1);
         if ($ret == 'html') print '<br>';
     }
     // Confirmation delete
-    if ($_GET["action"] == 'delete')
+    if ($action == 'delete')
     {
         $text=$langs->trans("ConfirmDeleteAProject");
         $task=new Task($db);
         $taskarray=$task->getTasksArray(0,0,$project->id,0,0);
         $nboftask=count($taskarray);
         if ($nboftask) $text.='<br>'.img_warning().' '.$langs->trans("ThisWillAlsoRemoveTasks",$nboftask);
-        $ret=$html->form_confirm($_SERVER["PHP_SELF"]."?id=".$project->id,$langs->trans("DeleteAProject"),$text,"confirm_delete",'','',1);
+        $ret=$form->form_confirm($_SERVER["PHP_SELF"]."?id=".$project->id,$langs->trans("DeleteAProject"),$text,"confirm_delete",'','',1);
         if ($ret == 'html') print '<br>';
     }
 
 
-    if ($_GET["action"] == 'edit' && $userAccess)
+    if ($action == 'edit' && $userWrite > 0)
     {
         print '<form action="'.$_SERVER["PHP_SELF"].'" method="POST">';
         print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
@@ -410,13 +415,13 @@ else
 
         // Customer
         print '<tr><td>'.$langs->trans("Company").'</td><td>';
-        print $html->select_societes($project->societe->id,'socid','',1,1);
+        print $form->select_company($project->societe->id,'socid','',1,1);
         print '</td></tr>';
 
         // Visibility
         print '<tr><td>'.$langs->trans("Visibility").'</td><td>';
         $array=array(0 => $langs->trans("PrivateProject"),1 => $langs->trans("SharedProject"));
-        print $html->selectarray('public',$array,$project->public);
+        print $form->selectarray('public',$array,$project->public);
         print '</td></tr>';
 
         // Statut
@@ -424,12 +429,12 @@ else
 
         // Date start
         print '<tr><td>'.$langs->trans("DateStart").'</td><td>';
-        print $html->select_date($project->date_start,'project');
+        print $form->select_date($project->date_start,'project');
         print '</td></tr>';
 
         // Date end
         print '<tr><td>'.$langs->trans("DateEnd").'</td><td>';
-        print $html->select_date($project->date_end?$project->date_end:-1,'projectend');
+        print $form->select_date($project->date_end?$project->date_end:-1,'projectend');
         print '</td></tr>';
 
         // Description
@@ -453,10 +458,10 @@ else
         // Define a complementary filter for search of next/prev ref.
         if (! $user->rights->projet->all->lire)
         {
-            $projectsListId = $project->getProjectsAuthorizedForUser($user,$mine,1);
-            $project->next_prev_filter=" rowid in (".$projectsListId.")";
+            $projectsListId = $project->getProjectsAuthorizedForUser($user,$mine,0);
+            $project->next_prev_filter=" rowid in (".(count($projectsListId)?join(',',array_keys($projectsListId)):'0').")";
         }
-        print $html->showrefnav($project,'ref','',1,'ref','ref');
+        print $form->showrefnav($project,'ref','',1,'ref','ref');
         print '</td></tr>';
 
         // Label
@@ -502,12 +507,12 @@ else
      */
     print '<div class="tabsAction">';
 
-    if ($_GET["action"] != "edit" )
+    if ($action != "edit" )
     {
         // Validate
         if ($project->statut == 0 && $user->rights->projet->creer)
         {
-            if ($userAccess)
+            if ($userWrite > 0)
             {
                 print '<a class="butAction" href="fiche.php?id='.$project->id.'&action=validate">'.$langs->trans("Valid").'</a>';
             }
@@ -520,7 +525,7 @@ else
         // Modify
         if ($project->statut != 2 && $user->rights->projet->creer)
         {
-            if ($userAccess)
+            if ($userWrite > 0)
             {
                 print '<a class="butAction" href="fiche.php?id='.$project->id.'&amp;action=edit">'.$langs->trans("Modify").'</a>';
             }
@@ -533,7 +538,7 @@ else
         // Close
         if ($project->statut == 1 && $user->rights->projet->creer)
         {
-            if ($userAccess)
+            if ($userWrite > 0)
             {
                 print '<a class="butAction" href="fiche.php?id='.$project->id.'&amp;action=close">'.$langs->trans("Close").'</a>';
             }
@@ -546,7 +551,7 @@ else
         // Reopen
         if ($project->statut == 2 && $user->rights->projet->creer)
         {
-            if ($userAccess)
+            if ($userWrite > 0)
             {
                 print '<a class="butAction" href="fiche.php?id='.$project->id.'&amp;action=reopen">'.$langs->trans("ReOpen").'</a>';
             }
@@ -559,7 +564,7 @@ else
         // Delete
         if ($user->rights->projet->supprimer)
         {
-            if ($userAccess)
+            if ($userDelete > 0)
             {
                 print '<a class="butActionDelete" href="fiche.php?id='.$project->id.'&amp;action=delete">'.$langs->trans("Delete").'</a>';
             }
@@ -573,7 +578,7 @@ else
     print "</div>";
     print "<br>\n";
 
-    if ($_GET['action'] != 'presend')
+    if ($action != 'presend')
     {
         print '<table width="100%"><tr><td width="50%" valign="top">';
         print '<a name="builddoc"></a>'; // ancre
@@ -585,8 +590,8 @@ else
         $filename=dol_sanitizeFileName($project->ref);
         $filedir=$conf->projet->dir_output . "/" . dol_sanitizeFileName($project->ref);
         $urlsource=$_SERVER["PHP_SELF"]."?id=".$project->id;
-        $genallowed=($user->rights->projet->creer && $userAccess);
-        $delallowed=($user->rights->projet->supprimer && $userAccess);
+        $genallowed=($user->rights->projet->lire && $userAccess > 0);
+        $delallowed=($user->rights->projet->creer && $userWrite > 0);
 
         $var=true;
 
@@ -604,7 +609,7 @@ else
 
 }
 
-$db->close();
-
 llxFooter();
+
+$db->close();
 ?>

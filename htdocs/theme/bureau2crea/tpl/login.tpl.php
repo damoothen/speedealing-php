@@ -18,34 +18,154 @@
 
 header('Cache-Control: Public, must-revalidate');
 header("Content-type: text/html; charset=".$conf->file->character_set_client);
-?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<!-- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> -->
-<!-- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> -->
-<!-- <!DOCTYPE html> -->
-<!-- Ce DTD est KO car inhibe document.body.scrollTop -->
-<!-- <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> -->
 
+?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!-- BEGIN PHP TEMPLATE -->
-
 <html>
-<!-- <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr"> -->
-<head>
-<meta name="robots" content="noindex,nofollow" />
-<title><?php echo $langs->trans('Login'); ?></title>
-<script type="text/javascript" src="<?php echo DOL_URL_ROOT ?>/includes/jquery/js/jquery-latest.min.js"></script>
-<link rel="stylesheet" type="text/css" href="<?php echo $conf_css; ?>" />
-<?php echo $conf->global->MAIN_HTML_HEADER ?>
+
 <?php
-$favicon=DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/favicon.ico';
+print '<head>
+<meta name="robots" content="noindex,nofollow" />
+<meta name="author" content="Dolibarr Development Team">
+<link rel="shortcut icon" type="image/x-icon" href="'.$favicon.'"/>
+<title>'.$langs->trans('Login').' '.$title.'</title>'."\n";
+print '<!-- Includes for JQuery (Ajax library) -->'."\n";
+if (constant('JS_JQUERY_UI')) print '<link rel="stylesheet" type="text/css" href="'.JS_JQUERY_UI.'css/'.$jquerytheme.'/jquery-ui.min.css" />'."\n";  // JQuery
+else print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/css/'.$jquerytheme.'/jquery-ui-latest.custom.css" />'."\n";    // JQuery
+// JQuery. Must be before other includes
+print '<!-- Includes JS for JQuery -->'."\n";
+if (constant('JS_JQUERY')) print '<script type="text/javascript" src="'.JS_JQUERY.'jquery.min.js"></script>'."\n";
+else print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/js/jquery-latest.min'.$ext.'"></script>'."\n";
+print '<link rel="stylesheet" type="text/css" href="'.$conf_css.'" />
+<style type="text/css">
+<!--
+#login {
+	margin-top: 70px;
+	margin-bottom: 30px;
+}
+.login_table {
+	width: 512px;
+	border: 1px solid #C0C0C0;
+	background: #F0F0F0 url('.$login_background.') repeat-x;
+}
+-->
+</style>'."\n";
+if (! empty($conf->global->MAIN_HTML_HEADER)) print $conf->global->MAIN_HTML_HEADER;
+print '<!-- HTTP_USER_AGENT = '.$_SERVER['HTTP_USER_AGENT'].' -->
+</head>';
+
 ?>
-<link rel="shortcut icon" type="image/x-icon" href="<?php echo $favicon; ?>" />
-<!-- HTTP_USER_AGENT = <?php echo $_SERVER['HTTP_USER_AGENT']; ?> -->
-</head>
 
 <body class="body">
 
+<!-- Javascript code on logon page only to detect user tz, dst_observed, dst_first, dst_second -->
 <script type="text/javascript">
+function DisplayDstSwitchDates(firstsecond)
+{
+    var year = new Date().getYear();
+    if (year < 1000) year += 1900;
+
+    var firstSwitch = 0;
+    var secondSwitch = 0;
+    var lastOffset = 99;
+
+    // Loop through every month of the current year
+    for (i = 0; i < 12; i++)
+    {
+        // Fetch the timezone value for the month
+        var newDate = new Date(Date.UTC(year, i, 0, 0, 0, 0, 0));
+        var tz = -1 * newDate.getTimezoneOffset() / 60;
+
+        // Capture when a timzezone change occurs
+        if (tz > lastOffset)
+            firstSwitch = i-1;
+        else if (tz < lastOffset)
+            secondSwitch = i-1;
+
+        lastOffset = tz;
+    }
+
+    // Go figure out date/time occurences a minute before
+    // a DST adjustment occurs
+    var secondDstDate = FindDstSwitchDate(year, secondSwitch);
+    var firstDstDate = FindDstSwitchDate(year, firstSwitch);
+
+	if (firstsecond == 'first') return firstDstDate;
+	if (firstsecond == 'second') return secondDstDate;
+
+    if (firstDstDate == null && secondDstDate == null)
+        return 'Daylight Savings is not observed in your timezone.';
+    else
+        return 'Last minute before DST change occurs in ' +
+           year + ': ' + firstDstDate + ' and ' + secondDstDate;
+}
+
+function FindDstSwitchDate(year, month)
+{
+    // Set the starting date
+    var baseDate = new Date(Date.UTC(year, month, 0, 0, 0, 0, 0));
+    var changeDay = 0;
+    var changeMinute = -1;
+    var baseOffset = -1 * baseDate.getTimezoneOffset() / 60;
+    var dstDate;
+
+    // Loop to find the exact day a timezone adjust occurs
+    for (day = 0; day < 50; day++)
+    {
+        var tmpDate = new Date(Date.UTC(year, month, day, 0, 0, 0, 0));
+        var tmpOffset = -1 * tmpDate.getTimezoneOffset() / 60;
+
+        // Check if the timezone changed from one day to the next
+        if (tmpOffset != baseOffset)
+        {
+            var minutes = 0;
+            changeDay = day;
+
+            // Back-up one day and grap the offset
+            tmpDate = new Date(Date.UTC(year, month, day-1, 0, 0, 0, 0));
+            tmpOffset = -1 * tmpDate.getTimezoneOffset() / 60;
+
+            // Count the minutes until a timezone chnage occurs
+            while (changeMinute == -1)
+            {
+                tmpDate = new Date(Date.UTC(year, month, day-1, 0, minutes, 0, 0));
+                tmpOffset = -1 * tmpDate.getTimezoneOffset() / 60;
+
+                // Determine the exact minute a timezone change
+                // occurs
+                if (tmpOffset != baseOffset)
+                {
+                    // Back-up a minute to get the date/time just
+                    // before a timezone change occurs
+                    tmpOffset = new Date(Date.UTC(year, month,
+                                         day-1, 0, minutes-1, 0, 0));
+                    changeMinute = minutes;
+                    break;
+                }
+                else
+                    minutes++;
+            }
+
+            // Add a month (for display) since JavaScript counts
+            // months from 0 to 11
+            dstDate = tmpOffset.getMonth() + 1;
+
+            // Pad the month as needed
+            if (dstDate < 10) dstDate = "0" + dstDate;
+
+            // Add the day and year
+            dstDate = year + '-' + dstDate + '-' + tmpOffset.getDate() + 'T';
+
+            // Capture the time stamp
+            tmpDate = new Date(Date.UTC(year, month,
+                               day-1, 0, minutes-1, 0, 0));
+            dstDate += tmpDate.toTimeString().split(' ')[0] + 'Z';
+            return dstDate;
+        }
+    }
+}
+
 jQuery(document).ready(function () {
 	// Set focus on correct field
 	<?php if ($focus_element) { ?>jQuery('#<?php echo $focus_element; ?>').focus(); <?php } ?>		// Warning to use this only on visible element
@@ -65,8 +185,13 @@ jQuery(document).ready(function () {
 	} else {
 	    dst = "1"; // daylight savings time is observed
 	}
+	var dst_first=DisplayDstSwitchDates('first');
+	var dst_second=DisplayDstSwitchDates('second');
+	//alert(dst);
 	jQuery('#tz').val(std_time_offset);   				  // returns TZ
-	jQuery('#dst').val(dst);   							  // returns DST
+	jQuery('#dst_observed').val(dst);   				  // returns if DST is observed on summer
+	jQuery('#dst_first').val(dst_first);   				  // returns DST first switch in year
+	jQuery('#dst_second').val(dst_second);   			  // returns DST second switch in year
 	// Detect and save screen resolution
 	jQuery('#screenwidth').val(jQuery(window).width());   // returns width of browser viewport
 	jQuery('#screenheight').val(jQuery(window).height());   // returns width of browser viewport
@@ -78,7 +203,9 @@ jQuery(document).ready(function () {
 <input type="hidden" name="loginfunction" value="loginfunction" />
 <!-- Add fields to send local user information -->
 <input type="hidden" name="tz" id="tz" value="" />
-<input type="hidden" name="dst" id="dst" value="" />
+<input type="hidden" name="dst_observed" id="dst_observed" value="" />
+<input type="hidden" name="dst_first" id="dst_first" value="" />
+<input type="hidden" name="dst_second" id="dst_second" value="" />
 <input type="hidden" name="screenwidth" id="screenwidth" value="" />
 <input type="hidden" name="screenheight" id="screenheight" value="" />
 
@@ -90,7 +217,7 @@ jQuery(document).ready(function () {
 
 <div id="parameterBox">
 
-<div id="logBox"><strong><label for="username"><?php echo $langs->trans('Login'); ?></label></strong><input type="text" id="username" name="username" class="flat" size="15" maxlength="40" value="<?php echo $login; ?>" tabindex="1" /></div>
+<div id="logBox"><strong><label for="username"><?php echo $langs->trans('Login'); ?></label></strong><input type="text" id="username" name="username" class="flat" size="15" maxlength="40" value="<?php echo GETPOST('username')?GETPOST('username'):$login; ?>" tabindex="1" /></div>
 <div id="passBox"><strong><label for="password"><?php echo $langs->trans('Password'); ?></label></strong><input id="password" name="password" class="flat" type="password" size="15" maxlength="30" value="<?php echo $password; ?>" tabindex="2" /></div>
 
 	<?php if ($select_entity) { ?>
@@ -103,7 +230,7 @@ jQuery(document).ready(function () {
 			<input id="securitycode" class="flat" type="text" size="6" maxlength="5" name="code" tabindex="4" />
         </div>
         <div class="captchaImg">
-			<img src="<?php echo DOL_URL_ROOT ?>/lib/antispamimage.php" border="0" width="128" height="36" id="captcha" />
+			<img src="<?php echo DOL_URL_ROOT ?>/core/antispamimage.php" border="0" width="80" height="32" id="captcha" />
 			<a href="<?php echo $php_self; ?>"><?php echo $captcha_refresh; ?></a>
 		</div>
 	<?php } ?>
@@ -177,7 +304,7 @@ jQuery(document).ready(function () {
 <!-- cookie name used for this session = <?php echo $session_name ?> -->
 <!-- urlfrom in this session = <?php echo $_SESSION["urlfrom"] ?> -->
 
-<?php echo $conf->global->MAIN_HTML_FOOTER; ?>
+<?php if (! empty($conf->global->MAIN_HTML_FOOTER)) print $conf->global->MAIN_HTML_FOOTER; ?>
 
 </body>
 </html>

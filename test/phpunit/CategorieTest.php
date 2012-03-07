@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * or see http://www.gnu.org/
  */
 
 /**
@@ -28,6 +28,7 @@ global $conf,$user,$langs,$db;
 require_once 'PHPUnit/Autoload.php';
 require_once dirname(__FILE__).'/../../htdocs/master.inc.php';
 require_once dirname(__FILE__).'/../../htdocs/categories/class/categorie.class.php';
+require_once dirname(__FILE__).'/../../htdocs/product/class/product.class.php';
 
 if (empty($user->id))
 {
@@ -89,6 +90,9 @@ class CategorieTest extends PHPUnit_Framework_TestCase
     }
 
 	/**
+	 * Init phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function setUp()
     {
@@ -101,6 +105,9 @@ class CategorieTest extends PHPUnit_Framework_TestCase
 		print __METHOD__."\n";
     }
 	/**
+	 * End phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function tearDown()
     {
@@ -108,6 +115,9 @@ class CategorieTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testCategorieCreate
+     *
+     * @return int
      */
     public function testCategorieCreate()
     {
@@ -123,11 +133,60 @@ class CategorieTest extends PHPUnit_Framework_TestCase
 
     	$this->assertLessThan($result, 0);
     	print __METHOD__." result=".$result."\n";
+
+    	// TODO Add test on error when creating duplicate
+
+
     	return $result;
     }
 
     /**
+     * testCategorieProduct
+     *
+     * @param	int		$id		Id of category
+     * @return	int
+     *
      * @depends	testCategorieCreate
+     * The depends says test is run only if previous is ok
+     */
+    public function testCategorieProduct($id)
+    {
+    	global $conf,$user,$langs,$db;
+		$conf=$this->savconf;
+		$user=$this->savuser;
+		$langs=$this->savlangs;
+		$db=$this->savdb;
+
+		$localobjecttmp=new Categorie($this->savdb);
+    	$localobjecttmp->initAsSpecimen();
+    	$localobjecttmp->label='Specimen Category for product';
+    	$localobjecttmp->type=0;    // product category
+    	$catid=$localobjecttmp->create($user);
+
+        print __METHOD__." catid=".$catid."\n";
+        $this->assertLessThanOrEqual($catid, 0);
+
+        // Category
+		$localobject2=new Product($this->savdb);
+    	$localobject2->initAsSpecimen();
+    	$localobject2->ref.='-CATEG';
+    	$localobject2->tva_npr=1;
+    	$localobject2->catid=$catid;
+    	$result=$localobject2->create($user);
+
+        print __METHOD__." result=".$result."\n";
+    	$this->assertLessThanOrEqual($result, 0);
+
+    	return $id;
+    }
+
+    /**
+     * testCategorieFetch
+     *
+     * @param	int		$id		Id of category
+     * @return	int
+     *
+     * @depends	testCategorieProduct
      * The depends says test is run only if previous is ok
      */
     public function testCategorieFetch($id)
@@ -147,6 +206,11 @@ class CategorieTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testCategorieUpdate
+     *
+     * @param	Category		$localobject		Category
+     * @return	int
+
      * @depends	testCategorieFetch
      * The depends says test is run only if previous is ok
      */
@@ -167,25 +231,11 @@ class CategorieTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @depends	testCategorieUpdate
-     * The depends says test is run only if previous is ok
-     */
-    /*public function testCategorieXXX($localobject)
-    {
-    	global $conf,$user,$langs,$db;
-		$conf=$this->savconf;
-		$user=$this->savuser;
-		$langs=$this->savlangs;
-		$db=$this->savdb;
-
-    	$result=$localobject->delete(0);
-    	print __METHOD__." id=".$localobject->id." result=".$result."\n";
-
-    	$this->assertLessThan($result, 0);
-    	return $localobject;
-    }*/
-
-    /**
+     * testCategorieOther
+     *
+     * @param	Category	$localobject	Category
+     * @return	int
+     *
      * @depends testCategorieUpdate
      * The depends says test is run only if previous is ok
      */
@@ -205,17 +255,22 @@ class CategorieTest extends PHPUnit_Framework_TestCase
         $localobject2->initAsSpecimen();
 
         $retarray=$localobject->liste_photos('/');
-        print __METHOD__." retarry size=".count($rearray)."\n";
+        print __METHOD__." retarray size=".count($retarray)."\n";
         $this->assertTrue(is_array($retarray));
 
-        $ret=$localobject->is_fille($localobject2);
-        print __METHOD__." retarry size=".count($rearray)."\n";
-        $this->assertFalse($ret);
+        $retarray=$localobject->is_fille($localobject2);
+        print __METHOD__." retarry size=".count($retarray)."\n";
+        $this->assertFalse($retarray);
 
         return $localobject->id;
     }
 
     /**
+     * testCategorieDelete
+     *
+     * @param	int		$id		Id of category
+     * @return	int
+     *
      * @depends	testCategorieOther
      * The depends says test is run only if previous is ok
      */
@@ -237,6 +292,10 @@ class CategorieTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testCategorieStatic
+     *
+     * @return	void
+     *
      * @depends  testCategorieDelete
      */
     public function testCategorieStatic()
@@ -252,7 +311,7 @@ class CategorieTest extends PHPUnit_Framework_TestCase
 
 		print __METHOD__." retarray size=".count($retarray)."\n";
     	$this->assertTrue(is_array($retarray));
-    	return $result;
+    	return $retarray;
     }
 
 }

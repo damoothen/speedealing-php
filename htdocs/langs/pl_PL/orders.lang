@@ -140,7 +140,7 @@ ConfirmCloneOrder=Czy na pewno chcesz klon tej <b>kolejności %s?</b>
 // START - Lines generated via autotranslator.php tool (2010-09-04 01:33:40).
 // Reference language: en_US -> pl_PL
 OrderToProcess=Aby proces
-DispatchSupplierOrder=Sssss Odbiór aby dostawca
+DispatchSupplierOrder=%s Odbiór aby dostawca
 TypeContact_commande_internal_SALESREPFOLL=Przedstawiciela w ślad za zamówienie klienta
 TypeContact_commande_internal_SHIPPING=Przedstawiciela w ślad za koszty
 TypeContact_commande_external_BILLING=kontakt faktury klienta
@@ -153,3 +153,18 @@ TypeContact_order_supplier_external_SHIPPING=kontakt koszty dostawcy
 TypeContact_order_supplier_external_CUSTOMER=Kontaktowy dostawca w ślad za zamówienie
 PDFEdisonDescription=Prosty model celu
 // STOP - Lines generated via autotranslator.php tool (2010-09-04 01:34:15).
+
+
+// START - Lines generated via autotranslator.php tool (2012-02-29 17:18:29).
+// Reference language: en_US -> pl_PL
+SuppliersOrdersToProcess=Dostawcy zamówienia na przetwarzanie
+StatusOrderSentShort=W procesie
+ShippingExist=Przesyłka istnieje
+UnvalidateOrder=Unvalidate zamówienie
+ConfirmUnvalidateOrder=Czy na pewno chcesz przywrócić <b>%s</b> zamówień ze statusem projektu?
+OrderByMail=Poczta
+OrderByFax=Faks
+OrderByEMail=EMail
+OrderByWWW=Online
+OrderByPhone=Telefon
+// STOP - Lines generated via autotranslator.php tool (2012-02-29 17:18:53).

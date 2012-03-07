@@ -18,9 +18,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**	    \file       htdocs/install/inc.php
- * 		\ingroup	core
- *		\brief      File that define environment for install pages
+/**
+ * 	\file       htdocs/install/inc.php
+ * 	\ingroup	core
+ *	\brief      File that define environment for support pages
  */
 
 define('DOL_VERSION','3.2.0-alpha');	// Also defined in htdocs/master.inc.php (Ex: x.y.z-alpha, x.y.z)
@@ -35,9 +36,9 @@ if (! defined('ADODB_PATH'))
 }
 
 require_once('../core/class/translate.class.php');
-require_once('../lib/functions.lib.php');
-require_once('../lib/admin.lib.php');
-require_once('../lib/files.lib.php');
+require_once('../core/lib/functions.lib.php');
+require_once('../core/lib/admin.lib.php');
+require_once('../core/lib/files.lib.php');
 require_once(ADODB_PATH.'adodb-time.inc.php');
 
 error_reporting(E_ALL);	// To have all errors without disabled E_STRICT
@@ -53,25 +54,25 @@ if (isset($_SERVER["DOCUMENT_URI"]) && $_SERVER["DOCUMENT_URI"])
 }
 
 
-// Definition des constantes syslog
-if (function_exists("define_syslog_variables"))
+// Define syslog constants
+if (! defined('LOG_DEBUG'))
 {
-    if (version_compare(PHP_VERSION, '5.3.0', '<'))
+    if (function_exists("define_syslog_variables"))
     {
         define_syslog_variables(); // Deprecated since php 5.3.0, syslog variables no longer need to be initialized
     }
-}
-else
-{
-    // Pour PHP sans syslog (comme sous Windows)
-    define('LOG_EMERG',0);
-    define('LOG_ALERT',1);
-    define('LOG_CRIT',2);
-    define('LOG_ERR',3);
-    define('LOG_WARNING',4);
-    define('LOG_NOTICE',5);
-    define('LOG_INFO',6);
-    define('LOG_DEBUG',7);
+    else
+    {
+        // Pour PHP sans syslog (comme sous Windows)
+        define('LOG_EMERG',0);
+        define('LOG_ALERT',1);
+        define('LOG_CRIT',2);
+        define('LOG_ERR',3);
+        define('LOG_WARNING',4);
+        define('LOG_NOTICE',5);
+        define('LOG_INFO',6);
+        define('LOG_DEBUG',7);
+    }
 }
 
 $includeconferror='';
@@ -111,7 +112,7 @@ if (! defined('DONOTLOADCONF') && file_exists($conffile))
         {
             if (! empty($dolibarr_main_document_root) && ! empty($dolibarr_main_db_type))
             {
-                $result=include_once($dolibarr_main_document_root . "/lib/databases/".$dolibarr_main_db_type.".class.php");
+                $result=include_once($dolibarr_main_document_root . "/core/db/".$dolibarr_main_db_type.".class.php");
                 if (! $result)
                 {
                     $includeconferror='ErrorBadValueForDolibarrMainDBType';
@@ -200,9 +201,10 @@ if (constant('DOL_DATA_ROOT') && file_exists($lockfile))
 }
 
 
-// Forcage du log pour les install et mises a jour
+// Force usage of log file for install and upgrades
 $conf->syslog->enabled=1;
 $conf->global->SYSLOG_LEVEL=constant('LOG_DEBUG');
+if (! defined('SYSLOG_FILE_ON')) define('SYSLOG_FILE_ON',1);
 if (! defined('SYSLOG_FILE'))	// To avoid warning on systems with constant already defined
 {
     if (@is_writable('/tmp')) define('SYSLOG_FILE','/tmp/dolibarr_install.log');
@@ -212,10 +214,7 @@ if (! defined('SYSLOG_FILE'))	// To avoid warning on systems with constant alrea
     else if (@is_writable('../../')) define('SYSLOG_FILE','../../dolibarr_install.log');				// For others
     //print 'SYSLOG_FILE='.SYSLOG_FILE;exit;
 }
-if (! defined('SYSLOG_FILE_NO_ERROR'))
-{
-    define('SYSLOG_FILE_NO_ERROR',1);
-}
+if (! defined('SYSLOG_FILE_NO_ERROR')) define('SYSLOG_FILE_NO_ERROR',1);
 
 // Removed magic_quotes
 if (function_exists('get_magic_quotes_gpc'))	// magic_quotes_* removed in PHP6
@@ -285,9 +284,10 @@ function conf($dolibarr_main_document_root)
     if (empty($dolibarr_main_db_cryptkey)) $dolibarr_main_db_cryptkey='';
     $conf->db->dolibarr_main_db_cryptkey = $dolibarr_main_db_cryptkey;
 
-    // Forcage du log pour les install et mises a jour
+    // Force usage of log file for install and upgrades
     $conf->syslog->enabled=1;
     $conf->global->SYSLOG_LEVEL=constant('LOG_DEBUG');
+    if (! defined('SYSLOG_FILE_ON')) define('SYSLOG_FILE_ON',1);
     if (! defined('SYSLOG_FILE'))	// To avoid warning on systems with constant already defined
     {
         if (@is_writable('/tmp')) define('SYSLOG_FILE','/tmp/dolibarr_install.log');
@@ -297,10 +297,7 @@ function conf($dolibarr_main_document_root)
         else if (@is_writable('../../')) define('SYSLOG_FILE','../../dolibarr_install.log');				// For others
         //print 'SYSLOG_FILE='.SYSLOG_FILE;exit;
     }
-    if (! defined('SYSLOG_FILE_NO_ERROR'))
-    {
-        define('SYSLOG_FILE_NO_ERROR',1);
-    }
+    if (! defined('SYSLOG_FILE_NO_ERROR')) define('SYSLOG_FILE_NO_ERROR',1);
 
     return 1;
 }
@@ -374,7 +371,7 @@ function pFooter($nonext=0,$setuplang='',$jscheckfunction='')
         print '<div class="nextbutton" id="nextbutton"><input type="submit" value="'.$langs->trans("NextStep").' ->"';
         if ($jscheckfunction) print ' onClick="return '.$jscheckfunction.'();"';
         print '></div>';
-        print '<div style="visibility: hidden;" class="pleasewait" id="pleasewait"><br><blink>'.$langs->trans("NextStepMightLastALongTime").'</blink><br><br>'.$langs->trans("PleaseBePatient").'</div>';
+        print '<div style="visibility: hidden;" class="pleasewait" id="pleasewait"><br>'.$langs->trans("NextStepMightLastALongTime").'<br><br><div class="blinkwait">'.$langs->trans("PleaseBePatient").'</div></div>';
     }
     if ($setuplang)
     {

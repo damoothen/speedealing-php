@@ -1,7 +1,7 @@
 <?PHP
 /* Copyright (C) 2005      Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2005-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2010-2011 Juanjo Menent 		<jmenent@2byte.es>
+ * Copyright (C) 2010-2012 Juanjo Menent 		<jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
  */
 
 require("../bank/pre.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/prelevement.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/prelevement.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/compta/prelevement/class/bon-prelevement.class.php");
 
 if (!$user->rights->prelevement->bons->lire)
@@ -39,14 +39,14 @@ $langs->load("categories");
 if ($user->societe_id > 0) accessforbidden();
 
 // Get supervariables
-$action = GETPOST("action");
-$id = GETPOST("id");
+$action = GETPOST('action','alpha');
+$id = GETPOST('id','int');
 
 /*
  * Actions
  */
 
-if ( $action == 'confirm_credite' && GETPOST("confirm") == 'yes')
+if ( $action == 'confirm_credite' && GETPOST('confirm','alpha') == 'yes')
 {
 	$bon = new BonPrelevement($db,"");
 	$bon->id = $id;
@@ -58,7 +58,7 @@ if ( $action == 'confirm_credite' && GETPOST("confirm") == 'yes')
 
 if ($action == 'infotrans' && $user->rights->prelevement->bons->send)
 {
-	require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
+	require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
 
 	$bon = new BonPrelevement($db,"");
 	$bon->fetch($id);
@@ -69,9 +69,9 @@ if ($action == 'infotrans' && $user->rights->prelevement->bons->send)
 
 		if (dol_move_uploaded_file($_FILES['userfile']['tmp_name'], $dir . "/" . $_FILES['userfile']['name'],1) > 0)
 		{
-			$dt = dol_mktime(12,0,0,GETPOST("remonth"),GETPOST("reday"),GETPOST("reyear"));
+			$dt = dol_mktime(12,0,0,GETPOST('remonth','int'),GETPOST('reday','int'),GETPOST('reyear','int'));
 
-			$bon->set_infotrans($user, $dt, GETPOST("methode"));
+			$bon->set_infotrans($user, $dt, GETPOST('methode','alpha'));
 		}
 
 		Header("Location: fiche.php?id=".$id);
@@ -88,7 +88,7 @@ if ($action == 'infocredit' && $user->rights->prelevement->bons->credit)
 {
 	$bon = new BonPrelevement($db,"");
 	$bon->fetch($id);
-	$dt = dol_mktime(12,0,0,GETPOST("remonth"),GETPOST("reday"),GETPOST("reyear"));
+	$dt = dol_mktime(12,0,0,GETPOST('remonth','int'),GETPOST('reday','int'),GETPOST('reyear','int'));
 
 	$error = $bon->set_infocredit($user, $dt);
 
@@ -110,7 +110,7 @@ if ($action == 'infocredit' && $user->rights->prelevement->bons->credit)
 
 llxHeader('',$langs->trans("WithdrawalReceipt"));
 
-$html = new Form($db);
+$form = new Form($db);
 
 if ($id)
 {
@@ -121,14 +121,14 @@ if ($id)
 		$head = prelevement_prepare_head($bon);
 		dol_fiche_head($head, 'prelevement', $langs->trans("WithdrawalReceipt"), '', 'payment');
 
-		if (GETPOST("error")!='')
+		if (GETPOST('error','alpha')!='')
 		{
-			print '<div class="error">'.$bon->ReadError(GETPOST("error")).'</div>';
+			print '<div class="error">'.$bon->ReadError(GETPOST('error','alpha')).'</div>';
 		}
 
 		if ($action == 'credite')
 		{
-			$ret=$html->form_confirm("fiche.php?id=".$bon->id,$langs->trans("ClassCredited"),$langs->trans("ClassCreditedConfirm"),"confirm_credite",'',1,1);
+			$ret=$form->form_confirm("fiche.php?id=".$bon->id,$langs->trans("ClassCredited"),$langs->trans("ClassCreditedConfirm"),"confirm_credite",'',1,1);
 			if ($ret == 'html') print '<br>';
 		}
 
@@ -181,10 +181,10 @@ if ($id)
 			print '<tr class="liste_titre">';
 			print '<td colspan="3">'.$langs->trans("NotifyTransmision").'</td></tr>';
 			print '<tr><td width="20%">'.$langs->trans("TransData").'</td><td>';
-			print $html->select_date('','','','','',"userfile");
+			print $form->select_date('','','','','',"userfile");
 			print '</td></tr>';
 			print '<tr><td width="20%">'.$langs->trans("TransMetod").'</td><td>';
-			print $html->selectarray("methode",$bon->methodes_trans);
+			print $form->selectarray("methode",$bon->methodes_trans);
 			print '</td></tr>';
 			print '<tr><td width="20%">'.$langs->trans("File").'</td><td>';
 			print '<input type="hidden" name="max_file_size" value="'.$conf->maxfilesize.'">';
@@ -204,7 +204,7 @@ if ($id)
 			print '<tr class="liste_titre">';
 			print '<td colspan="3">'.$langs->trans("NotifyCredit").'</td></tr>';
 			print '<tr><td width="20%">'.$langs->trans('CreditDate').'</td><td>';
-			print $html->select_date('','','','','',"infocredit");
+			print $form->select_date('','','','','',"infocredit");
 			print '</td></tr>';
 			print '</table><br>';
 			print '<center><input type="submit" class="button" value="'.$langs->trans("ClassCredited").'">';

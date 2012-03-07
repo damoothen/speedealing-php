@@ -24,7 +24,7 @@
  */
 
 require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/member.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/member.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/extrafields.class.php");
 
 $langs->load("members");
@@ -52,7 +52,7 @@ if (!$user->admin) accessforbidden();
  * Actions
  */
 
-require(DOL_DOCUMENT_ROOT."/lib/admin_extrafields.inc.php");
+require(DOL_DOCUMENT_ROOT."/core/admin_extrafields.inc.php");
 
 
 
@@ -144,7 +144,7 @@ if ($action == 'create')
 	// Label
 	print '<tr><td class="fieldrequired" required>'.$langs->trans("Label").'</td><td class="valeur"><input type="text" name="label" size="40" value="'.GETPOST('label').'"></td></tr>';
 	// Code
-	print '<tr><td class="fieldrequired" required>'.$langs->trans("AttributeCode").' ('.$langs->trans("AlphaNumOnlyCharsAndNoSpace").')</td><td class="valeur"><input type="text" name="attrname" size="10" value"'.GETPOST('attrname').'"></td></tr>';
+	print '<tr><td class="fieldrequired" required>'.$langs->trans("AttributeCode").' ('.$langs->trans("AlphaNumOnlyCharsAndNoSpace").')</td><td class="valeur"><input type="text" name="attrname" size="10" value="'.GETPOST('attrname').'"></td></tr>';
 	// Type
 	print '<tr><td class="fieldrequired" required>'.$langs->trans("Type").'</td><td class="valeur">';
     print $form->selectarray('type',$type2label,GETPOST('type'));

@@ -25,8 +25,8 @@
  */
 
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT.'/lib/order.lib.php');
-require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
+require_once(DOL_DOCUMENT_ROOT.'/core/lib/order.lib.php');
+require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 require_once(DOL_DOCUMENT_ROOT ."/commande/class/commande.class.php");
 
@@ -36,7 +36,7 @@ $langs->load('other');
 
 $action		= GETPOST('action');
 $confirm	= GETPOST('confirm');
-$id			= GETPOST('id');
+$id			= GETPOST('id','int');
 $ref		= GETPOST('ref');
 
 // Security check
@@ -75,7 +75,7 @@ if ($_POST["sendit"] && ! empty($conf->global->MAIN_UPLOAD_DOC))
 
 	    $upload_dir = $conf->commande->dir_output . "/" . dol_sanitizeFileName($object->ref);
 
-		if (create_exdir($upload_dir) >= 0)
+		if (dol_mkdir($upload_dir) >= 0)
 		{
 			$resupload=dol_move_uploaded_file($_FILES['userfile']['tmp_name'], $upload_dir . "/" . $_FILES['userfile']['name'],0,0,$_FILES['userfile']['error']);
 			if (is_numeric($resupload) && $resupload > 0)
@@ -111,7 +111,7 @@ if ($action == 'confirm_deletefile' && $confirm == 'yes')
 
     	$upload_dir = $conf->commande->dir_output . "/" . dol_sanitizeFileName($object->ref);
     	$file = $upload_dir . '/' . $_GET['urlfile'];	// Do not use urldecode here ($_GET and $_REQUEST are already decoded by PHP).
-    	dol_delete_file($file,0,0,0,'FILE_DELETE',$object);
+    	dol_delete_file($file,0,0,0,$object);
     	$mesg = '<div class="ok">'.$langs->trans("FileWasRemoved").'</div>';
     }
 }
@@ -123,7 +123,7 @@ if ($action == 'confirm_deletefile' && $confirm == 'yes')
 
 llxHeader('',$langs->trans('Order'),'EN:Customers_Orders|FR:Commandes_Clients|ES:Pedidos de clientes');
 
-$html = new Form($db);
+$form = new Form($db);
 
 if ($id > 0 || ! empty($ref))
 {
@@ -150,7 +150,7 @@ if ($id > 0 || ! empty($ref))
 
 		// Ref
 		print '<tr><td width="30%">'.$langs->trans('Ref').'</td><td colspan="3">';
-		print $html->showrefnav($object,'ref','',1,'ref','ref');
+		print $form->showrefnav($object,'ref','',1,'ref','ref');
 		print '</td></tr>';
 
 		print '<tr><td>'.$langs->trans('Company').'</td><td colspan="3">'.$object->thirdparty->getNomUrl(1).'</td></tr>';
@@ -166,7 +166,7 @@ if ($id > 0 || ! empty($ref))
 		 */
 		if ($action == 'delete')
 		{
-			$ret=$html->form_confirm($_SERVER["PHP_SELF"].'?id='.$id.'&urlfile='.urldecode($_GET["urlfile"]), $langs->trans('DeleteFile'), $langs->trans('ConfirmDeleteFile'), 'confirm_deletefile', '', 0, 1);
+			$ret=$form->form_confirm($_SERVER["PHP_SELF"].'?id='.$id.'&urlfile='.urldecode($_GET["urlfile"]), $langs->trans('DeleteFile'), $langs->trans('ConfirmDeleteFile'), 'confirm_deletefile', '', 0, 1);
 			if ($ret == 'html') print '<br>';
 		}
 

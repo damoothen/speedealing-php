@@ -25,8 +25,8 @@
 require("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 require_once(DOL_DOCUMENT_ROOT."/ecm/class/ecmdirectory.class.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/ecm.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/ecm.lib.php");
 
 // Load traductions files
 $langs->load("ecm");
@@ -72,7 +72,7 @@ if (! $urlfile)
 }
 
 // Load ecm object
-$ecmdir = new ECMDirectory($db);
+$ecmdir = new EcmDirectory($db);
 $result=$ecmdir->fetch(GETPOST("section"));
 if (! $result > 0)
 {
@@ -176,7 +176,7 @@ if ($_GET["action"] == 'edit')
 print '<table class="border" width="100%">';
 print '<tr><td width="30%">'.$langs->trans("Ref").'</td><td>';
 $s='';
-$tmpecmdir=new ECMDirectory($db);	// Need to create a new one
+$tmpecmdir=new EcmDirectory($db);	// Need to create a new one
 $tmpecmdir->fetch($ecmdir->id);
 $result = 1;
 $i=0;

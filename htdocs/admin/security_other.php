@@ -23,7 +23,7 @@
  */
 
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/admin.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 
 $langs->load("users");
@@ -41,9 +41,9 @@ $upload_dir=$conf->admin->dir_temp;
 
 if ($_POST["sendit"] && ! empty($conf->global->MAIN_UPLOAD_DOC))
 {
-    require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
+    require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
 
-    $result=create_exdir($upload_dir);	// Create dir if not exists
+    $result=dol_mkdir($upload_dir);	// Create dir if not exists
     if ($result >= 0)
     {
         $resupload=dol_move_uploaded_file($_FILES['userfile']['tmp_name'], $upload_dir . "/" . $_FILES['userfile']['name'],1,0,$_FILES['userfile']['error']);
@@ -210,8 +210,8 @@ if (function_exists("imagecreatefrompng"))
 }
 else
 {
-    $html = new Form($db);
-    $desc = $html->textwithpicto('',$langs->transnoentities("EnableGDLibraryDesc"),1,'warning');
+    $form = new Form($db);
+    $desc = $form->textwithpicto('',$langs->transnoentities("EnableGDLibraryDesc"),1,'warning');
     print $desc;
 }
 print "</td>";
@@ -344,7 +344,7 @@ $formfile=new FormFile($db);
 $formfile->form_attach_new_file(DOL_URL_ROOT.'/admin/security_other.php',$langs->trans("FormToTestFileUploadForm"),0,0,1);
 
 
-$db->close();
-
 llxFooter();
+
+$db->close();
 ?>

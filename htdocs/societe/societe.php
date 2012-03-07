@@ -1,7 +1,7 @@
 <?php
 /* Copyright (C) 2001-2004 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ $langs->load("customers");
 $langs->load("suppliers");
 
 // Security check
-$socid = GETPOST("socid");
+$socid = GETPOST('socid','int');
 if ($user->societe_id) $socid=$user->societe_id;
 $result = restrictedArea($user,'societe',$socid,'');
 
@@ -75,13 +75,13 @@ if ($mode == 'search')
 	if ($search_sale || !$user->rights->societe->client->voir && !$socid) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
     // We'll need this table joined to the select in order to filter by categ
     if ($search_categ) $sql.= ", ".MAIN_DB_PREFIX."categorie_societe as cs";
-	$sql.= " WHERE (";
-	$sql.= " s.nom like '%".$db->escape($socname)."%'";
+    $sql.= " WHERE s.entity IN (".getEntity('societe', 1).")";
+	$sql.= " AND (";
+	$sql.= " s.nom LIKE '%".$db->escape($socname)."%'";
 	$sql.= " OR s.code_client LIKE '%".$db->escape($socname)."%'";
-	$sql.= " OR s.email like '%".$db->escape($socname)."%'";
-	$sql.= " OR s.url like '%".$db->escape($socname)."%'";
+	$sql.= " OR s.email LIKE '%".$db->escape($socname)."%'";
+	$sql.= " OR s.url LIKE '%".$db->escape($socname)."%'";
 	$sql.= ")";
-	$sql.= " AND s.entity = ".$conf->entity;
 	if (!$user->rights->societe->client->voir && !$socid) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
 	if ($socid) $sql.= " AND s.rowid = ".$socid;
     if ($search_sale) $sql.= " AND s.rowid = sc.fk_soc";        // Join for the needed table to filter by sale
@@ -175,7 +175,7 @@ if ($search_sale || !$user->rights->societe->client->voir) $sql.= ", ".MAIN_DB_P
 // We'll need this table joined to the select in order to filter by categ
 if ($search_categ) $sql.= ", ".MAIN_DB_PREFIX."categorie_societe as cs";
 $sql.= " WHERE s.fk_stcomm = st.id";
-$sql.= " AND s.entity = ".$conf->entity;
+$sql.= " AND s.entity IN (".getEntity('societe', 1).")";
 if (! $user->rights->societe->client->voir && ! $socid)	$sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
 if ($socid)	$sql.= " AND s.rowid = ".$socid;
 if ($search_sale) $sql.= " AND s.rowid = sc.fk_soc";        // Join for the needed table to filter by sale
@@ -184,10 +184,7 @@ if (dol_strlen($stcomm))
 {
 	$sql.= " AND s.fk_stcomm=".$stcomm;
 }
-if (! $user->rights->societe->lire || ! $user->rights->fournisseur->lire)
-{
-	if (! $user->rights->fournisseur->lire) $sql.=" AND s.fournisseur != 1";
-}
+if (! $user->rights->fournisseur->lire) $sql.=" AND (s.fournisseur <> 1 OR s.client <> 0)";    // client=0, fournisseur=0 must be visible
 // Insert sale filter
 if ($search_sale)
 {
@@ -207,8 +204,8 @@ if ($search_all)
 	$sql.= " AND (";
 	$sql.= "s.nom LIKE '%".$db->escape($search_all)."%'";
 	$sql.= " OR s.code_client LIKE '%".$db->escape($search_all)."%'";
-	$sql.= " OR s.email like '%".$db->escape($search_all)."%'";
-	$sql.= " OR s.url like '%".$db->escape($search_all)."%'";
+	$sql.= " OR s.email LIKE '%".$db->escape($search_all)."%'";
+	$sql.= " OR s.url LIKE '%".$db->escape($search_all)."%'";
 	$sql.= ")";
 }
 if ($search_nom)
@@ -216,8 +213,8 @@ if ($search_nom)
 	$sql.= " AND (";
 	$sql.= "s.nom LIKE '%".$db->escape($search_nom)."%'";
 	$sql.= " OR s.code_client LIKE '%".$db->escape($search_nom)."%'";
-	$sql.= " OR s.email like '%".$db->escape($search_nom)."%'";
-	$sql.= " OR s.url like '%".$db->escape($search_nom)."%'";
+	$sql.= " OR s.email LIKE '%".$db->escape($search_nom)."%'";
+	$sql.= " OR s.url LIKE '%".$db->escape($search_nom)."%'";
 	$sql.= ")";
 }
 
@@ -278,12 +275,12 @@ if ($resql)
 	$textprofid=array();
 	foreach(array(1,2,3,4) as $key)
 	{
-		$label=$langs->transnoentities("ProfId".$key.$mysoc->pays_code);
+		$label=$langs->transnoentities("ProfId".$key.$mysoc->country_code);
 		$textprofid[$key]='';
-		if ($label != "ProfId".$key.$mysoc->pays_code)
+		if ($label != "ProfId".$key.$mysoc->country_code)
 		{	// Get only text between ()
 			if (preg_match('/\((.*)\)/i',$label,$reg)) $label=$reg[1];
-			$textprofid[$key]=$langs->trans("ProfIdShortDesc",$key,$mysoc->pays_code,$label);
+			$textprofid[$key]=$langs->trans("ProfIdShortDesc",$key,$mysoc->country_code,$label);
 		}
 	}
 
@@ -420,7 +417,8 @@ else
 	dol_print_error($db);
 }
 
+llxFooter();
+
 $db->close();
 
-llxFooter();
 ?>

@@ -27,7 +27,7 @@
  *      \brief      Page d'administration/configuration du module Livraison
  */
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/admin.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/livraison/class/livraison.class.php");
 
 $langs->load("admin");
@@ -70,7 +70,7 @@ if ($action == 'specimen')
 	//$sending->fetch_commande();
 
 	// Charge le modele
-	$dir = DOL_DOCUMENT_ROOT . "/includes/modules/livraison/pdf/";
+	$dir = DOL_DOCUMENT_ROOT . "/core/modules/livraison/pdf/";
 	$file = "pdf_".$modele.".modules.php";
 	if (file_exists($dir.$file))
 	{
@@ -190,7 +190,7 @@ if ($action == 'setmod')
  * View
  */
 
-$html=new Form($db);
+$form=new Form($db);
 
 llxHeader("","");
 
@@ -238,7 +238,7 @@ clearstatcache();
 
 foreach ($conf->file->dol_document_root as $dirroot)
 {
-	$dir = $dirroot . "/includes/modules/livraison/";
+	$dir = $dirroot . "/core/modules/livraison/";
 
 	if (is_dir($dir))
 	{
@@ -252,7 +252,7 @@ foreach ($conf->file->dol_document_root as $dirroot)
 				{
 					$file = substr($file, 0, dol_strlen($file)-4);
 
-					require_once(DOL_DOCUMENT_ROOT ."/includes/modules/livraison/".$file.".php");
+					require_once(DOL_DOCUMENT_ROOT ."/core/modules/livraison/".$file.".php");
 
 					$module = new $file;
 
@@ -270,11 +270,8 @@ foreach ($conf->file->dol_document_root as $dirroot)
                         // Show example of numbering module
                         print '<td nowrap="nowrap">';
                         $tmp=$module->getExample();
-                        if (preg_match('/^Error/',$tmp))
-                        {
-                        	$langs->load("errors");
-                        	print $langs->trans($tmp);
-                        }
+                        if (preg_match('/^Error/',$tmp)) { $langs->load("errors"); print '<div class="error">'.$langs->trans($tmp).'</div>'; }
+                        elseif ($tmp=='NotConfigured') print $langs->trans($tmp);
                         else print $tmp;
                         print '</td>'."\n";
 
@@ -311,7 +308,7 @@ foreach ($conf->file->dol_document_root as $dirroot)
 						}
 
 						print '<td align="center">';
-						print $html->textwithpicto('',$htmltooltip,1,0);
+						print $form->textwithpicto('',$htmltooltip,1,0);
 						print '</td>';
 
 						print '</tr>';
@@ -371,7 +368,7 @@ clearstatcache();
 
 foreach ($conf->file->dol_document_root as $dirroot)
 {
-	$dir = $dirroot . "/includes/modules/livraison/pdf/";
+	$dir = $dirroot . "/core/modules/livraison/pdf/";
 
 	if (is_dir($dir))
 	{
@@ -436,7 +433,7 @@ foreach ($conf->file->dol_document_root as $dirroot)
 	    			$htmltooltip.='<br><br>'.$langs->trans("FeaturesSupported").':';
 	    			$htmltooltip.='<br>'.$langs->trans("Logo").': '.yn($module->option_logo,1,1);
 	    	    	print '<td align="center">';
-	    	    	print $html->textwithpicto('',$htmltooltip,1,0);
+	    	    	print $form->textwithpicto('',$htmltooltip,1,0);
 	    	    	print '</td>';
 	    	    	print '<td align="center">';
 	    	    	print '<a href="'.$_SERVER["PHP_SELF"].'?action=specimen&module='.$name.'">'.img_object($langs->trans("Preview"),'sending').'</a>';

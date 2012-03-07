@@ -3,9 +3,10 @@
  * Copyright (C) 2004-2011 Laurent Destailleur          <eldy@users.sourceforge.net>
  * Copyright (C) 2004      Sebastien Di Cintio          <sdicintio@ressource-toi.org>
  * Copyright (C) 2004      Benoit Mortier               <benoit.mortier@opensides.be>
- * Copyright (C) 2005-2011 Regis Houssin                <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin                <regis@dolibarr.fr>
  * Copyright (C) 2008 	   Raphael Bertrand (Resultic)  <raphael.bertrand@resultic.fr>
  * Copyright (C) 2011 	   Juanjo Menent			    <jmenent@2byte.es>
+ * Copyright (C) 2011 	   Philippe Grand			    <philippe.grand@atoo-net.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +29,7 @@
  */
 
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/admin.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
 require_once(DOL_DOCUMENT_ROOT.'/fichinter/class/fichinter.class.php');
 
 $langs->load("admin");
@@ -106,12 +107,13 @@ if ($action == 'specimen')
 	$inter->initAsSpecimen();
 
 	// Charge le modele
-	$dir = DOL_DOCUMENT_ROOT . "/includes/modules/fichinter/";
+	$dir = "/core/modules/fichinter/doc/";
 	$file = "pdf_".$modele.".modules.php";
-	if (file_exists($dir.$file))
+	$file = dol_buildpath($dir.$file);
+	if (file_exists($file))
 	{
 		$classname = "pdf_".$modele;
-		require_once($dir.$file);
+		require_once($file);
 
 		$obj = new $classname($db);
 
@@ -219,7 +221,7 @@ if ($action == 'setmod')
 
 llxHeader();
 
-$html=new Form($db);
+$form=new Form($db);
 
 $linkback='<a href="'.DOL_URL_ROOT.'/admin/modules.php">'.$langs->trans("BackToModuleList").'</a>';
 print_fiche_titre($langs->trans("InterventionsSetup"),$linkback,'setup');
@@ -242,7 +244,7 @@ clearstatcache();
 
 foreach ($conf->file->dol_document_root as $dirroot)
 {
-	$dir = $dirroot . "/includes/modules/fichinter/";
+	$dir = $dirroot . "/core/modules/fichinter/";
 
 	if (is_dir($dir))
 	{
@@ -276,7 +278,8 @@ foreach ($conf->file->dol_document_root as $dirroot)
                         // Show example of numbering module
                         print '<td nowrap="nowrap">';
                         $tmp=$module->getExample();
-                        if (preg_match('/^Error/',$tmp)) print $langs->trans($tmp);
+                        if (preg_match('/^Error/',$tmp)) { $langs->load("errors"); print '<div class="error">'.$langs->trans($tmp).'</div>'; }
+                        elseif ($tmp=='NotConfigured') print $langs->trans($tmp);
                         else print $tmp;
                         print '</td>'."\n";
 
@@ -303,7 +306,7 @@ foreach ($conf->file->dol_document_root as $dirroot)
 							$htmltooltip.=''.$langs->trans("NextValue").': '.$nextval;
 						}
 						print '<td align="center">';
-						print $html->textwithpicto('',$htmltooltip,1,0);
+						print $form->textwithpicto('',$htmltooltip,1,0);
 						print '</td>';
 
 						print '</tr>';
@@ -360,7 +363,7 @@ clearstatcache();
 $var=true;
 foreach ($conf->file->dol_document_root as $dirroot)
 {
-	$dir = $dirroot . "/includes/modules/fichinter/";
+	$dir = $dirroot . "/core/modules/fichinter/doc/";
 
 	if (is_dir($dir))
 	{
@@ -380,7 +383,7 @@ foreach ($conf->file->dol_document_root as $dirroot)
 		    		echo "$name";
 		    		print "</td><td>\n";
 		    		require_once($dir.$file);
-		    		$module = new $classname();
+		    		$module = new $classname($db);
 		    		print $module->description;
 		    		print '</td>';
 
@@ -388,16 +391,9 @@ foreach ($conf->file->dol_document_root as $dirroot)
 		    		if (in_array($name, $def))
 		    		{
 		    			print "<td align=\"center\">\n";
-		    			//if ($conf->global->FICHEINTER_ADDON_PDF != "$name")
-		    			//{
-		    				print '<a href="'.$_SERVER["PHP_SELF"].'?action=del&amp;value='.$name.'&amp;scandir='.$module->scandir.'&amp;label='.urlencode($module->name).'">';
-		    				print img_picto($langs->trans("Enabled"),'switch_on');
-		    				print '</a>';
-		    			//}
-		    			//else
-		    			//{
-		    			//	print img_picto($langs->trans("Enabled"),'switch_on');
-		    			//}
+		    			print '<a href="'.$_SERVER["PHP_SELF"].'?action=del&amp;value='.$name.'&amp;scandir='.$module->scandir.'&amp;label='.urlencode($module->name).'">';
+		    			print img_picto($langs->trans("Enabled"),'switch_on');
+		    			print '</a>';
 		    			print "</td>";
 		    		}
 		    		else
@@ -431,7 +427,7 @@ foreach ($conf->file->dol_document_root as $dirroot)
 		    		$htmltooltip.='<br>'.$langs->trans("WatermarkOnDraftOrders").': '.yn($module->option_draft_watermark,1,1);
 		    		print '<td align="center">';
 		    		$link='<a href="'.$_SERVER["PHP_SELF"].'?action=specimen&module='.$name.'">'.img_object($langs->trans("Preview"),'intervention').'</a>';
-		    		print $html->textwithpicto(' &nbsp; &nbsp; '.$link,$htmltooltip,-1,0);
+		    		print $form->textwithpicto(' &nbsp; &nbsp; '.$link,$htmltooltip,-1,0);
 		    		print '</td>';
 
 		    		print '</tr>';

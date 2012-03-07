@@ -35,7 +35,7 @@ $langs->load('banks');
 $langs->load('companies');
 $langs->load('compta');
 
-$id =GETPOST("id");
+$id =GETPOST('id','int');
 $ref=GETPOST("ref");
 $action=GETPOST('action');
 
@@ -46,11 +46,11 @@ $result = restrictedArea($user, 'cheque', $id, 'bordereau_cheque','','',$fieldid
 
 $mesg='';
 
-$sortfield=isset($_GET["sortfield"])?$_GET["sortfield"]:$_POST["sortfield"];
-$sortorder=isset($_GET["sortorder"])?$_GET["sortorder"]:$_POST["sortorder"];
+$sortfield=GETPOST("sortfield");
+$sortorder=GETPOST("sortorder");
 $page=$_GET["page"];
 if (! $sortorder) $sortorder="ASC";
-if (! $sortfield) $sortfield="b.emetteur";
+if (! $sortfield) $sortfield="b.dateo,b.rowid";
 if ($page < 0) { $page = 0 ; }
 $limit = $conf->liste_limit;
 $offset = $limit * $page ;
@@ -67,7 +67,7 @@ $filteraccountid=GETPOST('accountid');
 if ($action == 'setdate' && $user->rights->banque->cheque)
 {
     $remisecheque = new RemiseCheque($db);
-    $result = $remisecheque->fetch(GETPOST('id'));
+    $result = $remisecheque->fetch(GETPOST('id','int'));
     if ($result > 0)
     {
         //print "x ".$_POST['liv_month'].", ".$_POST['liv_day'].", ".$_POST['liv_year'];
@@ -229,7 +229,7 @@ if (GETPOST('removefilter'))
 
 llxHeader();
 
-$html = new Form($db);
+$form = new Form($db);
 $formfile = new FormFile($db);
 
 
@@ -269,7 +269,7 @@ else
 	 */
 	if ($action == 'delete')
 	{
-		$ret=$html->form_confirm($_SERVER["PHP_SELF"].'?id='.$remisecheque->id, $langs->trans("DeleteCheckReceipt"), $langs->trans("ConfirmDeleteCheckReceipt"), 'confirm_delete','','',1);
+		$ret=$form->form_confirm($_SERVER["PHP_SELF"].'?id='.$remisecheque->id, $langs->trans("DeleteCheckReceipt"), $langs->trans("ConfirmDeleteCheckReceipt"), 'confirm_delete','','',1);
 		if ($ret == 'html') print '<br>';
 	}
 
@@ -279,7 +279,7 @@ else
 	if ($action == 'valide')
 	{
 		$facid = $_GET['facid'];
-		$ret=$html->form_confirm($_SERVER["PHP_SELF"].'?id='.$remisecheque->id, $langs->trans("ValidateCheckReceipt"), $langs->trans("ConfirmValidateCheckReceipt"), 'confirm_valide','','',1);
+		$ret=$form->form_confirm($_SERVER["PHP_SELF"].'?id='.$remisecheque->id, $langs->trans("ValidateCheckReceipt"), $langs->trans("ConfirmValidateCheckReceipt"), 'confirm_valide','','',1);
 		if ($ret == 'html') print '<br>';
 	}
 }
@@ -304,20 +304,20 @@ if ($action == 'new')
 	//print '<tr><td width="30%">'.$langs->trans('Date').'</td><td width="70%">'.dol_print_date($now,'day').'</td></tr>';
 	// Filter
 	print '<tr><td width="200">'.$langs->trans("DateChequeReceived").'</td><td>';
-	print $html->select_date($filterdate,'fd',0,0,1,'',1,1);
+	print $form->select_date($filterdate,'fd',0,0,1,'',1,1);
 	print '</td></tr>';
     print '<tr><td>'.$langs->trans("BankAccount").'</td><td>';
-    print $html->select_comptes($filteraccountid,'accountid',0,'courant <> 2',1);
+    print $form->select_comptes($filteraccountid,'accountid',0,'courant <> 2',1);
     print '</td></tr>';
-	print '<tr><td colspan="2" align="center">';
+	print '</table>';
+    print '<center>';
 	print '<input type="submit" class="button" name="filter" value="'.dol_escape_htmltag($langs->trans("ToFilter")).'">';
     if ($filterdate || $filteraccountid > 0)
     {
     	print ' &nbsp; ';
     	print '<input type="submit" class="button" name="removefilter" value="'.dol_escape_htmltag($langs->trans("RemoveFilter")).'">';
     }
-	print '</td></tr>';
-	print '</table>';
+	print '</center>';
     //print '</fieldset>';
 	print '</form>';
 	print '<br>';
@@ -448,7 +448,7 @@ else
 	print '<table class="border" width="100%">';
 	print '<tr><td width="20%">'.$langs->trans('Ref').'</td><td colspan="2" >';
 
-	print $html->showrefnav($remisecheque,'ref',$linkback, 1, 'number');
+	print $form->showrefnav($remisecheque,'ref',$linkback, 1, 'number');
 
 	print "</td>";
 	print "</tr>\n";
@@ -466,7 +466,7 @@ else
         print '<form name="setdate" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'" method="post">';
         print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
         print '<input type="hidden" name="action" value="setdate">';
-        $html->select_date($object->date_bordereau,'datecreate_','','','',"setdate");
+        $form->select_date($object->date_bordereau,'datecreate_','','','',"setdate");
         print '<input type="submit" class="button" value="'.$langs->trans('Modify').'">';
         print '</form>';
     }
@@ -522,12 +522,12 @@ else
 		$param="&amp;id=".$remisecheque->id;
 		print '<tr class="liste_titre">';
 		print_liste_field_titre($langs->trans("Cheque"),'','','','','width="30"');
+		print_liste_field_titre($langs->trans("DateChequeReceived"),$_SERVER["PHP_SELF"],"b.dateo,b.rowid", "",$param,'align="center"',$sortfield,$sortorder);
 		print_liste_field_titre($langs->trans("Numero"),$_SERVER["PHP_SELF"],"b.num_chq", "",$param,'align="center"',$sortfield,$sortorder);
 		print_liste_field_titre($langs->trans("CheckTransmitter"),$_SERVER["PHP_SELF"],"b.emetteur", "",$param,"",$sortfield,$sortorder);
 		print_liste_field_titre($langs->trans("Bank"),$_SERVER["PHP_SELF"],"b.banque", "",$param,"",$sortfield,$sortorder);
 		print_liste_field_titre($langs->trans("Amount"),$_SERVER["PHP_SELF"],"b.amount", "",$param,'align="right"',$sortfield,$sortorder);
 		print_liste_field_titre($langs->trans("LineRecord"),$_SERVER["PHP_SELF"],"b.rowid", "",$param,'align="center"',$sortfield,$sortorder);
-		print_liste_field_titre($langs->trans("DateChequeReceived"),$_SERVER["PHP_SELF"],"b.dateo", "",$param,'align="center"',$sortfield,$sortorder);
 		print_liste_field_titre('','','');
 		print "</tr>\n";
 		$i=1;
@@ -539,6 +539,7 @@ else
 
 			print "<tr $bc[$var]>";
 			print '<td align="center">'.$i.'</td>';
+			print '<td align="center">'.dol_print_date($db->jdate($objp->date),'day').'</td>';	// Date operation
 			print '<td align="center">'.($objp->num_chq?$objp->num_chq:'&nbsp;').'</td>';
 			print '<td>'.dol_trunc($objp->emetteur,24).'</td>';
 			print '<td>'.dol_trunc($objp->banque,24).'</td>';
@@ -554,7 +555,6 @@ else
 				print '&nbsp;';
 			}
 			print '</td>';
-			print '<td align="center">'.dol_print_date($db->jdate($objp->date),'day').'</td>';
 			if($remisecheque->statut == 0)
 			{
 				print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?id='.$remisecheque->id.'&amp;action=remove&amp;lineid='.$objp->rowid.'">'.img_delete().'</a></td>';
@@ -593,12 +593,12 @@ if ($user->societe_id == 0 && count($accounts) == 1 && $action == 'new' && $user
 
 if ($user->societe_id == 0 && $remisecheque->statut == 0 && $remisecheque->id && $user->rights->banque->cheque)
 {
-	print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$remisecheque->id.'&amp;action=valide">'.$langs->trans('Valid').'</a>';
+	print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$remisecheque->id.'&amp;action=valide&amp;sortfield='.$sortfield.'&amp;sortorder='.$sortorder.'">'.$langs->trans('Valid').'</a>';
 }
 
 if ($user->societe_id == 0 && $remisecheque->id && $user->rights->banque->cheque)
 {
-	print '<a class="butActionDelete" href="'.$_SERVER["PHP_SELF"].'?id='.$remisecheque->id.'&amp;action=delete">'.$langs->trans('Delete').'</a>';
+	print '<a class="butActionDelete" href="'.$_SERVER["PHP_SELF"].'?id='.$remisecheque->id.'&amp;action=delete&amp;sortfield='.$sortfield.'&amp;sortorder='.$sortorder.'">'.$langs->trans('Delete').'</a>';
 
 }
 print '</div>';

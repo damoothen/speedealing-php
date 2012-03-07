@@ -77,7 +77,7 @@ $sql.= " FROM ".MAIN_DB_PREFIX."societe as s";
 $sql.= ", ".MAIN_DB_PREFIX."commande_fournisseur as cf";
 if (!$user->rights->societe->client->voir && !$socid) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
 $sql.= " WHERE cf.fk_soc = s.rowid";
-$sql.= " AND s.entity = ".$conf->entity;
+$sql.= " AND cf.entity = ".$conf->entity;
 if ($user->societe_id) $sql.=' AND cf.fk_soc = '.$user->societe_id;
 if (!$user->rights->societe->client->voir && !$socid) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
 $sql.= " GROUP BY cf.fk_statut";
@@ -118,7 +118,7 @@ if ($resql)
     print "</tr>\n";
     foreach (array(0,1,2,3,4,5,6) as $statut)
     {
-        $dataseries[]=array('label'=>$commandestatic->LibStatut($statut,1),'values'=>array(0=>(isset($vals[$statut])?$vals[$statut]:0)));
+        $dataseries[]=array('label'=>$commandestatic->LibStatut($statut,1),'data'=>(isset($vals[$statut])?(int) $vals[$statut]:0));
         if (! $conf->use_javascript_ajax)
         {
             $var=!$var;
@@ -223,8 +223,8 @@ if ($resql)
         print "<tr $bc[$var]>";
         print '<td>';
         $userstatic->id=$obj->rowid;
-        $userstatic->nom=$obj->name;
-        $userstatic->prenom=$obj->firstname;
+        $userstatic->lastname=$obj->name;
+        $userstatic->firstname=$obj->firstname;
         print $userstatic->getNomUrl(1);
         print '</td>';
         print "</tr>\n";

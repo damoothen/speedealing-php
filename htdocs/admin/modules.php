@@ -26,34 +26,34 @@
  */
 
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/admin.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
 
 $langs->load("errors");
 $langs->load("admin");
 
 $mode=isset($_GET["mode"])?GETPOST("mode"):(isset($_SESSION['mode'])?$_SESSION['mode']:0);
 $mesg=GETPOST("mesg");
+$action=GETPOST('action');
 
-if (!$user->admin)
-    accessforbidden();
+if (!$user->admin) accessforbidden();
 
 
 /*
  * Actions
  */
 
-if (isset($_GET["action"]) && $_GET["action"] == 'set' && $user->admin)
+if ($action == 'set' && $user->admin)
 {
-    $result=Activate($_GET["value"]);
+    $result=activateModule($_GET["value"]);
     $mesg='';
     if ($result) $mesg=$result;
     Header("Location: modules.php?mode=".$mode."&mesg=".urlencode($mesg));
 	exit;
 }
 
-if (isset($_GET["action"]) && $_GET["action"] == 'reset' && $user->admin)
+if ($action == 'reset' && $user->admin)
 {
-    $result=UnActivate($_GET["value"]);
+    $result=unActivateModule($_GET["value"]);
     $mesg='';
     if ($result) $mesg=$result;
     Header("Location: modules.php?mode=".$mode."&mesg=".urlencode($mesg));
@@ -73,39 +73,38 @@ llxHeader('',$langs->trans("Setup"),$help_url);
 print_fiche_titre($langs->trans("ModulesSetup"),'','setup');
 
 
-// Search modules
+// Search modules dirs
+$modulesdir = array();
+foreach ($conf->file->dol_document_root as $type => $dirroot)
+{
+	$modulesdir[$dirroot . '/core/modules/'] = $dirroot . '/core/modules/';
+
+	$handle=@opendir($dirroot);
+	if (is_resource($handle))
+	{
+		while (($file = readdir($handle))!==false)
+		{
+		    if (is_dir($dirroot.'/'.$file) && substr($file, 0, 1) <> '.' && substr($file, 0, 3) <> 'CVS' && $file != 'includes')
+		    {
+		    	if (is_dir($dirroot . '/' . $file . '/core/modules/'))
+		    	{
+		    		$modulesdir[$dirroot . '/' . $file . '/core/modules/'] = $dirroot . '/' . $file . '/core/modules/';
+		    	}
+		    }
+		}
+		closedir($handle);
+	}
+}
+//var_dump($modulesdir);
+
+
 $filename = array();
 $modules = array();
 $orders = array();
 $categ = array();
 $dirmod = array();
-$modulesdir = array();
 $i = 0;	// is a sequencer of modules found
 $j = 0;	// j is module number. Automatically affected if module number not defined.
-
-foreach ($conf->file->dol_document_root as $type => $dirroot)
-{
-	$modulesdir[] = $dirroot . "/includes/modules/";
-	
-	if ($type == 'alt')
-	{	
-		$handle=@opendir($dirroot);
-		if (is_resource($handle))
-		{
-			while (($file = readdir($handle))!==false)
-			{
-			    if (is_dir($dirroot.'/'.$file) && substr($file, 0, 1) <> '.' && substr($file, 0, 3) <> 'CVS' && $file != 'includes')
-			    {
-			    	if (is_dir($dirroot . '/' . $file . '/includes/modules/'))
-			    	{
-			    		$modulesdir[] = $dirroot . '/' . $file . '/includes/modules/';
-			    	}
-			    }
-			}
-			closedir($handle);
-		}
-	}
-}
 
 foreach ($modulesdir as $dir)
 {
@@ -124,38 +123,45 @@ foreach ($modulesdir as $dir)
 
 		        if ($modName)
 		        {
-		            include_once($dir.$file);
-		            $objMod = new $modName($db);
-
-		            if ($objMod->numero > 0)
+		            try
 		            {
-		                $j = $objMod->numero;
+		                $res=include_once($dir.$file);
+		                $objMod = new $modName($db);
+
+    		            if ($objMod->numero > 0)
+    		            {
+    		                $j = $objMod->numero;
+    		            }
+    		            else
+    		            {
+    		                $j = 1000 + $i;
+    		            }
+
+    					$modulequalified=1;
+
+    					// We discard modules according to features level (PS: if module is activated we always show it)
+    					$const_name = 'MAIN_MODULE_'.strtoupper(preg_replace('/^mod/i','',get_class($objMod)));
+    					if ($objMod->version == 'development'  && $conf->global->MAIN_FEATURES_LEVEL < 2 && ! $conf->global->$const_name) $modulequalified=0;
+    					if ($objMod->version == 'experimental' && $conf->global->MAIN_FEATURES_LEVEL < 1 && ! $conf->global->$const_name) $modulequalified=0;
+
+    					if ($modulequalified)
+    					{
+    						$modules[$i] = $objMod;
+    			            $filename[$i]= $modName;
+    			            $orders[$i]  = $objMod->family."_".$j;   // Tri par famille puis numero module
+    						//print "x".$modName." ".$orders[$i]."\n<br>";
+    						if (isset($categ[$objMod->special])) $categ[$objMod->special]++;					// Array of all different modules categories
+    			            else $categ[$objMod->special]=1;
+    						$dirmod[$i] = $dir;
+    						$j++;
+    			            $i++;
+    					}
+    					else dol_syslog("Module ".get_class($objMod)." not qualified");
 		            }
-		            else
+		            catch(Exception $e)
 		            {
-		                $j = 1000 + $i;
+		                 dol_syslog("Failed to load ".$dir.$file." ".$e->getMessage(), LOG_ERR);
 		            }
-
-					$modulequalified=1;
-
-					// We discard modules according to features level (PS: if module is activated we always show it)
-					$const_name = 'MAIN_MODULE_'.strtoupper(preg_replace('/^mod/i','',get_class($objMod)));
-					if ($objMod->version == 'development'  && $conf->global->MAIN_FEATURES_LEVEL < 2 && ! $conf->global->$const_name) $modulequalified=0;
-					if ($objMod->version == 'experimental' && $conf->global->MAIN_FEATURES_LEVEL < 1 && ! $conf->global->$const_name) $modulequalified=0;
-
-					if ($modulequalified)
-					{
-						$modules[$i] = $objMod;
-			            $filename[$i]= $modName;
-			            $orders[$i]  = $objMod->family."_".$j;   // Tri par famille puis numero module
-						//print "x".$modName." ".$orders[$i]."\n<br>";
-						if (isset($categ[$objMod->special])) $categ[$objMod->special]++;					// Array of all different modules categories
-			            else $categ[$objMod->special]=1;
-						$dirmod[$i] = $dirroot;
-						$j++;
-			            $i++;
-					}
-					else dol_syslog("Module ".get_class($objMod)." not qualified");
 		        }
 		    }
 		}
@@ -317,8 +323,10 @@ if ($mode != 4)
                 //print $familytext;
                 $oldfamily=$family;
             }
-            
+
             $var=!$var;
+
+            //print "\n<!-- Module ".$objMod->numero." ".$objMod->getName()." found into ".$dirmod[$key]." -->\n";
             print '<tr height="18" '.$bc[$var].">\n";
 
             // Picto
@@ -465,7 +473,7 @@ dol_fiche_end();
 print '<div class="tabsAction">';
 print '</div>';
 
-$db->close();
-
 llxFooter();
+
+$db->close();
 ?>

@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * or see http://www.gnu.org/
  */
 
 /**
@@ -89,6 +89,9 @@ class ContratTest extends PHPUnit_Framework_TestCase
     }
 
 	/**
+	 * Init phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function setUp()
     {
@@ -101,6 +104,9 @@ class ContratTest extends PHPUnit_Framework_TestCase
 		print __METHOD__."\n";
     }
 	/**
+	 * End phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function tearDown()
     {
@@ -108,6 +114,9 @@ class ContratTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testContratCreate
+     *
+     * @return	int
      */
     public function testContratCreate()
     {
@@ -119,14 +128,20 @@ class ContratTest extends PHPUnit_Framework_TestCase
 
 		$localobject=new Contrat($this->savdb);
     	$localobject->initAsSpecimen();
-    	$result=$localobject->create($user,$langs,$conf);
+    	$result=$localobject->create($user);
 
-    	$this->assertLessThan($result, 0);
     	print __METHOD__." result=".$result."\n";
+    	$this->assertLessThan($result, 0);
+
     	return $result;
     }
 
     /**
+     * testContratFetch
+     *
+     * @param	int		$id		Id of contract
+     * @return	int
+     *
      * @depends	testContratCreate
      * The depends says test is run only if previous is ok
      */
@@ -141,33 +156,18 @@ class ContratTest extends PHPUnit_Framework_TestCase
 		$localobject=new Contrat($this->savdb);
     	$result=$localobject->fetch($id);
 
-    	$this->assertLessThan($result, 0);
     	print __METHOD__." id=".$id." result=".$result."\n";
-    	return $localobject;
-    }
-
-    /**
-     * @depends	testContratFetch
-     * The depends says test is run only if previous is ok
-     */
-/*    public function testContratUpdate($localobject)
-    {
-    	global $conf,$user,$langs,$db;
-		$conf=$this->savconf;
-		$user=$this->savuser;
-		$langs=$this->savlangs;
-		$db=$this->savdb;
-
-		$localobject->note='New note after update';
-    	$result=$localobject->update($user);
-
-    	print __METHOD__." id=".$localobject->id." result=".$result."\n";
     	$this->assertLessThan($result, 0);
+
     	return $localobject;
     }
-*/
 
     /**
+     * testContratValid
+     *
+     * @param	Contrat		$localobject		Contract
+     * @return	int
+     *
      * @depends	testContratFetch
      * The depends says test is run only if previous is ok
      */
@@ -187,6 +187,11 @@ class ContratTest extends PHPUnit_Framework_TestCase
     }
 
    /**
+     * testContratValid
+     *
+     * @param	Object	$localobject	Object contract
+     * @return	int
+     *
      * @depends testContratValid
      * The depends says test is run only if previous is ok
      */
@@ -211,6 +216,11 @@ class ContratTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testContratDelete
+     *
+     * @param	int		$id		Id of contract
+     * @return	int
+     *
      * @depends	testContratOther
      * The depends says test is run only if previous is ok
      */
@@ -233,7 +243,9 @@ class ContratTest extends PHPUnit_Framework_TestCase
 
 
     /**
+     *	testVerifyNumRef
      *
+     *	@return	int
      */
     public function testVerifyNumRef()
     {

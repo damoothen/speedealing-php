@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * or see http://www.gnu.org/
  */
 
 /**
@@ -27,7 +27,7 @@ global $conf,$user,$langs,$db;
 //define('TEST_DB_FORCE_TYPE','mysql');	// This is to force using mysql driver
 require_once 'PHPUnit/Autoload.php';
 require_once dirname(__FILE__).'/../../htdocs/master.inc.php';
-require_once dirname(__FILE__).'/../../htdocs/lib/CMailFile.class.php';
+require_once dirname(__FILE__).'/../../htdocs/core/class/CMailFile.class.php';
 
 if (empty($user->id))
 {
@@ -89,6 +89,9 @@ class CMailFileTest extends PHPUnit_Framework_TestCase
     }
 
 	/**
+	 * Init phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function setUp()
     {
@@ -101,6 +104,9 @@ class CMailFileTest extends PHPUnit_Framework_TestCase
 		print __METHOD__."\n";
     }
 	/**
+	 * End phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function tearDown()
     {
@@ -108,6 +114,9 @@ class CMailFileTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testCMailFileText
+     *
+     * @return void
      */
     public function testCMailFileText()
     {
@@ -117,8 +126,7 @@ class CMailFileTest extends PHPUnit_Framework_TestCase
 		$langs=$this->savlangs;
 		$db=$this->savdb;
 
-		$localobject=new CMailFile('Test','test@test.com','from@from.com',
-		'Message txt',array(),array(),array(),'','',1,0);
+		$localobject=new CMailFile('Test','test@test.com','from@from.com','Message txt',array(),array(),array(),'','',1,0);
 
     	$result=$localobject->sendfile();
         print __METHOD__." result=".$result."\n";
@@ -128,6 +136,9 @@ class CMailFileTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testCMailFileStatic
+     *
+     * @return string
      */
     public function testCMailFileStatic()
     {
@@ -140,6 +151,11 @@ class CMailFileTest extends PHPUnit_Framework_TestCase
         $localobject=new CMailFile('','','','');
 
         $src='John Doe <john@doe.com>';
+        $result=$localobject->getValidAddress($src,0);
+        print __METHOD__." result=".$result."\n";
+        $this->assertEquals($result,'John Doe <john@doe.com>');
+
+        $src='John Doe <john@doe.com>';
         $result=$localobject->getValidAddress($src,1);
         print __METHOD__." result=".$result."\n";
         $this->assertEquals($result,'<john@doe.com>');
@@ -148,6 +164,16 @@ class CMailFileTest extends PHPUnit_Framework_TestCase
         $result=$localobject->getValidAddress($src,2);
         print __METHOD__." result=".$result."\n";
         $this->assertEquals($result,'john@doe.com');
+
+        $src='John Doe <john@doe.com>';
+        $result=$localobject->getValidAddress($src,3,0);
+        print __METHOD__." result=".$result."\n";
+        $this->assertEquals($result,'"John Doe" <john@doe.com>');
+
+        $src='John Doe <john@doe.com>';
+        $result=$localobject->getValidAddress($src,3,1);
+        print __METHOD__." result=".$result."\n";
+        $this->assertEquals($result,'"=?UTF-8?B?Sm9obiBEb2U=?=" <john@doe.com>');
 
         return $result;
     }

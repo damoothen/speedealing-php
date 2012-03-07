@@ -1,6 +1,6 @@
 <?php
 /* Copyright (C) 2001-2006 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2009 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -27,15 +27,16 @@ require("../../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/product/stock/class/entrepot.class.php");
 require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formother.class.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/stock.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/product.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/date.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/stock.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/product.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/date.lib.php");
 
 $langs->load("products");
 $langs->load("stocks");
 
 if (!$user->rights->produit->lire) accessforbidden();
 
+$id=GETPOST('id','int');
 $idproduct = isset($_GET["idproduct"])?$_GET["idproduct"]:$_PRODUCT["idproduct"];
 $year = isset($_GET["year"])?$_GET["year"]:$_POST["year"];
 $month = isset($_GET["month"])?$_GET["month"]:$_POST["month"];
@@ -43,9 +44,9 @@ $search_movement = isset($_REQUEST["search_movement"])?$_REQUEST["search_movemen
 $search_product = isset($_REQUEST["search_product"])?$_REQUEST["search_product"]:'';
 $search_warehouse = isset($_REQUEST["search_warehouse"])?$_REQUEST["search_warehouse"]:'';
 $search_user = isset($_REQUEST["search_user"])?$_REQUEST["search_user"]:'';
-$page = $_GET["page"];
-$sortfield = $_GET["sortfield"];
-$sortorder = $_GET["sortorder"];
+$page = GETPOST("page");
+$sortfield = GETPOST("sortfield");
+$sortorder = GETPOST("sortorder");
 if ($page < 0) $page = 0;
 $offset = $conf->liste_limit * $page;
 
@@ -75,20 +76,20 @@ $form=new Form($db);
 $formother=new FormOther($db);
 
 $sql = "SELECT p.rowid, p.label as produit, p.fk_product_type as type,";
-$sql.= " s.label as stock, s.rowid as entrepot_id,";
+$sql.= " e.label as stock, e.rowid as entrepot_id,";
 $sql.= " m.rowid as mid, m.value, m.datem, m.fk_user_author, m.label,";
 $sql.= " u.login";
-$sql.= " FROM (".MAIN_DB_PREFIX."entrepot as s,";
-$sql.= " ".MAIN_DB_PREFIX."stock_mouvement as m,";
-$sql.= " ".MAIN_DB_PREFIX."product as p)";
+$sql.= " FROM (".MAIN_DB_PREFIX."entrepot as e,";
+$sql.= " ".MAIN_DB_PREFIX."product as p,";
+$sql.= " ".MAIN_DB_PREFIX."stock_mouvement as m)";
 $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."user as u ON m.fk_user_author = u.rowid";
 $sql.= " WHERE m.fk_product = p.rowid";
-$sql.= " AND m.fk_entrepot = s.rowid";
-$sql.= " AND s.entity = ".$conf->entity;
+$sql.= " AND m.fk_entrepot = e.rowid";
+$sql.= " AND e.entity = ".$conf->entity;
 if (empty($conf->global->STOCK_SUPPORTS_SERVICES)) $sql.= " AND p.fk_product_type = 0";
-if ($_GET["id"])
+if ($id)
 {
-	$sql.= " AND s.rowid ='".$_GET["id"]."'";
+	$sql.= " AND e.rowid ='".$id."'";
 }
 if ($month > 0)
 {
@@ -111,7 +112,7 @@ if (! empty($search_product))
 }
 if (! empty($search_warehouse))
 {
-	$sql.= " AND s.label LIKE '%".$db->escape($search_warehouse)."%'";
+	$sql.= " AND e.label LIKE '%".$db->escape($search_warehouse)."%'";
 }
 if (! empty($search_user))
 {
@@ -119,10 +120,10 @@ if (! empty($search_user))
 }
 if (! empty($_GET['idproduct']))
 {
-	$sql.= " AND p.rowid = '".$_GET['idproduct']."'";
+	$sql.= " AND p.rowid = '".$idproduct."'";
 }
 $sql.= $db->order($sortfield,$sortorder);
-$sql.= $db->plimit($conf->liste_limit + 1 ,$offset);
+$sql.= $db->plimit($conf->liste_limit+1, $offset);
 
 //print $sql;
 $resql = $db->query($sql);
@@ -139,7 +140,7 @@ if ($resql)
 	if ($_GET["id"])
 	{
 		$entrepot = new Entrepot($db);
-		$result = $entrepot->fetch($_GET["id"]);
+		$result = $entrepot->fetch($id);
 		if ($result < 0)
 		{
 	  		dol_print_error($db);
@@ -156,7 +157,7 @@ if ($resql)
 	/*
 	 * Show tab only if we ask a particular warehouse
 	 */
-	if ($_GET["id"])
+	if ($id)
 	{
 		$head = stock_prepare_head($entrepot);
 
@@ -173,25 +174,25 @@ if ($resql)
 		print '<tr><td>'.$langs->trans("LocationSummary").'</td><td colspan="3">'.$entrepot->lieu.'</td></tr>';
 
 		// Description
-		print '<tr><td valign="top">'.$langs->trans("Description").'</td><td colspan="3">'.nl2br($entrepot->description).'</td></tr>';
+		print '<tr><td valign="top">'.$langs->trans("Description").'</td><td colspan="3">'.dol_htmlentitiesbr($entrepot->description).'</td></tr>';
 
 		// Address
 		print '<tr><td>'.$langs->trans('Address').'</td><td colspan="3">';
 		print $entrepot->address;
 		print '</td></tr>';
 
-		// Ville
-		print '<tr><td width="25%">'.$langs->trans('Zip').'</td><td width="25%">'.$entrepot->cp.'</td>';
-		print '<td width="25%">'.$langs->trans('Town').'</td><td width="25%">'.$entrepot->ville.'</td></tr>';
+		// Town
+		print '<tr><td width="25%">'.$langs->trans('Zip').'</td><td width="25%">'.$entrepot->zip.'</td>';
+		print '<td width="25%">'.$langs->trans('Town').'</td><td width="25%">'.$entrepot->town.'</td></tr>';
 
 		// Country
 		print '<tr><td>'.$langs->trans('Country').'</td><td colspan="3">';
-		$img=picto_from_langcode($entrepot->pays_code);
+		$img=picto_from_langcode($entrepot->country_code);
 		print ($img?$img.' ':'');
-		print $entrepot->pays;
+		print $entrepot->country;
 		print '</td></tr>';
 
-		// Statut
+		// Status
 		print '<tr><td>'.$langs->trans("Status").'</td><td colspan="3">'.$entrepot->getLibStatut(4).'</td></tr>';
 
 		$calcproducts=$entrepot->nb_products();
@@ -207,8 +208,8 @@ if ($resql)
 		print "</td></tr>";
 
 		// Last movement
-		$sql = "SELECT max(m.datem) as datem";
-		$sql .= " FROM llx_stock_mouvement as m";
+		$sql = "SELECT MAX(m.datem) as datem";
+		$sql .= " FROM ".MAIN_DB_PREFIX."stock_mouvement as m";
 		$sql .= " WHERE m.fk_entrepot = '".$entrepot->id."'";
 		$resqlbis = $db->query($sql);
 		if ($resqlbis)
@@ -222,7 +223,14 @@ if ($resql)
 		}
 
 		print '<tr><td valign="top">'.$langs->trans("LastMovement").'</td><td colspan="3">';
-		if ($lastmovementdate) print dol_print_date($lastmovementdate,'dayhour');
+		if ($lastmovementdate)
+		{
+		    print dol_print_date($lastmovementdate,'dayhour');
+		}
+		else
+		{
+		    print $langs->trans("None");
+		}
 		print "</td></tr>";
 
 		print "</table>";
@@ -231,7 +239,7 @@ if ($resql)
 	}
 
 	$param='';
-	if ($_GET["id"]) $param.='&id='.$_GET["id"];
+	if ($id) $param.='&id='.$id;
 	if ($search_movement)   $param.='&search_movement='.urlencode($search_movement);
 	if ($search_product)   $param.='&search_product='.urlencode($search_product);
 	if ($search_warehouse) $param.='&search_warehouse='.urlencode($search_warehouse);
@@ -239,7 +247,7 @@ if ($resql)
 	if ($snom) $param.='&snom='.urlencode($snom);
 	if ($search_user)    $param.='&search_user='.urlencode($search_user);
 	if ($idproduct > 0)  $param.='&idproduct='.$idproduct;
-	if ($_GET["id"]) print_barre_liste($texte, $page, "mouvement.php", $param, $sortfield, $sortorder,'',$num,0,'');
+	if ($id) print_barre_liste($texte, $page, "mouvement.php", $param, $sortfield, $sortorder,'',$num,0,'');
 	else print_barre_liste($texte, $page, "mouvement.php", $param, $sortfield, $sortorder,'',$num);
 
 	print '<table class="noborder" width="100%">';
@@ -248,20 +256,20 @@ if ($resql)
 	print_liste_field_titre($langs->trans("Date"),$_SERVER["PHP_SELF"], "m.datem","",$param,"",$sortfield,$sortorder);
 	print_liste_field_titre($langs->trans("Label"),$_SERVER["PHP_SELF"], "m.label","",$param,"",$sortfield,$sortorder);
 	print_liste_field_titre($langs->trans("Product"),$_SERVER["PHP_SELF"], "p.ref","",$param,"",$sortfield,$sortorder);
-	print_liste_field_titre($langs->trans("Warehouse"),$_SERVER["PHP_SELF"], "s.label","",$param,"",$sortfield,$sortorder);
+	print_liste_field_titre($langs->trans("Warehouse"),$_SERVER["PHP_SELF"], "e.label","",$param,"",$sortfield,$sortorder);
 	print_liste_field_titre($langs->trans("Author"),$_SERVER["PHP_SELF"], "m.fk_user_author","",$param,"",$sortfield,$sortorder);
 	print_liste_field_titre($langs->trans("Units"),$_SERVER["PHP_SELF"], "m.value","",$param,'align="right"',$sortfield,$sortorder);
 	print "</tr>\n";
 
 	// Lignes des champs de filtre
 	print '<form method="get" action="'.$_SERVER["PHP_SELF"].'">';
+	if ($id) print '<input type="hidden" name="id" value="'.$id.'">';
 
 	print '<tr class="liste_titre">';
 	print '<td class="liste_titre" valign="right">';
 	print $langs->trans('Month').': <input class="flat" type="text" size="2" maxlength="2" name="month" value="'.$month.'">';
 	print '&nbsp;'.$langs->trans('Year').': ';
-	$max_year = date("Y");
-	$syear = $year;
+	$syear = GETPOST('year')?GETPOST('year'):-1;
 	$formother->select_year($syear,'year',1, 20, 5);
 	print '</td>';
 	// Label of movement
@@ -314,7 +322,7 @@ if ($resql)
 		// Author
 		print '<td>';
 		$userstatic->id=$objp->fk_user_author;
-		$userstatic->nom=$objp->login;
+		$userstatic->lastname=$objp->login;
 		print $userstatic->getNomUrl(1);
 		print "</td>\n";
 		// Value
@@ -334,8 +342,8 @@ else
 	dol_print_error($db);
 }
 
+llxFooter();
 
 $db->close();
 
-llxFooter();
 ?>

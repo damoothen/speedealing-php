@@ -2,7 +2,7 @@
 <project name="dolibarr" default="hudson" basedir=".">
 
 <!-- Exclude/ignore paths -->
- <property name="ignorepaths" value="${basedir}/htdocs/core/filemanagerdol,${basedir}/htdocs/includes/adodbtime,${basedir}/htdocs/includes/artichow,${basedir}/htdocs/includes/barcode/php-barcode,${basedir}/htdocs/includes/ckeditor,${basedir}/htdocs/includes/fpdfi,${basedir}/htdocs/includes/geoip,${basedir}/htdocs/includes/jquery,${basedir}/htdocs/includes/jsgantt,${basedir}/htdocs/includes/nusoap,${basedir}/htdocs/includes/odtphp,${basedir}/htdocs/includes/phpexcel,${basedir}/htdocs/includes/tcpdf" />
+ <property name="ignorepaths" value="${basedir}/htdocs/core/filemanagerdol,${basedir}/htdocs/includes" />
  <property name="ignoreregexp" value="**/PEAR/*,**/NET/*,**/HTTP/*" />
  
  <target name="clean">
@@ -44,19 +44,10 @@
   <exec executable="phpcpd">
    <arg line="	--log-pmd '${basedir}/hudson/logs/pmd-cpd.xml'
    				--exclude '${basedir}/htdocs/core/filemanagerdol'
-   				--exclude '${basedir}/htdocs/includes/adodbtime'
-   				--exclude '${basedir}/htdocs/includes/artichow'
-   				--exclude '${basedir}/htdocs/includes/barcode/php-barcode'
-   				--exclude '${basedir}/htdocs/includes/ckeditor'
-   				--exclude '${basedir}/htdocs/includes/fpdfi'
-   				--exclude '${basedir}/htdocs/includes/geoip'
-   				--exclude '${basedir}/htdocs/includes/jquery'
-   				--exclude '${basedir}/htdocs/includes/jsgantt'
-   				--exclude '${basedir}/htdocs/includes/nusoap'
-   				--exclude '${basedir}/htdocs/includes/odtphp'
-   				--exclude '${basedir}/htdocs/includes/phpexcel'
-   				--exclude '${basedir}/htdocs/includes/tcpdf'
+   				--exclude '${basedir}/htdocs/includes'
    				--exclude '**/PEAR/*,**/NET/*,**/HTTP/*'
+   				--min-tokens 70
+   				--min-lines 20 
    				htdocs
    				" />
   </exec>
@@ -67,18 +58,7 @@
   <exec executable="phploc">
    <arg line="	--log-csv '${basedir}/hudson/logs/phploc.csv'
    				--exclude '${basedir}/htdocs/core/filemanagerdol'
-   				--exclude '${basedir}/htdocs/includes/adodbtime'
-   				--exclude '${basedir}/htdocs/includes/artichow'
-   				--exclude '${basedir}/htdocs/includes/barcode/php-barcode'
-   				--exclude '${basedir}/htdocs/includes/ckeditor'
-   				--exclude '${basedir}/htdocs/includes/fpdfi'
-   				--exclude '${basedir}/htdocs/includes/geoip'
-   				--exclude '${basedir}/htdocs/includes/jquery'
-   				--exclude '${basedir}/htdocs/includes/jsgantt'
-   				--exclude '${basedir}/htdocs/includes/nusoap'
-   				--exclude '${basedir}/htdocs/includes/odtphp'
-   				--exclude '${basedir}/htdocs/includes/phpexcel'
-   				--exclude '${basedir}/htdocs/includes/tcpdf'
+   				--exclude '${basedir}/htdocs/includes'
    				--exclude '**/PEAR/*,**/NET/*,**/HTTP/*'
    				htdocs
    				" />
@@ -88,7 +68,7 @@
  <!-- Generate checkstyle.xml -->
  <target name="phpcs">
   <exec executable="phpcs" dir="${basedir}" output="${basedir}/hudson/logs/checkstyle.xml">
-    <arg line=" --standard=${basedir}/dev/codesniffer/ruleset.xml
+    <arg line=" --standard=${basedir}/dev/codesniffer/jenkins_ruleset.xml
     			--report=checkstyle
                 --ignore=${ignorepaths},${ignoreregexp}
                 htdocs
@@ -99,14 +79,14 @@
  <!-- Generate Doxygen documentation -->
  <target name="doxygen" description="Dolibarr documentation" >
   <exec executable="doxygen" dir="${basedir}" failonerror="false">
-   <arg value="${basedir}/build/doxygen/hudson-doxygen.doxyfile"/>
+   <arg value="${basedir}/build/doxygen/jenkins_doxygen.doxyfile"/>
   </exec>
  </target>
  
  <!-- Run unit tests and generate junit.xml and clover.xml -->
  <target name="phpunit">
   <exec executable="phpunit" dir="${basedir}" failonerror="true">
-   <arg line="	--configuration ${basedir}/test/phpunit/hudson_phpunittest.xml
+   <arg line="	--configuration ${basedir}/test/phpunit/jenkins_phpunittest.xml
 				--log-junit ${basedir}/hudson/logs/junit.xml
 				--coverage-clover ${basedir}/hudson/coverage/clover.xml
   				--coverage-html ${basedir}/hudson/coverage/

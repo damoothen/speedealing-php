@@ -42,18 +42,21 @@ class Service extends CommonObject
 	var $debut_epoch;
 	var $fin_epoch;
 
-
-	function Service($DB, $id=0) {
-		$this->db = $DB;
-		$this->id = $id;
-
-		return 1;
+	/**
+	*  Constructor
+	*
+	*  @param      DoliDB		$db      Database handler
+	*/
+	function Service($db)
+	{
+		$this->db = $db;
 	}
 
 
 	/**
-	 *      \brief      Charge indicateurs this->nb de tableau de bord
-	 *      \return     int         <0 si ko, >0 si ok
+	 *	Charge indicateurs this->nb de tableau de bord
+	 *
+	 *	@return     int         <0 if KO, >0 if OK
 	 */
 	function load_state_board()
 	{
@@ -63,8 +66,8 @@ class Service extends CommonObject
 
 		$sql = "SELECT count(p.rowid) as nb";
 		$sql.= " FROM ".MAIN_DB_PREFIX."product as p";
-		$sql.= " WHERE p.fk_product_type = 1";
-		$sql.= " AND p.entity = ".$conf->entity;
+		$sql.= ' WHERE p.entity IN ('.getEntity($this->element, 1).')';
+		$sql.= " AND p.fk_product_type = 1";
 
 		$resql=$this->db->query($sql);
 		if ($resql)

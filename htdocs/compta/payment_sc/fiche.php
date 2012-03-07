@@ -29,7 +29,7 @@ require('../../main.inc.php');
 require_once(DOL_DOCUMENT_ROOT."/compta/sociales/class/chargesociales.class.php");
 require_once(DOL_DOCUMENT_ROOT."/compta/sociales/class/paymentsocialcontribution.class.php");
 require_once(DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php');
-require_once(DOL_DOCUMENT_ROOT."/includes/modules/facture/modules_facture.php");
+require_once(DOL_DOCUMENT_ROOT."/core/modules/facture/modules_facture.php");
 if ($conf->banque->enabled) require_once(DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php');
 
 $langs->load('bills');
@@ -94,7 +94,7 @@ if ($_REQUEST['action'] == 'confirm_valide' && $_REQUEST['confirm'] == 'yes' && 
 				$outputlangs = new Translate("",$conf);
 				$outputlangs->setDefaultLang($_REQUEST['lang_id']);
 			}
-			facture_pdf_create($db, $fac, '', $fac->modelpdf, $outputlangs);
+			if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) facture_pdf_create($db, $fac, $fac->modelpdf, $outputlangs, $hookmanager);
 		}
 
 		Header('Location: fiche.php?id='.$paiement->id);
@@ -124,7 +124,7 @@ if ($result <= 0)
 	exit;
 }
 
-$html = new Form($db);
+$form = new Form($db);
 
 $h=0;
 
@@ -146,7 +146,7 @@ dol_fiche_head($head, $hselected, $langs->trans("PaymentSocialContribution"), 0,
  */
 if ($_GET['action'] == 'delete')
 {
-	$ret=$html->form_confirm('fiche.php?id='.$paiement->id, $langs->trans("DeletePayment"), $langs->trans("ConfirmDeletePayment"), 'confirm_delete','',0,2);
+	$ret=$form->form_confirm('fiche.php?id='.$paiement->id, $langs->trans("DeletePayment"), $langs->trans("ConfirmDeletePayment"), 'confirm_delete','',0,2);
 	if ($ret == 'html') print '<br>';
 }
 
@@ -156,7 +156,7 @@ if ($_GET['action'] == 'delete')
 if ($_GET['action'] == 'valide')
 {
 	$facid = $_GET['facid'];
-	$ret=$html->form_confirm('fiche.php?id='.$paiement->id.'&amp;facid='.$facid, $langs->trans("ValidatePayment"), $langs->trans("ConfirmValidatePayment"), 'confirm_valide','',0,2);
+	$ret=$form->form_confirm('fiche.php?id='.$paiement->id.'&amp;facid='.$facid, $langs->trans("ValidatePayment"), $langs->trans("ConfirmValidatePayment"), 'confirm_valide','',0,2);
 	if ($ret == 'html') print '<br>';
 }
 
@@ -169,7 +169,7 @@ print '<table class="border" width="100%">';
 // Ref
 print '<tr><td valign="top" width="140">'.$langs->trans('Ref').'</td>';
 print '<td colspan="3">';
-print $html->showrefnav($paiement,'id','',1,'rowid','id');
+print $form->showrefnav($paiement,'id','',1,'rowid','id');
 print '</td></tr>';
 
 // Date
@@ -182,7 +182,7 @@ print '<tr><td valign="top">'.$langs->trans('Mode').'</td><td colspan="3">'.$lan
 print '<tr><td valign="top">'.$langs->trans('Numero').'</td><td colspan="3">'.$paiement->num_paiement.'</td></tr>';
 
 // Montant
-print '<tr><td valign="top">'.$langs->trans('Amount').'</td><td colspan="3">'.price($paiement->amount).'&nbsp;'.$langs->trans('Currency'.$conf->monnaie).'</td></tr>';
+print '<tr><td valign="top">'.$langs->trans('Amount').'</td><td colspan="3">'.price($paiement->amount).'&nbsp;'.$langs->trans('Currency'.$conf->currency).'</td></tr>';
 
 
 // Note

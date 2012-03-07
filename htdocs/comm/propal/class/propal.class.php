@@ -1,13 +1,13 @@
 <?php
-/* Copyright (C) 2002-2004 Rodolphe Quiedeville  <rodolphe@quiedeville.org>
- * Copyright (C) 2004      Eric Seigne           <eric.seigne@ryxeo.com>
- * Copyright (C) 2004-2011 Laurent Destailleur   <eldy@users.sourceforge.net>
- * Copyright (C) 2005      Marc Barilley / Ocebo <marc@ocebo.com>
- * Copyright (C) 2005-2011 Regis Houssin         <regis@dolibarr.fr>
- * Copyright (C) 2006      Andre Cianfarani      <acianfa@free.fr>
- * Copyright (C) 2008      Raphael Bertrand (Resultic)   <raphael.bertrand@resultic.fr>
- * Copyright (C) 2010-2011 Juanjo Menent         <jmenent@2byte.es>
- * Copyright (C) 2010-2011 Philippe Grand        <philippe.grand@atoo-net.com>
+/* Copyright (C) 2002-2004 Rodolphe Quiedeville		<rodolphe@quiedeville.org>
+ * Copyright (C) 2004      Eric Seigne				<eric.seigne@ryxeo.com>
+ * Copyright (C) 2004-2011 Laurent Destailleur		<eldy@users.sourceforge.net>
+ * Copyright (C) 2005      Marc Barilley			<marc@ocebo.com>
+ * Copyright (C) 2005-2012 Regis Houssin			<regis@dolibarr.fr>
+ * Copyright (C) 2006      Andre Cianfarani			<acianfa@free.fr>
+ * Copyright (C) 2008      Raphael Bertrand			<raphael.bertrand@resultic.fr>
+ * Copyright (C) 2010-2011 Juanjo Menent			<jmenent@2byte.es>
+ * Copyright (C) 2010-2011 Philippe Grand			<philippe.grand@atoo-net.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,9 +26,6 @@
 /**
  *	\file       htdocs/comm/propal/class/propal.class.php
  *	\brief      Fichier de la classe des propales
- *	\author     Rodolphe Qiedeville
- *	\author	    Eric Seigne
- *	\author	    Laurent Destailleur
  */
 
 require_once(DOL_DOCUMENT_ROOT ."/core/class/commonobject.class.php");
@@ -116,16 +113,17 @@ class Propal extends CommonObject
 
 
 	/**
-	 *		\brief      Constructeur
-	 *      \param      DB          Database handler
-	 *      \param      socid		Id third party
-	 *      \param      propalid    Id proposal
+	 *	Constructor
+	 *
+	 *	@param      DoliDB	$db         Database handler
+	 *	@param      int		$socid		Id third party
+	 *	@param      int		$propalid   Id proposal
 	 */
-	function Propal($DB, $socid="", $propalid=0)
+	function Propal($db, $socid="", $propalid=0)
 	{
 		global $conf,$langs;
 
-		$this->db = $DB ;
+		$this->db = $db;
 		$this->socid = $socid;
 		$this->id = $propalid;
 		$this->products = array();
@@ -136,25 +134,27 @@ class Propal extends CommonObject
 		$this->duree_validite=$conf->global->PROPALE_VALIDITY_DURATION;
 
 		$langs->load("propal");
-		$this->labelstatut[0]=($conf->global->PROPAL_STATUS_DRAFT_LABEL ? $conf->global->PROPAL_STATUS_DRAFT_LABEL : $langs->trans("PropalStatusDraft"));
-		$this->labelstatut[1]=($conf->global->PROPAL_STATUS_VALIDATED_LABEL ? $conf->global->PROPAL_STATUS_VALIDATED_LABEL : $langs->trans("PropalStatusValidated"));
-		$this->labelstatut[2]=($conf->global->PROPAL_STATUS_SIGNED_LABEL ? $conf->global->PROPAL_STATUS_SIGNED_LABEL : $langs->trans("PropalStatusSigned"));
-		$this->labelstatut[3]=($conf->global->PROPAL_STATUS_NOTSIGNED_LABEL ? $conf->global->PROPAL_STATUS_NOTSIGNED_LABEL : $langs->trans("PropalStatusNotSigned"));
-		$this->labelstatut[4]=($conf->global->PROPAL_STATUS_BILLED_LABEL ? $conf->global->PROPAL_STATUS_BILLED_LABEL : $langs->trans("PropalStatusBilled"));
-		$this->labelstatut_short[0]=($conf->global->PROPAL_STATUS_DRAFTSHORT_LABEL ? $conf->global->PROPAL_STATUS_DRAFTSHORT_LABEL : $langs->trans("PropalStatusDraftShort"));
-		$this->labelstatut_short[1]=($conf->global->PROPAL_STATUS_VALIDATEDSHORT_LABEL ? $conf->global->PROPAL_STATUS_VALIDATEDSHORT_LABEL : $langs->trans("Opened"));
-		$this->labelstatut_short[2]=($conf->global->PROPAL_STATUS_SIGNEDSHORT_LABEL ? $conf->global->PROPAL_STATUS_SIGNEDSHORT_LABEL : $langs->trans("PropalStatusSignedShort"));
-		$this->labelstatut_short[3]=($conf->global->PROPAL_STATUS_NOTSIGNEDSHORT_LABEL ? $conf->global->PROPAL_STATUS_NOTSIGNEDSHORT_LABEL : $langs->trans("PropalStatusNotSignedShort"));
-		$this->labelstatut_short[4]=($conf->global->PROPAL_STATUS_BILLEDSHORT_LABEL ? $conf->global->PROPAL_STATUS_BILLEDSHORT_LABEL : $langs->trans("PropalStatusBilledShort"));
+		$this->labelstatut[0]=(! empty($conf->global->PROPAL_STATUS_DRAFT_LABEL) ? $conf->global->PROPAL_STATUS_DRAFT_LABEL : $langs->trans("PropalStatusDraft"));
+		$this->labelstatut[1]=(! empty($conf->global->PROPAL_STATUS_VALIDATED_LABEL) ? $conf->global->PROPAL_STATUS_VALIDATED_LABEL : $langs->trans("PropalStatusValidated"));
+		$this->labelstatut[2]=(! empty($conf->global->PROPAL_STATUS_SIGNED_LABEL) ? $conf->global->PROPAL_STATUS_SIGNED_LABEL : $langs->trans("PropalStatusSigned"));
+		$this->labelstatut[3]=(! empty($conf->global->PROPAL_STATUS_NOTSIGNED_LABEL) ? $conf->global->PROPAL_STATUS_NOTSIGNED_LABEL : $langs->trans("PropalStatusNotSigned"));
+		$this->labelstatut[4]=(! empty($conf->global->PROPAL_STATUS_BILLED_LABEL) ? $conf->global->PROPAL_STATUS_BILLED_LABEL : $langs->trans("PropalStatusBilled"));
+		$this->labelstatut_short[0]=(! empty($conf->global->PROPAL_STATUS_DRAFTSHORT_LABEL) ? $conf->global->PROPAL_STATUS_DRAFTSHORT_LABEL : $langs->trans("PropalStatusDraftShort"));
+		$this->labelstatut_short[1]=(! empty($conf->global->PROPAL_STATUS_VALIDATEDSHORT_LABEL) ? $conf->global->PROPAL_STATUS_VALIDATEDSHORT_LABEL : $langs->trans("Opened"));
+		$this->labelstatut_short[2]=(! empty($conf->global->PROPAL_STATUS_SIGNEDSHORT_LABEL) ? $conf->global->PROPAL_STATUS_SIGNEDSHORT_LABEL : $langs->trans("PropalStatusSignedShort"));
+		$this->labelstatut_short[3]=(! empty($conf->global->PROPAL_STATUS_NOTSIGNEDSHORT_LABEL) ? $conf->global->PROPAL_STATUS_NOTSIGNEDSHORT_LABEL : $langs->trans("PropalStatusNotSignedShort"));
+		$this->labelstatut_short[4]=(! empty($conf->global->PROPAL_STATUS_BILLEDSHORT_LABEL) ? $conf->global->PROPAL_STATUS_BILLEDSHORT_LABEL : $langs->trans("PropalStatusBilledShort"));
 	}
 
 
 	/**
 	 * 	Add line into array products
 	 *	$this->client doit etre charge
-	 * 	@param     	idproduct       	Id du produit a ajouter
-	 * 	@param     	qty             	Quantity
-	 * 	@param      remise_percent  	Remise relative effectuee sur le produit
+	 *
+	 * 	@param     	int		$idproduct       	Product Id to add
+	 * 	@param     	int		$qty             	Quantity
+	 * 	@param      int		$remise_percent  	Discount effected on Product
+	 *
 	 *	TODO	Remplacer les appels a cette fonction par generation objet Ligne
 	 *			insere dans tableau $this->products
 	 */
@@ -201,15 +201,16 @@ class Propal extends CommonObject
 	}
 
 	/**
-	 *    \brief     Ajout d'une ligne remise fixe dans la proposition, en base
-	 *    \param     idremise			Id de la remise fixe
-	 *    \return    int          		>0 si ok, <0 si ko
+	 *	Adding line of fixed discount in the proposal in DB
+	 *
+	 *	@param     int		@idremise			Id of fixed discount
+	 *  @return    int          				>0 si ok, <0 si ko
 	 */
 	function insert_discount($idremise)
 	{
 		global $langs;
 
-		include_once(DOL_DOCUMENT_ROOT.'/lib/price.lib.php');
+		include_once(DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php');
 		include_once(DOL_DOCUMENT_ROOT.'/core/class/discount.class.php');
 
 		$this->db->begin();
@@ -282,23 +283,24 @@ class Propal extends CommonObject
 	 *		par l'appelant par la methode get_default_tva(societe_vendeuse,societe_acheteuse,'',produit)
 	 *		et le desc doit deja avoir la bonne valeur (a l'appelant de gerer le multilangue)
 	 *
-	 * 		@param    	propalid        	Id de la propale
-	 * 		@param    	desc            	Description de la ligne
-	 * 		@param    	pu_ht              	Prix unitaire
-	 * 		@param    	qty             	Quantite
-	 * 		@param    	txtva           	Taux de tva
-	 * 		@param		txlocaltax1			Local tax 1 rate
-	 *  	@param		txlocaltax2			Local tax 2 rate
-	 *		@param    	fk_product      	Id du produit/service predefini
-	 * 		@param    	remise_percent  	Pourcentage de remise de la ligne
-	 * 		@param    	price_base_type		HT or TTC
-	 * 		@param    	pu_ttc             	Prix unitaire TTC
-	 * 		@param    	info_bits			Bits de type de lignes
-	 *      @param      type                Type of line (product, service)
-	 *      @param      rang                Position of line
-	 *      @param		special_code		Special code
-	 *      @param		fk_parent_line		Id of parent line
-	 *    	@return    	int             	>0 if OK, <0 if KO
+	 * 		@param    	int			$propalid			Id de la propale
+	 * 		@param    	string		$desc				Description de la ligne
+	 * 		@param    	double		$pu_ht				Prix unitaire
+	 * 		@param    	double		$qty             	Quantite
+	 * 		@param    	double		$txtva           	Taux de tva
+	 * 		@param		double		$txlocaltax1		Local tax 1 rate
+	 *  	@param		double		$txlocaltax2		Local tax 2 rate
+	 *		@param    	int			$fk_product      	Id du produit/service predefini
+	 * 		@param    	double		$remise_percent  	Pourcentage de remise de la ligne
+	 * 		@param    	string		$price_base_type	HT or TTC
+	 * 		@param    	dobule		$pu_ttc             Prix unitaire TTC
+	 * 		@param    	int			$info_bits			Bits de type de lignes
+	 *      @param      int			$type               Type of line (product, service)
+	 *      @param      int			$rang               Position of line
+	 *      @param		int			$special_code		Special code
+	 *      @param		int			$fk_parent_line		Id of parent line
+	 *    	@return    	int         	    			>0 if OK, <0 if KO
+	 *
 	 *    	@see       	add_product
 	 */
 	function addline($propalid, $desc, $pu_ht, $qty, $txtva, $txlocaltax1=0, $txlocaltax2=0, $fk_product=0, $remise_percent=0, $price_base_type='HT', $pu_ttc=0, $info_bits=0, $type=0, $rang=-1, $special_code=0, $fk_parent_line=0)
@@ -306,7 +308,7 @@ class Propal extends CommonObject
 		global $conf;
 
 		dol_syslog("Propal::Addline propalid=$propalid, desc=$desc, pu_ht=$pu_ht, qty=$qty, txtva=$txtva, fk_product=$fk_product, remise_except=$remise_percent, price_base_type=$price_base_type, pu_ttc=$pu_ttc, info_bits=$info_bits, type=$type");
-		include_once(DOL_DOCUMENT_ROOT.'/lib/price.lib.php');
+		include_once(DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php');
 
 		// Clean parameters
 		if (empty($remise_percent)) $remise_percent=0;
@@ -381,7 +383,6 @@ class Propal extends CommonObject
 			$this->line->subprice=$pu_ht;
 			$this->line->rang=$rangtouse;
 			$this->line->info_bits=$info_bits;
-			$this->line->fk_remise_except=$fk_remise_except;
 			$this->line->total_ht=$total_ht;
 			$this->line->total_tva=$total_tva;
 			$this->line->total_localtax1=$total_localtax1;
@@ -433,27 +434,27 @@ class Propal extends CommonObject
 	/**
 	 *  Update a proposal line
 	 *
-	 *  @param      rowid           	Id de la ligne
-	 *  @param      pu		     	  	Prix unitaire (HT ou TTC selon price_base_type)
-	 *  @param      qty            	 	Quantity
-	 *  @param      remise_percent  	Remise effectuee sur le produit
-	 *  @param      txtva	          	Taux de TVA
-	 * 	@param	  	txlocaltax1			Local tax 1 rate
-	 *  @param	  	txlocaltax2			Local tax 2 rate
-	 *  @param      desc            	Description
-	 *	@param	  	price_base_type		HT ou TTC
-	 *	@param      info_bits        	Miscellanous informations
-	 *	@param      special_code      	Set special code ('' = we don't change it)
-	 *	@param      fk_parent_line    	Id of line parent
-	 *  @param		skip_update_total	Skip update total
-	 *  @return     int             	0 if OK, <0 if KO
+	 *  @param      int			$rowid           	Id de la ligne
+	 *  @param      double		$pu		     	  	Prix unitaire (HT ou TTC selon price_base_type)
+	 *  @param      double		$qty            	Quantity
+	 *  @param      double		$remise_percent  	Remise effectuee sur le produit
+	 *  @param      double		$txtva	          	Taux de TVA
+	 * 	@param	  	double		$txlocaltax1		Local tax 1 rate
+	 *  @param	  	double		$txlocaltax2		Local tax 2 rate
+	 *  @param      string		$desc            	Description
+	 *	@param	  	double		$price_base_type	HT ou TTC
+	 *	@param      int			$info_bits        	Miscellanous informations
+	 *	@param      int			$special_code      	Set special code ('' = we don't change it)
+	 *	@param      int			$fk_parent_line    	Id of line parent
+	 *  @param		int			$skip_update_total	Skip update total
+	 *  @return     int     		        		0 if OK, <0 if KO
 	 */
 	function updateline($rowid, $pu, $qty, $remise_percent=0, $txtva, $txlocaltax1=0, $txlocaltax2=0, $desc='', $price_base_type='HT', $info_bits=0, $special_code=0, $fk_parent_line=0, $skip_update_total=0)
 	{
 		global $conf,$user,$langs;
 
 		dol_syslog("Propal::UpdateLine $rowid, $pu, $qty, $remise_percent, $txtva, $desc, $price_base_type, $info_bits");
-		include_once(DOL_DOCUMENT_ROOT.'/lib/price.lib.php');
+		include_once(DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php');
 
 		// Clean parameters
 		$remise_percent=price2num($remise_percent);
@@ -496,23 +497,30 @@ class Propal extends CommonObject
 			$staticline->fetch($rowid);
 			$this->line->oldline = $staticline;
 
-			$this->line->rowid=$rowid;
-			$this->line->desc=$desc;
-			$this->line->qty=$qty;
-			$this->line->tva_tx=$txtva;
-			$this->line->localtax1_tx=$txlocaltax1;
-			$this->line->localtax2_tx=$txlocaltax2;
-			$this->line->remise_percent=$remise_percent;
-			$this->line->subprice=$pu;
-			$this->line->info_bits=$info_bits;
-			$this->line->total_ht=$total_ht;
-			$this->line->total_tva=$total_tva;
-			$this->line->total_localtax1=$total_localtax1;
-			$this->line->total_localtax2=$total_localtax2;
-			$this->line->total_ttc=$total_ttc;
-			$this->line->special_code=$special_code;
-			$this->line->fk_parent_line=$fk_parent_line;
-			$this->line->skip_update_total=$skip_update_total;
+			// Reorder if fk_parent_line change
+			if (! empty($fk_parent_line) && ! empty($staticline->fk_parent_line) && $fk_parent_line != $staticline->fk_parent_line)
+			{
+				$rangmax = $this->line_max($fk_parent_line);
+				$this->line->rang = $rangmax + 1;
+			}
+
+			$this->line->rowid				= $rowid;
+			$this->line->desc				= $desc;
+			$this->line->qty				= $qty;
+			$this->line->tva_tx				= $txtva;
+			$this->line->localtax1_tx		= $txlocaltax1;
+			$this->line->localtax2_tx		= $txlocaltax2;
+			$this->line->remise_percent		= $remise_percent;
+			$this->line->subprice			= $pu;
+			$this->line->info_bits			= $info_bits;
+			$this->line->total_ht			= $total_ht;
+			$this->line->total_tva			= $total_tva;
+			$this->line->total_localtax1	= $total_localtax1;
+			$this->line->total_localtax2	= $total_localtax2;
+			$this->line->total_ttc			= $total_ttc;
+			$this->line->special_code		= $special_code;
+			$this->line->fk_parent_line		= $fk_parent_line;
+			$this->line->skip_update_total	= $skip_update_total;
 
 			// TODO deprecated
 			$this->line->price=$price;
@@ -521,6 +529,9 @@ class Propal extends CommonObject
 			$result=$this->line->update();
 			if ($result > 0)
 			{
+				// Reorder if child line
+				if (! empty($fk_parent_line)) $this->line_order(true,'DESC');
+
 				$this->update_price(1);
 
 				$this->fk_propal = $this->id;
@@ -546,7 +557,7 @@ class Propal extends CommonObject
 
 
 	/**
-	 *  Supprime une ligne de detail
+	 *  Delete detail line
 	 *
 	 *  @param		int		$lineid			Id of line to delete
 	 *  @return     int         			>0 if OK, <0 if KO
@@ -583,7 +594,7 @@ class Propal extends CommonObject
 	 * 	this->ref can be set or empty. If empty, we will use "(PROVid)"
 	 *
 	 * 	@param		User	$user		User that create
-	 * 	@param		int		$notrigger	Disable trigger
+	 * 	@param		int		$notrigger	1=Does not execute triggers, 0= execuete triggers
 	 *  @return     int     			<0 if KO, >=0 if OK
 	 */
 	function create($user='', $notrigger=0)
@@ -594,11 +605,12 @@ class Propal extends CommonObject
 		$now=dol_now();
 
 		// Clean parameters
-		$this->fin_validite = $this->datep + ($this->duree_validite * 24 * 3600);
+		if (empty($this->date)) $this->date=$this->datep;
+		$this->fin_validite = $this->date + ($this->duree_validite * 24 * 3600);
         if (empty($this->availability_id)) $this->availability_id=0;
         if (empty($this->demand_reason_id)) $this->demand_reason_id=0;
 
-		dol_syslog("Propal::Create");
+		dol_syslog(get_class($this)."::create");
 
 		// Check parameters
 		$soc = new Societe($this->db);
@@ -606,8 +618,14 @@ class Propal extends CommonObject
 		if ($result < 0)
 		{
 			$this->error="Failed to fetch company";
-			dol_syslog("Propal::create ".$this->error, LOG_ERR);
+			dol_syslog(get_class($this)."::create ".$this->error, LOG_ERR);
 			return -3;
+		}
+		if (empty($this->date))
+		{
+		    $this->error="Date of proposal is required";
+		    dol_syslog(get_class($this)."::create ".$this->error, LOG_ERR);
+		    return -4;
 		}
 		if (! empty($this->ref))
 		{
@@ -642,6 +660,7 @@ class Propal extends CommonObject
 		$sql.= ", date_livraison";
 		$sql.= ", fk_availability";
 		$sql.= ", fk_demand_reason";
+		$sql.= ", fk_projet";
 		$sql.= ", entity";
 		$sql.= ") ";
 		$sql.= " VALUES (";
@@ -652,24 +671,25 @@ class Propal extends CommonObject
 		$sql.= ", ".($this->remise_absolue?$this->remise_absolue:'null');
 		$sql.= ", 0";
 		$sql.= ", 0";
-		$sql.= ", '".$this->db->idate($this->datep)."'";
+		$sql.= ", '".$this->db->idate($this->date)."'";
 		$sql.= ", '".$this->db->idate($now)."'";
 		$sql.= ", '(PROV)'";
 		$sql.= ", ".($user->id > 0 ? "'".$user->id."'":"null");
 		$sql.= ", '".$this->db->escape($this->note)."'";
 		$sql.= ", '".$this->db->escape($this->note_public)."'";
 		$sql.= ", '".$this->modelpdf."'";
-		$sql.= ", '".$this->db->idate($this->fin_validite)."'";
+		$sql.= ", ".($this->fin_validite!=''?"'".$this->db->idate($this->fin_validite)."'":"null");
 		$sql.= ", ".$this->cond_reglement_id;
 		$sql.= ", ".$this->mode_reglement_id;
 		$sql.= ", '".$this->db->escape($this->ref_client)."'";
-		$sql.= ", ".($this->date_livraison!=''?"'".$this->db->idate($this->date_livraison)."'":'null');
+		$sql.= ", ".($this->date_livraison!=''?"'".$this->db->idate($this->date_livraison)."'":"null");
 		$sql.= ", ".$this->availability_id;
 		$sql.= ", ".$this->demand_reason_id;
+		$sql.= ", ".($this->fk_project?$this->fk_project:"null");
 		$sql.= ", ".$conf->entity;
 		$sql.= ")";
 
-		dol_syslog("Propal::create sql=".$sql, LOG_DEBUG);
+		dol_syslog(get_class($this)."::create sql=".$sql, LOG_DEBUG);
 		$resql=$this->db->query($sql);
 		if ($resql)
 		{
@@ -680,7 +700,7 @@ class Propal extends CommonObject
 				if (empty($this->ref)) $this->ref='(PROV'.$this->id.')';
 				$sql = 'UPDATE '.MAIN_DB_PREFIX."propal SET ref='".$this->ref."' WHERE rowid=".$this->id;
 
-				dol_syslog("Propal::create sql=".$sql);
+				dol_syslog(get_class($this)."::create sql=".$sql);
 				$resql=$this->db->query($sql);
 				if (! $resql) $error++;
 
@@ -739,17 +759,6 @@ class Propal extends CommonObject
 					if (! $ret)	dol_print_error($this->db);
 				}
 
-				// Affectation au projet
-				if (! $error && $this->fk_project)
-				{
-					$sql = "UPDATE ".MAIN_DB_PREFIX."propal";
-					$sql.= " SET fk_projet=".$this->fk_project;
-					$sql.= " WHERE ref='".$this->ref."'";
-					$sql.= " AND entity = ".$conf->entity;
-
-					$result=$this->db->query($sql);
-				}
-
 				// Set delivery address
 				if (! $error && $this->fk_delivery_address)
 				{
@@ -791,13 +800,13 @@ class Propal extends CommonObject
 			if (! $error)
 			{
 				$this->db->commit();
-				dol_syslog("Propal::Create done id=".$this->id);
+				dol_syslog(get_class($this)."::create done id=".$this->id);
 				return $this->id;
 			}
 			else
 			{
 				$this->error=$this->db->error();
-				dol_syslog("Propal::Create -2 ".$this->error, LOG_ERR);
+				dol_syslog(get_class($this)."::create -2 ".$this->error, LOG_ERR);
 				$this->db->rollback();
 				return -2;
 			}
@@ -805,7 +814,7 @@ class Propal extends CommonObject
 		else
 		{
 			$this->error=$this->db->error();
-			dol_syslog("Propal::Create -1 ".$this->error, LOG_ERR);
+			dol_syslog(get_class($this)."::create -1 ".$this->error, LOG_ERR);
 			$this->db->rollback();
 			return -1;
 		}
@@ -813,9 +822,10 @@ class Propal extends CommonObject
 
 
 	/**
-	 *    \brief     Insert en base un objet propal completement definie par ses donnees membres (resultant d'une copie par exemple).
-	 *    \return    int                 l'id du nouvel objet propal en base si ok, <0 si ko
-	 *    \see       create
+	 *	Insert into DB a proposal object completely defined by its data members (ex, results from copy).
+	 *	@param 		User	$user	User that create
+	 *	@return    	int				Id of the new object if ok, <0 if ko
+	 *	@see       	create
 	 */
 	function create_from($user)
 	{
@@ -827,83 +837,69 @@ class Propal extends CommonObject
 	/**
 	 *		Load an object from its id and create a new one in database
 	 *
-	 *		@param      int				$fromid     	Id of object to clone
-	 *		@param		int				$invertdetail	Reverse sign of amounts for lines
 	 *		@param		int				$socid			Id of thirdparty
 	 *		@param		HookManager		$hookmanager	Hook manager instance
 	 * 	 	@return		int								New id of clone
 	 */
-	function createFromClone($fromid,$invertdetail=0,$socid=0,$hookmanager=false)
+	function createFromClone($socid=0,$hookmanager=false)
 	{
 		global $user,$langs,$conf;
 
 		$error=0;
-
 		$now=dol_now();
-
-		$object=new Propal($this->db);
 
 		$this->db->begin();
 
 		// Load source object
-		$object->fetch($fromid);
-		$objFrom = $object;
+		$objFrom = dol_clone($this);
 
 		$objsoc=new Societe($this->db);
 
 		// Change socid if needed
-		if (! empty($socid) && $socid != $object->socid)
+		if (! empty($socid) && $socid != $this->socid)
 		{
-			if ($objsoc->fetch($socid)>0)
+			if ($objsoc->fetch($socid) > 0)
 			{
-				$object->socid 					= $objsoc->id;
-				$object->cond_reglement_id		= (! empty($objsoc->cond_reglement_id) ? $objsoc->cond_reglement_id : 0);
-				$object->mode_reglement_id		= (! empty($objsoc->mode_reglement_id) ? $objsoc->mode_reglement_id : 0);
-				$object->fk_project				= '';
-				$object->fk_delivery_address	= '';
+				$this->socid 				= $objsoc->id;
+				$this->cond_reglement_id	= (! empty($objsoc->cond_reglement_id) ? $objsoc->cond_reglement_id : 0);
+				$this->mode_reglement_id	= (! empty($objsoc->mode_reglement_id) ? $objsoc->mode_reglement_id : 0);
+				$this->fk_project			= '';
+				$this->fk_delivery_address	= '';
 			}
 
 			// TODO Change product price if multi-prices
 		}
 		else
 		{
-			$objsoc->fetch($object->socid);
+			$objsoc->fetch($this->socid);
 		}
 
-		$object->id=0;
-		$object->statut=0;
+		$this->id=0;
+		$this->statut=0;
 
-		$objsoc->fetch($object->socid);
-
-		if (empty($conf->global->PROPALE_ADDON) || ! is_readable(DOL_DOCUMENT_ROOT ."/includes/modules/propale/".$conf->global->PROPALE_ADDON.".php"))
+		if (empty($conf->global->PROPALE_ADDON) || ! is_readable(DOL_DOCUMENT_ROOT ."/core/modules/propale/".$conf->global->PROPALE_ADDON.".php"))
 		{
 			$this->error='ErrorSetupNotComplete';
 			return -1;
 		}
 
 		// Clear fields
-		$object->user_author	= $user->id;
-		$object->user_valid		= '';
-		$object->date			= '';
-		$object->datep			= $now;
-		$object->fin_validite	= $object->datep + ($this->duree_validite * 24 * 3600);
-		$object->ref_client		= '';
+		$this->user_author	= $user->id;
+		$this->user_valid	= '';
+		$this->date			= $now;
+		$this->datep		= $now;    // deprecated
+		$this->fin_validite	= $this->date + ($this->duree_validite * 24 * 3600);
+		$this->ref_client	= '';
 
 		// Set ref
-		require_once(DOL_DOCUMENT_ROOT ."/includes/modules/propale/".$conf->global->PROPALE_ADDON.".php");
+		require_once(DOL_DOCUMENT_ROOT ."/core/modules/propale/".$conf->global->PROPALE_ADDON.".php");
 		$obj = $conf->global->PROPALE_ADDON;
 		$modPropale = new $obj;
-		$object->ref = $modPropale->getNextValue($objsoc,$object);
+		$this->ref = $modPropale->getNextValue($objsoc,$this);
 
 		// Create clone
-		$result=$object->create($user);
-
-		// Other options
-		if ($result < 0)
-		{
-			$this->error=$object->error;
-			$error++;
-		}
+		$result=$this->create($user);
+		if ($result < 0) $error++;
 
 		if (! $error)
 		{
@@ -911,14 +907,15 @@ class Propal extends CommonObject
 			if (is_object($hookmanager))
 			{
 			    $parameters=array('objFrom'=>$objFrom);
-				$reshook=$hookmanager->executeHooks('createfrom',$parameters,$object,$action);    // Note that $action and $object may have been modified by some hooks
+				$action='';
+				$reshook=$hookmanager->executeHooks('createFrom',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
 				if ($reshook < 0) $error++;
 			}
 
 			// Appel des triggers
 			include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
 			$interface=new Interfaces($this->db);
-			$result=$interface->run_triggers('PROPAL_CLONE',$object,$user,$langs,$conf);
+			$result=$interface->run_triggers('PROPAL_CLONE',$this,$user,$langs,$conf);
 			if ($result < 0) { $error++; $this->errors=$interface->errors; }
 			// Fin appel triggers
 		}
@@ -927,7 +924,7 @@ class Propal extends CommonObject
 		if (! $error)
 		{
 			$this->db->commit();
-			return $object->id;
+			return $this->id;
 		}
 		else
 		{
@@ -937,10 +934,11 @@ class Propal extends CommonObject
 	}
 
 	/**
-	 *    	\brief      Load a proposal from database and its ligne array
-	 *		\param      rowid       id of object to load
-	 * 		\param		ref			Ref of proposal
-	 *		\return     int         >0 if OK, <0 if KO
+	 *	Load a proposal from database and its ligne array
+	 *
+	 *	@param      int			$rowid		id of object to load
+	 *	@param		string		$ref		Ref of proposal
+	 *	@return     int         			>0 if OK, <0 if KO
 	 */
 	function fetch($rowid,$ref='')
 	{
@@ -977,7 +975,7 @@ class Propal extends CommonObject
 		if ($ref) $sql.= " AND p.ref='".$ref."'";
 		else $sql.= " AND p.rowid=".$rowid;
 
-		dol_syslog("Propal::fecth sql=".$sql, LOG_DEBUG);
+		dol_syslog(get_class($this)."::fetch sql=".$sql, LOG_DEBUG);
 		$resql=$this->db->query($sql);
 		if ($resql)
 		{
@@ -1006,10 +1004,12 @@ class Propal extends CommonObject
 				$this->statut               = $obj->fk_statut;
 				$this->statut_libelle       = $obj->statut_label;
 
-				$this->datec                = $this->db->jdate($obj->datec);
-				$this->datev                = $this->db->jdate($obj->datev);
+				$this->datec                = $this->db->jdate($obj->datec); //TODO obsolete
+				$this->datev                = $this->db->jdate($obj->datev); //TODO obsolete
+				$this->date_creation		= $this->db->jdate($obj->datec); //Creation date
+                $this->date_validation		= $this->db->jdate($obj->datev); //Validation date
 				$this->date                 = $this->db->jdate($obj->dp);	// Proposal date
-				$this->datep                = $this->db->jdate($obj->dp);
+				$this->datep                = $this->db->jdate($obj->dp);    // deprecated
 				$this->fin_validite         = $this->db->jdate($obj->dfv);
 				$this->date_livraison       = $this->db->jdate($obj->date_livraison);
 				$this->availability_id      = $obj->fk_availability;
@@ -1110,7 +1110,7 @@ class Propal extends CommonObject
 				else
 				{
 					$this->error=$this->db->error();
-					dol_syslog("Propal::Fetch Error ".$this->error, LOG_ERR);
+					dol_syslog(get_class($this)."::fetch Error ".$this->error, LOG_ERR);
 					return -1;
 				}
 
@@ -1123,20 +1123,23 @@ class Propal extends CommonObject
 		else
 		{
 			$this->error=$this->db->error();
-			dol_syslog("Propal::Fetch Error ".$this->error, LOG_ERR);
+			dol_syslog(get_class($this)."::fetch Error ".$this->error, LOG_ERR);
 			return -1;
 		}
 	}
 
 	/**
-	 *      \brief      Passe au statut valider une propale
-	 *      \param      user        Objet utilisateur qui valide
-	 *      \return     int         <0 si ko, >=0 si ok
+	 *  Set status to validated
+	 *
+	 *  @param	User	$user       Object user that validate
+	 *  @param	int		$notrigger	1=Does not execute triggers, 0= execuete triggers
+	 *  @return int         		<0 if KO, >=0 if OK
 	 */
 	function valid($user, $notrigger=0)
 	{
 		global $conf,$langs;
 
+		$error=0;
 		$now=dol_now();
 
 		if ($user->rights->propale->valider)
@@ -1147,10 +1150,9 @@ class Propal extends CommonObject
 			$sql.= " SET fk_statut = 1, date_valid='".$this->db->idate($now)."', fk_user_valid=".$user->id;
 			$sql.= " WHERE rowid = ".$this->id." AND fk_statut = 0";
 
+			dol_syslog(get_class($this).'::valid sql='.$sql);
 			if ($this->db->query($sql))
 			{
-				$this->use_webcal=($conf->global->PHPWEBCALENDAR_PROPALSTATUS=='always'?1:0);
-
 				if (! $notrigger)
 				{
 					// Appel des triggers
@@ -1186,43 +1188,54 @@ class Propal extends CommonObject
 
 
 	/**
-	 *      \brief      Define proposal date
-	 *      \param      user        		Object user that modify
-	 *      \param      date				Date
-	 *      \return     int         		<0 if KO, >0 if OK
+	 *  Define proposal date
+	 *
+	 *  @param  User		$user      		Object user that modify
+	 *  @param  timestamp	$date			Date
+	 *  @return	int         				<0 if KO, >0 if OK
 	 */
 	function set_date($user, $date)
 	{
-		if ($user->rights->propale->creer)
+		if (empty($date))
 		{
-			$sql = "UPDATE ".MAIN_DB_PREFIX."propal SET datep = ".$this->db->idate($date);
+		    $this->error='ErrorBadParameter';
+		    dol_syslog(get_class($this)."::set_date ".$this->error, LOG_ERR);
+		    return -1;
+		}
+
+	    if ($user->rights->propale->creer)
+		{
+			$sql = "UPDATE ".MAIN_DB_PREFIX."propal SET datep = '".$this->db->idate($date)."'";
 			$sql.= " WHERE rowid = ".$this->id." AND fk_statut = 0";
+
+			dol_syslog(get_class($this)."::set_date sql=".$sql);
 			if ($this->db->query($sql) )
 			{
 				$this->date = $date;
-				$this->datep = $date;
+				$this->datep = $date;    // deprecated
 				return 1;
 			}
 			else
 			{
-				$this->error=$this->db->error();
-				dol_syslog("Propal::set_date Erreur SQL".$this->error, LOG_ERR);
+				$this->error=$this->db->lasterror();
+				dol_syslog(get_class($this)."::set_date ".$this->error, LOG_ERR);
 				return -1;
 			}
 		}
 	}
 
 	/**
-	 *      \brief      Define end validity date
-	 *      \param      user        		Object user that modify
-	 *      \param      date_fin_validite	End of validity date
-	 *      \return     int         		<0 if KO, >0 if OK
+	 *	Define end validity date
+	 *
+	 *	@param		User		$user        		Object user that modify
+	 *	@param      timestamp	$date_fin_validite	End of validity date
+	 *	@return     int         					<0 if KO, >0 if OK
 	 */
 	function set_echeance($user, $date_fin_validite)
 	{
-		if ($user->rights->propale->creer)
+	    if ($user->rights->propale->creer)
 		{
-			$sql = "UPDATE ".MAIN_DB_PREFIX."propal SET fin_validite = ".$this->db->idate($date_fin_validite);
+			$sql = "UPDATE ".MAIN_DB_PREFIX."propal SET fin_validite = ".($date_fin_validite!=''?"'".$this->db->idate($date_fin_validite)."'":'null');
 			$sql.= " WHERE rowid = ".$this->id." AND fk_statut = 0";
 			if ($this->db->query($sql) )
 			{
@@ -1232,24 +1245,25 @@ class Propal extends CommonObject
 			else
 			{
 				$this->error=$this->db->error();
-				dol_syslog("Propal::set_echeance Erreur SQL".$this->error, LOG_ERR);
+				dol_syslog(get_class($this)."::set_echeance Erreur SQL".$this->error, LOG_ERR);
 				return -1;
 			}
 		}
 	}
 
 	/**
-	 *      \brief      Set delivery date
-	 *      \param      user        		Objet utilisateur qui modifie
-	 *      \param      date_livraison      date de livraison
-	 *      \return     int         		<0 si ko, >0 si ok
+	 *	Set delivery date
+	 *
+	 *	@param      User 		$user        		Object user that modify
+	 *	@param      timestamp	$date_livraison     Delivery date
+	 *	@return     int         					<0 if ko, >0 if ok
 	 */
 	function set_date_livraison($user, $date_livraison)
 	{
 		if ($user->rights->propale->creer)
 		{
 			$sql = "UPDATE ".MAIN_DB_PREFIX."propal ";
-			$sql.= " SET date_livraison = ".($date_livraison!=''?$this->db->idate($date_livraison):'null');
+			$sql.= " SET date_livraison = ".($date_livraison!=''?"'".$this->db->idate($date_livraison)."'":'null');
 			$sql.= " WHERE rowid = ".$this->id;
 
 			if ($this->db->query($sql))
@@ -1260,17 +1274,18 @@ class Propal extends CommonObject
 			else
 			{
 				$this->error=$this->db->error();
-				dol_syslog("Propal::set_date_livraison Erreur SQL");
+				dol_syslog(get_class($this)."::set_date_livraison Erreur SQL");
 				return -1;
 			}
 		}
 	}
 
 	/**
-	 *      \brief      Define delivery address
-	 *      \param      user        		Objet utilisateur qui modifie
-	 *      \param      fk_address			Delivery address id
-	 *      \return     int         		<0 si ko, >0 si ok
+	 *	Define delivery address
+	 *
+	 *	@param      User	$user        	Object user that modify
+	 *	@param      int		$fk_address		Delivery address id
+	 *	@return     int			         	<0 si ko, >0 si ok
 	 */
 	function set_adresse_livraison($user, $fk_address)
 	{
@@ -1296,7 +1311,7 @@ class Propal extends CommonObject
 	/**
 	 *  Set delivery
 	 *
-	 *  @param		User	$user		  	Objet utilisateur qui modifie
+	 *  @param		User	$user		  	Object user that modify
 	 *  @param      int		$id				Availability id
 	 *  @return     int           			<0 if KO, >0 if OK
 	 */
@@ -1325,7 +1340,7 @@ class Propal extends CommonObject
 	/**
 	 *  Set source of demand
 	 *
-	 *  @param		User	$user		Objet utilisateur qui modifie
+	 *  @param		User	$user		Object user that modify
 	 *  @param      int		$id			Input reason id
 	 *  @return     int           		<0 if KO, >0 if OK
 	 */
@@ -1352,11 +1367,11 @@ class Propal extends CommonObject
 	}
 
 	/**
-	 *  Positionne numero reference client
+	 * Set customer reference number
 	 *
-	 *  @param      user            Utilisateur qui modifie
-	 *  @param      ref_client      Reference client
-	 *  @return     int             <0 si ko, >0 si ok
+	 *  @param      User	$user			Object user that modify
+	 *  @param      string	$ref_client		Customer reference
+	 *  @return     int						<0 if ko, >0 if ok
 	 */
 	function set_ref_client($user, $ref_client)
 	{
@@ -1385,10 +1400,11 @@ class Propal extends CommonObject
 	}
 
 	/**
-	 *      \brief      Definit une remise globale relative sur la proposition
-	 *      \param      user        Objet utilisateur qui modifie
-	 *      \param      remise      Montant remise
-	 *      \return     int         <0 si ko, >0 si ok
+	 *	Set an overall discount on the proposal
+	 *
+	 *	@param      User	$user       Object user that modify
+	 *	@param      double	$remise      Amount discount
+	 *	@return     int         		<0 if ko, >0 if ok
 	 */
 	function set_remise_percent($user, $remise)
 	{
@@ -1418,10 +1434,11 @@ class Propal extends CommonObject
 
 
 	/**
-	 *      \brief      Definit une remise globale absolue sur la proposition
-	 *      \param      user        Objet utilisateur qui modifie
-	 *      \param      remise      Montant remise
-	 *      \return     int         <0 si ko, >0 si ok
+	 *	Set an absolute overall discount on the proposal
+	 *
+	 *	@param      User	$user        Object user that modify
+	 *	@param      double	$remise      Amount discount
+	 *	@return     int         		<0 if ko, >0 if ok
 	 */
 	function set_remise_absolue($user, $remise)
 	{
@@ -1451,18 +1468,50 @@ class Propal extends CommonObject
 	}
 
 
+
 	/**
-	 *      \brief      Cloture de la proposition commerciale
-	 *      \param      user        Utilisateur qui cloture
-	 *      \param      statut      Statut
-	 *      \param      note        Commentaire
-	 *      \return     int         <0 si ko, >0 si ok
+	*	Close the commercial proposal
+	*
+	*	@param      User	$user		Object user that close
+	*	@param      int		$statut		Statut
+	*	@param      text	$note		Comment
+	*	@return     int         		<0 if KO, >0 if OK
+	*/
+	function reopen($user, $statut, $note)
+	{
+	    global $langs,$conf;
+
+	    $this->statut = $statut;
+	    $error=0;
+
+	    $this->db->begin();
+
+	    $sql = "UPDATE ".MAIN_DB_PREFIX."propal";
+			$sql.= " SET fk_statut = ".$statut.", note = '".$this->db->escape($note)."', date_cloture=".$this->db->idate(mktime()).", fk_user_cloture=".$user->id;
+	    $sql.= " WHERE rowid = ".$this->id;
+
+	    $resql=$this->db->query($sql);
+	    if ($resql)
+	    {
+
+	    }
+	}
+
+
+	/**
+	 *	Close the commercial proposal
+	 *
+	 *	@param      User	$user		Object user that close
+	 *	@param      int		$statut		Statut
+	 *	@param      text	$note		Comment
+	 *	@return     int         		<0 if KO, >0 if OK
 	 */
 	function cloture($user, $statut, $note)
 	{
 		global $langs,$conf;
 
 		$this->statut = $statut;
+		$error=0;
 
 		$this->db->begin();
 
@@ -1487,8 +1536,6 @@ class Propal extends CommonObject
 					return -2;
 				}
 
-				$this->use_webcal=($conf->global->PHPWEBCALENDAR_PROPALSTATUS=='always'?1:0);
-
 				// Appel des triggers
 				include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
 				$interface=new Interfaces($this->db);
@@ -1498,8 +1545,6 @@ class Propal extends CommonObject
 			}
 			else
 			{
-				$this->use_webcal=($conf->global->PHPWEBCALENDAR_PROPALSTATUS=='always'?1:0);
-
 				// Appel des triggers
 				include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
 				$interface=new Interfaces($this->db);
@@ -1520,8 +1565,9 @@ class Propal extends CommonObject
 	}
 
 	/**
-	 *        \brief      Classe la propale comme facturee
-	 *        \return     int     <0 si ko, >0 si ok
+	 *	Class invoiced the Propal
+	 *
+	 *	@return     int     	<0 si ko, >0 si ok
 	 */
 	function classer_facturee()
 	{
@@ -1538,10 +1584,10 @@ class Propal extends CommonObject
 	}
 
 	/**
-	 *		Set draft status
+	 *	Set draft status
 	 *
-	 *		@param		User	$user		Object user that modify
-	 *		@return		int					<0 if KO, >0 if OK
+	 *	@param		User	$user		Object user that modify
+	 *	@return		int					<0 if KO, >0 if OK
 	 */
 	function set_draft($user)
 	{
@@ -1564,15 +1610,15 @@ class Propal extends CommonObject
 	/**
 	 *    Return list of proposal (eventually filtered on user) into an array
 	 *
-	 *    @param       shortlist       0=Return array[id]=ref, 1=Return array[](id=>id,ref=>ref)
-	 *    @param       draft		   0=not draft, 1=draft
-	 *    @param       notcurrentuser  0=current user, 1=not current user
-	 *    @param       socid           Id third pary
-	 *    @param       limit           For pagination
-	 *    @param       offset          For pagination
-	 *    @param       sortfield       Sort criteria
-	 *    @param       sortorder       Sort order
-	 *    @return      int		       -1 if KO, array with result if OK
+	 *    @param	int		$shortlist			0=Return array[id]=ref, 1=Return array[](id=>id,ref=>ref)
+	 *    @param	int		$draft				0=not draft, 1=draft
+	 *    @param	int		$notcurrentuser		0=current user, 1=not current user
+	 *    @param    int		$socid				Id third pary
+	 *    @param    int		$limit				For pagination
+	 *    @param    int		$offset				For pagination
+	 *    @param    string	$sortfield			Sort criteria
+	 *    @param    string	$sortorder			Sort order
+	 *    @return	int		       				-1 if KO, array with result if OK
 	 */
 	function liste_array($shortlist=0, $draft=0, $notcurrentuser=0, $socid=0, $limit=0, $offset=0, $sortfield='p.datep', $sortorder='DESC')
 	{
@@ -1626,9 +1672,9 @@ class Propal extends CommonObject
 	}
 
 	/**
-	 *  Renvoie un tableau contenant les numeros de factures associees
+	 *  Returns an array with the numbers of related invoices
 	 *
-	 *	@return		array		Tableau des id de factures
+	 *	@return	array		Array of invoices
 	 */
 	function getInvoiceArrayList()
 	{
@@ -1636,7 +1682,7 @@ class Propal extends CommonObject
 	}
 
 	/**
-	 *  Renvoie un tableau contenant les id et ref des factures associees
+	 *  Returns an array with id and ref of related invoices
 	 *
 	 *	@param		int		$id			Id propal
 	 *	@return		array				Array of invoices id
@@ -1718,92 +1764,115 @@ class Propal extends CommonObject
 	}
 
 	/**
-	 *    \brief      Efface propal
-	 *    \param      user        Objet du user qui efface
+	 *	Delete proposal
+	 *
+	 *	@param	User	$user        	Object user that delete
+	 *	@param	int		$notrigger		1=Does not execute triggers, 0= execuete triggers
+	 *	@return	int						1 if ok, otherwise if error
 	 */
 	function delete($user, $notrigger=0)
 	{
 		global $conf,$langs;
-        require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
+        require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
 
 		$error=0;
 
 		$this->db->begin();
-
-		$sql = "DELETE FROM ".MAIN_DB_PREFIX."propaldet WHERE fk_propal = ".$this->id;
-		if ( $this->db->query($sql) )
+		
+		if (! $error && ! $notrigger)
 		{
-			$sql = "DELETE FROM ".MAIN_DB_PREFIX."propal WHERE rowid = ".$this->id;
-			if ( $this->db->query($sql) )
+			// Call triggers
+			include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+			$interface=new Interfaces($this->db);
+			$result=$interface->run_triggers('PROPAL_DELETE',$this,$user,$langs,$conf);
+			if ($result < 0) {
+				$error++; $this->errors=$interface->errors;
+			}
+			// End call triggers
+		}
+		
+		if (! $error)
+		{
+			$sql = "DELETE FROM ".MAIN_DB_PREFIX."propaldet WHERE fk_propal = ".$this->id;
+			if ($this->db->query($sql))
 			{
-				// Delete linked contacts
-				$res = $this->delete_linked_contact();
-				if ($res < 0)
+				$sql = "DELETE FROM ".MAIN_DB_PREFIX."propal WHERE rowid = ".$this->id;
+				if ($this->db->query($sql))
 				{
-					$this->error='ErrorFailToDeleteLinkedContact';
-					$this->db->rollback();
-					return 0;
-				}
-
-				// We remove directory
-				$propalref = dol_sanitizeFileName($this->ref);
-				if ($conf->propale->dir_output)
-				{
-					$dir = $conf->propale->dir_output . "/" . $propalref ;
-					$file = $conf->propale->dir_output . "/" . $propalref . "/" . $propalref . ".pdf";
-					if (file_exists($file))
+					// Delete linked object
+					$res = $this->deleteObjectLinked();
+					if ($res < 0) $error++;
+			
+					// Delete linked contacts
+					$res = $this->delete_linked_contact();
+					if ($res < 0) $error++;
+			
+					if (! $error)
 					{
-						propale_delete_preview($this->db, $this->id, $this->ref);
-
-						if (!dol_delete_file($file))
+						// We remove directory
+						$propalref = dol_sanitizeFileName($this->ref);
+						if ($conf->propale->dir_output)
 						{
-							$this->error='ErrorFailToDeleteFile';
-							$this->db->rollback();
-							return 0;
+							$dir = $conf->propale->dir_output . "/" . $propalref ;
+							$file = $conf->propale->dir_output . "/" . $propalref . "/" . $propalref . ".pdf";
+							if (file_exists($file))
+							{
+								dol_delete_preview($this);
+									
+								if (!dol_delete_file($file))
+								{
+									$this->error='ErrorFailToDeleteFile';
+									$this->db->rollback();
+									return 0;
+								}
+							}
+							if (file_exists($dir))
+							{
+								$res=@dol_delete_dir($dir);
+								if (! $res)
+								{
+									$this->error='ErrorFailToDeleteDir';
+									$this->db->rollback();
+									return 0;
+								}
+							}
 						}
 					}
-					if (file_exists($dir))
+			
+					if (! $error)
 					{
-						$res=@dol_delete_dir($dir);
-						if (! $res)
-						{
-							$this->error='ErrorFailToDeleteDir';
-							$this->db->rollback();
-							return 0;
-						}
+						dol_syslog(get_class($this)."::delete $this->id by $user->id", LOG_DEBUG);
+						$this->db->commit();
+						return 1;
 					}
-				}
-
-				if (! $notrigger)
-				{
-					// Call triggers
-					include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
-					$interface=new Interfaces($this->db);
-					$result=$interface->run_triggers('PROPAL_DELETE',$this,$user,$langs,$conf);
-					if ($result < 0) { $error++; $this->errors=$interface->errors; }
-					// End call triggers
-				}
-
-				if (!$error)
-				{
-					dol_syslog("Suppression de la proposition $this->id par $user->id", LOG_DEBUG);
-					$this->db->commit();
-					return 1;
+					else
+					{
+						$this->error=$this->db->lasterror();
+						dol_syslog(get_class($this)."::delete ".$this->error, LOG_ERR);
+						$this->db->rollback();
+						return 0;
+					}
 				}
 				else
 				{
+					$this->error=$this->db->lasterror();
+					dol_syslog(get_class($this)."::delete ".$this->error, LOG_ERR);
 					$this->db->rollback();
-					return 0;
+					return -3;
 				}
 			}
 			else
 			{
+				$this->error=$this->db->lasterror();
+				dol_syslog(get_class($this)."::delete ".$this->error, LOG_ERR);
 				$this->db->rollback();
 				return -2;
 			}
 		}
 		else
 		{
+			$this->error=$this->db->lasterror();
+			dol_syslog(get_class($this)."::delete ".$this->error, LOG_ERR);
 			$this->db->rollback();
 			return -1;
 		}
@@ -1811,10 +1880,10 @@ class Propal extends CommonObject
 
 
 	/**
-	 *  Change les conditions de reglement de la facture
+	 *  Change the payments conditions of the invoice
 	 *
-	 *  @param      cond_reglement_id      Id de la nouvelle condition de reglement
-	 *  @return     int                    >0 if OK, <0 if KO
+	 *  @param		int		$cond_reglement_id	Id of new payment condition
+	 *  @return     int                    		>0 if OK, <0 if KO
 	 */
 	function cond_reglement($cond_reglement_id)
 	{
@@ -1846,10 +1915,10 @@ class Propal extends CommonObject
 
 
 	/**
-	 *  Change le mode de reglement
+	 *  Change the payment mode
 	 *
-	 *  @param      mode_reglement_id     	Id du nouveau mode
-	 *  @return     int         			>0 if OK, <0 if KO
+	 *  @param	int	$mode_reglement_id	Id of new payment mode
+	 *  @return int         			>0 if OK, <0 if KO
 	 */
 	function mode_reglement($mode_reglement_id)
 	{
@@ -1880,10 +1949,10 @@ class Propal extends CommonObject
 	}
 
 	/**
-	 *  Change le delai de livraison
+	 *  Change the delivery time
 	 *
-	 *  @param      availability_id      Id du nouveau delai de livraison
-	 *  @return     int                  >0 if OK, <0 if KO
+	 *  @param	int	$availability_id	Id of new delivery time
+	 *  @return int                  	>0 if OK, <0 if KO
 	 */
 	function availability($availability_id)
 	{
@@ -1914,9 +1983,10 @@ class Propal extends CommonObject
 	}
 
 	/**
-	 *   \brief      Change l'origine de la demande
-	 *   \param      demand_reason_id      Id de la nouvelle origine de demande
-	 *   \return     int                    >0 si ok, <0 si ko
+	 *	Change source demand
+	 *
+	 *	@param	int $demand_reason_id 	Id of new source demand
+	 *	@return int						>0 si ok, <0 si ko
 	 */
 	function demand_reason($demand_reason_id)
 	{
@@ -1948,8 +2018,9 @@ class Propal extends CommonObject
 
 
 	/**
-	 *      \brief      Information sur l'objet propal
-	 *      \param      id      id de la propale
+	 *	Object Proposal Information
+	 *
+	 * 	@param	int	$id		Proposal id
 	 */
 	function info($id)
 	{
@@ -2005,7 +2076,8 @@ class Propal extends CommonObject
 
 	/**
 	 *    	Return label of status of proposal (draft, validated, ...)
-	 *    	@param      mode        0=long label, 1=short label, 2=Picto + short label, 3=Picto, 4=Picto + long label, 5=Short label + Picto
+	 *
+	 *    	@param      int			$mode        0=long label, 1=short label, 2=Picto + short label, 3=Picto, 4=Picto + long label, 5=Short label + Picto
 	 *    	@return     string		Label
 	 */
 	function getLibStatut($mode=0)
@@ -2015,8 +2087,9 @@ class Propal extends CommonObject
 
 	/**
 	 *    	Return label of a status (draft, validated, ...)
-	 *    	@param      statut		id statut
-	 *    	@param      mode        0=long label, 1=short label, 2=Picto + short label, 3=Picto, 4=Picto + long label, 5=Short label + Picto
+	 *
+	 *    	@param      int			$statut		id statut
+	 *    	@param      int			$mode      	0=long label, 1=short label, 2=Picto + short label, 3=Picto, 4=Picto + long label, 5=Short label + Picto
 	 *    	@return     string		Label
 	 */
 	function LibStatut($statut,$mode=1)
@@ -2069,9 +2142,10 @@ class Propal extends CommonObject
 
 	/**
      *      Load indicators for dashboard (this->nbtodo and this->nbtodolate)
-     *      @param          user    Objet user
-     *      @param          mode    "opened" pour propal a fermer, "signed" pour propale a facturer
-     *      @return         int     <0 if KO, >0 if OK
+     *
+     *      @param          User	$user   Object user
+     *      @param          int		$mode   "opened" for proposal to close, "signed" for proposal to invoice
+     *      @return         int     		<0 if KO, >0 if OK
 	 */
 	function load_board($user,$mode)
 	{
@@ -2140,7 +2214,7 @@ class Propal extends CommonObject
 		$prodids = array();
 		$sql = "SELECT rowid";
 		$sql.= " FROM ".MAIN_DB_PREFIX."product";
-		$sql.= " WHERE entity = ".$conf->entity;
+		$sql.= " WHERE entity IN (".getEntity('product', 1).")";
 		$resql = $this->db->query($sql);
 		if ($resql)
 		{
@@ -2216,7 +2290,7 @@ class Propal extends CommonObject
 	/**
 	 *      Charge indicateurs this->nb de tableau de bord
 	 *
-	 *      @return     int         <0 si ko, >0 si ok
+	 *      @return     int         <0 if ko, >0 if ok
 	 */
 	function load_state_board()
 	{
@@ -2255,17 +2329,18 @@ class Propal extends CommonObject
 
 
 	/**
-	 *      \brief      Renvoie la reference de propale suivante non utilisee en fonction du module
-	 *                  de numerotation actif defini dans PROPALE_ADDON
-	 *      \param	    soc  		            objet societe
-	 *      \return     string              reference libre pour la propale
+	 *  Returns the reference to the following non used Proposal used depending on the active numbering module
+	 *  defined into PROPALE_ADDON
+	 *
+	 *  @param	Societe		$soc  	Object thirdparty
+	 *  @return string      		Reference libre pour la propale
 	 */
 	function getNextNumRef($soc)
 	{
 		global $conf, $db, $langs;
 		$langs->load("propal");
 
-		$dir = DOL_DOCUMENT_ROOT . "/includes/modules/propale/";
+		$dir = DOL_DOCUMENT_ROOT . "/core/modules/propale/";
 
 		if (! empty($conf->global->PROPALE_ADDON))
 		{
@@ -2286,40 +2361,47 @@ class Propal extends CommonObject
 			}
 			else
 			{
-				dol_print_error($db,"Propale::getNextNumRef ".$obj->error);
+				$this->error=$obj->error;
+			    //dol_print_error($db,"Propale::getNextNumRef ".$obj->error);
 				return "";
 			}
 		}
 		else
 		{
-			print $langs->trans("Error")." ".$langs->trans("Error_PROPALE_ADDON_NotDefined");
+		    $langs->load("errors");
+			print $langs->trans("Error")." ".$langs->trans("ErrorModuleSetupNotComplete");
 			return "";
 		}
 	}
 
 	/**
-	 *      Return clicable link of object (with eventually picto)
-	 *      @param      withpicto       Add picto into link
-	 *      @param      option          Where point the link
-	 *      @param      get_params      Parametres added to url
-	 *      @return     string          String with URL
+	 *	Return clicable link of object (with eventually picto)
+	 *
+	 *	@param      int		$withpicto		Add picto into link
+	 *	@param      string	$option			Where point the link ('compta', 'expedition', 'document', ...)
+	 *	@param      string	$get_params    	Parametres added to url
+	 *	@return     string          		String with URL
 	 */
 	function getNomUrl($withpicto=0,$option='', $get_params='')
 	{
 		global $langs;
 
 		$result='';
-		if($option == '')
+		if ($option == '')
 		{
 			$lien = '<a href="'.DOL_URL_ROOT.'/comm/propal.php?id='.$this->id. $get_params .'">';
 		}
-		if($option == 'compta')   // deprecated
+		if ($option == 'compta')   // deprecated
 		{
 			$lien = '<a href="'.DOL_URL_ROOT.'/comm/propal.php?id='.$this->id. $get_params .'">';
 		}
-		if($option == 'expedition')
+		if ($option == 'expedition')
 		{
 			$lien = '<a href="'.DOL_URL_ROOT.'/expedition/propal.php?id='.$this->id. $get_params .'">';
+		}
+		if ($option == 'document')
+		{
+			$lien = '<a href="'.DOL_URL_ROOT.'/comm/propal/document.php?id='.$this->id. $get_params .'">';
 		}
 		$lienfin='</a>';
 
@@ -2333,7 +2415,9 @@ class Propal extends CommonObject
 	}
 
 	/**
-	 * 	Return an array of propal lines
+	 * 	Retrieve an array of propal lines
+	 *
+	 *	@return	int	<0 if ko, >0 if ok
 	 */
 	function getLinesArray()
 	{
@@ -2459,8 +2543,9 @@ class PropaleLigne
 	var $skip_update_total; // Skip update price total for special lines
 
 	/**
-	 *      \brief     Constructeur d'objets ligne de propal
-	 *      \param     DB      handler d'acces base de donnee
+	 * 	Class line Contructor
+	 *
+	 * 	@param	DoliDB	$DB	Database handler
 	 */
 	function PropaleLigne($DB)
 	{
@@ -2468,8 +2553,9 @@ class PropaleLigne
 	}
 
 	/**
-	 *      \brief     Recupere l'objet ligne de propal
-	 *      \param     rowid           id de la ligne de propal
+	 *	Retrieve the propal line object
+	 *
+	 *	@param	int	$rowid	propal line id
 	 */
 	function fetch($rowid)
 	{
@@ -2523,12 +2609,16 @@ class PropaleLigne
 	}
 
 	/**
-	 *      \brief     	Insert object line propal in database
-	 *		\return		int		<0 if KO, >0 if OK
+	 *  Insert object line propal in database
+	 *
+	 *	@param		int		$notrigger		1=Does not execute triggers, 0= execuete triggers
+	 *	@return		int						<0 if KO, >0 if OK
 	 */
 	function insert($notrigger=0)
 	{
 		global $conf,$langs,$user;
+
+		$error=0;
 
 		dol_syslog("PropaleLigne::insert rang=".$this->rang);
 
@@ -2586,8 +2676,6 @@ class PropaleLigne
 		$resql=$this->db->query($sql);
 		if ($resql)
 		{
-			$this->rang=$rangmax;
-
 			$this->rowid=$this->db->last_insert_id(MAIN_DB_PREFIX.'propaldet');
 			if (! $notrigger)
 			{
@@ -2613,12 +2701,13 @@ class PropaleLigne
 
 	/**
 	 * 	Delete line in database
-	 *	@return	 int  <0 si ko, >0 si ok
+	 *	@return	 int  <0 if ko, >0 if ok
 	 */
 	function delete()
 	{
 		global $conf,$langs,$user;
 
+		$error=0;
 		$this->db->begin();
 
 		$sql = "DELETE FROM ".MAIN_DB_PREFIX."propaldet WHERE rowid = ".$this->rowid;
@@ -2646,12 +2735,16 @@ class PropaleLigne
 	}
 
 	/**
-	 *      \brief     	Mise a jour de l'objet ligne de propale en base
-	 *		\return		int		<0 si ko, >0 si ok
+	 *	Update propal line object into DB
+	 *
+	 *	@param 	int		$notrigger	1=Does not execute triggers, 0= execuete triggers
+	 *	@return	int					<0 if ko, >0 if ok
 	 */
 	function update($notrigger=0)
 	{
 		global $conf,$langs,$user;
+
+		$error=0;
 
 		// Clean parameters
 		if (empty($this->tva_tx)) $this->tva_tx=0;
@@ -2692,9 +2785,10 @@ class PropaleLigne
 		$sql.= " , info_bits=".$this->info_bits;
 		if (strlen($this->special_code)) $sql.= " , special_code=".$this->special_code;
 		$sql.= " , fk_parent_line=".($this->fk_parent_line>0?$this->fk_parent_line:"null");
+		if (! empty($this->rang)) $sql.= ", rang=".$this->rang;
 		$sql.= " WHERE rowid = ".$this->rowid;
 
-		dol_syslog("PropaleLigne::update sql=$sql");
+		dol_syslog(get_class($this)."::update sql=".$sql, LOG_DEBUG);
 		$resql=$this->db->query($sql);
 		if ($resql)
 		{
@@ -2714,16 +2808,17 @@ class PropaleLigne
 		else
 		{
 			$this->error=$this->db->error();
-			dol_syslog("PropaleLigne::update Error ".$this->error, LOG_ERR);
+			dol_syslog(get_class($this)."::update Error ".$this->error, LOG_ERR);
 			$this->db->rollback();
 			return -2;
 		}
 	}
 
 	/**
-	 *      \brief     	Mise a jour en base des champs total_xxx de ligne
-	 *		\remarks	Utilise par migration
-	 *		\return		int		<0 si ko, >0 si ok
+	 *	Update DB line fields total_xxx
+	 *	Used by migration
+	 *
+	 *	@return		int		<0 if ko, >0 if ok
 	 */
 	function update_total()
 	{

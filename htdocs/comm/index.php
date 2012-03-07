@@ -1,7 +1,7 @@
 <?php
 /* Copyright (C) 2001-2005 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2010 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ require("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 require_once(DOL_DOCUMENT_ROOT."/societe/class/client.class.php");
 require_once(DOL_DOCUMENT_ROOT."/comm/action/class/actioncomm.class.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/agenda.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/agenda.lib.php");
 if ($conf->contrat->enabled) require_once(DOL_DOCUMENT_ROOT."/contrat/class/contrat.class.php");
 if ($conf->propal->enabled)  require_once(DOL_DOCUMENT_ROOT."/comm/propal/class/propal.class.php");
 
@@ -78,7 +78,7 @@ if (isset($_GET["action"]) && $_GET["action"] == 'del_bookmark')
 
 $now=dol_now();
 
-$html = new Form($db);
+$form = new Form($db);
 $formfile = new FormFile($db);
 $companystatic=new Societe($db);
 if ($conf->propal->enabled) $propalstatic=new Propal($db);
@@ -141,24 +141,24 @@ if ($conf->propal->enabled && $user->rights->propale->lire)
 	$sql = "SELECT p.rowid, p.ref, p.total_ht, s.rowid as socid, s.nom as name, s.client, s.canvas";
 	$sql.= " FROM ".MAIN_DB_PREFIX."propal as p";
 	$sql.= ", ".MAIN_DB_PREFIX."societe as s";
-	if (!$user->rights->societe->client->voir && !$socid) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
+	if (! $user->rights->societe->client->voir && ! $socid) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
 	$sql.= " WHERE p.fk_statut = 0";
 	$sql.= " AND p.fk_soc = s.rowid";
 	$sql.= " AND p.entity = ".$conf->entity;
-	if (!$user->rights->societe->client->voir && !$socid) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
+	if (! $user->rights->societe->client->voir && ! $socid) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
 	if ($socid)	$sql.= " AND s.rowid = ".$socid;
 
 	$resql=$db->query($sql);
 	if ($resql)
 	{
+		print '<table class="noborder" width="100%">';
+		print '<tr class="liste_titre">';
+		print '<td colspan="3">'.$langs->trans("ProposalsDraft").'</td></tr>';
+
 		$total = 0;
 		$num = $db->num_rows($resql);
 		if ($num > 0)
 		{
-			print '<table class="noborder" width="100%">';
-			print '<tr class="liste_titre">';
-			print '<td colspan="3">'.$langs->trans("ProposalsDraft").'</td></tr>';
-
 			$i = 0;
 			$var=true;
 			while ($i < $num)
@@ -186,8 +186,9 @@ if ($conf->propal->enabled && $user->rights->propale->lire)
 				$var=!$var;
 				print '<tr class="liste_total"><td>'.$langs->trans("Total").'</td><td colspan="2" align="right">'.price($total)."</td></tr>";
 			}
-			print "</table><br>";
 		}
+		print "</table><br>";
+		
 		$db->free($resql);
 	}
 	else
@@ -207,24 +208,24 @@ if ($conf->commande->enabled && $user->rights->commande->lire)
 	$sql = "SELECT c.rowid, c.ref, c.total_ttc, s.rowid as socid, s.nom as name, s.client, s.canvas";
 	$sql.= " FROM ".MAIN_DB_PREFIX."commande as c";
 	$sql.= ", ".MAIN_DB_PREFIX."societe as s";
-	if (!$user->rights->societe->client->voir && !$socid) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
+	if (! $user->rights->societe->client->voir && ! $socid) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
 	$sql.= " WHERE c.fk_soc = s.rowid";
 	$sql.= " AND c.fk_statut = 0";
 	$sql.= " AND c.entity = ".$conf->entity;
-	if (!$user->rights->societe->client->voir && !$socid) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
+	if (! $user->rights->societe->client->voir && ! $socid) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
 	if ($socid)	$sql.= " AND c.fk_soc = ".$socid;
 
 	$resql = $db->query($sql);
 	if ($resql)
 	{
+		print '<table class="noborder" width="100%">';
+		print '<tr class="liste_titre">';
+		print '<td colspan="3">'.$langs->trans("DraftOrders").'</td></tr>';
+
 		$total = 0;
 		$num = $db->num_rows($resql);
 		if ($num)
 		{
-			print '<table class="noborder" width="100%">';
-			print '<tr class="liste_titre">';
-			print '<td colspan="3">'.$langs->trans("DraftOrders").'</td></tr>';
-
 			$i = 0;
 			$var = true;
 			while ($i < $num)
@@ -248,8 +249,10 @@ if ($conf->commande->enabled && $user->rights->commande->lire)
 				$var=!$var;
 				print '<tr class="liste_total"><td>'.$langs->trans("Total").'</td><td colspan="2" align="right">'.price($total)."</td></tr>";
 			}
-			print "</table><br>";
 		}
+		print "</table><br>";
+		
+		$db->free($resql);
 	}
 }
 
@@ -280,10 +283,10 @@ if ($conf->societe->enabled && $user->rights->societe->lire)
 
 	$sql = "SELECT s.rowid, s.nom as name, s.client, s.datec,s.tms";
 	$sql.= " FROM ".MAIN_DB_PREFIX."societe as s";
-	if (!$user->rights->societe->client->voir && !$socid) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
+	if (! $user->rights->societe->client->voir && ! $socid) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
 	$sql.= " WHERE s.client IN (1, 2, 3)";
-	$sql.= " AND s.entity = ".$conf->entity;
-	if (!$user->rights->societe->client->voir && !$socid) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
+	$sql.= " AND s.entity IN (".getEntity($companystatic->element, 1).")";
+	if (! $user->rights->societe->client->voir && ! $socid) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
 	if ($socid)	$sql.= " AND s.rowid = $socid";
 	$sql .= " ORDER BY s.tms DESC";
 	$sql .= $db->plimit($max, 0);
@@ -340,10 +343,10 @@ if ($conf->fournisseur->enabled && $user->rights->societe->lire)
 
 	$sql = "SELECT s.nom as name, s.rowid, s.datec as dc, s.canvas, s.tms as dm";
 	$sql.= " FROM ".MAIN_DB_PREFIX."societe as s";
-	if (!$user->rights->societe->client->voir && !$user->societe_id) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
+	if (! $user->rights->societe->client->voir && ! $user->societe_id) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
 	$sql.= " WHERE s.fournisseur = 1";
-	$sql.= " AND s.entity = ".$conf->entity;
-	if (!$user->rights->societe->client->voir && !$user->societe_id) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
+	$sql.= " AND s.entity IN (".getEntity($companystatic->element, 1).")";
+	if (! $user->rights->societe->client->voir && ! $user->societe_id) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
 	if ($socid)	$sql.= " AND s.rowid = ".$socid;
 	$sql.= " ORDER BY s.datec DESC";
 	$sql.= $db->plimit($max, 0);
@@ -415,12 +418,11 @@ if ($conf->contrat->enabled && $user->rights->contrat->lire && 0) // TODO A REFA
 	$sql.= " FROM ".MAIN_DB_PREFIX."societe as s";
 	$sql.= ", ".MAIN_DB_PREFIX."contrat as c";
 	$sql.= ", ".MAIN_DB_PREFIX."product as p";
-	if (!$user->rights->societe->client->voir && !$socid) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
+	if (! $user->rights->societe->client->voir && ! $socid) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
 	$sql.= " WHERE c.fk_soc = s.rowid";
-	$sql.= " AND s.entity = ".$conf->entity;
-	//$sql.= " AND c.entity = ".$conf->entity;
+	$sql.= " AND c.entity = ".$conf->entity;
 	$sql.= " AND c.fk_product = p.rowid";
-	if (!$user->rights->societe->client->voir && !$socid)	$sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
+	if (! $user->rights->societe->client->voir && ! $socid)	$sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
 	if ($socid) $sql.= " AND s.rowid = ".$socid;
 	$sql.= " ORDER BY c.tms DESC";
 	$sql.= $db->plimit(5, 0);
@@ -472,11 +474,11 @@ if ($conf->propal->enabled && $user->rights->propale->lire)
 	$sql = "SELECT s.nom, s.rowid, p.rowid as propalid, p.total as total_ttc, p.total_ht, p.ref, p.fk_statut, p.datep as dp";
 	$sql.= " FROM ".MAIN_DB_PREFIX."societe as s";
 	$sql.= ", ".MAIN_DB_PREFIX."propal as p";
-	if (!$user->rights->societe->client->voir && !$socid) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
+	if (! $user->rights->societe->client->voir && ! $socid) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
 	$sql.= " WHERE p.fk_soc = s.rowid";
 	$sql.= " AND p.entity = ".$conf->entity;
 	$sql.= " AND p.fk_statut = 1";
-	if (!$user->rights->societe->client->voir && !$socid) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
+	if (! $user->rights->societe->client->voir && ! $socid) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
 	if ($socid) $sql.= " AND s.rowid = ".$socid;
 	$sql.= " ORDER BY p.rowid DESC";
 
@@ -545,8 +547,8 @@ if ($conf->propal->enabled && $user->rights->propale->lire)
 print '</td></tr>';
 print '</table>';
 
+llxFooter();
+
 $db->close();
 
-
-llxFooter();
 ?>

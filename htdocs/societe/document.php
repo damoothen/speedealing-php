@@ -1,7 +1,7 @@
 <?php
 /* Copyright (C) 2002-2007 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2010      Juanjo Menent        <jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -25,9 +25,9 @@
  */
 
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/company.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/images.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/images.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 
 $langs->load("companies");
@@ -37,7 +37,7 @@ $mesg='';
 
 $action		= GETPOST('action');
 $confirm	= GETPOST('confirm');
-$socid		= (GETPOST('socid') ? GETPOST('socid') : GETPOST('id'));
+$socid		= (GETPOST('socid','int') ? GETPOST('socid','int') : GETPOST('id','int'));
 
 // Security check
 if ($user->societe_id > 0)
@@ -46,7 +46,7 @@ if ($user->societe_id > 0)
 	$action='';
 	$socid = $user->societe_id;
 }
-$result = restrictedArea($user, 'societe', $socid);
+$result = restrictedArea($user, 'societe', $socid, '&societe');
 
 // Get parameters
 $sortfield = GETPOST("sortfield",'alpha');
@@ -73,7 +73,7 @@ if ( $_POST["sendit"] && ! empty($conf->global->MAIN_UPLOAD_DOC))
 {
 	if ($object->fetch($socid))
 	{
-		if (create_exdir($upload_dir) >= 0)
+		if (dol_mkdir($upload_dir) >= 0)
 		{
 			$resupload=dol_move_uploaded_file($_FILES['userfile']['tmp_name'], $upload_dir . "/" . $_FILES['userfile']['name'],0,0,$_FILES['userfile']['error']);
 			if (is_numeric($resupload) && $resupload > 0)
@@ -116,7 +116,7 @@ if ($action == 'confirm_deletefile' && $confirm == 'yes')
 	if ($object->fetch($socid))
 	{
 		$file = $upload_dir . "/" . $_GET['urlfile'];	// Do not use urldecode here ($_GET and $_REQUEST are already decoded by PHP).
-		dol_delete_file($file,0,0,0,'FILE_DELETE',$object);
+		dol_delete_file($file,0,0,0,$object);
 		$mesg = '<div class="ok">'.$langs->trans("FileWasRemoved").'</div>';
 	}
 }
@@ -141,7 +141,7 @@ if ($socid > 0)
 		if ($conf->notification->enabled) $langs->load("mails");
 		$head = societe_prepare_head($object);
 
-		$html=new Form($db);
+		$form=new Form($db);
 
 		dol_fiche_head($head, 'document', $langs->trans("ThirdParty"),0,'company');
 
@@ -204,21 +204,14 @@ if ($socid > 0)
 		 */
 		if ($action == 'delete')
 		{
-			$ret=$html->form_confirm($_SERVER["PHP_SELF"].'?socid='.$socid.'&urlfile='.urldecode($_GET["urlfile"]), $langs->trans('DeleteFile'), $langs->trans('ConfirmDeleteFile'), 'confirm_deletefile', '', 0, 1);
+			$ret=$form->form_confirm($_SERVER["PHP_SELF"].'?socid='.$socid.'&urlfile='.urldecode($_GET["urlfile"]), $langs->trans('DeleteFile'), $langs->trans('ConfirmDeleteFile'), 'confirm_deletefile', '', 0, 1);
 			if ($ret == 'html') print '<br>';
 		}
 
 		$formfile=new FormFile($db);
 
         // Show upload form
-		if ($conf->global->MAIN_USE_JQUERY_FILEUPLOAD)
-		{
-			$formfile->form_ajaxfileupload($object);
-		}
-		else
-		{
-			$formfile->form_attach_new_file($_SERVER["PHP_SELF"].'?socid='.$socid,'',0,0,$user->rights->societe->creer);
-        }
+		$formfile->form_attach_new_file($_SERVER["PHP_SELF"].'?socid='.$socid,'',0,0,$user->rights->societe->creer,50,$object);
 
 		// List of document
 		$param='&socid='.$object->id;

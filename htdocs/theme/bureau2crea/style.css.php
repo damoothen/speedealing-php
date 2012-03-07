@@ -1,9 +1,9 @@
 <?php
-/* Copyright (C) 2004-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C)      2006 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2007-2010 Regis Houssin        <regis@dolibarr.fr>
- * Copyright (C) 2011      Philippe Grand       <philippe.grand@atoo-net.com>
- * Copyright (C) 2011      Juanjo Menent        <jmenent@2byte.es>
+/* Copyright (C) 2004-2010	Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2006		Rodolphe Quiedeville <rodolphe@quiedeville.org>
+ * Copyright (C) 2007-2010	Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2011		Philippe Grand       <philippe.grand@atoo-net.com>
+ * Copyright (C) 2011		Juanjo Menent        <jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,6 @@ if (! defined('NOREQUIREAJAX'))   define('NOREQUIREAJAX','1');
 
 
 require_once("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/functions.lib.php");
 
 // Define css type
 header('Content-type: text/css');
@@ -121,46 +120,22 @@ body {
 
 a:link, a:visited, a:hover, a:active { font-family: <?php print $fontlist ?>; font-weight: bold; color: #000000; text-decoration: none; }
 
-input {
+input, input.flat, textarea, textarea.flat, form.flat select, select.flat {
     font-size: <?php print $fontsize ?>px;
-    font-family: <?php print $fontlist ?>;
-    background: #FDFDFD;
-    border: 1px solid #ACBCBB;
-    padding: 0px 0px 0px 0px;
-    margin: 0px 0px 0px 0px;
-}
-input.flat {
-	font-size: <?php print $fontsize ?>px;
 	font-family: <?php print $fontlist ?>;
-    background: #FDFDFD;
-    border: 1px solid #ACBCBB;
-    padding: 0px 0px 0px 0px;
-    margin: 0px 0px 0px 0px;
-}
-textarea  {
-	font-size: <?php print $fontsize ?>px;
-	font-family: <?php print $fontlist ?>;
-    background: #FDFDFD;
-    border: 1px solid #ACBCBB;
-    padding: 0px 0px 0px 0px;
-    margin: 0px 0px 0px 0px;
-}
-textarea.flat {
-	font-size: <?php print $fontsize ?>px;
-	font-family: <?php print $fontlist ?>;
-    background: #FDFDFD;
-    border: 1px solid #ACBCBB;
-    padding: 0px 0px 0px 0px;
-    margin: 0px 0px 0px 0px;
-}
-select.flat {
 	background: #FDFDFD;
-    font-size: <?php print $fontsize ?>px;
-	font-family: <?php print $fontlist ?>;
-	font-weight: normal;
     border: 1px solid #ACBCBB;
     padding: 0px 0px 0px 0px;
     margin: 0px 0px 0px 0px;
+}
+select.flat, form.flat select {
+	font-weight: normal;
+}
+input:disabled {
+	background:#ddd;
+}
+textarea:disabled {
+	background:#ddd;
 }
 
 input.button[type=submit] {
@@ -318,7 +293,7 @@ div.tmenu {
     white-space: nowrap;
     border-left: 0px;
     padding: 0px;
-    margin: 10px 0px 10px 0px;
+    margin: 5px 0px 10px 0px;
     font-size: 13px;
     background-image : url(<?php echo DOL_URL_ROOT.'/theme/bureau2crea/img/bg_mainNav.jpg' ?>);
     height: 22px;
@@ -552,7 +527,7 @@ li.tmenu a.tmenudisabled {
 div.login_block {
 	position: absolute;
 	<?php print $right; ?>: 5px;
-	top: 6px;
+	top: 2px;
 	font-weight: bold;
 	<?php if (GETPOST("optioncss") == 'print') { ?>
 	display: none;
@@ -1211,7 +1186,7 @@ span.tabspan {
 	font-family:"Trebuchet MS",Arial,Helvetica,sans-serif;
 	font-weight: bold;
 	background: url(<?php echo DOL_URL_ROOT.'/theme/bureau2crea/img/bg_btnBlue.jpg' ?>) repeat-x;
-	color: #FFF;
+	color: #FFF !important;
 	padding: 0px 10px 0px 10px;
 	margin: 0px 10px 0px 10px;
 	text-decoration: none;
@@ -1239,15 +1214,19 @@ span.tabspan {
 }
 
 .butActionRefused {
-	font-family: <?php print $fontlist ?> !important;
-	font-weight: bold !important;
-	background: white !important;
-	border: 1px solid #AAAAAA !important;
-	color: #AAAAAA !important;
-	padding: 0em 0.7em !important;
-	margin: 0em 0.5em !important;
-	text-decoration: none !important;
-	white-space: nowrap !important;
+	font-family:"Trebuchet MS",Arial,Helvetica,sans-serif;
+	font-weight: bold;
+	background: url(<?php echo DOL_URL_ROOT.'/theme/bureau2crea/img/bg_btnBlue.jpg' ?>) repeat-x;
+	color: #AAA !important;
+	padding: 0px 10px 0px 10px;
+	margin: 0px 10px 0px 10px;
+	text-decoration: none;
+	white-space: nowrap;
+    float: right;
+    font-size: 10px;
+    height: 18px;
+    line-height: 18px;
+    margin-bottom: 10px;
 	cursor: not-allowed;
 }
 
@@ -1363,7 +1342,7 @@ padding: 0px 0px;
 }
 table.nobordernopadding td {
     border: 0px;
-    padding: 0px 0px 0px 5px;
+    padding: 0px 0px 0px 0px !important;
 }
 
 /* For lists */
@@ -1388,7 +1367,8 @@ table.noborder {
 
 tr.liste_titre {
     height: 25px;
-    background-repeat: repeat-x;
+    background-repeat: no-repeat;
+    background-color: #C8C8C8;
     color: #333333;
     font-family: <?php print $fontlist ?>;
     font-weight: normal;
@@ -1397,13 +1377,12 @@ tr.liste_titre {
     white-space: nowrap;
 }
 
-tr.liste_titre:first-child {
+tr.liste_titre {
     background-image: url(<?php echo DOL_URL_ROOT.'/theme/bureau2crea/img/bg_centerBlock-title.jpg' ?>);
     background-position: top right;
 }
 
-th.liste_titre_sel, td.liste_titre_sel,
-tr.liste_titre:first-child td {
+th.liste_titre_sel, td.liste_titre_sel, th.liste_titre {
     color: #FFFFFF !important;
 }
 
@@ -1488,7 +1467,6 @@ padding: 5px;
 }
 
 .impair {
-/* background: #d0d4d7; */
 background: #eaeaea;
 font-family: <?php print $fontlist ?>;
 border: 0px;
@@ -1499,16 +1477,14 @@ background: #c0c4c7;
 border: 0px;
 }
 
+tr.impair td.nohover {
+background: #eaeaea;
+}
 
 .pair	{
-/* background: #e6ebed; */
 background: #FFFFFF;
 font-family: <?php print $fontlist ?>;
 border: 0px;
-}
-
-.pair td, .impair td {
-	padding: 2px 3px !important;
 }
 
 .pair:hover {
@@ -1516,6 +1492,20 @@ background: #c0c4c7;
 border: 0px;
 }
 
+tr.pair td.nohover {
+	background: #FFFFFF;
+}
+
+.pair td, .impair td
+{
+	padding: 2px 3px !important;
+}
+
+.noshadow {
+	-moz-box-shadow: 0px 0px 0px #CCC !important;
+	-webkit-box-shadow: 0px 0px 0px #CCC !important;
+	box-shadow: 0px 0px 0px #CCC !important;
+}
 
 
 /*
@@ -1523,21 +1513,21 @@ border: 0px;
  */
 
 .box {
-padding-right: 0px;
-padding-left: 0px;
-padding-bottom: 4px;
+	padding-right: 0px;
+	padding-left: 0px;
+	padding-bottom: 4px;
 }
 
 tr.box_titre {
-height: 24px;
-background: #7699A9;
-background-image: url(<?php echo DOL_URL_ROOT.'/theme/bureau2crea/img/menus/trtitle.png' ?>);
-background-repeat: repeat-x;
-color: #FFFFFF;
-font-family: <?php print $fontlist ?>, sans-serif;
-font-weight: normal;
-border-bottom: 1px solid #FDFFFF;
-white-space: nowrap;
+	height: 24px;
+	background: #7699A9;
+	background-image: url(<?php echo DOL_URL_ROOT.'/theme/bureau2crea/img/menus/trtitle.png' ?>);
+	background-repeat: repeat-x;
+	color: #FFFFFF;
+	font-family: <?php print $fontlist ?>, sans-serif;
+	font-weight: normal;
+	border-bottom: 1px solid #FDFFFF;
+	white-space: nowrap;
   -moz-border-radius-topleft:6px;
   -moz-border-radius-topright:6px;
 }
@@ -1705,6 +1695,12 @@ opacity: 1;
 /* ============================================================================== */
 /* Calendar                                                                       */
 /* ============================================================================== */
+
+.ui-datepicker-trigger {
+	vertical-align: middle;
+	cursor: pointer;
+}
+
 .bodyline {
 	-moz-border-radius:8px;
 	border: 1px #E4ECEC outset;
@@ -1860,39 +1856,32 @@ table.cal_event td { border: 0px; padding-<?php print $left; ?>: 0px; padding-<?
 
 
 /* ============================================================================== */
-/*  Ajax - In place editor                                                        */
+/*  jQuery - jeditable                                                            */
 /* ============================================================================== */
 
-form.inplaceeditor-form { /* The form */
+.editkey_textarea, .editkey_ckeditor, .editkey_string, .editkey_email, .editkey_numeric, .editkey_select {
+	background: url(<?php echo dol_buildpath($path.'/theme/bureau2crea/img/edit.png',1) ?>) right top no-repeat;
+	cursor: pointer;
 }
 
-form.inplaceeditor-form input[type="text"] { /* Input box */
+.editkey_datepicker {
+	background: url(<?php echo dol_buildpath($path.'/theme/bureau2crea/img/calendar.png',1) ?>) right center no-repeat;
+	cursor: pointer;
 }
 
-form.inplaceeditor-form textarea { /* Textarea, if multiple columns */
-background: #FAF8E8;
-color: black;
+.editval_textarea.active:hover, .editval_ckeditor.active:hover, .editval_string.active:hover, .editval_email.active:hover, .editval_numeric.active:hover, .editval_select.active:hover, .editval_datepicker.active:hover {
+	background: white;
+	cursor: pointer;
 }
 
-form.inplaceeditor-form input[type="submit"] { /* The submit button */
-  font-size: 100%;
-  font-weight:normal;
-	border: 0px;
-	background-image : url(<?php echo DOL_URL_ROOT.'/theme/bureau2crea/img/button_bg.png' ?>);
-	background-position : bottom;
-	cursor:pointer;
+.viewval_textarea.active:hover, .viewval_ckeditor.active:hover, .viewval_string.active:hover, .viewval_email.active:hover, .viewval_numeric.active:hover, .viewval_select.active:hover, .viewval_datepicker.active:hover {
+	background: white;
+	cursor: pointer;
 }
 
-form.inplaceeditor-form a { /* The cancel link */
-  margin-left: 5px;
-  font-size: 11px;
-	font-weight:normal;
-	border: 0px;
-	background-image : url(<?php echo DOL_URL_ROOT.'/theme/bureau2crea/img/button_bg.png' ?>);
-	background-position : bottom;
-	cursor:pointer;
+.viewval_hover {
+	background: white;
 }
-
 
 
 /* ============================================================================== */
@@ -2230,6 +2219,7 @@ div#logoBox {
     width: 100%;
     height: auto;
     margin-top: 30px;
+    text-align: center;
     }
 
 div#parameterBox {
@@ -2288,6 +2278,10 @@ div.captchaImg {
 img#captcha {
 	margin-left: 200px;
     }
+
+#captcha_refresh_img {
+	margin-bottom: 6px;
+}
 
 div#infoLogin {
     width: 100%;

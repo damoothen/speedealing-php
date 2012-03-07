@@ -9,23 +9,6 @@
 // START - Lines generated via autotranslator.php tool.
 // Reference language: en_US
 CHARSET=UTF-8
-ErrorPasswordDiffers=Salasanat vaihtelee, kirjoita ne uudelleen.
-ErrorForbidden=Pääsy kielletty. <br> Yrität saada sivun, alue tai ominaisuus ilman oikeaksi todistettu istunnon tai että ei saa käyttäjän.
-ErrorForbidden2=Lupa tämän sisäänkirjoittautumissivuksesi voidaan määritellä oma Dolibarr järjestelmänvalvoja valikkopalkki %s-> %s.
-ErrorForbidden3=Vaikuttaa siltä, että Dolibarr ei käytetä kautta autentikoitu istunnossa. Tutustu Dolibarr setup asiakirjat tietää, miten hallita authentications (htaccess, mod_auth tai muita ...).
-ErrorNoImagickReadimage=Tehtävä imagick_readimage ei löydy tässä PHP. Esikatselu ei voi olla käytettävissä. Järjestelmänvalvojat voivat poistaa tämän välilehden valikosta Asetukset - Näyttö.
-ErrorRecordAlreadyExists=Record jo olemassa
-ErrorCantReadFile=Failed to read file ' %s'
-ErrorCantReadDir=Lukeminen epäonnistui directory ' %s'
-ErrorFailedToFindEntity=Lukeminen epäonnistui yksikkö ' %s'
-ErrorBadLoginPassword=Bad arvo kirjautumistunnus tai salasana
-ErrorLoginDisabled=Tilisi on poistettu käytöstä
-ErrorFailedToRunExternalCommand=Epäonnistui suorittaa ulkoista komentoa. Tarkista se on saatavilla ja runnable teidän PHP palvelimelta. Jos PHP <b>Vikasietotila</b> on käytössä, tarkista, että komento on sisällä hakemiston määritelty parametri <b>safe_mode_exec_dir.</b>
-ErrorFailedToChangePassword=Ei vaihda salasana
-ErrorLoginDoesNotExists=Käyttäjälle <b>sisäänkirjoittautumissivuksesi %s</b> ei löydy.
-ErrorLoginHasNoEmail=Tämä käyttäjä ei ole sähköpostiosoitetta. Process aborted.
-ErrorBadValueForCode=Bad arvotyypeillä koodin. Yritä uudelleen uuteen arvoon ...
-ErrorFileIsInfectedWith=Tämä tiedosto on tartunnan %s
 SecurityCode=Suojakoodi
 Calendar=Kalenteri
 AddTrip=Lisää matka
@@ -42,12 +25,6 @@ AttachANewFile=Liitä uusi tiedosto / asiakirjan
 LinkedObject=Linkitettyä objektia
 Miscellanous=Miscellaneous
 NbOfActiveNotifications=Ilmoitusten lukumäärä
-WarningInstallDirExists=Varoitus, asentaa hakemistoon ( %s) on yhä olemassa. Tämä on vakava turvallisuuteen reikään. Sinun tulisi poistaa niin pian kuin mahdollista.
-WarningUntilDirRemoved=Tämä varoitus pysyy aktiivisena niin kauan kuin tähän hakemistoon on läsnä (Näkyy vain admin-käyttäjät).
-PredefinedMailContentSendInvoice=Veuillez trouver ci-yhteinen la seen __FACREF__ \ n \ nCordialement \ n \ n
-PredefinedMailContentSendInvoiceReminder=Nous apportons votre connaissance que la seen __FACREF__ ne semble pas avoir t rgle. La voici siis, pour rappel, en pice jointe. \ N \ nCordialement \ n \ n
-PredefinedMailContentSendProposal=Veuillez trouver ci-yhteinen la proposition commerciale __PROPREF__ \ n \ nCordialement \ n \ n
-PredefinedMailContentSendOrder=Veuillez trouver ci-yhteinen la commande __ORDERREF__ \ n \ nCordialement \ n \ n
 ChooseYourDemoProfil=Valitse demo profil jotka vastaavat aktiviisuutesi ...
 DemoCompanyShopWithCashDesk=Hallinnoi liikkeen kanssa kassa
 DemoCompanyProductAndStocks=Hallitse pieni tai keskisuuri yritys myy tuotteitaan
@@ -223,3 +200,58 @@ SizeUnitinch=tuuma
 SizeUnitfoot=jalka
 ImageEditor=Kuvankäsittelyohjelmassa
 // STOP - Lines generated via autotranslator.php tool (2010-09-04 01:56:55).
+
+
+// START - Lines generated via autotranslator.php tool (2011-10-10 02:45:33).
+// Reference language: en_US -> fi_FI
+ToolsDesc=Tämä alue on omistettu ryhmä sekalaisia ​​työkaluja ole saatavilla muihin valikot. <br><br> Näitä työkaluja pääsee valikosta puolella.
+Notify_WITHDRAW_TRANSMIT=Vaihteisto peruuttaminen
+Notify_WITHDRAW_CREDIT=Luotto peruuttaminen
+Notify_WITHDRAW_EMIT=Isue peruuttaminen
+Notify_ORDER_SENTBYMAIL=Asiakas tilaa postitse
+Notify_ORDER_SUPPLIER_VALIDATE=Toimittaja jotta validoitu
+Notify_ORDER_SUPPLIER_SENTBYMAIL=Toimittaja jotta postitse
+Notify_BILL_SUPPLIER_VALIDATE=Toimittaja laskun validoitu
+Notify_BILL_SUPPLIER_PAYED=Toimittaja laskun maksanut
+Notify_BILL_SUPPLIER_SENTBYMAIL=Toimittaja lasku lähetetään postitse
+Notify_CONTRACT_VALIDATE=Sopimus validoitu
+Notify_FICHEINTER_VALIDATE=Intervention validoitu
+Notify_SHIPPING_VALIDATE=Toimitus validoitu
+Notify_SHIPPING_SENTBYMAIL=Toimitus postitse
+Notify_MEMBER_VALIDATE=Jäsen validoitu
+Top=Top
+Bottom=Pohja
+Left=Vasen
+Right=Oikeus
+ThisIsListOfModules=Tämä on luettelo moduuleista Esivalittujen tämän demon profiilia (vain yleisimmät moduulit näkyvät tässä Demo). Muokkaa tätä on enemmän henkilökohtaista demo ja klikkaa &quot;Start&quot;.
+ClickHere=Klikkaa tästä
+UseAdvancedPerms=Käytä Lisäkäyttöoikeudet joidenkin moduulien
+FileFormat=Tiedostomuoto
+SelectAColor=Valitse väri
+AddFiles=Lisää tiedostoja
+// STOP - Lines generated via autotranslator.php tool (2011-10-10 03:21:28).
+
+
+// START - Lines generated via autotranslator.php tool (2012-02-29 16:10:23).
+// Reference language: en_US -> fi_FI
+Notify_COMPANY_CREATE=Kolmannen osapuolen luotu
+Notify_PROPAL_SENTBYMAIL=Kaupallinen ehdotus lähetetään postitse
+Notify_BILL_PAYED=Asiakas laskun maksanut
+Notify_BILL_CANCEL=Asiakas lasku peruutettu
+Notify_BILL_SENTBYMAIL=Asiakkaan lasku lähetetään postitse
+Notify_MEMBER_SUBSCRIPTION=Jäsen merkitty
+Notify_MEMBER_RESILIATE=Jäsen resiliated
+Notify_MEMBER_DELETE=Jäsen poistettu
+PredefinedMailContentSendInvoice=Löydät täältä laskun __ FACREF__ \n\n Sincerely \n\n
+PredefinedMailContentSendInvoiceReminder=Haluamme varoittaa, että lasku __ FACREF__ näyttää ei maksanut. Joten tämä on laskun liitetiedostona uudelleen, kuten muistutuksen. \n\n Vilpittömästi \n\n
+PredefinedMailContentSendProposal=Löydät täältä kaupallinen propoal __ PROPREF__ \n\n Sincerely \n\n
+PredefinedMailContentSendOrder=Löydät täältä järjestyksessä __ ORDERREF__ \n\n Sincerely \n\n
+PredefinedMailContentSendSupplierInvoice=Löydät täältä laskun __ FACREF__ \n\n Sincerely \n\n
+PredefinedMailContentSendShipping=Löydät täältä merenkulku __ SHIPPINGREF__ \n\n Sincerely \n\n
+PredefinedMailContentSendFichInter=Löydät täältä intervention __ FICHINTERREF__ \n\n Sincerely \n\n
+StartUpload=Aloita lataaminen
+CancelUpload=Peruuta Lähetä
+FileIsTooBig=Files on liian suuri
+ShipmentValidatedInDolibarr=Toimitus %s validoitu Dolibarr
+Export=Vienti
+// STOP - Lines generated via autotranslator.php tool (2012-02-29 16:10:28).

@@ -17,12 +17,12 @@
 ; ----- Change this -----
 AppName=DoliWamp
 ; DoliWamp-x.x.x or DoliWamp-x.x.x-dev or DoliWamp-x.x.x-beta
-AppVerName=DoliWamp-3.1.0-beta
+AppVerName=DoliWamp-3.2.0-alpha
 ; DoliWamp-x.x x or DoliWamp-x.x.x-dev or DoliWamp-x.x.x-beta
-OutputBaseFilename=DoliWamp-3.1.0-beta
+OutputBaseFilename=DoliWamp-3.2.0-alpha
 ; Define full path from wich all relative path are defined
 ; You must modify this to put here your dolibarr root directory
-SourceDir=C:\Mes Developpements\dolibarr
+SourceDir=c:\Documents and Settings\ldestail\git\dolibarr
 ; ----- End of change
 ;OutputManifestFile=build\doliwampbuild.log
 AppId=doliwamp
@@ -107,7 +107,7 @@ Source: "C:\Program Files\Wamp\bin\mysql\mysql5.0.45\*.*"; DestDir: "{app}\bin\m
 ; Mysql data files (does not overwrite if exists)
 Source: "build\exe\doliwamp\mysql\*.*"; DestDir: "{app}\bin\mysql\data\mysql"; Flags: onlyifdoesntexist ignoreversion recursesubdirs; Excludes: ".cvsignore,.project,CVS\*,Thumbs.db"
 ; Dolibarr
-Source: "htdocs\*.*"; DestDir: "{app}\www\dolibarr\htdocs"; Flags: ignoreversion recursesubdirs; Excludes: ".cvsignore,.project,CVS\*,Thumbs.db,custom\*,custom2\*,telephonie\*,*\conf.php,*\conf.php.mysql,*\conf.php.old,*\conf.php.postgres,*\install.forced.php,*\modBookmark4u.class.php,*\modDocument.class.php,*\modDroitPret.class.php,*\modEditeur.class.php,*\modPostnuke.class.php,*\modTelephonie.class.php,*\interface_modEditeur_Editeur.class.php*,*\bureau2crea,*\rodolphe"
+Source: "htdocs\*.*"; DestDir: "{app}\www\dolibarr\htdocs"; Flags: ignoreversion recursesubdirs; Excludes: ".cvsignore,.project,CVS\*,Thumbs.db,custom\*,custom2\*,telephonie\*,*\conf.php,*\conf.php.mysql,*\conf.php.old,*\conf.php.postgres,*\install.forced.php"
 Source: "dev\*.*"; DestDir: "{app}\www\dolibarr\dev"; Flags: ignoreversion recursesubdirs; Excludes: ".cvsignore,.project,CVS\*,Thumbs.db,dbmodel\*,fpdf\*,initdata\*,iso-normes\*,licence\*,phpcheckstyle\*,phpunit\*,samples\*,test\*,uml\*,xdebug\*"
 Source: "doc\*.*"; DestDir: "{app}\www\dolibarr\doc"; Flags: ignoreversion recursesubdirs; Excludes: ".cvsignore,.project,CVS\*,Thumbs.db,wiki\*,plaquette\*,dev\*,images\dolibarr_screenshot2.png,images\dolibarr_screenshot3.png,images\dolibarr_screenshot4.png,images\dolibarr_screenshot5.png,images\dolibarr_screenshot6.png,images\dolibarr_screenshot7.png,images\dolibarr_screenshot8.png,images\dolibarr_screenshot9.png,images\dolibarr_screenshot10.png,images\dolibarr_screenshot11.png,images\dolibarr_screenshot12.png"
 Source: "scripts\*.*"; DestDir: "{app}\www\dolibarr\scripts"; Flags: ignoreversion recursesubdirs; Excludes: ".cvsignore,.project,CVS\*,Thumbs.db,product\materiel.net.php,product\import-product.php"

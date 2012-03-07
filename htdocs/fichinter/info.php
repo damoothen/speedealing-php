@@ -24,14 +24,14 @@
  */
 
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/functions2.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/fichinter/class/fichinter.class.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/fichinter.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/fichinter.lib.php");
 
 $langs->load('companies');
 $langs->load("interventions");
 
-$fichinterid = GETPOST("id");
+$fichinterid = GETPOST('id','int');
 
 // Security check
 if ($user->societe_id) $socid=$user->societe_id;

@@ -37,7 +37,7 @@ $import->load_arrays($user);
  * View
  */
 
-$html=new Form($db);
+$form=new Form($db);
 
 llxHeader('',$langs->trans("ImportArea"),'EN:Module_Imports_En|FR:Module_Imports|ES:M&oacute;dulo_Importaciones');
 
@@ -61,7 +61,7 @@ print '<td>'.$langs->trans("LibraryShort").'</td>';
 print '<td align="right">'.$langs->trans("LibraryVersion").'</td>';
 print '</tr>';
 
-include_once(DOL_DOCUMENT_ROOT.'/includes/modules/import/modules_import.php');
+include_once(DOL_DOCUMENT_ROOT.'/core/modules/import/modules_import.php');
 $model=new ModeleImports();
 $liste=$model->liste_modeles($db);
 
@@ -71,7 +71,7 @@ foreach($liste as $key)
     print '<tr '.$bc[$var].'>';
     print '<td width="16">'.img_picto_common($model->getDriverLabel($key),$model->getPicto($key)).'</td>';
     $text=$model->getDriverDesc($key);
-    print '<td>'.$html->textwithpicto($model->getDriverLabel($key),$text).'</td>';
+    print '<td>'.$form->textwithpicto($model->getDriverLabel($key),$text).'</td>';
     print '<td>'.$model->getLibLabel($key).'</td>';
     print '<td nowrap="nowrap" align="right">'.$model->getLibVersion($key).'</td>';
     print '</tr>';

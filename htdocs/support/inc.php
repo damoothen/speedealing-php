@@ -19,8 +19,9 @@
  */
 
 /**
- * 	    \file       htdocs/support/inc.php
- *		\brief      File that define environment for support pages
+ * 	\file       htdocs/support/inc.php
+ * 	\ingroup	core
+ *	\brief      File that define environment for support pages
  */
 
 define('DOL_VERSION','3.2.0-alpha');	// Also defined in htdocs/master.inc.php
@@ -35,9 +36,9 @@ if (! defined('ADODB_PATH'))
 }
 
 require_once('../core/class/translate.class.php');
-require_once('../lib/functions.lib.php');
-require_once('../lib/admin.lib.php');
-require_once('../lib/files.lib.php');
+require_once('../core/lib/functions.lib.php');
+require_once('../core/lib/admin.lib.php');
+require_once('../core/lib/files.lib.php');
 require_once(ADODB_PATH.'adodb-time.inc.php');
 
 
@@ -49,27 +50,26 @@ if (isset($_SERVER["DOCUMENT_URI"]) && $_SERVER["DOCUMENT_URI"])
 }
 
 
-// Definition des constantes syslog
-if (function_exists("define_syslog_variables"))
+// Define syslog constants
+if (! defined('LOG_DEBUG'))
 {
-	if (version_compare(PHP_VERSION, '5.3.0', '<'))
-	{
-		define_syslog_variables(); // Deprecated since php 5.3.0, syslog variables no longer need to be initialized
-	}
+    if (function_exists("define_syslog_variables"))
+    {
+    	define_syslog_variables(); // Deprecated since php 5.3.0, syslog variables no longer need to be initialized
+    }
+    else
+    {
+    	// Pour PHP sans syslog (comme sous Windows)
+    	define('LOG_EMERG',0);
+    	define('LOG_ALERT',1);
+    	define('LOG_CRIT',2);
+    	define('LOG_ERR',3);
+    	define('LOG_WARNING',4);
+    	define('LOG_NOTICE',5);
+    	define('LOG_INFO',6);
+    	define('LOG_DEBUG',7);
+    }
 }
-else
-{
-	// Pour PHP sans syslog (comme sous Windows)
-	define('LOG_EMERG',0);
-	define('LOG_ALERT',1);
-	define('LOG_CRIT',2);
-	define('LOG_ERR',3);
-	define('LOG_WARNING',4);
-	define('LOG_NOTICE',5);
-	define('LOG_INFO',6);
-	define('LOG_DEBUG',7);
-}
-
 
 $includeconferror='';
 
@@ -105,7 +105,7 @@ if (! defined('DONOTLOADCONF') && file_exists($conffile))
 		{
 			if (! empty($dolibarr_main_document_root) && ! empty($dolibarr_main_db_type))
 			{
-				$result=include_once($dolibarr_main_document_root . "/lib/databases/".$dolibarr_main_db_type.".class.php");
+				$result=include_once($dolibarr_main_document_root . "/core/db/".$dolibarr_main_db_type.".class.php");
 				if (! $result)
 				{
 					$includeconferror='ErrorBadValueForDolibarrMainDBType';
@@ -167,9 +167,10 @@ $bc[true]=' class="bg2"';
 
 
 /**
- *	\brief		Load conf file (file must exists)
- *	\param		dolibarr_main_document_root		Root directory of Dolibarr bin files
- *	\return		int								<0 if KO, >0 if OK
+ *	Load conf file (file must exists)
+ *
+ *	@param	string	$dolibarr_main_document_root		Root directory of Dolibarr bin files
+ *	@return	int											<0 if KO, >0 if OK
  */
 function conf($dolibarr_main_document_root)
 {
@@ -193,7 +194,6 @@ function conf($dolibarr_main_document_root)
 	$conf->db->user = trim($dolibarr_main_db_user);
 	$conf->db->pass = trim($dolibarr_main_db_pass);
 
-	if (empty($conf->file->character_set_client))     	  $conf->file->character_set_client="UTF-8";
 	if (empty($conf->db->dolibarr_main_db_collation)) $conf->db->dolibarr_main_db_collation='latin1_swedish_ci';
 
 	return 1;
@@ -201,7 +201,12 @@ function conf($dolibarr_main_document_root)
 
 
 /**
- *	\brief		Show HTML header
+ *	Show HTML header
+ *
+ *	@param	string	$soutitre	Title
+ *	@param	string	$next		Next
+ *	@param	string	$action		Action
+ *	@return	void
  */
 function pHeader($soutitre,$next,$action='none')
 {
@@ -236,10 +241,11 @@ function pHeader($soutitre,$next,$action='none')
 }
 
 /**
- * Enter description here...
+ * Show footer
  *
- * @param   $nonext
- * @param   $setuplang
+ * @param	string	$nonext			No button "Next step"
+ * @param   string	$setuplang		Language code
+ * @return	void
  */
 function pFooter($nonext=0,$setuplang='')
 {
@@ -254,8 +260,8 @@ function pFooter($nonext=0,$setuplang='')
 /**
  * Output a text into a log file
  *
- * @param   $message
- * @param   $level
+ * @param	string	$message		Message to show
+ * @param   string	$level			Log level
  */
 function dolibarr_support_syslog($message, $level=LOG_DEBUG)
 {

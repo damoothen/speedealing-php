@@ -134,3 +134,19 @@ Inherited=موروث
 YourRole=الأدوار الخاص
 YourQuotaOfUsersIsReached=يتم التوصل إلى حصة الخاص بك من المستخدمين النشطين!
 // STOP - Lines generated via autotranslator.php tool (2010-07-17 11:13:57).
+
+
+// START - Lines generated via autotranslator.php tool (2011-10-10 02:45:33).
+// Reference language: en_US -> ar_SA
+DontDowngradeSuperAdmin=يمكن فقط superadmin تقليله a superadmin
+// STOP - Lines generated via autotranslator.php tool (2011-10-10 12:30:07).
+
+
+// START - Lines generated via autotranslator.php tool (2012-02-29 15:55:27).
+// Reference language: en_US -> ar_SA
+AdministratorDesc=المسؤول كيان
+UserWillBeInternalUser=وسوف يكون المستخدم إنشاء مستخدم داخلية (لأنه لا يرتبط طرف ثالث خاص)
+UserWillBeExternalUser=وسوف يكون المستخدم إنشاء مستخدم خارجي (لأنه مرتبط إلى طرف ثالث خاص)
+UserLogoff=%s المستخدم الخروج
+NbOfUsers=ملحوظة من المستخدمين
+// STOP - Lines generated via autotranslator.php tool (2012-02-29 15:55:44).

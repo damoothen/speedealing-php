@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * or see http://www.gnu.org/
  */
 
 /**
@@ -92,9 +92,9 @@ class ExportTest extends PHPUnit_Framework_TestCase
     }
 
 	/**
-	 * Ran on start
+	 * Init phpunit tests
 	 *
-	 * @return void
+	 * @return	void
 	 */
     protected function setUp()
     {
@@ -107,9 +107,9 @@ class ExportTest extends PHPUnit_Framework_TestCase
 		print __METHOD__."\n";
     }
 	/**
-	 * Ran on start
+	 * End phpunit tests
 	 *
-	 * @return void
+	 * @return	void
 	 */
     protected function tearDown()
     {

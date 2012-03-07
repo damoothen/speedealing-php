@@ -1,6 +1,6 @@
 <?php
-/* Copyright (C) 2008-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2011      Regis Houssin        <regis@dolibarr.fr>
+/* Copyright (C) 2008-2012	Laurent Destailleur	<eldy@users.sourceforge.net>
+ * Copyright (C) 2011-2012	Regis Houssin		<regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,13 @@
  */
 
 
-
+/**
+ * Show header
+ *
+ * @param 	string	$title		Title
+ * @param 	string	$head		More header to add
+ * @return	void
+ */
 function llxHeaderPaypal($title, $head = "")
 {
 	global $user, $conf, $langs;
@@ -49,10 +55,37 @@ function llxHeaderPaypal($title, $head = "")
 		print '.CTableRow2      { margin: 1px; padding: 3px; font: 12px verdana,arial; background: #FFFFFF; color: #000000; -moz-border-radius-topleft:6px; -moz-border-radius-topright:6px; -moz-border-radius-bottomleft:6px; -moz-border-radius-bottomright:6px;}';
 		print '</style>';
 	}
+	
+	if ($conf->use_javascript_ajax)
+	{
+		print '<!-- Includes for JQuery (Ajax library) -->'."\n";
+		print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/jnotify/jquery.jnotify-alt.min.css" />'."\n";          // JNotify
+		
+		// Output standard javascript links
+		$ext='.js';
+		if (isset($conf->global->MAIN_OPTIMIZE_SPEED) && ($conf->global->MAIN_OPTIMIZE_SPEED & 0x01)) {
+			$ext='.jgz';
+		}	// mini='_mini', ext='.gz'
+	
+		// JQuery. Must be before other includes
+		print '<!-- Includes JS for JQuery -->'."\n";
+		print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/js/jquery-latest.min'.$ext.'"></script>'."\n";
+		// jQuery jnotify
+		if (empty($conf->global->MAIN_DISABLE_JQUERY_JNOTIFY))
+		{
+			print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/jnotify/jquery.jnotify.min.js"></script>'."\n";
+			print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/core/js/jnotify.js"></script>'."\n";
+		}
+	}
 	print "</head>\n";
 	print '<body style="margin: 20px;">'."\n";
 }
 
+/**
+ * Show footer
+ *
+ * @return	void
+ */
 function llxFooterPaypal()
 {
 	print "</body>\n";
@@ -63,8 +96,9 @@ function llxFooterPaypal()
 /**
  * Show footer of company in HTML pages
  *
- * @param   $fromcompany
- * @param   $langs
+ * @param   Societe		$fromcompany	Third party
+ * @param   Translate	$langs			Output language
+ * @return	void
  */
 function html_print_paypal_footer($fromcompany,$langs)
 {
@@ -74,26 +108,26 @@ function html_print_paypal_footer($fromcompany,$langs)
 	$line1="";
 	if ($fromcompany->forme_juridique_code)
 	{
-		$line1.=($line1?" - ":"").$langs->convToOutputCharset(getFormeJuridiqueLabel($fromcompany->forme_juridique_code));
+		$line1.=($line1?" - ":"").getFormeJuridiqueLabel($fromcompany->forme_juridique_code);
 	}
 	// Capital
 	if ($fromcompany->capital)
 	{
-		$line1.=($line1?" - ":"").$langs->transnoentities("CapitalOf",$fromcompany->capital)." ".$langs->transnoentities("Currency".$conf->monnaie);
+		$line1.=($line1?" - ":"").$langs->transnoentities("CapitalOf",$fromcompany->capital)." ".$langs->transnoentities("Currency".$conf->currency);
 	}
 	// Prof Id 1
 	if ($fromcompany->idprof1 && ($fromcompany->pays_code != 'FR' || ! $fromcompany->idprof2))
 	{
-		$field=$langs->transcountrynoentities("ProfId1",$fromcompany->pays_code);
+		$field=$langs->transcountrynoentities("ProfId1",$fromcompany->country_code);
 		if (preg_match('/\((.*)\)/i',$field,$reg)) $field=$reg[1];
-		$line1.=($line1?" - ":"").$field.": ".$langs->convToOutputCharset($fromcompany->idprof1);
+		$line1.=($line1?" - ":"").$field.": ".$fromcompany->idprof1;
 	}
 	// Prof Id 2
 	if ($fromcompany->idprof2)
 	{
-		$field=$langs->transcountrynoentities("ProfId2",$fromcompany->pays_code);
+		$field=$langs->transcountrynoentities("ProfId2",$fromcompany->country_code);
 		if (preg_match('/\((.*)\)/i',$field,$reg)) $field=$reg[1];
-		$line1.=($line1?" - ":"").$field.": ".$langs->convToOutputCharset($fromcompany->idprof2);
+		$line1.=($line1?" - ":"").$field.": ".$fromcompany->idprof2;
 	}
 
 	// Second line of company infos
@@ -101,21 +135,21 @@ function html_print_paypal_footer($fromcompany,$langs)
 	// Prof Id 3
 	if ($fromcompany->idprof3)
 	{
-		$field=$langs->transcountrynoentities("ProfId3",$fromcompany->pays_code);
+		$field=$langs->transcountrynoentities("ProfId3",$fromcompany->country_code);
 		if (preg_match('/\((.*)\)/i',$field,$reg)) $field=$reg[1];
-		$line2.=($line2?" - ":"").$field.": ".$langs->convToOutputCharset($fromcompany->idprof3);
+		$line2.=($line2?" - ":"").$field.": ".$fromcompany->idprof3;
 	}
 	// Prof Id 4
 	if ($fromcompany->idprof4)
 	{
-		$field=$langs->transcountrynoentities("ProfId4",$fromcompany->pays_code);
+		$field=$langs->transcountrynoentities("ProfId4",$fromcompany->country_code);
 		if (preg_match('/\((.*)\)/i',$field,$reg)) $field=$reg[1];
-		$line2.=($line2?" - ":"").$field.": ".$langs->convToOutputCharset($fromcompany->idprof4);
+		$line2.=($line2?" - ":"").$field.": ".$fromcompany->idprof4;
 	}
 	// IntraCommunautary VAT
 	if ($fromcompany->tva_intra != '')
 	{
-		$line2.=($line2?" - ":"").$langs->transnoentities("VATIntraShort").": ".$langs->convToOutputCharset($fromcompany->tva_intra);
+		$line2.=($line2?" - ":"").$langs->transnoentities("VATIntraShort").": ".$fromcompany->tva_intra;
 	}
 
 	print '<br><br><hr>'."\n";
@@ -128,6 +162,7 @@ function html_print_paypal_footer($fromcompany,$langs)
 
 /**
  *  Define head array for tabs of paypal tools setup pages
+ *
  *  @return			Array of head
  */
 function paypaladmin_prepare_head()
@@ -142,6 +177,8 @@ function paypaladmin_prepare_head()
 	$head[$h][2] = 'paypalaccount';
 	$h++;
 
+	$object=(object) array();
+
     // Show more tabs from modules
     // Entries must be declared in modules descriptor with line
     // $this->tabs = array('entity:+tabname:Title:@mymodule:/mymodule/mypage.php?id=__ID__');   to add new tab
@@ -149,6 +186,29 @@ function paypaladmin_prepare_head()
     complete_head_from_modules($conf,$langs,$object,$head,$h,'paypaladmin');
 
     return $head;
+}
+
+
+
+/**
+ * Return string with full Url
+ *
+ * @param   string	$type		Type of URL ('free', 'order', 'invoice', 'contractline', 'membersubscription' ...)
+ * @param	string	$ref		Ref of object
+ * @return	string				Url string
+ */
+function showPaypalPaymentUrl($type,$ref)
+{
+	global $conf, $langs;
+
+	$langs->load("paypal");
+    $langs->load("paybox");
+    $servicename='PayPal';
+    $out='<br><br>';
+    $out.=img_picto('','object_globe.png').' '.$langs->trans("ToOfferALinkForOnlinePayment",$servicename).'<br>';
+    $url=getPaypalPaymentUrl(0,$type,$ref);
+    $out.='<input type="text" id="paypalurl" value="'.$url.'" size="60"><br>';
+    return $out;
 }
 
 
@@ -169,7 +229,11 @@ function getPaypalPaymentUrl($mode,$type,$ref='',$amount='9.99',$freetag='your_f
     if ($type == 'free')
     {
 	    $out=DOL_MAIN_URL_ROOT.'/public/paypal/newpayment.php?amount='.($mode?'<font color="#666666">':'').$amount.($mode?'</font>':'').'&tag='.($mode?'<font color="#666666">':'').$freetag.($mode?'</font>':'');
-	    if (! empty($conf->global->PAYPAL_SECURITY_TOKEN)) $out.='&securekey='.$conf->global->PAYPAL_SECURITY_TOKEN;
+	    if (! empty($conf->global->PAYPAL_SECURITY_TOKEN))
+	    {
+	    	if (empty($conf->global->PAYPAL_SECURITY_TOKEN_UNIQUE)) $out.='&securekey='.$conf->global->PAYPAL_SECURITY_TOKEN;
+	    	else $out.='&securekey='.dol_hash($conf->global->PAYPAL_SECURITY_TOKEN, 2);
+	    }
     }
     if ($type == 'order')
     {
@@ -250,12 +314,13 @@ function getPaypalPaymentUrl($mode,$type,$ref='',$amount='9.99',$freetag='your_f
 /**
  * Send redirect to paypal to browser
  *
- * @param       $paymentAmount
- * @param       $currencyCodeType
- * @param       $paymentType
- * @param       $returnURL
- * @param       $cancelURL
- * @param       $tag
+ * @param	float	$paymentAmount		Amount
+ * @param   string	$currencyCodeType	Currency code
+ * @param	string	$paymentType		Payment type
+ * @param  	string	$returnURL			Url to use if payment is OK
+ * @param   string	$cancelURL			Url to use if payment is KO
+ * @param   string	$tag				Tag
+ * @return	void
  */
 function print_paypal_redirect($paymentAmount,$currencyCodeType,$paymentType,$returnURL,$cancelURL,$tag)
 {
@@ -265,6 +330,7 @@ function print_paypal_redirect($paymentAmount,$currencyCodeType,$paymentType,$re
     global $PAYPAL_API_USER, $PAYPAL_API_PASSWORD, $PAYPAL_API_SIGNATURE;
 
     global $shipToName, $shipToStreet, $shipToCity, $shipToState, $shipToCountryCode, $shipToZip, $shipToStreet2, $phoneNum;
+    global $email, $desc;
 
     //'------------------------------------
     //' Calls the SetExpressCheckout API call
@@ -294,14 +360,27 @@ function print_paypal_redirect($paymentAmount,$currencyCodeType,$paymentType,$re
         $landingPage='Billing';
     }
 
-    dol_syslog("expresscheckout redirect with CallSetExpressCheckout $paymentAmount, $currencyCodeType, $paymentType, $returnURL, $cancelURL, $tag, $landingPage, $solutionType, $shipToName, $shipToStreet, $shipToCity, $shipToState, $shipToCountryCode, $shipToZip, $shipToStreet2, $phoneNum");
-    $resArray = CallSetExpressCheckout ($paymentAmount, $currencyCodeType, $paymentType, $returnURL, $cancelURL, $tag, $solutionType, $landingPage,
-        $shipToName, $shipToStreet, $shipToCity, $shipToState, $shipToCountryCode, $shipToZip, $shipToStreet2, $phoneNum);
-    /* For direct payment with credit card
-    {
-        //$resArray = DirectPayment (...);
-    }
-    */
+    dol_syslog("expresscheckout redirect with callSetExpressCheckout $paymentAmount, $currencyCodeType, $paymentType, $returnURL, $cancelURL, $tag, $solutionType, $landingPage, $shipToName, $shipToStreet, $shipToCity, $shipToState, $shipToCountryCode, $shipToZip, $shipToStreet2, $phoneNum");
+    $resArray = callSetExpressCheckout(
+        $paymentAmount,
+        $currencyCodeType,
+        $paymentType,
+        $returnURL,
+        $cancelURL,
+        $tag,
+        $solutionType,
+        $landingPage,
+        $shipToName,
+        $shipToStreet,
+        $shipToCity,
+        $shipToState,
+        $shipToCountryCode,
+        $shipToZip,
+        $shipToStreet2,
+        $phoneNum,
+        $email,
+        $desc
+    );
 
     $ack = strtoupper($resArray["ACK"]);
     if($ack=="SUCCESS" || $ack=="SUCCESSWITHWARNING")
@@ -347,10 +426,11 @@ function print_paypal_redirect($paymentAmount,$currencyCodeType,$paymentType,$re
  '      shipToZip:          the Ship to ZipCode entered on the merchant's site
  '      shipToStreet2:      the Ship to Street2 entered on the merchant's site
  '      phoneNum:           the phoneNum  entered on the merchant's site
+ '      email:              the buyer email
+ '      desc:               Product description
  '--------------------------------------------------------------------------------------------------------------------------------------------
  */
-function CallSetExpressCheckout( $paymentAmount, $currencyCodeType, $paymentType, $returnURL, $cancelURL, $tag, $solutionType, $landingPage,
-$shipToName, $shipToStreet, $shipToCity, $shipToState, $shipToCountryCode, $shipToZip, $shipToStreet2, $phoneNum)
+function callSetExpressCheckout($paymentAmount, $currencyCodeType, $paymentType, $returnURL, $cancelURL, $tag, $solutionType, $landingPage, $shipToName, $shipToStreet, $shipToCity, $shipToState, $shipToCountryCode, $shipToZip, $shipToStreet2, $phoneNum, $email='', $desc='')
 {
     //------------------------------------------------------------------------------------------------------------------------------------
     // Construct the parameter string that describes the SetExpressCheckout API call in the shortcut implementation
@@ -360,15 +440,16 @@ $shipToName, $shipToStreet, $shipToCity, $shipToState, $shipToCountryCode, $ship
     global $API_Endpoint, $API_Url, $API_version, $USE_PROXY, $PROXY_HOST, $PROXY_PORT;
     global $PAYPAL_API_USER, $PAYPAL_API_PASSWORD, $PAYPAL_API_SIGNATURE;
 
-    $nvpstr="&AMT=". urlencode($paymentAmount);
-    $nvpstr = $nvpstr . "&PAYMENTACTION=" . urlencode($paymentType);
+    $nvpstr = '';
+    $nvpstr = $nvpstr . "&AMT=". urlencode($paymentAmount);                // AMT deprecated by paypal -> PAYMENTREQUEST_n_AMT
+    $nvpstr = $nvpstr . "&PAYMENTACTION=" . urlencode($paymentType);       // PAYMENTACTION deprecated by paypal -> PAYMENTREQUEST_n_PAYMENTACTION
     $nvpstr = $nvpstr . "&RETURNURL=" . urlencode($returnURL);
     $nvpstr = $nvpstr . "&CANCELURL=" . urlencode($cancelURL);
-    $nvpstr = $nvpstr . "&CURRENCYCODE=" . urlencode($currencyCodeType);
+    $nvpstr = $nvpstr . "&CURRENCYCODE=" . urlencode($currencyCodeType);    // CURRENCYCODE deprecated by paypal -> PAYMENTREQUEST_n_CURRENCYCODE
     $nvpstr = $nvpstr . "&ADDROVERRIDE=1";
     //$nvpstr = $nvpstr . "&ALLOWNOTE=0";
-    $nvpstr = $nvpstr . "&SHIPTONAME=" . urlencode($shipToName);
-    $nvpstr = $nvpstr . "&SHIPTOSTREET=" . urlencode($shipToStreet);
+    $nvpstr = $nvpstr . "&SHIPTONAME=" . urlencode($shipToName);            // SHIPTONAME deprecated by paypal -> PAYMENTREQUEST_n_SHIPTONAME
+    $nvpstr = $nvpstr . "&SHIPTOSTREET=" . urlencode($shipToStreet);        //
     $nvpstr = $nvpstr . "&SHIPTOSTREET2=" . urlencode($shipToStreet2);
     $nvpstr = $nvpstr . "&SHIPTOCITY=" . urlencode($shipToCity);
     $nvpstr = $nvpstr . "&SHIPTOSTATE=" . urlencode($shipToState);
@@ -377,9 +458,10 @@ $shipToName, $shipToStreet, $shipToCity, $shipToState, $shipToCountryCode, $ship
     $nvpstr = $nvpstr . "&PHONENUM=" . urlencode($phoneNum);
     $nvpstr = $nvpstr . "&SOLUTIONTYPE=" . urlencode($solutionType);
     $nvpstr = $nvpstr . "&LANDINGPAGE=" . urlencode($landingPage);
-    //$nvpstr = $nvpstr . "&CUSTOMERSERVICENUMBER=" . urlencode($tag);
+    //$nvpstr = $nvpstr . "&CUSTOMERSERVICENUMBER=" . urlencode($tag);    // Hotline phone number
     $nvpstr = $nvpstr . "&INVNUM=" . urlencode($tag);
-
+    if (! empty($email)) $nvpstr = $nvpstr . "&EMAIL=" . urlencode($email);
+    if (! empty($desc))  $nvpstr = $nvpstr . "&DESC=" . urlencode($desc);        // DESC deprecated by paypal -> PAYMENTREQUEST_n_DESC
 
 
     $_SESSION["currencyCodeType"] = $currencyCodeType;
@@ -402,17 +484,13 @@ $shipToName, $shipToStreet, $shipToCity, $shipToState, $shipToCountryCode, $ship
     return $resArray;
 }
 
-/*
- '-------------------------------------------------------------------------------------------
- ' Purpose:     Prepares the parameters for the GetExpressCheckoutDetails API Call.
- '
- ' Inputs:
- '      None
- ' Returns:
- '      The NVP Collection object of the GetExpressCheckoutDetails Call Response.
- '-------------------------------------------------------------------------------------------
+/**
+ * 	Prepares the parameters for the GetExpressCheckoutDetails API Call.
+ *
+ *	@param	string	$token		Token
+ *	@return	array				The NVP Collection object of the GetExpressCheckoutDetails Call Response.
  */
-function GetDetails( $token )
+function getDetails($token)
 {
     //'--------------------------------------------------------------
     //' At this point, the buyer has completed authorizing the payment
@@ -450,12 +528,19 @@ function GetDetails( $token )
 }
 
 
-/*
- '-------------------------------------------------------------------------------------------------------------------------------------------
- ' Purpose:     Validate payment
- '--------------------------------------------------------------------------------------------------------------------------------------------
+/**
+ *	Validate payment
+ *
+ *	@param	string	$token				Token
+ *	@param	string	$paymentType		Type
+ *	@param	string	$currencyCodeType	Currency
+ *	@param	string	$payerID			Payer ID
+ *	@param	string	$ipaddress			IP Address
+ *	@param	string	$FinalPaymentAmt	Amount
+ *	@param	string	$tag				Tag
+ *	@return	void
  */
-function ConfirmPayment( $token, $paymentType, $currencyCodeType, $payerID, $ipaddress, $FinalPaymentAmt, $tag )
+function confirmPayment($token, $paymentType, $currencyCodeType, $payerID, $ipaddress, $FinalPaymentAmt, $tag)
 {
     /* Gather the information to make the final call to
      finalize the PayPal payment.  The variable nvpstr
@@ -467,9 +552,13 @@ function ConfirmPayment( $token, $paymentType, $currencyCodeType, $payerID, $ipa
     global $API_Endpoint, $API_Url, $API_version, $USE_PROXY, $PROXY_HOST, $PROXY_PORT;
     global $PAYPAL_API_USER, $PAYPAL_API_PASSWORD, $PAYPAL_API_SIGNATURE;
 
-    $nvpstr  = '&TOKEN=' . urlencode($token) . '&PAYERID=' . urlencode($payerID) . '&PAYMENTACTION=' . urlencode($paymentType) . '&AMT=' . urlencode($FinalPaymentAmt);
-    $nvpstr .= '&CURRENCYCODE=' . urlencode($currencyCodeType) . '&IPADDRESS=' . urlencode($ipaddress);
-    //$nvpstr .= '&CUSTOM=' . urlencode($tag);
+    $nvpstr = '';
+    $nvpstr .= '&TOKEN=' . urlencode($token);
+    $nvpstr .= '&PAYERID=' . urlencode($payerID);
+    $nvpstr .= '&PAYMENTACTION=' . urlencode($paymentType);
+    $nvpstr .= '&AMT=' . urlencode($FinalPaymentAmt);
+    $nvpstr .= '&CURRENCYCODE=' . urlencode($currencyCodeType);
+    $nvpstr .= '&IPADDRESS=' . urlencode($ipaddress);
     $nvpstr .= '&INVNUM=' . urlencode($tag);
 
     /* Make the call to PayPal to finalize payment
@@ -486,36 +575,27 @@ function ConfirmPayment( $token, $paymentType, $currencyCodeType, $payerID, $ipa
     return $resArray;
 }
 
-/*
- '-------------------------------------------------------------------------------------------------------------------------------------------
- ' Purpose:     This function makes a DoDirectPayment API call
- '
- ' Inputs:
- '      paymentType:        paymentType has to be one of the following values: Sale or Order or Authorization
- '      paymentAmount:      total value of the shopping cart
- '      currencyCode:       currency code value the PayPal API
- '      firstName:          first name as it appears on credit card
- '      lastName:           last name as it appears on credit card
- '      street:             buyer's street address line as it appears on credit card
- '      city:               buyer's city
- '      state:              buyer's state
- '      countryCode:        buyer's country code
- '      zip:                buyer's zip
- '      creditCardType:     buyer's credit card type (i.e. Visa, MasterCard ... )
- '      creditCardNumber:   buyers credit card number without any spaces, dashes or any other characters
- '      expDate:            credit card expiration date
- '      cvv2:               Card Verification Value
- '
- '-------------------------------------------------------------------------------------------
- '
- ' Returns:
- '      The NVP Collection object of the DoDirectPayment Call Response.
- '--------------------------------------------------------------------------------------------------------------------------------------------
+/**
+ *	This function makes a DoDirectPayment API call
+ *
+ *  paymentType:        paymentType has to be one of the following values: Sale or Order or Authorization
+ *  paymentAmount:      total value of the shopping cart
+ *  currencyCode:       currency code value the PayPal API
+ *  firstName:          first name as it appears on credit card
+ *  lastName:           last name as it appears on credit card
+ *  street:             buyer's street address line as it appears on credit card
+ *  city:               buyer's city
+ *  state:              buyer's state
+ *  countryCode:        buyer's country code
+ *  zip:                buyer's zip
+ *  creditCardType:     buyer's credit card type (i.e. Visa, MasterCard ... )
+ *  creditCardNumber:   buyers credit card number without any spaces, dashes or any other characters
+ *  expDate:            credit card expiration date
+ *  cvv2:               Card Verification Value
+ *	@return		array	The NVP Collection object of the DoDirectPayment Call Response.
  */
-
-function DirectPayment( $paymentType, $paymentAmount, $creditCardType, $creditCardNumber,
-$expDate, $cvv2, $firstName, $lastName, $street, $city, $state, $zip,
-$countryCode, $currencyCode, $tag )
+/*
+function DirectPayment($paymentType, $paymentAmount, $creditCardType, $creditCardNumber, $expDate, $cvv2, $firstName, $lastName, $street, $city, $state, $zip, $countryCode, $currencyCode, $tag)
 {
     //declaring of global variables
     global $conf, $langs;
@@ -523,9 +603,10 @@ $countryCode, $currencyCode, $tag )
     global $PAYPAL_API_USER, $PAYPAL_API_PASSWORD, $PAYPAL_API_SIGNATURE;
 
     //Construct the parameter string that describes DoDirectPayment
-    $nvpstr = "&AMT=" . urlencode($paymentAmount);
+    $nvpstr = '';
+    $nvpstr = $nvpstr . "&AMT=" . urlencode($paymentAmount);              // deprecated by paypal
     $nvpstr = $nvpstr . "&CURRENCYCODE=" . urlencode($currencyCode);
-    $nvpstr = $nvpstr . "&PAYMENTACTION=" . urlencode($paymentType);
+    $nvpstr = $nvpstr . "&PAYMENTACTION=" . urlencode($paymentType);      // deprecated by paypal
     $nvpstr = $nvpstr . "&CREDITCARDTYPE=" . urlencode($creditCardType);
     $nvpstr = $nvpstr . "&ACCT=" . urlencode($creditCardNumber);
     $nvpstr = $nvpstr . "&EXPDATE=" . urlencode($expDate);
@@ -543,13 +624,15 @@ $countryCode, $currencyCode, $tag )
 
     return $resArray;
 }
+*/
 
 
 /**
  * hash_call: Function to perform the API call to PayPal using API signature
- * @param	methodName 	is name of API  method.
- * @param	nvpStr 		is nvp string.
- * @return	array		returns an associtive array containing the response from the server.
+ *
+ * @param	string	$methodName 	is name of API  method.
+ * @param	string	$nvpStr 		is nvp string.
+ * @return	array					returns an associtive array containing the response from the server.
  */
 function hash_call($methodName,$nvpStr)
 {
@@ -606,13 +689,13 @@ function hash_call($methodName,$nvpStr)
     {
         dol_syslog("Paypal API hash_call set proxy to ".$PROXY_HOST. ":" . $PROXY_PORT." - ".$PROXY_USER. ":" . $PROXY_PASS);
         //curl_setopt ($ch, CURLOPT_PROXYTYPE, CURLPROXY_HTTP); // Curl 7.10
-        curl_setopt ($ch, CURLOPT_PROXY, $PROXY_HOST. ":" . $PROXY_PORT);
-        if ($PROXY_USER) curl_setopt ($ch, CURLOPT_PROXYUSERPWD, $PROXY_USER. ":" . $PROXY_PASS);
+        curl_setopt($ch, CURLOPT_PROXY, $PROXY_HOST. ":" . $PROXY_PORT);
+        if ($PROXY_USER) curl_setopt($ch, CURLOPT_PROXYUSERPWD, $PROXY_USER. ":" . $PROXY_PASS);
     }
 
     //NVPRequest for submitting to server
     $nvpreq ="METHOD=" . urlencode($methodName) . "&VERSION=" . urlencode($API_version) . "&PWD=" . urlencode($PAYPAL_API_PASSWORD) . "&USER=" . urlencode($PAYPAL_API_USER) . "&SIGNATURE=" . urlencode($PAYPAL_API_SIGNATURE) . $nvpStr;
-    $nvpreq.="&LOCALE=".strtoupper($langs->getDefaultLang(1));
+    $nvpreq.="&LOCALECODE=".strtoupper($langs->getDefaultLang(1));
     //$nvpreq.="&BRANDNAME=".urlencode();       // Override merchant name
     //$nvpreq.="&NOTIFYURL=".urlencode();       // For Instant Payment Notification url
 
@@ -649,35 +732,13 @@ function hash_call($methodName,$nvpStr)
     return $nvpResArray;
 }
 
+
 /**
- * 	Get API errors
- */
-function GetApiError()
-{
-	$errors=array();
-
-	$resArray=$_SESSION['reshash'];
-
-	if(isset($_SESSION['curl_error_no']))
-	{
-		$errors[] = $_SESSION['curl_error_no'].'-'.$_SESSION['curl_error_msg'];
-	}
-
-	foreach($resArray as $key => $value)
-	{
-		$errors[] = $key.'-'.$value;
-	}
-
-	return $errors;
-}
-
-
-/*'----------------------------------------------------------------------------------
  * This function will take NVPString and convert it to an Associative Array and it will decode the response.
  * It is usefull to search for a particular key and displaying arrays.
- * @nvpstr is NVPString.
- * @nvpArray is Associative Array.
- ----------------------------------------------------------------------------------
+ *
+ * @param	string	$nvpstr 		NVPString
+ * @return	array					nvpArray = Associative Array
  */
 function deformatNVP($nvpstr)
 {

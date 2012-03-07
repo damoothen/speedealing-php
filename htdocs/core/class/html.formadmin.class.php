@@ -1,5 +1,5 @@
 <?php
-/* Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
+/* Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2007      Patrick Raguin 		<patrick.raguin@gmail.com>
  *
@@ -25,8 +25,7 @@
 
 
 /**
- *       \class      FormAdmin
- *       \brief      Class to generate html code for admin pages
+ *      Class to generate html code for admin pages
  */
 class FormAdmin
 {
@@ -37,24 +36,24 @@ class FormAdmin
 	/**
 	 *	Constructor
 	 *
-	 *  @param		DoliDB		$DB      Database handler
+	 *  @param		DoliDB		$db      Database handler
 	 */
-	function FormAdmin($DB)
+	function FormAdmin($db)
 	{
-		$this->db = $DB;
-
+		$this->db = $db;
 		return 1;
 	}
 
 	/**
 	 *    	Output list with available languages
 	 *
-	 *      @deprecated                 Use select_language instead
-	 *    	@param      selected        Langue pre-selectionnee
-	 *    	@param      htmlname        Nom de la zone select
-	 *    	@param      showauto        Affiche choix auto
-	 * 		@param		filter			Array of keys to exclude in list
-	 * 		@param		showempty		Add empty value
+	 *    	@param		string		$selected       Langue pre-selectionnee
+	 *    	@param  	string		$htmlname       Nom de la zone select
+	 *    	@param  	int			$showauto       Affiche choix auto
+	 * 		@param		int			$filter			Array of keys to exclude in list
+	 * 		@param		int			$showempty		Add empty value
+	 * 		@return		void
+	 *      @deprecated                 		Use select_language instead
 	 */
 	function select_lang($selected='',$htmlname='lang_id',$showauto=0,$filter=0,$showempty=0)
 	{
@@ -63,12 +62,14 @@ class FormAdmin
 
 	/**
 	 *    	Return html select list with available languages (key='en_US', value='United States' for example)
-	 *    	@param      selected        Langue pre-selectionnee
-	 *    	@param      htmlname        Nom de la zone select
-	 *    	@param      showauto        Affiche choix auto
-	 * 		@param		filter			Array of keys to exclude in list
-	 * 		@param		showempty		Add empty value
-	 *      @param      showwarning     Show a warning if language is not complete
+	 *
+	 *    	@param      string		$selected       Langue pre-selectionnee
+	 *    	@param      string		$htmlname       Nom de la zone select
+	 *    	@param      int			$showauto       Affiche choix auto
+	 * 		@param		array		$filter			Array of keys to exclude in list
+	 * 		@param		int			$showempty		Add empty value
+	 *      @param      int			$showwarning    Show a warning if language is not complete
+	 *      @return		string						Return HTML select string with list of languages
 	 */
 	function select_language($selected='',$htmlname='lang_id',$showauto=0,$filter=0,$showempty=0,$showwarning=0)
 	{
@@ -124,25 +125,30 @@ class FormAdmin
 
 	/**
      *    Return list of available menus (eldy_backoffice, ...)
-     *    @param      selected        Preselected menu value
-     *    @param      htmlname        Name of html select
-     *    @param      dirmenu         Directory to scan or array of directories to scan
-     *    @param      moreattrib      More attributes on html select tag
+     *
+     *    @param	string		$selected        Preselected menu value
+     *    @param    string		$htmlname        Name of html select
+     *    @param    array		$dirmenuarray    Array of directories to scan
+     *    @param    string		$moreattrib      More attributes on html select tag
+     *    @return	void
      */
-    function select_menu($selected='', $htmlname, $dirmenu, $moreattrib='')
+    function select_menu($selected, $htmlname, $dirmenuarray, $moreattrib='')
     {
         global $langs,$conf;
 
+        // Clean parameters
         if ($selected == 'eldy.php') $selected='eldy_backoffice.php';  // For compatibility
+
+        // Check parameters
+        if (! is_array($dirmenuarray)) return -1;
 
 		$menuarray=array();
         foreach ($conf->file->dol_document_root as $dirroot)
         {
-            if (is_array($dirmenu)) $dirmenus=$dirmenu;
-            else $dirmenus=array($dirmenu);
-            foreach($dirmenus as $dirtoscan)
+            foreach($dirmenuarray as $dirtoscan)
             {
                 $dir=$dirroot.$dirtoscan;
+                //print $dir.'<br>';
                 if (is_dir($dir))
                 {
     	            $handle=opendir($dir);
@@ -150,7 +156,7 @@ class FormAdmin
     	            {
     	                while (($file = readdir($handle))!==false)
     	                {
-    	                    if (is_file($dir."/".$file) && substr($file, 0, 1) <> '.' && substr($file, 0, 3) <> 'CVS')
+    	                    if (is_file($dir."/".$file) && substr($file, 0, 1) <> '.' && substr($file, 0, 3) <> 'CVS' && substr($file, 0, 5) != 'index')
     	                    {
     	                        if (preg_match('/lib\.php$/i',$file)) continue;	// We exclude library files
     	                    	$filelib=preg_replace('/\.php$/i','',$file);
@@ -203,12 +209,14 @@ class FormAdmin
     }
 
     /**
-     *    Return combo list of available menu families
-     *    @param      selected        Menu pre-selected
-     *    @param      htmlname        Name of html select
-     *    @param      dirmenuarray    Directories to scan
+     *  Return combo list of available menu families
+     *
+     *  @param	string	$selected        Menu pre-selected
+     *  @param  string	$htmlname        Name of html select
+     *  @param	string	$dirmenuarray    Directories to scan
+     *  @return	void
      */
-    function select_menu_families($selected='',$htmlname,$dirmenuarray)
+    function select_menu_families($selected, $htmlname, $dirmenuarray)
     {
 		global $langs,$conf;
 
@@ -232,6 +240,7 @@ class FormAdmin
 	        				if (is_file($dir."/".$file) && substr($file, 0, 1) <> '.' && substr($file, 0, 3) <> 'CVS')
 	        				{
 	        					$filelib=preg_replace('/(_backoffice|_frontoffice)?\.php$/i','',$file);
+	        					if (preg_match('/^index/i',$filelib)) continue;
 	        					if (preg_match('/^default/i',$filelib)) continue;
 	        					if (preg_match('/^empty/i',$filelib)) continue;
 	        					if (preg_match('/\.lib/i',$filelib)) continue;
@@ -271,11 +280,13 @@ class FormAdmin
 
 
     /**
-     *    \brief      Retourne la liste deroulante des menus disponibles (eldy)
-     *    \param      selected        Menu pre-selectionnee
-     *    \param      htmlname        Nom de la zone select
+     *  Return a HTML select list of timezones
+     *
+     *  @param	string		$selected        Menu pre-selectionnee
+     *  @param  string		$htmlname        Nom de la zone select
+     *  @return	void
      */
-    function select_timezone($selected='',$htmlname)
+    function select_timezone($selected,$htmlname)
     {
 		global $langs,$conf;
 

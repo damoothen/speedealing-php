@@ -38,8 +38,8 @@ $langs->load("install");
 // Init "forced values" to nothing. "forced values" are used after an doliwamp install wizard.
 if (! isset($force_install_dolibarrlogin))     $force_install_dolibarrlogin='';
 $useforcedwizard=false;
-if (file_exists("./install.forced.php")) { $useforcedwizard=true; include_once("./install.forced.php"); }
-else if (file_exists("/etc/dolibarr/install.forced.php")) { $useforcedwizard=include_once("/etc/dolibarr/install.forced.php"); }
+if (@file_exists("./install.forced.php")) { $useforcedwizard=true; include_once("./install.forced.php"); }
+else if (@file_exists("/etc/dolibarr/install.forced.php")) { $useforcedwizard=include_once("/etc/dolibarr/install.forced.php"); }
 
 dolibarr_install_syslog("Dolibarr install/upgrade process started");
 
@@ -63,6 +63,16 @@ print '</center>';
 
 print '<b>'.$langs->trans("MiscellanousChecks")."</b>:<br>\n";
 
+// Check browser
+$useragent=$_SERVER['HTTP_USER_AGENT'];
+if (! empty($useragent))
+{
+    $tmp=getBrowserInfo();
+    $browserversion=$tmp['browserversion'];
+    $browsername=$tmp['browsername'];
+    if ($browsername == 'ie' && $browserversion < 7) print '<img src="../theme/eldy/img/warning.png" alt="Error"> '.$langs->trans("WarningBrowserTooOld")."<br>\n";
+}
+
 
 // Check PHP version
 if (versioncompare(versionphparray(),array(4,3,10)) < 0)        // Minimum to use (error if lower)
@@ -73,7 +83,7 @@ if (versioncompare(versionphparray(),array(4,3,10)) < 0)        // Minimum to us
 else if (versioncompare(versionphparray(),array(5,2,0)) < 0)    // Minimum supported (warning if lower)
 {
     print '<img src="../theme/eldy/img/warning.png" alt="Error"> '.$langs->trans("WarningPHPVersionTooLow",'5.2.0');
-    $checksok=0;
+    $checksok=1;
 }
 else
 {
@@ -272,14 +282,14 @@ else
 			include_once($conffile);
 			if (! empty($dolibarr_main_db_type) && ! empty($dolibarr_main_document_root))
 			{
-				if (! file_exists($dolibarr_main_document_root."/lib/admin.lib.php"))
+				if (! file_exists($dolibarr_main_document_root."/core/lib/admin.lib.php"))
 				{
 				    print '<font class="error">A '.$conffiletoshow.' file exists with a dolibarr_main_document_root to '.$dolibarr_main_document_root.' that seems wrong. Try to fix or remove the '.$conffiletoshow.' file.</font><br>'."\n";
 				    dol_syslog("A '.$conffiletoshow.' file exists with a dolibarr_main_document_root to ".$dolibarr_main_document_root." that seems wrong. Try to fix or remove the '.$conffiletoshow.' file.", LOG_WARNING);
 				}
 				else
 				{
-                    require_once($dolibarr_main_document_root."/lib/admin.lib.php");
+                    require_once($dolibarr_main_document_root."/core/lib/admin.lib.php");
 
     				// $conf is already instancied inside inc.php
     				$conf->db->type = $dolibarr_main_db_type;
@@ -331,12 +341,12 @@ else
 
 
 		// Array of install choices
-		print '<table width="100%" border="1" cellpadding="2">';
+		print '<table width="100%" class="listofchoices">';
 
 		// Show first install line
-		print '<tr><td nowrap="nowrap" align="center"><b>'.$langs->trans("FreshInstall").'</b>';
+		print '<tr class="listofchoices"><td class="listofchoices" nowrap="nowrap" align="center"><b>'.$langs->trans("FreshInstall").'</b>';
 		print '</td>';
-		print '<td>';
+		print '<td class="listofchoices">';
 		print $langs->trans("FreshInstallDesc");
 		if (empty($dolibarr_main_db_host))	// This means install process was not run
 		{
@@ -347,7 +357,7 @@ else
 			$foundrecommandedchoice=1;	// To show only once
 		}
 		print '</td>';
-		print '<td align="center">';
+		print '<td class="listofchoices" align="center">';
 		if ($allowinstall)
 		{
 			print '<a href="fileconf.php?selectlang='.$setuplang.'">'.$langs->trans("Start").'</a>';
@@ -393,8 +403,8 @@ else
             $version=preg_split('/[\.-]/',DOL_VERSION);
             $newversionfrombis='';
             if (versioncompare($dolibarrversiontoarray,$version) < -2) $newversionfrombis='/'.$versionto;
-			print '<tr><td nowrap="nowrap" align="center"><b>'.$langs->trans("Upgrade").'<br>'.$newversionfrom.' -> '.$newversionto.'</b></td>';
-			print '<td>';
+			print '<tr class="listofchoices"><td class="listofchoices" nowrap="nowrap" align="center"><b>'.$langs->trans("Upgrade").'<br>'.$newversionfrom.' -> '.$newversionto.'</b></td>';
+			print '<td class="listofchoices">';
 			print $langs->trans("UpgradeDesc");
 			if ($ok)
 			{
@@ -421,7 +431,7 @@ else
 				}
 			}
 			print '</td>';
-			print '<td align="center">';
+			print '<td class="listofchoices" align="center">';
 			if ($allowupgrade)
 			{
 				// If it's not last updagre script, action = upgrade_tmp, if last action = upgrade

@@ -36,7 +36,6 @@ if (! defined('NOREQUIREAJAX'))   define('NOREQUIREAJAX','1');
 session_cache_limiter(FALSE);
 
 require_once("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/functions.lib.php");
 
 // Define css type
 header('Content-type: text/css');
@@ -93,52 +92,22 @@ input:focus, textarea:focus, button:focus, select:focus {
     box-shadow: 0 0 4px #8091BF;
 }
 
-input {
+input, input.flat, textarea, textarea.flat, form.flat select, select.flat {
     font-size: <?php print $fontsize ?>px;
-    font-family: <?php print $fontlist ?>;
-    background: #FDFDFD;
+	font-family: <?php print $fontlist ?>;
+	background: #FDFDFD;
     border: 1px solid #ACBCBB;
     padding: 1px 1px 1px 1px;
     margin: 0px 0px 0px 0px;
 }
-input.flat {
-	font-size: <?php print $fontsize ?>px;
-	font-family: <?php print $fontlist ?>;
-    background: #FDFDFD;
-    border: 1px solid #ACBCBB;
-    padding: 1px 1px 1px 1px;
-    margin: 0px 0px 0px 0px;
+select.flat, form.flat select {
+	font-weight: normal;
 }
 input:disabled {
-background:#ddd;
-}
-textarea  {
-	font-size: <?php print $fontsize ?>px;
-	font-family: <?php print $fontlist ?>;
-    background: #FDFDFD;
-    border: 1px solid #ACBCBB;
-    padding: 1px 1px 1px 1px;
-    margin: 0px 0px 0px 0px;
-}
-textarea.flat {
-	font-size: <?php print $fontsize ?>px;
-	font-family: <?php print $fontlist ?>;
-    background: #FDFDFD;
-    border: 1px solid #ACBCBB;
-    padding: 1px 1px 1px 1px;
-    margin: 0px 0px 0px 0px;
+	background:#ddd;
 }
 textarea:disabled {
-background:#ddd;
-}
-select.flat {
-	background: #FDFDFD;
-    font-size: <?php print $fontsize ?>px;
-	font-family: <?php print $fontlist ?>;
-	font-weight: normal;
-    border: 1px solid #ACBCBB;
-    padding: 1px 1px 1px 1px;
-    margin: 0px 0px 0px 0px;
+	background:#ddd;
 }
 .button {
     font-family: <?php print $fontlist ?>;
@@ -480,6 +449,12 @@ foreach($mainmenuusedarray as $key => $val)
 
 /* Login */
 
+table.login {
+    -moz-box-shadow: 4px 4px 4px #CCC;
+    -webkit-box-shadow: 4px 4px 4px #CCC;
+    box-shadow: 4px 4px 4px #CCC;
+}
+
 div.login_block {
 	position: absolute;
 	<?php print $right; ?>: 5px;
@@ -707,7 +682,7 @@ td.photo {
 /* ============================================================================== */
 
 .toolbar {
-    background-image: url(<?php echo dol_buildpath($path.'/theme/'.$conf->theme.'/img/tmenu2.jpg',1); ?>) !important;
+    background-image: url(<?php echo dol_buildpath($path.'/theme/'.$conf->theme.'/img/tmenu2.jpg',1) ?>) !important;
     background-repeat: repeat-x !important;
     border: 1px solid #BBB !important;
 }
@@ -855,11 +830,17 @@ td.photo {
 }
 
 .ecm-layout-toggler {
-    background-color: #DDD;
+    border-top: 1px solid #AAA; /* match pane-border */
+    border-right: 1px solid #AAA; /* match pane-border */
+    border-bottom: 1px solid #AAA; /* match pane-border */
+    background-color: #CCC;
     }
 .ecm-layout-toggler-open {
 	height: 48px !important;
 	width: 6px !important;
+    -moz-border-radius:0px 10px 10px 0px;
+	-webkit-border-radius:0px 10px 10px 0px;
+	border-radius:0px 10px 10px 0px;
 }
 .ecm-layout-toggler-closed {
 	height: 48px !important;
@@ -1095,6 +1076,14 @@ background-repeat: repeat-x;
 */
 
 
+.paddingrightonly {
+	border-collapse: collapse;
+	border: 0px;
+	margin-left: 0px;
+	spacing-left: 0px;
+	padding-left: 0px;
+	padding-right: 4px;
+}
 .nocellnopadd {
 list-style-type:none;
 margin: 0px;
@@ -1278,7 +1267,7 @@ white-space: nowrap;
 
 .impair {
 /* background: #d0d4d7; */
-background: #eaeaea;
+background: #F5F6F7;
 font-family: <?php print $fontlist ?>;
 border: 0px;
 }
@@ -1291,7 +1280,7 @@ border: 0px;
 
 .pair	{
 /* background: #e6ebed; */
-background: #f4f4f4;
+background: #FBFCFC;
 font-family: <?php print $fontlist ?>;
 border: 0px;
 }
@@ -1301,6 +1290,19 @@ background: #c0c4c7;
 border: 0px;
 }
 */
+
+/* Disable shadows */ 
+.noshadow {
+	-moz-box-shadow: 0px 0px 0px #CCC !important;
+	-webkit-box-shadow: 0px 0px 0px #CCC !important;
+	box-shadow: 0px 0px 0px #CCC !important;
+}
+
+div.tabBar .noborder {
+	-moz-box-shadow: 0px 0px 0px #CCC !important;
+	-webkit-box-shadow: 0px 0px 0px #CCC !important;
+	box-shadow: 0px 0px 0px #CCC !important;
+}
 
 
 /*
@@ -1335,14 +1337,19 @@ white-space: nowrap;
 
 tr.box_impair {
 /* background: #e6ebed; */
-background: #eaeaea;
+background: #F5F6F7;
 font-family: <?php print $fontlist ?>;
 }
 
 tr.box_pair {
 /* background: #d0d4d7; */
-background: #f4f4f4;
+background: #FBFCFC;
 font-family: <?php print $fontlist ?>;
+}
+
+tr.box_pair td, tr.box_impair td, td.box_pair, td.box_impair
+{
+/*border-bottom: 1px solid white;*/
 }
 
 tr.fiche {
@@ -1487,16 +1494,9 @@ opacity: 1;
 /* Calendar                                                                       */
 /* ============================================================================== */
 
-.ui-datepicker-title {
-    margin: 0 !important;
-    line-height: 28px;
-}
-.ui-datepicker-month {
-    margin: 0 !important;
-    padding: 0 !important;
-}
-.ui-datepicker-header {
-    height: 28px !important;
+.ui-datepicker-trigger {
+	vertical-align: middle;
+	cursor: pointer;
 }
 
 .bodyline {
@@ -1513,6 +1513,9 @@ table.dp {
     border-<?php print $left; ?>: solid 2px #DDDDDD;
     border-<?php print $right; ?>: solid 1px #222222;
     border-bottom: solid 1px #222222;
+    padding: 0px;
+	border-spacing: 0px;
+	border-collapse: collapse;     
 }
 .dp td, .tpHour td, .tpMinute td{padding:2px; font-size:10px;}
 /* Barre titre */
@@ -1650,43 +1653,36 @@ table.cal_event td { border: 0px; padding-<?php print $left; ?>: 0px; padding-<?
 /* ============================================================================== */
 
 .ui-widget { font-family: Verdana,Arial,sans-serif; font-size: 0.9em; }
-.ui-autocomplete-loading { background: white url(<?php echo dol_buildpath($path.'/theme/eldy/img/working.gif',1) ?>) right center no-repeat; }
+.ui-autocomplete-loading { background: white url(<?php echo dol_buildpath($path.'/theme/auguria/img/working.gif',1) ?>) right center no-repeat; }
 
 
 /* ============================================================================== */
-/*  Ajax - In place editor                                                        */
+/*  jQuery - jeditable                                                            */
 /* ============================================================================== */
 
-form.inplaceeditor-form { /* The form */
+.editkey_textarea, .editkey_ckeditor, .editkey_string, .editkey_email, .editkey_numeric, .editkey_select {
+	background: url(<?php echo dol_buildpath($path.'/theme/auguria/img/edit.png',1) ?>) right top no-repeat;
+	cursor: pointer;
 }
 
-form.inplaceeditor-form input[type="text"] { /* Input box */
+.editkey_datepicker {
+	background: url(<?php echo dol_buildpath($path.'/theme/auguria/img/calendar.png',1) ?>) right center no-repeat;
+	cursor: pointer;
 }
 
-form.inplaceeditor-form textarea { /* Textarea, if multiple columns */
-background: #FAF8E8;
-color: black;
+.editval_textarea.active:hover, .editval_ckeditor.active:hover, .editval_string.active:hover, .editval_email.active:hover, .editval_numeric.active:hover, .editval_select.active:hover, .editval_datepicker.active:hover {
+	background: white;
+	cursor: pointer;
 }
 
-form.inplaceeditor-form input[type="submit"] { /* The submit button */
-  font-size: 100%;
-  font-weight:normal;
-	border: 0px;
-	background-image : url(<?php echo dol_buildpath($path.'/theme/auguria/img/button_bg.png',1) ?>);
-	background-position : bottom;
-	cursor:pointer;
+.viewval_textarea.active:hover, .viewval_ckeditor.active:hover, .viewval_string.active:hover, .viewval_email.active:hover, .viewval_numeric.active:hover, .viewval_select.active:hover, .viewval_datepicker.active:hover {
+	background: white;
+	cursor: pointer;
 }
 
-form.inplaceeditor-form a { /* The cancel link */
-  margin-left: 5px;
-  font-size: 11px;
-	font-weight:normal;
-	border: 0px;
-	background-image : url(<?php echo dol_buildpath($path.'/theme/auguria/img/button_bg.png',1); ?>);
-	background-position : bottom;
-	cursor:pointer;
+.viewval_hover {
+	background: white;
 }
-
 
 
 /* ============================================================================== */

@@ -4,9 +4,10 @@
  * Copyright (C) 2004      Sebastien Di Cintio          <sdicintio@ressource-toi.org>
  * Copyright (C) 2004      Benoit Mortier               <benoit.mortier@opensides.be>
  * Copyright (C) 2004      Andre Cianfarani             <acianfa@free.fr>
- * Copyright (C) 2005-2011 Regis Houssin                <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin                <regis@dolibarr.fr>
  * Copyright (C) 2008 	   Raphael Bertrand (Resultic)  <raphael.bertrand@resultic.fr>
- * Copyright (C) 2011 	   Juanjo Menent			    <jmenent@2byte.es>
+ * Copyright (C) 2011-2012 Juanjo Menent			    <jmenent@2byte.es>
+ * Copyright (C) 2011 	   Philippe Grand			    <philippe.grand@atoo-net.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,17 +30,16 @@
  */
 
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/admin.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
 require_once(DOL_DOCUMENT_ROOT.'/commande/class/commande.class.php');
 
 $langs->load("admin");
 $langs->load("errors");
 
-if (!$user->admin)
-accessforbidden();
+if (! $user->admin) accessforbidden();
 
-$action = GETPOST("action");
-$value = GETPOST("value");
+$action = GETPOST('action','alpha');
+$value = GETPOST('value','alpha');
 
 /*
  * Actions
@@ -71,30 +71,40 @@ if ($action == 'specimen')
 	$commande = new Commande($db);
 	$commande->initAsSpecimen();
 
-	// Charge le modele
-	$dir = DOL_DOCUMENT_ROOT . "/includes/modules/commande/";
-	$file = "pdf_".$modele.".modules.php";
-	if (file_exists($dir.$file))
+	// Search template files
+	$file=''; $classname=''; $filefound=0;
+	$dirmodels=array_merge(array('/'),(array) $conf->modules_parts['models']);
+	foreach($dirmodels as $reldir)
 	{
-		$classname = "pdf_".$modele;
-		require_once($dir.$file);
+	    $file=dol_buildpath($reldir."core/modules/commande/doc/pdf_".$modele.".modules.php",0);
+		if (file_exists($file))
+		{
+			$filefound=1;
+			$classname = "pdf_".$modele;
+			break;
+		}
+	}
 
-		$obj = new $classname($db);
+	if ($filefound)
+	{
+		require_once($file);
 
-		if ($obj->write_file($commande,$langs) > 0)
+		$module = new $classname($db);
+
+		if ($module->write_file($commande,$langs) > 0)
 		{
 			header("Location: ".DOL_URL_ROOT."/document.php?modulepart=commande&file=SPECIMEN.pdf");
 			return;
 		}
 		else
 		{
-			$mesg='<div class="error">'.$obj->error.'</div>';
-			dol_syslog($obj->error, LOG_ERR);
+			$mesg='<font class="error">'.$module->error.'</font>';
+			dol_syslog($module->error, LOG_ERR);
 		}
 	}
 	else
 	{
-		$mesg='<div class="error">'.$langs->trans("ErrorModuleNotFound").'</div>';
+		$mesg='<font class="error">'.$langs->trans("ErrorModuleNotFound").'</font>';
 		dol_syslog($langs->trans("ErrorModuleNotFound"), LOG_ERR);
 	}
 }
@@ -213,9 +223,11 @@ if ($action == 'set_COMMANDE_FREE_TEXT')
  * View
  */
 
+$dirmodels=array_merge(array('/'),(array) $conf->modules_parts['models']);
+
 llxHeader();
 
-$html=new Form($db);
+$form=new Form($db);
 
 $linkback='<a href="'.DOL_URL_ROOT.'/admin/modules.php">'.$langs->trans("BackToModuleList").'</a>';
 print_fiche_titre($langs->trans("OrdersSetup"),$linkback,'setup');
@@ -241,9 +253,9 @@ print "</tr>\n";
 
 clearstatcache();
 
-foreach ($conf->file->dol_document_root as $dirroot)
+foreach ($dirmodels as $reldir)
 {
-	$dir = $dirroot . "/includes/modules/commande/";
+	$dir = dol_buildpath($reldir."core/modules/commande/");
 
 	if (is_dir($dir))
 	{
@@ -258,7 +270,7 @@ foreach ($conf->file->dol_document_root as $dirroot)
 				{
 					$file = substr($file, 0, dol_strlen($file)-4);
 
-					require_once(DOL_DOCUMENT_ROOT ."/includes/modules/commande/".$file.".php");
+					require_once(DOL_DOCUMENT_ROOT ."/core/modules/commande/".$file.".php");
 
 					$module = new $file;
 
@@ -276,12 +288,13 @@ foreach ($conf->file->dol_document_root as $dirroot)
                         // Show example of numbering module
                         print '<td nowrap="nowrap">';
                         $tmp=$module->getExample();
-                        if (preg_match('/^Error/',$tmp)) print $langs->trans($tmp);
+                        if (preg_match('/^Error/',$tmp)) { $langs->load("errors"); print '<div class="error">'.$langs->trans($tmp).'</div>'; }
+                        elseif ($tmp=='NotConfigured') print $langs->trans($tmp);
                         else print $tmp;
                         print '</td>'."\n";
 
 						print '<td align="center">';
-						if ($conf->global->COMMANDE_ADDON == "$file")
+						if ($conf->global->COMMANDE_ADDON == $file)
 						{
 							print img_picto($langs->trans("Activated"),'switch_on');
 						}
@@ -315,7 +328,7 @@ foreach ($conf->file->dol_document_root as $dirroot)
 						}
 
 						print '<td align="center">';
-						print $html->textwithpicto('',$htmltooltip,1,0);
+						print $form->textwithpicto('',$htmltooltip,1,0);
 						print '</td>';
 
 						print '</tr>';
@@ -331,11 +344,11 @@ print '</table><br>';
 
 
 /*
- * Modeles de documents
+ * Document templates generators
  */
 print_titre($langs->trans("OrdersModelModule"));
 
-// Defini tableau def de modele
+// Load array def with activated templates
 $type='order';
 $def = array();
 $sql = "SELECT nom";
@@ -362,108 +375,130 @@ else
 
 print "<table class=\"noborder\" width=\"100%\">\n";
 print "<tr class=\"liste_titre\">\n";
-print '  <td width="100">'.$langs->trans("Name")."</td>\n";
-print "  <td>".$langs->trans("Description")."</td>\n";
-print '<td align="center" width="40">'.$langs->trans("Status")."</td>\n";
-print '<td align="center" width="40">'.$langs->trans("Default")."</td>\n";
-print '<td align="center" width="40">'.$langs->trans("Infos").'</td>';
-print '<td align="center" width="40">'.$langs->trans("Preview").'</td>';
+print '<td>'.$langs->trans("Name").'</td>';
+print '<td>'.$langs->trans("Description").'</td>';
+print '<td align="center" width="60">'.$langs->trans("Status")."</td>\n";
+print '<td align="center" width="60">'.$langs->trans("Default")."</td>\n";
+print '<td align="center" width="38" colspan="2">'.$langs->trans("Infos").'</td>';
 print "</tr>\n";
 
 clearstatcache();
 
-foreach ($conf->file->dol_document_root as $dirroot)
+$var=true;
+foreach ($dirmodels as $reldir)
 {
-	$dir = $dirroot . "/includes/modules/commande/";
+    foreach (array('','/doc') as $valdir)
+    {
+    	$dir = dol_buildpath($reldir."core/modules/commande".$valdir);
 
-	if (is_dir($dir))
-	{
-		$handle = opendir($dir);
-		if (is_resource($handle))
-		{
-			$var=true;
-		    while (($file = readdir($handle))!==false)
-		    {
-		    	if (preg_match('/\.modules\.php$/i',$file) && substr($file,0,4) == 'pdf_')
-		    	{
-		    		$name = substr($file, 4, dol_strlen($file) -16);
-		    		$classname = substr($file, 0, dol_strlen($file) -12);
+        if (is_dir($dir))
+        {
+            $handle=opendir($dir);
+            if (is_resource($handle))
+            {
 
-		    		$var=!$var;
-		    		print "<tr ".$bc[$var].">\n  <td>";
-		    		print "$name";
-		    		print "</td>\n  <td>\n";
-		    		require_once($dir.$file);
-		    		$module = new $classname($db);
-		    		print $module->description;
-		    		print "</td>\n";
+                while (($file = readdir($handle))!==false)
+                {
+                    $filelist[]=$file;
+                }
+                closedir($handle);
+                arsort($filelist);
 
-		    		// Activated
-		    		print "<td align=\"center\">\n";
-		    		if (in_array($name, $def))
-		    		{
-		    			//if ($conf->global->COMMANDE_ADDON_PDF != "$name")
-		    			//{
-		    				print '<a href="'.$_SERVER["PHP_SELF"].'?action=del&amp;value='.$name.'&amp;scandir='.$module->scandir.'&amp;label='.urlencode($module->name).'">';
-		    				print img_picto($langs->trans("Activated"),'switch_on');
-		    				print '</a>';
-		    			//}
-		    			//else
-		    			//{
-		    			//	print img_picto($langs->trans("Activated"),'switch_on');
-		    			//}
-		    		}
-		    		else
-		    		{
-		    			print '<a href="'.$_SERVER["PHP_SELF"].'?action=set&amp;value='.$name.'&amp;scandir='.$module->scandir.'&amp;label='.urlencode($module->name).'">';
-		    			print img_picto($langs->trans("Disabled"),'switch_off');
-		    			print '</a>';
-		    		}
-		    		print "</td>";
-
-		    		// Defaut
-		    		print "<td align=\"center\">";
-		    		if ($conf->global->COMMANDE_ADDON_PDF == "$name")
-		    		{
-		    			print img_picto($langs->trans("Yes"),'on');
-		    		}
-		    		else
-		    		{
-		    			print '<a href="'.$_SERVER["PHP_SELF"].'?action=setdoc&amp;value='.$name.'&amp;scandir='.$module->scandir.'&amp;label='.urlencode($module->name).'">';
-		    			print img_picto($langs->trans("No"),'off');
-		    			print '</a>';
-		    		}
-		    		print '</td>';
-
-		    		// Info
-		    		$htmltooltip =    ''.$langs->trans("Name").': '.$module->name;
-		    		$htmltooltip.='<br>'.$langs->trans("Type").': '.($module->type?$module->type:$langs->trans("Unknown"));
-                    if ($module->type == 'pdf')
+                foreach($filelist as $file)
+                {
+                    if (preg_match('/\.modules\.php$/i',$file) && preg_match('/^(pdf_|doc_)/',$file))
                     {
-                        $htmltooltip.='<br>'.$langs->trans("Width").'/'.$langs->trans("Height").': '.$module->page_largeur.'/'.$module->page_hauteur;
+                    	if (file_exists($dir.'/'.$file))
+                    	{
+                    		$name = substr($file, 4, dol_strlen($file) -16);
+	                        $classname = substr($file, 0, dol_strlen($file) -12);
+
+	                        require_once($dir.'/'.$file);
+	                        $module = new $classname($db);
+
+	                        $modulequalified=1;
+	                        if ($module->version == 'development'  && $conf->global->MAIN_FEATURES_LEVEL < 2) $modulequalified=0;
+	                        if ($module->version == 'experimental' && $conf->global->MAIN_FEATURES_LEVEL < 1) $modulequalified=0;
+
+	                        if ($modulequalified)
+	                        {
+	                            $var = !$var;
+	                            print '<tr '.$bc[$var].'><td width="100">';
+	                            print (empty($module->name)?$name:$module->name);
+	                            print "</td><td>\n";
+	                            if (method_exists($module,'info')) print $module->info($langs);
+	                            else print $module->description;
+	                            print '</td>';
+
+	                            // Active
+	                            if (in_array($name, $def))
+	                            {
+	                            	print '<td align="center">'."\n";
+	                            	print '<a href="'.$_SERVER["PHP_SELF"].'?action=del&amp;value='.$name.'">';
+	                            	print img_picto($langs->trans("Enabled"),'switch_on');
+	                            	print '</a>';
+	                            	print '</td>';
+	                            }
+	                            else
+	                            {
+	                                print '<td align="center">'."\n";
+	                                print '<a href="'.$_SERVER["PHP_SELF"].'?action=set&amp;value='.$name.'&amp;scandir='.$module->scandir.'&amp;label='.urlencode($module->name).'">'.img_picto($langs->trans("Disabled"),'switch_off').'</a>';
+	                                print "</td>";
+	                            }
+
+	                            // Defaut
+	                            print '<td align="center">';
+	                            if ($conf->global->COMMANDE_ADDON_PDF == $name)
+	                            {
+	                                print img_picto($langs->trans("Default"),'on');
+	                            }
+	                            else
+	                            {
+	                                print '<a href="'.$_SERVER["PHP_SELF"].'?action=setdoc&amp;value='.$name.'&amp;scandir='.$module->scandir.'&amp;label='.urlencode($module->name).'" alt="'.$langs->trans("Default").'">'.img_picto($langs->trans("Disabled"),'off').'</a>';
+	                            }
+	                            print '</td>';
+
+	                           // Info
+		    					$htmltooltip =    ''.$langs->trans("Name").': '.$module->name;
+					    		$htmltooltip.='<br>'.$langs->trans("Type").': '.($module->type?$module->type:$langs->trans("Unknown"));
+			                    if ($module->type == 'pdf')
+			                    {
+			                        $htmltooltip.='<br>'.$langs->trans("Width").'/'.$langs->trans("Height").': '.$module->page_largeur.'/'.$module->page_hauteur;
+			                    }
+					    		$htmltooltip.='<br><br><u>'.$langs->trans("FeaturesSupported").':</u>';
+					    		$htmltooltip.='<br>'.$langs->trans("Logo").': '.yn($module->option_logo,1,1);
+					    		$htmltooltip.='<br>'.$langs->trans("PaymentMode").': '.yn($module->option_modereg,1,1);
+					    		$htmltooltip.='<br>'.$langs->trans("PaymentConditions").': '.yn($module->option_condreg,1,1);
+					    		$htmltooltip.='<br>'.$langs->trans("MultiLanguage").': '.yn($module->option_multilang,1,1);
+					    		//$htmltooltip.='<br>'.$langs->trans("Escompte").': '.yn($module->option_escompte,1,1);
+					    		//$htmltooltip.='<br>'.$langs->trans("CreditNote").': '.yn($module->option_credit_note,1,1);
+					    		$htmltooltip.='<br>'.$langs->trans("WatermarkOnDraftOrders").': '.yn($module->option_draft_watermark,1,1);
+
+
+	                            print '<td align="center">';
+	                            print $form->textwithpicto('',$htmltooltip,1,0);
+	                            print '</td>';
+
+	                            // Preview
+	                            print '<td align="center">';
+	                            if ($module->type == 'pdf')
+	                            {
+	                                print '<a href="'.$_SERVER["PHP_SELF"].'?action=specimen&module='.$name.'">'.img_object($langs->trans("Preview"),'bill').'</a>';
+	                            }
+	                            else
+	                            {
+	                                print img_object($langs->trans("PreviewNotAvailable"),'generic');
+	                            }
+	                            print '</td>';
+
+	                            print "</tr>\n";
+	                        }
+                    	}
                     }
-		    		$htmltooltip.='<br><br><u>'.$langs->trans("FeaturesSupported").':</u>';
-		    		$htmltooltip.='<br>'.$langs->trans("Logo").': '.yn($module->option_logo,1,1);
-		    		$htmltooltip.='<br>'.$langs->trans("PaymentMode").': '.yn($module->option_modereg,1,1);
-		    		$htmltooltip.='<br>'.$langs->trans("PaymentConditions").': '.yn($module->option_condreg,1,1);
-		    		$htmltooltip.='<br>'.$langs->trans("MultiLanguage").': '.yn($module->option_multilang,1,1);
-		    		//$htmltooltip.='<br>'.$langs->trans("Escompte").': '.yn($module->option_escompte,1,1);
-		    		//$htmltooltip.='<br>'.$langs->trans("CreditNote").': '.yn($module->option_credit_note,1,1);
-		    		$htmltooltip.='<br>'.$langs->trans("WatermarkOnDraftOrders").': '.yn($module->option_draft_watermark,1,1);
-
-		    		print '<td align="center">';
-		    		print $html->textwithpicto('',$htmltooltip,1,0);
-		    		print '</td>';
-		    		print '<td align="center">';
-		    		print '<a href="'.$_SERVER["PHP_SELF"].'?action=specimen&module='.$name.'">'.img_object($langs->trans("Preview"),'order').'</a>';
-		    		print '</td>';
-
-		    		print "</tr>\n";
-		    	}
-		    }
-		    closedir($handle);
-		}
-	}
+                }
+            }
+        }
+    }
 }
 
 print '</table>';
@@ -489,7 +524,7 @@ print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 print '<input type="hidden" name="action" value="setvalidorder">';
 print '<tr '.$bc[$var].'>';
 print '<td>'.$langs->trans("ValidOrderAfterPropalClosed").'</td>';
-print '<td width="60" align="center">'.$html->selectyesno("validorder",$conf->global->COMMANDE_VALID_AFTER_CLOSE_PROPAL,1).'</td>';
+print '<td width="60" align="center">'.$form->selectyesno("validorder",$conf->global->COMMANDE_VALID_AFTER_CLOSE_PROPAL,1).'</td>';
 print '<td align="right"><input type="submit" class="button" value="'.$langs->trans("Modify").'"></td>';
 print '</tr>';
 print '</form>';
@@ -503,7 +538,7 @@ print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 print '<input type="hidden" name="action" value="deliverycostline">';
 print '<tr '.$bc[$var].'>';
 print '<td>'.$langs->trans("AddDeliveryCostLine").'</td>';
-print '<td width="60" align="center">'.$html->selectyesno("addline",$conf->global->COMMANDE_ADD_DELIVERY_COST_LINE,1).'</td>';
+print '<td width="60" align="center">'.$form->selectyesno("addline",$conf->global->COMMANDE_ADD_DELIVERY_COST_LINE,1).'</td>';
 print '<td align="right"><input type="submit" class="button" value="'.$langs->trans("Modify").'"></td>';
 print '</tr>';
 print '</form>';
@@ -517,7 +552,7 @@ print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 print '<input type="hidden" name="action" value="set_use_customer_contact_as_recipient">';
 print '<tr '.$bc[$var].'>';
 print '<td>'.$langs->trans("UseCustomerContactAsOrderRecipientIfExist").'</td>';
-print '<td width="60" align="center">'.$html->selectyesno("use_customer_contact_as_recipient",$conf->global->COMMANDE_USE_CUSTOMER_CONTACT_AS_RECIPIENT,1).'</td>';
+print '<td width="60" align="center">'.$form->selectyesno("use_customer_contact_as_recipient",$conf->global->COMMANDE_USE_CUSTOMER_CONTACT_AS_RECIPIENT,1).'</td>';
 print '<td align="right"><input type="submit" class="button" value="'.$langs->trans("Modify").'"></td>';
 print '</tr>';
 print '</form>';
@@ -554,7 +589,7 @@ print '<br>';
 
 dol_htmloutput_mesg($mesg);
 
-$db->close();
-
 llxFooter();
+
+$db->close();
 ?>

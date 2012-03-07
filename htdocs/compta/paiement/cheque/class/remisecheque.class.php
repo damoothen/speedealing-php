@@ -56,9 +56,9 @@ class RemiseCheque extends CommonObject
 	/**
 	 *	Load record
 	 *
-	 *	@param 		id 			Id record
-	 *	@param 		ref		 	Ref record
-	 * 	@return		int			<0 if KO, > 0 if OK
+	 *	@param	int		$id 			Id record
+	 *	@param 	string	$ref		 	Ref record
+	 * 	@return	int						<0 if KO, > 0 if OK
 	 */
 	function fetch($id,$ref='')
 	{
@@ -72,7 +72,7 @@ class RemiseCheque extends CommonObject
 		$sql.= " WHERE bc.entity = ".$conf->entity;
 		if ($id)  $sql.= " AND bc.rowid = ".$id;
 		if ($ref) $sql.= " AND bc.number = '".$this->db->escape($ref)."'";
-
+		
 		dol_syslog("RemiseCheque::fetch sql=".$sql, LOG_DEBUG);
 		$resql = $this->db->query($sql);
 		if ($resql)
@@ -397,10 +397,14 @@ class RemiseCheque extends CommonObject
 
 		$num=0;
 
-		// We use +0 to convert varchar to number
-		$sql = "SELECT MAX(number+0)";
+		// We use +0 to convert varchar to number for mysql, use ::integer for postgres.
+		// We must found a generic solution (Use a $db->toint function ?)
+		$sql = "SELECT ";
+		if ($this->db->type == 'pgsql') $sql.="MAX(number::integer)";
+		else $sql.="MAX(number+0)";
 		$sql.= " FROM ".MAIN_DB_PREFIX."bordereau_cheque";
 		$sql.= " WHERE entity = ".$conf->entity;
+		$sql.= " AND number not like '(%'";
 
 		dol_syslog("Remisecheque::getNextNumber sql=".$sql);
 		$resql = $this->db->query($sql);
@@ -467,6 +471,7 @@ class RemiseCheque extends CommonObject
 
 	/**
 	 *	Build document
+	 *
 	 *	@param 		model 			Model name
 	 *	@param 		outputlangs		Object langs
 	 * 	@return  	int        		<0 if KO, >0 if OK
@@ -479,7 +484,7 @@ class RemiseCheque extends CommonObject
 
 		dol_syslog("RemiseCheque::generatePdf model=".$model." id=".$this->id, LOG_DEBUG);
 
-		$dir=DOL_DOCUMENT_ROOT ."/includes/modules/cheque/pdf/";
+		$dir=DOL_DOCUMENT_ROOT ."/core/modules/cheque/pdf/";
 
 		// Charge le modele
 		$file = "pdf_".$model.".class.php";
@@ -489,7 +494,7 @@ class RemiseCheque extends CommonObject
 			require_once($dir.$file);
 
 			$classname='BordereauCheque'.ucfirst($model);
-			$docmodel = new $classname($db);
+			$docmodel = new $classname($this->db);
 
 			$sql = "SELECT b.banque, b.emetteur, b.amount, b.num_chq";
 			$sql.= " FROM ".MAIN_DB_PREFIX."bank as b";
@@ -499,14 +504,14 @@ class RemiseCheque extends CommonObject
 			$sql.= " AND b.fk_bordereau = bc.rowid";
 			$sql.= " AND bc.rowid = ".$this->id;
 			$sql.= " AND bc.entity = ".$conf->entity;
-			$sql.= " ORDER BY b.emetteur ASC, b.rowid ASC;";
+			$sql.= " ORDER BY b.dateo ASC, b.rowid ASC";
 
 			dol_syslog("RemiseCheque::generatePdf sql=".$sql, LOG_DEBUG);
 			$result = $this->db->query($sql);
 			if ($result)
 			{
 				$i = 0;
-				while ( $objp = $this->db->fetch_object($result) )
+				while ($objp = $this->db->fetch_object($result))
 				{
 					$docmodel->lines[$i]->bank_chq = $objp->banque;
 					$docmodel->lines[$i]->emetteur_chq = $objp->emetteur;
@@ -527,18 +532,18 @@ class RemiseCheque extends CommonObject
 
 			// We save charset_output to restore it because write_file can change it if needed for
 			// output format that does not support UTF8.
-			$sav_charset_output=$outputlangs->charset_output;
+			$sav_charseSupprimert_output=$outputlangs->charset_output;
 			$result=$docmodel->write_file($conf->banque->dir_output.'/bordereau', $this->number, $outputlangs);
 			if ($result > 0)
 			{
-				$outputlangs->charset_output=$sav_charset_output;
+				//$outputlangs->charset_output=$sav_charset_output;
 				return 1;
 			}
 			else
 			{
-				$outputlangs->charset_output=$sav_charset_output;
+				//$outputlangs->charset_output=$sav_charset_output;
 				dol_syslog("Error");
-				dol_print_error($db,$docmodel->error);
+				dol_print_error($this->db,$docmodel->error);
 				return 0;
 			}
 		}

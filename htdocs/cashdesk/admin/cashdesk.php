@@ -23,7 +23,7 @@
  */
 
 require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/admin.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/product/class/html.formproduct.class.php");
 
 // If socid provided by ajax company selector
@@ -49,11 +49,11 @@ if (GETPOST("action") == 'set')
 {
 	$db->begin();
 
-	if (GETPOST("socid") < 0) $_POST["socid"]='';
+	if (GETPOST('socid','int') < 0) $_POST["socid"]='';
 	/*if (GETPOST("CASHDESK_ID_BANKACCOUNT") < 0)  $_POST["CASHDESK_ID_BANKACCOUNT"]='';
 	if (GETPOST("CASHDESK_ID_WAREHOUSE") < 0)  $_POST["CASHDESK_ID_WAREHOUSE"]='';*/
 
-	$res = dolibarr_set_const($db,"CASHDESK_ID_THIRDPARTY",GETPOST("socid"),'chaine',0,'',$conf->entity);
+	$res = dolibarr_set_const($db,"CASHDESK_ID_THIRDPARTY",GETPOST('socid','int'),'chaine',0,'',$conf->entity);
 	$res = dolibarr_set_const($db,"CASHDESK_ID_BANKACCOUNT_CASH",GETPOST("CASHDESK_ID_BANKACCOUNT_CASH"),'chaine',0,'',$conf->entity);
 	$res = dolibarr_set_const($db,"CASHDESK_ID_BANKACCOUNT_CHEQUE",GETPOST("CASHDESK_ID_BANKACCOUNT_CHEQUE"),'chaine',0,'',$conf->entity);
 	$res = dolibarr_set_const($db,"CASHDESK_ID_BANKACCOUNT_CB",GETPOST("CASHDESK_ID_BANKACCOUNT_CB"),'chaine',0,'',$conf->entity);
@@ -103,7 +103,7 @@ print "</tr>\n";
 $var=!$var;
 print '<tr '.$bc[$var].'><td width=\"50%\">'.$langs->trans("CashDeskThirdPartyForSell").'</td>';
 print '<td colspan="2">';
-print $form->select_societes($conf->global->CASHDESK_ID_THIRDPARTY,'socid','s.client in (1,3)',1,1);
+print $form->select_company($conf->global->CASHDESK_ID_THIRDPARTY,'socid','s.client in (1,3)',1,1);
 print '</td></tr>';
 if ($conf->banque->enabled)
 {
@@ -131,7 +131,7 @@ if ($conf->stock->enabled)
 	$var=!$var;
 	print '<tr '.$bc[$var].'><td>'.$langs->trans("CashDeskIdWareHouse").'</td>';
 	print '<td colspan="2">';
-	$formproduct->selectWarehouses($conf->global->CASHDESK_ID_WAREHOUSE,'CASHDESK_ID_WAREHOUSE','',1);
+	print $formproduct->selectWarehouses($conf->global->CASHDESK_ID_WAREHOUSE,'CASHDESK_ID_WAREHOUSE','',1);
 	print '</td></tr>';
 }
 

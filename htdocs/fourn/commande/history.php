@@ -24,7 +24,7 @@
  */
 
 require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/fourn.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/fourn.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/fourn/class/fournisseur.commande.class.php");
 
 $langs->load("orders");
@@ -42,7 +42,7 @@ $result = restrictedArea($user, 'commande_fournisseur', $id,'');
  * View
  */
 
-$html =	new	Form($db);
+$form =	new	Form($db);
 
 $now=gmmktime();
 
@@ -78,7 +78,7 @@ if ($id > 0 || ! empty($ref))
 		// Ref
 		print '<tr><td width="20%">'.$langs->trans("Ref").'</td>';
 		print '<td colspan="2">';
-		print $html->showrefnav($commande,'ref','',1,'ref','ref');
+		print $form->showrefnav($commande,'ref','',1,'ref','ref');
 		print '</td>';
 		print '</tr>';
 

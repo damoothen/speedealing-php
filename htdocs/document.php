@@ -1,8 +1,8 @@
 <?php
 /* Copyright (C) 2004-2007 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005      Simon Tosser         <simon@kornog-computing.com>
- * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2010	   Pierre Morin         <pierre.morin@auguria.net>
  * Copyright (C) 2010	   Juanjo Menent        <jmenent@2byte.es>
  *
@@ -47,13 +47,13 @@ if (! defined('NOREQUIREAJAX')) define('NOREQUIREAJAX','1');
 function llxHeader() { }
 
 require("./main.inc.php");	// Load $user and permissions
-require_once(DOL_DOCUMENT_ROOT.'/lib/files.lib.php');
+require_once(DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php');
 
 $encoding = '';
-$action = GETPOST("action");
-$original_file = GETPOST("file");	// Do not use urldecode here ($_GET are already decoded by PHP).
-$modulepart = GETPOST("modulepart");
-$urlsource = GETPOST("urlsource");
+$action = GETPOST('action','alpha');
+$original_file = GETPOST('file','alpha');	// Do not use urldecode here ($_GET are already decoded by PHP).
+$modulepart = GETPOST('modulepart','alpha');
+$urlsource = GETPOST('urlsource','alpha');
 
 // Security check
 if (empty($modulepart)) accessforbidden('Bad value for parameter modulepart');
@@ -72,7 +72,7 @@ if (empty($modulepart)) accessforbidden('Bad value for parameter modulepart');
 
 // Define mime type
 $type = 'application/octet-stream';
-if (GETPOST('type')) $type=GETPOST('type');
+if (GETPOST('type','alpha')) $type=GETPOST('type','alpha');
 else $type=dol_mimetype($original_file);
 //print 'X'.$type.'-'.$original_file;exit;
 
@@ -135,7 +135,7 @@ if ($modulepart)
 	}
 
 	// Wrapping for invoices
-	else if ($modulepart == 'facture')
+	else if ($modulepart == 'facture' || $modulepart == 'invoice')
 	{
 		if ($user->rights->facture->lire || preg_match('/^specimen/i',$original_file))
 		{
@@ -188,7 +188,7 @@ if ($modulepart)
 	}
 
 	// Wrapping pour les commandes
-	else if ($modulepart == 'commande')
+	else if ($modulepart == 'commande' || $modulepart == 'order')
 	{
 		if ($user->rights->commande->lire || preg_match('/^specimen/i',$original_file))
 		{
@@ -210,7 +210,7 @@ if ($modulepart)
 	}
 
 	// Wrapping pour les commandes fournisseurs
-	else if ($modulepart == 'commande_fournisseur')
+	else if ($modulepart == 'commande_fournisseur' || $modulepart == 'order_supplier')
 	{
 		if ($user->rights->fournisseur->commande->lire || preg_match('/^specimen/i',$original_file))
 		{
@@ -422,23 +422,25 @@ if ($modulepart)
 	else
 	{
 		// Define $accessallowed
-		$subPermCategoryConstName = strtoupper($modulepart).'_SUBPERMCATEGORY_FOR_DOCUMENTS';
-		if (! empty($conf->global->$subPermCategoryConstName)) $subPermCategory = $conf->global->$subPermCategoryConstName;
-		if (empty($subPermCategory) && (($user->rights->$modulepart->lire) || ($user->rights->$modulepart->read) || ($user->rights->$modulepart->download)))
+		if (($user->rights->$modulepart->lire) || ($user->rights->$modulepart->read) || ($user->rights->$modulepart->download)) $accessallowed=1;	// No subpermission, we have checked on main permission
+		elseif (preg_match('/^specimen/i',$original_file))	$accessallowed=1;    // If link to a specimen
+ 		elseif ($user->admin) $accessallowed=1;    // If user is admin
+
+ 		// For modules who wants to manage different levels of permissions for documents
+	    $subPermCategoryConstName = strtoupper($modulepart).'_SUBPERMCATEGORY_FOR_DOCUMENTS';
+		if (! empty($conf->global->$subPermCategoryConstName))
 		{
-			$accessallowed=1;	// No subpermission, we have checked on main permission
+		    $subPermCategory = $conf->global->$subPermCategoryConstName;
+    		if (! empty($subPermCategory) && (($user->rights->$modulepart->$subPermCategory->lire) || ($user->rights->$modulepart->$subPermCategory->read) || ($user->rights->$modulepart->$subPermCategory->download)))
+    		{
+    		    $accessallowed=1;
+    		}
 		}
-		elseif (! empty($subPermCategory) && (($user->rights->$modulepart->$subPermCategory->lire) || ($user->rights->$modulepart->$subPermCategory->read) || ($user->rights->$modulepart->$subPermCategory->download)))
-		{
-			$accessallowed=1;	// There is subpermission supported, we have checked on them
-		}
- 		elseif (preg_match('/^specimen/i',$original_file))	// If link to a specimen
- 		{
-			$accessallowed=1;
- 		}
+
  		// Define $original_file
  		$original_file=$conf->$modulepart->dir_output.'/'.$original_file;
- 		// Define $sqlprotectagainstexternals
+
+ 		// Define $sqlprotectagainstexternals for modules who want to protect access using a SQL query.
  		$sqlProtectConstName = strtoupper($modulepart).'_SQLPROTECTAGAINSTEXTERNALS_FOR_DOCUMENTS';
 		if (! empty($conf->global->$sqlProtectConstName))	// If module want to define its own $sqlprotectagainstexternals
 		{
@@ -533,14 +535,18 @@ else						// Open and return file
 
 	// Les drois sont ok et fichier trouve, on l'envoie
 
+    header('Content-Description: File Transfer');
 	if ($encoding)   header('Content-Encoding: '.$encoding);
 	if ($type)       header('Content-Type: '.$type.(preg_match('/text/',$type)?'; charset="'.$conf->file->character_set_client:''));
 	if ($attachment) header('Content-Disposition: attachment; filename="'.$filename.'"');
 	else header('Content-Disposition: inline; filename="'.$filename.'"');
-
+	header('Content-Length: ' . dol_filesize($original_file));
 	// Ajout directives pour resoudre bug IE
 	header('Cache-Control: Public, must-revalidate');
 	header('Pragma: public');
+
+	//ob_clean();
+	//flush();
 
 	readfile($original_file_osencoded);
 }

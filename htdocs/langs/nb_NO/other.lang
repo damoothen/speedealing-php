@@ -1,14 +1,5 @@
 # Dolibarr language file - no_NB - other
 CHARSET=UTF-8
-ErrorPasswordDiffers=Passordene er forskjellige, prøv igjen
-ErrorForbidden=Tilgang forbudt.<br>Du prøver å nå en side, et område eller en funksjon uten at du er riktig logget inn. Det kan også være at du ikke har tilstrekkelige rettigheter.
-ErrorForbidden2=Tillatelse for denne innloggingen kan settes av Dolibarr-administratoren fra menyen %s->%s.
-ErrorForbidden3=Det ser ut til at Dolibarr ikke brukes gjennom en autensitert sesjon. Du kan lese mer i dokumentasjonen om hvordan du håndterer autensitering (htaccess, mod_auth eller andre...).
-ErrorNoImagickReadimage=Funksjonen imagick_readimage finnes ikke på denne PHP-installaajonen. Forhåndsvisning er da ikke mulig. Administrator kan slå av denne fanen i oppsett - visning.
-ErrorRecordAlreadyExists=Posten eksistererer fra før.
-ErrorCantReadFile=Kunne ikke lese filen '%s'
-ErrorCantReadDir=Kunne ikke lese mappen '%s'
-ErrorFailedToFindEntity=Kunne ikke lese enheten '%s'
 ErrorBadLoginPassword=Ugyldig verdi i brukernavn eller passord
 ErrorLoginDisabled=Din konto er deaktivert
 ErrorFailedToRunExternalCommand=Klarte ikke å kjøre ekstern kommando. Sjekk at den er tilgjengelig og kjørbar på serveren. Hvis PHP <b>Safe Mode</b> er slått på, sjekk at kommandoen er i en mappe definert med parameter <b>safe_mode_exec_dir</b>.
@@ -33,8 +24,6 @@ AttachANewFile=Legg ved ny fil/dokument
 LinkedObject=Lenkede objekter
 Miscellanous=Diverse
 NbOfActiveNotifications=Antall påminnelser
-WarningInstallDirExists=Advarsel! Installasjonsmappen (%s) eksisterer fortsatt! Dette er et alvorlig sikkerhetshull. Du bør fjerne mappen så snart som mulig.
-WarningUntilDirRemoved=Denne advarselen vil være aktivert så lenge denne mappen eksisterer (Den vises kun til administratorer).
 PredefinedMailContentSendInvoice=Vedlagt oversendes faktura __FACREF__\n\nMed vennlig hilsen\n\n
 PredefinedMailContentSendInvoiceReminder=I følge våre noteringer ser det ut til at vår faktura  __FACREF__ fortsatt står ubetalt hos oss. Dersom Deres betaling har krysset denne påminnelsen ber vi Dem vennligst se bort fra denne henvendelsen. \n\nMed vennlig hilsen\n\n
 PredefinedMailContentSendProposal=Vedlagt oversendes tilbud __PROPREF__\n\nMed vennlig hilsen\n\n
@@ -210,3 +199,55 @@ SizeUnitinch=tommers
 SizeUnitfoot=foten
 ImageEditor=Image Editor
 // STOP - Lines generated via autotranslator.php tool (2010-09-04 01:57:02).
+
+
+// START - Lines generated via autotranslator.php tool (2011-10-10 02:45:33).
+// Reference language: en_US -> nb_NO
+ToolsDesc=Dette området er dedikert til gruppen diverse verktøy ikke er tilgjengelig i andre menyen oppføringer. <br><br> Disse verktøyene kan nås fra menyen på siden.
+Notify_WITHDRAW_TRANSMIT=Transmission tilbaketrekning
+Notify_WITHDRAW_CREDIT=Credit tilbaketrekning
+Notify_WITHDRAW_EMIT=Isue tilbaketrekning
+Notify_ORDER_SENTBYMAIL=Kundeordre sendt i posten
+Notify_COMPANY_CREATE=Tredjeparts opprettet
+Notify_PROPAL_SENTBYMAIL=Kommersiell forslaget sendes med post
+Notify_ORDER_SENTBYMAIL=Envío pedido por e-post
+Notify_BILL_PAYED=Kunden faktura betales
+Notify_BILL_SUPPLIER_PAYED=Leverandør faktura betales
+Notify_BILL_SUPPLIER_SENTBYMAIL=Leverandør faktura sendt i posten
+Notify_CONTRACT_VALIDATE=Kontrakt validert
+Notify_FICHEINTER_VALIDATE=Intervention validert
+Notify_SHIPPING_VALIDATE=Shipping validert
+Notify_SHIPPING_SENTBYMAIL=Shipping sendt i posten
+Notify_MEMBER_VALIDATE=Medlem validert
+Notify_MEMBER_SUBSCRIPTION=Medlem abonnerer
+Notify_MEMBER_RESILIATE=Medlem resiliated
+Notify_MEMBER_DELETE=Medlem slettet
+Left=Venstre
+Right=Høyre
+ThisIsListOfModules=Dette er en liste over moduler forhåndsvalgt av denne demoen profilen (bare de vanligste modulene er synlige i denne demoen). Rediger denne å ha en mer personlig demo og klikk på &quot;Start&quot;.
+ClickHere=Klikk her
+UseAdvancedPerms=Bruk den avanserte tillatelser av noen moduler
+FileFormat=Filformat
+SelectAColor=Velg en farge
+AddFiles=Legg til filer
+StartUpload=Starte opplasting
+CancelUpload=Avbryt opplasting
+// STOP - Lines generated via autotranslator.php tool (2011-10-10 04:21:12).
+
+
+// START - Lines generated via autotranslator.php tool (2012-02-29 17:06:43).
+// Reference language: en_US -> nb_NO
+Notify_BILL_CANCEL=Kunden faktura kansellert
+Notify_BILL_SENTBYMAIL=Kunden faktura sendt i posten
+Notify_ORDER_SUPPLIER_VALIDATE=Leverandør orden validert
+Notify_ORDER_SUPPLIER_SENTBYMAIL=Leverandør ordre sendes med post
+Notify_BILL_SUPPLIER_VALIDATE=Leverandør faktura validert
+PredefinedMailContentSendSupplierInvoice=Du finner her fakturaen __ FACREF__ \n\n Vennlig hilsen \n\n
+PredefinedMailContentSendShipping=Du finner her shipping __ SHIPPINGREF__ \n\n Vennlig hilsen \n\n
+PredefinedMailContentSendFichInter=Du finner her intervensjonen __ FICHINTERREF__ \n\n Vennlig hilsen \n\n
+Top=Topp
+Bottom=Bottom
+FileIsTooBig=Filer er for stor
+ShipmentValidatedInDolibarr=Forsendelse %s validert i Dolibarr
+Export=Eksport
+// STOP - Lines generated via autotranslator.php tool (2012-02-29 17:06:47).

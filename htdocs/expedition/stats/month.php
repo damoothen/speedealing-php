@@ -28,6 +28,10 @@ require_once(DOL_DOCUMENT_ROOT."/expedition/class/expeditionstats.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/dolgraph.class.php");
 
 
+/*
+ * View
+ */
+
 llxHeader();
 
 $WIDTH=500;
@@ -35,12 +39,12 @@ $HEIGHT=200;
 
 $mesg = '';
 
-print_fiche_titre('Statistiques expeditions '.$_GET["year"], $mesg);
+print_fiche_titre($langs->trans("StatisticsOfSendings").' '.$_GET["year"], $mesg);
 
 $stats = new ExpeditionStats($db);
 $data = $stats->getNbExpeditionByMonth($_GET["year"]);
 
-create_exdir($conf->expedition->dir_temp);
+dol_mkdir($conf->expedition->dir_temp);
 
 $filename = $conf->expedition->dir_temp."/expedition".$year.".png";
 $fileurl = DOL_URL_ROOT.'/viewimage.php?modulepart=expeditionstats&file=expedition'.$year.'.png';
@@ -57,17 +61,17 @@ if (! $mesg)
     $px->SetShading(3);
 	$px->SetHorizTickIncrement(1);
 	$px->SetPrecisionY(0);
-    $px->draw($filename);
+    $px->draw($filename,$fileurl);
 }
 
 print '<table class="border" width="100%">';
 print '<tr><td align="center">Nombre d expedition par mois</td>';
 print '<td align="center">';
-print '<img src="'.$fileurl.'">';
+print $px->show();
 print '</td></tr>';
 print '</table>';
 
-$db->close();
-
 llxFooter();
+
+$db->close();
 ?>

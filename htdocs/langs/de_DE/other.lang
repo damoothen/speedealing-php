@@ -1,28 +1,11 @@
 /*
- * Language code: de_AT
+ * Language code: de_DE
  * Manually translated by eCleaners.at
  * Generation date 2010-11-12 21:09:12
  */
 
 
 CHARSET=UTF-8
-ErrorPasswordDiffers=Passwörter stimmen nicht überein, bitte erneut eingeben.
-ErrorForbidden=Kein Zugriff. <br>Für einen Zugriff zu diese Seite oder Funktion müssen Sie über eine Sitzung authentifiziert zu sein und über die entsprechenden Benutzerberechtigungen verfügen.
-ErrorForbidden2=Die Zugriffsberechtigungen für diese Anmeldung kann Ihr Administrator unter %s->%s einstellen.
-ErrorForbidden3=Es scheint keine ordnungsgemäße Authentifizierung für das System vorzuliegen. Bitte werfen Sie einen Blick auf die Systemdokumentation um die entsprechenden Authentifizierungsoptionen zu verwalten (htaccess, mod_auth oder andere...)
-ErrorNoImagickReadimage=Imagick_readimage Funktion in dieser PHP-Version nicht vorhanden. Vorschaubilder sind nicht möglich. Administratoren können diese Registerkarte unter Einstellungen-Display ausblenden.
-ErrorRecordAlreadyExists=Datensatz bereits vorhanden
-ErrorCantReadFile=Fehler beim Lesen der Datei '%s'
-ErrorCantReadDir=Fehler beim Lesen des Verzeichnisses '%s'
-ErrorFailedToFindEntity=Fehler beim Lesen der Entität '%s'
-ErrorBadLoginPassword=Benutzername oder Passwort falsch
-ErrorLoginDisabled=Ihr Konto wurde deaktiviert
-ErrorFailedToRunExternalCommand=Fehler beim Ausführen des externen Befehls. Überprüfen Sie dessen Verfügbarkeit und Ausführbarkeit durch den PHP-Server. Sollte der <b>PHP Safe Mode</b> aktiviert sein, stellen Sie sicher dass der Befehl in einem der <b>safe_mode_exec_dir</b>-Verzeichnisse ausgeführt wird.
-ErrorFailedToChangePassword=Passwortänderung fehlgeschlagen
-ErrorLoginDoesNotExists=Benutzer mit Anmeldung <b>%s</b> konnte nicht gefunden werden.
-ErrorLoginHasNoEmail=Dieser Benutzer hat keine E-Mail-Adresse. Prozess abgebrochen.
-ErrorBadValueForCode=Unzulässiger Code-Wert. Versuchen Sie es mit einem anderen Wert erneut...
-ErrorFileIsInfectedWith=Diese Datei ist mit %s infiziert
 SecurityCode=Sicherheitsschlüssel
 Calendar=Kalender
 AddTrip=Reise hinzufügen
@@ -39,8 +22,6 @@ AttachANewFile=Neue Datei/Dokument anhängen
 LinkedObject=Verknüpftes Objekt
 Miscellanous=Verschiedenes
 NbOfActiveNotifications=Anzahl aktiver Benachrichtigungen
-WarningInstallDirExists=Achtung: Das Installationsverzeichnis (%s) existiert noch. Dies ist eine ernsthafte Sicherheitslücke und sie sollten das Verzeichnis so rasch als möglich entfernen.
-WarningUntilDirRemoved=Diese Warnung bleibt so lange aktiv, wie dieses Verzeichnis existiert (nur für Administratoren).
 PredefinedMailContentSendInvoice=Bitte entnehmen Sie dem Anhang die Rechnung __FACREF__\n\nMit freundlichen Grüßen\n\n
 PredefinedMailContentSendInvoiceReminder=Bedauerlicherweise scheint die Rechnung __FACREF__ bislang unbeglichen. Als Erinnerung übersenden wir Ihnen diese nochmals im Anhang\n\nMit freundlichen Grüßen\n\n
 PredefinedMailContentSendProposal=Bitte entnehmen Sie dem Anhang unser Angebot __PROPREF__ \n\nMit freundlichen Grüßen\n\n
@@ -200,3 +181,55 @@ VolumeUnitgallon=Gallone
 SizeUnitinch=Zoll
 SizeUnitfoot=Fuß
 ImageEditor=Bildbearbeitung
+
+// START - Lines generated via autotranslator.php tool (2011-10-10 02:45:33).
+// Reference language: en_US -> de_DE
+ToolsDesc=Dieser Bereich ist zur Gruppe diverse Werkzeuge nicht verfügbar in andere Menüeinträge gewidmet. <br><br> Diese Tools können aus dem Menü auf der Seite zu erreichen.
+Notify_WITHDRAW_TRANSMIT=Transmission Rückzug
+Notify_WITHDRAW_CREDIT=Kreditkarten Rückzug
+Notify_WITHDRAW_EMIT=Isue Rückzug
+Notify_ORDER_SENTBYMAIL=Kunden bestellen per Post geschickt
+Notify_COMPANY_CREATE=Dritter erstellt
+Notify_PROPAL_SENTBYMAIL=Gewerbliche Vorschlag per Post
+Notify_ORDER_SENTBYMAIL=Envío pedido por e-mail
+Notify_BILL_SUPPLIER_PAYED=Lieferantenrechnung bezahlt
+Notify_BILL_SUPPLIER_SENTBYMAIL=Lieferant Rechnung per Post geschickt
+Notify_CONTRACT_VALIDATE=Contract validiert
+Notify_FICHEINTER_VALIDATE=Intervention validiert
+Notify_SHIPPING_VALIDATE=Liefer-validierte
+Notify_SHIPPING_SENTBYMAIL=Versand per Post
+Notify_MEMBER_VALIDATE=Mitglied validiert
+Notify_MEMBER_SUBSCRIPTION=Mitglied gezeichneten
+Notify_MEMBER_RESILIATE=Mitglied resiliated
+Notify_MEMBER_DELETE=Mitglied gelöscht
+Right=Recht
+ThisIsListOfModules=Dies ist eine Liste der Module, die von dieser Demo-Profil (nur gängigsten Module sind in dieser Demo) vorgewählt. Bearbeiten, um eine personalisierte Demo haben und klicken Sie auf &quot;Start&quot;.
+ClickHere=Klicken Sie hier
+UseAdvancedPerms=Verwenden Sie die erweiterten Berechtigungen einiger Module
+FileFormat=Dateiformat
+SelectAColor=Wählen Sie eine Farbe
+AddFiles=Dateien hinzufügen
+StartUpload=Upload starten
+CancelUpload=Hochladen abbrechen
+FileIsTooBig=Dateien zu groß
+// STOP - Lines generated via autotranslator.php tool (2011-10-10 03:02:54).
+
+
+// START - Lines generated via autotranslator.php tool (2012-02-29 16:03:27).
+// Reference language: en_US -> de_DE
+Notify_BILL_PAYED=Kunden Rechnung bezahlt
+Notify_BILL_CANCEL=Kunden Rechnung storniert
+Notify_BILL_SENTBYMAIL=Kunden Rechnung per Post zugesandt
+Notify_ORDER_SUPPLIER_VALIDATE=Lieferant Bestellung validiert
+Notify_ORDER_SUPPLIER_SENTBYMAIL=Lieferant Bestellung per Post zugesandt
+Notify_BILL_SUPPLIER_VALIDATE=Lieferantenrechnung validiert
+PredefinedMailContentSendSupplierInvoice=Hier finden Sie die Rechnung __ FACREF__ \n\n \n\n Mit freundlichen Grüßen
+PredefinedMailContentSendShipping=Hier finden Sie die Versandkosten __ SHIPPINGREF__ \n\n \n\n Mit freundlichen Grüßen
+PredefinedMailContentSendFichInter=Sie finden hier die Intervention __ FICHINTERREF__ \n\n \n\n Mit freundlichen Grüßen
+Top=Top-
+Bottom=Boden
+Left=Links
+BookmarksManagement=Lesezeichen-Verwaltung
+ShipmentValidatedInDolibarr=Versand %s in Dolibarr validiert
+Export=Exportieren
+// STOP - Lines generated via autotranslator.php tool (2012-02-29 16:03:31).

@@ -38,6 +38,8 @@ insert into llx_c_chargesociales (id, libelle, deductible, active, code, fk_pays
 insert into llx_c_chargesociales (id, libelle, deductible, active, code, fk_pays) values (  3, 'CSG/CRDS NON Deductible',0,1,'TAXCSGND' ,'1');
 insert into llx_c_chargesociales (id, libelle, deductible, active, code, fk_pays) values ( 10, 'Taxe apprentissage',     0,1,'TAXAPP'   ,'1');
 insert into llx_c_chargesociales (id, libelle, deductible, active, code, fk_pays) values ( 11, 'Taxe professionnelle',   0,1,'TAXPRO'   ,'1');
+insert into llx_c_chargesociales (id, libelle, deductible, active, code, fk_pays) values ( 12, 'Cotisation fonciere des entreprises', 0,1,'TAXCFE' ,'1');
+insert into llx_c_chargesociales (id, libelle, deductible, active, code, fk_pays) values ( 13, 'Cotisation sur la valeur ajoutee des entreprises', 0,1,'TAXCVAE' ,'1');
 insert into llx_c_chargesociales (id, libelle, deductible, active, code, fk_pays) values ( 20, 'Impots locaux/fonciers', 0,1,'TAXFON'   ,'1');
 insert into llx_c_chargesociales (id, libelle, deductible, active, code, fk_pays) values ( 25, 'Impots revenus',         0,1,'TAXREV'   ,'1');
 insert into llx_c_chargesociales (id, libelle, deductible, active, code, fk_pays) values ( 30, 'Assurance Sante',        0,1,'TAXSECU'  ,'1');
@@ -50,6 +52,6 @@ insert into llx_c_chargesociales (id, libelle, deductible, active, code, fk_pays
 --
 insert into llx_c_chargesociales (id, libelle, deductible, active, code, fk_pays) values (201, 'ONSS',						1,1,'TAXBEONSS'   ,'2');
 insert into llx_c_chargesociales (id, libelle, deductible, active, code, fk_pays) values (210, 'Precompte professionnel', 	1,1,'TAXBEPREPRO' ,'2');
-insert into llx_c_chargesociales (id, libelle, deductible, active, code, fk_pays) values (220, 'Prime d\'existence', 		1,1,'TAXBEPRIEXI' ,'2');
+insert into llx_c_chargesociales (id, libelle, deductible, active, code, fk_pays) values (220, 'Prime existence',    		1,1,'TAXBEPRIEXI' ,'2');
 insert into llx_c_chargesociales (id, libelle, deductible, active, code, fk_pays) values (230, 'Precompte immobilier',      1,1,'TAXBEPREIMMO','2');
 

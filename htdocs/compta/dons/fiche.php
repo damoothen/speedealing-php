@@ -23,16 +23,19 @@
  */
 
 require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/includes/modules/dons/modules_don.php");
+require_once(DOL_DOCUMENT_ROOT."/core/modules/dons/modules_don.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formcompany.class.php");
 require_once(DOL_DOCUMENT_ROOT."/compta/dons/class/don.class.php");
 require_once(DOL_DOCUMENT_ROOT."/compta/paiement/class/paiement.class.php");
-if ($conf->projet->enabled) require_once(DOL_DOCUMENT_ROOT.'/lib/project.lib.php');
+if ($conf->projet->enabled) require_once(DOL_DOCUMENT_ROOT.'/core/lib/project.lib.php');
 
 $langs->load("companies");
 $langs->load("donations");
 $langs->load("bills");
+
+$id=GETPOST('rowid')?GETPOST('rowid'):GETPOST('id','int');
+$action=GETPOST('action');
 
 $mesg="";
 $mesgs=array();
@@ -40,12 +43,15 @@ $mesgs=array();
 $don = new Don($db);
 $donation_date=dol_mktime(12, 0, 0, $_POST["remonth"], $_POST["reday"], $_POST["reyear"]);
 
+// Security check
+$result = restrictedArea($user, 'don', $id);
+
 
 /*
  * Actions
  */
 
-if ($_POST["action"] == 'update')
+if ($action == 'update')
 {
 	if (! empty($_POST['cancel']))
 	{
@@ -58,14 +64,14 @@ if ($_POST["action"] == 'update')
     if (empty($donation_date))
     {
         $mesgs[]=$langs->trans("ErrorFieldRequired",$langs->trans("Date"));
-        $_GET["action"] = "create";
+        $action = "create";
         $error++;
     }
 
 	if (! $_POST["amount"] > 0)
 	{
 		$mesgs[]=$langs->trans("ErrorFieldRequired",$langs->trans("Amount"));
-		$_GET["action"] = "create";
+		$action = "create";
 		$error++;
 	}
 
@@ -100,7 +106,7 @@ if ($_POST["action"] == 'update')
 	}
 }
 
-if ($_POST["action"] == 'add')
+if ($action == 'add')
 {
 	if (! empty($_POST['cancel']))
 	{
@@ -152,19 +158,19 @@ if ($_POST["action"] == 'add')
 	}
 }
 
-if ($_GET["action"] == 'delete')
+if ($action == 'delete')
 {
 	$don->delete($_GET["rowid"]);
 	Header("Location: liste.php");
 	exit;
 }
-if ($_POST["action"] == 'commentaire')
+if ($action == 'commentaire')
 {
 	$don->fetch($_POST["rowid"]);
 	$don->update_note($_POST["commentaire"]);
 	$_GET["rowid"] = $_POST["rowid"];
 }
-if ($_GET["action"] == 'valid_promesse')
+if ($action == 'valid_promesse')
 {
 	if ($don->valid_promesse($_GET["rowid"], $user->id) >= 0)
 	{
@@ -173,7 +179,7 @@ if ($_GET["action"] == 'valid_promesse')
 	}
     else $mesg=$don->error;
 }
-if ($_GET["action"] == 'set_cancel')
+if ($action == 'set_cancel')
 {
     if ($don->set_cancel($_GET["rowid"]) >= 0)
     {
@@ -182,7 +188,7 @@ if ($_GET["action"] == 'set_cancel')
     }
     else $mesg=$don->error;
 }
-if ($_GET["action"] == 'set_paid')
+if ($action == 'set_paid')
 {
 	if ($don->set_paye($_GET["rowid"], $modepaiement) >= 0)
 	{
@@ -191,7 +197,7 @@ if ($_GET["action"] == 'set_paid')
 	}
     else $mesg=$don->error;
 }
-if ($_GET["action"] == 'set_encaisse')
+if ($action == 'set_encaisse')
 {
 	if ($don->set_encaisse($_GET["rowid"]) >= 0)
 	{
@@ -204,7 +210,7 @@ if ($_GET["action"] == 'set_encaisse')
 /*
  * Build doc
  */
-if ($_REQUEST['action'] == 'builddoc')
+if ($action == 'builddoc')
 {
 	$donation = new Don($db);
 	$donation->fetch($_GET['rowid']);
@@ -244,9 +250,9 @@ if ($_REQUEST['action'] == 'builddoc')
 
 llxHeader('',$langs->trans("Donations"),'EN:Module_Donations|FR:Module_Dons|ES:M&oacute;dulo_Subvenciones');
 
-$html=new Form($db);
+$form=new Form($db);
 $formfile = new FormFile($db);
-$htmlcompany = new FormCompany($db);
+$formcompany = new FormCompany($db);
 
 
 /* ************************************************************************** */
@@ -255,7 +261,7 @@ $htmlcompany = new FormCompany($db);
 /*                                                                            */
 /* ************************************************************************** */
 
-if ($_GET["action"] == 'create')
+if ($action == 'create')
 {
 	print_fiche_titre($langs->trans("AddDonation"));
 
@@ -272,7 +278,7 @@ if ($_GET["action"] == 'create')
 
     // Date
 	print '<tr><td class="fieldrequired">'.$langs->trans("Date").'</td><td>';
-	$html->select_date($donation_date?$donation_date:-1,'','','','',"add",1,1);
+	$form->select_date($donation_date?$donation_date:-1,'','','','',"add",1,1);
 	print '</td>';
 
     print '<td rowspan="'.$nbrows.'" valign="top">'.$langs->trans("Comments").' :<br>';
@@ -280,10 +286,10 @@ if ($_GET["action"] == 'create')
     print "</tr>";
 
     // Amount
-    print "<tr>".'<td class="fieldrequired">'.$langs->trans("Amount").'</td><td><input type="text" name="amount" value="'.$_POST["amount"].'" size="10"> '.$langs->trans("Currency".$conf->monnaie).'</td></tr>';
+    print "<tr>".'<td class="fieldrequired">'.$langs->trans("Amount").'</td><td><input type="text" name="amount" value="'.$_POST["amount"].'" size="10"> '.$langs->trans("Currency".$conf->currency).'</td></tr>';
 
 	print '<tr><td class="fieldrequired">'.$langs->trans("PublicDonation")."</td><td>";
-	print $html->selectyesno("public",isset($_POST["public"])?$_POST["public"]:1,1);
+	print $form->selectyesno("public",isset($_POST["public"])?$_POST["public"]:1,1);
 	print "</td></tr>\n";
 
 	print "<tr>".'<td>'.$langs->trans("Company").'</td><td><input type="text" name="societe" value="'.$_POST["societe"].'" size="40"></td></tr>';
@@ -294,16 +300,16 @@ if ($_GET["action"] == 'create')
 
     // Zip / Town
     print '<tr><td>'.$langs->trans("Zip").' / '.$langs->trans("Town").'</td><td>';
-	print $htmlcompany->select_ziptown((isset($_POST["zipcode"])?$_POST["zipcode"]:$don->zip),'zipcode',array('town','selectpays_id','departement_id'),6);
+	print $formcompany->select_ziptown((isset($_POST["zipcode"])?$_POST["zipcode"]:$don->zip),'zipcode',array('town','selectcountry_id','departement_id'),6);
     print ' ';
-    print $htmlcompany->select_ziptown((isset($_POST["town"])?$_POST["town"]:$don->town),'town',array('zipcode','selectpays_id','departement_id'));
+    print $formcompany->select_ziptown((isset($_POST["town"])?$_POST["town"]:$don->town),'town',array('zipcode','selectcountry_id','departement_id'));
     print '</tr>';
 
 	print "<tr>".'<td>'.$langs->trans("Country").'</td><td><input type="text" name="pays" value="'.$_POST["pays"].'" size="40"></td></tr>';
 	print "<tr>".'<td>'.$langs->trans("EMail").'</td><td><input type="text" name="email" value="'.$_POST["email"].'" size="40"></td></tr>';
 
     print "<tr><td>".$langs->trans("PaymentMode")."</td><td>\n";
-    $html->select_types_paiements('', 'modepaiement', 'CRDT', 0, 1);
+    $form->select_types_paiements('', 'modepaiement', 'CRDT', 0, 1);
     print "</td></tr>\n";
 
 	if ($conf->projet->enabled)
@@ -326,10 +332,9 @@ if ($_GET["action"] == 'create')
 /*                                                              */
 /* ************************************************************ */
 
-if ($_GET["rowid"] && $_GET["action"] == 'edit')
+if ($id && $_GET["action"] == 'edit')
 {
-	$don->id = $_GET["rowid"];
-	$don->fetch($_GET["rowid"]);
+	$don->fetch($id);
 
 	$h=0;
 	$head[$h][0] = DOL_URL_ROOT."/compta/dons/fiche.php?rowid=".$_GET["rowid"];
@@ -357,7 +362,7 @@ if ($_GET["rowid"] && $_GET["action"] == 'edit')
 
     // Date
 	print "<tr>".'<td width="25%" class="fieldrequired">'.$langs->trans("Date").'</td><td>';
-	$html->select_date($don->date,'','','','',"update");
+	$form->select_date($don->date,'','','','',"update");
 	print '</td>';
 
     print '<td rowspan="'.$nbrows.'" valign="top">'.$langs->trans("Comments").' :<br>';
@@ -365,10 +370,10 @@ if ($_GET["rowid"] && $_GET["action"] == 'edit')
     print "</tr>";
 
 	// Amount
-    print "<tr>".'<td class="fieldrequired">'.$langs->trans("Amount").'</td><td><input type="text" name="amount" size="10" value="'.$don->amount.'"> '.$langs->trans("Currency".$conf->monnaie).'</td></tr>';
+    print "<tr>".'<td class="fieldrequired">'.$langs->trans("Amount").'</td><td><input type="text" name="amount" size="10" value="'.$don->amount.'"> '.$langs->trans("Currency".$conf->currency).'</td></tr>';
 
 	print '<tr><td class="fieldrequired">'.$langs->trans("PublicDonation")."</td><td>";
-	print $html->selectyesno("public",1,1);
+	print $form->selectyesno("public",1,1);
 	print "</td>";
 	print "</tr>\n";
 
@@ -381,16 +386,16 @@ if ($_GET["rowid"] && $_GET["action"] == 'edit')
 
     // Zip / Town
     print '<tr><td>'.$langs->trans("Zip").' / '.$langs->trans("Town").'</td><td>';
-    print $htmlcompany->select_ziptown((isset($_POST["zipcode"])?$_POST["zipcode"]:$don->zip),'zipcode',array('town','selectpays_id','departement_id'),6);
+    print $formcompany->select_ziptown((isset($_POST["zipcode"])?$_POST["zipcode"]:$don->zip),'zipcode',array('town','selectcountry_id','departement_id'),6);
     print ' ';
-    print $htmlcompany->select_ziptown((isset($_POST["town"])?$_POST["town"]:$don->town),'town',array('zipcode','selectpays_id','departement_id'));
+    print $formcompany->select_ziptown((isset($_POST["town"])?$_POST["town"]:$don->town),'town',array('zipcode','selectcountry_id','departement_id'));
     print '</tr>';
 
 	print "<tr>".'<td>'.$langs->trans("Country").'</td><td><input type="text" name="pays" size="40" value="'.$don->pays.'"></td></tr>';
 	print "<tr>".'<td>'.$langs->trans("EMail").'</td><td><input type="text" name="email" size="40" value="'.$don->email.'"></td></tr>';
 
     print "<tr><td>".$langs->trans("PaymentMode")."</td><td>\n";
-    $html->select_types_paiements('', 'modepaiement', 'CRDT', 0, 1);
+    $form->select_types_paiements('', 'modepaiement', 'CRDT', 0, 1);
     print "</td></tr>\n";
 
 	print "<tr>".'<td>'.$langs->trans("Status").'</td><td>'.$don->getLibStatut(4).'</td></tr>';
@@ -420,11 +425,9 @@ if ($_GET["rowid"] && $_GET["action"] == 'edit')
 /* Fiche don en mode visu                                       */
 /*                                                              */
 /* ************************************************************ */
-if ($_GET["rowid"] && $_GET["action"] != 'edit')
+if ($id && $action != 'edit')
 {
-	$don->id = $_GET["rowid"];
-	$result=$don->fetch($_GET["rowid"]);
-
+	$result=$don->fetch($id);
 
 	$h=0;
 	$head[$h][0] = DOL_URL_ROOT."/compta/dons/fiche.php?rowid=".$_GET["rowid"];
@@ -443,7 +446,7 @@ if ($_GET["rowid"] && $_GET["action"] != 'edit')
 
 	// Ref
 	print "<tr>".'<td>'.$langs->trans("Ref").'</td><td colspan="2">';
-	print $html->showrefnav($don,'rowid','',1,'rowid','ref','');
+	print $form->showrefnav($don,'rowid','',1,'rowid','ref','');
 	print '</td>';
 	print '</tr>';
 
@@ -455,7 +458,7 @@ if ($_GET["rowid"] && $_GET["action"] != 'edit')
     print '<td rowspan="'.$nbrows.'" valign="top" width="50%">'.$langs->trans("Comments").' :<br>';
 	print nl2br($don->note).'</td></tr>';
 
-    print "<tr>".'<td>'.$langs->trans("Amount").'</td><td>'.price($don->amount).' '.$langs->trans("Currency".$conf->monnaie).'</td></tr>';
+    print "<tr>".'<td>'.$langs->trans("Amount").'</td><td>'.price($don->amount).' '.$langs->trans("Currency".$conf->currency).'</td></tr>';
 
 	print "<tr><td>".$langs->trans("PublicDonation")."</td><td>";
 	print yn($don->public);

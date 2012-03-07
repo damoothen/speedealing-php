@@ -1,6 +1,6 @@
 <?php
 /* Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
- * Copyright (C) 2011      Juanjo Menent        <jmenent@2byte.es>
+ * Copyright (C) 2011-2012 Juanjo Menent        <jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,13 +24,13 @@
 
 require("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/fichinter/class/fichinter.class.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/fichinter.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/fichinter.lib.php");
 
 $langs->load('companies');
 $langs->load("interventions");
 
-$fichinterid = GETPOST("id");
-$action=GETPOST("action");
+$fichinterid = GETPOST('id','int');
+$action=GETPOST('action','alpha');
 
 // Security check
 if ($user->societe_id) $socid=$user->societe_id;
@@ -48,7 +48,7 @@ if ($action == 'update_public' && $user->rights->ficheinter->creer)
 
 	$db->begin();
 
-	$res=$fichinter->update_note_public(GETPOST("note_public"),$user);
+	$res=$fichinter->update_note_public(GETPOST('note_public','alpha'),$user);
 	if ($res < 0)
 	{
 		$mesg='<div class="error">'.$fichinter->error.'</div>';
@@ -67,7 +67,7 @@ if ($action == 'update' && $user->rights->ficheinter->creer)
 
 	$db->begin();
 
-	$res=$fichinter->update_note(GETPOST("note_private"),$user);
+	$res=$fichinter->update_note(GETPOST('note_private','alpha'),$user);
 	if ($res < 0)
 	{
 		$mesg='<div class="error">'.$fichinter->error.'</div>';
@@ -87,7 +87,7 @@ if ($action == 'update' && $user->rights->ficheinter->creer)
 
 llxHeader();
 
-$html = new Form($db);
+$form = new Form($db);
 
 if ($fichinterid)
 {
@@ -157,7 +157,7 @@ if ($fichinterid)
 			 */
 
 			print '<div class="tabsAction">';
-			if ($user->rights->ficheinter->creer && GETPOST("action") <> 'edit')
+			if ($user->rights->ficheinter->creer && $action <> 'edit')
 			{
 				print '<a class="butAction" href="note.php?id='.$fichinter->id.'&amp;action=edit">'.$langs->trans('Modify').'</a>';
 			}

@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * or see http://www.gnu.org/
  */
 
 /**
@@ -89,6 +89,9 @@ class CommandeTest extends PHPUnit_Framework_TestCase
     }
 
 	/**
+	 * Init phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function setUp()
     {
@@ -102,6 +105,9 @@ class CommandeTest extends PHPUnit_Framework_TestCase
 		//print $db->getVersion()."\n";
     }
 	/**
+	 * End phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function tearDown()
     {
@@ -109,6 +115,9 @@ class CommandeTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testCommandeCreate
+     *
+     * @return	void
      */
     public function testCommandeCreate()
     {
@@ -128,6 +137,11 @@ class CommandeTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testCommandeFetch
+     *
+     * @param	int		$id		Id order
+     * @return	Commande
+     *
      * @depends	testCommandeCreate
      * The depends says test is run only if previous is ok
      */
@@ -148,26 +162,11 @@ class CommandeTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @depends	testCommandeFetch
-     * The depends says test is run only if previous is ok
-     */
-/*    public function testCommandeUpdate($localobject)
-    {
-    	global $conf,$user,$langs,$db;
-		$conf=$this->savconf;
-		$user=$this->savuser;
-		$langs=$this->savlangs;
-		$db=$this->savdb;
-
-		$localobject->note='New note after update';
-    	$result=$localobject->update($user);
-
-	   	print __METHOD__." id=".$localobject->id." result=".$result."\n";
-    	$this->assertLessThan($result, 0);
-    	return $localobject->id;
-    }
-*/
-    /**
+     * testCommandeValid
+     *
+     * @param 	Object 	$localobject	Order
+     * @return	void
+     *
      * @depends	testCommandeFetch
      * The depends says test is run only if previous is ok
      */
@@ -187,6 +186,11 @@ class CommandeTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testCommandeCancel
+     *
+     * @param	Object	$localobject	Order
+     * @return	void
+     *
      * @depends	testCommandeValid
      * The depends says test is run only if previous is ok
      */
@@ -206,6 +210,11 @@ class CommandeTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testCommandeOther
+     *
+     * @param	Object	$localobject	Order
+     * @return	void
+     *
      * @depends testCommandeCancel
      * The depends says test is run only if previous is ok
      */
@@ -230,6 +239,11 @@ class CommandeTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * testCommandeDelete
+     *
+     * @param	int		$id			Id of order
+     * @return	void
+     *
      * @depends	testCommandeOther
      * The depends says test is run only if previous is ok
      */
@@ -251,7 +265,9 @@ class CommandeTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     *	testVerifyNumRef
      *
+     *	@return	void
      */
     public function testVerifyNumRef()
     {

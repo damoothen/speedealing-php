@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * or see http://www.gnu.org/
  */
 
 /**
@@ -27,7 +27,7 @@ global $conf,$user,$langs,$db;
 //define('TEST_DB_FORCE_TYPE','mysql');	// This is to force using mysql driver
 require_once 'PHPUnit/Autoload.php';
 require_once dirname(__FILE__).'/../../htdocs/master.inc.php';
-require_once dirname(__FILE__).'/../../htdocs/lib/date.lib.php';
+require_once dirname(__FILE__).'/../../htdocs/core/lib/date.lib.php';
 require_once(NUSOAP_PATH.'/nusoap.php');        // Include SOAP
 
 
@@ -91,6 +91,9 @@ class WebservicesTest extends PHPUnit_Framework_TestCase
     }
 
 	/**
+	 * Init phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function setUp()
     {
@@ -102,16 +105,23 @@ class WebservicesTest extends PHPUnit_Framework_TestCase
 
 		print __METHOD__."\n";
     }
+
 	/**
+	 * End phpunit tests
+	 *
+	 * @return	void
 	 */
     protected function tearDown()
     {
     	print __METHOD__."\n";
     }
 
-   /**
+    /**
+     * testWSVersion
+     *
+     * @return int
      */
-    public function testWSVersion()
+    public function testWSGetVersions()
     {
     	global $conf,$user,$langs,$db;
 		$conf=$this->savconf;

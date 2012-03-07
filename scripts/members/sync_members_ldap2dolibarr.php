@@ -42,8 +42,8 @@ $forcecommit=0;
 
 
 require_once($path."../../htdocs/master.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/date.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/ldap.class.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/date.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/class/ldap.class.php");
 require_once(DOL_DOCUMENT_ROOT."/adherents/class/adherent.class.php");
 require_once(DOL_DOCUMENT_ROOT."/adherents/class/cotisation.class.php");
 
@@ -181,19 +181,26 @@ if ($result >= 0)
 			$member = new Adherent($db);
 
 			// Propriete membre
-			$member->prenom=$ldapuser[$conf->global->LDAP_FIELD_FIRSTNAME];
-			$member->nom=$ldapuser[$conf->global->LDAP_FIELD_NAME];
+			$member->prenom=$ldapuser[$conf->global->LDAP_FIELD_FIRSTNAME];    // deprecated
+			$member->nom=$ldapuser[$conf->global->LDAP_FIELD_NAME];            // deprecated
+			$member->firstname=$ldapuser[$conf->global->LDAP_FIELD_FIRSTNAME];
+			$member->lastname=$ldapuser[$conf->global->LDAP_FIELD_NAME];
 			$member->login=$ldapuser[$conf->global->LDAP_FIELD_LOGIN];
 			$member->pass=$ldapuser[$conf->global->LDAP_FIELD_PASSWORD];
 
 			//$member->societe;
+			$member->adresse=$ldapuser[$conf->global->LDAP_FIELD_ADDRESS];   // deprecated
 			$member->address=$ldapuser[$conf->global->LDAP_FIELD_ADDRESS];
-			$member->adresse=$ldapuser[$conf->global->LDAP_FIELD_ADDRESS]; // TODO obsolete
-			$member->cp=$ldapuser[$conf->global->LDAP_FIELD_ZIP];
-			$member->ville=$ldapuser[$conf->global->LDAP_FIELD_TOWN];
-			$member->pays=$ldapuser[$conf->global->LDAP_FIELD_COUNTRY];	// Pays en libelle
-			$member->pays_id=$countries[$hashlib2rowid[strtolower($member->pays)]]['rowid'];
-			$member->pays_code=$countries[$hashlib2rowid[strtolower($member->pays)]]['code'];
+			$member->cp=$ldapuser[$conf->global->LDAP_FIELD_ZIP];            // deprecated
+			$member->zip=$ldapuser[$conf->global->LDAP_FIELD_ZIP];
+			$member->ville=$ldapuser[$conf->global->LDAP_FIELD_TOWN];        // deprecated
+			$member->town=$ldapuser[$conf->global->LDAP_FIELD_TOWN];
+			$member->pays=$ldapuser[$conf->global->LDAP_FIELD_COUNTRY];	     // deprecated
+			$member->country=$ldapuser[$conf->global->LDAP_FIELD_COUNTRY];
+			$member->pays_id=$countries[$hashlib2rowid[strtolower($member->country)]]['rowid'];    // deprecated
+			$member->country_id=$countries[$hashlib2rowid[strtolower($member->country)]]['rowid'];
+			$member->pays_code=$countries[$hashlib2rowid[strtolower($member->country)]]['code'];   // deprecated
+			$member->country_code=$countries[$hashlib2rowid[strtolower($member->country)]]['code'];
 
 			$member->phone=$ldapuser[$conf->global->LDAP_FIELD_PHONE];
 			$member->phone_perso=$ldapuser[$conf->global->LDAP_FIELD_PHONE_PERSO];

@@ -26,7 +26,7 @@
  */
 
 require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/admin.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
 
 $langs->load("admin");
 $langs->load("oscommerce");
@@ -66,7 +66,7 @@ if ($_POST["save"])
 }
 elseif ($_POST["test"])
 {
-	//$resql=$db->query("select count(*) from llx_const");
+	//$resql=$db->query("select count(*) from ".MAIN_DB_PREFIX."const");
 	//print "< ".$db." - ".$db->db." - ".$resql." - ".$db->error()."><br>\n";
 
 	// Test de la connexion a la database webcalendar
@@ -111,7 +111,7 @@ elseif ($_POST["test"])
 		$mesg.="</div>";
 	}
 
-	//$resql=$db->query("select count(*) from llx_const");
+	//$resql=$db->query("select count(*) from ".MAIN_DB_PREFIX."const");
 	//print "< ".$db." - ".$db->db." - ".$resql." - ".$db->error()."><br>\n";
 }
 

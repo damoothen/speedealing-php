@@ -26,9 +26,9 @@ require_once("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formother.class.php");
 require_once(DOL_DOCUMENT_ROOT."/imports/class/import.class.php");
-require_once(DOL_DOCUMENT_ROOT.'/includes/modules/import/modules_import.php');
-require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/lib/import.lib.php");
+require_once(DOL_DOCUMENT_ROOT.'/core/modules/import/modules_import.php');
+require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/import.lib.php");
 
 $langs->load("exports");
 $langs->load("errors");
@@ -64,22 +64,22 @@ $entitytolang=array(		// Translation code
 	'other'=>'Other'
 );
 
-$datatoimport=isset($_GET["datatoimport"])? $_GET["datatoimport"] : (isset($_POST["datatoimport"])?$_POST["datatoimport"]:'');
-$format=isset($_GET["format"])? $_GET["format"] : (isset($_POST["format"])?$_POST["format"]:'');
-$filetoimport=isset($_GET["filetoimport"])? $_GET["filetoimport"] : (isset($_POST["filetoimport"])?$_POST["filetoimport"]:'');
-$action=isset($_GET["action"]) ? $_GET["action"] : (isset($_POST["action"])?$_POST["action"]:'');
-$step=isset($_GET["step"])? $_GET["step"] : (isset($_POST["step"])?$_POST["step"]:1);
-$import_name=isset($_POST["import_name"])? $_POST["import_name"] : '';
-$hexa=isset($_POST["hexa"])? $_POST["hexa"] : '';
-$importmodelid=isset($_POST["importmodelid"])? $_POST["importmodelid"] : '';
-$excludefirstline=isset($_GET["excludefirstline"])? $_GET["excludefirstline"] : (isset($_POST["excludefirstline"])?$_POST["excludefirstline"]:0);
+$datatoimport		= GETPOST('datatoimport');
+$format				= GETPOST('format');
+$filetoimport		= GETPOST('filetoimport');
+$action				= GETPOST('action');
+$step				= (GETPOST('step') ? GETPOST('step') : 1);
+$import_name		= GETPOST('import_name');
+$hexa				= GETPOST('hexa');
+$importmodelid		= GETPOST('importmodelid');
+$excludefirstline	= (GETPOST('excludefirstline') ? GETPOST('excludefirstline') : 0);
 
 $objimport=new Import($db);
 $objimport->load_arrays($user,($step==1?'':$datatoimport));
 
 $objmodelimport=new ModeleImports();
 
-$html = new Form($db);
+$form = new Form($db);
 $htmlother = new FormOther($db);
 $formfile = new FormFile($db);
 
@@ -191,7 +191,7 @@ if ($action == 'add_import_model')
 
 if ($step == 3 && $datatoimport)
 {
-	require_once(DOL_DOCUMENT_ROOT."/lib/files.lib.php");
+	require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
 
 	if ( $_POST["sendit"] && ! empty($conf->global->MAIN_UPLOAD_DOC))
 	{
@@ -421,7 +421,7 @@ if ($step == 2 && $datatoimport)
 		print '<tr '.$bc[$var].'>';
 		print '<td width="16">'.img_picto_common($key,$objmodelimport->getPicto($key)).'</td>';
     	$text=$objmodelimport->getDriverDesc($key);
-    	print '<td>'.$html->textwithpicto($objmodelimport->getDriverLabel($key),$text).'</td>';
+    	print '<td>'.$form->textwithpicto($objmodelimport->getDriverLabel($key),$text).'</td>';
 		print '<td align="center"><a href="'.DOL_URL_ROOT.'/imports/emptyexample.php?format='.$key.$param.'" target="_blank">'.$langs->trans("DownloadEmptyExample").'</a></td>';
 		// Action button
 		print '<td align="right">';
@@ -478,8 +478,8 @@ if ($step == 3 && $datatoimport)
 	print '<tr><td width="25%">'.$langs->trans("SourceFileFormat").'</td>';
 	print '<td>';
     $text=$objmodelimport->getDriverDesc($format);
-    print $html->textwithpicto($objmodelimport->getDriverLabel($format),$text);
-    print '</td><td align="right" nowrap="nowrap" width="100"><a href="'.DOL_URL_ROOT.'/imports/emptyexample.php?format='.$format.$param.'" target="_blank">'.$langs->trans("DownloadEmptyExample").'</a>';
+    print $form->textwithpicto($objmodelimport->getDriverLabel($format),$text);
+    print '</td><td align="right" nowrap="nowrap"><a href="'.DOL_URL_ROOT.'/imports/emptyexample.php?format='.$format.$param.'" target="_blank">'.$langs->trans("DownloadEmptyExample").'</a>';
 
 	print '</td></tr>';
 
@@ -512,17 +512,17 @@ if ($step == 3 && $datatoimport)
 	print "</tr>\n";
 
 	// Search available imports
-	$dir = $conf->import->dir_temp;
-	$handle=@opendir(dol_osencode($dir));
-	if (is_resource($handle))
+	$filearray=dol_dir_list($conf->import->dir_temp,'files',0,'','','name',SORT_DESC);
+	if (count($filearray) > 0)
 	{
-		//print '<tr><td colspan="4">';
-		//print '<table class="noborder" width="100%">';
+		$dir=$conf->import->dir_temp;
 
 		// Search available files to import
 		$i=0;
-		while (($file = readdir($handle))!==false)
+		foreach ($filearray as $key => $val)
 		{
+		    $file=$val['name'];
+
 			// readdir return value in ISO and we want UTF8 in memory
 			if (! utf8_check($file)) $file=utf8_encode($file);
 
@@ -555,7 +555,6 @@ if ($step == 3 && $datatoimport)
 			print '</td>';
 			print '</tr>';
 		}
-		//print '</table></td></tr>';
 	}
 
 	print '</table></form>';
@@ -574,11 +573,11 @@ if ($step == 4 && $datatoimport)
 	$liste=$objmodelimport->liste_modeles($db);
 
 	// Create classe to use for import
-	$dir = DOL_DOCUMENT_ROOT . "/includes/modules/import/";
+	$dir = DOL_DOCUMENT_ROOT . "/core/modules/import/";
 	$file = "import_".$model.".modules.php";
 	$classname = "Import".ucfirst($model);
 	require_once($dir.$file);
-	$obj = new $classname($db);
+	$obj = new $classname($db,$datatoimport);
 
 	// Load source fields in input file
 	$fieldssource=array();
@@ -679,14 +678,14 @@ if ($step == 4 && $datatoimport)
 	print '<tr><td width="25%">'.$langs->trans("SourceFileFormat").'</td>';
 	print '<td>';
     $text=$objmodelimport->getDriverDesc($format);
-    print $html->textwithpicto($objmodelimport->getDriverLabel($format),$text);
+    print $form->textwithpicto($objmodelimport->getDriverLabel($format),$text);
 	print '</td></tr>';
 
 	// File to import
 	print '<tr><td width="25%">'.$langs->trans("FileToImport").'</td>';
 	print '<td>';
 	$modulepart='import';
-	//$relativepath=$filetoimport;
+	$relativepath=GETPOST('filetoimport');
     print '<a href="'.DOL_URL_ROOT.'/document.php?modulepart='.$modulepart.'&file='.urlencode($relativepath).'&step=4'.$param.'" target="_blank">';
     print $filetoimport;
     print '</a>';
@@ -819,12 +818,22 @@ if ($step == 4 && $datatoimport)
 			}
 			else
 			{
-				if ($objimport->array_import_convertvalue[0][$code]['rule']=='fetchfromref') $htmltext.=$langs->trans("DataComeFromIdFoundFromRef",$filecolumn,$langs->transnoentitiesnoconv($entitylang)).'<br>';
+				if ($objimport->array_import_convertvalue[0][$code]['rule']=='fetchidfromref')    $htmltext.=$langs->trans("DataComeFromIdFoundFromRef",$filecolumn,$langs->transnoentitiesnoconv($entitylang)).'<br>';
+				if ($objimport->array_import_convertvalue[0][$code]['rule']=='fetchidfromcodeid') $htmltext.=$langs->trans("DataComeFromIdFoundFromCodeId",$filecolumn,$langs->transnoentitiesnoconv($objimport->array_import_convertvalue[0][$code]['dict'])).'<br>';
 			}
 		}
-		$htmltext.=$langs->trans("SourceRequired").': <b>'.yn(preg_match('/\*$/',$label)).'</b>';
+		$htmltext.=$langs->trans("SourceRequired").': <b>'.yn(preg_match('/\*$/',$label)).'</b><br>';
 		$example=$objimport->array_import_examplevalues[0][$code];
-		if ($example) $htmltext.='<br>'.$langs->trans("SourceExample").': <b>'.$example.'</b><br>';
+
+		if (empty($objimport->array_import_convertvalue[0][$code]))	// If source file does not need convertion
+		{
+		    if ($example) $htmltext.=$langs->trans("SourceExample").': <b>'.$example.'</b><br>';
+		}
+		else
+		{
+		    if ($objimport->array_import_convertvalue[0][$code]['rule']=='fetchidfromref')    $htmltext.=$langs->trans("SourceExample").': <b>'.$langs->transnoentitiesnoconv("ExampleAnyRefFoundIntoElement",$entitylang).($example?' ('.$langs->transnoentitiesnoconv("Example").': '.$example.')':'').'</b><br>';
+		    if ($objimport->array_import_convertvalue[0][$code]['rule']=='fetchidfromcodeid') $htmltext.=$langs->trans("SourceExample").': <b>'.$langs->trans("ExampleAnyCodeOrIdFoundIntoDictionnary",$langs->transnoentitiesnoconv($objimport->array_import_convertvalue[0][$code]['dict'])).($example?' ('.$langs->transnoentitiesnoconv("Example").': '.$example.')':'').'</b><br>';
+		}
 		$htmltext.='<br>';
 		// Target field info
 		$htmltext.='<b><u>'.$langs->trans("FieldTarget").'</u></b><br>';
@@ -834,11 +843,12 @@ if ($step == 4 && $datatoimport)
 		}
 		else
 		{
-			if ($objimport->array_import_convertvalue[0][$code]['rule']=='fetchfromref') $htmltext.=$langs->trans("DataIDSourceIsInsertedInto").'<br>';
+			if ($objimport->array_import_convertvalue[0][$code]['rule']=='fetchidfromref')    $htmltext.=$langs->trans("DataIDSourceIsInsertedInto").'<br>';
+			if ($objimport->array_import_convertvalue[0][$code]['rule']=='fetchidfromcodeid') $htmltext.=$langs->trans("DataCodeIDSourceIsInsertedInto").'<br>';
 		}
 		$htmltext.=$langs->trans("FieldTitle").": <b>".$langs->trans($newlabel)."</b><br>";
 		$htmltext.=$langs->trans("Table")." -> ".$langs->trans("Field").': <b>'.$tablename." -> ".preg_replace('/^.*\./','',$code)."</b><br>";
-		print $html->textwithpicto($more,$htmltext);
+		print $form->textwithpicto($more,$htmltext);
 		print '</td>';
 
 		print '</tr>';
@@ -1026,11 +1036,11 @@ if ($step == 5 && $datatoimport)
 	$liste=$objmodelimport->liste_modeles($db);
 
 	// Create classe to use for import
-	$dir = DOL_DOCUMENT_ROOT . "/includes/modules/import/";
+	$dir = DOL_DOCUMENT_ROOT . "/core/modules/import/";
 	$file = "import_".$model.".modules.php";
 	$classname = "Import".ucfirst($model);
 	require_once($dir.$file);
-	$obj = new $classname($db);
+	$obj = new $classname($db,$datatoimport);
 
 	// Load source fields in input file
 	$fieldssource=array();
@@ -1087,15 +1097,15 @@ if ($step == 5 && $datatoimport)
 	print '<tr><td width="25%">'.$langs->trans("SourceFileFormat").'</td>';
 	print '<td>';
     $text=$objmodelimport->getDriverDesc($format);
-    print $html->textwithpicto($objmodelimport->getDriverLabel($format),$text);
+    print $form->textwithpicto($objmodelimport->getDriverLabel($format),$text);
 	print '</td></tr>';
 
 	// File to import
 	print '<tr><td>'.$langs->trans("FileToImport").'</td>';
 	print '<td>';
 	$modulepart='import';
-	//$relativepath=$filetoimport;
-    print '<a href="'.DOL_URL_ROOT.'/document.php?modulepart='.$modulepart.'&file='.urlencode($filtetoimport).'&step=4'.$param.'" target="_blank">';
+	$relativepath=GETPOST('filetoimport');
+    print '<a href="'.DOL_URL_ROOT.'/document.php?modulepart='.$modulepart.'&file='.urlencode($relativepath).'&step=4'.$param.'" target="_blank">';
     print $filetoimport;
     print '</a>';
     print '</td></tr>';
@@ -1210,7 +1220,6 @@ if ($step == 5 && $datatoimport)
     }
     else
     {
-
         // Launch import
         $arrayoferrors=array();
         $arrayofwarnings=array();
@@ -1236,10 +1245,13 @@ if ($step == 5 && $datatoimport)
             while ($sourcelinenb < $nboflines)
             {
                 $sourcelinenb++;
+                // Read line and stor it into $arrayrecord
                 $arrayrecord=$obj->import_read_record();
                 if ($excludefirstline && $sourcelinenb == 1) continue;
 
+                //
                 $result=$obj->import_insert($arrayrecord,$array_match_file_to_database,$objimport,count($fieldssource),$importid);
+
                 if (count($obj->errors))   $arrayoferrors[$sourcelinenb]=$obj->errors;
                 if (count($obj->warnings)) $arrayofwarnings[$sourcelinenb]=$obj->warnings;
                 if (! count($obj->errors) && ! count($obj->warnings)) $nbok++;
@@ -1353,11 +1365,11 @@ if ($step == 6 && $datatoimport)
 
 
 	// Create classe to use for import
-	$dir = DOL_DOCUMENT_ROOT . "/includes/modules/import/";
+	$dir = DOL_DOCUMENT_ROOT . "/core/modules/import/";
 	$file = "import_".$model.".modules.php";
 	$classname = "Import".ucfirst($model);
 	require_once($dir.$file);
-	$obj = new $classname($db);
+	$obj = new $classname($db,$datatoimport);
 
 	// Load source fields in input file
 	$fieldssource=array();
@@ -1413,15 +1425,15 @@ if ($step == 6 && $datatoimport)
 	print '<tr><td width="25%">'.$langs->trans("SourceFileFormat").'</td>';
 	print '<td>';
     $text=$objmodelimport->getDriverDesc($format);
-    print $html->textwithpicto($objmodelimport->getDriverLabel($format),$text);
+    print $form->textwithpicto($objmodelimport->getDriverLabel($format),$text);
 	print '</td></tr>';
 
 	// File to import
 	print '<tr><td>'.$langs->trans("FileToImport").'</td>';
 	print '<td>';
 	$modulepart='import';
-	//$relativepath=$filetoimport;
-    print '<a href="'.DOL_URL_ROOT.'/document.php?modulepart='.$modulepart.'&file='.urlencode($filetoimport).'&step=4'.$param.'" target="_blank">';
+    $relativepath=GETPOST('filetoimport');
+    print '<a href="'.DOL_URL_ROOT.'/document.php?modulepart='.$modulepart.'&file='.urlencode($relativepath).'&step=4'.$param.'" target="_blank">';
     print $filetoimport;
     print '</a>';
 	print '</td></tr>';
@@ -1572,9 +1584,9 @@ if ($step == 6 && $datatoimport)
 print '<br>';
 
 
-$db->close();
-
 llxFooter();
+
+$db->close();
 
 
 /**
@@ -1626,7 +1638,12 @@ function show_elem($fieldssource,$pos,$key,$var,$nostyle='')
 		print '</td>';
 		print '<td style="font-weight: normal">';
 		print $langs->trans("Field").' '.$pos;
-		if (! empty($fieldssource[$pos]['example1'])) print ' (<i>'.htmlentities($fieldssource[$pos]['example1']).'</i>)';
+		$example=$fieldssource[$pos]['example1'];
+		if ($example)
+		{
+		    if (! utf8_check($example)) $example=utf8_encode($example);
+		    print ' (<i>'.$example.'</i>)';
+		}
 		print '</td>';
 		print '</tr>';
 	}
