@@ -59,12 +59,12 @@ if ($_GET["action"] == 'cstc') {
 
 /* active datatable js */
 $arrayjs = array();
-$arrayjs[0] = "/lib/datatables/js/jquery.dataTables.js";
-$arrayjs[1] = "/lib/datatables/js/TableTools.js";
-$arrayjs[2] = "/lib/datatables/js/ZeroClipboard.js";
-$arrayjs[3] = "/lib/datatables/js/initXHR.js";
-$arrayjs[4] = "/lib/datatables/js/request.js";
-$arrayjs[5] = "/lib/datatables/js/searchColumns.js";
+$arrayjs[0] = "/core/datatables/js/jquery.dataTables.js";
+$arrayjs[1] = "/core/datatables/js/TableTools.js";
+$arrayjs[2] = "/core/datatables/js/ZeroClipboard.js";
+$arrayjs[3] = "/core/datatables/js/initXHR.js";
+$arrayjs[4] = "/core/datatables/js/request.js";
+$arrayjs[5] = "/core/datatables/js/searchColumns.js";
 
 /*
  * View
@@ -432,7 +432,7 @@ print'</tr>';
 print'</tbody>';
 print "</table>";
 
-include_once '../lib/datatables/js/initDatatablesCompte.js.php';
+include_once '../core/datatables/js/initDatatablesCompte.js.php';
 llxFooter('$Date: 2011/08/08 16:15:05 $ - $Revision: 1.80 $');
 ?>
  

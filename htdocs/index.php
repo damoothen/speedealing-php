@@ -542,6 +542,7 @@ print '</div></div></div><div class="fichecenter"><br>';
 if ($conf->agenda->enabled && $user->rights->agenda->myactions->read && $conf->highcharts->enabled && $user->rights->highcharts->read)
 {
     dol_include_once("/highCharts/class/highCharts.class.php");
+
     $langs->load("highcharts@highCharts");
 
     $graph=new HighCharts($db);

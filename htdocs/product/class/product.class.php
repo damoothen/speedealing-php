@@ -73,7 +73,6 @@ class Product extends CommonObject
         var $ecotax;
         var $ecotax_ttc;
 	//! Type 0 for regular product, 1 for service (Advanced feature: 2 for assembly kit, 3 for stock kit)
-	var $type;
 	var $typestring;
 
 	//! Stock

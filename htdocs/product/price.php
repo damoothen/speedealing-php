@@ -254,11 +254,7 @@ if ($conf->global->PRODUIT_MULTIPRICES)
 else
 {
     // TVA
-<<<<<<< HEAD
     print '<tr><td>'.$langs->trans("VATRate").'</td><td>'.vatrate($object->tva_tx.($object->tva_npr?'*':''),true).'</td></tr>';
-=======
-    print '<tr><td>'.$langs->trans("VATRate").'</td><td>'.vatrate($product->tva_tx.($product->tva_npr?'*':''),true).'</td></tr>';
->>>>>>> 5563ef9d67ff8a21e03194e3598c6d6f88de6ed9
 
     // Price
 	print '<tr><td>'.$langs->trans("SellingPrice").'</td><td>';

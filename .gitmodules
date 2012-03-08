@@ -16,3 +16,15 @@
 [submodule "htdocs/custom/dropbox"]
         path = htdocs/custom/dropbox
         url = hepr@doliforge.org:/gitroot/dropbox/dropbox.git
+[submodule "htdocs/custom/highCharts"]
+        path = htdocs/custom/highCharts
+        url = git@git.symeos.com:module-highcharts.git
+[submodule "htdocs/custom/genfact"]
+        path = htdocs/custom/genfact
+        url = git@git.symeos.com:module-genfact.git
+[submodule "htdocs/custom/mailjet"]
+        path = htdocs/custom/mailjet
+        url = git@git.symeos.com:module-mailjet.git
+[submodule "htdocs/custom/team"]
+        path = htdocs/custom/team
+        url = git@git.symeos.com:module-team.git

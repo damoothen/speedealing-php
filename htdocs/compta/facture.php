@@ -78,20 +78,10 @@ $usehm=$conf->global->MAIN_USE_HOURMIN_IN_DATE_RANGE;
 
 $object=new Facture($db);
 
-<<<<<<< HEAD
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
 include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
 $hookmanager=new HookManager($db);
 $hookmanager->initHooks(array('invoicecard'));
-=======
-// Instantiate hooks of thirdparty module
-if (is_array($conf->hooks_modules) && !empty($conf->hooks_modules))
-{
-    $object->callHooks('invoicecard');
-}
-
-
->>>>>>> 5563ef9d67ff8a21e03194e3598c6d6f88de6ed9
 
 /*
  * Actions

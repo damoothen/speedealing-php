@@ -22,7 +22,7 @@
  *		\brief      Page to int lib datatable
  *		\version    $Id: initDatatables.js,v 1.5 2011/12/14 20:54:12 synry63 Exp $
  */
-$path = "../lib/datatables/langs/".$langs->defaultlang.".txt";
+$path = "../core/datatables/langs/".$langs->defaultlang.".txt";
 $result = file($path);
 print'<script>';
 print '$(document).ready(function() {
@@ -63,12 +63,12 @@ print'
                 "sAjaxSource": "serverprocess.php?type='.$type.'&pstcomm='.$pstcomm.'&search_sale='.$search_sale.'",
                 "bPaginate": true,
                 "oLanguage": {
-                    "sUrl": "../lib/datatables/langs/"+lang+".txt"
+                    "sUrl": "../core/datatables/langs/"+lang+".txt"
                         
                 },
                 "sDom": \'T<"clear">lfrtip\',
                 "oTableTools": {
-                    "sSwfPath": "../lib/datatables/swf/copy_cvs_xls_pdf.swf",
+                    "sSwfPath": "../core/datatables/swf/copy_cvs_xls_pdf.swf",
                     "aButtons": [
                     "xls"	
                     ]
@@ -95,7 +95,7 @@ print'
                 "sAjaxSource": "serverprocess.php?type='.$type.'&pstcomm='.$pstcomm.'&search_sale='.$search_sale.'",
                 "bPaginate": true,
                 "oLanguage": {
-                    "sUrl": "../lib/datatables/langs/"+lang+".txt"
+                    "sUrl": "../core/datatables/langs/"+lang+".txt"
                         
                 }
             });
@@ -121,16 +121,22 @@ print'
                     "iDisplayLength": 10,
                     "aLengthMenu": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,"All"]],
                     "bProcessing": true,
-                    "bServerSide": true,
-                    "sAjaxSource": "serverprocess.php?type='.$type.'&pstcomm='.$pstcomm.'&search_sale='.$search_sale.'",
+                    "sAjaxDataProp": "rows",
+                    "sAjaxSource": "/users/_design/shop/_view/view",
+                    "aoColumns": [
+			{ "mDataProp": "id" },
+			{ "mDataProp": "key" },
+			{ "mDataProp": "value.0" },
+			{ "mDataProp": "value.1" }
+                    ],
                     "bPaginate": true,
                     "oLanguage": {
-                        "sUrl": "../lib/datatables/langs/"+lang+".txt"
+                        "sUrl": "../core/datatables/langs/"+lang+".txt"
 
                     },
                     "sDom": \'T<"clear">lfrtip\',
                     "oTableTools": {
-                        "sSwfPath": "../lib/datatables/swf/copy_cvs_xls_pdf.swf",
+                        "sSwfPath": "../core/datatables/swf/copy_cvs_xls_pdf.swf",
                         "aButtons": [
                         "xls"	
                         ]
@@ -158,7 +164,7 @@ print'
                     "sAjaxSource": "serverprocess.php?type='.$type.'&pstcomm='.$pstcomm.'&search_sale='.$search_sale.'",
                     "bPaginate": true,
                     "oLanguage": {
-                        "sUrl": "../lib/datatables/langs/"+lang+".txt"
+                        "sUrl": "../core/datatables/langs/"+lang+".txt"
 
                     }
                 });
@@ -188,12 +194,12 @@ print'
                 "sAjaxSource": "serverprocess.php?type='.$type.'&pstcomm='.$pstcomm.'&search_sale='.$search_sale.'",
                 "bPaginate": true,
                 "oLanguage": {
-                    "sUrl": "../lib/datatables/langs/"+lang+".txt"
+                    "sUrl": "../core/datatables/langs/"+lang+".txt"
                         
                 },
                 "sDom": \'T<"clear">lfrtip\',
                 "oTableTools": {
-                    "sSwfPath": "../lib/datatables/swf/copy_cvs_xls_pdf.swf",
+                    "sSwfPath": "../core/datatables/swf/copy_cvs_xls_pdf.swf",
                     "aButtons": [
                     "xls"	
                     ]
@@ -221,7 +227,7 @@ print'
                 "sAjaxSource": "serverprocess.php?type='.$type.'&pstcomm='.$pstcomm.'&search_sale='.$search_sale.'",
                 "bPaginate": true,
                 "oLanguage": {
-                    "sUrl": "../lib/datatables/langs/"+lang+".txt"
+                    "sUrl": "../core/datatables/langs/"+lang+".txt"
                         
                 }
             });
@@ -250,12 +256,12 @@ print'
                 "sAjaxSource": "serverprocess.php?type='.$type.'&pstcomm='.$pstcomm.'&search_sale='.$search_sale.'",
                 "bPaginate": true,
                 "oLanguage": {
-                    "sUrl": "../lib/datatables/langs/"+lang+".txt"
+                    "sUrl": "../core/datatables/langs/"+lang+".txt"
                         
                 },
                 "sDom": \'T<"clear">lfrtip\',
                 "oTableTools": {
-                    "sSwfPath": "../lib/datatables/swf/copy_cvs_xls_pdf.swf",
+                    "sSwfPath": "../core/datatables/swf/copy_cvs_xls_pdf.swf",
                     "aButtons": [
                     "xls"	
                     ]
@@ -283,7 +289,7 @@ print'
                 "sAjaxSource": "serverprocess.php?type='.$type.'&pstcomm='.$pstcomm.'&search_sale='.$search_sale.'",
                 "bPaginate": true,
                 "oLanguage": {
-                    "sUrl": "../lib/datatables/langs/"+lang+".txt"
+                    "sUrl": "../core/datatables/langs/"+lang+".txt"
                         
                 }
             });
