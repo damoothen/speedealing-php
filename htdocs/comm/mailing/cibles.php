@@ -2,6 +2,7 @@
 /* Copyright (C) 2004      Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2005-2010 Laurent Destailleur  <eldy@uers.sourceforge.net>
  * Copyright (C) 2005-2010 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2010-2011 Patrick Mary        <laube@hotmail.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -511,13 +512,19 @@ if ($mil->fetch($id) >= 0)
 				}
 				else
 				{
+                                        $langs->load("mailjet@mailjet"); // for translate status (open,click,bounce,spam,blocked)
 					print '<td align="center">'.$obj->date_envoi.'</td>';
 					print '<td align="right" nowrap="nowrap">';
 					if ($obj->statut==-1) print $langs->trans("MailingStatusError").' '.img_error();
 					if ($obj->statut==1) print $langs->trans("MailingStatusSent").' '.img_picto($langs->trans("MailingStatusSent"),'statut6');
-					if ($obj->statut==2) print $langs->trans("MailingStatusRead").' '.img_picto($langs->trans("MailingStatusRead"),'statut6');
-					if ($obj->statut==3) print $langs->trans("MailingStatusNotContact").' '.img_picto($langs->trans("MailingStatusNotContact"),'statut8');
-					print '</td>';
+                                        if ($obj->statut==3) print $langs->trans("Desabo").' '.img_picto($langs->trans("MailingDesinscription"),'statut2');
+					if ($obj->statut==4) print $langs->trans("Open").' '.img_picto($langs->trans("Open"),'stcomm8');
+                                        if ($obj->statut==5) print $langs->trans("Click").' '.img_picto($langs->trans("Click"),'stcomm9');
+                                        if ($obj->statut==6) print $langs->trans("Spam").' '.img_picto($langs->trans("Spam"),'statut5');
+                                        if ($obj->statut==7) print $langs->trans("Bounce").' '.img_picto($langs->trans("Click"),'statut3');
+                                        if ($obj->statut==8) print $langs->trans("Blocked").' '.img_picto($langs->trans("Click"),'statut9');
+                                      
+                                        print '</td>';
 				}
 				print '</tr>';
 

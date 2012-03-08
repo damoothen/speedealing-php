@@ -893,6 +893,11 @@ else
     }
 }
 
+<<<<<<< HEAD
+=======
+
+$db->close();
+>>>>>>> 5563ef9d67ff8a21e03194e3598c6d6f88de6ed9
 
 llxFooter();
 

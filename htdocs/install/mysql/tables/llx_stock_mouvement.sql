@@ -24,6 +24,7 @@ create table llx_stock_mouvement
   datem           datetime,
   fk_product      integer NOT NULL,
   fk_entrepot     integer NOT NULL,
+  fk_expedition   integer,
   value           integer,
   price           float(13,4) DEFAULT 0,
   type_mouvement  smallint,

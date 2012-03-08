@@ -38,10 +38,24 @@
 	<a name="<?php echo $line->id; ?>"></a>
 
 	<?php
+<<<<<<< HEAD
 	if (is_object($hookmanager))
 	{
 	    $parameters=array('fk_parent_line'=>$line->fk_parent_line);
 	    echo $hookmanager->executeHooks('formEditProductOptions',$parameters,$this,$action);
+=======
+	if (! empty($this->hooks)) {
+		foreach($this->hooks as $hook) {
+			if (! empty($hook['modules'])) {
+				foreach($hook['modules'] as $module) {
+					if (method_exists($module,'formEditProductOptions')) {
+						$module->formEditProductOptions($this,$line->fk_parent_line);
+						echo '<br>';
+					}
+				}
+			}
+		}
+>>>>>>> 5563ef9d67ff8a21e03194e3598c6d6f88de6ed9
 	}
 
 	// editeur wysiwyg

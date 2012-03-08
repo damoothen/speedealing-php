@@ -8,7 +8,7 @@
  * Copyright (C) 2010-2011 Juanjo Menent         <jmenent@2byte.es>
  * Copyright (C) 2010-2011 Philippe Grand        <philippe.grand@atoo-net.com>
  * Copyright (C) 2012      Christophe Battarel   <christophe.battarel@altairis.fr>
-*
+ * Copyright (C) 2011      Herve Prot            <herve.prot@symeos.com>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -800,6 +800,7 @@ else if ($action == "addline" && $user->rights->propale->creer)
     			$pu_ttc,
     			$info_bits,
     			$type,
+                $prod->ecotax,
     			-1,
     			0,
     			$_POST['fk_parent_line']
@@ -888,6 +889,7 @@ if ($action == 'updateligne' && $user->rights->propale->creer && $_POST["save"] 
     		$_POST['desc'],
     		'HT',
     		$info_bits,
+                $product->ecotax,
     		$special_code,
     		$_POST['fk_parent_line']
 		);
@@ -931,7 +933,7 @@ else if ($action == 'builddoc' && $user->rights->propale->creer)
 		$outputlangs = new Translate("",$conf);
 		$outputlangs->setDefaultLang($newlang);
 	}
-	$result=propale_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
+	$result=propale_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'));
 	if ($result <= 0)
 	{
 		dol_print_error($db,$result);
@@ -1137,7 +1139,8 @@ if ($id > 0 || ! empty($ref))
 		if (! $error) $formconfirm=$form->formconfirm($_SERVER["PHP_SELF"].'?id='.$object->id, $langs->trans('ValidateProp'), $text, 'confirm_validate','',0,1);
 	}
 
-	if (! $formconfirm)
+	// Hook for external modules
+	if (empty($formconfirm) && ! empty($object->hooks))
 	{
 	    $parameters=array('lineid'=>$lineid);
 	    $formconfirm=$hookmanager->executeHooks('formConfirm',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
@@ -1249,6 +1252,7 @@ if ($id > 0 || ! empty($ref))
 
 	if ($conf->projet->enabled) $rowspan++;
 	if ($conf->global->PROPALE_ADD_DELIVERY_ADDRESS) $rowspan++;
+        if ($conf->global->PRODUCT_USE_ECOTAX) $rowspan++;
 
 	//Local taxes
 	if ($mysoc->country_code=='ES')
@@ -1481,7 +1485,16 @@ if ($id > 0 || ! empty($ref))
 	// Amount HT
 	print '<tr><td height="10">'.$langs->trans('AmountHT').'</td>';
 	print '<td align="right" colspan="2" nowrap><b>'.price($object->total_ht).'</b></td>';
-	print '<td>'.$langs->trans("Currency".$conf->currency).'</td></tr>';
+	print '<td>'.$langs->trans("Currency".$conf->monnaie).'</td></tr>';
+        
+        // Amount EcoTax
+        if($conf->global->PRODUCT_USE_ECOTAX)
+        {
+            print '<tr><td>'.$langs->trans('AmountEcotax').'</td>';
+            print '<td align="right" colspan="2" nowrap><b>'.price(price2num($object->total_ttc-$object->total_tva-$object->total_ht, 'MT')).'</b></td>';
+            print '<td>'.$langs->trans('Currency'.$conf->monnaie);
+            print'</td></tr>';
+        }
 
 	// Amount VAT
 	print '<tr><td height="10">'.$langs->trans('AmountVAT').'</td>';
@@ -1517,6 +1530,7 @@ if ($id > 0 || ! empty($ref))
 	/*
 	 * Lines
 	 */
+    $result = $object->getLinesArray();
 
 	if ($conf->use_javascript_ajax && $object->statut == 0)
 	{
@@ -1528,8 +1542,7 @@ if ($id > 0 || ! empty($ref))
 	print '<table id="tablelines" class="noborder" width="100%">';
 
 	// Show object lines
-	$result = $object->getLinesArray();
-	if (! empty($object->lines)) $object->printObjectLines($action,$mysoc,$soc,$lineid,0,$hookmanager);
+	if (! empty($object->lines)) $object->printObjectLines($action,$mysoc,$soc,$lineid);
 
 	//print '<table id="tablelines" class="noborder" width="100%">';
 
@@ -1543,17 +1556,30 @@ if ($id > 0 || ! empty($ref))
 			$var=true;
 
 			// Add free products/services
-			$object->formAddFreeProduct(0,$mysoc,$soc,$hookmanager);
+			$object->formAddFreeProduct(0,$mysoc,$soc);
 
 			// Add predefined products/services
 			if ($conf->product->enabled || $conf->service->enabled)
 			{
 				$var=!$var;
-				$object->formAddPredefinedProduct(0,$mysoc,$soc,$hookmanager);
+				$object->formAddPredefinedProduct(0,$mysoc,$soc);
 			}
 
-			$parameters=array();
-			$reshook=$hookmanager->executeHooks('formAddObject',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+			// Hook for external modules
+			foreach($object->hooks as $hook)
+			{
+				if (! empty($hook['modules']))
+				{
+					foreach($hook['modules'] as $module)
+					{
+						if (method_exists($module,'formAddObject'))
+						{
+							$var=!$var;
+							$module->formAddObject($object);
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -1705,7 +1731,7 @@ if ($id > 0 || ! empty($ref))
 
 		$var=true;
 
-		$somethingshown=$formfile->show_documents('propal',$filename,$filedir,$urlsource,$genallowed,$delallowed,$object->modelpdf,1,0,0,28,0,'',0,'',$soc->default_lang,$hookmanager);
+		$somethingshown=$formfile->show_documents('propal',$filename,$filedir,$urlsource,$genallowed,$delallowed,$object->modelpdf,1,0,0,28,0,'',0,'',$soc->default_lang,$object->hooks);
 
 
 		/*
@@ -2011,7 +2037,7 @@ else
 		dol_print_error($db);
 	}
 }
-
+$db->close();
 
 llxFooter();
 

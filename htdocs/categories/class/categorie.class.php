@@ -898,7 +898,10 @@ class Categorie
 	 */
 	function get_all_categories ()
 	{
+		global $conf;
+		
 		$sql = "SELECT rowid FROM ".MAIN_DB_PREFIX."categorie";
+		$sql.= " WHERE entity = ".$conf->entity;
 
 		$res = $this->db->query($sql);
 		if ($res)
@@ -925,8 +928,12 @@ class Categorie
 	 */
 	function get_nb_categories()
 	{
+		global $conf;
+		
 		$sql = "SELECT count(rowid)";
 		$sql.= " FROM ".MAIN_DB_PREFIX."categorie";
+		$sql.= " WHERE entity = ".$conf->entity;
+		
 		$res = $this->db->query($sql);
 		if ($res)
 		{

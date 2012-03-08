@@ -16,9 +16,9 @@
  *
  */
 ?>
+ 
+<!-- BEGIN SMARTY TEMPLATE -->
 
-<!-- BEGIN TEMPLATE -->
 
 
-
-<!-- END TEMPLATE -->
+<!-- END SMARTY TEMPLATE -->

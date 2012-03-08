@@ -3,6 +3,7 @@
 -- Copyright (C) 2008-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
 -- Copyright (C) 2005-2010 Regis Houssin        <regis@dolibarr.fr>
 -- Copyright (C) 2010      juanjo Menent        <jmenent@2byte.es>
+-- Copyright (C) 2011      Herve Prot           <herve.prot@symeos.com>
 --
 -- This program is free software; you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -40,7 +41,8 @@ create table llx_product
   price						double(24,8) DEFAULT 0,
   price_ttc					double(24,8) DEFAULT 0,
   price_min					double(24,8) DEFAULT 0,
-  price_min_ttc				double(24,8) DEFAULT 0,
+  price_min_ttc                                 double(24,8) DEFAULT 0,
+  ecotax					double(24,8) DEFAULT 0,
   price_base_type			varchar(3)   DEFAULT 'HT',
   tva_tx					double(6,3),
   recuperableonly           integer NOT NULL DEFAULT '0',   -- French NPR VAT

@@ -1,6 +1,7 @@
 <?PHP
 /* Copyright (C) 2004      Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2005-2011 Laurent Destailleur  <eldy@uers.sourceforge.net>
+ * Copyright (C) 2010-2011 Patrick Mary  <laube@hotmail.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +40,7 @@ $message = '';
 // Tableau des substitutions possibles
 $substitutionarray=array(
 '__ID__' => 'IdRecord',
+'__CAMPAGNEID__' => 'IdCampagne',
 '__EMAIL__' => 'EMail',
 '__CHECK_READ__' => 'CheckMail',
 '__UNSUSCRIBE__' => 'Unsuscribe',
@@ -52,6 +54,7 @@ $substitutionarray=array(
 );
 $substitutionarrayfortest=array(
 '__ID__' => 'TESTIdRecord',
+'__CAMPAGNEID' => 'TESTIdCampagne',
 '__EMAIL__' => 'TESTEMail',
 '__CHECK_READ__' => 'TESTCheckMail',
 '__UNSUSCRIBE__' => 'TESTUnsuscribe',
@@ -181,6 +184,7 @@ if ($_REQUEST["action"] == 'sendallconfirmed' && $_REQUEST['confirm'] == 'yes')
                     $tmpfield=explode('=',$other[4],2); $other5=(isset($tmpfield[1])?$tmpfield[1]:$tmpfield[0]);
 					$substitutionarray=array(
 						'__ID__' => $obj->source_id,
+                                                '__CAMPAGNEID__'=> $id,
 						'__EMAIL__' => $obj->email,
 						'__CHECK_READ__' => '<img src="'.DOL_MAIN_URL_ROOT.'/public/emailing/mailing-read.php?tag='.$obj->tag.'" style="width:0px;height:0px" border="0"/>',
 						'__UNSUSCRIBE__' => '<a href="'.DOL_MAIN_URL_ROOT.'/public/emailing/mailing-usubscribe.php?tag='.$obj->tag.'&unsuscrib=1" target="_blank"/>'.$langs->trans("MailUnsubcribe").'</a>',
@@ -231,6 +235,7 @@ if ($_REQUEST["action"] == 'sendallconfirmed' && $_REQUEST['confirm'] == 'yes')
 					if ($res)
 					{
 						$res=$mail->sendfile();
+                                                
 					}
 
 					if ($res)
@@ -247,7 +252,7 @@ if ($_REQUEST["action"] == 'sendallconfirmed' && $_REQUEST['confirm'] == 'yes')
 						{
 							dol_print_error($db);
 						}
-					}
+                                 	}
 					else
 					{
 						// Mail failed
@@ -266,6 +271,8 @@ if ($_REQUEST["action"] == 'sendallconfirmed' && $_REQUEST['confirm'] == 'yes')
 
 					$i++;
 				}
+                              
+                                  
 			}
 
 			// Loop finished, set global statut of mail
@@ -298,12 +305,12 @@ if ($_REQUEST["action"] == 'sendallconfirmed' && $_REQUEST['confirm'] == 'yes')
 	}
 }
 
-// Action send test emailing
+// Action send test emailing 
 if ($_POST["action"] == 'send' && empty($_POST["cancel"]))
 {
 	$mil = new Mailing($db);
 	$result=$mil->fetch($_POST["mailid"]);
-
+        
 	$error=0;
 
 	$upload_dir = $conf->mailing->dir_output . "/" . get_exdir($mil->id,2,0,1);
@@ -317,7 +324,9 @@ if ($_POST["action"] == 'send' && empty($_POST["cancel"]))
 
 	if (! $error)
 	{
-		// Le message est-il en html
+          
+		
+	// Le message est-il en html
 		$msgishtml=-1;	// Inconnu par defaut
 		if (preg_match('/[\s\t]*<html>/i',$message)) $msgishtml=1;
 
@@ -360,7 +369,9 @@ if ($_POST["action"] == 'send' && empty($_POST["cancel"]))
 
 		$_GET["action"]='';
 		$_GET["id"]=$mil->id;
-	}
+	
+        }
+      
 }
 
 // Action add emailing
@@ -641,7 +652,9 @@ if ($_GET["action"] == 'create')
 	print '<td>';
 	// Editeur wysiwyg
 	require_once(DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php");
-	$doleditor=new DolEditor('body',$_POST['body'],'',320,'dolibarr_mailings','',true,true,$conf->global->FCKEDITOR_ENABLE_MAILING,20,70);
+    if(empty($_POST['body'])) $body='<br /><br /><br /><font face="Verdana, Helvetica, sans-serif" size="1">Pour ne plus recevoir de mailing, <a href="'.DOL_MAIN_URL_ROOT.'/public/mailing/desinscription?nom='.$conf->global->MAIN_INFO_SOCIETE_NOM.'&mail=__EMAIL__&id=__ID__&rowid=__CAMPAGNEID__'.'" target="_blank">désinscrivez vous</a> de la newsletter. (__EMAIL__) </font>';
+    else $body=$_POST['body'];
+	$doleditor=new DolEditor('body',$body,'',320,'dolibarr_mailings','',true,true,$conf->fckeditor->enabled && $conf->global->FCKEDITOR_ENABLE_MAILING,20,70);
 	$doleditor->Create();
 	print '</td></tr>';
 	print '</table>';
@@ -792,6 +805,15 @@ else
 
 
 			if ($mesg) print $mesg;
+                        
+                        if($conf->mailjet->enabled)
+                        {
+                            dol_include_once("/mailjet/class/mailjet.class.php");
+                            $langs->load("mailjet@mailjet");
+                            $mailjet=new Mailjet($db);
+                            
+                            print $mailjet->statistic($mil->id);
+                        }
 
 
 			/*
@@ -860,6 +882,7 @@ else
 
 			// Affichage formulaire de TEST
 			if ($_GET["action"] == 'test')
+                         
 			{
 				print_titre($langs->trans("TestMailing"));
 

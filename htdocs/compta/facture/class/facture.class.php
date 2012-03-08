@@ -8,6 +8,7 @@
  * Copyright (C) 2006      Andre Cianfarani      <acianfa@free.fr>
  * Copyright (C) 2007      Franky Van Liedekerke <franky.van.liedekerke@telenet.be>
  * Copyright (C) 2010-2011 Juanjo Menent         <jmenent@2byte.es>
+ * Copyright (C) 2011      Herve Prot            <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -838,7 +839,7 @@ class Facture extends CommonObject
         $sql.= ' l.rang, l.special_code,';
         $sql.= ' l.date_start as date_start, l.date_end as date_end,';
         $sql.= ' l.info_bits, l.total_ht, l.total_tva, l.total_localtax1, l.total_localtax2, l.total_ttc, l.fk_code_ventilation, l.fk_export_compta,';
-        $sql.= ' p.ref as product_ref, p.fk_product_type as fk_product_type, p.label as product_label, p.description as product_desc';
+        $sql.= ' p.ref as product_ref, p.fk_product_type as fk_product_type, p.label as product_label, p.description as product_desc, p.ecotax_ttc, p.ecotax';
         $sql.= ' FROM '.MAIN_DB_PREFIX.'facturedet as l';
         $sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'product as p ON l.fk_product = p.rowid';
         $sql.= ' WHERE l.fk_facture = '.$this->id;
@@ -873,8 +874,6 @@ class Facture extends CommonObject
                 $line->fk_product       = $objp->fk_product;
                 $line->date_start       = $this->db->jdate($objp->date_start);
                 $line->date_end         = $this->db->jdate($objp->date_end);
-                $line->date_start       = $this->db->jdate($objp->date_start);
-                $line->date_end         = $this->db->jdate($objp->date_end);
                 $line->info_bits        = $objp->info_bits;
                 $line->total_ht         = $objp->total_ht;
                 $line->total_tva        = $objp->total_tva;
@@ -886,6 +885,8 @@ class Facture extends CommonObject
                 $line->rang				= $objp->rang;
                 $line->special_code		= $objp->special_code;
                 $line->fk_parent_line	= $objp->fk_parent_line;
+                $line->ecotax          = $objp->ecotax;
+                $line->ecotax_ttc       = $objp->ecotax_ttc;
 
                 // Ne plus utiliser
                 //$line->price            = $objp->price;
@@ -1783,7 +1784,7 @@ class Facture extends CommonObject
      *      @param		int			$fk_parent_line		Id of parent line
      *    	@return    	int             				<0 if KO, Id of line if OK
      */
-    function addline($facid, $desc, $pu_ht, $qty, $txtva, $txlocaltax1=0, $txlocaltax2=0, $fk_product=0, $remise_percent=0, $date_start='', $date_end='', $ventil=0, $info_bits=0, $fk_remise_except='', $price_base_type='HT', $pu_ttc=0, $type=0, $rang=-1, $special_code=0, $origin='', $origin_id=0, $fk_parent_line=0)
+    function addline($facid, $desc, $pu_ht, $qty, $txtva, $txlocaltax1=0, $txlocaltax2=0, $fk_product=0, $remise_percent=0, $date_start='', $date_end='', $ventil=0, $info_bits=0, $fk_remise_except='', $price_base_type='HT', $pu_ttc=0, $type=0, $ecotax=0, $rang=-1, $special_code=0, $origin='', $origin_id=0, $fk_parent_line=0)
     {
         dol_syslog(get_class($this)."::Addline facid=$facid,desc=$desc,pu_ht=$pu_ht,qty=$qty,txtva=$txtva, txlocaltax1=$txlocaltax1, txlocaltax2=$txlocaltax2, fk_product=$fk_product,remise_percent=$remise_percent,date_start=$date_start,date_end=$date_end,ventil=$ventil,info_bits=$info_bits,fk_remise_except=$fk_remise_except,price_base_type=$price_base_type,pu_ttc=$pu_ttc,type=$type", LOG_DEBUG);
         include_once(DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php');
@@ -1806,6 +1807,7 @@ class Facture extends CommonObject
         $txtva=price2num($txtva);
         $txlocaltax1=price2num($txlocaltax1);
         $txlocaltax2=price2num($txlocaltax2);
+        $ecotax=price2num($ecotax);
 
         if ($price_base_type=='HT')
         {
@@ -1822,6 +1824,11 @@ class Facture extends CommonObject
         if ($this->brouillon)
         {
             $this->db->begin();
+            
+            if($conf->global->PRODUCT_USE_ECOTAX)
+            {
+                $pu+=$ecotax;
+            }
 
             // Calcul du total TTC et de la TVA pour la ligne a partir de
             // qty, pu, remise_percent et txtva
@@ -1834,6 +1841,12 @@ class Facture extends CommonObject
             $total_localtax1 = $tabprice[9];
             $total_localtax2 = $tabprice[10];
             $pu_ht = $tabprice[3];
+            
+            if($conf->global->PRODUCT_USE_ECOTAX)
+            {
+                $pu_ht-=$ecotax;
+                $total_ht-=$qty*$ecotax;
+            }
 
             // Rang to use
             $rangtouse = $rang;
@@ -1944,7 +1957,7 @@ class Facture extends CommonObject
      * 		@param		int			$skip_update_total	???
      *      @return    	int             				< 0 if KO, > 0 if OK
      */
-    function updateline($rowid, $desc, $pu, $qty, $remise_percent, $date_start, $date_end, $txtva, $txlocaltax1=0, $txlocaltax2=0, $price_base_type='HT', $info_bits=0, $type=0, $fk_parent_line=0, $skip_update_total=0)
+    function updateline($rowid, $desc, $pu, $qty, $remise_percent, $date_start, $date_end, $txtva, $txlocaltax1=0, $txlocaltax2=0, $price_base_type='HT', $info_bits=0, $type=0, $ecotax, $fk_parent_line=0, $skip_update_total=0)
     {
         include_once(DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php');
 
@@ -1964,9 +1977,18 @@ class Facture extends CommonObject
             $txtva			= price2num($txtva);
             $txlocaltax1	= price2num($txlocaltax1);
             $txlocaltax2	= price2num($txlocaltax2);
+			$ecotax=price2num($ecotax);
 
             // Check parameters
             if ($type < 0) return -1;
+            
+            if($conf->global->PRODUCT_USE_ECOTAX)
+            {
+                if($pu>=0)
+                    $pu+=$ecotax;
+                else
+                    $pu-=$ecotax;
+            }
 
             // Calculate total with, without tax and tax from qty, pu, remise_percent and txtva
             // TRES IMPORTANT: C'est au moment de l'insertion ligne qu'on doit stocker
@@ -1980,6 +2002,20 @@ class Facture extends CommonObject
             $pu_ht  = $tabprice[3];
             $pu_tva = $tabprice[4];
             $pu_ttc = $tabprice[5];
+            
+            if($conf->global->PRODUCT_USE_ECOTAX)
+            {
+                if($pu_ht>=0)
+                {
+                    $pu_ht-=$ecotax;
+                    $total_ht-=$qty*$ecotax;
+                }
+                else
+                {
+                    $pu_ht+=$ecotax;
+                    $total_ht+=$qty*$ecotax;
+                }
+            }
 
             // Old properties: $price, $remise (deprecated)
             $price = $pu;

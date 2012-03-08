@@ -822,7 +822,7 @@ elseif ($action == 'remove_file')
 
 /*
  *	View
- */
+*/
 
 $form = new Form($db);
 $formfile = new FormFile($db);

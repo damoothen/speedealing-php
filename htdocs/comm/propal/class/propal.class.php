@@ -1,13 +1,14 @@
 <?php
-/* Copyright (C) 2002-2004 Rodolphe Quiedeville		<rodolphe@quiedeville.org>
- * Copyright (C) 2004      Eric Seigne				<eric.seigne@ryxeo.com>
- * Copyright (C) 2004-2011 Laurent Destailleur		<eldy@users.sourceforge.net>
- * Copyright (C) 2005      Marc Barilley			<marc@ocebo.com>
- * Copyright (C) 2005-2012 Regis Houssin			<regis@dolibarr.fr>
- * Copyright (C) 2006      Andre Cianfarani			<acianfa@free.fr>
- * Copyright (C) 2008      Raphael Bertrand			<raphael.bertrand@resultic.fr>
- * Copyright (C) 2010-2011 Juanjo Menent			<jmenent@2byte.es>
- * Copyright (C) 2010-2011 Philippe Grand			<philippe.grand@atoo-net.com>
+/* Copyright (C) 2002-2004 Rodolphe Quiedeville  <rodolphe@quiedeville.org>
+ * Copyright (C) 2004      Eric Seigne           <eric.seigne@ryxeo.com>
+ * Copyright (C) 2004-2011 Laurent Destailleur   <eldy@users.sourceforge.net>
+ * Copyright (C) 2005      Marc Barilley / Ocebo <marc@ocebo.com>
+ * Copyright (C) 2005-2012 Regis Houssin         <regis@dolibarr.fr>
+ * Copyright (C) 2006      Andre Cianfarani      <acianfa@free.fr>
+ * Copyright (C) 2008      Raphael Bertrand (Resultic)   <raphael.bertrand@resultic.fr>
+ * Copyright (C) 2010-2011 Juanjo Menent         <jmenent@2byte.es>
+ * Copyright (C) 2010-2011 Philippe Grand        <philippe.grand@atoo-net.com>
+ * Copyright (C) 2011      Herve Prot            <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -303,7 +304,7 @@ class Propal extends CommonObject
 	 *
 	 *    	@see       	add_product
 	 */
-	function addline($propalid, $desc, $pu_ht, $qty, $txtva, $txlocaltax1=0, $txlocaltax2=0, $fk_product=0, $remise_percent=0, $price_base_type='HT', $pu_ttc=0, $info_bits=0, $type=0, $rang=-1, $special_code=0, $fk_parent_line=0)
+	function addline($propalid, $desc, $pu_ht, $qty, $txtva, $txlocaltax1=0, $txlocaltax2=0, $fk_product=0, $remise_percent=0, $price_base_type='HT', $pu_ttc=0, $info_bits=0, $type=0, $ecotax=0, $rang=-1, $special_code=0, $fk_parent_line=0)
 	{
 		global $conf;
 
@@ -324,6 +325,8 @@ class Propal extends CommonObject
 		$txtva=price2num($txtva);
 		$txlocaltax1=price2num($txlocaltax1);
 		$txlocaltax2=price2num($txlocaltax2);
+                $ecotax=price2num($ecotax);
+                
 		if ($price_base_type=='HT')
 		{
 			$pu=$pu_ht;
@@ -339,6 +342,11 @@ class Propal extends CommonObject
 		if ($this->statut == 0)
 		{
 			$this->db->begin();
+                        
+                        if($conf->global->PRODUCT_USE_ECOTAX)
+                        {
+                            $pu+=$ecotax;
+                        }
 
 			// Calcul du total TTC et de la TVA pour la ligne a partir de
 			// qty, pu, remise_percent et txtva
@@ -350,6 +358,12 @@ class Propal extends CommonObject
 			$total_ttc = $tabprice[2];
 			$total_localtax1 = $tabprice[9];
 			$total_localtax2 = $tabprice[10];
+                        
+                        if($conf->global->PRODUCT_USE_ECOTAX)
+                        {
+                            $pu-=$ecotax;
+                            $total_ht-=$qty*$ecotax;
+                        }
 
 			// Rang to use
 			$rangtouse = $rang;
@@ -449,7 +463,7 @@ class Propal extends CommonObject
 	 *  @param		int			$skip_update_total	Skip update total
 	 *  @return     int     		        		0 if OK, <0 if KO
 	 */
-	function updateline($rowid, $pu, $qty, $remise_percent=0, $txtva, $txlocaltax1=0, $txlocaltax2=0, $desc='', $price_base_type='HT', $info_bits=0, $special_code=0, $fk_parent_line=0, $skip_update_total=0)
+	function updateline($rowid, $pu, $qty, $remise_percent=0, $txtva, $txlocaltax1=0, $txlocaltax2=0, $desc='', $price_base_type='HT', $info_bits=0, $ecotax=0, $special_code=0, $fk_parent_line=0, $skip_update_total=0)
 	{
 		global $conf,$user,$langs;
 
@@ -463,12 +477,19 @@ class Propal extends CommonObject
 		$txtva = price2num($txtva);
 		$txlocaltax1=price2num($txlocaltax1);
 		$txlocaltax2=price2num($txlocaltax2);
+                $ecotax=price2num($ecotax);
+                
 		if (empty($qty) && empty($special_code)) $special_code=3;    // Set option tag
 		if (! empty($qty) && $special_code == 3) $special_code=0;    // Remove option tag
 
 		if ($this->statut == 0)
 		{
 			$this->db->begin();
+                        
+                        if($conf->global->PRODUCT_USE_ECOTAX)
+                        {
+                            $pu+=$ecotax;
+                        }
 
 			// Calcul du total TTC et de la TVA pour la ligne a partir de
 			// qty, pu, remise_percent et txtva
@@ -480,6 +501,12 @@ class Propal extends CommonObject
 			$total_ttc = $tabprice[2];
 			$total_localtax1 = $tabprice[9];
 			$total_localtax2 = $tabprice[10];
+                        
+                        if($conf->global->PRODUCT_USE_ECOTAX)
+                        {
+                            $pu-=$ecotax;
+                            $total_ht-=$qty*$ecotax;
+                        }
 
 			// Anciens indicateurs: $price, $remise (a ne plus utiliser)
 			$price = $pu;
@@ -733,6 +760,7 @@ class Propal extends CommonObject
 						0,
 						0,
 						$this->lines[$i]->product_type,
+                                                $this->lines[$i]->ecotax,
 						$this->lines[$i]->rang,
 						$this->lines[$i]->special_code,
 						$fk_parent_line
@@ -1047,7 +1075,7 @@ class Propal extends CommonObject
 				 */
 				$sql = "SELECT d.rowid, d.fk_propal, d.fk_parent_line, d.description, d.price, d.tva_tx, d.localtax1_tx, d.localtax2_tx, d.qty, d.fk_remise_except, d.remise_percent, d.subprice, d.fk_product,";
 				$sql.= " d.info_bits, d.total_ht, d.total_tva, d.total_localtax1, d.total_localtax2, d.total_ttc, d.marge_tx, d.marque_tx, d.special_code, d.rang, d.product_type,";
-                $sql.= ' p.ref as product_ref, p.description as product_desc, p.fk_product_type, p.label as product_label';
+                $sql.= ' p.ref as product_ref, p.description as product_desc, p.fk_product_type, p.label as product_label, p.ecotax_ttc, p.ecotax';
 				$sql.= " FROM ".MAIN_DB_PREFIX."propaldet as d";
 				$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product as p ON d.fk_product = p.rowid";
 				$sql.= " WHERE d.fk_propal = ".$this->id;
@@ -1099,6 +1127,9 @@ class Propal extends CommonObject
                         $line->product_label	= $objp->product_label;
 						$line->product_desc     = $objp->product_desc; 		// Description produit
                         $line->fk_product_type  = $objp->fk_product_type;
+                                                $line->ecotax  = $objp->ecotax;
+                                                $line->ecotax_ttc  = $objp->ecotax_ttc;
+                        
 
 						$this->lines[$i]        = $line;
 						//dol_syslog("1 ".$line->fk_product);
@@ -2425,7 +2456,7 @@ class Propal extends CommonObject
 		$sql.= ' pt.qty, pt.tva_tx, pt.remise_percent, pt.subprice, pt.info_bits,';
 		$sql.= ' pt.total_ht, pt.total_tva, pt.total_ttc, pt.marge_tx, pt.marque_tx, pt.pa_ht, pt.special_code,';
 		$sql.= ' pt.date_start, pt.date_end, pt.product_type, pt.rang,';
-		$sql.= ' p.label as product_label, p.ref, p.fk_product_type, p.rowid as prodid,';
+		$sql.= ' p.label as product_label, p.ref, p.fk_product_type, p.rowid as prodid,p.ecotax_ttc,p.ecotax,';
 		$sql.= ' p.description as product_desc';
 		$sql.= ' FROM '.MAIN_DB_PREFIX.'propaldet as pt';
 		$sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'product as p ON pt.fk_product=p.rowid';
@@ -2466,6 +2497,8 @@ class Propal extends CommonObject
 				$this->lines[$i]->rang				= $obj->rang;
 				$this->lines[$i]->date_start		= $this->db->jdate($obj->date_start);
 				$this->lines[$i]->date_end			= $this->db->jdate($obj->date_end);
+                                $this->lines[$i]->ecotax		= $obj->ecotax;
+                                $this->lines[$i]->ecotax_ttc		= $obj->ecotax_ttc;
 
 				$i++;
 			}
@@ -2539,6 +2572,8 @@ class PropaleLigne
 	var $localtax2_tx;
 	var $total_localtax1;
 	var $total_localtax2;
+        var $ecotax;
+        var $ecotax_ttc;
 
 	var $skip_update_total; // Skip update price total for special lines
 
@@ -2562,7 +2597,7 @@ class PropaleLigne
 		$sql = 'SELECT pd.rowid, pd.fk_propal, pd.fk_parent_line, pd.fk_product, pd.description, pd.price, pd.qty, pd.tva_tx,';
 		$sql.= ' pd.remise, pd.remise_percent, pd.fk_remise_except, pd.subprice,';
 		$sql.= ' pd.info_bits, pd.total_ht, pd.total_tva, pd.total_ttc, pd.marge_tx, pd.marque_tx, pd.special_code, pd.rang,';
-		$sql.= ' p.ref as product_ref, p.label as product_libelle, p.description as product_desc';
+		$sql.= ' p.ref as product_ref, p.label as product_libelle, p.description as product_desc, p.ecotax_ttc, p.ecotax';
 		$sql.= ' FROM '.MAIN_DB_PREFIX.'propaldet as pd';
 		$sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'product as p ON pd.fk_product = p.rowid';
 		$sql.= ' WHERE pd.rowid = '.$rowid;
@@ -2599,6 +2634,8 @@ class PropaleLigne
             $this->libelle			= $objp->product_libelle;  // deprecated
             $this->product_label	= $objp->product_libelle;
 			$this->product_desc		= $objp->product_desc;
+                        $this->ecotax                   = $objp->ecotax;
+                        $this->ecotax_ttc               = $objp->ecotax_ttc;
 
 			$this->db->free($result);
 		}

@@ -134,6 +134,7 @@ if ($resql)
 			$other5=$other[4];
 			$substitutionarray=array(
 				'__ID__' => $obj->source_id,
+                                '__CAMPAGNEID__'=> $id,
 				'__EMAIL__' => $obj->email,
 				'__CHECK_READ__' => '<img src="'.DOL_MAIN_URL_ROOT.'/public/emailing/mailing-read.php?tag='.$obj->tag.'" style="width:0px;height:0px" border="0"/>',
 				'__UNSUSCRIBE__' => '<a href="'.DOL_MAIN_URL_ROOT.'/public/emailing/mailing-usubscribe.php?tag='.$obj->tag.'&unsuscrib=1" target="_blank"/>'.$langs->trans("MailUnsubcribe").'</a>',
@@ -165,7 +166,9 @@ if ($resql)
             	'',
 			    0,
 			    $msgishtml,
-			    $errorsto
+			    $errorsto,
+				'',
+				$id
 			);
 
 			if ($mail->error)

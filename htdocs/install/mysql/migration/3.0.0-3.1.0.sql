@@ -164,6 +164,7 @@ ALTER TABLE llx_livraison ADD COLUMN ref_ext varchar(30) AFTER fk_soc;
 ALTER TABLE llx_livraison ADD COLUMN ref_int varchar(30) AFTER ref_ext;
 
 INSERT INTO llx_c_shipment_mode (rowid,code,libelle,description,active) VALUES (4,'LETTREMAX','Lettre Max','Courrier Suivi et Lettre Max',0);
+INSERT INTO llx_c_actioncomm (id, code, type, libelle, module, position) VALUES ( 10, 'AC_SHIP', 'system', 'Send shipping by email'	,'shipping', 11);
 
 ALTER TABLE llx_actioncomm DROP INDEX idx_actioncomm_fk_facture;
 ALTER TABLE llx_actioncomm DROP INDEX idx_actioncomm_fk_supplier_order;
@@ -459,6 +460,12 @@ create table llx_societe_extrafields
 ALTER TABLE llx_product_extrafields ADD INDEX idx_product_extrafields (fk_object);
 ALTER TABLE llx_societe_extrafields ADD INDEX idx_societe_extrafields (fk_object);
 
+-- ecotaxe
+alter table llx_product_price add ecotax double (24,8) default 0;
+alter table llx_product add ecotax double (24,8) default 0;
+alter table llx_product_price add ecotax_ttc double (24,8) default 0;
+alter table llx_product add ecotax_ttc double (24,8) default 0;
+
 alter table llx_adherent_options_label drop index uk_adherent_options_label_name;
 alter table llx_adherent_options_label rename to llx_extrafields; 
 ALTER TABLE llx_extrafields ADD COLUMN elementtype varchar(64) NOT NULL DEFAULT 'member' AFTER entity;
@@ -523,3 +530,36 @@ insert into llx_c_actioncomm (id, code, type, libelle, module, position) values 
 insert into llx_c_actioncomm (id, code, type, libelle, module, position) values ( 30, 'AC_SUP_ORD', 'system', 'Send supplier order by email'        ,'order_supplier',    9);
 insert into llx_c_actioncomm (id, code, type, libelle, module, position) values  (31, 'AC_SUP_INV', 'system', 'Send supplier invoice by email'        ,'invoice_supplier', 7);
 insert into llx_c_actioncomm (id, code, type, libelle, module, position) values ( 50, 'AC_OTH',     'system', 'Other'                                ,NULL, 5);
+
+-- Désabonnement mailing
+alter table llx_societe add newsletter tinyint DEFAULT 1 not NULL; --desabonnement mailing and newsletter
+alter table llx_socpeople add newsletter tinyint DEFAULT 1 not NULL; --desabonnement mailing and newsletter
+
+alter table llx_stock_mouvement add fk_expedition integer DEFAULT NULL; --link to expedition
+
+insert into llx_c_stcomm (id,code,libelle,type) values (-1, 'ST_NO',    'Ne pas contacter',-1);
+insert into llx_c_stcomm (id,code,libelle,active,type) values ( 0, 'ST_NEVER', 'Jamais contacté',1,0);
+insert into llx_c_stcomm (id,code,libelle,active,type) values ( 1, 'ST_TODO',  'A contacter',0,0);
+insert into llx_c_stcomm (id,code,libelle,active,type) values ( 2, 'ST_PEND',  'Contact en cours',0,0);
+insert into llx_c_stcomm (id,code,libelle,active,type) values ( 3, 'ST_DONE',  'Contactée',0,0);
+insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (4, 'ST_PFROI', 'Prospect froid', 1, 1);
+insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (5, 'ST_PTIED', 'Prospect tiède', 0, 1);
+insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (6, 'ST_PCHAU', 'Prospect chaud', 1, 1);
+insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (7, 'ST_CINF3', 'Client -3 mois', 1, 2);
+insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (8, 'ST_CREC', 'Client récurrent', 0, 2);
+insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (9, 'ST_CFID', 'Client fidèle', 1, 2);
+insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (10, 'ST_CPAR', 'Client partenaire', 0, 2);
+
+create table llx_categorie_contact
+(
+  fk_categorie  integer NOT NULL,
+  fk_contact    integer NOT NULL
+)type=innodb;
+
+ALTER TABLE llx_categorie_contact ADD PRIMARY KEY (fk_categorie, fk_contact);
+ALTER TABLE llx_categorie_contact ADD INDEX idx_categorie_contact_fk_categorie (fk_categorie);
+ALTER TABLE llx_categorie_contact ADD INDEX idx_categorie_contact_fk_contact (fk_contact);
+
+ALTER TABLE llx_categorie_contact ADD CONSTRAINT fk_categorie_contact_categorie_rowid FOREIGN KEY (fk_categorie) REFERENCES llx_categorie (rowid);
+ALTER TABLE llx_categorie_contact ADD CONSTRAINT fk_categorie_contact_product_rowid   FOREIGN KEY (fk_contact) REFERENCES llx_contact (rowid);
+

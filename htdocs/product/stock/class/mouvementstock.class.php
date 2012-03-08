@@ -2,6 +2,7 @@
 /* Copyright (C) 2003-2006 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2005-2009 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2011 Jean Heimburger  <jean@tiaris.info>
+ * Copyright (C) 2010-2011 Herve Prot  <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,7 +59,7 @@ class MouvementStock
 	 *	@param		string	$datem			Force date of movement
 	 *	@return		int						<0 if KO, >0 if OK
 	 */
-	function _create($user, $fk_product, $entrepot_id, $qty, $type, $price=0, $label='', $datem='')
+	function _create($user, $fk_product, $entrepot_id, $qty, $type, $price=0, $fk_expedition='', $label='', $datem='')
 	{
 		global $conf, $langs;
 
@@ -83,12 +84,12 @@ class MouvementStock
 		if ($movestock && $entrepot_id > 0)	// Change stock for current product, change for subproduct is done after
 		{
 			$sql = "INSERT INTO ".MAIN_DB_PREFIX."stock_mouvement";
-			$sql.= " (datem, fk_product, fk_entrepot, value, type_mouvement, fk_user_author, label, price)";
+			$sql.= " (datem, fk_product, fk_entrepot, value, type_mouvement, fk_user_author, label, price, fk_expedition)";
 			$sql.= " VALUES ('".$this->db->idate($now)."', ".$fk_product.", ".$entrepot_id.", ".$qty.", ".$type.",";
 			$sql.= " ".$user->id.",";
 			$sql.= " '".$this->db->escape($label)."',";
-			$sql.= " '".price2num($price)."')";
-
+			$sql.= " '".price2num($price)."',".(empty($fk_expedition)?"''":$fk_expedition).")";
+                        
 			dol_syslog("MouvementStock::_create sql=".$sql, LOG_DEBUG);
 			$resql = $this->db->query($sql);
 			if ($resql)
@@ -101,7 +102,6 @@ class MouvementStock
 				dol_syslog("MouvementStock::_create ".$this->error, LOG_ERR);
 				$error = -1;
 			}
-
 			// Define current values for qty and pmp
 			$oldqty=$product->stock_reel;
 			$oldqtywarehouse=0;
@@ -310,9 +310,9 @@ class MouvementStock
 	 * 	@param		string	$datem			Force date of movement
 	 * 	@return		int						<0 if KO, >0 if OK
 	 */
-	function livraison($user, $fk_product, $entrepot_id, $qty, $price=0, $label='', $datem='')
+	function livraison($user, $fk_product, $entrepot_id, $qty, $price=0, $fk_expedition='', $label='', $datem='')
 	{
-		return $this->_create($user, $fk_product, $entrepot_id, (0 - $qty), 2, $price, $label, $datem);
+		return $this->_create($user, $fk_product, $entrepot_id, (0 - $qty), 2, $price, $fk_expedition, $label, $datem);
 	}
 
 
@@ -327,9 +327,9 @@ class MouvementStock
 	 * 	@param		string	$label			Label of stock movement
 	 *	@return		int						<0 if KO, >0 if OK
 	 */
-	function reception($user, $fk_product, $entrepot_id, $qty, $price=0, $label='')
+	function reception($user, $fk_product, $entrepot_id, $qty, $price=0, $fk_expedition='', $label='')
 	{
-		return $this->_create($user, $fk_product, $entrepot_id, $qty, 3, $price, $label);
+		return $this->_create($user, $fk_product, $entrepot_id, $qty, 3, $price, $fk_expedition, $label);
 	}
 
 
@@ -350,6 +350,7 @@ class MouvementStock
 			$obj=$this->db->fetch_object($resql);
 			$nbSP=$obj->nb;
 		}
+		$this->db->free($resql);
 		return $nbSP;
 	}
 

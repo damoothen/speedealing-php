@@ -110,6 +110,10 @@ print "Building package name: $PROJECT\n";
 print "Building package version: $MAJOR.$MINOR.$BUILD\n";
 print "Source directory (SOURCE): $SOURCE\n";
 print "Target directory (DESTI) : $DESTI\n";
+<<<<<<< HEAD
+=======
+
+>>>>>>> 5563ef9d67ff8a21e03194e3598c6d6f88de6ed9
 
 
 # Choose package targets
@@ -260,8 +264,15 @@ if ($nboftargetok) {
 	    $ret=`rm -f  $BUILDROOT/$PROJECT/build.xml`;
 	    $ret=`rm -f  $BUILDROOT/$PROJECT/quickbuild.xml`;
         $ret=`rm -f  $BUILDROOT/$PROJECT/pom.xml`;
+<<<<<<< HEAD
         $ret=`rm -f  $BUILDROOT/$PROJECT/README.md`;
         
+=======
+        $ret=`rm -f  $BUILDROOT/$PROJECT/default.properties`;
+        $ret=`rm -f  $BUILDROOT/$PROJECT/git2cvs.sh`;
+        $ret=`rm -f  $BUILDROOT/$PROJECT/README.md`;
+
+>>>>>>> 5563ef9d67ff8a21e03194e3598c6d6f88de6ed9
 	    $ret=`rm -fr $BUILDROOT/$PROJECT/build/html`;
         $ret=`rm -f  $BUILDROOT/$PROJECT/build/Doli*-*`;
         $ret=`rm -f  $BUILDROOT/$PROJECT/build/dolibarr_*.deb`;

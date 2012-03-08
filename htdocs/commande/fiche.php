@@ -7,7 +7,8 @@
  * Copyright (C) 2010-2011 Juanjo Menent         <jmenent@2byte.es>
  * Copyright (C) 2011      Philippe Grand        <philippe.grand@atoo-net.com>
  * Copyright (C) 2012      Christophe Battarel   <christophe.battarel@altairis.fr>
-**
+ * Copyright (C) 2011-2012 Herve Prot            <herve.prot@symeos.com>
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -292,6 +293,7 @@ if ($action == 'add' && $user->rights->commande->creer)
                         $datestart,
                         $dateend,
                         $product_type,
+						$lines[$i]->ecotax,
                         $lines[$i]->rang,
                         $lines[$i]->special_code,
                         $fk_parent_line
@@ -545,6 +547,7 @@ if ($action == 'addline' && $user->rights->commande->creer)
                 $pu_ttc = $prod->price_ttc;
                 $price_min = $prod->price_min;
                 $price_base_type = $prod->price_base_type;
+                $ecotax_ht = $prod->ecotax;
             }
 
             // On reevalue prix selon taux tva car taux tva transaction peut etre different
@@ -630,6 +633,7 @@ if ($action == 'addline' && $user->rights->commande->creer)
                     $date_start,
                     $date_end,
                     $type,
+	                $ecotax_ht,
                     -1,
                     '',
                     $_POST['fk_parent_line']
@@ -744,6 +748,7 @@ if ($action == 'updateligne' && $user->rights->commande->creer && $_POST['save']
             $info_bits,
             $date_start,
             $date_end,
+	        $product->ecotax,
             $type,
             $_POST['fk_parent_line']
         );
@@ -1672,6 +1677,7 @@ else
              */
             $nbrow=9;
             if ($conf->projet->enabled) $nbrow++;
+            if ($conf->global->PRODUCT_USE_ECOTAX) $nbrow++;
 
             //Local taxes
             if ($mysoc->country_code=='ES')
@@ -1943,11 +1949,21 @@ else
             // Total HT
             print '<tr><td>'.$langs->trans('AmountHT').'</td>';
             print '<td align="right"><b>'.price($object->total_ht).'</b></td>';
-            print '<td>'.$langs->trans('Currency'.$conf->currency).'</td></tr>';
-
+            print '<td>'.$langs->trans('Currency'.$conf->currency);
+            print'</td></tr>';
+            
+            if($conf->global->PRODUCT_USE_ECOTAX)
+            {
+                print '<tr><td>'.$langs->trans('AmountEcotax').'</td>';
+                print '<td align="right"><b>'.price(price2num($object->total_ttc-$object->total_tva-$object->total_ht, 'MT')).'</b></td>';
+                print '<td>'.$langs->trans('Currency'.$conf->currency);
+                print'</td></tr>';
+            }
+           
             // Total TVA
             print '<tr><td>'.$langs->trans('AmountVAT').'</td><td align="right">'.price($object->total_tva).'</td>';
-            print '<td>'.$langs->trans('Currency'.$conf->currency).'</td></tr>';
+            print '<td>'.$langs->trans('Currency'.$conf->currency);
+            print '</td></tr>';
 
             // Amount Local Taxes
             if ($mysoc->country_code=='ES')

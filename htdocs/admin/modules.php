@@ -108,7 +108,8 @@ $i = 0;	// is a sequencer of modules found
 $j = 0;	// j is module number. Automatically affected if module number not defined.
 
 foreach ($modulesdir as $dir)
-{
+{      
+  
 	// Load modules attributes in arrays (name, numero, orders) from dir directory
 	//print $dir."\n<br>";
 	dol_syslog("Scan directory ".$dir." for modules");
@@ -121,7 +122,7 @@ foreach ($modulesdir as $dir)
 		    if (is_readable($dir.$file) && substr($file, 0, 3) == 'mod'  && substr($file, dol_strlen($file) - 10) == '.class.php')
 		    {
 		        $modName = substr($file, 0, dol_strlen($file) - 10);
-
+                       
 		        if ($modName)
 		        {
 		            try
@@ -363,6 +364,7 @@ if ($mode != 4)
             // Activate/Disable and Setup (2 columns)
             if (! empty($conf->global->$const_name))
             {
+                
                 $disableSetup = 0;
 
                 print "<td align=\"center\" valign=\"top\">";
@@ -370,6 +372,7 @@ if ($mode != 4)
             	// Module actif
                 if (! empty($objMod->always_enabled) || (($conf->global->MAIN_MODULE_MULTICOMPANY && $objMod->core_enabled) && ($user->entity || $conf->entity!=1)))
                 {
+                        
                 	print $langs->trans("Required");
                 	if ($conf->global->MAIN_MODULE_MULTICOMPANY && $user->entity) $disableSetup++;
                 	print '</td>'."\n";
@@ -379,6 +382,9 @@ if ($mode != 4)
                 	print '<a href="modules.php?id='.$objMod->numero.'&amp;action=reset&amp;value=' . $modName . '&amp;mode=' . $mode . '">';
                 	print img_picto($langs->trans("Activated"),'switch_on');
                 	print '</a></td>'."\n";
+                        
+                            
+                        
                 }
 
                 if (! empty($objMod->config_page_url) && !$disableSetup)

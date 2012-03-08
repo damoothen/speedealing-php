@@ -46,10 +46,24 @@
 	echo $form->select_type_of_lines(isset($_POST["type"])?$_POST["type"]:-1,'type',1);
 	if (($conf->product->enabled && $conf->service->enabled) || (empty($conf->product->enabled) && empty($conf->service->enabled))) echo '<br>';
 
+<<<<<<< HEAD
 	if (is_object($hookmanager))
 	{
 	    $parameters=array();
 	    echo $hookmanager->executeHooks('formCreateProductOptions',$parameters,$object,$action);
+=======
+	if (! empty($this->hooks)) {
+		foreach($this->hooks as $hook) {
+			if (! empty($hook['modules'])) {
+				foreach($hook['modules'] as $module) {
+					if (method_exists($module,'formCreateProductOptions')) {
+						$module->formCreateProductOptions($object);
+						echo '<br>';
+					}
+				}
+			}
+		}
+>>>>>>> 5563ef9d67ff8a21e03194e3598c6d6f88de6ed9
 	}
 
 	// Editor wysiwyg
@@ -64,7 +78,11 @@
 	<td align="right">
 	<?php
 	if ($buyer->tva_assuj == "0") echo '<input type="hidden" name="np_tva_tx" value="0">0';
+<<<<<<< HEAD
 	else echo $form->load_tva('np_tva_tx', (isset($_POST["np_tva_tx"])?$_POST["np_tva_tx"]:-1), $seller, $buyer);
+=======
+	else echo $html->load_tva('np_tva_tx', (isset($_POST["np_tva_tx"])?$_POST["np_tva_tx"]:-1), $seller, $buyer);
+>>>>>>> 5563ef9d67ff8a21e03194e3598c6d6f88de6ed9
 	?>
 	</td>
 	<td align="right"><input type="text" size="5" name="np_price" value="<?php echo (isset($_POST["np_price"])?$_POST["np_price"]:''); ?>"></td>

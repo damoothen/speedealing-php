@@ -7,7 +7,8 @@
  * Copyright (C) 2006      Andre Cianfarani      <acianfa@free.fr>
  * Copyright (C) 2010-2011 Juanjo Menent         <jmenent@2byte.es>
  * Copyright (C) 2012      Christophe Battarel   <christophe.battarel@altairis.fr>
-**
+ * Copyright (C) 2011      Herve Prot            <herve.prot@symeos.com>
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -77,17 +78,48 @@ $usehm=$conf->global->MAIN_USE_HOURMIN_IN_DATE_RANGE;
 
 $object=new Facture($db);
 
+<<<<<<< HEAD
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
 include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
 $hookmanager=new HookManager($db);
 $hookmanager->initHooks(array('invoicecard'));
+=======
+// Instantiate hooks of thirdparty module
+if (is_array($conf->hooks_modules) && !empty($conf->hooks_modules))
+{
+    $object->callHooks('invoicecard');
+}
+
+
+>>>>>>> 5563ef9d67ff8a21e03194e3598c6d6f88de6ed9
 
 /*
  * Actions
  */
 
-$parameters=array('socid'=>$socid);
-$reshook=$hookmanager->executeHooks('doActions',$parameters,$object,$action);    // Note that $action and $object may have been modified by some hooks
+// Hook of actions
+if (! empty($object->hooks))
+{
+	foreach($object->hooks as $hook)
+	{
+		if (! empty($hook['modules']))
+		{
+			foreach($hook['modules'] as $module)
+			{
+				if (method_exists($module,'doActions'))
+				{
+					$reshook+=$module->doActions($object);
+			        if (! empty($module->error) || (! empty($module->errors) && sizeof($module->errors) > 0))
+			        {
+			            $mesg=$module->error; $mesgs=$module->errors;
+			            if ($action=='add')    $action='create';
+			            if ($action=='update') $action='edit';
+			        }
+				}
+			}
+		}
+	}
+}
 
 // Action clone object
 if ($action == 'confirm_clone' && $confirm == 'yes')
@@ -835,6 +867,7 @@ if ($action == 'add' && $user->rights->facture->creer)
         							'HT',
                                     0,
                                     $product_type,
+                                $lines[$i]->ecotax,
                                     $lines[$i]->rang,
                                     $lines[$i]->special_code,
                                     $object->origin,
@@ -1079,6 +1112,7 @@ if (($action == 'addline' || $action == 'addline_predef') && $user->rights->fact
                     $price_base_type,
                     $pu_ttc,
                     $type,
+                $prod->ecotax,
                     -1,
                     0,
                     '',
@@ -1190,6 +1224,7 @@ if ($action == 'updateligne' && $user->rights->facture->creer && $_POST['save'] 
     		'HT',
             $info_bits,
             $type,
+        $product->ecotax,
             GETPOST('fk_parent_line')
         );
 
@@ -2210,7 +2245,8 @@ else
                 $formconfirm=$form->formconfirm($_SERVER["PHP_SELF"].'?facid='.$object->id,$langs->trans('CloneInvoice'),$langs->trans('ConfirmCloneInvoice',$object->ref),'confirm_clone',$formquestion,'yes',1);
             }
 
-            if (! $formconfirm)
+            // Hook for external modules
+            if (empty($formconfirm) && ! empty($object->hooks))
             {
                 $parameters=array('lineid'=>$lineid);
                 $formconfirm=$hookmanager->executeHooks('formConfirm',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
@@ -2422,6 +2458,7 @@ else
 
             $nbrows=8;
             if ($conf->projet->enabled) $nbrows++;
+            if ($conf->global->PRODUCT_USE_ECOTAX) $nbrows++;
 
             //Local taxes
             if ($mysoc->pays_code=='ES')
@@ -2656,8 +2693,16 @@ else
 
             // Amount
             print '<tr><td>'.$langs->trans('AmountHT').'</td>';
-            print '<td align="right" colspan="2" nowrap>'.price($object->total_ht).'</td>';
+            print '<td align="right" colspan="2" nowrap><b>'.price($object->total_ht).'</b></td>';
             print '<td>'.$langs->trans('Currency'.$conf->currency).'</td></tr>';
+            if($conf->global->PRODUCT_USE_ECOTAX)
+            {
+                print '<tr><td>'.$langs->trans('AmountEcotax').'</td>';
+                print '<td align="right" colspan="2" nowrap><b>'.price(price2num($object->total_ttc-$object->total_tva-$object->total_ht, 'MT')).'</b></td>';
+                print '<td>'.$langs->trans('Currency'.$conf->currency);
+                print'</td></tr>';
+            }
+            
             print '<tr><td>'.$langs->trans('AmountVAT').'</td><td align="right" colspan="2" nowrap>'.price($object->total_tva).'</td>';
             print '<td>'.$langs->trans('Currency'.$conf->currency).'</td></tr>';
 
@@ -2746,7 +2791,7 @@ else
             print '<table id="tablelines" class="noborder noshadow" width="100%">';
 
             // Show object lines
-            if (! empty($object->lines)) $object->printObjectLines($action,$mysoc,$soc,$lineid,1,$hookmanager);
+            if (! empty($object->lines)) $object->printObjectLines($action,$mysoc,$soc,$lineid,1);
 
             /*
              * Form to add new line
@@ -2755,17 +2800,33 @@ else
             {
                 $var=true;
 
-                $object->formAddFreeProduct(1,$mysoc,$soc,$hookmanager);
+                $object->formAddFreeProduct(1,$mysoc,$soc);
 
                 // Add predefined products/services
                 if ($conf->product->enabled || $conf->service->enabled)
                 {
                     $var=!$var;
-                    $object->formAddPredefinedProduct(1,$mysoc,$soc,$hookmanager);
+                    $object->formAddPredefinedProduct(1,$mysoc,$soc);
                 }
 
-                $parameters=array();
-                $reshook=$hookmanager->executeHooks('formAddObject',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+                // Hook for external modules
+                if (! empty($object->hooks))
+                {
+                	foreach($object->hooks as $hook)
+                	{
+                		if (! empty($hook['modules']))
+                		{
+                			foreach($hook['modules'] as $module)
+                			{
+                				if (method_exists($module,'formAddObject'))
+                				{
+                					$var=!$var;
+                					$module->formAddObject($object);
+                				}
+                			}
+                		}
+                	}
+                }
             }
 
             print "</table>\n";

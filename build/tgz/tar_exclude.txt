@@ -55,6 +55,7 @@ htdocs/oscommerce_ws/ws_client_demo
 htdocs/postnuke
 htdocs/public/bplc
 htdocs/rapport
+htdocs/theme/bureau2crea
 htdocs/theme/rodolphe
 htdocs/telephonie
 htdocs/voyage
