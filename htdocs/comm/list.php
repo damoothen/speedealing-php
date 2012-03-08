@@ -56,6 +56,32 @@ if ($_GET["action"] == 'cstc') {
     $sql .= " WHERE rowid = " . $_GET["socid"];
     $result = $db->query($sql);
 }
+// Select every potentiels.
+$sql = "SELECT code, label, sortorder";
+$sql.= " FROM ".MAIN_DB_PREFIX."c_prospectlevel";
+$sql.= " WHERE active > 0";
+$sql.= " ORDER BY sortorder";
+$resql = $db->query($sql);
+if ($resql)
+{
+    $tab_level = array();
+    while ($obj = $db->fetch_object($resql))
+        {     
+            $level=$obj->code;
+            // Put it in the array sorted by sortorder
+            $tab_level[$obj->sortorder] = $level;
+        }
+
+ // Added by Matelli (init list option)
+   $options = '<option value="">&nbsp;</option>';
+   foreach ($tab_level as $tab_level_label)
+     {
+     $options .= '<option value="'.$tab_level_label.'">';
+     $options .= $langs->trans($tab_level_label);
+     $options .= '</option>';
+     }        
+}
+
 
 /* active datatable js */
 $arrayjs = array();
@@ -329,48 +355,29 @@ if (empty($conf->global->SOCIETE_DISABLE_STATE)) {
         print'<td id="9"><input  style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search siret") . '" class="inputSearch" /></td>';
         print'<td id="10"><input  style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search ape") . '" class="inputSearch" /></td>';
         print'<td id="11"><input  style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search idprof4") . '" class="inputSearch" /></td>';
+        
+        print'<td id="12">';
+            print '<select class="flat" id="level">'.$options.'</select>';
+        print'</td>';
+        
+        print'<td id="13">';
+            print $htmlother->select_stcomm($type,$pstcomm,'pstcomm');
+        print'</td>';
 
-        print'<td id="12"><select class="level">
-                            <option  value="">&nbsp;</option>
-                            <option  value="PL_LOW">' . $langs->trans("Low") . '</option>
-                            <option  value="PL_MEDIUM">' . $langs->trans("Medium") . '</option>
-                            <option  value="PL_HIGH">' . $langs->trans("High") . '</option>
-                            </select></td>';
-
-        print'<td id="13"><select class="level">
-                            <option  value="">&nbsp;</option>
-                            <option  value="-1">' . $langs->trans("Don't contact") . '</option>
-                            <option  value="0">' . $langs->trans("Never contact") . '</option>    
-                            <option  value="4">' . $langs->trans("Cold prospect") . '</option>
-                            <option  value="6">' . $langs->trans("Cold prospect") . '</option>
-                            <option  value="7">' . $langs->trans("1 order") . '</option>
-                            <option  value="8">' . $langs->trans("+2 order") . '</option>
-                            <option  value="9">' . $langs->trans("Customer regular") . '</option>    
-                            </select></td>';
     } else {
         print'<td id="6"><input  style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search sales") . '" class="inputSearch" /></td>';
         print'<td id="7"><input  style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search siren") . '" class="inputSearch" /></td>';
         print'<td id="8"><input  style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search siret") . '" class="inputSearch" /></td>';
         print'<td id="9"><input  style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search ape") . '" class="inputSearch" /></td>';
         print'<td id="10"><input  style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search idprof4") . '" class="inputSearch" /></td>';
-
-        print'<td id="11"><select class="level">
-                            <option  value="">&nbsp;</option>
-                            <option  value="PL_LOW">' . $langs->trans("Low") . '</option>
-                            <option  value="PL_MEDIUM">' . $langs->trans("Medium") . '</option>
-                            <option  value="PL_HIGH">' . $langs->trans("High") . '</option>
-                            </select></td>';
-
-        print'<td id="12"><select class="level">
-                            <option  value="">&nbsp;</option>
-                            <option  value="-1">' . $langs->trans("Don't contact") . '</option>
-                            <option  value="0">' . $langs->trans("Never contact") . '</option>    
-                            <option  value="4">' . $langs->trans("Cold prospect") . '</option>
-                            <option  value="6">' . $langs->trans("Cold prospect") . '</option>
-                            <option  value="7">' . $langs->trans("1 order") . '</option>
-                            <option  value="8">' . $langs->trans("+2 order") . '</option>
-                            <option  value="9">' . $langs->trans("Customer regular") . '</option>    
-                            </select></td>';
+        
+        print'<td id="11">';
+            print '<select class="flat" id="level">'.$options.'</select>';
+        print'</td>';
+        
+        print'<td id="12">';
+             print $htmlother->select_stcomm($type,$pstcomm,'pstcomm');
+        print'</td>';
     }
 } else {
     print'<td id="3"><input  style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Zip") . '"class="inputSearch" /></td>';
@@ -383,23 +390,14 @@ if (empty($conf->global->SOCIETE_DISABLE_STATE)) {
         print'<td id="9"><input  style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search ape") . '" class="inputSearch" /></td>';
         print'<td id="10"><input  style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search idprof4") . '" class="inputSearch" /></td>';
 
-        print'<td id="11"><select class="level">
-                            <option  value="">&nbsp;</option>
-                            <option  value="PL_LOW">' . $langs->trans("Low") . '</option>
-                            <option  value="PL_MEDIUM">' . $langs->trans("Medium") . '</option>
-                            <option  value="PL_HIGH">' . $langs->trans("High") . '</option>
-                            </select></td>';
+        
+        print'<td id="11">';
+            print '<select class="flat" id="level">'.$options.'</select>';
+        print'</td>';
 
-        print'<td id="12"><select class="level">
-                            <option  value="">&nbsp;</option>
-                            <option  value="-1">' . $langs->trans("Don't contact") . '</option>
-                            <option  value="0">' . $langs->trans("Never contact") . '</option>    
-                            <option  value="4">' . $langs->trans("Cold prospect") . '</option>
-                            <option  value="6">' . $langs->trans("Cold prospect") . '</option>
-                            <option  value="7">' . $langs->trans("1 order") . '</option>
-                            <option  value="8">' . $langs->trans("+2 order") . '</option>
-                            <option  value="9">' . $langs->trans("Customer regular") . '</option>    
-                            </select></td>';
+        print'<td id="12">';
+            print $htmlother->select_stcomm($type,$pstcomm,'pstcomm');
+        print'</td>';
     } else {
         print'<td id="5"><input  style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search sales") . '" class="inputSearch" /></td>';
         print'<td id="6"><input  style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search siren") . '" class="inputSearch" /></td>';
@@ -407,23 +405,13 @@ if (empty($conf->global->SOCIETE_DISABLE_STATE)) {
         print'<td id="8"><input  style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search ape") . '" class="inputSearch" /></td>';
         print'<td id="9"><input  style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search idprof4") . '" class="inputSearch" /></td>';
 
-        print'<td id="10"><select class="level">
-                            <option  value="">&nbsp;</option>
-                            <option  value="PL_LOW">' . $langs->trans("Low") . '</option>
-                            <option  value="PL_MEDIUM">' . $langs->trans("Medium") . '</option>
-                            <option  value="PL_HIGH">' . $langs->trans("High") . '</option>
-                            </select></td>';
+        print'<td id="10">';
+            print '<select class="flat" id="level">'.$options.'</select>';
+        print'</td>';
 
-        print'<td id="11"><select class="level">
-                            <option  value="">&nbsp;</option>
-                            <option  value="-1">' . $langs->trans("Don't contact") . '</option>
-                            <option  value="0">' . $langs->trans("Never contact") . '</option>    
-                            <option  value="4">' . $langs->trans("Cold prospect") . '</option>
-                            <option  value="6">' . $langs->trans("Cold prospect") . '</option>
-                            <option  value="7">' . $langs->trans("1 order") . '</option>
-                            <option  value="8">' . $langs->trans("+2 order") . '</option>
-                            <option  value="9">' . $langs->trans("Customer regular") . '</option>    
-                            </select></td>';
+        print'<td id="11">';
+             print $htmlother->select_stcomm($type,$pstcomm,'pstcomm');
+        print'</td>';     
     }
 }
 
