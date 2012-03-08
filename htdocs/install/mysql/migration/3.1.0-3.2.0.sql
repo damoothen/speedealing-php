@@ -127,6 +127,10 @@ ALTER TABLE llx_societe ADD COLUMN fk_barcode_type integer DEFAULT 0;
 
 UPDATE llx_menu SET leftmenu = NULL where leftmenu in ('', '0', '1');
 
+-- Add models for contract
+alter table llx_contrat add model_pdf varchar(255);
+
+
 ALTER TABLE llx_categorie_societe DROP INDEX fk_categorie;
 ALTER TABLE llx_categorie_societe DROP INDEX fk_societe;
 

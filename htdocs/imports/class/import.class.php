@@ -158,6 +158,7 @@ class Import
 						$i++;
 					}
 				}
+                                closedir($handle);
 			}
 	        closedir($handle);
 		}

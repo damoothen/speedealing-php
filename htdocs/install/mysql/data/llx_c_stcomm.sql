@@ -5,6 +5,7 @@
 -- Copyright (C) 2004      Guillaume Delecourt  <guillaume.delecourt@opensides.be>
 -- Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
 -- Copyright (C) 2007 	   Patrick Raguin       <patrick.raguin@gmail.com>
+-- Copyright (C) 2010-2011 Herve Prot           <herve.prot@symeos.com>
 --
 -- This program is free software; you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -31,8 +32,17 @@
 --
 
 delete from llx_c_stcomm;
-insert into llx_c_stcomm (id,code,libelle) values (-1, 'ST_NO',    'Ne pas contacter');
-insert into llx_c_stcomm (id,code,libelle) values ( 0, 'ST_NEVER', 'Jamais contacté');
-insert into llx_c_stcomm (id,code,libelle) values ( 1, 'ST_TODO',  'A contacter');
-insert into llx_c_stcomm (id,code,libelle) values ( 2, 'ST_PEND',  'Contact en cours');
-insert into llx_c_stcomm (id,code,libelle) values ( 3, 'ST_DONE',  'Contactée');
+insert into llx_c_stcomm (id,code,libelle,type) values (-1, 'ST_NO',    'Ne pas contacter',-1);
+insert into llx_c_stcomm (id,code,libelle,active,type) values ( 0, 'ST_NEVER', 'Jamais contacté',1,0);
+insert into llx_c_stcomm (id,code,libelle,active,type) values ( 1, 'ST_TODO',  'A contacter',0,0);
+insert into llx_c_stcomm (id,code,libelle,active,type) values ( 2, 'ST_PEND',  'Contact en cours',0,0);
+insert into llx_c_stcomm (id,code,libelle,active,type) values ( 3, 'ST_DONE',  'Contactée',0,0);
+insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (4, 'ST_PFROI', 'Prospect froid', 1, 1);
+insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (5, 'ST_PTIED', 'Prospect tiède', 0, 1);
+insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (6, 'ST_PCHAU', 'Prospect chaud', 1, 1);
+insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (7, 'ST_CINF3', 'Client -3 mois', 1, 2);
+insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (8, 'ST_CREC', 'Client récurrent', 0, 2);
+insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (9, 'ST_CFID', 'Client fidèle', 1, 2);
+insert into llx_c_stcomm (id,code,libelle,active,type) VALUES (10, 'ST_CPAR', 'Client partenaire', 0, 2);
+
+

@@ -1,0 +1,18 @@
+[submodule "htdocs/custom/extrafields"]
+	path = htdocs/custom/extrafields
+	url = hepr@doliforge.org:/gitroot/extrafields/extrafields.git
+[submodule "htdocs/custom/google"]
+	path = htdocs/custom/google
+	url = hepr@doliforge.org:/gitroot/google/google.git
+[submodule "htdocs/custom/lead"]
+	path = htdocs/custom/lead
+	url = hepr@doliforge.org:/gitroot/lead/lead.git
+[submodule "htdocs/custom/multicompany"]
+	path = htdocs/custom/multicompany
+	url = hepr@doliforge.org:/gitroot/multicompany/multicompany.git
+[submodule "htdocs/custom/memcached"]
+	path = htdocs/custom/memcached
+	url = git@git.symeos.com:module-memcache.git
+[submodule "htdocs/custom/dropbox"]
+        path = htdocs/custom/dropbox
+        url = hepr@doliforge.org:/gitroot/dropbox/dropbox.git

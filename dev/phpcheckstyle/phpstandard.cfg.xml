@@ -176,7 +176,7 @@
         
     <!-- All arguments with default values should be at the end -->
     <test name="defaultValuesOrder"/>
-                    
+            
     <!-- Check for prohibited functions -->
     <!-- @see http://www.php.net/manual/en/indexes.php -->
     <test name="checkProhibitedFunctions">
@@ -218,7 +218,7 @@
         
         
     </test>
-    
+
      <!-- Check for silenced errors before function calls (@function) -->
     <test name="checkSilencedError">
         <exception value="rename"/> <!-- Exceptions to this rule -->

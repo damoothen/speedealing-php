@@ -3,6 +3,7 @@
 -- Copyright (C) 2004-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
 -- Copyright (C) 2005-2010 Regis Houssin        <regis@dolibarr.fr>
 -- Copyright (C) 2010      Juanjo Menent        <dolibarr@2byte.es>
+-- Copyright (C) 2010-2011 Herve Prot           <herve.prot@symeos.com>
 --
 -- This program is free software; you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -62,7 +63,7 @@ create table llx_societe
   tva_intra                varchar(20),                         		-- tva
   capital                  real,                                		-- capital de la societe
   description              text,                                		--
-  fk_stcomm                integer        DEFAULT 0 NOT NULL,      		-- commercial statut
+  fk_stcomm                smallint        DEFAULT 0 NOT NULL,      		-- commercial statut
   note                     text,                                		--
   services                 tinyint        DEFAULT 0,            		--
   prefix_comm              varchar(5),                          		-- prefix commercial
@@ -87,5 +88,7 @@ create table llx_societe
   default_lang             varchar(6),									-- default language
   logo                     varchar(255),
   canvas				   varchar(32),			                        -- type of canvas if used (null by default)
-  import_key               varchar(14)                          		-- import key
+  import_key               varchar(14),                          		-- import key
+  latitude       double     DEFAULT 0,                                          -- coordonnees GPS
+  longitude       double     DEFAULT 0                                         -- coordonnees GPS
 )ENGINE=innodb;

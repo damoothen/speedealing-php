@@ -3,6 +3,7 @@
 -- Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
 -- Copyright (C) 2010      Laurent Destailleur  <eldy@users.sourceforge.net>
 -- Copyright (C) 2010      Juanjo Menent        <jmenent@2byte.es>
+-- Copyright (C) 2010-2012 Herve Prot           <herve.prot@symeos.com>
 --
 -- This program is free software; you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -63,5 +64,6 @@ create table llx_propal
   date_livraison		date DEFAULT NULL,				-- delivery date
   fk_availability		integer NULL,
   fk_demand_reason		integer,
-  fk_adresse_livraison	integer							-- delivery address (deprecated)
+  fk_lead       integer     DEFAULT NULL,		-- affaire auquel est rattachee la propale
+  fk_adresse_livraison  integer					-- delivery address (deprecated)
 )ENGINE=innodb;

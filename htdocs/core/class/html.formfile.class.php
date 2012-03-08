@@ -267,7 +267,7 @@ class FormFile
                     $modellist=ModelePDFDeliveryOrder::liste_modeles($this->db);
                 }
             }
-            else if ($modulepart == 'ficheinter')
+            elseif ($modulepart == 'ficheinter')
             {
                 if (is_array($genallowed)) $modellist=$genallowed;
                 else
@@ -354,7 +354,7 @@ class FormFile
                 $class='Modele'.ucfirst($modulepart);
                 if (class_exists($class))
                 {
-                    $modellist=call_user_func($class.'::liste_modeles',$this->db);
+                    $modellist=call_user_func(array($class,'liste_modeles'),$this->db);
                 }
                 else
                 {

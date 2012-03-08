@@ -167,6 +167,10 @@ class HookManager
                             }
                         }
                     }
+                    else if ($method == 'getFields' && method_exists($actioninstance,$method))
+                    {
+                        return $actioninstance->getFields($parameters, $object, $action); // action can be changed by method (to go back to other action for example), socid can be changed/set by method (during creation for example)
+                    }
                     // Generic hooks that return a string (printSearchForm, printLeftBlock, formBuilddocOptions, ...)
                     else if (method_exists($actioninstance,$method))
                     {

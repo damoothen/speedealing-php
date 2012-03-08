@@ -2,6 +2,7 @@
 -- Copyright (C) 2003      Rodolphe Quiedeville <rodolphe@quiedeville.org>
 -- Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
 -- Copyright (C) 2010      Juanjo Menent        <jmenent@2byte.es>
+-- Copyright (C) 2010-2012 Herve Prot           <herve.prot@symeos.com>
 --
 -- This program is free software; you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -28,8 +29,9 @@ create table llx_commande
   ref_int				varchar(255),					-- reference into an internal system (used by dolibarr)
   ref_client			varchar(255),					-- reference for customer
 
-  fk_soc				integer NOT NULL,
-  fk_projet				integer DEFAULT NULL,			-- projet auquel est rattache la commande
+  fk_soc                integer NOT NULL,
+  fk_projet             integer DEFAULT 0,             -- projet auquel est rattache la commande
+  fk_lead       integer     DEFAULT NULL,		-- affaire auquel est rattachee la commande
 
   tms					timestamp,
   date_creation			datetime,						-- date de creation 

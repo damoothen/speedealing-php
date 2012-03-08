@@ -391,6 +391,20 @@ if ($modulepart)
 		}
 		$original_file=$conf->admin->dir_output.'/'.$original_file;
 	}
+        // Model de contract
+        else if ($modulepart == 'modelcontract')
+	{
+		if ($user->admin)
+		{
+			$accessallowed=1;
+		}
+                $tmpdir=trim($conf->global->CONTRAT_ADDON_PDF_ODT_PATH);
+                if($conf->multicompany->enabled && $conf->entity > 1)
+                    $upload_dir=preg_replace('/DOL_DATA_ROOT/',DOL_DATA_ROOT."/".$conf->entity,$tmpdir);
+                else
+                    $upload_dir=preg_replace('/DOL_DATA_ROOT/',DOL_DATA_ROOT,$tmpdir);
+		$original_file=$upload_dir.'/'.$original_file;
+	}
 
 	// Wrapping pour BitTorrent
 	else if ($modulepart == 'bittorrent')

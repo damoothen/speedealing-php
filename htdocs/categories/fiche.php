@@ -3,6 +3,7 @@
  * Copyright (C) 2006-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2007      Patrick Raguin	  	<patrick.raguin@gmail.com>
+ * Copyright (C) 2010-2011 Herve Prot	    	<herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,6 +48,7 @@ if ($origin)
 	if ($type == 1) $idSupplierOrigin 	= $origin;
 	if ($type == 2) $idCompanyOrigin 	= $origin;
 	if ($type == 3) $idMemberOrigin 	= $origin;
+	if ($type == 5) $idContactOrigin 	= $origin;
 }
 
 if ($catorigin && $type == 0) $idCatOrigin = $catorigin;
@@ -92,6 +94,11 @@ if ($action == 'add' && $user->rights->categorie->creer)
 			header("Location: ".DOL_URL_ROOT.'/categories/viewcat.php?id='.$idCatOrigin.'&type='.$type);
 			exit;
 		}
+        else if ($idContactOrigin)
+		{
+			header("Location: ".DOL_URL_ROOT.'/categories/viewcat.php?id='.$idContactOrigin.'&type='.$type);
+			exit;
+		}
 		else
 		{
 			header("Location: ".DOL_URL_ROOT.'/categories/index.php?leftmenu=cat&type='.$type);
@@ -106,6 +113,7 @@ if ($action == 'add' && $user->rights->categorie->creer)
 	$object->socid			= ($_POST["socid"] ? $_POST["socid"] : 'null');
 	$object->visible		= $_POST["visible"];
 	$object->type			= $type;
+	$object->priority		= $_POST["priority"];
 
 	if($_POST['catMere'] != "-1") $object->id_mere = $_POST['catMere'];
 
@@ -163,6 +171,11 @@ if (($action == 'add' || $action == 'confirmed') && $user->rights->categorie->cr
 			header("Location: ".DOL_URL_ROOT.'/categories/viewcat.php?id='.$idCatOrigin.'&mesg='.urlencode($langs->trans("CatCreated")));
 			exit;
 		}
+        else if ($idContactOrigin)
+		{
+			header("Location: ".DOL_URL_ROOT.'/categories/viewcat.php?id='.$idContactOrigin.'&mesg='.urlencode($langs->trans("CatCreated")));
+			exit;
+		}
 
 		header("Location: ".DOL_URL_ROOT.'/categories/viewcat.php?id='.$result.'&type='.$type);
 		exit;
@@ -217,6 +230,12 @@ if ($user->rights->categorie->creer)
 		print '<tr><td>'.$langs->trans("AddIn").'</td><td>';
 		print $form->select_all_categories($type,$catorigin);
 		print '</td></tr>';
+
+        // Priority
+        $priority=array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+        print '<tr><td>'.$langs->trans ("Priority").'</td><td>';
+        print $html->selectarray("priority",$priority,$categorie->priority);
+        print '</td></tr>';
 
 		print '</table>';
 

@@ -55,7 +55,7 @@ function dol_dir_list($path, $types="all", $recursive=0, $filter="", $excludefil
 		while (false !== ($file = readdir($dir)))
 		{
 			if (! utf8_check($file)) $file=utf8_encode($file);	// To be sure data is stored in utf8 in memory
-
+                        
 			$qualified=1;
 
 			// Define excludefilterarray

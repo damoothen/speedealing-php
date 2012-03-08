@@ -3,6 +3,7 @@
  * Copyright (C) 2006-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2007      Patrick Raguin	  	<patrick.raguin@gmail.com>
+ * Copyright (C) 2010-2011 Herve Prot	    	<herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,6 +60,7 @@ if ($action == 'update' && $user->rights->categorie->creer)
 	$categorie->description    = $_POST["description"];
 	$categorie->socid          = ($_POST["socid"] ? $_POST["socid"] : 'null');
 	$categorie->visible        = $_POST["visible"];
+    $categorie->priority       = $_POST["priority"];
 
 	if($_POST['catMere'] != "-1")
 		$categorie->id_mere = $_POST['catMere'];
@@ -111,6 +113,7 @@ dol_htmloutput_errors($mesg);
 $categorie = new Categorie($db, $id);
 $form = new Form($db);
 
+print '<div class="tabBar">';
 print '<table class="notopnoleft" border="0" width="100%">';
 
 print '<tr><td class="notopnoleft" valign="top" width="30%">';
@@ -127,7 +130,7 @@ print '<table class="border" width="100%">';
 // Ref
 print '<tr><td class="fieldrequired">';
 print $langs->trans("Ref").'</td>';
-print '<td><input type="text" size="25" id="nom" name ="nom" value="'.$categorie->label.'" />';
+print '<td><input type="text" size="50" id="nom" name ="nom" value="'.$categorie->label.'" />';
 print '</tr>';
 
 // Description
@@ -144,6 +147,12 @@ print '<tr><td>'.$langs->trans("In").'</td><td>';
 print $form->select_all_categories($type,$categorie->id_mere,'catMere',64,$categorie->id);
 print '</td></tr>';
 
+// Priority
+$priority=array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+print '<tr><td>'.$langs->trans ("Priority").'</td><td>';
+print $html->selectarray("priority",$priority,$categorie->priority);
+print '</td></tr>';
+
 print '</table>';
 print '<br>';
 
@@ -153,6 +162,7 @@ print '</center>';
 print '</form>';
 
 print '</td></tr></table>';
+print '</div>';
 
 $db->close();
 

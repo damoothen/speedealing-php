@@ -3,6 +3,7 @@
 -- Copyright (C) 2006 Laurent Destailleur  <eldy@users.sourceforge.net>
 -- Copyright (C) 2009 Regis Houssin        <regis@dolibarr.fr>
 -- Copyright (C) 2010 Juanjo Menent        <jmenent@2byte.es>
+-- Copyright (C) 2010-2011 Herve Prot      <herve.prot@symeos.com>
 -- 
 -- This program is free software; you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -38,7 +39,8 @@ create table llx_facture_rec
   total_ttc          double(24,8)     DEFAULT 0,
 
   fk_user_author     integer,             -- createur
-  fk_projet          integer,             -- projet auquel est associe la facture
+  fk_projet          integer,             -- projet auquel est associe la 
+  fk_lead       integer     DEFAULT NULL,		-- affaire auquel est rattachee au modèle de facture
   fk_cond_reglement  integer DEFAULT 0,   -- condition de reglement
   fk_mode_reglement  integer DEFAULT 0,  -- mode de reglement (Virement, Prelevement)
   date_lim_reglement date,               -- date limite de reglement

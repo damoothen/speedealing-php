@@ -2,6 +2,7 @@
 -- Copyright (C) 2002-2004 Rodolphe Quiedeville <rodolphe@quiedeville.org>
 -- Copyright (C) 2004-2005 Laurent Destailleur  <eldy@users.sourceforge.net>
 -- Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
+-- Copyright (C) 2010-2011 Herve Prot           <herve.prot@symeos.com>
 --
 -- This program is free software; you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -32,11 +33,13 @@ create table llx_contrat
   date_cloture            datetime,
   fk_soc                  integer NOT NULL,
   fk_projet               integer,
+  fk_lead       integer     DEFAULT NULL,		-- affaire auquel est rattachee aux contrats
   fk_commercial_signature integer NOT NULL, -- obsolete
   fk_commercial_suivi     integer NOT NULL,	-- obsolete
   fk_user_author          integer NOT NULL default 0,
   fk_user_mise_en_service integer,
   fk_user_cloture         integer,
+  model_pdf               varchar(255),
   note                    text,
   note_public             text
   

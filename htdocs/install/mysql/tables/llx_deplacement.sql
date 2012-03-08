@@ -2,6 +2,7 @@
 -- Copyright (C) 2003		Rodolphe Quiedeville <rodolphe@quiedeville.org>
 -- Copyright (C) 2009-2011	Regis Houssin        <regis@dolibarr.fr>
 -- Copyright (C) 2010		Laurent Destailleur  <eldy@users.sourceforge.net>
+-- Copyright (C) 2010-2011  Herve Prot           <herve.prot@symeos.com>
 --
 -- This program is free software; you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -34,6 +35,7 @@ create table llx_deplacement
   km				real,
   fk_soc			integer,
   fk_projet         integer DEFAULT 0,
+  fk_lead       integer     DEFAULT NULL,		-- affaire auquel est rattachee des déplacements
   note				text,
   note_public       text
 )ENGINE=innodb;

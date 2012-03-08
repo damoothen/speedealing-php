@@ -74,8 +74,11 @@ if (! empty($dolibarr_main_document_root_alt))
 }
 // Force db type (for test purpose)
 if (defined('TEST_DB_FORCE_TYPE')) $conf->db->type=constant('TEST_DB_FORCE_TYPE');
-// Force Multi-Company transverse mode
-$conf->multicompany->transverse_mode = empty($multicompany_transverse_mode)?'':$multicompany_transverse_mode;
+
+// Multi-Company transverse mode
+//$conf->multicompany->transverse_mode = empty($multicompany_transverse_mode)?'':$multicompany_transverse_mode;
+$conf->multicompany->transverse_mode=1;
+//print $conf->multicompany->transverse_mode."toto";exit;
 
 // Chargement des includes principaux de librairies communes
 if (! defined('NOREQUIREUSER')) require_once(DOL_DOCUMENT_ROOT ."/user/class/user.class.php");		// Need 500ko memory

@@ -2,6 +2,7 @@
 -- Copyright (C) 2004 Rodolphe Quiedeville <rodolphe@quiedeville.org>
 -- Copyright (C) 2007 Laurent Destailleur  <eldy@users.sourceforge.net>
 -- Copyright (C) 2010 Juanjo Menent        <jmenent@2byte.es>
+-- Copyright (C) 2010-2011 Herve Prot      <herve.prot@symeos.com>
 --
 -- This program is free software; you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -30,6 +31,7 @@ create table llx_commande_fournisseur
 
   fk_soc              integer NOT NULL,
   fk_projet           integer DEFAULT 0,             -- projet auquel est rattache la commande
+  fk_lead       integer     DEFAULT NULL,		-- affaire auquel est rattachee au modèle de facture
 
   tms                 timestamp,
   date_creation       datetime,                      -- date de creation 

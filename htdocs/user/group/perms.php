@@ -4,6 +4,7 @@
  * Copyright (C) 2004-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2004      Eric Seigne          <eric.seigne@ryxeo.com>
  * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2011      Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -184,6 +185,8 @@ if ($id)
     }
         
     $sql.= " AND ugr.fk_usergroup = ".$fgroup->id;
+    
+    //print $sql;exit;
 
     $result=$db->query($sql);
 
@@ -266,6 +269,8 @@ if ($id)
 
     if (empty($conf->global->MAIN_USE_ADVANCED_PERMS)) $sql.= " AND r.perms NOT LIKE '%_advance'";  // Hide advanced perms if option is disable
     $sql.= " ORDER BY r.module, r.id";
+    
+    //print $sql;exit;
 
     $result=$db->query($sql);
     if ($result)

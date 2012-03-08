@@ -1050,7 +1050,9 @@ function getListOfModels($db,$type,$maxfilenamelength=0)
     $sql = "SELECT nom as id, nom as lib, libelle as label, description as description";
     $sql.= " FROM ".MAIN_DB_PREFIX."document_model";
     $sql.= " WHERE type = '".$type."'";
-    $sql.= " AND entity = ".$conf->entity;
+    $sql.= " AND entity in (0,".$conf->entity.")";
+    
+    //print $sql;
 
     $resql = $db->query($sql);
     if ($resql)
@@ -1079,7 +1081,11 @@ function getListOfModels($db,$type,$maxfilenamelength=0)
                 foreach($listofdir as $key=>$tmpdir)
                 {
                     $tmpdir=trim($tmpdir);
-                    $tmpdir=preg_replace('/DOL_DATA_ROOT/',DOL_DATA_ROOT,$tmpdir);
+                    if($conf->multicompany->enabled && $conf->entity > 1)
+                        $tmpdir=preg_replace('/DOL_DATA_ROOT/',DOL_DATA_ROOT."/".$conf->entity,$tmpdir);
+                    else
+                        $tmpdir=preg_replace('/DOL_DATA_ROOT/',DOL_DATA_ROOT,$tmpdir);
+                    
                     if (! $tmpdir) { unset($listofdir[$key]); continue; }
                     if (is_dir($tmpdir))
                     {

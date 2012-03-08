@@ -133,7 +133,8 @@ abstract class CommonDocGenerator
             'company_idprof2'=>$object->idprof2,
             'company_idprof3'=>$object->idprof3,
             'company_idprof4'=>$object->idprof4,
-            'company_note'=>$object->note
+            'company_note'=>$object->note,
+            'company_contact'=>$object->contact->firstname." ".$object->contact->name
         );
     }
 

@@ -8,7 +8,8 @@
  * Copyright (C) 2006      Andre Cianfarani     <acianfa@free.fr>
  * Copyright (C) 2006      Marc Barilley/Ocebo  <marc@ocebo.com>
  * Copyright (C) 2007      Franky Van Liedekerke <franky.van.liedekerker@telenet.be>
- * Copyright (C) 2007      Patrick Raguin 		<patrick.raguin@gmail.com>
+ * Copyright (C) 2007      Patrick Raguin 	 <patrick.raguin@gmail.com>
+ * Copyright (C) 2010-2011 Herve Prot    	 <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -718,6 +719,58 @@ class FormOther
 
         return $out;
     }
+    
+    /**
+	 *  Return select list for stcomm (to use in form search selectors)
+	 *	@param    	type			Type of stcomm
+	 *  @param     	selected     	Preselected value
+	 *  @param     	htmlname      	Name of combo list
+	 *  @return    	return        	Html combo list code
+	 */
+	function select_stcomm($type,$selected='',$htmlname='pstcomm')
+	{
+		global $conf;
+
+	 	// Select each sales and print them in a select input
+ 		$moreforfilter ='<select class="flat" name="'.$htmlname.'">';
+ 		$moreforfilter.='<option value="">&nbsp;</option>';
+
+ 		// Get list of users allowed to be viewed
+ 		$sql_usr = "SELECT st.id, st.libelle";
+ 		$sql_usr.= " FROM ".MAIN_DB_PREFIX."c_stcomm as st, ".MAIN_DB_PREFIX."c_stcomm as sel";
+                $sql_usr.= " WHERE st.active = 1";
+                if($type!='')
+                    $sql_usr.= " AND st.type = ".$type;
+                elseif($selected!='')
+                    $sql_usr.= " AND st.type = sel.type AND sel.id = ".$selected;
+                $sql_usr.= " GROUP BY st.id";
+        
+        //print $sql_usr;exit;
+
+        $resql_usr = $this->db->query($sql_usr);
+ 		if ($resql_usr)
+ 		{
+ 			while ($obj_usr = $this->db->fetch_object($resql_usr))
+ 			{
+ 				$moreforfilter.='<option value="'.$obj_usr->id.'"';
+
+ 				if ($obj_usr->id == $selected) $moreforfilter.=' selected="selected"';
+
+ 				$moreforfilter.='>';
+ 				$moreforfilter.=$obj_usr->libelle;
+ 				$moreforfilter.='</option>';
+ 				$i++;
+ 			}
+ 			$this->db->free($resql_usr);
+ 		}
+ 		else
+ 		{
+ 			dol_print_error($this->db);
+ 		}
+ 		$moreforfilter.='</select>';
+
+ 		return $moreforfilter;
+	}
 
     /**
      * Show form to select addresse

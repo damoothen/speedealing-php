@@ -428,6 +428,8 @@ Module2900Name=GeoIPMaxmind
 Module2900Desc=Capacitats de conversió GeoIP Maxmind
 Module5000Name=Multi-empresa
 Module5000Desc=Permet gestionar diverses empreses
+Module13452Name=SpeedFinder
+Module13452Desc=Motor de cerca en AJAX per cercar en 2 segons un nom basant-se en part d'un número de telèfon
 Module50000Name=PayBox
 Module50000Desc=Mòdul per a proporcionar un pagament en línia amb targeta de crèdit mitjançant Paybox
 Module50100Name=TPV
@@ -1177,6 +1179,7 @@ SendingsReceiptModel=Model de notes de lliurament
 SendingsNumberingModules=Mòduls de numeració de notes de lliurament
 SendingsAbility=Ús de notes de lliurament per als enviaments a clients
 NoNeedForDeliveryReceipts=En la majoria dels casos, les notes de lliurament (llista de productes enviats) també actuen com a notes de recepció i són signades pel client. La gestió de les notes de recepció és per tant redundant i poques vegades s'activarà.
+FreeLegalTextOnDeliveryReceipts=Text lliure a les notes de lliurament
 FreeLegalTextOnShippings=Menció complementària en les notes de lliurament
 ##### Deliveries #####
 DeliveryOrderNumberingModules=Mòdul de numeració de les notes de recepció

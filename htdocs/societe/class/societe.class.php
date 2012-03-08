@@ -7,6 +7,7 @@
  * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2008      Patrick Raguin       <patrick.raguin@auguria.net>
  * Copyright (C) 2010-2011 Juanjo Menent        <jmenent@2byte.es>
+ * Copyright (C) 2010-2012 Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -123,6 +124,7 @@ class Societe extends CommonObject
     var $note;
     //! code statut prospect
     var $stcomm_id;
+    var $type; //0: suspect, 1: prospect, 2:client
     var $statut_commercial;
 
     var $price_level;
@@ -135,6 +137,11 @@ class Societe extends CommonObject
 
     var $ref_int;
     var $import_key;
+
+    //begin Symeos MAP
+    var $lat; // latitude
+    var $lng; // longitude
+    //end Symeos
 
     var $logo;
     var $logo_small;
@@ -159,6 +166,11 @@ class Societe extends CommonObject
         $this->forme_juridique_code  = 0;
         $this->tva_assuj = 1;
         $this->status = 1;
+
+        //begin Symeos
+	$this->lat = 0;
+	$this->lng = 0;
+	//end symeos
 
         return 1;
     }
@@ -246,7 +258,6 @@ class Societe extends CommonObject
                     $result=$interface->run_triggers('COMPANY_CREATE',$this,$user,$langs,$conf);
                     if ($result < 0) { $error++; $this->errors=$interface->errors; }
                     // Fin appel triggers
-
                     dol_syslog(get_class($this)."::Create success id=".$this->id);
                     $this->db->commit();
                     return $this->id;
@@ -500,6 +511,12 @@ class Societe extends CommonObject
             $sql .= ",default_lang = ".($this->default_lang?"'".$this->default_lang."'":"null");
             $sql .= ",logo = ".($this->logo?"'".$this->logo."'":"null");
 
+            //begin Symeos
+            $sql .= ",latitude = " . $this->lat;
+            $sql .= ",longitude = " . $this->lng;
+            //end Symeos
+
+
             if ($allowmodcodeclient && $this->client)
             {
                 //$this->check_codeclient();
@@ -542,7 +559,7 @@ class Societe extends CommonObject
                 // Actions on extra fields (by external module or standard code)
                 include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
                 $hookmanager=new HookManager($this->db);
-                $hookmanager->initHooks(array('thirdpartydao'));
+                $hookmanager->initHooks(array('thirdparty_extrafields'));
                 $parameters=array('socid'=>$this->id);
                 $reshook=$hookmanager->executeHooks('insertExtraFields',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
                 if (empty($reshook))
@@ -638,11 +655,15 @@ class Societe extends CommonObject
         $sql .= ', s.fk_departement, s.fk_pays as country_id, s.fk_stcomm, s.remise_client, s.mode_reglement, s.cond_reglement, s.tva_assuj';
         $sql .= ', s.localtax1_assuj, s.localtax2_assuj, s.fk_prospectlevel, s.default_lang, s.logo';
         $sql .= ', s.import_key';
+        // Begin Symeos
+	$sql .= ', s.latitude';
+	$sql .= ', s.longitude';
+	// End Symeos
         $sql .= ', fj.libelle as forme_juridique';
         $sql .= ', e.libelle as effectif';
         $sql .= ', p.code as country_code, p.libelle as country';
         $sql .= ', d.code_departement as state_code, d.nom as state';
-        $sql .= ', st.libelle as stcomm';
+        $sql .= ', st.libelle as stcomm, st.type as type';
         $sql .= ', te.code as typent_code';
         $sql .= ' FROM '.MAIN_DB_PREFIX.'societe as s';
         $sql .= ' LEFT JOIN '.MAIN_DB_PREFIX.'c_effectif as e ON s.fk_effectif = e.id';
@@ -708,6 +729,7 @@ class Societe extends CommonObject
                 $transcode=$langs->trans('StatusProspect'.$obj->fk_stcomm);
                 $libelle=($transcode!='StatusProspect'.$obj->fk_stcomm?$transcode:$obj->stcomm);
                 $this->stcomm_id = $obj->fk_stcomm;     // id statut commercial
+                $this->type      = $obj->type;          // stcomm type
                 $this->statut_commercial = $libelle;    // libelle statut commercial
 
                 $this->email = $obj->email;
@@ -773,6 +795,11 @@ class Societe extends CommonObject
                 $this->price_level = $obj->price_level;
 
                 $this->import_key = $obj->import_key;
+
+                //begin Symeos
+		$this->lat = $obj->latitude;
+		$this->lng = $obj->longitude;
+		//End Symeos
 
                 $result = 1;
             }
@@ -893,7 +920,7 @@ class Societe extends CommonObject
             	// Additionnal action by hooks
                 include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
                 $hookmanager=new HookManager($this->db);
-                $hookmanager->initHooks(array('thirdpartydao'));
+                $hookmanager->initHooks(array('thirdparty_extrafields'));
                 $parameters=array(); $action='delete';
                 $reshook=$hookmanager->executeHooks('deleteThirdparty',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
                 if (! empty($hookmanager->error))
@@ -1409,22 +1436,22 @@ class Societe extends CommonObject
         }
         if ($mode == 2)
         {
-            if ($statut==0) return img_picto($langs->trans("ActivityCeased"),'statut6').' '.$langs->trans("ActivityCeased");
+            if ($statut==0) return img_picto($langs->trans("ActivityCeased"),'statut5').' '.$langs->trans("ActivityCeased");
             if ($statut==1) return img_picto($langs->trans("InActivity"),'statut4').' '.$langs->trans("InActivity");
         }
         if ($mode == 3)
         {
-            if ($statut==0) return img_picto($langs->trans("ActivityCeased"),'statut6');
+            if ($statut==0) return img_picto($langs->trans("ActivityCeased"),'statut5');
             if ($statut==1) return img_picto($langs->trans("InActivity"),'statut4');
         }
         if ($mode == 4)
         {
-            if ($statut==0) return img_picto($langs->trans("ActivityCeased"),'statut6').' '.$langs->trans("ActivityCeased");
+            if ($statut==0) return img_picto($langs->trans("ActivityCeased"),'statut5').' '.$langs->trans("ActivityCeased");
             if ($statut==1) return img_picto($langs->trans("InActivity"),'statut4').' '.$langs->trans("InActivity");
         }
         if ($mode == 5)
         {
-            if ($statut==0) return $langs->trans("ActivityCeased").' '.img_picto($langs->trans("ActivityCeased"),'statut6');
+            if ($statut==0) return $langs->trans("ActivityCeased").' '.img_picto($langs->trans("ActivityCeased"),'statut5');
             if ($statut==1) return $langs->trans("InActivity").' '.img_picto($langs->trans("InActivity"),'statut4');
         }
     }

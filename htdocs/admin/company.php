@@ -36,7 +36,8 @@ require_once(DOL_DOCUMENT_ROOT."/core/class/html.formcompany.class.php");
 $langs->load("admin");
 $langs->load("companies");
 
-if (!$user->admin) accessforbidden();
+if (!$user->admin && !$user->rights->multicompany->read)
+    accessforbidden();
 
 
 /*
@@ -974,7 +975,8 @@ else
 
     // Actions buttons
     print '<div class="tabsAction">';
-    print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?action=edit">'.$langs->trans("Modify").'</a>';
+    if ($user->admin || $user->rights->multicompany->write)
+        print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?action=edit">'.$langs->trans("Modify").'</a>';
     print '</div>';
 
     print '<br>';

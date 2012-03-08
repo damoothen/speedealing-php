@@ -3,6 +3,8 @@
  * Copyright (C) 2004-2008 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2010 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2011      Juanjo Menent	    <jmenent@2byte.es>
+ * Copyright (C) 2010-2012 Herve Prot          <herve.prot@symeos.com>
+ * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -66,7 +68,7 @@ class modContrat extends DolibarrModules
 		$this->requiredby = array();
 
 		// Config pages
-		$this->config_page_url = array("contract.php");
+		$this->config_page_url = array("contract.php@contrat");
 
 		// Constantes
 		$this->const = array();
@@ -75,6 +77,7 @@ class modContrat extends DolibarrModules
 		$this->const[0][2] = "mod_contract_serpis";
 		$this->const[0][3] = 'Nom du gestionnaire de numerotation des contrats';
 		$this->const[0][4] = 0;
+                $this->const[1]  = array("CONTRAT_ADDON_PDF_ODT_PATH","chaine","DOL_DATA_ROOT/doctemplates/contracts","Directory models");
 
 		// Boxes
 		$this->boxes = array();

@@ -2,6 +2,7 @@
 /* Copyright (C) 2001-2006 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2010-2011 Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,11 +79,12 @@ print "</table></form><br>";
 $third = array();
 $total=0;
 
-$sql = "SELECT s.rowid, s.client, s.fournisseur";
+$sql = "SELECT s.rowid, s.client, s.fournisseur, st.type";
 $sql.= " FROM ".MAIN_DB_PREFIX."societe as s";
-if (! $user->rights->societe->client->voir && ! $socid) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
+$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."c_stcomm as st ON st.id = s.fk_stcomm";
+if (! $user->rights->societe->client->voir && !$socid) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
 $sql.= ' WHERE s.entity IN ('.getEntity('societe', 1).')';
-if (! $user->rights->societe->client->voir && ! $socid) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
+if (! $user->rights->societe->client->voir && !$socid) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
 if ($socid)	$sql.= " AND s.rowid = ".$socid;
 if (! $user->rights->fournisseur->lire) $sql.=" AND (s.fournisseur <> 1 OR s.client <> 0)";    // client=0, fournisseur=0 must be visible
 //print $sql;
@@ -92,8 +94,9 @@ if ($result)
     while ($objp = $db->fetch_object($result))
     {
         $found=0;
-        if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_CUSTOMERS_STATS) && ($objp->client == 1 || $objp->client == 3)) { $found=1; $third['customer']++; }
-        if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_PROSPECTS_STATS) && ($objp->client == 2 || $objp->client == 3)) { $found=1; $third['prospect']++; }
+        if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_CUSTOMERS_STATS) && ($objp->client == 1 || $objp->client == 3) && $objp->type==2) { $found=1; $third['customer']++; }
+        if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_PROSPECTS_STATS) && ($objp->client == 2 || $objp->client == 3) && $objp->type==1) { $found=1; $third['prospect']++; }
+        if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_SUSPECTS_STATS) && ($objp->client == 2 || $objp->client == 3) && $objp->type==0) { $found=1; $third['suspect']++; }
         if ($conf->fournisseur->enabled && empty($conf->global->SOCIETE_DISABLE_SUPPLIERS_STATS) && $objp->fournisseur) { $found=1; $third['supplier']++; }
         if ($conf->societe->enabled && $objp->client == 0 && $objp->fournisseur == 0) { $found=1; $third['other']++; }
         if ($found) $total++;
@@ -107,8 +110,9 @@ if ($conf->use_javascript_ajax && ((round($third['prospect'])?1:0)+(round($third
 {
     print '<tr><td align="center">';
     $dataseries=array();
-    if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_PROSPECTS_STATS))     $dataseries[]=array('label'=>$langs->trans("Prospects"),'data'=>round($third['prospect']));
-    if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_CUSTOMERS_STATS))     $dataseries[]=array('label'=>$langs->trans("Customers"),'data'=>round($third['customer']));
+    if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_CUSTOMERS_STATS)) $dataseries[]=array('label'=>$langs->trans("Customers"),'values'=>array(round($third['customer'])));
+    if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_PROSPECTS_STATS)) $dataseries[]=array('label'=>$langs->trans("Prospects"),'data'=>round($third['prospect']));
+    if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_SUSPECTS_STATS)) $dataseries[]=array('label'=>$langs->trans("Suspects"),'data'=>round($third['suspect']));
     if ($conf->fournisseur->enabled && empty($conf->global->SOCIETE_DISABLE_SUPPLIERS_STATS)) $dataseries[]=array('label'=>$langs->trans("Suppliers"),'data'=>round($third['supplier']));
     if ($conf->societe->enabled)                                                              $dataseries[]=array('label'=>$langs->trans("Others"),'data'=>round($third['other']));
     $data=array('series'=>$dataseries);
@@ -117,21 +121,27 @@ if ($conf->use_javascript_ajax && ((round($third['prospect'])?1:0)+(round($third
 }
 else
 {
-    if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_PROSPECTS_STATS))
-    {
-        $statstring = "<tr $bc[0]>";
-        $statstring.= '<td><a href="'.DOL_URL_ROOT.'/comm/prospect/list.php">'.$langs->trans("Prospects").'</a></td><td align="right">'.round($third['prospect']).'</td>';
-        $statstring.= "</tr>";
-    }
     if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_CUSTOMERS_STATS))
     {
+        $statstring= "<tr $bc[0]>";
+        $statstring.= '<td><a href="'.DOL_URL_ROOT.'/comm/list.php?type=2">'.$langs->trans("Customers").'</a></td><td align="right">'.round($third['customer']).'</td>';
+        $statstring.= "</tr>";
+    }
+    if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_PROSPECTS_STATS))
+    {
         $statstring.= "<tr $bc[1]>";
-        $statstring.= '<td><a href="'.DOL_URL_ROOT.'/comm/list.php">'.$langs->trans("Customers").'</a></td><td align="right">'.round($third['customer']).'</td>';
+        $statstring.= '<td><a href="'.DOL_URL_ROOT.'/comm/list.php?type=1">'.$langs->trans("Prospects").'</a></td><td align="right">'.round($third['prospect']).'</td>';
+        $statstring.= "</tr>";
+    }
+    if ($conf->societe->enabled && empty($conf->global->SOCIETE_DISABLE_SUSPECTS_STATS))
+    {
+        $statstring.= "<tr $bc[0]>";
+        $statstring.= '<td><a href="'.DOL_URL_ROOT.'/comm/list.php?type=0">'.$langs->trans("Suspects").'</a></td><td align="right">'.round($third['suspect']).'</td>';
         $statstring.= "</tr>";
     }
     if ($conf->fournisseur->enabled && empty($conf->global->SOCIETE_DISABLE_SUPPLIERS_STATS))
     {
-        $statstring2 = "<tr $bc[0]>";
+        $statstring2 = "<tr $bc[1]>";
         $statstring2.= '<td><a href="'.DOL_URL_ROOT.'/fourn/liste.php">'.$langs->trans("Suppliers").'</a></td><td align="right">'.round($third['supplier']).'</td>';
         $statstring2.= "</tr>";
     }
@@ -230,7 +240,24 @@ if ($result)
 
         $db->free();
 
-        print "</table>";
+		print "</table><br>";
+                /* Print Graph */
+                if($conf->highcharts->enabled && $user->rights->highcharts->read && $conf->societe->enabled && $conf->categorie->enabled)
+                {
+                    dol_include_once("/highCharts/class/highCharts.class.php");
+                    $langs->load("highcharts@highCharts");
+
+                    $graph=new HighCharts($db);
+                    $graph->width="100%";
+                    $graph->height="300px";
+                    $graph->name="graphPriority";
+                    $graph->label=$langs->trans("graphPriorityTiers");
+
+                    if($user->rights->highcharts->all && $user->rights->societe->client->voir)
+                        $graph->mine=0;
+
+                    $graph->graphPriorityTiers();
+                }
     }
 }
 else

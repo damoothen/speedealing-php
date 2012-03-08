@@ -86,11 +86,11 @@ class Conf
 	{
 	    // Avoid warnings when filling this->xxx
 	    $this->file=(object) array();
-        $this->db=(object) array();
-        $this->global=(object) array();
-        $this->mycompany=(object) array();
-        $this->admin=(object) array();
-        $this->user=(object) array();
+            $this->db=(object) array();
+            $this->global=(object) array();
+            $this->mycompany=(object) array();
+            $this->admin=(object) array();
+            $this->user=(object) array();
 	    //! Charset for HTML output and for storing data in memory
 	    $this->file->character_set_client='UTF-8';   // UTF-8, ISO-8859-1
 	}
@@ -118,6 +118,7 @@ class Conf
 		$sql = "SELECT ".$db->decrypt('name')." as name,";
 		$sql.= " ".$db->decrypt('value')." as value, entity";
 		$sql.= " FROM ".MAIN_DB_PREFIX."const";
+
 		if (! empty($this->multicompany->transverse_mode))
 		{
 			$sql.= " WHERE entity IN (0,1,".$this->entity.")";
@@ -133,6 +134,7 @@ class Conf
 		{
 			$i = 0;
 			$numr = $db->num_rows($resql);
+                        $this->varname=array();
 			while ($i < $numr)
 			{
 				$objp = $db->fetch_object($resql);

@@ -51,7 +51,7 @@ $userid=GETPOST('user', 'int');
 // Security check
 $result = restrictedArea($user, 'user', $id, 'usergroup&usergroup', 'user');
 
-if(! empty($conf->multicompany->enabled) && $conf->entity > 1 && $conf->multicompany->transverse_mode)
+if(! empty($conf->multicompany->enabled) && $conf->entity > 1 && $conf->global->MULTICOMPANY_TRANSVERSE_MODE)
 {
     accessforbidden();
 }
@@ -97,7 +97,7 @@ if ($action == 'add')
 			$object->nom	= trim($_POST["nom"]);
 			$object->note	= trim($_POST["note"]);
 			
-			if($conf->multicompany->enabled && ! empty($conf->multicompany->transverse_mode)) $object->entity = 0;
+			if($conf->multicompany->enabled && ! empty($conf->global->MULTICOMPANY_TRANSVERSE_MODE)) $object->entity = 0;
 			else $object->entity = $_POST["entity"];
 
             $db->begin();
@@ -140,8 +140,8 @@ if ($action == 'adduser' || $action =='removeuser')
 
 			$edituser = new User($db);
 			$edituser->fetch($userid);
-			if ($action == 'adduser')    $result=$edituser->SetInGroup($object->id,($conf->multicompany->transverse_mode?GETPOST("entity"):$object->entity));
-			if ($action == 'removeuser') $result=$edituser->RemoveFromGroup($object->id,($conf->multicompany->transverse_mode?GETPOST("entity"):$object->entity));
+			if ($action == 'adduser')    $result=$edituser->SetInGroup($object->id,($conf->global->MULTICOMPANY_TRANSVERSE_MODE?GETPOST("entity"):$object->entity));
+			if ($action == 'removeuser') $result=$edituser->RemoveFromGroup($object->id,($conf->global->MULTICOMPANY_TRANSVERSE_MODE?GETPOST("entity"):$object->entity));
 
             if ($result > 0)
             {
@@ -177,7 +177,7 @@ if ($action == 'update')
 		$object->nom	= trim($_POST["group"]);
 		$object->note	= dol_htmlcleanlastbr($_POST["note"]);
 		
-		if($conf->multicompany->enabled && !empty($conf->multicompany->transverse_mode)) $object->entity = 0;
+		if($conf->multicompany->enabled && !empty($conf->global->MULTICOMPANY_TRANSVERSE_MODE)) $object->entity = 0;
 		else $object->entity = $_POST["entity"];
 
         $ret=$object->update();
@@ -229,7 +229,7 @@ if ($action == 'create')
 	// Multicompany
 	if (! empty($conf->multicompany->enabled))
 	{
-		if (empty($conf->multicompany->transverse_mode) && $conf->entity == 1 && $user->admin && ! $user->entity)
+		if (empty($conf->global->MULTICOMPANY_TRANSVERSE_MODE) && $conf->entity == 1 && $user->admin && ! $user->entity)
 		{
 			print "<tr>".'<td valign="top">'.$langs->trans("Entity").'</td>';
 			print "<td>".$mc->select_entities($conf->entity);
@@ -306,7 +306,7 @@ else
 			print "</td></tr>\n";
 
 			// Multicompany
-			if (! empty($conf->multicompany->enabled) && empty($conf->multicompany->transverse_mode) && $conf->entity == 1 && $user->admin && ! $user->entity)
+			if (! empty($conf->multicompany->enabled) && empty($conf->global->MULTICOMPANY_TRANSVERSE_MODE) && $conf->entity == 1 && $user->admin && ! $user->entity)
 			{
 				$mc->getInfo($object->entity);
 				print "<tr>".'<td valign="top">'.$langs->trans("Entity").'</td>';
@@ -354,7 +354,7 @@ else
 
             if (! empty($object->members))
             {
-                if( !($conf->multicompany->enabled && $conf->multicompany->transverse_mode))
+                if( !($conf->multicompany->enabled && $conf->global->MULTICOMPANY_TRANSVERSE_MODE))
                 {
                     foreach($object->members as $useringroup)
                     {
@@ -376,7 +376,7 @@ else
                 // Multicompany
                 if (! empty($conf->multicompany->enabled))
                 {
-                    if ($conf->entity == 1 && $conf->multicompany->transverse_mode)
+                    if ($conf->entity == 1 && $conf->global->MULTICOMPANY_TRANSVERSE_MODE)
                     {
                         print '</td><td valign="top">'.$langs->trans("Entity").'</td>';
                         print "<td>".$mc->select_entities($conf->entity);
@@ -472,7 +472,7 @@ else
             // Multicompany
             if (! empty($conf->multicompany->enabled))
             {
-                if (empty($conf->multicompany->transverse_mode) && $conf->entity == 1 && $user->admin && ! $user->entity)
+                if (empty($conf->global->MULTICOMPANY_TRANSVERSE_MODE) && $conf->entity == 1 && $user->admin && ! $user->entity)
                 {
                     print "<tr>".'<td valign="top">'.$langs->trans("Entity").'</td>';
                     print "<td>".$mc->select_entities($object->entity);

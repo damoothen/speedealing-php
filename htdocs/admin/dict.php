@@ -5,6 +5,7 @@
  * Copyright (C) 2005-2010 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2010-2011 Juanjo Menent        <jmenent@2byte.es>
  * Copyright (C) 2011      Philippe Grand       <philippe.grand@atoo-net.com>
+ * Copyright (C) 2011      Herve Prot           <herve.prot@symeos.com>
  * Copyright (C) 2011      Remy Younes          <ryounes@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -68,8 +69,8 @@ $hookmanager->initHooks(array('admin'));
 // Thi page is a generic page to edit dictionnaries
 // Put here delacaration of dictionnaries properties
 
-// Sort order to show dictionnary (0 is space). All other dictionnaries (added by modules) will be at end of this.
-$taborder=array(9,0,4,3,2,0,1,8,19,16,0,5,11,0,6,0,10,12,13,0,14,0,7,17,0,22,20,18,21,0,15);
+// Ordres d'affichage des dictionnaires (0 pour espace)
+$taborder=array(9,0,4,3,2,0,1,8,19,0,28,16,26,27,0,5,11,0,6,0,10,12,13,0,14,0,7,17,0,22,20,18,21,0,15);
 
 // Name of SQL tables of dictionnaries
 $tabname[1] = MAIN_DB_PREFIX."c_forme_juridique";
@@ -94,6 +95,9 @@ $tabname[19]= MAIN_DB_PREFIX."c_effectif";
 $tabname[20]= MAIN_DB_PREFIX."c_input_method";
 $tabname[21]= MAIN_DB_PREFIX."c_availability";
 $tabname[22]= MAIN_DB_PREFIX."c_input_reason";
+$tabname[26]= MAIN_DB_PREFIX."c_lead_ca_level";
+$tabname[27]= MAIN_DB_PREFIX."c_leadlevel";
+$tabname[28]= MAIN_DB_PREFIX."c_stcomm";
 
 // Dictionary labels
 $tablib[1] = "DictionnaryCompanyJuridicalType";
@@ -118,6 +122,9 @@ $tablib[19]= "DictionnaryStaff";
 $tablib[20]= "DictionnaryOrderMethods";
 $tablib[21]= "DictionnaryAvailability";
 $tablib[22]= "DictionnarySource";
+$tablib[26]= $langs->trans("DictionnaryCAlevel");
+$tablib[27]= $langs->trans("DictionnaryLeadlevel");
+$tablib[28]= $langs->trans("DictionnaryProspectStatus");
 
 // Requete pour extraction des donnees des dictionnaires
 $tabsql[1] = "SELECT f.rowid as rowid, f.code, f.libelle, p.code as pays_code, p.libelle as pays, f.active FROM ".MAIN_DB_PREFIX."c_forme_juridique as f, ".MAIN_DB_PREFIX."c_pays as p WHERE f.fk_pays=p.rowid";
@@ -125,7 +132,7 @@ $tabsql[2] = "SELECT d.rowid as rowid, d.code_departement as code, d.nom as libe
 $tabsql[3] = "SELECT r.rowid as rowid, code_region as code, nom as libelle, r.fk_pays as pays_id, p.code as pays_code, p.libelle as pays, r.active FROM ".MAIN_DB_PREFIX."c_regions as r, ".MAIN_DB_PREFIX."c_pays as p WHERE r.fk_pays=p.rowid and p.active=1";
 $tabsql[4] = "SELECT rowid   as rowid, code, libelle, active FROM ".MAIN_DB_PREFIX."c_pays";
 $tabsql[5] = "SELECT c.rowid as rowid, c.code as code, c.civilite AS libelle, c.active FROM ".MAIN_DB_PREFIX."c_civilite AS c";
-$tabsql[6] = "SELECT a.id    as rowid, a.code as code, a.libelle AS libelle, a.type, a.active, a.module, a.position FROM ".MAIN_DB_PREFIX."c_actioncomm AS a";
+$tabsql[6] = "SELECT a.id    as rowid, a.code as code, a.libelle AS libelle, a.type, a.active, a.module, a.position, a.priority FROM ".MAIN_DB_PREFIX."c_actioncomm AS a";
 $tabsql[7] = "SELECT a.id    as rowid, a.code as code, a.libelle AS libelle, a.deductible, p.code as pays_code, p.libelle as pays, a.fk_pays as pays_id, a.active FROM ".MAIN_DB_PREFIX."c_chargesociales AS a, ".MAIN_DB_PREFIX."c_pays as p WHERE a.fk_pays=p.rowid and p.active=1";
 $tabsql[8] = "SELECT id      as rowid, code, libelle, active FROM ".MAIN_DB_PREFIX."c_typent";
 $tabsql[9] = "SELECT code_iso as code, label as libelle, unicode, active FROM ".MAIN_DB_PREFIX."c_currencies";
@@ -142,6 +149,10 @@ $tabsql[19]= "SELECT id      as rowid, code, libelle, active FROM ".MAIN_DB_PREF
 $tabsql[20]= "SELECT rowid   as rowid, code, libelle, active FROM ".MAIN_DB_PREFIX."c_input_method";
 $tabsql[21]= "SELECT c.rowid as rowid, code, label, active FROM ".MAIN_DB_PREFIX."c_availability AS c";
 $tabsql[22]= "SELECT rowid   as rowid, code, label, active FROM ".MAIN_DB_PREFIX."c_input_reason";
+$tabsql[26]= "SELECT id   as rowid, code, libelle, active FROM ".$tabname[26];
+$tabsql[27]= "SELECT id   as rowid, code, picto, libelle, type, active FROM ".$tabname[27];
+$tabsql[28]= "SELECT id   as rowid, code, libelle, active, type FROM ".$tabname[28];
+
 
 // Critere de tri du dictionnaire
 $tabsqlsort[1] ="pays ASC, code ASC";
@@ -149,7 +160,7 @@ $tabsqlsort[2] ="pays ASC, code ASC";
 $tabsqlsort[3] ="pays ASC, code ASC";
 $tabsqlsort[4] ="code ASC";
 $tabsqlsort[5] ="libelle ASC";
-$tabsqlsort[6] ="a.type ASC, a.module, a.position, a.code ASC";
+$tabsqlsort[6] ="a.type ASC, a.module, a.position, a.priority ASC";
 $tabsqlsort[7] ="pays ASC, code ASC, a.libelle ASC";
 $tabsqlsort[8] ="libelle ASC";
 $tabsqlsort[9] ="libelle ASC";
@@ -166,6 +177,9 @@ $tabsqlsort[19]="id ASC";
 $tabsqlsort[20]="code ASC, libelle ASC";
 $tabsqlsort[21]="code ASC, label ASC";
 $tabsqlsort[22]="code ASC, label ASC";
+$tabsqlsort[26]="id ASC";
+$tabsqlsort[27]="id ASC";
+$tabsqlsort[28]="id ASC";
 
 // Nom des champs en resultat de select pour affichage du dictionnaire
 $tabfield[1] = "code,libelle,pays";
@@ -173,7 +187,7 @@ $tabfield[2] = "code,libelle,region_id,region,pays";   // "code,libelle,region,p
 $tabfield[3] = "code,libelle,pays_id,pays";
 $tabfield[4] = "code,libelle";
 $tabfield[5] = "code,libelle";
-$tabfield[6] = "code,libelle,type,position";
+$tabfield[6] = "code,libelle,priority,type,position";
 $tabfield[7] = "code,libelle,pays_id,pays,deductible";
 $tabfield[8] = "code,libelle";
 $tabfield[9] = "code,libelle,unicode";
@@ -190,6 +204,9 @@ $tabfield[19]= "code,libelle";
 $tabfield[20]= "code,libelle";
 $tabfield[21]= "code,label";
 $tabfield[22]= "code,label";
+$tabfield[26]= "code,libelle";
+$tabfield[27]= "code,libelle,picto";
+$tabfield[28]= "code,libelle,type";
 
 // Nom des champs d'edition pour modification d'un enregistrement
 $tabfieldvalue[1] = "code,libelle,pays";
@@ -197,7 +214,7 @@ $tabfieldvalue[2] = "code,libelle,region";   // "code,libelle,region"
 $tabfieldvalue[3] = "code,libelle,pays";
 $tabfieldvalue[4] = "code,libelle";
 $tabfieldvalue[5] = "code,libelle";
-$tabfieldvalue[6] = "code,libelle,type,position";
+$tabfieldvalue[6] = "code,libelle,priority,type,position";
 $tabfieldvalue[7] = "code,libelle,pays,deductible";
 $tabfieldvalue[8] = "code,libelle";
 $tabfieldvalue[9] = "code,libelle,unicode";
@@ -214,6 +231,9 @@ $tabfieldvalue[19]= "code,libelle";
 $tabfieldvalue[20]= "code,libelle";
 $tabfieldvalue[21]= "code,label";
 $tabfieldvalue[22]= "code,label";
+$tabfieldvalue[26]= "code,libelle";
+$tabfieldvalue[27]= "code,libelle,picto";
+$tabfieldvalue[28]= "code,libelle,type";
 
 // Nom des champs dans la table pour insertion d'un enregistrement
 $tabfieldinsert[1] = "code,libelle,fk_pays";
@@ -221,7 +241,7 @@ $tabfieldinsert[2] = "code_departement,nom,fk_region";
 $tabfieldinsert[3] = "code_region,nom,fk_pays";
 $tabfieldinsert[4] = "code,libelle";
 $tabfieldinsert[5] = "code,civilite";
-$tabfieldinsert[6] = "code,libelle,type,position";
+$tabfieldinsert[6] = "code,libelle,priority,type,position";
 $tabfieldinsert[7] = "code,libelle,fk_pays,deductible";
 $tabfieldinsert[8] = "code,libelle";
 $tabfieldinsert[9] = "code_iso,label,unicode";
@@ -238,6 +258,9 @@ $tabfieldinsert[19]= "code,libelle";
 $tabfieldinsert[20]= "code,libelle";
 $tabfieldinsert[21]= "code,label";
 $tabfieldinsert[22]= "code,label";
+$tabfieldinsert[26]= "code,libelle";
+$tabfieldinsert[27]= "code,libelle,picto";
+$tabfieldinsert[28]= "code, libelle,type";
 
 // Nom du rowid si le champ n'est pas de type autoincrement
 // Example: "" if id field is "rowid" and has autoincrement on
@@ -264,6 +287,9 @@ $tabrowid[19]= "id";
 $tabrowid[20]= "";
 $tabrowid[21]= "rowid";
 $tabrowid[22]= "rowid";
+$tabrowid[26]= "id";
+$tabrowid[27]= "id";
+$tabrowid[28]= "id";
 
 // Condition to show dictionnary in setup page
 $tabcond[1] = true;
@@ -288,6 +314,9 @@ $tabcond[19]= $conf->societe->enabled;
 $tabcond[20]= $conf->fournisseur->enabled;
 $tabcond[21]= $conf->propale->enabled;
 $tabcond[22]= $conf->commande->enabled||$conf->propale->enabled;
+$tabcond[26]= $conf->lead->enabled;
+$tabcond[27]= $conf->lead->enabled;
+$tabcond[28]= $conf->societe->enabled;;
 
 
 complete_dictionnary_with_modules($taborder,$tabname,$tablib,$tabsql,$tabsqlsort,$tabfield,$tabfieldvalue,$tabfieldinsert,$tabrowid,$tabcond);
@@ -300,6 +329,7 @@ if ($id == 11)
     $langs->load("orders");
     $langs->load("contracts");
     $langs->load("projects");
+    $langs->load("lead@lead");
     $langs->load("propal");
     $langs->load("bills");
     $langs->load("interventions");
@@ -307,6 +337,7 @@ if ($id == 11)
     "order_supplier"=>$langs->trans("SupplierOrder"),
     "contrat"=>$langs->trans("Contract"),
     "project"=>$langs->trans("Project"),
+	"lead"=>$langs->trans("Lead"),
     "project_task"=>$langs->trans("Task"),
     "propal"=>$langs->trans("Propal"),
     "facture"=>$langs->trans("Bill"),
@@ -1026,6 +1057,12 @@ function fieldList($fieldlist,$obj='',$tabname='')
             print $formadmin->select_language($conf->global->MAIN_LANG_DEFAULT,'lang');
             print '</td>';
         }
+	elseif ($fieldlist[$field] == 'priority') {
+            $priority=array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+            print '<td>';
+            print $form->selectarray("priority",$priority,$obj->$fieldlist[$field]);
+            print '</td>';
+	}
         // Le type de l'element (pour les type de contact).'
         elseif ($fieldlist[$field] == 'element')
         {

@@ -2,6 +2,7 @@
 /* Copyright (c) 2008-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2010-2011 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2010      Juanjo Menent        <jmenent@2byte.es>
+ * Copyright (C) 2011      Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,8 +59,11 @@ class FormActions
     {
         global $langs,$conf;
 
-        $listofstatus=array('-1'=>$langs->trans("ActionNotApplicable"),
+        /*$listofstatus=array('-1'=>$langs->trans("ActionNotApplicable"),
                             '0'=>$langs->trans("ActionRunningNotStarted"),
+                            '50'=>$langs->trans("ActionRunningShort"),
+                            '100'=>$langs->trans("ActionDoneShort"));*/
+        $listofstatus=array('0'=>$langs->trans("ActionRunningNotStarted"),
                             '50'=>$langs->trans("ActionRunningShort"),
                             '100'=>$langs->trans("ActionDoneShort"));
 
@@ -165,7 +169,7 @@ class FormActions
      *  @param  string		$htmlname        Nom champ formulaire
      * 	@return	void
      */
-    function select_type_actions($selected='',$htmlname='actioncode')
+    function select_type_actions($selected='',$htmlname='actioncode',$active=1,$idorcode='code',$type='1,2')
     {
         global $langs,$user;
 
@@ -174,9 +178,10 @@ class FormActions
         $caction=new CActionComm($this->db);
         $form=new Form($this->db);
 
-        $arraylist=$caction->liste_array(1,'code');
-        array_unshift($arraylist,'&nbsp;');     // Add empty line at start
-        //asort($arraylist);
+        $arraylist=array();
+        $arraylist=$caction->liste_array($active,$idorcode,$type);
+        $arraylist[0]='&nbsp;';
+        asort($arraylist);
 
         print $form->selectarray($htmlname, $arraylist, $selected);
         if ($user->admin) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"),1);

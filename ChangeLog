@@ -159,6 +159,9 @@ For users:
 - New: Use autocompletion on invoice select when creating replacement 
        or credit note invoice.
 - New: task #10885: Add a week view for calendar.
+- New: Modify propect workflow by a dictionnary
+- New: Add new client workflow 
+- New: fusion of clients.php and propects.php to liste.php
 - New: task #11018: Add a status "not applicable" on events.
 - New: Add subscriptions/country/region/town statistics for member module.
 - New: Can define a proxy for external web access.

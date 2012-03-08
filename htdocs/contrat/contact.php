@@ -23,6 +23,7 @@
  */
 
 require ("../main.inc.php");
+require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 require_once(DOL_DOCUMENT_ROOT.'/core/lib/contract.lib.php');
 require_once(DOL_DOCUMENT_ROOT."/contrat/class/contrat.class.php");
 require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
@@ -112,6 +113,7 @@ $form = new Form($db);
 $formcompany= new FormCompany($db);
 $contactstatic=new Contact($db);
 $userstatic=new User($db);
+$formfile = new FormFile($db);
 
 dol_htmloutput_mesg($mesg);
 
@@ -349,7 +351,6 @@ if ($id > 0)
 			}
 		}
 		print "</table>";
-
 
 	}
 	else

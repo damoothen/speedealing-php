@@ -3,6 +3,7 @@
  * Copyright (C) 2006      Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2007      Patrick Raguin       <patrick.raguin@gmail.com>
  * Copyright (C) 2010      Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2010-2011 Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,7 +44,7 @@ function societe_prepare_head($object)
     $h++;
 
     // TODO Remove tests on object->object. Functions must be called with a company object directly
-    if (($object->client==2 || $object->client==3
+    if (($object->client==2 || $object->client==1 || $object->client==3 
     || (isset($object->object) && $object->object->client==2) || (isset($object->object) && $object->object->client==3)) && empty($conf->global->SOCIETE_DISABLE_PROSPECTS))
     {
         $head[$h][0] = DOL_URL_ROOT.'/comm/prospect/fiche.php?socid='.$object->id;
@@ -51,7 +52,7 @@ function societe_prepare_head($object)
         $head[$h][2] = 'prospect';
         $h++;
     }
-    if ($object->client==1 || $object->client==3 || (is_object($object->object) && $object->object->client==1) || (is_object($object->object) && $object->object->client==3))
+    if ($object->client==1 || $object->client==2 || $object->client==3 || (is_object($object->object) && $object->object->client==1) || (is_object($object->object) && $object->object->client==3))
     {
         $head[$h][0] = DOL_URL_ROOT.'/comm/fiche.php?socid='.$object->id;
         $head[$h][1] = $langs->trans("Customer");
@@ -68,7 +69,7 @@ function societe_prepare_head($object)
     if (! empty($conf->agenda->enabled))
     {
     	$head[$h][0] = DOL_URL_ROOT.'/societe/agenda.php?socid='.$object->id;
-    	$head[$h][1] = $langs->trans("Agenda");
+    	$head[$h][1] = $langs->trans("Activities");
     	$head[$h][2] = 'agenda';
     	$h++;
     }
@@ -118,6 +119,16 @@ function societe_prepare_head($object)
     $head[$h][1] = $langs->trans("Info");
     $head[$h][2] = 'info';
     $h++;
+
+    //Map module
+    if ($conf->map->enabled && $user->societe_id == 0 && $object->lat && $object->lng)
+    {
+        $langs->load("map@map");
+	$head[$h][0] = DOL_URL_ROOT.'/map/map.php?socid='.$object->id;
+	$head[$h][1] = $langs->trans("Map");
+	$head[$h][2] = 'map';
+	$h++;
+    }
 
     complete_head_from_modules($conf,$langs,$object,$head,$h,'thirdparty','remove');
 
