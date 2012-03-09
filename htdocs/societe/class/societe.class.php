@@ -1468,7 +1468,7 @@ class Societe extends CommonObject
         }
 
         // Add type of canvas
-        $lien.=(!empty($this->canvas)?'&amp;canvas='.$this->canvas:'').'">';
+        $lien.=(!empty($this->canvas)?'&amp;canvas='.$this->canvas:'').'" target="'.$option.'">';
         $lienfin='</a>';
 
         $name=$this->name?$this->name:$this->nom;
