@@ -415,7 +415,7 @@ class DoliDBMysqli
     {
         // If resultset not provided, we take the last used by connexion
         if (! is_object($resultset)) { $resultset=$this->_results; }
-        return mysqli_fetch_array($resultset);
+        return mysqli_fetch_array($resultset, MYSQL_ASSOC);
     }
 
     /**

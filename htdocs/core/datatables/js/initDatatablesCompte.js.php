@@ -24,335 +24,79 @@
  */
 $path = "../core/datatables/langs/".$langs->defaultlang.".txt";
 $result = file($path);
-print'<script>';
+print'<script type="text/javascript" charset="utf-8">';
 print '$(document).ready(function() {
     /* Get the lang */
     var lang="en_US"; 
     ';
 if($result!=false)
     print'lang = "'.$langs->defaultlang.'"';
-print'
-    var cate = "'.$conf->categorie->enabled.'";    
-    var state='.($conf->global->SOCIETE_DISABLE_STATE?0:1).';
-    var exportright ="'.$user->rights->societe->contact->export.'";  
+ 
     /* Insert a \'details\' column to the table */
-    var nCloneTh = document.createElement( \'th\' );
-    var nCloneTd = document.createElement( \'td\' );
-     
-    $(\'#liste thead tr\').each( function () {
-        this.insertBefore( nCloneTh, this.childNodes[0] );
-    } );
-     
-    $(\'#liste tbody tr\').each( function () {
-        this.insertBefore(  nCloneTd.cloneNode( true ), this.childNodes[0] );
-    } );
-    if(state!=\'\'){
-        if(cate!=\'\'){
-            if(exportright==1){
-                /* init dataTable with cate*/ 
-            oTable = $(\'#liste\').dataTable( {
-                "aoColumnDefs": [ 
-                {"bVisible": false, "aTargets": [ 5 ]},{"bVisible": false, "aTargets": [ 8 ]},
-                {"bVisible": false, "aTargets": [ 9 ]},{"bVisible": false, "aTargets": [ 10 ]},
-                {"bVisible": false, "aTargets": [ 11 ]}
-                ],
-                "iDisplayLength": 10,
+    print'
+                  oTable = $(\'#liste\').dataTable( {
+                
+                "iDisplayLength": '.$conf->global->MAIN_SIZE_LISTE_LIMIT.',
                 "aLengthMenu": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,"All"]],
                 "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "serverprocess.php?type='.$type.'&pstcomm='.$pstcomm.'&search_sale='.$search_sale.'",
-                "bPaginate": true,
-                "oLanguage": {
-                    "sUrl": "../core/datatables/langs/"+lang+".txt"
-                        
-                },
-                "sDom": \'T<"clear">lfrtip\',
-                "oTableTools": {
-                    "sSwfPath": "../core/datatables/swf/copy_cvs_xls_pdf.swf",
-                    "aButtons": [
-                    "xls"	
-                    ]
-                }
-            });
-            $("td#"+5).css("display", "none");
-            $("td#"+8).css("display", "none");
-            $("td#"+9).css("display", "none");
-            $("td#"+10).css("display", "none");
-            $("td#"+11).css("display", "none");
-            
-            }else{
-                /* init dataTable with cate*/ 
-            oTable = $(\'#liste\').dataTable( {
-                "aoColumnDefs": [ 
-                {"bVisible": false, "aTargets": [ 5 ]},{"bVisible": false, "aTargets": [ 8 ]},
-                {"bVisible": false, "aTargets": [ 9 ]},{"bVisible": false, "aTargets": [ 10 ]},
-                {"bVisible": false, "aTargets": [ 11 ]}
-                ],
-                "iDisplayLength": 10,
-                "aLengthMenu": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,"All"]],
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "serverprocess.php?type='.$type.'&pstcomm='.$pstcomm.'&search_sale='.$search_sale.'",
-                "bPaginate": true,
-                "oLanguage": {
-                    "sUrl": "../core/datatables/langs/"+lang+".txt"
-                        
-                }
-            });
-            $("td#"+5).css("display", "none");
-            $("td#"+8).css("display", "none");
-            $("td#"+9).css("display", "none");
-            $("td#"+10).css("display", "none");
-            $("td#"+11).css("display", "none");
-            
-            }
-            
-        }
-        if(cate==\'\'){
-              if(exportright==1){
-                /* init dataTable without cate*/ 
-                oTable = $(\'#liste\').dataTable( {
-                    "aoColumnDefs": [ 
-                    {"bVisible": false, "aTargets": [ 5 ]},{"bVisible": false, "aTargets": [ 7 ]},
-                    {"bVisible": false, "aTargets": [ 8 ]},{"bVisible": false, "aTargets": [ 9 ]},
-                    {"bVisible": false, "aTargets": [ 10 ]},
-                    ],
-
-                    "iDisplayLength": 10,
-                    "aLengthMenu": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,"All"]],
-                    "bProcessing": true,
-                    "sAjaxDataProp": "rows",
-                    "sAjaxSource": "/users/_design/shop/_view/view",
-                    "aoColumns": [
-			{ "mDataProp": "id" },
-			{ "mDataProp": "key" },
-			{ "mDataProp": "value.0" },
-			{ "mDataProp": "value.1" }
-                    ],
-                    "bPaginate": true,
-                    "oLanguage": {
-                        "sUrl": "../core/datatables/langs/"+lang+".txt"
-
+                "sAjaxSource": "serverprocess1.php?type='.$type.'&pstcomm='.$pstcomm.'&search_sale='.$search_sale.'",
+                "aoColumns": [
+                    { "mDataProp": "nom", "bUseRendered": false, "bSearchable": true,
+                        "fnRender": function(obj) {
+                        var ar = [];
+                        ar[ar.length] = "<a href=\"\/dolibarrnosql\/comm\/prospect\/fiche.php?socid=";
+                        ar[ar.length] = obj.aData.rowid;
+                        ar[ar.length] = "\"><img src=\"\/dolibarrnosql\/theme\/cameleo\/img\/object_company.png\" border=\"0\" alt=\"Afficher soci&eacute;t&eacute;:";
+                        ar[ar.length] = obj.aData.nom.toString();
+                        ar[ar.length] = "\" title=\"Afficher soci&eacute;t&eacute;:";
+                        ar[ar.length] = obj.aData.nom.toString();
+                        ar[ar.length] = "\"><\/a> <a href=\"\/dolibarrnosql\/comm\/prospect\/fiche.php?socid=";
+                        ar[ar.length] = obj.aData.rowid;
+                        ar[ar.length] = "\">";
+                        ar[ar.length] = obj.aData.nom.toString();
+                        ar[ar.length] = "<\/a>";
+                        var str = ar.join("");
+                        return str;
+                        }
                     },
-                    "sDom": \'T<"clear">lfrtip\',
-                    "oTableTools": {
-                        "sSwfPath": "../core/datatables/swf/copy_cvs_xls_pdf.swf",
-                        "aButtons": [
-                        "xls"	
-                        ]
-                    }
-                });
-                $("td#"+5).css("display", "none");
-                $("td#"+7).css("display", "none");
-                $("td#"+8).css("display", "none");
-                $("td#"+9).css("display", "none");
-                $("td#"+10).css("display", "none");          
-              }
-              else{
-                /* init dataTable without cate*/ 
-                oTable = $(\'#liste\').dataTable( {
-                    "aoColumnDefs": [ 
-                    {"bVisible": false, "aTargets": [ 5 ]},{"bVisible": false, "aTargets": [ 7 ]},
-                    {"bVisible": false, "aTargets": [ 8 ]},{"bVisible": false, "aTargets": [ 9 ]},
-                    {"bVisible": false, "aTargets": [ 10 ]},
-                    ],
-
-                    "iDisplayLength": 10,
-                    "aLengthMenu": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,"All"]],
-                    "bProcessing": true,
-                    "bServerSide": true,
-                    "sAjaxSource": "serverprocess.php?type='.$type.'&pstcomm='.$pstcomm.'&search_sale='.$search_sale.'",
-                    "bPaginate": true,
-                    "oLanguage": {
-                        "sUrl": "../core/datatables/langs/"+lang+".txt"
-
-                    }
-                });
-                $("td#"+5).css("display", "none");
-                $("td#"+7).css("display", "none");
-                $("td#"+8).css("display", "none");
-                $("td#"+9).css("display", "none");
-                $("td#"+10).css("display", "none"); 
-              }    
-        }
-    }
-    else{
-        if(cate!=\'\'){
-            if(exportright==1){
-                /* init dataTable with cate*/ 
-                oTable = $(\'#liste\').dataTable( {
-                "aoColumnDefs": [ 
-                {"bVisible": false,"aTargets": [ 4 ]},{"bVisible": false, "aTargets": [ 7 ]},
-                {"bVisible": false,"aTargets": [ 8 ]},{"bVisible": false, "aTargets": [ 9 ]},
-                {"bVisible": false, "aTargets": [ 10 ]}
+                    { "mDataProp": "ville" },
+                    '.(empty($conf->global->SOCIETE_DISABLE_STATE)?'{ "mDataProp": "departement" },':'').'
+                    { "mDataProp": "cp" },
+                    '.($conf->categorie->enabled?'{ "mDataProp": "category" },':'').'
+                    {"mDataProp": "commerciaux", "bUseRendered": false, "bSearchable": false,
+                        "fnRender": function(obj) {
+                                var str = obj.aData.commerciaux;
+                            return str;
+                            }
+                    },
+                    { "mDataProp": "siren" },
+                    { "mDataProp": "ape" },
+                    { "mDataProp": "fk_prospectlevel" },
+                    { "mDataProp": "fk_stcomm", "bUseRendered": true, "bSearchable": false,
+                        "fnRender": function(obj) {
+                                var str = obj.aData.fk_stcomm;
+                                str = "Jamais contacté";
+                            return str;
+                            }
+                    },
                 ],
-                
-                "iDisplayLength": 10,
-                "aLengthMenu": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,"All"]],
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "serverprocess.php?type='.$type.'&pstcomm='.$pstcomm.'&search_sale='.$search_sale.'",
-                "bPaginate": true,
+                "bDeferRender": true,
                 "oLanguage": {
                     "sUrl": "../core/datatables/langs/"+lang+".txt"
                         
                 },
-                "sDom": \'T<"clear">lfrtip\',
+                "sDom": \'<"top"Tflpi<"clear">>rt<"bottom"pi<"clear">>\',
+                '.($user->rights->societe->contact->export?'
                 "oTableTools": {
                     "sSwfPath": "../core/datatables/swf/copy_cvs_xls_pdf.swf",
                     "aButtons": [
-                    "xls"	
+                    "xls"
                     ]
                 }
+                ':"").'
             });
-               $("td#"+4).css("display", "none");
-               $("td#"+7).css("display", "none");
-               $("td#"+8).css("display", "none");
-               $("td#"+9).css("display", "none");
-               $("td#"+10).css("display", "none");
-            }
-            else{
-                /* init dataTable with cate*/ 
-                oTable = $(\'#liste\').dataTable( {
-                "aoColumnDefs": [ 
-                {"bVisible": false,"aTargets": [ 4 ]},{"bVisible": false, "aTargets": [ 7 ]},
-                {"bVisible": false,"aTargets": [ 8 ]},{"bVisible": false, "aTargets": [ 9 ]},
-                {"bVisible": false, "aTargets": [ 10 ]}
-                ],
-                
-                "iDisplayLength": 10,
-                "aLengthMenu": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,"All"]],
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "serverprocess.php?type='.$type.'&pstcomm='.$pstcomm.'&search_sale='.$search_sale.'",
-                "bPaginate": true,
-                "oLanguage": {
-                    "sUrl": "../core/datatables/langs/"+lang+".txt"
-                        
-                }
-            });
-               $("td#"+4).css("display", "none");
-               $("td#"+7).css("display", "none");
-               $("td#"+8).css("display", "none");
-               $("td#"+9).css("display", "none");
-               $("td#"+10).css("display", "none");
-            }
-            
-        }
-        if(cate==\'\'){
-            if(exportright==1){
-                /* init dataTable without cate*/ 
-                  oTable = $(\'#liste\').dataTable( {
-                "aoColumnDefs": [ 
-                {"bVisible": false, "aTargets": [ 4 ]},{"bVisible": false, "aTargets": [ 6 ]},
-                {"bVisible": false, "aTargets": [ 7 ]},{"bVisible": false, "aTargets": [ 8 ]},
-                {"bVisible": false, "aTargets": [ 9 ]},
-                ],
-                
-                "iDisplayLength": 10,
-                "aLengthMenu": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,"All"]],
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "serverprocess.php?type='.$type.'&pstcomm='.$pstcomm.'&search_sale='.$search_sale.'",
-                "bPaginate": true,
-                "oLanguage": {
-                    "sUrl": "../core/datatables/langs/"+lang+".txt"
-                        
-                },
-                "sDom": \'T<"clear">lfrtip\',
-                "oTableTools": {
-                    "sSwfPath": "../core/datatables/swf/copy_cvs_xls_pdf.swf",
-                    "aButtons": [
-                    "xls"	
-                    ]
-                }
-            });
-            $("td#"+4).css("display", "none");
-            $("td#"+6).css("display", "none");
-            $("td#"+7).css("display", "none");
-            $("td#"+8).css("display", "none");
-            $("td#"+9).css("display", "none"); 
-            }
-            else{
-            /* init dataTable without cate*/ 
-                  oTable = $(\'#liste\').dataTable( {
-                "aoColumnDefs": [ 
-                {"bVisible": false, "aTargets": [ 4 ]},{"bVisible": false, "aTargets": [ 6 ]},
-                {"bVisible": false, "aTargets": [ 7 ]},{"bVisible": false, "aTargets": [ 8 ]},
-                {"bVisible": false, "aTargets": [ 9 ]},
-                ],
-                
-                "iDisplayLength": 10,
-                "aLengthMenu": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,"All"]],
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "serverprocess.php?type='.$type.'&pstcomm='.$pstcomm.'&search_sale='.$search_sale.'",
-                "bPaginate": true,
-                "oLanguage": {
-                    "sUrl": "../core/datatables/langs/"+lang+".txt"
-                        
-                }
-            });
-            $("td#"+4).css("display", "none");
-            $("td#"+6).css("display", "none");
-            $("td#"+7).css("display", "none");
-            $("td#"+8).css("display", "none");
-            $("td#"+9).css("display", "none");    
-            }
-            
-        }  
-    }
-
-    /* Add event listener for opening and closing details
-     * Note that the indicator for showing which row is open is not controlled by DataTables,
-     * rather it is done here
-     */
-    $(\'#liste tbody td img.plus\').live(\'click\', function () {
-        var nTr = this.parentNode.parentNode;
-        var id =  $(this).attr("id");
-        nTr.setAttribute("id",id);
-        if ( this.src.match(\'details_close\') )
-        {
-                                        
-            /* This row is already open - close it */
-            this.src = "../theme/cameleo/img/details_open.png";
-            oTable.fnClose( nTr );
-        }
-        else
-        {
-            /* Open this row */
-            request(nTr);
-            this.src = "../theme/cameleo/img/details_close.png";
-                                        
-        }
-    } );
-    
-});
-function fnShowHide( iCol )
-{
-    $(document).ready(function() {   
-        var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
-        oTable.fnSetColumnVis( iCol, bVis ? false : true );
-        if(bVis==true){
-            $("td#"+iCol).css("display", "none");
-        }
-        else {
-            $("td#"+iCol).css("display", "");   
-        }
-    });    
-   
-}
-
-$(document).ready(function() {     
-    $("table.hideshow a").click(function (){
-        if($(this).css("color")=="rgb(128, 128, 128)"){ // grey
-            $(this).css("color","#000"); 
-        }
-        else{
-            $(this).css("color","rgb(128, 128, 128)");
-        }
-    })
 });
 ';
-print'</script>';
+print'</script>';            
+
 ?>

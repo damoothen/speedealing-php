@@ -2120,6 +2120,132 @@ a.cke_dialog_ui_button
     height: 72px !important;
 }
 
+/* ============================================================================== */
+/* DataTable                                                                     */
+/* ============================================================================== */
+
+/*
+ * DataTables display
+ */     
+
+tr.odd {    
+font-family:arial,tahoma,verdana,helvetica;
+background-color: #EAEAEA;
+}
+
+tr.odd:hover {    
+background-color: #C0C4C7;
+}
+tr.even:hover {    
+background-color: #C0C4C7;
+}
+tr.even {
+font-family:arial,tahoma,verdana,helvetica;	
+background-color: white;
+}
+tr.odd a{
+font-family:arial,tahoma,verdana,helvetica;
+}
+tr.even a{
+font-family:arial,tahoma,verdana,helvetica;
+}
+
+/* DataTables sorting */
+ 
+.sorting {
+	background: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/sort_both.png' ?>) no-repeat center right;
+}
+ 
+.sorting_asc {
+         
+	background: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/sort_asc.png' ?>) no-repeat center right;
+}
+
+.sorting_desc {
+	background: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/sort_desc.png' ?>) no-repeat center right;
+}
+
+.dataTables_info {
+        
+}
+
+.dataTables_paginate {
+	width: 44px;
+	* width: 50px;
+	float: right;
+	text-align: right;
+        padding: 2px;
+}
+
+/* Pagination nested */
+.paginate_disabled_previous, .paginate_enabled_previous, .paginate_disabled_next, .paginate_enabled_next {
+	height: 19px;
+	width: 19px;
+	margin-left: 3px;
+	float: left;
+}
+.paginate_disabled_previous {
+	background: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/back_disabled.jpg' ?>) no-repeat center right;
+}
+
+.paginate_enabled_previous {
+	background: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/previous.png' ?>) no-repeat center right;
+}
+
+.paginate_disabled_next {
+	background: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/forward_disabled.jpg' ?>) no-repeat center right;
+}
+
+.paginate_enabled_next {
+	background: url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/next.png' ?>) no-repeat center right;
+}
+
+table.display td.center {
+	text-align: center;
+}
+tr.odd {    
+font-family:arial,tahoma,verdana,helvetica;
+background-color: #EAEAEA;
+}
+
+tr.odd:hover {    
+background-color: #C0C4C7;
+}
+tr.even:hover {    
+background-color: #C0C4C7;
+}
+tr.even {
+font-family:arial,tahoma,verdana,helvetica;	
+background-color: white;
+}
+tr.odd a{
+font-family:arial,tahoma,verdana,helvetica;
+}
+tr.even a{
+font-family:arial,tahoma,verdana,helvetica;
+}
+
+/* search input */
+
+.dataTables_filter {
+        width: 50%;
+	float: right;
+	text-align: right;
+        margin-bottom:2px;
+        color:#842F00;
+        font-size: 12px;
+        font-family:"Trebuchet MS",Arial,Helvetica,sans-serif;
+        font-weight: bold;
+}
+
+/*
+ * CONTAINER Bouton Export
+ * TableTools container element and styles applying to all components
+ */
+div.DTTT_container {
+	text-align: right;
+}
+
 <?php
 if (is_object($db)) $db->close();
 ?>

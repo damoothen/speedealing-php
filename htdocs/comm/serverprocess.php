@@ -63,7 +63,7 @@ $search_sale = $_GET['search_sale'];
 /*
  * Paging
  */
-$sLimit = "";
+//$sLimit = " LIMIT 10000";
 if (isset($_GET['iDisplayStart']) && $_GET['iDisplayLength'] != '-1') {
     $sLimit = " LIMIT " . $_GET['iDisplayStart'] . ", " .
             $_GET['iDisplayLength'];
@@ -244,26 +244,35 @@ $sql.= $sOrder;
 $sql.= $sLimit;
 $resultSocietes = $db->query($sql);
 
+$cb = new Couchbase;
+$cb->addCouchbaseServer("localhost",11211,8092);
+
+
 /*get companies. usefull to get their sales and categories */
 while ($aRow = $db->fetch_object($resultSocietes)) {
-    if($ancinneValeur!=$aRow->rowid){ //do not insert the (next on the result query) same contact
-        $valueR = $valueR . $aRow->rowid . ',';
+    //if($ancinneValeur!=$aRow->rowid){ //do not insert the (next on the result query) same contact
+        //$valueR = $valueR . $aRow->rowid . ',';
         $col[] = $aRow;
-        $ancinneValeur = $aRow->rowid;
-    }
+        //$row=  get_object_vars($aRow);
+        //$ancinneValeur = $aRow->rowid;
+        $aRow->llx="societe";
+        $cb->set($aRow->rowid,  json_encode($aRow));
+    //}
 }
+
+
 $companies = '""';
 if ($valueR != '') {
     $companies = substr_replace($valueR, '', -1);
 }
 /* sql query get sales */
 $sql = " SELECT fk_soc,login FROM (llx_societe_commerciaux as sc,llx_user as u) 
-where sc.fk_soc in ($companies) and sc.fk_user=u.rowid";
+where "/*sc.fk_soc in ($companies) and*/." sc.fk_user=u.rowid";
 $resultCommerciaux = $db->query($sql);
 
 /* sql query get categories */
 $sql = " SELECT fk_societe,label FROM (llx_categorie_societe as cs,llx_categorie as c) 
-where cs.fk_societe in ($companies) and cs.fk_categorie=c.rowid";
+where "/*cs.fk_societe in ($companies) and*/ ."cs.fk_categorie=c.rowid";
 $resultCate = $db->query($sql);
 
 $prospectstatic = new Prospect($db);
@@ -278,10 +287,34 @@ $output = array(
 /* init society sales array  */
 while ($aRow = $db->fetch_object($resultCommerciaux)) {
     $commerciauxDeChaqueSociete[$aRow->fk_soc] = $commerciauxDeChaqueSociete[$aRow->fk_soc] . $aRow->login . ', ';
+    $result=$cb->get($aRow->fk_soc);
+    //
+    if($result){
+        //print $aRow->fk_soc;
+        //var_dump($result);exit;
+        $result=  json_decode($result);
+        $result->commerciaux[]=$aRow->login;
+        
+        //print_r($result);exit;
+        $cb->set($aRow->fk_soc,  json_encode($result));
+        //exit;
+    }
+    //$cb->set($aRow->fk_soc);
 }
 /* init society categories array */
 while ($aRow = $db->fetch_object($resultCate)) {
     $categoriesDeChaqueSociete[$aRow->fk_societe] = $categoriesDeChaqueSociete[$aRow->fk_societe] . $aRow->label . ', ';
+    $result=$cb->get($aRow->fk_societe);
+    //
+    if($result){
+        //print $aRow->fk_soc;
+        //var_dump($result);exit;
+        $result=  json_decode($result);
+        $result->category[]=$aRow->label;
+        //print_r($result);exit;
+        $cb->set($aRow->fk_societe,  json_encode($result));
+        //exit;
+    }
 }
 
 /* output data */
