@@ -534,7 +534,7 @@ class Product extends CommonObject
 
 		$error=0;
 
-		if ($user->rights->produit->supprimer)
+		if ($user->rights->produit->supprimer || $user->rights->service->supprimer)
 		{
 			$objectisused = $this->isObjectUsed($id);
 			if (empty($objectisused))
