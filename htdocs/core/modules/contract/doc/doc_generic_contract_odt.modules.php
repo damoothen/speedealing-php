@@ -346,7 +346,7 @@ class doc_generic_contract_odt extends ModeleContract
                                  // Get extra fields for contractid
                                 include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
                                 $hookmanager=new HookManager($this->db);
-                                $hookmanager->callHooks(array('contrat_extrafields'));
+                                $hookmanager->initHooks(array('contrat_extrafields'));
                                 $parameters=array('id'=>$object->id);
                                 $values=$hookmanager->executeHooks('getFields',$parameters,$object,GETPOST('action'));    // Note that $action and $object may have been modified by hook
                                 if(is_array($values))
@@ -368,7 +368,7 @@ class doc_generic_contract_odt extends ModeleContract
                                 // Get extra fields for socid
                                 include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
                                 $hookmanager=new HookManager($this->db);
-                                $hookmanager->callHooks(array('thirdparty_extrafields'));
+                                $hookmanager->initHooks(array('thirdparty_extrafields'));
                                 $parameters=array('id'=>$soc->id);
                                 $values=$hookmanager->executeHooks('getFields',$parameters,$soc,GETPOST('action'));    // Note that $action and $object may have been modified by hook
                                 if(is_array($values))
