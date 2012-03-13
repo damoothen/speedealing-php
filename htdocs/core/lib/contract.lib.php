@@ -120,7 +120,7 @@ function contract_admin_prepare_head($object)
             if (count($tmpfiles)) $listoffiles=array_merge($listoffiles,$tmpfiles);
         }
     }
-    /*if (count($listoffiles) && $conf->extrafields->enabled)
+    if (count($listoffiles) && $conf->extrafields->enabled)
     {
         foreach($listoffiles as $record)
         {
@@ -130,7 +130,7 @@ function contract_admin_prepare_head($object)
             $h++;
         }
     }
-    else
+    /*else
     {
             $head[$h][0] = DOL_URL_ROOT.'/contrat/admin/contrat_extrafields.php?';
             $head[$h][1] = $langs->trans("ExtraFields");
