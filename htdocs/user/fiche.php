@@ -64,7 +64,7 @@ if ($id)
 }
 
 //Multicompany in mode transversal
-if (! empty($conf->multicompany->enabled) && $conf->entity > 1 && $$conf->global->MULTICOMPANY_TRANSVERSE_MODE)
+if (! empty($conf->multicompany->enabled) && $conf->entity > 1 && $conf->global->MULTICOMPANY_TRANSVERSE_MODE)
 {
     accessforbidden();
 }
