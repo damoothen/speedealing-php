@@ -83,6 +83,10 @@ class Commande extends CommonObject
     var $rang;
     var $special_code;
     var $source;			// Origin of order
+    var $note;				// deprecated
+    var $note_private;
+    var $note_public;
+    var $extraparams=array();
 
     var $origin;
     var $origin_id;
@@ -868,6 +872,7 @@ class Commande extends CommonObject
     function createFromProposal($object)
     {
         global $conf,$user,$langs;
+        global $hookmanager;
 
         $error=0;
 
@@ -915,16 +920,26 @@ class Commande extends CommonObject
             $this->note                 = $object->note;
             $this->note_public          = $object->note_public;
 
-            $this->origin      = $object->element;
-            $this->origin_id   = $object->id;
+            $this->origin				= $object->element;
+            $this->origin_id			= $object->id;
+            
+            // Possibility to add external linked objects with hooks
+            $this->linked_objects[$this->origin] = $this->origin_id;
+            if (is_array($object->other_linked_objects) && ! empty($object->other_linked_objects))
+            {
+            	$this->linked_objects = array_merge($this->linked_objects, $object->other_linked_objects);
+            }
 
             $ret = $this->create($user);
 
             if ($ret > 0)
             {
                 // Actions hooked (by external module)
-                include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
-                $hookmanager=new HookManager($this->db);
+                if (! is_object($hookmanager))
+                {
+                	include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
+                	$hookmanager=new HookManager($this->db);
+                }
                 $hookmanager->initHooks(array('orderdao'));
 
                 $parameters=array('objFrom'=>$object);
@@ -1210,7 +1225,7 @@ class Commande extends CommonObject
         $sql.= ', c.date_commande';
         $sql.= ', c.date_livraison';
         $sql.= ', c.fk_projet, c.remise_percent, c.remise, c.remise_absolue, c.source, c.facture as facturee';
-        $sql.= ', c.note, c.note_public, c.ref_client, c.ref_ext, c.ref_int, c.model_pdf, c.fk_adresse_livraison';
+        $sql.= ', c.note as note_private, c.note_public, c.ref_client, c.ref_ext, c.ref_int, c.model_pdf, c.fk_adresse_livraison, c.extraparams';
         $sql.= ', p.code as mode_reglement_code, p.libelle as mode_reglement_libelle';
         $sql.= ', cr.code as cond_reglement_code, cr.libelle as cond_reglement_libelle, cr.libelle_facture as cond_reglement_libelle_doc';
         $sql.= ', ca.code as availability_code';
@@ -1255,7 +1270,8 @@ class Commande extends CommonObject
                 $this->remise_absolue         = $obj->remise_absolue;
                 $this->source                 = $obj->source;
                 $this->facturee               = $obj->facturee;
-                $this->note                   = $obj->note;
+                $this->note                   = $obj->note_private;	// deprecated
+                $this->note_private           = $obj->note_private;
                 $this->note_public            = $obj->note_public;
                 $this->fk_project             = $obj->fk_projet;
                 $this->modelpdf               = $obj->model_pdf;
@@ -1273,6 +1289,8 @@ class Commande extends CommonObject
                 $this->date_livraison         = $this->db->jdate($obj->date_livraison);
                 $this->fk_delivery_address    = $obj->fk_adresse_livraison;
                 $this->propale_id             = $obj->fk_source;
+                
+                $this->extraparams			  = (array) dol_json_decode($obj->extraparams, true);
 
                 $this->lines                 = array();
 
@@ -1845,34 +1863,6 @@ class Commande extends CommonObject
     }
 
     /**
-     *	Set address
-     *
-     *	@param      User		$user        	Object user making change
-     *	@param      int			$fk_address	    Adress of delivery
-     *	@return     int         				<0 ig KO, >0 if Ok
-     */
-    function set_adresse_livraison($user, $fk_address)
-    {
-        if ($user->rights->commande->creer)
-        {
-            $sql = "UPDATE ".MAIN_DB_PREFIX."commande SET fk_adresse_livraison = '".$fk_address."'";
-            $sql.= " WHERE rowid = ".$this->id." AND fk_statut = 0";
-
-            if ($this->db->query($sql) )
-            {
-                $this->fk_delivery_address = $fk_address;
-                return 1;
-            }
-            else
-            {
-                $this->error=$this->db->error();
-                dol_syslog("Commande::set_adresse_livraison Erreur SQL");
-                return -1;
-            }
-        }
-    }
-
-    /**
      *	Set availability
      *
      *	@param      User	$user		Object user making change
@@ -1972,75 +1962,6 @@ class Commande extends CommonObject
         {
             dol_print_error($this->db);
             return -1;
-        }
-    }
-
-    /**
-     *	Change les conditions de reglement de la commande
-     *
-     *	@param      int	$cond_reglement_id      Id de la nouvelle condition de reglement
-     *	@return     int                    		>0 if OK, <0 if KO
-     */
-    function cond_reglement($cond_reglement_id)
-    {
-        dol_syslog('Commande::cond_reglement('.$cond_reglement_id.')');
-        if ($this->statut >= 0)
-        {
-            $sql = 'UPDATE '.MAIN_DB_PREFIX.'commande';
-            $sql .= ' SET fk_cond_reglement = '.$cond_reglement_id;
-            $sql .= ' WHERE rowid='.$this->id;
-            if ( $this->db->query($sql) )
-            {
-                $this->cond_reglement_id = $cond_reglement_id;
-                return 1;
-            }
-            else
-            {
-                dol_syslog('Commande::cond_reglement Erreur '.$sql.' - '.$this->db->error(), LOG_ERR);
-                $this->error=$this->db->lasterror();
-                return -1;
-            }
-        }
-        else
-        {
-            dol_syslog('Commande::cond_reglement, etat commande incompatible', LOG_ERR);
-            $this->error='Etat commande incompatible '.$this->statut;
-            return -2;
-        }
-    }
-
-
-    /**
-     *  Change le mode de reglement
-     *
-     *  @param      int		$mode       Id du nouveau mode
-     *  @return     int         		>0 si ok, <0 si ko
-     */
-    function mode_reglement($mode_reglement_id)
-    {
-        dol_syslog('Commande::mode_reglement('.$mode_reglement_id.')');
-        if ($this->statut >= 0)
-        {
-            $sql = 'UPDATE '.MAIN_DB_PREFIX.'commande';
-            $sql .= ' SET fk_mode_reglement = '.$mode_reglement_id;
-            $sql .= ' WHERE rowid='.$this->id;
-            if ( $this->db->query($sql) )
-            {
-                $this->mode_reglement_id = $mode_reglement_id;
-                return 1;
-            }
-            else
-            {
-                dol_syslog('Commande::mode_reglement Erreur '.$sql.' - '.$this->db->error(), LOG_ERR);
-                $this->error=$this->db->lasterror();
-                return -1;
-            }
-        }
-        else
-        {
-            dol_syslog('Commande::mode_reglement, etat facture incompatible', LOG_ERR);
-            $this->error='Etat commande incompatible '.$this->statut;
-            return -2;
         }
     }
 
