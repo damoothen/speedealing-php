@@ -1,7 +1,7 @@
 <?php
 /* Copyright (C) 2003      Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2010 Destailleur Laurent  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2004-2012 Destailleur Laurent  <eldy@users.sourceforge.net>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2006      Andre Cianfarani     <acianfa@free.fr>
  * Copyright (C) 2008      Raphael Bertrand (Resultic) <raphael.bertrand@resultic.fr>
  * Copyright (C) 2010-2011 Juanjo Menent         <jmenent@2byte.es>
@@ -28,9 +28,6 @@
  */
 
 require_once(DOL_DOCUMENT_ROOT."/core/class/commonobject.class.php");
-require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/price.lib.php");
-
 
 /**
  *	\class      Contrat
@@ -60,11 +57,14 @@ class Contrat extends CommonObject
 	var $commercial_signature_id;
 	var $commercial_suivi_id;
 
-	var $note;
+	var $note;			// deprecated
+	var $note_private;
 	var $note_public;
 
 	var $fk_projet;
-
+	
+	var $extraparams=array();
+	
 	var $lines=array();
 
 
@@ -76,8 +76,6 @@ class Contrat extends CommonObject
 	function Contrat($db)
 	{
 		$this->db = $db;
-		$this->product = new Product($db);
-		$this->societe = new Societe($db);
 	}
 
 	/**
@@ -324,7 +322,7 @@ class Contrat extends CommonObject
 		$sql.= " fk_user_author,";
 		$sql.= " fk_projet,";
 		$sql.= " fk_commercial_signature, fk_commercial_suivi,";
-		$sql.= " note, note_public,model_pdf";
+		$sql.= " note as note_private,model_pdf, note_public, extraparams";
 		$sql.= " FROM ".MAIN_DB_PREFIX."contrat";
 		if ($ref) $sql.= " WHERE ref='".$ref."'";
 		else $sql.= " WHERE rowid=".$id;
@@ -337,21 +335,22 @@ class Contrat extends CommonObject
 
 			if ($result)
 			{
-				$this->id                = $result["rowid"];
-				$this->ref               = (!isset($result["ref"]) || !$result["ref"]) ? $result["rowid"] : $result["ref"];
-				$this->statut            = $result["statut"];
-				$this->mise_en_service   = $this->db->jdate($result["datemise"]);
-				$this->date_contrat      = $this->db->jdate($result["datecontrat"]);
+				$this->id						= $result["rowid"];
+				$this->ref						= (!isset($result["ref"]) || !$result["ref"]) ? $result["rowid"] : $result["ref"];
+				$this->statut					= $result["statut"];
+				$this->mise_en_service			= $this->db->jdate($result["datemise"]);
+				$this->date_contrat				= $this->db->jdate($result["datecontrat"]);
 
-				$this->user_author_id    = $result["fk_user_author"];
+				$this->user_author_id			= $result["fk_user_author"];
 
-				$this->commercial_signature_id = $result["fk_commercial_signature"];
-				$this->commercial_suivi_id = $result["fk_commercial_suivi"];
+				$this->commercial_signature_id	= $result["fk_commercial_signature"];
+				$this->commercial_suivi_id		= $result["fk_commercial_suivi"];
 
-				$this->note              = $result["note"];
-				$this->note_public       = $result["note_public"];
+				$this->note						= $result["note_private"];	// deprecated
+				$this->note_private				= $result["note_private"];
+				$this->note_public				= $result["note_public"];
 
-				$this->fk_projet         = $result["fk_projet"];
+				$this->fk_projet				= $result["fk_projet"];
 
 				$this->socid             = $result["fk_soc"];
 				$this->fk_soc            = $result["fk_soc"];
@@ -364,6 +363,8 @@ class Contrat extends CommonObject
                                 {
                                     $this->element=substr($model,1)."@contrat"; //for extrafeilds
                                 }
+
+				$this->extraparams	
 
 				$this->db->free($resql);
 

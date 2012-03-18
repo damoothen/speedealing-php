@@ -58,9 +58,10 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 	/**
 	 *	Constructor
 	 *
-	 *  @param		DoliDB		$DB      Database handler
+	 *  @param	DoliDB		$db     	Database handler
+	 *  @param	Societe		$object		Third party providing invoice
 	 */
-	function pdf_canelle($db,$object)
+	function __construct($db,$object)
 	{
 		global $conf,$langs,$mysoc;
 
@@ -688,11 +689,12 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 
 	/**
 	 *  Show payments table
-	 *  @param      pdf     		Object PDF
-	 *  @param      object     		Object invoice
-	 *	@param		posy			Position y in PDF
-	 *	@param		outputlangs		Object langs for output
-	 *	@return 	int				<0 if KO, >0 if OK
+	 *
+	 *  @param	PDF			&$pdf     		Object PDF
+	 *  @param  Object		$object     	Object invoice
+	 *	@param	int			$posy			Position y in PDF
+	 *	@param	Translate	$outputlangs	Object langs for output
+	 *	@return int							<0 if KO, >0 if OK
 	 */
 	function _tableau_versements(&$pdf, $object, $posy, $outputlangs)
 	{

@@ -38,7 +38,6 @@ if ($conf->contrat->enabled) require_once(DOL_DOCUMENT_ROOT."/contrat/class/cont
 if ($conf->adherent->enabled) require_once(DOL_DOCUMENT_ROOT."/adherents/class/adherent.class.php");
 if ($conf->ficheinter->enabled) require_once(DOL_DOCUMENT_ROOT."/fichinter/class/fichinter.class.php");
 if ($conf->lead->enabled) dol_include_once("/lead/lib/lead.lib.php");
-if (!empty($conf->global->MAIN_MODULE_CHRONODOCS)) require_once(DOL_DOCUMENT_ROOT."/chronodocs/chronodocs_entries.class.php");
 
 $langs->load("companies");
 if ($conf->contrat->enabled)  $langs->load("contracts");
@@ -47,7 +46,6 @@ if ($conf->facture->enabled) $langs->load("bills");
 if ($conf->projet->enabled)  $langs->load("projects");
 if ($conf->ficheinter->enabled) $langs->load("interventions");
 if ($conf->notification->enabled) $langs->load("mails");
-if (!empty($conf->global->MAIN_MODULE_CHRONODOCS)) $langs->load("chronodocs");
 
 // Security check
 $id = (GETPOST('socid','int') ? GETPOST('socid','int') : GETPOST('id','int'));
@@ -86,34 +84,19 @@ if ($action == 'setcustomeraccountancycode')
 	$action="";
 }
 
-if ($action == 'attribute_prefix' && $user->rights->societe->creer)
-{
-	$object->fetch($id);
-	$object->attribute_prefix($db, $id);
-}
 // conditions de reglement
 if ($action == 'setconditions' && $user->rights->societe->creer)
 {
 	$object->fetch($id);
-	$object->cond_reglement=$_POST['cond_reglement_id'];
-
-	// TODO move to DAO class
-	$sql = "UPDATE ".MAIN_DB_PREFIX."societe SET cond_reglement='".$_POST['cond_reglement_id'];
-	$sql.= "' WHERE rowid='".$id."'";
-	$result = $db->query($sql);
-	if (! $result) dol_print_error($result);
+	$result=$object->setPaymentTerms(GETPOST('cond_reglement_id','int'));
+	if ($result < 0) dol_print_error($db,$object->error);
 }
 // mode de reglement
 if ($action == 'setmode' && $user->rights->societe->creer)
 {
 	$object->fetch($id);
-	$object->mode_reglement=$_POST['mode_reglement_id'];
-
-	// TODO move to DAO class
-	$sql = "UPDATE ".MAIN_DB_PREFIX."societe SET mode_reglement='".$_POST['mode_reglement_id'];
-	$sql.= "' WHERE rowid='".$id."'";
-	$result = $db->query($sql);
-	if (! $result) dol_print_error($result);
+	$result=$object->setPaymentMethods(GETPOST('mode_reglement_id','int'));
+	if ($result < 0) dol_print_error($db,$object->error);
 }
 // assujetissement a la TVA
 if ($action == 'setassujtva' && $user->rights->societe->creer)
@@ -437,6 +420,7 @@ if ($id > 0)
                 $var=!$var;
 	}
 
+<<<<<<< HEAD
 	// Old way to define delivery address (deprecated).
 	// Now all addresses types (like delivery addresses, invoices addresses,...) are saved as contacts.
 	if ($conf->global->PROPALE_ADD_DELIVERY_ADDRESS)	// Hidden deprecated feature.
@@ -481,6 +465,8 @@ if ($id > 0)
         print "</td></tr>";
         $var=!$var;
 
+=======
+>>>>>>> 185fcb970d3dd6d82e3d175c195a90e892e26e7f
     // Module Adherent
     if ($conf->adherent->enabled)
     {
@@ -904,11 +890,6 @@ if ($id > 0)
 		}
 	}
 
-	/*if ($user->rights->societe->contact->creer)
-	{
-		print '<a class="butAction" href="'.DOL_URL_ROOT.'/contact/fiche.php?socid='.$object->id.'&amp;action=create">'.$langs->trans("AddContact").'</a>';
-	}*/
-
 	print '</div>';
 	print "<br>\n";
 
@@ -919,6 +900,12 @@ if ($id > 0)
 	    print '<br>';
 		// List of contacts
 		show_contacts($conf,$langs,$db,$object,$_SERVER["PHP_SELF"].'?socid='.$object->id);
+	}
+	
+	// Addresses list
+	if (! empty($conf->global->SOCIETE_ADDRESSES_MANAGEMENT) && ! empty($conf->global->MAIN_REPEATADDRESSONEACHTAB))
+	{
+		$result=show_addresses($conf,$langs,$db,$object,$_SERVER["PHP_SELF"].'?socid='.$object->id);
 	}
 
     if (! empty($conf->global->MAIN_REPEATTASKONEACHTAB))
@@ -944,7 +931,7 @@ else
 }
 
 
+// End of page
 llxFooter();
-
 $db->close();
 ?>

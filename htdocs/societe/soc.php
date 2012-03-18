@@ -685,7 +685,7 @@ else
 
         if ($conf->use_javascript_ajax)
         {
-            print "\n".'<script type="text/javascript" language="javascript">';
+            print "\n".'<script type="text/javascript">';
             print '$(document).ready(function () {
 						id_te_private=8;
                         id_ef15=1;
@@ -862,7 +862,7 @@ else
         if (empty($conf->global->SOCIETE_DISABLE_STATE))
         {
             print '<tr><td>'.$langs->trans('State').'</td><td colspan="3">';
-            if ($object->country_id) $formcompany->select_departement($object->state_id,$object->country_code,'departement_id');
+            if ($object->country_id) print $formcompany->select_state($object->state_id,$object->country_code,'departement_id');
             else print $countrynotdefined;
             print '</td></tr>';
         }
@@ -1317,7 +1317,7 @@ else
             if (empty($conf->global->SOCIETE_DISABLE_STATE))
             {
                 print '<tr><td>'.$langs->trans('State').'</td><td colspan="3">';
-                $formcompany->select_departement($object->state_id,$object->country_code);
+                print $formcompany->select_state($object->state_id,$object->country_code);
                 print '</td></tr>';
             }
 
@@ -1747,12 +1747,12 @@ else
         print '</td>';
 
         // VAT Code
-        print '<td id="label" nowrap="nowrpa">'.$langs->trans('VATIntra').'</td><td id="value">';
+        print '<td nowrap="nowrap">'.$langs->trans('VATIntra').'</td><td>';
         if ($object->tva_intra)
         {
             $s='';
             $s.=$object->tva_intra;
-            $s.='<input type="hidden" name="tva_intra" size="12" maxlength="20" value="'.$object->tva_intra.'">';
+            $s.='<input type="hidden" id="tva_intra" name="tva_intra" size="12" maxlength="20" value="'.$object->tva_intra.'">';
 
             if (empty($conf->global->MAIN_DISABLEVATCHECK))
             {
@@ -1767,7 +1767,7 @@ else
                     print "}\n";
                     print '</script>';
                     print "\n";
-                    $s.='<a href="#" onclick="javascript: CheckVAT(document.formsoc.tva_intra.value);">'.$langs->trans("VATIntraCheck").'</a>';
+                    $s.='<a href="#" onclick="javascript: CheckVAT( $(\'#tva_intra\').val() );">'.$langs->trans("VATIntraCheck").'</a>';
                     $s = $form->textwithpicto($s,$langs->trans("VATIntraCheckDesc",$langs->trans("VATIntraCheck")),1);
                 }
                 else
@@ -2053,6 +2053,12 @@ else
 			print '<td>';
         }
 
+        // Addresses list
+        if (! empty($conf->global->SOCIETE_ADDRESSES_MANAGEMENT))
+        {
+        	$result=show_addresses($conf,$langs,$db,$object,$_SERVER["PHP_SELF"].'?socid='.$object->id);
+        }
+
         // Projects list
         $result=show_projects($conf,$langs,$db,$object,$_SERVER["PHP_SELF"].'?socid='.$object->id);
 		print '</td>';
@@ -2063,7 +2069,7 @@ else
 }
 
 
-$db->close();
-
+// End of page
 llxFooter();
+$db->close();
 ?>

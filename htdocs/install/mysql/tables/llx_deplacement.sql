@@ -1,6 +1,6 @@
 -- ============================================================================
 -- Copyright (C) 2003		Rodolphe Quiedeville <rodolphe@quiedeville.org>
--- Copyright (C) 2009-2011	Regis Houssin        <regis@dolibarr.fr>
+-- Copyright (C) 2009-2012	Regis Houssin        <regis@dolibarr.fr>
 -- Copyright (C) 2010		Laurent Destailleur  <eldy@users.sourceforge.net>
 -- Copyright (C) 2010-2011  Herve Prot           <herve.prot@symeos.com>
 --
@@ -37,5 +37,7 @@ create table llx_deplacement
   fk_projet         integer DEFAULT 0,
   fk_lead       integer     DEFAULT NULL,		-- affaire auquel est rattachee des déplacements
   note				text,
-  note_public       text
+  note_public       text,
+  extraparams		varchar(255)					-- for stock other parameters with json format
+  
 )ENGINE=innodb;
