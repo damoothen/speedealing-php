@@ -354,7 +354,6 @@ class Contrat extends CommonObject
 
 				$this->socid             = $result["fk_soc"];
 				$this->fk_soc            = $result["fk_soc"];
-				$this->societe->fetch($result["fk_soc"]);	// TODO A virer car la societe doit etre chargee par appel de fetch_client()
                                 $this->modelpdf          = $result["model_pdf"];
                                 
                                 //recupère le nom du model odt
@@ -364,7 +363,7 @@ class Contrat extends CommonObject
                                     $this->element=substr($model,1)."@contrat"; //for extrafeilds
                                 }
 
-				$this->extraparams	
+				$this->extraparams  = (array) dol_json_decode($result["extraparams"], true);
 
 				$this->db->free($resql);
 

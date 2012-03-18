@@ -66,7 +66,7 @@ $hookmanager->initHooks(array('contrat_extrafields'));
 /*
  * Actions Extrafields
  */
-$parameters=array('id'=>$contratid);
+$parameters=array('id'=>$id);
 $reshook=$hookmanager->executeHooks('doActions',$parameters,$object,$action);    // Note that $action and $object may have been modified by some hooks
 $error=$hookmanager->error; $errors=$hookmanager->errors;
 
@@ -555,7 +555,7 @@ if (! empty($conf->global->MAIN_DISABLE_CONTACTS_TAB))
  */
 if (GETPOST('action') == 'builddoc')	// En get ou en post
 {
-    $object->fetch($contratid);
+    $object->fetch($id);
     $object->fetch_thirdparty();
 
     if (GETPOST('model'))
@@ -614,7 +614,7 @@ if ($action == 'create')
     $soc->fetch($socid);
 
     $object->date_contrat = dol_now();
-    if ($contratid) $result=$object->fetch($contratid);
+    if ($id) $result=$object->fetch($id);
 
     $numct = $object->getNextNumRef($soc);
 
@@ -694,14 +694,14 @@ elseif ($action == 'edit')
          */
         print_fiche_titre($langs->trans("EditContract"));
 
-        if ($contratid)
+        if ($id)
         {
             dol_fiche_head($head, $a, $langs->trans("AddContract"), 0, 'contract');
 
     dol_htmloutput_errors($mesg,'');
 
     $object->date_contrat = dol_now();
-    $object->fetch($contratid);
+    $object->fetch($id);
     
     $soc=new Societe($db);
     $soc->fetch($object->socid);
@@ -961,7 +961,6 @@ else
         /*
          * Lines of contracts
          */
-        $productstatic=new Product($db);
         
         // TODO move css and DAO
         

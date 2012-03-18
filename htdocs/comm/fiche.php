@@ -420,7 +420,6 @@ if ($id > 0)
                 $var=!$var;
 	}
 
-<<<<<<< HEAD
 	// Old way to define delivery address (deprecated).
 	// Now all addresses types (like delivery addresses, invoices addresses,...) are saved as contacts.
 	if ($conf->global->PROPALE_ADD_DELIVERY_ADDRESS)	// Hidden deprecated feature.
@@ -465,8 +464,6 @@ if ($id > 0)
         print "</td></tr>";
         $var=!$var;
 
-=======
->>>>>>> 185fcb970d3dd6d82e3d175c195a90e892e26e7f
     // Module Adherent
     if ($conf->adherent->enabled)
     {
