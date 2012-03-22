@@ -1,6 +1,6 @@
 -- ===================================================================
 -- Copyright (C) 2001-2007 Rodolphe Quiedeville <rodolphe@quiedeville.org>
--- Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
+-- Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
 -- Copyright (C) 2010-2011 Herve Prot           <herve.prot@symeos.com>
 --
 -- This program is free software; you can redistribute it and/or modify
@@ -20,24 +20,25 @@
 
 create table llx_fichinter
 (
-  rowid           integer AUTO_INCREMENT PRIMARY KEY,
-  fk_soc          integer NOT NULL,
-  fk_projet       integer DEFAULT 0,          -- projet auquel est rattache la fiche
+  rowid				integer AUTO_INCREMENT PRIMARY KEY,
+  fk_soc			integer NOT NULL,
+  fk_projet			integer DEFAULT 0,          -- projet auquel est rattache la fiche
   fk_lead       integer     DEFAULT NULL,     -- affaire auquel est rattachee aux interventions
-  fk_contrat      integer DEFAULT 0,          -- contrat auquel est rattache la fiche
-  ref             varchar(30) NOT NULL,       -- number
-  entity          integer DEFAULT 1 NOT NULL, -- multi company id
-  tms             timestamp,
-  datec           datetime,                   -- date de creation 
-  date_valid      datetime,                   -- date de validation
-  datei           date,                       -- date de livraison du bon d'intervention
-  fk_user_author  integer,                    -- createur de la fiche
-  fk_user_valid   integer,                    -- valideur de la fiche
-  fk_statut       smallint  DEFAULT 0,
-  duree           real,                       -- duree totale de l'intervention
-  description     text,
-  note_private    text,
-  note_public     text,
-  model_pdf       varchar(255)
+  fk_contrat		integer DEFAULT 0,          -- contrat auquel est rattache la fiche
+  ref				varchar(30) NOT NULL,       -- number
+  entity			integer DEFAULT 1 NOT NULL, -- multi company id
+  tms				timestamp,
+  datec				datetime,                   -- date de creation 
+  date_valid		datetime,                   -- date de validation
+  datei				date,                       -- date de livraison du bon d'intervention
+  fk_user_author	integer,                    -- createur de la fiche
+  fk_user_valid		integer,                    -- valideur de la fiche
+  fk_statut			smallint  DEFAULT 0,
+  duree				real,                       -- duree totale de l'intervention
+  description		text,
+  note_private		text,
+  note_public		text,
+  model_pdf			varchar(255),
+  extraparams		varchar(255)				-- for stock other parameters with json format
   
 )ENGINE=innodb;

@@ -42,9 +42,9 @@ class pdf_baleine extends ModelePDFProjects
 	/**
 	 *	Constructor
 	 *
-	 *  @param		DoliDB		$DB      Database handler
+	 *  @param		DoliDB		$db      Database handler
 	 */
-	function pdf_baleine($db)
+	function __construct($db)
 	{
 		global $conf,$langs,$mysoc;
 
@@ -85,10 +85,11 @@ class pdf_baleine extends ModelePDFProjects
 
 
 	/**
-	 *	\brief      Fonction generant le projet sur le disque
-	 *	\param	    object   		Object project a generer
-	 *	\param		outputlangs		Lang output object
-	 *	\return	    int         	1 if OK, <=0 if KO
+	 *	Fonction generant le projet sur le disque
+	 *
+	 *	@param	Project		$object   		Object project a generer
+	 *	@param	Translate	$outputlangs	Lang output object
+	 *	@return	int         				1 if OK, <=0 if KO
 	 */
 	function write_file($object,$outputlangs)
 	{
@@ -351,7 +352,7 @@ class pdf_baleine extends ModelePDFProjects
 		{
 			if (is_readable($logo))
 			{
-				$pdf->Image($logo, $this->marge_gauche, $posy, 0, 24);
+				$pdf->Image($logo, $this->marge_gauche, $posy, 0, 22);	// width=0 (auto), max height=22
 			}
 			else
 			{

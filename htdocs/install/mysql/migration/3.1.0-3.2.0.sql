@@ -15,6 +15,21 @@
 -- -- VPGSQL8.2 DELETE FROM llx_usergroup_user      WHERE fk_user      NOT IN (SELECT rowid from llx_user);
 -- -- VMYSQL4.1 DELETE FROM llx_usergroup_user      WHERE fk_usergroup NOT IN (SELECT rowid from llx_usergroup);
 
+
+update llx_propal set fk_projet = null where fk_projet not in (select rowid from llx_projet);
+update llx_commande set fk_projet = null where fk_projet not in (select rowid from llx_projet);
+update llx_facture set fk_projet = null where fk_projet not in (select rowid from llx_projet);
+update llx_commande_fournisseur set fk_projet = null where fk_projet not in (select rowid from llx_projet);
+update llx_contrat set fk_projet = null where fk_projet not in (select rowid from llx_projet);
+update llx_deplacement set fk_projet = null where fk_projet not in (select rowid from llx_projet);
+update llx_facture_fourn set fk_projet = null where fk_projet not in (select rowid from llx_projet);
+update llx_facture_rec set fk_projet = null where fk_projet not in (select rowid from llx_projet);
+update llx_fichinter set fk_projet = null where fk_projet not in (select rowid from llx_projet);
+update llx_projet_task set fk_projet = null where fk_projet not in (select rowid from llx_projet);
+
+update llx_commande set fk_user_author = null where fk_user_author not in (select rowid from llx_user);
+
+
 ALTER TABLE llx_extrafields ADD COLUMN TYPE VARCHAR(8);
 
 UPDATE llx_c_paper_format SET active=1 WHERE active=0;
@@ -36,6 +51,8 @@ ALTER TABLE llx_societe MODIFY siret varchar(128);
 ALTER TABLE llx_societe MODIFY ape varchar(128);
 ALTER TABLE llx_societe MODIFY idprof4 varchar(128);
 ALTER TABLE llx_societe ADD COLUMN idprof5 varchar(128);
+ALTER TABLE llx_societe MODIFY code_compta varchar(24);
+ALTER TABLE llx_societe MODIFY code_compta_fournisseur varchar(24);
 
   
 ALTER TABLE llx_chargesociales ADD COLUMN tms                   timestamp;
@@ -412,4 +429,26 @@ INSERT INTO llx_c_currencies ( code_iso, unicode, active, label ) VALUES ( 'MXP'
 ALTER TABLE llx_propal ADD CONSTRAINT fk_propal_fk_currency		FOREIGN KEY (fk_currency) REFERENCES llx_c_currencies (code_iso);
 ALTER TABLE llx_commande ADD CONSTRAINT fk_commande_fk_currency	FOREIGN KEY (fk_currency) REFERENCES llx_c_currencies (code_iso);
 ALTER TABLE llx_facture ADD CONSTRAINT fk_facture_fk_currency   FOREIGN KEY (fk_currency) REFERENCES llx_c_currencies (code_iso);
-  
+
+ALTER TABLE llx_expedition DROP COLUMN billed;
+
+ALTER TABLE llx_product_fournisseur_price DROP FOREIGN KEY fk_product_fournisseur_price_fk_product_fournisseur;
+ALTER TABLE llx_product_fournisseur_price DROP INDEX idx_product_fournisseur_price_fk_product_fournisseur;
+--We keep column for the moment because we must not loose data if migrate process fails (upgrade2) to allow a second chance fix. We will delete it at next version.
+--ALTER TABLE llx_product_fournisseur_price DROP COLUMN fk_product_fournisseur;
+ALTER TABLE llx_product_fournisseur_price ADD COLUMN tva_tx	double(6,3) NOT NULL DEFAULT 0 AFTER unitprice;
+
+UPDATE llx_c_departements SET ncc='JUJUY', nom = 'Jujuy' WHERE code_departement='2302' and fk_region='2301';
+
+ALTER TABLE llx_propal ADD COLUMN import_key varchar(14) AFTER fk_demand_reason;
+ALTER TABLE llx_propal ADD COLUMN extraparams varchar(255) AFTER import_key;
+ALTER TABLE llx_commande ADD COLUMN extraparams varchar(255) AFTER import_key;
+ALTER TABLE llx_facture ADD COLUMN extraparams varchar(255) AFTER import_key;
+ALTER TABLE llx_fichinter ADD COLUMN extraparams varchar(255) AFTER model_pdf;
+ALTER TABLE llx_deplacement ADD COLUMN extraparams varchar(255) AFTER note_public;
+ALTER TABLE llx_contrat ADD COLUMN import_key varchar(14) AFTER note_public;
+ALTER TABLE llx_contrat ADD COLUMN extraparams varchar(255) AFTER import_key;
+ALTER TABLE llx_commande_fournisseur ADD COLUMN extraparams varchar(255) AFTER import_key;
+ALTER TABLE llx_facture_fourn ADD COLUMN extraparams varchar(255) AFTER import_key;
+
+ALTER TABLE llx_boxes ADD COLUMN maxline integer NULL;

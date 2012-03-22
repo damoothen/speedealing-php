@@ -51,7 +51,7 @@ class CommActionRapport
 	 * @param	int		$month	Month
 	 * @param	int		$year	Year
 	 */
-	function CommActionRapport($db, $month, $year)
+	function __construct($db, $month, $year)
 	{
 		global $langs;
 		$langs->load("commercial");

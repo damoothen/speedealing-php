@@ -3,7 +3,7 @@
  * Copyright (C) 2005      Eric Seigne          <eric.seigne@ryxeo.com>
  * Copyright (C) 2006-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2007      Patrick Raguin       <patrick.raguin@gmail.com>
- * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2010-2011 Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -30,11 +30,12 @@ require("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/categories/class/categorie.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/treeview.lib.php");
 
-$type=(GETPOST('type') ? GETPOST('type') : 0);
-
-if (!$user->rights->categorie->lire) accessforbidden();
-
 $langs->load("categories");
+
+if (! $user->rights->categorie->lire) accessforbidden();
+
+$id=GETPOST('id','int');
+$type=(GETPOST('type') ? GETPOST('type') : 0);
 
 
 /*
@@ -89,9 +90,9 @@ print '</td><td valign="top" width="70%">';
 /*
  * Categories found
  */
-if($_POST['catname'] || $_REQUEST['id'])
+if($_POST['catname'] || $id > 0)
 {
-	$cats = $categstatic->rechercher($_REQUEST['id'],$_POST['catname'],$_POST['type']);
+	$cats = $categstatic->rechercher($id,$_POST['catname'],$type);
 
 	print '<table class="noborder" width="100%">';
 	print '<tr class="liste_titre"><td colspan="2">'.$langs->trans("FoundCats").'</td></tr>';
@@ -128,8 +129,8 @@ $fulltree=$cate_arbo;
 
 
 
-print '<table class="noborder" width="100%">';
-print '<tr class="liste_titre"><td>'.$langs->trans("Categories").'</td><td align="center">'.$langs->trans("Priority").'</td><td colspan="2">'.$langs->trans("Description").'</td></tr>';
+print '<table class="liste" width="100%">';
+print '<tr class="liste_titre"><td>'.$langs->trans("Categories").'</td><td colspan="3">'.$langs->trans("Description").'</td></tr>';
 
 
 $section=isset($_GET["section"])?$_GET["section"]:$_POST['section'];
@@ -236,8 +237,7 @@ foreach($fulltree as $key => $val)
 		$resarray=tree_showpad($fulltree,$key);
 		$a=$resarray[0];
 		$nbofsubdir=$resarray[1];
-		$c=$resarray[2];
-		$nboffilesinsubdir=$resarray[3];
+		$nboffilesinsubdir=$resarray[2];
 		print '</td>';
 
 		// Show picto
@@ -264,7 +264,7 @@ foreach($fulltree as $key => $val)
 		$categstatic->type=$type;
 		print ' &nbsp;'.$categstatic->getNomUrl(0,'',28);
 
-		//print ' &nbsp;'.'<a href="'.DOL_URL_ROOT.'/categories/viewcat.php?id='.$val['id'].'&type='.$type.'">'.dol_trunc($val['label'],28).'</a>';
+		//print ' &nbsp;'.dol_trunc($val['label'],28);
 		//if ($section == $val['id']) print '</u>';
 		print '</td>';
 		print '</tr></table>';
@@ -344,7 +344,7 @@ print "</table><br>";
     }
 
 
-$db->close();
 
 llxFooter();
+$db->close();
 ?>

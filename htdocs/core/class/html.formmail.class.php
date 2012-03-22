@@ -71,7 +71,7 @@ class FormMail
     /**
      *	Constructor
      *
-     *  @param	DoliDB	$DB      Database handler
+     *  @param	DoliDB	$db      Database handler
      */
     function FormMail($db)
     {
@@ -104,7 +104,7 @@ class FormMail
 
     /**
      * Clear list of attached files in send mail form (stored in session)
-     * 
+     *
      * @return	void
      */
     function clear_attached_files()

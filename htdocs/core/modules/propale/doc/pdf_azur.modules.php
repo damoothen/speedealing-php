@@ -44,9 +44,9 @@ class pdf_azur extends ModelePDFPropales
 	/**
 	 *	Constructor
 	 *
-	 *  @param		DoliDB		$DB      Database handler
+	 *  @param		DoliDB		$db      Database handler
 	 */
-	function pdf_azur($db)
+	function __construct($db)
 	{
 		global $conf,$langs,$mysoc;
 
@@ -129,7 +129,7 @@ class pdf_azur extends ModelePDFPropales
 		$outputlangs->load("propal");
 		$outputlangs->load("products");
 
-		if ($conf->propale->dir_output)
+		if ($conf->propal->dir_output)
 		{
 			$object->fetch_thirdparty();
 
@@ -138,13 +138,13 @@ class pdf_azur extends ModelePDFPropales
 			// Definition de $dir et $file
 			if ($object->specimen)
 			{
-				$dir = $conf->propale->dir_output;
+				$dir = $conf->propal->dir_output;
 				$file = $dir . "/SPECIMEN.pdf";
 			}
 			else
 			{
 				$objectref = dol_sanitizeFileName($object->ref);
-				$dir = $conf->propale->dir_output . "/" . $objectref;
+				$dir = $conf->propal->dir_output . "/" . $objectref;
 				$file = $dir . "/" . $objectref . ".pdf";
 			}
 
@@ -623,7 +623,7 @@ class pdf_azur extends ModelePDFPropales
 		$pdf->SetFont('','', $default_font_size - 1);
 
 		// Tableau total
-		$lltot = 200; $col1x = 120; $col2x = 170; $largcol2 = $lltot - $col2x;
+		$col1x = 120; $col2x = 170; $largcol2 = ($this->page_largeur - $this->marge_droite - $col2x);
 
 		// Total HT
 		$pdf->SetFillColor(255,255,255);
@@ -924,7 +924,7 @@ class pdf_azur extends ModelePDFPropales
 		{
 			if (is_readable($logo))
 			{
-				$pdf->Image($logo, $this->marge_gauche, $posy, 0, 24);
+				$pdf->Image($logo, $this->marge_gauche, $posy, 0, 22);	// width=0 (auto), max height=22
 			}
 			else
 			{

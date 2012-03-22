@@ -220,6 +220,7 @@ abstract class DolibarrModules
     /**
      *  Retourne le nom traduit du module si la traduction existe dans admin.lang,
      *  sinon le nom defini par defaut dans le module.
+     *
      *  @return     string      Nom du module traduit
      */
     function getName()
@@ -298,7 +299,8 @@ abstract class DolibarrModules
     /**
      *  Return translated label of a export dataset
      *
-     *  @return     string      Label of databaset
+     *	@param	int		$r		Index of dataset
+     *  @return string      	Label of databaset
      */
     function getExportDatasetLabel($r)
     {
@@ -321,7 +323,8 @@ abstract class DolibarrModules
     /**
      *  Return translated label of an import dataset
      *
-     *  @return     string      Label of databaset
+     *  @param	int		$r		Index of dataset
+     *  @return	string    		Label of databaset
      */
     function getImportDatasetLabel($r)
     {
@@ -371,7 +374,7 @@ abstract class DolibarrModules
         $sql.= $this->numero;
         $sql.= ", ".$conf->entity;
         $sql.= ", 1";
-        $sql.= ", '".$this->db->idate(gmmktime())."'";
+        $sql.= ", '".$this->db->idate(dol_now())."'";
         $sql.= ", '".$this->version."'";
         $sql.= ")";
 
@@ -466,12 +469,13 @@ abstract class DolibarrModules
 
 
     /**
-     *      Create tables and keys required by module.
-     *      Files module.sql and module.key.sql with create table and create keys
-     *      commands must be stored in directory reldir='/module/sql/'
-     *      This function is called by this->init
+     *  Create tables and keys required by module.
+     *  Files module.sql and module.key.sql with create table and create keys
+     *  commands must be stored in directory reldir='/module/sql/'
+     *  This function is called by this->init
      *
-     *      @return     int     <=0 if KO, >0 if OK
+     *  @param	string	$reldir		Relative directory where to scan files
+     *  @return	int     			<=0 if KO, >0 if OK
      */
     function _load_tables($reldir)
     {
@@ -579,28 +583,53 @@ abstract class DolibarrModules
                 $file  = isset($this->boxes[$key][1])?$this->boxes[$key][1]:'';
                 $note  = isset($this->boxes[$key][2])?$this->boxes[$key][2]:'';
 
-                $sql = "SELECT count(*) FROM ".MAIN_DB_PREFIX."boxes_def";
-                $sql.= " WHERE file = '".$file."'";
+                $sql = "SELECT count(*) as nb FROM ".MAIN_DB_PREFIX."boxes_def";
+                $sql.= " WHERE file = '".$this->db->escape($file)."'";
                 $sql.= " AND entity = ".$conf->entity;
-
                 if ($note) $sql.=" AND note ='".$this->db->escape($note)."'";
 
                 $result=$this->db->query($sql);
                 if ($result)
                 {
-                    $row = $this->db->fetch_row($result);
-                    if ($row[0] == 0)
+                    $obj = $this->db->fetch_object($result);
+                    if ($obj->nb == 0)
                     {
-                        $sql = "INSERT INTO ".MAIN_DB_PREFIX."boxes_def (file,entity,note)";
-                        $sql.= " VALUES ('".$this->db->escape($file)."',";
-                        $sql.= $conf->entity.",";
-                        $sql.= $note?"'".$this->db->escape($note)."'":"null";
-                        $sql.= ")";
+                        $this->db->begin();
 
-                        dol_syslog(get_class($this)."::insert_boxes sql=".$sql);
-                        if (! $this->db->query($sql))
+                        if (! $err)
                         {
-                            $err++;
+                            $sql = "INSERT INTO ".MAIN_DB_PREFIX."boxes_def (file,entity,note)";
+                            $sql.= " VALUES ('".$this->db->escape($file)."',";
+                            $sql.= $conf->entity.",";
+                            $sql.= $note?"'".$this->db->escape($note)."'":"null";
+                            $sql.= ")";
+
+                            dol_syslog(get_class($this)."::insert_boxes sql=".$sql);
+                            $resql=$this->db->query($sql);
+                            if (! $resql) $err++;
+
+                        }
+                        if (! $err)
+                        {
+                            $lastid=$this->db->last_insert_id(MAIN_DB_PREFIX."boxes_def","rowid");
+
+                            $sql = "INSERT INTO ".MAIN_DB_PREFIX."boxes (box_id,position,box_order,fk_user)";
+                            $sql.= " VALUES (".$lastid.", 0, '0', 0)";
+
+                            dol_syslog(get_class($this)."::insert_boxes sql=".$sql);
+                            $resql=$this->db->query($sql);
+                            if (! $resql) $err++;
+                        }
+
+                        if (! $err)
+                        {
+                            $this->db->commit();
+                        }
+                        else
+                        {
+                            $this->error=$this->db->lasterror();
+                            dol_syslog(get_class($this)."::insert_boxes ".$this->error, LOG_ERR);
+                            $this->db->rollback();
                         }
                     }
                 }
@@ -850,8 +879,8 @@ abstract class DolibarrModules
     /**
      *  Insert permissions definitions related to the module into llx_rights_def
      *
-     *  @param      $reinitadminperms   If 1, we also grant them to all admin users
-     *  @return     int                 Number of error (0 if OK)
+     *  @param	int		$reinitadminperms   If 1, we also grant them to all admin users
+     *  @return int                 		Number of error (0 if OK)
      */
     function insert_permissions($reinitadminperms=0)
     {
@@ -1189,7 +1218,9 @@ abstract class DolibarrModules
     /**
      *  Insert directories in llx_const
      *
-     *  @return     int     Nb of errors (0 if OK)
+     *  @param	string	$name		Name
+     *  @param	string	$dir		Directory
+     *  @return	int     			Nb of errors (0 if OK)
      */
     function insert_dirs($name,$dir)
     {
@@ -1263,7 +1294,7 @@ abstract class DolibarrModules
     {
     	global $conf;
 
-    	$err=0;
+    	$error=0;
     	$entity=$conf->entity;
 
     	if (is_array($this->module_parts) && ! empty($this->module_parts))
@@ -1278,12 +1309,12 @@ abstract class DolibarrModules
     				// Can defined other parameters
     				if (is_array($value['data']) && ! empty($value['data']))
     				{
-    					$newvalue = dol_json_encode($value['data']);
+    					$newvalue = json_encode($value['data']);
     					if (isset($value['entity'])) $entity = $value['entity'];
     				}
     				else
     				{
-    					$newvalue = dol_json_encode($value);
+    					$newvalue = json_encode($value);
     				}
     			}
 
@@ -1305,15 +1336,23 @@ abstract class DolibarrModules
     			$sql.= ")";
 
     			dol_syslog(get_class($this)."::insert_const_".$key." sql=".$sql);
-    			$resql=$this->db->query($sql);
+    			$resql=$this->db->query($sql,1);
     			if (! $resql)
     			{
-    				$this->error=$this->db->lasterror();
-    				dol_syslog(get_class($this)."::insert_const_".$key." ".$this->error);
+    			    if ($this->db->lasterrno() != 'DB_ERROR_RECORD_ALREADY_EXISTS')
+    			    {
+        			    $error++;
+        				$this->error=$this->db->lasterror();
+        				dol_syslog(get_class($this)."::insert_const_".$key." ".$this->error, LOG_ERR);
+    			    }
+    			    else
+    			    {
+    			        dol_syslog(get_class($this)."::insert_const_".$key." Record already exists.", LOG_WARNING);
+    			    }
     			}
     		}
     	}
-    	return $err;
+    	return $error;
     }
 
     /**
@@ -1334,7 +1373,7 @@ abstract class DolibarrModules
     		{
     			// If entity is defined
     			if (is_array($value) && isset($value['entity'])) $entity = $value['entity'];
-    			
+
     			$sql = "DELETE FROM ".MAIN_DB_PREFIX."const";
     			$sql.= " WHERE ".$this->db->decrypt('name')." LIKE '".$this->const_name."_".strtoupper($key)."'";
     			$sql.= " AND entity = ".$entity;
