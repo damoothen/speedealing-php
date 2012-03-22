@@ -38,7 +38,7 @@ $type = $_GET['type'];
 $pstcomm = $_GET['pstcomm'];
 $search_sale = $_GET['search_sale'];
 
-
+//include_once(DOL_DOCUMENT_ROOT ."/core/db/Couchbase.php");
 
 $cb = new Couchbase;
 $cb->addCouchbaseServer("localhost",11211,8092);

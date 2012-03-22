@@ -10,9 +10,6 @@
 [submodule "htdocs/custom/multicompany"]
 	path = htdocs/custom/multicompany
 	url = hepr@doliforge.org:/gitroot/multicompany/multicompany.git
-[submodule "htdocs/custom/memcached"]
-	path = htdocs/custom/memcached
-	url = git@git.symeos.com:module-memcache.git
 [submodule "htdocs/custom/dropbox"]
         path = htdocs/custom/dropbox
         url = hepr@doliforge.org:/gitroot/dropbox/dropbox.git
