@@ -6,7 +6,7 @@
 	url = hepr@doliforge.org:/gitroot/google/google.git
 [submodule "htdocs/custom/lead"]
 	path = htdocs/custom/lead
-	url = hepr@doliforge.org:/gitroot/lead/lead.git
+	url = git@git.symeos.com:module-lead.git
 [submodule "htdocs/custom/multicompany"]
 	path = htdocs/custom/multicompany
 	url = hepr@doliforge.org:/gitroot/multicompany/multicompany.git
