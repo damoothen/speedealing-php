@@ -25,3 +25,6 @@
 [submodule "htdocs/custom/team"]
         path = htdocs/custom/team
         url = git@git.symeos.com:module-team.git
+[submodule "htdocs/custom/stock"]
+        path = htdocs/custom/stock
+        url = git@git.symeos.com:module-stock.git
