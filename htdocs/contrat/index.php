@@ -24,7 +24,9 @@
  */
 
 require ("../main.inc.php");
-require_once (DOL_DOCUMENT_ROOT."/contrat/class/contrat.class.php");
+require_once(DOL_DOCUMENT_ROOT."/contrat/class/contrat.class.php");
+require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
+
 
 $langs->load("products");
 $langs->load("companies");

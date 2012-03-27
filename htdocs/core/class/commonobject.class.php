@@ -292,8 +292,8 @@ abstract class CommonObject
 
         $sql = "DELETE FROM ".MAIN_DB_PREFIX."element_contact";
         $sql.= " WHERE element_id =".$this->id;
-        $sql.= " AND fk_c_type_contact IN (".$listId.")";
-
+ //       $sql.= " AND fk_c_type_contact IN (".$listId.")";
+//print $sql;exit;
         dol_syslog(get_class($this)."::delete_linked_contact sql=".$sql, LOG_DEBUG);
         if ($this->db->query($sql))
         {
@@ -432,7 +432,7 @@ abstract class CommonObject
         if (! empty($source)) $sql.= " AND tc.source='".$source."'";
         $sql.= " ORDER by tc.".$order;
 
-        //print "sql=".$sql;
+        //print "sql=".$sql;exit;
         $resql=$this->db->query($sql);
         if ($resql)
         {
