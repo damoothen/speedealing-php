@@ -61,8 +61,9 @@ $view = $cb->getView("lookup", "list_company");
 $result = $view->getResult(array("reduce" => false,"limit"=>10000,"skip"=>0,"startkey"=>""));
 /*get companies. usefull to get their sales and categories */
 
-//print_r($result);
 
+//print_r($result);
+//exit;
 $iTotal=  count($result->rows);
 $output["iTotalRecords"]=$iTotal;
 $output["iTotalDisplayRecords"]=$iTotal;

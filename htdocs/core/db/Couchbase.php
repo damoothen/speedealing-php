@@ -246,4 +246,15 @@ class Couchbase extends Memcached
         $ddoc_json = json_encode($ddoc);
         $this->couchdb->saveDoc($ddoc_json);
     }
+    
+    /**
+     * generate uuids
+     *
+     * @param $nb uuids object.
+     */
+    function uuid($nb=1)
+    {
+        $uuids=json_decode($this->couchdb->send("GET", "/_uuids?count=$nb"));
+        return $uuids->uuids;
+    }
 }

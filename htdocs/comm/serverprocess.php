@@ -247,8 +247,10 @@ $resultSocietes = $db->query($sql);
 $cb = new Couchbase;
 $cb->addCouchbaseServer("localhost",11211,8092);
 
+$uuid=$cb->uuid($iTotal); //generation des uuids
 
 /*get companies. usefull to get their sales and categories */
+$i=0;
 while ($aRow = $db->fetch_object($resultSocietes)) {
     //if($ancinneValeur!=$aRow->rowid){ //do not insert the (next on the result query) same contact
         //$valueR = $valueR . $aRow->rowid . ',';
@@ -256,7 +258,8 @@ while ($aRow = $db->fetch_object($resultSocietes)) {
         //$row=  get_object_vars($aRow);
         //$ancinneValeur = $aRow->rowid;
         $aRow->llx="societe";
-        $cb->set($aRow->rowid,  json_encode($aRow));
+        $cb->set($uuid[$i],  json_encode($aRow));
+        $i++;
     //}
 }
 
@@ -296,7 +299,7 @@ while ($aRow = $db->fetch_object($resultCommerciaux)) {
         $result->commerciaux[]=$aRow->login;
         
         //print_r($result);exit;
-        $cb->set($aRow->fk_soc,  json_encode($result));
+        $cb->add($aRow->fk_soc,  json_encode($result));
         //exit;
     }
     //$cb->set($aRow->fk_soc);
