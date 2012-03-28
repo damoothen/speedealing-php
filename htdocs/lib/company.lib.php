@@ -49,7 +49,7 @@ function societe_prepare_head($object)
     || (isset($object->object) && $object->object->client==2) || (isset($object->object) && $object->object->client==3)) && empty($conf->global->SOCIETE_DISABLE_PROSPECTS))
     {
         $head[$h][0] = DOL_URL_ROOT.'/comm/prospect/fiche.php?socid='.$object->id;
-        $head[$h][1] = $langs->trans("Prospect");
+        $head[$h][1] = $langs->trans("Commercial");
         $head[$h][2] = 'prospect';
         $h++;
     }
