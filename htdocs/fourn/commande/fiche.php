@@ -190,7 +190,7 @@ else if ($action == 'addline' && $user->rights->fournisseur->commande->creer)
                     $_POST['idprodfournprice'],
                     $productsupplier->fourn_ref,
                     $remise_percent,
-       				'HT',
+                    'HT',
                     $type
                 );
             }
@@ -817,13 +817,13 @@ if (! empty($conf->global->MAIN_DISABLE_CONTACTS_TAB))
 	if ($action == 'addcontact' && $user->rights->fournisseur->commande->creer)
 	{
 		$result = $object->fetch($id);
-	
+
 		if ($result > 0 && $id > 0)
 		{
 			$contactid = (GETPOST('userid') ? GETPOST('userid') : GETPOST('contactid'));
 			$result = $result = $object->add_contact($contactid, $_POST["type"], $_POST["source"]);
 		}
-	
+
 		if ($result >= 0)
 		{
 			Header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
@@ -842,7 +842,7 @@ if (! empty($conf->global->MAIN_DISABLE_CONTACTS_TAB))
 			}
 		}
 	}
-	
+
 	// bascule du statut d'un contact
 	else if ($action == 'swapstatut' && $user->rights->fournisseur->commande->creer)
 	{
@@ -855,13 +855,13 @@ if (! empty($conf->global->MAIN_DISABLE_CONTACTS_TAB))
 			dol_print_error($db);
 		}
 	}
-	
+
 	// Efface un contact
 	else if ($action == 'deletecontact' && $user->rights->fournisseur->commande->creer)
 	{
 		$object->fetch($id);
 		$result = $object->delete_contact($_GET["lineid"]);
-	
+
 		if ($result >= 0)
 		{
 			Header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
@@ -926,7 +926,7 @@ if ($id > 0 || ! empty($ref))
          */
         if ($action	== 'valid')
         {
-            $object->date_commande=gmmktime();
+            $object->date_commande=dol_now();
 
             // We check if number is temporary number
             if (preg_match('/^[\(]?PROV/i',$object->ref)) $newref = $object->getNextNumRef($soc);
@@ -1154,18 +1154,18 @@ if ($id > 0 || ! empty($ref))
         print '<td>'.$langs->trans("Currency".$conf->currency).'</td></tr>';
 
         print "</table><br>";
-        
+
         if (! empty($conf->global->MAIN_DISABLE_CONTACTS_TAB))
         {
         	require_once(DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php');
         	require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
         	$formcompany= new FormCompany($db);
-        
+
         	$blocname = 'contacts';
         	$title = $langs->trans('ContactsAddresses');
         	include(DOL_DOCUMENT_ROOT.'/core/tpl/bloc_showhide.tpl.php');
         }
-        
+
         if (! empty($conf->global->MAIN_DISABLE_NOTES_TAB))
         {
         	$blocname = 'notes';
@@ -1687,6 +1687,8 @@ if ($id > 0 || ! empty($ref))
             $formmail->withcancel=1;
             // Tableau des substitutions
             $formmail->substit['__ORDERREF__']=$object->ref;
+            $formmail->substit['__SIGNATURE__']=$user->signature;
+            $formmail->substit['__PERSONALIZED__']='';
             // Tableau des parametres complementaires
             $formmail->param['action']='send';
             $formmail->param['models']='order_supplier_send';

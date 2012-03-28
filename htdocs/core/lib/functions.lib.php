@@ -33,116 +33,7 @@
 
 if (! function_exists('json_encode'))
 {
-    /**
-     * Implement json_encode for PHP that does not support it
-     *
-     * @param	mixed	$elements		PHP Object to json encode
-     * @return 	string					Json encoded string
-     */
-    function json_encode($elements)
-    {
-    	$num = count($elements);
-
-    	// determine type
-    	if (is_numeric(key($elements)))
-    	{
-    		// indexed (list)
-    		$output = '[';
-    		for ($i = 0, $last = ($num - 1); isset($elements[$i]); ++$i)
-    		{
-    			if (is_array($elements[$i])) $output.= json_encode($elements[$i]);
-    			else $output .= _val($elements[$i]);
-    			if($i !== $last) $output.= ',';
-    		}
-    		$output.= ']';
-    	}
-    	else
-    	{
-    		// associative (object)
-    		$output = '{';
-    		$last = $num - 1;
-    		$i = 0;
-    		foreach($elements as $key => $value)
-    		{
-    			$output .= '"'.$key.'":';
-    			if (is_array($value)) $output.= json_encode($value);
-    			else $output .= _val($value);
-    			if ($i !== $last) $output.= ',';
-    			++$i;
-    		}
-    		$output.= '}';
-    	}
-
-    	// return
-    	return $output;
-    }
-
-    /**
-     * Return text according to type
-     *
-     * @param 	mixed	$val	Value to show
-     * @return	string			Formated value
-     */
-    function _val($val)
-    {
-    	if (is_string($val)) return '"'.rawurlencode($val).'"';
-    	elseif (is_int($val)) return sprintf('%d', $val);
-    	elseif (is_float($val)) return sprintf('%F', $val);
-    	elseif (is_bool($val)) return ($val ? 'true' : 'false');
-    	else  return 'null';
-    }
-}
-
-if (! function_exists('json_decode'))
-{
-	/**
-	 * Implement json_decode for PHP that does not support it
-	 *
-	 * @param	string	$json		Json encoded to PHP Object or Array
-	 * @param	bool	$assoc		False return an object, true return an array
-	 * @return 	mixed				Object or Array
-	 */
-	function json_decode($json, $assoc=false)
-	{
-		$comment = false;
-
-		$strLength = dol_strlen($json);
-		for ($i=0; $i<$strLength; $i++)
-		{
-			if (! $comment)
-			{
-				if (($json[$i] == '{') || ($json[$i] == '[')) $out.= 'array(';
-				else if (($json[$i] == '}') || ($json[$i] == ']')) $out.= ')';
-				else if ($json[$i] == ':') $out.= ' => ';
-				else $out.= $json[$i];
-			}
-			else $out.= $json[$i];
-			if ($json[$i] == '"' && $json[($i-1)]!="\\") $comment = !$comment;
-		}
-
-		// Return an array
-		eval('$array = '.$out.';');
-
-		// Return an object
-		if (! $assoc)
-		{
-			if (! empty($array))
-			{
-				$object = false;
-
-				foreach ($array as $key => $value)
-				{
-					$object->{$key} = $value;
-				}
-
-				return $object;
-			}
-
-			return false;
-		}
-
-		return $array;
-	}
+    include_once(DOL_DOCUMENT_ROOT ."/core/lib/json.lib.php");
 }
 
 /**
@@ -275,7 +166,7 @@ function dol_shutdown()
  *  Return value of a param into GET or POST supervariable
  *
  *  @param	string	$paramname   Name of parameter to found
- *  @param	string	$check	     Type of check (''=no check,  'int'=check it's numeric, 'alpha'=check it's alpha only)
+ *  @param	string	$check	     Type of check (''=no check,  'int'=check it's numeric, 'alpha'=check it's alpha only, 'array'=check it's array)
  *  @param	int		$method	     Type of method (0 = get then post, 1 = only get, 2 = only post, 3 = post then get)
  *  @return string      		 Value found or '' if check fails
  */
@@ -289,16 +180,24 @@ function GETPOST($paramname,$check='',$method=0)
 
 	if (! empty($check))
 	{
-	    $out=trim($out);
 		// Check if numeric
-		if ($check == 'int' && ! preg_match('/^[-\.,0-9]+$/i',$out)) $out='';
+		if ($check == 'int' && ! preg_match('/^[-\.,0-9]+$/i',$out))
+		{
+			$out=trim($out);
+			$out='';
+		}
 		// Check if alpha
 		elseif ($check == 'alpha')
 		{
+			$out=trim($out);
 	    	// '"' is dangerous because param in url can close the href= or src= and add javascript functions.
     		// '../' is dangerous because it allows dir transversals
 		    if (preg_match('/"/',$out)) $out='';
 			else if (preg_match('/\.\.\//',$out)) $out='';
+		}
+		elseif ($check == 'array')
+		{
+			if (! is_array($out) || empty($out)) $out=array();
 		}
 	}
 
@@ -1102,6 +1001,7 @@ function dol_mktime($hour,$minute,$second,$month,$day,$year,$gm=false,$check=1)
 function dol_now($mode='gmt')
 {
     // Note that gmmktime and mktime return same value (GMT) whithout parameters
+	//if ($mode == 'gmt') $ret=gmmktime(); // Strict Standards: gmmktime(): You should be using the time() function instead
     if ($mode == 'gmt') $ret=time();	// Time for now at greenwich.
     else if ($mode == 'tzserver')		// Time for now with PHP server timezone added
     {

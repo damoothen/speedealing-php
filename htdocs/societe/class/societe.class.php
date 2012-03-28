@@ -257,6 +257,7 @@ class Societe extends CommonObject
                     $result=$interface->run_triggers('COMPANY_CREATE',$this,$user,$langs,$conf);
                     if ($result < 0) { $error++; $this->errors=$interface->errors; }
                     // Fin appel triggers
+
                     dol_syslog(get_class($this)."::Create success id=".$this->id);
                     $this->db->commit();
                     return $this->id;
@@ -653,7 +654,7 @@ class Societe extends CommonObject
         $sql .= ', s.code_client, s.code_fournisseur, s.code_compta, s.code_compta_fournisseur, s.parent, s.barcode';
         $sql .= ', s.fk_departement, s.fk_pays as country_id, s.fk_stcomm, s.remise_client, s.mode_reglement, s.cond_reglement, s.tva_assuj';
         $sql .= ', s.localtax1_assuj, s.localtax2_assuj, s.fk_prospectlevel, s.default_lang, s.logo';
-        $sql .= ', s.import_key';
+        $sql .= ', s.import_key, s.canvas';
         // Begin Symeos
 	$sql .= ', s.latitude';
 	$sql .= ', s.longitude';
@@ -697,6 +698,7 @@ class Societe extends CommonObject
 
                 $this->id           = $obj->rowid;
                 $this->entity       = $obj->entity;
+                $this->canvas		= $obj->canvas;
 
                 $this->ref          = $obj->rowid;
                 $this->name 		= $obj->name;
@@ -1347,22 +1349,22 @@ class Societe extends CommonObject
         }
         if ($mode == 2)
         {
-            if ($statut==0) return img_picto($langs->trans("ActivityCeased"),'statut5').' '.$langs->trans("ActivityCeased");
+            if ($statut==0) return img_picto($langs->trans("ActivityCeased"),'statut6').' '.$langs->trans("ActivityCeased");
             if ($statut==1) return img_picto($langs->trans("InActivity"),'statut4').' '.$langs->trans("InActivity");
         }
         if ($mode == 3)
         {
-            if ($statut==0) return img_picto($langs->trans("ActivityCeased"),'statut5');
+            if ($statut==0) return img_picto($langs->trans("ActivityCeased"),'statut6');
             if ($statut==1) return img_picto($langs->trans("InActivity"),'statut4');
         }
         if ($mode == 4)
         {
-            if ($statut==0) return img_picto($langs->trans("ActivityCeased"),'statut5').' '.$langs->trans("ActivityCeased");
+            if ($statut==0) return img_picto($langs->trans("ActivityCeased"),'statut6').' '.$langs->trans("ActivityCeased");
             if ($statut==1) return img_picto($langs->trans("InActivity"),'statut4').' '.$langs->trans("InActivity");
         }
         if ($mode == 5)
         {
-            if ($statut==0) return $langs->trans("ActivityCeased").' '.img_picto($langs->trans("ActivityCeased"),'statut5');
+            if ($statut==0) return $langs->trans("ActivityCeased").' '.img_picto($langs->trans("ActivityCeased"),'statut6');
             if ($statut==1) return $langs->trans("InActivity").' '.img_picto($langs->trans("InActivity"),'statut4');
         }
     }

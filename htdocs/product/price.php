@@ -87,7 +87,7 @@ if ($action == 'update_price' && ! $_POST["cancel"] && ($user->rights->produit->
                 $newecotax=price2num($_POST["ecotax"],'MU');
 	}
 
-	if ($object->update_price($object->id, $newprice, $newpricebase, $user, $newvat, $newprice_min, $newecotax, $level, $newnpr) > 0)
+	if ($object->updatePrice($object->id, $newprice, $newpricebase, $user, $newvat, $newprice_min, $newecotax, $level, $newnpr) > 0)
 	{
 		$action = '';
 		$mesg = '<div class="ok">'.$langs->trans("RecordSaved").'</div>';
@@ -497,7 +497,7 @@ if ($result)
 
 		// Il doit au moins y avoir la ligne de prix initial.
 		// On l'ajoute donc pour remettre a niveau (pb vieilles versions)
-		$object->update_price($object->id, $object->price, 'HT', $user, $newprice_min);
+		$object->updatePrice($object->id, $object->price, 'HT', $user, $newprice_min);
 
 		$result = $db->query($sql);
 		$num = $db->num_rows($result);

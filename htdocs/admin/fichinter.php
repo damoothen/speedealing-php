@@ -5,8 +5,8 @@
  * Copyright (C) 2004      Benoit Mortier               <benoit.mortier@opensides.be>
  * Copyright (C) 2005-2012 Regis Houssin                <regis@dolibarr.fr>
  * Copyright (C) 2008 	   Raphael Bertrand (Resultic)  <raphael.bertrand@resultic.fr>
- * Copyright (C) 2011 	   Juanjo Menent			    <jmenent@2byte.es>
- * Copyright (C) 2011 	   Philippe Grand			    <philippe.grand@atoo-net.com>
+ * Copyright (C) 2011-2012 Juanjo Menent			    <jmenent@2byte.es>
+ * Copyright (C) 2011-2012 Philippe Grand			    <philippe.grand@atoo-net.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,8 +39,8 @@ $langs->load("interventions");
 if (!$user->admin)
 accessforbidden();
 
-$action = GETPOST("action");
-$value = GETPOST("value");
+$action = GETPOST('action','alpha');
+$value = GETPOST('value','alpha');
 
 
 /*
@@ -48,8 +48,8 @@ $value = GETPOST("value");
  */
 if ($action == 'updateMask')
 {
-	$maskconst=GETPOST("maskconst");
-	$maskvalue=GETPOST("maskvalue");
+	$maskconst=GETPOST('maskconst','alpha');
+	$maskvalue=GETPOST('maskvalue','alpha');
 	if ($maskconst) $res = dolibarr_set_const($db,$maskconst,$maskvalue,'chaine',0,'',$conf->entity);
 
 	if (! $res > 0) $error++;
@@ -66,7 +66,7 @@ if ($action == 'updateMask')
 
 if ($action == 'set_FICHINTER_FREE_TEXT')
 {
-	$freetext= GETPOST("FICHINTER_FREE_TEXT");
+	$freetext= GETPOST('FICHINTER_FREE_TEXT','alpha');
 	$res = dolibarr_set_const($db, "FICHINTER_FREE_TEXT",$freetext,'chaine',0,'',$conf->entity);
 
 	if (! $res > 0) $error++;
@@ -83,7 +83,7 @@ if ($action == 'set_FICHINTER_FREE_TEXT')
 
 if ($action == 'set_FICHINTER_DRAFT_WATERMARK')
 {
-	$draft= GETPOST("FICHINTER_DRAFT_WATERMARK");
+	$draft= GETPOST('FICHINTER_DRAFT_WATERMARK','alpha');
 
 	$res = dolibarr_set_const($db, "FICHINTER_DRAFT_WATERMARK",trim($draft),'chaine',0,'',$conf->entity);
 
@@ -101,23 +101,32 @@ if ($action == 'set_FICHINTER_DRAFT_WATERMARK')
 
 if ($action == 'specimen')
 {
-	$modele=$_GET["module"];
+	$modele= GETPOST('module','alpha');
 
 	$inter = new Fichinter($db);
 	$inter->initAsSpecimen();
 
-	// Charge le modele
-	$dir = "/core/modules/fichinter/doc/";
-	$file = "pdf_".$modele.".modules.php";
-	$file = dol_buildpath($dir.$file);
-	if (file_exists($file))
+	// Search template files
+	$file=''; $classname=''; $filefound=0;
+	$dirmodels=array_merge(array('/'),(array) $conf->modules_parts['models']);
+	foreach($dirmodels as $reldir)
 	{
-		$classname = "pdf_".$modele;
+	    $file=dol_buildpath($reldir."core/modules/fichinter/doc/pdf_".$modele.".modules.php",0);
+		if (file_exists($file))
+		{
+			$filefound=1;
+			$classname = "pdf_".$modele;
+			break;
+		}
+	}
+
+	if ($filefound)
+	{
 		require_once($file);
 
-		$obj = new $classname($db);
+		$module = new $classname($db);
 
-		if ($obj->write_file($inter,$langs) > 0)
+		if ($module->write_file($inter,$langs) > 0)
 		{
 			header("Location: ".DOL_URL_ROOT."/document.php?modulepart=ficheinter&file=SPECIMEN.pdf");
 			return;
@@ -137,8 +146,8 @@ if ($action == 'specimen')
 
 if ($action == 'set')
 {
-	$label = GETPOST("label");
-	$scandir = GETPOST("scandir");
+	$label = GETPOST('label','alpha');
+	$scandir = GETPOST('scandir','alpha');
 
 	$type='ficheinter';
     $sql = "INSERT INTO ".MAIN_DB_PREFIX."document_model (nom, type, entity, libelle, description)";
@@ -168,8 +177,8 @@ if ($action == 'del')
 
 if ($action == 'setdoc')
 {
-	$label = GETPOST("label");
-	$scandir = GETPOST("scandir");
+	$label = GETPOST('label','alpha');
+	$scandir = GETPOST('scandir','alpha');
 
 	$db->begin();
 
@@ -219,6 +228,8 @@ if ($action == 'setmod')
  * View
  */
 
+$dirmodels=array_merge(array('/'),(array) $conf->modules_parts['models']);
+
 llxHeader();
 
 $form=new Form($db);
@@ -242,9 +253,9 @@ print "</tr>\n";
 
 clearstatcache();
 
-foreach ($conf->file->dol_document_root as $dirroot)
+foreach ($dirmodels as $reldir)
 {
-	$dir = $dirroot . "/core/modules/fichinter/";
+	$dir = dol_buildpath($reldir."core/modules/fichinter/");
 
 	if (is_dir($dir))
 	{
@@ -260,7 +271,7 @@ foreach ($conf->file->dol_document_root as $dirroot)
 					$file = $reg[1];
 					$classname = substr($file,4);
 
-					require_once($dir.$file.".php");
+					require_once(DOL_DOCUMENT_ROOT ."/core/modules/fichinter/".$file.".php");
 
 					$module = new $file;
 

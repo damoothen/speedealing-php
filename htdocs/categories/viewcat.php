@@ -109,8 +109,8 @@ if ($action == 'delete')
 	$ret=$form->form_confirm($_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;type='.$type,$langs->trans('DeleteCategory'),$langs->trans('ConfirmDeleteCategory'),'confirm_delete');
 	if ($ret == 'html') print '<br>';
 }
-$var=false;
-print '<table border="0" width="100%" class="noborder">';
+
+print '<table border="0" width="100%" class="border">';
 
 // Path of category
 print '<tr><td width="20%" class="notopnoleft">';
@@ -124,8 +124,8 @@ foreach ($ways as $way)
 print '</td></tr>';
 
 // Description
-print '<tr  '.$bc[$var].'><td width="20%" id="label">';
-print $langs->trans("Description").'</td><td id="value">';
+print '<tr><td width="20%" class="notopnoleft">';
+print $langs->trans("Description").'</td><td>';
 print nl2br($object->description);
 print '</td></tr>';
 $var=!$var;
@@ -334,7 +334,7 @@ if ($object->type == 3)
 {
 	require_once(DOL_DOCUMENT_ROOT."/adherents/class/adherent.class.php");
 
-	$prods = $object->get_type("member","Adherent");
+	$prods = $object->get_type("member","Adherent","","adherent");
 	if ($prods < 0)
 	{
 		dol_print_error($db,$object->error);
@@ -409,7 +409,7 @@ if ($object->type == 5)
                 print "</table>\n";
         }
 }
-$db->close();
 
 llxFooter();
+$db->close();
 ?>

@@ -185,7 +185,7 @@ input, input.flat, textarea, textarea.flat, form.flat select, select.flat {
     font-size: <?php print $fontsize ?>px;
 	font-family: <?php print $fontlist ?>;
 	background: #FDFDFD;
-    border: 1px solid #ACBCBB;
+    border: 1px solid #C0C0C0;
     padding: 1px 1px 1px 1px;
     margin: 0px 0px 0px 0px;
 }
@@ -196,6 +196,7 @@ input:disabled {
 	background:#ddd;
 }
 input:-webkit-autofill { background-color: #FCFEFA !important; background-image:none !important; }
+
 textarea:disabled {
 	background:#ddd;
 }
@@ -203,7 +204,7 @@ textarea:disabled {
     font-family: <?php print $fontlist ?>;
 	background-image: url(<?php echo $img_button ?>);
 	background-position: bottom;
-    border: 1px solid #ACBCBB;
+    border: 1px solid #C0C0C0;
 	padding: 0.1em 0.7em;
 	margin: 0em 0.5em;
     -moz-border-radius:0px 5px 0px 5px;
@@ -218,7 +219,7 @@ textarea:disabled {
 	color: #222244;
 	background-image: url(<?php echo $img_button ?>);
 	background-position: bottom;
-    border: 1px solid #ACBCBB;
+    border: 1px solid #C0C0C0;
 }
 .button:hover   {
 	background: #dee7ec;
@@ -255,6 +256,9 @@ th .button {
 	-moz-border-radius:0px !important;
 	-webkit-border-radius:0px !important;
 	border-radius:0px !important;
+}
+.valignmiddle {
+	vertical-align: middle;
 }
 
 /* ============================================================================== */
@@ -408,7 +412,7 @@ a.tmenu:hover, a.tmenu:active {
 }
 
 a.tmenusel:link, a.tmenusel:visited, a.tmenusel:hover, a.tmenusel:active {
-    font-weight: normal;
+	font-weight: normal;
 	color: #233030;
 	padding: 0px 5px 0px 5px;
 	margin: 0px 0px 0px 0px;
@@ -634,7 +638,7 @@ div.login_block table {
 
 div.login {
 	white-space:nowrap;
-    padding: <?php echo ($conf->browser->phone?'0':'8')?>px 0px 0px 0px;
+	padding: <?php echo ($conf->browser->phone?'0':'8')?>px 0px 0px 0px;
     margin: 0px 0px 0px 8px;
 	font-weight: bold;
 }
@@ -847,26 +851,37 @@ td.photo {
 /* ============================================================================== */
 
 .toolbar {
+    background-image: linear-gradient(bottom, rgb(<?php echo '240,240,240'; ?>) 15%, rgb(<?php echo '255,255,255'; ?>) 100%) !important;
+    background-image: -o-linear-gradient(bottom, rgb(<?php echo '240,240,240'; ?>) 15%, rgb(<?php echo '255,255,255'; ?>) 100%) !important;
+    background-image: -moz-linear-gradient(bottom, rgb(<?php echo '240,240,240'; ?>) 15%, rgb(<?php echo '255,255,255'; ?>) 100%) !important;
+    background-image: -webkit-linear-gradient(bottom, rgb(<?php echo '240,240,240'; ?>) 15%, rgb(<?php echo '255,255,255'; ?>) 100%) !important;
+    background-image: -ms-linear-gradient(bottom, rgb(<?php echo '240,240,240'; ?>) 15%, rgb(<?php echo '255,255,255'; ?>) 100%) !important;
 
-/* DYN */
-background-image: linear-gradient(bottom, rgb(<?php echo $colorback1; ?>) 15%, rgb(<?php echo $colorback2; ?>) 100%) !important;
-background-image: -o-linear-gradient(bottom, rgb(<?php echo $colorback1; ?>) 15%, rgb(<?php echo $colorback2; ?>) 100%) !important;
-background-image: -moz-linear-gradient(bottom, rgb(<?php echo $colorback1; ?>) 15%, rgb(<?php echo $colorback2; ?>) 100%) !important;
-background-image: -webkit-linear-gradient(bottom, rgb(<?php echo $colorback1; ?>) 15%, rgb(<?php echo $colorback2; ?>) 100%) !important;
-background-image: -ms-linear-gradient(bottom, rgb(<?php echo $colorback1; ?>) 15%, rgb(<?php echo $colorback2; ?>) 100%) !important;
+    border: 1px solid #CCC !important;
 
-    border: 1px solid #BBB !important;
+    -moz-border-radius: 5px 5px 5px 5px !important;
+	-webkit-border-radius: 5px 5px 5px 5px !important;
+	border-radius: 5px 5px 5px 5px !important;
+    -moz-box-shadow: 4px 4px 4px #EEE;
+    -webkit-box-shadow: 4px 4px 4px #EEE;
+    box-shadow: 4px 4px 4px #EEE;
+
+    padding: 0 4px 0 4px !important;
 }
 
-.toolbarbutton {
-    margin-top: 2px;
+a.toolbarbutton {
+    margin-top: 0px;
     margin-left: 4px;
+    margin-right: 4px;
+    height: 30px;
 /*    border: solid 1px #AAAAAA;
-    width: 34px;*/
-    height: 34px;
-/*    background: #FFFFFF;*/
+    width: 32px;
+    background: #FFFFFF;*/
 }
-
+img.toolbarbutton {
+	margin-top: 1px;
+    height: 30px;
+}
 
 /* ============================================================================== */
 /* Panes for ECM or Filemanager                                                   */
@@ -1039,12 +1054,10 @@ background-image: -ms-linear-gradient(bottom, rgb(<?php echo $colorback1; ?>) 15
 }
 
 .ecm-layout-resizer  { /* all 'resizer-bars' */
-    background:     #EEEEEE;
     border:         1px solid #BBB;
     border-width:   0;
     }
 .ecm-layout-resizer-closed {
-    background-color: #EEEEEE;
 }
 
 .ecm-in-layout-center {
@@ -1291,7 +1304,7 @@ table.border {
 }
 
 table.border td {
-	padding: 1px 2px 1px 1px;
+	padding: 1px 2px 1px 2px;
 	border: 1px solid #9CACBB;
 	border-collapse: collapse;
 }
@@ -1368,24 +1381,24 @@ table.nobordernopadding td {
 /* For lists */
 
 table.liste {
-    width: 100%;
-    border-collapse: collapse;
-    border-top-color: #FEFEFE;
+	width: 100%;
+	border-collapse: collapse;
+	border-top-color: #FEFEFE;
 
-    border-right-width: 1px;
-    border-right-color: #BBBBBB;
-    border-right-style: solid;
+	border-right-width: 1px;
+	border-right-color: #BBBBBB;
+	border-right-style: solid;
 
     border-left-width: 1px;
     border-left-color: #CCCCCC;
     border-left-style: solid;
 
-    border-bottom-width: 1px;
-    border-bottom-color: #BBBBBB;
-    border-bottom-style: solid;
+	border-bottom-width: 1px;
+	border-bottom-color: #BBBBBB;
+	border-bottom-style: solid;
 
-    margin-bottom: 2px;
-    margin-top: 0px;
+	margin-bottom: 2px;
+	margin-top: 0px;
 
     -moz-box-shadow: 4px 4px 4px #CCC;
     -webkit-box-shadow: 4px 4px 4px #CCC;
@@ -1751,7 +1764,7 @@ border-radius: 6px;
 /* Calendar                                                                       */
 /* ============================================================================== */
 
-img.datecallink { padding-left: 2px !important; padding-right: 2px !important;}
+img.datecallink { padding-left: 2px !important; padding-right: 2px !important; }
 
 .ui-datepicker-trigger {
 	vertical-align: middle;
@@ -1855,9 +1868,9 @@ td.hidden {
 /*  Module agenda                                                                 */
 /* ============================================================================== */
 
-.cal_other_month   { opacity: 0.6; background: #DDDDDD; border: solid 1px #ACBCBB; padding-<?php print $left; ?>: 2px; padding-<?php print $right; ?>: 1px; padding-top: 0px; padding-bottom: 0px; }
-.cal_past_month    { opacity: 0.6; background: #EEEEEE; border: solid 1px #ACBCBB; padding-<?php print $left; ?>: 2px; padding-<?php print $right; ?>: 1px; padding-top: 0px; padding-bottom: 0px; }
-.cal_current_month { background: #FFFFFF; border: solid 1px #ACBCBB; padding-<?php print $left; ?>: 2px; padding-<?php print $right; ?>: 1px; padding-top: 0px; padding-bottom: 0px; }
+.cal_other_month   { opacity: 0.6; background: #DDDDDD; border: solid 1px #C0C0C0; padding-<?php print $left; ?>: 2px; padding-<?php print $right; ?>: 1px; padding-top: 0px; padding-bottom: 0px; }
+.cal_past_month    { opacity: 0.6; background: #EEEEEE; border: solid 1px #C0C0C0; padding-<?php print $left; ?>: 2px; padding-<?php print $right; ?>: 1px; padding-top: 0px; padding-bottom: 0px; }
+.cal_current_month { background: #FFFFFF; border: solid 1px #C0C0C0; padding-<?php print $left; ?>: 2px; padding-<?php print $right; ?>: 1px; padding-top: 0px; padding-bottom: 0px; }
 .cal_today         { background: #FFFFFF; border: solid 2px #6C7C7B; padding-<?php print $left; ?>: 2px; padding-<?php print $right; ?>: 1px; padding-top: 0px; padding-bottom: 0px; }
 .cal_past          { }
 table.cal_event    { border-collapse: collapse; margin-bottom: 1px; -webkit-border-radius: 6px; border-radius: 6px; }
@@ -1933,7 +1946,7 @@ table.cal_event td { border: 0px; padding-<?php print $left; ?>: 0px; padding-<?
 /* CSS for treeview */
 
 /* Lien plier /deplier tout */
-	.arbre-switch {
+.arbre-switch {
     text-align: right;
     padding: 0 5px;
     margin: 0 0 -18px 0;
@@ -2206,7 +2219,7 @@ a.cke_dialog_ui_button
     font-family: <?php print $fontlist ?> !important;
 	background-image: url(<?php echo $img_button ?>) !important;
 	background-position: bottom !important;
-    border: 1px solid #ACBCBB !important;
+    border: 1px solid #C0C0C0 !important;
 	padding: 0.1em 0.7em !important;
 	margin: 0em 0.5em !important;
     -moz-border-radius:0px 5px 0px 5px !important;
@@ -2287,109 +2300,68 @@ ui-layout-north {
 
 }
 
-ul.jqueryFileTree {
-	font-family: Verdana, sans-serif;
+ul.ecmjqft {
 	font-size: 11px;
-	line-height: 18px;
+	line-height: 16px;
 	padding: 0px;
 	margin: 0px;
 	font-weight: normal;
 }
 
-ul.jqueryFileTree li {
+ul.ecmjqft li {
 	list-style: none;
 	padding: 0px;
 	padding-left: 20px;
 	margin: 0px;
 	white-space: nowrap;
+	display: block;
 }
 
-ul.jqueryFileTree a {
-	display: float;
+ul.ecmjqft a {
+	line-height: 16px;
+	vertical-align: middle;
+	color: #333;
 	padding: 0px 0px;
 	font-weight:normal;
+	display: inline-block !important;
+/*	float: left;*/
 }
-ul.jqueryFileTree a:active {
+ul.ecmjqft a:active {
 	font-weight: bold !important;
 }
-
-ul.jqueryFileTree a:hover {
+ul.ecmjqft a:hover {
     text-decoration: underline;
+}
+div.ecmjqft {
+	vertical-align: middle;
+	display: inline-block !important;
+	text-align: right;
+	position:absolute;
+	right:4px;
 }
 
 /* Core Styles */
-.jqueryFileTree LI.directory { font-weight:normal; background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/directory.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.expanded { font-weight:normal; background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/folder_open.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.file { font-weight:normal; background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/file.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.wait { font-weight:normal; background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/spinner.gif',1); ?>) left top no-repeat; }
-/* File Extensions*/
-.jqueryFileTree LI.ext_3gp { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/film.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_afp { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/code.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_afpa { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/code.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_asp { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/code.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_aspx { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/code.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_avi { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/film.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_bat { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/application.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_bmp { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/picture.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_c { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/code.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_cfm { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/code.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_cgi { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/code.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_com { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/application.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_cpp { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/code.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_css { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/css.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_doc { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/doc.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_exe { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/application.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_gif { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/picture.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_fla { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/flash.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_h { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/code.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_htm { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/html.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_html { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/html.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_jar { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/java.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_jpg { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/picture.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_jpeg { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/picture.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_js { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/script.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_lasso { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/code.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_log { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/txt.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_m4p { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/music.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_mov { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/film.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_mp3 { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/music.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_mp4 { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/film.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_mpg { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/film.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_mpeg { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/film.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_ogg { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/music.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_ogv { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/film.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_pcx { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/picture.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_pdf { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/pdf.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_php { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/php.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_png { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/picture.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_ppt { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/ppt.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_psd { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/psd.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_pl { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/script.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_py { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/script.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_rb { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/ruby.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_rbx { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/ruby.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_rhtml { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/ruby.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_rpm { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/linux.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_ruby { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/ruby.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_sql { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/db.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_swf { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/flash.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_tif { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/picture.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_tiff { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/picture.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_txt { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/txt.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_vb { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/code.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_wav { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/music.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_webm { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/film.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_wmv { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/film.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_xls { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/xls.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_xml { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/code.png',1); ?>) left top no-repeat; }
-.jqueryFileTree LI.ext_zip { background: url(<?php echo dol_buildpath('/filemanager/includes/jqueryFileTree/images/zip.png',1); ?>) left top no-repeat; }
+.ecmjqft LI.directory { font-weight:normal; background: url(<?php echo dol_buildpath($path.'/theme/common/treemenu/folder2.png',1); ?>) left top no-repeat; }
+.ecmjqft LI.expanded { font-weight:normal; background: url(<?php echo dol_buildpath($path.'/theme/common/treemenu/folder2-expanded.png',1); ?>) left top no-repeat; }
+.ecmjqft LI.wait { font-weight:normal; background: url(<?php echo dol_buildpath('/theme/eldy/img/working.gif',1); ?>) left top no-repeat; }
 
-/* Right panel */
 
-.fmvalue {
-    color: #001166;
+/* ============================================================================== */
+/*  jNotify                                                                       */
+/* ============================================================================== */
+
+.jnotify-container {
+	position: fixed !important;
+<?php if ($conf->global->MAIN_JQUERY_JNOTIFY_BOTTOM) { ?>
+	top: auto !important;
+	bottom: 4px !important;
+<?php } ?>
+	text-align: center;
+	min-width: 500px;
+	width: auto;
+	padding-left: 10px !important;
+	padding-right: 10px !important;
 }
-
 
 
 <?php

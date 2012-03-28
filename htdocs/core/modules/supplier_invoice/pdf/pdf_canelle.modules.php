@@ -229,8 +229,7 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 					$tab_top = 88;
 
 					$pdf->SetFont('','', $default_font_size - 1);   // Dans boucle pour gerer multi-page
-					$pdf->SetXY($this->posxdesc-1, $tab_top);
-					$pdf->MultiCell(190, 3, $outputlangs->convToOutputCharset($object->note_public), 0, 'L');
+					$pdf->writeHTMLCell(190, 3, $this->posxdesc-1, $tab_top, $outputlangs->convToOutputCharset($object->note_public), 0, 1);
 					$nexY = $pdf->GetY();
 					$height_note=$nexY-$tab_top;
 
@@ -742,7 +741,7 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 			    $y+=3;
 				$row = $this->db->fetch_object($resql);
 
-				$pdf->SetXY($tab3_posx, $tab3_top+$y );
+				$pdf->SetXY($tab3_posx, $tab3_top+$y);
 				$pdf->MultiCell(20, 3, dol_print_date($this->db->jdate($row->date),'day',false,$outputlangs,true), 0, 'L', 0);
 				$pdf->SetXY($tab3_posx+21, $tab3_top+$y);
 				$pdf->MultiCell(20, 3, price($row->amount), 0, 'L', 0);

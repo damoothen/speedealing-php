@@ -3234,6 +3234,8 @@ else
                 $formmail->withcancel=1;
                 // Tableau des substitutions
                 $formmail->substit['__FACREF__']=$object->ref;
+                $formmail->substit['__SIGNATURE__']=$user->signature;
+                $formmail->substit['__PERSONALIZED__']='';
                 // Tableau des parametres complementaires du post
                 $formmail->param['action']=$action;
                 $formmail->param['models']=$modelmail;

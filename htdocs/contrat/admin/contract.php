@@ -1,6 +1,6 @@
 <?php
-/* Copyright (C) 2011      Juanjo Menent	    <jmenent@2byte.es>
- * Copyright (C) 2011      Herve Prot          <herve.prot@symeos.com>
+/* Copyright (C) 2011-2012      Juanjo Menent	    <jmenent@2byte.es>
+ * Copyright (C) 2011           Herve Prot          <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,8 +32,8 @@ $langs->load("errors");
 
 if (!$user->admin) accessforbidden();
 
-$action = GETPOST("action");
-$value = GETPOST("value");
+$action = GETPOST('action','alpha');
+$value = GETPOST('value','alpha');
 
 if (empty($conf->global->CONTRACT_ADDON))
 {
@@ -47,8 +47,8 @@ if (empty($conf->global->CONTRACT_ADDON))
 
 if ($action == 'updateMask')
 {
-    $maskconst=$_POST['maskconstcontract'];
-    $maskvalue=$_POST['maskcontract'];
+    $maskconst = GETPOST('maskconstcontract','alpha');
+    $maskvalue =  GETPOST('maskcontract','alpha');
     if ($maskconst) $res = dolibarr_set_const($db,$maskconst,$maskvalue,'chaine',0,'',$conf->entity);
 
     if (! $res > 0) $error++;
@@ -80,7 +80,7 @@ if ($action == 'setmod')
  * View
  */
 
-clearstatcache();
+llxHeader();
 
 $dir=DOL_DOCUMENT_ROOT."/core/modules/contract/";
 $form=new Form($db);

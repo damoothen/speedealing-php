@@ -332,7 +332,7 @@ if ($action == 'update')
 {
 	if (! $_POST["cancel"])
 	{
-            $fulldayevent=$_POST["fullday"];
+        $fulldayevent=$_POST["fullday"];
 
 	    // Clean parameters
 		if ($_POST["aphour"] == -1) $_POST["aphour"]='0';
@@ -355,7 +355,7 @@ if ($action == 'update')
 		//$actioncomm->dateend     = $datea2;
 		$actioncomm->percentage  = $_POST["percentage"];
 		$actioncomm->priority    = $_POST["priority"];
-                $actioncomm->fulldayevent= $_POST["fullday"]?1:0;
+        $actioncomm->fulldayevent= $_POST["fullday"]?1:0;
 		$actioncomm->location    = isset($_POST["location"])?$_POST["location"]:'';
 		$actioncomm->societe->id = $_POST["socid"];
 		$actioncomm->contact->id = $_POST["contactid"];
@@ -389,7 +389,7 @@ if ($action == 'update')
 			$userdone->fetch($_POST["doneby"]);
 		}
 		$actioncomm->userdone = $userdone;
-                
+
 		if (! $error)
 		{
 			$db->begin();
@@ -1052,39 +1052,31 @@ if ($id)
 	else
 	{
 		// Affichage fiche action en mode visu
-                $var=false;
-                print '<table width="100%"><tr><td valign="top" width="65%">';
-		print '<table class="noborder" width="100%">';
+		print '<table class="border" width="100%">';
 
 		// Ref
-		print '<tr class="liste_titre"><td width="30%">'.($act->type==2?$langs->trans("Actions"):$langs->trans("Event")).'</td><td colspan="3" id="value">';
+		print '<tr><td width="30%">'.$langs->trans("Ref").'</td><td colspan="3">';
 		print $form->showrefnav($act,'id','',($user->societe_id?0:1),'id','ref','');
 		print '</td></tr>';
 
 		// Type
-		print '<tr '.$bc[$var].'><td id="label">'.($act->type==2?$langs->trans("Actions"):$langs->trans("Event")).'</td><td colspan="3" id="value">'.$act->type_label.'</td></tr>';
-                $var=!$var;
+		print '<tr><td>'.$langs->trans("Type").'</td><td colspan="3">'.$act->type.'</td></tr>';
 
 		// Title
-		print '<tr '.$bc[$var].'><td id="label">'.$langs->trans("Title").'</td><td colspan="3" id="value">'.$act->label.'</td></tr>';
-                $var=!$var;
+		print '<tr><td>'.$langs->trans("Title").'</td><td colspan="3">'.$act->label.'</td></tr>';
 
-                // Full day event
-                if($act->type==1)//RDV
-                {
-                    print '<tr '.$bc[$var].'><td id="label">'.$langs->trans("EventOnFullDay").'</td><td colspan="3" id="value">'.yn($act->fulldayevent).'</td></tr>';
-                    $var=!$var;
-                }
+        // Full day event
+        print '<tr><td>'.$langs->trans("EventOnFullDay").'</td><td colspan="3">'.yn($act->fulldayevent).'</td></tr>';
 
 		// Date start
-		print '<tr '.$bc[$var].'><td width="30%" id="label">'.($act->type==2?$langs->trans("DateEchAction"):$langs->trans("DateActionStart")).'</td><td colspan="2" id="value">';
+		print '<tr><td width="30%">'.$langs->trans("DateActionStart").'</td><td colspan="2">';
 		if (! $act->fulldayevent) print dol_print_date($act->datep,'dayhour');
 		else print dol_print_date($act->datep,'day');
-		if ($act->percentage < 100 && $act->datep && $act->datep < ($now - $delay_warning)) print img_warning($langs->trans("Late"));
+		if ($act->percentage == 0 && $act->datep && $act->datep < ($now - $delay_warning)) print img_warning($langs->trans("Late"));
 		print '</td>';
 		if($act->type==1) //RDV
                 {
-		print '<td rowspan="3" align="center" valign="middle" width="180">'."\n";
+		print '<td rowspan="4" align="center" valign="middle" width="180">'."\n";
         print '<form name="listactionsfiltermonth" action="'.DOL_URL_ROOT.'/comm/action/index.php" method="POST">';
         print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
         print '<input type="hidden" name="action" value="show_month">';
@@ -1117,26 +1109,14 @@ if ($id)
 		$var=!$var;
 
 		// Date end
-		print '<tr '.$bc[$var].'><td id="label">'.$langs->trans("DateActionEnd").'</td><td colspan="2">';
+		print '<tr><td>'.$langs->trans("DateActionEnd").'</td><td colspan="2">';
         if (! $act->fulldayevent) print dol_print_date($act->datef,'dayhour');
 		else print dol_print_date($act->datef,'day');
 		if ($act->percentage > 0 && $act->percentage < 100 && $act->datef && $act->datef < ($now- $delay_warning)) print img_warning($langs->trans("Late"));
-		print '</td>';
-		}
-        print '</tr>';
-        $var=!$var;
-
-		// Duration task
-                if($act->type==2)
-                {
-                    print '<tr '.$bc[$var].'><td nowrap id="label">'.$langs->trans("Duration").'</td><td colspan="3" id="value">';
-                    print $act->durationp/3600;
-                    print '</td></tr>';
-                    $var=!$var;
-                }
+		print '</td></tr>';
 
 		// Status
-		print '<tr '.$bc[$var].'><td nowrap id="label">'.$langs->trans("Status").' / '.$langs->trans("Percentage").'</td><td colspan="2"  id="value">';
+		print '<tr><td nowrap>'.$langs->trans("Status").' / '.$langs->trans("Percentage").'</td><td colspan="2">';
 		print $act->getLibStatut(4);
 		print '</td></tr>';
                 $var=!$var;
@@ -1147,31 +1127,32 @@ if ($id)
 		print '</td></tr>';
                 $var=!$var;
 
-
         // Location
-		if($act->type==1)
-        {
-        	print '<tr '.$bc[$var].'><td id="label">'.$langs->trans("Location").'</td><td colspan="3" id="value">'.$act->location.'</td></tr>';
-        	$var=!$var;
-        }
+        print '<tr><td>'.$langs->trans("Location").'</td><td colspan="2">'.$act->location.'</td></tr>';
 
-                // Description
-		print '<tr '.$bc[$var].'><td valign="top" id="label">'.$langs->trans("Description").'</td><td colspan="3" id="value">';
-		print dol_htmlentitiesbr($act->note);
+		print '</table><br><br><table class="border" width="100%">';
+
+		// Input by
+		$var=false;
+		print '<tr><td width="30%" nowrap="nowrap">'.$langs->trans("ActionAskedBy").'</td><td colspan="3">';
+		if ($act->author->id > 0) print $act->author->getNomUrl(1);
+		else print '&nbsp;';
 		print '</td></tr>';
-                $var=!$var;
-                
-		print '</table>';
-                print '</td>';
 
-                print '<td valign="top" width="35%"><table class="noborder" width="100%">';
+		// Affecte a
+		print '<tr><td nowrap="nowrap">'.$langs->trans("ActionAffectedTo").'</td><td colspan="3">';
+		if ($act->usertodo->id > 0) print $act->usertodo->getNomUrl(1);
+		print '</td></tr>';
 
-                print '<tr class="liste_titre"><td colspan="2">';
-                print $langs->trans('Company');
-                print '</td></tr>';
+		// Done by
+		print '<tr><td nowrap="nowrap">'.$langs->trans("ActionDoneBy").'</td><td colspan="3">';
+		if ($act->userdone->id > 0) print $act->userdone->getNomUrl(1);
+		print '</td></tr>';
+
+		print '</table><br><br><table class="border" width="100%">';
 
 		// Third party - Contact
-		print '<tr '.$bc[$var].'><td  id="label" width="30%">'.$langs->trans("ActionOnCompany").'</td><td id="value">'.($act->societe->id?$act->societe->getNomUrl(1):$langs->trans("None"));
+		print '<tr><td width="30%">'.$langs->trans("ActionOnCompany").'</td><td>'.($act->societe->id?$act->societe->getNomUrl(1):$langs->trans("None"));
 		if ($act->societe->id && $act->type_code == 'AC_TEL')
 		{
 			if ($act->societe->fetch($act->societe->id))
@@ -1179,11 +1160,9 @@ if ($id)
 				print "<br>".dol_print_phone($act->societe->tel);
 			}
 		}
-		print '</td></tr>';
-                $var=!$var;
-                print '<tr '.$bc[$var].'>';
-		print '<td id="label">'.$langs->trans("Contact").'</td>';
-		print '<td id="value">';
+		print '</td>';
+		print '<td>'.$langs->trans("Contact").'</td>';
+		print '<td>';
 		if ($act->contact->id > 0)
 		{
 			print $act->contact->getNomUrl(1);
@@ -1218,9 +1197,9 @@ if ($id)
 		}
 
 		// Project
-		if ($conf->projet->enabled && $act->fk_project)
+		if ($conf->projet->enabled)
 		{
-			print '<tr '.$bc[$var].'><td valign="top" id="label">'.$langs->trans("Project").'</td><td colspan="1" id="value">';
+			print '<tr><td valign="top">'.$langs->trans("Project").'</td><td colspan="3">';
 			if ($act->fk_project)
 			{
 				$project=new Project($db);
@@ -1239,37 +1218,17 @@ if ($id)
 		// Object linked
 		if (! empty($act->fk_element) && ! empty($act->elementtype))
 		{
-			print '<tr '.$bc[$var].'><td id="label">'.$langs->trans("LinkedObject").'</td>';
-			print '<td colspan="1" id="value">'.$act->getElementUrl($act->fk_element,$act->elementtype,1).'</td></tr>';
-			$var=!$var;
+			print '<tr><td>'.$langs->trans("LinkedObject").'</td>';
+			print '<td colspan="3">'.$act->getElementUrl($act->fk_element,$act->elementtype,1).'</td></tr>';
 		}
 
-                print '</table><br><table class="noborder" width="100%">';
-
-                print '<tr class="liste_titre"><td colspan="2">';
-                print $langs->trans("ActionAffectedTo").'</td></tr>';
-
-		// Input by
-		print '<tr '.$bc[$var].'><td width="40%" nowrap id="label">'.$langs->trans("ActionAskedBy").'</td><td colspan="1" id="value">';
-		if ($act->author->id > 0) print $act->author->getNomUrl(1);
-		else print '&nbsp;';
+		// Description
+		print '<tr><td valign="top">'.$langs->trans("Description").'</td><td colspan="3">';
+		print dol_htmlentitiesbr($act->note);
 		print '</td></tr>';
                 $var=!$var;
 
-		// Affecte a
-		print '<tr '.$bc[$var].'><td nowrap id="label">'.$langs->trans("ActionAffectedTo").'</td><td colspan="1" id="value">';
-		if ($act->usertodo->id > 0) print $act->usertodo->getNomUrl(1);
-		print '</td></tr>';
-                $var=!$var;
-
-		// Done by
-		print '<tr '.$bc[$var].'><td nowrap id="label">'.$langs->trans("ActionDoneBy").'</td><td colspan="1" id="value">';
-		if ($act->userdone->id > 0) print $act->userdone->getNomUrl(1);
-		print '</td></tr>';
-                $var=!$var;
-
-		print '</table></td>';
-                print '</tr></table>';
+		print '</table>';
 	}
 
 	print "</div>\n";
@@ -1280,7 +1239,6 @@ if ($id)
 	 *
 	 */
 
-	
 
 	if ($action != 'edit')
 	{

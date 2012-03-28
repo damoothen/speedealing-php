@@ -34,6 +34,8 @@ require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formother.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formcompany.class.php");
 
+$action=GETPOST('action');
+
 $langs->load("admin");
 $langs->load("companies");
 
@@ -45,8 +47,8 @@ if (!$user->admin && !$user->rights->multicompany->read)
  * Actions
  */
 
-if ( (isset($_POST["action"]) && $_POST["action"] == 'update' && empty($_POST["cancel"]))
-|| (isset($_POST["action"]) && $_POST["action"] == 'updateedit') )
+if ( ($action == 'update' && empty($_POST["cancel"]))
+|| ($action == 'updateedit') )
 {
     require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
 
@@ -137,6 +139,7 @@ if ( (isset($_POST["action"]) && $_POST["action"] == 'update' && empty($_POST["c
     dolibarr_set_const($db, "MAIN_INFO_APE",$_POST["ape"],'chaine',0,'',$conf->entity);
     dolibarr_set_const($db, "MAIN_INFO_RCS",$_POST["rcs"],'chaine',0,'',$conf->entity);
     dolibarr_set_const($db, "MAIN_INFO_TRAINER",$_POST["trainer"],'chaine',0,'',$conf->entity);
+    dolibarr_set_const($db, "MAIN_INFO_PROFID6",$_POST["MAIN_INFO_PROFID6"],'chaine',0,'',$conf->entity);
 
     dolibarr_set_const($db, "MAIN_INFO_TVAINTRA",$_POST["tva"],'chaine',0,'',$conf->entity);
 
@@ -148,14 +151,14 @@ if ( (isset($_POST["action"]) && $_POST["action"] == 'update' && empty($_POST["c
     dolibarr_set_const($db, "FACTURE_LOCAL_TAX1_OPTION",$_POST["optionlocaltax1"],'chaine',0,'',$conf->entity);
     dolibarr_set_const($db, "FACTURE_LOCAL_TAX2_OPTION",$_POST["optionlocaltax2"],'chaine',0,'',$conf->entity);
 
-    if ($_POST['action'] != 'updateedit' && ! $message)
+    if ($action != 'updateedit' && ! $message)
     {
         Header("Location: ".$_SERVER["PHP_SELF"]);
         exit;
     }
 }
 
-if ($_GET["action"] == 'addthumb')
+if ($action == 'addthumb')
 {
     if (file_exists($conf->societe->dir_output.'/logos/'.$_GET["file"]))
     {
@@ -200,7 +203,7 @@ if ($_GET["action"] == 'addthumb')
     }
 }
 
-if ($_GET["action"] == 'removelogo')
+if ($action == 'removelogo')
 {
     require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
 
@@ -264,8 +267,7 @@ print_fiche_titre($langs->trans("CompanyFoundation"),'','setup');
 print $langs->trans("CompanyFundationDesc")."<br>\n";
 print "<br>\n";
 
-if ((isset($_GET["action"]) && $_GET["action"] == 'edit')
-|| (isset($_POST["action"]) && $_POST["action"] == 'updateedit') )
+if ($action == 'edit' || $action == 'updateedit')
 {
     /**
      * Edition des parametres
@@ -481,6 +483,22 @@ if ((isset($_GET["action"]) && $_GET["action"] == 'edit')
         if ($country_code)
         {
             print '<input name="trainer" size="20" value="' . $conf->global->MAIN_INFO_TRAINER . '">';
+        }
+        else
+        {
+            print $countrynotdefined;
+        }
+        print '</td></tr>';
+    }
+
+    // ProfId6
+    if ($langs->transcountry("ProfId6",$country_code) != '-')
+    {
+        $var=!$var;
+        print '<tr '.$bc[$var].'><td width="35%">'.$langs->transcountry("ProfId6",$country_code).'</td><td>';
+        if ($country_code)
+        {
+            print '<input name="MAIN_INFO_PROFID6" size="20" value="' . $conf->global->MAIN_INFO_PROFID6 . '">';
         }
         else
         {
@@ -806,6 +824,18 @@ else
         print '</td></tr>';
     }
 
+    // ProfId6
+    if ($langs->transcountry("ProfId6",$country_code) != '-')
+    {
+        $var=!$var;
+        print '<tr '.$bc[$var].'><td width="35%">'.$langs->transcountry("ProfId6",$country_code).'</td><td>';
+        if ($langs->transcountry("ProfId6",$country_code) != '-')
+        {
+            print $conf->global->MAIN_INFO_PROFID6;
+        }
+        print '</td></tr>';
+    }
+
     // TVA
     $var=!$var;
     print '<tr '.$bc[$var].'><td>'.$langs->trans("VATIntra").'</td>';
@@ -971,6 +1001,7 @@ else
 }
 
 
-$db->close();
 llxFooter();
+
+$db->close();
 ?>

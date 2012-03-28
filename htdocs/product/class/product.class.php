@@ -914,7 +914,7 @@ class Product extends CommonObject
 	 *  @param     	int		$newnpr         0=Standard vat rate, 1=Special vat rate for French NPR VAT
 	 * 	@return		int						<0 if KO, >0 if OK
 	 */
-	function update_price($id, $newprice, $newpricebase, $user, $newvat='',$newminprice='',$newecotax=0, $level=0, $newnpr=0)
+	function updatePrice($id, $newprice, $newpricebase, $user, $newvat='',$newminprice='',$newecotax=0, $level=0, $newnpr=0)
 	{
 		global $conf,$langs;
 
@@ -995,7 +995,7 @@ class Product extends CommonObject
 			$sql.= " localtax1_tx=".($localtax1>=0?$localtax1:'NULL').",";
 			$sql.= " localtax2_tx=".($localtax2>=0?$localtax2:'NULL').",";
 			$sql.= " tva_tx='".price2num($newvat)."',";
-                        $sql.= " recuperableonly='".$newnpr."'";
+            $sql.= " recuperableonly='".$newnpr."'";
 			$sql.= " WHERE rowid = ".$id;
 
 			dol_syslog(get_class($this)."update_price sql=".$sql, LOG_DEBUG);
