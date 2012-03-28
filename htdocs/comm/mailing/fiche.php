@@ -441,7 +441,7 @@ if ($_REQUEST["action"] == 'setdesc' || $_REQUEST["action"] == 'setfrom' || $_RE
 }
 
 // Action update emailing
-if (! empty($_POST["removedfileid"]))
+if (! empty($_POST["removedfileid"]) && ! empty($_POST["removedfile"]))
 {
 	$mil = new Mailing($db);
 	$mil->fetch($_POST["id"]);
@@ -476,7 +476,7 @@ if ($_POST["action"] == 'update' && empty($_POST["removedfile"]) && empty($_POST
 	{
 		$isupload=1;
 		$upload_dir = $conf->mailing->dir_output."/".get_exdir($mil->id,2,0,1);
-
+                
 		$mesg=dol_add_file_process($upload_dir,0,1);
 	}
 
@@ -493,7 +493,7 @@ if ($_POST["action"] == 'update' && empty($_POST["removedfile"]) && empty($_POST
 		if (! $message)
 		{
 			if ($mil->update($user) >= 0)
-			{
+			{                            
 				Header("Location: fiche.php?id=".$mil->id);
 				exit;
 			}
