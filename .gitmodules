@@ -28,3 +28,6 @@
 [submodule "htdocs/custom/stock"]
         path = htdocs/custom/stock
         url = git@git.symeos.com:module-stock.git
+[submodule "htdocs/custom/ego"]
+        path = htdocs/custom/ego
+        url = git@git.symeos.com:module-ego.git
