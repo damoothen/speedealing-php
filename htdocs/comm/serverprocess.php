@@ -244,8 +244,9 @@ $sql.= $sOrder;
 $sql.= $sLimit;
 $resultSocietes = $db->query($sql);
 
-$cb = new Couchbase;
-$cb->addCouchbaseServer("localhost",11211,8092);
+$cb = new Couchbase_CouchDB("http://193.169.46.49:5984/dolibarr");
+//$cb->default_bucket_name="dolibarr";
+//$cb->addCouchbaseServer("localhost",12211,8092);
 
 $uuid=$cb->uuid($iTotal); //generation des uuids
 

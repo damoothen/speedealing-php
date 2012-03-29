@@ -39,12 +39,13 @@ $pstcomm = $_GET['pstcomm'];
 $search_sale = $_GET['search_sale'];
 
 $cb = new Couchbase;
-$cb->addCouchbaseServer("localhost",11211,8092);
+$cb->default_bucket_name="dolibarr";
+$cb->addCouchbaseServer("localhost",12211,8092);
 $flush=0;
         if($flush) {
             $cb->flush();
-            $cb->couchbase->deleteDb("default", $cb);
-            $cb->couchbase->createDb("default", $cb);
+            //$cb->couchbase->deleteDb("default", $cb);
+            //$cb->couchbase->createDb("default", $cb);
         }
 
 // start storing data

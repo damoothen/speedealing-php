@@ -207,4 +207,21 @@ class Couchbase_CouchDB
         // var_dump("--------------------------------");
         return $this->body;
     }
+    
+    /**
+     * generate uuids
+     *
+     * @param $nb uuids object.
+     */
+    function uuid($nb=1)
+    {
+        $uuids=json_decode($this->send("GET", "/_uuids?count=$nb"));
+        return $uuids->uuids;
+    }
+    
+    function set($key, $value)
+    {
+        $result=json_decode($this->send("PUT",$this->server->path."/"."$key",$value));
+        return $result;
+    }
 }
