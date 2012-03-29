@@ -245,8 +245,9 @@ $sql.= $sLimit;
 $resultSocietes = $db->query($sql);
 
 $cb = new Couchbase_CouchDB("http://193.169.46.49:5984/dolibarr");
+//$cb = new Couchbase;
 //$cb->default_bucket_name="dolibarr";
-//$cb->addCouchbaseServer("localhost",12211,8092);
+//$cb->addCouchbaseServer("localhost",11211,8092);
 
 $uuid=$cb->uuid($iTotal); //generation des uuids
 
@@ -259,7 +260,8 @@ while ($aRow = $db->fetch_object($resultSocietes)) {
         //$row=  get_object_vars($aRow);
         //$ancinneValeur = $aRow->rowid;
         $aRow->llx="societe";
-        $cb->set($uuid[$i],  json_encode($aRow));
+        //$cb->set($uuid[$i],  json_encode($aRow));
+        $cb->set($aRow->rowid,  json_encode($aRow));
         $i++;
     //}
 }

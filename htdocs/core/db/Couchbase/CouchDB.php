@@ -189,6 +189,8 @@ class Couchbase_CouchDB
         fwrite($s, $request); 
         $response = ""; 
 
+        
+        
         while(!feof($s)) {
             $response .= fgets($s);
         }
