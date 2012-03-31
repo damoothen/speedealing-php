@@ -226,4 +226,10 @@ class Couchbase_CouchDB
         $result=json_decode($this->send("PUT",$this->server->path."/"."$key",$value));
         return $result;
     }
+    
+    function get($key)
+    {
+        $result=$this->send("GET",$this->server->path."/"."$key");
+        return $result;
+    }
 }

@@ -63,7 +63,7 @@ $search_sale = $_GET['search_sale'];
 /*
  * Paging
  */
-//$sLimit = " LIMIT 10000";
+$sLimit = " LIMIT 10";
 if (isset($_GET['iDisplayStart']) && $_GET['iDisplayLength'] != '-1') {
     $sLimit = " LIMIT " . $_GET['iDisplayStart'] . ", " .
             $_GET['iDisplayLength'];
@@ -294,15 +294,15 @@ $output = array(
 while ($aRow = $db->fetch_object($resultCommerciaux)) {
     $commerciauxDeChaqueSociete[$aRow->fk_soc] = $commerciauxDeChaqueSociete[$aRow->fk_soc] . $aRow->login . ', ';
     $result=$cb->get($aRow->fk_soc);
-    //
-    if($result){
+    $result=  json_decode($result);
+    //print $aRow->fk_soc;
+    if($result->error != "not_found"){
         //print $aRow->fk_soc;
         //var_dump($result);exit;
-        $result=  json_decode($result);
         $result->commerciaux[]=$aRow->login;
         
         //print_r($result);exit;
-        $cb->add($aRow->fk_soc,  json_encode($result));
+        $cb->set($aRow->fk_soc,  json_encode($result));
         //exit;
     }
     //$cb->set($aRow->fk_soc);
@@ -310,12 +310,12 @@ while ($aRow = $db->fetch_object($resultCommerciaux)) {
 /* init society categories array */
 while ($aRow = $db->fetch_object($resultCate)) {
     $categoriesDeChaqueSociete[$aRow->fk_societe] = $categoriesDeChaqueSociete[$aRow->fk_societe] . $aRow->label . ', ';
-    $result=$cb->get($aRow->fk_societe);
-    //
-    if($result){
+    $result=$cb->get($aRow->fk_soc);
+    $result=  json_decode($result);
+    //print $aRow->fk_soc;
+    if($result->error != "not_found"){
         //print $aRow->fk_soc;
         //var_dump($result);exit;
-        $result=  json_decode($result);
         $result->category[]=$aRow->label;
         //print_r($result);exit;
         $cb->set($aRow->fk_societe,  json_encode($result));
