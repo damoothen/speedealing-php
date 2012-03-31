@@ -305,10 +305,10 @@ while ($aRow = $db->fetch_object($resultCommerciaux)) {
     try {
         $result= $cb->getDoc($aRow->fk_soc);
     } catch (Exception $e) {
-        $result=0;
+        //$result=0;
     }
     //print $aRow->fk_soc;
-    if($result){
+    if($result->id){
         //print $aRow->fk_soc;
         //var_dump($result);exit;
         $result->_id = $result->id;
@@ -334,10 +334,10 @@ while ($aRow = $db->fetch_object($resultCate)) {
     try {
         $result= $cb->getDoc($aRow->fk_soc);
     } catch (Exception $e) {
-        $result=0;
+        //$result=0;
     }
     //print $aRow->fk_soc;
-    if($result){
+    if($result->id){
         //print $aRow->fk_soc;
         //var_dump($result);exit;
         $result->_id = $result->id;
