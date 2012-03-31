@@ -44,13 +44,13 @@ if($result!=false)
                     { "mDataProp": "nom", "bUseRendered": false, "bSearchable": true,
                         "fnRender": function(obj) {
                         var ar = [];
-                        ar[ar.length] = "<a href=\"\/dolibarrnosql\/comm\/prospect\/fiche.php?socid=";
+                        ar[ar.length] = "<a href=\"'.DOL_URL_ROOT.'\/comm\/prospect\/fiche.php?socid=";
                         ar[ar.length] = obj.aData.rowid;
-                        ar[ar.length] = "\"><img src=\"\/dolibarrnosql\/theme\/cameleo\/img\/object_company.png\" border=\"0\" alt=\"Afficher soci&eacute;t&eacute;:";
+                        ar[ar.length] = "\"><img src=\"'.DOL_URL_ROOT.'\/theme\/'.$conf->theme.'\/img\/object_company.png\" border=\"0\" alt=\"Afficher soci&eacute;t&eacute;:";
                         ar[ar.length] = obj.aData.nom.toString();
                         ar[ar.length] = "\" title=\"Afficher soci&eacute;t&eacute;:";
                         ar[ar.length] = obj.aData.nom.toString();
-                        ar[ar.length] = "\"><\/a> <a href=\"\/dolibarrnosql\/comm\/prospect\/fiche.php?socid=";
+                        ar[ar.length] = "\"><\/a> <a href=\"'.DOL_URL_ROOT.'\/comm\/prospect\/fiche.php?socid=";
                         ar[ar.length] = obj.aData.rowid;
                         ar[ar.length] = "\">";
                         ar[ar.length] = obj.aData.nom.toString();

@@ -333,6 +333,7 @@ while ($aRow = $db->fetch_object($resultCate)) {
 }
 $db->free($resultCate);
 unset($resultCate);
+
 try {
         $cb->storeDocs($col,false);
 } catch (Exception $e) {
