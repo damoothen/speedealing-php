@@ -63,7 +63,7 @@ $search_sale = $_GET['search_sale'];
 /*
  * Paging
  */
-$sLimit = " LIMIT 10";
+//$sLimit = " LIMIT 10";
 if (isset($_GET['iDisplayStart']) && $_GET['iDisplayLength'] != '-1') {
     $sLimit = " LIMIT " . $_GET['iDisplayStart'] . ", " .
             $_GET['iDisplayLength'];
