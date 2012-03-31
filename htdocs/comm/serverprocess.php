@@ -244,12 +244,12 @@ $sql.= $sOrder;
 $sql.= $sLimit;
 $resultSocietes = $db->query($sql);
 
-$cb = new Couchbase_CouchDB("http://193.169.46.49:5984/dolibarr");
+$cb = new couchClient("http://193.169.46.49:5984/","dolibarr");
 //$cb = new Couchbase;
 //$cb->default_bucket_name="dolibarr";
 //$cb->addCouchbaseServer("localhost",11211,8092);
 
-$uuid=$cb->uuid($iTotal); //generation des uuids
+//$uuid=$cb->uuid($iTotal); //generation des uuids
 
 /*get companies. usefull to get their sales and categories */
 $i=0;
@@ -261,11 +261,17 @@ while ($aRow = $db->fetch_object($resultSocietes)) {
         //$ancinneValeur = $aRow->rowid;
         $aRow->llx="societe";
         //$cb->set($uuid[$i],  json_encode($aRow));
-        $cb->set($aRow->rowid,  json_encode($aRow));
+        $aRow->_id=$aRow->rowid;
+        try {
+                $cb->storeDoc($aRow);
+        } catch (Exception $e) {
+            echo "Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+            //exit(1);
+        }
+
         $i++;
     //}
 }
-
 
 $companies = '""';
 if ($valueR != '') {
@@ -293,77 +299,58 @@ $output = array(
 /* init society sales array  */
 while ($aRow = $db->fetch_object($resultCommerciaux)) {
     $commerciauxDeChaqueSociete[$aRow->fk_soc] = $commerciauxDeChaqueSociete[$aRow->fk_soc] . $aRow->login . ', ';
-    $result=$cb->get($aRow->fk_soc);
-    $result=  json_decode($result);
+    //$result=$cb->get($aRow->fk_soc);
+    //$result=  json_decode($result);
+    $result= new stdClass();
+    try {
+        $result= $cb->getDoc($aRow->fk_soc);
+    } catch (Exception $e) {
+        $result=0;
+    }
     //print $aRow->fk_soc;
-    if($result->error != "not_found"){
+    if($result){
         //print $aRow->fk_soc;
         //var_dump($result);exit;
+        $result->_id = $result->id;
+        $result->_rev = $result->rev;
         $result->commerciaux[]=$aRow->login;
-        
+        try {
+            $response = $cb->storeDoc($result);
+        } catch (Exception $e) {
+            echo "Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+        }
         //print_r($result);exit;
-        $cb->set($aRow->fk_soc,  json_encode($result));
+        
+        //$cb->set($aRow->fk_soc,  json_encode($result));
         //exit;
     }
     //$cb->set($aRow->fk_soc);
 }
+exit;
 /* init society categories array */
 while ($aRow = $db->fetch_object($resultCate)) {
     $categoriesDeChaqueSociete[$aRow->fk_societe] = $categoriesDeChaqueSociete[$aRow->fk_societe] . $aRow->label . ', ';
-    $result=$cb->get($aRow->fk_soc);
-    $result=  json_decode($result);
+    $result= new stdClass();
+    try {
+        $result= $cb->getDoc($aRow->fk_soc);
+    } catch (Exception $e) {
+        $result=0;
+    }
     //print $aRow->fk_soc;
-    if($result->error != "not_found"){
+    if($result){
         //print $aRow->fk_soc;
         //var_dump($result);exit;
+        $result->_id = $result->id;
+        $result->_rev = $result->rev;
         $result->category[]=$aRow->label;
-        //print_r($result);exit;
-        $cb->set($aRow->fk_societe,  json_encode($result));
-        //exit;
-    }
-}
-
-/* output data */
-if ($col != null) {
-
-    foreach ($col as $aRow) {
-        $row = array();
-        for ($i = 0; $i < count($aColumns); $i++) {
-
-            if ($aColumns[$i] == "company") {
-                $prospectstatic->id = $aRow->rowid;
-                $prospectstatic->nom = $aRow->nom;
-                $prospectstatic->status = $aRow->status;
-                if ($aRow->type == 2)
-                    $row[] = $prospectstatic->getNomUrl(1, 'customer');
-                else
-                    $row[] = $prospectstatic->getNomUrl(1, 'prospect');
-            }
-            else if ($aColumns[$i] == "categorie") {
-                $row[] = $categoriesDeChaqueSociete[$aRow->rowid];
-            } else if ($aColumns[$i] == "sale") {
-                $row[] = $commerciauxDeChaqueSociete[$aRow->rowid];
-            } else if ($aColumns[$i] == "datec") {
-                $row[] = dol_print_date($db->jdate($aRow->datec));
-            } else if ($aColumns[$i] == "etat") {
-                $prospectstatic->stcomm_id = $aRow->fk_stcomm;
-                $prospectstatic->type = $aRow->type;
-                $row[] = $prospectstatic->getIconList(DOL_URL_ROOT . "/comm/list.php?socid=" . $aRow->rowid . $param . '&lang=' . $langs->defaultlang . '&type=' . $type . '&action=cstc&amp;' . ($page ? '&amp;page=' . $page : ''));
-            } else if ($aColumns[$i] == "fk_prospectlevel") { // Level
-                $row[] = $prospectstatic->LibLevel($aRow->fk_prospectlevel);
-            } else if ($aColumns[$i] == "fk_stcomm") { //status
-                $row[] = $prospectstatic->LibProspStatut($aRow->fk_stcomm, 2);
-            } else if ($i == 0) { //first
-                $row[] = '<img id="' . $aRow->rowid . '" class="plus" src="../theme/cameleo/img/details_open.png">';
-            } else if ($i == (count($aColumns) - 1)) { //last
-                $row[] = $prospectstatic->getLibStatut(3);
-            } else if ($aColumns[$i] != ' ') {
-                /* General output */
-                $attribut = $aColumns[$i];
-                $row[] = $aRow->$attribut;
-            }
+        try {
+            $response = $cb->storeDoc($result);
+        } catch (Exception $e) {
+            echo "Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
         }
-        $output['aaData'][] = $row;
+        //print_r($result);exit;
+        //$cb->set($aRow->fk_societe,  json_encode($result));
+        //exit;
     }
 }
 
@@ -371,6 +358,6 @@ $db->free($resultCate);
 $db->free($resultCommerciaux);
 $db->free($resultSocietes);
 $db->free($resultTotal);
-header('Content-type: application/json');
-echo json_encode($output);
+//header('Content-type: application/json');
+//echo json_encode($output);
 ?>

@@ -220,16 +220,4 @@ class Couchbase_CouchDB
         $uuids=json_decode($this->send("GET", "/_uuids?count=$nb"));
         return $uuids->uuids;
     }
-    
-    function set($key, $value)
-    {
-        $result=json_decode($this->send("PUT",$this->server->path."/"."$key",$value));
-        return $result;
-    }
-    
-    function get($key)
-    {
-        $result=$this->send("GET",$this->server->path."/"."$key");
-        return $result;
-    }
 }
