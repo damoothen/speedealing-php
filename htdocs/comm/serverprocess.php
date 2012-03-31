@@ -63,7 +63,7 @@ $search_sale = $_GET['search_sale'];
 /*
  * Paging
  */
-//$sLimit = " LIMIT 10";
+$sLimit = " LIMIT 100";
 if (isset($_GET['iDisplayStart']) && $_GET['iDisplayLength'] != '-1') {
     $sLimit = " LIMIT " . $_GET['iDisplayStart'] . ", " .
             $_GET['iDisplayLength'];
@@ -253,22 +253,25 @@ $cb = new couchClient("http://193.169.46.49:5984/","dolibarr");
 
 /*get companies. usefull to get their sales and categories */
 $i=0;
+
 while ($aRow = $db->fetch_object($resultSocietes)) {
     //if($ancinneValeur!=$aRow->rowid){ //do not insert the (next on the result query) same contact
         //$valueR = $valueR . $aRow->rowid . ',';
-        $col[] = $aRow;
+        
         //$row=  get_object_vars($aRow);
         //$ancinneValeur = $aRow->rowid;
         $aRow->llx="societe";
         //$cb->set($uuid[$i],  json_encode($aRow));
         $aRow->_id=$aRow->rowid;
-        try {
+        $col[$aRow->rowid] = $aRow;
+        
+        /*try {
                 $cb->storeDoc($aRow);
         } catch (Exception $e) {
             echo "Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
             //exit(1);
-        }
-
+        }*/
+        
         $i++;
     //}
 }
@@ -280,11 +283,13 @@ if ($valueR != '') {
 /* sql query get sales */
 $sql = " SELECT fk_soc,login FROM (llx_societe_commerciaux as sc,llx_user as u) 
 where "/*sc.fk_soc in ($companies) and*/." sc.fk_user=u.rowid";
+//$sql .= " LIMIT 100";
 $resultCommerciaux = $db->query($sql);
 
 /* sql query get categories */
 $sql = " SELECT fk_societe,label FROM (llx_categorie_societe as cs,llx_categorie as c) 
 where "/*cs.fk_societe in ($companies) and*/ ."cs.fk_categorie=c.rowid";
+//$sql .= " LIMIT 100";
 $resultCate = $db->query($sql);
 
 $prospectstatic = new Prospect($db);
@@ -301,24 +306,13 @@ while ($aRow = $db->fetch_object($resultCommerciaux)) {
     $commerciauxDeChaqueSociete[$aRow->fk_soc] = $commerciauxDeChaqueSociete[$aRow->fk_soc] . $aRow->login . ', ';
     //$result=$cb->get($aRow->fk_soc);
     //$result=  json_decode($result);
-    $result= new stdClass();
-    try {
-        $result= $cb->getDoc($aRow->fk_soc);
-    } catch (Exception $e) {
-        //$result=0;
-    }
+    
     //print $aRow->fk_soc;
-    if($result->id){
+    if(!empty($col[$aRow->fk_soc]->rowid)){
         //print $aRow->fk_soc;
         //var_dump($result);exit;
-        $result->_id = $result->id;
-        $result->_rev = $result->rev;
-        $result->commerciaux[]=$aRow->login;
-        try {
-            $response = $cb->storeDoc($result);
-        } catch (Exception $e) {
-            echo "Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
-        }
+        $col[$aRow->fk_soc]->commerciaux[]=$aRow->login;
+        
         //print_r($result);exit;
         
         //$cb->set($aRow->fk_soc,  json_encode($result));
@@ -326,32 +320,27 @@ while ($aRow = $db->fetch_object($resultCommerciaux)) {
     }
     //$cb->set($aRow->fk_soc);
 }
-exit;
+
 /* init society categories array */
 while ($aRow = $db->fetch_object($resultCate)) {
     $categoriesDeChaqueSociete[$aRow->fk_societe] = $categoriesDeChaqueSociete[$aRow->fk_societe] . $aRow->label . ', ';
-    $result= new stdClass();
-    try {
-        $result= $cb->getDoc($aRow->fk_soc);
-    } catch (Exception $e) {
-        //$result=0;
-    }
+    
     //print $aRow->fk_soc;
-    if($result->id){
+    if(!empty($col[$aRow->fk_soc]->rowid)){
         //print $aRow->fk_soc;
         //var_dump($result);exit;
-        $result->_id = $result->id;
-        $result->_rev = $result->rev;
-        $result->category[]=$aRow->label;
-        try {
-            $response = $cb->storeDoc($result);
-        } catch (Exception $e) {
-            echo "Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
-        }
+        $col[$aRow->fk_soc]->category[]=$aRow->label;
         //print_r($result);exit;
         //$cb->set($aRow->fk_societe,  json_encode($result));
         //exit;
     }
+}
+
+try {
+        $cb->storeDocs($col,false);
+} catch (Exception $e) {
+    echo "Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+    //exit(1);
 }
 
 $db->free($resultCate);
