@@ -276,7 +276,7 @@ while ($aRow = $db->fetch_object($resultSocietes)) {
     //}
 }
 $db->free($resultSocietes);
-
+exit;
 $companies = '""';
 if ($valueR != '') {
     $companies = substr_replace($valueR, '', -1);
