@@ -287,25 +287,10 @@ $sql = " SELECT fk_soc,login FROM (llx_societe_commerciaux as sc,llx_user as u)
 where "/*sc.fk_soc in ($companies) and*/." sc.fk_user=u.rowid";
 //$sql .= " LIMIT 100";
 $resultCommerciaux = $db->query($sql);
-exit;
-/* sql query get categories */
-$sql = " SELECT fk_societe,label FROM (llx_categorie_societe as cs,llx_categorie as c) 
-where "/*cs.fk_societe in ($companies) and*/ ."cs.fk_categorie=c.rowid";
-//$sql .= " LIMIT 100";
-$resultCate = $db->query($sql);
 
-$prospectstatic = new Prospect($db);
-$commerciauxDeChaqueSociete = array();
-$categoriesDeChaqueSociete = array();
-$output = array(
-    "sEcho" => intval($_GET['sEcho']),
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iTotal,
-    "aaData" => array()
-);
 /* init society sales array  */
 while ($aRow = $db->fetch_object($resultCommerciaux)) {
-    $commerciauxDeChaqueSociete[$aRow->fk_soc] = $commerciauxDeChaqueSociete[$aRow->fk_soc] . $aRow->login . ', ';
+    //$commerciauxDeChaqueSociete[$aRow->fk_soc] = $commerciauxDeChaqueSociete[$aRow->fk_soc] . $aRow->login . ', ';
     //$result=$cb->get($aRow->fk_soc);
     //$result=  json_decode($result);
     
@@ -323,10 +308,18 @@ while ($aRow = $db->fetch_object($resultCommerciaux)) {
     //$cb->set($aRow->fk_soc);
 }
 $db->free($resultCommerciaux);
+unset($resultCommerciaux);
+
+/* sql query get categories */
+$sql = " SELECT fk_societe,label FROM (llx_categorie_societe as cs,llx_categorie as c) 
+where "/*cs.fk_societe in ($companies) and*/ ."cs.fk_categorie=c.rowid";
+//$sql .= " LIMIT 100";
+$resultCate = $db->query($sql);
+
 
 /* init society categories array */
 while ($aRow = $db->fetch_object($resultCate)) {
-    $categoriesDeChaqueSociete[$aRow->fk_societe] = $categoriesDeChaqueSociete[$aRow->fk_societe] . $aRow->label . ', ';
+    //$categoriesDeChaqueSociete[$aRow->fk_societe] = $categoriesDeChaqueSociete[$aRow->fk_societe] . $aRow->label . ', ';
     
     //print $aRow->fk_soc;
     if(!empty($col[$aRow->fk_soc]->rowid)){
@@ -339,6 +332,7 @@ while ($aRow = $db->fetch_object($resultCate)) {
     }
 }
 $db->free($resultCate);
+unset($resultCate);
 try {
         $cb->storeDocs($col,false);
 } catch (Exception $e) {
