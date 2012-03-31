@@ -275,6 +275,7 @@ while ($aRow = $db->fetch_object($resultSocietes)) {
         $i++;
     //}
 }
+$db->free($resultSocietes);
 
 $companies = '""';
 if ($valueR != '') {
@@ -320,6 +321,7 @@ while ($aRow = $db->fetch_object($resultCommerciaux)) {
     }
     //$cb->set($aRow->fk_soc);
 }
+$db->free($resultCommerciaux);
 
 /* init society categories array */
 while ($aRow = $db->fetch_object($resultCate)) {
@@ -335,7 +337,7 @@ while ($aRow = $db->fetch_object($resultCate)) {
         //exit;
     }
 }
-
+$db->free($resultCate);
 try {
         $cb->storeDocs($col,false);
 } catch (Exception $e) {
@@ -343,10 +345,6 @@ try {
     //exit(1);
 }
 
-$db->free($resultCate);
-$db->free($resultCommerciaux);
-$db->free($resultSocietes);
-$db->free($resultTotal);
 //header('Content-type: application/json');
 //echo json_encode($output);
 ?>
