@@ -276,7 +276,8 @@ while ($aRow = $db->fetch_object($resultSocietes)) {
     //}
 }
 $db->free($resultSocietes);
-exit;
+unset($resultSocietes);
+
 $companies = '""';
 if ($valueR != '') {
     $companies = substr_replace($valueR, '', -1);
@@ -286,7 +287,7 @@ $sql = " SELECT fk_soc,login FROM (llx_societe_commerciaux as sc,llx_user as u)
 where "/*sc.fk_soc in ($companies) and*/." sc.fk_user=u.rowid";
 //$sql .= " LIMIT 100";
 $resultCommerciaux = $db->query($sql);
-
+exit;
 /* sql query get categories */
 $sql = " SELECT fk_societe,label FROM (llx_categorie_societe as cs,llx_categorie as c) 
 where "/*cs.fk_societe in ($companies) and*/ ."cs.fk_categorie=c.rowid";
