@@ -30,6 +30,7 @@ require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
 
 $langs->load("products");
 $langs->load("companies");
+$langs->load("contracts");
 
 $sortfield = isset($_GET["sortfield"])?$_GET["sortfield"]:(isset($_POST["sortfield"])?$_POST["sortfield"]:'');
 $sortorder = isset($_GET["sortorder"])?$_GET["sortorder"]:(isset($_POST["sortorder"])?$_POST["sortorder"]:'');
