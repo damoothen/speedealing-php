@@ -161,7 +161,7 @@ if ($_POST["remonth"] && $_POST["reday"] && $_POST["reyear"])
     $datecontrat = dol_mktime($_POST["rehour"], $_POST["remin"], 0, $_POST["remonth"], $_POST["reday"], $_POST["reyear"]);
 }
 
-else if ($action == 'add' && $user->rights->contrat->creer)
+if ($action == 'add' && $user->rights->contrat->creer)
 {
     $object->socid						= $socid;
     $object->date_contrat				= $datecontrat;
@@ -196,7 +196,6 @@ else if ($action == 'add' && $user->rights->contrat->creer)
         $action='create';
     }
 }
-
 else if ($action == 'classin' && $user->rights->contrat->creer)
 {
     $object->fetch($id);
