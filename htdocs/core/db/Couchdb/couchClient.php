@@ -386,7 +386,7 @@ class couchClient extends couch {
 		$url = '/'.urlencode($this->dbname).'/_changes';
 		$opts = $this->query_parameters;
 		$this->query_parameters = array();
-		return $this->_queryAndTest ('GET', $url, array(200,201),$opts);
+		return $this->_queryAndTest ('GET', $url, array(200,201,202),$opts);
 	}
 
 
@@ -454,7 +454,7 @@ class couchClient extends couch {
 			$method = 'PUT';
 			$url.='/'.urlencode($doc->_id);
 		}
-		return $this->_queryAndTest ($method, $url, array(200,201),array(),$doc);
+		return $this->_queryAndTest ($method, $url, array(200,201,202),array(),$doc);
 	}
 
 	/**
@@ -483,7 +483,7 @@ class couchClient extends couch {
 		}
 
 		$url  = '/'.urlencode($this->dbname).'/_bulk_docs';
-		return $this->_queryAndTest ('POST', $url, array(200,201),array(),$request);
+		return $this->_queryAndTest ('POST', $url, array(200,201,202),array(),$request);
 	}
 
 
@@ -515,7 +515,7 @@ class couchClient extends couch {
 		}
 
 		$url  = '/'.urlencode($this->dbname).'/_bulk_docs';
-		return $this->_queryAndTest ('POST', $url, array(200,201),array(),$request);
+		return $this->_queryAndTest ('POST', $url, array(200,201,202),array(),$request);
 	}
 
 
@@ -582,7 +582,7 @@ class couchClient extends couch {
 			}
 		}
 
-                return $this->_queryAndTest ($method, $url, array(200,201),$params,$data,$contentType);
+                return $this->_queryAndTest ($method, $url, array(200,201,202),$params,$data,$contentType);
 	}
 
 	/**
@@ -601,7 +601,7 @@ class couchClient extends couch {
 		$method = 'COPY';
 		$url  = '/'.urlencode($this->dbname);
 		$url.='/'.urlencode($id);
-		return $this->_queryAndTest ($method, $url, array(200,201),array(),$new_id);
+		return $this->_queryAndTest ($method, $url, array(200,201,202),array(),$new_id);
 	}
 
 	/**
@@ -965,7 +965,7 @@ class couchClient extends couch {
 	public function ensureFullCommit() {
 		$method = 'POST';
 		$url = '/' . urlencode($this->dbname) . '/_ensure_full_commit';
-		return $this->_queryAndTest($method, $url, array(200, 201));
+		return $this->_queryAndTest($method, $url, array(200, 201,202));
 	}
 	
 }

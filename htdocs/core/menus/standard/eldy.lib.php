@@ -1392,6 +1392,15 @@ function print_left_eldy_menu($db,$menu_array_before,$menu_array_after)
                 $newmenu->add("/comm/mailing/fiche.php?leftmenu=mailing&amp;action=create", $langs->trans("NewMailing"), 1, $user->rights->mailing->creer);
                 $newmenu->add("/comm/mailing/liste.php?leftmenu=mailing", $langs->trans("List"), 1, $user->rights->mailing->lire);
             }
+            
+            if (! empty($conf->ego->enabled))
+            {
+                $langs->load("ego@ego");
+
+                $newmenu->add("/ego/index.php?leftmenu=ego", $langs->trans("MessagingEGO"), 0, $user->rights->ego->read, '', $mainmenu, 'mailing');
+                $newmenu->add("/ego/fiche.php?leftmenu=ego&amp;action=create", $langs->trans("NewMessage"), 1, $user->rights->ego->add);
+                $newmenu->add("/ego/list.php?leftmenu=ego", $langs->trans("List"), 1, $user->rights->ego->read);
+            }
 
             if (! empty($conf->export->enabled))
             {

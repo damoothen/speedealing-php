@@ -233,6 +233,10 @@ include_once(DOL_DOCUMENT_ROOT ."/core/db/Couchdb/couch.php");
 include_once(DOL_DOCUMENT_ROOT ."/core/db/Couchdb/couchClient.php");
 include_once(DOL_DOCUMENT_ROOT ."/core/db/Couchdb/couchDocument.php");
 
+
+$couch->dolibarr = new couchClient("http://193.169.46.49:5984/","dolibarr");
+$couch->mobile = new couchClient("http://193.169.46.49:5984/","mobile");
+
 // If password is encoded, we decode it
 if (preg_match('/crypted:/i',$dolibarr_main_db_pass) || ! empty($dolibarr_main_db_encrypted_pass))
 {
