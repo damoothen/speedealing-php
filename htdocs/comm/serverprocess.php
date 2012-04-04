@@ -244,12 +244,14 @@ $sql.= $sOrder;
 $sql.= $sLimit;
 $resultSocietes = $db->query($sql);
 
-$cb = new couchClient("http://193.169.46.49:5984/","dolibarr");
+//$cb = new couchClient("http://193.169.46.49:5984/","dolibarr");
 //$cb = new Couchbase;
 //$cb->default_bucket_name="dolibarr";
 //$cb->addCouchbaseServer("localhost",11211,8092);
 
-//$uuid=$cb->uuid($iTotal); //generation des uuids
+$cb->flush();
+
+$uuid=$cb->uuid($iTotal); //generation des uuids
 
 /*get companies. usefull to get their sales and categories */
 $i=0;
@@ -260,9 +262,9 @@ while ($aRow = $db->fetch_object($resultSocietes)) {
         
         //$row=  get_object_vars($aRow);
         //$ancinneValeur = $aRow->rowid;
-        $aRow->llx="societe";
+        $aRow->class="societe";
         //$cb->set($uuid[$i],  json_encode($aRow));
-        $aRow->_id=$aRow->rowid;
+        //$aRow->_id=$aRow->rowid;
         $col[$aRow->rowid] = $aRow;
         
         /*try {
@@ -334,11 +336,18 @@ while ($aRow = $db->fetch_object($resultCate)) {
 $db->free($resultCate);
 unset($resultCate);
 
-try {
-        $cb->storeDocs($col,false);
-} catch (Exception $e) {
-    echo "Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+$i=0;
+
+foreach ($col as $aRow)
+{
+    try {
+        //$cb->storeDocs($col,false);
+        $cb->set($uuid[$i],  json_encode($aRow));
+    } catch (Exception $e) {
+        echo "Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
     //exit(1);
+    }
+    $i++;
 }
 
 //header('Content-type: application/json');

@@ -228,11 +228,14 @@ include_once(DOL_DOCUMENT_ROOT ."/core/lib/functions.lib.php");
 include_once(DOL_DOCUMENT_ROOT ."/core/lib/security.lib.php");
 //print memory_get_usage();
 
-//include_once(DOL_DOCUMENT_ROOT ."/core/db/Couchbase.php");
+include_once(DOL_DOCUMENT_ROOT ."/core/db/Couchbase.php");
 include_once(DOL_DOCUMENT_ROOT ."/core/db/Couchdb/couch.php");
 include_once(DOL_DOCUMENT_ROOT ."/core/db/Couchdb/couchClient.php");
 include_once(DOL_DOCUMENT_ROOT ."/core/db/Couchdb/couchDocument.php");
 
+$cb = new Couchbase;
+$cb->default_bucket_name="dolibarr";
+$cb->addCouchbaseServer("couchbase.symeos.net",12211,8092);
 
 $couch->dolibarr = new couchClient("http://193.169.46.49:5984/","dolibarr");
 $couch->mobile = new couchClient("http://193.169.46.49:5984/","mobile");
