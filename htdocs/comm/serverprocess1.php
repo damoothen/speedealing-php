@@ -83,7 +83,9 @@ foreach($result->rows AS $aRow) {
         $aRow->value->commerciaux=null;
      if(!isset($aRow->value->category))
         $aRow->value->category=null;
-    unset($aRow->value->llx);
+    unset($aRow->value->class);
+    unset($aRow->value->_rev);
+    unset($aRow->value->_id);
     $output["aaData"][]=$aRow->value;
     unset($aRow);
 }
