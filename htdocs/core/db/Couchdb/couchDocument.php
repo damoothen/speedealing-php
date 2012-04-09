@@ -33,7 +33,7 @@ class couchDocument {
 		$this->__couch_data = new stdClass();
 		$this->__couch_data->client = $client;
 		$this->__couch_data->fields = new stdClass();
-		$this->__couch_data->autocommit = true;
+		$this->__couch_data->autocommit = false;
 	}
 
 	/**
