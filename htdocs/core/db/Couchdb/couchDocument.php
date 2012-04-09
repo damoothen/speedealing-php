@@ -419,4 +419,16 @@ class couchDocument {
 		$this->load($this->_id);
 		return $back;
 	}
+        
+        /**
+	 *  just a proxy method to couchClient->deleteDoc
+	 *
+	 *  @return int         		1 success
+	 */
+	public function delete()
+	{
+            $this->__couch_data->client->deleteDoc($this);
+                
+            return 1;
+	}
 }
