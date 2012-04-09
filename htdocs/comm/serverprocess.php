@@ -243,15 +243,15 @@ if($search_sale || $_GET['sSearch_7']!=""){
 $sql.= $sOrder;
 $sql.= $sLimit;
 $resultSocietes = $db->query($sql);
-
+exit;
 //$cb = new couchClient("http://193.169.46.49:5984/","dolibarr");
 //$cb = new Couchbase;
 //$cb->default_bucket_name="dolibarr";
 //$cb->addCouchbaseServer("localhost",11211,8092);
 
-$cb->flush();
+//$cb->flush();
 
-$uuid=$cb->uuid($iTotal); //generation des uuids
+//$uuid=$cb->uuid($iTotal); //generation des uuids
 
 /*get companies. usefull to get their sales and categories */
 $i=0;
@@ -341,15 +341,13 @@ $i=0;
 foreach ($col as $aRow)
 {
     try {
-        //$cb->storeDocs($col,false);
-        $cb->set($uuid[$i],  json_encode($aRow));
+        $couch->storeDocs($col,false);
+        //$cb->set($uuid[$i],  json_encode($aRow));
     } catch (Exception $e) {
         echo "Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
-    //exit(1);
+        exit(1);
     }
     $i++;
 }
 
-//header('Content-type: application/json');
-//echo json_encode($output);
 ?>

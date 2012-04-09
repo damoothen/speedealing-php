@@ -38,19 +38,6 @@ $type = $_GET['type'];
 $pstcomm = $_GET['pstcomm'];
 $search_sale = $_GET['search_sale'];
 
-//$cb = new couchClient("http://193.169.46.49:5984/","dolibarr");
-//$cb = new Couchbase;
-//$cb = new Couchbase_CouchDB("http://193.169.46.49:5984/dolibarr");
-//$cb->default_bucket_name="dolibarr";
-//$cb->addCouchbaseServer("localhost",12211,8092);
-//$cb->addCouchbaseServer("193.169.46.49",12211,5984);
-//$flush=0;
-//        if($flush) {
-//            $cb->flush();
-            //$cb->couchbase->deleteDb("default", $cb);
-            //$cb->couchbase->createDb("default", $cb);
-//        }
-
 // start storing data
 
 $output = array(
@@ -60,13 +47,7 @@ $output = array(
     "aaData" => array()
 );
 
-
-$view = $cb->getView("societe", "list_company");
-//print_r($cb->getAllDocsView());
-$result = $view->getResult(array("reduce" => false,"limit"=>10000,"skip"=>0,"startkey"=>""));
-/*get companies. usefull to get their sales and categories */
-
-//$result = $cb->limit(1000)->getView('lookup','list_company');
+$result = $couch->limit(1000)->getView('societe','list');
 
 
 //print_r($result);
