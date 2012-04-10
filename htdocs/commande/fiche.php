@@ -1,6 +1,6 @@
 <?php
 /* Copyright (C) 2003-2006 Rodolphe Quiedeville  <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2011 Laurent Destailleur   <eldy@users.sourceforge.net>
+ * Copyright (C) 2004-2012 Laurent Destailleur   <eldy@users.sourceforge.net>
  * Copyright (C) 2005      Marc Barilley / Ocebo <marc@ocebo.com>
  * Copyright (C) 2005-2012 Regis Houssin         <regis@dolibarr.fr>
  * Copyright (C) 2006      Andre Cianfarani      <acianfa@free.fr>
@@ -751,7 +751,7 @@ else if ($action == 'updateligne' && $user->rights->commande->creer && $_POST['s
             $vat_rate,
             $localtax1_rate,
             $localtax2_rate,
-    		'HT',
+            'HT',
             $info_bits,
             $date_start,
             $date_end,
@@ -1462,11 +1462,15 @@ if ($action == 'create' && $user->rights->commande->creer)
     print $form->selectarray('model',$liste,$conf->global->COMMANDE_ADDON_PDF);
     print "</td></tr>";
 
+
     // Note publique
     print '<tr>';
     print '<td class="border" valign="top">'.$langs->trans('NotePublic').'</td>';
     print '<td valign="top" colspan="2">';
-    print '<textarea name="note_public" wrap="soft" cols="70" rows="'.ROWS_3.'">'.$note_public.'</textarea>';
+    require_once(DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php");
+    $doleditor=new DolEditor('note_public', $note_public, '', 80, 'dolibarr_notes', 'In', 0, false, true, ROWS_3, 70);
+    print $doleditor->Create(1);
+    //print '<textarea name="note_public" wrap="soft" cols="70" rows="'.ROWS_3.'">'.$note_public.'</textarea>';
     print '</td></tr>';
 
     // Note privee
@@ -1475,7 +1479,10 @@ if ($action == 'create' && $user->rights->commande->creer)
         print '<tr>';
         print '<td class="border" valign="top">'.$langs->trans('NotePrivate').'</td>';
         print '<td valign="top" colspan="2">';
-        print '<textarea name="note" wrap="soft" cols="70" rows="'.ROWS_3.'">'.$note_private.'</textarea>';
+        require_once(DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php");
+        $doleditor=new DolEditor('note', $note_private, '', 80, 'dolibarr_notes', 'In', 0, false, true, ROWS_3, 70);
+        print $doleditor->Create(1);
+        //print '<textarea name="note" wrap="soft" cols="70" rows="'.ROWS_3.'">'.$note_private.'</textarea>';
         print '</td></tr>';
     }
 

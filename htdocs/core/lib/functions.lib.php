@@ -444,19 +444,19 @@ function dol_escape_htmltag($stringtoescape,$keepb=0)
  *	Write log message into outputs. Possible outputs can be:
  *	A file if SYSLOG_FILE_ON defined:   	file name is then defined by SYSLOG_FILE
  *	Syslog if SYSLOG_SYSLOG_ON defined:    	facility is then defined by SYSLOG_FACILITY
- * 	Warning, syslog functions are bugged on Windows, generating memory protection faults. To solve
- *	this, use logging to files instead of syslog (see setup of module).
- *	Note: If SYSLOG_FILE_NO_ERROR defined, we never output any error message when writing to log fails.
+ *  Warning, syslog functions are bugged on Windows, generating memory protection faults. To solve
+ *  this, use logging to files instead of syslog (see setup of module).
+ *  Note: If SYSLOG_FILE_NO_ERROR defined, we never output any error message when writing to log fails.
  *  Note: You can get log message into html sources by adding parameter &logtohtml=1 (constant MAIN_LOGTOHTML must be set)
  *
- *	This function works only if syslog module is enabled.
+ *  This function works only if syslog module is enabled.
  * 	This must not use any call to other function calling dol_syslog (avoid infinite loop).
  *
  * 	@param  string		$message	Line to log. Ne doit pas etre traduit si level = LOG_ERR
- *	@param  int			$level		Log level
+ *  @param  int			$level		Log level
  *									On Windows LOG_ERR=4, LOG_WARNING=5, LOG_NOTICE=LOG_INFO=6, LOG_DEBUG=6 si define_syslog_variables ou PHP 5.3+, 7 si dolibarr
  *									On Linux   LOG_ERR=3, LOG_WARNING=4, LOG_INFO=6, LOG_DEBUG=7
- *	@return	void
+ *  @return	void
  */
 function dol_syslog($message, $level=LOG_INFO)
 {
@@ -880,8 +880,8 @@ function dol_print_date($time,$format='',$tzoutput='tzserver',$outputlangs='',$e
  *  WARNING: This function always use PHP server timezone to return locale informations.
  *  Usage must be avoid.
  *
- *	@param	timestamp	$timestamp		Timestamp
- *	@param	boolean		$fast			Fast mode
+ *	@param	timestamp	$timestamp      Timestamp
+ *	@param	boolean		$fast           Fast mode
  *	@return	array						Array of informations
  *										If no fast mode:
  *										'seconds' => $secs,
@@ -1293,14 +1293,23 @@ function dol_print_address($address, $htmlid, $mode, $id)
     {
         print nl2br($address);
         $showmap=0;
-        if ($mode=='thirdparty' && $conf->google->enabled && $conf->global->GOOGLE_ENABLE_GMAPS) $showmap=1;
-        if ($mode=='contact' && $conf->google->enabled && $conf->global->GOOGLE_ENABLE_GMAPS_CONTACTS) $showmap=1;
-        if ($mode=='member' && $conf->google->enabled && $conf->global->GOOGLE_ENABLE_GMAPS_MEMBERS) $showmap=1;
+        if ($mode=='thirdparty' && $conf->google->enabled && $conf->global->GOOGLE_ENABLE_GMAPS) $showgmap=1;
+        if ($mode=='contact' && $conf->google->enabled && $conf->global->GOOGLE_ENABLE_GMAPS_CONTACTS) $showgmap=1;
+        if ($mode=='member' && $conf->google->enabled && $conf->global->GOOGLE_ENABLE_GMAPS_MEMBERS) $showgmap=1;
+        if ($mode=='thirdparty' && $conf->openstreetmap->enabled && $conf->global->OPENSTREETMAP_ENABLE_MAPS) $showomap=1;
+        if ($mode=='contact' && $conf->openstreetmap->enabled && $conf->global->OPENSTREETMAP_ENABLE_MAPS_CONTACTS) $showomap=1;
+        if ($mode=='member' && $conf->openstreetmap->enabled && $conf->global->OPENSTREETMAP_ENABLE_MAPS_MEMBERS) $showomap=1;
 
-        if ($showmap)
+        // TODO Add a hook here
+        if ($showgmap)
         {
             $url=dol_buildpath('/google/gmaps.php?mode='.$mode.'&id='.$id,1);
             print ' <a href="'.$url.'" target="_gmaps"><img id="'.$htmlid.'" border="0" src="'.DOL_URL_ROOT.'/theme/common/gmap.png"></a>';
+        }
+        if ($showomap)
+        {
+            $url=dol_buildpath('/openstreetmap/maps.php?mode='.$mode.'&id='.$id,1);
+            print ' <a href="'.$url.'" target="_gmaps"><img id="'.$htmlid.'_openstreetmap" border="0" src="'.DOL_URL_ROOT.'/theme/common/gmap.png"></a>';
         }
     }
 }
@@ -1696,7 +1705,7 @@ function img_picto_common($alt, $picto, $options='', $pictoisfullpath=0)
     global $conf;
     if (! preg_match('/(\.png|\.gif)$/i',$picto)) $picto.='.png';
     if ($pictoisfullpath) return '<img src="'.$picto.'" border="0" alt="'.dol_escape_htmltag($alt).'" title="'.dol_escape_htmltag($alt).'"'.($options?' '.$options:'').'>';
-    if (! empty($conf->global->MAIN_MODULE_CAN_OVERWRITE_COMMONICONS) && file_exists(DOL_DOCUMENT_ROOT.'/theme/'.$conf->theme.'/'.$picto)) return '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/'.$picto.'" border="0" alt="'.dol_escape_htmltag($alt).'" title="'.dol_escape_htmltag($alt).'"'.($options?' '.$options:'').'>';
+    if (! empty($conf->global->MAIN_MODULE_CAN_OVERWRITE_COMMONICONS) && file_exists(DOL_DOCUMENT_ROOT.'/theme/'.$conf->theme.'/img/'.$picto)) return '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/'.$picto.'" border="0" alt="'.dol_escape_htmltag($alt).'" title="'.dol_escape_htmltag($alt).'"'.($options?' '.$options:'').'>';
     return '<img src="'.DOL_URL_ROOT.'/theme/common/'.$picto.'" border="0" alt="'.dol_escape_htmltag($alt).'" title="'.dol_escape_htmltag($alt).'"'.($options?' '.$options:'').'>';
 }
 
@@ -3984,6 +3993,19 @@ function printCommonFooter($zone='private')
 function unichr($unicode , $encoding = 'UTF-8')
 {
 	return mb_convert_encoding("&#{$unicode};", $encoding, 'HTML-ENTITIES');
+}
+
+/**
+ *	Convert an array with RGB value into hex RGB value
+ *
+ *  @param	array	$arraycolor			Array
+ *  @param	string	$colorifnotfound	Color code to return if entry not defined
+ *  @return	string						RGB hex value (without # before). For example: FF00FF
+ */
+function colorArrayToHex($arraycolor,$colorifnotfound='888888')
+{
+    if (! is_array($arraycolor)) return $colorifnotfound;
+    return dechex($arraycolor[0]).dechex($arraycolor[1]).dechex($arraycolor[2]);
 }
 
 /**

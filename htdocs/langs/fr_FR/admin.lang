@@ -217,6 +217,7 @@ OfficialWebSiteFr= Site web officiel francophone
 OfficialWiki= Wiki de documentation Dolibarr
 OfficialDemo= Démo en ligne Dolibarr
 OfficialMarketPlace=Place de marché officielle des modules et extensions complémentaires
+OfficialWebHostingService=Service d'hébergement officiel (SaaS)
 ForDocumentationSeeWiki= Pour la documentation utilisateur, développeur ou les FAQs,<br>consultez le wiki Dolibarr:<br><b><a href="%s" target="_blank">%s</a></b>
 ForAnswersSeeForum= Pour tout autre question/aide, vous pouvez utiliser le forum Dolibarr:<br><b><a href="%s" target="_blank">%s</a></b>
 HelpCenterDesc1= Cette application, indépendante de Dolibarr, vous permet de vous aider à obtenir un service de support sur Dolibarr.
@@ -312,7 +313,7 @@ ResponseTimeout=Timeout de réponse
 SmsTestMessage=Message de test de __PHONEFROM__ vers __PHONETO__
 ModuleMustBeEnabledFirst=Le module <b>%s</b> doit etre activé pour utiliser cette fonction.
 SecurityToken=Clé de sécurisation des URLs
-NoSmsEngine=Aucun gestionnaire d'envoi de SMS n'est disponible. Les gestionnaires d'envois SMS ne sont pas installés en standard (car dépendent d'un fournisseur) mais vous pourrez en trouver depuis la plateforme http://www.dolistore.com
+NoSmsEngine=Aucun gestionnaire d'envoi de SMS n'est disponible. Les gestionnaires d'envois SMS ne sont pas installés en standard (car dépendent d'un fournisseur) mais vous pourrez en trouver depuis la plateforme %s
 PDF=PDF
 PDFDesc=Vous pouvez définir ici des options globales sur la génération des PDF
 PDFAddressForging=Règle de fabrication des zones adresses
@@ -874,6 +875,7 @@ MAIN_PROXY_PASS=Mot de passe pour passer le serveur proxy mandataire
 DefineHereComplementaryAttributes=Definissez ici la liste des attributs supplémentaire, non disponible en standard, et que vous voulez voir gérez sur les %s.
 ExtraFields=Attributs suplémentaires
 ExtraFieldHasWrongValue=L'attribut %s a une valeur incorrecte.
+AlphaNumOnlyCharsAndNoSpace=uniquement caractères alphanumériques sans espace
 SendingMailSetup=Configuration de l'envoi par mail
 SendmailOptionNotComplete=Attention, sur certains systèmes Linux, avec cette méthode d'envoi, pour pouvoir envoyer des mails en votre nom, la configuration d'exécution de sendmail doit contenir l'option <b>-ba</b> (paramètre <b>mail.force_extra_parameters</b> dans le fichier <b>php.ini</b>). Si certains de vos destinataires ne reçoivent pas de message, essayer de modifer ce paramètre PHP avec <b>mail.force_extra_parameters = -ba</b>.
 PathToDocuments= Chemin d'accès aux documents

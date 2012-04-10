@@ -923,7 +923,8 @@ class pdf_azur extends ModelePDFPropales
 		{
 			if (is_readable($logo))
 			{
-				$pdf->Image($logo, $this->marge_gauche, $posy, 0, 22);	// width=0 (auto), max height=22
+			    $height=pdf_getHeightForLogo($logo);
+			    $pdf->Image($logo, $this->marge_gauche, $posy, 0, $height);	// width=0 (auto)
 			}
 			else
 			{
@@ -984,7 +985,7 @@ class pdf_azur extends ModelePDFPropales
 		$posy+=2;
 
 		// Show list of linked objects
-		$posy = pdf_writeLinkedObjects($pdf, $object, $outputlangs, $posx, $posy, 'R', $default_font_size, $hookmanager);
+		$posy = pdf_writeLinkedObjects($pdf, $object, $outputlangs, $posx, $posy, 100, 3, 'R', $default_font_size, $hookmanager);
 
 		if ($showaddress)
 		{

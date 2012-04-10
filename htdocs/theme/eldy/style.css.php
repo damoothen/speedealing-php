@@ -867,6 +867,8 @@ td.photo {
     box-shadow: 4px 4px 4px #EEE;
 
     padding: 0 4px 0 4px !important;
+
+    height: 34px !important;
 }
 
 a.toolbarbutton {
@@ -874,9 +876,6 @@ a.toolbarbutton {
     margin-left: 4px;
     margin-right: 4px;
     height: 30px;
-/*    border: solid 1px #AAAAAA;
-    width: 32px;
-    background: #FFFFFF;*/
 }
 img.toolbarbutton {
 	margin-top: 1px;
@@ -2361,6 +2360,16 @@ div.ecmjqft {
 	width: auto;
 	padding-left: 10px !important;
 	padding-right: 10px !important;
+}
+
+/* ============================================================================== */
+/*  Maps                                                                          */
+/* ============================================================================== */
+
+.divmap, #google-visualization-geomap-embed-0, #google-visualization-geomap-embed-1, google-visualization-geomap-embed-2 {
+    -moz-box-shadow: 0px 0px 10px #AAA;
+    -webkit-box-shadow: 0px 0px 10px #AAA;
+    box-shadow: 0px 0px 10px #AAA;
 }
 
 

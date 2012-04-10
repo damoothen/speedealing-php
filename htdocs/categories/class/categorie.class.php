@@ -77,7 +77,7 @@ class Categorie
 	 */
 	function fetch($id)
 	{
-		$sql = "SELECT rowid, label, description, fk_soc, visible, type, priority";
+		$sql = "SELECT rowid, entity, label, description, fk_soc, visible, type, priority";
 		$sql.= " FROM ".MAIN_DB_PREFIX."categorie";
 		$sql.= " WHERE rowid = ".$id;
 
@@ -87,13 +87,14 @@ class Categorie
 		{
 			$res = $this->db->fetch_array($resql);
 
-			$this->id		       = $res['rowid'];
-			$this->label	     = $res['label'];
-			$this->description = $res['description'];
-			$this->socid       = $res['fk_soc'];
-			$this->visible     = $res['visible'];
-			$this->type        = $res['type'];
-                        $this->priority    =$res['priority'];
+			$this->id			= $res['rowid'];
+			$this->label		= $res['label'];
+			$this->description	= $res['description'];
+			$this->socid		= $res['fk_soc'];
+			$this->visible		= $res['visible'];
+			$this->type			= $res['type'];
+			$this->entity		= $res['entity'];
+			$this->priority     = $res['priority'];
 
 			$this->db->free($resql);
 		}
@@ -1378,6 +1379,8 @@ class Categorie
 	 */
 	function liste_photos($dir,$nbmax=0)
 	{
+		include_once(DOL_DOCUMENT_ROOT ."/core/lib/files.lib.php");
+		
 		$nbphoto=0;
 		$tabobj=array();
 
@@ -1390,7 +1393,7 @@ class Categorie
             {
     			while (($file = readdir($handle)) != false)
     			{
-    				if (is_file($dir.$file))
+    				if (dol_is_file($dir.$file) && preg_match('/(\.jpg|\.bmp|\.gif|\.png|\.tiff)$/i',$dir.$file))
     				{
     					$nbphoto++;
     					$photo = $file;

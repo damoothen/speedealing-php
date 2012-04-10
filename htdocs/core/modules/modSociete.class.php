@@ -3,7 +3,7 @@
  * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2004      Sebastien Di Cintio  <sdicintio@ressource-toi.org>
  * Copyright (C) 2004      Benoit Mortier       <benoit.mortier@opensides.be>
- * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -307,7 +307,7 @@ class modSociete extends DolibarrModules
 		$this->import_entities_array[$r]=array('s.fk_soc'=>'company');	// We define here only fields that use another icon that the one defined into import_icon
 		$this->import_tables_array[$r]=array('s'=>MAIN_DB_PREFIX.'socpeople');	// List of tables to insert into (insert done in same order)
 		$this->import_fields_array[$r]=array('s.fk_soc'=>'ThirdPartyName*','s.civilite'=>'Civility','s.name'=>"Name*",'s.firstname'=>"Firstname",'s.address'=>"Address",'s.cp'=>"Zip",'s.ville'=>"Town",'s.fk_pays'=>"CountryCode",'s.birthday'=>"BirthdayDate",'s.poste'=>"Role",'s.phone'=>"Phone",'s.phone_perso'=>"PhonePerso",'s.phone_mobile'=>"PhoneMobile",'s.fax'=>"Fax",'s.email'=>"Email",'s.note'=>"Note",'s.datec'=>"DateCreation");
-		$this->import_fieldshidden_array[$r]=array('s.fk_user_creat'=>'user->id');
+		$this->import_fieldshidden_array[$r]=array('s.fk_user_creat'=>'user->id');    // aliastable.field => ('user->id' or 'lastrowid-'.tableparent)
 		$this->import_convertvalue_array[$r]=array(
 			's.fk_soc'=>array('rule'=>'fetchidfromref','file'=>'/societe/class/societe.class.php','class'=>'Societe','method'=>'fetch','element'=>'ThirdParty'),
 			's.fk_pays'=>array('rule'=>'fetchidfromcodeid','classfile'=>'/core/class/cpays.class.php','class'=>'Cpays','method'=>'fetch','dict'=>'DictionnaryCountry'),
@@ -328,7 +328,7 @@ class modSociete extends DolibarrModules
      */
 	function init($options='')
 	{
-		global $conf;
+		global $conf, $langs;
 
 		// We disable this to prevent pb of modules not correctly disabled
 		//$this->remove($options);

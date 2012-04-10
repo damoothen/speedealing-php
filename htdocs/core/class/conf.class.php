@@ -94,7 +94,7 @@ class Conf
 		$this->syslog			= (object) array();
 		$this->browser			= (object) array();
 		$this->multicompany		= (object) array();
-		
+
 		// First level object
 		$this->expedition_bon	= (object) array();
 		$this->livraison_bon	= (object) array();
@@ -111,7 +111,7 @@ class Conf
 		$this->bank				= (object) array();
 		$this->notification		= (object) array();
 		$this->mailing			= (object) array();
-		
+
 		//! Charset for HTML output and for storing data in memory
 		$this->file->character_set_client='UTF-8';   // UTF-8, ISO-8859-1
 	}
@@ -208,12 +208,20 @@ class Conf
 				}
 				$i++;
 			}
-			
+
 		    $db->free($resql);
 		}
 		//var_dump($this->modules);
 		//var_dump($this->modules_parts);
-		
+
+		// Object $mc
+		if (! defined('NOREQUIREMC') && ! empty($this->multicompany->enabled))
+		{
+			global $mc;
+			$ret = @dol_include_once('/multicompany/class/actions_multicompany.class.php');
+			if ($ret) $mc = new ActionsMulticompany($db);
+		}
+
 		// Second or others levels object
 		$this->propal->cloture				= (object) array();
 		$this->propal->facturation			= (object) array();
@@ -253,23 +261,19 @@ class Conf
 		$rootfordata = DOL_DATA_ROOT;
 		$rootforuser = DOL_DATA_ROOT;
 		// If multicompany module is enabled, we redefine the root of data
-		if (! empty($this->global->MAIN_MODULE_MULTICOMPANY) && ! empty($this->entity) && $this->entity > 1)
+		if (! empty($this->multicompany->enabled) && ! empty($this->entity) && $this->entity > 1)
 		{
 			$rootfordata.='/'.$this->entity;
-			//var_dump($mc->sharings);
-			//var_dump($mc->referent);
-			//var_dump($mc->entities);
 		}
-
-		// For backward compatibility
-		// TODO Replace this->xxx->enabled by this->modulename->enabled to remove this code
-		if (isset($this->categorie->enabled)) $this->category->enabled=$this->categorie->enabled;
 
 		// Define default dir_output and dir_temp for directories of modules
 		foreach($this->modules as $module)
 		{
-			$this->$module->dir_output=$rootfordata."/".$module;
-			$this->$module->dir_temp=$rootfordata."/".$module."/temp";
+			$this->$module->multidir_output	= array($this->entity => $rootfordata."/".$module);
+			$this->$module->multidir_temp	= array($this->entity => $rootfordata."/".$module."/temp");
+			// For backward compatibility
+			$this->$module->dir_output	= $rootfordata."/".$module;
+			$this->$module->dir_temp	= $rootfordata."/".$module."/temp";
 		}
 
 		// For mycompany storage
@@ -281,9 +285,12 @@ class Conf
 		$this->admin->dir_temp=$rootfordata.'/admin/temp';
 
 		// For user storage
+		$this->user->multidir_output	= array($this->entity => $rootfordata."/users");
+		$this->user->multidir_temp		= array($this->entity => $rootfordata."/users/temp");
+		// For backward compatibility
 		$this->user->dir_output=$rootforuser."/users";
 		$this->user->dir_temp=$rootforuser."/users/temp";
-		
+
 		// For propal storage
 		$this->propal->dir_output=$rootforuser."/propale";
 		$this->propal->dir_temp=$rootforuser."/propale/temp";
@@ -301,11 +308,18 @@ class Conf
 		$this->fournisseur->commande->dir_temp  =$rootfordata."/fournisseur/commande/temp";
 		$this->fournisseur->facture->dir_output =$rootfordata."/fournisseur/facture";
 		$this->fournisseur->facture->dir_temp   =$rootfordata."/fournisseur/facture/temp";
+
 		// Module product/service
+		$this->product->multidir_output=array($this->entity => $rootfordata."/produit");
+		$this->product->multidir_temp  =array($this->entity => $rootfordata."/produit/temp");
+		$this->service->multidir_output=array($this->entity => $rootfordata."/produit");
+		$this->service->multidir_temp  =array($this->entity => $rootfordata."/produit/temp");
+		// For backward compatibility
 		$this->product->dir_output=$rootfordata."/produit";
 		$this->product->dir_temp  =$rootfordata."/produit/temp";
 		$this->service->dir_output=$rootfordata."/produit";
 		$this->service->dir_temp  =$rootfordata."/produit/temp";
+
 		// Module contrat
 		$this->contrat->dir_output=$rootfordata."/contracts";
 		$this->contrat->dir_temp  =$rootfordata."/contracts/temp";
@@ -401,7 +415,11 @@ class Conf
 		$this->bank->cheque->warning_delay=(isset($this->global->MAIN_DELAY_CHEQUES_TO_DEPOSIT)?$this->global->MAIN_DELAY_CHEQUES_TO_DEPOSIT:0)*24*60*60;
 
 		// For backward compatibility
-		$this->produit=$this->product;
+		if (isset($this->product))   $this->produit=$this->product;
+		if (isset($this->facture))   $this->invoice=$this->facture;
+		if (isset($this->commande))  $this->order=$this->commande;
+		if (isset($this->contrat))   $this->contract=$this->contrat;
+		if (isset($this->categorie)) $this->category=$this->categorie;
 
 
         // Define menu manager in setup
@@ -418,18 +436,11 @@ class Conf
         // For backward compatibility
         if ($this->top_menu == 'eldy.php') $this->top_menu='eldy_backoffice.php';
         elseif ($this->top_menu == 'rodolphe.php') $this->top_menu='eldy_backoffice.php';
-        
+
         // Object $mc
         if (! defined('NOREQUIREMC') && ! empty($this->multicompany->enabled))
         {
-        	global $mc;
-        
-        	$ret = @dol_include_once('/multicompany/class/actions_multicompany.class.php');
-        	if ($ret)
-        	{
-        		$mc = new ActionsMulticompany($db);
-        		$mc->setValues($this);
-        	}
+        	if (is_object($mc)) $mc->setValues($this);
         }
 	}
 }
