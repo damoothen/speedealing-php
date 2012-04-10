@@ -64,6 +64,15 @@ function facture_prepare_head($object)
 		$head[$h][2] = 'standingorders';
 		$h++;
 	}
+        
+	if ($conf->ego->enabled)
+	{
+                $langs->load('ego@ego');
+		$head[$h][0] = dol_buildpath('/ego/paiment.php?facid='.$object->id,1);
+		$head[$h][1] = $langs->trans('EgoPay');
+		$head[$h][2] = 'egopay';
+		$h++;
+	}
 
     // Show more tabs from modules
     // Entries must be declared in modules descriptor with line
