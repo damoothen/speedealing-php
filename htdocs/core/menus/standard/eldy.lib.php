@@ -513,6 +513,12 @@ function print_start_menu_array()
 	else print '<ul class="tmenu">';
 }
 
+/**
+ * Output start menu entry
+ *
+ * @param	string	$idsel		Text
+ * @return	void
+ */
 function print_start_menu_entry($idsel)
 {
 	global $conf;
@@ -520,6 +526,12 @@ function print_start_menu_entry($idsel)
 	else print '<li class="tmenu" id="mainmenutd_'.$idsel.'">';
 }
 
+/**
+ * Output menu entry
+ *
+ * @param	string	$text		Text
+ * @return	void
+ */
 function print_text_menu_entry($text)
 {
 	global $conf;
@@ -528,6 +540,11 @@ function print_text_menu_entry($text)
 	print '</span>';
 }
 
+/**
+ * Output end menu entry
+ *
+ * @return	void
+ */
 function print_end_menu_entry()
 {
 	global $conf;
@@ -536,6 +553,11 @@ function print_end_menu_entry()
 	print "\n";
 }
 
+/**
+ * Output menu array
+ *
+ * @return	void
+ */
 function print_end_menu_array()
 {
 	global $conf;
@@ -1405,11 +1427,12 @@ function print_left_eldy_menu($db,$menu_array_before,$menu_array_after)
                 $newmenu->add("/adherents/liste.php?leftmenu=members&amp;statut=1&amp;filter=uptodate",$langs->trans("MenuMembersUpToDate"),2,$user->rights->adherent->lire);
                 $newmenu->add("/adherents/liste.php?leftmenu=members&amp;statut=1&amp;filter=outofdate",$langs->trans("MenuMembersNotUpToDate"),2,$user->rights->adherent->lire);
                 $newmenu->add("/adherents/liste.php?leftmenu=members&amp;statut=0",$langs->trans("MenuMembersResiliated"),2,$user->rights->adherent->lire);
-                $newmenu->add("/adherents/stats/index.php?leftmenu=members",$langs->trans("MenuMembersStats"),1,$user->rights->adherent->lire);
+                $newmenu->add("/adherents/stats/geo.php?leftmenu=members&mode=memberbycountry",$langs->trans("MenuMembersStats"),1,$user->rights->adherent->lire);
 
                 $newmenu->add("/adherents/index.php?leftmenu=members&amp;mainmenu=members",$langs->trans("Subscriptions"),0,$user->rights->adherent->cotisation->lire);
                 $newmenu->add("/adherents/liste.php?leftmenu=members&amp;statut=-1,1&amp;mainmenu=members",$langs->trans("NewSubscription"),1,$user->rights->adherent->cotisation->creer);
                 $newmenu->add("/adherents/cotisations.php?leftmenu=members",$langs->trans("List"),1,$user->rights->adherent->cotisation->lire);
+                $newmenu->add("/adherents/stats/index.php?leftmenu=members",$langs->trans("MenuMembersStats"),1,$user->rights->adherent->lire);
 
 
                 if ($conf->categorie->enabled)

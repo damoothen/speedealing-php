@@ -575,7 +575,7 @@ if ($action == 'create')
 	print '<form name="formaction" action="'.DOL_URL_ROOT.'/comm/action/fiche.php" method="POST">';
 	print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 	print '<input type="hidden" name="action" value="add_action">';
-	print '<input type="hidden" name="backtopage" value="'.(! empty($backtopage) ? $backtopage : $_SERVER["HTTP_REFERER"]).'">';
+	print '<input type="hidden" name="backtopage" value="'.((! empty($backtopage) && $backtopage != '1') ? $backtopage : $_SERVER["HTTP_REFERER"]).'">';
 
 	if (GETPOST("actioncode") == 'AC_RDV') print_fiche_titre($langs->trans("AddActionRendezVous"));
 	else print_fiche_titre($langs->trans("AddAnAction"));
@@ -901,7 +901,7 @@ if ($id)
 		print '<input type="hidden" name="action" value="update">';
 		print '<input type="hidden" name="id" value="'.$id.'">';
 		print '<input type="hidden" name="ref_ext" value="'.$act->ref_ext.'">';
-		print '<input type="hidden" name="backtopage" value="'.(! empty($backtopage) ? $backtopage : $_SERVER["HTTP_REFERER"]).'">';
+		print '<input type="hidden" name="backtopage" value="'.((! empty($backtopage) && $backtopage != '1')? $backtopage : $_SERVER["HTTP_REFERER"]).'">';
 
 		print '<table class="border" width="100%">';
 
@@ -1084,7 +1084,7 @@ if ($id)
 		print '</td>';
 		if($act->type==1) //RDV
                 {
-		print '<td rowspan="3" align="center" valign="middle" width="180">'."\n";
+		print '<td rowspan="4" align="center" valign="middle" width="180">'."\n";
         print '<form name="listactionsfiltermonth" action="'.DOL_URL_ROOT.'/comm/action/index.php" method="POST">';
         print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
         print '<input type="hidden" name="action" value="show_month">';
@@ -1147,31 +1147,32 @@ if ($id)
 		print '</td></tr>';
                 $var=!$var;
 
-
         // Location
-		if($act->type==1)
-        {
-        	print '<tr '.$bc[$var].'><td id="label">'.$langs->trans("Location").'</td><td colspan="3" id="value">'.$act->location.'</td></tr>';
-        	$var=!$var;
-        }
+        print '<tr><td>'.$langs->trans("Location").'</td><td colspan="2">'.$act->location.'</td></tr>';
 
-                // Description
-		print '<tr '.$bc[$var].'><td valign="top" id="label">'.$langs->trans("Description").'</td><td colspan="3" id="value">';
-		print dol_htmlentitiesbr($act->note);
+		print '</table><br><br><table class="border" width="100%">';
+
+		// Input by
+		$var=false;
+		print '<tr><td width="30%" nowrap="nowrap">'.$langs->trans("ActionAskedBy").'</td><td colspan="3">';
+		if ($act->author->id > 0) print $act->author->getNomUrl(1);
+		else print '&nbsp;';
 		print '</td></tr>';
-                $var=!$var;
-                
-		print '</table>';
-                print '</td>';
 
-                print '<td valign="top" width="35%"><table class="noborder" width="100%">';
+		// Affecte a
+		print '<tr><td nowrap="nowrap">'.$langs->trans("ActionAffectedTo").'</td><td colspan="3">';
+		if ($act->usertodo->id > 0) print $act->usertodo->getNomUrl(1);
+		print '</td></tr>';
 
-                print '<tr class="liste_titre"><td colspan="2">';
-                print $langs->trans('Company');
-                print '</td></tr>';
+		// Done by
+		print '<tr><td nowrap="nowrap">'.$langs->trans("ActionDoneBy").'</td><td colspan="3">';
+		if ($act->userdone->id > 0) print $act->userdone->getNomUrl(1);
+		print '</td></tr>';
+
+		print '</table><br><br><table class="border" width="100%">';
 
 		// Third party - Contact
-		print '<tr '.$bc[$var].'><td  id="label" width="30%">'.$langs->trans("ActionOnCompany").'</td><td id="value">'.($act->societe->id?$act->societe->getNomUrl(1):$langs->trans("None"));
+		print '<tr><td width="30%">'.$langs->trans("ActionOnCompany").'</td><td>'.($act->societe->id?$act->societe->getNomUrl(1):$langs->trans("None"));
 		if ($act->societe->id && $act->type_code == 'AC_TEL')
 		{
 			if ($act->societe->fetch($act->societe->id))
@@ -1179,11 +1180,9 @@ if ($id)
 				print "<br>".dol_print_phone($act->societe->tel);
 			}
 		}
-		print '</td></tr>';
-                $var=!$var;
-                print '<tr '.$bc[$var].'>';
-		print '<td id="label">'.$langs->trans("Contact").'</td>';
-		print '<td id="value">';
+		print '</td>';
+		print '<td>'.$langs->trans("Contact").'</td>';
+		print '<td>';
 		if ($act->contact->id > 0)
 		{
 			print $act->contact->getNomUrl(1);

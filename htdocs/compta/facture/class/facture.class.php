@@ -35,8 +35,7 @@ require_once(DOL_DOCUMENT_ROOT ."/societe/class/client.class.php");
 
 
 /**
- *	\class      Facture
- *	\brief      Class to manage invoices
+ *	Class to manage invoices
  */
 class Facture extends CommonObject
 {
@@ -78,7 +77,7 @@ class Facture extends CommonObject
     //! 0=draft,
     //! 1=validated (need to be paid),
     //! 2=classified paid partially (close_code='discount_vat','badcustomer') or completely (close_code=null),
-    //! 3=classified abandoned and no payment done (close_code='badcustomer','abandon' ou 'replaced')
+    //! 3=classified abandoned and no payment done (close_code='badcustomer','abandon' or 'replaced')
     var $statut;
     //! Fermeture apres paiement partiel: discount_vat, badcustomer, abandon
     //! Fermeture alors que aucun paiement: replaced (si remplace), abandon
@@ -263,19 +262,19 @@ class Facture extends CommonObject
             			// On recupere les differents contact interne et externe
             			$order = new Commande($this->db);
             			$order->id = $origin_id;
-            		
+
             			// On recupere le commercial suivi propale
             			$this->userid = $order->getIdcontact('internal', 'SALESREPFOLL');
-            			
+
             			if ($this->userid)
             			{
             				//On passe le commercial suivi commande en commercial suivi paiement
             				$this->add_contact($this->userid[0], 'SALESREPFOLL', 'internal');
             			}
-            		
+
             			// On recupere le contact client facturation commande
             			$this->contactid = $order->getIdcontact('external', 'BILLING');
-            		
+
             			if ($this->contactid)
             			{
             				//On passe le contact client facturation commande en contact client facturation
@@ -674,7 +673,7 @@ class Facture extends CommonObject
 
         $this->origin				= $object->element;
         $this->origin_id			= $object->id;
-        
+
         // Possibility to add external linked objects with hooks
         $this->linked_objects[$this->origin] = $this->origin_id;
         if (is_array($object->other_linked_objects) && ! empty($object->other_linked_objects))
@@ -827,8 +826,8 @@ class Facture extends CommonObject
                 $this->user_author			= $obj->fk_user_author;
                 $this->user_valid			= $obj->fk_user_valid;
                 $this->modelpdf				= $obj->model_pdf;
-                
-                $this->extraparams			= (array) dol_json_decode($obj->extraparams, true);
+
+                $this->extraparams			= (array) json_decode($obj->extraparams, true);
 
                 if ($this->statut == 0)	$this->brouillon = 1;
 
@@ -3073,6 +3072,7 @@ class Facture extends CommonObject
         $this->specimen=1;
         $this->socid = 1;
         $this->date = $nownotime;
+        $this->date_lim_reglement = $nownotime + 3600 * 24 *30;
         $this->cond_reglement_id   = 1;
         $this->cond_reglement_code = 'RECEP';
         $this->date_lim_reglement=$this->calculate_date_lim_reglement();

@@ -77,7 +77,11 @@ function pdf_getInstance($format='',$metric='mm',$pagetype='P')
 {
 	global $conf;
 
-	require_once(TCPDF_PATH.'tcpdf.php');
+	if (! empty($conf->global->MAIN_USE_FPDF) && ! empty($conf->global->MAIN_DISABLE_FPDI))
+    	return "Error MAIN_USE_PDF and MAIN_DISABLE_FPDI can't be set together";
+
+	// We use by default TCPDF
+	if (empty($conf->global->MAIN_USE_FPDF)) require_once(TCPDF_PATH.'tcpdf.php');
 	// We need to instantiate fpdi object (instead of tcpdf) to use merging features. But we can disable it.
 	if (empty($conf->global->MAIN_DISABLE_FPDI)) require_once(FPDI_PATH.'fpdi.php');
 
@@ -165,6 +169,27 @@ function pdf_getPDFFontSize($outputlangs)
 
 
 /**
+ * Return height to use for Logo onot PDF
+ *
+ * @param	string		$logo		Full path to logo file to use
+ * @return	number
+ */
+function pdf_getHeightForLogo($logo)
+{
+    $height=22; $maxwidth=130;
+    include_once(DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php');
+    $tmp=dol_getImageSize($logo);
+    if ($tmp['height'])
+    {
+        $width=round($height*$tmp['width']/$tmp['height']);
+        if ($width > $maxwidth) $height=$height*$maxwidth/$width;
+    }
+    //print $tmp['width'].' '.$tmp['height'].' '.$width; exit;
+    return $height;
+}
+
+
+/**
  *   	Return a string with full address formated
  *
  * 		@param	Translate	$outputlangs		Output langs object
@@ -196,7 +221,7 @@ function pdf_build_address($outputlangs,$sourcecompany,$targetcompany='',$target
 		// Tel
 		if ($sourcecompany->tel) $stringaddress .= ($stringaddress ? "\n" : '' ).$outputlangs->transnoentities("Phone").": ".$outputlangs->convToOutputCharset($sourcecompany->tel);
 		// Fax
-		if ($sourcecompany->fax) $stringaddress .= ($stringaddress ? ($sourcecompany->tel ? " - " : "\n") : '' ).$outputlangs->transnoentities("Fax").": ".$outputlangs->convToOutputCharset($sourcecompany->fax);
+		if ($sourcecompany->fax) $stringaddress .= ($stringaddress ? "\n" : '' ).$outputlangs->transnoentities("Fax").": ".$outputlangs->convToOutputCharset($sourcecompany->fax);
 		// EMail
 		if ($sourcecompany->email) $stringaddress .= ($stringaddress ? "\n" : '' ).$outputlangs->transnoentities("Email").": ".$outputlangs->convToOutputCharset($sourcecompany->email);
 		// Web
@@ -318,17 +343,18 @@ function pdf_watermark(&$pdf, $outputlangs, $h, $w, $unit, $text)
 
 
 /**
- *   	Show bank informations for PDF generation
+ *  Show bank informations for PDF generation
  *
- *      @param	PDF			&$pdf            Object PDF
- *      @param  Translate	$outputlangs     Object lang
- *      @param  int			$curx            X
- *      @param  int			$cury            Y
- *      @param  Account		$account         Bank account object
- *      @param  int			$onlynumber      Output only number
- *      @return	void
+ *  @param	PDF			&$pdf            		Object PDF
+ *  @param  Translate	$outputlangs     		Object lang
+ *  @param  int			$curx            		X
+ *  @param  int			$cury            		Y
+ *  @param  Account		$account         		Bank account object
+ *  @param  int			$onlynumber      		Output only number
+ *  @param	int			$default_font_size		Default font size
+ *  @return	void
  */
-function pdf_bank(&$pdf,$outputlangs,$curx,$cury,$account,$onlynumber=0)
+function pdf_bank(&$pdf,$outputlangs,$curx,$cury,$account,$onlynumber=0,$default_font_size=10)
 {
 	global $mysoc, $conf;
 
@@ -336,7 +362,7 @@ function pdf_bank(&$pdf,$outputlangs,$curx,$cury,$account,$onlynumber=0)
 
 	if (empty($onlynumber))
 	{
-		$pdf->SetFont('','B',8);
+		$pdf->SetFont('','B',$default_font_size - 3);
 		$pdf->MultiCell(100, 3, $outputlangs->transnoentities('PaymentByTransferOnThisBankAccount').':', 0, 'L', 0);
 		$cury+=4;
 	}
@@ -353,9 +379,9 @@ function pdf_bank(&$pdf,$outputlangs,$curx,$cury,$account,$onlynumber=0)
 
 		if (empty($onlynumber))
 		{
-			$pdf->SetFont('','',6);
+			$pdf->SetFont('','',$default_font_size - 4);
 			$pdf->SetXY($curx, $cury);
-			$pdf->MultiCell(90, 3, $outputlangs->transnoentities("Bank").': ' . $outputlangs->convToOutputCharset($account->bank), 0, 'L', 0);
+			$pdf->MultiCell(100, 3, $outputlangs->transnoentities("Bank").': ' . $outputlangs->convToOutputCharset($account->bank), 0, 'L', 0);
 			$cury+=3;
 		}
 
@@ -379,10 +405,10 @@ function pdf_bank(&$pdf,$outputlangs,$curx,$cury,$account,$onlynumber=0)
 				// Bank code
 				$tmplength=18;
 				$pdf->SetXY($curx, $cury+5);
-				$pdf->SetFont('','',8);$pdf->MultiCell($tmplength, 3, $outputlangs->convToOutputCharset($account->code_banque), 0, 'C', 0);
+				$pdf->SetFont('','',$default_font_size - 3);$pdf->MultiCell($tmplength, 3, $outputlangs->convToOutputCharset($account->code_banque), 0, 'C', 0);
 				$pdf->SetXY($curx, $cury+1);
 				$curx+=$tmplength;
-				$pdf->SetFont('','B',6);$pdf->MultiCell($tmplength, 3, $outputlangs->transnoentities("BankCode"), 0, 'C', 0);
+				$pdf->SetFont('','B',$default_font_size - 4);$pdf->MultiCell($tmplength, 3, $outputlangs->transnoentities("BankCode"), 0, 'C', 0);
 				if (empty($onlynumber)) $pdf->line($curx, $cury+1, $curx, $cury+8);
 			}
 			if ($val == 'desk')
@@ -390,10 +416,10 @@ function pdf_bank(&$pdf,$outputlangs,$curx,$cury,$account,$onlynumber=0)
 				// Desk
 				$tmplength=18;
 				$pdf->SetXY($curx, $cury+5);
-				$pdf->SetFont('','',8);$pdf->MultiCell($tmplength, 3, $outputlangs->convToOutputCharset($account->code_guichet), 0, 'C', 0);
+				$pdf->SetFont('','',$default_font_size - 3);$pdf->MultiCell($tmplength, 3, $outputlangs->convToOutputCharset($account->code_guichet), 0, 'C', 0);
 				$pdf->SetXY($curx, $cury+1);
 				$curx+=$tmplength;
-				$pdf->SetFont('','B',6);$pdf->MultiCell($tmplength, 3, $outputlangs->transnoentities("DeskCode"), 0, 'C', 0);
+				$pdf->SetFont('','B',$default_font_size - 4);$pdf->MultiCell($tmplength, 3, $outputlangs->transnoentities("DeskCode"), 0, 'C', 0);
 				if (empty($onlynumber)) $pdf->line($curx, $cury+1, $curx, $cury+8);
 			}
 			if ($val == 'number')
@@ -401,10 +427,10 @@ function pdf_bank(&$pdf,$outputlangs,$curx,$cury,$account,$onlynumber=0)
 				// Number
 				$tmplength=24;
 				$pdf->SetXY($curx, $cury+5);
-				$pdf->SetFont('','',8);$pdf->MultiCell($tmplength, 3, $outputlangs->convToOutputCharset($account->number), 0, 'C', 0);
+				$pdf->SetFont('','',$default_font_size - 3);$pdf->MultiCell($tmplength, 3, $outputlangs->convToOutputCharset($account->number), 0, 'C', 0);
 				$pdf->SetXY($curx, $cury+1);
 				$curx+=$tmplength;
-				$pdf->SetFont('','B',6);$pdf->MultiCell($tmplength, 3, $outputlangs->transnoentities("BankAccountNumber"), 0, 'C', 0);
+				$pdf->SetFont('','B',$default_font_size - 4);$pdf->MultiCell($tmplength, 3, $outputlangs->transnoentities("BankAccountNumber"), 0, 'C', 0);
 				if (empty($onlynumber)) $pdf->line($curx, $cury+1, $curx, $cury+8);
 			}
 			if ($val == 'key')
@@ -412,10 +438,10 @@ function pdf_bank(&$pdf,$outputlangs,$curx,$cury,$account,$onlynumber=0)
 				// Key
 				$tmplength=13;
 				$pdf->SetXY($curx, $cury+5);
-				$pdf->SetFont('','',8);$pdf->MultiCell($tmplength, 3, $outputlangs->convToOutputCharset($account->cle_rib), 0, 'C', 0);
+				$pdf->SetFont('','',$default_font_size - 3);$pdf->MultiCell($tmplength, 3, $outputlangs->convToOutputCharset($account->cle_rib), 0, 'C', 0);
 				$pdf->SetXY($curx, $cury+1);
 				$curx+=$tmplength;
-				$pdf->SetFont('','B',6);$pdf->MultiCell($tmplength, 3, $outputlangs->transnoentities("BankAccountNumberKey"), 0, 'C', 0);
+				$pdf->SetFont('','B',$default_font_size - 4);$pdf->MultiCell($tmplength, 3, $outputlangs->transnoentities("BankAccountNumberKey"), 0, 'C', 0);
 				if (empty($onlynumber)) $pdf->line($curx, $cury+1, $curx, $cury+8);
 			}
 		}
@@ -427,12 +453,12 @@ function pdf_bank(&$pdf,$outputlangs,$curx,$cury,$account,$onlynumber=0)
 	{
 		$pdf->SetFont('','B',6);
 		$pdf->SetXY($curx, $cury);
-		$pdf->MultiCell(90, 3, $outputlangs->transnoentities("Bank").': ' . $outputlangs->convToOutputCharset($account->bank), 0, 'L', 0);
+		$pdf->MultiCell(100, 3, $outputlangs->transnoentities("Bank").': ' . $outputlangs->convToOutputCharset($account->bank), 0, 'L', 0);
 		$cury+=3;
 
 		$pdf->SetFont('','B',6);
 		$pdf->SetXY($curx, $cury);
-		$pdf->MultiCell(90, 3, $outputlangs->transnoentities("BankAccountNumber").': ' . $outputlangs->convToOutputCharset($account->number), 0, 'L', 0);
+		$pdf->MultiCell(100, 3, $outputlangs->transnoentities("BankAccountNumber").': ' . $outputlangs->convToOutputCharset($account->number), 0, 'L', 0);
 		$cury+=3;
 	}
 
@@ -448,7 +474,7 @@ function pdf_bank(&$pdf,$outputlangs,$curx,$cury,$account,$onlynumber=0)
 	{
 		$pdf->SetXY($curx, $cury);
 		$val=$outputlangs->transnoentities("Residence").': ' . $outputlangs->convToOutputCharset($account->domiciliation);
-		$pdf->MultiCell(90, 3, $val, 0, 'L', 0);
+		$pdf->MultiCell(100, 3, $val, 0, 'L', 0);
 		$nboflines=dol_nboflines_bis($val,120);
 		//print $nboflines;exit;
 		$cury+=($nboflines*2)+2;
@@ -456,9 +482,9 @@ function pdf_bank(&$pdf,$outputlangs,$curx,$cury,$account,$onlynumber=0)
 	else if (! $usedetailedbban) $cury+=1;
 
 	$pdf->SetXY($curx, $cury);
-	$pdf->MultiCell(90, 3, $outputlangs->transnoentities($ibankey).': ' . $outputlangs->convToOutputCharset($account->iban), 0, 'L', 0);
+	$pdf->MultiCell(100, 3, $outputlangs->transnoentities($ibankey).': ' . $outputlangs->convToOutputCharset($account->iban), 0, 'L', 0);
 	$pdf->SetXY($curx, $cury+3);
-	$pdf->MultiCell(90, 3, $outputlangs->transnoentities($bickey).': ' . $outputlangs->convToOutputCharset($account->bic), 0, 'L', 0);
+	$pdf->MultiCell(100, 3, $outputlangs->transnoentities($bickey).': ' . $outputlangs->convToOutputCharset($account->bic), 0, 'L', 0);
 
 	return $pdf->getY();
 }
@@ -664,14 +690,19 @@ function pdf_pagefoot(&$pdf,$outputlangs,$paramfreetext,$fromcompany,$marge_bass
 /**
  *	Show linked objects for PDF generation
  *
- *	@param	PDF			&$pdf			Object PDF
- *	@param	object		$object			Object
- *	@param  Translate	$outputlangs	Object lang
- *	@param  int			$curx			X
- *	@param  int			$cury			Y
+ *	@param	PDF			&$pdf				Object PDF
+ *	@param	object		$object				Object
+ *	@param  Translate	$outputlangs		Object lang
+ *	@param  int			$posx				X
+ *	@param  int			$posy				Y
+ *	@param	float		$w					Width of cells. If 0, they extend up to the right margin of the page.
+ *	@param	float		$h					Cell minimum height. The cell extends automatically if needed.
+ *	@param	int			$align				Align
+ *	@param	string		$default_font_size	Font size
+ *	@param	HookManager	$hookmanager		Hook manager object
  *	@return	void
  */
-function pdf_writeLinkedObjects(&$pdf,$object,$outputlangs,$posx,$posy,$align,$default_font_size,$hookmanager=false)
+function pdf_writeLinkedObjects(&$pdf,$object,$outputlangs,$posx,$posy,$w,$h,$align,$default_font_size,$hookmanager=false)
 {
 	$linkedobjects = pdf_getLinkedObjects($object,$outputlangs,$hookmanager);
 	if (! empty($linkedobjects))
@@ -681,17 +712,17 @@ function pdf_writeLinkedObjects(&$pdf,$object,$outputlangs,$posx,$posy,$align,$d
 			$posy+=3;
 			$pdf->SetXY($posx,$posy);
 			$pdf->SetFont('','', $default_font_size - 2);
-			$pdf->MultiCell(100, 3, $linkedobject["ref_title"].' : '.$linkedobject["ref_value"], '', $align);
-			
+			$pdf->MultiCell($w, $h, $linkedobject["ref_title"].' : '.$linkedobject["ref_value"], '', $align);
+
 			if (! empty($linkedobject["date_title"]) && ! empty($linkedobject["date_value"]))
 			{
 				$posy+=3;
 				$pdf->SetXY($posx,$posy);
-				$pdf->MultiCell(100, 3, $linkedobject["date_title"].' : '.$linkedobject["date_value"], '', $align);
+				$pdf->MultiCell($w, $h, $linkedobject["date_title"].' : '.$linkedobject["date_value"], '', $align);
 			}
 		}
 	}
-	
+
 	return $pdf->getY();
 }
 
@@ -1292,13 +1323,13 @@ function pdf_getTotalQty($object,$type,$outputlangs,$hookmanager=false)
 function pdf_getCurrencySymbol(&$pdf, $currency_code)
 {
 	global $db, $form;
-	
+
 	$currency_sign = '';
-	
+
 	if (! is_object($form)) $form = new Form($db);
-	
+
 	$form->load_cache_currencies();
-	
+
 	if (is_array($form->cache_currencies[$currency_code]['unicode']) && ! empty($form->cache_currencies[$currency_code]['unicode']))
 	{
 		foreach($form->cache_currencies[$currency_code]['unicode'] as $unicode)
@@ -1310,13 +1341,13 @@ function pdf_getCurrencySymbol(&$pdf, $currency_code)
 	{
 		$currency_sign = $currency_code;
 	}
-	
+
 	return $currency_sign;
 }
 
 /**
  * 	Return linked objects
- * 
+ *
  * 	@param	object		$object			Object
  * 	@param	Translate	$outputlangs	Object lang for output
  *	@param	HookManager	$hookmanager	Hook manager instance
@@ -1325,7 +1356,7 @@ function pdf_getCurrencySymbol(&$pdf, $currency_code)
 function pdf_getLinkedObjects($object,$outputlangs,$hookmanager=false)
 {
 	$linkedobjects=array();
-	
+
 	$object->fetchObjectLinked();
 
 	foreach($object->linkedObjects as $objecttype => $objects)
@@ -1355,7 +1386,7 @@ function pdf_getLinkedObjects($object,$outputlangs,$hookmanager=false)
 			}
 		}
 	}
-	
+
 	// For add external linked objects
 	if (is_object($hookmanager))
 	{

@@ -216,6 +216,7 @@ OfficialWebSiteFr=lloc web oficial francòfon
 OfficialWiki=Wiki Dolibarr
 OfficialDemo=Demo en línia Dolibarr
 OfficialMarketPlace=Lloc oficial de mòduls complementaris i extensions
+OfficialWebHostingService=Servei oficial d'allotjament (SaaS)
 ForDocumentationSeeWiki=Per a la documentació d'usuari, desenvolupador o Preguntes Freqüents (FAQ), consulteu el wiki Dolibarr: <br><b><a href="%s" target="_blank">%s</a></b>
 ForAnswersSeeForum=Per altres qüestions o realitzar les seves pròpies consultes, pot utilitzar el fòrum Dolibarr: <br><b><a href="%s" target="_blank">%s</a></b>
 HelpCenterDesc1=Aquesta aplicació, independent de Dolibarr, us permet ajudar a obtenir un servei de suport de Dolibarr.
@@ -870,6 +871,7 @@ MAIN_PROXY_PASS=Contrasenya del servidor proxy
 DefineHereComplementaryAttributes=Definiu aquí la llista d'atributs addicionals, no disponibles a estàndard, i que vol gestionar per %s.
 ExtraFields=Atributs addicionals
 ExtraFieldHasWrongValue=L'atribut %s te un valor incorrecte.
+AlphaNumOnlyCharsAndNoSpace=només carateres alfanumèrics sense espais
 SendingMailSetup=Configuració de l'enviament per mail
 SendmailOptionNotComplete=Atenció, en alguns sistemes Linux, amb aquest mètode d'enviament, per poder enviar mails en nom seu, la configuració de sendmail ha de contenir l'opció <b>-ba</b> (paràmetre <b>mail.force_extra_parameters</b> a l'arxiu <b>php.ini</b>). Si alguns dels seus destinataris no reben els seus missatges, proveu de modificar aquest paràmetre PHP amb <b>mail.force_extra_parameters =-ba </b>.
 PathToDocuments=Rutes d'accés a documents

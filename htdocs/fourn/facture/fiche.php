@@ -1,6 +1,6 @@
 <?php
 /* Copyright (C) 2002-2005	Rodolphe Quiedeville	<rodolphe@quiedeville.org>
- * Copyright (C) 2004-2011	Laurent Destailleur 	<eldy@users.sourceforge.net>
+ * Copyright (C) 2004-2012	Laurent Destailleur 	<eldy@users.sourceforge.net>
  * Copyright (C) 2004		Christophe Combelles	<ccomb@free.fr>
  * Copyright (C) 2005		Marc Barilley		<marc@ocebo.fr>
  * Copyright (C) 2005-2012	Regis Houssin		<regis@dolibarr.fr>
@@ -168,7 +168,7 @@ elseif ($action == 'setlabel' && $user->rights->fournisseur->facture->creer)
     if ($result < 0) dol_print_error($db);
 }
 
-elseif ($action == 'setdate' && $user->rights->fournisseur->facture->creer)
+elseif ($action == 'setdatef' && $user->rights->fournisseur->facture->creer)
 {
     $object->fetch($id);
     $object->date=dol_mktime(12,0,0,$_POST['datefmonth'],$_POST['datefday'],$_POST['datefyear']);
@@ -316,7 +316,7 @@ elseif ($action == 'add' && $user->rights->fournisseur->facture->creer)
                             $date_end,
                             0,
                             $lines[$i]->info_bits,
-        					'HT',
+                            'HT',
                             $product_type
                         );
 
@@ -836,13 +836,13 @@ if (! empty($conf->global->MAIN_DISABLE_CONTACTS_TAB))
 	if ($action == 'addcontact' && $user->rights->fournisseur->facture->creer)
 	{
 		$result = $object->fetch($id);
-	
+
 		if ($result > 0 && $id > 0)
 		{
 			$contactid = (GETPOST('userid') ? GETPOST('userid') : GETPOST('contactid'));
 			$result = $result = $object->add_contact($contactid, $_POST["type"], $_POST["source"]);
 		}
-	
+
 		if ($result >= 0)
 		{
 			Header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
@@ -861,7 +861,7 @@ if (! empty($conf->global->MAIN_DISABLE_CONTACTS_TAB))
 			}
 		}
 	}
-	
+
 	// bascule du statut d'un contact
 	else if ($action == 'swapstatut' && $user->rights->fournisseur->facture->creer)
 	{
@@ -874,13 +874,13 @@ if (! empty($conf->global->MAIN_DISABLE_CONTACTS_TAB))
 			dol_print_error($db);
 		}
 	}
-	
+
 	// Efface un contact
 	else if ($action == 'deletecontact' && $user->rights->fournisseur->facture->creer)
 	{
 		$object->fetch($id);
 		$result = $object->delete_contact($_GET["lineid"]);
-	
+
 		if ($result >= 0)
 		{
 			Header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
@@ -1420,7 +1420,7 @@ else
         // Due date
         print '<tr><td>'.$form->editfieldkey("DateMaxPayment",'date_lim_reglement',$object->date_echeance,$object,($object->statut<2 && $user->rights->fournisseur->facture->creer && $object->getSommePaiement() <= 0),'datepicker').'</td><td colspan="3">';
         print $form->editfieldval("DateMaxPayment",'date_lim_reglement',$object->date_echeance,$object,($object->statut<2 && $user->rights->fournisseur->facture->creer && $object->getSommePaiement() <= 0),'datepicker');
-        if ((empty($action) || $action == 'view') && $object->date_echeance && $object->date_echeance < ($now - $conf->facture->fournisseur->warning_delay)) print img_warning($langs->trans('Late'));
+        if ((empty($action) || $action == 'view') && $object->statut < 2 && $object->date_echeance && $object->date_echeance < ($now - $conf->facture->fournisseur->warning_delay)) print img_warning($langs->trans('Late'));
         print '</td>';
 
         // Status
@@ -1480,18 +1480,18 @@ else
         }
 
         print '</table><br>';
-        
+
         if (! empty($conf->global->MAIN_DISABLE_CONTACTS_TAB))
         {
         	require_once(DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php');
         	require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
         	$formcompany= new FormCompany($db);
-        
+
         	$blocname = 'contacts';
         	$title = $langs->trans('ContactsAddresses');
         	include(DOL_DOCUMENT_ROOT.'/core/tpl/bloc_showhide.tpl.php');
         }
-        
+
         if (! empty($conf->global->MAIN_DISABLE_NOTES_TAB))
         {
         	$colwidth=20;
@@ -1936,6 +1936,8 @@ else
             $formmail->withcancel=1;
             // Tableau des substitutions
             $formmail->substit['__FACREF__']=$object->ref;
+            $formmail->substit['__SIGNATURE__']=$user->signature;
+            $formmail->substit['__PERSONALIZED__']='';
             // Tableau des parametres complementaires
             $formmail->param['action']='send';
             $formmail->param['models']='invoice_supplier_send';

@@ -209,7 +209,7 @@ class pdf_oursin extends ModelePDFFactures
 
 				$pdf->SetFillColor(220,220,220);
 				$pdf->SetFont('','', $default_font_size - 1);
-				$pdf->SetXY($this->marges['g'], $tab_top + $this->marges['g'] );
+				$pdf->SetXY($this->marges['g'], $tab_top + $this->marges['g']);
 
 				$iniY = $pdf->GetY();
 				$curY = $pdf->GetY();
@@ -260,7 +260,7 @@ class pdf_oursin extends ModelePDFFactures
 					$pdf->MultiCell(21, 3, $total_excl_tax, 0, 'R', 0);
 
 
-					if ($nexY > 200 && $i < $nblignes - 1)
+					if (($nexY > 200 && $i < $nblignes - 1) || (isset($object->lines[$i+1]->pagebreak) && $object->lines[$i+1]->pagebreak))
 					{
 						$this->_tableau($pdf, $tab_top, $tab_height, $nexY, $object, $outputlangs);
 						$nexY = $iniY;
@@ -356,13 +356,13 @@ class pdf_oursin extends ModelePDFFactures
 		$pdf->Rect($tab3_posx, $tab3_top-1, $tab3_width, $tab3_height);
 
 		$pdf->SetFont('','', $default_font_size - 4);
-		$pdf->SetXY($tab3_posx, $tab3_top-1 );
+		$pdf->SetXY($tab3_posx, $tab3_top-1);
 		$pdf->MultiCell(20, 4, $outputlangs->transnoentities("Payment"), 0, 'L', 0);
-		$pdf->SetXY($tab3_posx+21, $tab3_top-1 );
+		$pdf->SetXY($tab3_posx+21, $tab3_top-1);
 		$pdf->MultiCell(20, 4, $outputlangs->transnoentities("Amount"), 0, 'L', 0);
-		$pdf->SetXY($tab3_posx+40, $tab3_top-1 );
+		$pdf->SetXY($tab3_posx+40, $tab3_top-1);
 		$pdf->MultiCell(20, 4, $outputlangs->transnoentities("Type"), 0, 'L', 0);
-		$pdf->SetXY($tab3_posx+58, $tab3_top-1 );
+		$pdf->SetXY($tab3_posx+58, $tab3_top-1);
 		$pdf->MultiCell(20, 4, $outputlangs->transnoentities("Num"), 0, 'L', 0);
 
 		$y=0;
@@ -617,8 +617,7 @@ class pdf_oursin extends ModelePDFFactures
 		$pdf->SetFont('','', $default_font_size - 1);
 
 		// Tableau total
-		$col1x=$this->marges['g']+110; $col2x=$this->marges['g']+164;
-		$lltot = 200; $largcol2 = $lltot - $col2x;
+		$col1x=$this->marges['g']+110; $col2x=$this->marges['g']+164; $largcol2 = ($this->page_largeur - $this->marge_droite - $col2x);
 
 		$pdf->SetXY($this->marges['g'], $tab2_top + 0);
 
@@ -746,6 +745,7 @@ class pdf_oursin extends ModelePDFFactures
 	 *   @param		string		$tab_top		Top position of table
 	 *   @param		string		$tab_height		Height of table (rectangle)
 	 *   @param		int			$nexY			Y
+	 *   @param		Object		$object			Object
 	 *   @param		Translate	$outputlangs	Langs object
 	 *   @return	void
 	 */
@@ -834,9 +834,8 @@ class pdf_oursin extends ModelePDFFactures
 		{
 			if (is_readable($logo))
 			{
-				$taille=getimagesize($logo);
-				$length=$taille[0]/2.835;
-				$pdf->Image($logo, $this->marges['g'], $this->marges['h'], 0, 24);
+			    $height=pdf_getHeightForLogo($logo);
+				$pdf->Image($logo, $this->marges['g'], $this->marges['h'], 0, $height);	// width=0 (auto)
 			}
 			else
 			{
@@ -1004,7 +1003,7 @@ class pdf_oursin extends ModelePDFFactures
 		$posy+=1;
 
 		// Show list of linked objects
-		$posy = pdf_writeLinkedObjects($pdf, $object, $outputlangs, $posx, $posy, 'L', $default_font_size, $hookmanager);
+		$posy = pdf_writeLinkedObjects($pdf, $object, $outputlangs, $posx, $posy, 100, 3, 'L', $default_font_size, $hookmanager);
 
 		// Amount in (at tab_top - 1)
 		$pdf->SetTextColor(0,0,0);

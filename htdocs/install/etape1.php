@@ -43,10 +43,11 @@ $passroot=isset($_POST["db_pass_root"])?$_POST["db_pass_root"]:"";
 // Repertoire des pages dolibarr
 $main_dir=isset($_POST["main_dir"])?trim($_POST["main_dir"]):'';
 
-// Init "forced values" to nothing. "forced values" are used after an doliwamp install wizard.
+// Now we load forced value from install.forced.php file.
 $useforcedwizard=false;
-if (file_exists("./install.forced.php")) { $useforcedwizard=true; include_once("./install.forced.php"); }
-else if (file_exists("/etc/dolibarr/install.forced.php")) { $useforcedwizard=include_once("/etc/dolibarr/install.forced.php"); }
+$forcedfile="./install.forced.php";
+if ($conffile == "/etc/dolibarr/conf.php") $forcedfile="/etc/dolibarr/install.forced.php";
+if (@file_exists($forcedfile)) { $useforcedwizard=true; include_once($forcedfile); }
 
 dolibarr_install_syslog("--- etape1: Entering etape1.php page");
 
@@ -236,8 +237,8 @@ if (! $error && $db->connected)
 {
     if (! empty($_POST["db_create_database"]))	// If we create database, we force default value
     {
-        $defaultCharacterSet=$db->forcecharset;
-        $defaultCollationConnection=$db->forcecollate;
+    	$defaultCharacterSet=getStaticMember(get_class($db),'forcecharset');
+    	$defaultCollationConnection=getStaticMember(get_class($db),'forcecollate');
     }
     else	// If already created, we take current value
     {

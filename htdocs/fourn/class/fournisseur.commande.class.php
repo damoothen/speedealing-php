@@ -169,7 +169,7 @@ class CommandeFournisseur extends Commande
             $this->note_public			= $obj->note_public;
             $this->modelpdf				= $obj->model_pdf;
             
-            $this->extraparams			= (array) dol_json_decode($obj->extraparams, true);
+            $this->extraparams			= (array) json_decode($obj->extraparams, true);
 
             $this->db->free($resql);
 
@@ -1665,7 +1665,7 @@ class CommandeFournisseur extends Commande
     {
         global $conf, $user;
 
-        $now=gmmktime();
+        $now=dol_now();
 
         $this->nbtodo=$this->nbtodolate=0;
         $clause = " WHERE";

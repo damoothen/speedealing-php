@@ -74,9 +74,9 @@ Class pdf_expedition_merou extends ModelePdfExpedition
 	/**
 	 *	Fonction generant le document sur le disque
 	 *
-	 *	@param	    object			Objet expedition a generer (ou id si ancienne methode)
-	 *	@param		outputlangs		Lang output object
-	 * 	@return	    int     		1=ok, 0=ko
+	 *	@param	Object		&$object			Objet expedition a generer (ou id si ancienne methode)
+	 *	@param	Translate	$outputlangs	Lang output object
+	 * 	@return	int     					1=ok, 0=ko
 	 */
 	function write_file(&$object, $outputlangs)
 	{
@@ -382,7 +382,8 @@ Class pdf_expedition_merou extends ModelePdfExpedition
 		{
 			if (is_readable($logo))
 			{
-				$pdf->Image($logo,10, 5, 0, 22);
+			    $height=pdf_getHeightForLogo($logo);
+			    $pdf->Image($logo,10, 5, 0, $height);	// width=0 (auto)
 			}
 			else
 			{

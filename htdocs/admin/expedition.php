@@ -5,7 +5,8 @@
  * Copyright (C) 2004      Benoit Mortier       <benoit.mortier@opensides.be>
  * Copyright (C) 2004      Eric Seigne          <eric.seigne@ryxeo.com>
  * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
- * Copyright (C) 2011      Juanjo Menent	    <jmenent@2byte.es>
+ * Copyright (C) 2011-2012 Juanjo Menent	    <jmenent@2byte.es>
+ * Copyright (C) 2011-2012 Philippe Grand	    <philippe.grand@atoo-net.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,8 +38,8 @@ $langs->load("deliveries");
 
 if (!$user->admin) accessforbidden();
 
-$action=GETPOST("action");
-$value=GETPOST("value");
+$action=GETPOST('action','alpha');
+$value=GETPOST('value','alpha');
 
 if (empty($conf->global->EXPEDITION_ADDON_NUMBER))
 {
@@ -51,32 +52,40 @@ if (empty($conf->global->EXPEDITION_ADDON_NUMBER))
  */
 if ($action == 'specimen')
 {
-	$modele=GETPOST("module");
+	$modele=GETPOST('module','alpha');
 
 	$exp = new Expedition($db);
 	$exp->initAsSpecimen();
-	//$exp->fetch_commande();
 
-	// Charge le modele
-	$dir = "/core/modules/expedition/doc/";
-	$file = "pdf_expedition_".$modele.".modules.php";
-	$file = dol_buildpath($dir.$file);
-	if (file_exists($file))
+	// Search template files
+	$file=''; $classname=''; $filefound=0;
+	$dirmodels=array_merge(array('/'),(array) $conf->modules_parts['models']);
+	foreach($dirmodels as $reldir)
 	{
-		$classname = "pdf_expedition_".$modele;
+	    $file=dol_buildpath($reldir."core/modules/expedition/doc/pdf_".$modele.".modules.php",0);
+		if (file_exists($file))
+		{
+			$filefound=1;
+			$classname = "pdf_".$modele;
+			break;
+		}
+	}
+
+	if ($filefound)
+	{
 		require_once($file);
 
-		$obj = new $classname($db);
+		$module = new $classname($db);
 
-		if ($obj->write_file($exp,$langs) > 0)
+		if ($module->write_file($exp,$langs) > 0)
 		{
 			header("Location: ".DOL_URL_ROOT."/document.php?modulepart=expedition&file=SPECIMEN.pdf");
 			return;
 		}
 		else
 		{
-			$mesg='<font class="error">'.$obj->error.'</font>';
-			dol_syslog($obj->error, LOG_ERR);
+			$mesg='<font class="error">'.$module->error.'</font>';
+			dol_syslog($module->error, LOG_ERR);
 		}
 	}
 	else
@@ -89,8 +98,8 @@ if ($action == 'specimen')
 // Activate a model
 if ($action == 'set')
 {
-	$label = GETPOST("label");
-	$scandir = GETPOST("scandir");
+	$label = GETPOST('label','alpha');
+	$scandir = GETPOST('scandir','alpha');
 
 	$type='shipping';
     $sql = "INSERT INTO ".MAIN_DB_PREFIX."document_model (nom, type, entity, libelle, description)";
@@ -121,8 +130,8 @@ if ($action == 'del')
 // Set default model
 if ($action == 'setdoc')
 {
-	$label = GETPOST("label");
-	$scandir = GETPOST("scandir");
+	$label = GETPOST('label','alpha');
+	$scandir = GETPOST('scandir','alpha');
 
 	$db->begin();
 
@@ -158,9 +167,9 @@ if ($action == 'setdoc')
 // TODO A quoi servent les methode d'expedition ?
 if ($action == 'setmethod' || $action== 'setmod')
 {
-	$module=GETPOST("module");
-	$moduleid=GETPOST("moduleid");
-	$statut=GETPOST("statut");
+	$module=GETPOST('module','alpha');
+	$moduleid=GETPOST('moduleid','alpha');
+	$statut=GETPOST('statut','alpha');
 
 	require_once(DOL_DOCUMENT_ROOT."/core/modules/expedition/methode_expedition_$module.modules.php");
 
@@ -231,7 +240,7 @@ if ($action == 'setmod')
 	// TODO Verifier si module numerotation choisi peut etre active
 	// par appel methode canBeActivated
 
-	$module=GETPOST("module");
+	$module=GETPOST('module','alpha');
 
     dolibarr_set_const($db, "EXPEDITION_ADDON",$module,'chaine',0,'',$conf->entity);
 
@@ -239,8 +248,8 @@ if ($action == 'setmod')
 
 if ($action == 'updateMask')
 {
-	$maskconst=GETPOST("maskconstexpedition");
-	$maskvalue=GETPOST("maskexpedition");
+	$maskconst=GETPOST('maskconstexpedition','alpha');
+	$maskvalue=GETPOST('maskexpedition','alpha');
 	if ($maskconst) $res = dolibarr_set_const($db,$maskconst,$maskvalue,'chaine',0,'',$conf->entity);
 
 	if (! $res > 0) $error++;
@@ -262,7 +271,7 @@ if ($action == 'setmodel')
 
 if ($action == 'set_SHIPPING_DRAFT_WATERMARK')
 {
-	$draft=GETPOST("SHIPPING_DRAFT_WATERMARK");
+	$draft=GETPOST('SHIPPING_DRAFT_WATERMARK','alpha');
 	$res = dolibarr_set_const($db, "SHIPPING_DRAFT_WATERMARK",trim($draft),'chaine',0,'',$conf->entity);
 
 	if (! $res > 0) $error++;
@@ -279,7 +288,7 @@ if ($action == 'set_SHIPPING_DRAFT_WATERMARK')
 
 if ($action == 'set_SHIPPING_FREE_TEXT')
 {
-	$free=GETPOST("SHIPPING_FREE_TEXT");
+	$free=GETPOST('SHIPPING_FREE_TEXT','alpha');
 	$res = dolibarr_set_const($db, "SHIPPING_FREE_TEXT",$free,'chaine',0,'',$conf->entity);
 	if (! $res > 0) $error++;
 
@@ -298,8 +307,9 @@ if ($action == 'set_SHIPPING_FREE_TEXT')
  * View
  */
 
-$form=new Form($db);
+$dirmodels=array_merge(array('/'),(array) $conf->modules_parts['models']);
 
+$form=new Form($db);
 
 llxHeader("","");
 
@@ -349,9 +359,9 @@ print "</tr>\n";
 
 clearstatcache();
 
-foreach ($conf->file->dol_document_root as $dirroot)
+foreach ($dirmodels as $reldir)
 {
-	$dir = $dirroot . "/core/modules/expedition/";
+	$dir = dol_buildpath($reldir."core/modules/expedition/");
 
 	if (is_dir($dir))
 	{
@@ -362,9 +372,10 @@ foreach ($conf->file->dol_document_root as $dirroot)
 
 			while (($file = readdir($handle))!==false)
 			{
-				if (substr($file, 0, 15) == 'mod_expedition_' && substr($file, dol_strlen($file)-3, 3) == 'php')
+				if (preg_match('/^(mod_.*)\.php$/i',$file,$reg))
 				{
-					$file = substr($file, 0, dol_strlen($file)-4);
+					$file = $reg[1];
+					$classname = substr($file,4);
 
 					require_once(DOL_DOCUMENT_ROOT ."/core/modules/expedition/".$file.".php");
 
@@ -482,15 +493,14 @@ print "</tr>\n";
 
 clearstatcache();
 
-foreach ($conf->file->dol_document_root as $dirroot)
+$var=true;
+foreach ($dirmodels as $reldir)
 {
-	$dir = $dirroot . "/core/modules/expedition/doc/";
+	$dir = dol_buildpath($reldir."core/modules/expedition/doc/");
 
 	if (is_dir($dir))
 	{
 		$handle=opendir($dir);
-		$var=true;
-
 	    if (is_resource($handle))
 	    {
 	    	while (($file = readdir($handle))!==false)

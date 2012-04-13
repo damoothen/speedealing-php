@@ -120,7 +120,7 @@ class Form
      * @param	string	$value			Value to show/edit
      * @param	object	$object			Object
      * @param	boolean	$perm			Permission to allow button to edit parameter
-     * @param	string	$typeofdata		Type of data ('string' by default, 'email', 'numeric:99', 'text' or 'textarea:rows:cols', 'day' or 'datepicker', 'ckeditor:dolibarr_zzz:width:height:savemethod:1:rows:cols', 'select:xxx'...)
+     * @param	string	$typeofdata		Type of data ('string' by default, 'email', 'numeric:99', 'text' or 'textarea:rows:cols', 'day' or 'datepicker', 'ckeditor:dolibarr_zzz:width:height:savemethod:toolbarstartexpanded:rows:cols', 'select:xxx'...)
      * @param	string	$editvalue		When in edit mode, use this value as $value instead of value
      * @param	object	$extObject		External object
      * @param	string	$success		Success message
@@ -204,9 +204,13 @@ class Form
                 else if (preg_match('/^ckeditor/',$typeofdata))
                 {
                     $tmpcontent=dol_htmlentitiesbr($value);
-                    $firstline=preg_replace('/<br>.*/','',$tmpcontent);
-                    $firstline=preg_replace('/[\n\r].*/','',$firstline);
-                    $ret.=$firstline.((strlen($firstline) != strlen($tmpcontent))?'...':'');
+                    if (! empty($conf->global->MAIN_DISABLE_NOTES_TAB))
+                    {
+                        $firstline=preg_replace('/<br>.*/','',$tmpcontent);
+                        $firstline=preg_replace('/[\n\r].*/','',$firstline);
+                        $tmpcontent=$firstline.((strlen($firstline) != strlen($tmpcontent))?'...':'');
+                    }
+                    $ret.=$tmpcontent;
                 }
                 else $ret.=$value;
             }
@@ -389,7 +393,7 @@ class Form
      *	Show a text with a picto and a tooltip on picto
      *
      *	@param	string	$text				Text to show
-     *	@param  string	$htmltooltip     	Content of tooltip
+     *	@param  string	$htmltext	     	Content of tooltip
      *	@param	int		$direction			1=Icon is after text, -1=Icon is before text, 0=no icon
      * 	@param	string	$type				Type of picto (info, help, warning, superadmin...)
      *  @param  string	$extracss           Add a CSS style to td tags
@@ -651,7 +655,7 @@ class Form
      *	@param	int		$showempty		Add an empty field
      * 	@param	int		$showtype		Show third party type in combolist (customer, prospect or supplier)
      * 	@param	int		$forcecombo		Force to use combo box
-     	 @param	array	$event			Event options
+     *  @param	array	$event			Event options
      * 	@return	string					HTML string with
      */
     function select_company($selected='',$htmlname='socid',$filter='',$showempty=0, $showtype=0, $forcecombo=0, $event=array())
@@ -792,7 +796,7 @@ class Form
      *	@param	int		$socid      	Id ot third party or 0 for all
      *	@param  string	$selected   	Id contact pre-selectionne
      *	@param  string	$htmlname  	    Name of HTML field ('none' for a not editable field)
-     *	@param  int		$show_empty     0=no empty value, 1=add an empty value
+     *	@param  int		$showempty      0=no empty value, 1=add an empty value
      *	@param  string	$exclude        List of contacts id to exclude
      *	@param	string	$limitto		Disable answers that are not id in this array list
      *	@param	string	$showfunction   Add function into label
@@ -811,7 +815,7 @@ class Form
      *	@param	int		$socid      	Id ot third party or 0 for all
      *	@param  string	$selected   	Id contact pre-selectionne
      *	@param  string	$htmlname  	    Name of HTML field ('none' for a not editable field)
-     *	@param  int		$show_empty     0=no empty value, 1=add an empty value
+     *	@param  int		$showempty     	0=no empty value, 1=add an empty value
      *	@param  string	$exclude        List of contacts id to exclude
      *	@param	string	$limitto		Disable answers that are not id in this array list
      *	@param	string	$showfunction   Add function into label
@@ -822,9 +826,9 @@ class Form
     function selectcontacts($socid,$selected='',$htmlname='contactid',$showempty=0,$exclude='',$limitto='',$showfunction=0, $moreclass='', $options_only=false)
     {
         global $conf,$langs;
-        
+
         $langs->load('companies');
-        
+
         $out='';
 
         // On recherche les societes
@@ -901,7 +905,7 @@ class Form
             {
                 $out.= '</select>';
             }
-            
+
             $this->num = $num;
             return $out;
         }
@@ -1055,6 +1059,7 @@ class Form
      *  @param		int			$status					-1=Return all products, 0=Products not on sell, 1=Products on sell
      *  @param		int			$finished				2=all, 1=finished, 0=raw material
      *  @param		string		$selected_input_value	Value of preselected input text (with ajax)
+     *  @param		int			$hidelabel				Hide label
      *  @return		void
      */
     function select_produits($selected='',$htmlname='productid',$filtertype='',$limit=20,$price_level=0,$status=1,$finished=2,$selected_input_value='',$hidelabel=0)
@@ -1306,13 +1311,13 @@ class Form
      *	Return list of products for customer (in Ajax if Ajax activated or go to select_produits_fournisseurs_do)
      *
      *	@param	int		$socid			Id third party
-     *	@param  string	$selected        Preselected product
-     *	@param  string	$htmlname        Name of HTML Select
-     *  @param	string	$filtertype      Filter on product type (''=nofilter, 0=product, 1=service)
-     *	@param  string	$filtre          For a SQL filter
+     *	@param  string	$selected       Preselected product
+     *	@param  string	$htmlname       Name of HTML Select
+     *  @param	string	$filtertype     Filter on product type (''=nofilter, 0=product, 1=service)
+     *	@param  string	$filtre			For a SQL filter
      *	@return	void
      */
-    function select_produits_fournisseurs($socid,$selected='',$htmlname='productid',$filtertype='',$filtre)
+    function select_produits_fournisseurs($socid,$selected='',$htmlname='productid',$filtertype='',$filtre='')
     {
         global $langs,$conf;
         global $price_level, $status, $finished;
@@ -1333,15 +1338,15 @@ class Form
     /**
      *	Return list of suppliers products
      *
-     *	@param		socid   		Id societe fournisseur (0 pour aucun filtre)
-     *	@param      selected        Produit pre-selectionne
-     *	@param      htmlname        Nom de la zone select
-     *  @param		filtertype      Filter on product type (''=nofilter, 0=product, 1=service)
-     *	@param      filtre          Pour filtre sql
-     *	@param      filterkey       Filtre des produits
-     *  @param      status          -1=Return all products, 0=Products not on sell, 1=Products on sell
-     *  @param      disableout      Disable print output
-     *  @return     array           Array of keys for json
+     *	@param	int		$socid   		Id societe fournisseur (0 pour aucun filtre)
+     *	@param  int		$selected       Produit pre-selectionne
+     *	@param  string	$htmlname       Nom de la zone select
+     *  @param	string	$filtertype     Filter on product type (''=nofilter, 0=product, 1=service)
+     *	@param  string	$filtre         Pour filtre sql
+     *	@param  string	$filterkey      Filtre des produits
+     *  @param  int		$statut         -1=Return all products, 0=Products not on sell, 1=Products on sell
+     *  @param  int		$disableout     Disable print output
+     *  @return array           		Array of keys for json
      */
     function select_produits_fournisseurs_do($socid,$selected='',$htmlname='productid',$filtertype='',$filtre='',$filterkey='',$statut=-1,$disableout=0)
     {
@@ -1576,7 +1581,7 @@ class Form
      *    @param    int		$showempty         	Add an empty field
      *    @return	void
      */
-    function select_address($selected='', $socid, $htmlname='address_id',$showempty=0)
+    function select_address($selected, $socid, $htmlname='address_id',$showempty=0)
     {
         // On recherche les utilisateurs
         $sql = "SELECT a.rowid, a.label";
@@ -1764,7 +1769,7 @@ class Form
                 $tmparray[$obj->rowid]['label']=$label;
                 $i++;
             }
-            $this->cache_demand_reason=dol_sort_array($tmparray,'label', $order='asc');
+            $this->cache_demand_reason=dol_sort_array($tmparray, 'label', 'asc');
 
             unset($tmparray);
             return 1;
@@ -2064,6 +2069,7 @@ class Form
      *    @param    string	$select_name		HTML field name
      *    @param    int		$maxlength      	Maximum length for labels
      *    @param    int		$excludeafterid 	Exclude all categories after this leaf in category tree.
+     *    @return	void
      */
     function select_all_categories($type, $selected='', $select_name="", $maxlength=64, $excludeafterid=0)
     {
@@ -2112,6 +2118,7 @@ class Form
      * 	   @param	string		$selectedchoice		"" or "no" or "yes"
      * 	   @param	int			$useajax		   	0=No, 1=Yes, 2=Yes but submit page with &confirm=no if choice is No
      *     @param	int			$height          	Force height of box
+     *     @param	int			$width				Force width of box
      *     @return 	void
      */
     function form_confirm($page, $title, $question, $action, $formquestion='', $selectedchoice="", $useajax=0, $height=170, $width=500)
@@ -2130,6 +2137,7 @@ class Form
      * 	   @param  	string		$selectedchoice  	"" or "no" or "yes"
      * 	   @param  	int			$useajax		   	0=No, 1=Yes, 2=Yes but submit page with &confirm=no if choice is No, 'xxx'=preoutput confirm box with div id=dialog-confirm-xxx
      *     @param  	int			$height          	Force height of box
+     *     @param	int			$width				Force width of bow
      *     @return 	string      	    			'ajax' if a confirm ajax popup is shown, 'html' if it's an html form
      */
     function formconfirm($page, $title, $question, $action, $formquestion='', $selectedchoice="", $useajax=0, $height=170, $width=500)
@@ -2493,7 +2501,7 @@ class Form
      *    @param    string		$htmlname    Name of input html field
      *    @return	void
      */
-    function form_date($page, $selected='', $htmlname)
+    function form_date($page, $selected, $htmlname)
     {
         global $langs;
 
@@ -2606,7 +2614,7 @@ class Form
      *
      *  @param  string	$page        	Page URL where form is shown
      *  @param  int		$selected    	Value pre-selected
-     *	@param  string	$htmlname    	Nom du formulaire select. Si none, non modifiable
+     *	@param  string	$htmlname    	Nom du formulaire select. Si 'none', non modifiable. Example 'remise_id'.
      *	@param	int		$socid			Third party id
      * 	@param	float	$amount			Total amount available
      * 	@param	string	$filter			SQL filter on discounts
@@ -2614,7 +2622,7 @@ class Form
      *  @param  string	$more           More string to add
      *  @return	void
      */
-    function form_remise_dispo($page, $selected='', $htmlname='remise_id', $socid, $amount, $filter='', $maxvalue=0, $more='')
+    function form_remise_dispo($page, $selected, $htmlname, $socid, $amount, $filter='', $maxvalue=0, $more='')
     {
         global $conf,$langs;
         if ($htmlname != "none")
@@ -2666,9 +2674,10 @@ class Form
     /**
      *    Affiche formulaire de selection des contacts
      *
-     *    @param	string	$page        Page
-     *    @param    int		$selected    Id contact pre-selectionne
-     *    @param    string	$htmlname    Nom du formulaire select
+     *    @param	string	$page        	Page
+     *    @param	Societe	$societe		Third party
+     *    @param    int		$selected    	Id contact pre-selectionne
+     *    @param    string	$htmlname    	Nom du formulaire select
      *    @return	void
      */
     function form_contacts($page, $societe, $selected='', $htmlname='contactidp')
@@ -2728,7 +2737,7 @@ class Form
             print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
             print '<table class="nobordernopadding" cellpadding="0" cellspacing="0">';
             print '<tr><td>';
-            print $this->select_company($selected , $htmlname);
+            print $this->select_company($selected, $htmlname);
             print '</td>';
             print '<td align="left"><input type="submit" class="button" value="'.$langs->trans("Modify").'"></td>';
             print '</tr></table></form>';
@@ -2791,7 +2800,7 @@ class Form
 
     			// Si traduction existe, on l'utilise, sinon on prend le libelle par defaut
     			$this->cache_currencies[$obj->code_iso]['label'] = ($obj->code_iso && $langs->trans("Currency".$obj->code_iso)!="Currency".$obj->code_iso?$langs->trans("Currency".$obj->code_iso):($obj->label!='-'?$obj->label:''));
-    			$this->cache_currencies[$obj->code_iso]['unicode'] = (array) dol_json_decode($obj->unicode, true);
+    			$this->cache_currencies[$obj->code_iso]['unicode'] = (array) json_decode($obj->unicode, true);
     			$label[$obj->code_iso] = $this->cache_currencies[$obj->code_iso]['label'];
     			$i++;
     		}
@@ -2855,7 +2864,7 @@ class Form
      *  @param  Societe	$societe_acheteuse  Object societe acheteuse
      *  @param  int		$idprod             Id product
      *  @param  int		$info_bits          Miscellaneous information on line
-     *  @param  type               			''=Unknown, 0=Product, 1=Service (Used if idprod not defined)
+     *  @param  string	$type      			''=Unknown, 0=Product, 1=Service (Used if idprod not defined)
      *  						            Si vendeur non assujeti a TVA, TVA par defaut=0. Fin de regle.
      *              						Si le (pays vendeur = pays acheteur) alors la TVA par defaut=TVA du produit vendu. Fin de regle.
      *              						Si (vendeur et acheteur dans Communaute europeenne) et bien vendu = moyen de transports neuf (auto, bateau, avion), TVA par defaut=0 (La TVA doit etre paye par l'acheteur au centre d'impots de son pays et non au vendeur). Fin de regle.
@@ -2872,11 +2881,13 @@ class Form
     /**
      *	Load into the cache vat rates of a country
      *
-     *	@param		string		Country code
-     *	@return		int			Nb of loaded lines, 0 if already loaded, <0 if KO
+     *	@param	string	$country_code		Country code
+     *	@return	int							Nb of loaded lines, 0 if already loaded, <0 if KO
      */
     function load_cache_vatrates($country_code)
     {
+    	global $langs;
+    	
     	if (count($this->cache_vatrates)) return 0;    // Cache deja charge
 
     	$sql  = "SELECT DISTINCT t.taux, t.recuperableonly";
@@ -3048,7 +3059,7 @@ class Form
         {
             $return.= $this->error;
         }
-        
+
         $this->num = $num;
         return $return;
     }
@@ -3380,6 +3391,8 @@ class Form
     function selectarray($htmlname, $array, $id='', $show_empty=0, $key_in_label=0, $value_as_key=0, $option='', $translate=0, $maxlen=0, $disabled=0)
     {
         global $langs;
+        
+        if ($value_as_key) $array=array_combine($array, $array);
 
         $out='<select id="'.$htmlname.'" '.($disabled?'disabled="disabled" ':'').'class="flat" name="'.$htmlname.'" '.($option != ''?$option:'').'>';
 
@@ -3392,30 +3405,28 @@ class Form
         {
             foreach($array as $key => $value)
             {
-                $out.='<option value="'.($value_as_key?$value:$key).'"';
+                $out.='<option value="'.$key.'"';
                 // Si il faut pre-selectionner une valeur
-                if ($id != '' && ($id == $key || $id == $value))
+                if ($id != '' && $id == $key)
                 {
                     $out.=' selected="selected"';
                 }
 
                 $out.='>';
-
+                
+                $newval=($translate?$langs->trans(ucfirst($value)):$value);
                 if ($key_in_label)
                 {
-                    $newval=($translate?$langs->trans($value):$value);
                     $selectOptionValue = dol_htmlentitiesbr($key.' - '.($maxlen?dol_trunc($newval,$maxlen):$newval));
-                    $out.=$selectOptionValue;
                 }
                 else
                 {
-                    $newval=($translate?$langs->trans($value):$value);
                     $selectOptionValue = dol_htmlentitiesbr($maxlen?dol_trunc($newval,$maxlen):$newval);
                     if ($value == '' || $value == '-') {
                         $selectOptionValue='&nbsp;';
                     }
-                    $out.=$selectOptionValue;
                 }
+                $out.=$selectOptionValue;
                 $out.="</option>\n";
             }
         }
@@ -3423,12 +3434,87 @@ class Form
         $out.="</select>";
         return $out;
     }
+    
+    /**
+     *	Show a multiselect form from an array.
+     *
+     *	@param	string	$htmlname		Name of select
+     *	@param	array	$array			Array with key+value
+     *	@param	array	$selected		Preselected keys
+     *	@param	int		$key_in_label   1 pour afficher la key dans la valeur "[key] value"
+     *	@param	int		$value_as_key   1 to use value as key
+     *	@param  string	$option         Valeur de l'option en fonction du type choisi
+     *	@param  int		$translate		Translate and encode value
+     *	@return	string					HTML multiselect string
+     */
+    function multiselectarray($htmlname, $array, $selected=array(), $key_in_label=0, $value_as_key=0, $option='', $translate=0)
+    {
+    	global $conf, $langs;
+
+    	$out = '<select id="'.$htmlname.'" class="multiselect" multiple="multiple" name="'.$htmlname.'[]"'.$option.'>'."\n";
+    	if (is_array($array) && ! empty($array))
+    	{
+    		if ($value_as_key) $array=array_combine($array, $array);
+
+    		if (! empty($conf->global->MAIN_USE_JQUERY_MULTISELECT) && is_array($selected) && ! empty($selected))
+    		{
+    			foreach ($selected as $selected_value)
+    			{
+    				foreach($array as $key => $value)
+    				{
+    					if ($selected_value == $key)
+    					{
+    						$value=$array[$selected_value];
+    						$out.= '<option value="'.$key.'" selected="selected">';
+    						$newval = ($translate ? $langs->trans(ucfirst($value)) : $value);
+    						$newval = ($key_in_label ? $key.' - '.$newval : $newval);
+    						$out.= dol_htmlentitiesbr($newval);
+    						$out.= '</option>'."\n";
+    						unset($array[$key]);
+    					}
+    				}
+    			}
+    			
+    			if (! empty($array))
+    			{
+    				foreach ($array as $key => $value)
+    				{
+    					$out.= '<option value="'.$key.'">';
+    					$newval = ($translate ? $langs->trans(ucfirst($value)) : $value);
+    					$newval = ($key_in_label ? $key.' - '.$newval : $newval);
+    					$out.= dol_htmlentitiesbr($newval);
+    					$out.= '</option>'."\n";
+    				}
+    			}
+    		}
+    		else
+    		{
+    			foreach ($array as $key => $value)
+    			{
+    				$out.= '<option value="'.$key.'"';
+    				if (is_array($selected) && ! empty($selected) && in_array($key, $selected))
+    				{
+    					$out.= ' selected="selected"';
+    				}
+    				$out.= '>';
+    				 
+    				$newval = ($translate ? $langs->trans(ucfirst($value)) : $value);
+    				$newval = ($key_in_label ? $key.' - '.$newval : $newval);
+    				$out.= dol_htmlentitiesbr($newval);
+    				$out.= '</option>'."\n";
+    			}
+    		}
+    	}
+    	$out.= '</select>'."\n";
+    
+    	return $out;
+    }
 
 
     /**
      *	Return an html string with a select combo box to choose yes or no
      *
-     *	@param	string	$name			Name of html select field
+     *	@param	string	$htmlname		Name of html select field
      *	@param	string	$value			Pre-selected value
      *	@param	int		$option			0 return yes/no, 1 return 1/0
      *	@param	bool	$disabled		true or false
@@ -3607,7 +3693,7 @@ class Form
 
         if ($modulepart=='societe')
         {
-            $dir=$conf->societe->dir_output;
+            $dir=$conf->societe->multidir_output[$object->entity];
             $smallfile=$object->logo;
             $smallfile=preg_replace('/(\.png|\.gif|\.jpg|\.jpeg|\.bmp)/i','_small\\1',$smallfile);
             if ($object->logo) $file=$object->id.'/logos/thumbs/'.$smallfile;
@@ -3633,14 +3719,14 @@ class Form
             if ($file && file_exists($dir."/".$file))
             {
                 // TODO Link to large image
-                $ret.='<a href="'.DOL_URL_ROOT.'/viewimage.php?modulepart='.$modulepart.'&file='.urlencode($file).'&cache='.$cache.'">';
-                $ret.='<img alt="Photo" id="photologo'.(preg_replace('/[^a-z]/i','_',$file)).'" class="photologo" border="0" width="'.$width.'" src="'.DOL_URL_ROOT.'/viewimage.php?modulepart='.$modulepart.'&file='.urlencode($file).'&cache='.$cache.'">';
+                $ret.='<a href="'.DOL_URL_ROOT.'/viewimage.php?modulepart='.$modulepart.'&entity='.$object->entity.'&file='.urlencode($file).'&cache='.$cache.'">';
+                $ret.='<img alt="Photo" id="photologo'.(preg_replace('/[^a-z]/i','_',$file)).'" class="photologo" border="0" width="'.$width.'" src="'.DOL_URL_ROOT.'/viewimage.php?modulepart='.$modulepart.'&entity='.$object->entity.'&file='.urlencode($file).'&cache='.$cache.'">';
                 $ret.='</a>';
             }
             else if ($altfile && file_exists($dir."/".$altfile))
             {
-                $ret.='<a href="'.DOL_URL_ROOT.'/viewimage.php?modulepart='.$modulepart.'&file='.urlencode($file).'&cache='.$cache.'">';
-                $ret.='<img alt="Photo alt" id="photologo'.(preg_replace('/[^a-z]/i','_',$file)).'" class="photologo" border="0" width="'.$width.'" src="'.DOL_URL_ROOT.'/viewimage.php?modulepart='.$modulepart.'&file='.urlencode($altfile).'&cache='.$cache.'">';
+                $ret.='<a href="'.DOL_URL_ROOT.'/viewimage.php?modulepart='.$modulepart.'&entity='.$object->entity.'&file='.urlencode($file).'&cache='.$cache.'">';
+                $ret.='<img alt="Photo alt" id="photologo'.(preg_replace('/[^a-z]/i','_',$file)).'" class="photologo" border="0" width="'.$width.'" src="'.DOL_URL_ROOT.'/viewimage.php?modulepart='.$modulepart.'&entity='.$object->entity.'&file='.urlencode($altfile).'&cache='.$cache.'">';
                 $ret.='</a>';
             }
             else
@@ -3649,7 +3735,7 @@ class Form
                 {
                     global $dolibarr_main_url_root;
                     $ret.='<!-- Put link to gravatar -->';
-                    $ret.='<img alt="Photo found on Gravatar" title="Photo Gravatar.com - email '.$email.'" border="0" width="'.$width.'" src="http://www.gravatar.com/avatar/'.dol_hash($email).'?s='.$width.'&d='.urlencode( dol_buildpath('/theme/common/nophoto.jpg',2) ).'">';
+                    $ret.='<img alt="Photo found on Gravatar" title="Photo Gravatar.com - email '.$email.'" border="0" width="'.$width.'" src="http://www.gravatar.com/avatar/'.dol_hash($email).'?s='.$width.'&d='.urlencode(dol_buildpath('/theme/common/nophoto.jpg',2)).'">';
                 }
                 else
                 {

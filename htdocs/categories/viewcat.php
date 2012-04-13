@@ -2,8 +2,8 @@
 /* Copyright (C) 2005      Matthieu Valleton	<mv@seeschloss.org>
  * Copyright (C) 2006-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2007      Patrick Raguin		<patrick.raguin@gmail.com>
- * Copyright (C) 2005-2011 Regis Houssin		<regis@dolibarr.fr>
- * Copyright (C) 2010-2011 Herve Prot   	  	<herve.prot@symeos.com>
+ * Copyright (C) 2005-2012 Regis Houssin		<regis@dolibarr.fr>
+ * Copyright (C) 2010-2012 Herve Prot   	  	<herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@ if ($id == "")
 }
 
 // Security check
-$result = restrictedArea($user, 'categorie', $id);
+$result = restrictedArea($user, 'categorie', $id, '&category');
 
 $object = new Categorie($db);
 $result=$object->fetch($id);
@@ -334,7 +334,7 @@ if ($object->type == 3)
 {
 	require_once(DOL_DOCUMENT_ROOT."/adherents/class/adherent.class.php");
 
-	$prods = $object->get_type("member","Adherent");
+	$prods = $object->get_type("member","Adherent","","adherent");
 	if ($prods < 0)
 	{
 		dol_print_error($db,$object->error);
@@ -409,7 +409,7 @@ if ($object->type == 5)
                 print "</table>\n";
         }
 }
-$db->close();
 
 llxFooter();
+$db->close();
 ?>

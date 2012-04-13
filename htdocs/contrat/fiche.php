@@ -493,13 +493,13 @@ if (! empty($conf->global->MAIN_DISABLE_CONTACTS_TAB))
 	if ($action == 'addcontact' && $user->rights->contrat->creer)
 	{
 		$result = $object->fetch($id);
-	
+
 		if ($result > 0 && $id > 0)
 		{
 			$contactid = (GETPOST('userid') ? GETPOST('userid') : GETPOST('contactid'));
 			$result = $result = $object->add_contact($contactid, $_POST["type"], $_POST["source"]);
 		}
-	
+
 		if ($result >= 0)
 		{
 			Header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
@@ -807,7 +807,7 @@ else
         }
 
         dol_htmloutput_errors($mesg,'');
-        
+
         $object->fetch_thirdparty();
 
         $nbofservices=count($object->lines);
@@ -950,7 +950,14 @@ else
         	$title = $langs->trans('Notes');
         	include(DOL_DOCUMENT_ROOT.'/core/tpl/bloc_showhide.tpl.php');
         }
-        
+
+        if (! empty($conf->global->MAIN_DISABLE_NOTES_TAB))
+        {
+        	$blocname = 'notes';
+        	$title = $langs->trans('Notes');
+        	include(DOL_DOCUMENT_ROOT.'/core/tpl/bloc_showhide.tpl.php');
+        }
+
 
         $servicepos=(isset($_REQUEST["servicepos"])?$_REQUEST["servicepos"]:1);
         $colorb='666666';
@@ -960,9 +967,10 @@ else
         /*
          * Lines of contracts
          */
-        
+        $productstatic=new Product($db);
+
         // TODO move css and DAO
-        
+
         // Title line for service
         print '<table class="notopnoleft allwidth">';	// Array with (n*2)+1 lines
         $cursorline=1;
@@ -1229,9 +1237,9 @@ else
                 {
                     if ($object->statut > 0 && $action != 'activateline' && $action != 'unactivateline')
                     {
-                        $action='activateline';
-                        if ($objp->statut == 4) $action='unactivateline';
-                        print '<a href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;ligne='.$object->lines[$cursorline-1]->id.'&amp;action='.$action.'">';
+                        $tmpaction='activateline';
+                        if ($objp->statut == 4) $tmpaction='unactivateline';
+                        print '<a href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&amp;ligne='.$object->lines[$cursorline-1]->id.'&amp;action='.$tmpaction.'">';
                         print img_edit();
                         print '</a>';
                     }

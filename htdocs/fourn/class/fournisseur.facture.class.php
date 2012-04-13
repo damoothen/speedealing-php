@@ -78,7 +78,7 @@ class FactureFournisseur extends Facture
 
     var $lines;
     var $fournisseur;
-    
+
     var $extraparams=array();
 
 
@@ -194,7 +194,7 @@ class FactureFournisseur extends Facture
                         $this->lines[$i]->localtax2_tx,
                         $this->lines[$i]->qty,
                         $this->lines[$i]->fk_product,
-    					'HT',
+                        'HT',
                         $this->lines[$i]->info_bits,
                         $this->lines[$i]->product_type
                     );
@@ -345,8 +345,8 @@ class FactureFournisseur extends Facture
                 $this->note_public			= $obj->note_public;
                 $this->model_pdf			= $obj->model_pdf;
                 $this->import_key			= $obj->import_key;
-                
-                $this->extraparams			= (array) dol_json_decode($obj->extraparams, true);
+
+                $this->extraparams			= (array) json_decode($obj->extraparams, true);
 
                 $this->socid  = $obj->socid;
                 $this->socnom = $obj->socnom;
@@ -1166,7 +1166,7 @@ class FactureFournisseur extends Facture
     {
         global $conf, $user;
 
-        $now=gmmktime();
+        $now=dol_now();
 
         $this->nbtodo=$this->nbtodolate=0;
         $sql = 'SELECT ff.rowid, ff.date_lim_reglement as datefin';

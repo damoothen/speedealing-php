@@ -1,6 +1,6 @@
 <?php
 /* Copyright (C) 2005      Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2005-2009 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2005-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,15 +20,14 @@
 /**
  *	\file       htdocs/comm/mailing/class/mailing.class.php
  *	\ingroup    mailing
- *	\brief      Fichier de la classe de gestion des mailings
+ *	\brief      File of class to manage emailings module
  */
 
 require_once(DOL_DOCUMENT_ROOT ."/core/class/commonobject.class.php");
 
 
 /**
- *	\class      Mailing
- *	\brief      Classe permettant la gestion des mailings
+ *	Class to manage emailings module
  */
 class Mailing extends CommonObject
 {
@@ -77,9 +76,10 @@ class Mailing extends CommonObject
 	}
 
 	/**
-	 *    \brief      Create an EMailing
-	 *    \param      user 		Object of user making creation
-	 *    \return     -1 if error, Id of created object if OK
+	 *  Create an EMailing
+	 *
+	 *  @param	User	$user 		Object of user making creation
+	 *  @return int	   				-1 if error, Id of created object if OK
 	 */
 	function create($user)
 	{
@@ -133,9 +133,10 @@ class Mailing extends CommonObject
 	}
 
 	/**
-	 *    \brief      Update emailing record
-	 *    \param      user 		Object of user making change
-	 *    \return     < 0 if KO, > 0 if OK
+	 *  Update emailing record
+	 *
+	 *  @param	User	$user 		Object of user making change
+	 *  @return int				    < 0 if KO, > 0 if OK
 	 */
 	function update($user)
 	{
@@ -165,9 +166,10 @@ class Mailing extends CommonObject
 	}
 
 	/**
-	 *		\brief      Get object from database
-	 *		\param      rowid       id du mailing
-	 *		\return		int
+	 *	Get object from database
+	 *
+	 *	@param	int		$rowid      Id of emailing
+	 *	@return	int					<0 if KO, >0 if OK
 	 */
 	function fetch($rowid)
 	{
@@ -227,9 +229,12 @@ class Mailing extends CommonObject
 
 
 	/**
-	 *		\brief      Load an object from its id and create a new one in database
-	 *		\param      fromid     	Id of object to clone
-	 *		\return		int			New id of clone
+	 *	Load an object from its id and create a new one in database
+	 *
+	 *	@param  int		$fromid     	Id of object to clone
+	 *	@param	int		$option1		1=Copy content, 0=Forget content
+	 *	@param	int		$option2		Not used
+	 *	@return	int						New id of clone
 	 */
 	function createFromClone($fromid,$option1,$option2)
 	{
@@ -247,14 +252,13 @@ class Mailing extends CommonObject
 		$object->statut=0;
 
 		// Clear fields
-		$object->titre=$langs->trans("CopyOf").' '.$object->titre;
+		$object->titre=$langs->trans("CopyOf").' '.$object->titre.' '.dol_print_date(dol_now());
 
 		// If no option copy content
 		if (empty($option1))
 		{
 			// Clear values
 			$object->nbemail            = 0;
-			$object->titre              = $langs->trans("Draft").' '.mktime();
 			$object->sujet              = '';
 			$object->body               = '';
 			$object->bgcolor            = '';
@@ -303,14 +307,17 @@ class Mailing extends CommonObject
 	}
 
 	/**
-	 *    	\brief     	Validate emailing
-	 *    	\param     	user      	Objet user qui valide
-	 * 		\return		int			<0 if KO, >0 if OK
+	 *  Validate emailing
+	 *
+	 *  @param	User	$user      	Objet user qui valide
+	 * 	@return	int					<0 if KO, >0 if OK
 	 */
 	function valid($user)
 	{
+		$now=dol_now();
+
 		$sql = "UPDATE ".MAIN_DB_PREFIX."mailing ";
-		$sql .= " SET statut = 1, date_valid = ".$this->db->idate(gmmktime()).", fk_user_valid=".$user->id;
+		$sql .= " SET statut = 1, date_valid = ".$this->db->idate($now).", fk_user_valid=".$user->id;
 		$sql .= " WHERE rowid = ".$this->id;
 
 		dol_syslog("Mailing::valid sql=".$sql, LOG_DEBUG);
@@ -328,9 +335,10 @@ class Mailing extends CommonObject
 
 
 	/**
-	 *    \brief      Delete emailing
-	 *    \param      rowid       id du mailing a supprimer
-	 *    \return     int         1 en cas de succes
+	 *  Delete emailing
+	 *
+	 *  @param	int		$rowid      id du mailing a supprimer
+	 *  @return int         		1 en cas de succes
 	 */
 	function delete($rowid)
 	{
@@ -353,9 +361,10 @@ class Mailing extends CommonObject
 
 
 	/**
-	 *    	\brief      Change status of each recipient
-	 *		\param     	user      	Objet user qui valide
-	 *    	\return     int         <0 if KO, >0 if OK
+	 *  Change status of each recipient
+	 *
+	 *	@param	User	$user      	Objet user qui valide
+	 *  @return int         		<0 if KO, >0 if OK
 	 */
 	function reset_targets_status($user)
 	{
@@ -379,9 +388,10 @@ class Mailing extends CommonObject
 
 
 	/**
-	 *    \brief      Retourne le libelle du statut d'un mailing (brouillon, validee, ...
-	 *    \param      mode          0=libelle long, 1=libelle court, 2=Picto + Libelle court, 3=Picto, 4=Picto + Libelle long
-	 *    \return     string        Libelle
+	 *  Retourne le libelle du statut d'un mailing (brouillon, validee, ...
+	 *
+	 *  @param	int		$mode          	0=libelle long, 1=libelle court, 2=Picto + Libelle court, 3=Picto, 4=Picto + Libelle long
+	 *  @return string        			Label
 	 */
 	function getLibStatut($mode=0)
 	{
@@ -389,10 +399,11 @@ class Mailing extends CommonObject
 	}
 
 	/**
-	 *    	\brief      Renvoi le libelle d'un statut donn�
-	 *    	\param      statut        	Id statut
-	 *    	\param      mode          	0=libelle long, 1=libelle court, 2=Picto + Libelle court, 3=Picto, 4=Picto + Libelle long, 5=Libelle court + Picto
-	 *    	\return     string        	Libelle du statut
+	 *  Renvoi le libelle d'un statut donne
+	 *
+	 *  @param	int		$statut        	Id statut
+	 *  @param  int		$mode          	0=libelle long, 1=libelle court, 2=Picto + Libelle court, 3=Picto, 4=Picto + Libelle long, 5=Libelle court + Picto
+	 *  @return string        			Label
 	 */
 	function LibStatut($statut,$mode=0)
 	{

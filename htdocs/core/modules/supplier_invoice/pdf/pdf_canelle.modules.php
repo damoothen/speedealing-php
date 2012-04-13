@@ -1,6 +1,6 @@
 <?php
 /* Copyright (C) 2010-2011      Juanjo Menent        <jmenent@2byte.es>
- * Copyright (C) 2010      		Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2010-2012 		Laurent Destailleur  <eldy@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,8 +31,7 @@ require_once(DOL_DOCUMENT_ROOT.'/core/lib/pdf.lib.php');
 
 
 /**
- *	\class      pdf_canelle
- *	\brief      Class to generate the supplier invoices with the canelle model
+ *	Class to generate the supplier invoices with the canelle model
  */
 class pdf_canelle extends ModelePDFSuppliersInvoices
 {
@@ -114,10 +113,11 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 
 
 	/**
-     *      Write the invoice as a document onto disk
-     *      @param      object          Object invoice to build (or id if old method)
-     *      @param      outputlangs     Lang object for output language
-     *      @return     int             1=OK, 0=KO
+     *  Build document onto disk
+     *
+     *  @param	Object		$object         Object invoice to build (or id if old method)
+     *  @param  Translate	$outputlangs    Lang object for output language
+     *  @return int             			1=OK, 0=KO
 	 */
 	function write_file($object,$outputlangs='')
 	{
@@ -228,8 +228,7 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 					$tab_top = 88;
 
 					$pdf->SetFont('','', $default_font_size - 1);   // Dans boucle pour gerer multi-page
-					$pdf->SetXY($this->posxdesc-1, $tab_top);
-					$pdf->MultiCell(190, 3, $outputlangs->convToOutputCharset($object->note_public), 0, 'L');
+					$pdf->writeHTMLCell(190, 3, $this->posxdesc-1, $tab_top, $outputlangs->convToOutputCharset($object->note_public), 0, 1);
 					$nexY = $pdf->GetY();
 					$height_note=$nexY-$tab_top;
 
@@ -456,7 +455,7 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 		}
 
 		// Tableau total
-		$lltot = 200; $col1x = 120; $col2x = 170; $largcol2 = $lltot - $col2x;
+		$col1x = 120; $col2x = 170; $largcol2 = ($this->page_largeur - $this->marge_droite - $col2x);
 
 		// Total HT
 		$pdf->SetFillColor(255,255,255);
@@ -712,13 +711,13 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 		$pdf->line($tab3_posx, $tab3_top-1+$tab3_height, $tab3_posx+$tab3_width, $tab3_top-1+$tab3_height);
 
 		$pdf->SetFont('','', $default_font_size - 4);
-		$pdf->SetXY($tab3_posx, $tab3_top );
+		$pdf->SetXY($tab3_posx, $tab3_top);
 		$pdf->MultiCell(20, 3, $outputlangs->transnoentities("Payment"), 0, 'L', 0);
-		$pdf->SetXY($tab3_posx+21, $tab3_top );
+		$pdf->SetXY($tab3_posx+21, $tab3_top);
 		$pdf->MultiCell(20, 3, $outputlangs->transnoentities("Amount"), 0, 'L', 0);
-		$pdf->SetXY($tab3_posx+40, $tab3_top );
+		$pdf->SetXY($tab3_posx+40, $tab3_top);
 		$pdf->MultiCell(20, 3, $outputlangs->transnoentities("Type"), 0, 'L', 0);
-		$pdf->SetXY($tab3_posx+58, $tab3_top );
+		$pdf->SetXY($tab3_posx+58, $tab3_top);
 		$pdf->MultiCell(20, 3, $outputlangs->transnoentities("Num"), 0, 'L', 0);
 
 		$y=0;
@@ -741,7 +740,7 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 			    $y+=3;
 				$row = $this->db->fetch_object($resql);
 
-				$pdf->SetXY($tab3_posx, $tab3_top+$y );
+				$pdf->SetXY($tab3_posx, $tab3_top+$y);
 				$pdf->MultiCell(20, 3, dol_print_date($this->db->jdate($row->date),'day',false,$outputlangs,true), 0, 'L', 0);
 				$pdf->SetXY($tab3_posx+21, $tab3_top+$y);
 				$pdf->MultiCell(20, 3, price($row->amount), 0, 'L', 0);
@@ -752,7 +751,7 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 				$pdf->SetXY($tab3_posx+58, $tab3_top+$y);
 				$pdf->MultiCell(30, 3, $row->num, 0, 'L', 0);
 
-				$pdf->line($tab3_posx, $tab3_top+$y+3, $tab3_posx+$tab3_width, $tab3_top+$y+3 );
+				$pdf->line($tab3_posx, $tab3_top+$y+3, $tab3_posx+$tab3_width, $tab3_top+$y+3);
 
 				$i++;
 			}
@@ -804,7 +803,8 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 		{
 			if (is_readable($logo))
 			{
-				$pdf->Image($logo, $this->marge_gauche, $posy, 0, 24);
+			    $height=pdf_getHeightForLogo($logo);
+			    $pdf->Image($logo, $this->marge_gauche, $posy, 0, $height);	// width=0 (auto)
 			}
 			else
 			{
@@ -825,6 +825,13 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 		$pdf->SetTextColor(0,0,60);
 		$pdf->MultiCell(100, 4, $outputlangs->transnoentities("SupplierInvoice")." ".$outputlangs->convToOutputCharset($object->ref), '', 'R');
 		$pdf->SetFont('','', $default_font_size + 2);
+
+		if ($object->ref_supplier)
+		{
+    		$posy+=5;
+    		$pdf->SetXY($posx,$posy);
+			$pdf->MultiCell(100, 4, $outputlangs->transnoentities("RefSupplier")." : " . $object->ref_supplier, '', 'R');
+		}
 
 		$posy+=6;
 		$pdf->SetXY($posx,$posy);
@@ -866,7 +873,7 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 			$pdf->MultiCell(80, 4, $outputlangs->convToOutputCharset($this->emetteur->name), 0, 'L');
 
 			// Show sender information
-			$pdf->SetXY($posx+2,$posy+8);
+			$pdf->SetXY($posx+2,$posy+4+(dol_nboflines_bis($this->emetteur->name,44)*4));
 			$pdf->SetFont('','', $default_font_size - 1);
 			$pdf->MultiCell(80, 4, $carac_emetteur, 0, 'L');
 
@@ -874,7 +881,7 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 
 			// If BILLING contact defined on invoice, we use it
 			$usecontact=false;
-			$arrayidcontact=$object->getIdContact('external','BILLING');
+			$arrayidcontact=$object->getIdContact('internal','BILLING');
 			if (count($arrayidcontact) > 0)
 			{
 				$usecontact=true;
@@ -886,15 +893,15 @@ class pdf_canelle extends ModelePDFSuppliersInvoices
 			{
 				// On peut utiliser le nom de la societe du contact
 				if ($conf->global->MAIN_USE_COMPANY_NAME_OF_CONTACT) $socname = $object->contact->socname;
-				else $socname = $object->client->nom;
+				else $socname = $mysoc->nom;
 				$carac_client_name=$outputlangs->convToOutputCharset($socname);
 			}
 			else
 			{
-				$carac_client_name=$outputlangs->convToOutputCharset($object->client->nom);
+				$carac_client_name=$outputlangs->convToOutputCharset($mysoc->nom);
 			}
 
-			$carac_client=pdf_build_address($outputlangs,$this->emetteur,$object->client,$object->contact,$usecontact,'target');
+			$carac_client=pdf_build_address($outputlangs,$this->emetteur,$mysoc,$object->contact,$usecontact,'target');
 
 			// Show recipient
 			$posy=42;

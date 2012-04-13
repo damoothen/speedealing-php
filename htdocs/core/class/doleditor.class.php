@@ -47,8 +47,8 @@ class DolEditor
     /**
      *      Create an object to build an HTML area to edit a large string content
      *
-     *      @param 	string	$htmlname		        HTML name of WYSIWIG form
-     *      @param 	string	$content		        Content of WYSIWIG form
+     *      @param 	string	$htmlname		        HTML name of WYSIWIG field
+     *      @param 	string	$content		        Content of WYSIWIG field
      *      @param	int		$width					Width in pixel of edit area (auto by default)
      *      @param 	int		$height			        Height in pixel of edit area (200px by default)
      *      @param 	string	$toolbarname	        Name of bar set to use ('Full', 'dolibarr_notes', 'dolibarr_details', 'dolibarr_mailings')
@@ -138,10 +138,11 @@ class DolEditor
      *	Output edit area inside the HTML stream.
      *	Output depends on this->tool (fckeditor, ckeditor, texatrea, ...)
      *
-     *  @param	int		$noprint     1=Return HTML string instead of printing it to output
+     *  @param	int		$noprint    1=Return HTML string instead of printing it to output
+     *  @param	string	$morejs		Add more js. For example: ".on( \'saveSnapshot\', function(e) { alert(\'ee\'); });"
      *  @return	void
      */
-    function Create($noprint=0)
+    function Create($noprint=0,$morejs='')
     {
     	global $conf;
 
@@ -172,6 +173,7 @@ class DolEditor
             	$out.= '<script type="text/javascript">
             			$(document).ready(function () {
                             /* if (CKEDITOR.loadFullCore) CKEDITOR.loadFullCore(); */
+                            /* should be editor=CKEDITOR.replace but what if serveral editors ? */
                             CKEDITOR.replace(\''.$this->htmlname.'\',
             					{
             						customConfig : \''.dol_buildpath('/theme/'.$conf->theme.'/ckeditor/config.js',1).'\',
@@ -217,10 +219,8 @@ class DolEditor
                                filebrowserImageWindowWidth : \'900\',
                                filebrowserImageWindowHeight : \'500\'';
             	}
-            	$out.= '
-            					});
-
-            			});
+            	$out.= '	})'.$morejs;
+            	$out.= '});
             			</script>';
             }
         }

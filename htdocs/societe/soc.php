@@ -68,7 +68,7 @@ if (! empty($canvas))
 }
 
 // Security check
-$result = restrictedArea($user, 'societe', $socid, '&societe', '', '', '', $objcanvas);
+$result = restrictedArea($user, 'societe', $socid, '&societe', '', 'fk_soc', 'rowid', $objcanvas);
 
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
 include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
@@ -286,7 +286,7 @@ if (empty($reshook))
                     }
 
                     // Gestion du logo de la société
-                    $dir     = $conf->societe->dir_output."/".$object->id."/logos/";
+                    $dir     = $conf->societe->multidir_output[$conf->entity]."/".$object->id."/logos/";
                     $file_OK = is_uploaded_file($_FILES['photo']['tmp_name']);
                     if ($file_OK)
                     {
@@ -399,14 +399,14 @@ if (empty($reshook))
                 }
 
                 // Gestion du logo de la société
-                $dir     = $conf->societe->dir_output."/".$object->id."/logos";
+                $dir     = $conf->societe->multidir_output[$object->entity]."/".$object->id."/logos";
                 $file_OK = is_uploaded_file($_FILES['photo']['tmp_name']);
                 if ($file_OK)
                 {
                     if (GETPOST('deletephoto'))
                     {
-                        $fileimg=$conf->societe->dir_output.'/'.$object->id.'/logos/'.$object->logo;
-                        $dirthumbs=$conf->societe->dir_output.'/'.$object->id.'/logos/thumbs';
+                        $fileimg=$dir.'/'.$object->logo;
+                        $dirthumbs=$dir.'/thumbs';
                         dol_delete_file($fileimg);
                         dol_delete_dir_recursive($dirthumbs);
                     }
@@ -639,7 +639,7 @@ else
         $object->logo = dol_sanitizeFileName($_FILES['photo']['name']);
 
         // Gestion du logo de la société
-        $dir     = $conf->societe->dir_output."/".$object->id."/logos";
+        $dir     = $conf->societe->multidir_output[$object->entity]."/".$object->id."/logos";
         $file_OK = is_uploaded_file($_FILES['photo']['tmp_name']);
         if ($file_OK)
         {
@@ -874,46 +874,24 @@ else
         print '<tr><td>'.$langs->trans('EMail').($conf->global->SOCIETE_MAIL_REQUIRED?'*':'').'</td><td><input type="text" name="email" size="32" value="'.$object->email.'"></td>';
         print '<td>'.$langs->trans('Web').'</td><td><input type="text" name="url" size="32" value="'.$object->url.'"></td></tr>';
 
-        print '<tr>';
-        // IdProf1 (SIREN for France)
-        $idprof=$langs->transcountry('ProfId1',$object->country_code);
-        if ($idprof!='-')
+        // Prof ids
+        $i=1; $j=0;
+        while ($i <= 6)
         {
-            print '<td>'.$idprof.'</td><td>';
-            print $formcompany->get_input_id_prof(1,'idprof1',$object->idprof1,$object->country_code);
-            print '</td>';
+            $idprof=$langs->transcountry('ProfId'.$i,$object->country_code);
+            if ($idprof!='-')
+            {
+                if (($j % 2) == 0) print '<tr>';
+                print '<td>'.$idprof.'</td><td>';
+                $key='idprof'.$i;
+                print $formcompany->get_input_id_prof($i,'idprof'.$i,$object->$key,$object->country_code);
+                print '</td>';
+                if (($j % 2) == 1) print '</tr>';
+                $j++;
+            }
+            $i++;
         }
-        else print '<td>&nbsp;</td><td>&nbsp;</td>';
-        // IdProf2 (SIRET for France)
-        $idprof=$langs->transcountry('ProfId2',$object->country_code);
-        if ($idprof!='-')
-        {
-            print '<td>'.$idprof.'</td><td>';
-            print $formcompany->get_input_id_prof(2,'idprof2',$object->idprof2,$object->country_code);
-            print '</td>';
-        }
-        else print '<td>&nbsp;</td><td>&nbsp;</td>';
-        print '</tr>';
-        print '<tr>';
-        // IdProf3 (APE for France)
-        $idprof=$langs->transcountry('ProfId3',$object->country_code);
-        if ($idprof!='-')
-        {
-            print '<td>'.$idprof.'</td><td>';
-            print $formcompany->get_input_id_prof(3,'idprof3',$object->idprof3,$object->country_code);
-            print '</td>';
-        }
-        else print '<td>&nbsp;</td><td>&nbsp;</td>';
-        // IdProf4 (NU for France)
-        $idprof=$langs->transcountry('ProfId4',$object->country_code);
-        if ($idprof!='-')
-        {
-            print '<td>'.$idprof.'</td><td>';
-            print $formcompany->get_input_id_prof(4,'idprof4',$object->idprof4,$object->country_code);
-            print '</td>';
-        }
-        else print '<td>&nbsp;</td><td>&nbsp;</td>';
-        print '</tr>';
+        if ($j % 2 == 1) print '<td colspan="2"></td></tr>';
 
         // Assujeti TVA
         $form = new Form($db);
@@ -1056,7 +1034,8 @@ else
         /*
          * Edition
          */
-        print_fiche_titre($langs->trans("EditCompany"));
+
+        //print_fiche_titre($langs->trans("EditCompany"));
 
         if ($socid)
         {
@@ -1065,6 +1044,12 @@ else
             if ($res < 0) { dol_print_error($db,$object->error); exit; }
             $res=$object->fetch_optionals($object->id,$extralabels);
             //if ($res < 0) { dol_print_error($db); exit; }
+
+
+	        $head = societe_prepare_head($object);
+
+	        dol_fiche_head($head, 'card', $langs->trans("ThirdParty"),0,'company');
+
 
             // Load object modCodeTiers
             $module=$conf->global->SOCIETE_CODECLIENT_ADDON;
@@ -1329,46 +1314,24 @@ else
             print '<tr><td>'.$langs->trans('EMail').($conf->global->SOCIETE_MAIL_REQUIRED?'*':'').'</td><td><input type="text" name="email" size="32" value="'.$object->email.'"></td>';
             print '<td>'.$langs->trans('Web').'</td><td><input type="text" name="url" size="32" value="'.$object->url.'"></td></tr>';
 
-            print '<tr>';
-            // IdProf1 (SIREN for France)
-            $idprof=$langs->transcountry('ProfId1',$object->country_code);
-            if ($idprof!='-')
+            // Prof ids
+            $i=1; $j=0;
+            while ($i <= 6)
             {
-                print '<td>'.$idprof.'</td><td>';
-                print $formcompany->get_input_id_prof(1,'idprof1',$object->idprof1,$object->country_code);
-                print '</td>';
+                $idprof=$langs->transcountry('ProfId'.$i,$object->country_code);
+                if ($idprof!='-')
+                {
+                    if (($j % 2) == 0) print '<tr>';
+                    print '<td>'.$idprof.'</td><td>';
+                    $key='idprof'.$i;
+                    print $formcompany->get_input_id_prof($i,'idprof'.$i,$object->$key,$object->country_code);
+                    print '</td>';
+                    if (($j % 2) == 1) print '</tr>';
+                    $j++;
+                }
+                $i++;
             }
-            else print '<td>&nbsp;</td><td>&nbsp;</td>';
-            // IdProf2 (SIRET for France)
-            $idprof=$langs->transcountry('ProfId2',$object->country_code);
-            if ($idprof!='-')
-            {
-                print '<td>'.$idprof.'</td><td>';
-                print $formcompany->get_input_id_prof(2,'idprof2',$object->idprof2,$object->country_code);
-                print '</td>';
-            }
-            else print '<td>&nbsp;</td><td>&nbsp;</td>';
-            print '</tr>';
-            print '<tr>';
-            // IdProf3 (APE for France)
-            $idprof=$langs->transcountry('ProfId3',$object->country_code);
-            if ($idprof!='-')
-            {
-                print '<td>'.$idprof.'</td><td>';
-                print $formcompany->get_input_id_prof(3,'idprof3',$object->idprof3,$object->country_code);
-                print '</td>';
-            }
-            else print '<td>&nbsp;</td><td>&nbsp;</td>';
-            // IdProf4 (NU for France)
-            $idprof=$langs->transcountry('ProfId4',$object->country_code);
-            if ($idprof!='-')
-            {
-                print '<td>'.$idprof.'</td><td>';
-                print $formcompany->get_input_id_prof(4,'idprof4',$object->idprof4,$object->country_code);
-                print '</td>';
-            }
-            else print '<td>&nbsp;</td><td>&nbsp;</td>';
-            print '</tr>';
+            if ($j % 2 == 1) print '<td colspan="2"></td></tr>';
 
             // VAT payers
             print '<tr><td>'.$langs->trans('VATIsUsed').'</td><td>';
@@ -1501,6 +1464,8 @@ else
             print '</center>';
 
             print '</form>';
+
+	        dol_fiche_end();
         }
     }
     else
@@ -1518,8 +1483,6 @@ else
         $head = societe_prepare_head($object);
 
         dol_fiche_head($head, 'card', $langs->trans("ThirdParty"),0,'company');
-
-        $form = new Form($db);
 
         // Confirm delete third party
         if ($action == 'delete' || $conf->use_javascript_ajax)
@@ -1616,7 +1579,11 @@ else
         // Barcode
         if ($conf->global->MAIN_MODULE_BARCODE)
         {
-            print '<tr><td>'.$langs->trans('Gencod').'</td><td colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'">'.$object->barcode.'</td></tr>';
+            print '<tr><td>';
+            print $langs->trans('Gencod').'</td><td colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'">'.$object->barcode;
+            print '</td>';
+            print $htmllogobar; $htmllogobar='';
+            print '</tr>';
         }
 
         // Status
@@ -1678,65 +1645,29 @@ else
         print '</td></tr>';
         $var=!$var;
 
-        // ProfId1 (SIREN for France)
-        $profid=$langs->transcountry('ProfId1',$object->country_code);
-        if ($profid!='-')
+        // Prof ids
+        $i=1; $j=0;
+        while ($i <= 6)
         {
-            print '<tr '.$bc[$var].'><td id="label">'.$profid.'</td><td id="value">';
-            print $object->idprof1;
-            if ($object->idprof1)
+            $idprof=$langs->transcountry('ProfId'.$i,$object->country_code);
+            if ($idprof!='-')
             {
-                if ($object->id_prof_check(1,$object) > 0) print ' &nbsp; '.$object->id_prof_url(1,$object);
-                else print ' <font class="error">('.$langs->trans("ErrorWrongValue").')</font>';
+                if (($j % 2) == 0) print '<tr>';
+                print '<td>'.$idprof.'</td><td>';
+                $key='idprof'.$i;
+                print $object->$key;
+                if ($object->$key)
+                {
+                    if ($object->id_prof_check($i,$object) > 0) print ' &nbsp; '.$object->id_prof_url($i,$object);
+                    else print ' <font class="error">('.$langs->trans("ErrorWrongValue").')</font>';
+                }
+                print '</td>';
+                if (($j % 2) == 1) print '</tr>';
+                $j++;
             }
-            print '</td>';
+            $i++;
         }
-        else print '<tr '.$bc[$var].'><td id="label">&nbsp;</td><td>&nbsp;</td>';
-        // ProfId2 (SIRET for France)
-        $profid=$langs->transcountry('ProfId2',$object->country_code);
-        if ($profid!='-')
-        {
-            print '<td>'.$profid.'</td><td id="value">';
-            print $object->idprof2;
-            if ($object->idprof2)
-            {
-                if ($object->id_prof_check(2,$object) > 0) print ' &nbsp; '.$object->id_prof_url(2,$object);
-                else print ' <font class="error">('.$langs->trans("ErrorWrongValue").')</font>';
-            }
-            print '</td></tr>';
-        }
-        else print '<td>&nbsp;</td><td>&nbsp;</td></tr>';
-        $var=!$var;
-
-        // ProfId3 (APE for France)
-        $profid=$langs->transcountry('ProfId3',$object->country_code);
-        if ($profid!='-')
-        {
-            print '<tr '.$bc[$var].'><td id="label">'.$profid.'</td><td id="value">';
-            print $object->idprof3;
-            if ($object->idprof3)
-            {
-                if ($object->id_prof_check(3,$object) > 0) print ' &nbsp; '.$object->id_prof_url(3,$object);
-                else print ' <font class="error">('.$langs->trans("ErrorWrongValue").')</font>';
-            }
-            print '</td>';
-        }
-        else print '<tr '.$bc[$var].'><td id="label">&nbsp;</td><td>&nbsp;</td>';
-        // ProfId4 (NU for France)
-        $profid=$langs->transcountry('ProfId4',$object->country_code);
-        if ($profid!='-')
-        {
-            print '<td id="label">'.$profid.'</td><td id="value">';
-            print $object->idprof4;
-            if ($object->idprof4)
-            {
-                if ($object->id_prof_check(4,$object) > 0) print ' &nbsp; '.$object->id_prof_url(4,$object);
-                else print ' <font class="error">('.$langs->trans("ErrorWrongValue").')</font>';
-            }
-            print '</td></tr>';
-        }
-        else print '<td id="label">&nbsp;</td><td id="value">&nbsp;</td></tr>';
-        $var=!$var;
+        if ($j % 2 == 1)  print '<td colspan="2"></td></tr>';
 
         // VAT payers
         $form = new Form($db);
@@ -2023,7 +1954,7 @@ else
             /*
              * Documents generes
              */
-            $filedir=$conf->societe->dir_output.'/'.$object->id;
+            $filedir=$conf->societe->multidir_output[$object->entity].'/'.$object->id;
             $urlsource=$_SERVER["PHP_SELF"]."?socid=".$object->id;
             $genallowed=$user->rights->societe->creer;
             $delallowed=$user->rights->societe->supprimer;

@@ -374,7 +374,7 @@ abstract class DolibarrModules
         $sql.= $this->numero;
         $sql.= ", ".$conf->entity;
         $sql.= ", 1";
-        $sql.= ", '".$this->db->idate(gmmktime())."'";
+        $sql.= ", '".$this->db->idate(dol_now())."'";
         $sql.= ", '".$this->version."'";
         $sql.= ")";
 
@@ -1294,7 +1294,7 @@ abstract class DolibarrModules
     {
     	global $conf;
 
-    	$err=0;
+    	$error=0;
     	$entity=$conf->entity;
 
     	if (is_array($this->module_parts) && ! empty($this->module_parts))
@@ -1309,12 +1309,12 @@ abstract class DolibarrModules
     				// Can defined other parameters
     				if (is_array($value['data']) && ! empty($value['data']))
     				{
-    					$newvalue = dol_json_encode($value['data']);
+    					$newvalue = json_encode($value['data']);
     					if (isset($value['entity'])) $entity = $value['entity'];
     				}
     				else
     				{
-    					$newvalue = dol_json_encode($value);
+    					$newvalue = json_encode($value);
     				}
     			}
 
@@ -1336,15 +1336,23 @@ abstract class DolibarrModules
     			$sql.= ")";
 
     			dol_syslog(get_class($this)."::insert_const_".$key." sql=".$sql);
-    			$resql=$this->db->query($sql);
+    			$resql=$this->db->query($sql,1);
     			if (! $resql)
     			{
-    				$this->error=$this->db->lasterror();
-    				dol_syslog(get_class($this)."::insert_const_".$key." ".$this->error);
+    			    if ($this->db->lasterrno() != 'DB_ERROR_RECORD_ALREADY_EXISTS')
+    			    {
+        			    $error++;
+        				$this->error=$this->db->lasterror();
+        				dol_syslog(get_class($this)."::insert_const_".$key." ".$this->error, LOG_ERR);
+    			    }
+    			    else
+    			    {
+    			        dol_syslog(get_class($this)."::insert_const_".$key." Record already exists.", LOG_WARNING);
+    			    }
     			}
     		}
     	}
-    	return $err;
+    	return $error;
     }
 
     /**
