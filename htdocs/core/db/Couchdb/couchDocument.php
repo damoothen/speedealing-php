@@ -33,7 +33,7 @@ class couchDocument {
 		$this->__couch_data = new stdClass();
 		$this->__couch_data->client = $client;
 		$this->__couch_data->fields = new stdClass();
-		$this->__couch_data->autocommit = false;
+		$this->__couch_data->autocommit = true;
 	}
 
 	/**
@@ -418,17 +418,5 @@ class couchDocument {
 		// we should reload document to be sure that we have an up-to-date version
 		$this->load($this->_id);
 		return $back;
-	}
-        
-        /**
-	 *  just a proxy method to couchClient->deleteDoc
-	 *
-	 *  @return int         		1 success
-	 */
-	public function delete()
-	{
-            $this->__couch_data->client->deleteDoc($this);
-                
-            return 1;
 	}
 }

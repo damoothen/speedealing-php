@@ -228,9 +228,7 @@ include_once(DOL_DOCUMENT_ROOT ."/core/lib/functions.lib.php");
 include_once(DOL_DOCUMENT_ROOT ."/core/lib/security.lib.php");
 //print memory_get_usage();
 
-include_once(DOL_DOCUMENT_ROOT ."/core/db/Couchdb/couch.php");
-include_once(DOL_DOCUMENT_ROOT ."/core/db/Couchdb/couchClient.php");
-include_once(DOL_DOCUMENT_ROOT ."/core/db/Couchdb/couchDocument.php");
+include_once(DOL_DOCUMENT_ROOT ."/core/db/Couchdb/couchDolibarr.php");
 
 $couch = new couchClient("http://couch.symeos.com:5984/","demo");
 

@@ -39,7 +39,7 @@ if($result!=false)
                 "iDisplayLength": '.$conf->global->MAIN_SIZE_LISTE_LIMIT.',
                 "aLengthMenu": [[10,25, 50, 100,1000, -1], [10,25, 50, 100,1000,"All"]],
                 "bProcessing": true,
-                "sAjaxSource": "serverprocess1.php?type='.$type.'&pstcomm='.$pstcomm.'&search_sale='.$search_sale.'",
+                "sAjaxSource": "serverprocess.php?type='.$type.'&pstcomm='.$pstcomm.'&search_sale='.$search_sale.'",
                 "aoColumns": [
                     { "mDataProp": "nom", "bUseRendered": false, "bSearchable": true,
                         "fnRender": function(obj) {
