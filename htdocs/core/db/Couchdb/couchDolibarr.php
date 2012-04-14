@@ -33,6 +33,13 @@ abstract class couchDolibarr extends couchDocument
 {
     
         var $db;
+        
+        var $arrayjs = array("/core/datatables/js/jquery.dataTables.js",
+            "/core/datatables/js/TableTools.js",
+            "/core/datatables/js/ZeroClipboard.js",
+            "/core/datatables/js/initXHR.js",
+            "/core/datatables/js/request.js",
+            "/core/datatables/js/searchColumns.js");
     
         /**
 	*class constructor

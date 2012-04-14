@@ -893,7 +893,7 @@ if ($id)
                     });
                })';
         print '</script>'."\n";*/
-        }
+            }
 
         // Fiche action en mode edition
 		print '<form name="formaction" action="'.DOL_URL_ROOT.'/comm/action/fiche.php" method="post">';
@@ -1065,8 +1065,8 @@ if ($id)
 		// Title
 		print '<tr><td>'.$langs->trans("Title").'</td><td colspan="3">'.$act->label.'</td></tr>';
 
-        // Full day event
-        print '<tr><td>'.$langs->trans("EventOnFullDay").'</td><td colspan="3">'.yn($act->fulldayevent).'</td></tr>';
+                // Full day event
+                print '<tr><td>'.$langs->trans("EventOnFullDay").'</td><td colspan="3">'.yn($act->fulldayevent).'</td></tr>';
 
 		// Date start
 		print '<tr><td width="30%">'.$langs->trans("DateActionStart").'</td><td colspan="2">';
@@ -1074,8 +1074,8 @@ if ($id)
 		else print dol_print_date($act->datep,'day');
 		if ($act->percentage == 0 && $act->datep && $act->datep < ($now - $delay_warning)) print img_warning($langs->trans("Late"));
 		print '</td>';
-		if($act->type==1) //RDV
-                {
+		//if($act->type==1) //RDV
+                //{
 		print '<td rowspan="4" align="center" valign="middle" width="180">'."\n";
         print '<form name="listactionsfiltermonth" action="'.DOL_URL_ROOT.'/comm/action/index.php" method="POST">';
         print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
@@ -1122,13 +1122,13 @@ if ($id)
                 $var=!$var;
                 
                 // Priority
-		print '<tr '.$bc[$var].'><td nowrap id="label">'.$langs->trans("Priority").'</td><td colspan="3" id="value">';
+		print '<tr><td nowrap id="label">'.$langs->trans("Priority").'</td><td colspan="2" id="value">';
 		print $act->priority;
 		print '</td></tr>';
                 $var=!$var;
 
-        // Location
-        print '<tr><td>'.$langs->trans("Location").'</td><td colspan="2">'.$act->location.'</td></tr>';
+                // Location
+                print '<tr><td>'.$langs->trans("Location").'</td><td colspan="2">'.$act->location.'</td></tr>';
 
 		print '</table><br><br><table class="border" width="100%">';
 

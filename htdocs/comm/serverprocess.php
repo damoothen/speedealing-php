@@ -24,15 +24,6 @@
  * 	\version    $Id: serverprocess.php,v 1.6 2012/01/27 16:15:05 synry63 Exp $
  */
 require_once("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT . "/comm/prospect/class/prospect.class.php");
-require_once(DOL_DOCUMENT_ROOT . "/core/class/html.formother.class.php");
-$langs->load("companies");
-$langs->load("customers");
-$langs->load("suppliers");
-$langs->load("commercial");
-/* Array of database columns which should be read and sent back to DataTables. Use a space where
- * you want to insert a non-database field (for example a counter or static image)
- */
 
 /* get Type */
 $type = $_GET['type'];
@@ -56,8 +47,6 @@ $result = $couch->limit(1000)->getView('societe','list');
 $iTotal=  count($result->rows);
 $output["iTotalRecords"]=$iTotal;
 $output["iTotalDisplayRecords"]=$iTotal;
-
-$prospectstatic = new Prospect($db);
 
 
 foreach($result->rows AS $aRow) {
