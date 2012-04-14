@@ -41,7 +41,7 @@ if($result!=false)
                 "bProcessing": true,
                 "sAjaxSource": "serverprocess.php?type='.$type.'&pstcomm='.$pstcomm.'&search_sale='.$search_sale.'",
                 "aoColumns": [
-                    { "mDataProp": "nom", "bUseRendered": false, "bSearchable": true,
+                    { "mDataProp": "nom", "bUseRendered": true, "bSearchable": true,
                         "fnRender": function(obj) {
                         var ar = [];
                         ar[ar.length] = "<a href=\"'.DOL_URL_ROOT.'\/comm\/prospect\/fiche.php?socid=";
@@ -63,7 +63,7 @@ if($result!=false)
                     '.(empty($conf->global->SOCIETE_DISABLE_STATE)?'{ "mDataProp": "departement" },':'').'
                     { "mDataProp": "cp" },
                     '.($conf->categorie->enabled?'{ "mDataProp": "category" },':'').'
-                    {"mDataProp": "commerciaux", "bUseRendered": false, "bSearchable": false,
+                    {"mDataProp": "commerciaux", "bUseRendered": false, "bSearchable": true,
                         "fnRender": function(obj) {
                                 var str = obj.aData.commerciaux;
                             return str;
