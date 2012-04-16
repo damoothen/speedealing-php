@@ -2153,6 +2153,14 @@ tr.even a{
 font-family:arial,tahoma,verdana,helvetica;
 }
 
+td.right {
+    text-align: right;
+}
+
+td.center {
+    text-align: center;
+}
+
 /* DataTables sorting */
  
 .sorting {
