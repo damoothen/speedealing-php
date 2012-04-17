@@ -105,7 +105,7 @@ class Form
             $ret.='<table class="nobordernopadding" width="100%"><tr><td nowrap="nowrap">';
             $ret.=$langs->trans($text);
             $ret.='</td>';
-            if (GETPOST('action') != 'edit'.$htmlname && $perm) $ret.='<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=edit'.$htmlname.'&amp;id='.$object->id.$moreparam.'">'.img_edit($langs->trans('Edit'),1).'</a></td>';
+            if (GETPOST('action') != 'edit'.$htmlname && $perm) $ret.='<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=edit'.$htmlname.'&amp;id='.(isset($object->id)?$object->id:$object->id()).$moreparam.'">'.img_edit($langs->trans('Edit'),1).'</a></td>';
             $ret.='</tr></table>';
         }
 
@@ -147,7 +147,7 @@ class Form
                 $ret.='<form method="post" action="'.$_SERVER["PHP_SELF"].($moreparam?'?'.$moreparam:'').'">';
                 $ret.='<input type="hidden" name="action" value="set'.$htmlname.'">';
                 $ret.='<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-                $ret.='<input type="hidden" name="id" value="'.$object->id.'">';
+                $ret.='<input type="hidden" name="id" value="'.(isset($object->id)?$object->id:$object->id()).'">';
                 $ret.='<table class="nobordernopadding" cellpadding="0" cellspacing="0">';
                 $ret.='<tr><td>';
                 if (preg_match('/^(string|email|numeric)/',$typeofdata))
@@ -162,7 +162,7 @@ class Form
                 }
                 else if ($typeofdata == 'day' || $typeofdata == 'datepicker')
                 {
-                    $ret.=$this->form_date($_SERVER['PHP_SELF'].'?id='.$object->id,$value,$htmlname);
+                    $ret.=$this->form_date($_SERVER['PHP_SELF'].'?id='.(isset($object->id)?$object->id:$object->id()),$value,$htmlname);
                 }
                 else if (preg_match('/^select;/',$typeofdata))
                 {
@@ -256,7 +256,7 @@ class Form
             {
                 $element = $object->element;
                 $table_element = $object->table_element;
-                $fk_element = $object->id;
+                $fk_element = $object->id();
             }
 
             if (is_object($extObject))
