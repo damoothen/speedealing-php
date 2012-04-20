@@ -52,6 +52,7 @@ abstract class couchDolibarr extends couchDocument
 	{
                 parent::__construct($db);
                 $this->__couch_data->autocommit = false;
+                $this->class = $this->element;
 		$this->db = $db;
 	}
         
@@ -65,6 +66,66 @@ abstract class couchDolibarr extends couchDocument
             $this->__couch_data->client->deleteDoc($this);
                 
             return 1;
+	}
+        
+        
+        /**
+	 *  Get a view name for the class
+	 *
+         *  @param  string                      view name
+	 *  @return array         		1 success
+	 */
+        
+        public function getView($name)
+        {
+            global $conf;
+            
+            return $this->db->limit($conf->liste_limit)->getView($this->class,$name);
+        }
+        
+        
+        
+        /**
+	 *  For list datatables generation
+	 *
+         *  @param $obj object of aocolumns details
+         *  @param $ref_css name of #list
+         *  @param $url_root DOL_URL_ROOT
+	 *  @return string
+	 */
+	public function _datatables($obj,$ref_css,$url_root)
+	{
+            global $conf,$langs;
+            
+            $obj->sAjaxSource = $_SERVER['PHP_SELF']."?json=true";
+            $obj->iDisplayLength = (int)$conf->global->MAIN_SIZE_LISTE_LIMIT;
+            $obj->aLengthMenu= array(array(10, 25, 50, 100, 1000, -1), array(10, 25, 50, 100,1000,"All"));
+            $obj->bProcessing = true;
+            $obj->bJQueryUI = true;
+            $obj->bDeferRender = true;
+            $obj->oLanguage->sUrl = $url_root.'/core/datatables/langs/'.($langs->defaultlang?$langs->defaultlang:"en_US").".txt";
+            $obj->sDom = '<\"top\"Tflpi<\"clear\">>rt<\"bottom\"pi<\"clear\">>';
+            $obj->oTableTools->sSwfPath = "../../core/datatables/swf/copy_cvs_xls_pdf.swf";
+            $obj->oTableTools->aButtons = array("xls");
+            
+            $output ='<script type="text/javascript" charset="utf-8">';
+            $output.='$(document).ready(function() {';
+            $output.='oTable = $(\''.$ref_css.'\').dataTable(';
+            
+            $json = json_encode($obj);
+            $json = str_replace('"%', '', $json);
+            $json = str_replace('%"', '', $json);
+            $json = str_replace('\n', '', $json);
+            $json = str_replace('\"', '"', $json);
+            $json = str_replace('\"', '"', $json);
+            $json = str_replace('$', '"', $json);
+            $output.=$json;
+            
+            $output.= ");";
+            $output.= "});";
+            $output.='</script>';
+                
+            return $output;
 	}
 }
 
