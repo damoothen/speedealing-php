@@ -28,7 +28,7 @@
 /**
  *	Parent class of all other business classes (invoices, contracts, proposals, orders, ...)
  */
-abstract class CommonObject
+abstract class CommonObject extends couchDolibarr
 {
     protected $db;
     public $error;
@@ -755,7 +755,7 @@ abstract class CommonObject
 
         if (! $this->table_element)
         {
-            dol_print_error('',get_class($this)."::load_previous_next_ref was called on objet with property table_element not defined", LOG_ERR);
+            //dol_print_error('',get_class($this)."::load_previous_next_ref was called on objet with property table_element not defined", LOG_ERR);
             return -1;
         }
 
@@ -2219,7 +2219,7 @@ abstract class CommonObject
         //'CH',	// Switzerland - No. Swizerland in not in EEC
         );
         //print "dd".$this->country_code;
-        return in_array($this->country_code,$country_code_in_EEC);
+        return in_array($this->country_id,$country_code_in_EEC);
     }
 
 

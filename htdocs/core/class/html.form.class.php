@@ -495,11 +495,11 @@ class Form
                     if ($selected && $selected != '-1' && ($selected == $row['rowid'] || $selected == $row['code_iso'] || $selected == $row['label']) )
                     {
                         $foundselected=true;
-                        $out.= '<option value="'.$row['rowid'].'" selected="selected">';
+                        $out.= '<option value="'.$row['code_iso'].'" selected="selected">';
                     }
                     else
                     {
-                        $out.= '<option value="'.$row['rowid'].'">';
+                        $out.= '<option value="'.$row['code_iso'].'">';
                     }
                     $out.= $row['label'];
                     if ($row['code_iso']) $out.= ' ('.$row['code_iso'] . ')';

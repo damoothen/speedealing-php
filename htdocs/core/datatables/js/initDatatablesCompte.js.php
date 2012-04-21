@@ -44,24 +44,38 @@ if($result!=false)
                     { "mDataProp": "nom", "bUseRendered": true, "bSearchable": true,
                         "fnRender": function(obj) {
                         var ar = [];
-                        ar[ar.length] = "<a href=\"'.DOL_URL_ROOT.'\/comm\/prospect\/fiche.php?socid=";
-                        ar[ar.length] = obj.aData.rowid;
+                        ar[ar.length] = "<a href=\"'.DOL_URL_ROOT.'\/societe\/soc.php?socid=";
+                        ar[ar.length] = obj.aData._id;
                         ar[ar.length] = "\"><img src=\"'.DOL_URL_ROOT.'\/theme\/'.$conf->theme.'\/img\/object_company.png\" border=\"0\" alt=\"Afficher soci&eacute;t&eacute;:";
-                        ar[ar.length] = obj.aData.nom.toString();
+                        ar[ar.length] = obj.aData.name.toString();
                         ar[ar.length] = "\" title=\"Afficher soci&eacute;t&eacute;:";
-                        ar[ar.length] = obj.aData.nom.toString();
-                        ar[ar.length] = "\"><\/a> <a href=\"'.DOL_URL_ROOT.'\/comm\/prospect\/fiche.php?socid=";
-                        ar[ar.length] = obj.aData.rowid;
+                        ar[ar.length] = obj.aData.name.toString();
+                        ar[ar.length] = "\"><\/a> <a href=\"'.DOL_URL_ROOT.'\/societe\/soc.php?socid=";
+                        ar[ar.length] = obj.aData._id;
                         ar[ar.length] = "\">";
-                        ar[ar.length] = obj.aData.nom.toString();
+                        ar[ar.length] = obj.aData.name.toString();
                         ar[ar.length] = "<\/a>";
                         var str = ar.join("");
                         return str;
                         }
                     },
-                    { "mDataProp": "ville" },
+                    { "mDataProp": "town",  "bUseRendered": true, "bSearchable": false,
+                        "fnRender": function(obj) {
+                                var str = obj.aData.town;
+                                if(typeof str === "undefined")
+                                    str = "";
+                            return str;
+                            }
+                    },
                     '.(empty($conf->global->SOCIETE_DISABLE_STATE)?'{ "mDataProp": "departement" },':'').'
-                    { "mDataProp": "cp" },
+                    { "mDataProp": "zip", "bUseRendered": true, "bSearchable": false,
+                        "fnRender": function(obj) {
+                                var str = obj.aData.zip;
+                                if(typeof str === "undefined")
+                                    str = "";
+                            return str;
+                            }
+                    },
                     '.($conf->categorie->enabled?'{ "mDataProp": "category" },':'').'
                     {"mDataProp": "commerciaux", "bUseRendered": false, "bSearchable": true,
                         "fnRender": function(obj) {
@@ -69,9 +83,30 @@ if($result!=false)
                             return str;
                             }
                     },
-                    { "mDataProp": "siren" },
-                    { "mDataProp": "ape" },
-                    { "mDataProp": "fk_prospectlevel" },
+                    { "mDataProp": "siren","bUseRendered": true, "bSearchable": false,
+                        "fnRender": function(obj) {
+                                var str = obj.aData.siren;
+                                if(typeof str === "undefined")
+                                    str = "";
+                            return str;
+                            }
+                    },
+                    { "mDataProp": "ape", "bUseRendered": true, "bSearchable": false,
+                        "fnRender": function(obj) {
+                                var str = obj.aData.siren;
+                                if(typeof str === "undefined")
+                                    str = "";
+                            return str;
+                            }
+                    },
+                    { "mDataProp": "fk_prospectlevel",  "bUseRendered": true, "bSearchable": false,
+                        "fnRender": function(obj) {
+                                var str = obj.aData.siren;
+                                if(typeof str === "undefined")
+                                    str = "";
+                            return str;
+                            }
+                    },
                     { "mDataProp": "fk_stcomm", "bUseRendered": true, "bSearchable": false,
                         "fnRender": function(obj) {
                                 var str = obj.aData.fk_stcomm;

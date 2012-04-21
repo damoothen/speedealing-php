@@ -56,7 +56,6 @@ foreach($result->rows AS $aRow) {
         $aRow->value->category=null;
     unset($aRow->value->class);
     unset($aRow->value->_rev);
-    unset($aRow->value->_id);
     $output["aaData"][]=$aRow->value;
     unset($aRow);
 }

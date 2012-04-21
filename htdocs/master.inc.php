@@ -190,7 +190,7 @@ if (! empty($conf->global->MAIN_ONLY_LOGIN_ALLOWED))
 if (! defined('NOREQUIREDB') && ! defined('NOREQUIRESOC'))
 {
 	require_once(DOL_DOCUMENT_ROOT ."/societe/class/societe.class.php");
-	$mysoc=new Societe($db);
+	$mysoc=new Societe($couch);
 
 	$mysoc->id=0;
 	$mysoc->nom=$conf->global->MAIN_INFO_SOCIETE_NOM; 			// TODO deprecated

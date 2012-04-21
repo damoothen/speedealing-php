@@ -32,7 +32,7 @@ include_once(DOL_DOCUMENT_ROOT ."/core/db/Couchdb/couchDocument.php");
 abstract class couchDolibarr extends couchDocument
 {
     
-        var $db;
+        protected $db;
         
         var $arrayjs = array("/core/datatables/js/jquery.dataTables.js",
             "/core/datatables/js/TableTools.js",
@@ -51,9 +51,29 @@ abstract class couchDolibarr extends couchDocument
         function __construct(couchClient $db)
 	{
                 parent::__construct($db);
-                $this->__couch_data->autocommit = false;
+                $this->setAutocommit(false);
                 $this->class = $this->element;
 		$this->db = $db;
+	}
+        
+        /**
+	 *  Record fonction for update : suppress empty value
+	 *
+	 *  @return int         		1 success
+	 */
+	public function record()
+	{
+            foreach ($this->__couch_data->fields as $key => $aRow)
+            {
+                if(empty($aRow))
+                {
+                    unset($this->__couch_data->fields->$key);
+                }
+                else
+                    trim($aRow);
+                    
+            }
+            return parent::record();
 	}
         
         /**
@@ -127,6 +147,9 @@ abstract class couchDolibarr extends couchDocument
                 
             return $output;
 	}
+        
+        
+        
 }
 
 
