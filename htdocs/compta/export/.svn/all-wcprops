@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/dolibarr/!svn/ver/229/trunk/compta/export
+END
+ComptaJournalPdf.class.php
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/dolibarr/!svn/ver/4/trunk/compta/export/ComptaJournalPdf.class.php
+END
+pre.inc.php
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/dolibarr/!svn/ver/4/trunk/compta/export/pre.inc.php
+END
+liste.php
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/dolibarr/!svn/ver/71/trunk/compta/export/liste.php
+END
+ComptaJournalVente.class.php
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/dolibarr/!svn/ver/4/trunk/compta/export/ComptaJournalVente.class.php
+END
+ComptaJournalPaiement.class.php
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/dolibarr/!svn/ver/4/trunk/compta/export/ComptaJournalPaiement.class.php
+END
+index.php
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/dolibarr/!svn/ver/71/trunk/compta/export/index.php
+END

@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/dolibarr/!svn/ver/229/trunk/compta/export/modules
+END
+compta.export.poivre.class.php
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/dolibarr/!svn/ver/239/trunk/compta/export/modules/compta.export.poivre.class.php
+END
+compta.export.safran.class.php
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/dolibarr/!svn/ver/4/trunk/compta/export/modules/compta.export.safran.class.php
+END
+compta.export.class.php
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/dolibarr/!svn/ver/235/trunk/compta/export/modules/compta.export.class.php
+END
