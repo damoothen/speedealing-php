@@ -37,7 +37,7 @@ if ($user->societe_id > 0) $socid=$user->societe_id;
  * View
  */
 
-$socstatic=new Societe($db);
+$socstatic=new Societe($couch);
 
 llxHeader("",$langs->trans("Tools"),"");
 

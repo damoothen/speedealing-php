@@ -29,13 +29,13 @@ require_once(DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php');
 
 $langs->load("companies");
 
-$socid = GETPOST('socid','int');
+$socid = GETPOST('socid');
 if ($user->societe_id) $socid=$user->societe_id;
 
 // Security check
 $result=restrictedArea($user,'societe',0,'','','','');
 
-$thirdparty_static = new Societe($db);
+$thirdparty_static = new Societe($couch);
 
 
 /*
