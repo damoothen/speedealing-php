@@ -38,7 +38,7 @@ require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/extrafields.class.php");
 require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
 if ($conf->adherent->enabled) require_once(DOL_DOCUMENT_ROOT."/adherents/class/adherent.class.php");
-if ($conf->highcharts->enabled) require_once(DOL_DOCUMENT_ROOT_ALT."/highCharts/class/highCharts.class.php");
+if ($conf->highcharts->enabled) dol_include_once("/highCharts/class/highCharts.class.php");
 
 $langs->load("companies");
 $langs->load("commercial");
