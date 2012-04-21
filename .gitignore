@@ -9,3 +9,4 @@ doxygen_warnings.log
 .project
 .DS_Store
 documents
+htdocs/custom
