@@ -110,10 +110,9 @@ abstract class couchDolibarr extends couchDocument
 	 *
          *  @param $obj object of aocolumns details
          *  @param $ref_css name of #list
-         *  @param $url_root DOL_URL_ROOT
 	 *  @return string
 	 */
-	public function _datatables($obj,$ref_css,$url_root)
+	public function _datatables($obj,$ref_css)
 	{
             global $conf,$langs;
             
@@ -123,9 +122,9 @@ abstract class couchDolibarr extends couchDocument
             $obj->bProcessing = true;
             $obj->bJQueryUI = true;
             $obj->bDeferRender = true;
-            $obj->oLanguage->sUrl = $url_root.'/core/datatables/langs/'.($langs->defaultlang?$langs->defaultlang:"en_US").".txt";
+            $obj->oLanguage->sUrl = DOL_URL_ROOT.'/core/datatables/langs/'.($langs->defaultlang?$langs->defaultlang:"en_US").".txt";
             $obj->sDom = '<\"top\"Tflpi<\"clear\">>rt<\"bottom\"pi<\"clear\">>';
-            $obj->oTableTools->sSwfPath = "../../core/datatables/swf/copy_cvs_xls_pdf.swf";
+            $obj->oTableTools->sSwfPath = DOL_URL_ROOT.'/core/datatables/swf/copy_cvs_xls_pdf.swf';
             $obj->oTableTools->aButtons = array("xls");
             
             $output ='<script type="text/javascript" charset="utf-8">';

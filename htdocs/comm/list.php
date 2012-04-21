@@ -48,6 +48,44 @@ $type = GETPOST("type", 'int');
 $pstcomm = GETPOST("pstcomm");
 $search_sale = GETPOST("search_sale");
 
+$object = new Societe($couch);
+
+if($_GET['json'])
+{
+    $output = array(
+    "sEcho" => intval($_GET['sEcho']),
+    "iTotalRecords" => 0,
+    "iTotalDisplayRecords" => 0,
+    "aaData" => array()
+    );
+
+    $result = $object->getView("list");
+
+
+    //print_r($result);
+    //exit;
+    $iTotal=  count($result->rows);
+    $output["iTotalRecords"]=$iTotal;
+    $output["iTotalDisplayRecords"]=$iTotal;
+
+
+    foreach($result->rows AS $aRow) {
+        if(!isset($aRow->value->commerciaux))
+            $aRow->value->commerciaux=null;
+        if(!isset($aRow->value->category))
+            $aRow->value->category=null;
+        unset($aRow->value->class);
+        unset($aRow->value->_rev);
+        $output["aaData"][]=$aRow->value;
+        unset($aRow);
+    }
+
+    header('Content-type: application/json');
+    echo json_encode($output);
+    exit;
+}
+
+
 /*
  * Actions
  */
@@ -82,16 +120,6 @@ if ($resql)
      }        
 }
 
-
-/* active datatable js */
-$arrayjs = array();
-$arrayjs[0] = "/core/datatables/js/jquery.dataTables.js";
-$arrayjs[1] = "/core/datatables/js/TableTools.js";
-$arrayjs[2] = "/core/datatables/js/ZeroClipboard.js";
-$arrayjs[3] = "/core/datatables/js/initXHR.js";
-$arrayjs[4] = "/core/datatables/js/request.js";
-$arrayjs[5] = "/core/datatables/js/searchColumns.js";
-
 /*
  * View
  */
@@ -99,7 +127,7 @@ $arrayjs[5] = "/core/datatables/js/searchColumns.js";
 $htmlother = new FormOther($db);
 
 
-llxHeader('', $langs->trans("ThirdParty"), $help_url, '', '', '', $arrayjs);
+llxHeader('', $langs->trans("ThirdParty"), $help_url, '', '', '', $object->arrayjs);
 
 if ($type != '') {
     if ($type == 0)
@@ -114,9 +142,9 @@ else
 
 print_barre_liste($titre, $page, '', '', '', '', '', 0, 0);
 
+print $object->listSociete("#list");
 
-
-print '<table cellpadding="0" cellspacing="0" border="0" class="liste" id="liste" width="100%">';
+print '<table cellpadding="0" cellspacing="0" border="0" class="liste" id="list" width="100%">';
 // Ligne des titres 
 print'<thead>';
 print'<tr class="liste_titre">';
@@ -152,36 +180,50 @@ print'<th class="sorting">';
 print $langs->trans("ProspectLevelShort");
 print'</th>';
 print'<th class="sorting">';
-print $langs->trans("StatusProsp");
+print $langs->trans("Status");
 print'</th>';
-print '</tr>';
+print'<th class="sorting">';
+print $langs->trans("Date");
+print'</th>';
+print'</tr>';
 print'</thead>';
 print'<tbody class="contenu">';
 print'</tbody>';
 
+$i=0;
+
 /* input search view */
 print'<tbody class="recherche">';
 print'<tr>';
-print'<td id="0"><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Company") . '" class="inputSearch"/></td>';
-print'<td id="1"><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Town") . '" class="inputSearch" /></td>';
-print'<th></th>';
+print'<td id="'.$i.'"><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Company") . '" class="inputSearch"/></td>';
+$i++;
+print'<td id="'.$i.'"><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Town") . '" class="inputSearch" /></td>';
+$i++;
+print'<td id="'.$i.'"><input  style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Zip") . '" class="inputSearch" /></td>';
+$i++;
 if(empty($conf->global->SOCIETE_DISABLE_STATE)) {
     print'<th></th>';
+    $i++;
 }
 if ($conf->categorie->enabled) {
-        print'<th></th>';
+        print'<td id="'.$i.'"><input  style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search category") . '" class="inputSearch" /></td>';
+        $i++;
 }
-print'<td id="3"><input  style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search sales") . '" class="inputSearch" /></td>';
-print'<td id="4"><input  style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search siren") . '" class="inputSearch" /></td>';
+print'<td id="'.$i.'"><input  style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search sales") . '" class="inputSearch" /></td>';
+$i++;
+print'<td id="'.$i.'"><input  style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search siren") . '" class="inputSearch" /></td>';
+$i++;
 print'<th></th>';
-        
-print'<th></th>';        
+$i++;   
+print'<th></th>';
+$i++;
+print'<th></th>';
+$i++;
 print'<th></th>';
 print'</tr>';
 print'</tbody>';
 print "</table>";
 
-include_once '../core/datatables/js/initDatatablesCompte.js.php';
 llxFooter();
 ?>
  
