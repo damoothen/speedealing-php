@@ -1637,7 +1637,7 @@ else
         $var=!$var;
 
         // Address
-        print "<tr '.$bc[$var].'><td valign=\"top\">".$langs->trans('Address').'</td><td colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'">';
+        print '<tr '.$bc[$var].'><td valign="top">'.$langs->trans("Address").'</td><td colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'">';
         dol_print_address($object->address,'gmap','thirdparty',$object->id());
         print "</td></tr>";
         $var=!$var;
