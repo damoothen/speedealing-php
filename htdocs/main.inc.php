@@ -164,6 +164,13 @@ $sessiontimeout='DOLSESSTIMEOUT_'.$prefix;
 if (! empty($_COOKIE[$sessiontimeout])) ini_set('session.gc_maxlifetime',$_COOKIE[$sessiontimeout]);
 session_name($sessionname);
 session_start();
+if (ini_get('register_globals'))    // To solve bug in using $_SESSION
+{
+    foreach ($_SESSION as $key=>$value)
+    {
+        if (isset($GLOBALS[$key])) unset($GLOBALS[$key]);
+    }
+}
 
 // Init the 5 global objects
 // This include will set: $conf, $db, $langs, $user, $mysoc objects
@@ -434,7 +441,7 @@ if (! defined('NOLOGIN'))
             dol_syslog('User not found, connexion refused');
             session_destroy();
             session_name($sessionname);
-            session_start();
+            session_start();    // Fixing the bug of register_globals here is useless since session is empty
 
             if ($resultFetchUser == 0)
             {
@@ -476,7 +483,7 @@ if (! defined('NOLOGIN'))
             dol_syslog("Can't load user even if session logged. _SESSION['dol_login']=".$login, LOG_WARNING);
             session_destroy();
             session_name($sessionname);
-            session_start();
+            session_start();    // Fixing the bug of register_globals here is useless since session is empty
 
             if ($resultFetchUser == 0)
             {
