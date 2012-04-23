@@ -28,15 +28,55 @@
 /**
  *	Parent class of all other business classes (invoices, contracts, proposals, orders, ...)
  */
-abstract class CommonObject extends couchDolibarr
+abstract class CommonObject extends couchDocument
 {
     protected $db;
     public $error;
     public $errors;
     public $canvas;                // Contains canvas name if it is
+    
+    var $arrayjs = array("/core/datatables/js/jquery.dataTables.js",
+            "/core/datatables/js/TableTools.js",
+            "/core/datatables/js/ZeroClipboard.js",
+            "/core/datatables/js/initXHR.js",
+            "/core/datatables/js/request.js",
+            "/core/datatables/js/searchColumns.js");
 
 
-    // No constructor as it is an abstract class
+       /**
+	*class constructor
+	*
+	* @param couchClient $client couchClient connection object
+	*
+	*/
+    
+        function __construct(couchClient $db)
+	{
+                parent::__construct($db);
+                $this->setAutocommit(false);
+                $this->class = $this->element;
+		$this->db = $db;
+	}
+        
+        /**
+	 *  Record fonction for update : suppress empty value
+	 *
+	 *  @return int         		1 success
+	 */
+	public function record()
+	{
+            foreach ($this->__couch_data->fields as $key => $aRow)
+            {
+                if(empty($aRow))
+                {
+                    unset($this->__couch_data->fields->$key);
+                }
+                else
+                    trim($aRow);
+                    
+            }
+            return parent::record();
+	}
 
 
     /**
@@ -2699,6 +2739,63 @@ abstract class CommonObject extends couchDolibarr
 
         include(DOL_DOCUMENT_ROOT.'/core/tpl/originproductline.tpl.php');
     }
+    
+        /**
+	 *  Get a view name for the class
+	 *
+         *  @param  string                      view name
+	 *  @return array         		1 success
+	 */
+        
+        public function getView($name)
+        {
+            global $conf;
+            
+            return $this->db->limit($conf->liste_limit)->getView($this->class,$name);
+        }
+    
+    
+        /**
+	 *  For list datatables generation
+	 *
+         *  @param $obj object of aocolumns details
+         *  @param $ref_css name of #list
+	 *  @return string
+	 */
+	public function _datatables($obj,$ref_css)
+	{
+            global $conf,$langs;
+            
+            $obj->sAjaxSource = $_SERVER['PHP_SELF']."?json=true";
+            $obj->iDisplayLength = (int)$conf->global->MAIN_SIZE_LISTE_LIMIT;
+            $obj->aLengthMenu= array(array(10, 25, 50, 100, 1000, -1), array(10, 25, 50, 100,1000,"All"));
+            $obj->bProcessing = true;
+            $obj->bJQueryUI = true;
+            $obj->bDeferRender = true;
+            $obj->oLanguage->sUrl = DOL_URL_ROOT.'/core/datatables/langs/'.($langs->defaultlang?$langs->defaultlang:"en_US").".txt";
+            $obj->sDom = '<\"top\"Tflpi<\"clear\">>rt<\"bottom\"pi<\"clear\">>';
+            $obj->oTableTools->sSwfPath = DOL_URL_ROOT.'/core/datatables/swf/copy_cvs_xls_pdf.swf';
+            $obj->oTableTools->aButtons = array("xls");
+            
+            $output ='<script type="text/javascript" charset="utf-8">';
+            $output.='$(document).ready(function() {';
+            $output.='oTable = $(\''.$ref_css.'\').dataTable(';
+            
+            $json = json_encode($obj);
+            $json = str_replace('"%', '', $json);
+            $json = str_replace('%"', '', $json);
+            $json = str_replace('\n', '', $json);
+            $json = str_replace('\"', '"', $json);
+            $json = str_replace('\"', '"', $json);
+            $json = str_replace('$', '"', $json);
+            $output.=$json;
+            
+            $output.= ");";
+            $output.= "});";
+            $output.='</script>';
+                
+            return $output;
+	}
 }
 
 ?>

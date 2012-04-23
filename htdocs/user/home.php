@@ -42,7 +42,7 @@ if (! empty($conf->global->MAIN_USE_ADVANCED_PERMS))
 $socid=0;
 if ($user->societe_id > 0) $socid = $user->societe_id;
 
-$companystatic = new Societe($db);
+$companystatic = new Societe($couch);
 $fuserstatic = new User($db);
 
 

@@ -1797,8 +1797,6 @@ class Societe extends CommonObject
         {
             global $langs, $conf;
 
-            $obj->aaSorting = array(array(2, "desc"));
-
             $i=0;
             $obj->aoColumns[$i]->mDataProp = "name";
             $obj->aoColumns[$i]->sWidth = "20em";
