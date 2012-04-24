@@ -142,7 +142,8 @@ else
 
 print_barre_liste($titre, $page, '', '', '', '', '', 0, 0);
 
-print $object->listSociete("#list");
+$i=0;
+$obj=new stdClass();
 
 print '<table cellpadding="0" cellspacing="0" border="0" class="liste" id="list" width="100%">';
 // Ligne des titres 
@@ -151,12 +152,52 @@ print'<tr class="liste_titre">';
 print'<th class="sorting">';
 print $langs->trans("Company");
 print'</th>';
+$obj->aoColumns[$i]->mDataProp = "name";
+$obj->aoColumns[$i]->sWidth = "20em";
+$obj->aoColumns[$i]->bUseRendered = true;
+$obj->aoColumns[$i]->bSearchable = true;
+$obj->aoColumns[$i]->fnRender= '%function(obj) {
+var ar = [];
+ar[ar.length] = $<a href=\"'.DOL_URL_ROOT.'/societe/soc.php?socid=$;
+ar[ar.length] = obj.aData._id;
+ar[ar.length] = $\"><img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/object_company.png\" border=\"0\" alt=\"Afficher mailing : $;
+ar[ar.length] = obj.aData.name.toString();
+ar[ar.length] = $\" title=\"Afficher soci&eacute;t&eacute;:$;
+ar[ar.length] = obj.aData.name.toString();
+ar[ar.length] = $\"></a> <a href=\"'.DOL_URL_ROOT.'/societe/soc.php?socid=$;
+ar[ar.length] = obj.aData._id;
+ar[ar.length] = $\">$;
+ar[ar.length] = obj.aData.name.toString();
+ar[ar.length] = $</a>$;
+var str = ar.join("");
+return str;
+}%';
+$i++;
 print'<th class="sorting">';
 print $langs->trans("Town");
 print'</th>';
+$obj->aoColumns[$i]->mDataProp = "town";
+$obj->aoColumns[$i]->sWidth = "7em";
+$obj->aoColumns[$i]->sClass = "center";
+$obj->aoColumns[$i]->fnRender= '%function(obj) {
+var str = obj.aData.town;
+if(typeof str === $undefined$)
+    str = null;
+    return str;
+}%';
+$i++;
 print'<th class="sorting">';
 print $langs->trans("Zip");
 print'</th>';
+$obj->aoColumns[$i]->mDataProp = "zip";
+$obj->aoColumns[$i]->sClass = "right";
+$obj->aoColumns[$i]->fnRender = '%function(obj) {
+var str = obj.aData.zip;
+if(typeof str === $undefined$)
+    str = null;
+    return str;
+}%';
+$i++;
 if (empty($conf->global->SOCIETE_DISABLE_STATE)) {
     print'<th class="sorting">';
     print $langs->trans("State");
@@ -166,29 +207,105 @@ if ($conf->categorie->enabled) {
     print'<th class="sorting">';
     print $langs->trans('Categories');
     print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "category";
+    $obj->aoColumns[$i]->fnRender = '%function(obj) {
+    var str = obj.aData.category;
+    if(typeof str === $undefined$)
+        str = null;
+        return str;
+    }%';
+    $i++;
 }
 print'<th class="sorting">';
 print $langs->trans('SalesRepresentatives');
 print'</th>';
+$obj->aoColumns[$i]->mDataProp = "commerciaux";
+$obj->aoColumns[$i]->fnRender = '%function(obj) {
+var str = obj.aData.commerciaux;
+if(typeof str === $undefined$)
+    str = null;
+    return str;
+}%';
+$i++;
 print'<th class="sorting">';
 print $langs->trans('Siren');
 print'</th>';
+$obj->aoColumns[$i]->mDataProp = "idprof1";
+$obj->aoColumns[$i]->fnRender = '%function(obj) {
+var str = obj.aData.idprof1;
+if(typeof str === $undefined$)
+    str = null;
+    return str;
+}%';
+$i++;
 print'<th class="sorting">';
 print $langs->trans('Ape');
 print'</th>';
+$obj->aoColumns[$i]->mDataProp = "idprof2";
+$obj->aoColumns[$i]->fnRender = '%function(obj) {
+var str = obj.aData.idprof2;
+if(typeof str === $undefined$)
+    str = null;
+    return str;
+}%';
+$i++;
 print'<th class="sorting">';
 print $langs->trans("ProspectLevelShort");
 print'</th>';
+$obj->aoColumns[$i]->mDataProp = "potentiel";
+$obj->aoColumns[$i]->fnRender = '%function(obj) {
+var str = obj.aData.potentiel;
+if(typeof str === $undefined$)
+    str = null;
+    return str;
+}%';
+$i++;
 print'<th class="sorting">';
 print $langs->trans("Status");
 print'</th>';
+$obj->aoColumns[$i]->mDataProp = "fk_stcomm";
+$obj->aoColumns[$i]->sClass = "center";
+$obj->aoColumns[$i]->fnRender = '%function(obj) {
+var status = new Array();
+var stcomm = obj.aData.fk_stcomm;
+if(typeof str === $undefined$)
+    stcomm = 0;
+status[0] = new Array($'.$langs->trans('MailingStatusDraft').'$,0);
+status[1] = new Array($'.$langs->trans('MailingStatusValidated').'$,1);
+status[2] = new Array($'.$langs->trans('MailingStatusSentPartialy').'$,3);
+status[3] = new Array($'.$langs->trans('MailingStatusSentCompletely').'$,6);
+var ar = [];
+ar[ar.length] = $<img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/statut$;
+ar[ar.length] = status[stcomm][1];
+ar[ar.length] = $.png\" border=\"0\" alt=\"Afficher mailing : $;
+ar[ar.length] = $\" title=\"$;
+ar[ar.length] = status[stcomm][0];
+ar[ar.length] = $\">$;
+var str = ar.join("");
+return str;
+}%';
+$i++;
 print'<th class="sorting">';
 print $langs->trans("Date");
 print'</th>';
+$obj->aoColumns[$i]->mDataProp = "tms";
+$obj->aoColumns[$i]->sType="date";
+$obj->aoColumns[$i]->sClass = "center";
+$obj->aoColumns[$i]->fnRender = '%function(obj) {
+if(obj.aData.tms)
+{
+    var date = new Date(obj.aData.tms*1000);
+    return date.toLocaleDateString();
+}
+else
+    return null;
+}%';
 print'</tr>';
 print'</thead>';
 print'<tbody class="contenu">';
 print'</tbody>';
+
+print $object->_datatables($obj,"#list");
 
 $i=0;
 
@@ -201,10 +318,10 @@ print'<td id="'.$i.'"><input style="margin-top:1px;"  type="text" placeholder="'
 $i++;
 print'<td id="'.$i.'"><input  style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Zip") . '" class="inputSearch" /></td>';
 $i++;
-if(empty($conf->global->SOCIETE_DISABLE_STATE)) {
+/*if(empty($conf->global->SOCIETE_DISABLE_STATE)) {
     print'<th></th>';
     $i++;
-}
+}*/
 if ($conf->categorie->enabled) {
         print'<td id="'.$i.'"><input  style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search category") . '" class="inputSearch" /></td>';
         $i++;

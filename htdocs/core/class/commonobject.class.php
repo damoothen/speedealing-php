@@ -2785,6 +2785,7 @@ abstract class CommonObject extends couchDocument
             $json = str_replace('"%', '', $json);
             $json = str_replace('%"', '', $json);
             $json = str_replace('\n', '', $json);
+            $json = str_replace('\r', '', $json);
             $json = str_replace('\"', '"', $json);
             $json = str_replace('\"', '"', $json);
             $json = str_replace('$', '"', $json);
