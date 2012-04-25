@@ -39,6 +39,7 @@ require_once('../core/class/translate.class.php');
 require_once('../core/lib/functions.lib.php');
 require_once('../core/lib/admin.lib.php');
 require_once('../core/lib/files.lib.php');
+require_once('../core/db/couchdb/lib/couchDocument.php');
 require_once(ADODB_PATH.'adodb-time.inc.php');
 
 error_reporting(E_ALL);	// To have all errors without disabled E_STRICT
