@@ -1014,8 +1014,8 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
             
             print'<!-- Foundation framework -->';
             print '<link rel="stylesheet" href="'.DOL_URL_ROOT.'/theme/pertho_sample/foundation/stylesheets/foundation.css">';
-            //print '<!-- jquery UI -->';
-            //print '<link rel="stylesheet" href="'.DOL_URL_ROOT.'/theme/pertho_sample/lib/jQueryUI/css/Aristo/Aristo.css" media="all" />';
+            print '<!-- jquery UI -->';
+            print '<link rel="stylesheet" href="'.DOL_URL_ROOT.'/theme/pertho_sample/lib/jQueryUI/css/Aristo/Aristo.css" media="all" />';
             print '<!-- jQplot (charts) -->';
             print '<link rel="stylesheet" href="'.DOL_URL_ROOT.'/theme/pertho_sample/lib/jQplot/jquery.jqplot.css" media="all" />';
             print '<!-- fancybox -->';
@@ -1028,8 +1028,8 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
             print '<link rel="stylesheet" href="'.DOL_URL_ROOT.'/theme/pertho_sample/css/style.css" />';
 
             print '<!-- Google fonts -->';
-            print '<link href="http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet" />';
-            print '<link href="http://fonts.googleapis.com/css?family=Terminal+Dosis" rel="stylesheet" />';
+            print '<link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet" />';
+            print '<link href="https://fonts.googleapis.com/css?family=Terminal+Dosis" rel="stylesheet" />';
 
             print '<!-- Favicons and the like (avoid using transparent .png) -->';
             print '<link rel="shortcut icon" type="image/x-icon" href="'.DOL_URL_ROOT.'/theme/favicon.ico"/>'."\n";
