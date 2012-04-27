@@ -819,25 +819,20 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
     if (empty($conf->css)) $conf->css = '/theme/eldy/style.css.php';	// If not defined, eldy by default
 
     print '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">';
-    //print '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/strict.dtd">';
-    //print '<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
-    //print '<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">';
-    //print '<!DOCTYPE HTML>';
+    
     print "\n";
     if (! empty($conf->global->MAIN_USE_CACHE_MANIFEST)) print '<html manifest="cache.manifest">'."\n";
     else print '<html>'."\n";
-    //print '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">'."\n";
+    
     if (empty($disablehead))
     {
         print "<head>\n";
 
         // Displays meta
         print '<meta name="robots" content="noindex,nofollow">'."\n";      // Evite indexation par robots
-        print '<meta name="author" content="Dolibarr Development Team">'."\n";
-        $favicon=DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/favicon.ico';
-        print '<link rel="shortcut icon" type="image/x-icon" href="'.$favicon.'"/>'."\n";
+        print '<meta name="author" content="SpeeDealing Development Team">'."\n";
         // Displays title
-        $appli='Dolibarr';
+        $appli='SpeeDealing';
         if (!empty($conf->global->MAIN_APPLICATION_TITLE)) $appli=$conf->global->MAIN_APPLICATION_TITLE;
 
         if ($title) print '<title>'.$appli.' - '.$title.'</title>';
@@ -849,10 +844,10 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
             print '<!-- Includes for JQuery (Ajax library) -->'."\n";
             $jquerytheme = 'smoothness';
             if (!empty($conf->global->MAIN_USE_JQUERY_THEME)) $jquerytheme = $conf->global->MAIN_USE_JQUERY_THEME;
-            if (constant('JS_JQUERY_UI')) print '<link rel="stylesheet" type="text/css" href="'.JS_JQUERY_UI.'css/'.$jquerytheme.'/jquery-ui.min.css" />'."\n";  // JQuery
-            else print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/css/'.$jquerytheme.'/jquery-ui-latest.custom.css" />'."\n";    // JQuery
-            print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/tiptip/tipTip.css" />'."\n";                           // Tooltip
-            print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/jnotify/jquery.jnotify-alt.min.css" />'."\n";          // JNotify
+            //if (constant('JS_JQUERY_UI')) print '<link rel="stylesheet" type="text/css" href="'.JS_JQUERY_UI.'css/'.$jquerytheme.'/jquery-ui.min.css" />'."\n";  // JQuery
+            //else print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/css/'.$jquerytheme.'/jquery-ui-latest.custom.css" />'."\n";    // JQuery
+            //print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/tiptip/tipTip.css" />'."\n";                           // Tooltip
+            //print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/jnotify/jquery.jnotify-alt.min.css" />'."\n";          // JNotify
             //print '<link rel="stylesheet" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/lightbox/css/jquery.lightbox-0.5.css" media="screen" />'."\n";       // Lightbox
             if (! empty($conf->global->MAIN_USE_JQUERY_FILEUPLOAD))     // jQuery fileupload
             {
@@ -861,11 +856,11 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
             if (! empty($conf->global->MAIN_USE_JQUERY_DATATABLES))     // jQuery datatables
             {
                 //print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/css/jquery.dataTables.css" />'."\n";
-                print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/css/jquery.dataTables_jui.css" />'."\n";
-                print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/ColReorder/css/ColReorder.css" />'."\n";
-                print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/ColVis/css/ColVis.css" />'."\n";
+                //print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/css/jquery.dataTables_jui.css" />'."\n";
+                //print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/ColReorder/css/ColReorder.css" />'."\n";
+                //print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/ColVis/css/ColVis.css" />'."\n";
                 //print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/ColVis/css/ColVisAlt.css" />'."\n";
-                print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/TableTools/css/TableTools.css" />'."\n";
+                //print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/TableTools/css/TableTools.css" />'."\n";
             }
             if (! empty($conf->global->MAIN_USE_JQUERY_MULTISELECT))     // jQuery multiselect
             {
@@ -906,7 +901,7 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
 
         if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER)) print '<link rel="top" title="'.$langs->trans("Home").'" href="'.(DOL_URL_ROOT?DOL_URL_ROOT:'/').'">'."\n";
         if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER)) print '<link rel="copyright" title="GNU General Public License" href="http://www.gnu.org/copyleft/gpl.html#SEC1">'."\n";
-        if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER)) print '<link rel="author" title="Dolibarr Development Team" href="http://www.dolibarr.org">'."\n";
+        if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER)) print '<link rel="author" title="SpeeDealing Development Team" href="http://www.speedealing.com">'."\n";
 
         // Output standard javascript links
         if (! $disablejs && $conf->use_javascript_ajax)
@@ -917,27 +912,27 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
             }	// mini='_mini', ext='.gz'
 
             // JQuery. Must be before other includes
-            print '<!-- Includes JS for JQuery -->'."\n";
+            /*print '<!-- Includes JS for JQuery -->'."\n";
             if (constant('JS_JQUERY')) print '<script type="text/javascript" src="'.JS_JQUERY.'jquery.min.js"></script>'."\n";
             else print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/js/jquery-latest.min'.$ext.'"></script>'."\n";
             if (constant('JS_JQUERY_UI')) print '<script type="text/javascript" src="'.JS_JQUERY_UI.'jquery-ui.min.js"></script>'."\n";
             else print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/js/jquery-ui-latest.custom.min'.$ext.'"></script>'."\n";
             print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/tablednd/jquery.tablednd_0_5'.$ext.'"></script>'."\n";
-            print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/tiptip/jquery.tipTip.min'.$ext.'"></script>'."\n";
+            print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/tiptip/jquery.tipTip.min'.$ext.'"></script>'."\n";*/
             //print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/lightbox/js/jquery.lightbox-0.5.min'.$ext.'"></script>'."\n";
             // jQuery Layout
-            if (! empty($conf->global->MAIN_MENU_USE_JQUERY_LAYOUT) || defined('REQUIRE_JQUERY_LAYOUT'))
+            /*if (! empty($conf->global->MAIN_MENU_USE_JQUERY_LAYOUT) || defined('REQUIRE_JQUERY_LAYOUT'))
             {
                 print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/layout/jquery.layout-latest'.$ext.'"></script>'."\n";
-            }
+            }*/
             // jQuery jnotify
-            if (empty($conf->global->MAIN_DISABLE_JQUERY_JNOTIFY))
+            /*if (empty($conf->global->MAIN_DISABLE_JQUERY_JNOTIFY))
             {
                 print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/jnotify/jquery.jnotify.min.js"></script>'."\n";
                 print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/core/js/jnotify.js"></script>'."\n";
-            }
+            }*/
             // Flot
-            if (empty($conf->global->MAIN_DISABLE_JQUERY_FLOT))
+            /*if (empty($conf->global->MAIN_DISABLE_JQUERY_FLOT))
             {
                 if (constant('JS_JQUERY_FLOT'))
                 {
@@ -953,7 +948,7 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
                     print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/flot/jquery.flot.pie.min.js"></script>'."\n";
                     print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/flot/jquery.flot.stack.min.js"></script>'."\n";
                 }
-            }
+            }*/
             // jQuery jeditable
             if (! empty($conf->global->MAIN_USE_JQUERY_JEDITABLE))
             {
@@ -982,20 +977,20 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
                 print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/fileupload/jquery.fileupload-ui.js"></script>'."\n";
             }
             // jQuery DataTables
-            if (! empty($conf->global->MAIN_USE_JQUERY_DATATABLES))
-            {
-                print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/js/jquery.dataTables.min'.$ext.'"></script>'."\n";
-                print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/ColReorder/js/ColReorder.min'.$ext.'"></script>'."\n";
-                print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/ColVis/js/ColVis.min'.$ext.'"></script>'."\n";
-                print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/TableTools/js/TableTools.min'.$ext.'"></script>'."\n";
-            }
+            //    print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/js/jquery.dataTables.min'.$ext.'"></script>'."\n";
+            //    print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/ColReorder/js/ColReorder.min'.$ext.'"></script>'."\n";
+            //    print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/ColVis/js/ColVis.min'.$ext.'"></script>'."\n";
+            //    print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/TableTools/js/TableTools.min'.$ext.'"></script>'."\n";
+            //    print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/js/initXHR'.$ext.'"></script>'."\n";
+            //    print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/js/searchColumns'.$ext.'"></script>'."\n";
+            //    print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/js/ZeroClipboard'.$ext.'"></script>'."\n";
             // jQuery Multiselect
             if (! empty($conf->global->MAIN_USE_JQUERY_MULTISELECT))
             {
             	print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/multiselect/js/ui.multiselect.js"></script>'."\n";
             }
             // CKEditor
-            if (! empty($conf->fckeditor->enabled) && (empty($conf->global->FCKEDITOR_EDITORNAME) || $conf->global->FCKEDITOR_EDITORNAME == 'ckeditor'))
+            /*if (! empty($conf->fckeditor->enabled) && (empty($conf->global->FCKEDITOR_EDITORNAME) || $conf->global->FCKEDITOR_EDITORNAME == 'ckeditor'))
             {
                 print '<!-- Includes JS for CKEditor -->'."\n";
                 if (constant('JS_CKEDITOR'))
@@ -1008,14 +1003,44 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
                     print '<script type="text/javascript">var CKEDITOR_BASEPATH = \''.DOL_URL_ROOT.'/includes/ckeditor/\';</script>'."\n";
                     print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/ckeditor/ckeditor_basic.js"></script>'."\n";
                 }
-            }
+            }*/
 
             // Global js function
             print '<!-- Includes JS of Dolibarr -->'."\n";
-            print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/core/js/lib_head.js"></script>'."\n";
+            //print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/core/js/lib_head.js"></script>'."\n";
 
             // Add datepicker default options
-            print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/core/js/datepicker.js.php?lang='.$langs->defaultlang.'"></script>'."\n";
+            //print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/core/js/datepicker.js.php?lang='.$langs->defaultlang.'"></script>'."\n";
+            
+            print'<!-- Foundation framework -->';
+            print '<link rel="stylesheet" href="'.DOL_URL_ROOT.'/theme/pertho_sample/foundation/stylesheets/foundation.css">';
+            //print '<!-- jquery UI -->';
+            //print '<link rel="stylesheet" href="'.DOL_URL_ROOT.'/theme/pertho_sample/lib/jQueryUI/css/Aristo/Aristo.css" media="all" />';
+            print '<!-- jQplot (charts) -->';
+            print '<link rel="stylesheet" href="'.DOL_URL_ROOT.'/theme/pertho_sample/lib/jQplot/jquery.jqplot.css" media="all" />';
+            print '<!-- fancybox -->';
+            print '<link rel="stylesheet" href="'.DOL_URL_ROOT.'/theme/pertho_sample/lib/fancybox/jquery.fancybox-1.3.4.css" media="all" />';
+            print '<!-- fullcalendar -->';
+            print '<link rel="stylesheet" href="'.DOL_URL_ROOT.'/theme/pertho_sample/lib/fullcalendar/fullcalendar.css" media="all" />';
+            print '<!-- tooltips -->';
+            print '<link rel="stylesheet" href="'.DOL_URL_ROOT.'/theme/pertho_sample/lib/qtip2/jquery.qtip.min.css" />';
+            print '<!-- main styles -->';
+            print '<link rel="stylesheet" href="'.DOL_URL_ROOT.'/theme/pertho_sample/css/style.css" />';
+
+            print '<!-- Google fonts -->';
+            print '<link href="http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet" />';
+            print '<link href="http://fonts.googleapis.com/css?family=Terminal+Dosis" rel="stylesheet" />';
+
+            print '<!-- Favicons and the like (avoid using transparent .png) -->';
+            print '<link rel="shortcut icon" type="image/x-icon" href="'.DOL_URL_ROOT.'/theme/favicon.ico"/>'."\n";
+            print '<link rel="apple-touch-icon-precomposed" href="'.DOL_URL_ROOT.'/theme/icon.png" />';
+
+            print '<!--[if lt IE 9]>';
+            print '<link rel="stylesheet" href="foundation/stylesheets/ie.css">';
+            print '<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>';
+            print '<script src="lib/jQplot/excanvas.min.js"></script>';
+            print '<![endif]-->';
+            
 
             // Output module javascript
             if (is_array($arrayofjs))
@@ -1080,88 +1105,7 @@ function top_menu($head, $title='', $target='', $disablejs=0, $disablehead=0, $a
     // For backward compatibility with old modules
     if (empty($conf->headerdone)) top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss);
 
-    print '<body id="mainbody">';
-
-    if ($conf->use_javascript_ajax)
-    {
-        if ($conf->global->MAIN_MENU_USE_JQUERY_LAYOUT)
-        {
-            print '<script type="text/javascript">
-				jQuery(document).ready(function () {
-					jQuery("body").layout(layoutSettings);
-				});
-				var layoutSettings = {
-					name: "mainlayout",
-					defaults: {
-						useStateCookie: true,
-						size: "auto",
-						resizable: false,
-						//paneClass: "none",
-						//resizerClass: "resizer",
-						//togglerClass: "toggler",
-						//buttonClass: "button",
-						//contentSelector: ".content",
-						//contentIgnoreSelector: "span",
-						togglerTip_open: "Close This Pane",
-						togglerTip_closed: "Open This Pane",
-						resizerTip:	"Resize This Pane",
-						fxSpeed: "fast"
-					},
-					west: {
-						paneClass: "leftContent",
-						//spacing_closed:	14,
-						//togglerLength_closed: 14,
-						//togglerAlign_closed: "auto",
-						//togglerLength_open: 0,
-						//	effect defaults - overridden on some panes
-						//slideTrigger_open:	"mouseover",
-						initClosed:	'.(empty($conf->browser->phone)?'false':'true').',
-						fxName:	"drop",
-						fxSpeed: "fast",
-						fxSettings: { easing: "" }
-					},
-					north: {
-						paneClass: "none",
-						resizerClass: "none",
-						togglerClass: "none",
-						spacing_open: 0,
-						togglerLength_open:	0,
-						togglerLength_closed: -1,
-						slidable: false,
-						fxName:	"none",
-						fxSpeed: "fast"
-					},
-					center: {
-						paneSelector: "#mainContent"
-					}
-				}
-    		</script>';
-        }
-
-        if (! empty($conf->global->MAIN_MENU_USE_JQUERY_ACCORDION))
-        {
-            print "\n".'<script type="text/javascript">
-					jQuery(document).ready(function () {
-						jQuery( ".vmenu" ).accordion({
-							autoHeight: false,
-							event: "mouseover",
-							//collapsible: true,
-							//active: 2,
-							header: "> .blockvmenupair > .menu_titre"
-						});
-					});
-					</script>';
-        }
-
-        // Wrapper to show tooltips
-        print "\n".'<script type="text/javascript">
-                    jQuery(document).ready(function () {
-                    	jQuery(function() {
-                        	jQuery(".classfortooltip").tipTip({maxWidth: "'.dol_size(600,'width').'px", edgeOffset: 10, delay: 50, fadeIn: 50, fadeOut: 50});
-                        });
-                    });
-                </script>';
-    }
+    print '<body class="ptrn_a grdnt_a mhover_a">';
 
     /*
      * Top menu
@@ -1190,8 +1134,62 @@ function top_menu($head, $title='', $target='', $disablejs=0, $disablehead=0, $a
     print "\n".'<!-- Start top horizontal menu '.$top_menu.' -->'."\n";
 
     if ($conf->use_javascript_ajax && $conf->global->MAIN_MENU_USE_JQUERY_LAYOUT) print '<div class="ui-layout-north"> <!-- Begin top layout -->'."\n";
-
-    print '<div id="tmenu_tooltip" class="tmenu">'."\n";
+    print '<header>';
+    print '<div class="container head_s_a">';
+    
+    // HEADER
+    print '<div class="row sepH_b">
+        <div class="six columns">
+        <div class="row">
+        <div class="five phone-two columns">
+        <div id="logo">';
+    $mysoc->logo_mini=$conf->global->MAIN_INFO_SOCIETE_LOGO_MINI;
+    if (! empty($mysoc->logo_mini) && is_readable($conf->mycompany->dir_output.'/logos/thumbs/'.$mysoc->logo_mini))
+        $urllogo=DOL_URL_ROOT.'/viewimage.php?cache=1&amp;modulepart=companylogo&amp;file='.urlencode('thumbs/'.$mysoc->logo_mini);
+    else
+        $urllogo=DOL_URL_ROOT.'/theme/dolibarr_logo.png';
+    print '<a href="'.DOL_URL_ROOT.'/index.php?mainmenu=home"><img src="'.$urllogo.'" alt="'.$conf->global->MAIN_INFO_SOCIETE_NOM.'" title="'.$conf->global->MAIN_INFO_SOCIETE_NOM.'"/></a>';
+    print '</div>
+							</div>
+							<div class="seven phone-two columns">
+								<form action="search.php" id="search_box" method="post">
+									<input name="query" id="query" type="text" size="40" placeholder="Find&hellip;" autocomplete="off" />
+								</form>
+							</div>
+						</div>
+					</div>
+					<div class="six columns">
+						<div class="user_box cf">
+							<div class="user_avatar">
+								<img src="'.DOL_URL_ROOT.'/theme/pertho_sample/img/user_female.png" alt="" />
+							</div>
+							<div class="user_info user_sep">
+								<p class="sepH_a">
+									<strong>'.$user->prenom." ".$user->nom.'</strong>
+								</p>
+								<span>
+									<a href="'.DOL_URL_ROOT.'/user/fiche.php?id='.$user->id.'" class="sep">Settings</a>
+									<a href="'.DOL_URL_ROOT.'/user/logout.php">Log out</a>
+								</span>
+							</div>
+							<div class="ntf_bar user_sep">
+								<a href="#ntf_mail_panel" class="ntf_item" style="background-image: url('.DOL_URL_ROOT.'/theme/pertho_sample/img/ico/icSw2/32-Mail.png)">
+									<span class="ntf_tip ntf_tip_red"><span>12</span></span>
+								</a>
+								<a href="#ntf_tickets_panel" class="ntf_item" style="background-image: url('.DOL_URL_ROOT.'/theme/pertho_sample/img/ico/icSw2/32-Day-Calendar.png)">
+									<span class="ntf_tip ntf_tip_red"><span>122</span></span>
+								</a>
+								<a href="#ntf_comments_panel" class="ntf_item" style="background-image: url('.DOL_URL_ROOT.'/theme/pertho_sample/img/ico/icSw2/32-Speech-Bubble.png)">
+									<span class="ntf_tip ntf_tip_blue"><span>8</span></span>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>';
+    
+    
+    print '<div class="row">'."\n";
+    print '<div class="twelve columns">';
 
     // Show menu
     $menutop = new MenuTop($db);
@@ -1199,102 +1197,79 @@ function top_menu($head, $title='', $target='', $disablejs=0, $disablehead=0, $a
     $menutop->showmenu();      // This contains a \n
 
     print "</div>\n";
-
-    // Link to login card
-    $loginhtmltext=''; $logintext='';
-    if ($user->societe_id)
-    {
-        $thirdpartystatic=new Societe($db);
-        $thirdpartystatic->fetch($user->societe_id);
-        $companylink=' ('.$thirdpartystatic->getNomUrl('','').')';
-        $company=' ('.$langs->trans("Company").': '.$thirdpartystatic->name.')';
-    }
-    $logintext='<div class="login"><a href="'.DOL_URL_ROOT.'/user/fiche.php?id='.$user->id.'"';
-    $logintext.=$menutop->atarget?(' target="'.$menutop->atarget.'"'):'';
-    $logintext.='>'.$user->login.'</a>';
-    if ($user->societe_id) $logintext.=$companylink;
-    $logintext.='</div>';
-    $loginhtmltext.='<u>'.$langs->trans("User").'</u>';
-    $loginhtmltext.='<br><b>'.$langs->trans("Name").'</b>: '.$user->getFullName($langs);
-    $loginhtmltext.='<br><b>'.$langs->trans("Login").'</b>: '.$user->login;
-    $loginhtmltext.='<br><b>'.$langs->trans("Administrator").'</b>: '.yn($user->admin);
-    $type=($user->societe_id?$langs->trans("External").$company:$langs->trans("Internal"));
-    $loginhtmltext.='<br><b>'.$langs->trans("Type").'</b>: '.$type;
-    $loginhtmltext.='<br><b>'.$langs->trans("IPAddress").'</b>: '.$_SERVER["REMOTE_ADDR"];
-    $loginhtmltext.='<br>';
-    $loginhtmltext.='<br><u>'.$langs->trans("Connection").'</u>';
-    if ($conf->global->MAIN_MODULE_MULTICOMPANY) $loginhtmltext.='<br><b>'.$langs->trans("ConnectedOnMultiCompany").'</b>: '.$conf->entity.' (user entity '.$user->entity.')';
-    $loginhtmltext.='<br><b>'.$langs->trans("ConnectedSince").'</b>: '.dol_print_date($user->datelastlogin,"dayhour");
-    $loginhtmltext.='<br><b>'.$langs->trans("PreviousConnexion").'</b>: '.dol_print_date($user->datepreviouslogin,"dayhour");
-    $loginhtmltext.='<br><b>'.$langs->trans("AuthenticationMode").'</b>: '.$_SESSION["dol_authmode"];
-    $loginhtmltext.='<br><b>'.$langs->trans("CurrentTheme").'</b>: '.$conf->theme;
-    $s=picto_from_langcode($langs->getDefaultLang());
-    $loginhtmltext.='<br><b>'.$langs->trans("CurrentUserLanguage").'</b>: '.($s?$s.' ':'').$langs->getDefaultLang();
-    $loginhtmltext.='<br><b>'.$langs->trans("Browser").'</b>: '.$conf->browser->name.($conf->browser->version?' '.$conf->browser->version:'').' ('.$_SERVER['HTTP_USER_AGENT'].')';
-    if (! empty($conf->browser->phone)) $loginhtmltext.='<br><b>'.$langs->trans("Phone").'</b>: '.$conf->browser->phone;
-    if (! empty($_SESSION["disablemodules"])) $loginhtmltext.='<br><b>'.$langs->trans("DisabledModules").'</b>: <br>'.join(', ',explode(',',$_SESSION["disablemodules"]));
-
-    $appli='Dolibarr';
-    if (!empty($conf->global->MAIN_APPLICATION_TITLE)) $appli=$conf->global->MAIN_APPLICATION_TITLE;
-
-    // Link info
-    $logouttext='';
-    $logouthtmltext=$appli.' '.DOL_VERSION.'<br>';
-    $logouthtmltext.=$langs->trans("Logout").'<br>';
-    //$logouthtmltext.="<br>";
-    if ($_SESSION["dol_authmode"] != 'forceuser'
-    && $_SESSION["dol_authmode"] != 'http')
-    {
-        $logouttext.='<a href="'.DOL_URL_ROOT.'/user/logout.php"';
-        $logouttext.=$menutop->atarget?(' target="'.$menutop->atarget.'"'):'';
-        $logouttext.='>';
-        $logouttext.='<img class="login" border="0" width="14" height="14" src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/logout.png"';
-        $logouttext.=' alt="'.dol_escape_htmltag($langs->trans("Logout")).'" title=""';
-        $logouttext.='>';
-        $logouttext.='</a>';
-    }
-    else
-    {
-        $logouttext.='<img class="login" border="0" width="14" height="14" src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/logout.png"';
-        $logouttext.=' alt="'.dol_escape_htmltag($langs->trans("Logout")).'" title=""';
-        $logouttext.='>';
-    }
-
-    print '<div class="login_block">'."\n";
-    print '<table class="nobordernopadding" summary=""><tr>';
-
-    if (! is_object($form)) $form=new Form($db);
-
-    $toprightmenu.=$form->textwithtooltip('',$loginhtmltext,2,1,$logintext,'',1);
-
-    // Execute hook printTopRightMenu (hooks should output string like '<td><div class="login"><a href="">mylink</a></div></td>')
-    $parameters=array();
-    $toprightmenu.=$hookmanager->executeHooks('printTopRightMenu',$parameters);    // Note that $action and $object may have been modified by some hooks
-
-    // Logout link
-    $toprightmenu.=$form->textwithtooltip('',$logouthtmltext,2,1,$logouttext,'',1);
-
-    // Link to print main content area
-    if (empty($conf->global->MAIN_PRINT_DISABLELINK) && empty($conf->browser->phone))
-    {
-        $qs=$_SERVER["QUERY_STRING"].($_SERVER["QUERY_STRING"]?'&':'').$morequerystring;
-        $text ='<a href="'.$_SERVER["PHP_SELF"].'?'.$qs.($qs?'&':'').'optioncss=print" target="_blank">';
-        $text.='<img class="printer" border="0" width="14" height="14" src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/printer.png"';
-        $text.=' title="" alt="">';
-        $text.='</a>';
-        $toprightmenu.=$form->textwithtooltip('',$langs->trans("PrintContentArea"),2,1,$text,'',1);
-    }
-
-    print $toprightmenu;
-
-    print '</tr></table>'."\n";
     print "</div>\n";
-
-    if ($conf->use_javascript_ajax && $conf->global->MAIN_MENU_USE_JQUERY_LAYOUT) print "</div><!-- End top layout -->\n";
+    print '<!-- End Menu -->';
+    
+    print "</div>\n";
+    
+    print '<!-- notifications content -->
+			<div style="display:none">
+				<div id="ntf_tickets_panel" style="display:none">
+					<p class="sticky-title">New Tickets</p>
+					<ul class="sticky-list">
+						<li>
+							<a href="#">Admin should not break if URL&hellip;</a>
+							<p><span class="s_color small">updated 01.04.2012</span></p>
+						</li>
+						<li>
+							<a href="#">Displaying submenus in custom&hellip;</a>
+							<p><span class="s_color small">updated 01.04.2012</span></p>
+						</li>
+						<li>
+							<a href="#">Featured image on post types.</a>
+							<p><span class="s_color small">updated 24.03.2012</span></p>
+						</li>
+						<li>
+							<a href="#">Multiple feed fixes and&hellip;</a>
+							<p><span class="s_color small">updated 22.03.2012</span></p>
+						</li>
+						<li>
+							<a href="#">Automatic line breaks in&hellip;</a>
+							<p><span class="s_color small">updated 18.03.2012</span></p>
+						</li>
+						<li>
+							<a href="#">Wysiwyg bug with shortcodes.</a>
+							<p><span class="s_color small">updated 08.10.2012</span></p>
+						</li>
+					</ul>
+					<a href="#" class="gh_button btn-small">Show all tickets</a>
+				</div>
+				<div id="ntf_comments_panel" style="display:none">
+					<p class="sticky-title">New Comments</p>
+					<ul class="sticky-list">
+						<li>
+							<a href="#">Lorem ipsum dolor sit amet&hellip;</a>
+							<p><span class="s_color small">John Smith on Maiden Castle, Dorset (29.10.2012)</span></p>
+						</li>
+						<li>
+							<a href="#">Lorem ipsum dolor sit&hellip;</a>
+							<p><span class="s_color small">John Smith on Draining and development&hellip; (29.10.2012)</span></p>
+						</li>
+					</ul>
+					<a href="#" class="gh_button btn-small">Show all comments</a>
+				</div>
+				<div id="ntf_mail_panel" style="display:none">
+					<p class="sticky-title">New Messages</p>
+					<ul class="sticky-list">
+						<li>
+							<a href="#">Lorem ipsum dolor sit amet&hellip;</a>
+							<p><span class="s_color small">From John Smith (29.10.2012)</span></p>
+						</li>
+						<li>
+							<a href="#">Lorem ipsum dolor sit&hellip;</a>
+							<p><span class="s_color small">From John Smith (28.10.2012)</span></p>
+						</li>
+					</ul>
+					<a href="#" class="gh_button btn-small">Show all messages</a>
+				</div>
+			</div>';
+    print '</header>';
 
     print "<!-- End top horizontal menu -->\n";
 
-    if (! $conf->use_javascript_ajax || ! $conf->global->MAIN_MENU_USE_JQUERY_LAYOUT) print '<table width="100%" class="notopnoleftnoright" summary="leftmenutable" id="undertopmenu"><tr>';
+    print '<div class="container">';
+    
+    print '<table width="100%" class="notopnoleftnoright" summary="leftmenutable" id="undertopmenu"><tr>';
 
 
 }
@@ -1645,16 +1620,62 @@ if (! function_exists("llxFooter"))
         }
 
         print "\n\n";
-        if (preg_match('/^smartphone/',$conf->smart_menu) && ! empty($conf->browser->phone))
-        {
-            print '</div> <!-- end div data-role="content" -->'."\n";
-            print '</div> <!-- end div data-role="page" -->'."\n";
-        }
         print '</div> <!-- end div class="fiche" -->'."\n";
 
 
         print "\n".'</td></tr></table> <!-- end right area -->'."\n";
-        if ($conf->use_javascript_ajax && ! empty($conf->global->MAIN_MENU_USE_JQUERY_LAYOUT)) print '</div></div> <!-- end main layout -->'."\n";
+        
+        print "</div>";
+        
+        print '<footer class="container" id="footer">
+			<div class="row">
+				<div class="twelve columns">
+                    Copyright &copy; 2012 speedealing.com - tzd-themes.com
+				</div>
+			</div>
+		</footer>
+		<div class="sw_width">
+			<img class="sw_full" title="switch to full width" alt="" src="'.DOL_URL_ROOT.'/theme/blank.gif" />
+			<img style="display:none" class="sw_fixed" title="switch to fixed width (980px)" alt="" src="'.DOL_URL_ROOT.'/theme/blank.gif" />
+		</div>';
+
+        print '<script src="'.DOL_URL_ROOT.'/includes/js/jquery.min.js"></script>';
+        print '<script src="'.DOL_URL_ROOT.'/includes/lib/jQueryUI/jquery-ui-1.8.18.custom.min.js"></script>';
+        print '<script src="'.DOL_URL_ROOT.'/includes/js/s_scripts.js"></script>';
+        print '<script src="'.DOL_URL_ROOT.'/includes/js/jquery.ui.extend.js"></script>';
+        print '<script src="'.DOL_URL_ROOT.'/includes/jquery/plugins/qtip2/jquery.qtip.min.js"></script>';
+        print '<script src="'.DOL_URL_ROOT.'/includes/lib/jQplot/jquery.jqplot.min.js"></script>';
+        print '<script src="'.DOL_URL_ROOT.'/includes/lib/jQplot/jqplot.plugins.js"></script>';
+        print '<script src="'.DOL_URL_ROOT.'/includes/lib/fullcalendar/fullcalendar.min.js"></script>';
+        print '<script src="'.DOL_URL_ROOT.'/includes/js/jquery.list.min.js"></script>';
+        print '<script src="'.DOL_URL_ROOT.'/includes/js/pertho.js"></script>';
+        print '<script>
+			$(document).ready(function() {
+				//* common functions
+				prth_common.init();
+                
+                //* nested accordion
+                prth_nested_accordion.init();
+				//* full calendar
+				prth_calendar.init();
+				//* filterable list
+				prth_flist.init();
+				//* smart gallery
+				prth_gallery.init();
+				//* home page charts resize
+				prth_charts.charts_resize();
+				//* home page charts
+				prth_charts.ds_plot1();
+				prth_charts.ds_plot2();
+				if(!jQuery.browser.mobile) {
+					// create image from visible chart
+					prth_charts.makeImage();
+				}
+				//* horizontal scrollable (charts)
+				prth_h_scrollable.init();
+			});
+		</script>';
+        
 
         print "\n";
         if ($foot) print '<!-- '.$foot.' -->'."\n";

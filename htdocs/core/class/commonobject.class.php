@@ -34,13 +34,6 @@ abstract class CommonObject extends couchDocument
     public $error;
     public $errors;
     public $canvas;                // Contains canvas name if it is
-    
-    var $arrayjs = array("/core/datatables/js/jquery.dataTables.js",
-            "/core/datatables/js/TableTools.js",
-            "/core/datatables/js/ZeroClipboard.js",
-            "/core/datatables/js/initXHR.js",
-            "/core/datatables/js/request.js",
-            "/core/datatables/js/searchColumns.js");
 
 
        /**
@@ -2772,9 +2765,9 @@ abstract class CommonObject extends couchDocument
             $obj->bProcessing = true;
             $obj->bJQueryUI = true;
             $obj->bDeferRender = true;
-            $obj->oLanguage->sUrl = DOL_URL_ROOT.'/core/datatables/langs/'.($langs->defaultlang?$langs->defaultlang:"en_US").".txt";
+            $obj->oLanguage->sUrl = DOL_URL_ROOT.'/includes/jquery/plugins/datatables/langs/'.($langs->defaultlang?$langs->defaultlang:"en_US").".txt";
             $obj->sDom = '<\"top\"Tflpi<\"clear\">>rt<\"bottom\"pi<\"clear\">>';
-            $obj->oTableTools->sSwfPath = DOL_URL_ROOT.'/core/datatables/swf/copy_cvs_xls_pdf.swf';
+            $obj->oTableTools->sSwfPath = DOL_URL_ROOT.'/includes/jquery/plugins/datatables/swf/copy_cvs_xls_pdf.swf';
             $obj->oTableTools->aButtons = array("xls");
             
             $output ='<script type="text/javascript" charset="utf-8">';

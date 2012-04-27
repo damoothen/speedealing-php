@@ -127,7 +127,7 @@ if ($resql)
 $htmlother = new FormOther($db);
 
 
-llxHeader('', $langs->trans("ThirdParty"), $help_url, '', '', '', $object->arrayjs);
+llxHeader('', $langs->trans("ThirdParty"), $help_url, '', '', '', '');
 
 if ($type != '') {
     if ($type == 0)
@@ -179,24 +179,14 @@ print'</th>';
 $obj->aoColumns[$i]->mDataProp = "town";
 $obj->aoColumns[$i]->sWidth = "7em";
 $obj->aoColumns[$i]->sClass = "center";
-$obj->aoColumns[$i]->fnRender= '%function(obj) {
-var str = obj.aData.town;
-if(typeof str === $undefined$)
-    str = null;
-    return str;
-}%';
+$obj->aoColumns[$i]->sDefaultContent = "";
 $i++;
 print'<th class="sorting">';
 print $langs->trans("Zip");
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "zip";
-$obj->aoColumns[$i]->sClass = "right";
-$obj->aoColumns[$i]->fnRender = '%function(obj) {
-var str = obj.aData.zip;
-if(typeof str === $undefined$)
-    str = null;
-    return str;
-}%';
+//$obj->aoColumns[$i]->sClass = "right";
+$obj->aoColumns[$i]->sDefaultContent = "";
 $i++;
 if (empty($conf->global->SOCIETE_DISABLE_STATE)) {
     print'<th class="sorting">';
@@ -208,63 +198,39 @@ if ($conf->categorie->enabled) {
     print $langs->trans('Categories');
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "category";
-    $obj->aoColumns[$i]->fnRender = '%function(obj) {
-    var str = obj.aData.category;
-    if(typeof str === $undefined$)
-        str = null;
-        return str;
-    }%';
+    $obj->aoColumns[$i]->sDefaultContent = "";
     $i++;
 }
 print'<th class="sorting">';
 print $langs->trans('SalesRepresentatives');
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "commerciaux";
-$obj->aoColumns[$i]->fnRender = '%function(obj) {
-var str = obj.aData.commerciaux;
-if(typeof str === $undefined$)
-    str = null;
-    return str;
-}%';
+$obj->aoColumns[$i]->sDefaultContent = "";
 $i++;
 print'<th class="sorting">';
 print $langs->trans('Siren');
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "idprof1";
-$obj->aoColumns[$i]->fnRender = '%function(obj) {
-var str = obj.aData.idprof1;
-if(typeof str === $undefined$)
-    str = null;
-    return str;
-}%';
+$obj->aoColumns[$i]->sDefaultContent = "";
 $i++;
 print'<th class="sorting">';
 print $langs->trans('Ape');
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "idprof2";
-$obj->aoColumns[$i]->fnRender = '%function(obj) {
-var str = obj.aData.idprof2;
-if(typeof str === $undefined$)
-    str = null;
-    return str;
-}%';
+$obj->aoColumns[$i]->sDefaultContent = "";
 $i++;
 print'<th class="sorting">';
 print $langs->trans("ProspectLevelShort");
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "potentiel";
-$obj->aoColumns[$i]->fnRender = '%function(obj) {
-var str = obj.aData.potentiel;
-if(typeof str === $undefined$)
-    str = null;
-    return str;
-}%';
+$obj->aoColumns[$i]->sDefaultContent = "";
 $i++;
 print'<th class="sorting">';
 print $langs->trans("Status");
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "fk_stcomm";
 $obj->aoColumns[$i]->sClass = "center";
+$obj->aoColumns[$i]->sDefaultContent = 0;
 $obj->aoColumns[$i]->fnRender = '%function(obj) {
 var status = new Array();
 var stcomm = obj.aData.fk_stcomm;

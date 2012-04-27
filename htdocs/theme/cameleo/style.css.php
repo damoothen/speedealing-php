@@ -67,26 +67,6 @@ $fontlist='arial,tahoma,verdana,helvetica';
 /* Styles par defaut                                                              */
 /* ============================================================================== */
 
-body {
-<?php if (GETPOST("optioncss") == 'print') {  ?>
-	background-color: #FFFFFF;
-<?php } else { ?>
-	/*background: #ffffff url(<?php echo DOL_URL_ROOT.'/theme/cameleo/img/headbg2.jpg' ?>) 0 0 no-repeat;*/
-<?php } ?>
-	color: #101010;
-	font-size: <?php print $fontsize ?>px;
-    font-family: <?php print $fontlist ?>;
-    margin-top: 0;
-    margin-bottom: 0;
-    margin-right: 0;
-    margin-left: 0;
-    text-align: left;
-    <?php print 'direction: '.$langs->trans("DIRECTION").";\n"; ?>
-}
-
-a:link, a:visited, a:active { font-family: <?php print $fontlist ?>; font-weight: bold; color: blue; text-decoration: none; }
-a:hover { font-family: <?php print $fontlist ?>; font-weight: bold; color: #A51B00; text-decoration: none; }
-
 input:focus, textarea:focus, button:focus, select:focus {
     box-shadow: 0 0 4px #8091BF;
 }

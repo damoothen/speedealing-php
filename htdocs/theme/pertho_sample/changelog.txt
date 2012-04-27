@@ -1,0 +1,11 @@
+v1.1 (22/04/2012)
+  - Added Tag Handler plugin
+  - Added Mask Input plugin
+  - Added Centered sticky nav
+  - Inproved compatibilty with ie7
+  - Minor bugs
+  
+v1.0 (31/03/2012)
+  - initial release
+  
+ 

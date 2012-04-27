@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" >
+    <head>
+        <meta charset="utf-8" />
+        <title>Autocomplete with PHP, jQuery, MySQL and XML | Script Tutorials</title>
+
+        <link href="css/jquery.autocomplete.css" rel="stylesheet" type="text/css" />
+        <link href="css/main.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" src="js/jquery-1.5.2.min.js"></script>
+        <script type="text/javascript" src="js/jquery.autocomplete.pack.js"></script>
+        <script type="text/javascript" src="js/script.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <form action="#">
+                <p><label>Your month:</label> <input id="month" type="text" autocomplete="off"></p>
+                <p><label>Your year:</label> <input id="year" type="text" autocomplete="off"></p>
+                <p><label>Your country:</label> <input id="country" type="text" autocomplete="off"></p>
+            </form>
+        </div>
+        <footer>
+            <h2>Autocomplete with PHP, jQuery, MySQL and XML</h2>
+            <a href="http://www.script-tutorials.com/autocomplete-with-php-jquery-mysql-and-xml/" class="stuts">Back to original tutorial on <span>Script Tutorials</span></a>
+        </footer>
+    </body>
+</html>

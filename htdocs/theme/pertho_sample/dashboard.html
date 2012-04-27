@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<title>Pertho Admin Panel</title>
+
+		<!-- Foundation framework -->
+			<link rel="stylesheet" href="foundation/stylesheets/foundation.css">
+		<!-- jquery UI -->
+			<link rel="stylesheet" href="lib/jQueryUI/css/Aristo/Aristo.css" media="all" />
+		<!-- jQplot (charts) -->
+			<link rel="stylesheet" href="lib/jQplot/jquery.jqplot.css" media="all" />
+		<!-- fancybox -->
+			<link rel="stylesheet" href="lib/fancybox/jquery.fancybox-1.3.4.css" media="all" />
+		<!-- fullcalendar -->
+			<link rel="stylesheet" href="lib/fullcalendar/fullcalendar.css" media="all" />
+		<!-- tooltips -->
+			<link rel="stylesheet" href="lib/qtip2/jquery.qtip.min.css" />
+		<!-- main styles -->
+			<link rel="stylesheet" href="css/style.css" />
+
+		<!-- Google fonts -->
+			<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' />
+			<link href='http://fonts.googleapis.com/css?family=Terminal+Dosis' rel='stylesheet' />
+
+		<!-- Favicons and the like (avoid using transparent .png) -->
+			<link rel="shortcut icon" href="favicon.ico" />
+			<link rel="apple-touch-icon-precomposed" href="icon.png" />
+
+		<!--[if lt IE 9]>
+			<link rel="stylesheet" href="foundation/stylesheets/ie.css">
+			<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+			<script src="lib/jQplot/excanvas.min.js"></script>
+		<![endif]-->
+	</head>
+	<body class="ptrn_a grdnt_a mhover_a">
+		<header>
+			<div class="container head_s_a">
+				<div class="row sepH_b">
+					<div class="six columns">
+						<div class="row">
+							<div class="five phone-two columns">
+								<div id="logo">
+									<img src="img/logo.png" alt="Pertho Admin" />
+								</div>
+							</div>
+							<div class="seven phone-two columns">
+								<form action="search.php" id="search_box" method="post">
+									<input name="query" id="query" type="text" size="40" placeholder="Find a city&hellip;" autocomplete="off" />
+								</form>
+							</div>
+						</div>
+					</div>
+					<div class="six columns">
+						<div class="user_box cf">
+							<div class="user_avatar">
+								<img src="img/user_female.png" alt="" />
+							</div>
+							<div class="user_info user_sep">
+								<p class="sepH_a">
+									<strong>Mary Adams</strong>
+								</p>
+								<span>
+									<a href="#" class="sep">Settings</a>
+									<a href="login.html">Log out</a>
+								</span>
+							</div>
+							<div class="ntf_bar user_sep">
+								<a href="#ntf_mail_panel" class="ntf_item" style="background-image: url(img/ico/icSw2/32-Mail.png)">
+									<span class="ntf_tip ntf_tip_red"><span>12</span></span>
+								</a>
+								<a href="#ntf_tickets_panel" class="ntf_item" style="background-image: url(img/ico/icSw2/32-Day-Calendar.png)">
+									<span class="ntf_tip ntf_tip_red"><span>122</span></span>
+								</a>
+								<a href="#ntf_comments_panel" class="ntf_item" style="background-image: url(img/ico/icSw2/32-Speech-Bubble.png)">
+									<span class="ntf_tip ntf_tip_blue"><span>8</span></span>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="twelve columns">
+						<nav id="smoothmenu_h" class="ddsmoothmenu tinyNav">
+							<ul class="cf">
+								<li><a href="dashboard.html" class="mb_parent first_el pageselected">Dashboard</a></li>
+								<li>
+									<a href="javascript:void(0)" class="mb_parent">Forms</a>
+									<ul style="display:none">
+										<li><a href="form_elements.html">Form elements</a></li>
+										<li><a href="form_extended.html">Form elements (extended)</a></li>
+										<li><a href="form_validation.html">Form validation</a></li>
+										<li><a href="form_example.html">Form example</a></li>
+									</ul>
+								</li>
+								<li>
+									<a href="javascript:void(0)" class="mb_parent">UI Elements</a>
+									<ul style="display:none">
+										<li><a href="ui_alertbox_btn_ico_tip.html">Alerts, Buttons, Icons, Tooltips</a></li>
+										<li><a href="ui_gallery.html">Gallery</a></li>
+										<li><a href="ui_grid.html">Grid</a></li>
+										<li><a href="ui_pricingtable.html">Pricing Table</a></li>
+										<li><a href="ui_scrollable.html">Scrollable</a></li>
+										<li><a href="ui_sidebar.html">Sidebar</a></li>
+										<li><a href="ui_tabs.html">Tabs / Accordion</a></li>
+										<li><a href="ui_typography.html">Typography</a></li>
+										<li><a href="ui_widgets.html">Widgets</a></li>
+									</ul>
+								</li>
+								<li>
+									<a href="javascript:void(0)" class="mb_parent">Plugins</a>
+									<ul style="display:none">
+										<li><a href="plugin_charts.html">Charts</a></li>
+										<li><a href="plugin_tables.html">Data tables</a></li>
+										<li><a href="plugin_explorer.html">File explorer</a></li>
+										<li><a href="plugin_help.html">Help/Faq</a></li>
+										<li><a href="plugin_dialogs.html">Dialog boxes/Notifications</a></li>
+										<li><a href="plugin_wizard.html">Wizard</a></li>
+									</ul>
+								</li>
+								<li>
+									<a href="javascript:void(0)" class="mb_parent">Navigation</a>
+									<ul style="display:none">
+										<li><a href="nav_sticky.html">Sticky navigation</a></li>
+										<li><a href="nav_sticky_center.html">Sticky navigation (centered)</a></li>
+										<li><a href="nav_sidebar.html">Sidebar navigation</a></li>
+									</ul>
+								</li>
+								<li>
+									<a href="javascript:void(0)" class="mb_parent">Error Pages</a>
+									<ul style="display:none">
+										<li><a href="error_401.html">401</a></li>
+										<li><a href="error_403.html">403</a></li>
+										<li><a href="error_404.html">404</a></li>
+										<li><a href="error_500.html">500</a></li>
+										<li><a href="error_503.html">503</a></li>
+										<li><a href="error_unexpected.html">Unexpected error</a></li>
+									</ul>
+								</li>
+								<li>
+									<a href="javascript:void(0)" class="mb_parent">Sub-levels</a>
+									<ul style="display:none">
+										<li>
+											<a href="#">First level</a>
+											<ul style="display:none">
+												<li>
+													<a href="#">Second level</a>
+													<ul style="display:none">
+														<li><a href="#">Third level</a></li>
+														<li><a href="#">Third level</a></li>
+													</ul>
+												</li>
+												<li><a href="#">Second level</a></li>
+											</ul>
+										</li>
+										<li><a href="#">First level</a></li>
+										<li><a href="#">First level</a></li>
+										<li><a href="#">First level</a></li>
+									</ul>
+								</li>
+								<li>
+									<a href="documentation.html" class="mb_parent">Documentation</a>
+								</li>
+							</ul>
+						</nav>
+						<ul id="breadcrumbs" class="cf">
+							<li>You are here:</li>
+							<li><a href="#">Content</a></li>
+							<li><a href="#">Article</a></li>
+							<li><span>Lorem Ipsum&hellip;</span></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<!-- notifications content -->
+			<div style="display:none">
+				<div id="ntf_tickets_panel" style="display:none">
+					<p class="sticky-title">New Tickets</p>
+					<ul class="sticky-list">
+						<li>
+							<a href="#">Admin should not break if URL&hellip;</a>
+							<p><span class="s_color small">updated 01.04.2012</span></p>
+						</li>
+						<li>
+							<a href="#">Displaying submenus in custom&hellip;</a>
+							<p><span class="s_color small">updated 01.04.2012</span></p>
+						</li>
+						<li>
+							<a href="#">Featured image on post types.</a>
+							<p><span class="s_color small">updated 24.03.2012</span></p>
+						</li>
+						<li>
+							<a href="#">Multiple feed fixes and&hellip;</a>
+							<p><span class="s_color small">updated 22.03.2012</span></p>
+						</li>
+						<li>
+							<a href="#">Automatic line breaks in&hellip;</a>
+							<p><span class="s_color small">updated 18.03.2012</span></p>
+						</li>
+						<li>
+							<a href="#">Wysiwyg bug with shortcodes.</a>
+							<p><span class="s_color small">updated 08.10.2012</span></p>
+						</li>
+					</ul>
+					<a href="#" class="gh_button btn-small">Show all tickets</a>
+				</div>
+				<div id="ntf_comments_panel" style="display:none">
+					<p class="sticky-title">New Comments</p>
+					<ul class="sticky-list">
+						<li>
+							<a href="#">Lorem ipsum dolor sit amet&hellip;</a>
+							<p><span class="s_color small">John Smith on Maiden Castle, Dorset (29.10.2012)</span></p>
+						</li>
+						<li>
+							<a href="#">Lorem ipsum dolor sit&hellip;</a>
+							<p><span class="s_color small">John Smith on Draining and development&hellip; (29.10.2012)</span></p>
+						</li>
+					</ul>
+					<a href="#" class="gh_button btn-small">Show all comments</a>
+				</div>
+				<div id="ntf_mail_panel" style="display:none">
+					<p class="sticky-title">New Messages</p>
+					<ul class="sticky-list">
+						<li>
+							<a href="#">Lorem ipsum dolor sit amet&hellip;</a>
+							<p><span class="s_color small">From John Smith (29.10.2012)</span></p>
+						</li>
+						<li>
+							<a href="#">Lorem ipsum dolor sit&hellip;</a>
+							<p><span class="s_color small">From John Smith (28.10.2012)</span></p>
+						</li>
+					</ul>
+					<a href="#" class="gh_button btn-small">Show all messages</a>
+				</div>
+			</div>
+		</header>
+		<div class="container">
+			<div class="row">
+				<div class="four columns">
+					<div class="box_c">
+						<div class="box_c_heading cf box_actions">
+							<div class="box_c_ico"><img src="img/ico/icSw2/16-Abacus.png" alt="" /></div>
+							<p>Statistics</p>
+						</div>
+						<div class="box_c_content">
+							<p class="inner_heading sepH_c">Latest info</p>
+							<ul class="overview_list">
+								<li>
+									<a href="#">
+										<img src="img/blank.gif" style="background-image: url(img/ico/open/dollar.png)" alt="" />
+										<span class="ov_nb">$10201</span>
+										<span class="ov_text">Total sale</span>
+									</a>
+								</li>
+								<li>
+									<a href="#">
+										<img src="img/blank.gif" style="background-image: url(img/ico/open/tag.png)" alt="" />
+										<span class="ov_nb">$231</span>
+										<span class="ov_text">Today sale</span>
+									</a>
+								</li>
+								<li>
+									<a href="#">
+										<img src="img/blank.gif" style="background-image: url(img/ico/open/happy-face.png)" alt="" />
+										<span class="ov_nb">32</span>
+										<span class="ov_text">New registrations</span>
+									</a>
+								</li>
+								<li>
+									<a href="#">
+										<img src="img/blank.gif" style="background-image: url(img/ico/open/bar-chart.png)" alt="" />
+										<span class="ov_nb">3021</span>
+										<span class="ov_text">Unique visitors</span>
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="eight columns">
+					<div class="box_c">
+						<div class="box_c_heading cf">
+							<div class="box_c_ico"><img src="img/ico/icSw2/16-Graph.png" alt="" /></div>
+							<p>Charts</p>
+						</div>
+						<div class="box_c_content">
+							<div class="inner_block">
+								<div class="h_scrollable sepH_a sw_resizedEL" style="height:280px">
+									<div class="items">
+										<div class="left">
+											<div id="ds_plot1" title="Unique visitors" style="height:280px;margin:0 auto" class="chart_flw"></div>
+										</div>
+										<div class="left">
+											<div id="ds_plot2" title="Another chart" style="height:280px;margin:0 auto" class="chart_flw"></div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="four columns">
+										<a class="gh_button pill small image_from_chart" style="display:none;margin-top:10px" href="#">Create image from chart</a>
+									</div>
+									<div class="eight columns">
+										<ul class="pagination h_navi right sepV_a">
+											<li class="current"><a href="javascript:void(0)">Unique visitors</a></li>
+											<li><a href="javascript:void(0)">Another chart</a></li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="six columns">
+					<div class="box_c">
+						<div class="box_c_heading cf box_actions">
+							<div class="box_c_ico"><img src="img/ico/icSw2/16-Books.png" alt="" /></div>
+							<p>Content</p>
+						</div>
+						<div class="box_c_content" id="nestedAcc">
+							<ul id="acc" class="accordion">
+								<li>
+									<h4>Heading 1</h4>
+									<div class="inner">
+										<ul>
+											<li>
+												<h5>Heading a</h5>
+												<div class="outer">
+													<div class="inner shown">
+														<p>
+														1a. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt
+														ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+														laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
+														voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
+														non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+														</p>
+													</div>
+												</div>
+											</li>
+											<li>
+												<h5>Heading b</h5>
+												<div class="outer">
+													<div class="inner">
+														<p>
+														1b. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt
+														ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+														laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
+														voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
+														non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+														</p>
+													</div>
+												</div>
+											</li>
+										</ul>
+									</div>
+								</li>
+								<li>
+									<h4>Heading 2</h4>
+									<div class="inner">
+										<ul>
+											<li>
+												<h5>Heading a</h5>
+												<div class="outer">
+													<div class="inner">
+													<p>
+														2a. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt
+														ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+														laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
+														voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
+														non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+													</p>
+													</div>
+												</div>
+											</li>
+											<li>
+												<h5>Heading b</h5>
+												<div class="outer">
+													<div class="inner">
+														<p>
+															2b. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt
+															ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+															laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
+															voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
+															non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+														</p>
+													</div>
+												</div>
+											</li>
+										</ul>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="six columns">
+					<div class="box_c">
+						<div class="box_c_heading cf">
+							<div class="box_c_ico"><img src="img/ico/icSw2/16-Image2-2.png" alt="" /></div>
+							<p>Gallery Widget</p>
+							<a href="ui_gallery.html" class="right sepV_b"><small>Go to Gallery</small></a>
+						</div>
+						<div class="box_c_content">
+							<div class="gal_scrollable h_scrollable sepH_a sw_resizedEL">
+								<div class="items">
+									<ul class="gallery_list left cf">
+										<li>
+											<a href="gallery/image.gif" class="fancybox img_wrapper">
+												<img src="gallery/image_tn.gif" alt="" />
+											</a>
+										</li>
+										<li>
+											<a href="gallery/image.gif" class="fancybox img_wrapper">
+												<img src="gallery/image_tn.gif" alt="" />
+											</a>
+										</li>
+										<li>
+											<a href="gallery/image.gif" class="fancybox img_wrapper">
+												<img src="gallery/image_tn.gif" alt="" />
+											</a>
+										</li>
+										<li>
+											<a href="gallery/image.gif" class="fancybox img_wrapper">
+												<img src="gallery/image_tn.gif" alt="" />
+											</a>
+										</li>
+										<li>
+											<a href="gallery/image.gif" class="fancybox img_wrapper">
+												<img src="gallery/image_tn.gif" alt="" />
+											</a>
+										</li>
+										<li>
+											<a href="gallery/image.gif" class="fancybox img_wrapper">
+												<img src="gallery/image_tn.gif" alt="" />
+											</a>
+										</li>
+										<li>
+											<a href="gallery/image.gif" class="fancybox img_wrapper">
+												<img src="gallery/image_tn.gif" alt="" />
+											</a>
+										</li>
+										<li>
+											<a href="gallery/image.gif" class="fancybox img_wrapper">
+												<img src="gallery/image_tn.gif" alt="" />
+											</a>
+										</li>
+										<li>
+											<a href="gallery/image.gif" class="fancybox img_wrapper">
+												<img src="gallery/image_tn.gif" alt="" />
+											</a>
+										</li>
+										<li>
+											<a href="gallery/image.gif" class="fancybox img_wrapper">
+												<img src="gallery/image_tn.gif" alt="" />
+											</a>
+										</li>
+										<li>
+											<a href="gallery/image.gif" class="fancybox img_wrapper">
+												<img src="gallery/image_tn.gif" alt="" />
+											</a>
+										</li>
+										<li>
+											<a href="gallery/image.gif" class="fancybox img_wrapper">
+												<img src="gallery/image_tn.gif" alt="" />
+											</a>
+										</li>
+									</ul>
+									<ul class="gallery_list left cf">
+										<li>
+											<a href="gallery/image.gif" class="fancybox img_wrapper">
+												<img src="gallery/image_tn.gif" alt="" />
+											</a>
+										</li>
+										<li>
+											<a href="gallery/image.gif" class="fancybox img_wrapper">
+												<img src="gallery/image_tn.gif" alt="" />
+											</a>
+										</li>
+										<li>
+											<a href="gallery/image.gif" class="fancybox img_wrapper">
+												<img src="gallery/image_tn.gif" alt="" />
+											</a>
+										</li>
+										<li>
+											<a href="gallery/image.gif" class="fancybox img_wrapper">
+												<img src="gallery/image_tn.gif" alt="" />
+											</a>
+										</li>
+										<li>
+											<a href="gallery/image.gif" class="fancybox img_wrapper">
+												<img src="gallery/image_tn.gif" alt="" />
+											</a>
+										</li>
+										<li>
+											<a href="gallery/image.gif" class="fancybox img_wrapper">
+												<img src="gallery/image_tn.gif" alt="" />
+											</a>
+										</li>
+										<li>
+											<a href="gallery/image.gif" class="fancybox img_wrapper">
+												<img src="gallery/image_tn.gif" alt="" />
+											</a>
+										</li>
+										<li>
+											<a href="gallery/image.gif" class="fancybox img_wrapper">
+												<img src="gallery/image_tn.gif" alt="" />
+											</a>
+										</li>
+										<li>
+											<a href="gallery/image.gif" class="fancybox img_wrapper">
+												<img src="gallery/image_tn.gif" alt="" />
+											</a>
+										</li>
+										<li>
+											<a href="gallery/image.gif" class="fancybox img_wrapper">
+												<img src="gallery/image_tn.gif" alt="" />
+											</a>
+										</li>
+										<li>
+											<a href="gallery/image.gif" class="fancybox img_wrapper">
+												<img src="gallery/image_tn.gif" alt="" />
+											</a>
+										</li>
+										<li>
+											<a href="gallery/image.gif" class="fancybox img_wrapper">
+												<img src="gallery/image_tn.gif" alt="" />
+											</a>
+										</li>
+									</ul>
+								</div>
+							</div>
+							<div class="cf">
+								<ul class="pagination h_navi right sepV_b">
+									<li class="current"><a href="javascript:void(0)">1</a></li>
+									<li><a href="javascript:void(0)">2</a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="twelve columns">
+					<div class="box_c">
+						<div class="box_c_heading cf box_actions">
+							<div class="box_c_ico"><img src="img/ico/icSw2/16-Day-Calendar.png" alt="" /></div>
+							<p>Calendar</p>
+						</div>
+						<div class="box_c_content">
+							<div id='calendar'></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="six columns">
+					<div class="box_c">
+						<div class="box_c_heading cf box_actions">
+							<p>Filterable, sortable, searchable list</p>
+						</div>
+						<div class="box_c_content" id="user-list">
+							<div class="row">
+								<div class="twelve columns">
+									<input type="text" class="search expand input-text" placeholder="Search list" />
+								</div>
+							</div>
+							<div class="row sepH_b">
+								<div class="five columns">
+									<dl class="sub-nav filter">
+										<dd class="active"><a href="#" id="filter-none">All</a></dd>
+										<dd><a href="#" id="filter-online">Online</a></dd>
+										<dd><a href="#" id="filter-offline">Offline</a></dd>
+									</dl>
+								</div>
+								<div class="seven columns">
+									<dl class="sub-nav sort-by">
+										<dd><a href="javascript:void(0)" class="sort" data-sort="sl_name">Sort by name</a></dd>
+										<dd><a href="javascript:void(0)" class="sort" data-sort="sl_status">Sort by status</a></dd>
+									</dl>
+								</div>
+							</div>
+							<ul class="list numbered content_list">
+								<li>
+									<span class="lbl ok_bg right sl_status">online</span>
+									<a href="#" class="sl_name">John Doe</a><br />
+									<small class="s_color sl_email">johnd@example1.com</small>
+								</li>
+								<li>
+									<span class="lbl ok_bg right sl_status">online</span>
+								   <a href="#" class="sl_name">Kate Miller</a><br />
+								   <small class="s_color sl_email">kmiller@example1.com</small>
+								</li>
+								<li>
+									<span class="lbl error_bg right sl_status">offline</span>
+									<a href="#" class="sl_name">James Vandenberg</a><br />
+									<small class="s_color sl_email">jamesv@example2.com</small>
+								</li>
+								<li>
+									<span class="lbl error_bg right sl_status">offline</span>
+									<a href="#" class="sl_name">Donna Doerr</a><br />
+									<small class="s_color sl_email">donnad@example3.com</small>
+								</li>
+								<li>
+									<span class="lbl error_bg right sl_status">offline</span>
+									<a href="#" class="sl_name">Perry Weitzel</a><br />
+									<small class="s_color sl_email">perryw@example2.com</small>
+								</li>
+								<li>
+									<span class="lbl ok_bg right sl_status">online</span>
+									<a href="#" class="sl_name">Charles Bledsoe</a><br />
+									<small class="s_color sl_email">charlesb@example3.com</small>
+								</li>
+								<li>
+									<span class="lbl error_bg right sl_status">offline</span>
+									<a href="#" class="sl_name">Wendy Proto</a><br />
+									<small class="s_color sl_email">wnedyp@example1.com</small>
+								</li>
+								<li>
+									<span class="lbl ok_bg right sl_status">online</span>
+									<a href="#" class="sl_name">Nancy Ibrahim</a><br />
+									<small class="s_color sl_email">nancyi@example2.com</small>
+								</li>
+								<li>
+									<span class="lbl error_bg right sl_status">offline</span>
+									<a href="#" class="sl_name">Eric Cantrell</a><br />
+									<small class="s_color sl_email">ericc@example4.com</small>
+								</li>
+								<li>
+									<span class="lbl ok_bg right sl_status">online</span>
+									<a href="#" class="sl_name">Andre Hill</a><br />
+									<small class="s_color sl_email">andreh@example2.com</small>
+								</li>
+								<li>
+									<span class="lbl ok_bg right sl_status">online</span>
+									<a href="#" class="sl_name">Laura Taggart</a><br />
+									<small class="s_color sl_email">laurat@example3.com</small>
+								</li>
+								<li>
+									<span class="lbl error_bg right sl_status">offline</span>
+									<a href="#" class="sl_name">Doug Singer</a><br />
+									<small class="s_color sl_email">dougs@example2.com</small>
+								</li>
+								<li>
+									<span class="lbl ok_bg right sl_status">online</span>
+									<a href="#" class="sl_name">Douglas Arnott</a><br />
+									<small class="s_color sl_email">douglasa@example1.com</small>
+								</li>
+								<li>
+									<span class="lbl error_bg right sl_status">offline</span>
+									<a href="#" class="sl_name">Lauren Henley</a><br />
+									<small class="s_color sl_email">laurenh@example3.com</small>
+								</li>
+								<li>
+									<span class="lbl error_bg right sl_status">offline</span>
+									<a href="#" class="sl_name">William Jardine</a><br />
+									<small class="s_color sl_email">williamj@example4.com</small>
+								</li>
+								<li>
+									<span class="lbl ok_bg right sl_status">online</span>
+									<a href="#" class="sl_name">Yves Ouellet</a><br />
+									<small class="s_color sl_email">yveso@example2.com</small>
+								</li>
+							</ul>
+							<ul class="pagination paging bottomPaging cf"></ul>
+						</div>
+					</div>
+				</div>
+				<div class="six columns">
+					<div class="box_c">
+						<div class="box_c_heading cf box_actions">
+							<div class="box_c_ico"><img src="img/ico/icSw2/16-Create-Write.png" alt="" /></div>
+							<p>Tickets</p>
+						</div>
+						<div class="box_c_content">
+							<p class="inner_heading sepH_c cf"><span class="left"><span class="sepV_b">VERSION v1.2</span><span class="s_color">(latest 6 tickets)</span></span><a href="#" class="right small sepV_a">view more&hellip;</a></p>
+							<ul class="numbered content_list">
+								<li>
+									<span class="lbl error_bg right">High</span>
+									<a href="#"><strong>Admin should not break if URL changes.</strong></a>
+									<p><span class="s_color small">updated 29.03.2012</span></p>
+								</li>
+								<li>
+									<span class="lbl info_bg right">Medium</span>
+									<a href="#"><strong>Displaying submenus in custom taxonomy&hellip;</strong></a>
+									<p><span class="s_color small">updated 27.03.2012</span></p>
+								</li>
+								<li>
+									<span class="lbl alert_bg right">Low</span>
+									<a href="#"><strong>Featured image on post types.</strong></a>
+									<p><span class="s_color small">updated 26.03.2012</span></p>
+								</li>
+								<li>
+									<span class="lbl ok_bg right">Reopen</span>
+									<a href="#"><strong>Multiple feed fixes and enhancements.</strong></a>
+									<p><span class="s_color small">updated 22.03.2012</span></p>
+								</li>
+								<li>
+									<span class="lbl neutral_bg right">New Comment</span>
+									<a href="#"><strong>Automatic line breaks in comments.</strong></a>
+									<p><span class="s_color small">updated 14.03.2012</span></p>
+								</li>
+								<li>
+									<span class="lbl info_bg right">Medium</span>
+									<a href="#"><strong>Wysiwyg bug with shortcodes.</strong></a>
+									<p><span class="s_color small">updated 08.03.2012</span></p>
+								</li>
+							</ul>
+							<div class="gh_button-group">
+								<a href="#" class="gh_button primary">See all</a>
+								<a href="#" class="gh_button">High</a>
+								<a href="#" class="gh_button">Medium</a>
+								<a href="#" class="gh_button">Low</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<footer class="container" id="footer">
+			<div class="row">
+				<div class="twelve columns">
+                    Copyright &copy; 2012 tzd-themes.com
+				</div>
+			</div>
+		</footer>
+		<div class="sw_width">
+			<img class="sw_full" title="switch to full width" alt="" src="img/blank.gif" />
+			<img style="display:none" class="sw_fixed" title="switch to fixed width (980px)" alt="" src="img/blank.gif" />
+		</div>
+
+		<script src="js/jquery.min.js"></script>
+		<script src="lib/jQueryUI/jquery-ui-1.8.18.custom.min.js"></script>
+		<script src="js/s_scripts.js"></script>
+		<script src="js/jquery.ui.extend.js"></script>
+		<script src="lib/qtip2/jquery.qtip.min.js"></script>
+		<script src="lib/jQplot/jquery.jqplot.min.js"></script>
+		<script src="lib/jQplot/jqplot.plugins.js"></script>
+		<script src="lib/fullcalendar/fullcalendar.min.js"></script>
+		<script src="js/jquery.list.min.js"></script>
+		<script src="js/pertho.js"></script>
+		<script>
+			$(document).ready(function() {
+				//* common functions
+				prth_common.init();
+                
+                //* nested accordion
+                prth_nested_accordion.init();
+				//* full calendar
+				prth_calendar.init();
+				//* filterable list
+				prth_flist.init();
+				//* smart gallery
+				prth_gallery.init();
+				//* home page charts resize
+				prth_charts.charts_resize();
+				//* home page charts
+				prth_charts.ds_plot1();
+				prth_charts.ds_plot2();
+				if(!jQuery.browser.mobile) {
+					// create image from visible chart
+					prth_charts.makeImage();
+				}
+				//* horizontal scrollable (charts)
+				prth_h_scrollable.init();
+			});
+		</script>
+	</body>
+</html>

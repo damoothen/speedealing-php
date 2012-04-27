@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<title>Pertho Admin Panel</title>
+
+		<!-- Foundation framework -->
+			<link rel="stylesheet" href="foundation/stylesheets/foundation.css" />
+		<!-- jquery UI -->
+			<link rel="stylesheet" href="lib/jQueryUI/css/Aristo/Aristo.css" media="all" />
+		<!-- fancybox -->
+			<link rel="stylesheet" href="lib/fancybox/jquery.fancybox-1.3.4.css" media="all" />
+		<!-- tooltips -->
+			<link rel="stylesheet" href="lib/qtip2/jquery.qtip.min.css" />
+		<!-- main styles -->
+			<link rel="stylesheet" href="css/style.css" />
+
+		<!-- Google fonts -->
+			<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' />
+			<link href='http://fonts.googleapis.com/css?family=Terminal+Dosis' rel='stylesheet' />
+
+		<!-- Favicons and the like (avoid using transparent .png) -->
+			<link rel="shortcut icon" href="favicon.ico" />
+			<link rel="apple-touch-icon-precomposed" href="icon.png" />
+
+		<!--[if lt IE 9]>
+			<link rel="stylesheet" href="foundation/stylesheets/ie.css" />
+			<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+	</head>
+	<body class="ptrn_a grdnt_a mhover_a">
+		<header>
+			<div class="container head_s_a">
+				<div class="row sepH_b">
+					<div class="six columns">
+						<div class="row">
+							<div class="five phone-two columns">
+								<div id="logo">
+									<img src="img/logo.png" alt="Pertho Admin" />
+								</div>
+							</div>
+							<div class="seven phone-two columns">
+								<form action="search.php" id="search_box" method="post">
+									<input name="query" id="query" type="text" size="40" placeholder="Find a city&hellip;" autocomplete="off" />
+								</form>
+							</div>
+						</div>
+					</div>
+					<div class="six columns">
+						<div class="user_box cf">
+							<div class="user_avatar">
+								<img src="img/user_female.png" alt="" />
+							</div>
+							<div class="user_info user_sep">
+								<p class="sepH_a">
+									<strong>Mary Adams</strong>
+								</p>
+								<span>
+									<a href="#" class="sep">Settings</a>
+									<a href="login.html">Log out</a>
+								</span>
+							</div>
+							<div class="ntf_bar user_sep">
+								<a href="#ntf_mail_panel" class="ntf_item" style="background-image: url(img/ico/icSw2/32-Mail.png)">
+									<span class="ntf_tip ntf_tip_red"><span>12</span></span>
+								</a>
+								<a href="#ntf_tickets_panel" class="ntf_item" style="background-image: url(img/ico/icSw2/32-Day-Calendar.png)">
+									<span class="ntf_tip ntf_tip_red"><span>122</span></span>
+								</a>
+								<a href="#ntf_comments_panel" class="ntf_item" style="background-image: url(img/ico/icSw2/32-Speech-Bubble.png)">
+									<span class="ntf_tip ntf_tip_blue"><span>8</span></span>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="twelve columns">
+						<nav id="smoothmenu_h" class="ddsmoothmenu">
+							<ul class="cf">
+								<li><a href="dashboard.html" class="mb_parent first_el">Dashboard</a></li>
+								<li>
+									<a href="javascript:void(0)" class="mb_parent">Forms</a>
+									<ul style="display:none">
+										<li><a href="form_elements.html">Form elements</a></li>
+										<li><a href="form_extended.html">Form elements (extended)</a></li>
+										<li><a href="form_validation.html">Form validation</a></li>
+										<li><a href="form_example.html">Form example</a></li>
+									</ul>
+								</li>
+								<li>
+									<a href="javascript:void(0)" class="mb_parent">UI Elements</a>
+									<ul style="display:none">
+										<li><a href="ui_alertbox_btn_ico_tip.html">Alerts, Buttons, Icons, Tooltips</a></li>
+										<li><a href="ui_gallery.html">Gallery</a></li>
+										<li><a href="ui_grid.html">Grid</a></li>
+										<li><a href="ui_pricingtable.html">Pricing Table</a></li>
+										<li><a href="ui_scrollable.html">Scrollable</a></li>
+										<li><a href="ui_sidebar.html">Sidebar</a></li>
+										<li><a href="ui_tabs.html">Tabs / Accordion</a></li>
+										<li><a href="ui_typography.html">Typography</a></li>
+										<li><a href="ui_widgets.html">Widgets</a></li>
+									</ul>
+								</li>
+								<li>
+									<a href="javascript:void(0)" class="mb_parent">Plugins</a>
+									<ul style="display:none">
+										<li><a href="plugin_charts.html">Charts</a></li>
+										<li><a href="plugin_tables.html">Data tables</a></li>
+										<li><a href="plugin_explorer.html">File explorer</a></li>
+										<li><a href="plugin_help.html">Help/Faq</a></li>
+										<li><a href="plugin_dialogs.html">Dialog boxes/Notifications</a></li>
+										<li><a href="plugin_wizard.html">Wizard</a></li>
+									</ul>
+								</li>
+								<li>
+									<a href="javascript:void(0)" class="mb_parent">Navigation</a>
+									<ul style="display:none">
+										<li><a href="nav_sticky.html">Sticky navigation</a></li>
+										<li><a href="nav_sticky_center.html">Sticky navigation (centered)</a></li>
+										<li><a href="nav_sidebar.html">Sidebar navigation</a></li>
+									</ul>
+								</li>
+								<li>
+									<a href="javascript:void(0)" class="mb_parent">Error Pages</a>
+									<ul style="display:none">
+										<li><a href="error_401.html">401</a></li>
+										<li><a href="error_403.html">403</a></li>
+										<li><a href="error_404.html">404</a></li>
+										<li><a href="error_500.html">500</a></li>
+										<li><a href="error_503.html">503</a></li>
+										<li><a href="error_unexpected.html">Unexpected error</a></li>
+									</ul>
+								</li>
+								<li>
+									<a href="javascript:void(0)" class="mb_parent">Sub-levels</a>
+									<ul style="display:none">
+										<li>
+											<a href="#">First level</a>
+											<ul style="display:none">
+												<li>
+													<a href="#">Second level</a>
+													<ul style="display:none">
+														<li><a href="#">Third level</a></li>
+														<li><a href="#">Third level</a></li>
+													</ul>
+												</li>
+												<li><a href="#">Second level</a></li>
+											</ul>
+										</li>
+										<li><a href="#">First level</a></li>
+										<li><a href="#">First level</a></li>
+										<li><a href="#">First level</a></li>
+									</ul>
+								</li>
+								<li>
+									<a href="documentation.html" class="mb_parent">Documentation</a>
+								</li>
+							</ul>
+						</nav>
+						<ul id="breadcrumbs" class="cf">
+							<li>You are here:</li>
+							<li><a href="#">Content</a></li>
+							<li><a href="#">Article</a></li>
+							<li><span>Lorem Ipsum&hellip;</span></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<!-- notifications content -->
+			<div style="display:none">
+				<div id="ntf_tickets_panel" style="display:none">
+					<p class="sticky-title">New Tickets</p>
+					<ul class="sticky-list">
+						<li>
+							<a href="#">Admin should not break if URL&hellip;</a>
+							<p><span class="s_color small">updated 01.04.2012</span></p>
+						</li>
+						<li>
+							<a href="#">Displaying submenus in custom&hellip;</a>
+							<p><span class="s_color small">updated 01.04.2012</span></p>
+						</li>
+						<li>
+							<a href="#">Featured image on post types.</a>
+							<p><span class="s_color small">updated 24.03.2012</span></p>
+						</li>
+						<li>
+							<a href="#">Multiple feed fixes and&hellip;</a>
+							<p><span class="s_color small">updated 22.03.2012</span></p>
+						</li>
+						<li>
+							<a href="#">Automatic line breaks in&hellip;</a>
+							<p><span class="s_color small">updated 18.03.2012</span></p>
+						</li>
+						<li>
+							<a href="#">Wysiwyg bug with shortcodes.</a>
+							<p><span class="s_color small">updated 08.10.2012</span></p>
+						</li>
+					</ul>
+					<a href="#" class="gh_button btn-small">Show all tickets</a>
+				</div>
+				<div id="ntf_comments_panel" style="display:none">
+					<p class="sticky-title">New Comments</p>
+					<ul class="sticky-list">
+						<li>
+							<a href="#">Lorem ipsum dolor sit amet&hellip;</a>
+							<p><span class="s_color small">John Smith on Maiden Castle, Dorset (29.10.2012)</span></p>
+						</li>
+						<li>
+							<a href="#">Lorem ipsum dolor sit&hellip;</a>
+							<p><span class="s_color small">John Smith on Draining and development&hellip; (29.10.2012)</span></p>
+						</li>
+					</ul>
+					<a href="#" class="gh_button btn-small">Show all comments</a>
+				</div>
+				<div id="ntf_mail_panel" style="display:none">
+					<p class="sticky-title">New Messages</p>
+					<ul class="sticky-list">
+						<li>
+							<a href="#">Lorem ipsum dolor sit amet&hellip;</a>
+							<p><span class="s_color small">From John Smith (29.10.2012)</span></p>
+						</li>
+						<li>
+							<a href="#">Lorem ipsum dolor sit&hellip;</a>
+							<p><span class="s_color small">From John Smith (28.10.2012)</span></p>
+						</li>
+					</ul>
+					<a href="#" class="gh_button btn-small">Show all messages</a>
+				</div>
+			</div>
+		</header>
+        <div class="container">
+            <div class="row">
+                <div class="twelve columns">
+                    <div class="box_c">
+                        <div class="box_c_heading cf">
+                            <p>Alerts</p>
+                        </div>
+                        <div class="box_c_content">
+                            <div class="alert-box">
+                                This is a default alert (div.alert-box)
+                                <a href="" class="close">&times;</a>
+                            </div>
+                            <div class="alert-box success">
+                                This is a success alert (div.alert-box.success)
+                                <a href="" class="close">&times;</a>
+                            </div>
+                            <div class="alert-box warning">
+                                This is a warning alert (div.alert-box.warning)
+                                <a href="" class="close">&times;</a>
+                            </div>
+                            <div class="alert-box error">
+                                This is a error alert (div.alert-box.error)
+                                <a href="" class="close">&times;</a>
+                            </div>
+                            <div class="alert-box info">
+                                This is a info alert (div.alert-box.info)
+                                <a href="" class="close">&times;</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box_c">
+                        <div class="box_c_heading cf">
+                            <p>Buttons</p>
+                        </div>
+                        <div class="box_c_content">
+                            <div class="sepH_c">
+                                <h5 class="sepH_a_line">GitHub styles buttons</h5>
+                                <div class="row sepH_c">
+                                    <div class="three columns"><a class="gh_button" href="#">Post comment (link)</a></div>
+                                    <div class="three columns"><input type="submit" value="Post comment (input)" class="gh_button"></div>
+                                    <div class="three columns"><button type="submit" class="gh_button">Post comment (button)</button></div>
+                                    <div class="three columns"><a class="gh_button pill" href="#">Pill button</a></div>
+                                </div>
+                                <div class="row sepH_c">
+                                    <div class="three columns"><a class="gh_button icon search" href="#">Search</a></div>
+                                    <div class="three columns"><a class="gh_button icon favorite" href="#">Favorite</a></div>
+                                    <div class="three columns"><a class="gh_button icon like" href="#">Like</a></div>
+                                    <div class="three columns"><a class="gh_button icon trash danger" href="#">Delete post</a></div>
+                                </div>
+                                <div class="row sepH_c">
+                                    <div class="three columns"><a class="gh_button icon log" href="#">Log</a></div>
+                                    <div class="three columns"><a class="gh_button icon home" href="#">Homepage</a></div>
+                                    <div class="three columns"><a class="gh_button icon comment" href="#">Add Comment</a></div>
+                                    <div class="three columns"><a class="gh_button icon add" href="#">Add post</a></div>
+                                </div>
+                                <div class="row sepH_c">
+                                    <div class="six columns">
+                                        <div class="gh_button-group">
+                                            <a href="#" class="gh_button primary">Dashboard</a>
+                                            <a href="#" class="gh_button">Inbox</a>
+                                            <a href="#" class="gh_button">Account</a>
+                                            <a href="#" class="gh_button">Logout</a>
+                                        </div>
+                                    </div>
+                                    <div class="six columns">
+                                        <div class="gh_button-group">
+                                            <a href="#" class="gh_button primary pill">Dashboard</a>
+                                            <a href="#" class="gh_button pill">Inbox</a>
+                                            <a href="#" class="gh_button pill">Account</a>
+                                            <a href="#" class="gh_button pill">Logout</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row sepH_c">
+                                    <div class="twelve columns">
+                                        <div class="gh_button-group minor-group">
+                                            <a href="#" class="gh_button primary">Dashboard</a>
+                                            <a href="#" class="gh_button">Inbox</a>
+                                            <a href="#" class="gh_button">Account</a>
+                                            <a href="#" class="gh_button">Logout</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <h5 class="sepH_a_line">Foundation framework buttons</h5>
+                                <div class="row sepH_c">
+                                    <div class="four columns"><a class="button small radius" href="#">Post comment (link)</a></div>
+                                    <div class="four columns"><input type="submit" value="Post comment (input)" class="button small radius"></div>
+                                    <div class="four columns"><button type="submit" class="button small radius">Post comment (button)</button></div>
+                                </div>
+                                <div class="row sepH_c">
+                                    <div class="four columns"><a class="button small" href="#">default button</a></div>
+                                    <div class="four columns"><a class="button small radius" href="#">round button</a></div>
+                                    <div class="four columns"><a class="button small round" href="#">pill button</a></div>
+                                </div>
+                                <div class="row sepH_c">
+                                    <div class="four columns"><a class="button tiny radius" href="#">tiny button</a></div>
+                                    <div class="four columns"><a class="button small radius" href="#">small button</a></div>
+                                    <div class="four columns"><a class="button medium radius" href="#">medium button</a></div>
+                                </div>
+                                <div class="row sepH_c">
+                                    <div class="four columns"><a class="button large radius" href="#">large button</a></div>
+                                </div>
+                                <div class="row sepH_c">
+                                    <div class="three columns"><a class="button small radius" href="#">blue button</a></div>
+                                    <div class="three columns"><a class="button white small radius" href="#">white button</a></div>
+                                    <div class="three columns"><a class="button black small radius" href="#">black button</a></div>
+                                    <div class="three columns"><a class="button red small radius" href="#">red button</a></div>
+                                </div>
+                                <div class="row sepH_c">
+                                    <div class="three columns"><a class="button green small radius" href="#">green button</a></div>
+                                </div>
+                                <div class="row sepH_c">
+                                    <div class="three columns"><a class="button small radius nice" href="#">nice blue button</a></div>
+                                    <div class="three columns"><a class="button white small radius nice" href="#">nice white button</a></div>
+                                    <div class="three columns"><a class="button black small radius nice" href="#">nice black button</a></div>
+                                    <div class="three columns"><a class="button red small radius nice" href="#">nice red button</a></div>
+                                </div>
+                                <div class="row sepH_c">
+                                    <div class="three columns"><a class="button green small radius nice" href="#">nice green button</a></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box_c">
+                        <div class="box_c_heading cf">
+                            <p>Icons</p>
+                        </div>
+                        <div class="box_c_content">
+                            <p class="sepH_b">There are 2 icon sets included in Pertho Admin Template:</p>
+                            <p class="sepH_a"><a href="http://iconsweets2.com/">Iconsweets2</a> icons (16x16 and 32x32, light color) <code>img/ico/icSw2/</code></p>
+                            <p><a href="http://www.greepit.com/open-source-icons-gcons/">Gcons</a> icons (32x32, grey color, 100 icons) <code>img/ico/open/</code></p>
+                        </div>
+                    </div>
+                    <div class="box_c">
+                        <div class="box_c_heading cf">
+                            <p>Tooltips</p>
+                        </div>
+                        <div class="box_c_content">
+                            <div class="alert-box">
+                                This tooltips are always visible in the viewport.
+                                <a href="" class="close">&times;</a>
+                            </div>
+                            <div class="row">
+                                <div class="three columns">
+                                    <span class="ttip_t" title="Lorem ipsum dolor sit amet">Top center</span>
+                                </div>
+                                <div class="three columns">
+                                    <span class="ttip_b" title="Lorem ipsum dolor sit amet">Bottom center</span>
+                                </div>
+                                <div class="three columns">
+                                    <span class="ttip_l" title="Lorem ipsum dolor sit amet">Left center</span>
+                                </div>
+                                <div class="three columns">
+                                    <span class="ttip_r" title="Lorem ipsum dolor sit amet">Right center</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+		<footer class="container" id="footer">
+			<div class="row">
+				<div class="twelve columns">
+                    Copyright &copy; 2012 tzd-themes.com
+				</div>
+			</div>
+		</footer>
+		<div class="sw_width">
+			<img class="sw_full" title="switch to full width" alt="" src="img/blank.gif" />
+			<img style="display:none" class="sw_fixed" title="switch to fixed width (980px)" alt="" src="img/blank.gif" />
+		</div>
+        
+		<script src="js/jquery.min.js"></script>
+		<script src="lib/jQueryUI/jquery-ui-1.8.18.custom.min.js"></script>
+		<script src="js/s_scripts.js"></script>
+		<script src="js/jquery.ui.extend.js"></script>
+		<script src="lib/qtip2/jquery.qtip.min.js"></script>
+		<script src="js/pertho.js"></script>
+		<script>
+			$(document).ready(function() {
+				//* common functions
+				prth_common.init();
+			});
+		</script>
+	</body>
+</html>
