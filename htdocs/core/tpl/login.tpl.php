@@ -28,152 +28,122 @@ header("Content-type: text/html; charset=".$conf->file->character_set_client);
 <?php
 print '<head>
 <meta name="robots" content="noindex,nofollow" />
-<meta name="author" content="Dolibarr Development Team">
-<link rel="shortcut icon" type="image/x-icon" href="'.$favicon.'"/>
-<title>'.$langs->trans('Login').' '.$title.'</title>'."\n";
-print '<!-- Includes for JQuery (Ajax library) -->'."\n";
-if (constant('JS_JQUERY_UI')) print '<link rel="stylesheet" type="text/css" href="'.JS_JQUERY_UI.'css/'.$jquerytheme.'/jquery-ui.min.css" />'."\n";  // JQuery
-else print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/css/'.$jquerytheme.'/jquery-ui-latest.custom.css" />'."\n";    // JQuery
-// JQuery. Must be before other includes
-$ext='.js';
-if (isset($conf->global->MAIN_OPTIMIZE_SPEED) && ($conf->global->MAIN_OPTIMIZE_SPEED & 0x01)) $ext='.jgz';
-print '<!-- Includes JS for JQuery -->'."\n";
-if (constant('JS_JQUERY')) print '<script type="text/javascript" src="'.JS_JQUERY.'jquery.min.js"></script>'."\n";
-else print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/js/jquery-latest.min'.$ext.'"></script>'."\n";
-print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/core/js/dst.js"></script>'."\n";
-print '<link rel="stylesheet" type="text/css" href="'.$conf_css.'" />
-<style type="text/css">
-<!--
-#login {
-	margin-top: 70px;
-	margin-bottom: 30px;
-}
-.login_table {
-	width: 512px;
-	border: 1px solid #C0C0C0;
-	background: #F0F0F0 url('.$login_background.') repeat-x;
-}
--->
-</style>'."\n";
+<meta name="author" content="Speedealing Development Team" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- Foundation framework -->';
+print '<link rel="stylesheet" href="'.DOL_URL_ROOT.'/theme/pertho_sample/foundation/stylesheets/foundation.css">';
+print '<!-- Favicons and the like (avoid using transparent .png) -->';
+print '<link rel="shortcut icon" type="image/x-icon" href="'.DOL_URL_ROOT.'/theme/favicon.ico"/>'."\n";
+print '<link rel="apple-touch-icon-precomposed" href="'.DOL_URL_ROOT.'/theme/icon.png" />';
+
+//<!-- Favicons and the like (avoid using transparent .png) -->
+//<link rel="apple-touch-icon-precomposed" href="icon.png" />
+//<link rel="shortcut icon" type="image/x-icon" href="'.$favicon.'"/>
+print '<title>'.$langs->trans('Login').' '.$title.'</title>'."\n";
+
+print '<!-- main styles -->';
+print '<link rel="stylesheet" href="'.DOL_URL_ROOT.'/theme/pertho_sample/css/style.css" />';
 if (! empty($conf->global->MAIN_HTML_HEADER)) print $conf->global->MAIN_HTML_HEADER;
 print '<!-- HTTP_USER_AGENT = '.$_SERVER['HTTP_USER_AGENT'].' -->
 </head>';
 
 ?>
 
-<body class="body">
+<body class="ptrn_a grdnt_a">
+    <div class="container">
+        <div class="row">
+            <div class="eight columns centered">            
+            </div>
+        </div>
+            <div class="row">
+                <div class="eight columns centered">
+                    <div class="login_box">
+                        <div class="lb_content">
+                            <div class="login_logo"><img src="<?php echo $urllogo; ?>" width="120" alt="" /></div>
+                                <div class="cf">
+                                    <h2 class="lb_ribbon lb_blue"><span>Login to your account</span><span style="display:none">New password</span></h2>
+                                    <a href="#" class="right small sl_link">
+                                        <span>Forgot your password?</span>
+                                        <span style="display:none">Back to login form</span>
+                                    </a>
+				</div>
+                                <div class="row m_cont">
+                                    <div class="eight columns centered">
+                                        <div class="l_pane">
+                                            <form name="login" action="<?php echo $php_self; ?>" method="post" class="nice" id="l_form">
+                                                <input type="hidden" name="token" value="<?php echo $_SESSION['newtoken']; ?>" />
+                                                <input type="hidden" name="loginfunction" value="loginfunction" />
+                                                <!-- Add fields to send local user information -->
+                                                <input type="hidden" name="tz" id="tz" value="" />
+                                                <input type="hidden" name="dst_observed" id="dst_observed" value="" />
+                                                <input type="hidden" name="dst_first" id="dst_first" value="" />
+                                                <input type="hidden" name="dst_second" id="dst_second" value="" />
+                                                <input type="hidden" name="screenwidth" id="screenwidth" value="" />
+                                                <input type="hidden" name="screenheight" id="screenheight" value="" />
+						<div class="sepH_c">
+                                                    <div class="elVal">
+                                                        <label for="username"><?php echo $langs->trans('Login'); ?></label>
+        						<input type="text" id="username" name="username" class="oversize expand input-text" value="<?php echo GETPOST('username')?GETPOST('username'):$login; ?>" tabindex="1" />
+                                                    </div>
+                                                    <div class="elVal">
+                                                        <label for="password"><?php echo $langs->trans('Password'); ?></label>
+							<input type="password" id="password" name="password" class="oversize expand input-text" tabindex="2" />
+                                                    </div>
+                                                    <?php
+                                                        if (! empty($hookmanager->resArray['options'])) {
+                                                            foreach ($hookmanager->resArray['options'] as $option)
+                                                            {
+                                                                echo '<!-- Option by hook -->';
+                                                                echo '<div class="elVal">';
+                                                                echo $option;
+                                                                echo '</div>';
+                                                            }
+                                                        }
+                                                    ?>
 
-<!-- Javascript code on logon page only to detect user tz, dst_observed, dst_first, dst_second -->
-<script type="text/javascript">
-$(document).ready(function () {
-	// Set focus on correct field
-	<?php if ($focus_element) { ?>$('#<?php echo $focus_element; ?>').focus(); <?php } ?>		// Warning to use this only on visible element
-});
-</script>
+                                                    <?php if ($captcha) { ?>
+                                                        <!-- Captcha -->
+                                                        <tr><td valign="middle" nowrap="nowrap"> &nbsp; <b><?php echo $langs->trans('SecurityCode'); ?></b></td>
+                                                        <td valign="top" nowrap="nowrap" align="left" class="none">
 
-<form id="login" name="login" method="post" action="<?php echo $php_self; ?>">
-<input type="hidden" name="token" value="<?php echo $_SESSION['newtoken']; ?>" />
-<input type="hidden" name="loginfunction" value="loginfunction" />
-<!-- Add fields to send local user information -->
-<input type="hidden" name="tz" id="tz" value="" />
-<input type="hidden" name="dst_observed" id="dst_observed" value="" />
-<input type="hidden" name="dst_first" id="dst_first" value="" />
-<input type="hidden" name="dst_second" id="dst_second" value="" />
-<input type="hidden" name="screenwidth" id="screenwidth" value="" />
-<input type="hidden" name="screenheight" id="screenheight" value="" />
+                                                        <table class="login_table" style="width: 100px;"><tr>
+                                                        <td><input id="securitycode" class="flat" type="text" size="6" maxlength="5" name="code" tabindex="4" /></td>
+                                                        <td><img src="<?php echo DOL_URL_ROOT ?>/core/antispamimage.php" border="0" width="80" height="32" /></td>
+                                                        <td><a href="<?php echo $php_self; ?>"><?php echo $captcha_refresh; ?></a></td>
+                                                        </tr></table>
 
-<table class="login_table" summary="<?php echo $title; ?>" cellpadding="0" cellspacing="0" border="0" align="center">
-<tr class="vmenu"><td align="center"><?php echo $title; ?></td></tr>
-</table>
-<br>
+                                                        </td></tr>
+                                                    <?php } ?>
+						</div>
+						<div class="cf">
+                                                    <label for="remember" class="left"><input type="checkbox" id="remember"> Remember me</label>
+                                                    <input type="submit" class="button small radius right black" value="<?php echo $langs->trans('Connection'); ?>" tabindex="5"  />
+						</div>
+                                            </form>
+					</div>
+					<div class="l_pane" style="display:none">
+                                            <form action="dashboard.html" method="post" class="nice" id="rp_form">
+                                                <div class="sepH_c">
+                                                    <p class="sepH_b">Please enter your email address. You will receive a link to create a new password via email.</p>
+                                                    <div class="elVal">
+                                                        <label for="upname">E-mail:</label>
+                                                        <input type="text" id="upname" name="upname" class="oversize expand input-text" />
+                                                    </div>
+						</div>
+						<div class="cf">
+                                                    <input type="submit" class="button small radius right black" value="Get new password" />
+						</div>
+                                            </form>
+					</div>
+                                    </div>
+				</div>
+                            </div>
+			</div>
+                    </div>
+		</div>
 
-<table class="login_table" summary="Login area" cellpadding="2" align="center">
-
-<tr><td colspan="2" valign="middle">
-<table class="none" summary="Login pass" cellpadding="2" align="center">
-
-<!-- Login -->
-<tr>
-<td valign="bottom"> &nbsp; <strong><label for="username"><?php echo $langs->trans('Login'); ?></label></strong> &nbsp; </td>
-<td valign="bottom" nowrap="nowrap">
-<input type="text" id="username" name="username" class="flat" size="15" maxlength="40" value="<?php echo GETPOST('username')?GETPOST('username'):$login; ?>" tabindex="1" />
-</td>
-</tr>
-
-<!-- Password -->
-<tr><td valign="top" nowrap="nowrap"> &nbsp; <strong><label for="password"><?php echo $langs->trans('Password'); ?></label></strong> &nbsp; </td>
-<td valign="top" nowrap="nowrap">
-<input id="password" name="password" class="flat" type="password" size="15" maxlength="30" value="<?php echo $password; ?>" tabindex="2" />
-</td></tr>
-
-<?php
-if (! empty($hookmanager->resArray['options'])) {
-	foreach ($hookmanager->resArray['options'] as $option)
-	{
-		echo '<!-- Option by hook -->';
-		echo $option;
-	}
-}
-?>
-
-<?php if ($captcha) { ?>
-	<!-- Captcha -->
-	<tr><td valign="middle" nowrap="nowrap"> &nbsp; <b><?php echo $langs->trans('SecurityCode'); ?></b></td>
-	<td valign="top" nowrap="nowrap" align="left" class="none">
-
-	<table class="login_table" style="width: 100px;"><tr>
-	<td><input id="securitycode" class="flat" type="text" size="6" maxlength="5" name="code" tabindex="4" /></td>
-	<td><img src="<?php echo DOL_URL_ROOT ?>/core/antispamimage.php" border="0" width="80" height="32" /></td>
-	<td><a href="<?php echo $php_self; ?>"><?php echo $captcha_refresh; ?></a></td>
-	</tr></table>
-
-	</td></tr>
-<?php } ?>
-
-</table>
-</td>
-
-<td align="center" valign="top">
-<img alt="Logo" title="" src="<?php echo $urllogo; ?>" />
-</td>
-
-</tr>
-
-<!-- Button Connection -->
-<tr><td colspan="3" style="text-align:center;"><br>
-<input type="submit" class="button" value="&nbsp; <?php echo $langs->trans('Connection'); ?> &nbsp;" tabindex="5" />
-</td></tr>
-
-<?php
-if ($forgetpasslink || $helpcenterlink) {
-	echo '<tr><td colspan="3" align="center">';
-	if ($forgetpasslink) {
-		echo '<a style="color: #888888; font-size: 10px" href="'.DOL_URL_ROOT.'/user/passwordforgotten.php">(';
-		echo $langs->trans('PasswordForgotten');
-		if (! $helpcenterlink) {
-			echo ')';
-		}
-		echo '</a>';
-	}
-
-	if ($helpcenterlink) {
-		echo '<a style="color: #888888; font-size: 10px" href="'.DOL_URL_ROOT.'/support/index.php" target="_blank">';
-		if ($forgetpasslink) {
-			echo '&nbsp;-&nbsp;';
-		} else {
-			echo '(';
-		}
-		echo $langs->trans('NeedHelpCenter').')</a>';
-	}
-	echo '</td></tr>';
-}
-?>
-
-</table>
-
-</form>
-
-
+</div>
 
 
 <?php if (! empty($_SESSION['dol_loginmesg']))
@@ -222,7 +192,61 @@ if (! empty($conf->global->MAIN_GOOGLE_AD_CLIENT) && ! empty($conf->global->MAIN
 <!-- urlfrom in this session = <?php echo $_SESSION["urlfrom"] ?> -->
 
 <?php if (! empty($conf->global->MAIN_HTML_FOOTER)) print $conf->global->MAIN_HTML_FOOTER; ?>
+    </div>
+    
+    <script src="<?php echo DOL_URL_ROOT ?>/includes/js/jquery.min.js"></script>
+    <script src="<?php echo DOL_URL_ROOT ?>/includes/js/s_scripts.js"></script>
+    <script src="<?php echo DOL_URL_ROOT ?>/includes/lib/validate/jquery.validate.min.js"></script>
+    <script>
+			$(document).ready(function() {
+				$(".sl_link").click(function(event){
+					$('.l_pane').slideToggle('normal').toggleClass('dn');
+					$('.sl_link,.lb_ribbon').children('span').toggle();
+					event.preventDefault();
+				});
 
+				$("#l_form").validate({
+					highlight: function(element) {
+						$(element).closest('.elVal').addClass("form-field error");
+					},
+					unhighlight: function(element) {
+						$(element).closest('.elVal').removeClass("form-field error");
+					},
+					rules: {
+						username: "required",
+						password: "required"
+					},
+					messages: {
+						username: "Please enter your username (type anything)",
+						password: "Please enter a password (type anything)"
+					},
+					errorPlacement: function(error, element) {
+						error.appendTo( element.closest(".elVal") );
+					}
+				});
+
+				$("#rp_form").validate({
+					highlight: function(element) {
+						$(element).closest('.elVal').addClass("form-field error");
+					},
+					unhighlight: function(element) {
+						$(element).closest('.elVal').removeClass("form-field error");
+					},
+					rules: {
+						upname: {
+							required: true,
+							email: true
+						}
+					},
+					messages: {
+						upname: "Please enter a valid email address"
+					},
+					errorPlacement: function(error, element) {
+						error.appendTo( element.closest(".elVal") );
+					}
+				});
+			});
+    </script>
 </body>
 </html>
 <!-- END PHP TEMPLATE -->

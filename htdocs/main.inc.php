@@ -829,10 +829,12 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
         print "<head>\n";
 
         // Displays meta
-        print '<meta name="robots" content="noindex,nofollow">'."\n";      // Evite indexation par robots
-        print '<meta name="author" content="SpeeDealing Development Team">'."\n";
+        print '<meta charset="utf-8" />';
+        print '<meta name="viewport" content="width=device-width, initial-scale=1.0" />';
+        print '<meta name="robots" content="noindex,nofollow" />'."\n";      // Evite indexation par robots
+        print '<meta name="author" content="Speedealing Development Team" />'."\n";
         // Displays title
-        $appli='SpeeDealing';
+        $appli='Speedealing';
         if (!empty($conf->global->MAIN_APPLICATION_TITLE)) $appli=$conf->global->MAIN_APPLICATION_TITLE;
 
         if ($title) print '<title>'.$appli.' - '.$title.'</title>';
@@ -901,7 +903,7 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
 
         if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER)) print '<link rel="top" title="'.$langs->trans("Home").'" href="'.(DOL_URL_ROOT?DOL_URL_ROOT:'/').'">'."\n";
         if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER)) print '<link rel="copyright" title="GNU General Public License" href="http://www.gnu.org/copyleft/gpl.html#SEC1">'."\n";
-        if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER)) print '<link rel="author" title="SpeeDealing Development Team" href="http://www.speedealing.com">'."\n";
+        if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER)) print '<link rel="author" title="Speedealing Development Team" href="http://www.speedealing.com">'."\n";
 
         // Output standard javascript links
         if (! $disablejs && $conf->use_javascript_ajax)
@@ -1037,7 +1039,7 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
 
             print '<!--[if lt IE 9]>';
             print '<link rel="stylesheet" href="foundation/stylesheets/ie.css">';
-            print '<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>';
+            print '<script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>';
             print '<script src="lib/jQplot/excanvas.min.js"></script>';
             print '<![endif]-->';
             
