@@ -164,23 +164,6 @@ elseif ($conf->browser->name == 'epiphany') $usecss3=false;
 /* Styles par defaut                                                              */
 /* ============================================================================== */
 
-body {
-<?php if (GETPOST("optioncss") == 'print') {  ?>
-	background-color: #FFFFFF;
-<?php } else { ?>
-	background: <?php print $colorbackbody; ?>;
-<?php } ?>
-	color: #101010;
-	font-size: <?php print $fontsize ?>px;
-    font-family: <?php print $fontlist ?>;
-    margin-top: 0;
-    margin-bottom: 0;
-    margin-right: 0;
-    margin-left: 0;
-    <?php print 'direction: '.$langs->trans("DIRECTION").";\n"; ?>
-}
-
-a:link, a:visited, a:hover, a:active { font-family: <?php print $fontlist ?>; font-weight: bold; color: #000000; text-decoration: none; }
 
 input:focus, textarea:focus, button:focus, select:focus {
     box-shadow: 0 0 4px #8091BF;
