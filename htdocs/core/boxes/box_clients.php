@@ -61,13 +61,13 @@ class box_clients extends ModeleBoxes
 	 */
 	function loadBox($max=5)
 	{
-		global $user, $langs, $db, $conf;
+		global $user, $langs, $db, $conf, $couch;
 		$langs->load("boxes");
 
 		$this->max=$max;
 
         include_once(DOL_DOCUMENT_ROOT."/societe/class/societe.class.php");
-        $thirdpartystatic=new Societe($db);
+        $thirdpartystatic=new Societe($couch);
 
         $this->info_box_head = array('text' => $langs->trans("BoxTitleLastModifiedCustomers",$max));
 
