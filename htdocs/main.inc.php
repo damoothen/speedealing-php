@@ -774,7 +774,6 @@ if (! function_exists("llxHeader"))
     {
         top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss);	// Show html headers
         top_menu($head, $title, $target, $disablejs, $disablehead, $arrayofjs, $arrayofcss, $morequerystring);
-        left_menu('', $help_url, '', '', 1, $title);
         main_area($title);
     }
 }
@@ -1236,8 +1235,6 @@ function top_menu($head, $title='', $target='', $disablejs=0, $disablehead=0, $a
     print '</header>';
 
     print "<!-- End top horizontal menu -->\n";
-
-    print '<div class="container">';
     
     //print '<table width="100%" class="notopnoleftnoright" summary="leftmenutable" id="undertopmenu"><tr>';
 
@@ -1338,14 +1335,15 @@ function left_menu($menu_array_before, $helppagename='', $moresearchform='', $me
         }
     }
 
+    /*
     // Left column
     print '<!-- Begin left area - menu '.$left_menu.' -->'."\n";
 
     print '<div class="row">'."\n";
     print '<div class="three columns hide-on-phones">'."\n";
 
-    $menuleft=new MenuLeft($db,$menu_array_before,$menu_array_after);
-    $menuleft->showmenu(); // output menu_array and menu found in database
+    //$menuleft=new MenuLeft($db,$menu_array_before,$menu_array_after);
+    //$menuleft->showmenu(); // output menu_array and menu found in database
 
 
     // Show other forms
@@ -1439,7 +1437,7 @@ function left_menu($menu_array_before, $helppagename='', $moresearchform='', $me
     print '<!-- End of left area -->'."\n";
     print "\n";
     print '<!-- Begin right area -->'."\n";
-
+    */
 
     if (empty($leftmenuwithoutmainarea)) main_area($title);
 }
@@ -1455,7 +1453,9 @@ function main_area($title='')
 {
     global $conf, $langs;
 
-    print '<div class="nine columns">'."\n";
+    print '<div class="container">';
+    print '<div class="row">';
+    print '<div class="twelve columns">'."\n";
     
     if (! empty($conf->global->MAIN_ONLY_LOGIN_ALLOWED)) print info_admin($langs->trans("WarningYouAreInMaintenanceMode",$conf->global->MAIN_ONLY_LOGIN_ALLOWED));
 }
@@ -1557,10 +1557,12 @@ if (! function_exists("llxFooter"))
         }
 
         print "\n\n";
-        print '</div> <!-- end div class="fiche" -->'."\n";
-
-        
         print "</div>";
+        print "</div>";
+        print '</div> <!-- end div class="container" -->'."\n";
+
+  
+        
         
         print '<footer class="container" id="footer">
 			<div class="row">

@@ -261,7 +261,7 @@ function print_submenu($db,$mainmenu)
  * @param   array		$menu_array_after    Table of menu entries to show after entries of menu handler
  * @return	void
  */
-function print_left_auguria_menu($db,$menu_array_before,$menu_array_after)
+/*function print_left_auguria_menu($db,$menu_array_before,$menu_array_after)
 {
     global $user,$conf,$langs,$dolibarr_main_db_name,$mysoc;
 
@@ -346,11 +346,6 @@ function print_left_auguria_menu($db,$menu_array_before,$menu_array_after)
             }
         }
     }
-
-    /**
-     * On definit newmenu en fonction de mainmenu et leftmenu
-     * ------------------------------------------------------
-     */
     if ($mainmenu)
     {
         require_once(DOL_DOCUMENT_ROOT."/core/class/menubase.class.php");
@@ -457,6 +452,6 @@ function print_left_auguria_menu($db,$menu_array_before,$menu_array_after)
     }
 
     return count($menu_array);
-}
+}*/
 
 ?>
