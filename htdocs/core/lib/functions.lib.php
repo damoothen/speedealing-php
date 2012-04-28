@@ -2052,7 +2052,7 @@ function info_admin($text,$infoonimgalt=0)
     }
     else
     {
-        $s.='<div class="info">';
+        $s.='<div class="alert-box warning">';
         $s.=img_picto($langs->trans("InfoAdmin"),'star');
         $s.=' ';
         $s.=$text;
@@ -2305,7 +2305,11 @@ function print_titre($title)
  */
 function print_fiche_titre($titre, $mesg='', $picto='title.png', $pictoisfullpath=0, $id='')
 {
+    print '<div class="row">';
+    print '<div class="tweelve columns">';
     print load_fiche_titre($titre, $mesg, $picto, $pictoisfullpath, $id);
+    print '</div>';
+    print '</div>';
 }
 
 /**

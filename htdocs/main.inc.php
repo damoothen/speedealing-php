@@ -1454,8 +1454,6 @@ function main_area($title='')
     global $conf, $langs;
 
     print '<div class="container">';
-    print '<div class="row">';
-    print '<div class="twelve columns">'."\n";
     
     if (! empty($conf->global->MAIN_ONLY_LOGIN_ALLOWED)) print info_admin($langs->trans("WarningYouAreInMaintenanceMode",$conf->global->MAIN_ONLY_LOGIN_ALLOWED));
 }
@@ -1557,8 +1555,6 @@ if (! function_exists("llxFooter"))
         }
 
         print "\n\n";
-        print "</div>";
-        print "</div>";
         print '</div> <!-- end div class="container" -->'."\n";
 
   

@@ -59,31 +59,45 @@ if (!isset($conf->global->MAIN_INFO_SOCIETE_NOM) || empty($conf->global->MAIN_IN
 
 llxHeader();
 
-print_fiche_titre($langs->trans("HomeArea"));
+
+//print_fiche_titre($langs->trans("HomeArea"));
+
+
+
 
 if (! empty($conf->global->MAIN_MOTD))
 {
     $conf->global->MAIN_MOTD=preg_replace('/<br(\s[\sa-zA-Z_="]*)?\/?>/i','<br>',$conf->global->MAIN_MOTD);
     if (! empty($conf->global->MAIN_MOTD))
     {
+        print '<div class="row">';
+        print '<div class="twelve columns">';
         print "\n<!-- Start of welcome text -->\n";
         print '<table width="100%" class="notopnoleftnoright"><tr><td>';
         print dol_htmlentitiesbr($conf->global->MAIN_MOTD);
         print '</td></tr></table><br>';
         print "\n<!-- End of welcome text -->\n";
+        print '</div>';
+        print '</div>';
     }
 }
 
 
-print '<div class="fichecenter"><div class="fichethirdleft">';
-
+print '<div class="row">';
 
 /*
  * Informations area
  */
 
+print '<div class="four columns">';
+
+print '<div class="box_c">';
+print '<div class="box_c_heading cf">';
+print '<div class="box_c_ico"><img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/open/agent.png" alt="" /></div>';
+print '<p>'.$langs->trans("Informations").'</p>';
+print '</div>';
+print '<div class="box_c_content">';
 print '<table class="noborder" width="100%">';
-print '<tr class="liste_titre"><th class="liste_titre" colspan="2">'.$langs->trans("Informations").'</th></tr>';
 print '<tr '.$bc[false].'>';
 print '<td nowrap="nowrap">'.$langs->trans("User").'</td><td>'.$user->getNomUrl(0).'</td></tr>';
 print '<tr '.$bc[true].'>';
@@ -93,7 +107,8 @@ else print $langs->trans("Unknown");
 print '</td>';
 print "</tr>\n";
 print "</table>\n";
-
+print '</div>';
+print '</div>';
 
 /*
  * Dashboard Dolibarr states (statistics)
@@ -105,12 +120,14 @@ $langs->load("orders");
 
 if ($user->societe_id == 0)
 {
-    print '<br>';
+    print '<div class="box_c">';
+    print '<div class="box_c_heading cf">';
+    print '<div class="box_c_ico"><img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/open/bar-chart.png" alt="" /></div>';
+    print '<p>'.$langs->trans("DolibarrStateBoard").'</p>';
+    print '</div>';
+
+    print '<div class="box_c_content">';
     print '<table class="noborder" width="100%">';
-    print '<tr class="liste_titre">';
-    print '<th class="liste_titre" colspan="2">'.$langs->trans("DolibarrStateBoard").'</th>';
-    print '<th class="liste_titre" align="right">&nbsp;</th>';
-    print '</tr>';
 
     $var=true;
 
@@ -254,10 +271,13 @@ if ($user->societe_id == 0)
     $reshook=$hookmanager->executeHooks('addStatisticLine',$parameters,$object,$action);    // Note that $action and $object may have been modified by some hooks
 
     print '</table>';
+    print '</div>';
+    print '</div>';
 }
 
+print '</div>';
 
-print '</div><div class="fichetwothirdright"><div class="ficheaddleft">';
+
 
 
 /*
@@ -266,15 +286,22 @@ print '</div><div class="fichetwothirdright"><div class="ficheaddleft">';
 $showweather=empty($conf->global->MAIN_DISABLE_METEO)?1:0;
 $rowspan=0;
 $dashboardlines=array();
+print '<div class="eight columns">';
+print '<div class="box_c">';
+print '<div class="box_c_heading cf">';
+print '<div class="box_c_ico"><img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/open/cloud-filled.png" alt="" /></div>';
+print '<p>'.$langs->trans("DolibarrWorkBoard").'</p>';
+print '</div>';
 
+print '<div class="box_c_content">';
 print '<table class="noborder" width="100%">';
 print '<tr class="liste_titre">';
-print '<th class="liste_titre"colspan="2">'.$langs->trans("DolibarrWorkBoard").'</th>';
-print '<th class="liste_titre"align="right">'.$langs->trans("Number").'</th>';
-print '<th class="liste_titre"align="right">'.$langs->trans("Late").'</th>';
-print '<th class="liste_titre">&nbsp;</th>';
-print '<th class="liste_titre"width="20">&nbsp;</th>';
-if ($showweather) print '<th class="liste_titre" width="80">&nbsp;</th>';
+print '<th colspan="2">'.$langs->trans("DolibarrWorkBoard").'</th>';
+print '<th align="right">'.$langs->trans("Number").'</th>';
+print '<th align="right">'.$langs->trans("Late").'</th>';
+print '<th >&nbsp;</th>';
+print '<th width="20">&nbsp;</th>';
+if ($showweather) print '<th width="80">&nbsp;</th>';
 print '</tr>';
 
 
@@ -515,12 +542,18 @@ foreach($dashboardlines as $key => $board)
 
 
 print '</table>';   // End table array
+print '</div>';
+print '</div>';
 
 
-print '</div></div></div><div class="fichecenter"><br>';
+print '</div></div>';
+
+
 
 if ($conf->agenda->enabled && $user->rights->agenda->myactions->read && $conf->highcharts->enabled && $user->rights->highcharts->read)
 {
+    print '<div class="row">';
+    print '<div class="twelve column">';
     dol_include_once("/highCharts/class/highCharts.class.php");
 
     $langs->load("highcharts@highCharts");
@@ -535,17 +568,18 @@ if ($conf->agenda->enabled && $user->rights->agenda->myactions->read && $conf->h
         $graph->mine=0;
     }
     $graph->eisenhower();
+    print '</div></div>';
 }
 
 /*
  * Show boxes
  */
 
+print '<div class="row">';
+print '<div class="twelve column">';
 FormOther::printBoxesArea($user,"0");
-
-
 print '</div>';
-
+print '</div>';
 /*
  * Show security warnings
  */
@@ -575,7 +609,11 @@ if ($user->admin && empty($conf->global->MAIN_REMOVE_INSTALL_WARNING))
 
     if ($message)
     {
+        print '</br><div class="row">';
+        print '<div class="twelve column">';
         print $message;
+        print '</div>';
+        print '</div>';
         //$message.='<br>';
         //print info_admin($langs->trans("WarningUntilDirRemoved",DOL_DOCUMENT_ROOT."/install"));
     }
