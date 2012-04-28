@@ -987,6 +987,8 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
         print '<link rel="stylesheet" href="'.DOL_URL_ROOT.'/theme/pertho_sample/lib/fullcalendar/fullcalendar.css" media="all" />';
         print '<!-- tooltips -->';
         print '<link rel="stylesheet" href="'.DOL_URL_ROOT.'/theme/pertho_sample/lib/qtip2/jquery.qtip.min.css" />';
+        print '<!-- datatables -->';
+        print '<link rel="stylesheet" href="'.DOL_URL_ROOT.'/theme/pertho_sample/lib/datatables/css/demo_table_jui.css" media="all" />';
         print '<!-- main styles -->';
         print '<link rel="stylesheet" href="'.DOL_URL_ROOT.'/theme/pertho_sample/css/style.css" />';
 

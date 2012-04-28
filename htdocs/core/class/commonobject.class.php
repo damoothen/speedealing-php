@@ -2764,11 +2764,21 @@ abstract class CommonObject extends couchDocument
             $obj->aLengthMenu= array(array(10, 25, 50, 100, 1000, -1), array(10, 25, 50, 100,1000,"All"));
             $obj->bProcessing = true;
             $obj->bJQueryUI = true;
+            $obj->bAutoWidth = false;
             $obj->bDeferRender = true;
             $obj->oLanguage->sUrl = DOL_URL_ROOT.'/includes/jquery/plugins/datatables/langs/'.($langs->defaultlang?$langs->defaultlang:"en_US").".txt";
-            $obj->sDom = '<\"top\"Tflpi<\"clear\">>rt<\"bottom\"pi<\"clear\">>';
+            //$obj->sDom = '<\"top\"Tflpi<\"clear\">>rt<\"bottom\"pi<\"clear\">>';
+            $obj->sPaginationType = 'full_numbers';
+            //$obj->sDom = 'TC<\"clear\">lfrtip';
             $obj->oTableTools->sSwfPath = DOL_URL_ROOT.'/includes/jquery/plugins/datatables/swf/copy_cvs_xls_pdf.swf';
             $obj->oTableTools->aButtons = array("xls");
+            $obj->oColVis->buttonText = 'Voir/Cacher';
+            //$obj->oColVis->bRestore = true;
+            //$obj->oColVis->sAlign = 'left';
+            $obj->sDom = 'T<\"clear\"flCr>t<\"clear\"rtip>';
+            //$obj->sScrollY = '200px';
+            //$obj->bScrollCollapse = false;
+            //$obj->bScrollAutoCss = false;
             
             $output ='<script type="text/javascript" charset="utf-8">';
             $output.='$(document).ready(function() {';

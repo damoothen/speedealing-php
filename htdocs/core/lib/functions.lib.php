@@ -2283,6 +2283,41 @@ function getTitleFieldOfList($name, $thead=0, $file="", $field="", $begin="", $m
 }
 
 /**
+ *	Start a box
+ *
+ *	@param	string	$title			Title of the box
+ *	@param	string	$nbcolumn		Number of column see style.css
+ *	@return	string				Title to show
+ */
+function start_box($title,$nbcolumn='twelve',$icon='database.png')
+{
+    global $conf,$langs;
+    
+    $rtr = '<div class="'.$nbcolumn.' columns">';
+    $rtr.= '<div class="box_c">';
+    $rtr.= '<div class="box_c_heading cf">';
+    $rtr.= '<div class="box_c_ico"><img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/open/'.$icon.'" alt="" /></div>';
+    $rtr.= '<p>'.$title.'</p>';
+    $rtr.= '</div>';
+    $rtr.= '<div class="box_c_content">';
+    return $rtr;
+}
+
+/**
+ *	End of a box
+ *
+ *	@return	string					Title to show
+ */
+function end_box()
+{
+    $rtr = '</div>';//end content box
+    $rtr.= '</div>';//end box
+    $rtr.= '</div>';//end columns
+    return $rtr;
+}
+
+
+/**
  *	Show a title (deprecated. use print_fiche_titre instrad)
  *
  *	@param	string	$title			Title to show

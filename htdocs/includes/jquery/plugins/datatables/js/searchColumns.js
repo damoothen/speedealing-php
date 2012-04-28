@@ -24,20 +24,20 @@
  */	 
 /* send input value to server */
 $(document).ready(function() {
-$("tbody input").keyup( function () {
+$("tfoot input").keyup( function () {
 	/* Filter on the column */
         var id = $(this).parent().attr("id");
         oTable.fnFilter( this.value, id);
         } );
 /*send selected level value to server */        
-$("tbody #level").change( function () {
+$("tfoot #level").change( function () {
 	/* Filter on the column */
         var id = $(this).parent().attr("id");
         var value = $(this).val();
         oTable.fnFilter( value, id);
         } );
 /*send selected stcomm value to server */   
-$("tbody .flat").change( function () {
+$("tfoot .flat").change( function () {
 	/* Filter on the column */
         var id = $(this).parent().attr("id");
         var value = $(this).val();

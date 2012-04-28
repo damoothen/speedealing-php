@@ -140,20 +140,21 @@ if ($type != '') {
 else
     $titre = $langs->trans("ListOfAll");
 
-print_barre_liste($titre, $page, '', '', '', '', '', 0, 0);
+print '<div class=row>';
+
+print start_box($titre,"twelve","addressbook.png");
 
 $i=0;
 $obj=new stdClass();
 
-print '<table cellpadding="0" cellspacing="0" border="0" class="liste" id="list" width="100%">';
+print '<table cellpadding="0" cellspacing="0" border="0" class="display dt_act" id="societe" >';
 // Ligne des titres 
 print'<thead>';
-print'<tr class="liste_titre">';
-print'<th class="sorting">';
+print'<tr>';
+print'<th class="essential">';
 print $langs->trans("Company");
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "name";
-$obj->aoColumns[$i]->sWidth = "20em";
 $obj->aoColumns[$i]->bUseRendered = true;
 $obj->aoColumns[$i]->bSearchable = true;
 $obj->aoColumns[$i]->fnRender= '%function(obj) {
@@ -173,59 +174,61 @@ var str = ar.join("");
 return str;
 }%';
 $i++;
-print'<th class="sorting">';
+print'<th class="essential">';
 print $langs->trans("Town");
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "town";
-$obj->aoColumns[$i]->sWidth = "7em";
 $obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->sDefaultContent = "";
 $i++;
-print'<th class="sorting">';
+print'<th class="essential">';
 print $langs->trans("Zip");
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "zip";
-//$obj->aoColumns[$i]->sClass = "right";
+$obj->aoColumns[$i]->sClass = "center";
+$obj->aoColumns[$i]->bVisible = false;
 $obj->aoColumns[$i]->sDefaultContent = "";
 $i++;
 if (empty($conf->global->SOCIETE_DISABLE_STATE)) {
-    print'<th class="sorting">';
+    print'<th class="essential">';
     print $langs->trans("State");
     print'</th>';
 }
 if ($conf->categorie->enabled) {
-    print'<th class="sorting">';
+    print'<th class="essential">';
     print $langs->trans('Categories');
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "category";
     $obj->aoColumns[$i]->sDefaultContent = "";
     $i++;
 }
-print'<th class="sorting">';
+print'<th class="essential">';
 print $langs->trans('SalesRepresentatives');
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "commerciaux";
 $obj->aoColumns[$i]->sDefaultContent = "";
 $i++;
-print'<th class="sorting">';
+print'<th class="essential">';
 print $langs->trans('Siren');
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "idprof1";
+$obj->aoColumns[$i]->bVisible = false;
 $obj->aoColumns[$i]->sDefaultContent = "";
 $i++;
-print'<th class="sorting">';
+print'<th class="essential">';
 print $langs->trans('Ape');
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "idprof2";
+$obj->aoColumns[$i]->bVisible = false;
 $obj->aoColumns[$i]->sDefaultContent = "";
 $i++;
-print'<th class="sorting">';
+print'<th class="essential">';
 print $langs->trans("ProspectLevelShort");
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "potentiel";
 $obj->aoColumns[$i]->sDefaultContent = "";
 $i++;
-print'<th class="sorting">';
+print'<th class="essential">';
 print $langs->trans("Status");
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "fk_stcomm";
@@ -251,12 +254,13 @@ var str = ar.join("");
 return str;
 }%';
 $i++;
-print'<th class="sorting">';
+print'<th class="essential">';
 print $langs->trans("Date");
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "tms";
 $obj->aoColumns[$i]->sType="date";
 $obj->aoColumns[$i]->sClass = "center";
+//$obj->aoColumns[$i]->sWidth = "50px";
 $obj->aoColumns[$i]->fnRender = '%function(obj) {
 if(obj.aData.tms)
 {
@@ -268,44 +272,36 @@ else
 }%';
 print'</tr>';
 print'</thead>';
-print'<tbody class="contenu">';
-print'</tbody>';
-
-print $object->_datatables($obj,"#list");
-
-$i=0;
-
+print'<tfoot>';
 /* input search view */
-print'<tbody class="recherche">';
 print'<tr>';
-print'<td id="'.$i.'"><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Company") . '" class="inputSearch"/></td>';
-$i++;
-print'<td id="'.$i.'"><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Town") . '" class="inputSearch" /></td>';
-$i++;
-print'<td id="'.$i.'"><input  style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Zip") . '" class="inputSearch" /></td>';
-$i++;
+print'<th><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Company") . '" /></th>';
+print'<th><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Town") . '" /></th>';
+print'<th><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Zip") . '" /></th>';
 /*if(empty($conf->global->SOCIETE_DISABLE_STATE)) {
     print'<th></th>';
     $i++;
 }*/
 if ($conf->categorie->enabled) {
-        print'<td id="'.$i.'"><input  style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search category") . '" class="inputSearch" /></td>';
-        $i++;
+        print'<th><input  style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search category") . '" /></th>';
 }
-print'<td id="'.$i.'"><input  style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search sales") . '" class="inputSearch" /></td>';
-$i++;
-print'<td id="'.$i.'"><input  style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search siren") . '" class="inputSearch" /></td>';
-$i++;
+print'<th><input  style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search sales") . '" /></th>';
+print'<th><input  style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search siren") . '" /></th>';
 print'<th></th>';
-$i++;   
 print'<th></th>';
-$i++;
 print'<th></th>';
-$i++;
 print'<th></th>';
 print'</tr>';
+print'</tfoot>';
+print'<tbody>';
 print'</tbody>';
+
 print "</table>";
+
+print $object->_datatables($obj,"#societe");
+
+print end_box();
+print '</div>'; // end row
 
 llxFooter();
 ?>
