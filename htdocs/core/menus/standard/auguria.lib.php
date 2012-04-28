@@ -82,11 +82,14 @@ function print_auguria_menu($db,$atarget,$type_user)
 				if (! empty($_SESSION['idmenu']) && $newTabMenu[$i]['rowid'] == $_SESSION['idmenu']) $classname.=' pageselected';
 				else if (! empty($_SESSION["mainmenu"]) && $newTabMenu[$i]['mainmenu'] == $_SESSION["mainmenu"]) $classname.=' pageselected';
 
-				print_start_menu_entry_auguria($idsel);
+				print '<li>';
 				print '<a class="'.$classname.'" href="'.$url.'"'.($newTabMenu[$i]['target']?' target="'.$newTabMenu[$i]['target'].'"':($atarget?' target="'.$atarget.'"':'')).'>';
-				print_text_menu_entry_auguria($newTabMenu[$i]['titre']);
+				print $newTabMenu[$i]['titre'];
 				print '</a>';
-				print_end_menu_entry_auguria();
+                                // Submenu
+                                print_submenu($db, $newTabMenu[$i]['mainmenu']);
+                                
+                                print '</li>';
 			}
 		}
 	}
@@ -106,48 +109,8 @@ function print_start_menu_array_auguria()
 {
 	global $conf;
         print '<nav id="smoothmenu_h" class="ddsmoothmenu tinyNav">';
-        print '<ul class="cf l_tinynav1">';
+        print '<ul class="cf">';
 }
-
-/**
- * Output menu entry
- *
- * @param	string	$idsel		Text
- * @return	void
- */
-function print_start_menu_entry_auguria($idsel)
-{
-	global $conf;
-	print '<li>';
-}
-
-/**
- * Output menu entry
- *
- * @param	string	$text		Text
- * @return	void
- */
-function print_text_menu_entry_auguria($text)
-{
-	global $conf;
-	
-	print $text;
-	
-}
-
-/**
- * Output end menu entry
- *
- * @return	void
- */
-function print_end_menu_entry_auguria()
-{
-	global $conf;
-	if (preg_match('/bluelagoon|eldy|freelug|rodolphe|yellow|dev/',$conf->css)) print '</td>';
-	else print '</li>';
-	print "\n";
-}
-
 /**
  * Output menu array
  *
@@ -162,100 +125,133 @@ function print_end_menu_array_auguria()
             <li>You are here:</li>
             <li><a href="#">Content</a></li>
             <li><a href="#">Article</a></li>
-            <li><span>Lorem Ipsum&hellip;</span></li>
-            </ul>';
-        print "\n";
+            <li><span>Lorem Ipsum&hellip;</span></li>';
+        print '</ul>'."\n";
         print '</div>';
-        /*print '<div class="row">
-					<div class="twelve columns">
-						<nav id="smoothmenu_h" class="ddsmoothmenu tinyNav">
-							<ul class="cf">
-								<li><a href="dashboard.html" class="mb_parent first_el pageselected">Dashboard</a></li>
-								<li>
-									<a href="javascript:void(0)" class="mb_parent">Forms</a>
-									<ul style="display:none">
-										<li><a href="form_elements.html">Form elements</a></li>
-										<li><a href="form_extended.html">Form elements (extended)</a></li>
-										<li><a href="form_validation.html">Form validation</a></li>
-										<li><a href="form_example.html">Form example</a></li>
-									</ul>
-								</li>
-								<li>
-									<a href="javascript:void(0)" class="mb_parent">UI Elements</a>
-									<ul style="display:none">
-										<li><a href="ui_alertbox_btn_ico_tip.html">Alerts, Buttons, Icons, Tooltips</a></li>
-										<li><a href="ui_gallery.html">Gallery</a></li>
-										<li><a href="ui_grid.html">Grid</a></li>
-										<li><a href="ui_pricingtable.html">Pricing Table</a></li>
-										<li><a href="ui_scrollable.html">Scrollable</a></li>
-										<li><a href="ui_sidebar.html">Sidebar</a></li>
-										<li><a href="ui_tabs.html">Tabs / Accordion</a></li>
-										<li><a href="ui_typography.html">Typography</a></li>
-										<li><a href="ui_widgets.html">Widgets</a></li>
-									</ul>
-								</li>
-								<li>
-									<a href="javascript:void(0)" class="mb_parent">Plugins</a>
-									<ul style="display:none">
-										<li><a href="plugin_charts.html">Charts</a></li>
-										<li><a href="plugin_tables.html">Data tables</a></li>
-										<li><a href="plugin_explorer.html">File explorer</a></li>
-										<li><a href="plugin_help.html">Help/Faq</a></li>
-										<li><a href="plugin_dialogs.html">Dialog boxes/Notifications</a></li>
-										<li><a href="plugin_wizard.html">Wizard</a></li>
-									</ul>
-								</li>
-								<li>
-									<a href="javascript:void(0)" class="mb_parent">Navigation</a>
-									<ul style="display:none">
-										<li><a href="nav_sticky.html">Sticky navigation</a></li>
-										<li><a href="nav_sticky_center.html">Sticky navigation (centered)</a></li>
-										<li><a href="nav_sidebar.html">Sidebar navigation</a></li>
-									</ul>
-								</li>
-								<li>
-									<a href="javascript:void(0)" class="mb_parent">Error Pages</a>
-									<ul style="display:none">
-										<li><a href="error_401.html">401</a></li>
-										<li><a href="error_403.html">403</a></li>
-										<li><a href="error_404.html">404</a></li>
-										<li><a href="error_500.html">500</a></li>
-										<li><a href="error_503.html">503</a></li>
-										<li><a href="error_unexpected.html">Unexpected error</a></li>
-									</ul>
-								</li>
-								<li>
-									<a href="javascript:void(0)" class="mb_parent">Sub-levels</a>
-									<ul style="display:none">
-										<li>
-											<a href="#">First level</a>
-											<ul style="display:none">
-												<li>
-													<a href="#">Second level</a>
-													<ul style="display:none">
-														<li><a href="#">Third level</a></li>
-														<li><a href="#">Third level</a></li>
-													</ul>
-												</li>
-												<li><a href="#">Second level</a></li>
-											</ul>
-										</li>
-										<li><a href="#">First level</a></li>
-										<li><a href="#">First level</a></li>
-										<li><a href="#">First level</a></li>
-									</ul>
-								</li>
-								<li>
-									<a href="documentation.html" class="mb_parent">Documentation</a>
-								</li>
-							</ul>
-						</nav>
-						
-					</div>';
-//				</div>';*/
 }
 
+/**
+ * Core function to output submenu auguria
+ *
+ * @param	DoliDB		$db                  Database handler
+ * @param 	array		$menu_array_before   Table of menu entries to show before entries of menu handler
+ * @param   array		$menu_array_after    Table of menu entries to show after entries of menu handler
+ * @return	void
+ */
+function print_submenu($db,$mainmenu)
+{
+    global $user,$conf,$langs,$dolibarr_main_db_name,$mysoc;
 
+    $overwritemenufor = array();
+    $newmenu = new Menu();
+
+    if (isset($_GET["leftmenu"])) {
+        // On sauve en session le menu principal choisi
+        $leftmenu=$_GET["leftmenu"];
+        $_SESSION["leftmenu"]=$leftmenu;
+        if ($_SESSION["leftmenuopened"]==$leftmenu) {
+            //$leftmenu="";
+            $_SESSION["leftmenuopened"]="";
+        }
+        else {
+            $_SESSION["leftmenuopened"]=$leftmenu;
+        }
+    } else {
+        // On va le chercher en session si non defini par le lien
+        $leftmenu=isset($_SESSION["leftmenu"])?$_SESSION["leftmenu"]:'';
+    }
+
+    /**
+     * On definit newmenu en fonction de mainmenu et leftmenu
+     * ------------------------------------------------------
+     */
+    if ($mainmenu)
+    {
+        require_once(DOL_DOCUMENT_ROOT."/core/class/menubase.class.php");
+
+        $tabMenu=array();
+        $menuArbo = new Menubase($db,'auguria','left');
+        $newmenu = $menuArbo->menuLeftCharger($newmenu,$mainmenu,$leftmenu,($user->societe_id?1:0),'auguria',$tabMenu);
+        //var_dump($newmenu);
+    }
+
+
+    //var_dump($menu_array_before);exit;
+    //var_dump($menu_array_after);exit;
+    $menu_array=$newmenu->liste;
+    if (is_array($menu_array_before)) $menu_array=array_merge($menu_array_before, $menu_array);
+    if (is_array($menu_array_after))  $menu_array=array_merge($menu_array, $menu_array_after);
+    //var_dump($menu_array);exit;
+
+    // Show menu
+    $alt=0;
+    if (is_array($menu_array))
+    {
+        $num=count($menu_array);
+        if ($num==0)
+            return 0;
+        
+        print '<ul style="display:none">';
+    	for ($i = 0; $i < $num; $i++)
+        {
+            print '<li>'."\n";
+
+            // Place tabulation
+            $tabstring='';
+            $tabul=($menu_array[$i]['level'] - 1);
+            if ($tabul > 0)
+            {
+                for ($j=0; $j < $tabul; $j++)
+                {
+                    $tabstring.='&nbsp; &nbsp;';
+                }
+            }
+
+            // Add mainmenu in GET url. This make to go back on correct menu even when using Back on browser.
+            $url=dol_buildpath($menu_array[$i]['url'],1);
+
+            if (! preg_match('/mainmenu=/i',$menu_array[$i]['url']))
+            {
+                if (! preg_match('/\?/',$url)) $url.='?';
+                else $url.='&';
+                $url.='mainmenu='.$mainmenu;
+            }
+
+            print '<!-- Add menu entry with mainmenu='.$menu_array[$i]['mainmenu'].', leftmenu='.$menu_array[$i]['leftmenu'].', level='.$menu_array[$i]['mainmenu'].' -->'."\n";
+
+            // Menu link
+            if ($menu_array[$i]['enabled'])
+            {
+                print '<a href="'.$url.'"'.($menu_array[$i]['target']?' target="'.$menu_array[$i]['target'].'"':'').'>'.$menu_array[$i]['titre'].'</a>';
+            }
+            else
+            {
+                print '<a href="#">'.$menu_array[$i]['titre'].'</a>';
+            }
+                
+            if($menu_array[$i]['level'] == $menu_array[$i+1]['level'])
+            {   
+                print '</li>';
+            }
+            else if($menu_array[$i]['level'] < $menu_array[$i+1]['level'])
+            {
+                print '<ul style="display:none">';
+            }
+            else
+            {
+                for ($j=0;$j<($menu_array[$i]['level']-$menu_array[$i+1]['level']);$j++)
+                {
+                    print '</li>';
+                    print '</ul>';
+                }
+            }            
+        }
+        
+        print '</ul>';
+    }
+
+    return count($menu_array);
+}
 
 /**
  * Core function to output left menu auguria
