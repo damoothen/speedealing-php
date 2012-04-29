@@ -51,7 +51,7 @@ $mesg=''; $error=0; $errors=array();
 
 $action		= (GETPOST('action') ? GETPOST('action') : 'view');
 $confirm	= GETPOST('confirm');
-$socid		= GETPOST('socid');
+$socid		= GETPOST('id');
 if ($user->societe_id) $socid=$user->societe_id;
 
 $object = new Societe($couch);
@@ -269,7 +269,7 @@ if (empty($reshook))
                 {
                     try {
                         $object->record();
-                        Header("Location: ".$_SERVER['PHP_SELF']."?socid=".$object->id());
+                        Header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id());
                         exit;
                     }
                     catch (Exception $e) {
@@ -353,7 +353,7 @@ if (empty($reshook))
                 {
                     $db->commit();
 
-                    $url=$_SERVER["PHP_SELF"]."?socid=".$object->id();
+                    $url=$_SERVER["PHP_SELF"]."?id=".$object->id();
                     if (($object->client == 1 || $object->client == 3) && empty($conf->global->SOCIETE_DISABLE_CUSTOMERS)) $url=DOL_URL_ROOT."/comm/fiche.php?socid=".$object->id();
                     else if ($object->fournisseur == 1) $url=DOL_URL_ROOT."/fourn/fiche.php?socid=".$object->id();
                     Header("Location: ".$url);
@@ -370,7 +370,7 @@ if (empty($reshook))
             {
                 if ($_POST["cancel"])
                 {
-                    Header("Location: ".$_SERVER["PHP_SELF"]."?socid=".$socid);
+                    Header("Location: ".$_SERVER["PHP_SELF"]."?id=".$socid);
                     exit;
                 }
 
@@ -471,7 +471,7 @@ if (empty($reshook))
                 if (! $error && ! count($errors))
                 {
 
-                    Header("Location: ".$_SERVER["PHP_SELF"]."?socid=".$socid);
+                    Header("Location: ".$_SERVER["PHP_SELF"]."?id=".$socid);
                     exit;
                 }
                 else
@@ -538,7 +538,7 @@ if (empty($reshook))
             }
             else
             {
-                Header('Location: '.$_SERVER["PHP_SELF"].'?socid='.$object->id().(empty($conf->global->MAIN_JUMP_TAG)?'':'#builddoc'));
+                Header('Location: '.$_SERVER["PHP_SELF"].'?id='.$object->id().(empty($conf->global->MAIN_JUMP_TAG)?'':'#builddoc'));
                 exit;
             }
         }
@@ -563,6 +563,8 @@ $formadmin = new FormAdmin($db);
 $formcompany = new FormCompany($db);
 
 $countrynotdefined=$langs->trans("ErrorSetACountryFirst").' ('.$langs->trans("SeeAbove").')';
+
+print '<div class="row">';
 
 
 if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
@@ -1188,10 +1190,10 @@ else
                 print '</script>'."\n";
             }
 
-            print '<form enctype="multipart/form-data" action="'.$_SERVER["PHP_SELF"].'?socid='.$object->id().'" method="post" name="formsoc">';
+            print '<form enctype="multipart/form-data" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id().'" method="post" name="formsoc">';
             print '<input type="hidden" name="action" value="update">';
             print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-            print '<input type="hidden" name="socid" value="'.$object->id().'">';
+            print '<input type="hidden" name="id" value="'.$object->id().'">';
             if ($modCodeClient->code_auto || $modCodeFournisseur->code_auto) print '<input type="hidden" name="code_auto" value="1">';
 
             print '<table class="border" width="100%">';
@@ -1504,6 +1506,9 @@ else
         /*
          * View
          */
+        
+        print start_box($langs->trans("ThirdParty"),"twelve","16-Apartment-Building.png");
+        
         try
         {
             $res=$object->load($socid);
@@ -1526,7 +1531,7 @@ else
         if ($action == 'delete' || $conf->use_javascript_ajax)
         {
             $form = new Form($db);
-            $ret=$form->form_confirm($_SERVER["PHP_SELF"]."?socid=".$object->id(),$langs->trans("DeleteACompany"),$langs->trans("ConfirmDeleteCompany"),"confirm_delete",'',0,"action-delete");
+            $ret=$form->form_confirm($_SERVER["PHP_SELF"]."?id=".$object->id(),$langs->trans("DeleteACompany"),$langs->trans("ConfirmDeleteCompany"),"confirm_delete",'',0,"action-delete");
             if ($ret == 'html') print '<br>';
         }
 
@@ -1833,7 +1838,7 @@ else
             print $langs->trans('RIB');
             print '<td><td align="right">';
             if ($user->rights->societe->creer)
-            print '<a href="'.DOL_URL_ROOT.'/societe/rib.php?socid='.$object->id().'">'.img_edit().'</a>';
+            print '<a href="'.DOL_URL_ROOT.'/societe/rib.php?id='.$object->id().'">'.img_edit().'</a>';
             else
             print '&nbsp;';
             print '</td></tr></table>';
@@ -1852,7 +1857,7 @@ else
             print $langs->trans('ParentCompany');
             print '<td><td align="right">';
             if ($user->rights->societe->creer)
-            print '<a href="'.DOL_URL_ROOT.'/societe/lien.php?socid='.$object->id().'">'.img_edit() .'</a>';
+            print '<a href="'.DOL_URL_ROOT.'/societe/lien.php?id='.$object->id().'">'.img_edit() .'</a>';
             else
             print '&nbsp;';
             print '</td></tr></table>';
@@ -1877,7 +1882,7 @@ else
         print $langs->trans('SalesRepresentatives');
         print '<td><td align="right">';
         if ($user->rights->societe->creer)
-        print '<a href="'.DOL_URL_ROOT.'/societe/commerciaux.php?socid='.$object->id().'">'.img_edit().'</a>';
+        print '<a href="'.DOL_URL_ROOT.'/societe/commerciaux.php?id='.$object->id().'">'.img_edit().'</a>';
         else
         print '&nbsp;';
         print '</td></tr></table>';
@@ -1888,7 +1893,7 @@ else
         $nbofsalesrepresentative=count($listsalesrepresentatives);
         if ($nbofsalesrepresentative > 3)   // We print only number
         {
-            print '<a href="'.DOL_URL_ROOT.'/societe/commerciaux.php?socid='.$object->id().'">';
+            print '<a href="'.DOL_URL_ROOT.'/societe/commerciaux.php?id='.$object->id().'">';
             print $nbofsalesrepresentative;
             print '</a>';
         }
@@ -1944,7 +1949,7 @@ else
 
         if ($user->rights->societe->creer)
         {
-            print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?socid='.$object->id().'&amp;action=edit">'.$langs->trans("Modify").'</a>'."\n";
+            print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id().'&amp;action=edit">'.$langs->trans("Modify").'</a>'."\n";
         }
 
         if ($user->rights->societe->supprimer)
@@ -1955,7 +1960,7 @@ else
             }
             else
             {
-                print '<a class="butActionDelete" href="'.$_SERVER["PHP_SELF"].'?socid='.$object->id().'&amp;action=delete">'.$langs->trans('Delete').'</a>'."\n";
+                print '<a class="butActionDelete" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id().'&amp;action=delete">'.$langs->trans('Delete').'</a>'."\n";
             }
         }
 
@@ -1971,7 +1976,7 @@ else
              * Documents generes
              */
             $filedir=$conf->societe->multidir_output[$object->entity].'/'.$object->id();
-            $urlsource=$_SERVER["PHP_SELF"]."?socid=".$object->id();
+            $urlsource=$_SERVER["PHP_SELF"]."?id=".$object->id();
             $genallowed=$user->rights->societe->creer;
             $delallowed=$user->rights->societe->supprimer;
 
@@ -1993,21 +1998,24 @@ else
         // Contacts list
         if (empty($conf->global->SOCIETE_DISABLE_CONTACTS))
         {
-            $result=show_contacts($conf,$langs,$db,$object,$_SERVER["PHP_SELF"].'?socid='.$object->id());
+            $result=show_contacts($conf,$langs,$db,$object,$_SERVER["PHP_SELF"].'?id='.$object->id());
         }
 
         // Addresses list
         if (! empty($conf->global->SOCIETE_ADDRESSES_MANAGEMENT))
         {
-        	$result=show_addresses($conf,$langs,$db,$object,$_SERVER["PHP_SELF"].'?socid='.$object->id());
+        	$result=show_addresses($conf,$langs,$db,$object,$_SERVER["PHP_SELF"].'?id='.$object->id());
         }
 
         // Projects list
-        $result=show_projects($conf,$langs,$db,$object,$_SERVER["PHP_SELF"].'?socid='.$object->id());
+        $result=show_projects($conf,$langs,$db,$object,$_SERVER["PHP_SELF"].'?id='.$object->id());
+        
+        print end_box();
     }
 
 }
 
+print '</div>'; // end row
 
 // End of page
 llxFooter();

@@ -38,7 +38,7 @@ function societe_prepare_head($object)
     $h = 0;
     $head = array();
 
-    $head[$h][0] = DOL_URL_ROOT.'/societe/soc.php?socid='.$object->id();
+    $head[$h][0] = DOL_URL_ROOT.'/societe/fiche.php?id='.$object->id();
     $head[$h][1] = $langs->trans("Card");
     $head[$h][2] = 'card';
     $h++;

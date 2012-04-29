@@ -2289,14 +2289,14 @@ function getTitleFieldOfList($name, $thead=0, $file="", $field="", $begin="", $m
  *	@param	string	$nbcolumn		Number of column see style.css
  *	@return	string				Title to show
  */
-function start_box($title,$nbcolumn='twelve',$icon='database.png')
+function start_box($title,$nbcolumn='twelve',$icon='16-Abacus.png')
 {
     global $conf,$langs;
     
     $rtr = '<div class="'.$nbcolumn.' columns">';
     $rtr.= '<div class="box_c">';
     $rtr.= '<div class="box_c_heading cf">';
-    $rtr.= '<div class="box_c_ico"><img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/open/'.$icon.'" alt="" /></div>';
+    $rtr.= '<div class="box_c_ico"><img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/'.$icon.'" alt="" /></div>';
     $rtr.= '<p>'.$title.'</p>';
     $rtr.= '</div>';
     $rtr.= '<div class="box_c_content">';

@@ -2775,9 +2775,9 @@ abstract class CommonObject extends couchDocument
             $obj->oColVis->buttonText = 'Voir/Cacher';
             //$obj->oColVis->bRestore = true;
             //$obj->oColVis->sAlign = 'left';
-            $obj->sDom = 'CT<fr>t<\"clear\"rtip>';
-            //$obj->sScrollY = '200px';
-            //$obj->bScrollCollapse = false;
+            $obj->sDom = 'CTl<fr>t<\"clear\"rtip>';
+            //$obj->sScrollX = '100px';
+            //$obj->bScrollCollapse = true;
             //$obj->bScrollAutoCss = false;
             
             // jeditable

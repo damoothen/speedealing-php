@@ -83,7 +83,7 @@ print '<div class="row">';
  * Informations area
  */
 
-print start_box($langs->trans("Informations"), 'four', 'agent.png');
+print start_box($langs->trans("Informations"), 'four', '16-User.png');
 print '<table class="noborder" width="100%">';
 print '<tr '.$bc[false].'>';
 print '<td nowrap="nowrap">'.$langs->trans("User").'</td><td>'.$user->getNomUrl(0).'</td></tr>';
@@ -103,7 +103,7 @@ print end_box();
 $showweather=empty($conf->global->MAIN_DISABLE_METEO)?1:0;
 $rowspan=0;
 $dashboardlines=array();
-print start_box($langs->trans("DolibarrWorkBoard"),"eight","cloud-filled.png");
+print start_box($langs->trans("DolibarrWorkBoard"),"eight","16-Cloud.png");
 print '<table class="noborder" width="100%">';
 print '<tr class="liste_titre">';
 print '<th colspan="2">'.$langs->trans("DolibarrWorkBoard").'</th>';
@@ -366,7 +366,7 @@ $langs->load("orders");
 
 if ($user->societe_id == 0)
 {
-    print start_box($langs->trans("DolibarrStateBoard"),'four','bar-chart.png');
+    print start_box($langs->trans("DolibarrStateBoard"),'four','16-Graph.png');
     print '<table class="noborder" width="100%">';
 
     $var=true;

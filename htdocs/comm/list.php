@@ -142,7 +142,7 @@ else
 
 print '<div class=row>';
 
-print start_box($titre,"twelve","addressbook.png");
+print start_box($titre,"twelve","16-Companies.png");
 
 $i=0;
 $obj=new stdClass();
@@ -159,13 +159,13 @@ $obj->aoColumns[$i]->bUseRendered = true;
 $obj->aoColumns[$i]->bSearchable = true;
 $obj->aoColumns[$i]->fnRender= '%function(obj) {
 var ar = [];
-ar[ar.length] = "<a href=\"'.DOL_URL_ROOT.'/societe/soc.php?socid=";
+ar[ar.length] = "<a href=\"'.DOL_URL_ROOT.'/societe/fiche.php?id=";
 ar[ar.length] = obj.aData._id;
-ar[ar.length] = "\"><img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/object_company.png\" border=\"0\" alt=\"Afficher mailing : ";
+ar[ar.length] = "\"><img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Apartment-Building.png\" border=\"0\" alt=\"Afficher societe : ";
 ar[ar.length] = obj.aData.name.toString();
 ar[ar.length] = "\" title=\"Afficher soci&eacute;t&eacute;:";
 ar[ar.length] = obj.aData.name.toString();
-ar[ar.length] = "\"></a> <a href=\"'.DOL_URL_ROOT.'/societe/soc.php?socid=";
+ar[ar.length] = "\"></a> <a href=\"'.DOL_URL_ROOT.'/societe/fiche.php?id=";
 ar[ar.length] = obj.aData._id;
 ar[ar.length] = "\">";
 ar[ar.length] = obj.aData.name.toString();
