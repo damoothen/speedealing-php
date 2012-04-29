@@ -2759,18 +2759,19 @@ abstract class CommonObject extends couchDocument
 	{
             global $conf,$langs;
             
-            $obj->sAjaxSource = $_SERVER['PHP_SELF']."?json=true";
+            $obj->sAjaxSource = $_SERVER['PHP_SELF']."?json=list";
             $obj->iDisplayLength = (int)$conf->global->MAIN_SIZE_LISTE_LIMIT;
             $obj->aLengthMenu= array(array(10, 25, 50, 100, 1000, -1), array(10, 25, 50, 100,1000,"All"));
             $obj->bProcessing = true;
             $obj->bJQueryUI = true;
             $obj->bAutoWidth = false;
+            //$obj->bServerSide = true;
             $obj->bDeferRender = true;
             $obj->oLanguage->sUrl = DOL_URL_ROOT.'/includes/jquery/plugins/datatables/langs/'.($langs->defaultlang?$langs->defaultlang:"en_US").".txt";
             //$obj->sDom = '<\"top\"Tflpi<\"clear\">>rt<\"bottom\"pi<\"clear\">>';
             //$obj->sPaginationType = 'full_numbers';
             //$obj->sDom = 'TC<\"clear\">lfrtip';
-            $obj->oTableTools->sSwfPath = DOL_URL_ROOT.'/includes/jquery/plugins/datatables/swf/copy_cvs_xls_pdf.swf';
+            $obj->oTableTools->sSwfPath = DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/TableTools/swf/copy_cvs_xls.swf';
             $obj->oTableTools->aButtons = array("xls");
             $obj->oColVis->buttonText = 'Voir/Cacher';
             //$obj->oColVis->bRestore = true;
@@ -2782,12 +2783,13 @@ abstract class CommonObject extends couchDocument
             
             // jeditable
             $obj->fnDrawCallback= '%function () {
-            $("'.$ref_css.' tbody td.edit").editable( "../examples_support/editable_ajax.php", {
+            $("'.$ref_css.' tbody td.edit").editable( "'.$_SERVER['PHP_SELF'].'?json=edit", {
                 "callback": function( sValue, y ) {
                     oTable.fnDraw();
                 },
                 "height": "14px",
                 "tooltip": "Cliquer pour éditer...",
+                "indicator" : "<div style=\"text-align: center;\"><img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>",
                 "placeholder" : ""
                 
             } );

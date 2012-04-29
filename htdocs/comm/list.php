@@ -50,17 +50,16 @@ $search_sale = GETPOST("search_sale");
 
 $object = new Societe($couch);
 
-if($_GET['json'])
+if($_GET['json']=="list")
 {
     $output = array(
     "sEcho" => intval($_GET['sEcho']),
     "iTotalRecords" => 0,
     "iTotalDisplayRecords" => 0,
     "aaData" => array()
-    );
+     );
 
     $result = $object->getView("list");
-
 
     //print_r($result);
     //exit;
@@ -68,16 +67,11 @@ if($_GET['json'])
     $output["iTotalRecords"]=$iTotal;
     $output["iTotalDisplayRecords"]=$iTotal;
 
-
     foreach($result->rows AS $aRow) {
-        if(!isset($aRow->value->commerciaux))
-            $aRow->value->commerciaux=null;
-        if(!isset($aRow->value->category))
-            $aRow->value->category=null;
-        unset($aRow->value->class);
-        unset($aRow->value->_rev);
-        $output["aaData"][]=$aRow->value;
-        unset($aRow);
+       unset($aRow->value->class);
+       unset($aRow->value->_rev);
+       $output["aaData"][]=$aRow->value;
+       unset($aRow);
     }
 
     header('Content-type: application/json');
@@ -85,6 +79,13 @@ if($_GET['json'])
     exit;
 }
 
+if($_GET['json']=="edit")
+{
+    sleep(1);
+    print "sauv";
+    
+    exit;//ajouter fonction
+}
 
 /*
  * Actions
@@ -178,9 +179,8 @@ print'<th class="essential">';
 print $langs->trans("Town");
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "town";
-$obj->aoColumns[$i]->sClass = "center";
+$obj->aoColumns[$i]->sClass = "center edit";
 $obj->aoColumns[$i]->sDefaultContent = "";
-$obj->aoColumns[$i]->sClass = "edit";
 $i++;
 print'<th class="essential">';
 print $langs->trans("Zip");
