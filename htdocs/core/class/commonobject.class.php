@@ -2768,7 +2768,7 @@ abstract class CommonObject extends couchDocument
             $obj->bDeferRender = true;
             $obj->oLanguage->sUrl = DOL_URL_ROOT.'/includes/jquery/plugins/datatables/langs/'.($langs->defaultlang?$langs->defaultlang:"en_US").".txt";
             //$obj->sDom = '<\"top\"Tflpi<\"clear\">>rt<\"bottom\"pi<\"clear\">>';
-            $obj->sPaginationType = 'full_numbers';
+            //$obj->sPaginationType = 'full_numbers';
             //$obj->sDom = 'TC<\"clear\">lfrtip';
             $obj->oTableTools->sSwfPath = DOL_URL_ROOT.'/includes/jquery/plugins/datatables/swf/copy_cvs_xls_pdf.swf';
             $obj->oTableTools->aButtons = array("xls");

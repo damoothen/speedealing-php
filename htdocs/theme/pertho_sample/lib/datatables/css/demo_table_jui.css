@@ -5,7 +5,7 @@
 .dataTables_wrapper select {display:inline;margin:0}
 .dataTables_paginate{width:auto;float:right;text-align:right;position:relative;top:-4px}
 .dataTables_info{float:left}
-table.display thead th,table.display tfoot th{text-align:left;font-size:11px;border:1px solid #ccc;padding:6px 8px 4px;text-transform:uppercase;vertical-align:middle}
+table.display thead th,table.display tfoot th{text-align:left;font-size:10px;border:1px solid #ccc;padding:6px 8px 4px;text-transform:uppercase;vertical-align:middle}
 table.display thead th {cursor:pointer;background-color:#e0e0e0;font-weight:700}
 table.display thead th.sorting_disabled{cursor:default}
 div.dataTables_wrapper .ui-widget-header{font-weight:400}
