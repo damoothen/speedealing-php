@@ -260,7 +260,7 @@ print'</th>';
 $obj->aoColumns[$i]->mDataProp = "tms";
 $obj->aoColumns[$i]->sType="date";
 $obj->aoColumns[$i]->sClass = "center";
-//$obj->aoColumns[$i]->sWidth = "50px";
+$obj->aoColumns[$i]->sWidth = "200px";
 $obj->aoColumns[$i]->fnRender = '%function(obj) {
 if(obj.aData.tms)
 {

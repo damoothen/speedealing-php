@@ -2768,14 +2768,14 @@ abstract class CommonObject extends couchDocument
             $obj->bDeferRender = true;
             $obj->oLanguage->sUrl = DOL_URL_ROOT.'/includes/jquery/plugins/datatables/langs/'.($langs->defaultlang?$langs->defaultlang:"en_US").".txt";
             //$obj->sDom = '<\"top\"Tflpi<\"clear\">>rt<\"bottom\"pi<\"clear\">>';
-            //$obj->sPaginationType = 'full_numbers';
+            $obj->sPaginationType = 'full_numbers';
             //$obj->sDom = 'TC<\"clear\">lfrtip';
             $obj->oTableTools->sSwfPath = DOL_URL_ROOT.'/includes/jquery/plugins/datatables/swf/copy_cvs_xls_pdf.swf';
             $obj->oTableTools->aButtons = array("xls");
             $obj->oColVis->buttonText = 'Voir/Cacher';
             //$obj->oColVis->bRestore = true;
             //$obj->oColVis->sAlign = 'left';
-            $obj->sDom = 'TC<\"clear\"flr>t<\"clear\"rtip>';
+            $obj->sDom = 'CT<fr>t<\"clear\"rtip>';
             //$obj->sScrollY = '200px';
             //$obj->bScrollCollapse = false;
             //$obj->bScrollAutoCss = false;
