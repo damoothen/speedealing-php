@@ -163,7 +163,7 @@ ar[ar.length] = "<a href=\"'.DOL_URL_ROOT.'/societe/fiche.php?id=";
 ar[ar.length] = obj.aData._id;
 ar[ar.length] = "\"><img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Apartment-Building.png\" border=\"0\" alt=\"Afficher societe : ";
 ar[ar.length] = obj.aData.name.toString();
-ar[ar.length] = "\" title=\"Afficher soci&eacute;t&eacute;:";
+ar[ar.length] = "\" title=\"Afficher soci&eacute;t&eacute; : ";
 ar[ar.length] = obj.aData.name.toString();
 ar[ar.length] = "\"></a> <a href=\"'.DOL_URL_ROOT.'/societe/fiche.php?id=";
 ar[ar.length] = obj.aData._id;
