@@ -189,11 +189,11 @@ $obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->bVisible = false;
 $obj->aoColumns[$i]->sDefaultContent = "";
 $i++;
-if (empty($conf->global->SOCIETE_DISABLE_STATE)) {
+/*if (empty($conf->global->SOCIETE_DISABLE_STATE)) {
     print'<th class="essential">';
     print $langs->trans("State");
     print'</th>';
-}
+}*/
 if ($conf->categorie->enabled) {
     print'<th class="essential">';
     print $langs->trans('Categories');
