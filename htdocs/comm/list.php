@@ -159,17 +159,17 @@ $obj->aoColumns[$i]->bUseRendered = true;
 $obj->aoColumns[$i]->bSearchable = true;
 $obj->aoColumns[$i]->fnRender= '%function(obj) {
 var ar = [];
-ar[ar.length] = $<a href=\"'.DOL_URL_ROOT.'/societe/soc.php?socid=$;
+ar[ar.length] = "<a href=\"'.DOL_URL_ROOT.'/societe/soc.php?socid=";
 ar[ar.length] = obj.aData._id;
-ar[ar.length] = $\"><img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/object_company.png\" border=\"0\" alt=\"Afficher mailing : $;
+ar[ar.length] = "\"><img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/object_company.png\" border=\"0\" alt=\"Afficher mailing : ";
 ar[ar.length] = obj.aData.name.toString();
-ar[ar.length] = $\" title=\"Afficher soci&eacute;t&eacute;:$;
+ar[ar.length] = "\" title=\"Afficher soci&eacute;t&eacute;:";
 ar[ar.length] = obj.aData.name.toString();
-ar[ar.length] = $\"></a> <a href=\"'.DOL_URL_ROOT.'/societe/soc.php?socid=$;
+ar[ar.length] = "\"></a> <a href=\"'.DOL_URL_ROOT.'/societe/soc.php?socid=";
 ar[ar.length] = obj.aData._id;
-ar[ar.length] = $\">$;
+ar[ar.length] = "\">";
 ar[ar.length] = obj.aData.name.toString();
-ar[ar.length] = $</a>$;
+ar[ar.length] = "</a>";
 var str = ar.join("");
 return str;
 }%';
@@ -180,6 +180,7 @@ print'</th>';
 $obj->aoColumns[$i]->mDataProp = "town";
 $obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->sDefaultContent = "";
+$obj->aoColumns[$i]->sClass = "edit";
 $i++;
 print'<th class="essential">';
 print $langs->trans("Zip");
@@ -200,6 +201,7 @@ if ($conf->categorie->enabled) {
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "category";
     $obj->aoColumns[$i]->sDefaultContent = "";
+    $obj->aoColumns[$i]->sClass = "edit";
     $i++;
 }
 print'<th class="essential">';
@@ -237,19 +239,19 @@ $obj->aoColumns[$i]->sDefaultContent = 0;
 $obj->aoColumns[$i]->fnRender = '%function(obj) {
 var status = new Array();
 var stcomm = obj.aData.fk_stcomm;
-if(typeof str === $undefined$)
+if(typeof str === "undefined")
     stcomm = 0;
-status[0] = new Array($'.$langs->trans('MailingStatusDraft').'$,0);
-status[1] = new Array($'.$langs->trans('MailingStatusValidated').'$,1);
-status[2] = new Array($'.$langs->trans('MailingStatusSentPartialy').'$,3);
-status[3] = new Array($'.$langs->trans('MailingStatusSentCompletely').'$,6);
+status[0] = new Array("'.$langs->trans('MailingStatusDraft').'",0);
+status[1] = new Array("'.$langs->trans('MailingStatusValidated').'",1);
+status[2] = new Array("'.$langs->trans('MailingStatusSentPartialy').'",3);
+status[3] = new Array("'.$langs->trans('MailingStatusSentCompletely').'",6);
 var ar = [];
-ar[ar.length] = $<img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/statut$;
+ar[ar.length] = "<img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/statut";
 ar[ar.length] = status[stcomm][1];
-ar[ar.length] = $.png\" border=\"0\" alt=\"Afficher mailing : $;
-ar[ar.length] = $\" title=\"$;
+ar[ar.length] = ".png\" border=\"0\" alt=\"Afficher mailing : ";
+ar[ar.length] = "\" title=\"";
 ar[ar.length] = status[stcomm][0];
-ar[ar.length] = $\">$;
+ar[ar.length] = "\">";
 var str = ar.join("");
 return str;
 }%';
@@ -274,23 +276,34 @@ print'</tr>';
 print'</thead>';
 print'<tfoot>';
 /* input search view */
+$i=0;
 print'<tr>';
-print'<th><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Company") . '" /></th>';
-print'<th><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Town") . '" /></th>';
-print'<th><input style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search Zip") . '" /></th>';
+print'<th id="'.$i.'"><input type="text" placeholder="' . $langs->trans("Search Company") . '" /></th>';
+$i++;
+print'<th id="'.$i.'"><input type="text" placeholder="' . $langs->trans("Search Town") . '" /></th>';
+$i++;
+print'<th id="'.$i.'"><input type="text" placeholder="' . $langs->trans("Search Zip") . '" /></th>';
+$i++;
 /*if(empty($conf->global->SOCIETE_DISABLE_STATE)) {
     print'<th></th>';
     $i++;
 }*/
 if ($conf->categorie->enabled) {
-        print'<th><input  style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search category") . '" /></th>';
+        print'<th id="'.$i.'"><input type="text" placeholder="' . $langs->trans("Search category") . '" /></th>';
+        $i++;
 }
-print'<th><input  style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search sales") . '" /></th>';
-print'<th><input  style="margin-top:1px;"  type="text" placeholder="' . $langs->trans("Search siren") . '" /></th>';
-print'<th></th>';
-print'<th></th>';
-print'<th></th>';
-print'<th></th>';
+print'<th id="'.$i.'"><input type="text" placeholder="' . $langs->trans("Search sales") . '" /></th>';
+$i++;
+print'<th id="'.$i.'"><input type="text" placeholder="' . $langs->trans("Search siren") . '" /></th>';
+$i++;
+print'<th id="'.$i.'"></th>';
+$i++;
+print'<th id="'.$i.'"></th>';
+$i++;
+print'<th id="'.$i.'"></th>';
+$i++;
+print'<th id="'.$i.'"></th>';
+$i++;
 print'</tr>';
 print'</tfoot>';
 print'<tbody>';

@@ -23,7 +23,7 @@ table.display thead th div.DataTables_sort_wrapper span{position:absolute;top:50
 .paginate_disabled_next{background-image:url(../images/forward_disabled.gif)}
 .paginate_enabled_next{background-image:url(../images/forward_enabled.gif)}
 table.display{width:100%;clear:both;border-collapse:collapse;margin:0 auto 24px;background:#fff;position:relative;top:12px}
-table.display tfoot th{font-weight:400;padding:3px 8px 3px 8px}
+table.display tfoot th{font-weight:400;padding:2px 8px 2px 8px}
 table.display tr.heading2 td{border-bottom:1px solid #aaa}
 table.display td{padding:5px 8px;border:1px solid #ccc;font-size:12px;vertical-align:middle}
 table.display td .fancyImg {display:block;border:1px solid #dcdcdc;padding:2px;background:#fff;float:left}
@@ -63,3 +63,4 @@ table.display td.center,.dataTables_empty{text-align:center}
 .ColVis_collection .ColVis_Button {border:none;background:none;text-align:left;padding:4px 6px}
 .DTTT_container {margin-bottom:0px; float: left}
 .DTTT_button {border: medium none;cursor: pointer;display: inline-block;font-family: "Helvetica Neue","Helvetica",Arial,Verdana,sans-serif;font-weight: bold;line-height: 1;margin: 0;outline: medium none;position: relative;text-align: center;text-decoration: none;font-size: 10px;padding: 6px 14px 8px;width: auto;background-color: #E9E9E9;color: #333333}
+tbody td.edit{background-image: url(/speedealing/theme/eldy/img/ico/pencil_gray.png); background-repeat: no-repeat; background-position: right top}

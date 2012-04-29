@@ -2780,6 +2780,21 @@ abstract class CommonObject extends couchDocument
             //$obj->bScrollCollapse = false;
             //$obj->bScrollAutoCss = false;
             
+            // jeditable
+            $obj->fnDrawCallback= '%function () {
+            $("'.$ref_css.' tbody td.edit").editable( "../examples_support/editable_ajax.php", {
+                "callback": function( sValue, y ) {
+                    oTable.fnDraw();
+                },
+                "height": "14px",
+                "tooltip": "Cliquer pour éditer...",
+                "placeholder" : ""
+                
+            } );
+            }%';
+
+
+            
             $output ='<script type="text/javascript" charset="utf-8">';
             $output.='$(document).ready(function() {';
             $output.='oTable = $(\''.$ref_css.'\').dataTable(';
@@ -2791,7 +2806,6 @@ abstract class CommonObject extends couchDocument
             $json = str_replace('\r', '', $json);
             $json = str_replace('\"', '"', $json);
             $json = str_replace('\"', '"', $json);
-            $json = str_replace('$', '"', $json);
             $output.=$json;
             
             $output.= ");";

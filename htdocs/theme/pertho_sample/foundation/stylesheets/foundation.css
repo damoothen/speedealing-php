@@ -528,7 +528,7 @@
    Standard Forms
 ----------------------------------------- */
 
-	form { margin: 0 0 18px; }
+	/*form { margin: 0 0 18px; }*/
 	form label { display: block; font-size: 13px; line-height: 18px; cursor: pointer; margin-bottom: 9px; }
 
 	input.input-text, textarea { border-right: 1px solid #bbb; border-bottom: 1px solid #bbb; }
