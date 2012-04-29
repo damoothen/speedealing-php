@@ -514,19 +514,16 @@ if ($user->societe_id == 0)
     print end_box();   
 }
 
-print '</div>'; //end row
-
 if ($conf->agenda->enabled && $user->rights->agenda->myactions->read && $conf->highcharts->enabled && $user->rights->highcharts->read)
 {
-    print '<div class="row">';
-    print start_box($langs->trans("Action"),"twelve","bar-chart.png");
+    print start_box($langs->trans("Action"),"eight","16-Cog-4.png");
     dol_include_once("/highCharts/class/highCharts.class.php");
 
     $langs->load("highcharts@highCharts");
 
     $graph=new HighCharts($db);
     $graph->width="100%";
-    $graph->height="300px";
+    $graph->height="250px";
     $graph->name="ActionsToDo";
     $graph->label=$langs->trans("ActionsToDo");
     if($user->rights->highcharts->all)
@@ -535,8 +532,9 @@ if ($conf->agenda->enabled && $user->rights->agenda->myactions->read && $conf->h
     }
     $graph->eisenhower();
     print end_box();
-    print '</div>';
 }
+
+print '</div>';
 
 /*
  * Show boxes

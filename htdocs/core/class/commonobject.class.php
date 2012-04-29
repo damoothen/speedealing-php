@@ -2777,9 +2777,6 @@ abstract class CommonObject extends couchDocument
             //$obj->oColVis->bRestore = true;
             //$obj->oColVis->sAlign = 'left';
             $obj->sDom = 'CTl<fr>t<\"clear\"rtip>';
-            //$obj->sScrollX = '100px';
-            //$obj->bScrollCollapse = true;
-            //$obj->bScrollAutoCss = false;
             
             // jeditable
             $obj->fnDrawCallback= '%function () {
