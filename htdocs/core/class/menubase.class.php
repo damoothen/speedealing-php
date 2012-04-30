@@ -301,6 +301,7 @@ class Menubase
                 $this->enabled = str_replace("\"","'",$obj->enabled);
                 $this->user = $obj->user;
                 $this->tms = $this->db->jdate($obj->tms);
+
             }
             $this->db->free($resql);
 

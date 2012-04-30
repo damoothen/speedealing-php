@@ -41,14 +41,18 @@ class Societe extends CommonObject
     public $fk_element='fk_soc';
     protected $childtables=array("propal","commande","facture","contrat","facture_fourn","commande_fournisseur");    // To test if we can delete object
     protected $ismultientitymanaged = 1;	// 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
+    
+    var $db;
 
     /**
      *    Constructor
      *
      *    @param	DoliDB		$db		Database handler
      */
-    public function Societe(couchClient $db)
+    public function Societe($db)
     {
+        $this->db = $db;
+        
         parent::__construct($db);
 
         return 1;

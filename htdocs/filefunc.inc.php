@@ -238,8 +238,6 @@ include_once(DOL_DOCUMENT_ROOT ."/core/db/couchdb/lib/couch.php");
 include_once(DOL_DOCUMENT_ROOT ."/core/db/couchdb/lib/couchClient.php");
 include_once(DOL_DOCUMENT_ROOT ."/core/db/couchdb/lib/couchDocument.php");
 
-$couch = new couchClient("http://couch.symeos.com:5984/","demo");
-
 // If password is encoded, we decode it
 if (preg_match('/crypted:/i',$dolibarr_main_db_pass) || ! empty($dolibarr_main_db_encrypted_pass))
 {

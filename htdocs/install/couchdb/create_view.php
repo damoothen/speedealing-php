@@ -52,7 +52,16 @@ $obj[$i]->_id="_design/societe";
 $obj[$i]->language="javascript";
 $obj[$i]->views->list->map='function(doc) {
     if(doc.class && doc.class=="societe")
-      emit(doc.nom, doc);
+      emit(doc.name, doc);
+    }';
+$i++;
+
+// menu
+$obj[$i]->_id="_design/menu";
+$obj[$i]->language="javascript";
+$obj[$i]->views->list->map='function(doc) {
+    if(doc.class && doc.class=="menu")
+      emit([doc.position, doc._id], doc);
     }';
 $i++;
 

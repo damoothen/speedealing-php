@@ -43,12 +43,14 @@ abstract class CommonObject extends couchDocument
 	*
 	*/
     
-        function __construct(couchClient $db)
+        function __construct($db)
 	{
-                parent::__construct($db);
-                $this->setAutocommit(false);
-                $this->class = $this->element;
-		$this->db = $db;
+            global $conf;
+            
+            parent::__construct($conf->couchdb);
+            $this->setAutocommit(false);
+            $this->class = $this->element;
+            $this->db = $db;
 	}
         
         /**
@@ -2744,7 +2746,7 @@ abstract class CommonObject extends couchDocument
         {
             global $conf;
             
-            return $this->db->limit($conf->liste_limit)->getView($this->class,$name);
+            return $conf->couchdb->limit($conf->liste_limit)->getView($this->class,$name);
         }
     
     
@@ -2771,9 +2773,10 @@ abstract class CommonObject extends couchDocument
             //$obj->sDom = '<\"top\"Tflpi<\"clear\">>rt<\"bottom\"pi<\"clear\">>';
             //$obj->sPaginationType = 'full_numbers';
             //$obj->sDom = 'TC<\"clear\">lfrtip';
-            $obj->oTableTools->sSwfPath = DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/TableTools/swf/copy_cvs_xls.swf';
+            $obj->oTableTools->sSwfPath = DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/TableTools/media/swf/copy_csv_xls.swf';
             $obj->oTableTools->aButtons = array("xls");
             $obj->oColVis->buttonText = 'Voir/Cacher';
+            $obj->oColVis->aiExclude = array(0,4,7); // Not cacheable
             //$obj->oColVis->bRestore = true;
             //$obj->oColVis->sAlign = 'left';
             $obj->sDom = 'CTl<fr>t<\"clear\"rtip>';
@@ -2792,7 +2795,6 @@ abstract class CommonObject extends couchDocument
             } );
             }%';
 
-
             
             $output ='<script type="text/javascript" charset="utf-8">';
             $output.='$(document).ready(function() {';
@@ -2808,7 +2810,53 @@ abstract class CommonObject extends couchDocument
             $output.=$json;
             
             $output.= ");";
+            //$output.= "});"; // ATTENTION AUTOFILL NOT COMPATIBLE WITH COLVIS !!!!
+            $output.= 'new AutoFill( oTable, {
+		"aoColumnDefs": [
+                {
+                        "bEnable":false,
+                        "aTargets": [ 0,1,2,3,5,6,8,9 ]
+                },
+                {
+			"fnCallback": function ( ao ) {
+				var n = document.getElementById(\'output\');
+				for ( var i=0, iLen=ao.length ; i<iLen ; i++ ) {
+					n.innerHTML += "Update: old value: {"+
+						ao[i].oldValue+"} - new value: {"+ao[i].newValue+"}<br>";
+				}
+				n.scrollTop = n.scrollHeight;
+			},
+                        "bEnable" : true,
+			"aTargets": [ 4,7 ]
+		}]
+            } );';
             $output.= "});";
+            $output.='</script>'."\n";
+            
+            // search column
+            $output.='<script type="text/javascript" charset="utf-8">';
+            
+            $output.='$(document).ready(function() {
+            $("tfoot input").keyup( function () {
+            /* Filter on the column */
+            var id = $(this).parent().attr("id");
+            oTable.fnFilter( this.value, id);
+            } );
+            /*send selected level value to server */        
+            $("tfoot #level").change( function () {
+            /* Filter on the column */
+            var id = $(this).parent().attr("id");
+            var value = $(this).val();
+            oTable.fnFilter( value, id);
+            } );
+            /*send selected stcomm value to server */   
+            $("tfoot .flat").change( function () {
+            /* Filter on the column */
+            var id = $(this).parent().attr("id");
+            var value = $(this).val();
+            oTable.fnFilter( value, id);
+            } );
+            });';
             $output.='</script>';
                 
             return $output;
