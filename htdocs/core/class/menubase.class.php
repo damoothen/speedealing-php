@@ -26,7 +26,7 @@
 /**
  *  Class to manage menu entries
  */
-class Menubase
+class Menubase extends couchDocument
 {
     var $db;							// To store db handler
     var $error;							// To return error code (or message)
@@ -63,9 +63,13 @@ class Menubase
      */
     function Menubase($db,$menu_handler='',$type='')
     {
+        global $conf;
+        
         $this->db = $db;
         $this->menu_handler = $menu_handler;
         $this->type = $type;
+        
+        parent::__construct($conf->couchdb);
         return 1;
     }
 
@@ -651,6 +655,24 @@ class Menubase
             }
         }
    }
+   
+   /**
+     *  Compare this->position for usort
+     *
+     *  @param  int		$a			first element
+     *  @param  int		$b			second element
+     *  @return	-1,0,1
+     */
+    public function compare($a, $b)
+    {
+        $a1 = $a->position;
+        $b1 = $b->position;
+        
+        if ($a1 == $b1) {
+            return 0;
+        }
+        return ($a1 > $b1) ? +1 : -1;
+    }
 
 }
 

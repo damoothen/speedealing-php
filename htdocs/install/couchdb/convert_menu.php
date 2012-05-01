@@ -23,6 +23,7 @@
  * 	\version    $Id: serverprocess.php,v 1.6 2012/01/27 16:15:05 synry63 Exp $
  */
 require_once("../../main.inc.php");
+require_once(DOL_DOCUMENT_ROOT."/core/class/menubase.class.php");;
 $langs->load("companies");
 $langs->load("customers");
 $langs->load("suppliers");
@@ -72,10 +73,12 @@ $result = $db->query($sql);
 
 $i=0;
 
+$aRow = new Menubase($db);
+
 while ($aRow = $db->fetch_object($result)) {
         
         //print_r($aRow);
-    
+        
         unset($aRow->menu_handler);
         unset($aRow->entity);
         $rowid = (int)$aRow->rowid;
@@ -120,29 +123,29 @@ while ($aRow = $db->fetch_object($result)) {
             unset($aRow->type);
             unset($aRow->leftmenu);
             unset($aRow->mainmenu);
-            unset($aRow->position);
             unset($aRow->tms);
             $obj[$tabname[$fk_menu]]->submenu[$name] = $aRow;
+            uasort($obj[$tabname[$fk_menu]]->submenu,array("Menubase","compare")); // suivant position
         }
         else if($level==1)
         {
             unset($aRow->type);
             unset($aRow->leftmenu);     
             unset($aRow->mainmenu);
-            unset($aRow->position);
             unset($aRow->tms);
             $aRow->_id = "menu:".strtolower($aRow->title);
             $obj[$tabname[$tabperefils[$fk_menu]]]->submenu[$tabname[$fk_menu]]->submenu[$name] = $aRow;
+            uasort($obj[$tabname[$tabperefils[$fk_menu]]]->submenu[$tabname[$fk_menu]]->submenu,array("Menubase","compare"));
         }
         else
         {
             unset($aRow->type);
             unset($aRow->leftmenu);     
             unset($aRow->mainmenu);
-            unset($aRow->position);
             unset($aRow->tms);
             $aRow->_id = "menu:".strtolower($aRow->title);
             $obj[$tabname[$tabperefils[$tabperefils[$fk_menu]]]]->submenu[$tabname[$tabperefils[$fk_menu]]]->submenu[$tabname[$fk_menu]]->submenu[$name] = $aRow;
+            uasort($obj[$tabname[$tabperefils[$tabperefils[$fk_menu]]]]->submenu[$tabname[$tabperefils[$fk_menu]]]->submenu[$tabname[$fk_menu]]->submenu,array("Menubase","compare"));
         }
         
         $tabname[$rowid]=$name;
