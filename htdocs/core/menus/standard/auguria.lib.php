@@ -47,6 +47,7 @@ function print_auguria_menu($db,$atarget,$type_user)
 
         //print_r($result);exit;
         $i=0;
+        $selectnav = array();
 	foreach($result->rows AS $aRow) 
 	{
                 $newTabMenu = $aRow->value;
@@ -65,7 +66,12 @@ function print_auguria_menu($db,$atarget,$type_user)
                         $classname='mb_parent';
                         if($i==0)
                             $classname.=' first_el';
-                        if (! empty($_SESSION['idmenu']) && menuSelected($newTabMenu, $_SESSION['idmenu'])) $classname.=' pageselected';
+                        if (! empty($_SESSION['idmenu']) && menuSelected($newTabMenu, $_SESSION['idmenu']))
+                        {
+                            $classname.=' pageselected';
+                            $selectnav[0]->name = $newTabMenu->title;
+                            $selectnav[0]->url = $url;
+                        }
 
                         print '<li>';
                         print '<a class="'.$classname.'" href="'.$url.'">';
@@ -73,15 +79,14 @@ function print_auguria_menu($db,$atarget,$type_user)
                         print '</a>';
                         // Submenu level 1
                         if(isset($newTabMenu->submenu))
-                            print_submenu($newTabMenu->submenu);
+                            print_submenu($newTabMenu->submenu,$selectnav,1);
                                 
                         print '</li>';
                         $i++;
                     }
 		}
 	}
-
-	print_end_menu_array_auguria();
+	print_end_menu_array_auguria($selectnav);
 
 	print "\n";
 }
@@ -103,16 +108,19 @@ function print_start_menu_array_auguria()
  *
  * @return	void
  */
-function print_end_menu_array_auguria()
+function print_end_menu_array_auguria($selectnav)
 {
 	global $conf;
 	print '</ul>';
         print '</nav>';
         print '<ul id="breadcrumbs" class="cf">
-            <li>You are here:</li>
-            <li><a href="#">Content</a></li>
-            <li><a href="#">Article</a></li>
-            <li><span>Lorem Ipsum&hellip;</span></li>';
+            <li>You are here:</li>';
+        
+        for($i=0;$i < (count($selectnav)-1);$i++)
+        {
+            print '<li><a href="'.$selectnav[$i]->url.'">'.$selectnav[$i]->name.'</a></li>';
+        }
+        print '<li><span>'.$selectnav[count($selectnav)-1]->name.'</span></a></li>';
         print '</ul>'."\n";
         print '</div>';
 }
@@ -120,12 +128,12 @@ function print_end_menu_array_auguria()
 /**
  * Core function to output submenu auguria
  *
- * @param	DoliDB		$db                  Database handler
- * @param 	array		$menu_array_before   Table of menu entries to show before entries of menu handler
- * @param   array		$menu_array_after    Table of menu entries to show after entries of menu handler
+ * @param	array		$submenu            One entry menu
+ * @param 	array		$selectnav          Array of selected navigation
+ * @param       int		$level              Level for the navigation
  * @return	void
  */
-function print_submenu($submenu)
+function print_submenu($submenu, &$selectnav, $level)
 {
     global $user,$conf,$langs;
     
@@ -149,7 +157,12 @@ function print_submenu($submenu)
                 $classname='mb_parent';
                 if($i==0)
                     $classname.=' first_el';
-                if (! empty($_SESSION['idmenu']) && menuSelected($newTabMenu, $_SESSION['idmenu'])) $classname.=' pageselected';
+                if (! empty($_SESSION['idmenu']) && menuSelected($newTabMenu, $_SESSION['idmenu']))
+                {
+                    $classname.=' pageselected';
+                    $selectnav[$level]->name = $newTabMenu->title;
+                    $selectnav[$level]->url = $url;
+                }
 
                 print '<li>';
                 print '<a class="'.$classname.'" href="'.$url.'">';
@@ -158,8 +171,7 @@ function print_submenu($submenu)
                 print '</a>';
                 // Submenu level 1
                 if(isset($newTabMenu->submenu))
-                    print_submenu($newTabMenu->submenu);
-                                
+                    print_submenu($newTabMenu->submenu, $selectnav, ($level+1));
                 print '</li>';
                 $i++;
             }
