@@ -1535,27 +1535,46 @@ else
         //$img=picto_from_langcode($object->country_id);
         print '<h3 class="sepH_a country">'.$object->zip.($object->zip && $object->town?" ":"").$object->town;
         // MAP GPS
-        print img_picto(($object->gps[0].','.$object->gps[1]),(($object->gps[0] && $object->gps[1])?"green-dot":"red-dot"));
+        print "&nbsp".img_picto(($object->gps[0].','.$object->gps[1]),(($object->gps[0] && $object->gps[1])?"green-dot":"red-dot"));
         print '</h3>';
         print '<p>'.dol_print_url($object->url).'</p>';
         print '</div>';
+        
+        
         print '<div class="four column">';
         print '<div class="row">';
-        print '<div class="gh_button-group right">
-                                            <a href="#" class="gh_button primary pill">Modify</a>
-                                            <a href="#" class="gh_button pill icon trash danger">Delete</a>
-                                        </div>';
+        
+        
+        if ($user->rights->societe->supprimer)
+        {
+            print '<div class="gh_button-group right">';
+            if ($user->rights->societe->creer)
+            {
+                print '<a class="gh_button primary pill" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id().'&amp;action=edit">'.$langs->trans("Modify").'</a>'."\n";
+            }
+            print '<span id="action-delete" class="gh_button pill icon trash danger">'.$langs->trans('Delete').'</span>'."\n";
+            print '</div>';
+        }
+        else
+        {
+            if ($user->rights->societe->creer)
+               print '<a class="gh_button pill primary right" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id().'&amp;action=edit">'.$langs->trans("Modify").'</a>'."\n"; // bouton rond
+        }
+
+        
         print '</div>';
         
         print '<div class="row vcard">';
         print '<p></p>';
-        print '<ul class="sepH_c">';
-        $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Phone.png" alt="" />';
-        print '<li class="right light">'.dol_print_phone($object->tel,$object->country_id,0,$object->id(),'AC_TEL').$img.'</li>';
-        $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Fax.png" alt="" />';
-        print '<li class="right light">'.dol_print_phone($object->fax,$object->country_id,0,$object->id(),'AC_TEL').$img.'</li>';
-        $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Mail.png" alt="" />';
-        print '<li class="right">'.dol_print_email($object->email,0,$object->id,'AC_EMAIL').$img.'</li>';
+        print '<ul class="sepH_c fright">';
+        $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Info-_-About.png" title="'.$langs->trans('CustomerCode').'" />';
+        print '<li class="light"><span class="ttip_l" title="'.$langs->trans('CustomerCode').'">'.$object->code_client.$img.'</span></li>';
+        $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Phone.png" title="'.$langs->trans('Phone').'" />';
+        print '<li class="light"><span class="ttip_l" title="'.$langs->trans('Phone').'">'.dol_print_phone($object->tel,$object->country_id,0,$object->id(),'AC_TEL').$img.'</span></li>';
+        $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Fax.png" title="'.$langs->trans('Fax').'" />';
+        print '<li class="light"><span class="ttip_l" title="'.$langs->trans('Fax').'">'.dol_print_phone($object->fax,$object->country_id,0,$object->id(),'AC_FAX').$img.'</span></li>';
+        $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Mail.png" title="'.$langs->trans('EMail').'" />';
+        print '<li><span class="ttip_l" title="'.$langs->trans('EMail').'">'.dol_print_email($object->email,0,$object->id,'AC_EMAIL').$img.'</span></li>';
         print '</ul>';
         print '</div>';
         
@@ -1688,7 +1707,7 @@ else
 
         // State
         if (empty($conf->global->SOCIETE_DISABLE_STATE)) print '<tr><td>'.$langs->trans('State').'</td><td colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'">'.$object->state.'</td>';
-
+        
         print '<tr '.$bc[$var].'><td>'.$langs->trans('Phone').'</td><td style="min-width: 25%;">'.dol_print_phone($object->tel,$object->country_id,0,$object->id(),'AC_TEL').'</td>';
         print '<td>'.$langs->trans('Fax').'</td><td style="min-width: 25%;">'.dol_print_phone($object->fax,$object->country_id,0,$object->id(),'AC_FAX').'</td></tr>';
         $var=!$var;
@@ -1957,26 +1976,7 @@ else
         /*
          *  Actions
          */
-        print '<div class="tabsAction">'."\n";
 
-        if ($user->rights->societe->creer)
-        {
-            print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id().'&amp;action=edit">'.$langs->trans("Modify").'</a>'."\n";
-        }
-
-        if ($user->rights->societe->supprimer)
-        {
-            if ($conf->use_javascript_ajax)
-            {
-                print '<span id="action-delete" class="butActionDelete">'.$langs->trans('Delete').'</span>'."\n";
-            }
-            else
-            {
-                print '<a class="butActionDelete" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id().'&amp;action=delete">'.$langs->trans('Delete').'</a>'."\n";
-            }
-        }
-
-        print '</div>'."\n";
         print '<br>';
 
         if ($conf->ecm->enabled && empty($conf->global->SOCIETE_DISABLE_BUILDDOC))

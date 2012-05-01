@@ -800,4 +800,5 @@
 .vcard img{ margin-right: 5px;}
 .vcard .lbl {vertical-align: top}
 .vcard .light {color: gray}
+.vcard .fright li{text-align: right}
 .vcard li img{vertical-align: bottom; margin: 0 5px}
