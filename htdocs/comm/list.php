@@ -152,6 +152,13 @@ print '<table cellpadding="0" cellspacing="0" border="0" class="display dt_act" 
 // Ligne des titres 
 print'<thead>';
 print'<tr>';
+print'<th>';
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "_id";
+$obj->aoColumns[$i]->bUseRendered = false;
+$obj->aoColumns[$i]->bSearchable = false;
+$obj->aoColumns[$i]->bVisible = false;
+$i++;
 print'<th class="essential">';
 print $langs->trans("Company");
 print'</th>';
@@ -278,6 +285,8 @@ print'<tfoot>';
 /* input search view */
 $i=0;
 print'<tr>';
+print'<th id="'.$i.'"></th>';
+$i++;
 print'<th id="'.$i.'"><input type="text" placeholder="' . $langs->trans("Search Company") . '" /></th>';
 $i++;
 print'<th id="'.$i.'"><input type="text" placeholder="' . $langs->trans("Search Town") . '" /></th>';

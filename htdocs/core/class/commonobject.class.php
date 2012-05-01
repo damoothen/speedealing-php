@@ -2761,6 +2761,9 @@ abstract class CommonObject extends couchDocument
 	{
             global $conf,$langs;
             
+            if(!isset($obj->aaSorting))
+                $obj->aaSorting = array(array(1, "asc"));
+            
             $obj->sAjaxSource = $_SERVER['PHP_SELF']."?json=list";
             $obj->iDisplayLength = (int)$conf->global->MAIN_SIZE_LISTE_LIMIT;
             $obj->aLengthMenu= array(array(10, 25, 50, 100, 1000, -1), array(10, 25, 50, 100,1000,"All"));
@@ -2776,7 +2779,7 @@ abstract class CommonObject extends couchDocument
             $obj->oTableTools->sSwfPath = DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/TableTools/media/swf/copy_csv_xls.swf';
             $obj->oTableTools->aButtons = array("xls");
             $obj->oColVis->buttonText = 'Voir/Cacher';
-            $obj->oColVis->aiExclude = array(0,4,7); // Not cacheable
+            $obj->oColVis->aiExclude = array(0,1); // Not cacheable
             //$obj->oColVis->bRestore = true;
             //$obj->oColVis->sAlign = 'left';
             $obj->sDom = 'CTl<fr>t<\"clear\"rtip>';
@@ -2811,11 +2814,11 @@ abstract class CommonObject extends couchDocument
             
             $output.= ");";
             //$output.= "});"; // ATTENTION AUTOFILL NOT COMPATIBLE WITH COLVIS !!!!
-            $output.= 'new AutoFill( oTable, {
+            /*$output.= 'new AutoFill( oTable, {
 		"aoColumnDefs": [
                 {
                         "bEnable":false,
-                        "aTargets": [ 0,1,2,3,5,6,8,9 ]
+                        "aTargets": [ 0,1,2,3,5,6,8]
                 },
                 {
 			"fnCallback": function ( ao ) {
@@ -2829,7 +2832,7 @@ abstract class CommonObject extends couchDocument
                         "bEnable" : true,
 			"aTargets": [ 4,7 ]
 		}]
-            } );';
+            } );';*/
             $output.= "});";
             $output.='</script>'."\n";
             
