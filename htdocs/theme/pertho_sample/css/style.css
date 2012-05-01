@@ -298,8 +298,8 @@
 		.box_c_heading .gh_button-group a:hover {color:#fff !important}
 		.box_c_content {padding:12px;border-width:0 1px 1px;border-style:solid;border-color: #dcdcdc;background:#fff}
 		.cntn_noP {padding:0}
-		.bAct_hide,.bAct_toggle {background: url(../img/bAct_bg.png) no-repeat 0 0;display:block;float:right;height:18px;width:18px;overflow:hidden;margin:7px 5px 0 0}
-		.bAct_hide img,.bAct_toggle	img {display:block;cursor:pointer;background-image: url(../img/bAct_bg.png);background-repeat: no-repeat;height:18px;width:18px}
+		.bAct_hide,.bAct_toggle {background: url(/speedealing/theme/eldy/img/bAct_bg.png) no-repeat 0 0;display:block;float:right;height:18px;width:18px;overflow:hidden;margin:7px 5px 0 0}
+		.bAct_hide img,.bAct_toggle	img {display:block;cursor:pointer;background-image: url(/speedealing/theme/eldy/img/bAct_bg.png);background-repeat: no-repeat;height:18px;width:18px}
 		.bAct_x {background-position: 0 -18px}
 		.bAct_minus {background-position: 0 -36px}
 		.bAct_plus {background-position: 0 -54px}
@@ -398,6 +398,7 @@
 
 	/* small labels */
 		.lbl {padding:2px 6px;font-size:10px;color:#fff;position:relative;top:-1px;vertical-align:middle}
+                .lbt  {padding:2px 6px;font-size:10px;color:#fff;position:relative;top:-1px;vertical-align:top}
 		.ok_bg {background:#70a415}
 		.alert_bg {background:#F5AA1A}
 		.info_bg {background:#058dc7}
@@ -793,3 +794,10 @@
 			.error_box {background:#fff;padding:20px 20px 40px;margin-top:10%}
 			.form_content {border-left:none}
 		}
+                
+.vcard .avatar { background: white; border: 1px solid #D8DADA; margin-right: 5px; -webkit-border-radius: 5px; -moz-border-radius: 10px; border-radius: 10px; float: left; height: 100px; position: relative; width: 100px;}
+.vcard h1{color: #21759B;}
+.vcard img{ margin-right: 5px;}
+.vcard .lbl {vertical-align: top}
+.vcard .light {color: gray}
+.vcard li img{vertical-align: bottom; margin: 0 5px}

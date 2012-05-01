@@ -734,7 +734,7 @@ class Societe extends CommonObject
         // By default
         if (empty($lien))
         {
-            $lien = '<a href="'.DOL_URL_ROOT.'/societe/soc.php?socid='.$this->id;
+            $lien = '<a href="'.DOL_URL_ROOT.'/societe/fiche.php?id='.$this->id();
         }
 
         // Add type of canvas
@@ -778,8 +778,8 @@ class Societe extends CommonObject
         }
         if ($mode == 1)
         {
-            if ($statut==0) return $langs->trans("ActivityCeased");
-            if ($statut==1) return $langs->trans("InActivity");
+            if ($statut==0) return '<span class="lbl error_bg sl_status">'.$langs->trans("ActivityCeased").'</span>';
+            if ($statut==1) return '<span class="lbl ok_bg sl_status">'.$langs->trans("InActivity").'</span>';
         }
         if ($mode == 2)
         {

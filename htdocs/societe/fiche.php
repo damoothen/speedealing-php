@@ -564,8 +564,6 @@ $formcompany = new FormCompany($db);
 
 $countrynotdefined=$langs->trans("ErrorSetACountryFirst").' ('.$langs->trans("SeeAbove").')';
 
-print '<div class="row">';
-
 
 if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 {
@@ -1507,8 +1505,6 @@ else
          * View
          */
         
-        print start_box($langs->trans("ThirdParty"),"twelve","16-Apartment-Building.png");
-        
         try
         {
             $res=$object->load($socid);
@@ -1521,12 +1517,95 @@ else
         //if ($res < 0) { dol_print_error($db,$object->error); exit; }
         $res=$object->fetch_optionals($object->id(),$extralabels);
         //if ($res < 0) { dol_print_error($db); exit; }
-
-
+        
+        print '<div class="row">';
+        
+        print start_box($langs->trans("ThirdParty"),"eight","16-Apartment-Building.png", false);
+        print '<div class="row">';
+        print '<div class="vcard">';
+        print '<div class="avatar">';
+        print '<img src="'.DOL_URL_ROOT.'/theme/companies.png" alt="" />';
+        print '</div></div>';
+        print '<div class="five column vcard">';
+        $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Apartment-Building.png" alt="" />';
+        print '<h1 class="sepH_a">'.$img.$object->name.$object->getLibStatut(1).'</h1>';
+        print '<h5 class="sepH_a light">';
+        dol_print_address($object->address,'gmap','thirdparty',$object->id());
+        print '</h5>';
+        //$img=picto_from_langcode($object->country_id);
+        print '<h3 class="sepH_a country">'.$object->zip.($object->zip && $object->town?" ":"").$object->town;
+        // MAP GPS
+        print img_picto(($object->gps[0].','.$object->gps[1]),(($object->gps[0] && $object->gps[1])?"green-dot":"red-dot"));
+        print '</h3>';
+        print '<p>'.dol_print_url($object->url).'</p>';
+        print '</div>';
+        print '<div class="four column">';
+        print '<div class="row">';
+        print '<div class="gh_button-group right">
+                                            <a href="#" class="gh_button primary pill">Modify</a>
+                                            <a href="#" class="gh_button pill icon trash danger">Delete</a>
+                                        </div>';
+        print '</div>';
+        
+        print '<div class="row vcard">';
+        print '<p></p>';
+        print '<ul class="sepH_c">';
+        $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Phone.png" alt="" />';
+        print '<li class="right light">'.dol_print_phone($object->tel,$object->country_id,0,$object->id(),'AC_TEL').$img.'</li>';
+        $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Fax.png" alt="" />';
+        print '<li class="right light">'.dol_print_phone($object->fax,$object->country_id,0,$object->id(),'AC_TEL').$img.'</li>';
+        $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Mail.png" alt="" />';
+        print '<li class="right">'.dol_print_email($object->email,0,$object->id,'AC_EMAIL').$img.'</li>';
+        print '</ul>';
+        print '</div>';
+        
+        print '</div>';
+        print '</div>';
+        print end_box();
+        
+        print start_box($langs->trans("Statistics"),"four","16-Abacus.png");
+        
+        print '<ul class="overview_list">
+                <li>
+                    <a href="#">
+                        <img src="'.DOL_URL_ROOT.'/theme/blank.gif" style="background-image: url('.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/open/dollar.png)" alt="" />
+                        <span class="ov_nb">$10201</span>
+                        <span class="ov_text">Total sale</span>
+                    </a>
+		</li>
+		<li>
+                    <a href="#">
+			<img src="'.DOL_URL_ROOT.'/theme/blank.gif" style="background-image: url('.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/open/tag.png)" alt="" />
+			<span class="ov_nb">$231</span>
+			<span class="ov_text">Today sale</span>
+                    </a>
+		</li>
+		<li>
+                    <a href="#">
+                        <img src="'.DOL_URL_ROOT.'/theme/blank.gif" style="background-image: url('.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/open/happy-face.png)" alt="" />
+                        <span class="ov_nb">32</span>
+                        <span class="ov_text">New registrations</span>
+                    </a>
+		</li>
+		<li>
+                    <a href="#">
+			<img src="'.DOL_URL_ROOT.'/theme/blank.gif" style="background-image: url('.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/open/bar-chart.png)" alt="" />
+                        <span class="ov_nb">3021</span>
+			<span class="ov_text">Unique visitors</span>
+                    </a>
+		</li>
+            </ul>';
+        
+        print end_box();
+        
+        print '</div><div class="row">';
+        
         $head = societe_prepare_head($object);
 
-        dol_fiche_head($head, 'card', $langs->trans("ThirdParty"),0,'company');
-
+        //dol_fiche_head($head, 'card', $langs->trans("ThirdParty"),0,'company');
+        
+        print start_box($langs->trans("ThirdParty"),"twelve","16-Apartment-Building.png");
+        
         // Confirm delete third party
         if ($action == 'delete' || $conf->use_javascript_ajax)
         {
@@ -1544,22 +1623,6 @@ else
 
         print '<table class="noborder" width="100%">';
 
-        // Ref
-        /*
-        print '<tr><td width="25%" valign="top">'.$langs->trans("Ref").'</td>';
-        print '<td colspan="2">';
-        print $fuser->id;
-        print '</td>';
-        print '</tr>';
-        */
-
-        // Name
-        print '<tr class="liste_titre"><td width="20%">'.$langs->trans('ThirdPartyName').'</td>';
-        print '<td colspan="3">';
-        print $form->showrefnav($object,'socid','',($user->societe_id?0:1),'rowid','name');
-        print '</td>';
-        print '</tr>';
-
         // Logo+barcode
         $rowspan=4;
         if (! empty($conf->global->SOCIETE_USEPREFIX)) $rowspan++;
@@ -1576,15 +1639,6 @@ else
             if ($showbarcode) $htmllogobar.=$form->showbarcode($object,50);
             $htmllogobar.='</td>';
         }
-        
-         // Name
-	print '<tr '.$bc[$var].'><td id="label" width="20%">'.$langs->trans('ThirdPartyName').'</td>';
-	print '<td colspan="'.(2+($object->logo?0:1)).'" id="value">';
-	print $object->getNomUrl(1);
-	print '</td>';
-        print $showlogo; $showlogo='';
-        print '</tr>';
-        $var=!$var;
 
         // Prefix
         if (! empty($conf->global->SOCIETE_USEPREFIX))  // Old not used prefix field
@@ -1632,42 +1686,6 @@ else
             $var=!$var;
         }
 
-        // Status
-        print '<tr '.$bc[$var].'><td>'.$langs->trans("Status").'</td>';
-        print '<td colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'">';
-        print $object->getLibStatut(2);
-        print '</td>';
-        print $htmllogobar; $htmllogobar='';
-        print '</tr>';
-        $var=!$var;
-
-        // Address
-        print '<tr '.$bc[$var].'><td valign="top">'.$langs->trans("Address").'</td><td colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'">';
-        dol_print_address($object->address,'gmap','thirdparty',$object->id());
-        print "</td></tr>";
-        $var=!$var;
-
-        // Zip / Town
-        print '<tr '.$bc[$var].'><td width="25%">'.$langs->trans('Zip').' / '.$langs->trans("Town").'</td><td colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'">';
-        print $object->zip.($object->zip && $object->town?" / ":"").$object->town;
-        print "</td>";
-        print '</tr>';
-        $var=!$var;
-
-        // Country
-        print '<tr '.$bc[$var].'><td>'.$langs->trans("Country").'</td><td nowrap="nowrap">';
-        $img=picto_from_langcode($object->country_id);
-        if ($object->isInEEC()) print $form->textwithpicto(($img?$img.' ':'').$object->country,$langs->trans("CountryIsInEEC"),1,0);
-        else print ($img?$img.' ':'').$object->country;
-		print '</td>';
-        
-        // MAP GPS
-        if($conf->map->enabled)
-            print '<td id="label" colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'">GPS '.img_picto(($object->gps[0].','.$object->gps[1]),(($object->gps[0] && $object->gps[1])?"statut4":"statut1")).'</td></tr>';
-        else
-            print '<td id="label" colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'"></td></tr>';
-        $var=!$var;
-
         // State
         if (empty($conf->global->SOCIETE_DISABLE_STATE)) print '<tr><td>'.$langs->trans('State').'</td><td colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'">'.$object->state.'</td>';
 
@@ -1679,12 +1697,6 @@ else
         print '<tr '.$bc[$var].'><td>'.$langs->trans('EMail').'</td><td width="25%">';
         print dol_print_email($object->email,0,$object->id,'AC_EMAIL');
         print '</td>';
-
-        // Web
-        print '<td>'.$langs->trans('Web').'</td><td>';
-        print dol_print_url($object->url);
-        print '</td></tr>';
-        $var=!$var;
 
         // Prof ids
         $i=1; $j=0;

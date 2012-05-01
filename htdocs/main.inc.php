@@ -1077,7 +1077,7 @@ function top_menu($head, $title='', $target='', $disablejs=0, $disablehead=0, $a
     // For backward compatibility with old modules
     if (empty($conf->headerdone)) top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss);
 
-    print '<body class="ptrn_a grdnt_a mhover_a">';
+    print '<body class="ptrn_a grdnt_b mhover_c">';
 
     /*
      * Top menu

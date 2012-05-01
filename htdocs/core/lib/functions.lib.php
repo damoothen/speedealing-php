@@ -1076,7 +1076,7 @@ function dol_print_url($url,$target='_blank',$max=32)
     if (! preg_match('/^http/i',$url)) $link.='http://';
     $link.=$url;
     if ($target) $link.='" target="'.$target.'">';
-    if (! preg_match('/^http/i',$url)) $link.='http://';
+    //if (! preg_match('/^http/i',$url)) $link.='http://';
     $link.=dol_trunc($url,$max);
     $link.='</a>';
     return $link;
@@ -2289,13 +2289,16 @@ function getTitleFieldOfList($name, $thead=0, $file="", $field="", $begin="", $m
  *	@param	string	$nbcolumn		Number of column see style.css
  *	@return	string				Title to show
  */
-function start_box($title,$nbcolumn='twelve',$icon='16-Abacus.png')
+function start_box($title,$nbcolumn='twelve',$icon='16-Abacus.png',$box_action=true)
 {
     global $conf,$langs;
     
     $rtr = '<div class="'.$nbcolumn.' columns">';
     $rtr.= '<div class="box_c">';
-    $rtr.= '<div class="box_c_heading cf">';
+    if($box_action)
+        $rtr.= '<div class="box_c_heading cf box_actions">';
+    else
+        $rtr.= '<div class="box_c_heading cf">';
     $rtr.= '<div class="box_c_ico"><img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/'.$icon.'" alt="" /></div>';
     $rtr.= '<p>'.$title.'</p>';
     $rtr.= '</div>';
