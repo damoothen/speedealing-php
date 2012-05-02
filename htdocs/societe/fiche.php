@@ -126,22 +126,25 @@ if (empty($reshook))
         $object->town                  = $_POST["town"];
         $object->country_id            = $_POST["country_id"];
         $object->state_id              = $_POST["departement_id"];
-        $object->contact=array("Phone" => array('value'=> $_POST["tel"]));
-        $object->contact["Phone"]["type"] = 'AC_TEL';
-        $object->contact["Fax"] = array('value'=> $_POST["fax"]);
-        $object->contact["Fax"]["type"]   = 'AC_FAX';
-        $object->contact["EMail"] = trim($_POST["email"]);
-        $object->contact["EMail"]["type"]   = 'AC_EMAIL';
+
+        $contact["Phone"]['value'] = $_POST["tel"];
+        $contact["Phone"]["type"] = 'AC_TEL';
+        $contact["Fax"]['value'] = $_POST["fax"];
+        $contact["Fax"]["type"]   = 'AC_FAX';
+        $contact["EMail"] = trim($_POST["email"]);
+        $contact["EMail"]["type"]   = 'AC_EMAIL';
         
-        print $object->contact['EMail'];
-        exit;
-        $object->contact['EMail']->type = 'AC_EMAIL';
+        $object->contact = $contact;
+        
         $object->url                   = array(trim($_POST["url"]));
-        $object->idprof["idprof1"]     = $_POST["idprof1"];
+        /*$object->idprof["idprof1"]     = $_POST["idprof1"];
         $object->idprof["idprof2"]     = $_POST["idprof2"];
         $object->idprof["idprof3"]     = $_POST["idprof3"];
-        $object->idprof["idprof4"]     = $_POST["idprof4"];
+        $object->idprof["idprof4"]     = $_POST["idprof4"];*/
         $object->prefix_comm           = $_POST["prefix_comm"];
+        
+        
+        
         $object->code_compta->CustomerCode = $_POST["code_client"];
         $object->code_compta->SupplierCode = $_POST["code_fournisseur"];
         $object->capital               = (int)$_POST["capital"];
