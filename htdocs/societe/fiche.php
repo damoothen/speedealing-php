@@ -1598,10 +1598,11 @@ else
         print '</div>';
         
         // Note et informations
-        print '<div class="row">';
+        print '<div class="row vcard">';
         print '<div class="twelve column">';
-        print '<h4 class="inner_heading">'.$langs->trans("Notes").'</h4>';
-        print '<p>'.$object->notes.'</p>';
+        $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Info-_-About.png" title="'.$langs->trans($key).'" />';
+        print '<h4 class="inner_heading">'.$img.$langs->trans("Notes").'</h4>';
+        print '<p class="edit_area ttip_l">'.$object->notes.'</p>';
         print '</div>'; 
         print '</div>'; // End block note
         
