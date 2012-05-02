@@ -797,8 +797,6 @@
                 
 .vcard .avatar { background: white; border: 1px solid #D8DADA; margin-right: 5px; -webkit-border-radius: 5px; -moz-border-radius: 10px; border-radius: 10px; float: left; height: 100px; position: relative; width: 100px;}
 .vcard h1{color: #21759B;}
-.vcard img{ margin: 0 5px;}
-.vcard .lbl {vertical-align: top}
 .vcard .light {color: gray}
 .vcard .fright li{text-align: right}
 .vcard li img{vertical-align: bottom; margin: 0 5px}

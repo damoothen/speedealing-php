@@ -1522,7 +1522,7 @@ else
 
         print start_box($langs->trans("ThirdParty"),"eight","16-Apartment-Building.png", false);
         print '<div class="row">';
-        print '<div class="two column vcard">';
+        print '<div class="two column vcard avatar">';
         print '<div class="avatar">';
         print '<img src="'.DOL_URL_ROOT.'/theme/companies.png" alt="" />';
         print '</div></div>';
