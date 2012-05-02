@@ -65,6 +65,20 @@ $obj[$i]->views->list->map='function(doc) {
     }';
 $i++;
 
+
+// List link between documents
+$obj[$i]->_id="_design/link";
+$obj[$i]->language="javascript";
+$obj[$i]->views->from->map='function(doc) {
+if(doc.linkto.length > 0) {
+    for(var idx in doc.linkto) {
+      emit(doc.linkto[idx][0], {_id:doc._id, linkto:doc.linkto[idx][1]});
+    }
+  }
+}';
+$i++;
+
+
 try {
     $couch->storeDocs($obj,false);
     } catch (Exception $e) {

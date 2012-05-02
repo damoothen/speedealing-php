@@ -1522,13 +1522,14 @@ else
         
         print start_box($langs->trans("ThirdParty"),"eight","16-Apartment-Building.png", false);
         print '<div class="row">';
-        print '<div class="vcard">';
+        print '<div class="two column vcard">';
         print '<div class="avatar">';
         print '<img src="'.DOL_URL_ROOT.'/theme/companies.png" alt="" />';
         print '</div></div>';
         print '<div class="five column vcard">';
         $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Apartment-Building.png" alt="" />';
-        print '<h1 class="sepH_a">'.$img.$object->name.$object->getLibStatut(1).'</h1>';
+        print '<h1 class="sepH_a">'.$img.$object->name.'</h1>';
+        print $object->getLibStatut(1);
         print '<h5 class="sepH_a light">';
         dol_print_address($object->address,'gmap','thirdparty',$object->id());
         print '</h5>';
@@ -1539,10 +1540,10 @@ else
         print '</h3>';
         // url
         foreach ($object->url as $aRow)
-            print '<p>'.dol_print_url($aRow).'</p>';
+            print dol_print_url($aRow);
         print '</div>';
         
-        
+        // Partie droite
         print '<div class="four column">';
         print '<div class="row">';
         
@@ -1567,7 +1568,6 @@ else
         print '</div>';
         
         // List of tel, fax, mail...
-        
         print '<div class="row vcard">';
         print '<p></p>';
         print '<ul class="sepH_c fright">';
@@ -1588,8 +1588,17 @@ else
         print '</ul>';
         print '</div>';
         
+        print '</div>'; // termine la colonne droite
         print '</div>';
-        print '</div>';
+        
+        // Note et informations
+        print '<div class="row">';
+        print '<div class="twelve column">';
+        print '<h4 class="inner_heading">'.$langs->trans("Notes").'</h4>';
+        print '<p>'.$object->notes.'</p>';
+        print '</div>'; 
+        print '</div>'; // End block note
+        
         print end_box();
         
         print start_box($langs->trans("Statistics"),"four","16-Abacus.png");
@@ -1631,7 +1640,7 @@ else
         
         $head = societe_prepare_head($object);
 
-        //dol_fiche_head($head, 'card', $langs->trans("ThirdParty"),0,'company');
+        dol_fiche_head($head, 'card', $langs->trans("ThirdParty"),0,'company');
         
         print start_box($langs->trans("ThirdParty"),"twelve","16-Apartment-Building.png");
         

@@ -310,7 +310,7 @@
 
 	/* inner blocks */
 		.inner_block {padding:8px;background:#fafafa;border:1px solid #f1f1f1}
-		.inner_heading {font-size:12px;padding:0 0 6px 2px;border-bottom:1px solid #e8e8e8}
+		.inner_heading {color: #21759B; padding:0 0 6px 2px;border-bottom:1px solid #e8e8e8}
 		.inner_content {margin:0 12px 12px}
 
 	/* tables */
