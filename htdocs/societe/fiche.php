@@ -126,17 +126,24 @@ if (empty($reshook))
         $object->town                  = $_POST["town"];
         $object->country_id            = $_POST["country_id"];
         $object->state_id              = $_POST["departement_id"];
-        $object->tel                   = $_POST["tel"];
-        $object->fax                   = $_POST["fax"];
-        $object->email                 = trim($_POST["email"]);
-        $object->url                   = trim($_POST["url"]);
-        $object->idprof1               = $_POST["idprof1"];
-        $object->idprof2               = $_POST["idprof2"];
-        $object->idprof3               = $_POST["idprof3"];
-        $object->idprof4               = $_POST["idprof4"];
+        $object->contact=array("Phone" => array('value'=> $_POST["tel"]));
+        $object->contact["Phone"]["type"] = 'AC_TEL';
+        $object->contact["Fax"] = array('value'=> $_POST["fax"]);
+        $object->contact["Fax"]["type"]   = 'AC_FAX';
+        $object->contact["EMail"] = trim($_POST["email"]);
+        $object->contact["EMail"]["type"]   = 'AC_EMAIL';
+        
+        print $object->contact['EMail'];
+        exit;
+        $object->contact['EMail']->type = 'AC_EMAIL';
+        $object->url                   = array(trim($_POST["url"]));
+        $object->idprof["idprof1"]     = $_POST["idprof1"];
+        $object->idprof["idprof2"]     = $_POST["idprof2"];
+        $object->idprof["idprof3"]     = $_POST["idprof3"];
+        $object->idprof["idprof4"]     = $_POST["idprof4"];
         $object->prefix_comm           = $_POST["prefix_comm"];
-        $object->code_client           = $_POST["code_client"];
-        $object->code_fournisseur      = $_POST["code_fournisseur"];
+        $object->code_compta->CustomerCode = $_POST["code_client"];
+        $object->code_compta->SupplierCode = $_POST["code_fournisseur"];
         $object->capital               = (int)$_POST["capital"];
         $object->barcode               = $_POST["barcode"];
 
@@ -210,16 +217,16 @@ if (empty($reshook))
         // Check parameters
         if (empty($_POST["cancel"]))
         {
-            if (! empty($object->email) && ! isValidEMail($object->email))
+            if (! empty($object->contact['EMail']->value) && ! isValidEMail($object->contact['EMail']->value))
             {
                 $langs->load("errors");
-                $error++; $errors[] = $langs->trans("ErrorBadEMail",$object->email);
+                $error++; $errors[] = $langs->trans("ErrorBadEMail",$object->contact['EMail']->value);
                 $action = ($action=='add'?'create':'edit');
             }
-            if (! empty($object->url) && ! isValidUrl($object->url))
+            if (! empty($object->url[0]) && ! isValidUrl($object->url[0]))
             {
                 $langs->load("errors");
-                $error++; $errors[] = $langs->trans("ErrorBadUrl",$object->url);
+                $error++; $errors[] = $langs->trans("ErrorBadUrl",$object->url[0]);
                 $action = ($action=='add'?'create':'edit');
             }
             if ($object->fournisseur && ! $conf->fournisseur->enabled)
@@ -229,7 +236,7 @@ if (empty($reshook))
                 $action = ($action=='add'?'create':'edit');
             }
 
-        	for ($i = 1; $i < 3; $i++)
+        	/*for ($i = 1; $i < 3; $i++)
         	{
     			$slabel="idprof".$i;
         		if (($_POST[$slabel] && $object->id_prof_verifiable($i)))
@@ -241,7 +248,7 @@ if (empty($reshook))
                 		$action = ($action=='add'?'create':'edit');
 					}
 				}
-			}
+			}*/
         }
         if (! $error)
         {

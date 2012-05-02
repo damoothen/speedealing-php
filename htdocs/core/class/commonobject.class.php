@@ -60,6 +60,7 @@ abstract class CommonObject extends couchDocument
 	 */
 	public function record()
 	{
+            print $this->contact['EMail']->value;exit;
             foreach ($this->__couch_data->fields as $key => $aRow)
             {
                 if(empty($aRow))
