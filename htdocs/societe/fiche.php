@@ -1577,7 +1577,7 @@ else
         // list of compta codes
         if (! empty($object->code_compta)) {
         	foreach ($object->code_compta as $key => $aRow) {
-        		$img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Info-_-About.png" title="'.$langs->trans($key).'" />';
+        		$img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Money.png" title="'.$langs->trans($key).'" />';
         		print '<li class="light"><span class="ttip_l" title="'.$langs->trans($key).'">'.$aRow.$img.'</span></li>';
         	}
         }

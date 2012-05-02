@@ -86,7 +86,7 @@ class Form
         $ret='';
 
         // TODO change for compatibility
-        if (! empty($conf->global->MAIN_USE_JQUERY_JEDITABLE) && ! preg_match('/^select;/',$typeofdata))
+        if (! preg_match('/^select;/',$typeofdata))
         {
             if ($perm)
             {
@@ -135,7 +135,7 @@ class Form
 
         // When option to edit inline is activated
         // TODO change for compatibility
-        if (! empty($conf->global->MAIN_USE_JQUERY_JEDITABLE) && ! preg_match('/^select;/',$typeofdata))
+        if (! preg_match('/^select;/',$typeofdata))
         {
             $ret.=$this->editInPlace($object, $value, $htmlname, $perm, $typeofdata, $editvalue, $extObject, $success);
         }
@@ -413,11 +413,6 @@ class Form
             if ($type == 'info' || $type == 'help')	return $text;
             else { $alt=$htmltext; $htmltext='';
             }
-        }
-        // If info or help with smartphone, show only text
-        if (! empty($conf->browser->phone))
-        {
-            if ($type == 'info' || $type == 'help') return $text;
         }
         // Info or help
         if ($type == 'info') 				$img=img_help(0,$alt);
