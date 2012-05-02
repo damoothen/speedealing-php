@@ -1537,7 +1537,9 @@ else
         // MAP GPS
         print "&nbsp".img_picto(($object->gps[0].','.$object->gps[1]),(($object->gps[0] && $object->gps[1])?"green-dot":"red-dot"));
         print '</h3>';
-        print '<p>'.dol_print_url($object->url).'</p>';
+        // url
+        foreach ($object->url as $aRow)
+            print '<p>'.dol_print_url($aRow).'</p>';
         print '</div>';
         
         
@@ -1564,17 +1566,25 @@ else
         
         print '</div>';
         
+        // List of tel, fax, mail...
+        
         print '<div class="row vcard">';
         print '<p></p>';
         print '<ul class="sepH_c fright">';
-        $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Info-_-About.png" title="'.$langs->trans('CustomerCode').'" />';
-        print '<li class="light"><span class="ttip_l" title="'.$langs->trans('CustomerCode').'">'.$object->code_client.$img.'</span></li>';
-        $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Phone.png" title="'.$langs->trans('Phone').'" />';
-        print '<li class="light"><span class="ttip_l" title="'.$langs->trans('Phone').'">'.dol_print_phone($object->tel,$object->country_id,0,$object->id(),'AC_TEL').$img.'</span></li>';
-        $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Fax.png" title="'.$langs->trans('Fax').'" />';
-        print '<li class="light"><span class="ttip_l" title="'.$langs->trans('Fax').'">'.dol_print_phone($object->fax,$object->country_id,0,$object->id(),'AC_FAX').$img.'</span></li>';
-        $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Mail.png" title="'.$langs->trans('EMail').'" />';
-        print '<li><span class="ttip_l" title="'.$langs->trans('EMail').'">'.dol_print_email($object->email,0,$object->id,'AC_EMAIL').$img.'</span></li>';
+        
+        // list of compta codes
+        foreach ($object->code_compta as $key => $aRow){
+            $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Info-_-About.png" title="'.$langs->trans($key).'" />';
+            print '<li class="light"><span class="ttip_l" title="'.$langs->trans($key).'">'.$aRow.$img.'</span></li>';
+        }
+        // list tel, fax, mail
+        foreach ($object->contact as $key => $aRow){
+        $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/type/'.$aRow->type.'.png" title="'.$langs->trans($key).'" />';
+        if($aRow->type == "AC_EMAIL")
+            print '<li><span class="ttip_l" title="'.$langs->trans($key).'">'.dol_print_email($aRow->value,0,$object->id(),'AC_EMAIL').$img.'</span></li>';
+        else
+            print '<li class="light"><span class="ttip_l" title="'.$langs->trans($key).'">'.dol_print_phone($aRow->value,$object->country_id,0,$object->id(),$aRow->type).$img.'</span></li>';
+        }
         print '</ul>';
         print '</div>';
         
