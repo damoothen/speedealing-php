@@ -1144,7 +1144,7 @@ function dol_print_email($email,$cid=0,$socid=0,$addlink=0,$max=64,$showinvalid=
  * 	@param 	string	$separ 		separation between numbers for a better visibility example : xx.xx.xx.xx.xx
  * 	@return string 				Formated phone number
  */
-function dol_print_phone($phone,$country="FR",$cid=0,$socid=0,$addlink=0,$separ="&nbsp;")
+function dol_print_phone($phone,$country="FR",$cid=0,$socid=0,$addlink=0,$separ=" ")
 {
     global $conf,$user,$langs;
 
