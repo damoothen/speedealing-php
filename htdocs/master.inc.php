@@ -41,6 +41,10 @@ require_once("filefunc.inc.php");	// May have been already require by main.inc.p
 require_once(DOL_DOCUMENT_ROOT."/core/class/conf.class.php");
 
 $conf = new Conf();
+// Identifiant propres au serveur couchdb
+$conf->couchdb->host					= $dolibarr_main_couchdb_host;
+$conf->couchdb->port					= $dolibarr_main_couchdb_port;
+$conf->couchdb->name					= $dolibarr_main_couchdb_name;
 // Identifiant propres au serveur base de donnee
 $conf->db->host							= $dolibarr_main_db_host;
 $conf->db->port							= $dolibarr_main_db_port;
@@ -140,6 +144,9 @@ if (! defined('NOREQUIREDB'))
 	}
 
 	//print "Will work with data into entity instance number '".$conf->entity."'";
+	
+	// CouchDB
+	$conf->couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
 
 	// Here we read database (llx_const table) and define $conf->global->XXX var.
 	$conf->setValues($db);

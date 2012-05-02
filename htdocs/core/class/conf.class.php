@@ -39,8 +39,8 @@ class Conf
 	var $db;
 	//! To store properties found into database
 	var $global;
-        //! url of couchdb server
-        var $couchdb;
+	//! url of couchdb server
+	var $couchdb;
 
 	//! To store if javascript/ajax is enabked
 	public $use_javascript_ajax;
@@ -89,6 +89,7 @@ class Conf
 		// Avoid warnings when filling this->xxx
 		$this->file				= (object) array();
 		$this->db				= (object) array();
+		$this->couchdb			= (object) array();
 		$this->global			= (object) array();
 		$this->mycompany		= (object) array();
 		$this->admin			= (object) array();
@@ -444,8 +445,6 @@ class Conf
         {
         	if (is_object($mc)) $mc->setValues($this);
         }
-        
-        $this->couchdb = new couchClient("http://couch.symeos.com:5984/","demo");
         
 	}
 }
