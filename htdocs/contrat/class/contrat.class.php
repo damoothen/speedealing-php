@@ -1,11 +1,10 @@
 <?php
-/* Copyright (C) 2003      Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2012 Destailleur Laurent  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
- * Copyright (C) 2006      Andre Cianfarani     <acianfa@free.fr>
- * Copyright (C) 2008      Raphael Bertrand (Resultic) <raphael.bertrand@resultic.fr>
- * Copyright (C) 2010-2011 Juanjo Menent         <jmenent@2byte.es>
- * Copyright (C) 2011      Herve Prot          <herve.prot@symeos.com>
+/* Copyright (C) 2003		Rodolphe Quiedeville	<rodolphe@quiedeville.org>
+ * Copyright (C) 2004-2012	Destailleur Laurent		<eldy@users.sourceforge.net>
+ * Copyright (C) 2005-2012	Regis Houssin			<regis@dolibarr.fr>
+ * Copyright (C) 2006		Andre Cianfarani		<acianfa@free.fr>
+ * Copyright (C) 2008		Raphael Bertrand		<raphael.bertrand@resultic.fr>
+ * Copyright (C) 2010-2011	Juanjo Menent			<jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -323,7 +322,7 @@ class Contrat extends CommonObject
 		$sql.= " fk_user_author,";
 		$sql.= " fk_projet,";
 		$sql.= " fk_commercial_signature, fk_commercial_suivi,";
-		$sql.= " note as note_private,model_pdf, note_public, extraparams";
+		$sql.= " note as note_private, note_public, extraparams";
 		$sql.= " FROM ".MAIN_DB_PREFIX."contrat";
 		if ($ref) $sql.= " WHERE ref='".$ref."'";
 		else $sql.= " WHERE rowid=".$id;
@@ -353,16 +352,8 @@ class Contrat extends CommonObject
 
 				$this->fk_projet				= $result["fk_projet"];
 
-				$this->socid             = $result["fk_soc"];
-				$this->fk_soc            = $result["fk_soc"];
-                                $this->modelpdf          = $result["model_pdf"];
-                                
-                                //recupère le nom du model odt
-                                $model=strrchr($this->modelpdf,"/");
-                                if($model!=false)
-                                {
-                                    $this->element=substr($model,1)."@contrat"; //for extrafeilds
-                                }
+				$this->socid					= $result["fk_soc"];
+				$this->fk_soc					= $result["fk_soc"];
 
 				$this->extraparams				= (array) json_decode($result["extraparams"], true);
 
@@ -631,14 +622,14 @@ class Contrat extends CommonObject
 		// Insert contract
 		$sql = "INSERT INTO ".MAIN_DB_PREFIX."contrat (datec, fk_soc, fk_user_author, date_contrat,";
 		$sql.= " fk_commercial_signature, fk_commercial_suivi, fk_projet,";
-		$sql.= " ref,entity)";
+		$sql.= " ref, entity)";
 		$sql.= " VALUES (".$this->db->idate(mktime()).",".$this->socid.",".$user->id;
 		$sql.= ",".$this->db->idate($this->date_contrat);
 		$sql.= ",".($this->commercial_signature_id>0?$this->commercial_signature_id:"NULL");
 		$sql.= ",".($this->commercial_suivi_id>0?$this->commercial_suivi_id:"NULL");
 		$sql.= ",".($this->fk_projet>0?$this->fk_projet:"NULL");
-		$sql.= ",".(dol_strlen($this->ref)<=0 ? "null" : "'".$this->ref."'");
-                $sql.= ",".$conf->entity;
+		$sql.= ", ".(dol_strlen($this->ref)<=0 ? "null" : "'".$this->ref."'");
+		$sql.= ", ".$conf->entity;
 		$sql.= ")";
 		$resql=$this->db->query($sql);
 		if ($resql)
@@ -654,23 +645,6 @@ class Contrat extends CommonObject
 			// Insert contacts commerciaux ('SALESREPFOLL','contrat')
 			$result=$this->add_contact($this->commercial_suivi_id,'SALESREPFOLL','internal');
 			if ($result < 0) $error++;
-                        
-                        // Actions on extra fields (by external module or standard code)
-                        include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
-                        $hookmanager=new HookManager($this->db);
-                        $hookmanager->initHooks(array('contrat_extrafields'));
-                        $parameters=array('id'=>$this->id);
-                        $action='add';
-                        $reshook=$hookmanager->executeHooks('insertExtraFields',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
-                        if (empty($reshook))
-                        {
-                            $result=$this->insertExtraFields();
-                            if ($result < 0)
-                            {
-                                $error++;
-                            }
-                        }
-                        else if ($reshook < 0) $error++;
 
 			if (! $error)
 			{
@@ -708,71 +682,6 @@ class Contrat extends CommonObject
 		{
 			$this->error=$langs->trans("UnknownError: ".$this->db->error()." - sql=".$sql);
 			dol_syslog(get_class($this)."::create - 10 - ".$this->error, LOG_ERR);
-
-			$this->db->rollback();
-			return -1;
-		}
-	}
-        
-        /**
-	 *      \brief      Update a contract into database
-	 *      \param      user        User that create
-	 *      \return     int         <0 if KO, id of contract if OK
-	 */
-	function update($user)
-	{
-		global $conf,$langs,$mysoc;
-
-		$this->db->begin();
-
-		// Insert contract
-		$sql = "UPDATE ".MAIN_DB_PREFIX."contrat";
-		$sql.= " SET ";
-		$sql.= "date_contrat=".$this->db->idate($this->date_contrat);
-		//$sql.= ",fk_commercial_signature=".($this->commercial_signature_id>0?$this->commercial_signature_id:"NULL");
-		//$sql.= ",fk_commercial_suivi=".($this->commercial_suivi_id>0?$this->commercial_suivi_id:"NULL");
-		$sql.= ",fk_projet=".($this->fk_projet>0?$this->fk_projet:"NULL");
-                $sql.= " WHERE rowid=".$this->id;
-		$resql=$this->db->query($sql);
-		if ($resql)
-		{
-			$error=0;
-                        
-                        // Actions on extra fields (by external module or standard code)
-                        include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
-                        $hookmanager=new HookManager($this->db);
-                        $hookmanager->initHooks(array('contrat_extrafields'));
-                        $parameters=array('id'=>$this->id);
-                        $action='update';
-                        $reshook=$hookmanager->executeHooks('insertExtraFields',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
-                        if (empty($reshook))
-                        {
-                            $result=$this->insertExtraFields();
-                            if ($result < 0)
-                            {
-                                $error++;
-                            }
-                        }
-                        else if ($reshook < 0) $error++;
-
-			if (! $error)
-			{
-					$this->db->commit();
-					return $this->id;
-                        }
-			else
-			{
-				$this->error=$interface->error;
-				dol_syslog("Contrat::update - 30 - ".$this->error, LOG_ERR);
-
-				$this->db->rollback();
-				return -3;
-			}
-		}
-		else
-		{
-			$this->error=$langs->trans("UnknownError: ".$this->db->error()." - sql=".$sql);
-			dol_syslog("Contrat::update - 10 - ".$this->error, LOG_ERR);
 
 			$this->db->rollback();
 			return -1;
