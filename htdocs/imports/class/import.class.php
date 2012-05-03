@@ -161,7 +161,7 @@ class Import
 						}
 					}
 				}
-                                closedir($handle);
+				closedir($handle);
 			}
 		}
 	}
