@@ -54,7 +54,7 @@ $confirm	= GETPOST('confirm');
 $socid		= GETPOST('id');
 if ($user->societe_id) $socid=$user->societe_id;
 
-$object = new Societe($couch);
+
 $extrafields = new ExtraFields($db);
 
 // Get object canvas (By default, this is not defined, so standard usage of dolibarr)
@@ -104,7 +104,7 @@ if (empty($reshook))
     {
         require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
 
-        if ($action == 'update') $object->load($socid);
+        if ($action == 'update') $object = $conf->couchdb->getDoc($socid);
 		else $object->canvas=$canvas;
 
         if (GETPOST("private") == 1)
@@ -119,7 +119,7 @@ if (empty($reshook))
         }
         else
         {
-            $object->name              = $_POST["nom"];
+            $object->name              = ucwords($_POST["nom"]);
         }
         $object->address               = $_POST["adresse"];
         $object->zip                   = $_POST["zipcode"];
@@ -127,10 +127,26 @@ if (empty($reshook))
         $object->country_id            = $_POST["country_id"];
         $object->state_id              = $_POST["departement_id"];
         
-        $contact= new AddressBook();
-        $contact->set("Phone", $_POST["tel"], "AC_TEL");
-        $contact->set("Fax", $_POST["fax"], "AC_FAX");
-        $contact->set("EMail", $_POST["email"], "AC_EMAIL");
+        $tel	= preg_replace("/\s/","",$_POST["tel"]);
+        $tel	= preg_replace("/\./","",$tel);
+        $fax	= preg_replace("/\s/","",$_POST["fax"]);
+        $fax	= preg_replace("/\./","",$fax);
+        if($tel)
+        {
+            $object->AddressBook->Phone->value = $tel;
+            $object->AddressBook->Phone->type = "AC_TEL";
+        }
+        if($fax)
+        {
+            $object->AddressBook->Fax->value = $fax;
+            $object->AddressBook->Fax->type = "AC_FAX";
+        }
+        $email = $_POST["email"];
+        if($email)
+        {
+            $object->AddressBook->EMail->value = $email;
+            $object->AddressBook->EMail->type = "AC_EMAIL";
+        }
         
         $object->url                   = array(clean_url(trim($_POST["url"]),0));
         /*$object->idprof["idprof1"]     = $_POST["idprof1"];
@@ -139,23 +155,24 @@ if (empty($reshook))
         $object->idprof["idprof4"]     = $_POST["idprof4"];*/
         $object->prefix_comm           = $_POST["prefix_comm"];
         
-        $compta = new Accounting();
-        $compta->set('CustomerCode',$_POST["code_client"]);
-        $compta->set('SupplierCode',$_POST["code_fournisseur"]);
-        $compta->set('VATIsUsed',(bool)$_POST["assujtva_value"]);
-        $compta->set('VATIntra',$_POST["tva_intra"]);
-        $compta->set('localtax1_assuj',(int)$_POST["localtax1assuj_value"]);
-        $compta->set('localtax2_assuj',(int)$_POST["localtax2assuj_value"]);
+        $object->Accounting->CustomerCode   = $_POST["code_client"];
+        $object->Accounting->SupplierCode   = $_POST["code_fournisseur"];
+        $object->Accounting->VATIsUsed      = (bool)$_POST["assujtva_value"];
+        $object->Accounting->VATIntra       = dol_sanitizeFileName($_POST["tva_intra"],'');
+        $object->Accounting->localtax1_assuj= (int)$_POST["localtax1assuj_value"];
+        $object->Accounting->localtax2_assuj= (int)$_POST["localtax2assuj_value"];
         
-        
-        $deal = new Deal();
-        $deal->set('JuridicalStatus',$_POST["forme_juridique_code"]);
-        $deal->set('Capital',$_POST["capital"]." ".$langs->trans("Currency".$conf->currency));
-        $deal->set('Staff', $_POST["effectif_id"]);
+        $object->Dael->JuridicalStatus      = $_POST["forme_juridique_code"];
+        $object->Deal->Capital              = price2num(trim($_POST["capital"]),'MT')." ".$langs->trans("Currency".$conf->currency);
+        $object->Deal->Staff                = $_POST["effectif_id"];
                 
-        $object->barcode               = $_POST["barcode"];
+        $object->barcode                = $_POST["barcode"];
 
-        $object->status                = (int)$_POST["status"];
+        $object->status                 = (int)$_POST["status"];
+        
+        $object->tms                    = dol_now();
+
+        
 
         if (GETPOST("private") == 1)
         {
@@ -265,8 +282,6 @@ if (empty($reshook))
                 // For automatic creation during create action (not used by Dolibarr GUI, can be used by scripts)
                 if ($object->Accounting->CustomCode == -1)      $compta->setCode ("CustomerCode", $object->get_codeclient($object->prefix_comm,0));
                 if ($object->Accounting->SupplierCode == -1) $compta->setCode("SupplierCode",$object->get_codefournisseur($object->prefix_comm,1));
-                
-                $object->Accounting = $compta->get();
                 
                 if (! $message)
                 {
@@ -418,15 +433,23 @@ if (empty($reshook))
                 if (empty($object->client) && empty($oldcopy->code_client))          $object->code_client='';
                 if (empty($object->fournisseur)&& empty($oldcopy->code_fournisseur)) $object->code_fournisseur='';
                 //var_dump($object);exit;
+                $soc = new Societe($db);
                 // For automatic creation during create action (not used by Dolibarr GUI, can be used by scripts)
-                if ($object->Accounting->CustomCode == -1)      $compta->set("CustomerCode", $object->get_codeclient($object->prefix_comm,0));
-                if ($object->Accounting->SupplierCode == -1) $compta->set("SupplierCode",$object->get_codefournisseur($object->prefix_comm,1));
-                
-                $object->Accounting = $compta->get();
-                $object->Deal = $deal->get();
-                $object->AddressBook = $contact->get();
+                if ($object->Accounting->CustomCode == -1)      $object->Accounting->CustomCode = $soc->get_codeclient($object->prefix_comm,0);
+                if ($object->Accounting->SupplierCode == -1) $object->Accounting->SupplierCode = $soc->get_codefournisseur($object->prefix_comm,1);
 
-                $result = $object->update($socid,$user,1,$oldcopy->codeclient_modifiable(),$oldcopy->codefournisseur_modifiable());
+                 //$object->update($socid,$user,1,$oldcopy->codeclient_modifiable(),$oldcopy->codefournisseur_modifiable());
+                
+                try {
+                    $conf->couchdb->clean($object);
+                    $conf->couchdb->storeDoc($object);
+                    $result = 1;
+                }
+                catch (Exception $e) {
+                    $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+                    print $error;
+                    exit;
+                }
                 
                 if ($result <=  0)
                 {
@@ -434,7 +457,7 @@ if (empty($reshook))
                 }
 
                 // Gestion du logo de la société
-                $dir     = $conf->societe->multidir_output[$object->entity]."/".$object->id()."/logos";
+                $dir     = $conf->societe->multidir_output[$object->entity]."/".$object->_id."/logos";
                 $file_OK = is_uploaded_file($_FILES['photo']['tmp_name']);
                 if ($file_OK)
                 {
@@ -496,7 +519,7 @@ if (empty($reshook))
     // Delete third party
     if ($action == 'confirm_delete' && $confirm == 'yes' && $user->rights->societe->supprimer)
     {
-        
+        $object = new Societe($db);
         $object->load($socid);
         $result = $object->delete();
 
@@ -527,6 +550,7 @@ if (empty($reshook))
         {
             require_once(DOL_DOCUMENT_ROOT.'/core/modules/societe/modules_societe.class.php');
 
+            $object = new Societe($db);
             $object->load($socid);
             $object->fetch_thirdparty();
 
@@ -582,6 +606,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
     // -----------------------------------------
     if (! $objcanvas->hasActions() && $socid)
  	{
+             $object = new Societe($db);
 	     $object->load($socid);                // For use with "pure canvas" (canvas that contains templates only)
  	}
    	$objcanvas->assign_values($action, $socid);	// Set value for templates
@@ -1070,6 +1095,8 @@ else
          * Edition
          */
 
+        $object = new Societe($db);
+        
         //print_fiche_titre($langs->trans("EditCompany"));
 
         if ($socid)
@@ -1514,6 +1541,7 @@ else
         /*
          * View
          */
+        $object = new Societe($db);
         
         try
         {
@@ -1535,24 +1563,18 @@ else
         print start_box($langs->trans("ThirdParty"),"eight","16-Apartment-Building.png",$head);
         // First onglet
         
-        $address_book = new AddressBook();
-        $address_book->load($object);
         print '<article class="tab_pane">';
-        print $object->content_box_information($address_book->content($object));
+        print $object->content_box_information($object->content_contact());
         print $object->content_note();
         print '</article>';
         
-        $deal = new Deal();
-        $deal->load($object);
         print '<article class="tab_pane">';
-        print $object->content_box_information($deal->content($object));
+        print $object->content_box_information($object->content_deal());
         print $object->content_note();
         print '</article>';
         
-        $accounting = new Accounting();
-        $accounting->load($object);
         print '<article class="tab_pane">';
-        print $object->content_box_information($accounting->content($object));
+        print $object->content_box_information($object->content_accounting());
         print $object->content_note();
         print '</article>';
         print end_box();
