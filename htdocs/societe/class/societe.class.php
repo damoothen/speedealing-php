@@ -159,12 +159,11 @@ class Societe extends CommonObject
         $now=dol_now();
         
         // Clean parameters
-        $this->tel			= preg_replace("/\s/","",$this->tel);
-        $this->tel			= preg_replace("/\./","",$this->tel);
-        $this->fax			= preg_replace("/\s/","",$this->fax);
-        $this->fax			= preg_replace("/\./","",$this->fax);
-        $this->url			= $this->url?clean_url($this->url,0):'';
-        $this->tms                      = $now;
+        $this->tel	= preg_replace("/\s/","",$this->tel);
+        $this->tel	= preg_replace("/\./","",$this->tel);
+        $this->fax	= preg_replace("/\s/","",$this->fax);
+        $this->fax	= preg_replace("/\./","",$this->fax);
+        $this->tms	= $now;
 
         $this->tva_intra	= dol_sanitizeFileName($this->tva_intra,'');
 
