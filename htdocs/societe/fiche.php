@@ -136,7 +136,7 @@ if (empty($reshook))
         
         $object->contact = $contact;
         
-        $object->url                   = array(trim($_POST["url"]));
+        $object->url                   = array(clean_url(trim($_POST["url"]),0));
         /*$object->idprof["idprof1"]     = $_POST["idprof1"];
         $object->idprof["idprof2"]     = $_POST["idprof2"];
         $object->idprof["idprof3"]     = $_POST["idprof3"];

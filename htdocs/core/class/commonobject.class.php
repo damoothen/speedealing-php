@@ -60,17 +60,13 @@ abstract class CommonObject extends couchDocument
 	 */
 	public function record()
 	{
-            foreach ($this->__couch_data->fields as $key => $aRow)
-            {
-                if(empty($aRow))
-                {
-                    unset($this->__couch_data->fields->$key);
-                }
-                else
-                    trim($aRow);
-                    
-            }
-            return parent::record();
+		foreach ($this->__couch_data->fields as $key => $aRow)
+		{
+			if (empty($aRow)) unset($this->__couch_data->fields->$key);
+			//else trim($aRow); // TODO problem with array value
+		}
+		
+		return parent::record();
 	}
 
 
