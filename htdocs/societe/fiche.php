@@ -1534,20 +1534,25 @@ else
 
         print start_box($langs->trans("ThirdParty"),"eight","16-Apartment-Building.png",$head);
         // First onglet
+        
+        $address_book = new AddressBook();
+        $address_book->address_book = $object->AddressBook;
         print '<article class="tab_pane">';
-        print $object->content_box_information($object->content_contact());
+        print $object->content_box_information($address_book->content($object));
         print $object->content_note();
         print '</article>';
         
-        
+        $deal = new Deal();
+        $deal->deal = $object->Deal;
         print '<article class="tab_pane">';
-        print $object->content_box_information("commercial");
+        print $object->content_box_information($deal->content($object));
         print $object->content_note();
         print '</article>';
         
-        
+        $accounting = new Accounting();
+        $accounting->accounting = $object->Accounting;
         print '<article class="tab_pane">';
-        print $object->content_box_information("compta");
+        print $object->content_box_information($accounting->content($object));
         print $object->content_note();
         print '</article>';
         print end_box();

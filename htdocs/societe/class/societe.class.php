@@ -1823,7 +1823,7 @@ class Societe extends CommonObject
         $rtr.= '</div>';
         
         // Partie droite
-        $rtr.= '<div class="four column">';
+        $rtr.= '<div class="five column">';
         $rtr.= '<div class="row">';
         
         
@@ -1854,43 +1854,6 @@ class Societe extends CommonObject
         return $rtr;
     }
     
-    /**
-     * return div with list of information contact (tel, fax, ...)
-     *
-     *  @return	@string
-     */
-    function content_contact()
-    {
-        global $conf,$user,$langs;
-        
-        // List of tel, fax, mail...
-        $rtr = '<div class="row vcard">';
-        $rtr.= '<p></p>';
-        $rtr.= '<ul class="sepH_c fright">';
-        
-        // list of compta codes
-        if (! empty($this->code_compta)) {
-        	foreach ($this->code_compta as $key => $aRow) {
-        		$img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Money.png" title="'.$langs->trans($key).'" />';
-        		$rtr.= '<li class="light"><span class="ttip_l" title="'.$langs->trans($key).'">'.$aRow.$img.'</span></li>';
-        	}
-        }
-        // list tel, fax, mail
-        if (! empty($this->contact)) {
-        	foreach ($this->contact as $key => $aRow) {
-        		$img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/type/'.$aRow->type.'.png" title="'.$langs->trans($key).'" />';
-        		if($aRow->type == "AC_EMAIL")
-        			$rtr.= '<li><span class="ttip_l" title="'.$langs->trans($key).'">'.dol_print_email($aRow->value,0,$this->id(),'AC_EMAIL').$img.'</span></li>';
-        		else
-        			$rtr.= '<li class="light"><span class="ttip_l" title="'.$langs->trans($key).'">'.dol_print_phone($aRow->value,$this->country_id,0,$this->id(),$aRow->type).$img.'</span></li>';
-        	}
-        }
-        $rtr.= '</ul>';
-        $rtr.= '</div>';
-
-        return $rtr;
-    }
-    
      /**
      * return div with block note
      *
@@ -1905,12 +1868,112 @@ class Societe extends CommonObject
         $rtr.= '<div class="twelve column">';
         $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Info-_-About.png" title="'.$langs->trans($key).'" />';
         $rtr.= '<h4 class="inner_heading">'.$img.$langs->trans("Notes").'</h4>';
-        $rtr.= '<p class="edit_wysiwyg ttip_l">'.$object->notes.'</p>';
+        $rtr.= '<p class="edit_wysiwyg ttip_l">'.$this->notes.'</p>';
         $rtr.= '</div>'; 
         $rtr.= '</div>'; // End block note
         
         return $rtr;
     }
+}
+
+class Accounting
+{
+    var $accounting;
+
+    /**
+     * return div with list of information accounting (Customer Code,TVA,...)
+     *
+     *  @return	@string
+     */
+    function content()
+    {
+        global $conf,$user,$langs;
+        
+        // List of tel, fax, mail...
+        $rtr = '<div class="row vcard">';
+        $rtr.= '<p></p>';
+        $rtr.= '<ul class="sepH_c fright">';
+        
+        // list of compta codes
+        if (! empty($this->accounting)) {
+        	foreach ($this->accounting as $key => $aRow) {
+        		$img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Money.png" title="'.$langs->trans($key).'" />';
+        		$rtr.= '<li class="light"><span>'.$langs->trans($key).'</span><span> : </span><span class="ttip_l edit">'.$aRow.'</span><span>'.$img.'</span></li>';
+        	}
+        }
+        $rtr.= '</ul>';
+        $rtr.= '</div>';
+
+        return $rtr;
+    }
+}
+
+class Deal
+{
+    var $deal;
+    
+    /**
+     * return div with list of commercial infomations
+     *
+     *  @return	@string
+     */
+    function content($object)
+    {
+        global $conf,$user,$langs;
+        
+        // List of tel, fax, mail...
+        $rtr = '<div class="row vcard">';
+        $rtr.= '<p></p>';
+        $rtr.= '<ul class="sepH_c fright">';
+        
+        // list of compta codes
+        if (! empty($this->deal)) {
+        	foreach ($this->deal as $key => $aRow) {
+        		$img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Money.png" title="'.$langs->trans($key).'" />';
+        		$rtr.= '<li class="light"><span>'.$langs->trans($key).'</span><span> : </span><span class="ttip_r edit">'.$aRow.'</span><span>'.$img.'</span></li>';
+        	}
+        }
+        $rtr.= '</ul>';
+        $rtr.= '</div>';
+
+        return $rtr;
+    }
+}
+
+class AddressBook
+{
+    var $address_book;
+    
+    /**
+     * return div with list of information contact (tel, fax, ...)
+     *
+     *  @return	@string
+     */
+    function content($object)
+    {
+        global $conf,$user,$langs;
+        
+        // List of tel, fax, mail...
+        $rtr = '<div class="row vcard">';
+        $rtr.= '<p></p>';
+        $rtr.= '<ul class="sepH_c fright">';
+        
+        // list tel, fax, mail
+        if (! empty($this->address_book)) {
+        	foreach ($this->address_book as $key => $aRow) {
+        		$img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/type/'.$aRow->type.'.png" title="'.$langs->trans($key).'" />';
+        		if($aRow->type == "AC_EMAIL")
+        			$rtr.= '<li><span class="ttip_l" title="'.$langs->trans($key).'">'.dol_print_email($aRow->value,0,  $object->id(),'AC_EMAIL').'</span><span>'.$img.'</span></li>';
+        		else
+        			$rtr.= '<li class="light"><span class="ttip_l" title="'.$langs->trans($key).'">'.dol_print_phone($aRow->value,$object->country_id,0,$object->id(),$aRow->type).'</span><span>'.$img.'</span></li>';
+        	}
+        }
+        $rtr.= '</ul>';
+        $rtr.= '</div>';
+
+        return $rtr;
+    }
+    
 }
 
 ?>
