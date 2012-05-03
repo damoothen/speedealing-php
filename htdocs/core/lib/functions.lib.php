@@ -1289,10 +1289,12 @@ function dol_user_country()
 function dol_print_address($address, $htmlid, $mode, $id)
 {
     global $conf,$user,$langs;
+    
+    $rtr = "";
 
     if ($address)
     {
-        print nl2br($address);
+        $rtr.= nl2br($address);
         $showmap=0;
         if ($mode=='thirdparty' && $conf->google->enabled && $conf->global->GOOGLE_ENABLE_GMAPS) $showgmap=1;
         if ($mode=='contact' && $conf->google->enabled && $conf->global->GOOGLE_ENABLE_GMAPS_CONTACTS) $showgmap=1;
@@ -1305,14 +1307,16 @@ function dol_print_address($address, $htmlid, $mode, $id)
         if ($showgmap)
         {
             $url=dol_buildpath('/google/gmaps.php?mode='.$mode.'&id='.$id,1);
-            print ' <a href="'.$url.'" target="_gmaps"><img id="'.$htmlid.'" border="0" src="'.DOL_URL_ROOT.'/theme/common/gmap.png"></a>';
+            $rtr.= ' <a href="'.$url.'" target="_gmaps"><img id="'.$htmlid.'" border="0" src="'.DOL_URL_ROOT.'/theme/common/gmap.png"></a>';
         }
         if ($showomap)
         {
             $url=dol_buildpath('/openstreetmap/maps.php?mode='.$mode.'&id='.$id,1);
-            print ' <a href="'.$url.'" target="_gmaps"><img id="'.$htmlid.'_openstreetmap" border="0" src="'.DOL_URL_ROOT.'/theme/common/gmap.png"></a>';
+            $rtr.= ' <a href="'.$url.'" target="_gmaps"><img id="'.$htmlid.'_openstreetmap" border="0" src="'.DOL_URL_ROOT.'/theme/common/gmap.png"></a>';
         }
     }
+    
+    return $rtr;
 }
 
 
@@ -2287,20 +2291,33 @@ function getTitleFieldOfList($name, $thead=0, $file="", $field="", $begin="", $m
  *
  *	@param	string	$title			Title of the box
  *	@param	string	$nbcolumn		Number of column see style.css
+ *	@param	array	$head                   list of top menu on box
+ *	@param	boolean	$box_action             Enable or Disable buttons reduse and delete box
  *	@return	string				Title to show
  */
-function start_box($title,$nbcolumn='twelve',$icon='16-Abacus.png',$box_action=true)
+function start_box($title,$nbcolumn='twelve',$icon='16-Abacus.png',$head=null,$box_action=true)
 {
     global $conf,$langs;
     
     $rtr = '<div class="'.$nbcolumn.' columns">';
     $rtr.= '<div class="box_c">';
-    if($box_action)
+    if($box_action && empty($head))
         $rtr.= '<div class="box_c_heading cf box_actions">';
     else
         $rtr.= '<div class="box_c_heading cf">';
     $rtr.= '<div class="box_c_ico"><img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/'.$icon.'" alt="" /></div>';
     $rtr.= '<p>'.$title.'</p>';
+    
+    // See menu on top box
+    if(!empty($head))
+    {
+        $rtr.='<ul class="tabs cf right">';
+        foreach ($head as $aRow)
+        {
+            $rtr.='<li><a href="#">'.$aRow[1].'</a></li>';
+        }
+        $rtr.='</ul>';
+    }
     $rtr.= '</div>';
     $rtr.= '<div class="box_c_content">';
     return $rtr;

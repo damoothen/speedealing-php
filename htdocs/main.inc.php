@@ -859,6 +859,7 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
         print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/AutoFill/media/css/AutoFill.css" />'."\n";
         // jQuery multiselect
         //print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/multiselect/css/ui.multiselect.css" />'."\n";
+        print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/wysiwyg/css/jquery.wysiwyg.css" />'."\n";
 
         print '<!-- Includes for Dolibarr, modules or specific pages-->'."\n";
         // Output style sheets (optioncss='print' or '')
@@ -922,6 +923,8 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
         print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/jeditable/jquery.jeditable.min'.$ext.'"></script>'."\n";
         print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/jeditable/jquery.jeditable.ui-datepicker.js"></script>'."\n";
         print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/jeditable/jquery.jeditable.ui-autocomplete.js"></script>'."\n";
+        print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/jeditable/jquery.jeditable.wysiwyg.js"></script>'."\n";
+        print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/wysiwyg/jquery.wysiwyg.js"></script>'."\n";
         print '<script type="text/javascript">'."\n";
         print '$(document).ready(function() {
      $(".edit").editable("http://www.example.com/save.php", {
@@ -935,6 +938,24 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
          height    : "64px",
          indicator : "<div style=\"text-align: center;\"><img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>",
          tooltip   : "Click to edit..."
+     });
+     $(".edit_wysiwyg").editable("http://www.example.com/save.php", { 
+         type      : "wysiwyg",
+         cancel    : "Cancel",
+         submit    : "OK",
+         height    : "auto",
+         onblur    : "ignore",
+         indicator : "<div style=\"text-align: center;\"><img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>",
+         tooltip   : "Click to edit...",
+         wysiwyg   : { controls : { separator04         : { visible : true },
+                               insertOrderedList   : { visible : true },
+                               insertUnorderedList : { visible : true },
+                               undo : { visible : true },
+                               separator08 : { visible : false },
+                               increaseFontSize : { visible : false},
+                               decreaseFontSize : { visible : false},
+                               
+                     }}
      });
  });';
         print 'var urlSaveInPlace = \''.DOL_URL_ROOT.'/core/ajax/saveinplace.php\';'."\n";

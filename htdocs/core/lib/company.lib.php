@@ -48,14 +48,14 @@ function societe_prepare_head($object)
     || (isset($object->object) && $object->object->client==2) || (isset($object->object) && $object->object->client==3)) && empty($conf->global->SOCIETE_DISABLE_PROSPECTS))
     {
         $head[$h][0] = DOL_URL_ROOT.'/comm/prospect/fiche.php?socid='.$object->id;
-        $head[$h][1] = $langs->trans("Prospect");
+        $head[$h][1] = $langs->trans("Commercial");
         $head[$h][2] = 'prospect';
         $h++;
     }
     if ($object->client==1 || $object->client==2 || $object->client==3 || (is_object($object->object) && $object->object->client==1) || (is_object($object->object) && $object->object->client==3))
     {
         $head[$h][0] = DOL_URL_ROOT.'/comm/fiche.php?socid='.$object->id;
-        $head[$h][1] = $langs->trans("Customer");
+        $head[$h][1] = $langs->trans("Comptable");
         $head[$h][2] = 'customer';
         $h++;
     }
@@ -92,18 +92,6 @@ function societe_prepare_head($object)
 
     if ($user->societe_id == 0)
     {
-    	// Notes
-        $head[$h][0] = DOL_URL_ROOT.'/societe/note.php?socid='.$object->id;
-        $head[$h][1] = $langs->trans("Note");
-        $head[$h][2] = 'note';
-        $h++;
-
-        // Attached files
-        $head[$h][0] = DOL_URL_ROOT.'/societe/document.php?socid='.$object->id;
-        $head[$h][1] = $langs->trans("Documents");
-        $head[$h][2] = 'document';
-        $h++;
-
         // Notifications
         if (! empty($conf->notification->enabled))
         {
@@ -113,12 +101,6 @@ function societe_prepare_head($object)
         	$h++;
         }
     }
-
-    // Log
-    $head[$h][0] = DOL_URL_ROOT.'/societe/info.php?socid='.$object->id;
-    $head[$h][1] = $langs->trans("Info");
-    $head[$h][2] = 'info';
-    $h++;
 
     //Map module
     if ($conf->map->enabled && $user->societe_id == 0 && $object->lat && $object->lng)

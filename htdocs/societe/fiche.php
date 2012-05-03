@@ -1529,96 +1529,30 @@ else
         //if ($res < 0) { dol_print_error($db); exit; }
         
         print '<div class="row">';
+        
+        $head = societe_prepare_head($object);
 
-        print start_box($langs->trans("ThirdParty"),"eight","16-Apartment-Building.png", false);
-        print '<div class="row">';
-        print '<div class="two column vcard avatar">';
-        print '<div class="avatar">';
-        print '<img src="'.DOL_URL_ROOT.'/theme/companies.png" alt="" />';
-        print '</div></div>';
-        print '<div class="five column vcard">';
-        $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Apartment-Building.png" alt="" />';
-        print '<h1 class="sepH_a">'.$img.$object->name.'</h1>';
-        print $object->getLibStatut(1);
-        print '<h5 class="sepH_a light">';
-        dol_print_address($object->address,'gmap','thirdparty',$object->id());
-        print '</h5>';
-        //$img=picto_from_langcode($object->country_id);
-        print '<h3 class="sepH_a country">'.$object->zip.($object->zip && $object->town?" ":"").$object->town;
-        // MAP GPS
-        print "&nbsp".img_picto(($object->gps[0].','.$object->gps[1]),(($object->gps[0] && $object->gps[1])?"green-dot":"red-dot"));
-        print '</h3>';
-        // url
-        if (! empty($object->url)) {
-        	foreach ($object->url as $aRow)
-        		print dol_print_url($aRow);
-        }
-        print '</div>';
-        
-        // Partie droite
-        print '<div class="four column">';
-        print '<div class="row">';
+        print start_box($langs->trans("ThirdParty"),"eight","16-Apartment-Building.png",$head);
+        // First onglet
+        print '<article class="tab_pane">';
+        print $object->content_box_information($object->content_contact());
+        print $object->content_note();
+        print '</article>';
         
         
-        if ($user->rights->societe->supprimer)
-        {
-            print '<div class="gh_button-group right">';
-            if ($user->rights->societe->creer)
-            {
-                print '<a class="gh_button primary pill" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id().'&amp;action=edit">'.$langs->trans("Modify").'</a>'."\n";
-            }
-            print '<span id="action-delete" class="gh_button pill icon trash danger">'.$langs->trans('Delete').'</span>'."\n";
-            print '</div>';
-        }
-        else
-        {
-            if ($user->rights->societe->creer)
-               print '<a class="gh_button pill primary right" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id().'&amp;action=edit">'.$langs->trans("Modify").'</a>'."\n"; // bouton rond
-        }
-
+        print '<article class="tab_pane">';
+        print $object->content_box_information("commercial");
+        print $object->content_note();
+        print '</article>';
         
-        print '</div>';
         
-        // List of tel, fax, mail...
-        print '<div class="row vcard">';
-        print '<p></p>';
-        print '<ul class="sepH_c fright">';
-        
-        // list of compta codes
-        if (! empty($object->code_compta)) {
-        	foreach ($object->code_compta as $key => $aRow) {
-        		$img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Money.png" title="'.$langs->trans($key).'" />';
-        		print '<li class="light"><span class="ttip_l" title="'.$langs->trans($key).'">'.$aRow.$img.'</span></li>';
-        	}
-        }
-        // list tel, fax, mail
-        if (! empty($object->contact)) {
-        	foreach ($object->contact as $key => $aRow) {
-        		$img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/type/'.$aRow->type.'.png" title="'.$langs->trans($key).'" />';
-        		if($aRow->type == "AC_EMAIL")
-        			print '<li><span class="ttip_l" title="'.$langs->trans($key).'">'.dol_print_email($aRow->value,0,$object->id(),'AC_EMAIL').$img.'</span></li>';
-        		else
-        			print '<li class="light"><span class="ttip_l" title="'.$langs->trans($key).'">'.dol_print_phone($aRow->value,$object->country_id,0,$object->id(),$aRow->type).$img.'</span></li>';
-        	}
-        }
-        print '</ul>';
-        print '</div>';
-        
-        print '</div>'; // termine la colonne droite
-        print '</div>';
-        
-        // Note et informations
-        print '<div class="row vcard">';
-        print '<div class="twelve column">';
-        $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Info-_-About.png" title="'.$langs->trans($key).'" />';
-        print '<h4 class="inner_heading">'.$img.$langs->trans("Notes").'</h4>';
-        print '<p class="edit_area ttip_l">'.$object->notes.'</p>';
-        print '</div>'; 
-        print '</div>'; // End block note
-        
+        print '<article class="tab_pane">';
+        print $object->content_box_information("compta");
+        print $object->content_note();
+        print '</article>';
         print end_box();
         
-        print start_box($langs->trans("Statistics"),"four","16-Abacus.png");
+        print start_box($langs->trans("Informations"),"four","16-Info-_-About.png");
         
         print '<ul class="overview_list">
                 <li>

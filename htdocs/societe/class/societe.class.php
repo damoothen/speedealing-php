@@ -1789,7 +1789,129 @@ class Societe extends CommonObject
         $this->idprof3='idprof3';
         $this->idprof4='idprof4';
     }
+    
+    /**
+     * return box address for a company
+     *
+     *  @return	@string
+     */
+    function content_box_information($content="")
+    {
+        global $conf,$user,$langs;
+        
+        $rtr = '<div class="row">';
+        $rtr.= '<div class="two column vcard avatar">';
+        $rtr.= '<div class="avatar">';
+        $rtr.= '<img src="'.DOL_URL_ROOT.'/theme/companies.png" alt="" />';
+        $rtr.= '</div></div>';
+        $rtr.= '<div class="five column vcard">';
+        $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Apartment-Building.png" alt="" />';
+        $rtr.= '<h1 class="sepH_a">'.$img.$this->name.'</h1>';
+        $rtr.= $this->getLibStatut(1);
+        $rtr.= '<h5 class="sepH_a light">';
+        $rtr.= dol_print_address($this->address,'gmap','thirdparty',$this->id());
+        $rtr.= '</h5>';
+        //$img=picto_from_langcode($object->country_id);
+        $rtr.= '<h3 class="sepH_a country">'.$this->zip.($this->zip && $this->town?" ":"").$this->town;
+        // MAP GPS
+        $rtr.= "&nbsp".img_picto(($this->gps[0].','.$this->gps[1]),(($this->gps[0] && $this->gps[1])?"green-dot":"red-dot"));
+        $rtr.= '</h3>';
+        // url
+        if (! empty($this->url)) {
+        	foreach ($this->url as $aRow)
+        		$rtr.= dol_print_url($aRow);
+        }
+        $rtr.= '</div>';
+        
+        // Partie droite
+        $rtr.= '<div class="four column">';
+        $rtr.= '<div class="row">';
+        
+        
+        if ($user->rights->societe->supprimer)
+        {
+            $rtr.= '<div class="gh_button-group right">';
+            if ($user->rights->societe->creer)
+            {
+                $rtr.= '<a class="gh_button primary pill" href="'.$_SERVER["PHP_SELF"].'?id='.$this->id().'&amp;action=edit">'.$langs->trans("Modify").'</a>'."\n";
+            }
+            $rtr.= '<span id="action-delete" class="gh_button pill icon trash danger">'.$langs->trans('Delete').'</span>'."\n";
+            $rtr.= '</div>';
+        }
+        else
+        {
+            if ($user->rights->societe->creer)
+               $rtr.= '<a class="gh_button pill primary right" href="'.$_SERVER["PHP_SELF"].'?id='.$this->id().'&amp;action=edit">'.$langs->trans("Modify").'</a>'."\n"; // bouton rond
+        }
 
+        
+        $rtr.= '</div>';
+        
+        $rtr.= $content; //external content
+        
+        $rtr.= '</div>'; // termine la colonne droite
+        $rtr.= '</div>';
+        
+        return $rtr;
+    }
+    
+    /**
+     * return div with list of information contact (tel, fax, ...)
+     *
+     *  @return	@string
+     */
+    function content_contact()
+    {
+        global $conf,$user,$langs;
+        
+        // List of tel, fax, mail...
+        $rtr = '<div class="row vcard">';
+        $rtr.= '<p></p>';
+        $rtr.= '<ul class="sepH_c fright">';
+        
+        // list of compta codes
+        if (! empty($this->code_compta)) {
+        	foreach ($this->code_compta as $key => $aRow) {
+        		$img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Money.png" title="'.$langs->trans($key).'" />';
+        		$rtr.= '<li class="light"><span class="ttip_l" title="'.$langs->trans($key).'">'.$aRow.$img.'</span></li>';
+        	}
+        }
+        // list tel, fax, mail
+        if (! empty($this->contact)) {
+        	foreach ($this->contact as $key => $aRow) {
+        		$img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/type/'.$aRow->type.'.png" title="'.$langs->trans($key).'" />';
+        		if($aRow->type == "AC_EMAIL")
+        			$rtr.= '<li><span class="ttip_l" title="'.$langs->trans($key).'">'.dol_print_email($aRow->value,0,$this->id(),'AC_EMAIL').$img.'</span></li>';
+        		else
+        			$rtr.= '<li class="light"><span class="ttip_l" title="'.$langs->trans($key).'">'.dol_print_phone($aRow->value,$this->country_id,0,$this->id(),$aRow->type).$img.'</span></li>';
+        	}
+        }
+        $rtr.= '</ul>';
+        $rtr.= '</div>';
+
+        return $rtr;
+    }
+    
+     /**
+     * return div with block note
+     *
+     *  @return	@string
+     */
+    function content_note()
+    {
+        global $conf,$user,$langs;
+        
+        // Notes
+        $rtr = '<div class="row vcard">';
+        $rtr.= '<div class="twelve column">';
+        $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Info-_-About.png" title="'.$langs->trans($key).'" />';
+        $rtr.= '<h4 class="inner_heading">'.$img.$langs->trans("Notes").'</h4>';
+        $rtr.= '<p class="edit_wysiwyg ttip_l">'.$object->notes.'</p>';
+        $rtr.= '</div>'; 
+        $rtr.= '</div>'; // End block note
+        
+        return $rtr;
+    }
 }
 
 ?>
