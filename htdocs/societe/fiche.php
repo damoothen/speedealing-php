@@ -126,15 +126,11 @@ if (empty($reshook))
         $object->town                  = $_POST["town"];
         $object->country_id            = $_POST["country_id"];
         $object->state_id              = $_POST["departement_id"];
-
-        $contact["Phone"]['value'] = $_POST["tel"];
-        $contact["Phone"]["type"] = 'AC_TEL';
-        $contact["Fax"]['value'] = $_POST["fax"];
-        $contact["Fax"]["type"]   = 'AC_FAX';
-        $contact["EMail"] = trim($_POST["email"]);
-        $contact["EMail"]["type"]   = 'AC_EMAIL';
         
-        $object->contact = $contact;
+        $contact= new AddressBook();
+        $contact->set("Phone", $_POST["tel"], "AC_TEL");
+        $contact->set("Fax", $_POST["fax"], "AC_FAX");
+        $contact->set("EMail", $_POST["email"], "AC_EMAIL");
         
         $object->url                   = array(clean_url(trim($_POST["url"]),0));
         /*$object->idprof["idprof1"]     = $_POST["idprof1"];
@@ -143,23 +139,24 @@ if (empty($reshook))
         $object->idprof["idprof4"]     = $_POST["idprof4"];*/
         $object->prefix_comm           = $_POST["prefix_comm"];
         
+        $compta = new Accounting();
+        $compta->set('CustomerCode',$_POST["code_client"]);
+        $compta->set('SupplierCode',$_POST["code_fournisseur"]);
+        $compta->set('VATIsUsed',(bool)$_POST["assujtva_value"]);
+        $compta->set('VATIntra',$_POST["tva_intra"]);
+        $compta->set('localtax1_assuj',(int)$_POST["localtax1assuj_value"]);
+        $compta->set('localtax2_assuj',(int)$_POST["localtax2assuj_value"]);
         
         
-        $object->code_compta->CustomerCode = $_POST["code_client"];
-        $object->code_compta->SupplierCode = $_POST["code_fournisseur"];
-        $object->capital               = (int)$_POST["capital"];
+        $deal = new Deal();
+        $deal->set('JuridicalStatus',$_POST["forme_juridique_code"]);
+        $deal->set('Capital',$_POST["capital"]." ".$langs->trans("Currency".$conf->currency));
+        $deal->set('Staff', $_POST["effectif_id"]);
+                
         $object->barcode               = $_POST["barcode"];
 
-        $object->tva_intra             = $_POST["tva_intra"];
-        $object->tva_assuj             = (int)$_POST["assujtva_value"];
         $object->status                = (int)$_POST["status"];
 
-        // Local Taxes
-        $object->localtax1_assuj       = (int)$_POST["localtax1assuj_value"];
-        $object->localtax2_assuj       = (int)$_POST["localtax2assuj_value"];
-
-        $object->forme_juridique_code  = $_POST["forme_juridique_code"];
-        $object->effectif_id           = $_POST["effectif_id"];
         if (GETPOST("private") == 1)
         {
             $object->typent_id         = 8; // TODO predict another method if the field "special" change of rowid
@@ -220,12 +217,6 @@ if (empty($reshook))
         // Check parameters
         if (empty($_POST["cancel"]))
         {
-            if (! empty($object->contact['EMail']->value) && ! isValidEMail($object->contact['EMail']->value))
-            {
-                $langs->load("errors");
-                $error++; $errors[] = $langs->trans("ErrorBadEMail",$object->contact['EMail']->value);
-                $action = ($action=='add'?'create':'edit');
-            }
             if (! empty($object->url[0]) && ! isValidUrl($object->url[0]))
             {
                 $langs->load("errors");
@@ -272,8 +263,10 @@ if (empty($reshook))
                 $object->tms=dol_now();                
 
                 // For automatic creation during create action (not used by Dolibarr GUI, can be used by scripts)
-                if ($object->code_client == -1)      $object->get_codeclient($object->prefix_comm,0);
-                if ($object->code_fournisseur == -1) $object->get_codefournisseur($object->prefix_comm,1);
+                if ($object->Accounting->CustomCode == -1)      $compta->setCode ("CustomerCode", $object->get_codeclient($object->prefix_comm,0));
+                if ($object->Accounting->SupplierCode == -1) $compta->setCode("SupplierCode",$object->get_codefournisseur($object->prefix_comm,1));
+                
+                $object->Accounting = $compta->get();
                 
                 if (! $message)
                 {
@@ -425,6 +418,13 @@ if (empty($reshook))
                 if (empty($object->client) && empty($oldcopy->code_client))          $object->code_client='';
                 if (empty($object->fournisseur)&& empty($oldcopy->code_fournisseur)) $object->code_fournisseur='';
                 //var_dump($object);exit;
+                // For automatic creation during create action (not used by Dolibarr GUI, can be used by scripts)
+                if ($object->Accounting->CustomCode == -1)      $compta->set("CustomerCode", $object->get_codeclient($object->prefix_comm,0));
+                if ($object->Accounting->SupplierCode == -1) $compta->set("SupplierCode",$object->get_codefournisseur($object->prefix_comm,1));
+                
+                $object->Accounting = $compta->get();
+                $object->Deal = $deal->get();
+                $object->AddressBook = $contact->get();
 
                 $result = $object->update($socid,$user,1,$oldcopy->codeclient_modifiable(),$oldcopy->codefournisseur_modifiable());
                 
@@ -1244,12 +1244,12 @@ else
             }
             else if ($object->codeclient_modifiable())
             {
-                print '<input type="text" name="code_client" size="16" value="'.$object->code_client.'" maxlength="15">';
+                print '<input type="text" name="code_client" size="16" value="'.$object->Accounting->CustomerCode.'" maxlength="15">';
             }
             else
             {
-                print $object->code_client;
-                print '<input type="hidden" name="code_client" value="'.$object->code_client.'">';
+                print $object->Accounting->CustomerCod;
+                print '<input type="hidden" name="code_client" value="'.$object->Accounting->CustomerCod.'">';
             }
             print '</td><td>';
             $s=$modCodeClient->getToolTip($langs,$object,0);
@@ -1346,12 +1346,12 @@ else
             }
 
             // Phone / Fax
-            print '<tr><td>'.$langs->trans('Phone').'</td><td><input type="text" name="tel" value="'.$object->tel.'"></td>';
-            print '<td>'.$langs->trans('Fax').'</td><td><input type="text" name="fax" value="'.$object->fax.'"></td></tr>';
+            print '<tr><td>'.$langs->trans('Phone').'</td><td><input type="text" name="tel" value="'.$object->AddressBook->Phone->value.'"></td>';
+            print '<td>'.$langs->trans('Fax').'</td><td><input type="text" name="fax" value="'.$object->AddressBook->Fax->value.'"></td></tr>';
 
             // EMail / Web
-            print '<tr><td>'.$langs->trans('EMail').($conf->global->SOCIETE_MAIL_REQUIRED?'*':'').'</td><td><input type="text" name="email" size="32" value="'.$object->email.'"></td>';
-            print '<td>'.$langs->trans('Web').'</td><td><input type="text" name="url" size="32" value="'.$object->url.'"></td></tr>';
+            print '<tr><td>'.$langs->trans('EMail').($conf->global->SOCIETE_MAIL_REQUIRED?'*':'').'</td><td><input type="text" name="email" size="32" value="'.$object->AddressBook->EMail->value.'"></td>';
+            print '<td>'.$langs->trans('Web').'</td><td><input type="text" name="url" size="32" value="'.$object->url[0].'"></td></tr>';
 
             // Prof ids
             $i=1; $j=0;
@@ -1447,7 +1447,7 @@ else
 
             print '<tr><td>'.$langs->trans('JuridicalStatus').'</td><td colspan="3">';
             //print $form->selectarray("forme_juridique_code",$formcompany->forme_juridique_array(1), $object->forme_juridique_code);
-            $formcompany->select_forme_juridique($object->forme_juridique_code,$object->country_id);
+            $formcompany->select_forme_juridique($object->Deal->JuridicalStatus,$object->country_id);
             if ($user->admin) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"),1);
             print '</td></tr>';
 
@@ -1536,21 +1536,21 @@ else
         // First onglet
         
         $address_book = new AddressBook();
-        $address_book->address_book = $object->AddressBook;
+        $address_book->load($object);
         print '<article class="tab_pane">';
         print $object->content_box_information($address_book->content($object));
         print $object->content_note();
         print '</article>';
         
         $deal = new Deal();
-        $deal->deal = $object->Deal;
+        $deal->load($object);
         print '<article class="tab_pane">';
         print $object->content_box_information($deal->content($object));
         print $object->content_note();
         print '</article>';
         
         $accounting = new Accounting();
-        $accounting->accounting = $object->Accounting;
+        $accounting->load($object);
         print '<article class="tab_pane">';
         print $object->content_box_information($accounting->content($object));
         print $object->content_note();

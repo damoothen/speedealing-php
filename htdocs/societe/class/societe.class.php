@@ -159,10 +159,6 @@ class Societe extends CommonObject
         $now=dol_now();
         
         // Clean parameters
-        $this->tel	= preg_replace("/\s/","",$this->tel);
-        $this->tel	= preg_replace("/\./","",$this->tel);
-        $this->fax	= preg_replace("/\s/","",$this->fax);
-        $this->fax	= preg_replace("/\./","",$this->fax);
         $this->tms	= $now;
 
         $this->tva_intra	= dol_sanitizeFileName($this->tva_intra,'');
@@ -170,10 +166,6 @@ class Societe extends CommonObject
         // Local taxes
 
         $this->capital=price2num(trim($this->capital),'MT');
-
-        // For automatic creation
-        if ($this->code_client == -1) $this->get_codeclient($this->prefix_comm,0);
-        if ($this->code_fournisseur == -1) $this->get_codefournisseur($this->prefix_comm,1);
 
         // Check parameters
         if (! empty($conf->global->SOCIETE_MAIL_REQUIRED) && ! isValidEMail($this->email))
@@ -1056,8 +1048,8 @@ class Societe extends CommonObject
             $var = $conf->global->SOCIETE_CODECLIENT_ADDON;
             $mod = new $var;
 
-            $this->code_client = $mod->getNextValue($objsoc,$type);
-            $this->prefixCustomerIsRequired = $mod->prefixIsRequired;
+            return $mod->getNextValue($objsoc,$type);
+            //$this->prefixCustomerIsRequired = $mod->prefixIsRequired;
 
             dol_syslog(get_class($this)."::get_codeclient code_client=".$this->code_client." module=".$var);
         }
@@ -1085,7 +1077,7 @@ class Societe extends CommonObject
             $var = $conf->global->SOCIETE_CODEFOURNISSEUR_ADDON;
             $mod = new $var;
 
-            $this->code_fournisseur = $mod->getNextValue($objsoc,$type);
+            return $mod->getNextValue($objsoc,$type);
 
             dol_syslog(get_class($this)."::get_codefournisseur code_fournisseur=".$this->code_fournisseur." module=".$var);
         }
@@ -1878,7 +1870,49 @@ class Societe extends CommonObject
 
 class Accounting
 {
-    var $accounting;
+    private $accounting;
+    
+    var $errors;
+    
+    /**
+     * Set list of Accounting
+     * 
+     */
+    
+    function load($object)
+    {
+        $this->accounting = $object->Accounting;
+    }
+    
+    /**
+     * Set an Accounting Code
+     * 
+     * @param   $label  string          label of the Accounting
+     * @param   $value  string          Code number
+     * @return  true or error
+     */
+    
+    function set($label,$value)
+    {
+        if(empty($value))
+            return 1;
+        
+        $this->accounting->$label = $value;
+        
+        return 1;
+        
+    }
+    
+    /**
+     * Get list of Accounting
+     * 
+     * @return array
+     */
+    
+    function get()
+    {
+        return $this->accounting;
+    }
 
     /**
      * return div with list of information accounting (Customer Code,TVA,...)
@@ -1910,7 +1944,47 @@ class Accounting
 
 class Deal
 {
-    var $deal;
+    private $deal;
+    
+    /**
+     * Set list of Deal information
+     * 
+     */
+    
+    function load($object)
+    {
+        $this->deal = $object->Deal;
+    }
+    
+    /**
+     * Set an Deal information
+     * 
+     * @param   $label  string          label of the Accounting
+     * @param   $value  string          Code number
+     * @return  true or error
+     */
+    
+    function set($label,$value)
+    {
+        if(empty($value))
+            return 1;
+        
+        $this->deal->$label = $value;
+        
+        return 1;
+        
+    }
+    
+    /**
+     * Get list of Deal information
+     * 
+     * @return array
+     */
+    
+    function get()
+    {
+        return $this->deal;
+    }
     
     /**
      * return div with list of commercial infomations
@@ -1942,8 +2016,59 @@ class Deal
 
 class AddressBook
 {
-    var $address_book;
+    private $address_book;
+    var $errors;
     
+    /**
+     * Set a Phone number
+     * 
+     * @param   $label  string          label of the Phone number
+     * @param   $type   string          type of the Phone number (AC_TEL, AC_MOB, AC_FAX)
+     * @param   $value  string          Phone number
+     * @return  true or error
+     */
+    
+    function set($label,$value,$type)
+    {
+        if(empty($value))
+            return 1;
+        
+        if($type!='AC_EMAIL') // All phone
+        {
+            $value	= preg_replace("/\s/","",$value);
+            $value	= preg_replace("/\./","",$value);
+        }
+        
+        $this->address_book->$label->value = $value;
+        $this->address_book->$label->type = $type;
+        
+        return 1;
+        
+    }
+    
+    /**
+     * Set list of Address Book
+     * 
+     */
+    
+    function load($object)
+    {
+        $this->address_book = $object->AddressBook;
+    }
+    
+    /**
+     * Get list of Address Book
+     * 
+     * @return array
+     */
+    
+    function get()
+    {
+        return $this->address_book;
+    }
+    
+    
+
     /**
      * return div with list of information contact (tel, fax, ...)
      *
