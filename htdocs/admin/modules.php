@@ -73,7 +73,6 @@ llxHeader('',$langs->trans("Setup"),$help_url);
 
 print_fiche_titre($langs->trans("ModulesSetup"),'','setup');
 
-
 // Search modules dirs
 $modulesdir = array();
 foreach ($conf->file->dol_document_root as $type => $dirroot)

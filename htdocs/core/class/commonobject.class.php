@@ -2753,14 +2753,16 @@ abstract class CommonObject extends couchDocument
          *  @param $ref_css name of #list
 	 *  @return string
 	 */
-	public function _datatables($obj,$ref_css)
+	public function _datatables($obj,$ref_css,$json=true, $ColSearch=false)
 	{
             global $conf,$langs;
             
             if(!isset($obj->aaSorting))
                 $obj->aaSorting = array(array(1, "asc"));
             
-            $obj->sAjaxSource = $_SERVER['PHP_SELF']."?json=list";
+            if($json)
+                $obj->sAjaxSource = $_SERVER['PHP_SELF']."?json=list";
+            
             $obj->iDisplayLength = (int)$conf->global->MAIN_SIZE_LISTE_LIMIT;
             $obj->aLengthMenu= array(array(10, 25, 50, 100, 1000, -1), array(10, 25, 50, 100,1000,"All"));
             $obj->bProcessing = true;
@@ -2778,7 +2780,11 @@ abstract class CommonObject extends couchDocument
             $obj->oColVis->aiExclude = array(0,1); // Not cacheable
             //$obj->oColVis->bRestore = true;
             //$obj->oColVis->sAlign = 'left';
-            $obj->sDom = 'CTl<fr>t<\"clear\"rtip>';
+            
+            // Avec export Excel
+            //$obj->sDom = 'CTl<fr>t<\"clear\"rtip>';
+            // Sans export
+            $obj->sDom = 'Cl<fr>t<\"clear\"rtip>';
             
             // jeditable
             $obj->fnDrawCallback= '%function () {
@@ -2832,34 +2838,38 @@ abstract class CommonObject extends couchDocument
             $output.= "});";
             $output.='</script>'."\n";
             
-            // search column
-            $output.='<script type="text/javascript" charset="utf-8">';
+            if($ColSearch)
+            {
+                // search column
+                $output.='<script type="text/javascript" charset="utf-8">';
             
-            $output.='$(document).ready(function() {
-            $("tfoot input").keyup( function () {
-            /* Filter on the column */
-            var id = $(this).parent().attr("id");
-            oTable.fnFilter( this.value, id);
-            } );
-            /*send selected level value to server */        
-            $("tfoot #level").change( function () {
-            /* Filter on the column */
-            var id = $(this).parent().attr("id");
-            var value = $(this).val();
-            oTable.fnFilter( value, id);
-            } );
-            /*send selected stcomm value to server */   
-            $("tfoot .flat").change( function () {
-            /* Filter on the column */
-            var id = $(this).parent().attr("id");
-            var value = $(this).val();
-            oTable.fnFilter( value, id);
-            } );
-            });';
+                $output.='$(document).ready(function() {
+                $("tfoot input").keyup( function () {
+                /* Filter on the column */
+                var id = $(this).parent().attr("id");
+                oTable.fnFilter( this.value, id);
+                } );
+                /*send selected level value to server */        
+                $("tfoot #level").change( function () {
+                /* Filter on the column */
+                var id = $(this).parent().attr("id");
+                var value = $(this).val();
+                oTable.fnFilter( value, id);
+                } );
+                /*send selected stcomm value to server */   
+                $("tfoot .flat").change( function () {
+                /* Filter on the column */
+                var id = $(this).parent().attr("id");
+                var value = $(this).val();
+                oTable.fnFilter( value, id);
+                } );
+                });';
             $output.='</script>';
+            }
                 
             return $output;
 	}
+        
 }
 
 ?>

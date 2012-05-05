@@ -41,6 +41,8 @@ class Societe extends CommonObject
     public $fk_element='fk_soc';
     protected $childtables=array("propal","commande","facture","contrat","facture_fourn","commande_fournisseur");    // To test if we can delete object
     protected $ismultientitymanaged = 1;	// 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
+    var $extrafields;
+    
     
     var $db;
 
@@ -1790,7 +1792,7 @@ class Societe extends CommonObject
         $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Apartment-Building.png" alt="" />';
         $rtr.= '<h1 class="sepH_a">'.$img.$this->name.'</h1>';
         $rtr.= $this->getLibStatut(1);
-        $rtr.= '<h5 class="sepH_a light">';
+        $rtr.= '<h5 class="sepH_a s_color">';
         $rtr.= dol_print_address($this->address,'gmap','thirdparty',$this->id());
         $rtr.= '</h5>';
         //$img=picto_from_langcode($object->country_id);
@@ -1873,12 +1875,11 @@ class Societe extends CommonObject
         $rtr.= '<ul class="sepH_c fright">';
         
         // list of compta codes
-        if (! empty($this->Accounting)) {
-        	foreach ($this->Accounting as $key => $aRow) {
-        		$img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Money.png" title="'.$langs->trans($key).'" />';
-        		$rtr.= '<li class="light"><span>'.$langs->trans($key).'</span><span> : </span><span class="ttip_l edit">'.$aRow.'</span><span>'.$img.'</span></li>';
-        	}
+        foreach ($this->extrafields->fields->Accounting as $key => $aRow) {
+            $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Money.png" title="'.$langs->trans($aRow->label).'" />';
+            $rtr.= '<li class="s_color"><span>'.$langs->trans($aRow->label).'</span><span> : </span><span class="ttip_r edit">'.$this->Accounting->$key.'</span><span>'.$img.'</span></li>';
         }
+
         $rtr.= '</ul>';
         $rtr.= '</div>';
 
@@ -1900,15 +1901,14 @@ class Societe extends CommonObject
         $rtr.= '<ul class="sepH_c fright">';
         
         // list tel, fax, mail
-        if (! empty($this->AddressBook)) {
-        	foreach ($this->AddressBook as $key => $aRow) {
-        		$img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/type/'.$aRow->type.'.png" title="'.$langs->trans($key).'" />';
-        		if($aRow->type == "AC_EMAIL")
-        			$rtr.= '<li><span class="ttip_l" title="'.$langs->trans($key).'">'.dol_print_email($aRow->value,0,  $this->id(),'AC_EMAIL').'</span><span>'.$img.'</span></li>';
-        		else
-        			$rtr.= '<li class="light"><span class="ttip_l" title="'.$langs->trans($key).'">'.dol_print_phone($aRow->value,$this->country_id,0,$this->id(),$aRow->type).'</span><span>'.$img.'</span></li>';
-        	}
+        foreach ($this->extrafields->fields->AddressBook as $key => $aRow) {
+            $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/'.$this->extrafields->fields->AddressBook->$key->type.'.png" title="'.$langs->trans($aRow->label).'" />';
+            if($this->extrafields->fields->AddressBook->$key->type == "AC_EMAIL")
+        	$rtr.= '<li class="s_color"><span>'.$langs->trans($aRow->label).'</span> : <span class="ttip_r edit">'.$this->AddressBook->$key.'</span><span>'.$img.'</span></li>';
+            else
+                $rtr.= '<li class="s_color"><span>'.$langs->trans($aRow->label).'</span> : <span class="ttip_r edit">'.dol_print_phone($this->AddressBook->$key,$this->country_id,0,$this->id(),$this->extrafields->fields->AddressBook->$key->type).'</span><span>'.$img.'</span></li>';
         }
+        
         $rtr.= '</ul>';
         $rtr.= '</div>';
 
@@ -1930,11 +1930,9 @@ class Societe extends CommonObject
         $rtr.= '<ul class="sepH_c fright">';
         
         // list of compta codes
-        if (! empty($this->Deal)) {
-        	foreach ($this->Deal as $key => $aRow) {
-        		$img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Money.png" title="'.$langs->trans($key).'" />';
-        		$rtr.= '<li class="light"><span>'.$langs->trans($key).'</span><span> : </span><span class="ttip_r edit">'.$aRow.'</span><span>'.$img.'</span></li>';
-        	}
+        foreach ($this->extrafields->fields->Deal as $key => $aRow) {
+            $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Money.png" title="'.$langs->trans($aRow->label).'" />';
+            $rtr.= '<li class="s_color"><span>'.$langs->trans($aRow->label).'</span><span> : </span><span class="ttip_r edit">'.$this->Deal->$key.'</span><span>'.$img.'</span></li>';
         }
         $rtr.= '</ul>';
         $rtr.= '</div>';

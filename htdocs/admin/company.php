@@ -1000,6 +1000,8 @@ else
     print '<br>';
 }
 
+dol_fiche_end();
+
 
 llxFooter();
 

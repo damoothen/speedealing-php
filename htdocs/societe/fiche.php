@@ -56,6 +56,16 @@ if ($user->societe_id) $socid=$user->societe_id;
 
 
 $extrafields = new ExtraFields($db);
+// Load attribute_label
+try {
+    $extrafields->load("extrafields:"."company");
+}
+catch (Exception $e) {
+    $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+    print $error;
+    exit;
+}
+
 
 // Get object canvas (By default, this is not defined, so standard usage of dolibarr)
 /*$object->getCanvas($socid);
@@ -70,19 +80,10 @@ if (! empty($canvas))
 // Security check
 $result = restrictedArea($user, 'societe', $socid, '&societe', '', 'fk_soc', 'rowid', $objcanvas);
 
-// Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
-include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
-$hookmanager=new HookManager($db);
-$hookmanager->initHooks(array('thirdparty_extrafields'));
-
 
 /*
  * Actions
  */
-
-$parameters=array('id'=>$socid, 'objcanvas'=>$objcanvas);$reshook=$hookmanager->executeHooks('doActions',$parameters,$object,$action);    // Note that $action and $object may have been modified by some hooks
-$error=$hookmanager->error; $errors=$hookmanager->errors;
-
 
 if (empty($reshook))
 {
@@ -148,11 +149,15 @@ if (empty($reshook))
             $object->AddressBook->EMail->type = "AC_EMAIL";
         }
         
-        $object->url                   = array(clean_url(trim($_POST["url"]),0));
-        /*$object->idprof["idprof1"]     = $_POST["idprof1"];
-        $object->idprof["idprof2"]     = $_POST["idprof2"];
+        $object->url->Web                = clean_url(trim($_POST["url"]),0);
+        
+        foreach ($_POST['Deal'] as $key => $aRow)
+        {
+            $object->Deal->$key = $aRow;
+        /*$object->idprof["idprof2"]     = $_POST["idprof2"];
         $object->idprof["idprof3"]     = $_POST["idprof3"];
         $object->idprof["idprof4"]     = $_POST["idprof4"];*/
+        }
         $object->prefix_comm           = $_POST["prefix_comm"];
         
         $object->Accounting->CustomerCode   = $_POST["code_client"];
@@ -162,7 +167,7 @@ if (empty($reshook))
         $object->Accounting->localtax1_assuj= (int)$_POST["localtax1assuj_value"];
         $object->Accounting->localtax2_assuj= (int)$_POST["localtax2assuj_value"];
         
-        $object->Dael->JuridicalStatus      = $_POST["forme_juridique_code"];
+        $object->Deal->JuridicalStatus      = $_POST["forme_juridique_code"];
         $object->Deal->Capital              = price2num(trim($_POST["capital"]),'MT')." ".$langs->trans("Currency".$conf->currency);
         $object->Deal->Staff                = $_POST["effectif_id"];
                 
@@ -190,15 +195,6 @@ if (empty($reshook))
         $object->commercial_id         = $_POST["commercial_id"];
         $object->default_lang          = $_POST["default_lang"];
 
-        // Get extra fields
-        foreach($_POST as $key => $value)
-        {
-            if (preg_match("/^options_/",$key))
-            {
-                $object->array_options[$key]=$_POST[$key];
-            }
-        }
-        
         if($conf->map->enabled)
         {
             //Retire le CEDEX de la ville :
@@ -234,10 +230,10 @@ if (empty($reshook))
         // Check parameters
         if (empty($_POST["cancel"]))
         {
-            if (! empty($object->url[0]) && ! isValidUrl($object->url[0]))
+            if (! empty($object->url->Web) && ! isValidUrl($object->url->Web))
             {
                 $langs->load("errors");
-                $error++; $errors[] = $langs->trans("ErrorBadUrl",$object->url[0]);
+                $error++; $errors[] = $langs->trans("ErrorBadUrl",$object->url->Web);
                 $action = ($action=='add'?'create':'edit');
             }
             if ($object->fournisseur && ! $conf->fournisseur->enabled)
@@ -584,9 +580,6 @@ if (empty($reshook))
 /*
  *  View
  */
-
-// fetch optionals attributes and labels
-$extralabels=$extrafields->fetch_name_optionals_label('company');
 
 $help_url='EN:Module_Third_Parties|FR:Module_Tiers|ES:Empresas';
 llxHeader('',$langs->trans("ThirdParty"),$help_url);
@@ -1059,20 +1052,6 @@ else
             print '</td></tr>';
         }
 
-        // Other attributes
-        $parameters=array('colspan' => ' colspan="3"');
-        $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
-        if (empty($reshook) && ! empty($extrafields->attribute_label))
-        {
-            foreach($extrafields->attribute_label as $key=>$label)
-            {
-                $value=(isset($_POST["options_".$key])?$_POST["options_".$key]:$object->array_options["options_".$key]);
-                print '<tr><td>'.$label.'</td><td colspan="3">';
-                print $extrafields->showInputField($key,$value);
-                print '</td></tr>'."\n";
-            }
-        }
-
         // Ajout du logo
         print '<tr>';
         print '<td>'.$langs->trans("Logo").'</td>';
@@ -1108,10 +1087,9 @@ else
                 dol_syslog("soc::edit ".$error, LOG_ERR);
                 print $error;
                 exit;
-            }    
-            $res=$object->fetch_optionals($object->id(),$extralabels);
-            //if ($res < 0) { dol_print_error($db); exit; }
+            }
 
+            $object->extrafields = $extrafields;
 
 	        $head = societe_prepare_head($object);
 
@@ -1378,7 +1356,7 @@ else
 
             // EMail / Web
             print '<tr><td>'.$langs->trans('EMail').($conf->global->SOCIETE_MAIL_REQUIRED?'*':'').'</td><td><input type="text" name="email" size="32" value="'.$object->AddressBook->EMail->value.'"></td>';
-            print '<td>'.$langs->trans('Web').'</td><td><input type="text" name="url" size="32" value="'.$object->url[0].'"></td></tr>';
+            print '<td>'.$langs->trans('Web').'</td><td><input type="text" name="url" size="32" value="'.$object->url->Web.'"></td></tr>';
 
             // Prof ids
             $i=1; $j=0;
@@ -1389,8 +1367,8 @@ else
                 {
                     if (($j % 2) == 0) print '<tr>';
                     print '<td>'.$idprof.'</td><td>';
-                    $key='idprof'.$i;
-                    print $formcompany->get_input_id_prof($i,'idprof'.$i,$object->$key,$object->country_id);
+                    $key=$idprof;
+                    print $formcompany->get_input_id_prof($i,'Deal'.'['.$idprof.']',$object->Deal->$key,$object->country_id);
                     print '</td>';
                     if (($j % 2) == 1) print '</tr>';
                     $j++;
@@ -1490,20 +1468,6 @@ else
                 print '</tr>';
             }
 
-            // Other attributes
-            $parameters=array('colspan' => ' colspan="3"');
-            $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
-            if (empty($reshook) && ! empty($extrafields->attribute_label))
-            {
-                foreach($extrafields->attribute_label as $key=>$label)
-                {
-                    $value=(isset($_POST["options_".$key])?$_POST["options_".$key]:$object->array_options["options_".$key]);
-                    print '<tr><td>'.$label.'</td><td colspan="3">';
-                    print $extrafields->showInputField($key,$value);
-                    print "</td></tr>\n";
-                }
-            }
-
             // Logo
             print '<tr>';
             print '<td>'.$langs->trans("Logo").'</td>';
@@ -1552,9 +1516,8 @@ else
             print $error;
             exit;
         }
-        //if ($res < 0) { dol_print_error($db,$object->error); exit; }
-        $res=$object->fetch_optionals($object->id(),$extralabels);
-        //if ($res < 0) { dol_print_error($db); exit; }
+        
+        $object->extrafields = $extrafields;
         
         print '<div class="row">';
         
@@ -1841,21 +1804,6 @@ else
             print $labellang;
             print '</td></tr>';
             $var=!$var;
-        }
-
-        // Other attributes
-        $parameters=array('socid'=>$socid, 'colspan' => ' colspan="3"');
-        $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
-        if (empty($reshook) && ! empty($extrafields->attribute_label))
-        {
-            foreach($extrafields->attribute_label as $key=>$label)
-            {
-                $value=(isset($_POST["options_".$key])?$_POST["options_".$key]:$object->array_options["options_".$key]);
-                print '<tr '.$bc[$var].'><td>'.$label.'</td><td colspan="3">';
-                print $extrafields->showOutputField($key,$value);
-                print "</td></tr>\n";
-                $var=!$var;
-            }
         }
 
         // Ban

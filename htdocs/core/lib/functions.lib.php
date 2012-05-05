@@ -609,7 +609,7 @@ function dol_fiche_head($links=array(), $active='0', $title='', $notab=0, $picto
  */
 function dol_get_fiche_head($links=array(), $active='0', $title='', $notab=0, $picto='')
 {
-    $out="\n".'<div class="tabs">'."\n";
+    $out="\n".'<div>'."\n";
 
     // Affichage titre
     if ($title)
@@ -674,6 +674,8 @@ function dol_get_fiche_head($links=array(), $active='0', $title='', $notab=0, $p
 function dol_fiche_end($notab=0)
 {
     print dol_get_fiche_end($notab);
+    print end_box();
+    print '</div>';
 }
 
 /**
@@ -1099,7 +1101,7 @@ function dol_print_email($email,$cid=0,$socid=0,$addlink=0,$max=64,$showinvalid=
 
     $newemail=$email;
 
-    if (empty($email)) return '&nbsp;';
+    if (empty($email)) return '';
 
     if (! empty($addlink))
     {
@@ -1147,6 +1149,9 @@ function dol_print_email($email,$cid=0,$socid=0,$addlink=0,$max=64,$showinvalid=
 function dol_print_phone($phone,$country="FR",$cid=0,$socid=0,$addlink=0,$separ=" ")
 {
     global $conf,$user,$langs;
+    
+    if(empty($phone))
+        return null;
 
     // Clean phone parameter
     $phone = preg_replace("/[\s.-]/","",trim($phone));
@@ -1786,7 +1791,7 @@ function img_edit($alt = "default", $float=0, $other='')
 {
     global $conf,$langs;
     if ($alt=="default") $alt=$langs->trans("Modify");
-    $img='<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/edit.png" border="0" alt="'.dol_escape_htmltag($alt).'" title="'.dol_escape_htmltag($alt).'"';
+    $img='<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/pencil_gray.png" border="0" alt="'.dol_escape_htmltag($alt).'" title="'.dol_escape_htmltag($alt).'"';
     if ($float) $img.=' style="float: right"';
     if ($other) $img.=' '.$other;
     $img.='>';
@@ -1823,7 +1828,11 @@ function img_delete($alt = "default", $other='')
 {
     global $conf,$langs;
     if ($alt=="default") $alt=$langs->trans("Delete");
-    return img_picto($alt,'delete.png',$other);
+    $img='<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/trashcan_gray.png" border="0" alt="'.dol_escape_htmltag($alt).'" title="'.dol_escape_htmltag($alt).'"';
+    if ($float) $img.=' style="float: right"';
+    if ($other) $img.=' '.$other;
+    $img.='>';
+    return $img;
 }
 
 
@@ -2361,10 +2370,12 @@ function print_titre($title)
 function print_fiche_titre($titre, $mesg='', $picto='title.png', $pictoisfullpath=0, $id='')
 {
     print '<div class="row">';
-    print '<div class="tweelve columns">';
-    print load_fiche_titre($titre, $mesg, $picto, $pictoisfullpath, $id);
-    print '</div>';
-    print '</div>';
+    print start_box($titre,"twelve","16-Apartment-Building.png");
+    //print load_fiche_titre($titre, $mesg, $picto, $pictoisfullpath, $id);
+    //print '</div>';
+    //print '</div>';
+    //print '<div class="row">';
+    //print '<div class="tweelve columns">';
 }
 
 /**

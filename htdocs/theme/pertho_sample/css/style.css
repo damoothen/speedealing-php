@@ -417,7 +417,7 @@
 		#toTop:active,#toTop:focus{outline:none}
 
 	/* footer */
-		#footer {font-size:11px;margin-top:20px;height:30px}
+		#footer {font-size:11px;margin-top:2px;height:30px}
 
 /* -----------------------------------------
    Form elements
@@ -797,6 +797,5 @@
                 
 .vcard .avatar { background: white; border: 1px solid #D8DADA; margin-right: 5px; -webkit-border-radius: 5px; -moz-border-radius: 10px; border-radius: 10px; float: left; height: 100px; position: relative; width: 100px;}
 .vcard h1{color: #21759B;}
-.vcard .light {color: gray}
 .vcard .fright li{text-align: right}
 .vcard li img{vertical-align: bottom; margin: 0 5px}
