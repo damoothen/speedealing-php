@@ -2304,7 +2304,7 @@ function getTitleFieldOfList($name, $thead=0, $file="", $field="", $begin="", $m
  *	@param	boolean	$box_action             Enable or Disable buttons reduse and delete box
  *	@return	string				Title to show
  */
-function start_box($title,$nbcolumn='twelve',$icon='16-Abacus.png',$box_action=true,$isForms=true,$head=null)
+function start_box($title,$nbcolumn='twelve',$icon='16-Abacus.png',$box_action=true,$isForms=false,$head=null)
 {
     global $conf,$langs;
     

@@ -768,6 +768,9 @@ class Societe extends CommonObject
         global $langs,$conf;
         $langs->load('companies');
         
+        if(empty($status))
+            return null;
+        
         return '<span class="lbl '.$this->status->$status->cssClass.' sl_status ttip_r edit">'.$langs->trans($this->status->$status->label).'</span>';        
     }
 

@@ -1202,7 +1202,7 @@ else
                 {
                     print '<div class="formRow">';
                     print '<label for="'.$key.'">'.$langs->trans($key).'</label>';
-                    print '<input type="text" id="'.$key.'" name="'.$key.'" value="'.$object->$key.'" class="input-text large" />';
+                    print '<input type="text" maxlength="'.$aRow->length.'" id="'.$key.'" name="'.$key.'" value="'.$object->$key.'" class="input-text large" />';
                     print '</div>';
                 }
             }
@@ -1526,7 +1526,7 @@ else
         
         $head = societe_prepare_head($object);
 
-        print start_box($langs->trans("ThirdParty"),"eight","16-Apartment-Building.png",false,$head);
+        print start_box($langs->trans("ThirdParty"),"eight","16-Apartment-Building.png",false,false,$head);
         // First onglet
         
         print '<article class="tab_pane">';
