@@ -5,7 +5,7 @@
  * Copyright (C) 2005-2010 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2010-2011 Juanjo Menent        <jmenent@2byte.es>
  * Copyright (C) 2011      Philippe Grand       <philippe.grand@atoo-net.com>
- * Copyright (C) 2011      Herve Prot           <herve.prot@symeos.com>
+ * Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
  * Copyright (C) 2011      Remy Younes          <ryounes@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -1005,7 +1005,7 @@ else
     print '</table>';
 }
 
-print '<br>';
+dol_fiche_end();
 
 $db->close();
 

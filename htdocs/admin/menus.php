@@ -1,7 +1,7 @@
 <?php
-/* Copyright (C) 2001-2005 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2010 Regis Houssin        <regis@dolibarr.fr>
+/* Copyright (C) 2007      Patrick Raguin       <patrick.raguin@gmail.com>
+ * Copyright (C) 2007-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2009-2011 Regis Houssin        <regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,26 +18,19 @@
  */
 
 /**
- *      \file       htdocs/admin/menus.php
- *      \ingroup    core
- *      \brief      Page to setup menu manager to use
+ *  \file       htdocs/admin/menus/index.php
+ *  \ingroup    core
+ *  \brief      Index page for menu editor
  */
 
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formadmin.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/treeview.lib.php");
 
-$action=GETPOST('action');
-
-$langs->load("companies");
-$langs->load("products");
-$langs->load("admin");
-$langs->load("users");
 $langs->load("other");
+$langs->load("admin");
 
-// Security check
-if (!$user->admin) accessforbidden();
+if (! $user->admin) accessforbidden();
 
 $dirstandard = array("/core/menus/standard");
 $dirsmartphone = array("/core/menus/smartphone");
@@ -47,71 +40,157 @@ foreach($conf->menus_modules as $dir)
     $dirsmartphone[]=$dir.'standard';
 }
 
+$mesg=$_GET["mesg"];
 
-// Cette page peut etre longue. On augmente le delai autorise.
-// Ne fonctionne que si on est pas en safe_mode.
-$err=error_reporting();
-error_reporting(0);     // Disable all errors
-//error_reporting(E_ALL);
-@set_time_limit(300);   // Need more than 240 on Windows 7/64
-error_reporting($err);
+$menu_handler_top=$conf->global->MAIN_MENU_STANDARD;
+$menu_handler_smartphone=$conf->global->MAIN_MENU_SMARTPHONE;
+$menu_handler_top=preg_replace('/_backoffice.php/i','',$menu_handler_top);
+$menu_handler_top=preg_replace('/_frontoffice.php/i','',$menu_handler_top);
+$menu_handler_smartphone=preg_replace('/_backoffice.php/i','',$menu_handler_smartphone);
+$menu_handler_smartphone=preg_replace('/_frontoffice.php/i','',$menu_handler_smartphone);
+
+$menu_handler=$menu_handler_top;
+
+if ($_REQUEST["handler_origine"]) $menu_handler=$_REQUEST["handler_origine"];
+if ($_REQUEST["menu_handler"])    $menu_handler=$_REQUEST["menu_handler"];
 
 
 /*
- * Actions
- */
+* Actions
+*/
 
-if ($action == 'update' && empty($_POST["cancel"]))
+if (isset($_GET["action"]) && ($_GET["action"] == 'up'))
 {
-	$_SESSION["mainmenu"]="home";   // Le gestionnaire de menu a pu changer
+	$current=array();
+	$previous=array();
 
-	dolibarr_set_const($db, "MAIN_MENU_STANDARD",      $_POST["MAIN_MENU_STANDARD"],'chaine',0,'',$conf->entity);
-	dolibarr_set_const($db, "MAIN_MENU_SMARTPHONE",     $_POST["MAIN_MENU_SMARTPHONE"],'chaine',0,'',$conf->entity);
-
-	dolibarr_set_const($db, "MAIN_MENUFRONT_STANDARD", $_POST["MAIN_MENUFRONT_STANDARD"],'chaine',0,'',$conf->entity);
-	dolibarr_set_const($db, "MAIN_MENUFRONT_SMARTPHONE",$_POST["MAIN_MENUFRONT_SMARTPHONE"],'chaine',0,'',$conf->entity);
-
-	// Define list of menu handlers to initialize
-	$listofmenuhandler=array();
-	$listofmenuhandler[preg_replace('/((_back|_front)office)?\.php/i','',$_POST["MAIN_MENU_STANDARD"])]=1;
-	$listofmenuhandler[preg_replace('/((_back|_front)office)?\.php/i','',$_POST["MAIN_MENUFRONT_STANDARD"])]=1;
-	if (isset($_POST["MAIN_MENU_SMARTPHONE"]))      $listofmenuhandler[preg_replace('/((_back|_front)office)?\.php/i','',$_POST["MAIN_MENU_SMARTPHONE"])]=1;
-	if (isset($_POST["MAIN_MENUFRONT_SMARTPHONE"])) $listofmenuhandler[preg_replace('/((_back|_front)office)?\.php/i','',$_POST["MAIN_MENUFRONT_SMARTPHONE"])]=1;
-
-	// Initialize menu handlers
-	$error=0; $errmsgs=array();
-	foreach ($listofmenuhandler as $key => $val)
+	// Get current position
+	$sql = "SELECT m.rowid, m.position, m.type, m.fk_menu";
+	$sql.= " FROM ".MAIN_DB_PREFIX."menu as m";
+	$sql.= " WHERE m.rowid = ".$_GET["menuId"];
+	dol_syslog("admin/menus/index.php ".$sql);
+	$result = $db->query($sql);
+	$num = $db->num_rows($result);
+	$i = 0;
+	while($i < $num)
 	{
-		// Load sql init_menu_handler.sql file
-        $dir = "/core/menus/";
-	    $file='init_menu_'.$key.'.sql';
-	    $fullpath=dol_buildpath($dir.$file);
-
-		if (file_exists($fullpath))
-		{
-			$db->begin();
-
-			$result=run_sql($fullpath,1,'',1,$key,'none');
-			if ($result > 0)
-			{
-				$db->commit();
-			}
-			else
-			{
-				$error++;
-				$errmsgs[]='Failed to initialize menu '.$key.'.';
-				$db->rollback();
-			}
-		}
+		$obj = $db->fetch_object($result);
+		$current['rowid'] = $obj->rowid;
+		$current['order'] = $obj->position;
+		$current['type'] = $obj->type;
+		$current['fk_menu'] = $obj->fk_menu;
+		$i++;
 	}
 
-	if (! $error)
+	// Menu before
+	$sql = "SELECT m.rowid, m.position";
+	$sql.= " FROM ".MAIN_DB_PREFIX."menu as m";
+	$sql.= " WHERE (m.position < ".($current['order'])." OR (m.position = ".($current['order'])." AND rowid < ".$_GET["menuId"]."))";
+	$sql.= " AND m.menu_handler='".$menu_handler."'";
+	$sql.= " AND m.entity = ".$conf->entity;
+	$sql.= " AND m.type = '".$current['type']."'";
+	$sql.= " AND m.fk_menu = '".$current['fk_menu']."'";
+	$sql.= " ORDER BY m.position, m.rowid";
+	dol_syslog("admin/menus/index.php ".$sql);
+	$result = $db->query($sql);
+	$num = $db->num_rows($result);
+	$i = 0;
+	while($i < $num)
 	{
-		$db->close();
+		$obj = $db->fetch_object($result);
+		$previous['rowid'] = $obj->rowid;
+		$previous['order'] = $obj->position;
+		$i++;
+	}
 
-		// We make a header redirect because we need to change menu NOW.
-		header("Location: ".$_SERVER["PHP_SELF"]);
-		exit;
+	$sql = "UPDATE ".MAIN_DB_PREFIX."menu as m";
+	$sql.= " SET m.position = ".$previous['order'];
+	$sql.= " WHERE m.rowid = ".$current['rowid']; // Up the selected entry
+	dol_syslog("admin/menus/index.php ".$sql);
+	$db->query($sql);
+	$sql = "UPDATE ".MAIN_DB_PREFIX."menu as m";
+	$sql.= " SET m.position = ".($current['order']!=$previous['order']?$current['order']:$current['order']+1);
+	$sql.= " WHERE m.rowid = ".$previous['rowid']; // Descend celui du dessus
+	dol_syslog("admin/menus/index.php ".$sql);
+	$db->query($sql);
+}
+
+if (isset($_GET["action"]) && $_GET["action"] == 'down')
+{
+	$current=array();
+	$next=array();
+
+	// Get current position
+	$sql = "SELECT m.rowid, m.position, m.type, m.fk_menu";
+	$sql.= " FROM ".MAIN_DB_PREFIX."menu as m";
+	$sql.= " WHERE m.rowid = ".$_GET["menuId"];
+	dol_syslog("admin/menus/index.php ".$sql);
+	$result = $db->query($sql);
+	$num = $db->num_rows($result);
+	$i = 0;
+	while($i < $num)
+	{
+		$obj = $db->fetch_object($result);
+		$current['rowid'] = $obj->rowid;
+		$current['order'] = $obj->position;
+		$current['type'] = $obj->type;
+		$current['fk_menu'] = $obj->fk_menu;
+		$i++;
+	}
+
+	// Menu after
+	$sql = "SELECT m.rowid, m.position";
+	$sql.= " FROM ".MAIN_DB_PREFIX."menu as m";
+	$sql.= " WHERE (m.position > ".($current['order'])." OR (m.position = ".($current['order'])." AND rowid > ".$_GET["menuId"]."))";
+	$sql.= " AND m.menu_handler='".$menu_handler."'";
+	$sql.= " AND m.entity = ".$conf->entity;
+	$sql.= " AND m.type = '".$current['type']."'";
+	$sql.= " AND m.fk_menu = '".$current['fk_menu']."'";
+	$sql.= " ORDER BY m.position, m.rowid";
+	dol_syslog("admin/menus/index.php ".$sql);
+	$result = $db->query($sql);
+	$num = $db->num_rows($result);
+	$i = 0;
+	while($i < $num)
+	{
+		$obj = $db->fetch_object($result);
+		$next['rowid'] = $obj->rowid;
+		$next['order'] = $obj->position;
+		$i++;
+	}
+
+	$sql = "UPDATE ".MAIN_DB_PREFIX."menu as m";
+	$sql.= " SET m.position = ".($current['order']!=$next['order']?$next['order']:$current['order']+1); // Down the selected entry
+	$sql.= " WHERE m.rowid = ".$current['rowid'];
+	dol_syslog("admin/menus/index.php ".$sql);
+	$db->query($sql);
+	$sql = "UPDATE ".MAIN_DB_PREFIX."menu as m";	// Up the next entry
+	$sql.= " SET m.position = ".$current['order'];
+	$sql.= " WHERE m.rowid = ".$next['rowid'];
+	dol_syslog("admin/menus/index.php ".$sql);
+	$db->query($sql);
+}
+
+if ($_POST["action"] == 'confirm_delete' && $_POST["confirm"] == 'yes')
+{
+	$db->begin();
+
+	$sql = "DELETE FROM ".MAIN_DB_PREFIX."menu";
+	$sql.= " WHERE rowid = ".$_GET['menuId'];
+	$resql=$db->query($sql);
+	if ($resql)
+	{
+		$db->commit();
+
+		Header("Location: ".DOL_URL_ROOT.'/admin/menus/index.php?menu_handler='.$menu_handler.'&mesg='.urlencode($langs->trans("MenuDeleted")));
+		exit ;
+	}
+	else
+	{
+		$db->rollback();
+
+		$reload = 0;
+		$_GET["action"]='';
 	}
 }
 
@@ -122,158 +201,132 @@ if ($action == 'update' && empty($_POST["cancel"]))
 
 $form=new Form($db);
 $formadmin=new FormAdmin($db);
+$arrayofjs=array('/admin/menus/menu.js.php?lang='.$langs->defaultlang);
 
-$wikihelp='EN:First_setup|FR:Premiers_paramétrages|ES:Primeras_configuraciones';
-llxHeader('',$langs->trans("Setup"),$wikihelp);
+llxHeader('',$langs->trans("Menus"),'','',0,0,$arrayofjs);
 
-print_fiche_titre($langs->trans("Menus"),'','setup');
+print '<div class="row">';
+print start_box($langs->trans("Menus"),"twelve");
 
-
-$h = 0;
-
-$head[$h][0] = DOL_URL_ROOT."/admin/menus.php";
-$head[$h][1] = $langs->trans("MenuHandlers");
-$head[$h][2] = 'handler';
-$h++;
-
-$head[$h][0] = DOL_URL_ROOT."/admin/menus/index.php";
-$head[$h][1] = $langs->trans("MenuAdmin");
-$head[$h][2] = 'editor';
-$h++;
-
-$head[$h][0] = DOL_URL_ROOT."/admin/menus/other.php";
-$head[$h][1] = $langs->trans("Miscellanous");
-$head[$h][2] = 'misc';
-$h++;
+//print_fiche_titre($langs->trans("Menus"),'','setup');
 
 
-dol_fiche_head($head, 'handler', $langs->trans("Menus"));
+dol_htmloutput_mesg($mesg);
 
-print $langs->trans("MenusDesc")."<br>\n";
+
+//dol_fiche_head($head, 'editor', $langs->trans("Menus"));
+
+print $langs->trans("MenusEditorDesc")."<br>\n";
 print "<br>\n";
 
 
-if (isset($_GET["action"]) && $_GET["action"] == 'edit')
+// Confirmation for remove menu entry
+if ($_GET["action"] == 'delete')
 {
-	print '<form method="post" action="'.$_SERVER["PHP_SELF"].'">';
-	print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-	print '<input type="hidden" name="action" value="update">';
+	$sql = "SELECT m.titre";
+	$sql.= " FROM ".MAIN_DB_PREFIX."menu as m";
+	$sql.= " WHERE m.rowid = ".$_GET['menuId'];
+	$result = $db->query($sql);
+	$obj = $db->fetch_object($result);
 
-	clearstatcache();
+    $ret=$form->form_confirm("index.php?menu_handler=".$menu_handler."&menuId=".$_GET['menuId'],$langs->trans("DeleteMenu"),$langs->trans("ConfirmDeleteMenu",$obj->titre),"confirm_delete");
+    if ($ret == 'html') print '<br>';
+}
 
-	// Gestionnaires de menu
-	$var=true;
 
-	print '<table class="noborder" width="100%">';
-	print '<tr class="liste_titre"><td width="35%">'.$langs->trans("Menu").'</td>';
-	print '<td>';
-	print $form->textwithpicto($langs->trans("InternalUsers"),$langs->trans("InternalExternalDesc"));
-	print '</td>';
-	print '<td>';
-	print $form->textwithpicto($langs->trans("ExternalUsers"),$langs->trans("InternalExternalDesc"));
-	print '</td>';
-	print '</tr>';
+/*print '<form name="newmenu" class="nocellnopadd" action="'.$_SERVER["PHP_SELF"].'">';
+print '<input type="hidden" action="change_menu_handler">';
+print $langs->trans("MenuHandler").': ';
+print $formadmin->select_menu_families($menu_handler,'menu_handler',array_merge($dirstandard,$dirsmartphone));
+print ' &nbsp; <input type="submit" class="button" value="'.$langs->trans("Refresh").'">';
+print '</form>';
 
-	// Menu top
-	$var=!$var;
-	print '<tr '.$bc[$var].'><td>'.$langs->trans("DefaultMenuManager").'</td>';
-	print '<td>';
-	print $formadmin->select_menu(empty($conf->global->MAIN_MENU_STANDARD_FORCED)?$conf->global->MAIN_MENU_STANDARD:$conf->global->MAIN_MENU_STANDARD_FORCED, 'MAIN_MENU_STANDARD', $dirstandard, empty($conf->global->MAIN_MENU_STANDARD_FORCED)?'':' disabled="disabled"');
-	print '</td>';
-	print '<td>';
-	print $formadmin->select_menu(empty($conf->global->MAIN_MENUFRONT_STANDARD_FORCED)?$conf->global->MAIN_MENUFRONT_STANDARD:$conf->global->MAIN_MENUFRONT_STANDARD_FORCED, 'MAIN_MENUFRONT_STANDARD', $dirstandard, empty($conf->global->MAIN_MENUFRONT_STANDARD_FORCED)?'':' disabled="disabled"');
-	print '</td>';
-	print '</tr>';
+print '<br>';*/
 
-	// Menu smartphone
-	$var=!$var;
-	print '<tr '.$bc[$var].'><td>'.$langs->trans("DefaultMenuSmartphoneManager").'</td>';
-	print '<td>';
-	print $formadmin->select_menu(empty($conf->global->MAIN_MENU_SMARTPHONE_FORCED)?$conf->global->MAIN_MENU_SMARTPHONE:$conf->global->MAIN_MENU_SMARTPHONE_FORCED, 'MAIN_MENU_SMARTPHONE', array_merge($dirstandard,$dirsmartphone), empty($conf->global->MAIN_MENU_SMARTPHONE_FORCED)?'':' disabled="disabled"');
+print '<table class="border" width="100%">';
+
+print '<tr class="liste_titre">';
+print '<td>'.$langs->trans("TreeMenuPersonalized").'</td>';
+print '</tr>';
+
+print '<tr>';
+print '<td>';
+
+// ARBORESCENCE
+
+$rangLast = 0;
+$idLast = -1;
+if ($conf->use_javascript_ajax)
+{
+	/*-------------------- MAIN -----------------------
+	tableau des elements de l'arbre:
+	c'est un tableau a 2 dimensions.
+	Une ligne represente un element : data[$x]
+	chaque ligne est decomposee en 3 donnees:
+	  - l'index de l'élément
+	  - l'index de l'élément parent
+	  - la chaine a afficher
+	ie: data[]= array (index, index parent, chaine )
+	*/
+	//il faut d'abord declarer un element racine de l'arbre
+
+	$data[] = array(0,-1,"racine");
+
+	//puis tous les elements enfants
+
+
+	$sql = "SELECT m.rowid, m.fk_menu, m.titre, m.langs";
+	$sql.= " FROM ".MAIN_DB_PREFIX."menu as m";
+	$sql.= " WHERE menu_handler = '".$menu_handler."'";
+	$sql.= " AND entity = ".$conf->entity;
+	$sql.= " AND fk_menu >= 0";
+	$sql.= " ORDER BY m.position, m.rowid";		// Order is position then rowid (because we need a sort criteria when position is same)
+	$res  = $db->query($sql);
+
+	if ($res)
+	{
+		$num = $db->num_rows($res);
+
+		$i = 1;
+		while ($menu = $db->fetch_array($res))
+		{
+			if (! empty($menu['langs'])) $langs->load($menu['langs']);
+			$titre = $langs->trans($menu['titre']);
+			$data[] = array($menu['rowid'],$menu['fk_menu'],$titre);
+			$i++;
+		}
+	}
+
+	// Appelle de la fonction recursive (ammorce)
+	// avec recherche depuis la racine.
+	// array($menu['rowid'],$menu['fk_menu'],$titre);
+	tree_recur($data,0,0);
+
 	print '</td>';
-	print '<td>';
-	print $formadmin->select_menu(empty($conf->global->MAIN_MENUFRONT_SMARTPHONE_FORCED)?$conf->global->MAIN_MENUFRONT_SMARTPHONE:$conf->global->MAIN_MENUFRONT_SMARTPHONE_FORCED, 'MAIN_MENUFRONT_SMARTPHONE', array_merge($dirstandard,$dirsmartphone), empty($conf->global->MAIN_MENUFRONT_SMARTPHONE_FORCED)?'':' disabled="disabled"');
-	print '</td>';
+
 	print '</tr>';
 
 	print '</table>';
 
-	print '<br><center>';
-	print '<input class="button" type="submit" name="save" value="'.$langs->trans("Save").'">';
-	print ' &nbsp; &nbsp; ';
-	print '<input class="button" type="submit" name="cancel" value="'.$langs->trans("Cancel").'">';
-	print '</center>';
 
-	print '</form>';
+	/*
+	 * Boutons actions
+	 */
+	/*print '<div class="tabsAction">';
+	print '<a class="butAction" href="'.DOL_URL_ROOT.'/admin/menus/edit.php?menuId=0&amp;action=create&amp;menu_handler='.urlencode($menu_handler).'">'.$langs->trans("NewMenu").'</a>';
+	print '</div>';*/
 }
 else
 {
-	// Gestionnaires de menu
-	$var=true;
-
-	print '<table class="noborder" width="100%">';
-	print '<tr class="liste_titre"><td width="35%">'.$langs->trans("Menu").'</td>';
-	print '<td>';
-	print $form->textwithpicto($langs->trans("InternalUsers"),$langs->trans("InternalExternalDesc"));
-	print '</td>';
-	print '<td>';
-	print $form->textwithpicto($langs->trans("ExternalUsers"),$langs->trans("InternalExternalDesc"));
-	print '</td>';
-	print '</tr>';
-
-	$var=!$var;
-	print '<tr '.$bc[$var].'><td>'.$langs->trans("DefaultMenuManager").'</td>';
-	print '<td>';
-	$filelib=preg_replace('/.php$/i','',(empty($conf->global->MAIN_MENU_STANDARD_FORCED)?$conf->global->MAIN_MENU_STANDARD:$conf->global->MAIN_MENU_STANDARD_FORCED));
-	print $filelib;
-	print '</td>';
-	print '<td>';
-	$filelib=preg_replace('/.php$/i','',(empty($conf->global->MAIN_MENUFRONT_STANDARD_FORCED)?$conf->global->MAIN_MENUFRONT_STANDARD:$conf->global->MAIN_MENUFRONT_STANDARD_FORCED));
-	print $filelib;
-	print '</td>';
-	print '</tr>';
-
-	$var=!$var;
-	print '<tr '.$bc[$var].'>';
-	print '<td>'.$langs->trans("DefaultMenuSmartphoneManager").'</td>';
-	print '<td>';
-	$filelib=preg_replace('/.php$/i','',(empty($conf->global->MAIN_MENU_SMARTPHONE_FORCED)?$conf->global->MAIN_MENU_SMARTPHONE:$conf->global->MAIN_MENU_SMARTPHONE_FORCED));
-	print $filelib;
-	if (preg_match('/smartphone/',$conf->global->MAIN_MENU_SMARTPHONE_FORCED)
-	|| (empty($conf->global->MAIN_MENU_SMARTPHONE_FORCED) && preg_match('/smartphone/',$conf->global->MAIN_MENU_SMARTPHONE)))
-	{
-		print ' '.img_warning($langs->transnoentitiesnoconv("ThisForceAlsoTheme"));
-	}
-	print '</td>';
-	print '<td>';
-	$filelib=preg_replace('/.php$/i','',(empty($conf->global->MAIN_MENUFRONT_SMARTPHONE_FORCED)?$conf->global->MAIN_MENUFRONT_SMARTPHONE:$conf->global->MAIN_MENUFRONT_SMARTPHONE_FORCED));
-	print $filelib;
-	if (preg_match('/smartphone/',$conf->global->MAIN_MENUFRONT_SMARTPHONE_FORCED)
-	|| (empty($conf->global->MAIN_MENUFRONT_SMARTPHONE_FORCED) && preg_match('/smartphone/',$conf->global->MAIN_MENUFRONT_SMARTPHONE)))
-	{
-		print ' '.img_warning($langs->transnoentitiesnoconv("ThisForceAlsoTheme"));
-	}
-	print '</td>';
-	print '</tr>';
-
-	print '</table>';
+	$langs->load("errors");
+	print '<div class="error">'.$langs->trans("ErrorFeatureNeedJavascript").'</div>';
 }
 
+print end_box();
 print '</div>';
 
+$db->close();
 
-dol_htmloutput_errors('',$errmsgs);
-
-
-if (! isset($_GET["action"]) || $_GET["action"] != 'edit')
-{
-	print '<div class="tabsAction">';
-	print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?action=edit">'.$langs->trans("Modify").'</a>';
-	print '</div>';
-}
-
+print '<br>';
 
 llxFooter();
-
-$db->close();
-?>

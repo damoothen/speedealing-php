@@ -50,12 +50,46 @@ $elementtype='company';
 
 if (!$user->admin) accessforbidden();
 
+$acts[0] = "activate";
+$acts[1] = "disable";
+$actl[0] = img_picto($langs->trans("Disabled"),'switch_off');
+$actl[1] = img_picto($langs->trans("Activated"),'switch_on');
+
 /*
  * Actions
  */
 
 $maxsizestring=255;
 $maxsizeint=10;
+
+if($action==$acts[0] || $action==$acts[1])
+{
+        if(isset($_GET["attrname"]) && preg_match("/^\w[a-zA-Z0-9-_]*$/",$_GET["attrname"]))
+	{
+            try {
+                    $object=$conf->couchdb->getDoc("extrafields:".$elementtype);
+                    if($action == $acts[0])
+                        $object->fields->$_GET["fields"]->$_GET["attrname"]->enable = true;
+                    else
+                        $object->fields->$_GET["fields"]->$_GET["attrname"]->enable = false;
+                    $conf->couchdb->storeDoc($object);
+            }
+            catch (Exception $e) {
+            $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+            print $error;
+            exit;
+            }
+            Header("Location: ".$_SERVER["PHP_SELF"]);
+            exit;
+	}
+	else
+	{
+	    $error++;
+		$langs->load("errors");
+		$mesg=$langs->trans("ErrorFieldCanNotContainSpecialCharacters",$langs->transnoentities("AttributeCode"));
+	}
+}
+
 
 // Rename field
 if ($action == 'update' || $action == 'add')
@@ -347,18 +381,10 @@ foreach ($extrafields->fields as $key => $aRow)
     $obj->aoColumns[$i]->bSearchable = false;
     $i++;
     print'<th class="center">';
-    print $langs->trans("Status");
+    print $langs->trans("Action");
     print'</th>';
     $obj->aoColumns[$i]->bSearchable = false;
     $i++;
-    if($aRow->edit)
-    {
-        print'<th class="center">';
-        print $langs->trans("Action");
-        print'</th>';
-        $obj->aoColumns[$i]->bSearchable = false;
-        $i++;
-    }
     print "</tr>";
     print "</thead>";
     print "<tbody>";
@@ -373,17 +399,15 @@ foreach ($extrafields->fields as $key => $aRow)
             print "<td>".$key1."</td>";
             print "<td>".$value->type."</td>";
             print '<td align="right">'.$value->length.'</td>';
-            print '<td align="center">';
-            if($value->enable)
-                print '<span class="lbl ok_bg">'.$langs->trans("Enabled").'</td>';
-            else
-                print '<span class="lbl error_bg">'.$langs->trans("Disabled").'</td>';
+            print '<td class "content_actions" align="right">';
+            print '<a class="sepV_a" href="'.$_SERVER["PHP_SELF"].'?'.'&fields='.$key.'&attrname='.$key1.'&action='.$acts[$value->enable].'">'.$actl[$value->enable].'</a>';
             if($aRow->edit)
             {
-                print '<td class "content_actions" align="right">';
+                
                 print '<a class="sepV_a" href="'.$_SERVER["PHP_SELF"].'?action=edit&fields='.$key.'&attrname='.$key1.'">'.img_edit().'</a>';
-                print '<a class="sepV_a" href="'.$_SERVER["PHP_SELF"].'?action=delete&fields='.$key.'&attrname='.$key1.'">'.img_delete().'</a></td>';
+                print '<a class="sepV_a" href="'.$_SERVER["PHP_SELF"].'?action=delete&fields='.$key.'&attrname='.$key1.'">'.img_delete().'</a>';
             }
+            print '</td>';
             print "</tr>";
         }
     }
