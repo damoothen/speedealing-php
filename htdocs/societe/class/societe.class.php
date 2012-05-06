@@ -768,8 +768,7 @@ class Societe extends CommonObject
         global $langs,$conf;
         $langs->load('companies');
         
-        return '<span class="lbl '.$this->status->$status->cssClass.' sl_status">'.$langs->trans($this->status->$status->label).'</span>';
-        
+        return '<span class="lbl '.$this->status->$status->cssClass.' sl_status ttip_r edit">'.$langs->trans($this->status->$status->label).'</span>';        
     }
 
     /**
@@ -1775,13 +1774,13 @@ class Societe extends CommonObject
         $rtr.= '</div></div>';
         $rtr.= '<div class="five column vcard">';
         $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Apartment-Building.png" alt="" />';
-        $rtr.= '<h1 class="sepH_a">'.$img.$this->name.'</h1>';
+        $rtr.= '<h1 class="sepH_a">'.$img.$this->ThirdPartyName.'</h1>';
         $rtr.= $this->getLibStatus();
         $rtr.= '<h5 class="sepH_a s_color">';
-        $rtr.= dol_print_address($this->address,'gmap','thirdparty',$this->id());
+        $rtr.= dol_print_address($this->Address,'gmap','thirdparty',$this->id());
         $rtr.= '</h5>';
         //$img=picto_from_langcode($object->country_id);
-        $rtr.= '<h3 class="sepH_a country">'.$this->zip.($this->zip && $this->town?" ":"").$this->town;
+        $rtr.= '<h3 class="sepH_a country">'.$this->Zip.($this->Zip && $this->Town?" ":"").$this->Town;
         // MAP GPS
         $rtr.= "&nbsp".img_picto(($this->gps[0].','.$this->gps[1]),(($this->gps[0] && $this->gps[1])?"green-dot":"red-dot"));
         $rtr.= '</h3>';

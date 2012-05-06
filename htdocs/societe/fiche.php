@@ -1063,22 +1063,16 @@ else
 
         $object = new Societe($db);
         
-        //print_fiche_titre($langs->trans("EditCompany"));
+        print '<div class="row">';
+        print start_box($langs->trans("EditCompany"),"twelve","16-Pencil",false,true);
 
-        if ($socid)
-        {
-            try {
-                $object->load($socid);
-            } catch (Exception $e) {
-                $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
-                dol_syslog("soc::edit ".$error, LOG_ERR);
-                print $error;
-                exit;
-            }
-
-	        $head = societe_prepare_head($object);
-
-	        dol_fiche_head($head, 'card', $langs->trans("ThirdParty"),0,'company');
+        try {
+            $object->load($socid);
+        } catch (Exception $e) {
+            $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+            print $error;
+            exit;
+        }
 
 
             // Load object modCodeTiers
@@ -1170,34 +1164,57 @@ else
                     {
                         dol_print_error($db);
                     }
-                    $object->country		= $langs->trans("Country".$object->country_id);
+                    $object->country = $langs->trans("Country".$object->country_id);
                 }
             }
 
             dol_htmloutput_errors($error,$errors);
 
-            if ($conf->use_javascript_ajax)
-            {
-                print "\n".'<script type="text/javascript" language="javascript">';
-                print '$(document).ready(function () {
-                			$("#selectcountry_id").change(function() {
-                				document.formsoc.action.value="edit";
-                				document.formsoc.submit();
-                			});
+            print "\n".'<script type="text/javascript" language="javascript">';
+            print '$(document).ready(function () {
+            			$("#selectcountry_id").change(function() {
+              				document.formsoc.action.value="edit";
+               				document.formsoc.submit();
+               			});
                        })';
-                print '</script>'."\n";
-            }
+            print '</script>'."\n";
+            
 
-            print '<form enctype="multipart/form-data" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id().'" method="post" name="formsoc">';
+            print '<form class="nice" enctype="multipart/form-data" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id().'" method="post" name="formsoc">';
             print '<input type="hidden" name="action" value="update">';
             print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
             print '<input type="hidden" name="id" value="'.$object->id().'">';
             if ($modCodeClient->code_auto || $modCodeFournisseur->code_auto) print '<input type="hidden" name="code_auto" value="1">';
+            
+            print '<div class="row sepH_b">
+                    <div class="two columns">
+                        <div class="form_legend">
+                            <h4>Personal details</h4>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent pharetra metus non nisi feugiat porta&hellip;</p>
+			</div>
+                    </div>
+                    <div class="ten columns">';
+            
+            print '<div class="form_content">';
+            foreach($object->extrafields->fields->Main as  $key => $aRow)
+            {
+		if(is_object($aRow) && $aRow->enable)
+                {
+                    print '<div class="formRow">';
+                    print '<label for="'.$key.'">'.$langs->trans($key).'</label>';
+                    print '<input type="text" id="'.$key.'" name="'.$key.'" value="'.$object->$key.'" class="input-text large" />';
+                    print '</div>';
+                }
+            }
+            print '</div>';
+            print '</div>';
+            print '</div>';
+            
 
             print '<table class="border" width="100%">';
 
             // Name
-            print '<tr><td><span class="fieldrequired">'.$langs->trans('ThirdPartyName').'</span></td><td colspan="3"><input type="text" size="40" maxlength="60" name="nom" value="'.$object->name.'"></td></tr>';
+            print '<tr><td><span class="fieldrequired">'.$langs->trans('ThirdPartyName').'</span></td><td colspan="3"><input type="text" size="40" maxlength="60" name="nom" value="'.$object->ThirdPartyName.'"></td></tr>';
 
             // Prefix
             if (! empty($conf->global->SOCIETE_USEPREFIX))  // Old not used prefix field
@@ -1482,8 +1499,11 @@ else
 
             print '</form>';
 
-	        dol_fiche_end();
-        }
+	        //dol_fiche_end();
+        
+        print end_box();
+        print '</div>';
+        
     }
     else
     {
@@ -1506,7 +1526,7 @@ else
         
         $head = societe_prepare_head($object);
 
-        print start_box($langs->trans("ThirdParty"),"eight","16-Apartment-Building.png",$head);
+        print start_box($langs->trans("ThirdParty"),"eight","16-Apartment-Building.png",false,$head);
         // First onglet
         
         print '<article class="tab_pane">';
