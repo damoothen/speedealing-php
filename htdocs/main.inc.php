@@ -632,17 +632,8 @@ if (! defined('NOLOGIN'))
     }
 
     // If theme support option like flip-hide left menu and we use a smartphone, we force it
-    if (! empty($conf->global->MAIN_SMARTPHONE_OPTIM) && $conf->browser->phone && $conf->theme == 'eldy') $conf->global->MAIN_MENU_USE_JQUERY_LAYOUT='forced';
+    //if (! empty($conf->global->MAIN_SMARTPHONE_OPTIM) && $conf->browser->phone && $conf->theme == 'eldy') $conf->global->MAIN_MENU_USE_JQUERY_LAYOUT='forced';
 
-    // Set javascript option
-    if (! GETPOST('nojs'))   // If javascript was not disabled on URL
-    {
-        if (! empty($user->conf->MAIN_DISABLE_JAVASCRIPT))
-        {
-            $conf->use_javascript_ajax=! $user->conf->MAIN_DISABLE_JAVASCRIPT;
-        }
-    }
-    else $conf->use_javascript_ajax=0;
 }
 
 if (! defined('NOREQUIRETRAN'))
@@ -1133,14 +1124,13 @@ function top_menu($head, $title='', $target='', $disablejs=0, $disablehead=0, $a
         }
         if (! $menufound)	// If failed to include, we try with standard
         {
-            $top_menu='eldy_backoffice.php';
+            $top_menu='auguria_backoffice.php';
             include_once(DOL_DOCUMENT_ROOT."/core/menus/standard/".$top_menu);
         }
     }
 
     print "\n".'<!-- Start top horizontal menu '.$top_menu.' -->'."\n";
 
-    if ($conf->use_javascript_ajax && $conf->global->MAIN_MENU_USE_JQUERY_LAYOUT) print '<div class="ui-layout-north"> <!-- Begin top layout -->'."\n";
     print '<header>';
     print '<div class="container head_s_a">';
     
@@ -1309,9 +1299,6 @@ function left_menu($menu_array_before, $helppagename='', $moresearchform='', $me
 	}
     $hookmanager->initHooks(array('searchform','leftblock'));
 
-    //if ($conf->use_javascript_ajax && $conf->global->MAIN_MENU_USE_JQUERY_LAYOUT) print "\n".'<div class="ui-layout-west"> <!-- Begin left layout -->'."\n";
-    //else print '<td class="vmenu" valign="top">';
-
     print "\n";
 
     // Define $searchform
@@ -1468,8 +1455,7 @@ function left_menu($menu_array_before, $helppagename='', $moresearchform='', $me
     $leftblock=$hookmanager->executeHooks('printLeftBlock',$parameters);    // Note that $action and $object may have been modified by some hooks
     print $leftblock;
 
-    //if ($conf->use_javascript_ajax && $conf->global->MAIN_MENU_USE_JQUERY_LAYOUT) print '</div> <!-- End left layout -->'."\n";
-    //else print '</td>';
+    //print '</td>';
 
     print "\n";
     print '<!-- End of left area -->'."\n";
