@@ -43,11 +43,12 @@ $type2label=array(
 //'datetime'=>$langs->trans('DateAndTime')
 );
 
+$yesno=array($langs->trans('No'),$langs->trans('Yes'));
+
 $action=GETPOST("action");
 $elementtype='company';
 
 if (!$user->admin) accessforbidden();
-
 
 /*
  * Actions
@@ -98,10 +99,19 @@ if ($action == 'update' || $action == 'add')
                         
                         $object->fields->$_POST['fields']->$_POST['attrname']->type=$_POST['type'];
                         $object->fields->$_POST['fields']->$_POST['attrname']->length=$_POST['size'];
+                        $object->fields->$_POST['fields']->$_POST['attrname']->enable=$_POST['enable'];
+                        
                         if (isset($_POST['label']))
                         {
                             $object->fields->$_POST['fields']->$_POST['attrname']->label=$_POST['label'];
                         }
+                        foreach ($object->fields as $key => $value) {
+                            $array = new ArrayObject($object->fields->$key);
+                            $array->uasort(array("ExtraFields","compare")); //trie suivant la position
+                            $value=$array;
+                        }
+                        
+                        //print_r ($object->fields);exit;
                         
                         try {
                             $conf->couchdb->storeDoc($object);
@@ -256,14 +266,19 @@ if ($_GET["attrname"] && $action == 'edit')
     print '</tr>';
     // Type
     $type=$extrafields->fields->$_GET["fields"]->$_GET["attrname"]->type;
-    $size=$extrafields->fields->$_GET["fields"]->$_GET["attrname"]->length;
     print '<tr><td class="fieldrequired" required>'.$langs->trans("Type").'</td>';
     print '<td class="valeur">';
     print $type2label[$type];
     print '<input type="hidden" name="type" value="'.$type.'">';
     print '</td></tr>';
     // Size
+    $size=$extrafields->fields->$_GET["fields"]->$_GET["attrname"]->length;
     print '<tr><td class="fieldrequired" required>'.$langs->trans("Size").'</td><td class="valeur"><input type="text" name="size" size="5" value="'.$size.'"></td></tr>';
+    // Enable
+    $enable=$extrafields->fields->$_GET["fields"]->$_GET["attrname"]->enable;
+    print '<tr><td class="fieldrequired" required>'.$langs->trans("Enable").'</td><td class="valeur">';
+    print $form->selectarray('enable',$yesno,$enable);
+    print '</td></tr>';
 
     print '</table>';
 
@@ -281,17 +296,20 @@ foreach ($extrafields->fields as $key => $aRow)
     print '<div class="row">';
     print start_box($langs->trans($key),"twelve",'16-Alert-2.png','',true);
     
-    /*
-    * Barre d'actions
-    *
-    */
-    if ($action != 'create' && $action != 'edit')
+    if($aRow->edit)
     {
-        print '<div class="row sepH_a">';
-        print '<div class="right">';
-            print '<a class="gh_button primary pill icon add" href='.$_SERVER["PHP_SELF"].'?action=create&fields='.$key.' >'.$langs->trans("NewAttribute").'</a>';
-        print "</div>";
-        print "</div>";
+       /*
+        * Barre d'actions
+        *
+        */
+        if ($action != 'create' && $action != 'edit')
+        {
+            print '<div class="row sepH_a">';
+            print '<div class="right">';
+                print '<a class="gh_button primary pill icon add" href='.$_SERVER["PHP_SELF"].'?action=create&fields='.$key.' >'.$langs->trans("NewAttribute").'</a>';
+            print "</div>";
+            print "</div>";
+        }
     }
     
     print '<div class="row">';
@@ -303,6 +321,11 @@ foreach ($extrafields->fields as $key => $aRow)
     // Ligne des titres 
     print'<thead>';
     print'<tr>';
+    print'<th class="center">';
+    print $langs->trans("Position");
+    print'</th>';
+    $obj->aoColumns[$i]->bSearchable = false;
+    $i++;
     print'<th class="essential">';
     print $langs->trans("Label");
     print'</th>';
@@ -324,28 +347,52 @@ foreach ($extrafields->fields as $key => $aRow)
     $obj->aoColumns[$i]->bSearchable = false;
     $i++;
     print'<th class="center">';
-    print $langs->trans("Action");
+    print $langs->trans("Status");
     print'</th>';
     $obj->aoColumns[$i]->bSearchable = false;
     $i++;
+    if($aRow->edit)
+    {
+        print'<th class="center">';
+        print $langs->trans("Action");
+        print'</th>';
+        $obj->aoColumns[$i]->bSearchable = false;
+        $i++;
+    }
     print "</tr>";
+    print "</thead>";
     print "<tbody>";
 
     foreach($aRow as $key1 => $value)
     {
-        print "<tr>";
-        print "<td>".$langs->trans($value->label)."</td>";
-        print "<td>".$key1."</td>";
-        print "<td>".$value->type."</td>";
-        print '<td align="right">'.$value->length.'</td>';
-        print '<td class "content_actions" align="right"><a class="sepV_a" href="'.$_SERVER["PHP_SELF"].'?action=edit&fields='.$key.'&attrname='.$key1.'">'.img_edit().'</a>';
-        print '&nbsp; <a class="sepV_a" href="'.$_SERVER["PHP_SELF"].'?action=delete&fields='.$key.'&attrname='.$key1.'">'.img_delete().'</a></td>';
-        print "</tr>";
+        if(is_object($value))
+        {
+            print "<tr>";
+            print '<td align="center">'.$value->position.'</td>';
+            print "<td>".(empty($value->label)?$langs->trans($key1):$langs->trans($value->label))."</td>";
+            print "<td>".$key1."</td>";
+            print "<td>".$value->type."</td>";
+            print '<td align="right">'.$value->length.'</td>';
+            print '<td align="center">';
+            if($value->enable)
+                print '<span class="lbl ok_bg">'.$langs->trans("Enabled").'</td>';
+            else
+                print '<span class="lbl error_bg">'.$langs->trans("Disabled").'</td>';
+            if($aRow->edit)
+            {
+                print '<td class "content_actions" align="right">';
+                print '<a class="sepV_a" href="'.$_SERVER["PHP_SELF"].'?action=edit&fields='.$key.'&attrname='.$key1.'">'.img_edit().'</a>';
+                print '<a class="sepV_a" href="'.$_SERVER["PHP_SELF"].'?action=delete&fields='.$key.'&attrname='.$key1.'">'.img_delete().'</a></td>';
+            }
+            print "</tr>";
+        }
     }
 
     print "</tbody>";
     print "</table>";
     print "</div>";
+    
+    print $extrafields->_datatables($obj,$key);
     
     print end_box();
     print '</div>';

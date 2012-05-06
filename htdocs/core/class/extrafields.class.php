@@ -141,6 +141,24 @@ class ExtraFields extends CommonObject
         $out=$value;
         return $out;
     }
+    
+    /**
+     *  Compare this->position for usort
+     *
+     *  @param  int		$a			first element
+     *  @param  int		$b			second element
+     *  @return	-1,0,1
+     */
+    public function compare($a, $b)
+    {
+        $a1 = $a->position;
+        $b1 = $b->position;
+        
+        if ($a1 == $b1) {
+            return 0;
+        }
+        return ($a1 > $b1) ? +1 : -1;
+    }
 
 }
 ?>

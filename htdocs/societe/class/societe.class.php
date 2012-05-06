@@ -1876,8 +1876,12 @@ class Societe extends CommonObject
         
         // list of compta codes
         foreach ($this->extrafields->fields->Accounting as $key => $aRow) {
-            $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Money.png" title="'.$langs->trans($aRow->label).'" />';
-            $rtr.= '<li class="s_color"><span>'.$langs->trans($aRow->label).'</span><span> : </span><span class="ttip_r edit">'.$this->Accounting->$key.'</span><span>'.$img.'</span></li>';
+            if(is_object($aRow) && $aRow->enable)
+            {
+                $label = (empty($aRow->label) ? $langs->trans($key) : $langs->trans($aRow->label));
+                $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Money.png" title="'.$label.'" />';
+                $rtr.= '<li><span class="s_color">'.$label.'</span><span> : </span><span class="ttip_r edit">'.$this->Accounting->$key.'</span><span>'.$img.'</span></li>';
+            }
         }
 
         $rtr.= '</ul>';
@@ -1902,11 +1906,15 @@ class Societe extends CommonObject
         
         // list tel, fax, mail
         foreach ($this->extrafields->fields->AddressBook as $key => $aRow) {
-            $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/'.$this->extrafields->fields->AddressBook->$key->type.'.png" title="'.$langs->trans($aRow->label).'" />';
-            if($this->extrafields->fields->AddressBook->$key->type == "AC_EMAIL")
-        	$rtr.= '<li class="s_color"><span>'.$langs->trans($aRow->label).'</span> : <span class="ttip_r edit">'.$this->AddressBook->$key.'</span><span>'.$img.'</span></li>';
-            else
-                $rtr.= '<li class="s_color"><span>'.$langs->trans($aRow->label).'</span> : <span class="ttip_r edit">'.dol_print_phone($this->AddressBook->$key,$this->country_id,0,$this->id(),$this->extrafields->fields->AddressBook->$key->type).'</span><span>'.$img.'</span></li>';
+            if(is_object($aRow) && $aRow->enable)
+            {
+                $label = (empty($aRow->label) ? $langs->trans($key) : $langs->trans($aRow->label));
+                $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/'.$this->extrafields->fields->AddressBook->$key->type.'.png" title="'.$label.'" />';
+                if($this->extrafields->fields->AddressBook->$key->type == "AC_EMAIL")
+                    $rtr.= '<li><span class="s_color">'.$label.'</span> : <span class="ttip_r edit">'.$this->AddressBook->$key.'</span><span>'.$img.'</span></li>';
+                else
+                    $rtr.= '<li><span class="s_color">'.$label.'</span> : <span class="ttip_r edit">'.dol_print_phone($this->AddressBook->$key,$this->country_id,0,$this->id(),$this->extrafields->fields->AddressBook->$key->type).'</span><span>'.$img.'</span></li>';
+            }
         }
         
         $rtr.= '</ul>';
@@ -1931,8 +1939,12 @@ class Societe extends CommonObject
         
         // list of compta codes
         foreach ($this->extrafields->fields->Deal as $key => $aRow) {
-            $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Money.png" title="'.$langs->trans($aRow->label).'" />';
-            $rtr.= '<li class="s_color"><span>'.$langs->trans($aRow->label).'</span><span> : </span><span class="ttip_r edit">'.$this->Deal->$key.'</span><span>'.$img.'</span></li>';
+            if(is_object($aRow) && $aRow->enable)
+            {
+                $label = (empty($aRow->label) ? $langs->trans($key) : $langs->trans($aRow->label));
+                $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Money.png" title="'.$label.'" />';
+                $rtr.= '<li><span class="s_color">'.$label.'</span><span> : </span><span class="ttip_r edit">'.$this->Deal->$key.'</span><span>'.$img.'</span></li>';
+            }
         }
         $rtr.= '</ul>';
         $rtr.= '</div>';

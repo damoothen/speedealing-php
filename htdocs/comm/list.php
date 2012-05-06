@@ -320,7 +320,7 @@ print'</tbody>';
 
 print "</table>";
 
-print $object->_datatables($obj,"#societe");
+print $object->_datatables($obj,"societe",true,true);
 
 print end_box();
 print '</div>'; // end row

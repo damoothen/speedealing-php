@@ -2753,11 +2753,11 @@ abstract class CommonObject extends couchDocument
          *  @param $ref_css name of #list
 	 *  @return string
 	 */
-	public function _datatables($obj,$ref_css,$json=true, $ColSearch=false)
+	public function _datatables($obj,$ref_css,$json=false, $ColSearch=false)
 	{
             global $conf,$langs;
             
-            if(!isset($obj->aaSorting))
+            if(!isset($obj->aaSorting) && $json)
                 $obj->aaSorting = array(array(1, "asc"));
             
             if($json)
@@ -2777,7 +2777,10 @@ abstract class CommonObject extends couchDocument
             $obj->oTableTools->sSwfPath = DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/TableTools/media/swf/copy_csv_xls.swf';
             $obj->oTableTools->aButtons = array("xls");
             $obj->oColVis->buttonText = 'Voir/Cacher';
-            $obj->oColVis->aiExclude = array(0,1); // Not cacheable
+            if($json)
+                $obj->oColVis->aiExclude = array(0,1); // Not cacheable
+            else
+                $obj->oColVis->aiExclude = array(0); // Not cacheable
             //$obj->oColVis->bRestore = true;
             //$obj->oColVis->sAlign = 'left';
             
@@ -2788,7 +2791,7 @@ abstract class CommonObject extends couchDocument
             
             // jeditable
             $obj->fnDrawCallback= '%function () {
-            $("'.$ref_css.' tbody td.edit").editable( "'.$_SERVER['PHP_SELF'].'?json=edit", {
+            $("#'.$ref_css.' tbody td.edit").editable( "'.$_SERVER['PHP_SELF'].'?json=edit", {
                 "callback": function( sValue, y ) {
                     oTable.fnDraw();
                 },
@@ -2803,7 +2806,7 @@ abstract class CommonObject extends couchDocument
             
             $output ='<script type="text/javascript" charset="utf-8">';
             $output.='$(document).ready(function() {';
-            $output.='oTable = $(\''.$ref_css.'\').dataTable(';
+            $output.='oTable = $(\'#'.$ref_css.'\').dataTable(';
             
             $json = json_encode($obj);
             $json = str_replace('"%', '', $json);
