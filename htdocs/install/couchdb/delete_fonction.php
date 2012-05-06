@@ -28,11 +28,11 @@ require_once("../../main.inc.php");
  */
 
 
-$flush=1;
+$flush=0;
 if($flush)
 {
     // reset old value
-    $result = $conf->couchdb->limit(50000)->getView('societe','target_id');
+    $result = $conf->couchdb->limit(50000)->getView('mouvement','target_id');
     $i=0;
     
     if(count($result->rows)==0)

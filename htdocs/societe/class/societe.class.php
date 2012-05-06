@@ -42,6 +42,7 @@ class Societe extends CommonObject
     protected $childtables=array("propal","commande","facture","contrat","facture_fourn","commande_fournisseur");    // To test if we can delete object
     protected $ismultientitymanaged = 1;	// 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
     var $extrafields;
+    var $status;
     
     
     var $db;
@@ -53,7 +54,19 @@ class Societe extends CommonObject
      */
     public function Societe($db)
     {
+        global $conf;
+        
         $this->db = $db;
+        
+        try {
+            $this->extrafields = $conf->couchdb->getDoc("extrafields:company"); // load fields company
+            $this->status = $conf->couchdb->getDoc("dict:fk_stcomm"); //load status table
+        }catch (Exception $e) {
+            $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+            print $error;
+            exit;
+        }
+
         
         parent::__construct($db);
 
@@ -738,9 +751,9 @@ class Societe extends CommonObject
      *    @param	int		$mode       0=libelle long, 1=libelle court, 2=Picto + Libelle court, 3=Picto, 4=Picto + Libelle long
      *    @return   string        		Libelle
      */
-    function getLibStatut($mode=0)
+    function getLibStatus()
     {
-        return $this->LibStatut($this->status,$mode);
+        return $this->LibStatut($this->Status);
     }
 
     /**
@@ -750,41 +763,13 @@ class Societe extends CommonObject
      *  @param	int		$mode           0=libelle long, 1=libelle court, 2=Picto + Libelle court, 3=Picto, 4=Picto + Libelle long, 5=Libelle court + Picto
      *  @return	string          		Libelle du statut
      */
-    function LibStatut($statut,$mode=0)
+    function LibStatut($status)
     {
-        global $langs;
+        global $langs,$conf;
         $langs->load('companies');
-
-        if ($mode == 0)
-        {
-            if ($statut==0) return $langs->trans("ActivityCeased");
-            if ($statut==1) return $langs->trans("InActivity");
-        }
-        if ($mode == 1)
-        {
-            if ($statut==0) return '<span class="lbl error_bg sl_status">'.$langs->trans("ActivityCeased").'</span>';
-            if ($statut==1) return '<span class="lbl ok_bg sl_status">'.$langs->trans("InActivity").'</span>';
-        }
-        if ($mode == 2)
-        {
-            if ($statut==0) return img_picto($langs->trans("ActivityCeased"),'statut6').' '.$langs->trans("ActivityCeased");
-            if ($statut==1) return img_picto($langs->trans("InActivity"),'statut4').' '.$langs->trans("InActivity");
-        }
-        if ($mode == 3)
-        {
-            if ($statut==0) return img_picto($langs->trans("ActivityCeased"),'statut6');
-            if ($statut==1) return img_picto($langs->trans("InActivity"),'statut4');
-        }
-        if ($mode == 4)
-        {
-            if ($statut==0) return img_picto($langs->trans("ActivityCeased"),'statut6').' '.$langs->trans("ActivityCeased");
-            if ($statut==1) return img_picto($langs->trans("InActivity"),'statut4').' '.$langs->trans("InActivity");
-        }
-        if ($mode == 5)
-        {
-            if ($statut==0) return $langs->trans("ActivityCeased").' '.img_picto($langs->trans("ActivityCeased"),'statut6');
-            if ($statut==1) return $langs->trans("InActivity").' '.img_picto($langs->trans("InActivity"),'statut4');
-        }
+        
+        return '<span class="lbl '.$this->status->$status->cssClass.' sl_status">'.$langs->trans($this->status->$status->label).'</span>';
+        
     }
 
     /**
@@ -1791,7 +1776,7 @@ class Societe extends CommonObject
         $rtr.= '<div class="five column vcard">';
         $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Apartment-Building.png" alt="" />';
         $rtr.= '<h1 class="sepH_a">'.$img.$this->name.'</h1>';
-        $rtr.= $this->getLibStatut(1);
+        $rtr.= $this->getLibStatus();
         $rtr.= '<h5 class="sepH_a s_color">';
         $rtr.= dol_print_address($this->address,'gmap','thirdparty',$this->id());
         $rtr.= '</h5>';

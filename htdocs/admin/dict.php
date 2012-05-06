@@ -726,7 +726,7 @@ if ($id)
         print '<tr><td colspan="'.(count($fieldlist)+2).'">&nbsp;</td></tr>';
     }
 
-
+    
     // List of available values in database
     dol_syslog("htdocs/admin/dict sql=".$sql, LOG_DEBUG);
     $resql=$db->query($sql);
@@ -782,6 +782,8 @@ if ($id)
             print_liste_field_titre($langs->trans("Status"),"dict.php","active",($page?'page='.$page.'&':'').'&id='.$id,"",'align="center"',$sortfield,$sortorder);
             print '<td colspan="2"  class="liste_titre">&nbsp;</td>';
             print '</tr>';
+            
+            $dict = new stdClass(); // for couchdb
 
             // Lines with values
             while ($i < $num)
@@ -938,7 +940,53 @@ if ($id)
 
                     print "</tr>\n";
                 }
+                
+                if($id==28)
+                {
+                    $arrayType = array(-1 => "closed",0=> "suspect",1=>"prospect",2=>"customer");
+                    $arrayColor = array (-1 => "error_bg", 0=> "neutral_bg", 1=> "info_bg", 2=>"ok_bg");// definie CSS for color
+                }
+                
+                
+                $code = $obj->code;
+                
+                $dict->$code->enable=(bool)$obj->active;
+                $dict->$code->label=$obj->libelle;
+                if($id==28)
+                {
+                    $dict->$code->type=$arrayType[$obj->type];
+                    $dict->$code->cssClass=$arrayColor[$obj->type];
+                }
+                
                 $i++;
+                
+            }
+            
+            // convert dictionnary
+            $dictid=substr($tabname[$id],6,strlen($tabname[$id])); //retire llx_c_
+            $dictid="dict:fk_".$dictid;
+            // if not exist write the dictionnary in couchdb
+            try {
+                $conf->couchdb->getDoc($dictid); // test if exit
+                print "Dictionnaire déjà transféré !";
+                $exist=1;
+            }
+            catch (Exception $e) {
+                $exist=0;
+            }
+            if(!$exist)
+            {
+                $dict->class="dict";
+                $dict->_id=$dictid;
+                try {
+                    $conf->couchdb->storeDoc($dict);
+                    print "Dictionnaire transfert : ok !";
+                }catch (Exception $e) {
+                    $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+                    print $error;
+                    exit;
+                }
+                //print_r($dict);
             }
         }
     }

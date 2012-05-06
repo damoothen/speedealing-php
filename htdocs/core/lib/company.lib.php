@@ -37,28 +37,18 @@ function societe_prepare_head($object)
     global $langs, $conf, $user;
     $h = 0;
     $head = array();
-
-    $head[$h][0] = DOL_URL_ROOT.'/societe/fiche.php?id='.$object->id();
-    $head[$h][1] = $langs->trans("Card");
-    $head[$h][2] = 'card';
-    $h++;
-
-    // TODO Remove tests on object->object. Functions must be called with a company object directly
-    if (($object->client==2 || $object->client==1 || $object->client==3 
-    || (isset($object->object) && $object->object->client==2) || (isset($object->object) && $object->object->client==3)) && empty($conf->global->SOCIETE_DISABLE_PROSPECTS))
+    
+    foreach ($object->extrafields->fields as $key => $aRow)
     {
-        $head[$h][0] = DOL_URL_ROOT.'/comm/prospect/fiche.php?socid='.$object->id;
-        $head[$h][1] = $langs->trans("Commercial");
-        $head[$h][2] = 'prospect';
-        $h++;
+        if($aRow->edit)
+        {
+            $head[$h][0] = "#";
+            $head[$h][1] = $langs->trans($key);
+            $head[$h][2] = $key;
+            $h++;
+        }
     }
-    if ($object->client==1 || $object->client==2 || $object->client==3 || (is_object($object->object) && $object->object->client==1) || (is_object($object->object) && $object->object->client==3))
-    {
-        $head[$h][0] = DOL_URL_ROOT.'/comm/fiche.php?socid='.$object->id;
-        $head[$h][1] = $langs->trans("Comptable");
-        $head[$h][2] = 'customer';
-        $h++;
-    }
+
     if (! empty($conf->fournisseur->enabled) && ($object->fournisseur || (isset($object->object) && $object->object->fournisseur)) && ! empty($user->rights->fournisseur->lire))
     {
         $head[$h][0] = DOL_URL_ROOT.'/fourn/fiche.php?socid='.$object->id;

@@ -54,19 +54,6 @@ $confirm	= GETPOST('confirm');
 $socid		= GETPOST('id');
 if ($user->societe_id) $socid=$user->societe_id;
 
-
-$extrafields = new ExtraFields($db);
-// Load attribute_label
-try {
-    $extrafields->load("extrafields:"."company");
-}
-catch (Exception $e) {
-    $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
-    print $error;
-    exit;
-}
-
-
 // Get object canvas (By default, this is not defined, so standard usage of dolibarr)
 /*$object->getCanvas($socid);
 $canvas = $object->canvas?$object->canvas:GETPOST("canvas");
@@ -1089,8 +1076,6 @@ else
                 exit;
             }
 
-            $object->extrafields = $extrafields;
-
 	        $head = societe_prepare_head($object);
 
 	        dol_fiche_head($head, 'card', $langs->trans("ThirdParty"),0,'company');
@@ -1516,8 +1501,6 @@ else
             print $error;
             exit;
         }
-        
-        $object->extrafields = $extrafields;
         
         print '<div class="row">';
         
