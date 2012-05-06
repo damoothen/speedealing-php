@@ -58,7 +58,7 @@ function print_auguria_menu($db,$atarget,$type_user)
                     $idsel=(empty($newTabMenu->_id)?'none':$newTabMenu->_id);
                     if ($newTabMenu->perms == true)	// Is allowed
                     {
-                        $url = menuURL($newTabMenu);
+                        $url = menuURL($newTabMenu, $newTabMenu->_id);
                         
                         //print $url;exit;
         
@@ -66,7 +66,7 @@ function print_auguria_menu($db,$atarget,$type_user)
                         $classname='mb_parent';
                         if($i==0)
                             $classname.=' first_el';
-                        if (! empty($_SESSION['idmenu']) && menuSelected($newTabMenu, $_SESSION['idmenu']))
+                        if (! empty($_SESSION['idmenu']) && menuSelected($newTabMenu, $newTabMenu->_id))
                         {
                             $classname.=' pageselected';
                             $selectnav[0]->name = $newTabMenu->title;
@@ -138,7 +138,7 @@ function print_submenu($submenu, &$selectnav, $level)
     global $user,$conf,$langs;
     
     print '<ul style="display:none">';
-    foreach ($submenu as $aRow)
+    foreach ($submenu as $key => $aRow)
     {
         $menu = $aRow;
         //print_r($menu);exit;
@@ -146,10 +146,10 @@ function print_submenu($submenu, &$selectnav, $level)
                 
         if ($newTabMenu->enabled == true)
         {
-            $idsel=(empty($newTabMenu->_id)?'none':$newTabMenu->_id);
+            //$idsel=(empty($newTabMenu_id)?'none':$newTabMenu->_id);
             if ($newTabMenu->perms == true)	// Is allowed
             {
-                $url = menuURL($newTabMenu);
+                $url = menuURL($newTabMenu, $key);
                        
                 //print $url;exit;
         
@@ -157,7 +157,7 @@ function print_submenu($submenu, &$selectnav, $level)
                 $classname='mb_parent';
                 if($i==0)
                     $classname.=' first_el';
-                if (! empty($_SESSION['idmenu']) && menuSelected($newTabMenu, $_SESSION['idmenu']))
+                if (! empty($_SESSION['idmenu']) && menuSelected($newTabMenu,$key))
                 {
                     $classname.=' pageselected';
                     $selectnav[$level]->name = $newTabMenu->title;
@@ -166,7 +166,7 @@ function print_submenu($submenu, &$selectnav, $level)
 
                 print '<li>';
                 print '<a class="'.$classname.'" href="'.$url.'">';
-                print '<!-- Add menu entry with mainmenu='.$newTabMenu->_id.' -->'."\n";
+                print '<!-- Add menu entry with mainmenu='.$key.' -->'."\n";
                 print $newTabMenu->title;
                 print '</a>';
                 // Submenu level 1
@@ -255,7 +255,7 @@ function verifyMenu($newTabMenu)
  * @param	object		$newTabMenu         One Menu Entry
  * @return	url
  */
-function menuURL($newTabMenu)
+function menuURL($newTabMenu, $_id)
 {
     global $user;
     
@@ -271,7 +271,7 @@ function menuURL($newTabMenu)
 	{
             if (! preg_match('/\?/',$url)) $url.='?';
             else $url.='&';
-	    $url.='idmenu='.$newTabMenu->_id;
+	    $url.='idmenu='.$_id;
 	}
 	//$url.="idmenu=".$newTabMenu[$i]['rowid'];    // Already done by menuLoad
      }
@@ -287,16 +287,16 @@ function menuURL($newTabMenu)
  * @param	session		$session            Session Var
  * @return	true if selected
  */
-function menuSelected($newTabMenu,$session)
-{
-    if($newTabMenu->_id==$session)
+function menuSelected($newTabMenu,$_id)
+{   
+    if($_id==$_SESSION['idmenu'])
         return true;
     
     if(isset($newTabMenu->submenu))
     {
-        foreach($newTabMenu->submenu AS $aRow)
+        foreach($newTabMenu->submenu AS $key => $aRow)
         {
-            if(menuSelected($aRow, $session))
+            if(menuSelected($aRow, $key))
                 return true;
         }
     }

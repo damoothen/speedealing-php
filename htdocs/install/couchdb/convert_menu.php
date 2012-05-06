@@ -106,7 +106,6 @@ while ($aRow = $db->fetch_object($result)) {
         }
         
         $name = "menu:".strtolower($aRow->title);
-        $aRow->_id = $name;
         
         if($aRow->type == "top")
         {
@@ -133,7 +132,6 @@ while ($aRow = $db->fetch_object($result)) {
             unset($aRow->leftmenu);     
             unset($aRow->mainmenu);
             unset($aRow->tms);
-            $aRow->_id = "menu:".strtolower($aRow->title);
             $obj[$tabname[$tabperefils[$fk_menu]]]->submenu[$tabname[$fk_menu]]->submenu[$name] = $aRow;
             uasort($obj[$tabname[$tabperefils[$fk_menu]]]->submenu[$tabname[$fk_menu]]->submenu,array("Menubase","compare"));
         }
@@ -143,7 +141,6 @@ while ($aRow = $db->fetch_object($result)) {
             unset($aRow->leftmenu);     
             unset($aRow->mainmenu);
             unset($aRow->tms);
-            $aRow->_id = "menu:".strtolower($aRow->title);
             $obj[$tabname[$tabperefils[$tabperefils[$fk_menu]]]]->submenu[$tabname[$tabperefils[$fk_menu]]]->submenu[$tabname[$fk_menu]]->submenu[$name] = $aRow;
             uasort($obj[$tabname[$tabperefils[$tabperefils[$fk_menu]]]]->submenu[$tabname[$tabperefils[$fk_menu]]]->submenu[$tabname[$fk_menu]]->submenu,array("Menubase","compare"));
         }
