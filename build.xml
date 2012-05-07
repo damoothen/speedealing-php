@@ -2,7 +2,7 @@
 <project name="dolibarr" default="hudson" basedir=".">
 
 <!-- Exclude/ignore paths -->
- <property name="ignorepaths" value="${basedir}/htdocs/conf,${basedir}/htdocs/core/filemanagerdol,${basedir}/htdocs/includes" />
+ <property name="ignorepaths" value="${basedir}/htdocs/conf,${basedir}/htdocs/core/filemanagerdol,${basedir}/htdocs/includes,${basedir}/htdocs/theme/pertho_sample" />
  <property name="ignoreregexp" value="**/PEAR/*,**/NET/*,**/HTTP/*" />
  
  <target name="clean">
@@ -46,6 +46,7 @@
    				--exclude '${basedir}/htdocs/conf'
    				--exclude '${basedir}/htdocs/core/filemanagerdol'
    				--exclude '${basedir}/htdocs/includes'
+				--exclude '${basedir}/htdocs/theme/pertho_sample'
    				--exclude '**/PEAR/*,**/NET/*,**/HTTP/*'
    				--min-tokens 70
    				--min-lines 20 
@@ -61,6 +62,7 @@
    				--exclude '${basedir}/htdocs/conf'
    				--exclude '${basedir}/htdocs/core/filemanagerdol'
    				--exclude '${basedir}/htdocs/includes'
+				--exclude '${basedir}/htdocs/theme/pertho_sample'
    				--exclude '**/PEAR/*,**/NET/*,**/HTTP/*'
    				htdocs
    				" />

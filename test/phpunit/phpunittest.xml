@@ -23,6 +23,7 @@
     <directory suffix=".php">../../htdocs/contact/canvas/</directory>
     <directory suffix=".php">../../htdocs/societe/canvas/</directory>
     <directory suffix=".php">../../htdocs/includes/</directory>
+    <directory suffix=".php">../../htdocs/theme/pertho_sample/</directory>
   </blacklist>
   <whitelist addUncoveredFilesFromWhitelist="true">
     <directory suffix=".class.php">../../htdocs/</directory>
@@ -46,6 +47,7 @@
     <directory suffix=".php">../../htdocs/contact/canvas/</directory>
     <directory suffix=".php">../../htdocs/societe/canvas/</directory>
     <directory suffix=".php">../../htdocs/includes/</directory>
+    <directory suffix=".php">../../htdocs/theme/pertho_sample/</directory>
     <file>../../htdocs/boutique/osc_master.inc.php</file>
     <file>../../htdocs/compta/bank/pre.inc.php</file>
     <file>../../htdocs/compta/paiement/cheque/pre.inc.php</file>
