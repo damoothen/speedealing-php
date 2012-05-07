@@ -1186,6 +1186,8 @@ else
             print '<input type="hidden" name="id" value="'.$object->id().'">';
             if ($modCodeClient->code_auto || $modCodeFournisseur->code_auto) print '<input type="hidden" name="code_auto" value="1">';
             
+            
+            // Block Main
             print '<div class="row sepH_b">
                     <div class="two columns">
                         <div class="form_legend">
@@ -1195,43 +1197,67 @@ else
                     </div>
                     <div class="ten columns">';
             
-            print '<div class="form_content">';
-            foreach($object->extrafields->fields->Main as  $key => $aRow)
+            print '<div class="form_content">'; //forms columns
+            print ' <div class="eight columns">';// center form
             {
-		if(is_object($aRow) && $aRow->enable)
+                // Name
+                $key = "ThirdPartyName";
+                if($object->fk_extrafields->fields->Main->$key->enable)
                 {
                     print '<div class="formRow">';
                     print '<label for="'.$key.'">'.$langs->trans($key).'</label>';
-                    print '<input type="text" maxlength="'.$aRow->length.'" id="'.$key.'" name="'.$key.'" value="'.$object->$key.'" class="input-text large" />';
+                    print '<input type="text" maxlength="'.$object->fk_extrafields->fields->Main->$key->length.'" id="'.$key.'" name="'.$key.'" value="'.$object->$key.'" class="input-text large" />';
                     print '</div>';
                 }
             }
-            print '</div>';
-            print '</div>';
-            print '</div>';
+            print '</div>'; // end center form
+            
+            // right forms
+            print ' <div class="four columns">';// little right form
+            {
+                // Prefix
+                $key = "Prefix";
+                if($object->fk_extrafields->fields->Main->$key->enable)
+                {
+                    print '<div class="formRow">';
+                    print '<label for="'.$key.'">'.$langs->trans($key).'</label>';
+                    if (($prefixCustomerIsUsed || $prefixSupplierIsUsed) && $object->$key)
+                    {
+                        print '<input type="hidden" name="'.$key.'" value="'.$object->prefix_comm.'">';
+                        print $object->$key;
+                    }
+                    else
+                        print '<input type="text" maxlength="'.$object->fk_extrafields->fields->Main->$key->length.'" id="'.$key.'" name="'.$key.'" value="'.$object->$key.'" class="input-text small" />'; 
+                    print '</div>';
+                }
+                
+                // Status
+                $key = "Status";
+                if($object->fk_extrafields->fields->Main->$key->enable)
+                {
+                    if(empty($object->$key))
+                        $country=substr($langs->defaultlang,3,5);
+                    else
+                        $country=$boject->$key;
+                    print '<div class="formRow">';
+                    print '<label for="'.$key.'">'.$langs->trans($key).'</label>';
+                    print '<select name="'.$key.'" id="'.$key.'">';
+                    //foreach ($object->extrafields->fields->Main->$key->enable)
+                    print '<select>';
+                    print '</div>';
+                }
+                
+            }
+            print '</div>';// end right forms
+            
+            
+            print '</div>'; // end forms columns
+            
+            print '</div>'; // end ten columns
+            print '</div>'; // end row
             
 
             print '<table class="border" width="100%">';
-
-            // Name
-            print '<tr><td><span class="fieldrequired">'.$langs->trans('ThirdPartyName').'</span></td><td colspan="3"><input type="text" size="40" maxlength="60" name="nom" value="'.$object->ThirdPartyName.'"></td></tr>';
-
-            // Prefix
-            if (! empty($conf->global->SOCIETE_USEPREFIX))  // Old not used prefix field
-            {
-                print '<tr><td>'.$langs->trans("Prefix").'</td><td colspan="3">';
-                // It does not change the prefix mode using the auto numbering prefix
-                if (($prefixCustomerIsUsed || $prefixSupplierIsUsed) && $object->prefix_comm)
-                {
-                    print '<input type="hidden" name="prefix_comm" value="'.$object->prefix_comm.'">';
-                    print $object->prefix_comm;
-                }
-                else
-                {
-                    print '<input type="text" size="5" maxlength="5" name="prefix_comm" value="'.$object->prefix_comm.'">';
-                }
-                print '</td>';
-            }
 
             // Prospect/Customer
             print '<tr><td width="25%"><span class="fieldrequired">'.$langs->trans('ProspectCustomer').'</span></td><td width="25%"><select class="flat" name="client">';

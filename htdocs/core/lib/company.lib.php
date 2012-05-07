@@ -38,7 +38,7 @@ function societe_prepare_head($object)
     $h = 0;
     $head = array();
     
-    foreach ($object->extrafields->fields as $key => $aRow)
+    foreach ($object->fk_extrafields->fields as $key => $aRow)
     {
         if($aRow->edit)
         {

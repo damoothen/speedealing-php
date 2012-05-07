@@ -59,7 +59,7 @@ if($_GET['json']=="list")
     "aaData" => array()
      );
 
-    $result = $object->getView("list");
+    $result = $object->getView("societe","list");
 
     //print_r($result);
     //exit;
@@ -148,7 +148,7 @@ print start_box($titre,"twelve","16-Companies.png");
 $i=0;
 $obj=new stdClass();
 
-print '<table cellpadding="0" cellspacing="0" border="0" class="display dt_act" id="societe" >';
+print '<table class="display dt_act" id="societe" >';
 // Ligne des titres 
 print'<thead>';
 print'<tr>';
@@ -162,7 +162,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans("Company");
 print'</th>';
-$obj->aoColumns[$i]->mDataProp = "name";
+$obj->aoColumns[$i]->mDataProp = "ThirdPartyName";
 $obj->aoColumns[$i]->bUseRendered = true;
 $obj->aoColumns[$i]->bSearchable = true;
 $obj->aoColumns[$i]->fnRender= '%function(obj) {
@@ -170,13 +170,13 @@ var ar = [];
 ar[ar.length] = "<a href=\"'.DOL_URL_ROOT.'/societe/fiche.php?id=";
 ar[ar.length] = obj.aData._id;
 ar[ar.length] = "\"><img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Apartment-Building.png\" border=\"0\" alt=\"Afficher societe : ";
-ar[ar.length] = obj.aData.name.toString();
+ar[ar.length] = obj.aData.ThirdPartyName.toString();
 ar[ar.length] = "\" title=\"Afficher soci&eacute;t&eacute; : ";
-ar[ar.length] = obj.aData.name.toString();
+ar[ar.length] = obj.aData.ThirdPartyName.toString();
 ar[ar.length] = "\"></a> <a href=\"'.DOL_URL_ROOT.'/societe/fiche.php?id=";
 ar[ar.length] = obj.aData._id;
 ar[ar.length] = "\">";
-ar[ar.length] = obj.aData.name.toString();
+ar[ar.length] = obj.aData.ThirdPartyName.toString();
 ar[ar.length] = "</a>";
 var str = ar.join("");
 return str;
@@ -185,14 +185,14 @@ $i++;
 print'<th class="essential">';
 print $langs->trans("Town");
 print'</th>';
-$obj->aoColumns[$i]->mDataProp = "town";
+$obj->aoColumns[$i]->mDataProp = "Town";
 $obj->aoColumns[$i]->sClass = "center edit";
 $obj->aoColumns[$i]->sDefaultContent = "";
 $i++;
 print'<th class="essential">';
 print $langs->trans("Zip");
 print'</th>';
-$obj->aoColumns[$i]->mDataProp = "zip";
+$obj->aoColumns[$i]->mDataProp = "Zip";
 $obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->bVisible = false;
 $obj->aoColumns[$i]->sDefaultContent = "";
@@ -240,12 +240,12 @@ $i++;
 print'<th class="essential">';
 print $langs->trans("Status");
 print'</th>';
-$obj->aoColumns[$i]->mDataProp = "fk_stcomm";
+$obj->aoColumns[$i]->mDataProp = "Status";
 $obj->aoColumns[$i]->sClass = "center";
-$obj->aoColumns[$i]->sDefaultContent = 0;
+$obj->aoColumns[$i]->sDefaultContent = "";
 $obj->aoColumns[$i]->fnRender = '%function(obj) {
 var status = new Array();
-var stcomm = obj.aData.fk_stcomm;
+var stcomm = obj.aData.Status;
 if(typeof str === "undefined")
     stcomm = 0;
 status[0] = new Array("'.$langs->trans('MailingStatusDraft').'",0);

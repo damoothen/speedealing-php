@@ -41,8 +41,9 @@ class Societe extends CommonObject
     public $fk_element='fk_soc';
     protected $childtables=array("propal","commande","facture","contrat","facture_fourn","commande_fournisseur");    // To test if we can delete object
     protected $ismultientitymanaged = 1;	// 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
-    var $extrafields;
-    var $status;
+    var $fk_extrafields;
+    var $fk_status;
+    var $fk_country;
     
     
     var $db;
@@ -59,8 +60,9 @@ class Societe extends CommonObject
         $this->db = $db;
         
         try {
-            $this->extrafields = $conf->couchdb->getDoc("extrafields:company"); // load fields company
-            $this->status = $conf->couchdb->getDoc("dict:fk_stcomm"); //load status table
+            $this->fk_extrafields = $conf->couchdb->getDoc("extrafields:company"); // load fields company
+            $this->fk_status = $conf->couchdb->getDoc($this->fk_extrafields->fields->Main->Status->dict); //load status table
+            $this->fk_country = $conf->couchdb->getDoc($this->fk_extrafields->fields->Main->Country->dict); //load country table
         }catch (Exception $e) {
             $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
             print $error;
@@ -771,7 +773,7 @@ class Societe extends CommonObject
         if(empty($status))
             return null;
         
-        return '<span class="lbl '.$this->status->$status->cssClass.' sl_status ttip_r edit">'.$langs->trans($this->status->$status->label).'</span>';        
+        return '<span class="lbl '.$this->fk_status->$status->cssClass.' sl_status ttip_r edit">'.$langs->trans($this->status->$status->label).'</span>';        
     }
 
     /**
@@ -1862,7 +1864,7 @@ class Societe extends CommonObject
         $rtr.= '<ul class="sepH_c fright">';
         
         // list of compta codes
-        foreach ($this->extrafields->fields->Accounting as $key => $aRow) {
+        foreach ($this->fk_extrafields->fields->Accounting as $key => $aRow) {
             if(is_object($aRow) && $aRow->enable)
             {
                 $label = (empty($aRow->label) ? $langs->trans($key) : $langs->trans($aRow->label));
@@ -1892,15 +1894,15 @@ class Societe extends CommonObject
         $rtr.= '<ul class="sepH_c fright">';
         
         // list tel, fax, mail
-        foreach ($this->extrafields->fields->AddressBook as $key => $aRow) {
+        foreach ($this->fk_extrafields->fields->AddressBook as $key => $aRow) {
             if(is_object($aRow) && $aRow->enable)
             {
                 $label = (empty($aRow->label) ? $langs->trans($key) : $langs->trans($aRow->label));
-                $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/'.$this->extrafields->fields->AddressBook->$key->type.'.png" title="'.$label.'" />';
-                if($this->extrafields->fields->AddressBook->$key->type == "AC_EMAIL")
+                $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/'.$this->fk_extrafields->fields->AddressBook->$key->type.'.png" title="'.$label.'" />';
+                if($this->fk_extrafields->fields->AddressBook->$key->type == "AC_EMAIL")
                     $rtr.= '<li><span class="s_color">'.$label.'</span> : <span class="ttip_r edit">'.$this->AddressBook->$key.'</span><span>'.$img.'</span></li>';
                 else
-                    $rtr.= '<li><span class="s_color">'.$label.'</span> : <span class="ttip_r edit">'.dol_print_phone($this->AddressBook->$key,$this->country_id,0,$this->id(),$this->extrafields->fields->AddressBook->$key->type).'</span><span>'.$img.'</span></li>';
+                    $rtr.= '<li><span class="s_color">'.$label.'</span> : <span class="ttip_r edit">'.dol_print_phone($this->AddressBook->$key,$this->country_id,0,$this->id(),$this->fk_extrafields->fields->AddressBook->$key->type).'</span><span>'.$img.'</span></li>';
             }
         }
         
@@ -1925,7 +1927,7 @@ class Societe extends CommonObject
         $rtr.= '<ul class="sepH_c fright">';
         
         // list of compta codes
-        foreach ($this->extrafields->fields->Deal as $key => $aRow) {
+        foreach ($this->fk_extrafields->fields->Deal as $key => $aRow) {
             if(is_object($aRow) && $aRow->enable)
             {
                 $label = (empty($aRow->label) ? $langs->trans($key) : $langs->trans($aRow->label));

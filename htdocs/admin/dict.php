@@ -941,21 +941,24 @@ if ($id)
                     print "</tr>\n";
                 }
                 
-                if($id==28)
+                // for export couchdb
+                if($obj->code)
                 {
-                    $arrayType = array(-1 => "closed",0=> "suspect",1=>"prospect",2=>"customer");
-                    $arrayColor = array (-1 => "error_bg", 0=> "neutral_bg", 1=> "info_bg", 2=>"ok_bg");// definie CSS for color
-                }
-                
-                
-                $code = $obj->code;
-                
-                $dict->$code->enable=(bool)$obj->active;
-                $dict->$code->label=$obj->libelle;
-                if($id==28)
-                {
-                    $dict->$code->type=$arrayType[$obj->type];
-                    $dict->$code->cssClass=$arrayColor[$obj->type];
+                    $values = new stdClass();
+                    $code = $obj->code;
+                    $values->enable=(bool)$obj->active;
+                    $values->label=$obj->libelle;
+                    
+                    switch ($id) {
+                        case 28:
+                            $arrayType = array(-1 => "closed",0=> "suspect",1=>"prospect",2=>"customer");
+                            $arrayColor = array (-1 => "error_bg", 0=> "neutral_bg", 1=> "info_bg", 2=>"ok_bg");// definie CSS for color
+
+                            $values->type=$arrayType[$obj->type];
+                            $values->cssClass=$arrayColor[$obj->type];
+                            break;
+                        }
+                    $dict->values->$code = $values;
                 }
                 
                 $i++;
@@ -966,6 +969,9 @@ if ($id)
             $dictid=substr($tabname[$id],6,strlen($tabname[$id])); //retire llx_c_
             $dictid="dict:fk_".$dictid;
             // if not exist write the dictionnary in couchdb
+            $arrayConf = array(4=>true, 28=>true);
+            if(isset($arrayConf[$id]) && $arrayConf[$id]==true)
+            {
             try {
                 $conf->couchdb->getDoc($dictid); // test if exit
                 print "Dictionnaire déjà transféré !";
@@ -986,7 +992,12 @@ if ($id)
                     print $error;
                     exit;
                 }
-                //print_r($dict);
+            }
+            }
+            else
+            {
+                print "Dictionnaire non configuré pour l'export vers couchdb !";
+                print_r($dict);
             }
         }
     }

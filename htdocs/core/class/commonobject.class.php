@@ -2741,11 +2741,11 @@ abstract class CommonObject extends couchDocument
 	 *  @return array         		1 success
 	 */
         
-        public function getView($name)
+        public function getView($view,$name)
         {
             global $conf;
             
-            return $conf->couchdb->limit($conf->liste_limit)->getView($this->class,$name);
+            return $conf->couchdb->limit($conf->liste_limit)->getView($view,$name);
         }
     
     
