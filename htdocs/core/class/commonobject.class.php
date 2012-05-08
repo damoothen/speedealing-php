@@ -570,9 +570,7 @@ abstract class CommonObject extends couchDocument
         if (empty($this->socid)) return 0;
 
         $thirdparty = new Societe($this->db);
-        $result = $conf->couchdb->key((int)$this->socid)->getView("societe","rowid");
-        //print_r($result);
-        $result=$thirdparty->load($result->rows[0]->value);
+        $result=$thirdparty->fetch($this->socid);
         $this->client = $thirdparty;  // deprecated
         $this->thirdparty = $thirdparty;
 
@@ -580,7 +578,7 @@ abstract class CommonObject extends couchDocument
         if ($conf->global->PRODUIT_MULTIPRICES && empty($this->thirdparty->price_level))
         {
             $this->client->price_level=1; // deprecated
-            $this->thirdparty->price_level=1;
+            $this->thirdparty->PriceLevel=1;
         }
 
         return $result;

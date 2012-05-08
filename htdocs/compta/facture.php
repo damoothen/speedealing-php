@@ -90,7 +90,7 @@ $hookmanager->initHooks(array('invoicecard'));
 /*
  * Actions
  */
-
+/*
 // Hook of actions
 if (! empty($object->hooks))
 {
@@ -113,7 +113,7 @@ if (! empty($object->hooks))
 			}
 		}
 	}
-}
+}*/
 
 // Action clone object
 if ($action == 'confirm_clone' && $confirm == 'yes' && $user->rights->facture->creer)
@@ -1603,7 +1603,6 @@ $htmlother = new FormOther($db);
 $formfile = new FormFile($db);
 $now=dol_now();
 
-
 /*********************************************************************
  *
  * Mode creation
@@ -2076,8 +2075,7 @@ else
             $result=$object->fetch_thirdparty();
 
             $soc = new Societe($db);
-            $result = $conf->couchdb->key((int)$object->socid)->getView("societe","rowid");
-            $soc->load($result->rows[0]->value);
+            $soc->fetch($object->socid);
 
             $totalpaye  = $object->getSommePaiement();
             $totalcreditnotes = $object->getSumCreditNotesUsed();
