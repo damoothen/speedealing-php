@@ -1039,15 +1039,13 @@ abstract class DolibarrModules
 
         $err=0;
 
-        $this->db->begin();
-
         //var_dump($this->menu); exit;
         foreach ($this->menu as $key => $value)
         {
             $menu = new Menubase($this->db);
-            $menu->menu_handler='all';
+            //$menu->menu_handler='all';
             $menu->module=$this->rights_class;
-            if (! $this->menu[$key]['fk_menu'])
+            /*if (! $this->menu[$key]['fk_menu'])
             {
                 $menu->fk_menu=0;
                 //print 'aaa'.$this->menu[$key]['fk_menu'];
@@ -1086,7 +1084,7 @@ abstract class DolibarrModules
                     dol_syslog(get_class($this)."::insert_menus ".$this->error." ".$this->menu[$key]['fk_menu'], LOG_ERR);
                     $err++;
                 }
-            }
+            }*/
             $menu->type=$this->menu[$key]['type'];
             $menu->mainmenu=isset($this->menu[$key]['mainmenu'])?$this->menu[$key]['mainmenu']:(isset($menu->fk_mainmenu)?$menu->fk_mainmenu:'');
             $menu->leftmenu=isset($this->menu[$key]['leftmenu'])?$this->menu[$key]['leftmenu']:'';

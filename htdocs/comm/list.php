@@ -141,7 +141,7 @@ if ($type != '') {
 else
     $titre = $langs->trans("ListOfAll");
 
-print '<div class=row>';
+print '<div class="row">';
 
 print start_box($titre,"twelve","16-Companies.png");
 
@@ -242,23 +242,22 @@ print $langs->trans("Status");
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "Status";
 $obj->aoColumns[$i]->sClass = "center";
-$obj->aoColumns[$i]->sDefaultContent = "";
+$obj->aoColumns[$i]->sDefaultContent = "ST_NEVER";
 $obj->aoColumns[$i]->fnRender = '%function(obj) {
 var status = new Array();
 var stcomm = obj.aData.Status;
-if(typeof str === "undefined")
-    stcomm = 0;
-status[0] = new Array("'.$langs->trans('MailingStatusDraft').'",0);
-status[1] = new Array("'.$langs->trans('MailingStatusValidated').'",1);
-status[2] = new Array("'.$langs->trans('MailingStatusSentPartialy').'",3);
-status[3] = new Array("'.$langs->trans('MailingStatusSentCompletely').'",6);
-var ar = [];
-ar[ar.length] = "<img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/statut";
+if(typeof stcomm === "undefined")
+    stcomm = "ST_NEVER";';
+foreach ($object->fk_status->values as $key => $aRow)
+{
+    $obj->aoColumns[$i]->fnRender.= 'status["'.$key.'"]= new Array("'.$langs->trans($aRow->label).'","'.$aRow->cssClass.'");';
+}
+$obj->aoColumns[$i]->fnRender.= 'var ar = [];
+ar[ar.length] = "<span class=\"lbl ";
 ar[ar.length] = status[stcomm][1];
-ar[ar.length] = ".png\" border=\"0\" alt=\"Afficher mailing : ";
-ar[ar.length] = "\" title=\"";
+ar[ar.length] = " sl_status\">";
 ar[ar.length] = status[stcomm][0];
-ar[ar.length] = "\">";
+ar[ar.length] = "</span>";
 var str = ar.join("");
 return str;
 }%';
