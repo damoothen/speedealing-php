@@ -500,7 +500,7 @@
 		.login_box:before,.login_box:after{content:"";position:absolute;z-index:-2}
 		.login_box:before{-webkit-box-shadow:0 0 15px rgba(0,0,0,0.4);-moz-box-shadow:0 0 15px rgba(0,0,0,0.4);box-shadow:0 0 15px rgba(0,0,0,0.4);top:50%;bottom:0;left:10px;right:10px;-moz-border-radius:100px / 10px;border-radius:100px / 10px}
 		.lb_content{position:relative;background:#fff;min-height:200px;padding:14px 14px 30px}
-		.login_logo {position:absolute;top:-34px;left:14px}
+		.login_logo {position:absolute;top:-44px;left:14px}
         .lb_ribbon{color:#fff;position:relative;font-size:14px;float:left;clear:both;left:-20px;margin-bottom:30px;text-shadow:1px 1px 0 rgba(0,0,0,.2);-moz-box-shadow:2px 2px 0 rgba(0,0,0,0.1);-webkit-box-shadow:2px 2px 0 rgba(0,0,0,0.1);-o-box-shadow:2px 2px 0 rgba(0,0,0,0.1);box-shadow:2px 2px 0 rgba(0,0,0,0.1);padding:10px 24px}
 		.lb_ribbon:before{content:" ";background-image:url(../img/ribbon.png);background-repeat:no-repeat;display:block;width:10px;height:10px;position:absolute;bottom:0;left:0;margin-bottom:-10px;z-index:-1}
 		.lb_ribbon.lb_blue {background:#2b8cbe}
