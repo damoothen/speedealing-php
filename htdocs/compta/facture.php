@@ -2076,7 +2076,8 @@ else
             $result=$object->fetch_thirdparty();
 
             $soc = new Societe($db);
-            $soc->fetch($object->socid);
+            $result = $conf->couchdb->key((int)$object->socid)->getView("societe","rowid");
+            $soc->load($result->rows[0]->value);
 
             $totalpaye  = $object->getSommePaiement();
             $totalcreditnotes = $object->getSumCreditNotesUsed();
@@ -2117,6 +2118,8 @@ else
             $objectidnext=$object->getIdReplacingInvoice();
 
 
+            print '<div class="row">';
+            print start_box($langs->trans('InvoiceCustomer'),"twelve","16-Money.png", false);
             $head = facture_prepare_head($object);
 
             dol_fiche_head($head, 'compta', $langs->trans('InvoiceCustomer'), 0, 'bill');
@@ -3254,13 +3257,15 @@ else
 
                 $formmail->show_form();
 
-                print '<br>';
             }
         }
         else
         {
             dol_print_error($db,$object->error);
         }
+        
+        print end_box();
+        print '</div>';
     }
     else
     {

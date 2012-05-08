@@ -570,7 +570,9 @@ abstract class CommonObject extends couchDocument
         if (empty($this->socid)) return 0;
 
         $thirdparty = new Societe($this->db);
-        $result=$thirdparty->fetch($this->socid);
+        $result = $conf->couchdb->key((int)$this->socid)->getView("societe","rowid");
+        //print_r($result);
+        $result=$thirdparty->load($result->rows[0]->value);
         $this->client = $thirdparty;  // deprecated
         $this->thirdparty = $thirdparty;
 

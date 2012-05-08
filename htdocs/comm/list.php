@@ -214,7 +214,7 @@ if ($conf->categorie->enabled) {
 print'<th class="essential">';
 print $langs->trans('SalesRepresentatives');
 print'</th>';
-$obj->aoColumns[$i]->mDataProp = "commerciaux";
+$obj->aoColumns[$i]->mDataProp = "SalesRepresentatives";
 $obj->aoColumns[$i]->sDefaultContent = "";
 $i++;
 print'<th class="essential">';
@@ -242,6 +242,7 @@ print $langs->trans("Status");
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "Status";
 $obj->aoColumns[$i]->sClass = "center";
+$obj->aoColumns[$i]->sWidth = "100px";
 $obj->aoColumns[$i]->sDefaultContent = "ST_NEVER";
 $obj->aoColumns[$i]->fnRender = '%function(obj) {
 var status = new Array();

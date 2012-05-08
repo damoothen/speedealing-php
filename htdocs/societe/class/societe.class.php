@@ -706,35 +706,12 @@ class Societe extends CommonObject
     {
         global $conf,$langs;
 
-        $name=$this->name;
+        $name=$this->ThirdPartyName;
 
         $result='';
         $lien=$lienfin='';
 
-        if ($option == 'customer' || $option == 'compta')
-        {
-            if (($this->client == 1 || $this->client == 3) && empty($conf->global->SOCIETE_DISABLE_CUSTOMERS))  // Only customer
-            {
-                $lien = '<a href="'.DOL_URL_ROOT.'/comm/fiche.php?socid='.$this->id;
-            }
-            elseif($this->client == 2 && empty($conf->global->SOCIETE_DISABLE_PROSPECTS))   // Only prospect
-            {
-                $lien = '<a href="'.DOL_URL_ROOT.'/comm/prospect/fiche.php?socid='.$this->id;
-            }
-        }
-        else if ($option == 'prospect' && empty($conf->global->SOCIETE_DISABLE_PROSPECTS))
-        {
-            $lien = '<a href="'.DOL_URL_ROOT.'/comm/prospect/fiche.php?socid='.$this->id;
-        }
-        else if ($option == 'supplier')
-        {
-            $lien = '<a href="'.DOL_URL_ROOT.'/fourn/fiche.php?socid='.$this->id;
-        }
-        // By default
-        if (empty($lien))
-        {
-            $lien = '<a href="'.DOL_URL_ROOT.'/societe/fiche.php?id='.$this->id();
-        }
+        $lien = '<a href="'.DOL_URL_ROOT.'/societe/fiche.php?id='.$this->id();
 
         // Add type of canvas
         $lien.=(!empty($this->canvas)?'&amp;canvas='.$this->canvas:'').'">';
@@ -773,7 +750,7 @@ class Societe extends CommonObject
         if(empty($status))
             return null;
         
-        return '<span class="lbl '.$this->fk_status->$status->cssClass.' sl_status ttip_r edit">'.$langs->trans($this->fk_status->$status->label).'</span>';        
+        return '<span class="lbl '.$this->fk_status->values->$status->cssClass.' sl_status ttip_r edit">'.$langs->trans($this->fk_status->values->$status->label).'</span>';
     }
 
     /**
@@ -1939,6 +1916,19 @@ class Societe extends CommonObject
         $rtr.= '</div>';
 
         return $rtr;
+    }
+    
+    //temporaire
+    function fetch($socid)
+    {
+        global $conf;
+        try {
+            $result = $conf->couchdb->key((int)$socid)->getView("societe","rowid");
+            $this->load($result->rows[0]->value);
+        } catch (Exception $e) {
+            return 0;
+        }
+        return 1;
     }
 }
 

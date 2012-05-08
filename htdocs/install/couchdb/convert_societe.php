@@ -63,125 +63,10 @@ $search_sale = $_GET['search_sale'];
 /*
  * Paging
  */
-//$sLimit = " LIMIT 100";
-if (isset($_GET['iDisplayStart']) && $_GET['iDisplayLength'] != '-1') {
-    $sLimit = " LIMIT " . $_GET['iDisplayStart'] . ", " .
-            $_GET['iDisplayLength'];
-}
-
-/*
- * Ordering
- */
-
-if (isset($_GET['iSortCol_0'])) {
-    $sOrder = " ORDER BY  ";
-    for ($i = 0; $i < intval($_GET['iSortingCols']); $i++) {
-        if ($_GET['bSortable_' . intval($_GET['iSortCol_' . $i])] == "true") {
-            $Cols = intval($_GET['iSortCol_' . $i]);
-            $sOrder .= $aColumnsSql[intval($_GET['iSortCol_' . $i])] . "
-				 	" . ($_GET['sSortDir_' . $i]) . ", ";
-        }
-    }
-    $sOrder = substr_replace($sOrder, "", -2);
-    if ($sOrder == "ORDER BY") {
-        $sOrder = "";
-    }
-    if ($Cols == 0 || $Cols == ($_GET['iColumns'] - 1) || $Cols == ($_GET['iColumns'] - 2)) {
-        $sOrder = "";
-    }
-}
+//$sLimit = " LIMIT 3";
 
 /* search basic */
 $sWhere = "";
-if ($_GET['sSearch'] != "") {
-    $sWhere = " AND (";
-    for ($i = 0; $i < count($aColumnsSql); $i++) {
-        if ($aColumnsSql[$i] != '' && $aColumnsSql[$i] != "c.label" && $aColumnsSql[$i] != "u.login") {
-            $sWhere .= $aColumnsSql[$i] . " LIKE '%" . $_GET['sSearch'] . "%' OR ";
-        }
-    }
-    $sWhere = substr_replace($sWhere, "", -3);
-    $sWhere .= ')';
-}
-
-if ($_GET['sSearch_1'] != "") {
-    $sWhere .= " AND (";
-    $sWhere .= $aColumnsSql[1]. " LIKE '%" . $_GET['sSearch_1'] . "%'";
-    $sWhere .= ')';
-}
-
-if ($_GET['sSearch_2'] != "") {
-    $sWhere .= " AND (";
-    $sWhere .= $aColumnsSql[2] . " LIKE '%" . $_GET['sSearch_2'] . "%'";
-    $sWhere .= ')';
-}
-
-if ($_GET['sSearch_3'] != "") {
-    $sWhere .= " AND (";
-    $sWhere .= $aColumnsSql[3] . " LIKE '%" . $_GET['sSearch_3'] . "%'";
-    $sWhere .= ')';
-}
-
-if ($_GET['sSearch_4'] != "") {
-    $sWhere .= " AND (";
-    $sWhere .= $aColumnsSql[4] . " LIKE '%" . $_GET['sSearch_4'] . "%'";
-    $sWhere .= ')';
-}
-
-if ($_GET['sSearch_5'] != "") {
-    $sWhere .= " AND (";
-    $sWhere .= $aColumnsSql[5] . " LIKE '%" . $_GET['sSearch_5'] . "%'";
-    $sWhere .= ')';
-}
-
-if ($_GET['sSearch_6'] != "") {
-    $sWhere .= " AND (";
-    $sWhere .= $aColumnsSql[6] . " LIKE '%" . $_GET['sSearch_6'] . "%'";
-    $sWhere .= ')';
-}
-
-if ($_GET['sSearch_7'] != "") {
-    $sWhere .= " AND (";
-    $sWhere .= $aColumnsSql[7] . " LIKE '%" . $_GET['sSearch_7'] . "%'";
-    $sWhere .= ')';
-}
-
-if ($_GET['sSearch_8'] != "") {
-    $sWhere .= " AND (";
-    $sWhere .= $aColumnsSql[8] . " LIKE '%" . $_GET['sSearch_8'] . "%'";
-    $sWhere .= ')';
-}
-
-if ($_GET['sSearch_9'] != "") {
-    $sWhere .= " AND (";
-    $sWhere .= $aColumnsSql[9] . " LIKE '%" . $_GET['sSearch_9'] . "%'";
-    $sWhere .= ')';
-}
-
-if ($_GET['sSearch_10'] != "") {
-    $sWhere .= " AND (";
-    $sWhere .= $aColumnsSql[10] . " LIKE '%" . $_GET['sSearch_10'] . "%'";
-    $sWhere .= ')';
-}
-
-if ($_GET['sSearch_11'] != "") {
-    $sWhere .= " AND (";
-    $sWhere .= $aColumnsSql[11] . " LIKE '%" . $_GET['sSearch_11'] . "%'";
-    $sWhere .= ')';
-}
-
-if ($_GET['sSearch_12'] != "") {
-    $sWhere .= " AND (";
-    $sWhere .= $aColumnsSql[12] . " LIKE '%" . $_GET['sSearch_12'] . "%'";
-    $sWhere .= ')';
-}
-
-if ($_GET['sSearch_13'] != "") {
-    $sWhere .= " AND (";
-    $sWhere .= $aColumnsSql[13]. " LIKE '%" . $_GET['sSearch_13'] . "%'";
-    $sWhere .= ')';
-}
-
 // If the user must only see his prospect, force searching by him
 if (!$user->rights->societe->client->voir && !$socid) {
     $search_sale = $user->id;
@@ -221,9 +106,8 @@ if($flush)
 
 
 /*basic companies request query */
-$sql = "SELECT s.rowid, s.nom, s.ville, s.datec, s.datea, s.status as status,";
-$sql.= " st.libelle as stcomm, s.prefix_comm, s.fk_stcomm, s.fk_prospectlevel,st.type,";
-$sql.= " d.nom as departement, s.cp as cp,s.siren,s.siret,s.ape,s.idprof4";
+$sql = "SELECT s.*,";
+$sql.= " st.code as stcomm, p.code, u1.login as user_creat, u2.login as user_modif ";
 /*looking for categories ? */
 $roc = stristr($sOrder, 'c.label');
 $rsc = stristr($sWhere, 'c.label');
@@ -238,8 +122,10 @@ if ($rou != false || $rsu!=false) {
 }
 $sql .= " FROM (" . MAIN_DB_PREFIX . "societe as s";
 $sql.= " ) ";
-$sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "c_departements as d on (d.rowid = s.fk_departement)";
+$sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "c_pays as p on (p.rowid = s.fk_pays)";
 $sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "c_stcomm as st ON st.id = s.fk_stcomm";
+$sql.= " LEFT JOIN llx_user AS u1 ON u1.rowid = s.fk_user_creat";
+$sql.= " LEFT JOIN llx_user AS u2 ON u2.rowid = s.fk_user_modif";
 
 /* requesting data on categorie filter  */
 if ($roc != false || $rsc!=false) {
@@ -292,33 +178,55 @@ $resultSocietes = $db->query($sql);
 $i=0;
 
 while ($aRow = $db->fetch_object($resultSocietes)) {
-    //if($ancinneValeur!=$aRow->rowid){ //do not insert the (next on the result query) same contact
-        //$valueR = $valueR . $aRow->rowid . ',';
-        
-        //$row=  get_object_vars($aRow);
-        //$ancinneValeur = $aRow->rowid;
-        $aRow->class="societe";
-        //$cb->set($uuid[$i],  json_encode($aRow));
-        //$aRow->_id=$aRow->rowid;
-        $col[$aRow->rowid] = $aRow;
-        
-        /*try {
-                $cb->storeDoc($aRow);
-        } catch (Exception $e) {
-            echo "Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
-            //exit(1);
-        }*/
+        $col[$aRow->rowid]->rowid =(int)$aRow->rowid;
+        $col[$aRow->rowid]->class="company";
+        $col[$aRow->rowid]->ThirdPartyName = $aRow->nom;
+        $col[$aRow->rowid]->Town = $aRow->ville;
+        $col[$aRow->rowid]->DateCreate = $db->jdate($aRow->datec);
+        $col[$aRow->rowid]->Zip = $aRow->cp;
+        $col[$aRow->rowid]->tms = $db->jdate($aRow->tms);
+        $col[$aRow->rowid]->CustomerCode = $aRow->code_client;
+        $col[$aRow->rowid]->SupplierCode = $aRow->code_fournisseur;
+        $col[$aRow->rowid]->Accounting->CustomerCode = $aRow->code_compta;
+        $col[$aRow->rowid]->Accounting->SupplierCode = $aRow->code_compta_fournisseur;
+        $col[$aRow->rowid]->Address = $aRow->address;
+        $col[$aRow->rowid]->State = $aRow->fk_departement;
+        $col[$aRow->rowid]->Country = $aRow->code; // FR
+        $col[$aRow->rowid]->AddressBook->Phone = $aRow->tel;
+        $col[$aRow->rowid]->AddressBook->Fax = $aRow->fax;
+        $col[$aRow->rowid]->AddressBook->EMail = $aRow->email;
+        if(!empty($aRow->url))
+            $col[$aRow->rowid]->url[] = $aRow->url;
+        $col[$aRow->rowid]->Deal->SIREN = $aRow->siren;
+        $col[$aRow->rowid]->Deal->SIRET = $aRow->siret;
+        $col[$aRow->rowid]->Deal->NAF = $aRow->ape;
+        $col[$aRow->rowid]->Accounting->VATIntra = $aRow->tva_intra;
+        $col[$aRow->rowid]->Accounting->VATIsUsed = (bool)$aRow->tva_assuj;
+        $col[$aRow->rowid]->Deal->Capital = (int)$aRow->capital;
+        $col[$aRow->rowid]->Status = $aRow->stcomm;
+        $col[$aRow->rowid]->Notes = $aRow->note;
+        $col[$aRow->rowid]->Prefix = $aRow->prefix_comm;
+        $col[$aRow->rowid]->Deal->ProspectLevelShort = (int)$aRow->fk_prospectlevel;
+        $col[$aRow->rowid]->UserCreate = $aRow->user_creat;
+        $col[$aRow->rowid]->UserUpdate = $aRow->user_modif;
+        $col[$aRow->rowid]->Deal->CustomerRelativeDiscountShort = (int)$aRow->remise_client;
+        $col[$aRow->rowid]->Gencode = $aRow->barcode;
+        $col[$aRow->rowid]->DefaultLang = $aRow->default_lang;
+        $col[$aRow->rowid]->Deal->PriceLevel = $aRow->price_level;
+        if($aRow->latitude && $aRow->longitude)
+        {
+            $col[$aRow->rowid]->gps[0] = (int)$aRow->latitude;
+            $col[$aRow->rowid]->gps[1] = (int)$aRow->longitude;
+        }
+        $col[$aRow->rowid]->Logo = $aRow->logo;
+        $col[$aRow->rowid]->NoMailing = (bool)!$aRow->newsletter;
         
         $i++;
-    //}
 }
+
 $db->free($resultSocietes);
 unset($resultSocietes);
 
-$companies = '""';
-if ($valueR != '') {
-    $companies = substr_replace($valueR, '', -1);
-}
 /* sql query get sales */
 $sql = " SELECT fk_soc,login FROM (llx_societe_commerciaux as sc,llx_user as u) 
 where "/*sc.fk_soc in ($companies) and*/." sc.fk_user=u.rowid";
@@ -327,22 +235,9 @@ $resultCommerciaux = $db->query($sql);
 
 /* init society sales array  */
 while ($aRow = $db->fetch_object($resultCommerciaux)) {
-    //$commerciauxDeChaqueSociete[$aRow->fk_soc] = $commerciauxDeChaqueSociete[$aRow->fk_soc] . $aRow->login . ', ';
-    //$result=$cb->get($aRow->fk_soc);
-    //$result=  json_decode($result);
-    
-    //print $aRow->fk_soc;
     if(!empty($col[$aRow->fk_soc]->rowid)){
-        //print $aRow->fk_soc;
-        //var_dump($result);exit;
-        $col[$aRow->fk_soc]->commerciaux[]=$aRow->login;
-        
-        //print_r($result);exit;
-        
-        //$cb->set($aRow->fk_soc,  json_encode($result));
-        //exit;
+        $col[$aRow->fk_soc]->Deal->SalesRepresentatives[]=$aRow->login;   
     }
-    //$cb->set($aRow->fk_soc);
 }
 $db->free($resultCommerciaux);
 unset($resultCommerciaux);
@@ -357,23 +252,22 @@ $resultCate = $db->query($sql);
 /* init society categories array */
 while ($aRow = $db->fetch_object($resultCate)) {
     
-    //print $aRow->fk_soc;
     if(!empty($col[$aRow->fk_soc]->rowid)){
-        //print $aRow->fk_soc;
-        //var_dump($result);exit;
-        $col[$aRow->fk_soc]->category[]=$aRow->label;
-        //print_r($result);exit;
+        $col[$aRow->fk_soc]->tags[]=$aRow->label;
     }
 }
 $db->free($resultCate);
 unset($resultCate);
 
-$i=0;
+//print_r($col);exit;
 
 try {
-    $couch->storeDocs($col,false);
+    $conf->couchdb->clean($col);
+    $conf->couchdb->storeDocs($col,false);
     } catch (Exception $e) {
         echo "Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
         exit(1);
     }
+    
+print "Import société terminée : ".count($col);
 ?>
