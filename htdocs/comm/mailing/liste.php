@@ -1,5 +1,5 @@
 <?php
-/* Copyright (C) 2005-2009 Laurent Destailleur  <eldy@users.sourceforge.net>
+/* Copyright (C) 2005-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2010 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2010-2011 Patrick Mary        <laube@hotmail.fr>
  *
@@ -161,7 +161,7 @@ if ($result)
 		{
 			print '<td align="center">';
 			$nbemail = $obj->nbemail;
-			if (!empty($conf->global->MAILING_LIMIT_SENDBYWEB) && $conf->global->MAILING_LIMIT_SENDBYWEB < $nbemail)
+			if ($obj->statut != 3 && !empty($conf->global->MAILING_LIMIT_SENDBYWEB) && $conf->global->MAILING_LIMIT_SENDBYWEB < $nbemail)
 			{
 				$text=$langs->trans('LimitSendingEmailing',$conf->global->MAILING_LIMIT_SENDBYWEB);
 				print $form->textwithpicto($nbemail,$text,1,'warning');
@@ -222,7 +222,7 @@ else
 	dol_print_error($db);
 }
 
-$db->close();
-
 llxFooter();
+
+$db->close();
 ?>
