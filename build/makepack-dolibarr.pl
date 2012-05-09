@@ -102,7 +102,8 @@ for (0..@ARGV-1) {
     	$FILENAMESNAPSHOT.="-".$PREFIX; 
     }
 }
-if ($ENV{"DESTI"}) { $DESTI = $ENV{"DESTI"}; }		# Force output dir if env DESTI is defined
+if ($ENV{"DESTIBETARC"} && $BUILD =~ /[a-z]/i)    { $DESTI = $ENV{"DESTIBETARC"}; }		# Force output dir if env DESTI is defined
+if ($ENV{"DESTISTABLE"}  && $BUILD =~ /^[0-9]+$/) { $DESTI = $ENV{"DESTISTABLE"}; }	# Force output dir if env DESTI is defined
 
 
 print "Makepack version $VERSION\n";
@@ -165,7 +166,7 @@ $atleastonerpm=0;
 foreach my $target (keys %CHOOSEDTARGET) {
 	if ($target =~ /RPM/i)
 	{
-		if ($atleastonerpm && ! $ENV{"DESTI"})
+		if ($atleastonerpm && ($DESTI eq "$SOURCE/build"))
 		{
 			print "Error: You asked creation of several rpms. Because all rpm have same name, you must defined an environment variable DESTI to tell packager where it can create subdirs for each generated package.\n";
 			exit;

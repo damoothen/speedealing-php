@@ -1,7 +1,8 @@
 <?php
-/* Copyright (C) 2001-2002 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2001-2002 Jean-Louis Bergamo   <jlb@j1b.org>
- * Copyright (C) 2006-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
+/* Copyright (C) 2001-2002	Rodolphe Quiedeville	<rodolphe@quiedeville.org>
+ * Copyright (C) 2001-2002	Jean-Louis Bergamo		<jlb@j1b.org>
+ * Copyright (C) 2006-2011	Laurent Destailleur		<eldy@users.sourceforge.net>
+ * Copyright (C) 2012		Regis Houssin			<regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +36,13 @@
 
 define("NOLOGIN",1);		// This means this output page does not require to be logged.
 define("NOCSRFCHECK",1);	// We accept to go on this page from external web site.
+
+// For MultiCompany module
+$entity=(! empty($_GET['entity']) ? (int) $_GET['entity'] : (! empty($_POST['entity']) ? (int) $_POST['entity'] : 1));
+if (is_int($entity))
+{
+	define("DOLENTITY", $entity);
+}
 
 require("../../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/adherents/class/adherent.class.php");
@@ -266,12 +274,18 @@ if ($action == 'add')
                     $urlback=DOL_MAIN_URL_ROOT.'/public/paybox/newpayment.php?from=membernewform&source=membersubscription&ref='.$adh->ref;
                     if (price2num(GETPOST('amount'))) $urlback.='&amount='.price2num(GETPOST('amount'));
                     if (GETPOST('email')) $urlback.='&email='.urlencode(GETPOST('email'));
+                    if (! empty($entity)) $urlback.='&entity='.$entity;
                 }
                 else if ($conf->global->MEMBER_NEWFORM_PAYONLINE == 'paypal')
                 {
                     $urlback=DOL_MAIN_URL_ROOT.'/public/paypal/newpayment.php?from=membernewform&source=membersubscription&ref='.$adh->ref;
                     if (price2num(GETPOST('amount'))) $urlback.='&amount='.price2num(GETPOST('amount'));
                     if (GETPOST('email')) $urlback.='&email='.urlencode(GETPOST('email'));
+                    if (! empty($conf->global->PAYPAL_SECURITY_TOKEN) && ! empty($conf->global->PAYPAL_SECURITY_TOKEN_UNIQUE))
+                    {
+                    	$urlback.='&securekey='.dol_hash($conf->global->PAYPAL_SECURITY_TOKEN . 'membersubscription' . $adh->ref, 2);
+                    }
+                    if (! empty($entity)) $urlback.='&entity='.$entity;
                 }
                 else
                 {
@@ -359,8 +373,9 @@ jQuery(document).ready(function () {
 
 // Print form
 print '<form action="'.$_SERVER["PHP_SELF"].'" method="POST" name="newmember">'."\n";
-print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-print '<input type="hidden" name="action" value="add">';
+print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'" / >';
+print '<input type="hidden" name="entity" value="'.$entity.'" />';
+print '<input type="hidden" name="action" value="add" />';
 
 print '<div id="divsubscribe">';
 print '<table class="border" summary="form to subscribe" id="tablesubscribe">'."\n";
