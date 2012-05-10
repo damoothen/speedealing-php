@@ -135,7 +135,7 @@ while ($aRow = $db->fetch_object($result)) {
 	    $obj[$name] = $aRow;
 	    
 	    // Add father
-	    $obj[$name]->fk_menu[] = $tabname[$fk_menu];
+	    $obj[$name]->fk_menu = $tabname[$fk_menu];
             $obj[$name]->_id = $name;
 	    
             //$obj[$tabname[$fk_menu]]->submenu[$name] = $aRow;
