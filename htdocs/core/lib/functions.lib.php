@@ -3031,7 +3031,7 @@ function yn($yesno, $case=1, $color=0)
         if ($color == 2) $classname='ok';
         else $classname='error';
     }
-    if ($color) return '<font class="'.$classname.'">'.$result.'</font>';
+    if ($color) return $result;
     return $result;
 }
 

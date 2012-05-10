@@ -1751,9 +1751,10 @@ class Societe extends CommonObject
         
         $rtr = '<div class="row">';
         $rtr.= '<div class="two column vcard avatar">';
-        $rtr.= '<div class="avatar">';
+        $rtr.= '<div class="avatar sepH_b">';
         $rtr.= '<img src="'.DOL_URL_ROOT.'/theme/companies.png" alt="" />';
-        $rtr.= '</div></div>';
+        $rtr.= '</div>';
+        $rtr.= '</div>';
         $rtr.= '<div class="five column vcard">';
         $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Apartment-Building.png" alt="" />';
         $rtr.= '<h1 class="sepH_a">'.$img.$this->ThirdPartyName.'</h1>';
@@ -1766,16 +1767,11 @@ class Societe extends CommonObject
         // MAP GPS
         $rtr.= "&nbsp".img_picto(($this->gps[0].','.$this->gps[1]),(($this->gps[0] && $this->gps[1])?"green-dot":"red-dot"));
         $rtr.= '</h3>';
-        // url
-        if (! empty($this->url)) {
-        	foreach ($this->url as $aRow)
-        		$rtr.= dol_print_url($aRow);
-        }
         $rtr.= '</div>';
         
         // Partie droite
         $rtr.= '<div class="five column">';
-        $rtr.= '<div class="row">';
+        $rtr.= '<div class="row sepH_b">';
         
         
         if ($user->rights->societe->supprimer)
@@ -1793,9 +1789,30 @@ class Societe extends CommonObject
             if ($user->rights->societe->creer)
                $rtr.= '<a class="gh_button pill primary right" href="'.$_SERVER["PHP_SELF"].'?id='.$this->id().'&amp;action=edit">'.$langs->trans("Modify").'</a>'."\n"; // bouton rond
         }
-
         
         $rtr.= '</div>';
+        
+        if($this->CustomerCode || $this->SupplierCode)
+        {
+            $rtr.= '<div class="row vcard sepH_b inner_heading">';
+            $rtr.= '<ul>';
+            if($this->CustomerCode)
+            {
+                $key='CustomerCode';
+                $label = $langs->trans($key);
+                $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Money.png" title="'.$label.'" />';
+                $rtr.= '<li><span>'.$img.'</span><span class="s_color">'.$label.'</span><span> : </span><span>'.$this->$key.'</span></li>';
+            }
+            if($this->SupplierCode)
+            {
+                $key='SupplierCode';
+                $label = $langs->trans($key);
+                $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Money.png" title="'.$label.'" />';
+                $rtr.= '<li><span>'.$img.'</span><span class="s_color">'.$label.'</span><span> : </span><span>'.$this->$key.'</span></li>';
+            }
+            $rtr.= '</ul>';
+            $rtr.= '</div>';
+        }
         
         $rtr.= $content; //external content
         
@@ -1836,9 +1853,8 @@ class Societe extends CommonObject
         global $conf,$user,$langs;
         
         // List of tel, fax, mail...
-        $rtr = '<div class="row vcard">';
-        $rtr.= '<p></p>';
-        $rtr.= '<ul class="sepH_c fright">';
+        $rtr = '<div class="row vcard sepH_c">';
+        $rtr.= '<ul class="fright">';
         
         // list of compta codes
         foreach ($this->fk_extrafields->fields->Accounting as $key => $aRow) {
@@ -1866,9 +1882,8 @@ class Societe extends CommonObject
         global $conf,$user,$langs;
         
         // List of tel, fax, mail...
-        $rtr = '<div class="row vcard">';
-        $rtr.= '<p></p>';
-        $rtr.= '<ul class="sepH_c fright">';
+        $rtr = '<div class="row vcard sepH_b">';
+        $rtr.= '<ul class="fright">';
         
         // list tel, fax, mail
         foreach ($this->fk_extrafields->fields->AddressBook as $key => $aRow) {
@@ -1878,6 +1893,16 @@ class Societe extends CommonObject
                 $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/'.$this->fk_extrafields->fields->AddressBook->$key->type.'.png" title="'.$label.'" />';
                 if($this->fk_extrafields->fields->AddressBook->$key->type == "AC_EMAIL")
                     $rtr.= '<li><span class="s_color">'.$label.'</span> : <span class="ttip_r edit">'.$this->AddressBook->$key.'</span><span>'.$img.'</span></li>';
+                else if($this->fk_extrafields->fields->AddressBook->$key->type == "AC_URL")
+                {
+                    if(!empty($this->$key))
+                    {
+                        if($aRow->site == "www") // An  URL
+                            $rtr.= '<li>'.dol_print_url($aRow->value).'</li>';
+                        else // Facebook linkedin...
+                            $rtr.= '<li>'.dol_print_url($label,$aRow->value).'<span>'.$img.'</span></li>';
+                    }
+                }
                 else
                     $rtr.= '<li><span class="s_color">'.$label.'</span> : <span class="ttip_r edit">'.dol_print_phone($this->AddressBook->$key,$this->country_id,0,$this->id(),$this->fk_extrafields->fields->AddressBook->$key->type).'</span><span>'.$img.'</span></li>';
             }
@@ -1899,9 +1924,8 @@ class Societe extends CommonObject
         global $conf,$user,$langs;
         
         // List of tel, fax, mail...
-        $rtr = '<div class="row vcard">';
-        $rtr.= '<p></p>';
-        $rtr.= '<ul class="sepH_c fright">';
+        $rtr = '<div class="row vcard sepH_c">';
+        $rtr.= '<ul class="fright">';
         
         // list of compta codes
         foreach ($this->fk_extrafields->fields->Deal as $key => $aRow) {

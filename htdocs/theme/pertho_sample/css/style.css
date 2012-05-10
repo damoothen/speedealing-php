@@ -426,7 +426,7 @@
 	.form_a {background:#fafafa;padding:0}
 	.form_a form {padding:18px 0 0}
 	.form_a small {display:block}
-	.formRow {padding:9px 18px;border-bottom:1px solid #ededed}
+	.formRow {padding:0px 8px;border-bottom:1px solid #ededed}
 	.formRow:last-child {border:none}
 	input.input-text, textarea, select {border-width:1px;border-style:solid;border-color:#a9a9a9 #dcdcdc #dcdcdc #a9a9a9}
 	select {max-width:96%;padding:2px 2px;background: #fff}
@@ -799,3 +799,4 @@
 .vcard h1{color: #21759B;}
 .vcard .fright li{text-align: right}
 .vcard li img{vertical-align: bottom; margin: 0 5px}
+.info{background-image: url(../img/ico/icSw2/16-Alert-2.png); background-repeat: no-repeat;background-position: right;  padding-right: 18px;}

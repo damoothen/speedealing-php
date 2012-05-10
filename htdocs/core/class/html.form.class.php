@@ -455,58 +455,38 @@ class Form
         $out='';
         $countryArray=array();
         $label=array();
-
-        $sql = "SELECT rowid, code as code_iso, libelle as label";
-        $sql.= " FROM ".MAIN_DB_PREFIX."c_pays";
-        $sql.= " WHERE active = 1";
-        $sql.= " ORDER BY code ASC";
-
-        dol_syslog(get_class($this)."::select_country sql=".$sql);
-        $resql=$this->db->query($sql);
-        if ($resql)
+        
+        if(empty($selected))
         {
-            $out.= '<select id="select'.$htmlname.'" class="flat selectpays" name="'.$htmlname.'" '.$htmloption.'>';
-            $num = $this->db->num_rows($resql);
-            $i = 0;
-            if ($num)
-            {
-                $foundselected=false;
-
-                while ($i < $num)
-                {
-                    $obj = $this->db->fetch_object($resql);
-                    $countryArray[$i]['rowid'] 		= $obj->rowid;
-                    $countryArray[$i]['code_iso'] 	= $obj->code_iso;
-                    $countryArray[$i]['label']		= ($obj->code_iso && $langs->transnoentitiesnoconv("Country".$obj->code_iso)!="Country".$obj->code_iso?$langs->transnoentitiesnoconv("Country".$obj->code_iso):($obj->label!='-'?$obj->label:''));
-                    $label[$i] 	= $countryArray[$i]['label'];
-                    $i++;
-                }
-
-                array_multisort($label, SORT_ASC, $countryArray);
-
-                foreach ($countryArray as $row)
-                {
+            $selected=substr($langs->defaultlang, 3,2);
+            
+        }
+        try {
+            $result = $conf->couchdb->getDoc("dict:fk_pays");
+        } catch(Exception $e) {
+            $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+            dol_print_error('', $error);
+            exit;
+        }
+        
+        $out.= '<select id="select'.$htmlname.'" name="'.$htmlname.'" '.$htmloption.'>';
+        
+        foreach ($result->values as $key => $aRow)
+        {
                     //print 'rr'.$selected.'-'.$row['label'].'-'.$row['code_iso'].'<br>';
-                    if ($selected && $selected != '-1' && ($selected == $row['rowid'] || $selected == $row['code_iso'] || $selected == $row['label']) )
+                    if ($selected == $key)
                     {
-                        $foundselected=true;
-                        $out.= '<option value="'.$row['code_iso'].'" selected="selected">';
+                        $out.= '<option value="'.$key.'" selected="selected">';
                     }
                     else
                     {
-                        $out.= '<option value="'.$row['code_iso'].'">';
+                        $out.= '<option value="'.$key.'">';
                     }
-                    $out.= $row['label'];
-                    if ($row['code_iso']) $out.= ' ('.$row['code_iso'] . ')';
+                    $out.= ($key && $langs->transnoentitiesnoconv("Country".$key)!="Country".$key?$langs->transnoentitiesnoconv("Country".$key):($aRow->label!='-'?$aRow->label:''));
+                    if ($key) $out.= ' ('.$key.')';
                     $out.= '</option>';
-                }
-            }
-            $out.= '</select>';
         }
-        else
-        {
-            dol_print_error($this->db);
-        }
+        $out.= '</select>';
 
         return $out;
     }
