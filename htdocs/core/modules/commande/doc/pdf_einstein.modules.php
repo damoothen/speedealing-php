@@ -20,7 +20,7 @@
  */
 
 /**
- *	\file       htdocs/core/modules/commande/pdf_einstein.modules.php
+ *	\file       htdocs/core/modules/commande/doc/pdf_einstein.modules.php
  *	\ingroup    commande
  *	\brief      Fichier de la classe permettant de generer les commandes au modele Einstein
  *	\author	    Laurent Destailleur

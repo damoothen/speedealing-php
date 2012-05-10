@@ -245,8 +245,7 @@ if ($socid)
 
 	dol_fiche_head($head, 'category', $langs->trans("ThirdParty"),0,'company');
 
-        $var=false;
-        print '<table width="100%"><tr><td valign="top" width="50%">';
+	print '<table class="border" width="100%">';
 
 	print '<tr><td width="25%">'.$langs->trans("ThirdPartyName").'</td><td colspan="3">';
 	print $form->showrefnav($soc,'socid','',($user->societe_id?0:1),'rowid','nom','','&type='.$type);
@@ -260,39 +259,30 @@ if ($socid)
 
     if (! empty($conf->global->SOCIETE_USEPREFIX))  // Old not used prefix field
 	{
-		print '<td width="20%" id="label">'.$langs->trans('Prefix').'</td><td colspan="1"  id="value">'.$soc->prefix_comm.'</td></tr>';
-		$var=!$var;
-	}
-	else
-	{
-		print '<td width="20%" id="label"></td><td colspan="1"  id="value"></td></tr>';
-		$var=!$var;
+	   print '<tr><td>'.$langs->trans('Prefix').'</td><td colspan="3">'.$soc->prefix_comm.'</td></tr>';
 	}
 
 	if ($soc->client)
 	{
-		print '<tr '.$bc[$var].'><td  colspan="3" id="label">';
-		print $langs->trans('CustomerCode').'</td><td id="value">';
+		print '<tr><td>';
+		print $langs->trans('CustomerCode').'</td><td colspan="3">';
 		print $soc->code_client;
 		if ($soc->check_codeclient() <> 0) print ' <font class="error">('.$langs->trans("WrongCustomerCode").')</font>';
 		print '</td></tr>';
-        $var=!$var;
 	}
 
 	if ($soc->fournisseur)
 	{
-		print '<tr '.$bc[$var].'><td colspan="3" id="label">';
-		print $langs->trans('SupplierCode').'</td><td  id="value">';
+		print '<tr><td>';
+		print $langs->trans('SupplierCode').'</td><td colspan="3">';
 		print $soc->code_fournisseur;
 		if ($soc->check_codefournisseur() <> 0) print ' <font class="error">('.$langs->trans("WrongSupplierCode").')</font>';
 		print '</td></tr>';
-        $var=!$var;
 	}
 
 	if ($conf->global->MAIN_MODULE_BARCODE)
 	{
-		print '<tr '.$bc[$var].'><td id="label">'.$langs->trans('Gencod').'</td><td colspan="3" id="value">'.$soc->gencod.'</td></tr>';
-        $var=!$var;
+		print '<tr><td>'.$langs->trans('Gencod').'</td><td colspan="3">'.$soc->barcode.'</td></tr>';
 	}
 
 	// Address
@@ -313,28 +303,25 @@ if ($socid)
 	}
 
 	// Phone
-	print '<tr '.$bc[$var].'><td id="label">'.$langs->trans('Phone').'</td><td id="value">'.dol_print_phone($soc->tel,$soc->country_code,0,$soc->id,'AC_TEL').'</td>';
-	print '<td id="label">'.$langs->trans('Fax').'</td><td id="value">'.dol_print_phone($soc->fax,$soc->country_code,0,$soc->id,'AC_FAX').'</td></tr>';
-    $var=!$var;
+	print '<tr><td>'.$langs->trans('Phone').'</td><td>'.dol_print_phone($soc->tel,$soc->country_code,0,$soc->id,'AC_TEL').'</td>';
+	print '<td>'.$langs->trans('Fax').'</td><td>'.dol_print_phone($soc->fax,$soc->country_code,0,$soc->id,'AC_FAX').'</td></tr>';
 
 	// EMail
-	print '<tr '.$bc[$var].'><td id="label">'.$langs->trans('EMail').'</td><td id="value">';
+	print '<tr><td>'.$langs->trans('EMail').'</td><td>';
 	print dol_print_email($soc->email,0,$soc->id,'AC_EMAIL');
 	print '</td>';
 
 	// Web
-	print '<td id="label">'.$langs->trans('Web').'</td><td id="value">';
+	print '<td>'.$langs->trans('Web').'</td><td>';
 	print dol_print_url($soc->url);
 	print '</td></tr>';
-    $var=!$var;
 
 	// Assujeti a TVA ou pas
-	print '<tr '.$bc[$var].'>';
-	print '<td nowrap="nowrap" id="label">'.$langs->trans('VATIsUsed').'</td><td colspan="3" id="value">';
+	print '<tr>';
+	print '<td nowrap="nowrap">'.$langs->trans('VATIsUsed').'</td><td colspan="3">';
 	print yn($soc->tva_assuj);
 	print '</td>';
 	print '</tr>';
-    $var=!$var;
 
 	print '</table>';
         print '</td>';

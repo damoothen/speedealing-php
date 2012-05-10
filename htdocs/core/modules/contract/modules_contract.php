@@ -74,7 +74,7 @@ class ModelNumRefContracts
 	/**
 	 *	Test if existing numbers make problems with numbering
 	 *
-	 *	@return     boolean     false if conflit, true if ok
+	 *	@return		boolean		false if conflit, true if ok
 	 */
 	function canBeActivated()
 	{
@@ -84,9 +84,11 @@ class ModelNumRefContracts
 	/**
 	 *	Return next value
 	 *
-	 *	@return     string      Value
+	 *	@param	Societe		$objsoc     third party object
+	 *	@param	Object		$contract	contract object
+	 *	@return	string					Value
 	 */
-	function getNextValue()
+	function getNextValue($objsoc, $contract)
 	{
 		global $langs;
 		return $langs->trans("NotAvailable");

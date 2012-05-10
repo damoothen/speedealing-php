@@ -2,7 +2,7 @@
 /* Copyright (C) 2001-2004	Rodolphe Quiedeville	<rodolphe@quiedeville.org>
  * Copyright (C) 2004-2012	Laurent Destailleur		<eldy@users.sourceforge.net>
  * Copyright (C) 2005-2012	Regis Houssin			<regis@dolibarr.fr>
- * Copyright (C) 2011       Herve Prot              <herve.prot@symeos.com>
+ * Copyright (C) 2011-2012  Herve Prot              <herve.prot@symeos.com>
  * Copyright (C) 2011   	Juanjo Menent			<jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -96,7 +96,6 @@ print "</tr>\n";
 print "</table>\n";
 print end_box();
 
-
 /*
  * Dolibarr Working Board with weather
  */
@@ -106,12 +105,12 @@ $dashboardlines=array();
 print start_box($langs->trans("DolibarrWorkBoard"),"eight","16-Cloud.png");
 print '<table class="noborder" width="100%">';
 print '<tr class="liste_titre">';
-print '<th colspan="2">'.$langs->trans("DolibarrWorkBoard").'</th>';
-print '<th align="right">'.$langs->trans("Number").'</th>';
-print '<th align="right">'.$langs->trans("Late").'</th>';
-print '<th >&nbsp;</th>';
-print '<th width="20">&nbsp;</th>';
-if ($showweather) print '<th width="80">&nbsp;</th>';
+print '<th class="liste_titre"colspan="2">'.$langs->trans("DolibarrWorkBoard").'</th>';
+print '<th class="liste_titre"align="right">'.$langs->trans("Number").'</th>';
+print '<th class="liste_titre"align="right">'.$langs->trans("Late").'</th>';
+print '<th class="liste_titre">&nbsp;</th>';
+print '<th class="liste_titre"width="20">&nbsp;</th>';
+if ($showweather) print '<th class="liste_titre" width="80">&nbsp;</th>';
 print '</tr>';
 //
 // Do not include sections without management permission

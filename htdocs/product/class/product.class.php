@@ -1945,11 +1945,13 @@ class Product extends CommonObject
 	function clone_fournisseurs($fromId, $toId)
 	{
 		$this->db->begin();
+		
+		$now=dol_now();
 
 		// les fournisseurs
 		/*$sql = "INSERT ".MAIN_DB_PREFIX."product_fournisseur ("
 		. " datec, fk_product, fk_soc, ref_fourn, fk_user_author )"
-		. " SELECT '".$this->db->idate(mktime())."', ".$toId.", fk_soc, ref_fourn, fk_user_author"
+		. " SELECT '".$this->db->idate($now)."', ".$toId.", fk_soc, ref_fourn, fk_user_author"
 		. " FROM ".MAIN_DB_PREFIX."product_fournisseur"
 		. " WHERE fk_product = ".$fromId;
 
@@ -1962,7 +1964,7 @@ class Product extends CommonObject
 		// les prix de fournisseurs.
 		$sql = "INSERT ".MAIN_DB_PREFIX."product_fournisseur_price (";
 		$sql.= " datec, fk_product, fk_soc, price, quantity, fk_user)";
-		$sql.= " SELECT '".$this->db->idate(mktime())."', ".$toId. ", fk_soc, price, quantity, fk_user";
+		$sql.= " SELECT '".$this->db->idate($now)."', ".$toId. ", fk_soc, price, quantity, fk_user";
 		$sql.= " FROM ".MAIN_DB_PREFIX."product_fournisseur_price";
 		$sql.= " WHERE fk_product = ".$fromId;
 

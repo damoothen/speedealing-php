@@ -84,8 +84,8 @@ function print_auguria_menu($db,$atarget,$type_user)
                         print '</li>';
                         $i++;
                     }
-		}
-	}
+				}
+					}
 	print_end_menu_array_auguria($selectnav);
 
 	print "\n";
@@ -93,7 +93,7 @@ function print_auguria_menu($db,$atarget,$type_user)
 
 
 /**
- * Output start menu entry
+ * Output start menu array
  *
  * @return	void
  */
@@ -178,7 +178,7 @@ function print_submenu($submenu, &$selectnav, $level)
         }
     }
 
-    print '</ul>';
+	print '</ul>';
 
     return count($submenu);
 }

@@ -26,6 +26,44 @@
 
 
 /**
+ * Return list of modules directories
+ *
+ * @param	string	$subdir		Sub directory (Example: '/mailings')
+ * @return	array				Array of directories that can contains module descriptors
+ */
+function dolGetModulesDirs($subdir='')
+{
+    global $conf;
+
+    $modulesdir=array();
+
+    foreach ($conf->file->dol_document_root as $type => $dirroot)
+    {
+        // Default core/modules dir
+        $modulesdir[$dirroot . '/core/modules'.$subdir.'/'] = $dirroot . '/core/modules'.$subdir.'/';
+
+        // Scan dir from external modules
+        $handle=@opendir($dirroot);
+        if (is_resource($handle))
+        {
+            while (($file = readdir($handle))!==false)
+            {
+                if (is_dir($dirroot.'/'.$file) && substr($file, 0, 1) <> '.' && substr($file, 0, 3) <> 'CVS' && $file != 'includes')
+                {
+                    if (is_dir($dirroot . '/' . $file . '/core/modules'.$subdir.'/'))
+                    {
+                        $modulesdir[$dirroot . '/' . $file . '/core/modules'.$subdir.'/'] = $dirroot . '/' . $file . '/core/modules'.$subdir.'/';
+                    }
+                }
+            }
+            closedir($handle);
+        }
+    }
+    return $modulesdir;
+}
+
+
+/**
  *  Try to guess default paper format according to language into $langs
  *
  *	@return		string		Defautl paper format code
@@ -121,7 +159,7 @@ function dol_print_object_info($object)
         print '<br>';
     }
 
-    // Date
+    // Date creation
     if (isset($object->date_creation))
     print $langs->trans("DateCreation")." : " . dol_print_date($object->date_creation,"dayhourtext") . '<br>';
 
@@ -142,7 +180,7 @@ function dol_print_object_info($object)
         print '<br>';
     }
 
-    // Date
+    // Date change
     if (isset($object->date_modification))
     print $langs->trans("DateLastModification")." : " . dol_print_date($object->date_modification,"dayhourtext") . '<br>';
 
@@ -163,9 +201,30 @@ function dol_print_object_info($object)
         print '<br>';
     }
 
-    // Date
+    // Date validation
     if (isset($object->date_validation))
     print $langs->trans("DateValidation")." : " . dol_print_date($object->date_validation,"dayhourtext") . '<br>';
+
+    // User approve
+    if (isset($object->user_approve))
+    {
+        print $langs->trans("ApprovedBy")." : ";
+        if (is_object($object->user_approve))
+        {
+            print $object->user_approve->getNomUrl(1);
+        }
+        else
+        {
+            $userstatic=new User($db);
+            $userstatic->fetch($object->user_approve);
+            print $userstatic->getNomUrl(1);
+        }
+        print '<br>';
+    }
+
+    // Date approve
+    if (isset($object->date_approve))
+    print $langs->trans("DateApprove")." : " . dol_print_date($object->date_approve,"dayhourtext") . '<br>';
 
     // User close
     if (isset($object->user_cloture))
@@ -184,7 +243,7 @@ function dol_print_object_info($object)
         print '<br>';
     }
 
-    // Date
+    // Date close
     if (isset($object->date_cloture))
     print $langs->trans("DateClosing")." : " . dol_print_date($object->date_cloture,"dayhourtext") . '<br>';
 
@@ -205,11 +264,11 @@ function dol_print_object_info($object)
         print '<br>';
     }
 
-    // Date
+    // Date conciliate
     if (isset($object->date_rappro))
     print $langs->trans("DateConciliating")." : " . dol_print_date($object->date_rappro,"dayhourtext") . '<br>';
 
-    //Date send
+    // Date send
     if (isset($object->date_envoi))
     print $langs->trans("DateLastSend")." : " . dol_print_date($object->date_envoi,"dayhourtext") . '<br>';
 }
@@ -389,7 +448,7 @@ function get_next_value($db,$mask,$table,$field,$where='',$objsoc='',$date='',$m
     else $valueforccc=$objsoc->code_client;
 
     // Clean parameters
-    if ($date == '') $date=mktime();	// We use local year and month of PHP server to search numbers
+    if ($date == '') $date=dol_now();	// We use local year and month of PHP server to search numbers
     // but we should use local year and month of user
 
     // Extract value for mask counter, mask raz and mask offset

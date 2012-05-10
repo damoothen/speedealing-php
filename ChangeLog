@@ -2,6 +2,26 @@
 English Dolibarr ChangeLog
 --------------------------------------------------------------
 
+
+***** ChangeLog for 3.3 compared to 3.2 *****
+For users:
+- New: Add supplier ref on supplier orders.
+- New: Can export supplier orders.
+- New: First feature to install external plugins from gui. 
+- New: Monaco is like France for default vat calculation
+- New: Can list elements (invoices, orders or proposals on a particular
+  user contact). This allow to view a "basket" of its elements.
+- New: Add bank account on payment list of invoice card.
+- New: Cloning project allow to clones task, notes, files, contacts. 
+- New: Enhance default style.
+- New: Can edit and resiliate member status from list.
+
+For developers:
+- New: A module can overwrite templates parts.
+- New: Can add a link on title field of added dictionnary.
+- New: Uniformize code.
+
+
 ***** ChangeLog for 3.2.0 compared to 3.1.2 *****
 WARNING: PHP lower than 5.x are no more supported.
 WARNING: Because of a major datastructure change onto supplier prices tables, be aware
@@ -66,8 +86,6 @@ For users:
 - Fix: Can use POS module with several concurrent users.
 - Fix: Installer don't fails with Mysql version that added a ssl_cypher field.
 - Fix: Sanitize input parameters.
-- Fix: [ bug #368 ] Product list
-- Fix: [ bug #370 ] Filter in accountancy -> suppliers_bills
 
 For developers:
 - New: Can add a left menu into an existing top menu or left menu.
@@ -96,20 +114,6 @@ For developers:
 WARNING: To reduce technic debt, all functions dolibarr_xxx were renamed int dol_xxx.
 
 
-
-***** ChangeLog for 3.1.2 compared to 3.1.1 *****
-
-- Fix: Can clone a proposal
-- Fix: Add member ID in substitution method
-- Fix: Duplicate end tag and missing form parts
-- Fix: Support companies with no prof id.
-- Fix: Sanitize data
-- Fix: Bug #318
-- Fix: Bug #369
-- Fix: More bugs
-
-
-
 ***** ChangeLog for 3.1.1 compared to 3.1.0 *****
 
 - New: Add option FACTURE_DEPOSITS_ARE_JUST_PAYMENTS. With this option added, 
@@ -129,13 +133,8 @@ WARNING: To reduce technic debt, all functions dolibarr_xxx were renamed int dol
 - Fix: Some other very minor fixes.
 
 
-
 ***** ChangeLog for 3.1 compared to 3.0 *****
 WARNING: IE6 browser is no more supported in this version.
-WARNING: Credit notes are no more used as a "payment" but are removed from total
-         amount of final invoice. So final turnover is now amount of credit note
-         + amount of final invoice (previously turnover was final invoices only).
-
 For users:
 - New: War against number of clicks:
      - When adding a free bank transaction, form to add next one is still
@@ -185,9 +184,6 @@ For users:
 - New: Use autocompletion on invoice select when creating replacement 
        or credit note invoice.
 - New: task #10885: Add a week view for calendar.
-- New: Modify propect workflow by a dictionnary
-- New: Add new client workflow 
-- New: fusion of clients.php and propects.php to liste.php
 - New: task #11018: Add a status "not applicable" on events.
 - New: Add subscriptions/country/region/town statistics for member module.
 - New: Can define a proxy for external web access.

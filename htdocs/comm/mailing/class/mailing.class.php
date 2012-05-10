@@ -96,9 +96,11 @@ class Mailing extends CommonObject
 			return -1;
 		}
 
+		$now=dol_now();
+
 		$sql = "INSERT INTO ".MAIN_DB_PREFIX."mailing";
 		$sql .= " (date_creat, fk_user_creat, entity)";
-		$sql .= " VALUES (".$this->db->idate(mktime()).", ".$user->id.", ".$conf->entity.")";
+		$sql .= " VALUES (".$this->db->idate($now).", ".$user->id.", ".$conf->entity.")";
 
 		if (! $this->titre)
 		{
@@ -183,7 +185,7 @@ class Mailing extends CommonObject
 		$sql .= " FROM ".MAIN_DB_PREFIX."mailing as m";
 		$sql .= " WHERE m.rowid = ".$rowid;
 
-		dol_syslog("Mailing.class::fetch sql=".$sql);
+		dol_syslog(get_class($this)."::fetch sql=".$sql);
 		$result=$this->db->query($sql);
 		if ($result)
 		{
@@ -216,13 +218,13 @@ class Mailing extends CommonObject
 			}
 			else
 			{
-				dol_syslog("Mailing::Fetch Erreur -1");
+				dol_syslog(get_class($this)."::fetch Erreur -1");
 				return -1;
 			}
 		}
 		else
 		{
-			dol_syslog("Mailing::Fetch Erreur -2");
+			dol_syslog(get_class($this)."::fetch Erreur -2");
 			return -2;
 		}
 	}

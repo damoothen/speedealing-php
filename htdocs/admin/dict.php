@@ -1,6 +1,6 @@
 <?php
 /* Copyright (C) 2004      Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2004      Benoit Mortier       <benoit.mortier@opensides.be>
  * Copyright (C) 2005-2010 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2010-2011 Juanjo Menent        <jmenent@2byte.es>
@@ -66,13 +66,14 @@ include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
 $hookmanager=new HookManager($db);
 $hookmanager->initHooks(array('admin'));
 
-// Thi page is a generic page to edit dictionnaries
-// Put here delacaration of dictionnaries properties
+// This page is a generic page to edit dictionnaries
+// Put here declaration of dictionnaries properties
 
-// Ordres d'affichage des dictionnaires (0 pour espace)
-$taborder=array(9,0,4,3,2,0,1,8,19,0,28,16,26,27,0,5,11,0,6,0,10,12,13,0,14,0,7,17,0,22,20,18,21,0,15);
+// Sort order to show dictionnary (0 is space). All other dictionnaries (added by modules) will be at end of this.
+$taborder=array(9,0,4,3,2,0,1,8,19,16,0,28,16,26,27,0,5,11,0,6,0,10,12,13,0,14,0,7,17,0,22,20,18,21,0,15);
 
 // Name of SQL tables of dictionnaries
+$tabname=array();
 $tabname[1] = MAIN_DB_PREFIX."c_forme_juridique";
 $tabname[2] = MAIN_DB_PREFIX."c_departements";
 $tabname[3] = MAIN_DB_PREFIX."c_regions";
@@ -100,6 +101,7 @@ $tabname[27]= MAIN_DB_PREFIX."c_leadlevel";
 $tabname[28]= MAIN_DB_PREFIX."c_stcomm";
 
 // Dictionary labels
+$tablib=array();
 $tablib[1] = "DictionnaryCompanyJuridicalType";
 $tablib[2] = "DictionnaryCanton";
 $tablib[3] = "DictionnaryRegion";
@@ -127,6 +129,7 @@ $tablib[27]= $langs->trans("DictionnaryLeadlevel");
 $tablib[28]= $langs->trans("DictionnaryProspectStatus");
 
 // Requete pour extraction des donnees des dictionnaires
+$tabsql=array();
 $tabsql[1] = "SELECT f.rowid as rowid, f.code, f.libelle, p.code as pays_code, p.libelle as pays, f.active FROM ".MAIN_DB_PREFIX."c_forme_juridique as f, ".MAIN_DB_PREFIX."c_pays as p WHERE f.fk_pays=p.rowid";
 $tabsql[2] = "SELECT d.rowid as rowid, d.code_departement as code, d.nom as libelle, d.fk_region as region_id, r.nom as region, p.code as pays_code, p.libelle as pays, d.active FROM ".MAIN_DB_PREFIX."c_departements as d, ".MAIN_DB_PREFIX."c_regions as r, ".MAIN_DB_PREFIX."c_pays as p WHERE d.fk_region=r.code_region and r.fk_pays=p.rowid and r.active=1 and p.active=1";
 $tabsql[3] = "SELECT r.rowid as rowid, code_region as code, nom as libelle, r.fk_pays as pays_id, p.code as pays_code, p.libelle as pays, r.active FROM ".MAIN_DB_PREFIX."c_regions as r, ".MAIN_DB_PREFIX."c_pays as p WHERE r.fk_pays=p.rowid and p.active=1";
@@ -155,6 +158,7 @@ $tabsql[28]= "SELECT id   as rowid, code, libelle, active, type FROM ".$tabname[
 
 
 // Critere de tri du dictionnaire
+$tabsqlsort=array();
 $tabsqlsort[1] ="pays ASC, code ASC";
 $tabsqlsort[2] ="pays ASC, code ASC";
 $tabsqlsort[3] ="pays ASC, code ASC";
@@ -182,6 +186,7 @@ $tabsqlsort[27]="id ASC";
 $tabsqlsort[28]="id ASC";
 
 // Nom des champs en resultat de select pour affichage du dictionnaire
+$tabfield=array();
 $tabfield[1] = "code,libelle,pays";
 $tabfield[2] = "code,libelle,region_id,region,pays";   // "code,libelle,region,pays_code-pays"
 $tabfield[3] = "code,libelle,pays_id,pays";
@@ -209,6 +214,7 @@ $tabfield[27]= "code,libelle,picto";
 $tabfield[28]= "code,libelle,type";
 
 // Nom des champs d'edition pour modification d'un enregistrement
+$tabfieldvalue=array();
 $tabfieldvalue[1] = "code,libelle,pays";
 $tabfieldvalue[2] = "code,libelle,region";   // "code,libelle,region"
 $tabfieldvalue[3] = "code,libelle,pays";
@@ -236,6 +242,7 @@ $tabfieldvalue[27]= "code,libelle,picto";
 $tabfieldvalue[28]= "code,libelle,type";
 
 // Nom des champs dans la table pour insertion d'un enregistrement
+$tabfieldinsert=array();
 $tabfieldinsert[1] = "code,libelle,fk_pays";
 $tabfieldinsert[2] = "code_departement,nom,fk_region";
 $tabfieldinsert[3] = "code_region,nom,fk_pays";
@@ -265,6 +272,7 @@ $tabfieldinsert[28]= "code, libelle,type";
 // Nom du rowid si le champ n'est pas de type autoincrement
 // Example: "" if id field is "rowid" and has autoincrement on
 //          "nameoffield" if id field is not "rowid" or has not autoincrement on
+$tabrowid=array();
 $tabrowid[1] = "";
 $tabrowid[2] = "";
 $tabrowid[3] = "";
@@ -292,6 +300,7 @@ $tabrowid[27]= "id";
 $tabrowid[28]= "id";
 
 // Condition to show dictionnary in setup page
+$tabcond=array();
 $tabcond[1] = true;
 $tabcond[2] = true;
 $tabcond[3] = true;
@@ -318,7 +327,34 @@ $tabcond[26]= $conf->lead->enabled;
 $tabcond[27]= $conf->lead->enabled;
 $tabcond[28]= $conf->societe->enabled;
 
-complete_dictionnary_with_modules($taborder,$tabname,$tablib,$tabsql,$tabsqlsort,$tabfield,$tabfieldvalue,$tabfieldinsert,$tabrowid,$tabcond);
+// List of help for fields
+$tabhelp=array();
+$tabhelp[1]  = array();
+$tabhelp[2]  = array();
+$tabhelp[3]  = array();
+$tabhelp[4]  = array();
+$tabhelp[5]  = array();
+$tabhelp[6]  = array();
+$tabhelp[7]  = array();
+$tabhelp[8]  = array();
+$tabhelp[9]  = array();
+$tabhelp[10] = array();
+$tabhelp[11] = array();
+$tabhelp[12] = array();
+$tabhelp[13] = array();
+$tabhelp[14] = array();
+$tabhelp[15] = array();
+$tabhelp[16] = array();
+$tabhelp[17] = array();
+$tabhelp[18] = array();
+$tabhelp[19] = array();
+$tabhelp[20] = array();
+$tabhelp[21] = array();
+$tabhelp[22] = array();
+
+// Complete all arrays with entries found into modules
+complete_dictionnary_with_modules($taborder,$tabname,$tablib,$tabsql,$tabsqlsort,$tabfield,$tabfieldvalue,$tabfieldinsert,$tabrowid,$tabcond,$tabhelp);
+
 
 // Define elementList and sourceList (used for dictionnary "type of contacts")
 $elementList = array();
@@ -350,9 +386,7 @@ if ($id == 11)
 $msg='';
 
 
-/*
- * Actions ajout ou modification d'une entree dans un dictionnaire de donnee
- */
+// Actions ajout ou modification d'une entree dans un dictionnaire de donnee
 if ($_POST["actionadd"] || $_POST["actionmodify"])
 {
     $listfield=explode(',',$tabfield[$id]);
@@ -533,7 +567,8 @@ if ($action == 'confirm_delete' && $confirm == 'yes')       // delete
     }
 }
 
-if ($action == $acts[0])       // activate
+// activate
+if ($action == $acts[0])
 {
     if ($tabrowid[$id]) { $rowidcol=$tabrowid[$id]; }
     else { $rowidcol="rowid"; }
@@ -552,7 +587,8 @@ if ($action == $acts[0])       // activate
     }
 }
 
-if ($action == $acts[1])       // disable
+// disable
+if ($action == $acts[1])
 {
     if ($tabrowid[$id]) { $rowidcol=$tabrowid[$id]; }
     else { $rowidcol="rowid"; }
@@ -598,9 +634,7 @@ if (empty($id))
 print "<br>\n";
 
 
-/*
- * Confirmation de la suppression de la ligne
- */
+// Confirmation de la suppression de la ligne
 if ($action == 'delete')
 {
     $ret=$form->form_confirm($_SERVER["PHP_SELF"].'?'.($page?'page='.$page.'&':'').'sortfield='.$sortfield.'&sortorder='.$sortorder.'&rowid='.$rowid.'&code='.$_GET["code"].'&id='.$id, $langs->trans('DeleteLine'), $langs->trans('ConfirmDeleteLine'), 'confirm_delete','',0,1);
@@ -650,7 +684,6 @@ if ($id)
         $var=false;
 
         $fieldlist=explode(',',$tabfield[$id]);
-        //        print '<table class="noborder" width="100%">';
 
         // Line for title
         print '<tr class="liste_titre">';
@@ -685,7 +718,9 @@ if ($id)
             if ($valuetoshow != '')
             {
             	print '<td>';
-            	print $valuetoshow;
+            	if (preg_match('/http:/i',$tabhelp[$id][$value])) print '<a href="'.$tabhelp[$id][$value].'" target="_blank">'.$valuetoshow.'</a>';
+            	else if (! empty($tabhelp[$id][$value])) print $form->textwithpicto($valuetoshow,$tabhelp[$id][$value]);
+            	else print $valuetoshow;
                 print '</td>';
              }
              if ($fieldlist[$field]=='libelle' || $fieldlist[$field]=='label') $alabelisused=1;
@@ -708,7 +743,7 @@ if ($id)
 
             }
         }
-        
+
         $tmpaction = 'create';
         $parameters=array('fieldlist'=>$fieldlist, 'tabname'=>$tabname[$_GET["id"]]);
         $reshook=$hookmanager->executeHooks('createDictionaryFieldlist',$parameters, $obj, $tmpaction);    // Note that $action and $object may have been modified by some hooks
@@ -726,7 +761,7 @@ if ($id)
         print '<tr><td colspan="'.(count($fieldlist)+2).'">&nbsp;</td></tr>';
     }
 
-    
+
     // List of available values in database
     dol_syslog("htdocs/admin/dict sql=".$sql, LOG_DEBUG);
     $resql=$db->query($sql);
@@ -776,10 +811,10 @@ if ($id)
                 // Affiche nom du champ
                 if ($showfield)
                 {
-                    print_liste_field_titre($valuetoshow,"dict.php",$fieldlist[$field],($page?'page='.$page.'&':'').'&id='.$id,"","",$sortfield,$sortorder);
+                    print_liste_field_titre($valuetoshow,$_SERVER["PHP_SELF"],$fieldlist[$field],($page?'page='.$page.'&':'').'&id='.$id,"","",$sortfield,$sortorder);
                 }
             }
-            print_liste_field_titre($langs->trans("Status"),"dict.php","active",($page?'page='.$page.'&':'').'&id='.$id,"",'align="center"',$sortfield,$sortorder);
+            print_liste_field_titre($langs->trans("Status"),$_SERVER["PHP_SELF"],"active",($page?'page='.$page.'&':'').'&id='.$id,"",'align="center"',$sortfield,$sortorder);
             print '<td colspan="2"  class="liste_titre">&nbsp;</td>';
             print '</tr>';
             
@@ -800,14 +835,14 @@ if ($id)
                     print '<input type="hidden" name="id" value="'.$id.'">';
                     print '<input type="hidden" name="page" value="'.$page.'">';
                     print '<input type="hidden" name="rowid" value="'.$rowid.'">';
-                    
+
                     $tmpaction='edit';
                     $parameters=array('fieldlist'=>$fieldlist, 'tabname'=>$tabname[$id]);
                     $reshook=$hookmanager->executeHooks('editDictionaryFieldlist',$parameters,$obj, $tmpaction);    // Note that $action and $object may have been modified by some hooks
                     $error=$hookmanager->error; $errors=$hookmanager->errors;
-                    
+
                     if (empty($reshook)) fieldList($fieldlist,$obj,$tabname[$id]);
-                    
+
                     print '<td colspan="3" align="right"><a name="'.($obj->rowid?$obj->rowid:$obj->code).'">&nbsp;</a><input type="submit" class="button" name="actionmodify" value="'.$langs->trans("Modify").'">';
                     print '&nbsp;<input type="submit" class="button" name="actioncancel" value="'.$langs->trans("Cancel").'"></td>';
                 }
@@ -816,7 +851,7 @@ if ($id)
                     $tmpaction = 'view';
                     $parameters=array('fieldlist'=>$fieldlist, 'tabname'=>$tabname[$id]);
                     $reshook=$hookmanager->executeHooks('viewDictionaryFieldlist',$parameters,$obj, $tmpaction);    // Note that $action and $object may have been modified by some hooks
-                    
+
                     $error=$hookmanager->error; $errors=$hookmanager->errors;
 
                     if (empty($reshook))
@@ -933,7 +968,7 @@ if ($id)
                     // Modify link
                     if ($iserasable) print '<td align="center"><a href="'.$_SERVER["PHP_SELF"].'?'.($page?'page='.$page.'&':'').'sortfield='.$sortfield.'&sortorder='.$sortorder.'&rowid='.($obj->rowid?$obj->rowid:$obj->code).'&amp;code='.$obj->code.'&amp;id='.$id.'&amp;action=edit#'.($obj->rowid?$obj->rowid:$obj->code).'">'.img_edit().'</a></td>';
                     else print '<td>&nbsp;</td>';
-                    
+
                     // Delete link
                     if ($iserasable) print '<td align="center"><a href="'.$_SERVER["PHP_SELF"].'?'.($page?'page='.$page.'&':'').'sortfield='.$sortfield.'&sortorder='.$sortorder.'&rowid='.($obj->rowid?$obj->rowid:$obj->code).'&amp;code='.$obj->code.'&amp;id='.$id.'&amp;action=delete">'.img_delete().'</a></td>';
                     else print '<td>&nbsp;</td>';

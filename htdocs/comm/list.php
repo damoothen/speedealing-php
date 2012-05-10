@@ -2,9 +2,9 @@
 
 /* Copyright (C) 2001-2006 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2011      Philippe Grand       <philippe.grand@atoo-net.com>
- * Copyright (C) 2011      Herve Prot           <herve.prot@symeos.com>
+ * Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
  * Copyright (C) 2011      Patrick Mary           <laube@hotmail.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -22,21 +22,18 @@
  */
 
 /**
- * 	\file       htdocs/comm/list.php
- * 	\ingroup    commercial societe
- * 	\brief      List of customers
- * 	\version    $Id: list.php,v 1.80 2012/01/12 16:15:05 synry63 Exp $
+ *	\file       htdocs/comm/list.php
+ *	\ingroup    commercial societe
+ *	\brief      List of customers
  */
+
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT . "/comm/prospect/class/prospect.class.php");
-require_once(DOL_DOCUMENT_ROOT . "/core/class/html.formother.class.php");
+require_once(DOL_DOCUMENT_ROOT."/core/class/html.formother.class.php");
 
 $langs->load("companies");
 $langs->load("customers");
 $langs->load("suppliers");
 $langs->load("commercial");
-
-
 
 // Security check
 $socid = GETPOST("socid");

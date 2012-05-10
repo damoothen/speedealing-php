@@ -60,11 +60,11 @@ class Categorie
 	 *  @param		DoliDB		$db     Database handler
 	 *  @param		int			$id		Id of category to fetch during init
 	 */
-	function Categorie($db, $id=-1)
+	function __construct($db)
 	{
 		$this->db = $db;
 		$this->id = $id;
-                $this->priority = 0;
+        $this->priority = 0;
 
 		if ($id != -1) $this->fetch($this->id);
 	}
@@ -169,8 +169,7 @@ class Categorie
 		{
 			$sql.= ($this->socid != -1 ? $this->socid : 'null').",";
 		}
-		$sql.= "'".$this->visible."','".$this->type."','".$this->priority."'";
-		$sql.= "'".$this->visible."',".$this->type.",".$conf->entity;
+		$sql.= "'".$this->visible."','".$this->type."','".$this->priority."',".$conf->entity;
 		//$sql.= ",".$this->parentId;
 		$sql.= ")";
 
@@ -1211,7 +1210,7 @@ class Categorie
 		if ($typeid == 1)  { $table='societe'; $type='fournisseur'; }
 		if ($typeid == 2)  { $table='societe'; $type='societe'; }
 		if ($typeid == 3)  { $table='member'; $type='member'; }
-                if ($typeid == 4)  { $table='lead'; $type='lead'; }
+        if ($typeid == 4)  { $table='lead'; $type='lead'; }
 		if ($typeid == 5)  { $table='contact'; $type='contact'; }
 
 		$sql = "SELECT ct.fk_categorie";

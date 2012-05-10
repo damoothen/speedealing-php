@@ -632,8 +632,6 @@ if (! defined('NOLOGIN'))
     }
 
     // If theme support option like flip-hide left menu and we use a smartphone, we force it
-    //if (! empty($conf->global->MAIN_SMARTPHONE_OPTIM) && $conf->browser->phone && $conf->theme == 'eldy') $conf->global->MAIN_MENU_USE_JQUERY_LAYOUT='forced';
-
 }
 
 if (! defined('NOREQUIRETRAN'))
@@ -655,6 +653,14 @@ if (! defined('NOREQUIRETRAN'))
     {
         $langs->setDefaultLang(GETPOST('lang','alpha',1));
     }
+}
+
+// Use php template engine
+if ($conf->global->MAIN_USE_TEMPLATE_ENGINE && ! defined('NOTEMPLATEENGINE'))
+{
+	require_once(DOL_DOCUMENT_ROOT.'/includes/savant/Savant3.php');
+
+	$tpl = new Savant3();
 }
 
 // Case forcing style from url
@@ -728,7 +734,7 @@ else
     define('ROWS_9',8);
 }
 
-$heightforframes=48;
+$heightforframes=52;
 
 // Switch to another entity
 if (! empty($conf->multicompany->enabled) && GETPOST('action') == 'switchentity')
@@ -1263,7 +1269,7 @@ function top_menu($head, $title='', $target='', $disablejs=0, $disablehead=0, $a
     print '</header>';
 
     print "<!-- End top horizontal menu -->\n";
-    
+
     //print '<table width="100%" class="notopnoleftnoright" summary="leftmenutable" id="undertopmenu"><tr>';
 
 

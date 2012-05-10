@@ -43,6 +43,7 @@ $langs->load("users");
 
 
 $action=GETPOST('action','alpha');
+$backtopage=GETPOST('backtopage','alpha');
 $confirm=GETPOST('confirm','alpha');
 $rowid=GETPOST('rowid','int');
 $typeid=GETPOST('typeid','int');
@@ -331,6 +332,12 @@ if ($action == 'update' && ! $_POST["cancel"] && $user->rights->adherent->creer)
 
 			$rowid=$object->id;
 			$action='';
+
+            if (! empty($backtopage))
+            {
+                header("Location: ".$backtopage);
+                exit;
+            }
 		}
 		else
 		{
@@ -505,8 +512,16 @@ if ($user->rights->adherent->supprimer && $action == 'confirm_delete' && $confir
     $result=$object->delete($rowid);
     if ($result > 0)
     {
-    	Header("Location: liste.php");
-    	exit;
+        if (! empty($backtopage))
+        {
+            header("Location: ".$backtopage);
+    	    exit;
+        }
+        else
+        {
+    	    Header("Location: liste.php");
+    	    exit;
+        }
     }
     else
     {
@@ -548,37 +563,45 @@ if ($user->rights->adherent->creer && $action == 'confirm_valid' && $confirm == 
 	}
 }
 
-if ($user->rights->adherent->supprimer && $action == 'confirm_resign' && $confirm == 'yes')
+if ($user->rights->adherent->supprimer && $action == 'confirm_resign')
 {
-    $adht = new AdherentType($db);
-    $adht->fetch($object->typeid);
+    if ($confirm == 'yes')
+    {
+        $adht = new AdherentType($db);
+        $adht->fetch($object->typeid);
 
-    $result=$object->resiliate($user);
+        $result=$object->resiliate($user);
 
-    if ($result >= 0 && ! count($object->errors))
-	{
-	    if ($object->email && $_POST["send_mail"])
-		{
-			$result=$object->send_an_email($adht->getMailOnResiliate(),$conf->global->ADHERENT_MAIL_RESIL_SUBJECT,array(),array(),array(),"","",0,-1);
-		}
-		if ($result < 0)
-		{
-			$errmsg.=$object->error;
-		}
+        if ($result >= 0 && ! count($object->errors))
+    	{
+    	    if ($object->email && $_POST["send_mail"])
+    		{
+    			$result=$object->send_an_email($adht->getMailOnResiliate(),$conf->global->ADHERENT_MAIL_RESIL_SUBJECT,array(),array(),array(),"","",0,-1);
+    		}
+    		if ($result < 0)
+    		{
+    			$errmsg.=$object->error;
+    		}
 
-	    // supprime l'utilisateur des divers abonnements ..
-	    if ($object->del_to_abo() < 0)
-	    {
-	        // error
-	        $errmsg.=$langs->trans("FaildToRemoveFromMailmanList").': '.$object->error."<br>\n";
-	    }
-	}
-	else
-	{
-		if ($object->error) $errmsg=$object->error;
-		else $errmsgs=$object->errors;
-		$action='';
-	}
+    	    // supprime l'utilisateur des divers abonnements ..
+    	    if ($object->del_to_abo() < 0)
+    	    {
+    	        // error
+    	        $errmsg.=$langs->trans("FaildToRemoveFromMailmanList").': '.$object->error."<br>\n";
+    	    }
+    	}
+    	else
+    	{
+    		if ($object->error) $errmsg=$object->error;
+    		else $errmsgs=$object->errors;
+    		$action='';
+    	}
+    }
+    if (! empty($backtopage) && ! $errmsg)
+    {
+        header("Location: ".$backtopage);
+        exit;
+    }
 }
 
 if ($user->rights->adherent->supprimer && $action == 'confirm_del_spip' && $confirm == 'yes')
@@ -874,6 +897,7 @@ if ($action == 'edit')
 	print '<input type="hidden" name="action" value="update" />';
 	print '<input type="hidden" name="rowid" value="'.$rowid.'" />';
 	print '<input type="hidden" name="statut" value="'.$object->statut.'" />';
+	print '<input type="hidden" name="backtopage" value="'.((! empty($backtopage) && $backtopage != '1') ? $backtopage : $_SERVER["HTTP_REFERER"]).'">';
 
 	print '<table class="border" width="100%">';
 
@@ -1181,15 +1205,18 @@ if ($rowid && $action != 'edit')
 
         // Cree un tableau formulaire
 		$formquestion=array();
-		if ($object->email) $formquestion[0]=array('type' => 'checkbox', 'name' => 'send_mail', 'label' => $label, 'value' => ($conf->global->ADHERENT_DEFAULT_SENDINFOBYMAIL?'true':'false'));
-		$ret=$form->form_confirm("fiche.php?rowid=$rowid",$langs->trans("ResiliateMember"),$langs->trans("ConfirmResiliateMember"),"confirm_resign",$formquestion);
+		if ($object->email) $formquestion[]=array('type' => 'checkbox', 'name' => 'send_mail', 'label' => $label, 'value' => ($conf->global->ADHERENT_DEFAULT_SENDINFOBYMAIL?'true':'false'));
+		if ($backtopage)    $formquestion[]=array('type' => 'hidden', 'name' => 'backtopage', 'value' => ((! empty($backtopage) && $backtopage != '1') ? $backtopage : $_SERVER["HTTP_REFERER"]));
+		$ret=$form->form_confirm("fiche.php?rowid=".$rowid,$langs->trans("ResiliateMember"),$langs->trans("ConfirmResiliateMember"),"confirm_resign",$formquestion);
         if ($ret == 'html') print '<br>';
     }
 
 	// Confirm remove member
     if ($action == 'delete')
     {
-        $ret=$form->form_confirm("fiche.php?rowid=$rowid",$langs->trans("DeleteMember"),$langs->trans("ConfirmDeleteMember"),"confirm_delete",'',0,1);
+		$formquestion=array();
+		if ($backtopage) $formquestion[]=array('type' => 'hidden', 'name' => 'backtopage', 'value' => ((! empty($backtopage) && $backtopage != '1') ? $backtopage : $_SERVER["HTTP_REFERER"]));
+        $ret=$form->form_confirm("fiche.php?rowid=".$rowid,$langs->trans("DeleteMember"),$langs->trans("ConfirmDeleteMember"),"confirm_delete",$formquestion,0,1);
         if ($ret == 'html') print '<br>';
     }
 
@@ -1198,7 +1225,8 @@ if ($rowid && $action != 'edit')
     */
     if ($action == 'add_spip')
     {
-        $ret=$form->form_confirm("fiche.php?rowid=$rowid","Ajouter dans spip","Etes-vous sur de vouloir ajouter cet adherent dans spip ? (serveur : ".ADHERENT_SPIP_SERVEUR.")","confirm_add_spip");
+        $langs->load("mailmanspip");
+        $ret=$form->form_confirm("fiche.php?rowid=".$rowid,"Add to spip","Etes-vous sur de vouloir ajouter cet adherent dans spip ? (serveur : ".ADHERENT_SPIP_SERVEUR.")","confirm_add_spip");
         if ($ret == 'html') print '<br>';
     }
 
@@ -1207,6 +1235,7 @@ if ($rowid && $action != 'edit')
     */
     if ($action == 'del_spip')
     {
+        $langs->load("mailmanspip");
         $ret=$form->form_confirm("fiche.php?rowid=$rowid","Supprimer dans spip","Etes-vous sur de vouloir effacer cet adherent dans spip ? (serveur : ".ADHERENT_SPIP_SERVEUR.")","confirm_del_spip");
         if ($ret == 'html') print '<br>';
     }

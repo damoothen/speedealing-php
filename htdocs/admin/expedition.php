@@ -62,11 +62,11 @@ if ($action == 'specimen')
 	$dirmodels=array_merge(array('/'),(array) $conf->modules_parts['models']);
 	foreach($dirmodels as $reldir)
 	{
-	    $file=dol_buildpath($reldir."core/modules/expedition/doc/pdf_".$modele.".modules.php",0);
+	    $file=dol_buildpath($reldir."core/modules/expedition/doc/pdf_expedition_".$modele.".modules.php",0);
 		if (file_exists($file))
 		{
 			$filefound=1;
-			$classname = "pdf_".$modele;
+			$classname = "pdf_expedition_".$modele;
 			break;
 		}
 	}
@@ -372,10 +372,9 @@ foreach ($dirmodels as $reldir)
 
 			while (($file = readdir($handle))!==false)
 			{
-				if (preg_match('/^(mod_.*)\.php$/i',$file,$reg))
+				if (substr($file, 0, 15) == 'mod_expedition_' && substr($file, dol_strlen($file)-3, 3) == 'php')
 				{
-					$file = $reg[1];
-					$classname = substr($file,4);
+					$file = substr($file, 0, dol_strlen($file)-4);
 
 					require_once(DOL_DOCUMENT_ROOT ."/core/modules/expedition/".$file.".php");
 
@@ -420,7 +419,6 @@ foreach ($dirmodels as $reldir)
 						// Info
 						$htmltooltip='';
 						$htmltooltip.=''.$langs->trans("Version").': <b>'.$module->getVersion().'</b><br>';
-						$facture->type=0;
 						$nextval=$module->getNextValue($mysoc,$expedition);
 						if ("$nextval" != $langs->trans("NotAvailable"))	// Keep " on nextval
 						{
@@ -511,7 +509,7 @@ foreach ($dirmodels as $reldir)
 	    			$classname = substr($file, 0, dol_strlen($file) - 12);
 
 	    			$var=!$var;
-	    			print "<tr $bc[$var]><td>";
+	    			print '<tr '.$bc[$var].'><td>';
 	    			print $name;
 	    			print "</td><td>\n";
 	    			require_once($dir.$file);
@@ -523,17 +521,10 @@ foreach ($dirmodels as $reldir)
 	    			// Active
 	    			if (in_array($name, $def))
 	    			{
-	    				print "<td align=\"center\">\n";
-	    				//if ($conf->global->EXPEDITION_ADDON_PDF != $name)
-	    				//{
-	    					print '<a href="'.$_SERVER["PHP_SELF"].'?action=del&amp;value='.$name.'">';
-	    					print img_picto($langs->trans("Activated"),'switch_on');
-	    					print '</a>';
-	    				//}
-	    				//else
-	    				//{
-	    				//	print img_picto($langs->trans("Activated"),'switch_on');
-	    				//}
+	    				print "<td align=\"center\">\n";	    				
+	    				print '<a href="'.$_SERVER["PHP_SELF"].'?action=del&amp;value='.$name.'">';
+	    				print img_picto($langs->trans("Activated"),'switch_on');
+	    				print '</a>';	    				
 	    				print "</td>";
 	    			}
 	    			else
