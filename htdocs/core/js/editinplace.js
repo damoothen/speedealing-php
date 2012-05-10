@@ -26,6 +26,45 @@ $(document).ready(function() {
 	var table_element = $('#jeditable_table_element').html();
 	var fk_element = $('#jeditable_fk_element').html();
 	
+	$('.edit').editable(urlSaveInPlace, {
+        indicator : indicatorInPlace,
+        tooltip   : tooltipInPlace
+    });
+	
+	$('.edit_area').editable(urlSaveInPlace, {
+		type		: 'text',
+		id			: 'field',
+		height		: '64px',
+		width		: 300,
+		tooltip		: tooltipInPlace,
+		placeholder	: placeholderInPlace,
+		cancel		: cancelInPlace,
+		submit		: submitInPlace,
+		indicator	: indicatorInPlace
+	});
+	
+	$('.edit_wysiwyg').editable(urlSaveInPlace, {
+		type		: 'wysiwyg',
+		id			: 'field',
+		onblur		: 'ignore',
+		tooltip		: tooltipInPlace,
+		placeholder	: '&nbsp;',
+		cancel		: cancelInPlace,
+		submit		: submitInPlace,
+		indicator	: indicatorInPlace,
+		wysiwyg		: {
+			controls : {
+				separator04 : { visible : true },
+				insertOrderedList : { visible : true },
+				insertUnorderedList : { visible : true },
+				undo : { visible : true },
+				separator08 : { visible : false },
+				increaseFontSize : { visible : false},
+				decreaseFontSize : { visible : false},
+			}
+		}
+	});
+	
 	$('.editval_textarea').editable(urlSaveInPlace, {
 		type		: 'textarea',
 		rows		: 4,
@@ -91,6 +130,25 @@ $(document).ready(function() {
 		onreset		: function(result, settings) {
 			getDefault(settings);
 		}
+	});
+	$('.editkey_ckeditor').hover(
+			function () {
+				$('#viewval_' + $(this).attr('id')).addClass("viewval_hover");
+			},
+			function () {
+				$('#viewval_' + $(this).attr('id')).removeClass("viewval_hover");
+			}
+	);
+	$('.editkey_ckeditor').click(function() {
+		$( '#viewval_' + $(this).attr('id') ).click();
+	});
+	$('.viewval_ckeditor.active').click(function() {
+		$('#viewval_' + $(this).attr('id').substr(8)).hide();
+		$('#editval_' + $(this).attr('id').substr(8)).show().click();
+	});
+	$('.editkey_ckeditor').click(function() {
+		$('#viewval_' + $(this).attr('id')).hide();
+		$('#editval_' + $(this).attr('id')).show().click();
 	});
 	$('.editkey_ckeditor').hover(
 			function () {

@@ -923,39 +923,8 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
         print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/jeditable/jquery.jeditable.wysiwyg.js"></script>'."\n";
         print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/wysiwyg/jquery.wysiwyg.js"></script>'."\n";
         print '<script type="text/javascript">'."\n";
-        print '$(document).ready(function() {
-     $(".edit").editable("http://www.example.com/save.php", {
-         indicator : "Saving...",
-         tooltip   : "Click to edit..."
-     });
-     $(".edit_area").editable("http://www.example.com/save.php", { 
-         type      : "textarea",
-         cancel    : "Cancel",
-         submit    : "OK",
-         height    : "64px",
-         indicator : "<div style=\"text-align: center;\"><img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>",
-         tooltip   : "Click to edit..."
-     });
-     $(".edit_wysiwyg").editable("http://www.example.com/save.php", { 
-         type      : "wysiwyg",
-         cancel    : "Cancel",
-         submit    : "OK",
-         height    : "auto",
-         onblur    : "ignore",
-         indicator : "<div style=\"text-align: center;\"><img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>",
-         tooltip   : "Click to edit...",
-         wysiwyg   : { controls : { separator04         : { visible : true },
-                               insertOrderedList   : { visible : true },
-                               insertUnorderedList : { visible : true },
-                               undo : { visible : true },
-                               separator08 : { visible : false },
-                               increaseFontSize : { visible : false},
-                               decreaseFontSize : { visible : false},
-                               
-                     }}
-     });
- });';
-        print 'var urlSaveInPlace = \''.DOL_URL_ROOT.'/core/ajax/saveinplace.php\';'."\n";
+        print 'var urlSaveInPlace = \'http://www.example.com/save.php\';'."\n";
+        //print 'var urlSaveInPlace = \''.DOL_URL_ROOT.'/core/ajax/saveinplace.php\';'."\n";
         print 'var urlLoadInPlace = \''.DOL_URL_ROOT.'/core/ajax/loadinplace.php\';'."\n";
         print 'var tooltipInPlace = \''.$langs->transnoentities('ClickToEdit').'\';'."\n";
         print 'var placeholderInPlace = \''.$langs->trans('ClickToEdit').'\';'."\n";
@@ -964,7 +933,7 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
         print 'var indicatorInPlace = \'<img src="'.DOL_URL_ROOT."/theme/".$conf->theme."/img/working.gif".'">\';'."\n";
         print 'var ckeditorConfig = \''.dol_buildpath('/theme/'.$conf->theme.'/ckeditor/config.js',1).'\';'."\n";
         print '</script>'."\n";
-        //print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/core/js/editinplace.js"></script>'."\n";
+        print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/core/js/editinplace.js"></script>'."\n";
         print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/jeditable/jquery.jeditable.ckeditor.js"></script>'."\n";
         // jQuery File Upload
         print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/fileupload/jquery.tmpl.min.js"></script>'."\n";
