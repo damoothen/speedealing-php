@@ -37,7 +37,7 @@ $flush=0;
 if($flush)
 {
     // reset old value
-    $result = $couch->limit(50000)->getView('menu','target_id');
+    $result = $conf->couchdb->limit(50000)->getView('menu','target_id');
     $i=0;
     
     if(count($result->rows)==0)
@@ -54,7 +54,7 @@ if($flush)
     }
 
     try {
-        $couch->deleteDocs($obj);
+        $conf->couchdb->deleteDocs($obj);
     } catch (Exception $e) {
         echo "Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
         exit(1);
@@ -86,54 +86,69 @@ while ($aRow = $db->fetch_object($result)) {
         $fk_menu=(int)$aRow->fk_menu;
         unset($aRow->fk_menu);
         $level=(int)$aRow->level;
-        unset($aRow->level);
+        //unset($aRow->level);
         unset($aRow->fk_leftmenu);
         unset($aRow->fk_mainmenu);
         unset($aRow->target);
         $aRow->tms=dol_now();
         $aRow->title=$aRow->titre;
         unset($aRow->titre);
-        $aRow->enabled = (bool)$aRow->enabled;
         $aRow->position = (int)$aRow->position;
         $aRow->usertype = (int)$aRow->usertype;
-        $pos=strpos($aRow->url, "?");
         
         $tabperefils[$rowid]=$fk_menu;
         
+	$pos=strpos($aRow->url, "?");
         if($pos!=false)
         {
             $aRow->url=substr($aRow->url, 0,$pos);
         }
         
-        $name = "menu:".strtolower($aRow->title);
-        
         if($aRow->type == "top")
         {
             $aRow->class="menu";
-            unset($aRow->type);
+            //unset($aRow->type);
             unset($aRow->leftmenu);
             $name="menu:".$aRow->mainmenu;
             unset($aRow->mainmenu);
             $obj[$name] = $aRow;
             $obj[$name]->_id = $name;
         }
-        else if($level==0)// left
+        else
         {
+	    $aRow->class="menu";
+	    $name = "menu:".strtolower($aRow->title);
+	    $pos=strpos($name, "|");
+        
+	    if($pos!=false)
+	    {
+		$name=substr($name, 0,$pos);
+	    }
+	    
+	    if($tabinsert[$name])
+		$name.= "1"; // Ajoute 1 en cas de doublons
             unset($aRow->type);
             unset($aRow->leftmenu);
             unset($aRow->mainmenu);
-            unset($aRow->tms);
-            $obj[$tabname[$fk_menu]]->submenu[$name] = $aRow;
-            uasort($obj[$tabname[$fk_menu]]->submenu,array("Menubase","compare")); // suivant position
+	    
+	    
+	    $obj[$name] = $aRow;
+	    
+	    // Add father
+	    $obj[$name]->fk_menu[] = $tabname[$fk_menu];
+            $obj[$name]->_id = $name;
+	    
+            //$obj[$tabname[$fk_menu]]->submenu[$name] = $aRow;
+            //uasort($obj[$tabname[$fk_menu]]->submenu,array("Menubase","compare")); // suivant position
         }
-        else if($level==1)
+        /*else if($level==1)
         {
             unset($aRow->type);
             unset($aRow->leftmenu);     
             unset($aRow->mainmenu);
             unset($aRow->tms);
             $obj[$tabname[$tabperefils[$fk_menu]]]->submenu[$tabname[$fk_menu]]->submenu[$name] = $aRow;
-            uasort($obj[$tabname[$tabperefils[$fk_menu]]]->submenu[$tabname[$fk_menu]]->submenu,array("Menubase","compare"));
+            //uasort($obj[$tabname[$tabperefils[$fk_menu]]]->submenu[$tabname[$fk_menu]]->submenu,array("Menubase","compare"));
         }
         else
         {
@@ -142,22 +157,29 @@ while ($aRow = $db->fetch_object($result)) {
             unset($aRow->mainmenu);
             unset($aRow->tms);
             $obj[$tabname[$tabperefils[$tabperefils[$fk_menu]]]]->submenu[$tabname[$tabperefils[$fk_menu]]]->submenu[$tabname[$fk_menu]]->submenu[$name] = $aRow;
-            uasort($obj[$tabname[$tabperefils[$tabperefils[$fk_menu]]]]->submenu[$tabname[$tabperefils[$fk_menu]]]->submenu[$tabname[$fk_menu]]->submenu,array("Menubase","compare"));
-        }
+            //uasort($obj[$tabname[$tabperefils[$tabperefils[$fk_menu]]]]->submenu[$tabname[$tabperefils[$fk_menu]]]->submenu[$tabname[$fk_menu]]->submenu,array("Menubase","compare"));
+        }*/
         
         $tabname[$rowid]=$name;
+	$tabinsert[$name]=true;
         
         $i++;
 }
 $db->free($result);
 unset($result);
 
-//print json_encode($obj);
+$result = $conf->couchdb->limit(50000)->getView('menu','target_id');
+    
+foreach ($result->rows as $key => $aRow)
+{
+    $obj[$aRow->value->_id]->_rev=$aRow->value->_rev;
+}
+
+//print_r($obj);
 //exit;
 
-$i=0;
-
 try {
+    $conf->couchdb->clean($obj);
     print_r($conf->couchdb->storeDocs($obj,false));
     } catch (Exception $e) {
         echo "Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";

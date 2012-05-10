@@ -78,8 +78,8 @@ function print_auguria_menu($db,$atarget,$type_user)
                         print $newTabMenu->title;
                         print '</a>';
                         // Submenu level 1
-                        if(isset($newTabMenu->submenu))
-                            print_submenu($newTabMenu->submenu,$selectnav,1);
+                        //if(isset($newTabMenu->submenu))
+                            print_submenu($newTabMenu->_id,$selectnav,1);
                                 
                         print '</li>';
                         $i++;
@@ -133,14 +133,21 @@ function print_end_menu_array_auguria($selectnav)
  * @param       int		$level              Level for the navigation
  * @return	void
  */
-function print_submenu($submenu, &$selectnav, $level)
+function print_submenu($id, &$selectnav, $level)
 {
     global $user,$conf,$langs;
     
+    $result = $conf->couchdb->startkey(array($id))->endkey(array($id,"{}"))->getView("menu","submenu");
+    
+    if(count($result->rows)==0)
+	return 0;
+    
+    //print_r($result->rows);exit;
+    
     print '<ul style="display:none">';
-    foreach ($submenu as $key => $aRow)
+    foreach ($result->rows as $key => $aRow)
     {
-        $menu = $aRow;
+        $menu = $aRow->value;
         //print_r($menu);exit;
         $newTabMenu = verifyMenu($menu);
                 
@@ -149,7 +156,7 @@ function print_submenu($submenu, &$selectnav, $level)
             //$idsel=(empty($newTabMenu_id)?'none':$newTabMenu->_id);
             if ($newTabMenu->perms == true)	// Is allowed
             {
-                $url = menuURL($newTabMenu, $key);
+                $url = menuURL($newTabMenu, $menu->_id);
                        
                 //print $url;exit;
         
@@ -157,7 +164,7 @@ function print_submenu($submenu, &$selectnav, $level)
                 $classname='mb_parent';
                 if($i==0)
                     $classname.=' first_el';
-                if (! empty($_SESSION['idmenu']) && menuSelected($newTabMenu,$key))
+                if (! empty($_SESSION['idmenu']) && menuSelected($newTabMenu,$menu->_id))
                 {
                     $classname.=' pageselected';
                     $selectnav[$level]->name = $newTabMenu->title;
@@ -166,12 +173,12 @@ function print_submenu($submenu, &$selectnav, $level)
 
                 print '<li>';
                 print '<a class="'.$classname.'" href="'.$url.'">';
-                print '<!-- Add menu entry with mainmenu='.$key.' -->'."\n";
+                print '<!-- Add menu entry with mainmenu='.$menu->_id.' -->'."\n";
                 print $newTabMenu->title;
                 print '</a>';
                 // Submenu level 1
-                if(isset($newTabMenu->submenu))
-                    print_submenu($newTabMenu->submenu, $selectnav, ($level+1));
+                //if(isset($newTabMenu->submenu))
+                print_submenu($newTabMenu->_id, $selectnav, ($level+1));
                 print '</li>';
                 $i++;
             }
