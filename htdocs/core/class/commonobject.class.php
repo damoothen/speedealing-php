@@ -35,34 +35,33 @@ abstract class CommonObject extends couchDocument
 {
     protected $db;
     protected $couchdb;
+    
     public $error;
     public $errors;
     public $canvas;                // Contains canvas name if it is
 
 
-       /**
-	*class constructor
-	*
-	* @param couchClient $client couchClient connection object
-	*
-	*/
-    
-        function __construct($db)
-	{
-            global $conf;
-            
-            parent::__construct($conf->couchdb);
-            $this->setAutocommit(false);
-            $this->class = $this->element;
-            $this->db = $db;
-	    $this->couchdb = $conf->couchdb;
-	}
-        
-        /**
-	 *  Record fonction for update : suppress empty value
+	/**
+	 *	class constructor
 	 *
-	 *  @return int         		1 success
+	 *	@param couchClient $client couchClient connection object
 	 */
+    function __construct($db)
+    {
+    	global $conf;
+    	
+    	parent::__construct($conf->couchdb);
+    	$this->setAutocommit(false);
+    	$this->class = $this->element;
+    	$this->db = $db;
+    	$this->couchdb = $conf->couchdb;
+    }
+    
+    /**
+     * 	Record fonction for update : suppress empty value
+     * 
+     * 	@return int         		1 success
+     */
 	public function record()
 	{
 		foreach ($this->__couch_data->fields as $key => $aRow)
