@@ -92,7 +92,7 @@ if (empty($reshook))
     {
         require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
 
-        if ($action == 'update') $object = $conf->couchdb->getDoc($socid);
+        if ($action == 'update') $object = $couchdb->getDoc($socid);
 		else $object->canvas=$canvas;
 
         if (GETPOST("private") == 1)
@@ -424,8 +424,8 @@ if (empty($reshook))
                  //$object->update($socid,$user,1,$oldcopy->codeclient_modifiable(),$oldcopy->codefournisseur_modifiable());
                 
                 try {
-                    $conf->couchdb->clean($object);
-                    $conf->couchdb->storeDoc($object);
+                    $couchdb->clean($object);
+                    $couchdb->storeDoc($object);
                     $result = 1;
                 }
                 catch (Exception $e) {

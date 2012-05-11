@@ -45,7 +45,7 @@ $type = GETPOST("type", 'int');
 $pstcomm = GETPOST("pstcomm");
 $search_sale = GETPOST("search_sale");
 
-$object = new Societe($couch);
+$object = new Societe($couchdb);
 
 if($_GET['json']=="list")
 {

@@ -20,7 +20,6 @@
  * 	\file       htdocs/comm/serverprocess.php
  * 	\ingroup    commercial societe
  * 	\brief      load data to display
- * 	\version    $Id: serverprocess.php,v 1.6 2012/01/27 16:15:05 synry63 Exp $
  */
 require_once("../../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/menubase.class.php");;
@@ -37,7 +36,7 @@ $flush=0;
 if($flush)
 {
     // reset old value
-    $result = $conf->couchdb->limit(50000)->getView('menu','target_id');
+    $result = $couchdb->limit(50000)->getView('menu','target_id');
     $i=0;
     
     if(count($result->rows)==0)
@@ -54,7 +53,7 @@ if($flush)
     }
 
     try {
-        $conf->couchdb->deleteDocs($obj);
+        $couchdb->deleteDocs($obj);
     } catch (Exception $e) {
         echo "Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
         exit(1);
@@ -168,7 +167,7 @@ while ($aRow = $db->fetch_object($result)) {
 $db->free($result);
 unset($result);
 
-$result = $conf->couchdb->limit(50000)->getView('menu','target_id');
+$result = $couchdb->limit(50000)->getView('menu','target_id');
     
 foreach ($result->rows as $key => $aRow)
 {
@@ -179,8 +178,8 @@ foreach ($result->rows as $key => $aRow)
 //exit;
 
 try {
-    $conf->couchdb->clean($obj);
-    print_r($conf->couchdb->storeDocs($obj,false));
+    $couchdb->clean($obj);
+    print_r($couchdb->storeDocs($obj,false));
     } catch (Exception $e) {
         $error = "Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
 	dol_print_error("", $error);

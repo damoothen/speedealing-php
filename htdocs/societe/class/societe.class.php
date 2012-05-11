@@ -45,32 +45,30 @@ class Societe extends CommonObject
     var $fk_status;
     var $fk_country;
     
-    
     var $db;
 
     /**
      *    Constructor
      *
-     *    @param	DoliDB		$db		Database handler
+     *    @param	couchClient		$db		Database handler
      */
     public function Societe($db)
     {
-        global $conf;
-        
+    	global $couchdb;
+    	
         $this->db = $db;
         
+        parent::__construct($couchdb);
+        
         try {
-            $this->fk_extrafields = $conf->couchdb->getDoc("extrafields:company"); // load fields company
-            $this->fk_status = $conf->couchdb->getDoc($this->fk_extrafields->fields->Main->Status->dict); //load status table
-            $this->fk_country = $conf->couchdb->getDoc($this->fk_extrafields->fields->Main->Country->dict); //load country table
+            $this->fk_extrafields = $couchdb->getDoc("extrafields:company"); // load fields company
+            $this->fk_status = $couchdb->getDoc($this->fk_extrafields->fields->Main->Status->dict); //load status table
+            $this->fk_country = $couchdb->getDoc($this->fk_extrafields->fields->Main->Country->dict); //load country table
         }catch (Exception $e) {
             $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
             print $error;
             exit;
         }
-
-        
-        parent::__construct($db);
 
         return 1;
     }
@@ -1947,9 +1945,10 @@ class Societe extends CommonObject
     //temporaire
     function fetch($socid)
     {
-        global $conf;
+    	global $couchdb;
+    	
         try {
-            $result = $conf->couchdb->key((int)$socid)->getView("societe","rowid");
+            $result = $couchdb->key((int)$socid)->getView("societe","rowid");
             $this->load($result->rows[0]->value);
         } catch (Exception $e) {
             return 0;

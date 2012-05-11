@@ -109,6 +109,9 @@ if (! defined('NOREQUIREDB'))
 		dol_print_error($db,"host=".$conf->db->host.", port=".$conf->db->port.", user=".$conf->db->user.", databasename=".$conf->db->name.", ".$db->error);
 		exit;
 	}
+	
+	// CouchDB
+	$couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
 }
 
 // Now database connexion is known, so we can forget password
@@ -148,9 +151,6 @@ if (! defined('NOREQUIREDB'))
 	}
 
 	//print "Will work with data into entity instance number '".$conf->entity."'";
-	
-	// CouchDB
-	$conf->couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
 
 	// Here we read database (llx_const table) and define $conf->global->XXX var.
 	$conf->setValues($db);
@@ -201,7 +201,7 @@ if (! empty($conf->global->MAIN_ONLY_LOGIN_ALLOWED))
 if (! defined('NOREQUIREDB') && ! defined('NOREQUIRESOC'))
 {
 	require_once(DOL_DOCUMENT_ROOT ."/societe/class/societe.class.php");
-	$mysoc=new Societe($conf->couchdb);
+	$mysoc=new Societe($couchdb);
 
 	$mysoc->id=0;
 	$mysoc->nom=$conf->global->MAIN_INFO_SOCIETE_NOM; 			// TODO deprecated

@@ -262,8 +262,8 @@ unset($resultCate);
 //print_r($col);exit;
 
 try {
-    $conf->couchdb->clean($col);
-    $conf->couchdb->storeDocs($col,false);
+    $couchdb->clean($col);
+    $couchdb->storeDocs($col,false);
     } catch (Exception $e) {
         echo "Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
         exit(1);

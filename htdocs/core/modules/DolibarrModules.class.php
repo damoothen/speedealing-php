@@ -1031,91 +1031,89 @@ abstract class DolibarrModules
      *
      *  @return     int     Nb of errors (0 if OK)
      */
-    function insert_menus()
-    {
-    	global $user, $conf;
-
-        require_once(DOL_DOCUMENT_ROOT."/core/class/menubase.class.php");
-
-        $err=0;
-	if(count($this->menu)==0)
-	    return 0;
-	
-	$menus = array();
-
-        //var_dump($this->menu); exit;
-        foreach ($this->menu as $key => $value)
-        {
-	    $id = $this->menu[$key]['_id'];
-	    
-            $menu[$id]->module=$this->rights_class;
-           
-	    if (empty($this->menu[$key]['_id']))
-            {
-		$error ="ErrorBadDefinitionOfMenuArrayInModuleDescriptor (bad value for key _id)";
-		dol_print_error("",$error);
-		$err++;
-	    }
-	    
-	    if ($this->menu[$key]['type']!="top" && !empty($value['fk_menu']))
-            {
-		if(empty($menu[$value['fk_menu']]))
+	function insert_menus()
+	{
+		global $user, $couchdb;
+		
+		require_once(DOL_DOCUMENT_ROOT."/core/class/menubase.class.php");
+		
+		$err=0;
+		if(count($this->menu)==0) return 0;
+		
+		$menus = array();
+		
+		//var_dump($this->menu); exit;
+		foreach ($this->menu as $key => $value)
 		{
-		    try {
-			$conf->couchdb->getDoc($value['fk_menu']);
-		    } catch (Exception $e) {
-			$error ="ErrorBadDefinitionOfMenuArrayInModuleDescriptor (bad value for key fk_menu)";
-			$error.="<br>Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
-			dol_print_error("",$error);
-			$err++;
-		    }
+			$id = $this->menu[$key]['_id'];
+			
+			$menu[$id]->module=$this->rights_class;
+			
+			if (empty($this->menu[$key]['_id']))
+			{
+				$error ="ErrorBadDefinitionOfMenuArrayInModuleDescriptor (bad value for key _id)";
+				dol_print_error("",$error);
+				$err++;
+			}
+			
+			if ($this->menu[$key]['type']!="top" && !empty($value['fk_menu']))
+			{
+				if (empty($menu[$value['fk_menu']]))
+				{
+					try {
+						$couchdb->getDoc($value['fk_menu']);
+					} catch (Exception $e) {
+						$error ="ErrorBadDefinitionOfMenuArrayInModuleDescriptor (bad value for key fk_menu)";
+						$error.="<br>Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+						dol_print_error("",$error);
+						$err++;
+					}
+				}
+			}
+			
+			$menu[$id]->class="menu";
+			$menu[$id]->type=$this->menu[$key]['type'];
+			$menu[$id]->title=$this->menu[$key]['titre'];
+			$menu[$id]->url=$this->menu[$key]['url'];
+			$menu[$id]->langs=$this->menu[$key]['langs'];
+			$menu[$id]->position=(int)$this->menu[$key]['position'];
+			$menu[$id]->perms=$this->menu[$key]['perms'];
+			$menu[$id]->target=$this->menu[$key]['target'];
+			$menu[$id]->user=$this->menu[$key]['user'];
+			$menu[$id]->enabled=isset($this->menu[$key]['enabled'])?$this->menu[$key]['enabled']:0;
+			if($this->menu[$key]['fk_menu']) $menu[$id]->fk_menu=$this->menu[$key]['fk_menu'];
+			$menu[$id]->_id=$this->menu[$key]['_id'];
+			
+			// for update
+			try {
+				$obj = $couchdb->getDoc($id);
+				$menu[$id]->_rev = $obj->_rev;
+			} catch (Exception $e) {
+				
+			}
+			//print_r($menu);
 		}
-	    }
-	    
-	    $menu[$id]->class="menu";
-            $menu[$id]->type=$this->menu[$key]['type'];
-            $menu[$id]->title=$this->menu[$key]['titre'];
-            $menu[$id]->url=$this->menu[$key]['url'];
-            $menu[$id]->langs=$this->menu[$key]['langs'];
-            $menu[$id]->position=(int)$this->menu[$key]['position'];
-            $menu[$id]->perms=$this->menu[$key]['perms'];
-            $menu[$id]->target=$this->menu[$key]['target'];
-            $menu[$id]->user=$this->menu[$key]['user'];
-            $menu[$id]->enabled=isset($this->menu[$key]['enabled'])?$this->menu[$key]['enabled']:0;
-	    if($this->menu[$key]['fk_menu'])
-		$menu[$id]->fk_menu=$this->menu[$key]['fk_menu'];
-	    $menu[$id]->_id=$this->menu[$key]['_id'];
-	    
-	    // for update
-	    try {
-		    $obj = $conf->couchdb->getDoc($id);
-		    $menu[$id]->_rev = $obj->_rev;
-		} catch (Exception $e) {
-		    
+		
+		//print_r($menu);exit;
+		
+		if (! $err)
+		{
+			try {
+				$couchdb->clean($menu);
+				$couchdb->storeDocs($menu,false);
+			} catch (Exception $e) {
+				$error = "Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+				dol_print_error("", $error);
+				exit(1);
+			}
 		}
-		//print_r($menu);
-        }
-	
-	//print_r($menu);exit;
-
-        if (! $err)
-        {
-            try {
-		$conf->couchdb->clean($menu);
-		$conf->couchdb->storeDocs($menu,false);
-	    } catch (Exception $e) {
-		$error = "Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
-		dol_print_error("", $error);
-		exit(1);
-	    }
-        }
-        else
-        {
-            dol_syslog(get_class($this)."::insert_menus ".$this->error, LOG_ERR);
-        }
-
-        return $err;
-    }
+		else
+		{
+			dol_syslog(get_class($this)."::insert_menus ".$this->error, LOG_ERR);
+		}
+		
+		return $err;
+	}
 
 
     /**

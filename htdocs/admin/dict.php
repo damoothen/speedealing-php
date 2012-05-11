@@ -1008,7 +1008,7 @@ if ($id)
             if(isset($arrayConf[$id]) && $arrayConf[$id]==true)
             {
             try {
-                $conf->couchdb->getDoc($dictid); // test if exit
+                $couchdb->getDoc($dictid); // test if exit
                 print "Dictionnaire déjà transféré !";
                 $exist=1;
             }
@@ -1020,7 +1020,7 @@ if ($id)
                 $dict->class="dict";
                 $dict->_id=$dictid;
                 try {
-                    $conf->couchdb->storeDoc($dict);
+                    $couchdb->storeDoc($dict);
                     print "Dictionnaire transfert : ok !";
                 }catch (Exception $e) {
                     $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";

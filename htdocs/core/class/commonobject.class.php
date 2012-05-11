@@ -34,7 +34,6 @@ require_once(DOL_DOCUMENT_ROOT.'/core/db/couchdb/lib/couchDocument.php');
 abstract class CommonObject extends couchDocument
 {
     protected $db;
-    protected $couchdb;
     
     public $error;
     public $errors;
@@ -44,17 +43,17 @@ abstract class CommonObject extends couchDocument
 	/**
 	 *	class constructor
 	 *
-	 *	@param couchClient $client couchClient connection object
+	 *	@param	couchClient	$db		Database handler
 	 */
     function __construct($db)
     {
-    	global $conf;
+    	global $couchdb;
     	
-    	parent::__construct($conf->couchdb);
+    	parent::__construct($couchdb);
+    	
     	$this->setAutocommit(false);
     	$this->class = $this->element;
     	$this->db = $db;
-    	$this->couchdb = $conf->couchdb;
     }
     
     /**
@@ -2796,9 +2795,9 @@ abstract class CommonObject extends couchDocument
         
         public function getView($view,$name)
         {
-            global $conf;
-            
-            return $conf->couchdb->limit($conf->liste_limit)->getView($view,$name);
+        	global $couchdb;
+        	
+            return $couchdb->limit($conf->liste_limit)->getView($view,$name);
         }
     
     

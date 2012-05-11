@@ -60,12 +60,12 @@ class Menubase extends couchDocument
      */
     function Menubase($db)
     {
-        global $conf;
+        global $couchdb;
         
         $this->db = $db;
         
-        parent::__construct($conf->couchdb);
-	$this->setAutocommit(false);
+        parent::__construct($couchdb);
+        $this->setAutocommit(false);
         return 1;
     }
 

@@ -656,7 +656,7 @@ if (! defined('NOREQUIRETRAN'))
 }
 
 // Use php template engine
-if ($conf->global->MAIN_USE_TEMPLATE_ENGINE && ! defined('NOTEMPLATEENGINE'))
+if (! defined('NOTEMPLATEENGINE'))
 {
 	require_once(DOL_DOCUMENT_ROOT.'/includes/savant/Savant3.php');
 

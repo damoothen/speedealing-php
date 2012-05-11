@@ -34,7 +34,7 @@
  */
 function print_auguria_menu($db,$atarget,$type_user)
 {
-	global $user,$conf,$langs;
+	global $user,$couchdb,$langs;
 
 	// On sauve en session le menu principal choisi
 	if (isset($_GET["idmenu"]))   $_SESSION["idmenu"]=$_GET["idmenu"];
@@ -42,8 +42,8 @@ function print_auguria_menu($db,$atarget,$type_user)
 	$tabMenu=array();
         
 	try {	
-	    $result = $conf->couchdb->getView("menu","list");
-	    $submenu_tmp = $conf->couchdb->getView("menu","submenu");
+	    $result = $couchdb->getView("menu","list");
+	    $submenu_tmp = $couchdb->getView("menu","submenu");
 	} catch (Exception $e) {
 	    $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
             dol_print_error('',$error);

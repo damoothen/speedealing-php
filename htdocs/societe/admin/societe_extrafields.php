@@ -64,23 +64,23 @@ $maxsizeint=10;
 
 if($action==$acts[0] || $action==$acts[1])
 {
-        if(isset($_GET["attrname"]) && preg_match("/^\w[a-zA-Z0-9-_]*$/",$_GET["attrname"]))
+	if(isset($_GET["attrname"]) && preg_match("/^\w[a-zA-Z0-9-_]*$/",$_GET["attrname"]))
 	{
-            try {
-                    $object=$conf->couchdb->getDoc("extrafields:".$elementtype);
-                    if($action == $acts[0])
-                        $object->fields->$_GET["fields"]->$_GET["attrname"]->enable = true;
-                    else
-                        $object->fields->$_GET["fields"]->$_GET["attrname"]->enable = false;
-                    $conf->couchdb->storeDoc($object);
-            }
-            catch (Exception $e) {
-            $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
-            print $error;
-            exit;
-            }
-            Header("Location: ".$_SERVER["PHP_SELF"]);
-            exit;
+		try {
+			$object=$couchdb->getDoc("extrafields:".$elementtype);
+			if($action == $acts[0])
+				$object->fields->$_GET["fields"]->$_GET["attrname"]->enable = true;
+			else
+				$object->fields->$_GET["fields"]->$_GET["attrname"]->enable = false;
+			$couchdb->storeDoc($object);
+		}
+		catch (Exception $e) {
+			$error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+			print $error;
+			exit;
+		}
+		Header("Location: ".$_SERVER["PHP_SELF"]);
+		exit;
 	}
 	else
 	{
@@ -120,52 +120,52 @@ if ($action == 'update' || $action == 'add')
 
 	    if (! $error)
 	    {
-                if (isset($_POST["attrname"]) && preg_match("/^\w[a-zA-Z0-9-_]*$/",$_POST['attrname']))
+	    	if (isset($_POST["attrname"]) && preg_match("/^\w[a-zA-Z0-9-_]*$/",$_POST['attrname']))
     		{
-                        try {
-                            $object=$conf->couchdb->getDoc("extrafields:".$elementtype);
-                        }
-                        catch (Exception $e) {
-                            $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
-                            print $error;
-                            exit;
-                        }
-                        
-                        $object->fields->$_POST['fields']->$_POST['attrname']->type=$_POST['type'];
-                        $object->fields->$_POST['fields']->$_POST['attrname']->length=$_POST['size'];
-                        $object->fields->$_POST['fields']->$_POST['attrname']->enable=$_POST['enable'];
-                        
-                        if (isset($_POST['label']))
-                        {
-                            $object->fields->$_POST['fields']->$_POST['attrname']->label=$_POST['label'];
-                        }
-                        foreach ($object->fields as $key => $value) {
-                            $array = new ArrayObject($object->fields->$key);
-                            $array->uasort(array("ExtraFields","compare")); //trie suivant la position
-                            $value=$array;
-                        }
-                        
-                        //print_r ($object->fields);exit;
-                        
-                        try {
-                            $conf->couchdb->storeDoc($object);
-                        }
-                        catch (Exception $e) {
-                            $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
-                            print $error;
-                            exit;
-                        }
-                        
+    			try {
+    				$object=$couchdb->getDoc("extrafields:".$elementtype);
+    			}
+    			catch (Exception $e) {
+    				$error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+    				print $error;
+    				exit;
+    			}
+    			
+    			$object->fields->$_POST['fields']->$_POST['attrname']->type=$_POST['type'];
+    			$object->fields->$_POST['fields']->$_POST['attrname']->length=$_POST['size'];
+    			$object->fields->$_POST['fields']->$_POST['attrname']->enable=$_POST['enable'];
+    			
+    			if (isset($_POST['label']))
+    			{
+    				$object->fields->$_POST['fields']->$_POST['attrname']->label=$_POST['label'];
+    			}
+    			foreach ($object->fields as $key => $value) {
+    				$array = new ArrayObject($object->fields->$key);
+    				$array->uasort(array("ExtraFields","compare")); //trie suivant la position
+    				$value=$array;
+    			}
+    			
+    			//print_r ($object->fields);exit;
+    			
+    			try {
+    				$couchdb->storeDoc($object);
+    			}
+    			catch (Exception $e) {
+    				$error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+    				print $error;
+    				exit;
+    			}
+    			
     			Header("Location: ".$_SERVER["PHP_SELF"]);
     			exit;
     		}
     		else
     		{
-    		    $error++;
-                    $langs->load("errors");
-                    $mesg=$langs->trans("ErrorFieldCanNotContainSpecialCharacters",$langs->transnoentities("AttributeCode"));
+    			$error++;
+    			$langs->load("errors");
+    			$mesg=$langs->trans("ErrorFieldCanNotContainSpecialCharacters",$langs->transnoentities("AttributeCode"));
     		}
-	    }
+    	}
 	}
 }
 
@@ -175,9 +175,9 @@ if ($action == 'delete')
 	if(isset($_GET["attrname"]) && preg_match("/^\w[a-zA-Z0-9-_]*$/",$_GET["attrname"]))
 	{
             try {
-                    $object=$conf->couchdb->getDoc("extrafields:".$elementtype);
+                    $object=$couchdb->getDoc("extrafields:".$elementtype);
                     unset($object->fields->$_GET["fields"]->$_GET["attrname"]);
-                    $conf->couchdb->storeDoc($object);
+                    $couchdb->storeDoc($object);
             }
             catch (Exception $e) {
             $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
