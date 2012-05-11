@@ -2,7 +2,7 @@
 .paging_full_numbers .ui-button{cursor:hand;color:#333!important;margin:0;padding:2px 6px}
 .dataTables_paginate .ui-button{margin-right:-.1em!important}
 .dataTables_wrapper .ui-toolbar{padding:5px}
-.dataTables_wrapper select {display:inline;margin:0}
+.dataTables_wrapper select {display:inline;margin:2px 0;}
 .dataTables_paginate{width:auto;float:right;text-align:right;position:relative;top:-4px}
 .dataTables_info{float:left}
 table.display thead th,table.display tfoot th{text-align:left;font-size:10px;border:1px solid #ccc;padding:6px 8px 4px;text-transform:uppercase;vertical-align:middle}
