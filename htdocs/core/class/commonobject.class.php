@@ -34,7 +34,9 @@ require_once(DOL_DOCUMENT_ROOT.'/core/db/couchdb/lib/couchDocument.php');
 abstract class CommonObject extends couchDocument
 {
     protected $db;
-    
+    protected $couchdb;
+
+
     public $error;
     public $errors;
     public $canvas;                // Contains canvas name if it is
@@ -54,6 +56,7 @@ abstract class CommonObject extends couchDocument
     	$this->setAutocommit(false);
     	$this->class = $this->element;
     	$this->db = $db;
+	$this->couchdb = $couchdb;
     }
     
     /**
