@@ -130,5 +130,7 @@ foreach($rights_ids as $right_id)
 	$old = $right_id;
 }
 
+print dol_fiche_end();
+
 llxFooter();
 ?>
