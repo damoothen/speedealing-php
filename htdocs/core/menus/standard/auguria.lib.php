@@ -41,7 +41,23 @@ function print_auguria_menu($db,$atarget,$type_user)
 
 	$tabMenu=array();
         
-        $result = $conf->couchdb->getView("menu","list");
+	try {	
+	    $result = $conf->couchdb->getView("menu","list");
+	    $submenu_tmp = $conf->couchdb->getView("menu","submenu");
+	} catch (Exception $e) {
+	    $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+            dol_print_error('',$error);
+            exit;
+	}
+
+	// Construct submenu
+	foreach ($submenu_tmp->rows as $key => $aRow)
+	{
+	    $submenu[$aRow->key[0]][]= $aRow->value;
+	}
+	//print_r($submenu);exit;
+	
+	unset($submenu_tmp);
 
 	print_start_menu_array_auguria();
 
@@ -78,7 +94,7 @@ function print_auguria_menu($db,$atarget,$type_user)
                         print $newTabMenu->title;
                         print '</a>';
                         // Submenu level 1
-                        $selected = print_submenu($newTabMenu->_id,$selectnav,1);
+                        $selected = print_submenu($submenu,$newTabMenu->_id,$selectnav,1);
 			if($selected)
 			{
 			    $selectnav[0]->name = $newTabMenu->title;
@@ -88,8 +104,8 @@ function print_auguria_menu($db,$atarget,$type_user)
                         print '</li>';
                         $i++;
                     }
-				}
-					}
+		}
+	}
 	print_end_menu_array_auguria($selectnav);
 
 	print "\n";
@@ -132,28 +148,27 @@ function print_end_menu_array_auguria($selectnav)
 /**
  * Core function to output submenu auguria
  *
- * @param	array		$submenu            One entry menu
+ * @param	array		$submenu            All entries menu
+ * @param	string		$id		    Id name menu father
  * @param 	array		$selectnav          Array of selected navigation
  * @param       int		$level              Level for the navigation
  * @return	void
  */
-function print_submenu($id, &$selectnav, $level)
+function print_submenu(&$submenu, $id, &$selectnav, $level)
 {
     global $user,$conf,$langs;
     
     $selectnow = false;
     
-    $result = $conf->couchdb->startkey(array($id))->endkey(array($id,"{}"))->getView("menu","submenu");
+    $result = $submenu[$id];
     
-    if(count($result->rows)==0)
+    if(count($result)==0)
 	return false;
     
-    //print_r($result->rows);exit;
-    
     print '<ul style="display:none">';
-    foreach ($result->rows as $key => $aRow)
+    foreach ($result as $aRow)
     {
-        $menu = $aRow->value;
+        $menu = $aRow;
         //print_r($menu);exit;
         $newTabMenu = verifyMenu($menu);
                 
@@ -185,7 +200,7 @@ function print_submenu($id, &$selectnav, $level)
                 print '</a>';
                 // Submenu level 1
                 //if(isset($newTabMenu->submenu))
-                $selected = print_submenu($newTabMenu->_id, $selectnav, ($level+1));
+                $selected = print_submenu($submenu,$newTabMenu->_id, $selectnav, ($level+1));
 		if($selected)
 		{
 		    $selectnav[$level]->name = $newTabMenu->title;

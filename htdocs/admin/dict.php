@@ -1024,7 +1024,7 @@ if ($id)
                     print "Dictionnaire transfert : ok !";
                 }catch (Exception $e) {
                     $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
-                    print $error;
+                    dol_print_error('',$error);
                     exit;
                 }
             }
