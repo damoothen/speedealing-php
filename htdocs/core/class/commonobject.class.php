@@ -2795,7 +2795,7 @@ abstract class CommonObject extends couchDocument
         
         public function getView($view,$name)
         {
-        	global $couchdb;
+        	global $conf, $couchdb;
         	
             return $couchdb->limit($conf->liste_limit)->getView($view,$name);
         }
