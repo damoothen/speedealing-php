@@ -34,10 +34,8 @@ class Menubase extends couchDocument
 
     var $id;
 
-    var $menu_handler;
     var $module;
     var $type;
-    var $mainmenu;
     var $fk_menu;
     var $fk_mainmenu;
     var $fk_leftmenu;
@@ -49,7 +47,6 @@ class Menubase extends couchDocument
     var $level;
     var $leftmenu;		//<! Not used
     var $perms;
-    var $enabled;
     var $user;
     var $tms;
 
@@ -61,15 +58,14 @@ class Menubase extends couchDocument
      *  @param     	string		$menu_handler	Menu handler
      *  @param     	string		$type			Type
      */
-    function Menubase($db,$menu_handler='',$type='')
+    function Menubase($db)
     {
         global $conf;
         
         $this->db = $db;
-        $this->menu_handler = $menu_handler;
-        $this->type = $type;
         
         parent::__construct($conf->couchdb);
+	$this->setAutocommit(false);
         return 1;
     }
 

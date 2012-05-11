@@ -182,7 +182,8 @@ try {
     $conf->couchdb->clean($obj);
     print_r($conf->couchdb->storeDocs($obj,false));
     } catch (Exception $e) {
-        echo "Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+        $error = "Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+	dol_print_error("", $error);
         exit(1);
     }
 ?>
