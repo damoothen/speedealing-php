@@ -76,7 +76,7 @@ $flush=0;
 if($flush)
 {
     // reset old value
-    $result = $couch->limit(50000)->getView('societe','target_id');
+    $result = $couchdb->limit(50000)->getView('societe','target_id');
     $i=0;
     
     if(count($result->rows)==0)
@@ -93,7 +93,7 @@ if($flush)
     }
 
     try {
-        $couch->deleteDocs($obj);
+        $couchdb->deleteDocs($obj);
     } catch (Exception $e) {
         echo "Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
         exit(1);

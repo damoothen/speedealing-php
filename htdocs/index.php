@@ -385,9 +385,9 @@ if ($user->societe_id == 0)
 	! empty($conf->facture->enabled) && $user->rights->facture->lire,
 	! empty($conf->societe->enabled) && $user->rights->contrat->activer);
 	// Class file containing the method load_state_board for each line
-	$includes=array("/comm/prospect/class/prospect.class.php",
-	"/comm/prospect/class/prospect.class.php",
-        "/comm/prospect/class/prospect.class.php",
+	$includes=array("/societe/class/societe.class.php",
+	"/societe/class/societe.class.php",
+        "/societe/class/societe.class.php",
 	"/fourn/class/fournisseur.class.php",
 	"/adherents/class/adherent.class.php",
 	"/product/class/product.class.php",
@@ -398,9 +398,9 @@ if ($user->societe_id == 0)
 	"/compta/facture/class/facture.class.php",
 	"/contrat/class/contrat.class.php");
 	// Name class containing the method load_state_board for each line
-	$classes=array('Prospect',
-                   'Prospect',
-                   'Prospect',
+	$classes=array('Societe',
+                   'Societe',
+                   'Societe',
                    'Fournisseur',
                    'Adherent',
                    'Product',
@@ -411,9 +411,9 @@ if ($user->societe_id == 0)
 		   'Facture',
                    'Contrat');
     // Cle array returned by the method load_state_board for each line
-    $keys=array('customers',
-                'prospects',
-                'suspects',
+    $keys=array('customer',
+                'prospect',
+                'suspect',
                 'suppliers',
                 'members',
                 'products',

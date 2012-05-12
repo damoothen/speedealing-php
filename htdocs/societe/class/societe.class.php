@@ -44,6 +44,7 @@ class Societe extends CommonObject
     var $fk_extrafields;
     var $fk_status;
     var $fk_country;
+    var $nb; //statistics
     
     var $db;
 
@@ -750,7 +751,7 @@ class Societe extends CommonObject
         if(empty($status))
             return null;
         
-        return '<span class="lbl '.$this->fk_status->values->$status->cssClass.' sl_status ttip_r edit">'.$langs->trans($this->fk_status->values->$status->label).'</span>';
+        return '<span class="lbl '.$this->fk_status->values->$status->cssClass.' sl_status ttip_r edit">'.$langs->trans($status).'</span>';
     }
 
     /**
@@ -1954,6 +1955,29 @@ class Societe extends CommonObject
             return 0;
         }
         return 1;
+    }
+    
+    /**
+     *  Charge indicateurs this->nb de tableau de bord
+     *
+     *  @return     int         <0 if KO, >0 if OK
+     */
+    function load_state_board()
+    {
+        global $conf, $user;
+
+        $this->nb=array("customer" => 0,"prospect" => 0, "suspect" => 0);
+        
+	$result = $this->couchdb->group("exact")->getView("societe","count_status");
+
+	foreach($result->rows as $aRow)
+	{
+	    //print_r($aRow);exit;
+	    $key = $aRow->key;
+	    $this->nb[$this->fk_status->values->$key->type] = $aRow->value;
+            
+            return 1;
+        }
     }
 }
 

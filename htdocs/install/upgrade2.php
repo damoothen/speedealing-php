@@ -37,6 +37,10 @@ require_once($dolibarr_main_document_root . '/fourn/class/fournisseur.commande.c
 require_once($dolibarr_main_document_root . '/core/lib/price.lib.php');
 require_once($dolibarr_main_document_root . '/core/class/menubase.class.php');
 require_once($dolibarr_main_document_root . '/core/lib/files.lib.php');
+require_once($dolibarr_main_document_root ."/core/db/couchdb/lib/couch.php");
+require_once($dolibarr_main_document_root ."/core/db/couchdb/lib/couchClient.php");
+require_once($dolibarr_main_document_root ."/core/db/couchdb/lib/couchDocument.php");
+
 
 $grant_query='';
 $etape = 2;
@@ -106,6 +110,11 @@ if (! GETPOST("action") || preg_match('/upgrade/i',GETPOST('action')))
     $conf->db->pass = $dolibarr_main_db_pass;
 
     $db=getDoliDBInstance($conf->db->type,$conf->db->host,$conf->db->user,$conf->db->pass,$conf->db->name,$conf->db->port);
+    
+    
+    
+    // CouchDB
+    $couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
 
     if ($db->connected != 1)
     {
@@ -313,10 +322,10 @@ if (! GETPOST("action") || preg_match('/upgrade/i',GETPOST('action')))
         	migrate_mode_reglement($db,$langs,$conf);
 
             // Reload modules
-            migrate_reload_modules($db,$langs,$conf);
+            //migrate_reload_modules($db,$langs,$conf);
 
             // Reload menus
-            migrate_reload_menu($db,$langs,$conf,$versionto);
+            //migrate_reload_menu($db,$langs,$conf,$versionto);
         }
 
 
@@ -3400,9 +3409,6 @@ function migrate_delete_old_files($db,$langs,$conf)
     DOL_DOCUMENT_ROOT.'/core/triggers/interface_modCommande_Ecotax.class.php',
     DOL_DOCUMENT_ROOT.'/core/triggers/interface_modCommande_fraisport.class.php',
     DOL_DOCUMENT_ROOT.'/core/triggers/interface_modPropale_PropalWorkflow.class.php',
-    DOL_DOCUMENT_ROOT.'/core/menus/smartphone/iphone.lib.php',
-    DOL_DOCUMENT_ROOT.'/core/menus/smartphone/iphone_backoffice.php',
-    DOL_DOCUMENT_ROOT.'/core/menus/smartphone/iphone_frontoffice.php',
     DOL_DOCUMENT_ROOT.'/core/modules/mailings/dolibarr_services_expired.modules.php',
     DOL_DOCUMENT_ROOT.'/core/modules/mailings/poire.modules.php',
     DOL_DOCUMENT_ROOT.'/core/modules/mailings/kiwi.modules.php',

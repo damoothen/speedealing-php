@@ -32,7 +32,7 @@ $flush=0;
 if($flush)
 {
     // reset old value
-    $result = $couchdb->limit(50000)->getView('mouvement','target_id');
+    $result = $couchdb->limit(50000)->getView('unlink','target_id');
     $i=0;
     
     if(count($result->rows)==0)

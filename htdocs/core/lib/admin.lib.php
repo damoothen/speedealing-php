@@ -716,6 +716,7 @@ function activateModule($value,$withdeps=1)
 
     $result=$objMod->init();
     if ($result <= 0) $ret=$objMod->error;
+    
 
     if (! $ret && $withdeps)
     {

@@ -116,7 +116,7 @@ $(document).ready(function () {
 				<?php endif; ?>
 				<?php if ($this->Main['Status']['enable']): ?>
 				<div class="formRow"><!-- Status -->
-					<label for="Status"><?php echo $this->$this->Main['Status']['trans']; ?></label>
+					<label for="Status"><?php echo $this->Main['Status']['trans']; ?></label>
 					<?php echo $this->select_status; ?>
 				</div>
 				<?php endif; ?>

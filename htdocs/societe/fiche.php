@@ -1216,7 +1216,7 @@ else
             				$out.= '<option selected="selected"';
             			else
             				$out.= '<option';
-            			$out.= ' value="'.$key.'">'.$langs->trans($aRow->label).'</option>\n';
+            			$out.= ' value="'.$key.'">'.$langs->trans($key).'</option>\n';
             		}
             	}
             	$out.= '<select>';

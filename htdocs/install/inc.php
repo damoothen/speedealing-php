@@ -255,6 +255,10 @@ function conf($dolibarr_main_document_root)
     global $dolibarr_main_db_user;
     global $dolibarr_main_db_pass;
     global $character_set_client;
+    
+    global $dolibarr_main_couchdb_host;
+    global $dolibarr_main_couchdb_port;
+    global $dolibarr_main_couchdb_name;
 
     $return=include_once($dolibarr_main_document_root."/core/class/conf.class.php");
     if (! $return) return -1;
@@ -266,6 +270,11 @@ function conf($dolibarr_main_document_root)
     $conf->db->name = trim($dolibarr_main_db_name);
     $conf->db->user = trim($dolibarr_main_db_user);
     $conf->db->pass = trim($dolibarr_main_db_pass);
+    
+    // CouchDB
+    $conf->couchdb->host = trim($dolibarr_main_couchdb_host);
+    $conf->couchdb->port = trim($dolibarr_main_couchdb_port);
+    $conf->couchdb->name = trim($dolibarr_main_couchdb_name);
 
     if (empty($character_set_client)) $character_set_client="UTF-8";
     $conf->file->character_set_client=strtoupper($character_set_client);

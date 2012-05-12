@@ -248,7 +248,7 @@ if(typeof stcomm === "undefined")
     stcomm = "ST_NEVER";';
 foreach ($object->fk_status->values as $key => $aRow)
 {
-    $obj->aoColumns[$i]->fnRender.= 'status["'.$key.'"]= new Array("'.$langs->trans($aRow->label).'","'.$aRow->cssClass.'");';
+    $obj->aoColumns[$i]->fnRender.= 'status["'.$key.'"]= new Array("'.$langs->trans($key).'","'.$aRow->cssClass.'");';
 }
 $obj->aoColumns[$i]->fnRender.= 'var ar = [];
 ar[ar.length] = "<span class=\"lbl ";

@@ -1043,20 +1043,20 @@ abstract class DolibarrModules
 		$menus = array();
 		
 		//var_dump($this->menu); exit;
-		foreach ($this->menu as $key => $value)
+		foreach ($this->menu as $value)
 		{
-			$id = $this->menu[$key]['_id'];
+			$id = $value['_id'];			
 			
 			$menu[$id]->module=$this->rights_class;
 			
-			if (empty($this->menu[$key]['_id']))
+			if (empty($value['_id']))
 			{
-				$error ="ErrorBadDefinitionOfMenuArrayInModuleDescriptor (bad value for key _id)";
+				$error ="ErrorBadDefinitionOfMenuArrayInModuleDescriptor (bad value for _id)";
 				dol_print_error("",$error);
 				$err++;
 			}
 			
-			if ($this->menu[$key]['type']!="top" && !empty($value['fk_menu']))
+			if ($value['type']!="top" && !empty($value['fk_menu']))
 			{
 				if (empty($menu[$value['fk_menu']]))
 				{
@@ -1072,17 +1072,17 @@ abstract class DolibarrModules
 			}
 			
 			$menu[$id]->class="menu";
-			$menu[$id]->type=$this->menu[$key]['type'];
-			$menu[$id]->title=$this->menu[$key]['titre'];
-			$menu[$id]->url=$this->menu[$key]['url'];
-			$menu[$id]->langs=$this->menu[$key]['langs'];
-			$menu[$id]->position=(int)$this->menu[$key]['position'];
-			$menu[$id]->perms=$this->menu[$key]['perms'];
-			$menu[$id]->target=$this->menu[$key]['target'];
-			$menu[$id]->user=$this->menu[$key]['user'];
-			$menu[$id]->enabled=isset($this->menu[$key]['enabled'])?$this->menu[$key]['enabled']:0;
-			if($this->menu[$key]['fk_menu']) $menu[$id]->fk_menu=$this->menu[$key]['fk_menu'];
-			$menu[$id]->_id=$this->menu[$key]['_id'];
+			$menu[$id]->type=$value['type'];
+			$menu[$id]->title=$value['titre'];
+			$menu[$id]->url=$value['url'];
+			$menu[$id]->langs=$value['langs'];
+			$menu[$id]->position=(int)$value['position'];
+			$menu[$id]->perms=$value['perms'];
+			$menu[$id]->target=$value['target'];
+			$menu[$id]->user=$value['user'];
+			$menu[$id]->enabled=isset($value['enabled'])?$value['enabled']:false;
+			if($value['fk_menu']) $menu[$id]->fk_menu=$value['fk_menu'];
+			$menu[$id]->_id=$value['_id'];
 			
 			// for update
 			try {
@@ -1138,7 +1138,7 @@ abstract class DolibarrModules
 		$menu->enabled = false;
 		$menu->record();
 	    } catch (Exception $e) {
-		$error ="ErrorBadDefinitionOfMenuArrayInModuleDescriptor (bad value for key fk_menu)";
+		$error ="ErrorBadDefinitionOfMenuArrayInModuleDescriptor (bad value for delete_menus _id)";
 		$error.="<br>Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
 		dol_print_error("",$error);
 		exit;

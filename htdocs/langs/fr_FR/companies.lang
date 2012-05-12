@@ -397,3 +397,11 @@ AddressBook=Fiche
 MonkeyNumRefModelDesc=Renvoie le numéro sous la forme %syymm-nnnn pour les codes clients et %syymm-nnnn pour les codes fournisseurs où yy est l'année, mm le mois et nnnn un compteur séquentiel sans rupture et sans remise à 0.
 # Leopard
 LeopardNumRefModelDesc=Code client/fournisseur libre sans vérification. Peut être modifié à tout moment.
+ST_NO=Ne pas contacter
+ST_NEVER=Jamais contacté
+ST_PCOLD=Prospect froid
+ST_PHOT=Prospect chaud
+ST_CLESS3=Nouveau client
+ST_CUST=Client actif
+ST_PART=Partenaire
+ST_CLOSED=Société fermée
