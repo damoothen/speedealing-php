@@ -661,14 +661,6 @@ if (! defined('NOTEMPLATEENGINE'))
 	require_once(DOL_DOCUMENT_ROOT.'/includes/savant/Savant3.php');
 
 	$tpl = new Savant3();
-	
-	require_once(DOL_DOCUMENT_ROOT.'/includes/twig/lib/Twig/Autoloader.php');
-	Twig_Autoloader::register();
-    
-	$loader = new Twig_Loader_Filesystem('templates'); // Dossier contenant les templates
-	$twig = new Twig_Environment($loader, array(
-	'cache' => false
-	));
 }
 
 // Case forcing style from url

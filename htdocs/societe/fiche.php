@@ -1226,7 +1226,6 @@ else
             // Display template
             $tpl->display("./tpl/update_card.tpl.php");
 
-
             print '<table class="border" width="100%">';
 
             // VAT payers
