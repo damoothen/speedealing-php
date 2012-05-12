@@ -1089,11 +1089,6 @@ else
                 if ($res) break;
             }
             $modCodeClient = new $module;
-            // We verified if the tag prefix is used
-            if ($modCodeClient->code_auto)
-            {
-                $prefixCustomerIsUsed = $modCodeClient->verif_prefixIsUsed();
-            }
             $module=$conf->global->SOCIETE_CODEFOURNISSEUR_ADDON;
             if (! $module) $module=$conf->global->SOCIETE_CODECLIENT_ADDON;
             if (substr($module, 0, 15) == 'mod_codeclient_' && substr($module, -3) == 'php')
@@ -1107,11 +1102,6 @@ else
                 if ($res) break;
             }
             $modCodeFournisseur = new $module;
-            // On verifie si la balise prefix est utilisee
-            if ($modCodeFournisseur->code_auto)
-            {
-                $prefixSupplierIsUsed = $modCodeFournisseur->verif_prefixIsUsed();
-            }
 
             if (! empty($_POST["nom"]))
             {
@@ -1169,358 +1159,71 @@ else
             }
 
             dol_htmloutput_errors($error,$errors);
-
-            print "\n".'<script type="text/javascript" language="javascript">';
-            print '$(document).ready(function () {
-            			$("#selectcountry_id").change(function() {
-              				document.formsoc.action.value="edit";
-               				document.formsoc.submit();
-               			});
-                       })';
-            print '</script>'."\n";
             
-
-            print '<form class="nice" enctype="multipart/form-data" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id().'" method="post" name="formsoc">';
-            print '<input type="hidden" name="action" value="update">';
-            print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-            print '<input type="hidden" name="id" value="'.$object->id().'">';
-            if ($modCodeClient->code_auto || $modCodeFournisseur->code_auto) print '<input type="hidden" name="code_auto" value="1">';
+            // Assign values for template
+            $tpl->assign('id', $object->id());
             
+            $tpl->assign('customer_code_auto', $modCodeClient->code_auto);
+            $tpl->assign('customer_code_changed', $object->codeclient_modifiable());
+            $tpl->assign('customer_code_tooltip', $modCodeClient->getToolTip($langs,$object,0));
             
-            // Block Main
-            print '<div class="row sepH_b">
-                    <div class="two columns">
-                        <div class="form_legend">
-                            <h4>Personal details</h4>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent pharetra metus non nisi feugiat porta&hellip;</p>
-			</div>
-                    </div>
-                    <div class="ten columns">';
+            $tpl->assign('supplier_code_auto', $modCodeFournisseur->code_auto);
+            $tpl->assign('supplier_code_auto', $object->codefournisseur_modifiable());
+            $tpl->assign('supplier_code_tooltip', $modCodeFournisseur->getToolTip($langs,$object,1));
             
-            print '<div class="form_content">'; //forms columns
-            print ' <div class="eight columns">';// center form
-            {
-                // Name
-                $key = "ThirdPartyName";
-                if($object->fk_extrafields->fields->Main->$key->enable)
-                {
-                    print '<div class="formRow">';
-                    print '<label for="'.$key.'">'.$langs->trans($key).'</label>';
-                    print '<input type="text" maxlength="'.$object->fk_extrafields->fields->Main->$key->length.'" id="'.$key.'" name="'.$key.'" value="'.$object->$key.'" class="input-text large" />';
-                    print '</div>';
-                }
-                
-                // Address
-                $key = "Address";
-                if($object->fk_extrafields->fields->Main->$key->enable)
-                {
-                    print '<div class="formRow">';
-                    print '<label for="'.$key.'">'.$langs->trans($key).'</label>';
-                    print '<textarea cols="'.$object->fk_extrafields->fields->Main->$key->cols.'" rows="'.$object->fk_extrafields->fields->Main->$key->rows.'" id="'.$key.'" name="'.$key.'" class="auto_expand expand">'.$object->$key.'</textarea>';
-                    print '</div>';
-                }
-                
-                // Zip
-                $key = "Zip";
-                if($object->fk_extrafields->fields->Main->$key->enable)
-                {
-                    print '<div class="formRow">';
-                    print '<label for="'.$key.'">'.$langs->trans($key).'</label>';
-                    print $formcompany->select_ziptown($object->$key,$key,array('town','selectcountry_id','departement_id'),$object->fk_extrafields->fields->Main->$key->length);
-                    print '</div>';
-                }
-
-                // Town
-                $key = "Town";
-                if($object->fk_extrafields->fields->Main->$key->enable)
-                {
-                    print '<div class="formRow">';
-                    print '<label for="'.$key.'">'.$langs->trans($key).'</label>';
-                    print $formcompany->select_ziptown($object->$key,$key,array('zipcode','selectcountry_id','departement_id'),$object->fk_extrafields->fields->Main->$key->length);
-                    print '</div>';
-                }
-                
-                // Country
-                $key = "Country";
-                if($object->fk_extrafields->fields->Main->$key->enable)
-                {
-                    print '<div class="formRow">';
-                    print '<label for="'.$key.'">'.$langs->trans($key);
-                    if ($user->admin) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"),1);
-                    print '</label>';
-                    
-                    print $form->select_country($object->$key,$key);
-                    print '</div>';
-                }
-                
-                
-                // State
-                $key = "State";
-                if($object->fk_extrafields->fields->Main->$key->enable)
-                {
-                    print '<div class="formRow">';
-                    print '<label for="'.$key.'">'.$langs->trans($key);
-                    if ($user->admin) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"),1);
-                    print '</label>';
-                    
-                    print $formcompany->select_state($object->$key,$object->Country);
-                    print '</div>';
-                }
+            if ($user->admin) {
+            	$tpl->assign('info_admin', info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"),1));
             }
-            print '</div>'; // end center form
             
-            // right forms
-            print ' <div class="four columns">';// little right form
-            {
-                // Prefix
-                $key = "Prefix";
-                if($object->fk_extrafields->fields->Main->$key->enable)
-                {
-                    print '<div class="formRow">';
-                    print '<label for="'.$key.'">'.$langs->trans($key).'</label>';
-                    if (($prefixCustomerIsUsed || $prefixSupplierIsUsed) && $object->$key)
-                    {
-                        print '<input type="hidden" name="'.$key.'" value="'.$object->$key.'">';
-                        print $object->$key;
-                    }
-                    else
-                        print '<input type="text" maxlength="'.$object->fk_extrafields->fields->Main->$key->length.'" id="'.$key.'" name="'.$key.'" value="'.$object->$key.'" class="input-text small" />'; 
-                    print '</div>';
-                }
-                
-                // CustomerCode
-                $key = "CustomerCode";
-                if($object->fk_extrafields->fields->Main->$key->enable)
-                {
-                    $s=$modCodeClient->getToolTip($langs,$object,0);
-                    
-                    print '<div class="formRow">';
-                    print '<label for="'.$key.'"><span class="ttip_l info" title="'.$s.'">'.$langs->trans($key).'</span></label>';
-                    if ($object->codeclient_modifiable())
-                    {
-                        print '<input type="text" maxlength="'.$object->fk_extrafields->fields->Main->$key->length.'" id="'.$key.'" name="'.$key.'" value="'.$object->$key.'" class="input-text small" />'; 
-                    }
-                    else
-                    {
-                        print $object->$key;
-                        print '<input type="hidden" id="'.$key.'" name="'.$key.'" value="'.$object->$key.'">';
-                    }
-                    print '</div>';
-                }
-                
-                // SupplierCode
-                $key = "SupplierCode";
-                if($object->fk_extrafields->fields->Main->$key->enable)
-                {
-                    $s=$modCodeFournisseur->getToolTip($langs,$object,1);
-                    
-                    print '<div class="formRow">';
-                    print '<label for="'.$key.'"><span class="ttip_l info" title="'.$s.'">'.$langs->trans($key).'</span></label>';
-                    if ($object->codefournisseur_modifiable())
-                    {
-                        print '<input type="text" maxlength="'.$object->fk_extrafields->fields->Main->$key->length.'" id="'.$key.'" name="'.$key.'" value="'.$object->$key.'" class="input-text small" />'; 
-                    }
-                    else
-                    {
-                        print $object->$key;
-                        print '<input type="hidden" id="'.$key.'" name="'.$key.'" value="'.$object->$key.'">';
-                    }                    
-                    print '</div>';
-                }
-                
-                // Status
-                $key = "Status";
-                if($object->fk_extrafields->fields->Main->$key->enable)
-                {
-                    if(empty($object->$key))
-                        $value=$object->fk_extrafields->fields->Main->$key->default;
-                    else
-                        $value=$object->$key;
-                    
-                    print '<div class="formRow">';
-                    print '<label for="'.$key.'">'.$langs->trans($key).'</label>';
-                    print '<select name="'.$key.'" id="'.$key.'">';
-                    foreach ($object->fk_status->values as $key => $aRow)
-                    {
-                        if($aRow->enable)
-                        {
-                            if($key == $value)
-                                print '<option selected="selected"';
-                            else
-                                print '<option';
-                            print ' value="'.$key.'">'.$langs->trans($aRow->label).'</option>\n';
-                        }
-                    }
-                    print '<select>';
-                    print '</div>';
-                }
-                
-                // BarCode
-                $key = "Gencod";
-                if($object->fk_extrafields->fields->Main->$key->enable)
-                {
-                    print '<div class="formRow">';
-                    print '<label for="'.$key.'">'.$langs->trans($key).'</label>';
-                    print '<input type="hidden" name="'.$key.'" value="'.$object->$key.'">';
-                    print '</div>';
-                }
-                
+            // Assign blocks and fields
+            foreach($object->fk_extrafields->fields as $block => $fields) {
+            	$blockfields=array();
+            	foreach($fields as $key => $params) {
+            		$blockfields[$key]['trans'] = $langs->trans($key);
+            		$blockfields[$key]['value'] = $object->$key;
+            		if (is_object($params) && ! empty($params)) {
+            			foreach($params as $param => $value) {
+            				$blockfields[$key][$param] = $value;
+            			}
+            		}
+            	}
+            	$tpl->assign($block, $blockfields);
             }
-            print '</div>';// end right forms
             
-            print '</div>'; // end forms columns
-            
-            print '</div>'; // end ten columns
-            print '</div>'; // end row
-            
-            
-            // Block AddressBook
-            print '<div class="row sepH_b">
-                    <div class="two columns">
-                        <div class="form_legend">
-                            <h4>Personal details</h4>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent pharetra metus non nisi feugiat porta&hellip;</p>
-			</div>
-                    </div>
-                    <div class="ten columns">';
-            
-            print '<div class="form_content">'; //forms columns
-            print ' <div class="six columns">';// center form
-            {
-                // Attributes
-                foreach ($object->fk_extrafields->fields->AddressBook as $key => $aRow)
-                {
-                    if($aRow->enable && $aRow->type != 'AC_URL')
-                    {
-                        print '<div class="formRow">';
-                        print '<label for="'.$key.'">'.$langs->trans($key).'</label>';
-                        print '<input type="text" maxlength="'.$aRow->length.'" id="'.$key.'" name="'.$key.'" value="'.$object->AddressBook->$key.'" class="input-text medium" />';
-                        print '</div>';
-                    }
-                }
+            // Assign specific functions
+            if ($object->fk_extrafields->fields->Main->Zip->enable) {
+            	$tpl->assign('select_zip', $formcompany->select_ziptown($object->Zip,'Zip',array('Town','selectCountry','State'),$object->fk_extrafields->fields->Main->Zip->length));
             }
-            print '</div>'; // end center form
-            // right forms
-            print ' <div class="six columns">';// little right form
-            {
-                // Attributes URL
-                foreach ($object->fk_extrafields->fields->AddressBook as $key => $aRow)
-                {
-                    if($aRow->enable && $aRow->type == 'AC_URL')
-                    {
-                        print '<div class="formRow">';
-                        print '<label for="'.$key.'">'.$langs->trans($key).'</label>';
-                        print '<input type="text" maxlength="'.$aRow->length.'" id="'.$key.'" name="'.$key.'" value="'.$object->AddressBook->$key.'" class="input-text medium" />';
-                        print '</div>';
-                    }
-                }
+            if ($object->fk_extrafields->fields->Main->Town->enable) {
+            	$tpl->assign('select_town', $formcompany->select_ziptown($object->Town,'Town',array('Zip','selectCountry','State'),$object->fk_extrafields->fields->Main->Town->length));
             }
-            print '</div>';// end right forms
-            
-            print '</div>'; // end forms columns
-            
-            print '</div>'; // end ten columns
-            print '</div>'; // end row
-            
-            // Block Deal
-            print '<div class="row sepH_b">
-                    <div class="two columns">
-                        <div class="form_legend">
-                            <h4>Personal details</h4>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent pharetra metus non nisi feugiat porta&hellip;</p>
-			</div>
-                    </div>
-                    <div class="ten columns">';
-            
-            print '<div class="form_content">'; //forms columns
-            print ' <div class="six columns">';// center form
-            {
-                // Attributes
-                foreach ($object->fk_extrafields->fields->Deal as $key => $aRow)
-                {
-                    if($aRow->enable && $aRow->type=="text")
-                    {
-                        print '<div class="formRow">';
-                        print '<label for="'.$key.'">'.$langs->trans($key).'</label>';
-                        print '<input type="text" maxlength="'.$aRow->length.'" id="'.$key.'" name="'.$key.'" value="'.$object->AddressBook->$key.'" class="input-text medium" />';
-                        print '</div>';
-                    }
-                }
+            if ($object->fk_extrafields->fields->Main->Country->enable) {
+            	$tpl->assign('select_country', $form->select_country($object->Country,'Country'));
             }
-            print '</div>'; // end center form
-            // right forms
-            print ' <div class="six columns">';// little right form
-            {
-                // Attributes
-                foreach ($object->fk_extrafields->fields->Deal as $key => $aRow)
-                {
-                    if($aRow->enable && $aRow->type != "text")
-                    {
-                        print '<div class="formRow">';
-                        print '<label for="'.$key.'">'.$langs->trans($key);
-                        if ($user->admin) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"),1);
-                        print '</label>';
-                        print '<input type="text" maxlength="'.$aRow->length.'" id="'.$key.'" name="'.$key.'" value="'.$object->AddressBook->$key.'" class="input-text medium" />';
-                        print '</div>';
-                    }
-                }
+            if ($object->fk_extrafields->fields->Main->State->enable) {
+            	$tpl->assign('select_state', $formcompany->select_state($object->State,$object->Country,'State'));
             }
-            print '</div>';// end right forms
-            
-            print '</div>'; // end forms columns
-            
-            print '</div>'; // end ten columns
-            print '</div>'; // end row
-            
-             // Block Accounting
-            print '<div class="row sepH_b">
-                    <div class="two columns">
-                        <div class="form_legend">
-                            <h4>Personal details</h4>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent pharetra metus non nisi feugiat porta&hellip;</p>
-			</div>
-                    </div>
-                    <div class="ten columns">';
-            
-            print '<div class="form_content">'; //forms columns
-            print ' <div class="six columns">';// center form
-            {
-                // Attributes
-                foreach ($object->fk_extrafields->fields->Accounting as $key => $aRow)
-                {
-                    if($aRow->enable && $aRow->type=="text")
-                    {
-                        print '<div class="formRow">';
-                        print '<label for="'.$key.'">'.$langs->trans($key).'</label>';
-                        print '<input type="text" maxlength="'.$aRow->length.'" id="'.$key.'" name="'.$key.'" value="'.$object->AddressBook->$key.'" class="input-text medium" />';
-                        print '</div>';
-                    }
-                }
+            if ($object->fk_extrafields->fields->Main->Status->enable) {
+            	// TODO add function select
+            	$value = (! empty($object->Status) ? $object->Status : $object->fk_extrafields->fields->Main->Status->default);
+            	$out = '<select name="Status" id="Status">';
+            	foreach ($object->fk_status->values as $key => $aRow)
+            	{
+            		if($aRow->enable)
+            		{
+            			if($key == $value)
+            				$out.= '<option selected="selected"';
+            			else
+            				$out.= '<option';
+            			$out.= ' value="'.$key.'">'.$langs->trans($aRow->label).'</option>\n';
+            		}
+            	}
+            	$out.= '<select>';
+            	$tpl->assign('select_status', $out);
             }
-            print '</div>'; // end center form
-            // right forms
-            print ' <div class="six columns">';// little right form
-            {
-                // Attributes
-                foreach ($object->fk_extrafields->fields->Accounting as $key => $aRow)
-                {
-                    if($aRow->enable && $aRow->type != "text")
-                    {
-                        print '<div class="formRow">';
-                        print '<label for="'.$key.'">'.$langs->trans($key);
-                        if ($user->admin) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"),1);
-                        print '</label>';
-                        print '<input type="text" maxlength="'.$aRow->length.'" id="'.$key.'" name="'.$key.'" value="'.$object->AddressBook->$key.'" class="input-text medium" />';
-                        print '</div>';
-                    }
-                }
-            }
-            print '</div>';// end right forms
             
-            print '</div>'; // end forms columns
-            
-            print '</div>'; // end ten columns
-            print '</div>'; // end row
+            // Display template
+            $tpl->display("./tpl/update_card.tpl.php");
 
 
             print '<table class="border" width="100%">';
@@ -1644,8 +1347,6 @@ else
             print '</center>';
 
             print '</form>';
-
-	        //dol_fiche_end();
         
         print end_box();
         print '</div>';
