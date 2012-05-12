@@ -1,3 +1,6 @@
 [submodule "htdocs/core/db/couchdb"]
 	path = htdocs/core/db/couchdb
 	url = git@github.com:speedealing/PHP-on-Couch.git
+[submodule "htdocs/includes/twig"]
+	path = htdocs/includes/twig
+	url = git://github.com/fabpot/Twig.git
