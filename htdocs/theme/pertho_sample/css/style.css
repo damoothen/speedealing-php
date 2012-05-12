@@ -298,8 +298,8 @@
 		.box_c_heading .gh_button-group a:hover {color:#fff !important}
 		.box_c_content {padding:12px;border-width:0 1px 1px;border-style:solid;border-color: #dcdcdc;background:#fff}
 		.cntn_noP {padding:0}
-		.bAct_hide,.bAct_toggle {background: url(/speedealing/theme/eldy/img/bAct_bg.png) no-repeat 0 0;display:block;float:right;height:18px;width:18px;overflow:hidden;margin:7px 5px 0 0}
-		.bAct_hide img,.bAct_toggle	img {display:block;cursor:pointer;background-image: url(/speedealing/theme/eldy/img/bAct_bg.png);background-repeat: no-repeat;height:18px;width:18px}
+		.bAct_hide,.bAct_toggle {background: url(../img/bAct_bg.png) no-repeat 0 0;display:block;float:right;height:18px;width:18px;overflow:hidden;margin:7px 5px 0 0}
+		.bAct_hide img,.bAct_toggle	img {display:block;cursor:pointer;background-image: url(../img/bAct_bg.png);background-repeat: no-repeat;height:18px;width:18px}
 		.bAct_x {background-position: 0 -18px}
 		.bAct_minus {background-position: 0 -36px}
 		.bAct_plus {background-position: 0 -54px}
