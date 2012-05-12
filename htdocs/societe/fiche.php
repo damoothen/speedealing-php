@@ -1103,10 +1103,10 @@ else
             }
             $modCodeFournisseur = new $module;
 
-            if (! empty($_POST["nom"]))
+            if (! empty($_POST["ThirdPartyName"]))
             {
                 // We overwrite with values if posted
-                $object->name					= $_POST["nom"];
+                $object->ThirdPartyName			= $_POST["ThirdPartyName"];
                 $object->prefix_comm			= $_POST["prefix_comm"];
                 $object->client					= $_POST["client"];
                 $object->code_client			= $_POST["code_client"];
@@ -1116,6 +1116,7 @@ else
                 $object->zip					= $_POST["zipcode"];
                 $object->town					= $_POST["town"];
                 $object->country_id				= $_POST["country_id"]?$_POST["country_id"]:$mysoc->country_id;
+                $object->Country				= $_POST["Country"]?$_POST["Country"]:$mysoc->country_code;
                 $object->state_id				= $_POST["departement_id"];
                 $object->tel					= $_POST["tel"];
                 $object->fax					= $_POST["fax"];
@@ -1142,9 +1143,9 @@ else
 
                 // We set country_id, and pays_code label of the chosen country
                 // TODO move to DAO class
-                if ($object->country_id)
+                if ($object->Country)
                 {
-                    $sql = "SELECT code, libelle from ".MAIN_DB_PREFIX."c_pays where code = '".$object->country_id."'";
+                    $sql = "SELECT code, libelle from ".MAIN_DB_PREFIX."c_pays where code = '".$object->Country."'";
                     $resql=$db->query($sql);
                     if ($resql)
                     {
@@ -1154,7 +1155,7 @@ else
                     {
                         dol_print_error($db);
                     }
-                    $object->country = $langs->trans("Country".$object->country_id);
+                    $object->countryname = $langs->trans("Country".$object->country_id);
                 }
             }
 

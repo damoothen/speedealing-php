@@ -1,5 +1,5 @@
 <?php
-/* Copyright (C) 2010 Regis Houssin       <regis@dolibarr.fr>
+/* Copyright (C) 2012 Regis Houssin       <regis@dolibarr.fr>
  * Copyright (C) 2011 Laurent Destailleur <eldy@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -32,7 +32,8 @@ if (! defined('NOCSRFCHECK'))    define('NOCSRFCHECK','1');
 require('../../main.inc.php');
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formcompany.class.php");
 
-
+$zip=GETPOST('Zip','alpha');
+$town=GETPOST('Town','alpha');
 
 /*
  * View
@@ -51,14 +52,10 @@ dol_syslog("GET is ".join(',',$_GET));
 //var_dump($_GET);
 
 // Generation of list of zip-town
-if (! empty($_GET['zipcode']) || ! empty($_GET['town']))
+if (! empty($zip) || ! empty($town))
 {
 	$return_arr = array();
 	$formcompany = new FormCompany($db);
-
-	// Define filter on text typed
-	$zipcode = $_GET['zipcode']?$_GET['zipcode']:'';
-	$town = $_GET['town']?$_GET['town']:'';
 
 	if ($conf->global->MAIN_USE_ZIPTOWN_DICTIONNARY)   // Use zip-town table
 	{
@@ -70,7 +67,7 @@ if (! empty($_GET['zipcode']) || ! empty($_GET['town']))
     	$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."c_regions as r ON d.fk_region = r.code_region";
     	$sql.= " WHERE z.fk_pays = p.rowid";
     	$sql.= " AND z.active = 1 AND p.active = 1";
-    	if ($zipcode) $sql.=" AND z.zip LIKE '" . $db->escape($zipcode) . "%'";
+    	if ($zip) $sql.=" AND z.zip LIKE '" . $db->escape($zip) . "%'";
     	if ($town)    $sql.=" AND z.town LIKE '%" . $db->escape($town) . "%'";
     	$sql.= " ORDER BY z.zip, z.town";
         $sql.= $db->plimit(50); // Avoid pb with bad criteria
@@ -84,7 +81,7 @@ if (! empty($_GET['zipcode']) || ! empty($_GET['town']))
         $sql.= " LEFT JOIN ".MAIN_DB_PREFIX ."c_departements as d ON fk_departement = d.rowid";
         $sql.= " LEFT JOIN ".MAIN_DB_PREFIX.'c_pays as p ON fk_pays = p.rowid';
         $sql.= " WHERE";
-        if ($zipcode) $sql.= " s.cp LIKE '".$db->escape($zipcode)."%'";
+        if ($zip) $sql.= " s.cp LIKE '".$db->escape($zip)."%'";
         if ($town)    $sql.= " s.ville LIKE '%" . $db->escape($town) . "%'";
         $sql.= " ORDER BY s.fk_pays, s.cp, s.ville";
         $sql.= $db->plimit(50); // Avoid pb with bad criteria

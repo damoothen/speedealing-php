@@ -20,7 +20,7 @@
 <!-- BEGIN PHP TEMPLATE thirdparty update card -->
 <script type="text/javascript">
 $(document).ready(function () {
-	$("#selectcountry_id").change(function() {
+	$("#selectCountry").change(function() {
 		document.formsoc.action.value="edit";
 		document.formsoc.submit();
 	});
