@@ -2833,8 +2833,9 @@ abstract class CommonObject extends couchDocument
             //$obj->sPaginationType = 'full_numbers';
             //$obj->sDom = 'TC<\"clear\">lfrtip';
             $obj->oTableTools->sSwfPath = DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/TableTools/media/swf/copy_csv_xls.swf';
-	    if($obj->oTableTools->aButtons==null)
-		$obj->oTableTools->aButtons = array("xls");
+	    //if($obj->oTableTools->aButtons==null)
+	    //$obj->oTableTools->aButtons = array("xls");
+	    
             $obj->oColVis->buttonText = 'Voir/Cacher';
             if($json)
                 $obj->oColVis->aiExclude = array(0,1); // Not cacheable
@@ -2844,9 +2845,10 @@ abstract class CommonObject extends couchDocument
             //$obj->oColVis->sAlign = 'left';
             
             // Avec export Excel
-            $obj->sDom = 'TC<fr>t<\"clear\"lrtip>';
-            // Sans export
-            //$obj->sDom = 'Cl<fr>t<\"clear\"rtip>';
+	    if($obj->oTableTools->aButtons==null)
+		$obj->sDom = 'Cl<fr>t<\"clear\"rtip>';
+            else // Sans export
+		$obj->sDom = 'TC<\"clear\"fr>lt<\"clear\"rtip>';
             
             // jeditable
             $obj->fnDrawCallback= '%function () {
