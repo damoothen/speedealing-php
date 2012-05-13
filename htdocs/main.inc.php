@@ -923,8 +923,8 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
         print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/jeditable/jquery.jeditable.wysiwyg.js"></script>'."\n";
         print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/wysiwyg/jquery.wysiwyg.js"></script>'."\n";
         print '<script type="text/javascript">'."\n";
-        print 'var urlSaveInPlace = \'http://www.example.com/save.php\';'."\n";
-        //print 'var urlSaveInPlace = \''.DOL_URL_ROOT.'/core/ajax/saveinplace.php\';'."\n";
+        //print 'var urlSaveInPlace = \'http://www.example.com/save.php\';'."\n";
+        print 'var urlSaveInPlace = \''.DOL_URL_ROOT.'/core/ajax/saveinplace.php\';'."\n";
         print 'var urlLoadInPlace = \''.DOL_URL_ROOT.'/core/ajax/loadinplace.php\';'."\n";
         print 'var tooltipInPlace = \''.$langs->transnoentities('ClickToEdit').'\';'."\n";
         print 'var placeholderInPlace = \''.$langs->trans('ClickToEdit').'\';'."\n";

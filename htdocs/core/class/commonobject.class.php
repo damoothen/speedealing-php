@@ -67,6 +67,8 @@ abstract class CommonObject
 		$this->values = $this->couchdb->getDoc($result->rows[0]->value);
 		$this->id = $this->values->_id;
 	    } catch (Exception $e) {
+		$error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+		dol_print_error($this->db,$error);
 		return 0;
 	    }
 	}
@@ -76,6 +78,8 @@ abstract class CommonObject
 		$this->values = $this->couchdb->getDoc($id);
 		$this->id = $this->values->_id;
 	    } catch (Exception $e) {
+		$error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+		dol_print_error($this->db,$error);
 		return 0;
 	    }
 	}
@@ -83,10 +87,34 @@ abstract class CommonObject
         return 1;
     }
     
+    function update($user)
+    {	
+	    if($this->id)
+		$this->values->fk_user_update = $user->login;
+	    else
+	    {
+		$this->values->fk_user_create = $user->login;
+		$this->values->fk_user_update = $user->login;
+	    }
+	    
+	    try {
+		$result = $this->couchdb->storeDoc($this->values);
+		print_r($result);exit;
+	    } catch (Exception $e) {
+		$error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+		dol_print_error($this->db,$error);
+		return 0;
+	    }
+	    
+	    return 1;
+    }
+    
     public function id()
     {
 	return $this->id;
     }
+    
+    
     
     /**
      * 	Record fonction for update : suppress empty value
@@ -2897,7 +2925,7 @@ abstract class CommonObject
             
             $output ='<script type="text/javascript" charset="utf-8">';
             $output.='$(document).ready(function() {';
-            $output.='oTable = $(\'#'.$ref_css.'\').dataTable(';
+            $output.='var oTable = $(\'#'.$ref_css.'\').dataTable(';
             
             $json = json_encode($obj);
             $json = str_replace('"%', '', $json);
@@ -2929,6 +2957,23 @@ abstract class CommonObject
 			"aTargets": [ 4,7 ]
 		}]
             } );';*/
+/*	    $output.= '$("#'.$ref_css.' tbody td.edit").editable( "'.$_SERVER['PHP_SELF'].'?json=edit", {
+        "callback": function( sValue, y ) {
+            var aPos = oTable.fnGetPosition( this );
+            oTable.fnUpdate( sValue, aPos[0], aPos[1] );
+        },
+        "submitdata": function ( value, settings ) {
+            return {
+                "row_id": this.parentNode.getAttribute(\'id\'),
+                "column": oTable.fnGetPosition( this )[2]
+            };
+        },
+        "height": "14px",
+	"tooltip": "Cliquer pour éditer...",
+        "indicator" : "<div style=\"text-align: center;\"><img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>",
+        "placeholder" : "",
+        "width": "100%"
+    } );';*/
             $output.= "});";
             $output.='</script>'."\n";
             

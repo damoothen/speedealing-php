@@ -76,13 +76,27 @@ if($_GET['json']=="list")
     exit;
 }
 
-if($_GET['json']=="edit")
-{
-    sleep(1);
-    print "sauv";
+/*edit cell value */
+if($_GET['json']=="edit"){
+    $key = $_POST['idrow'];
+    $field = $_POST['column'];
+    $value = $_POST['value'];
     
-    exit;//ajouter fonction
+    print_r($_POST);
+    exit;
+    
+    try {
+	    $object->fetch($key);
+	    $object->values->$fields = $value;
+	    $object->update($user);
+            print $value."tto";
+            exit;
+        } catch (Exception $exc) {
+            print $exc->getTraceAsString();
+            exit;
+        }
 }
+
 
 /*
  * Actions

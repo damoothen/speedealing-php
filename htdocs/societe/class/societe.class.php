@@ -54,7 +54,7 @@ class Societe extends CommonObject
      *
      *    @param	Client		$db		Database handler
      */
-    public function Societe($db)
+    public function __construct($db)
     {	
         parent::__construct($db);
         

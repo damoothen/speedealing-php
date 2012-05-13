@@ -1377,19 +1377,19 @@
 			$('.chSel_all').click(function () {
 				$(this).closest('table').find('input[name=row_sel]').attr('checked', this.checked);
 			});
-			$('table.dt_act').each(function(){
-				$(this).before('<div style="clear:both;position:relative;top:5px" class="medium table_act"><a href="javascript:void(0)" class="delete_all_rows">Delete selected rows</a></div>');
-			});
-			$('.delete_all_rows').click( function() {
-				var target = $(this).closest('div.table_act').next('table.dt_act');
-				oTable = $('#'+target.attr('id')).dataTable();
-				$('input[@name=row_sel]:checked', oTable.fnGetNodes()).closest('tr').fadeTo(600, 0, function () {
-					oTable.fnDeleteRow( this );
-					$( '.chSel_all', '#'+target.attr('id') ).attr('checked',false);
-					return false;
-				});
-				return false;
-			});
+			//$('table.dt_act').each(function(){
+			//	$(this).before('<div style="clear:both;position:relative;top:5px" class="medium table_act"><a href="javascript:void(0)" class="delete_all_rows">Delete selected rows</a></div>');
+			//});
+			//$('.delete_all_rows').click( function() {
+			//	var target = $(this).closest('div.table_act').next('table.dt_act');
+			//	oTable = $('#'+target.attr('id')).dataTable();
+			//	$('input[@name=row_sel]:checked', oTable.fnGetNodes()).closest('tr').fadeTo(600, 0, function () {
+			//		oTable.fnDeleteRow( this );
+			//		$( '.chSel_all', '#'+target.attr('id') ).attr('checked',false);
+			//		return false;
+			//	});
+			//	return false;
+			//});
 		}
 	};
 
