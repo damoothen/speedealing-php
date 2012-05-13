@@ -1184,7 +1184,10 @@ else
             	$blockfields=array();
             	foreach($fields as $key => $params) {
             		$blockfields[$key]['trans'] = $langs->trans($key);
-            		$blockfields[$key]['value'] = $object->values->$key;
+			if($block=="Main")
+			    $blockfields[$key]['value'] = $object->values->$key;
+			else
+			    $blockfields[$key]['value'] = $object->values->$block->$key;
             		if (is_object($params) && ! empty($params)) {
             			foreach($params as $param => $value) {
             				$blockfields[$key][$param] = $value;

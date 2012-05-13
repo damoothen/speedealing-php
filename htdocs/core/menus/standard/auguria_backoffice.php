@@ -32,9 +32,6 @@
  *	\brief      Classe permettant la gestion du menu du haut Auguria
  */
 
-include_once(DOL_DOCUMENT_ROOT ."/core/db/couchdb/lib/couch.php");
-include_once(DOL_DOCUMENT_ROOT ."/core/db/couchdb/lib/couchClient.php");
-
 class MenuTop
 {
 	protected $db;

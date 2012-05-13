@@ -1860,7 +1860,7 @@ class Societe extends CommonObject
             {
                 $label = (empty($aRow->label) ? $langs->trans($key) : $langs->trans($aRow->label));
                 $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Money.png" title="'.$label.'" />';
-                $rtr.= '<li><span class="s_color">'.$label.'</span><span> : </span><span class="ttip_r edit">'.$this->Accounting->$key.'</span><span>'.$img.'</span></li>';
+                $rtr.= '<li><span class="s_color">'.$label.'</span><span> : </span><span class="ttip_r edit">'.$this->values->Accounting->$key.'</span><span>'.$img.'</span></li>';
             }
         }
 

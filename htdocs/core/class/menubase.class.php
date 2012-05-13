@@ -22,9 +22,6 @@
  *  \brief      File of class to manage dynamic menu entries
  */
 
-include_once(DOL_DOCUMENT_ROOT ."/core/db/couchdb/lib/couch.php");
-include_once(DOL_DOCUMENT_ROOT ."/core/db/couchdb/lib/couchClient.php");
-
 /**
  *  Class to manage menu entries
  */

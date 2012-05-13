@@ -89,6 +89,11 @@ if (! defined('NOREQUIREUSER')) require_once(DOL_DOCUMENT_ROOT ."/user/class/use
 if (! defined('NOREQUIRETRAN')) require_once(DOL_DOCUMENT_ROOT ."/core/class/translate.class.php");
 if (! defined('NOREQUIRESOC'))  require_once(DOL_DOCUMENT_ROOT ."/societe/class/societe.class.php");
 
+// For couchdb
+
+include_once(DOL_DOCUMENT_ROOT ."/core/db/couchdb/lib/couch.php");
+include_once(DOL_DOCUMENT_ROOT ."/core/db/couchdb/lib/couchClient.php");
+
 /*
  * Creation objet $langs (must be before all other code)
  */

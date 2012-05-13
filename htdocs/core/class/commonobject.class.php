@@ -25,9 +25,6 @@
  *	\brief      File of parent class of all other business classes (invoices, contracts, proposals, orders, ...)
  */
 
-include_once(DOL_DOCUMENT_ROOT ."/core/db/couchdb/lib/couch.php");
-include_once(DOL_DOCUMENT_ROOT ."/core/db/couchdb/lib/couchClient.php");
-
 
 /**
  *	Parent class of all other business classes (invoices, contracts, proposals, orders, ...)
