@@ -176,7 +176,7 @@ print'</th>';
 $obj->aoColumns[$i]->mDataProp = "ThirdPartyName";
 $obj->aoColumns[$i]->bUseRendered = true;
 $obj->aoColumns[$i]->bSearchable = true;
-$obj->aoColumns[$i]->fnRender= '%function(obj) {
+$obj->aoColumns[$i]->fnRender= 'function(obj) {
 var ar = [];
 ar[ar.length] = "<a href=\"'.DOL_URL_ROOT.'/societe/fiche.php?id=";
 ar[ar.length] = obj.aData._id;
@@ -191,7 +191,7 @@ ar[ar.length] = obj.aData.ThirdPartyName.toString();
 ar[ar.length] = "</a>";
 var str = ar.join("");
 return str;
-}%';
+}';
 $i++;
 print'<th class="essential">';
 print $langs->trans("Town");
@@ -255,7 +255,7 @@ $obj->aoColumns[$i]->mDataProp = "Status";
 $obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->sWidth = "100px";
 $obj->aoColumns[$i]->sDefaultContent = "ST_NEVER";
-$obj->aoColumns[$i]->fnRender = '%function(obj) {
+$obj->aoColumns[$i]->fnRender = 'function(obj) {
 var status = new Array();
 var stcomm = obj.aData.Status;
 if(typeof stcomm === "undefined")
@@ -272,7 +272,7 @@ ar[ar.length] = status[stcomm][0];
 ar[ar.length] = "</span>";
 var str = ar.join("");
 return str;
-}%';
+}';
 $i++;
 print'<th class="essential">';
 print $langs->trans("Date");
@@ -281,7 +281,7 @@ $obj->aoColumns[$i]->mDataProp = "tms";
 $obj->aoColumns[$i]->sType="date";
 $obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->sWidth = "200px";
-$obj->aoColumns[$i]->fnRender = '%function(obj) {
+$obj->aoColumns[$i]->fnRender = 'function(obj) {
 if(obj.aData.tms)
 {
     var date = new Date(obj.aData.tms*1000);
@@ -289,7 +289,7 @@ if(obj.aData.tms)
 }
 else
     return null;
-}%';
+}';
 print'</tr>';
 print'</thead>';
 print'<tfoot>';

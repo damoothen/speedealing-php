@@ -2872,71 +2872,84 @@ abstract class CommonObject
 	public function _datatables($obj,$ref_css,$json=false, $ColSearch=false)
 	{
             global $conf,$langs;
-            
-            if(!isset($obj->aaSorting) && $json)
-                $obj->aaSorting = array(array(1, "asc"));
-            
-            if($json)
-                $obj->sAjaxSource = $_SERVER['PHP_SELF']."?json=list";
-            
-            $obj->iDisplayLength = (int)$conf->global->MAIN_SIZE_LISTE_LIMIT;
-            $obj->aLengthMenu= array(array(10, 25, 50, 100, 1000, -1), array(10, 25, 50, 100,1000,"All"));
-            $obj->bProcessing = true;
-            $obj->bJQueryUI = true;
-            $obj->bAutoWidth = false;
-            //$obj->bServerSide = true;
-            $obj->bDeferRender = true;
-            $obj->oLanguage->sUrl = DOL_URL_ROOT.'/includes/jquery/plugins/datatables/langs/'.($langs->defaultlang?$langs->defaultlang:"en_US").".txt";
-            //$obj->sDom = '<\"top\"Tflpi<\"clear\">>rt<\"bottom\"pi<\"clear\">>';
-            //$obj->sPaginationType = 'full_numbers';
-            //$obj->sDom = 'TC<\"clear\">lfrtip';
-            $obj->oTableTools->sSwfPath = DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/TableTools/media/swf/copy_csv_xls.swf';
-	    //if($obj->oTableTools->aButtons==null)
-	    //$obj->oTableTools->aButtons = array("xls");
+
+?>
+<script type="text/javascript" charset="utf-8">
+$(document).ready(function() {
+    var oTable = $('#<?php echo $ref_css?>').dataTable( {
+    "aoColumns" : [
+    <?php foreach ($obj->aoColumns as $i => $aRow): ?>
+{
+	<?php foreach ($aRow as $key => $fields): ?>
+		<?php if($key == "mDataProp" || $key == "sClass" || $key == "sDefaultContent" || $key == "sType" || $key == "sWidth") : ?>
+	"<?php echo $key;?>":"<?php echo $fields;?>",
+		<?php elseif($key == fnRender) :?>
+	"<?php echo $key;?>": <?php echo $fields;?>,	    
+		<?php else :?>
+	"<?php echo $key;?>": <?php echo ($fields?"true":"false");?>,
+		<?php endif;?>
+	<?php endforeach; ?>
+},
+    <?php endforeach; ?>
+    ],
+    <?php if(!isset($obj->aaSorting) && $json) :?>
+    "aaSorting" : [[1,"asc"]],
+    <?php endif;?>
+    <?php if($json) : ?>
+    "sAjaxSource" : "<?php echo $_SERVER['PHP_SELF'];?>?json=list",
+    <?php endif;?>
+    "iDisplayLength": <?php echo (int)$conf->global->MAIN_SIZE_LISTE_LIMIT;?>,
+    "aLengthMenu": [[10, 25, 50, 100, 1000, -1],[10, 25, 50, 100,1000,"All"]],
+    "bProcessing": true,
+    "bJQueryUI": true,
+    "bAutoWidth": false,
+    /*$obj->bServerSide = true;*/
+    "bDeferRender": true,
+    "oLanguage": { "sUrl": "<?php echo DOL_URL_ROOT.'/includes/jquery/plugins/datatables/langs/'.($langs->defaultlang?$langs->defaultlang:"en_US").".txt";?>"},
+    /*$obj->sDom = '<\"top\"Tflpi<\"clear\">>rt<\"bottom\"pi<\"clear\">>';*/
+    /*$obj->sPaginationType = 'full_numbers';*/
+    /*$obj->sDom = 'TC<\"clear\">lfrtip';*/
+   "oTableTools": { "sSwfPath": "<?php echo DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/TableTools/media/swf/copy_csv_xls.swf';?>"},
+    //if($obj->oTableTools->aButtons==null)
+    //$obj->oTableTools->aButtons = array("xls");
 	    
-            $obj->oColVis->buttonText = 'Voir/Cacher';
-            if($json)
-                $obj->oColVis->aiExclude = array(0,1); // Not cacheable
-            else
-                $obj->oColVis->aiExclude = array(0); // Not cacheable
-            //$obj->oColVis->bRestore = true;
-            //$obj->oColVis->sAlign = 'left';
+    "oColVis": { "buttonText" : 'Voir/Cacher',
+    <?php if($json) :?>
+	"aiExclude": [0,1], // Not cacheable
+    <?php else :?>
+	"aiExclude": [0,1], // Not cacheable
+    <?php endif;?> 
+    },
+    //$obj->oColVis->bRestore = true;
+    //$obj->oColVis->sAlign = 'left';
             
-            // Avec export Excel
-	    if($obj->oTableTools->aButtons==null)
-		$obj->sDom = 'Cl<fr>t<\"clear\"rtip>';
-            else // Sans export
-		$obj->sDom = 'TC<\"clear\"fr>lt<\"clear\"rtip>';
+    // Avec export Excel
+    <?php if($obj->oTableTools->aButtons==null) :?>
+    "sDom": "Cl<fr>t<\"clear\"rtip>",
+    <?php else :?>
+    "sDom": "TC<\"clear\"fr>lt<\"clear\"rtip>";
+    <?php endif;?> //
             
-            // jeditable
-            $obj->fnDrawCallback= '%function () {
-            $("#'.$ref_css.' tbody td.edit").editable( "'.$_SERVER['PHP_SELF'].'?json=edit", {
+    // jeditable
+    "fnDrawCallback": function () {
+    alert( 'Number of rows: '+ this.fnGetNodes() );
+    $("td.edit", this.fnGetNodes()).editable( '<?php echo $_SERVER['PHP_SELF'];?>?json=edit', {
                 "callback": function( sValue, y ) {
                     oTable.fnDraw();
                 },
                 "height": "14px",
                 "tooltip": "Cliquer pour éditer...",
-                "indicator" : "<div style=\"text-align: center;\"><img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>",
+                "indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>';?>",
                 "placeholder" : ""
                 
             } );
-            }%';
+	}
+    });
+});
+</script>
+<?php
 
             
-            $output ='<script type="text/javascript" charset="utf-8">';
-            $output.='$(document).ready(function() {';
-            $output.='var oTable = $(\'#'.$ref_css.'\').dataTable(';
-            
-            $json = json_encode($obj);
-            $json = str_replace('"%', '', $json);
-            $json = str_replace('%"', '', $json);
-            $json = str_replace('\n', '', $json);
-            $json = str_replace('\r', '', $json);
-            $json = str_replace('\"', '"', $json);
-            $json = str_replace('\"', '"', $json);
-            $output.=$json;
-            
-            $output.= ");";
             //$output.= "});"; // ATTENTION AUTOFILL NOT COMPATIBLE WITH COLVIS !!!!
             /*$output.= 'new AutoFill( oTable, {
 		"aoColumnDefs": [
@@ -2974,36 +2987,35 @@ abstract class CommonObject
         "placeholder" : "",
         "width": "100%"
     } );';*/
-            $output.= "});";
-            $output.='</script>'."\n";
             
             if($ColSearch)
             {
-                // search column
-                $output.='<script type="text/javascript" charset="utf-8">';
-            
-                $output.='$(document).ready(function() {
-                $("tfoot input").keyup( function () {
-                /* Filter on the column */
-                var id = $(this).parent().attr("id");
-                oTable.fnFilter( this.value, id);
-                } );
-                /*send selected level value to server */        
-                $("tfoot #level").change( function () {
-                /* Filter on the column */
-                var id = $(this).parent().attr("id");
-                var value = $(this).val();
-                oTable.fnFilter( value, id);
-                } );
-                /*send selected stcomm value to server */   
-                $("tfoot .flat").change( function () {
-                /* Filter on the column */
-                var id = $(this).parent().attr("id");
-                var value = $(this).val();
-                oTable.fnFilter( value, id);
-                } );
-                });';
-            $output.='</script>';
+?>
+<script type="text/javascript" charset="utf-8">
+    /* search column */
+$(document).ready(function() {
+    $("tfoot input").keyup( function () {
+    /* Filter on the column */
+    var id = $(this).parent().attr("id");
+    oTable.fnFilter( this.value, id);
+    } );
+    /*send selected level value to server */        
+    $("tfoot #level").change( function () {
+    /* Filter on the column */
+    var id = $(this).parent().attr("id");
+    var value = $(this).val();
+    oTable.fnFilter( value, id);
+    } );
+    /*send selected stcomm value to server */   
+    $("tfoot .flat").change( function () {
+    /* Filter on the column */
+    var id = $(this).parent().attr("id");
+    var value = $(this).val();
+    oTable.fnFilter( value, id);
+    } );
+});
+</script>
+<?php
             }
                 
             return $output;
