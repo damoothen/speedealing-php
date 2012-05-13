@@ -1073,18 +1073,17 @@ function top_menu($head, $title='', $target='', $disablejs=0, $disablehead=0, $a
 
     $toprightmenu='';
 
-    if (! $conf->top_menu)  $conf->top_menu ='eldy_backoffice.php';
+    $conf->top_menu ='auguria_backoffice.php';
 
     // For backward compatibility with old modules
-    if (empty($conf->headerdone)) top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss);
+    //if (empty($conf->headerdone)) top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss);
 
     print '<body class="ptrn_a grdnt_b mhover_c">';
 
     /*
      * Top menu
     */
-    $top_menu=empty($conf->browser->phone)?$conf->top_menu:$conf->smart_menu;
-    if (GETPOST('menu')) $top_menu=GETPOST('menu'); // menu=eldy_backoffice.php
+    $top_menu=$conf->top_menu;
 
     // Load the top menu manager
     // Load the top menu manager (only if not already done)

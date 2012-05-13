@@ -1070,7 +1070,7 @@ else
         print start_box($langs->trans("EditCompany"),"twelve","16-Pencil",false,true);
 
         try {
-            $object->load($socid);
+            $object->fetch($socid);
         } catch (Exception $e) {
             $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
             print $error;
@@ -1184,7 +1184,7 @@ else
             	$blockfields=array();
             	foreach($fields as $key => $params) {
             		$blockfields[$key]['trans'] = $langs->trans($key);
-            		$blockfields[$key]['value'] = $object->$key;
+            		$blockfields[$key]['value'] = $object->values->$key;
             		if (is_object($params) && ! empty($params)) {
             			foreach($params as $param => $value) {
             				$blockfields[$key][$param] = $value;
@@ -1196,20 +1196,20 @@ else
             
             // Assign specific functions
             if ($object->fk_extrafields->fields->Main->Zip->enable) {
-            	$tpl->assign('select_zip', $formcompany->select_ziptown($object->Zip,'Zip',array('Town','selectCountry','State'),$object->fk_extrafields->fields->Main->Zip->length));
+            	$tpl->assign('select_zip', $formcompany->select_ziptown($object->values->Zip,'Zip',array('Town','selectCountry','State'),$object->fk_extrafields->fields->Main->Zip->length));
             }
             if ($object->fk_extrafields->fields->Main->Town->enable) {
-            	$tpl->assign('select_town', $formcompany->select_ziptown($object->Town,'Town',array('Zip','selectCountry','State'),$object->fk_extrafields->fields->Main->Town->length));
+            	$tpl->assign('select_town', $formcompany->select_ziptown($object->values->Town,'Town',array('Zip','selectCountry','State'),$object->fk_extrafields->fields->Main->Town->length));
             }
             if ($object->fk_extrafields->fields->Main->Country->enable) {
-            	$tpl->assign('select_country', $form->select_country($object->Country,'Country'));
+            	$tpl->assign('select_country', $form->select_country($object->values->Country,'Country'));
             }
             if ($object->fk_extrafields->fields->Main->State->enable) {
-            	$tpl->assign('select_state', $formcompany->select_state($object->State,$object->Country,'State'));
+            	$tpl->assign('select_state', $formcompany->select_state($object->values->State,$object->values->Country,'State'));
             }
             if ($object->fk_extrafields->fields->Main->Status->enable) {
             	// TODO add function select
-            	$value = (! empty($object->Status) ? $object->Status : $object->fk_extrafields->fields->Main->Status->default);
+            	$value = (! empty($object->values->Status) ? $object->values->Status : $object->fk_extrafields->fields->Main->Status->default);
             	$out = '<select name="Status" id="Status">';
             	foreach ($object->fk_status->values as $key => $aRow)
             	{
@@ -1364,7 +1364,7 @@ else
         
         try
         {
-            $res=$object->load($socid);
+            $res=$object->fetch($socid);
         } catch (Exception $e) {
             $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
             dol_syslog("societe::load ".$error, LOG_ERR);

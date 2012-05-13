@@ -111,7 +111,7 @@ if (! defined('NOREQUIREDB'))
 	}
 	
 	// CouchDB
-	$couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
+	//$couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
 }
 
 // Now database connexion is known, so we can forget password

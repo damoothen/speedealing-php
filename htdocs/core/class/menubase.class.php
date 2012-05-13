@@ -22,33 +22,22 @@
  *  \brief      File of class to manage dynamic menu entries
  */
 
+include_once(DOL_DOCUMENT_ROOT ."/core/db/couchdb/lib/couch.php");
+include_once(DOL_DOCUMENT_ROOT ."/core/db/couchdb/lib/couchClient.php");
 
 /**
  *  Class to manage menu entries
  */
-class Menubase extends couchDocument
+class Menubase
 {
     var $db;							// To store db handler
     var $error;							// To return error code (or message)
     var $errors=array();				// To return several error codes (or messages)
 
     var $id;
+    var $values;
 
-    var $module;
-    var $type;
-    var $fk_menu;
-    var $fk_mainmenu;
-    var $fk_leftmenu;
-    var $position;
-    var $url;
-    var $target;
-    var $titre;
-    var $langs;
-    var $level;
-    var $leftmenu;		//<! Not used
-    var $perms;
-    var $user;
-    var $tms;
+    protected $couchdb;
 
 
     /**
@@ -59,13 +48,13 @@ class Menubase extends couchDocument
      *  @param     	string		$type			Type
      */
     function Menubase($db)
-    {
-        global $couchdb;
-        
+    {   
+	global $conf;
+	
         $this->db = $db;
         
-        parent::__construct($couchdb);
-        $this->setAutocommit(false);
+	$this->couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
+        
         return 1;
     }
 

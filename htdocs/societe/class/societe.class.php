@@ -41,30 +41,27 @@ class Societe extends CommonObject
     public $fk_element='fk_soc';
     protected $childtables=array("propal","commande","facture","contrat","facture_fourn","commande_fournisseur");    // To test if we can delete object
     protected $ismultientitymanaged = 1;	// 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
+    
     var $fk_extrafields;
     var $fk_status;
     var $fk_country;
     var $nb; //statistics
     
-    var $db;
+    
 
     /**
      *    Constructor
      *
-     *    @param	couchClient		$db		Database handler
+     *    @param	Client		$db		Database handler
      */
     public function Societe($db)
-    {
-    	global $couchdb;
-    	
-        $this->db = $db;
-        
-        parent::__construct($couchdb);
+    {	
+        parent::__construct($db);
         
         try {
-            $this->fk_extrafields = $couchdb->getDoc("extrafields:company"); // load fields company
-            $this->fk_status = $couchdb->getDoc($this->fk_extrafields->fields->Main->Status->dict); //load status table
-            $this->fk_country = $couchdb->getDoc($this->fk_extrafields->fields->Main->Country->dict); //load country table
+            $this->fk_extrafields = $this->couchdb->getDoc("extrafields:company"); // load fields company
+            $this->fk_status = $this->couchdb->getDoc($this->fk_extrafields->fields->Main->Status->dict); //load status table
+            $this->fk_country = $this->couchdb->getDoc($this->fk_extrafields->fields->Main->Country->dict); //load country table
         }catch (Exception $e) {
             $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
             print $error;
@@ -1758,15 +1755,15 @@ class Societe extends CommonObject
         $rtr.= '</div>';
         $rtr.= '<div class="five column vcard">';
         $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Apartment-Building.png" alt="" />';
-        $rtr.= '<h1 class="sepH_a">'.$img.$this->ThirdPartyName.'</h1>';
+        $rtr.= '<h1 class="sepH_a">'.$img.$this->values->ThirdPartyName.'</h1>';
         $rtr.= $this->getLibStatus();
         $rtr.= '<h5 class="sepH_a s_color">';
-        $rtr.= dol_print_address($this->Address,'gmap','thirdparty',$this->id());
+        $rtr.= dol_print_address($this->values->Address,'gmap','thirdparty',$this->id());
         $rtr.= '</h5>';
         //$img=picto_from_langcode($object->country_id);
-        $rtr.= '<h3 class="sepH_a country">'.$this->Zip.($this->Zip && $this->Town?" ":"").$this->Town;
+        $rtr.= '<h3 class="sepH_a country">'.$this->values->Zip.($this->values->Zip && $this->values->Town?" ":"").$this->values->Town;
         // MAP GPS
-        $rtr.= "&nbsp".img_picto(($this->gps[0].','.$this->gps[1]),(($this->gps[0] && $this->gps[1])?"green-dot":"red-dot"));
+        $rtr.= "&nbsp".img_picto(($this->values->gps[0].','.$this->values->gps[1]),(($this->values->gps[0] && $this->values->gps[1])?"green-dot":"red-dot"));
         $rtr.= '</h3>';
         $rtr.= '</div>';
         
@@ -1793,23 +1790,23 @@ class Societe extends CommonObject
         
         $rtr.= '</div>';
         
-        if($this->CustomerCode || $this->SupplierCode)
+        if($this->values->CustomerCode || $this->values->SupplierCode)
         {
             $rtr.= '<div class="row vcard sepH_b inner_heading">';
             $rtr.= '<ul>';
-            if($this->CustomerCode)
+            if($this->values->CustomerCode)
             {
                 $key='CustomerCode';
                 $label = $langs->trans($key);
                 $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Money.png" title="'.$label.'" />';
-                $rtr.= '<li><span>'.$img.'</span><span class="s_color">'.$label.'</span><span> : </span><span>'.$this->$key.'</span></li>';
+                $rtr.= '<li><span>'.$img.'</span><span class="s_color">'.$label.'</span><span> : </span><span>'.$this->values->$key.'</span></li>';
             }
-            if($this->SupplierCode)
+            if($this->values->SupplierCode)
             {
                 $key='SupplierCode';
                 $label = $langs->trans($key);
                 $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Money.png" title="'.$label.'" />';
-                $rtr.= '<li><span>'.$img.'</span><span class="s_color">'.$label.'</span><span> : </span><span>'.$this->$key.'</span></li>';
+                $rtr.= '<li><span>'.$img.'</span><span class="s_color">'.$label.'</span><span> : </span><span>'.$this->values->$key.'</span></li>';
             }
             $rtr.= '</ul>';
             $rtr.= '</div>';
@@ -1837,7 +1834,7 @@ class Societe extends CommonObject
         $rtr.= '<div class="twelve column">';
         $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Info-_-About.png" title="'.$langs->trans($key).'" />';
         $rtr.= '<h4 class="inner_heading">'.$img.$langs->trans("Notes").'</h4>';
-        $rtr.= '<p class="edit_wysiwyg ttip_l">'.$this->notes.'</p>';
+        $rtr.= '<p class="edit_wysiwyg ttip_l">'.$this->values->notes.'</p>';
         $rtr.= '</div>'; 
         $rtr.= '</div>'; // End block note
         
@@ -1893,19 +1890,19 @@ class Societe extends CommonObject
                 $label = (empty($aRow->label) ? $langs->trans($key) : $langs->trans($aRow->label));
                 $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/'.$this->fk_extrafields->fields->AddressBook->$key->type.'.png" title="'.$label.'" />';
                 if($this->fk_extrafields->fields->AddressBook->$key->type == "AC_EMAIL")
-                    $rtr.= '<li><span class="s_color">'.$label.'</span> : <span class="ttip_r edit">'.$this->AddressBook->$key.'</span><span>'.$img.'</span></li>';
+                    $rtr.= '<li><span class="s_color">'.$label.'</span> : <span class="ttip_r edit">'.$this->values->AddressBook->$key.'</span><span>'.$img.'</span></li>';
                 else if($this->fk_extrafields->fields->AddressBook->$key->type == "AC_URL")
                 {
                     if(!empty($this->$key))
                     {
                         if($aRow->site == "www") // An  URL
-                            $rtr.= '<li>'.dol_print_url($aRow->value).'</li>';
+                            $rtr.= '<li>'.dol_print_url($this->values->AddressBook->$key->value).'</li>';
                         else // Facebook linkedin...
-                            $rtr.= '<li>'.dol_print_url($label,$aRow->value).'<span>'.$img.'</span></li>';
+                            $rtr.= '<li>'.dol_print_url($label,$this->values->AddressBook->$key->value).'<span>'.$img.'</span></li>';
                     }
                 }
                 else
-                    $rtr.= '<li><span class="s_color">'.$label.'</span> : <span class="ttip_r edit">'.dol_print_phone($this->AddressBook->$key,$this->country_id,0,$this->id(),$this->fk_extrafields->fields->AddressBook->$key->type).'</span><span>'.$img.'</span></li>';
+                    $rtr.= '<li><span class="s_color">'.$label.'</span> : <span class="ttip_r edit">'.dol_print_phone($this->values->AddressBook->$key,$this->country_id,0,$this->id(),$this->fk_extrafields->fields->AddressBook->$key->type).'</span><span>'.$img.'</span></li>';
             }
         }
         
@@ -1934,27 +1931,13 @@ class Societe extends CommonObject
             {
                 $label = (empty($aRow->label) ? $langs->trans($key) : $langs->trans($aRow->label));
                 $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Money.png" title="'.$label.'" />';
-                $rtr.= '<li><span class="s_color">'.$label.'</span><span> : </span><span class="ttip_r edit">'.$this->Deal->$key.'</span><span>'.$img.'</span></li>';
+                $rtr.= '<li><span class="s_color">'.$label.'</span><span> : </span><span class="ttip_r edit">'.$this->values->Deal->$key.'</span><span>'.$img.'</span></li>';
             }
         }
         $rtr.= '</ul>';
         $rtr.= '</div>';
 
         return $rtr;
-    }
-    
-    //temporaire
-    function fetch($socid)
-    {
-    	global $couchdb;
-    	
-        try {
-            $result = $couchdb->key((int)$socid)->getView("societe","rowid");
-            $this->load($result->rows[0]->value);
-        } catch (Exception $e) {
-            return 0;
-        }
-        return 1;
     }
     
     /**

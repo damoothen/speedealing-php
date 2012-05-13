@@ -25,17 +25,21 @@
  *	\brief      File of parent class of all other business classes (invoices, contracts, proposals, orders, ...)
  */
 
-require_once(DOL_DOCUMENT_ROOT.'/core/db/couchdb/lib/couchDocument.php');
+include_once(DOL_DOCUMENT_ROOT ."/core/db/couchdb/lib/couch.php");
+include_once(DOL_DOCUMENT_ROOT ."/core/db/couchdb/lib/couchClient.php");
 
 
 /**
  *	Parent class of all other business classes (invoices, contracts, proposals, orders, ...)
  */
-abstract class CommonObject extends couchDocument
+abstract class CommonObject
 {
     protected $db;
     protected $couchdb;
-
+    
+    public $id;
+    
+    public $values;
 
     public $error;
     public $errors;
@@ -49,14 +53,42 @@ abstract class CommonObject extends couchDocument
 	 */
     function __construct($db)
     {
-    	global $couchdb;
+    	global $conf;
     	
-    	parent::__construct($couchdb);
-    	
-    	$this->setAutocommit(false);
     	$this->class = $this->element;
     	$this->db = $db;
-	$this->couchdb = $couchdb;
+	$this->couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
+    }
+    
+    
+    function fetch($id)
+    {	
+	if(is_int($id)) // for old rowid
+	{
+	    try {
+		$result = $this->couchdb->key((int)$id)->getView(get_class(),"rowid");
+		$this->values = $this->couchdb->getDoc($result->rows[0]->value);
+		$this->id = $this->values->_id;
+	    } catch (Exception $e) {
+		return 0;
+	    }
+	}
+	else
+	{
+	    try {
+		$this->values = $this->couchdb->getDoc($id);
+		$this->id = $this->values->_id;
+	    } catch (Exception $e) {
+		return 0;
+	    }
+	}
+	    
+        return 1;
+    }
+    
+    public function id()
+    {
+	return $this->id;
     }
     
     /**
@@ -74,6 +106,7 @@ abstract class CommonObject extends couchDocument
 		
 		return parent::record();
 	}
+	
 
 
     /**
@@ -2798,9 +2831,9 @@ abstract class CommonObject extends couchDocument
         
         public function getView($view,$name)
         {
-        	global $conf, $couchdb;
+        	global $conf;
         	
-            return $couchdb->limit($conf->liste_limit)->getView($view,$name);
+            return $this->couchdb->limit($conf->liste_limit)->getView($view,$name);
         }
     
     
