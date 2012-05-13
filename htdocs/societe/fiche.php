@@ -49,9 +49,10 @@ if ($conf->notification->enabled) $langs->load("mails");
 
 $mesg=''; $error=0; $errors=array();
 
-$action		= (GETPOST('action') ? GETPOST('action') : 'view');
-$confirm	= GETPOST('confirm');
-$socid		= GETPOST('id');
+$action		= (GETPOST('action','alpha') ? GETPOST('action','alpha') : 'view');
+$confirm	= GETPOST('confirm','alpha');
+$cancel		= GETPOST('cancel','alpha');
+$socid		= GETPOST('id','alpha');
 if ($user->societe_id) $socid=$user->societe_id;
 
 // Get object canvas (By default, this is not defined, so standard usage of dolibarr)
@@ -88,7 +89,7 @@ if (empty($reshook))
 
     // Add new third party
     if ((! $_POST["getcustomercode"] && ! $_POST["getsuppliercode"])
-    && ($action == 'add' || $action == 'update') && $user->rights->societe->creer)
+    && ($action == 'add' || $action == 'update') && empty($cancel) && $user->rights->societe->creer)
     {
         require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
 
@@ -107,17 +108,17 @@ if (empty($reshook))
         }
         else
         {
-            $object->name              = ucwords($_POST["nom"]);
+            $object->name	= ucwords($_POST["nom"]);
         }
-        $object->address               = $_POST["adresse"];
-        $object->zip                   = $_POST["zipcode"];
-        $object->town                  = $_POST["town"];
-        $object->country_id            = $_POST["country_id"];
-        $object->state_id              = $_POST["departement_id"];
+        $object->Address	= $_POST["Address"];
+        $object->Zip		= $_POST["Zip"];
+        $object->Town		= $_POST["Town"];
+        $object->Country	= $_POST["Country"];
+        $object->State		= $_POST["State"];
         
-        $tel	= preg_replace("/\s/","",$_POST["tel"]);
+        $tel	= preg_replace("/\s/","",$_POST["Phone"]);
         $tel	= preg_replace("/\./","",$tel);
-        $fax	= preg_replace("/\s/","",$_POST["fax"]);
+        $fax	= preg_replace("/\s/","",$_POST["Fax"]);
         $fax	= preg_replace("/\./","",$fax);
         if($tel)
         {
@@ -136,15 +137,17 @@ if (empty($reshook))
             $object->AddressBook->EMail->type = "AC_EMAIL";
         }
         
-        $object->url->Web                = clean_url(trim($_POST["url"]),0);
+        $object->Url->Web	= clean_url(trim($_POST["Web"]),0);
         
-        foreach ($_POST['Deal'] as $key => $aRow)
-        {
-            $object->Deal->$key = $aRow;
-        /*$object->idprof["idprof2"]     = $_POST["idprof2"];
-        $object->idprof["idprof3"]     = $_POST["idprof3"];
-        $object->idprof["idprof4"]     = $_POST["idprof4"];*/
+        if (! empty($_POST['Deal'])) {
+        	foreach ($_POST['Deal'] as $key => $aRow) {
+        		$object->Deal->$key = $aRow;
+        		/*$object->idprof["idprof2"]     = $_POST["idprof2"];
+        		 $object->idprof["idprof3"]     = $_POST["idprof3"];
+        		$object->idprof["idprof4"]     = $_POST["idprof4"];*/
+        	}
         }
+        
         $object->prefix_comm           = $_POST["prefix_comm"];
         
         $object->Accounting->CustomerCode   = $_POST["code_client"];
