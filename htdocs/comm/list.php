@@ -78,18 +78,22 @@ if($_GET['json']=="list")
 
 /*edit cell value */
 if($_GET['json']=="edit"){
-    $key = $_POST['idrow'];
-    $field = $_POST['column'];
+    $key = $_POST['key'];
+    $id = $_POST['id'];
     $value = $_POST['value'];
     
-    print_r($_POST);
-    exit;
-    
     try {
-	    $object->fetch($key);
-	    $object->values->$fields = $value;
-	    $object->update($user);
-            print $value."tto";
+	    $object->fetch($id);
+	    $res = $object->set($key,$value);
+	    if($res)
+		$res = $object->update($user);
+	    if( $res >0 )
+		print $value;
+	    else
+	    {
+		print $res."</br>";
+		print_r($object->errors);
+	    }
             exit;
         } catch (Exception $exc) {
             print $exc->getTraceAsString();
@@ -177,21 +181,21 @@ $obj->aoColumns[$i]->mDataProp = "ThirdPartyName";
 $obj->aoColumns[$i]->bUseRendered = true;
 $obj->aoColumns[$i]->bSearchable = true;
 $obj->aoColumns[$i]->fnRender= 'function(obj) {
-var ar = [];
-ar[ar.length] = "<a href=\"'.DOL_URL_ROOT.'/societe/fiche.php?id=";
-ar[ar.length] = obj.aData._id;
-ar[ar.length] = "\"><img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Apartment-Building.png\" border=\"0\" alt=\"Afficher societe : ";
-ar[ar.length] = obj.aData.ThirdPartyName.toString();
-ar[ar.length] = "\" title=\"Afficher soci&eacute;t&eacute; : ";
-ar[ar.length] = obj.aData.ThirdPartyName.toString();
-ar[ar.length] = "\"></a> <a href=\"'.DOL_URL_ROOT.'/societe/fiche.php?id=";
-ar[ar.length] = obj.aData._id;
-ar[ar.length] = "\">";
-ar[ar.length] = obj.aData.ThirdPartyName.toString();
-ar[ar.length] = "</a>";
-var str = ar.join("");
-return str;
-}';
+	var ar = [];
+	ar[ar.length] = "<a href=\"'.DOL_URL_ROOT.'/societe/fiche.php?id=";
+	ar[ar.length] = obj.aData._id;
+	ar[ar.length] = "\"><img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Apartment-Building.png\" border=\"0\" alt=\"Afficher societe : ";
+	ar[ar.length] = obj.aData.ThirdPartyName.toString();
+	ar[ar.length] = "\" title=\"Afficher soci&eacute;t&eacute; : ";
+	ar[ar.length] = obj.aData.ThirdPartyName.toString();
+	ar[ar.length] = "\"></a> <a href=\"'.DOL_URL_ROOT.'/societe/fiche.php?id=";
+	ar[ar.length] = obj.aData._id;
+	ar[ar.length] = "\">";
+	ar[ar.length] = obj.aData.ThirdPartyName.toString();
+	ar[ar.length] = "</a>";
+	var str = ar.join("");
+	return str;
+    }';
 $i++;
 print'<th class="essential">';
 print $langs->trans("Town");
@@ -256,23 +260,23 @@ $obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->sWidth = "100px";
 $obj->aoColumns[$i]->sDefaultContent = "ST_NEVER";
 $obj->aoColumns[$i]->fnRender = 'function(obj) {
-var status = new Array();
-var stcomm = obj.aData.Status;
-if(typeof stcomm === "undefined")
-    stcomm = "ST_NEVER";';
+	var status = new Array();
+	var stcomm = obj.aData.Status;
+	if(typeof stcomm === "undefined")
+	    stcomm = "ST_NEVER";';
 foreach ($object->fk_status->values as $key => $aRow)
 {
     $obj->aoColumns[$i]->fnRender.= 'status["'.$key.'"]= new Array("'.$langs->trans($key).'","'.$aRow->cssClass.'");';
 }
 $obj->aoColumns[$i]->fnRender.= 'var ar = [];
-ar[ar.length] = "<span class=\"lbl ";
-ar[ar.length] = status[stcomm][1];
-ar[ar.length] = " sl_status\">";
-ar[ar.length] = status[stcomm][0];
-ar[ar.length] = "</span>";
-var str = ar.join("");
-return str;
-}';
+	ar[ar.length] = "<span class=\"lbl ";
+	ar[ar.length] = status[stcomm][1];
+	ar[ar.length] = " sl_status\">";
+	ar[ar.length] = status[stcomm][0];
+	ar[ar.length] = "</span>";
+	var str = ar.join("");
+	return str;
+    }';
 $i++;
 print'<th class="essential">';
 print $langs->trans("Date");
@@ -282,14 +286,14 @@ $obj->aoColumns[$i]->sType="date";
 $obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->sWidth = "200px";
 $obj->aoColumns[$i]->fnRender = 'function(obj) {
-if(obj.aData.tms)
-{
-    var date = new Date(obj.aData.tms*1000);
-    return date.toLocaleDateString();
-}
-else
-    return null;
-}';
+	if(obj.aData.tms)
+	{
+	    var date = new Date(obj.aData.tms*1000);
+	    return date.toLocaleDateString();
+	}
+	else
+	    return null;
+    }';
 print'</tr>';
 print'</thead>';
 print'<tfoot>';

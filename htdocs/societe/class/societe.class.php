@@ -81,9 +81,9 @@ class Societe extends CommonObject
         $this->errors=array();
 
         $result = 0;
-        $this->name	= trim($this->name);
+        $this->values->ThirdPartyName	= trim($this->values->ThirdPartyName);
 
-        if (! $this->name)
+        if (! $this->values->ThirdPartyName)
         {
             $this->errors[] = 'ErrorBadThirdPartyName';
             $result = -2;
@@ -157,14 +157,12 @@ class Societe extends CommonObject
      *		@param	string	$action						'create' or 'update'
      *      @return int  			           			<0 if KO, >=0 if OK
      */
-    function update($id, $user='', $call_trigger=1, $allowmodcodeclient=0, $allowmodcodefournisseur=0, $action='update')
+    function update($user='', $call_trigger=1, $allowmodcodeclient=0, $allowmodcodefournisseur=0, $action='update')
     {
         global $langs,$conf;
         require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
 
-		$error=0;
-
-        dol_syslog(get_class($this)."::Update id=".$id." call_trigger=".$call_trigger." allowmodcodeclient=".$allowmodcodeclient." allowmodcodefournisseur=".$allowmodcodefournisseur);
+	$error=0;
 
         // For triggers
         //if ($call_trigger) $this->oldobject = dol_clone($this);
@@ -190,7 +188,7 @@ class Societe extends CommonObject
             unset($this->nom); //TODO supprimer
             unset($this->departement); //TODO supprimer
             unset($this->country_code); // TODO supprimer
-            $this->record();
+            parent::update($user);
             dol_syslog(get_class($this)."::Update json=".  json_encode($this));
             
             //TODO - faire la suite...

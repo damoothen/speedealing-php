@@ -90,16 +90,19 @@ abstract class CommonObject
     function update($user)
     {	
 	    if($this->id)
-		$this->values->fk_user_update = $user->login;
+		$this->values->UserUpdate = $user->login;
 	    else
 	    {
-		$this->values->fk_user_create = $user->login;
-		$this->values->fk_user_update = $user->login;
+		$this->values->UserCreate = $user->login;
+		$this->values->UserUpdate = $user->login;
 	    }
 	    
 	    try {
+		$this->couchdb->clean($this->values);
 		$result = $this->couchdb->storeDoc($this->values);
-		print_r($result);exit;
+		$this->id=$result->id;
+		$this->values->_id = $result->id;
+		$this->values->_rev= $result->rev;
 	    } catch (Exception $e) {
 		$error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
 		dol_print_error($this->db,$error);
@@ -114,14 +117,33 @@ abstract class CommonObject
 	return $this->id;
     }
     
-    
+    public function set($key, $value)
+    {
+	foreach ($this->fk_extrafields->fields as $group => $aRow)
+	{
+	    foreach ($aRow as $fields => $element)
+	    {
+		if($fields == $key)
+		{
+		    if($group == "Main")
+			$this->values->$key = $value;
+		    else
+			$this->values->$group->$key = $value;
+		    
+		    return 1;
+		}
+	    }
+	}
+	$this->errors[] = $key." Not found";
+	return 0; // Not Found
+    }
     
     /**
      * 	Record fonction for update : suppress empty value
      * 
      * 	@return int         		1 success
      */
-	public function record()
+	/*public function record()
 	{
 		foreach ($this->__couch_data->fields as $key => $aRow)
 		{
@@ -130,7 +152,7 @@ abstract class CommonObject
 		}
 		
 		return parent::record();
-	}
+	}*/
 	
 
 
@@ -2878,26 +2900,26 @@ abstract class CommonObject
 $(document).ready(function() {
     var oTable = $('#<?php echo $ref_css?>').dataTable( {
     "aoColumns" : [
-    <?php foreach ($obj->aoColumns as $i => $aRow): ?>
+<?php foreach ($obj->aoColumns as $i => $aRow): ?>
 {
-	<?php foreach ($aRow as $key => $fields): ?>
-		<?php if($key == "mDataProp" || $key == "sClass" || $key == "sDefaultContent" || $key == "sType" || $key == "sWidth") : ?>
-	"<?php echo $key;?>":"<?php echo $fields;?>",
-		<?php elseif($key == fnRender) :?>
-	"<?php echo $key;?>": <?php echo $fields;?>,	    
-		<?php else :?>
-	"<?php echo $key;?>": <?php echo ($fields?"true":"false");?>,
-		<?php endif;?>
-	<?php endforeach; ?>
+<?php foreach ($aRow as $key => $fields): ?>
+<?php if($key == "mDataProp" || $key == "sClass" || $key == "sDefaultContent" || $key == "sType" || $key == "sWidth") : ?>
+    "<?php echo $key;?>":"<?php echo $fields;?>",
+<?php elseif($key == fnRender) :?>
+    "<?php echo $key;?>": <?php echo $fields;?>,	    
+<?php else :?>
+    "<?php echo $key;?>": <?php echo ($fields?"true":"false");?>,
+<?php endif;?>
+<?php endforeach; ?>
 },
-    <?php endforeach; ?>
-    ],
-    <?php if(!isset($obj->aaSorting) && $json) :?>
+<?php endforeach; ?>
+],
+<?php if(!isset($obj->aaSorting) && $json) :?>
     "aaSorting" : [[1,"asc"]],
-    <?php endif;?>
-    <?php if($json) : ?>
+<?php endif;?>
+<?php if($json) : ?>
     "sAjaxSource" : "<?php echo $_SERVER['PHP_SELF'];?>?json=list",
-    <?php endif;?>
+<?php endif;?>
     "iDisplayLength": <?php echo (int)$conf->global->MAIN_SIZE_LISTE_LIMIT;?>,
     "aLengthMenu": [[10, 25, 50, 100, 1000, -1],[10, 25, 50, 100,1000,"All"]],
     "bProcessing": true,
@@ -2914,28 +2936,36 @@ $(document).ready(function() {
     //$obj->oTableTools->aButtons = array("xls");
 	    
     "oColVis": { "buttonText" : 'Voir/Cacher',
-    <?php if($json) :?>
-	"aiExclude": [0,1], // Not cacheable
-    <?php else :?>
-	"aiExclude": [0,1], // Not cacheable
-    <?php endif;?> 
-    },
+<?php if($json) :?>
+    "aiExclude": [0,1], // Not cacheable
+<?php else :?>
+    "aiExclude": [0,1], // Not cacheable
+<?php endif;?> 
+},
     //$obj->oColVis->bRestore = true;
     //$obj->oColVis->sAlign = 'left';
             
     // Avec export Excel
-    <?php if($obj->oTableTools->aButtons==null) :?>
+<?php if($obj->oTableTools->aButtons==null) :?>
     "sDom": "Cl<fr>t<\"clear\"rtip>",
-    <?php else :?>
+<?php else :?>
     "sDom": "TC<\"clear\"fr>lt<\"clear\"rtip>";
-    <?php endif;?> //
+<?php endif;?> //
             
     // jeditable
     "fnDrawCallback": function () {
-    alert( 'Number of rows: '+ this.fnGetNodes() );
+	var columns = [
+<?php foreach ($obj->aoColumns as $i => $aRow) :?>
+"<?php echo $aRow->mDataProp; ?>",
+<?php endforeach; ?>
+];
     $("td.edit", this.fnGetNodes()).editable( '<?php echo $_SERVER['PHP_SELF'];?>?json=edit', {
                 "callback": function( sValue, y ) {
                     oTable.fnDraw();
+                },
+		"submitdata": function ( value, settings ) {
+                    return { "id": oTable.fnGetData( this.parentNode, 0), 
+                    "key": columns[oTable.fnGetPosition( this )[2]]};
                 },
                 "height": "14px",
                 "tooltip": "Cliquer pour éditer...",
