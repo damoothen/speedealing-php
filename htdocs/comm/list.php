@@ -121,15 +121,6 @@ if($_GET['json']=="edit"){
         }
 }
 
-
-/*
- * Actions
- */
-if ($_GET["action"] == 'cstc') {
-    $sql = "UPDATE " . MAIN_DB_PREFIX . "societe SET fk_stcomm = " . $_GET["stcomm"];
-    $sql .= " WHERE rowid = " . $_GET["socid"];
-    $result = $db->query($sql);
-}
 // Select every potentiels.
 $sql = "SELECT code, label, sortorder";
 $sql.= " FROM ".MAIN_DB_PREFIX."c_prospectlevel";
@@ -355,7 +346,7 @@ print'</tbody>';
 
 print "</table>";
 
-print $object->_datatables($obj,"societe",true,true);
+$object->_datatables($obj,"societe",true,true);
 
 print end_box();
 print '</div>'; // end row

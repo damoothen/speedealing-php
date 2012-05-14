@@ -32,6 +32,9 @@ $langs->load("commercial");
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
  * you want to insert a non-database field (for example a counter or static image)
  */
+
+$couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
+
 if (empty($conf->global->SOCIETE_DISABLE_STATE)) {
     if($conf->categorie->enabled){
          $aColumns = array('', 'company', 'ville', 'departement', 'cp', 'datec', 'categorie', 'sale','siren','siret','ape','idprof4', 'fk_prospectlevel', 'fk_stcomm', 'etat', 'priv');
@@ -179,7 +182,7 @@ $i=0;
 
 while ($aRow = $db->fetch_object($resultSocietes)) {
         $col[$aRow->rowid]->rowid =(int)$aRow->rowid;
-        $col[$aRow->rowid]->class="company";
+        $col[$aRow->rowid]->class="Societe";
         $col[$aRow->rowid]->ThirdPartyName = $aRow->nom;
         $col[$aRow->rowid]->Town = $aRow->ville;
         $col[$aRow->rowid]->DateCreate = $db->jdate($aRow->datec);
@@ -263,11 +266,13 @@ unset($resultCate);
 
 try {
     $couchdb->clean($col);
-    $couchdb->storeDocs($col,false);
+    $result = $couchdb->storeDocs($col,false);
     } catch (Exception $e) {
         echo "Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
         exit(1);
     }
+    
+print_r($result);
     
 print "Import société terminée : ".count($col);
 ?>

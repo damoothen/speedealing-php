@@ -27,6 +27,7 @@ require_once("../../main.inc.php");
  * you want to insert a non-database field (for example a counter or static image)
  */
 
+$couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
 
 $flush=0;
 if($flush)

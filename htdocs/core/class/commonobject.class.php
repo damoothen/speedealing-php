@@ -67,7 +67,7 @@ abstract class CommonObject
 		$this->values = $this->couchdb->getDoc($result->rows[0]->value);
 		$this->id = $this->values->_id;
 	    } catch (Exception $e) {
-		$error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+		$error="Fetch : Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
 		dol_print_error($this->db,$error);
 		return 0;
 	    }
@@ -97,6 +97,8 @@ abstract class CommonObject
 		$this->values->UserUpdate = $user->login;
 	    }
 	    
+	    $this->values->class = get_class($this);
+	    
 	    try {
 		$this->couchdb->clean($this->values);
 		$result = $this->couchdb->storeDoc($this->values);
@@ -104,7 +106,7 @@ abstract class CommonObject
 		$this->values->_id = $result->id;
 		$this->values->_rev= $result->rev;
 	    } catch (Exception $e) {
-		$error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+		$error=  get_class($this)." Update : Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
 		dol_print_error($this->db,$error);
 		return 0;
 	    }
@@ -2905,7 +2907,7 @@ $(document).ready(function() {
 <?php foreach ($aRow as $key => $fields): ?>
 <?php if($key == "mDataProp" || $key == "sClass" || $key == "sDefaultContent" || $key == "sType" || $key == "sWidth") : ?>
     "<?php echo $key;?>":"<?php echo $fields;?>",
-<?php elseif($key == fnRender) :?>
+<?php elseif($key == "fnRender") :?>
     "<?php echo $key;?>": <?php echo $fields;?>,	    
 <?php else :?>
     "<?php echo $key;?>": <?php echo ($fields?"true":"false");?>,
@@ -2916,6 +2918,8 @@ $(document).ready(function() {
 ],
 <?php if(!isset($obj->aaSorting) && $json) :?>
     "aaSorting" : [[1,"asc"]],
+<?php else :?>
+    "aaSorting" : <?php echo json_encode($obj->aaSorting);?>,
 <?php endif;?>
 <?php if($json) : ?>
     "sAjaxSource" : "<?php echo $_SERVER['PHP_SELF'];?>?json=list",
@@ -2939,7 +2943,7 @@ $(document).ready(function() {
 <?php if($json) :?>
     "aiExclude": [0,1], // Not cacheable
 <?php else :?>
-    "aiExclude": [0,1], // Not cacheable
+    "aiExclude": [0], // Not cacheable
 <?php endif;?> 
 },
     //$obj->oColVis->bRestore = true;
@@ -2949,8 +2953,25 @@ $(document).ready(function() {
 <?php if($obj->oTableTools->aButtons==null) :?>
     "sDom": "Cl<fr>t<\"clear\"rtip>",
 <?php else :?>
-    "sDom": "TC<\"clear\"fr>lt<\"clear\"rtip>";
-<?php endif;?> //
+    "sDom": "TC<\"clear\"fr>lt<\"clear\"rtip>",
+<?php endif;?>
+// bottons
+<?php if($obj->oTableTools->aButtons !=null) :?>
+    "oTableTools" : { "aButtons": [
+<?php foreach ($obj->oTableTools->aButtons as $i => $aRow): ?>
+{
+<?php foreach ($aRow as $key => $fields): ?>
+<?php if($key == "fnClick" || $key == "fnAjaxComplete") :?>
+    "<?php echo $key;?>": <?php echo $fields;?>,	    
+<?php else :?>
+    "<?php echo $key;?>":"<?php echo $fields;?>",
+<?php endif;?>
+<?php endforeach; ?>
+},
+<?php endforeach; ?>
+]},
+ 
+<?php endif;?>
             
     // jeditable
     "fnDrawCallback": function () {
@@ -2993,6 +3014,31 @@ $(document).ready(function() {
             } );
 	}
     });
+<?php if($ColSearch) :?>
+    $("tfoot input").keyup( function () {
+    /* Filter on the column */
+    var id = $(this).parent().attr("id");
+    oTable.fnFilter( this.value, id);
+    } );
+    /*send selected level value to server */        
+    $("tfoot #level").change( function () {
+    /* Filter on the column */
+    var id = $(this).parent().attr("id");
+    var value = $(this).val();
+    oTable.fnFilter( value, id);
+    } );
+    /*send selected stcomm value to server */   
+    $("tfoot .flat").change( function () {
+    /* Filter on the column */
+    var id = $(this).parent().attr("id");
+    var value = $(this).val();
+    oTable.fnFilter( value, id);
+    } );
+<?php endif;?> 
+    // Select_all
+    $(document).ready(function() {
+	prth_datatable.dt_actions();
+    });
 });
 </script>
 <?php
@@ -3018,55 +3064,8 @@ $(document).ready(function() {
 			"aTargets": [ 4,7 ]
 		}]
             } );';*/
-/*	    $output.= '$("#'.$ref_css.' tbody td.edit").editable( "'.$_SERVER['PHP_SELF'].'?json=edit", {
-        "callback": function( sValue, y ) {
-            var aPos = oTable.fnGetPosition( this );
-            oTable.fnUpdate( sValue, aPos[0], aPos[1] );
-        },
-        "submitdata": function ( value, settings ) {
-            return {
-                "row_id": this.parentNode.getAttribute(\'id\'),
-                "column": oTable.fnGetPosition( this )[2]
-            };
-        },
-        "height": "14px",
-	"tooltip": "Cliquer pour éditer...",
-        "indicator" : "<div style=\"text-align: center;\"><img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>",
-        "placeholder" : "",
-        "width": "100%"
-    } );';*/
-            
-            if($ColSearch)
-            {
-?>
-<script type="text/javascript" charset="utf-8">
-    /* search column */
-$(document).ready(function() {
-    $("tfoot input").keyup( function () {
-    /* Filter on the column */
-    var id = $(this).parent().attr("id");
-    oTable.fnFilter( this.value, id);
-    } );
-    /*send selected level value to server */        
-    $("tfoot #level").change( function () {
-    /* Filter on the column */
-    var id = $(this).parent().attr("id");
-    var value = $(this).val();
-    oTable.fnFilter( value, id);
-    } );
-    /*send selected stcomm value to server */   
-    $("tfoot .flat").change( function () {
-    /* Filter on the column */
-    var id = $(this).parent().attr("id");
-    var value = $(this).val();
-    oTable.fnFilter( value, id);
-    } );
-});
-</script>
-<?php
-            }
                 
-            return $output;
+            return;
 	}
         
 }
