@@ -76,6 +76,21 @@ if($_GET['json']=="list")
     exit;
 }
 
+if($_GET['json']=="Status"){
+    $value = $_GET['value'];
+    
+    foreach ($object->fk_status->values as $key => $aRow)
+    {
+	if($aRow->enable)
+        {   
+	    $array[$key] = $langs->trans($key);
+        }
+    }
+    $array['selected'] = "ST_PCOLD";
+    
+    print json_encode($array);
+    exit;
+}
 /*edit cell value */
 if($_GET['json']=="edit"){
     $key = $_POST['key'];
@@ -88,7 +103,12 @@ if($_GET['json']=="edit"){
 	    if($res)
 		$res = $object->update($user);
 	    if( $res >0 )
-		print $value;
+	    {
+		if($key == 'Status')
+		    print $object->LibStatut ($value);
+		else
+		    print $value;
+	    }
 	    else
 	    {
 		print $res."</br>";
@@ -256,7 +276,7 @@ print'<th class="essential">';
 print $langs->trans("Status");
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "Status";
-$obj->aoColumns[$i]->sClass = "center";
+$obj->aoColumns[$i]->sClass = "select center";
 $obj->aoColumns[$i]->sWidth = "100px";
 $obj->aoColumns[$i]->sDefaultContent = "ST_NEVER";
 $obj->aoColumns[$i]->fnRender = 'function(obj) {

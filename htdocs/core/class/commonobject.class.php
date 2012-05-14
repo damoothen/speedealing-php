@@ -2973,6 +2973,24 @@ $(document).ready(function() {
                 "placeholder" : ""
                 
             } );
+    $("td.select", this.fnGetNodes()).editable( '<?php echo $_SERVER['PHP_SELF'];?>?json=edit', {
+                "callback": function( sValue, y ) {
+                    oTable.fnDraw();
+                },
+		"submitdata": function ( value, settings ) {
+		    //alert( 'Number of rows: '+ oTable.fnGetData( this.parentNode, oTable.fnGetPosition( this )[2] ));
+                    return { "id": oTable.fnGetData( this.parentNode, 0), 
+			    "key": columns[oTable.fnGetPosition( this )[2]]};
+                },
+		"loadurl" : '<?php echo $_SERVER['PHP_SELF'];?>?json=Status',
+		"type" : 'select',
+		"submit" : 'OK',
+                "height": "14px",
+                "tooltip": "Cliquer pour éditer...",
+                "indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>';?>",
+                "placeholder" : ""
+                
+            } );
 	}
     });
 });
