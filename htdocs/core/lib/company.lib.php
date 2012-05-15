@@ -38,15 +38,15 @@ function societe_prepare_head($object)
     $h = 0;
     $head = array();
     
-    foreach ($object->fk_extrafields->fields as $key => $aRow)
+    foreach ($object->fk_extrafields->block as $key)
     {
-        if($aRow->edit)
-        {
-            $head[$h][0] = "#";
-            $head[$h][1] = $langs->trans($key);
-            $head[$h][2] = $key;
-            $h++;
-        }
+	if($key != 'Main')
+	{
+	    $head[$h][0] = "#";
+	    $head[$h][1] = $langs->trans($key);
+	    $head[$h][2] = $key;
+	    $h++;
+	}
     }
 
     if (! empty($conf->fournisseur->enabled) && ($object->fournisseur || (isset($object->object) && $object->object->fournisseur)) && ! empty($user->rights->fournisseur->lire))

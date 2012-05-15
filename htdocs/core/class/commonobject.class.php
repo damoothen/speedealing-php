@@ -3067,6 +3067,30 @@ $(document).ready(function() {
                 
             return;
 	}
+	
+    /**
+     * 	Contruct a HTML From for a fields
+     *
+     * 	@param	array	$aRow		parameter of the field
+     * 	@param	string	$key		Name of the field
+     * 	@param	string	$cssClass	CSS Classe for the form
+     * 	@return	string
+     */
+    public function form($aRow, $key, $cssClass)
+    {
+	global $langs;
+	
+	$rtr = "";
+
+	if ($aRow->enable)
+	{
+	    $rtr.= '<div class="formRow">'."\n";
+	    $rtr.= '<label for="'.$key.'">'.$langs->trans($key).'</label>'."\n";
+	    $rtr.= '<input type="text" maxlength="'.$aRow->length.'" id="'.$key.'" name="'.$key.'" value="'.$this->values->$key.'" class="input-text '.$cssClass.'" />'."\n";
+	    $rtr.= '</div>'."\n";
+	}
+	return $rtr;
+    }
         
 }
 

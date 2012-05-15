@@ -1067,7 +1067,7 @@ else
         $object = new Societe($db);
         
         print '<div class="row">';
-        print start_box($langs->trans("EditCompany"),"twelve","16-Pencil",false,true);
+        print start_box($langs->trans("EditCompany"),"twelve","16-Pencil",false);
 
         try {
             $object->fetch($socid);
@@ -1146,9 +1146,9 @@ else
 
                 // We set country_id, and pays_code label of the chosen country
                 // TODO move to DAO class
-                if ($object->Country)
+                if ($object->values->Country)
                 {
-                    $sql = "SELECT code, libelle from ".MAIN_DB_PREFIX."c_pays where code = '".$object->Country."'";
+                    $sql = "SELECT code, libelle from ".MAIN_DB_PREFIX."c_pays where code = '".$object->values->Country."'";
                     $resql=$db->query($sql);
                     if ($resql)
                     {
@@ -1158,7 +1158,7 @@ else
                     {
                         dol_print_error($db);
                     }
-                    $object->countryname = $langs->trans("Country".$object->country_id);
+                    $object->countryname = $langs->trans("Country".$object->values->Country);
                 }
             }
 
@@ -1180,39 +1180,36 @@ else
             }
             
             // Assign blocks and fields
-            foreach($object->fk_extrafields->fields as $block => $fields) {
+            for($i=0; $i < count($object->fk_extrafields->block);$i++) {
             	$blockfields=array();
-            	foreach($fields as $key => $params) {
+            	foreach($object->fk_extrafields->fields as $key => $params) {
             		$blockfields[$key]['trans'] = $langs->trans($key);
-			if($block=="Main")
-			    $blockfields[$key]['value'] = $object->values->$key;
-			else
-			    $blockfields[$key]['value'] = $object->values->$block->$key;
+			$blockfields[$key]['value'] = $object->values->$key;
             		if (is_object($params) && ! empty($params)) {
             			foreach($params as $param => $value) {
             				$blockfields[$key][$param] = $value;
             			}
             		}
             	}
-            	$tpl->assign($block, $blockfields);
+            	$tpl->assign($object->fk_extrafields->block[$i], $blockfields);
             }
             
             // Assign specific functions
-            if ($object->fk_extrafields->fields->Main->Zip->enable) {
-            	$tpl->assign('select_zip', $formcompany->select_ziptown($object->values->Zip,'Zip',array('Town','selectCountry','State'),$object->fk_extrafields->fields->Main->Zip->length));
+            if ($object->fk_extrafields->fields->Zip->enable) {
+            	$tpl->assign('select_zip', $formcompany->select_ziptown($object->values->Zip,'Zip',array('Town','selectCountry','State'),$object->fk_extrafields->fields->Zip->length));
             }
-            if ($object->fk_extrafields->fields->Main->Town->enable) {
-            	$tpl->assign('select_town', $formcompany->select_ziptown($object->values->Town,'Town',array('Zip','selectCountry','State'),$object->fk_extrafields->fields->Main->Town->length));
+            if ($object->fk_extrafields->fields->Town->enable) {
+            	$tpl->assign('select_town', $formcompany->select_ziptown($object->values->Town,'Town',array('Zip','selectCountry','State'),$object->fk_extrafields->fields->Town->length));
             }
-            if ($object->fk_extrafields->fields->Main->Country->enable) {
+            if ($object->fk_extrafields->fields->Country->enable) {
             	$tpl->assign('select_country', $form->select_country($object->values->Country,'Country'));
             }
-            if ($object->fk_extrafields->fields->Main->State->enable) {
+            if ($object->fk_extrafields->fields->State->enable) {
             	$tpl->assign('select_state', $formcompany->select_state($object->values->State,$object->values->Country,'State'));
             }
-            if ($object->fk_extrafields->fields->Main->Status->enable) {
+            if ($object->fk_extrafields->fields->Status->enable) {
             	// TODO add function select
-            	$value = (! empty($object->values->Status) ? $object->values->Status : $object->fk_extrafields->fields->Main->Status->default);
+            	$value = (! empty($object->values->Status) ? $object->values->Status : $object->fk_extrafields->fields->Status->default);
             	$out = '<select name="Status" id="Status">';
             	foreach ($object->fk_status->values as $key => $aRow)
             	{
@@ -1226,11 +1223,81 @@ else
             		}
             	}
             	$out.= '<select>';
-            	$tpl->assign('select_status', $out);
+            	//$tpl->assign('select_status', $out);
             }
-            
+?>
+<!-- BEGIN PHP TEMPLATE thirdparty update card -->
+<script type="text/javascript">
+$(document).ready(function () {
+	$("#selectCountry").change(function() {
+		document.formsoc.action.value="edit";
+		document.formsoc.submit();
+	});
+})
+</script>
+
+<form id="simple_wizard" class="stepy-wizzard nice" enctype="multipart/form-data" action="<?php echo $_SERVER["PHP_SELF"].'?id='.$object->id; ?>" method="POST" name="formsoc">
+<input type="hidden" name="action" value="update">
+<input type="hidden" name="token" value="<?php echo $_SESSION['newtoken']; ?>">
+<input type="hidden" name="id" value="<?php echo $object->id; ?>">
+<?php if ($auto_customer_code->auto || $auto_supplier_code->auto): ?>
+<input type="hidden" name="code_auto" value="1">
+<?php endif; ?>
+
+<?php for($i=0; $i < count($object->fk_extrafields->place); $i++):?>
+<fieldset title="Personal info">
+    <legend>Lorem ipsum dolor&hellip;</legend>
+
+<div class="row">
+	<div class="two columns">
+		<div class="form_legend">
+			<h4>Personal details</h4>
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent pharetra metus non nisi feugiat porta&hellip;</p>
+		</div>
+	</div>
+	<div class="ten columns">
+		<div class="form_content"><!-- forms columns -->
+			<div class="eight columns"><!-- center form -->
+<?php
+		foreach ($object->fk_extrafields->place[$i][0] as $key)
+		{
+		    $aRow = $object->fk_extrafields->fields->$key;
+		    print $object->form($aRow, $key, "large");
+		}
+?>			</div><!-- end center form -->
+			<div class="four columns"><!-- right form -->
+<?php
+		foreach ($object->fk_extrafields->place[$i][1] as $key)
+		{
+		    $aRow = $object->fk_extrafields->fields->$key;
+		    print $object->form($aRow, $key, "small");
+		}
+?>
+			</div><!-- end right form -->
+		</div><!-- end forms columns -->
+	</div><!-- end ten columns -->
+</div><!-- end row -->
+</fieldset>
+<?php endfor; ?>
+<button type="submit" class="finish gh_button icon approve primary"><?php echo $langs->trans("Save");?></button>
+
+<script>
+$(document).ready(function() {
+     //* common functions
+				prth_common.init();
+
+                //* step by step wizard
+				prth_wizard.simple();
+				//prth_wizard.validation();
+				prth_wizard.steps_nb();
+				// extended select elements
+				//prth_chosen_select.init();
+            });
+        </script>
+
+<?php          
             // Display template
-            $tpl->display("./tpl/update_card.tpl.php");
+            //$tpl->display("./tpl/update_card.tpl.php");
 
             print '<table class="border" width="100%">';
 
@@ -1382,20 +1449,16 @@ else
         print start_box($langs->trans("ThirdParty"),"eight","16-Apartment-Building.png",false,false,$head);
         // First onglet
         
-        print '<article class="tab_pane">';
-        print $object->content_box_information($object->content_contact());
-        print $object->content_note();
-        print '</article>';
-        
-        print '<article class="tab_pane">';
-        print $object->content_box_information($object->content_deal());
-        print $object->content_note();
-        print '</article>';
-        
-        print '<article class="tab_pane">';
-        print $object->content_box_information($object->content_accounting());
-        print $object->content_note();
-        print '</article>';
+	for($i=0; $i < count($object->fk_extrafields->block); $i++ )
+	{
+	    if($object->fk_extrafields->block[$i] != "Main")
+	    {
+		print '<article class="tab_pane">';
+		print $object->content_box_information($i);
+		print $object->content_note();
+		print '</article>';
+	    }
+	}
         print end_box();
         
         print start_box($langs->trans("Informations"),"four","16-Info-_-About.png");

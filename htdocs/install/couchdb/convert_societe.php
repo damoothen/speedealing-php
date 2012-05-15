@@ -79,7 +79,7 @@ $flush=0;
 if($flush)
 {
     // reset old value
-    $result = $couchdb->limit(50000)->getView('societe','target_id');
+    $result = $couchdb->limit(50000)->getView('Societe','target_id');
     $i=0;
     
     if(count($result->rows)==0)
@@ -190,32 +190,32 @@ while ($aRow = $db->fetch_object($resultSocietes)) {
         $col[$aRow->rowid]->tms = $db->jdate($aRow->tms);
         $col[$aRow->rowid]->CustomerCode = $aRow->code_client;
         $col[$aRow->rowid]->SupplierCode = $aRow->code_fournisseur;
-        $col[$aRow->rowid]->Accounting->CustomerCode = $aRow->code_compta;
-        $col[$aRow->rowid]->Accounting->SupplierCode = $aRow->code_compta_fournisseur;
+        $col[$aRow->rowid]->CustomerAccount = $aRow->code_compta;
+        $col[$aRow->rowid]->SupplierAccount = $aRow->code_compta_fournisseur;
         $col[$aRow->rowid]->Address = $aRow->address;
         $col[$aRow->rowid]->State = $aRow->fk_departement;
         $col[$aRow->rowid]->Country = $aRow->code; // FR
-        $col[$aRow->rowid]->AddressBook->Phone = $aRow->tel;
-        $col[$aRow->rowid]->AddressBook->Fax = $aRow->fax;
-        $col[$aRow->rowid]->AddressBook->EMail = $aRow->email;
+        $col[$aRow->rowid]->Phone = $aRow->tel;
+        $col[$aRow->rowid]->Fax = $aRow->fax;
+        $col[$aRow->rowid]->EMail = $aRow->email;
         if(!empty($aRow->url))
             $col[$aRow->rowid]->url[] = $aRow->url;
-        $col[$aRow->rowid]->Deal->SIREN = $aRow->siren;
-        $col[$aRow->rowid]->Deal->SIRET = $aRow->siret;
-        $col[$aRow->rowid]->Deal->NAF = $aRow->ape;
-        $col[$aRow->rowid]->Accounting->VATIntra = $aRow->tva_intra;
-        $col[$aRow->rowid]->Accounting->VATIsUsed = (bool)$aRow->tva_assuj;
-        $col[$aRow->rowid]->Deal->Capital = (int)$aRow->capital;
+        $col[$aRow->rowid]->SIREN = $aRow->siren;
+        $col[$aRow->rowid]->SIRET = $aRow->siret;
+        $col[$aRow->rowid]->NAF = $aRow->ape;
+        $col[$aRow->rowid]->VATIntra = $aRow->tva_intra;
+        $col[$aRow->rowid]->VATIsUsed = (bool)$aRow->tva_assuj;
+        $col[$aRow->rowid]->Capital = (int)$aRow->capital;
         $col[$aRow->rowid]->Status = $aRow->stcomm;
         $col[$aRow->rowid]->Notes = $aRow->note;
         $col[$aRow->rowid]->Prefix = $aRow->prefix_comm;
-        $col[$aRow->rowid]->Deal->ProspectLevelShort = (int)$aRow->fk_prospectlevel;
+        $col[$aRow->rowid]->ProspectLevelShort = (int)$aRow->fk_prospectlevel;
         $col[$aRow->rowid]->UserCreate = $aRow->user_creat;
         $col[$aRow->rowid]->UserUpdate = $aRow->user_modif;
-        $col[$aRow->rowid]->Deal->CustomerRelativeDiscountShort = (int)$aRow->remise_client;
+        $col[$aRow->rowid]->CustomerRelativeDiscountShort = (int)$aRow->remise_client;
         $col[$aRow->rowid]->Gencode = $aRow->barcode;
         $col[$aRow->rowid]->DefaultLang = $aRow->default_lang;
-        $col[$aRow->rowid]->Deal->PriceLevel = $aRow->price_level;
+        $col[$aRow->rowid]->PriceLevel = $aRow->price_level;
         if($aRow->latitude && $aRow->longitude)
         {
             $col[$aRow->rowid]->gps[0] = (int)$aRow->latitude;
@@ -239,7 +239,7 @@ $resultCommerciaux = $db->query($sql);
 /* init society sales array  */
 while ($aRow = $db->fetch_object($resultCommerciaux)) {
     if(!empty($col[$aRow->fk_soc]->rowid)){
-        $col[$aRow->fk_soc]->Deal->SalesRepresentatives[]=$aRow->login;   
+        $col[$aRow->fk_soc]->SalesRepresentatives[]=$aRow->login;   
     }
 }
 $db->free($resultCommerciaux);

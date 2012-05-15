@@ -1741,7 +1741,7 @@ class Societe extends CommonObject
      *
      *  @return	@string
      */
-    function content_box_information($content="")
+    function content_box_information($id=0)
     {
         global $conf,$user,$langs;
         
@@ -1810,7 +1810,7 @@ class Societe extends CommonObject
             $rtr.= '</div>';
         }
         
-        $rtr.= $content; //external content
+        $rtr.= $this->content_box($id); //external content
         
         $rtr.= '</div>'; // termine la colonne droite
         $rtr.= '</div>';
@@ -1838,42 +1838,14 @@ class Societe extends CommonObject
         
         return $rtr;
     }
-    
+        
     /**
-     * return div with list of information accounting (Customer Code,TVA,...)
-     *
+     * return div with list of information content block (see extrafields block)
+     * 
+     *  @param  int	    $blockid	    id of the block in the extrafiels block attribute
      *  @return	@string
      */
-    function content_accounting()
-    {
-        global $conf,$user,$langs;
-        
-        // List of tel, fax, mail...
-        $rtr = '<div class="row vcard sepH_c">';
-        $rtr.= '<ul class="fright">';
-        
-        // list of compta codes
-        foreach ($this->fk_extrafields->fields->Accounting as $key => $aRow) {
-            if(is_object($aRow) && $aRow->enable)
-            {
-                $label = (empty($aRow->label) ? $langs->trans($key) : $langs->trans($aRow->label));
-                $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Money.png" title="'.$label.'" />';
-                $rtr.= '<li><span class="s_color">'.$label.'</span><span> : </span><span class="ttip_r edit">'.$this->values->Accounting->$key.'</span><span>'.$img.'</span></li>';
-            }
-        }
-
-        $rtr.= '</ul>';
-        $rtr.= '</div>';
-
-        return $rtr;
-    }
-    
-    /**
-     * return div with list of information contact (tel, fax, ...)
-     *
-     *  @return	@string
-     */
-    function content_contact()
+    function content_box($blockid)
     {
         global $conf,$user,$langs;
         
@@ -1882,56 +1854,37 @@ class Societe extends CommonObject
         $rtr.= '<ul class="fright">';
         
         // list tel, fax, mail
-        foreach ($this->fk_extrafields->fields->AddressBook as $key => $aRow) {
+	for ($i=0; $i < count($this->fk_extrafields->place[$blockid]); $i++) // Block
+	{
+        foreach ($this->fk_extrafields->place[$blockid][$i] as $key) {
+	    $aRow = $this->fk_extrafields->fields->$key;
             if(is_object($aRow) && $aRow->enable)
             {
                 $label = (empty($aRow->label) ? $langs->trans($key) : $langs->trans($aRow->label));
-                $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/'.$this->fk_extrafields->fields->AddressBook->$key->type.'.png" title="'.$label.'" />';
-                if($this->fk_extrafields->fields->AddressBook->$key->type == "AC_EMAIL")
-                    $rtr.= '<li><span class="s_color">'.$label.'</span> : <span class="ttip_r edit">'.$this->values->AddressBook->$key.'</span><span>'.$img.'</span></li>';
-                else if($this->fk_extrafields->fields->AddressBook->$key->type == "AC_URL")
+		if(isset($aRow->ico))
+		    $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/'.$aRow->ico.'.png" title="'.$label.'" />';
+		else
+		    $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Money.png" title="'.$label.'" />';
+                if($aRow->type == "AC_EMAIL")
+                    $rtr.= '<li><span class="s_color">'.$label.'</span> : <span class="ttip_r edit">'.$this->values->$key.'</span><span>'.$img.'</span></li>';
+		elseif($aRow->type == "AC_TEL" || $aRow->type == "AC_FAX")
+		    $rtr.= '<li><span class="s_color">'.$label.'</span> : <span class="ttip_r edit">'.dol_print_phone($this->values->$key,$this->values->Country,0,$this->id(),$aRow->type).'</span><span>'.$img.'</span></li>';
+                elseif($aRow->type == "AC_URL")
                 {
-                    if(!empty($this->$key))
+                    if(!empty($this->values->$key))
                     {
                         if($aRow->site == "www") // An  URL
-                            $rtr.= '<li>'.dol_print_url($this->values->AddressBook->$key->value).'</li>';
+                            $rtr.= '<li>'.dol_print_url($this->values->$key->value).'</li>';
                         else // Facebook linkedin...
-                            $rtr.= '<li>'.dol_print_url($label,$this->values->AddressBook->$key->value).'<span>'.$img.'</span></li>';
+                            $rtr.= '<li>'.dol_print_url($label,$this->values->$key->value).'<span>'.$img.'</span></li>';
                     }
                 }
                 else
-                    $rtr.= '<li><span class="s_color">'.$label.'</span> : <span class="ttip_r edit">'.dol_print_phone($this->values->AddressBook->$key,$this->country_id,0,$this->id(),$this->fk_extrafields->fields->AddressBook->$key->type).'</span><span>'.$img.'</span></li>';
+                    $rtr.= '<li><span class="s_color">'.$label.'</span><span> : </span><span class="ttip_r edit">'.$this->values->$key.'</span><span>'.$img.'</span></li>';
             }
         }
+	}
         
-        $rtr.= '</ul>';
-        $rtr.= '</div>';
-
-        return $rtr;
-    }
-    
-    /**
-     * return div with list of commercial infomations
-     *
-     *  @return	@string
-     */
-    function content_deal()
-    {
-        global $conf,$user,$langs;
-        
-        // List of tel, fax, mail...
-        $rtr = '<div class="row vcard sepH_c">';
-        $rtr.= '<ul class="fright">';
-        
-        // list of compta codes
-        foreach ($this->fk_extrafields->fields->Deal as $key => $aRow) {
-            if(is_object($aRow) && $aRow->enable)
-            {
-                $label = (empty($aRow->label) ? $langs->trans($key) : $langs->trans($aRow->label));
-                $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Money.png" title="'.$label.'" />';
-                $rtr.= '<li><span class="s_color">'.$label.'</span><span> : </span><span class="ttip_r edit">'.$this->values->Deal->$key.'</span><span>'.$img.'</span></li>';
-            }
-        }
         $rtr.= '</ul>';
         $rtr.= '</div>';
 
