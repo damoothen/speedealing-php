@@ -163,8 +163,8 @@ class MenuTop
                         $selected = $this->print_submenu($newTabMenu->_id,1);
 			if($selected)
 			{
-			    $selectnav[0]->name = $newTabMenu->title;
-			    $selectnav[0]->url = $url;
+			    $this->selected[0]->name = $newTabMenu->title;
+			    $this->selected[0]->url = $url;
 			}
 
                         print '</li>';
@@ -268,8 +268,8 @@ class MenuTop
 			$selected = $this->print_submenu($newTabMenu->_id, ($level+1));
 			if($selected)
 			{
-			    $selectnav[$level]->name = $newTabMenu->title;
-			    $selectnav[$level]->url = $url;
+			    $this->selected[$level]->name = $newTabMenu->title;
+			    $this->selected[$level]->url = $url;
 			    $selectnow = true;
 			}
 			print '</li>';
