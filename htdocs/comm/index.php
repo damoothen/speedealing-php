@@ -770,6 +770,8 @@ if ($conf->propal->enabled && $user->rights->propale->lire)
 print '</td></tr>';
 print '</table>';
 
+dol_fiche_end();
+
 llxFooter();
 
 $db->close();
