@@ -2299,6 +2299,57 @@ function print_titre($title)
 }
 
 /**
+ *	Start a box
+ *
+ *	@param	string	$title			Title of the box
+ *	@param	string	$nbcolumn		Number of column see style.css
+ *	@param	array	$head                   list of top menu on box
+ *	@param	boolean	$box_action             Enable or Disable buttons reduse and delete box
+ *	@return	string				Title to show
+ */
+function start_box($title,$nbcolumn='twelve',$icon='16-Abacus.png',$box_action=true,$head=null)
+{
+    global $conf,$langs;
+    
+    $rtr = '<div class="'.$nbcolumn.' columns">';
+    $rtr.= '<div class="box_c">';
+    if($box_action && empty($head))
+        $rtr.= '<div class="box_c_heading cf box_actions">';
+    else
+        $rtr.= '<div class="box_c_heading cf">';
+    $rtr.= '<div class="box_c_ico"><img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/'.$icon.'" alt="" /></div>';
+    $rtr.= '<p>'.$title.'</p>';
+    
+    // See menu on top box
+    if(!empty($head))
+    {
+        $rtr.='<ul class="tabs cf right">';
+        foreach ($head as $aRow)
+        {
+            $rtr.='<li><a href="#">'.$aRow[1].'</a></li>';
+        }
+        $rtr.='</ul>';
+    }
+    $rtr.= '</div>';
+    $rtr.= '<div class="box_c_content">';
+
+    return $rtr;
+}
+
+/**
+ *	End of a box
+ *
+ *	@return	string					Title to show
+ */
+function end_box()
+{
+    $rtr = '</div>';//end content box
+    $rtr.= '</div>';//end box
+    $rtr.= '</div>';//end columns
+    return $rtr;
+}
+
+/**
  *	Show a title with picto
  *
  *	@param	string	$titre				Title to show

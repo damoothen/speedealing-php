@@ -1283,17 +1283,14 @@ $(document).ready(function () {
 
 <script>
 $(document).ready(function() {
-     //* common functions
-				prth_common.init();
-
-                //* step by step wizard
-				prth_wizard.simple();
-				//prth_wizard.validation();
-				prth_wizard.steps_nb();
-				// extended select elements
-				//prth_chosen_select.init();
-            });
-        </script>
+    //* step by step wizard
+    prth_wizard.simple();
+    //prth_wizard.validation();
+    prth_wizard.steps_nb();
+    // extended select elements
+    //prth_chosen_select.init();
+});
+</script>
 
 <?php          
             // Display template
@@ -1446,7 +1443,7 @@ $(document).ready(function() {
         
         $head = societe_prepare_head($object);
 
-        print start_box($langs->trans("ThirdParty"),"eight","16-Apartment-Building.png",false,false,$head);
+        print start_box($langs->trans("ThirdParty"),"eight","16-Apartment-Building.png",false,$head);
         // First onglet
         
 	for($i=0; $i < count($object->fk_extrafields->block); $i++ )
