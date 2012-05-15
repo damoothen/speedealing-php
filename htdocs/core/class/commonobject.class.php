@@ -119,27 +119,6 @@ abstract class CommonObject
 	return $this->id;
     }
     
-    public function set($key, $value)
-    {
-	foreach ($this->fk_extrafields->fields as $group => $aRow)
-	{
-	    foreach ($aRow as $fields => $element)
-	    {
-		if($fields == $key)
-		{
-		    if($group == "Main")
-			$this->values->$key = $value;
-		    else
-			$this->values->$group->$key = $value;
-		    
-		    return 1;
-		}
-	    }
-	}
-	$this->errors[] = $key." Not found";
-	return 0; // Not Found
-    }
-    
     /**
      * 	Record fonction for update : suppress empty value
      * 

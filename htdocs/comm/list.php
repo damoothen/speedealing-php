@@ -99,13 +99,12 @@ if($_GET['json']=="edit"){
     
     try {
 	    $object->fetch($id);
-	    $res = $object->set($key,$value);
-	    if($res)
-		$res = $object->update($user);
+	    $object->values->$key = $value;
+	    $res = $object->update($user);
 	    if( $res >0 )
 	    {
 		if($key == 'Status')
-		    print $object->LibStatut ($value);
+		    print $object->LibStatut($value);
 		else
 		    print $value;
 	    }
