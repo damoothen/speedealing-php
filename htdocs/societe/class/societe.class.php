@@ -1949,7 +1949,7 @@ class Societe extends CommonObject
 
         $this->nb=array("customer" => 0,"prospect" => 0, "suspect" => 0);
         
-	$result = $this->couchdb->group("exact")->getView("societe","count_status");
+	$result = $this->couchdb->group("exact")->getView(get_class($this),"count_status");
 
 	foreach($result->rows as $aRow)
 	{
