@@ -674,8 +674,6 @@ function dol_get_fiche_head($links=array(), $active='0', $title='', $notab=0, $p
 function dol_fiche_end($notab=0)
 {
     print dol_get_fiche_end($notab);
-    print end_box();
-    print '</div>';
 }
 
 /**
@@ -1009,7 +1007,7 @@ function dol_now($mode='gmt')
     else if ($mode == 'tzserver')		// Time for now with PHP server timezone added
     {
         require_once(DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php');
-        $tzsecond=getServerTimeZoneInt();    // Contains tz+dayling saving time
+        $tzsecond=getServerTimeZoneInt('now');    // Contains tz+dayling saving time
         $ret=dol_now('gmt')+($tzsecond*3600);
     }
     /*else if ($mode == 'tzref')				// Time for now with parent company timezone is added
@@ -1078,7 +1076,7 @@ function dol_print_url($url,$target='_blank',$max=32)
     if (! preg_match('/^http/i',$url)) $link.='http://';
     $link.=$url;
     if ($target) $link.='" target="'.$target.'">';
-    //if (! preg_match('/^http/i',$url)) $link.='http://';
+    if (! preg_match('/^http/i',$url)) $link.='http://';
     $link.=dol_trunc($url,$max);
     $link.='</a>';
     return $link;
@@ -1101,7 +1099,7 @@ function dol_print_email($email,$cid=0,$socid=0,$addlink=0,$max=64,$showinvalid=
 
     $newemail=$email;
 
-    if (empty($email)) return '';
+    if (empty($email)) return '&nbsp;';
 
     if (! empty($addlink))
     {
@@ -1146,12 +1144,9 @@ function dol_print_email($email,$cid=0,$socid=0,$addlink=0,$max=64,$showinvalid=
  * 	@param 	string	$separ 		separation between numbers for a better visibility example : xx.xx.xx.xx.xx
  * 	@return string 				Formated phone number
  */
-function dol_print_phone($phone,$country="FR",$cid=0,$socid=0,$addlink=0,$separ=" ")
+function dol_print_phone($phone,$country="FR",$cid=0,$socid=0,$addlink=0,$separ="&nbsp;")
 {
     global $conf,$user,$langs;
-    
-    if(empty($phone))
-        return null;
 
     // Clean phone parameter
     $phone = preg_replace("/[\s.-]/","",trim($phone));
@@ -1300,7 +1295,7 @@ function dol_print_address($address, $htmlid, $mode, $id)
     if ($address)
     {
         $rtr.= nl2br($address);
-        $showmap=0;
+        $showgmap=$showomap=0;
         if ($mode=='thirdparty' && $conf->google->enabled && $conf->global->GOOGLE_ENABLE_GMAPS) $showgmap=1;
         if ($mode=='contact' && $conf->google->enabled && $conf->global->GOOGLE_ENABLE_GMAPS_CONTACTS) $showgmap=1;
         if ($mode=='member' && $conf->google->enabled && $conf->global->GOOGLE_ENABLE_GMAPS_MEMBERS) $showgmap=1;
@@ -1791,7 +1786,7 @@ function img_edit($alt = "default", $float=0, $other='')
 {
     global $conf,$langs;
     if ($alt=="default") $alt=$langs->trans("Modify");
-    $img='<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/pencil_gray.png" border="0" alt="'.dol_escape_htmltag($alt).'" title="'.dol_escape_htmltag($alt).'"';
+    $img='<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/edit.png" border="0" alt="'.dol_escape_htmltag($alt).'" title="'.dol_escape_htmltag($alt).'"';
     if ($float) $img.=' style="float: right"';
     if ($other) $img.=' '.$other;
     $img.='>';
@@ -1828,11 +1823,7 @@ function img_delete($alt = "default", $other='')
 {
     global $conf,$langs;
     if ($alt=="default") $alt=$langs->trans("Delete");
-    $img='<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/trashcan_gray.png" border="0" alt="'.dol_escape_htmltag($alt).'" title="'.dol_escape_htmltag($alt).'"';
-    if ($float) $img.=' style="float: right"';
-    if ($other) $img.=' '.$other;
-    $img.='>';
-    return $img;
+    return img_picto($alt,'delete.png',$other);
 }
 
 
@@ -2065,7 +2056,7 @@ function info_admin($text,$infoonimgalt=0)
     }
     else
     {
-        $s.='<div class="alert-box warning">';
+        $s.='<div class="info">';
         $s.=img_picto($langs->trans("InfoAdmin"),'star');
         $s.=' ';
         $s.=$text;
@@ -2297,58 +2288,6 @@ function getTitleFieldOfList($name, $thead=0, $file="", $field="", $begin="", $m
 }
 
 /**
- *	Start a box
- *
- *	@param	string	$title			Title of the box
- *	@param	string	$nbcolumn		Number of column see style.css
- *	@param	array	$head                   list of top menu on box
- *	@param	boolean	$box_action             Enable or Disable buttons reduse and delete box
- *	@return	string				Title to show
- */
-function start_box($title,$nbcolumn='twelve',$icon='16-Abacus.png',$box_action=true,$head=null)
-{
-    global $conf,$langs;
-    
-    $rtr = '<div class="'.$nbcolumn.' columns">';
-    $rtr.= '<div class="box_c">';
-    if($box_action && empty($head))
-        $rtr.= '<div class="box_c_heading cf box_actions">';
-    else
-        $rtr.= '<div class="box_c_heading cf">';
-    $rtr.= '<div class="box_c_ico"><img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/'.$icon.'" alt="" /></div>';
-    $rtr.= '<p>'.$title.'</p>';
-    
-    // See menu on top box
-    if(!empty($head))
-    {
-        $rtr.='<ul class="tabs cf right">';
-        foreach ($head as $aRow)
-        {
-            $rtr.='<li><a href="#">'.$aRow[1].'</a></li>';
-        }
-        $rtr.='</ul>';
-    }
-    $rtr.= '</div>';
-    $rtr.= '<div class="box_c_content">';
-
-    return $rtr;
-}
-
-/**
- *	End of a box
- *
- *	@return	string					Title to show
- */
-function end_box()
-{
-    $rtr = '</div>';//end content box
-    $rtr.= '</div>';//end box
-    $rtr.= '</div>';//end columns
-    return $rtr;
-}
-
-
-/**
  *	Show a title (deprecated. use print_fiche_titre instrad)
  *
  *	@param	string	$title			Title to show
@@ -2371,13 +2310,7 @@ function print_titre($title)
  */
 function print_fiche_titre($titre, $mesg='', $picto='title.png', $pictoisfullpath=0, $id='')
 {
-    print '<div class="row">';
-    print start_box($titre,"twelve","16-Apartment-Building.png");
-    //print load_fiche_titre($titre, $mesg, $picto, $pictoisfullpath, $id);
-    //print '</div>';
-    //print '</div>';
-    //print '<div class="row">';
-    //print '<div class="tweelve columns">';
+    print load_fiche_titre($titre, $mesg, $picto, $pictoisfullpath, $id);
 }
 
 /**
@@ -3031,7 +2964,7 @@ function yn($yesno, $case=1, $color=0)
         if ($color == 2) $classname='ok';
         else $classname='error';
     }
-    if ($color) return $result;
+    if ($color) return '<font class="'.$classname.'">'.$result.'</font>';
     return $result;
 }
 
@@ -4006,16 +3939,16 @@ function printCommonFooter($zone='private')
     {
         print "\n";
         print '<script type="text/javascript">'."\n";
-            print '  var _gaq = _gaq || [];'."\n";
-            print '  _gaq.push([\'_setAccount\', \''.$conf->global->MAIN_GOOGLE_AN_ID.'\']);'."\n";
-            print '  _gaq.push([\'_trackPageview\']);'."\n";
-            print ''."\n";
+        print '  var _gaq = _gaq || [];'."\n";
+        print '  _gaq.push([\'_setAccount\', \''.$conf->global->MAIN_GOOGLE_AN_ID.'\']);'."\n";
+        print '  _gaq.push([\'_trackPageview\']);'."\n";
+        print ''."\n";
         print '  (function() {'."\n";
-            print '    var ga = document.createElement(\'script\'); ga.type = \'text/javascript\'; ga.async = true;'."\n";
-            print '    ga.src = (\'https:\' == document.location.protocol ? \'https://ssl\' : \'http://www\') + \'.google-analytics.com/ga.js\';'."\n";
-            print '    var s = document.getElementsByTagName(\'script\')[0]; s.parentNode.insertBefore(ga, s);'."\n";
-            print '  })();'."\n";
-            print '</script>'."\n";
+        print '    var ga = document.createElement(\'script\'); ga.type = \'text/javascript\'; ga.async = true;'."\n";
+        print '    ga.src = (\'https:\' == document.location.protocol ? \'https://ssl\' : \'http://www\') + \'.google-analytics.com/ga.js\';'."\n";
+        print '    var s = document.getElementsByTagName(\'script\')[0]; s.parentNode.insertBefore(ga, s);'."\n";
+        print '  })();'."\n";
+        print '</script>'."\n";
     }
 
     // End of tuning
@@ -4120,47 +4053,6 @@ function getCurrencySymbol($currency_code)
 	}
 
 	return $currency_sign;
-}
-
-/**
- * 	Convert object to array
- * 
- * 	@param	object	$d		Object to convert
- * 	@return	array			Object converted
- */
-function object2Array($d)
-{
-	if (is_object($d))
-	{
-		$d = get_object_vars($d);
-	}
-	 
-	if (is_array($d))
-	{
-		return array_map(__FUNCTION__, $d);
-	}
-	else
-	{
-		return $d;
-	}
-}
-
-/**
- * 	Convert array to object
- * 
- * 	@param	array	$d		Array to convert
- * 	@return	object			Array converted
- */
-function array2Object($d)
-{
-	if (is_array($d))
-	{
-		return (object) array_map(__FUNCTION__, $d);
-	}
-	else
-	{
-		return $d;
-	}
 }
 
 if (! function_exists('getmypid'))
