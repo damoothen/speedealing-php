@@ -42,7 +42,7 @@ class MenuTop
 
 	var $topmenu;	// array of level 0
 	var $submenu;	// array of level > 0
-	var $selected;  // array of selected
+	var $selected = array();  // array of selected
 
 	/**
      *  Constructor

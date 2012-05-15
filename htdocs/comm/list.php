@@ -56,7 +56,7 @@ if($_GET['json']=="list")
     "aaData" => array()
      );
 
-    $result = $object->getView("societe","list");
+    $result = $object->getView("Societe","list");
 
     //print_r($result);
     //exit;
