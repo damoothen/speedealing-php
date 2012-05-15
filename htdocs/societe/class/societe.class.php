@@ -60,8 +60,8 @@ class Societe extends CommonObject
         
         try {
             $this->fk_extrafields = $this->couchdb->getDoc("extrafields:".  get_class($this)); // load fields company
-            $this->fk_status = $this->couchdb->getDoc($this->fk_extrafields->fields->Main->Status->dict); //load status table
-            $this->fk_country = $this->couchdb->getDoc($this->fk_extrafields->fields->Main->Country->dict); //load country table
+            $this->fk_status = $this->couchdb->getDoc("status:".get_class($this)); //load status table
+            $this->fk_country = $this->couchdb->getDoc("dict:country"); //load country table
         }catch (Exception $e) {
             $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
             print $error;
