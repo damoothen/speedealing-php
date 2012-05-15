@@ -59,7 +59,7 @@ class Societe extends CommonObject
         parent::__construct($db);
         
         try {
-            $this->fk_extrafields = $this->couchdb->getDoc("extrafields:company"); // load fields company
+            $this->fk_extrafields = $this->couchdb->getDoc("extrafields:".  get_class($this)); // load fields company
             $this->fk_status = $this->couchdb->getDoc($this->fk_extrafields->fields->Main->Status->dict); //load status table
             $this->fk_country = $this->couchdb->getDoc($this->fk_extrafields->fields->Main->Country->dict); //load country table
         }catch (Exception $e) {

@@ -38,8 +38,11 @@ class MenuTop
 	protected $couchdb;
 	var $require_left=array("auguria_backoffice");  // Si doit etre en phase avec un gestionnaire de menu gauche particulier
 	var $hideifnotallowed=0;						// Put 0 for back office menu, 1 for front office menu
-	var $atarget="";                                // Valeur du target a utiliser dans les liens
+	var $atarget="";                               // Valeur du target a utiliser dans les liens
 
+	var $topmenu;	// array of level 0
+	var $submenu;	// array of level > 0
+	var $selected;  // array of selected
 
 	/**
      *  Constructor
@@ -52,6 +55,28 @@ class MenuTop
 		
 		$this->db=$db;
 		$this->couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
+		
+		$tabMenu=array();
+        
+		try {	
+		    $topmenu = $this->couchdb->getView(get_class($this),"list");
+		    $submenu = $this->couchdb->getView(get_class($this),"submenu");
+		} catch (Exception $e) {
+		    $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+		    dol_print_error('',$error);
+		    exit;
+		}
+		
+		$this->topmenu = $topmenu->rows;
+
+		// Construct submenu
+		foreach ($submenu->rows as $key => $aRow)
+		{
+		    $this->submenu[$aRow->key[0]][]= $aRow->value;
+		}
+		//print_r($submenu);exit;
+	
+		return 1;
 	}
 
 
@@ -83,8 +108,8 @@ class MenuTop
 	    $tabMenu=array();
         
 	    try {	
-		$result = $this->couchdb->getView("menu","list");
-		$submenu_tmp = $this->couchdb->getView("menu","submenu");
+		$result = $this->couchdb->getView(get_class($this),"list");
+		$submenu_tmp = $this->couchdb->getView(get_class($this),"submenu");
 	    } catch (Exception $e) {
 		$error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
 		dol_print_error('',$error);
@@ -105,7 +130,7 @@ class MenuTop
 	    //print_r($result);exit;
 	    $i=0;
 	    $selectnav = array();
-	    foreach($result->rows AS $aRow) 
+	    foreach($this->topmenu AS $aRow) 
 	    {
                 $newTabMenu = $aRow->value;
                 $newTabMenu = $this->verifyMenu($newTabMenu);
@@ -126,8 +151,8 @@ class MenuTop
                         if (! empty($_SESSION['idmenu']) && $this->menuSelected($newTabMenu, $newTabMenu->_id))
                         {
                             $classname.=' pageselected';
-                            $selectnav[0]->name = $newTabMenu->title;
-                            $selectnav[0]->url = $url;
+                            $this->selected[0]->name = $newTabMenu->title;
+                            $this->selected[0]->url = $url;
                         }
 
                         print '<li>';
@@ -135,7 +160,7 @@ class MenuTop
                         print $newTabMenu->title;
                         print '</a>';
                         // Submenu level 1
-                        $selected = $this->print_submenu($submenu,$newTabMenu->_id,$selectnav,1);
+                        $selected = $this->print_submenu($newTabMenu->_id,1);
 			if($selected)
 			{
 			    $selectnav[0]->name = $newTabMenu->title;
@@ -147,7 +172,7 @@ class MenuTop
                     }
 		}
 	    }
-	    $this->print_end_menu_array_auguria($selectnav);
+	    $this->print_end_menu_array_auguria();
 
 	    print "\n";
 	}
@@ -170,7 +195,7 @@ class MenuTop
 	*
 	* @return	void
 	*/
-	function print_end_menu_array_auguria($selectnav)
+	function print_end_menu_array_auguria()
 	{
 	    global $conf;
 	    print '</ul>';
@@ -178,9 +203,9 @@ class MenuTop
 	    print '<ul id="breadcrumbs" class="cf">
 		<li>You are here:</li>';
         
-	    for($i=0;$i < count($selectnav);$i++)
+	    for($i=0;$i < count($this->selected);$i++)
 	    {
-		print '<li><a href="'.$selectnav[$i]->url.'">'.$selectnav[$i]->name.'</a></li>';
+		print '<li><a href="'.$this->selected[$i]->url.'">'.$this->selected[$i]->name.'</a></li>';
 	    }
 	    //print '<li><span>'.$selectnav[count($selectnav)-1]->name.'</span></a></li>';
 	    print '</ul>'."\n";
@@ -190,19 +215,17 @@ class MenuTop
 	/**
 	* Core function to output submenu auguria
 	*
-	* @param	array		$submenu            All entries menu
 	* @param	string		$id		    Id name menu father
-	* @param 	array		$selectnav          Array of selected navigation
 	* @param       int		$level              Level for the navigation
 	* @return	void
 	*/
-	function print_submenu(&$submenu, $id, &$selectnav, $level)
+	function print_submenu($id, $level)
 	{
 	    global $user,$conf,$langs;
     
 	    $selectnow = false;
     
-	    $result = $submenu[$id];
+	    $result = $this->submenu[$id];
     
 	    if(count($result)==0)
 		return false;
@@ -230,8 +253,8 @@ class MenuTop
 			if (! empty($_SESSION['idmenu']) && $this->menuSelected($newTabMenu,$menu->_id))
 			{
 			    $classname.=' pageselected';
-			    $selectnav[$level]->name = $newTabMenu->title;
-			    $selectnav[$level]->url = $url;
+			    $this->selected[$level]->name = $newTabMenu->title;
+			    $this->selected[$level]->url = $url;
 			    $selectnow = true;
 			}
 
@@ -242,7 +265,7 @@ class MenuTop
 			print '</a>';
 			// Submenu level 1
 			//if(isset($newTabMenu->submenu))
-			$selected = $this->print_submenu($submenu,$newTabMenu->_id, $selectnav, ($level+1));
+			$selected = $this->print_submenu($newTabMenu->_id, ($level+1));
 			if($selected)
 			{
 			    $selectnav[$level]->name = $newTabMenu->title;
