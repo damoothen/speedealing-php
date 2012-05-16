@@ -2941,8 +2941,11 @@ $(document).ready(function() {
 ]},
  
 <?php endif;?>
-            
-    // jeditable
+
+<?php if(isset($obj->fnDrawCallback)):?>
+	"fnDrawCallback": <?php echo $obj->fnDrawCallback; ?>,
+<?php else :?>
+// jeditable
     "fnDrawCallback": function () {
 	var columns = [
 <?php foreach ($obj->aoColumns as $i => $aRow) :?>
@@ -2982,6 +2985,7 @@ $(document).ready(function() {
                 
             } );
 	}
+<?php endif; ?>
     });
 <?php if($ColSearch) :?>
     $("tfoot input").keyup( function () {
@@ -3159,7 +3163,7 @@ $(document).ready(function() {
 	{
 		global $conf;
 		
-		if(isset($key))
+		if(!empty($key))
 		{
 			if($group_level)
 				return $this->couchdb->limit($conf->liste_limit)->group(true)->group_level($group_level)->key($key)->getView(get_class ($this),$name);
