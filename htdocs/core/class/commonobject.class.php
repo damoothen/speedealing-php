@@ -2895,7 +2895,11 @@ $(document).ready(function() {
     "aaSorting" : <?php echo json_encode($obj->aaSorting);?>,
 <?php endif;?>
 <?php if($json) : ?>
+<?php if(isset($obj->fnDrawCallback)):?>
+	"sAjaxSource": "<?php echo $obj->sAjaxSource; ?>",
+<?php else :?>
     "sAjaxSource" : "<?php echo $_SERVER['PHP_SELF'];?>?json=list",
+<?php endif;?>
 <?php endif;?>
     "iDisplayLength": <?php echo (int)$conf->global->MAIN_SIZE_LISTE_LIMIT;?>,
     "aLengthMenu": [[10, 25, 50, 100, 1000, -1],[10, 25, 50, 100,1000,"All"]],
