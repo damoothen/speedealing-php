@@ -2866,13 +2866,13 @@ abstract class CommonObject
     
     
         /**
-	 *  For list datatables generation
+	 *  For Generate a datatable
 	 *
-         *  @param $obj object of aocolumns details
+         *  @param $obj object of aocolumns parameters
          *  @param $ref_css name of #list
 	 *  @return string
 	 */
-	public function _datatables($obj,$ref_css,$json=false, $ColSearch=false)
+	public function datatablesCreate($obj,$ref_css,$json=false, $ColSearch=false)
 	{
             global $conf,$langs;
 
@@ -2919,12 +2919,8 @@ $(document).ready(function() {
     //$obj->oTableTools->aButtons = array("xls");
 	    
     "oColVis": { "buttonText" : 'Voir/Cacher',
-<?php if($json) :?>
-    "aiExclude": [0,1], // Not cacheable
-<?php else :?>
-    "aiExclude": [0], // Not cacheable
-<?php endif;?> 
-},
+		"aiExclude": [0,1] // Not cacheable _id and name
+	},
     //$obj->oColVis->bRestore = true;
     //$obj->oColVis->sAlign = 'left';
             
@@ -3047,29 +3043,102 @@ $(document).ready(function() {
             return;
 	}
 	
-    /**
-     * 	Contruct a HTML From for a fields
-     *
-     * 	@param	array	$aRow		parameter of the field
-     * 	@param	string	$key		Name of the field
-     * 	@param	string	$cssClass	CSS Classe for the form
-     * 	@return	string
-     */
-    public function form($aRow, $key, $cssClass)
-    {
-	global $langs;
-	
-	$rtr = "";
-
-	if ($aRow->enable)
+	/**
+	* 	Contruct a HTML From for a fields
+	*
+	* 	@param	array	$aRow		parameter of the field
+	* 	@param	string	$key		Name of the field
+	* 	@param	string	$cssClass	CSS Classe for the form
+	* 	@return	string
+	*/
+	public function form($aRow, $key, $cssClass)
 	{
-	    $rtr.= '<div class="formRow">'."\n";
-	    $rtr.= '<label for="'.$key.'">'.$langs->trans($key).'</label>'."\n";
-	    $rtr.= '<input type="text" maxlength="'.$aRow->length.'" id="'.$key.'" name="'.$key.'" value="'.$this->values->$key.'" class="input-text '.$cssClass.'" />'."\n";
-	    $rtr.= '</div>'."\n";
+		global $langs;
+	
+		$rtr = "";
+
+		if ($aRow->enable)
+		{
+			$rtr.= '<div class="formRow">'."\n";
+			$rtr.= '<label for="'.$key.'">'.$langs->trans($key).'</label>'."\n";
+			$rtr.= '<input type="text" maxlength="'.$aRow->length.'" id="'.$key.'" name="'.$key.'" value="'.$this->values->$key.'" class="input-text '.$cssClass.'" />'."\n";
+			$rtr.= '</div>'."\n";
+		}
+		return $rtr;
 	}
-	return $rtr;
-    }
+    
+	/**
+	 *  For Generate fnRender param for a datatable parameter
+	 *
+         *  @param $obj object of aocolumns parameters
+         *  @param $ref_css name of #list
+	 *  @return string
+	 */
+    
+	public function datatablesFnRender($key,$type)
+	{
+		global $langs, $conf;
+		
+		if($type=="url")
+		{
+			$rtr = 'function(obj) {
+				var ar = [];
+				ar[ar.length] = "<a href=\"'.DOL_URL_ROOT.'/'.strtolower(get_class($this)).'/fiche.php?id=";
+				ar[ar.length] = obj.aData._id;
+				ar[ar.length] = "\"><img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.$this->fk_extrafields->ico.'\" border=\"0\" alt=\"Afficher societe : ";
+				ar[ar.length] = obj.aData.'.$key.'.toString();
+				ar[ar.length] = "\" title=\"Afficher soci&eacute;t&eacute; : ";
+				ar[ar.length] = obj.aData.'.$key.'.toString();
+				ar[ar.length] = "\"></a> <a href=\"'.DOL_URL_ROOT.'/'.strtolower(get_class($this)).'/fiche.php?id=";
+				ar[ar.length] = obj.aData._id;
+				ar[ar.length] = "\">";
+				ar[ar.length] = obj.aData.'.$key.'.toString();
+				ar[ar.length] = "</a>";
+				var str = ar.join("");
+				return str;
+			}';
+		}
+		elseif($type=="date")
+		{
+			$rtr = 'function(obj) {
+			if(obj.aData.'.$key.')
+			{
+				var date = new Date(obj.aData.'.$key.'*1000);
+				return date.toLocaleDateString();
+			}
+			else
+				return null;
+			}';
+		}
+		elseif($type=="status")
+		{
+			$rtr ='function(obj) {
+					var status = new Array();
+					var stat = obj.aData.Status;
+					if(typeof stat === "undefined")
+						stat = "'.$this->fk_extrafields->fields->$key->default.'";';
+			foreach ($this->fk_status->values as $key => $aRow)
+			{
+				$rtr.= 'status["'.$key.'"]= new Array("'.$langs->trans($key).'","'.$aRow->cssClass.'");';
+			}
+			$rtr.= 'var ar = [];
+				ar[ar.length] = "<span class=\"lbl ";
+				ar[ar.length] = status[stat][1];
+				ar[ar.length] = " sl_status\">";
+				ar[ar.length] = status[stat][0];
+				ar[ar.length] = "</span>";
+				var str = ar.join("");
+				return str;
+			}';
+		}
+		else
+		{
+			dol_print_error($db, "Type of fnRender must be url, date");
+			exit;
+		}
+		
+		return $rtr;	
+	}
         
 }
 
