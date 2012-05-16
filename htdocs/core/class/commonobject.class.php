@@ -54,7 +54,16 @@ abstract class CommonObject
     	
     	$this->class = $this->element;
     	$this->db = $db;
-	$this->couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
+		$this->couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
+		
+        try {
+            $this->fk_extrafields = $this->couchdb->getDoc("extrafields:".  get_class($this)); // load extrafields for class
+        }catch (Exception $e) {
+            $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+            print $error;
+            exit;
+        }
+
     }
     
     
@@ -3110,6 +3119,18 @@ $(document).ready(function() {
 				return null;
 			}';
 		}
+		elseif($type=="datetime")
+		{
+			$rtr = 'function(obj) {
+			if(obj.aData.'.$key.')
+			{
+				var date = new Date(obj.aData.'.$key.'*1000);
+				return date.toLocaleDateString()+"\n"+date.toLocaleTimeString();
+			}
+			else
+				return null;
+			}';
+		}
 		elseif($type=="status")
 		{
 			$rtr ='function(obj) {
@@ -3133,7 +3154,7 @@ $(document).ready(function() {
 		}
 		else
 		{
-			dol_print_error($db, "Type of fnRender must be url, date");
+			dol_print_error($db, "Type of fnRender must be url, date, datetime or status");
 			exit;
 		}
 		
