@@ -2859,26 +2859,11 @@ abstract class CommonObject
         }
     }
     
-        /**
-	 *  Get a view name for the class
-	 *
-         *  @param  string                      view name
-	 *  @return array         		1 success
-	 */
-        
-        public function getView($view,$name)
-        {
-        	global $conf;
-        	
-            return $this->couchdb->limit($conf->liste_limit)->getView($view,$name);
-        }
-    
-    
-        /**
+    /**
 	 *  For Generate a datatable
 	 *
-         *  @param $obj object of aocolumns parameters
-         *  @param $ref_css name of #list
+     *  @param $obj object of aocolumns parameters
+     *  @param $ref_css name of #list
 	 *  @return string
 	 */
 	public function datatablesCreate($obj,$ref_css,$json=false, $ColSearch=false)
@@ -3079,8 +3064,8 @@ $(document).ready(function() {
 	/**
 	 *  For Generate fnRender param for a datatable parameter
 	 *
-         *  @param $obj object of aocolumns parameters
-         *  @param $ref_css name of #list
+	 *  @param $obj object of aocolumns parameters
+	 *  @param $ref_css name of #list
 	 *  @return string
 	 */
     
@@ -3160,6 +3145,56 @@ $(document).ready(function() {
 		
 		return $rtr;	
 	}
+	
+	/** Call a view on couchdb
+	 * 
+	 * @param	$name			string			name of the view
+	 * @param	$group_level	int				group level for reduce
+	 * @param	$key			string			search a specific key
+	 * @param	$startkey		string			search startkey
+	 * @param	$endkey			string			search endkey
+	 * @return  array
+	 */
+	public function getView($name,$group_level=0,$key=null,$startkey=null,$endkey=null)
+	{
+		global $conf;
+		
+		if(isset($key))
+		{
+			if($group_level)
+				return $this->couchdb->limit($conf->liste_limit)->group(true)->group_level($group_level)->key($key)->getView(get_class ($this),$name);
+			else
+				return $this->couchdb->limit($conf->liste_limit)->key($key)->getView(get_class ($this),$name);
+		}
+		elseif(isset($startkey)&&isset($startkey))
+		{
+			if($group_level)
+				return $this->couchdb->limit($conf->liste_limit)->group(true)->group_level($group_level)->startkey($startkey)->endkey($endkey)->getView(get_class ($this),$name);
+			else
+				return $this->couchdb->limit($conf->liste_limit)->startkey($startkey)->endkey($endkey)->getView(get_class ($this),$name);
+		}
+		else
+		{
+			if($group_level)
+				return $this->couchdb->limit($conf->liste_limit)->group(true)->group_level($group_level)->getView(get_class ($this),$name);
+			else
+				return $this->couchdb->limit($conf->liste_limit)->getView(get_class ($this),$name);
+		}
+     }
+	 
+	 /**
+	  *	Set a value and modify type for couchdb
+	  * @param string $key
+	  * @param string $value 
+	  */
+	 
+	 public function set($key,$value)
+	 {
+		 if(is_numeric($value))
+			$this->values->$key = (int)$value;
+		 else
+			$this->values->$key = $value;
+	 }
         
 }
 
