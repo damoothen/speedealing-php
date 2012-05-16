@@ -52,7 +52,7 @@ abstract class CommonObject
     {
     	global $conf;
     	
-    	$this->class = $this->element;
+    	$this->class = get_class($this);
     	$this->db = $db;
 		$this->couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
 		

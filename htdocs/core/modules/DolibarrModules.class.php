@@ -33,28 +33,29 @@
  */
 abstract class DolibarrModules
 {
-    //! Database handler
-    var $db;
-    //! Relative path to module style sheet
-    var $style_sheet = ''; // deprecated
-    //! Path to create when module activated
-    var $dirs = array();
-    //! Tableau des boites
-    var $boxes;
-    //! Tableau des constantes
-    var $const;
-    //! Tableau des droits
-    var $rights;
-    //! Tableau des menus
-    var $menu=array();
-    //! Module parts array
-    var $module_parts=array();
-    //! Tableau des documents ???
-    var $docs;
+	//! Database handler
+	var $db;
+	protected $couchdb;
+	//! Relative path to module style sheet
+	var $style_sheet = ''; // deprecated
+	//! Path to create when module activated
+	var $dirs = array();
+	//! Tableau des boites
+	var $boxes;
+	//! Tableau des constantes
+	var $const;
+	//! Tableau des droits
+	var $rights;
+	//! Tableau des menus
+	var $menu=array();
+	//! Module parts array
+	var $module_parts=array();
+	//! Tableau des documents ???
+	var $docs;
 
-    var $dbversion = "-";
-
-    /**
+	var $dbversion = "-";
+	
+	/**
      *      Fonction d'activation. Insere en base les constantes et boites du module
      *
      *      @param      array	$array_sql  Array of SQL requests to execute when enabling module
@@ -63,8 +64,10 @@ abstract class DolibarrModules
      */
     function _init($array_sql, $options='')
     {
-        global $langs;
+        global $langs, $conf;
         $err=0;
+		
+	$this->couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
 
         $this->db->begin();
 
@@ -154,7 +157,10 @@ abstract class DolibarrModules
      */
     function _remove($array_sql, $options='')
     {
-        global $langs;
+        global $langs, $conf;
+	
+	$this->couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
+	
         $err=0;
 
         $this->db->begin();
@@ -1033,7 +1039,7 @@ abstract class DolibarrModules
      */
 	function insert_menus()
 	{
-		global $user, $couchdb;
+		global $user;
 		
 		require_once(DOL_DOCUMENT_ROOT."/core/class/menubase.class.php");
 		
@@ -1045,7 +1051,7 @@ abstract class DolibarrModules
 		//var_dump($this->menu); exit;
 		foreach ($this->menu as $value)
 		{
-			$id = $value['_id'];			
+			$id = $value['_id'];
 			
 			$menu[$id]->module=$this->rights_class;
 			
@@ -1086,12 +1092,11 @@ abstract class DolibarrModules
 			
 			// for update
 			try {
-				$obj = $couchdb->getDoc($id);
+				$obj = $this->couchdb->getDoc($id);
 				$menu[$id]->_rev = $obj->_rev;
 			} catch (Exception $e) {
 				
 			}
-			//print_r($menu);
 		}
 		
 		//print_r($menu);exit;
@@ -1099,8 +1104,8 @@ abstract class DolibarrModules
 		if (! $err)
 		{
 			try {
-				$couchdb->clean($menu);
-				$couchdb->storeDocs($menu,false);
+				$this->couchdb->clean($menu);
+				$this->couchdb->storeDocs($menu,false);
 			} catch (Exception $e) {
 				$error = "Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
 				dol_print_error("", $error);
@@ -1123,20 +1128,14 @@ abstract class DolibarrModules
      */
     function delete_menus()
     {
-        global $conf;
-	
-	require_once(DOL_DOCUMENT_ROOT."/core/class/menubase.class.php");
-	
-	$menu = new Menubase($this->db);
 	$err=0;
 	
 	foreach ($this->menu as $key => $value)
         {
 	    try {
-	    	$menu->load($value['_id']);
-		
-		$menu->enabled = false;
-		$menu->record();
+		$menu = $this->couchdb->getDoc($value['_id']);
+	    	$menu->enabled = false;
+		$this->couchdb->storeDoc($menu);
 	    } catch (Exception $e) {
 		$error ="ErrorBadDefinitionOfMenuArrayInModuleDescriptor (bad value for delete_menus _id)";
 		$error.="<br>Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
