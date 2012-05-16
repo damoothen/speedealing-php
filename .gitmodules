@@ -1,3 +1,5 @@
 [submodule "htdocs/core/db/couchdb"]
 	path = htdocs/core/db/couchdb
 	url = git@github.com:speedealing/PHP-on-Couch.git
+[submodule "htdocs/custom"]
+        path = htdocs/custom
