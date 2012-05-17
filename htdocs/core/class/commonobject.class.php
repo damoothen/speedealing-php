@@ -3198,10 +3198,18 @@ $(document).ready(function() {
 	 
 	 public function set($key,$value)
 	 {
-		 if(is_numeric($value))
+		if(is_numeric($value))
 			$this->values->$key = (int)$value;
-		 else
+		else
 			$this->values->$key = $value;
+
+		$params = new stdClass();
+		
+		$params->field = $key;
+		$params->value = $value;
+		
+		return $this->couchdb->updateDoc(get_class($this),"in-place",$params,$this->id);
+
 	 }
         
 }

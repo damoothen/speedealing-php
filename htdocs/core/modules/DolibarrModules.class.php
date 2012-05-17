@@ -55,6 +55,13 @@ abstract class DolibarrModules
 
 	var $dbversion = "-";
 	
+	function __construct() {
+		global $conf;
+		
+		$this->couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
+	}
+
+
 	/**
      *      Fonction d'activation. Insere en base les constantes et boites du module
      *
@@ -64,10 +71,8 @@ abstract class DolibarrModules
      */
     function _init($array_sql, $options='')
     {
-        global $langs, $conf;
+        global $langs;
         $err=0;
-		
-	$this->couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
 
         $this->db->begin();
 
@@ -157,9 +162,7 @@ abstract class DolibarrModules
      */
     function _remove($array_sql, $options='')
     {
-        global $langs, $conf;
-	
-	$this->couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
+        global $langs;
 	
         $err=0;
 
@@ -1067,7 +1070,7 @@ abstract class DolibarrModules
 				if (empty($menu[$value['fk_menu']]))
 				{
 					try {
-						$couchdb->getDoc($value['fk_menu']);
+						$this->couchdb->getDoc($value['fk_menu']);
 					} catch (Exception $e) {
 						$error ="ErrorBadDefinitionOfMenuArrayInModuleDescriptor (bad value for key fk_menu)";
 						$error.="<br>Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";

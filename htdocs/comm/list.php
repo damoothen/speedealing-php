@@ -98,26 +98,25 @@ if($_GET['json']=="edit"){
     $value = $_POST['value'];
     
     try {
-	    $object->fetch($id);
-	    $object->values->$key = $value;
-	    $res = $object->update($user);
-	    if( $res >0 )
+		$object->id = $id;
+		$res = $object->set($key, $value);
+	    if( $res == $value )
 	    {
-		if($key == 'Status')
-		    print $object->LibStatut($value);
-		else
-		    print $value;
+			if($key == 'Status')
+				print $object->LibStatut($value);
+			else
+				print $value;
 	    }
 	    else
 	    {
 		print $res."</br>";
-		print_r($object->errors);
+			print_r($object->errors);
 	    }
-            exit;
-        } catch (Exception $exc) {
-            print $exc->getTraceAsString();
-            exit;
-        }
+        exit;
+	} catch (Exception $exc) {
+		print $exc->getTraceAsString();
+        exit;
+	}
 }
 
 // Select every potentiels.

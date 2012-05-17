@@ -38,9 +38,6 @@ print '<!-- Favicons and the like (avoid using transparent .png) -->';
 print '<link rel="shortcut icon" type="image/x-icon" href="'.DOL_URL_ROOT.'/theme/favicon.ico"/>'."\n";
 print '<link rel="apple-touch-icon-precomposed" href="'.DOL_URL_ROOT.'/theme/icon.png" />';
 
-//<!-- Favicons and the like (avoid using transparent .png) -->
-//<link rel="apple-touch-icon-precomposed" href="icon.png" />
-//<link rel="shortcut icon" type="image/x-icon" href="'.$favicon.'"/>
 print '<title>'.$langs->trans('Login').' '.$title.'</title>'."\n";
 
 print '<!-- main styles -->';
