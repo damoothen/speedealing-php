@@ -29,6 +29,7 @@
  */
 
 require_once(DOL_DOCUMENT_ROOT ."/core/class/commonobject.class.php");
+require_once(DOL_DOCUMENT_ROOT . "/core/db/couchdb/lib/couchAdmin.php");
 
 
 /**
@@ -39,6 +40,8 @@ class User extends CommonObject
 	public $element='user';
 	public $table_element='user';
 	protected $ismultientitymanaged = 1;	// 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
+	private $couchAdmin;
+	
 
 	var $id=0;
 	var $ldap_sid;
@@ -101,6 +104,11 @@ class User extends CommonObject
 	function __construct($db)
 	{
 		$this->db = $db;
+		
+		parent::__construct($db);
+		$this->couchAdmin = new couchAdmin($this->couchdb);
+		$this->couchdb->useDatabase("_users");
+		
 
 		// Preference utilisateur
 		$this->liste_limit = 0;
@@ -119,152 +127,27 @@ class User extends CommonObject
 	/**
 	 *	Load a user from database with its id or ref (login)
 	 *
-	 *	@param	int		$id		       		Si defini, id a utiliser pour recherche
+	 *	@param	string	$id		       		Si defini, id a utiliser pour recherche
 	 * 	@param  string	$login       		Si defini, login a utiliser pour recherche
 	 *	@param  strinf	$sid				Si defini, sid a utiliser pour recherche
 	 * 	@param	int		$loadpersonalconf	Also load personal conf of user (in $user->conf->xxx)
 	 * 	@return	int							<0 if KO, 0 not found, >0 if OK
 	 */
-	function fetch($id='', $login='',$sid='',$loadpersonalconf=1)
+	function fetch($login)
 	{
-		global $conf, $user;
 
 		// Clean parameters
 		$login=trim($login);
 
-		// Get user
-		$sql = "SELECT u.rowid, u.name, u.firstname, u.email, u.signature, u.office_phone, u.office_fax, u.user_mobile,";
-		$sql.= " u.admin, u.login, u.webcal_login, u.phenix_login, u.phenix_pass, u.note,";
-		$sql.= " u.pass, u.pass_crypted, u.pass_temp,";
-		$sql.= " u.fk_societe, u.fk_socpeople, u.fk_member, u.ldap_sid,";
-		$sql.= " u.statut, u.lang, u.entity,";
-		$sql.= " u.datec as datec,";
-		$sql.= " u.tms as datem,";
-		$sql.= " u.datelastlogin as datel,";
-		$sql.= " u.datepreviouslogin as datep,";
-		$sql.= " u.photo as photo,";
-		$sql.= " u.openid as openid,";
-		$sql.= " u.ref_int, u.ref_ext";
-		$sql.= " FROM ".MAIN_DB_PREFIX."user as u";
-
-		if(! empty($conf->multicompany->enabled) && $conf->entity == 1)
-		{
-			$sql.= " WHERE u.entity IS NOT NULL";
+		try {
+			$this->values = $this->couchAdmin->getUser($login);
+		} catch(Exception $e) {
+			$this->error = "USERNOTFOUND";
+			return 0;
 		}
-		else
-		{
-			$sql.= " WHERE u.entity IN (0,".$conf->entity.")";
-		}
-
-		if ($sid)    // permet une recherche du user par son SID ActiveDirectory ou Samba
-		{
-			$sql.= " AND (u.ldap_sid = '".$sid."' OR u.login = '".$this->db->escape($login)."') LIMIT 1";
-		}
-		else if ($login)
-		{
-			$sql.= " AND u.login = '".$this->db->escape($login)."'";
-		}
-		else
-		{
-			$sql.= " AND u.rowid = ".$id;
-		}
-
-		dol_syslog(get_class($this)."::fetch sql=".$sql, LOG_DEBUG);
-		$result = $this->db->query($sql);
-		if ($result)
-		{
-			$obj = $this->db->fetch_object($result);
-			if ($obj)
-			{
-				$this->id 			= $obj->rowid;
-				$this->ref 			= $obj->rowid;
-
-				$this->ref_int 		= $obj->ref_int;
-				$this->ref_ext 		= $obj->ref_ext;
-
-				$this->ldap_sid 	= $obj->ldap_sid;
-				$this->nom 			= $obj->name;		// TODO deprecated
-				$this->lastname		= $obj->name;
-				$this->prenom 		= $obj->firstname;	// TODO deprecated
-				$this->firstname 	= $obj->firstname;
-
-				$this->login = $obj->login;
-				$this->pass_indatabase = $obj->pass;
-				$this->pass_indatabase_crypted = $obj->pass_crypted;
-				$this->pass = $obj->pass;
-				$this->pass_temp = $obj->pass_temp;
-				$this->office_phone = $obj->office_phone;
-				$this->office_fax   = $obj->office_fax;
-				$this->user_mobile  = $obj->user_mobile;
-				$this->email = $obj->email;
-				$this->signature = $obj->signature;
-				$this->admin = $obj->admin;
-				$this->note = $obj->note;
-				$this->statut = $obj->statut;
-				$this->photo = $obj->photo;
-				$this->openid = $obj->openid;
-				$this->lang = $obj->lang;
-				$this->entity = $obj->entity;
-
-				$this->datec  = $this->db->jdate($obj->datec);
-				$this->datem  = $this->db->jdate($obj->datem);
-				$this->datelastlogin     = $this->db->jdate($obj->datel);
-				$this->datepreviouslogin = $this->db->jdate($obj->datep);
-
-				$this->webcal_login         = $obj->webcal_login;
-				$this->phenix_login         = $obj->phenix_login;
-				$this->phenix_pass_crypted  = $obj->phenix_pass;
-				$this->societe_id           = $obj->fk_societe;
-				$this->contact_id           = $obj->fk_socpeople;
-				$this->fk_member            = $obj->fk_member;
-
-				if (! $this->lang) $this->lang='fr_FR';
-
-				$this->db->free($result);
-			}
-			else
-			{
-				$this->error="USERNOTFOUND";
-				dol_syslog(get_class($this)."::fetch user not found", LOG_DEBUG);
-
-				$this->db->free($result);
-				return 0;
-			}
-		}
-		else
-		{
-			$this->error=$this->db->error();
-			dol_syslog(get_class($this)."::fetch Error -1, fails to get user - ".$this->error." - sql=".$sql, LOG_ERR);
-			return -1;
-		}
-
-		// Recupere parametrage global propre a l'utilisateur
-		if ($loadpersonalconf)
-		{
-			$sql = "SELECT param, value FROM ".MAIN_DB_PREFIX."user_param";
-			$sql.= " WHERE fk_user = ".$this->id;
-			$sql.= " AND entity = ".$conf->entity;
-			$resql=$this->db->query($sql);
-			if ($resql)
-			{
-				$num = $this->db->num_rows($resql);
-				$i = 0;
-				while ($i < $num)
-				{
-					$obj = $this->db->fetch_object($resql);
-					$p=$obj->param;
-					if ($p) $this->conf->$p = $obj->value;
-					$i++;
-				}
-				$this->db->free($resql);
-			}
-			else
-			{
-				$this->error=$this->db->error();
-				dol_syslog(get_class($this)."::fetch Error -2, fails to get setup user - ".$this->error." - sql=".$sql, LOG_ERR);
-				return -2;
-			}
-		}
+		
+		$this->id = $this->values->name;
+		$this->admin = $this->values->Administrator;
 
 		return 1;
 	}
@@ -508,7 +391,7 @@ class User extends CommonObject
 		$sql.= ", ".MAIN_DB_PREFIX."rights_def as r";
 		$sql.= " WHERE r.id = ur.fk_id";
 		$sql.= " AND r.entity IN (0,".(!empty($conf->multicompany->transverse_mode)?"1,":"").$conf->entity.")";
-		$sql.= " AND ur.fk_user= ".$this->id;
+		$sql.= " AND ur.fk_user= ".$this->values->rowid;
 		$sql.= " AND r.perms IS NOT NULL";
 		if ($moduletag) $sql.= " AND r.module = '".$this->db->escape($moduletag)."'";
 
@@ -553,7 +436,7 @@ class User extends CommonObject
 		$sql.= " ".MAIN_DB_PREFIX."rights_def as r";
 		$sql.= " WHERE r.id = gr.fk_id";
 		$sql.= " AND gr.fk_usergroup = gu.fk_usergroup";
-		$sql.= " AND gu.fk_user = ".$this->id;
+		$sql.= " AND gu.fk_user = ".$this->values->rowid;
 		$sql.= " AND r.perms IS NOT NULL";
 		$sql.= " AND r.entity = ".$conf->entity;
 		$sql.= " AND gu.entity IN (0,".$conf->entity.")";
@@ -732,80 +615,65 @@ class User extends CommonObject
 		global $mysoc;
 
 		// Clean parameters
-		$this->login = trim($this->login);
-		if (! isset($this->entity)) $this->entity=$conf->entity;	// If not defined, we use default value
+		$this->values->name = trim($this->values->name);
 
-		dol_syslog(get_class($this)."::create login=".$this->login.", user=".(is_object($user)?$user->id:''), LOG_DEBUG);
+		dol_syslog(get_class($this)."::create login=".$this->values->name.", user=".(is_object($user)?$user->id:''), LOG_DEBUG);
 
 		// Check parameters
-		if (! empty($conf->global->USER_MAIL_REQUIRED) && ! isValidEMail($this->email))
+		if (! empty($conf->global->USER_MAIL_REQUIRED) && ! isValidEMail($this->values->EMail))
 		{
 			$langs->load("errors");
-			$this->error = $langs->trans("ErrorBadEMail",$this->email);
+			$this->error = $langs->trans("ErrorBadEMail",$this->values->Email);
 			return -1;
 		}
 
-		$this->datec = dol_now();
+		$this->values->CreateDate = dol_now();
+		trim($this->values->pass);
 
 		$error=0;
-		$this->db->begin();
-
-		$sql = "SELECT login FROM ".MAIN_DB_PREFIX."user";
-		$sql.= " WHERE login ='".$this->db->escape($this->login)."'";
-		$sql.= " AND entity IN (0,".$conf->entity.")";
-
-		dol_syslog(get_class($this)."::create sql=".$sql, LOG_DEBUG);
-		$resql=$this->db->query($sql);
-		if ($resql)
+		
+		try {
+			$result = $this->couchAdmin->getUser($this->values->name);
+		} catch(Exception $e) {}
+		
+		if (isset($result->values->name))
 		{
-			$num = $this->db->num_rows($resql);
-			$this->db->free($resql);
-
-			if ($num)
-			{
 				$this->error = 'ErrorLoginAlreadyExists';
 				dol_syslog(get_class($this)."::create ".$this->error, LOG_WARNING);
 				$this->db->rollback();
 				return -6;
-			}
-			else
-			{
-				$sql = "INSERT INTO ".MAIN_DB_PREFIX."user (datec,login,ldap_sid,entity)";
-				$sql.= " VALUES('".$this->db->idate($this->datec)."','".$this->db->escape($this->login)."','".$this->ldap_sid."',".$this->entity.")";
-				$result=$this->db->query($sql);
-
-				dol_syslog(get_class($this)."::create sql=".$sql, LOG_DEBUG);
+		}
+		else
+		{
+				try {
+					$this->couchAdmin->createUser($this->values->name, $this->values->pass);
+					$user_tmp = $this->couchAdmin->getUser($this->values->name);
+					
+					$this->values->salt = $user_tmp->salt;
+					$this->values->password_sha = $user_tmp->password_sha;
+					$this->values->type = $user_tmp->type;
+					$this->values->roles = $user_tmp->roles;
+					$this->values->_id = $user_tmp->_id;
+					$this->values->_rev = $user_tmp->_rev;
+					unset($this->values->pass);
+					
+					$this->couchdb->clean($this->values);
+					
+					//print_r($this->values);exit;
+					$result = $this->couchdb->storeDoc($this->values); // Save all specific parameters
+					
+				} catch ( Exception $e) {
+					$this->error=$e->getMessage();
+					dol_syslog(get_class($this)."::create ".$this->error, LOG_ERR);
+					dol_print_error("",$this->error);
+					exit;
+					return -3;
+				}
+					
+				
 				if ($result)
 				{
-					$this->id = $this->db->last_insert_id(MAIN_DB_PREFIX."user");
-
-					// Set default rights
-					if ($this->set_default_rights() < 0)
-					{
-						$this->error=$this->db->error();
-						$this->db->rollback();
-						return -5;
-					}
-
-					// Update minor fields
-					$result = $this->update($user,1,1);
-					if ($result < 0)
-					{
-						$this->db->rollback();
-						return -4;
-					}
-
-					if (! empty($conf->global->STOCK_USERSTOCK_AUTOCREATE))
-					{
-						require_once(DOL_DOCUMENT_ROOT."/product/stock/class/entrepot.class.php");
-						$langs->load("stocks");
-						$entrepot = new Entrepot($this->db);
-						$entrepot->libelle = $langs->trans("PersonalStock",$this->getFullName($langs));
-						$entrepot->description = $langs->trans("ThisWarehouseIsPersonalStock",$this->getFullName($langs));
-						$entrepot->statut = 1;
-						$entrepot->country_id = $mysoc->country_id;
-						$entrepot->create($user);
-					}
+					$this->id = $this->values->name;
 
 					if (! $notrigger)
 					{
@@ -817,35 +685,15 @@ class User extends CommonObject
 						// Fin appel triggers
 					}
 
-					if (! $error)
-					{
-						$this->db->commit();
-						return $this->id;
-					}
-					else
-					{
-						$this->error=$interface->error;
-						dol_syslog(get_class($this)."::create ".$this->error, LOG_ERR);
-						$this->db->rollback();
-						return -3;
-					}
 				}
 				else
 				{
 					$this->error=$this->db->lasterror();
 					dol_syslog(get_class($this)."::create ".$this->error, LOG_ERR);
-					$this->db->rollback();
 					return -2;
 				}
 			}
-		}
-		else
-		{
-			$this->error=$this->db->lasterror();
-			dol_syslog(get_class($this)."::create ".$this->error, LOG_ERR);
-			$this->db->rollback();
-			return -1;
-		}
+			return $this->id;
 	}
 
 
@@ -1730,7 +1578,7 @@ class User extends CommonObject
 	 */
 	function getLibStatut($mode=0)
 	{
-		return $this->LibStatut($this->statut,$mode);
+		return $this->LibStatut($this->values->Enable,$mode);
 	}
 
 	/**

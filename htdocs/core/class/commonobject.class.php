@@ -60,8 +60,7 @@ abstract class CommonObject
             $this->fk_extrafields = $this->couchdb->getDoc("extrafields:".  get_class($this)); // load extrafields for class
         }catch (Exception $e) {
             $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
-            print $error;
-            exit;
+			dol_syslog(get_class($this)."::__contruct ".$error, LOG_WARN);
         }
 
     }

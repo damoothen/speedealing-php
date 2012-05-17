@@ -36,7 +36,7 @@ if ($conf->ldap->enabled) require_once(DOL_DOCUMENT_ROOT."/core/class/ldap.class
 if ($conf->adherent->enabled) require_once(DOL_DOCUMENT_ROOT."/adherents/class/adherent.class.php");
 if (! empty($conf->multicompany->enabled)) dol_include_once("/multicompany/class/actions_multicompany.class.php");
 
-$id			= GETPOST('id','int');
+$id			= GETPOST('id');
 $action		= GETPOST("action");
 $group		= GETPOST("group","int",3);
 $confirm	= GETPOST("confirm");
@@ -82,7 +82,6 @@ $langs->load("companies");
 $langs->load("ldap");
 
 $form = new Form($db);
-
 
 /**
  * Actions
@@ -188,60 +187,32 @@ if ($action == 'add' && $canadduser)
 
     if (! $message)
     {
-        $edituser->lastname		= $_POST["nom"];
-        $edituser->firstname	= $_POST["prenom"];
-        $edituser->login		= $_POST["login"];
-        $edituser->admin		= $_POST["admin"];
-        $edituser->office_phone	= $_POST["office_phone"];
-        $edituser->office_fax	= $_POST["office_fax"];
-        $edituser->user_mobile	= $_POST["user_mobile"];
-        $edituser->email		= $_POST["email"];
-        $edituser->webcal_login	= $_POST["webcal_login"];
-        $edituser->signature	= $_POST["signature"];
-        $edituser->phenix_login	= $_POST["phenix_login"];
-        $edituser->phenix_pass	= $_POST["phenix_pass"];
-        $edituser->note			= $_POST["note"];
-        $edituser->ldap_sid		= $_POST["ldap_sid"];
-        // If multicompany is off, admin users must all be on entity 0.
-        if($conf->multicompany->enabled)
-        {
-        	if($conf->global->MULTICOMPANY_TRANSVERSE_MODE || ! empty($_POST["superadmin"]))
-        	{
-        		$edituser->entity=0;
-        	}
-        	else
-        	{
-        		$edituser->entity = (empty($_POST["entity"]) ? 0 : $_POST["entity"]);
-        	}
-        }
-        else if(! empty($_POST["admin"]))
-        {
-        	$edituser->entity=0;
-        }
-        else
-        {
-        	$edituser->entity = (empty($_POST["entity"]) ? 0 : $_POST["entity"]);
-        }
+        $edituser->values->Lastname		= $_POST["nom"];
+        $edituser->values->Firstname	= $_POST["prenom"];
+        $edituser->values->name		= $_POST["login"];
+        $edituser->values->Administrator		= (bool) $_POST["admin"];
+        $edituser->values->PhonePro		= $_POST["office_phone"];
+        $edituser->values->Fax			= $_POST["office_fax"];
+        $edituser->values->PhoneMobile	= $_POST["user_mobile"];
+        $edituser->values->EMail		= $_POST["email"];
+        $edituser->values->webcal_login	= $_POST["webcal_login"];
+        $edituser->values->Signature	= $_POST["signature"];
+        $edituser->values->phenix_login	= $_POST["phenix_login"];
+        $edituser->values->phenix_pass	= $_POST["phenix_pass"];
+        $edituser->values->ldap_sid		= $_POST["ldap_sid"];
+		$edituser->values->pass			= $_POST["password"];
 
         $db->begin();
 
         $id = $edituser->create($user);
         if ($id > 0)
         {
-            if (isset($_POST['password']) && trim($_POST['password']))
-            {
-                $edituser->setPassword($user,trim($_POST['password']));
-            }
-
-            $db->commit();
-
             Header("Location: ".$_SERVER['PHP_SELF'].'?id='.$id);
             exit;
         }
         else
         {
             $langs->load("errors");
-            $db->rollback();
             if (is_array($edituser->errors) && count($edituser->errors)) $message='<div class="error">'.join('<br>',$langs->trans($edituser->errors)).'</div>';
             else $message='<div class="error">'.$langs->trans($edituser->error).'</div>';
             $action="create";       // Go back to create page
@@ -742,21 +713,6 @@ if (($action == 'create') || ($action == 'adduserldap'))
         print "</td></tr>\n";
     }
 
-    //Multicompany
-    if (! empty($conf->multicompany->enabled))
-    {
-        if (empty($conf->global->MULTICOMPANY_TRANSVERSE_MODE) && $conf->entity == 1 && $user->admin && ! $user->entity)
-        {
-            print "<tr>".'<td valign="top">'.$langs->trans("Entity").'</td>';
-            print "<td>".$mc->select_entities($conf->entity);
-            print "</td></tr>\n";
-        }
-        else
-        {
-            print '<input type="hidden" name="entity" value="'.$conf->entity.'" />';
-        }
-    }
-
     // Type
     print '<tr><td valign="top">'.$langs->trans("Type").'</td>';
     print '<td>';
@@ -825,14 +781,14 @@ if (($action == 'create') || ($action == 'adduserldap'))
     print '<textarea rows="'.ROWS_5.'" cols="90" name="signature">'.$_POST["signature"].'</textarea>';
     print '</td></tr>';
 
-    // Note
+    /*// Note
     print '<tr><td valign="top">';
     print $langs->trans("Note");
     print '</td><td>';
     require_once(DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php");
     $doleditor=new DolEditor('note','','',180,'dolibarr_notes','',false,true,$conf->global->FCKEDITOR_ENABLE_SOCIETE,ROWS_4,90);
     $doleditor->Create();
-    print "</td></tr>\n";
+    print "</td></tr>\n";*/
 
     // Autres caracteristiques issus des autres modules
 
@@ -990,7 +946,7 @@ else
 
             // Lastname
             print '<tr><td valign="top">'.$langs->trans("Lastname").'</td>';
-            print '<td>'.$fuser->nom.'</td>';
+            print '<td>'.$fuser->values->Lastname.'</td>';
 
             // Photo
             print '<td align="center" valign="middle" width="25%" rowspan="'.$rowspan.'">';
@@ -1001,7 +957,7 @@ else
 
             // Firstname
             print '<tr><td valign="top">'.$langs->trans("Firstname").'</td>';
-            print '<td>'.$fuser->prenom.'</td>';
+            print '<td>'.$fuser->values->Firstname.'</td>';
             print '</tr>'."\n";
 
             // Login
@@ -1012,7 +968,7 @@ else
             }
             else
             {
-                print '<td>'.$fuser->login.'</td>';
+                print '<td>'.$fuser->values->name.'</td>';
             }
             print '</tr>'."\n";
 
@@ -1040,12 +996,8 @@ else
             else
             {
                 print '<td>';
-                if ($fuser->pass) print preg_replace('/./i','*',$fuser->pass);
-                else
-                {
-                    if ($user->admin) print $langs->trans("Crypted").': '.$fuser->pass_indatabase_crypted;
-                    else print $langs->trans("Hidden");
-                }
+                if ($user->admin) print $langs->trans("Crypted").': '.$fuser->pass_indatabase_crypted;
+                else print $langs->trans("Hidden");                
                 print "</td>";
             }
             print '</tr>'."\n";
@@ -1100,27 +1052,27 @@ else
 
             // Tel pro
             print '<tr><td valign="top">'.$langs->trans("PhonePro").'</td>';
-            print '<td>'.dol_print_phone($fuser->office_phone,'',0,0,1).'</td>';
+            print '<td>'.dol_print_phone($fuser->values->PhonePro,'',0,0,1).'</td>';
             print '</tr>'."\n";
 
             // Tel mobile
             print '<tr><td valign="top">'.$langs->trans("PhoneMobile").'</td>';
-            print '<td>'.dol_print_phone($fuser->user_mobile,'',0,0,1).'</td>';
+            print '<td>'.dol_print_phone($fuser->values->PhoneMobile,'',0,0,1).'</td>';
             print '</tr>'."\n";
 
             // Fax
             print '<tr><td valign="top">'.$langs->trans("Fax").'</td>';
-            print '<td>'.dol_print_phone($fuser->office_fax,'',0,0,1).'</td>';
+            print '<td>'.dol_print_phone($fuser->values->Fax,'',0,0,1).'</td>';
             print '</tr>'."\n";
 
             // EMail
             print '<tr><td valign="top">'.$langs->trans("EMail").'</td>';
-            print '<td>'.dol_print_email($fuser->email,0,0,1).'</td>';
+            print '<td>'.dol_print_email($fuser->values->EMail,0,0,1).'</td>';
             print "</tr>\n";
 
             // Signature
             print '<tr><td valign="top">'.$langs->trans('Signature').'</td>';
-            print '<td>'.$fuser->signature.'</td>';
+            print '<td>'.$fuser->values->Signature.'</td>';
             print "</tr>\n";
 
             // Statut
@@ -1596,21 +1548,6 @@ else
                 print '</td></tr>';
             }
 
-            //Multicompany
-            if (! empty($conf->multicompany->enabled))
-            {
-            	if (empty($conf->global->MULTICOMPANY_TRANSVERSE_MODE) && $conf->entity == 1 && $user->admin && ! $user->entity)
-            	{
-            		print "<tr>".'<td valign="top">'.$langs->trans("Entity").'</td>';
-            		print "<td>".$mc->select_entities($conf->entity);
-            		print "</td></tr>\n";
-            	}
-            	else
-            	{
-            		print '<input type="hidden" name="entity" value="'.$conf->entity.'" />';
-            	}
-            }
-            else
             {
             	// Type
             	print '<tr><td width="25%" valign="top">'.$langs->trans("Type").'</td>';
@@ -1808,6 +1745,8 @@ else
 }
 
 $db->close();
+
+dol_fiche_end();
 
 llxFooter();
 

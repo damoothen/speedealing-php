@@ -189,24 +189,17 @@ function dol_loginfunction($langs,$conf,$mysoc)
 	$php_self.= $_SERVER["QUERY_STRING"]?'?'.$_SERVER["QUERY_STRING"]:'';
 
 	// Title
-	$title='Dolibarr '.DOL_VERSION;
+	$title='Speedealing '.DOL_VERSION;
 	if (! empty($conf->global->MAIN_APPLICATION_TITLE)) $title=$conf->global->MAIN_APPLICATION_TITLE;
 
 	// Select templates
-	if (preg_match('/^smartphone/',$conf->smart_menu) && ! empty($conf->browser->phone))
+	if (file_exists(DOL_DOCUMENT_ROOT."/theme/".$conf->theme."/tpl/login.tpl.php"))
 	{
-		$template_dir = DOL_DOCUMENT_ROOT.'/theme/phones/smartphone/tpl/';
+		$template_dir = DOL_DOCUMENT_ROOT."/theme/".$conf->theme."/tpl/";
 	}
 	else
 	{
-		if (file_exists(DOL_DOCUMENT_ROOT."/theme/".$conf->theme."/tpl/login.tpl.php"))
-		{
-			$template_dir = DOL_DOCUMENT_ROOT."/theme/".$conf->theme."/tpl/";
-		}
-		else
-		{
-			$template_dir = DOL_DOCUMENT_ROOT."/core/tpl/";
-		}
+		$template_dir = DOL_DOCUMENT_ROOT."/core/tpl/";
 	}
 
 	$conf->css = "/theme/".(GETPOST('theme')?GETPOST('theme','alpha'):$conf->theme)."/style.css.php?lang=".$langs->defaultlang;

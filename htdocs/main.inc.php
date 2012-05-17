@@ -292,7 +292,6 @@ if (! empty($_SESSION["disablemodules"]))
     }
 }
 
-
 /*
  * Phase authentication / login
 */
@@ -436,7 +435,7 @@ if (! defined('NOLOGIN'))
             exit;
         }
 
-        $resultFetchUser=$user->fetch('',$login);
+        $resultFetchUser=$user->fetch($login);
         if ($resultFetchUser <= 0)
         {
             dol_syslog('User not found, connexion refused');
@@ -477,7 +476,7 @@ if (! defined('NOLOGIN'))
         $login=$_SESSION["dol_login"];
         dol_syslog("This is an already logged session. _SESSION['dol_login']=".$login);
 
-        $resultFetchUser=$user->fetch('',$login);
+        $resultFetchUser=$user->fetch($login);
         if ($resultFetchUser <= 0)
         {
             // Account has been removed after login
@@ -535,7 +534,7 @@ if (! defined('NOLOGIN'))
         $error=0;
 
         // New session for this login
-        $_SESSION["dol_login"]=$user->login;
+        $_SESSION["dol_login"]=$user->values->name;
         $_SESSION["dol_authmode"]=isset($dol_authmode)?$dol_authmode:'';
         $_SESSION["dol_tz"]=isset($dol_tz)?$dol_tz:'';
         $_SESSION["dol_tz_string"]=isset($dol_tz_string)?$dol_tz_string:'';
@@ -602,7 +601,7 @@ if (! defined('NOLOGIN'))
         if ($reshook < 0) $error++;
     }
 
-
+	
     // If user admin, we force the rights-based modules
     if ($user->admin)
     {
@@ -677,10 +676,10 @@ if (! defined('NOLOGIN'))
 {
     // If the login is not recovered, it is identified with an account that does not exist.
     // Hacking attempt?
-    if (! $user->login) accessforbidden();
+    if (! $user->values->name) accessforbidden();
 
     // Check if user is active
-    if ($user->statut < 1)
+    if ($user->values->Enable != true)
     {
         // If not active, we refuse the user
         $langs->load("other");
