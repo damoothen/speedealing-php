@@ -46,19 +46,28 @@ if (! empty($json))
 {
 	if ($json == "Status") {
 		
-		$object = new GenericObject($db);
+		$return=array();
 		
-		foreach ($object->fk_status->values as $key => $aRow)
+		if (empty($_SESSION['SelectCompanyStatus']))
 		{
-			if($aRow->enable)
+			$langs->load("companies");
+			
+			$object = new GenericObject($db);
+			
+			foreach ($object->fk_status->values as $key => $aRow)
 			{
-				$array[$key] = $langs->trans($key);
+				if($aRow->enable)
+				{
+					$return[$key] = $langs->trans($key);
+				}
 			}
+			
+			$return['selected'] = "ST_PCOLD";
+			
+			$_SESSION['SelectCompanyStatus'] = json_encode($return);
 		}
-		
-		$array['selected'] = "ST_PCOLD";
-		
-		echo json_encode($array);
+
+		echo $_SESSION['SelectCompanyStatus'];
 	}
 }
 
