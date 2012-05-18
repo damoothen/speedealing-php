@@ -609,7 +609,7 @@ class User extends CommonObject
 	 *  @param  int		$notrigger		1 ne declenche pas les triggers, 0 sinon
 	 *  @return int			         	<0 si KO, id compte cree si OK
 	 */
-	function create($user,$notrigger=0)
+	function create($user,$notrigger=0, $action)
 	{
 		global $conf,$langs;
 		global $mysoc;
@@ -636,7 +636,7 @@ class User extends CommonObject
 			$result = $this->couchAdmin->getUser($this->values->name);
 		} catch(Exception $e) {}
 		
-		if (isset($result->values->name))
+		if (isset($result->name) && $action=='add')
 		{
 				$this->error = 'ErrorLoginAlreadyExists';
 				dol_syslog(get_class($this)."::create ".$this->error, LOG_WARNING);
@@ -645,8 +645,23 @@ class User extends CommonObject
 		}
 		else
 		{
-				try {
+			if($action == 'add')
+			{
+				try {	
 					$this->couchAdmin->createUser($this->values->name, $this->values->pass);
+				} catch ( Exception $e) {
+					$this->error=$e->getMessage();
+					dol_syslog(get_class($this)."::create ".$this->error, LOG_ERR);
+					dol_print_error("",$this->error);
+					exit;
+					return -4;
+				}
+			}
+		}
+		
+		try {
+					$this->values->Enable = true;
+					
 					$user_tmp = $this->couchAdmin->getUser($this->values->name);
 					
 					$this->values->salt = $user_tmp->salt;
@@ -655,6 +670,7 @@ class User extends CommonObject
 					$this->values->roles = $user_tmp->roles;
 					$this->values->_id = $user_tmp->_id;
 					$this->values->_rev = $user_tmp->_rev;
+					
 					unset($this->values->pass);
 					
 					$this->couchdb->clean($this->values);
@@ -662,13 +678,13 @@ class User extends CommonObject
 					//print_r($this->values);exit;
 					$result = $this->couchdb->storeDoc($this->values); // Save all specific parameters
 					
-				} catch ( Exception $e) {
+			} catch ( Exception $e) {
 					$this->error=$e->getMessage();
 					dol_syslog(get_class($this)."::create ".$this->error, LOG_ERR);
 					dol_print_error("",$this->error);
 					exit;
 					return -3;
-				}
+			}
 					
 				
 				if ($result)
@@ -692,7 +708,7 @@ class User extends CommonObject
 					dol_syslog(get_class($this)."::create ".$this->error, LOG_ERR);
 					return -2;
 				}
-			}
+			
 			return $this->id;
 	}
 

@@ -159,7 +159,7 @@ if ($action == 'confirm_delete' && $confirm == "yes" && $candisableuser)
 }
 
 // Action ajout user
-if ($action == 'add' && $canadduser)
+if (($action == 'add' || $action == 'update') && ! $_POST["cancel"] && $canadduser)
 {
     $message="";
     if (! $_POST["nom"])
@@ -191,21 +191,22 @@ if ($action == 'add' && $canadduser)
         $edituser->values->Firstname	= $_POST["prenom"];
         $edituser->values->name		= $_POST["login"];
         $edituser->values->Administrator		= (bool) $_POST["admin"];
-        $edituser->values->PhonePro		= $_POST["office_phone"];
-        $edituser->values->Fax			= $_POST["office_fax"];
+        $edituser->values->PhonePro		= $_POST["PhonePro"];
+        $edituser->values->Fax			= $_POST["Fax"];
         $edituser->values->PhoneMobile	= $_POST["user_mobile"];
-        $edituser->values->EMail		= $_POST["email"];
+        $edituser->values->EMail		= $_POST["EMail"];
         $edituser->values->webcal_login	= $_POST["webcal_login"];
         $edituser->values->Signature	= $_POST["signature"];
         $edituser->values->phenix_login	= $_POST["phenix_login"];
         $edituser->values->phenix_pass	= $_POST["phenix_pass"];
         $edituser->values->ldap_sid		= $_POST["ldap_sid"];
 		$edituser->values->pass			= $_POST["password"];
+		$edituser->values->rowid		= $_POST["rowid"];
 
         $db->begin();
 
-        $id = $edituser->create($user);
-        if ($id > 0)
+        $id = $edituser->create($user, 0, $action);
+        if ($id == $edituser->values->name)
         {
             Header("Location: ".$_SERVER['PHP_SELF'].'?id='.$id);
             exit;
@@ -215,7 +216,11 @@ if ($action == 'add' && $canadduser)
             $langs->load("errors");
             if (is_array($edituser->errors) && count($edituser->errors)) $message='<div class="error">'.join('<br>',$langs->trans($edituser->errors)).'</div>';
             else $message='<div class="error">'.$langs->trans($edituser->error).'</div>';
-            $action="create";       // Go back to create page
+			print $edituser->error;
+			if($action == "add")
+				$action="create";       // Go back to create page
+			if($action == "update")
+				$action="edit";       // Go back to create page
         }
 
     }
@@ -826,55 +831,14 @@ else
         $fuser = new User($db);
         $fuser->fetch($id);
 
-        // Connexion ldap
-        // pour recuperer passDoNotExpire et userChangePassNextLogon
-        if ($conf->ldap->enabled && $fuser->ldap_sid)
-        {
-            $ldap = new Ldap();
-            $result=$ldap->connect_bind();
-            if ($result > 0)
-            {
-                $userSearchFilter = '('.$conf->global->LDAP_FILTER_CONNECTION.'('.$this->getUserIdentifier().'='.$fuser->login.'))';
-                $entries = $ldap->fetch($fuser->login,$userSearchFilter);
-                if (! $entries)
-                {
-                    $message .= $ldap->error;
-                }
-
-                $passDoNotExpire = 0;
-                $userChangePassNextLogon = 0;
-                $userDisabled = 0;
-                $statutUACF = '';
-
-                //On verifie les options du compte
-                if (count($ldap->uacf) > 0)
-                {
-                    foreach ($ldap->uacf as $key => $statut)
-                    {
-                        if ($key == 65536)
-                        {
-                            $passDoNotExpire = 1;
-                            $statutUACF = $statut;
-                        }
-                    }
-                }
-                else
-                {
-                    $userDisabled = 1;
-                    $statutUACF = "ACCOUNTDISABLE";
-                }
-
-                if ($ldap->pwdlastset == 0)
-                {
-                    $userChangePassNextLogon = 1;
-                }
-            }
-        }
-
         // Show tabs
         $head = user_prepare_head($fuser);
 
         $title = $langs->trans("User");
+		
+		print '<div class="row">';
+		print start_box($title,"twelve","16-User.png",false);
+		
         dol_fiche_head($head, 'user', $title, 0, 'user');
 
         /*
@@ -1375,7 +1339,7 @@ else
             print '<form action="'.$_SERVER['PHP_SELF'].'?id='.$fuser->id.'" method="POST" name="updateuser" enctype="multipart/form-data">';
             print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
             print '<input type="hidden" name="action" value="update">';
-            print '<input type="hidden" name="entity" value="'.$conf->entity.'">';
+            print '<input type="hidden" name="rowid" value="'.$fuser->values->rowid.'">';
             print '<table width="100%" class="border">';
 
             $rowspan=12;
@@ -1397,11 +1361,11 @@ else
             print '<td>';
             if ($caneditfield && !$fuser->ldap_sid)
             {
-                print '<input size="30" type="text" class="flat" name="nom" value="'.$fuser->nom.'">';
+                print '<input size="30" type="text" class="flat" name="nom" value="'.$fuser->values->Lastname.'">';
             }
             else
             {
-                print '<input type="hidden" name="nom" value="'.$fuser->nom.'">';
+                print '<input type="hidden" name="nom" value="'.$fuser->values->Lastname.'">';
                 print $fuser->nom;
             }
             print '</td>';
@@ -1410,9 +1374,9 @@ else
             print $form->showphoto('userphoto',$fuser);
             if ($caneditfield)
             {
-                if ($fuser->photo) print "<br>\n";
+                if ($fuser->values->Photo) print "<br>\n";
                 print '<table class="nobordernopadding">';
-                if ($fuser->photo) print '<tr><td align="center"><input type="checkbox" class="flat" name="deletephoto" id="photodelete"> '.$langs->trans("Delete").'<br><br></td></tr>';
+                if ($fuser->values->Photo) print '<tr><td align="center"><input type="checkbox" class="flat" name="deletephoto" id="photodelete"> '.$langs->trans("Delete").'<br><br></td></tr>';
                 print '<tr><td>'.$langs->trans("PhotoFile").'</td></tr>';
                 print '<tr><td><input type="file" class="flat" name="photo" id="photoinput"></td></tr>';
                 print '</table>';
@@ -1426,26 +1390,26 @@ else
             print '<td>';
             if ($caneditfield && !$fuser->ldap_sid)
             {
-                print '<input size="30" type="text" class="flat" name="prenom" value="'.$fuser->prenom.'">';
+                print '<input size="30" type="text" class="flat" name="prenom" value="'.$fuser->values->Firstname.'">';
             }
             else
             {
-                print '<input type="hidden" name="prenom" value="'.$fuser->prenom.'">';
-                print $fuser->prenom;
+                print '<input type="hidden" name="prenom" value="'.$fuser->values->Firstname.'">';
+                print $fuser->values->Firstname;
             }
             print '</td></tr>';
 
             // Login
             print "<tr>".'<td valign="top"><span class="fieldrequired">'.$langs->trans("Login").'</span></td>';
             print '<td>';
-            if ($user->admin  && !$fuser->ldap_sid)
+            if (!$user->values->name)
             {
-                print '<input size="12" maxlength="24" type="text" class="flat" name="login" value="'.$fuser->login.'">';
+                print '<input size="12" maxlength="24" type="text" class="flat" name="login" value="'.$fuser->values->name.'">';
             }
             else
             {
-                print '<input type="hidden" name="login" value="'.$fuser->login.'">';
-                print $fuser->login;
+                print '<input type="hidden" name="login" value="'.$fuser->values->name.'">';
+                print $fuser->values->name;
             }
             print '</td>';
             print '</tr>';
@@ -1453,11 +1417,7 @@ else
             // Pass
             print '<tr><td valign="top">'.$langs->trans("Password").'</td>';
             print '<td>';
-            if ($fuser->ldap_sid)
-            {
-                $text=$langs->trans("DomainPassword");
-            }
-            else if ($caneditpassword)
+            if ($caneditpassword)
             {
                 $text='<input size="12" maxlength="32" type="password" class="flat" name="password" value="'.$fuser->pass.'">';
                 if ($dolibarr_main_authentication && $dolibarr_main_authentication == 'http')
@@ -1477,7 +1437,7 @@ else
             if ($fuser->societe_id > 0)
             {
                 print '<td>';
-                print '<input type="hidden" name="admin" value="'.$fuser->admin.'">'.yn($fuser->admin);
+                print '<input type="hidden" name="admin" value="'.$fuser->values->Administrator.'">'.yn($fuser->values->Administrator);
                 print ' ('.$langs->trans("ExternalUser").')';
                 print '</td></tr>';
             }
@@ -1490,7 +1450,7 @@ else
                 && ($fuser->entity > 0 || $nbSuperAdmin > 1)    // Don't downgrade a superadmin if alone
                 )
                 {
-                    print $form->selectyesno('admin',$fuser->admin,1);
+                    print $form->selectyesno('admin',$fuser->values->Administrator,1);
 
                     if (! empty($conf->multicompany->enabled) && ! $user->entity && empty($conf->global->MULTICOMPANY_TRANSVERSE_MODE))
                     {
@@ -1533,14 +1493,14 @@ else
 								</script>';
                         }
 
-                        $checked=(($fuser->admin && ! $fuser->entity) ? ' checked' : '');
+                        $checked=(($fuser->values->Administrator && ! $fuser->entity) ? ' checked' : '');
                         print '<input type="checkbox" name="superadmin" value="1"'.$checked.' /> '.$langs->trans("SuperAdministrator");
                     }
                 }
                 else
                 {
-                    $yn = yn($fuser->admin);
-                    print '<input type="hidden" name="admin" value="'.$fuser->admin.'">';
+                    $yn = yn($fuser->values->Administrator);
+                    print '<input type="hidden" name="Administrator" value="'.$fuser->values->Administrator.'">';
                     print '<input type="hidden" name="superadmin" value="'.(empty($fuser->entity) ? 1 : 0).'">';
                     if (! empty($conf->multicompany->enabled) && empty($fuser->entity)) print $form->textwithpicto($yn,$langs->trans("DontDowngradeSuperAdmin"),1,'warning');
                     else print $yn;
@@ -1548,36 +1508,34 @@ else
                 print '</td></tr>';
             }
 
+            // Type
+            print '<tr><td width="25%" valign="top">'.$langs->trans("Type").'</td>';
+            print '<td>';
+            if ($fuser->societe_id)
             {
-            	// Type
-            	print '<tr><td width="25%" valign="top">'.$langs->trans("Type").'</td>';
-            	print '<td>';
-            	if ($fuser->societe_id)
-            	{
-            		print $langs->trans("External");
-            	}
-            	else if ($fuser->ldap_sid)
-            	{
-            		print $langs->trans("DomainUser");
-            	}
-            	else
-            	{
-            		print $langs->trans("Internal");
-            	}
-            	print '</td></tr>';
+            	print $langs->trans("External");
             }
+            else if ($fuser->ldap_sid)
+            {
+            	print $langs->trans("DomainUser");
+            }
+            else
+            {
+            	print $langs->trans("Internal");
+            }
+            print '</td></tr>';
 
             // Tel pro
             print "<tr>".'<td valign="top">'.$langs->trans("PhonePro").'</td>';
             print '<td>';
             if ($caneditfield  && !$fuser->ldap_sid)
             {
-                print '<input size="20" type="text" name="office_phone" class="flat" value="'.$fuser->office_phone.'">';
+                print '<input size="20" type="text" name="PhonePro" class="flat" value="'.$fuser->values->PhonePro.'">';
             }
             else
             {
-                print '<input type="hidden" name="office_phone" value="'.$fuser->office_phone.'">';
-                print $fuser->office_phone;
+                print '<input type="hidden" name="PhonePro" value="'.$fuser->values->PhonePro.'">';
+                print $fuser->values->PhonePro;
             }
             print '</td></tr>';
 
@@ -1586,12 +1544,12 @@ else
             print '<td>';
             if ($caneditfield && !$fuser->ldap_sid)
             {
-                print '<input size="20" type="text" name="user_mobile" class="flat" value="'.$fuser->user_mobile.'">';
+                print '<input size="20" type="text" name="PhoneMobile" class="flat" value="'.$fuser->values->PhoneMobile.'">';
             }
             else
             {
-                print '<input type="hidden" name="user_mobile" value="'.$fuser->user_mobile.'">';
-                print $fuser->user_mobile;
+                print '<input type="hidden" name="user_mobile" value="'.$fuser->values->PhoneMobile.'">';
+                print $fuser->values->PhoneMobile;
             }
             print '</td></tr>';
 
@@ -1600,12 +1558,12 @@ else
             print '<td>';
             if ($caneditfield  && !$fuser->ldap_sid)
             {
-                print '<input size="20" type="text" name="office_fax" class="flat" value="'.$fuser->office_fax.'">';
+                print '<input size="20" type="text" name="office_fax" class="flat" value="'.$fuser->values->Fax.'">';
             }
             else
             {
-                print '<input type="hidden" name="office_fax" value="'.$fuser->office_fax.'">';
-                print $fuser->office_fax;
+                print '<input type="hidden" name="Fax" value="'.$fuser->values->Fax.'">';
+                print $fuser->values->Fax;
             }
             print '</td></tr>';
 
@@ -1614,37 +1572,20 @@ else
             print '<td>';
             if ($caneditfield  && !$fuser->ldap_sid)
             {
-                print '<input size="40" type="text" name="email" class="flat" value="'.$fuser->email.'">';
+                print '<input size="40" type="text" name="email" class="flat" value="'.$fuser->values->EMail.'">';
             }
             else
             {
-                print '<input type="hidden" name="email" value="'.$fuser->email.'">';
-                print $fuser->email;
+                print '<input type="hidden" name="email" value="'.$fuser->values->EMail.'">';
+                print $fuser->values->EMail;
             }
             print '</td></tr>';
 
             // Signature
             print "<tr>".'<td valign="top">'.$langs->trans("Signature").'</td>';
             print '<td>';
-            print '<textarea name="signature" rows="5" cols="90">'.dol_htmlentitiesbr_decode($fuser->signature).'</textarea>';
+            print '<textarea name="Signature" rows="5" cols="90">'.dol_htmlentitiesbr_decode($fuser->values->Signature).'</textarea>';
             print '</td></tr>';
-
-            // openid
-            if (preg_match('/myopenid/',$conf->authmode))
-            {
-                print "<tr>".'<td valign="top">'.$langs->trans("url_openid").'</td>';
-                print '<td>';
-                if ($caneditfield  && !$fuser->ldap_sid)
-                {
-                    print '<input size="40" type="text" name="openid" class="flat" value="'.$fuser->openid.'">';
-                }
-                else
-                {
-                    print '<input type="hidden" name="openid" value="'.$fuser->openid.'">';
-                    print $fuser->openid;
-                }
-                print '</td></tr>';
-            }
 
             // Statut
             print '<tr><td valign="top">'.$langs->trans("Status").'</td>';
@@ -1745,6 +1686,9 @@ else
 }
 
 $db->close();
+
+print end_box();
+print '</div>';
 
 dol_fiche_end();
 

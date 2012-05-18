@@ -1139,7 +1139,7 @@ function top_menu($head, $title='', $target='', $disablejs=0, $disablehead=0, $a
 		</div>
 		<div class="user_info user_sep">
                     <p class="sepH_a">
-                        <strong>'.$user->prenom." ".$user->nom.'</strong>
+                        <strong>'.$user->values->Firstname." ".$user->values->Lastname.'</strong>
                     </p>
                     <span>
                         <a href="'.DOL_URL_ROOT.'/user/fiche.php?id='.$user->id.'" class="sep">Settings</a>
