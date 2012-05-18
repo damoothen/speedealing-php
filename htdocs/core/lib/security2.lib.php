@@ -59,7 +59,7 @@ function checkLoginPassEntity($usertotest,$passwordtotest,$entitytotest,$authmod
 
     dol_syslog("checkLoginPassEntity usertotest=".$usertotest." entitytotest=".$entitytotest." authmode=".join(',',$authmode));
 	$login = '';
-
+/*
 	// Validation of login/pass/entity with a third party login module method
 	if (! empty($conf->login_modules) && is_array($conf->login_modules))
 	{
@@ -144,6 +144,33 @@ function checkLoginPassEntity($usertotest,$passwordtotest,$entitytotest,$authmod
     			}
     		}
     	}
+	}*/
+	
+	$login='';
+
+	if (! empty($usertotest))
+	{
+	
+		try {
+			$host = substr($conf->couchdb->host,7);
+	
+			$client = new couchClient('http://'.$usertotest.':'.$passwordtotest.'@'.$host.':'.$conf->couchdb->port.'/',$conf->couchdb->name, array("cookie_auth"=>TRUE));
+			if(strlen($client->getSessionCookie()) > 15)
+				$_SESSION['couchdb']=$client->getSessionCookie();
+		} catch (Exception $e)
+		{
+			print $e->getMessage();exit;
+		}
+		
+		if(empty($_SESSION['couchdb']))
+		{
+			sleep(1);
+			$langs->load('main');
+			$langs->load('errors');
+			$_SESSION["dol_loginmesg"]=$langs->trans("ErrorBadLoginPassword");
+		}
+		else
+			$login=$usertotest;
 	}
 
 	return $login;

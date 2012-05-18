@@ -55,6 +55,8 @@ abstract class CommonObject
     	$this->class = get_class($this);
     	$this->db = $db;
 		$this->couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
+		$this->couchdb->setSessionCookie($_SESSION['couchdb']);
+		//$this->couchdb->setSessionCookie("AuthSession=YWRtaW46NEZCNjY3MzI64i88haDY8r69K9LFivG1hwnAn-o");
 		
         try {
             $this->fk_extrafields = $this->couchdb->getDoc("extrafields:".  get_class($this)); // load extrafields for class
