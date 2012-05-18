@@ -24,11 +24,16 @@ if (! defined('NOTOKENRENEWAL')) define('NOTOKENRENEWAL','1'); // Disables token
 if (! defined('NOREQUIREMENU'))  define('NOREQUIREMENU','1');
 //if (! defined('NOREQUIREHTML'))  define('NOREQUIREHTML','1');
 if (! defined('NOREQUIREAJAX'))  define('NOREQUIREAJAX','1');
-if (! defined('NOREQUIRESOC'))   define('NOREQUIRESOC','1');
+//if (! defined('NOREQUIRESOC'))   define('NOREQUIRESOC','1');
 //if (! defined('NOREQUIRETRAN'))  define('NOREQUIRETRAN','1');
 
 require('../../main.inc.php');
 require_once(DOL_DOCUMENT_ROOT."/core/class/genericobject.class.php");
+
+$json = GETPOST('json','alpha');
+$key = GETPOST('key','alpha');
+$id = GETPOST('id','alpha');
+$value = GETPOST('value','alpha');
 
 $field			= GETPOST('field','alpha',2);
 $element		= GETPOST('element','alpha',2);
@@ -44,8 +49,38 @@ top_httphead();
 //print '<!-- Ajax page called with url '.$_SERVER["PHP_SELF"].'?'.$_SERVER["QUERY_STRING"].' -->'."\n";
 //print_r($_POST);
 
+if (! empty($json) && ! empty($key) && ! empty($id) && ! empty($value))
+{
+	if ($json == "edit") {
+	
+		try {
+			// TODO uniformize
+			$object = new Societe($db);
+			
+			$object->id = $id;
+			$res = $object->set($key, $value);
+			if( $res == $value )
+			{
+				if($key == 'Status')
+					echo $object->LibStatut($value);
+				else
+					echo $value;
+			}
+			else
+			{
+				print $res."</br>";
+				print_r($object->errors);
+			}
+			exit;
+		} catch (Exception $exc) {
+			print $exc->getTraceAsString();
+			exit;
+		}
+	}
+}
+
 // Load original field value
-if (! empty($field) && ! empty($element) && ! empty($table_element) && ! empty($fk_element))
+else if (! empty($field) && ! empty($element) && ! empty($table_element) && ! empty($fk_element))
 {
 	$ext_element		= GETPOST('ext_element','alpha',2);
 	$field				= substr($field, 8); // remove prefix val_
