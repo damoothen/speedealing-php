@@ -91,8 +91,6 @@ llxHeader();
 
 print_fiche_titre($langs->trans("CustomerArea"));
 
-print "Test rewrite=".$_GET['couchdb'];
-
 print '<table border="0" width="100%" class="notopnoleftnoright">';
 
 print '<tr>';
