@@ -76,48 +76,6 @@ if($_GET['json']=="list")
     exit;
 }
 
-if($_GET['json']=="Status"){
-    $value = $_GET['value'];
-    
-    foreach ($object->fk_status->values as $key => $aRow)
-    {
-	if($aRow->enable)
-        {   
-	    $array[$key] = $langs->trans($key);
-        }
-    }
-    $array['selected'] = "ST_PCOLD";
-    
-    print json_encode($array);
-    exit;
-}
-/*edit cell value */
-if($_GET['json']=="edit"){
-    $key = $_POST['key'];
-    $id = $_POST['id'];
-    $value = $_POST['value'];
-    
-    try {
-		$object->id = $id;
-		$res = $object->set($key, $value);
-	    if( $res == $value )
-	    {
-			if($key == 'Status')
-				print $object->LibStatut($value);
-			else
-				print $value;
-	    }
-	    else
-	    {
-		print $res."</br>";
-			print_r($object->errors);
-	    }
-        exit;
-	} catch (Exception $exc) {
-		print $exc->getTraceAsString();
-        exit;
-	}
-}
 
 // Select every potentiels.
 $sql = "SELECT code, label, sortorder";

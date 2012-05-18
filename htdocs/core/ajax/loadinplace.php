@@ -30,6 +30,8 @@ if (! defined('NOREQUIRESOC'))   define('NOREQUIRESOC','1');
 require('../../main.inc.php');
 require_once(DOL_DOCUMENT_ROOT."/core/class/genericobject.class.php");
 
+$json = GETPOST('json','alpha');
+
 $field			= GETPOST('field','alpha');
 $element		= GETPOST('element','alpha');
 $table_element	= GETPOST('table_element','alpha');
@@ -43,8 +45,36 @@ top_httphead();
 
 //print '<!-- Ajax page called with url '.$_SERVER["PHP_SELF"].'?'.$_SERVER["QUERY_STRING"].' -->'."\n";
 
+if (! empty($json))
+{
+	if ($json == "Status") {
+
+		$return=array();
+
+		if (empty($_SESSION['SelectCompanyStatus']))
+		{
+			$langs->load("companies");
+				
+			$object = new GenericObject($db);
+				
+			foreach ($object->fk_status->values as $key => $aRow)
+			{
+				if($aRow->enable)
+				{
+					$return[$key] = $langs->trans($key);
+				}
+			}
+				
+			$return['selected'] = "ST_PCOLD";
+				
+			$_SESSION['SelectCompanyStatus'] = json_encode($return);
+		}
+
+		echo $_SESSION['SelectCompanyStatus'];
+	}
+}
 // Load original field value
-if (! empty($field) && ! empty($element) && ! empty($table_element) && ! empty($fk_element))
+else if (! empty($field) && ! empty($element) && ! empty($table_element) && ! empty($fk_element))
 {
 	$ext_element	= GETPOST('ext_element','alpha');
 	$field			= substr($field, 8); // remove prefix val_
