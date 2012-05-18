@@ -785,6 +785,7 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
 
         // Displays meta
         print '<meta charset="utf-8" />';
+		print '<base href="'.DOL_URL_ROOT.'/" />';
         print '<meta name="viewport" content="width=device-width, initial-scale=1.0" />';
         print '<meta name="robots" content="noindex,nofollow" />'."\n";      // Evite indexation par robots
         print '<meta name="author" content="Speedealing Development Team" />'."\n";
@@ -953,7 +954,7 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
         print '<!-- datatables -->';
         print '<link rel="stylesheet" href="'.DOL_URL_ROOT.'/theme/pertho_sample/lib/datatables/css/demo_table_jui.css" media="all" />';
         print '<!-- main styles -->';
-        print '<link rel="stylesheet" href="'.DOL_URL_ROOT.'/theme/pertho_sample/css/style.css" />';
+        print '<link rel="stylesheet" href="'.DOL_URL_ROOT.'/theme/eldy/style.css" />';
 
         print '<!-- Google fonts -->';
         print '<link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet" />';
