@@ -2978,7 +2978,7 @@ $(document).ready(function() {
                     return { "id": oTable.fnGetData( this.parentNode, 0), 
 			    "key": columns[oTable.fnGetPosition( this )[2]]};
                 },
-		"loadurl" : '<?php echo $_SERVER['PHP_SELF'];?>?json=Status',
+		"loadurl" : '<?php echo DOL_URL_ROOT.'/core/ajax/editinplace.php'; ?>?json=Status',
 		"type" : 'select',
 		"submit" : 'OK',
                 "height": "14px",

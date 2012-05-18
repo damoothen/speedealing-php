@@ -31,6 +31,8 @@ require_once(DOL_DOCUMENT_ROOT ."/core/class/commonobject.class.php");
 class GenericObject extends CommonObject
 {
 	var $db;
+	
+	var $fk_status;
 
 	/**
 	 *	Constructor
@@ -40,6 +42,18 @@ class GenericObject extends CommonObject
 	function __construct($db)
 	{
 	    $this->db=$db;
+	    
+	    parent::__construct($db);
+	    
+	    try {
+	    	//$this->fk_extrafields = $this->couchdb->getDoc("extrafields:".  get_class($this)); // load fields company
+	    	$this->fk_status = $this->couchdb->getDoc("status:Societe"); //load status table
+	    	//$this->fk_country = $this->couchdb->getDoc("dict:country"); //load country table
+	    }catch (Exception $e) {
+	    	$error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+	    	print $error;
+	    	exit;
+	    }
 	}
 
 }
