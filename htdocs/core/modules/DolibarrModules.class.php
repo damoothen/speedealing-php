@@ -31,11 +31,10 @@
  *  \class      DolibarrModules
  *  \brief      Classe mere des classes de description et activation des modules Dolibarr
  */
-abstract class DolibarrModules
+abstract class DolibarrModules extends CommonObject
 {
 	//! Database handler
 	var $db;
-	protected $couchdb;
 	//! Relative path to module style sheet
 	var $style_sheet = ''; // deprecated
 	//! Path to create when module activated
@@ -54,12 +53,6 @@ abstract class DolibarrModules
 	var $docs;
 
 	var $dbversion = "-";
-	
-	function __construct() {
-		global $conf;
-		
-		$this->couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
-	}
 
 
 	/**
@@ -1136,15 +1129,10 @@ abstract class DolibarrModules
 	foreach ($this->menu as $key => $value)
         {
 	    try {
-		$menu = $this->couchdb->getDoc($value['_id']);
+			$menu = $this->couchdb->getDoc($value['_id']);
 	    	$menu->enabled = false;
-		$this->couchdb->storeDoc($menu);
-	    } catch (Exception $e) {
-		$error ="ErrorBadDefinitionOfMenuArrayInModuleDescriptor (bad value for delete_menus _id)";
-		$error.="<br>Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
-		dol_print_error("",$error);
-		exit;
-	    }
+			$this->couchdb->storeDoc($menu);
+	    } catch (Exception $e) {}
 	}
 
         return $err;

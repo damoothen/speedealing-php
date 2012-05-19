@@ -48,7 +48,7 @@ if ($action == 'set' && $user->admin)
     $result=activateModule($_GET["value"]);
     $mesg='';
     if ($result) $mesg=$result;
-    Header("Location: modules.php?mode=".$mode."&mesg=".urlencode($mesg));
+    Header("Location: ".$_SERVER['PHP_SELF']."?mode=".$mode."&mesg=".urlencode($mesg));
 	exit;
 }
 
@@ -57,7 +57,7 @@ if ($action == 'reset' && $user->admin)
     $result=unActivateModule($_GET["value"]);
     $mesg='';
     if ($result) $mesg=$result;
-    Header("Location: modules.php?mode=".$mode."&mesg=".urlencode($mesg));
+    Header("Location: ".$_SERVER['PHP_SELF']."?mode=".$mode."&mesg=".urlencode($mesg));
 	exit;
 }
 
@@ -387,7 +387,7 @@ if ($mode != 4)
                 }
                 else
                 {
-                	print '<a href="modules.php?id='.$objMod->numero.'&amp;action=reset&amp;value=' . $modName . '&amp;mode=' . $mode . '">';
+                	print '<a href="'.$_SERVER['PHP_SELF'].'?id='.$objMod->numero.'&amp;action=reset&amp;value=' . $modName . '&amp;mode=' . $mode . '">';
                 	print img_picto($langs->trans("Activated"),'switch_on');
                 	print '</a></td>'."\n";
                         
@@ -448,7 +448,7 @@ if ($mode != 4)
                 }
 
                 // Module non actif
-               	print '<a href="modules.php?id='.$objMod->numero.'&amp;action=set&amp;value=' . $modName . '&amp;mode=' . $mode . '">';
+               	print '<a href="'.$_SERVER['PHP_SELF'].'?id='.$objMod->numero.'&amp;action=set&amp;value=' . $modName . '&amp;mode=' . $mode . '">';
                	print img_picto($langs->trans("Disabled"),'switch_off');
                	print "</a></td>\n  <td>&nbsp;</td>\n";
             }

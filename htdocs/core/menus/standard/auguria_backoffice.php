@@ -32,7 +32,7 @@
  *	\brief      Classe permettant la gestion du menu du haut Auguria
  */
 
-class MenuTop
+class MenuTop extends CommonObject
 {
 	protected $db;
 	protected $couchdb;
@@ -51,10 +51,7 @@ class MenuTop
 	 */
 	function __construct($db)
 	{
-		global $conf;
-		
-		$this->db=$db;
-		$this->couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
+		parent::__construct($db);
 		
 		$tabMenu=array();
         
