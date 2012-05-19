@@ -153,27 +153,30 @@ while ($aRow = $db->fetch_object($result)) {
         }
         else
         {
-	    $aRow->class="menu";
-	    $name = "menu:".strtolower($aRow->title);
-	    $pos=strpos($name, "|");
+			$aRow->class="menu";
+			$name = "menu:".strtolower($aRow->module).strtolower($aRow->title);
+			$pos=strpos($name, "|");
         
-	    if($pos!=false)
-	    {
-		$name=substr($name, 0,$pos);
-	    }
+			if($pos!=false)
+			{
+				$name=substr($name, 0,$pos);
+			}
 	    
-	    if($tabinsert[$name])
-		$name.= "1"; // Ajoute 1 en cas de doublons
-            unset($aRow->type);
-            unset($aRow->leftmenu);
-            unset($aRow->mainmenu);
+			if($tabinsert[$name])
+			{
+				$name = is_uniq($tabinsert, $name, 0); // Ajoute 1 en cas de doublons
+			}
+			
+			unset($aRow->type);
+			unset($aRow->leftmenu);
+			unset($aRow->mainmenu);
 	    
 	    
-	    $obj[$name] = $aRow;
+			$obj[$name] = $aRow;
 	    
-	    // Add father
-	    $obj[$name]->fk_menu = $tabname[$fk_menu];
-            $obj[$name]->_id = $name;
+			// Add father
+			$obj[$name]->fk_menu = $tabname[$fk_menu];
+			$obj[$name]->_id = $name;
 	    
             //$obj[$tabname[$fk_menu]]->submenu[$name] = $aRow;
             //uasort($obj[$tabname[$fk_menu]]->submenu,array("Menubase","compare")); // suivant position
@@ -198,7 +201,7 @@ while ($aRow = $db->fetch_object($result)) {
         }*/
         
         $tabname[$rowid]=$name;
-	$tabinsert[$name]=true;
+		$tabinsert[$name]=true;
         
         $i++;
 }
@@ -223,4 +226,18 @@ try {
 	dol_print_error("", $error);
         exit(1);
     }
+	
+
+	function is_uniq(&$tabinsert, $name, $level)
+	{
+		if($tabinsert[$name.$level])
+		{	
+			$level++;	
+			return is_uniq($tabinsert, $name, $level);
+		}
+		else
+			return $name.strval($level);
+	}
+	
+	
 ?>

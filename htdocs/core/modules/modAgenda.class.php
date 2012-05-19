@@ -44,6 +44,9 @@ class modAgenda extends DolibarrModules
 	function modAgenda($db)
 	{
 		$this->db = $db;
+		
+		parent::__construct($db);
+		
 		$this->numero = 2400;
 
 		$this->family = "projects";
@@ -178,6 +181,7 @@ class modAgenda extends DolibarrModules
 		// $r++;
 		$this->menu[$r]=array('fk_menu'=>0,
 													'type'=>'top',
+		    '_id'=>'menu:agenda',
 													'titre'=>'Agenda',
 													'mainmenu'=>'agenda',
 													'url'=>'/comm/action/listactions.php',
@@ -189,7 +193,8 @@ class modAgenda extends DolibarrModules
 													'user'=>2);
 		$r++;
 
-		$this->menu[$r]=array('fk_menu'=>'r=0',
+		$this->menu[$r]=array('fk_menu'=>'menu:agenda',
+			'_id'=>'menu:actionagenda',
 													'type'=>'left',
 													'titre'=>'Actions',
 													'mainmenu'=>'agenda',
@@ -201,7 +206,8 @@ class modAgenda extends DolibarrModules
 													'target'=>'',
 													'user'=>2);
 		$r++;
-		$this->menu[$r]=array('fk_menu'=>'r=1',
+		$this->menu[$r]=array('fk_menu'=>'menu:actionagenda',
+			'_id'=>'menu:newaction',
 													'type'=>'left',
 													'titre'=>'NewAction',
 													'mainmenu'=>'agenda',
@@ -214,7 +220,8 @@ class modAgenda extends DolibarrModules
 													'user'=>2);
 		$r++;
 		// Calendar
-		$this->menu[$r]=array('fk_menu'=>'r=1',
+		$this->menu[$r]=array('fk_menu'=>'menu:actionagenda',
+			'_id'=>'menu:actioncalendar',
 													'type'=>'left',
 													'titre'=>'Calendar',
 													'mainmenu'=>'agenda',
@@ -226,7 +233,8 @@ class modAgenda extends DolibarrModules
 													'target'=>'',
 													'user'=>2);
 		$r++;
-		$this->menu[$r]=array('fk_menu'=>'r=3',
+		$this->menu[$r]=array('fk_menu'=>'menu:actioncalendar',
+			'_id'=>'menu:MenuToDoMyActions',
 													'type'=>'left',
 													'titre'=>'MenuToDoMyActions',
 													'mainmenu'=>'agenda',
@@ -238,7 +246,8 @@ class modAgenda extends DolibarrModules
 													'target'=>'',
 													'user'=>2);
 		$r++;
-		$this->menu[$r]=array('fk_menu'=>'r=3',
+		$this->menu[$r]=array('fk_menu'=>'menu:actioncalendar',
+			'_id'=>'menu:MenuDoneMyActions',
 													'type'=>'left',
 													'titre'=>'MenuDoneMyActions',
 													'mainmenu'=>'agenda',
@@ -250,7 +259,8 @@ class modAgenda extends DolibarrModules
 													'target'=>'',
 													'user'=>2);
 		$r++;
-		$this->menu[$r]=array('fk_menu'=>'r=3',
+		$this->menu[$r]=array('fk_menu'=>'menu:actioncalendar',
+			'_id'=>'menu:MenuToDoActions',
 													'type'=>'left',
 													'titre'=>'MenuToDoActions',
 													'mainmenu'=>'agenda',
@@ -262,7 +272,8 @@ class modAgenda extends DolibarrModules
 													'target'=>'',
 													'user'=>2);
 		$r++;
-		$this->menu[$r]=array('fk_menu'=>'r=3',
+		$this->menu[$r]=array('fk_menu'=>'menu:actioncalendar',
+			'_id'=>'menu:MenuDoneActions',
 													'type'=>'left',
 													'titre'=>'MenuDoneActions',
 													'mainmenu'=>'agenda',
@@ -275,7 +286,8 @@ class modAgenda extends DolibarrModules
 													'user'=>2);
 		$r++;
 		// List
-		$this->menu[$r]=array('fk_menu'=>'r=1',
+		$this->menu[$r]=array('fk_menu'=>'menu:agenda',
+			'_id'=>'menu:agendaList',
 													'type'=>'left',
 													'titre'=>'List',
 													'mainmenu'=>'agenda',
@@ -287,7 +299,8 @@ class modAgenda extends DolibarrModules
 													'target'=>'',
 													'user'=>2);
 		$r++;
-		$this->menu[$r]=array('fk_menu'=>'r=8',
+		$this->menu[$r]=array('fk_menu'=>'menu:agendaList',
+			'_id'=>'menu:MenuToDoMyActions',
 													'type'=>'left',
 													'titre'=>'MenuToDoMyActions',
 													'mainmenu'=>'agenda',
@@ -299,7 +312,8 @@ class modAgenda extends DolibarrModules
 													'target'=>'',
 													'user'=>2);
 		$r++;
-		$this->menu[$r]=array('fk_menu'=>'r=8',
+		$this->menu[$r]=array('fk_menu'=>'menu:agendaList',
+			'_id'=>'menu:MenuDoneMyActions',
 													'type'=>'left',
 													'titre'=>'MenuDoneMyActions',
 													'mainmenu'=>'agenda',
@@ -311,7 +325,8 @@ class modAgenda extends DolibarrModules
 													'target'=>'',
 													'user'=>2);
 		$r++;
-		$this->menu[$r]=array('fk_menu'=>'r=8',
+		$this->menu[$r]=array('fk_menu'=>'menu:agendaList',
+			'_id'=>'menu:MenuToDoActions',
 													'type'=>'left',
 													'titre'=>'MenuToDoActions',
 													'mainmenu'=>'agenda',
@@ -323,7 +338,8 @@ class modAgenda extends DolibarrModules
 													'target'=>'',
 													'user'=>2);
 		$r++;
-		$this->menu[$r]=array('fk_menu'=>'r=8',
+		$this->menu[$r]=array('fk_menu'=>'menu:agendaList',
+			'_id'=>'menu:MenuDoneActions',
 													'type'=>'left',
 													'titre'=>'MenuDoneActions',
 													'mainmenu'=>'agenda',
@@ -336,7 +352,8 @@ class modAgenda extends DolibarrModules
 													'user'=>2);
 		$r++;
 		// Reports
-		$this->menu[$r]=array('fk_menu'=>'r=1',
+		$this->menu[$r]=array('fk_menu'=>'menu:agenda',
+			'_id'=>'menu:agendaReportings',
 													'type'=>'left',
 													'titre'=>'Reportings',
 													'mainmenu'=>'agenda',
