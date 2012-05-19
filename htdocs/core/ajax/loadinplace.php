@@ -54,7 +54,7 @@ if (! empty($json) && ! empty($class))
 		if (empty($_SESSION['SelectCompanyStatus']))
 		{
 			$langs->load("companies");
-			require_once(DOL_DOCUMENT_ROOT."/".strtolower($class)."/class/".strtolower($class).".class.php");
+			dol_include_once("/".strtolower($class)."/class/".strtolower($class).".class.php");
 				
 			$object = new $class($db);
 				

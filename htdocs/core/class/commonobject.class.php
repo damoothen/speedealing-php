@@ -2898,7 +2898,7 @@ $(document).ready(function() {
 <?php if(isset($obj->fnDrawCallback)):?>
 	"sAjaxSource": "<?php echo $obj->sAjaxSource; ?>",
 <?php else :?>
-    "sAjaxSource" : "<?php echo $_SERVER['PHP_SELF'];?>?json=list",
+    "sAjaxSource" : "<?php echo DOL_URL_ROOT.'/core/ajax/listDatatables.php'; ?>?json=list&class=<?php echo get_class($this); ?>",
 <?php endif;?>
 <?php endif;?>
     "iDisplayLength": <?php echo (int)$conf->global->MAIN_SIZE_LISTE_LIMIT;?>,
@@ -2956,11 +2956,11 @@ $(document).ready(function() {
 "<?php echo $aRow->mDataProp; ?>",
 <?php endforeach; ?>
 ];
-    $("td.edit", this.fnGetNodes()).editable( '<?php echo $_SERVER['PHP_SELF'];?>?json=edit', {
+    $("td.edit", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT.'/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
                 "callback": function( sValue, y ) {
                     oTable.fnDraw();
                 },
-		"submitdata": function ( value, settings ) {
+				"submitdata": function ( value, settings ) {
                     return { "id": oTable.fnGetData( this.parentNode, 0), 
                     "key": columns[oTable.fnGetPosition( this )[2]]};
                 },

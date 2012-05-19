@@ -41,63 +41,7 @@ if ($user->societe_id)
     $socid = $user->societe_id;
 $result = restrictedArea($user, 'societe', $socid, '');
 
-$type = GETPOST("type", 'int');
-$pstcomm = GETPOST("pstcomm");
-$search_sale = GETPOST("search_sale");
-
-$object = new Societe($couchdb);
-
-if($_GET['json']=="list")
-{
-	$output = $object->getList();
-	
-    header('Content-type: application/json');
-    echo json_encode($output);
-    exit;
-}
-
-if($_GET['json']=="Status"){
-    $value = $_GET['value'];
-    
-    foreach ($object->fk_extrafields->fields->Status->values as $key => $aRow)
-    {
-	if($aRow->enable)
-        {   
-	    $array[$key] = $langs->trans($key);
-        }
-    }
-    $array['selected'] = "ST_PCOLD";
-    
-    print json_encode($array);
-    exit;
-}
-/*edit cell value */
-if($_GET['json']=="edit"){
-    $key = $_POST['key'];
-    $id = $_POST['id'];
-    $value = $_POST['value'];
-    
-    try {
-		$object->id = $id;
-		$res = $object->set($key, $value);
-	    if( $res == $value )
-	    {
-			if($key == 'Status')
-				print $object->LibStatut($value);
-			else
-				print $value;
-	    }
-	    else
-	    {
-		print $res."</br>";
-			print_r($object->errors);
-	    }
-        exit;
-	} catch (Exception $exc) {
-		print $exc->getTraceAsString();
-        exit;
-	}
-}
+$object = new Societe($db);
 
 // Select every potentiels.
 $sql = "SELECT code, label, sortorder";

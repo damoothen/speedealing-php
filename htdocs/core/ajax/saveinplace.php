@@ -51,7 +51,7 @@ top_httphead();
 
 if (! empty($json) && ! empty($key) && ! empty($id) && ! empty($value) && ! empty($class))
 {
-	require_once(DOL_DOCUMENT_ROOT."/".strtolower($class)."/class/".strtolower($class).".class.php");
+	dol_include_once("/".strtolower($class)."/class/".strtolower($class).".class.php");
 				
 	$object = new $class($db);
 	
