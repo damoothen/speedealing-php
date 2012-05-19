@@ -59,9 +59,7 @@ class Societe extends CommonObject
         parent::__construct($db);
         
         try {
-            $this->fk_extrafields = $this->couchdb->getDoc("extrafields:".  get_class($this)); // load fields company
-            $this->fk_status = $this->couchdb->getDoc("status:".get_class($this)); //load status table
-            $this->fk_country = $this->couchdb->getDoc("dict:country"); //load country table
+			$this->fk_country = $this->couchdb->getDoc("dict:country"); //load country table
         }catch (Exception $e) {
             $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
             print $error;
@@ -746,7 +744,7 @@ class Societe extends CommonObject
         if(empty($status))
             return null;
         
-        return '<span class="lbl '.$this->fk_status->values->$status->cssClass.' sl_status ttip_r edit">'.$langs->trans($status).'</span>';
+        return '<span class="lbl '.$this->fk_extrafields->fields->Status->values->$status->cssClass.' sl_status ttip_r">'.$langs->trans($status).'</span>';
     }
 
     /**

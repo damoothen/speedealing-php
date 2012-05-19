@@ -1042,7 +1042,7 @@ else
             // Statut
             print '<tr><td valign="top">'.$langs->trans("Status").'</td>';
             print '<td>';
-            print $fuser->getLibStatut(4);
+            print $fuser->getLibStatut();
             print '</td>';
             print '</tr>'."\n";
 
@@ -1590,7 +1590,7 @@ else
             // Statut
             print '<tr><td valign="top">'.$langs->trans("Status").'</td>';
             print '<td>';
-            print $fuser->getLibStatut(4);
+            print $fuser->getLibStatut();
             print '</td></tr>';
 
             // Autres caracteristiques issus des autres modules

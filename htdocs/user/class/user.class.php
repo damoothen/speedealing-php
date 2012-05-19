@@ -140,7 +140,7 @@ class User extends CommonObject
 		$login=trim($login);
 
 		try {
-			$this->values = $this->couchAdmin->getUser($login);
+			$this->values = $this->couchdb->getDoc($login);
 		} catch(Exception $e) {
 			$this->error = "USERNOTFOUND";
 			return 0;
@@ -647,6 +647,8 @@ class User extends CommonObject
 		{
 			if($action == 'add')
 			{
+				$this->values->Status = "DISABLE";
+				
 				try {	
 					$this->couchAdmin->createUser($this->values->name, $this->values->pass);
 				} catch ( Exception $e) {
@@ -659,9 +661,7 @@ class User extends CommonObject
 			}
 		}
 		
-		try {
-					$this->values->Enable = true;
-					
+		try {		
 					$user_tmp = $this->couchAdmin->getUser($this->values->name);
 					
 					$this->values->salt = $user_tmp->salt;
@@ -1078,26 +1078,11 @@ class User extends CommonObject
 	function update_last_login_date()
 	{
 		$now=dol_now();
+		
+		$this->values->LastConnection = $this->values->NewConnection;
+		$this->values->NewConnection = $now;
+		$this->couchdb->storeDoc($this->values);
 
-		$sql = "UPDATE ".MAIN_DB_PREFIX."user SET";
-		$sql.= " datepreviouslogin = datelastlogin,";
-		$sql.= " datelastlogin = '".$this->db->idate($now)."',";
-		$sql.= " tms = tms";    // La date de derniere modif doit changer sauf pour la mise a jour de date de derniere connexion
-		$sql.= " WHERE rowid = ".$this->id;
-
-		dol_syslog(get_class($this)."::update_last_login_date user->id=".$this->id." ".$sql, LOG_DEBUG);
-		$resql = $this->db->query($sql);
-		if ($resql)
-		{
-			$this->datepreviouslogin=$this->datelastlogin;
-			$this->datelastlogin=$now;
-			return 1;
-		}
-		else
-		{
-			$this->error=$this->db->lasterror().' sql='.$sql;
-			return -1;
-		}
 	}
 
 
@@ -1592,9 +1577,9 @@ class User extends CommonObject
 	 *  @param	int		$mode          0=libelle long, 1=libelle court, 2=Picto + Libelle court, 3=Picto, 4=Picto + Libelle long
 	 *  @return	string 			       Label of status
 	 */
-	function getLibStatut($mode=0)
+	function getLibStatut()
 	{
-		return $this->LibStatut($this->values->Enable,$mode);
+		return $this->LibStatut($this->values->Status);
 	}
 
 	/**
@@ -1604,42 +1589,15 @@ class User extends CommonObject
 	 *  @param  int		$mode          	0=libelle long, 1=libelle court, 2=Picto + Libelle court, 3=Picto, 4=Picto + Libelle long, 5=Libelle court + Picto
 	 *  @return string 			       	Label of status
 	 */
-	function LibStatut($statut,$mode=0)
+	function LibStatut($status)
 	{
 		global $langs;
 		$langs->load('users');
 
-		if ($mode == 0)
-		{
-			$prefix='';
-			if ($statut == 1) return $langs->trans('Enabled');
-			if ($statut == 0) return $langs->trans('Disabled');
-		}
-		if ($mode == 1)
-		{
-			if ($statut == 1) return $langs->trans('Enabled');
-			if ($statut == 0) return $langs->trans('Disabled');
-		}
-		if ($mode == 2)
-		{
-			if ($statut == 1) return img_picto($langs->trans('Enabled'),'statut4').' '.$langs->trans('Enabled');
-			if ($statut == 0) return img_picto($langs->trans('Disabled'),'statut5').' '.$langs->trans('Disabled');
-		}
-		if ($mode == 3)
-		{
-			if ($statut == 1) return img_picto($langs->trans('Enabled'),'statut4');
-			if ($statut == 0) return img_picto($langs->trans('Disabled'),'statut5');
-		}
-		if ($mode == 4)
-		{
-			if ($statut == 1) return img_picto($langs->trans('Enabled'),'statut4').' '.$langs->trans('Enabled');
-			if ($statut == 0) return img_picto($langs->trans('Disabled'),'statut5').' '.$langs->trans('Disabled');
-		}
-		if ($mode == 5)
-		{
-			if ($statut == 1) return $langs->trans('Enabled').' '.img_picto($langs->trans('Enabled'),'statut4');
-			if ($statut == 0) return $langs->trans('Disabled').' '.img_picto($langs->trans('Disabled'),'statut5');
-		}
+		if(empty($status))
+            return null;
+        
+        return '<span class="lbl '.$this->fk_extrafields->fields->Status->values->$status->cssClass.' sl_status ttip_r">'.$langs->trans($status).'</span>';
 	}
 
 

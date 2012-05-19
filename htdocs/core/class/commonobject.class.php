@@ -56,7 +56,6 @@ abstract class CommonObject
     	$this->db = $db;
 		$this->couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
 		$this->couchdb->setSessionCookie($_SESSION['couchdb']);
-		//$this->couchdb->setSessionCookie("AuthSession=YWRtaW46NEZCNjY3MzI64i88haDY8r69K9LFivG1hwnAn-o");
 		
         try {
             $this->fk_extrafields = $this->couchdb->getDoc("extrafields:".  get_class($this)); // load extrafields for class
@@ -160,8 +159,8 @@ abstract class CommonObject
     {
         global $conf;
 
-        $lastname=$this->lastname;
-        $firstname=$this->firstname;
+        $lastname=$this->values->Lastname;
+        $firstname=$this->values->Firstname;
         if (empty($lastname))  $lastname=($this->name?$this->name:$this->nom);
         if (empty($firstname)) $firstname=$this->prenom;
 
@@ -2971,7 +2970,7 @@ $(document).ready(function() {
                 "placeholder" : ""
                 
             } );
-    $("td.select", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT.'/core/ajax/saveinplace.php'; ?>?json=edit', {
+			$("td.select", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT.'/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
                 "callback": function( sValue, y ) {
                     oTable.fnDraw();
                 },
@@ -2980,7 +2979,7 @@ $(document).ready(function() {
                     return { "id": oTable.fnGetData( this.parentNode, 0), 
 			    "key": columns[oTable.fnGetPosition( this )[2]]};
                 },
-		"loadurl" : '<?php echo DOL_URL_ROOT.'/core/ajax/loadinplace.php'; ?>?json=Status',
+		"loadurl" : '<?php echo DOL_URL_ROOT.'/core/ajax/loadinplace.php'; ?>?json=Status&class=<?php echo get_class($this); ?>',
 		"type" : 'select',
 		"submit" : 'OK',
                 "height": "14px",
@@ -3129,10 +3128,8 @@ $(document).ready(function() {
 		{
 			$rtr ='function(obj) {
 					var status = new Array();
-					var stat = obj.aData.Status;
-					if(typeof stat === "undefined")
-						stat = "'.$this->fk_extrafields->fields->$key->default.'";';
-			foreach ($this->fk_status->values as $key => $aRow)
+					var stat = obj.aData.Status;';
+			foreach ($this->fk_extrafields->fields->$key->values as $key => $aRow)
 			{
 				$rtr.= 'status["'.$key.'"]= new Array("'.$langs->trans($key).'","'.$aRow->cssClass.'");';
 			}
@@ -3212,6 +3209,38 @@ $(document).ready(function() {
 		return $this->couchdb->updateDoc(get_class($this),"in-place",$params,$this->id);
 
 	 }
+	 
+	 /**
+	  *	Return list for datatable from the list view of couchdb
+	  * @return string
+	  */
+	 public function getList()
+	 {
+		$output = array(
+		"sEcho" => intval($_GET['sEcho']),
+		"iTotalRecords" => 0,
+		"iTotalDisplayRecords" => 0,
+		"aaData" => array()
+		);
+
+		$result = $this->getView("list");
+
+		//print_r($result);
+		//exit;
+		$iTotal=  count($result->rows);
+		$output["iTotalRecords"]=$iTotal;
+		$output["iTotalDisplayRecords"]=$iTotal;
+
+		foreach($result->rows AS $aRow) {
+			unset($aRow->value->class);
+			unset($aRow->value->_rev);
+			$output["aaData"][]=$aRow->value;
+			unset($aRow);
+		}
+		
+		return $output;
+	 }
+
         
 }
 

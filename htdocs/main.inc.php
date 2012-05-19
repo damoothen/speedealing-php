@@ -433,7 +433,7 @@ if (! defined('NOLOGIN'))
         }
 		
 		$user = new User($db);
-        $resultFetchUser=$user->fetch($login);
+        $resultFetchUser=$user->fetch("org.couchdb.user:".$login);
     }
     else
     {
@@ -442,7 +442,7 @@ if (! defined('NOLOGIN'))
         dol_syslog("This is an already logged session. _SESSION['dol_login']=".$login);
 
 		$user = new User($db);
-        $resultFetchUser=$user->fetch($login);
+        $resultFetchUser=$user->fetch("org.couchdb.user:".$login);
         if ($resultFetchUser <= 0)
         {
             // Account has been removed after login
@@ -637,7 +637,7 @@ if (! defined('NOLOGIN'))
     if (! $user->values->name) accessforbidden();
 
     // Check if user is active
-    if ($user->values->Enable != true)
+    if ($user->values->Status != "ENABLE")
     {
         // If not active, we refuse the user
         $langs->load("other");

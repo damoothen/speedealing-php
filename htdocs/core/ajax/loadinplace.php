@@ -28,9 +28,9 @@ if (! defined('NOREQUIRESOC'))   define('NOREQUIRESOC','1');
 //if (! defined('NOREQUIRETRAN'))  define('NOREQUIRETRAN','1');
 
 require('../../main.inc.php');
-require_once(DOL_DOCUMENT_ROOT."/core/class/genericobject.class.php");
 
 $json = GETPOST('json','alpha');
+$class = GETPOST('class','alpha');
 
 $field			= GETPOST('field','alpha');
 $element		= GETPOST('element','alpha');
@@ -45,7 +45,7 @@ top_httphead();
 
 //print '<!-- Ajax page called with url '.$_SERVER["PHP_SELF"].'?'.$_SERVER["QUERY_STRING"].' -->'."\n";
 
-if (! empty($json))
+if (! empty($json) && ! empty($class))
 {
 	if ($json == "Status") {
 
@@ -54,10 +54,11 @@ if (! empty($json))
 		if (empty($_SESSION['SelectCompanyStatus']))
 		{
 			$langs->load("companies");
+			require_once(DOL_DOCUMENT_ROOT."/".strtolower($class)."/class/".strtolower($class).".class.php");
 				
-			$object = new GenericObject($db);
+			$object = new $class($db);
 				
-			foreach ($object->fk_status->values as $key => $aRow)
+			foreach ($object->fk_extrafields->fields->Status->values as $key => $aRow)
 			{
 				if($aRow->enable)
 				{

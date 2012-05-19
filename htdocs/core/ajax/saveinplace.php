@@ -28,9 +28,9 @@ if (! defined('NOREQUIREAJAX'))  define('NOREQUIREAJAX','1');
 //if (! defined('NOREQUIRETRAN'))  define('NOREQUIRETRAN','1');
 
 require('../../main.inc.php');
-require_once(DOL_DOCUMENT_ROOT."/core/class/genericobject.class.php");
 
 $json = GETPOST('json','alpha');
+$class = GETPOST('class','alpha');
 $key = GETPOST('key','alpha');
 $id = GETPOST('id','alpha');
 $value = GETPOST('value','alpha');
@@ -49,13 +49,15 @@ top_httphead();
 //print '<!-- Ajax page called with url '.$_SERVER["PHP_SELF"].'?'.$_SERVER["QUERY_STRING"].' -->'."\n";
 //print_r($_POST);
 
-if (! empty($json) && ! empty($key) && ! empty($id) && ! empty($value))
+if (! empty($json) && ! empty($key) && ! empty($id) && ! empty($value) && ! empty($class))
 {
+	require_once(DOL_DOCUMENT_ROOT."/".strtolower($class)."/class/".strtolower($class).".class.php");
+				
+	$object = new $class($db);
+	
 	if ($json == "edit") {
 	
 		try {
-			// TODO uniformize
-			$object = new Societe($db);
 			
 			$object->id = $id;
 			$res = $object->set($key, $value);

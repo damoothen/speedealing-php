@@ -5,7 +5,7 @@
  * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2011      Philippe Grand       <philippe.grand@atoo-net.com>
  * Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
- * Copyright (C) 2011      Patrick Mary           <laube@hotmail.fr>
+ * Copyright (C) 2011      Patrick Mary         <laube@hotmail.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,28 +49,8 @@ $object = new Societe($couchdb);
 
 if($_GET['json']=="list")
 {
-    $output = array(
-    "sEcho" => intval($_GET['sEcho']),
-    "iTotalRecords" => 0,
-    "iTotalDisplayRecords" => 0,
-    "aaData" => array()
-     );
-
-    $result = $object->getView("list");
-
-    //print_r($result);
-    //exit;
-    $iTotal=  count($result->rows);
-    $output["iTotalRecords"]=$iTotal;
-    $output["iTotalDisplayRecords"]=$iTotal;
-
-    foreach($result->rows AS $aRow) {
-       unset($aRow->value->class);
-       unset($aRow->value->_rev);
-       $output["aaData"][]=$aRow->value;
-       unset($aRow);
-    }
-
+	$output = $object->getList();
+	
     header('Content-type: application/json');
     echo json_encode($output);
     exit;
@@ -79,7 +59,7 @@ if($_GET['json']=="list")
 if($_GET['json']=="Status"){
     $value = $_GET['value'];
     
-    foreach ($object->fk_status->values as $key => $aRow)
+    foreach ($object->fk_extrafields->fields->Status->values as $key => $aRow)
     {
 	if($aRow->enable)
         {   
