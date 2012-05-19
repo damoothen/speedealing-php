@@ -22,6 +22,10 @@
  *  \brief			Library of admin functions
  */
 
+include_once(DOL_DOCUMENT_ROOT ."/core/modules/DolibarrModules.class.php");
+
+class Admin extends DolibarrModules
+{
 
 /**
  *  Renvoi une version en chaine depuis une version en tableau
@@ -462,42 +466,13 @@ function dolibarr_set_const($db, $name, $value, $type='chaine', $visible=0, $not
 
     //dol_syslog("dolibarr_set_const name=$name, value=$value type=$type, visible=$visible, note=$note entity=$entity");
 
-    $db->begin();
-
-    $sql = "DELETE FROM ".MAIN_DB_PREFIX."const";
-    $sql.= " WHERE name = ".$db->encrypt($name,1);
-    if ($entity >= 0) $sql.= " AND entity = ".$entity;
-
-    dol_syslog("admin.lib::dolibarr_set_const sql=".$sql, LOG_DEBUG);
-    $resql=$db->query($sql);
-
     if (strcmp($value,''))	// true if different. Must work for $value='0' or $value=0
     {
-        $sql = "INSERT INTO ".MAIN_DB_PREFIX."const(name,value,type,visible,note,entity)";
-        $sql.= " VALUES (";
-        $sql.= $db->encrypt($name,1);
-        $sql.= ", ".$db->encrypt($value,1);
-        $sql.= ",'".$type."',".$visible.",'".$db->escape($note)."',".$entity.")";
-
-        //print "sql".$value."-".pg_escape_string($value)."-".$sql;exit;
-        //print "xx".$db->escape($value);
-        dol_syslog("admin.lib::dolibarr_set_const sql=".$sql, LOG_DEBUG);
-        $resql=$db->query($sql);
+		$this->global->values->$name = $value;
+		$this->couchdb->storeDoc($this->global);
     }
 
-    if ($resql)
-    {
-        $db->commit();
-        $conf->global->$name=$value;
-        return 1;
-    }
-    else
-    {
-        $error=$db->lasterror();
-        dol_syslog("admin.lib::dolibarr_set_const ".$error, LOG_ERR);
-        $db->rollback();
-        return -1;
-    }
+    return 1;
 }
 
 
@@ -1191,5 +1166,5 @@ function delDocumentModel($name, $type)
 		return -1;
 	}
 }
-
+}
 ?>

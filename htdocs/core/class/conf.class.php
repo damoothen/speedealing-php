@@ -128,6 +128,8 @@ class Conf
 	 */
 	function setValues(couchClient $couchdb)
 	{
+		global $conf;
+		
 		dol_syslog(get_class($this)."::setValues");
 		$couchdb->useDatabase($this->couchdb->name);
 
@@ -140,12 +142,34 @@ class Conf
 		 * - En constante php (TODO a virer)
 		 * - En $this->global->key=value
 		 */
+		$found=false;
 		
-		try{
-			$result = $couchdb->getDoc('const');
-		} catch(Exception $e) {
-			dol_print_error("",$e->getMessage());
-			exit;
+		if (! empty($conf->memcached->enabled) && ! empty($conf->global->MEMCACHED_SERVER))
+		{
+			print "toto";
+			$result=dol_getcache("const");
+			
+			if(is_array($result))
+			{
+				print "toto";
+				$found=true;
+			}
+				
+		}
+		
+		if(!$found)
+		{
+			try{
+				$result = $couchdb->getDoc('const');
+				if (! empty($conf->memcached->enabled) && ! empty($conf->global->MEMCACHED_SERVER))
+				{
+					print dol_setcache("const", $result);
+					
+				}
+			} catch(Exception $e) {
+				dol_print_error("",$e->getMessage());
+				exit;
+			}
 		}
 		
 		$i = 0;

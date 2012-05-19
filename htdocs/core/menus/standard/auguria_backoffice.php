@@ -40,8 +40,8 @@ class MenuTop extends CommonObject
 	var $hideifnotallowed=0;						// Put 0 for back office menu, 1 for front office menu
 	var $atarget="";                               // Valeur du target a utiliser dans les liens
 
-	var $topmenu;	// array of level 0
-	var $submenu;	// array of level > 0
+	var $topmenu=array();	// array of level 0
+	var $submenu=array();	// array of level > 0
 	var $selected = array();  // array of selected
 
 	/**
@@ -51,28 +51,53 @@ class MenuTop extends CommonObject
 	 */
 	function __construct($db)
 	{
+		global $conf;
+		
 		parent::__construct($db);
 		
 		$tabMenu=array();
-        
-		try {	
-		    $topmenu = $this->couchdb->getView(get_class($this),"list");
-		    $submenu = $this->couchdb->getView(get_class($this),"submenu");
-		} catch (Exception $e) {
-		    $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
-		    dol_print_error('',$error);
-		    exit;
+		
+		if (! empty($conf->memcached->enabled) && ! empty($conf->global->MEMCACHED_SERVER))
+		{
+			$this->topmenu=dol_getcache("topmenu");
+			//print_r($this->topmenu);
+			$this->submenu=dol_getcache("submenu");
+			//print_r($this->submenu);
+			if(is_array($this->topmenu) && is_array($this->submenu))
+			{
+				return 1;
+			}
+				
 		}
+        
+		$this->topmenu = array();
+		$this->submenu = array();
+		
+		try {	
+				$topmenu = $this->couchdb->getView(get_class($this),"list");
+				$submenu = $this->couchdb->getView(get_class($this),"submenu");
+		} catch (Exception $e) {
+				$error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+				dol_print_error('',$error);
+				exit;
+		}
+
 		
 		$this->topmenu = $topmenu->rows;
 	
-		// Construct submenu
+			// Construct submenu
 		foreach ($submenu->rows as $key => $aRow)
 		{
-		    $this->submenu[$aRow->key[0]][]= $aRow->value;
+			$this->submenu[$aRow->key[0]][]= $aRow->value;
 		}
-		//print_r($submenu);exit;
-	
+		
+		if (! empty($conf->memcached->enabled) && ! empty($conf->global->MEMCACHED_SERVER))
+		{
+			//print_r($this->submenu);exit;
+			dol_setcache("topmenu", $this->topmenu);
+			dol_setcache("submenu", $this->submenu);
+		}
+		
 		return 1;
 	}
 

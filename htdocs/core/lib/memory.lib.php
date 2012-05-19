@@ -53,7 +53,7 @@ function dol_setcache($memoryid,$data)
 		$result=$m->addServer($tmparray[0], $tmparray[1]?$tmparray[1]:11211);
 		//$m->setOption(Memcached::OPT_COMPRESSION, false);
 		//print "Add memoryid=".$memoryid;
-		$m->add($memoryid,$data);    // This fails if key already exists
+		$m->set($memoryid,$data,3600);    // This fails if key already exists
 		$rescode=$m->getResultCode();
 		if ($rescode == 0)
 		{
@@ -71,7 +71,7 @@ function dol_setcache($memoryid,$data)
 		$tmparray=explode(':',$conf->global->MEMCACHED_SERVER);
 		$result=$m->addServer($tmparray[0], $tmparray[1]?$tmparray[1]:11211);
 		//$m->setOption(Memcached::OPT_COMPRESSION, false);
-		$result=$m->add($memoryid,$data);    // This fails if key already exists
+		$result=$m->set($memoryid,$data);    // This fails if key already exists
 		if ($result)
 		{
 			return count($data);
