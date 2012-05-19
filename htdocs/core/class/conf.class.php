@@ -126,9 +126,10 @@ class Conf
 	 *	@param      DoliDB		$db		Handler d'acces base
 	 *	@return     int					< 0 if KO, >= 0 if OK
 	 */
-	function setValues($db)
+	function setValues(couchClient $couchdb)
 	{
 		dol_syslog(get_class($this)."::setValues");
+		$couchdb->useDatabase($this->couchdb->name);
 
 		// Avoid warning if not defined
 		if (empty($this->db->dolibarr_main_db_encryption)) $this->db->dolibarr_main_db_encryption=0;
@@ -139,30 +140,23 @@ class Conf
 		 * - En constante php (TODO a virer)
 		 * - En $this->global->key=value
 		 */
-		$sql = "SELECT ".$db->decrypt('name')." as name,";
-		$sql.= " ".$db->decrypt('value')." as value, entity";
-		$sql.= " FROM ".MAIN_DB_PREFIX."const";
-
-		if (! empty($this->multicompany->transverse_mode))
-		{
-			$sql.= " WHERE entity IN (0,1,".$this->entity.")";
+		
+		try{
+			$result = $couchdb->getDoc('const');
+		} catch(Exception $e) {
+			dol_print_error("",$e->getMessage());
+			exit;
 		}
-		else
+		
+		$i = 0;
+		if(count($result->values)==0)
 		{
-			$sql.= " WHERE entity IN (0,".$this->entity.")";
+			dol_print_error("","Error in const document : values is empty !");
+			exit;
 		}
-		$sql.= " ORDER BY entity";	// This is to have entity 0 first, then entity 1 that overwrite.
-
-		$resql = $db->query($sql);
-		if ($resql)
+		
+		foreach($result->values as $key => $value)
 		{
-			$i = 0;
-			$numr = $db->num_rows($resql);
-			while ($i < $numr)
-			{
-				$objp = $db->fetch_object($resql);
-				$key=$objp->name;
-				$value=$objp->value;
 				if ($key)
 				{
 					if (! defined("$key")) define("$key", $value);	// In some cases, the constant might be already forced (Example: SYSLOG_FILE_ON and SYSLOG_FILE during install)
@@ -210,20 +204,9 @@ class Conf
 					}
 				}
 				$i++;
-			}
-
-		    $db->free($resql);
 		}
 		//var_dump($this->modules);
 		//var_dump($this->modules_parts);
-
-		// Object $mc
-		if (! defined('NOREQUIREMC') && ! empty($this->multicompany->enabled))
-		{
-			global $mc;
-			$ret = @dol_include_once('/multicompany/class/actions_multicompany.class.php');
-			if ($ret) $mc = new ActionsMulticompany($db);
-		}
 
 		// Second or others levels object
 		$this->propal->cloture				= (object) array();

@@ -3087,9 +3087,9 @@ $(document).ready(function() {
 				var ar = [];
 				ar[ar.length] = "<a href=\"'.DOL_URL_ROOT.'/'.strtolower(get_class($this)).'/fiche.php?id=";
 				ar[ar.length] = obj.aData._id;
-				ar[ar.length] = "\"><img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.$this->fk_extrafields->ico.'\" border=\"0\" alt=\"Afficher societe : ";
+				ar[ar.length] = "\"><img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.$this->fk_extrafields->ico.'\" border=\"0\" alt=\"'.$langs->trans("See ".get_class($this)).' : ";
 				ar[ar.length] = obj.aData.'.$key.'.toString();
-				ar[ar.length] = "\" title=\"Afficher soci&eacute;t&eacute; : ";
+				ar[ar.length] = "\" title=\"'.$langs->trans("See ".get_class($this)).' : ";
 				ar[ar.length] = obj.aData.'.$key.'.toString();
 				ar[ar.length] = "\"></a> <a href=\"'.DOL_URL_ROOT.'/'.strtolower(get_class($this)).'/fiche.php?id=";
 				ar[ar.length] = obj.aData._id;

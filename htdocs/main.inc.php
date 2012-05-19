@@ -172,8 +172,8 @@ if (ini_get('register_globals'))    // To solve bug in using $_SESSION
     }
 }
 
-// Init the 5 global objects
-// This include will set: $conf, $db, $langs, $user, $mysoc objects
+// Init the 4 global objects
+// This include will set: $conf, $db, $langs, $user objects
 require_once("master.inc.php");
 
 // Activate end of page function
@@ -234,7 +234,7 @@ if (! empty($conf->file->main_force_https))
 // Chargement des includes complementaires de presentation
 if (! defined('NOREQUIREMENU')) require_once(DOL_DOCUMENT_ROOT ."/core/class/menu.class.php");			// Need 10ko memory (11ko in 2.2)
 if (! defined('NOREQUIREHTML')) require_once(DOL_DOCUMENT_ROOT ."/core/class/html.form.class.php");	    // Need 660ko memory (800ko in 2.2)
-if (! defined('NOREQUIREAJAX') && $conf->use_javascript_ajax) require_once(DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php');	// Need 22ko memory
+if (! defined('NOREQUIREAJAX')) require_once(DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php');	// Need 22ko memory
 
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (! empty($conf->global->MAIN_NOT_INSTALLED) || ! empty($conf->global->MAIN_NOT_UPGRADED))
@@ -592,6 +592,10 @@ if (! defined('NOLOGIN'))
 
     // If theme support option like flip-hide left menu and we use a smartphone, we force it
 }
+
+// Init the 4 global objects
+// This include will set: $conf, $db, $langs, $user objects
+require_once("after.inc.php");
 
 if (! defined('NOREQUIRETRAN'))
 {
