@@ -26,6 +26,7 @@
  *  				Config is stored into file conf.php
  */
 
+require_once(DOL_DOCUMENT_ROOT ."/core/lib/memory.lib.php"); // Lib for memcached
 
 /**
  *  Class to stock current configuration
@@ -41,6 +42,9 @@ class Conf
 	var $global;
 	//! url of couchdb server
 	var $couchdb;
+	
+	//! url of memcached server
+	var $Memcached;
 
 	//! To store if javascript/ajax is enabked
 	public $use_javascript_ajax;
@@ -90,6 +94,7 @@ class Conf
 		$this->file				= (object) array();
 		$this->db				= (object) array();
 		$this->couchdb			= (object) array();
+		$this->Memcached		= (object) array();
 		$this->global			= (object) array();
 		$this->mycompany		= (object) array();
 		$this->admin			= (object) array();
@@ -144,14 +149,11 @@ class Conf
 		 */
 		$found=false;
 		
-		if (! empty($conf->memcached->enabled) && ! empty($conf->global->MEMCACHED_SERVER))
+		if (! empty($this->Memcached->host))
 		{
-			print "toto";
 			$result=dol_getcache("const");
-			
-			if(is_array($result))
+			if(is_object($result))
 			{
-				print "toto";
 				$found=true;
 			}
 				
@@ -159,12 +161,13 @@ class Conf
 		
 		if(!$found)
 		{
+			$result = array();
 			try{
 				$result = $couchdb->getDoc('const');
-				if (! empty($conf->memcached->enabled) && ! empty($conf->global->MEMCACHED_SERVER))
+				//print_r($result);
+				if (! empty($this->Memcached->host))
 				{
-					print dol_setcache("const", $result);
-					
+					dol_setcache("const", $result);
 				}
 			} catch(Exception $e) {
 				dol_print_error("",$e->getMessage());

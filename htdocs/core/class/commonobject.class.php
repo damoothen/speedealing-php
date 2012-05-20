@@ -41,6 +41,8 @@ abstract class CommonObject
     public $error;
     public $errors;
     public $canvas;                // Contains canvas name if it is
+	
+	public $fk_extrafields;
 
 
 	/**
@@ -57,13 +59,39 @@ abstract class CommonObject
 		$this->couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
 		$this->couchdb->setSessionCookie($_SESSION['couchdb']);
 		
-        try {
-            $this->fk_extrafields = $this->couchdb->getDoc("extrafields:".  get_class($this)); // load extrafields for class
-        }catch (Exception $e) {
-            $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
-			dol_syslog(get_class($this)."::__contruct ".$error, LOG_WARN);
-        }
+		if(substr(get_class($this),0,3)=="mod") // If module no fk_extrafields
+			return 1;
+		
+		$found=false;
+		
+		if ($conf->memcached->enabled)
+		{
+			$result=dol_getcache("extrafields:".get_class($this));
 
+			if(is_object($result))
+			{
+				$found=true;
+			}
+				
+		}
+		
+		if(!$found)
+		{
+			$result = array();
+			try{
+				$result = $this->couchdb->getDoc("extrafields:".get_class($this)); // load extrafields for class
+
+				if ($conf->memcached->enabled)
+				{
+					dol_setcache("extrafields:".get_class($this), $result);
+				}
+			} catch(Exception $e) {
+				dol_print_error("",$e->getMessage());
+				dol_syslog(get_class($this)."::__contruct ".$error, LOG_WARN);
+			}
+		}
+		
+		$this->fk_extrafields = $result;
     }
     
     

@@ -51,8 +51,8 @@ if (! empty($json) && ! empty($class))
 
 		$return=array();
 
-		if (empty($_SESSION['SelectCompanyStatus']))
-		{
+		//if (empty($_SESSION['SelectCompanyStatus']))
+		//{
 			$langs->load("companies");
 			dol_include_once("/".strtolower($class)."/class/".strtolower($class).".class.php");
 				
@@ -67,11 +67,13 @@ if (! empty($json) && ! empty($class))
 			}
 				
 			$return['selected'] = "ST_PCOLD";
+			
+			echo json_encode($return);
 				
-			$_SESSION['SelectCompanyStatus'] = json_encode($return);
-		}
+			//$_SESSION['SelectCompanyStatus'] = json_encode($return);
+		//}
 
-		echo $_SESSION['SelectCompanyStatus'];
+		//echo $_SESSION['SelectCompanyStatus'];
 	}
 }
 // Load original field value
