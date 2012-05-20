@@ -38,7 +38,6 @@ $action=GETPOST('action');
 
 if (!$user->admin) accessforbidden();
 
-
 /*
  * Actions
  */

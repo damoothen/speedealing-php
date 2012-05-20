@@ -446,9 +446,6 @@ class Conf
             $this->top_menu=(empty($this->global->MAIN_MENUFRONT_STANDARD_FORCED)?$this->global->MAIN_MENUFRONT_STANDARD:$this->global->MAIN_MENUFRONT_STANDARD_FORCED);
             $this->smart_menu=(empty($this->global->MAIN_MENUFRONT_SMARTPHONE_FORCED)?$this->global->MAIN_MENUFRONT_SMARTPHONE:$this->global->MAIN_MENUFRONT_SMARTPHONE_FORCED);
         }
-        // For backward compatibility
-        if ($this->top_menu == 'eldy.php') $this->top_menu='eldy_backoffice.php';
-        elseif ($this->top_menu == 'rodolphe.php') $this->top_menu='eldy_backoffice.php';
 
         // Object $mc
         if (! defined('NOREQUIREMC') && ! empty($this->multicompany->enabled))

@@ -2923,7 +2923,7 @@ $(document).ready(function() {
     "aaSorting" : <?php echo json_encode($obj->aaSorting);?>,
 <?php endif;?>
 <?php if($json) : ?>
-<?php if(isset($obj->fnDrawCallback)):?>
+<?php if(isset($obj->sAjaxSource)):?>
 	"sAjaxSource": "<?php echo $obj->sAjaxSource; ?>",
 <?php else :?>
     "sAjaxSource" : "<?php echo DOL_URL_ROOT.'/core/ajax/listDatatables.php'; ?>?json=list&class=<?php echo get_class($this); ?>",
@@ -3105,19 +3105,22 @@ $(document).ready(function() {
 	 *  @return string
 	 */
     
-	public function datatablesFnRender($key,$type)
+	public function datatablesFnRender($key,$type,$url="")
 	{
 		global $langs, $conf;
 		
 		if($type=="url")
 		{
+			if(empty($url)) // default url
+				$url = DOL_URL_ROOT.'/'.strtolower(get_class($this)).'/fiche.php?id=';
+			
 			$rtr = 'function(obj) {
 				var ar = [];
 				ar[ar.length] = "<img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.$this->fk_extrafields->ico.'\" border=\"0\" alt=\"'.$langs->trans("See ".get_class($this)).' : ";
 				ar[ar.length] = obj.aData.'.$key.'.toString();
 				ar[ar.length] = "\" title=\"'.$langs->trans("See ".get_class($this)).' : ";
 				ar[ar.length] = obj.aData.'.$key.'.toString();
-				ar[ar.length] = "\"></a> <a href=\"'.DOL_URL_ROOT.'/'.strtolower(get_class($this)).'/fiche.php?id=";
+				ar[ar.length] = "\"></a> <a href=\"'.$url.'";
 				ar[ar.length] = obj.aData._id;
 				ar[ar.length] = "\">";
 				ar[ar.length] = obj.aData.'.$key.'.toString();
@@ -3154,7 +3157,7 @@ $(document).ready(function() {
 		{
 			$rtr ='function(obj) {
 					var status = new Array();
-					var stat = obj.aData.Status;';
+					var stat = obj.aData.'.$key.';';
 			foreach ($this->fk_extrafields->fields->$key->values as $key => $aRow)
 			{
 				$rtr.= 'status["'.$key.'"]= new Array("'.$langs->trans($key).'","'.$aRow->cssClass.'");';

@@ -22,11 +22,6 @@
  *  \brief			Library of admin functions
  */
 
-include_once(DOL_DOCUMENT_ROOT ."/core/modules/DolibarrModules.class.php");
-
-class Admin extends DolibarrModules
-{
-
 /**
  *  Renvoi une version en chaine depuis une version en tableau
  *
@@ -450,7 +445,7 @@ function dolibarr_get_const($db, $name, $entity=1)
  *
  *	@see		dolibarr_del_const, dolibarr_get_const, dol_set_user_param
  */
-function dolibarr_set_const($db, $name, $value, $type='chaine', $visible=0, $note='', $entity=1)
+function dolibarr_set_const($couchdb, $name, $value, $type='chaine', $visible=0, $note='', $entity=1)
 {
     global $conf;
 
@@ -468,8 +463,8 @@ function dolibarr_set_const($db, $name, $value, $type='chaine', $visible=0, $not
 
     if (strcmp($value,''))	// true if different. Must work for $value='0' or $value=0
     {
-		$this->global->values->$name = $value;
-		$this->couchdb->storeDoc($this->global);
+		$conf->global->values->$name = $value;
+		$couchdb->storeDoc($conf->global);
     }
 
     return 1;
@@ -1165,6 +1160,5 @@ function delDocumentModel($name, $type)
 		$db->rollback();
 		return -1;
 	}
-}
 }
 ?>
