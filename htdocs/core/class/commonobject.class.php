@@ -3113,9 +3113,7 @@ $(document).ready(function() {
 		{
 			$rtr = 'function(obj) {
 				var ar = [];
-				ar[ar.length] = "<a href=\"'.DOL_URL_ROOT.'/'.strtolower(get_class($this)).'/fiche.php?id=";
-				ar[ar.length] = obj.aData._id;
-				ar[ar.length] = "\"><img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.$this->fk_extrafields->ico.'\" border=\"0\" alt=\"'.$langs->trans("See ".get_class($this)).' : ";
+				ar[ar.length] = "<img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.$this->fk_extrafields->ico.'\" border=\"0\" alt=\"'.$langs->trans("See ".get_class($this)).' : ";
 				ar[ar.length] = obj.aData.'.$key.'.toString();
 				ar[ar.length] = "\" title=\"'.$langs->trans("See ".get_class($this)).' : ";
 				ar[ar.length] = obj.aData.'.$key.'.toString();
@@ -3171,9 +3169,30 @@ $(document).ready(function() {
 				return str;
 			}';
 		}
+		elseif($type=="attachment")
+		{
+			$url_server = $this->couchdb->getServerUri()."/".$this->couchdb->getDatabaseName();
+			
+			$rtr = 'function(obj) {
+				var ar = [];
+				ar[ar.length] = "<img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.$this->fk_extrafields->ico.'\" border=\"0\" alt=\"'.$langs->trans("See ".get_class($this)).' : ";
+				ar[ar.length] = obj.aData.'.$key.'.toString();
+				ar[ar.length] = "\" title=\"'.$langs->trans("See ".get_class($this)).' : ";
+				ar[ar.length] = obj.aData.'.$key.'.toString();
+				ar[ar.length] = "\"></a> <a href=\"'.$url_server.'/";
+				ar[ar.length] = obj.aData._id;
+				ar[ar.length] = "/";
+				ar[ar.length] = obj.aData.'.$key.'.toString();
+				ar[ar.length] = "\">";
+				ar[ar.length] = obj.aData.'.$key.'.toString();
+				ar[ar.length] = "</a>";
+				var str = ar.join("");
+				return str;
+			}';
+		}
 		else
 		{
-			dol_print_error($db, "Type of fnRender must be url, date, datetime or status");
+			dol_print_error($db, "Type of fnRender must be url, date, datetime, attachment or status");
 			exit;
 		}
 		
