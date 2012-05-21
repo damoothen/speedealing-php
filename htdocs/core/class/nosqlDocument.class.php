@@ -22,7 +22,7 @@ require_once(DOL_DOCUMENT_ROOT."/core/class/commonobject.class.php");
  */
 abstract class nosqlDocument extends CommonObject
 {
-    protected $couchdb;
+    protected $couchdb; // TODO must to be private !!!!!
     
     public $id;
     
@@ -48,67 +48,28 @@ abstract class nosqlDocument extends CommonObject
     	$this->db = $db;
 		$this->couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
 		$this->couchdb->setSessionCookie($_SESSION['couchdb']);
-		
-		if(substr(get_class($this),0,3)=="mod") // If module no fk_extrafields
-			return 1;
-		
-		$found=false;
-		
-		if ($conf->memcached->enabled)
-		{
-			$result=dol_getcache("extrafields:".get_class($this));
 
-			if(is_object($result))
-			{
-				$found=true;
-			}
-				
-		}
-		
-		if(!$found)
-		{
-			$result = array();
-			try{
-				$result = $this->couchdb->getDoc("extrafields:".get_class($this)); // load extrafields for class
-
-				if ($conf->memcached->enabled)
-				{
-					dol_setcache("extrafields:".get_class($this), $result);
-				}
-			} catch(Exception $e) {
-				dol_print_error("",$e->getMessage());
-				dol_syslog(get_class($this)."::__contruct ".$error, LOG_WARN);
-			}
-		}
-		
-		$this->fk_extrafields = $result;
     }
+
     
-    
-    function fetch($id)
+    function fetch($rowid) // old dolibarr rowid
     {	
-		if(is_int($id)) // for old rowid
+		if(is_int($id)) 
 		{
+			
 			try {
 				$result = $this->couchdb->key((int)$id)->getView(get_class(),"rowid");
-				$this->values = $this->couchdb->getDoc($result->rows[0]->value);
-				$this->id = $this->values->_id;
+				$this->load($result->rows[0]->value);
 			} catch (Exception $e) {
-				$error="Fetch : Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
-				dol_print_error($this->db,$error);
+				$this->error="Fetch : Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+				dol_print_error($this->db,$this->error);
 				return 0;
 			}
 		}
 		else
 		{
-			try {
-				$this->values = $this->couchdb->getDoc($id);
-				$this->id = $this->values->_id;
-			} catch (Exception $e) {
-				$error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
-				dol_print_error($this->db,$error);
-				return 0;
-			}
+			$this->error = "rowid must be an int";
+			return 0;
 		}
 	    
         return 1;
@@ -116,35 +77,174 @@ abstract class nosqlDocument extends CommonObject
     
     function update($user)
     {	
-	    if($this->id)
+	    if($this->id) // only update
 			$this->values->UserUpdate = $user->login;
-	    else
+	    else // Create
 	    {
 			$this->values->UserCreate = $user->login;
 			$this->values->UserUpdate = $user->login;
 	    }
 	    
-	    $this->values->class = get_class($this);
-	    
-	    try {
+	   return $this->commit();
+    }
+	
+	/**
+	  *	Set a value and modify type for couchdb
+	  * @param string $key
+	  * @param string $value 
+	  */
+	 
+	public function set($key,$value)
+	{
+		if(is_numeric($value))
+			$this->values->$key = (int)$value;
+		else
+			$this->values->$key = $value;
+
+		$params = new stdClass();
+		
+		$params->field = $key;
+		$params->value = $value;
+		
+		return $this->couchdb->updateDoc(get_class($this),"in-place",$params,$this->id);
+
+	}
+	
+	/**
+	  *	Get a value from a key
+	  * @param string $key
+	  * @return value 
+	  */
+	 
+	public function get($key)
+	{
+		return $this->values->$key;
+	}
+	
+	
+	/**
+	  *	load a $id document in values
+	  * @param $id
+	  * @return $value
+	  */
+	 
+	public function load($id,$cache=false)
+	{
+		global $conf;
+		
+		$found=false;
+		
+		if($conf->memcached->enabled && $cache)
+		{
+			$this->values=dol_getcache($id);
+			if(is_object($this->values))
+			{
+				$found=true;
+			}
+		}
+		
+		if(!$found)
+		{
+			$this->values = array();
+			try{
+				$this->values = $this->couchdb->getDoc($id); // load extrafields for class
+
+				if ($conf->memcached->enabled && $cache)
+				{
+					dol_setcache($id, $this->values);
+				}
+			} catch(Exception $e) {
+				dol_print_error("",$e->getMessage());
+				dol_syslog(get_class($this)."::get ".$error, LOG_WARN);
+			}
+		}
+		$this->id = $this->values->_id;
+		return $this->values;
+	}
+	
+	/**
+	  *	save values object document
+	 *  @param	$cache	if true remove element from cache
+	  * @return value of storeDoc
+	  */
+	 
+	public function commit($cache=false)
+	{
+		global $conf;
+		
+		$this->values->class = get_class($this);
+		
+		if($conf->memcached->enabled && $cache)
+		{
+			dol_delcache($this->id);
+		}
+
+		try{
 			$this->couchdb->clean($this->values);
 			$result = $this->couchdb->storeDoc($this->values);
 			$this->id=$result->id;
 			$this->values->_id = $result->id;
 			$this->values->_rev= $result->rev;
-	    } catch (Exception $e) {
-			$error=  get_class($this)." Update : Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
-			dol_print_error($this->db,$error);
-			return 0;
-	    }
-	    
-	    return 1;
-    }
-    
+		} catch(Exception $e) {
+			dol_print_error("",$e->getMessage());
+			dol_syslog(get_class($this)."::get ".$error, LOG_WARN);
+		}
+		return $result;
+	}
+	
+	
+	/**
+	  *	Return id of document
+	  * @return string
+	  */
     public function id()
     {
 		return $this->id;
     }
+	
+	/** Call a view on couchdb
+	 * 
+	 * @param	$name			string			name of the view
+	 * @param	$params			array			params ['group'],['level'],['key'],...
+	 * @param	$cache			bool			load from cache
+	 * @return  array
+	 */
+	public function getView($name,$params, $cache=false)
+	{
+		global $conf;
+		
+		$found = false;
+				
+		if($conf->memcached->enabled && $cache)
+		{
+			$result=dol_getcache(get_class($this).":".$name);
+			if(is_object($result))
+			{
+				$found=true;
+			}
+		}
+		
+		if(!$found)
+		{
+			$result = array();
+			try{
+				$params['limit'] = $conf->view_limit;
+				$this->couchdb->setQueryParameters($params);
+				
+				$result = $this->couchdb->getView(get_class($this),$name);
+				
+				if ($conf->memcached->enabled && $cache)
+				{
+					dol_setcache(get_class($this).":".$name, $result);
+				}
+			} catch(Exception $e) {
+				dol_print_error("",$e->getMessage());
+				dol_syslog(get_class($this)."::getView ".$error, LOG_WARN);
+			}
+		}
+		
+		return $result;
+     }
     
     /**
 	 *  For Generate a datatable
@@ -460,64 +560,6 @@ $(document).ready(function() {
 		
 		return $rtr;	
 	}
-	
-	/** Call a view on couchdb
-	 * 
-	 * @param	$name			string			name of the view
-	 * @param	$group_level	int				group level for reduce
-	 * @param	$key			string			search a specific key
-	 * @param	$startkey		string			search startkey
-	 * @param	$endkey			string			search endkey
-	 * @return  array
-	 */
-	public function getView($name,$group_level=0,$key=null,$startkey=null,$endkey=null)
-	{
-		global $conf;
-		
-		if(!empty($key))
-		{
-			if($group_level)
-				return $this->couchdb->limit($conf->liste_limit)->group(true)->group_level($group_level)->key($key)->getView(get_class ($this),$name);
-			else
-				return $this->couchdb->limit($conf->liste_limit)->key($key)->getView(get_class ($this),$name);
-		}
-		elseif(isset($startkey)&&isset($startkey))
-		{
-			if($group_level)
-				return $this->couchdb->limit($conf->liste_limit)->group(true)->group_level($group_level)->startkey($startkey)->endkey($endkey)->getView(get_class ($this),$name);
-			else
-				return $this->couchdb->limit($conf->liste_limit)->startkey($startkey)->endkey($endkey)->getView(get_class ($this),$name);
-		}
-		else
-		{
-			if($group_level)
-				return $this->couchdb->limit($conf->liste_limit)->group(true)->group_level($group_level)->getView(get_class ($this),$name);
-			else
-				return $this->couchdb->limit($conf->liste_limit)->getView(get_class ($this),$name);
-		}
-     }
-	 
-	 /**
-	  *	Set a value and modify type for couchdb
-	  * @param string $key
-	  * @param string $value 
-	  */
-	 
-	 public function set($key,$value)
-	 {
-		if(is_numeric($value))
-			$this->values->$key = (int)$value;
-		else
-			$this->values->$key = $value;
-
-		$params = new stdClass();
-		
-		$params->field = $key;
-		$params->value = $value;
-		
-		return $this->couchdb->updateDoc(get_class($this),"in-place",$params,$this->id);
-
-	 }
 }
 
 ?>

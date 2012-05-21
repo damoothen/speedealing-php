@@ -365,6 +365,10 @@ class Conf
 		// conf->liste_limit = constante de taille maximale des listes
 		if (empty($this->global->MAIN_SIZE_LISTE_LIMIT)) $this->global->MAIN_SIZE_LISTE_LIMIT=25;
 		$this->liste_limit=$this->global->MAIN_SIZE_LISTE_LIMIT;
+		
+		// conf->liste_limit = constante de taille maximale des listes
+		if (empty($this->global->MAIN_SIZE_VIEW_LIMIT)) $this->global->MAIN_SIZE_VIEW_LIMIT=1000;
+		$this->view_limit=$this->global->MAIN_SIZE_VIEW_LIMIT;
 
 		// conf->product->limit_size = constante de taille maximale des select de produit
 		if (! isset($this->global->PRODUIT_LIMIT_SIZE)) $this->global->PRODUIT_LIMIT_SIZE=100;

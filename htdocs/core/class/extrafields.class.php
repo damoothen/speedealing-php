@@ -1,10 +1,11 @@
 <?php
-/* Copyright (C) 2002-2003 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2002-2003 Jean-Louis Bergamo   <jlb@j1b.org>
- * Copyright (C) 2004      Sebastien Di Cintio  <sdicintio@ressource-toi.org>
- * Copyright (C) 2004      Benoit Mortier	    <benoit.mortier@opensides.be>
- * Copyright (C) 2009-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2009-2011 Regis Houssin        <regis@dolibarr.fr>
+/* Copyright (C) 2002-2003	Rodolphe Quiedeville	<rodolphe@quiedeville.org>
+ * Copyright (C) 2002-2003	Jean-Louis Bergamo		<jlb@j1b.org>
+ * Copyright (C) 2004		Sebastien Di Cintio		<sdicintio@ressource-toi.org>
+ * Copyright (C) 2004		Benoit Mortier			<benoit.mortier@opensides.be>
+ * Copyright (C) 2009-2011	Laurent Destailleur		<eldy@users.sourceforge.net>
+ * Copyright (C) 2009-2011	Regis Houssin			<regis@dolibarr.fr>
+ * Copyright (C) 2012		Herve Prot				<herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,17 +20,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+require_once(DOL_DOCUMENT_ROOT."/core/class/nosqlDocument.class.php");
 
-/**
- * 	\file 		htdocs/core/class/extrafields.class.php
- *	\ingroup    core
- *	\brief      File of class to manage extra fields
- */
 
 /**
  *	Class to manage standard extra fields
  */
-class ExtraFields extends CommonObject
+class ExtraFields extends nosqlDocument
 {
 	var $db;
 

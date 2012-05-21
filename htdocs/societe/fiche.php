@@ -1070,7 +1070,7 @@ else
         print start_box($langs->trans("EditCompany"),"twelve","16-Pencil",false);
 
         try {
-            $object->fetch($socid);
+            $object->load($socid);
         } catch (Exception $e) {
             $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
             print $error;
@@ -1431,7 +1431,7 @@ $(document).ready(function() {
         
         try
         {
-            $res=$object->fetch($socid);
+            $res=$object->load($socid);
         } catch (Exception $e) {
             $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
             dol_syslog("societe::load ".$error, LOG_ERR);
@@ -1757,7 +1757,7 @@ $(document).ready(function() {
             print '<td colspan="3">';
             if ($object->parent)
             {
-                $socm->fetch($object->parent);
+                $socm->load($object->parent);
                 print $socm->getNomUrl(1).' '.($socm->code_client?"(".$socm->code_client.")":"");
                 print $socm->town?' - '.$socm->town:'';
             }

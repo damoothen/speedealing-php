@@ -151,6 +151,63 @@ function dol_getcache($memoryid)
 	return 0;
 }
 
+/**
+ * 	delete a data into a memory area shared by all users, all sessions on server
+ *
+ *  @param	string      $memoryid		Memory id of shared area
+ * 	@param	string		$data			Data to save
+ * 	@return	int							<0 if KO, Nb of bytes written if OK
+ */
+function dol_delcache($memoryid)
+{
+	global $conf;
+	$result=-1;
+
+	// Using a memcached server
+	if (! empty($conf->Memcached->host) && class_exists('Memcached'))
+	{
+		$memoryid=session_name().'_'.$memoryid;
+		$m=new Memcached();
+		$tmparray=explode(':',$conf->Memcached->host);
+		$result=$m->addServer($tmparray[0], $tmparray[1]?$tmparray[1]:11211);
+		//$m->setOption(Memcached::OPT_COMPRESSION, false);
+		//print "Add memoryid=".$memoryid;
+		$m->delete($memoryid);    // This fails if key already exists
+		$rescode=$m->getResultCode();
+		if ($rescode == 0)
+		{
+			return 1;
+		}
+		else
+		{
+			return -$rescode;
+		}
+	}
+	else if (! empty($conf->Memcached->host) && class_exists('Memcache'))
+	{
+		$memoryid=session_name().'_'.$memoryid;
+		$m=new Memcache();
+		$tmparray=explode(':',$conf->Memcached->host);
+		$result=$m->addServer($tmparray[0], $tmparray[1]?$tmparray[1]:11211);
+		//$m->setOption(Memcached::OPT_COMPRESSION, false);
+		$result=$m->delete($memoryid);    // This fails if key already exists
+		if ($result)
+		{
+			return 1;
+		}
+		else
+		{
+			return -1;
+		}
+	}
+	/*// Using shmop
+	else if (isset($conf->global->MAIN_OPTIMIZE_SPEED) && ($conf->global->MAIN_OPTIMIZE_SPEED & 0x02))
+	{
+		$result=dol_setshmop($memoryid,$data);
+	}*/
+
+	return $result;
+}
 
 
 /**

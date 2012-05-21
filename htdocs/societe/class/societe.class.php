@@ -23,6 +23,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+require_once(DOL_DOCUMENT_ROOT."/core/class/extrafields.class.php");
+
 /**
  *	Class to manage third parties objects (customers, suppliers, prospects...)
  */
@@ -49,6 +51,10 @@ class Societe extends nosqlDocument
     public function __construct($db)
     {	
         parent::__construct($db);
+		
+		$fk_extrafields = new ExtraFields($db);
+		$this->fk_extrafields = $fk_extrafields->load("extrafields:".get_class($this),true); // load and cache
+		
         
         try {
 			$this->fk_country = $this->couchdb->getDoc("dict:country"); //load country table
