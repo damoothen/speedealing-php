@@ -42,6 +42,7 @@ require_once(DOL_DOCUMENT_ROOT."/core/class/conf.class.php");
 
 $conf = new Conf();
 // Identifiant propres au serveur couchdb
+$conf->couchdb->protocol				= $dolibarr_main_couchdb_protocol;
 $conf->couchdb->host					= $dolibarr_main_couchdb_host;
 $conf->couchdb->port					= $dolibarr_main_couchdb_port;
 $conf->couchdb->name					= $dolibarr_main_couchdb_name;
@@ -198,7 +199,7 @@ if (! empty($conf->global->MAIN_ONLY_LOGIN_ALLOWED))
 /*
  * Create object $mysoc (A thirdparty object that contains properties of companies managed by Dolibarr.
  */
-if (! defined('NOREQUIREDB') && ! defined('NOREQUIRESOC') && false) // TODO retirer le false et déplacer !!!!
+if (! defined('NOREQUIRESOC'))
 {
 	require_once(DOL_DOCUMENT_ROOT ."/societe/class/societe.class.php");
 	$mysoc=new Societe($db);

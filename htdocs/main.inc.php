@@ -434,6 +434,41 @@ if (! defined('NOLOGIN'))
 		
 		$user = new User($db);
         $resultFetchUser=$user->fetch($login);
+        /*
+         if ($resultFetchUser <= 0)
+        {
+            dol_syslog('User not found, connexion refused');
+            session_destroy();
+            session_name($sessionname);
+            session_start();    // Fixing the bug of register_globals here is useless since session is empty
+
+            if ($resultFetchUser == 0)
+            {
+                $langs->load('main');
+                $langs->load('errors');
+
+                $user->trigger_mesg='ErrorCantLoadUserFromDolibarrDatabase - login='.$login;
+                $_SESSION["dol_loginmesg"]=$langs->trans("ErrorCantLoadUserFromDolibarrDatabase",$login);
+            }
+            if ($resultFetchUser < 0)
+            {
+                $user->trigger_mesg=$user->error;
+                $_SESSION["dol_loginmesg"]=$user->error;
+            }
+
+            // Call triggers
+            include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+            $interface=new Interfaces($db);
+            $result=$interface->run_triggers('USER_LOGIN_FAILED',$user,$user,$langs,$conf,$_POST["entity"]);
+            if ($result < 0) {
+                $error++;
+            }
+            // End call triggers
+
+            header('Location: '.DOL_URL_ROOT.'/index.php');
+            exit;
+        }
+         */
     }
     else
     {
