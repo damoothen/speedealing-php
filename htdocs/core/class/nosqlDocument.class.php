@@ -168,7 +168,7 @@ abstract class nosqlDocument extends CommonObject
 	  * @return value of storeDoc
 	  */
 	 
-	public function commit($cache=false)
+	public function record($cache=false)
 	{
 		global $conf;
 		
@@ -209,7 +209,7 @@ abstract class nosqlDocument extends CommonObject
 	 * @param	$cache			bool			load from cache
 	 * @return  array
 	 */
-	public function getView($name,$params, $cache=false)
+	public function getView($name,$params=array(), $cache=false)
 	{
 		global $conf;
 		
@@ -245,6 +245,36 @@ abstract class nosqlDocument extends CommonObject
 		
 		return $result;
      }
+	 
+	 /**
+     *    Return label of status (activity, closed)
+     *
+     *    @return   string        		Libelle
+     */
+    function getLibStatus()
+    {
+        return $this->LibStatut($this->values->Status);
+    }
+
+    /**
+     *  Renvoi le libelle d'un statut donne
+     *
+     *  @param	int		$statut         Id statut
+     *  @return	string          		Libelle du statut
+     */
+    function LibStatus($status)
+    {
+        global $langs, $conf;
+        //$langs->load('companies');
+        
+        if(empty($status))
+            $status = $this->fk_extrafields->fields->Status->default;
+		
+        if(isset($this->fk_extrafields->fields->Status->values->$status->label))
+			return '<span class="lbl '.$this->fk_extrafields->fields->Status->values->$status->cssClass.' sl_status ttip_r">'.$langs->trans($this->fk_extrafields->fields->Status->values->$status->label).'</span>';
+		else
+			return '<span class="lbl '.$this->fk_extrafields->fields->Status->values->$status->cssClass.' sl_status ttip_r">'.$langs->trans($status).'</span>';
+    }
     
     /**
 	 *  For Generate a datatable
@@ -519,7 +549,10 @@ $(document).ready(function() {
 					var stat = obj.aData.'.$key.';';
 			foreach ($this->fk_extrafields->fields->$key->values as $key => $aRow)
 			{
-				$rtr.= 'status["'.$key.'"]= new Array("'.$langs->trans($key).'","'.$aRow->cssClass.'");';
+				if(isset($aRow->label))
+					$rtr.= 'status["'.$key.'"]= new Array("'.$langs->trans($aRow->label).'","'.$aRow->cssClass.'");';
+				else
+					$rtr.= 'status["'.$key.'"]= new Array("'.$langs->trans($key).'","'.$aRow->cssClass.'");';
 			}
 			$rtr.= 'var ar = [];
 				ar[ar.length] = "<span class=\"lbl ";

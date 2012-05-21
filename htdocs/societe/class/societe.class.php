@@ -717,35 +717,6 @@ class Societe extends nosqlDocument
     }
 
     /**
-     *    Return label of status (activity, closed)
-     *
-     *    @param	int		$mode       0=libelle long, 1=libelle court, 2=Picto + Libelle court, 3=Picto, 4=Picto + Libelle long
-     *    @return   string        		Libelle
-     */
-    function getLibStatus()
-    {
-        return $this->LibStatut($this->Status);
-    }
-
-    /**
-     *  Renvoi le libelle d'un statut donne
-     *
-     *  @param	int		$statut         Id statut
-     *  @param	int		$mode           0=libelle long, 1=libelle court, 2=Picto + Libelle court, 3=Picto, 4=Picto + Libelle long, 5=Libelle court + Picto
-     *  @return	string          		Libelle du statut
-     */
-    function LibStatut($status)
-    {
-        global $langs,$conf;
-        $langs->load('companies');
-        
-        if(empty($status))
-            return null;
-        
-        return '<span class="lbl '.$this->fk_extrafields->fields->Status->values->$status->cssClass.' sl_status ttip_r">'.$langs->trans($status).'</span>';
-    }
-
-    /**
      * 	Return full address of third party
      *
      * 	@param		int			$withcountry		1=Add country into address string
