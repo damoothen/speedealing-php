@@ -182,7 +182,7 @@ class Form
                     $ret.=$doleditor->Create(1);
                 }
                 $ret.='</td>';
-                if ($typeofdata != 'day' && $typeofdata != 'datepicker') $ret.='<td align="left"><input type="submit" class="button" value="'.$langs->trans("Modify").'"></td>';
+                if ($typeofdata != 'day' && $typeofdata != 'datepicker') $ret.='<td align="left"><input type="submit" class="button tiny radius" value="'.$langs->trans("Modify").'"></td>';
                 $ret.='</tr></table>'."\n";
                 $ret.='</form>'."\n";
             }

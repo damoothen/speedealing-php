@@ -41,10 +41,10 @@ require_once(DOL_DOCUMENT_ROOT."/core/class/conf.class.php");
 
 $conf = new Conf();
 // Identifiant propres au serveur couchdb
-$conf->couchdb->protocol				= $dolibarr_main_couchdb_protocol;
-$conf->couchdb->host					= $dolibarr_main_couchdb_host;
-$conf->couchdb->port					= $dolibarr_main_couchdb_port;
-$conf->couchdb->name					= $dolibarr_main_couchdb_name;
+$conf->Couchdb->protocol				= $dolibarr_main_couchdb_protocol;
+$conf->Couchdb->host					= $dolibarr_main_couchdb_host;
+$conf->Couchdb->port					= $dolibarr_main_couchdb_port;
+$conf->Couchdb->name					= $dolibarr_main_couchdb_name;
 // Identifiant pour le serveur memcached
 $conf->Memcached->host					= $dolibarr_main_memcached_host;
 

@@ -27,11 +27,12 @@
  */
 
 require_once(DOL_DOCUMENT_ROOT ."/core/lib/memory.lib.php"); // Lib for memcached
+require_once(DOL_DOCUMENT_ROOT ."/core/class/nosqlDocument.class.php");
 
 /**
  *  Class to stock current configuration
  */
-class Conf
+class Conf extends nosqlDocument
 {
 	/** \public */
 	//! To store properties found in conf file
@@ -41,7 +42,7 @@ class Conf
 	//! To store properties found into database
 	var $global;
 	//! url of couchdb server
-	var $couchdb;
+	var $Couchdb;
 	
 	//! url of memcached server
 	var $Memcached;
@@ -93,7 +94,7 @@ class Conf
 		// Avoid warnings when filling this->xxx
 		$this->file				= (object) array();
 		$this->db				= (object) array();
-		$this->couchdb			= (object) array();
+		$this->Couchdb			= (object) array();
 		$this->Memcached		= (object) array();
 		$this->global			= (object) array();
 		$this->mycompany		= (object) array();
@@ -124,19 +125,17 @@ class Conf
 		$this->file->character_set_client='UTF-8';   // UTF-8, ISO-8859-1
 	}
 
-
 	/**
 	 *	Load setup values into conf object (read llx_const)
 	 *
 	 *	@param      DoliDB		$db		Handler d'acces base
 	 *	@return     int					< 0 if KO, >= 0 if OK
 	 */
-	function setValues(couchClient $couchdb)
+	function setValues()
 	{
 		global $conf;
 		
 		dol_syslog(get_class($this)."::setValues");
-		$couchdb->useDatabase($this->couchdb->name);
 
 		// Avoid warning if not defined
 		if (empty($this->db->dolibarr_main_db_encryption)) $this->db->dolibarr_main_db_encryption=0;
@@ -163,7 +162,7 @@ class Conf
 		{
 			$result = array();
 			try{
-				$result = $couchdb->getDoc('const');
+				$result = $this->load('const');
 				//print_r($result);
 				if (! empty($this->Memcached->host))
 				{

@@ -43,6 +43,13 @@ require_once(DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php');
 require_once(DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php');
 require_once(ADODB_PATH.'adodb-time.inc.php');
 
+// For couchdb
+
+require_once(DOL_DOCUMENT_ROOT ."/core/db/couchdb/lib/couch.php");
+require_once(DOL_DOCUMENT_ROOT ."/core/db/couchdb/lib/couchClient.php");
+require_once(DOL_DOCUMENT_ROOT ."/core/class/nosqlDocument.class.php");
+
+
 // Avoid warnings with strict mode E_STRICT
 $conf = new stdClass(); // instantiate $conf explicitely
 $conf->global	= (object) array();
@@ -272,9 +279,11 @@ function conf($dolibarr_main_document_root)
     $conf->db->pass = trim($dolibarr_main_db_pass);
     
     // CouchDB
-    $conf->couchdb->host = trim($dolibarr_main_couchdb_host);
-    $conf->couchdb->port = trim($dolibarr_main_couchdb_port);
-    $conf->couchdb->name = trim($dolibarr_main_couchdb_name);
+    $conf->Couchdb->host = trim($dolibarr_main_couchdb_host);
+    $conf->Couchdb->port = trim($dolibarr_main_couchdb_port);
+    $conf->Couchdb->name = trim($dolibarr_main_couchdb_name);
+	
+	$conf->loadDatabase();
 
     if (empty($character_set_client)) $character_set_client="UTF-8";
     $conf->file->character_set_client=strtoupper($character_set_client);

@@ -554,7 +554,7 @@ create table llx_categorie_contact
 (
   fk_categorie  integer NOT NULL,
   fk_contact    integer NOT NULL
-)type=innodb;
+);
 
 ALTER TABLE llx_categorie_contact ADD PRIMARY KEY (fk_categorie, fk_contact);
 ALTER TABLE llx_categorie_contact ADD INDEX idx_categorie_contact_fk_categorie (fk_categorie);

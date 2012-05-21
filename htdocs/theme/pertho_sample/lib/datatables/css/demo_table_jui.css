@@ -22,7 +22,24 @@ table.display thead th div.DataTables_sort_wrapper span{position:absolute;top:50
 .paginate_enabled_previous{background-image:url(../images/back_enabled.gif)}
 .paginate_disabled_next{background-image:url(../images/forward_disabled.gif)}
 .paginate_enabled_next{background-image:url(../images/forward_enabled.gif)}
-table.display{width:100%;clear:both;border-collapse:collapse;margin:0 auto 24px;background:#fff;position:relative;top:12px}
+table.display{clear:both;border-collapse:collapse;margin:0 auto 24px;background:#fff;position:relative;top:12px;
+width: 99%;
+border-spacing: 0px;
+border-right-width: 0px;
+border-right-color: #DDD;
+border-right-style: solid;
+border-left-width: 1px;
+border-left-color: #DDD;
+border-left-style: solid;
+border-bottom-width: 1px;
+border-bottom-color: #DDD;
+border-bottom-style: solid;
+-moz-box-shadow: 4px 4px 4px #CCC;
+-webkit-box-shadow: 4px 4px 4px #CCC;
+box-shadow: 4px 4px 4px #CCC;
+-moz-border-radius: 0.2em;
+-webkit-border-radius: 0.2em;
+border-radius: 0.2em;}
 table.display tfoot th{font-weight:400;padding:2px 8px 2px 8px}
 table.display tr.heading2 td{border-bottom:1px solid #aaa}
 table.display td{padding:5px 8px;border:1px solid #ccc;font-size:12px;vertical-align:middle}

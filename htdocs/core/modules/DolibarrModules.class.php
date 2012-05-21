@@ -149,7 +149,9 @@ abstract class DolibarrModules extends nosqlDocument
         if (! $err)
         {
             $this->db->commit();
+			//print_r($this->global);exit;
 			$this->couchdb->storeDoc($this->global);
+			$this->flush(); // clear cache
             return 1;
         }
         else
@@ -222,7 +224,9 @@ abstract class DolibarrModules extends nosqlDocument
         if (! $err)
         {
             $this->db->commit();
+			print_r($this->global);
 			$this->couchdb->storeDoc($this->global);
+			$this->flush(); // clear cache
             return 1;
         }
         else
@@ -705,12 +709,15 @@ abstract class DolibarrModules extends nosqlDocument
         global $conf;
 		
 		$name = $this->const_name."_TABS";
-
-		foreach($this->global->values as $key => $aRow)
+		
+		if(count($this->global->values))
 		{
-			if(strpos($key,$name) != false)
-				if(isset($this->global->values->$key))
-					unset($this->global->values->$key);
+			foreach($this->global->values as $key => $aRow)
+			{
+				if(strpos($key,$name) != false)
+					if(isset($this->global->values->$key))
+						unset($this->global->values->$key);
+			}
 		}
 
         $err=0;

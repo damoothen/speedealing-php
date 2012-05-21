@@ -315,7 +315,7 @@ else
 			if (empty($dolibarr_main_db_cryptkey)) $dolibarr_main_db_cryptkey='';
 			$conf->db->dolibarr_main_db_cryptkey = $dolibarr_main_db_cryptkey;
 
-			$conf->setValues($db);
+			$conf->setValues();
 			// Current version is $conf->global->MAIN_VERSION_LAST_UPGRADE
 			// Version to install is DOL_VERSION
 			$dolibarrlastupgradeversionarray=preg_split('/[\.-]/',isset($conf->global->MAIN_VERSION_LAST_UPGRADE) ? $conf->global->MAIN_VERSION_LAST_UPGRADE : (isset($conf->global->MAIN_VERSION_LAST_INSTALL)?$conf->global->MAIN_VERSION_LAST_INSTALL:''));

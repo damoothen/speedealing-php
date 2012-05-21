@@ -41,15 +41,28 @@ abstract class nosqlDocument extends CommonObject
 	 *	@param	couchClient	$db		Database handler
 	 */
     function __construct($db)
-    {
-    	global $conf;
-    	
+    {	
     	$this->class = get_class($this);
     	$this->db = $db;
-		$this->couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
-		$this->couchdb->setSessionCookie($_SESSION['couchdb']);
-
+		$this->loadDatabase();
     }
+	
+	/**
+	 * load couchdb parameters
+	 * @param	$dbname		string			name of database
+	 * @return int 
+	 * 
+	 */
+	public function loadDatabase($dbname="")
+	{
+		global $conf;
+		
+		if(empty($dbname))
+			$dbname = $conf->Couchdb->name;
+		
+		$this->couchdb = new couchClient($conf->Couchdb->host.':'.$conf->Couchdb->port.'/',$dbname);
+		$this->couchdb->setSessionCookie($_SESSION['couchdb']);
+	}
 
     
     function fetch($rowid) // old dolibarr rowid
@@ -246,7 +259,7 @@ abstract class nosqlDocument extends CommonObject
 		return $result;
      }
 	 
-	 /**
+	/**
      *    Return label of status (activity, closed)
      *
      *    @return   string        		Libelle
@@ -254,6 +267,19 @@ abstract class nosqlDocument extends CommonObject
     function getLibStatus()
     {
         return $this->LibStatut($this->values->Status);
+    }
+	
+	/**
+     *    Flush the cache
+     *	@param		$id					key to delete, nothing flush_all
+     *  @return		string        		Libelle
+     */
+    function flush($id='')
+    {
+		if(!empty($id))
+			return dol_delcache($id);
+		else
+			return dol_flushcache();
     }
 
     /**

@@ -58,7 +58,8 @@ if (! defined('NOREQUIREDB'))
 	}
 
 	// Here we read database (llx_const table) and define $conf->global->XXX var.
-	$conf->setValues($user->couchdb);
+	$conf->loadDatabase();
+	$conf->setValues();
 }
 
 // Overwrite database value

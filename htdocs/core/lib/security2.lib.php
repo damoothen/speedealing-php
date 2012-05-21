@@ -152,9 +152,9 @@ function checkLoginPassEntity($usertotest,$passwordtotest,$entitytotest,$authmod
 	{
 	
 		try {
-			$host = substr($conf->couchdb->host,7);
+			$host = substr($conf->Couchdb->host,7);
 	
-			$client = new couchClient('http://'.$usertotest.':'.$passwordtotest.'@'.$host.':'.$conf->couchdb->port.'/',$conf->couchdb->name, array("cookie_auth"=>TRUE));
+			$client = new couchClient('http://'.$usertotest.':'.$passwordtotest.'@'.$host.':'.$conf->Couchdb->port.'/',$conf->Couchdb->name, array("cookie_auth"=>TRUE));
 			if(strlen($client->getSessionCookie()) > 15)
 				$_SESSION['couchdb']=$client->getSessionCookie();
 		} catch (Exception $e)

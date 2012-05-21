@@ -111,10 +111,7 @@ if (! GETPOST("action") || preg_match('/upgrade/i',GETPOST('action')))
 
     $db=getDoliDBInstance($conf->db->type,$conf->db->host,$conf->db->user,$conf->db->pass,$conf->db->name,$conf->db->port);
     
-    
-    
-    // CouchDB
-    $couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
+	$conf->loadDatabase();
 
     if ($db->connected != 1)
     {
@@ -141,7 +138,7 @@ if (! GETPOST("action") || preg_match('/upgrade/i',GETPOST('action')))
     $conf->db->dolibarr_main_db_cryptkey = $dolibarr_main_db_cryptkey;
 
     // Chargement config
-    if (! $error) $conf->setValues($db);
+    if (! $error) $conf->setValues();
 
 
     /***************************************************************************************
