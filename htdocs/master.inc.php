@@ -37,7 +37,6 @@
 /*
  * Create $conf object
  */
-
 require_once(DOL_DOCUMENT_ROOT."/core/class/conf.class.php");
 
 $conf = new Conf();
@@ -88,8 +87,9 @@ if (! defined('NOREQUIREUSER')) require_once(DOL_DOCUMENT_ROOT ."/user/class/use
 
 // For couchdb
 
-include_once(DOL_DOCUMENT_ROOT ."/core/db/couchdb/lib/couch.php");
-include_once(DOL_DOCUMENT_ROOT ."/core/db/couchdb/lib/couchClient.php");
+require_once(DOL_DOCUMENT_ROOT ."/core/db/couchdb/lib/couch.php");
+require_once(DOL_DOCUMENT_ROOT ."/core/db/couchdb/lib/couchClient.php");
+require_once(DOL_DOCUMENT_ROOT ."/core/class/nosqlDocument.class.php");
 
 /*
  * Creation objet $langs (must be before all other code)

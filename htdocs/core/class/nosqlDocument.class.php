@@ -1,0 +1,523 @@
+<?php
+/* Copyright (C) 2011-2012 Herve Prot			<herve.prot@symeos.com>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+require_once(DOL_DOCUMENT_ROOT."/core/class/commonobject.class.php");
+
+/**
+ *	Parent class of all other business classes (invoices, contracts, proposals, orders, ...)
+ */
+abstract class nosqlDocument extends CommonObject
+{
+    protected $couchdb;
+    
+    public $id;
+    
+    public $values;
+
+    public $error;
+    public $errors;
+    public $canvas;                // Contains canvas name if it is
+	
+	public $fk_extrafields;
+
+
+	/**
+	 *	class constructor
+	 *
+	 *	@param	couchClient	$db		Database handler
+	 */
+    function __construct($db)
+    {
+    	global $conf;
+    	
+    	$this->class = get_class($this);
+    	$this->db = $db;
+		$this->couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
+		$this->couchdb->setSessionCookie($_SESSION['couchdb']);
+		
+		if(substr(get_class($this),0,3)=="mod") // If module no fk_extrafields
+			return 1;
+		
+		$found=false;
+		
+		if ($conf->memcached->enabled)
+		{
+			$result=dol_getcache("extrafields:".get_class($this));
+
+			if(is_object($result))
+			{
+				$found=true;
+			}
+				
+		}
+		
+		if(!$found)
+		{
+			$result = array();
+			try{
+				$result = $this->couchdb->getDoc("extrafields:".get_class($this)); // load extrafields for class
+
+				if ($conf->memcached->enabled)
+				{
+					dol_setcache("extrafields:".get_class($this), $result);
+				}
+			} catch(Exception $e) {
+				dol_print_error("",$e->getMessage());
+				dol_syslog(get_class($this)."::__contruct ".$error, LOG_WARN);
+			}
+		}
+		
+		$this->fk_extrafields = $result;
+    }
+    
+    
+    function fetch($id)
+    {	
+		if(is_int($id)) // for old rowid
+		{
+			try {
+				$result = $this->couchdb->key((int)$id)->getView(get_class(),"rowid");
+				$this->values = $this->couchdb->getDoc($result->rows[0]->value);
+				$this->id = $this->values->_id;
+			} catch (Exception $e) {
+				$error="Fetch : Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+				dol_print_error($this->db,$error);
+				return 0;
+			}
+		}
+		else
+		{
+			try {
+				$this->values = $this->couchdb->getDoc($id);
+				$this->id = $this->values->_id;
+			} catch (Exception $e) {
+				$error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+				dol_print_error($this->db,$error);
+				return 0;
+			}
+		}
+	    
+        return 1;
+    }
+    
+    function update($user)
+    {	
+	    if($this->id)
+			$this->values->UserUpdate = $user->login;
+	    else
+	    {
+			$this->values->UserCreate = $user->login;
+			$this->values->UserUpdate = $user->login;
+	    }
+	    
+	    $this->values->class = get_class($this);
+	    
+	    try {
+			$this->couchdb->clean($this->values);
+			$result = $this->couchdb->storeDoc($this->values);
+			$this->id=$result->id;
+			$this->values->_id = $result->id;
+			$this->values->_rev= $result->rev;
+	    } catch (Exception $e) {
+			$error=  get_class($this)." Update : Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+			dol_print_error($this->db,$error);
+			return 0;
+	    }
+	    
+	    return 1;
+    }
+    
+    public function id()
+    {
+		return $this->id;
+    }
+    
+    /**
+	 *  For Generate a datatable
+	 *
+     *  @param $obj object of aocolumns parameters
+     *  @param $ref_css name of #list
+	 *  @return string
+	 */
+	public function datatablesCreate($obj,$ref_css,$json=false, $ColSearch=false)
+	{
+            global $conf,$langs;
+
+?>
+<script type="text/javascript" charset="utf-8">
+$(document).ready(function() {
+    var oTable = $('#<?php echo $ref_css?>').dataTable( {
+    "aoColumns" : [
+<?php foreach ($obj->aoColumns as $i => $aRow): ?>
+{
+<?php foreach ($aRow as $key => $fields): ?>
+<?php if($key == "mDataProp" || $key == "sClass" || $key == "sDefaultContent" || $key == "sType" || $key == "sWidth") : ?>
+    "<?php echo $key;?>":"<?php echo $fields;?>",
+<?php elseif($key == "fnRender") :?>
+    "<?php echo $key;?>": <?php echo $fields;?>,	    
+<?php else :?>
+    "<?php echo $key;?>": <?php echo ($fields?"true":"false");?>,
+<?php endif;?>
+<?php endforeach; ?>
+},
+<?php endforeach; ?>
+],
+<?php if(!isset($obj->aaSorting) && $json) :?>
+    "aaSorting" : [[1,"asc"]],
+<?php else :?>
+    "aaSorting" : <?php echo json_encode($obj->aaSorting);?>,
+<?php endif;?>
+<?php if($json) : ?>
+<?php if(!empty($obj->sAjaxSource)):?>
+	"sAjaxSource": "<?php echo $obj->sAjaxSource; ?>",
+<?php else :?>
+    "sAjaxSource" : "<?php echo DOL_URL_ROOT.'/core/ajax/listDatatables.php'; ?>?json=list&class=<?php echo get_class($this); ?>",
+<?php endif;?>
+<?php endif;?>
+    "iDisplayLength": <?php echo (int)$conf->global->MAIN_SIZE_LISTE_LIMIT;?>,
+    "aLengthMenu": [[10, 25, 50, 100, 1000, -1],[10, 25, 50, 100,1000,"All"]],
+    "bProcessing": true,
+    "bJQueryUI": true,
+    "bAutoWidth": false,
+    /*$obj->bServerSide = true;*/
+    "bDeferRender": true,
+    "oLanguage": { "sUrl": "<?php echo DOL_URL_ROOT.'/includes/jquery/plugins/datatables/langs/'.($langs->defaultlang?$langs->defaultlang:"en_US").".txt";?>"},
+    /*$obj->sDom = '<\"top\"Tflpi<\"clear\">>rt<\"bottom\"pi<\"clear\">>';*/
+    /*$obj->sPaginationType = 'full_numbers';*/
+    /*$obj->sDom = 'TC<\"clear\">lfrtip';*/
+   "oTableTools": { "sSwfPath": "<?php echo DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/TableTools/media/swf/copy_csv_xls.swf';?>"},
+    //if($obj->oTableTools->aButtons==null)
+    //$obj->oTableTools->aButtons = array("xls");
+	    
+    "oColVis": { "buttonText" : 'Voir/Cacher',
+		"aiExclude": [0,1] // Not cacheable _id and name
+	},
+    //$obj->oColVis->bRestore = true;
+    //$obj->oColVis->sAlign = 'left';
+            
+    // Avec export Excel
+<?php if($obj->oTableTools->aButtons==null) :?>
+    "sDom": "Cl<fr>t<\"clear\"rtip>",
+<?php else :?>
+    "sDom": "TC<\"clear\"fr>lt<\"clear\"rtip>",
+<?php endif;?>
+// bottons
+<?php if($obj->oTableTools->aButtons !=null) :?>
+    "oTableTools" : { "aButtons": [
+<?php foreach ($obj->oTableTools->aButtons as $i => $aRow): ?>
+{
+<?php foreach ($aRow as $key => $fields): ?>
+<?php if($key == "fnClick" || $key == "fnAjaxComplete") :?>
+    "<?php echo $key;?>": <?php echo $fields;?>,	    
+<?php else :?>
+    "<?php echo $key;?>":"<?php echo $fields;?>",
+<?php endif;?>
+<?php endforeach; ?>
+},
+<?php endforeach; ?>
+]},
+ 
+<?php endif;?>
+
+<?php if(isset($obj->fnDrawCallback)):?>
+	"fnDrawCallback": <?php echo $obj->fnDrawCallback; ?>,
+<?php else :?>
+// jeditable
+    "fnDrawCallback": function () {
+	var columns = [
+<?php foreach ($obj->aoColumns as $i => $aRow) :?>
+"<?php echo $aRow->mDataProp; ?>",
+<?php endforeach; ?>
+];
+    $("td.edit", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT.'/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
+                "callback": function( sValue, y ) {
+                    oTable.fnDraw();
+                },
+				"submitdata": function ( value, settings ) {
+                    return { "id": oTable.fnGetData( this.parentNode, 0), 
+                    "key": columns[oTable.fnGetPosition( this )[2]]};
+                },
+                "height": "14px",
+                "tooltip": "Cliquer pour éditer...",
+                "indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>';?>",
+                "placeholder" : ""
+                
+            } );
+			$("td.select", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT.'/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
+                "callback": function( sValue, y ) {
+                    oTable.fnDraw();
+                },
+		"submitdata": function ( value, settings ) {
+		    //alert( 'Number of rows: '+ oTable.fnGetData( this.parentNode, oTable.fnGetPosition( this )[2] ));
+                    return { "id": oTable.fnGetData( this.parentNode, 0), 
+			    "key": columns[oTable.fnGetPosition( this )[2]]};
+                },
+		"loadurl" : '<?php echo DOL_URL_ROOT.'/core/ajax/loadinplace.php'; ?>?json=Status&class=<?php echo get_class($this); ?>',
+		"type" : 'select',
+		"submit" : 'OK',
+                "height": "14px",
+                "tooltip": "Cliquer pour éditer...",
+                "indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>';?>",
+                "placeholder" : ""
+                
+            } );
+	}
+<?php endif; ?>
+    });
+<?php if($ColSearch) :?>
+    $("tfoot input").keyup( function () {
+    /* Filter on the column */
+    var id = $(this).parent().attr("id");
+    oTable.fnFilter( this.value, id);
+    } );
+    /*send selected level value to server */        
+    $("tfoot #level").change( function () {
+    /* Filter on the column */
+    var id = $(this).parent().attr("id");
+    var value = $(this).val();
+    oTable.fnFilter( value, id);
+    } );
+    /*send selected stcomm value to server */   
+    $("tfoot .flat").change( function () {
+    /* Filter on the column */
+    var id = $(this).parent().attr("id");
+    var value = $(this).val();
+    oTable.fnFilter( value, id);
+    } );
+<?php endif;?> 
+    // Select_all
+    $(document).ready(function() {
+	prth_datatable.dt_actions();
+    });
+});
+</script>
+<?php
+
+            
+            //$output.= "});"; // ATTENTION AUTOFILL NOT COMPATIBLE WITH COLVIS !!!!
+            /*$output.= 'new AutoFill( oTable, {
+		"aoColumnDefs": [
+                {
+                        "bEnable":false,
+                        "aTargets": [ 0,1,2,3,5,6,8]
+                },
+                {
+			"fnCallback": function ( ao ) {
+				var n = document.getElementById(\'output\');
+				for ( var i=0, iLen=ao.length ; i<iLen ; i++ ) {
+					n.innerHTML += "Update: old value: {"+
+						ao[i].oldValue+"} - new value: {"+ao[i].newValue+"}<br>";
+				}
+				n.scrollTop = n.scrollHeight;
+			},
+                        "bEnable" : true,
+			"aTargets": [ 4,7 ]
+		}]
+            } );';*/
+                
+            return;
+	}
+	
+	/**
+	* 	Contruct a HTML From for a fields
+	*
+	* 	@param	array	$aRow		parameter of the field
+	* 	@param	string	$key		Name of the field
+	* 	@param	string	$cssClass	CSS Classe for the form
+	* 	@return	string
+	*/
+	public function form($aRow, $key, $cssClass)
+	{
+		global $langs;
+	
+		$rtr = "";
+
+		if ($aRow->enable)
+		{
+			$rtr.= '<div class="formRow">'."\n";
+			$rtr.= '<label for="'.$key.'">'.$langs->trans($key).'</label>'."\n";
+			$rtr.= '<input type="text" maxlength="'.$aRow->length.'" id="'.$key.'" name="'.$key.'" value="'.$this->values->$key.'" class="input-text '.$cssClass.'" />'."\n";
+			$rtr.= '</div>'."\n";
+		}
+		return $rtr;
+	}
+    
+	/**
+	 *  For Generate fnRender param for a datatable parameter
+	 *
+	 *  @param $obj object of aocolumns parameters
+	 *  @param $ref_css name of #list
+	 *  @return string
+	 */
+    
+	public function datatablesFnRender($key,$type,$url="")
+	{
+		global $langs, $conf;
+		
+		if($type=="url")
+		{
+			if(empty($url)) // default url
+				$url = DOL_URL_ROOT.'/'.strtolower(get_class($this)).'/fiche.php?id=';
+			
+			$rtr = 'function(obj) {
+				var ar = [];
+				ar[ar.length] = "<img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.$this->fk_extrafields->ico.'\" border=\"0\" alt=\"'.$langs->trans("See ".get_class($this)).' : ";
+				ar[ar.length] = obj.aData.'.$key.'.toString();
+				ar[ar.length] = "\" title=\"'.$langs->trans("See ".get_class($this)).' : ";
+				ar[ar.length] = obj.aData.'.$key.'.toString();
+				ar[ar.length] = "\"></a> <a href=\"'.$url.'";
+				ar[ar.length] = obj.aData._id;
+				ar[ar.length] = "\">";
+				ar[ar.length] = obj.aData.'.$key.'.toString();
+				ar[ar.length] = "</a>";
+				var str = ar.join("");
+				return str;
+			}';
+		}
+		elseif($type=="date")
+		{
+			$rtr = 'function(obj) {
+			if(obj.aData.'.$key.')
+			{
+				var date = new Date(obj.aData.'.$key.'*1000);
+				return date.toLocaleDateString();
+			}
+			else
+				return null;
+			}';
+		}
+		elseif($type=="datetime")
+		{
+			$rtr = 'function(obj) {
+			if(obj.aData.'.$key.')
+			{
+				var date = new Date(obj.aData.'.$key.'*1000);
+				return date.toLocaleDateString()+"\n"+date.toLocaleTimeString();
+			}
+			else
+				return null;
+			}';
+		}
+		elseif($type=="status")
+		{
+			$rtr ='function(obj) {
+					var status = new Array();
+					var stat = obj.aData.'.$key.';';
+			foreach ($this->fk_extrafields->fields->$key->values as $key => $aRow)
+			{
+				$rtr.= 'status["'.$key.'"]= new Array("'.$langs->trans($key).'","'.$aRow->cssClass.'");';
+			}
+			$rtr.= 'var ar = [];
+				ar[ar.length] = "<span class=\"lbl ";
+				ar[ar.length] = status[stat][1];
+				ar[ar.length] = " sl_status\">";
+				ar[ar.length] = status[stat][0];
+				ar[ar.length] = "</span>";
+				var str = ar.join("");
+				return str;
+			}';
+		}
+		elseif($type=="attachment")
+		{
+			$url_server = $this->couchdb->getServerUri()."/".$this->couchdb->getDatabaseName();
+			
+			$rtr = 'function(obj) {
+				var ar = [];
+				ar[ar.length] = "<img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.$this->fk_extrafields->ico.'\" border=\"0\" alt=\"'.$langs->trans("See ".get_class($this)).' : ";
+				ar[ar.length] = obj.aData.'.$key.'.toString();
+				ar[ar.length] = "\" title=\"'.$langs->trans("See ".get_class($this)).' : ";
+				ar[ar.length] = obj.aData.'.$key.'.toString();
+				ar[ar.length] = "\"></a> <a href=\"'.$url_server.'/";
+				ar[ar.length] = obj.aData._id;
+				ar[ar.length] = "/";
+				ar[ar.length] = obj.aData.'.$key.'.toString();
+				ar[ar.length] = "\">";
+				ar[ar.length] = obj.aData.'.$key.'.toString();
+				ar[ar.length] = "</a>";
+				var str = ar.join("");
+				return str;
+			}';
+		}
+		else
+		{
+			dol_print_error($db, "Type of fnRender must be url, date, datetime, attachment or status");
+			exit;
+		}
+		
+		return $rtr;	
+	}
+	
+	/** Call a view on couchdb
+	 * 
+	 * @param	$name			string			name of the view
+	 * @param	$group_level	int				group level for reduce
+	 * @param	$key			string			search a specific key
+	 * @param	$startkey		string			search startkey
+	 * @param	$endkey			string			search endkey
+	 * @return  array
+	 */
+	public function getView($name,$group_level=0,$key=null,$startkey=null,$endkey=null)
+	{
+		global $conf;
+		
+		if(!empty($key))
+		{
+			if($group_level)
+				return $this->couchdb->limit($conf->liste_limit)->group(true)->group_level($group_level)->key($key)->getView(get_class ($this),$name);
+			else
+				return $this->couchdb->limit($conf->liste_limit)->key($key)->getView(get_class ($this),$name);
+		}
+		elseif(isset($startkey)&&isset($startkey))
+		{
+			if($group_level)
+				return $this->couchdb->limit($conf->liste_limit)->group(true)->group_level($group_level)->startkey($startkey)->endkey($endkey)->getView(get_class ($this),$name);
+			else
+				return $this->couchdb->limit($conf->liste_limit)->startkey($startkey)->endkey($endkey)->getView(get_class ($this),$name);
+		}
+		else
+		{
+			if($group_level)
+				return $this->couchdb->limit($conf->liste_limit)->group(true)->group_level($group_level)->getView(get_class ($this),$name);
+			else
+				return $this->couchdb->limit($conf->liste_limit)->getView(get_class ($this),$name);
+		}
+     }
+	 
+	 /**
+	  *	Set a value and modify type for couchdb
+	  * @param string $key
+	  * @param string $value 
+	  */
+	 
+	 public function set($key,$value)
+	 {
+		if(is_numeric($value))
+			$this->values->$key = (int)$value;
+		else
+			$this->values->$key = $value;
+
+		$params = new stdClass();
+		
+		$params->field = $key;
+		$params->value = $value;
+		
+		return $this->couchdb->updateDoc(get_class($this),"in-place",$params,$this->id);
+
+	 }
+}
+
+?>

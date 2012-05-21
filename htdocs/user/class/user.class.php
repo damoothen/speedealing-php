@@ -28,14 +28,14 @@
  *  \ingroup	core
  */
 
-require_once(DOL_DOCUMENT_ROOT ."/core/class/commonobject.class.php");
+require_once(DOL_DOCUMENT_ROOT ."/core/class/nosqlDocument.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/db/couchdb/lib/couchAdmin.php");
 
 
 /**
  *	Class to manage Dolibarr users
  */
-class User extends CommonObject
+class User extends nosqlDocument
 {
 	public $element='user';
 	public $table_element='user';

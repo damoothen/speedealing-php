@@ -24,17 +24,9 @@
  */
 
 /**
- *	\file       htdocs/societe/class/societe.class.php
- *	\ingroup    societe
- *	\brief      File for third party class
- */
-require_once(DOL_DOCUMENT_ROOT."/core/class/commonobject.class.php");
-
-
-/**
  *	Class to manage third parties objects (customers, suppliers, prospects...)
  */
-class Societe extends CommonObject
+class Societe extends nosqlDocument
 {
     public $element='societe';
     //public $table_element = 'societe';

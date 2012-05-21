@@ -17,22 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- *	\file       htdocs/core/menus/standard/auguria_backoffice.php
- *	\brief      Gestionnaire nomme Auguria du menu du haut
- *
- *	\remarks    La construction d'un gestionnaire pour le menu du haut est simple:
- *	\remarks    Toutes les entrees de menu a faire apparaitre dans la barre du haut
- *	\remarks    doivent etre affichees par <a class="tmenu" href="...?mainmenu=...">...</a>
- *	\remarks    ou si menu selectionne <a class="tmenusel" href="...?mainmenu=...">...</a>
- */
-
-/**
- *	\class      MenuTop
- *	\brief      Classe permettant la gestion du menu du haut Auguria
- */
-
-class MenuTop extends CommonObject
+class MenuTop extends nosqlDocument
 {
 	protected $db;
 	protected $couchdb;

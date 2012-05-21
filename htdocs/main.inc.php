@@ -1011,11 +1011,11 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
             
         // For new theme
         print '<script>
-	$(document).ready(function() {
-	//* common functions
-	prth_common.init();
-	});
-	</script>';
+		$(document).ready(function() {
+		//* common functions
+			prth_common.init();
+			});
+		</script>';
             
         // Output module javascript
         if (is_array($arrayofjs))

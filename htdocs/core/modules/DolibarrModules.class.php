@@ -31,7 +31,7 @@
  *  \class      DolibarrModules
  *  \brief      Classe mere des classes de description et activation des modules Dolibarr
  */
-abstract class DolibarrModules extends CommonObject
+abstract class DolibarrModules extends nosqlDocument
 {
 	//! Database handler
 	var $db;

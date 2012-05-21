@@ -49,7 +49,27 @@ if (! empty($json) && ! empty($class))
 	
 	if($json=="list")
 	{
-		$output = $object->getList();
+		$output = array(
+		"sEcho" => intval($_GET['sEcho']),
+		"iTotalRecords" => 0,
+		"iTotalDisplayRecords" => 0,
+		"aaData" => array()
+		);
+
+		$result = $object->getView("list");
+
+		//print_r($result);
+		//exit;
+		$iTotal=  count($result->rows);
+		$output["iTotalRecords"]=$iTotal;
+		$output["iTotalDisplayRecords"]=$iTotal;
+
+		foreach($result->rows AS $aRow) {
+			unset($aRow->value->class);
+			unset($aRow->value->_rev);
+			$output["aaData"][]=$aRow->value;
+			unset($aRow);
+		}
 	
 		header('Content-type: application/json');
 		echo json_encode($output);
