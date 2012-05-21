@@ -20,7 +20,6 @@
  * 	\file       htdocs/comm/serverprocess.php
  * 	\ingroup    commercial societe
  * 	\brief      load data to display
- * 	\version    $Id: serverprocess.php,v 1.6 2012/01/27 16:15:05 synry63 Exp $
  */
 require_once("../../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT . "/comm/prospect/class/prospect.class.php");

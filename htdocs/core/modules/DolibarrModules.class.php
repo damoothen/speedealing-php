@@ -31,11 +31,10 @@
  *  \class      DolibarrModules
  *  \brief      Classe mere des classes de description et activation des modules Dolibarr
  */
-abstract class DolibarrModules
+abstract class DolibarrModules extends CommonObject
 {
 	//! Database handler
 	var $db;
-	protected $couchdb;
 	//! Relative path to module style sheet
 	var $style_sheet = ''; // deprecated
 	//! Path to create when module activated
@@ -52,13 +51,19 @@ abstract class DolibarrModules
 	var $module_parts=array();
 	//! Tableau des documents ???
 	var $docs;
+	var $global; // Load global from database
 
 	var $dbversion = "-";
 	
-	function __construct() {
-		global $conf;
+	function __construct($db) {
+		parent::__construct($db);
 		
-		$this->couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
+		try{
+			$this->global = $this->couchdb->getDoc("const");
+		} catch (Exception $e) {
+			dol_print_error('', "Error : no const document in database".$e->getMessage());
+		}
+		
 	}
 
 
@@ -144,6 +149,7 @@ abstract class DolibarrModules
         if (! $err)
         {
             $this->db->commit();
+			$this->couchdb->storeDoc($this->global);
             return 1;
         }
         else
@@ -216,6 +222,7 @@ abstract class DolibarrModules
         if (! $err)
         {
             $this->db->commit();
+			$this->couchdb->storeDoc($this->global);
             return 1;
         }
         else
@@ -430,23 +437,9 @@ abstract class DolibarrModules
 
         // Common module
         $entity = ((! empty($this->always_enabled) || ! empty($this->core_enabled)) ? 0 : $conf->entity);
-
-        $sql = "DELETE FROM ".MAIN_DB_PREFIX."const";
-        $sql.= " WHERE ".$this->db->decrypt('name')." = '".$this->const_name."'";
-        $sql.= " AND entity IN (0, ".$entity.")";
-
-        dol_syslog(get_class($this)."::_active sql=".$sql, LOG_DEBUG);
-        $resql=$this->db->query($sql);
-        if (! $resql) $err++;
-
-        $sql = "INSERT INTO ".MAIN_DB_PREFIX."const (name,value,visible,entity) VALUES";
-        $sql.= " (".$this->db->encrypt($this->const_name,1);
-        $sql.= ",".$this->db->encrypt('1',1);
-        $sql.= ",0,".$entity.")";
-
-        dol_syslog(get_class($this)."::_active sql=".$sql, LOG_DEBUG);
-        $resql=$this->db->query($sql);
-        if (! $resql) $err++;
+		
+		$name = $this->const_name;
+		$this->global->values->$name = 1;
 
         return $err;
     }
@@ -460,18 +453,13 @@ abstract class DolibarrModules
     function _unactive()
     {
         global $conf;
+		
+		$name = $this->const_name;
 
+		if(isset($this->global->values->$name))
+			unset($this->global->values->$name);
+		
         $err = 0;
-
-        // Common module
-        $entity = ((! empty($this->always_enabled) || ! empty($this->core_enabled)) ? 0 : $conf->entity);
-
-        $sql = "DELETE FROM ".MAIN_DB_PREFIX."const";
-        $sql.= " WHERE ".$this->db->decrypt('name')." = '".$this->const_name."'";
-        $sql.= " AND entity IN (0, ".$entity.")";
-
-        dol_syslog(get_class($this)."::_unactive sql=".$sql);
-        $this->db->query($sql);
 
         return $err;
     }
@@ -715,20 +703,17 @@ abstract class DolibarrModules
     function delete_tabs()
     {
         global $conf;
+		
+		$name = $this->const_name."_TABS";
+
+		foreach($this->global->values as $key => $aRow)
+		{
+			if(strpos($key,$name) != false)
+				if(isset($this->global->values->$key))
+					unset($this->global->values->$key);
+		}
 
         $err=0;
-
-        $sql = "DELETE FROM ".MAIN_DB_PREFIX."const";
-        $sql.= " WHERE ".$this->db->decrypt('name')." like '".$this->const_name."_TABS_%'";
-        $sql.= " AND entity = ".$conf->entity;
-
-        dol_syslog(get_class($this)."::delete_tabs sql=".$sql);
-        if (! $this->db->query($sql))
-        {
-            $this->error=$this->db->lasterror();
-            dol_syslog(get_class($this)."::delete_tabs ".$this->error, LOG_ERR);
-            $err++;
-        }
 
         return $err;
     }
@@ -751,33 +736,10 @@ abstract class DolibarrModules
             {
                 if ($value)
                 {
-                    $sql = "INSERT INTO ".MAIN_DB_PREFIX."const (";
-                    $sql.= "name";
-                    $sql.= ", type";
-                    $sql.= ", value";
-                    $sql.= ", note";
-                    $sql.= ", visible";
-                    $sql.= ", entity";
-                    $sql.= ")";
-                    $sql.= " VALUES (";
-                    $sql.= $this->db->encrypt($this->const_name."_TABS_".$i,1);
-                    $sql.= ", 'chaine'";
-                    $sql.= ", ".$this->db->encrypt($value,1);
-                    $sql.= ", null";
-                    $sql.= ", '0'";
-                    $sql.= ", ".$conf->entity;
-                    $sql.= ")";
-
-                    dol_syslog(get_class($this)."::insert_tabs sql=".$sql);
-                    $resql=$this->db->query($sql);
-                    /* Allow duplicate key
-                     if (! $resql)
-                     {
-                        $err++;
-                        }
-                        */
+					$name = $this->const_name."_TABS_".$i;
+					$this->global->values->$name = $value;
+					$i++;
                 }
-                $i++;
             }
         }
         return $err;
@@ -869,16 +831,8 @@ abstract class DolibarrModules
 
             if ($deleteonunactive)
             {
-                $sql = "DELETE FROM ".MAIN_DB_PREFIX."const";
-                $sql.= " WHERE ".$this->db->decrypt('name')." = '".$name."'";
-                $sql.= " AND entity in (0, ".$conf->entity.")";
-                dol_syslog(get_class($this)."::delete_const sql=".$sql);
-                if (! $this->db->query($sql))
-                {
-                    $this->error=$this->db->lasterror();
-                    dol_syslog(get_class($this)."::delete_const ".$this->error, LOG_ERR);
-                    $err++;
-                }
+				if(isset($this->global->values->$name))
+					unset($this->global->values->$name);
             }
         }
 
@@ -1136,15 +1090,10 @@ abstract class DolibarrModules
 	foreach ($this->menu as $key => $value)
         {
 	    try {
-		$menu = $this->couchdb->getDoc($value['_id']);
+			$menu = $this->couchdb->getDoc($value['_id']);
 	    	$menu->enabled = false;
-		$this->couchdb->storeDoc($menu);
-	    } catch (Exception $e) {
-		$error ="ErrorBadDefinitionOfMenuArrayInModuleDescriptor (bad value for delete_menus _id)";
-		$error.="<br>Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
-		dol_print_error("",$error);
-		exit;
-	    }
+			$this->couchdb->storeDoc($menu);
+	    } catch (Exception $e) {}
 	}
 
         return $err;
@@ -1311,38 +1260,8 @@ abstract class DolibarrModules
     				}
     			}
 
-    			$sql = "INSERT INTO ".MAIN_DB_PREFIX."const (";
-    			$sql.= "name";
-    			$sql.= ", type";
-    			$sql.= ", value";
-    			$sql.= ", note";
-    			$sql.= ", visible";
-    			$sql.= ", entity";
-    			$sql.= ")";
-    			$sql.= " VALUES (";
-    			$sql.= $this->db->encrypt($this->const_name."_".strtoupper($key), 1);
-    			$sql.= ", 'chaine'";
-    			$sql.= ", ".$this->db->encrypt($newvalue, 1);
-    			$sql.= ", null";
-    			$sql.= ", '0'";
-    			$sql.= ", ".$entity;
-    			$sql.= ")";
-
-    			dol_syslog(get_class($this)."::insert_const_".$key." sql=".$sql);
-    			$resql=$this->db->query($sql,1);
-    			if (! $resql)
-    			{
-    			    if ($this->db->lasterrno() != 'DB_ERROR_RECORD_ALREADY_EXISTS')
-    			    {
-        			    $error++;
-        				$this->error=$this->db->lasterror();
-        				dol_syslog(get_class($this)."::insert_const_".$key." ".$this->error, LOG_ERR);
-    			    }
-    			    else
-    			    {
-    			        dol_syslog(get_class($this)."::insert_const_".$key." Record already exists.", LOG_WARNING);
-    			    }
-    			}
+				$name = $this->const_name."_".strtoupper($key);
+				$this->global->values->$name = $newvalue;
     		}
     	}
     	return $error;
@@ -1366,18 +1285,14 @@ abstract class DolibarrModules
     		{
     			// If entity is defined
     			if (is_array($value) && isset($value['entity'])) $entity = $value['entity'];
+				
+				$name = $this->const_name."_".strtoupper($key);
 
-    			$sql = "DELETE FROM ".MAIN_DB_PREFIX."const";
-    			$sql.= " WHERE ".$this->db->decrypt('name')." LIKE '".$this->const_name."_".strtoupper($key)."'";
-    			$sql.= " AND entity = ".$entity;
-
-    			dol_syslog(get_class($this)."::delete_const_".$key." sql=".$sql);
-    			if (! $this->db->query($sql))
-    			{
-    				$this->error=$this->db->lasterror();
-    				dol_syslog(get_class($this)."::delete_const_".$key." ".$this->error, LOG_ERR);
-    				$err++;
-    			}
+				foreach($this->global->values as $key => $aRow)
+				{
+					if(strpos($key,$name) != false)
+						unset($this->global->values->$key);
+				}
     		}
     	}
 

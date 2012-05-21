@@ -25,35 +25,12 @@
 /**
  *  Class to manage menu entries
  */
-class Menubase
+class Menubase extends CommonObject
 {
     var $db;							// To store db handler
     var $error;							// To return error code (or message)
     var $errors=array();				// To return several error codes (or messages)
 
-    var $id;
-    var $values;
-
-    protected $couchdb;
-
-
-    /**
-	 *	Constructor
-	 *
-	 *  @param		DoliDB		$db 		    Database handler
-     *  @param     	string		$menu_handler	Menu handler
-     *  @param     	string		$type			Type
-     */
-    function Menubase($db)
-    {   
-	global $conf;
-	
-        $this->db = $db;
-        
-	$this->couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
-        
-        return 1;
-    }
 
 
     /**

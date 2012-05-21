@@ -31,12 +31,14 @@ $langs->load("commercial");
  * you want to insert a non-database field (for example a counter or static image)
  */
 
+$couchdb = new couchClient("http://"."Administrator:admin@".substr($conf->couchdb->host, 7).':'.$conf->couchdb->port.'/',$conf->couchdb->name);
+
 
 $flush=0;
 if($flush)
 {
     // reset old value
-    $result = $couchdb->limit(50000)->getView('menu','target_id');
+    $result = $couchdb->limit(50000)->getView('MenuTop','target_id');
     $i=0;
     
     if(count($result->rows)==0)
@@ -97,11 +99,47 @@ while ($aRow = $db->fetch_object($result)) {
         
         $tabperefils[$rowid]=$fk_menu;
         
-	$pos=strpos($aRow->url, "?");
-        if($pos!=false)
+		$pos1=strpos($aRow->url, "mainmenu");
+		$pos2=strpos($aRow->url, "&");
+		
+		//print $aRow->url."</br>";
+        if($pos1 > 0 )
         {
-            $aRow->url=substr($aRow->url, 0,$pos);
+			if($pos2 > 0 && $pos2 > $pos1) // retire mainmenu= in url
+			{
+				$url = substr($aRow->url, 0,$pos1);
+				$url.= substr($aRow->url, $pos2+5); // supprimer le &
+				$aRow->url = $url;
+			}
+			else
+			{
+				if($pos2 > 0)
+					$aRow->url=substr($aRow->url, 0,$pos2-5);
+				else
+					$aRow->url=substr($aRow->url, 0,$pos1-1);
+			}
         }
+		
+		$pos1=strpos($aRow->url, "leftmenu");
+		$pos2=strpos($aRow->url, "&");
+		
+        if($pos1 > 0 )
+        {
+			if($pos2 > 0 && $pos2 > $pos1) // retire leftmenu= in url
+			{
+				$url = substr($aRow->url, 0,$pos1);
+				$url.= substr($aRow->url, $pos2+5); // supprimer le &
+				$aRow->url = $url;
+				//print $url."toto</br>";
+			}
+			else
+				if($pos2 > 0)
+					$aRow->url=substr($aRow->url, 0,$pos1-5);
+				else
+					$aRow->url=substr($aRow->url, 0,$pos1-1);
+        }
+		
+		//print $aRow->url."</br>";
         
         if($aRow->type == "top")
         {
@@ -115,27 +153,30 @@ while ($aRow = $db->fetch_object($result)) {
         }
         else
         {
-	    $aRow->class="menu";
-	    $name = "menu:".strtolower($aRow->title);
-	    $pos=strpos($name, "|");
+			$aRow->class="menu";
+			$name = "menu:".strtolower($aRow->module).strtolower($aRow->title);
+			$pos=strpos($name, "|");
         
-	    if($pos!=false)
-	    {
-		$name=substr($name, 0,$pos);
-	    }
+			if($pos!=false)
+			{
+				$name=substr($name, 0,$pos);
+			}
 	    
-	    if($tabinsert[$name])
-		$name.= "1"; // Ajoute 1 en cas de doublons
-            unset($aRow->type);
-            unset($aRow->leftmenu);
-            unset($aRow->mainmenu);
+			if($tabinsert[$name])
+			{
+				$name = is_uniq($tabinsert, $name, 0); // Ajoute 1 en cas de doublons
+			}
+			
+			unset($aRow->type);
+			unset($aRow->leftmenu);
+			unset($aRow->mainmenu);
 	    
 	    
-	    $obj[$name] = $aRow;
+			$obj[$name] = $aRow;
 	    
-	    // Add father
-	    $obj[$name]->fk_menu = $tabname[$fk_menu];
-            $obj[$name]->_id = $name;
+			// Add father
+			$obj[$name]->fk_menu = $tabname[$fk_menu];
+			$obj[$name]->_id = $name;
 	    
             //$obj[$tabname[$fk_menu]]->submenu[$name] = $aRow;
             //uasort($obj[$tabname[$fk_menu]]->submenu,array("Menubase","compare")); // suivant position
@@ -160,14 +201,14 @@ while ($aRow = $db->fetch_object($result)) {
         }*/
         
         $tabname[$rowid]=$name;
-	$tabinsert[$name]=true;
+		$tabinsert[$name]=true;
         
         $i++;
 }
 $db->free($result);
 unset($result);
 
-$result = $couchdb->limit(50000)->getView('menu','target_id');
+$result = $couchdb->limit(50000)->getView('MenuTop','target_id');
     
 foreach ($result->rows as $key => $aRow)
 {
@@ -185,4 +226,18 @@ try {
 	dol_print_error("", $error);
         exit(1);
     }
+	
+
+	function is_uniq(&$tabinsert, $name, $level)
+	{
+		if($tabinsert[$name.$level])
+		{	
+			$level++;	
+			return is_uniq($tabinsert, $name, $level);
+		}
+		else
+			return $name.strval($level);
+	}
+	
+	
 ?>

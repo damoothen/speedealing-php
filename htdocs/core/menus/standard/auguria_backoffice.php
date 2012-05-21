@@ -32,7 +32,7 @@
  *	\brief      Classe permettant la gestion du menu du haut Auguria
  */
 
-class MenuTop
+class MenuTop extends CommonObject
 {
 	protected $db;
 	protected $couchdb;
@@ -40,8 +40,8 @@ class MenuTop
 	var $hideifnotallowed=0;						// Put 0 for back office menu, 1 for front office menu
 	var $atarget="";                               // Valeur du target a utiliser dans les liens
 
-	var $topmenu;	// array of level 0
-	var $submenu;	// array of level > 0
+	var $topmenu=array();	// array of level 0
+	var $submenu=array();	// array of level > 0
 	var $selected = array();  // array of selected
 
 	/**
@@ -53,29 +53,51 @@ class MenuTop
 	{
 		global $conf;
 		
-		$this->db=$db;
-		$this->couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
+		parent::__construct($db);
 		
 		$tabMenu=array();
-        
-		try {	
-		    $topmenu = $this->couchdb->getView(get_class($this),"list");
-		    $submenu = $this->couchdb->getView(get_class($this),"submenu");
-		} catch (Exception $e) {
-		    $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
-		    dol_print_error('',$error);
-		    exit;
+		
+		if (! empty($conf->memcached->enabled) && ! empty($conf->global->MEMCACHED_SERVER))
+		{
+			$this->topmenu=dol_getcache("topmenu");
+			//print_r($this->topmenu);
+			$this->submenu=dol_getcache("submenu");
+			//print_r($this->submenu);
+			if(is_array($this->topmenu) && is_array($this->submenu))
+			{
+				return 1;
+			}
+				
 		}
+        
+		$this->topmenu = array();
+		$this->submenu = array();
+		
+		try {	
+				$topmenu = $this->couchdb->getView(get_class($this),"list");
+				$submenu = $this->couchdb->getView(get_class($this),"submenu");
+		} catch (Exception $e) {
+				$error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+				dol_print_error('',$error);
+				exit;
+		}
+
 		
 		$this->topmenu = $topmenu->rows;
-
-		// Construct submenu
+	
+			// Construct submenu
 		foreach ($submenu->rows as $key => $aRow)
 		{
-		    $this->submenu[$aRow->key[0]][]= $aRow->value;
+			$this->submenu[$aRow->key[0]][]= $aRow->value;
 		}
-		//print_r($submenu);exit;
-	
+		
+		if (! empty($conf->memcached->enabled) && ! empty($conf->global->MEMCACHED_SERVER))
+		{
+			//print_r($this->submenu);exit;
+			dol_setcache("topmenu", $this->topmenu);
+			dol_setcache("submenu", $this->submenu);
+		}
+		
 		return 1;
 	}
 
@@ -106,24 +128,6 @@ class MenuTop
 	    if (isset($_GET["idmenu"]))   $_SESSION["idmenu"]=$_GET["idmenu"];
 
 	    $tabMenu=array();
-        
-	    try {	
-		$result = $this->couchdb->getView(get_class($this),"list");
-		$submenu_tmp = $this->couchdb->getView(get_class($this),"submenu");
-	    } catch (Exception $e) {
-		$error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
-		dol_print_error('',$error);
-		exit;
-	    }
-
-	    // Construct submenu
-	    foreach ($submenu_tmp->rows as $key => $aRow)
-	    {
-		$submenu[$aRow->key[0]][]= $aRow->value;
-	    }
-	    //print_r($submenu);exit;
-	
-	    unset($submenu_tmp);
 
 	    $this->print_start_menu_array_auguria();
 
@@ -148,7 +152,7 @@ class MenuTop
                         $classname='mb_parent';
                         if($i==0)
                             $classname.=' first_el';
-                        if (! empty($_SESSION['idmenu']) && $this->menuSelected($newTabMenu, $newTabMenu->_id))
+                        if (! empty($_SESSION['idmenu']) && $this->menuSelected($newTabMenu))
                         {
                             $classname.=' pageselected';
                             $this->selected[0]->name = $newTabMenu->title;
@@ -161,11 +165,11 @@ class MenuTop
                         print '</a>';
                         // Submenu level 1
                         $selected = $this->print_submenu($newTabMenu->_id,1);
-			if($selected)
-			{
-			    $this->selected[0]->name = $newTabMenu->title;
-			    $this->selected[0]->url = $url;
-			}
+						if($selected)
+						{
+							$this->selected[0]->name = $newTabMenu->title;
+							$this->selected[0]->url = $url;
+						}
 
                         print '</li>';
                         $i++;
@@ -233,49 +237,49 @@ class MenuTop
 	    print '<ul style="display:none">';
 	    foreach ($result as $aRow)
 	    {
-		$menu = $aRow;
-		//print_r($menu);exit;
-		$newTabMenu = $this->verifyMenu($menu);
+			$menu = $aRow;
+			//print_r($menu);exit;
+			$newTabMenu = $this->verifyMenu($menu);
                 
-		if ($newTabMenu->enabled == true)
-		{
-		    //$idsel=(empty($newTabMenu_id)?'none':$newTabMenu->_id);
-		    if ($newTabMenu->perms == true)	// Is allowed
-		    {
-			$url = $this->menuURL($newTabMenu, $menu->_id);
+			if ($newTabMenu->enabled == true)
+			{
+				//$idsel=(empty($newTabMenu_id)?'none':$newTabMenu->_id);
+				if ($newTabMenu->perms == true)	// Is allowed
+				{
+					$url = $this->menuURL($newTabMenu, $menu->_id);
                        
-			//print $url;exit;
+					//print $url;exit;
         
-			// Define the class (top menu selected or not)
-			$classname='mb_parent';
-			if($i==0)
-			    $classname.=' first_el';
-			if (! empty($_SESSION['idmenu']) && $this->menuSelected($newTabMenu,$menu->_id))
-			{
-			    $classname.=' pageselected';
-			    $this->selected[$level]->name = $newTabMenu->title;
-			    $this->selected[$level]->url = $url;
-			    $selectnow = true;
-			}
+					// Define the class (top menu selected or not)
+					$classname='mb_parent';
+					if($i==0)
+						$classname.=' first_el';
+					if (! empty($_SESSION['idmenu']) && $this->menuSelected($newTabMenu))
+					{
+						$classname.=' pageselected';
+						$this->selected[$level]->name = $newTabMenu->title;
+						$this->selected[$level]->url = $url;
+						$selectnow = true;
+					}
 
-			print '<li>';
-			print '<a class="'.$classname.'" href="'.$url.'">';
-			print '<!-- Add menu entry with mainmenu='.$menu->_id.' -->'."\n";
-			print $newTabMenu->title;
-			print '</a>';
-			// Submenu level 1
-			//if(isset($newTabMenu->submenu))
-			$selected = $this->print_submenu($newTabMenu->_id, ($level+1));
-			if($selected)
-			{
-			    $this->selected[$level]->name = $newTabMenu->title;
-			    $this->selected[$level]->url = $url;
-			    $selectnow = true;
+					print '<li>';
+					print '<a class="'.$classname.'" href="'.$url.'">';
+					print '<!-- Add menu entry with mainmenu='.$menu->_id.' -->'."\n";
+					print $newTabMenu->title;
+					print '</a>';
+					// Submenu level 1
+					//if(isset($newTabMenu->submenu))
+					$selected = $this->print_submenu($newTabMenu->_id, ($level+1));
+					if($selected)
+					{
+						$this->selected[$level]->name = $newTabMenu->title;
+						$this->selected[$level]->url = $url;
+						$selectnow = true;
+					}
+					print '</li>';
+					$i++;
+				}
 			}
-			print '</li>';
-			$i++;
-		    }
-		}
 	    }
 
 	    print '</ul>';
@@ -386,19 +390,23 @@ class MenuTop
 	* @param	session		$session            Session Var
 	* @return	true if selected
 	*/
-	function menuSelected($newTabMenu,$_id)
+	function menuSelected($newTabMenu)
 	{   
-	    if($_id==$_SESSION['idmenu'])
-		return true;
+	    if($newTabMenu->_id==$_SESSION['idmenu'])
+			return true;
     
-	    /*if(isset($newTabMenu->fk_menu))
-	    {
-		if(menuSelected($aRow, $key))
-		    return true;
-	    }*/
-	    else
+		$result = $this->submenu[$newTabMenu->_id];
+		if(count($result)==0)
+			return false;
+		
+		foreach ($result as $aRow)
+		{	
+			if($this->menuSelected($aRow))
+				return true;
+		}
 		return false;
 	}
+
 }
 
 ?>

@@ -41,6 +41,8 @@ abstract class CommonObject
     public $error;
     public $errors;
     public $canvas;                // Contains canvas name if it is
+	
+	public $fk_extrafields;
 
 
 	/**
@@ -56,15 +58,40 @@ abstract class CommonObject
     	$this->db = $db;
 		$this->couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
 		$this->couchdb->setSessionCookie($_SESSION['couchdb']);
-		//$this->couchdb->setSessionCookie("AuthSession=YWRtaW46NEZCNjY3MzI64i88haDY8r69K9LFivG1hwnAn-o");
 		
-        try {
-            $this->fk_extrafields = $this->couchdb->getDoc("extrafields:".  get_class($this)); // load extrafields for class
-        }catch (Exception $e) {
-            $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
-			dol_syslog(get_class($this)."::__contruct ".$error, LOG_WARN);
-        }
+		if(substr(get_class($this),0,3)=="mod") // If module no fk_extrafields
+			return 1;
+		
+		$found=false;
+		
+		if ($conf->memcached->enabled)
+		{
+			$result=dol_getcache("extrafields:".get_class($this));
 
+			if(is_object($result))
+			{
+				$found=true;
+			}
+				
+		}
+		
+		if(!$found)
+		{
+			$result = array();
+			try{
+				$result = $this->couchdb->getDoc("extrafields:".get_class($this)); // load extrafields for class
+
+				if ($conf->memcached->enabled)
+				{
+					dol_setcache("extrafields:".get_class($this), $result);
+				}
+			} catch(Exception $e) {
+				dol_print_error("",$e->getMessage());
+				dol_syslog(get_class($this)."::__contruct ".$error, LOG_WARN);
+			}
+		}
+		
+		$this->fk_extrafields = $result;
     }
     
     
@@ -160,8 +187,8 @@ abstract class CommonObject
     {
         global $conf;
 
-        $lastname=$this->lastname;
-        $firstname=$this->firstname;
+        $lastname=$this->values->Lastname;
+        $firstname=$this->values->Firstname;
         if (empty($lastname))  $lastname=($this->name?$this->name:$this->nom);
         if (empty($firstname)) $firstname=$this->prenom;
 
@@ -2896,10 +2923,10 @@ $(document).ready(function() {
     "aaSorting" : <?php echo json_encode($obj->aaSorting);?>,
 <?php endif;?>
 <?php if($json) : ?>
-<?php if(isset($obj->fnDrawCallback)):?>
+<?php if(isset($obj->sAjaxSource)):?>
 	"sAjaxSource": "<?php echo $obj->sAjaxSource; ?>",
 <?php else :?>
-    "sAjaxSource" : "<?php echo $_SERVER['PHP_SELF'];?>?json=list",
+    "sAjaxSource" : "<?php echo DOL_URL_ROOT.'/core/ajax/listDatatables.php'; ?>?json=list&class=<?php echo get_class($this); ?>",
 <?php endif;?>
 <?php endif;?>
     "iDisplayLength": <?php echo (int)$conf->global->MAIN_SIZE_LISTE_LIMIT;?>,
@@ -2957,11 +2984,11 @@ $(document).ready(function() {
 "<?php echo $aRow->mDataProp; ?>",
 <?php endforeach; ?>
 ];
-    $("td.edit", this.fnGetNodes()).editable( '<?php echo $_SERVER['PHP_SELF'];?>?json=edit', {
+    $("td.edit", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT.'/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
                 "callback": function( sValue, y ) {
                     oTable.fnDraw();
                 },
-		"submitdata": function ( value, settings ) {
+				"submitdata": function ( value, settings ) {
                     return { "id": oTable.fnGetData( this.parentNode, 0), 
                     "key": columns[oTable.fnGetPosition( this )[2]]};
                 },
@@ -2971,7 +2998,7 @@ $(document).ready(function() {
                 "placeholder" : ""
                 
             } );
-    $("td.select", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT.'/core/ajax/saveinplace.php'; ?>?json=edit', {
+			$("td.select", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT.'/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
                 "callback": function( sValue, y ) {
                     oTable.fnDraw();
                 },
@@ -2980,7 +3007,7 @@ $(document).ready(function() {
                     return { "id": oTable.fnGetData( this.parentNode, 0), 
 			    "key": columns[oTable.fnGetPosition( this )[2]]};
                 },
-		"loadurl" : '<?php echo DOL_URL_ROOT.'/core/ajax/loadinplace.php'; ?>?json=Status',
+		"loadurl" : '<?php echo DOL_URL_ROOT.'/core/ajax/loadinplace.php'; ?>?json=Status&class=<?php echo get_class($this); ?>',
 		"type" : 'select',
 		"submit" : 'OK',
                 "height": "14px",
@@ -3078,21 +3105,22 @@ $(document).ready(function() {
 	 *  @return string
 	 */
     
-	public function datatablesFnRender($key,$type)
+	public function datatablesFnRender($key,$type,$url="")
 	{
 		global $langs, $conf;
 		
 		if($type=="url")
 		{
+			if(empty($url)) // default url
+				$url = DOL_URL_ROOT.'/'.strtolower(get_class($this)).'/fiche.php?id=';
+			
 			$rtr = 'function(obj) {
 				var ar = [];
-				ar[ar.length] = "<a href=\"'.DOL_URL_ROOT.'/'.strtolower(get_class($this)).'/fiche.php?id=";
-				ar[ar.length] = obj.aData._id;
-				ar[ar.length] = "\"><img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.$this->fk_extrafields->ico.'\" border=\"0\" alt=\"Afficher societe : ";
+				ar[ar.length] = "<img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.$this->fk_extrafields->ico.'\" border=\"0\" alt=\"'.$langs->trans("See ".get_class($this)).' : ";
 				ar[ar.length] = obj.aData.'.$key.'.toString();
-				ar[ar.length] = "\" title=\"Afficher soci&eacute;t&eacute; : ";
+				ar[ar.length] = "\" title=\"'.$langs->trans("See ".get_class($this)).' : ";
 				ar[ar.length] = obj.aData.'.$key.'.toString();
-				ar[ar.length] = "\"></a> <a href=\"'.DOL_URL_ROOT.'/'.strtolower(get_class($this)).'/fiche.php?id=";
+				ar[ar.length] = "\"></a> <a href=\"'.$url.'";
 				ar[ar.length] = obj.aData._id;
 				ar[ar.length] = "\">";
 				ar[ar.length] = obj.aData.'.$key.'.toString();
@@ -3129,10 +3157,8 @@ $(document).ready(function() {
 		{
 			$rtr ='function(obj) {
 					var status = new Array();
-					var stat = obj.aData.Status;
-					if(typeof stat === "undefined")
-						stat = "'.$this->fk_extrafields->fields->$key->default.'";';
-			foreach ($this->fk_status->values as $key => $aRow)
+					var stat = obj.aData.'.$key.';';
+			foreach ($this->fk_extrafields->fields->$key->values as $key => $aRow)
 			{
 				$rtr.= 'status["'.$key.'"]= new Array("'.$langs->trans($key).'","'.$aRow->cssClass.'");';
 			}
@@ -3146,9 +3172,30 @@ $(document).ready(function() {
 				return str;
 			}';
 		}
+		elseif($type=="attachment")
+		{
+			$url_server = $this->couchdb->getServerUri()."/".$this->couchdb->getDatabaseName();
+			
+			$rtr = 'function(obj) {
+				var ar = [];
+				ar[ar.length] = "<img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.$this->fk_extrafields->ico.'\" border=\"0\" alt=\"'.$langs->trans("See ".get_class($this)).' : ";
+				ar[ar.length] = obj.aData.'.$key.'.toString();
+				ar[ar.length] = "\" title=\"'.$langs->trans("See ".get_class($this)).' : ";
+				ar[ar.length] = obj.aData.'.$key.'.toString();
+				ar[ar.length] = "\"></a> <a href=\"'.$url_server.'/";
+				ar[ar.length] = obj.aData._id;
+				ar[ar.length] = "/";
+				ar[ar.length] = obj.aData.'.$key.'.toString();
+				ar[ar.length] = "\">";
+				ar[ar.length] = obj.aData.'.$key.'.toString();
+				ar[ar.length] = "</a>";
+				var str = ar.join("");
+				return str;
+			}';
+		}
 		else
 		{
-			dol_print_error($db, "Type of fnRender must be url, date, datetime or status");
+			dol_print_error($db, "Type of fnRender must be url, date, datetime, attachment or status");
 			exit;
 		}
 		
@@ -3212,6 +3259,38 @@ $(document).ready(function() {
 		return $this->couchdb->updateDoc(get_class($this),"in-place",$params,$this->id);
 
 	 }
+	 
+	 /**
+	  *	Return list for datatable from the list view of couchdb
+	  * @return string
+	  */
+	 public function getList()
+	 {
+		$output = array(
+		"sEcho" => intval($_GET['sEcho']),
+		"iTotalRecords" => 0,
+		"iTotalDisplayRecords" => 0,
+		"aaData" => array()
+		);
+
+		$result = $this->getView("list");
+
+		//print_r($result);
+		//exit;
+		$iTotal=  count($result->rows);
+		$output["iTotalRecords"]=$iTotal;
+		$output["iTotalDisplayRecords"]=$iTotal;
+
+		foreach($result->rows AS $aRow) {
+			unset($aRow->value->class);
+			unset($aRow->value->_rev);
+			$output["aaData"][]=$aRow->value;
+			unset($aRow);
+		}
+		
+		return $output;
+	 }
+
         
 }
 

@@ -379,7 +379,7 @@
 		.h_scrollable {position:relative;overflow:hidden;width:100%;min-height:200px}
 		.h_scrollable .items {width:20000em;position:absolute}
 		.h_navi li {cursor:pointer}
-		.tab_pane {overflow:hidden}
+		.tab_pane {}
 
 	/* accordion */
 		.accordion {margin:0}

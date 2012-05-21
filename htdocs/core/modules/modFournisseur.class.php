@@ -41,6 +41,8 @@ class modFournisseur extends DolibarrModules
 	function modFournisseur($db)
 	{
 		global $conf;
+		
+		parent::__construct($db);
 
 		$this->db = $db;
 		$this->numero = 40;

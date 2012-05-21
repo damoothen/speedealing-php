@@ -42,6 +42,8 @@ class modAdherent extends DolibarrModules
      */
     function modAdherent($db)
     {
+		parent::__construct($db);
+		
         $this->db = $db;
         $this->numero = 310;
 

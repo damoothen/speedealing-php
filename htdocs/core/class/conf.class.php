@@ -26,6 +26,7 @@
  *  				Config is stored into file conf.php
  */
 
+require_once(DOL_DOCUMENT_ROOT ."/core/lib/memory.lib.php"); // Lib for memcached
 
 /**
  *  Class to stock current configuration
@@ -41,6 +42,9 @@ class Conf
 	var $global;
 	//! url of couchdb server
 	var $couchdb;
+	
+	//! url of memcached server
+	var $Memcached;
 
 	//! To store if javascript/ajax is enabked
 	public $use_javascript_ajax;
@@ -90,6 +94,7 @@ class Conf
 		$this->file				= (object) array();
 		$this->db				= (object) array();
 		$this->couchdb			= (object) array();
+		$this->Memcached		= (object) array();
 		$this->global			= (object) array();
 		$this->mycompany		= (object) array();
 		$this->admin			= (object) array();
@@ -126,9 +131,12 @@ class Conf
 	 *	@param      DoliDB		$db		Handler d'acces base
 	 *	@return     int					< 0 if KO, >= 0 if OK
 	 */
-	function setValues($db)
+	function setValues(couchClient $couchdb)
 	{
+		global $conf;
+		
 		dol_syslog(get_class($this)."::setValues");
+		$couchdb->useDatabase($this->couchdb->name);
 
 		// Avoid warning if not defined
 		if (empty($this->db->dolibarr_main_db_encryption)) $this->db->dolibarr_main_db_encryption=0;
@@ -139,30 +147,43 @@ class Conf
 		 * - En constante php (TODO a virer)
 		 * - En $this->global->key=value
 		 */
-		$sql = "SELECT ".$db->decrypt('name')." as name,";
-		$sql.= " ".$db->decrypt('value')." as value, entity";
-		$sql.= " FROM ".MAIN_DB_PREFIX."const";
-
-		if (! empty($this->multicompany->transverse_mode))
+		$found=false;
+		
+		if (! empty($this->Memcached->host))
 		{
-			$sql.= " WHERE entity IN (0,1,".$this->entity.")";
-		}
-		else
-		{
-			$sql.= " WHERE entity IN (0,".$this->entity.")";
-		}
-		$sql.= " ORDER BY entity";	// This is to have entity 0 first, then entity 1 that overwrite.
-
-		$resql = $db->query($sql);
-		if ($resql)
-		{
-			$i = 0;
-			$numr = $db->num_rows($resql);
-			while ($i < $numr)
+			$result=dol_getcache("const");
+			if(is_object($result))
 			{
-				$objp = $db->fetch_object($resql);
-				$key=$objp->name;
-				$value=$objp->value;
+				$found=true;
+			}
+				
+		}
+		
+		if(!$found)
+		{
+			$result = array();
+			try{
+				$result = $couchdb->getDoc('const');
+				//print_r($result);
+				if (! empty($this->Memcached->host))
+				{
+					dol_setcache("const", $result);
+				}
+			} catch(Exception $e) {
+				dol_print_error("",$e->getMessage());
+				exit;
+			}
+		}
+		
+		$i = 0;
+		if(count($result->values)==0)
+		{
+			dol_print_error("","Error in const document : values is empty !");
+			exit;
+		}
+		
+		foreach($result->values as $key => $value)
+		{
 				if ($key)
 				{
 					if (! defined("$key")) define("$key", $value);	// In some cases, the constant might be already forced (Example: SYSLOG_FILE_ON and SYSLOG_FILE during install)
@@ -210,20 +231,9 @@ class Conf
 					}
 				}
 				$i++;
-			}
-
-		    $db->free($resql);
 		}
 		//var_dump($this->modules);
 		//var_dump($this->modules_parts);
-
-		// Object $mc
-		if (! defined('NOREQUIREMC') && ! empty($this->multicompany->enabled))
-		{
-			global $mc;
-			$ret = @dol_include_once('/multicompany/class/actions_multicompany.class.php');
-			if ($ret) $mc = new ActionsMulticompany($db);
-		}
 
 		// Second or others levels object
 		$this->propal->cloture				= (object) array();
@@ -436,9 +446,6 @@ class Conf
             $this->top_menu=(empty($this->global->MAIN_MENUFRONT_STANDARD_FORCED)?$this->global->MAIN_MENUFRONT_STANDARD:$this->global->MAIN_MENUFRONT_STANDARD_FORCED);
             $this->smart_menu=(empty($this->global->MAIN_MENUFRONT_SMARTPHONE_FORCED)?$this->global->MAIN_MENUFRONT_SMARTPHONE:$this->global->MAIN_MENUFRONT_SMARTPHONE_FORCED);
         }
-        // For backward compatibility
-        if ($this->top_menu == 'eldy.php') $this->top_menu='eldy_backoffice.php';
-        elseif ($this->top_menu == 'rodolphe.php') $this->top_menu='eldy_backoffice.php';
 
         // Object $mc
         if (! defined('NOREQUIREMC') && ! empty($this->multicompany->enabled))
