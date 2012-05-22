@@ -60,7 +60,6 @@ if ($action == 'update' && $user->rights->categorie->creer)
 	$categorie->description    = $_POST["description"];
 	$categorie->socid          = ($_POST["socid"] ? $_POST["socid"] : 'null');
 	$categorie->visible        = $_POST["visible"];
-    $categorie->priority       = $_POST["priority"];
 
 	if($_POST['catMere'] != "-1")
 		$categorie->id_mere = $_POST['catMere'];
@@ -110,7 +109,9 @@ print_fiche_titre($langs->trans("ModifCat"));
 dol_htmloutput_errors($mesg);
 
 
-$categorie = new Categorie($db, $id);
+$object = new Categorie($db);
+$object->fetch($id);
+
 $form = new Form($db);
 
 print '<div class="tabBar">';
@@ -122,7 +123,7 @@ print "\n";
 print '<form method="post" action="'.$_SERVER['PHP_SELF'].'">';
 print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 print '<input type="hidden" name="action" value="update">';
-print '<input type="hidden" name="id" value="'.$categorie->id.'">';
+print '<input type="hidden" name="id" value="'.$object->id.'">';
 print '<input type="hidden" name="type" value="'.$type.'">';
 
 print '<table class="border" width="100%">';
@@ -130,7 +131,7 @@ print '<table class="border" width="100%">';
 // Ref
 print '<tr><td class="fieldrequired">';
 print $langs->trans("Ref").'</td>';
-print '<td><input type="text" size="50" id="nom" name ="nom" value="'.$categorie->label.'" />';
+print '<td><input type="text" size="25" id="nom" name ="nom" value="'.$object->label.'" />';
 print '</tr>';
 
 // Description
@@ -138,19 +139,19 @@ print '<tr>';
 print '<td width="25%">'.$langs->trans("Description").'</td>';
 print '<td>';
 require_once(DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php");
-$doleditor=new DolEditor('description',$categorie->description,'',200,'dolibarr_notes','',false,true,$conf->fckeditor->enabled,ROWS_6,50);
+$doleditor=new DolEditor('description',$object->description,'',200,'dolibarr_notes','',false,true,$conf->fckeditor->enabled,ROWS_6,50);
 $doleditor->Create();
 print '</td></tr>';
 
 // Parent category
 print '<tr><td>'.$langs->trans("In").'</td><td>';
-print $form->select_all_categories($type,$categorie->id_mere,'catMere',64,$categorie->id);
+print $form->select_all_categories($type,$object->id_mere,'catMere',64,$object->id);
 print '</td></tr>';
 
 // Priority
 $priority=array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
 print '<tr><td>'.$langs->trans ("Priority").'</td><td>';
-print $html->selectarray("priority",$priority,$categorie->priority);
+print $html->selectarray("priority",$priority,$object->priority);
 print '</td></tr>';
 
 print '</table>';
