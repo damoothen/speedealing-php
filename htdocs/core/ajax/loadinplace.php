@@ -47,37 +47,28 @@ top_httphead();
 
 if (! empty($json) && ! empty($class))
 {
-	if (!empty($json)) {
-
-		$return=array();
-
-		//if (empty($_SESSION['SelectCompanyStatus']))
-		//{
-			$langs->load("companies");
-			dol_include_once("/".strtolower($class)."/class/".strtolower($class).".class.php");
-				
-			$object = new $class($db);
-				
-			foreach ($object->fk_extrafields->fields->$json->values as $key => $aRow)
-			{
-				if($aRow->enable)
-				{
-					if(isset($aRow->label))
-						$return[$key] = $langs->trans($aRow->label);
-					else
-						$return[$key] = $langs->trans($key);
-				}
-			}
-				
-			$return['selected'] = $object->fk_extrafields->fields->$json->default;
-			
-			echo json_encode($return);
-				
-			//$_SESSION['SelectCompanyStatus'] = json_encode($return);
-		//}
-
-		//echo $_SESSION['SelectCompanyStatus'];
+	dol_include_once("/".strtolower($class)."/class/".strtolower($class).".class.php");
+	
+	$langs->load("companies");
+	
+	$return=array();
+	
+	$object = new $class($db);
+	
+	foreach ($object->fk_extrafields->fields->$json->values as $key => $aRow)
+	{
+		if($aRow->enable)
+		{
+			if(isset($aRow->label))
+				$return[$key] = $langs->trans($aRow->label);
+			else
+				$return[$key] = $langs->trans($key);
+		}
 	}
+	
+	$return['selected'] = $object->fk_extrafields->fields->$json->default;
+		
+	echo json_encode($return);
 }
 // Load original field value
 else if (! empty($field) && ! empty($element) && ! empty($table_element) && ! empty($fk_element))
