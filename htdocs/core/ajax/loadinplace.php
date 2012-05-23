@@ -47,7 +47,7 @@ top_httphead();
 
 if (! empty($json) && ! empty($class))
 {
-	if ($json == "Status") {
+	if (!empty($json)) {
 
 		$return=array();
 
@@ -58,15 +58,18 @@ if (! empty($json) && ! empty($class))
 				
 			$object = new $class($db);
 				
-			foreach ($object->fk_extrafields->fields->Status->values as $key => $aRow)
+			foreach ($object->fk_extrafields->fields->$json->values as $key => $aRow)
 			{
 				if($aRow->enable)
 				{
-					$return[$key] = $langs->trans($key);
+					if(isset($aRow->label))
+						$return[$key] = $langs->trans($aRow->label);
+					else
+						$return[$key] = $langs->trans($key);
 				}
 			}
 				
-			$return['selected'] = "ST_PCOLD";
+			$return['selected'] = $object->fk_extrafields->fields->$json->default;
 			
 			echo json_encode($return);
 				

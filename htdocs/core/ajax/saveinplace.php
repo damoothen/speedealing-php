@@ -55,6 +55,8 @@ if (! empty($json) && ! empty($key) && ! empty($id) && ! empty($value) && ! empt
 				
 	$object = new $class($db);
 	
+	$langs->load('companies');	
+	
 	if ($json == "edit") {
 	
 		try {
@@ -64,7 +66,7 @@ if (! empty($json) && ! empty($key) && ! empty($id) && ! empty($value) && ! empt
 			if( $res == $value )
 			{
 				if($key == 'Status')
-					echo $object->LibStatut($value);
+					echo $object->LibStatus($value);
 				else
 					echo $value;
 			}
