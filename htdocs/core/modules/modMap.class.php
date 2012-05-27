@@ -45,6 +45,7 @@ class modMap extends DolibarrModules
     function modMap($DB)
     {
         $this->db = $DB;
+		parent::__construct($DB);
         $this->numero = 450 ;
 
         $this->family = "technic";

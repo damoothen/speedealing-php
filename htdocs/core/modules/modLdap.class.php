@@ -41,6 +41,7 @@ class modLdap extends DolibarrModules
 	function modLdap($db)
 	{
 		$this->db = $db;
+		parent::__construct($db);
 		$this->numero = 200;
 
 		$this->family = "technic";

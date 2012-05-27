@@ -43,6 +43,8 @@ class modStock extends DolibarrModules
 	function modStock($db)
 	{
 		global $conf;
+		
+		parent::__construct($db);
 
 		$this->db = $db;
 		$this->numero = 52;

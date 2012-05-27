@@ -48,6 +48,7 @@ class modFicheinter extends DolibarrModules
         global $conf;
 
         $this->db = $db;
+		parent::__construct($db);
         $this->numero = 70;
 
         $this->family = "crm";

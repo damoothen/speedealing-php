@@ -31,7 +31,7 @@ $langs->load("commercial");
  * you want to insert a non-database field (for example a counter or static image)
  */
 
-$couchdb = new couchClient("http://"."Administrator:admin@".substr($conf->couchdb->host, 7).':'.$conf->couchdb->port.'/',$conf->couchdb->name);
+$couchdb = new couchClient("http://"."Administrator:admin@".substr($conf->Couchdb->host, 7).':'.$conf->Couchdb->port.'/',$conf->Couchdb->name);
 
 
 $flush=0;

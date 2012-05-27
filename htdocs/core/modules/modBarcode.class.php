@@ -43,6 +43,7 @@ class modBarcode extends DolibarrModules
 	function modBarcode($db)
 	{
 		$this->db = $db;
+		parent::__construct($db);
 		$this->numero = 55;
 
 		$this->family = "technic";

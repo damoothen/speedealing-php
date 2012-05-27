@@ -40,6 +40,7 @@ class modGeoIPMaxmind extends DolibarrModules
 	function modGeoIPMaxmind($db)
 	{
 		$this->db = $db;
+		parent::__construct($db);
 		$this->numero = 2900;
 
 		// Family can be 'crm','financial','hr','projects','products','ecm','technic','other'

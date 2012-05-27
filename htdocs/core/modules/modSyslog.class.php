@@ -41,6 +41,7 @@ class modSyslog extends DolibarrModules
 	function modSyslog($db)
 	{
 		$this->db = $db;
+		parent::__construct($db);
 		$this->numero = 42;
 
 		// Family can be 'crm','financial','hr','projects','products','ecm','technic','other'

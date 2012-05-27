@@ -44,6 +44,7 @@ class modExpedition extends DolibarrModules
 	function modExpedition($db)
 	{
 		$this->db = $db;
+		parent::__construct($db);
 		$this->numero = 80;
 
 		$this->family = "crm";

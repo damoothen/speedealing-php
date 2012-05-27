@@ -48,6 +48,7 @@ class modBanque extends DolibarrModules
 		global $conf;
 
 		$this->db = $db;
+		parent::__construct($db);
 		$this->numero = 85;
 
 		$this->family = "financial";

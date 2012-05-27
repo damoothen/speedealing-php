@@ -42,6 +42,7 @@ class modCategorie extends DolibarrModules
 	    global $conf;
 
 		$this->db = $db;
+		parent::__construct($db);
 		$this->numero = 1780;
 
 		$this->family = "technic";

@@ -45,6 +45,9 @@ class modProjet extends DolibarrModules
 	function modProjet($db)
 	{
 		$this->db = $db;
+		
+		parent::__construct($db);
+		
 		$this->numero = 400;
 
 		$this->family = "projects";

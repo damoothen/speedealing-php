@@ -42,7 +42,8 @@ class modWorkflow extends DolibarrModules
     function __construct($db)
     {
         $this->db = $db;
-
+		parent::__construct($db);
+		
         // Id for module (must be unique).
         // Use here a free id (See in Home -> System information -> Dolibarr for list of used modules id).
         $this->numero = 6000 ;

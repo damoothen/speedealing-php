@@ -45,6 +45,8 @@ class modSociete extends DolibarrModules
 	function modSociete($db)
 	{
 		global $conf;
+		
+		parent::__construct($db);
 
 		$this->db = $db;
 		$this->numero = 1;

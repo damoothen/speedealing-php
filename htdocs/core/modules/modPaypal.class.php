@@ -40,6 +40,7 @@ class modPaypal extends DolibarrModules
     function modPaypal($db)
     {
         $this->db = $db;
+		parent::__construct($db);
 
         // Id for module (must be unique).
         // Use here a free id (See in Home -> System information -> Dolibarr for list of used modules id).

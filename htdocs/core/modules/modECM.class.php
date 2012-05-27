@@ -40,6 +40,7 @@ class modECM extends DolibarrModules
 	function modECM($db)
 	{
 		$this->db = $db;
+		parent::__construct($db);
 
 		// Id for module (must be unique).
 		// Use here a free id.

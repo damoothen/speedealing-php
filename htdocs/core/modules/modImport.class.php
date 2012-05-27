@@ -41,6 +41,7 @@ class modImport extends DolibarrModules
 	function modImport($db)
 	{
 		$this->db = $db;
+		parent::__construct($db);
 		$this->numero = 250;
 
 		$this->family = "technic";

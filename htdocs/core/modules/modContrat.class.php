@@ -46,6 +46,7 @@ class modContrat extends DolibarrModules
 	function modContrat($db)
 	{
 		$this->db = $db;
+		parent::__construct($db);
 		$this->numero = 54;
 
 		$this->family = "crm";

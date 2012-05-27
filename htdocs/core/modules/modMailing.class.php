@@ -43,6 +43,7 @@ class modMailing extends DolibarrModules
 	function modMailing($db)
 	{
 		$this->db = $db;
+		parent::__construct($db);
 		$this->numero = 22;
 
 		$this->family = "technic";

@@ -44,6 +44,7 @@ class modDocument extends DolibarrModules
 	function modDocument($db)
 	{
 		$this->db = $db;
+		parent::__construct($db);
 		$this->numero = 51;
 
 		$this->family = "technic";

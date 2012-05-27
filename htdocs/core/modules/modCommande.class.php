@@ -48,6 +48,7 @@ class modCommande extends DolibarrModules
 		global $conf;
 
 		$this->db = $db;
+		parent::__construct($db);
 		$this->numero = 25;
 
 		$this->family = "crm";

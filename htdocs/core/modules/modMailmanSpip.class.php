@@ -41,6 +41,7 @@ class modMailmanSpip extends DolibarrModules
 	function modMailmanSpip($db)
 	{
 		$this->db = $db;
+		parent::__construct($db);
 		$this->numero = 105;
 
 		$this->family = "technic";

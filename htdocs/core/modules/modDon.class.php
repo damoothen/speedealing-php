@@ -43,6 +43,7 @@ class modDon  extends DolibarrModules
 	function modDon($db)
 	{
 		$this->db = $db;
+		parent::__construct($db);
 		$this->numero = 700;
 
 		$this->family = "financial";

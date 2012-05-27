@@ -43,6 +43,7 @@ class modDeplacement extends DolibarrModules
 		global $conf;
 
 		$this->db = $DB ;
+		parent::__construct($DB);
 		$this->numero = 75 ;
 
 		$this->family = "financial";

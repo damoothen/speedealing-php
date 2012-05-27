@@ -47,6 +47,8 @@ class modProduct extends DolibarrModules
 	{
 		global $conf;
 
+		parent::__construct($db);
+		
 		$this->db = $db;
 		$this->numero = 50;
 

@@ -43,6 +43,7 @@ class modClickToDial extends DolibarrModules
 	function modClickToDial($db)
 	{
 		$this->db = $db;
+		parent::__construct($db);
 		$this->numero = 58;
 
 		$this->family = "technic";

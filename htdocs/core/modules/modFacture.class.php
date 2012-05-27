@@ -45,6 +45,7 @@ class modFacture extends DolibarrModules
 		global $conf;
 
 		$this->db = $db;
+		parent::__construct($db);
 		$this->numero = 30;
 
 		$this->family = "financial";

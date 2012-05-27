@@ -45,6 +45,7 @@ class modFournisseur extends DolibarrModules
 		parent::__construct($db);
 
 		$this->db = $db;
+		parent::__construct($db);
 		$this->numero = 40;
 
 		$this->family = "products";

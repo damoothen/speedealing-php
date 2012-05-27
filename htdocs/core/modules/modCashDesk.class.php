@@ -39,6 +39,7 @@ class modCashDesk extends DolibarrModules
 	function modCashDesk ($db)
 	{
 		$this->db = $db;
+		parent::__construct($db);
 
 		// Id for module (must be unique).
 		// Use here a free id (See in Home -> System information -> Dolibarr for list of used module id).

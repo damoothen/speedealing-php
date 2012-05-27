@@ -43,6 +43,7 @@ class modLabel extends DolibarrModules
 	function modLabel($db)
 	{
 		$this->db = $db;
+		parent::__construct($db);
 		$this->numero = 60;
 
 		$this->family = "other";

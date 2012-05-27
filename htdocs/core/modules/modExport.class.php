@@ -42,6 +42,7 @@ class modExport extends DolibarrModules
 	function modExport($db)
 	{
 		$this->db = $db;
+		parent::__construct($db);
 		$this->numero = 240;
 
 		$this->family = "technic";

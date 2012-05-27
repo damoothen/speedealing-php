@@ -41,6 +41,7 @@ class modWebServices extends DolibarrModules
     function modWebServices($db)
     {
         $this->db = $db;
+		parent::__construct($db);
         $this->numero = 2600;
 
         $this->family = "technic";

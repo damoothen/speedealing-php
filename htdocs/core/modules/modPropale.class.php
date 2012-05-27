@@ -48,6 +48,7 @@ class modPropale extends DolibarrModules
 		global $conf;
 
 		$this->db = $db;
+		parent::__construct($db);
 		$this->numero = 20;
 
 		$this->family = "crm";

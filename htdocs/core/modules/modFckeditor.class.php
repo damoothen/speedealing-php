@@ -43,6 +43,7 @@ class modFckeditor extends DolibarrModules
 	function modFckeditor($db)
 	{
 		$this->db = $db;
+		parent::__construct($db);
 		$this->numero = 2000;
 
 		$this->family = "technic";
