@@ -59,11 +59,6 @@ $confirm = GETPOST('confirm');
 $lineid  = GETPOST('lineid');
 $mesg    = GETPOST('mesg');
 
-//PDF
-$hidedetails = (GETPOST('hidedetails','int') ? GETPOST('hidedetails','int') : (! empty($conf->global->MAIN_GENERATE_DOCUMENTS_HIDE_DETAILS) ? 1 : 0));
-$hidedesc 	 = (GETPOST('hidedesc','int') ? GETPOST('hidedesc','int') : (! empty($conf->global->MAIN_GENERATE_DOCUMENTS_HIDE_DESC) ?  1 : 0));
-$hideref 	 = (GETPOST('hideref','int') ? GETPOST('hideref','int') : (! empty($conf->global->MAIN_GENERATE_DOCUMENTS_HIDE_REF) ? 1 : 0));
-
 // Security check
 if ($user->societe_id) $socid=$user->societe_id;
 $result=restrictedArea($user,'commande',$id,'');
@@ -177,7 +172,7 @@ else if ($action == 'confirm_deleteline' && $confirm == 'yes')
             if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE))
             {
                 $ret=$object->fetch($id);    // Reload to get new records
-                commande_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref, $hookmanager);
+                commande_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
             }
         }
         else
@@ -303,7 +298,6 @@ else if ($action == 'add' && $user->rights->commande->creer)
                         $datestart,
                         $dateend,
                         $product_type,
-						$lines[$i]->ecotax,
                         $lines[$i]->rang,
                         $lines[$i]->special_code,
                         $fk_parent_line
@@ -496,7 +490,7 @@ else if ($action == 'setconditions' && $user->rights->commande->creer)
         	}
 
             $ret=$object->fetch($id);    // Reload to get new records
-            commande_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref, $hookmanager);
+            commande_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
         }
     } 
 }
@@ -586,7 +580,6 @@ else if ($action == 'addline' && $user->rights->commande->creer)
                 $pu_ttc = $prod->price_ttc;
                 $price_min = $prod->price_min;
                 $price_base_type = $prod->price_base_type;
-                $ecotax_ht = $prod->ecotax;
             }
 
             // On reevalue prix selon taux tva car taux tva transaction peut etre different
@@ -672,7 +665,6 @@ else if ($action == 'addline' && $user->rights->commande->creer)
                     $date_start,
                     $date_end,
                     $type,
-	                $ecotax_ht,
                     -1,
                     '',
                     $_POST['fk_parent_line']
@@ -693,7 +685,7 @@ else if ($action == 'addline' && $user->rights->commande->creer)
                     	}
 
                         $ret=$object->fetch($id);    // Reload to get new records
-                        commande_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref, $hookmanager);
+                        commande_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
                     }
 
                     unset($_POST['qty']);
@@ -787,7 +779,6 @@ else if ($action == 'updateligne' && $user->rights->commande->creer && $_POST['s
             $info_bits,
             $date_start,
             $date_end,
-	        $product->ecotax,
             $type,
             $_POST['fk_parent_line']
         );
@@ -807,7 +798,7 @@ else if ($action == 'updateligne' && $user->rights->commande->creer && $_POST['s
             if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE))
             {
                 $ret=$object->fetch($id);    // Reload to get new records
-                commande_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref, $hookmanager);
+                commande_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
             }
         }
         else
@@ -857,7 +848,7 @@ else if ($action == 'confirm_validate' && $confirm == 'yes' && $user->rights->co
                 $outputlangs = new Translate("",$conf);
                 $outputlangs->setDefaultLang($newlang);
             }
-            if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) commande_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref, $hookmanager);
+            if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) commande_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
         }
     }
 }
@@ -899,7 +890,7 @@ else if ($action == 'confirm_modif' && $user->rights->commande->creer)
 	        if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE))
 	        {
                 $ret=$object->fetch($id);    // Reload to get new records
-	            commande_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref, $hookmanager);
+	            commande_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
 	        }
 	    }
 	}
@@ -959,7 +950,7 @@ else if ($action == 'up' && $user->rights->commande->creer)
         $outputlangs->setDefaultLang($newlang);
     }
 
-    if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) commande_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref, $hookmanager);
+    if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) commande_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
 
     Header('Location: '.$_SERVER["PHP_SELF"].'?id='.$id.'#'.$_GET['rowid']);
     exit;
@@ -981,7 +972,7 @@ else if ($action == 'down' && $user->rights->commande->creer)
         $outputlangs = new Translate("",$conf);
         $outputlangs->setDefaultLang($newlang);
     }
-    if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) commande_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref, $hookmanager);
+    if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) commande_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
 
     Header('Location: '.$_SERVER["PHP_SELF"].'?id='.$id.'#'.$_GET['rowid']);
     exit;
@@ -1013,7 +1004,7 @@ else if ($action == 'builddoc')	// In get or post
         $outputlangs = new Translate("",$conf);
         $outputlangs->setDefaultLang($newlang);
     }
-    $result=commande_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref, $hookmanager);
+    $result=commande_pdf_create($db, $object, $object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
     if ($result <= 0)
     {
         dol_print_error($db,$result);
@@ -1777,7 +1768,6 @@ else
              */
             $nbrow=9;
             if ($conf->projet->enabled) $nbrow++;
-            if ($conf->global->PRODUCT_USE_ECOTAX) $nbrow++;
 
             //Local taxes
             if ($mysoc->country_code=='ES')
@@ -2022,21 +2012,11 @@ else
             // Total HT
             print '<tr><td>'.$langs->trans('AmountHT').'</td>';
             print '<td align="right"><b>'.price($object->total_ht).'</b></td>';
-            print '<td>'.$langs->trans('Currency'.$conf->currency);
-            print'</td></tr>';
-            
-            if($conf->global->PRODUCT_USE_ECOTAX)
-            {
-                print '<tr><td>'.$langs->trans('AmountEcotax').'</td>';
-                print '<td align="right"><b>'.price(price2num($object->total_ttc-$object->total_tva-$object->total_ht, 'MT')).'</b></td>';
-                print '<td>'.$langs->trans('Currency'.$conf->currency);
-                print'</td></tr>';
-            }
-           
+            print '<td>'.$langs->trans('Currency'.$conf->currency).'</td></tr>';
+
             // Total TVA
             print '<tr><td>'.$langs->trans('AmountVAT').'</td><td align="right">'.price($object->total_tva).'</td>';
-            print '<td>'.$langs->trans('Currency'.$conf->currency);
-            print '</td></tr>';
+            print '<td>'.$langs->trans('Currency'.$conf->currency).'</td></tr>';
 
             // Amount Local Taxes
             if ($mysoc->country_code=='ES')
@@ -2303,7 +2283,7 @@ else
                         $outputlangs->setDefaultLang($newlang);
                     }
 
-                    $result=commande_pdf_create($db, $object, GETPOST('model')?GETPOST('model'):$object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref, $hookmanager);
+                    $result=commande_pdf_create($db, $object, GETPOST('model')?GETPOST('model'):$object->modelpdf, $outputlangs, GETPOST('hidedetails'), GETPOST('hidedesc'), GETPOST('hideref'), $hookmanager);
                     if ($result <= 0)
                     {
                         dol_print_error($db,$result);

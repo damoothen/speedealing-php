@@ -1,5 +1,6 @@
 <?php
-/* Copyright (C) 2010 Regis Houssin <regis@dolibarr.fr>
+/* Copyright (C) 2010 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +37,14 @@ $mine = $_REQUEST['mode']=='mine' ? 1 : 0;
 $id = GETPOST('id','int');
 $ref= GETPOST('ref');
 
+$project = new Project($db);
+if (! $project->fetch($id,$ref) > 0)
+{
+	dol_print_error($db);
+	exit;
+}
+else $id=$project->id;
+
 // Security check
 $socid=0;
 if ($user->societe_id > 0) $socid=$user->societe_id;
@@ -52,12 +61,6 @@ $pagenext = $page + 1;
 if (! $sortorder) $sortorder="ASC";
 if (! $sortfield) $sortfield="name";
 
-$project = new Project($db);
-if (! $project->fetch($id,$ref) > 0)
-{
-	dol_print_error($db);
-	exit;
-}
 
 
 /*
@@ -190,7 +193,7 @@ if ($id > 0 || ! empty($ref))
 
 	// Affiche formulaire upload
 	$formfile=new FormFile($db);
-	$formfile->form_attach_new_file(DOL_URL_ROOT.'/projet/document.php?id='.$project->id,'',0,0,($userWrite>0));
+	$formfile->form_attach_new_file(DOL_URL_ROOT.'/projet/document.php?id='.$project->id,'',0,0,($userWrite>0),50,$object);
 
 
 	// List of document

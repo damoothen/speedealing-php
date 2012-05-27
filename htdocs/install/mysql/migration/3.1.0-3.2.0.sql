@@ -147,10 +147,6 @@ ALTER TABLE llx_societe ADD COLUMN fk_barcode_type integer DEFAULT 0;
 
 UPDATE llx_menu SET leftmenu = NULL where leftmenu in ('', '0', '1');
 
--- Add models for contract
-alter table llx_contrat add model_pdf varchar(255);
-
-
 ALTER TABLE llx_categorie_societe DROP INDEX fk_categorie;
 ALTER TABLE llx_categorie_societe DROP INDEX fk_societe;
 
@@ -455,4 +451,4 @@ ALTER TABLE llx_facture_fourn ADD COLUMN extraparams varchar(255) AFTER import_k
 
 ALTER TABLE llx_boxes ADD COLUMN maxline integer NULL;
 
-ALTER TABLE llx_commande_fournisseur ADD COLUMN date_livraison date NULL;
+ALTER TABLE llx_product_fournisseur_price MODIFY fk_product_fournisseur integer DEFAULT 0;

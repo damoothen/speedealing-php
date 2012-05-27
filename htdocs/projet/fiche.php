@@ -34,7 +34,7 @@ $langs->load("projects");
 $langs->load('companies');
 
 $id=GETPOST('id','int');
-$ref=GETPOST('ref','alpha');
+$ref = GETPOST('ref','alpha');
 $action=GETPOST('action','alpha');
 $backtopage=GETPOST('backtopage','alpha');
 
@@ -42,6 +42,13 @@ if ($id == '' && $ref == '' && ($action != "create" && $action != "add" && $acti
 
 $mine = GETPOST('mode')=='mine' ? 1 : 0;
 //if (! $user->rights->projet->all->lire) $mine=1;	// Special for projects
+
+$project = new Project($db);
+if ($ref)
+{
+    $project->fetch(0,$ref);
+    $id=$project->id;
+}
 
 // Security check
 $socid=0;
@@ -58,42 +65,8 @@ $result = restrictedArea($user, 'projet', $id);
 // Cancel
 if (GETPOST("cancel") && ! empty($backtopage))
 {
-	if (GETPOST("comefromclone")==1)
-	{
-		$project = new Project($db);
-	    $project->fetch($id);
-	    $result=$project->delete($user);
-	    if ($result > 0)
-	    {
-	        Header("Location: index.php");
-	        exit;
-	    }
-	    else
-	    {
-	        dol_syslog($project->error,LOG_DEBUG);
-	        $mesg='<div class="error">'.$langs->trans("CantRemoveProject").'</div>';
-	    }
-	}
     header("Location: ".$backtopage);
     exit;
-}
-
-//if cancel and come from clone then delete the cloned project
-if (GETPOST("cancel") && (GETPOST("comefromclone")==1))
-{
-	$project = new Project($db);
-    $project->fetch($id);
-    $result=$project->delete($user);
-    if ($result > 0)
-    {
-        Header("Location: index.php");
-        exit;
-    }
-    else
-    {
-        dol_syslog($project->error,LOG_DEBUG);
-        $mesg='<div class="error">'.$langs->trans("CantRemoveProject").'</div>';
-    }
 }
 
 if ($action == 'add' && $user->rights->projet->creer)
@@ -116,16 +89,14 @@ if ($action == 'add' && $user->rights->projet->creer)
 
         $db->begin();
 
-        $project = new Project($db);
-
-        $project->ref             = GETPOST('ref','alpha');
-        $project->title           = GETPOST('title','alpha');
-        $project->socid           = GETPOST('socid','int');
-        $project->description     = GETPOST('description','alpha');
-        $project->public          = GETPOST('public','alpha');
+        $project->ref             = $_POST["ref"];
+        $project->title           = $_POST["title"];
+        $project->socid           = $_POST["socid"];
+        $project->description     = $_POST["description"];
+        $project->public          = $_POST["public"];
         $project->datec=dol_now();
-        $project->date_start=dol_mktime(12,0,0,GETPOST('projectmonth','int'),GETPOST('projectday','int'),GETPOST('projectyear','int'));
-        $project->date_end=dol_mktime(12,0,0,GETPOST('projectendmonth','int'),GETPOST('projectendday','int'),GETPOST('projectendyear','int'));
+        $project->dateo=dol_mktime(12,0,0,$_POST['projectmonth'],$_POST['projectday'],$_POST['projectyear']);
+        $project->datee=dol_mktime(12,0,0,$_POST['projectendmonth'],$_POST['projectendday'],$_POST['projectendyear']);
 
         $result = $project->create($user);
         if ($result > 0)
@@ -184,32 +155,19 @@ if ($action == 'update' && ! $_POST["cancel"] && $user->rights->projet->creer)
     }
     if (! $error)
     {
-        $project = new Project($db);
         $project->fetch($id);
 
-		$old_start_date = $project->date_start;
-
-        $project->ref             = GETPOST('ref','alpha');
-        $project->title           = GETPOST('title','alpha');
-        $project->socid           = GETPOST('socid','int');
-        $project->description     = GETPOST('description','alpha');
-        $project->public          = GETPOST('public','alpha');
-        $project->date_start   = empty($_POST["project"])?'':dol_mktime(0,0,0,GETPOST('projectmonth'),GETPOST('projectday'),GETPOST('projectyear'));
-        $project->date_end     = empty($_POST["projectend"])?'':dol_mktime(0,0,0,GETPOST('projectendmonth'),GETPOST('projectendday'),GETPOST('projectendyear'));
+        $project->ref          = $_POST["ref"];
+        $project->title        = $_POST["title"];
+        $project->socid        = $_POST["socid"];
+        $project->description  = $_POST["description"];
+        $project->public       = $_POST["public"];
+        $project->date_start   = empty($_POST["project"])?'':dol_mktime(12,0,0,$_POST['projectmonth'],$_POST['projectday'],$_POST['projectyear']);
+        $project->date_end     = empty($_POST["projectend"])?'':dol_mktime(12,0,0,$_POST['projectendmonth'],$_POST['projectendday'],$_POST['projectendyear']);
 
         $result=$project->update($user);
 
         $id=$project->id;  // On retourne sur la fiche projet
-
-        if (GETPOST("reportdate") && ($project->date_start!=$old_start_date))
-        {
-        	$result=$project->shiftTaskDate($old_start_date);
-        	if (!$result)
-        	{
-        		$error++;
-        		$mesg='<div class="error">'.$langs->trans("ErrorShiftTaskDate").':'.$project->error.'</div>';
-        	}
-        }
     }
     else
     {
@@ -220,7 +178,6 @@ if ($action == 'update' && ! $_POST["cancel"] && $user->rights->projet->creer)
 // Build doc
 if ($action == 'builddoc' && $user->rights->projet->creer)
 {
-    $project = new Project($db);
     $project->fetch($id);
     if (GETPOST('model'))
     {
@@ -246,10 +203,8 @@ if ($action == 'builddoc' && $user->rights->projet->creer)
     }
 }
 
-
 if ($action == 'confirm_validate' && GETPOST('confirm') == 'yes')
 {
-    $project = new Project($db);
     $project->fetch($id);
 
     $result = $project->setValid($user);
@@ -261,7 +216,6 @@ if ($action == 'confirm_validate' && GETPOST('confirm') == 'yes')
 
 if ($action == 'confirm_close' && GETPOST('confirm') == 'yes')
 {
-    $project = new Project($db);
     $project->fetch($id);
     $result = $project->setClose($user);
     if ($result <= 0)
@@ -272,7 +226,6 @@ if ($action == 'confirm_close' && GETPOST('confirm') == 'yes')
 
 if ($action == 'confirm_reopen' && GETPOST('confirm') == 'yes')
 {
-    $project = new Project($db);
     $project->fetch($id);
     $result = $project->setValid($user);
     if ($result <= 0)
@@ -283,7 +236,6 @@ if ($action == 'confirm_reopen' && GETPOST('confirm') == 'yes')
 
 if ($action == 'confirm_delete' && GETPOST("confirm") == "yes" && $user->rights->projet->supprimer)
 {
-    $project = new Project($db);
     $project->fetch($id);
     $result=$project->delete($user);
     if ($result > 0)
@@ -295,28 +247,6 @@ if ($action == 'confirm_delete' && GETPOST("confirm") == "yes" && $user->rights-
     {
         dol_syslog($project->error,LOG_DEBUG);
         $mesg='<div class="error">'.$langs->trans("CantRemoveProject").'</div>';
-    }
-}
-
-if ($action == 'confirm_clone' && $user->rights->projet->creer && GETPOST('confirm') == 'yes')
-{
-	$idtoclone=$id;
-	$project = new Project($db);
-    $project->fetch($idtoclone);
-    $clone_contacts=GETPOST('clone_contacts')?1:0;
-    $clone_tasks=GETPOST('clone_tasks')?1:0;
-    $clone_files=GETPOST('clone_files')?1:0;
-    $clone_notes=GETPOST('clone_notes')?1:0;
-    $result=$project->createFromClone($idtoclone,$clone_contacts,$clone_tasks,$clone_files,$clone_notes);
-    if ($result <= 0)
-    {
-        $mesg='<div class="error">'.$project->error.'</div>';
-    }
-    else
-    {
-    	$id=$result;
-    	$action='edit';
-    	$comefromclone=true;
     }
 }
 
@@ -465,19 +395,6 @@ else
         if ($ret == 'html') print '<br>';
     }
 
-    // Clone confirmation
-    if ($action == 'clone')
-    {
-        $formquestion=array(
-    		'text' => $langs->trans("ConfirmClone"),
-            array('type' => 'checkbox', 'name' => 'clone_contacts','label' => $langs->trans("CloneContacts"), 'value' => true),
-            array('type' => 'checkbox', 'name' => 'clone_tasks',   'label' => $langs->trans("CloneTasks"), 'value' => true),
-            array('type' => 'checkbox', 'name' => 'clone_notes',   'label' => $langs->trans("CloneNotes"), 'value' => true),
-            array('type' => 'checkbox', 'name' => 'clone_files',   'label' => $langs->trans("CloneFiles"), 'value' => false)
-        );
-
-        print $form->formconfirm($_SERVER["PHP_SELF"]."?id=".$project->id, $langs->trans("CloneProject"), $langs->trans("ConfirmCloneProject"), "confirm_clone", $formquestion, '', 1, 240);
-    }
 
     if ($action == 'edit' && $userWrite > 0)
     {
@@ -485,7 +402,6 @@ else
         print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
         print '<input type="hidden" name="action" value="update">';
         print '<input type="hidden" name="id" value="'.$project->id.'">';
-        print '<input type="hidden" name="comefromclone" value="'.$comefromclone.'">';
 
         print '<table class="border" width="100%">';
 
@@ -499,7 +415,9 @@ else
 
         // Customer
         print '<tr><td>'.$langs->trans("Company").'</td><td>';
-        print $form->select_company($project->societe->id,'socid','',1,1);
+        $text=$form->select_company($project->societe->id,'socid','',1,1);
+        $texthelp=$langs->trans("IfNeedToUseOhterObjectKeepEmpty");
+        print $form->textwithtooltip($text.' '.img_help(),$texthelp,1);
         print '</td></tr>';
 
         // Visibility
@@ -514,9 +432,6 @@ else
         // Date start
         print '<tr><td>'.$langs->trans("DateStart").'</td><td>';
         print $form->select_date($project->date_start,'project');
-        print '<input type="checkbox" name="reportdate" value="yes" ';
-        if ($comefromclone){print ' checked="checked" ';}
-		print '/>'. $langs->trans("ProjectReportDate");
         print '</td></tr>';
 
         // Date end
@@ -534,7 +449,7 @@ else
 
         print '<div align="center"><br>';
         print '<input name="update" class="button" type="submit" value="'.$langs->trans("Modify").'"> &nbsp; ';
-        print '<input type="submit" class="button" name="cancel" value="'.$langs->trans("Cancel").'"></div>';
+        print '<input type="submit" class="button" name="cancel" Value="'.$langs->trans("Cancel").'"></div>';
 
         print '</form>';
     }
@@ -598,7 +513,7 @@ else
 
     if ($action != "edit" )
     {
-    	// Validate
+        // Validate
         if ($project->statut == 0 && $user->rights->projet->creer)
         {
             if ($userWrite > 0)
@@ -650,19 +565,6 @@ else
             }
         }
 
-        // Clone
-        if ($user->rights->projet->creer)
-        {
-            if ($userWrite > 0)
-            {
-                print '<a class="butAction" href="fiche.php?id='.$project->id.'&action=clone">'.$langs->trans('ToClone').'</a>';
-            }
-            else
-            {
-                print '<a class="butActionRefused" href="#" title="'.$langs->trans("NotOwnerOfProject").'">'.$langs->trans('ToClone').'</a>';
-            }
-        }
-
         // Delete
         if ($user->rights->projet->supprimer)
         {
@@ -708,6 +610,7 @@ else
 
         print '</td></tr></table>';
     }
+
 }
 
 llxFooter();
