@@ -224,7 +224,7 @@ abstract class DolibarrModules extends nosqlDocument
         if (! $err)
         {
             $this->db->commit();
-			print_r($this->global);
+			//print_r($this->global);
 			$this->couchdb->storeDoc($this->global);
 			$this->flush(); // clear cache
             return 1;
