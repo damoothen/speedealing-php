@@ -151,6 +151,7 @@ class User extends nosqlDocument
 		}
 		
 		$this->id = $this->values->name;
+		$this->login = $this->values->name;
 		$this->admin = $this->values->Administrator;
 
 		return 1;

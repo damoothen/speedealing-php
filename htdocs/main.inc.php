@@ -768,7 +768,7 @@ if (! function_exists("llxHeader"))
     function llxHeader($head = '', $title='', $help_url='', $target='', $disablejs=0, $disablehead=0, $arrayofjs='', $arrayofcss='', $morequerystring='')
     {
         top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss);	// Show html headers
-        top_menu($head, $title, $target, $disablejs, $disablehead, $arrayofjs, $arrayofcss, $morequerystring);
+		top_menu($head, $title, $target, $disablejs, $disablehead, $arrayofjs, $arrayofcss, $morequerystring);
         main_area($title);
     }
 }
@@ -946,6 +946,7 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
         print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/ColVis/media/js/ColVis.min'.$ext.'"></script>'."\n";
         print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/TableTools/media/js/TableTools.min'.$ext.'"></script>'."\n";
         print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/AutoFill/media/js/AutoFill.min'.$ext.'"></script>'."\n";
+		print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/AjaxReload/media/js/fnReloadAjax.js"></script>'."\n";
         //print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/js/initXHR'.$ext.'"></script>'."\n";
         //print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/js/searchColumns'.$ext.'"></script>'."\n";
         //print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/js/ZeroClipboard'.$ext.'"></script>'."\n";
@@ -1083,7 +1084,7 @@ function top_menu($head, $title='', $target='', $disablejs=0, $disablehead=0, $a
 
     /*
      * Top menu
-    */
+	 */
     $top_menu=$conf->top_menu;
 
     // Load the top menu manager
@@ -1106,9 +1107,9 @@ function top_menu($head, $title='', $target='', $disablejs=0, $disablehead=0, $a
 
     print "\n".'<!-- Start top horizontal menu '.$top_menu.' -->'."\n";
 
-    print '<header>';
-    print '<div class="container head_s_a">';
-    
+	print '<header>';
+	print '<div class="container head_s_a">';
+	
     // HEADER
     print '<div class="row sepH_b">
         <div class="six columns">
@@ -1122,8 +1123,10 @@ function top_menu($head, $title='', $target='', $disablejs=0, $disablehead=0, $a
         $urllogo=DOL_URL_ROOT.'/theme/speedealing_logo.png';
     print '<a href="'.DOL_URL_ROOT.'/index.php?idmenu=menu:home"><img src="'.$urllogo.'" alt="'.$conf->global->MAIN_INFO_SOCIETE_NOM.'" title="'.$conf->global->MAIN_INFO_SOCIETE_NOM.'"/></a>';
     print '</div>
-         </div>
-         <div class="seven phone-two columns">
+         </div>';
+	if(!defined('NOLOGIN'))
+	{
+         print '<div class="seven phone-two columns">
             <form action="search.php" id="search_box" method="post">
 		<input name="query" id="query" type="text" size="40" placeholder="Find&hellip;" autocomplete="off" />
             </form>
@@ -1160,21 +1163,24 @@ function top_menu($head, $title='', $target='', $disablejs=0, $disablehead=0, $a
     </div>';
     
     
-    print '<div class="row">'."\n";
-    print '<div class="twelve columns">';
+	if(!defined('NOREQUIREMENU'))
+	{
+		print '<div class="row">'."\n";
+		print '<div class="twelve columns">';
 
-    // Show menu
-    $menutop = new MenuTop($db);
-    $menutop->atarget=$target;
-    $menutop->showmenu();      // This contains a \n
+		// Show menu
+		$menutop = new MenuTop($db);
+		$menutop->atarget=$target;
+		$menutop->showmenu();      // This contains a \n
 
-    print "</div>\n";
-    print "</div>\n";
-    print '<!-- End Menu -->';
+		print "</div>\n";
+		print "</div>\n";
+		print '<!-- End Menu -->';
+	}
     
     print "</div>\n";
     
-    print '<!-- notifications content -->
+	print '<!-- notifications content -->
         <div style="display:none">
             <div id="ntf_tickets_panel" style="display:none">
                 <p class="sticky-title">New Tickets</p>
@@ -1235,8 +1241,11 @@ function top_menu($head, $title='', $target='', $disablejs=0, $disablehead=0, $a
                 <a href="#" class="gh_button btn-small">Show all messages</a>
             </div>
         </div>';
-    print '</header>';
-
+	
+	} // End for NOLOGIN
+	
+	print '</header>';
+	
     print "<!-- End top horizontal menu -->\n";
 
     //print '<table width="100%" class="notopnoleftnoright" summary="leftmenutable" id="undertopmenu"><tr>';

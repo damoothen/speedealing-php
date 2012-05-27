@@ -159,16 +159,11 @@ abstract class nosqlDocument extends CommonObject
 		if(!$found)
 		{
 			$this->values = array();
-			try{
-				$this->values = $this->couchdb->getDoc($id); // load extrafields for class
+			$this->values = $this->couchdb->getDoc($id); // load extrafields for class
 
-				if ($conf->memcached->enabled && $cache)
-				{
-					dol_setcache($id, $this->values);
-				}
-			} catch(Exception $e) {
-				dol_print_error("",$e->getMessage());
-				dol_syslog(get_class($this)."::get ".$error, LOG_WARN);
+			if ($conf->memcached->enabled && $cache)
+			{
+				dol_setcache($id, $this->values);
 			}
 		}
 		$this->id = $this->values->_id;
@@ -366,8 +361,9 @@ $(document).ready(function() {
     //$obj->oColVis->sAlign = 'left';
             
     // Avec export Excel
-<?php if($obj->oTableTools->aButtons==null) :?>
-    "sDom": "Cl<fr>t<\"clear\"rtip>",
+<?php if(!empty($obj->sDom)) :?>
+    //"sDom": "Cl<fr>t<\"clear\"rtip>",
+	"sDom": "<?php echo $obj->sDom; ?>",
 <?php else :?>
     "sDom": "TC<\"clear\"fr>lt<\"clear\"rtip>",
 <?php endif;?>
@@ -389,8 +385,8 @@ $(document).ready(function() {
  
 <?php endif;?>
 
-<?php if(isset($obj->fnDrawCallback)):?>
-	"fnDrawCallback": <?php echo $obj->fnDrawCallback; ?>,
+<?php if(isset($obj->fnDrawCallback) || defined('NOLOGIN')):?>
+	"fnDrawCallback": "<?php echo $obj->fnDrawCallback; ?>",
 <?php else :?>
 // jeditable
     "fnDrawCallback": function () {
@@ -454,10 +450,10 @@ $(document).ready(function() {
     var value = $(this).val();
     oTable.fnFilter( value, id);
     } );
-<?php endif;?> 
+<?php endif;?>
     // Select_all
     $(document).ready(function() {
-	prth_datatable.dt_actions();
+		prth_datatable.dt_actions();
     });
 });
 </script>
