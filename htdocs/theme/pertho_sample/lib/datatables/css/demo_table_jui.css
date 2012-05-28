@@ -11,7 +11,7 @@ table.display thead th.sorting_disabled{cursor:default}
 div.dataTables_wrapper .ui-widget-header{font-weight:400}
 table.display thead th div.DataTables_sort_wrapper{position:relative}
 table.display thead th div.DataTables_sort_wrapper span{position:absolute;top:50%;margin-top:-8px;right:0}
-.dataTables_wrapper{position:relative;_height:302px;clear:both;overflow:hidden}
+.dataTables_wrapper{position:relative;min-height:132px;clear:both;overflow:hidden}
 .dataTables_processing{position:absolute;top:0;left:50%;width:250px;margin-left:-125px;border:1px solid #ddd;text-align:center;color:#999;padding:2px 0}
 .dataTables_length{width:30%;float:left}
 .dataTables_filter{width:50%;float:right;text-align:right}
@@ -34,9 +34,9 @@ border-left-style: solid;
 border-bottom-width: 1px;
 border-bottom-color: #DDD;
 border-bottom-style: solid;
--moz-box-shadow: 4px 4px 4px #CCC;
--webkit-box-shadow: 4px 4px 4px #CCC;
-box-shadow: 4px 4px 4px #CCC;
+-moz-box-shadow: 3px 3px 3px #CCC;
+-webkit-box-shadow: 3px 3px 3px #CCC;
+box-shadow: 3px 3px 3px #CCC;
 -moz-border-radius: 0.2em;
 -webkit-border-radius: 0.2em;
 border-radius: 0.2em;}
