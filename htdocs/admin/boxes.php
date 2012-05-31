@@ -2,6 +2,7 @@
 /* Copyright (C) 2003-2005 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2012		Herve Prot			<herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -124,7 +125,7 @@ if ($action == 'add')
 
 	if (! $error)
 	{
-		Header("Location: boxes.php");
+		Header("Location: ".$_SERVER['PHP_SELF']);
 	    $db->commit();
 		exit;
 	}
@@ -351,7 +352,7 @@ foreach($boxtoadd as $box)
     print $form->selectarray("pos",$pos_name);
     print '<input type="hidden" name="action" value="add">';
     print '<input type="hidden" name="boxid" value="'.$box->box_id.'">';
-    print ' <input type="submit" class="button" name="button" value="'.$langs->trans("Activate").'">';
+    print ' <input type="submit" class="nice button tiny" name="button" value="'.$langs->trans("Activate").'">';
     print '</td>';
 
     print '</tr>';
@@ -401,11 +402,11 @@ foreach($boxactivated as $key => $box)
 	$hasprevious=($key != 0);
 	print '<td align="center">'.($key+1).'</td>';
 	print '<td align="center">';
-	print ($hasnext?'<a href="boxes.php?action=switch&switchfrom='.$box->rowid.'&switchto='.$boxactivated[$key+1]->rowid.'">'.img_down().'</a>&nbsp;':'');
-	print ($hasprevious?'<a href="boxes.php?action=switch&switchfrom='.$box->rowid.'&switchto='.$boxactivated[$key-1]->rowid.'">'.img_up().'</a>':'');
+	print ($hasnext?'<a href="'.$_SERVER['PHP_SELF'].'?action=switch&switchfrom='.$box->rowid.'&switchto='.$boxactivated[$key+1]->rowid.'">'.img_down().'</a>&nbsp;':'');
+	print ($hasprevious?'<a href="'.$_SERVER['PHP_SELF'].'?action=switch&switchfrom='.$box->rowid.'&switchto='.$boxactivated[$key-1]->rowid.'">'.img_up().'</a>':'');
 	print '</td>';
 	print '<td align="center">';
-	print '<a href="boxes.php?rowid='.$box->rowid.'&amp;action=delete">'.img_delete().'</a>';
+	print '<a href="'.$_SERVER['PHP_SELF'].'?rowid='.$box->rowid.'&amp;action=delete">'.img_delete().'</a>';
 	print '</td>';
 
 	print '</tr>'."\n";
@@ -436,13 +437,14 @@ print '<td>';
 print '<input type="text" class="flat" size="6" name="MAIN_BOXES_MAXLINES" value="'.$conf->global->MAIN_BOXES_MAXLINES.'">';
 print '</td>';
 print '<td align="right">';
-print '<input type="submit" class="button" value="'.$langs->trans("Save").'" name="Button">';
+print '<input type="submit" class="button nice tiny" value="'.$langs->trans("Save").'" name="Button">';
 print '</td>'."\n";
 print '</tr>';
 print '</form>';
 
 print '</table>';
 
+dol_fiche_end();
 
 llxFooter();
 

@@ -293,19 +293,19 @@ if (empty($reshook))
                         dol_syslog("This thirdparty is a personal people",LOG_DEBUG);
                         $contact=new Contact($db);
 
-     			$contact->civilite_id   		= $object->civilite_id;
+						$contact->civilite_id   		= $object->civilite_id;
                         $contact->name				= $object->name_bis;
                         $contact->firstname			= $object->firstname;
                         $contact->address			= $object->address;
                         $contact->zip				= $object->zip;
                         $contact->town				= $object->town;
-                        $contact->state_id                  	= $object->state_id;
-                        $contact->country_id                    = $object->country_id;
+                        $contact->state_id          = $object->state_id;
+                        $contact->country_id        = $object->country_id;
                         $contact->socid				= $object->id();	// fk_soc
                         $contact->status			= 1;
                         $contact->email				= $object->email;
-			$contact->phone_pro			= $object->tel;
-			$contact->fax				= $object->fax;
+						$contact->phone_pro			= $object->tel;
+						$contact->fax				= $object->fax;
                         $contact->priv				= 0;
         
                         $result=$contact->create($user);

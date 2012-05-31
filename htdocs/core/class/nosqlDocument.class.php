@@ -366,7 +366,8 @@ foreach ($obj->aoColumns as $i => $aRow): ?>
     //"sDom": "Cl<fr>t<\"clear\"rtip>",
 	"sDom": "<?php echo $obj->sDom; ?>",
 <?php else :?>
-    "sDom": "TC<\"clear\"fr>lt<\"clear\"rtip>",
+    "sDom": "C<\"clear\"fr>lt<\"clear\"rtip>",
+	//"sDom": "TC<\"clear\"fr>lt<\"clear\"rtip>",
 <?php endif;?>
 // bottons
 <?php if($obj->oTableTools->aButtons !=null) :?>
