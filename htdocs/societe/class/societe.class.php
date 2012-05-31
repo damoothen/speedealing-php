@@ -1818,7 +1818,7 @@ class Societe extends nosqlDocument
         
         // List of tel, fax, mail...
         $rtr = '<div class="row vcard sepH_b">';
-        $rtr.= '<ul class="fright">';
+        $rtr.= '<ul class="">';
         
         // list tel, fax, mail
 	for ($i=0; $i < count($this->fk_extrafields->place[$blockid]); $i++) // Block
@@ -1833,9 +1833,9 @@ class Societe extends nosqlDocument
 		else
 		    $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Money.png" title="'.$label.'" />';
                 if($aRow->type == "AC_EMAIL")
-                    $rtr.= '<li><span class="s_color">'.$label.'</span> : <span class="ttip_r edit">'.$this->values->$key.'</span><span>'.$img.'</span></li>';
+                    $rtr.= '<li><span>'.$img.'</span><span class="s_color">'.$label.'</span> : <span class="ttip_r edit">'.$this->values->$key.'</span></li>';
 		elseif($aRow->type == "AC_TEL" || $aRow->type == "AC_FAX")
-		    $rtr.= '<li><span class="s_color">'.$label.'</span> : <span class="ttip_r edit">'.dol_print_phone($this->values->$key,$this->values->Country,0,$this->id(),$aRow->type).'</span><span>'.$img.'</span></li>';
+		    $rtr.= '<li><span>'.$img.'</span><span class="s_color">'.$label.'</span> : <span class="ttip_r edit">'.dol_print_phone($this->values->$key,$this->values->Country,0,$this->id(),$aRow->type).'</span></li>';
                 elseif($aRow->type == "AC_URL")
                 {
                     if(!empty($this->values->$key))
@@ -1843,11 +1843,11 @@ class Societe extends nosqlDocument
                         if($aRow->site == "www") // An  URL
                             $rtr.= '<li>'.dol_print_url($this->values->$key->value).'</li>';
                         else // Facebook linkedin...
-                            $rtr.= '<li>'.dol_print_url($label,$this->values->$key->value).'<span>'.$img.'</span></li>';
+                            $rtr.= '<li><span>'.$img.'</span>'.dol_print_url($label,$this->values->$key->value).'</li>';
                     }
                 }
                 else
-                    $rtr.= '<li><span class="s_color">'.$label.'</span><span> : </span><span class="ttip_r edit">'.$this->values->$key.'</span><span>'.$img.'</span></li>';
+                    $rtr.= '<li><span>'.$img.'</span><span class="s_color">'.$label.'</span><span> : </span><span class="ttip_r edit">'.$this->values->$key.'</span></li>';
             }
         }
 	}
