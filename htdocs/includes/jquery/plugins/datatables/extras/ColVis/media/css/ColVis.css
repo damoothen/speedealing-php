@@ -5,6 +5,7 @@
 .ColVis {
 	float: right;
 	margin-bottom: 1em;
+	z-index: 1100;
 }
 
 .ColVis_Button {
