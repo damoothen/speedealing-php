@@ -313,7 +313,9 @@ abstract class nosqlDocument extends CommonObject
 $(document).ready(function() {
     var oTable = $('#<?php echo $ref_css?>').dataTable( {
     "aoColumns" : [
-<?php foreach ($obj->aoColumns as $i => $aRow): ?>
+<?php 
+$nb = count($obj->aoColumns);
+foreach ($obj->aoColumns as $i => $aRow): ?>
 {
 <?php foreach ($aRow as $key => $fields): ?>
 <?php if($key == "mDataProp" || $key == "sClass" || $key == "sDefaultContent" || $key == "sType" || $key == "sWidth") : ?>
@@ -323,8 +325,7 @@ $(document).ready(function() {
 <?php else :?>
     "<?php echo $key;?>": <?php echo ($fields?"true":"false");?>,
 <?php endif;?>
-<?php endforeach; ?>
-},
+<?php endforeach; if($nb-1 == $i) echo "}"; else echo"},"; ?>
 <?php endforeach; ?>
 ],
 <?php if(!isset($obj->aaSorting) && $json) :?>

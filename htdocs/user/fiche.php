@@ -587,7 +587,7 @@ if (($action == 'create') || ($action == 'adduserldap'))
         }
     }
 
-    print '<form action="fiche.php" method="post" name="createuser">';
+    print '<form action="'.$_SERVER["PHP_SELF"].'" method="post" name="createuser">';
     print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
     print '<input type="hidden" name="action" value="add">';
     if ($ldap_sid) print '<input type="hidden" name="ldap_sid" value="'.$ldap_sid.'">';
@@ -846,7 +846,7 @@ else
          */
         if ($action == 'password')
         {
-            $ret=$form->form_confirm("fiche.php?id=$fuser->id",$langs->trans("ReinitPassword"),$langs->trans("ConfirmReinitPassword",$fuser->login),"confirm_password", '', 0, 1);
+            $ret=$form->form_confirm($_SERVER["PHP_SELF"]."?id=$fuser->id",$langs->trans("ReinitPassword"),$langs->trans("ConfirmReinitPassword",$fuser->login),"confirm_password", '', 0, 1);
             if ($ret == 'html') print '<br>';
         }
 
@@ -855,7 +855,7 @@ else
          */
         if ($action == 'passwordsend')
         {
-            $ret=$form->form_confirm("fiche.php?id=$fuser->id",$langs->trans("SendNewPassword"),$langs->trans("ConfirmSendNewPassword",$fuser->login),"confirm_passwordsend", '', 0, 1);
+            $ret=$form->form_confirm($_SERVER["PHP_SELF"]."?id=$fuser->id",$langs->trans("SendNewPassword"),$langs->trans("ConfirmSendNewPassword",$fuser->login),"confirm_passwordsend", '', 0, 1);
             if ($ret == 'html') print '<br>';
         }
 
@@ -864,7 +864,7 @@ else
          */
         if ($action == 'disable')
         {
-            $ret=$form->form_confirm("fiche.php?id=$fuser->id",$langs->trans("DisableAUser"),$langs->trans("ConfirmDisableUser",$fuser->login),"confirm_disable", '', 0, 1);
+            $ret=$form->form_confirm($_SERVER["PHP_SELF"]."?id=$fuser->id",$langs->trans("DisableAUser"),$langs->trans("ConfirmDisableUser",$fuser->login),"confirm_disable", '', 0, 1);
             if ($ret == 'html') print '<br>';
         }
 
@@ -873,7 +873,7 @@ else
          */
         if ($action == 'enable')
         {
-            $ret=$form->form_confirm("fiche.php?id=$fuser->id",$langs->trans("EnableAUser"),$langs->trans("ConfirmEnableUser",$fuser->login),"confirm_enable", '', 0, 1);
+            $ret=$form->form_confirm($_SERVER["PHP_SELF"]."?id=$fuser->id",$langs->trans("EnableAUser"),$langs->trans("ConfirmEnableUser",$fuser->login),"confirm_enable", '', 0, 1);
             if ($ret == 'html') print '<br>';
         }
 
@@ -882,7 +882,7 @@ else
          */
         if ($action == 'delete')
         {
-            $ret=$form->form_confirm("fiche.php?id=$fuser->id",$langs->trans("DeleteAUser"),$langs->trans("ConfirmDeleteUser",$fuser->login),"confirm_delete", '', 0, 1);
+            $ret=$form->form_confirm($_SERVER["PHP_SELF"]."?id=$fuser->id",$langs->trans("DeleteAUser"),$langs->trans("ConfirmDeleteUser",$fuser->login),"confirm_delete", '', 0, 1);
             if ($ret == 'html') print '<br>';
         }
 
@@ -1151,13 +1151,13 @@ else
                 }
                 else
                 {
-                    print '<a class="butAction" href="fiche.php?id='.$fuser->id.'&amp;action=edit">'.$langs->trans("Modify").'</a>';
+                    print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$fuser->id.'&amp;action=edit">'.$langs->trans("Modify").'</a>';
                 }
             }
             elseif ($caneditpassword && ! $fuser->ldap_sid &&
             (empty($conf->multicompany->enabled) || ($fuser->entity == $conf->entity) || ($conf->global->MULTICOMPANY_TRANSVERSE_MODE && $conf->entity == 1)) )
             {
-                print '<a class="butAction" href="fiche.php?id='.$fuser->id.'&amp;action=edit">'.$langs->trans("EditPassword").'</a>';
+                print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$fuser->id.'&amp;action=edit">'.$langs->trans("EditPassword").'</a>';
             }
 
             // Si on a un gestionnaire de generation de mot de passe actif
@@ -1170,7 +1170,7 @@ else
                 elseif (($user->id != $id && $caneditpassword) && $fuser->login && !$fuser->ldap_sid &&
                 (empty($conf->multicompany->enabled) || ($fuser->entity == $conf->entity) || ($conf->multicompany->transverse_mode && $conf->entity == 1)))
                 {
-                    print '<a class="butAction" href="fiche.php?id='.$fuser->id.'&amp;action=password">'.$langs->trans("ReinitPassword").'</a>';
+                    print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$fuser->id.'&amp;action=password">'.$langs->trans("ReinitPassword").'</a>';
                 }
 
 				if ($fuser->statut == 0)
@@ -1180,7 +1180,7 @@ else
                 else if (($user->id != $id && $caneditpassword) && $fuser->login && !$fuser->ldap_sid &&
                 (empty($conf->multicompany->enabled) || ($fuser->entity == $conf->entity) || ($conf->multicompany->transverse_mode && $conf->entity == 1)) )
                 {
-                    if ($fuser->email) print '<a class="butAction" href="fiche.php?id='.$fuser->id.'&amp;action=passwordsend">'.$langs->trans("SendNewPassword").'</a>';
+                    if ($fuser->email) print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$fuser->id.'&amp;action=passwordsend">'.$langs->trans("SendNewPassword").'</a>';
                     else print '<a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NoEMail")).'">'.$langs->trans("SendNewPassword").'</a>';
                 }
             }
@@ -1189,19 +1189,19 @@ else
             if ($user->id <> $id && $candisableuser && $fuser->statut == 0 &&
             (empty($conf->multicompany->enabled) || ($fuser->entity == $conf->entity) || ($conf->global->MULTICOMPANY_TRANSVERSE_MODE && $conf->entity == 1)) )
             {
-                print '<a class="butAction" href="fiche.php?id='.$fuser->id.'&amp;action=enable">'.$langs->trans("Reactivate").'</a>';
+                print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$fuser->id.'&amp;action=enable">'.$langs->trans("Reactivate").'</a>';
             }
             // Desactiver
             if ($user->id <> $id && $candisableuser && $fuser->statut == 1 &&
             (empty($conf->multicompany->enabled) || ($fuser->entity == $conf->entity) || ($conf->global->MULTICOMPANY_TRANSVERSE_MODE && $conf->entity == 1)) )
             {
-                print '<a class="butActionDelete" href="fiche.php?action=disable&amp;id='.$fuser->id.'">'.$langs->trans("DisableUser").'</a>';
+                print '<a class="butActionDelete" href="'.$_SERVER["PHP_SELF"].'?action=disable&amp;id='.$fuser->id.'">'.$langs->trans("DisableUser").'</a>';
             }
             // Delete
             if ($user->id <> $id && $candisableuser &&
             (empty($conf->multicompany->enabled) || ($fuser->entity == $conf->entity) || ($conf->global->MULTICOMPANY_TRANSVERSE_MODE && $conf->entity == 1)) )
             {
-                print '<a class="butActionDelete" href="fiche.php?action=delete&amp;id='.$fuser->id.'">'.$langs->trans("DeleteUser").'</a>';
+                print '<a class="butActionDelete" href="'.$_SERVER["PHP_SELF"].'?action=delete&amp;id='.$fuser->id.'">'.$langs->trans("DeleteUser").'</a>';
             }
 
             print "</div>\n";

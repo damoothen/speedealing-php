@@ -29,6 +29,7 @@
  */
 
 require_once(DOL_DOCUMENT_ROOT ."/core/class/nosqlDocument.class.php");
+require_once(DOL_DOCUMENT_ROOT."/core/class/extrafields.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/db/couchdb/lib/couchAdmin.php");
 
 
@@ -110,6 +111,10 @@ class User extends nosqlDocument
 		$this->db = $db;
 		
 		parent::__construct($db);
+		
+		$fk_extrafields = new ExtraFields($db);
+		$this->fk_extrafields = $fk_extrafields->load("extrafields:".get_class($this),true); // load and cache
+		
 		$this->couchAdmin = new couchAdmin($this->couchdb);
 		$this->couchdb->useDatabase("_users");
 		
@@ -150,7 +155,7 @@ class User extends nosqlDocument
 			return 0;
 		}
 		
-		$this->id = $this->values->name;
+		$this->id = $this->values->_id;
 		$this->login = $this->values->name;
 		$this->admin = $this->values->Administrator;
 

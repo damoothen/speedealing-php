@@ -50,7 +50,7 @@ print start_box($langs->trans("ListOfUsers"),"twelve","16-User.png",false);
 $i=0;
 $obj=new stdClass();
 
-print '<table class="display dt_act" id="societe" >';
+print '<table class="display dt_act" id="user" >';
 // Ligne des titres 
 print'<thead>';
 print'<tr>';
@@ -118,7 +118,9 @@ print'</tbody>';
 
 print "</table>";
 
-$object->datatablesCreate($obj,"societe",true,true);
+$obj->sDom = 'l<fr>t<\"clear\"rtip>';
+
+$object->datatablesCreate($obj,"user",true);
 
 
 
