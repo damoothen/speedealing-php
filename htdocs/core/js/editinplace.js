@@ -28,7 +28,8 @@ $(document).ready(function() {
 	
 	$('.edit').editable(urlSaveInPlace, {
         indicator : indicatorInPlace,
-        tooltip   : tooltipInPlace
+        tooltip   : tooltipInPlace,
+		placeholder	: ''
     });
 	
 	$('.edit_area').editable(urlSaveInPlace, {

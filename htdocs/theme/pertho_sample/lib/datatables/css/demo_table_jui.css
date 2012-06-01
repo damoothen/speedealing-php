@@ -31,6 +31,9 @@ border-right-style: solid;
 border-left-width: 1px;
 border-left-color: #DDD;
 border-left-style: solid;
+border-top-width: 1px;
+border-top-color: #DDD;
+border-top-style: solid;
 border-bottom-width: 1px;
 border-bottom-color: #DDD;
 border-bottom-style: solid;
@@ -43,6 +46,7 @@ border-radius: 0.2em;}
 table.display tfoot th{font-weight:400;padding:2px 8px 2px 8px}
 table.display tr.heading2 td{border-bottom:1px solid #aaa}
 table.display td{padding:5px 8px;border:1px solid #ccc;font-size:12px;vertical-align:middle}
+table.noborder td{;border:0px;}
 table.display td .fancyImg {display:block;border:1px solid #dcdcdc;padding:2px;background:#fff;float:left}
 table.display td .fancyImg img {display:block}
 .sorting_asc {background:url(../images/sort_asc.gif) no-repeat right center}

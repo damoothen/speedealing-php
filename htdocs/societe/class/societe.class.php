@@ -1818,41 +1818,42 @@ class Societe extends nosqlDocument
         
         // List of tel, fax, mail...
         $rtr = '<div class="row vcard sepH_b">';
-        $rtr.= '<ul class="">';
+        $rtr.= '<table class="display noborder">';
+		$rtr.= '<tbody>';
         
         // list tel, fax, mail
 	for ($i=0; $i < count($this->fk_extrafields->place[$blockid]); $i++) // Block
 	{
         foreach ($this->fk_extrafields->place[$blockid][$i] as $key) {
-	    $aRow = $this->fk_extrafields->fields->$key;
+			$aRow = $this->fk_extrafields->fields->$key;
             if(is_object($aRow) && $aRow->enable)
             {
+				$rtr.='<tr>';
                 $label = (empty($aRow->label) ? $langs->trans($key) : $langs->trans($aRow->label));
-		if(isset($aRow->ico))
-		    $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/'.$aRow->ico.'.png" title="'.$label.'" />';
-		else
-		    $img = '<img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Money.png" title="'.$label.'" />';
+				if(isset($aRow->ico))
+					$rtr.= '<td><img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/'.$aRow->ico.'.png" title="'.$label.'" /></td>';
+				else
+					$rtr.= '<td><img src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/ico/icSw2/16-Money.png" title="'.$label.'" /></td>';
+				
                 if($aRow->type == "AC_EMAIL")
-                    $rtr.= '<li><span>'.$img.'</span><span class="s_color">'.$label.'</span> : <span class="ttip_r edit">'.$this->values->$key.'</span></li>';
-		elseif($aRow->type == "AC_TEL" || $aRow->type == "AC_FAX")
-		    $rtr.= '<li><span>'.$img.'</span><span class="s_color">'.$label.'</span> : <span class="ttip_r edit">'.dol_print_phone($this->values->$key,$this->values->Country,0,$this->id(),$aRow->type).'</span></li>';
+                    $rtr.= '<td class="s_color">'.$label.'</td></td><td class="ttip_r edit">'.$this->values->$key.'</td>';
+				elseif($aRow->type == "AC_TEL" || $aRow->type == "AC_FAX")
+					$rtr.= '<td class="s_color">'.$label.'</td><td class="ttip_r edit">'.dol_print_phone($this->values->$key,$this->values->Country,0,$this->id(),$aRow->type).'</td>';
                 elseif($aRow->type == "AC_URL")
                 {
-                    if(!empty($this->values->$key))
-                    {
-                        if($aRow->site == "www") // An  URL
-                            $rtr.= '<li>'.dol_print_url($this->values->$key->value).'</li>';
-                        else // Facebook linkedin...
-                            $rtr.= '<li><span>'.$img.'</span>'.dol_print_url($label,$this->values->$key->value).'</li>';
-                    }
+                    $rtr.= '<td>'.dol_print_url($label,$this->values->$key->value).'</td><td class="ttip_r edit">'.$this->values->$key.'</td>';
                 }
                 else
-                    $rtr.= '<li><span>'.$img.'</span><span class="s_color">'.$label.'</span><span> : </span><span class="ttip_r edit">'.$this->values->$key.'</span></li>';
+                    $rtr.= '<td class="s_color">'.$label.'</td><td class="ttip_r edit">'.$this->values->$key.'</td>';
+				
+				$rtr.='</tr>';
             }
         }
 	}
         
-        $rtr.= '</ul>';
+        $rtr.= '</tbody>';
+		$rtr.= '</table>';
+		
         $rtr.= '</div>';
 
         return $rtr;
