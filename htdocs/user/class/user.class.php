@@ -155,9 +155,16 @@ class User extends nosqlDocument
 			return 0;
 		}
 		
+		// Test if User is a global administrator
+		try {
+			$this->couchAdmin->getAllUsers();
+			$this->admin = true;
+		} catch(Exception $e) {
+			$this->admin = false;
+		}
+		
 		$this->id = $this->values->_id;
 		$this->login = $this->values->name;
-		$this->admin = $this->values->Administrator;
 
 		return 1;
 	}
@@ -1590,9 +1597,13 @@ class User extends nosqlDocument
 	 *  @param	int		$all		Return for all entities
 	 *  @return int  				Number of users
 	 */
-	function getNbOfUsers($limitTo='',$all=0)
+	function getNbOfUsers($limitTo='')
 	{
 		global $conf;
+		
+		$result = $this->couchAdmin->getAllUsers();
+		
+		return count($result);
 
 		$sql = "SELECT count(rowid) as nb";
 		$sql.= " FROM ".MAIN_DB_PREFIX."user";

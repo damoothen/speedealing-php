@@ -73,6 +73,7 @@ table.display tr.even.row_selected td{background-color:#B0BED9}
 table.display tr.odd.row_selected td{background-color:#9FAFD1}
 .display tr td.sorting_1 {background:#f0f0f0}
 table.display td.center,.dataTables_empty{text-align:center}
+table.display td.fright{text-align:right}
 .dataTables_empty{background:#fff}
 .paging_full_numbers .paginate_button{background-color:#fff}
 .dataTables_scroll,.clear{clear:both}

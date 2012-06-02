@@ -292,9 +292,9 @@ abstract class nosqlDocument extends CommonObject
             $status = $this->fk_extrafields->fields->Status->default;
 		
         if(isset($this->fk_extrafields->fields->Status->values->$status->label))
-			return '<span class="lbl '.$this->fk_extrafields->fields->Status->values->$status->cssClass.' sl_status ttip_r editval_select">'.$langs->trans($this->fk_extrafields->fields->Status->values->$status->label).'</span>';
+			return '<span class="lbl '.$this->fk_extrafields->fields->Status->values->$status->cssClass.' sl_status ttip_r">'.$langs->trans($this->fk_extrafields->fields->Status->values->$status->label).'</span>';
 		else
-			return '<span class="lbl '.$this->fk_extrafields->fields->Status->values->$status->cssClass.' sl_status ttip_r editval_select">'.$langs->trans($status).'</span>';
+			return '<span class="lbl '.$this->fk_extrafields->fields->Status->values->$status->cssClass.' sl_status ttip_r">'.$langs->trans($status).'</span>';
     }
     
     /**
@@ -611,6 +611,26 @@ foreach ($obj->aoColumns as $i => $aRow): ?>
 				return str;
 			}';
 		}
+		elseif($type=="sizeMo")
+		{
+			$rtr = 'function(obj) {
+				var ar = [];
+			if(obj.aData.'.$key.')
+			{
+				var size = obj.aData.'.$key.'/1000000;
+				size = (Math.round(size*100))/100;
+				ar[ar.length] = size;
+				ar[ar.length] = " Mo";
+				var str = ar.join("");
+				return str;
+			}
+			else
+			{
+				ar[ar.length] = "0 Mo";
+				return null;
+			}
+			}';
+		}
 		else
 		{
 			dol_print_error($db, "Type of fnRender must be url, date, datetime, attachment or status");
@@ -618,6 +638,50 @@ foreach ($obj->aoColumns as $i => $aRow): ?>
 		}
 		
 		return $rtr;	
+	}
+	
+	/**
+	 * Function for ajax inbox to create an new object
+	 * @param	$url	string		url of the create page
+	 * @return string
+	 */
+	public function buttonCreate($url)
+	{
+		global $langs;
+		
+		print '<a href="#fd_input" class="gh_button pill icon add" id="fd3">'.$langs->trans("Create").'</a>';
+?>
+<div style="display:none">
+	<div id="inlineDialog">
+		<div id="fd_input">
+			<div class="fd3_pane">
+				<form action="<?php echo $url; ?>" class="nice" style="width:220px">
+					<label><?php echo $this->fk_extrafields->labelCreate; ?></label>
+					<input type="text" class="input-text fd3_name_input expand" name="id" />
+                    <a href="#" class="gh_button small pill fd3_submit">Create</a>
+                </form>
+            </div>
+		</div>
+	</div>
+</div>
+<?php
+?>
+<script type="text/javascript" charset="utf-8">
+$(document).ready(function() {
+	$("#fd3").fancybox({
+	'overlayOpacity'	: '0.2',
+	'transitionIn'		: 'elastic',
+	'transitionOut'		: 'fade',
+	'onCleanup'			: function() {
+		if($('.fd3_pane:first').is(':hidden')){$('.fd3_pane').toggle();$.fancybox.resize();}
+			$('.fd3_pane label.error').remove();
+		}
+	});
+});
+</script>
+<?php
+		
+		return 1;
 	}
 }
 

@@ -58,12 +58,6 @@ if ($id)
     || (($user->id != $id) && $user->rights->user->user->password));
 }
 
-//Multicompany in mode transversal
-if (! empty($conf->multicompany->enabled) && $conf->entity > 1 && $conf->global->MULTICOMPANY_TRANSVERSE_MODE)
-{
-    accessforbidden();
-}
-
 // Security check
 $socid=0;
 if ($user->societe_id > 0) $socid = $user->societe_id;
@@ -531,10 +525,8 @@ if (($action == 'create') || ($action == 'adduserldap'))
         print '<td>';
         print $form->selectyesno('admin',$_POST["admin"],1);
 
-        if (! empty($conf->multicompany->enabled) && ! $user->entity && empty($conf->global->MULTICOMPANY_TRANSVERSE_MODE))
+        if ($conf->use_javascript_ajax)
         {
-            if ($conf->use_javascript_ajax)
-            {
                 print '<script type="text/javascript">
 							$(function() {
 								$("select[name=admin]").change(function() {
@@ -564,7 +556,6 @@ if (($action == 'create') || ($action == 'adduserldap'))
             $checked=($_POST["superadmin"]?' checked':'');
             $disabled=($_POST["superadmin"]?'':' disabled');
             print '<input type="checkbox" name="superadmin" value="1"'.$checked.$disabled.' /> '.$langs->trans("SuperAdministrator");
-        }
         print "</td></tr>\n";
     }
 

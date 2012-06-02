@@ -32,7 +32,7 @@ if ($conf->ldap->enabled) require_once (DOL_DOCUMENT_ROOT."/core/class/ldap.clas
  *	\class      UserGroup
  *	\brief      Class to manage user groups
  */
-class UserGroup extends nosqlDocument
+class UserDatabase extends nosqlDocument
 {
 	public $element='usergroup';
 	public $table_element='usergroup';
@@ -81,43 +81,31 @@ class UserGroup extends nosqlDocument
 	{
 		global $conf;
 
-		$this->id = $id;
-
-		$sql = "SELECT g.rowid, g.entity, g.nom as name, g.note, g.datec, g.tms as datem";
-		$sql.= " FROM ".MAIN_DB_PREFIX."usergroup as g";
-		$sql.= " WHERE g.rowid = ".$this->id;
-
-		dol_syslog(get_class($this)."::fetch sql=".$sql);
-		$result = $this->db->query($sql);
-		if ($result)
+		$this->couchdb->useDatabase($id);
+		$this->values = $this->couchdb->getDatabaseInfos();
+		
+		$this->couchAdmin = new couchAdmin($this->couchdb);
+		
+		$members = $this->couchAdmin->getDatabaseReaderUsers();
+		
+		$user = new User($this->db);
+		
+		foreach ($members as $aRow)
 		{
-			if ($this->db->num_rows($result))
-			{
-				$obj = $this->db->fetch_object($result);
-
-				$this->id = $obj->rowid;
-				$this->ref = $obj->rowid;
-				$this->entity = $obj->entity;
-				$this->nom  = $obj->name;        // depecated
-				$this->name = $obj->name;
-				$this->note = $obj->note;
-				$this->datec = $obj->datec;
-				$this->datem = $obj->datem;
-
-				$this->members=$this->listUsersForGroup();
-
-				// Sav current LDAP Current DN
-				//$this->ldap_dn = $this->_load_ldap_dn($this->_load_ldap_info(),0);
-			}
-			$this->db->free($result);
-			return 1;
+			$user = $this->couchAdmin->getUser($aRow);
+			$this->members[]=$user;
 		}
-		else
+		
+		$membersAdmin = $this->couchAdmin->getDatabaseAdminUsers();
+		foreach ($membersAdmin as $aRow)
 		{
-			$this->error=$this->db->lasterror();
-			dol_syslog(get_class($this)."::fetch ".$this->error, LOG_ERR);
-			return -1;
+			$user = $this->couchAdmin->getUser($aRow);
+			$user->Administrator = true;
+			$this->members[]=$user;
 		}
+		
+		$this->id = $this->values->db_name;
+		return 1;
 	}
 
 
@@ -502,45 +490,20 @@ class UserGroup extends nosqlDocument
 	}
 
 	/**
-	 *        Efface un groupe de la base
+	 *        Delete a database
 	 *
 	 *        @return     <0 if KO, > 0 if OK
 	 */
 	function delete()
 	{
-		global $user,$conf,$langs;
-
-		$error=0;
-
-		$this->db->begin();
-
-		$sql = "DELETE FROM ".MAIN_DB_PREFIX."usergroup_rights";
-		$sql .= " WHERE fk_usergroup = ".$this->id;
-		$this->db->query($sql);
-
-		$sql = "DELETE FROM ".MAIN_DB_PREFIX."usergroup_user";
-		$sql .= " WHERE fk_usergroup = ".$this->id;
-		$this->db->query($sql);
-
-		$sql = "DELETE FROM ".MAIN_DB_PREFIX."usergroup";
-		$sql .= " WHERE rowid = ".$this->id;
-		$result=$this->db->query($sql);
-		if ($result)
-		{
-			// Appel des triggers
-			include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
-			$interface=new Interfaces($this->db);
-			$result=$interface->run_triggers('USER_DELETE',$this,$user,$langs,$conf);
-			if ($result < 0) { $error++; $this->errors=$interface->errors; }
-			// Fin appel triggers
-
-			$this->db->commit();
+		try{
+			$this->couchdb->useDatabase($this->id);
+			$this->couchdb->deleteDatabase();
 			return 1;
 		}
-		else
+		catch(Exception $e)
 		{
-			$this->db->rollback();
-			dol_print_error($this->db);
+			dol_print_error('',$e->getMessage());
 			return -1;
 		}
 	}
@@ -648,86 +611,6 @@ class UserGroup extends nosqlDocument
 			dol_print_error($this->db);
 			return -1;
 		}
-	}
-
-
-	/**
-	 *	Retourne chaine DN complete dans l'annuaire LDAP pour l'objet
-	 *
-	 *	@param		string	$info		Info string loaded by _load_ldap_info
-	 *	@param		int		$mode		0=Return full DN (uid=qqq,ou=xxx,dc=aaa,dc=bbb)
-	 *									1=Return DN without key inside (ou=xxx,dc=aaa,dc=bbb)
-	 *									2=Return key only (uid=qqq)
-	 *	@return		string				DN
-	 */
-	function _load_ldap_dn($info,$mode=0)
-	{
-		global $conf;
-		$dn='';
-		if ($mode==0) $dn=$conf->global->LDAP_KEY_GROUPS."=".$info[$conf->global->LDAP_KEY_GROUPS].",".$conf->global->LDAP_GROUP_DN;
-		if ($mode==1) $dn=$conf->global->LDAP_GROUP_DN;
-		if ($mode==2) $dn=$conf->global->LDAP_KEY_GROUPS."=".$info[$conf->global->LDAP_KEY_GROUPS];
-		return $dn;
-	}
-
-
-	/**
-	 *	Initialize the info array (array of LDAP values) that will be used to call LDAP functions
-	 *
-	 *	@return		array		Tableau info des attributs
-	 */
-	function _load_ldap_info()
-	{
-		global $conf,$langs;
-		$info=array();
-
-		// Object classes
-		$info["objectclass"]=explode(',',$conf->global->LDAP_GROUP_OBJECT_CLASS);
-
-		// Champs
-		if ($this->nom && $conf->global->LDAP_GROUP_FIELD_FULLNAME) $info[$conf->global->LDAP_GROUP_FIELD_FULLNAME] = $this->nom;
-		//if ($this->nom && $conf->global->LDAP_GROUP_FIELD_NAME) $info[$conf->global->LDAP_GROUP_FIELD_NAME] = $this->nom;
-		if ($this->note && $conf->global->LDAP_GROUP_FIELD_DESCRIPTION) $info[$conf->global->LDAP_GROUP_FIELD_DESCRIPTION] = $this->note;
-		if ($conf->global->LDAP_GROUP_FIELD_GROUPMEMBERS)
-		{
-			$valueofldapfield=array();
-			foreach($this->members as $key=>$val)    // This is array of users for group into dolibarr database.
-			{
-				$muser=new User($this->db);
-				$muser->fetch($val->id);
-                if ($conf->global->LDAP_KEY_USERS == 'cn') $ldapuserid=$muser->getFullName($langs);
-                elseif ($conf->global->LDAP_KEY_USERS == 'sn') $ldapuserid=$muser->lastname;
-                elseif ($conf->global->LDAP_KEY_USERS == 'uid') $ldapuserid=$muser->login;
-
-				$valueofldapfield[] = $conf->global->LDAP_KEY_USERS.'='.$ldapuserid.','.$conf->global->LDAP_USER_DN;
-			}
-			$info[$conf->global->LDAP_GROUP_FIELD_GROUPMEMBERS] = (!empty($valueofldapfield)?$valueofldapfield:'');
-		}
-		return $info;
-	}
-
-
-	/**
-     *  Initialise an instance with random values.
-     *  Used to build previews or test instances.
-     *	id must be 0 if object instance is a specimen.
-     *
-     *  @return	void
-	 */
-	function initAsSpecimen()
-	{
-		global $conf, $user, $langs;
-
-		// Initialise parametres
-		$this->id=0;
-		$this->ref = 'SPECIMEN';
-		$this->specimen=1;
-
-		$this->nom='DOLIBARR GROUP SPECIMEN';
-		$this->note='This is a note';
-		$this->datec=time();
-		$this->datem=time();
-		$this->members=array($user->id);	// Members of this group is just me
 	}
 }
 

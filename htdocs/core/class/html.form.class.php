@@ -944,10 +944,9 @@ class Form
      * 	@param	int		$disabled		If select list must be disabled
      *  @param  array	$include        Array list of users id to include
      * 	@param	int		$enableonly		Array list of users id to be enabled. All other must be disabled
-     *  @param	int		$force_entity	Possibility to force entity
      * 	@return	string					HTML select string
      */
-    function select_dolusers($selected='',$htmlname='userid',$show_empty=0,$exclude='',$disabled=0,$include='',$enableonly='',$force_entity=0)
+    function select_dolusers($selected='',$htmlname='userid',$show_empty=0,$exclude='',$disabled=0,$include='',$enableonly='')
     {
         global $conf,$user,$langs;
 
@@ -960,89 +959,54 @@ class Form
         if (is_array($include))	$includeUsers = implode("','",$include);
 
         $out='';
-
-        // On recherche les utilisateurs
-        $sql = "SELECT u.rowid, u.name as lastname, u.firstname, u.login, u.admin, u.entity";
-        if(! empty($conf->multicompany->enabled) && $conf->entity == 1 && $user->admin && ! $user->entity)
+		
+		$object = new User($db);
+		$result = $object->getView("list");
+       
+        $i = 0;
+        if (count($result->rows))
         {
-            $sql.= ", e.label";
-        }
-        $sql.= " FROM ".MAIN_DB_PREFIX ."user as u";
-        if(! empty($conf->multicompany->enabled) && $conf->entity == 1 && $user->admin && ! $user->entity)
-        {
-            $sql.= " LEFT JOIN ".MAIN_DB_PREFIX ."entity as e on e.rowid=u.entity";
-            if ($force_entity) $sql.= " WHERE u.entity IN (0,".$force_entity.")";
-            else $sql.= " WHERE u.entity IS NOT NULL";
-        }
-        else
-        {
-            $sql.= " WHERE u.entity IN (0,".$conf->entity.")";
-        }
-        if (is_array($exclude) && $excludeUsers) $sql.= " AND u.rowid NOT IN ('".$excludeUsers."')";
-        if (is_array($include) && $includeUsers) $sql.= " AND u.rowid IN ('".$includeUsers."')";
-        $sql.= " ORDER BY u.name ASC";
-
-        dol_syslog(get_class($this)."::select_dolusers sql=".$sql);
-        $resql=$this->db->query($sql);
-        if ($resql)
-        {
-            $num = $this->db->num_rows($resql);
-            $i = 0;
-            if ($num)
-            {
                 $out.= '<select class="flat" id="'.$htmlname.'" name="'.$htmlname.'"'.($disabled?' disabled="disabled"':'').'>';
                 if ($show_empty) $out.= '<option value="-1"'.($selected==-1?' selected="selected"':'').'>&nbsp;</option>'."\n";
 
-                $userstatic=new User($this->db);
-
-                while ($i < $num)
+                foreach($result->rows as $obj)
                 {
-                    $obj = $this->db->fetch_object($resql);
-
-                    $userstatic->id=$obj->rowid;
-                    $userstatic->lastname=$obj->lastname;
-                    $userstatic->firstname=$obj->firstname;
+					if(!is_array($exclude) || !in_array($obj->id, $exclude, true))
+					{
+                    $object->id=$obj->id;
+                    $object->values->Lastname=$obj->value->Lastname;
+                    $object->values->Firstname=$obj->value->Firstname;
 
                     $disableline=0;
-                    if (is_array($enableonly) && count($enableonly) && ! in_array($obj->rowid,$enableonly)) $disableline=1;
+                    if (is_array($enableonly) && count($enableonly) && ! in_array($obj->value->name,$enableonly)) $disableline=1;
 
-                    if ((is_object($selected) && $selected->id == $obj->rowid) || (! is_object($selected) && $selected == $obj->rowid))
+                    if ((is_object($selected) && $selected->id == $obj->value->name) || (! is_object($selected) && $selected == $obj->value->name))
                     {
-                        $out.= '<option value="'.$obj->rowid.'"';
+                        $out.= '<option value="'.$obj->value->name.'"';
                         if ($disableline) $out.= ' disabled="disabled"';
                         $out.= ' selected="selected">';
                     }
                     else
                     {
-                        $out.= '<option value="'.$obj->rowid.'"';
+                        $out.= '<option value="'.$obj->value->name.'"';
                         if ($disableline) $out.= ' disabled="disabled"';
                         $out.= '>';
                     }
-                    $out.= $userstatic->getFullName($langs);
-
-                    if(! empty($conf->multicompany->enabled) && empty($conf->multicompany->transverse_mode) && $conf->entity == 1 && $user->admin && ! $user->entity)
-                    {
-                        if ($obj->admin && ! $obj->entity) $out.=" (".$langs->trans("AllEntities").")";
-                        else $out.=" (".$obj->label.")";
-                    }
+                    $out.= $object->getFullName($langs);
 
                     //if ($obj->admin) $out.= ' *';
-                    if ($conf->global->MAIN_SHOW_LOGIN) $out.= ' ('.$obj->login.')';
+                    if (!$conf->global->MAIN_SHOW_LOGIN) $out.= ' ('.$obj->value->name.')';
                     $out.= '</option>';
                     $i++;
+					}
                 }
-            }
-            else
-            {
-                $out.= '<select class="flat" name="'.$htmlname.'" disabled="disabled">';
-                $out.= '<option value="">'.$langs->trans("None").'</option>';
-            }
-            $out.= '</select>';
-        }
+		}
         else
         {
-            dol_print_error($this->db);
+            $out.= '<select class="flat" name="'.$htmlname.'" disabled="disabled">';
+            $out.= '<option value="">'.$langs->trans("None").'</option>';
         }
+        $out.= '</select>';
 
         return $out;
     }
