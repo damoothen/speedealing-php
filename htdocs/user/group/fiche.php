@@ -1,4 +1,5 @@
 <?php
+
 /* Copyright (C) 2005      Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2005-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
@@ -22,39 +23,26 @@
  *       \file       htdocs/user/group/fiche.php
  *       \brief      Onglet groupes utilisateurs
  */
-
 require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/user/class/usergroup.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/usergroups.lib.php");
-if(! empty($conf->multicompany->enabled)) dol_include_once("/multicompany/class/actions_multicompany.class.php");
+require_once(DOL_DOCUMENT_ROOT . "/user/class/usergroup.class.php");
+require_once(DOL_DOCUMENT_ROOT . "/core/lib/usergroups.lib.php");
+require_once(DOL_DOCUMENT_ROOT . "/user/class/userdatabase.class.php");
 
 // Defini si peux lire/modifier utilisateurs et permisssions
-$canreadperms=($user->admin || $user->rights->user->user->lire);
-$caneditperms=($user->admin || $user->rights->user->user->creer);
-$candisableperms=($user->admin || $user->rights->user->user->supprimer);
-// Advanced permissions
-if (! empty($conf->global->MAIN_USE_ADVANCED_PERMS))
-{
-    $canreadperms=($user->admin || $user->rights->user->group_advance->read);
-    $caneditperms=($user->admin || $user->rights->user->group_advance->write);
-    $candisableperms=($user->admin || $user->rights->user->group_advance->delete);
-}
+$canreadperms = ($user->admin || $user->rights->user->user->lire);
+$caneditperms = ($user->admin || $user->rights->user->user->creer);
+$candisableperms = ($user->admin || $user->rights->user->user->supprimer);
 
 $langs->load("users");
 $langs->load("other");
 
-$id=GETPOST('id', 'int');
-$action=GETPOST('action', 'alpha');
-$confirm=GETPOST('confirm', 'alpha');
-$userid=GETPOST('user', 'int');
+$id = GETPOST('id', 'alpha');
+$action = GETPOST('action', 'alpha');
+$confirm = GETPOST('confirm', 'alpha');
+$userid = GETPOST('user', 'alpha');
 
 // Security check
 $result = restrictedArea($user, 'user', $id, 'usergroup&usergroup', 'user');
-
-if(! empty($conf->multicompany->enabled) && $conf->entity > 1 && $conf->global->MULTICOMPANY_TRANSVERSE_MODE)
-{
-    accessforbidden();
-}
 
 $object = new Usergroup($db);
 
@@ -62,142 +50,103 @@ $object = new Usergroup($db);
 /**
  *  Action remove group
  */
-if ($action == 'confirm_delete' && $confirm == "yes")
-{
-    if ($caneditperms)
-    {
-        $object->fetch($id);
-        $object->delete();
-        Header("Location: index.php");
-        exit;
-    }
-    else
-    {
-    	$langs->load("errors");
-        $message = '<div class="error">'.$langs->trans('ErrorForbidden').'</div>';
-    }
+if ($action == 'confirm_delete' && $confirm == "yes") {
+	if ($caneditperms) {
+		$object->fetch($id);
+		$object->delete();
+		Header("Location: index.php");
+		exit;
+	} else {
+		$langs->load("errors");
+		$message = '<div class="error">' . $langs->trans('ErrorForbidden') . '</div>';
+	}
 }
 
 /**
  *  Action add group
  */
-if ($action == 'add')
-{
-    if($caneditperms)
-    {
-        $message="";
-        if (! $_POST["nom"])
-        {
-            $message='<div class="error">'.$langs->trans("NameNotDefined").'</div>';
-            $action="create";       // Go back to create page
-        }
+if ($action == 'add') {
+	if ($caneditperms) {
+		$message = "";
+		if (!$_POST["nom"]) {
+			$message = '<div class="error">' . $langs->trans("NameNotDefined") . '</div>';
+			$action = "create";	// Go back to create page
+		}
 
-		if (! $message)
-		{
-			$object->nom	= trim($_POST["nom"]);
-			$object->note	= trim($_POST["note"]);
-			
-			if($conf->multicompany->enabled && ! empty($conf->global->MULTICOMPANY_TRANSVERSE_MODE)) $object->entity = 0;
-			else $object->entity = $_POST["entity"];
+		if (!$message) {
+			$object->values->name = trim($_POST["nom"]);
+			$object->values->note = trim($_POST["note"]);
 
-            $db->begin();
+			$object->record();
 
-            $id = $object->create();
-
-            if ($id > 0)
-            {
-                $db->commit();
-
-                Header("Location: fiche.php?id=".$object->id);
-                exit;
-            }
-            else
-            {
-                $db->rollback();
-
-                $langs->load("errors");
-                $message='<div class="error">'.$langs->trans("ErrorGroupAlreadyExists",$object->nom).'</div>';
-                $action="create";       // Go back to create page
-            }
-        }
-    }
-    else
-    {
-    	$langs->load("errors");
-        $message = '<div class="error">'.$langs->trans('ErrorForbidden').'</div>';
-    }
+			Header("Location: fiche.php?id=" . $object->id);
+			exit;
+		}
+	} else {
+		$langs->load("errors");
+		$message = '<div class="error">' . $langs->trans('ErrorForbidden') . '</div>';
+	}
 }
 
 // Add/Remove user into group
-if ($action == 'adduser' || $action =='removeuser')
-{
-    if ($caneditperms)
-    {
-        if ($userid)
-        {
-            $object->fetch($id);
-            $object->oldcopy=dol_clone($object);
+if ($action == 'adduser' || $action == 'removeuser') {
+	if ($caneditperms) {
+		if ($userid) {
 
-			$edituser = new User($db);
-			$edituser->fetch($userid);
-			if ($action == 'adduser')    $result=$edituser->SetInGroup($object->id,($conf->global->MULTICOMPANY_TRANSVERSE_MODE?GETPOST("entity"):$object->entity));
-			if ($action == 'removeuser') $result=$edituser->RemoveFromGroup($object->id,($conf->global->MULTICOMPANY_TRANSVERSE_MODE?GETPOST("entity"):$object->entity));
+			$object->load($id);
 
-            if ($result > 0)
-            {
-                header("Location: fiche.php?id=".$object->id);
-                exit;
-            }
-            else
-            {
-                $message.=$edituser->error;
-            }
-        }
-    }
-    else
-    {
-    	$langs->load("errors");
-        $message = '<div class="error">'.$langs->trans('ErrorForbidden').'</div>';
-    }
+			if ($action == 'adduser') {
+				$object->couchAdmin->addRoleToUser($userid, $object->values->name);
+			}
+			if ($action == 'removeuser') {
+				$object->couchAdmin->removeRoleFromUser($userid, $object->values->name);
+			}
+
+			if ($result > 0) {
+				header("Location: fiche.php?id=" . $object->id);
+				exit;
+			} else {
+				$message.=$edituser->error;
+			}
+		}
+	} else {
+		$langs->load("errors");
+		$message = '<div class="error">' . $langs->trans('ErrorForbidden') . '</div>';
+	}
 }
 
 
-if ($action == 'update')
-{
-    if($caneditperms)
-    {
-        $message="";
+if ($action == 'update') {
+	if ($caneditperms) {
+		$message = "";
 
-        $db->begin();
+		$db->begin();
 
-        $object->fetch($id);
+		$object->fetch($id);
 
-        $object->oldcopy=dol_clone($object);
+		$object->oldcopy = dol_clone($object);
 
-		$object->nom	= trim($_POST["group"]);
-		$object->note	= dol_htmlcleanlastbr($_POST["note"]);
-		
-		if($conf->multicompany->enabled && !empty($conf->global->MULTICOMPANY_TRANSVERSE_MODE)) $object->entity = 0;
-		else $object->entity = $_POST["entity"];
+		$object->nom = trim($_POST["group"]);
+		$object->note = dol_htmlcleanlastbr($_POST["note"]);
 
-        $ret=$object->update();
+		if ($conf->multicompany->enabled && !empty($conf->global->MULTICOMPANY_TRANSVERSE_MODE))
+			$object->entity = 0;
+		else
+			$object->entity = $_POST["entity"];
 
-        if ($ret >= 0 && ! count($object->errors))
-        {
-            $message.='<div class="ok">'.$langs->trans("GroupModified").'</div>';
-            $db->commit();
-        }
-        else
-        {
-            $message.='<div class="error">'.$object->error.'</div>';
-            $db->rollback();
-        }
-    }
-    else
-    {
-    	$langs->load("errors");
-        $message = '<div class="error">'.$langs->trans('ErrorForbidden').'</div>';
-    }
+		$ret = $object->update();
+
+		if ($ret >= 0 && !count($object->errors)) {
+			$message.='<div class="ok">' . $langs->trans("GroupModified") . '</div>';
+			$db->commit();
+		} else {
+			$message.='<div class="error">' . $object->error . '</div>';
+			$db->rollback();
+		}
+	} else {
+		$langs->load("errors");
+		$message = '<div class="error">' . $langs->trans('ErrorForbidden') . '</div>';
+	}
 }
 
 
@@ -206,305 +155,375 @@ if ($action == 'update')
  * View
  */
 
-llxHeader('',$langs->trans("GroupCard"));
+llxHeader('', $langs->trans("GroupCard"));
 
 $form = new Form($db);
 $fuserstatic = new User($db);
 
-if ($action == 'create')
-{
-    print_fiche_titre($langs->trans("NewGroup"));
+if ($action == 'create') {
+	print_fiche_titre($langs->trans("NewGroup"));
 
-    if ($message) { print $message."<br>"; }
-
-    print '<form action="'.$_SERVER["PHP_SELF"].'" method="post">';
-    print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-    print '<input type="hidden" name="action" value="add">';
-
-    print '<table class="border" width="100%">';
-
-	print "<tr>".'<td valign="top" class="fieldrequired">'.$langs->trans("Name").'</td>';
-	print '<td class="valeur"><input size="30" type="text" name="nom" value=""></td></tr>';
-
-	// Multicompany
-	if (! empty($conf->multicompany->enabled))
-	{
-		if (empty($conf->global->MULTICOMPANY_TRANSVERSE_MODE) && $conf->entity == 1 && $user->admin && ! $user->entity)
-		{
-			print "<tr>".'<td valign="top">'.$langs->trans("Entity").'</td>';
-			print "<td>".$mc->select_entities($conf->entity);
-			print "</td></tr>\n";
-		}
-		else
-		{
-			print '<input type="hidden" name="entity" value="'.$conf->entity.'" />';
-		}
+	if ($message) {
+		print $message . "<br>";
 	}
 
-    print "<tr>".'<td valign="top">'.$langs->trans("Note").'</td><td>';
-    require_once(DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php");
-    $doleditor=new DolEditor('note','','',240,'dolibarr_notes','',false,true,$conf->global->FCKEDITOR_ENABLE_SOCIETE,ROWS_8,90);
-    $doleditor->Create();
-    print "</td></tr>\n";
-    print "</table>\n";
+	print '<form action="' . $_SERVER["PHP_SELF"] . '" method="post">';
+	print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+	print '<input type="hidden" name="action" value="add">';
 
-    print '<center><br><input class="button" value="'.$langs->trans("CreateGroup").'" type="submit"></center>';
+	print '<table class="border" width="100%">';
 
-    print "</form>";
+	print "<tr>" . '<td valign="top" class="fieldrequired">' . $langs->trans("Name") . '</td>';
+	print '<td class="valeur"><input size="30" type="text" name="nom" value=""></td></tr>';
+
+	print "<tr>" . '<td valign="top">' . $langs->trans("Note") . '</td><td>';
+	require_once(DOL_DOCUMENT_ROOT . "/core/class/doleditor.class.php");
+	$doleditor = new DolEditor('note', '', '', 240, 'dolibarr_notes', '', false, true, $conf->global->FCKEDITOR_ENABLE_SOCIETE, ROWS_8, 90);
+	$doleditor->Create();
+	print "</td></tr>\n";
+	print "</table>\n";
+
+	print '<center><br><input class="button small nice" value="' . $langs->trans("CreateGroup") . '" type="submit"></center>';
+
+	print "</form>";
+	dol_fiche_end();
 }
 
 
-/* ************************************************************************** */
+/* * ************************************************************************* */
 /*                                                                            */
 /* Visu et edition                                                            */
 /*                                                                            */
-/* ************************************************************************** */
-else
-{
-    if ($id)
-    {
-        $object->fetch($id);
+/* * ************************************************************************* */ else {
+	if ($id) {
+		$object->load($id);
 
-        /*
-         * Affichage onglets
-         */
-        $head = group_prepare_head($object);
-        $title = $langs->trans("Group");
-        dol_fiche_head($head, 'group', $title, 0, 'group');
+		/*
+		 * Affichage onglets
+		 */
+		$head = group_prepare_head($object);
+		$title = $langs->trans("Group");
+		print '<div class="row">';
+		print start_box($title, "twelve", "16-Users-2.png", false);
 
 		/*
 		 * Confirmation suppression
 		 */
-		if ($action == 'delete')
-		{
-			$ret=$form->form_confirm($_SERVER['PHP_SELF']."?id=".$object->id,$langs->trans("DeleteAGroup"),$langs->trans("ConfirmDeleteGroup",$object->name),"confirm_delete", '',0,1);
-			if ($ret == 'html') print '<br>';
+		if ($action == 'delete') {
+			$ret = $form->form_confirm($_SERVER['PHP_SELF'] . "?id=" . $object->id, $langs->trans("DeleteAGroup"), $langs->trans("ConfirmDeleteGroup", $object->name), "confirm_delete", '', 0, 1);
+			if ($ret == 'html')
+				print '<br>';
 		}
 
 		/*
 		 * Fiche en mode visu
 		 */
 
-		if ($action != 'edit')
-		{
+		if ($action != 'edit') {
+			/*
+			 * Barre d'actions
+			 */
+			print '<div class="row sepH_a">';
+			print '<div class="gh_button-group right">';
+
+			if ($caneditperms) {
+				print '<a class="gh_button pill primary" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=edit">' . $langs->trans("Modify") . '</a>';
+			}
+
+			if ($candisableperms) {
+				print '<a class="gh_button pill icon trash danger" href="' . $_SERVER['PHP_SELF'] . '?action=delete&amp;id=' . $object->id . '">' . $langs->trans("Delete") . '</a>';
+			}
+
+			print "</div>\n";
+			print "</div>\n";
+
 			print '<table class="border" width="100%">';
 
 			// Ref
-			print '<tr><td width="25%" valign="top">'.$langs->trans("Ref").'</td>';
+			print '<tr><td width="25%" valign="top">' . $langs->trans("Ref") . '</td>';
 			print '<td colspan="2">';
-			print $form->showrefnav($object,'id','',$user->rights->user->user->lire || $user->admin);
+			print $form->showrefnav($object, 'id', '', $user->rights->user->user->lire || $user->admin);
 			print '</td>';
 			print '</tr>';
 
 			// Name
-			print '<tr><td width="25%" valign="top">'.$langs->trans("Name").'</td>';
-			print '<td width="75%" class="valeur">'.$object->nom;
-			if (empty($object->entity))
-			{
-				print img_picto($langs->trans("GlobalGroup"),'redstar');
-			}
+			print '<tr><td width="25%" valign="top">' . $langs->trans("Name") . '</td>';
+			print '<td width="75%" class="valeur">' . $object->values->name;
 			print "</td></tr>\n";
 
-			// Multicompany
-			if (! empty($conf->multicompany->enabled) && empty($conf->global->MULTICOMPANY_TRANSVERSE_MODE) && $conf->entity == 1 && $user->admin && ! $user->entity)
-			{
-				$mc->getInfo($object->entity);
-				print "<tr>".'<td valign="top">'.$langs->trans("Entity").'</td>';
-				print '<td width="75%" class="valeur">'.$mc->label;
-				print "</td></tr>\n";
-			}
-
-			// Note
-			print '<tr><td width="25%" valign="top">'.$langs->trans("Note").'</td>';
-			print '<td class="valeur">'.dol_htmlentitiesbr($object->note).'&nbsp;</td>';
-			print "</tr>\n";
 			print "</table>\n";
 
+			print "</div>\n";
+
+			print '</div>';
+			print '</div>';
+
+
+			dol_htmloutput_mesg($message);
+
+			/*
+			 * Liste des utilisateurs dans le groupe
+			 */
+
+			print '<div class="row">';
+			print start_box($langs->trans("ListOfUsersInGroup"), "twelve", "16-User-2.png", false);
+
+			// On selectionne les users qui ne sont pas deja dans le groupe
+			$exclude = array();
+
+			$userstatic = new User($db);
+			$result = $userstatic->getView("roles", array('key' => $object->values->name));
+
+			if (count($result->rows)) {
+				foreach ($result->rows as $useringroup) {
+					$exclude[] = $useringroup->value->_id;
+				}
+			}
+
+			if ($caneditperms) {
+				print '<form action="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '" method="POST">' . "\n";
+				print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+				print '<input type="hidden" name="action" value="adduser">';
+				print '<table class="noborder" width="100%">' . "\n";
+				print '<tr class="liste_titre"><td class="liste_titre" width="25%">' . $langs->trans("NonAffectedUsers") . '</td>' . "\n";
+				print '<td>';
+				print $form->select_dolusers('', 'user', 1, $exclude, 0, '', '');
+				print '</td><td>';
+				print '<input type="submit" class="tiny nice button" value="' . $langs->trans("Add") . '">';
+				print '</td></tr>' . "\n";
+				print '</table></form>' . "\n";
+				print '<br>';
+			}
+
+			/*
+			 * Group members
+			 */
+			$obj = new stdClass();
+			$i = 0;
+			print '<table class="display" id="users">';
+			print '<thead>';
+			print '<tr>';
+			print '<th>' . $langs->trans("Login") . '</th>';
+			$obj->aoColumns[$i]->mDataProp = "";
+			$i++;
+			print '<th>' . $langs->trans("Lastname") . '</th>';
+			$obj->aoColumns[$i]->mDataProp = "";
+			$i++;
+			print '<th>' . $langs->trans("Firstname") . '</th>';
+			$obj->aoColumns[$i]->mDataProp = "";
+			$i++;
+			print '<th>' . $langs->trans("Status") . '</th>';
+			$obj->aoColumns[$i]->mDataProp = "";
+			$obj->aoColumns[$i]->sClass = "center";
+			$i++;
+			print '<th></th>';
+			$obj->aoColumns[$i]->mDataProp = "";
+			$obj->aoColumns[$i]->sClass = "fright content_actions";
+			$i++;
+			print "</tr>\n";
+			print '</thead>';
+
+			print '<tbody>';
+			if (count($result->rows)) {
+				$var = True;
+
+				foreach ($result->rows as $aRow) {
+					$var = !$var;
+
+					$useringroup = new User($db);
+					$useringroup->values = $aRow->value;
+					$useringroup->admin = $useringroup->values->Administrator;
+					$useringroup->id = $useringroup->values->_id;
+
+					print "<tr $bc[$var]>";
+					print '<td>';
+					print '<a href="' . DOL_URL_ROOT . '/user/fiche.php?id=' . $useringroup->id . '">' . img_object($langs->trans("ShowUser"), "user") . ' ' . $useringroup->values->name . '</a>';
+					if ($useringroup->admin)
+						print img_picto($langs->trans("Administrator"), 'star');
+					print '</td>';
+					print '<td>' . $useringroup->values->Lastname . '</td>';
+					print '<td>' . $useringroup->values->Firstname . '</td>';
+					print '<td>' . $useringroup->getLibStatus() . '</td>';
+					print '<td>';
+					if ($user->admin) {
+						print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=removeuser&amp;user=' . $useringroup->values->name . '">';
+						print img_delete($langs->trans("RemoveFromGroup"));
+					} else {
+						print "-";
+					}
+					print "</td></tr>\n";
+				}
+			}
+			print '<tbody>';
+			print "</table>";
+
+			$obj->aaSorting = array(array(0, "asc"));
+			$obj->sDom = 'l<fr>t<\"clear\"rtip>';
+
+			$object->datatablesCreate($obj, "users");
+
+			print '</div>';
 			print '</div>';
 
 			/*
-			 * Barre d'actions
+			 * Liste des databases du groupe / role
 			 */
-			print '<div class="tabsAction">';
 
-			if ($caneditperms)
-			{
-				print '<a class="butAction" href="'.$_SERVER['PHP_SELF'].'?id='.$object->id.'&amp;action=edit">'.$langs->trans("Modify").'</a>';
+			print '<div class="row">';
+			print start_box($langs->trans("ListOfRolesInDatabase"), "twelve", "16-Cloud.png", false);
+
+			// On selectionne les users qui ne sont pas deja dans le groupe
+			$exclude = array();
+
+			$database = new UserDatabase($db);
+			try {
+				$result = $database->couchdb->listDatabases();
+			} catch (Exception $exc) {
+				print $exc->getMessage();
 			}
 
-			if ($candisableperms)
-			{
-				print '<a class="butActionDelete" href="'.$_SERVER['PHP_SELF'].'?action=delete&amp;id='.$object->id.'">'.$langs->trans("DeleteGroup").'</a>';
+			$object->database = array();
+			foreach ($result as $aRow) {
+				if ($aRow[0] != "_") { // Not _users and _replicator
+					try {
+						$database->fetch($aRow);
+						$info = $database->values;
+						$secu = $database->couchAdmin->getSecurity();
+
+						foreach($secu as $key => $type)
+						{
+							if(in_array($object->values->name, $type->roles))
+							{
+								if($key == "admins")
+									$info->Administrator = true;
+								
+								$$object->database[] = $info;
+							}
+						}
+					} catch (Exception $exc) {
+						print $exc->getMessage();
+					}
+				}
+			}
+			
+			//print_r($object->database);
+
+			if (count($object->database)) {
+				foreach ($object->database as $dbingroup) {
+					$exclude[] = $dbingroup->db_name;
+				}
 			}
 
-			print "</div>\n";
-			print "<br>\n";
+			if ($caneditperms) {
+				print '<form action="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '" method="POST">' . "\n";
+				print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+				print '<input type="hidden" name="action" value="adduser">';
+				print '<table class="noborder" width="100%">' . "\n";
+				print '<tr class="liste_titre"><td class="liste_titre" width="25%">' . $langs->trans("NonAffectedUsers") . '</td>' . "\n";
+				print '<td>';
+				print $form->select_dolgroups('', 'groupid', 1, $exclude, 0, '', '');
+				print '<td valign="top">' . $langs->trans("Administrator") . '</td>';
+				print "<td>" . $form->selectyesno('admin', 0, 1);
+				print "</td>\n";
+				print '</td><td>';
+				print '<input type="submit" class="tiny nice button" value="' . $langs->trans("Add") . '">';
+				print '</td></tr>' . "\n";
+				print '</table></form>' . "\n";
+				print '<br>';
+			}
 
+			/*
+			 * Group members
+			 */
+			$obj = new stdClass();
+			$i = 0;
+			print '<table class="display" id="databases">';
+			print '<thead>';
+			print '<tr>';
+			print '<th>' . $langs->trans("Group") . '</th>';
+			$obj->aoColumns[$i]->mDataProp = "";
+			$i++;
+			print '<th></th>';
+			$obj->aoColumns[$i]->mDataProp = "";
+			$obj->aoColumns[$i]->sClass = "fright content_actions";
+			$i++;
+			print "</tr>\n";
+			print '</thead>';
 
-            dol_htmloutput_mesg($message);
+			print '<tbody>';
+			if (count($object->database)) {
+				$var = True;
 
-            /*
-             * Liste des utilisateurs dans le groupe
-             */
+				foreach ($object->database as $aRow) {
+					$var = !$var;
 
-            print_fiche_titre($langs->trans("ListOfUsersInGroup"),'','');
+					$useringroup = new User($db);
+					$useringroup->values = $aRow;
+					$useringroup->admin = $useringroup->values->Administrator;
+					$useringroup->id = $useringroup->values->_id;
 
-            // On selectionne les users qui ne sont pas deja dans le groupe
-            $exclude = array();
+					print "<tr $bc[$var]>";
+					print '<td>';
+					print '<a href="' . DOL_URL_ROOT . '/user/fiche.php?id=' . $useringroup->id . '">' . img_object($langs->trans("ShowUser"), "user") . ' ' . $useringroup->values->name . '</a>';
+					if ($aRow->Administrator)
+						print img_picto($langs->trans("Administrator"), 'star');
+					print '</td>';
+					print '<td>';
+					if ($user->admin) {
+						print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=removeuser&amp;user=' . $useringroup->values->name . '">';
+						print img_delete($langs->trans("RemoveFromGroup"));
+					} else {
+						print "-";
+					}
+					print "</td></tr>\n";
+				}
+			}
+			print '<tbody>';
+			print "</table>";
 
-            if (! empty($object->members))
-            {
-                if( !($conf->multicompany->enabled && $conf->global->MULTICOMPANY_TRANSVERSE_MODE))
-                {
-                    foreach($object->members as $useringroup)
-                    {
-                        $exclude[]=$useringroup->id;
-                    }
-                }
-            }
+			$obj->aaSorting = array(array(0, "asc"));
+			$obj->sDom = 'l<fr>t<\"clear\"rtip>';
 
-            if ($caneditperms)
-            {
-                print '<form action="'.$_SERVER['PHP_SELF'].'?id='.$object->id.'" method="POST">'."\n";
-                print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-                print '<input type="hidden" name="action" value="adduser">';
-                print '<table class="noborder" width="100%">'."\n";
-                print '<tr class="liste_titre"><td class="liste_titre" width="25%">'.$langs->trans("NonAffectedUsers").'</td>'."\n";
-                print '<td>';
-                print $form->select_dolusers('','user',1,$exclude,0,'','',$object->entity);
-                print ' &nbsp; ';
-                // Multicompany
-                if (! empty($conf->multicompany->enabled))
-                {
-                    if ($conf->entity == 1 && $conf->global->MULTICOMPANY_TRANSVERSE_MODE)
-                    {
-                        print '</td><td valign="top">'.$langs->trans("Entity").'</td>';
-                        print "<td>".$mc->select_entities($conf->entity);
-                    }
-                    else
-                    {
-                    	print '<input type="hidden" name="entity" value="'.$conf->entity.'" />';
-                    }
-                }
-                else
-                {
-                	print '<input type="hidden" name="entity" value="'.$conf->entity.'">';
-                }
-                print '<input type="submit" class="button" value="'.$langs->trans("Add").'">';
-                print '</td></tr>'."\n";
-                print '</table></form>'."\n";
-                print '<br>';
-            }
+			$object->datatablesCreate($obj, "databases");
 
-            /*
-             * Group members
-             */
-            print '<table class="noborder" width="100%">';
-            print '<tr class="liste_titre">';
-            print '<td class="liste_titre">'.$langs->trans("Login").'</td>';
-            print '<td class="liste_titre">'.$langs->trans("Lastname").'</td>';
-            print '<td class="liste_titre">'.$langs->trans("Firstname").'</td>';
-			if(! empty($conf->multicompany->enabled) && $conf->entity == 1)
-            {
-            	print '<td class="liste_titre">'.$langs->trans("Entity").'</td>';
-            }
-            print '<td class="liste_titre" width="5" align="center">'.$langs->trans("Status").'</td>';
-            print '<td class="liste_titre" width="5" align="right">&nbsp;</td>';
-            print "</tr>\n";
+			print '</div>';
+			print '</div>';
+		}
 
-            if (! empty($object->members))
-            {
-            	$var=True;
+		/*
+		 * Fiche en mode edition
+		 */
+		if ($action == 'edit' && $caneditperms) {
+			print '<form action="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '" method="post" name="updategroup" enctype="multipart/form-data">';
+			print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+			print '<input type="hidden" name="action" value="update">';
 
-            	foreach($object->members as $useringroup)
-            	{
-            		$var=!$var;
+			print '<table class="border" width="100%">';
+			print '<tr><td width="25%" valign="top" class="fieldrequired">' . $langs->trans("Name") . '</td>';
+			print '<td width="75%" class="valeur"><input size="15" type="text" name="group" value="' . $object->nom . '">';
+			print "</td></tr>\n";
 
-            		print "<tr $bc[$var]>";
-            		print '<td>';
-            		print '<a href="'.DOL_URL_ROOT.'/user/fiche.php?id='.$useringroup->id.'">'.img_object($langs->trans("ShowUser"),"user").' '.$useringroup->login.'</a>';
-            		if ($useringroup->admin  && ! $useringroup->entity) print img_picto($langs->trans("SuperAdministrator"),'redstar');
-            		else if ($useringroup->admin) print img_picto($langs->trans("Administrator"),'star');
-            		print '</td>';
-            		print '<td>'.$useringroup->lastname.'</td>';
-            		print '<td>'.$useringroup->firstname.'</td>';
-            		if(! empty($conf->multicompany->enabled) && $conf->entity == 1)
-            		{
-            			$mc->getInfo($useringroup->usergroup_entity);
-            			print '<td class="valeur">'.$mc->label."</td>";
-            		}
-            		print '<td align="center">'.$useringroup->getLibStatut(3).'</td>';
-            		print '<td align="right">';
-            		if ($user->admin)
-            		{
-            			print '<a href="'.$_SERVER['PHP_SELF'].'?id='.$object->id.'&amp;action=removeuser&amp;user='.$useringroup->id.'&amp;entity='.$useringroup->usergroup_entity.'">';
-            			print img_delete($langs->trans("RemoveFromGroup"));
-            		}
-            		else
-            		{
-            			print "-";
-            		}
-            		print "</td></tr>\n";
-            	}
-            }
-            else
-            {
-                print '<tr><td colspan=2>'.$langs->trans("None").'</td></tr>';
-            }
-            print "</table>";
-            print "<br>";
-        }
+			print '<tr><td width="25%" valign="top">' . $langs->trans("Note") . '</td>';
+			print '<td class="valeur">';
+			require_once(DOL_DOCUMENT_ROOT . "/core/class/doleditor.class.php");
+			$doleditor = new DolEditor('note', $object->note, '', 240, 'dolibarr_notes', '', true, false, $conf->global->FCKEDITOR_ENABLE_SOCIETE, ROWS_8, 90);
+			$doleditor->Create();
+			print '</td>';
+			print "</tr>\n";
+			print "</table>\n";
 
-        /*
-         * Fiche en mode edition
-         */
-        if ($action == 'edit' && $caneditperms)
-        {
-            print '<form action="'.$_SERVER['PHP_SELF'].'?id='.$object->id.'" method="post" name="updategroup" enctype="multipart/form-data">';
-            print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-            print '<input type="hidden" name="action" value="update">';
+			print '<center><br><input class="button" value="' . $langs->trans("Save") . '" type="submit"></center>';
 
-            print '<table class="border" width="100%">';
-            print '<tr><td width="25%" valign="top" class="fieldrequired">'.$langs->trans("Name").'</td>';
-            print '<td width="75%" class="valeur"><input size="15" type="text" name="group" value="'.$object->nom.'">';
-            print "</td></tr>\n";
+			print '</form>';
 
-            // Multicompany
-            if (! empty($conf->multicompany->enabled))
-            {
-                if (empty($conf->global->MULTICOMPANY_TRANSVERSE_MODE) && $conf->entity == 1 && $user->admin && ! $user->entity)
-                {
-                    print "<tr>".'<td valign="top">'.$langs->trans("Entity").'</td>';
-                    print "<td>".$mc->select_entities($object->entity);
-                    print "</td></tr>\n";
-                }
-            	else
-            	{
-            		print '<input type="hidden" name="entity" value="'.$conf->entity.'" />';
-            	}
-            }
-
-            print '<tr><td width="25%" valign="top">'.$langs->trans("Note").'</td>';
-            print '<td class="valeur">';
-            require_once(DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php");
-            $doleditor=new DolEditor('note',$object->note,'',240,'dolibarr_notes','',true,false,$conf->global->FCKEDITOR_ENABLE_SOCIETE,ROWS_8,90);
-            $doleditor->Create();
-            print '</td>';
-            print "</tr>\n";
-            print "</table>\n";
-
-            print '<center><br><input class="button" value="'.$langs->trans("Save").'" type="submit"></center>';
-
-            print '</form>';
-
-            print '</div>';
-        }
-
-    }
+			print '</div>';
+		}
+	}
 }
+
+dol_fiche_end();
 
 llxFooter();
 
 $db->close();
-
 ?>

@@ -62,7 +62,7 @@ if ($action == 'add') {
 		$message = "";
 		if (!$_POST["nom"]) {
 			$message = '<div class="error">' . $langs->trans("NameNotDefined") . '</div>';
-			$action = "create";	   // Go back to create page
+			$action = "create"; // Go back to create page
 		}
 
 		if (!$message) {
@@ -83,7 +83,7 @@ if ($action == 'add') {
 
 				$langs->load("errors");
 				$message = '<div class="error">' . $langs->trans("ErrorGroupAlreadyExists", $object->nom) . '</div>';
-				$action = "create";	   // Go back to create page
+				$action = "create"; // Go back to create page
 			}
 		}
 	} else {
@@ -97,16 +97,14 @@ if ($action == 'adduser' || $action == 'removeuser') {
 	if ($caneditperms) {
 		if ($userid) {
 			$object->fetch($id);
-			
-			if ($action == 'adduser')
-			{
-				if($_POST['admin']==true)
+
+			if ($action == 'adduser') {
+				if ($_POST['admin'] == true)
 					$object->couchAdmin->addDatabaseAdminUser($userid);
 				else
 					$object->couchAdmin->addDatabaseReaderUser($userid);
 			}
-			if ($action == 'removeuser')
-			{
+			if ($action == 'removeuser') {
 				$object->couchAdmin->removeDatabaseAdminUser($userid);
 				$object->couchAdmin->removeDatabaseReaderUser($userid);
 			}
@@ -253,7 +251,6 @@ if ($action == 'create') {
 			print "</table>\n";
 
 			print "</div>\n";
-			print "<br>\n";
 
 			print '</div>';
 			print '</div>';
@@ -262,10 +259,11 @@ if ($action == 'create') {
 			dol_htmloutput_mesg($message);
 
 			/*
-			 * Liste des utilisateurs dans le groupe
+			 * Liste des utilisateurs dans le database
 			 */
 
-			print_fiche_titre($langs->trans("ListOfUsersInDatabase"), '', '');
+			print '<div class="row">';
+			print start_box($langs->trans("ListOfUsersInDatabase"), "twelve", "16-User-2.png", false);
 
 			// On selectionne les users qui ne sont pas deja dans le groupe
 			$exclude = array();
@@ -284,11 +282,11 @@ if ($action == 'create') {
 				print '<tr class="liste_titre"><td class="liste_titre" width="25%">' . $langs->trans("NonAffectedUsers") . '</td>' . "\n";
 				print '<td>';
 				print $form->select_dolusers('', 'user', 1, $exclude, 0, '', '');
+				print '</td>';
 				print '<td valign="top">' . $langs->trans("Administrator") . '</td>';
-				print "<td>" . $form->selectyesno('admin',0,1);
+				print "<td>" . $form->selectyesno('admin', 0, 1);
 				print "</td>\n";
-				print '</td><td>';
-				print '<input type="submit" class="tiny nice button" value="' . $langs->trans("Add") . '">';
+				print '<td><input type="submit" class="tiny nice button" value="' . $langs->trans("Add") . '">';
 				print '</td></tr>' . "\n";
 				print '</table></form>' . "\n";
 				print '<br>';
@@ -298,8 +296,8 @@ if ($action == 'create') {
 			 * Group members
 			 */
 			$obj = new stdClass();
-			$i=0;
-			print '<table class="display" id="database">';
+			$i = 0;
+			print '<table class="display" id="users">';
 			print '<thead>';
 			print '<tr>';
 			print '<th>' . $langs->trans("Login") . '</th>';
@@ -328,7 +326,7 @@ if ($action == 'create') {
 
 				foreach ($object->members as $aRow) {
 					$var = !$var;
-					
+
 					$useringroup = new User($db);
 					$useringroup->values = $aRow;
 					$useringroup->admin = $useringroup->values->Administrator;
@@ -355,12 +353,105 @@ if ($action == 'create') {
 			}
 			print '<tbody>';
 			print "</table>";
-			print "<br>";
-			
+
 			$obj->aaSorting = array(array(0, "asc"));
 			$obj->sDom = 'l<fr>t<\"clear\"rtip>';
+
+			$object->datatablesCreate($obj, "users");
+
+			print '</div>';
+			print '</div>';
 			
-			$object->datatablesCreate($obj, "database");
+			/*
+			 * Liste des groupes / roles dans le database
+			 */
+			
+			print '<div class="row">';
+			print start_box($langs->trans("ListOfRolesInDatabase"), "twelve", "16-Users-2.png", false);
+
+			// On selectionne les users qui ne sont pas deja dans le groupe
+			$exclude = array();
+
+			if (!empty($object->membersRoles)) {
+				foreach ($object->membersRoles as $useringroup) {
+					$exclude[] = $useringroup->_id;
+				}
+			}
+
+			if ($caneditperms) {
+				print '<form action="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '" method="POST">' . "\n";
+				print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+				print '<input type="hidden" name="action" value="adduser">';
+				print '<table class="noborder" width="100%">' . "\n";
+				print '<tr class="liste_titre"><td class="liste_titre" width="25%">' . $langs->trans("NonAffectedUsers") . '</td>' . "\n";
+				print '<td>';
+				print $form->select_dolgroups('', 'groupid', 1, $exclude, 0, '', '');
+				print '</td>';
+				print '<td valign="top">' . $langs->trans("Administrator") . '</td>';
+				print "<td>" . $form->selectyesno('admin', 0, 1);
+				print "</td>\n";
+				print '<td><input type="submit" class="tiny nice button" value="' . $langs->trans("Add") . '">';
+				print '</td></tr>' . "\n";
+				print '</table></form>' . "\n";
+				print '<br>';
+			}
+
+			/*
+			 * Group members
+			 */
+			$obj = new stdClass();
+			$i = 0;
+			print '<table class="display" id="group">';
+			print '<thead>';
+			print '<tr>';
+			print '<th>' . $langs->trans("Group") . '</th>';
+			$obj->aoColumns[$i]->mDataProp = "";
+			$i++;
+			print '<th></th>';
+			$obj->aoColumns[$i]->mDataProp = "";
+			$obj->aoColumns[$i]->sClass = "fright content_actions";
+			$i++;
+			print "</tr>\n";
+			print '</thead>';
+
+			print '<tbody>';
+			if (!empty($object->membersRoles)) {
+				$var = True;
+
+				foreach ($object->membersRoles as $aRow) {
+					$var = !$var;
+
+					$useringroup = new User($db);
+					$useringroup->values = $aRow;
+					$useringroup->admin = $useringroup->values->Administrator;
+					$useringroup->id = $useringroup->values->_id;
+
+					print "<tr $bc[$var]>";
+					print '<td>';
+					print '<a href="' . DOL_URL_ROOT . '/user/fiche.php?id=' . $useringroup->id . '">' . img_object($langs->trans("ShowUser"), "user") . ' ' . $useringroup->values->name . '</a>';
+					if ($useringroup->admin)
+						print img_picto($langs->trans("Administrator"), 'star');
+					print '</td>';
+					print '<td>';
+					if ($user->admin) {
+						print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=removeuser&amp;user=' . $useringroup->values->name . '">';
+						print img_delete($langs->trans("RemoveFromGroup"));
+					} else {
+						print "-";
+					}
+					print "</td></tr>\n";
+				}
+			}
+			print '<tbody>';
+			print "</table>";
+
+			$obj->aaSorting = array(array(0, "asc"));
+			$obj->sDom = 'l<fr>t<\"clear\"rtip>';
+
+			$object->datatablesCreate($obj, "group");
+
+			print '</div>';
+			print '</div>';
 		}
 
 		/*

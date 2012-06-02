@@ -72,56 +72,6 @@ class UserGroup extends nosqlDocument
 
 
 	/**
-	 *	Charge un objet group avec toutes ces caracteristiques (excpet ->members array)
-	 *
-	 *	@param      int		$id     id du groupe a charger
-	 *	@return		int				<0 if KO, >0 if OK
-	 */
-	function fetch($id)
-	{
-		global $conf;
-
-		$this->id = $id;
-
-		$sql = "SELECT g.rowid, g.entity, g.nom as name, g.note, g.datec, g.tms as datem";
-		$sql.= " FROM ".MAIN_DB_PREFIX."usergroup as g";
-		$sql.= " WHERE g.rowid = ".$this->id;
-
-		dol_syslog(get_class($this)."::fetch sql=".$sql);
-		$result = $this->db->query($sql);
-		if ($result)
-		{
-			if ($this->db->num_rows($result))
-			{
-				$obj = $this->db->fetch_object($result);
-
-				$this->id = $obj->rowid;
-				$this->ref = $obj->rowid;
-				$this->entity = $obj->entity;
-				$this->nom  = $obj->name;        // depecated
-				$this->name = $obj->name;
-				$this->note = $obj->note;
-				$this->datec = $obj->datec;
-				$this->datem = $obj->datem;
-
-				$this->members=$this->listUsersForGroup();
-
-				// Sav current LDAP Current DN
-				//$this->ldap_dn = $this->_load_ldap_dn($this->_load_ldap_info(),0);
-			}
-			$this->db->free($result);
-			return 1;
-		}
-		else
-		{
-			$this->error=$this->db->lasterror();
-			dol_syslog(get_class($this)."::fetch ".$this->error, LOG_ERR);
-			return -1;
-		}
-	}
-
-
-	/**
 	 * 	Return array of groups objects for a particular user
 	 *
 	 *	@param		int		$userid 	User id to search

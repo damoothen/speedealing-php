@@ -2,7 +2,7 @@
 /* Copyright (C) 2002-2003 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
- * Copyright (C) 2011      Herve Prot           <herve.prot@symeos.com>
+ * Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,35 +18,46 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- *      \file       htdocs/user/group/index.php
- * 		\ingroup	core
- *      \brief      Page of user groups
- */
-
 require("../../main.inc.php");
-
-
-if (! empty($conf->global->MAIN_USE_ADVANCED_PERMS))
-{
-	if (! $user->rights->user->group_advance->read && ! $user->admin) accessforbidden();
-}
+require_once(DOL_DOCUMENT_ROOT."/user/class/usergroup.class.php");
 
 $langs->load("users");
 
-$sall=GETPOST("sall");
+$object=new UserGroup($db);
 
-$sortfield = GETPOST("sortfield",'alpha');
-$sortorder = GETPOST("sortorder",'alpha');
-$page = GETPOST("page",'int');
-if ($page == -1) { $page = 0; }
-$offset = $conf->liste_limit * $page;
-$pageprev = $page - 1;
-$pagenext = $page + 1;
+/*
+ * View
+ */
 
-if (! $sortfield) $sortfield="g.nom";
-if (! $sortorder) $sortorder="ASC";
+if($_GET['json']=="list")
+{
+    $output = array(
+    "sEcho" => intval($_GET['sEcho']),
+    "iTotalRecords" => 0,
+    "iTotalDisplayRecords" => 0,
+    "aaData" => array()
+    );
+    
+    try {
+       $result = $object->getView("list");
+    } catch (Exception $exc) {
+		print $exc->getMessage();
+    }
+	
+	//print_r ($result);
 
+    $iTotal= count($result->rows);
+    $output["iTotalRecords"]=$iTotal;
+    $output["iTotalDisplayRecords"]=$iTotal;
+    
+    foreach($result->rows as $aRow){
+		$output["aaData"][]=$aRow->value;
+    }
+    
+    header('Content-type: application/json');
+    echo json_encode($output);
+    exit;
+}
 
 /*
  * View
@@ -54,78 +65,81 @@ if (! $sortorder) $sortorder="ASC";
 
 llxHeader();
 
-print_fiche_titre($langs->trans("ListOfGroups"));
+print '<div class="row">';
+print start_box($langs->trans("ListOfGroups"),"twelve","16-Users-2.png",false);
 
-$sql = "SELECT g.rowid, g.nom, g.entity, g.datec, COUNT(ugu.rowid) as nb";
-$sql.= " FROM ".MAIN_DB_PREFIX."usergroup as g";
-$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."usergroup_user as ugu ON ugu.fk_usergroup = g.rowid";
-if(! empty($conf->multicompany->enabled) && $conf->entity == 1 && ($conf->global->MULTICOMPANY_TRANSVERSE_MODE || ($user->admin && ! $user->entity)))
+print ' <div class="row sepH_b">';
+print ' <div class="right">';
+if ($user->admin)
 {
-	$sql.= " WHERE g.entity IS NOT NULL";
-}
-else
-{
-	$sql.= " WHERE g.entity IN (0,".$conf->entity.")";
-}
-if ($_POST["search_group"])
-{
-    $sql .= " AND (g.nom LIKE '%".$db->escape($_POST["search_group"])."%' OR g.note LIKE '%".$db->escape($_POST["search_group"])."%')";
-}
-if ($sall) $sql.= " AND (g.nom LIKE '%".$db->escape($sall)."%' OR g.note LIKE '%".$db->escape($sall)."%')";
-$sql.= " GROUP BY g.rowid, g.nom, g.entity, g.datec";
-$sql.= $db->order($sortfield,$sortorder);
-
-$resql = $db->query($sql);
-if ($resql)
-{
-    $num = $db->num_rows($resql);
-    $i = 0;
-
-    $param="search_group=".$search_group."&amp;sall=".$sall;
-    print '<table class="noborder" width="100%">';
-    print '<tr class="liste_titre">';
-    print_liste_field_titre($langs->trans("Group"),$_SERVER["PHP_SELF"],"g.nom",$param,"","",$sortfield,$sortorder);
-    //multicompany
-    if(! empty($conf->multicompany->enabled) && empty($conf->global->MULTICOMPANY_TRANSVERSE_MODE) && $conf->entity == 1)
+	if (! empty($conf->global->MAIN_ONLY_LOGIN_ALLOWED))
     {
-    	print_liste_field_titre($langs->trans("Entity"),$_SERVER["PHP_SELF"],"g.entity",$param,"",'align="center"',$sortfield,$sortorder);
+		print '<a class="gh_button pill disable" href="#" title="'.dol_escape_htmltag($langs->trans("DisabledInMonoUserMode")).'">'.$langs->trans("Create").'</a>';
     }
-    print_liste_field_titre($langs->trans("NbOfUsers"),$_SERVER["PHP_SELF"],"g.nb",$param,"",'align="center"',$sortfield,$sortorder);
-    print_liste_field_titre($langs->trans("DateCreation"),$_SERVER["PHP_SELF"],"g.datec",$param,"",'align="right"',$sortfield,$sortorder);
-    print "</tr>\n";
-    $var=True;
-    while ($i < $num)
+    else
     {
-        $obj = $db->fetch_object($resql);
-        $var=!$var;
-
-        print "<tr $bc[$var]>";
-        print '<td><a href="fiche.php?id='.$obj->rowid.'">'.img_object($langs->trans("ShowGroup"),"group").' '.$obj->nom.'</a>';
-        if (!$obj->entity)
-        {
-        	print img_picto($langs->trans("GlobalGroup"),'redstar');
-        }
-        print "</td>";
-        //multicompany
-        if(! empty($conf->multicompany->enabled) && empty($conf->global->MULTICOMPANY_TRANSVERSE_MODE) && $conf->entity == 1)
-        {
-            $mc->getInfo($obj->entity);
-            print '<td align="center">'.$mc->label.'</td>';
-        }
-        print '<td align="center">'.$obj->nb.'</td>';
-        print '<td align="right" nowrap="nowrap">'.dol_print_date($db->jdate($obj->datec),"dayhour").'</td>';
-        print "</tr>\n";
-        $i++;
+		//print '<a class="gh_button primary pill icon add" href="'.DOL_URL_ROOT.'/user/database/fiche.php?action=create">'.$langs->trans("Create").'</a>';
+		$object->buttonCreate(DOL_URL_ROOT.'/user/database/fiche.php');
     }
-    print "</table>";
-    $db->free();
 }
-else
-{
-    dol_print_error($db);
-}
+print "</div>\n";
+print "</div>\n";
 
-$db->close();
+$i=0;
+$obj=new stdClass();
+
+print '<table class="display dt_act" id="user" >';
+// Ligne des titres 
+print'<thead>';
+print'<tr>';
+print'<th class="essential">';
+print $langs->trans("Group");
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "name";
+$obj->aoColumns[$i]->bUseRendered = false;
+$obj->aoColumns[$i]->bSearchable = true;
+$obj->aoColumns[$i]->fnRender= 'function(obj) {
+				var ar = [];
+				ar[ar.length] = "<img src=\"'.DOL_URL_ROOT.'/theme/'.$conf->theme.$object->fk_extrafields->ico.'\" border=\"0\" alt=\"'.$langs->trans("See ".get_class($object)).' : ";
+				ar[ar.length] = obj.aData.name.toString();
+				ar[ar.length] = "\" title=\"'.$langs->trans("See ".get_class($object)).' : ";
+				ar[ar.length] = obj.aData.name.toString();
+				ar[ar.length] = "\"></a> <a href=\"'.DOL_URL_ROOT.'/user/group/fiche.php?id=";
+				ar[ar.length] = obj.aData._id.toString();
+				ar[ar.length] = "\">";
+				ar[ar.length] = obj.aData.name.toString();
+				ar[ar.length] = "</a>";
+				var str = ar.join("");
+				return str;
+			}';
+$i++;
+print'<th class="essential">';
+print $langs->trans('NbUsers');
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "doc_count";
+$obj->aoColumns[$i]->sDefaultContent = 0;
+$obj->aoColumns[$i]->sClass = "fright";
+$i++;
+print'</tr>';
+print'</thead>';
+print'<tfoot>';
+print'</tfoot>';
+print'<tbody>';
+print'</tbody>';
+
+print "</table>";
+
+$obj->sDom = 'l<fr>t<\"clear\"rtip>';
+$obj->sAjaxSource = $_SERVER['PHP_SELF'].'?json=list';
+
+$obj->aaSorting = array(array(0, "asc"));
+
+$object->datatablesCreate($obj,"user",true);
+
+
+
+print end_box();
+print '<div>';
 
 llxFooter();
 

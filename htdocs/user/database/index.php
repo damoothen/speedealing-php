@@ -55,7 +55,7 @@ if($_GET['json']=="list")
 				$info = $object->values;
 				$secu = $object->couchAdmin->getSecurity();
 				
-				if(count($secu->admins->names) + count($secu->readers->names) > 0)
+				if(count($secu->admins->names) + count($secu->readers->names) + count($secu->admins->roles) + count($secu->admins->roles)> 0)
 					$info->Status = "SECURE";
 				else
 					$info->Status = "INSECURE";

@@ -48,6 +48,7 @@ class UserDatabase extends nosqlDocument
 	var $datec;			// Creation date of group
 	var $datem;			// Modification date of group
 	var $members=array();	// Array of users
+	var $membersRoles=array();	// Array of groups
 
 	private $_tab_loaded=array();		// Array of cache of already loaded permissions
 
@@ -88,7 +89,7 @@ class UserDatabase extends nosqlDocument
 		
 		$members = $this->couchAdmin->getDatabaseReaderUsers();
 		
-		$user = new User($this->db);
+		$membersRoles = $this->couchAdmin->getDatabaseReaderRoles();
 		
 		foreach ($members as $aRow)
 		{
@@ -96,12 +97,29 @@ class UserDatabase extends nosqlDocument
 			$this->members[]=$user;
 		}
 		
+		foreach ($membersRoles as $aRow)
+		{
+			$group->id = $aRow;
+			$this->membersRoles[]=$group;
+		}
+		
 		$membersAdmin = $this->couchAdmin->getDatabaseAdminUsers();
+		$membersRolesAdmin = $this->couchAdmin->getDatabaseAdminRoles();
+		
+		$this->membersRoles = array_merge($this->membersRoles,$membersRolesAdmin);
+		
 		foreach ($membersAdmin as $aRow)
 		{
 			$user = $this->couchAdmin->getUser($aRow);
 			$user->Administrator = true;
 			$this->members[]=$user;
+		}
+		
+		foreach ($membersRolesAdmin as $aRow)
+		{
+			$group->Administrator = true;
+			$group->id = $aRow;
+			$this->membersRoles[]=$group;
 		}
 		
 		$this->id = $this->values->db_name;
