@@ -48,11 +48,6 @@ $canedituser=($user->admin || $user->rights->user->user->creer);
 $candisableuser=($user->admin || $user->rights->user->user->supprimer);
 $canreadgroup=$canreaduser;
 $caneditgroup=$canedituser;
-if (! empty($conf->global->MAIN_USE_ADVANCED_PERMS))
-{
-    $canreadgroup=($user->admin || $user->rights->user->group_advance->read);
-    $caneditgroup=($user->admin || $user->rights->user->group_advance->write);
-}
 // Define value to know what current user can do on properties of edited user
 if ($id)
 {
@@ -189,8 +184,8 @@ if (($action == 'add' || $action == 'update') && ! $_POST["cancel"] && $canaddus
     {
         $edituser->values->Lastname		= $_POST["nom"];
         $edituser->values->Firstname	= $_POST["prenom"];
-        $edituser->values->name		= $_POST["login"];
-        $edituser->values->Administrator		= (bool) $_POST["admin"];
+        $edituser->values->name			= $_POST["login"];
+        $edituser->values->Administrator= (bool) $_POST["admin"];
         $edituser->values->PhonePro		= $_POST["PhonePro"];
         $edituser->values->Fax			= $_POST["Fax"];
         $edituser->values->PhoneMobile	= $_POST["user_mobile"];
@@ -203,12 +198,10 @@ if (($action == 'add' || $action == 'update') && ! $_POST["cancel"] && $canaddus
 		$edituser->values->pass			= $_POST["password"];
 		$edituser->values->rowid		= $_POST["rowid"];
 
-        $db->begin();
-
-        $id = $edituser->create($user, 0, $action);
+        $id = $edituser->update($user, 0, $action);
         if ($id == $edituser->values->name)
         {
-            Header("Location: ".$_SERVER['PHP_SELF'].'?id='.$id);
+            Header("Location: ".$_SERVER['PHP_SELF'].'?id=org.couchdb.user:'.$id);
             exit;
         }
         else
@@ -248,149 +241,6 @@ if (($action == 'addgroup' || $action == 'removegroup') && $caneditfield)
         else
         {
             $message.=$edituser->error;
-        }
-    }
-}
-
-if ($action == 'update' && ! $_POST["cancel"])
-{
-    require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
-
-    if ($caneditfield)	// Case we can edit all field
-    {
-        $message="";
-
-        if (! $_POST["nom"])
-        {
-            $message='<div class="error">'.$langs->trans("NameNotDefined").'</div>';
-            $action="edit";       // Go back to create page
-        }
-        if (! $_POST["login"])
-        {
-            $message='<div class="error">'.$langs->trans("LoginNotDefined").'</div>';
-            $action="edit";       // Go back to create page
-        }
-
-        if (! $message)
-        {
-            $db->begin();
-            $edituser = new User($db);
-            $edituser->fetch($id);
-
-            $edituser->oldcopy=dol_clone($edituser);
-
-            $edituser->lastname		= $_POST["nom"];
-            $edituser->firstname	= $_POST["prenom"];
-            $edituser->login		= $_POST["login"];
-            $edituser->pass			= $_POST["password"];
-            $edituser->admin		= $_POST["admin"];
-            $edituser->office_phone	= $_POST["office_phone"];
-            $edituser->office_fax	= $_POST["office_fax"];
-            $edituser->user_mobile	= $_POST["user_mobile"];
-            $edituser->email		= $_POST["email"];
-            $edituser->signature	= $_POST["signature"];
-            $edituser->openid		= $_POST["openid"];
-            $edituser->webcal_login	= $_POST["webcal_login"];
-            $edituser->phenix_login	= $_POST["phenix_login"];
-            $edituser->phenix_pass	= $_POST["phenix_pass"];
-            if($conf->multicompany->enabled)
-            {
-            	if($conf->global->MULTICOMPANY_TRANSVERSE_MODE || ! empty($_POST["superadmin"]))
-            	{
-            		$edituser->entity=0;
-            	}
-            	else
-            	{
-            		$edituser->entity = (empty($_POST["entity"]) ? 0 : $_POST["entity"]);
-            	}
-            }
-            else if(! empty($_POST["admin"]))
-            {
-            	$edituser->entity=0;
-            }
-            else
-            {
-            	$edituser->entity = (empty($_POST["entity"]) ? 0 : $_POST["entity"]);
-            }
-
-            if (GETPOST('deletephoto')) $edituser->photo='';
-            if (! empty($_FILES['photo']['name'])) $edituser->photo = dol_sanitizeFileName($_FILES['photo']['name']);
-
-            $ret=$edituser->update($user);
-            if ($ret < 0)
-            {
-                if ($db->errno() == 'DB_ERROR_RECORD_ALREADY_EXISTS')
-                {
-                    $langs->load("errors");
-                    $message.='<div class="error">'.$langs->trans("ErrorLoginAlreadyExists",$edituser->login).'</div>';
-                }
-                else
-                {
-                    $message.='<div class="error">'.$edituser->error.'</div>';
-                }
-            }
-
-            if ($ret >=0 && ! count($edituser->errors))
-            {
-                if (GETPOST('deletephoto') && $edituser->photo)
-                {
-                    $fileimg=$conf->user->dir_output.'/'.get_exdir($edituser->id,2,0,1).'/logos/'.$edituser->photo;
-                    $dirthumbs=$conf->user->dir_output.'/'.get_exdir($edituser->id,2,0,1).'/logos/thumbs';
-                    dol_delete_file($fileimg);
-                    dol_delete_dir_recursive($dirthumbs);
-                }
-
-                if (isset($_FILES['photo']['tmp_name']) && trim($_FILES['photo']['tmp_name']))
-                {
-                    $dir= $conf->user->dir_output . '/' . get_exdir($edituser->id,2,0,1);
-
-                    dol_mkdir($dir);
-
-                    if (@is_dir($dir))
-                    {
-                        $newfile=$dir.'/'.dol_sanitizeFileName($_FILES['photo']['name']);
-                        $result=dol_move_uploaded_file($_FILES['photo']['tmp_name'],$newfile,1,0,$_FILES['photo']['error']);
-
-                        if (! $result > 0)
-                        {
-                            $message .= '<div class="error">'.$langs->trans("ErrorFailedToSaveFile").'</div>';
-                        }
-                        else
-                        {
-                            // Create small thumbs for company (Ratio is near 16/9)
-                            // Used on logon for example
-                            $imgThumbSmall = vignette($newfile, $maxwidthsmall, $maxheightsmall, '_small', $quality);
-
-                            // Create mini thumbs for company (Ratio is near 16/9)
-                            // Used on menu or for setup page for example
-                            $imgThumbMini = vignette($newfile, $maxwidthmini, $maxheightmini, '_mini', $quality);
-                        }
-                    }
-                }
-            }
-
-            if ($ret >= 0 && ! count($edituser->errors))
-            {
-                $message.='<div class="ok">'.$langs->trans("UserModified").'</div>';
-                $db->commit();
-            }
-            else
-            {
-                $db->rollback();
-            }
-        }
-    }
-    else if ($caneditpassword)	// Case we can edit only password
-    {
-        $edituser = new User($db);
-        $edituser->fetch($id);
-
-        $edituser->oldcopy=dol_clone($edituser);
-
-        $ret=$edituser->setPassword($user,$_POST["password"]);
-        if ($ret < 0)
-        {
-            $message.='<div class="error">'.$edituser->error.'</div>';
         }
     }
 }
@@ -893,6 +743,71 @@ else
          */
         if ($action != 'edit')
         {
+			/*
+             * Buttons actions
+             */
+
+            print ' <div class="row sepH_a">';
+			print ' <div class="gh_button-group right">';
+
+            if ($caneditfield)
+            {
+                if (! empty($conf->global->MAIN_ONLY_LOGIN_ALLOWED))
+                {
+                    print '<a class="gh_button pill disable" href="#" title="'.dol_escape_htmltag($langs->trans("DisabledInMonoUserMode")).'">'.$langs->trans("Modify").'</a>';
+                }
+                else
+                {
+                    print '<a class="gh_button primary pill" href="'.$_SERVER["PHP_SELF"].'?id='.$fuser->id.'&amp;action=edit">'.$langs->trans("Modify").'</a>';
+                }
+            }
+            elseif ($caneditpassword && ! $fuser->ldap_sid )
+            {
+                print '<a class="gh_button pill" href="'.$_SERVER["PHP_SELF"].'?id='.$fuser->id.'&amp;action=edit">'.$langs->trans("EditPassword").'</a>';
+            }
+
+            // Si on a un gestionnaire de generation de mot de passe actif
+            if ($conf->global->USER_PASSWORD_GENERATED != 'none')
+            {
+				if ($fuser->values->Status == "DISABLE")
+				{
+	                print '<a class="gh_button pill disable" href="#" title="'.dol_escape_htmltag($langs->trans("UserDisabled")).'">'.$langs->trans("ReinitPassword").'</a>';
+				}
+                elseif (($user->id != $id && $caneditpassword) && $fuser->login && !$fuser->ldap_sid )
+                {
+                    print '<a class="gh_button pill" href="'.$_SERVER["PHP_SELF"].'?id='.$fuser->id.'&amp;action=password">'.$langs->trans("ReinitPassword").'</a>';
+                }
+
+				if ($fuser->values->Status == "DISABLE")
+				{
+	                print '<a class="gh_button pill disable" href="#" title="'.dol_escape_htmltag($langs->trans("UserDisabled")).'">'.$langs->trans("SendNewPassword").'</a>';
+				}
+                else if (($user->id != $id && $caneditpassword) && $fuser->login && !$fuser->ldap_sid )
+                {
+                    if ($fuser->email) print '<a class="gh_button pill" href="'.$_SERVER["PHP_SELF"].'?id='.$fuser->id.'&amp;action=passwordsend">'.$langs->trans("SendNewPassword").'</a>';
+                    else print '<a class="gh_button pill disable" href="#" title="'.dol_escape_htmltag($langs->trans("NoEMail")).'">'.$langs->trans("SendNewPassword").'</a>';
+                }
+            }
+
+            // Activer
+            if ($user->id <> $id && $candisableuser && $fuser->values->Status == "DISABLE" )
+            {
+                print '<a class="gh_button pill icon unlock" href="'.$_SERVER["PHP_SELF"].'?id='.$fuser->id.'&amp;action=enable">'.$langs->trans("Reactivate").'</a>';
+            }
+            // Desactiver
+            if ($user->id <> $id && $candisableuser && $fuser->values->Status == "ENABLE" )
+            {
+                print '<a class="gh_button pill icon lock" href="'.$_SERVER["PHP_SELF"].'?action=disable&amp;id='.$fuser->id.'">'.$langs->trans("DisableUser").'</a>';
+            }
+            // Delete
+            if ($user->id <> $id && $candisableuser)
+            {
+                print '<a class="gh_button pill icon trash danger" href="'.$_SERVER["PHP_SELF"].'?action=delete&amp;id='.$fuser->id.'">'.$langs->trans("DeleteUser").'</a>';
+            }
+
+			print "</div>\n";
+            print "</div>\n";
+			
             print '<table class="border" width="100%">';
 
             // Ref
@@ -1042,7 +957,7 @@ else
             // Statut
             print '<tr><td valign="top">'.$langs->trans("Status").'</td>';
             print '<td>';
-            print $fuser->getLibStatut();
+            print $fuser->getLibStatus();
             print '</td>';
             print '</tr>'."\n";
 
@@ -1135,78 +1050,11 @@ else
             print "</table>\n";
 
             print "</div>\n";
+            
+			print end_box();
+			print '</div>';
 
-
-            /*
-             * Buttons actions
-             */
-
-            print '<div class="tabsAction">';
-
-            if ($caneditfield && (empty($conf->multicompany->enabled) || (($fuser->entity == $conf->entity) || $fuser->entity == $user->entity) || ($conf->global->MULTICOMPANY_TRANSVERSE_MODE && $conf->entity == 1)) )
-            {
-                if (! empty($conf->global->MAIN_ONLY_LOGIN_ALLOWED))
-                {
-                    print '<a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("DisabledInMonoUserMode")).'">'.$langs->trans("Modify").'</a>';
-                }
-                else
-                {
-                    print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$fuser->id.'&amp;action=edit">'.$langs->trans("Modify").'</a>';
-                }
-            }
-            elseif ($caneditpassword && ! $fuser->ldap_sid &&
-            (empty($conf->multicompany->enabled) || ($fuser->entity == $conf->entity) || ($conf->global->MULTICOMPANY_TRANSVERSE_MODE && $conf->entity == 1)) )
-            {
-                print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$fuser->id.'&amp;action=edit">'.$langs->trans("EditPassword").'</a>';
-            }
-
-            // Si on a un gestionnaire de generation de mot de passe actif
-            if ($conf->global->USER_PASSWORD_GENERATED != 'none')
-            {
-				if ($fuser->statut == 0)
-				{
-	                print '<a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("UserDisabled")).'">'.$langs->trans("ReinitPassword").'</a>';
-				}
-                elseif (($user->id != $id && $caneditpassword) && $fuser->login && !$fuser->ldap_sid &&
-                (empty($conf->multicompany->enabled) || ($fuser->entity == $conf->entity) || ($conf->multicompany->transverse_mode && $conf->entity == 1)))
-                {
-                    print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$fuser->id.'&amp;action=password">'.$langs->trans("ReinitPassword").'</a>';
-                }
-
-				if ($fuser->statut == 0)
-				{
-	                print '<a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("UserDisabled")).'">'.$langs->trans("SendNewPassword").'</a>';
-				}
-                else if (($user->id != $id && $caneditpassword) && $fuser->login && !$fuser->ldap_sid &&
-                (empty($conf->multicompany->enabled) || ($fuser->entity == $conf->entity) || ($conf->multicompany->transverse_mode && $conf->entity == 1)) )
-                {
-                    if ($fuser->email) print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$fuser->id.'&amp;action=passwordsend">'.$langs->trans("SendNewPassword").'</a>';
-                    else print '<a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NoEMail")).'">'.$langs->trans("SendNewPassword").'</a>';
-                }
-            }
-
-            // Activer
-            if ($user->id <> $id && $candisableuser && $fuser->statut == 0 &&
-            (empty($conf->multicompany->enabled) || ($fuser->entity == $conf->entity) || ($conf->global->MULTICOMPANY_TRANSVERSE_MODE && $conf->entity == 1)) )
-            {
-                print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$fuser->id.'&amp;action=enable">'.$langs->trans("Reactivate").'</a>';
-            }
-            // Desactiver
-            if ($user->id <> $id && $candisableuser && $fuser->statut == 1 &&
-            (empty($conf->multicompany->enabled) || ($fuser->entity == $conf->entity) || ($conf->global->MULTICOMPANY_TRANSVERSE_MODE && $conf->entity == 1)) )
-            {
-                print '<a class="butActionDelete" href="'.$_SERVER["PHP_SELF"].'?action=disable&amp;id='.$fuser->id.'">'.$langs->trans("DisableUser").'</a>';
-            }
-            // Delete
-            if ($user->id <> $id && $candisableuser &&
-            (empty($conf->multicompany->enabled) || ($fuser->entity == $conf->entity) || ($conf->global->MULTICOMPANY_TRANSVERSE_MODE && $conf->entity == 1)) )
-            {
-                print '<a class="butActionDelete" href="'.$_SERVER["PHP_SELF"].'?action=delete&amp;id='.$fuser->id.'">'.$langs->trans("DeleteUser").'</a>';
-            }
-
-            print "</div>\n";
-            print "<br>\n";
-
+			print '<div class="row">';
 
 
             /*
@@ -1275,10 +1123,6 @@ else
                 print '<table class="noborder" width="100%">';
                 print '<tr class="liste_titre">';
                 print '<td class="liste_titre" width="25%">'.$langs->trans("Groups").'</td>';
-                if(! empty($conf->multicompany->enabled) && !empty($conf->global->MULTICOMPANY_TRANSVERSE_MODE) && $conf->entity == 1 && $user->admin && ! $user->entity)
-                {
-                	print '<td class="liste_titre" width="25%">'.$langs->trans("Entity").'</td>';
-                }
                 print "<td>&nbsp;</td></tr>\n";
 
                 if (! empty($groupslist))
@@ -1590,7 +1434,7 @@ else
             // Statut
             print '<tr><td valign="top">'.$langs->trans("Status").'</td>';
             print '<td>';
-            print $fuser->getLibStatut();
+            print $fuser->getLibStatus();
             print '</td></tr>';
 
             // Autres caracteristiques issus des autres modules
@@ -1671,9 +1515,9 @@ else
             print '</table>';
 
             print '<br><center>';
-            print '<input value="'.$langs->trans("Save").'" class="button" type="submit" name="save">';
+            print '<input value="'.$langs->trans("Save").'" class="button blue small radius nice" type="submit" name="save">';
             print ' &nbsp; ';
-            print '<input value="'.$langs->trans("Cancel").'" class="button" type="submit" name="cancel">';
+            print '<input value="'.$langs->trans("Cancel").'" class="button white small radius nice" type="submit" name="cancel">';
             print '</center>';
 
             print '</form>';

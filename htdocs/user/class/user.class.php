@@ -41,7 +41,7 @@ class User extends nosqlDocument
 	public $element='user';
 	public $table_element='user';
 	protected $ismultientitymanaged = 1;	// 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
-	private $couchAdmin;
+	var $couchAdmin;
 	var $couchdb;
 	
 
@@ -508,45 +508,23 @@ class User extends nosqlDocument
 	 *	@param	int		$statut		Status to set
 	 *  @return int     			<0 if KO, 0 if nothing is done, >0 if OK
 	 */
-	function setstatus($statut)
+	function setstatus($status)
 	{
-		global $conf,$langs,$user;
-
 		$error=0;
+		
+		if($status == 0)
+			$status = "DISABLE";
+		else
+			$status = "ENABLE";
 
 		// Check parameters
-		if ($this->statut == $statut) return 0;
-		else $this->statut = $statut;
+		if ($this->values->Status == $status) return 0;
+		
+		
+		
+		$this->set("Status", $status);
 
-		$this->db->begin();
-
-		// Desactive utilisateur
-		$sql = "UPDATE ".MAIN_DB_PREFIX."user";
-		$sql.= " SET statut = ".$this->statut;
-		$sql.= " WHERE rowid = ".$this->id;
-		$result = $this->db->query($sql);
-
-		dol_syslog(get_class($this)."::setstatus sql=".$sql);
-		if ($result)
-		{
-			// Appel des triggers
-			include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
-			$interface=new Interfaces($this->db);
-			$result=$interface->run_triggers('USER_ENABLEDISABLE',$this,$user,$langs,$conf);
-			if ($result < 0) { $error++; $this->errors=$interface->errors; }
-			// Fin appel triggers
-		}
-
-		if ($error)
-		{
-			$this->db->rollback();
-			return -$error;
-		}
-		else
-		{
-			$this->db->commit();
-			return 1;
-		}
+		return 1;
 	}
 
 
@@ -613,13 +591,13 @@ class User extends nosqlDocument
 	}
 
 	/**
-	 *  Create a user into database
+	 *  Create or Update an user into database
 	 *
 	 *  @param	User	$user        	Objet user qui demande la creation
 	 *  @param  int		$notrigger		1 ne declenche pas les triggers, 0 sinon
 	 *  @return int			         	<0 si KO, id compte cree si OK
 	 */
-	function create($user,$notrigger=0, $action)
+	function update($user,$notrigger=0, $action)
 	{
 		global $conf,$langs;
 		global $mysoc;
@@ -680,6 +658,15 @@ class User extends nosqlDocument
 					$this->values->roles = $user_tmp->roles;
 					$this->values->_id = $user_tmp->_id;
 					$this->values->_rev = $user_tmp->_rev;
+					$this->values->Status = $user_tmp->Status;
+					
+					$caneditpassword=((($user->id == $this->values->name) && $user->rights->user->self->password)
+					|| (($user->id != $this->values->name) && $user->rights->user->user->password));
+					
+					if ($caneditpassword && $this->values->pass)	// Case we can edit only password
+					{
+						$this->values->password_sha = sha1( $this->values->pass . $this->values->salt, false);
+					}
 					
 					unset($this->values->pass);
 					
@@ -897,186 +884,6 @@ class User extends nosqlDocument
 		}
 
 		return $i;
-	}
-
-	/**
-	 *  	Update a user into databse (and also password if this->pass is defined)
-	 *
-	 *		@param	User	$user				User qui fait la mise a jour
-	 *    	@param  int		$notrigger			1 ne declenche pas les triggers, 0 sinon
-	 *		@param	int		$nosyncmember		0=Synchronize linked member (standard info), 1=Do not synchronize linked member
-	 *		@param	int		$nosyncmemberpass	0=Synchronize linked member (password), 1=Do not synchronize linked member
-	 *    	@return int 		        		<0 si KO, >=0 si OK
-	 */
-	function update($user,$notrigger=0,$nosyncmember=0,$nosyncmemberpass=0)
-	{
-		global $conf, $langs;
-
-		$nbrowsaffected=0;
-		$error=0;
-
-		dol_syslog(get_class($this)."::update notrigger=".$notrigger.", nosyncmember=".$nosyncmember.", nosyncmemberpass=".$nosyncmemberpass);
-
-		// Clean parameters
-		$this->nom          = trim($this->nom);		// deprecated
-		$this->prenom       = trim($this->prenom);  // deprecated
-		$this->lastname     = trim($this->lastname);
-		$this->firstname    = trim($this->firstname);
-		$this->login        = trim($this->login);
-		$this->pass         = trim($this->pass);
-		$this->office_phone = trim($this->office_phone);
-		$this->office_fax   = trim($this->office_fax);
-		$this->user_mobile  = trim($this->user_mobile);
-		$this->email        = trim($this->email);
-		$this->signature    = trim($this->signature);
-		$this->note         = trim($this->note);
-		$this->openid       = trim(empty($this->openid)?'':$this->openid);    // Avoid warning
-		$this->webcal_login = trim($this->webcal_login);
-		$this->phenix_login = trim($this->phenix_login);
-		if ($this->phenix_pass != $this->phenix_pass_crypted)
-		{
-			$this->phenix_pass  = dol_hash(trim($this->phenix_pass));
-		}
-		$this->admin        = $this->admin?$this->admin:0;
-
-		// Check parameters
-		if (! empty($conf->global->USER_MAIL_REQUIRED) && ! isValidEMail($this->email))
-		{
-			$langs->load("errors");
-			$this->error = $langs->trans("ErrorBadEMail",$this->email);
-			return -1;
-		}
-
-		$this->db->begin();
-
-		// Mise a jour autres infos
-		$sql = "UPDATE ".MAIN_DB_PREFIX."user SET";
-		$sql.= " name = '".$this->db->escape($this->lastname)."'";
-		$sql.= ", firstname = '".$this->db->escape($this->firstname)."'";
-		$sql.= ", login = '".$this->db->escape($this->login)."'";
-		$sql.= ", admin = ".$this->admin;
-		$sql.= ", office_phone = '".$this->db->escape($this->office_phone)."'";
-		$sql.= ", office_fax = '".$this->db->escape($this->office_fax)."'";
-		$sql.= ", user_mobile = '".$this->db->escape($this->user_mobile)."'";
-		$sql.= ", email = '".$this->db->escape($this->email)."'";
-		$sql.= ", signature = '".addslashes($this->signature)."'";
-		$sql.= ", webcal_login = '".$this->db->escape($this->webcal_login)."'";
-		$sql.= ", phenix_login = '".$this->db->escape($this->phenix_login)."'";
-		$sql.= ", phenix_pass = '".$this->db->escape($this->phenix_pass)."'";
-		$sql.= ", note = '".$this->db->escape($this->note)."'";
-		$sql.= ", photo = ".($this->photo?"'".$this->db->escape($this->photo)."'":"null");
-		$sql.= ", openid = ".($this->openid?"'".$this->db->escape($this->openid)."'":"null");
-		$sql.= ", entity = '".$this->entity."'";
-		$sql.= " WHERE rowid = ".$this->id;
-
-		dol_syslog(get_class($this)."::update sql=".$sql, LOG_DEBUG);
-		$resql = $this->db->query($sql);
-		if ($resql)
-		{
-			$nbrowsaffected+=$this->db->affected_rows($resql);
-
-			// Update password
-			if ($this->pass)
-			{
-				if ($this->pass != $this->pass_indatabase && $this->pass != $this->pass_indatabase_crypted)
-				{
-					// Si mot de passe saisi et different de celui en base
-					$result=$this->setPassword($user,$this->pass,0,$notrigger,$nosyncmemberpass);
-					if (! $nbrowsaffected) $nbrowsaffected++;
-				}
-			}
-
-			// If user is linked to a member, remove old link to this member
-			if ($this->fk_member > 0)
-			{
-				$sql = "UPDATE ".MAIN_DB_PREFIX."user SET fk_member = NULL where fk_member = ".$this->fk_member;
-				dol_syslog(get_class($this)."::update sql=".$sql, LOG_DEBUG);
-				$resql = $this->db->query($sql);
-				if (! $resql) { $this->error=$this->db->error(); $this->db->rollback(); return -5; }
-			}
-			// Set link to user
-			$sql = "UPDATE ".MAIN_DB_PREFIX."user SET fk_member =".($this->fk_member>0?$this->fk_member:'null')." where rowid = ".$this->id;
-			dol_syslog(get_class($this)."::update sql=".$sql, LOG_DEBUG);
-			$resql = $this->db->query($sql);
-			if (! $resql) { $this->error=$this->db->error(); $this->db->rollback(); return -5; }
-
-			if ($nbrowsaffected)	// If something has changed in data
-			{
-				if ($this->fk_member > 0 && ! $nosyncmember)
-				{
-					require_once(DOL_DOCUMENT_ROOT."/adherents/class/adherent.class.php");
-
-					// This user is linked with a member, so we also update members informations
-					// if this is an update.
-					$adh=new Adherent($this->db);
-					$result=$adh->fetch($this->fk_member);
-
-					if ($result >= 0)
-					{
-						$adh->prenom=$this->firstname;    // deprecated
-						$adh->nom=$this->lastname;        // deprecated
-						$adh->firstname=$this->firstname;
-						$adh->lastname=$this->lastname;
-						$adh->login=$this->login;
-						$adh->pass=$this->pass;
-						$adh->societe=(empty($adh->societe) && $this->societe_id ? $this->societe_id : $adh->societe);
-
-						$adh->email=$this->email;
-						$adh->phone=$this->office_phone;
-						$adh->phone_mobile=$this->user_mobile;
-
-						$adh->note=$this->note;
-
-						$adh->user_id=$this->id;
-						$adh->user_login=$this->login;
-
-						$result=$adh->update($user,0,1);
-						if ($result < 0)
-						{
-							$this->error=$luser->error;
-							dol_syslog(get_class($this)."::update ".$this->error,LOG_ERR);
-							$error++;
-						}
-					}
-					else
-					{
-						$this->error=$adh->error;
-						$error++;
-					}
-				}
-			}
-
-			if (! $error && ! $notrigger)
-			{
-				// Appel des triggers
-				include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
-				$interface=new Interfaces($this->db);
-				$result=$interface->run_triggers('USER_MODIFY',$this,$user,$langs,$conf);
-				if ($result < 0) { $error++; $this->errors=$interface->errors; }
-				// Fin appel triggers
-			}
-
-			if (! $error)
-			{
-				$this->db->commit();
-				return $nbrowsaffected;
-			}
-			else
-			{
-				$this->error=$this->db->lasterror();
-				dol_syslog(get_class($this)."::update error=".$this->error,LOG_ERR);
-				$this->db->rollback();
-				return -1;
-			}
-		}
-		else
-		{
-			$this->error=$this->db->lasterror();
-			dol_syslog(get_class($this)."::update error=".$this->error,LOG_ERR);
-			$this->db->rollback();
-			return -2;
-		}
-
 	}
 
 	/**
@@ -1580,36 +1387,6 @@ class User extends nosqlDocument
 		$result.=$lien.$this->login.$lienfin;
 		return $result;
 	}
-
-	/**
-	 *  Retourne le libelle du statut d'un user (actif, inactif)
-	 *
-	 *  @param	int		$mode          0=libelle long, 1=libelle court, 2=Picto + Libelle court, 3=Picto, 4=Picto + Libelle long
-	 *  @return	string 			       Label of status
-	 */
-	function getLibStatut()
-	{
-		return $this->LibStatut($this->values->Status);
-	}
-
-	/**
-	 *  Renvoi le libelle d'un statut donne
-	 *
-	 *  @param	int		$statut        	Id statut
-	 *  @param  int		$mode          	0=libelle long, 1=libelle court, 2=Picto + Libelle court, 3=Picto, 4=Picto + Libelle long, 5=Libelle court + Picto
-	 *  @return string 			       	Label of status
-	 */
-	function LibStatut($status)
-	{
-		global $langs;
-		$langs->load('users');
-
-		if(empty($status))
-            return null;
-        
-        return '<span class="lbl '.$this->fk_extrafields->fields->Status->values->$status->cssClass.' sl_status ttip_r">'.$langs->trans($status).'</span>';
-	}
-
 
 	/**
 	 *	Retourne chaine DN complete dans l'annuaire LDAP pour l'objet

@@ -38,6 +38,38 @@ if ($user->societe_id > 0) $socid = $user->societe_id;
 $object=new User($db);
 $companystatic = new Societe($db);
 
+if($_GET['json']=="list")
+{
+    $output = array(
+    "sEcho" => intval($_GET['sEcho']),
+    "iTotalRecords" => 0,
+    "iTotalDisplayRecords" => 0,
+    "aaData" => array()
+    );
+    
+    try {
+       $result = $object->couchAdmin->getAllUsers(true);
+    } catch (Exception $exc) {
+		print $exc->getMessage();
+    }
+	
+	//print_r ($result);
+
+    $iTotal= count($result);
+    $output["iTotalRecords"]=$iTotal;
+    $output["iTotalDisplayRecords"]=$iTotal;
+    $i=0;
+    foreach($result as $aRow){
+
+        $output["aaData"][]=$aRow->doc;
+        
+    }
+    
+    header('Content-type: application/json');
+    echo json_encode($output);
+    exit;
+}
+
 /*
  * View
  */
@@ -119,6 +151,7 @@ print'</tbody>';
 print "</table>";
 
 $obj->sDom = 'l<fr>t<\"clear\"rtip>';
+$obj->sAjaxSource = $_SERVER['PHP_SELF'].'?json=list';
 
 $object->datatablesCreate($obj,"user",true);
 

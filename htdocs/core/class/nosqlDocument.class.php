@@ -570,7 +570,9 @@ foreach ($obj->aoColumns as $i => $aRow): ?>
 		{
 			$rtr ='function(obj) {
 					var status = new Array();
-					var stat = obj.aData.'.$key.';';
+					var stat = obj.aData.'.$key.';
+					if(stat === undefined)
+						stat = "DISABLE";';
 			foreach ($this->fk_extrafields->fields->$key->values as $key => $aRow)
 			{
 				if(isset($aRow->label))
