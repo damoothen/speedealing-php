@@ -415,9 +415,9 @@ if ($action == 'create') {
 				print '<td>';
 				print $form->select_dolgroups('', 'group', 1, $exclude, 0, '', '');
 				print '</td>';
-				print '<td valign="top">' . $langs->trans("Administrator") . '</td>';
-				print "<td>" . $form->selectyesno('admin', 0, 1);
-				print "</td>\n";
+				//print '<td valign="top">' . $langs->trans("Administrator") . '</td>';
+				//print "<td>" . $form->selectyesno('admin', 0, 1);
+				//print "</td>\n";
 				print '<td><input type="submit" class="tiny nice button" value="' . $langs->trans("Add") . '">';
 				print '</td></tr>' . "\n";
 				print '</table></form>' . "\n";

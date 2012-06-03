@@ -427,9 +427,10 @@ if ($action == 'create') {
 				print '<tr class="liste_titre"><td class="liste_titre" width="25%">' . $langs->trans("NonAffectedUsers") . '</td>' . "\n";
 				print '<td>';
 				print $form->select_doldatabases('', 'databaseid', 1, $exclude, 0, '', '');
-				print '<td valign="top">' . $langs->trans("Administrator") . '</td>';
-				print "<td>" . $form->selectyesno('admin', 0, 1);
 				print "</td>\n";
+				//print '<td valign="top">' . $langs->trans("Administrator") . '</td>';
+				//print "<td>" . $form->selectyesno('admin', 0, 1);
+				//print "</td>\n";
 				print '</td><td>';
 				print '<input type="submit" class="tiny nice button" value="' . $langs->trans("Add") . '">';
 				print '</td></tr>' . "\n";

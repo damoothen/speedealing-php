@@ -2,7 +2,7 @@
 /* Copyright (C) 2003      Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2009 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2010 Regis Houssin        <regis@dolibarr.fr>
- * Copyright (C) 2011      Herve Prot           <herve.prot@symeos.com>
+ * Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,12 +16,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
-
-/**
- *   	\file       htdocs/admin/perms.php
- *      \ingroup    core
- *		\brief      Page d'administration/configuration des permissions par defaut
  */
 
 require("../main.inc.php");
@@ -181,7 +175,6 @@ if ($result)
             print '<td>'.$langs->trans("Module").'</td>';
             print '<td>'.$langs->trans("Permission").'</td>';
             print '<td align="center">'.$langs->trans("Default").'</td>';
-            print '<td align="center">&nbsp;</td>';
             print "</tr>\n";
         }
 
@@ -191,20 +184,20 @@ if ($result)
         print '<td>'.img_object('',$picto).' '.$objMod->getName();
         print '<a name="'.$objMod->getName().'">&nbsp;</a>';
 
-        $perm_libelle=($conf->global->MAIN_USE_ADVANCED_PERMS && ($langs->trans("PermissionAdvanced".$obj->id)!=("PermissionAdvanced".$obj->id))?$langs->trans("PermissionAdvanced".$obj->id):(($langs->trans("Permission".$obj->id)!=("Permission".$obj->id))?$langs->trans("Permission".$obj->id):$obj->libelle));
+        $perm_libelle=$obj->libelle;
         print '<td>'.$perm_libelle. '</td>';
 
         print '<td align="center">';
         if ($obj->bydefault == 1)
         {
-            print img_picto($langs->trans("Active"),'tick');
-            print '</td><td>';
+            //print img_picto($langs->trans("Active"),'tick');
+            //print '</td><td>';
             print '<a href="perms.php?pid='.$obj->id.'&amp;action=remove#'.$objMod->getName().'">'.img_edit_remove().'</a>';
         }
         else
         {
-            print '&nbsp;';
-            print '</td><td>';
+            //print '&nbsp;';
+            //print '</td><td>';
             print '<a href="perms.php?pid='.$obj->id.'&amp;action=add#'.$objMod->getName().'">'.img_edit_add().'</a>';
         }
 
@@ -217,6 +210,7 @@ print '</table>';
 
 print '</div>';
 
+dol_fiche_end();
 
 $db->close();
 

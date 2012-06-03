@@ -1764,7 +1764,7 @@ function img_edit_add($alt = "default")
 {
     global $conf,$langs;
     if ($alt=="default") $alt=$langs->trans("Add");
-    return img_picto($alt,'edit_add.png');
+    return img_picto($alt,'switch_off.png');
 }
 /**
  *	Show logo -
@@ -1776,7 +1776,7 @@ function img_edit_remove($alt = "default")
 {
     global $conf,$langs;
     if ($alt=="default") $alt=$langs->trans("Remove");
-    return img_picto($alt,'edit_remove.png');
+    return img_picto($alt,'switch_on.png');
 }
 
 /**
