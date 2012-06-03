@@ -253,9 +253,9 @@ abstract class nosqlDocument extends CommonObject {
 			$status = $this->fk_extrafields->fields->Status->default;
 
 		if (isset($this->fk_extrafields->fields->Status->values->$status->label))
-			return '<span class="lbl ' . $this->fk_extrafields->fields->Status->values->$status->cssClass . ' sl_status ttip_r">' . $langs->trans($this->fk_extrafields->fields->Status->values->$status->label) . '</span>';
+			return '<span class="lbl ' . $this->fk_extrafields->fields->Status->values->$status->cssClass . ' sl_status ">' . $langs->trans($this->fk_extrafields->fields->Status->values->$status->label) . '</span>';
 		else
-			return '<span class="lbl ' . $this->fk_extrafields->fields->Status->values->$status->cssClass . ' sl_status ttip_r">' . $langs->trans($status) . '</span>';
+			return '<span class="lbl ' . $this->fk_extrafields->fields->Status->values->$status->cssClass . ' sl_status ">' . $langs->trans($status) . '</span>';
 	}
 
 	/**
