@@ -609,7 +609,7 @@ function dol_fiche_head($links=array(), $active='0', $title='', $notab=0, $picto
  */
 function dol_get_fiche_head($links=array(), $active='0', $title='', $notab=0, $picto='')
 {
-    $out="\n".'<div class="tabs">'."\n";
+    $out="\n".'<div>'."\n";
 
     // Affichage titre
     if ($title)
