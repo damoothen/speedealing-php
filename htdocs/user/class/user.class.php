@@ -31,6 +31,7 @@
 require_once(DOL_DOCUMENT_ROOT . "/core/class/nosqlDocument.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/class/extrafields.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/db/couchdb/lib/couchAdmin.php");
+require_once(DOL_DOCUMENT_ROOT."/user/class/userdatabase.class.php");
 
 /**
  * 	Class to manage Dolibarr users
@@ -133,7 +134,8 @@ class User extends nosqlDocument {
 	 * 	@return	int							<0 if KO, 0 not found, >0 if OK
 	 */
 	function fetch($login) {
-
+		global $conf;
+			
 		// Clean parameters
 		$login = trim($login);
 
@@ -150,6 +152,15 @@ class User extends nosqlDocument {
 			$this->admin = true;
 		} catch (Exception $e) {
 			$this->admin = false;
+		}
+		
+		$database = new UserDatabase($this->db);
+		$database->fetch($conf->Couchdb->name); // TODO Modify to put it in SESSION
+		$result = $database->couchAdmin->getDatabaseAdminUsers(); // Administrateur local de la bd
+
+		if(in_array($this->values->name, $result))
+		{
+			$this->admin = true;
 		}
 
 		$this->id = $this->values->_id;
