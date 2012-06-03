@@ -190,15 +190,11 @@ if ($result)
         print '<td align="center">';
         if ($obj->bydefault == 1)
         {
-            //print img_picto($langs->trans("Active"),'tick');
-            //print '</td><td>';
-            print '<a href="perms.php?pid='.$obj->id.'&amp;action=remove#'.$objMod->getName().'">'.img_edit_remove().'</a>';
+            print '<a href="'.$_SERVER['PHP_SELF'].'?pid='.$obj->id.'&amp;action=remove#'.$objMod->getName().'">'.img_edit_remove().'</a>';
         }
         else
         {
-            //print '&nbsp;';
-            //print '</td><td>';
-            print '<a href="perms.php?pid='.$obj->id.'&amp;action=add#'.$objMod->getName().'">'.img_edit_add().'</a>';
+            print '<a href="'.$_SERVER['PHP_SELF'].'?pid='.$obj->id.'&amp;action=add#'.$objMod->getName().'">'.img_edit_add().'</a>';
         }
 
         print '</td></tr>';
