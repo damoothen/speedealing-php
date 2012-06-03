@@ -427,7 +427,6 @@ if ($id || $ref)
 						// VAT rate
 						print '<td align="right">';
 						print vatrate($productfourn->fourn_tva_tx,true);
-
 						print '</td>';
 
 						// Price quantity

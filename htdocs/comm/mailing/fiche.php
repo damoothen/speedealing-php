@@ -62,13 +62,13 @@ $substitutionarray=array(
 );
 if ($conf->global->MAILING_EMAIL_UNSUBSCRIBE)
 {
-	$substitutionarray=array_merge(
-			$substitutionarray,
-			array(
-					'__CHECK_READ__' => 'CheckMail',
-					'__UNSUSCRIBE__' => 'Unsubscribe'
-			)
-	);
+    $substitutionarray=array_merge(
+        $substitutionarray,
+        array(
+            '__CHECK_READ__' => 'CheckMail',
+            '__UNSUSCRIBE__' => 'Unsubscribe'
+        )
+    );
 }
 
 $substitutionarrayfortest=array(
@@ -89,11 +89,11 @@ $substitutionarrayfortest=array(
 if ($conf->global->MAILING_EMAIL_UNSUBSCRIBE)
 {
     $substitutionarrayfortest=array_merge(
-    		$substitutionarrayfortest,
-    		array(
-    				'__CHECK_READ__' => 'TESTCheckMail',
-    				'__UNSUSCRIBE__' => 'TESTUnsubscribe'
-    		)
+        $substitutionarrayfortest,
+        array(
+            '__CHECK_READ__' => 'TESTCheckMail',
+            '__UNSUSCRIBE__' => 'TESTUnsubscribe'
+        )
     );
 }
 
@@ -115,9 +115,9 @@ if ($action == 'confirm_clone' && $confirm == 'yes')
 		else
 		{
 			$mesg=$object->error;
-			$action='';
 		}
 	}
+    $action='';
 }
 
 // Action send emailing for everybody
@@ -264,7 +264,6 @@ if ($action == 'sendallconfirmed' && $confirm == 'yes')
 					if ($res)
 					{
 						$res=$mail->sendfile();
-                                                
 					}
 
 					if ($res)
@@ -328,8 +327,6 @@ if ($action == 'sendallconfirmed' && $confirm == 'yes')
 
 					$i++;
 				}
-                              
-                                  
 			}
 
 			// Loop finished, set global statut of mail
@@ -380,9 +377,7 @@ if ($action == 'send' && empty($_POST["cancel"]))
 
 	if (! $error)
 	{
-          
-		
-	// Le message est-il en html
+		// Le message est-il en html
 		$msgishtml=-1;	// Inconnu par defaut
 		if (preg_match('/[\s\t]*<html>/i',$message)) $msgishtml=1;
 
@@ -666,9 +661,7 @@ if ($action == 'create')
 	print '<td>';
 	// Editeur wysiwyg
 	require_once(DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php");
-    if(empty($_POST['body'])) $body='<br /><br /><br /><font face="Verdana, Helvetica, sans-serif" size="1">Pour ne plus recevoir de mailing, <a href="'.DOL_MAIN_URL_ROOT.'/public/mailing/desinscription?nom='.$conf->global->MAIN_INFO_SOCIETE_NOM.'&mail=__EMAIL__&id=__ID__&rowid=__CAMPAGNEID__'.'" target="_blank">désinscrivez vous</a> de la newsletter. (__EMAIL__) </font>';
-    else $body=$_POST['body'];
-	$doleditor=new DolEditor('body',$body,'',320,'dolibarr_mailings','',true,true,$conf->fckeditor->enabled && $conf->global->FCKEDITOR_ENABLE_MAILING,20,70);
+	$doleditor=new DolEditor('body',$_POST['body'],'',320,'dolibarr_mailings','',true,true,$conf->global->FCKEDITOR_ENABLE_MAILING,20,70);
 	$doleditor->Create();
 	print '</td></tr>';
 	print '</table>';
@@ -811,14 +804,13 @@ else
 				array('type' => 'checkbox', 'name' => 'clone_receivers', 'label' => $langs->trans("CloneReceivers").' ('.$langs->trans("FeatureNotYetAvailable").')', 'value' => 0, 'disabled' => true)
 				);
 				// Paiement incomplet. On demande si motif = escompte ou autre
-				$form->form_confirm($_SERVER["PHP_SELF"].'?id='.$object->id,$langs->trans('CloneEMailing'),$langs->trans('ConfirmCloneEMailing',$object->ref),'confirm_clone',$formquestion,'yes');
+				$form->form_confirm($_SERVER["PHP_SELF"].'?id='.$object->id,$langs->trans('CloneEMailing'),$langs->trans('ConfirmCloneEMailing',$object->ref),'confirm_clone',$formquestion,'yes',2,240);
 				print '<br>';
 			}
 
 
-			if ($mesg) print $mesg;
-                        
-                        if($conf->mailjet->enabled)
+			dol_htmloutput_mesg($mesg);
+						if($conf->mailjet->enabled)
                         {
                             dol_include_once("/mailjet/class/mailjet.class.php");
                             $langs->load("mailjet@mailjet");
@@ -826,7 +818,6 @@ else
                             
                             print $mailjet->statistic($mil->id);
                         }
-
 
 			/*
 			 * Boutons d'action
@@ -972,8 +963,10 @@ else
 			 * Mailing en mode edition
 			 */
 
-			if ($mesg) print $mesg."<br>";
-			if ($message) print $message."<br>";
+		    $mesgs=array();
+		    if ($mesg)    $mesgs[]=$mesg;
+		    if ($message) $message[]=$message;
+			dol_htmloutput_mesg('',$mesgs);
 
 			print '<table class="border" width="100%">';
 

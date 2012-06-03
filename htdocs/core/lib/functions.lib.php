@@ -373,18 +373,18 @@ function dol_string_unaccent($str)
     {
         $string = strtr(
             $str,
-			"\xC0\xC1\xC2\xC3\xC5\xC7
-	        \xC8\xC9\xCA\xCB\xCC\xCD\xCE\xCF\xD0\xD1
-	        \xD2\xD3\xD4\xD5\xD8\xD9\xDA\xDB\xDD
-	        \xE0\xE1\xE2\xE3\xE5\xE7\xE8\xE9\xEA\xEB
-	        \xEC\xED\xEE\xEF\xF0\xF1\xF2\xF3\xF4\xF5\xF8
-	        \xF9\xFA\xFB\xFD\xFF",
-			"AAAAAC
-	        EEEEIIIIDN
-	        OOOOOUUUY
-	        aaaaaceeee
-	        iiiidnooooo
-	        uuuyy"
+            "\xC0\xC1\xC2\xC3\xC5\xC7
+            \xC8\xC9\xCA\xCB\xCC\xCD\xCE\xCF\xD0\xD1
+            \xD2\xD3\xD4\xD5\xD8\xD9\xDA\xDB\xDD
+            \xE0\xE1\xE2\xE3\xE5\xE7\xE8\xE9\xEA\xEB
+            \xEC\xED\xEE\xEF\xF0\xF1\xF2\xF3\xF4\xF5\xF8
+            \xF9\xFA\xFB\xFD\xFF",
+            "AAAAAC
+            EEEEIIIIDN
+            OOOOOUUUY
+            aaaaaceeee
+            iiiidnooooo
+            uuuyy"
         );
         $string = strtr($string, array("\xC4"=>"Ae", "\xC6"=>"AE", "\xD6"=>"Oe", "\xDC"=>"Ue", "\xDE"=>"TH", "\xDF"=>"ss", "\xE4"=>"ae", "\xE6"=>"ae", "\xF6"=>"oe", "\xFC"=>"ue", "\xFE"=>"th"));
         return $string;
@@ -609,7 +609,7 @@ function dol_fiche_head($links=array(), $active='0', $title='', $notab=0, $picto
  */
 function dol_get_fiche_head($links=array(), $active='0', $title='', $notab=0, $picto='')
 {
-    $out="\n".'<div>'."\n";
+    $out="\n".'<div class="tabs">'."\n";
 
     // Affichage titre
     if ($title)
@@ -4068,18 +4068,6 @@ function printCommonFooter($zone='private')
 }
 
 /**
- * Convert unicode
- *
- * @param	string	$unicode	Unicode
- * @param	string	$encoding	Encoding type
- * @return	string				Unicode converted
- */
-function unichr($unicode , $encoding = 'UTF-8')
-{
-	return mb_convert_encoding("&#{$unicode};", $encoding, 'HTML-ENTITIES');
-}
-
-/**
  *	Convert an array with RGB value into hex RGB value
  *
  *  @param	array	$arraycolor			Array
@@ -4108,11 +4096,11 @@ function getCurrencySymbol($currency_code)
 
 	$form->load_cache_currencies();
 
-	if (is_array($form->cache_currencies[$currency_code]['unicode']) && ! empty($form->cache_currencies[$currency_code]['unicode']))
+	if (function_exists("mb_convert_encoding") && is_array($form->cache_currencies[$currency_code]['unicode']) && ! empty($form->cache_currencies[$currency_code]['unicode']))
 	{
 		foreach($form->cache_currencies[$currency_code]['unicode'] as $unicode)
 		{
-			$currency_sign.= unichr($unicode);
+			$currency_sign .= mb_convert_encoding("&#{$unicode};", "UTF-8", 'HTML-ENTITIES');
 		}
 	}
 	else

@@ -29,6 +29,7 @@ require_once(DOL_DOCUMENT_ROOT."/compta/facture/class/facture.class.php");
 require_once(DOL_DOCUMENT_ROOT.'/core/class/discount.class.php');
 require_once(DOL_DOCUMENT_ROOT."/core/lib/invoice.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/images.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 
 $langs->load('propal');
@@ -41,6 +42,13 @@ $action		= GETPOST('action');
 $confirm	= GETPOST('confirm');
 $id			= GETPOST('facid','int');
 $ref		= GETPOST('ref');
+
+$mesg='';
+if (isset($_SESSION['DolMessage']))
+{
+	$mesg=$_SESSION['DolMessage'];
+	unset($_SESSION['DolMessage']);
+}
 
 // Security check
 if ($user->societe_id)
@@ -79,10 +87,19 @@ if ($_POST["sendit"] && ! empty($conf->global->MAIN_UPLOAD_DOC))
 
 		if (dol_mkdir($upload_dir) >= 0)
 		{
-			$resupload=dol_move_uploaded_file($_FILES['userfile']['tmp_name'], $upload_dir . "/" . $_FILES['userfile']['name'],0,0,$_FILES['userfile']['error']);
+			$resupload=dol_move_uploaded_file($_FILES['userfile']['tmp_name'], $upload_dir . "/" . dol_unescapefile($_FILES['userfile']['name']),0,0,$_FILES['userfile']['error']);
 			if (is_numeric($resupload) && $resupload > 0)
 			{
-				$mesg = '<div class="ok">'.$langs->trans("FileTransferComplete").'</div>';
+	            if (image_format_supported($upload_dir . "/" . $_FILES['userfile']['name']) == 1)
+                {
+                    // Create small thumbs for image (Ratio is near 16/9)
+                    // Used on logon for example
+                    $imgThumbSmall = vignette($upload_dir . "/" . $_FILES['userfile']['name'], $maxwidthsmall, $maxheightsmall, '_small', $quality, "thumbs");
+                    // Create mini thumbs for image (Ratio is near 16/9)
+                    // Used on menu or for setup page for example
+                    $imgThumbMini = vignette($upload_dir . "/" . $_FILES['userfile']['name'], $maxwidthmini, $maxheightmini, '_mini', $quality, "thumbs");
+                }
+			    $mesg = '<div class="ok">'.$langs->trans("FileTransferComplete").'</div>';
 			}
 			else
 			{
@@ -109,12 +126,15 @@ if ($action == 'confirm_deletefile' && $confirm == 'yes')
 {
 	if ($object->fetch($id))
 	{
+	    $langs->load("other");
 		$object->fetch_thirdparty();
 
 		$upload_dir = $conf->facture->dir_output . "/" . dol_sanitizeFileName($object->ref);
-		$file = $upload_dir . '/' . $_GET['urlfile'];	// Do not use urldecode here ($_GET and $_REQUEST are already decoded by PHP).
+		$file = $upload_dir . '/' . GETPOST('urlfile');	// Do not use urldecode here ($_GET and $_REQUEST are already decoded by PHP).
 		dol_delete_file($file,0,0,0,$object);
-		$mesg = '<div class="ok">'.$langs->trans("FileWasRemoved").'</div>';
+		$_SESSION['DolMessage'] = '<div class="ok">'.$langs->trans("FileWasRemoved",GETPOST('urlfile')).'</div>';
+    	Header('Location: '.$_SERVER["PHP_SELF"].'?id='.$id);
+    	exit;
 	}
 }
 
@@ -195,7 +215,7 @@ if ($id > 0 || ! empty($ref))
 		 */
 		if ($action == 'delete')
 		{
-			$ret=$form->form_confirm($_SERVER["PHP_SELF"].'?facid='.$id.'&urlfile='.urldecode($_GET["urlfile"]), $langs->trans('DeleteFile'), $langs->trans('ConfirmDeleteFile'), 'confirm_deletefile', '', 0, 1);
+			$ret=$form->form_confirm($_SERVER["PHP_SELF"].'?facid='.$id.'&urlfile='.urlencode(GETPOST("urlfile")), $langs->trans('DeleteFile'), $langs->trans('ConfirmDeleteFile'), 'confirm_deletefile', '', 0, 1);
 			if ($ret == 'html') print '<br>';
 		}
 

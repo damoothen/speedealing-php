@@ -28,6 +28,7 @@ require_once(DOL_DOCUMENT_ROOT."/projet/class/project.class.php");
 require_once(DOL_DOCUMENT_ROOT."/projet/class/task.class.php");
 require_once(DOL_DOCUMENT_ROOT.'/core/lib/project.lib.php');
 require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/core/lib/images.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
 
 
@@ -42,6 +43,13 @@ $id = GETPOST('id','int');
 $ref= GETPOST('ref','alpha');
 $withproject=GETPOST('withproject','int');
 $project_ref = GETPOST('project_ref','alpha');
+
+$mesg='';
+if (isset($_SESSION['DolMessage']))
+{
+	$mesg=$_SESSION['DolMessage'];
+	unset($_SESSION['DolMessage']);
+}
 
 // Security check
 $socid=0;
@@ -70,14 +78,21 @@ $projectstatic = new Project($db);
 // Envoi fichier
 if ($_POST["sendit"] && ! empty($conf->global->MAIN_UPLOAD_DOC))
 {
-	require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
-
 	if (dol_mkdir($upload_dir) >= 0)
 	{
-		$resupload=dol_move_uploaded_file($_FILES['userfile']['tmp_name'], $upload_dir . "/" . $_FILES['userfile']['name'],0,0,$_FILES['userfile']['error']);
+		$resupload=dol_move_uploaded_file($_FILES['userfile']['tmp_name'], $upload_dir . "/" . dol_unescapefile($_FILES['userfile']['name']),0,0,$_FILES['userfile']['error']);
 		if (is_numeric($resupload) && $resupload > 0)
 		{
-			$mesg = '<div class="ok">'.$langs->trans("FileTransferComplete").'</div>';
+            if (image_format_supported($upload_dir . "/" . $_FILES['userfile']['name']) == 1)
+            {
+                // Create small thumbs for image (Ratio is near 16/9)
+                // Used on logon for example
+                $imgThumbSmall = vignette($upload_dir . "/" . $_FILES['userfile']['name'], $maxwidthsmall, $maxheightsmall, '_small', $quality, "thumbs");
+                // Create mini thumbs for image (Ratio is near 16/9)
+                // Used on menu or for setup page for example
+                $imgThumbMini = vignette($upload_dir . "/" . $_FILES['userfile']['name'], $maxwidthmini, $maxheightmini, '_mini', $quality, "thumbs");
+            }
+		    $mesg = '<div class="ok">'.$langs->trans("FileTransferComplete").'</div>';
 		}
 		else
 		{
@@ -101,9 +116,12 @@ if ($_POST["sendit"] && ! empty($conf->global->MAIN_UPLOAD_DOC))
 // Delete
 if ($action=='delete')
 {
-	$file = $upload_dir . '/' . $_GET['urlfile'];	// Do not use urldecode here ($_GET and $_REQUEST are already decoded by PHP).
+    $langs->load("other");
+	$file = $upload_dir . '/' . GETPOST('urlfile');	// Do not use urldecode here ($_GET and $_REQUEST are already decoded by PHP).
 	dol_delete_file($file);
-	$mesg = '<div class="ok">'.$langs->trans("FileWasRemoved").'</div>';
+	$_SESSION['DolMessage'] = '<div class="ok">'.$langs->trans("FileWasRemoved",GETPOST('urlfile')).'</div>';
+    Header('Location: '.$_SERVER["PHP_SELF"].'?id='.$id);
+    exit;
 }
 
 // Retreive First Task ID of Project if withprojet is on to allow project prev next to work

@@ -54,13 +54,14 @@ if (function_exists('get_magic_quotes_gpc'))	// magic_quotes_* removed in PHP6
         // Forcing parameter setting magic_quotes_gpc and cleaning parameters
         // (Otherwise he would have for each position, condition
         // Reading stripslashes variable according to state get_magic_quotes_gpc).
-        // Off mode (recommended, you just do $db->escape when an insert / update.
+        // Off mode recommended (just do $db->escape for insert / update).
         function stripslashes_deep($value)
         {
             return (is_array($value) ? array_map('stripslashes_deep', $value) : stripslashes($value));
         }
         $_GET     = array_map('stripslashes_deep', $_GET);
         $_POST    = array_map('stripslashes_deep', $_POST);
+        $_FILES   = array_map('stripslashes_deep', $_FILES);
         //$_COOKIE  = array_map('stripslashes_deep', $_COOKIE); // Useless because a cookie should never be outputed on screen nor used into sql
         @set_magic_quotes_runtime(0);
     }
@@ -172,8 +173,8 @@ if (ini_get('register_globals'))    // To solve bug in using $_SESSION
     }
 }
 
-// Init the 4 global objects
-// This include will set: $conf, $db, $langs, $user objects
+// Init the 5 global objects
+// This include will set: $conf, $db, $langs, $user, $mysoc objects
 require_once("master.inc.php");
 
 // Activate end of page function
@@ -234,7 +235,7 @@ if (! empty($conf->file->main_force_https))
 // Chargement des includes complementaires de presentation
 if (! defined('NOREQUIREMENU')) require_once(DOL_DOCUMENT_ROOT ."/core/class/menu.class.php");			// Need 10ko memory (11ko in 2.2)
 if (! defined('NOREQUIREHTML')) require_once(DOL_DOCUMENT_ROOT ."/core/class/html.form.class.php");	    // Need 660ko memory (800ko in 2.2)
-if (! defined('NOREQUIREAJAX')) require_once(DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php');	// Need 22ko memory
+if (! defined('NOREQUIREAJAX') && $conf->use_javascript_ajax) require_once(DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php');	// Need 22ko memory
 
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (! empty($conf->global->MAIN_NOT_INSTALLED) || ! empty($conf->global->MAIN_NOT_UPGRADED))
@@ -268,14 +269,17 @@ if (! defined('NOTOKENRENEWAL'))
     if (isset($_SESSION['newtoken'])) $_SESSION['token'] = $_SESSION['newtoken'];
     $_SESSION['newtoken'] = $token;
 }
-if (isset($_POST['token']) && isset($_SESSION['token']))
+if (! empty($conf->global->MAIN_SECURITY_CSRF))	// Check validity of token, only if option enabled (this option breaks some features sometimes)
 {
+    if (isset($_POST['token']) && isset($_SESSION['token']))
+    {
         if (($_POST['token'] != $_SESSION['token']))
         {
             dol_syslog("Invalid token in ".$_SERVER['HTTP_REFERER'].", action=".$_POST['action'].", _POST['token']=".$_POST['token'].", _SESSION['token']=".$_SESSION['token'],LOG_WARNING);
             //print 'Unset POST by CSRF protection in main.inc.php.';	// Do not output anything because this create problems when using the BACK button on browsers.
             unset($_POST);
         }
+    }
 }
 
 // Disable modules (this must be after session_start and after conf has been loaded)
@@ -288,6 +292,7 @@ if (! empty($_SESSION["disablemodules"]))
         if ($module) $conf->$module->enabled=false;
     }
 }
+
 
 /*
  * Phase authentication / login
@@ -486,11 +491,19 @@ if (! defined('NOLOGIN'))
             session_name($sessionname);
             session_start();    // Fixing the bug of register_globals here is useless since session is empty
 
-            $langs->load('main');
-            $langs->load('errors');
+            if ($resultFetchUser == 0)
+            {
+                $langs->load('main');
+                $langs->load('errors');
 
-            $user->trigger_mesg=$user->error;
-            $_SESSION["dol_loginmesg"]=$langs->trans("SESSIONEXPIRE");
+                $user->trigger_mesg='ErrorCantLoadUserFromDolibarrDatabase - login='.$login;
+                $_SESSION["dol_loginmesg"]=$langs->trans("ErrorCantLoadUserFromDolibarrDatabase",$login);
+            }
+            if ($resultFetchUser < 0)
+            {
+                $user->trigger_mesg=$user->error;
+                $_SESSION["dol_loginmesg"]=$user->error;
+            }
 
             // Call triggers
             include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
@@ -594,7 +607,7 @@ if (! defined('NOLOGIN'))
         if ($reshook < 0) $error++;
     }
 
-	
+
     // If user admin, we force the rights-based modules
     if ($user->admin)
     {
@@ -654,7 +667,7 @@ if (! defined('NOREQUIRETRAN'))
 }
 
 // Use php template engine
-if (! defined('NOTEMPLATEENGINE'))
+if ($conf->global->MAIN_USE_TEMPLATE_ENGINE && ! defined('NOTEMPLATEENGINE'))
 {
 	require_once(DOL_DOCUMENT_ROOT.'/includes/savant/Savant3.php');
 
@@ -813,11 +826,14 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
     if (empty($conf->css)) $conf->css = '/theme/eldy/style.css.php';	// If not defined, eldy by default
 
     print '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">';
-    
+    //print '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/strict.dtd">';
+    //print '<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
+    //print '<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">';
+    //print '<!DOCTYPE HTML>';
     print "\n";
     if (! empty($conf->global->MAIN_USE_CACHE_MANIFEST)) print '<html manifest="cache.manifest">'."\n";
     else print '<html>'."\n";
-    
+    //print '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">'."\n";
     if (empty($disablehead))
     {
         print "<head>\n";
@@ -828,6 +844,8 @@ function top_htmlhead($head, $title='', $disablejs=0, $disablehead=0, $arrayofjs
         print '<meta name="viewport" content="width=device-width, initial-scale=1.0" />';
         print '<meta name="robots" content="noindex,nofollow" />'."\n";      // Evite indexation par robots
         print '<meta name="author" content="Speedealing Development Team" />'."\n";
+		$favicon=DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/favicon.ico';
+        print '<link rel="shortcut icon" type="image/x-icon" href="'.$favicon.'"/>'."\n";
         // Displays title
         $appli='Speedealing';
         if (!empty($conf->global->MAIN_APPLICATION_TITLE)) $appli=$conf->global->MAIN_APPLICATION_TITLE;

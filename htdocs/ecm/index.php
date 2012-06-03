@@ -94,7 +94,7 @@ if (GETPOST("sendit") && ! empty($conf->global->MAIN_UPLOAD_DOC))
 
 	if (dol_mkdir($upload_dir) >= 0)
 	{
-		$resupload = dol_move_uploaded_file($_FILES['userfile']['tmp_name'], $upload_dir . "/" . $_FILES['userfile']['name'],0, 0, $_FILES['userfile']['error']);
+		$resupload = dol_move_uploaded_file($_FILES['userfile']['tmp_name'], $upload_dir . "/" . dol_unescapefile($_FILES['userfile']['name']),0, 0, $_FILES['userfile']['error']);
 		if (is_numeric($resupload) && $resupload > 0)
 		{
 			//$mesg = '<div class="ok">'.$langs->trans("FileTransferComplete").'</div>';
@@ -154,6 +154,7 @@ if ($action == 'confirm_deletefile')
 {
     if (GETPOST('confirm') == 'yes')
     {
+        $langs->load("other");
     	$result=$ecmdir->fetch($section);
     	if (! $result > 0)
     	{
@@ -166,7 +167,7 @@ if ($action == 'confirm_deletefile')
 
     	$result=dol_delete_file($file);
 
-    	$mesg = '<div class="ok">'.$langs->trans("FileWasRemoved").'</div>';
+    	$mesg = '<div class="ok">'.$langs->trans("FileWasRemoved",GETPOST('urlfile')).'</div>';
 
     	$result=$ecmdir->changeNbOfFiles('-');
 
@@ -203,7 +204,7 @@ if ($action == 'refreshmanual')
     // Now we compare both trees to complete missing trees into database
     //var_dump($disktree);
     //var_dump($sqltree);
-    foreach($disktree as $dirdesc)
+    foreach($disktree as $dirdesc)    // Loop on tree onto disk
     {
         $dirisindatabase=0;
         foreach($sqltree as $dirsqldesc)
@@ -292,6 +293,9 @@ if ($action == 'refreshmanual')
         }
     }
 
+    $sql="UPDATE ".MAIN_DB_PREFIX."ecm_directories set cachenbofdoc=0 WHERE cachenbofdoc < 0";
+    $db->query($sql);
+
     // If a directory was added, the fulltree array is not correctly completed and sorted, so we clean
     // it to be sure that fulltree array is not used without reloading it.
     if ($adirwascreated) $sqltree=null;
@@ -318,7 +322,7 @@ $moreheadcss="
         _width:     700px; /* min-width for IE6 */
     }
 </style>";
-$moreheadjs="
+$moreheadjs=empty($conf->use_javascript_ajax)?"":"
 <script type=\"text/javascript\">
     jQuery(document).ready(function () {
         jQuery('#containerlayout').layout({
@@ -384,19 +388,15 @@ if ($action == 'delete')
 dol_htmloutput_mesg($mesg);
 
 
+if (! empty($conf->use_javascript_ajax)) $classviewhide='hidden';
+else $classviewhide='visible';
+
 // Start container of all panels
-if ($conf->use_javascript_ajax)
-{
 ?>
-	<div id="containerlayout"> <!-- begin div id="containerlayout" -->
-	<div id="ecm-layout-north" class="toolbar">
+<div id="containerlayout"> <!-- begin div id="containerlayout" -->
+<div id="ecm-layout-north" class="toolbar">
 <?php
-}
-else
-{
-    print '<table class="border" width="100%">';
-    print '<tr><td colspan="2" style="background: #FFFFFF" style="height: 34px !important">';
-}
+
 // Start top panel, toolbar
 print '<div class="toolbarbutton">';
 
@@ -419,21 +419,12 @@ print '</a>';
 
 print '</div>';
 // End top panel, toolbar
-if ($conf->use_javascript_ajax)
-{
-?>
-	</div>
-    <div id="ecm-layout-west" class="hidden">
-<?php
-}
-else
-{
-    print '</td></tr>';
-    print '<tr>';
-    print '<td width="40%" valign="top" style="background: #FFFFFF" rowspan="2">';
-}
-// Start left area
 
+?>
+</div>
+<div id="ecm-layout-west" class="<?php echo $classviewhide; ?>">
+<?php
+// Start left area
 
 
 // Confirmation de la suppression d'une ligne categorie
@@ -457,7 +448,6 @@ if (empty($action) || $action == 'file_manager' || preg_match('/refresh/i',$acti
 
     $showonrightsize='';
 
-
     // Auto section
 	if (count($sectionauto))
 	{
@@ -480,87 +470,51 @@ if (empty($action) || $action == 'file_manager' || preg_match('/refresh/i',$acti
 		print '<td align="right">&nbsp;</td>';
 		print '<td align="right">&nbsp;</td>';
 		print '<td align="center">';
-		//print $form->textwithpicto('',$htmltooltip,1,0);
 		print '</td>';
-		//print '<td align="right">'.$langs->trans("ECMNbOfDocsSmall").' <a href="'.$_SERVER["PHP_SELF"].'?action=refreshauto">'.img_picto($langs->trans("Refresh"),'refresh').'</a></td>';
 		print '</tr>';
 
 		$sectionauto=dol_sort_array($sectionauto,'label','ASC',true,false);
+
+		print '<tr>';
+    	print '<td colspan="6" style="padding-left: 20px">';
+	    print '<div id="filetreeauto" class="ecmfiletree"><ul class="ecmjqft">';
 
 		$nbofentries=0;
 		$oldvallevel=0;
 		foreach ($sectionauto as $key => $val)
 		{
-			if ($val['test'])    // If condition to show is ok
+			if (empty($val['test'])) continue;   // If condition to show is ok
+
+			$var=false;
+
+		    print '<li class="directory collapsed">';
+			if (! empty($conf->use_javascript_ajax) && empty($conf->global->MAIN_ECM_DISABLE_JS))
 			{
-				$var=false;
-
-				print '<tr>';
-
-				// Section
-				print '<td align="left">';
-				print '<table class="nobordernopadding"><tr class="nobordernopadding"><td>';
-				tree_showpad($sectionauto,$key);
-				print '</td>';
-
-				print '<td valign="top">';
-				if ($val['module'] == GETPOST("module"))
-				{
-					$n=3;
-					$ref=img_picto('',DOL_URL_ROOT.'/theme/common/treemenu/minustop'.$n.'.gif','',1);
-				}
-				else
-				{
-					$n=3;
-					$ref=img_picto('',DOL_URL_ROOT.'/theme/common/treemenu/plustop'.$n.'.gif','',1);
-				}
-				print '<a href="'.DOL_URL_ROOT.'/ecm/index.php?module='.$val['module'].'">';
-				print $ref;
-				print '</a>';
-				print img_picto('',DOL_URL_ROOT.'/theme/common/treemenu/folder.gif','',1);
-				print '</td>';
-
-				print '<td valign="middle">';
-				print '<a href="'.DOL_URL_ROOT.'/ecm/index.php?module='.$val['module'].'">';
-				print $val['label'];
-				print '</a></td></tr></table>';
-				print "</td>\n";
-
-				// Nb of doc in dir
-				print '<td align="right">&nbsp;</td>';
-
-				// Nb of doc in subdir
-				print '<td align="right">&nbsp;</td>';
-
-				// Edit link
-				print '<td align="right">&nbsp;</td>';
-
-				// Add link
-				print '<td align="right">&nbsp;</td>';
-
-				// Info
-				print '<td align="center">';
-				$htmltooltip='<b>'.$langs->trans("ECMSection").'</b>: '.$val['label'].'<br>';
-				$htmltooltip='<b>'.$langs->trans("Type").'</b>: '.$langs->trans("ECMSectionAuto").'<br>';
-				$htmltooltip.='<b>'.$langs->trans("ECMCreationUser").'</b>: '.$langs->trans("ECMTypeAuto").'<br>';
-				$htmltooltip.='<b>'.$langs->trans("Description").'</b>: '.$val['desc'];
-				print $form->textwithpicto('',$htmltooltip,1,"info");
-				print '</td>';
-
-				print "</tr>\n";
-
-				if ($val['module'] == GETPOST('module'))    // We are on selected module
-				{
-					if (in_array($val['module'],array('product')))
-					{
-						$showonrightsize='featurenotyetavailable';
-					}
-				}
-
-				$oldvallevel=$val['level'];
-				$nbofentries++;
+			    print '<a class="fmdirlia jqft ecmjqft" href="'.DOL_URL_ROOT.'/ecm/index.php?module='.$val['module'].'">';
+			    print $val['label'];
+   			    print '</a>';
 			}
+			else
+			{
+			    print '<a class="fmdirlia jqft ecmjqft" href="'.DOL_URL_ROOT.'/ecm/index.php?module='.$val['module'].'">';
+			    print $val['label'];
+			    print '</a>';
+			}
+
+		    print '<div class="ecmjqft">';
+		    // Info
+		    $htmltooltip='<b>'.$langs->trans("ECMSection").'</b>: '.$val['label'].'<br>';
+		    $htmltooltip='<b>'.$langs->trans("Type").'</b>: '.$langs->trans("ECMSectionAuto").'<br>';
+		    $htmltooltip.='<b>'.$langs->trans("ECMCreationUser").'</b>: '.$langs->trans("ECMTypeAuto").'<br>';
+		    $htmltooltip.='<b>'.$langs->trans("Description").'</b>: '.$val['desc'];
+		    print $form->textwithpicto('',$htmltooltip,1,"info");
+		    print '</div>';
+		    print '</li>';
+
+		    $nbofentries++;
 		}
+
+	    print '</ul></div></td></tr>';
 	}
 
 
@@ -589,15 +543,14 @@ if (empty($action) || $action == 'file_manager' || preg_match('/refresh/i',$acti
 	print '</td>';
 	print '</tr>';
 
-    if (empty($conf->global->MAIN_ECM_DISABLE_JS))
+    if (! empty($conf->use_javascript_ajax) && empty($conf->global->MAIN_ECM_DISABLE_JS))
     {
         print '<tr><td colspan="6" style="padding-left: 20px">';
 
     	// Show filemanager tree
 	    print '<div id="filetree" class="ecmfiletree">';
-	    print '</div>';
 
-	    print '</td></tr>';
+	    print '</div>';
 
 	    $openeddir='/';
         ?>
@@ -645,12 +598,18 @@ if (empty($action) || $action == 'file_manager' || preg_match('/refresh/i',$acti
 	    </script>
 	    <?php
 
-	    print $form->formconfirm('eeeee', $langs->trans('DeleteFile'), $langs->trans('ConfirmDeleteFile'), 'confirm_deletefile', '', '', 'deletefile');
+	    if ($action == 'deletefile') print $form->formconfirm('eeeee', $langs->trans('DeleteFile'), $langs->trans('ConfirmDeleteFile'), 'confirm_deletefile', '', '', 'deletefile');
+
+	    print '</td></tr>';
     }
     else
     {
+        print '<tr><td colspan="6" style="padding-left: 20px">';
+        print '<div id="filetree" class="ecmfiletree">';
+        print '<ul class="ecmjqft">';
+
     	// Load full tree
-    	if (empty($sqltree)) $sqltree=$ecmdirstatic->get_full_arbo(0);
+    	if (empty($sqltree)) $sqltree=$ecmdirstatic->get_full_arbo(0);    // Slow
 
     	// ----- This section will show a tree from a fulltree array -----
     	// $section must also be defined
@@ -711,7 +670,7 @@ if (empty($action) || $action == 'file_manager' || preg_match('/refresh/i',$acti
     		$ecmdirstatic->ref=$val['label'];
 
     		// Refresh cache
-    		if (preg_match('/refresh/i',$_GET['action']))
+    		if (preg_match('/refresh/i',$action))
     		{
     			$result=$ecmdirstatic->fetch($val['id']);
     			$ecmdirstatic->ref=$ecmdirstatic->label;
@@ -740,58 +699,32 @@ if (empty($action) || $action == 'file_manager' || preg_match('/refresh/i',$acti
     			else $option='indexnotexpanded';
     			//print $option;
 
-    			print '<tr>';
+    			print '<li class="directory collapsed">';
 
     			// Show tree graph pictos
-    			print '<td align="left">';
-    			print '<table class="nobordernopadding"><tr class="nobordernopadding"><td>';
-    			$resarray=tree_showpad($sqltree,$key);
+                $cpt=1;
+    			while ($cpt < $sqltree[$key]['level'])
+    			{
+    			    print ' &nbsp; &nbsp;';
+    			    $cpt++;
+    			}
+    			$resarray=tree_showpad($sqltree,$key,1);
     			$a=$resarray[0];
     			$nbofsubdir=$resarray[1];
     			$nboffilesinsubdir=$resarray[2];
-    			print '</td>';
-
-    			// Show picto
-    			print '<td valign="top">';
-    			//print $val['fullpath']."(".$showline.")";
-    			$n='2';
-    			if ($b == 0 || ! in_array($val['id'],$expandedsectionarray)) $n='3';
-    			if (! in_array($val['id'],$expandedsectionarray)) $ref=img_picto('',DOL_URL_ROOT.'/theme/common/treemenu/plustop'.$n.'.gif','',1);
-    			else $ref=img_picto('',DOL_URL_ROOT.'/theme/common/treemenu/minustop'.$n.'.gif','',1);
-    			if ($option == 'indexexpanded') $lien = '<a href="'.$_SERVER["PHP_SELF"].'?section='.$val['id'].'&amp;sectionexpand=false">';
-    	    	if ($option == 'indexnotexpanded') $lien = '<a href="'.$_SERVER["PHP_SELF"].'?section='.$val['id'].'&amp;sectionexpand=true">';
-    	    	//$newref=str_replace('_',' ',$ref);
-    	    	$newref=$ref;
-    	    	$lienfin='</a>';
-    	    	print $lien.$newref.$lienfin;
-    			if (! in_array($val['id'],$expandedsectionarray)) print img_picto($ecmdirstatic->ref,DOL_URL_ROOT.'/theme/common/treemenu/folder.gif','',1);
-    			else print img_picto($ecmdirstatic->ref,DOL_URL_ROOT.'/theme/common/treemenu/folder-expanded.gif','',1);
-    			print '</td>';
 
     			// Show link
-    			print '<td valign="middle">';
-    			if ($section == $val['id']) print ' <u>';
-    			print $ecmdirstatic->getNomUrl(0,'index',32);
-    			if ($section == $val['id']) print '</u>';
-    			print '</td>';
-    			print '<td>&nbsp;</td>';
-    			print '</tr></table>';
-    			print "</td>\n";
+    			print $ecmdirstatic->getNomUrl(0,$option,32,'class="fmdirlia jqft ecmjqft"');
+
+    			print '<div class="ecmjqft">';
 
     			// Nb of docs
-    			print '<td align="right">';
+    			print '<table class="nobordernopadding"><tr><td>';
     			print $val['cachenbofdoc'];
     			print '</td>';
     			print '<td align="left">';
     			if ($nbofsubdir && $nboffilesinsubdir) print '<font color="#AAAAAA">+'.$nboffilesinsubdir.'</font> ';
     			print '</td>';
-
-    			// Edit link
-    			print '<td align="right"><a href="'.DOL_URL_ROOT.'/ecm/docmine.php?section='.$val['id'].'">'.img_view($langs->trans("Edit").' - '.$langs->trans("Show")).'</a></td>';
-
-    			// Add link
-    			//print '<td align="right"><a href="'.DOL_URL_ROOT.'/ecm/docdir.php?action=create&amp;catParent='.$val['id'].'">'.img_edit_add().'</a></td>';
-    			print '<td align="right">&nbsp;</td>';
 
     			// Info
     			print '<td align="center">';
@@ -808,7 +741,11 @@ if (empty($action) || $action == 'file_manager' || preg_match('/refresh/i',$acti
     			print $form->textwithpicto('',$htmltooltip,1,"info");
     			print "</td>";
 
-    			print "</tr>\n";
+    			print '</tr></table>';
+
+    			print '</div>';
+
+    			print "</li>\n";
     		}
 
     		$oldvallevel=$val['level'];
@@ -818,17 +755,16 @@ if (empty($action) || $action == 'file_manager' || preg_match('/refresh/i',$acti
     	// If nothing to show
     	if ($nbofentries == 0)
     	{
-    		print '<tr>';
-    		print '<td class="left"><table class="nobordernopadding"><tr class="nobordernopadding"><td>'.img_picto_common('','treemenu/branchbottom.gif').'</td>';
-    		print '<td>'.img_picto('',DOL_URL_ROOT.'/theme/common/treemenu/minustop3.gif','',1).'</td>';
-    		print '<td valign="middle">';
+    		print '<li class="directory collapsed">';
+    		print '<div class="ecmjqft">';
     		print $langs->trans("ECMNoDirecotyYet");
-    		print '</td>';
-    		print '<td>&nbsp;</td>';
-    		print '</table></td>';
-    		print '<td colspan="5">&nbsp;</td>';
-    		print '</tr>';
+    		print '</div>';
+   			print "</li>\n";
     	}
+
+    	print '</ul>';
+    	print '</div>';
+    	print '</td></tr>';
     }
 
 
@@ -837,20 +773,12 @@ if (empty($action) || $action == 'file_manager' || preg_match('/refresh/i',$acti
 
 
 // End left banner
-if ($conf->use_javascript_ajax)
-{
 ?>
-    </div>
-    <div id="ecm-layout-center" class="hidden">
-    <div class="pane-in ecm-in-layout-center">
-    <div id="ecmfileview" class="ecmfileview">
-
+</div>
+<div id="ecm-layout-center" class="<?php echo $classviewhide; ?>">
+<div class="pane-in ecm-in-layout-center">
+<div id="ecmfileview" class="ecmfileview">
 <?php
-}
-else
-{
-    print '</td><td valign="top" style="background: #FFFFFF">';
-}
 // Start right panel
 
 
@@ -859,20 +787,11 @@ include_once(DOL_DOCUMENT_ROOT.'/core/ajax/ajaxdirpreview.php');
 
 
 // End right panel
-if ($conf->use_javascript_ajax)
-{
 ?>
-	</div>
-    </div>
-    <div class="pane-in ecm-in-layout-south layout-padding valignmiddle">
+</div>
+</div>
+<div class="pane-in ecm-in-layout-south layout-padding valignmiddle">
 <?php
-}
-else
-{
-    print '</td></tr>';
-    print '<tr height="22">';
-    print '<td>';
-}
 // Start Add new file area
 
 
@@ -887,21 +806,12 @@ else print '&nbsp;';
 
 
 // End Add new file area
-if ($conf->use_javascript_ajax)
-{
 ?>
-    </div>
-    </div>
-	</div> <!-- end div id="containerlayout" -->
+</div>
+</div>
+</div> <!-- end div id="containerlayout" -->
 <?php
-}
-else
-{
-    print '</td></tr>';
-    print '</table>';
-}
 // End of page
-
 
 
 llxFooter();
