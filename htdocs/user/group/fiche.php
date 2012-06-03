@@ -40,6 +40,7 @@ $id = GETPOST('id', 'alpha');
 $action = GETPOST('action', 'alpha');
 $confirm = GETPOST('confirm', 'alpha');
 $userid = GETPOST('user', 'alpha');
+$databaseid = GETPOST('databaseid', 'alpha');
 
 // Security check
 $result = restrictedArea($user, 'user', $id, 'usergroup&usergroup', 'user');
@@ -76,6 +77,7 @@ if ($action == 'add') {
 		if (!$message) {
 			$object->values->name = trim($_POST["nom"]);
 			$object->values->note = trim($_POST["note"]);
+			$object->values->_id = "group:".$object->values->name;
 
 			$object->record();
 
@@ -100,6 +102,40 @@ if ($action == 'adduser' || $action == 'removeuser') {
 			}
 			if ($action == 'removeuser') {
 				$object->couchAdmin->removeRoleFromUser($userid, $object->values->name);
+			}
+
+			if ($result > 0) {
+				header("Location: fiche.php?id=" . $object->id);
+				exit;
+			} else {
+				$message.=$edituser->error;
+			}
+		}
+	} else {
+		$langs->load("errors");
+		$message = '<div class="error">' . $langs->trans('ErrorForbidden') . '</div>';
+	}
+}
+
+// Add/Remove database into roles
+if ($action == 'adddatabase' || $action == 'removedatabase') {
+	if ($caneditperms) {
+		if ($databaseid) {
+
+			$object->load($id);
+			
+			$database = new UserDatabase($db);
+			$database->fetch($databaseid);
+
+			if ($action == 'adddatabase') {
+				if($_POST['admin'])
+					$database->couchAdmin->addDatabaseAdminRole($object->values->name);
+				else
+					$database->couchAdmin->addDatabaseReaderRole($object->values->name);
+			}
+			if ($action == 'removedatabase') {
+				$database->couchAdmin->removeDatabaseAdminRole($object->values->name);
+				$database->couchAdmin->removeDatabaseReaderRole($object->values->name);
 			}
 
 			if ($result > 0) {
@@ -374,42 +410,11 @@ if ($action == 'create') {
 
 			// On selectionne les users qui ne sont pas deja dans le groupe
 			$exclude = array();
-
-			$database = new UserDatabase($db);
-			try {
-				$result = $database->couchdb->listDatabases();
-			} catch (Exception $exc) {
-				print $exc->getMessage();
-			}
-
-			$object->database = array();
-			foreach ($result as $aRow) {
-				if ($aRow[0] != "_") { // Not _users and _replicator
-					try {
-						$database->fetch($aRow);
-						$info = $database->values;
-						$secu = $database->couchAdmin->getSecurity();
-
-						foreach($secu as $key => $type)
-						{
-							if(in_array($object->values->name, $type->roles))
-							{
-								if($key == "admins")
-									$info->Administrator = true;
-								
-								$$object->database[] = $info;
-							}
-						}
-					} catch (Exception $exc) {
-						print $exc->getMessage();
-					}
-				}
-			}
 			
 			//print_r($object->database);
 
-			if (count($object->database)) {
-				foreach ($object->database as $dbingroup) {
+			if (count($object->databases)) {
+				foreach ($object->databases as $dbingroup) {
 					$exclude[] = $dbingroup->db_name;
 				}
 			}
@@ -417,11 +422,11 @@ if ($action == 'create') {
 			if ($caneditperms) {
 				print '<form action="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '" method="POST">' . "\n";
 				print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
-				print '<input type="hidden" name="action" value="adduser">';
+				print '<input type="hidden" name="action" value="adddatabase">';
 				print '<table class="noborder" width="100%">' . "\n";
 				print '<tr class="liste_titre"><td class="liste_titre" width="25%">' . $langs->trans("NonAffectedUsers") . '</td>' . "\n";
 				print '<td>';
-				print $form->select_dolgroups('', 'groupid', 1, $exclude, 0, '', '');
+				print $form->select_doldatabases('', 'databaseid', 1, $exclude, 0, '', '');
 				print '<td valign="top">' . $langs->trans("Administrator") . '</td>';
 				print "<td>" . $form->selectyesno('admin', 0, 1);
 				print "</td>\n";
@@ -451,26 +456,21 @@ if ($action == 'create') {
 			print '</thead>';
 
 			print '<tbody>';
-			if (count($object->database)) {
+			if (count($object->databases)) {
 				$var = True;
 
-				foreach ($object->database as $aRow) {
+				foreach ($object->databases as $aRow) {
 					$var = !$var;
-
-					$useringroup = new User($db);
-					$useringroup->values = $aRow;
-					$useringroup->admin = $useringroup->values->Administrator;
-					$useringroup->id = $useringroup->values->_id;
 
 					print "<tr $bc[$var]>";
 					print '<td>';
-					print '<a href="' . DOL_URL_ROOT . '/user/fiche.php?id=' . $useringroup->id . '">' . img_object($langs->trans("ShowUser"), "user") . ' ' . $useringroup->values->name . '</a>';
+					print '<a href="' . DOL_URL_ROOT . '/user/database/fiche.php?id=' . $aRow->db_name. '">' . img_object($langs->trans("ShowDatabase"), "database") . ' ' . $aRow->db_name . '</a>';
 					if ($aRow->Administrator)
 						print img_picto($langs->trans("Administrator"), 'star');
 					print '</td>';
 					print '<td>';
 					if ($user->admin) {
-						print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=removeuser&amp;user=' . $useringroup->values->name . '">';
+						print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=removedatabase&amp;databaseid=' . $aRow->db_name . '">';
 						print img_delete($langs->trans("RemoveFromGroup"));
 					} else {
 						print "-";

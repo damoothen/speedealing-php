@@ -19,6 +19,7 @@
 
 require("../../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT . "/user/class/userdatabase.class.php");
+require_once(DOL_DOCUMENT_ROOT . "/user/class/usergroup.class.php");
 
 // Defini si peux lire/modifier utilisateurs et permisssions
 $canreadperms = ($user->admin || $user->rights->user->user->lire);
@@ -32,6 +33,7 @@ $id = GETPOST('id', 'alpha');
 $action = GETPOST('action', 'alpha');
 $confirm = GETPOST('confirm', 'alpha');
 $userid = GETPOST('user', 'alpha');
+$groupid = GETPOST('group', 'alpha');
 
 // Security check
 $result = restrictedArea($user, 'user', $id, 'usergroup&usergroup', 'user');
@@ -115,6 +117,32 @@ if ($action == 'adduser' || $action == 'removeuser') {
 			} else {
 				$message.=$edituser->error;
 			}
+		}
+	} else {
+		$langs->load("errors");
+		$message = '<div class="error">' . $langs->trans('ErrorForbidden') . '</div>';
+	}
+}
+
+// Add/Remove user into group
+if ($action == 'addgroup' || $action == 'removegroup') {
+	if ($caneditperms) {
+		if ($groupid) {
+			$object->fetch($id);
+
+			if ($action == 'addgroup') {				
+				if($_POST['admin'])
+					$object->couchAdmin->addDatabaseAdminRole($groupid);
+				else
+					$object->couchAdmin->addDatabaseReaderRole($groupid);
+			}
+			if ($action == 'removegroup') {
+				$object->couchAdmin->removeDatabaseAdminRole($groupid);
+				$object->couchAdmin->removeDatabaseReaderRole($groupid);
+			}
+
+			header("Location: fiche.php?id=" . $object->id);
+			exit;
 		}
 	} else {
 		$langs->load("errors");
@@ -293,7 +321,7 @@ if ($action == 'create') {
 			}
 
 			/*
-			 * Group members
+			 * Users members
 			 */
 			$obj = new stdClass();
 			$i = 0;
@@ -374,18 +402,18 @@ if ($action == 'create') {
 
 			if (!empty($object->membersRoles)) {
 				foreach ($object->membersRoles as $useringroup) {
-					$exclude[] = $useringroup->_id;
+					$exclude[] = $useringroup->id;
 				}
 			}
 
 			if ($caneditperms) {
 				print '<form action="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '" method="POST">' . "\n";
 				print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
-				print '<input type="hidden" name="action" value="adduser">';
+				print '<input type="hidden" name="action" value="addgroup">';
 				print '<table class="noborder" width="100%">' . "\n";
 				print '<tr class="liste_titre"><td class="liste_titre" width="25%">' . $langs->trans("NonAffectedUsers") . '</td>' . "\n";
 				print '<td>';
-				print $form->select_dolgroups('', 'groupid', 1, $exclude, 0, '', '');
+				print $form->select_dolgroups('', 'group', 1, $exclude, 0, '', '');
 				print '</td>';
 				print '<td valign="top">' . $langs->trans("Administrator") . '</td>';
 				print "<td>" . $form->selectyesno('admin', 0, 1);
@@ -421,20 +449,18 @@ if ($action == 'create') {
 				foreach ($object->membersRoles as $aRow) {
 					$var = !$var;
 
-					$useringroup = new User($db);
-					$useringroup->values = $aRow;
-					$useringroup->admin = $useringroup->values->Administrator;
-					$useringroup->id = $useringroup->values->_id;
+					$useringroup = new UserGroup($db);
+					$useringroup->load("group:".$aRow->id);
 
 					print "<tr $bc[$var]>";
 					print '<td>';
-					print '<a href="' . DOL_URL_ROOT . '/user/fiche.php?id=' . $useringroup->id . '">' . img_object($langs->trans("ShowUser"), "user") . ' ' . $useringroup->values->name . '</a>';
+					print '<a href="' . DOL_URL_ROOT . '/user/group/fiche.php?id=' . $useringroup->id . '">' . img_object($langs->trans("ShowGroup"), "group") . ' ' . $useringroup->values->name . '</a>';
 					if ($useringroup->admin)
 						print img_picto($langs->trans("Administrator"), 'star');
 					print '</td>';
 					print '<td>';
 					if ($user->admin) {
-						print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=removeuser&amp;user=' . $useringroup->values->name . '">';
+						print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=removegroup&amp;group=' . $useringroup->values->name . '">';
 						print img_delete($langs->trans("RemoveFromGroup"));
 					} else {
 						print "-";
