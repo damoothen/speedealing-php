@@ -386,8 +386,8 @@ foreach ($obj->aoColumns as $i => $aRow): ?>
 ]},
  
 <?php endif;?>
-
-<?php if(isset($obj->fnDrawCallback) || defined('NOLOGIN')):?>
+<?php if(!defined('NOLOGIN')) :?>
+<?php if(isset($obj->fnDrawCallback)):?>
 	"fnDrawCallback": <?php echo $obj->fnDrawCallback; ?>,
 <?php else :?>
 // jeditable
@@ -430,6 +430,7 @@ foreach ($obj->aoColumns as $i => $aRow): ?>
                 
             } );
 	}
+<?php endif; ?>
 <?php endif; ?>
     });
 <?php if($ColSearch) :?>
