@@ -31,7 +31,7 @@
 require_once(DOL_DOCUMENT_ROOT . "/core/class/nosqlDocument.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/class/extrafields.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/db/couchdb/lib/couchAdmin.php");
-require_once(DOL_DOCUMENT_ROOT."/user/class/userdatabase.class.php");
+require_once(DOL_DOCUMENT_ROOT . "/user/class/userdatabase.class.php");
 
 /**
  * 	Class to manage Dolibarr users
@@ -82,11 +82,11 @@ class User extends nosqlDocument {
 	var $lang;
 	//! Liste des entrepots auquel a acces l'utilisateur
 	var $entrepots;
-	var $rights;						// Array of permissions user->rights->permx
+	var $rights;	  // Array of permissions user->rights->permx
 	var $all_permissions_are_loaded; /*	 * < \private all_permissions_are_loaded */
 	private $_tab_loaded = array();  // Array of cache of already loaded permissions
-	var $conf;		   // To store personal config
-	var $oldcopy;				// To contains a clone of this when we need to save old properties of object
+	var $conf;	 // To store personal config
+	var $oldcopy;	// To contains a clone of this when we need to save old properties of object
 
 	/**
 	 *    Constructor de la classe
@@ -135,7 +135,7 @@ class User extends nosqlDocument {
 	 */
 	function fetch($login) {
 		global $conf;
-			
+
 		// Clean parameters
 		$login = trim($login);
 
@@ -153,14 +153,17 @@ class User extends nosqlDocument {
 		} catch (Exception $e) {
 			$this->admin = false;
 		}
-		
-		$database = new UserDatabase($this->db);
-		$database->fetch($conf->Couchdb->name); // TODO Modify to put it in SESSION
-		$result = $database->couchAdmin->getDatabaseAdminUsers(); // Administrateur local de la bd
 
-		if(in_array($this->values->name, $result))
-		{
-			$this->admin = true;
+		try {
+			$database = new UserDatabase($this->db);
+			$database->fetch($conf->Couchdb->name); // TODO Modify to put it in SESSION
+			$result = $database->couchAdmin->getDatabaseAdminUsers(); // Administrateur local de la bd
+
+			if (in_array($this->values->name, $result)) {
+				$this->admin = true;
+			}
+		} catch (Exception $e) {
+			
 		}
 
 		$this->id = $this->values->_id;
@@ -1406,8 +1409,8 @@ class User extends nosqlDocument {
 		$this->ref = 'SPECIMEN';
 		$this->specimen = 1;
 
-		$this->nom = 'DOLIBARR';		// deprecated
-		$this->prenom = 'SPECIMEN';	 // deprecated
+		$this->nom = 'DOLIBARR';  // deprecated
+		$this->prenom = 'SPECIMEN';  // deprecated
 		$this->lastname = 'DOLIBARR';
 		$this->firstname = 'SPECIMEN';
 		$this->note = 'This is a note';
@@ -1469,7 +1472,7 @@ class User extends nosqlDocument {
 		$sql = "SELECT count(mc.email) as nb";
 		$sql.= " FROM " . MAIN_DB_PREFIX . "mailing_cibles as mc";
 		$sql.= " WHERE mc.email = '" . $this->db->escape($this->email) . "'";
-		$sql.= " AND mc.statut=1";	  // -1 erreur, 0 non envoye, 1 envoye avec succes
+		$sql.= " AND mc.statut=1";   // -1 erreur, 0 non envoye, 1 envoye avec succes
 		$resql = $this->db->query($sql);
 		if ($resql) {
 			$obj = $this->db->fetch_object($resql);
