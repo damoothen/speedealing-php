@@ -31,7 +31,7 @@
  *  \class      DolibarrModules
  *  \brief      Classe mere des classes de description et activation des modules Dolibarr
  */
-abstract class DolibarrModules extends nosqlDocument
+class DolibarrModules extends nosqlDocument
 {
 	//! Database handler
 	var $db;
@@ -62,6 +62,13 @@ abstract class DolibarrModules extends nosqlDocument
 			$this->global = $this->couchdb->getDoc("const");
 		} catch (Exception $e) {
 			dol_print_error('', "Error : no const document in database".$e->getMessage());
+		}
+		
+		$fk_extrafields = new ExtraFields($db);
+		try {
+			$this->fk_extrafields = $fk_extrafields->load("extrafields:" . get_class($this), true); // load and cache
+		} catch (Exception $e) {
+			
 		}
 		
 	}
@@ -248,15 +255,38 @@ abstract class DolibarrModules extends nosqlDocument
         global $langs;
         $langs->load("admin");
 
-        if ($langs->trans("Module".$this->numero."Name") != ("Module".$this->numero."Name"))
+        if ($langs->trans("Module".$this->values->numero."Name") != ("Module".$this->values->numero."Name"))
         {
             // Si traduction du nom du module existe
-            return $langs->trans("Module".$this->numero."Name");
+            return $langs->trans("Module".$this->values->numero."Name");
         }
         else
         {
             // If translation of module with its numero does not exists, we take its name
-            return $this->name;
+            return $this->values->name;
+        }
+    }
+	
+	/**
+     *  Retourne le nom traduit de la permssion si la traduction existe dans admin.lang,
+     *  sinon le nom defini par defaut dans le module.
+     *
+     *  @return     string      Nom de la permission traduite
+     */
+    function getPermDesc()
+    {
+        global $langs;
+        $langs->load("admin");
+
+        if ($langs->trans("Permission".$this->values->id) != ("Permission".$this->values->id))
+        {
+            // Si traduction du nom du module existe
+            return $langs->trans("Permission".$this->values->id);
+        }
+        else
+        {
+            // If translation of module with its numero does not exists, we take its name
+            return $this->values->perm;
         }
     }
 

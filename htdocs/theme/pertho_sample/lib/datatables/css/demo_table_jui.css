@@ -45,7 +45,7 @@ box-shadow: 3px 3px 3px #CCC;
 border-radius: 0.2em;}
 table.display tfoot th{font-weight:400;padding:2px 8px 2px 8px}
 table.display tr.heading2 td{border-bottom:1px solid #aaa}
-table.display td{padding:5px 8px;border:1px solid #ccc;font-size:12px;vertical-align:middle}
+table.display td{padding:2px 8px;border:1px solid #ccc;font-size:12px;vertical-align:middle}
 table.noborder td{;border:0px;}
 table.display td .fancyImg {display:block;border:1px solid #dcdcdc;padding:2px;background:#fff;float:left}
 table.display td .fancyImg img {display:block}
