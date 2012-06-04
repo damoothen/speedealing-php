@@ -35,7 +35,7 @@ $langs->load("languages");
 // Defini si peux lire/modifier permisssions
 $canreaduser=($user->admin || $user->rights->user->user->lire);
 
-$id = GETPOST('id','int');
+$id = GETPOST('id','alpha');
 $action = GETPOST('action');
 
 if ($id)
@@ -118,6 +118,9 @@ llxHeader();
 $head = user_prepare_head($fuser);
 
 $title = $langs->trans("User");
+print '<div class="row">';
+print start_box($title, "twelve", "16-User-2.png", false);
+
 dol_fiche_head($head, 'guisetup', $title, 0, 'user');
 
 
@@ -250,6 +253,9 @@ else
     print '</div>';
 
 }
+
+print end_box();
+print '</div>';
 
 $db->close();
 

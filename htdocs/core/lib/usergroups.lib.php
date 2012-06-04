@@ -35,11 +35,7 @@ function user_prepare_head($object)
 
 	$langs->load("users");
 
-	$canreadperms=true;
-	if (! empty($conf->global->MAIN_USE_ADVANCED_PERMS))
-	{
-		$canreadperms=($user->admin || ($user->id != $object->id && $user->rights->user->user_advance->readperms) || ($user->id == $object->id && $user->rights->user->self_advance->readperms));
-	}
+	$canreadperms=($user->admin || ($user->id != $object->id && $user->rights->user->user_advance->readperms) || ($user->id == $object->id && $user->rights->user->self_advance->readperms));
 
 	$h = 0;
 	$head = array();
@@ -84,19 +80,6 @@ function user_prepare_head($object)
     // $this->tabs = array('entity:+tabname:Title:@mymodule:conditiontoshow:/mymodule/mypage.php?id=__ID__');   to add new tab
     // $this->tabs = array('entity:-tabname:Title:@mymodule:conditiontoshow:/mymodule/mypage.php?id=__ID__');   to remove a tab
     complete_head_from_modules($conf,$langs,$object,$head,$h,'user');
-
-    if (! $user->societe_id)
-    {
-    	$head[$h][0] = DOL_URL_ROOT.'/user/note.php?id='.$object->id;
-    	$head[$h][1] = $langs->trans("Note");
-    	$head[$h][2] = 'note';
-    	$h++;
-
-    	$head[$h][0] = DOL_URL_ROOT.'/user/info.php?id='.$object->id;
-    	$head[$h][1] = $langs->trans("Info");
-    	$head[$h][2] = 'info';
-    	$h++;
-    }
 
 	return $head;
 }

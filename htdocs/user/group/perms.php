@@ -57,7 +57,7 @@ if ($action == 'add' && $caneditperms) {
 	try {
 		$editgroup->load($id);
 
-		$editgroup->values->rights[] = (int) $_GET['pid'];
+		$editgroup->values->rights->$_GET['pid'] = true;
 		$editgroup->record();
 	} catch (Exception $e) {
 		dol_print_error("", $e->getMessage());
@@ -68,14 +68,9 @@ if ($action == 'remove' && $caneditperms) {
 	$editgroup = new Usergroup($db);
 	try {
 		$editgroup->load($id);
-		if (is_array($editgroup->values->rights)) {
-			$idx = array_search((int) $_GET['pid'], $editgroup->values->rights, true);
-			if (is_numeric($idx)) {
-				unset($editgroup->values->rights[$idx]);
+		unset($editgroup->values->rights->$_GET['pid']);
 
-				$editgroup->record();
-			}
-		}
+		$editgroup->record();
 	} catch (Exception $e) {
 		dol_print_error("", $e->getMessage());
 	}
@@ -110,6 +105,9 @@ if ($id) {
 
 	$i = 0;
 	$obj = new stdClass();
+
+	if ($user->admin)
+		print info_admin($langs->trans("WarningOnlyPermissionOfActivatedModules"));
 
 	print '<table class="display dt_act" id="default_right">';
 
@@ -202,20 +200,23 @@ if ($id) {
 			print '<td>' . img_object('', $aRow->value->picto) . " " . $object->getName() . '</td>';
 			print '<td>' . $object->getPermDesc() . '<a name="' . $aRow->value->id . '">&nbsp;</a></td>';
 			print '<td>';
-			$perm_class = $aRow->value->rights_class;
-			$perm = $aRow->value->perm;
 
-			$idx = null;
-			if (is_array($fgroup->values->rights))
-				$idx = array_search($aRow->value->id, $fgroup->values->rights, true);
+			$perm = $aRow->value->id;
 
-			if ($aRow->value->Status)
-				print $object->getLibStatus(); // Enable by default
-			elseif (is_numeric($idx))
-				print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $fgroup->id . '&pid=' . $aRow->value->id . '&amp;action=remove#' . $aRow->value->id . '">' . img_edit_remove() . '</a>';
-			else
-				print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $fgroup->id . '&pid=' . $aRow->value->id . '&amp;action=add#' . $aRow->value->id . '">' . img_edit_add() . '</a>';
-
+			if ($caneditperms) {
+				if ($aRow->value->Status)
+					print $object->getLibStatus(); // Enable by default
+				elseif ($fgroup->values->rights->$perm)
+					print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $fgroup->id . '&pid=' . $aRow->value->id . '&amp;action=remove#' . $aRow->value->id . '">' . img_edit_remove() . '</a>';
+				else
+					print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $fgroup->id . '&pid=' . $aRow->value->id . '&amp;action=add#' . $aRow->value->id . '">' . img_edit_add() . '</a>';
+			}
+			else {
+				if ($aRow->value->Status)
+					print $object->getLibStatus(); // Enable by default
+				else
+					print $object->getLibStatus();
+			}
 			print '</td>';
 
 			print'</tr>';
@@ -229,145 +230,6 @@ if ($id) {
 
 	print $object->datatablesCreate($obj, "default_right");
 
-
-	/*    print '<table class="border" width="100%">';
-
-	  // Ref
-	  print '<tr><td width="25%" valign="top">'.$langs->trans("Ref").'</td>';
-	  print '<td colspan="2">';
-	  print $form->showrefnav($fgroup,'id','',$user->rights->user->user->lire || $user->admin);
-	  print '</td>';
-	  print '</tr>';
-
-	  // Nom
-	  print '<tr><td width="25%" valign="top">'.$langs->trans("Name").'</td>';
-	  print '<td colspan="2">'.$fgroup->nom.'';
-	  if (! $fgroup->entity)
-	  {
-	  print img_picto($langs->trans("GlobalGroup"),'redstar');
-	  }
-	  print "</td></tr>\n";
-
-	  // Note
-	  print '<tr><td width="25%" valign="top">'.$langs->trans("Note").'</td>';
-	  print '<td class="valeur">'.dol_htmlentitiesbr($fgroup->note).'</td>';
-	  print "</tr>\n";
-
-	  print '</table><br>';
-
-	  if ($user->admin) print info_admin($langs->trans("WarningOnlyPermissionOfActivatedModules"));
-
-	  print '<table width="100%" class="noborder">';
-	  print '<tr class="liste_titre">';
-	  print '<td>'.$langs->trans("Module").'</td>';
-	  if ($caneditperms) print '<td width="24">&nbsp</td>';
-	  print '<td align="center" width="24">&nbsp;</td>';
-	  print '<td>'.$langs->trans("Permissions").'</td>';
-	  print '</tr>';
-
-	  $sql = "SELECT r.id, r.libelle, r.module";
-	  $sql.= " FROM ".MAIN_DB_PREFIX."rights_def as r";
-	  $sql.= " WHERE r.libelle NOT LIKE 'tou%'";    // On ignore droits "tous"
-	  //$sql.= " AND r.entity = ".(empty($conf->multicompany->enabled) ? $conf->entity : $fgroup->entity);
-	  if(! empty($conf->multicompany->enabled))
-	  {
-	  if(empty($conf->multicompany->transverse_mode))
-	  {
-	  $sql.= " AND r.entity = ".$conf->entity;
-	  }
-	  else
-	  {
-	  $sql.= " AND r.entity IN (0,1)";
-	  }
-	  }
-	  else
-	  {
-	  $sql.= " AND r.entity = ".$conf->entity;
-	  }
-
-	  if (empty($conf->global->MAIN_USE_ADVANCED_PERMS)) $sql.= " AND r.perms NOT LIKE '%_advance'";  // Hide advanced perms if option is disable
-	  $sql.= " ORDER BY r.module, r.id";
-
-	  //print $sql;exit;
-
-	  $result=$db->query($sql);
-	  if ($result)
-	  {
-	  $i = 0;
-	  $var = true;
-	  $oldmod = '';
-
-	  $num = $db->num_rows($result);
-
-	  while ($i < $num)
-	  {
-	  $obj = $db->fetch_object($result);
-
-	  // Si la ligne correspond a un module qui n'existe plus (absent de includes/module), on l'ignore
-	  if (! $modules[$obj->module])
-	  {
-	  $i++;
-	  continue;
-	  }
-
-	  if ($oldmod <> $obj->module)
-	  {
-	  $oldmod = $obj->module;
-	  $var = !$var;
-
-	  // Rupture detectee, on recupere objMod
-	  $objMod = $modules[$obj->module];
-	  $picto=($objMod->picto?$objMod->picto:'generic');
-
-	  if ($caneditperms)
-	  {
-	  print '<tr '. $bc[$var].'>';
-	  print '<td nowrap="nowrap">'.img_object('',$picto).' '.$objMod->getName();
-	  print '<a name="'.$objMod->getName().'">&nbsp;</a></td>';
-	  print '<td align="center" nowrap="nowrap">';
-	  print '<a title='.$langs->trans("All").' alt='.$langs->trans("All").' href="perms.php?id='.$fgroup->id.'&amp;action=addrights&amp;module='.$obj->module.'#'.$objMod->getName().'">'.$langs->trans("All")."</a>";
-	  print '/';
-	  print '<a title='.$langs->trans("None").' alt='.$langs->trans("None").' href="perms.php?id='.$fgroup->id.'&amp;action=delrights&amp;module='.$obj->module.'#'.$objMod->getName().'">'.$langs->trans("None")."</a>";
-	  print '</td>';
-	  print '<td colspan="2">&nbsp;</td>';
-	  print '</tr>';
-	  }
-	  }
-
-	  print '<tr '. $bc[$var].'>';
-
-	  // Module
-	  print '<td nowrap="nowrap">'.img_object('',$picto).' '.$objMod->getName().'</td>';
-
-	  if (in_array($obj->id, $permsgroup))
-	  {
-	  // Own permission by group
-	  if ($caneditperms)
-	  {
-	  print '<td align="center"><a href="perms.php?id='.$fgroup->id.'&amp;action=delrights&amp;rights='.$obj->id.'#'.$objMod->getName().'">'.img_edit_remove($langs->trans("Remove")).'</a></td>';
-	  }
-	  print '<td align="center">';
-	  print img_picto($langs->trans("Active"),'tick');
-	  print '</td>';
-	  }
-	  else
-	  {
-	  // Do not own permission
-	  if ($caneditperms)
-	  {
-	  print '<td align="center"><a href="perms.php?id='.$fgroup->id.'&amp;action=addrights&amp;rights='.$obj->id.'#'.$objMod->getName().'">'.img_edit_add($langs->trans("Add")).'</a></td>';
-	  }
-	  print '<td>&nbsp</td>';
-	  }
-
-	  $perm_libelle=($conf->global->MAIN_USE_ADVANCED_PERMS && ($langs->trans("PermissionAdvanced".$obj->id)!=("PermissionAdvanced".$obj->id))?$langs->trans("PermissionAdvanced".$obj->id):(($langs->trans("Permission".$obj->id)!=("Permission".$obj->id))?$langs->trans("Permission".$obj->id):$obj->libelle));
-	  print '<td>'.$perm_libelle. '</td>';
-
-	  print '</tr>';
-
-	  $i++;
-	  }
-	  } */
 	print '</table>';
 }
 
