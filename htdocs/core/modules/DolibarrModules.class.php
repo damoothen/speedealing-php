@@ -254,6 +254,9 @@ class DolibarrModules extends nosqlDocument
     {
         global $langs;
         $langs->load("admin");
+		
+		if(empty($this->values->numero))
+			$this->values->numero = 0;
 
         if ($langs->trans("Module".$this->values->numero."Name") != ("Module".$this->values->numero."Name"))
         {

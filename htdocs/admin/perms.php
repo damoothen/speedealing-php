@@ -33,26 +33,32 @@ $action = GETPOST('action');
 if (!$user->admin)
 	accessforbidden();
 
+$object = new DolibarrModules($db);
 
 /*
  * Actions
  */
 
 if ($action == 'add') {
-	$sql = "UPDATE " . MAIN_DB_PREFIX . "rights_def SET bydefault=1";
-	$sql.= " WHERE id = " . $_GET["pid"];
-	$sql.= " AND entity = " . $conf->entity;
-	$db->query($sql);
+
+	try {
+		$object->load($_GET['id']);
+		$object->values->rights[$_GET['pid']]->default = true;
+		$object->record();
+	} catch (Exception $e) {
+		dol_print_error('', $e->getMessage());
+	}
 }
 
 if ($action == 'remove') {
-	$sql = "UPDATE " . MAIN_DB_PREFIX . "rights_def SET bydefault=0";
-	$sql.= " WHERE id = " . $_GET["pid"];
-	$sql.= " AND entity = " . $conf->entity;
-	$db->query($sql);
+	try {
+		$object->load($_GET['id']);
+		$object->values->rights[$_GET['pid']]->default = false;
+		$object->record();
+	} catch (Exception $e) {
+		dol_print_error('', $e->getMessage());
+	}
 }
-
-$object = new DolibarrModules($db);
 
 $langs->load("admin");
 
@@ -168,9 +174,9 @@ if (count($result->rows)) {
 		print '<td>' . $object->getPermDesc() . '<a name="' . $aRow->value->id . '">&nbsp;</a></td>';
 		print '<td>';
 		if ($aRow->value->Status) {
-			print '<a href="' . $_SERVER['PHP_SELF'] . '?pid=' . $aRow->key[0] . '->' . $aRow->value->perm . '&amp;action=remove#' . $aRow->value->id . '">' . img_edit_remove() . '</a>';
+			print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $aRow->value->_id . '&pid=' . $aRow->value->idx . '&amp;action=remove#' . $aRow->value->id . '">' . img_edit_remove() . '</a>';
 		} else {
-			print '<a href="' . $_SERVER['PHP_SELF'] . '?pid=' . $aRow->key[0] . '->' . $aRow->value->perm . '&amp;action=add#' . $aRow->value->id . '">' . img_edit_add() . '</a>';
+			print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $aRow->value->_id . '&pid=' . $aRow->value->idx . '&amp;action=add#' . $aRow->value->id . '">' . img_edit_add() . '</a>';
 		}
 		print '</td>';
 
@@ -180,7 +186,7 @@ if (count($result->rows)) {
 print'</tbody>';
 print'</table>';
 
-$obj->aaSorting = array(array(0, 'asc'));
+$obj->aaSorting = array(array(1, 'asc'));
 $obj->sDom = 'l<fr>t<\"clear\"rtip>';
 
 print $object->datatablesCreate($obj, "default_right");
