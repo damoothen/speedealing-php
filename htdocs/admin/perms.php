@@ -165,6 +165,7 @@ if (count($result->rows)) {
 
 		$object->values->name = $aRow->value->name;
 		$object->values->numero = $aRow->value->numero;
+		$object->values->rights_class = $aRow->value->rights_class;
 		$object->values->id = $aRow->value->id;
 		$object->values->perm = $aRow->value->perm;
 		$object->values->Status = ($aRow->value->Status == true ? "true" : "false");

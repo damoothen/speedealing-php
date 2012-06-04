@@ -106,11 +106,7 @@ function group_prepare_head($object)
 {
 	global $langs, $conf, $user;
 
-	$canreadperms=true;
-	if (! empty($conf->global->MAIN_USE_ADVANCED_PERMS))
-	{
-		$canreadperms=($user->admin || $user->rights->user->group_advance->readperms);
-	}
+	$canreadperms=($user->admin || $user->rights->user->group_advance->readperms);
 
 	$h = 0;
 	$head = array();

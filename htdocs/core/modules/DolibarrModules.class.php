@@ -289,7 +289,11 @@ class DolibarrModules extends nosqlDocument
         else
         {
             // If translation of module with its numero does not exists, we take its name
-            return $this->values->perm;
+			$out=$this->values->rights_class;
+			for($i=0; $i < count($this->values->perm); $i++)
+				$out.= "->".$this->values->perm[$i];
+			
+            return $out;
         }
     }
 

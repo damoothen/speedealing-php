@@ -25,7 +25,7 @@
 require_once(DOL_DOCUMENT_ROOT . "/core/class/nosqlDocument.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/class/extrafields.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/db/couchdb/lib/couchAdmin.php");
-require_once(DOL_DOCUMENT_ROOT."/user/class/userdatabase.class.php");
+require_once(DOL_DOCUMENT_ROOT . "/user/class/userdatabase.class.php");
 
 if ($conf->ldap->enabled)
 	require_once (DOL_DOCUMENT_ROOT . "/core/class/ldap.class.php");
@@ -48,7 +48,7 @@ class UserGroup extends nosqlDocument {
 	var $datec;   // Creation date of group
 	var $datem;   // Modification date of group
 	var $members = array(); // Array of users
-	var $databases= array(); // Array of databases
+	var $databases = array(); // Array of databases
 	private $_tab_loaded = array();  // Array of cache of already loaded permissions
 
 	/**
@@ -120,58 +120,40 @@ class UserGroup extends nosqlDocument {
 	 * 	@param      int		$id     id du groupe a charger
 	 * 	@return		int				<0 if KO, >0 if OK
 	 */
-	function load($id) {
+	function load($id, $loaddb = false) {
 		global $conf;
-		
+
 		parent::load($id);
 
-		$database = new UserDatabase($this->db);
-		try {
-			$result = $database->couchdb->listDatabases();
-		} catch (Exception $exc) {
-			print $exc->getMessage();
-		}
+		if ($loaddb) {
+			$database = new UserDatabase($this->db);
+			try {
+				$result = $database->couchdb->listDatabases();
+			} catch (Exception $exc) {
+				print $exc->getMessage();
+			}
 
-		foreach ($result as $aRow) {
-			if ($aRow[0] != "_") { // Not _users and _replicator
-				try {
-					$database->fetch($aRow);
-					$info = $database->values;
-					$secu = $database->couchAdmin->getSecurity();
+			foreach ($result as $aRow) {
+				if ($aRow[0] != "_") { // Not _users and _replicator
+					try {
+						$database->fetch($aRow);
+						$info = $database->values;
+						$secu = $database->couchAdmin->getSecurity();
 
-					foreach ($secu as $key => $type) {
-						if (in_array($this->values->name, $type->roles)) {
-							if ($key == "admins")
-								$info->Administrator = true;
+						foreach ($secu as $key => $type) {
+							if (in_array($this->values->name, $type->roles)) {
+								if ($key == "admins")
+									$info->Administrator = true;
 
-							$this->databases[] = $info;
+								$this->databases[] = $info;
+							}
 						}
+					} catch (Exception $exc) {
+						print $exc->getMessage();
 					}
-				} catch (Exception $exc) {
-					print $exc->getMessage();
 				}
 			}
 		}
-
-		/*$this->couchAdmin = new couchAdmin($this->couchdb);
-
-		$membersRoles = $this->couchAdmin->getDatabaseReaderRoles();
-
-
-		foreach ($membersRoles as $aRow) {
-			$group->id = $aRow;
-			$this->membersRoles[] = $group;
-		}
-
-		$membersRolesAdmin = $this->couchAdmin->getDatabaseAdminRoles();
-
-		$this->membersRoles = array_merge($this->membersRoles, $membersRolesAdmin);
-
-		foreach ($membersRolesAdmin as $aRow) {
-			$group->Administrator = true;
-			$group->id = $aRow;
-			$this->membersRoles[] = $group;
-		}*/
 
 		return 1;
 	}
@@ -411,74 +393,6 @@ class UserGroup extends nosqlDocument {
 	}
 
 	/**
-	 *  Charge dans l'objet group, la liste des permissions auquels le groupe a droit
-	 *
-	 *  @param      string	$moduletag	 	Name of module we want permissions ('' means all)
-	 * 	@return		int						<0 if KO, >0 if OK
-	 */
-	function getrights($moduletag = '') {
-		global $conf;
-
-		if ($moduletag && isset($this->_tab_loaded[$moduletag]) && $this->_tab_loaded[$moduletag]) {
-			// Le fichier de ce module est deja charge
-			return;
-		}
-
-		if ($this->all_permissions_are_loaded) {
-			// Si les permissions ont deja ete chargees, on quitte
-			return;
-		}
-
-		/*
-		 * Recuperation des droits
-		 */
-		$sql = "SELECT r.module, r.perms, r.subperms ";
-		$sql.= " FROM " . MAIN_DB_PREFIX . "usergroup_rights as u, " . MAIN_DB_PREFIX . "rights_def as r";
-		$sql.= " WHERE r.id = u.fk_id";
-		$sql.= " AND r.entity = " . $conf->entity;
-		$sql.= " AND u.fk_usergroup = " . $this->id;
-		$sql.= " AND r.perms IS NOT NULL";
-		if ($moduletag)
-			$sql.= " AND r.module = '" . $this->db->escape($moduletag) . "'";
-
-		dol_syslog(get_class($this) . '::getrights sql=' . $sql, LOG_DEBUG);
-		$resql = $this->db->query($sql);
-		if ($resql) {
-			$num = $this->db->num_rows($resql);
-			$i = 0;
-			while ($i < $num) {
-				$obj = $this->db->fetch_object($resql);
-
-				$module = $obj->module;
-				$perms = $obj->perms;
-				$subperms = $obj->subperms;
-
-				if ($perms) {
-					if ($subperms) {
-						$this->rights->$module->$perms->$subperms = 1;
-					} else {
-						$this->rights->$module->$perms = 1;
-					}
-				}
-
-				$i++;
-			}
-			$this->db->free($resql);
-		}
-
-		if ($moduletag == '') {
-			// Si module etait non defini, alors on a tout charge, on peut donc considerer
-			// que les droits sont en cache (car tous charges) pour cet instance de group
-			$this->all_permissions_are_loaded = 1;
-		} else {
-			// Si module defini, on le marque comme charge en cache
-			$this->_tab_loaded[$moduletag] = 1;
-		}
-
-		return 1;
-	}
-
-	/**
 	 *        Efface un groupe de la base
 	 *
 	 *        @return     <0 if KO, > 0 if OK
@@ -665,7 +579,7 @@ class UserGroup extends nosqlDocument {
 			$info[$conf->global->LDAP_GROUP_FIELD_DESCRIPTION] = $this->note;
 		if ($conf->global->LDAP_GROUP_FIELD_GROUPMEMBERS) {
 			$valueofldapfield = array();
-			foreach ($this->members as $key => $val) {	// This is array of users for group into dolibarr database.
+			foreach ($this->members as $key => $val) { // This is array of users for group into dolibarr database.
 				$muser = new User($this->db);
 				$muser->fetch($val->id);
 				if ($conf->global->LDAP_KEY_USERS == 'cn')

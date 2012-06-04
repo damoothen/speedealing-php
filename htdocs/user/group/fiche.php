@@ -232,7 +232,7 @@ if ($action == 'create') {
 /*                                                                            */
 /* * ************************************************************************* */ else {
 	if ($id) {
-		$object->load($id);
+		$object->load($id,true);
 
 		/*
 		 * Affichage onglets
@@ -241,6 +241,8 @@ if ($action == 'create') {
 		$title = $langs->trans("Group");
 		print '<div class="row">';
 		print start_box($title, "twelve", "16-Users-2.png", false);
+		
+		dol_fiche_head($head, 'group', $title, 0, 'group');
 
 		/*
 		 * Confirmation suppression
