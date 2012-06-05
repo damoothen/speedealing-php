@@ -96,9 +96,9 @@ function test_sql_and_script_inject($val, $type) {
 	}
 	// For XSS Injection done by adding javascript closing html tags like with onmousemove, etc... (closing a src or href tag with not cleaned param)
 	if ($type == 1)
-		$sql_inj += preg_match('/"/i', $val);	  // We refused " in GET parameters value
+		$sql_inj += preg_match('/"/i', $val);   // We refused " in GET parameters value
 	if ($type == 2)
-		$sql_inj += preg_match('/[\s;"]/', $val);	// PHP_SELF is an url and must match url syntax
+		$sql_inj += preg_match('/[\s;"]/', $val); // PHP_SELF is an url and must match url syntax
 	return $sql_inj;
 }
 
@@ -153,7 +153,7 @@ if (!empty($_COOKIE[$sessiontimeout]))
 	ini_set('session.gc_maxlifetime', $_COOKIE[$sessiontimeout]);
 session_name($sessionname);
 session_start();
-if (ini_get('register_globals')) {	// To solve bug in using $_SESSION
+if (ini_get('register_globals')) { // To solve bug in using $_SESSION
 	foreach ($_SESSION as $key => $value) {
 		if (isset($GLOBALS[$key]))
 			unset($GLOBALS[$key]);
@@ -210,9 +210,10 @@ if (!empty($conf->file->main_force_https)) {
 if (!defined('NOREQUIREMENU'))
 	require_once(DOL_DOCUMENT_ROOT . "/core/class/menu.class.php");   // Need 10ko memory (11ko in 2.2)
 if (!defined('NOREQUIREHTML'))
-	require_once(DOL_DOCUMENT_ROOT . "/core/class/html.form.class.php");	 // Need 660ko memory (800ko in 2.2)
+	require_once(DOL_DOCUMENT_ROOT . "/core/class/html.form.class.php");  // Need 660ko memory (800ko in 2.2)
 if (!defined('NOREQUIREAJAX') && $conf->use_javascript_ajax)
 	require_once(DOL_DOCUMENT_ROOT . '/core/lib/ajax.lib.php'); // Need 22ko memory
+
 
 	
 // If install or upgrade process not done or not completely finished, we call the install page.
@@ -449,7 +450,7 @@ if (!defined('NOLOGIN')) {
 			dol_syslog("Can't load user even if session logged. _SESSION['dol_login']=" . $login, LOG_WARNING);
 			session_destroy();
 			session_name($sessionname);
-			session_start();	// Fixing the bug of register_globals here is useless since session is empty
+			session_start(); // Fixing the bug of register_globals here is useless since session is empty
 
 			if ($resultFetchUser == 0) {
 				$langs->load('main');
@@ -553,7 +554,7 @@ if (!defined('NOLOGIN')) {
 		$hookmanager = new HookManager($db);
 		$hookmanager->initHooks(array('login'));
 		$parameters = array('dol_authmode' => $dol_authmode);
-		$reshook = $hookmanager->executeHooks('afterLogin', $parameters, $user, $action);	// Note that $action and $object may have been modified by some hooks
+		$reshook = $hookmanager->executeHooks('afterLogin', $parameters, $user, $action); // Note that $action and $object may have been modified by some hooks
 		if ($reshook < 0)
 			$error++;
 	}
@@ -772,7 +773,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 		print '<meta charset="utf-8" />';
 		print '<base href="' . DOL_URL_ROOT . '/" />';
 		print '<meta name="viewport" content="width=device-width, initial-scale=1.0" />';
-		print '<meta name="robots" content="noindex,nofollow" />' . "\n";	  // Evite indexation par robots
+		print '<meta name="robots" content="noindex,nofollow" />' . "\n";   // Evite indexation par robots
 		print '<meta name="author" content="Speedealing Development Team" />' . "\n";
 		$favicon = DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/favicon.ico';
 		print '<link rel="shortcut icon" type="image/x-icon" href="' . $favicon . '"/>' . "\n";
@@ -795,7 +796,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 		//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/jnotify/jquery.jnotify-alt.min.css" />'."\n";          // JNotify
 		//print '<link rel="stylesheet" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/lightbox/css/jquery.lightbox-0.5.css" media="screen" />'."\n";       // Lightbox
 		// jQuery fileupload
-		print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/fileupload/css/jquery.fileupload-ui.css" />'."\n";
+		print '<link rel="stylesheet" type="text/css" href="' . DOL_URL_ROOT . '/includes/jquery/plugins/fileupload/css/jquery.fileupload-ui.css" />' . "\n";
 		// jQuery datatables
 		//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/media/css/jquery.dataTables.css" />'."\n";
 		//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/media/css/jquery.dataTables_jui.css" />'."\n";
@@ -950,8 +951,23 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 		print '<link rel="stylesheet" href="' . DOL_URL_ROOT . '/theme/eldy/style.css" />';
 
 		print '<!-- Google fonts -->';
-		print '<link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet" />';
-		print '<link href="https://fonts.googleapis.com/css?family=Terminal+Dosis" rel="stylesheet" />';
+		//print '<link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet" />';
+		print '<style type="text/css" media="screen, print">
+		@font-face {
+		font-family: "Open Sans Condensed";
+		font-style: normal;
+		font-weight: 300;
+		src: url("' . DOL_URL_ROOT . '/theme/pertho_sample/lib/google/OpenSans-CondensedLight.woff") format("woff");
+		}
+		</style>';
+		print '<style type="text/css" media="screen, print">
+		@font-face {
+		font-family: "Terminal Dosis";
+		font-style: normal;
+		font-weight: 400;
+		src: url("' . DOL_URL_ROOT . '/theme/pertho_sample/lib/google/Dosis-Regular.woff") format("woff");
+		}
+		</style>';
 
 		print '<!-- Favicons and the like (avoid using transparent .png) -->';
 		print '<link rel="shortcut icon" type="image/x-icon" href="' . DOL_URL_ROOT . '/theme/favicon.ico"/>' . "\n";
@@ -1115,7 +1131,7 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 			// Show menu
 			$menutop = new MenuTop($db);
 			$menutop->atarget = $target;
-			$menutop->showmenu();	  // This contains a \n
+			$menutop->showmenu();   // This contains a \n
 
 			print "</div>\n";
 			print "</div>\n";
@@ -1247,7 +1263,7 @@ function left_menu($menu_array_before, $helppagename = '', $moresearchform = '',
 
 	// Execute hook printSearchForm
 	$parameters = array();
-	$searchform.=$hookmanager->executeHooks('printSearchForm', $parameters);	// Note that $action and $object may have been modified by some hooks
+	$searchform.=$hookmanager->executeHooks('printSearchForm', $parameters); // Note that $action and $object may have been modified by some hooks
 	// Define $bookmarks
 	if ($conf->bookmark->enabled && $user->rights->bookmark->lire) {
 		include_once (DOL_DOCUMENT_ROOT . '/bookmarks/bookmarks.lib.php');
@@ -1258,7 +1274,8 @@ function left_menu($menu_array_before, $helppagename = '', $moresearchform = '',
 
 	$left_menu = empty($conf->browser->phone) ? $conf->top_menu : $conf->smart_menu;
 	if (GETPOST('menu'))
-		$left_menu = GETPOST('menu');	 // menu=eldy_backoffice.php
+		$left_menu = GETPOST('menu');  // menu=eldy_backoffice.php
+
 
 		
 // Load the top menu manager (only if not already done)
