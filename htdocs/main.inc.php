@@ -957,7 +957,8 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 		font-family: "Open Sans Condensed";
 		font-style: normal;
 		font-weight: 300;
-		src: url("' . DOL_URL_ROOT . '/theme/pertho_sample/lib/google/OpenSans-CondensedLight.woff") format("woff");
+		src: url("' . DOL_URL_ROOT . '/theme/pertho_sample/lib/google/OpenSans-CondensedLight.woff") format("woff"),
+			url("http://themes.googleusercontent.com/static/fonts/opensanscondensed/v6/gk5FxslNkTTHtojXrkp-xF1YPouZEKgzpqZW9wN-3Ek.woff") format("woff");
 		}
 		</style>';
 		print '<style type="text/css" media="screen, print">
@@ -965,7 +966,8 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 		font-family: "Terminal Dosis";
 		font-style: normal;
 		font-weight: 400;
-		src: url("' . DOL_URL_ROOT . '/theme/pertho_sample/lib/google/Dosis-Regular.woff") format("woff");
+		src: url("' . DOL_URL_ROOT . '/theme/pertho_sample/lib/google/Dosis-Regular.woff") format("woff"),
+			url("http://themes.googleusercontent.com/static/fonts/terminaldosis/v5/_IcvjW_kWHsIHjjUsLbdpFGxLvFzKVP0OsRYGzgS_zk.woff") format("woff");
 		}
 		</style>';
 
