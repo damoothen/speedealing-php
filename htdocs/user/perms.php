@@ -72,8 +72,10 @@ if ($action == 'add' && $caneditperms) {
 		$fuser->values->rights->$_GET['pid'] = true;
 		$fuser->record();
 	} catch (Exception $e) {
-		dol_print_error("", $e->getMessage());
+		$mesg = $e->getMessage();
 	}
+	Header("Location: " . $_SERVER['PHP_SELF'] . "?id=".$id."&mesg=" . urlencode($mesg));
+	exit;
 }
 
 if ($action == 'remove' && $caneditperms) {
@@ -83,8 +85,10 @@ if ($action == 'remove' && $caneditperms) {
 
 		$fuser->record();
 	} catch (Exception $e) {
-		dol_print_error("", $e->getMessage());
+		$mesg = $e->getMessage();
 	}
+	Header("Location: " . $_SERVER['PHP_SELF'] . "?id=".$id."&mesg=" . urlencode($mesg));
+	exit;
 }
 
 
@@ -125,7 +129,7 @@ if ($user->admin)
 $i = 0;
 $obj = new stdClass();
 
-print '<table class="display dt_act" id="default_right">';
+print '<table class="display dt_act" id="rights">';
 
 print'<thead>';
 print'<tr>';
@@ -166,7 +170,7 @@ $obj->fnDrawCallback = "function(oSettings){
                 {
                     return;
                 }
-                var nTrs = jQuery('#default_right tbody tr');
+                var nTrs = jQuery('#rights tbody tr');
                 var iColspan = nTrs[0].getElementsByTagName('td').length;
                 var sLastGroup = '';
                 for ( var i=0 ; i<nTrs.length ; i++ )
@@ -245,7 +249,7 @@ print'</table>';
 $obj->aaSorting = array(array(1, 'asc'));
 $obj->sDom = 'l<fr>t<\"clear\"rtip>';
 
-print $object->datatablesCreate($obj, "default_right");
+print $object->datatablesCreate($obj, "rights");
 
 
 print end_box();

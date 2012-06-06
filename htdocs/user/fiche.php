@@ -69,6 +69,7 @@ if ($user->id == $id) {
 	$feature2 = '';
 	$canreaduser = 1;
 } // A user can always read its own card
+
 $result = restrictedArea($user, 'user', $id, '&user', $feature2);
 if ($user->id <> $id && !$canreaduser)
 	accessforbidden();
@@ -548,15 +549,6 @@ if (($action == 'create') || ($action == 'adduserldap')) {
 	print '<textarea rows="' . ROWS_5 . '" cols="90" name="signature">' . $_POST["signature"] . '</textarea>';
 	print '</td></tr>';
 
-	/* // Note
-	  print '<tr><td valign="top">';
-	  print $langs->trans("Note");
-	  print '</td><td>';
-	  require_once(DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php");
-	  $doleditor=new DolEditor('note','','',180,'dolibarr_notes','',false,true,$conf->global->FCKEDITOR_ENABLE_SOCIETE,ROWS_4,90);
-	  $doleditor->Create();
-	  print "</td></tr>\n"; */
-
 	// Autres caracteristiques issus des autres modules
 	// Module Webcalendar
 	if ($conf->webcalendar->enabled) {
@@ -684,7 +676,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
 			}
 
 			// Activer
-			if ($user->id <> $id && $candisableuser && $fuser->values->Status == "DISABLE") {
+			if ($user->id <> $id && $candisableuser && $fuser->values->Status != "ENABLE") {
 				print '<a class="gh_button pill icon unlock" href="' . $_SERVER["PHP_SELF"] . '?id=' . $fuser->id . '&amp;action=enable">' . $langs->trans("Reactivate") . '</a>';
 			}
 			// Desactiver

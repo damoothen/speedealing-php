@@ -60,8 +60,10 @@ if ($action == 'add' && $caneditperms) {
 		$editgroup->values->rights->$_GET['pid'] = true;
 		$editgroup->record();
 	} catch (Exception $e) {
-		dol_print_error("", $e->getMessage());
+		$mesg = $e->getMessage();
 	}
+	Header("Location: " . $_SERVER['PHP_SELF'] . "?id=".$id."&mesg=" . urlencode($mesg));
+	exit;
 }
 
 if ($action == 'remove' && $caneditperms) {
@@ -72,8 +74,10 @@ if ($action == 'remove' && $caneditperms) {
 
 		$editgroup->record();
 	} catch (Exception $e) {
-		dol_print_error("", $e->getMessage());
+		$mesg = $e->getMessage();
 	}
+	Header("Location: " . $_SERVER['PHP_SELF'] . "?id=".$id."&mesg=" . urlencode($mesg));
+	exit;
 }
 
 
@@ -109,7 +113,7 @@ if ($id) {
 	if ($user->admin)
 		print info_admin($langs->trans("WarningOnlyPermissionOfActivatedModules"));
 
-	print '<table class="display dt_act" id="default_right">';
+	print '<table class="display dt_act" id="rights">';
 
 	print'<thead>';
 	print'<tr>';
@@ -150,7 +154,7 @@ if ($id) {
                 {
                     return;
                 }
-                var nTrs = jQuery('#default_right tbody tr');
+                var nTrs = jQuery('#rights tbody tr');
                 var iColspan = nTrs[0].getElementsByTagName('td').length;
                 var sLastGroup = '';
                 for ( var i=0 ; i<nTrs.length ; i++ )
@@ -228,9 +232,7 @@ if ($id) {
 	$obj->aaSorting = array(array(1, 'asc'));
 	$obj->sDom = 'l<fr>t<\"clear\"rtip>';
 
-	print $object->datatablesCreate($obj, "default_right");
-
-	print '</table>';
+	print $object->datatablesCreate($obj, "rights");
 }
 
 print end_box();

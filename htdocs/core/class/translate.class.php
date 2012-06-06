@@ -210,7 +210,7 @@ class Translate
 				// Enable caching of lang file in memory (not by default)
 				$usecachekey='';
 				// Using a memcached server
-				if (! empty($conf->memcached->enabled) && ! empty($conf->global->MEMCACHED_SERVER))
+				if (! empty($conf->memcached->enabled))
 				{
 					$usecachekey=$newdomain.'_'.$langofdir.'_'.md5($file_lang);    // Should not contains special chars
 				}

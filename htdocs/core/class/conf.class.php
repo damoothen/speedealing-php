@@ -218,19 +218,26 @@ class Conf extends nosqlDocument
 							$this->$varname = array_merge($this->$varname, array($modulename => $value));  // TODO deprecated
 							$this->modules_parts[$partname] = array_merge($this->modules_parts[$partname], array($modulename => $value));
 						}
-                        // If this is a module constant (must be at end)
-						elseif (preg_match('/^MAIN_MODULE_([A-Z_]+)$/i',$key,$reg))
-						{
-							$modulename=strtolower($reg[1]);
-							if ($modulename == 'propale') $modulename='propal';
-							$this->$modulename=(object) array();
-							$this->$modulename->enabled=true;
-							$this->modules[]=$modulename;              // Add this module in list of enabled modules
-						}
 					}
 				}
 				$i++;
 		}
+		
+		// load configuration module
+		
+		$object = new DolibarrModules($this->db);
+		
+		$result = $object->getView("list",array(),true);		
+		foreach ($result->rows as $aRow)
+		{
+			$modulename = $aRow->key;
+			$this->$modulename = $aRow->value;
+			$this->modules[]=$modulename;
+		}
+		
+		//print_r($this);exit;
+		
+		
 		//var_dump($this->modules);
 		//var_dump($this->modules_parts);
 
@@ -272,11 +279,6 @@ class Conf extends nosqlDocument
 
 		$rootfordata = DOL_DATA_ROOT;
 		$rootforuser = DOL_DATA_ROOT;
-		// If multicompany module is enabled, we redefine the root of data
-		if (! empty($this->multicompany->enabled) && ! empty($this->entity) && $this->entity > 1)
-		{
-			$rootfordata.='/'.$this->entity;
-		}
 
 		// Define default dir_output and dir_temp for directories of modules
 		foreach($this->modules as $module)

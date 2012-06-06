@@ -5,7 +5,7 @@
  * Copyright (C) 2004      Eric Seigne          <eric.seigne@ryxeo.com>
  * Copyright (C) 2005-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
- * Copyright (C) 2011      Herve Prot           <herve.prot@symeos.com>
+ * Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -289,10 +289,7 @@ class DolibarrModules extends nosqlDocument
         else
         {
             // If translation of module with its numero does not exists, we take its name
-			$out=$this->values->rights_class;
-			for($i=0; $i < count($this->values->perm); $i++)
-				$out.= "->".$this->values->perm[$i];
-			
+			$out=$this->values->desc;
             return $out;
         }
     }
@@ -309,15 +306,15 @@ class DolibarrModules extends nosqlDocument
         global $langs;
         $langs->load("admin");
 
-        if ($langs->trans("Module".$this->numero."Desc") != ("Module".$this->numero."Desc"))
+        if ($langs->trans("Module".$this->values->numero."Desc") != ("Module".$this->values->numero."Desc"))
         {
             // Si traduction de la description du module existe
-            return $langs->trans("Module".$this->numero."Desc");
+            return $langs->trans("Module".$this->values->numero."Desc");
         }
         else
         {
             // Si traduction de la description du module n'existe pas, on prend definition en dur dans module
-            return $this->description;
+            return $this->values->description;
         }
     }
 
@@ -335,10 +332,10 @@ class DolibarrModules extends nosqlDocument
         global $langs;
         $langs->load("admin");
 
-        if ($this->version == 'experimental') return $langs->trans("VersionExperimental");
-        elseif ($this->version == 'development') return $langs->trans("VersionDevelopment");
-        elseif ($this->version == 'dolibarr') return DOL_VERSION;
-        elseif ($this->version) return $this->version;
+        if ($this->values->version == 'experimental') return $langs->trans("VersionExperimental");
+        elseif ($this->values->version == 'development') return $langs->trans("VersionDevelopment");
+        elseif ($this->values->version == 'dolibarr') return DOL_VERSION;
+        elseif ($this->values->version) return $this->values->version;
         else return $langs->trans("VersionUnknown");
     }
 

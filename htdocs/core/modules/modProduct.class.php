@@ -1,9 +1,11 @@
 <?php
+
 /* Copyright (C) 2003      Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2004      Sebastien Di Cintio  <sdicintio@ressource-toi.org>
  * Copyright (C) 2004      Benoit Mortier       <benoit.mortier@opensides.be>
  * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,210 +22,203 @@
  */
 
 /**
- *	\defgroup   produit     Module products
- *	\brief      Module to manage catalog of predefined products
+ * 	\defgroup   produit     Module products
+ * 	\brief      Module to manage catalog of predefined products
  */
+/**
+ * 	\file       htdocs/core/modules/modProduct.class.php
+ * 	\ingroup    produit
+ * 	\brief      File to describe module to manage catalog of predefined products
+ */
+include_once(DOL_DOCUMENT_ROOT . "/core/modules/DolibarrModules.class.php");
 
 /**
- *	\file       htdocs/core/modules/modProduct.class.php
- *	\ingroup    produit
- *	\brief      File to describe module to manage catalog of predefined products
+ * 	Class descriptor of Product module
  */
+class modProduct extends DolibarrModules {
 
-include_once(DOL_DOCUMENT_ROOT ."/core/modules/DolibarrModules.class.php");
-
-
-/**
- *	Class descriptor of Product module
- */
-class modProduct extends DolibarrModules
-{
 	/**
 	 *   Constructor. Define names, constants, directories, boxes, permissions
 	 *
 	 *   @param      DoliDB		$db      Database handler
 	 */
-	function modProduct($db)
-	{
+	function modProduct($db) {
 		global $conf;
 
 		parent::__construct($db);
-		
-		$this->db = $db;
-		$this->numero = 50;
 
-		$this->family = "products";
+		$this->values->numero = 50;
+
+		$this->values->family = "products";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->name = preg_replace('/^mod/i','',get_class($this));
-		$this->description = "Gestion des produits";
+		$this->values->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->values->description = "Gestion des produits";
 
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
-		$this->version = 'dolibarr';
+		$this->values->version = 'dolibarr';
 
-		$this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
-		$this->special = 0;
-		$this->picto='product';
+		$this->values->const_name = 'MAIN_MODULE_' . strtoupper($this->values->name);
+		$this->values->special = 0;
+		$this->values->picto = 'product';
 
 		// Data directories to create when module is enabled
-		$this->dirs = array("/product/temp");
+		$this->values->dirs = array("/product/temp");
 
 		// Dependencies
-		$this->depends = array();
-		$this->requiredby = array("modStock","modBarcode");
+		$this->values->depends = array();
+		$this->values->requiredby = array("modStock", "modBarcode");
 
 		// Config pages
-		$this->config_page_url = array("product.php@product");
-		$this->langfiles = array("products","companies","stocks","bills");
+		$this->values->config_page_url = array("product.php@product");
+		$this->values->langfiles = array("products", "companies", "stocks", "bills");
 
 		// Constants
-		$this->const = array();
-		$r=0;
+		$this->values->const = array();
+		$r = 0;
 
-		$this->const[$r][0] = "MAIN_SEARCHFORM_PRODUITSERVICE";
-		$this->const[$r][1] = "yesno";
-		$this->const[$r][2] = "1";
-		$this->const[$r][3] = "Show form for quick product search";
-		$this->const[$r][4] = 0;
+		$this->values->const[$r][0] = "MAIN_SEARCHFORM_PRODUITSERVICE";
+		$this->values->const[$r][1] = "yesno";
+		$this->values->const[$r][2] = "1";
+		$this->values->const[$r][3] = "Show form for quick product search";
+		$this->values->const[$r][4] = 0;
 		$r++;
 
 		// Boxes
-		$this->boxes = array();
-		$this->boxes[0][1] = "box_produits.php";
+		$this->values->boxes = array();
+		$this->values->boxes[0][1] = "box_produits.php";
 
 		// Permissions
-		$this->rights = array();
-		$this->rights_class = 'produit';
-		$r=0;
+		$this->values->rights = array();
+		$this->values->rights_class = 'produit';
+		$r = 0;
 
-		$this->rights[$r][0] = 31; // id de la permission
-		$this->rights[$r][1] = 'Lire les produits'; // libelle de la permission
-		$this->rights[$r][2] = 'r'; // type de la permission (deprecie a ce jour)
-		$this->rights[$r][3] = 1; // La permission est-elle une permission par defaut
-		$this->rights[$r][4] = 'lire';
+		$this->values->rights[$r][0] = 31; // id de la permission
+		$this->values->rights[$r][1] = 'Lire les produits'; // libelle de la permission
+		$this->values->rights[$r][2] = 'r'; // type de la permission (deprecie a ce jour)
+		$this->values->rights[$r][3] = 1; // La permission est-elle une permission par defaut
+		$this->values->rights[$r][4] = 'lire';
 		$r++;
 
-		$this->rights[$r][0] = 32; // id de la permission
-		$this->rights[$r][1] = 'Creer/modifier les produits'; // libelle de la permission
-		$this->rights[$r][2] = 'w'; // type de la permission (deprecie a ce jour)
-		$this->rights[$r][3] = 0; // La permission est-elle une permission par defaut
-		$this->rights[$r][4] = 'creer';
+		$this->values->rights[$r][0] = 32; // id de la permission
+		$this->values->rights[$r][1] = 'Creer/modifier les produits'; // libelle de la permission
+		$this->values->rights[$r][2] = 'w'; // type de la permission (deprecie a ce jour)
+		$this->values->rights[$r][3] = 0; // La permission est-elle une permission par defaut
+		$this->values->rights[$r][4] = 'creer';
 		$r++;
 
-		$this->rights[$r][0] = 34; // id de la permission
-		$this->rights[$r][1] = 'Supprimer les produits'; // libelle de la permission
-		$this->rights[$r][2] = 'd'; // type de la permission (deprecie a ce jour)
-		$this->rights[$r][3] = 0; // La permission est-elle une permission par defaut
-		$this->rights[$r][4] = 'supprimer';
-        $r++;
+		$this->values->rights[$r][0] = 34; // id de la permission
+		$this->values->rights[$r][1] = 'Supprimer les produits'; // libelle de la permission
+		$this->values->rights[$r][2] = 'd'; // type de la permission (deprecie a ce jour)
+		$this->values->rights[$r][3] = 0; // La permission est-elle une permission par defaut
+		$this->values->rights[$r][4] = 'supprimer';
+		$r++;
 
-		$this->rights[$r][0] = 38;	// Must be same permission than in service module
-		$this->rights[$r][1] = 'Exporter les produits';
-		$this->rights[$r][2] = 'r';
-		$this->rights[$r][3] = 0;
-		$this->rights[$r][4] = 'export';
-        $r++;
+		$this->values->rights[$r][0] = 38; // Must be same permission than in service module
+		$this->values->rights[$r][1] = 'Exporter les produits';
+		$this->values->rights[$r][2] = 'r';
+		$this->values->rights[$r][3] = 0;
+		$this->values->rights[$r][4] = 'export';
+		$r++;
 
 
 		// Exports
 		//--------
-		$r=0;
+		$r = 0;
 
 		$r++;
-		$this->export_code[$r]=$this->rights_class.'_'.$r;
-		$this->export_label[$r]="Products";	// Translation key (used only if key ExportDataset_xxx_z not found)
-		$this->export_permission[$r]=array(array("produit","export"));
-		$this->export_fields_array[$r]=array('p.rowid'=>"Id",'p.ref'=>"Ref",'p.label'=>"Label",'p.description'=>"Description",'p.accountancy_code_sell'=>"ProductAccountancySellCode",'p.accountancy_code_buy'=>"ProductAccountancyBuyCode",'p.note'=>"Note",'p.length'=>"Length",'p.surface'=>"Surface",'p.volume'=>"Volume",'p.weight'=>"Weight",'p.customcode'=>'CustomCode','p.price_base_type'=>"PriceBase",'p.price'=>"UnitPriceHT",'p.price_ttc'=>"UnitPriceTTC",'p.tva_tx'=>'VATRate','p.tosell'=>"OnSell",'p.tobuy'=>"OnBuy",'p.datec'=>'DateCreation','p.tms'=>'DateModification');
-		//if (! empty($conf->stock->enabled)) $this->export_fields_array[$r]=array_merge ($this->export_fields_array[$r],array('p.stock'=>'Stock','p.pmp'=>'PMPValue'));
-		if (! empty($conf->stock->enabled)) $this->export_fields_array[$r]=array_merge($this->export_fields_array[$r],array('p.pmp'=>'PMPValue'));
-		if (! empty($conf->barcode->enabled)) $this->export_fields_array[$r]=array_merge($this->export_fields_array[$r],array('p.barcode'=>'Barcode'));
-		$this->export_entities_array[$r]=array('p.rowid'=>"product",'p.ref'=>"product",'p.label'=>"product",'p.description'=>"product",'p.accountancy_code_sell'=>'product','p.accountancy_code_sell'=>'product','p.note'=>"product",'p.length'=>"product",'p.surface'=>"product",'p.volume'=>"product",'p.weight'=>"product",'p.customcode'=>'product','p.price_base_type'=>"product",'p.price'=>"product",'p.price_ttc'=>"product",'p.tva_tx'=>"product",'p.tosell'=>"product",'p.tobuy'=>"product",'p.datec'=>"product",'p.tms'=>"product");
-		//if (! empty($conf->stock->enabled)) $this->export_entities_array[$r]=array_merge ($this->export_entities_array[$r],array('p.stock'=>'product','p.pmp'=>'product'));
-		if (! empty($conf->stock->enabled)) $this->export_entities_array[$r]=array_merge($this->export_entities_array[$r],array('p.pmp'=>'product'));
-		if (! empty($conf->barcode->enabled)) $this->export_entities_array[$r]=array_merge($this->export_entities_array[$r],array('p.barcode'=>'product'));
+		$this->values->export_code[$r] = $this->values->rights_class . '_' . $r;
+		$this->values->export_label[$r] = "Products"; // Translation key (used only if key ExportDataset_xxx_z not found)
+		$this->values->export_permission[$r] = array(array("produit", "export"));
+		$this->values->export_fields_array[$r] = array('p.rowid' => "Id", 'p.ref' => "Ref", 'p.label' => "Label", 'p.description' => "Description", 'p.accountancy_code_sell' => "ProductAccountancySellCode", 'p.accountancy_code_buy' => "ProductAccountancyBuyCode", 'p.note' => "Note", 'p.length' => "Length", 'p.surface' => "Surface", 'p.volume' => "Volume", 'p.weight' => "Weight", 'p.customcode' => 'CustomCode', 'p.price_base_type' => "PriceBase", 'p.price' => "UnitPriceHT", 'p.price_ttc' => "UnitPriceTTC", 'p.tva_tx' => 'VATRate', 'p.tosell' => "OnSell", 'p.tobuy' => "OnBuy", 'p.datec' => 'DateCreation', 'p.tms' => 'DateModification');
+		//if (! empty($conf->stock->enabled)) $this->values->export_fields_array[$r]=array_merge ($this->values->export_fields_array[$r],array('p.stock'=>'Stock','p.pmp'=>'PMPValue'));
+		if (!empty($conf->stock->enabled))
+			$this->values->export_fields_array[$r] = array_merge($this->values->export_fields_array[$r], array('p.pmp' => 'PMPValue'));
+		if (!empty($conf->barcode->enabled))
+			$this->values->export_fields_array[$r] = array_merge($this->values->export_fields_array[$r], array('p.barcode' => 'Barcode'));
+		$this->values->export_entities_array[$r] = array('p.rowid' => "product", 'p.ref' => "product", 'p.label' => "product", 'p.description' => "product", 'p.accountancy_code_sell' => 'product', 'p.accountancy_code_sell' => 'product', 'p.note' => "product", 'p.length' => "product", 'p.surface' => "product", 'p.volume' => "product", 'p.weight' => "product", 'p.customcode' => 'product', 'p.price_base_type' => "product", 'p.price' => "product", 'p.price_ttc' => "product", 'p.tva_tx' => "product", 'p.tosell' => "product", 'p.tobuy' => "product", 'p.datec' => "product", 'p.tms' => "product");
+		//if (! empty($conf->stock->enabled)) $this->values->export_entities_array[$r]=array_merge ($this->values->export_entities_array[$r],array('p.stock'=>'product','p.pmp'=>'product'));
+		if (!empty($conf->stock->enabled))
+			$this->values->export_entities_array[$r] = array_merge($this->values->export_entities_array[$r], array('p.pmp' => 'product'));
+		if (!empty($conf->barcode->enabled))
+			$this->values->export_entities_array[$r] = array_merge($this->values->export_entities_array[$r], array('p.barcode' => 'product'));
 		// Add extra fields
-		$sql="SELECT name, label FROM ".MAIN_DB_PREFIX."extrafields WHERE elementtype = 'product'";
-		$resql=$this->db->query($sql);
-		if ($resql)    // This can fail when class is used on old database (during migration for example)
-		{
-		    while ($obj=$this->db->fetch_object($resql))
-		    {
-		        $fieldname='extra.'.$obj->name;
-		        $fieldlabel=ucfirst($obj->label);
-		        $this->export_fields_array[$r][$fieldname]=$fieldlabel;
-		        $this->export_entities_array[$r][$fieldname]='product';
-		    }
+		$sql = "SELECT name, label FROM " . MAIN_DB_PREFIX . "extrafields WHERE elementtype = 'product'";
+		$resql = $this->db->query($sql);
+		if ($resql) {	// This can fail when class is used on old database (during migration for example)
+			while ($obj = $this->db->fetch_object($resql)) {
+				$fieldname = 'extra.' . $obj->name;
+				$fieldlabel = ucfirst($obj->label);
+				$this->values->export_fields_array[$r][$fieldname] = $fieldlabel;
+				$this->values->export_entities_array[$r][$fieldname] = 'product';
+			}
 		}
 		// End add axtra fields
 
-		$this->export_sql_start[$r]='SELECT DISTINCT ';
-		$this->export_sql_end[$r]  =' FROM '.MAIN_DB_PREFIX.'product as p';
-        $this->export_sql_end[$r] .=' LEFT JOIN '.MAIN_DB_PREFIX.'product_extrafields as extra ON p.rowid = extra.fk_object';
-		$this->export_sql_end[$r] .=' WHERE p.fk_product_type = 0 AND p.entity IN ('.getEntity("product", 1).')';
+		$this->values->export_sql_start[$r] = 'SELECT DISTINCT ';
+		$this->values->export_sql_end[$r] = ' FROM ' . MAIN_DB_PREFIX . 'product as p';
+		$this->values->export_sql_end[$r] .=' LEFT JOIN ' . MAIN_DB_PREFIX . 'product_extrafields as extra ON p.rowid = extra.fk_object';
+		$this->values->export_sql_end[$r] .=' WHERE p.fk_product_type = 0 AND p.entity IN (' . getEntity("product", 1) . ')';
 
 
 		// Imports
 		//--------
-		$r=0;
+		$r = 0;
 
 		$r++;
-		$this->import_code[$r]=$this->rights_class.'_'.$r;
-		$this->import_label[$r]="Products";	// Translation key
-		$this->import_icon[$r]=$this->picto;
-		$this->import_entities_array[$r]=array();		// We define here only fields that use another icon that the one defined into import_icon
-		$this->import_tables_array[$r]=array('p'=>MAIN_DB_PREFIX.'product','extra'=>MAIN_DB_PREFIX.'product_extrafields');
-		$this->import_tables_creator_array[$r]=array('p'=>'fk_user_author');	// Fields to store import user id
-		$this->import_fields_array[$r]=array('p.ref'=>"Ref*",'p.label'=>"Label*",'p.description'=>"Description",'p.accountancy_code_sell'=>"ProductAccountancySellCode",'p.accountancy_code_buy'=>"ProductAccountancyBuyCode",'p.note'=>"Note",'p.length'=>"Length",'p.surface'=>"Surface",'p.volume'=>"Volume",'p.weight'=>"Weight",'p.duration'=>"Duration",'p.customcode'=>'CustomCode','p.price'=>"SellingPriceHT",'p.price_ttc'=>"SellingPriceTTC",'p.tva_tx'=>'VAT','p.tosell'=>"OnSell*",'p.tobuy'=>"OnBuy*",'p.fk_product_type'=>"Type*",'p.finished'=>'Nature','p.datec'=>'DateCreation*');
+		$this->values->import_code[$r] = $this->values->rights_class . '_' . $r;
+		$this->values->import_label[$r] = "Products"; // Translation key
+		$this->values->import_icon[$r] = $this->values->picto;
+		$this->values->import_entities_array[$r] = array();  // We define here only fields that use another icon that the one defined into import_icon
+		$this->values->import_tables_array[$r] = array('p' => MAIN_DB_PREFIX . 'product', 'extra' => MAIN_DB_PREFIX . 'product_extrafields');
+		$this->values->import_tables_creator_array[$r] = array('p' => 'fk_user_author'); // Fields to store import user id
+		$this->values->import_fields_array[$r] = array('p.ref' => "Ref*", 'p.label' => "Label*", 'p.description' => "Description", 'p.accountancy_code_sell' => "ProductAccountancySellCode", 'p.accountancy_code_buy' => "ProductAccountancyBuyCode", 'p.note' => "Note", 'p.length' => "Length", 'p.surface' => "Surface", 'p.volume' => "Volume", 'p.weight' => "Weight", 'p.duration' => "Duration", 'p.customcode' => 'CustomCode', 'p.price' => "SellingPriceHT", 'p.price_ttc' => "SellingPriceTTC", 'p.tva_tx' => 'VAT', 'p.tosell' => "OnSell*", 'p.tobuy' => "OnBuy*", 'p.fk_product_type' => "Type*", 'p.finished' => 'Nature', 'p.datec' => 'DateCreation*');
 		// Add extra fields
-		$sql="SELECT name, label FROM ".MAIN_DB_PREFIX."extrafields WHERE elementtype = 'product'";
-		$resql=$this->db->query($sql);
-		if ($resql)    // This can fail when class is used on old database (during migration for example)
-		{
-		    while ($obj=$this->db->fetch_object($resql))
-		    {
-		        $fieldname='extra.'.$obj->name;
-		        $fieldlabel=ucfirst($obj->label);
-		        $this->import_fields_array[$r][$fieldname]=$fieldlabel;
-		    }
+		$sql = "SELECT name, label FROM " . MAIN_DB_PREFIX . "extrafields WHERE elementtype = 'product'";
+		$resql = $this->db->query($sql);
+		if ($resql) {	// This can fail when class is used on old database (during migration for example)
+			while ($obj = $this->db->fetch_object($resql)) {
+				$fieldname = 'extra.' . $obj->name;
+				$fieldlabel = ucfirst($obj->label);
+				$this->values->import_fields_array[$r][$fieldname] = $fieldlabel;
+			}
 		}
 		// End add extra fields
-		$this->import_fieldshidden_array[$r]=array('extra.fk_object'=>'lastrowid-'.MAIN_DB_PREFIX.'product');    // aliastable.field => ('user->id' or 'lastrowid-'.tableparent)
-		$this->import_regex_array[$r]=array('p.ref'=>'[^ ]','p.tosell'=>'^[0|1]$','p.tobuy'=>'^[0|1]$','p.fk_product_type'=>'^[0|1]$','p.datec'=>'^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$');
-		$this->import_examplevalues_array[$r]=array('p.ref'=>"PR123456",'p.label'=>"My product",'p.description'=>"This is a description example for record",'p.note'=>"Some note",'p.price'=>"100",'p.price_ttc'=>"110",'p.tva_tx'=>'10','p.tosell'=>"0 or 1",'p.tobuy'=>"0 or 1",'p.fk_product_type'=>"0 for product/1 for service",'p.finished'=>'','p.duration'=>"1y",'p.datec'=>'2008-12-31');
+		$this->values->import_fieldshidden_array[$r] = array('extra.fk_object' => 'lastrowid-' . MAIN_DB_PREFIX . 'product');	// aliastable.field => ('user->id' or 'lastrowid-'.tableparent)
+		$this->values->import_regex_array[$r] = array('p.ref' => '[^ ]', 'p.tosell' => '^[0|1]$', 'p.tobuy' => '^[0|1]$', 'p.fk_product_type' => '^[0|1]$', 'p.datec' => '^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$');
+		$this->values->import_examplevalues_array[$r] = array('p.ref' => "PR123456", 'p.label' => "My product", 'p.description' => "This is a description example for record", 'p.note' => "Some note", 'p.price' => "100", 'p.price_ttc' => "110", 'p.tva_tx' => '10', 'p.tosell' => "0 or 1", 'p.tobuy' => "0 or 1", 'p.fk_product_type' => "0 for product/1 for service", 'p.finished' => '', 'p.duration' => "1y", 'p.datec' => '2008-12-31');
 	}
-
 
 	/**
-	 *		Function called when module is enabled.
-	 *		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
-	 *		It also creates data directories
+	 * 		Function called when module is enabled.
+	 * 		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
+	 * 		It also creates data directories
 	 *
-     *      @param      string	$options    Options when enabling module ('', 'noboxes')
+	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
 	 */
-	function init($options='')
-	{
+	function init($options = '') {
 		// Permissions
-		$this->remove($options);
+		$this->values->remove($options);
 
 		$sql = array();
 
-		return $this->_init($sql,$options);
+		return $this->values->_init($sql, $options);
 	}
 
-    /**
-	 *		Function called when module is disabled.
+	/**
+	 * 		Function called when module is disabled.
 	 *      Remove from database constants, boxes and permissions from Dolibarr database.
-	 *		Data directories are not deleted
+	 * 		Data directories are not deleted
 	 *
-     *      @param      string	$options    Options when enabling module ('', 'noboxes')
+	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
-     */
-    function remove($options='')
-    {
+	 */
+	function remove($options = '') {
 		$sql = array();
 
-		return $this->_remove($sql,$options);
-    }
+		return $this->values->_remove($sql, $options);
+	}
 
 }
+
 ?>

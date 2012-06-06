@@ -201,7 +201,8 @@ abstract class nosqlDocument extends CommonObject {
 		if (!$found) {
 			$result = array();
 			try {
-				$params['limit'] = $conf->view_limit;
+				if(!empty($conf->view_limit))
+					$params['limit'] = $conf->view_limit;
 				$this->couchdb->setQueryParameters($params);
 
 				$result = $this->couchdb->getView(get_class($this), $name);

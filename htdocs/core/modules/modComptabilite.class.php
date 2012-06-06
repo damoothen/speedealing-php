@@ -1,8 +1,10 @@
 <?php
+
 /* Copyright (C) 2003      Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2008 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2004      Sebastien Di Cintio  <sdicintio@ressource-toi.org>
  * Copyright (C) 2004      Benoit Mortier       <benoit.mortier@opensides.be>
+ * Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,137 +27,130 @@
  * \ingroup    comptabilite
  * \brief      Fichier de description et activation du module Comptabilite
  */
-
-include_once(DOL_DOCUMENT_ROOT ."/core/modules/DolibarrModules.class.php");
-
+include_once(DOL_DOCUMENT_ROOT . "/core/modules/DolibarrModules.class.php");
 
 /**
- *		\class 		modComptabilite
+ * 		\class 		modComptabilite
  *      \brief      Classe de description et activation du module Comptabilite
  */
-class modComptabilite extends DolibarrModules
-{
+class modComptabilite extends DolibarrModules {
 
-   /**
+	/**
 	 *   Constructor. Define names, constants, directories, boxes, permissions
 	 *
 	 *   @param      DoliDB		$db      Database handler
-    */
-	function modComptabilite($db)
-	{
+	 */
+	function modComptabilite($db) {
 		global $conf;
 
-		$this->db = $db;
 		parent::__construct($db);
-		$this->numero = 10;
+		$this->values->numero = 10;
 
-		$this->family = "financial";
+		$this->values->family = "financial";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->name = preg_replace('/^mod/i','',get_class($this));
-		$this->description = "Gestion sommaire de comptabilite";
+		$this->values->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->values->description = "Gestion sommaire de comptabilite";
 
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
-		$this->version = 'dolibarr';
+		$this->values->version = 'dolibarr';
 
-		$this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
-		$this->special = 0;
-        $this->picto='';
+		$this->values->const_name = 'MAIN_MODULE_' . strtoupper($this->values->name);
+		$this->values->special = 0;
+		$this->values->picto = '';
 
 		// Config pages
-		$this->config_page_url = array("compta.php");
+		$this->values->config_page_url = array("compta.php");
 
 		// Dependances
-		$this->depends = array("modFacture","modBanque");
-		$this->requiredby = array();
-		$this->conflictwith = array("modAccounting");
-		$this->langfiles = array("compta");
+		$this->values->depends = array("modFacture", "modBanque");
+		$this->values->requiredby = array();
+		$this->values->conflictwith = array("modAccounting");
+		$this->values->langfiles = array("compta");
 
 		// Constantes
-		$this->const = array();
+		$this->values->const = array();
 
 		// Data directories to create when module is enabled
-		$this->dirs = array("/comptabilite/temp",
-		                    "/comptabilite/rapport",
-		                    "/comptabilite/export",
-		                    "/comptabilite/bordereau"
-		                    );
+		$this->values->dirs = array("/comptabilite/temp",
+			"/comptabilite/rapport",
+			"/comptabilite/export",
+			"/comptabilite/bordereau"
+		);
 
 		// Boites
-		$this->boxes = array();
+		$this->values->boxes = array();
 
 		// Permissions
-		$this->rights = array();
-		$this->rights_class = 'compta';
-		$r=0;
+		$this->values->rights = array();
+		$this->values->rights_class = 'compta';
+		$r = 0;
 
 		$r++;
-		$this->rights[$r][0] = 95;
-		$this->rights[$r][1] = 'Lire CA, bilans, resultats';
-		$this->rights[$r][2] = 'r';
-		$this->rights[$r][3] = 1;
-		$this->rights[$r][4] = 'resultat';
-		$this->rights[$r][5] = 'lire';
+		$this->values->rights[$r][0] = 95;
+		$this->values->rights[$r][1] = 'Lire CA, bilans, resultats';
+		$this->values->rights[$r][2] = 'r';
+		$this->values->rights[$r][3] = 1;
+		$this->values->rights[$r][4] = 'resultat';
+		$this->values->rights[$r][5] = 'lire';
 
 		$r++;
-		$this->rights[$r][0] = 96;
-		$this->rights[$r][1] = 'Parametrer la ventilation';
-		$this->rights[$r][2] = 'r';
-		$this->rights[$r][3] = 0;
-		$this->rights[$r][4] = 'ventilation';
-		$this->rights[$r][5] = 'parametrer';
+		$this->values->rights[$r][0] = 96;
+		$this->values->rights[$r][1] = 'Parametrer la ventilation';
+		$this->values->rights[$r][2] = 'r';
+		$this->values->rights[$r][3] = 0;
+		$this->values->rights[$r][4] = 'ventilation';
+		$this->values->rights[$r][5] = 'parametrer';
 
 		$r++;
-		$this->rights[$r][0] = 97;
-		$this->rights[$r][1] = 'Lire les ventilations de factures';
-		$this->rights[$r][2] = 'r';
-		$this->rights[$r][3] = 1;
-		$this->rights[$r][4] = 'ventilation';
-		$this->rights[$r][5] = 'lire';
+		$this->values->rights[$r][0] = 97;
+		$this->values->rights[$r][1] = 'Lire les ventilations de factures';
+		$this->values->rights[$r][2] = 'r';
+		$this->values->rights[$r][3] = 1;
+		$this->values->rights[$r][4] = 'ventilation';
+		$this->values->rights[$r][5] = 'lire';
 
 		$r++;
-		$this->rights[$r][0] = 98;
-		$this->rights[$r][1] = 'Ventiler les lignes de factures';
-		$this->rights[$r][2] = 'r';
-		$this->rights[$r][3] = 0;
-		$this->rights[$r][4] = 'ventilation';
-		$this->rights[$r][5] = 'creer';
+		$this->values->rights[$r][0] = 98;
+		$this->values->rights[$r][1] = 'Ventiler les lignes de factures';
+		$this->values->rights[$r][2] = 'r';
+		$this->values->rights[$r][3] = 0;
+		$this->values->rights[$r][4] = 'ventilation';
+		$this->values->rights[$r][5] = 'creer';
 	}
 
-
-   /**
-	 *		Function called when module is enabled.
-	 *		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
-	 *		It also creates data directories
+	/**
+	 * 		Function called when module is enabled.
+	 * 		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
+	 * 		It also creates data directories
 	 *
-     *      @param      string	$options    Options when enabling module ('', 'noboxes')
+	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
-    */
-	function init($options='')
-	{
+	 */
+	function init($options = '') {
 		global $conf;
 
 		// Nettoyage avant activation
-		$this->remove($options);
+		$this->values->remove($options);
 
 		$sql = array();
 
-		return $this->_init($sql,$options);
+		return $this->values->_init($sql, $options);
 	}
 
-    /**
-	 *		Function called when module is disabled.
+	/**
+	 * 		Function called when module is disabled.
 	 *      Remove from database constants, boxes and permissions from Dolibarr database.
-	 *		Data directories are not deleted
+	 * 		Data directories are not deleted
 	 *
-     *      @param      string	$options    Options when enabling module ('', 'noboxes')
+	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
-     */
-    function remove($options='')
-    {
+	 */
+	function remove($options = '') {
 		$sql = array();
 
-		return $this->_remove($sql,$options);
-    }
+		return $this->values->_remove($sql, $options);
+	}
 
 }
+
 ?>

@@ -1,5 +1,7 @@
 <?php
-/* Copyright (C) 2009 Laurent Destailleur  <eldy@users.sourceforge.net>
+
+/* Copyright (C) 2009 Laurent Destailleur		<eldy@users.sourceforge.net>
+ * Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,105 +24,98 @@
  *       \ingroup    webservices
  *       \brief      File to describe webservices module
  */
-
-include_once(DOL_DOCUMENT_ROOT ."/core/modules/DolibarrModules.class.php");
+include_once(DOL_DOCUMENT_ROOT . "/core/modules/DolibarrModules.class.php");
 
 /**
  *       \class      modWebServices
  *       \brief      Class to describe a WebServices module
  */
+class modWebServices extends DolibarrModules {
 
-class modWebServices extends DolibarrModules
-{
-
-    /**
+	/**
 	 *   Constructor. Define names, constants, directories, boxes, permissions
 	 *
 	 *   @param      DoliDB		$db      Database handler
-     */
-    function modWebServices($db)
-    {
-        $this->db = $db;
+	 */
+	function modWebServices($db) {
 		parent::__construct($db);
-        $this->numero = 2600;
+		$this->values->numero = 2600;
 
-        $this->family = "technic";
-        // Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-        $this->name = preg_replace('/^mod/i','',get_class($this));
-        $this->description = "Enable the Dolibarr web services server";
-        $this->version = 'dolibarr';                        // 'experimental' or 'dolibarr' or version
-        // Key used in llx_const table to save module status enabled/disabled (where MYMODULE is value of property name of module in uppercase)
-        $this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
-        // Where to store the module in setup page (0=common,1=interface,2=others,3=very specific)
-        $this->special = 1;
-        // Name of image file used for this module.
-        $this->picto='technic';
+		$this->values->family = "technic";
+		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
+		$this->values->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->values->description = "Enable the Dolibarr web services server";
+		$this->values->version = 'dolibarr';						// 'experimental' or 'dolibarr' or version
+		// Key used in llx_const table to save module status enabled/disabled (where MYMODULE is value of property name of module in uppercase)
+		$this->values->const_name = 'MAIN_MODULE_' . strtoupper($this->values->name);
+		// Where to store the module in setup page (0=common,1=interface,2=others,3=very specific)
+		$this->values->special = 1;
+		// Name of image file used for this module.
+		$this->values->picto = 'technic';
 
-        // Data directories to create when module is enabled
-        $this->dirs = array();
+		// Data directories to create when module is enabled
+		$this->values->dirs = array();
 
-        // Config pages
-        //-------------
-        $this->config_page_url = array("webservices.php@webservices");
+		// Config pages
+		//-------------
+		$this->values->config_page_url = array("webservices.php@webservices");
 
-        // Dependancies
-        //-------------
-        $this->depends = array();
-        $this->requiredby = array();
-        $this->langfiles = array("other");
+		// Dependancies
+		//-------------
+		$this->values->depends = array();
+		$this->values->requiredby = array();
+		$this->values->langfiles = array("other");
 
-        // Constantes
-        //-----------
-        $this->const = array();
+		// Constantes
+		//-----------
+		$this->values->const = array();
 
-        // New pages on tabs
-        // -----------------
-        $this->tabs = array();
+		// New pages on tabs
+		// -----------------
+		$this->values->tabs = array();
 
-        // Boxes
-        //------
-        $this->boxes = array();
+		// Boxes
+		//------
+		$this->values->boxes = array();
 
-        // Permissions
-        //------------
-        $this->rights = array();
-        $this->rights_class = 'webservices';
-        $r=0;
-    }
+		// Permissions
+		//------------
+		$this->values->rights = array();
+		$this->values->rights_class = 'webservices';
+		$r = 0;
+	}
 
-
-    /**
-	 *		Function called when module is enabled.
-	 *		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
-	 *		It also creates data directories
+	/**
+	 * 		Function called when module is enabled.
+	 * 		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
+	 * 		It also creates data directories
 	 *
-     *      @param      string	$options    Options when enabling module ('', 'noboxes')
+	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
-     */
-    function init($options='')
-    {
-        // Prevent pb of modules not correctly disabled
-        //$this->remove($options);
+	 */
+	function init($options = '') {
+		// Prevent pb of modules not correctly disabled
+		//$this->values->remove($options);
 
-        $sql = array();
-
-        return $this->_init($sql,$options);
-    }
-
-    /**
-	 *		Function called when module is disabled.
-	 *      Remove from database constants, boxes and permissions from Dolibarr database.
-	 *		Data directories are not deleted
-	 *
-     *      @param      string	$options    Options when enabling module ('', 'noboxes')
-	 *      @return     int             	1 if OK, 0 if KO
-     */
-    function remove($options='')
-    {
 		$sql = array();
 
-		return $this->_remove($sql,$options);
-    }
+		return $this->values->_init($sql, $options);
+	}
+
+	/**
+	 * 		Function called when module is disabled.
+	 *      Remove from database constants, boxes and permissions from Dolibarr database.
+	 * 		Data directories are not deleted
+	 *
+	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
+	 *      @return     int             	1 if OK, 0 if KO
+	 */
+	function remove($options = '') {
+		$sql = array();
+
+		return $this->values->_remove($sql, $options);
+	}
 
 }
+
 ?>

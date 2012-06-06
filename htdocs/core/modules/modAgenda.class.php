@@ -42,132 +42,130 @@ class modAgenda extends DolibarrModules
 	 *   @param      DoliDB		$db      Database handler
 	 */
 	function modAgenda($db)
-	{
-		$this->db = $db;
-		
+	{	
 		parent::__construct($db);
 		
-		$this->numero = 2400;
+		$this->values->numero = 2400;
 
-		$this->family = "projects";
+		$this->values->family = "projects";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->name = preg_replace('/^mod/i','',get_class($this));
-		$this->description = "Gestion de l'agenda et des actions";
-		$this->version = 'dolibarr';                        // 'experimental' or 'dolibarr' or version
+		$this->values->name = preg_replace('/^mod/i','',get_class($this));
+		$this->values->description = "Gestion de l'agenda et des actions";
+		$this->values->version = 'dolibarr';                        // 'experimental' or 'dolibarr' or version
 		// Key used in llx_const table to save module status enabled/disabled (where MYMODULE is value of property name of module in uppercase)
-		$this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
-		$this->special = 0;
-		$this->picto='action';
+		$this->values->const_name = 'MAIN_MODULE_'.strtoupper($this->values->name);
+		$this->values->special = 0;
+		$this->values->picto='action';
 
 		// Data directories to create when module is enabled
-		$this->dirs = array("/agenda/temp");
+		$this->values->dirs = array("/agenda/temp");
 
 		// Config pages
 		//-------------
-		$this->config_page_url = array("agenda.php");
+		$this->values->config_page_url = array("agenda.php");
 
 		// Dependancies
 		//-------------
-		$this->depends = array();
-		$this->requiredby = array();
-		$this->langfiles = array("companies");
+		$this->values->depends = array();
+		$this->values->requiredby = array();
+		$this->values->langfiles = array("companies");
 
 		// Constantes
 		//-----------
-		$this->const = array();
-		$this->const[0]  = array("MAIN_AGENDA_ACTIONAUTO_COMPANY_CREATE","chaine","1");
-        $this->const[1]  = array("MAIN_AGENDA_ACTIONAUTO_CONTRACT_VALIDATE","chaine","1");
-        $this->const[2]  = array("MAIN_AGENDA_ACTIONAUTO_PROPAL_VALIDATE","chaine","1");
-        $this->const[3]  = array("MAIN_AGENDA_ACTIONAUTO_PROPAL_SENTBYMAIL","chaine","1");
-        $this->const[4]  = array("MAIN_AGENDA_ACTIONAUTO_ORDER_VALIDATE","chaine","1");
-        $this->const[5]  = array("MAIN_AGENDA_ACTIONAUTO_ORDER_SENTBYMAIL","chaine","1");
-        $this->const[6]  = array("MAIN_AGENDA_ACTIONAUTO_BILL_VALIDATE","chaine","1");
-        $this->const[7]  = array("MAIN_AGENDA_ACTIONAUTO_BILL_PAYED","chaine","1");
-        $this->const[8]  = array("MAIN_AGENDA_ACTIONAUTO_BILL_CANCEL","chaine","1");
-        $this->const[9]  = array("MAIN_AGENDA_ACTIONAUTO_BILL_SENTBYMAIL","chaine","1");
-        $this->const[10] = array("MAIN_AGENDA_ACTIONAUTO_ORDER_SUPPLIER_VALIDATE","chaine","1");
-        $this->const[11] = array("MAIN_AGENDA_ACTIONAUTO_BILL_SUPPLIER_VALIDATE","chaine","1");
-        $this->const[12] = array("MAIN_AGENDA_ACTIONAUTO_SHIPPING_VALIDATE","chaine","1");
-        $this->const[13] = array("MAIN_AGENDA_ACTIONAUTO_SHIPPING_SENTBYMAIL","chaine","1");
+		$this->values->const = array();
+		$this->values->const[0]  = array("MAIN_AGENDA_ACTIONAUTO_COMPANY_CREATE","chaine","1");
+        $this->values->const[1]  = array("MAIN_AGENDA_ACTIONAUTO_CONTRACT_VALIDATE","chaine","1");
+        $this->values->const[2]  = array("MAIN_AGENDA_ACTIONAUTO_PROPAL_VALIDATE","chaine","1");
+        $this->values->const[3]  = array("MAIN_AGENDA_ACTIONAUTO_PROPAL_SENTBYMAIL","chaine","1");
+        $this->values->const[4]  = array("MAIN_AGENDA_ACTIONAUTO_ORDER_VALIDATE","chaine","1");
+        $this->values->const[5]  = array("MAIN_AGENDA_ACTIONAUTO_ORDER_SENTBYMAIL","chaine","1");
+        $this->values->const[6]  = array("MAIN_AGENDA_ACTIONAUTO_BILL_VALIDATE","chaine","1");
+        $this->values->const[7]  = array("MAIN_AGENDA_ACTIONAUTO_BILL_PAYED","chaine","1");
+        $this->values->const[8]  = array("MAIN_AGENDA_ACTIONAUTO_BILL_CANCEL","chaine","1");
+        $this->values->const[9]  = array("MAIN_AGENDA_ACTIONAUTO_BILL_SENTBYMAIL","chaine","1");
+        $this->values->const[10] = array("MAIN_AGENDA_ACTIONAUTO_ORDER_SUPPLIER_VALIDATE","chaine","1");
+        $this->values->const[11] = array("MAIN_AGENDA_ACTIONAUTO_BILL_SUPPLIER_VALIDATE","chaine","1");
+        $this->values->const[12] = array("MAIN_AGENDA_ACTIONAUTO_SHIPPING_VALIDATE","chaine","1");
+        $this->values->const[13] = array("MAIN_AGENDA_ACTIONAUTO_SHIPPING_SENTBYMAIL","chaine","1");
 
 		// New pages on tabs
 		// -----------------
-		$this->tabs = array();
+		$this->values->tabs = array();
 
 		// Boxes
 		//------
-		$this->boxes = array();
-		$this->boxes[0][1] = "box_actions.php";
+		$this->values->boxes = array();
+		$this->values->boxes[0][1] = "box_actions.php";
 
 		// Permissions
 		//------------
-		$this->rights = array();
-		$this->rights_class = 'agenda';
+		$this->values->rights = array();
+		$this->values->rights_class = 'agenda';
 		$r=0;
 
-		// $this->rights[$r][0]     Id permission (unique tous modules confondus)
-		// $this->rights[$r][1]     Libelle par defaut si traduction de cle "PermissionXXX" non trouvee (XXX = Id permission)
-		// $this->rights[$r][2]     Non utilise
-		// $this->rights[$r][3]     1=Permis par defaut, 0=Non permis par defaut
-		// $this->rights[$r][4]     Niveau 1 pour nommer permission dans code
-		// $this->rights[$r][5]     Niveau 2 pour nommer permission dans code
+		// $this->values->rights[$r][0]     Id permission (unique tous modules confondus)
+		// $this->values->rights[$r][1]     Libelle par defaut si traduction de cle "PermissionXXX" non trouvee (XXX = Id permission)
+		// $this->values->rights[$r][2]     Non utilise
+		// $this->values->rights[$r][3]     1=Permis par defaut, 0=Non permis par defaut
+		// $this->values->rights[$r][4]     Niveau 1 pour nommer permission dans code
+		// $this->values->rights[$r][5]     Niveau 2 pour nommer permission dans code
 		// $r++;
 
-		$this->rights[$r][0] = 2401;
-		$this->rights[$r][1] = 'Read actions/tasks linked to his account';
-		$this->rights[$r][2] = 'r';
-		$this->rights[$r][3] = 1;
-		$this->rights[$r][4] = 'myactions';
-		$this->rights[$r][5] = 'read';
+		$this->values->rights[$r][0] = 2401;
+		$this->values->rights[$r][1] = 'Read actions/tasks linked to his account';
+		$this->values->rights[$r][2] = 'r';
+		$this->values->rights[$r][3] = 1;
+		$this->values->rights[$r][4] = 'myactions';
+		$this->values->rights[$r][5] = 'read';
 		$r++;
 
-		$this->rights[$r][0] = 2402;
-		$this->rights[$r][1] = 'Create/modify actions/tasks linked to his account';
-		$this->rights[$r][2] = 'w';
-		$this->rights[$r][3] = 0;
-		$this->rights[$r][4] = 'myactions';
-		$this->rights[$r][5] = 'create';
+		$this->values->rights[$r][0] = 2402;
+		$this->values->rights[$r][1] = 'Create/modify actions/tasks linked to his account';
+		$this->values->rights[$r][2] = 'w';
+		$this->values->rights[$r][3] = 0;
+		$this->values->rights[$r][4] = 'myactions';
+		$this->values->rights[$r][5] = 'create';
 		$r++;
 
-		$this->rights[$r][0] = 2403;
-		$this->rights[$r][1] = 'Delete actions/tasks linked to his account';
-		$this->rights[$r][2] = 'w';
-		$this->rights[$r][3] = 0;
-		$this->rights[$r][4] = 'myactions';
-		$this->rights[$r][5] = 'delete';
+		$this->values->rights[$r][0] = 2403;
+		$this->values->rights[$r][1] = 'Delete actions/tasks linked to his account';
+		$this->values->rights[$r][2] = 'w';
+		$this->values->rights[$r][3] = 0;
+		$this->values->rights[$r][4] = 'myactions';
+		$this->values->rights[$r][5] = 'delete';
 		$r++;
 
-		$this->rights[$r][0] = 2411;
-		$this->rights[$r][1] = 'Read actions/tasks of others';
-		$this->rights[$r][2] = 'r';
-		$this->rights[$r][3] = 0;
-		$this->rights[$r][4] = 'allactions';
-		$this->rights[$r][5] = 'read';
+		$this->values->rights[$r][0] = 2411;
+		$this->values->rights[$r][1] = 'Read actions/tasks of others';
+		$this->values->rights[$r][2] = 'r';
+		$this->values->rights[$r][3] = 0;
+		$this->values->rights[$r][4] = 'allactions';
+		$this->values->rights[$r][5] = 'read';
 		$r++;
 
-		$this->rights[$r][0] = 2412;
-		$this->rights[$r][1] = 'Create/modify actions/tasks of others';
-		$this->rights[$r][2] = 'w';
-		$this->rights[$r][3] = 0;
-		$this->rights[$r][4] = 'allactions';
-		$this->rights[$r][5] = 'create';
+		$this->values->rights[$r][0] = 2412;
+		$this->values->rights[$r][1] = 'Create/modify actions/tasks of others';
+		$this->values->rights[$r][2] = 'w';
+		$this->values->rights[$r][3] = 0;
+		$this->values->rights[$r][4] = 'allactions';
+		$this->values->rights[$r][5] = 'create';
 		$r++;
 
-		$this->rights[$r][0] = 2413;
-		$this->rights[$r][1] = 'Delete actions/tasks of others';
-		$this->rights[$r][2] = 'w';
-		$this->rights[$r][3] = 0;
-		$this->rights[$r][4] = 'allactions';
-		$this->rights[$r][5] = 'delete';
+		$this->values->rights[$r][0] = 2413;
+		$this->values->rights[$r][1] = 'Delete actions/tasks of others';
+		$this->values->rights[$r][2] = 'w';
+		$this->values->rights[$r][3] = 0;
+		$this->values->rights[$r][4] = 'allactions';
+		$this->values->rights[$r][5] = 'delete';
 		$r++;
 
 		// Main menu entries
-		$this->menu = array();			// List of menus to add
+		$this->values->menu = array();			// List of menus to add
 		$r=0;
 
 		// Add here entries to declare new menus
 		// Example to declare the Top Menu entry:
-		// $this->menu[$r]=array(	'fk_menu'=>0,			// Put 0 if this is a top menu
+		// $this->values->menu[$r]=array(	'fk_menu'=>0,			// Put 0 if this is a top menu
 		//							'type'=>'top',			// This is a Top menu entry
 		//							'titre'=>'MyModule top menu',
 		//							'mainmenu'=>'mymodule',
@@ -179,7 +177,7 @@ class modAgenda extends DolibarrModules
 		//							'target'=>'',
 		//							'user'=>2);				// 0=Menu for internal users, 1=external users, 2=both
 		// $r++;
-		$this->menu[$r]=array('fk_menu'=>0,
+		$this->values->menu[$r]=array('fk_menu'=>0,
 													'type'=>'top',
 		    '_id'=>'menu:agenda',
 													'titre'=>'Agenda',
@@ -193,7 +191,7 @@ class modAgenda extends DolibarrModules
 													'user'=>2);
 		$r++;
 
-		$this->menu[$r]=array('fk_menu'=>'menu:agenda',
+		$this->values->menu[$r]=array('fk_menu'=>'menu:agenda',
 			'_id'=>'menu:actionagenda',
 													'type'=>'left',
 													'titre'=>'Actions',
@@ -206,7 +204,7 @@ class modAgenda extends DolibarrModules
 													'target'=>'',
 													'user'=>2);
 		$r++;
-		$this->menu[$r]=array('fk_menu'=>'menu:actionagenda',
+		$this->values->menu[$r]=array('fk_menu'=>'menu:actionagenda',
 			'_id'=>'menu:newaction',
 													'type'=>'left',
 													'titre'=>'NewAction',
@@ -220,7 +218,7 @@ class modAgenda extends DolibarrModules
 													'user'=>2);
 		$r++;
 		// Calendar
-		$this->menu[$r]=array('fk_menu'=>'menu:actionagenda',
+		$this->values->menu[$r]=array('fk_menu'=>'menu:actionagenda',
 			'_id'=>'menu:actioncalendar',
 													'type'=>'left',
 													'titre'=>'Calendar',
@@ -233,7 +231,7 @@ class modAgenda extends DolibarrModules
 													'target'=>'',
 													'user'=>2);
 		$r++;
-		$this->menu[$r]=array('fk_menu'=>'menu:actioncalendar',
+		$this->values->menu[$r]=array('fk_menu'=>'menu:actioncalendar',
 			'_id'=>'menu:MenuToDoMyActions',
 													'type'=>'left',
 													'titre'=>'MenuToDoMyActions',
@@ -246,7 +244,7 @@ class modAgenda extends DolibarrModules
 													'target'=>'',
 													'user'=>2);
 		$r++;
-		$this->menu[$r]=array('fk_menu'=>'menu:actioncalendar',
+		$this->values->menu[$r]=array('fk_menu'=>'menu:actioncalendar',
 			'_id'=>'menu:MenuDoneMyActions',
 													'type'=>'left',
 													'titre'=>'MenuDoneMyActions',
@@ -259,7 +257,7 @@ class modAgenda extends DolibarrModules
 													'target'=>'',
 													'user'=>2);
 		$r++;
-		$this->menu[$r]=array('fk_menu'=>'menu:actioncalendar',
+		$this->values->menu[$r]=array('fk_menu'=>'menu:actioncalendar',
 			'_id'=>'menu:MenuToDoActions',
 													'type'=>'left',
 													'titre'=>'MenuToDoActions',
@@ -272,7 +270,7 @@ class modAgenda extends DolibarrModules
 													'target'=>'',
 													'user'=>2);
 		$r++;
-		$this->menu[$r]=array('fk_menu'=>'menu:actioncalendar',
+		$this->values->menu[$r]=array('fk_menu'=>'menu:actioncalendar',
 			'_id'=>'menu:MenuDoneActions',
 													'type'=>'left',
 													'titre'=>'MenuDoneActions',
@@ -286,7 +284,7 @@ class modAgenda extends DolibarrModules
 													'user'=>2);
 		$r++;
 		// List
-		$this->menu[$r]=array('fk_menu'=>'menu:agenda',
+		$this->values->menu[$r]=array('fk_menu'=>'menu:agenda',
 			'_id'=>'menu:agendaList',
 													'type'=>'left',
 													'titre'=>'List',
@@ -299,7 +297,7 @@ class modAgenda extends DolibarrModules
 													'target'=>'',
 													'user'=>2);
 		$r++;
-		$this->menu[$r]=array('fk_menu'=>'menu:agendaList',
+		$this->values->menu[$r]=array('fk_menu'=>'menu:agendaList',
 			'_id'=>'menu:MenuToDoMyActions',
 													'type'=>'left',
 													'titre'=>'MenuToDoMyActions',
@@ -312,7 +310,7 @@ class modAgenda extends DolibarrModules
 													'target'=>'',
 													'user'=>2);
 		$r++;
-		$this->menu[$r]=array('fk_menu'=>'menu:agendaList',
+		$this->values->menu[$r]=array('fk_menu'=>'menu:agendaList',
 			'_id'=>'menu:MenuDoneMyActions',
 													'type'=>'left',
 													'titre'=>'MenuDoneMyActions',
@@ -325,7 +323,7 @@ class modAgenda extends DolibarrModules
 													'target'=>'',
 													'user'=>2);
 		$r++;
-		$this->menu[$r]=array('fk_menu'=>'menu:agendaList',
+		$this->values->menu[$r]=array('fk_menu'=>'menu:agendaList',
 			'_id'=>'menu:MenuToDoActions',
 													'type'=>'left',
 													'titre'=>'MenuToDoActions',
@@ -338,7 +336,7 @@ class modAgenda extends DolibarrModules
 													'target'=>'',
 													'user'=>2);
 		$r++;
-		$this->menu[$r]=array('fk_menu'=>'menu:agendaList',
+		$this->values->menu[$r]=array('fk_menu'=>'menu:agendaList',
 			'_id'=>'menu:MenuDoneActions',
 													'type'=>'left',
 													'titre'=>'MenuDoneActions',
@@ -352,7 +350,7 @@ class modAgenda extends DolibarrModules
 													'user'=>2);
 		$r++;
 		// Reports
-		$this->menu[$r]=array('fk_menu'=>'menu:agenda',
+		$this->values->menu[$r]=array('fk_menu'=>'menu:agenda',
 			'_id'=>'menu:agendaReportings',
 													'type'=>'left',
 													'titre'=>'Reportings',
@@ -371,12 +369,12 @@ class modAgenda extends DolibarrModules
 		//--------
 		$r=0;
 
-		// $this->export_code[$r]          Code unique identifiant l'export (tous modules confondus)
-		// $this->export_label[$r]         Libelle par defaut si traduction de cle "ExportXXX" non trouvee (XXX = Code)
-		// $this->export_permission[$r]    Liste des codes permissions requis pour faire l'export
-		// $this->export_fields_sql[$r]    Liste des champs exportables en codif sql
-		// $this->export_fields_name[$r]   Liste des champs exportables en codif traduction
-		// $this->export_sql[$r]           Requete sql qui offre les donnees a l'export
+		// $this->values->export_code[$r]          Code unique identifiant l'export (tous modules confondus)
+		// $this->values->export_label[$r]         Libelle par defaut si traduction de cle "ExportXXX" non trouvee (XXX = Code)
+		// $this->values->export_permission[$r]    Liste des codes permissions requis pour faire l'export
+		// $this->values->export_fields_sql[$r]    Liste des champs exportables en codif sql
+		// $this->values->export_fields_name[$r]   Liste des champs exportables en codif traduction
+		// $this->values->export_sql[$r]           Requete sql qui offre les donnees a l'export
 	}
 
 
@@ -391,11 +389,11 @@ class modAgenda extends DolibarrModules
 	function init($options='')
 	{
 		// Prevent pb of modules not correctly disabled
-		//$this->remove($options);
+		//$this->values->remove($options);
 
 		$sql = array();
 
-		return $this->_init($sql,$options);
+		return $this->values->_init($sql,$options);
 	}
 
 	/**
@@ -410,7 +408,7 @@ class modAgenda extends DolibarrModules
 	{
 		$sql = array();
 
-		return $this->_remove($sql,$options);
+		return $this->values->_remove($sql,$options);
 	}
 
 }

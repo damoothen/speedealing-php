@@ -1,6 +1,7 @@
 <?php
 /* Copyright (C) 2005      Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2005-2007 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,65 +43,64 @@ class modBookmark extends DolibarrModules
 	 */
 	function modBookmark($db)
 	{
-		$this->db = $db;
 		parent::__construct($db);
-		$this->numero = 330;
+		$this->values->numero = 330;
 
-		$this->family = "technic";
+		$this->values->family = "technic";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->name = preg_replace('/^mod/i','',get_class($this));
-		$this->description = "Gestion des Bookmarks";
+		$this->values->name = preg_replace('/^mod/i','',get_class($this));
+		$this->values->description = "Gestion des Bookmarks";
 
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
-		$this->version = 'dolibarr';
+		$this->values->version = 'dolibarr';
 
-		$this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
-		$this->special = 2;
-		$this->picto='bookmark';
+		$this->values->const_name = 'MAIN_MODULE_'.strtoupper($this->values->name);
+		$this->values->special = 2;
+		$this->values->picto='bookmark';
 
 		// Data directories to create when module is enabled
-		$this->dirs = array();
+		$this->values->dirs = array();
 
 		// Dependancies
-		$this->depends = array();
-		$this->requiredby = array();
-		$this->langfiles = array("bookmarks");
+		$this->values->depends = array();
+		$this->values->requiredby = array();
+		$this->values->langfiles = array("bookmarks");
 
 		// Config pages
-		$this->config_page_url = array('bookmark.php@bookmarks');
+		$this->values->config_page_url = array('bookmark.php@bookmarks');
 
 		// Constantes
-		$this->const = array();
+		$this->values->const = array();
 
 		// Boites
-		$this->boxes = array();
-		$this->boxes[0][1] = "box_bookmarks.php";
+		$this->values->boxes = array();
+		$this->values->boxes[0][1] = "box_bookmarks.php";
 
 		// Permissions
-		$this->rights = array();
-		$this->rights_class = 'bookmark';
+		$this->values->rights = array();
+		$this->values->rights_class = 'bookmark';
 		$r=0;
 
 		$r++;
-		$this->rights[$r][0] = 331; // id de la permission
-		$this->rights[$r][1] = 'Lire les bookmarks'; // libelle de la permission
-		$this->rights[$r][2] = 'r'; // type de la permission (deprecie a ce jour)
-		$this->rights[$r][3] = 1; // La permission est-elle une permission par defaut
-		$this->rights[$r][4] = 'lire';
+		$this->values->rights[$r][0] = 331; // id de la permission
+		$this->values->rights[$r][1] = 'Lire les bookmarks'; // libelle de la permission
+		$this->values->rights[$r][2] = 'r'; // type de la permission (deprecie a ce jour)
+		$this->values->rights[$r][3] = 1; // La permission est-elle une permission par defaut
+		$this->values->rights[$r][4] = 'lire';
 
 		$r++;
-		$this->rights[$r][0] = 332; // id de la permission
-		$this->rights[$r][1] = 'Creer/modifier les bookmarks'; // libelle de la permission
-		$this->rights[$r][2] = 'r'; // type de la permission (deprecie a ce jour)
-		$this->rights[$r][3] = 1; // La permission est-elle une permission par defaut
-		$this->rights[$r][4] = 'creer';
+		$this->values->rights[$r][0] = 332; // id de la permission
+		$this->values->rights[$r][1] = 'Creer/modifier les bookmarks'; // libelle de la permission
+		$this->values->rights[$r][2] = 'r'; // type de la permission (deprecie a ce jour)
+		$this->values->rights[$r][3] = 1; // La permission est-elle une permission par defaut
+		$this->values->rights[$r][4] = 'creer';
 
 		$r++;
-		$this->rights[$r][0] = 333; // id de la permission
-		$this->rights[$r][1] = 'Supprimer les bookmarks'; // libelle de la permission
-		$this->rights[$r][2] = 'r'; // type de la permission (d�pr�ci� � ce jour)
-		$this->rights[$r][3] = 1; // La permission est-elle une permission par d�faut
-		$this->rights[$r][4] = 'supprimer';
+		$this->values->rights[$r][0] = 333; // id de la permission
+		$this->values->rights[$r][1] = 'Supprimer les bookmarks'; // libelle de la permission
+		$this->values->rights[$r][2] = 'r'; // type de la permission (d�pr�ci� � ce jour)
+		$this->values->rights[$r][3] = 1; // La permission est-elle une permission par d�faut
+		$this->values->rights[$r][4] = 'supprimer';
 
 	}
 
@@ -116,7 +116,7 @@ class modBookmark extends DolibarrModules
 	{
 		$sql = array();
 
-		return $this->_init($sql,$options);
+		return $this->values->_init($sql,$options);
 	}
 
     /**
@@ -131,7 +131,7 @@ class modBookmark extends DolibarrModules
     {
 		$sql = array();
 
-		return $this->_remove($sql,$options);
+		return $this->values->_remove($sql,$options);
     }
 
 }

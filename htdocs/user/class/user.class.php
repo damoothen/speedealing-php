@@ -32,6 +32,7 @@ require_once(DOL_DOCUMENT_ROOT . "/core/class/nosqlDocument.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/class/extrafields.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/db/couchdb/lib/couchAdmin.php");
 require_once(DOL_DOCUMENT_ROOT . "/user/class/userdatabase.class.php");
+require_once(DOL_DOCUMENT_ROOT . "/core/modules/DolibarrModules.class.php");
 
 /**
  * 	Class to manage Dolibarr users
@@ -58,7 +59,6 @@ class User extends nosqlDocument {
 	var $user_mobile;
 	var $admin;
 	var $login;
-	var $entity;
 	//! Clear password in memory
 	var $pass;
 	//! Clear password in database (defined if DATABASE_PWD_ENCRYPTED=0)
@@ -82,11 +82,11 @@ class User extends nosqlDocument {
 	var $lang;
 	//! Liste des entrepots auquel a acces l'utilisateur
 	var $entrepots;
-	var $rights;	  // Array of permissions user->rights->permx
+	var $rights;   // Array of permissions user->rights->permx
 	var $all_permissions_are_loaded; /*	 * < \private all_permissions_are_loaded */
 	private $_tab_loaded = array();  // Array of cache of already loaded permissions
-	var $conf;	 // To store personal config
-	var $oldcopy;	// To contains a clone of this when we need to save old properties of object
+	var $conf;  // To store personal config
+	var $oldcopy; // To contains a clone of this when we need to save old properties of object
 
 	/**
 	 *    Constructor de la classe
@@ -389,92 +389,61 @@ class User extends nosqlDocument {
 			return;
 		}
 
-		// Recuperation des droits utilisateurs + recuperation des droits groupes
-		// D'abord les droits utilisateurs
-		$sql = "SELECT r.module, r.perms, r.subperms";
-		$sql.= " FROM " . MAIN_DB_PREFIX . "user_rights as ur";
-		$sql.= ", " . MAIN_DB_PREFIX . "rights_def as r";
-		$sql.= " WHERE r.id = ur.fk_id";
-		$sql.= " AND r.entity IN (0," . (!empty($conf->multicompany->transverse_mode) ? "1," : "") . $conf->entity . ")";
-		$sql.= " AND ur.fk_user= " . $this->values->rowid;
-		$sql.= " AND r.perms IS NOT NULL";
-		if ($moduletag)
-			$sql.= " AND r.module = '" . $this->db->escape($moduletag) . "'";
+		$object = new DolibarrModules($this->db);
 
-		dol_syslog(get_class($this) . '::getrights sql=' . $sql, LOG_DEBUG);
-		$resql = $this->db->query($sql);
-		if ($resql) {
-			$num = $this->db->num_rows($resql);
-			$i = 0;
-			while ($i < $num) {
-				$obj = $this->db->fetch_object($resql);
+		try {
+			$result = $object->getView("default_right");
+			foreach ($this->values->roles as $aRow) // load groups
+				$groups[] = $object->couchdb->getDoc("group:" . $aRow);
+		} catch (Exception $exc) {
+			print $exc->getMessage();
+		}
 
-				$module = $obj->module;
-				$perms = $obj->perms;
-				$subperms = $obj->subperms;
 
-				if ($perms) {
-					if (!is_object($this->rights))
-						$this->rights = (object) array(); // For avoid error
-					if (!is_object($this->rights->$module))
-						$this->rights->$module = (object) array();
-					if ($subperms) {
-						if (!is_object($this->rights->$module->$perms))
-							$this->rights->$module->$perms = (object) array();
-						$this->rights->$module->$perms->$subperms = 1;
-					}
-					else {
-						$this->rights->$module->$perms = 1;
+
+		if (count($result->rows)) {
+			foreach ($result->rows as $aRow) {
+				$object->values->name = $aRow->value->name;
+				$object->values->numero = $aRow->value->numero;
+				$rights_class = $aRow->value->rights_class;
+				$object->values->id = $aRow->value->id;
+				$perm = $aRow->value->perm;
+
+				// Add default rights
+
+				if (count($perm) == 1)
+					$this->rights->$rights_class->$perm[0] = $aRow->value->Status;
+				elseif(count($perm) == 2)
+				{
+					if(isset($this->rights->$rights_class->$perm[0]))
+						$this->rights->$rights_class->$perm[0]->$perm[1] = $aRow->value->Status;
+					else
+						$this->rights->$rights_class->$perm[0]->$perm[1] = $aRow->value->Status;
+				}
+
+				// Add user rights
+
+				if (is_array($this->values->rights) && in_array($aRow->value->id, $this->values->rights, true)) {
+					if (count($perm) == 1)
+						$this->rights->$rights_class->$perm[0] = true;
+					else
+						$this->rights->$rights_class->$perm[0]->$perm[1] = true;
+				}
+
+				// Add groups rights
+				for ($i = 0; $i < count($groups); $i++) {
+					if (in_array($aRow->value->id, $groups[$i]->rights, true)) {
+						if (count($perm) == 1)
+							$this->rights->$rights_class->$perm[0] = true;
+						else
+							$this->rights->$rights_class->$perm[0]->$perm[1] = true;
 					}
 				}
-				$i++;
 			}
-			$this->db->free($resql);
 		}
-
-		// Maintenant les droits groupes
-		$sql = "SELECT r.module, r.perms, r.subperms";
-		$sql.= " FROM " . MAIN_DB_PREFIX . "usergroup_rights as gr,";
-		$sql.= " " . MAIN_DB_PREFIX . "usergroup_user as gu,";
-		$sql.= " " . MAIN_DB_PREFIX . "rights_def as r";
-		$sql.= " WHERE r.id = gr.fk_id";
-		$sql.= " AND gr.fk_usergroup = gu.fk_usergroup";
-		$sql.= " AND gu.fk_user = " . $this->values->rowid;
-		$sql.= " AND r.perms IS NOT NULL";
-		$sql.= " AND r.entity = " . $conf->entity;
-		$sql.= " AND gu.entity IN (0," . $conf->entity . ")";
-		if ($moduletag)
-			$sql.= " AND r.module = '" . $this->db->escape($moduletag) . "'";
-
-		dol_syslog(get_class($this) . '::getrights sql=' . $sql, LOG_DEBUG);
-		$resql = $this->db->query($sql);
-		if ($resql) {
-			$num = $this->db->num_rows($resql);
-			$i = 0;
-			while ($i < $num) {
-				$obj = $this->db->fetch_object($resql);
-
-				$module = $obj->module;
-				$perms = $obj->perms;
-				$subperms = $obj->subperms;
-
-				if ($perms) {
-					if ($subperms) {
-						$this->rights->$module->$perms->$subperms = 1;
-					} else {
-						$this->rights->$module->$perms = 1;
-					}
-				}
-				$i++;
-			}
-			$this->db->free($resql);
-		}
-
-		// For backward compatibility
-		if (isset($this->rights->propale)) {
-			$this->rights->propal = $this->rights->propale;
-		}
-
+		
+		//print_r($this->rights);
+		
 		if (!$moduletag) {
 			// Si module etait non defini, alors on a tout charge, on peut donc considerer
 			// que les droits sont en cache (car tous charges) pour cet instance de user

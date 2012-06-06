@@ -3,6 +3,7 @@
  * Copyright (C) 2004-2008 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2004      Sebastien Di Cintio  <sdicintio@ressource-toi.org>
  * Copyright (C) 2004      Benoit Mortier       <benoit.mortier@opensides.be>
+ * Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,49 +43,48 @@ class modBoutique extends DolibarrModules
 	 *   @param      DoliDB		$db      Database handler
 	 */
 	function modBoutique($db)
-	{
-		$this->db = $db;
+	{		
 		parent::__construct($db);
-		$this->numero = 800;
+		$this->values->numero = 800;
 
-		$this->family = "products";
+		$this->values->family = "products";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->name = preg_replace('/^mod/i','',get_class($this));
-		$this->description = "Interface de visualisation d'une boutique OSCommerce ou OSCSS";
-		$this->version = 'dolibarr';                        // 'experimental' or 'dolibarr' or version
-		$this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
-		$this->special = 1;
+		$this->values->name = preg_replace('/^mod/i','',get_class($this));
+		$this->values->description = "Interface de visualisation d'une boutique OSCommerce ou OSCSS";
+		$this->values->version = 'dolibarr';                        // 'experimental' or 'dolibarr' or version
+		$this->values->const_name = 'MAIN_MODULE_'.strtoupper($this->values->name);
+		$this->values->special = 1;
 
 		// Data directories to create when module is enabled
-		$this->dirs = array();
+		$this->values->dirs = array();
 
 		// Config pages
-//		$this->config_page_url = array("boutique.php","osc-languages.php");
-		$this->config_page_url = array("boutique.php@boutique");
+//		$this->values->config_page_url = array("boutique.php","osc-languages.php");
+		$this->values->config_page_url = array("boutique.php@boutique");
 
 		// Dependancies
-		$this->depends = array();
-		$this->requiredby = array();
-	    $this->conflictwith = array("modOSCommerceWS");
-	   	$this->langfiles = array("shop");
+		$this->values->depends = array();
+		$this->values->requiredby = array();
+	    $this->values->conflictwith = array("modOSCommerceWS");
+	   	$this->values->langfiles = array("shop");
 
 		// Constants
-		$this->const = array();
+		$this->values->const = array();
 		$r=0;
 
-		$this->const[$r][0] = "OSC_DB_HOST";
-		$this->const[$r][1] = "chaine";
-		$this->const[$r][2] = "localhost";
-		$this->const[$r][3] = "Host for OSC database for OSCommerce module 1";
-		$this->const[$r][4] = 0;
+		$this->values->const[$r][0] = "OSC_DB_HOST";
+		$this->values->const[$r][1] = "chaine";
+		$this->values->const[$r][2] = "localhost";
+		$this->values->const[$r][3] = "Host for OSC database for OSCommerce module 1";
+		$this->values->const[$r][4] = 0;
 		$r++;
 
 	    // Boites
-	    $this->boxes = array();
+	    $this->values->boxes = array();
 
 		// Permissions
-		$this->rights = array();
-		$this->rights_class = 'boutique';
+		$this->values->rights = array();
+		$this->values->rights_class = 'boutique';
 	}
 
     /**
@@ -99,7 +99,7 @@ class modBoutique extends DolibarrModules
 	{
 		$sql = array();
 
-		return $this->_init($sql,$options);
+		return $this->values->_init($sql,$options);
 	}
 
     /**
@@ -114,7 +114,7 @@ class modBoutique extends DolibarrModules
     {
 		$sql = array();
 
-		return $this->_remove($sql,$options);
+		return $this->values->_remove($sql,$options);
     }
 
 }

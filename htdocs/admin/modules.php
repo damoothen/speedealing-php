@@ -1,4 +1,5 @@
 <?php
+
 /* Copyright (C) 2003-2007 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2003      Jean-Louis Bergamo   <jlb@j1b.org>
  * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
@@ -25,71 +26,33 @@
  *  \file       htdocs/admin/modules.php
  *  \brief      Page to activate/disable all modules
  */
-
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
+require_once(DOL_DOCUMENT_ROOT . "/core/lib/admin.lib.php");
 
 $langs->load("errors");
 $langs->load("admin");
 
-$mode=isset($_GET["mode"])?GETPOST("mode"):(isset($_SESSION['mode'])?$_SESSION['mode']:0);
-$mesg=GETPOST("mesg");
-$action=GETPOST('action');
+$mesg = GETPOST("mesg");
+$action = GETPOST('action');
 
-if (!$user->admin) accessforbidden();
+if (!$user->admin)
+	accessforbidden();
 
-/*
- * Actions
- */
-
-if ($action == 'set' && $user->admin)
-{
-    $result=activateModule($_GET["value"]);
-    $mesg='';
-    if ($result) $mesg=$result;
-    Header("Location: ".$_SERVER['PHP_SELF']."?mode=".$mode."&mesg=".urlencode($mesg));
-	exit;
-}
-
-if ($action == 'reset' && $user->admin)
-{
-    $result=unActivateModule($_GET["value"]);
-    $mesg='';
-    if ($result) $mesg=$result;
-    Header("Location: ".$_SERVER['PHP_SELF']."?mode=".$mode."&mesg=".urlencode($mesg));
-	exit;
-}
-
-
-/*
- * View
- */
-
-$_SESSION["mode"]=$mode;
-
-$help_url='EN:First_setup|FR:Premiers_paramétrages|ES:Primeras_configuraciones';
-llxHeader('',$langs->trans("Setup"),$help_url);
-
-print_fiche_titre($langs->trans("ModulesSetup"),'','setup');
+$object = new DolibarrModules($db);
 
 // Search modules dirs
 $modulesdir = array();
-foreach ($conf->file->dol_document_root as $type => $dirroot)
-{
+foreach ($conf->file->dol_document_root as $type => $dirroot) {
 	$modulesdir[$dirroot . '/core/modules/'] = $dirroot . '/core/modules/';
 
-	$handle=@opendir($dirroot);
-	if (is_resource($handle))
-	{
-		while (($file = readdir($handle))!==false)
-		{
-		    if (is_dir($dirroot.'/'.$file) && substr($file, 0, 1) <> '.' && substr($file, 0, 3) <> 'CVS' && $file != 'includes')
-		    {
-		    	if (is_dir($dirroot . '/' . $file . '/core/modules/'))
-		    	{
-		    		$modulesdir[$dirroot . '/' . $file . '/core/modules/'] = $dirroot . '/' . $file . '/core/modules/';
-		    	}
-		    }
+	$handle = @opendir($dirroot);
+	if (is_resource($handle)) {
+		while (($file = readdir($handle)) !== false) {
+			if (is_dir($dirroot . '/' . $file) && substr($file, 0, 1) <> '.' && substr($file, 0, 3) <> 'CVS' && $file != 'includes') {
+				if (is_dir($dirroot . '/' . $file . '/core/modules/')) {
+					$modulesdir[$dirroot . '/' . $file . '/core/modules/'] = $dirroot . '/' . $file . '/core/modules/';
+				}
+			}
 		}
 		closedir($handle);
 	}
@@ -102,83 +65,73 @@ $modules = array();
 $orders = array();
 $categ = array();
 $dirmod = array();
-$i = 0;	// is a sequencer of modules found
-$j = 0;	// j is module number. Automatically affected if module number not defined.
-$modNameLoaded=array();
+$i = 0; // is a sequencer of modules found
+$j = 0; // j is module number. Automatically affected if module number not defined.
+$modNameLoaded = array();
 
-foreach ($modulesdir as $dir)
-{      
-  
+foreach ($modulesdir as $dir) {
+
 	// Load modules attributes in arrays (name, numero, orders) from dir directory
 	//print $dir."\n<br>";
-	dol_syslog("Scan directory ".$dir." for modules");
-	$handle=@opendir($dir);
-	if (is_resource($handle))
-	{
-		while (($file = readdir($handle))!==false)
-		{
+	dol_syslog("Scan directory " . $dir . " for modules");
+	$handle = @opendir($dir);
+	if (is_resource($handle)) {
+		while (($file = readdir($handle)) !== false) {
 			//print "$i ".$file."\n<br>";
-		    if (is_readable($dir.$file) && substr($file, 0, 3) == 'mod'  && substr($file, dol_strlen($file) - 10) == '.class.php')
-		    {
-		        $modName = substr($file, 0, dol_strlen($file) - 10);
-                       
-		        if ($modName)
-		        {
-		        	if (! empty($modNameLoaded[$modName]))
-		        	{
-		        		$mesg="Error: Module ".$modName." was found twice: Into ".$modNameLoaded[$modName]." and ".$dir.". You probably have an old file on your disk.<br>";
-		                dol_syslog($mesg, LOG_ERR);
+			if (is_readable($dir . $file) && substr($file, 0, 3) == 'mod' && substr($file, dol_strlen($file) - 10) == '.class.php') {
+				$modName = substr($file, 0, dol_strlen($file) - 10);
+
+				if ($modName) {
+					if (!empty($modNameLoaded[$modName])) {
+						$mesg = "Error: Module " . $modName . " was found twice: Into " . $modNameLoaded[$modName] . " and " . $dir . ". You probably have an old file on your disk.<br>";
+						dol_syslog($mesg, LOG_ERR);
 						continue;
-		        	}
+					}
 
-		            try
-		            {
-		                $res=include_once($dir.$file);
-		                $objMod = new $modName($db);
-						$modNameLoaded[$modName]=$dir;
+					try {
+						$res = include_once($dir . $file);
+						$objMod = new $modName($db);
+						$modNameLoaded[$modName] = $dir;
 
-    		            if ($objMod->numero > 0)
-    		            {
-    		                $j = $objMod->numero;
-    		            }
-    		            else
-    		            {
-    		                $j = 1000 + $i;
-    		            }
+						if ($objMod->numero > 0) {
+							$j = $objMod->numero;
+						} else {
+							$j = 1000 + $i;
+						}
 
-    					$modulequalified=1;
+						$modulequalified = 1;
 
-    					// We discard modules according to features level (PS: if module is activated we always show it)
-    					$const_name = 'MAIN_MODULE_'.strtoupper(preg_replace('/^mod/i','',get_class($objMod)));
-    					if ($objMod->version == 'development'  && $conf->global->MAIN_FEATURES_LEVEL < 2 && ! $conf->global->$const_name) $modulequalified=0;
-    					if ($objMod->version == 'experimental' && $conf->global->MAIN_FEATURES_LEVEL < 1 && ! $conf->global->$const_name) $modulequalified=0;
+						// We discard modules according to features level (PS: if module is activated we always show it)
+						$const_name = 'MAIN_MODULE_' . strtoupper(preg_replace('/^mod/i', '', get_class($objMod)));
+						if ($objMod->version == 'development' && $conf->global->MAIN_FEATURES_LEVEL < 2 && !$conf->global->$const_name)
+							$modulequalified = 0;
+						if ($objMod->version == 'experimental' && $conf->global->MAIN_FEATURES_LEVEL < 1 && !$conf->global->$const_name)
+							$modulequalified = 0;
 
-    					if ($modulequalified)
-    					{
-    						$modules[$i] = $objMod;
-    			            $filename[$i]= $modName;
-    			            $orders[$i]  = $objMod->family."_".$j;   // Tri par famille puis numero module
-    						//print "x".$modName." ".$orders[$i]."\n<br>";
-    						if (isset($categ[$objMod->special])) $categ[$objMod->special]++;					// Array of all different modules categories
-    			            else $categ[$objMod->special]=1;
-    						$dirmod[$i] = $dir;
-    						$j++;
-    			            $i++;
-    					}
-    					else dol_syslog("Module ".get_class($objMod)." not qualified");
-		            }
-		            catch(Exception $e)
-		            {
-		                 dol_syslog("Failed to load ".$dir.$file." ".$e->getMessage(), LOG_ERR);
-		            }
-		        }
-		    }
+						if ($modulequalified) {
+							$modules[$i] = $objMod;
+							$filename[$i] = $modName;
+							$orders[$i] = $objMod->family . "_" . $j;   // Tri par famille puis numero module
+							//print "x".$modName." ".$orders[$i]."\n<br>";
+							if (isset($categ[$objMod->special]))
+								$categ[$objMod->special]++;  // Array of all different modules categories
+							else
+								$categ[$objMod->special] = 1;
+							$dirmod[$i] = $dir;
+							$j++;
+							$i++;
+						}
+						else
+							dol_syslog("Module " . get_class($objMod) . " not qualified");
+					} catch (Exception $e) {
+						dol_syslog("Failed to load " . $dir . $file . " " . $e->getMessage(), LOG_ERR);
+					}
+				}
+			}
 		}
 		closedir($handle);
-	}
-	else
-	{
-		dol_syslog("htdocs/admin/modules.php: Failed to open directory ".$dir.". See permission and open_basedir option.", LOG_WARNING);
+	} else {
+		dol_syslog("htdocs/admin/modules.php: Failed to open directory " . $dir . ". See permission and open_basedir option.", LOG_WARNING);
 	}
 }
 
@@ -186,305 +139,308 @@ asort($orders);
 //var_dump($orders);
 //var_dump($categ);
 //var_dump($modules);
-
 // Affichage debut page
-
-if ($mode==0) { $tagmode = 'common';      print $langs->trans("ModulesDesc")."<br>\n"; }
-if ($mode==2) { $tagmode = 'other';       print $langs->trans("ModulesSpecialDesc")."<br>\n"; }
-if ($mode==1) { $tagmode = 'interfaces';  print $langs->trans("ModulesInterfaceDesc")."<br>\n"; }
-if ($mode==3) { $tagmode = 'functional';  print $langs->trans("ModulesJobDesc")."<br>\n"; }
-if ($mode==4) { $tagmode = 'marketplace'; print $langs->trans("ModulesMarketPlaceDesc")."<br>\n"; }
-print "<br>\n";
-
-
-$h = 0;
-
-$categidx=0;    // Main
-if (! empty($categ[$categidx]))
-{
-	$head[$h][0] = DOL_URL_ROOT."/admin/modules.php?mode=".$categidx;
-	$head[$h][1] = $langs->trans("ModulesCommon");
-	$head[$h][2] = 'common';
-	$h++;
-}
-
-$categidx=2;    // Other
-if (! empty($categ[$categidx]))
-{
-	$head[$h][0] = DOL_URL_ROOT."/admin/modules.php?mode=".$categidx;
-	$head[$h][1] = $langs->trans("ModulesOther");
-	$head[$h][2] = 'other';
-	$h++;
-}
-
-$categidx=1;    // Interfaces
-if (! empty($categ[$categidx]))
-{
-	$head[$h][0] = DOL_URL_ROOT."/admin/modules.php?mode=".$categidx;
-	$head[$h][1] = $langs->trans("ModulesInterfaces");
-	$head[$h][2] = 'interfaces';
-	$h++;
-}
-
-$categidx=3;    // Not used
-if (! empty($categ[$categidx]))
-{
-	$head[$h][0] = DOL_URL_ROOT."/admin/modules.php?mode=".$categidx;
-	$head[$h][1] = $langs->trans("ModulesSpecial");
-	$head[$h][2] = 'functional';
-	$h++;
-}
-
-$categidx=4;
-//if (! empty($categ[$categidx]))
-//{
-    $head[$h][0] = DOL_URL_ROOT."/admin/modules.php?mode=".$categidx;
-    $head[$h][1] = $langs->trans("ModulesMarketPlaces");
-    $head[$h][2] = 'marketplace';
-    $h++;
-//}
-
-
-dol_fiche_head($head, $tagmode, $langs->trans("Modules"));
-
 
 dol_htmloutput_errors($mesg);
 
+/**
+ * Actions
+ */
+if ($action == 'set' && $user->admin) {
+	try {
+		$object->load($_GET['id']); // update if module exist
+		$rev = $object->values->_rev;
+	} catch (Exception $e) {
+		
+	}
 
-if ($mode != 4)
-{
-    print "<table summary=\"list_of_modules\" class=\"noborder\" width=\"100%\">\n";
-    print "<tr class=\"liste_titre\">\n";
-    //print '<tr class="liste_total">'."\n";
-    //print "  <td>".$langs->trans("Family")."</td>\n";
-    print "  <td colspan=\"2\">".$langs->trans("Module")."</td>\n";
-    print "  <td>".$langs->trans("Description")."</td>\n";
-    print "  <td align=\"center\">".$langs->trans("Version")."</td>\n";
-    //print "  <td align=\"center\">".$langs->trans("DbVersion")."</td>\n";
-    print "  <td align=\"center\">".$langs->trans("Status")."</td>\n";
-    print "  <td align=\"right\">".$langs->trans("SetupShort")."</td>\n";
-    print "</tr>\n";
+	try {
 
+		$key = $_GET['value'];
+		$objMod = $modules[$key];
 
-    // Affichage liste modules
-
-    $var=true;
-    $oldfamily='';
-
-    $familylib=array(
-    'base'=>$langs->trans("ModuleFamilyBase"),
-    'crm'=>$langs->trans("ModuleFamilyCrm"),
-    'products'=>$langs->trans("ModuleFamilyProducts"),
-    'hr'=>$langs->trans("ModuleFamilyHr"),
-    'projects'=>$langs->trans("ModuleFamilyProjects"),
-    'financial'=>$langs->trans("ModuleFamilyFinancial"),
-    'ecm'=>$langs->trans("ModuleFamilyECM"),
-    'technic'=>$langs->trans("ModuleFamilyTechnic"),
-    'other'=>$langs->trans("ModuleFamilyOther")
-    );
-
-    foreach ($orders as $key => $value)
-    {
-        $tab=explode('_',$value);
-        $family=$tab[0]; $numero=$tab[1];
-
-        $modName = $filename[$key];
-    	$objMod  = $modules[$key];
-    	//var_dump($objMod);
-
-    	if ($objMod->special != $mode) continue;    // Discard if not for tab
-        if (! $objMod->getName())
-        {
-        	dol_syslog("Error for module ".$key." - Property name of module looks empty", LOG_WARNING);
-      		continue;
-        }
-
-        $const_name = 'MAIN_MODULE_'.strtoupper(preg_replace('/^mod/i','',get_class($objMod)));
-
-        // Load all lang files of module
-        if (isset($objMod->langfiles) && is_array($objMod->langfiles))
-        {
-        	foreach($objMod->langfiles as $domain)
-        	{
-        		$langs->load($domain);
-        	}
-        }
-
-        // Print a separator if we change family
-        //print "<tr><td>xx".$oldfamily."-".$family."-".$atleastoneforfamily."<br></td><tr>";
-        //if ($oldfamily && $family!=$oldfamily && $atleastoneforfamily) {
-        if ($family!=$oldfamily) {
-            print '<tr class="liste_titre">'."\n  <td colspan=\"6\">";
-            $familytext=empty($familylib[$family])?$family:$familylib[$family];
-            print $familytext;
-            print "</td>\n</tr>\n";
-            $atleastoneforfamily=0;
-            //print "<tr><td>yy".$oldfamily."-".$family."-".$atleastoneforfamily."<br></td><tr>";
-        }
-
-        if ($objMod->special == $mode)
-        {
-            $atleastoneforfamily++;
-
-            if ($family!=$oldfamily)
-            {
-                $familytext=empty($familylib[$family])?$family:$familylib[$family];
-                //print $familytext;
-                $oldfamily=$family;
-            }
-
-            $var=!$var;
-
-            //print "\n<!-- Module ".$objMod->numero." ".$objMod->getName()." found into ".$dirmod[$key]." -->\n";
-            print '<tr '.$bc[$var].">\n";
-
-            // Picto
-            print '  <td valign="top" width="14" align="center">';
-            $alttext='';
-            //if (is_array($objMod->need_dolibarr_version)) $alttext.=($alttext?' - ':'').'Dolibarr >= '.join('.',$objMod->need_dolibarr_version);
-            //if (is_array($objMod->phpmin)) $alttext.=($alttext?' - ':'').'PHP >= '.join('.',$objMod->phpmin);
-            if (! empty($objMod->picto))
-            {
-            	if (preg_match('/^\//i',$objMod->picto)) print img_picto($alttext,$objMod->picto,' width="14px"',1);
-            	else print img_object($alttext,$objMod->picto,' width="14px"');
-            }
-            else
-            {
-            	print img_object($alttext,'generic');
-            }
-            print '</td>';
-
-            // Name
-            print '<td valign="top">'.$objMod->getName();
-            print "</td>\n";
-
-            // Desc
-            print "<td valign=\"top\">";
-            print nl2br($objMod->getDesc());
-            print "</td>\n";
-
-            // Version
-            print "<td align=\"center\" valign=\"top\" nowrap=\"nowrap\">";
-            print $objMod->getVersion();
-            print "</td>\n";
-
-            // Activate/Disable and Setup (2 columns)
-            if (! empty($conf->global->$const_name))
-            {
-                
-                $disableSetup = 0;
-
-                print "<td align=\"center\" valign=\"middle\">";
-
-            	// Module actif
-                if (! empty($objMod->always_enabled) || (($conf->global->MAIN_MODULE_MULTICOMPANY && $objMod->core_enabled) && ($user->entity || $conf->entity!=1)))
-                {
-                        
-                	print $langs->trans("Required");
-                	if ($conf->global->MAIN_MODULE_MULTICOMPANY && $user->entity) $disableSetup++;
-                	print '</td>'."\n";
-                }
-                else
-                {
-                	print '<a href="'.$_SERVER['PHP_SELF'].'?id='.$objMod->numero.'&amp;action=reset&amp;value=' . $modName . '&amp;mode=' . $mode . '">';
-                	print img_picto($langs->trans("Activated"),'switch_on');
-                	print '</a></td>'."\n";
-                        
-                            
-                        
-                }
-
-                if (! empty($objMod->config_page_url) && !$disableSetup)
-                {
-                    if (is_array($objMod->config_page_url))
-                    {
-                        print '  <td align="right" valign="top">';
-                        $i=0;
-                        foreach ($objMod->config_page_url as $page)
-                        {
-    						$urlpage=$page;
-                            if ($i++)
-                            {
-                                print '<a href="'.$urlpage.'" title="'.$langs->trans($page).'">'.img_picto(ucfirst($page),"setup").'</a>&nbsp;';
-                            //    print '<a href="'.$page.'">'.ucfirst($page).'</a>&nbsp;';
-                            }
-                            else
-                            {
-                            	if (preg_match('/^([^@]+)@([^@]+)$/i',$urlpage,$regs))
-                            	{
-                           			print '<a href="'.dol_buildpath('/'.$regs[2].'/admin/'.$regs[1],1).'" title="'.$langs->trans("Setup").'">'.img_picto($langs->trans("Setup"),"setup").'</a>&nbsp;';
-                            	}
-                            	else
-                            	{
-                            		print '<a href="'.$urlpage.'" title="'.$langs->trans("Setup").'">'.img_picto($langs->trans("Setup"),"setup").'</a>&nbsp;';
-                            	}
-                            }
-                        }
-                        print "</td>\n";
-                    }
-                    else if (preg_match('/^([^@]+)@([^@]+)$/i',$objMod->config_page_url,$regs))
-                    {
-                       	print '<td align="right" valign="top"><a href="'.dol_buildpath('/'.$regs[2].'/admin/'.$regs[1],1).'" title="'.$langs->trans("Setup").'">'.img_picto($langs->trans("Setup"),"setup").'</a></td>';
-                    }
-                    else
-                    {
-                        print '<td align="right" valign="top"><a href="'.$objMod->config_page_url.'" title="'.$langs->trans("Setup").'">'.img_picto($langs->trans("Setup"),"setup").'</a></td>';
-                    }
-                }
-                else
-                {
-                    print "<td>&nbsp;</td>";
-                }
-
-            }
-            else
-            {
-                print "<td align=\"center\" valign=\"middle\">";
-
-                if (! empty($objMod->always_enabled))
-                {
-                    // Ne devrait pas arriver.
-                }
-
-                // Module non actif
-               	print '<a href="'.$_SERVER['PHP_SELF'].'?id='.$objMod->numero.'&amp;action=set&amp;value=' . $modName . '&amp;mode=' . $mode . '">';
-               	print img_picto($langs->trans("Disabled"),'switch_off');
-               	print "</a></td>\n  <td>&nbsp;</td>\n";
-            }
-
-            print "</tr>\n";
-        }
-
-    }
-    print "</table>\n";
-}
-else
-{
-    // Marketplace
-    print "<table summary=\"list_of_modules\" class=\"noborder\" width=\"100%\">\n";
-    print "<tr class=\"liste_titre\">\n";
-    //print '<td>'.$langs->trans("Logo").'</td>';
-    print '<td colspan="2">'.$langs->trans("WebSiteDesc").'</td>';
-    print '<td>'.$langs->trans("URL").'</td>';
-    print '</tr>';
-
-    $var=!$var;
-    print "<tr ".$bc[$var].">\n";
-    $url='http://www.dolistore.com';
-    print '<td align="left"><a href="'.$url.'" target="_blank"><img border="0" width="180" src="'.DOL_URL_ROOT.'/theme/dolistore_logo.png"></a></td>';
-    print '<td>'.$langs->trans("DoliStoreDesc").'</td>';
-    print '<td><a href="'.$url.'" target="_blank">'.$url.'</a></td>';
-    print '</tr>';
-
-
-    print "</table>\n";
+		$object->values = $objMod->values;
+		$object->values->_id = "module:" . $objMod->values->name;
+		$object->values->_rev = $rev;
+		$object->values->enabled = true;
+		$object->record();
+	} catch (Exception $e) {
+		$mesg = $e->getMessage();
+	}
+	Header("Location: " . $_SERVER['PHP_SELF'] . "?&mesg=" . urlencode($mesg));
+	exit;
 }
 
+if ($action == 'reset' && $user->admin) {
+	try {
+		$object->load($_GET['id']);
+		unset($object->values->enabled);
 
-dol_fiche_end();
+		$object->record();
+	} catch (Exception $e) {
+		$mesg = $e->getMessage();
+	}
+	Header("Location: " . $_SERVER['PHP_SELF'] . "?&mesg=" . urlencode($mesg));
+	exit;
+}
 
-// Pour eviter bug mise en page IE
-print '<div class="tabsAction">';
+/*
+ * View
+ */
+
+$help_url = 'EN:First_setup|FR:Premiers_paramétrages|ES:Primeras_configuraciones';
+llxHeader('', $langs->trans("Setup"), $help_url);
+
+print '<div class="row">';
+print start_box($langs->trans("ModulesSetup"), 'twelve', '16-Cog-4.png', false);
+
+
+
+
+$obj = new stdClass();
+$i = 0;
+
+print '<table class="display dt_act" id="list_modules">';
+
+print'<thead>';
+print'<tr>';
+
+print'<th>';
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "id";
+$obj->aoColumns[$i]->sDefaultContent = "";
+$obj->aoColumns[$i]->bVisible = false;
+$i++;
+
+print'<th class="essential">';
+print $langs->trans("Family");
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "family";
+$obj->aoColumns[$i]->sDefaultContent = "other";
+$obj->aoColumns[$i]->bVisible = false;
+$i++;
+
+print'<th class="essential">';
+print $langs->trans("Module");
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "name";
+$obj->aoColumns[$i]->sDefaultContent = "";
+$i++;
+
+print'<th>';
+print $langs->trans("Description");
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "desc";
+$obj->aoColumns[$i]->sDefaultContent = "";
+$obj->aoColumns[$i]->bVisible = true;
+$i++;
+print'<th class="essential">';
+print $langs->trans("Version");
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "version";
+$obj->aoColumns[$i]->sDefaultContent = "false";
+$obj->aoColumns[$i]->sClass = "center";
+$i++;
+print'<th class="essential">';
+print $langs->trans("Status");
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "Status";
+$obj->aoColumns[$i]->sDefaultContent = "false";
+$obj->aoColumns[$i]->sClass = "center";
+$i++;
+print'<th class="essential">';
+print $langs->trans("SetupShort");
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "setup";
+$obj->aoColumns[$i]->sDefaultContent = "";
+$obj->aoColumns[$i]->bSortable = false;
+$obj->aoColumns[$i]->sClass = "center";
+print'</tr>';
+
+print'</thead>';
+$obj->fnDrawCallback = "function(oSettings){
+                if ( oSettings.aiDisplay.length == 0 )
+                {
+                    return;
+                }
+                var nTrs = jQuery('#list_modules tbody tr');
+                var iColspan = nTrs[0].getElementsByTagName('td').length;
+                var sLastGroup = '';
+                for ( var i=0 ; i<nTrs.length ; i++ )
+                {
+                    var iDisplayIndex = oSettings._iDisplayStart + i;
+                     var sGroup = oSettings.aoData[ oSettings.aiDisplay[iDisplayIndex] ]._aData['family'];
+                         if (sGroup!=null && sGroup!='' && sGroup != sLastGroup)
+                            {
+                                var nGroup = document.createElement('tr');
+                                var nCell = document.createElement('td');
+                                nCell.colSpan = iColspan;
+                                nCell.className = 'group';
+                                nCell.innerHTML = sGroup;
+                                nGroup.appendChild( nCell );
+                                nTrs[i].parentNode.insertBefore( nGroup, nTrs[i] );
+                                sLastGroup = sGroup;
+                            }
+                    
+                    
+                }
+	}";
+
+$i = 0;
+print'<tfoot>';
+print'</tfoot>';
+print'<tbody>';
+
+// Affichage liste modules
+
+$var = true;
+$oldfamily = '';
+
+$familylib = array(
+	'base' => $langs->trans("ModuleFamilyBase"),
+	'crm' => $langs->trans("ModuleFamilyCrm"),
+	'products' => $langs->trans("ModuleFamilyProducts"),
+	'hr' => $langs->trans("ModuleFamilyHr"),
+	'projects' => $langs->trans("ModuleFamilyProjects"),
+	'financial' => $langs->trans("ModuleFamilyFinancial"),
+	'ecm' => $langs->trans("ModuleFamilyECM"),
+	'technic' => $langs->trans("ModuleFamilyTechnic"),
+	'other' => $langs->trans("ModuleFamilyOther")
+);
+
+foreach ($orders as $key => $value) {
+	$tab = explode('_', $value);
+	$family = $tab[0];
+	$numero = $tab[1];
+
+	$modName = $filename[$key];
+	$objMod = $modules[$key];
+	//var_dump($objMod);
+
+	if (!$objMod->getName()) {
+		dol_syslog("Error for module " . $key . " - Property name of module looks empty", LOG_WARNING);
+		continue;
+	}
+
+	$const_name = 'MAIN_MODULE_' . strtoupper(preg_replace('/^mod/i', '', get_class($objMod)));
+
+	// Load all lang files of module
+	if (isset($objMod->langfiles) && is_array($objMod->langfiles)) {
+		foreach ($objMod->langfiles as $domain) {
+			$langs->load($domain);
+		}
+	}
+
+	//print "\n<!-- Module ".$objMod->numero." ".$objMod->getName()." found into ".$dirmod[$key]." -->\n";
+	print '<tr>';
+
+	// Id
+	print '<td>';
+	print $objMod->values->numero;
+	print '</td>';
+
+	// Family
+	print '<td>';
+	$family = $objMod->values->family;
+	print $familytext = empty($familylib[$family]) ? $family : $familylib[$family];
+	print "</td>\n";
+
+	// Picto
+	print '  <td>';
+	$alttext = '';
+	//if (is_array($objMod->need_dolibarr_version)) $alttext.=($alttext?' - ':'').'Dolibarr >= '.join('.',$objMod->need_dolibarr_version);
+	//if (is_array($objMod->phpmin)) $alttext.=($alttext?' - ':'').'PHP >= '.join('.',$objMod->phpmin);
+	if (!empty($objMod->values->picto)) {
+		if (preg_match('/^\//i', $objMod->values->picto))
+			print img_picto($alttext, $objMod->values->picto, ' width="14px"', 1);
+		else
+			print img_object($alttext, $objMod->values->picto, ' width="14px"');
+	}
+	else {
+		print img_object($alttext, 'generic');
+	}
+
+
+	// Name
+	print ' ' . $objMod->getName();
+	print "</td>\n";
+
+	// Desc
+	print "<td>";
+	print nl2br($objMod->getDesc());
+	print "</td>\n";
+
+	// Version
+	print "<td>";
+	print $objMod->getVersion();
+	print "</td>\n";
+
+	// Activate/Disable and Setup (2 columns)
+	$name = $objMod->values->name;
+
+	if (isset($conf->$name) && !empty($conf->$name->enabled)) {
+
+		$disableSetup = 0;
+
+		print "<td>";
+
+		// Module actif
+		if (!empty($conf->$name->always_enabled)) {
+
+			print '<span class="lbl ok_bg sl_status ">' . $langs->trans("Required") . '</span>';
+			print '</td>' . "\n";
+		} else {
+			print '<a href="' . $_SERVER['PHP_SELF'] . '?id=module:' . $objMod->values->name . '&amp;action=reset&amp;value=' . $key . '">';
+			print img_picto($langs->trans("Activated"), 'switch_on');
+			print '</a></td>' . "\n";
+		}
+
+		if (!empty($objMod->values->config_page_url) && !$disableSetup) {
+			if (is_array($objMod->values->config_page_url)) {
+				print '  <td>';
+				$i = 0;
+				foreach ($objMod->values->config_page_url as $page) {
+					$urlpage = $page;
+					if ($i++) {
+						print '<a href="' . $_SERVER['PHP_SELF'] . '/' . $urlpage . '" title="' . $langs->trans($page) . '">' . img_picto(ucfirst($page), "setup") . '</a>&nbsp;';
+						//    print '<a href="'.$page.'">'.ucfirst($page).'</a>&nbsp;';
+					} else {
+						if (preg_match('/^([^@]+)@([^@]+)$/i', $urlpage, $regs)) {
+							print '<a href="' . dol_buildpath('/' . $regs[2] . '/admin/' . $regs[1], 1) . '" title="' . $langs->trans("Setup") . '">' . img_picto($langs->trans("Setup"), "setup") . '</a>&nbsp;';
+						} else {
+							print '<a href="' . DOL_URL_ROOT . '/admin/' . $urlpage . '" title="' . $langs->trans("Setup") . '">' . img_picto($langs->trans("Setup"), "setup") . '</a>&nbsp;';
+						}
+					}
+				}
+				print "</td>\n";
+			} else if (preg_match('/^([^@]+)@([^@]+)$/i', $objMod->values->config_page_url, $regs)) {
+				print '<td><a href="' . dol_buildpath('/' . $regs[2] . '/admin/' . $regs[1], 1) . '" title="' . $langs->trans("Setup") . '">' . img_picto($langs->trans("Setup"), "setup") . '</a></td>';
+			} else {
+				print '<td><a href="' . $objMod->values->config_page_url . '" title="' . $langs->trans("Setup") . '">' . img_picto($langs->trans("Setup"), "setup") . '</a></td>';
+			}
+		} else {
+			print "<td>&nbsp;</td>";
+		}
+	} else {
+		print "<td>";
+
+		// Module non actif
+		print '<a href="' . $_SERVER['PHP_SELF'] . '?id=module:' . $objMod->values->name . '&amp;action=set&amp;value=' . $key . '">';
+		print img_picto($langs->trans("Disabled"), 'switch_off');
+		print "</a></td>\n  <td>&nbsp;</td>\n";
+	}
+
+	print "</tr>\n";
+}
+print'</tbody>';
+print'</table>';
+
+$obj->aaSorting = array(array(1, 'asc'));
+$obj->sDom = 'l<fr>t<\"clear\"rtip>';
+
+print $object->datatablesCreate($obj, "list_modules");
+
+print end_box();
 print '</div>';
 
 llxFooter();
