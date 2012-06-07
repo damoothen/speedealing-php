@@ -90,6 +90,7 @@ else if (! empty($field) && ! empty($element) && ! empty($table_element) && ! em
 	$field				= substr($field, 8); // remove prefix val_
 	$type				= GETPOST('type','alpha',2);
 	$value				= ($type == 'ckeditor' ? GETPOST('value','',2) : GETPOST('value','alpha',2));
+	$loadmethod			= GETPOST('loadmethod','alpha',2);
 	$savemethod			= GETPOST('savemethod','alpha',2);
 	$savemethodname		= (! empty($savemethod) ? $savemethod : 'setValueFrom');
 
@@ -143,9 +144,9 @@ else if (! empty($field) && ! empty($element) && ! empty($table_element) && ! em
 		}
 		else if ($type == 'select')
 		{
-			$loadmethodname	= 'load_cache_'.GETPOST('loadmethod','alpha');
-			$loadcachename	= 'cache_'.GETPOST('loadmethod','alpha');
-			$loadviewname	= 'view_'.GETPOST('loadmethod','alpha');
+			$loadmethodname	= 'load_cache_'.$loadmethod;
+			$loadcachename	= 'cache_'.$loadmethod;
+			$loadviewname	= 'view_'.$loadmethod;
 
 			$form = new Form($db);
 			if (method_exists($form, $loadmethodname))
@@ -170,8 +171,15 @@ else if (! empty($field) && ! empty($element) && ! empty($table_element) && ! em
 			}
 			else
 			{
-				dol_include_once('/'.$ext_element.'/class/actions_'.$ext_element.'.class.php');
-				$classname = 'Actions'.ucfirst($ext_element);
+				$module = $subelement = $ext_element;
+				if (preg_match('/^([^_]+)_([^_]+)/i',$ext_element,$regs))
+				{
+					$module = $regs[1];
+					$subelement = $regs[2];
+				}
+				
+				dol_include_once('/'.$module.'/class/actions_'.$subelement.'.class.php');
+				$classname = 'Actions'.ucfirst($subelement);
 				$object = new $classname($db);
 				$ret = $object->$loadmethodname();
 				if ($ret > 0)
