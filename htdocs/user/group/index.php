@@ -71,12 +71,8 @@ print start_box($langs->trans("ListOfGroups"), "twelve", "16-Users-2.png", false
 print ' <div class="row sepH_b">';
 print ' <div class="right">';
 if ($user->admin) {
-	if (!empty($conf->global->MAIN_ONLY_LOGIN_ALLOWED)) {
-		print '<a class="gh_button pill disable" href="#" title="' . dol_escape_htmltag($langs->trans("DisabledInMonoUserMode")) . '">' . $langs->trans("Create") . '</a>';
-	} else {
-		//print '<a class="gh_button primary pill icon add" href="'.DOL_URL_ROOT.'/user/database/fiche.php?action=create">'.$langs->trans("Create").'</a>';
-		$object->buttonCreate(DOL_URL_ROOT . '/user/database/fiche.php');
-	}
+	//print '<a class="gh_button primary pill icon add" href="'.DOL_URL_ROOT.'/user/database/fiche.php?action=create">'.$langs->trans("Create").'</a>';
+	//$object->buttonCreate(DOL_URL_ROOT . '/user/database/fiche.php');
 }
 print "</div>\n";
 print "</div>\n";
