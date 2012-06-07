@@ -46,7 +46,7 @@ $conf->Couchdb->host					= $dolibarr_main_couchdb_host;
 $conf->Couchdb->port					= $dolibarr_main_couchdb_port;
 $conf->Couchdb->name					= $dolibarr_main_couchdb_name;
 // Identifiant pour le serveur memcached
-$conf->Memcached->host					= $dolibarr_main_memcached_host;
+$conf->memcached->host					= $dolibarr_main_memcached_host;
 
 // Identifiant propres au serveur base de donnee
 $conf->db->host							= $dolibarr_main_db_host;

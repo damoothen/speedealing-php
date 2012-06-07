@@ -45,7 +45,7 @@ class Conf extends nosqlDocument
 	var $Couchdb;
 	
 	//! url of memcached server
-	var $Memcached;
+	var $memcached;
 
 	//! To store if javascript/ajax is enabked
 	public $use_javascript_ajax;
@@ -95,7 +95,7 @@ class Conf extends nosqlDocument
 		$this->file				= (object) array();
 		$this->db				= (object) array();
 		$this->Couchdb			= (object) array();
-		$this->Memcached		= (object) array();
+		$this->memcached		= (object) array();
 		$this->global			= (object) array();
 		$this->mycompany		= (object) array();
 		$this->admin			= (object) array();
@@ -148,7 +148,7 @@ class Conf extends nosqlDocument
 		 */
 		$found=false;
 		
-		if (! empty($this->Memcached->host))
+		if (! empty($this->memcached->host))
 		{
 			$result=dol_getcache("const");
 			if(is_object($result))
@@ -164,7 +164,7 @@ class Conf extends nosqlDocument
 			try{
 				$result = $this->load('const');
 				//print_r($result);
-				if (! empty($this->Memcached->host))
+				if (! empty($this->memcached->host))
 				{
 					dol_setcache("const", $result);
 				}

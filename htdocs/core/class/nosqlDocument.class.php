@@ -27,7 +27,7 @@ abstract class nosqlDocument extends CommonObject {
 	public $values;
 	public $error;
 	public $errors;
-	public $canvas;				// Contains canvas name if it is
+	public $canvas;	// Contains canvas name if it is
 	public $fk_extrafields;
 
 	/**
@@ -125,7 +125,7 @@ abstract class nosqlDocument extends CommonObject {
 
 		$found = false;
 
-		if ($conf->memcached->enabled && $cache) {
+		if ($conf->Memcached->enabled && $cache) {
 			$this->values = dol_getcache($id);
 			if (is_object($this->values)) {
 				$found = true;
@@ -136,7 +136,7 @@ abstract class nosqlDocument extends CommonObject {
 			$this->values = array();
 			$this->values = $this->couchdb->getDoc($id); // load extrafields for class
 
-			if ($conf->memcached->enabled && $cache) {
+			if ($conf->Memcached->enabled && $cache) {
 				dol_setcache($id, $this->values);
 			}
 		}
@@ -154,7 +154,7 @@ abstract class nosqlDocument extends CommonObject {
 
 		$this->values->class = get_class($this);
 
-		if ($conf->memcached->enabled && $cache) {
+		if ($conf->Memcached->enabled && $cache) {
 			dol_delcache($this->id);
 		}
 
@@ -191,7 +191,7 @@ abstract class nosqlDocument extends CommonObject {
 
 		$found = false;
 
-		if ($conf->memcached->enabled && $cache) {
+		if ($conf->Memcached->enabled && $cache) {
 			$result = dol_getcache(get_class($this) . ":" . $name);
 			if (is_object($result)) {
 				$found = true;
@@ -201,13 +201,13 @@ abstract class nosqlDocument extends CommonObject {
 		if (!$found) {
 			$result = array();
 			try {
-				if(!empty($conf->view_limit))
+				if (!empty($conf->view_limit))
 					$params['limit'] = $conf->view_limit;
 				$this->couchdb->setQueryParameters($params);
 
 				$result = $this->couchdb->getView(get_class($this), $name);
 
-				if ($conf->memcached->enabled && $cache) {
+				if ($conf->Memcached->enabled && $cache) {
 					dol_setcache(get_class($this) . ":" . $name, $result);
 				}
 			} catch (Exception $e) {
@@ -277,17 +277,20 @@ abstract class nosqlDocument extends CommonObject {
 		$nb = count($obj->aoColumns);
 		foreach ($obj->aoColumns as $i => $aRow):
 			?>
-							{
+								{
 			<?php foreach ($aRow as $key => $fields): ?>
 				<?php if ($key == "mDataProp" || $key == "sClass" || $key == "sDefaultContent" || $key == "sType" || $key == "sWidth") : ?>
-										"<?php echo $key; ?>":"<?php echo $fields; ?>",
+												"<?php echo $key; ?>":"<?php echo $fields; ?>",
 				<?php elseif ($key == "fnRender") : ?>
-										"<?php echo $key; ?>": <?php echo $fields; ?>,	    
+												"<?php echo $key; ?>": <?php echo $fields; ?>,	    
 				<?php else : ?>
-										"<?php echo $key; ?>": <?php echo ($fields ? "true" : "false"); ?>,
+												"<?php echo $key; ?>": <?php echo ($fields ? "true" : "false"); ?>,
 				<?php endif; ?>
 			<?php endforeach;
-			if ($nb - 1 == $i) echo "}"; else echo"},"; ?>
+			if ($nb - 1 == $i)
+				echo "}"; else
+				echo"},";
+			?>
 		<?php endforeach; ?>
 						],
 		<?php if (!isset($obj->aaSorting) && $json) : ?>
@@ -297,9 +300,9 @@ abstract class nosqlDocument extends CommonObject {
 		<?php endif; ?>
 		<?php if ($json) : ?>
 			<?php if (!empty($obj->sAjaxSource)): ?>
-								"sAjaxSource": "<?php echo $obj->sAjaxSource; ?>",
+									"sAjaxSource": "<?php echo $obj->sAjaxSource; ?>",
 			<?php else : ?>
-								"sAjaxSource" : "<?php echo DOL_URL_ROOT . '/core/ajax/listDatatables.php'; ?>?json=list&class=<?php echo get_class($this); ?>",
+									"sAjaxSource" : "<?php echo DOL_URL_ROOT . '/core/ajax/listDatatables.php'; ?>?json=list&class=<?php echo get_class($this); ?>",
 			<?php endif; ?>
 		<?php endif; ?>
 						"iDisplayLength": <?php echo (int) $conf->global->MAIN_SIZE_LISTE_LIMIT; ?>,
@@ -316,13 +319,13 @@ abstract class nosqlDocument extends CommonObject {
 						"oTableTools": { "sSwfPath": "<?php echo DOL_URL_ROOT . '/includes/jquery/plugins/datatables/extras/TableTools/media/swf/copy_csv_xls.swf'; ?>"},
 						//if($obj->oTableTools->aButtons==null)
 						//$obj->oTableTools->aButtons = array("xls");
-			    
+					    
 						"oColVis": { "buttonText" : 'Voir/Cacher',
 							"aiExclude": [0,1] // Not cacheable _id and name
 						},
 						//$obj->oColVis->bRestore = true;
 						//$obj->oColVis->sAlign = 'left';
-		            
+				            
 						// Avec export Excel
 		<?php if (!empty($obj->sDom)) : ?>
 							//"sDom": "Cl<fr>t<\"clear\"rtip>",
@@ -335,63 +338,63 @@ abstract class nosqlDocument extends CommonObject {
 		<?php if ($obj->oTableTools->aButtons != null) : ?>
 							"oTableTools" : { "aButtons": [
 			<?php foreach ($obj->oTableTools->aButtons as $i => $aRow): ?>
-										{
+											{
 				<?php foreach ($aRow as $key => $fields): ?>
 					<?php if ($key == "fnClick" || $key == "fnAjaxComplete") : ?>
-													"<?php echo $key; ?>": <?php echo $fields; ?>,	    
+																"<?php echo $key; ?>": <?php echo $fields; ?>,	    
 					<?php else : ?>
-													"<?php echo $key; ?>":"<?php echo $fields; ?>",
+																"<?php echo $key; ?>":"<?php echo $fields; ?>",
 					<?php endif; ?>
 				<?php endforeach; ?>
-										},
+												},
 			<?php endforeach; ?>
-								]},
-			 
+									]},
+						 
 		<?php endif; ?>
 		<?php if (!defined('NOLOGIN')) : ?>
 			<?php if (isset($obj->fnDrawCallback)): ?>
-								"fnDrawCallback": <?php echo $obj->fnDrawCallback; ?>,
+									"fnDrawCallback": <?php echo $obj->fnDrawCallback; ?>,
 			<?php else : ?>
-								// jeditable
-								"fnDrawCallback": function () {
-									var columns = [
+									// jeditable
+									"fnDrawCallback": function () {
+										var columns = [
 				<?php foreach ($obj->aoColumns as $i => $aRow) : ?>
-											"<?php echo $aRow->mDataProp; ?>",
+													"<?php echo $aRow->mDataProp; ?>",
 				<?php endforeach; ?>
-									];
-									$("td.edit", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
-										"callback": function( sValue, y ) {
-											oTable.fnDraw();
-										},
-										"submitdata": function ( value, settings ) {
-											return { "id": oTable.fnGetData( this.parentNode, 0), 
-												"key": columns[oTable.fnGetPosition( this )[2]]};
-										},
-										"height": "14px",
-										"tooltip": "Cliquer pour éditer...",
-										"indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
-										"placeholder" : ""
-				                
-									} );
-									$("td.select", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
-										"callback": function( sValue, y ) {
-											oTable.fnDraw();
-										},
-										"submitdata": function ( value, settings ) {
-											//alert( 'Number of rows: '+ oTable.fnGetData( this.parentNode, oTable.fnGetPosition( this )[2] ));
-											return { "id": oTable.fnGetData( this.parentNode, 0), 
-												"key": columns[oTable.fnGetPosition( this )[2]]};
-										},
-										"loadurl" : '<?php echo DOL_URL_ROOT . '/core/ajax/loadinplace.php'; ?>?json=Status&class=<?php echo get_class($this); ?>',
-										"type" : 'select',
-										"submit" : 'OK',
-										"height": "14px",
-										"tooltip": "Cliquer pour éditer...",
-										"indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
-										"placeholder" : ""
-				                
-									} );
-								}
+											];
+											$("td.edit", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
+												"callback": function( sValue, y ) {
+													oTable.fnDraw();
+												},
+												"submitdata": function ( value, settings ) {
+													return { "id": oTable.fnGetData( this.parentNode, 0), 
+														"key": columns[oTable.fnGetPosition( this )[2]]};
+												},
+												"height": "14px",
+												"tooltip": "Cliquer pour éditer...",
+												"indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
+												"placeholder" : ""
+								                
+											} );
+											$("td.select", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
+												"callback": function( sValue, y ) {
+													oTable.fnDraw();
+												},
+												"submitdata": function ( value, settings ) {
+													//alert( 'Number of rows: '+ oTable.fnGetData( this.parentNode, oTable.fnGetPosition( this )[2] ));
+													return { "id": oTable.fnGetData( this.parentNode, 0), 
+														"key": columns[oTable.fnGetPosition( this )[2]]};
+												},
+												"loadurl" : '<?php echo DOL_URL_ROOT . '/core/ajax/loadinplace.php'; ?>?json=Status&class=<?php echo get_class($this); ?>',
+												"type" : 'select',
+												"submit" : 'OK',
+												"height": "14px",
+												"tooltip": "Cliquer pour éditer...",
+												"indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
+												"placeholder" : ""
+								                
+											} );
+										}
 			<?php endif; ?>
 		<?php endif; ?>
 					});
@@ -602,14 +605,13 @@ abstract class nosqlDocument extends CommonObject {
 						<form action="<?php echo $url; ?>" class="nice" style="width:220px">
 							<label><?php echo $this->fk_extrafields->labelCreate; ?></label>
 							<input type="text" class="input-text fd3_name_input expand" name="id" />
-		                    <a href="#" class="gh_button small pill fd3_submit">Create</a>
-		                </form>
-		            </div>
+							<a href="#" class="gh_button small pill fd3_submit">Create</a>
+						</form>
+					</div>
 				</div>
 			</div>
 		</div>
-		<?php
-		?>
+		<?php ?>
 		<script type="text/javascript" charset="utf-8">
 				$(document).ready(function() {
 					$("#fd3").fancybox({
