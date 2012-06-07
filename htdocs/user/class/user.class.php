@@ -423,19 +423,20 @@ class User extends nosqlDocument {
 
 				// Add user rights
 
-				if (is_array($this->values->rights) && in_array($aRow->value->id, $this->values->rights, true)) {
+				if (is_array($this->values->rights) && isset($this->values->rights->$key)) {
 					if (count($perm) == 1)
 						$this->rights->$rights_class->$perm[0] = true;
-					else
+					elseif (count($perm) == 2)
 						$this->rights->$rights_class->$perm[0]->$perm[1] = true;
 				}
 
 				// Add groups rights
 				for ($i = 0; $i < count($groups); $i++) {
-					if (in_array($aRow->value->id, $groups[$i]->rights, true)) {
+					$key = $aRow->value->id;
+					if (isset($groups[$i]->rights->$key)) {
 						if (count($perm) == 1)
 							$this->rights->$rights_class->$perm[0] = true;
-						else
+						elseif (count($perm) == 2)
 							$this->rights->$rights_class->$perm[0]->$perm[1] = true;
 					}
 				}

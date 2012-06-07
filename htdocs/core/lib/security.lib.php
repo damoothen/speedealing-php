@@ -165,6 +165,9 @@ function restrictedArea($user, $features, $objectid=0, $dbtablename='', $feature
             && empty($user->rights->$feature->run)) $readok=0;
         }
     }
+	
+	if($user->admin)
+		$readok = 1;
 
     if (! $readok) accessforbidden();
     //print "Read access is ok";
@@ -211,6 +214,9 @@ function restrictedArea($user, $features, $objectid=0, $dbtablename='', $feature
                 && empty($user->rights->$feature->write)) $createok=0;
             }
         }
+		
+		if($user->admin)
+			$createok = 1;
 
         if (! $createok) accessforbidden();
         //print "Write access is ok";
