@@ -99,6 +99,47 @@ class modCategorie extends DolibarrModules {
 		$this->values->rights[$r][4] = 'supprimer';
 		$r++;
 
+		// Menus
+		$r = 0;
+		$this->values->menus[$r]->_id = "menu:supplierscategoriesshort";
+		$this->values->menus[$r]->position = 3;
+		$this->values->menus[$r]->url = "/categories/index.php?type=1";
+		$this->values->menus[$r]->langs = "categories";
+		$this->values->menus[$r]->perms = '$user->rights->categorie->lire';
+		$this->values->menus[$r]->enabled = '$conf->societe->enabled && $conf->categorie->enabled';
+		$this->values->menus[$r]->usertype = 2;
+		$this->values->menus[$r]->title = "SuppliersCategoriesShort";
+		$this->values->menus[$r]->fk_menu = "menu:companies";
+		$r++;
+		$this->values->menus[$r]->_id = "menu:customersprospectscategoriesshort";
+		$this->values->menus[$r]->position = 4;
+		$this->values->menus[$r]->url = "/categories/index.php?type=2";
+		$this->values->menus[$r]->langs = "categories";
+		$this->values->menus[$r]->perms = "$user->rights->categorie->lire";
+		$this->values->menus[$r]->enabled = '$conf->fournisseur->enabled && $conf->categorie->enabled';
+		$this->values->menus[$r]->usertype = 2;
+		$this->values->menus[$r]->title = "CustomersProspectsCategoriesShort";
+		$this->values->menus[$r]->fk_menu = "menu:companies";
+		$r++;
+		$this->values->menus[$r]->_id = "menu:newcategory";
+		$this->values->menus[$r]->url = "/categories/fiche.php?action=create&amp;type=1";
+		$this->values->menus[$r]->langs = "categories";
+		$this->values->menus[$r]->perms = '$user->rights->categorie->creer';
+		$this->values->menus[$r]->enabled = '$conf->societe->enabled && $conf->categorie->enabled';
+		$this->values->menus[$r]->usertype = 2;
+		$this->values->menus[$r]->title = "NewCategory";
+		$this->values->menus[$r]->fk_menu = "menu:supplierscategoriesshort";
+		$r++;
+		$this->values->menus[$r]->_id = "menu:newcategory0";
+		$this->values->menus[$r]->url = "/categories/fiche.php?action=create&amp;type=2";
+		$this->values->menus[$r]->langs = "categories";
+		$this->values->menus[$r]->perms = '$user->rights->categorie->creer';
+		$this->values->menus[$r]->enabled = '$conf->fournisseur->enabled && $conf->categorie->enabled';
+		$this->values->menus[$r]->usertype = 2;
+		$this->values->menus[$r]->title = "NewCategory";
+		$this->values->menus[$r]->fk_menu = "menu:customersprospectscategoriesshort";
+		$r++;
+
 		// Exports
 		//--------
 		$r = 0;

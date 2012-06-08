@@ -155,7 +155,6 @@ if ($action == 'set' && $user->admin) {
 	}
 
 	try {
-
 		$key = $_GET['value'];
 		$objMod = $modules[$key];
 
@@ -167,6 +166,7 @@ if ($action == 'set' && $user->admin) {
 	} catch (Exception $e) {
 		$mesg = $e->getMessage();
 	}
+	dol_flushcache(); // reset 
 	Header("Location: " . $_SERVER['PHP_SELF'] . "?&mesg=" . urlencode($mesg));
 	exit;
 }

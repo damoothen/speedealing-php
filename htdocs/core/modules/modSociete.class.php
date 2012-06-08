@@ -50,7 +50,7 @@ class modSociete extends DolibarrModules {
 
 		$this->values->family = "crm";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->values->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->values->name = "societe";
 		$this->values->description = "Gestion des societes et contacts";
 
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
@@ -118,57 +118,137 @@ class modSociete extends DolibarrModules {
 		$this->values->rights[$r]->id = 121; // id de la permission
 		$this->values->rights[$r]->desc = 'Lire les societes'; // libelle de la permission
 		$this->values->rights[$r]->default = true;
-		$this->values->rights[$r]->perms = array('lire');
+		$this->values->rights[$r]->perm = array('lire');
 
 		$r++;
 		$this->values->rights[$r]->id = 122; // id de la permission
 		$this->values->rights[$r]->desc = 'Creer modifier les societes'; // libelle de la permission
 		$this->values->rights[$r]->default = 0; // La permission est-elle une permission par defaut
-		$this->values->rights[$r]->perms = array('creer');
+		$this->values->rights[$r]->perm = array('creer');
 
 		$r++;
 		$this->values->rights[$r]->id = 125; // id de la permission
 		$this->values->rights[$r]->desc = 'Supprimer les societes'; // libelle de la permission
 		$this->values->rights[$r]->default = 0; // La permission est-elle une permission par defaut
-		$this->values->rights[$r]->perms = array('supprimer');
+		$this->values->rights[$r]->perm = array('supprimer');
 
 		$r++;
 		$this->values->rights[$r]->id = 126; // id de la permission
 		$this->values->rights[$r]->desc = 'Exporter les societes'; // libelle de la permission
 		$this->values->rights[$r]->default = 0; // La permission est-elle une permission par defaut
-		$this->values->rights[$r]->perms = array('export');
+		$this->values->rights[$r]->perm = array('export');
 
 		// 262 : Resteindre l'acces des commerciaux
 		$r++;
 		$this->values->rights[$r]->id = 262;
 		$this->values->rights[$r]->desc = 'Consulter tous les tiers par utilisateurs internes (sinon uniquement si contact commercial). Non effectif pour utilisateurs externes (tjs limités à eux-meme).';
 		$this->values->rights[$r]->default = 1;
-		$this->values->rights[$r]->perms = array('client','voir');
+		$this->values->rights[$r]->perm = array('client', 'voir');
 
 		$r++;
 		$this->values->rights[$r]->id = 281; // id de la permission
 		$this->values->rights[$r]->desc = 'Lire les contacts'; // libelle de la permission
 		$this->values->rights[$r]->default = 1; // La permission est-elle une permission par defaut
-		$this->values->rights[$r]->perms = array('contact','lire');
+		$this->values->rights[$r]->perm = array('contact', 'lire');
 
 		$r++;
 		$this->values->rights[$r]->id = 282; // id de la permission
 		$this->values->rights[$r]->desc = 'Creer modifier les contacts'; // libelle de la permission
 		$this->values->rights[$r]->default = 0; // La permission est-elle une permission par defaut
-		$this->values->rights[$r]->perms = array('contact','creer');
+		$this->values->rights[$r]->perm = array('contact', 'creer');
 
 		$r++;
 		$this->values->rights[$r]->id = 283; // id de la permission
 		$this->values->rights[$r]->desc = 'Supprimer les contacts'; // libelle de la permission
 		$this->values->rights[$r]->default = 0; // La permission est-elle une permission par defaut
-		$this->values->rights[$r]->perms = array('contact','supprimer');
+		$this->values->rights[$r]->perm = array('contact', 'supprimer');
 
 		$r++;
 		$this->values->rights[$r]->id = 286; // id de la permission
 		$this->values->rights[$r]->desc = 'Exporter les contacts'; // libelle de la permission
 		$this->values->rights[$r]->default = 0; // La permission est-elle une permission par defaut
-		$this->values->rights[$r]->perms = array('contact','export');
+		$this->values->rights[$r]->perm = array('contact', 'export');
 
+		// Menus
+		$r = 0;
+		$this->values->menus[$r]->_id = "menu:companies";
+		$this->values->menus[$r]->type = "top";
+		$this->values->menus[$r]->position = 2;
+		$this->values->menus[$r]->url = "/societe/index.php";
+		$this->values->menus[$r]->langs = "companies";
+		$this->values->menus[$r]->perms = '$user->rights->societe->lire || $user->rights->societe->contact->lire';
+		$this->values->menus[$r]->enabled = '$conf->societe->enabled || $conf->fournisseur->enabled';
+		$this->values->menus[$r]->usertype = 2;
+		$this->values->menus[$r]->title = "ThirdParties";
+
+		$r++;
+		$this->values->menus[$r]->_id = "menu:thirdparty";
+		$this->values->menus[$r]->url = "/societe/index.php";
+		$this->values->menus[$r]->langs = "companies";
+		$this->values->menus[$r]->perms = '$user->rights->societe->lire';
+		$this->values->menus[$r]->enabled = '$conf->societe->enabled';
+		$this->values->menus[$r]->usertype = 2;
+		$this->values->menus[$r]->title = "ThirdParty";
+		$this->values->menus[$r]->fk_menu = "menu:companies";
+		$r++;
+		$this->values->menus[$r]->_id = "menu:contactsaddresses";
+		$this->values->menus[$r]->position = 1;
+		$this->values->menus[$r]->url = "/contact/list.php";
+		$this->values->menus[$r]->langs = "companies";
+		$this->values->menus[$r]->perms = '$user->rights->societe->lire';
+		$this->values->menus[$r]->enabled = '$conf->societe->enabled';
+		$this->values->menus[$r]->usertype = 2;
+		$this->values->menus[$r]->title = 'ContactsAddresses||Contacts@$conf->global->SOCIETE_ADDRESSES_MANAGEMENT';
+		$this->values->menus[$r]->fk_menu = "menu:companies";
+		$r++;
+		$this->values->menus[$r]->_id = "menu:newcontactaddress";
+		$this->values->menus[$r]->url = "/contact/fiche.php?action=create";
+		$this->values->menus[$r]->langs = "companies";
+		$this->values->menus[$r]->perms = '$user->rights->societe->cree';
+		$this->values->menus[$r]->enabled = '$conf->societe->enabled';
+		$this->values->menus[$r]->usertype = 2;
+		$this->values->menus[$r]->title = 'NewContactAddress||NewContact@$conf->global->SOCIETE_ADDRESSES_MANAGEMENT';
+		$this->values->menus[$r]->fk_menu = "menu:contactsaddresses";
+		$r++;
+		$this->values->menus[$r]->_id = "menu:list";
+		$this->values->menus[$r]->position = 1;
+		$this->values->menus[$r]->url = "/contact/list.php";
+		$this->values->menus[$r]->langs = "companies";
+		$this->values->menus[$r]->perms = '$user->rights->societe->lire';
+		$this->values->menus[$r]->enabled = '$conf->societe->enabled';
+		$this->values->menus[$r]->usertype = 2;
+		$this->values->menus[$r]->title = "List";
+		$this->values->menus[$r]->fk_menu = "menu:contactsaddresses";
+		$r++;
+		$this->values->menus[$r]->_id = "menu:menunewthirdparty";
+		$this->values->menus[$r]->url = "/societe/soc.php?action=create";
+		$this->values->menus[$r]->langs = "companies";
+		$this->values->menus[$r]->perms = '$user->rights->societe->lire';
+		$this->values->menus[$r]->enabled = '$conf->societe->enabled';
+		$this->values->menus[$r]->usertype = 2;
+		$this->values->menus[$r]->title = "MenuNewThirdParty";
+		$this->values->menus[$r]->fk_menu = "menu:thirdparty";
+		$r++;
+		$this->values->menus[$r]->_id = "menu:listprospectsshort";
+		$this->values->menus[$r]->position = 3;
+		$this->values->menus[$r]->url = "/comm/prospect/list.php";
+		$this->values->menus[$r]->langs = "companies";
+		$this->values->menus[$r]->perms = '$user->rights->societe->lire';
+		$this->values->menus[$r]->enabled = '$conf->societe->enabled';
+		$this->values->menus[$r]->usertype = 2;
+		$this->values->menus[$r]->title = "ListProspectsShort";
+		$this->values->menus[$r]->fk_menu = "menu:thirdparty";
+		$r++;
+		$this->values->menus[$r]->_id = "menu:listcustomersshort";
+		$this->values->menus[$r]->position = 4;
+		$this->values->menus[$r]->url = "/comm/list.php";
+		$this->values->menus[$r]->langs = "companies";
+		$this->values->menus[$r]->perms = '$user->rights->societe->lire';
+		$this->values->menus[$r]->enabled = '$conf->societe->enabled';
+		$this->values->menus[$r]->usertype = 2;
+		$this->values->menus[$r]->title = "ListCustomersShort";
+		$this->values->menus[$r]->fk_menu = "menu:thirdparty";
+		$r++;
 
 		// Exports
 		//--------

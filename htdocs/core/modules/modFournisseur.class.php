@@ -229,6 +229,19 @@ class modFournisseur extends DolibarrModules {
 		$this->values->rights[$r][4] = 'commande';
 		$this->values->rights[$r][5] = 'export';
 
+		// Menus
+		//--------
+		$r = 0;
+		$this->values->menus[$r]->_id = "menu:listsuppliersshort";
+		$this->values->menus[$r]->position = 5;
+		$this->values->menus[$r]->url = "/fourn/liste.php";
+		$this->values->menus[$r]->langs = "suppliers";
+		$this->values->menus[$r]->perms = '$user->rights->societe->lire && $user->rights->fournisseur->lire';
+		$this->values->menus[$r]->enabled = '$conf->societe->enabled && $conf->fournisseur->enabled';
+		$this->values->menus[$r]->usertype = 2;
+		$this->values->menus[$r]->title = "ListSuppliersShort";
+		$this->values->menus[$r]->fk_menu = "menu:thirdparty";
+
 		// Exports
 		//--------
 		$r = 0;
