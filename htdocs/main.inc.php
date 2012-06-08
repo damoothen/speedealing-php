@@ -215,6 +215,7 @@ if (!defined('NOREQUIREAJAX') && $conf->use_javascript_ajax)
 	require_once(DOL_DOCUMENT_ROOT . '/core/lib/ajax.lib.php'); // Need 22ko memory
 
 
+
 	
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
@@ -1274,12 +1275,6 @@ function left_menu($menu_array_before, $helppagename = '', $moresearchform = '',
 		$bookmarks = printBookmarksList($db, $langs);
 	}
 
-	$left_menu = empty($conf->browser->phone) ? $conf->top_menu : $conf->smart_menu;
-	if (GETPOST('menu'))
-		$left_menu = GETPOST('menu');  // menu=eldy_backoffice.php
-
-
-		
 // Load the top menu manager (only if not already done)
 	if (!class_exists('MenuLeft')) {
 		$menufound = 0;

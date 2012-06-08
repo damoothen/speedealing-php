@@ -27,10 +27,10 @@ $(document).ready(function() {
 	var fk_element = $('#jeditable_fk_element').html();
 	
 	$('.edit').editable(urlSaveInPlace, {
-        indicator : indicatorInPlace,
-        tooltip   : tooltipInPlace,
+		indicator : indicatorInPlace,
+		tooltip   : tooltipInPlace,
 		placeholder	: ''
-    });
+	});
 	
 	$('.edit_area').editable(urlSaveInPlace, {
 		type		: 'text',
@@ -55,13 +55,27 @@ $(document).ready(function() {
 		indicator	: indicatorInPlace,
 		wysiwyg		: {
 			controls : {
-				separator04 : { visible : true },
-				insertOrderedList : { visible : true },
-				insertUnorderedList : { visible : true },
-				undo : { visible : true },
-				separator08 : { visible : false },
-				increaseFontSize : { visible : false},
-				decreaseFontSize : { visible : false},
+				separator04 : {
+					visible : true
+				},
+				insertOrderedList : {
+					visible : true
+				},
+				insertUnorderedList : {
+					visible : true
+				},
+				undo : {
+					visible : true
+				},
+				separator08 : {
+					visible : false
+				},
+				increaseFontSize : {
+					visible : false
+				},
+				decreaseFontSize : {
+					visible : false
+				},
 			}
 		}
 	});
@@ -90,13 +104,13 @@ $(document).ready(function() {
 		}
 	});
 	$('.editkey_textarea').hover(
-			function () {
-				$('#viewval_' + $(this).attr('id')).addClass("viewval_hover");
-			},
-			function () {
-				$('#viewval_' + $(this).attr('id')).removeClass("viewval_hover");
-			}
-	);
+		function () {
+			$('#viewval_' + $(this).attr('id')).addClass("viewval_hover");
+		},
+		function () {
+			$('#viewval_' + $(this).attr('id')).removeClass("viewval_hover");
+		}
+		);
 	$('.editkey_textarea').click(function() {
 		$('#viewval_' + $(this).attr('id')).click();
 	});
@@ -133,13 +147,13 @@ $(document).ready(function() {
 		}
 	});
 	$('.editkey_ckeditor').hover(
-			function () {
-				$('#viewval_' + $(this).attr('id')).addClass("viewval_hover");
-			},
-			function () {
-				$('#viewval_' + $(this).attr('id')).removeClass("viewval_hover");
-			}
-	);
+		function () {
+			$('#viewval_' + $(this).attr('id')).addClass("viewval_hover");
+		},
+		function () {
+			$('#viewval_' + $(this).attr('id')).removeClass("viewval_hover");
+		}
+		);
 	$('.editkey_ckeditor').click(function() {
 		$( '#viewval_' + $(this).attr('id') ).click();
 	});
@@ -152,13 +166,13 @@ $(document).ready(function() {
 		$('#editval_' + $(this).attr('id')).show().click();
 	});
 	$('.editkey_ckeditor').hover(
-			function () {
-				$('#viewval_' + $(this).attr('id')).addClass("viewval_hover");
-			},
-			function () {
-				$('#viewval_' + $(this).attr('id')).removeClass("viewval_hover");
-			}
-	);
+		function () {
+			$('#viewval_' + $(this).attr('id')).addClass("viewval_hover");
+		},
+		function () {
+			$('#viewval_' + $(this).attr('id')).removeClass("viewval_hover");
+		}
+		);
 	$('.editkey_ckeditor').click(function() {
 		$( '#viewval_' + $(this).attr('id') ).click();
 	});
@@ -191,13 +205,13 @@ $(document).ready(function() {
 		}
 	});
 	$('.editkey_string').hover(
-			function () {
-				$('#viewval_' + $(this).attr('id')).addClass("viewval_hover");
-			},
-			function () {
-				$('#viewval_' + $(this).attr('id')).removeClass("viewval_hover");
-			}
-	);
+		function () {
+			$('#viewval_' + $(this).attr('id')).addClass("viewval_hover");
+		},
+		function () {
+			$('#viewval_' + $(this).attr('id')).removeClass("viewval_hover");
+		}
+		);
 	$('.editkey_string').click(function() {
 		$( '#viewval_' + $(this).attr('id') ).click();
 	});
@@ -230,13 +244,13 @@ $(document).ready(function() {
 		}
 	});
 	$('.editkey_numeric').hover(
-			function () {
-				$( '#viewval_' + $(this).attr('id') ).addClass("viewval_hover");
-			},
-			function () {
-				$( '#viewval_' + $(this).attr('id') ).removeClass("viewval_hover");
-			}
-	);
+		function () {
+			$( '#viewval_' + $(this).attr('id') ).addClass("viewval_hover");
+		},
+		function () {
+			$( '#viewval_' + $(this).attr('id') ).removeClass("viewval_hover");
+		}
+		);
 	$('.editkey_numeric').click(function() {
 		$( '#viewval_' + $(this).attr('id') ).click();
 	});
@@ -269,13 +283,13 @@ $(document).ready(function() {
 		}
 	});
 	$('.editkey_datepicker').hover(
-			function () {
-				$('#viewval_' + $(this).attr('id')).addClass("viewval_hover");
-			},
-			function () {
-				$('#viewval_' + $(this).attr('id')).removeClass("viewval_hover");
-			}
-	);
+		function () {
+			$('#viewval_' + $(this).attr('id')).addClass("viewval_hover");
+		},
+		function () {
+			$('#viewval_' + $(this).attr('id')).removeClass("viewval_hover");
+		}
+		);
 	$('.viewval_datepicker.active').click(function() {
 		$('#viewval_' + $(this).attr('id').substr(8)).hide();
 		$('#editval_' + $(this).attr('id').substr(8)).show().click();
@@ -310,13 +324,13 @@ $(document).ready(function() {
 		}
 	});
 	$('.editkey_select').hover(
-			function () {
-				$('#viewval_' + $(this).attr('id')).addClass("viewval_hover");
-			},
-			function () {
-				$('#viewval_' + $(this).attr('id')).removeClass("viewval_hover");
-			}
-	);
+		function () {
+			$('#viewval_' + $(this).attr('id')).addClass("viewval_hover");
+		},
+		function () {
+			$('#viewval_' + $(this).attr('id')).removeClass("viewval_hover");
+		}
+		);
 	$('.viewval_select.active').click(function() {
 		$('#viewval_' + $(this).attr('id').substr(8)).hide();
 		$('#editval_' + $(this).attr('id').substr(8)).show().click();
@@ -354,13 +368,13 @@ $(document).ready(function() {
 		}
 	});
 	$('.editkey_autocomplete').hover(
-			function () {
-				$('#viewval_' + $(this).attr('id')).addClass("viewval_hover");
-			},
-			function () {
-				$('#viewval_' + $(this).attr('id')).removeClass("viewval_hover");
-			}
-	);
+		function () {
+			$('#viewval_' + $(this).attr('id')).addClass("viewval_hover");
+		},
+		function () {
+			$('#viewval_' + $(this).attr('id')).removeClass("viewval_hover");
+		}
+		);
 	$('.viewval_autocomplete.active').click(function() {
 		$('#viewval_' + $(this).attr('id').substr(8)).hide();
 		$('#editval_' + $(this).attr('id').substr(8)).show().click();
