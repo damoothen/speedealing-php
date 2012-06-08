@@ -75,12 +75,6 @@ class DolEditor
         $this->tool=empty($conf->global->FCKEDITOR_EDITORNAME)?$defaulteditor:$conf->global->FCKEDITOR_EDITORNAME;
         $this->uselocalbrowser=$uselocalbrowser;
 
-        // Check if extended editor is ok. If not we force textarea
-        if (empty($conf->fckeditor->enabled) || ! $okforextendededitor)
-        {
-            $this->tool = 'textarea';
-        }
-
         // Define content and some properties
         if ($this->tool == 'ckeditor')
         {

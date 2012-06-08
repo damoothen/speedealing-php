@@ -170,6 +170,16 @@ abstract class nosqlDocument extends CommonObject {
 		}
 		return $result;
 	}
+	
+	/**
+	 * 	save values objects documents
+	 *  @param	$obj		array of objects
+	 *  @return value of storeDoc
+	 */
+	public function storeDocs($obj)
+	{
+		$this->couchdb->storeDocs($obj);
+	}
 
 	/**
 	 * 	Return id of document
