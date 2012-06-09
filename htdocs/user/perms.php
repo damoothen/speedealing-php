@@ -146,6 +146,7 @@ print $langs->trans("Module");
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "name";
 $obj->aoColumns[$i]->sDefaultContent = "";
+$obj->aoColumns[$i]->sWidth = "18em";
 $i++;
 
 print'<th>';
@@ -246,6 +247,7 @@ print'</table>';
 
 $obj->aaSorting = array(array(1, 'asc'));
 $obj->sDom = 'l<fr>t<\"clear\"rtip>';
+$obj->iDisplayLength = -1;
 
 print $object->datatablesCreate($obj, "rights");
 
