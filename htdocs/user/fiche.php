@@ -768,18 +768,6 @@ if (($action == 'create') || ($action == 'adduserldap')) {
 			}
 			print '</td></tr>' . "\n";
 
-			// Multicompany
-			if (!empty($conf->multicompany->enabled) && empty($conf->global->MULTICOMPANY_TRANSVERSE_MODE) && $conf->entity == 1 && $user->admin && !$user->entity) {
-				print '<tr><td valign="top">' . $langs->trans("Entity") . '</td><td width="75%" class="valeur">';
-				if ($fuser->admin && !$fuser->entity) {
-					print $langs->trans("AllEntities");
-				} else {
-					$mc->getInfo($fuser->entity);
-					print $mc->label;
-				}
-				print "</td></tr>\n";
-			}
-
 			// Type
 			print '<tr><td valign="top">' . $langs->trans("Type") . '</td><td>';
 			if ($fuser->societe_id) {

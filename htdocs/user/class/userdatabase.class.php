@@ -525,110 +525,75 @@ class UserDatabase extends nosqlDocument
 			return -1;
 		}
 	}
-
+	
 	/**
-	 *	Create group into database
+	 *        Compact a database
 	 *
-	 *	@param		int		$notrigger	0=triggers enabled, 1=triggers disabled
-	 *	@return     int					<0 if KO, >=0 if OK
+	 *        @return     <0 if KO, > 0 if OK
 	 */
-	function create($notrigger=0)
+	function compact()
 	{
-		global $user, $conf, $langs;
-
-		$error=0;
-		$now=dol_now();
-
-		$entity=$conf->entity;
-		if(! empty($conf->multicompany->enabled) && $conf->entity == 1)
-		{
-			$entity=$this->entity;
+		try{
+			$this->couchdb->useDatabase($this->id);
+			$this->couchdb->compactDatabase();
+			return 1;
 		}
-
-		$sql = "INSERT INTO ".MAIN_DB_PREFIX."usergroup (";
-		$sql.= "datec";
-		$sql.= ", nom";
-		$sql.= ", entity";
-		$sql.= ") VALUES (";
-		$sql.= "'".$this->db->idate($now)."'";
-		$sql.= ",'".$this->db->escape($this->nom)."'";
-		$sql.= ",".$entity;
-		$sql.= ")";
-
-		dol_syslog("UserGroup::Create sql=".$sql, LOG_DEBUG);
-		$result=$this->db->query($sql);
-		if ($result)
+		catch(Exception $e)
 		{
-			$this->id = $this->db->last_insert_id(MAIN_DB_PREFIX."usergroup");
-
-			if ($this->update(1) < 0) return -2;
-
-			if (! $notrigger)
-			{
-				// Appel des triggers
-				include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
-				$interface=new Interfaces($this->db);
-				$result=$interface->run_triggers('GROUP_CREATE',$this,$user,$langs,$conf);
-				if ($result < 0) { $error++; $this->errors=$interface->errors; }
-				// Fin appel triggers
-			}
-
-			return $this->id;
+			dol_print_error('',$e->getMessage());
+			return -1;
 		}
-		else
+	}
+	
+	/**
+	 *        Compact views
+	 *
+	 *        @return     <0 if KO, > 0 if OK
+	 */
+	function compactView()
+	{
+		try{
+			$this->couchdb->useDatabase($this->id);
+			$this->couchdb->compactAllViews();
+			return 1;
+		}
+		catch(Exception $e)
 		{
-			$this->error=$this->db->lasterror();
-			dol_syslog("UserGroup::Create ".$this->error,LOG_ERR);
+			dol_print_error('',$e->getMessage());
+			return -1;
+		}
+	}
+	
+	/**
+	 *        Write data in memory to disk
+	 *
+	 *        @return     <0 if KO, > 0 if OK
+	 */
+	function commit()
+	{
+		try{
+			$this->couchdb->useDatabase($this->id);
+			$this->couchdb->ensureFullCommit();
+			return 1;
+		}
+		catch(Exception $e)
+		{
+			dol_print_error('',$e->getMessage());
 			return -1;
 		}
 	}
 
 	/**
-	 *		Update group into database
+	 *	Create a database
 	 *
-	 *      @param      int		$notrigger	    0=triggers enabled, 1=triggers disabled
-	 *    	@return     int						<0 if KO, >=0 if OK
+	 *	@param		int		$notrigger	0=triggers enabled, 1=triggers disabled
+	 *	@return     int					<0 if KO, >=0 if OK
 	 */
-	function update($notrigger=0)
+	function create()
 	{
-		global $user, $conf, $langs;
-
-		$error=0;
-
-		$entity=$conf->entity;
-		if(! empty($conf->multicompany->enabled) && $conf->entity == 1)
-		{
-			$entity=$this->entity;
-		}
-
-		$sql = "UPDATE ".MAIN_DB_PREFIX."usergroup SET ";
-		$sql.= " nom = '" . $this->db->escape($this->nom) . "'";
-		$sql.= ", entity = " . $entity;
-		$sql.= ", note = '" . $this->db->escape($this->note) . "'";
-		$sql.= " WHERE rowid = " . $this->id;
-
-		dol_syslog("Usergroup::update sql=".$sql);
-		$resql = $this->db->query($sql);
-		if ($resql)
-		{
-			if (! $notrigger)
-			{
-				// Appel des triggers
-				include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
-				$interface=new Interfaces($this->db);
-				$result=$interface->run_triggers('GROUP_MODIFY',$this,$user,$langs,$conf);
-				if ($result < 0) { $error++; $this->errors=$interface->errors; }
-				// Fin appel triggers
-			}
-
-			if (! $error) return 1;
-			else return -$error;
-		}
-		else
-		{
-			dol_print_error($this->db);
-			return -1;
-		}
+		$this->couchdb->useDatabase($this->id);
+		$this->couchdb->createDatabase();
+		return 1;
 	}
 }
 

@@ -519,10 +519,19 @@ class modUser extends DolibarrModules {
 		$this->values->menus[$r]->_id = "menu:newgroup";
 		$this->values->menus[$r]->url = "/user/group/fiche.php?action=create";
 		$this->values->menus[$r]->langs = "users";
-		$this->values->menus[$r]->perms = '($conf->global->MAIN_USE_ADVANCED_PERMS?$user->rights->user->group_advance->write:$user->rights->user->user->creer) || $user->admin';
+		$this->values->menus[$r]->perms = '$user->rights->user->group_advance->write || $user->admin';
 		$this->values->menus[$r]->usertype = 2;
 		$this->values->menus[$r]->title = "NewGroup";
 		$this->values->menus[$r]->fk_menu = "menu:groups";
+		$r++;
+		
+		$this->values->menus[$r]->_id = "menu:newdatabase";
+		$this->values->menus[$r]->url = "/user/database/fiche.php?action=create";
+		$this->values->menus[$r]->langs = "users";
+		$this->values->menus[$r]->perms = '$user->admin';
+		$this->values->menus[$r]->usertype = 2;
+		$this->values->menus[$r]->title = "NewDatabase";
+		$this->values->menus[$r]->fk_menu = "menu:databases";
 
 
 		// Exports

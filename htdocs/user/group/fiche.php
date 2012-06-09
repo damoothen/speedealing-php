@@ -426,7 +426,7 @@ if ($action == 'create') {
 				print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
 				print '<input type="hidden" name="action" value="adddatabase">';
 				print '<table class="noborder" width="100%">' . "\n";
-				print '<tr class="liste_titre"><td class="liste_titre" width="25%">' . $langs->trans("NonAffectedUsers") . '</td>' . "\n";
+				print '<tr class="liste_titre"><td class="liste_titre" width="25%">' . $langs->trans("NonAffectedGroupsDatabase") . '</td>' . "\n";
 				print '<td>';
 				print $form->select_doldatabases('', 'databaseid', 1, $exclude, 0, '', '');
 				print "</td>\n";

@@ -21,6 +21,10 @@ require_once(DOL_DOCUMENT_ROOT . "/user/class/userdatabase.class.php");
 
 $langs->load("users");
 
+$id = GETPOST('id', 'alpha');
+$action = GETPOST("action");
+$confirm = GETPOST("confirm");
+
 $object = new UserDatabase($db);
 
 /*
@@ -75,11 +79,57 @@ if ($_GET['json'] == "list") {
 	exit;
 }
 
+if ($action == 'confirm_delete' && $confirm == "yes") {
+	if ($user->admin) {
+		$object->id = $id;
+		$object->delete();
+		Header("Location: index.php");
+		exit;
+	} else {
+		$langs->load("errors");
+		$message = '<div class="error">' . $langs->trans('ErrorForbidden') . '</div>';
+	}
+}
+
+if ($action == 'commit' ) {
+	if ($user->admin) {
+		$object->id = $id;
+		$object->commit();
+		Header("Location: index.php");
+		exit;
+	} else {
+		$langs->load("errors");
+		$message = '<div class="error">' . $langs->trans('ErrorForbidden') . '</div>';
+	}
+}
+
+if ($action == 'compact' ) {
+	if ($user->admin) {
+		$object->id = $id;
+		$object->compact();
+		$object->compactView();
+		Header("Location: index.php");
+		exit;
+	} else {
+		$langs->load("errors");
+		$message = '<div class="error">' . $langs->trans('ErrorForbidden') . '</div>';
+	}
+}
+
 /*
  * View
  */
 
 llxHeader();
+
+$form = new Form($db);
+
+if ($action == 'delete') {
+	$ret = $form->form_confirm($_SERVER['PHP_SELF'] . "?id=" . $id, $langs->trans("DeleteADatabase"), $langs->trans("ConfirmDatabase", $id), "confirm_delete", '', 0, 1);
+	if ($ret == 'html')
+		print '<br>';
+}
+
 
 print '<div class="row">';
 print start_box($langs->trans("ListOfDatabases"), "twelve", "16-Cloud.png", false);
@@ -136,6 +186,13 @@ $obj->aoColumns[$i]->sDefaultContent = "";
 $obj->aoColumns[$i]->sClass = "fright";
 $i++;
 print'<th class="essential">';
+print $langs->trans('Commit');
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "committed_update_seq";
+$obj->aoColumns[$i]->sDefaultContent = "";
+$obj->aoColumns[$i]->sClass = "fright";
+$i++;
+print'<th class="essential">';
 print $langs->trans('DiskSize');
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "disk_size";
@@ -165,14 +222,20 @@ print'<th class="essential">';
 print $langs->trans('Action');
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "";
-$obj->aoColumns[$i]->sClass = "fright content_actions";
+$obj->aoColumns[$i]->sClass = "center content_actions";
 $obj->aoColumns[$i]->sDefaultContent = "";
 
 $obj->aoColumns[$i]->fnRender = 'function(obj) {
 	var ar = [];
-	ar[ar.length] = "<a href=\"#\" class=\"sepV_a\" title=\"Compact Database\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/ico/icSw2/16-ZIP-File.png\" alt=\"\" /></a>";
-	ar[ar.length] = "<a href=\"#\" class=\"sepV_a\" title=\"Compact Views\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/ico/icSw2/16-Preview.png\" alt=\"\" /></a>";
-	ar[ar.length] = "<a href=\"#\" class=\"sepV_a\" title=\"Commit\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/ico/icSw2/16-Create-Write.png\" alt=\"\" /></a>";
+	ar[ar.length] = "<a href=\"'. $_SERVER['PHP_SELF'] . '?id=";
+	ar[ar.length] = obj.aData.db_name.toString();
+	ar[ar.length] = "&action=compact\" class=\"sepV_a\" title=\"Compact Database\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/processing.png\" alt=\"\" /></a>";
+	ar[ar.length] = "<a href=\"'. $_SERVER['PHP_SELF'] . '?id=";
+	ar[ar.length] = obj.aData.db_name.toString();
+	ar[ar.length] = "&action=commit\" class=\"sepV_a\" title=\"Commit\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/save.png\" alt=\"\" /></a>";
+	ar[ar.length] = "<a href=\"'. $_SERVER['PHP_SELF'] . '?id=";
+	ar[ar.length] = obj.aData.db_name.toString();
+	ar[ar.length] = "&action=delete\" class=\"sepV_a\" title=\"Delete\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/delete.png\" alt=\"\" /></a>";
 	var str = ar.join("");
 	return str;
 }';

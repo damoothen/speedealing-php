@@ -22,9 +22,9 @@ require_once(DOL_DOCUMENT_ROOT . "/user/class/userdatabase.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/user/class/usergroup.class.php");
 
 // Defini si peux lire/modifier utilisateurs et permisssions
-$canreadperms = ($user->admin || $user->rights->user->user->lire);
-$caneditperms = ($user->admin || $user->rights->user->user->creer);
-$candisableperms = ($user->admin || $user->rights->user->user->supprimer);
+$canreadperms = ($user->admin );
+$caneditperms = ($user->admin );
+$candisableperms = ($user->admin );
 
 $langs->load("users");
 $langs->load("other");
@@ -57,7 +57,7 @@ if ($action == 'confirm_delete' && $confirm == "yes") {
 }
 
 /**
- *  Action add group
+ *  Action add database
  */
 if ($action == 'add') {
 	if ($caneditperms) {
@@ -68,25 +68,16 @@ if ($action == 'add') {
 		}
 
 		if (!$message) {
-			$object->nom = trim($_POST["nom"]);
-			$object->note = trim($_POST["note"]);
-
-			$db->begin();
-
-			$id = $object->create();
-
-			if ($id > 0) {
-				$db->commit();
-
-				Header("Location: fiche.php?id=" . $object->id);
-				exit;
-			} else {
-				$db->rollback();
-
+			try {
+				$object->id = trim($_POST["nom"]);
+				$object->create();
+			} catch (Exception $e) {
 				$langs->load("errors");
-				$message = '<div class="error">' . $langs->trans("ErrorGroupAlreadyExists", $object->nom) . '</div>';
+				$message = '<div class="error">' . $langs->trans("ErrorDatabaseAlreadyExists", $object->id) . '</div>';
 				$action = "create"; // Go back to create page
 			}
+			Header("Location: fiche.php?id=" . $object->id);
+			exit;
 		}
 	} else {
 		$langs->load("errors");
@@ -130,8 +121,8 @@ if ($action == 'addgroup' || $action == 'removegroup') {
 		if ($groupid) {
 			$object->fetch($id);
 
-			if ($action == 'addgroup') {				
-				if($_POST['admin'])
+			if ($action == 'addgroup') {
+				if ($_POST['admin'])
 					$object->couchAdmin->addDatabaseAdminRole($groupid);
 				else
 					$object->couchAdmin->addDatabaseReaderRole($groupid);
@@ -149,36 +140,6 @@ if ($action == 'addgroup' || $action == 'removegroup') {
 		$message = '<div class="error">' . $langs->trans('ErrorForbidden') . '</div>';
 	}
 }
-
-
-if ($action == 'update') {
-	if ($caneditperms) {
-		$message = "";
-
-		$db->begin();
-
-		$object->fetch($id);
-
-		$object->oldcopy = dol_clone($object);
-
-		$object->nom = trim($_POST["group"]);
-		$object->note = dol_htmlcleanlastbr($_POST["note"]);
-
-		$ret = $object->update();
-
-		if ($ret >= 0 && !count($object->errors)) {
-			$message.='<div class="ok">' . $langs->trans("GroupModified") . '</div>';
-			$db->commit();
-		} else {
-			$message.='<div class="error">' . $object->error . '</div>';
-			$db->rollback();
-		}
-	} else {
-		$langs->load("errors");
-		$message = '<div class="error">' . $langs->trans('ErrorForbidden') . '</div>';
-	}
-}
-
 
 
 /*
@@ -208,7 +169,7 @@ if ($action == 'create') {
 
 	print "</table>\n";
 
-	print '<center><br><input class="button" value="' . $langs->trans("CreateGroup") . '" type="submit"></center>';
+	print '<center><br><input class="button" value="' . $langs->trans("CreateDatabase") . '" type="submit"></center>';
 
 	print "</form>";
 }
@@ -264,14 +225,14 @@ if ($action == 'create') {
 
 			print '<table class="border" width="100%">';
 
-			// Ref
+// Ref
 			print '<tr><td width="25%" valign="top">' . $langs->trans("Ref") . '</td>';
 			print '<td colspan="2">';
 			print $form->showrefnav($object, 'id', '', $user->rights->user->user->lire || $user->admin);
 			print '</td>';
 			print '</tr>';
 
-			// Name
+// Name
 			print '<tr><td width="25%" valign="top">' . $langs->trans("Name") . '</td>';
 			print '<td width="75%" class="valeur">' . $object->values->db_name;
 			print "</td></tr>\n";
@@ -293,7 +254,7 @@ if ($action == 'create') {
 			print '<div class="row">';
 			print start_box($langs->trans("ListOfUsersInDatabase"), "twelve", "16-User-2.png", false);
 
-			// On selectionne les users qui ne sont pas deja dans le groupe
+// On selectionne les users qui ne sont pas deja dans le groupe
 			$exclude = array();
 
 			if (!empty($object->members)) {
@@ -307,7 +268,7 @@ if ($action == 'create') {
 				print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
 				print '<input type="hidden" name="action" value="adduser">';
 				print '<table class="noborder" width="100%">' . "\n";
-				print '<tr class="liste_titre"><td class="liste_titre" width="25%">' . $langs->trans("NonAffectedUsers") . '</td>' . "\n";
+				print '<tr class="liste_titre"><td class="liste_titre" width="25%">' . $langs->trans("NonAffectedUsersDatabase") . '</td>' . "\n";
 				print '<td>';
 				print $form->select_dolusers('', 'user', 1, $exclude, 0, '', '');
 				print '</td>';
@@ -389,15 +350,15 @@ if ($action == 'create') {
 
 			print '</div>';
 			print '</div>';
-			
+
 			/*
 			 * Liste des groupes / roles dans le database
 			 */
-			
+
 			print '<div class="row">';
 			print start_box($langs->trans("ListOfRolesInDatabase"), "twelve", "16-Users-2.png", false);
 
-			// On selectionne les users qui ne sont pas deja dans le groupe
+// On selectionne les users qui ne sont pas deja dans le groupe
 			$exclude = array();
 
 			if (!empty($object->membersRoles)) {
@@ -411,13 +372,13 @@ if ($action == 'create') {
 				print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
 				print '<input type="hidden" name="action" value="addgroup">';
 				print '<table class="noborder" width="100%">' . "\n";
-				print '<tr class="liste_titre"><td class="liste_titre" width="25%">' . $langs->trans("NonAffectedUsers") . '</td>' . "\n";
+				print '<tr class="liste_titre"><td class="liste_titre" width="25%">' . $langs->trans("NonAffectedGroupsDatabase") . '</td>' . "\n";
 				print '<td>';
 				print $form->select_dolgroups('', 'group', 1, $exclude, 0, '', '');
 				print '</td>';
-				//print '<td valign="top">' . $langs->trans("Administrator") . '</td>';
-				//print "<td>" . $form->selectyesno('admin', 0, 1);
-				//print "</td>\n";
+//print '<td valign="top">' . $langs->trans("Administrator") . '</td>';
+//print "<td>" . $form->selectyesno('admin', 0, 1);
+//print "</td>\n";
 				print '<td><input type="submit" class="tiny nice button" value="' . $langs->trans("Add") . '">';
 				print '</td></tr>' . "\n";
 				print '</table></form>' . "\n";
@@ -450,7 +411,7 @@ if ($action == 'create') {
 					$var = !$var;
 
 					$useringroup = new UserGroup($db);
-					$useringroup->load("group:".$aRow->id);
+					$useringroup->load("group:" . $aRow->id);
 
 					print "<tr $bc[$var]>";
 					print '<td>';
