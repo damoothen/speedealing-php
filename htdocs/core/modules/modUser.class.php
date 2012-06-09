@@ -49,10 +49,9 @@ class modUser extends DolibarrModules {
 		$this->values->name = preg_replace('/^mod/i', '', get_class($this));
 		$this->values->description = "Gestion des utilisateurs (requis)";
 		$this->values->always_enabled = 1; // Can't be disabled
-		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
-		$this->values->version = 'dolibarr';
+		// Possible values for version are: 'development', 'experimental', 'speedealing' or version
+		$this->values->version = 'speedealing';
 
-		$this->values->const_name = 'MAIN_MODULE_' . strtoupper($this->values->name);
 		$this->values->special = 0;
 		$this->values->picto = 'group';
 

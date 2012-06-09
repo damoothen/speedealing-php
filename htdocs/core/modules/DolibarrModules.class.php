@@ -64,6 +64,9 @@ class DolibarrModules extends nosqlDocument
 			dol_print_error('', "Error : no const document in database".$e->getMessage());
 		}
 		
+		$fk_extrafields = new ExtraFields($db);
+		$this->fk_extrafields = $fk_extrafields->load("extrafields:DolibarrModules",true); // load and cache
+		
 	}
 
 
@@ -327,7 +330,8 @@ class DolibarrModules extends nosqlDocument
 
         if ($this->values->version == 'experimental') return $langs->trans("VersionExperimental");
         elseif ($this->values->version == 'development') return $langs->trans("VersionDevelopment");
-        elseif ($this->values->version == 'dolibarr') return DOL_VERSION;
+        elseif ($this->values->version == 'speedealing') return DOL_VERSION;
+		elseif ($this->values->version == 'dolibarr') return '<span class="lbl alert_bg sl_status ">' . $langs->trans("Dolibarr") . '</span>';
         elseif ($this->values->version) return $this->values->version;
         else return $langs->trans("VersionUnknown");
     }

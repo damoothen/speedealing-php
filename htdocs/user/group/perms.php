@@ -198,6 +198,7 @@ if ($id) {
 			$object->values->rights_class = $aRow->value->rights_class;
 			$object->values->id = $aRow->value->id;
 			$object->values->perm = $aRow->value->perm;
+			$object->values->desc = $aRow->value->desc;
 			$object->values->Status = ($aRow->value->Status == true ? "true" : "false");
 
 			print '<td>' . $aRow->value->id . '</td>';
@@ -216,9 +217,6 @@ if ($id) {
 					print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $fgroup->id . '&pid=' . $aRow->value->id . '&amp;action=add#' . $aRow->value->id . '">' . img_edit_add() . '</a>';
 			}
 			else {
-				if ($aRow->value->Status)
-					print $object->getLibStatus(); // Enable by default
-				else
 					print $object->getLibStatus();
 			}
 			print '</td>';

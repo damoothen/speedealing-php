@@ -424,10 +424,14 @@ foreach ($orders as $key => $value) {
 	} else {
 		print "<td>";
 
-		// Module non actif
-		print '<a href="' . $_SERVER['PHP_SELF'] . '?id=module:' . $objMod->values->name . '&amp;action=set&amp;value=' . $key . '">';
-		print img_picto($langs->trans("Disabled"), 'switch_off');
-		print "</a></td>\n  <td>&nbsp;</td>\n";
+		if ($objMod->values->version == 'dolibarr') {
+			print "</td>\n  <td>&nbsp;</td>\n";
+		} else {
+			// Module non actif
+			print '<a href="' . $_SERVER['PHP_SELF'] . '?id=module:' . $objMod->values->name . '&amp;action=set&amp;value=' . $key . '">';
+			print img_picto($langs->trans("Disabled"), 'switch_off');
+			print "</a></td>\n  <td>&nbsp;</td>\n";
+		}
 	}
 
 	print "</tr>\n";

@@ -53,8 +53,8 @@ class modSociete extends DolibarrModules {
 		$this->values->name = "societe";
 		$this->values->description = "Gestion des societes et contacts";
 
-		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
-		$this->values->version = 'dolibarr';
+		// Possible values for version are: 'development', 'experimental', 'speedealing' or version
+		$this->values->version = 'speedealing';
 
 		$this->values->special = 0;
 		$this->values->config_page_url = array("societe.php@societe");

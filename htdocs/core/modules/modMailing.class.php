@@ -46,8 +46,7 @@ class modMailing extends DolibarrModules {
 // Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
 		$this->values->name = preg_replace('/^mod/i', '', get_class($this));
 		$this->values->description = "Gestion des EMailings";
-		$this->values->version = 'dolibarr'; // 'experimental' or 'dolibarr' or version
-		$this->values->const_name = 'MAIN_MODULE_' . strtoupper($this->values->name);
+		$this->values->version = 'speedealing'; // 'experimental' or 'speedealing' or version
 		$this->values->special = 0;
 		$this->values->picto = 'email';
 

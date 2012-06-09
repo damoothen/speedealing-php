@@ -47,15 +47,13 @@ class modFacture extends DolibarrModules {
 		$this->values->numero = 30;
 
 		$this->values->family = "financial";
-		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->values->name = preg_replace('/^mod/i', '', get_class($this));
+
+		$this->values->name = "facture";
 		$this->values->description = "Gestion des factures";
 
-		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
-		$this->values->version = 'dolibarr';
+		// Possible values for version are: 'development', 'experimental', 'speedealing' or version
+		$this->values->version = 'speedealing';
 
-		$this->values->const_name = 'MAIN_MODULE_' . strtoupper($this->values->name);
-		$this->values->special = 0;
 		$this->values->picto = 'bill';
 
 		// Data directories to create when module is enabled
@@ -104,70 +102,142 @@ class modFacture extends DolibarrModules {
 		$this->values->rights_class = 'facture';
 		$r = 0;
 
-		$r++;
-		$this->values->rights[$r][0] = 11;
-		$this->values->rights[$r][1] = 'Lire les factures';
-		$this->values->rights[$r][2] = 'a';
-		$this->values->rights[$r][3] = 1;
-		$this->values->rights[$r][4] = 'lire';
+		$this->values->rights[$r]->id = 11;
+		$this->values->rights[$r]->desc = 'Lire les factures';
+		$this->values->rights[$r]->default = 1;
+		$this->values->rights[$r]->perm = array('lire');
 
 		$r++;
-		$this->values->rights[$r][0] = 12;
-		$this->values->rights[$r][1] = 'Creer/modifier les factures';
-		$this->values->rights[$r][2] = 'a';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'creer';
+		$this->values->rights[$r]->id = 12;
+		$this->values->rights[$r]->desc = 'Creer/modifier les factures';
+		$this->values->rights[$r]->default = 0;
+		$this->values->rights[$r]->perm = array('creer');
 
 		// There is a particular permission for unvalidate because this may be not forbidden by some laws
 		$r++;
-		$this->values->rights[$r][0] = 13;
-		$this->values->rights[$r][1] = 'Dévalider les factures';
-		$this->values->rights[$r][2] = 'a';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'invoice_advance';
-		$this->values->rights[$r][5] = 'unvalidate';
+		$this->values->rights[$r]->id = 13;
+		$this->values->rights[$r]->desc = 'Dévalider les factures';
+		$this->values->rights[$r]->default = 0;
+		$this->values->rights[$r]->perm = array('invoice_advance', 'unvalidate');
 
 		$r++;
-		$this->values->rights[$r][0] = 14;
-		$this->values->rights[$r][1] = 'Valider les factures';
-		$this->values->rights[$r][2] = 'a';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'valider';
+		$this->values->rights[$r]->id = 14;
+		$this->values->rights[$r]->desc = 'Valider les factures';
+		$this->values->rights[$r]->default = 0;
+		$this->values->rights[$r]->perm = array('valider');
 
 		$r++;
-		$this->values->rights[$r][0] = 15;
-		$this->values->rights[$r][1] = 'Envoyer les factures par mail';
-		$this->values->rights[$r][2] = 'a';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'invoice_advance';
-		$this->values->rights[$r][5] = 'send';
+		$this->values->rights[$r]->id = 15;
+		$this->values->rights[$r]->desc = 'Envoyer les factures par mail';
+		$this->values->rights[$r]->default = 0;
+		$this->values->rights[$r]->perm = array('invoice_advance', 'send');
 
 		$r++;
-		$this->values->rights[$r][0] = 16;
-		$this->values->rights[$r][1] = 'Emettre des paiements sur les factures';
-		$this->values->rights[$r][2] = 'a';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'paiement';
+		$this->values->rights[$r]->id = 16;
+		$this->values->rights[$r]->desc = 'Emettre des paiements sur les factures';
+		$this->values->rights[$r]->default = 0;
+		$this->values->rights[$r]->perm = array('paiement');
+		$r++;
+		$this->values->rights[$r]->id = 19;
+		$this->values->rights[$r]->desc = 'Supprimer les factures';
+		$this->values->rights[$r]->default = 0;
+		$this->values->rights[$r]->perm = array('supprimer');
 
 		$r++;
-		$this->values->rights[$r][0] = 19;
-		$this->values->rights[$r][1] = 'Supprimer les factures';
-		$this->values->rights[$r][2] = 'a';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'supprimer';
+		$this->values->rights[$r]->id = 1321;
+		$this->values->rights[$r]->desc = 'Exporter les factures clients, attributs et reglements';
+		$this->values->rights[$r]->default = 0;
+		$this->values->rights[$r]->perm = array('facture', 'export');
 
+		// Menus
+		//-------
+
+		$r = 0;
+		$this->values->menus[$r]->_id = "menu:accountancy";
+		$this->values->menus[$r]->type = "top";
+		$this->values->menus[$r]->position = 6;
+		$this->values->menus[$r]->url = "/compta/index.php";
+		$this->values->menus[$r]->langs = "compta";
+		$this->values->menus[$r]->perms = '$user->rights->compta->resultat->lire || $user->rights->accounting->plancompte->lire || $user->rights->facture->lire|| $user->rights->deplacement->lire || $user->rights->don->lire || $user->rights->tax->charges->lire';
+		$this->values->menus[$r]->enabled = '$conf->comptabilite->enabled || $conf->accounting->enabled || $conf->facture->enabled || $conf->deplacement->enabled || $conf->don->enabled  || $conf->tax->enabled';
+		$this->values->menus[$r]->usertype = 2;
+		$this->values->menus[$r]->title = "MenuFinancial";
 		$r++;
-		$this->values->rights[$r][0] = 1321;
-		$this->values->rights[$r][1] = 'Exporter les factures clients, attributs et reglements';
-		$this->values->rights[$r][2] = 'r';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'facture';
-		$this->values->rights[$r][5] = 'export';
+		$this->values->menus[$r]->_id = "menu:billscustomers";
+		$this->values->menus[$r]->position = 3;
+		$this->values->menus[$r]->url = "/compta/facture.php";
+		$this->values->menus[$r]->langs = "bills";
+		$this->values->menus[$r]->perms = '$user->rights->facture->lire';
+		$this->values->menus[$r]->enabled = '$conf->facture->enabled';
+		$this->values->menus[$r]->usertype = 2;
+		$this->values->menus[$r]->title = "BillsCustomers";
+		$this->values->menus[$r]->fk_menu = "menu:accountancy";
+		$r++;
+		$this->values->menus[$r]->_id = "menu:newbill0";
+		$this->values->menus[$r]->position = 3;
+		$this->values->menus[$r]->url = "/compta/clients.php?action=facturer";
+		$this->values->menus[$r]->langs = "bills";
+		$this->values->menus[$r]->perms = '$user->rights->facture->creer';
+		$this->values->menus[$r]->enabled = '$conf->facture->enabled';
+		$this->values->menus[$r]->usertype = 2;
+		$this->values->menus[$r]->title = "NewBill";
+		$this->values->menus[$r]->fk_menu = "menu:billscustomers";
+		$r++;
+		$this->values->menus[$r]->_id = "menu:repeatable";
+		$this->values->menus[$r]->position = 4;
+		$this->values->menus[$r]->url = "/compta/facture/fiche-rec.php";
+		$this->values->menus[$r]->langs = "bills";
+		$this->values->menus[$r]->perms = '$user->rights->facture->lire';
+		$this->values->menus[$r]->enabled = '$conf->facture->enabled';
+		$this->values->menus[$r]->usertype = 2;
+		$this->values->menus[$r]->title = "Repeatable";
+		$this->values->menus[$r]->fk_menu = "menu:billscustomers";
+		$r++;
+		$this->values->menus[$r]->_id = "menu:unpaid0";
+		$this->values->menus[$r]->position = 5;
+		$this->values->menus[$r]->url = "/compta/facture/impayees.php?action=facturer";
+		$this->values->menus[$r]->langs = "bills";
+		$this->values->menus[$r]->perms = '$user->rights->facture->lire';
+		$this->values->menus[$r]->enabled = '$conf->facture->enabled';
+		$this->values->menus[$r]->usertype = 2;
+		$this->values->menus[$r]->title = "Unpaid";
+		$this->values->menus[$r]->fk_menu = "menu:billscustomers";
+		$r++;
+		$this->values->menus[$r]->_id = "menu:payments0";
+		$this->values->menus[$r]->position = 6;
+		$this->values->menus[$r]->url = "/compta/paiement/liste.php";
+		$this->values->menus[$r]->langs = "bills";
+		$this->values->menus[$r]->perms = '$user->rights->facture->lire';
+		$this->values->menus[$r]->enabled = '$conf->facture->enabled';
+		$this->values->menus[$r]->usertype = 2;
+		$this->values->menus[$r]->title = "Payments";
+		$this->values->menus[$r]->fk_menu = "menu:billscustomers";
+		$r++;
+		$this->values->menus[$r]->_id = "menu:statistics3";
+		$this->values->menus[$r]->position = 8;
+		$this->values->menus[$r]->url = "/compta/facture/stats/index.php";
+		$this->values->menus[$r]->langs = "bills";
+		$this->values->menus[$r]->perms = '$user->rights->facture->lire';
+		$this->values->menus[$r]->enabled = '$conf->facture->enabled';
+		$this->values->menus[$r]->usertype = 2;
+		$this->values->menus[$r]->title = "Statistics";
+		$this->values->menus[$r]->fk_menu = "menu:billscustomers";
+		$r++;
+		$this->values->menus[$r]->_id = "menu:reportings";
+		$this->values->menus[$r]->position = 1;
+		$this->values->menus[$r]->url = "/compta/paiement/rapport.php";
+		$this->values->menus[$r]->langs = "bills";
+		$this->values->menus[$r]->perms = '$user->rights->facture->lire';
+		$this->values->menus[$r]->enabled = '$conf->facture->enabled';
+		$this->values->menus[$r]->usertype = 2;
+		$this->values->menus[$r]->title = "Reportings";
+		$this->values->menus[$r]->fk_menu = "menu:payments0";
+
 
 
 		// Exports
 		//--------
-		$r = 1;
+		$r = 0;
 
 		$this->values->export_code[$r] = $this->values->rights_class . '_' . $r;
 		$this->values->export_label[$r] = 'CustomersInvoicesAndInvoiceLines'; // Translation key (used only if key ExportDataset_xxx_z not found)

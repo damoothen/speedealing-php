@@ -27,7 +27,7 @@ abstract class nosqlDocument extends CommonObject {
 	public $values;
 	public $error;
 	public $errors;
-	public $canvas;	// Contains canvas name if it is
+	public $canvas; // Contains canvas name if it is
 	public $fk_extrafields;
 
 	/**
@@ -58,18 +58,12 @@ abstract class nosqlDocument extends CommonObject {
 	}
 
 	function fetch($rowid) { // old dolibarr rowid
-		if (is_int($id)) {
-
-			try {
-				$result = $this->couchdb->key((int) $id)->getView(get_class(), "rowid");
-				$this->load($result->rows[0]->value);
-			} catch (Exception $e) {
-				$this->error = "Fetch : Something weird happened: " . $e->getMessage() . " (errcode=" . $e->getCode() . ")\n";
-				dol_print_error($this->db, $this->error);
-				return 0;
-			}
-		} else {
-			$this->error = "rowid must be an int";
+		try {
+			$result = $this->getView("rowid", array("key" => intval($rowid)));
+			$this->load($result->rows[0]->value);
+		} catch (Exception $e) {
+			$this->error = "Fetch : Something weird happened: " . $e->getMessage() . " (errcode=" . $e->getCode() . ")\n";
+			dol_print_error($this->db, $this->error);
 			return 0;
 		}
 
@@ -170,14 +164,13 @@ abstract class nosqlDocument extends CommonObject {
 		}
 		return $result;
 	}
-	
+
 	/**
 	 * 	save values objects documents
 	 *  @param	$obj		array of objects
 	 *  @return value of storeDoc
 	 */
-	public function storeDocs($obj)
-	{
+	public function storeDocs($obj) {
 		$this->couchdb->storeDocs($obj);
 	}
 
@@ -258,7 +251,6 @@ abstract class nosqlDocument extends CommonObject {
 	 */
 	function LibStatus($status) {
 		global $langs, $conf;
-		//$langs->load('companies');
 
 		if (empty($status))
 			$status = $this->fk_extrafields->fields->Status->default;
@@ -296,7 +288,8 @@ abstract class nosqlDocument extends CommonObject {
 				<?php else : ?>
 												"<?php echo $key; ?>": <?php echo ($fields ? "true" : "false"); ?>,
 				<?php endif; ?>
-			<?php endforeach;
+			<?php
+			endforeach;
 			if ($nb - 1 == $i)
 				echo "}"; else
 				echo"},";
@@ -329,13 +322,13 @@ abstract class nosqlDocument extends CommonObject {
 						"oTableTools": { "sSwfPath": "<?php echo DOL_URL_ROOT . '/includes/jquery/plugins/datatables/extras/TableTools/media/swf/copy_csv_xls.swf'; ?>"},
 						//if($obj->oTableTools->aButtons==null)
 						//$obj->oTableTools->aButtons = array("xls");
-					    
+							    
 						"oColVis": { "buttonText" : 'Voir/Cacher',
 							"aiExclude": [0,1] // Not cacheable _id and name
 						},
 						//$obj->oColVis->bRestore = true;
 						//$obj->oColVis->sAlign = 'left';
-				            
+						            
 						// Avec export Excel
 		<?php if (!empty($obj->sDom)) : ?>
 							//"sDom": "Cl<fr>t<\"clear\"rtip>",
@@ -359,7 +352,7 @@ abstract class nosqlDocument extends CommonObject {
 												},
 			<?php endforeach; ?>
 									]},
-						 
+									 
 		<?php endif; ?>
 		<?php if (!defined('NOLOGIN')) : ?>
 			<?php if (isset($obj->fnDrawCallback)): ?>
@@ -384,7 +377,7 @@ abstract class nosqlDocument extends CommonObject {
 												"tooltip": "Cliquer pour éditer...",
 												"indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
 												"placeholder" : ""
-								                
+												                
 											} );
 											$("td.select", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
 												"callback": function( sValue, y ) {
@@ -402,7 +395,7 @@ abstract class nosqlDocument extends CommonObject {
 												"tooltip": "Cliquer pour éditer...",
 												"indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
 												"placeholder" : ""
-								                
+												                
 											} );
 										}
 			<?php endif; ?>

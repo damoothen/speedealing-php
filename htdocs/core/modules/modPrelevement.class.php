@@ -56,10 +56,8 @@ class modPrelevement extends DolibarrModules
 		$this->values->description = "Gestion des Prelevements";
 
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
-		$this->values->version = 'dolibarr';
+		$this->values->version = 'speedealing';
 
-		$this->values->const_name = 'MAIN_MODULE_'.strtoupper($this->values->name);
-		$this->values->special = 0;
 		// Name of png file (without png) used for this module
 		$this->values->picto='payment';
 
