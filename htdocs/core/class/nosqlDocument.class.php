@@ -171,7 +171,34 @@ abstract class nosqlDocument extends CommonObject {
 	 *  @return value of storeDoc
 	 */
 	public function storeDocs($obj) {
-		$this->couchdb->storeDocs($obj);
+		return $this->couchdb->storeDocs($obj);
+	}
+	
+	/**
+	 * 	delete values objects documents
+	 *  @param	$obj		array of objects
+	 *  @return value of storeDoc
+	 */
+	public function deleteDocs($obj) {
+		return $this->couchdb->deleteDocs($obj);
+	}
+	
+	/**
+	 * 	save values of one object documents
+	 *  @param	$obj		object
+	 *  @return value of storeDoc
+	 */
+	public function storeDoc($obj) {
+		return $this->couchdb->storeDoc($obj);
+	}
+	
+	/**
+	 * 	delete a object document
+	 *  @param	$obj		object
+	 *  @return value of storeDoc
+	 */
+	public function deleteDoc($obj) {
+		return $this->couchdb->deleteDoc($obj);
 	}
 
 	/**
