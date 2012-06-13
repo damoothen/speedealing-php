@@ -216,6 +216,7 @@ if (!defined('NOREQUIREAJAX') && $conf->use_javascript_ajax)
 
 
 
+
 	
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
@@ -864,37 +865,40 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 		// jQuery jnotify
 		//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/jnotify/jquery.jnotify.min.js"></script>'."\n";
 		//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/core/js/jnotify.js"></script>'."\n";
-		// Flot
-		print '<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/flot/excanvas.min.js"></script><![endif]-->' . "\n";
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/flot/jquery.flot.min.js"></script>' . "\n";
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/flot/jquery.flot.pie.min.js"></script>' . "\n";
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/flot/jquery.flot.stack.min.js"></script>' . "\n";
-		// jQuery jeditable
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/jeditable/jquery.jeditable.min' . $ext . '"></script>' . "\n";
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/jeditable/jquery.jeditable.ui-datepicker.js"></script>' . "\n";
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/jeditable/jquery.jeditable.ui-autocomplete.js"></script>' . "\n";
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/jeditable/jquery.jeditable.wysiwyg.js"></script>' . "\n";
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/wysiwyg/jquery.wysiwyg.js"></script>' . "\n";
-		print '<script type="text/javascript">' . "\n";
-		//print 'var urlSaveInPlace = \'http://www.example.com/save.php\';'."\n";
-		print 'var urlSaveInPlace = \'' . DOL_URL_ROOT . '/core/ajax/saveinplace.php\';' . "\n";
-		print 'var urlLoadInPlace = \'' . DOL_URL_ROOT . '/core/ajax/loadinplace.php\';' . "\n";
-		print 'var tooltipInPlace = \'' . $langs->transnoentities('ClickToEdit') . '\';' . "\n";
-		print 'var placeholderInPlace = \'' . $langs->trans('ClickToEdit') . '\';' . "\n";
-		print 'var cancelInPlace = \'' . $langs->trans('Cancel') . '\';' . "\n";
-		print 'var submitInPlace = \'' . $langs->trans('Ok') . '\';' . "\n";
-		print 'var indicatorInPlace = \'<img src="' . DOL_URL_ROOT . "/theme/" . $conf->theme . "/img/working.gif" . '">\';' . "\n";
-		print 'var ckeditorConfig = \'' . dol_buildpath('/theme/' . $conf->theme . '/ckeditor/config.js', 1) . '\';' . "\n";
-		print '</script>' . "\n";
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/core/js/editinplace.js"></script>' . "\n";
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/jeditable/jquery.jeditable.ckeditor.js"></script>' . "\n";
-		// jQuery File Upload
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/template/tmpl.min.js"></script>' . "\n";
-		//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/fileupload/js/jquery.iframe-transport.js"></script>'."\n";
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/fileupload/js/jquery.fileupload.js"></script>' . "\n";
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/fileupload/js/jquery.fileupload-fp.js"></script>' . "\n";
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/fileupload/js/jquery.fileupload-ui.js"></script>' . "\n";
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/fileupload/js/jquery.fileupload-jui.js"></script>' . "\n";
+
+		if (!defined('NOLOGIN')) {
+			// Flot
+			print '<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/flot/excanvas.min.js"></script><![endif]-->' . "\n";
+			print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/flot/jquery.flot.min.js"></script>' . "\n";
+			print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/flot/jquery.flot.pie.min.js"></script>' . "\n";
+			print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/flot/jquery.flot.stack.min.js"></script>' . "\n";
+			// jQuery jeditable
+			print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/jeditable/jquery.jeditable.min' . $ext . '"></script>' . "\n";
+			print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/jeditable/jquery.jeditable.ui-datepicker.js"></script>' . "\n";
+			print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/jeditable/jquery.jeditable.ui-autocomplete.js"></script>' . "\n";
+			print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/jeditable/jquery.jeditable.wysiwyg.js"></script>' . "\n";
+			print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/wysiwyg/jquery.wysiwyg.js"></script>' . "\n";
+			print '<script type="text/javascript">' . "\n";
+			//print 'var urlSaveInPlace = \'http://www.example.com/save.php\';'."\n";
+			print 'var urlSaveInPlace = \'' . DOL_URL_ROOT . '/core/ajax/saveinplace.php\';' . "\n";
+			print 'var urlLoadInPlace = \'' . DOL_URL_ROOT . '/core/ajax/loadinplace.php\';' . "\n";
+			print 'var tooltipInPlace = \'' . $langs->transnoentities('ClickToEdit') . '\';' . "\n";
+			print 'var placeholderInPlace = \'' . $langs->trans('ClickToEdit') . '\';' . "\n";
+			print 'var cancelInPlace = \'' . $langs->trans('Cancel') . '\';' . "\n";
+			print 'var submitInPlace = \'' . $langs->trans('Ok') . '\';' . "\n";
+			print 'var indicatorInPlace = \'<img src="' . DOL_URL_ROOT . "/theme/" . $conf->theme . "/img/working.gif" . '">\';' . "\n";
+			print 'var ckeditorConfig = \'' . dol_buildpath('/theme/' . $conf->theme . '/ckeditor/config.js', 1) . '\';' . "\n";
+			print '</script>' . "\n";
+			print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/core/js/editinplace.js"></script>' . "\n";
+			print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/jeditable/jquery.jeditable.ckeditor.js"></script>' . "\n";
+			// jQuery File Upload
+			print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/template/tmpl.min.js"></script>' . "\n";
+			//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/fileupload/js/jquery.iframe-transport.js"></script>'."\n";
+			print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/fileupload/js/jquery.fileupload.js"></script>' . "\n";
+			print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/fileupload/js/jquery.fileupload-fp.js"></script>' . "\n";
+			print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/fileupload/js/jquery.fileupload-ui.js"></script>' . "\n";
+			print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/fileupload/js/jquery.fileupload-jui.js"></script>' . "\n";
+		}
 		// jQuery DataTables
 		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/datatables/media/js/jquery.dataTables.min' . $ext . '"></script>' . "\n";
 		//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/js/dataTables.plugins.js"></script>';
@@ -918,8 +922,8 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/js/s_scripts.js"></script>';
 		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/js/jquery.ui.extend.js"></script>';
 		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/qtip2/jquery.qtip.min.js"></script>';
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/lib/jQplot/jquery.jqplot.min.js"></script>';
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/lib/jQplot/jqplot.plugins.js"></script>';
+		//print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/lib/jQplot/jquery.jqplot.min.js"></script>';
+		//print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/lib/jQplot/jqplot.plugins.js"></script>';
 		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/lib/fullcalendar/fullcalendar.min.js"></script>';
 		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/lib/stepy/js/jquery.stepy.min.js"></script>';
 		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/lib/validate/jquery.validate.min.js"></script>';
@@ -932,7 +936,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/core/js/lib_head.js"></script>' . "\n";
 
 		// Add datepicker default options
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/core/js/datepicker.js.php?lang=' . $langs->defaultlang . '"></script>' . "\n";
+		//print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/core/js/datepicker.js.php?lang=' . $langs->defaultlang . '"></script>' . "\n";
 
 		print'<!-- Foundation framework -->';
 		print '<link rel="stylesheet" href="' . DOL_URL_ROOT . '/theme/pertho_sample/foundation/stylesheets/foundation.css">';
@@ -1047,7 +1051,7 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 	// For backward compatibility with old modules
 	//if (empty($conf->headerdone)) top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss);
 
-	print '<body class="ptrn_a grdnt_b mhover_c">';
+	print '<body class="ptrn_a grdnt_b mhover_c fullW">'; // fullW full size width
 
 	/*
 	 * Top menu
