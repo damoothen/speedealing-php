@@ -217,6 +217,7 @@ if (!defined('NOREQUIREAJAX') && $conf->use_javascript_ajax)
 
 
 
+
 	
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
@@ -931,9 +932,12 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/js/pertho.js"></script>';
 		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/js/jquery.rwd-table.js"></script>';
 		// END THEME
-		// Global js function
-		print '<!-- Includes JS of Dolibarr -->' . "\n";
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/core/js/lib_head.js"></script>' . "\n";
+
+		if (!defined('NOLOGIN')) {
+			// Global js function
+			print '<!-- Includes JS of Dolibarr -->' . "\n";
+			print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/core/js/lib_head.js"></script>' . "\n";
+		}
 
 		// Add datepicker default options
 		//print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/core/js/datepicker.js.php?lang=' . $langs->defaultlang . '"></script>' . "\n";
