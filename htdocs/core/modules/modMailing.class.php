@@ -91,6 +91,21 @@ class modMailing extends DolibarrModules {
 		$this->values->rights[$r]->desc = 'Supprimer les mailings)';
 		$this->values->rights[$r]->default = 0;
 		$this->values->rights[$r]->perm = array('supprimer');
+		$r++;
+		$this->values->rights[$r]->id = 237;
+		$this->values->rights[$r]->desc = 'View recipients and info';
+		$this->values->rights[$r]->default = 0;
+		$this->values->rights[$r]->perm = array('mailing_advance','recipient');
+		$r++;
+		$this->values->rights[$r]->id = 238;
+		$this->values->rights[$r]->desc = 'Manually send mailings';
+		$this->values->rights[$r]->default = 0;
+		$this->values->rights[$r]->perm = array('mailing_advance','send');
+		$r++;
+		$this->values->rights[$r]->id = 239;
+		$this->values->rights[$r]->desc = 'Delete mailings after validation and/or sent';
+		$this->values->rights[$r]->default = 0;
+		$this->values->rights[$r]->perm = array('mailing_advance','delete');
 
 		$this->values->menu = array();   // List of menus to add
 		$r = 0;

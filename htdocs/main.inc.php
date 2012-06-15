@@ -8,7 +8,7 @@
  * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2011      Philippe Grand       <philippe.grand@atoo-net.com>
  * Copyright (C) 2008      Matteli
- * Copyright (C) 2011      Herve Prot		<herve.prot@symeos.com>
+ * Copyright (C) 2011-2012 Herve Prot		<herve.prot@symeos.com>
  * Copyright (C) 2011      Juanjo Menent	<jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -213,8 +213,6 @@ if (!defined('NOREQUIREHTML'))
 	require_once(DOL_DOCUMENT_ROOT . "/core/class/html.form.class.php");  // Need 660ko memory (800ko in 2.2)
 if (!defined('NOREQUIREAJAX') && $conf->use_javascript_ajax)
 	require_once(DOL_DOCUMENT_ROOT . '/core/lib/ajax.lib.php'); // Need 22ko memory
-
-
 
 
 

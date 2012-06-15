@@ -172,13 +172,13 @@ if ($id > 0)
 
 	dol_fiche_head($head, 'customer', $langs->trans("ThirdParty"),0,'company');
 
-        $var=true;
+
 	print '<table width="100%" class="notopnoleftnoright">';
 	print '<tr><td valign="top" class="notopnoleft">';
 
-	print '<table class="noborder" width="100%">';
+	print '<table class="border" width="100%">';
 
-	print '<tr class="liste_titre"><td colspan="4">';
+	print '<tr><td width="30%">'.$langs->trans("ThirdPartyName").'</td><td width="70%" colspan="3">';
 	$object->next_prev_filter="te.client in (1,3)";
 	print $form->showrefnav($object,'socid','',($user->societe_id?0:1),'rowid','nom','','');
 	print '</td></tr>';
@@ -194,117 +194,102 @@ if ($id > 0)
 	// Prefix
     if (! empty($conf->global->SOCIETE_USEPREFIX))  // Old not used prefix field
     {
-        print '<tr '.$bc[$var].'><td>'.$langs->trans("Prefix").'</td><td colspan="3">';
+        print '<tr><td>'.$langs->trans("Prefix").'</td><td colspan="3">';
 	   print ($object->prefix_comm?$object->prefix_comm:'&nbsp;');
 	   print '</td></tr>';
-           $var=!$var;
     }
 
 	if ($object->client)
 	{
         $langs->load("compta");
 
-		print '<tr '.$bc[$var].'><td nowrap>';
+		print '<tr><td nowrap>';
 		print $langs->trans('CustomerCode').'</td><td colspan="3">';
 		print $object->code_client;
 		if ($object->check_codeclient() <> 0) print ' <font class="error">('.$langs->trans("WrongCustomerCode").')</font>';
 		print '</td></tr>';
-                $var=!$var;
 
-		print '<tr '.$bc[$var].'>';
+		print '<tr>';
 		print '<td>';
 		print $form->editfieldkey("CustomerAccountancyCode",'customeraccountancycode',$object->code_compta,$object,$user->rights->societe->creer);
 		print '</td><td colspan="3">';
 		print $form->editfieldval("CustomerAccountancyCode",'customeraccountancycode',$object->code_compta,$object,$user->rights->societe->creer);
 		print '</td>';
 		print '</tr>';
-                $var=!$var;
 	}
 
 	// Address
-	print '<tr '.$bc[$var].'><td valign="top">'.$langs->trans('Address').'</td><td colspan="3">';
+	print '<tr><td valign="top">'.$langs->trans('Address').'</td><td colspan="3">';
 	dol_print_address($object->address,'gmap','thirdparty',$object->id);
 	print "</td></tr>";
-        $var=!$var;
 
 	// Zip / Town
-        print '<tr '.$bc[$var].'><td id="label" width="25%">'.$langs->trans('Zip').' / '.$langs->trans("Town").'</td><td id="value" colspan="'.(2+($object->logo?0:1)).'">';
-        print $object->zip.($object->zip && $object->town?" / ":"").$object->town;
-        print "</td>";
-        print '</tr>';
-        $var=!$var;
+	print '<tr><td nowrap="nowrap">'.$langs->trans('Zip').' / '.$langs->trans('Town').'</td>';
+	print '<td colspan="3">'.$object->zip.(($object->zip && $object->town)?' / ':'').$object->town."</td>";
+	print '</tr>';
 
-        // Country
-        print '<tr '.$bc[$var].'><td id="label">'.$langs->trans("Country").'</td><td id="value" nowrap="nowrap">';
-        $img=picto_from_langcode($object->country_code);
-        if ($object->isInEEC()) print $form->textwithpicto(($img?$img.' ':'').$object->pays,$langs->trans("CountryIsInEEC"),1,0);
-        else print ($img?$img.' ':'').$object->country;
-        print '</td>';
-        
-        // MAP GPS
-        if($conf->map->enabled)
-            print '<td id="label" colspan="2">GPS '.img_picto(($object->lat.','.$object->lng),(($object->lat && $object->lng)?"statut4":"statut1")).'</td></tr>';
-        else
-            print '<td id="label" colspan="2"></td></tr>';
-        $var=!$var;
-        
+	// Country
+	print '<tr><td>'.$langs->trans("Country").'</td><td colspan="3">';
+	$img=picto_from_langcode($object->country_code);
+	if ($object->isInEEC()) print $form->textwithpicto(($img?$img.' ':'').$object->country,$langs->trans("CountryIsInEEC"),1,0);
+	else print ($img?$img.' ':'').$object->country;
+	print '</td></tr>';
+	
+	// MAP GPS
+    if($conf->map->enabled)
+        print '<td id="label" colspan="2">GPS '.img_picto(($object->lat.','.$object->lng),(($object->lat && $object->lng)?"statut4":"statut1")).'</td></tr>';
+    else
+        print '<td id="label" colspan="2"></td></tr>';
+
 	// Phone
-	print '<tr '.$bc[$var].'><td>'.$langs->trans('Phone').'</td><td style="min-width: 25%;">'.dol_print_phone($object->tel,$object->pays_code,0,$object->id,'AC_TEL').'</td>';
+	print '<tr><td>'.$langs->trans('Phone').'</td><td style="min-width: 25%;">'.dol_print_phone($object->tel,$object->country_code,0,$object->id,'AC_TEL').'</td>';
 
 	// Fax
-	print '<td>'.$langs->trans('Fax').'</td><td style="min-width: 25%;">'.dol_print_phone($object->fax,$object->pays_code,0,$object->id,'AC_FAX').'</td></tr>';
-        $var=!$var;
+	print '<td>'.$langs->trans('Fax').'</td><td style="min-width: 25%;">'.dol_print_phone($object->fax,$object->country_code,0,$object->id,'AC_FAX').'</td></tr>';
 
 	// EMail
-	print '<tr '.$bc[$var].'><td>'.$langs->trans('EMail').'</td><td colspan="3">'.dol_print_email($object->email,0,$object->id,'AC_EMAIL').'</td></tr>';
-        $var=!$var;
+	print '<td>'.$langs->trans('EMail').'</td><td colspan="3">'.dol_print_email($object->email,0,$object->id,'AC_EMAIL').'</td></tr>';
 
 	// Web
-	print '<tr '.$bc[$var].'><td>'.$langs->trans("Web").'</td><td colspan="3">'.dol_print_url($object->url,'_blank').'</td></tr>';
-        $var=!$var;
+	print '<tr><td>'.$langs->trans("Web").'</td><td colspan="3">'.dol_print_url($object->url,'_blank').'</td></tr>';
 
 	// Assujeti a TVA ou pas
-	print '<tr '.$bc[$var].'>';
+	print '<tr>';
 	print '<td nowrap="nowrap">'.$langs->trans('VATIsUsed').'</td><td colspan="3">';
 	print yn($object->tva_assuj);
 	print '</td>';
 	print '</tr>';
-        $var=!$var;
 
 	// Local Taxes
 	if($mysoc->country_code=='ES')
 	{
 		if($mysoc->localtax1_assuj=="1" && $mysoc->localtax2_assuj=="1")
 		{
-			print '<tr '.$bc[$var].'><td nowrap="nowrap">'.$langs->trans('LocalTax1IsUsedES').'</td><td colspan="3">';
+			print '<tr><td nowrap="nowrap">'.$langs->trans('LocalTax1IsUsedES').'</td><td colspan="3">';
 			print yn($object->localtax1_assuj);
 			print '</td></tr>';
-			print '<tr '.$bc[$var].'><td nowrap="nowrap">'.$langs->trans('LocalTax2IsUsedES').'</td><td colspan="3">';
+			print '<tr><td nowrap="nowrap">'.$langs->trans('LocalTax2IsUsedES').'</td><td colspan="3">';
 			print yn($object->localtax2_assuj);
 			print '</td></tr>';
-                        $var=!$var;
 		}
 		elseif($mysoc->localtax1_assuj=="1")
 		{
-			print '<tr '.$bc[$var].'><td>'.$langs->trans("LocalTax1IsUsedES").'</td><td colspan="3">';
+			print '<tr><td>'.$langs->trans("LocalTax1IsUsedES").'</td><td colspan="3">';
 			print yn($object->localtax1_assuj);
 			print '</td></tr>';
-                        $var=!$var;
 		}
 		elseif($mysoc->localtax2_assuj=="1")
 		{
-			print '<tr '.$bc[$var].'><td>'.$langs->trans("LocalTax2IsUsedES").'</td><td colspan="3">';
+			print '<tr><td>'.$langs->trans("LocalTax2IsUsedES").'</td><td colspan="3">';
 			print yn($object->localtax2_assuj);
 			print '</td></tr>';
-                        $var=!$var;
 		}
 	}
 
 	// TVA Intra
-	print '<tr '.$bc[$var].'><td nowrap>'.$langs->trans('VATIntraVeryShort').'</td><td colspan="3">';
+	print '<tr><td nowrap>'.$langs->trans('VATIntraVeryShort').'</td><td colspan="3">';
 	print $object->tva_intra;
 	print '</td></tr>';
-        $var=!$var;
         
         // Ban
         if (empty($conf->global->SOCIETE_DISABLE_BANKACCOUNT))
@@ -329,13 +314,13 @@ if ($id > 0)
 	// Conditions de reglement par defaut
 	$langs->load('bills');
 	$form = new Form($db);
-	print '<tr '.$bc[$var].'><td nowrap>';
+	print '<tr><td nowrap>';
 	print '<table width="100%" class="nobordernopadding"><tr><td nowrap>';
 	print $langs->trans('PaymentConditions');
 	print '<td>';
 	if (($action != 'editconditions') && $user->rights->societe->creer) print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editconditions&amp;socid='.$object->id.'">'.img_edit($langs->trans('SetConditions'),1).'</a></td>';
 	print '</tr></table>';
-	print '</td><td colspan="3" id="value">';
+	print '</td><td colspan="3">';
 	if ($action == 'editconditions')
 	{
 		$form->form_conditions_reglement($_SERVER['PHP_SELF'].'?socid='.$object->id,$object->cond_reglement,'cond_reglement_id',-1,1);
@@ -346,16 +331,15 @@ if ($id > 0)
 	}
 	print "</td>";
 	print '</tr>';
-        $var=!$var;
 
 	// Mode de reglement par defaut
-	print '<tr '.$bc[$var].'><td nowrap id="label">';
+	print '<tr><td nowrap>';
 	print '<table width="100%" class="nobordernopadding"><tr><td nowrap>';
 	print $langs->trans('PaymentMode');
 	print '<td>';
 	if (($action != 'editmode') && $user->rights->societe->creer) print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editmode&amp;socid='.$object->id.'">'.img_edit($langs->trans('SetMode'),1).'</a></td>';
 	print '</tr></table>';
-	print '</td><td colspan="3" id="value">';
+	print '</td><td colspan="3">';
 	if ($action == 'editmode')
 	{
 		$form->form_modes_reglement($_SERVER['PHP_SELF'].'?socid='.$object->id,$object->mode_reglement,'mode_reglement_id');
@@ -366,10 +350,9 @@ if ($id > 0)
 	}
 	print "</td>";
 	print '</tr>';
-        $var=!$var;
 
 	// Relative discounts (Discounts-Drawbacks-Rebates)
-	print '<tr '.$bc[$var].'><td nowrap id="label">';
+	print '<tr><td nowrap>';
 	print '<table width="100%" class="nobordernopadding"><tr><td nowrap>';
 	print $langs->trans("CustomerRelativeDiscountShort");
 	print '<td><td align="right">';
@@ -378,12 +361,11 @@ if ($id > 0)
 		print '<a href="'.DOL_URL_ROOT.'/comm/remise.php?id='.$object->id.'">'.img_edit($langs->trans("Modify")).'</a>';
 	}
 	print '</td></tr></table>';
-	print '</td><td colspan="3" id="value">'.($object->remise_client?'<a href="'.DOL_URL_ROOT.'/comm/remise.php?id='.$object->id.'">'.$object->remise_client.'%</a>':$langs->trans("DiscountNone")).'</td>';
+	print '</td><td colspan="3">'.($object->remise_client?'<a href="'.DOL_URL_ROOT.'/comm/remise.php?id='.$object->id.'">'.$object->remise_client.'%</a>':$langs->trans("DiscountNone")).'</td>';
 	print '</tr>';
-        $var=!$var;
 
 	// Absolute discounts (Discounts-Drawbacks-Rebates)
-	print '<tr '.$bc[$var].'><td nowrap id="value">';
+	print '<tr><td nowrap>';
 	print '<table width="100%" class="nobordernopadding">';
 	print '<tr><td nowrap>';
 	print $langs->trans("CustomerAbsoluteDiscountShort");
@@ -394,19 +376,18 @@ if ($id > 0)
 	}
 	print '</td></tr></table>';
 	print '</td>';
-	print '<td colspan="3" id="value">';
+	print '<td colspan="3">';
 	$amount_discount=$object->getAvailableDiscounts();
 	if ($amount_discount < 0) dol_print_error($db,$object->error);
 	if ($amount_discount > 0) print '<a href="'.DOL_URL_ROOT.'/comm/remx.php?id='.$object->id.'&backtopage='.urlencode($_SERVER["PHP_SELF"].'?socid='.$object->id).'">'.price($amount_discount).'</a>&nbsp;'.$langs->trans("Currency".$conf->currency);
 	else print $langs->trans("DiscountNone");
 	print '</td>';
 	print '</tr>';
-        $var=!$var;
 
 	// Multiprice level
 	if ($conf->global->PRODUIT_MULTIPRICES)
 	{
-		print '<tr '.$bc[$var].'><td nowrap id="label">';
+		print '<tr><td nowrap>';
 		print '<table width="100%" class="nobordernopadding"><tr><td nowrap>';
 		print $langs->trans("PriceLevel");
 		print '<td><td align="right">';
@@ -415,9 +396,8 @@ if ($id > 0)
 			print '<a href="'.DOL_URL_ROOT.'/comm/multiprix.php?id='.$object->id.'">'.img_edit($langs->trans("Modify")).'</a>';
 		}
 		print '</td></tr></table>';
-		print '</td><td colspan="3" id="value">'.$object->price_level."</td>";
+		print '</td><td colspan="3">'.$object->price_level."</td>";
 		print '</tr>';
-                $var=!$var;
 	}
 
     // Module Adherent
@@ -425,7 +405,7 @@ if ($id > 0)
     {
         $langs->load("members");
         $langs->load("users");
-        print '<tr '.$bc[$var].'><td width="25%" valign="top">'.$langs->trans("LinkedToDolibarrMember").'</td>';
+        print '<tr><td width="25%" valign="top">'.$langs->trans("LinkedToDolibarrMember").'</td>';
         print '<td colspan="3">';
         $adh=new Adherent($db);
         $result=$adh->fetch('','',$object->id);
@@ -440,7 +420,6 @@ if ($id > 0)
         }
         print '</td>';
         print "</tr>\n";
-        $var=!$var;
     }
 
 	print "</table>";
@@ -448,7 +427,7 @@ if ($id > 0)
 	print "</td>\n";
 
 
-	print '<td valign="top" width="50%" class="notopnoright">';
+	print '<td valign="top" width="50%" class="notopnoleftnoright">';
 
 	// Nbre max d'elements des petites listes
 	$MAXLIST=4;
@@ -461,6 +440,7 @@ if ($id > 0)
 	print '<td align="right"><a href="'.DOL_URL_ROOT.'/compta/recap-compta.php?socid='.$object->id.'">'.$langs->trans("ShowCustomerPreview").'</a></td></tr></table></td>';
 	print '</tr>';
 	print '</table>';
+	print '<br>';
 
 	$now=dol_now();
 
@@ -486,12 +466,11 @@ if ($id > 0)
 		$resql=$db->query($sql);
 		if ($resql)
 		{
-                    
 			$var=true;
 			$num = $db->num_rows($resql);
 
-                    if ($num > 0)
-                    {
+            if ($num > 0)
+            {
 		        print '<table class="noborder" width="100%">';
 
                 print '<tr class="liste_titre">';
@@ -499,7 +478,7 @@ if ($id > 0)
                 print '<td width="20px" align="right"><a href="'.DOL_URL_ROOT.'/comm/propal/stats/index.php?socid='.$object->id.'">'.img_picto($langs->trans("Statistics"),'stats').'</a></td>';
     			print '</tr></table></td>';
     			print '</tr>';
-                    }
+            }
 
 			$i = 0;
 			while ($i < $num && $i < $MAXLIST)
@@ -513,7 +492,7 @@ if ($id > 0)
 				}
 				print '</td><td align="right" width="80">'.dol_print_date($db->jdate($objp->dp),'day')."</td>\n";
 				print '<td align="right" width="120">'.price($objp->total_ht).'</td>';
-				print '<td align="right" nowrap="nowrap">'.$propal_static->LibStatut($objp->fk_statut,5).'</td></tr>';
+				print '<td align="right" width="100" nowrap="nowrap">'.$propal_static->LibStatut($objp->fk_statut,5).'</td></tr>';
 				$var=!$var;
 				$i++;
 			}
@@ -609,10 +588,10 @@ if ($id > 0)
 				print '<td colspan="4"><table width="100%" class="nobordernopadding"><tr><td>'.$langs->trans("LastContracts",($num<=$MAXLIST?"":$MAXLIST)).'</td>';
 				print '<td align="right"><a href="'.DOL_URL_ROOT.'/contrat/liste.php?socid='.$object->id.'">'.$langs->trans("AllContracts").' ('.$num.')</a></td></tr></table></td>';
 				print '</tr>';
-			
-                            $i = 0;
-                            while ($i < $num && $i < $MAXLIST)
-                            {
+			}
+			$i = 0;
+			while ($i < $num && $i < $MAXLIST)
+			{
 				$contrat=new Contrat($db);
 
 				$objp = $db->fetch_object($resql);
@@ -631,8 +610,7 @@ if ($id > 0)
 				print "</td>\n";
 				print '</tr>';
 				$i++;
-                            }
-                        }
+			}
 			$db->free($resql);
 
 			if ($num > 0) print "</table>";
@@ -681,13 +659,13 @@ if ($id > 0)
 
 				print "<tr ".$bc[$var].">";
 				print '<td nowrap="nowrap"><a href="'.DOL_URL_ROOT.'/fichinter/fiche.php?id='.$objp->id.'">'.img_object($langs->trans("ShowPropal"),"propal").' '.$objp->ref.'</a></td>'."\n";
-                                //print '<td align="right">'.dol_print_date($db->jdate($objp->startdate)).'</td>'."\n";
-				print '<td align="right">'.convertSecondToTime($objp->duration).'</td>'."\n";
-				print '<td align="right">'.$fichinter_static->getLibStatut(3).'</td>'."\n";
+                //print '<td align="right" width="80">'.dol_print_date($db->jdate($objp->startdate)).'</td>'."\n";
+				print '<td align="right" width="120">'.convertSecondToTime($objp->duration).'</td>'."\n";
+				print '<td align="right" width="100">'.$fichinter_static->getLibStatut(5).'</td>'."\n";
 				print '</tr>';
 				$var=!$var;
 				$i++;
-                        }
+			}
 			$db->free($resql);
 
 			if ($num > 0) print "</table>";
@@ -733,10 +711,11 @@ if ($id > 0)
 				print '<td colspan="4"><table width="100%" class="nobordernopadding"><tr><td>'.$langs->trans("LastCustomersBills",($num<=$MAXLIST?"":$MAXLIST)).'</td><td align="right"><a href="'.DOL_URL_ROOT.'/compta/facture.php?socid='.$object->id.'">'.$langs->trans("AllBills").' ('.$num.')</a></td>';
                 print '<td width="20px" align="right"><a href="'.DOL_URL_ROOT.'/compta/facture/stats/index.php?socid='.$object->id.'">'.img_picto($langs->trans("Statistics"),'stats').'</a></td>';
 				print '</tr></table></td>';
-				print '</tr>';		
+				print '</tr>';
+			}
 
-                            while ($i < $num && $i < $MAXLIST)
-                            {
+			while ($i < $num && $i < $MAXLIST)
+			{
 				$objp = $db->fetch_object($resql);
 				$var=!$var;
 				print "<tr $bc[$var]>";
@@ -748,18 +727,17 @@ if ($id > 0)
 				print '</td>';
 				if ($objp->df > 0)
 				{
-					print "<td align=\"right\">".dol_print_date($db->jdate($objp->df),'day')."</td>\n";
+					print '<td align="right" width="80">'.dol_print_date($db->jdate($objp->df),'day').'</td>';
 				}
 				else
 				{
-					print "<td align=\"right\"><b>!!!</b></td>\n";
+					print '<td align="right"><b>!!!</b></td>';
 				}
-				print "<td align=\"right\">".price($objp->total_ttc)."</td>\n";
+				print '<td align="right" width="120">'.price($objp->total_ttc).'</td>';
 
-				print '<td align="right" nowrap="nowrap">'.($facturestatic->LibStatut($objp->paye,$objp->statut,5,$objp->am))."</td>\n";
+				print '<td align="right" nowrap="nowrap" width="100" >'.($facturestatic->LibStatut($objp->paye,$objp->statut,5,$objp->am)).'</td>';
 				print "</tr>\n";
 				$i++;
-                            }
 			}
 			$db->free($resql);
 
@@ -846,8 +824,6 @@ if ($id > 0)
 	print '</div>';
 	print "<br>\n";
 
-        
-
 	if (! empty($conf->global->MAIN_REPEATCONTACTONEACHTAB))
 	{
 	    print '<br>';
@@ -863,7 +839,7 @@ if ($id > 0)
 
     if (! empty($conf->global->MAIN_REPEATTASKONEACHTAB))
     {
-		 print '<br>';
+        print load_fiche_titre($langs->trans("ActionsOnCompany"),'','');
 
             if ($conf->lead->enabled)
             {
@@ -880,7 +856,7 @@ if ($id > 0)
 }
 else
 {
-    dol_print_error($db,'Bad value for socid parameter');
+	dol_print_error($db,'Bad value for socid parameter');
 }
 
 

@@ -168,7 +168,7 @@ if ($conf->propal->enabled && $user->rights->propale->lire)
     $board->load_board($user,"opened");
     $board->warning_delay=$conf->propal->cloture->warning_delay/60/60/24;
     $board->label=$langs->trans("PropalsToClose");
-    $board->url=DOL_URL_ROOT.'/comm/propal.php?viewstatut=1';
+    $board->url=DOL_URL_ROOT.'/comm/propal/list.php?viewstatut=1';
     $board->img=img_object($langs->trans("Propals"),"propal");
     $rowspan++;
     $dashboardlines[]=$board;
@@ -184,7 +184,7 @@ if ($conf->propal->enabled && $user->rights->propale->lire)
     $board->load_board($user,"signed");
     $board->warning_delay=$conf->propal->facturation->warning_delay/60/60/24;
     $board->label=$langs->trans("PropalsToBill");
-    $board->url=DOL_URL_ROOT.'/comm/propal.php?viewstatut=2';
+    $board->url=DOL_URL_ROOT.'/comm/propal/list.php?viewstatut=2';
     $board->img=img_object($langs->trans("Propals"),"propal");
     $rowspan++;
     $dashboardlines[]=$board;
@@ -316,7 +316,7 @@ $var=true;
 foreach($dashboardlines as $key => $board)
 {
     $var=!$var;
-    print '<tr '.$bc[$var].'><td width="16"><a href="'.$board->url.'">'.$board->img.'</a></td><td><a href="'.$board->url.'">'.$board->label.'</a></td>';
+    print '<tr '.$bc[$var].'><td width="16">'.$board->img.'</td><td>'.$board->label.'</td>';
     print '<td align="right"><a href="'.$board->url.'">'.$board->nbtodo.'</a></td>';
     print '<td align="right">';
     print '<a href="'.$board->url.'">';

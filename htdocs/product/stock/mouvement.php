@@ -28,6 +28,7 @@ require("../../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/product/stock/class/entrepot.class.php");
 require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/html.formother.class.php");
+require_once(DOL_DOCUMENT_ROOT."/product/class/html.formproduct.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/stock.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/product.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/date.lib.php");
@@ -38,6 +39,9 @@ $langs->load("stocks");
 if (!$user->rights->produit->lire) accessforbidden();
 
 $id=GETPOST('id','int');
+$product_id=GETPOST("product_id");
+$action=GETPOST('action');
+$cancel=GETPOST('cancel');
 $idproduct = isset($_GET["idproduct"])?$_GET["idproduct"]:$_PRODUCT["idproduct"];
 $year = isset($_GET["year"])?$_GET["year"]:$_POST["year"];
 $month = isset($_GET["month"])?$_GET["month"]:$_POST["month"];
@@ -45,11 +49,9 @@ $search_movement = isset($_REQUEST["search_movement"])?$_REQUEST["search_movemen
 $search_product = isset($_REQUEST["search_product"])?$_REQUEST["search_product"]:'';
 $search_warehouse = isset($_REQUEST["search_warehouse"])?$_REQUEST["search_warehouse"]:'';
 $search_user = isset($_REQUEST["search_user"])?$_REQUEST["search_user"]:'';
-$search_bl = isset($_REQUEST["search_bl"])?$_REQUEST["search_bl"]:'';
-$search_fac = isset($_REQUEST["search_fac"])?$_REQUEST["search_fac"]:'';
-$page = $_GET["page"];
-$sortfield = $_GET["sortfield"];
-$sortorder = $_GET["sortorder"];
+$page = GETPOST("page");
+$sortfield = GETPOST("sortfield");
+$sortorder = GETPOST("sortorder");
 if ($page < 0) $page = 0;
 $offset = $conf->liste_limit * $page;
 
@@ -69,6 +71,39 @@ if (GETPOST("button_removefilter"))
 
 
 /*
+ * Actions
+ */
+
+if ($cancel) $action='';
+
+// Correct stock
+if ($action == "correct_stock" && ! $_POST["cancel"])
+{
+    if (is_numeric($_POST["nbpiece"]) && $product_id)
+    {
+        $product = new Product($db);
+        $result=$product->fetch($product_id);
+
+        $result=$product->correct_stock(
+            $user,
+            $id,
+            $_POST["nbpiece"],
+            $_POST["mouvement"],
+            $_POST["label"],
+            0
+        );		// We do not change value of stock for a correction
+
+        if ($result > 0)
+        {
+            header("Location: ".$_SERVER["PHP_SELF"]."?id=".$id);
+            exit;
+        }
+    }
+    else $action='';
+}
+
+
+/*
  * View
  */
 
@@ -77,6 +112,7 @@ $warehousestatic=new Entrepot($db);
 $userstatic=new User($db);
 $form=new Form($db);
 $formother=new FormOther($db);
+$formproduct=new FormProduct($db);
 
 $sql = "SELECT p.rowid, p.label as produit, p.fk_product_type as type,";
 $sql.= " e.label as stock, e.rowid as entrepot_id,";
@@ -254,121 +290,205 @@ if ($resql)
 		print '</div>';
 	}
 
-	$param='';
-	if ($id) $param.='&id='.$id;
-	if ($search_movement)   $param.='&search_movement='.urlencode($search_movement);
-	if ($search_product)   $param.='&search_product='.urlencode($search_product);
-        if ($search_bl)   $param.='&search_bl='.urlencode($search_bl);
-        if ($search_fac)   $param.='&search_fac='.urlencode($search_fac);
-	if ($search_warehouse) $param.='&search_warehouse='.urlencode($search_warehouse);
-	if ($sref) $param.='&sref='.urlencode($sref);
-	if ($snom) $param.='&snom='.urlencode($snom);
-	if ($search_user)    $param.='&search_user='.urlencode($search_user);
-	if ($idproduct > 0)  $param.='&idproduct='.$idproduct;
-	if ($id) print_barre_liste($texte, $page, "mouvement.php", $param, $sortfield, $sortorder,'',$num,0,'');
-	else print_barre_liste($texte, $page, "mouvement.php", $param, $sortfield, $sortorder,'',$num);
 
-	print '<table class="noborder" width="100%">';
-	print "<tr class=\"liste_titre\">";
-	//print_liste_field_titre($langs->trans("Id"),$_SERVER["PHP_SELF"], "m.rowid","",$param,"",$sortfield,$sortorder);
-	print_liste_field_titre($langs->trans("Date"),$_SERVER["PHP_SELF"], "m.datem","",$param,"",$sortfield,$sortorder);
-	print_liste_field_titre($langs->trans("Label"),$_SERVER["PHP_SELF"], "m.label","",$param,"",$sortfield,$sortorder);
-        print_liste_field_titre($langs->trans("Bon de livraison"),$_SERVER["PHP_SELF"], "m.fk_expedition","",$param,"",$sortfield,$sortorder);
-        print_liste_field_titre($langs->trans("Facture"),$_SERVER["PHP_SELF"], "m.factid","",$param,"",$sortfield,$sortorder);
-	print_liste_field_titre($langs->trans("Product"),$_SERVER["PHP_SELF"], "p.ref","",$param,"",$sortfield,$sortorder);
-	print_liste_field_titre($langs->trans("Warehouse"),$_SERVER["PHP_SELF"], "e.label","",$param,"",$sortfield,$sortorder);
-	print_liste_field_titre($langs->trans("Author"),$_SERVER["PHP_SELF"], "m.fk_user_author","",$param,"",$sortfield,$sortorder);
-	print_liste_field_titre($langs->trans("Units"),$_SERVER["PHP_SELF"], "m.value","",$param,'align="right"',$sortfield,$sortorder);
-	print "</tr>\n";
+    /*
+     * Correct stock
+     */
+    if ($action == "correction")
+    {
+        print_titre($langs->trans("StockCorrection"));
+        print '<form action="'.$_SERVER["PHP_SELF"].'?id='.$id.'" method="post">'."\n";
+        print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+        print '<input type="hidden" name="action" value="correct_stock">';
+        print '<table class="border" width="100%">';
 
-	// Lignes des champs de filtre
-	print '<form method="get" action="'.$_SERVER["PHP_SELF"].'">';
-	if ($id) print '<input type="hidden" name="id" value="'.$id.'">';
+        // Warehouse
+        print '<tr>';
+        print '<td width="20%">'.$langs->trans("Product").'</td>';
+        print '<td width="20%">';
+        print $form->select_produits(GETPOST('productid'),'product_id',(empty($conf->global->STOCK_SUPPORTS_SERVICES)?'0':''));
+        print '</td>';
+        print '<td width="20%">';
+        print '<select name="mouvement" class="flat">';
+        print '<option value="0">'.$langs->trans("Add").'</option>';
+        print '<option value="1">'.$langs->trans("Delete").'</option>';
+        print '</select></td>';
+        print '<td width="20%">'.$langs->trans("NumberOfUnit").'</td><td width="20%"><input class="flat" name="nbpiece" size="10" value=""></td>';
+        print '</tr>';
 
-	print '<tr class="liste_titre">';
-	print '<td class="liste_titre" valign="right">';
-	print $langs->trans('Month').': <input class="flat" type="text" size="2" maxlength="2" name="month" value="'.$month.'">';
-	print '&nbsp;'.$langs->trans('Year').': ';
-	$syear = GETPOST('year')?GETPOST('year'):-1;
-	$formother->select_year($syear,'year',1, 20, 5);
-	print '</td>';
-	// Label of movement
-	print '<td class="liste_titre" align="left">';
-	print '<input class="flat" type="text" size="12" name="search_movement" value="'.$search_movement.'">';
-	print '</td>';
-        // Numéro bon de livraison
-	print '<td class="liste_titre" align="left">';
-	print '<input class="flat" type="text" size="12" name="search_bl" value="'.$search_bl.'">';
-	print '</td>';
-        // Numéro de la facture
-	print '<td class="liste_titre" align="left">';
-	print '<input class="flat" type="text" size="12" name="search_bl" value="'.$search_fac.'">';
-	print '</td>';
-	// Product
-	print '<td class="liste_titre" align="left">';
-	print '<input class="flat" type="text" size="12" name="search_product" value="'.($idproduct?$product->libelle:$search_product).'">';
-	print '</td>';
-	print '<td class="liste_titre" align="left">';
-	print '<input class="flat" type="text" size="10" name="search_warehouse" value="'.($search_warehouse).'">';
-	print '</td>';
-	print '<td class="liste_titre" align="left">';
-	print '<input class="flat" type="text" size="6" name="search_user" value="'.($search_user).'">';
-	print '</td>';
-	print '<td class="liste_titre" align="right">';
-	print '<input type="image" class="liste_titre" src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/search.png" name="button_search" value="'.dol_escape_htmltag($langs->trans("Search")).'" title="'.dol_escape_htmltag($langs->trans("Search")).'">';
-        print '&nbsp; ';
-        print '<input type="image" class="liste_titre" src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/searchclear.png" name="button_removefilter" value="'.dol_escape_htmltag($langs->trans("RemoveFilter")).'" title="'.dol_escape_htmltag($langs->trans("RemoveFilter")).'">';
-	print '</td>';
-	print "</tr>\n";
-	print '</form>';
+        // Label
+        print '<tr>';
+        print '<td width="20%">'.$langs->trans("Label").'</td>';
+        print '<td colspan="4">';
+        print '<input type="text" name="label" size="40" value="">';
+        print '</td>';
+        print '</tr>';
 
-	$var=True;
-	while ($i < min($num,$conf->liste_limit))
-	{
-		$objp = $db->fetch_object($resql);
-		$var=!$var;
-		print "<tr $bc[$var]>";
-		// Id movement
-		//print '<td>'.$objp->mid.'</td>';	// This is primary not movement id
-		// Date
-		print '<td>'.dol_print_date($db->jdate($objp->datem),'dayhour').'</td>';
-		// Label of movement
-		print '<td>'.$objp->label.'</td>';
-                // Bon de livraison
-                $expedition = new Expedition($db);
-                $expedition->fetch($objp->fk_expedition);
-		print '<td>'.$expedition->getNomUrl().'</td>';
-                // Facture
-                $facture = new Facture($db);
-                $facture->fetch($objp->factureid);
-                print '<td>'.$facture->getNomUrl().'</td>';
-		// Product
-		print '<td>';
-		$productstatic->id=$objp->rowid;
-		$productstatic->ref=$objp->produit;
-		$productstatic->type=$objp->type;
-		print $productstatic->getNomUrl(1,'',16);
-		print "</td>\n";
-		// Warehouse
-		print '<td>';
-		$warehousestatic->id=$objp->entrepot_id;
-		$warehousestatic->libelle=$objp->stock;
-		print $warehousestatic->getNomUrl(1);
-		print "</td>\n";
-		// Author
-		print '<td>';
-		$userstatic->id=$objp->fk_user_author;
-		$userstatic->lastname=$objp->login;
-		print $userstatic->getNomUrl(1);
-		print "</td>\n";
-		// Value
-		print '<td align="right">';
-		if ($objp->value > 0) print '+';
-		print $objp->value.'</td>';
-		print "</tr>\n";
-		$i++;
-	}
-	$db->free($resql);
+        print '</table>';
+
+        print '<center><input type="submit" class="button" value="'.$langs->trans('Save').'">&nbsp;';
+        print '<input type="submit" class="button" name="cancel" value="'.$langs->trans("Cancel").'"></center>';
+        print '</form>';
+    }
+
+    /*
+     * Transfer of units
+     */
+    /*
+    if ($action == "transfert")
+    {
+        print_titre($langs->trans("Transfer"));
+        print '<form action="'.$_SERVER["PHP_SELF"].'?id='.$id.'" method="post">'."\n";
+        print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+        print '<input type="hidden" name="action" value="transfert_stock">';
+        print '<table class="border" width="100%">';
+
+        print '<tr>';
+        print '<td width="20%">'.$langs->trans("Product").'</td>';
+        print '<td width="20%">';
+        print $form->select_produits(GETPOST('productid'),'product_id');
+        print '</td>';
+        print '<td width="20%">'.$langs->trans("WarehouseTarget").'</td><td width="20%">';
+        print $formproduct->selectWarehouses('','id_entrepot_destination','',1);
+        print '</td>';
+        print '<td width="20%">'.$langs->trans("NumberOfUnit").'</td><td width="20%"><input name="nbpiece" size="10" value=""></td>';
+        print '</tr>';
+
+        // Label
+        print '<tr>';
+        print '<td width="20%">'.$langs->trans("Label").'</td>';
+        print '<td colspan="5">';
+        print '<input type="text" name="label" size="40" value="">';
+        print '</td>';
+        print '</tr>';
+
+        print '</table>';
+
+        print '<center><input type="submit" class="button" value="'.$langs->trans('Save').'">&nbsp;';
+        print '<input type="submit" class="button" name="cancel" value="'.$langs->trans("Cancel").'"></center>';
+
+        print '</form>';
+    }
+	*/
+
+    /* ************************************************************************** */
+    /*                                                                            */
+    /* Barre d'action                                                             */
+    /*                                                                            */
+    /* ************************************************************************** */
+
+    if (empty($action) && $id)
+    {
+        print "<div class=\"tabsAction\">\n";
+
+        if ($user->rights->stock->creer)
+        {
+            print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$id.'&action=correction">'.$langs->trans("StockCorrection").'</a>';
+        }
+
+        /*if ($user->rights->stock->mouvement->creer)
+        {
+            print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$id.'&action=transfert">'.$langs->trans("StockMovement").'</a>';
+        }*/
+        print '</div><br>';
+    }
+
+
+    $param='';
+    if ($id) $param.='&id='.$id;
+    if ($search_movement)   $param.='&search_movement='.urlencode($search_movement);
+    if ($search_product)   $param.='&search_product='.urlencode($search_product);
+    if ($search_warehouse) $param.='&search_warehouse='.urlencode($search_warehouse);
+    if ($sref) $param.='&sref='.urlencode($sref);
+    if ($snom) $param.='&snom='.urlencode($snom);
+    if ($search_user)    $param.='&search_user='.urlencode($search_user);
+    if ($idproduct > 0)  $param.='&idproduct='.$idproduct;
+    if ($id) print_barre_liste($texte, $page, "mouvement.php", $param, $sortfield, $sortorder,'',$num,0,'');
+    else print_barre_liste($texte, $page, "mouvement.php", $param, $sortfield, $sortorder,'',$num);
+
+    print '<table class="noborder" width="100%">';
+    print "<tr class=\"liste_titre\">";
+    //print_liste_field_titre($langs->trans("Id"),$_SERVER["PHP_SELF"], "m.rowid","",$param,"",$sortfield,$sortorder);
+    print_liste_field_titre($langs->trans("Date"),$_SERVER["PHP_SELF"], "m.datem","",$param,"",$sortfield,$sortorder);
+    print_liste_field_titre($langs->trans("Label"),$_SERVER["PHP_SELF"], "m.label","",$param,"",$sortfield,$sortorder);
+    print_liste_field_titre($langs->trans("Product"),$_SERVER["PHP_SELF"], "p.ref","",$param,"",$sortfield,$sortorder);
+    print_liste_field_titre($langs->trans("Warehouse"),$_SERVER["PHP_SELF"], "e.label","",$param,"",$sortfield,$sortorder);
+    print_liste_field_titre($langs->trans("Author"),$_SERVER["PHP_SELF"], "m.fk_user_author","",$param,"",$sortfield,$sortorder);
+    print_liste_field_titre($langs->trans("Units"),$_SERVER["PHP_SELF"], "m.value","",$param,'align="right"',$sortfield,$sortorder);
+    print "</tr>\n";
+
+    // Lignes des champs de filtre
+    print '<form method="get" action="'.$_SERVER["PHP_SELF"].'">';
+    if ($id) print '<input type="hidden" name="id" value="'.$id.'">';
+
+    print '<tr class="liste_titre">';
+    print '<td class="liste_titre" valign="right">';
+    print $langs->trans('Month').': <input class="flat" type="text" size="2" maxlength="2" name="month" value="'.$month.'">';
+    print '&nbsp;'.$langs->trans('Year').': ';
+    $syear = GETPOST('year')?GETPOST('year'):-1;
+    $formother->select_year($syear,'year',1, 20, 5);
+    print '</td>';
+    // Label of movement
+    print '<td class="liste_titre" align="left">';
+    print '<input class="flat" type="text" size="12" name="search_movement" value="'.$search_movement.'">';
+    print '</td>';
+    // Product
+    print '<td class="liste_titre" align="left">';
+    print '<input class="flat" type="text" size="12" name="search_product" value="'.($idproduct?$product->libelle:$search_product).'">';
+    print '</td>';
+    print '<td class="liste_titre" align="left">';
+    print '<input class="flat" type="text" size="10" name="search_warehouse" value="'.($search_warehouse).'">';
+    print '</td>';
+    print '<td class="liste_titre" align="left">';
+    print '<input class="flat" type="text" size="6" name="search_user" value="'.($search_user).'">';
+    print '</td>';
+    print '<td class="liste_titre" align="right">';
+    print '<input type="image" class="liste_titre" src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/search.png" name="button_search" value="'.dol_escape_htmltag($langs->trans("Search")).'" title="'.dol_escape_htmltag($langs->trans("Search")).'">';
+    print '&nbsp; ';
+    print '<input type="image" class="liste_titre" src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/searchclear.png" name="button_removefilter" value="'.dol_escape_htmltag($langs->trans("RemoveFilter")).'" title="'.dol_escape_htmltag($langs->trans("RemoveFilter")).'">';
+    print '</td>';
+    print "</tr>\n";
+    print '</form>';
+
+    $var=True;
+    while ($i < min($num,$conf->liste_limit))
+    {
+        $objp = $db->fetch_object($resql);
+        $var=!$var;
+        print "<tr $bc[$var]>";
+        // Id movement
+        //print '<td>'.$objp->mid.'</td>';	// This is primary not movement id
+        // Date
+        print '<td>'.dol_print_date($db->jdate($objp->datem),'dayhour').'</td>';
+        // Label of movement
+        print '<td>'.$objp->label.'</td>';
+        // Product
+        print '<td>';
+        $productstatic->id=$objp->rowid;
+        $productstatic->ref=$objp->produit;
+        $productstatic->type=$objp->type;
+        print $productstatic->getNomUrl(1,'',16);
+        print "</td>\n";
+        // Warehouse
+        print '<td>';
+        $warehousestatic->id=$objp->entrepot_id;
+        $warehousestatic->libelle=$objp->stock;
+        print $warehousestatic->getNomUrl(1);
+        print "</td>\n";
+        // Author
+        print '<td>';
+        $userstatic->id=$objp->fk_user_author;
+        $userstatic->lastname=$objp->login;
+        print $userstatic->getNomUrl(1);
+        print "</td>\n";
+        // Value
+        print '<td align="right">';
+        if ($objp->value > 0) print '+';
+        print $objp->value.'</td>';
+        print "</tr>\n";
+        $i++;
+    }
+    $db->free($resql);
 
 	print "</table>";
 

@@ -105,6 +105,9 @@ class modFournisseur extends DolibarrModules {
 		$this->values->boxes[$r][1] = "box_factures_fourn.php";
 		$r++;
 
+		$this->boxes[$r][1] = "box_supplier_orders.php";
+        $r++;
+
 		// Permissions
 		$this->values->rights = array();
 		$this->values->rights_class = 'fournisseur';
@@ -332,5 +335,4 @@ class modFournisseur extends DolibarrModules {
 	}
 
 }
-
 ?>

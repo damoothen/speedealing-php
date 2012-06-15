@@ -3150,7 +3150,7 @@ function dol_string_nohtmltag($StringHtml,$removelinefeed=1,$pagecodeto='UTF-8')
     $temp = preg_replace($pattern,"",$temp);
 
     // Supprime aussi les retours
-    if ($removelinefeed) $temp=str_replace("\n"," ",$temp);
+    if ($removelinefeed) $temp=str_replace(array("\r\n","\r","\n")," ",$temp);
 
     // et les espaces doubles
     while(strpos($temp,"  "))
@@ -3323,7 +3323,7 @@ function dol_nboflines($s,$maxchar=0)
 
 
 /**
- *	Return nb of lines of a formated text with \n and <br>
+ *	Return nb of lines of a formated text with \n and <br> (we can't have both \n and br)
  *
  *	@param	string	$text      		Text
  *	@param	int		$maxlinesize  	Largeur de ligne en caracteres (ou 0 si pas de limite - defaut)
@@ -3332,12 +3332,14 @@ function dol_nboflines($s,$maxchar=0)
  */
 function dol_nboflines_bis($text,$maxlinesize=0,$charset='UTF-8')
 {
-    //print $text;
     $repTable = array("\t" => " ", "\n" => "<br>", "\r" => " ", "\0" => " ", "\x0B" => " ");
+    if (dol_textishtml($text)) $repTable = array("\t" => " ", "\n" => " ", "\r" => " ", "\0" => " ", "\x0B" => " ");
+
     $text = strtr($text, $repTable);
-    if ($charset == 'UTF-8') { $pattern = '/(<[^>]+>)/Uu'; }	// /U is to have UNGREEDY regex to limit to one html tag. /u is for UTF8 support
-    else $pattern = '/(<[^>]+>)/U';								// /U is to have UNGREEDY regex to limit to one html tag.
+    if ($charset == 'UTF-8') { $pattern = '/(<br[^>]*>)/Uu'; }	// /U is to have UNGREEDY regex to limit to one html tag. /u is for UTF8 support
+    else $pattern = '/(<br[^>]*>)/U';							// /U is to have UNGREEDY regex to limit to one html tag.
     $a = preg_split($pattern, $text, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+
     $nblines = floor((count($a)+1)/2);
     // count possible auto line breaks
     if($maxlinesize)
@@ -3444,7 +3446,7 @@ function complete_substitutions_array(&$substitutionarray,$outputlangs,$object='
     require_once(DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php');
 
     // Check if there is external substitution to do asked by plugins
-    $dirsubstitutions=array_merge(array(),$conf->modules_parts['substitutions']);
+    $dirsubstitutions=array_merge(array(),(array) $conf->modules_parts['substitutions']);
 
     foreach($dirsubstitutions as $reldir)
     {
