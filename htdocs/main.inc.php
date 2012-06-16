@@ -1053,7 +1053,7 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 	// For backward compatibility with old modules
 	//if (empty($conf->headerdone)) top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss);
 
-	print '<body class="ptrn_a grdnt_b mhover_c fullW">'; // fullW full size width
+	print '<body class="ptrn_a grdnt_b mhover_c">'; // fullW full size width
 
 	/*
 	 * Top menu
@@ -1063,17 +1063,8 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 	// Load the top menu manager
 	// Load the top menu manager (only if not already done)
 	if (!class_exists('MenuTop')) {
-		$menufound = 0;
-		$dirmenus = array_merge(array("/core/menus/"), $conf->menus_modules);
-		foreach ($dirmenus as $dirmenu) {
-			$menufound = dol_include_once($dirmenu . "standard/" . $top_menu);
-			if ($menufound)
-				break;
-		}
-		if (!$menufound) { // If failed to include, we try with standard
 			$top_menu = 'auguria_backoffice.php';
 			include_once(DOL_DOCUMENT_ROOT . "/core/menus/standard/" . $top_menu);
-		}
 	}
 
 	print "\n" . '<!-- Start top horizontal menu ' . $top_menu . ' -->' . "\n";

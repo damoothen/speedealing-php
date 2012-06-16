@@ -165,7 +165,7 @@ class modFacture extends DolibarrModules {
 		$r++;
 		$this->values->menus[$r]->_id = "menu:billscustomers";
 		$this->values->menus[$r]->position = 3;
-		$this->values->menus[$r]->url = "/compta/facture.php";
+		$this->values->menus[$r]->url = "/compta/facture/list.php";
 		$this->values->menus[$r]->langs = "bills";
 		$this->values->menus[$r]->perms = '$user->rights->facture->lire';
 		$this->values->menus[$r]->enabled = '$conf->facture->enabled';

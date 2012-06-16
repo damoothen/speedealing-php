@@ -213,6 +213,9 @@ $sql.= ' f.rowid DESC ';
 $sql.= $db->plimit($limit+1,$offset);
 //print $sql;
 
+print '<div class="row">';
+print start_box($langs->trans('BillsCustomers'),"twelve","16-Money-2.png",false);
+
 $resql = $db->query($sql);
 if ($resql)
 {
@@ -232,7 +235,7 @@ if ($resql)
     if ($search_user > 0) $param.='&search_user=' .$search_user;
     if ($search_montant_ht)  $param.='&search_montant_ht='.$search_montant_ht;
     if ($search_montant_ttc) $param.='&search_montant_ttc='.$search_montant_ttc;
-    print_barre_liste($langs->trans('BillsCustomers').' '.($socid?' '.$soc->nom:''),$page,$_SERVER["PHP_SELF"],$param,$sortfield,$sortorder,'',$num);
+    //print_barre_liste($langs->trans('BillsCustomers').' '.($socid?' '.$soc->nom:''),$page,$_SERVER["PHP_SELF"],$param,$sortfield,$sortorder,'',$num);
 
     $i = 0;
     print '<form method="GET" action="'.$_SERVER["PHP_SELF"].'">'."\n";
@@ -387,6 +390,9 @@ else
 {
     dol_print_error($db);
 }
+
+print end_box();
+print '</div>';
 
 llxFooter();
 $db->close();

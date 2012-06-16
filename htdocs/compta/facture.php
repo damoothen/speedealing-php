@@ -3301,6 +3301,9 @@ else if ($id > 0 || ! empty($ref))
     }
 }
 
+print end_box();
+print '</div>';
+
 
 llxFooter();
 $db->close();
