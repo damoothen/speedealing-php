@@ -1,8 +1,9 @@
 <?php
-/* Copyright (C) 2004-2005 Rodolphe Quiedeville  <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2009 Laurent Destailleur   <eldy@users.sourceforge.net>
- * Copyright (C) 2005      Marc Barilley / Ocebo <marc@ocebo.com>
- * Copyright (C) 2005-2010 Regis Houssin         <regis@dolibarr.fr>
+/* Copyright (C) 2004-2005	Rodolphe Quiedeville	<rodolphe@quiedeville.org>
+ * Copyright (C) 2004-2009	Laurent Destailleur		<eldy@users.sourceforge.net>
+ * Copyright (C) 2005		Marc Barilley / Ocebo	<marc@ocebo.com>
+ * Copyright (C) 2005-2010	Regis Houssin			<regis@dolibarr.fr>
+ * Copyright (C) 2012		Herve Prot				<herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,13 +51,6 @@ dolibarr_install_syslog("Dolibarr install/upgrade process started");
  */
 
 pHeader('','');     // No next step for navigation buttons. Next step is defined by clik on links.
-
-
-
-print '<center>';
-print '<img src="../theme/dolibarr_logo.png" alt="Dolibarr logo"><br>';
-print DOL_VERSION.'<br><br>';
-print '</center>';
 
 //print "<br>\n";
 //print $langs->trans("InstallEasy")."<br><br>\n";
@@ -281,7 +275,6 @@ else
 
 		$allowinstall=1;
 	}
-	print "<br>\n";
 
 	// Si prerequis ok, on affiche le bouton pour passer a l'etape suivante
 	if ($checksok)
@@ -320,6 +313,13 @@ else
 		}
 
 		// If a database access is available, we set more variable
+		
+		print end_box();
+		print '</div>';
+		
+		print '<div class="row">';
+		print start_box($langs->trans("DolibarrSetup"),"twelve","16-Settings.png");
+		
 		if ($ok)
 		{
 			if (empty($dolibarr_main_db_encryption)) $dolibarr_main_db_encryption=0;
@@ -341,9 +341,8 @@ else
 			print $langs->trans("VersionProgram").': <b><font class="ok">'.DOL_VERSION.'</font></b>';
 			//print ' '.img_warning($langs->trans("RunningUpdateProcessMayBeRequired"));
 			print '<br>';
-			print '<br>';
 		}
-		else print "<br>\n";
+		else print "\n";
 
 		print $langs->trans("InstallEasy")." ";
 		print $langs->trans("ChooseYourSetupMode");
@@ -351,9 +350,8 @@ else
 
 		$foundrecommandedchoice=0;
 
-
 		// Array of install choices
-		print '<table width="100%" class="listofchoices">';
+		print '<table class="display dt_act">';
 
 		// Show first install line
 		print '<tr class="listofchoices"><td class="listofchoices" nowrap="nowrap" align="center"><b>'.$langs->trans("FreshInstall").'</b>';

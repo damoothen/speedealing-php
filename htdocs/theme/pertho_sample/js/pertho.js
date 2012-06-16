@@ -1931,10 +1931,10 @@
 		},
 		validation: function(){
 			$('#validate_wizard').stepy({
-				backLabel	: 'Backward',
+				backLabel	: 'Previous',
 				block		: true,
 				errorImage	: true,
-				nextLabel	: 'Forward',
+				nextLabel	: 'Next',
 				titleClick	: true,
 				validate	: true
 			});

@@ -286,7 +286,7 @@
 		.ntf_tip_blue span {background: url(img/ntf_tip.png) no-repeat right -17px}
 
 	/* widget box */
-		.box_c,.box_s,.box_s_reg {margin-bottom:30px}
+		.box_c,.box_s,.box_s_reg {/*margin-bottom:30px*/}
 		.box_c_heading {height:30px;border:1px solid #dcdcdc;font-size:16px;line-height:30px;position:relative}
 		.box_c_heading .ff_icon {color:#bdbdbd;font-size:20px}
 		.box_c_heading .box_c_ico {width:36px;border-right:1px solid #dcdcdc;box-shadow: 1px 0 0 rgba(255,255,255,.5);background: transparent;background: rgba(0, 0, 0, .2);float:left;text-align:center;line-height:34px;height:30px;overflow:hidden}
@@ -616,7 +616,7 @@
 	/* wizard */
 		.stepy-titles {overflow:hidden;padding:0 10px}
 		.stepy-titles li {margin:0 4px 12px 0;cursor:pointer;position:relative;line-height:1;float:left;padding:7px 14px 5px 40px;border:1px solid #dcdcdc;height:30px;-webkit-border-radius: 4px;-moz-border-radius: 4px;-ms-border-radius: 4px;border-radius: 4px;-webkit-box-shadow: inset 0px 0px 0px 1px #fff;-moz-box-shadow: inset 0px 0px 0px 1px #fff;box-shadow: inset 0px 0px 0px 1px #fff; }
-		.stepy-titles li.error-image {background-image: url(lib/stepy/img/error_img.png);background-repeat: no-repeat;background-position: right 0}
+		.stepy-titles li.error-image {background-image: url(img/stepy/error_img.png);background-repeat: no-repeat;background-position: right 0}
 		.stepy-titles div {font-size:13px;font-weight:700}
 		.stepy-titles span {font-size:11px;color:#999}
 		span.stepNb	{font-size: 34px;position:absolute;left:10px;top:4px;color:#bbb;font-weight:700}

@@ -1,6 +1,7 @@
 <?php
-/* Copyright (C) 2004-2005 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
+/* Copyright (C) 2004-2005	Rodolphe Quiedeville	<rodolphe@quiedeville.org>
+ * Copyright (C) 2004-2010	Laurent Destailleur		<eldy@users.sourceforge.net>
+ * Copyright (C) 2012		Herve Prot				<herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,12 +47,6 @@ $langs->load("admin");
 $formadmin=new FormAdmin('');	// Note: $db does not exist yet but we don't need it, so we put ''.
 
 pHeader("", "check");   // Etape suivante = check
-
-
-print '<center>';
-print '<img src="../theme/dolibarr_logo.png" alt="Dolibarr logo"><br>';
-print DOL_VERSION.'<br><br>';
-print '</center>';
 
 // Ask installation language
 print '<br><br><center>';

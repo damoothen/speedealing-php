@@ -1,4 +1,4 @@
-# Dolibarr language file - fr_FR - errors
+# Speedealing language file - fr_FR - errors
 CHARSET=UTF-8
 MenuManager=Gestionnaire de menu
 
@@ -37,9 +37,9 @@ ErrorBadImageFormat=L'image n'a pas un format reconnu
 ErrorBadDateFormat=La valeur '%s' a un format de date non reconnu
 ErrorFailedToWriteInDir=Impossible d'écrire dans le répertoire %s
 ErrorFoundBadEmailInFile=Syntaxe de mail incorrecte trouvée pour %s lignes dans le fichier (exemple ligne %s avec email=%s)
-ErrorUserCannotBeDelete=L'utilisateur ne peut pas être supprimé. Peut-être est-il associé à des éléments de Dolibarr.
+ErrorUserCannotBeDelete=L'utilisateur ne peut pas être supprimé. Peut-être est-il associé à des éléments de Speedealing.
 ErrorFieldsRequired=Des champs obligatoires n'ont pas été renseignés
-ErrorFailedToCreateDir=Echec à la création d'un répertoire. Vérifiez que le user du serveur Web a bien les droits d'écriture dans les répertoires documents de Dolibarr. Si le paramètre <b>safe_mode</b> a été activé sur ce PHP, vérifier que les fichiers php dolibarr appartiennent à l'utilisateur du serveur Web.
+ErrorFailedToCreateDir=Echec à la création d'un répertoire. Vérifiez que le user du serveur Web a bien les droits d'écriture dans les répertoires documents de Speedealing. Si le paramètre <b>safe_mode</b> a été activé sur ce PHP, vérifier que les fichiers php Speedealing appartiennent à l'utilisateur du serveur Web.
 ErrorNoMailDefinedForThisUser=EMail non défini pour cet utilisateur
 ErrorFeatureNeedJavascript=Cette fonctionnalité a besoin de javascript activé pour fonctionner. Modifier dans configuration - affichage.
 ErrorTopMenuMustHaveAParentWithId0=Un menu de type 'Top' ne peut avoir de menu père. Mettre 0 dans l'id père ou choisir un menu de type 'Left'.
@@ -58,7 +58,7 @@ ErrorSizeTooLongForVarcharType=Longueur de champ trop longue pour le type chaine
 ErrorFieldCanNotContainSpecialCharacters=Le champ <b>%s</b> ne peut contenir de caractères spéciaux.
 ErrorNoAccountancyModuleLoaded=Aucun module de comptabilité activé
 ErrorExportDuplicateProfil=Ce nom de profil existe déjà pour ce lot d'export.
-ErrorLDAPSetupNotComplete=Le matching Dolibarr-LDAP est incomplet.
+ErrorLDAPSetupNotComplete=Le matching Speedealing-LDAP est incomplet.
 ErrorLDAPMakeManualTest=Un fichier .ldif a été généré dans le répertoire %s. Essayez de charger ce fichier en manuel depuis la ligne de commande pour plus de détail sur l'erreur.
 ErrorCantSaveADoneUserWithZeroPercentage=Impossible de sauver une action à l'état non commencé avec un utilisateur défini comme ayant fait l'action.
 ErrorRefAlreadyExists=La référence utilisée pour la création existe déjà
@@ -73,7 +73,7 @@ ErrorFieldRefNotIn=Mauvaise valeur pour le champ numéro <b>%s</b> (la valeur '<
 ErrorsOnXLines=Erreurs sur <b>%s</b> lignes sources
 ErrorFileIsInfectedWithAVirus=L'antivirus n'a pas pu valider ce fichier (il est probablement infecté par un virus) !
 ErrorSpecialCharNotAllowedForField=Les caractères spéciaux ne sont pas admis pour le champ "%s"
-ErrorDatabaseParameterWrong=Le paramètre de configuration de la base de donnée '<b>%s</b>' a une valeur non compatible pour une utilisation de Dolibarr (doit avoir la valeur '<b>%s</b>').
+ErrorDatabaseParameterWrong=Le paramètre de configuration de la base de donnée '<b>%s</b>' a une valeur non compatible pour une utilisation de Speedealing (doit avoir la valeur '<b>%s</b>').
 ErrorNumRefModel=Une référence existe en base (%s) et est incompatible avec cette numérotation. Supprimez la ligne ou renommez la référence pour activer ce module.
 ErrorQtyTooLowForThisSupplier=Quantité insuffisante pour ce fournisseur ou aucun tarif défini sur ce produit pour ce fournisseur
 ErrorModuleSetupNotComplete=La configuration du module semble incomplète. Aller dans l'espace Configuration - Modules pour corriger.
@@ -88,8 +88,8 @@ ErrorFailedToSendPassword=Échec de l'envoi du mot de passe
 ErrorFailedToLoadRSSFile=Echec de la récupération du flux RSS. Ajouter la constante MAIN_SIMPLEXMLLOAD_DEBUG si le message d'erreur n'est pas assez explicite.
 ErrorPasswordDiffers=Les mots de passe ne sont pas identiques, veuillez les saisir à nouveau
 ErrorForbidden=Accès non autorisé.<br>Vous essayez d'accéder à une page, zone ou fonction sans être au sein d'une session authentifiée ou qui n'est pas autorisée pour votre compte utilisateur.
-ErrorForbidden2=Les permissions pour ce login peuvent être attribuées par l'administrateur Dolibarr via le menu %s -> %s.
-ErrorForbidden3=Dolibarr ne semble pas fonctionner au sein d'une session authentifiée. Consultez la documentation d'installation de Dolibarr pour savoir comment gérer les authentifications (htaccess, mod_auth ou autre...).
+ErrorForbidden2=Les permissions pour ce login peuvent être attribuées par l'administrateur Speedealing via le menu %s -> %s.
+ErrorForbidden3=Speedealing ne semble pas fonctionner au sein d'une session authentifiée. Consultez la documentation d'installation de Speedealing pour savoir comment gérer les authentifications (htaccess, mod_auth ou autre...).
 ErrorNoImagickReadimage=La classe Imagick n'est pas présente sur cette installation de PHP. L'aperçu n'est donc pas disponible. Les administrateurs peuvent désactiver cet onglet dans le menu Configuration - Affichage.
 ErrorRecordAlreadyExists=Enregistrement déjà existant
 ErrorCantReadFile=Échec de lecture du fichier '%s'
@@ -107,8 +107,8 @@ ErrorWebServerUserHasNotPermission=Le compte d'execution du serveur web <b>%s</b
 ErrorNoActivatedBarcode=Aucun type de code bar activé
 ErrUnzipFails=Impossible de décompresser le fichier %s avec ZipArchive
 ErrNoZipEngine=Pas de moteur pour décompresser le fichier %s dans ce PHP
-ErrorFileMustBeADolibarrPackage=Le fichier doit être un package Dolibarr
-ErrorFileRequired=Il faut un fichier de package Dolibarr
+ErrorFileMustBeADolibarrPackage=Le fichier doit être un package Speedealing
+ErrorFileRequired=Il faut un fichier de package Speedealing
 SESSIONEXPIRE=Session expirée
 
 # Warnings
@@ -116,7 +116,7 @@ WarningSafeModeOnCheckExecDir=Attention, l'option PHP <b>safe_mode</b> est activ
 WarningAllowUrlFopenMustBeOn=Attention, le paramètre <b>allow_url_fopen</b> doit être positionné à <b>on</b> dans le fichier <b>php.ini</b> pour que ce module soit pleinement opérationnel. Vous devez modifier ce fichier manuellement.
 WarningBuildScriptNotRunned=Le script <b>%s</b> n'a pas encore été lancé pour générer les graphiques ou il n'y a aucune donnée à afficher.
 WarningBookmarkAlreadyExists=Un marque-page avec ce titre ou cette destination (URL) existe déjà.
-WarningPassIsEmpty=Attention, le mot de passe de la base de données Dolibarr est vide. Cela représente une faille de sécurité. Il est recommandé d'ajouter manuellement un mot de passe à la base et de modifier le fichier conf.php pour refléter ce changement.
+WarningPassIsEmpty=Attention, le mot de passe de la base de données Speedealing est vide. Cela représente une faille de sécurité. Il est recommandé d'ajouter manuellement un mot de passe à la base et de modifier le fichier conf.php pour refléter ce changement.
 WarningConfFileMustBeReadOnly=Attention, votre fichier de configuration (<b>htdocs/conf/conf.php</b>) est accessible en écriture au serveur Web. Ceci représente une faille sérieuse de sécurité. Modifiez les permissions pour qu'il soit en lecture seule pour le compte sous lequel tourne le serveur Web et non lisible pour les autres.<br>Si vous êtes sous Windows sur un disque dur utilisant un formatage FAT, sachez que ce système de fichier ne permet pas de protéger des fichiers et n'offre donc aucune solution pour réduire les risques de manipulation de ce fichier.
 WarningsOnXLines=Alertes sur <b>%s</b> lignes sources
 WarningNoDocumentModelActivated=Aucun modèle, pour la génération de document, n'a été activé. Un modèle sera pris par défaut en attendant la correction de configuration du module.
