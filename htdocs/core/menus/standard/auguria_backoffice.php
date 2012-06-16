@@ -76,7 +76,7 @@ class MenuTop extends nosqlDocument {
 
 		// On sauve en session le menu principal choisi
 		if (isset($_GET["idmenu"]))
-			$_SESSION["idmenu"] = $_GET["idmenu"];
+			dol_setcache ("idmenu",$_GET["idmenu"]);
 
 		$tabMenu = array();
 
@@ -99,7 +99,8 @@ class MenuTop extends nosqlDocument {
 					$classname = 'mb_parent';
 					if ($i == 0)
 						$classname.=' first_el';
-					if (!empty($_SESSION['idmenu']) && $this->menuSelected($newTabMenu)) {
+					$idmenu = dol_getcache('idmenu');
+					if (!empty($idmenu) && $this->menuSelected($newTabMenu)) {
 						$classname.=' pageselected';
 						$this->selected[0]->name = $newTabMenu->title;
 						$this->selected[0]->url = $url;
@@ -197,7 +198,8 @@ class MenuTop extends nosqlDocument {
 			$classname = 'mb_parent';
 			if ($i == 0)
 				$classname.=' first_el';
-			if (!empty($_SESSION['idmenu']) && $this->menuSelected($menu)) {
+			$idmenu = dol_getcache('idmenu');
+			if (!empty($idmenu) && $this->menuSelected($menu)) {
 				$classname.=' pageselected';
 				$this->selected[$level]->name = $menu->title;
 				$this->selected[$level]->url = $url;
@@ -315,7 +317,7 @@ class MenuTop extends nosqlDocument {
 	 * @return	true if selected
 	 */
 	function menuSelected($newTabMenu) {
-		if ($newTabMenu->_id == $_SESSION['idmenu'])
+		if ($newTabMenu->_id == dol_getcache('idmenu'))
 			return true;
 
 		$result = $this->submenu[$newTabMenu->_id];

@@ -133,21 +133,17 @@ class Conf extends nosqlDocument {
 		 */
 		$found = false;
 
-		if (!empty($this->memcached->host)) {
-			$result = dol_getcache("const");
-			if (is_object($result)) {
-				$found = true;
-			}
-		}
+		$result = dol_getcache("const");
+		if (is_object($result))
+			$found = true;
+		
 
 		if (!$found) {
 			$result = array();
 			try {
 				$result = $this->load('const');
 				//print_r($result);
-				if (!empty($this->memcached->host)) {
-					dol_setcache("const", $result);
-				}
+				dol_setcache("const", $result);
 			} catch (Exception $e) {
 				dol_print_error("", $e->getMessage());
 				exit;

@@ -119,7 +119,7 @@ abstract class nosqlDocument extends CommonObject {
 
 		$found = false;
 
-		if ($conf->Memcached->enabled && $cache) {
+		if ($cache) {
 			$this->values = dol_getcache($id);
 			if (is_object($this->values)) {
 				$found = true;
@@ -130,7 +130,7 @@ abstract class nosqlDocument extends CommonObject {
 			$this->values = array();
 			$this->values = $this->couchdb->getDoc($id); // load extrafields for class
 
-			if ($conf->Memcached->enabled && $cache) {
+			if ($cache) {
 				dol_setcache($id, $this->values);
 			}
 		}
@@ -148,20 +148,21 @@ abstract class nosqlDocument extends CommonObject {
 
 		$this->values->class = get_class($this);
 
-		if ($conf->Memcached->enabled && $cache) {
-			dol_delcache($this->id);
-		}
-
 		try {
 			$this->couchdb->clean($this->values);
 			$result = $this->couchdb->storeDoc($this->values);
 			$this->id = $result->id;
 			$this->values->_id = $result->id;
 			$this->values->_rev = $result->rev;
+			if ($cache) {
+				dol_setcache($id, $this->values);
+			}
 		} catch (Exception $e) {
 			dol_print_error("", $e->getMessage());
 			dol_syslog(get_class($this) . "::get " . $error, LOG_WARN);
 		}
+		
+		
 		return $result;
 	}
 
@@ -250,7 +251,7 @@ abstract class nosqlDocument extends CommonObject {
 
 		$found = false;
 
-		if ($conf->Memcached->enabled && $cache) {
+		if ($cache) {
 			$result = dol_getcache(get_class($this) . ":" . $name);
 			if (is_object($result)) {
 				$found = true;
@@ -266,7 +267,7 @@ abstract class nosqlDocument extends CommonObject {
 
 				$result = $this->couchdb->getView(get_class($this), $name);
 
-				if ($conf->Memcached->enabled && $cache) {
+				if ($cache) {
 					dol_setcache(get_class($this) . ":" . $name, $result);
 				}
 			} catch (Exception $e) {

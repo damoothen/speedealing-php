@@ -162,11 +162,16 @@ if ($action == 'set' && $user->admin) {
 		$object->values->_id = "module:" . $objMod->values->name;
 		$object->values->_rev = $rev;
 		$object->values->enabled = true;
+		dol_delcache("MenuTop:list"); //refresh menu
+		dol_delcache("MenuTop:submenu"); //refresh menu
+		dol_delcache("extrafields:" . $object->values->class); //refresh extrafields
+		dol_delcache("const"); //delete $conf
+		dol_delcache("DolibarrModules:list"); //refresh menu
+		
 		$object->record();
 	} catch (Exception $e) {
 		$mesg = $e->getMessage();
 	}
-	dol_flushcache(); // reset 
 	Header("Location: " . $_SERVER['PHP_SELF'] . "?&mesg=" . urlencode($mesg));
 	exit;
 }
@@ -175,6 +180,11 @@ if ($action == 'reset' && $user->admin) {
 	try {
 		$object->load($_GET['id']);
 		unset($object->values->enabled);
+		
+		dol_delcache("MenuTop:list"); //refresh menu
+		dol_delcache("MenuTop:submenu"); //refresh menu
+		dol_delcache("const"); //delete $conf
+		dol_delcache("DolibarrModules:list"); //refresh menu
 
 		$object->record();
 	} catch (Exception $e) {
