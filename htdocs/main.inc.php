@@ -28,7 +28,7 @@
 /**
  * 	\file       htdocs/main.inc.php
  * 	\ingroup	core
- * 	\brief      File that defines environment for Dolibarr pages only (variables not required by scripts)
+ * 	\brief      File that defines environment for Speedealing pages only (variables not required by scripts)
  */
 //@ini_set('memory_limit', '64M');	// This may be useless if memory is hard limited by your PHP
 // For optionnal tuning. Enabled if environment variable DOL_TUNING is defined.
@@ -138,14 +138,14 @@ if (!empty($_SERVER["QUERY_STRING"])) {
 // Sanity check on POST
 analyse_sql_and_script($_POST, 0);
 
-// This is to make Dolibarr working with Plesk
+// This is to make Speedealing working with Plesk
 if (!empty($_SERVER['DOCUMENT_ROOT']))
 	set_include_path($_SERVER['DOCUMENT_ROOT'] . '/htdocs');
 
 // Include the conf.php and functions.lib.php
 require_once("filefunc.inc.php");
 
-// Init session. Name of session is specific to Dolibarr instance.
+// Init session. Name of session is specific to Speedealing instance.
 $prefix = dol_getprefix();
 $sessionname = 'DOLSESSID_' . $prefix;
 $sessiontimeout = 'DOLSESSTIMEOUT_' . $prefix;
@@ -178,7 +178,7 @@ if (isset($_SERVER["HTTP_USER_AGENT"])) {
 }
 
 
-// Force HTTPS if required ($conf->file->main_force_https is 0/1 or https dolibarr root url)
+// Force HTTPS if required ($conf->file->main_force_https is 0/1 or https Speedealing root url)
 if (!empty($conf->file->main_force_https)) {
 	$newurl = '';
 	if ($conf->file->main_force_https == '1') {
@@ -810,7 +810,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 		//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/multiselect/css/ui.multiselect.css" />'."\n";
 		print '<link rel="stylesheet" type="text/css" href="' . DOL_URL_ROOT . '/includes/jquery/plugins/wysiwyg/css/jquery.wysiwyg.css" />' . "\n";
 
-		print '<!-- Includes for Dolibarr, modules or specific pages-->' . "\n";
+		print '<!-- Includes for Speedealing, modules or specific pages-->' . "\n";
 		// Output style sheets (optioncss='print' or '')
 		$themepath = dol_buildpath((empty($conf->global->MAIN_FORCETHEMEDIR) ? '' : $conf->global->MAIN_FORCETHEMEDIR) . $conf->css, 1);
 		$themeparam = '?lang=' . $langs->defaultlang . '&amp;theme=' . $conf->theme . (GETPOST('optioncss') ? '&amp;optioncss=' . GETPOST('optioncss', 'alpha', 1) : '');
@@ -933,7 +933,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
 		if (!defined('NOLOGIN')) {
 			// Global js function
-			print '<!-- Includes JS of Dolibarr -->' . "\n";
+			print '<!-- Includes JS of Speedealing -->' . "\n";
 			print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/core/js/lib_head.js"></script>' . "\n";
 		}
 
@@ -1326,7 +1326,7 @@ function left_menu($menu_array_before, $helppagename = '', $moresearchform = '',
 	  print "<!-- End Bookmarks -->\n";
 	  }
 
-	  // Link to Dolibarr wiki pages
+	  // Link to Speedealing wiki pages
 	  if ($helppagename && empty($conf->global->MAIN_HELP_DISABLELINK))
 	  {
 	  $langs->load("help");

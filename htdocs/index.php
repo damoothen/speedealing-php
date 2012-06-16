@@ -21,7 +21,7 @@
 
 /**
  *	\file       htdocs/index.php
- *	\brief      Dolibarr home page
+ *	\brief      Speedealing home page
  */
 
 define('NOCSRFCHECK',1);	// This is login page. We must be able to go on it from another web site.
@@ -97,7 +97,7 @@ print "</table>\n";
 print end_box();
 
 /*
- * Dolibarr Working Board with weather
+ * Speedealing Working Board with weather
  */
 $showweather=empty($conf->global->MAIN_DISABLE_METEO)?1:0;
 $rowspan=0;
@@ -356,7 +356,7 @@ print '</div>'; //end row
 print '<div class="row">';
 
 /*
- * Dashboard Dolibarr states (statistics)
+ * Dashboard Speedealing states (statistics)
  * Hidden for external users
  */
 $langs->load("commercial");

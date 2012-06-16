@@ -286,7 +286,7 @@
 		.ntf_tip_blue span {background: url(img/ntf_tip.png) no-repeat right -17px}
 
 	/* widget box */
-		.box_c,.box_s,.box_s_reg {/*margin-bottom:30px*/}
+		.box_c,.box_s,.box_s_reg {margin-bottom:25px}
 		.box_c_heading {height:30px;border:1px solid #dcdcdc;font-size:16px;line-height:30px;position:relative}
 		.box_c_heading .ff_icon {color:#bdbdbd;font-size:20px}
 		.box_c_heading .box_c_ico {width:36px;border-right:1px solid #dcdcdc;box-shadow: 1px 0 0 rgba(255,255,255,.5);background: transparent;background: rgba(0, 0, 0, .2);float:left;text-align:center;line-height:34px;height:30px;overflow:hidden}

@@ -270,7 +270,8 @@ http://www.myserver.com:8180/speedealing</pre>
 				<div class="form_content">
 					<div class="formRow elVal">
 						<label><?php echo $langs->trans("DatabaseName"); ?></label>
-						<input type="text" class="input-text small" id="db_name"
+						<input type="text" class="input-text small" 
+							   id="couchdb_name"
 							   name="couchdb_name"
 							   value="<?php echo (!empty($dolibarr_main_couchdb_host)) ? $dolibarr_main_couchdb_host : ($force_install_database ? $force_install_database : 'speedealing'); ?>">
 					</div>
@@ -303,7 +304,7 @@ http://www.myserver.com:8180/speedealing</pre>
 							   name="couchdb_host<?php print ($force_install_noedit == 2 && $force_install_dbserver) ? '_bis' : ''; ?>"
 							   <?php if ($force_install_noedit == 2 && $force_install_dbserver) print ' disabled="disabled"'; ?>
 							   value="<?php print (!empty($dolibarr_main_couchdb_host)) ? $dolibarr_main_couchdb_host : (empty($force_install_dbserver) ? 'http://localhost.localdomain' : $force_install_dbserver); ?>">
-							   <?php if ($force_install_noedit == 2 && $force_install_dbserver) print '<input type="hidden" name="db_host" value="' . ((!empty($dolibarr_main_couchdb_host)) ? $dolibarr_main_couchdb_host : $force_install_dbserver) . '">'; ?>
+							   <?php if ($force_install_noedit == 2 && $force_install_dbserver) print '<input type="hidden" name="couchdb_host" value="' . ((!empty($dolibarr_main_couchdb_host)) ? $dolibarr_main_couchdb_host : $force_install_dbserver) . '">'; ?>
 					</div>
 				</div>
 			</div>
@@ -327,7 +328,7 @@ https://couchdb.speedealing.com</pre>
 							   name="couchdb_port<?php print ($force_install_noedit == 2 && $force_install_port) ? '_bis' : ''; ?>"
 							   <?php if ($force_install_noedit == 2 && $force_install_port) print ' disabled="disabled"'; ?>
 							   value="<?php print (!empty($dolibarr_main_couchdb_port)) ? $dolibarr_main_couchdb_port : (empty($force_install_port) ? '5984' : $force_install_port); ?>">
-							   <?php if ($force_install_noedit == 2 && $force_install_port) print '<input type="hidden" name="db_port" value="' . ((!empty($dolibarr_main_couchdb_port)) ? $dolibarr_main_couchdb_port : $force_install_port) . '">'; ?>
+							   <?php if ($force_install_noedit == 2 && $force_install_port) print '<input type="hidden" name="couchdb_port" value="' . ((!empty($dolibarr_main_couchdb_port)) ? $dolibarr_main_couchdb_port : $force_install_port) . '">'; ?>
 					</div>
 				</div>
 			</div>
@@ -361,8 +362,7 @@ https://couchdb.speedealing.com</pre>
 					</div>
 					<div class="formRow elVal">
 						<label><?php echo $langs->trans("CreateAdminUser"); ?></label>
-						<input type="checkbox" id="couchdb_create_admin" name="couchdb_create_admin"
-							   <?php if ($force_install_createdatabase) print ' checked="on"'; ?>>
+						<input type="checkbox" id="couchdb_create_admin" name="couchdb_create_admin" <?php if (!empty($force_install_createdatabase)) print ' checked="on"'; ?>>
 					</div>
 				</div>
 			</div>
@@ -372,7 +372,6 @@ https://couchdb.speedealing.com</pre>
 				</div>
 			</div>
 		</div>
-
 	</div>
 </fieldset>
 
@@ -380,7 +379,7 @@ https://couchdb.speedealing.com</pre>
 
 <fieldset title="<?php echo $langs->trans("DatabaseSQL"); ?>">
 	<legend>Lorem ipsum dolor&hellip;</legend>
-	<div class="row sepH_a">
+	<div class="row sepH_b">
 		<div class="row sepH_b">
 			<div class="twelve columns">
 				<h3 class="inner_heading"><?php echo $langs->trans("DatabaseSQL"); ?></h3>
@@ -439,11 +438,6 @@ https://couchdb.speedealing.com</pre>
 
 									if ($type == 'sqlite')
 										continue; // We hide sqlite because support can't be complete unti sqlit does not manage foreign key creation after table creation
-
-
-
-
-										
 // Version min of database
 									$versionbasemin = getStaticMember($class, 'versionmin');
 									$note = '(' . getStaticMember($class, 'label') . ' >= ' . versiontostring($versionbasemin) . ')';
@@ -510,6 +504,7 @@ https://couchdb.speedealing.com</pre>
 				</div>
 			</div>
 		</div>
+
 		<div class="row box_s_reg sepH_a">
 			<div class="seven columns">
 				<div class="form_content">
@@ -519,7 +514,7 @@ https://couchdb.speedealing.com</pre>
 							   name="db_host<?php print ($force_install_noedit == 2 && $force_install_dbserver) ? '_bis' : ''; ?>"
 							   <?php if ($force_install_noedit == 2 && $force_install_dbserver) print ' disabled="disabled"'; ?>
 							   value="<?php print (!empty($dolibarr_main_db_host)) ? $dolibarr_main_db_host : (empty($force_install_dbserver) ? 'localhost' : $force_install_dbserver); ?>">
-<?php if ($force_install_noedit == 2 && $force_install_dbserver) print '<input type="hidden" name="db_host" value="' . ((!empty($dolibarr_main_db_host)) ? $dolibarr_main_db_host : $force_install_dbserver) . '">'; ?>
+							   <?php if ($force_install_noedit == 2 && $force_install_dbserver) print '<input type="hidden" name="db_host" value="' . ((!empty($dolibarr_main_db_host)) ? $dolibarr_main_db_host : $force_install_dbserver) . '">'; ?>
 					</div>
 				</div>
 			</div>
@@ -540,7 +535,7 @@ https://couchdb.speedealing.com</pre>
 							   name="db_port<?php print ($force_install_noedit == 2 && $force_install_port) ? '_bis' : ''; ?>"
 							   <?php if ($force_install_noedit == 2 && $force_install_port) print ' disabled="disabled"'; ?>
 							   value="<?php print (!empty($dolibarr_main_db_port)) ? $dolibarr_main_db_port : $force_install_port; ?>">
-<?php if ($force_install_noedit == 2 && $force_install_port) print '<input type="hidden" name="db_port" value="' . ((!empty($dolibarr_main_db_port)) ? $dolibarr_main_db_port : $force_install_port) . '">'; ?>
+							   <?php if ($force_install_noedit == 2 && $force_install_port) print '<input type="hidden" name="db_port" value="' . ((!empty($dolibarr_main_db_port)) ? $dolibarr_main_db_port : $force_install_port) . '">'; ?>
 					</div>
 				</div>
 			</div>
@@ -573,7 +568,7 @@ https://couchdb.speedealing.com</pre>
 			<div class="seven columns">
 				<div class="form_content">
 					<div class="formRow elVal">
-						<label for="db_user"><?php echo $langs->trans("Login"); ?></label>
+						<label><?php echo $langs->trans("Login"); ?></label>
 						<input type="text" id="db_user" class="input-text medium"
 							   name="db_user"
 							   value="<?php print (!empty($dolibarr_main_db_user)) ? $dolibarr_main_db_user : $force_install_databaselogin; ?>">
@@ -588,7 +583,7 @@ https://couchdb.speedealing.com</pre>
 						<label><?php echo $langs->trans("CreateUser"); ?></label>
 						<input type="checkbox"
 							   id="db_create_user" name="db_create_user"
-<?php if (!empty($force_install_createuser)) print ' checked="on"'; ?>>
+							   <?php if (!empty($force_install_createuser)) print ' checked="on"'; ?>>
 					</div>
 				</div>
 			</div>
@@ -614,13 +609,13 @@ https://couchdb.speedealing.com</pre>
 					<div class="formRow elVal">
 						<label><?php echo $langs->trans("Login"); ?></label>
 						<input type="text" id="db_user_root" class="input-text medium"
-							   name="db_user_root" class="needroot"
+							   name="db_user_root"
 							   value="<?php print (!empty($db_user_root)) ? $db_user_root : $force_install_databaserootlogin; ?>">
 					</div>
 					<div class="formRow elVal">
 						<label><?php echo $langs->trans("Password"); ?></label>
 						<input type="password" class="input-text medium"
-							   id="db_pass_root" name="db_pass_root" class="needroot"
+							   id="db_pass_root" name="db_pass_root"
 							   value="<?php print (!empty($db_pass_root)) ? $db_pass_root : $force_install_databaserootpass; ?>">
 					</div>
 				</div>
@@ -640,13 +635,9 @@ postgres (PostgreSql)</pre>
 </fieldset>
 
 <!-- Memcached -->
-
-<fieldset title="<?php echo $langs->trans("Memcached"); ?>">
+<!-- Max 3 steps !!!! bug in 4 steps -->
+<!--<fieldset title="<?php echo $langs->trans("Memcached"); ?>">
 	<legend>Lorem ipsum dolor&hellip;</legend>
-	<?php
-	$force_install_databaserootlogin = preg_replace('/__SUPERUSERLOGIN__/', 'root', $force_install_databaserootlogin);
-	$force_install_databaserootpass = preg_replace('/__SUPERUSERPASSWORD__/', '', $force_install_databaserootpass);
-	?>
 	<div class="row sepH_b">
 		<div class="row sepH_b">
 			<div class="twelve columns">
@@ -678,7 +669,7 @@ postgres (PostgreSql)</pre>
 							   name="memcached_host<?php print ($force_install_noedit == 2 && $force_install_dbserver) ? '_bis' : ''; ?>"
 							   <?php if ($force_install_noedit == 2 && $force_install_dbserver) print ' disabled="disabled"'; ?>
 							   value="<?php print (!empty($dolibarr_main_memcached_host)) ? $dolibarr_main_memcached_host : (empty($force_install_dbserver) ? 'localhost' : $force_install_dbserver); ?>">
-<?php if ($force_install_noedit == 2 && $force_install_dbserver) print '<input type="hidden" name="memcached_host" value="' . ((!empty($dolibarr_main_memcached_host)) ? $dolibarr_main_memcached_host : $force_install_dbserver) . '">'; ?>
+							   <?php if ($force_install_noedit == 2 && $force_install_dbserver) print '<input type="hidden" name="memcached_host" value="' . ((!empty($dolibarr_main_memcached_host)) ? $dolibarr_main_memcached_host : $force_install_dbserver) . '">'; ?>
 					</div>
 				</div>
 			</div>
@@ -699,7 +690,7 @@ postgres (PostgreSql)</pre>
 							   name="memcached_port<?php print ($force_install_noedit == 2 && $force_install_port) ? '_bis' : ''; ?>"
 							   <?php if ($force_install_noedit == 2 && $force_install_port) print ' disabled="disabled"'; ?>
 							   value="<?php print (!empty($dolibarr_main_memcached_port)) ? $dolibarr_main_memcached_port : (empty($force_install_port) ? '11211' : $force_install_port); ?>">
-<?php if ($force_install_noedit == 2 && $force_install_port) print '<input type="hidden" name="db_port" value="' . ((!empty($dolibarr_main_memcached_port)) ? $dolibarr_main_memcached_port : $force_install_port) . '">'; ?>
+							   <?php if ($force_install_noedit == 2 && $force_install_port) print '<input type="hidden" name="memcached_port" value="' . ((!empty($dolibarr_main_memcached_port)) ? $dolibarr_main_memcached_port : $force_install_port) . '">'; ?>
 					</div>
 				</div>
 			</div>
@@ -710,7 +701,7 @@ postgres (PostgreSql)</pre>
 			</div>
 		</div>
 	</div>
-</fieldset>
+</fieldset>-->
 
 <button type="submit" class="finish gh_button icon approve primary"><?php echo $langs->trans("Save"); ?></button>
 
@@ -784,7 +775,7 @@ postgres (PostgreSql)</pre>
 	
 </script>
 
-
+<!--
 <script type="text/javascript">
 	jQuery(document).ready(function() {
 
@@ -796,7 +787,7 @@ postgres (PostgreSql)</pre>
 		function init_needroot()
 		{
 			/*alert(jQuery("#db_create_database").attr("checked")); */
-			if (jQuery("#db_create_database").attr("checked") || jQuery("#db_create_user").attr("checked"))
+			if (jQuery("#db_create_database").attr("checked") || jQuery("#db_create_user").attr("checked") || jQuery("#couchdb_create_admin").attr("checked"))
 			{
 				jQuery(".needroot").removeAttr('disabled');
 			}
@@ -813,8 +804,11 @@ postgres (PostgreSql)</pre>
 		jQuery("#db_create_user").click(function() {
 			init_needroot();
 		});
+		jQuery("#couchdb_create_admin").click(function() {
+			init_needroot();
+		});
 <?php if ($force_install_noedit) { ?>
-			jQuery("#db_pass").focus();
+					jQuery("#db_pass").focus();
 <?php } ?>
 	});
 
@@ -883,7 +877,7 @@ postgres (PostgreSql)</pre>
 		return ok;
 	}
 </script>
-
+-->
 <?php
 // $db->close();	Not database connexion yet
 
