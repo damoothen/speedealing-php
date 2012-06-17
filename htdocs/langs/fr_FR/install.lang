@@ -52,9 +52,9 @@ ServerAddressDescription=Nom ou adresse ip du serveur de base de données, gén�
 ServerPortDescription=Port du serveur. Ne rien mettre si inconnu.
 ServerPortCouchdbDescription=Port du serveur. Défaut 5984.
 ServerAddressCouchdbDescription=Nom FQDN du serveur de base de données, 'localhost.localdomain' quand le serveur est installé sur la même machine que le serveur web
-DatabaseCouchdbUserDescription=Login du super administrateur ayant tous les droits sur le serveur CouchDB ou l'administrateur propriétaire de la base si la base et son compte d'accès existent déjà (comme lorsque vous êtes chez un hébergeur).
+DatabaseCouchdbUserDescription=Login du super administrateur ayant tous les droits sur le serveur CouchDB ou l'administrateur propriétaire de la base si la base et son compte d'accès existent déjà (comme lorsque vous êtes chez un hébergeur).<br><br><div class="alert-box info">Cet utilisateur/mot de passe sera l'administrateur pour se connecter à Speedealing.</div>
 CheckToCreateCouchdbDatabase=Cochez cette option si la base de données n'existe pas et doit être créée.
-CreateAdminUser=Créer le super administrateur
+CreateAdminUser=Créer le super administrateur (Première installation de couchDB)
 MemcachedDescription=Activer Memcached necessite l'installation d'un serveur Memcached et des lib php-memcached ou php-memcache. Il peut être activer après l'installation.
 ServerAddressMemcachedDesc=Nom ou adresse ip du serveur memcached, généralement 'localhost' quand le serveur est installé sur la même machine que le serveur web
 ServerPortMemcachedDesc=Port du serveur memcached. Défaut : 11211
