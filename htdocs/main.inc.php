@@ -926,6 +926,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/lib/fullcalendar/fullcalendar.min.js"></script>';
 		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/lib/stepy/js/jquery.stepy.min.js"></script>';
 		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/lib/validate/jquery.validate.min.js"></script>';
+		print '<script type="text/javascript" src="../includes/lib/validate/localization/messages_'.substr($langs->getDefaultLang(),0,2).'.js"></script>'; //localization for validation plugin
 		//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/js/jquery.list.min.js"></script>';
 		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/js/pertho.js"></script>';
 		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/js/jquery.rwd-table.js"></script>';

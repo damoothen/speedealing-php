@@ -636,7 +636,7 @@ postgres (PostgreSql)</pre>
 
 <!-- Memcached -->
 <!-- Max 3 steps !!!! bug in 4 steps -->
-<!--<fieldset title="<?php echo $langs->trans("Memcached"); ?>">
+<fieldset title="<?php echo $langs->trans("Memcached"); ?>">
 	<legend>Lorem ipsum dolor&hellip;</legend>
 	<div class="row sepH_b">
 		<div class="row sepH_b">
@@ -701,7 +701,7 @@ postgres (PostgreSql)</pre>
 			</div>
 		</div>
 	</div>
-</fieldset>-->
+</fieldset>
 
 <button type="submit" class="finish gh_button icon approve primary"><?php echo $langs->trans("Save"); ?></button>
 
@@ -750,14 +750,6 @@ postgres (PostgreSql)</pre>
 					'db_pass'		: 'required',
 					'couchdb_user_root' : 'required',
 					'couchdb_pass_root' : 'required'
-				}, messages: {
-					'db_user'		: { required:  '<?php echo dol_escape_js($langs->transnoentities("ErrorFieldRequired", $langs->transnoentitiesnoconv("Login"))); ?>' },
-					'couchdb_user_root'		: { required:  '<?php echo dol_escape_js($langs->transnoentities("ErrorFieldRequired", $langs->transnoentitiesnoconv("Login"))); ?>' },
-					'main_dir'		: { required:  '<?php echo $langs->trans('ErrorFieldRequired'); ?>' },
-					'db_pass'		: { required:  '<?php echo dol_escape_js($langs->transnoentities("ErrorFieldRequired", $langs->transnoentitiesnoconv("Password"))); ?>' },
-					'couchdb_pass_root'		: { required:  '<?php echo dol_escape_js($langs->transnoentities("ErrorFieldRequired", $langs->transnoentitiesnoconv("Password"))); ?>' },
-					'main_data_dir'	: { required:  '<?php echo $langs->trans('ErrorFieldRequired'); ?>' },
-					'db_host'		: { required:  '<?php echo $langs->trans('ErrorFieldRequired'); ?>' }
 				},
 				ignore				: ':hidden'
 			});

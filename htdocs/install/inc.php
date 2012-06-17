@@ -387,6 +387,8 @@ function pHeader($soutitre, $next, $action = 'set', $param = '') {
 		</style>';
 	print '<script type="text/javascript" src="../includes/lib/stepy/js/jquery.stepy.min.js"></script>';
 	print '<script type="text/javascript" src="../includes/lib/validate/jquery.validate.min.js"></script>';
+	
+	print '<script type="text/javascript" src="../includes/lib/validate/localization/messages_'.substr($langs->getDefaultLang(),0,2).'.js"></script>'; //localization for validation plugin
 	//print '<script type="text/javascript" src="../includes/js/pertho.js"></script>';
 
 	print '</head>' . "\n";

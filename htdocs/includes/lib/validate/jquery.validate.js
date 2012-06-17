@@ -1,5 +1,5 @@
 /**
- * jQuery Validation Plugin 1.9.0
+ * jQuery Validation Plugin 2.0.0pre
  *
  * http://bassistance.de/jquery-plugins/jquery-plugin-validation/
  * http://docs.jquery.com/Plugins/Validation
@@ -63,7 +63,7 @@ $.extend($.fn, {
 							// insert a hidden input as a replacement for the missing submit button
 							var hidden = $("<input type='hidden'/>").attr("name", validator.submitButton.name).val(validator.submitButton.value).appendTo(validator.currentForm);
 						}
-						validator.settings.submitHandler.call( validator, validator.currentForm );
+						validator.settings.submitHandler.call( validator, validator.currentForm, event );
 						if (validator.submitButton) {
 							// and clean up afterwards; thanks to no-block-scope, hidden can be referenced
 							hidden.remove();
@@ -350,11 +350,16 @@ $.extend($.validator, {
 		// http://docs.jquery.com/Plugins/Validation/Validator/element
 		element: function( element ) {
 			element = this.validationTargetFor( this.clean( element ) );
+
+			if (!element) {
+				return true;
+			}
+
 			this.lastElement = element;
 			this.prepareElement( element );
 			this.currentElements = $(element);
-			var result = this.check( element );
-			if ( result ) {
+			var result = this.check( element ) !== false;
+			if (result) {
 				delete this.invalid[element.name];
 			} else {
 				this.invalid[element.name] = true;
@@ -677,9 +682,9 @@ $.extend($.validator, {
 		validationTargetFor: function(element) {
 			// if radio/checkbox, validate first element in group instead
 			if (this.checkable(element)) {
-				element = this.findByName( element.name ).not(this.settings.ignore)[0];
+				element = this.findByName( element.name );
 			}
-			return element;
+			return $(element).not(this.settings.ignore)[0];
 		},
 
 		checkable: function( element ) {
@@ -765,9 +770,7 @@ $.extend($.validator, {
 		url: {url: true},
 		date: {date: true},
 		dateISO: {dateISO: true},
-		dateDE: {dateDE: true},
 		number: {number: true},
-		numberDE: {numberDE: true},
 		digits: {digits: true},
 		creditcard: {creditcard: true}
 	},
