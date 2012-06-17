@@ -635,7 +635,6 @@ postgres (PostgreSql)</pre>
 </fieldset>
 
 <!-- Memcached -->
-<!-- Max 3 steps !!!! bug in 4 steps -->
 <fieldset title="<?php echo $langs->trans("Memcached"); ?>">
 	<legend>Lorem ipsum dolor&hellip;</legend>
 	<div class="row sepH_b">

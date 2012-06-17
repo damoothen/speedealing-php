@@ -715,6 +715,33 @@ function write_conf_file($conffile) {
 		fputs($fp, '$dolibarr_main_authentication=\'dolibarr\';');
 		fputs($fp, "\n\n");
 
+		/* CouchDB */
+
+		fputs($fp, '// Couchdb settings');
+		fputs($fp, "\n");
+
+		fputs($fp, '$dolibarr_main_couchdb_host=\'' . str_replace("'", "\'", ($_POST["couchdb_host"])) . '\';');
+		fputs($fp, "\n");
+
+		fputs($fp, '$dolibarr_main_couchdb_port=\'' . str_replace("'", "\'", ($_POST["couchdb_port"])) . '\';');
+		fputs($fp, "\n");
+
+		fputs($fp, '$dolibarr_main_couchdb_name=\'' . str_replace("'", "\'", ($_POST["couchdb_name"])) . '\';');
+		fputs($fp, "\n\n");
+
+		/* memcached */
+		if ($_POST["db_enable_memcached"] == true) {
+			fputs($fp, '// Memcached settings');
+			fputs($fp, "\n");
+
+			fputs($fp, '$dolibarr_main_memcached_host=\'' . str_replace("'", "\'", ($_POST["memcached_host"])) . '\';');
+			fputs($fp, "\n");
+
+			fputs($fp, '$dolibarr_main_memcached_port=\'' . str_replace("'", "\'", ($_POST["memcached_port"])) . '\';');
+			fputs($fp, "\n\n");
+		}
+		/* Specific setting */
+
 		fputs($fp, '// Specific settings');
 		fputs($fp, "\n");
 
