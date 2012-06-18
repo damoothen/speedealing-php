@@ -1,0 +1,22 @@
+{
+   "_id": "_design/Societe",
+   "language": "javascript",
+   "views": {
+       "list": {
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\")\n  emit(doc.ThirdPartyName, doc);\n}"
+       },
+       "target_id": {
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\")\n  \temit(doc._id, {_id:doc._id, _rev:doc._rev});\n}"
+       },
+       "rowid": {
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\")\n  emit(doc.rowid, doc._id);\n}"
+       },
+       "count_status": {
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\")\n  emit(doc.Status, 1);\n}",
+           "reduce": "function(keys, values) {\n  return sum(values)\n}"
+       }
+   },
+   "updates": {
+       "in-place": "function (doc, req) {\n var field = req.query.field;\n var value = req.query.value;\n doc[field] = value;\n  return [doc, value];\n }"
+   }
+}

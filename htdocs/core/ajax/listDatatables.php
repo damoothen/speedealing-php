@@ -42,7 +42,10 @@ top_httphead();
 
 if (!empty($json) && !empty($class)) {
 
-	dol_include_once("/" . strtolower($class) . "/class/" . strtolower($class) . ".class.php");
+	$result = dol_include_once("/" . $class . "/class/" .strtolower($class) . ".class.php");
+	if(empty($result)){
+		dol_include_once("/" . strtolower($class) . "/class/" .strtolower($class) . ".class.php"); // Old version
+	}
 
 	$object = new $class($db);
 

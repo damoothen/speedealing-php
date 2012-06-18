@@ -585,6 +585,7 @@ if (!$error && $db->connected && $action == "set") {
 					$couchdb = new couchClient($conf->Couchdb->host . ':' . $conf->Couchdb->port . '/', $conf->Couchdb->name);
 					$couchAdmin = new couchAdmin($couchdb);
 					$couchAdmin->createAdmin($_POST['couchdb_user_root'], $_POST['couchdb_pass_root']);
+					$couchAdmin->addRoleToUser($_POST['couchdb_user_root'], "Administrator"); // Add user in administrator group
 				}
 
 				$host = substr($conf->Couchdb->host, 7);

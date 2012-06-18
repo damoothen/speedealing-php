@@ -560,7 +560,7 @@ class DolibarrModules extends nosqlDocument {
 	 *  @param	string	$reldir		Relative directory where to scan files
 	 *  @return	int     			<=0 if KO, >0 if OK
 	 */
-	function _load_documents($reldir) {
+	function _load_documents() {
 		global $db, $conf;
 
 		$error = 0;
@@ -568,7 +568,7 @@ class DolibarrModules extends nosqlDocument {
 		$ok = 1;
 		foreach ($conf->file->dol_document_root as $dirroot) {
 			if ($ok) {
-				$dir = $dirroot . $reldir;
+				$dir = $dirroot . "/" . $this->values->name . "/json/";
 				$ok = 0;
 
 				// Create or upgrade views and documents

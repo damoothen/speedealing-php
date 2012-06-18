@@ -169,6 +169,7 @@ if ($action == 'set' && $user->admin) {
 		dol_delcache("DolibarrModules:list"); //refresh menu
 		
 		$object->record();
+		$object->_load_documents();
 	} catch (Exception $e) {
 		$mesg = $e->getMessage();
 	}
