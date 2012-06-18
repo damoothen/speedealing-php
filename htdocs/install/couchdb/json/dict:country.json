@@ -1,0 +1,974 @@
+{
+   "_id": "dict:country",
+   "values": {
+       "AD": {
+           "enable": true,
+           "label": "Andorre"
+       },
+       "AE": {
+           "enable": true,
+           "label": "Émirats arabes unis"
+       },
+       "AF": {
+           "enable": true,
+           "label": "Afghanistan"
+       },
+       "AG": {
+           "enable": true,
+           "label": "Antigua-et-Barbuda"
+       },
+       "AI": {
+           "enable": true,
+           "label": "Anguilla"
+       },
+       "AL": {
+           "enable": true,
+           "label": "Albanie"
+       },
+       "AM": {
+           "enable": true,
+           "label": "Arménie"
+       },
+       "AN": {
+           "enable": true,
+           "label": "Antilles néerlandaises"
+       },
+       "AO": {
+           "enable": true,
+           "label": "Angola"
+       },
+       "AQ": {
+           "enable": true,
+           "label": "Antarctique"
+       },
+       "AR": {
+           "enable": true,
+           "label": "Argentine"
+       },
+       "AS": {
+           "enable": true,
+           "label": "Samoa américaines"
+       },
+       "AT": {
+           "enable": true,
+           "label": "Autriche"
+       },
+       "AU": {
+           "enable": true,
+           "label": "Australia"
+       },
+       "AW": {
+           "enable": true,
+           "label": "Aruba"
+       },
+       "AX": {
+           "enable": true,
+           "label": "Iles Aland"
+       },
+       "AZ": {
+           "enable": true,
+           "label": "Azerbaïdjan"
+       },
+       "BA": {
+           "enable": true,
+           "label": "Bosnie-Herzégovine"
+       },
+       "BB": {
+           "enable": true,
+           "label": "Barbade"
+       },
+       "BD": {
+           "enable": true,
+           "label": "Bangladesh"
+       },
+       "BE": {
+           "enable": true,
+           "label": "Belgium"
+       },
+       "BF": {
+           "enable": true,
+           "label": "Burkina Faso"
+       },
+       "BG": {
+           "enable": true,
+           "label": "Bulgarie"
+       },
+       "BH": {
+           "enable": true,
+           "label": "Bahreïn"
+       },
+       "BI": {
+           "enable": true,
+           "label": "Burundi"
+       },
+       "BJ": {
+           "enable": true,
+           "label": "Bénin"
+       },
+       "BL": {
+           "enable": true,
+           "label": "Saint-Barthélemy"
+       },
+       "BM": {
+           "enable": true,
+           "label": "Bermudes"
+       },
+       "BN": {
+           "enable": true,
+           "label": "Brunei"
+       },
+       "BO": {
+           "enable": true,
+           "label": "Bolivie"
+       },
+       "BR": {
+           "enable": true,
+           "label": "Brésil"
+       },
+       "BS": {
+           "enable": true,
+           "label": "Bahamas"
+       },
+       "BT": {
+           "enable": true,
+           "label": "Bhoutan"
+       },
+       "BV": {
+           "enable": true,
+           "label": "Ile Bouvet"
+       },
+       "BW": {
+           "enable": true,
+           "label": "Botswana"
+       },
+       "BY": {
+           "enable": true,
+           "label": "Biélorussie"
+       },
+       "BZ": {
+           "enable": true,
+           "label": "Belize"
+       },
+       "CA": {
+           "enable": true,
+           "label": "Canada"
+       },
+       "CC": {
+           "enable": true,
+           "label": "Iles des Cocos (Keeling)"
+       },
+       "CD": {
+           "enable": true,
+           "label": "République démocratique du Congo"
+       },
+       "CF": {
+           "enable": true,
+           "label": "République centrafricaine"
+       },
+       "CG": {
+           "enable": true,
+           "label": "Congo"
+       },
+       "CH": {
+           "enable": true,
+           "label": "Suisse"
+       },
+       "CI": {
+           "enable": true,
+           "label": "Côte d'Ivoire"
+       },
+       "CK": {
+           "enable": true,
+           "label": "Iles Cook"
+       },
+       "CL": {
+           "enable": true,
+           "label": "Chili"
+       },
+       "CM": {
+           "enable": true,
+           "label": "Cameroun"
+       },
+       "CN": {
+           "enable": true,
+           "label": "China"
+       },
+       "CO": {
+           "enable": true,
+           "label": "Colombie"
+       },
+       "CR": {
+           "enable": true,
+           "label": "Costa Rica"
+       },
+       "CU": {
+           "enable": true,
+           "label": "Cuba"
+       },
+       "CV": {
+           "enable": true,
+           "label": "Cap-Vert"
+       },
+       "CX": {
+           "enable": true,
+           "label": "Ile Christmas"
+       },
+       "CY": {
+           "enable": true,
+           "label": "Chypre"
+       },
+       "CZ": {
+           "enable": true,
+           "label": "République Tchèque"
+       },
+       "DE": {
+           "enable": true,
+           "label": "Germany"
+       },
+       "DJ": {
+           "enable": true,
+           "label": "Djibouti"
+       },
+       "DK": {
+           "enable": true,
+           "label": "Danemark"
+       },
+       "DM": {
+           "enable": true,
+           "label": "Dominique"
+       },
+       "DO": {
+           "enable": true,
+           "label": "République Dominicaine"
+       },
+       "DZ": {
+           "enable": true,
+           "label": "Algérie"
+       },
+       "EC": {
+           "enable": true,
+           "label": "Equateur"
+       },
+       "EE": {
+           "enable": true,
+           "label": "Estonie"
+       },
+       "EG": {
+           "enable": true,
+           "label": "Egypte"
+       },
+       "EH": {
+           "enable": true,
+           "label": "Sahara occidental"
+       },
+       "ER": {
+           "enable": true,
+           "label": "Erythrée"
+       },
+       "ES": {
+           "enable": true,
+           "label": "Spain"
+       },
+       "ET": {
+           "enable": true,
+           "label": "Ethiopie"
+       },
+       "FI": {
+           "enable": true,
+           "label": "Finlande"
+       },
+       "FJ": {
+           "enable": true,
+           "label": "Iles Fidji"
+       },
+       "FK": {
+           "enable": true,
+           "label": "Iles Falkland"
+       },
+       "FM": {
+           "enable": true,
+           "label": "Micronésie"
+       },
+       "FO": {
+           "enable": true,
+           "label": "Iles Féroé"
+       },
+       "FR": {
+           "enable": true,
+           "label": "France"
+       },
+       "GA": {
+           "enable": true,
+           "label": "Gabon"
+       },
+       "GB": {
+           "enable": true,
+           "label": "United Kingdom"
+       },
+       "GD": {
+           "enable": true,
+           "label": "Grenade"
+       },
+       "GE": {
+           "enable": true,
+           "label": "Géorgie"
+       },
+       "GF": {
+           "enable": true,
+           "label": "Guyane française"
+       },
+       "GG": {
+           "enable": true,
+           "label": "Guernesey"
+       },
+       "GH": {
+           "enable": true,
+           "label": "Ghana"
+       },
+       "GI": {
+           "enable": true,
+           "label": "Gibraltar"
+       },
+       "GL": {
+           "enable": true,
+           "label": "Groenland"
+       },
+       "GM": {
+           "enable": true,
+           "label": "Gambie"
+       },
+       "GN": {
+           "enable": true,
+           "label": "Guinée"
+       },
+       "GQ": {
+           "enable": true,
+           "label": "Guinée Equatoriale"
+       },
+       "GR": {
+           "enable": true,
+           "label": "Grèce"
+       },
+       "GS": {
+           "enable": true,
+           "label": "Iles Géorgie du Sud et Sandwich du Sud"
+       },
+       "GT": {
+           "enable": true,
+           "label": "Guatemala"
+       },
+       "GU": {
+           "enable": true,
+           "label": "Guam"
+       },
+       "GW": {
+           "enable": true,
+           "label": "Guinée-Bissao"
+       },
+       "HK": {
+           "enable": true,
+           "label": "Hong Kong"
+       },
+       "HM": {
+           "enable": true,
+           "label": "Iles Heard et McDonald"
+       },
+       "HN": {
+           "enable": true,
+           "label": "Honduras"
+       },
+       "HR": {
+           "enable": true,
+           "label": "Croatie"
+       },
+       "HT": {
+           "enable": true,
+           "label": "Haiti"
+       },
+       "HU": {
+           "enable": true,
+           "label": "Hongrie"
+       },
+       "ID": {
+           "enable": true,
+           "label": "Indonésie"
+       },
+       "IE": {
+           "enable": true,
+           "label": "Irland"
+       },
+       "IL": {
+           "enable": true,
+           "label": "Israel"
+       },
+       "IM": {
+           "enable": true,
+           "label": "Ile de Man"
+       },
+       "IN": {
+           "enable": true,
+           "label": "India"
+       },
+       "IO": {
+           "enable": true,
+           "label": "Territoire britannique de l'Océan Indien"
+       },
+       "IQ": {
+           "enable": true,
+           "label": "Iraq"
+       },
+       "IR": {
+           "enable": true,
+           "label": "Iran"
+       },
+       "IS": {
+           "enable": true,
+           "label": "Islande"
+       },
+       "IT": {
+           "enable": true,
+           "label": "Italy"
+       },
+       "JE": {
+           "enable": true,
+           "label": "Jersey"
+       },
+       "JM": {
+           "enable": true,
+           "label": "Jamaïque"
+       },
+       "JO": {
+           "enable": true,
+           "label": "Jordanie"
+       },
+       "JP": {
+           "enable": true,
+           "label": "Japon"
+       },
+       "KE": {
+           "enable": true,
+           "label": "Kenya"
+       },
+       "KG": {
+           "enable": true,
+           "label": "Kirghizistan"
+       },
+       "KH": {
+           "enable": true,
+           "label": "Cambodge"
+       },
+       "KI": {
+           "enable": true,
+           "label": "Kiribati"
+       },
+       "KM": {
+           "enable": true,
+           "label": "Comores"
+       },
+       "KN": {
+           "enable": true,
+           "label": "Saint-Christophe-et-Niévès"
+       },
+       "KP": {
+           "enable": true,
+           "label": "Corée du Nord"
+       },
+       "KR": {
+           "enable": true,
+           "label": "Corée du Sud"
+       },
+       "KW": {
+           "enable": true,
+           "label": "Koweït"
+       },
+       "KY": {
+           "enable": true,
+           "label": "Iles Cayman"
+       },
+       "KZ": {
+           "enable": true,
+           "label": "Kazakhstan"
+       },
+       "LA": {
+           "enable": true,
+           "label": "Laos"
+       },
+       "LB": {
+           "enable": true,
+           "label": "Liban"
+       },
+       "LC": {
+           "enable": true,
+           "label": "Sainte-Lucie"
+       },
+       "LI": {
+           "enable": true,
+           "label": "Liechtenstein"
+       },
+       "LK": {
+           "enable": true,
+           "label": "Sri Lanka"
+       },
+       "LR": {
+           "enable": true,
+           "label": "Liberia"
+       },
+       "LS": {
+           "enable": true,
+           "label": "Lesotho"
+       },
+       "LT": {
+           "enable": true,
+           "label": "Lituanie"
+       },
+       "LU": {
+           "enable": true,
+           "label": "Luxembourg"
+       },
+       "LV": {
+           "enable": true,
+           "label": "Lettonie"
+       },
+       "LY": {
+           "enable": true,
+           "label": "Libye"
+       },
+       "MA": {
+           "enable": true,
+           "label": "Maroc"
+       },
+       "MC": {
+           "enable": true,
+           "label": "Monaco"
+       },
+       "MD": {
+           "enable": true,
+           "label": "Moldavie"
+       },
+       "ME": {
+           "enable": true,
+           "label": "Monténégro"
+       },
+       "MF": {
+           "enable": true,
+           "label": "Saint-Martin"
+       },
+       "MG": {
+           "enable": true,
+           "label": "Madagascar"
+       },
+       "MH": {
+           "enable": true,
+           "label": "Iles Marshall"
+       },
+       "MK": {
+           "enable": true,
+           "label": "ex-République yougoslave de Macédoine"
+       },
+       "ML": {
+           "enable": true,
+           "label": "Mali"
+       },
+       "MM": {
+           "enable": true,
+           "label": "Birmanie (Myanmar)"
+       },
+       "MN": {
+           "enable": true,
+           "label": "Mongolie"
+       },
+       "MO": {
+           "enable": true,
+           "label": "Macao"
+       },
+       "MP": {
+           "enable": true,
+           "label": "Mariannes du Nord"
+       },
+       "MR": {
+           "enable": true,
+           "label": "Mauritanie"
+       },
+       "MS": {
+           "enable": true,
+           "label": "Monserrat"
+       },
+       "MT": {
+           "enable": true,
+           "label": "Malte"
+       },
+       "MU": {
+           "enable": true,
+           "label": "Maurice"
+       },
+       "MV": {
+           "enable": true,
+           "label": "Maldives"
+       },
+       "MW": {
+           "enable": true,
+           "label": "Malawi"
+       },
+       "MX": {
+           "enable": true,
+           "label": "Mexique"
+       },
+       "MY": {
+           "enable": true,
+           "label": "Malaisie"
+       },
+       "MZ": {
+           "enable": true,
+           "label": "Mozambique"
+       },
+       "NA": {
+           "enable": true,
+           "label": "Namibie"
+       },
+       "NC": {
+           "enable": true,
+           "label": "Nouvelle-Calédonie"
+       },
+       "NE": {
+           "enable": true,
+           "label": "Niger"
+       },
+       "NF": {
+           "enable": true,
+           "label": "Ile Norfolk"
+       },
+       "NG": {
+           "enable": true,
+           "label": "Nigeria"
+       },
+       "NI": {
+           "enable": true,
+           "label": "Nicaragua"
+       },
+       "NL": {
+           "enable": true,
+           "label": "Nerderland"
+       },
+       "NO": {
+           "enable": true,
+           "label": "Norvège"
+       },
+       "NP": {
+           "enable": true,
+           "label": "Népal"
+       },
+       "NR": {
+           "enable": true,
+           "label": "Nauru"
+       },
+       "NU": {
+           "enable": true,
+           "label": "Nioué"
+       },
+       "NZ": {
+           "enable": true,
+           "label": "Nouvelle-Zélande"
+       },
+       "OM": {
+           "enable": true,
+           "label": "Oman"
+       },
+       "PA": {
+           "enable": true,
+           "label": "Panama"
+       },
+       "PE": {
+           "enable": true,
+           "label": "Pérou"
+       },
+       "PF": {
+           "enable": true,
+           "label": "Polynésie française"
+       },
+       "PG": {
+           "enable": true,
+           "label": "Papouasie-Nouvelle-Guinée"
+       },
+       "PH": {
+           "enable": true,
+           "label": "Philippines"
+       },
+       "PK": {
+           "enable": true,
+           "label": "Pakistan"
+       },
+       "PL": {
+           "enable": true,
+           "label": "Pologne"
+       },
+       "PM": {
+           "enable": true,
+           "label": "Saint-Pierre-et-Miquelon"
+       },
+       "PN": {
+           "enable": true,
+           "label": "Iles Pitcairn"
+       },
+       "PR": {
+           "enable": true,
+           "label": "Porto Rico"
+       },
+       "PS": {
+           "enable": true,
+           "label": "Territoire Palestinien Occupé"
+       },
+       "PT": {
+           "enable": true,
+           "label": "Portugal"
+       },
+       "PW": {
+           "enable": true,
+           "label": "Palaos"
+       },
+       "PY": {
+           "enable": true,
+           "label": "Paraguay"
+       },
+       "QA": {
+           "enable": true,
+           "label": "Qatar"
+       },
+       "RO": {
+           "enable": true,
+           "label": "Roumanie"
+       },
+       "RS": {
+           "enable": true,
+           "label": "Serbie"
+       },
+       "RU": {
+           "enable": true,
+           "label": "Russia"
+       },
+       "RW": {
+           "enable": true,
+           "label": "Rwanda"
+       },
+       "SA": {
+           "enable": true,
+           "label": "Arabie Saoudite"
+       },
+       "SB": {
+           "enable": true,
+           "label": "Iles Salomon"
+       },
+       "SC": {
+           "enable": true,
+           "label": "Seychelles"
+       },
+       "SD": {
+           "enable": true,
+           "label": "Soudan"
+       },
+       "SE": {
+           "enable": true,
+           "label": "Sweden"
+       },
+       "SG": {
+           "enable": true,
+           "label": "Singapour"
+       },
+       "SH": {
+           "enable": true,
+           "label": "Sainte-Hélène"
+       },
+       "SI": {
+           "enable": true,
+           "label": "Slovénie"
+       },
+       "SJ": {
+           "enable": true,
+           "label": "Iles Svalbard et Jan Mayen"
+       },
+       "SK": {
+           "enable": true,
+           "label": "Slovaquie"
+       },
+       "SL": {
+           "enable": true,
+           "label": "Sierra Leone"
+       },
+       "SM": {
+           "enable": true,
+           "label": "Saint-Marin"
+       },
+       "SN": {
+           "enable": true,
+           "label": "Sénégal"
+       },
+       "SO": {
+           "enable": true,
+           "label": "Somalie"
+       },
+       "SR": {
+           "enable": true,
+           "label": "Suriname"
+       },
+       "ST": {
+           "enable": true,
+           "label": "Sao Tomé-et-Principe"
+       },
+       "SV": {
+           "enable": true,
+           "label": "Salvador"
+       },
+       "SY": {
+           "enable": true,
+           "label": "Syrie"
+       },
+       "SZ": {
+           "enable": true,
+           "label": "Swaziland"
+       },
+       "TC": {
+           "enable": true,
+           "label": "Iles Turks-et-Caicos"
+       },
+       "TD": {
+           "enable": true,
+           "label": "Tchad"
+       },
+       "TF": {
+           "enable": true,
+           "label": "Terres australes françaises"
+       },
+       "TG": {
+           "enable": true,
+           "label": "Togo"
+       },
+       "TH": {
+           "enable": true,
+           "label": "Thaïlande"
+       },
+       "TJ": {
+           "enable": true,
+           "label": "Tadjikistan"
+       },
+       "TK": {
+           "enable": true,
+           "label": "Tokélaou"
+       },
+       "TL": {
+           "enable": true,
+           "label": "Timor Oriental"
+       },
+       "TM": {
+           "enable": true,
+           "label": "Turkménistan"
+       },
+       "TN": {
+           "enable": true,
+           "label": "Tunisie"
+       },
+       "TO": {
+           "enable": true,
+           "label": "Tonga"
+       },
+       "TR": {
+           "enable": true,
+           "label": "Turquie"
+       },
+       "TT": {
+           "enable": true,
+           "label": "Trinité-et-Tobago"
+       },
+       "TV": {
+           "enable": true,
+           "label": "Tuvalu"
+       },
+       "TW": {
+           "enable": true,
+           "label": "Taïwan"
+       },
+       "TZ": {
+           "enable": true,
+           "label": "Tanzanie"
+       },
+       "UA": {
+           "enable": true,
+           "label": "Ukraine"
+       },
+       "UG": {
+           "enable": true,
+           "label": "Ouganda"
+       },
+       "UM": {
+           "enable": true,
+           "label": "Iles mineures éloignées des États-Unis"
+       },
+       "US": {
+           "enable": true,
+           "label": "United States"
+       },
+       "UY": {
+           "enable": true,
+           "label": "Uruguay"
+       },
+       "UZ": {
+           "enable": true,
+           "label": "Ouzbékistan"
+       },
+       "VA": {
+           "enable": true,
+           "label": "Saint-Siège (Vatican)"
+       },
+       "VC": {
+           "enable": true,
+           "label": "Saint-Vincent-et-les-Grenadines"
+       },
+       "VE": {
+           "enable": true,
+           "label": "Vénézuela"
+       },
+       "VG": {
+           "enable": true,
+           "label": "Iles Vierges britanniques"
+       },
+       "VI": {
+           "enable": true,
+           "label": "Iles Vierges américaines"
+       },
+       "VN": {
+           "enable": true,
+           "label": "Viêt Nam"
+       },
+       "VU": {
+           "enable": true,
+           "label": "Vanuatu"
+       },
+       "WF": {
+           "enable": true,
+           "label": "Wallis-et-Futuna"
+       },
+       "WS": {
+           "enable": true,
+           "label": "Samoa"
+       },
+       "YE": {
+           "enable": true,
+           "label": "Yémen"
+       },
+       "YT": {
+           "enable": true,
+           "label": "Mayotte"
+       },
+       "ZA": {
+           "enable": true,
+           "label": "Afrique du Sud"
+       },
+       "ZM": {
+           "enable": true,
+           "label": "Zambie"
+       },
+       "ZW": {
+           "enable": true,
+           "label": "Zimbabwe"
+       }
+   },
+   "class": "dict"
+}

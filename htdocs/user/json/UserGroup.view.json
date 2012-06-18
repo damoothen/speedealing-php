@@ -1,0 +1,9 @@
+{
+   "_id": "_design/UserGroup",
+   "language": "javascript",
+   "views": {
+       "list": {
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"UserGroup\")\n  emit(doc.name, doc);\n}"
+       }
+   }
+}

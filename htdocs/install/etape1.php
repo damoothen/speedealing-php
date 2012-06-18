@@ -332,10 +332,10 @@ if (!$error && $db->connected && $action == "set") {
 	$main_force_https = ((GETPOST("main_force_https") && (GETPOST("main_force_https") == "on" || GETPOST("main_force_https") == 1)) ? '1' : '0');
 
 	// Use alternative directory
-	$main_use_alt_dir = ((GETPOST("main_use_alt_dir") && (GETPOST("main_use_alt_dir") == "on" || GETPOST("main_use_alt_dir") == 1)) ? '' : '//');
+	$main_use_alt_dir = ((GETPOST("main_use_alt_dir") && (GETPOST("main_use_alt_dir") == "off" || GETPOST("main_use_alt_dir") == 0)) ? '//' : '');
 
 	// Alternative root directory name
-	$main_alt_dir_name = ((GETPOST("main_alt_dir_name") && GETPOST("main_alt_dir_name") != '') ? GETPOST("main_alt_dir_name") : 'custom');
+	$main_alt_dir_name = ((GETPOST("main_alt_dir_name") && GETPOST("main_alt_dir_name") != '') ? GETPOST("main_alt_dir_name") : 'modules');
 
 	// Write conf file on disk
 	if (!$error) {
@@ -571,6 +571,54 @@ if (!$error && $db->connected && $action == "set") {
 				$error++;
 			}
 		}
+		// We test access to couchdb server
+		if (!$error) {
+
+			include_once($dolibarr_main_document_root . "/core/db/couchdb/lib/couchClient.php");
+			include_once($dolibarr_main_document_root . "/core/db/couchdb/lib/couchAdmin.php");
+
+			print '<input type="hidden" name="couchdb_user_root" value="' . $_POST['couchdb_user_root'] . '">';
+			print '<input type="hidden" name="couchdb_pass_root" value="' . $_POST['couchdb_pass_root'] . '">';
+
+			try {
+				if ($_POST['couchdb_create_admin']) {
+					$couchdb = new couchClient($conf->Couchdb->host . ':' . $conf->Couchdb->port . '/', $conf->Couchdb->name);
+					$couchAdmin = new couchAdmin($couchdb);
+					$couchAdmin->createAdmin($_POST['couchdb_user_root'], $_POST['couchdb_pass_root']);
+				}
+
+				$host = substr($conf->Couchdb->host, 7);
+				$couchdb = new couchClient('http://' . $_POST['couchdb_user_root'] . ':' . $_POST['couchdb_pass_root'] . '@' . $host . ':' . $conf->Couchdb->port . '/', $conf->Couchdb->name, array("cookie_auth" => false));
+
+				if ($_POST['couchdb_create_database'])
+					$couchdb->createDatabase();
+
+				$couchdb->getDatabaseInfos();
+				print "<tr><td>";
+				print $langs->trans("ServerConnection") . " (" . $langs->trans("User") . " " . $_POST['couchdb_user_root'] . ") : ";
+				print $dolibarr_main_couchdb_host;
+				print "</td><td>";
+				print $langs->trans("OK");
+				print "</td></tr>";
+				print "<tr><td>";
+				print $langs->trans("DatabaseConnection") . " (" . $langs->trans("User") . " " . $_POST['couchdb_user_root'] . ") : ";
+				print $dolibarr_main_couchdb_name;
+				print "</td><td>";
+				print $langs->trans("OK");
+				print "</td></tr>";
+			} catch (Exception $e) {
+				$error_msg = $e->getMessage();
+				$error++;
+			}
+			if ($error) {
+				print "<tr><td>";
+				print $langs->trans("ServerConnection") . " (" . $langs->trans("User") . " " . $_POST['couchdb_user_root'] . ") : ";
+				print $dolibarr_main_couchdb_host;
+				print "</td><td>";
+				print $error_msg;
+				print "</td></tr>";
+			}
+		}
 	}
 
 	print '</table>';
@@ -646,6 +694,8 @@ function write_conf_file($conffile) {
 	global $dolibarr_main_url_root, $dolibarr_main_document_root, $dolibarr_main_data_root, $dolibarr_main_db_host;
 	global $dolibarr_main_db_port, $dolibarr_main_db_name, $dolibarr_main_db_user, $dolibarr_main_db_pass;
 	global $dolibarr_main_db_type, $dolibarr_main_db_character_set, $dolibarr_main_db_collation, $dolibarr_main_authentication;
+	global $dolibarr_main_couchdb_host, $dolibarr_main_couchdb_port, $dolibarr_main_couchdb_name;
+	global $dolibarr_main_memcached_host, $dolibarr_main_memcached_port;
 	global $conffile, $conffiletoshow, $conffiletoshowshort;
 	global $force_dolibarr_lib_ADODB_PATH, $force_dolibarr_lib_NUSOAP_PATH;
 	global $force_dolibarr_lib_TCPDF_PATH, $force_dolibarr_lib_FPDI_PATH;

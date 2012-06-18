@@ -28,6 +28,7 @@
  */
 require_once(DOL_DOCUMENT_ROOT . "/core/lib/memory.lib.php"); // Lib for memcached
 require_once(DOL_DOCUMENT_ROOT . "/core/class/nosqlDocument.class.php");
+require_once(DOL_DOCUMENT_ROOT . "/core/modules/DolibarrModules.class.php");
 
 /**
  *  Class to stock current configuration

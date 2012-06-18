@@ -1,0 +1,28 @@
+{
+   "_id": "extrafields:UserDatabase",
+   "class": "extrafields",
+   "ico": "/img/object_database.png",
+   "labelCreate": "Entrer le nom de la database",
+   "fields": {
+       "Status": {
+           "type": "select",
+           "enable": true,
+           "default": "INSECURE",
+           "aoColumns": {
+               "sClass": "center",
+               "bSearchable": true,
+               "bVisible": true
+           },
+           "values": {
+               "INSECURE": {
+                   "enable": true,
+                   "cssClass": "error_bg"
+               },
+               "SECURE": {
+                   "enable": true,
+                   "cssClass": "ok_bg"
+               }
+           }
+       }
+   }
+}

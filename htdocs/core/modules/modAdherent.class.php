@@ -175,7 +175,7 @@ class modAdherent extends DolibarrModules {
 		$this->values->export_permission[$r] = array(array("adherent", "export"));
 		$this->values->export_fields_array[$r] = array('a.rowid' => 'Id', 'a.civilite' => "UserTitle", 'a.nom' => "Lastname", 'a.prenom' => "Firstname", 'a.login' => "Login", 'a.morphy' => 'MorPhy', 'a.societe' => 'Company', 'a.adresse' => "Address", 'a.cp' => "Zip", 'a.ville' => "Town", 'a.pays' => "Country", 'a.phone' => "PhonePro", 'a.phone_perso' => "PhonePerso", 'a.phone_mobile' => "PhoneMobile", 'a.email' => "Email", 'a.naiss' => "Birthday", 'a.statut' => "Status", 'a.photo' => "Photo", 'a.note' => "Note", 'a.datec' => 'DateCreation', 'a.datevalid' => 'DateValidation', 'a.tms' => 'DateLastModification', 'a.datefin' => 'DateEndSubscription', 'ta.rowid' => 'MemberTypeId', 'ta.libelle' => 'MemberTypeLabel', 'c.rowid' => 'SubscriptionId', 'c.dateadh' => 'DateSubscription', 'c.cotisation' => 'Amount');
 		$this->values->export_entities_array[$r] = array('a.rowid' => 'member', 'a.civilite' => "member", 'a.nom' => "member", 'a.prenom' => "member", 'a.login' => "member", 'a.morphy' => 'member', 'a.societe' => 'member', 'a.adresse' => "member", 'a.cp' => "member", 'a.ville' => "member", 'a.pays' => "member", 'a.phone' => "member", 'a.phone_perso' => "member", 'a.phone_mobile' => "member", 'a.email' => "member", 'a.naiss' => "member", 'a.statut' => "member", 'a.photo' => "member", 'a.note' => "member", 'a.datec' => 'member', 'a.datevalid' => 'member', 'a.tms' => 'member', 'a.datefin' => 'member', 'ta.rowid' => 'member_type', 'ta.libelle' => 'member_type', 'c.rowid' => 'subscription', 'c.dateadh' => 'subscription', 'c.cotisation' => 'subscription');
-		// Add extra fields
+		/*// Add extra fields
 		$sql = "SELECT name, label FROM " . MAIN_DB_PREFIX . "extrafields WHERE elementtype = 'member'";
 		$resql = $this->db->query($sql);
 		while ($obj = $this->db->fetch_object($resql)) {
@@ -183,7 +183,7 @@ class modAdherent extends DolibarrModules {
 			$fieldlabel = ucfirst($obj->label);
 			$this->values->export_fields_array[$r][$fieldname] = $fieldlabel;
 			$this->values->export_entities_array[$r][$fieldname] = 'member';
-		}
+		}*/
 		// End add axtra fields
 		$this->values->export_sql_start[$r] = 'SELECT DISTINCT ';
 		$this->values->export_sql_end[$r] = ' FROM (' . MAIN_DB_PREFIX . 'adherent_type as ta, ' . MAIN_DB_PREFIX . 'adherent as a)';
@@ -206,7 +206,7 @@ class modAdherent extends DolibarrModules {
 		$this->values->import_tables_array[$r] = array('a' => MAIN_DB_PREFIX . 'adherent', 'extra' => MAIN_DB_PREFIX . 'adherent_extrafields');
 		$this->values->import_tables_creator_array[$r] = array('a' => 'fk_user_author');	// Fields to store import user id
 		$this->values->import_fields_array[$r] = array('a.civilite' => "Civility", 'a.nom' => "Lastname*", 'a.prenom' => "Firstname", 'a.login' => "Login*", "a.pass" => "Password", "a.fk_adherent_type" => "MemberType*", 'a.morphy' => 'MorPhy*', 'a.societe' => 'Company', 'a.adresse' => "Address", 'a.cp' => "Zip", 'a.ville' => "Town", 'a.pays' => "Country", 'a.phone' => "PhonePro", 'a.phone_perso' => "PhonePerso", 'a.phone_mobile' => "PhoneMobile", 'a.email' => "Email", 'a.naiss' => "Birthday", 'a.statut' => "Status*", 'a.photo' => "Photo", 'a.note' => "Note", 'a.datec' => 'DateCreation', 'a.datefin' => 'DateEndSubscription');
-		// Add extra fields
+		/*// Add extra fields
 		$sql = "SELECT name, label FROM " . MAIN_DB_PREFIX . "extrafields WHERE elementtype = 'member'";
 		$resql = $this->db->query($sql);
 		if ($resql) {	// This can fail when class is used on old database (during migration for example)
@@ -215,7 +215,7 @@ class modAdherent extends DolibarrModules {
 				$fieldlabel = ucfirst($obj->label);
 				$this->values->import_fields_array[$r][$fieldname] = $fieldlabel;
 			}
-		}
+		}*/
 		// End add extra fields
 		$this->values->import_fieldshidden_array[$r] = array('extra.fk_object' => 'lastrowid-' . MAIN_DB_PREFIX . 'adherent');	// aliastable.field => ('user->id' or 'lastrowid-'.tableparent)
 		$this->values->import_regex_array[$r] = array('a.civilite' => 'code@' . MAIN_DB_PREFIX . 'c_civilite', 'a.fk_adherent_type' => 'rowid@' . MAIN_DB_PREFIX . 'adherent_type', 'a.morphy' => '(phy|mor)', 'a.statut' => '^[0|1]', 'a.datec' => '^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$', 'a.datefin' => '^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$');

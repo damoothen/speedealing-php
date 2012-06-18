@@ -1,0 +1,12 @@
+{
+   "_id": "_design/DolibarrModules",
+   "language": "javascript",
+   "views": {
+       "default_right": {
+           "map": "function(doc) {\n  if(doc.class==\"DolibarrModules\" && doc.rights && doc.rights_class && doc.enabled) {\n     var i=0;\n     doc.rights.forEach(function(tag) {\n         emit([doc.rights_class,tag.id],{_id:doc._id,numero:doc.numero,name:doc.name,desc:tag.desc,rights_class:doc.rights_class,Status:tag.default,id:tag.id, perm:tag.perm, picto:doc.picto, idx:i});\n         i++;\n    });\n}\n}"
+       },
+       "list": {
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"DolibarrModules\")\n    emit(doc.name, {numero:doc.numero, enabled:doc.enabled, always_enabled:doc.always_enabled, family: doc.family, version: doc.version, picto: doc.picto, moddir:doc.moddir, dirs:doc.dirs, depends:doc.depends, requiredby:doc.requireby,phpmin:doc.phpmin, need_dolibarr_version:doc.need_dolibarr_version, const:doc.const, langfiles:doc.langfiles,boxes:doc.boxes})\n}"
+       }
+   }
+}

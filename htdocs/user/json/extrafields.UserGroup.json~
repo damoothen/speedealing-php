@@ -1,0 +1,28 @@
+{
+   "_id": "extrafields:UserGroup",
+   "class": "extrafields",
+   "ico": "/img/ico/icSw2/16-Users-2.png",
+   "labelCreate": "Entrer le nom du group",
+   "fields": {
+       "Status": {
+           "type": "select",
+           "enable": true,
+           "default": "INSECURE",
+           "aoColumns": {
+               "sClass": "center",
+               "bSearchable": true,
+               "bVisible": true
+           },
+           "values": {
+               "INSECURE": {
+                   "enable": true,
+                   "cssClass": "error_bg"
+               },
+               "SECURE": {
+                   "enable": true,
+                   "cssClass": "ok_bg"
+               }
+           }
+       }
+   }
+}

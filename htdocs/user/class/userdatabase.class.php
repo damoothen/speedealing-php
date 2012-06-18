@@ -75,7 +75,7 @@ class UserDatabase extends nosqlDocument
 	/**
 	 *	Charge un objet group avec toutes ces caracteristiques (excpet ->members array)
 	 *
-	 *	@param      int		$id     id du groupe a charger
+	 *	@param      int		$id     name of the data to fetch
 	 *	@return		int				<0 if KO, >0 if OK
 	 */
 	function fetch($id)

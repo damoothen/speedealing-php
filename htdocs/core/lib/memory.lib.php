@@ -45,8 +45,7 @@ function dol_setcache($memoryid, $data) {
 	if (!empty($conf->memcached->host) && class_exists('Memcached')) {
 		$memoryid = session_name() . '_' . $memoryid;
 		$m = new Memcached();
-		$tmparray = explode(':', $conf->memcached->host);
-		$result = $m->addServer($tmparray[0], $tmparray[1] ? $tmparray[1] : 11211);
+		$result = $m->addServer($conf->memcached->host, $conf->memcached->port);
 		//$m->setOption(Memcached::OPT_COMPRESSION, false);
 		//print "Add memoryid=".$memoryid;
 		$m->set($memoryid, $data, 3600);	// This fails if key already exists
@@ -59,8 +58,7 @@ function dol_setcache($memoryid, $data) {
 	} else if (!empty($conf->memcached->host) && class_exists('Memcache')) {
 		$memoryid = session_name() . '_' . $memoryid;
 		$m = new Memcache();
-		$tmparray = explode(':', $conf->memcached->host);
-		$result = $m->addServer($tmparray[0], $tmparray[1] ? $tmparray[1] : 11211);
+		$result = $m->addServer($conf->memcached->host, $conf->memcached->port);
 		//$m->setOption(Memcached::OPT_COMPRESSION, false);
 		$result = $m->set($memoryid, $data);	// This fails if key already exists
 		if ($result) {
@@ -96,8 +94,7 @@ function dol_getcache($memoryid) {
 	if (!empty($conf->memcached->host) && class_exists('Memcached')) {
 		$memoryid = session_name() . '_' . $memoryid;
 		$m = new Memcached();
-		$tmparray = explode(':', $conf->memcached->host);
-		$result = $m->addServer($tmparray[0], $tmparray[1] ? $tmparray[1] : 11211);
+		$result = $m->addServer($conf->memcached->host, $conf->memcached->port);
 		//$m->setOption(Memcached::OPT_COMPRESSION, false);
 		//print "Get memoryid=".$memoryid;
 		$data = $m->get($memoryid);
@@ -112,8 +109,7 @@ function dol_getcache($memoryid) {
 	} else if (!empty($conf->memcached->host) && class_exists('Memcache')) {
 		$memoryid = session_name() . '_' . $memoryid;
 		$m = new Memcache();
-		$tmparray = explode(':', $conf->memcached->host);
-		$result = $m->addServer($tmparray[0], $tmparray[1] ? $tmparray[1] : 11211);
+		$result = $m->addServer($conf->memcached->host, $conf->memcached->port);
 		//$m->setOption(Memcached::OPT_COMPRESSION, false);
 		$data = $m->get($memoryid);
 		//print "memoryid=".$memoryid." - rescode=".$rescode." - data=".count($data)."\n<br>";
@@ -151,8 +147,7 @@ function dol_delcache($memoryid) {
 	if (!empty($conf->memcached->host) && class_exists('Memcached')) {
 		$memoryid = session_name() . '_' . $memoryid;
 		$m = new Memcached();
-		$tmparray = explode(':', $conf->memcached->host);
-		$result = $m->addServer($tmparray[0], $tmparray[1] ? $tmparray[1] : 11211);
+		$result = $m->addServer($conf->memcached->host, $conf->memcached->port);
 		//$m->setOption(Memcached::OPT_COMPRESSION, false);
 		//print "Add memoryid=".$memoryid;
 		$m->delete($memoryid);	// This fails if key already exists
@@ -165,8 +160,7 @@ function dol_delcache($memoryid) {
 	} else if (!empty($conf->memcached->host) && class_exists('Memcache')) {
 		$memoryid = session_name() . '_' . $memoryid;
 		$m = new Memcache();
-		$tmparray = explode(':', $conf->memcached->host);
-		$result = $m->addServer($tmparray[0], $tmparray[1] ? $tmparray[1] : 11211);
+		$result = $m->addServer($conf->memcached->host, $conf->memcached->port);
 		//$m->setOption(Memcached::OPT_COMPRESSION, false);
 		$result = $m->delete($memoryid);	// This fails if key already exists
 		if ($result) {
@@ -202,8 +196,7 @@ function dol_flushcache() {
 	if (!empty($conf->memcached->host) && class_exists('Memcached')) {
 		$memoryid = session_name() . '_' . $memoryid;
 		$m = new Memcached();
-		$tmparray = explode(':', $conf->memcached->host);
-		$result = $m->addServer($tmparray[0], $tmparray[1] ? $tmparray[1] : 11211);
+		$result = $m->addServer($conf->memcached->host, $conf->memcached->port);
 		//$m->setOption(Memcached::OPT_COMPRESSION, false);
 		//print "Add memoryid=".$memoryid;
 		$m->flush();	// This fails if key already exists
@@ -216,8 +209,7 @@ function dol_flushcache() {
 	} else if (!empty($conf->memcached->host) && class_exists('Memcache')) {
 		$memoryid = session_name() . '_' . $memoryid;
 		$m = new Memcache();
-		$tmparray = explode(':', $conf->memcached->host);
-		$result = $m->addServer($tmparray[0], $tmparray[1] ? $tmparray[1] : 11211);
+		$result = $m->addServer($conf->memcached->host, $conf->memcached->port);
 		//$m->setOption(Memcached::OPT_COMPRESSION, false);
 		$result = $m->flush();	// This fails if key already exists
 		if ($result) {

@@ -90,7 +90,7 @@ foreach ($modulesdir as $dir) {
 
 					try {
 						$res = include_once($dir . $file);
-						$objMod = new $modName($db);
+						$objMod = new $modName();
 						$modNameLoaded[$modName] = $dir;
 
 						if ($objMod->numero > 0) {

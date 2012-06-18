@@ -1,0 +1,12 @@
+{
+   "_id": "_design/MenuTop",
+   "language": "javascript",
+   "views": {
+       "submenu": {
+           "map": "function(doc) {\n  if(doc.class==\"DolibarrModules\" && doc.menus && doc.enabled) {\n     doc.menus.forEach(function(tag) {\n\tif(!tag.type) {\n      emit([tag.fk_menu,tag.position],tag);\n\t}\n    });\n}\n}"
+       },
+       "list": {
+           "map": "function(doc) {\n  if(doc.class==\"DolibarrModules\" && doc.menus && doc.enabled) {\n     doc.menus.forEach(function(tag) {\n\tif(tag.type) {\n      emit([tag.position,tag._id],tag);\n\t}\n    });\n}\n}"
+       }
+   }
+}

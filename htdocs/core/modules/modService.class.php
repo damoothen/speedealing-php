@@ -126,7 +126,7 @@ class modService extends DolibarrModules {
 		$this->values->export_entities_array[$r] = array('p.rowid' => "service", 'p.ref' => "service", 'p.label' => "service", 'p.description' => "service", 'p.accountancy_code_sell' => 'service', 'p.accountancy_code_sell' => 'service', 'p.note' => "service", 'p.price_base_type' => "service", 'p.price' => "service", 'p.price_ttc' => "service", 'p.tva_tx' => "service", 'p.tosell' => "service", 'p.duration' => "service", 'p.datec' => "service", 'p.tms' => "service");
 		if (!empty($conf->stock->enabled))
 			$this->values->export_entities_array[$r] = array_merge($this->values->export_entities_array[$r], array('p.stock' => 'product'));
-		// Add extra fields
+		/*// Add extra fields
 		$sql = "SELECT name, label FROM " . MAIN_DB_PREFIX . "extrafields WHERE elementtype = 'product'";
 		$resql = $this->db->query($sql);
 		if ($resql) {	// This can fail when class is used on old database (during migration for example)
@@ -136,7 +136,7 @@ class modService extends DolibarrModules {
 				$this->values->export_fields_array[$r][$fieldname] = $fieldlabel;
 				$this->values->export_entities_array[$r][$fieldname] = 'product';
 			}
-		}
+		}*/
 		// End add axtra fields
 
 		$this->values->export_sql_start[$r] = 'SELECT DISTINCT ';
@@ -157,7 +157,7 @@ class modService extends DolibarrModules {
 		$this->values->import_tables_array[$r] = array('p' => MAIN_DB_PREFIX . 'product', 'extra' => MAIN_DB_PREFIX . 'product_extrafields');
 		$this->values->import_tables_creator_array[$r] = array('p' => 'fk_user_author'); // Fields to store import user id
 		$this->values->import_fields_array[$r] = array('p.ref' => "Ref*", 'p.label' => "Label*", 'p.description' => "Description", 'p.accountancy_code_sell' => "ProductAccountancySellCode", 'p.accountancy_code_buy' => "ProductAccountancyBuyCode", 'p.note' => "Note", 'p.length' => "Length", 'p.surface' => "Surface", 'p.volume' => "Volume", 'p.weight' => "Weight", 'p.duration' => "Duration", 'p.customcode' => 'CustomCode', 'p.price' => "SellingPriceHT", 'p.price_ttc' => "SellingPriceTTC", 'p.tva_tx' => 'VAT', 'p.tosell' => "OnSell*", 'p.tobuy' => "OnBuy*", 'p.fk_product_type' => "Type*", 'p.finished' => 'Nature', 'p.datec' => 'DateCreation*');
-		// Add extra fields
+		/*// Add extra fields
 		$sql = "SELECT name, label FROM " . MAIN_DB_PREFIX . "extrafields WHERE elementtype = 'product'";
 		$resql = $this->db->query($sql);
 		if ($resql) {	// This can fail when class is used on old database (during migration for example)
@@ -166,7 +166,7 @@ class modService extends DolibarrModules {
 				$fieldlabel = ucfirst($obj->label);
 				$this->values->import_fields_array[$r][$fieldname] = $fieldlabel;
 			}
-		}
+		}*/
 		// End add extra fields
 		$this->values->import_fieldshidden_array[$r] = array('extra.fk_object' => 'lastrowid-' . MAIN_DB_PREFIX . 'product');	// aliastable.field => ('user->id' or 'lastrowid-'.tableparent)
 		$this->values->import_regex_array[$r] = array('p.ref' => '[^ ]', 'p.tosell' => '^[0|1]$', 'p.tobuy' => '^[0|1]$', 'p.fk_product_type' => '^[0|1]$', 'p.datec' => '^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$');

@@ -1,0 +1,27 @@
+{
+   "_id": "extrafields:User",
+   "class": "extrafields",
+   "ico": "/img/ico/icSw2/16-User.png",
+   "fields": {
+       "Status": {
+           "type": "select",
+           "enable": true,
+           "default": "DISABLE",
+           "aoColumns": {
+               "sClass": "center",
+               "bSearchable": true,
+               "bVisible": true
+           },
+           "values": {
+               "DISABLE": {
+                   "enable": true,
+                   "cssClass": "error_bg"
+               },
+               "ENABLE": {
+                   "enable": true,
+                   "cssClass": "ok_bg"
+               }
+           }
+       }
+   }
+}

@@ -1,0 +1,9 @@
+{
+   "_id": "_design/dict",
+   "language": "javascript",
+   "views": {
+       "list": {
+           "map": "function(doc) {\n  if(doc.class==\"dict\" && doc.values) {\n    doc.values.forEach(function(tag) {\n      if(tag.enable==true)\n      emit(doc._id, tag._id);\n    });\n  }\n}"
+       }
+   }
+}

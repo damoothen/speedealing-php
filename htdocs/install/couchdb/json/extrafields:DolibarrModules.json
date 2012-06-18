@@ -1,0 +1,29 @@
+{
+   "_id": "extrafields:DolibarrModules",
+   "class": "extrafields",
+   "ico": "/img/ico/icSw2/16-Cog-4.png",
+   "fields": {
+       "Status": {
+           "type": "select",
+           "enable": true,
+           "default": false,
+           "aoColumns": {
+               "sClass": "center",
+               "bSearchable": true,
+               "bVisible": true
+           },
+           "values": {
+               "false": {
+                   "label": "Disabled",
+                   "enable": true,
+                   "cssClass": "error_bg"
+               },
+               "true": {
+                   "label": "Enabled",
+                   "enable": true,
+                   "cssClass": "ok_bg"
+               }
+           }
+       }
+   }
+}

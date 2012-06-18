@@ -264,7 +264,7 @@ class modSociete extends DolibarrModules {
 		if (!empty($conf->global->SOCIETE_USEPREFIX))
 			$this->values->export_fields_array[$r]['s.prefix'] = 'Prefix';
 		$this->values->export_entities_array[$r] = array(); // We define here only fields that use another picto
-		// Add extra fields
+		/*// Add extra fields
 		$sql = "SELECT name, label FROM " . MAIN_DB_PREFIX . "extrafields WHERE elementtype = 'company'";
 		$resql = $this->db->query($sql);
 		if ($resql) { // This can fail when class is used on old database (during migration for example)
@@ -274,7 +274,7 @@ class modSociete extends DolibarrModules {
 				$this->values->export_fields_array[$r][$fieldname] = $fieldlabel;
 				$this->values->export_entities_array[$r][$fieldname] = 'company';
 			}
-		}
+		}*/
 		// End add axtra fields
 		$this->values->export_sql_start[$r] = 'SELECT DISTINCT ';
 		$this->values->export_sql_end[$r] = ' FROM ' . MAIN_DB_PREFIX . 'societe as s';
@@ -298,7 +298,7 @@ class modSociete extends DolibarrModules {
 			unset($this->values->export_fields_array[$r]['s.code_fournisseur']);
 			unset($this->values->export_entities_array[$r]['s.code_fournisseur']);
 		}
-		// Add extra fields
+		/*// Add extra fields
 		$sql = "SELECT name, label FROM " . MAIN_DB_PREFIX . "extrafields WHERE elementtype = 'contact'";
 		$resql = $this->db->query($sql);
 		if ($resql) { // This can fail when class is used on old database (during migration for example)
@@ -308,7 +308,7 @@ class modSociete extends DolibarrModules {
 				$this->values->export_fields_array[$r][$fieldname] = $fieldlabel;
 				$this->values->export_entities_array[$r][$fieldname] = 'contact';
 			}
-		}
+		}*/
 		// End add axtra fields
 		$this->values->export_sql_start[$r] = 'SELECT DISTINCT ';
 		$this->values->export_sql_end[$r] = ' FROM ' . MAIN_DB_PREFIX . 'socpeople as c';
@@ -329,7 +329,7 @@ class modSociete extends DolibarrModules {
 		$this->values->import_entities_array[$r] = array();  // We define here only fields that use another icon that the one defined into import_icon
 		$this->values->import_tables_array[$r] = array('s' => MAIN_DB_PREFIX . 'societe', 'extra' => MAIN_DB_PREFIX . 'societe_extrafields'); // List of tables to insert into (insert done in same order)
 		$this->values->import_fields_array[$r] = array('s.nom' => "Name*", 's.status' => "Status", 's.client' => "Customer*", 's.fournisseur' => "Supplier*", 's.code_client' => "CustomerCode", 's.code_fournisseur' => "SupplierCode", 's.code_compta' => "CustomerAccountancyCode", 's.code_compta_fournisseur' => "SupplierAccountancyCode", 's.address' => "Address", 's.cp' => "Zip", 's.ville' => "Town", 's.fk_pays' => "CountryCode", 's.tel' => "Phone", 's.fax' => "Fax", 's.url' => "Url", 's.email' => "Email", 's.siret' => "IdProf1", 's.siren' => "IdProf2", 's.ape' => "IdProf3", 's.idprof4' => "IdProf4", 's.tva_intra' => "VATIntraShort", 's.capital' => "Capital", 's.note' => "Note", 's.fk_typent' => "ThirdPartyType", 's.fk_effectif' => "Effectif", "s.fk_forme_juridique" => "JuridicalStatus", 's.fk_prospectlevel' => 'ProspectLevel', 's.fk_stcomm' => 'ProspectStatus', 's.default_lang' => 'DefaultLanguage', 's.barcode' => 'BarCode', 's.datec' => "DateCreation");
-		// Add extra fields
+		/*// Add extra fields
 		$sql = "SELECT name, label FROM " . MAIN_DB_PREFIX . "extrafields WHERE elementtype = 'company'";
 		$resql = $this->db->query($sql);
 		if ($resql) { // This can fail when class is used on old database (during migration for example)
@@ -338,7 +338,7 @@ class modSociete extends DolibarrModules {
 				$fieldlabel = ucfirst($obj->label);
 				$this->values->import_fields_array[$r][$fieldname] = $fieldlabel;
 			}
-		}
+		}*/
 		// End add extra fields
 		$this->values->import_fieldshidden_array[$r] = array('s.fk_user_creat' => 'user->id', 'extra.fk_object' => 'lastrowid-' . MAIN_DB_PREFIX . 'societe'); // aliastable.field => ('user->id' or 'lastrowid-'.tableparent)
 		$this->values->import_convertvalue_array[$r] = array(

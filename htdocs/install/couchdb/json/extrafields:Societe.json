@@ -1,0 +1,300 @@
+{
+   "_id": "extrafields:Societe",
+   "class": "extrafields",
+   "ico": "/img/ico/icSw2/16-Apartment-Building.png",
+   "place": [
+       [
+           [
+               "ThirdPartyName",
+               "Address",
+               "Zip",
+               "Town",
+               "Country",
+               "State",
+               "DefaultLang"
+           ],
+           [
+               "Prefix",
+               "CustomerCode",
+               "SupplierCode",
+               "Gencod",
+               "Status",
+               "Logo"
+           ]
+       ],
+       [
+           [
+               "Phone",
+               "Fax",
+               "EMail"
+           ],
+           [
+               "Web",
+               "Facebook",
+               "LinkedIn"
+           ]
+       ],
+       [
+           [
+               "SIREN",
+               "SIRET",
+               "NAF",
+               "Capital"
+           ],
+           [
+               "ThirdPartyType",
+               "Staff"
+           ]
+       ],
+       [
+           [
+               "VATIntra"
+           ],
+           [
+               "VATIsUsed",
+               "JuridicalStatus"
+           ]
+       ]
+   ],
+   "block": [
+       "Main",
+       "AddressBook",
+       "Deal",
+       "Accounting"
+   ],
+   "longList": [
+       "CustomerCode",
+       "Zip",
+       "Town",
+       "Phone",
+       "SIREN",
+       "SIRET",
+       "SalesRepresentatives"
+   ],
+   "shortList": [
+       "Town",
+       "Phone",
+       "SalesRepresentatives"
+   ],
+   "fields": {
+       "ThirdPartyName": {
+           "type": "input",
+           "length": 60,
+           "enable": true
+       },
+       "Prefix": {
+           "type": "text",
+           "length": 5,
+           "enable": false
+       },
+       "CustomerCode": {
+           "type": "text",
+           "length": 15,
+           "enable": true,
+           "aoColumns": {
+               "sClass": "center",
+               "bSearchable": true,
+               "bVisible": false
+           }
+       },
+       "SupplierCode": {
+           "type": "text",
+           "length": 15,
+           "enable": false
+       },
+       "Gencod": {
+           "type": "text",
+           "enable": false
+       },
+       "Status": {
+           "type": "select",
+           "enable": true,
+           "default": "ST_NEVER",
+           "aoColumns": {
+               "sClass": "center",
+               "bSearchable": true,
+               "bVisible": true
+           },
+           "values": {
+               "ST_NO": {
+                   "enable": true,
+                   "type": "closed",
+                   "cssClass": "error_bg"
+               },
+               "ST_NEVER": {
+                   "enable": true,
+                   "type": "suspect",
+                   "cssClass": "neutral_bg"
+               },
+               "ST_PCOLD": {
+                   "enable": true,
+                   "type": "prospect",
+                   "cssClass": "info_bg"
+               },
+               "ST_PHOT": {
+                   "enable": true,
+                   "type": "prospect",
+                   "cssClass": "error_bg"
+               },
+               "ST_CLESS3": {
+                   "enable": true,
+                   "type": "customer",
+                   "cssClass": "alert_bg"
+               },
+               "ST_CUST": {
+                   "enable": true,
+                   "type": "customer",
+                   "cssClass": "ok_bg"
+               },
+               "ST_CPAR": {
+                   "enable": false,
+                   "type": "customer",
+                   "cssClass": "ok_bg"
+               }
+           }
+       },
+       "Address": {
+           "type": "textarea",
+           "cols": 40,
+           "rows": 3,
+           "enable": true
+       },
+       "Zip": {
+           "type": "text",
+           "length": 15,
+           "enable": true,
+           "javascript": null,
+           "aoColumns": {
+               "sClass": "center edit",
+               "bSearchable": true,
+               "bVisible": false
+           }
+       },
+       "Town": {
+           "type": "text",
+           "length": 15,
+           "enable": true,
+           "javascript": null,
+           "aoColumns": {
+               "sClass": "edit",
+               "bSearchable": true,
+               "bVisible": true
+           }
+       },
+       "Country": {
+           "type": "select",
+           "enable": true,
+           "dict": "dict:fk_pays",
+           "default": "substr($langs->defaultlang,3,5)"
+       },
+       "State": {
+           "type": "select",
+           "enable": false,
+           "dict": null
+       },
+       "DefaultLang": {
+           "type": "select",
+           "enable": false,
+           "dict": null
+       },
+       "Logo": {
+           "type": "img",
+           "enable": true
+       },
+       "Phone": {
+           "type": "AC_TEL",
+           "ico": "AC_TEL",
+           "enable": true,
+           "aoColumns": {
+               "sClass": "center",
+               "bSearchable": true,
+               "bVisible": false
+           }
+       },
+       "Fax": {
+           "type": "AC_FAX",
+           "ico": "AC_FAX",
+           "enable": true
+       },
+       "EMail": {
+           "type": "AC_EMAIL",
+           "ico": "AC_EMAIL",
+           "enable": true
+       },
+       "Web": {
+           "type": "AC_URL",
+           "ico": "AC_URL",
+           "site": "www",
+           "enable": true
+       },
+       "Facebook": {
+           "type": "AC_URL",
+           "ico": "AC_URL",
+           "site": "facebook",
+           "enable": true
+       },
+       "LinkedIn": {
+           "type": "AC_URL",
+           "ico": "AC_URL",
+           "site": "linkedin",
+           "enable": true
+       },
+       "SIREN": {
+           "type": "text",
+           "length": "12",
+           "label": "N° de SIREN",
+           "enable": true,
+           "aoColumns": {
+               "bSearchable": true,
+               "bVisible": false
+           }
+       },
+       "SIRET": {
+           "type": "text",
+           "length": "25",
+           "label": "N° SIRET",
+           "enable": true,
+           "aoColumns": {
+               "bSearchable": true,
+               "bVisible": false
+           }
+       },
+       "NAF": {
+           "type": "text",
+           "length": "12",
+           "label": "Code NAF/APE",
+           "enable": "1"
+       },
+       "ThirdPartyType": {
+           "type": "select",
+           "dict": null,
+           "enable": true
+       },
+       "Staff": {
+           "type": "select",
+           "dict": null,
+           "enable": true
+       },
+       "Capital": {
+           "type": "text",
+           "length": "20",
+           "label": "Capital",
+           "enable": "1"
+       },
+       "VATIsUsed": {
+           "type": "bool",
+           "enable": true
+       },
+       "VATIntra": {
+           "type": "text",
+           "length": 25,
+           "javascript": null,
+           "enable": true
+       },
+       "JuridicalStatus": {
+           "type": "dict",
+           "label": "JuridicalStatus",
+           "enable": true
+       }
+   }
+}
