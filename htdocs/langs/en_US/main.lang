@@ -5,7 +5,7 @@ SeparatorDecimal=.
 SeparatorThousand=,
 FormatDateShort=%m/%d/%Y
 FormatDateShortJava=MM/dd/yyyy
-FormatDateShortJQuery=dd/mm/yy
+FormatDateShortJQuery=mm/dd/yy
 FormatHourShort=%I:%M %p
 FormatHourShortDuration=%H:%M
 FormatDateTextShort=%b %d, %Y
@@ -618,6 +618,9 @@ ByYear=By year
 ByMonth=by month
 ByDay=By day
 BySalesRepresentative=By sales representative
+LinkedToSpecificUsers=Linked to a particular user contact
+DeleteAFile=Delete a file
+ConfirmDeleteAFile=Are you sure you want to delete file
 
 # Week day
 Monday=Monday

@@ -1007,7 +1007,7 @@ function dol_now($mode='gmt')
     else if ($mode == 'tzserver')		// Time for now with PHP server timezone added
     {
         require_once(DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php');
-        $tzsecond=getServerTimeZoneInt();    // Contains tz+dayling saving time
+        $tzsecond=getServerTimeZoneInt('now');    // Contains tz+dayling saving time
         $ret=dol_now('gmt')+($tzsecond*3600);
     }
     /*else if ($mode == 'tzref')				// Time for now with parent company timezone is added
@@ -3249,7 +3249,7 @@ function dol_nboflines($s,$maxchar=0)
 
 
 /**
- *	Return nb of lines of a formated text with \n and <br>
+ *	Return nb of lines of a formated text with \n and <br> (we can't have both \n and br)
  *
  *	@param	string	$text      		Text
  *	@param	int		$maxlinesize  	Largeur de ligne en caracteres (ou 0 si pas de limite - defaut)
@@ -3258,12 +3258,14 @@ function dol_nboflines($s,$maxchar=0)
  */
 function dol_nboflines_bis($text,$maxlinesize=0,$charset='UTF-8')
 {
-    //print $text;
     $repTable = array("\t" => " ", "\n" => "<br>", "\r" => " ", "\0" => " ", "\x0B" => " ");
+    if (dol_textishtml($text)) $repTable = array("\t" => " ", "\n" => " ", "\r" => " ", "\0" => " ", "\x0B" => " ");
+
     $text = strtr($text, $repTable);
-    if ($charset == 'UTF-8') { $pattern = '/(<[^>]+>)/Uu'; }	// /U is to have UNGREEDY regex to limit to one html tag. /u is for UTF8 support
-    else $pattern = '/(<[^>]+>)/U';								// /U is to have UNGREEDY regex to limit to one html tag.
+    if ($charset == 'UTF-8') { $pattern = '/(<br[^>]*>)/Uu'; }	// /U is to have UNGREEDY regex to limit to one html tag. /u is for UTF8 support
+    else $pattern = '/(<br[^>]*>)/U';							// /U is to have UNGREEDY regex to limit to one html tag.
     $a = preg_split($pattern, $text, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+
     $nblines = floor((count($a)+1)/2);
     // count possible auto line breaks
     if($maxlinesize)
@@ -3994,18 +3996,6 @@ function printCommonFooter($zone='private')
 }
 
 /**
- * Convert unicode
- *
- * @param	string	$unicode	Unicode
- * @param	string	$encoding	Encoding type
- * @return	string				Unicode converted
- */
-function unichr($unicode , $encoding = 'UTF-8')
-{
-	return mb_convert_encoding("&#{$unicode};", $encoding, 'HTML-ENTITIES');
-}
-
-/**
  *	Convert an array with RGB value into hex RGB value
  *
  *  @param	array	$arraycolor			Array
@@ -4034,11 +4024,11 @@ function getCurrencySymbol($currency_code)
 
 	$form->load_cache_currencies();
 
-	if (is_array($form->cache_currencies[$currency_code]['unicode']) && ! empty($form->cache_currencies[$currency_code]['unicode']))
+	if (function_exists("mb_convert_encoding") && is_array($form->cache_currencies[$currency_code]['unicode']) && ! empty($form->cache_currencies[$currency_code]['unicode']))
 	{
 		foreach($form->cache_currencies[$currency_code]['unicode'] as $unicode)
 		{
-			$currency_sign.= unichr($unicode);
+			$currency_sign .= mb_convert_encoding("&#{$unicode};", "UTF-8", 'HTML-ENTITIES');
 		}
 	}
 	else

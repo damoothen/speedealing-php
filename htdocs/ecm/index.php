@@ -94,7 +94,7 @@ if (GETPOST("sendit") && ! empty($conf->global->MAIN_UPLOAD_DOC))
 
 	if (dol_mkdir($upload_dir) >= 0)
 	{
-		$resupload = dol_move_uploaded_file($_FILES['userfile']['tmp_name'], $upload_dir . "/" . $_FILES['userfile']['name'],0, 0, $_FILES['userfile']['error']);
+		$resupload = dol_move_uploaded_file($_FILES['userfile']['tmp_name'], $upload_dir . "/" . dol_unescapefile($_FILES['userfile']['name']),0, 0, $_FILES['userfile']['error']);
 		if (is_numeric($resupload) && $resupload > 0)
 		{
 			//$mesg = '<div class="ok">'.$langs->trans("FileTransferComplete").'</div>';
@@ -150,26 +150,30 @@ if ($action == 'add' && $user->rights->ecm->setup)
 }
 
 // Remove file
-if ($action == 'confirm_deletefile' && GETPOST('confirm') == 'yes')
+if ($action == 'confirm_deletefile')
 {
-	$result=$ecmdir->fetch($section);
-	if (! $result > 0)
-	{
-		dol_print_error($db,$ecmdir->error);
-		exit;
-	}
-	$relativepath=$ecmdir->getRelativePath();
-	$upload_dir = $conf->ecm->dir_output.'/'.$relativepath;
-	$file = $upload_dir . "/" . GETPOST('urlfile');	// Do not use urldecode here ($_GET and $_REQUEST are already decoded by PHP).
+    if (GETPOST('confirm') == 'yes')
+    {
+        $langs->load("other");
+    	$result=$ecmdir->fetch($section);
+    	if (! $result > 0)
+    	{
+    		dol_print_error($db,$ecmdir->error);
+    		exit;
+    	}
+    	$relativepath=$ecmdir->getRelativePath();
+    	$upload_dir = $conf->ecm->dir_output.'/'.$relativepath;
+    	$file = $upload_dir . "/" . GETPOST('urlfile');	// Do not use urldecode here ($_GET and $_REQUEST are already decoded by PHP).
 
-	$result=dol_delete_file($file);
+    	$result=dol_delete_file($file);
 
-	$mesg = '<div class="ok">'.$langs->trans("FileWasRemoved").'</div>';
+    	$mesg = '<div class="ok">'.$langs->trans("FileWasRemoved",GETPOST('urlfile')).'</div>';
 
-	$result=$ecmdir->changeNbOfFiles('-');
-	$action='file_manager';
+    	$result=$ecmdir->changeNbOfFiles('-');
 
-	clearstatcache();
+    	clearstatcache();
+    }
+   	$action='file_manager';
 }
 
 // Remove directory

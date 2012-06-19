@@ -1588,6 +1588,7 @@ class Propal extends CommonObject
         if ($this->db->query($sql))
         {
             $this->statut = 0;
+            $this->brouillon = 1;
             return 1;
         }
         else
@@ -1809,7 +1810,7 @@ class Propal extends CommonObject
                             {
                                 dol_delete_preview($this);
 
-                                if (!dol_delete_file($file))
+                                if (! dol_delete_file($file,0,0,0,$this)) // For triggers
                                 {
                                     $this->error='ErrorFailToDeleteFile';
                                     $this->db->rollback();

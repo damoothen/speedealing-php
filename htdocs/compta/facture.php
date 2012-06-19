@@ -149,6 +149,7 @@ else if ($action == 'reopen' && $user->rights->facture->creer)
 else if ($action == 'confirm_delete' && $confirm == 'yes' && $user->rights->facture->supprimer)
 {
 	$result = $object->fetch($id);
+	$object->fetch_thirdparty();
 	$result = $object->delete();
 	if ($result > 0)
 	{
@@ -3263,7 +3264,7 @@ else
         if ($userid)
         {
             if ($userid == -1) $sql.=' AND f.fk_user_author IS NULL';
-            else $sql.=' AND f.fk_user_author = '.$user->id;
+            else $sql.=' AND f.fk_user_author = '.$userid;
         }
         if ($_GET['filtre'])
         {
