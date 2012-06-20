@@ -49,7 +49,7 @@ top_httphead();
 //print '<!-- Ajax page called with url '.$_SERVER["PHP_SELF"].'?'.$_SERVER["QUERY_STRING"].' -->'."\n";
 //print_r($_POST);
 
-if (! empty($json) && ! empty($key) && ! empty($id) && ! empty($value) && ! empty($class))
+if (! empty($json) && ! empty($key) && ! empty($id) && ! empty($class))
 {
 	$res=dol_include_once("/".$class."/class/".strtolower($class).".class.php");
 	if(!$res) // old dolibarr
