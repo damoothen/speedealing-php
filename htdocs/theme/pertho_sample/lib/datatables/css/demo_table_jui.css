@@ -54,8 +54,8 @@ table.display td .fancyImg img {display:block}
 .sorting_asc_disabled {background: url('../images/sort_asc_disabled.gif') no-repeat center right}
 .sorting_desc_disabled {background: url('../images/sort_desc_disabled.gif') no-repeat center right}
 .sorting {background:url(../images/sort_both.gif) no-repeat right center}
-.display tr td{background-color:#fff}
-.display tr:nth-child(2n) td{background-color:#f5f5f5}
+/*.display tr td{background-color:#fff}*/
+/*.display tr:nth-child(2n) td{background-color:#f5f5f5}*/
 .top,.bottom{background-color:#F5F5F5;border:1px solid #CCC;padding:15px}
 .top .dataTables_info{float:none}
 table.display tfoot input{width:100%;color:#444;margin:.5em 0}
@@ -78,7 +78,18 @@ table.display td.fright{text-align:right}
 .paging_full_numbers .paginate_button{background-color:#fff}
 .dataTables_scroll,.clear{clear:both}
 .dataTables_info,.dataTables_length,.dataTables_filter,.dataTables_processing,.paging_full_numbers span.paginate_button,.paging_full_numbers span.paginate_active {font-size:11px}
-
+table.display tr.odd.gradeA {background-color: #ddffdd;}
+table.display tr.even.gradeA {background-color: #eeffee;}
+table.display tr.odd.gradeA {background-color: #ddffdd;}
+table.display tr.even.gradeA {background-color: #eeffee;}
+table.display tr.odd.gradeC {background-color: #ddddff;}
+table.display tr.even.gradeC {background-color: #eeeeff;}
+table.display tr.odd.gradeX {background-color: #ffdddd;}
+table.display tr.even.gradeX {background-color: #ffeeee;}
+table.display tr.odd.gradeU {background-color: #ddd;}
+table.display tr.even.gradeU {background-color: #eee;}
+table.display tr.odd {background-color: #f5f5f5;}
+table.display tr.even {background-color: white;}
 .TableTools {margin-bottom:0px; float: left}
 .ColVis_Button {border: medium none;cursor: pointer;display: inline-block;font-family: "Helvetica Neue","Helvetica",Arial,Verdana,sans-serif;font-weight: bold;line-height: 1;margin: 0;outline: medium none;position: relative;text-align: center;text-decoration: none;font-size: 10px;padding: 6px 14px 8px;width: auto;background-color: #E9E9E9;color: #333333}
 .ColVis_collection {border:1px solid #dcdcdc;margin-top:-1px;background:#fff;padding:4px 0;margin-left:1px}

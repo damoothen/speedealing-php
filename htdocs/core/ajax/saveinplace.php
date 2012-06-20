@@ -51,7 +51,9 @@ top_httphead();
 
 if (! empty($json) && ! empty($key) && ! empty($id) && ! empty($value) && ! empty($class))
 {
-	dol_include_once("/".strtolower($class)."/class/".strtolower($class).".class.php");
+	$res=dol_include_once("/".$class."/class/".strtolower($class).".class.php");
+	if(!$res) // old dolibarr
+		dol_include_once("/".strtolower($class)."/class/".strtolower($class).".class.php");
 				
 	$object = new $class($db);
 	

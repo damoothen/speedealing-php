@@ -385,13 +385,13 @@ abstract class nosqlDocument extends CommonObject {
 						"oTableTools": { "sSwfPath": "<?php echo DOL_URL_ROOT . '/includes/jquery/plugins/datatables/extras/TableTools/media/swf/copy_csv_xls.swf'; ?>"},
 						//if($obj->oTableTools->aButtons==null)
 						//$obj->oTableTools->aButtons = array("xls");
-													    
+																							    
 						"oColVis": { "buttonText" : 'Voir/Cacher',
 							"aiExclude": [0,1] // Not cacheable _id and name
 						},
 						//$obj->oColVis->bRestore = true;
 						//$obj->oColVis->sAlign = 'left';
-												            
+																						            
 						// Avec export Excel
 		<?php if (!empty($obj->sDom)) : ?>
 							//"sDom": "Cl<fr>t<\"clear\"rtip>",
@@ -415,8 +415,11 @@ abstract class nosqlDocument extends CommonObject {
 												},
 			<?php endforeach; ?>
 									]},
-																		 
 		<?php endif; ?>
+		<?php if (isset($obj->fnRowCallback)): ?>
+							"fnRowCallback": <?php echo $obj->fnRowCallback; ?>,
+		<?php endif; ?>
+						
 		<?php if (!defined('NOLOGIN')) : ?>
 			<?php if (isset($obj->fnDrawCallback)): ?>
 									"fnDrawCallback": <?php echo $obj->fnDrawCallback; ?>,
@@ -431,6 +434,7 @@ abstract class nosqlDocument extends CommonObject {
 											$("td.edit", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
 												"callback": function( sValue, y ) {
 													oTable.fnDraw();
+													//oTable.fnReloadAjax();
 												},
 												"submitdata": function ( value, settings ) {
 													return { "id": oTable.fnGetData( this.parentNode, 0), 
@@ -440,11 +444,12 @@ abstract class nosqlDocument extends CommonObject {
 												"tooltip": "Cliquer pour éditer...",
 												"indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
 												"placeholder" : ""
-																								                
+																																												                
 											} );
 											$("td.select", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
 												"callback": function( sValue, y ) {
 													oTable.fnDraw();
+													//oTable.fnReloadAjax();
 												},
 												"submitdata": function ( value, settings ) {
 													//alert( 'Number of rows: '+ oTable.fnGetData( this.parentNode, oTable.fnGetPosition( this )[2] ));
@@ -458,7 +463,7 @@ abstract class nosqlDocument extends CommonObject {
 												"tooltip": "Cliquer pour éditer...",
 												"indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
 												"placeholder" : ""
-																								                
+																																												                
 											} );
 										}
 			<?php endif; ?>
