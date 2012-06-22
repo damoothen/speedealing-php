@@ -23,10 +23,11 @@ class MenuTop extends nosqlDocument {
 	protected $db;
 	var $require_left = array("auguria_backoffice");  // Si doit etre en phase avec un gestionnaire de menu gauche particulier
 	var $hideifnotallowed = 0;   // Put 0 for back office menu, 1 for front office menu
-	var $atarget = "";		  // Valeur du target a utiliser dans les liens
+	var $atarget = "";	// Valeur du target a utiliser dans les liens
 	var $topmenu = array(); // array of level 0
 	var $submenu = array(); // array of level > 0
 	var $selected = array();  // array of selected
+	var $idmenu;   // Id of selected menu
 
 	/**
 	 *  Constructor
@@ -75,8 +76,10 @@ class MenuTop extends nosqlDocument {
 		global $user, $langs;
 
 		// On sauve en session le menu principal choisi
-		if (isset($_GET["idmenu"]))
-			dol_setcache ("idmenu",$_GET["idmenu"]);
+		if (isset($_GET["idmenu"])) {
+			dol_setcache("idmenu", $_GET["idmenu"]);
+			$this->idmenu = $_GET["idmenu"];
+		}
 
 		$tabMenu = array();
 
@@ -99,8 +102,10 @@ class MenuTop extends nosqlDocument {
 					$classname = 'mb_parent';
 					if ($i == 0)
 						$classname.=' first_el';
-					$idmenu = dol_getcache('idmenu');
-					if (!empty($idmenu) && $this->menuSelected($newTabMenu)) {
+					if(empty($this->idmenu))
+						$this->idmenu = dol_getcache('idmenu'); // For cache optimisation
+
+					if (!empty($this->idmenu) && $this->menuSelected($newTabMenu)) {
 						$classname.=' pageselected';
 						$this->selected[0]->name = $newTabMenu->title;
 						$this->selected[0]->url = $url;
@@ -198,8 +203,8 @@ class MenuTop extends nosqlDocument {
 			$classname = 'mb_parent';
 			if ($i == 0)
 				$classname.=' first_el';
-			$idmenu = dol_getcache('idmenu');
-			if (!empty($idmenu) && $this->menuSelected($menu)) {
+			
+			if (!empty($this->idmenu) && $this->menuSelected($menu)) {
 				$classname.=' pageselected';
 				$this->selected[$level]->name = $menu->title;
 				$this->selected[$level]->url = $url;
@@ -317,7 +322,7 @@ class MenuTop extends nosqlDocument {
 	 * @return	true if selected
 	 */
 	function menuSelected($newTabMenu) {
-		if ($newTabMenu->_id == dol_getcache('idmenu'))
+		if ($newTabMenu->_id == $this->idmenu)
 			return true;
 
 		$result = $this->submenu[$newTabMenu->_id];

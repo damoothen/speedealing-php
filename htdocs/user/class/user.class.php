@@ -392,7 +392,7 @@ class User extends nosqlDocument {
 		$object = new DolibarrModules($this->db);
 
 		try {
-			$result = $object->getView("default_right");
+			$result = $object->getView("default_right",'',true);
 			foreach ($this->values->roles as $aRow) // load groups
 				$groups[] = $object->couchdb->getDoc("group:" . $aRow);
 		} catch (Exception $exc) {
