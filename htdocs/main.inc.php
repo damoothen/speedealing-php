@@ -216,6 +216,7 @@ if (!defined('NOREQUIREAJAX') && $conf->use_javascript_ajax)
 
 
 
+
 	
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
@@ -432,12 +433,7 @@ if (!defined('NOLOGIN')) {
 		  if ($result < 0) {
 		  $error++;
 		  }
-		  // End call triggers
-
-		  header('Location: '.DOL_URL_ROOT.'/index.php');
-		  exit;
-		  }
-		 */
+		  // End call triggers */
 	} else {
 		// We are already into an authenticated session
 		$login = $_SESSION["dol_login"];
@@ -557,6 +553,9 @@ if (!defined('NOLOGIN')) {
 		$reshook = $hookmanager->executeHooks('afterLogin', $parameters, $user, $action); // Note that $action and $object may have been modified by some hooks
 		if ($reshook < 0)
 			$error++;
+		
+		header('Location: ' . DOL_URL_ROOT . '/index.php?idmenu=menu:home');
+		exit;
 	}
 
 
@@ -925,7 +924,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/lib/fullcalendar/fullcalendar.min.js"></script>';
 		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/lib/stepy/js/jquery.stepy.min.js"></script>';
 		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/lib/validate/jquery.validate.min.js"></script>';
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/lib/validate/localization/messages_'.substr($langs->getDefaultLang(),0,2).'.js"></script>'; //localization for validation plugin
+		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/lib/validate/localization/messages_' . substr($langs->getDefaultLang(), 0, 2) . '.js"></script>'; //localization for validation plugin
 		//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/js/jquery.list.min.js"></script>';
 		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/js/pertho.js"></script>';
 		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/js/jquery.rwd-table.js"></script>';
@@ -1063,8 +1062,8 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 	// Load the top menu manager
 	// Load the top menu manager (only if not already done)
 	if (!class_exists('MenuTop')) {
-			$top_menu = 'auguria_backoffice.php';
-			include_once(DOL_DOCUMENT_ROOT . "/core/menus/standard/" . $top_menu);
+		$top_menu = 'auguria_backoffice.php';
+		include_once(DOL_DOCUMENT_ROOT . "/core/menus/standard/" . $top_menu);
 	}
 
 	print "\n" . '<!-- Start top horizontal menu ' . $top_menu . ' -->' . "\n";
