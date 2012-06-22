@@ -195,8 +195,8 @@ class DolEditor
             	{
                     $out.= ','."\n";
                     // To use filemanager with old fckeditor (GPL)
-                    $out.= '    filebrowserBrowseUrl : ckeditorFilebrowserBrowseUrl,';
-                    $out.= '    filebrowserImageBrowseUrl : ckeditorFilebrowserImageBrowseUrl,';
+// Problem                    $out.= '    filebrowserBrowseUrl : ckeditorFilebrowserBrowseUrl,';
+// Problem                    $out.= '    filebrowserImageBrowseUrl : ckeditorFilebrowserImageBrowseUrl,';
                     //$out.= '    filebrowserUploadUrl : \''.DOL_URL_ROOT.'/includes/fckeditor/editor/filemanagerdol/connectors/php/upload.php?Type=File\',';
                     //$out.= '    filebrowserImageUploadUrl : \''.DOL_URL_ROOT.'/includes/fckeditor/editor/filemanagerdol/connectors/php/upload.php?Type=Image\',';
                     $out.= "\n";
