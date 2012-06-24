@@ -52,9 +52,7 @@ class modSyslog extends DolibarrModules {
 		// Can be enabled / disabled only in the main company
 		$this->values->core_enabled = 1;
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
-		$this->values->version = 'dolibarr';	// 'experimental' or 'dolibarr' or version
-		// Key used in llx_const table to save module status enabled/disabled (where MYMODULE is value of property name of module in uppercase)
-		$this->values->const_name = 'MAIN_MODULE_' . strtoupper($this->values->name);
+		$this->values->version = 'speedealing';	// 'experimental' or 'dolibarr' or version
 		// Where to store the module in setup page (0=common,1=interface,2=others,3=very specific)
 		$this->values->special = 2;
 		// Name of image file used for this module.

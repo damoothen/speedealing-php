@@ -23,6 +23,7 @@ require_once(DOL_DOCUMENT_ROOT . "/core/class/commonobject.class.php");
 abstract class nosqlDocument extends CommonObject {
 
 	protected $couchdb; // TODO must to be private !!!!!
+	protected $logdb; // Module Syslog
 	public $id;
 	public $values;
 	public $error;
@@ -56,6 +57,11 @@ abstract class nosqlDocument extends CommonObject {
 		if (empty($this->couchdb)) {
 			$this->couchdb = new couchClient($conf->Couchdb->host . ':' . $conf->Couchdb->port . '/', $dbname);
 			$this->couchdb->setSessionCookie($_SESSION['couchdb']);
+		}
+
+		if ($conf->Syslog->enabled) {
+			$this->logdb = clone $this->couchdb;
+			$this->logdb->useDatabase("syslog");
 		}
 	}
 
@@ -385,13 +391,13 @@ abstract class nosqlDocument extends CommonObject {
 						"oTableTools": { "sSwfPath": "<?php echo DOL_URL_ROOT . '/includes/jquery/plugins/datatables/extras/TableTools/media/swf/copy_csv_xls.swf'; ?>"},
 						//if($obj->oTableTools->aButtons==null)
 						//$obj->oTableTools->aButtons = array("xls");
-																							    
+																											    
 						"oColVis": { "buttonText" : 'Voir/Cacher',
 							"aiExclude": [0,1] // Not cacheable _id and name
 						},
 						//$obj->oColVis->bRestore = true;
 						//$obj->oColVis->sAlign = 'left';
-																						            
+																										            
 						// Avec export Excel
 		<?php if (!empty($obj->sDom)) : ?>
 							//"sDom": "Cl<fr>t<\"clear\"rtip>",
@@ -419,7 +425,7 @@ abstract class nosqlDocument extends CommonObject {
 		<?php if (isset($obj->fnRowCallback)): ?>
 							"fnRowCallback": <?php echo $obj->fnRowCallback; ?>,
 		<?php endif; ?>
-						
+										
 		<?php if (!defined('NOLOGIN')) : ?>
 			<?php if (isset($obj->fnDrawCallback)): ?>
 									"fnDrawCallback": <?php echo $obj->fnDrawCallback; ?>,
@@ -444,7 +450,7 @@ abstract class nosqlDocument extends CommonObject {
 												"tooltip": "Cliquer pour éditer...",
 												"indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
 												"placeholder" : ""
-																																												                
+																																																				                
 											} );
 											$("td.select", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
 												"callback": function( sValue, y ) {
@@ -463,7 +469,7 @@ abstract class nosqlDocument extends CommonObject {
 												"tooltip": "Cliquer pour éditer...",
 												"indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
 												"placeholder" : ""
-																																												                
+																																																				                
 											} );
 										}
 			<?php endif; ?>
@@ -698,6 +704,99 @@ abstract class nosqlDocument extends CommonObject {
 		</script>
 		<?php
 		return 1;
+	}
+
+	/**
+	 * 	Write log message into outputs. Possible outputs can be:
+	 * 	A file if SYSLOG_FILE_ON defined:   	file name is then defined by SYSLOG_FILE
+	 * 	Syslog if SYSLOG_SYSLOG_ON defined:    	facility is then defined by SYSLOG_FACILITY
+	 *  Warning, syslog functions are bugged on Windows, generating memory protection faults. To solve
+	 *  this, use logging to files instead of syslog (see setup of module).
+	 *  Note: If SYSLOG_FILE_NO_ERROR defined, we never output any error message when writing to log fails.
+	 *  Note: You can get log message into html sources by adding parameter &logtohtml=1 (constant MAIN_LOGTOHTML must be set)
+	 *
+	 *  This function works only if syslog module is enabled.
+	 * 	This must not use any call to other function calling dol_syslog (avoid infinite loop).
+	 *
+	 * 	@param  string		$message	Line to log. Ne doit pas etre traduit si level = LOG_ERR
+	 *  @param  int			$level		Log level
+	 * 									On Windows LOG_ERR=4, LOG_WARNING=5, LOG_NOTICE=LOG_INFO=6, LOG_DEBUG=6 si define_syslog_variables ou PHP 5.3+, 7 si dolibarr
+	 * 									On Linux   LOG_ERR=3, LOG_WARNING=4, LOG_INFO=6, LOG_DEBUG=7
+	 *  @return	void
+	 */
+	function dol_syslog($message, $level = LOG_INFO) {
+		global $conf, $user, $langs, $_REQUEST;
+
+		$log = new stdClass();
+		
+		$log->module = get_class($this);
+
+		$log->msg = $message;
+		$log->level = $level;
+
+
+		// If adding log inside HTML page is required
+		if (!empty($_REQUEST['logtohtml']) && !empty($conf->global->MAIN_LOGTOHTML)) {
+			$conf->logbuffer[] = dol_print_date(time(), "%Y-%m-%d %H:%M:%S") . " " . $message;
+		}
+
+		// If syslog module enabled
+		if (!empty($conf->Syslog->enabled)) {
+			//print $level.' - '.$conf->global->SYSLOG_LEVEL.' - '.$conf->syslog->enabled." \n";
+			if ($level > $conf->global->SYSLOG_LEVEL)
+				return;
+
+			// Translate error message if this is an error message (rare) and langs is loaded
+			if ($level == LOG_ERR) {
+				if (is_object($langs)) {
+					$langs->load("errors");
+					if ($message != $langs->trans($message))
+						$log->msg = $langs->trans($message);
+				}
+			}
+
+			// Add page/script name to log message
+			$script = isset($_SERVER['PHP_SELF']) ? basename($_SERVER['PHP_SELF'], '.php') . ' ' : '';
+			$log->script = $script;
+
+			// Add user to log message
+			$login = 'nologin';
+			if (is_object($user) && $user->id)
+				$login = $user->login;
+
+			$log->login = $login;
+
+			$ip = '???'; // $ip contains information to identify computer that run the code
+			if (!empty($_SERVER["REMOTE_ADDR"]))
+				$ip = $_SERVER["REMOTE_ADDR"];   // In most cases.
+			else if (!empty($_SERVER['SERVER_ADDR']))
+				$ip = $_SERVER['SERVER_ADDR'];  // This is when PHP session is ran inside a web server but not inside a client request (example: init code of apache)
+			else if (!empty($_SERVER['COMPUTERNAME']))
+				$ip = $_SERVER['COMPUTERNAME'] . (empty($_SERVER['USERNAME']) ? '' : '@' . $_SERVER['USERNAME']); // This is when PHP session is ran outside a web server, like from Windows command line (Not always defined, but usefull if OS defined it).
+			else if (!empty($_SERVER['LOGNAME']))
+				$ip = '???@' . $_SERVER['LOGNAME']; // This is when PHP session is ran outside a web server, like from Linux command line (Not always defined, but usefull if OS defined it).
+
+			$log->ip = $ip;
+
+			$liblevelarray = array(LOG_ERR => 'ERROR', LOG_WARNING => 'WARN', LOG_INFO => 'INFO', LOG_DEBUG => 'DEBUG');
+			$liblevel = $liblevelarray[$level];
+			if (!$liblevel)
+				$liblevel = 'UNDEF';
+
+			$log->liblevel = $liblevel;
+
+			$log->tms = dol_print_date(time(), "%Y-%m-%d %H:%M:%S");
+
+			$this->logdb->storeDoc($log);
+
+			// This is for log file, we do not change permissions
+			// If enable html log tag enabled and url parameter log defined, we show output log on HTML comments
+			if (!empty($conf->global->MAIN_ENABLE_LOG_HTML) && !empty($_GET["log"])) {
+				print "\n\n<!-- Log start\n";
+				print $message . "\n";
+				print "Log end -->\n";
+			}
+		}
 	}
 
 }

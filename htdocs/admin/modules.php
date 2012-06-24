@@ -73,7 +73,6 @@ foreach ($modulesdir as $dir) {
 
 	// Load modules attributes in arrays (name, numero, orders) from dir directory
 	//print $dir."\n<br>";
-	dol_syslog("Scan directory " . $dir . " for modules");
 	$handle = @opendir($dir);
 	if (is_resource($handle)) {
 		while (($file = readdir($handle)) !== false) {
@@ -90,7 +89,7 @@ foreach ($modulesdir as $dir) {
 
 					try {
 						$res = include_once($dir . $file);
-						$objMod = new $modName();
+						$objMod = new $modName($db);
 						$modNameLoaded[$modName] = $dir;
 
 						if ($objMod->numero > 0) {
@@ -131,7 +130,7 @@ foreach ($modulesdir as $dir) {
 		}
 		closedir($handle);
 	} else {
-		dol_syslog("htdocs/admin/modules.php: Failed to open directory " . $dir . ". See permission and open_basedir option.", LOG_WARNING);
+		$object->dol_syslog("htdocs/admin/modules.php: Failed to open directory " . $dir . ". See permission and open_basedir option.", LOG_WARNING);
 	}
 }
 

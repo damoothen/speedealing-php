@@ -148,7 +148,7 @@ class Interfaces
             $objMod = new $modName($this->db);
             if ($objMod)
             {
-                dol_syslog(get_class($this)."::run_triggers action=".$action." Launch triggers for file '".$files[$key]."'",LOG_INFO);
+                //dol_syslog(get_class($this)."::run_triggers action=".$action." Launch triggers for file '".$files[$key]."'",LOG_INFO);
 
                 $result=$objMod->run_trigger($action,$object,$user,$langs,$conf);
                 if ($result > 0)

@@ -119,7 +119,7 @@ class Conf extends nosqlDocument {
 	function setValues() {
 		global $conf;
 
-		dol_syslog(get_class($this) . "::setValues");
+		$this->dol_syslog(get_class($this) . "::setValues");
 
 		// Avoid warning if not defined
 		if (empty($this->db->dolibarr_main_db_encryption))

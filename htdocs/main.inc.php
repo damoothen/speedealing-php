@@ -214,9 +214,6 @@ if (!defined('NOREQUIREHTML'))
 if (!defined('NOREQUIREAJAX') && $conf->use_javascript_ajax)
 	require_once(DOL_DOCUMENT_ROOT . '/core/lib/ajax.lib.php'); // Need 22ko memory
 
-
-
-
 	
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
@@ -437,13 +434,11 @@ if (!defined('NOLOGIN')) {
 	} else {
 		// We are already into an authenticated session
 		$login = $_SESSION["dol_login"];
-		dol_syslog("This is an already logged session. _SESSION['dol_login']=" . $login);
 
 		$user = new User($db);
 		$resultFetchUser = $user->fetch("org.couchdb.user:" . $login);
 		if ($resultFetchUser <= 0) {
 			// Account has been removed after login
-			dol_syslog("Can't load user even if session logged. _SESSION['dol_login']=" . $login, LOG_WARNING);
 			session_destroy();
 			session_name($sessionname);
 			session_start(); // Fixing the bug of register_globals here is useless since session is empty
@@ -503,7 +498,7 @@ if (!defined('NOLOGIN')) {
 		$_SESSION["dol_screenheight"] = isset($dol_screenheight) ? $dol_screenheight : '';
 		$_SESSION["dol_company"] = $conf->global->MAIN_INFO_SOCIETE_NOM;
 		$_SESSION["dol_entity"] = $conf->entity;
-		dol_syslog("This is a new started user session. _SESSION['dol_login']=" . $_SESSION["dol_login"] . ' Session id=' . session_id());
+		$user->dol_syslog("This is a new started user session. _SESSION['dol_login']=" . $_SESSION["dol_login"] . ' Session id=' . session_id());
 
 		$db->begin();
 
@@ -553,7 +548,7 @@ if (!defined('NOLOGIN')) {
 		$reshook = $hookmanager->executeHooks('afterLogin', $parameters, $user, $action); // Note that $action and $object may have been modified by some hooks
 		if ($reshook < 0)
 			$error++;
-		
+
 		header('Location: ' . DOL_URL_ROOT . '/index.php?idmenu=menu:home'); // TODO Add default database
 		exit;
 	}
@@ -640,10 +635,6 @@ if (!defined('NOLOGIN')) {
 	$user->getrights();
 }
 
-
-dol_syslog("--- Access to " . $_SERVER["PHP_SELF"]);
-//Another call for easy debugg
-//dol_syslog("Access to ".$_SERVER["PHP_SELF"].' GET='.join(',',array_keys($_GET)).'->'.join(',',$_GET).' POST:'.join(',',array_keys($_POST)).'->'.join(',',$_POST));
 // Load main languages files
 if (!defined('NOREQUIRETRAN')) {
 	$langs->load("main");
