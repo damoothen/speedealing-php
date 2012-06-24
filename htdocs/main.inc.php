@@ -1,5 +1,4 @@
 <?php
-
 /* Copyright (C) 2002-2007 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2003      Xavier Dutoit        <doli@sydesy.com>
  * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
@@ -213,6 +212,13 @@ if (!defined('NOREQUIREHTML'))
 	require_once(DOL_DOCUMENT_ROOT . "/core/class/html.form.class.php");  // Need 660ko memory (800ko in 2.2)
 if (!defined('NOREQUIREAJAX') && $conf->use_javascript_ajax)
 	require_once(DOL_DOCUMENT_ROOT . '/core/lib/ajax.lib.php'); // Need 22ko memory
+
+
+
+
+
+
+
 
 	
 // If install or upgrade process not done or not completely finished, we call the install page.
@@ -981,7 +987,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 		// For new theme
 		print '<script>
 		$(document).ready(function() {
-		//* common functions
+		// common functions
 			prth_common.init();
 			});
 		</script>';
@@ -1056,148 +1062,193 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 		$top_menu = 'auguria_backoffice.php';
 		include_once(DOL_DOCUMENT_ROOT . "/core/menus/standard/" . $top_menu);
 	}
+	?> <!-- Start top horizontal menu ' . $top_menu . ' -->
 
-	print "\n" . '<!-- Start top horizontal menu ' . $top_menu . ' -->' . "\n";
-
-	print '<header>';
-	print '<div class="container head_s_a">';
-
-	// HEADER
-	print '<div class="row sepH_b">
-        <div class="six columns">
-        <div class="row">
-        <div class="five phone-two columns">
-        <div id="logo">';
+	<header>
+		<div class="container head_s_a">
+			<div class="row sepH_b">
+				<div class="six columns">
+					<div class="row">
+						<div class="five phone-two columns">
+							<div id="logo"><?php
 	$mysoc->logo_mini = $conf->global->MAIN_INFO_SOCIETE_LOGO_MINI;
 	if (!empty($mysoc->logo_mini) && is_readable($conf->mycompany->dir_output . '/logos/thumbs/' . $mysoc->logo_mini))
 		$urllogo = DOL_URL_ROOT . '/viewimage.php?cache=1&amp;modulepart=companylogo&amp;file=' . urlencode('thumbs/' . $mysoc->logo_mini);
 	else
 		$urllogo = DOL_URL_ROOT . '/theme/speedealing_logo.png';
 	print '<a href="' . DOL_URL_ROOT . '/index.php?idmenu=menu:home"><img src="' . $urllogo . '" alt="' . $conf->global->MAIN_INFO_SOCIETE_NOM . '" title="' . $conf->global->MAIN_INFO_SOCIETE_NOM . '"/></a>';
-	print '</div>
-         </div>';
-	if (!defined('NOLOGIN')) {
-		print '<div class="seven phone-two columns">
-            <form action="search.php" id="search_box" method="post">
-		<input name="query" id="query" type="text" size="40" placeholder="Find&hellip;" autocomplete="off" />
-            </form>
-         </div>
-	</div>
-       </div>
-	<div class="six columns">
-            <div class="user_box cf">
-                <div class="user_avatar">
-                    <img src="' . DOL_URL_ROOT . '/theme/pertho_sample/img/user_female.png" alt="" />
-		</div>
-		<div class="user_info user_sep">
-                    <p class="sepH_a">
-                        <strong>' . $user->values->Firstname . " " . $user->values->Lastname . '</strong>
-                    </p>
-                    <span>
-                        <a href="' . DOL_URL_ROOT . '/user/fiche.php?id=' . $user->id . '" class="sep">Settings</a>
-			<a href="' . DOL_URL_ROOT . '/user/logout.php">Log out</a>
-                    </span>
-		</div>
-		<div class="ntf_bar user_sep">
-                    <a href="#ntf_mail_panel" class="ntf_item" style="background-image: url(' . DOL_URL_ROOT . '/theme/pertho_sample/img/ico/icSw2/32-Mail.png)">
-                        <span class="ntf_tip ntf_tip_red"><span>12</span></span>
-                    </a>
-                    <a href="#ntf_tickets_panel" class="ntf_item" style="background-image: url(' . DOL_URL_ROOT . '/theme/pertho_sample/img/ico/icSw2/32-Day-Calendar.png)">
-                        <span class="ntf_tip ntf_tip_red"><span>122</span></span>
-                    </a>
-                    <a href="#ntf_comments_panel" class="ntf_item" style="background-image: url(' . DOL_URL_ROOT . '/theme/pertho_sample/img/ico/icSw2/32-Speech-Bubble.png)">
-                        <span class="ntf_tip ntf_tip_blue"><span>8</span></span>
-                    </a>
-		</div>
-            </div>
-	</div>
-    </div>';
+	?>
+							</div>
+						</div>
+	<?php if (!defined('NOLOGIN')) : ?>
+							<div class = "seven phone-two columns">
+								<form action = "search.php" id = "search_box" method = "post">
+									<input name = "query" id = "query" type = "text" size = "40" placeholder = "Find&hellip;" autocomplete = "off" />
+								</form>
+							</div>
+							<script type="text/javascript" charset="utf-8">
+								$(document).ready(function() {
+									$('#query').sautocomplete('includes/lib/autocomplete/data.php?mode=xml', {
+										delay		: 10,
+										minChars	: 2,
+										max			: 6,
+										matchCase	: 1,
+										width		: 212
+									}).result(function(event, query_val) {
+										$.fancybox({
+											href	: 'includes/lib/autocomplete/search_result.php',
+											ajax : {
+												type	: "POST",
+												data	: "search_item=" + query_val
+											},
+											'overlayOpacity'	: '0.2',
+											'transitionIn'		: 'elastic',
+											'transitionOut'		: 'fade',
+											onComplete			: function() {
+												$('#query').blur();
+											}
+										});
+									});
+									$('#search_box').submit(function() {
+										var query_val = $("#query").val();
+										$.fancybox({
+											href	: 'includes/lib/autocomplete/search_result.php',
+											ajax : {
+												type	: "POST",
+												data	: "search_item=" + query_val
+											},
+											'overlayOpacity'	: '0.2',
+											'transitionIn'		: 'elastic',
+											'transitionOut'		: 'fade'
+										});
+										return false;
+									});
+								});
+							</script>
+						</div>
+					</div>
+					<div class = "six columns">
+						<div class = "user_box cf">
+							<div class = "user_avatar">
+								<img src = "theme/pertho_sample/img/user_female.png" alt = "" />
+							</div>
+							<div class = "user_info user_sep">
+								<p class = "sepH_a">
+									<strong><?php echo $user->values->Firstname; ?> <?php echo $user->values->Lastname; ?></strong>
+								</p>
+								<span>
+									<a href = "user/fiche.php?id=<?php echo $user->id; ?>" class = "sep">Settings</a>
+									<a href = "user/logout.php">Log out</a>
+								</span>
+							</div>
+							<div class = "ntf_bar user_sep">
+								<a href = "#ntf_mail_panel" class = "ntf_item" style = "background-image: url(theme/pertho_sample/img/ico/icSw2/32-Mail.png)">
+									<span class = "ntf_tip ntf_tip_red"><span>12</span></span>
+								</a>
+								<a href = "#ntf_tickets_panel" class = "ntf_item" style = "background-image: url(theme/pertho_sample/img/ico/icSw2/32-Day-Calendar.png)">
+									<span class = "ntf_tip ntf_tip_red"><span>122</span></span>
+								</a>
+								<a href = "#ntf_comments_panel" class = "ntf_item" style = "background-image: url(theme/pertho_sample/img/ico/icSw2/32-Speech-Bubble.png)">
+									<span class = "ntf_tip ntf_tip_blue"><span>8</span></span>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
 
 
-		if (!defined('NOREQUIREMENU')) {
-			print '<div class="row">' . "\n";
-			print '<div class="twelve columns">';
+		<?php if (!defined('NOREQUIREMENU')) : ?>
+					<div class = "row">
+						<div class = "twelve columns">
 
-			// Show menu
-			$menutop = new MenuTop($db);
-			$menutop->atarget = $target;
-			$menutop->showmenu();   // This contains a \n
+							<?php
+							// Show menu
+							$menutop = new MenuTop($db);
+							$menutop->atarget = $target;
+							$menutop->showmenu();   // This contains a \n
+							?>
+						</div>
+					</div>
+					<!--End Menu-->
+		<?php endif; ?>
 
-			print "</div>\n";
-			print "</div>\n";
-			print '<!-- End Menu -->';
-		}
+			</div>
 
-		print "</div>\n";
+			<!--notifications content-->
+			<div style = "display:none">
+				<div id = "ntf_tickets_panel" style = "display:none">
+					<p class = "sticky-title">New Tickets</p>
+					<ul class = "sticky-list">
+						<li>
+							<a href = "#">Admin should not break if URL&hellip;
+							</a>
+							<p><span class = "s_color small">updated 01.04.2012</span></p>
+						</li>
+						<li>
+							<a href = "#">Displaying submenus in custom&hellip;
+							</a>
+							<p><span class = "s_color small">updated 01.04.2012</span></p>
+						</li>
+						<li>
+							<a href = "#">Featured image on post types.</a>
+							<p><span class = "s_color small">updated 24.03.2012</span></p>
+						</li>
+						<li>
+							<a href = "#">Multiple feed fixes and&hellip;
+							</a>
+							<p><span class = "s_color small">updated 22.03.2012</span></p>
+						</li>
+						<li>
+							<a href = "#">Automatic line breaks in&hellip;
+							</a>
+							<p><span class = "s_color small">updated 18.03.2012</span></p>
+						</li>
+						<li>
+							<a href = "#">Wysiwyg bug with shortcodes.</a>
+							<p><span class = "s_color small">updated 08.10.2012</span></p>
+						</li>
+					</ul>
+					<a href = "#" class = "gh_button btn-small">Show all tickets</a>
+				</div>
+				<div id = "ntf_comments_panel" style = "display:none">
+					<p class = "sticky-title">New Comments</p>
+					<ul class = "sticky-list">
+						<li>
+							<a href = "#">Lorem ipsum dolor sit amet&hellip;
+							</a>
+							<p><span class = "s_color small">John Smith on Maiden Castle, Dorset (29.10.2012)</span></p>
+						</li>
+						<li>
+							<a href = "#">Lorem ipsum dolor sit&hellip;
+							</a>
+							<p><span class = "s_color small">John Smith on Draining and development & hellip;
+									(29.10.2012)</span></p>
+						</li>
+					</ul>
+					<a href = "#" class = "gh_button btn-small">Show all comments</a>
+				</div>
+				<div id = "ntf_mail_panel" style = "display:none">
+					<p class = "sticky-title">New Messages</p>
+					<ul class = "sticky-list">
+						<li>
+							<a href = "#">Lorem ipsum dolor sit amet&hellip;
+							</a>
+							<p><span class = "s_color small">From John Smith (29.10.2012)</span></p>
+						</li>
+						<li>
+							<a href = "#">Lorem ipsum dolor sit&hellip;
+							</a>
+							<p><span class = "s_color small">From John Smith (28.10.2012)</span></p>
+						</li>
+					</ul>
+					<a href = "#" class = "gh_button btn-small">Show all messages</a>
+				</div>
+			</div>
+	<?php endif; ?>
 
-		print '<!-- notifications content -->
-        <div style="display:none">
-            <div id="ntf_tickets_panel" style="display:none">
-                <p class="sticky-title">New Tickets</p>
-		<ul class="sticky-list">
-                    <li>
-                        <a href="#">Admin should not break if URL&hellip;</a>
-			<p><span class="s_color small">updated 01.04.2012</span></p>
-                    </li>
-                    <li>
-                        <a href="#">Displaying submenus in custom&hellip;</a>
-			<p><span class="s_color small">updated 01.04.2012</span></p>
-                    </li>
-                    <li>
-                        <a href="#">Featured image on post types.</a>
-			<p><span class="s_color small">updated 24.03.2012</span></p>
-                    </li>
-                    <li>
-                        <a href="#">Multiple feed fixes and&hellip;</a>
-			<p><span class="s_color small">updated 22.03.2012</span></p>
-                    </li>
-                    <li>
-                        <a href="#">Automatic line breaks in&hellip;</a>
-			<p><span class="s_color small">updated 18.03.2012</span></p>
-                    </li>
-                    <li>
-                        <a href="#">Wysiwyg bug with shortcodes.</a>
-			<p><span class="s_color small">updated 08.10.2012</span></p>
-                    </li>
-		</ul>
-		<a href="#" class="gh_button btn-small">Show all tickets</a>
-            </div>
-            <div id="ntf_comments_panel" style="display:none">
-                <p class="sticky-title">New Comments</p>
-                <ul class="sticky-list">
-                    <li>
-                        <a href="#">Lorem ipsum dolor sit amet&hellip;</a>
-                        <p><span class="s_color small">John Smith on Maiden Castle, Dorset (29.10.2012)</span></p>
-                    </li>
-                    <li>
-                        <a href="#">Lorem ipsum dolor sit&hellip;</a>
-                        <p><span class="s_color small">John Smith on Draining and development&hellip; (29.10.2012)</span></p>
-                    </li>
-                </ul>
-                <a href="#" class="gh_button btn-small">Show all comments</a>
-            </div>
-            <div id="ntf_mail_panel" style="display:none">
-                <p class="sticky-title">New Messages</p>
-                <ul class="sticky-list">
-                    <li>
-                        <a href="#">Lorem ipsum dolor sit amet&hellip;</a>
-                        <p><span class="s_color small">From John Smith (29.10.2012)</span></p>
-                    </li>
-                    <li>
-                        <a href="#">Lorem ipsum dolor sit&hellip;</a>
-                        <p><span class="s_color small">From John Smith (28.10.2012)</span></p>
-                    </li>
-                </ul>
-                <a href="#" class="gh_button btn-small">Show all messages</a>
-            </div>
-        </div>';
-	} // End for NOLOGIN
-
-	print '</header>';
-
-	print "<!-- End top horizontal menu -->\n";
-
-	//print '<table width="100%" class="notopnoleftnoright" summary="leftmenutable" id="undertopmenu"><tr>';
+	</header>
+	<!-- End top horizontal menu -->
+	<?php
 }
 
 /**
@@ -1279,10 +1330,10 @@ function left_menu($menu_array_before, $helppagename = '', $moresearchform = '',
 
 	/*
 	  // Left column
-	  print '<!-- Begin left area - menu '.$left_menu.' -->'."\n";
+	  print '<!--Begin left area - menu '.$left_menu.'-->'."\n";
 
-	  print '<div class="row">'."\n";
-	  print '<div class="three columns hide-on-phones">'."\n";
+	  print '<div class = "row">'."\n";
+	  print '<div class = "three columns hide-on-phones">'."\n";
 
 	  //$menuleft=new MenuLeft($db,$menu_array_before,$menu_array_after);
 	  //$menuleft->showmenu(); // output menu_array and menu found in database
@@ -1293,7 +1344,7 @@ function left_menu($menu_array_before, $helppagename = '', $moresearchform = '',
 	  {
 	  print "\n";
 	  print "<!-- Begin SearchForm -->\n";
-	  print '<div id="blockvmenusearch" class="blockvmenusearch">'."\n";
+	  print '<div id = "blockvmenusearch" class = "blockvmenusearch">'."\n";
 	  print $searchform;
 	  print '</div>'."\n";
 	  print "<!-- End SearchForm -->\n";
@@ -1310,7 +1361,7 @@ function left_menu($menu_array_before, $helppagename = '', $moresearchform = '',
 	  {
 	  print "\n";
 	  print "<!-- Begin Bookmarks -->\n";
-	  print '<div id="blockvmenubookmarks" class="blockvmenubookmarks">'."\n";
+	  print '<div id = "blockvmenubookmarks" class = "blockvmenubookmarks">'."\n";
 	  print $bookmarks;
 	  print '</div>'."\n";
 	  print "<!-- End Bookmarks -->\n";
@@ -1334,10 +1385,10 @@ function left_menu($menu_array_before, $helppagename = '', $moresearchform = '',
 	  // Link to help pages
 	  if ($helpbaseurl && $helppage)
 	  {
-	  print '<div id="blockvmenuhelp" class="blockvmenuhelp">';
-	  print '<a class="help" target="_blank" title="'.$langs->trans($mode == 'wiki' ? 'GoToWikiHelpPage': 'GoToHelpPage');
+	  print '<div id = "blockvmenuhelp" class = "blockvmenuhelp">';
+	  print '<a class = "help" target = "_blank" title = "'.$langs->trans($mode == 'wiki' ? 'GoToWikiHelpPage': 'GoToHelpPage');
 	  if ($mode == 'wiki') print ' - '.$langs->trans("PageWiki").' &quot;'.dol_escape_htmltag(strtr($helppage,'_',' ')).'&quot;';
-	  print '" href="';
+	  print '" href = "';
 	  print sprintf($helpbaseurl,urlencode(html_entity_decode($helppage)));
 	  print '">';
 	  print img_picto('', 'helpdoc').' ';
@@ -1355,10 +1406,10 @@ function left_menu($menu_array_before, $helppagename = '', $moresearchform = '',
 	  $bugbaseurl.='func=additem&group=dolibarr&privacy=1&';
 	  $bugbaseurl.="&details=";
 	  $bugbaseurl.=urlencode("\n\n\n\n\n-------------\n");
-	  $bugbaseurl.=urlencode($langs->trans("Version").": ".DOL_VERSION."\n");
-	  $bugbaseurl.=urlencode($langs->trans("Server").": ".$_SERVER["SERVER_SOFTWARE"]."\n");
-	  $bugbaseurl.=urlencode($langs->trans("Url").": ".$_SERVER["REQUEST_URI"]."\n");
-	  print '<div class="help"><a class="help" target="_blank" href="'.$bugbaseurl.'">'.$langs->trans("FindBug").'</a></div>';
+	  $bugbaseurl.=urlencode($langs->trans("Version") . ": " . DOL_VERSION . "\n");
+	  $bugbaseurl.=urlencode($langs->trans("Server") . ": " . $_SERVER["SERVER_SOFTWARE"] . "\n");
+	  $bugbaseurl.=urlencode($langs->trans("Url") . ": " . $_SERVER["REQUEST_URI"] . "\n");
+	  print '<div class="help"><a class="help" target="_blank" href="' . $bugbaseurl . '">' . $langs->trans("FindBug") . '</a></div>';
 	  }
 	  print "\n";
 
@@ -1368,14 +1419,14 @@ function left_menu($menu_array_before, $helppagename = '', $moresearchform = '',
 	  print "\n";
 
 	  // Execute hook printLeftBlock
-	  $parameters=array();
-	  $leftblock=$hookmanager->executeHooks('printLeftBlock',$parameters);    // Note that $action and $object may have been modified by some hooks
+	  $parameters = array();
+	  $leftblock = $hookmanager->executeHooks('printLeftBlock', $parameters);	// Note that $action and $object may have been modified by some hooks
 	  print $leftblock;
 
 	  //print '</td>';
 
 	  print "\n";
-	  print '<!-- End of left area -->'."\n";
+	  print '<!-- End of left area -->' . "\n";
 	  print "\n";
 	  print '<!-- Begin right area -->'."\n";
 	 */

@@ -2047,7 +2047,7 @@ function dol_print_error($db = '', $error = '') {
 	else
 		define("MAIN_CORE_ERROR", 1);
 	//else print 'Sorry, an error occured but the parameter $dolibarr_main_prod is defined in conf file so no message is reported to your browser. Please read the log file for error message.';
-	dol_syslog("Error " . $syslog, LOG_ERR);
+	//dol_syslog("Error " . $syslog, LOG_ERR);
 }
 
 /**

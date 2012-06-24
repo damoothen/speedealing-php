@@ -41,7 +41,7 @@ class modUser extends DolibarrModules {
 	function modUser($db) {
 		global $conf;
 
-		$this->couchdb = $db; // Just for first install
+		//$this->couchdb = $db; // Just for first install
 		parent::__construct($db);
 		$this->values->numero = 0;
 

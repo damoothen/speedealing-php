@@ -28,10 +28,6 @@
             prth_main_nav.mobile_nav();
             //* sticky notifications (user box)
             prth_sticky_notifications.init();
-            //* search box autocomplete
-            prth_search.sautocomplete();
-            //* search box submit
-            prth_search.submit_res();
             //* fancybox with title
 			prth_fancyImg.init();
             //* tooltips
@@ -284,52 +280,6 @@
 	prth_external_links = {
 		init: function() {
 			$("a[href^='http']").attr('target','_blank').addClass('external_link');
-		}
-	};
-
-	//* search autocomplete and submit
-	prth_search = {
-		// search box autocomplete
-		sautocomplete: function(){
-			//xml mode
-			$('#query').sautocomplete('lib/autocomplete/data.php?mode=xml', {
-				delay		: 10,
-				minChars	: 2,
-				max			: 6,
-				matchCase	: 1,
-				width		: 212
-			}).result(function(event, query_val) {
-				$.fancybox({
-					href	: 'lib/autocomplete/search_result.php',
-					ajax : {
-						type	: "POST",
-						data	: "search_item=" + query_val
-					},
-					'overlayOpacity'	: '0.2',
-					'transitionIn'		: 'elastic',
-					'transitionOut'		: 'fade',
-					onComplete			: function() {
-						$('#query').blur();
-					}
-				});
-			});
-		},
-		// search box submit
-		submit_res: function(){
-			$('#search_box').submit(function() {
-				var query_val = $("#query").val();
-				$.fancybox({
-					href	: 'lib/autocomplete/search_result.php',
-					ajax : {
-						type	: "POST",
-						data	: "search_item=" + query_val
-					},
-					'overlayOpacity'	: '0.2',
-					'transitionIn'		: 'elastic',
-					'transitionOut'		: 'fade'
-				});
-				return false;
-			});
 		}
 	};
 

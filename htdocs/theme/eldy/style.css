@@ -800,3 +800,4 @@
 .vcard .fright li{text-align: right}
 .vcard li img{vertical-align: bottom; margin: 0 5px}
 .info{background-image: url(img/ico/icSw2/16-Alert-2.png); background-repeat: no-repeat;background-position: right;  padding-right: 18px;}
+.datatable {min-height:350px;}

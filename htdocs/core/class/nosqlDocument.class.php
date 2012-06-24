@@ -167,7 +167,7 @@ abstract class nosqlDocument extends CommonObject {
 			}
 		} catch (Exception $e) {
 			dol_print_error("", $e->getMessage());
-			dol_syslog(get_class($this) . "::get " . $error, LOG_WARN);
+			$this->dol_syslog(get_class($this) . "::get " . $error, LOG_WARN);
 		}
 
 
@@ -269,9 +269,11 @@ abstract class nosqlDocument extends CommonObject {
 		if (!$found) {
 			$result = array();
 			try {
-				if (!empty($conf->view_limit))
-					$params['limit'] = $conf->view_limit;
-				$this->couchdb->setQueryParameters($params);
+				/*if (!empty($conf->view_limit))
+					$params['limit'] = $conf->global->MAIN_SIZE_LISTE_LIMIT;*/
+					//$params['limit'] = $conf->view_limit;
+				if(is_array($params))
+					$this->couchdb->setQueryParameters($params);
 
 				$result = $this->couchdb->getView(get_class($this), $name);
 
@@ -280,8 +282,35 @@ abstract class nosqlDocument extends CommonObject {
 				}
 			} catch (Exception $e) {
 				dol_print_error("", $e->getMessage());
-				dol_syslog(get_class($this) . "::getView " . $error, LOG_WARN);
+				$this->dol_syslog(get_class($this) . "::getView " . $error, LOG_WARN);
 			}
+		}
+
+		return $result;
+	}
+
+	/** Call an Indexed view with lucene on couchdb
+	 * 
+	 * @param	$name			string			name of the view
+	 * @param	$params			array			params ['group'],['level'],['key'],...
+	 * @return  array
+	 */
+	public function getIndexedView($name, $params = array()) {
+		global $conf;
+
+		$result = array();
+		try {
+			/*if (!empty($conf->view_limit))
+				$params['limit'] = $conf->global->MAIN_SIZE_LISTE_LIMIT;*/
+				//$params['limit'] = $conf->view_limit;
+
+			$params['include_docs'] = true;
+			$this->couchdb->setQueryParameters($params);
+
+			$result = $this->couchdb->getIndexedView(get_class($this), $name);
+		} catch (Exception $e) {
+			dol_print_error("", $e->getMessage());
+			$this->dol_syslog(get_class($this) . "::getView " . $error, LOG_WARN);
 		}
 
 		return $result;
@@ -378,11 +407,19 @@ abstract class nosqlDocument extends CommonObject {
 		<?php else : ?>
 							"iDisplayLength": <?php echo (int) $conf->global->MAIN_SIZE_LISTE_LIMIT; ?>,
 		<?php endif; ?>
-						"aLengthMenu": [[10, 25, 50, 100, 1000, -1],[10, 25, 50, 100,1000,"All"]],
+						"aLengthMenu": [[5, 10, 25, 50, 100],[5, 10, 25, 50, 100]],
 						"bProcessing": true,
 						"bJQueryUI": true,
 						"bAutoWidth": false,
-						/*$obj->bServerSide = true;*/
+						/*"sScrollY": "500px",
+						"oScroller": {
+							"loadingIndicator": true
+						},*/
+		<?php if ($obj->bServerSide) : ?>
+						"bServerSide": true,
+		<?php else : ?>
+						"bServerSide": false,
+		<?php endif; ?>
 						"bDeferRender": true,
 						"oLanguage": { "sUrl": "<?php echo DOL_URL_ROOT . '/includes/jquery/plugins/datatables/langs/' . ($langs->defaultlang ? $langs->defaultlang : "en_US") . ".txt"; ?>"},
 						/*$obj->sDom = '<\"top\"Tflpi<\"clear\">>rt<\"bottom\"pi<\"clear\">>';*/
@@ -391,19 +428,20 @@ abstract class nosqlDocument extends CommonObject {
 						"oTableTools": { "sSwfPath": "<?php echo DOL_URL_ROOT . '/includes/jquery/plugins/datatables/extras/TableTools/media/swf/copy_csv_xls.swf'; ?>"},
 						//if($obj->oTableTools->aButtons==null)
 						//$obj->oTableTools->aButtons = array("xls");
-																											    
+																																			    
 						"oColVis": { "buttonText" : 'Voir/Cacher',
 							"aiExclude": [0,1] // Not cacheable _id and name
 						},
 						//$obj->oColVis->bRestore = true;
 						//$obj->oColVis->sAlign = 'left';
-																										            
+																																		            
 						// Avec export Excel
 		<?php if (!empty($obj->sDom)) : ?>
 							//"sDom": "Cl<fr>t<\"clear\"rtip>",
 							"sDom": "<?php echo $obj->sDom; ?>",
 		<?php else : ?>
 							"sDom": "C<\"clear\"fr>lt<\"clear\"rtip>",
+							//"sDom": "C<\"clear\"fr>tiS",
 							//"sDom": "TC<\"clear\"fr>lt<\"clear\"rtip>",
 		<?php endif; ?>
 						// bottons
@@ -425,7 +463,7 @@ abstract class nosqlDocument extends CommonObject {
 		<?php if (isset($obj->fnRowCallback)): ?>
 							"fnRowCallback": <?php echo $obj->fnRowCallback; ?>,
 		<?php endif; ?>
-										
+																		
 		<?php if (!defined('NOLOGIN')) : ?>
 			<?php if (isset($obj->fnDrawCallback)): ?>
 									"fnDrawCallback": <?php echo $obj->fnDrawCallback; ?>,
@@ -450,7 +488,7 @@ abstract class nosqlDocument extends CommonObject {
 												"tooltip": "Cliquer pour éditer...",
 												"indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
 												"placeholder" : ""
-																																																				                
+																																																																				                
 											} );
 											$("td.select", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
 												"callback": function( sValue, y ) {
@@ -469,7 +507,7 @@ abstract class nosqlDocument extends CommonObject {
 												"tooltip": "Cliquer pour éditer...",
 												"indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
 												"placeholder" : ""
-																																																				                
+																																																																				                
 											} );
 										}
 			<?php endif; ?>
@@ -728,7 +766,7 @@ abstract class nosqlDocument extends CommonObject {
 		global $conf, $user, $langs, $_REQUEST;
 
 		$log = new stdClass();
-		
+
 		$log->module = get_class($this);
 
 		$log->msg = $message;

@@ -451,7 +451,8 @@ print'</table>';
 
 $obj->aaSorting = array(array(1, 'asc'));
 $obj->sDom = 'l<fr>t<\"clear\"rtip>';
-$obj->iDisplayLength = -1;
+$obj->iDisplayLength = 100;
+$obj->bServerSide = false;
 
 print $object->datatablesCreate($obj, "list_modules");
 

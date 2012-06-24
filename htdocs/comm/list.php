@@ -95,7 +95,7 @@ print start_box($titre,"twelve","16-Companies.png");
 
 $i=0;
 $obj=new stdClass();
-
+print '<div class="datatable">';
 print '<table class="display dt_act" id="societe" >';
 // Ligne des titres 
 print'<thead>';
@@ -182,7 +182,9 @@ print'<tbody>';
 print'</tbody>';
 
 print "</table>";
+print "</div>";
 
+$obj->bServerSide = true;
 $object->datatablesCreate($obj,"societe",true,true);
 
 print end_box();

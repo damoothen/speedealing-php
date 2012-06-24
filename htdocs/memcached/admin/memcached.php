@@ -132,7 +132,7 @@ if (!$error) {
 		$server = $tmparray[0];
 		$port = $tmparray[1] ? $tmparray[1] : 11211;
 
-		dol_syslog("Try to connect to server " . $server . " port " . $port . " with class " . get_class($m));
+		//dol_syslog("Try to connect to server " . $server . " port " . $port . " with class " . get_class($m));
 		$result = $m->addServer($server, $port);
 		//$m->setOption(Memcached::OPT_COMPRESSION, false);
 		//print "xxx".$result;

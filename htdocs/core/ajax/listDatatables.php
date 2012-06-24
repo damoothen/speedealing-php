@@ -42,9 +42,9 @@ top_httphead();
 
 if (!empty($json) && !empty($class)) {
 
-	$result = dol_include_once("/" . $class . "/class/" .strtolower($class) . ".class.php");
-	if(empty($result)){
-		dol_include_once("/" . strtolower($class) . "/class/" .strtolower($class) . ".class.php"); // Old version
+	$result = dol_include_once("/" . $class . "/class/" . strtolower($class) . ".class.php");
+	if (empty($result)) {
+		dol_include_once("/" . strtolower($class) . "/class/" . strtolower($class) . ".class.php"); // Old version
 	}
 
 	$object = new $class($db);
@@ -56,13 +56,21 @@ if (!empty($json) && !empty($class)) {
 		"aaData" => array()
 	);
 
-	$result = $object->getView($json);
+	if ($_GET['sSearch']) {
+		$result = $object->getIndexedView($json, array('limit' => intval(empty($_GET['iDisplayLength'])?$conf->view_limit:$_GET['iDisplayLength']),
+														'q' => $_GET['sSearch']."*",
+														'skip' => intval($_GET['iDisplayStart'])));
+		$indexed = true;
+	}
+	else
+		$result = $object->getView($json, array('limit' => intval(empty($_GET['iDisplayLength'])?$conf->view_limit:$_GET['iDisplayLength']),
+												'skip' => intval($_GET['iDisplayStart'])));
 
 	//print_r($result);
 	//exit;
-	$iTotal = count($result->rows);
-	$output["iTotalRecords"] = $iTotal;
-	$output["iTotalDisplayRecords"] = $iTotal;
+	//$output["sEcho"] = count($result->rows) -1;
+	$output["iTotalRecords"] = $result->total_rows;
+	$output["iTotalDisplayRecords"] = $result->total_rows;
 
 	foreach ($result->rows AS $aRow) {
 		unset($aRow->value->class);
