@@ -269,10 +269,10 @@ abstract class nosqlDocument extends CommonObject {
 		if (!$found) {
 			$result = array();
 			try {
-				/*if (!empty($conf->view_limit))
-					$params['limit'] = $conf->global->MAIN_SIZE_LISTE_LIMIT;*/
-					//$params['limit'] = $conf->view_limit;
-				if(is_array($params))
+				/* if (!empty($conf->view_limit))
+				  $params['limit'] = $conf->global->MAIN_SIZE_LISTE_LIMIT; */
+				//$params['limit'] = $conf->view_limit;
+				if (is_array($params))
 					$this->couchdb->setQueryParameters($params);
 
 				$result = $this->couchdb->getView(get_class($this), $name);
@@ -300,9 +300,9 @@ abstract class nosqlDocument extends CommonObject {
 
 		$result = array();
 		try {
-			/*if (!empty($conf->view_limit))
-				$params['limit'] = $conf->global->MAIN_SIZE_LISTE_LIMIT;*/
-				//$params['limit'] = $conf->view_limit;
+			/* if (!empty($conf->view_limit))
+			  $params['limit'] = $conf->global->MAIN_SIZE_LISTE_LIMIT; */
+			//$params['limit'] = $conf->view_limit;
 
 			$params['include_docs'] = true;
 			$this->couchdb->setQueryParameters($params);
@@ -399,7 +399,7 @@ abstract class nosqlDocument extends CommonObject {
 			<?php if (!empty($obj->sAjaxSource)): ?>
 									"sAjaxSource": "<?php echo $obj->sAjaxSource; ?>",
 			<?php else : ?>
-									"sAjaxSource" : "<?php echo DOL_URL_ROOT . '/core/ajax/listDatatables.php'; ?>?json=list&class=<?php echo get_class($this); ?>",
+									"sAjaxSource" : "<?php echo DOL_URL_ROOT . '/core/ajax/listDatatables.php'; ?>?json=list&bServerSide=<?php echo $obj->bServerSide; ?>&class=<?php echo get_class($this); ?>",
 			<?php endif; ?>
 		<?php endif; ?>
 		<?php if (!empty($obj->iDisplayLength)): ?>
@@ -416,9 +416,9 @@ abstract class nosqlDocument extends CommonObject {
 							"loadingIndicator": true
 						},*/
 		<?php if ($obj->bServerSide) : ?>
-						"bServerSide": true,
+							"bServerSide": true,
 		<?php else : ?>
-						"bServerSide": false,
+							"bServerSide": false,
 		<?php endif; ?>
 						"bDeferRender": true,
 						"oLanguage": { "sUrl": "<?php echo DOL_URL_ROOT . '/includes/jquery/plugins/datatables/langs/' . ($langs->defaultlang ? $langs->defaultlang : "en_US") . ".txt"; ?>"},
@@ -428,13 +428,13 @@ abstract class nosqlDocument extends CommonObject {
 						"oTableTools": { "sSwfPath": "<?php echo DOL_URL_ROOT . '/includes/jquery/plugins/datatables/extras/TableTools/media/swf/copy_csv_xls.swf'; ?>"},
 						//if($obj->oTableTools->aButtons==null)
 						//$obj->oTableTools->aButtons = array("xls");
-																																			    
+																																							    
 						"oColVis": { "buttonText" : 'Voir/Cacher',
 							"aiExclude": [0,1] // Not cacheable _id and name
 						},
 						//$obj->oColVis->bRestore = true;
 						//$obj->oColVis->sAlign = 'left';
-																																		            
+																																						            
 						// Avec export Excel
 		<?php if (!empty($obj->sDom)) : ?>
 							//"sDom": "Cl<fr>t<\"clear\"rtip>",
@@ -463,7 +463,7 @@ abstract class nosqlDocument extends CommonObject {
 		<?php if (isset($obj->fnRowCallback)): ?>
 							"fnRowCallback": <?php echo $obj->fnRowCallback; ?>,
 		<?php endif; ?>
-																		
+																						
 		<?php if (!defined('NOLOGIN')) : ?>
 			<?php if (isset($obj->fnDrawCallback)): ?>
 									"fnDrawCallback": <?php echo $obj->fnDrawCallback; ?>,
@@ -488,7 +488,7 @@ abstract class nosqlDocument extends CommonObject {
 												"tooltip": "Cliquer pour éditer...",
 												"indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
 												"placeholder" : ""
-																																																																				                
+																																																																												                
 											} );
 											$("td.select", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
 												"callback": function( sValue, y ) {
@@ -507,7 +507,7 @@ abstract class nosqlDocument extends CommonObject {
 												"tooltip": "Cliquer pour éditer...",
 												"indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
 												"placeholder" : ""
-																																																																				                
+																																																																												                
 											} );
 										}
 			<?php endif; ?>
@@ -641,7 +641,7 @@ abstract class nosqlDocument extends CommonObject {
 					var status = new Array();
 					var stat = obj.aData.' . $key . ';
 					if(stat === undefined)
-						stat = "DISABLE";';
+						stat = "' . $this->fk_extrafields->fields->$key->default . '";';
 			foreach ($this->fk_extrafields->fields->$key->values as $key => $aRow) {
 				if (isset($aRow->label))
 					$rtr.= 'status["' . $key . '"]= new Array("' . $langs->trans($aRow->label) . '","' . $aRow->cssClass . '");';
@@ -835,6 +835,20 @@ abstract class nosqlDocument extends CommonObject {
 				print "Log end -->\n";
 			}
 		}
+	}
+
+	/**
+	 * Compare function for sorting two aaData rows in datatable
+	 */
+	public function sortDatatable(&$array, $key, $dir) {
+		if ($dir == "desc")
+			usort($array, function($a, $b) use ($key) {
+						return $a->$key > $b->$key ? -1 : 1;
+					});
+		else
+			usort($array, function($a, $b) use ($key) {
+						return $a->$key > $b->$key ? 1 : -1;
+					});
 	}
 
 }

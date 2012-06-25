@@ -156,7 +156,7 @@ print'</tr>';
 print'</thead>';
 print'<tfoot>';
 /* input search view */
-$i=0;
+/*$i=0; Doesn't work with bServerSide
 print'<tr>';
 print'<th id="'.$i.'"></th>';
 $i++;
@@ -176,7 +176,7 @@ print'<th id="'.$i.'"><input type="text" placeholder="' . $langs->trans("Search 
 $i++;
 print'<th id="'.$i.'"></th>';
 $i++;
-print'</tr>';
+print'</tr>';*/
 print'</tfoot>';
 print'<tbody>';
 print'</tbody>';

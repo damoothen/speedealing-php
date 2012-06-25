@@ -18,5 +18,10 @@
    },
    "updates": {
        "in-place": "function (doc, req) {\n var field = req.query.field;\n var value = req.query.value;\n doc[field] = value;\n  return [doc, value];\n }"
+   },
+   "fulltext": {
+       "list": {
+           "index": "function(doc) {\n if(doc.class != \"Societe\"){ return null;} var result = new Document(); result.add(doc.ThirdPartyName);  result.add(doc.CustomerCode);  result.add(doc.Zip); result.add(doc.Town);  return result;}"
+		   }
+	   }
    }
-}
