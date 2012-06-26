@@ -56,44 +56,41 @@ if (!empty($json) && !empty($class)) {
 		"iTotalDisplayRecords" => 0,
 		"aaData" => array()
 	);
-	
-	$indexed = false;
 
-	if ( $bServerSide && $_GET['sSearch'] ) {
-		$result = $object->getIndexedView($json, array('limit' => intval(empty($_GET['iDisplayLength'])?$conf->view_limit:$_GET['iDisplayLength']),
-														'q' => $_GET['sSearch']."*",
-														'skip' => intval($_GET['iDisplayStart']),
-														//'sort' => $_GET['mDataProp_'.$_GET['iSortCol_0']],
-														'stale'=> "ok"
-			));
-		$indexed = true;
-		
+	if ($bServerSide && $_GET['sSearch']) {
+		$result = $object->getIndexedView($json, array('limit' => intval(empty($_GET['iDisplayLength']) ? $conf->view_limit : $_GET['iDisplayLength']),
+			'q' => $_GET['sSearch'] . "*",
+			'skip' => intval($_GET['iDisplayStart'])
+				//'sort' => $_GET['mDataProp_'.$_GET['iSortCol_0']],
+				//'stale'=> "ok"
+				));
+	} else {
+		$result = $object->getView($json, array('limit' => intval(empty($_GET['iDisplayLength']) ? $conf->view_limit : $_GET['iDisplayLength']),
+			'skip' => intval($_GET['iDisplayStart'])
+				//'stale'=> "update_after"
+				));
+		dol_setcache("total_rows", $result->total_rows);
 	}
-	else
-	{
-		$result = $object->getView($json, array('limit' => intval(empty($_GET['iDisplayLength'])?$conf->view_limit:$_GET['iDisplayLength']),
-												'skip' => intval($_GET['iDisplayStart']),
-												'stale'=> "ok"
-			));
-		dol_setcache("total_rows",$result->total_rows);
-	}
-	
-	
+
+	if (empty($result->total_rows))
+		$bServerSide = 0;
+
 	//print_r($result);
 	//exit;
 	$output["iTotalRecords"] = dol_getcache("total_rows");
 	$output["iTotalDisplayRecords"] = $result->total_rows;
 
-	foreach ($result->rows AS $aRow) {
-		unset($aRow->value->class);
-		unset($aRow->value->_rev);
-		$output["aaData"][] = clone $aRow->value;
-		unset($aRow);
-	}
+	if (isset($result->rows))
+		foreach ($result->rows AS $aRow) {
+			unset($aRow->value->class);
+			unset($aRow->value->_rev);
+			$output["aaData"][] = clone $aRow->value;
+			unset($aRow);
+		}
 	//error_log(json_encode($result));
-	
 	//sorting
-	$object->sortDatatable($output["aaData"], $_GET['mDataProp_'.$_GET['iSortCol_0']], $_GET['sSortDir_0']);
+	//if($bServerSide)
+	//	$object->sortDatatable($output["aaData"], $_GET['mDataProp_'.$_GET['iSortCol_0']], $_GET['sSortDir_0']);
 
 	header('Content-type: application/json');
 	echo json_encode($output);

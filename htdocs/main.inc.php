@@ -1088,7 +1088,7 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 							</div>
 							<script type="text/javascript" charset="utf-8">
 								$(document).ready(function() {
-									$('#query').sautocomplete('includes/lib/autocomplete/data.php?mode=xml', {
+									$('#query').sautocomplete('includes/lib/autocomplete/data.php', {
 										delay		: 10,
 										minChars	: 2,
 										max			: 6,

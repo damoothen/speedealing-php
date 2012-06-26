@@ -267,7 +267,7 @@ abstract class nosqlDocument extends CommonObject {
 		}
 
 		if (!$found) {
-			$result = array();
+			$result = new stdClass();
 			try {
 				/* if (!empty($conf->view_limit))
 				  $params['limit'] = $conf->global->MAIN_SIZE_LISTE_LIMIT; */
@@ -281,8 +281,9 @@ abstract class nosqlDocument extends CommonObject {
 					dol_setcache(get_class($this) . ":" . $name, $result);
 				}
 			} catch (Exception $e) {
-				dol_print_error("", $e->getMessage());
+				error_log($e->getMessage());
 				$this->dol_syslog(get_class($this) . "::getView " . $error, LOG_WARN);
+				$result->total_rows = 0;
 			}
 		}
 
@@ -298,7 +299,7 @@ abstract class nosqlDocument extends CommonObject {
 	public function getIndexedView($name, $params = array()) {
 		global $conf;
 
-		$result = array();
+		$result = new stdClass();
 		try {
 			/* if (!empty($conf->view_limit))
 			  $params['limit'] = $conf->global->MAIN_SIZE_LISTE_LIMIT; */
@@ -309,8 +310,9 @@ abstract class nosqlDocument extends CommonObject {
 
 			$result = $this->couchdb->getIndexedView(get_class($this), $name);
 		} catch (Exception $e) {
-			dol_print_error("", $e->getMessage());
+			error_log($e->getMessage());
 			$this->dol_syslog(get_class($this) . "::getView " . $error, LOG_WARN);
+			$result->total_rows = 0;
 		}
 
 		return $result;
@@ -428,13 +430,13 @@ abstract class nosqlDocument extends CommonObject {
 						"oTableTools": { "sSwfPath": "<?php echo DOL_URL_ROOT . '/includes/jquery/plugins/datatables/extras/TableTools/media/swf/copy_csv_xls.swf'; ?>"},
 						//if($obj->oTableTools->aButtons==null)
 						//$obj->oTableTools->aButtons = array("xls");
-																																							    
+																																									    
 						"oColVis": { "buttonText" : 'Voir/Cacher',
 							"aiExclude": [0,1] // Not cacheable _id and name
 						},
 						//$obj->oColVis->bRestore = true;
 						//$obj->oColVis->sAlign = 'left';
-																																						            
+																																								            
 						// Avec export Excel
 		<?php if (!empty($obj->sDom)) : ?>
 							//"sDom": "Cl<fr>t<\"clear\"rtip>",
@@ -463,7 +465,7 @@ abstract class nosqlDocument extends CommonObject {
 		<?php if (isset($obj->fnRowCallback)): ?>
 							"fnRowCallback": <?php echo $obj->fnRowCallback; ?>,
 		<?php endif; ?>
-																						
+																								
 		<?php if (!defined('NOLOGIN')) : ?>
 			<?php if (isset($obj->fnDrawCallback)): ?>
 									"fnDrawCallback": <?php echo $obj->fnDrawCallback; ?>,
@@ -488,7 +490,7 @@ abstract class nosqlDocument extends CommonObject {
 												"tooltip": "Cliquer pour éditer...",
 												"indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
 												"placeholder" : ""
-																																																																												                
+																																																																																                
 											} );
 											$("td.select", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
 												"callback": function( sValue, y ) {
@@ -507,7 +509,7 @@ abstract class nosqlDocument extends CommonObject {
 												"tooltip": "Cliquer pour éditer...",
 												"indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
 												"placeholder" : ""
-																																																																												                
+																																																																																                
 											} );
 										}
 			<?php endif; ?>
@@ -823,7 +825,7 @@ abstract class nosqlDocument extends CommonObject {
 
 			$log->liblevel = $liblevel;
 
-			$log->tms = dol_print_date(time(), "%Y-%m-%d %H:%M:%S");
+			$log->tms = dol_now();
 
 			$this->logdb->storeDoc($log);
 
