@@ -1088,7 +1088,7 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 							</div>
 							<script type="text/javascript" charset="utf-8">
 								$(document).ready(function() {
-									$('#query').sautocomplete('includes/lib/autocomplete/data.php', {
+									$('#query').sautocomplete('search/data.php', {
 										delay		: 10,
 										minChars	: 2,
 										max			: 6,
@@ -1096,7 +1096,7 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 										width		: 212
 									}).result(function(event, query_val) {
 										$.fancybox({
-											href	: 'includes/lib/autocomplete/search_result.php',
+											href	: 'search/search_result.php',
 											ajax : {
 												type	: "POST",
 												data	: "search_item=" + query_val
@@ -1112,7 +1112,7 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 									$('#search_box').submit(function() {
 										var query_val = $("#query").val();
 										$.fancybox({
-											href	: 'includes/lib/autocomplete/search_result.php',
+											href	: 'search/search_result.php',
 											ajax : {
 												type	: "POST",
 												data	: "search_item=" + query_val
