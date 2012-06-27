@@ -222,32 +222,13 @@ class modSociete extends DolibarrModules {
 		$this->values->menus[$r]->fk_menu = "menu:contactsaddresses";
 		$r++;
 		$this->values->menus[$r]->_id = "menu:menunewthirdparty";
-		$this->values->menus[$r]->url = "/societe/soc.php?action=create";
+		$this->values->menus[$r]->url = "/societe/fiche.php?action=create";
 		$this->values->menus[$r]->langs = "companies";
 		$this->values->menus[$r]->perms = '$user->rights->societe->creer';
 		$this->values->menus[$r]->enabled = '$conf->societe->enabled';
 		$this->values->menus[$r]->usertype = 2;
 		$this->values->menus[$r]->title = "MenuNewThirdParty";
 		$this->values->menus[$r]->fk_menu = "menu:thirdparty";
-		$r++;
-		$this->values->menus[$r]->_id = "menu:listprospectsshort";
-		$this->values->menus[$r]->position = 2;
-		$this->values->menus[$r]->url = "/comm/list.php";
-		$this->values->menus[$r]->langs = "companies";
-		$this->values->menus[$r]->perms = '$user->rights->societe->lire';
-		$this->values->menus[$r]->enabled = '$conf->societe->enabled';
-		$this->values->menus[$r]->usertype = 2;
-		$this->values->menus[$r]->title = "ListProspectsShort";
-		$this->values->menus[$r]->fk_menu = "menu:companies";
-		$r++;
-		$this->values->menus[$r]->_id = "menu:menunewprospect";
-		$this->values->menus[$r]->url = "/societe/soc.php?action=create";
-		$this->values->menus[$r]->langs = "companies";
-		$this->values->menus[$r]->perms = '$user->rights->societe->creer';
-		$this->values->menus[$r]->enabled = '$conf->societe->enabled';
-		$this->values->menus[$r]->usertype = 2;
-		$this->values->menus[$r]->title = "MenuNewThirdParty";
-		$this->values->menus[$r]->fk_menu = "menu:listprospectsshort";
 		$r++;
 
 		// Exports

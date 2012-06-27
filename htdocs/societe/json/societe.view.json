@@ -22,6 +22,6 @@
    "fulltext": {
        "list": {
            "index": "function(doc) {\n if(doc.class != \"Societe\"){ return null;} var result = new Document(); result.add(doc.ThirdPartyName);  result.add(doc.CustomerCode);  result.add(doc.Zip); result.add(doc.Town);  return result;}"
-		   }
-	   }
+       }
    }
+}
