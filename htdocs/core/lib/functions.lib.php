@@ -152,7 +152,7 @@ function getBrowserInfo() {
 	} elseif (preg_match('/chrome(\/|\s)([\d\.]+)/i', $_SERVER["HTTP_USER_AGENT"], $reg)) {
 		$name = 'chrome';
 		$version = $reg[2];
-	} // we can have 'chrome (Mozilla...) chrome x.y' in one string
+	}	// we can have 'chrome (Mozilla...) chrome x.y' in one string
 	elseif (preg_match('/chrome/i', $_SERVER["HTTP_USER_AGENT"], $reg)) {
 		$name = 'chrome';
 	} elseif (preg_match('/iceweasel/i', $_SERVER["HTTP_USER_AGENT"])) {
@@ -171,7 +171,7 @@ function getBrowserInfo() {
 	} elseif (preg_match('/msie(\/|\s)([\d\.]*)/i', $_SERVER["HTTP_USER_AGENT"], $reg)) {
 		$name = 'ie';
 		$version = $reg[2];
-	} // MS products at end
+	}	// MS products at end
 	// Other
 	$firefox = 0;
 	if (in_array($name, array('firefox', 'iceweasel')))
@@ -281,7 +281,7 @@ function dol_buildpath($path, $type = 0) {
 				$res = DOL_DOCUMENT_ROOT_ALT . $path;
 		}
 	}
-	else { // For an url path
+	else {	// For an url path
 		// We try to get local path of file on filesystem from url
 		// Note that trying to know if a file on disk exist by forging path on disk from url
 		// works only for some web server and some setup. This is bugged when
@@ -289,7 +289,7 @@ function dol_buildpath($path, $type = 0) {
 		if ($type == 1) {
 			$res = DOL_URL_ROOT . $path;  // Standard value
 			if (defined('DOL_URL_ROOT_ALT') && DOL_URL_ROOT_ALT) {   // We check only if alternate feature is used
-				preg_match('/^([^\?]+(\.css\.php|\.css|\.js\.php|\.js|\.png|\.jpg|\.php)?)/i', $path, $regs); // Take part before '?'
+				preg_match('/^([^\?]+(\.css\.php|\.css|\.js\.php|\.js|\.png|\.jpg|\.php)?)/i', $path, $regs);	// Take part before '?'
 				if (!empty($regs[1])) {
 					if (!file_exists(DOL_DOCUMENT_ROOT . $regs[1]))
 						$res = DOL_URL_ROOT_ALT . $path;
@@ -297,9 +297,9 @@ function dol_buildpath($path, $type = 0) {
 			}
 		}
 		if ($type == 2) {
-			$res = DOL_MAIN_URL_ROOT . $path;   // Standard value
-			if (defined('DOL_URL_ROOT_ALT') && DOL_URL_ROOT_ALT) {   // We check only if alternate feature is used
-				preg_match('/^([^\?]+(\.css\.php|\.css|\.js\.php|\.js|\.png|\.jpg|\.php)?)/i', $path, $regs); // Take part before '?'
+			$res = DOL_MAIN_URL_ROOT . $path;	  // Standard value
+			if (defined('DOL_URL_ROOT_ALT') && DOL_URL_ROOT_ALT) {			// We check only if alternate feature is used
+				preg_match('/^([^\?]+(\.css\.php|\.css|\.js\.php|\.js|\.png|\.jpg|\.php)?)/i', $path, $regs);	// Take part before '?'
 				if (!empty($regs[1])) {
 					if (!file_exists(DOL_DOCUMENT_ROOT . $regs[1]))
 						$res = DOL_MAIN_URL_ROOT_ALT . $path;
@@ -450,9 +450,9 @@ function dol_escape_htmltag($stringtoescape, $keepb = 0) {
 	// escape quotes and backslashes, newlines, etc.
 	$tmp = dol_html_entity_decode($stringtoescape, ENT_COMPAT, 'UTF-8');
 	if ($keepb)
-		$tmp = strtr($tmp, array('"' => '', "\r" => '\\r', "\n" => '\\n'));
+		$tmp = strtr($tmp, array("\r" => '\\r', "\n" => '\\n'));
 	else
-		$tmp = strtr($tmp, array('"' => '', "\r" => '\\r', "\n" => '\\n', "<b>" => '', '</b>' => ''));
+		$tmp = strtr($tmp, array("\r" => '\\r', "\n" => '\\n', "<b>" => '', '</b>' => ''));
 	return dol_htmlentities($tmp, ENT_COMPAT, 'UTF-8');
 }
 
@@ -574,7 +574,7 @@ function dol_format_address($object) {
 		if ($object->zip)
 			$ret .= ', ' . $object->zip;
 	}
-	else {		  // Other: zip town, state
+	else {										// Other: zip town, state
 		$ret .= ($ret ? "\n" : '' ) . $object->zip;
 		$ret .= ' ' . $object->town;
 		if ($object->state && in_array($object->country_code, $countriesusingstate)) {
@@ -661,16 +661,14 @@ function dol_print_date($time, $format = '', $tzoutput = 'tzserver', $outputlang
 	if ($format == 'dayxcard')
 		$format = '%Y%m%d';
 	if ($format == 'dayrfc')
-		$format = '%Y-%m-%d';	// DATE_RFC3339
+		$format = '%Y-%m-%d';			 // DATE_RFC3339
 	if ($format == 'dayhourrfc')
 		$format = '%Y-%m-%dT%H:%M:%SZ';   // DATETIME RFC3339
 
-
 		
 // If date undefined or "", we return ""
-	if (dol_strlen($time) == 0 || $time == 0)
+	if (dol_strlen($time) == 0)
 		return '';  // $time=0 allowed (it means 01/01/1970 00:00:00)
-
 
 		
 //print 'x'.$time;
@@ -739,7 +737,6 @@ function dol_print_date($time, $format = '', $tzoutput = 'tzserver', $outputlang
 /**
  * 	Return an array with locale date info.
  *  PHP getdate is restricted to the years 1901-2038 on Unix and 1970-2038 on Windows
- *
  *  WARNING: This function always use PHP server timezone to return locale informations.
  *  Usage must be avoid.
  *
@@ -772,7 +769,7 @@ function dol_print_date($time, $format = '', $tzoutput = 'tzserver', $outputlang
 function dol_getdate($timestamp, $fast = false) {
 	$usealternatemethod = false;
 	if ($timestamp <= 0)
-		$usealternatemethod = true; // <= 1970
+		$usealternatemethod = true;	// <= 1970
 	if ($timestamp >= 2145913200)
 		$usealternatemethod = true;  // >= 2038
 
@@ -828,7 +825,7 @@ function dol_mktime($hour, $minute, $second, $month, $day, $year, $gm = false, $
 			return '';
 	}
 
-	if (method_exists('DateTime', 'getTimestamp') && !empty($conf->global->MAIN_NEW_DATE)) {
+	if (method_exists('DateTime', 'getTimestamp') && empty($conf->global->MAIN_OLD_DATE)) {
 		if (empty($gm))
 			$localtz = new DateTimeZone(date_default_timezone_get());
 		else
@@ -870,7 +867,7 @@ function dol_now($mode = 'gmt') {
 		$ret = time(); // Time for now at greenwich.
 	else if ($mode == 'tzserver') {  // Time for now with PHP server timezone added
 		require_once(DOL_DOCUMENT_ROOT . '/core/lib/date.lib.php');
-		$tzsecond = getServerTimeZoneInt('now'); // Contains tz+dayling saving time
+		$tzsecond = getServerTimeZoneInt('now');	// Contains tz+dayling saving time
 		$ret = dol_now('gmt') + ($tzsecond * 3600);
 	}
 	/* else if ($mode == 'tzref')				// Time for now with parent company timezone is added
@@ -878,7 +875,7 @@ function dol_now($mode = 'gmt') {
 	  require_once(DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php');
 	  $tzsecond=getParentCompanyTimeZoneInt();    // Contains tz+dayling saving time
 	  $ret=dol_now('gmt')+($tzsecond*3600);
-	  } */ else if ($mode == 'tzuser') { // Time for now with user timezone is added
+	  } */ else if ($mode == 'tzuser') {	// Time for now with user timezone is added
 		//print 'eeee'.time().'-'.mktime().'-'.gmmktime();
 		$offsettz = (empty($_SESSION['dol_tz']) ? 0 : $_SESSION['dol_tz']) * 60 * 60;
 		$offsetdst = (empty($_SESSION['dol_dst']) ? 0 : $_SESSION['dol_dst']) * 60 * 60;
@@ -937,7 +934,8 @@ function dol_print_url($url, $target = '_blank', $max = 32) {
 	$link.=$url;
 	if ($target)
 		$link.='" target="' . $target . '">';
-	//if (! preg_match('/^http/i',$url)) $link.='http://';
+	if (!preg_match('/^http/i', $url))
+		$link.='http://';
 	$link.=dol_trunc($url, $max);
 	$link.='</a>';
 	return $link;
@@ -1005,9 +1003,6 @@ function dol_print_email($email, $cid = 0, $socid = 0, $addlink = 0, $max = 64, 
  */
 function dol_print_phone($phone, $country = "FR", $cid = 0, $socid = 0, $addlink = 0, $separ = "&nbsp;") {
 	global $conf, $user, $langs;
-
-	if (empty($phone))
-		return null;
 
 	// Clean phone parameter
 	$phone = preg_replace("/[\s.-]/", "", trim($phone));
@@ -1143,10 +1138,8 @@ function dol_user_country() {
 function dol_print_address($address, $htmlid, $mode, $id) {
 	global $conf, $user, $langs;
 
-	$rtr = "";
-
 	if ($address) {
-		$rtr.= nl2br($address);
+		print nl2br($address);
 		$showgmap = $showomap = 0;
 		if ($mode == 'thirdparty' && $conf->google->enabled && $conf->global->GOOGLE_ENABLE_GMAPS)
 			$showgmap = 1;
@@ -1164,15 +1157,13 @@ function dol_print_address($address, $htmlid, $mode, $id) {
 		// TODO Add a hook here
 		if ($showgmap) {
 			$url = dol_buildpath('/google/gmaps.php?mode=' . $mode . '&id=' . $id, 1);
-			$rtr.= ' <a href="' . $url . '" target="_gmaps"><img id="' . $htmlid . '" border="0" src="' . DOL_URL_ROOT . '/theme/common/gmap.png"></a>';
+			print ' <a href="' . $url . '" target="_gmaps"><img id="' . $htmlid . '" border="0" src="' . DOL_URL_ROOT . '/theme/common/gmap.png"></a>';
 		}
 		if ($showomap) {
 			$url = dol_buildpath('/openstreetmap/maps.php?mode=' . $mode . '&id=' . $id, 1);
-			$rtr.= ' <a href="' . $url . '" target="_gmaps"><img id="' . $htmlid . '_openstreetmap" border="0" src="' . DOL_URL_ROOT . '/theme/common/gmap.png"></a>';
+			print ' <a href="' . $url . '" target="_gmaps"><img id="' . $htmlid . '_openstreetmap" border="0" src="' . DOL_URL_ROOT . '/theme/common/gmap.png"></a>';
 		}
 	}
-
-	return $rtr;
 }
 
 /**
@@ -1259,7 +1250,7 @@ function dol_substr($string, $start, $length, $stringencoding = '') {
  */
 function dol_print_graph($htmlid, $width, $height, $data, $showlegend = 0, $type = 'pie', $showpercent = 0, $url = '') {
 	global $conf, $langs;
-	global $theme_datacolor; // To have var kept when function is called several times
+	global $theme_datacolor;	// To have var kept when function is called several times
 	if (empty($conf->use_javascript_ajax))
 		return;
 	$jsgraphlib = 'flot';
@@ -1494,7 +1485,7 @@ function img_object($alt, $picto, $options = '', $pictoisfullpath = 0) {
 		if (preg_match('/^([^@]+)@([^@]+)$/i', $picto, $regs)) {
 			$picto = $regs[1];
 			$path = $regs[2];
-		}   // If image into a module/img path
+		}	  // If image into a module/img path
 		if (!preg_match('/(\.png|\.gif)$/i', $picto))
 			$picto.='.png';
 		// If img file not into standard path, we use alternate path
@@ -1541,7 +1532,7 @@ function img_picto($alt, $picto, $options = '', $pictoisfullpath = 0) {
 		if (preg_match('/^([^@]+)@([^@]+)$/i', $picto, $regs)) {
 			$picto = $regs[1];
 			$path = $regs[2];
-		}   // If image into a module/img path
+		}	  // If image into a module/img path
 		if (!preg_match('/(\.png|\.gif)$/i', $picto))
 			$picto.='.png';
 		// If img file not into standard path, we use alternate path
@@ -1651,7 +1642,7 @@ function img_edit($alt = "default", $float = 0, $other = '') {
 	global $conf, $langs;
 	if ($alt == "default")
 		$alt = $langs->trans("Modify");
-	$img = '<img src="' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/ico/pencil_gray.png" border="0" alt="' . dol_escape_htmltag($alt) . '" title="' . dol_escape_htmltag($alt) . '"';
+	$img = '<img src="' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/edit.png" border="0" alt="' . dol_escape_htmltag($alt) . '" title="' . dol_escape_htmltag($alt) . '"';
 	if ($float)
 		$img.=' style="float: right"';
 	if ($other)
@@ -1692,13 +1683,7 @@ function img_delete($alt = "default", $other = '') {
 	global $conf, $langs;
 	if ($alt == "default")
 		$alt = $langs->trans("Delete");
-	$img = '<img src="' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/ico/trashcan_gray.png" border="0" alt="' . dol_escape_htmltag($alt) . '" title="' . dol_escape_htmltag($alt) . '"';
-	if ($float)
-		$img.=' style="float: right"';
-	if ($other)
-		$img.=' ' . $other;
-	$img.='>';
-	return $img;
+	return img_picto($alt, 'delete.png', $other);
 }
 
 /**
@@ -1930,7 +1915,7 @@ function info_admin($text, $infoonimgalt = 0) {
 	if ($infoonimgalt) {
 		$s.=img_picto($text, 'star');
 	} else {
-		$s.='<div class="alert-box warning">';
+		$s.='<div class="info">';
 		$s.=img_picto($langs->trans("InfoAdmin"), 'star');
 		$s.=' ';
 		$s.=$text;
@@ -1966,7 +1951,7 @@ function dol_print_error($db = '', $error = '') {
 	$langs->load("main");
 	$langs->load("errors");
 
-	if ($_SERVER['DOCUMENT_ROOT']) { // Mode web
+	if ($_SERVER['DOCUMENT_ROOT']) {	// Mode web
 		$out.=$langs->trans("DolibarrHasDetectedError") . ".<br>\n";
 		if (!empty($conf->global->MAIN_FEATURES_LEVEL))
 			$out.="You use an experimental level of features, so please do NOT report any bugs, anywhere, until going back to MAIN_FEATURES_LEVEL = 0.<br>\n";
@@ -1993,7 +1978,7 @@ function dol_print_error($db = '', $error = '') {
 		$out.="<br>\n";
 		$syslog.="url=" . $_SERVER["REQUEST_URI"];
 		$syslog.=", query_string=" . $_SERVER["QUERY_STRING"];
-	} else {		 // Mode CLI
+	} else {							  // Mode CLI
 		$out.='> ' . $langs->transnoentities("ErrorInternalErrorDetected") . ":\n" . $argv[0] . "\n";
 		$syslog.="pid=" . getmypid();
 	}
@@ -2005,7 +1990,7 @@ function dol_print_error($db = '', $error = '') {
 			$out.="<b>" . $langs->trans("ReturnCodeLastAccessInError") . ":</b> " . ($db->lasterrno() ? $db->lasterrno() : $langs->trans("ErrorNoRequestInError")) . "<br>\n";
 			$out.="<b>" . $langs->trans("InformationLastAccessInError") . ":</b> " . ($db->lasterror() ? $db->lasterror() : $langs->trans("ErrorNoRequestInError")) . "<br>\n";
 			$out.="<br>\n";
-		} else {	   // Mode CLI
+		} else {							// Mode CLI
 			$out.='> ' . $langs->transnoentities("DatabaseTypeManager") . ":\n" . $db->type . "\n";
 			$out.='> ' . $langs->transnoentities("RequestLastAccessInError") . ":\n" . ($db->lastqueryerror() ? $db->lastqueryerror() : $langs->trans("ErrorNoRequestInError")) . "\n";
 			$out.='> ' . $langs->transnoentities("ReturnCodeLastAccessInError") . ":\n" . ($db->lasterrno() ? $db->lasterrno() : $langs->trans("ErrorNoRequestInError")) . "\n";
@@ -2027,7 +2012,7 @@ function dol_print_error($db = '', $error = '') {
 			$msg = $langs->trans($msg);
 			if ($_SERVER['DOCUMENT_ROOT']) {  // Mode web
 				$out.="<b>" . $langs->trans("Message") . ":</b> " . $msg . "<br>\n";
-			} else {	   // Mode CLI
+			} else {							// Mode CLI
 				$out.='> ' . $langs->transnoentities("Message") . ":\n" . $msg . "\n";
 			}
 			$syslog.=", msg=" . $msg;
@@ -2047,7 +2032,7 @@ function dol_print_error($db = '', $error = '') {
 	else
 		define("MAIN_CORE_ERROR", 1);
 	//else print 'Sorry, an error occured but the parameter $dolibarr_main_prod is defined in conf file so no message is reported to your browser. Please read the log file for error message.';
-	//dol_syslog("Error " . $syslog, LOG_ERR);
+	dol_syslog("Error " . $syslog, LOG_ERR);
 }
 
 /**
@@ -2108,7 +2093,7 @@ function getTitleFieldOfList($name, $thead = 0, $file = "", $field = "", $begin 
 	}
 	$out.=$name;
 
-	if (empty($thead) && $field) { // If this is a sort field
+	if (empty($thead) && $field) {	// If this is a sort field
 		$options = preg_replace('/sortfield=([a-zA-Z0-9,\s\.]+)/i', '', $moreparam);
 		$options = preg_replace('/sortorder=([a-zA-Z0-9,\s\.]+)/i', '', $options);
 		$options = preg_replace('/&+/i', '&', $options);
@@ -2554,7 +2539,6 @@ function price2num($amount, $rounding = '', $alreadysqlnb = 0) {
 			$nbofdectoround = $conf->global->MAIN_MAX_DECIMALS_SHOWN;
 		elseif ($rounding == '2')
 			$nbofdectoround = 2;  // For admin info page
-
 			
 //print "RR".$amount.' - '.$nbofdectoround.'<br>';
 		if (dol_strlen($nbofdectoround))
@@ -2651,11 +2635,11 @@ function get_product_vat_for_country($idprod, $thirdparty_seller, $idprodfournpr
 		$result = $product->fetch($idprod);
 
 		if ($mysoc->pays_code == $thirdparty_seller->country_code) { // If selling country is ours
-			if ($idprodfournprice > 0) {  // We want vat for product for a supplier order or invoice
+			if ($idprodfournprice > 0) {	 // We want vat for product for a supplier order or invoice
 				$product->get_buyprice($idprodfournprice, 0, 0, 0);
 				$ret = $product->vatrate_supplier;
 			} else {
-				$ret = $product->tva_tx; // Default vat of product we defined
+				$ret = $product->tva_tx;	// Default vat of product we defined
 			}
 			$found = 1;
 		} else {
@@ -2920,7 +2904,6 @@ function dol_mkdir($dir) {
 		if (preg_match("/^.:$/", $ccdir, $regs))
 			continue; // Si chemin Windows incomplet, on poursuit par rep suivant
 
-
 			
 // Attention, le is_dir() peut echouer bien que le rep existe.
 		// (ex selon config de open_basedir)
@@ -3155,7 +3138,7 @@ function dol_nboflines_bis($text, $maxlinesize = 0, $charset = 'UTF-8') {
 		$pattern = '/(<br[^>]*>)/Uu';
 	} // /U is to have UNGREEDY regex to limit to one html tag. /u is for UTF8 support
 	else
-		$pattern = '/(<br[^>]*>)/U';	// /U is to have UNGREEDY regex to limit to one html tag.
+		$pattern = '/(<br[^>]*>)/U';	   // /U is to have UNGREEDY regex to limit to one html tag.
 	$a = preg_split($pattern, $text, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 
 	$nblines = floor((count($a) + 1) / 2);
@@ -3574,11 +3557,11 @@ function utf8_check($str) {
 function dol_osencode($str) {
 	global $conf;
 
-	$tmp = ini_get("unicode.filesystem_encoding");   // Disponible avec PHP 6.0
+	$tmp = ini_get("unicode.filesystem_encoding");	  // Disponible avec PHP 6.0
 	if (empty($tmp) && !empty($_SERVER["WINDIR"]))
 		$tmp = 'iso-8859-1'; // By default for windows
 	if (empty($tmp))
-		$tmp = 'utf-8';	// By default for other
+		$tmp = 'utf-8';		  // By default for other
 	if (!empty($conf->global->MAIN_FILESYSTEM_ENCODING))
 		$tmp = $conf->global->MAIN_FILESYSTEM_ENCODING;
 
@@ -3638,7 +3621,7 @@ function dol_getIdFromCode($db, $key, $tablename, $fieldkey = 'code', $fieldid =
 function verifCond($strRights) {
 	global $user, $conf, $langs;
 	global $leftmenu;
-	global $rights; // To export to dol_eval function
+	global $rights;	// To export to dol_eval function
 	//print $strRights."<br>\n";
 	$rights = true;
 	if ($strRights != '') {
@@ -3739,7 +3722,7 @@ function complete_head_from_modules($conf, $langs, $object, &$head, &$h, $type, 
 			$values = explode(':', $value);
 
 			if ($mode == 'add' && !preg_match('/^\-/', $values[1])) {
-				if (count($values) == 6) {	// new declaration with permissions:  $value='objecttype:+tabname1:Title1:langfile@mymodule:$user->rights->mymodule->read:/mymodule/mynewtab1.php?id=__ID__'
+				if (count($values) == 6) {	   // new declaration with permissions:  $value='objecttype:+tabname1:Title1:langfile@mymodule:$user->rights->mymodule->read:/mymodule/mynewtab1.php?id=__ID__'
 					if ($values[0] != $type)
 						continue;
 
@@ -3752,7 +3735,7 @@ function complete_head_from_modules($conf, $langs, $object, &$head, &$h, $type, 
 						$h++;
 					}
 				}
-				else if (count($values) == 5) {	// new declaration
+				else if (count($values) == 5) {	   // new declaration
 					if ($values[0] != $type)
 						continue;
 					if ($values[3])

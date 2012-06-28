@@ -172,7 +172,7 @@ class CommActionRapport
 		$sql.= " u.login";
 		$sql.= " FROM ".MAIN_DB_PREFIX."c_actioncomm as c, ".MAIN_DB_PREFIX."user as u, ".MAIN_DB_PREFIX."actioncomm as a";
         $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."societe as s ON a.fk_soc = s.rowid";
-		$sql.= " WHERE c.id=a.fk_action AND a.fk_user_done = u.rowid";
+		$sql.= " WHERE c.id=a.fk_action AND a.fk_user_author = u.rowid";
 		$sql.= " AND a.datep BETWEEN '".$this->db->idate(dol_get_first_day($this->year,$this->month,false))."'";
 		$sql.= " AND '".$this->db->idate(dol_get_last_day($this->year,$this->month,false))."'";
 		$sql.= " ORDER BY u.rowid,a.datep";
