@@ -1212,12 +1212,15 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
 			<script>
 				$(document).ready(function() {
-					//* step by step wizard
-					prth_wizard.simple();
-					//prth_wizard.validation();
-					prth_wizard.steps_nb();
-					// extended select elements
-					//prth_chosen_select.init();
+					$('#simple_wizard').stepy({
+						titleClick	: true
+					});
+					$('.stepy-titles').each(function(){
+						$(this).children('li').each(function(index){
+							var myIndex = index + 1
+							$(this).append('<span class="stepNb">'+myIndex+'</span>');
+						})
+					})
 				});
 			</script>
 
@@ -1374,22 +1377,20 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 			}
 			?>
 			<script>
-				/*$("#edit").fancybox({
-					href	: 'societe/edit.php',
-					ajax : {
-						type			: "GET",
-						data			: "id=<? echo $object->id; ?>"
-					},
+				$("#edit_fiche").fancybox({
+					href	: 'societe/edit.php?id=<? echo $object->id; ?>&action=edit',
 					'overlayOpacity'	: '0.2',
 					'transitionIn'		: 'elastic',
-					'transitionOut'		: 'fade'
-				});*/
+					'transitionOut'		: 'fade',
+					'width': '80%',
+					'height': '80%',
+					'autoScale': false,
+					'onComplete': function () { $("html").css("overflow","hidden"); },
+					'onClosed': function () { $("html").css("overflow-y","scroll"); },
+					'type': 'iframe'
+				});
 				$("#view_fiche").fancybox({
-					href	: 'societe/edit.php',
-					ajax : {
-						type			: "GET",
-						data			: "id=<? echo $object->id; ?>"
-					},
+					href	: 'societe/edit.php?id=<? echo $object->id; ?>',
 					'overlayOpacity'	: '0.2',
 					'transitionIn'		: 'elastic',
 					'transitionOut'		: 'fade',

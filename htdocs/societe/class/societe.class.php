@@ -1583,9 +1583,8 @@ class Societe extends nosqlDocument {
 
 		if ($user->rights->societe->supprimer) {
 			$rtr.= '<div class="gh_button-group right">';
-			//$rtr.= '<a class="gh_button primary pill" id="view" href="' . $_SERVER["PHP_SELF"] . '?id=' . $this->id . '&amp;action=edit">' . $langs->trans("See") . '</a>' . "\n";
 			if ($user->rights->societe->creer) {
-				$rtr.= '<a class="gh_button pill icon edit" id="edit" href="' . $_SERVER["PHP_SELF"] . '?id=' . $this->id . '&amp;action=edit">' . $langs->trans("Modify") . '</a>' . "\n";
+				$rtr.= '<a class="gh_button pill icon edit" id="edit_fiche" href="' . $_SERVER["PHP_SELF"] . '?id=' . $this->id . '&amp;action=edit">' . $langs->trans("Modify") . '</a>' . "\n";
 			}
 			$rtr.= '<span id="action-delete" class="gh_button pill icon trash danger">' . $langs->trans('Delete') . '</span>' . "\n";
 			$rtr.= '</div>';
