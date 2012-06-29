@@ -26,7 +26,7 @@ $(document).ready(function() {
 	var table_element = $('#jeditable_table_element').html();
 	var fk_element = $('#jeditable_fk_element').html();
 	
-	$('.edit').editable(urlSaveInPlace, {
+	$('.edit_text').editable(urlSaveInPlace, {
 		indicator : indicatorInPlace,
 		tooltip   : tooltipInPlace,
 		placeholder	: ''

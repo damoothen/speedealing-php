@@ -34,7 +34,7 @@ class Societe extends nosqlDocument {
 	public $element = 'societe';
 	//public $table_element = 'societe';
 	public $fk_element = 'fk_soc';
-	protected $childtables = array("propal", "commande", "facture", "contrat", "facture_fourn", "commande_fournisseur");	// To test if we can delete object
+	protected $childtables = array("propal", "commande", "facture", "contrat", "facture_fourn", "commande_fournisseur"); // To test if we can delete object
 	protected $ismultientitymanaged = 1; // 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
 	var $fk_extrafields;
 	var $fk_status;
@@ -182,7 +182,7 @@ class Societe extends nosqlDocument {
 				$hookmanager = new HookManager($this->db);
 				$hookmanager->initHooks(array('thirdparty_extrafields'));
 				$parameters = array('socid' => $this->id);
-				$reshook = $hookmanager->executeHooks('insertExtraFields', $parameters, $this, $action);	// Note that $action and $object may have been modified by some hooks
+				$reshook = $hookmanager->executeHooks('insertExtraFields', $parameters, $this, $action); // Note that $action and $object may have been modified by some hooks
 				if (empty($reshook)) {
 					$result = $this->insertExtraFields();
 					if ($result < 0) {
@@ -315,7 +315,7 @@ class Societe extends nosqlDocument {
 				$hookmanager->initHooks(array('thirdparty_extrafields'));
 				$parameters = array();
 				$action = 'delete';
-				$reshook = $hookmanager->executeHooks('deleteThirdparty', $parameters, $this, $action);	// Note that $action and $object may have been modified by some hooks
+				$reshook = $hookmanager->executeHooks('deleteThirdparty', $parameters, $this, $action); // Note that $action and $object may have been modified by some hooks
 				if (!empty($hookmanager->error)) {
 					$error++;
 					$this->error = $hookmanager->error;
@@ -1473,10 +1473,10 @@ class Societe extends nosqlDocument {
 		$this->values->country_code = $member->country_code;
 		$this->values->pays_id = $member->country_id; // TODO obsolete
 		$this->values->country_id = $member->country_id;
-		$this->values->tel = $member->phone;	// Prof phone
+		$this->values->tel = $member->phone; // Prof phone
 		$this->values->email = $member->email;
 
-		$this->values->client = 1;	// A member is a customer by default
+		$this->values->client = 1; // A member is a customer by default
 		$this->values->code_client = -1;
 		$this->values->code_fournisseur = -1;
 
@@ -1564,9 +1564,9 @@ class Societe extends nosqlDocument {
 		$rtr.= '</div>';
 		$rtr.= '<div class="five column vcard">';
 		$img = '<img src="' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/ico/icSw2/16-Apartment-Building.png" alt="" />';
-		$rtr.= '<h1 class="sepH_a">' . $img . $this->values->ThirdPartyName . '</h1>';
-		$rtr.= $this->getLibStatus();
-		$rtr.= '<h5 class="sepH_a s_color">';
+		$rtr.= '<h1 class="sepH_a"><a id="view_fiche" href="#">' . $img . $this->values->ThirdPartyName . '</a></h1>';
+		$rtr.= '<div class="sepH_a">'.$this->getLibStatus().'</div>';
+		$rtr.= '<h5 class="s_color">';
 		$rtr.= dol_print_address($this->values->Address, 'gmap', 'thirdparty', $this->id());
 		$rtr.= '</h5>';
 		//$img=picto_from_langcode($object->country_id);
@@ -1583,8 +1583,9 @@ class Societe extends nosqlDocument {
 
 		if ($user->rights->societe->supprimer) {
 			$rtr.= '<div class="gh_button-group right">';
+			//$rtr.= '<a class="gh_button primary pill" id="view" href="' . $_SERVER["PHP_SELF"] . '?id=' . $this->id . '&amp;action=edit">' . $langs->trans("See") . '</a>' . "\n";
 			if ($user->rights->societe->creer) {
-				$rtr.= '<a class="gh_button primary pill" href="' . $_SERVER["PHP_SELF"] . '?id=' . $this->id() . '&amp;action=edit">' . $langs->trans("Modify") . '</a>' . "\n";
+				$rtr.= '<a class="gh_button pill icon edit" id="edit" href="' . $_SERVER["PHP_SELF"] . '?id=' . $this->id . '&amp;action=edit">' . $langs->trans("Modify") . '</a>' . "\n";
 			}
 			$rtr.= '<span id="action-delete" class="gh_button pill icon trash danger">' . $langs->trans('Delete') . '</span>' . "\n";
 			$rtr.= '</div>';
@@ -1669,14 +1670,14 @@ class Societe extends nosqlDocument {
 						$rtr.= '<td><img src="' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/ico/icSw2/16-Money.png" title="' . $label . '" /></td>';
 
 					if ($aRow->type == "AC_EMAIL")
-						$rtr.= '<td class="s_color">' . $label . '</td></td><td class="ttip_r edit">' . $this->values->$key . '</td>';
+						$rtr.= '<td class="s_color">' . $label . '</td></td><td class="ttip_r edit_text">' . $this->values->$key . '</td>';
 					elseif ($aRow->type == "AC_TEL" || $aRow->type == "AC_FAX")
-						$rtr.= '<td class="s_color">' . $label . '</td><td class="ttip_r edit">' . dol_print_phone($this->values->$key, $this->values->Country, 0, $this->id(), $aRow->type) . '</td>';
+						$rtr.= '<td class="s_color">' . $label . '</td><td class="ttip_r edit_text">' . dol_print_phone($this->values->$key, $this->values->Country, 0, $this->id(), $aRow->type) . '</td>';
 					elseif ($aRow->type == "AC_URL") {
-						$rtr.= '<td>' . dol_print_url($label, $this->values->$key->value) . '</td><td class="ttip_r edit">' . $this->values->$key . '</td>';
+						$rtr.= '<td>' . dol_print_url($label, $this->values->$key->value) . '</td><td class="ttip_r edit_text">' . $this->values->$key . '</td>';
 					}
 					else
-						$rtr.= '<td class="s_color">' . $label . '</td><td class="ttip_r edit">' . $this->values->$key . '</td>';
+						$rtr.= '<td class="s_color">' . $label . '</td><td class="ttip_r edit_text">' . $this->values->$key . '</td>';
 
 					$rtr.='</tr>';
 				}
@@ -1701,7 +1702,7 @@ class Societe extends nosqlDocument {
 
 		$this->nb = array("customer" => 0, "prospect" => 0, "suspect" => 0);
 
-		$result = $this->getView("count_status", array("group"=> "exact"));
+		$result = $this->getView("count_status", array("group" => "exact"));
 
 		foreach ($result->rows as $aRow) {
 			//print_r($aRow);exit;

@@ -220,6 +220,9 @@ if (!defined('NOREQUIREAJAX') && $conf->use_javascript_ajax)
 
 
 
+
+
+
 	
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
@@ -1049,8 +1052,11 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 	// For backward compatibility with old modules
 	//if (empty($conf->headerdone)) top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss);
 
-	print '<body class="ptrn_a grdnt_b mhover_c">'; // fullW full size width
-
+	if(!defined('NOHEADER'))
+		print '<body class="ptrn_a grdnt_b mhover_c">'; // fullW full size width
+	else
+		print '<body style="background: white;">'; // fullW full size width
+	
 	/*
 	 * Top menu
 	 */
@@ -1063,190 +1069,190 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 		include_once(DOL_DOCUMENT_ROOT . "/core/menus/standard/" . $top_menu);
 	}
 	?> <!-- Start top horizontal menu ' . $top_menu . ' -->
+	<?php if (!defined('NOHEADER')) : ?>
+		<header>
+			<div class="container head_s_a">
+				<div class="row sepH_b">
+					<div class="six columns">
+						<div class="row">
+							<div class="five phone-two columns">
+								<div id="logo"><?php
+		$mysoc->logo_mini = $conf->global->MAIN_INFO_SOCIETE_LOGO_MINI;
+		if (!empty($mysoc->logo_mini) && is_readable($conf->mycompany->dir_output . '/logos/thumbs/' . $mysoc->logo_mini))
+			$urllogo = DOL_URL_ROOT . '/viewimage.php?cache=1&amp;modulepart=companylogo&amp;file=' . urlencode('thumbs/' . $mysoc->logo_mini);
+		else
+			$urllogo = DOL_URL_ROOT . '/theme/speedealing_logo.png';
+		print '<a href="' . DOL_URL_ROOT . '/index.php?idmenu=menu:home"><img src="' . $urllogo . '" alt="' . $conf->global->MAIN_INFO_SOCIETE_NOM . '" title="' . $conf->global->MAIN_INFO_SOCIETE_NOM . '"/></a>';
+		?>
+								</div>
+							</div>
+		<?php if (!defined('NOLOGIN')) : ?>
+								<div class = "seven phone-two columns">
+									<form action = "search.php" id = "search_box" method = "post">
+										<input name = "query" id = "query" type = "text" size = "40" placeholder = "Find&hellip;" autocomplete = "off" />
+									</form>
+								</div>
+								<script>
+									$(document).ready(function() {
+										$('#query').sautocomplete('search/data.php', {
+											delay		: 10,
+											minChars	: 2,
+											max			: 6,
+											matchCase	: 1,
+											width		: 212
+										}).result(function(event, query_val) {
+											$.fancybox({
+												href	: 'search/search_result.php',
+												ajax : {
+													type	: "POST",
+													data	: "search_item=" + query_val
+												},
+												'overlayOpacity'	: '0.2',
+												'transitionIn'		: 'elastic',
+												'transitionOut'		: 'fade',
+												onComplete			: function() {
+													$('#query').blur();
+												}
+											});
+										});
+										$('#search_box').submit(function() {
+											var query_val = $("#query").val();
+											$.fancybox({
+												href	: 'search/search_result.php',
+												ajax : {
+													type	: "POST",
+													data	: "search_item=" + query_val
+												},
+												'overlayOpacity'	: '0.2',
+												'transitionIn'		: 'elastic',
+												'transitionOut'		: 'fade'
+											});
+											return false;
+										});
+									});
+								</script>
+							</div>
+						</div>
+						<div class = "six columns">
+							<div class = "user_box cf">
+								<div class = "user_avatar">
+									<img src = "theme/pertho_sample/img/user_female.png" alt = "" />
+								</div>
+								<div class = "user_info user_sep">
+									<p class = "sepH_a">
+										<strong><?php echo $user->values->Firstname; ?> <?php echo $user->values->Lastname; ?></strong>
+									</p>
+									<span>
+										<a href = "user/fiche.php?id=<?php echo $user->id; ?>" class = "sep">Settings</a>
+										<a href = "user/logout.php">Log out</a>
+									</span>
+								</div>
+								<div class = "ntf_bar user_sep">
+									<a href = "#ntf_mail_panel" class = "ntf_item" style = "background-image: url(theme/pertho_sample/img/ico/icSw2/32-Mail.png)">
+										<span class = "ntf_tip ntf_tip_red"><span>12</span></span>
+									</a>
+									<a href = "#ntf_tickets_panel" class = "ntf_item" style = "background-image: url(theme/pertho_sample/img/ico/icSw2/32-Day-Calendar.png)">
+										<span class = "ntf_tip ntf_tip_red"><span>122</span></span>
+									</a>
+									<a href = "#ntf_comments_panel" class = "ntf_item" style = "background-image: url(theme/pertho_sample/img/ico/icSw2/32-Speech-Bubble.png)">
+										<span class = "ntf_tip ntf_tip_blue"><span>8</span></span>
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
 
-	<header>
-		<div class="container head_s_a">
-			<div class="row sepH_b">
-				<div class="six columns">
-					<div class="row">
-						<div class="five phone-two columns">
-							<div id="logo"><?php
-	$mysoc->logo_mini = $conf->global->MAIN_INFO_SOCIETE_LOGO_MINI;
-	if (!empty($mysoc->logo_mini) && is_readable($conf->mycompany->dir_output . '/logos/thumbs/' . $mysoc->logo_mini))
-		$urllogo = DOL_URL_ROOT . '/viewimage.php?cache=1&amp;modulepart=companylogo&amp;file=' . urlencode('thumbs/' . $mysoc->logo_mini);
-	else
-		$urllogo = DOL_URL_ROOT . '/theme/speedealing_logo.png';
-	print '<a href="' . DOL_URL_ROOT . '/index.php?idmenu=menu:home"><img src="' . $urllogo . '" alt="' . $conf->global->MAIN_INFO_SOCIETE_NOM . '" title="' . $conf->global->MAIN_INFO_SOCIETE_NOM . '"/></a>';
-	?>
+
+			<?php if (!defined('NOREQUIREMENU')) : ?>
+						<div class = "row">
+							<div class = "twelve columns">
+
+								<?php
+								// Show menu
+								$menutop = new MenuTop($db);
+								$menutop->atarget = $target;
+								$menutop->showmenu();   // This contains a \n
+								?>
 							</div>
 						</div>
-	<?php if (!defined('NOLOGIN')) : ?>
-							<div class = "seven phone-two columns">
-								<form action = "search.php" id = "search_box" method = "post">
-									<input name = "query" id = "query" type = "text" size = "40" placeholder = "Find&hellip;" autocomplete = "off" />
-								</form>
-							</div>
-							<script type="text/javascript" charset="utf-8">
-								$(document).ready(function() {
-									$('#query').sautocomplete('search/data.php', {
-										delay		: 10,
-										minChars	: 2,
-										max			: 6,
-										matchCase	: 1,
-										width		: 212
-									}).result(function(event, query_val) {
-										$.fancybox({
-											href	: 'search/search_result.php',
-											ajax : {
-												type	: "POST",
-												data	: "search_item=" + query_val
-											},
-											'overlayOpacity'	: '0.2',
-											'transitionIn'		: 'elastic',
-											'transitionOut'		: 'fade',
-											onComplete			: function() {
-												$('#query').blur();
-											}
-										});
-									});
-									$('#search_box').submit(function() {
-										var query_val = $("#query").val();
-										$.fancybox({
-											href	: 'search/search_result.php',
-											ajax : {
-												type	: "POST",
-												data	: "search_item=" + query_val
-											},
-											'overlayOpacity'	: '0.2',
-											'transitionIn'		: 'elastic',
-											'transitionOut'		: 'fade'
-										});
-										return false;
-									});
-								});
-							</script>
-						</div>
-					</div>
-					<div class = "six columns">
-						<div class = "user_box cf">
-							<div class = "user_avatar">
-								<img src = "theme/pertho_sample/img/user_female.png" alt = "" />
-							</div>
-							<div class = "user_info user_sep">
-								<p class = "sepH_a">
-									<strong><?php echo $user->values->Firstname; ?> <?php echo $user->values->Lastname; ?></strong>
-								</p>
-								<span>
-									<a href = "user/fiche.php?id=<?php echo $user->id; ?>" class = "sep">Settings</a>
-									<a href = "user/logout.php">Log out</a>
-								</span>
-							</div>
-							<div class = "ntf_bar user_sep">
-								<a href = "#ntf_mail_panel" class = "ntf_item" style = "background-image: url(theme/pertho_sample/img/ico/icSw2/32-Mail.png)">
-									<span class = "ntf_tip ntf_tip_red"><span>12</span></span>
-								</a>
-								<a href = "#ntf_tickets_panel" class = "ntf_item" style = "background-image: url(theme/pertho_sample/img/ico/icSw2/32-Day-Calendar.png)">
-									<span class = "ntf_tip ntf_tip_red"><span>122</span></span>
-								</a>
-								<a href = "#ntf_comments_panel" class = "ntf_item" style = "background-image: url(theme/pertho_sample/img/ico/icSw2/32-Speech-Bubble.png)">
-									<span class = "ntf_tip ntf_tip_blue"><span>8</span></span>
-								</a>
-							</div>
-						</div>
-					</div>
+						<!--End Menu-->
+			<?php endif; ?>
+
 				</div>
 
-
-		<?php if (!defined('NOREQUIREMENU')) : ?>
-					<div class = "row">
-						<div class = "twelve columns">
-
-							<?php
-							// Show menu
-							$menutop = new MenuTop($db);
-							$menutop->atarget = $target;
-							$menutop->showmenu();   // This contains a \n
-							?>
-						</div>
+				<!--notifications content-->
+				<div style = "display:none">
+					<div id = "ntf_tickets_panel" style = "display:none">
+						<p class = "sticky-title">New Tickets</p>
+						<ul class = "sticky-list">
+							<li>
+								<a href = "#">Admin should not break if URL&hellip;
+								</a>
+								<p><span class = "s_color small">updated 01.04.2012</span></p>
+							</li>
+							<li>
+								<a href = "#">Displaying submenus in custom&hellip;
+								</a>
+								<p><span class = "s_color small">updated 01.04.2012</span></p>
+							</li>
+							<li>
+								<a href = "#">Featured image on post types.</a>
+								<p><span class = "s_color small">updated 24.03.2012</span></p>
+							</li>
+							<li>
+								<a href = "#">Multiple feed fixes and&hellip;
+								</a>
+								<p><span class = "s_color small">updated 22.03.2012</span></p>
+							</li>
+							<li>
+								<a href = "#">Automatic line breaks in&hellip;
+								</a>
+								<p><span class = "s_color small">updated 18.03.2012</span></p>
+							</li>
+							<li>
+								<a href = "#">Wysiwyg bug with shortcodes.</a>
+								<p><span class = "s_color small">updated 08.10.2012</span></p>
+							</li>
+						</ul>
+						<a href = "#" class = "gh_button btn-small">Show all tickets</a>
 					</div>
-					<!--End Menu-->
+					<div id = "ntf_comments_panel" style = "display:none">
+						<p class = "sticky-title">New Comments</p>
+						<ul class = "sticky-list">
+							<li>
+								<a href = "#">Lorem ipsum dolor sit amet&hellip;
+								</a>
+								<p><span class = "s_color small">John Smith on Maiden Castle, Dorset (29.10.2012)</span></p>
+							</li>
+							<li>
+								<a href = "#">Lorem ipsum dolor sit&hellip;
+								</a>
+								<p><span class = "s_color small">John Smith on Draining and development & hellip;
+										(29.10.2012)</span></p>
+							</li>
+						</ul>
+						<a href = "#" class = "gh_button btn-small">Show all comments</a>
+					</div>
+					<div id = "ntf_mail_panel" style = "display:none">
+						<p class = "sticky-title">New Messages</p>
+						<ul class = "sticky-list">
+							<li>
+								<a href = "#">Lorem ipsum dolor sit amet&hellip;
+								</a>
+								<p><span class = "s_color small">From John Smith (29.10.2012)</span></p>
+							</li>
+							<li>
+								<a href = "#">Lorem ipsum dolor sit&hellip;
+								</a>
+								<p><span class = "s_color small">From John Smith (28.10.2012)</span></p>
+							</li>
+						</ul>
+						<a href = "#" class = "gh_button btn-small">Show all messages</a>
+					</div>
+				</div>
 		<?php endif; ?>
-
-			</div>
-
-			<!--notifications content-->
-			<div style = "display:none">
-				<div id = "ntf_tickets_panel" style = "display:none">
-					<p class = "sticky-title">New Tickets</p>
-					<ul class = "sticky-list">
-						<li>
-							<a href = "#">Admin should not break if URL&hellip;
-							</a>
-							<p><span class = "s_color small">updated 01.04.2012</span></p>
-						</li>
-						<li>
-							<a href = "#">Displaying submenus in custom&hellip;
-							</a>
-							<p><span class = "s_color small">updated 01.04.2012</span></p>
-						</li>
-						<li>
-							<a href = "#">Featured image on post types.</a>
-							<p><span class = "s_color small">updated 24.03.2012</span></p>
-						</li>
-						<li>
-							<a href = "#">Multiple feed fixes and&hellip;
-							</a>
-							<p><span class = "s_color small">updated 22.03.2012</span></p>
-						</li>
-						<li>
-							<a href = "#">Automatic line breaks in&hellip;
-							</a>
-							<p><span class = "s_color small">updated 18.03.2012</span></p>
-						</li>
-						<li>
-							<a href = "#">Wysiwyg bug with shortcodes.</a>
-							<p><span class = "s_color small">updated 08.10.2012</span></p>
-						</li>
-					</ul>
-					<a href = "#" class = "gh_button btn-small">Show all tickets</a>
-				</div>
-				<div id = "ntf_comments_panel" style = "display:none">
-					<p class = "sticky-title">New Comments</p>
-					<ul class = "sticky-list">
-						<li>
-							<a href = "#">Lorem ipsum dolor sit amet&hellip;
-							</a>
-							<p><span class = "s_color small">John Smith on Maiden Castle, Dorset (29.10.2012)</span></p>
-						</li>
-						<li>
-							<a href = "#">Lorem ipsum dolor sit&hellip;
-							</a>
-							<p><span class = "s_color small">John Smith on Draining and development & hellip;
-									(29.10.2012)</span></p>
-						</li>
-					</ul>
-					<a href = "#" class = "gh_button btn-small">Show all comments</a>
-				</div>
-				<div id = "ntf_mail_panel" style = "display:none">
-					<p class = "sticky-title">New Messages</p>
-					<ul class = "sticky-list">
-						<li>
-							<a href = "#">Lorem ipsum dolor sit amet&hellip;
-							</a>
-							<p><span class = "s_color small">From John Smith (29.10.2012)</span></p>
-						</li>
-						<li>
-							<a href = "#">Lorem ipsum dolor sit&hellip;
-							</a>
-							<p><span class = "s_color small">From John Smith (28.10.2012)</span></p>
-						</li>
-					</ul>
-					<a href = "#" class = "gh_button btn-small">Show all messages</a>
-				</div>
-			</div>
+		</header>
 	<?php endif; ?>
-
-	</header>
 	<!-- End top horizontal menu -->
 	<?php
 }
@@ -1537,31 +1543,28 @@ if (!function_exists("llxFooter")) {
 
 			define("MAIN_CORE_ERROR", 0);
 		}
-
-		print "\n\n";
-		print '</div> <!-- end div class="container" -->' . "\n";
-
+		?>
+		</div> <!-- end div class="container" -->
 
 
+		<?php if (!defined('NOHEADER')) : ?>
 
-		print '<footer class="container" id="footer">
-			<div class="row">
-				<div class="twelve columns">
-                    Copyright &copy; 2012 speedealing.com - tzd-themes.com
+			<footer class="container" id="footer">
+				<div class="row">
+					<div class="twelve columns">
+						Copyright &copy; 2012 speedealing.com - tzd-themes.com
+					</div>
 				</div>
-			</div>
-		</footer>
-		<div class="sw_width">
-			<img class="sw_full" title="switch to full width" alt="" src="' . DOL_URL_ROOT . '/theme/blank.gif" />
-			<img style="display:none" class="sw_fixed" title="switch to fixed width (980px)" alt="" src="' . DOL_URL_ROOT . '/theme/blank.gif" />
-		</div>';
-
-		print "\n";
-		if ($foot)
-			print '<!-- ' . $foot . ' -->' . "\n";
-
-		printCommonFooter();
-
+			</footer>
+			<div class="sw_width">
+				<img class="sw_full" title="switch to full width" alt="" src="theme/blank.gif" />
+				<img style="display:none" class="sw_fixed" title="switch to fixed width (980px)" alt="" src="theme/blank.gif" />
+			</div>';
+			<?php
+			printCommonFooter();
+			?>
+		<?php endif; ?>
+		<?php
 		print "</body>\n";
 		print "</html>\n";
 	}
