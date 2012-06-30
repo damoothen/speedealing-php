@@ -123,7 +123,7 @@ if ($_GET["msg"])
 ?>
 
 <!-- Dump of a server -->
-<form method="post" action="export.php" name="dump"><input type="hidden"
+<form method="post" action="admin/tools/export.php" name="dump"><input type="hidden"
 	name="token" value="<?php echo $_SESSION['newtoken']; ?>" /> <input
 	type="hidden" name="export_type" value="server" />
 
@@ -388,7 +388,7 @@ $filearray=dol_dir_list($conf->admin->dir_output.'/backup','files',0,'','',$sort
 $result=$formfile->list_of_documents($filearray,null,'systemtools','',1,'backup/',1,0,$langs->trans("NoBackupFileAvailable"),0,$langs->trans("PreviousDumpFiles"));
 print '<br>';
 
-
+print dol_fiche_end();
 llxFooter();
 
 $db->close();

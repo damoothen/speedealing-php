@@ -105,7 +105,7 @@ if ($what == 'mysql')
     $cmddump=GETPOST("mysqldump");	// Do not sanitize here with 'alpha', will be sanitize later by escapeshellarg
     if ($cmddump)
     {
-        dolibarr_set_const($db, 'SYSTEMTOOLS_MYSQLDUMP', $cmddump,'chaine',0,'',$conf->entity);
+        //dolibarr_set_const($db, 'SYSTEMTOOLS_MYSQLDUMP', $cmddump,'chaine',0,'',$conf->entity);
     }
 
     $outputdir  = $conf->admin->dir_output.'/backup';
@@ -358,6 +358,8 @@ $result=$formfile->list_of_documents($filearray,null,'systemtools','',1,'backup/
 print '<br>';
 
 $time_end = time();
+
+print dol_fiche_end();
 
 llxFooter();
 
