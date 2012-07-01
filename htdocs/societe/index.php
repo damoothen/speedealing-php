@@ -232,7 +232,7 @@ if ($result)
             print dol_print_date($thirdparty_static->datem,'day');
             print "</td>";
             print '<td align="right" nowrap="nowrap">';
-            print $thirdparty_static->getLibStatut(3);
+            print $thirdparty_static->getLibStatus();
             print "</td>";
             print "</tr>\n";
             $i++;

@@ -213,17 +213,6 @@ if (!defined('NOREQUIREHTML'))
 if (!defined('NOREQUIREAJAX') && $conf->use_javascript_ajax)
 	require_once(DOL_DOCUMENT_ROOT . '/core/lib/ajax.lib.php'); // Need 22ko memory
 
-
-
-
-
-
-
-
-
-
-
-	
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
 	dol_syslog("main.inc: A previous install or upgrade was not complete. Redirect to install page.", LOG_WARNING);
@@ -297,13 +286,13 @@ if (!defined('NOLOGIN')) {
 		dol_print_error('', $langs->trans("ErrorConfigParameterNotDefined", 'dolibarr_main_authentication'));
 		exit;
 	}
-
+	
 	// If requested by the login has already occurred, it is retrieved from the session
 	// Call module if not realized that his request.
 	// At the end of this phase, the variable $login is defined.
 	$resultFetchUser = '';
 	$test = true;
-	if (!isset($_SESSION["dol_login"])) {
+	if (!isset($_SESSION["dol_login"]) || !isset($_COOKIE["AuthSession"])) {
 		// It is not already authenticated and it requests the login / password
 		include_once(DOL_DOCUMENT_ROOT . '/core/lib/security2.lib.php');
 
@@ -753,268 +742,264 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
 	if (empty($conf->css))
 		$conf->css = '/theme/eldy/style.css.php'; // If not defined, eldy by default
-
-	print '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">';
-	//print '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/strict.dtd">';
-	//print '<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
-	//print '<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">';
-	//print '<!DOCTYPE HTML>';
-	print "\n";
+	?>
+	<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+	<?php
 	if (!empty($conf->global->MAIN_USE_CACHE_MANIFEST))
 		print '<html manifest="cache.manifest">' . "\n";
 	else
 		print '<html>' . "\n";
-	//print '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">'."\n";
+
 	if (empty($disablehead)) {
-		print "<head>\n";
+		?>
+		<head>
 
-		// Displays meta
-		print '<meta charset="utf-8" />';
-		print '<base href="' . DOL_URL_ROOT . '/" />';
-		print '<meta name="viewport" content="width=device-width, initial-scale=1.0" />';
-		print '<meta name="robots" content="noindex,nofollow" />' . "\n";   // Evite indexation par robots
-		print '<meta name="author" content="Speedealing Development Team" />' . "\n";
-		$favicon = DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/favicon.ico';
-		print '<link rel="shortcut icon" type="image/x-icon" href="' . $favicon . '"/>' . "\n";
-		// Displays title
-		$appli = 'Speedealing';
-		if (!empty($conf->global->MAIN_APPLICATION_TITLE))
-			$appli = $conf->global->MAIN_APPLICATION_TITLE;
+			<meta charset="utf-8" />
+			<base href="<?php echo DOL_URL_ROOT . '/'; ?>" />
+			<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+			<meta name="robots" content="noindex,nofollow" />
+			<meta name="author" content="Speedealing Development Team" />
+			<link rel="shortcut icon" type="image/x-icon" href="theme/<?php echo $conf->theme; ?>/img/favicon.ico"/>
+			<?php
+			// Displays title
+			$appli = 'Speedealing';
+			if (!empty($conf->global->MAIN_APPLICATION_TITLE))
+				$appli = $conf->global->MAIN_APPLICATION_TITLE;
 
-		if ($title)
-			print '<title>' . $appli . ' - ' . $title . '</title>';
-		else
-			print "<title>" . $appli . "</title>";
-		print "\n";
+			if ($title)
+				print '<title>' . $appli . ' - ' . $title . '</title>';
+			else
+				print "<title>" . $appli . "</title>";
+			print "\n";
 
-		print '<!-- Includes for JQuery (Ajax library) -->' . "\n";
-		//$jquerytheme = 'smoothness';
-		//if (!empty($conf->global->MAIN_USE_JQUERY_THEME)) $jquerytheme = $conf->global->MAIN_USE_JQUERY_THEME;
-		//else print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/css/'.$jquerytheme.'/jquery-ui-latest.custom.css" />'."\n";    // JQuery
-		//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/tiptip/tipTip.css" />'."\n";                           // Tooltip
-		//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/jnotify/jquery.jnotify-alt.min.css" />'."\n";          // JNotify
-		//print '<link rel="stylesheet" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/lightbox/css/jquery.lightbox-0.5.css" media="screen" />'."\n";       // Lightbox
-		// jQuery fileupload
-		print '<link rel="stylesheet" type="text/css" href="' . DOL_URL_ROOT . '/includes/jquery/plugins/fileupload/css/jquery.fileupload-ui.css" />' . "\n";
-		// jQuery datatables
-		//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/media/css/jquery.dataTables.css" />'."\n";
-		//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/media/css/jquery.dataTables_jui.css" />'."\n";
-		print '<link rel="stylesheet" type="text/css" href="' . DOL_URL_ROOT . '/includes/jquery/plugins/datatables/extras/ColReorder/media/css/ColReorder.css" />' . "\n";
-		//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/ColVis/media/css/ColVis.css" />'."\n";
-		//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/ColVis/media/css/ColVisAlt.css" />'."\n";
-		//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/TableTools/media/css/TableTools.css" />'."\n";
-		print '<link rel="stylesheet" type="text/css" href="' . DOL_URL_ROOT . '/includes/jquery/plugins/datatables/extras/AutoFill/media/css/AutoFill.css" />' . "\n";
-		// jQuery multiselect
-		//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/multiselect/css/ui.multiselect.css" />'."\n";
-		print '<link rel="stylesheet" type="text/css" href="' . DOL_URL_ROOT . '/includes/jquery/plugins/wysiwyg/css/jquery.wysiwyg.css" />' . "\n";
+			print '<!-- Includes for JQuery (Ajax library) -->' . "\n";
+			//$jquerytheme = 'smoothness';
+			//if (!empty($conf->global->MAIN_USE_JQUERY_THEME)) $jquerytheme = $conf->global->MAIN_USE_JQUERY_THEME;
+			//else print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/css/'.$jquerytheme.'/jquery-ui-latest.custom.css" />'."\n";    // JQuery
+			//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/tiptip/tipTip.css" />'."\n";                           // Tooltip
+			//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/jnotify/jquery.jnotify-alt.min.css" />'."\n";          // JNotify
+			//print '<link rel="stylesheet" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/lightbox/css/jquery.lightbox-0.5.css" media="screen" />'."\n";       // Lightbox
+			// jQuery fileupload
+			print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/fileupload/css/jquery.fileupload-ui.css" />' . "\n";
+			// jQuery datatables
+			//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/media/css/jquery.dataTables.css" />'."\n";
+			//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/media/css/jquery.dataTables_jui.css" />'."\n";
+			print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/extras/ColReorder/media/css/ColReorder.css" />' . "\n";
+			//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/ColVis/media/css/ColVis.css" />'."\n";
+			//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/ColVis/media/css/ColVisAlt.css" />'."\n";
+			//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/TableTools/media/css/TableTools.css" />'."\n";
+			print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/extras/AutoFill/media/css/AutoFill.css" />' . "\n";
+			// jQuery multiselect
+			//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/multiselect/css/ui.multiselect.css" />'."\n";
+			print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/wysiwyg/css/jquery.wysiwyg.css" />' . "\n";
 
-		print '<!-- Includes for Speedealing, modules or specific pages-->' . "\n";
-		// Output style sheets (optioncss='print' or '')
-		$themepath = dol_buildpath((empty($conf->global->MAIN_FORCETHEMEDIR) ? '' : $conf->global->MAIN_FORCETHEMEDIR) . $conf->css, 1);
-		$themeparam = '?lang=' . $langs->defaultlang . '&amp;theme=' . $conf->theme . (GETPOST('optioncss') ? '&amp;optioncss=' . GETPOST('optioncss', 'alpha', 1) : '');
-		if (!empty($_SESSION['dol_resetcache']))
-			$themeparam.='&amp;dol_resetcache=' . $_SESSION['dol_resetcache'];
-		//print 'themepath='.$themepath.' themeparam='.$themeparam;exit;
-		print '<link rel="stylesheet" type="text/css" title="default" href="' . $themepath . $themeparam . '">' . "\n";
-		// CSS forced by modules (relative url starting with /)
-		if (is_array($conf->css_modules)) {
-			foreach ($conf->css_modules as $key => $cssfile) {
-				// cssfile is an absolute path
-				print '<link rel="stylesheet" type="text/css" title="default" href="' . dol_buildpath($cssfile, 1);
-				// We add params only if page is not static, because some web server setup does not return content type text/css if url has parameters, so browser cache is not used.
-				if (!preg_match('/\.css$/i', $cssfile))
-					print $themeparam;
-				print '"><!-- Added by module ' . $key . '-->' . "\n";
+			print '<!-- Includes for Speedealing, modules or specific pages-->' . "\n";
+			// Output style sheets (optioncss='print' or '')
+			$themepath = dol_buildpath((empty($conf->global->MAIN_FORCETHEMEDIR) ? '' : $conf->global->MAIN_FORCETHEMEDIR) . $conf->css, 1);
+			$themeparam = '?lang=' . $langs->defaultlang . '&amp;theme=' . $conf->theme . (GETPOST('optioncss') ? '&amp;optioncss=' . GETPOST('optioncss', 'alpha', 1) : '');
+			if (!empty($_SESSION['dol_resetcache']))
+				$themeparam.='&amp;dol_resetcache=' . $_SESSION['dol_resetcache'];
+			//print 'themepath='.$themepath.' themeparam='.$themeparam;exit;
+			print '<link rel="stylesheet" type="text/css" title="default" href="' . $themepath . $themeparam . '">' . "\n";
+			// CSS forced by modules (relative url starting with /)
+			if (is_array($conf->css_modules)) {
+				foreach ($conf->css_modules as $key => $cssfile) {
+					// cssfile is an absolute path
+					print '<link rel="stylesheet" type="text/css" title="default" href="' . dol_buildpath($cssfile, 1);
+					// We add params only if page is not static, because some web server setup does not return content type text/css if url has parameters, so browser cache is not used.
+					if (!preg_match('/\.css$/i', $cssfile))
+						print $themeparam;
+					print '"><!-- Added by module ' . $key . '-->' . "\n";
+				}
 			}
-		}
-		// CSS forced by page in top_htmlhead call (relative url starting with /)
-		if (is_array($arrayofcss)) {
-			foreach ($arrayofcss as $cssfile) {
-				print '<link rel="stylesheet" type="text/css" title="default" href="' . dol_buildpath($cssfile, 1);
-				// We add params only if page is not static, because some web server setup does not return content type text/css if url has parameters and browser cache is not used.
-				if (!preg_match('/\.css$/i', $cssfile))
-					print $themeparam;
-				print '"><!-- Added by page -->' . "\n";
+			// CSS forced by page in top_htmlhead call (relative url starting with /)
+			if (is_array($arrayofcss)) {
+				foreach ($arrayofcss as $cssfile) {
+					print '<link rel="stylesheet" type="text/css" title="default" href="' . dol_buildpath($cssfile, 1);
+					// We add params only if page is not static, because some web server setup does not return content type text/css if url has parameters and browser cache is not used.
+					if (!preg_match('/\.css$/i', $cssfile))
+						print $themeparam;
+					print '"><!-- Added by page -->' . "\n";
+				}
 			}
-		}
 
-		if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER))
-			print '<link rel="top" title="' . $langs->trans("Home") . '" href="' . (DOL_URL_ROOT ? DOL_URL_ROOT : '/') . '">' . "\n";
-		if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER))
-			print '<link rel="copyright" title="GNU General Public License" href="http://www.gnu.org/copyleft/gpl.html#SEC1">' . "\n";
-		if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER))
-			print '<link rel="author" title="Speedealing Development Team" href="http://www.speedealing.com">' . "\n";
+			if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER))
+				print '<link rel="top" title="' . $langs->trans("Home") . '" href="' . (DOL_URL_ROOT ? DOL_URL_ROOT : '/') . '">' . "\n";
+			if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER))
+				print '<link rel="copyright" title="GNU General Public License" href="http://www.gnu.org/copyleft/gpl.html#SEC1">' . "\n";
+			if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER))
+				print '<link rel="author" title="Speedealing Development Team" href="http://www.speedealing.com">' . "\n";
 
-		// Output standard javascript links
-		$ext = '.js';
-		if (isset($conf->global->MAIN_OPTIMIZE_SPEED) && ($conf->global->MAIN_OPTIMIZE_SPEED & 0x01)) {
-			$ext = '.jgz';
-		} // mini='_mini', ext='.gz'
-		// JQuery. Must be before other includes
-		print '<!-- Includes JS for JQuery -->' . "\n";
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/js/jquery-latest.min' . $ext . '"></script>' . "\n";
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/js/jquery-ui-latest.custom.min' . $ext . '"></script>' . "\n";
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/tablednd/jquery.tablednd_0_5' . $ext . '"></script>' . "\n";
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/tiptip/jquery.tipTip.min' . $ext . '"></script>' . "\n";
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/lightbox/js/jquery.lightbox-0.5.min' . $ext . '"></script>' . "\n";
-		// jQuery Layout
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/layout/jquery.layout-latest' . $ext . '"></script>' . "\n";
-		// jQuery jnotify
-		//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/jnotify/jquery.jnotify.min.js"></script>'."\n";
-		//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/core/js/jnotify.js"></script>'."\n";
+			// Output standard javascript links
+			$ext = '.js';
+			if (isset($conf->global->MAIN_OPTIMIZE_SPEED) && ($conf->global->MAIN_OPTIMIZE_SPEED & 0x01)) {
+				$ext = '.jgz';
+			} // mini='_mini', ext='.gz'
+			// JQuery. Must be before other includes
+			print '<!-- Includes JS for JQuery -->' . "\n";
+			print '<script type="text/javascript" src="includes/jquery/js/jquery-latest.min' . $ext . '"></script>' . "\n";
+			print '<script type="text/javascript" src="includes/jquery/js/jquery-ui-latest.custom.min' . $ext . '"></script>' . "\n";
+			print '<script type="text/javascript" src="includes/jquery/plugins/tablednd/jquery.tablednd_0_5' . $ext . '"></script>' . "\n";
+			print '<script type="text/javascript" src="includes/jquery/plugins/tiptip/jquery.tipTip.min' . $ext . '"></script>' . "\n";
+			print '<script type="text/javascript" src="includes/jquery/plugins/lightbox/js/jquery.lightbox-0.5.min' . $ext . '"></script>' . "\n";
+			// jQuery Layout
+			print '<script type="text/javascript" src="includes/jquery/plugins/layout/jquery.layout-latest' . $ext . '"></script>' . "\n";
+			// jQuery jnotify
+			//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/jnotify/jquery.jnotify.min.js"></script>'."\n";
+			//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/core/js/jnotify.js"></script>'."\n";
 
-		if (!defined('NOLOGIN')) {
-			// Flot
-			print '<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/flot/excanvas.min.js"></script><![endif]-->' . "\n";
-			print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/flot/jquery.flot.min.js"></script>' . "\n";
-			print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/flot/jquery.flot.pie.min.js"></script>' . "\n";
-			print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/flot/jquery.flot.stack.min.js"></script>' . "\n";
-			// jQuery jeditable
-			print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/jeditable/jquery.jeditable.min' . $ext . '"></script>' . "\n";
-			print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/jeditable/jquery.jeditable.ui-datepicker.js"></script>' . "\n";
-			print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/jeditable/jquery.jeditable.ui-autocomplete.js"></script>' . "\n";
-			print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/jeditable/jquery.jeditable.wysiwyg.js"></script>' . "\n";
-			print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/wysiwyg/jquery.wysiwyg.js"></script>' . "\n";
-			print '<script type="text/javascript">' . "\n";
-			//print 'var urlSaveInPlace = \'http://www.example.com/save.php\';'."\n";
-			print 'var urlSaveInPlace = \'' . DOL_URL_ROOT . '/core/ajax/saveinplace.php\';' . "\n";
-			print 'var urlLoadInPlace = \'' . DOL_URL_ROOT . '/core/ajax/loadinplace.php\';' . "\n";
-			print 'var tooltipInPlace = \'' . $langs->transnoentities('ClickToEdit') . '\';' . "\n";
-			print 'var placeholderInPlace = \'' . $langs->trans('ClickToEdit') . '\';' . "\n";
-			print 'var cancelInPlace = \'' . $langs->trans('Cancel') . '\';' . "\n";
-			print 'var submitInPlace = \'' . $langs->trans('Ok') . '\';' . "\n";
-			print 'var indicatorInPlace = \'<img src="' . DOL_URL_ROOT . "/theme/" . $conf->theme . "/img/working.gif" . '">\';' . "\n";
-			print 'var ckeditorConfig = \'' . dol_buildpath('/theme/' . $conf->theme . '/ckeditor/config.js', 1) . '\';' . "\n";
-			print '</script>' . "\n";
-			print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/core/js/editinplace.js"></script>' . "\n";
-			print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/jeditable/jquery.jeditable.ckeditor.js"></script>' . "\n";
-			// jQuery File Upload
-			print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/template/tmpl.min.js"></script>' . "\n";
-			//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/fileupload/js/jquery.iframe-transport.js"></script>'."\n";
-			print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/fileupload/js/jquery.fileupload.js"></script>' . "\n";
-			print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/fileupload/js/jquery.fileupload-fp.js"></script>' . "\n";
-			print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/fileupload/js/jquery.fileupload-ui.js"></script>' . "\n";
-			print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/fileupload/js/jquery.fileupload-jui.js"></script>' . "\n";
-		}
-		// jQuery DataTables
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/datatables/media/js/jquery.dataTables.min' . $ext . '"></script>' . "\n";
-		//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/js/dataTables.plugins.js"></script>';
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/datatables/extras/ColReorder/media/js/ColReorder.min' . $ext . '"></script>' . "\n";
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/datatables/extras/ColVis/media/js/ColVis.min' . $ext . '"></script>' . "\n";
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/datatables/extras/TableTools/media/js/TableTools.min' . $ext . '"></script>' . "\n";
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/datatables/extras/AutoFill/media/js/AutoFill.min' . $ext . '"></script>' . "\n";
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/datatables/extras/AjaxReload/media/js/fnReloadAjax.js"></script>' . "\n";
-		//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/js/initXHR'.$ext.'"></script>'."\n";
-		//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/js/searchColumns'.$ext.'"></script>'."\n";
-		//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/js/ZeroClipboard'.$ext.'"></script>'."\n";
-		// jQuery Multiselect
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/multiselect/js/ui.multiselect.js"></script>' . "\n";
+			if (!defined('NOLOGIN')) {
+				// Flot
+				print '<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="includes/jquery/plugins/flot/excanvas.min.js"></script><![endif]-->' . "\n";
+				print '<script type="text/javascript" src="includes/jquery/plugins/flot/jquery.flot.min.js"></script>' . "\n";
+				print '<script type="text/javascript" src="includes/jquery/plugins/flot/jquery.flot.pie.min.js"></script>' . "\n";
+				print '<script type="text/javascript" src="includes/jquery/plugins/flot/jquery.flot.stack.min.js"></script>' . "\n";
+				// jQuery jeditable
+				print '<script type="text/javascript" src="includes/jquery/plugins/jeditable/jquery.jeditable.min' . $ext . '"></script>' . "\n";
+				print '<script type="text/javascript" src="includes/jquery/plugins/jeditable/jquery.jeditable.ui-datepicker.js"></script>' . "\n";
+				print '<script type="text/javascript" src="includes/jquery/plugins/jeditable/jquery.jeditable.ui-autocomplete.js"></script>' . "\n";
+				print '<script type="text/javascript" src="includes/jquery/plugins/jeditable/jquery.jeditable.wysiwyg.js"></script>' . "\n";
+				print '<script type="text/javascript" src="includes/jquery/plugins/wysiwyg/jquery.wysiwyg.js"></script>' . "\n";
+				print '<script type="text/javascript">' . "\n";
+				//print 'var urlSaveInPlace = \'http://www.example.com/save.php\';'."\n";
+				print 'var urlSaveInPlace = \'core/ajax/saveinplace.php\';' . "\n";
+				print 'var urlLoadInPlace = \'core/ajax/loadinplace.php\';' . "\n";
+				print 'var tooltipInPlace = \'' . $langs->transnoentities('ClickToEdit') . '\';' . "\n";
+				print 'var placeholderInPlace = \'' . $langs->trans('ClickToEdit') . '\';' . "\n";
+				print 'var cancelInPlace = \'' . $langs->trans('Cancel') . '\';' . "\n";
+				print 'var submitInPlace = \'' . $langs->trans('Ok') . '\';' . "\n";
+				print 'var indicatorInPlace = \'<img src="' . "theme/" . $conf->theme . "/img/working.gif" . '">\';' . "\n";
+				print 'var ckeditorConfig = \'' . dol_buildpath('/theme/' . $conf->theme . '/ckeditor/config.js', 1) . '\';' . "\n";
+				print '</script>' . "\n";
+				print '<script type="text/javascript" src="core/js/editinplace.js"></script>' . "\n";
+				print '<script type="text/javascript" src="includes/jquery/plugins/jeditable/jquery.jeditable.ckeditor.js"></script>' . "\n";
+				// jQuery File Upload
+				print '<script type="text/javascript" src="includes/jquery/plugins/template/tmpl.min.js"></script>' . "\n";
+				//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/fileupload/js/jquery.iframe-transport.js"></script>'."\n";
+				print '<script type="text/javascript" src="includes/jquery/plugins/fileupload/js/jquery.fileupload.js"></script>' . "\n";
+				print '<script type="text/javascript" src="includes/jquery/plugins/fileupload/js/jquery.fileupload-fp.js"></script>' . "\n";
+				print '<script type="text/javascript" src="includes/jquery/plugins/fileupload/js/jquery.fileupload-ui.js"></script>' . "\n";
+				print '<script type="text/javascript" src="includes/jquery/plugins/fileupload/js/jquery.fileupload-jui.js"></script>' . "\n";
+			}
+			// jQuery DataTables
+			print '<script type="text/javascript" src="includes/jquery/plugins/datatables/media/js/jquery.dataTables.min' . $ext . '"></script>' . "\n";
+			//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/js/dataTables.plugins.js"></script>';
+			print '<script type="text/javascript" src="includes/jquery/plugins/datatables/extras/ColReorder/media/js/ColReorder.min' . $ext . '"></script>' . "\n";
+			print '<script type="text/javascript" src="includes/jquery/plugins/datatables/extras/ColVis/media/js/ColVis.min' . $ext . '"></script>' . "\n";
+			print '<script type="text/javascript" src="includes/jquery/plugins/datatables/extras/TableTools/media/js/TableTools.min' . $ext . '"></script>' . "\n";
+			print '<script type="text/javascript" src="includes/jquery/plugins/datatables/extras/AutoFill/media/js/AutoFill.min' . $ext . '"></script>' . "\n";
+			print '<script type="text/javascript" src="includes/jquery/plugins/datatables/extras/AjaxReload/media/js/fnReloadAjax.js"></script>' . "\n";
+			//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/js/initXHR'.$ext.'"></script>'."\n";
+			//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/js/searchColumns'.$ext.'"></script>'."\n";
+			//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/js/ZeroClipboard'.$ext.'"></script>'."\n";
+			// jQuery Multiselect
+			print '<script type="text/javascript" src="includes/jquery/plugins/multiselect/js/ui.multiselect.js"></script>' . "\n";
 
-		// CKEditor
-		print '<script type="text/javascript">var CKEDITOR_BASEPATH = \'' . DOL_URL_ROOT . '/includes/ckeditor/\';</script>' . "\n";
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/ckeditor/ckeditor_basic.js"></script>' . "\n";
+			// CKEditor
+			print '<script type="text/javascript">var CKEDITOR_BASEPATH = \'includes/ckeditor/\';</script>' . "\n";
+			print '<script type="text/javascript" src="includes/ckeditor/ckeditor_basic.js"></script>' . "\n";
 
-		// BEGIN THEME
-		//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/lib/jQueryUI/jquery-ui-1.8.18.custom.min.js"></script>';
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/js/s_scripts.js"></script>';
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/js/jquery.ui.extend.js"></script>';
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/jquery/plugins/qtip2/jquery.qtip.min.js"></script>';
-		//print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/lib/jQplot/jquery.jqplot.min.js"></script>';
-		//print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/lib/jQplot/jqplot.plugins.js"></script>';
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/lib/fullcalendar/fullcalendar.min.js"></script>';
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/lib/stepy/js/jquery.stepy.min.js"></script>';
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/lib/validate/jquery.validate.min.js"></script>';
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/lib/validate/localization/messages_' . substr($langs->getDefaultLang(), 0, 2) . '.js"></script>'; //localization for validation plugin
-		//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/js/jquery.list.min.js"></script>';
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/js/pertho.js"></script>';
-		print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/js/jquery.rwd-table.js"></script>';
-		// END THEME
+			// BEGIN THEME
+			//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/lib/jQueryUI/jquery-ui-1.8.18.custom.min.js"></script>';
+			print '<script type="text/javascript" src="includes/js/s_scripts.js"></script>';
+			print '<script type="text/javascript" src="includes/js/jquery.ui.extend.js"></script>';
+			print '<script type="text/javascript" src="includes/jquery/plugins/qtip2/jquery.qtip.min.js"></script>';
+			//print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/lib/jQplot/jquery.jqplot.min.js"></script>';
+			//print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/lib/jQplot/jqplot.plugins.js"></script>';
+			print '<script type="text/javascript" src="includes/lib/fullcalendar/fullcalendar.min.js"></script>';
+			print '<script type="text/javascript" src="includes/lib/stepy/js/jquery.stepy.min.js"></script>';
+			print '<script type="text/javascript" src="includes/lib/validate/jquery.validate.min.js"></script>';
+			print '<script type="text/javascript" src="includes/lib/validate/localization/messages_' . substr($langs->getDefaultLang(), 0, 2) . '.js"></script>'; //localization for validation plugin
+			//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/js/jquery.list.min.js"></script>';
+			print '<script type="text/javascript" src="includes/js/pertho.js"></script>';
+			print '<script type="text/javascript" src="includes/js/jquery.rwd-table.js"></script>';
+			// END THEME
 
-		if (!defined('NOLOGIN')) {
-			// Global js function
-			print '<!-- Includes JS of Speedealing -->' . "\n";
-			print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/core/js/lib_head.js"></script>' . "\n";
-		}
+			if (!defined('NOLOGIN')) {
+				// Global js function
+				print '<!-- Includes JS of Speedealing -->' . "\n";
+				print '<script type="text/javascript" src="core/js/lib_head.js"></script>' . "\n";
+			}
 
-		// Add datepicker default options
-		//print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/core/js/datepicker.js.php?lang=' . $langs->defaultlang . '"></script>' . "\n";
+			// Add datepicker default options
+			//print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/core/js/datepicker.js.php?lang=' . $langs->defaultlang . '"></script>' . "\n";
 
-		print'<!-- Foundation framework -->';
-		print '<link rel="stylesheet" href="' . DOL_URL_ROOT . '/theme/pertho_sample/foundation/stylesheets/foundation.css">';
-		print '<!-- jquery UI -->';
-		print '<link rel="stylesheet" href="' . DOL_URL_ROOT . '/theme/pertho_sample/lib/jQueryUI/css/Aristo/Aristo.css" media="all" />';
-		print '<!-- jQplot (charts) -->';
-		print '<link rel="stylesheet" href="' . DOL_URL_ROOT . '/theme/pertho_sample/lib/jQplot/jquery.jqplot.css" media="all" />';
-		print '<!-- fancybox -->';
-		print '<link rel="stylesheet" href="' . DOL_URL_ROOT . '/theme/pertho_sample/lib/fancybox/jquery.fancybox-1.3.4.css" media="all" />';
-		print '<!-- fullcalendar -->';
-		print '<link rel="stylesheet" href="' . DOL_URL_ROOT . '/theme/pertho_sample/lib/fullcalendar/fullcalendar.css" media="all" />';
-		print '<!-- tooltips -->';
-		print '<link rel="stylesheet" href="' . DOL_URL_ROOT . '/theme/pertho_sample/lib/qtip2/jquery.qtip.min.css" />';
-		print '<!-- datatables -->';
-		print '<link rel="stylesheet" href="' . DOL_URL_ROOT . '/theme/pertho_sample/lib/datatables/css/demo_table_jui.css" media="all" />';
-		print '<!-- main styles -->';
-		print '<link rel="stylesheet" href="' . DOL_URL_ROOT . '/theme/eldy/style.css" />';
+			print'<!-- Foundation framework -->';
+			print '<link rel="stylesheet" href="theme/pertho_sample/foundation/stylesheets/foundation.css">';
+			print '<!-- jquery UI -->';
+			print '<link rel="stylesheet" href="theme/pertho_sample/lib/jQueryUI/css/Aristo/Aristo.css" media="all" />';
+			print '<!-- jQplot (charts) -->';
+			print '<link rel="stylesheet" href="theme/pertho_sample/lib/jQplot/jquery.jqplot.css" media="all" />';
+			print '<!-- fancybox -->';
+			print '<link rel="stylesheet" href="theme/pertho_sample/lib/fancybox/jquery.fancybox-1.3.4.css" media="all" />';
+			print '<!-- fullcalendar -->';
+			print '<link rel="stylesheet" href="theme/pertho_sample/lib/fullcalendar/fullcalendar.css" media="all" />';
+			print '<!-- tooltips -->';
+			print '<link rel="stylesheet" href="theme/pertho_sample/lib/qtip2/jquery.qtip.min.css" />';
+			print '<!-- datatables -->';
+			print '<link rel="stylesheet" href="theme/pertho_sample/lib/datatables/css/demo_table_jui.css" media="all" />';
+			print '<!-- main styles -->';
+			print '<link rel="stylesheet" href="theme/eldy/style.css" />';
 
-		print '<!-- Google fonts -->';
-		//print '<link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet" />';
-		print '<style type="text/css" media="screen, print">
+			print '<!-- Google fonts -->';
+			//print '<link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet" />';
+			print '<style type="text/css" media="screen, print">
 		@font-face {
 		font-family: "Open Sans Condensed";
 		font-style: normal;
 		font-weight: 300;
-		src: url("' . DOL_URL_ROOT . '/theme/pertho_sample/lib/google/OpenSans-CondensedLight.woff") format("woff"),
+		src: url("theme/pertho_sample/lib/google/OpenSans-CondensedLight.woff") format("woff"),
 			url("http://themes.googleusercontent.com/static/fonts/opensanscondensed/v6/gk5FxslNkTTHtojXrkp-xF1YPouZEKgzpqZW9wN-3Ek.woff") format("woff");
 		}
 		</style>';
-		print '<style type="text/css" media="screen, print">
+			print '<style type="text/css" media="screen, print">
 		@font-face {
 		font-family: "Terminal Dosis";
 		font-style: normal;
 		font-weight: 400;
-		src: url("' . DOL_URL_ROOT . '/theme/pertho_sample/lib/google/Dosis-Regular.woff") format("woff"),
+		src: url("theme/pertho_sample/lib/google/Dosis-Regular.woff") format("woff"),
 			url("http://themes.googleusercontent.com/static/fonts/terminaldosis/v5/_IcvjW_kWHsIHjjUsLbdpFGxLvFzKVP0OsRYGzgS_zk.woff") format("woff");
 		}
 		</style>';
 
-		print '<!-- Favicons and the like (avoid using transparent .png) -->';
-		print '<link rel="shortcut icon" type="image/x-icon" href="' . DOL_URL_ROOT . '/theme/favicon.ico"/>' . "\n";
-		print '<link rel="apple-touch-icon-precomposed" href="' . DOL_URL_ROOT . '/theme/icon.png" />';
+			print '<!-- Favicons and the like (avoid using transparent .png) -->';
+			print '<link rel="shortcut icon" type="image/x-icon" href="theme/favicon.ico"/>' . "\n";
+			print '<link rel="apple-touch-icon-precomposed" href="theme/icon.png" />';
 
-		print '<!--[if lt IE 9]>';
-		print '<link rel="stylesheet" href="foundation/stylesheets/ie.css">';
-		print '<script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>';
-		print '<script src="lib/jQplot/excanvas.min.js"></script>';
-		print '<![endif]-->';
+			print '<!--[if lt IE 9]>';
+			print '<link rel="stylesheet" href="foundation/stylesheets/ie.css">';
+			print '<script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>';
+			print '<script src="lib/jQplot/excanvas.min.js"></script>';
+			print '<![endif]-->';
 
-		// For new theme
-		print '<script>
+			// For new theme
+			print '<script>
 		$(document).ready(function() {
-		// common functions
 			prth_common.init();
 			});
 		</script>';
 
-		// Output module javascript
-		if (is_array($arrayofjs)) {
-			print '<!-- Includes JS specific to page -->' . "\n";
-			foreach ($arrayofjs as $jsfile) {
-				if (preg_match('/^http/i', $jsfile)) {
-					print '<script type="text/javascript" src="' . $jsfile . '"></script>' . "\n";
-				} else {
-					if (!preg_match('/^\//', $jsfile))
-						$jsfile = '/' . $jsfile; // For backward compatibility
-					print '<script type="text/javascript" src="' . dol_buildpath($jsfile, 1) . '"></script>' . "\n";
+			// Output module javascript
+			if (is_array($arrayofjs)) {
+				print '<!-- Includes JS specific to page -->' . "\n";
+				foreach ($arrayofjs as $jsfile) {
+					if (preg_match('/^http/i', $jsfile)) {
+						print '<script type="text/javascript" src="' . $jsfile . '"></script>' . "\n";
+					} else {
+						if (!preg_match('/^\//', $jsfile))
+							$jsfile = '/' . $jsfile; // For backward compatibility
+						print '<script type="text/javascript" src="' . dol_buildpath($jsfile, 1) . '"></script>' . "\n";
+					}
 				}
 			}
-		}
 
-		if (!empty($head))
-			print $head . "\n";
-		if (!empty($conf->global->MAIN_HTML_HEADER))
-			print $conf->global->MAIN_HTML_HEADER . "\n";
-
-		print "</head>\n\n";
+			if (!empty($head))
+				print $head . "\n";
+			if (!empty($conf->global->MAIN_HTML_HEADER))
+				print $conf->global->MAIN_HTML_HEADER . "\n";
+			?>
+		</head>
+		<?php
 	}
 
 	$conf->headerdone = 1; // To tell header was output
@@ -1052,11 +1037,11 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 	// For backward compatibility with old modules
 	//if (empty($conf->headerdone)) top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss);
 
-	if(!defined('NOHEADER'))
+	if (!defined('NOHEADER'))
 		print '<body class="ptrn_a grdnt_b mhover_c">'; // fullW full size width
 	else
 		print '<body style="background: white;">'; // fullW full size width
-	
+
 	/*
 	 * Top menu
 	 */

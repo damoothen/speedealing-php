@@ -113,6 +113,9 @@ if (! defined('NOREQUIREDB'))
 		dol_print_error($db,"host=".$conf->db->host.", port=".$conf->db->port.", user=".$conf->db->user.", databasename=".$conf->db->name.", ".$db->error);
 		exit;
 	}
+	
+	$couch = new couchClient($conf->Couchdb->host . ':' . $conf->Couchdb->port . '/', $conf->Couchdb->name);
+	$couch->setSessionCookie("AuthSession=" . $_COOKIE['AuthSession']);
 }
 
 // Now database connexion is known, so we can forget password
@@ -122,10 +125,10 @@ unset($conf->db->pass);				// This is to avoid password to be shown in memory/sw
 /*
  * Object $user
  */
-if (! defined('NOREQUIREUSER'))
-{
-	$user = new User($db);
-}
+//if (! defined('NOREQUIREUSER'))
+//{
+//	$user = new User($db);
+//}
 
 if (! defined('MAIN_LABEL_MENTION_NPR') ) define('MAIN_LABEL_MENTION_NPR','NPR');
 
