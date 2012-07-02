@@ -73,8 +73,10 @@ if (!empty($_COOKIE[$sessiontimeout]))
 session_name($sessionname);
 session_destroy();
 $parts = parse_url($conf->Couchdb->host);
-setcookie('AuthSession', '', 1, '/', $parts["host"]); // destroy couchdb cookie
-if($parts["host"] != $_SERVER["SERVER_NAME"])
+
+if (preg_match('/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i', $parts["host"], $regs))
+	setcookie('AuthSession', '', 1, '/', $regs["domain"]); // destroy couchdb cookie
+else
 	setcookie('AuthSession', '', 1, '/'); // destroy speedealing cookie if different than couchdb
 dol_syslog("End of session " . $sessionname);
 
