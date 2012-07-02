@@ -72,7 +72,10 @@ if (!empty($_COOKIE[$sessiontimeout]))
 	ini_set('session.gc_maxlifetime', $_COOKIE[$sessiontimeout]);
 session_name($sessionname);
 session_destroy();
-setcookie('AuthSession', '', 1, '/', substr($conf->Couchdb->host, 7)); // destroy couchdb cookie
+$parts = parse_url($conf->Couchdb->host);
+setcookie('AuthSession', '', 1, '/', $parts["host"]); // destroy couchdb cookie
+if($parts["host"] != $_SERVER["SERVER_NAME"])
+	setcookie('AuthSession', '', 1, '/'); // destroy speedealing cookie if different than couchdb
 dol_syslog("End of session " . $sessionname);
 
 // Define url to go

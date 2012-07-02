@@ -150,14 +150,13 @@ function checkLoginPassEntity($usertotest, $passwordtotest, $entitytotest, $auth
 	if (!empty($usertotest)) {
 
 		try {
-			$host = substr($conf->Couchdb->host, 7);
+			$parts = parse_url($conf->Couchdb->host);
+			//$host = substr($conf->Couchdb->host, 7);
 
-			$couch = new couchClient('http://' . $usertotest . ':' . $passwordtotest . '@' . $host . ':' . $conf->Couchdb->port . '/', $conf->Couchdb->name, array("cookie_auth" => true));
+			$couch = new couchClient('http://' . $usertotest . ':' . $passwordtotest . '@' . $parts["host"] . ':' . $conf->Couchdb->port . '/', $conf->Couchdb->name, array("cookie_auth" => true));
 			//if (strlen($couch->getSessionCookie()) > 15) {
 			//	$_SESSION['couchdb'] = $couch->getSessionCookie();
 			//}
-			if($host != $_SERVER["PHP_SELF"])
-				setcookie('AuthSession', substr(reset($line), strpos(reset($line), "=") + 1), null); // COOKIE Authentification not the same as couchdb
 			$login = $usertotest;
 		} catch (Exception $e) {
 			sleep(1);
