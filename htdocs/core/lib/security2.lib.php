@@ -156,6 +156,8 @@ function checkLoginPassEntity($usertotest, $passwordtotest, $entitytotest, $auth
 			//if (strlen($couch->getSessionCookie()) > 15) {
 			//	$_SESSION['couchdb'] = $couch->getSessionCookie();
 			//}
+			if($host != $_SERVER["PHP_SELF"])
+				setcookie('AuthSession', substr(reset($line), strpos(reset($line), "=") + 1), null); // COOKIE Authentification not the same as couchdb
 			$login = $usertotest;
 		} catch (Exception $e) {
 			sleep(1);
