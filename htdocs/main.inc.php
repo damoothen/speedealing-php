@@ -213,6 +213,7 @@ if (!defined('NOREQUIREHTML'))
 if (!defined('NOREQUIREAJAX') && $conf->use_javascript_ajax)
 	require_once(DOL_DOCUMENT_ROOT . '/core/lib/ajax.lib.php'); // Need 22ko memory
 
+	
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
 	dol_syslog("main.inc: A previous install or upgrade was not complete. Redirect to install page.", LOG_WARNING);
@@ -286,7 +287,7 @@ if (!defined('NOLOGIN')) {
 		dol_print_error('', $langs->trans("ErrorConfigParameterNotDefined", 'dolibarr_main_authentication'));
 		exit;
 	}
-	
+
 	// If requested by the login has already occurred, it is retrieved from the session
 	// Call module if not realized that his request.
 	// At the end of this phase, the variable $login is defined.
@@ -440,19 +441,17 @@ if (!defined('NOLOGIN')) {
 			session_destroy();
 			session_name($sessionname);
 			session_start(); // Fixing the bug of register_globals here is useless since session is empty
+			//if ($resultFetchUser <= 0) {
+			$langs->load('main');
+			$langs->load('errors');
 
-			if ($resultFetchUser == 0) {
-				$langs->load('main');
-				$langs->load('errors');
-
-				$user->trigger_mesg = 'ErrorCantLoadUserFromDolibarrDatabase - login=' . $login;
-				$_SESSION["dol_loginmesg"] = $langs->trans("ErrorCantLoadUserFromDolibarrDatabase", $login);
-			}
-			if ($resultFetchUser < 0) {
-				$user->trigger_mesg = $user->error;
-				$_SESSION["dol_loginmesg"] = $user->error;
-			}
-
+			
+			//$_SESSION["dol_loginmesg"] = 
+			//}
+			//if ($resultFetchUser < 0) {
+			$user->trigger_mesg = 'SessionExpire - login=' . $login;
+			$_SESSION["dol_loginmesg"] = $langs->trans("ErrorCantLoadUserFromDolibarrDatabase", $login); // TODO Session Expire
+			//}
 			// Call triggers
 			include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
 			$interface = new Interfaces($db);
@@ -1071,7 +1070,7 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 		?>
 								</div>
 							</div>
-		<?php if (!defined('NOLOGIN')) : ?>
+							<?php if (!defined('NOLOGIN')) : ?>
 								<div class = "seven phone-two columns">
 									<form action = "search.php" id = "search_box" method = "post">
 										<input name = "query" id = "query" type = "text" size = "40" placeholder = "Find&hellip;" autocomplete = "off" />
@@ -1148,7 +1147,7 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 					</div>
 
 
-			<?php if (!defined('NOREQUIREMENU')) : ?>
+					<?php if (!defined('NOREQUIREMENU')) : ?>
 						<div class = "row">
 							<div class = "twelve columns">
 
@@ -1161,7 +1160,7 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 							</div>
 						</div>
 						<!--End Menu-->
-			<?php endif; ?>
+					<?php endif; ?>
 
 				</div>
 
@@ -1235,7 +1234,7 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 						<a href = "#" class = "gh_button btn-small">Show all messages</a>
 					</div>
 				</div>
-		<?php endif; ?>
+			<?php endif; ?>
 		</header>
 	<?php endif; ?>
 	<!-- End top horizontal menu -->

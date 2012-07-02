@@ -142,7 +142,6 @@ class User extends nosqlDocument {
 		try {
 			$this->values = $this->couchdb->getDoc($login);
 		} catch (Exception $e) {
-			$this->error = "USERNOTFOUND";
 			return 0;
 		}
 
