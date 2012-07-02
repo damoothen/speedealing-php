@@ -72,12 +72,12 @@ if (!empty($_COOKIE[$sessiontimeout]))
 	ini_set('session.gc_maxlifetime', $_COOKIE[$sessiontimeout]);
 session_name($sessionname);
 session_destroy();
-$parts = parse_url($conf->Couchdb->host);
 
-if (preg_match('/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i', $parts["host"], $regs))
-	setcookie('AuthSession', '', 1, '/', $regs["domain"]); // destroy couchdb cookie
+if (preg_match('/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i', $_SERVER["SERVER_NAME"], $regs))
+	setcookie('AuthSession', '', 1, '/', "." . $regs["domain"]); // destroy couchdb cookie
 else
-	setcookie('AuthSession', '', 1, '/'); // destroy speedealing cookie if different than couchdb
+	setcookie('AuthSession', '', 1, '/'); // localhost
+
 dol_syslog("End of session " . $sessionname);
 
 // Define url to go
