@@ -213,6 +213,7 @@ if (!defined('NOREQUIREHTML'))
 if (!defined('NOREQUIREAJAX') && $conf->use_javascript_ajax)
 	require_once(DOL_DOCUMENT_ROOT . '/core/lib/ajax.lib.php'); // Need 22ko memory
 
+
 	
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
@@ -445,7 +446,7 @@ if (!defined('NOLOGIN')) {
 			$langs->load('main');
 			$langs->load('errors');
 
-			
+
 			//$_SESSION["dol_loginmesg"] = 
 			//}
 			//if ($resultFetchUser < 0) {
@@ -895,7 +896,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 			print '<script type="text/javascript" src="includes/jquery/plugins/multiselect/js/ui.multiselect.js"></script>' . "\n";
 
 			// CKEditor
-			print '<script type="text/javascript">var CKEDITOR_BASEPATH = \'includes/ckeditor/\';</script>' . "\n";
+			print '<script type="text/javascript">var CKEDITOR_BASEPATH = \'' . DOL_URL_ROOT . '/includes/ckeditor/\';</script>' . "\n";
 			print '<script type="text/javascript" src="includes/ckeditor/ckeditor_basic.js"></script>' . "\n";
 
 			// BEGIN THEME
@@ -1070,7 +1071,7 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 		?>
 								</div>
 							</div>
-							<?php if (!defined('NOLOGIN')) : ?>
+		<?php if (!defined('NOLOGIN')) : ?>
 								<div class = "seven phone-two columns">
 									<form action = "search.php" id = "search_box" method = "post">
 										<input name = "query" id = "query" type = "text" size = "40" placeholder = "Find&hellip;" autocomplete = "off" />
@@ -1147,7 +1148,7 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 					</div>
 
 
-					<?php if (!defined('NOREQUIREMENU')) : ?>
+			<?php if (!defined('NOREQUIREMENU')) : ?>
 						<div class = "row">
 							<div class = "twelve columns">
 
@@ -1160,7 +1161,7 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 							</div>
 						</div>
 						<!--End Menu-->
-					<?php endif; ?>
+			<?php endif; ?>
 
 				</div>
 
@@ -1234,7 +1235,7 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 						<a href = "#" class = "gh_button btn-small">Show all messages</a>
 					</div>
 				</div>
-			<?php endif; ?>
+		<?php endif; ?>
 		</header>
 	<?php endif; ?>
 	<!-- End top horizontal menu -->
