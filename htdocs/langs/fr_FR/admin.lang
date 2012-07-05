@@ -24,7 +24,7 @@ NoSessionFound=Votre PHP ne semble pas pouvoir lister les sessions actives. Le r
 HTMLCharset= Charset des pages HTML générées
 DBStoringCharset= Charset base pour stockage données
 DBSortingCharset= Charset base pour tri données
-WarningModuleNotActive= Module <b>%s</b> non actife
+WarningModuleNotActive= Module <b>%s</b> non actif
 WarningOnlyPermissionOfActivatedModules= Attention, seules les permissions en rapport avec les modules activés sont affichées ici. Vous pouvez activer les autres modules sur la page Accueil->Configuration->Modules
 DolibarrSetup= Installation ou mise à jour de Speedealing
 DolibarrUser= Utilisateur Speedealing
@@ -1326,4 +1326,3 @@ ExternalSiteSetup=Configuration du lien vers le site externe
 ##### Ecommerce #####
 EcommerceSiteSetup=Configuration du module Ecommerce
 DictionnaryProspectStatus=Workflow Prospects/Clients
-EcommerceSiteSetup=Configuration du module Ecommerce

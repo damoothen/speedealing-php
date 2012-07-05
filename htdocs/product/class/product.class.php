@@ -144,7 +144,7 @@ class Product extends CommonObject
 
 	//! Contains detail of stock of product into each warehouse
 	var $stock_warehouse=array();
-	
+
 	var $oldcopy;
 
 
@@ -434,7 +434,7 @@ class Product extends CommonObject
 		global $langs, $conf;
 
 		$error=0;
-		
+
 		$this->db->begin();
 
 		// Verification parametres
@@ -537,7 +537,7 @@ class Product extends CommonObject
 				if ($result < 0) { $error++; $this->errors=$interface->errors; }
 				// Fin appel triggers
 			}
-			
+
 			if (! $error && (is_object($this->oldcopy) && $this->oldcopy->ref != $this->ref))
 			{
 				// We remove directory
@@ -556,7 +556,7 @@ class Product extends CommonObject
 					}
 				}
 			}
-			
+
 			if (! $error)
 			{
 				$this->db->commit();
@@ -647,7 +647,7 @@ class Product extends CommonObject
     				    dol_syslog(get_class($this).'::delete error '.$this->error, LOG_ERR);
     				}
                 }
-                
+
                 if (! $error)
                 {
                 	// We remove directory
@@ -2449,9 +2449,12 @@ class Product extends CommonObject
 	{
 		$this->stock_reel = 0;
 
-		$sql = "SELECT reel, fk_entrepot, pmp";
-		$sql.= " FROM ".MAIN_DB_PREFIX."product_stock";
-		$sql.= " WHERE fk_product = '".$this->id."'";
+		$sql = "SELECT ps.reel, ps.fk_entrepot, ps.pmp";
+		$sql.= " FROM ".MAIN_DB_PREFIX."product_stock as ps";
+		$sql.= ", ".MAIN_DB_PREFIX."entrepot as w";
+		$sql.= " WHERE w.entity = (".getEntity('warehouse', 1).")";
+		$sql.= " AND w.rowid = ps.fk_entrepot";
+		$sql.= " AND ps.fk_product = ".$this->id;
 
 		dol_syslog(get_class($this)."::load_stock sql=".$sql);
 		$result = $this->db->query($sql);
@@ -2659,7 +2662,7 @@ class Product extends CommonObject
 
     				if (! utf8_check($file)) $file=utf8_encode($file);	// To be sure file is stored in UTF8 in memory
 
-    				if (dol_is_file($dir.$file) && preg_match('/(\.jpg|\.bmp|\.gif|\.png|\.tiff)$/i',$dir.$file))
+    				if (dol_is_file($dir.$file) && preg_match('/(\.jpg|\.bmp|\.gif|\.png|\.tiff)$/i', $dir.$file))
     				{
     					$nbphoto++;
     					$photo = $file;
@@ -2668,8 +2671,8 @@ class Product extends CommonObject
     					if ($size == 1) {   // Format vignette
     						// On determine nom du fichier vignette
     						$photo_vignette='';
-    						if (preg_match('/(\.jpg|\.bmp|\.gif|\.png|\.tiff)$/i',$photo,$regs)) {
-    							$photo_vignette=preg_replace('/'.$regs[0].'/i','',$photo)."_small".$regs[0];
+    						if (preg_match('/(\.jpg|\.bmp|\.gif|\.png|\.tiff)$/i', $photo, $regs)) {
+    							$photo_vignette=preg_replace('/'.$regs[0].'/i', '', $photo)."_small".$regs[0];
     							if (! dol_is_file($dirthumb.$photo_vignette)) $photo_vignette='';
     						}
 
@@ -2704,7 +2707,7 @@ class Product extends CommonObject
     						{
     							$return.= '<br>';
     							// On propose la generation de la vignette si elle n'existe pas et si la taille est superieure aux limites
-    							if ($photo_vignette && preg_match('/(\.bmp|\.gif|\.jpg|\.jpeg|\.png)$/i',$photo) && ($product->imgWidth > $maxWidth || $product->imgHeight > $maxHeight))
+    							if ($photo_vignette && preg_match('/(\.bmp|\.gif|\.jpg|\.jpeg|\.png)$/i', $photo) && ($product->imgWidth > $maxWidth || $product->imgHeight > $maxHeight))
     							{
     								$return.= '<a href="'.$_SERVER["PHP_SELF"].'?id='.$_GET["id"].'&amp;action=addthumb&amp;file='.urlencode($pdir.$viewfilename).'">'.img_picto($langs->trans('GenerateThumb'),'refresh').'&nbsp;&nbsp;</a>';
     							}
@@ -2791,16 +2794,16 @@ class Product extends CommonObject
 			while (($file = readdir($handle)) != false)
 			{
 				if (! utf8_check($file)) $file=utf8_encode($file);	// readdir returns ISO
-				if (dol_is_file($dir.$file))
+				if (dol_is_file($dir.$file) && preg_match('/(\.jpg|\.bmp|\.gif|\.png|\.tiff)$/i', $dir.$file))
 				{
 					$nbphoto++;
 
 					// On determine nom du fichier vignette
 					$photo=$file;
 					$photo_vignette='';
-					if (preg_match('/(\.jpg|\.bmp|\.gif|\.png|\.tiff)$/i',$photo,$regs))
+					if (preg_match('/(\.jpg|\.bmp|\.gif|\.png|\.tiff)$/i', $photo, $regs))
 					{
-						$photo_vignette=preg_replace('/'.$regs[0].'/i','',$photo).'_small'.$regs[0];
+						$photo_vignette=preg_replace('/'.$regs[0].'/i', '', $photo).'_small'.$regs[0];
 					}
 
 					$dirthumb = $dir.'thumbs/';
