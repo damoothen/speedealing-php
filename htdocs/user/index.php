@@ -49,6 +49,7 @@ if($_GET['json']=="list")
     
     try {
        $result = $object->couchAdmin->getAllUsers(true);
+	   $admins = $object->couchAdmin->getUserAdmins();
     } catch (Exception $exc) {
 		print $exc->getMessage();
     }
@@ -60,7 +61,11 @@ if($_GET['json']=="list")
     $output["iTotalDisplayRecords"]=$iTotal;
     $i=0;
     foreach($result as $aRow){
-
+		$name = substr($aRow->doc->_id,17);
+		if(isset($admins->$name))
+			$aRow->doc->admin=true;
+		else
+			$aRow->doc->admin=false;
         $output["aaData"][]=$aRow->doc;
         
     }
@@ -99,7 +104,28 @@ print'</th>';
 $obj->aoColumns[$i]->mDataProp = "name";
 $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->bSearchable = true;
-$obj->aoColumns[$i]->fnRender= $object->datatablesFnRender("name", "url");
+
+$url = strtolower(get_class($object)) . '/fiche.php?id=';
+$key = "name";
+$obj->aoColumns[$i]->fnRender= 'function(obj) {
+				var ar = [];
+				ar[ar.length] = "<img src=\"theme/' . $conf->theme . $object->fk_extrafields->ico . '\" border=\"0\" alt=\"' . $langs->trans("See " . get_class($object)) . ' : ";
+				ar[ar.length] = obj.aData.' . $key . '.toString();
+				ar[ar.length] = "\" title=\"' . $langs->trans("See " . get_class($object)) . ' : ";
+				ar[ar.length] = obj.aData.' . $key . '.toString();
+				ar[ar.length] = "\"> <a href=\"' . $url . '";
+				ar[ar.length] = obj.aData._id;
+				ar[ar.length] = "\">";
+				ar[ar.length] = obj.aData.' . $key . '.toString();
+				ar[ar.length] = "</a> ";
+				if(obj.aData.admin) {
+					ar[ar.length] = "<img src=\"theme/' . $conf->theme . '/img/redstar.png\" border=\"0\" ";
+					ar[ar.length] = "\" title=\"' . $langs->trans("SuperAdmin") . '";
+					ar[ar.length] = "\">";
+				}
+				var str = ar.join("");
+				return str;
+			}';
 $i++;
 print'<th class="essential">';
 print $langs->trans('LastName');

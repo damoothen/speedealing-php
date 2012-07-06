@@ -606,11 +606,11 @@ abstract class nosqlDocument extends CommonObject {
 
 		if ($type == "url") {
 			if (empty($url)) // default url
-				$url = DOL_URL_ROOT . '/' . strtolower(get_class($this)) . '/fiche.php?id=';
+				$url = strtolower(get_class($this)) . '/fiche.php?id=';
 
 			$rtr = 'function(obj) {
 				var ar = [];
-				ar[ar.length] = "<img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . $this->fk_extrafields->ico . '\" border=\"0\" alt=\"' . $langs->trans("See " . get_class($this)) . ' : ";
+				ar[ar.length] = "<img src=\"theme/' . $conf->theme . $this->fk_extrafields->ico . '\" border=\"0\" alt=\"' . $langs->trans("See " . get_class($this)) . ' : ";
 				ar[ar.length] = obj.aData.' . $key . '.toString();
 				ar[ar.length] = "\" title=\"' . $langs->trans("See " . get_class($this)) . ' : ";
 				ar[ar.length] = obj.aData.' . $key . '.toString();
@@ -670,7 +670,7 @@ abstract class nosqlDocument extends CommonObject {
 
 			$rtr = 'function(obj) {
 				var ar = [];
-				ar[ar.length] = "<img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . $this->fk_extrafields->ico . '\" border=\"0\" alt=\"' . $langs->trans("See " . get_class($this)) . ' : ";
+				ar[ar.length] = "<img src=\"theme/' . $conf->theme . $this->fk_extrafields->ico . '\" border=\"0\" alt=\"' . $langs->trans("See " . get_class($this)) . ' : ";
 				ar[ar.length] = obj.aData.' . $key . '.toString();
 				ar[ar.length] = "\" title=\"' . $langs->trans("See " . get_class($this)) . ' : ";
 				ar[ar.length] = obj.aData.' . $key . '.toString();

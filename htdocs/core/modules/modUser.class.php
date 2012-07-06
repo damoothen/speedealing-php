@@ -38,7 +38,7 @@ class modUser extends DolibarrModules {
 	 *
 	 *   @param      DoliDB		$db      Database handler
 	 */
-	function modUser($db) {
+	function __construct($db) {
 		global $conf;
 
 		//$this->couchdb = $db; // Just for first install
@@ -184,7 +184,7 @@ class modUser extends DolibarrModules {
 		$this->values->menus[$r]->langs = "admin";
 		$this->values->menus[$r]->position = 0;
 		$this->values->menus[$r]->usertype = 2;
-		$this->values->menus[$r]->enabled = "$user->admin";
+		$this->values->menus[$r]->enabled = '$user->admin';
 		$this->values->menus[$r]->title = "Setup";
 		$this->values->menus[$r]->fk_menu = "menu:home";
 		$r++;
@@ -194,7 +194,7 @@ class modUser extends DolibarrModules {
 		$this->values->menus[$r]->url = "/admin/system/index.php";
 		$this->values->menus[$r]->langs = "admin";
 		$this->values->menus[$r]->usertype = 2;
-		$this->values->menus[$r]->enabled = "$user->admin";
+		$this->values->menus[$r]->enabled = '$user->admin';
 		$this->values->menus[$r]->title = "SystemInfo";
 		$this->values->menus[$r]->fk_menu = "menu:home";
 		$r++;
@@ -204,7 +204,7 @@ class modUser extends DolibarrModules {
 		$this->values->menus[$r]->url = "/admin/tools/index.php";
 		$this->values->menus[$r]->langs = "admin";
 		$this->values->menus[$r]->usertype = 2;
-		$this->values->menus[$r]->enabled = "$user->admin";
+		$this->values->menus[$r]->enabled = '$user->admin';
 		$this->values->menus[$r]->title = "SystemTools";
 		$this->values->menus[$r]->fk_menu = "menu:home";
 		$r++;
@@ -214,7 +214,7 @@ class modUser extends DolibarrModules {
 		$this->values->menus[$r]->url = "/user/home.php";
 		$this->values->menus[$r]->langs = "users";
 		$this->values->menus[$r]->usertype = 2;
-		$this->values->menus[$r]->enabled = "$user->admin";
+		$this->values->menus[$r]->enabled = '$user->admin';
 		$this->values->menus[$r]->title = "MenuUsersAndGroups";
 		$this->values->menus[$r]->fk_menu = "menu:home";
 		$r++;

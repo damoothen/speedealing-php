@@ -759,9 +759,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
 
 			// Administrator
 			print '<tr><td valign="top">' . $langs->trans("Administrator") . '</td><td>';
-			if (!empty($conf->multicompany->enabled) && $fuser->admin && !$fuser->entity) {
-				print $form->textwithpicto(yn($fuser->admin), $langs->trans("SuperAdministratorDesc"), 1, "superadmin");
-			} else if ($fuser->admin) {
+			if ($fuser->admin) {
 				print $form->textwithpicto(yn($fuser->admin), $langs->trans("AdministratorDesc"), 1, "admin");
 			} else {
 				print yn($fuser->admin);
@@ -1097,56 +1095,10 @@ if (($action == 'create') || ($action == 'adduserldap')) {
 				) {
 					print $form->selectyesno('admin', $fuser->values->Administrator, 1);
 
-					if (!empty($conf->multicompany->enabled) && !$user->entity && empty($conf->global->MULTICOMPANY_TRANSVERSE_MODE)) {
-						if ($conf->use_javascript_ajax) {
-							print '<script type="text/javascript">
-									$(function() {
-										var admin = $("select[name=admin]").val();
-										if (admin == 0) {
-											$("input[name=superadmin]")
-													.attr("disabled", true)
-													.attr("checked", false);
-										}
-										if ($("input[name=superadmin]").attr("checked") == "checked") {
-											$("select[name=entity]")
-													.attr("disabled", true);
-										}
-										$("select[name=admin]").change(function() {
-											 if ( $(this).val() == 0 ) {
-											 	$("input[name=superadmin]")
-											 		.attr("disabled", true)
-											 		.attr("checked", false);
-											 	$("select[name=entity]")
-													.attr("disabled", false);
-											 } else {
-											 	$("input[name=superadmin]")
-											 		.attr("disabled", false);
-											 }
-										});
-										$("input[name=superadmin]").change(function() {
-											if ( $(this).attr("checked") == "checked" ) {
-												$("select[name=entity]")
-													.attr("disabled", true);
-											} else {
-												$("select[name=entity]")
-													.attr("disabled", false);
-											}
-										});
-									});
-								</script>';
-						}
-
-						$checked = (($fuser->values->Administrator && !$fuser->entity) ? ' checked' : '');
-						print '<input type="checkbox" name="superadmin" value="1"' . $checked . ' /> ' . $langs->trans("SuperAdministrator");
-					}
 				} else {
 					$yn = yn($fuser->values->Administrator);
 					print '<input type="hidden" name="Administrator" value="' . $fuser->values->Administrator . '">';
-					print '<input type="hidden" name="superadmin" value="' . (empty($fuser->entity) ? 1 : 0) . '">';
-					if (!empty($conf->multicompany->enabled) && empty($fuser->entity))
-						print $form->textwithpicto($yn, $langs->trans("DontDowngradeSuperAdmin"), 1, 'warning');
-					else
-						print $yn;
+					print $yn;
 				}
 				print '</td></tr>';
 			}

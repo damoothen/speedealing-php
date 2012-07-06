@@ -136,7 +136,7 @@ class User extends nosqlDocument {
 	function fetch($login) {
 		global $conf;
 
-		// Clean parameters
+		// Clean parametersadmin
 		$login = trim($login);
 
 		try {
@@ -147,8 +147,12 @@ class User extends nosqlDocument {
 
 		// Test if User is a global administrator
 		try {
-			$this->couchAdmin->getAllUsers();
-			$this->admin = true;
+			$admins = $this->couchAdmin->getUserAdmins();
+			$name = substr($login,17); // suppress org.couchdb.user:
+			if(isset($admins->$name))
+				$this->admin = true;
+			else
+				$this->admin = false;
 		} catch (Exception $e) {
 			$this->admin = false;
 		}
