@@ -214,6 +214,7 @@ if (!defined('NOREQUIREAJAX') && $conf->use_javascript_ajax)
 	require_once(DOL_DOCUMENT_ROOT . '/core/lib/ajax.lib.php'); // Need 22ko memory
 
 
+
 	
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
@@ -1544,7 +1545,7 @@ if (!function_exists("llxFooter")) {
 			<div class="sw_width">
 				<img class="sw_full" title="switch to full width" alt="" src="theme/blank.gif" />
 				<img style="display:none" class="sw_fixed" title="switch to fixed width (980px)" alt="" src="theme/blank.gif" />
-			</div>';
+			</div>
 			<?php
 			printCommonFooter();
 			?>
