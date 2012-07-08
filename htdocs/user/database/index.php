@@ -106,7 +106,7 @@ if ($action == 'commit' ) {
 if ($action == 'compact' ) {
 	if ($user->admin) {
 		$object->id = $id;
-		$object->purgeDatabase();
+		//$object->purgeDatabase(); Need Optimization
 		$object->compact();
 		$object->compactView();
 		Header("Location: index.php");
