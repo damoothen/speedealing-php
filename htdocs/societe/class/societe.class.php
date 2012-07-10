@@ -56,6 +56,7 @@ class Societe extends nosqlDocument {
 
 		try {
 			$this->fk_country = $this->couchdb->getDoc("dict:country"); //load country table
+			$this->couchdb->useDatabase('societe');
 		} catch (Exception $e) {
 			$error = "Something weird happened: " . $e->getMessage() . " (errcode=" . $e->getCode() . ")\n";
 			print $error;

@@ -33,7 +33,6 @@ class Search extends nosqlDocument {
 		$this->db = $db;
 
 		parent::__construct($db);
-
 	}
 }
 

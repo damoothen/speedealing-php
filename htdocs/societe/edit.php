@@ -63,16 +63,6 @@ $socid = GETPOST('id', 'alpha');
 if ($user->societe_id)
 	$socid = $user->societe_id;
 
-// Get object canvas (By default, this is not defined, so standard usage of dolibarr)
-/* $object->getCanvas($socid);
-  $canvas = $object->canvas?$object->canvas:GETPOST("canvas");
-  if (! empty($canvas))
-  {
-  require_once(DOL_DOCUMENT_ROOT."/core/class/canvas.class.php");
-  $objcanvas = new Canvas($db, $action);
-  $objcanvas->getCanvas('thirdparty', 'card', $canvas);
-  } */
-
 // Security check
 $result = restrictedArea($user, 'societe', $socid, '&societe', '', 'fk_soc', 'rowid', $objcanvas);
 

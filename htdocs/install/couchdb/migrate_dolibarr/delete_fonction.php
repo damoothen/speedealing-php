@@ -22,18 +22,20 @@
  * 	\brief      load data to display
  * 	\version    $Id: serverprocess.php,v 1.6 2012/01/27 16:15:05 synry63 Exp $
  */
-require_once("../../main.inc.php");
+require_once("../../../main.inc.php");
 /* Array of database columns which should be read and sent back to DataTables. Use a space where
  * you want to insert a non-database field (for example a counter or static image)
  */
 
-$couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
 
-$flush=0;
+$couchdb = clone $couch;
+$couchdb->useDatabase('demo');
+
+$flush=1;
 if($flush)
 {
     // reset old value
-    $result = $couchdb->limit(50000)->getView('unlink','target_id');
+    $result = $couchdb->limit(50000)->getView('unlink','link');
     $i=0;
     
     if(count($result->rows)==0)
