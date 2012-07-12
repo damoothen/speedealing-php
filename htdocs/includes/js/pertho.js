@@ -20,12 +20,6 @@
                 //* scroll to top
                 $().UItoTop();
             }
-            if(!jQuery.browser.mobile) {
-                //* main navigatin
-                prth_main_nav.h_nav();
-            } 
-            //* mobile navigatin
-            prth_main_nav.mobile_nav();
             //* sticky notifications (user box)
             prth_sticky_notifications.init();
             //* fancybox with title

@@ -184,7 +184,7 @@
        "Country": {
            "type": "select",
            "enable": true,
-           "dict": "dict:fk_pays",
+           "dict": "dict:country",
            "default": "substr($langs->defaultlang,3,5)"
        },
        "State": {

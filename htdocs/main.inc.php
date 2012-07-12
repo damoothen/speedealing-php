@@ -215,6 +215,8 @@ if (!defined('NOREQUIREAJAX') && $conf->use_javascript_ajax)
 
 
 
+
+
 	
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
@@ -497,7 +499,7 @@ if (!defined('NOLOGIN')) {
 		$_SESSION["dol_screenheight"] = isset($dol_screenheight) ? $dol_screenheight : '';
 		$_SESSION["dol_company"] = $conf->global->MAIN_INFO_SOCIETE_NOM;
 		$_SESSION["dol_entity"] = $conf->entity;
-		$user->dol_syslog("This is a new started user session. _SESSION['dol_login']=" . $_SESSION["dol_login"] . ' Session id=' . session_id());
+		dol_syslog("This is a new started user session. _SESSION['dol_login']=" . $_SESSION["dol_login"] . ' Session id=' . session_id());
 
 		$db->begin();
 
@@ -1161,6 +1163,17 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 								?>
 							</div>
 						</div>
+						<script>
+							$(document).ready(function() {
+								if(!jQuery.browser.mobile) {
+									//* main navigatin
+									prth_main_nav.h_nav();
+								} else {
+									//* mobile navigatin
+									prth_main_nav.mobile_nav();
+								}
+							});
+						</script>
 						<!--End Menu-->
 			<?php endif; ?>
 

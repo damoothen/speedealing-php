@@ -42,9 +42,8 @@ class User extends nosqlDocument {
 	public $element = 'user';
 	public $table_element = 'user';
 	protected $ismultientitymanaged = 1; // 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
-	var $couchAdmin;
-	var $couchdb;
-	var $id = 0;
+	protected $couchAdmin;
+	var $id;
 	var $ldap_sid;
 	var $search_sid;
 	var $nom;  // TODO deprecated
@@ -107,7 +106,7 @@ class User extends nosqlDocument {
 		}
 
 		$this->couchAdmin = new couchAdmin($this->couchdb);
-		$this->couchdb->useDatabase("_users");
+		$this->useDatabase("_users");
 
 
 		// Preference utilisateur
