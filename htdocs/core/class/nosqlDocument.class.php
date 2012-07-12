@@ -576,7 +576,7 @@ abstract class nosqlDocument extends CommonObject {
 		$rtr = "";
 
 		if ($aRow->enable) {
-			$rtr.= '<div class="formRow">' . "\n";
+			$rtr.= '<div class="formRow elVal">' . "\n";
 			$rtr.= '<label for="' . $key . '">' . $langs->trans($key) . '</label>' . "\n";
 			switch ($aRow->type) {
 				case "textarea" :

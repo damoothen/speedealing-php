@@ -437,8 +437,8 @@ if (empty($reshook)) {
 				if (!$error && !count($errors)) {
 					?>
 					<script language="javascript">    
-							//code to close fancy box
-							parent.$.fancybox.close();
+						//code to close fancy box
+						parent.$.fancybox.close();
 					</script>
 					<?php
 					exit;
@@ -1030,7 +1030,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 			})
 		</script>
 
-		<form id="simple_wizard" class="stepy-wizzard nice" enctype="multipart/form-data" action="<?php echo $_SERVER["PHP_SELF"] . '?id=' . $object->id; ?>" method="POST" name="formsoc">
+		<form id="validate_wizard" class="stepy-wizzard nice" enctype="multipart/form-data" action="<?php echo $_SERVER["PHP_SELF"] . '?id=' . $object->id; ?>" method="POST" name="formsoc">
 			<input type="hidden" name="action" value="update">
 			<input type="hidden" name="token" value="<?php echo $_SESSION['newtoken']; ?>">
 			<input type="hidden" name="id" value="<?php echo $object->id; ?>">
@@ -1075,16 +1075,41 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
 			<script>
 				$(document).ready(function() {
-					$('#simple_wizard').stepy({
-						titleClick	: true
+					$('#validate_wizard').stepy({
+						backLabel	: 'Previous',
+						block		: true,
+						errorImage	: true,
+						nextLabel	: 'Next',
+						titleClick	: true,
+						validate	: true
 					});
-					$('.stepy-titles').each(function(){
-						$(this).children('li').each(function(index){
-							var myIndex = index + 1
-							$(this).append('<span class="stepNb">'+myIndex+'</span>');
-						})
-					})
-				});
+					$('#validate_wizard').validate({
+						errorPlacement: function(error, element) {
+							error.appendTo( element.closest("div.elVal") );
+						}, highlight: function(element) {
+							$(element).closest('div.elVal').addClass("form-field error");
+						}, unhighlight: function(element) {
+							$(element).closest('div.elVal').removeClass("form-field error");
+						}, rules: {
+		<?php foreach ($object->fk_extrafields->fields as $key => $aRow) : ?>
+			<?php if (isset($aRow->validate)) : ?>
+				<?php echo "'" . $key . "'"; ?> : {
+				<?php foreach ($aRow->validate as $idx => $row) : ?>
+					<?php echo $idx . " : " . $row; ?>,
+				<?php endforeach; ?>
+									},
+			<?php endif; ?>
+		<?php endforeach; ?>
+				},
+				ignore				: ':hidden'
+			});
+			$('.stepy-titles').each(function(){
+				$(this).children('li').each(function(index){
+					var myIndex = index + 1
+					$(this).append('<span class="stepNb">'+myIndex+'</span>');
+				})
+			})
+		});
 			</script>
 
 			<?php
