@@ -581,6 +581,7 @@ abstract class nosqlDocument extends CommonObject {
 			switch ($aRow->type) {
 				case "textarea" :
 					$rtr.= '<textarea maxlength="' . $aRow->length . '" class="' . $cssClass . '" id="' . $key . '" name="' . $key . '" cols="1" rows="4">' . $this->values->$key . '</textarea>';
+					$rtr.= '<script> $(document).ready(function() { $("#'.$key.'").counter({ goal: 120 });});	</script>';
 					break;
 				case "select" :
 					$rtr.= '<select data-placeholder="' . $langs->trans($key) . '&hellip;" class="chzn-select" id="' . $key . '" name="' . $key . '" >';
