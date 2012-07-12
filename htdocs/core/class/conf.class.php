@@ -51,8 +51,8 @@ class Conf extends nosqlDocument {
 	//! Used to store current currency
 	public $currency;
 	//! Used to store current css (from theme)
-	public $theme;		// Contains current theme ("eldy", "auguria", ...)
-	public $css;		  // Contains full path of css page ("/theme/eldy/style.css.php", ...)
+	public $theme;  // Contains current theme ("eldy", "auguria", ...)
+	public $css;	// Contains full path of css page ("/theme/eldy/style.css.php", ...)
 	//! Used to store current menu handlers
 	public $top_menu;
 	public $smart_menu;
@@ -119,7 +119,7 @@ class Conf extends nosqlDocument {
 	function setValues() {
 		global $conf;
 
-		$this->dol_syslog(get_class($this) . "::setValues");
+		dol_syslog(get_class($this) . "::setValues", LOG_INFO, get_class($this));
 
 		// Avoid warning if not defined
 		if (empty($this->db->dolibarr_main_db_encryption))
@@ -137,7 +137,7 @@ class Conf extends nosqlDocument {
 		$result = dol_getcache("const");
 		if (is_object($result))
 			$found = true;
-		
+
 
 		if (!$found) {
 			$result = array();
@@ -172,7 +172,7 @@ class Conf extends nosqlDocument {
 					// If this is constant for a sms engine
 					elseif (preg_match('/^MAIN_MODULE_([A-Z_]+)_SMS$/i', $key, $reg)) {
 						$modulename = strtolower($reg[1]);
-						$this->sms_engine_modules[$modulename] = $modulename;	// Add this module in list of modules that provide SMS
+						$this->sms_engine_modules[$modulename] = $modulename; // Add this module in list of modules that provide SMS
 					}
 					// If this is constant for all generic part activated by a module
 					elseif (preg_match('/^MAIN_MODULE_([A-Z_]+)_([A-Z]+)$/i', $key, $reg)) {
@@ -239,6 +239,7 @@ class Conf extends nosqlDocument {
 			$this->global->MAIN_MENU_SMARTPHONE = "eldy_backoffice.php"; // Use eldy by default because smartphone does not work on all phones
 		if (empty($this->global->MAIN_MENUFRONT_SMARTPHONE))
 			$this->global->MAIN_MENUFRONT_SMARTPHONE = "eldy_frontoffice.php"; // Ue eldy by default because smartphone does not work on all phones
+
 
 			
 // Variable globales LDAP
@@ -336,7 +337,8 @@ class Conf extends nosqlDocument {
 		if (empty($this->global->USER_PASSWORD_GENERATED))
 			$this->global->USER_PASSWORD_GENERATED = 'standard'; // Default password generator
 		if (empty($this->global->MAIN_UMASK))
-			$this->global->MAIN_UMASK = '0664';		 // Default mask
+			$this->global->MAIN_UMASK = '0664';   // Default mask
+
 
 			
 // conf->use_javascript_ajax
@@ -355,6 +357,7 @@ class Conf extends nosqlDocument {
 		// conf->global->COMPTA_MODE = Option des modules Comptabilites (simple ou expert). Defini le mode de calcul des etats comptables (CA,...)
 		if (empty($this->global->COMPTA_MODE))
 			$this->global->COMPTA_MODE = 'RECETTES-DEPENSES';  // By default. Can be 'RECETTES-DEPENSES' ou 'CREANCES-DETTES'
+
 
 			
 // conf->liste_limit = constante de taille maximale des listes
@@ -394,8 +397,8 @@ class Conf extends nosqlDocument {
 			$this->mailing->email_from = $this->global->MAILING_EMAIL_FROM;
 
 		// Format for date (used by default when not found or searched in lang)
-		$this->format_date_short = "%d/%m/%Y";			// Format of day with PHP/C tags (strftime functions)
-		$this->format_date_short_java = "dd/MM/yyyy";	 // Format of day with Java tags
+		$this->format_date_short = "%d/%m/%Y";   // Format of day with PHP/C tags (strftime functions)
+		$this->format_date_short_java = "dd/MM/yyyy";  // Format of day with Java tags
 		$this->format_hour_short = "%H:%M";
 		$this->format_hour_short_duration = "%H:%M";
 		$this->format_date_text_short = "%d %b %Y";
@@ -456,10 +459,10 @@ class Conf extends nosqlDocument {
 
 
 		// Define menu manager in setup
-		if (empty($user->societe_id)) {	// If internal user or not defined
+		if (empty($user->societe_id)) { // If internal user or not defined
 			$this->top_menu = (empty($this->global->MAIN_MENU_STANDARD_FORCED) ? $this->global->MAIN_MENU_STANDARD : $this->global->MAIN_MENU_STANDARD_FORCED);
 			$this->smart_menu = (empty($this->global->MAIN_MENU_SMARTPHONE_FORCED) ? $this->global->MAIN_MENU_SMARTPHONE : $this->global->MAIN_MENU_SMARTPHONE_FORCED);
-		} else {						// If external user
+		} else {	  // If external user
 			$this->top_menu = (empty($this->global->MAIN_MENUFRONT_STANDARD_FORCED) ? $this->global->MAIN_MENUFRONT_STANDARD : $this->global->MAIN_MENUFRONT_STANDARD_FORCED);
 			$this->smart_menu = (empty($this->global->MAIN_MENUFRONT_SMARTPHONE_FORCED) ? $this->global->MAIN_MENUFRONT_SMARTPHONE : $this->global->MAIN_MENUFRONT_SMARTPHONE_FORCED);
 		}

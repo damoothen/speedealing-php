@@ -212,8 +212,18 @@ function dol_shutdown() {
  * 									On Linux   LOG_ERR=3, LOG_WARNING=4, LOG_INFO=6, LOG_DEBUG=7
  *  @return	void
  */
-function dol_syslog($message, $level = LOG_INFO) {
-	global $conf, $user, $langs, $_REQUEST;
+function dol_syslog($message, $level = LOG_INFO, $module = "undefined") {
+	global $conf, $user, $langs, $_REQUEST, $couch;
+
+	$logdb = clone $couch;
+	$logdb-> useDatabase("syslog");
+	
+	$log = new stdClass();
+	$log->module = $module;
+
+	$log->msg = $message;
+	$log->level = $level;
+
 
 	// If adding log inside HTML page is required
 	if (!empty($_REQUEST['logtohtml']) && !empty($conf->global->MAIN_LOGTOHTML)) {
@@ -228,19 +238,25 @@ function dol_syslog($message, $level = LOG_INFO) {
 	if ($level == LOG_ERR) {
 		if (is_object($langs)) {
 			$langs->load("errors");
-			if ($message != $langs->trans($message))
+			if ($message != $langs->trans($message)) {
 				$message = $langs->trans($message);
+				$log->msg = $langs->trans($message);
+			}
 		}
 	}
 
 	// Add page/script name to log message
 	$script = isset($_SERVER['PHP_SELF']) ? basename($_SERVER['PHP_SELF'], '.php') . ' ' : '';
+	$log->script = $script;
 	$message = $script . $message;
 
 	// Add user to log message
 	$login = 'nologin';
 	if (is_object($user) && $user->id)
 		$login = $user->login;
+
+	$log->login = $login;
+
 	$message = sprintf("%-8s", $login) . " " . $message;
 
 	// Check if log is to a file (SYSLOG_FILE_ON defined)
@@ -264,10 +280,18 @@ function dol_syslog($message, $level = LOG_INFO) {
 			else if (!empty($_SERVER['LOGNAME']))
 				$ip = '???@' . $_SERVER['LOGNAME']; // This is when PHP session is ran outside a web server, like from Linux command line (Not always defined, but usefull if OS defined it).
 
+			$log->ip = $ip;
+
 			$liblevelarray = array(LOG_ERR => 'ERROR', LOG_WARNING => 'WARN', LOG_INFO => 'INFO', LOG_DEBUG => 'DEBUG');
 			$liblevel = $liblevelarray[$level];
 			if (!$liblevel)
 				$liblevel = 'UNDEF';
+
+			$log->liblevel = $liblevel;
+			$log->tms = dol_now();
+
+			$logdb->storeDoc($log); // save login db
+
 
 			$message = dol_print_date(time(), "%Y-%m-%d %H:%M:%S") . " " . sprintf("%-5s", $liblevel) . " " . sprintf("%-15s", $ip) . " " . $message;
 
@@ -708,7 +732,7 @@ function dol_format_address($object) {
 		if ($object->zip)
 			$ret .= ', ' . $object->zip;
 	}
-	else {	// Other: zip town, state
+	else { // Other: zip town, state
 		$ret .= ($ret ? "\n" : '' ) . $object->zip;
 		$ret .= ' ' . $object->town;
 		if ($object->state && in_array($object->country_code, $countriesusingstate)) {
@@ -801,10 +825,14 @@ function dol_print_date($time, $format = '', $tzoutput = 'tzserver', $outputlang
 
 
 
+
+
 		
 // If date undefined or "", we return ""
 	if (dol_strlen($time) == 0)
 		return '';  // $time=0 allowed (it means 01/01/1970 00:00:00)
+
+
 
 
 
@@ -1275,7 +1303,7 @@ function dol_user_country() {
  */
 function dol_print_address($address, $htmlid, $mode, $id) {
 	global $conf, $user, $langs;
-	
+
 	$rtr = "";
 
 	if ($address) {
@@ -2131,7 +2159,7 @@ function dol_print_error($db = '', $error = '') {
 			$out.="<b>" . $langs->trans("ReturnCodeLastAccessInError") . ":</b> " . ($db->lasterrno() ? $db->lasterrno() : $langs->trans("ErrorNoRequestInError")) . "<br>\n";
 			$out.="<b>" . $langs->trans("InformationLastAccessInError") . ":</b> " . ($db->lasterror() ? $db->lasterror() : $langs->trans("ErrorNoRequestInError")) . "<br>\n";
 			$out.="<br>\n";
-		} else {	// Mode CLI
+		} else { // Mode CLI
 			$out.='> ' . $langs->transnoentities("DatabaseTypeManager") . ":\n" . $db->type . "\n";
 			$out.='> ' . $langs->transnoentities("RequestLastAccessInError") . ":\n" . ($db->lastqueryerror() ? $db->lastqueryerror() : $langs->trans("ErrorNoRequestInError")) . "\n";
 			$out.='> ' . $langs->transnoentities("ReturnCodeLastAccessInError") . ":\n" . ($db->lasterrno() ? $db->lasterrno() : $langs->trans("ErrorNoRequestInError")) . "\n";
@@ -2153,7 +2181,7 @@ function dol_print_error($db = '', $error = '') {
 			$msg = $langs->trans($msg);
 			if ($_SERVER['DOCUMENT_ROOT']) {  // Mode web
 				$out.="<b>" . $langs->trans("Message") . ":</b> " . $msg . "<br>\n";
-			} else {	// Mode CLI
+			} else { // Mode CLI
 				$out.='> ' . $langs->transnoentities("Message") . ":\n" . $msg . "\n";
 			}
 			$syslog.=", msg=" . $msg;
@@ -2682,6 +2710,8 @@ function price2num($amount, $rounding = '', $alreadysqlnb = 0) {
 			$nbofdectoround = 2;  // For admin info page
 
 
+
+
 			
 //print "RR".$amount.' - '.$nbofdectoround.'<br>';
 		if (dol_strlen($nbofdectoround))
@@ -3046,6 +3076,8 @@ function dol_mkdir($dir) {
 			$ccdir = $cdir[$i];
 		if (preg_match("/^.:$/", $ccdir, $regs))
 			continue; // Si chemin Windows incomplet, on poursuit par rep suivant
+
+
 
 
 

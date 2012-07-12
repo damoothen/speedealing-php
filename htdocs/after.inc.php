@@ -58,7 +58,7 @@ if (! defined('NOREQUIREDB'))
 	}
 
 	// Here we read database (llx_const table) and define $conf->global->XXX var.
-	$conf->loadDatabase();
+	$conf->useDatabase();
 	$conf->setValues();
 }
 
