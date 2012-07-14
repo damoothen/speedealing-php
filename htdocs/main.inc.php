@@ -886,6 +886,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 				print '<script type="text/javascript" src="includes/lib/chosen/chosen.jquery.min.js"></script>' . "\n";
 				print '<script type="text/javascript" src="includes/js/jquery.inputmask.js"></script>' . "\n";
 				print '<script type="text/javascript" src="includes/js/jquery.inputmask.extentions.js"></script>' . "\n";
+				print '<script type="text/javascript" src="includes/js/ui.spinner.js"></script>' . "\n";
 				
 				
 			}

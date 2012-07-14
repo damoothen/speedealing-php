@@ -425,13 +425,13 @@ abstract class nosqlDocument extends CommonObject {
 						"oTableTools": { "sSwfPath": "<?php echo DOL_URL_ROOT . '/includes/jquery/plugins/datatables/extras/TableTools/media/swf/copy_csv_xls.swf'; ?>"},
 						//if($obj->oTableTools->aButtons==null)
 						//$obj->oTableTools->aButtons = array("xls");
-																																																													    
+																																																															    
 						"oColVis": { "buttonText" : 'Voir/Cacher',
 							"aiExclude": [0,1] // Not cacheable _id and name
 						},
 						//$obj->oColVis->bRestore = true;
 						//$obj->oColVis->sAlign = 'left';
-																																																												            
+																																																														            
 						// Avec export Excel
 		<?php if (!empty($obj->sDom)) : ?>
 							//"sDom": "Cl<fr>t<\"clear\"rtip>",
@@ -460,7 +460,7 @@ abstract class nosqlDocument extends CommonObject {
 		<?php if (isset($obj->fnRowCallback)): ?>
 							"fnRowCallback": <?php echo $obj->fnRowCallback; ?>,
 		<?php endif; ?>
-																																												
+																																														
 		<?php if (!defined('NOLOGIN')) : ?>
 			<?php if (isset($obj->fnDrawCallback)): ?>
 									"fnDrawCallback": <?php echo $obj->fnDrawCallback; ?>,
@@ -485,7 +485,7 @@ abstract class nosqlDocument extends CommonObject {
 												"tooltip": "Cliquer pour éditer...",
 												"indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
 												"placeholder" : ""
-																																																																																																																								                
+																																																																																																																												                
 											} );
 											$("td.select", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
 												"callback": function( sValue, y ) {
@@ -504,7 +504,7 @@ abstract class nosqlDocument extends CommonObject {
 												"tooltip": "Cliquer pour éditer...",
 												"indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
 												"placeholder" : ""
-																																																																																																																								                
+																																																																																																																												                
 											} );
 										}
 			<?php endif; ?>
@@ -577,7 +577,7 @@ abstract class nosqlDocument extends CommonObject {
 
 		if ($aRow->enable) {
 			$rtr.= '<div class="formRow elVal">' . "\n";
-			
+
 			$label = $langs->transcountry($key, $this->values->Country);
 			if (!$label)
 				$label = $langs->trans($key);
@@ -622,11 +622,22 @@ abstract class nosqlDocument extends CommonObject {
 					$rtr.= '</select>';
 
 					break;
+				case "checkbox" :
+					if(isset($this->values->$key))
+						$value = $this->values->$key;
+					else
+						$value = $aRow->default;
+					
+					if($value)
+						$rtr.= '<input type="checkbox" id="' . $key . '" name="' . $key . '" checked="checked"/>';
+					else
+						$rtr.= '<input type="checkbox" id="' . $key . '" name="' . $key . '" />';
+					break;
 				default :
 					if (isset($aRow->mask))
-						$rtr.= '<input type="text" maxlength="' . $aRow->length . '" id="' . $key . '" name="' . $key . '" value="' . $this->values->$key . '" class="input-text ' . $cssClass . '" mask="' . $key . '"/>' . "\n";
+						$rtr.= '<input type="text" maxlength="' . $aRow->length . '" id="' . $key . '" name="' . $key . '" value="' . $this->values->$key . '" class="input-text ' . $aRow->css . " " . $cssClass . '" mask="' . $key . '"/>' . "\n";
 					else
-						$rtr.= '<input type="text" maxlength="' . $aRow->length . '" id="' . $key . '" name="' . $key . '" value="' . $this->values->$key . '" class="input-text ' . $cssClass . '"/>' . "\n";
+						$rtr.= '<input type="text" maxlength="' . $aRow->length . '" id="' . $key . '" name="' . $key . '" value="' . $this->values->$key . '" class="input-text ' . $aRow->css . " " . $cssClass . '"/>' . "\n";
 			}
 			$rtr.= '</div>' . "\n";
 		}

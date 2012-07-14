@@ -170,7 +170,7 @@ print '*/'."\n";
 /* ============================================================================== */
 
 
-input:focus, textarea:focus, button:focus, select:focus {
+/*input:focus, textarea:focus, button:focus, select:focus {
     box-shadow: 0 0 4px #8091BF;
 }
 input, input.flat, textarea, textarea.flat, form.flat select, select.flat {
@@ -267,7 +267,7 @@ th .button {
 }
 .valignmiddle {
 	vertical-align: middle;
-}
+}*/
 
 /* ============================================================================== */
 /* Styles to hide objects                                                         */

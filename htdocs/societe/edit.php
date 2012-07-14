@@ -1039,14 +1039,14 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 			<?php endif; ?>
 
 			<?php for ($i = 0; $i < count($object->fk_extrafields->place); $i++): ?>
-				<fieldset title="Personal info">
-					<legend>Lorem ipsum dolor&hellip;</legend>
+				<fieldset title="<?php echo $langs->trans($object->fk_extrafields->block[$i]); ?>">
+					<legend><?php echo $langs->trans($object->fk_extrafields->block[$i]."Resume"); ?></legend>
 
 					<div class="row">
 						<div class="two columns">
 							<div class="form_legend">
-								<h4>Personal details</h4>
-								<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent pharetra metus non nisi feugiat porta&hellip;</p>
+								<h4><?php echo $langs->trans($object->fk_extrafields->block[$i]); ?></h4>
+								<p><?php echo $langs->trans($object->fk_extrafields->block[$i]."Legend"); ?></p>
 							</div>
 						</div>
 						<div class="ten columns">
@@ -1106,6 +1106,9 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 		<?php foreach ($object->fk_extrafields->fields as $key => $aRow) : ?>
 			<?php if (isset($aRow->mask)) : ?>
 						$("#<?php echo $key; ?>").inputmask("<?php echo $aRow->mask; ?>");
+			<?php endif; ?>
+			<?php if (isset($aRow->spinner)) : ?>
+						$("#<?php echo $key; ?>").spinner(<?php echo $aRow->spinner; ?>);
 			<?php endif; ?>
 		<?php endforeach; ?>
 			$('.stepy-titles').each(function(){
