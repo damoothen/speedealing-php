@@ -80,7 +80,11 @@
        "ThirdPartyName": {
            "type": "input",
            "length": 60,
-           "enable": true
+           "enable": true,
+           "validate": {
+               "required": true,
+               "minlength": 3
+           }
        },
        "Prefix": {
            "type": "text",

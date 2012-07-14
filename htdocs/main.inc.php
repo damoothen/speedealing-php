@@ -883,6 +883,11 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 				print '<script type="text/javascript" src="includes/jquery/plugins/fileupload/js/jquery.fileupload-fp.js"></script>' . "\n";
 				print '<script type="text/javascript" src="includes/jquery/plugins/fileupload/js/jquery.fileupload-ui.js"></script>' . "\n";
 				print '<script type="text/javascript" src="includes/jquery/plugins/fileupload/js/jquery.fileupload-jui.js"></script>' . "\n";
+				print '<script type="text/javascript" src="includes/lib/chosen/chosen.jquery.min.js"></script>' . "\n";
+				print '<script type="text/javascript" src="includes/js/jquery.inputmask.js"></script>' . "\n";
+				print '<script type="text/javascript" src="includes/js/jquery.inputmask.extentions.js"></script>' . "\n";
+				
+				
 			}
 			// jQuery DataTables
 			print '<script type="text/javascript" src="includes/jquery/plugins/datatables/media/js/jquery.dataTables.min' . $ext . '"></script>' . "\n";
@@ -939,6 +944,8 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 			print '<link rel="stylesheet" href="theme/pertho_sample/lib/fullcalendar/fullcalendar.css" media="all" />';
 			print '<!-- tooltips -->';
 			print '<link rel="stylesheet" href="theme/pertho_sample/lib/qtip2/jquery.qtip.min.css" />';
+			print '<!-- chosen (select element extended) -->';
+			print '<link rel="stylesheet" href="theme/pertho_sample/lib/chosen/chosen.css" media="all" />';
 			print '<!-- datatables -->';
 			print '<link rel="stylesheet" href="theme/pertho_sample/lib/datatables/css/demo_table_jui.css" media="all" />';
 			print '<!-- main styles -->';

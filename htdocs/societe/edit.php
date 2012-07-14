@@ -1103,12 +1103,18 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 				},
 				ignore				: ':hidden'
 			});
+		<?php foreach ($object->fk_extrafields->fields as $key => $aRow) : ?>
+			<?php if (isset($aRow->mask)) : ?>
+						$("#<?php echo $key; ?>").inputmask("<?php echo $aRow->mask; ?>");
+			<?php endif; ?>
+		<?php endforeach; ?>
 			$('.stepy-titles').each(function(){
 				$(this).children('li').each(function(index){
 					var myIndex = index + 1
 					$(this).append('<span class="stepNb">'+myIndex+'</span>');
 				})
 			})
+			$(".chzn-select").chosen();
 		});
 			</script>
 
