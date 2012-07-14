@@ -603,7 +603,7 @@ abstract class nosqlDocument extends CommonObject {
 					}
 
 					foreach ($aRow->values as $idx => $row) {
-						if ($aRow->enable) {
+						if ($row->enable) {
 							$rtr.= '<option value="' . $idx . '"';
 
 							if ($this->values->$key == $idx)
