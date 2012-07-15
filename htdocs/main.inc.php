@@ -762,7 +762,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 			<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 			<meta name="robots" content="noindex,nofollow" />
 			<meta name="author" content="Speedealing Development Team" />
-			<link rel="shortcut icon" type="image/x-icon" href="theme/<?php echo $conf->theme; ?>/img/favicon.ico"/>
+			<link rel="shortcut icon" type="image/x-icon" href="favicon.ico"/>
 			<?php
 			// Displays title
 			$appli = 'Speedealing';
@@ -974,8 +974,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 		</style>';
 
 			print '<!-- Favicons and the like (avoid using transparent .png) -->';
-			print '<link rel="shortcut icon" type="image/x-icon" href="theme/favicon.ico"/>' . "\n";
-			print '<link rel="apple-touch-icon-precomposed" href="theme/icon.png" />';
+			print '<link rel="apple-touch-icon-precomposed" href="icon.png" />';
 
 			print '<!--[if lt IE 9]>';
 			print '<link rel="stylesheet" href="foundation/stylesheets/ie.css">';
@@ -1077,7 +1076,7 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 		if (!empty($mysoc->logo_mini) && is_readable($conf->mycompany->dir_output . '/logos/thumbs/' . $mysoc->logo_mini))
 			$urllogo = DOL_URL_ROOT . '/viewimage.php?cache=1&amp;modulepart=companylogo&amp;file=' . urlencode('thumbs/' . $mysoc->logo_mini);
 		else
-			$urllogo = DOL_URL_ROOT . '/theme/speedealing_logo.png';
+			$urllogo = DOL_URL_ROOT . 'logo.png';
 		print '<a href="' . DOL_URL_ROOT . '/index.php?idmenu=menu:home"><img src="' . $urllogo . '" alt="' . $conf->global->MAIN_INFO_SOCIETE_NOM . '" title="' . $conf->global->MAIN_INFO_SOCIETE_NOM . '"/></a>';
 		?>
 								</div>
