@@ -130,7 +130,7 @@ foreach ($modulesdir as $dir) {
 		}
 		closedir($handle);
 	} else {
-		$object->dol_syslog("htdocs/admin/modules.php: Failed to open directory " . $dir . ". See permission and open_basedir option.", LOG_WARNING);
+		dol_syslog("htdocs/admin/modules.php: Failed to open directory " . $dir . ". See permission and open_basedir option.", LOG_WARNING);
 	}
 }
 

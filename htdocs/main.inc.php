@@ -1076,7 +1076,7 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 		if (!empty($mysoc->logo_mini) && is_readable($conf->mycompany->dir_output . '/logos/thumbs/' . $mysoc->logo_mini))
 			$urllogo = DOL_URL_ROOT . '/viewimage.php?cache=1&amp;modulepart=companylogo&amp;file=' . urlencode('thumbs/' . $mysoc->logo_mini);
 		else
-			$urllogo = DOL_URL_ROOT . 'logo.png';
+			$urllogo = 'logo.png';
 		print '<a href="' . DOL_URL_ROOT . '/index.php?idmenu=menu:home"><img src="' . $urllogo . '" alt="' . $conf->global->MAIN_INFO_SOCIETE_NOM . '" title="' . $conf->global->MAIN_INFO_SOCIETE_NOM . '"/></a>';
 		?>
 								</div>

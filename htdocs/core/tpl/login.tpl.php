@@ -58,7 +58,7 @@ print '<!-- HTTP_USER_AGENT = '.$_SERVER['HTTP_USER_AGENT'].' -->
                 <div class="eight columns centered">
                     <div class="login_box">
                         <div class="lb_content">
-                            <div class="login_logo"><img src="<?php echo DOL_URL_ROOT."/theme/speedealing_logo.png"; ?>" width="140" alt="" /></div>
+                            <div class="login_logo"><img src="logo.png" width="140" alt="" /></div>
                                 <div class="cf">
                                     <h2 class="lb_ribbon lb_blue"><span>Login to your account</span><span style="display:none">New password</span></h2>
                                     <a href="#" class="right small sl_link">
