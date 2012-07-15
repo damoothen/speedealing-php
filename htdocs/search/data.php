@@ -36,7 +36,7 @@ $sParam = $_GET['q'];
 if (!$sParam)
 	exit;
 
-$object->loadDatabase('societe');
+$object->useDatabase('societe');
 $result = $object->getIndexedView("list", array('limit' => 6,
 	'q' => $sParam . "*"
 		));

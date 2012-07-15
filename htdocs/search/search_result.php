@@ -30,7 +30,7 @@ require('../main.inc.php');
 require_once(DOL_DOCUMENT_ROOT . "/search/class/search.class.php");
 
 $object = new Search($db);
-$object->loadDatabase('societe');
+$object->useDatabase('societe');
 
 $sParam = $_POST[search_item];
 
