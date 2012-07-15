@@ -48,8 +48,8 @@ if($_GET['json']=="list")
     );
     
     try {
-       $result = $object->couchAdmin->getAllUsers(true);
-	   $admins = $object->couchAdmin->getUserAdmins();
+       $result = $object->getAllUsers(true);
+	   $admins = $object->getUserAdmins();
     } catch (Exception $exc) {
 		print $exc->getMessage();
     }

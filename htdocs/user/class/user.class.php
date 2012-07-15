@@ -147,8 +147,8 @@ class User extends nosqlDocument {
 		// Test if User is a global administrator
 		try {
 			$admins = $this->couchAdmin->getUserAdmins();
-			$name = substr($login,17); // suppress org.couchdb.user:
-			if(isset($admins->$name))
+			$name = substr($login, 17); // suppress org.couchdb.user:
+			if (isset($admins->$name))
 				$this->admin = true;
 			else
 				$this->admin = false;
@@ -394,7 +394,7 @@ class User extends nosqlDocument {
 		$object = new DolibarrModules($this->db);
 
 		try {
-			$result = $object->getView("default_right",'',true);
+			$result = $object->getView("default_right", '', true);
 			foreach ($this->values->roles as $aRow) // load groups
 				$groups[] = $object->couchdb->getDoc("group:" . $aRow);
 		} catch (Exception $exc) {
@@ -415,9 +415,8 @@ class User extends nosqlDocument {
 
 				if (count($perm) == 1)
 					$this->rights->$rights_class->$perm[0] = $aRow->value->Status;
-				elseif(count($perm) == 2)
-				{
-					if(isset($this->rights->$rights_class->$perm[0]))
+				elseif (count($perm) == 2) {
+					if (isset($this->rights->$rights_class->$perm[0]))
 						$this->rights->$rights_class->$perm[0]->$perm[1] = $aRow->value->Status;
 					else
 						$this->rights->$rights_class->$perm[0]->$perm[1] = $aRow->value->Status;
@@ -444,9 +443,9 @@ class User extends nosqlDocument {
 				}
 			}
 		}
-		
+
 		//print_r($this->rights);
-		
+
 		if (!$moduletag) {
 			// Si module etait non defini, alors on a tout charge, on peut donc considerer
 			// que les droits sont en cache (car tous charges) pour cet instance de user
@@ -1496,6 +1495,14 @@ class User extends nosqlDocument {
 			$this->error = $this->db->error();
 			return -1;
 		}
+	}
+
+	function getAllUsers($include_docs) {
+		return $this->couchAdmin->getAllUsers($include_docs);
+	}
+
+	function getUserAdmins() {
+		return $this->couchAdmin->getUserAdmins();
 	}
 
 }

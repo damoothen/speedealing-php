@@ -73,10 +73,10 @@ if (!empty($_COOKIE[$sessiontimeout]))
 session_name($sessionname);
 session_destroy();
 
-if (preg_match('/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i', $_SERVER["SERVER_NAME"], $regs))
-	setcookie('AuthSession', '', 1, '/', "." . $regs["domain"]); // destroy couchdb cookie
-else
-	setcookie('AuthSession', '', 1, '/'); // localhost
+//if (preg_match('/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i', $_SERVER["SERVER_NAME"], $regs))
+//	setcookie('AuthSession', '', 1, '/', "." . $regs["domain"]); // destroy couchdb cookie
+//else
+setcookie('AuthSession', '', 1, '/');
 
 dol_syslog("End of session " . $sessionname);
 
