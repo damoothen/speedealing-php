@@ -70,7 +70,7 @@ try {
 				foreach ($result->rows AS $aRow) :
 					?>
 					<li>
-						<a href="societe/fiche?id=<?php echo $aRow->value->_id;?>"><?php echo $aRow->value->ThirdPartyName . " (" . $langs->trans($aRow->value->class) . ")"; ?></a>
+						<a href="societe/fiche.php?id=<?php echo $aRow->value->_id;?>"><?php echo $aRow->value->ThirdPartyName . " (" . $langs->trans($aRow->value->class) . ")"; ?></a>
 						<p><?php echo $aRow->value->Address; ?> <?php echo $aRow->value->Zip; ?> <?php echo $aRow->value->Town; ?></br>
 							<?php echo "RCS : ".$aRow->value->SIREN; ?> <?php echo $aRow->value->CustomerCode; ?></br>
 							<?php echo $aRow->value->Phone; ?> <?php echo $aRow->value->Mail; ?></p>
