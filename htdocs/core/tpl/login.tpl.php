@@ -31,12 +31,13 @@ print '<head>
 <meta name="robots" content="noindex,nofollow" />
 <meta name="author" content="Speedealing Development Team" />
 <meta charset="utf-8" />
+<base href="'. DOL_URL_ROOT . '/" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <!-- Foundation framework -->';
 print '<link rel="stylesheet" href="'.DOL_URL_ROOT.'/theme/pertho_sample/foundation/stylesheets/foundation.css">';
 print '<!-- Favicons and the like (avoid using transparent .png) -->';
-print '<link rel="shortcut icon" type="image/x-icon" href="'.DOL_URL_ROOT.'/theme/favicon.ico"/>'."\n";
-print '<link rel="apple-touch-icon-precomposed" href="'.DOL_URL_ROOT.'/theme/icon.png" />';
+print '<link rel="shortcut icon" type="image/x-icon" href="favicon.ico"/>'."\n";
+print '<link rel="apple-touch-icon-precomposed" href="icon.png" />';
 
 print '<title>'.$langs->trans('Login').' '.$title.'</title>'."\n";
 
