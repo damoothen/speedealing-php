@@ -156,7 +156,7 @@ print'</tr>';
 print'</thead>';
 print'<tfoot>';
 /* input search view */
-/*$i=0; Doesn't work with bServerSide
+/*$i=0; //Doesn't work with bServerSide
 print'<tr>';
 print'<th id="'.$i.'"></th>';
 $i++;

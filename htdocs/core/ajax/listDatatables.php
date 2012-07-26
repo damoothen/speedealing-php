@@ -89,8 +89,8 @@ if (!empty($json) && !empty($class)) {
 		}
 	//error_log(json_encode($result));
 	//sorting
-	//if($bServerSide)
-	//	$object->sortDatatable($output["aaData"], $_GET['mDataProp_'.$_GET['iSortCol_0']], $_GET['sSortDir_0']);
+	if($bServerSide)
+		$object->sortDatatable($output["aaData"], $_GET['mDataProp_'.$_GET['iSortCol_0']], $_GET['sSortDir_0']);
 
 	header('Content-type: application/json');
 	echo json_encode($output);
