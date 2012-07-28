@@ -470,7 +470,7 @@
 		.ui-datepicker {z-index:10 !important}
 
 	/* spinner */
-		label + .ui-spinner {margin-top:-6px}
+		/*label + .ui-spinner {margin-top:-6px}*/
 		.ui-spinner button {height:14px;position:absolute;background:none;border:none;width:18px;padding:0;background: url(img/spinner_arrows.gif) no-repeat 0 -100px;cursor:pointer}
 		.ui-spinner .ui-spinner-up {top:0;right:0;background-position:0 0}
 		.ui-spinner .ui-spinner-down {top:14px;right:0;background-position:0 -14px}
@@ -478,11 +478,9 @@
 		.ui-spinner .ui-spinner-down:hover {background-position:-18px -14px}
 		.ui-spinner {
 			position:relative;
-			background: url("foundation/images/misc/input-bg.png") 0 0 #fff;
-			font-size: 13px;
 			outline: none !important;
-			padding: 0 24px 0 8px;
-			border: 1px solid #BBBBBB;
+			/*padding: 0 24px 0 8px;*/
+			border: 0px solid #BBBBBB;
 			border-radius: 2px 2px 2px 2px;
 			font-family: inherit;
 			overflow: hidden;

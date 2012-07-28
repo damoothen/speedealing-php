@@ -49,7 +49,7 @@ $mesg=''; $error=0; $errors=array();
 
 $action		= (GETPOST('action') ? GETPOST('action') : 'view');
 $confirm	= GETPOST('confirm');
-$socid		= GETPOST('socid','int');
+$socid		= GETPOST('socid');
 if ($user->societe_id) $socid=$user->societe_id;
 
 $object = new Societe($db);
@@ -104,7 +104,7 @@ if (empty($reshook))
 
         if ($action == 'update')
         {
-        	$ret=$object->fetch($socid);
+        	$ret=$object->load($socid);
         	$object->oldcopy=dol_clone($object);
         }
 		else $object->canvas=$canvas;
@@ -126,7 +126,7 @@ if (empty($reshook))
         $object->address               = $_POST["adresse"];
         $object->zip                   = $_POST["zipcode"];
         $object->town                  = $_POST["town"];
-        $object->country_id            = $_POST["country_id"];
+        $object->country_code          = $_POST["country_id"];
         $object->state_id              = $_POST["departement_id"];
         $object->tel                   = $_POST["tel"];
         $object->fax                   = $_POST["fax"];
@@ -228,7 +228,7 @@ if (empty($reshook))
                 if (empty($object->client))      $object->code_client='';
                 if (empty($object->fournisseur)) $object->code_fournisseur='';
 
-                $result = $object->create($user);
+                $result = $object->record();
                 if ($result >= 0)
                 {
                     if ($object->particulier)
@@ -395,7 +395,7 @@ if (empty($reshook))
     // Delete third party
     if ($action == 'confirm_delete' && $confirm == 'yes' && $user->rights->societe->supprimer)
     {
-        $object->fetch($socid);
+        $object->load($socid);
         $result = $object->delete($socid);
 
         if ($result > 0)
@@ -425,7 +425,7 @@ if (empty($reshook))
         {
             require_once(DOL_DOCUMENT_ROOT.'/core/modules/societe/modules_societe.class.php');
 
-            $object->fetch($socid);
+            $object->load($socid);
 
             // Define output language
             $outputlangs = $langs;
@@ -454,7 +454,7 @@ if (empty($reshook))
     // Remove file in doc form
     else if ($action == 'remove_file')
     {
-    	if ($object->fetch($socid))
+    	if ($object->load($socid))
     	{
     		require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
 
@@ -495,7 +495,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
     if (empty($object->error) && $socid)
  	{
 	     $object = new Societe($db);
-	     $object->fetch($socid);
+	     $object->load($socid);
  	}
    	$objcanvas->assign_values($action, $socid);	// Set value for templates
     $objcanvas->display_canvas($action);		// Show template
@@ -989,9 +989,9 @@ else
         if ($socid)
         {
             $object = new Societe($db);
-            $res=$object->fetch($socid);
+            $res=$object->load($socid);
             if ($res < 0) { dol_print_error($db,$object->error); exit; }
-            $res=$object->fetch_optionals($object->id,$extralabels);
+            //$res=$object->fetch_optionals($object->id,$extralabels);
             //if ($res < 0) { dol_print_error($db); exit; }
 
 
@@ -1050,7 +1050,7 @@ else
                 $object->address				= $_POST["adresse"];
                 $object->zip					= $_POST["zipcode"];
                 $object->town					= $_POST["town"];
-                $object->country_id				= $_POST["country_id"]?$_POST["country_id"]:$mysoc->country_id;
+                $object->country_code				= $_POST["country_id"]?$_POST["country_id"]:$mysoc->country_id;
                 $object->state_id				= $_POST["departement_id"];
                 $object->tel					= $_POST["tel"];
                 $object->fax					= $_POST["fax"];
@@ -1077,9 +1077,9 @@ else
 
                 // We set country_id, and pays_code label of the chosen country
                 // TODO move to DAO class
-                if ($object->country_id)
+                if ($object->country_code)
                 {
-                    $sql = "SELECT code, libelle from ".MAIN_DB_PREFIX."c_pays where rowid = ".$object->country_id;
+                    $sql = "SELECT code, libelle from ".MAIN_DB_PREFIX."c_pays where rowid = ".$object->country_code;
                     $resql=$db->query($sql);
                     if ($resql)
                     {
@@ -1089,8 +1089,8 @@ else
                     {
                         dol_print_error($db);
                     }
-                    $object->country_code	= $obj->code;
-                    $object->country		= $langs->trans("Country".$obj->code)?$langs->trans("Country".$obj->code):$obj->libelle;
+                    //$object->country_code	= $obj->code;
+                    $object->country		= $langs->trans("Country".$object->country_code)?$langs->trans("Country".$object->country_code):$obj->libelle;
                 }
             }
 
@@ -1243,7 +1243,7 @@ else
 
             // Country
             print '<tr><td>'.$langs->trans('Country').'</td><td colspan="3">';
-            print $form->select_country($object->country_id,'country_id');
+            print $form->select_country($object->country_code,'country_id');
             if ($user->admin) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"),1);
             print '</td></tr>';
 
@@ -1423,10 +1423,11 @@ else
          * View
          */
         $object = new Societe($db);
-        $res=$object->fetch($socid);
+        $res=$object->load($socid);
+		
         if ($res < 0) { dol_print_error($db,$object->error); exit; }
-        $res=$object->fetch_optionals($object->id,$extralabels);
-        //if ($res < 0) { dol_print_error($db); exit; }
+        //$res=$object->fetch_optionals($object->id,$extralabels);
+        if ($res < 0) { dol_print_error($db); exit; }
 
 
         $head = societe_prepare_head($object);
@@ -1455,7 +1456,7 @@ else
         print $fuser->id;
         print '</td>';
         print '</tr>';
-        */
+		*/
 
         // Name
         print '<tr><td width="20%">'.$langs->trans('ThirdPartyName').'</td>';
@@ -1526,14 +1527,14 @@ else
         // Status
         print '<tr><td>'.$langs->trans("Status").'</td>';
         print '<td colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'">';
-        print $object->getLibStatut(2);
+        print $object->getLibStatus();
         print '</td>';
         print $htmllogobar; $htmllogobar='';
         print '</tr>';
 
         // Address
         print "<tr><td valign=\"top\">".$langs->trans('Address').'</td><td colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'">';
-        dol_print_address($object->address,'gmap','thirdparty',$object->id);
+        print dol_print_address($object->address,'gmap','thirdparty',$object->id);
         print "</td></tr>";
 
         // Zip / Town
@@ -1738,7 +1739,7 @@ else
             if ($object->parent)
             {
                 $socm = new Societe($db);
-                $socm->fetch($object->parent);
+                $socm->load($object->parent);
                 print $socm->getNomUrl(1).' '.($socm->code_client?"(".$socm->code_client.")":"");
                 print $socm->town?' - '.$socm->town:'';
             }

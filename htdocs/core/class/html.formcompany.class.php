@@ -647,6 +647,8 @@ class FormCompany
 	function select_ziptown($selected='', $htmlname='zipcode', $fields='', $fieldsize=0, $disableautocomplete=0)
 	{
 		global $conf;
+		
+		include_once (DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php');
 
 		$out='';
 

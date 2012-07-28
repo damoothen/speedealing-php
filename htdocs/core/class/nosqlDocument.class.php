@@ -24,11 +24,13 @@ abstract class nosqlDocument extends CommonObject {
 
 	protected $couchdb; // TODO must to be private !!!!!
 	public $id;
-	public $values;
 	public $error;
 	public $errors;
 	public $canvas; // Contains canvas name if it is
 	public $fk_extrafields;
+	
+	public $no_save = array("no_save","token","id","fk_extrafields","fk_country","couchdb","db","canvas",
+						"error","errors","childtables","element","fk_element","ismultientitymanaged");
 
 	/**
 	 * 	class constructor
@@ -123,22 +125,26 @@ abstract class nosqlDocument extends CommonObject {
 		$found = false;
 
 		if ($cache) {
-			$this->values = dol_getcache($id);
-			if (is_object($this->values)) {
+			$values = dol_getcache($id);
+			if (is_object($values)) {
 				$found = true;
 			}
 		}
 
 		if (!$found) {
-			$this->values = array();
-			$this->values = $this->couchdb->getDoc($id); // load extrafields for class
+			$values = array();
+			$values = $this->couchdb->getDoc($id); // load extrafields for class
 
 			if ($cache) {
-				dol_setcache($id, $this->values);
+				dol_setcache($id, $values);
 			}
 		}
-		$this->id = $this->values->_id;
-		return $this->values;
+		$this->id = $values->_id;
+		
+		foreach (get_object_vars($values) as $key => $aRow)
+			$this->$key = $aRow;
+		
+		return $values;
 	}
 
 	/**
@@ -148,23 +154,26 @@ abstract class nosqlDocument extends CommonObject {
 	 */
 	public function record($cache = false) {
 		global $conf;
-
-		$this->values->class = get_class($this);
+		
+		foreach (get_object_vars($this) as $key => $aRow)
+			if(! in_array($key, $this->no_save))
+				$values->$key = $aRow;
+		
+		$values->class = get_class($this);
 
 		try {
-			$this->couchdb->clean($this->values);
-			$result = $this->couchdb->storeDoc($this->values);
+			$this->couchdb->clean($values);
+			$result = $this->couchdb->storeDoc($values);
 			$this->id = $result->id;
-			$this->values->_id = $result->id;
-			$this->values->_rev = $result->rev;
+			$this->_id = $result->id;
+			$this->_rev = $result->rev;
 			if ($cache) {
-				dol_setcache($id, $this->values);
+				dol_setcache($id, $values);
 			}
 		} catch (Exception $e) {
 			dol_print_error("", $e->getMessage());
 			$this->dol_syslog(get_class($this) . "::get " . $error, LOG_WARN);
 		}
-
 
 		return $result;
 	}
@@ -580,45 +589,45 @@ abstract class nosqlDocument extends CommonObject {
 		if ($aRow->enable) {
 			$rtr.= '<div class="formRow elVal">' . "\n";
 
-			$label = $langs->transcountry($key, $this->values->Country);
+			$label = $langs->transcountry($key, $this->Country);
 			if (!$label)
 				$label = $langs->trans($key);
 
 			$rtr.= '<label for="' . $key . '">' . $label . '</label>' . "\n";
 			switch ($aRow->type) {
 				case "textarea" :
-					$rtr.= '<textarea maxlength="' . $aRow->length . '" class="' . $cssClass . '" id="' . $key . '" name="' . $key . '" cols="1" rows="4">' . $this->values->$key . '</textarea>';
+					$rtr.= '<textarea maxlength="' . $aRow->length . '" class="' . $cssClass . '" id="' . $key . '" name="' . $key . '" cols="1" rows="4">' . $this->$key . '</textarea>';
 					$rtr.= '<script> $(document).ready(function() { $("#' . $key . '").counter({ goal: 120 });});	</script>';
 					break;
 				case "select" :
 					if ($cssClass == "small")
-						$style = "width:128px;";
+						$style = "width:200px;";
 					else
 						$style = "width:400px;";
-					$rtr.= '<select data-placeholder="' . $langs->trans($key) . '&hellip;" class="chzn-select" style="' . $style . '" id="' . $key . '" name="' . $key . '" >';
+					$rtr.= '<select data-placeholder="' . $langs->trans($key) . '&hellip;" class="chzn-select expand" style="' . $style . '" id="' . $key . '" name="' . $key . '" >';
 					if (isset($aRow->dict)) {
 						require_once(DOL_DOCUMENT_ROOT . "/admin/class/dict.class.php");
 						// load from dictionnary
 						try {
 							$dict = new Dict($this->db);
-							$dict->load($aRow->dict, true);
+							$values = $dict->load($aRow->dict, true);
 							//filter for country
-							foreach ($dict->values->values as $idx => $row) {
-								if(empty($row->pays_code) || $this->values->Country == $row->pays_code)							
+							foreach ($values->values as $idx => $row) {
+								if(empty($row->pays_code) || $this->Country == $row->pays_code)							
 									$aRow->values[$idx] = $row;
 							}
 						} catch (Exception $e) {
 							dol_print_error('', $e->getMessage());
 						}
 					}
-					if (empty($this->values->$key))
-						$this->values->$key = $aRow->default;
+					if (empty($this->$key))
+						$this->$key = $aRow->default;
 
 					foreach ($aRow->values as $idx => $row) {
 						if ($row->enable) {
 							$rtr.= '<option value="' . $idx . '"';
 
-							if ($this->values->$key == $idx)
+							if ($this->$key == $idx)
 								$rtr.= ' selected="selected"';
 
 							$rtr.= '>';
@@ -635,8 +644,8 @@ abstract class nosqlDocument extends CommonObject {
 
 					break;
 				case "checkbox" :
-					if (isset($this->values->$key))
-						$value = $this->values->$key;
+					if (isset($this->$key))
+						$value = $this->$key;
 					else
 						$value = $aRow->default;
 
@@ -650,9 +659,9 @@ abstract class nosqlDocument extends CommonObject {
 				break;
 				default :
 					if (isset($aRow->mask))
-						$rtr.= '<input type="text" maxlength="' . $aRow->length . '" id="' . $key . '" name="' . $key . '" value="' . $this->values->$key . '" class="input-text ' . $aRow->css . " " . $cssClass . '" mask="' . $key . '"/>' . "\n";
+						$rtr.= '<input type="text" maxlength="' . $aRow->length . '" id="' . $key . '" name="' . $key . '" value="' . $this->$key . '" class="input-text ' . $aRow->css . " " . $cssClass . '" mask="' . $key . '"/>' . "\n";
 					else
-						$rtr.= '<input type="text" maxlength="' . $aRow->length . '" id="' . $key . '" name="' . $key . '" value="' . $this->values->$key . '" class="input-text ' . $aRow->css . " " . $cssClass . '"/>' . "\n";
+						$rtr.= '<input type="text" maxlength="' . $aRow->length . '" id="' . $key . '" name="' . $key . '" value="' . $this->$key . '" class="input-text ' . $aRow->css . " " . $cssClass . '"/>' . "\n";
 			}
 			$rtr.= '</div>' . "\n";
 		}

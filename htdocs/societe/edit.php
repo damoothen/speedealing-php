@@ -90,82 +90,31 @@ if (empty($reshook)) {
 		if ($action == 'update')
 			$object->load($socid);
 		else
-			$object->values->canvas = $canvas;
+			$object->canvas = $canvas;
 
 		if (GETPOST("private") == 1) {
-			$object->values->particulier = GETPOST("private");
+			$object->particulier = GETPOST("private");
 
-			$object->values->name = empty($conf->global->MAIN_FIRSTNAME_NAME_POSITION) ? trim($_POST["prenom"] . ' ' . $_POST["nom"]) : trim($_POST["nom"] . ' ' . $_POST["prenom"]);
-			$object->values->civilite_id = (int) $_POST["civilite_id"];
+			$object->name = empty($conf->global->MAIN_FIRSTNAME_NAME_POSITION) ? trim($_POST["prenom"] . ' ' . $_POST["nom"]) : trim($_POST["nom"] . ' ' . $_POST["prenom"]);
+			$object->civilite_id = (int) $_POST["civilite_id"];
 			// Add non official properties
-			$object->values->name_bis = $_POST["nom"];
-			$object->values->firstname = $_POST["prenom"];
+			$object->name_bis = $_POST["nom"];
+			$object->firstname = $_POST["prenom"];
 		} else {
-			$object->values->name = ucwords($_POST["nom"]);
+			$object->name = ucwords($_POST["nom"]);
 		}
-		$object->values->Address = $_POST["Address"];
-		$object->values->Zip = $_POST["Zip"];
-		$object->values->Town = $_POST["Town"];
-		$object->values->Country = $_POST["Country"];
-		$object->values->State = $_POST["State"];
+		
+		foreach ($_POST as $key => $aRow)
+			if(!in_array($key,$object->no_save))
+					$object->$key = $aRow;
 
-		$tel = preg_replace("/\s/", "", $_POST["Phone"]);
-		$tel = preg_replace("/\./", "", $tel);
-		$fax = preg_replace("/\s/", "", $_POST["Fax"]);
-		$fax = preg_replace("/\./", "", $fax);
-		if ($tel) {
-			$object->values->Phone = $tel;
-		}
-		if ($fax) {
-			$object->values->Fax = $fax;
-		}
-		$email = $_POST["email"];
-		if ($email) {
-			$object->values->EMail = $email;
-		}
-
-		$object->values->Web = clean_url(trim($_POST["Web"]), 0);
-
-		if (!empty($_POST['Deal'])) {
-			foreach ($_POST['Deal'] as $key => $aRow) {
-				$object->values->$key = $aRow;
-				/* $object->idprof["idprof2"]     = $_POST["idprof2"];
-				  $object->idprof["idprof3"]     = $_POST["idprof3"];
-				  $object->idprof["idprof4"]     = $_POST["idprof4"]; */
-			}
-		}
-
-		$object->values->prefix_comm = $_POST["prefix_comm"];
-
-		$object->values->CustomerCode = $_POST["code_client"];
-		$object->values->SupplierCode = $_POST["code_fournisseur"];
-		$object->values->VATIsUsed = (bool) $_POST["assujtva_value"];
-		$object->values->VATIntra = dol_sanitizeFileName($_POST["tva_intra"], '');
-		$object->values->localtax1_assuj = (int) $_POST["localtax1assuj_value"];
-		$object->values->localtax2_assuj = (int) $_POST["localtax2assuj_value"];
-
-		$object->values->JuridicalStatus = $_POST["forme_juridique_code"];
-		$object->values->Capital = price2num(trim($_POST["capital"]), 'MT') . " " . $langs->trans("Currency" . $conf->currency);
-		$object->values->Staff = $_POST["effectif_id"];
-
-		$object->values->barcode = $_POST["barcode"];
-
-		$object->values->Status = $_POST["Status"];
-
-		$object->values->tms = dol_now();
+		$object->tms = dol_now();
 
 		if (GETPOST("private") == 1) {
-			$object->values->typent_id = 8; // TODO predict another method if the field "special" change of rowid
+			$object->typent_id = 8; // TODO predict another method if the field "special" change of rowid
 		} else {
-			$object->values->typent_id = $_POST["typent_id"];
+			$object->typent_id = $_POST["typent_id"];
 		}
-
-		$object->values->client = (int) $_POST["client"];
-		$object->values->fournisseur = (int) $_POST["fournisseur"];
-		$object->values->fournisseur_categorie = $_POST["fournisseur_categorie"];
-
-		$object->values->commercial_id = $_POST["commercial_id"];
-		$object->values->DefaultLang = $_POST["default_lang"];
 
 		if ($conf->map->enabled) {
 			//Retire le CEDEX de la ville :
@@ -186,23 +135,23 @@ if (empty($reshook)) {
 			$response = json_decode($json);
 			curl_close($c);
 			if ($response->status == "OK") {
-				$object->values->gps = array($response->results[0]->geometry->location->lat, $response->results[0]->geometry->location->lng);
+				$object->gps = array($response->results[0]->geometry->location->lat, $response->results[0]->geometry->location->lng);
 			} else {
-				$object->values->gps = array(0, 0);
+				$object->gps = array(0, 0);
 			}
 		}
 
 		if (GETPOST('deletephoto'))
-			$object->values->logo = '';
+			$object->logo = '';
 		else if (!empty($_FILES['photo']['name']))
-			$object->values->logo = dol_sanitizeFileName($_FILES['photo']['name']);
+			$object->logo = dol_sanitizeFileName($_FILES['photo']['name']);
 
 		// Check parameters
 		if (empty($_POST["cancel"])) {
-			if (!empty($object->values->Web) && !isValidUrl($object->values->Web)) {
+			if (!empty($object->Web) && !isValidUrl($object->Web)) {
 				$langs->load("errors");
 				$error++;
-				$errors[] = $langs->trans("ErrorBadUrl", $object->values->Web);
+				$errors[] = $langs->trans("ErrorBadUrl", $object->Web);
 				$action = ($action == 'add' ? 'create' : 'edit');
 			}
 			if ($object->fournisseur && !$conf->fournisseur->enabled) {
@@ -229,24 +178,24 @@ if (empty($reshook)) {
 		if (!$error) {
 			if ($action == 'add') {
 				if (!empty($conf->global->MAIN_FIRST_TO_UPPER))
-					$object->values->name = ucwords($object->values->name);
+					$object->name = ucwords($object->name);
 
-				dol_syslog(get_class($object) . "::create " . $object->values->name);
+				dol_syslog(get_class($object) . "::create " . $object->name);
 
 				// Check parameters
-				if (!empty($conf->global->SOCIETE_MAIL_REQUIRED) && !isValidEMail($object->values->EMail)) {
+				if (!empty($conf->global->SOCIETE_MAIL_REQUIRED) && !isValidEMail($object->EMail)) {
 					$langs->load("errors");
-					$message = $langs->trans("ErrorBadEMail", $object->values->EMail);
+					$message = $langs->trans("ErrorBadEMail", $object->EMail);
 					return -1;
 				}
 
-				$object->values->tms = dol_now();
+				$object->tms = dol_now();
 
 				// For automatic creation during create action (not used by Dolibarr GUI, can be used by scripts)
-				if ($object->values->CustomCode == -1)
-					$compta->setCode("CustomerCode", $object->get_codeclient($object->values->prefix_comm, 0));
-				if ($object->values->SupplierCode == -1)
-					$compta->setCode("SupplierCode", $object->get_codefournisseur($object->values->prefix_comm, 1));
+				if ($object->CustomCode == -1)
+					$compta->setCode("CustomerCode", $object->get_codeclient($object->prefix_comm, 0));
+				if ($object->SupplierCode == -1)
+					$compta->setCode("SupplierCode", $object->get_codefournisseur($object->prefix_comm, 1));
 
 				if (!$message) {
 					try {
@@ -264,7 +213,7 @@ if (empty($reshook)) {
 
 				$result = 0; // TODO go next
 				if ($result >= 0) {
-					if ($object->values->particulier) {
+					if ($object->particulier) {
 						dol_syslog("This thirdparty is a personal people", LOG_DEBUG);
 						$contact = new Contact($db);
 
@@ -324,7 +273,7 @@ if (empty($reshook)) {
 					$url = $_SERVER["PHP_SELF"] . "?id=" . $object->id;
 					if (($object->client == 1 || $object->client == 3) && empty($conf->global->SOCIETE_DISABLE_CUSTOMERS))
 						$url = DOL_URL_ROOT . "/comm/fiche.php?socid=" . $object->id;
-					else if ($object->values->fournisseur == 1)
+					else if ($object->fournisseur == 1)
 						$url = DOL_URL_ROOT . "/fourn/fiche.php?socid=" . $object->id;
 					Header("Location: " . $url);
 					exit;
@@ -368,24 +317,24 @@ if (empty($reshook)) {
 					$response = json_decode($json);
 					curl_close($c);
 					if ($response->status == "OK") {
-						$object->values->gps = array($response->results[0]->geometry->location->lat, $response->results[0]->geometry->location->lng);
+						$object->gps = array($response->results[0]->geometry->location->lat, $response->results[0]->geometry->location->lng);
 					} else {
-						$object->values->gps = array(0, 0);
+						$object->gps = array(0, 0);
 					}
 				}
 
 				// To not set code if third party is not concerned. But if it had values, we keep them.
-				if (empty($object->values->client) && empty($oldcopy->code_client))
+				if (empty($object->client) && empty($oldcopy->code_client))
 					$object->code_client = '';
 				if (empty($object->valeus->fournisseur) && empty($oldcopy->code_fournisseur))
 					$object->code_fournisseur = '';
 				//var_dump($object);exit;
 				$soc = new Societe($db);
 				// For automatic creation during create action (not used by Dolibarr GUI, can be used by scripts)
-				if ($object->values->CustomCode == -1)
-					$object->values->CustomCode = $soc->get_codeclient($object->values->prefix_comm, 0);
-				if ($object->values->SupplierCode == -1)
-					$object->values->SupplierCode = $soc->get_codefournisseur($object->values->prefix_comm, 1);
+				if ($object->CustomCode == -1)
+					$object->CustomCode = $soc->get_codeclient($object->prefix_comm, 0);
+				if ($object->SupplierCode == -1)
+					$object->SupplierCode = $soc->get_codefournisseur($object->prefix_comm, 1);
 
 				//$object->update($socid,$user,1,$oldcopy->codeclient_modifiable(),$oldcopy->codefournisseur_modifiable());
 
@@ -403,7 +352,7 @@ if (empty($reshook)) {
 				$file_OK = is_uploaded_file($_FILES['photo']['tmp_name']);
 				if ($file_OK) {
 					if (GETPOST('deletephoto')) {
-						$fileimg = $dir . '/' . $object->values->logo;
+						$fileimg = $dir . '/' . $object->logo;
 						$dirthumbs = $dir . '/thumbs';
 						dol_delete_file($fileimg);
 						dol_delete_dir_recursive($dirthumbs);
@@ -938,7 +887,6 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 			exit;
 		}
 
-
 		// Load object modCodeTiers
 		$module = $conf->global->SOCIETE_CODECLIENT_ADDON;
 		if (!$module)
@@ -1006,15 +954,15 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
 			// We set country_id, and pays_code label of the chosen country
 			// TODO move to DAO class
-			if ($object->values->Country) {
-				$sql = "SELECT code, libelle from " . MAIN_DB_PREFIX . "c_pays where code = '" . $object->values->Country . "'";
+			if ($object->Country) {
+				$sql = "SELECT code, libelle from " . MAIN_DB_PREFIX . "c_pays where code = '" . $object->Country . "'";
 				$resql = $db->query($sql);
 				if ($resql) {
 					$obj = $db->fetch_object($resql);
 				} else {
 					dol_print_error($db);
 				}
-				$object->countryname = $langs->trans("Country" . $object->values->Country);
+				$object->countryname = $langs->trans("Country" . $object->Country);
 			}
 		}
 
@@ -1101,14 +1049,14 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 			<?php endif; ?>
 		<?php endforeach; ?>
 				},
-				ignore				: ':hidden'
+				ignore: ':hidden'
 			});
 		<?php foreach ($object->fk_extrafields->fields as $key => $aRow) : ?>
 			<?php if (isset($aRow->mask)) : ?>
 						$("#<?php echo $key; ?>").inputmask("<?php echo $aRow->mask; ?>");
 			<?php endif; ?>
 			<?php if (isset($aRow->spinner)) : ?>
-						$("#<?php echo $key; ?>").spinner(<?php echo $aRow->spinner; ?>);
+						$("#<?php echo $key; ?>").spinner({<?php echo $aRow->spinner; ?>, group: " "});
 			<?php endif; ?>
 		<?php endforeach; ?>
 			$('.stepy-titles').each(function(){

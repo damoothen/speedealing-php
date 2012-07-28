@@ -1565,15 +1565,15 @@ class Societe extends nosqlDocument {
 		$rtr.= '</div>';
 		$rtr.= '<div class="five column vcard">';
 		$img = '<img src="' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/ico/icSw2/16-Apartment-Building.png" alt="" />';
-		$rtr.= '<h1 class="sepH_a"><a id="view_fiche" href="#">' . $img . $this->values->ThirdPartyName . '</a></h1>';
+		$rtr.= '<h1 class="sepH_a"><a id="view_fiche" href="#">' . $img . $this->ThirdPartyName . '</a></h1>';
 		$rtr.= '<div class="sepH_a">'.$this->getLibStatus().'</div>';
 		$rtr.= '<h5 class="s_color">';
-		$rtr.= dol_print_address($this->values->Address, 'gmap', 'thirdparty', $this->id());
+		$rtr.= dol_print_address($this->Address, 'gmap', 'thirdparty', $this->id());
 		$rtr.= '</h5>';
 		//$img=picto_from_langcode($object->country_id);
-		$rtr.= '<h3 class="sepH_a country">' . $this->values->Zip . ($this->values->Zip && $this->values->Town ? " " : "") . $this->values->Town;
+		$rtr.= '<h3 class="sepH_a country">' . $this->Zip . ($this->Zip && $this->Town ? " " : "") . $this->Town;
 		// MAP GPS
-		$rtr.= "&nbsp" . img_picto(($this->values->gps[0] . ',' . $this->values->gps[1]), (($this->values->gps[0] && $this->values->gps[1]) ? "green-dot" : "red-dot"));
+		$rtr.= "&nbsp" . img_picto(($this->gps[0] . ',' . $this->gps[1]), (($this->gps[0] && $this->gps[1]) ? "green-dot" : "red-dot"));
 		$rtr.= '</h3>';
 		$rtr.= '</div>';
 
@@ -1596,20 +1596,20 @@ class Societe extends nosqlDocument {
 
 		$rtr.= '</div>';
 
-		if ($this->values->CustomerCode || $this->values->SupplierCode) {
+		if ($this->CustomerCode || $this->SupplierCode) {
 			$rtr.= '<div class="row vcard sepH_b inner_heading">';
 			$rtr.= '<ul>';
-			if ($this->values->CustomerCode) {
+			if ($this->CustomerCode) {
 				$key = 'CustomerCode';
 				$label = $langs->trans($key);
 				$img = '<img src="' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/ico/icSw2/16-Money.png" title="' . $label . '" />';
-				$rtr.= '<li><span>' . $img . '</span><span class="s_color">' . $label . '</span><span> : </span><span>' . $this->values->$key . '</span></li>';
+				$rtr.= '<li><span>' . $img . '</span><span class="s_color">' . $label . '</span><span> : </span><span>' . $this->$key . '</span></li>';
 			}
-			if ($this->values->SupplierCode) {
+			if ($this->SupplierCode) {
 				$key = 'SupplierCode';
 				$label = $langs->trans($key);
 				$img = '<img src="' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/ico/icSw2/16-Money.png" title="' . $label . '" />';
-				$rtr.= '<li><span>' . $img . '</span><span class="s_color">' . $label . '</span><span> : </span><span>' . $this->values->$key . '</span></li>';
+				$rtr.= '<li><span>' . $img . '</span><span class="s_color">' . $label . '</span><span> : </span><span>' . $this->$key . '</span></li>';
 			}
 			$rtr.= '</ul>';
 			$rtr.= '</div>';
@@ -1670,14 +1670,14 @@ class Societe extends nosqlDocument {
 						$rtr.= '<td><img src="' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/ico/icSw2/16-Money.png" title="' . $label . '" /></td>';
 
 					if ($aRow->type == "AC_EMAIL")
-						$rtr.= '<td class="s_color">' . $label . '</td></td><td class="ttip_r edit_text">' . $this->values->$key . '</td>';
+						$rtr.= '<td class="s_color">' . $label . '</td></td><td class="ttip_r edit_text">' . $this->$key . '</td>';
 					elseif ($aRow->type == "AC_TEL" || $aRow->type == "AC_FAX")
-						$rtr.= '<td class="s_color">' . $label . '</td><td class="ttip_r edit_text">' . dol_print_phone($this->values->$key, $this->values->Country, 0, $this->id(), $aRow->type) . '</td>';
+						$rtr.= '<td class="s_color">' . $label . '</td><td class="ttip_r edit_text">' . dol_print_phone($this->$key, $this->Country, 0, $this->id(), $aRow->type) . '</td>';
 					elseif ($aRow->type == "AC_URL") {
-						$rtr.= '<td>' . dol_print_url($label, $this->values->$key->value) . '</td><td class="ttip_r edit_text">' . $this->values->$key . '</td>';
+						$rtr.= '<td>' . dol_print_url($label, $this->$key->value) . '</td><td class="ttip_r edit_text">' . $this->$key . '</td>';
 					}
 					else
-						$rtr.= '<td class="s_color">' . $label . '</td><td class="ttip_r edit_text">' . $this->values->$key . '</td>';
+						$rtr.= '<td class="s_color">' . $label . '</td><td class="ttip_r edit_text">' . $this->$key . '</td>';
 
 					$rtr.='</tr>';
 				}
@@ -1711,6 +1711,15 @@ class Societe extends nosqlDocument {
 
 			return 1;
 		}
+	}
+	
+	/**
+	 *    Return label of status (activity, closed)
+	 *
+	 *    @return   string        		Libelle
+	 */
+	function getLibStatus() {
+		return $this->LibStatus($this->Status);
 	}
 
 }
