@@ -127,7 +127,7 @@
                },
                "ST_NEVER": {
                    "enable": true,
-                   "type": "suspect",
+                   "type": "never",
                    "cssClass": "neutral_bg"
                },
                "ST_PCOLD": {
@@ -202,7 +202,7 @@
            "dict": null
        },
        "Logo": {
-           "type": "img",
+           "type": "uploadfile",
            "enable": true
        },
        "Phone": {
@@ -214,13 +214,13 @@
                "bSearchable": true,
                "bVisible": false
            },
-           "mask": "(+99) 9 99 99 99 99"
+           "mask": "+99 9 99 99 99 99"
        },
        "Fax": {
            "type": "AC_FAX",
            "ico": "AC_FAX",
            "enable": true,
-           "mask": "(+99) 9 99 99 99 99"
+           "mask": "+99 9 99 99 99 99"
        },
        "EMail": {
            "type": "AC_EMAIL",
@@ -270,13 +270,81 @@
        },
        "ThirdPartyType": {
            "type": "select",
-           "dict": null,
-           "enable": true
+           "default": "TE_UNKNOWN",
+           "enable": true,
+           "values": {
+               "TE_UNKNOWN": {
+                   "enable": true
+               },
+               "TE_ADMIN": {
+                   "enable": true
+               },
+               "TE_OTHER": {
+                   "enable": true
+               },
+               "TE_FEMME": {
+                   "enable": false
+               },
+               "TE_GROUP": {
+                   "enable": true
+               },
+               "TE_WHOLE": {
+                   "enable": false
+               },
+               "TE_HOMME": {
+                   "enable": false
+               },
+               "TE_PRIVATE": {
+                   "enable": true
+               },
+               "TE_MEDIUM": {
+                   "enable": true
+               },
+               "TE_RETAIL": {
+                   "enable": false
+               },
+               "TE_STARTUP": {
+                   "enable": false
+               },
+               "TE_SMALL": {
+                   "enable": true
+               }
+           }
        },
        "Staff": {
            "type": "select",
-           "dict": null,
-           "enable": true
+           "enable": true,
+           "default": "EF0",
+           "values": {
+               "EF0": {
+                   "enable": true,
+                   "label": "-"
+               },
+               "EF1-5": {
+                   "enable": true,
+                   "label": "1 - 5"
+               },
+               "EF6-10": {
+                   "enable": true,
+                   "label": "6 - 10"
+               },
+               "EF11-50": {
+                   "enable": true,
+                   "label": "11 - 50"
+               },
+               "EF51-100": {
+                   "enable": true,
+                   "label": "51 - 100"
+               },
+               "EF101-500": {
+                   "enable": true,
+                   "label": "101 - 500"
+               },
+               "EF500-": {
+                   "enable": true,
+                   "label": "> 500"
+               }
+           }
        },
        "Capital": {
            "type": "text",
@@ -300,6 +368,7 @@
        "JuridicalStatus": {
            "type": "select",
            "label": "JuridicalStatus",
+           "dict": "dict:fk_forme_juridique",
            "enable": true
        }
    }
