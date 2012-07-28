@@ -1117,11 +1117,12 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 					$(this).append('<span class="stepNb">'+myIndex+'</span>');
 				})
 			})
-			$(".chzn-select").chosen();
+			$(".chzn-select").chosen({no_results_text: "No results matched"});
 		});
 			</script>
 
 			<?php
+			/*
 			print '<table class="border" width="100%">';
 
 			// VAT payers
@@ -1232,6 +1233,8 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 			print ' &nbsp; &nbsp; ';
 			print '<input type="submit" class="button" name="cancel" value="' . $langs->trans("Cancel") . '">';
 			print '</center>';
+			 * 
+			 */
 
 			print '</form>';
 		}

@@ -425,13 +425,13 @@ abstract class nosqlDocument extends CommonObject {
 						"oTableTools": { "sSwfPath": "<?php echo DOL_URL_ROOT . '/includes/jquery/plugins/datatables/extras/TableTools/media/swf/copy_csv_xls.swf'; ?>"},
 						//if($obj->oTableTools->aButtons==null)
 						//$obj->oTableTools->aButtons = array("xls");
-																																																																	    
+																																																																							    
 						"oColVis": { "buttonText" : 'Voir/Cacher',
 							"aiExclude": [0,1] // Not cacheable _id and name
 						},
 						//$obj->oColVis->bRestore = true;
 						//$obj->oColVis->sAlign = 'left';
-																																																																            
+																																																																						            
 						// Avec export Excel
 		<?php if (!empty($obj->sDom)) : ?>
 							//"sDom": "Cl<fr>t<\"clear\"rtip>",
@@ -460,7 +460,7 @@ abstract class nosqlDocument extends CommonObject {
 		<?php if (isset($obj->fnRowCallback)): ?>
 							"fnRowCallback": <?php echo $obj->fnRowCallback; ?>,
 		<?php endif; ?>
-																																																
+																																																						
 		<?php if (!defined('NOLOGIN')) : ?>
 			<?php if (isset($obj->fnDrawCallback)): ?>
 									"fnDrawCallback": <?php echo $obj->fnDrawCallback; ?>,
@@ -485,7 +485,7 @@ abstract class nosqlDocument extends CommonObject {
 												"tooltip": "Cliquer pour éditer...",
 												"indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
 												"placeholder" : ""
-																																																																																																																																                
+																																																																																																																																												                
 											} );
 											$("td.select", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
 												"callback": function( sValue, y ) {
@@ -504,7 +504,7 @@ abstract class nosqlDocument extends CommonObject {
 												"tooltip": "Cliquer pour éditer...",
 												"indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
 												"placeholder" : ""
-																																																																																																																																                
+																																																																																																																																												                
 											} );
 										}
 			<?php endif; ?>
@@ -572,6 +572,8 @@ abstract class nosqlDocument extends CommonObject {
 	 */
 	public function form($aRow, $key, $cssClass) {
 		global $langs, $conf;
+		
+		$form = new Form($this->db);
 
 		$rtr = "";
 
@@ -589,18 +591,28 @@ abstract class nosqlDocument extends CommonObject {
 					$rtr.= '<script> $(document).ready(function() { $("#' . $key . '").counter({ goal: 120 });});	</script>';
 					break;
 				case "select" :
-					$rtr.= '<select data-placeholder="' . $langs->trans($key) . '&hellip;" class="chzn-select" id="' . $key . '" name="' . $key . '" >';
+					if ($cssClass == "small")
+						$style = "width:128px;";
+					else
+						$style = "width:400px;";
+					$rtr.= '<select data-placeholder="' . $langs->trans($key) . '&hellip;" class="chzn-select" style="' . $style . '" id="' . $key . '" name="' . $key . '" >';
 					if (isset($aRow->dict)) {
 						require_once(DOL_DOCUMENT_ROOT . "/admin/class/dict.class.php");
 						// load from dictionnary
 						try {
 							$dict = new Dict($this->db);
 							$dict->load($aRow->dict, true);
-							$aRow->values = $dict->values->values;
+							//filter for country
+							foreach ($dict->values->values as $idx => $row) {
+								if(empty($row->pays_code) || $this->values->Country == $row->pays_code)							
+									$aRow->values[$idx] = $row;
+							}
 						} catch (Exception $e) {
 							dol_print_error('', $e->getMessage());
 						}
 					}
+					if (empty($this->values->$key))
+						$this->values->$key = $aRow->default;
 
 					foreach ($aRow->values as $idx => $row) {
 						if ($row->enable) {
@@ -633,6 +645,9 @@ abstract class nosqlDocument extends CommonObject {
 					else
 						$rtr.= '<input type="checkbox" id="' . $key . '" name="' . $key . '" />';
 					break;
+				case "uploadfile" :	
+					$rtr.= '<input type="file" class="flat" name="' . $key . '" id="' . $key . '">';
+				break;
 				default :
 					if (isset($aRow->mask))
 						$rtr.= '<input type="text" maxlength="' . $aRow->length . '" id="' . $key . '" name="' . $key . '" value="' . $this->values->$key . '" class="input-text ' . $aRow->css . " " . $cssClass . '" mask="' . $key . '"/>' . "\n";
