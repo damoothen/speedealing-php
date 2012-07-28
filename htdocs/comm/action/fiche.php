@@ -49,7 +49,9 @@ $langs->load("orders");
 $langs->load("agenda");
 
 $action=GETPOST('action','alpha');
+$cancel=GETPOST('cancel','alpha');
 $backtopage=GETPOST('backtopage','alpha');
+$contactid=GETPOST('contactid','int');
 
 // Security check
 $socid = GETPOST('socid','int');
@@ -58,6 +60,7 @@ if ($user->societe_id) $socid=$user->societe_id;
 //$result = restrictedArea($user, 'agenda', $id, 'actioncomm', 'actions', '', 'id');
 
 $error=GETPOST("error");
+$mesg='';
 
 $cactioncomm = new CActionComm($db);
 $actioncomm = new ActionComm($db);
@@ -78,12 +81,12 @@ if ($action == 'add_action')
         else $backtopage=DOL_URL_ROOT.'/comm/action/index.php';
     }
 
-    if ($_POST["contactid"])
+    if ($contactid)
 	{
-		$result=$contact->fetch($_POST["contactid"]);
+		$result=$contact->fetch($contactid);
 	}
 
-	if ($_POST['cancel'])
+	if ($cancel)
 	{
 		header("Location: ".$backtopage);
 		exit;
@@ -140,7 +143,7 @@ if ($action == 'add_action')
 	$actioncomm->label = trim($_POST["label"]);
 	if (! $_POST["label"])
 	{
-		if ($cactioncomm->type == 1 && $contact->getFullName($langs)) //RDV
+		if ($_POST["actioncode"] == 'AC_RDV' && $contact->getFullName($langs))
 		{
 			$actioncomm->label = $langs->transnoentitiesnoconv("TaskRDVWith",$contact->getFullName($langs));
 		}
@@ -426,7 +429,6 @@ if ($action == 'update')
 }
 
 
-
 /*
  * View
  */
@@ -662,9 +664,9 @@ if ($action == 'create')
 	print '</td></tr>';
 
 	// Realised by
-	//print '<tr><td nowrap>'.$langs->trans("ActionDoneBy").'</td><td>';
-	//$html->select_users(GETPOST("doneby")?GETPOST("doneby"):($percent==100?$actioncomm->userdone:0),'doneby',1);
-	//print '</td></tr>';
+	print '<tr><td nowrap>'.$langs->trans("ActionDoneBy").'</td><td>';
+	$form->select_users(GETPOST("doneby")?GETPOST("doneby"):(! empty($actioncomm->userdone->id) && $percent==100?$actioncomm->userdone->id:0),'doneby',1);
+	print '</td></tr>';
 
 	print '</table>';
 	print '<br><br>';
@@ -709,16 +711,16 @@ if ($action == 'create')
 	}
 
 	// Project
-	if ($conf->projet->enabled && GETPOST("Projectid"))
+	if (! empty($conf->projet->enabled))
 	{
 		// Projet associe
 		$langs->load("project");
 
 		print '<tr><td valign="top">'.$langs->trans("Project").'</td><td>';
-		$numproject=select_projects($societe->id,GETPOST("projectid")?GETPOST("projectid"):$projectid,'projectid');
+		$numproject=select_projects((! empty($societe->id)?$societe->id:0),GETPOST("projectid")?GETPOST("projectid"):'','projectid');
 		if ($numproject==0)
 		{
-			print ' &nbsp; <a href="../../projet/fiche.php?socid='.$societe->id.'&action=create">'.$langs->trans("AddProject").'</a>';
+			print ' &nbsp; <a href="'.DOL_DOCUMENT_ROOT.'/projet/fiche.php?socid='.$societe->id.'&action=create">'.$langs->trans("AddProject").'</a>';
 		}
 		print '</td></tr>';
 	}
@@ -743,7 +745,7 @@ if ($action == 'create')
 
 	// Priority
 	print '<tr><td nowrap>'.$langs->trans("Priority").'</td><td colspan="3">';
-	print '<input type="text" name="priority" value="'.($_POST["priority"]?$_POST["priority"]:($actioncomm->priority?$actioncomm->priority:'')).'" size="5">';
+	print '<input type="text" name="priority" value="'.(GETPOST('priority')?GETPOST('priority'):($actioncomm->priority?$actioncomm->priority:'')).'" size="5">';
 	print '</td></tr>';
 
 	add_row_for_calendar_link();
@@ -751,7 +753,7 @@ if ($action == 'create')
     // Description
     print '<tr><td valign="top">'.$langs->trans("Description").'</td><td>';
     require_once(DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php");
-    $doleditor=new DolEditor('note',($_POST["note"]?$_POST["note"]:$actioncomm->note),'',280,'dolibarr_notes','In',true,true,$conf->fckeditor->enabled,ROWS_7,90);
+    $doleditor=new DolEditor('note',(GETPOST('note')?GETPOST('note'):$actioncomm->note),'',280,'dolibarr_notes','In',true,true,$conf->fckeditor->enabled,ROWS_7,90);
     $doleditor->Create();
     print '</td></tr>';
 
@@ -765,7 +767,6 @@ if ($action == 'create')
 	print '</center>';
 
 	print "</form>";
-        
 }
 
 // View or edit
@@ -782,7 +783,6 @@ if ($id)
 
 	$act = new ActionComm($db);
 	$result=$act->fetch($id);
-        
 	if ($result < 0)
 	{
 		dol_print_error($db,$act->error);
@@ -813,7 +813,7 @@ if ($id)
 	 */
 
 	$head=actions_prepare_head($act);
-	dol_fiche_head($head, 'card', $langs->trans("Actions"),0,'action');
+	dol_fiche_head($head, 'card', $langs->trans("Action"),0,'action');
 
 	$now=dol_now();
 	$delay_warning=$conf->global->MAIN_DELAY_ACTIONS_TODO*24*60*60;
@@ -828,7 +828,7 @@ if ($id)
 	if ($action == 'edit')
 	{
 	    if ($conf->use_javascript_ajax)
-            {
+        {
             print "\n".'<script type="text/javascript" language="javascript">';
             print 'jQuery(document).ready(function () {
                          function setdatefields()
@@ -860,40 +860,7 @@ if ($id)
                         });
                    })';
             print '</script>'."\n";
-       /*     print "\n".'<script type="text/javascript" language="javascript">';
-        print 'jQuery(document).ready(function () {
-                     function setday()
-                     {
-                            if ($("#ap").val()!="")
-                            {                               
-                                $("#p2").val($("#ap").val());
-                            }
-                    }
-                    setday();
-                    jQuery("#p2").click(function() {
-                        setday();
-                    });
-               })';
-        print '</script>'."\n";
-        print "\n".'<script type="text/javascript" language="javascript">';
-        print 'jQuery(document).ready(function () {
-                     function sethour()
-                     {
-                            var hour=parseInt($(".fulldaystarthour option:selected").val());
-                            hour=hour+1;
-                            var strhour=hour.toString(10)
-                            if(strhour.length==1)
-                                $(".fulldayendhour").val(0+strhour);
-                            else
-                                $(".fulldayendhour").val(strhour);
-                    }
-                    sethour();
-                    jQuery(".fulldayendhour").click(function() {
-                        sethour();
-                    });
-               })';
-        print '</script>'."\n";*/
-            }
+        }
 
         // Fiche action en mode edition
 		print '<form name="formaction" action="'.DOL_URL_ROOT.'/comm/action/fiche.php" method="post">';
@@ -1270,7 +1237,6 @@ if ($id)
 		{
 			print '<a class="butActionRefused" href="#" title="'.$langs->trans("NotAllowed").'">'.$langs->trans("Delete").'</a>';
 		}
-	
 
             print '</div>';
             print "<br>\n";
@@ -1296,7 +1262,6 @@ if ($id)
         }
 }
 
-
 $db->close();
 
 llxFooter();
@@ -1313,7 +1278,8 @@ function add_row_for_calendar_link()
 	$nbtr=0;
 
 	// Lien avec calendrier si module active
-	if ($conf->webcalendar->enabled)
+	// TODO external module
+	if (! empty($conf->webcalendar->enabled))
 	{
 		if ($conf->global->PHPWEBCALENDAR_SYNCRO != 'never')
 		{
@@ -1345,7 +1311,8 @@ function add_row_for_calendar_link()
 		}
 	}
 
-	if ($conf->phenix->enabled)
+	// TODO external module
+	if (! empty($conf->phenix->enabled))
 	{
 		if ($conf->global->PHPPHENIX_SYNCRO != 'never')
 		{

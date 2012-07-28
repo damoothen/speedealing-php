@@ -222,7 +222,7 @@ LibraryVersion=Sürüm
 ExportableDatas=Dışaaktarılabilir veri
 NoExportableData=Dışaaktarılabilir veri yok (dışaaktarılabilir verili modül yok ya da izinler yok)
 ToExport= Dışaaktar 
-NewExport=Yeni Dışaaktarma
+NewExport=Yeni dışaaktarım
 ##### External sites #####
 ExternalSites=Dış siteler
 

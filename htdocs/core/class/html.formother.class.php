@@ -4,7 +4,7 @@
  * Copyright (C) 2004      Benoit Mortier       <benoit.mortier@opensides.be>
  * Copyright (C) 2004      Sebastien Di Cintio  <sdicintio@ressource-toi.org>
  * Copyright (C) 2004      Eric Seigne          <eric.seigne@ryxeo.com>
- * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2006      Andre Cianfarani     <acianfa@free.fr>
  * Copyright (C) 2006      Marc Barilley/Ocebo  <marc@ocebo.com>
  * Copyright (C) 2007      Franky Van Liedekerke <franky.van.liedekerker@telenet.be>
@@ -242,14 +242,15 @@ class FormOther
     }
 
     /**
-     *  Return select list for categories (to use in form search selectors)
+     * Return select list for categories (to use in form search selectors)
      *
-     *	@param	int		$type			Type of categories (0=product, 1=suppliers, 2=customers, 3=members)
-     *  @param  string	$selected     	Preselected value
-     *  @param  string	$htmlname      	Name of combo list
-     *  @return string		        	Html combo list code
+     * @param	int		$type			Type of categories (0=product, 1=suppliers, 2=customers, 3=members)
+     * @param  string	$selected     	Preselected value
+     * @param  string	$htmlname      	Name of combo list
+     * @param	int		$nocateg		Show also an entry "Not categorized"
+     * @return string		        	Html combo list code
      */
-    function select_categories($type,$selected=0,$htmlname='search_categ')
+    function select_categories($type,$selected=0,$htmlname='search_categ',$nocateg=0)
     {
         global $langs;
         require_once(DOL_DOCUMENT_ROOT."/categories/class/categorie.class.php");
@@ -260,8 +261,8 @@ class FormOther
 
         // Print a select with each of them
         $moreforfilter ='<select class="flat" name="'.$htmlname.'">';
-        $moreforfilter.='<option value="">&nbsp;</option>';
-
+        $moreforfilter.='<option value="">&nbsp;</option>';	// Should use -1 to say nothing
+        
         if (is_array($tab_categs))
         {
             foreach ($tab_categs as $categ)
@@ -270,6 +271,11 @@ class FormOther
                 if ($categ['id'] == $selected) $moreforfilter.=' selected="selected"';
                 $moreforfilter.='>'.dol_trunc($categ['fulllabel'],50,'middle').'</option>';
             }
+        }
+        if ($nocateg) 
+        {
+        	$langs->load("categories");
+        	$moreforfilter.='<option value="-2"'.($selected == -2 ? ' selected="selected"':'').'>- '.$langs->trans("NotCategorized").' -</option>';
         }
         $moreforfilter.='</select>';
 
@@ -463,13 +469,31 @@ class FormOther
      */
     function select_color($set_color='', $prefix='f_color', $form_name='objForm', $showcolorbox=1, $arrayofcolors='')
     {
+    	print $this->selectColor($set_color, $prefix, $form_name, $showcolorbox, $arrayofcolors);
+    }
+
+    /**
+     *		Output a HTML code to select a color
+     *
+     *		@param	string		$set_color		Pre-selected color
+     *		@param	string		$prefix			Name of HTML field
+     *		@param	string		$form_name		Name of form
+     * 		@param	int			$showcolorbox	1=Show color code and color box, 0=Show only color code
+     * 		@param 	array		$arrayofcolors	Array of colors. Example: array('29527A','5229A3','A32929','7A367A','B1365F','0D7813')
+     * 		@return	void
+     */
+    function selectColor($set_color='', $prefix='f_color', $form_name='objForm', $showcolorbox=1, $arrayofcolors='')
+    {
         global $langs;
+
+        $out='';
+
         if (! is_array($arrayofcolors) || count($arrayofcolors) < 1)
         {
             $langs->load("other");
-            print '<link rel="stylesheet" media="screen" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/jpicker/css/jPicker-1.1.6.css" />';
-            print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/jpicker/jpicker-1.1.6.js"></script>';
-            print '<script type="text/javascript">
+            $out.= '<link rel="stylesheet" media="screen" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/jpicker/css/jPicker-1.1.6.css" />';
+            $out.= '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/jpicker/jpicker-1.1.6.js"></script>';
+            $out.= '<script type="text/javascript">
              jQuery(document).ready(function(){
                 $(\'#colorpicker'.$prefix.'\').jPicker( {
                 window: {
@@ -506,13 +530,13 @@ class FormOther
                   }
 		        } ); });
              </script>';
-            print '<input id="colorpicker'.$prefix.'" name="'.$prefix.'" size="6" maxlength="7" class="flat" type="text" value="'.$set_color.'" />';
+            $out.= '<input id="colorpicker'.$prefix.'" name="'.$prefix.'" size="6" maxlength="7" class="flat" type="text" value="'.$set_color.'" />';
         }
         else  // In most cases, this is not used. We used instead function with no specific list of colors
         {
-            print '<link rel="stylesheet" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/colorpicker/jquery.colorpicker.css" type="text/css" media="screen" />';
-            print '<script src="'.DOL_URL_ROOT.'/includes/jquery/plugins/colorpicker/jquery.colorpicker.js" type="text/javascript"></script>';
-            print '<script type="text/javascript">
+            $out.= '<link rel="stylesheet" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/colorpicker/jquery.colorpicker.css" type="text/css" media="screen" />';
+            $out.= '<script src="'.DOL_URL_ROOT.'/includes/jquery/plugins/colorpicker/jquery.colorpicker.js" type="text/javascript"></script>';
+            $out.= '<script type="text/javascript">
              jQuery(document).ready(function(){
                  jQuery(\'#colorpicker'.$prefix.'\').colorpicker({
                      size: 14,
@@ -522,16 +546,18 @@ class FormOther
              });
              </script>';
 
-            print '<select id="colorpicker'.$prefix.'" class="flat" name="'.$prefix.'">';
+            $out.= '<select id="colorpicker'.$prefix.'" class="flat" name="'.$prefix.'">';
             //print '<option value="-1">&nbsp;</option>';
             foreach ($arrayofcolors as $val)
             {
-                print '<option value="'.$val.'"';
-                if ($set_color == $val) print ' selected="selected"';
-                print '>'.$val.'</option>';
+                $out.= '<option value="'.$val.'"';
+                if ($set_color == $val) $out.= ' selected="selected"';
+                $out.= '>'.$val.'</option>';
             }
-            print '</select>';
+            $out.= '</select>';
         }
+
+        return $out;
     }
 
     /**
@@ -694,6 +720,7 @@ class FormOther
         $out.= '<select class="flat" id="' . $htmlname . '" name="' . $htmlname . '"'.$option.' >';
         if($useempty)
         {
+        	$selected_html='';
             if ($selected == '') $selected_html = ' selected="selected"';
             $out.= '<option value=""' . $selected_html . '>&nbsp;</option>';
         }

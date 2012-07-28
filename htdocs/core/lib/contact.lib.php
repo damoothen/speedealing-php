@@ -41,7 +41,7 @@ function contact_prepare_head($object)
 	$head[$h][2] = 'card';
 	$h++;
 
-	if ($conf->ldap->enabled && $conf->global->LDAP_CONTACT_ACTIVE)
+	if (! empty($conf->ldap->enabled) && ! empty($conf->global->LDAP_CONTACT_ACTIVE))
 	{
 		$langs->load("ldap");
 

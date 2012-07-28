@@ -26,14 +26,14 @@
  *	\brief      File of class to manage suppliers invoices
  */
 
-include_once(DOL_DOCUMENT_ROOT."/compta/facture/class/facture.class.php");
+include_once(DOL_DOCUMENT_ROOT."/core/class/commoninvoice.class.php");
 
 
 /**
  *	\class      FactureFournisseur
  *	\brief      Class to manage suppliers invoices
  */
-class FactureFournisseur extends Facture
+class FactureFournisseur extends CommonInvoice
 {
     public $element='invoice_supplier';
     public $table_element='facture_fourn';
@@ -164,7 +164,7 @@ class FactureFournisseur extends Facture
 
 
             // Add object linked
-            if (! $error && $this->id && $this->origin && $this->origin_id)
+            if (! $error && $this->id && ! empty($this->origin) && ! empty($this->origin_id))
             {
                 $ret = $this->add_object_linked();
                 if (! $ret)
@@ -195,7 +195,7 @@ class FactureFournisseur extends Facture
                         $this->lines[$i]->qty,
                         $this->lines[$i]->fk_product,
                         'HT',
-                        $this->lines[$i]->info_bits,
+                        (! empty($this->lines[$i]->info_bits)?$this->lines[$i]->info_bits:''),
                         $this->lines[$i]->product_type
                     );
                 }
@@ -405,27 +405,29 @@ class FactureFournisseur extends Facture
                 while ($i < $num_rows)
                 {
                     $obj = $this->db->fetch_object($resql_rows);
-                    $this->lines[$i]->rowid            = $obj->rowid;
-                    $this->lines[$i]->description      = $obj->description;
-                    $this->lines[$i]->ref              = $obj->product_ref;       // TODO deprecated
-                    $this->lines[$i]->product_ref      = $obj->product_ref;       // Internal reference
-                    //$this->lines[$i]->ref_fourn        = $obj->ref_fourn;       // Reference fournisseur du produit
-                    $this->lines[$i]->libelle          = $obj->label;           // Label du produit
-                    $this->lines[$i]->product_desc     = $obj->product_desc;    // Description du produit
-                    $this->lines[$i]->pu_ht            = $obj->pu_ht;
-                    $this->lines[$i]->pu_ttc           = $obj->pu_ttc;
-                    $this->lines[$i]->tva_tx           = $obj->tva_tx;
-                    $this->lines[$i]->localtax1_tx     = $obj->localtax1_tx;
-                    $this->lines[$i]->localtax2_tx     = $obj->localtax2_tx;
-                    $this->lines[$i]->qty              = $obj->qty;
-                    $this->lines[$i]->tva              = $obj->tva;
-                    $this->lines[$i]->total_ht         = $obj->total_ht;
-                    $this->lines[$i]->total_tva        = $obj->total_tva;
-                    $this->lines[$i]->total_localtax1  = $obj->total_localtax1;
-                    $this->lines[$i]->total_localtax2  = $obj->total_localtax2;
-                    $this->lines[$i]->total_ttc        = $obj->total_ttc;
-                    $this->lines[$i]->fk_product       = $obj->fk_product;
-                    $this->lines[$i]->product_type     = $obj->product_type;
+
+                    $this->lines[$i]					= (object) array();
+                    $this->lines[$i]->rowid				= $obj->rowid;
+                    $this->lines[$i]->description		= $obj->description;
+                    $this->lines[$i]->ref				= $obj->product_ref;       // TODO deprecated
+                    $this->lines[$i]->product_ref		= $obj->product_ref;       // Internal reference
+                    //$this->lines[$i]->ref_fourn		= $obj->ref_fourn;       // Reference fournisseur du produit
+                    $this->lines[$i]->libelle			= $obj->label;           // Label du produit
+                    $this->lines[$i]->product_desc		= $obj->product_desc;    // Description du produit
+                    $this->lines[$i]->pu_ht				= $obj->pu_ht;
+                    $this->lines[$i]->pu_ttc			= $obj->pu_ttc;
+                    $this->lines[$i]->tva_tx			= $obj->tva_tx;
+                    $this->lines[$i]->localtax1_tx		= $obj->localtax1_tx;
+                    $this->lines[$i]->localtax2_tx		= $obj->localtax2_tx;
+                    $this->lines[$i]->qty				= $obj->qty;
+                    $this->lines[$i]->tva				= $obj->tva;
+                    $this->lines[$i]->total_ht			= $obj->total_ht;
+                    $this->lines[$i]->total_tva			= $obj->total_tva;
+                    $this->lines[$i]->total_localtax1	= $obj->total_localtax1;
+                    $this->lines[$i]->total_localtax2	= $obj->total_localtax2;
+                    $this->lines[$i]->total_ttc			= $obj->total_ttc;
+                    $this->lines[$i]->fk_product		= $obj->fk_product;
+                    $this->lines[$i]->product_type		= $obj->product_type;
 
                     $i++;
                 }
@@ -1361,7 +1363,7 @@ class FactureFournisseur extends Facture
         // Loop on each line of new invoice
         foreach($object->lines as $i => $line)
         {
-            if (($object->lines[$i]->info_bits & 0x02) == 0x02)	// We do not clone line of discounts
+            if (isset($object->lines[$i]->info_bits) && ($object->lines[$i]->info_bits & 0x02) == 0x02)	// We do not clone line of discounts
             {
                 unset($object->lines[$i]);
             }

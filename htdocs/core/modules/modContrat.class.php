@@ -60,7 +60,7 @@ class modContrat extends DolibarrModules {
 		$this->values->dirs = array("/contracts/temp");
 
 		// Dependances
-		$this->values->depends = array("modService");
+		$this->values->depends = array("modSociete","modService");
 		$this->values->requiredby = array();
 
 		// Config pages

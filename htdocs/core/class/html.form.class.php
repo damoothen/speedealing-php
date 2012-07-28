@@ -49,7 +49,7 @@ class Form
     var $cache_conditions_paiements=array();
     var $cache_availability=array();
     var $cache_demand_reason=array();
-    var $cache_type_fees=array();
+    var $cache_types_fees=array();
     var $cache_currencies=array();
     var $cache_vatrates=array();
 
@@ -91,7 +91,7 @@ class Form
             if ($perm)
             {
                 $tmp=explode(':',$typeofdata);
-                $ret.= '<div class="editkey_'.$tmp[0].' '.$tmp[1].'" id="'.$htmlname.'">';
+                $ret.= '<div class="editkey_'.$tmp[0].(! empty($tmp[1]) ? ' '.$tmp[1] : '').'" id="'.$htmlname.'">';
                 $ret.= $langs->trans($text);
                 $ret.= '</div>'."\n";
             }
@@ -182,7 +182,7 @@ class Form
                     $ret.=$doleditor->Create(1);
                 }
                 $ret.='</td>';
-                if ($typeofdata != 'day' && $typeofdata != 'datepicker') $ret.='<td align="left"><input type="submit" class="button nice tiny" value="'.$langs->trans("Modify").'"></td>';
+                if ($typeofdata != 'day' && $typeofdata != 'datepicker') $ret.='<td align="left"><input type="submit" class="button" value="'.$langs->trans("Modify").'"></td>';
                 $ret.='</tr></table>'."\n";
                 $ret.='</form>'."\n";
             }
@@ -267,13 +267,15 @@ class Form
             if (preg_match('/^(string|email|numeric)/',$inputType))
             {
                 $tmp=explode(':',$inputType);
-                $inputType=$tmp[0]; $inputOption=$tmp[1];
+                $inputType=$tmp[0];
+                if (! empty($tmp[1])) $inputOption=$tmp[1];
                 if (! empty($tmp[2])) $savemethod=$tmp[2];
             }
             else if (preg_match('/^datepicker/',$inputType))
             {
                 $tmp=explode(':',$inputType);
-                $inputType=$tmp[0]; $inputOption=$tmp[1];
+                $inputType=$tmp[0];
+                if (! empty($tmp[1])) $inputOption=$tmp[1];
                 if (! empty($tmp[2])) $savemethod=$tmp[2];
 
                 $out.= '<input id="timestamp" type="hidden"/>'."\n"; // Use for timestamp format
@@ -318,8 +320,8 @@ class Form
             if (! empty($ext_element))	$out.= '<input id="ext_element_'.$htmlname.'" value="'.$ext_element.'" type="hidden"/>'."\n";
             if (! empty($success))		$out.= '<input id="success_'.$htmlname.'" value="'.$success.'" type="hidden"/>'."\n";
 
-            $out.= '<div id="viewval_'.$htmlname.'" class="viewval_'.$inputType.($button_only ? ' inactive' : ' active').'">'.$value.'</div>'."\n";
-            $out.= '<div id="editval_'.$htmlname.'" class="editval_'.$inputType.($button_only ? ' inactive' : ' active').' hideobject">'.(! empty($editvalue) ? $editvalue : $value).'</div>'."\n";
+            $out.= '<span id="viewval_'.$htmlname.'" class="viewval_'.$inputType.($button_only ? ' inactive' : ' active').'">'.$value.'</span>'."\n";
+            $out.= '<span id="editval_'.$htmlname.'" class="editval_'.$inputType.($button_only ? ' inactive' : ' active').' hideobject">'.(! empty($editvalue) ? $editvalue : $value).'</span>'."\n";
         }
         else
         {
@@ -669,6 +671,7 @@ class Form
         $sql.= " FROM ".MAIN_DB_PREFIX ."societe as s";
         if (!$user->rights->societe->client->voir && !$user->societe_id) $sql .= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
         $sql.= " WHERE s.entity IN (".getEntity('societe', 1).")";
+        if (! empty($user->societe_id)) $sql.= " AND s.rowid = ".$user->societe_id;
         if ($filter) $sql.= " AND ".$filter;
         if (!$user->rights->societe->client->voir && !$user->societe_id) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
         $sql.= " ORDER BY nom ASC";
@@ -929,7 +932,7 @@ class Form
      *  @param	int		$force_entity	Possibility to force entity
      * 	@return	void
      */
-    function select_users($selected='',$htmlname='userid',$show_empty=0,$exclude='',$disabled=0,$include='',$enableonly='',$force_entity=0)
+    function select_users($selected='',$htmlname='userid',$show_empty=0,$exclude='',$disabled=0,$include='',$enableonly='',$force_entity=false)
     {
         print $this->select_dolusers($selected,$htmlname,$show_empty,$exclude,$disabled,$include,$enableonly,$force_entity);
     }
@@ -1322,10 +1325,10 @@ class Form
         $sql.= " s.nom";
         $sql.= " FROM ".MAIN_DB_PREFIX."product as p";
         $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product_fournisseur_price as pfp ON p.rowid = pfp.fk_product";
+        if ($socid) $sql.= " AND pfp.fk_soc = ".$socid;
         $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."societe as s ON pfp.fk_soc = s.rowid";
         $sql.= " WHERE p.entity IN (".getEntity('product', 1).")";
         $sql.= " AND p.tobuy = 1";
-        if ($socid) $sql.= " AND pfp.fk_soc = ".$socid;
         if (strval($filtertype) != '') $sql.=" AND p.fk_product_type=".$filtertype;
         if (! empty($filtre)) $sql.=" ".$filtre;
         // Add criteria on ref/label
@@ -2113,21 +2116,23 @@ class Form
         $inputok=array();
         $inputko=array();
 
-        if (is_array($formquestion) && count($formquestion) > 0)
+        if (is_array($formquestion) && ! empty($formquestion))
         {
             $more.='<table class="paddingrightonly" width="100%">'."\n";
-            $more.='<tr><td colspan="3" valign="top">'.$formquestion['text'].'</td></tr>'."\n";
+            $more.='<tr><td colspan="3" valign="top">'.(! empty($formquestion['text'])?$formquestion['text']:'').'</td></tr>'."\n";
             foreach ($formquestion as $key => $input)
             {
-                if (is_array($input))
+                if (is_array($input) && ! empty($input))
                 {
+                	$size=(! empty($input['size'])?' size="'.$input['size'].'"':'');
+
                     if ($input['type'] == 'text')
                     {
-                        $more.='<tr><td valign="top">'.$input['label'].'</td><td valign="top" colspan="2" align="left"><input type="text" class="flat" id="'.$input['name'].'" name="'.$input['name'].'" size="'.$input['size'].'" value="'.$input['value'].'" /></td></tr>'."\n";
+                        $more.='<tr><td valign="top">'.$input['label'].'</td><td valign="top" colspan="2" align="left"><input type="text" class="flat" id="'.$input['name'].'" name="'.$input['name'].'"'.$size.' value="'.$input['value'].'" /></td></tr>'."\n";
                     }
                     else if ($input['type'] == 'password')
                     {
-                        $more.='<tr><td valign="top">'.$input['label'].'</td><td valign="top" colspan="2" align="left"><input type="password" class="flat" id="'.$input['name'].'" name="'.$input['name'].'" size="'.$input['size'].'" value="'.$input['value'].'" /></td></tr>'."\n";
+                        $more.='<tr><td valign="top">'.$input['label'].'</td><td valign="top" colspan="2" align="left"><input type="password" class="flat" id="'.$input['name'].'" name="'.$input['name'].'"'.$size.' value="'.$input['value'].'" /></td></tr>'."\n";
                     }
                     else if ($input['type'] == 'select')
                     {
@@ -2143,7 +2148,7 @@ class Form
                         $more.='<input type="checkbox" class="flat" id="'.$input['name'].'" name="'.$input['name'].'"';
                         if (! is_bool($input['value']) && $input['value'] != 'false') $more.=' checked="checked"';
                         if (is_bool($input['value']) && $input['value']) $more.=' checked="checked"';
-                        if ($input['disabled']) $more.=' disabled="disabled"';
+                        if (isset($input['disabled'])) $more.=' disabled="disabled"';
                         $more.=' /></td>';
                         $more.='<td valign="top" align="left">&nbsp;</td>';
                         $more.='</tr>'."\n";
@@ -2200,8 +2205,8 @@ class Form
             {
                 foreach ($formquestion as $key => $input)
                 {
-                    array_push($inputok,$input['name']);
-                    if ($input['inputko'] == 1) array_push($inputko,$input['name']);
+                    if (isset($input['name'])) array_push($inputok,$input['name']);
+                    if (isset($input['inputko']) && $input['inputko'] == 1) array_push($inputko,$input['name']);
                 }
             }
 
@@ -2642,9 +2647,14 @@ class Form
      *    @param	string	$page       Page
      *    @param    string	$selected   Id preselected
      *    @param    string	$htmlname	Name of HTML select
+     *  @param  string	$filter         Optionnal filters criteras
+     *	@param	int		$showempty		Add an empty field
+     * 	@param	int		$showtype		Show third party type in combolist (customer, prospect or supplier)
+     * 	@param	int		$forcecombo		Force to use combo box
+     *  @param	array	$event			Event options
      *    @return	void
      */
-    function form_thirdparty($page, $selected='', $htmlname='socid')
+    function form_thirdparty($page, $selected='', $htmlname='socid', $filter='',$showempty=0, $showtype=0, $forcecombo=0, $event=array())
     {
         global $langs;
 
@@ -2655,7 +2665,7 @@ class Form
             print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
             print '<table class="nobordernopadding" cellpadding="0" cellspacing="0">';
             print '<tr><td>';
-            print $this->select_company($selected, $htmlname);
+            print $this->select_company($selected, $htmlname, $filter, $showempty, $showtype, $forcecombo, $event);
             print '</td>';
             print '<td align="left"><input type="submit" class="button" value="'.$langs->trans("Modify").'"></td>';
             print '</tr></table></form>';
@@ -3021,11 +3031,11 @@ class Form
         if (preg_match('/^([0-9]+)\-([0-9]+)\-([0-9]+)\s?([0-9]+)?:?([0-9]+)?/',$set_time,$reg))
         {
             // Date format 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM:SS'
-            $syear = $reg[1];
-            $smonth = $reg[2];
-            $sday = $reg[3];
-            $shour = $reg[4];
-            $smin = $reg[5];
+            $syear	= (! empty($reg[1])?$reg[1]:'');
+            $smonth	= (! empty($reg[2])?$reg[2]:'');
+            $sday	= (! empty($reg[3])?$reg[3]:'');
+            $shour	= (! empty($reg[4])?$reg[4]:'');
+            $smin	= (! empty($reg[5])?$reg[5]:'');
         }
         elseif (strval($set_time) != '' && $set_time != -1)
         {
@@ -3049,8 +3059,9 @@ class Form
         if ($d)
         {
             // Show date with popup
-            if ($conf->use_javascript_ajax && (empty($conf->global->MAIN_POPUP_CALENDAR) || $conf->global->MAIN_POPUP_CALENDAR != "none"))
+            if (! empty($conf->use_javascript_ajax) && (empty($conf->global->MAIN_POPUP_CALENDAR) || $conf->global->MAIN_POPUP_CALENDAR != "none"))
             {
+            	$formated_date='';
                 //print "e".$set_time." t ".$conf->format_date_short;
                 if (strval($set_time) != '' && $set_time != -1)
                 {
@@ -3212,7 +3223,7 @@ class Form
             // Generate the date part, depending on the use or not of the javascript calendar
             if (empty($conf->global->MAIN_POPUP_CALENDAR) || $conf->global->MAIN_POPUP_CALENDAR == "eldy")
             {
-                $base=DOL_URL_ROOT.'/core/lib/';
+                $base=DOL_URL_ROOT.'/core/';
                 $reset_scripts .= 'resetDP(\''.$base.'\',\''.$prefix.'\',\''.$langs->trans("FormatDateShortJava").'\',\''.$langs->defaultlang.'\');';
             }
             else
@@ -3652,7 +3663,7 @@ class Form
             }
             else
             {
-                if ($conf->gravatar->enabled && $email)
+                if (! empty($conf->gravatar->enabled) && $email)
                 {
                     global $dolibarr_main_url_root;
                     $ret.='<!-- Put link to gravatar -->';

@@ -40,7 +40,7 @@ echo $this->control->tpl['ajax_selectcountry'];
 <input type="hidden" name="contactid" value="<?php echo $this->control->tpl['id']; ?>">
 <input type="hidden" name="old_name" value="<?php echo $this->control->tpl['name']; ?>">
 <input type="hidden" name="old_firstname" value="<?php echo $this->control->tpl['firstname']; ?>">
-<?php if ($this->control->tpl['company_id']) { ?>
+<?php if (! empty($this->control->tpl['company_id'])) { ?>
 <input type="hidden" name="socid" value="<?php echo $this->control->tpl['company_id']; ?>">
 <?php } ?>
 
@@ -133,12 +133,13 @@ echo $this->control->tpl['ajax_selectcountry'];
 	<td colspan="3" valign="top"><textarea name="note" cols="70" rows="<?php echo ROWS_3; ?>"><?php echo $this->control->tpl['note']; ?></textarea></td>
 </tr>
 
+<?php if (! empty($this->control->tpl['contact_element'])) { ?>
 <?php foreach ($this->control->tpl['contact_element'] as $element) { ?>
 <tr>
 	<td><?php echo $element['linked_element_label']; ?></td>
 	<td colspan="3"><?php echo $element['linked_element_value']; ?></td>
 </tr>
-<?php } ?>
+<?php } } ?>
 
 <tr>
 	<td><?php echo $langs->trans("DolibarrLogin"); ?></td>

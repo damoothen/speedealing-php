@@ -39,8 +39,8 @@ require_once(DOL_DOCUMENT_ROOT.'/compta/paiement/class/paiement.class.php');
 require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
 require_once(DOL_DOCUMENT_ROOT.'/core/lib/invoice.lib.php');
 require_once(DOL_DOCUMENT_ROOT."/core/lib/date.lib.php");
-if ($conf->commande->enabled) require_once(DOL_DOCUMENT_ROOT.'/commande/class/commande.class.php');
-if ($conf->projet->enabled)
+if (! empty($conf->commande->enabled)) require_once(DOL_DOCUMENT_ROOT.'/commande/class/commande.class.php');
+if (! empty($conf->projet->enabled))
 {
 	require_once(DOL_DOCUMENT_ROOT.'/projet/class/project.class.php');
 	require_once(DOL_DOCUMENT_ROOT.'/core/lib/project.lib.php');
@@ -52,8 +52,8 @@ $langs->load('bills');
 $langs->load('companies');
 $langs->load('products');
 $langs->load('main');
-
-if (GETPOST('mesg','int',1) && isset($_SESSION['message'])) $mesg=$_SESSION['message'];
+if (! empty($conf->margin->enabled))
+  $langs->load('margins');
 
 $sall=trim(GETPOST('sall'));
 $projectid=(GETPOST('projectid')?GETPOST('projectid','int'):0);
@@ -83,7 +83,7 @@ $result = restrictedArea($user, 'facture', $id,'','','fk_soc',$fieldid);
 // Nombre de ligne pour choix de produit/service predefinis
 $NBLINES=4;
 
-$usehm=$conf->global->MAIN_USE_HOURMIN_IN_DATE_RANGE;
+$usehm=(! empty($conf->global->MAIN_USE_HOURMIN_IN_DATE_RANGE)?$conf->global->MAIN_USE_HOURMIN_IN_DATE_RANGE:0);
 
 $object=new Facture($db);
 
@@ -112,7 +112,7 @@ if ($action == 'confirm_clone' && $confirm == 'yes' && $user->rights->facture->c
 {
     if (1==0 && empty($_REQUEST["clone_content"]) && empty($_REQUEST["clone_receivers"]))
     {
-        $mesg='<div class="error">'.$langs->trans("NoCloneOptionsSpecified").'</div>';
+        $mesgs[]='<div class="error">'.$langs->trans("NoCloneOptionsSpecified").'</div>';
     }
     else
     {
@@ -126,7 +126,7 @@ if ($action == 'confirm_clone' && $confirm == 'yes' && $user->rights->facture->c
     		}
     		else
     		{
-    			$mesg=$object->error;
+    			$mesgs[]=$object->error;
     			$action='';
     		}
     	}
@@ -148,7 +148,7 @@ else if ($action == 'reopen' && $user->rights->facture->creer)
         }
         else
         {
-            $mesg='<div class="error">'.$object->error.'</div>';
+            $mesgs[]='<div class="error">'.$object->error.'</div>';
         }
     }
 }
@@ -161,12 +161,12 @@ else if ($action == 'confirm_delete' && $confirm == 'yes' && $user->rights->fact
 	$result = $object->delete();
 	if ($result > 0)
 	{
-		Header('Location: '.$_SERVER["PHP_SELF"]);
+		Header('Location: '.DOL_URL_ROOT.'/compta/facture/list.php');
 		exit;
 	}
 	else
 	{
-		$mesg='<div class="error">'.$object->error.'</div>';
+		$mesgs[]='<div class="error">'.$object->error.'</div>';
 	}
 }
 
@@ -202,7 +202,7 @@ else if ($action == 'confirm_deleteline' && $confirm == 'yes' && $user->rights->
 	}
 	else
 	{
-		$mesg='<div clas="error">'.$object->error.'</div>';
+		$mesgs[]='<div clas="error">'.$object->error.'</div>';
 		$action='';
 	}
 }
@@ -226,7 +226,7 @@ else if ($action == 'valid' && $user->rights->facture->creer)
         // Si avoir, le signe doit etre negatif
         if ($object->total_ht >= 0)
         {
-            $mesg='<div class="error">'.$langs->trans("ErrorInvoiceAvoirMustBeNegative").'</div>';
+            $mesgs[]='<div class="error">'.$langs->trans("ErrorInvoiceAvoirMustBeNegative").'</div>';
             $action='';
         }
     }
@@ -235,7 +235,7 @@ else if ($action == 'valid' && $user->rights->facture->creer)
         // Si non avoir, le signe doit etre positif
         if (empty($conf->global->FACTURE_ENABLE_NEGATIVE) && $object->total_ht < 0)
         {
-            $mesg='<div class="error">'.$langs->trans("ErrorInvoiceOfThisTypeMustBePositive").'</div>';
+            $mesgs[]='<div class="error">'.$langs->trans("ErrorInvoiceOfThisTypeMustBePositive").'</div>';
             $action='';
         }
     }
@@ -302,7 +302,7 @@ else if ($action == "setabsolutediscount" && $user->rights->facture->creer)
             $result=$object->insert_discount($_POST["remise_id"]);
             if ($result < 0)
             {
-                $mesg='<div class="error">'.$object->error.'</div>';
+                $mesgs[]='<div class="error">'.$object->error.'</div>';
             }
         }
         else
@@ -319,7 +319,7 @@ else if ($action == "setabsolutediscount" && $user->rights->facture->creer)
         $result=$discount->link_to_invoice(0,$id);
         if ($result < 0)
         {
-            $mesg='<div class="error">'.$discount->error.'</div>';
+            $mesgs[]='<div class="error">'.$discount->error.'</div>';
         }
     }
 }
@@ -358,7 +358,7 @@ else if ($action == 'confirm_valid' && $confirm == 'yes' && $user->rights->factu
         if (! $idwarehouse || $idwarehouse == -1)
         {
             $error++;
-            $errors[]=$langs->trans('ErrorFieldRequired',$langs->transnoentitiesnoconv("Warehouse"));
+            $mesgs[]=$langs->trans('ErrorFieldRequired',$langs->transnoentitiesnoconv("Warehouse"));
             $action='';
         }
     }
@@ -386,7 +386,7 @@ else if ($action == 'confirm_valid' && $confirm == 'yes' && $user->rights->factu
         }
         else
         {
-            $mesg='<div class="error">'.$object->error.'</div>';
+            $mesgs[]='<div class="error">'.$object->error.'</div>';
         }
     }
 }
@@ -405,7 +405,7 @@ else if ($action == 'confirm_modif' && ((empty($conf->global->MAIN_USE_ADVANCED_
         if (! $idwarehouse || $idwarehouse == -1)
         {
             $error++;
-            $errors[]=$langs->trans('ErrorFieldRequired',$langs->transnoentitiesnoconv("Warehouse"));
+            $mesgs[]=$langs->trans('ErrorFieldRequired',$langs->transnoentitiesnoconv("Warehouse"));
             $action='';
         }
     }
@@ -482,7 +482,7 @@ else if ($action == 'confirm_paid_partially' && $confirm == 'yes' && $user->righ
     }
     else
     {
-        $mesg='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->trans("Reason")).'</div>';
+        $mesgs[]='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->trans("Reason")).'</div>';
     }
 }
 // Classify "abandoned"
@@ -497,7 +497,7 @@ else if ($action == 'confirm_canceled' && $confirm == 'yes')
     }
     else
     {
-        $mesg='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->trans("Reason")).'</div>';
+        $mesgs[]='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->trans("Reason")).'</div>';
     }
 }
 
@@ -556,18 +556,18 @@ else if ($action == 'confirm_converttoreduc' && $confirm == 'yes' && $user->righ
             $result=$object->set_paid($user);
             if ($result > 0)
             {
-                //$mesg='OK'.$discount->id;
+                //$mesgs[]='OK'.$discount->id;
                 $db->commit();
             }
             else
             {
-                $mesg='<div class="error">'.$object->error.'</div>';
+                $mesgs[]='<div class="error">'.$object->error.'</div>';
                 $db->rollback();
             }
         }
         else
         {
-            $mesg='<div class="error">'.$discount->error.'</div>';
+            $mesgs[]='<div class="error">'.$discount->error.'</div>';
             $db->rollback();
         }
     }
@@ -591,13 +591,13 @@ else if ($action == 'add' && $user->rights->facture->creer)
         if (empty($datefacture))
         {
             $error++;
-            $mesg='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->trans("Date")).'</div>';
+            $mesgs[]='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->trans("Date")).'</div>';
         }
 
         if (! ($_POST['fac_replacement'] > 0))
         {
             $error++;
-            $mesg='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->trans("ReplaceInvoice")).'</div>';
+            $mesgs[]='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->trans("ReplaceInvoice")).'</div>';
         }
 
         if (! $error)
@@ -623,7 +623,7 @@ else if ($action == 'add' && $user->rights->facture->creer)
             $object->type				= 1;
 
             $id=$object->createFromCurrent($user);
-            if ($id <= 0) $mesg=$object->error;
+            if ($id <= 0) $mesgs[]=$object->error;
         }
     }
 
@@ -633,14 +633,14 @@ else if ($action == 'add' && $user->rights->facture->creer)
         if (! $_POST['fac_avoir'] > 0)
         {
             $error++;
-            $mesg='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->trans("CorrectInvoice")).'</div>';
+            $mesgs[]='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->trans("CorrectInvoice")).'</div>';
         }
 
         $datefacture = dol_mktime(12, 0, 0, $_POST['remonth'], $_POST['reday'], $_POST['reyear']);
         if (empty($datefacture))
         {
             $error++;
-            $mesg='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->trans("Date")).'</div>';
+            $mesgs[]='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->trans("Date")).'</div>';
         }
 
         if (! $error)
@@ -692,7 +692,7 @@ else if ($action == 'add' && $user->rights->facture->creer)
         if (empty($datefacture))
         {
             $error++;
-            $mesg='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->trans("Date")).'</div>';
+            $mesgs[]='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->trans("Date")).'</div>';
         }
 
         if (! $error)
@@ -721,7 +721,7 @@ else if ($action == 'add' && $user->rights->facture->creer)
         if (empty($datefacture))
         {
             $error++;
-            $mesg='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->trans("Date")).'</div>';
+            $mesgs[]='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->trans("Date")).'</div>';
         }
 
         if (! $error)
@@ -812,7 +812,7 @@ else if ($action == 'add' && $user->rights->facture->creer)
                                 }
                                 else
                                 {
-                                    $mesg=$discount->error;
+                                    $mesgs[]=$discount->error;
                                     $error++;
                                     break;
                                 }
@@ -861,7 +861,9 @@ else if ($action == 'add' && $user->rights->facture->creer)
                                     $lines[$i]->special_code,
                                     $object->origin,
                                     $lines[$i]->rowid,
-                                    $fk_parent_line
+                                    $fk_parent_line,
+                                    $lines[$i]->fk_fournprice,
+                                    $lines[$i]->pa_ht
                                 );
 
                                 if ($result > 0)
@@ -889,13 +891,13 @@ else if ($action == 'add' && $user->rights->facture->creer)
                     }
                     else
                     {
-                        $mesg=$srcobject->error;
+                        $mesgs[]=$srcobject->error;
                         $error++;
                     }
                 }
                 else
                 {
-                    $mesg=$object->error;
+                    $mesgs[]=$object->error;
                     $error++;
                 }
             }
@@ -932,7 +934,7 @@ else if ($action == 'add' && $user->rights->facture->creer)
         $action='create';
         $_GET["origin"]=$_POST["origin"];
         $_GET["originid"]=$_POST["originid"];
-        if (! $mesg) $mesg='<div class="error">'.$object->error.'</div>';
+        $mesgs[]='<div class="error">'.$object->error.'</div>';
     }
 }
 
@@ -944,27 +946,27 @@ else if (($action == 'addline' || $action == 'addline_predef') && $user->rights-
     if ($_POST['np_price'] < 0 && $_POST["qty"] < 0)
     {
     	$langs->load("errors");
-    	$mesg='<div class="error">'.$langs->trans("ErrorBothFieldCantBeNegative",$langs->transnoentitiesnoconv("UnitPriceHT"),$langs->transnoentitiesnoconv("Qty")).'</div>';
+    	$mesgs[]='<div class="error">'.$langs->trans("ErrorBothFieldCantBeNegative",$langs->transnoentitiesnoconv("UnitPriceHT"),$langs->transnoentitiesnoconv("Qty")).'</div>';
     	$result = -1 ;
     }
     if (empty($_POST['idprod']) && $_POST["type"] < 0)
     {
-        $mesg='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->transnoentitiesnoconv("Type")).'</div>';
+        $mesgs[]='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->transnoentitiesnoconv("Type")).'</div>';
         $result = -1 ;
     }
     if (empty($_POST['idprod']) && (! isset($_POST["np_price"]) || $_POST["np_price"]==''))	// Unit price can be 0 but not ''
     {
-        $mesg='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->transnoentitiesnoconv("UnitPriceHT")).'</div>';
+        $mesgs[]='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->transnoentitiesnoconv("UnitPriceHT")).'</div>';
         $result = -1 ;
     }
     if (empty($_POST['idprod']) && empty($_POST["np_desc"]) && empty($_POST["dp_desc"]))
     {
-        $mesg='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->transnoentitiesnoconv("Description")).'</div>';
+        $mesgs[]='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->transnoentitiesnoconv("Description")).'</div>';
         $result = -1 ;
     }
     if (! isset($_POST['qty']) || $_POST['qty']=='')
     {
-        $mesg='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->transnoentitiesnoconv('Qty')).'</div>';
+        $mesgs[]='<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->transnoentitiesnoconv('Qty')).'</div>';
         $result = -1 ;
     }
     if ($result >= 0 && ( ($_POST['np_price']!='' && ($_POST['np_desc'] || $_POST['dp_desc'])) || $_POST['idprod'] ) )
@@ -1070,6 +1072,13 @@ else if (($action == 'addline' || $action == 'addline_predef') && $user->rights-
         $localtax1_tx=get_localtax($tva_tx,1,$object->client);
         $localtax2_tx=get_localtax($tva_tx,2,$object->client);
 
+    		// ajout prix achat
+    		$fk_fournprice = $_POST['np_fournprice'];
+    		if ( ! empty($_POST['np_buying_price']) )
+    		  $pa_ht = $_POST['np_buying_price'];
+    		else
+    		  $pa_ht = null;
+
         $info_bits=0;
         if ($tva_npr) $info_bits |= 0x01;
 
@@ -1101,12 +1110,13 @@ else if (($action == 'addline' || $action == 'addline_predef') && $user->rights-
                     $price_base_type,
                     $pu_ttc,
                     $type,
-                $prod->ecotax,
                     -1,
                     0,
                     '',
                     0,
-                    GETPOST('fk_parent_line')
+                    GETPOST('fk_parent_line'),
+                    $fk_fournprice,
+                    $pa_ht
                 );
             }
         }
@@ -1137,10 +1147,11 @@ else if (($action == 'addline' || $action == 'addline_predef') && $user->rights-
         unset($_POST['np_desc']);
         unset($_POST['np_price']);
         unset($_POST['np_tva_tx']);
+				unset($_POST['np_buying_price']);
     }
     else
     {
-        if (empty($mesg)) $mesg='<div class="error">'.$object->error.'</div>';
+        $mesgs[]='<div class="error">'.$object->error.'</div>';
     }
 
     $action='';
@@ -1169,10 +1180,17 @@ else if ($action == 'updateligne' && $user->rights->facture->creer && $_POST['sa
     $localtax1_rate=get_localtax($vat_rate,1,$object->client);
     $localtax2_rate=get_localtax($vat_rate,2,$object->client);
 
+  	// ajout prix d'achat
+  	$fk_fournprice = $_POST['fournprice'];
+  	if ( ! empty($_POST['buying_price']) )
+  	  $pa_ht = $_POST['buying_price'];
+  	else
+  	  $pa_ht = null;
+
     // Check parameters
     if (! GETPOST('productid') && GETPOST("type") < 0)
     {
-        $mesg = '<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->transnoentitiesnoconv("Type")).'</div>';
+        $mesgs[] = '<div class="error">'.$langs->trans("ErrorFieldRequired",$langs->transnoentitiesnoconv("Type")).'</div>';
         $result = -1 ;
     }
     // Check minimum price
@@ -1188,7 +1206,7 @@ else if ($action == 'updateligne' && $user->rights->facture->creer && $_POST['sa
     if ($object->type!=2 && $price_min && GETPOST('productid') && (price2num($up_ht)*(1-price2num(GETPOST('remise_percent'))/100) < price2num($price_min)))
     {
         //print "CantBeLessThanMinPrice ".$up_ht." - ".GETPOST('remise_percent')." - ".$product->price_min;
-        $mesg = '<div class="error">'.$langs->trans("CantBeLessThanMinPrice",price2num($price_min,'MU').' '.$langs->trans("Currency".$conf->currency)).'</div>';
+        $mesgs[] = '<div class="error">'.$langs->trans("CantBeLessThanMinPrice",price2num($price_min,'MU').' '.$langs->trans("Currency".$conf->currency)).'</div>';
         $result=-1;
     }
 
@@ -1213,7 +1231,10 @@ else if ($action == 'updateligne' && $user->rights->facture->creer && $_POST['sa
             'HT',
             $info_bits,
             $type,
-            GETPOST('fk_parent_line')
+            GETPOST('fk_parent_line'),
+            0,
+            $fk_fournprice,
+            $pa_ht
         );
 
         // Define output language
@@ -1230,6 +1251,13 @@ else if ($action == 'updateligne' && $user->rights->facture->creer && $_POST['sa
         {
             $ret=$object->fetch($id);    // Reload to get new records
             facture_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref, $hookmanager);
+
+						unset($_POST['qty']);
+						unset($_POST['type']);
+						unset($_POST['np_price']);
+						unset($_POST['dp_desc']);
+						unset($_POST['np_tva_tx']);
+						unset($_POST['np_buying_price']);
         }
     }
 }
@@ -1288,7 +1316,7 @@ else if ($action == 'down' && $user->rights->facture->creer)
 /*
  * Add file in email form
  */
-if ($_POST['addfile'])
+if (GETPOST('addfile'))
 {
     require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
 
@@ -1296,7 +1324,7 @@ if ($_POST['addfile'])
     $vardir=$conf->user->dir_output."/".$user->id;
     $upload_dir_tmp = $vardir.'/temp';
 
-    $mesg=dol_add_file_process($upload_dir_tmp,0,0);
+    $mesgs[]=dol_add_file_process($upload_dir_tmp,0,0);
 
     $action='presend';
 }
@@ -1313,7 +1341,7 @@ if (! empty($_POST['removedfile']))
     $upload_dir_tmp = $vardir.'/temp';
 
 	// TODO Delete only files that was uploaded from email form
-    $mesg=dol_remove_file_process($_POST['removedfile'],0);
+    $mesgs[]=dol_remove_file_process($_POST['removedfile'],0);
 
     $action='presend';
 }
@@ -1444,8 +1472,8 @@ if (($action == 'send' || $action == 'relance') && ! $_POST['addfile'] && ! $_PO
                         {
                             // Redirect here
                             // This avoid sending mail twice if going out and then back to page
-                            $_SESSION['message'] = $mesg;
-                            Header('Location: '.$_SERVER["PHP_SELF"].'?facid='.$object->id.'&mesg=1');
+                            $_SESSION['dol_message'] = $mesg;
+                            Header('Location: '.$_SERVER["PHP_SELF"].'?facid='.$object->id);
                             exit;
                         }
                     }
@@ -1463,27 +1491,28 @@ if (($action == 'send' || $action == 'relance') && ! $_POST['addfile'] && ! $_PO
                             $mesg.='No mail sent. Feature is disabled by option MAIN_DISABLE_ALL_MAILS';
                         }
                         $mesg.='</div>';
+                        $mesgs[]=$mesg;
                     }
                 }
 /*            }
             else
             {
                 $langs->load("other");
-                $mesg='<div class="error">'.$langs->trans('ErrorMailRecipientIsEmpty').'</div>';
+                $mesgs[]='<div class="error">'.$langs->trans('ErrorMailRecipientIsEmpty').'</div>';
                 dol_syslog('Recipient email is empty');
             }*/
         }
         else
         {
             $langs->load("errors");
-            $mesg='<div class="error">'.$langs->trans('ErrorCantReadFile',$file).'</div>';
+            $mesgs[]='<div class="error">'.$langs->trans('ErrorCantReadFile',$file).'</div>';
             dol_syslog('Failed to read file: '.$file);
         }
     }
     else
     {
         $langs->load("other");
-        $mesg='<div class="error">'.$langs->trans('ErrorFailedToReadEntity',$langs->trans("Invoice")).'</div>';
+        $mesgs[]='<div class="error">'.$langs->trans('ErrorFailedToReadEntity',$langs->trans("Invoice")).'</div>';
         dol_syslog('Impossible de lire les donnees de la facture. Le fichier facture n\'a peut-etre pas ete genere.');
     }
 
@@ -1539,7 +1568,7 @@ else if ($action == 'remove_file')
 		$upload_dir = $conf->facture->dir_output;
 		$file = $upload_dir . '/' . GETPOST('file');
 		dol_delete_file($file,0,0,0,$object);
-		$mesg = '<div class="ok">'.$langs->trans("FileWasRemoved",GETPOST('file')).'</div>';
+		$mesgs[] = '<div class="ok">'.$langs->trans("FileWasRemoved",GETPOST('file')).'</div>';
 	}
 }
 
@@ -1565,11 +1594,11 @@ if (! empty($conf->global->MAIN_DISABLE_CONTACTS_TAB))
 			if ($object->error == 'DB_ERROR_RECORD_ALREADY_EXISTS')
 			{
 				$langs->load("errors");
-				$mesg = '<div class="error">'.$langs->trans("ErrorThisContactIsAlreadyDefinedAsThisType").'</div>';
+				$mesgs[] = '<div class="error">'.$langs->trans("ErrorThisContactIsAlreadyDefinedAsThisType").'</div>';
 			}
 			else
 			{
-				$mesg = '<div class="error">'.$object->error.'</div>';
+				$mesgs[] = '<div class="error">'.$object->error.'</div>';
 			}
 		}
 	}
@@ -1617,8 +1646,6 @@ $formfile = new FormFile($db);
 $bankaccountstatic=new Account($db);
 $now=dol_now();
 
-print '<div class="row">';
-print start_box($langs->trans('Bill'),"twelve","16-List-w_-Images.png");
 
 /*********************************************************************
  *
@@ -1630,9 +1657,6 @@ if ($action == 'create')
     $facturestatic=new Facture($db);
 
     print_fiche_titre($langs->trans('NewBill'));
-
-    dol_htmloutput_mesg($mesg);
-    dol_htmloutput_errors('',$errors);
 
     $soc = new Societe($db);
     if ($socid) $res=$soc->fetch($socid);
@@ -2079,8 +2103,6 @@ else if ($id > 0 || ! empty($ref))
     /*
      * Show object in view mode
      */
-    dol_htmloutput_mesg($mesg);
-    dol_htmloutput_errors('',$errors);
 
     $result=$object->fetch($id,$ref);
     if ($result > 0)
@@ -2376,7 +2398,7 @@ else if ($id > 0 || ! empty($ref))
         print '<table class="nobordernopadding" width="100%">';
         print '<tr><td>'.$langs->trans('Company').'</td>';
         print '</td><td colspan="5">';
-        if ($conf->global->FACTURE_CHANGE_THIRDPARTY && $action != 'editthirdparty' && $object->brouillon && $user->rights->facture->creer)
+        if (! empty($conf->global->FACTURE_CHANGE_THIRDPARTY) && $action != 'editthirdparty' && $object->brouillon && $user->rights->facture->creer)
         print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editthirdparty&amp;facid='.$object->id.'">'.img_edit($langs->trans('SetLinkToThirdParty'),1).'</a></td>';
         print '</tr></table>';
         print '</td><td colspan="5">';
@@ -2735,6 +2757,12 @@ else if ($id > 0 || ! empty($ref))
 
         print '</table>';
 
+				// Margin Infos
+				if (! empty($conf->margin->enabled)) {
+				  print '<br>';
+				  $object->displayMarginInfos($object->statut > 0);
+				}
+
         print '</td></tr>';
 
         // Date payment term
@@ -2811,14 +2839,9 @@ else if ($id > 0 || ! empty($ref))
         print '<td align="right" colspan="2" nowrap>'.price($object->total_ht).'</td>';
         print '<td>'.$langs->trans('Currency'.$conf->currency).'</td></tr>';
         print '<tr><td>'.$langs->trans('AmountVAT').'</td><td align="right" colspan="2" nowrap>'.price($object->total_tva).'</td>';
-        print '<td>'.$langs->trans('Currency'.$conf->currency).'</td></tr>';
-		if($conf->global->PRODUCT_USE_ECOTAX)
-            {
-                print '<tr><td>'.$langs->trans('AmountEcotax').'</td>';
-                print '<td align="right" colspan="2" nowrap><b>'.price(price2num($object->total_ttc-$object->total_tva-$object->total_ht, 'MT')).'</b></td>';
-                print '<td>'.$langs->trans('Currency'.$conf->currency);
-                print'</td></tr>';
-            }
+        print '<td>'.$langs->trans('Currency'.$conf->currency).'</td>';
+
+				print '</tr>';
 
         // Amount Local Taxes
         if ($mysoc->pays_code=='ES')
@@ -3028,7 +3051,7 @@ else if ($id > 0 || ! empty($ref))
                     }
                 }
 
-                if ($conf->global->FACTURE_SHOW_SEND_REMINDER)	// For backward compatibility
+                if (! empty($conf->global->FACTURE_SHOW_SEND_REMINDER))	// For backward compatibility
                 {
                     if (($object->statut == 1 || $object->statut == 2) && $resteapayer > 0)
                     {
@@ -3304,6 +3327,7 @@ else if ($id > 0 || ! empty($ref))
 print end_box();
 print '</div>';
 
+dol_htmloutput_mesg('',$mesgs);
 
 llxFooter();
 $db->close();

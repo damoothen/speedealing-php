@@ -1,6 +1,6 @@
 <?php
 /* Copyright (C) 2008-2011	Laurent Destailleur			<eldy@users.sourceforge.net>
- * Copyright (C) 2008-2011	Regis Houssin				<regis@dolibarr.fr>
+ * Copyright (C) 2008-2012	Regis Houssin				<regis@dolibarr.fr>
  * Copyright (C) 2008		Raphael Bertrand (Resultic)	<raphael.bertrand@resultic.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -27,32 +27,32 @@
 /**
  * Same function than javascript unescape() function but in PHP.
  *
- * @param 	string	$sourcetodecode		String to decode
- * @return
+ * @param 	string	$source		String to decode
+ * @return	string				Unescaped string
  */
 function jsUnEscape($source)
 {
     $decodedStr = "";
     $pos = 0;
-    $len = strlen ($source);
+    $len = strlen($source);
     while ($pos < $len) {
-        $charAt = substr ($source, $pos, 1);
+        $charAt = substr($source, $pos, 1);
         if ($charAt == '%') {
             $pos++;
-            $charAt = substr ($source, $pos, 1);
+            $charAt = substr($source, $pos, 1);
             if ($charAt == 'u') {
                 // we got a unicode character
                 $pos++;
-                $unicodeHexVal = substr ($source, $pos, 4);
-                $unicode = hexdec ($unicodeHexVal);
+                $unicodeHexVal = substr($source, $pos, 4);
+                $unicode = hexdec($unicodeHexVal);
                 $entity = "&#". $unicode . ';';
-                $decodedStr .= utf8_encode ($entity);
+                $decodedStr .= utf8_encode($entity);
                 $pos += 4;
             }
             else {
                 // we have an escaped ascii character
-                $hexVal = substr ($source, $pos, 2);
-                $decodedStr .= chr (hexdec ($hexVal));
+                $hexVal = substr($source, $pos, 2);
+                $decodedStr .= chr(hexdec($hexVal));
                 $pos += 2;
             }
         } else {
@@ -531,7 +531,7 @@ function get_next_value($db,$mask,$table,$field,$where='',$objsoc='',$date='',$m
 
     // Extract value for mask counter, mask raz and mask offset
     if (! preg_match('/\{(0+)([@\+][0-9]+)?([@\+][0-9]+)?\}/i',$mask,$reg)) return 'ErrorBadMask';
-    $masktri=$reg[1].$reg[2].$reg[3];
+    $masktri=$reg[1].(! empty($reg[2])?$reg[2]:'').(! empty($reg[3])?$reg[3]:'');
     $maskcounter=$reg[1];
     $maskraz=-1;
     $maskoffset=0;
@@ -558,7 +558,11 @@ function get_next_value($db,$mask,$table,$field,$where='',$objsoc='',$date='',$m
         $masktype_value=substr(preg_replace('/^TE_/','',$objsoc->typent_code),0,dol_strlen($regType[1]));//get n first characters of client code where n is length in mask
         $masktype_value=str_pad($masktype_value,dol_strlen($regType[1]),"#",STR_PAD_RIGHT);
     }
-    else $masktype='';
+    else
+    {
+    	$masktype='';
+    	$masktype_value='';
+    }
 
     $maskwithonlyymcode=$mask;
     $maskwithonlyymcode=preg_replace('/\{(0+)([@\+][0-9]+)?([@\+][0-9]+)?\}/i',$maskcounter,$maskwithonlyymcode);

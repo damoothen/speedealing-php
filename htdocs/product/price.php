@@ -147,9 +147,9 @@ if ($isphoto)
 print '</tr>';
 
 // MultiPrix
-if ($conf->global->PRODUIT_MULTIPRICES)
+if (! empty($conf->global->PRODUIT_MULTIPRICES))
 {
-	if ($socid)
+	if (! empty($socid))
 	{
 		$soc = new Societe($db);
 		$soc->id = $socid;
@@ -305,8 +305,9 @@ print "</table>\n";
 
 print "</div>\n";
 
-
-dol_htmloutput_mesg($mesg);
+if (! empty($mesg)) {
+	dol_htmloutput_mesg($mesg);
+}
 
 
 /* ************************************************************************** */
@@ -482,7 +483,7 @@ $sql.= " FROM ".MAIN_DB_PREFIX."product_price as p,";
 $sql.= " ".MAIN_DB_PREFIX."user as u";
 $sql.= " WHERE fk_product = ".$object->id;
 $sql.= " AND p.fk_user_author = u.rowid";
-if ($socid && $conf->global->PRODUIT_MULTIPRICES) $sql.= " AND p.price_level = ".$soc->price_level;
+if (! empty($socid) && ! empty($conf->global->PRODUIT_MULTIPRICES)) $sql.= " AND p.price_level = ".$soc->price_level;
 $sql.= " ORDER BY p.date_price DESC, p.price_level ASC";
 //$sql .= $db->plimit();
 

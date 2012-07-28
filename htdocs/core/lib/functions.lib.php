@@ -215,8 +215,11 @@ function dol_shutdown() {
 function dol_syslog($message, $level = LOG_INFO, $module = "undefined") {
 	global $conf, $user, $langs, $_REQUEST, $couch;
 
-	$logdb = clone $couch;
-	$logdb-> useDatabase("syslog");
+	if(is_object($couch))
+	{
+		$logdb = clone $couch;
+		$logdb-> useDatabase("syslog");
+	}
 	
 	$log = new stdClass();
 	$log->module = $module;

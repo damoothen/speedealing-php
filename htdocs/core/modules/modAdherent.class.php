@@ -1,5 +1,4 @@
 <?php
-
 /* Copyright (C) 2003,2005 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2003      Jean-Louis Bergamo   <jlb@j1b.org>
  * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
@@ -24,22 +23,21 @@
 /**
  *      \defgroup   member     Module foundation
  *      \brief      Module to manage members of a foundation
- * 		\file       htdocs/core/modules/modAdherent.class.php
+ *		\file       htdocs/core/modules/modAdherent.class.php
  *      \ingroup    member
  *      \brief      File descriptor or module Member
  */
-include_once(DOL_DOCUMENT_ROOT . "/core/modules/DolibarrModules.class.php");
 
 /**
  *  Classe de description et activation du module Adherent
  */
 class modAdherent extends DolibarrModules {
 
-	/**
+    /**
 	 *   Constructor. Define names, constants, directories, boxes, permissions
 	 *
 	 *   @param      DoliDB		$db      Database handler
-	 */
+     */
 	function modAdherent($db) {
 		parent::__construct($db);
 
@@ -54,21 +52,21 @@ class modAdherent extends DolibarrModules {
 		$this->values->special = 0;
 		$this->values->picto = 'user';
 
-		// Data directories to create when module is enabled
+        // Data directories to create when module is enabled
 		$this->values->dirs = array("/adherent/temp");
 
-		// Config pages
-		//-------------
+        // Config pages
+        //-------------
 		$this->values->config_page_url = array("adherent.php@adherents");
 
-		// Dependances
-		//------------
+        // Dependances
+        //------------
 		$this->values->depends = array();
 		$this->values->requiredby = array('modMailmanSpip');
 		$this->values->langfiles = array("members", "companies");
 
-		// Constantes
-		//-----------
+        // Constantes
+        //-----------
 		$this->values->const = array();
 		$this->values->const[2] = array("MAIN_SEARCHFORM_ADHERENT", "yesno", "1", "Show form for quick member search");
 		$this->values->const[3] = array("ADHERENT_MAIL_RESIL", "texte", "Votre adhésion vient d'être résiliée.\r\nNous espérons vous revoir très bientôt", "Mail de résiliation");
@@ -88,14 +86,14 @@ class modAdherent extends DolibarrModules {
 		$this->values->const[34] = array("ADHERENT_ETIQUETTE_TYPE", "chaine", "L7163", "Type of address sheets");
 		$this->values->const[35] = array("ADHERENT_ETIQUETTE_TEXT", 'texte', "%FULLNAME%\n%ADDRESS%\n%ZIP% %TOWN%\n%COUNTRY%", "Text to print on member address sheets");
 
-		// Boxes
-		//-------
+        // Boxes
+        //-------
 		$this->values->boxes = array();
 		$r = 0;
 		$this->values->boxes[$r][1] = "box_members.php";
 
-		// Permissions
-		//------------
+        // Permissions
+        //------------
 		$this->values->rights = array();
 		$this->values->rights_class = 'adherent';
 		$r = 0;
@@ -107,42 +105,42 @@ class modAdherent extends DolibarrModules {
 		// $this->values->rights[$r][4]     Niveau 1 pour nommer permission dans code
 		// $this->values->rights[$r][5]     Niveau 2 pour nommer permission dans code
 
-		$r++;
+        $r++;
 		$this->values->rights[$r][0] = 71;
 		$this->values->rights[$r][1] = 'Read members\' card';
 		$this->values->rights[$r][2] = 'r';
 		$this->values->rights[$r][3] = 1;
 		$this->values->rights[$r][4] = 'lire';
 
-		$r++;
+        $r++;
 		$this->values->rights[$r][0] = 72;
 		$this->values->rights[$r][1] = 'Create/modify members (need also user module permissions if member linked to a user)';
 		$this->values->rights[$r][2] = 'w';
 		$this->values->rights[$r][3] = 0;
 		$this->values->rights[$r][4] = 'creer';
 
-		$r++;
+        $r++;
 		$this->values->rights[$r][0] = 74;
 		$this->values->rights[$r][1] = 'Remove members';
 		$this->values->rights[$r][2] = 'd';
 		$this->values->rights[$r][3] = 0;
 		$this->values->rights[$r][4] = 'supprimer';
 
-		$r++;
+        $r++;
 		$this->values->rights[$r][0] = 76;
 		$this->values->rights[$r][1] = 'Export members';
 		$this->values->rights[$r][2] = 'r';
 		$this->values->rights[$r][3] = 0;
 		$this->values->rights[$r][4] = 'export';
 
-		$r++;
+        $r++;
 		$this->values->rights[$r][0] = 75;
 		$this->values->rights[$r][1] = 'Setup types and attributes of members';
 		$this->values->rights[$r][2] = 'w';
 		$this->values->rights[$r][3] = 0;
 		$this->values->rights[$r][4] = 'configurer';
 
-		$r++;
+        $r++;
 		$this->values->rights[$r][0] = 78;
 		$this->values->rights[$r][1] = 'Read subscriptions';
 		$this->values->rights[$r][2] = 'r';
@@ -150,7 +148,7 @@ class modAdherent extends DolibarrModules {
 		$this->values->rights[$r][4] = 'cotisation';
 		$this->values->rights[$r][5] = 'lire';
 
-		$r++;
+        $r++;
 		$this->values->rights[$r][0] = 79;
 		$this->values->rights[$r][1] = 'Create/modify/remove subscriptions';
 		$this->values->rights[$r][2] = 'w';
@@ -158,8 +156,8 @@ class modAdherent extends DolibarrModules {
 		$this->values->rights[$r][4] = 'cotisation';
 		$this->values->rights[$r][5] = 'creer';
 
-		// Exports
-		//--------
+        // Exports
+        //--------
 		$r = 0;
 
 		// $this->values->export_code[$r]          Code unique identifiant l'export (tous modules confondus)
@@ -169,7 +167,7 @@ class modAdherent extends DolibarrModules {
 		// $this->values->export_fields_name[$r]   Liste des champs exportables en codif traduction
 		// $this->values->export_sql[$r]           Requete sql qui offre les donnees a l'export
 
-		$r++;
+        $r++;
 		$this->values->export_code[$r] = $this->values->rights_class . '_' . $r;
 		$this->values->export_label[$r] = 'MembersAndSubscriptions';
 		$this->values->export_permission[$r] = array(array("adherent", "export"));
@@ -191,14 +189,14 @@ class modAdherent extends DolibarrModules {
 		$this->values->export_sql_end[$r] .=' LEFT JOIN ' . MAIN_DB_PREFIX . 'cotisation as c ON c.fk_adherent = a.rowid';
 		$this->values->export_sql_end[$r] .=' WHERE a.fk_adherent_type = ta.rowid';
 
-		// Imports
-		//--------
+        // Imports
+        //--------
 		$r = 0;
 
 		$now = dol_now();
 		require_once(DOL_DOCUMENT_ROOT . "/core/lib/date.lib.php");
 
-		$r++;
+        $r++;
 		$this->values->import_code[$r] = $this->values->rights_class . '_' . $r;
 		$this->values->import_label[$r] = "Members"; // Translation key
 		$this->values->import_icon[$r] = $this->values->picto;
@@ -214,42 +212,42 @@ class modAdherent extends DolibarrModules {
 				$fieldname = 'extra.' . $obj->name;
 				$fieldlabel = ucfirst($obj->label);
 				$this->values->import_fields_array[$r][$fieldname] = $fieldlabel;
-			}
+		    }
 		}*/
 		// End add extra fields
 		$this->values->import_fieldshidden_array[$r] = array('extra.fk_object' => 'lastrowid-' . MAIN_DB_PREFIX . 'adherent');	// aliastable.field => ('user->id' or 'lastrowid-'.tableparent)
 		$this->values->import_regex_array[$r] = array('a.civilite' => 'code@' . MAIN_DB_PREFIX . 'c_civilite', 'a.fk_adherent_type' => 'rowid@' . MAIN_DB_PREFIX . 'adherent_type', 'a.morphy' => '(phy|mor)', 'a.statut' => '^[0|1]', 'a.datec' => '^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$', 'a.datefin' => '^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$');
 		$this->values->import_examplevalues_array[$r] = array('a.civilite' => "MR", 'a.nom' => 'Smith', 'a.prenom' => 'John', 'a.login' => 'jsmith', 'a.pass' => 'passofjsmith', 'a.fk_adherent_type' => '1', 'a.morphy' => '"mor" or "phy"', 'a.societe' => 'JS company', 'a.adresse' => '21 jump street', 'a.cp' => '55000', 'a.ville' => 'New York', 'a.pays' => '1', 'a.email' => 'jsmith@example.com', 'a.naiss' => '1972-10-10', 'a.statut' => "0 or 1", 'a.note' => "This is a comment on member", 'a.datec' => dol_print_date($now, '%Y-%m-%d'), 'a.datefin' => dol_print_date(dol_time_plus_duree($now, 1, 'y'), '%Y-%m-%d'));
-	}
+    }
 
-	/**
+    /**
 	 * 		Function called when module is enabled.
 	 * 		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
 	 * 		It also creates data directories
 	 *
-	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
+     *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
-	 */
+     */
 	function init($options = '') {
 
-		$sql = array();
+        $sql = array();
 
 		return $this->values->_init($sql, $options);
-	}
+    }
 
-	/**
+    /**
 	 * 		Function called when module is disabled.
 	 *      Remove from database constants, boxes and permissions from Dolibarr database.
 	 * 		Data directories are not deleted
 	 *
-	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
+     *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
-	 */
+     */
 	function remove($options = '') {
 		$sql = array();
 
 		return $this->values->_remove($sql, $options);
-	}
+    }
 
 }
 

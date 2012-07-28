@@ -2,7 +2,6 @@
 /* Copyright (C) 2004		Rodolphe Quiedeville	<rodolphe@quiedeville.org>
  * Copyright (C) 2005-2012	Laurent Destailleur		<eldy@uers.sourceforge.net>
  * Copyright (C) 2005-2012	Regis Houssin			<regis@dolibarr.fr>
- * Copyright (C) 2010-2011 Patrick Mary  <laube@hotmail.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,19 +34,12 @@ require_once(DOL_DOCUMENT_ROOT."/core/class/extrafields.class.php");
 
 $langs->load("mails");
 
-if (! $user->rights->mailing->lire || $user->societe_id > 0) accessforbidden();
+if (! $user->rights->mailing->lire || (empty($conf->global->EXTERNAL_USERS_ARE_AUTHORIZED) && $user->societe_id > 0)) accessforbidden();
 
 $id=(GETPOST('mailid','int') ? GETPOST('mailid','int') : GETPOST('id','int'));
 $action=GETPOST('action','alpha');
 $confirm=GETPOST('confirm','alpha');
 $urlfrom=GETPOST('urlfrom');
-
-$mesg='';
-if (isset($_SESSION['DolMessage']))
-{
-	$mesg=$_SESSION['DolMessage'];
-	unset($_SESSION['DolMessage']);
-}
 
 $object=new Mailing($db);
 $result=$object->fetch($id);
@@ -81,7 +73,7 @@ if ($conf->global->MAILING_EMAIL_UNSUBSCRIBE)
         $object->substitutionarray,
         array(
             '__CHECK_READ__' => 'CheckMail',
-            '__UNSUSCRIBE__' => 'Unsubscribe'
+            '__UNSUBSCRIBE__' => 'Unsubscribe'
         )
     );
 }
@@ -107,7 +99,7 @@ if ($conf->global->MAILING_EMAIL_UNSUBSCRIBE)
         $object->substitutionarrayfortest,
         array(
             '__CHECK_READ__' => 'TESTCheckMail',
-            '__UNSUSCRIBE__' => 'TESTUnsubscribe'
+            '__UNSUBSCRIBE__' => 'TESTUnsubscribe'
         )
     );
 }
@@ -235,7 +227,7 @@ if ($action == 'sendallconfirmed' && $confirm == 'yes')
                       		'__CAMPAGNEID__'=> $id,
 							'__EMAIL__' => $obj->email,
 							'__CHECK_READ__' => '<img src="'.DOL_MAIN_URL_ROOT.'/public/emailing/mailing-read.php?tag='.$obj->tag.'" width="1" height="1" style="width:1px;height:1px" border="0"/>',
-							'__UNSUSCRIBE__' => '<a href="'.DOL_MAIN_URL_ROOT.'/public/emailing/mailing-unsubscribe.php?tag='.$obj->tag.'&unsuscrib=1" target="_blank">'.$langs->trans("MailUnsubcribe").'</a>',
+							'__UNSUBSCRIBE__' => '<a href="'.DOL_MAIN_URL_ROOT.'/public/emailing/mailing-unsubscribe.php?tag='.$obj->tag.'&unsuscrib=1" target="_blank">'.$langs->trans("MailUnsubcribe").'</a>',
 							'__MAILTOEMAIL__' => '<a href="mailto:'.$obj->email.'">'.$obj->email.'</a>',
 							'__LASTNAME__' => $obj->nom,
 							'__FIRSTNAME__' => $obj->prenom,
@@ -373,7 +365,7 @@ if ($action == 'sendallconfirmed' && $confirm == 'yes')
 			dol_syslog($db->error());
 			dol_print_error($db);
 		}
-		
+
 		$action = '';
 	}
 }
@@ -565,8 +557,8 @@ if ($action == 'confirm_valid' && $confirm == 'yes')
 	if ($object->id > 0)
 	{
 		$object->valid($user);
-		
-		$_SESSION['DolMessage']='<div class="ok">'.$langs->trans("MailingSuccessfullyValidated").'</div>';
+
+		$_SESSION['dol_message']='<div class="ok">'.$langs->trans("MailingSuccessfullyValidated").'</div>';
 
 		Header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
 		exit;
@@ -654,7 +646,7 @@ if ($action == 'create')
 	print '<tr><td width="25%" class="fieldrequired">'.$langs->trans("MailTitle").'</td><td><input class="flat" name="titre" size="40" value="'.$_POST['titre'].'"></td></tr>';
 	print '<tr><td width="25%" class="fieldrequired">'.$langs->trans("MailFrom").'</td><td><input class="flat" name="from" size="40" value="'.$conf->global->MAILING_EMAIL_FROM.'"></td></tr>';
 	print '<tr><td width="25%">'.$langs->trans("MailErrorsTo").'</td><td><input class="flat" name="errorsto" size="40" value="'.(!empty($conf->global->MAILING_EMAIL_ERRORSTO)?$conf->global->MAILING_EMAIL_ERRORSTO:$conf->global->MAIN_MAIL_ERRORS_TO).'"></td></tr>';
-	
+
 	// Other attributes
 	$parameters=array();
 	$reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
@@ -668,7 +660,7 @@ if ($action == 'create')
 			print '</td></tr>'."\n";
 		}
 	}
-	
+
 	print '</table>';
 	print '</br><br>';
 
@@ -721,7 +713,7 @@ else
 		// Confirm delete
 		else if ($action == 'delete')
 		{
-			$ret=$form->form_confirm($_SERVER["PHP_SELF"]."?id=".$object->id,$langs->trans("DeleteAMailing"),$langs->trans("ConfirmDeleteMailing"),"confirm_delete",'','',1);
+			$ret=$form->form_confirm($_SERVER["PHP_SELF"]."?id=".$object->id.(! empty($urlfrom) ? '&urlfrom='.urlencode($urlfrom) : ''),$langs->trans("DeleteAMailing"),$langs->trans("ConfirmDeleteMailing"),"confirm_delete",'','',1);
 			if ($ret == 'html') print '<br>';
 		}
 
@@ -742,9 +734,9 @@ else
 				{
 					// Pour des raisons de securite, on ne permet pas cette fonction via l'IHM,
 					// on affiche donc juste un message
-				    $mesg.='<div class="warning">'.$langs->trans("MailingNeedCommand").'</div>';
-					$mesg.='<br><textarea cols="60" rows="'.ROWS_2.'" wrap="soft">php ./scripts/emailings/mailing-send.php '.$object->id.'</textarea>';
-					$mesg.='<br><br><div class="warning">'.$langs->trans("MailingNeedCommand2").'</div>';
+				    $mesgembedded.='<div class="warning">'.$langs->trans("MailingNeedCommand").'</div>';
+					$mesgembedded.='<br><textarea cols="60" rows="'.ROWS_2.'" wrap="soft">php ./scripts/emailings/mailing-send.php '.$object->id.'</textarea>';
+					$mesgembedded.='<br><br><div class="warning">'.$langs->trans("MailingNeedCommand2").'</div>';
 					$_GET["action"]='';
 				}
 				else
@@ -777,12 +769,12 @@ else
 
 			// From
 			print '<tr><td>'.$form->editfieldkey("MailFrom",'email_from',$object->email_from,$object,$user->rights->mailing->creer && $object->statut < 3,'string').'</td><td colspan="3">';
-			print $form->editfieldval("MailFrom",'email_from',$object->email_from,$object,$user->rights->mailing->creer && $object->statut < 3,'email');
+			print $form->editfieldval("MailFrom",'email_from',$object->email_from,$object,$user->rights->mailing->creer && $object->statut < 3,'string');
 			print '</td></tr>';
 
 			// Errors to
 			print '<tr><td>'.$form->editfieldkey("MailErrorsTo",'email_errorsto',$object->email_errorsto,$object,$user->rights->mailing->creer && $object->statut < 3,'string').'</td><td colspan="3">';
-			print $form->editfieldval("MailErrorsTo",'email_errorsto',$object->email_errorsto,$object,$user->rights->mailing->creer && $object->statut < 3,'email');
+			print $form->editfieldval("MailErrorsTo",'email_errorsto',$object->email_errorsto,$object,$user->rights->mailing->creer && $object->statut < 3,'string');
 			print '</td></tr>';
 
 			// Status
@@ -812,7 +804,7 @@ else
 				print $nbemail;
 			}
 			print '</td></tr>';
-			
+
 			// Other attributes
 			$parameters=array();
 			$reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
@@ -842,8 +834,7 @@ else
 				array('type' => 'checkbox', 'name' => 'clone_receivers', 'label' => $langs->trans("CloneReceivers").' ('.$langs->trans("FeatureNotYetAvailable").')', 'value' => 0, 'disabled' => true)
 				);
 				// Paiement incomplet. On demande si motif = escompte ou autre
-				$form->form_confirm($_SERVER["PHP_SELF"].'?id='.$object->id,$langs->trans('CloneEMailing'),$langs->trans('ConfirmCloneEMailing',$object->ref),'confirm_clone',$formquestion,'yes',2,240);
-				print '<br>';
+				print $form->formconfirm($_SERVER["PHP_SELF"].'?id='.$object->id,$langs->trans('CloneEMailing'),$langs->trans('ConfirmCloneEMailing',$object->ref),'confirm_clone',$formquestion,'yes',2,240);
 			}
 
 
@@ -861,7 +852,7 @@ else
 			 * Boutons d'action
 			 */
 
-			if (GETPOST("cancel") || $confirm=='no' || $action == '' || in_array($action,array('valid','delete','sendall')))
+			if (GETPOST("cancel") || $confirm=='no' || $action == '' || in_array($action,array('valid','delete','sendall','clone')))
 			{
 				print "\n\n<div class=\"tabsAction\">\n";
 
@@ -871,7 +862,7 @@ else
 				}
 
 				//print '<a class="butAction" href="fiche.php?action=test&amp;id='.$object->id.'">'.$langs->trans("PreviewMailing").'</a>';
-				
+
 				if (! empty($conf->global->MAIN_USE_ADVANCED_PERMS) && ! $user->rights->mailing->mailing_advance->send)
 				{
 					print '<a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->transnoentitiesnoconv("NotEnoughPermissions")).'">'.$langs->trans("TestMailing").'</a>';
@@ -940,6 +931,8 @@ else
 
 				print '<br><br></div>';
 			}
+
+			if (! empty($mesgembedded)) dol_htmloutput_mesg($mesgembedded,'','warning',1);
 
 			// Affichage formulaire de TEST
 			if ($action == 'test')
@@ -1053,6 +1046,20 @@ else
 				print $nbemail;
 			}
 			print '</td></tr>';
+
+			// Other attributes
+			$parameters=array();
+			$reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+			if (empty($reshook) && ! empty($extrafields->attribute_label))
+			{
+				foreach($extrafields->attribute_label as $key=>$label)
+				{
+					$value=(isset($_POST["options_".$key])?$_POST["options_".$key]:$object->array_options["options_".$key]);
+					print '<tr><td>'.$label.'</td><td colspan="3">';
+					print $extrafields->showInputField($key,$value);
+					print "</td></tr>\n";
+				}
+			}
 
 			print '</table>';
 			print "</div>";

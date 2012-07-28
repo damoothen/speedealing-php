@@ -57,7 +57,7 @@ function print_actions_filter($form,$canedit,$status,$year,$month,$day,$showbirt
 		print '<input type="hidden" name="month" value="'.$month.'">';
 		print '<input type="hidden" name="day" value="'.$day.'">';
 		print '<input type="hidden" name="showbirthday" value="'.$showbirthday.'">';
-		print '<table class="border" width="100%">';
+		print '<table class="nobordernopadding" width="100%">';
 		if ($canedit || $conf->projet->enabled)
 		{
 			print '<tr><td nowrap="nowrap">';
@@ -186,6 +186,8 @@ function show_array_actions_to_do($max=5, $fk_task=0)
 	$sql.= ", ".MAIN_DB_PREFIX."c_actioncomm as c";
 	$sql.= ", ".MAIN_DB_PREFIX."societe as s";
 	if (!$user->rights->societe->client->voir && !$socid) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
+	$sql.= ")";
+    $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."societe as s ON a.fk_soc = s.rowid";
 	$sql.= " WHERE c.id = a.fk_action";
 	$sql.= " AND a.percent < 100";
 	$sql.= " AND s.rowid = a.fk_soc";
@@ -313,7 +315,7 @@ function show_array_last_actions_done($max=5)
 			$obj = $db->fetch_object($resql);
 			$var=!$var;
 
-			print "<tr $bc[$var]>";
+			print '<tr '.$bc[$var].'>';
 
 			$staticaction->type_code=$obj->code;
 			$staticaction->libelle=$obj->label;
@@ -430,7 +432,7 @@ function calendars_prepare_head($param)
     $h = 0;
     $head = array();
 
-    $head[$h][0] = DOL_URL_ROOT.'/comm/action/listactions.php'.($param?'?'.$param:'');
+    $head[$h][0] = DOL_URL_ROOT.'/comm/action/index.php'.($param?'?'.$param:'');
     $head[$h][1] = $langs->trans("Agenda");
     $head[$h][2] = 'card';
     $h++;

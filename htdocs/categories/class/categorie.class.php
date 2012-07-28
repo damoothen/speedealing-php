@@ -867,7 +867,7 @@ class Categorie
 		// Process all childs on several levels of this category
 		$protection++;
 		if ($protection > 10) return;	// On ne traite pas plus de 10 niveaux de profondeurs
-		if (! is_array($this->cats[$id_categ]['id_children'])) return;
+		if (empty($this->cats[$id_categ]['id_children'])) return;
 		foreach($this->cats[$id_categ]['id_children'] as $key => $idchild)
 		{
 			// Protection when a category has itself as a child (should not happen)
@@ -1179,21 +1179,25 @@ class Categorie
 	 */
 	function get_all_ways ()
 	{
-		$ways = array ();
+		$ways = array();
 
-		foreach ($this->get_meres() as $mere)
+		$parents=$this->get_meres();
+		if (! empty($parents))
 		{
-			foreach ($mere->get_all_ways() as $way)
+			foreach ($parents as $parent)
 			{
-				$w   = $way;
-				$w[] = $this;
-
-				$ways[] = $w;
+				$allways=$parent->get_all_ways();
+				foreach ($allways as $way)
+				{
+					$w		= $way;
+					$w[]	= $this;
+					$ways[]	= $w;
+				}
 			}
 		}
 
 		if (count($ways) == 0)
-		$ways[0][0] = $this;
+			$ways[0][0] = $this;
 
 		return $ways;
 	}

@@ -231,7 +231,7 @@ class Contrat extends CommonObject
 	 *	@return	void
 	 */
 	function cloture($user)
-	{	
+	{
 		$this->db->begin();
 
 		// Load lines
@@ -281,7 +281,7 @@ class Contrat extends CommonObject
 	function validate($user)
 	{
 		global $langs, $conf;
-		
+
 		$error=0;
 
 		$sql = "UPDATE ".MAIN_DB_PREFIX."contrat SET statut = 1";
@@ -353,7 +353,8 @@ class Contrat extends CommonObject
 				$this->note_private				= $result["note_private"];
 				$this->note_public				= $result["note_public"];
 
-				$this->fk_projet				= $result["fk_projet"];
+				$this->fk_projet				= $result["fk_projet"]; // deprecated
+				$this->fk_project				= $result["fk_projet"];
 
 				$this->socid					= $result["fk_soc"];
 				$this->fk_soc					= $result["fk_soc"];
@@ -442,7 +443,7 @@ class Contrat extends CommonObject
 				$line->statut			= $objp->statut;
 				$line->remise_percent	= $objp->remise_percent;
 				$line->price_ht			= $objp->price_ht;
-				$line->price			= $objp->price;	// For backward compatibility
+				$line->price			= $objp->price_ht;	// For backward compatibility
 				$line->total_ht			= $objp->total_ht;
 				$line->total_tva		= $objp->total_tva;
 				$line->total_localtax1	= $objp->total_localtax1;
@@ -621,7 +622,7 @@ class Contrat extends CommonObject
 		if (! $paramsok) return -1;
 
 		$this->db->begin();
-		
+
 		$now=dol_now();
 
 		// Insert contract
@@ -703,7 +704,7 @@ class Contrat extends CommonObject
 	function delete($user)
 	{
 		global $conf, $langs;
-		
+
 		$error=0;
 
 		$this->db->begin();
@@ -791,7 +792,7 @@ class Contrat extends CommonObject
 				$error++;
 			}
 		}
-		
+
 		if (! $error)
 		{
 			// Appel des triggers
@@ -803,7 +804,7 @@ class Contrat extends CommonObject
 			}
 			// Fin appel triggers
 		}
-		
+
 		if (! $error)
 		{
 			// We remove directory

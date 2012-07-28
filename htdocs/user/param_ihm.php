@@ -146,9 +146,21 @@ print "</tr>\n";
 print '</table><br>';
 
 
-if ($_GET["action"] == 'edit')
+if ($action == 'edit')
 {
-    print '<form method="post" action="'.$_SERVER["PHP_SELF"].'">';
+	print '<script type="text/javascript" language="javascript">
+	jQuery(document).ready(function() {
+		$("#main_lang_default").change(function() {
+			$("#check_MAIN_LANG_DEFAULT").attr(\'checked\', true);
+		});
+		$("#main_size_liste_limit").keyup(function() {
+			if ($(this).val().length) $("#check_SIZE_LISTE_LIMIT").attr(\'checked\', true);
+			else $("#check_SIZE_LISTE_LIMIT").attr(\'checked\', false);
+		});
+	});
+	</script>';
+
+	print '<form method="post" action="'.$_SERVER["PHP_SELF"].'">';
     print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
     print '<input type="hidden" name="action" value="update">';
     print '<input type="hidden" name="id" value="'.$id.'">';
@@ -167,21 +179,21 @@ if ($_GET["action"] == 'edit')
     print $s?$s.' ':'';
     print ($conf->global->MAIN_LANG_DEFAULT=='auto'?$langs->trans("AutoDetectLang"):$langs->trans("Language_".$conf->global->MAIN_LANG_DEFAULT));
     print '</td>';
-    print '<td align="left" nowrap="nowrap" width="20%"><input '.$bc[$var].' name="check_MAIN_LANG_DEFAULT" type="checkbox" '.($fuser->conf->MAIN_LANG_DEFAULT?" checked":"");
+    print '<td align="left" nowrap="nowrap" width="20%"><input '.$bc[$var].' name="check_MAIN_LANG_DEFAULT" id="check_MAIN_LANG_DEFAULT" type="checkbox" '.(! empty($fuser->conf->MAIN_LANG_DEFAULT)?" checked":"");
     print ! empty($dolibarr_main_demo)?' disabled="disabled"':'';	// Disabled for demo
     print '> '.$langs->trans("UsePersonalValue").'</td>';
     print '<td>';
-    print $formadmin->select_language($fuser->conf->MAIN_LANG_DEFAULT,'main_lang_default',1);
+    print $formadmin->select_language((! empty($fuser->conf->MAIN_LANG_DEFAULT)?$fuser->conf->MAIN_LANG_DEFAULT:''),'main_lang_default',1);
     print '</td></tr>';
 
     // Taille max des listes
     $var=!$var;
     print '<tr '.$bc[$var].'><td>'.$langs->trans("MaxSizeList").'</td>';
     print '<td>'.$conf->global->MAIN_SIZE_LISTE_LIMIT.'</td>';
-    print '<td align="left" nowrap="nowrap" width="20%"><input '.$bc[$var].' name="check_SIZE_LISTE_LIMIT" type="checkbox" '.($fuser->conf->MAIN_SIZE_LISTE_LIMIT?" checked":"");
+    print '<td align="left" nowrap="nowrap" width="20%"><input '.$bc[$var].' name="check_SIZE_LISTE_LIMIT" id="check_SIZE_LISTE_LIMIT" type="checkbox" '.(! empty($fuser->conf->MAIN_SIZE_LISTE_LIMIT)?" checked":"");
     print ! empty($dolibarr_main_demo)?' disabled="disabled"':'';	// Disabled for demo
     print '> '.$langs->trans("UsePersonalValue").'</td>';
-    print '<td><input class="flat" name="main_size_liste_limit" size="4" value="' . $fuser->conf->SIZE_LISTE_LIMIT . '"></td></tr>';
+    print '<td><input class="flat" name="main_size_liste_limit" id="main_size_liste_limit" size="4" value="' . (! empty($fuser->conf->SIZE_LISTE_LIMIT)?$fuser->conf->SIZE_LISTE_LIMIT:'') . '"></td></tr>';
 
     print '</table><br>';
 
@@ -210,20 +222,20 @@ else
     print '<td>';
     $s=picto_from_langcode($conf->global->MAIN_LANG_DEFAULT);
     print ($s?$s.' ':'');
-    print ($conf->global->MAIN_LANG_DEFAULT=='auto'?$langs->trans("AutoDetectLang"):$langs->trans("Language_".$conf->global->MAIN_LANG_DEFAULT));
+    print (isset($conf->global->MAIN_LANG_DEFAULT) && $conf->global->MAIN_LANG_DEFAULT=='auto'?$langs->trans("AutoDetectLang"):$langs->trans("Language_".$conf->global->MAIN_LANG_DEFAULT));
     print '</td>';
-    print '<td align="left" nowrap="nowrap" width="20%"><input '.$bc[$var].' type="checkbox" disabled '.($fuser->conf->MAIN_LANG_DEFAULT?" checked":"").'> '.$langs->trans("UsePersonalValue").'</td>';
+    print '<td align="left" nowrap="nowrap" width="20%"><input '.$bc[$var].' type="checkbox" disabled '.(! empty($fuser->conf->MAIN_LANG_DEFAULT)?" checked":"").'> '.$langs->trans("UsePersonalValue").'</td>';
     print '<td>';
-    $s=picto_from_langcode($fuser->conf->MAIN_LANG_DEFAULT);
+    $s=(isset($fuser->conf->MAIN_LANG_DEFAULT) ? picto_from_langcode($fuser->conf->MAIN_LANG_DEFAULT) : '');
     print ($s?$s.' ':'');
-    print ($fuser->conf->MAIN_LANG_DEFAULT=='auto'?$langs->trans("AutoDetectLang"):($fuser->conf->MAIN_LANG_DEFAULT?$langs->trans("Language_".$fuser->conf->MAIN_LANG_DEFAULT):''));
+    print (isset($fuser->conf->MAIN_LANG_DEFAULT) && $fuser->conf->MAIN_LANG_DEFAULT=='auto'?$langs->trans("AutoDetectLang"):(! empty($fuser->conf->MAIN_LANG_DEFAULT)?$langs->trans("Language_".$fuser->conf->MAIN_LANG_DEFAULT):''));
     print '</td></tr>';
 
     $var=!$var;
     print '<tr '.$bc[$var].'><td>'.$langs->trans("MaxSizeList").'</td>';
-    print '<td>'.$conf->global->MAIN_SIZE_LISTE_LIMIT.'</td>';
-    print '<td align="left" nowrap="nowrap" width="20%"><input '.$bc[$var].' type="checkbox" disabled '.($fuser->conf->MAIN_SIZE_LISTE_LIMIT?" checked":"").'> '.$langs->trans("UsePersonalValue").'</td>';
-    print '<td>' . $fuser->conf->MAIN_SIZE_LISTE_LIMIT . '</td></tr>';
+    print '<td>'.(! empty($conf->global->MAIN_SIZE_LISTE_LIMIT)?$conf->global->MAIN_SIZE_LISTE_LIMIT:'&nbsp;').'</td>';
+    print '<td align="left" nowrap="nowrap" width="20%"><input '.$bc[$var].' type="checkbox" disabled '.(! empty($fuser->conf->MAIN_SIZE_LISTE_LIMIT)?" checked":"").'> '.$langs->trans("UsePersonalValue").'</td>';
+    print '<td>' . (! empty($fuser->conf->MAIN_SIZE_LISTE_LIMIT)?$fuser->conf->MAIN_SIZE_LISTE_LIMIT:'&nbsp;') . '</td></tr>';
 
     print '</table><br>';
 
@@ -240,7 +252,7 @@ else
     }
     else
     {
-        if ($user->id == $fuser->id || $user->admin)       // Si utilisateur edite = utilisateur courant (pas besoin de droits particulier car il s'agit d'une page de modif d'output et non de données) ou si admin
+        if ($user->id == $fuser->id || ! empty($user->admin))       // Si utilisateur edite = utilisateur courant (pas besoin de droits particulier car il s'agit d'une page de modif d'output et non de données) ou si admin
         {
             print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?action=edit&amp;id='.$fuser->id.'">'.$langs->trans("Modify").'</a>';
         }

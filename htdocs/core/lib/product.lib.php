@@ -123,7 +123,7 @@ function product_prepare_head($object, $user)
 
 
 	// More tabs from canvas
-	if (is_array($object->onglets))
+	if (isset($object->onglets) && is_array($object->onglets))
 	{
 		foreach ($object->onglets as $onglet)
 		{
@@ -271,7 +271,7 @@ function show_stats_for_company($product,$socid)
 		if ($ret < 0) dol_print_error($db);
 		$langs->load("bills");
 		print '<tr><td>';
-		print '<a href="'.DOL_URL_ROOT.'/compta/facture/list.php?id='.$product->id.'">'.img_object('','bill').' '.$langs->trans("CustomersInvoices").'</a>';
+		print '<a href="facture.php?id='.$product->id.'">'.img_object('','bill').' '.$langs->trans("CustomersInvoices").'</a>';
 		print '</td><td align="right">';
 		print $product->stats_facture['customers'];
 		print '</td><td align="right">';

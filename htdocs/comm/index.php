@@ -34,15 +34,13 @@ if ($conf->contrat->enabled) require_once(DOL_DOCUMENT_ROOT."/contrat/class/cont
 if ($conf->propal->enabled)  require_once(DOL_DOCUMENT_ROOT."/comm/propal/class/propal.class.php");
 if ($conf->lead->enabled)  dol_include_once("/lead/lib/lead.lib.php");
 
-if (!$user->rights->societe->lire)
-accessforbidden();
+if (! $user->rights->societe->lire) accessforbidden();
 
 $langs->load("commercial");
 
 // Securite acces client
-$socid='';
-if ($_GET["socid"]) { $socid=$_GET["socid"]; }
-if ($user->societe_id > 0)
+$socid=GETPOST('socid','int');
+if (isset($user->societe_id) && $user->societe_id > 0)
 {
 	$action = '';
 	$socid = $user->societe_id;
@@ -102,10 +100,10 @@ print '<tr>';
 //}
 
 // Recherche Propal
-if ($conf->propal->enabled && $user->rights->propale->lire)
+if ($conf->propal->enabled && $user->rights->propal->lire)
 {
 	$var=false;
-	print '<form method="post" action="'.DOL_URL_ROOT.'/comm/propal.php">';
+	print '<form method="post" action="'.DOL_URL_ROOT.'/comm/propal/list.php">';
 	print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 	print '<table class="noborder" width="100%">';
 	print '<tr class="liste_titre"><td colspan="3">'.$langs->trans("SearchAProposal").'</td></tr>';
@@ -236,7 +234,7 @@ if ($conf->societe->enabled && $user->rights->societe->lire)
 /*
  * Draft proposals
  */
-if ($conf->propal->enabled && $user->rights->propale->lire)
+if ($conf->propal->enabled && $user->rights->propal->lire)
 {
 	$sql = "SELECT p.rowid, p.ref, p.total_ht, s.rowid as socid, s.nom as name, s.client, s.canvas";
 	$sql.= " FROM ".MAIN_DB_PREFIX."propal as p";
@@ -279,7 +277,7 @@ if ($conf->propal->enabled && $user->rights->propale->lire)
 				print '</td>';
 				print '<td align="right" nowrap="nowrap">'.price($obj->total_ht).'</td></tr>';
 				$i++;
-				$total += $obj->price;
+				$total += $obj->total_ht;
 			}
 			if ($total>0)
 			{
@@ -288,7 +286,7 @@ if ($conf->propal->enabled && $user->rights->propale->lire)
 			}
 		}
 		print "</table><br>";
-		
+
 		$db->free($resql);
 	}
 	else
@@ -351,7 +349,7 @@ if ($conf->commande->enabled && $user->rights->commande->lire)
 			}
 		}
 		print "</table><br>";
-		
+
 		$db->free($resql);
 	}
 }
@@ -504,7 +502,7 @@ if ($conf->societe->enabled && $user->rights->societe->lire)
 {
 	$langs->load("boxes");
 
-	$sql = "SELECT s.rowid, s.nom as name, s.client, s.datec,s.tms";
+	$sql = "SELECT s.rowid, s.nom as name, s.client, s.datec, s.tms, s.canvas";
 	$sql.= " FROM ".MAIN_DB_PREFIX."societe as s";
 	if (! $user->rights->societe->client->voir && ! $socid) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
 	$sql.= " WHERE s.client IN (1, 2, 3)";
@@ -690,7 +688,7 @@ if ($conf->contrat->enabled && $user->rights->contrat->lire && 0) // TODO A REFA
 /*
  * Opened proposals
  */
-if ($conf->propal->enabled && $user->rights->propale->lire)
+if ($conf->propal->enabled && $user->rights->propal->lire)
 {
 	$langs->load("propal");
 

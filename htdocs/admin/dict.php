@@ -497,7 +497,7 @@ if ($_POST["actionadd"] || $_POST["actionmodify"])
     }
 
     // Si verif ok et action modify, on modifie la ligne
-    if ($ok && $_POST["actionmodify"])
+    if ($ok && GETPOST('actionmodify'))
     {
         if ($tabrowid[$id]) { $rowidcol=$tabrowid[$id]; }
         else { $rowidcol="rowid"; }
@@ -540,7 +540,7 @@ if ($_POST["actionadd"] || $_POST["actionmodify"])
     $_GET["id"]=$_POST["id"];       // Force affichage dictionnaire en cours d'edition
 }
 
-if ($_POST["actioncancel"])
+if (GETPOST('actioncancel'))
 {
     $_GET["id"]=$_POST["id"];       // Force affichage dictionnaire en cours d'edition
 }
@@ -650,7 +650,7 @@ if ($id)
 
     // Complete requete recherche valeurs avec critere de tri
     $sql=$tabsql[$id];
-    if ($_GET["sortfield"])
+    if (GETPOST('sortfield'))
     {
         // If sort order is "pays", we use pays_code instead
         if ($_GET["sortfield"] == 'pays') $_GET["sortfield"]='pays_code';
@@ -718,7 +718,7 @@ if ($id)
             if ($valuetoshow != '')
             {
             	print '<td>';
-            	if (preg_match('/http:/i',$tabhelp[$id][$value])) print '<a href="'.$tabhelp[$id][$value].'" target="_blank">'.$valuetoshow.'</a>';
+            	if (! empty($tabhelp[$id][$value]) && preg_match('/http:/i',$tabhelp[$id][$value])) print '<a href="'.$tabhelp[$id][$value].'" target="_blank">'.$valuetoshow.'</a>';
             	else if (! empty($tabhelp[$id][$value])) print $form->textwithpicto($valuetoshow,$tabhelp[$id][$value]);
             	else print $valuetoshow;
                 print '</td>';
@@ -735,7 +735,7 @@ if ($id)
 
         $obj='';
         // If data was already input, we define them in obj to populate input fields.
-        if ($_POST["actionadd"])
+        if (GETPOST('actionadd'))
         {
             foreach ($fieldlist as $key=>$val)
             {
@@ -828,7 +828,7 @@ if ($id)
                 //print_r($obj);
                 print "<tr ".$bc[$var].">";
 
-                if ($action == 'edit' && ($rowid == ($obj->rowid?$obj->rowid:$obj->code)))
+                if ($action == 'edit' && ($rowid == (! empty($obj->rowid)?$obj->rowid:$obj->code)))
                 {
                     print '<form action="dict.php" method="post">';
                     print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
@@ -843,7 +843,7 @@ if ($id)
 
                     if (empty($reshook)) fieldList($fieldlist,$obj,$tabname[$id]);
 
-                    print '<td colspan="3" align="right"><a name="'.($obj->rowid?$obj->rowid:$obj->code).'">&nbsp;</a><input type="submit" class="button" name="actionmodify" value="'.$langs->trans("Modify").'">';
+                    print '<td colspan="3" align="right"><a name="'.(! empty($obj->rowid)?$obj->rowid:$obj->code).'">&nbsp;</a><input type="submit" class="button" name="actionmodify" value="'.$langs->trans("Modify").'">';
                     print '&nbsp;<input type="submit" class="button" name="actioncancel" value="'.$langs->trans("Cancel").'"></td>';
                 }
                 else
@@ -899,7 +899,7 @@ if ($id)
                                 $key=$langs->trans("Action".strtoupper($obj->code));
                                 $valuetoshow=($obj->code && $key != "Action".strtoupper($obj->code))?$key:$obj->$fieldlist[$field];
                             }
-                            else if ($fieldlist[$field]=='libelle' && $tabname[$_GET["id"]]==MAIN_DB_PREFIX.'c_currencies') {
+                            else if (! empty($obj->code_iso) && $fieldlist[$field]=='libelle' && $tabname[$_GET["id"]]==MAIN_DB_PREFIX.'c_currencies') {
                                 $key=$langs->trans("Currency".strtoupper($obj->code_iso));
                                 $valuetoshow=($obj->code_iso && $key != "Currency".strtoupper($obj->code_iso))?$key:$obj->$fieldlist[$field];
                             }
@@ -959,18 +959,18 @@ if ($id)
                     if (isset($obj->code) && ($obj->code == '0' || $obj->code == '' || preg_match('/unknown/i',$obj->code))) $iserasable=0;
                     if (isset($obj->code) && $obj->code == 'RECEP') $iserasable=0;
                     if (isset($obj->code) && $obj->code == 'EF0') $iserasable=0;
-                    if ($obj->type && $obj->type == 'system') $iserasable=0;
+                    if (isset($obj->type) && $obj->type == 'system') $iserasable=0;
 
-                    if ($iserasable) print '<a href="'.$_SERVER["PHP_SELF"].'?'.($page?'page='.$page.'&':'').'sortfield='.$sortfield.'&sortorder='.$sortorder.'&rowid='.($obj->rowid?$obj->rowid:$obj->code).'&amp;code='.$obj->code.'&amp;id='.$id.'&amp;action='.$acts[$obj->active].'">'.$actl[$obj->active].'</a>';
+                    if ($iserasable) print '<a href="'.$_SERVER["PHP_SELF"].'?'.($page?'page='.$page.'&':'').'sortfield='.$sortfield.'&sortorder='.$sortorder.'&rowid='.(! empty($obj->rowid)?$obj->rowid:(! empty($obj->code)?$obj->code:'')).'&amp;code='.(! empty($obj->code)?$obj->code:'').'&amp;id='.$id.'&amp;action='.$acts[$obj->active].'">'.$actl[$obj->active].'</a>';
                     else print $langs->trans("AlwaysActive");
                     print "</td>";
 
                     // Modify link
-                    if ($iserasable) print '<td align="center"><a href="'.$_SERVER["PHP_SELF"].'?'.($page?'page='.$page.'&':'').'sortfield='.$sortfield.'&sortorder='.$sortorder.'&rowid='.($obj->rowid?$obj->rowid:$obj->code).'&amp;code='.$obj->code.'&amp;id='.$id.'&amp;action=edit#'.($obj->rowid?$obj->rowid:$obj->code).'">'.img_edit().'</a></td>';
+                    if ($iserasable) print '<td align="center"><a href="'.$_SERVER["PHP_SELF"].'?'.($page?'page='.$page.'&':'').'sortfield='.$sortfield.'&sortorder='.$sortorder.'&rowid='.(! empty($obj->rowid)?$obj->rowid:(! empty($obj->code)?$obj->code:'')).'&amp;code='.(! empty($obj->code)?$obj->code:'').'&amp;id='.$id.'&amp;action=edit#'.(! empty($obj->rowid)?$obj->rowid:(! empty($obj->code)?$obj->code:'')).'">'.img_edit().'</a></td>';
                     else print '<td>&nbsp;</td>';
 
                     // Delete link
-                    if ($iserasable) print '<td align="center"><a href="'.$_SERVER["PHP_SELF"].'?'.($page?'page='.$page.'&':'').'sortfield='.$sortfield.'&sortorder='.$sortorder.'&rowid='.($obj->rowid?$obj->rowid:$obj->code).'&amp;code='.$obj->code.'&amp;id='.$id.'&amp;action=delete">'.img_delete().'</a></td>';
+                    if ($iserasable) print '<td align="center"><a href="'.$_SERVER["PHP_SELF"].'?'.($page?'page='.$page.'&':'').'sortfield='.$sortfield.'&sortorder='.$sortorder.'&rowid='.(! empty($obj->rowid)?$obj->rowid:(! empty($obj->code)?$obj->code:'')).'&amp;code='.(! empty($obj->code)?$obj->code:'').'&amp;id='.$id.'&amp;action=delete">'.img_delete().'</a></td>';
                     else print '<td>&nbsp;</td>';
 
                     print "</tr>\n";
@@ -1061,7 +1061,7 @@ else
 
     foreach ($taborder as $i)
     {
-        if ($tabname[$i] && empty($tabcond[$i])) continue;
+        if (isset($tabname[$i]) && empty($tabcond[$i])) continue;
 
         if ($i)
         {
@@ -1129,7 +1129,7 @@ function fieldList($fieldlist,$obj='',$tabname='')
     	if ($fieldlist[$field] == 'pays') {
     		if (in_array('region_id',$fieldlist)) { print '<td>&nbsp;</td>'; continue; }	// For region page, we do not show the country input
             print '<td>';
-            print $form->select_country(($obj->pays_code?$obj->pays_code:$obj->pays),'pays');
+            print $form->select_country((! empty($obj->pays_code)?$obj->pays_code:(! empty($obj->pays)?$obj->pays:'')),'pays');
             print '</td>';
         }
         elseif ($fieldlist[$field] == 'pays_id') {
@@ -1142,7 +1142,7 @@ function fieldList($fieldlist,$obj='',$tabname='')
             print '</td>';
         }
         elseif ($fieldlist[$field] == 'region_id') {
-            $region_id = $obj->$fieldlist[$field]?$obj->$fieldlist[$field]:0;
+            $region_id = (! empty($obj->$fieldlist[$field])?$obj->$fieldlist[$field]:0);
             print '<input type="hidden" name="'.$fieldlist[$field].'" value="'.$region_id.'">';
         }
         elseif ($fieldlist[$field] == 'lang') {
@@ -1160,14 +1160,14 @@ function fieldList($fieldlist,$obj='',$tabname='')
         elseif ($fieldlist[$field] == 'element')
         {
             print '<td>';
-            print $form->selectarray('element', $elementList,$obj->$fieldlist[$field]);
+            print $form->selectarray('element', $elementList,(! empty($obj->$fieldlist[$field])?$obj->$fieldlist[$field]:''));
             print '</td>';
         }
         // La source de l'element (pour les type de contact).'
         elseif ($fieldlist[$field] == 'source')
         {
             print '<td>';
-            print $form->selectarray('source', $sourceList,$obj->$fieldlist[$field]);
+            print $form->selectarray('source', $sourceList,(! empty($obj->$fieldlist[$field])?$obj->$fieldlist[$field]:''));
             print '</td>';
         }
         elseif ($fieldlist[$field] == 'type' && $tabname == MAIN_DB_PREFIX."c_actioncomm")
@@ -1178,30 +1178,30 @@ function fieldList($fieldlist,$obj='',$tabname='')
         }
         elseif ($fieldlist[$field] == 'recuperableonly' || $fieldlist[$field] == 'fdm') {
             print '<td>';
-            print $form->selectyesno($fieldlist[$field],$obj->$fieldlist[$field],1);
+            print $form->selectyesno($fieldlist[$field],(! empty($obj->$fieldlist[$field])?$obj->$fieldlist[$field]:''),1);
             print '</td>';
         }
         elseif (in_array($fieldlist[$field],array('nbjour','decalage','taux','localtax1','localtax2'))) {
-            print '<td><input type="text" class="flat" value="'.$obj->$fieldlist[$field].'" size="3" name="'.$fieldlist[$field].'"></td>';
+            print '<td><input type="text" class="flat" value="'.(! empty($obj->$fieldlist[$field])?$obj->$fieldlist[$field]:'').'" size="3" name="'.$fieldlist[$field].'"></td>';
         }
         elseif ($fieldlist[$field] == 'libelle_facture') {
-            print '<td><textarea cols="30" rows="'.ROWS_2.'" class="flat" name="'.$fieldlist[$field].'">'.$obj->$fieldlist[$field].'</textarea></td>';
+            print '<td><textarea cols="30" rows="'.ROWS_2.'" class="flat" name="'.$fieldlist[$field].'">'.(! empty($obj->$fieldlist[$field])?$obj->$fieldlist[$field]:'').'</textarea></td>';
         }
         elseif ($fieldlist[$field] == 'price' || preg_match('/^amount/i',$fieldlist[$field])) {
-            print '<td><input type="text" class="flat" value="'.price($obj->$fieldlist[$field]).'" size="8" name="'.$fieldlist[$field].'"></td>';
+            print '<td><input type="text" class="flat" value="'.price((! empty($obj->$fieldlist[$field])?$obj->$fieldlist[$field]:'')).'" size="8" name="'.$fieldlist[$field].'"></td>';
         }
-        elseif ($fieldlist[$field] == 'code') {
-            print '<td><input type="text" class="flat" value="'.$obj->$fieldlist[$field].'" size="10" name="'.$fieldlist[$field].'"></td>';
+        elseif ($fieldlist[$field] == 'code' && isset($obj->$fieldlist[$field])) {
+            print '<td><input type="text" class="flat" value="'.(! empty($obj->$fieldlist[$field])?$obj->$fieldlist[$field]:'').'" size="10" name="'.$fieldlist[$field].'"></td>';
         }
         elseif ($fieldlist[$field]=='unit') {
             print '<td>';
-            print $form->selectarray('unit',array('mm','cm','point','inch'),$obj->$fieldlist[$field],0,0,1);
+            print $form->selectarray('unit',array('mm','cm','point','inch'),(! empty($obj->$fieldlist[$field])?$obj->$fieldlist[$field]:''),0,0,1);
             print '</td>';
         }
         else
         {
             print '<td>';
-            print '<input type="text" '.($fieldlist[$field]=='libelle'?'size="32" ':'').' class="flat" value="'.$obj->$fieldlist[$field].'" name="'.$fieldlist[$field].'">';
+            print '<input type="text" '.($fieldlist[$field]=='libelle'?'size="32" ':'').' class="flat" value="'.(isset($obj->$fieldlist[$field])?$obj->$fieldlist[$field]:'').'" name="'.$fieldlist[$field].'">';
             print '</td>';
         }
     }

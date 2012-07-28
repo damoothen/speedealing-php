@@ -50,7 +50,8 @@ $object = new Contact($db);
 
 // Get object canvas (By default, this is not defined, so standard usage of dolibarr)
 $object->getCanvas($id);
-$canvas = $object->canvas?$object->canvas:GETPOST("canvas");
+$objcanvas=null;
+$canvas = (! empty($object->canvas)?$object->canvas:GETPOST("canvas"));
 if (! empty($canvas))
 {
     require_once(DOL_DOCUMENT_ROOT."/core/class/canvas.class.php");
@@ -540,10 +541,11 @@ else
             print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
             print '<input type="hidden" name="id" value="'.$id.'">';
             print '<input type="hidden" name="action" value="update">';
-            print '<input type="hidden" name="backtopage" value="'.$backtopage.'">';
             print '<input type="hidden" name="contactid" value="'.$object->id.'">';
             print '<input type="hidden" name="old_name" value="'.$object->name.'">';
             print '<input type="hidden" name="old_firstname" value="'.$object->firstname.'">';
+            if (! empty($backtopage)) print '<input type="hidden" name="backtopage" value="'.$backtopage.'">';
+
             print '<table class="border" width="100%">';
 
             // Ref

@@ -26,6 +26,7 @@
  *
  *  @param	int		$id			Element id
  *  @param	string	$table		Table of Element
+ *  @return	boolean				True if child exists
  */
 function checkElementExist($id, $table)
 {
@@ -107,6 +108,40 @@ function checkLinkedElements($sourcetype, $targettype)
 	else $out.= '('.$langs->trans('NothingToDelete').')<br>';
 
 	return $out;
+}
+
+/**
+ * Clean data into ecm_directories table
+ *
+ * @return	void
+ */
+function clean_data_ecm_directories()
+{
+	global $db, $langs;
+
+	// Clean data from ecm_directories
+	$sql="SELECT rowid, label FROM ".MAIN_DB_PREFIX."ecm_directories";
+	$resql=$db->query($sql);
+	if ($resql)
+	{
+		while($obj=$db->fetch_object($resql))
+		{
+			$id=$obj->rowid;
+			$label=$obj->label;
+			$newlabel=dol_sanitizeFileName($label);
+			if ($label != $newlabel)
+			{
+				$sqlupdate="UPDATE ".MAIN_DB_PREFIX."ecm_directories set label='".$newlabel."' WHERE rowid=".$id;
+				print '<tr><td>'.$sqlupdate."</td></tr>\n";
+				$resqlupdate=$db->query($sqlupdate);
+				if (! $resqlupdate) dol_print_error($db,'Failed to update');
+			}
+
+		}
+	}
+	else dol_print_error($db,'Failed to run request');
+
+	return;
 }
 
 ?>

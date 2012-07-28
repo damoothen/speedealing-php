@@ -36,6 +36,7 @@
 function check_user_password_dolibarr($usertotest,$passwordtotest,$entitytotest=1)
 {
 	global $db,$conf,$langs;
+	global $mc;
 
 	dol_syslog("functions_dolibarr::check_user_password_dolibarr usertotest=".$usertotest);
 
@@ -66,7 +67,6 @@ function check_user_password_dolibarr($usertotest,$passwordtotest,$entitytotest=
 	}
 
 	return $login;
-	
 }
 
 

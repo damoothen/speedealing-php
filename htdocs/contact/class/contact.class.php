@@ -2,7 +2,7 @@
 /* Copyright (C) 2002-2004 Rodolphe Quiedeville        <rodolphe@quiedeville.org>
  * Copyright (C) 2004      Benoit Mortier              <benoit.mortier@opensides.be>
  * Copyright (C) 2004-2010 Laurent Destailleur         <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2008 Regis Houssin               <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin               <regis@dolibarr.fr>
  * Copyright (C) 2007      Franky Van Liedekerke       <franky.van.liedekerker@telenet.be>
  * Copyright (C) 2008      Raphael Bertrand (Resultic) <raphael.bertrand@resultic.fr>
  *
@@ -534,7 +534,6 @@ class Contact extends CommonObject
 				$this->mail				= $obj->email;
 
 				$this->birthday			= $this->db->jdate($obj->birthday);
-				$this->birthday_alert 	= $obj->birthday_alert;
 				$this->note				= $obj->note;
 				$this->default_lang		= $obj->default_lang;
 				$this->user_id			= $obj->user_id;
@@ -806,8 +805,12 @@ class Contact extends CommonObject
 		$sql = "SELECT count(mc.email) as nb";
 		$sql.= " FROM ".MAIN_DB_PREFIX."mailing_cibles as mc";
 		$sql.= " WHERE mc.email = '".$this->db->escape($this->email)."'";
-		$sql.= " AND mc.statut=1";      // -1 erreur, 0 non envoye, 1 envoye avec succes
+		$sql.= " AND mc.statut NOT IN (-1,0)";      // -1 erreur, 0 non envoye, 1 envoye avec succes
+		
+		dol_syslog(get_class($this)."::getNbOfEMailings sql=".$sql, LOG_DEBUG);
+		
 		$resql=$this->db->query($sql);
+		
 		if ($resql)
 		{
 			$obj = $this->db->fetch_object($resql);

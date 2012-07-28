@@ -33,6 +33,8 @@ require_once(DOL_DOCUMENT_ROOT."/societe/class/societe.class.php");
 
 dol_syslog("Call Dolibarr webservices interfaces");
 
+$langs->load("main");
+
 // Enable and test if module web services is enabled
 if (empty($conf->global->MAIN_MODULE_WEBSERVICES))
 {
@@ -108,10 +110,10 @@ $server->wsdl->addComplexType(
     	'country_id' => array('name'=>'country_id','type'=>'xsd:string'),
     	'country_code' => array('name'=>'country_code','type'=>'xsd:string'),
     	'country' => array('name'=>'country','type'=>'xsd:string'),
-        'phone' => array('name'=>'country_id','type'=>'xsd:string'),
-    	'fax' => array('name'=>'country_id','type'=>'xsd:string'),
-    	'email' => array('name'=>'country_id','type'=>'xsd:string'),
-    	'url' => array('name'=>'country_id','type'=>'xsd:string'),
+        'phone' => array('name'=>'phone','type'=>'xsd:string'),
+    	'fax' => array('name'=>'fax','type'=>'xsd:string'),
+    	'email' => array('name'=>'email','type'=>'xsd:string'),
+    	'url' => array('name'=>'url','type'=>'xsd:string'),
     	'profid1' => array('name'=>'profid1','type'=>'xsd:string'),
     	'profid2' => array('name'=>'profid2','type'=>'xsd:string'),
     	'profid3' => array('name'=>'profid3','type'=>'xsd:string'),

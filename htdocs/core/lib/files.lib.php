@@ -51,7 +51,7 @@ function dol_basename($pathfile)
  */
 function dol_dir_list($path, $types="all", $recursive=0, $filter="", $excludefilter="", $sortcriteria="name", $sortorder=SORT_ASC, $mode=0)
 {
-	dol_syslog("files.lib.php::dol_dir_list path=".$path." types=".$types." recursive=".$recursive." filter=".$filter." excludefilter=".$excludefilter);
+	dol_syslog("files.lib.php::dol_dir_list path=".$path." types=".$types." recursive=".$recursive." filter=".$filter." excludefilter=".json_encode($excludefilter));
 
 	$loaddate=($mode==1||$mode==2)?true:false;
 	$loadsize=($mode==1||$mode==3)?true:false;
@@ -64,7 +64,10 @@ function dol_dir_list($path, $types="all", $recursive=0, $filter="", $excludefil
 
 	if ($dir = opendir($newpath))
 	{
+		$filedate='';
+		$filesize='';
 		$file_list = array();
+
 		while (false !== ($file = readdir($dir)))
 		{
 			if (! utf8_check($file)) $file=utf8_encode($file);	// To be sure data is stored in utf8 in memory
@@ -862,7 +865,7 @@ function dol_meta_create($object)
 			{
 				//Pour les articles
 				$meta .= "ITEM_" . $i . "_QUANTITY=\"" . $object->lines[$i]->qty . "\"
-				ITEM_" . $i . "_UNIT_PRICE=\"" . $object->lines[$i]->price . "\"
+				ITEM_" . $i . "_UNIT_PRICE=\"" . $object->lines[$i]->total_ht . "\"
 				ITEM_" . $i . "_TVA=\"" .$object->lines[$i]->tva_tx . "\"
 				ITEM_" . $i . "_DESCRIPTION=\"" . str_replace("\r\n","",nl2br($object->lines[$i]->desc)) . "\"
 				";
