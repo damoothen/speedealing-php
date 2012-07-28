@@ -1097,65 +1097,6 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
 		dol_htmloutput_errors($error, $errors);
 
-		// Assign values for template
-		/* $tpl->assign('id', $object->id);
-
-		  $tpl->assign('customer_code_auto', $modCodeClient->code_auto);
-		  $tpl->assign('customer_code_changed', $object->codeclient_modifiable());
-		  $tpl->assign('customer_code_tooltip', $modCodeClient->getToolTip($langs, $object, 0));
-
-		  $tpl->assign('supplier_code_auto', $modCodeFournisseur->code_auto);
-		  $tpl->assign('supplier_code_auto', $object->codefournisseur_modifiable());
-		  $tpl->assign('supplier_code_tooltip', $modCodeFournisseur->getToolTip($langs, $object, 1));
-
-		  if ($user->admin) {
-		  $tpl->assign('info_admin', info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"), 1));
-		  }
-
-		  // Assign blocks and fields
-		  for ($i = 0; $i < count($object->fk_extrafields->block); $i++) {
-		  $blockfields = array();
-		  foreach ($object->fk_extrafields->fields as $key => $params) {
-		  $blockfields[$key]['trans'] = $langs->trans($key);
-		  $blockfields[$key]['value'] = $object->values->$key;
-		  if (is_object($params) && !empty($params)) {
-		  foreach ($params as $param => $value) {
-		  $blockfields[$key][$param] = $value;
-		  }
-		  }
-		  }
-		  $tpl->assign($object->fk_extrafields->block[$i], $blockfields);
-		  }
-
-		  // Assign specific functions
-		  if ($object->fk_extrafields->fields->Zip->enable) {
-		  $tpl->assign('select_zip', $formcompany->select_ziptown($object->values->Zip, 'Zip', array('Town', 'selectCountry', 'State'), $object->fk_extrafields->fields->Zip->length));
-		  }
-		  if ($object->fk_extrafields->fields->Town->enable) {
-		  $tpl->assign('select_town', $formcompany->select_ziptown($object->values->Town, 'Town', array('Zip', 'selectCountry', 'State'), $object->fk_extrafields->fields->Town->length));
-		  }
-		  if ($object->fk_extrafields->fields->Country->enable) {
-		  $tpl->assign('select_country', $form->select_country($object->values->Country, 'Country'));
-		  }
-		  if ($object->fk_extrafields->fields->State->enable) {
-		  $tpl->assign('select_state', $formcompany->select_state($object->values->State, $object->values->Country, 'State'));
-		  }
-		  if ($object->fk_extrafields->fields->Status->enable) {
-		  // TODO add function select
-		  $value = (!empty($object->values->Status) ? $object->values->Status : $object->fk_extrafields->fields->Status->default);
-		  $out = '<select name="Status" id="Status">';
-		  foreach ($object->fk_status->values as $key => $aRow) {
-		  if ($aRow->enable) {
-		  if ($key == $value)
-		  $out.= '<option selected="selected"';
-		  else
-		  $out.= '<option';
-		  $out.= ' value="' . $key . '">' . $langs->trans($key) . '</option>\n';
-		  }
-		  }
-		  $out.= '<select>';
-		  //$tpl->assign('select_status', $out);
-		  } */
 		?>
 		<!-- BEGIN PHP TEMPLATE thirdparty update card -->
 		<script type="text/javascript">
@@ -1225,8 +1166,6 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 			</script>
 
 			<?php
-			// Display template
-			//$tpl->display("./tpl/update_card.tpl.php");
 
 			print '<table class="border" width="100%">';
 
@@ -1364,7 +1303,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
 			$head = societe_prepare_head($object);
 
-			print start_box($langs->trans("ThirdParty"), "eight", "16-Apartment-Building.png", false, $head);
+			print start_box($langs->trans("ThirdParty"), "eight", "16-Apartment-Building.png", true);
 			// First onglet
 
 			for ($i = 0; $i < count($object->fk_extrafields->block); $i++) {

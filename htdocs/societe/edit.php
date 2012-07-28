@@ -1040,13 +1040,13 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
 			<?php for ($i = 0; $i < count($object->fk_extrafields->place); $i++): ?>
 				<fieldset title="<?php echo $langs->trans($object->fk_extrafields->block[$i]); ?>">
-					<legend><?php echo $langs->trans($object->fk_extrafields->block[$i]."Resume"); ?></legend>
+					<legend><?php echo $langs->trans($object->fk_extrafields->block[$i] . "Resume"); ?></legend>
 
 					<div class="row">
 						<div class="two columns">
 							<div class="form_legend">
 								<h4><?php echo $langs->trans($object->fk_extrafields->block[$i]); ?></h4>
-								<p><?php echo $langs->trans($object->fk_extrafields->block[$i]."Legend"); ?></p>
+								<p><?php echo $langs->trans($object->fk_extrafields->block[$i] . "Legend"); ?></p>
 							</div>
 						</div>
 						<div class="ten columns">
@@ -1137,7 +1137,6 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 			if (empty($conf->global->MAIN_DISABLEVATCHECK)) {
 				$s.=' &nbsp; ';
 
-				if ($conf->use_javascript_ajax) {
 					print "\n";
 					print '<script language="JavaScript" type="text/javascript">';
 					print "function CheckVAT(a) {\n";
@@ -1147,9 +1146,9 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 					print "\n";
 					$s.='<a href="#" onclick="javascript: CheckVAT(document.formsoc.tva_intra.value);">' . $langs->trans("VATIntraCheck") . '</a>';
 					$s = $form->textwithpicto($s, $langs->trans("VATIntraCheckDesc", $langs->trans("VATIntraCheck")), 1);
-				} else {
-					$s.='<a href="' . $langs->transcountry("VATIntraCheckURL", $object->id_pays) . '" target="_blank">' . img_picto($langs->trans("VATIntraCheckableOnEUSite"), 'help') . '</a>';
-				}
+//				} else {
+//					$s.='<a href="' . $langs->transcountry("VATIntraCheckURL", $object->id_pays) . '" target="_blank">' . img_picto($langs->trans("VATIntraCheckableOnEUSite"), 'help') . '</a>';
+//				}
 			}
 			print $s;
 			print '</td>';
