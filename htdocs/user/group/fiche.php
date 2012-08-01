@@ -75,9 +75,9 @@ if ($action == 'add') {
 		}
 
 		if (!$message) {
-			$object->values->name = trim($_POST["nom"]);
-			$object->values->note = trim($_POST["note"]);
-			$object->values->_id = "group:".$object->values->name;
+			$object->name = trim($_POST["nom"]);
+			$object->note = trim($_POST["note"]);
+			$object->_id = "group:".$object->name;
 
 			$object->record();
 
@@ -98,10 +98,10 @@ if ($action == 'adduser' || $action == 'removeuser') {
 			$object->load($id);
 
 			if ($action == 'adduser') {
-				$object->couchAdmin->addRoleToUser($userid, $object->values->name);
+				$object->couchAdmin->addRoleToUser($userid, $object->name);
 			}
 			if ($action == 'removeuser') {
-				$object->couchAdmin->removeRoleFromUser($userid, $object->values->name);
+				$object->couchAdmin->removeRoleFromUser($userid, $object->name);
 			}
 
 			if ($result > 0) {
@@ -129,13 +129,13 @@ if ($action == 'adddatabase' || $action == 'removedatabase') {
 
 			if ($action == 'adddatabase') {
 				if($_POST['admin'])
-					$database->couchAdmin->addDatabaseAdminRole($object->values->name);
+					$database->couchAdmin->addDatabaseAdminRole($object->name);
 				else
-					$database->couchAdmin->addDatabaseReaderRole($object->values->name);
+					$database->couchAdmin->addDatabaseReaderRole($object->name);
 			}
 			if ($action == 'removedatabase') {
-				$database->couchAdmin->removeDatabaseAdminRole($object->values->name);
-				$database->couchAdmin->removeDatabaseReaderRole($object->values->name);
+				$database->couchAdmin->removeDatabaseAdminRole($object->name);
+				$database->couchAdmin->removeDatabaseReaderRole($object->name);
 			}
 
 			if ($result > 0) {
@@ -232,7 +232,7 @@ if ($action == 'create') {
 /*                                                                            */
 /* * ************************************************************************* */ else {
 	if ($id) {
-		$object->load($id,true);
+		$object->load($id);
 
 		/*
 		 * Affichage onglets
@@ -262,11 +262,11 @@ if ($action == 'create') {
 			 * Barre d'actions
 			 */
 			print '<div class="row sepH_a">';
-			print '<div class="gh_button-group right">';
+			print '<div class="right">';
 
-			if ($caneditperms) {
-				print '<a class="gh_button pill primary" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=edit">' . $langs->trans("Modify") . '</a>';
-			}
+			//if ($caneditperms) {
+			//	print '<a class="gh_button pill primary" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=edit">' . $langs->trans("Modify") . '</a>';
+			//}
 
 			if ($candisableperms) {
 				print '<a class="gh_button pill icon trash danger" href="' . $_SERVER['PHP_SELF'] . '?action=delete&amp;id=' . $object->id . '">' . $langs->trans("Delete") . '</a>';
@@ -286,7 +286,7 @@ if ($action == 'create') {
 
 			// Name
 			print '<tr><td width="25%" valign="top">' . $langs->trans("Name") . '</td>';
-			print '<td width="75%" class="valeur">' . $object->values->name;
+			print '<td width="75%" class="valeur">' . $object->name;
 			print "</td></tr>\n";
 
 			print "</table>\n";
@@ -310,7 +310,7 @@ if ($action == 'create') {
 			$exclude = array();
 
 			$userstatic = new User($db);
-			$result = $userstatic->getView("roles", array('key' => $object->values->name));
+			$result = $userstatic->getView("roles", array('key' => $object->name));
 
 			if (count($result->rows)) {
 				foreach ($result->rows as $useringroup) {
@@ -503,7 +503,7 @@ if ($action == 'create') {
 
 			print '<table class="border" width="100%">';
 			print '<tr><td width="25%" valign="top" class="fieldrequired">' . $langs->trans("Name") . '</td>';
-			print '<td width="75%" class="valeur"><input size="15" type="text" name="group" value="' . $object->nom . '">';
+			print '<td width="75%" class="valeur"><input size="15" type="text" name="group" value="' . $object->name . '">';
 			print "</td></tr>\n";
 
 			print '<tr><td width="25%" valign="top">' . $langs->trans("Note") . '</td>';

@@ -253,7 +253,7 @@ $bc[true] = ' class="bg2"';
  * @return	int												<0 if KO, >0 if OK
  */
 function conf($dolibarr_main_document_root) {
-	global $conf;
+	global $conf, $couch;
 	global $dolibarr_main_db_type;
 	global $dolibarr_main_db_host;
 	global $dolibarr_main_db_port;
@@ -282,8 +282,11 @@ function conf($dolibarr_main_document_root) {
 	$conf->Couchdb->host = trim($dolibarr_main_couchdb_host);
 	$conf->Couchdb->port = trim($dolibarr_main_couchdb_port);
 	$conf->Couchdb->name = trim($dolibarr_main_couchdb_name);
+	
+	$couch = new couchClient($conf->Couchdb->host . ':' . $conf->Couchdb->port . '/', $conf->Couchdb->name);
+	$couch->setSessionCookie("AuthSession=" . $_COOKIE['AuthSession']);
 
-	$conf->loadDatabase();
+	$conf->useDatabase();
 
 	if (empty($character_set_client))
 		$character_set_client = "UTF-8";

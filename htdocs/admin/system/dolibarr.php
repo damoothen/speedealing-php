@@ -209,6 +209,8 @@ print '<tr '.$bc[$var].'><td width="300">&nbsp; => '.$langs->trans("File encodin
 print '</table>';
 print '<br>';
 
+print dol_fiche_end();
+
 llxFooter();
 
 $db->close();

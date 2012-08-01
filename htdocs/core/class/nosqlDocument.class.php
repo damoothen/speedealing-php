@@ -286,7 +286,7 @@ abstract class nosqlDocument extends CommonObject {
 				}
 			} catch (Exception $e) {
 				error_log($e->getMessage());
-				$this->dol_syslog(get_class($this) . "::getView " . $error, LOG_WARN);
+				dol_syslog(get_class($this) . "::getView " . $error, LOG_WARN);
 				$result->total_rows = 0;
 			}
 		}

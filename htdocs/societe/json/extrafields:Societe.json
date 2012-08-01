@@ -39,11 +39,12 @@
                "ProfId1",
                "ProfId2",
                "ProfId3",
-               "Capital"
+               "ProfId4"
            ],
            [
                "ThirdPartyType",
-               "Staff"
+               "Staff",
+               "Capital"
            ]
        ],
        [
@@ -66,6 +67,7 @@
        "CustomerCode",
        "Zip",
        "Town",
+       "Address",
        "Phone",
        "SIREN",
        "SIRET",
@@ -161,7 +163,12 @@
            "type": "textarea",
            "cols": 40,
            "rows": 3,
-           "enable": true
+           "enable": true,
+           "aoColumns": {
+               "sClass": "",
+               "bSearchable": true,
+               "bVisible": false
+           }
        },
        "Zip": {
            "type": "text",
@@ -225,25 +232,37 @@
        "EMail": {
            "type": "AC_EMAIL",
            "ico": "AC_EMAIL",
-           "enable": true
+           "enable": true,
+           "validate": {
+               "email": true
+           }
        },
        "Web": {
-           "type": "AC_URL",
+           "type": "text",
            "ico": "AC_URL",
            "site": "www",
-           "enable": true
+           "enable": true,
+           "validate": {
+               "url": true
+           }
        },
        "Facebook": {
-           "type": "AC_URL",
+           "type": "text",
            "ico": "AC_URL",
            "site": "facebook",
-           "enable": true
+           "enable": true,
+           "validate": {
+               "url": true
+           }
        },
        "LinkedIn": {
-           "type": "AC_URL",
+           "type": "text",
            "ico": "AC_URL",
            "site": "linkedin",
-           "enable": true
+           "enable": true,
+           "validate": {
+               "url": true
+           }
        },
        "ProfId1": {
            "type": "text",
@@ -351,8 +370,7 @@
            "length": "20",
            "label": "Capital",
            "enable": "1",
-           "css": "expand",
-           "spinner": "{currency: '€', min: 0}"
+           "spinner": "min: 0"
        },
        "VATIsUsed": {
            "type": "checkbox",

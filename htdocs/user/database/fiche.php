@@ -415,13 +415,13 @@ if ($action == 'create') {
 
 					print "<tr $bc[$var]>";
 					print '<td>';
-					print '<a href="' . DOL_URL_ROOT . '/user/group/fiche.php?id=' . $useringroup->id . '">' . img_object($langs->trans("ShowGroup"), "group") . ' ' . $useringroup->values->name . '</a>';
+					print '<a href="' . DOL_URL_ROOT . '/user/group/fiche.php?id=' . $useringroup->id . '">' . img_object($langs->trans("ShowGroup"), "group") . ' ' . $useringroup->name . '</a>';
 					if ($useringroup->admin)
 						print img_picto($langs->trans("Administrator"), 'star');
 					print '</td>';
 					print '<td>';
 					if ($user->admin) {
-						print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=removegroup&amp;group=' . $useringroup->values->name . '">';
+						print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=removegroup&amp;group=' . $useringroup->name . '">';
 						print img_delete($langs->trans("RemoveFromGroup"));
 					} else {
 						print "-";

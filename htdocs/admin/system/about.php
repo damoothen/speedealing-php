@@ -123,6 +123,7 @@ if (preg_match('/^fr_/i',$langs->getDefaultLang()))
 }
 print '</ul>';
 
+print dol_fiche_end();
 
 llxFooter();
 

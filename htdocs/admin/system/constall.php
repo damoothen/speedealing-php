@@ -243,6 +243,7 @@ if ($resql)
 
 print '</table>';
 
+print dol_fiche_end();
 
 llxFooter();
 

@@ -115,6 +115,8 @@ print '<br>';
 //print "<br>\n";
 print info_admin($langs->trans("SystemInfoDesc")).'<br>';
 
+print dol_fiche_end();
+
 llxFooter();
 
 $db->close();

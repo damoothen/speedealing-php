@@ -355,42 +355,6 @@ class modUser extends DolibarrModules {
 		$this->values->menus[$r]->fk_menu = "menu:systeminfo";
 		$r++;
 
-		$this->values->menus[$r]->_id = "menu:os";
-		$this->values->menus[$r]->position = 2;
-		$this->values->menus[$r]->url = "/admin/system/os.php";
-		$this->values->menus[$r]->langs = "admin";
-		$this->values->menus[$r]->usertype = 2;
-		$this->values->menus[$r]->title = "OS";
-		$this->values->menus[$r]->fk_menu = "menu:systeminfo";
-		$r++;
-
-		$this->values->menus[$r]->_id = "menu:webserver";
-		$this->values->menus[$r]->position = 3;
-		$this->values->menus[$r]->url = "/admin/system/web.php";
-		$this->values->menus[$r]->langs = "admin";
-		$this->values->menus[$r]->usertype = 2;
-		$this->values->menus[$r]->title = "WebServer";
-		$this->values->menus[$r]->fk_menu = "menu:systeminfo";
-		$r++;
-
-		$this->values->menus[$r]->_id = "menu:php";
-		$this->values->menus[$r]->position = 4;
-		$this->values->menus[$r]->url = "/admin/system/phpinfo.php";
-		$this->values->menus[$r]->langs = "admin";
-		$this->values->menus[$r]->usertype = 2;
-		$this->values->menus[$r]->title = "Php";
-		$this->values->menus[$r]->fk_menu = "menu:systeminfo";
-		$r++;
-
-		$this->values->menus[$r]->_id = "menu:database";
-		$this->values->menus[$r]->position = 5;
-		$this->values->menus[$r]->url = "/admin/system/database.php";
-		$this->values->menus[$r]->langs = "admin";
-		$this->values->menus[$r]->usertype = 2;
-		$this->values->menus[$r]->title = "Database";
-		$this->values->menus[$r]->fk_menu = "menu:systeminfo";
-		$r++;
-
 		$this->values->menus[$r]->_id = "menu:allparameters";
 		$this->values->menus[$r]->position = 1;
 		$this->values->menus[$r]->url = "/admin/system/constall.php";

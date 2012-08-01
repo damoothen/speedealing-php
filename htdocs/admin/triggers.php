@@ -54,6 +54,8 @@ $triggers = $interfaces->getTriggersList(0,'priority');
 
 include($template_dir.'triggers.tpl.php');
 
+print dol_fiche_end();
+
 llxFooter();
 
 $db->close();
