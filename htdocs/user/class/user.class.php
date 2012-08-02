@@ -401,14 +401,12 @@ class User extends nosqlDocument {
 			print $exc->getMessage();
 		}
 
-
-
 		if (count($result->rows)) {
 			foreach ($result->rows as $aRow) {
-				$object->values->name = $aRow->value->name;
-				$object->values->numero = $aRow->value->numero;
+				//$object->values->name = $aRow->value->name;
+				//$object->values->numero = $aRow->value->numero;
 				$rights_class = $aRow->value->rights_class;
-				$object->values->id = $aRow->value->id;
+				//$object->values->id = $aRow->value->id;
 				$perm = $aRow->value->perm;
 
 				// Add default rights
@@ -424,7 +422,7 @@ class User extends nosqlDocument {
 
 				// Add user rights
 
-				if (is_array($this->values->rights) && isset($this->values->rights->$key)) {
+				if ((is_array($this->values->rights) && isset($this->values->rights->$key)) || $this->admin) {
 					if (count($perm) == 1)
 						$this->rights->$rights_class->$perm[0] = true;
 					elseif (count($perm) == 2)
