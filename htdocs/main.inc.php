@@ -1048,7 +1048,7 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 	//if (empty($conf->headerdone)) top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss);
 
 	if (!defined('NOHEADER'))
-		print '<body class="ptrn_a grdnt_b mhover_c">'; // fullW full size width
+		print '<body class="ptrn_a grdnt_b mhover_c fullW">'; // fullW full size width
 	else
 		print '<body style="background: white;">'; // fullW full size width
 
