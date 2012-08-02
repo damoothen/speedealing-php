@@ -147,7 +147,6 @@ dol_htmloutput_errors($mesg);
 if ($action == 'set' && $user->admin) {
 	try {
 		$object->load($_GET['id']); // update if module exist
-		$rev = $object->values->_rev;
 	} catch (Exception $e) {
 		
 	}
@@ -156,15 +155,16 @@ if ($action == 'set' && $user->admin) {
 		$key = $_GET['value'];
 		$objMod = $modules[$key];
 
-		$object->values = $objMod->values;
-		$object->values->_id = "module:" . $objMod->values->name;
-		$object->values->_rev = $rev;
-		$object->values->enabled = true;
+		foreach($objMod->values as $key => $aRow)
+			$object->$key = $aRow;
+		$object->_id = "module:" . $objMod->values->name;
+		$object->enabled = true;
 		dol_delcache("MenuTop:list"); //refresh menu
 		dol_delcache("MenuTop:submenu"); //refresh menu
-		dol_delcache("extrafields:" . $object->values->class); //refresh extrafields
+		dol_delcache("extrafields:" . $object->class); //refresh extrafields
 		dol_delcache("const"); //delete $conf
 		dol_delcache("DolibarrModules:list"); //refresh menu
+		dol_delcache("DolibarrModules:default_right");
 		
 		$object->record();
 		$object->_load_documents();
@@ -178,12 +178,13 @@ if ($action == 'set' && $user->admin) {
 if ($action == 'reset' && $user->admin) {
 	try {
 		$object->load($_GET['id']);
-		unset($object->values->enabled);
+		unset($object->enabled);
 		
 		dol_delcache("MenuTop:list"); //refresh menu
 		dol_delcache("MenuTop:submenu"); //refresh menu
 		dol_delcache("const"); //delete $conf
 		dol_delcache("DolibarrModules:list"); //refresh menu
+		dol_delcache("DolibarrModules:default_right");
 
 		$object->record();
 	} catch (Exception $e) {
@@ -202,8 +203,6 @@ llxHeader('', $langs->trans("Setup"), $help_url);
 
 print '<div class="row">';
 print start_box($langs->trans("ModulesSetup"), 'twelve', '16-Cog-4.png', false);
-
-
 
 
 $obj = new stdClass();

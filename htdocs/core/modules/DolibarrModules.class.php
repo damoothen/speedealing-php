@@ -317,7 +317,7 @@ class DolibarrModules extends nosqlDocument {
 		elseif ($this->values->version == 'speedealing')
 			return DOL_VERSION;
 		elseif ($this->values->version == 'dolibarr')
-			return '<span class="lbl alert_bg sl_status ">' . $langs->trans("Dolibarr") . '</span>';
+			return '<span class="lbl alert_bg sl_status ">' . $langs->trans("Old") . '</span>';
 		elseif ($this->values->version)
 			return $this->values->version;
 		else

@@ -47,7 +47,7 @@ class modAdherent extends DolibarrModules {
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
 		$this->values->name = preg_replace('/^mod/i', '', get_class($this));
 		$this->values->description = "Gestion des adhérents d'une association";
-		$this->values->version = 'dolibarr';						// 'experimental' or 'dolibarr' or version
+		$this->values->version = 'speedealing';						// 'experimental' or 'dolibarr' or version
 		$this->values->const_name = 'MAIN_MODULE_' . strtoupper($this->values->name);
 		$this->values->special = 0;
 		$this->values->picto = 'user';
@@ -97,64 +97,167 @@ class modAdherent extends DolibarrModules {
 		$this->values->rights = array();
 		$this->values->rights_class = 'adherent';
 		$r = 0;
-
-		// $this->values->rights[$r][0]     Id permission (unique tous modules confondus)
-		// $this->values->rights[$r][1]     Libelle par defaut si traduction de cle "PermissionXXX" non trouvee (XXX = Id permission)
-		// $this->values->rights[$r][2]     Non utilise
-		// $this->values->rights[$r][3]     1=Permis par defaut, 0=Non permis par defaut
-		// $this->values->rights[$r][4]     Niveau 1 pour nommer permission dans code
-		// $this->values->rights[$r][5]     Niveau 2 pour nommer permission dans code
-
-        $r++;
-		$this->values->rights[$r][0] = 71;
-		$this->values->rights[$r][1] = 'Read members\' card';
-		$this->values->rights[$r][2] = 'r';
-		$this->values->rights[$r][3] = 1;
-		$this->values->rights[$r][4] = 'lire';
+		
+		//$this->values->rights[$r]->id = 121; // id de la permission
+		//$this->values->rights[$r]->desc = 'Lire les societes'; // libelle de la permission
+		//$this->values->rights[$r]->default = true;
+		//$this->values->rights[$r]->perm = array('lire');
+		
+		$this->values->rights[$r]->id = 71;
+		$this->values->rights[$r]->desc = 'Read members\' card';
+		$this->values->rights[$r]->default = 1;
+		$this->values->rights[$r]->perm = array('lire');
 
         $r++;
-		$this->values->rights[$r][0] = 72;
-		$this->values->rights[$r][1] = 'Create/modify members (need also user module permissions if member linked to a user)';
-		$this->values->rights[$r][2] = 'w';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'creer';
+		$this->values->rights[$r]->id = 72;
+		$this->values->rights[$r]->desc = 'Create/modify members (need also user module permissions if member linked to a user)';
+		$this->values->rights[$r]->default = 0;
+		$this->values->rights[$r]->perm = array('creer');
 
         $r++;
-		$this->values->rights[$r][0] = 74;
-		$this->values->rights[$r][1] = 'Remove members';
-		$this->values->rights[$r][2] = 'd';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'supprimer';
+		$this->values->rights[$r]->id = 74;
+		$this->values->rights[$r]->desc = 'Remove members';
+		$this->values->rights[$r]->default = 0;
+		$this->values->rights[$r]->perm = array('supprimer');
 
         $r++;
-		$this->values->rights[$r][0] = 76;
-		$this->values->rights[$r][1] = 'Export members';
-		$this->values->rights[$r][2] = 'r';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'export';
+		$this->values->rights[$r]->id = 76;
+		$this->values->rights[$r]->desc = 'Export members';
+		$this->values->rights[$r]->default = 0;
+		$this->values->rights[$r]->perm = array('export');
 
         $r++;
-		$this->values->rights[$r][0] = 75;
-		$this->values->rights[$r][1] = 'Setup types and attributes of members';
-		$this->values->rights[$r][2] = 'w';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'configurer';
+		$this->values->rights[$r]->id = 75;
+		$this->values->rights[$r]->desc = 'Setup types and attributes of members';
+		$this->values->rights[$r]->default = 0;
+		$this->values->rights[$r]->perm = array('configurer');
 
         $r++;
-		$this->values->rights[$r][0] = 78;
-		$this->values->rights[$r][1] = 'Read subscriptions';
-		$this->values->rights[$r][2] = 'r';
-		$this->values->rights[$r][3] = 1;
-		$this->values->rights[$r][4] = 'cotisation';
-		$this->values->rights[$r][5] = 'lire';
+		$this->values->rights[$r]->id = 78;
+		$this->values->rights[$r]->desc = 'Read subscriptions';
+		$this->values->rights[$r]->default = 1;
+		$this->values->rights[$r]->perm = array('cotisation','lire');
 
         $r++;
-		$this->values->rights[$r][0] = 79;
-		$this->values->rights[$r][1] = 'Create/modify/remove subscriptions';
-		$this->values->rights[$r][2] = 'w';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'cotisation';
-		$this->values->rights[$r][5] = 'creer';
+		$this->values->rights[$r]->id = 79;
+		$this->values->rights[$r]->desc = 'Create/modify/remove subscriptions';
+		$this->values->rights[$r]->default = 0;
+		$this->values->rights[$r]->perm = array('cotisation','creer');
+		
+		// Menu
+		//--------
+		
+		$r = 0;
+		$this->values->menus[$r]->_id = "menu:members";
+		$this->values->menus[$r]->type = "top";
+		$this->values->menus[$r]->position = 15;
+		$this->values->menus[$r]->url = "/adherents/index.php";
+		$this->values->menus[$r]->langs = "members";
+		$this->values->menus[$r]->perms = '$user->rights->adherent->lire';
+		$this->values->menus[$r]->enabled = '$conf->Adherent->enabled';
+		$this->values->menus[$r]->usertype = 2;
+		$this->values->menus[$r]->title = "Members";
+
+		$r++;
+		$this->values->menus[$r]->_id = "menu:members0";
+		$this->values->menus[$r]->position = 0;
+		$this->values->menus[$r]->url = "/adherents/index.php";
+		$this->values->menus[$r]->langs = "members";
+		$this->values->menus[$r]->perms = '$user->rights->adherent->lire';
+		$this->values->menus[$r]->enabled = '$conf->Adherent->enabled';
+		$this->values->menus[$r]->usertype = 2;
+		$this->values->menus[$r]->title = "Members";
+		$this->values->menus[$r]->fk_menu = "menu:members";
+		$r++;
+		$this->values->menus[$r]->_id = "menu:subscriptions";
+		$this->values->menus[$r]->position = 1;
+		$this->values->menus[$r]->url = "/adherents/index.php";
+		$this->values->menus[$r]->langs = "compta";
+		$this->values->menus[$r]->perms = '$user->rights->adherent->cotisation->lire';
+		$this->values->menus[$r]->enabled = '$conf->Adherent->enabled';
+		$this->values->menus[$r]->usertype = 2;
+		$this->values->menus[$r]->title = "Subscriptions";
+		$this->values->menus[$r]->fk_menu = "menu:members";
+		$r++;
+		$this->values->menus[$r]->_id = "menu:exports";
+		$this->values->menus[$r]->position = 2;
+		$this->values->menus[$r]->url = "/adherents/index.php";
+		$this->values->menus[$r]->langs = "members";
+		$this->values->menus[$r]->perms = '$user->rights->adherent->export';
+		$this->values->menus[$r]->enabled = '$conf->Adherent->enabled';
+		$this->values->menus[$r]->usertype = 2;
+		$this->values->menus[$r]->title = "Exports";
+		$this->values->menus[$r]->fk_menu = "menu:members";
+		$r++;
+		$this->values->menus[$r]->_id = "menu:memberscategoriesshort";
+		$this->values->menus[$r]->position = 3;
+		$this->values->menus[$r]->url = "/categories/index.php?type=3";
+		$this->values->menus[$r]->langs = "categories";
+		$this->values->menus[$r]->perms = '$user->rights->categorie->lire';
+		$this->values->menus[$r]->enabled = '$conf->Adherent->enabled && $conf->categorie->enabled';
+		$this->values->menus[$r]->usertype = 2;
+		$this->values->menus[$r]->title = "MembersCategoriesShort";
+		$this->values->menus[$r]->fk_menu = "menu:members";
+		$r++;
+		$this->values->menus[$r]->_id = "menu:memberstypes";
+		$this->values->menus[$r]->position = 5;
+		$this->values->menus[$r]->url = "/adherents/type.php";
+		$this->values->menus[$r]->langs = "members";
+		$this->values->menus[$r]->perms = '$user->rights->adherent->configurer';
+		$this->values->menus[$r]->enabled = '$conf->Adherent->enabled';
+		$this->values->menus[$r]->usertype = 2;
+		$this->values->menus[$r]->title = "MembersTypes";
+		$this->values->menus[$r]->fk_menu = "menu:members";
+		$r++;
+		$this->values->menus[$r]->_id = "menu:newmember";
+		$this->values->menus[$r]->position = 0;
+		$this->values->menus[$r]->url = "/adherents/fiche.php?action=create";
+		$this->values->menus[$r]->langs = "members";
+		$this->values->menus[$r]->perms = '$user->rights->adherent->creer';
+		$this->values->menus[$r]->enabled = '$conf->Adherent->enabled';
+		$this->values->menus[$r]->usertype = 2;
+		$this->values->menus[$r]->title = "NewMember";
+		$this->values->menus[$r]->fk_menu = "menu:members0";
+		$r++;
+		$this->values->menus[$r]->_id = "menu:list18";
+		$this->values->menus[$r]->position = 1;
+		$this->values->menus[$r]->url = "/adherents/liste.php";
+		$this->values->menus[$r]->langs = "members";
+		$this->values->menus[$r]->perms = '$user->rights->adherent->lire';
+		$this->values->menus[$r]->enabled = '$conf->Adherent->enabled';
+		$this->values->menus[$r]->usertype = 2;
+		$this->values->menus[$r]->title = "List";
+		$this->values->menus[$r]->fk_menu = "menu:members0";
+		$r++;
+		$this->values->menus[$r]->_id = "menu:menumembersstats";
+		$this->values->menus[$r]->position = 7;
+		$this->values->menus[$r]->url = "/adherents/stats/geo.php?mode=memberbycountry";
+		$this->values->menus[$r]->langs = "members";
+		$this->values->menus[$r]->perms = '$user->rights->adherent->lire';
+		$this->values->menus[$r]->enabled = '$conf->Adherent->enabled';
+		$this->values->menus[$r]->usertype = 2;
+		$this->values->menus[$r]->title = "MenuMembersStats";
+		$this->values->menus[$r]->fk_menu = "menu:members0";
+		$r++;
+		$this->values->menus[$r]->_id = "menu:new2";
+		$this->values->menus[$r]->position = 0;
+		$this->values->menus[$r]->url = "/adherents/type.php";
+		$this->values->menus[$r]->langs = "members";
+		$this->values->menus[$r]->perms = '$user->rights->adherent->configurer';
+		$this->values->menus[$r]->enabled = '$conf->Adherent->enabled';
+		$this->values->menus[$r]->usertype = 2;
+		$this->values->menus[$r]->title = "New";
+		$this->values->menus[$r]->fk_menu = "menu:memberstypes";
+		$r++;
+		$this->values->menus[$r]->_id = "menu:list20";
+		$this->values->menus[$r]->position = 0;
+		$this->values->menus[$r]->url = "/adherents/type.php";
+		$this->values->menus[$r]->langs = "members";
+		$this->values->menus[$r]->perms = '$user->rights->adherent->configurer';
+		$this->values->menus[$r]->enabled = '$conf->Adherent->enabled';
+		$this->values->menus[$r]->usertype = 2;
+		$this->values->menus[$r]->title = "List";
+		$this->values->menus[$r]->fk_menu = "menu:memberstypes";
 
         // Exports
         //--------

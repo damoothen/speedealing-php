@@ -43,8 +43,9 @@ if ($action == 'add') {
 
 	try {
 		$object->load($_GET['id']);
-		$object->values->rights[$_GET['pid']]->default = true;
+		$object->rights[$_GET['pid']]->default = true;
 		$object->record();
+		dol_delcache("DolibarrModules:default_right");
 	} catch (Exception $e) {
 		dol_print_error('', $e->getMessage());
 	}
@@ -53,8 +54,9 @@ if ($action == 'add') {
 if ($action == 'remove') {
 	try {
 		$object->load($_GET['id']);
-		$object->values->rights[$_GET['pid']]->default = false;
+		$object->rights[$_GET['pid']]->default = false;
 		$object->record();
+		dol_delcache("DolibarrModules:default_right");
 	} catch (Exception $e) {
 		dol_print_error('', $e->getMessage());
 	}
