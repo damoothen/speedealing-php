@@ -901,7 +901,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
 
 			if ($canreadgroup) {
 				print '<div class="row">';
-				print start_box($langs->trans("ListOfRolesInDatabase"), "twelve", "16-Users-2.png", false);
+				print start_box($langs->trans("ListOfGroups"), "twelve", "16-Users-2.png", false);
 
 				// On selectionne les users qui ne sont pas deja dans le groupe
 				$exclude = array();
