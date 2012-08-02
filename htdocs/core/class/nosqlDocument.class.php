@@ -740,7 +740,7 @@ abstract class nosqlDocument extends CommonObject {
 			}';
 		}
 		elseif ($type == "attachment") {
-			$url_server = $this->couchdb->getServerUri() . "/" . $this->couchdb->getDatabaseName();
+			$url_server = "/db/" . $this->couchdb->getDatabaseName();
 
 			$rtr = 'function(obj) {
 				var ar = [];
