@@ -46,7 +46,7 @@ $type2label=array(
 $yesno=array($langs->trans('No'),$langs->trans('Yes'));
 
 $action=GETPOST("action");
-$elementtype='company';
+$elementtype='Societe';
 
 if (!$user->admin) accessforbidden();
 

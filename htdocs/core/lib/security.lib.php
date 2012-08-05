@@ -169,7 +169,7 @@ function restrictedArea($user, $features, $objectid=0, $dbtablename='', $feature
     }
 	
 	if($user->admin)
-		$readok = 1;
+		return 1;
 
     if (! $readok) accessforbidden();
     //print "Read access is ok";

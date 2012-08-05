@@ -1,5 +1,4 @@
 
-
 /**
  * Create a new TR element (and it's TD children) for a row
  *  @param {object} oSettings dataTables settings object
@@ -301,12 +300,6 @@ function _fnDrawHead( oSettings, aoSource, bIncludeHidden )
  */
 function _fnDraw( oSettings )
 {
-	var i, iLen, n;
-	var anRows = [];
-	var iRowCount = 0;
-	var iStripes = oSettings.asStripeClasses.length;
-	var iOpenRows = oSettings.aoOpenRows.length;
-	
 	/* Provide a pre-callback function which can be used to cancel the draw is false is returned */
 	var aPreDraw = _fnCallbackFire( oSettings, 'aoPreDrawCallback', 'preDraw', [oSettings] );
 	if ( $.inArray( false, aPreDraw ) !== -1 )
@@ -314,6 +307,12 @@ function _fnDraw( oSettings )
 		_fnProcessingDisplay( oSettings, false );
 		return;
 	}
+	
+	var i, iLen, n;
+	var anRows = [];
+	var iRowCount = 0;
+	var iStripes = oSettings.asStripeClasses.length;
+	var iOpenRows = oSettings.aoOpenRows.length;
 	
 	oSettings.bDrawing = true;
 	
@@ -573,11 +572,11 @@ function _fnAddOptionsHtml ( oSettings )
 				/* Replace jQuery UI constants */
 				if ( sAttr == "H" )
 				{
-					sAttr = "fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix";
+					sAttr = oSettings.oClasses.sJUIHeader;
 				}
 				else if ( sAttr == "F" )
 				{
-					sAttr = "fg-toolbar ui-toolbar ui-widget-header ui-corner-bl ui-corner-br ui-helper-clearfix";
+					sAttr = oSettings.oClasses.sJUIFooter;
 				}
 				
 				/* The attribute can be in the format of "#id.class", "#id" or "class" This logic

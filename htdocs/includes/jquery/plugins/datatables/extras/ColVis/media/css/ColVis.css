@@ -5,7 +5,6 @@
 .ColVis {
 	float: right;
 	margin-bottom: 1em;
-	z-index: 1100;
 }
 
 .ColVis_Button {
@@ -53,7 +52,7 @@ div.ColVis_collection button.ColVis_Button {
 
 div.ColVis_catcher {
 	position: absolute;
-	z-index: 1103;
+	z-index: 1101;
 }
 
 .disabled {

@@ -304,7 +304,7 @@ if ($resql)
 
 		// Statut
 		print '<td nowrap="nowrap">';
-		print $memberstatic->LibStatut($objp->statut,$objp->cotisation,$datefin,2);
+		print $memberstatic->LibStatus($objp->statut,$datefin);
 		print "</td>";
 
 		// End of subscription date

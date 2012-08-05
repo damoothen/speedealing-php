@@ -618,7 +618,7 @@ class Societe extends nosqlDocument {
 	function getNomUrl($withpicto = 0, $option = '', $maxlen = 0) {
 		global $conf, $langs;
 
-		$name = $this->values->ThirdPartyName;
+		$name = $this->ThirdPartyName;
 
 		$result = '';
 		$lien = $lienfin = '';

@@ -28,9 +28,8 @@ abstract class nosqlDocument extends CommonObject {
 	public $errors;
 	public $canvas; // Contains canvas name if it is
 	public $fk_extrafields;
-	
-	public $no_save = array("no_save","global","token","id","fk_extrafields","fk_country","couchdb","db","canvas",
-						"error","errors","childtables","element","fk_element","ismultientitymanaged","dbversion");
+	public $no_save = array("no_save", "global", "token", "id", "fk_extrafields", "fk_country", "couchdb", "db", "canvas",
+		"error", "errors", "childtables", "element", "fk_element", "ismultientitymanaged", "dbversion");
 
 	/**
 	 * 	class constructor
@@ -63,27 +62,38 @@ abstract class nosqlDocument extends CommonObject {
 	}
 
 	function fetch($rowid) { // old dolibarr rowid
-		try {
-			$result = $this->getView("rowid", array("key" => intval($rowid)));
-			$this->load($result->rows[0]->value);
-		} catch (Exception $e) {
-			$this->error = "Fetch : Something weird happened: " . $e->getMessage() . " (errcode=" . $e->getCode() . ")\n";
-			dol_print_error($this->db, $this->error);
-			return 0;
+		if (is_int($rowid)) {
+			try {
+				$result = $this->getView("rowid", array("key" => intval($rowid)));
+				$this->load($result->rows[0]->value);
+			} catch (Exception $e) {
+				$this->error = "Fetch : Something weird happened: " . $e->getMessage() . " (errcode=" . $e->getCode() . ")\n";
+				dol_print_error($this->db, $this->error);
+				return 0;
+			}
+		} else {
+			try {
+				$this->load($rowid);
+			} catch (Exception $e) {
+				$this->error = "Fetch : Something weird happened: " . $e->getMessage() . " (errcode=" . $e->getCode() . ")\n";
+				dol_print_error($this->db, $this->error);
+				return 0;
+			}
 		}
+
 
 		return 1;
 	}
 
 	function update($user) {
 		if ($this->id) // only update
-			$this->values->UserUpdate = $user->login;
+			$this->UserUpdate = $user->login;
 		else { // Create
-			$this->values->UserCreate = $user->login;
-			$this->values->UserUpdate = $user->login;
+			$this->UserCreate = $user->login;
+			$this->UserUpdate = $user->login;
 		}
 
-		return $this->commit();
+		return $this->record();
 	}
 
 	/**
@@ -140,10 +150,10 @@ abstract class nosqlDocument extends CommonObject {
 			}
 		}
 		$this->id = $values->_id;
-		
+
 		foreach (get_object_vars($values) as $key => $aRow)
 			$this->$key = $aRow;
-		
+
 		return $values;
 	}
 
@@ -154,11 +164,11 @@ abstract class nosqlDocument extends CommonObject {
 	 */
 	public function record($cache = false) {
 		global $conf;
-		
+
 		foreach (get_object_vars($this) as $key => $aRow)
-			if(! in_array($key, $this->no_save))
+			if (!empty($aRow) && !in_array($key, $this->no_save))
 				$values->$key = $aRow;
-		
+
 		$values->class = get_class($this);
 
 		try {
@@ -210,7 +220,12 @@ abstract class nosqlDocument extends CommonObject {
 	 *  @param	$obj		object
 	 *  @return value of storeDoc
 	 */
-	public function deleteDoc($obj) {
+	public function deleteDoc($obj = null) {
+		if (empty($obj)) {
+			$obj = new stdClass();
+			$obj->_id = $this->_id;
+			$obj->_rev = $this->_rev;
+		}
 		return $this->couchdb->deleteDoc($obj);
 	}
 
@@ -346,16 +361,22 @@ abstract class nosqlDocument extends CommonObject {
 	/**
 	 *  Renvoi le libelle d'un statut donne
 	 *
-	 *  @param	int		$statut         Id statut
-	 *  @return	string          		Libelle du statut
+	 *  @param	int		$statut				Id statut
+	 *  @param  date	$expiration_date	Automatic Status with an expiration date (expired or actived)
+	 *  @return	string						Libelle du statut
 	 */
-	function LibStatus($status) {
+	function LibStatus($status, $expiration_date = null) {
 		global $langs, $conf;
 
 		if (empty($status))
 			$status = $this->fk_extrafields->fields->Status->default;
 
-		if (isset($this->fk_extrafields->fields->Status->values->$status->label))
+		if (!empty($expiration_date) && isset($this->fk_extrafields->fields->Status->values->$status->expire)) {
+			if ($expiration_date < dol_now())
+				return '<span class="lbl ' . $this->fk_extrafields->fields->Status->values->$status->expire->expired->CssClass . ' sl_status ">' . $langs->trans($this->fk_extrafields->fields->Status->values->$status->expire->expired->label) . '</span>';
+			else
+				return '<span class="lbl ' . $this->fk_extrafields->fields->Status->values->$status->expire->actived->cssClass . ' sl_status ">' . $langs->trans($this->fk_extrafields->fields->Status->values->$status->expire->actived->label) . '</span>';
+		} elseif (isset($this->fk_extrafields->fields->Status->values->$status->label))
 			return '<span class="lbl ' . $this->fk_extrafields->fields->Status->values->$status->cssClass . ' sl_status ">' . $langs->trans($this->fk_extrafields->fields->Status->values->$status->label) . '</span>';
 		else
 			return '<span class="lbl ' . $this->fk_extrafields->fields->Status->values->$status->cssClass . ' sl_status ">' . $langs->trans($status) . '</span>';
@@ -434,13 +455,13 @@ abstract class nosqlDocument extends CommonObject {
 						"oTableTools": { "sSwfPath": "<?php echo DOL_URL_ROOT . '/includes/jquery/plugins/datatables/extras/TableTools/media/swf/copy_csv_xls.swf'; ?>"},
 						//if($obj->oTableTools->aButtons==null)
 						//$obj->oTableTools->aButtons = array("xls");
-																																																																							    
+																																																																											    
 						"oColVis": { "buttonText" : 'Voir/Cacher',
 							"aiExclude": [0,1] // Not cacheable _id and name
 						},
 						//$obj->oColVis->bRestore = true;
 						//$obj->oColVis->sAlign = 'left';
-																																																																						            
+																																																																										            
 						// Avec export Excel
 		<?php if (!empty($obj->sDom)) : ?>
 							//"sDom": "Cl<fr>t<\"clear\"rtip>",
@@ -469,7 +490,7 @@ abstract class nosqlDocument extends CommonObject {
 		<?php if (isset($obj->fnRowCallback)): ?>
 							"fnRowCallback": <?php echo $obj->fnRowCallback; ?>,
 		<?php endif; ?>
-																																																						
+																																																										
 		<?php if (!defined('NOLOGIN')) : ?>
 			<?php if (isset($obj->fnDrawCallback)): ?>
 									"fnDrawCallback": <?php echo $obj->fnDrawCallback; ?>,
@@ -494,7 +515,7 @@ abstract class nosqlDocument extends CommonObject {
 												"tooltip": "Cliquer pour éditer...",
 												"indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
 												"placeholder" : ""
-																																																																																																																																												                
+																																																																																																																																																				                
 											} );
 											$("td.select", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
 												"callback": function( sValue, y ) {
@@ -513,7 +534,7 @@ abstract class nosqlDocument extends CommonObject {
 												"tooltip": "Cliquer pour éditer...",
 												"indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
 												"placeholder" : ""
-																																																																																																																																												                
+																																																																																																																																																				                
 											} );
 										}
 			<?php endif; ?>
@@ -581,7 +602,7 @@ abstract class nosqlDocument extends CommonObject {
 	 */
 	public function form($aRow, $key, $cssClass) {
 		global $langs, $conf;
-		
+
 		$form = new Form($this->db);
 
 		$rtr = "";
@@ -613,7 +634,7 @@ abstract class nosqlDocument extends CommonObject {
 							$values = $dict->load($aRow->dict, true);
 							//filter for country
 							foreach ($values->values as $idx => $row) {
-								if(empty($row->pays_code) || $this->Country == $row->pays_code)							
+								if (empty($row->pays_code) || $this->Country == $row->pays_code)
 									$aRow->values[$idx] = $row;
 							}
 						} catch (Exception $e) {
@@ -654,9 +675,9 @@ abstract class nosqlDocument extends CommonObject {
 					else
 						$rtr.= '<input type="checkbox" id="' . $key . '" name="' . $key . '" />';
 					break;
-				case "uploadfile" :	
+				case "uploadfile" :
 					$rtr.= '<input type="file" class="flat" name="' . $key . '" id="' . $key . '">';
-				break;
+					break;
 				default :
 					if (isset($aRow->mask))
 						$rtr.= '<input type="text" maxlength="' . $aRow->length . '" id="' . $key . '" name="' . $key . '" value="' . $this->$key . '" class="input-text ' . $aRow->css . " " . $cssClass . '" mask="' . $key . '"/>' . "\n";

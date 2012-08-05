@@ -901,8 +901,8 @@ DataTable.defaults = {
 	 *        "bProcessing": true,
 	 *        "bServerSide": true,
 	 *        "sAjaxSource": "xhr.php",
-	 *        "fnServerData": function ( sSource, aoData, fnCallback ) {
-	 *          $.ajax( {
+	 *        "fnServerData": function ( sSource, aoData, fnCallback, oSettings ) {
+	 *          oSettings.jqXHR = $.ajax( {
 	 *            "dataType": 'json', 
 	 *            "type": "POST", 
 	 *            "url": sSource, 
@@ -980,7 +980,7 @@ DataTable.defaults = {
 	 *    $(document).ready(function() {
 	 *      $('#example').dataTable( {
 	 *        "bStateSave": true,
-	 *        "fnStateLoad": function (oSettings, oData) {
+	 *        "fnStateLoad": function (oSettings) {
 	 *          var o;
 	 *          
 	 *          // Send an Ajax request to the server to get the data. Note that
@@ -1832,7 +1832,7 @@ DataTable.defaults = {
 	 *  @example
 	 *    $(document).ready(function() {
 	 *      $('#example').dataTable( {
-	 *        "sDom": '&lt;"top"i&gt;rt&lt;"bottom"flp&gt;&lt;"clear"&lgt;'
+	 *        "sDom": '&lt;"top"i&gt;rt&lt;"bottom"flp&gt;&lt;"clear"&gt;'
 	 *      } );
 	 *    } );
 	 */
