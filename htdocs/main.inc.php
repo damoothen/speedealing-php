@@ -217,6 +217,7 @@ if (!defined('NOREQUIREAJAX') && $conf->use_javascript_ajax)
 
 
 
+
 	
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
@@ -773,9 +774,8 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 			else
 				print "<title>" . $appli . "</title>";
 			print "\n";
-
 			?>
-			<base href="<?php echo DOL_URL_ROOT . '/'; ?>" />
+			<base href="<?php echo 'http://' . $_SERVER['HTTP_HOST'] . DOL_URL_ROOT . '/'; ?>" />
 			<?php
 			print '<!-- Includes for JQuery (Ajax library) -->' . "\n";
 			//$jquerytheme = 'smoothness';
@@ -889,8 +889,6 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 				print '<script type="text/javascript" src="includes/js/jquery.inputmask.js"></script>' . "\n";
 				print '<script type="text/javascript" src="includes/js/jquery.inputmask.extentions.js"></script>' . "\n";
 				print '<script type="text/javascript" src="includes/jquery/plugins/spinner/ui.spinner.min.js"></script>' . "\n";
-				
-				
 			}
 			// jQuery DataTables
 			print '<script type="text/javascript" src="includes/jquery/plugins/datatables/media/js/jquery.dataTables.min' . $ext . '"></script>' . "\n";
@@ -1011,61 +1009,61 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 				print $conf->global->MAIN_HTML_HEADER . "\n";
 			?>
 		</head>
-		<?php
+			<?php
+		}
+
+		$conf->headerdone = 1; // To tell header was output
 	}
 
-	$conf->headerdone = 1; // To tell header was output
-}
-
-/**
- *  Show an HTML header + a BODY + The top menu bar
- *
- *  @param      string	$head    			Lines in the HEAD
- *  @param      string	$title   			Title of web page
- *  @param      string	$target  			Target to use in menu links
- * 	@param		int		$disablejs			Do not output links to js (Ex: qd fonction utilisee par sous formulaire Ajax)
- * 	@param		int		$disablehead		Do not output head section
- * 	@param		array	$arrayofjs			Array of js files to add in header
- * 	@param		array	$arrayofcss			Array of css files to add in header
- *  @param		string	$morequerystring	Query string to add to the link "print" to get same parameters (use only if autodetect fails)
- *  @return		void
- */
-function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead = 0, $arrayofjs = '', $arrayofcss = '', $morequerystring = '') {
-	global $user, $conf, $langs, $db;
-	global $dolibarr_main_authentication;
-	global $hookmanager;
-
-	// Instantiate hooks of thirdparty module only if not already define
-	if (!is_object($hookmanager)) {
-		include_once(DOL_DOCUMENT_ROOT . '/core/class/hookmanager.class.php');
-		$hookmanager = new HookManager($db);
-	}
-	$hookmanager->initHooks(array('toprightmenu'));
-
-	$toprightmenu = '';
-
-	$conf->top_menu = 'auguria_backoffice.php';
-
-	// For backward compatibility with old modules
-	//if (empty($conf->headerdone)) top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss);
-
-	if (!defined('NOHEADER'))
-		print '<body class="ptrn_a grdnt_b mhover_c fullW">'; // fullW full size width
-	else
-		print '<body style="background: white;">'; // fullW full size width
-
-	/*
-	 * Top menu
+	/**
+	 *  Show an HTML header + a BODY + The top menu bar
+	 *
+	 *  @param      string	$head    			Lines in the HEAD
+	 *  @param      string	$title   			Title of web page
+	 *  @param      string	$target  			Target to use in menu links
+	 * 	@param		int		$disablejs			Do not output links to js (Ex: qd fonction utilisee par sous formulaire Ajax)
+	 * 	@param		int		$disablehead		Do not output head section
+	 * 	@param		array	$arrayofjs			Array of js files to add in header
+	 * 	@param		array	$arrayofcss			Array of css files to add in header
+	 *  @param		string	$morequerystring	Query string to add to the link "print" to get same parameters (use only if autodetect fails)
+	 *  @return		void
 	 */
-	$top_menu = $conf->top_menu;
+	function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead = 0, $arrayofjs = '', $arrayofcss = '', $morequerystring = '') {
+		global $user, $conf, $langs, $db;
+		global $dolibarr_main_authentication;
+		global $hookmanager;
 
-	// Load the top menu manager
-	// Load the top menu manager (only if not already done)
-	if (!class_exists('MenuTop')) {
-		$top_menu = 'auguria_backoffice.php';
-		include_once(DOL_DOCUMENT_ROOT . "/core/menus/standard/" . $top_menu);
-	}
-	?> <!-- Start top horizontal menu ' . $top_menu . ' -->
+		// Instantiate hooks of thirdparty module only if not already define
+		if (!is_object($hookmanager)) {
+			include_once(DOL_DOCUMENT_ROOT . '/core/class/hookmanager.class.php');
+			$hookmanager = new HookManager($db);
+		}
+		$hookmanager->initHooks(array('toprightmenu'));
+
+		$toprightmenu = '';
+
+		$conf->top_menu = 'auguria_backoffice.php';
+
+		// For backward compatibility with old modules
+		//if (empty($conf->headerdone)) top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss);
+
+		if (!defined('NOHEADER'))
+			print '<body class="ptrn_a grdnt_b mhover_c fullW">'; // fullW full size width
+		else
+			print '<body style="background: white;">'; // fullW full size width
+
+		/*
+		 * Top menu
+		 */
+		$top_menu = $conf->top_menu;
+
+		// Load the top menu manager
+		// Load the top menu manager (only if not already done)
+		if (!class_exists('MenuTop')) {
+			$top_menu = 'auguria_backoffice.php';
+			include_once(DOL_DOCUMENT_ROOT . "/core/menus/standard/" . $top_menu);
+		}
+		?> <!-- Start top horizontal menu ' . $top_menu . ' -->
 	<?php if (!defined('NOHEADER')) : ?>
 		<header>
 			<div class="container head_s_a">
@@ -1083,7 +1081,7 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 		?>
 								</div>
 							</div>
-		<?php if (!defined('NOLOGIN')) : ?>
+									<?php if (!defined('NOLOGIN')) : ?>
 								<div class = "seven phone-two columns">
 									<form action = "search.php" id = "search_box" method = "post">
 										<input name = "query" id = "query" type = "text" size = "40" placeholder = "Find&hellip;" autocomplete = "off" />
@@ -1164,12 +1162,12 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 						<div class = "row">
 							<div class = "twelve columns">
 
-								<?php
-								// Show menu
-								$menutop = new MenuTop($db);
-								$menutop->atarget = $target;
-								$menutop->showmenu();   // This contains a \n
-								?>
+				<?php
+				// Show menu
+				$menutop = new MenuTop($db);
+				$menutop->atarget = $target;
+				$menutop->showmenu();   // This contains a \n
+				?>
 							</div>
 						</div>
 						<script>
@@ -1260,7 +1258,7 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 				</div>
 		<?php endif; ?>
 		</header>
-	<?php endif; ?>
+		<?php endif; ?>
 	<!-- End top horizontal menu -->
 	<?php
 }
