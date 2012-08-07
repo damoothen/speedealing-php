@@ -758,7 +758,6 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 		<head>
 
 			<meta charset="utf-8" />
-			<base href="<?php echo DOL_URL_ROOT . '/'; ?>" />
 			<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 			<meta name="robots" content="noindex,nofollow" />
 			<meta name="author" content="Speedealing Development Team" />
@@ -775,6 +774,9 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 				print "<title>" . $appli . "</title>";
 			print "\n";
 
+			?>
+			<base href="<?php echo DOL_URL_ROOT . '/'; ?>" />
+			<?php
 			print '<!-- Includes for JQuery (Ajax library) -->' . "\n";
 			//$jquerytheme = 'smoothness';
 			//if (!empty($conf->global->MAIN_USE_JQUERY_THEME)) $jquerytheme = $conf->global->MAIN_USE_JQUERY_THEME;

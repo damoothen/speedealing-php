@@ -3,10 +3,10 @@
    "class": "extrafields",
    "ico": "/img/ico/icSw2/16-User.png",
    "fields": {
-       "status": {
+       "Status": {
            "type": "select",
            "enable": true,
-           "default": 0,
+           "default": "-1",
            "aoColumns": {
                "sClass": "center",
                "bSearchable": true,
@@ -21,7 +21,7 @@
                "1": {
                    "label": "MemberStatusActive",
                    "enable": true,
-                   "cssClass": "ok_bg",
+                   "cssClass": "alert_bg",
                    "expire": {
                        "actived": {
                            "label": "MemberStatusPaid",
