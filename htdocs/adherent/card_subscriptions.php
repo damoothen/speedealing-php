@@ -24,11 +24,11 @@
  */
 
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/member.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/adherent/lib/member.lib.php");
 require_once(DOL_DOCUMENT_ROOT."/core/lib/date.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/adherents/class/adherent.class.php");
-require_once(DOL_DOCUMENT_ROOT."/adherents/class/adherent_type.class.php");
-require_once(DOL_DOCUMENT_ROOT."/adherents/class/cotisation.class.php");
+require_once(DOL_DOCUMENT_ROOT."/adherent/class/adherent.class.php");
+require_once(DOL_DOCUMENT_ROOT."/adherent/class/adherent_type.class.php");
+require_once(DOL_DOCUMENT_ROOT."/adherent/class/cotisation.class.php");
 require_once(DOL_DOCUMENT_ROOT."/compta/bank/class/account.class.php");
 require_once(DOL_DOCUMENT_ROOT."/core/class/extrafields.class.php");
 
@@ -40,8 +40,8 @@ $langs->load("mails");
 
 
 $action=GETPOST('action','alpha');
-$rowid=GETPOST('rowid','int');
-$typeid=GETPOST('typeid','int');
+$rowid=GETPOST('id','alpha');
+$typeid=GETPOST('typeid','alpha');
 
 // Security check
 $result=restrictedArea($user,'adherent',$rowid);
@@ -471,7 +471,9 @@ if ($rowid)
     //$res=$object->fetch_optionals($object->id,$extralabels);
     //if ($res < 0) { dol_print_error($db); exit; }
 
-    $adht->fetch($object->typeid);
+	$result = $adht->getView('list',array("key"=>$object->typeid,'limit'=>1));
+	if(count($result->rows))
+		$adht->fetch($result->rows[0]->value->_id);
 
     $head = member_prepare_head($object);
 

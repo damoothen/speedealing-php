@@ -24,6 +24,7 @@
 
 require_once(DOL_DOCUMENT_ROOT . "/core/lib/functions2.lib.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/lib/date.lib.php");
+require_once(DOL_DOCUMENT_ROOT."/adherent/class/cotisation.class.php");
 
 /**
  *      \class      Adherent
@@ -38,9 +39,7 @@ class Adherent extends nosqlDocument {
 	var $ref;
 	var $civilite_id;
 	var $firstname;
-	var $prenom; // deprecated
 	var $lastname;
-	var $nom; // deprecated
 	var $login;
 	var $pass;
 	var $societe;
@@ -69,7 +68,7 @@ class Adherent extends nosqlDocument {
 	var $morphy;
 	var $public;
 	var $note; // Private note
-	var $statut;   // -1:brouillon, 0:resilie, >=1:valide,paye
+	var $Status;   // -1:resilie, 0:brouillon, >=1:valide,paye
 	var $photo;
 	var $datec;
 	var $datem;
@@ -112,7 +111,7 @@ class Adherent extends nosqlDocument {
 			exit;
 		}
 
-		$this->statut = -1;
+		$this->Status = 0;
 		// l'adherent n'est pas public par defaut
 		$this->public = 0;
 		// les champs optionnels sont vides
@@ -348,8 +347,8 @@ class Adherent extends nosqlDocument {
 		dol_syslog(get_class($this) . "::update notrigger=" . $notrigger . ", nosyncuser=" . $nosyncuser . ", nosyncuserpass=" . $nosyncuserpass . ", email=" . $this->email);
 
 		// Clean parameters
-		$this->lastname = trim($this->lastname) ? trim($this->lastname) : trim($this->nom);
-		$this->firstname = trim($this->firstname) ? trim($this->firstname) : trim($this->prenom);
+		$this->lastname = trim($this->lastname);
+		$this->firstname = trim($this->firstname);
 		$this->address = ($this->address ? $this->address : $this->adresse);
 		$this->zip = ($this->zip ? $this->zip : $this->cp);
 		$this->town = ($this->town ? $this->town : $this->ville);
@@ -570,7 +569,7 @@ class Adherent extends nosqlDocument {
 	 *  @param	int		$rowid		Id of member to delete
 	 *  @return	int					<0 if KO, 0=nothing to do, >0 if OK
 	 */
-	function delete($rowid) {
+	function delete() {
 		global $conf, $langs, $user;
 
 		$result = 0;
@@ -896,9 +895,10 @@ class Adherent extends nosqlDocument {
 		$cotisation->datef = $datefin; // End data of new subscription
 		$cotisation->amount = $montant;
 		$cotisation->note = $label;
+		$cotisation->year = (int)strftime("%Y",$date);
 
 		$this->cotisations[] = $cotisation;
-
+		
 		// Change properties of object (used by triggers)
 		$this->last_subscription_date = dol_now();
 		$this->last_subscription_amount = $montant;
@@ -917,11 +917,7 @@ class Adherent extends nosqlDocument {
 
 		$this->record();
 
-		if (!$error) {
-			return $rowid;
-		} else {
-			return -1;
-		}
+		return $rowid;
 	}
 
 	/**
@@ -937,12 +933,12 @@ class Adherent extends nosqlDocument {
 		$now = dol_now();
 
 		// Check parameters
-		if ($this->statut == 1) {
+		if ($this->Status == 1) {
 			dol_syslog(get_class($this) . "::validate statut of member does not allow this", LOG_WARNING);
 			return 0;
 		}
 
-		$this->statut = 1;
+		$this->Status = 1;
 		$this->datevalid = $now;
 		$this->fk_user_valid = $user->login;
 
@@ -974,12 +970,12 @@ class Adherent extends nosqlDocument {
 		$error = 0;
 
 		// Check paramaters
-		if ($this->statut == 0) {
+		if ($this->Status == -1) {
 			dol_syslog(get_class($this) . "::resiliate statut of member does not allow this", LOG_WARNING);
 			return 0;
 		}
 
-		$this->statut = 0;
+		$this->Status = -1;
 		$this->fk_user_valid = $user->login;
 
 		$this->record();
@@ -1157,7 +1153,7 @@ class Adherent extends nosqlDocument {
 	 *  @return string				Label
 	 */
 	function getLibStatut() {
-		return $this->LibStatus($this->statut, $this->datefin);
+		return $this->LibStatus($this->Status, $this->last_subscription_date_end);
 	}
 
 	/**
@@ -1260,7 +1256,7 @@ class Adherent extends nosqlDocument {
 		$this->naiss = time();
 		$this->photo = '';
 		$this->public = 1;
-		$this->statut = 0;
+		$this->Status = 0;
 
 		$this->datefin = time();
 		$this->datevalid = time();
@@ -1314,10 +1310,6 @@ class Adherent extends nosqlDocument {
 		// Member
 		if ($this->fullname && $conf->global->LDAP_MEMBER_FIELD_FULLNAME)
 			$info[$conf->global->LDAP_MEMBER_FIELD_FULLNAME] = $this->fullname;
-		if ($this->nom && $conf->global->LDAP_MEMBER_FIELD_NAME)
-			$info[$conf->global->LDAP_MEMBER_FIELD_NAME] = $this->nom;
-		if ($this->prenom && $conf->global->LDAP_MEMBER_FIELD_FIRSTNAME)
-			$info[$conf->global->LDAP_MEMBER_FIELD_FIRSTNAME] = $this->prenom;
 		if ($this->login && $conf->global->LDAP_MEMBER_FIELD_LOGIN)
 			$info[$conf->global->LDAP_MEMBER_FIELD_LOGIN] = $this->login;
 		if ($this->pass && $conf->global->LDAP_MEMBER_FIELD_PASSWORD)
@@ -1346,8 +1338,8 @@ class Adherent extends nosqlDocument {
 			$info[$conf->global->LDAP_MEMBER_FIELD_DESCRIPTION] = $this->note;
 		if ($this->naiss && $conf->global->LDAP_MEMBER_FIELD_BIRTHDATE)
 			$info[$conf->global->LDAP_MEMBER_FIELD_BIRTHDATE] = dol_print_date($this->naiss, 'dayhourldap');
-		if (isset($this->statut) && $conf->global->LDAP_FIELD_MEMBER_STATUS)
-			$info[$conf->global->LDAP_FIELD_MEMBER_STATUS] = $this->statut;
+		if (isset($this->Status) && $conf->global->LDAP_FIELD_MEMBER_STATUS)
+			$info[$conf->global->LDAP_FIELD_MEMBER_STATUS] = $this->Status;
 		if ($this->datefin && $conf->global->LDAP_FIELD_MEMBER_END_LASTSUBSCRIPTION)
 			$info[$conf->global->LDAP_FIELD_MEMBER_END_LASTSUBSCRIPTION] = dol_print_date($this->datefin, 'dayhourldap');
 

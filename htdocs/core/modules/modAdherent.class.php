@@ -57,7 +57,7 @@ class modAdherent extends DolibarrModules {
 
         // Config pages
         //-------------
-		$this->values->config_page_url = array("adherent.php@adherents");
+		$this->values->config_page_url = array("adherent.php@adherent");
 
         // Dependances
         //------------
@@ -151,7 +151,7 @@ class modAdherent extends DolibarrModules {
 		$this->values->menus[$r]->_id = "menu:members";
 		$this->values->menus[$r]->type = "top";
 		$this->values->menus[$r]->position = 15;
-		$this->values->menus[$r]->url = "/adherents/index.php";
+		$this->values->menus[$r]->url = "/adherent/index.php";
 		$this->values->menus[$r]->langs = "members";
 		$this->values->menus[$r]->perms = '$user->rights->adherent->lire';
 		$this->values->menus[$r]->enabled = '$conf->Adherent->enabled';
@@ -161,7 +161,7 @@ class modAdherent extends DolibarrModules {
 		$r++;
 		$this->values->menus[$r]->_id = "menu:members0";
 		$this->values->menus[$r]->position = 0;
-		$this->values->menus[$r]->url = "/adherents/index.php";
+		$this->values->menus[$r]->url = "/adherent/list.php";
 		$this->values->menus[$r]->langs = "members";
 		$this->values->menus[$r]->perms = '$user->rights->adherent->lire';
 		$this->values->menus[$r]->enabled = '$conf->Adherent->enabled';
@@ -171,22 +171,12 @@ class modAdherent extends DolibarrModules {
 		$r++;
 		$this->values->menus[$r]->_id = "menu:subscriptions";
 		$this->values->menus[$r]->position = 1;
-		$this->values->menus[$r]->url = "/adherents/index.php";
+		$this->values->menus[$r]->url = "/adherent/index.php";
 		$this->values->menus[$r]->langs = "compta";
 		$this->values->menus[$r]->perms = '$user->rights->adherent->cotisation->lire';
 		$this->values->menus[$r]->enabled = '$conf->Adherent->enabled';
 		$this->values->menus[$r]->usertype = 2;
 		$this->values->menus[$r]->title = "Subscriptions";
-		$this->values->menus[$r]->fk_menu = "menu:members";
-		$r++;
-		$this->values->menus[$r]->_id = "menu:exports";
-		$this->values->menus[$r]->position = 2;
-		$this->values->menus[$r]->url = "/adherents/index.php";
-		$this->values->menus[$r]->langs = "members";
-		$this->values->menus[$r]->perms = '$user->rights->adherent->export';
-		$this->values->menus[$r]->enabled = '$conf->Adherent->enabled';
-		$this->values->menus[$r]->usertype = 2;
-		$this->values->menus[$r]->title = "Exports";
 		$this->values->menus[$r]->fk_menu = "menu:members";
 		$r++;
 		$this->values->menus[$r]->_id = "menu:memberscategoriesshort";
@@ -201,7 +191,7 @@ class modAdherent extends DolibarrModules {
 		$r++;
 		$this->values->menus[$r]->_id = "menu:memberstypes";
 		$this->values->menus[$r]->position = 5;
-		$this->values->menus[$r]->url = "/adherents/type.php";
+		$this->values->menus[$r]->url = "/adherent/type.php";
 		$this->values->menus[$r]->langs = "members";
 		$this->values->menus[$r]->perms = '$user->rights->adherent->configurer';
 		$this->values->menus[$r]->enabled = '$conf->Adherent->enabled';
@@ -211,7 +201,7 @@ class modAdherent extends DolibarrModules {
 		$r++;
 		$this->values->menus[$r]->_id = "menu:newmember";
 		$this->values->menus[$r]->position = 0;
-		$this->values->menus[$r]->url = "/adherents/fiche.php?action=create";
+		$this->values->menus[$r]->url = "/adherent/fiche.php?action=create";
 		$this->values->menus[$r]->langs = "members";
 		$this->values->menus[$r]->perms = '$user->rights->adherent->creer';
 		$this->values->menus[$r]->enabled = '$conf->Adherent->enabled';
@@ -221,43 +211,13 @@ class modAdherent extends DolibarrModules {
 		$r++;
 		$this->values->menus[$r]->_id = "menu:list18";
 		$this->values->menus[$r]->position = 1;
-		$this->values->menus[$r]->url = "/adherents/liste.php";
+		$this->values->menus[$r]->url = "/adherent/list.php";
 		$this->values->menus[$r]->langs = "members";
 		$this->values->menus[$r]->perms = '$user->rights->adherent->lire';
 		$this->values->menus[$r]->enabled = '$conf->Adherent->enabled';
 		$this->values->menus[$r]->usertype = 2;
 		$this->values->menus[$r]->title = "List";
 		$this->values->menus[$r]->fk_menu = "menu:members0";
-		$r++;
-		$this->values->menus[$r]->_id = "menu:menumembersstats";
-		$this->values->menus[$r]->position = 7;
-		$this->values->menus[$r]->url = "/adherents/stats/geo.php?mode=memberbycountry";
-		$this->values->menus[$r]->langs = "members";
-		$this->values->menus[$r]->perms = '$user->rights->adherent->lire';
-		$this->values->menus[$r]->enabled = '$conf->Adherent->enabled';
-		$this->values->menus[$r]->usertype = 2;
-		$this->values->menus[$r]->title = "MenuMembersStats";
-		$this->values->menus[$r]->fk_menu = "menu:members0";
-		$r++;
-		$this->values->menus[$r]->_id = "menu:new2";
-		$this->values->menus[$r]->position = 0;
-		$this->values->menus[$r]->url = "/adherents/type.php";
-		$this->values->menus[$r]->langs = "members";
-		$this->values->menus[$r]->perms = '$user->rights->adherent->configurer';
-		$this->values->menus[$r]->enabled = '$conf->Adherent->enabled';
-		$this->values->menus[$r]->usertype = 2;
-		$this->values->menus[$r]->title = "New";
-		$this->values->menus[$r]->fk_menu = "menu:memberstypes";
-		$r++;
-		$this->values->menus[$r]->_id = "menu:list20";
-		$this->values->menus[$r]->position = 0;
-		$this->values->menus[$r]->url = "/adherents/type.php";
-		$this->values->menus[$r]->langs = "members";
-		$this->values->menus[$r]->perms = '$user->rights->adherent->configurer';
-		$this->values->menus[$r]->enabled = '$conf->Adherent->enabled';
-		$this->values->menus[$r]->usertype = 2;
-		$this->values->menus[$r]->title = "List";
-		$this->values->menus[$r]->fk_menu = "menu:memberstypes";
 
         // Exports
         //--------

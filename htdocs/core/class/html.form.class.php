@@ -3264,7 +3264,7 @@ class Form {
 			$fieldref = 'ref';
 		
 		if(isset($object->class))
-			return $object->id;
+			return $object->_rev;
 
 		//print "paramid=$paramid,morehtml=$morehtml,shownav=$shownav,$fieldid,$fieldref,$morehtmlref,$moreparam";
 		$object->load_previous_next_ref((isset($object->next_prev_filter) ? $object->next_prev_filter : ''), $fieldid);

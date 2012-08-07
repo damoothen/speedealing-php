@@ -52,6 +52,7 @@ if (! empty($json) && ! empty($class))
 		dol_include_once("/".strtolower($class)."/class/".strtolower($class).".class.php");
 	
 	$langs->load("companies");
+	$langs->load("members");
 	
 	$return=array();
 	

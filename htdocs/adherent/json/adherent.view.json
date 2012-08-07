@@ -1,0 +1,30 @@
+{
+   "_id": "_design/Adherent",
+   "language": "javascript",
+   "views": {
+       "list": {
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Adherent\")\n  emit(doc.lastname, doc);\n}"
+       },
+       "target_id": {
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Adherent\")\n  \temit(doc._id, {_id:doc._id, _rev:doc._rev});\n}"
+       },
+       "count_status": {
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Adherent\")\n  emit(doc.statut, 1);\n}",
+           "reduce": "function(keys, values) {\n  return sum(values)\n}"
+       },
+       "group": {
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Adherent\")\n  emit(doc.typeid, doc);\n}"
+       },
+       "cotisation": {
+           "map": "function(doc) {\nif(doc.cotisations.length > 0) {\n    for(var idx in doc.cotisations) {\n      emit(doc._id, {_id:doc._id, dateh:doc.cotisations[idx].dateh, datef:doc.cotisations[idx].datef, amount:doc.cotisations[idx].amount});\n    }\n  }\n}"
+       }
+   },
+   "updates": {
+       "in-place": "function (doc, req) {\n var field = req.query.field;\n var value = req.query.value;\n doc[field] = value;\n  return [doc, value];\n }"
+   },
+   "fulltext": {
+       "list": {
+           "index": "function(doc) {\n if(doc.class != \"Adherent\"){ return null;} var result = new Document(); result.add(doc.firstname);  result.add(doc.lastname); result.add(doc.login); result.add(doc.typeid); result.add(doc.email);  return result;}"
+       }
+   }
+}

@@ -189,9 +189,9 @@ function dol_time_plus_timezone($time,$timezone)
 function dol_time_plus_duree($time,$duration_value,$duration_unit)
 {
 	if ($duration_value == 0)  return $time;
-	if ($duration_unit == 'w') return $time + (3600*24*7*$duration_value);
 	if ($duration_value > 0) $deltastring="+".abs($duration_value);
 	if ($duration_value < 0) $deltastring="-".abs($duration_value);
+	if ($duration_unit == 'w') { $deltastring.=" week"; }
 	if ($duration_unit == 'd') { $deltastring.=" day"; }
 	if ($duration_unit == 'm') { $deltastring.=" month"; }
 	if ($duration_unit == 'y') { $deltastring.=" year"; }

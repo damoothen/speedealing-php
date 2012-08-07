@@ -330,7 +330,7 @@ abstract class nosqlDocument extends CommonObject {
 			$result = $this->couchdb->getIndexedView(get_class($this), $name);
 		} catch (Exception $e) {
 			error_log($e->getMessage());
-			$this->dol_syslog(get_class($this) . "::getView " . $error, LOG_WARN);
+			dol_syslog(get_class($this) . "::getView " . $error, LOG_WARN);
 			$result->total_rows = 0;
 		}
 
@@ -365,17 +365,17 @@ abstract class nosqlDocument extends CommonObject {
 	 *  @param  date	$expiration_date	Automatic Status with an expiration date (expired or actived)
 	 *  @return	string						Libelle du statut
 	 */
-	function LibStatus($status, $expiration_date = null) {
+	function LibStatus($status, $expiration_date = 0) {
 		global $langs, $conf;
 
-		if (empty($status))
-			$status = $this->fk_extrafields->fields->Status->default;
+		//if (empty($status))
+		//	$status = $this->fk_extrafields->fields->Status->default;
 
-		if (!empty($expiration_date) && isset($this->fk_extrafields->fields->Status->values->$status->expire)) {
-			if ($expiration_date < dol_now())
-				return '<span class="lbl ' . $this->fk_extrafields->fields->Status->values->$status->expire->expired->CssClass . ' sl_status ">' . $langs->trans($this->fk_extrafields->fields->Status->values->$status->expire->expired->label) . '</span>';
-			else
+		if ($expiration_date > 0 && isset($this->fk_extrafields->fields->Status->values->$status->expire)) {
+			if ($expiration_date >= dol_now())
 				return '<span class="lbl ' . $this->fk_extrafields->fields->Status->values->$status->expire->actived->cssClass . ' sl_status ">' . $langs->trans($this->fk_extrafields->fields->Status->values->$status->expire->actived->label) . '</span>';
+			else
+				return '<span class="lbl ' . $this->fk_extrafields->fields->Status->values->$status->expire->expired->cssClass . ' sl_status ">' . $langs->trans($this->fk_extrafields->fields->Status->values->$status->expire->expired->label) . '</span>';
 		} elseif (isset($this->fk_extrafields->fields->Status->values->$status->label))
 			return '<span class="lbl ' . $this->fk_extrafields->fields->Status->values->$status->cssClass . ' sl_status ">' . $langs->trans($this->fk_extrafields->fields->Status->values->$status->label) . '</span>';
 		else
@@ -455,13 +455,13 @@ abstract class nosqlDocument extends CommonObject {
 						"oTableTools": { "sSwfPath": "<?php echo DOL_URL_ROOT . '/includes/jquery/plugins/datatables/extras/TableTools/media/swf/copy_csv_xls.swf'; ?>"},
 						//if($obj->oTableTools->aButtons==null)
 						//$obj->oTableTools->aButtons = array("xls");
-																																																																											    
+																																																																													    
 						"oColVis": { "buttonText" : 'Voir/Cacher',
 							"aiExclude": [0,1] // Not cacheable _id and name
 						},
 						//$obj->oColVis->bRestore = true;
 						//$obj->oColVis->sAlign = 'left';
-																																																																										            
+																																																																												            
 						// Avec export Excel
 		<?php if (!empty($obj->sDom)) : ?>
 							//"sDom": "Cl<fr>t<\"clear\"rtip>",
@@ -490,7 +490,7 @@ abstract class nosqlDocument extends CommonObject {
 		<?php if (isset($obj->fnRowCallback)): ?>
 							"fnRowCallback": <?php echo $obj->fnRowCallback; ?>,
 		<?php endif; ?>
-																																																										
+																																																												
 		<?php if (!defined('NOLOGIN')) : ?>
 			<?php if (isset($obj->fnDrawCallback)): ?>
 									"fnDrawCallback": <?php echo $obj->fnDrawCallback; ?>,
@@ -515,7 +515,7 @@ abstract class nosqlDocument extends CommonObject {
 												"tooltip": "Cliquer pour éditer...",
 												"indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
 												"placeholder" : ""
-																																																																																																																																																				                
+																																																																																																																																																								                
 											} );
 											$("td.select", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
 												"callback": function( sValue, y ) {
@@ -534,7 +534,7 @@ abstract class nosqlDocument extends CommonObject {
 												"tooltip": "Cliquer pour éditer...",
 												"indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
 												"placeholder" : ""
-																																																																																																																																																				                
+																																																																																																																																																								                
 											} );
 										}
 			<?php endif; ?>
@@ -699,17 +699,18 @@ abstract class nosqlDocument extends CommonObject {
 	public function datatablesFnRender($key, $type, $url = "") {
 		global $langs, $conf;
 
-		if ($type == "url") {
-			if (empty($url)) // default url
-				$url = strtolower(get_class($this)) . '/fiche.php?id=';
+		switch ($type) {
+			case "url":
+				if (empty($url)) // default url
+					$url = strtolower(get_class($this)) . '/fiche.php?id=';
 
-			$rtr = 'function(obj) {
+				$rtr = 'function(obj) {
 				var ar = [];
 				ar[ar.length] = "<img src=\"theme/' . $conf->theme . $this->fk_extrafields->ico . '\" border=\"0\" alt=\"' . $langs->trans("See " . get_class($this)) . ' : ";
 				ar[ar.length] = obj.aData.' . $key . '.toString();
 				ar[ar.length] = "\" title=\"' . $langs->trans("See " . get_class($this)) . ' : ";
 				ar[ar.length] = obj.aData.' . $key . '.toString();
-				ar[ar.length] = "\"></a> <a href=\"' . $url . '";
+				ar[ar.length] = "\"> <a href=\"' . $url . '";
 				ar[ar.length] = obj.aData._id;
 				ar[ar.length] = "\">";
 				ar[ar.length] = obj.aData.' . $key . '.toString();
@@ -717,9 +718,23 @@ abstract class nosqlDocument extends CommonObject {
 				var str = ar.join("");
 				return str;
 			}';
-		}
-		elseif ($type == "date") {
-			$rtr = 'function(obj) {
+				break;
+				
+			case "email":
+				$rtr = 'function(obj) {
+				var ar = [];
+				ar[ar.length] = "<a href=\"mailto:";
+				ar[ar.length] = obj.aData.' . $key . '.toString();
+				ar[ar.length] = "\">";
+				ar[ar.length] = obj.aData.' . $key . '.toString();
+				ar[ar.length] = "</a>";
+				var str = ar.join("");
+				return str;
+			}';
+				break;
+
+			case "date":
+				$rtr = 'function(obj) {
 			if(obj.aData.' . $key . ')
 			{
 				var date = new Date(obj.aData.' . $key . '*1000);
@@ -728,8 +743,10 @@ abstract class nosqlDocument extends CommonObject {
 			else
 				return null;
 			}';
-		} elseif ($type == "datetime") {
-			$rtr = 'function(obj) {
+				break;
+
+			case "datetime" :
+				$rtr = 'function(obj) {
 			if(obj.aData.' . $key . ')
 			{
 				var date = new Date(obj.aData.' . $key . '*1000);
@@ -738,19 +755,21 @@ abstract class nosqlDocument extends CommonObject {
 			else
 				return null;
 			}';
-		} elseif ($type == "status") {
-			$rtr = 'function(obj) {
+				break;
+
+			case "status":
+				$rtr = 'function(obj) {
 					var status = new Array();
 					var stat = obj.aData.' . $key . ';
 					if(stat === undefined)
 						stat = "' . $this->fk_extrafields->fields->$key->default . '";';
-			foreach ($this->fk_extrafields->fields->$key->values as $key => $aRow) {
-				if (isset($aRow->label))
-					$rtr.= 'status["' . $key . '"]= new Array("' . $langs->trans($aRow->label) . '","' . $aRow->cssClass . '");';
-				else
-					$rtr.= 'status["' . $key . '"]= new Array("' . $langs->trans($key) . '","' . $aRow->cssClass . '");';
-			}
-			$rtr.= 'var ar = [];
+				foreach ($this->fk_extrafields->fields->$key->values as $key => $aRow) {
+					if (isset($aRow->label))
+						$rtr.= 'status["' . $key . '"]= new Array("' . $langs->trans($aRow->label) . '","' . $aRow->cssClass . '");';
+					else
+						$rtr.= 'status["' . $key . '"]= new Array("' . $langs->trans($key) . '","' . $aRow->cssClass . '");';
+				}
+				$rtr.= 'var ar = [];
 				ar[ar.length] = "<span class=\"lbl ";
 				ar[ar.length] = status[stat][1];
 				ar[ar.length] = " sl_status\">";
@@ -759,11 +778,12 @@ abstract class nosqlDocument extends CommonObject {
 				var str = ar.join("");
 				return str;
 			}';
-		}
-		elseif ($type == "attachment") {
-			$url_server = "/db/" . $this->couchdb->getDatabaseName();
+				break;
 
-			$rtr = 'function(obj) {
+			case "attachment" :
+				$url_server = "/db/" . $this->couchdb->getDatabaseName();
+
+				$rtr = 'function(obj) {
 				var ar = [];
 				ar[ar.length] = "<img src=\"theme/' . $conf->theme . $this->fk_extrafields->ico . '\" border=\"0\" alt=\"' . $langs->trans("See " . get_class($this)) . ' : ";
 				ar[ar.length] = obj.aData.' . $key . '.toString();
@@ -779,8 +799,10 @@ abstract class nosqlDocument extends CommonObject {
 				var str = ar.join("");
 				return str;
 			}';
-		} elseif ($type == "sizeMo") {
-			$rtr = 'function(obj) {
+				break;
+
+			case "sizeMo":
+				$rtr = 'function(obj) {
 				var ar = [];
 			if(obj.aData.' . $key . ')
 			{
@@ -797,9 +819,11 @@ abstract class nosqlDocument extends CommonObject {
 				return null;
 			}
 			}';
-		} else {
-			dol_print_error($db, "Type of fnRender must be url, date, datetime, attachment or status");
-			exit;
+				break;
+
+			default :
+				dol_print_error($db, "Type of fnRender must be url, date, datetime, attachment or status");
+				exit;
 		}
 
 		return $rtr;

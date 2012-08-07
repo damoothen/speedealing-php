@@ -25,12 +25,12 @@
  *       \brief      Page of member
  */
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT . "/core/lib/member.lib.php");
+require_once(DOL_DOCUMENT_ROOT . "/adherent/lib/member.lib.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/lib/company.lib.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/lib/images.lib.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/lib/functions2.lib.php");
-require_once(DOL_DOCUMENT_ROOT . "/adherents/class/adherent.class.php");
-require_once(DOL_DOCUMENT_ROOT . "/adherents/class/adherent_type.class.php");
+require_once(DOL_DOCUMENT_ROOT . "/adherent/class/adherent.class.php");
+require_once(DOL_DOCUMENT_ROOT . "/adherent/class/adherent_type.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/class/extrafields.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/compta/bank/class/account.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/class/html.formcompany.class.php");
@@ -44,10 +44,13 @@ $langs->load("users");
 $action = GETPOST('action', 'alpha');
 $backtopage = GETPOST('backtopage', 'alpha');
 $confirm = GETPOST('confirm', 'alpha');
-$rowid = GETPOST('rowid', 'alpha');
-$typeid = GETPOST('typeid', 'int');
-$userid = GETPOST('userid', 'int');
+$rowid = GETPOST('id', 'alpha');
+$typeid = GETPOST('typeid', 'alpha');
+$userid = GETPOST('userid', 'alpha');
 $socid = GETPOST('socid', 'alpha');
+
+$defaultdelay = 1;
+$defaultdelayunit = 'y';
 
 // Security check
 $result = restrictedArea($user, 'adherent', $rowid);
@@ -58,7 +61,7 @@ $extrafields = new ExtraFields($db);
 $errmsg = '';
 $errmsgs = array();
 
-if ($rowid > 0) {
+if (!empty($rowid)) {
 	// Load member
 	$result = $object->fetch($rowid);
 
@@ -92,7 +95,7 @@ $hookmanager->initHooks(array('membercard'));
  */
 
 $parameters = array('socid' => $socid);
-$reshook = $hookmanager->executeHooks('doActions', $parameters, $object, $action);	// Note that $action and $object may have been modified by some hooks
+$reshook = $hookmanager->executeHooks('doActions', $parameters, $object, $action); // Note that $action and $object may have been modified by some hooks
 
 if ($action == 'setuserid' && ($user->rights->user->self->creer || $user->rights->user->user->creer)) {
 	$error = 0;
@@ -186,24 +189,17 @@ if ($action == 'update' && !$_POST["cancel"] && $user->rights->adherent->creer) 
 
 		// Change values
 		$object->civilite_id = trim($_POST["civilite_id"]);
-		$object->prenom = trim($_POST["prenom"]);	 // deprecated
-		$object->nom = trim($_POST["nom"]);		// deprecated
 		$object->firstname = trim($_POST["prenom"]);
 		$object->lastname = trim($_POST["nom"]);
 		$object->login = trim($_POST["login"]);
 		$object->pass = trim($_POST["pass"]);
 
 		$object->societe = trim($_POST["societe"]);
-		$object->adresse = trim($_POST["address"]);	// deprecated
 		$object->address = trim($_POST["address"]);
-		$object->cp = trim($_POST["zipcode"]);	// deprecated
 		$object->zip = trim($_POST["zipcode"]);
-		$object->ville = trim($_POST["town"]);	   // deprecated
 		$object->town = trim($_POST["town"]);
 		$object->state_id = $_POST["departement_id"];
 		$object->country_id = $_POST["country_id"];
-		$object->fk_departement = $_POST["departement_id"];   // deprecated
-		$object->pays_id = $_POST["country_id"];   // deprecated
 
 		$object->phone = trim($_POST["phone"]);
 		$object->phone_perso = trim($_POST["phone_perso"]);
@@ -223,7 +219,7 @@ if ($action == 'update' && !$_POST["cancel"] && $user->rights->adherent->creer) 
 			$object->photo = dol_sanitizeFileName($_FILES['photo']['name']);
 
 		// Get status and public property
-		$object->statut = $_POST["statut"];
+		$object->Status = $_POST["statut"];
 		$object->public = $_POST["public"];
 
 		// Get extra fields
@@ -283,13 +279,13 @@ if ($action == 'update' && !$_POST["cancel"] && $user->rights->adherent->creer) 
 
 			// Rajoute l'utilisateur dans les divers abonnements (mailman, spip, etc...)
 			if (($oldcopy->email != $object->email) || ($oldcopy->typeid != $object->typeid)) {
-				if ($oldcopy->email != $object->email) {	// If email has changed we delete mailman subscription for old email
+				if ($oldcopy->email != $object->email) { // If email has changed we delete mailman subscription for old email
 					if ($oldcopy->del_to_abo() < 0) {
 						// error
 						$errmsgs[] = $langs->trans("FailedToCleanMailmanList") . ': ' . $object->error . "<br>\n";
 					}
 				}
-				if ($object->add_to_abo() < 0) {	// We add subscription if new email or new type (new type may means more mailing-list to subscribe)
+				if ($object->add_to_abo() < 0) { // We add subscription if new email or new type (new type may means more mailing-list to subscribe)
 					// error
 					$errmsgs[] = $langs->trans("FailedToAddToMailmanList") . ': ' . $object->error . "<br>\n";
 				}
@@ -351,16 +347,11 @@ if ($action == 'add' && $user->rights->adherent->creer) {
 	$socid = $_POST["socid"];
 
 	$object->civilite_id = $civilite_id;
-	$object->prenom = $prenom;	// deprecated
-	$object->nom = $nom;	   // deprecated
 	$object->firstname = $prenom;
 	$object->lastname = $nom;
 	$object->societe = $societe;
-	$object->adresse = $address; // deprecated
 	$object->address = $address;
-	$object->cp = $zip;	 // deprecated
 	$object->zip = $zip;
-	$object->ville = $town;	// deprecated
 	$object->town = $town;
 	$object->fk_departement = $state_id;
 	$object->state_id = $state_id;
@@ -482,7 +473,9 @@ if ($user->rights->adherent->creer && $action == 'confirm_valid' && $confirm == 
 	$result = $object->validate($user);
 
 	$adht = new AdherentType($db);
-	$adht->fetch($object->typeid);
+	$result = $adht->getView('list', array("key" => $object->typeid, 'limit' => 1));
+	if (count($result->rows))
+		$adht->fetch($result->rows[0]->value->_id);
 
 	if ($result >= 0 && !count($object->errors)) {
 		// Send confirmation Email (selon param du type adherent sinon generique)
@@ -510,7 +503,9 @@ if ($user->rights->adherent->creer && $action == 'confirm_valid' && $confirm == 
 if ($user->rights->adherent->supprimer && $action == 'confirm_resign') {
 	if ($confirm == 'yes') {
 		$adht = new AdherentType($db);
-		$adht->fetch($object->typeid);
+		$result = $adht->getView('list', array("key" => $object->typeid, 'limit' => 1));
+		if (count($result->rows))
+			$adht->fetch($result->rows[0]->value->_id);
 
 		$result = $object->resiliate($user);
 
@@ -556,6 +551,247 @@ if ($user->rights->adherent->creer && $action == 'confirm_add_spip' && $confirm 
 			$errmsg.="Echec du rajout de l'utilisateur dans spip: " . $object->error . "<BR>\n";
 		}
 	}
+}
+
+if ($user->rights->adherent->cotisation->creer && $action == 'cotisation' && !$_POST["cancel"]) {
+	$error = 0;
+
+	$langs->load("banks");
+
+	$result = $object->fetch($rowid);
+	$adht = new AdherentType($db);
+	$result = $adht->getView('list', array("key" => $object->typeid, 'limit' => 1));
+	if (count($result->rows))
+		$adht->fetch($result->rows[0]->value->_id);
+
+	// Subscription informations
+	$datecotisation = 0;
+	$datesubend = 0;
+	$paymentdate = 0;
+	if ($_POST["reyear"] && $_POST["remonth"] && $_POST["reday"]) {
+		$datecotisation = dol_mktime(0, 0, 0, $_POST["remonth"], $_POST["reday"], $_POST["reyear"]);
+	}
+	if ($_POST["endyear"] && $_POST["endmonth"] && $_POST["endday"]) {
+		$datesubend = dol_mktime(0, 0, 0, $_POST["endmonth"], $_POST["endday"], $_POST["endyear"]);
+	}
+	if ($_POST["paymentyear"] && $_POST["paymentmonth"] && $_POST["paymentday"]) {
+		$paymentdate = dol_mktime(0, 0, 0, $_POST["paymentmonth"], $_POST["paymentday"], $_POST["paymentyear"]);
+	}
+	$cotisation = $_POST["cotisation"]; // Amount of subscription
+	$label = $_POST["label"];
+
+	// Payment informations
+	$accountid = $_POST["accountid"];
+	$operation = $_POST["operation"]; // Payment mode
+	$num_chq = $_POST["num_chq"];
+	$emetteur_nom = $_POST["chqemetteur"];
+	$emetteur_banque = $_POST["chqbank"];
+	$option = $_POST["paymentsave"];
+	if (empty($option))
+		$option = 'none';
+
+	// Check parameters
+	if (!$datecotisation) {
+		$error++;
+		$langs->load("errors");
+		$errmsg = $langs->trans("ErrorBadDateFormat", $langs->transnoentitiesnoconv("DateSubscription"));
+		$action = 'addsubscription';
+	}
+	if (GETPOST('end') && !$datesubend) {
+		$error++;
+		$langs->load("errors");
+		$errmsg = $langs->trans("ErrorBadDateFormat", $langs->transnoentitiesnoconv("DateEndSubscription"));
+		$action = 'addsubscription';
+	}
+	if (!$datesubend) {
+		$datesubend = dol_time_plus_duree(dol_time_plus_duree($datecotisation, $defaultdelay, $defaultdelayunit), -1, 'd');
+	}
+	if (($option == 'bankviainvoice' || $option == 'bankdirect') && !$paymentdate) {
+		$error++;
+		$errmsg = $langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("DatePayment"));
+		$action = 'addsubscription';
+	}
+
+	// Check if a payment is mandatory or not
+	if (!$error && $adht->cotisation) { // Type adherent soumis a cotisation
+		if (!is_numeric($_POST["cotisation"])) {
+			// If field is '' or not a numeric value
+			$errmsg = $langs->trans("ErrorFieldRequired", $langs->transnoentities("Amount"));
+			$error++;
+			$action = 'addsubscription';
+		} else {
+			if ($conf->banque->enabled && $_POST["paymentsave"] != 'none') {
+				if ($_POST["cotisation"]) {
+					if (!$_POST["label"])
+						$errmsg = $langs->trans("ErrorFieldRequired", $langs->transnoentities("Label"));
+					if ($_POST["paymentsave"] != 'invoiceonly' && !$_POST["operation"])
+						$errmsg = $langs->trans("ErrorFieldRequired", $langs->transnoentities("PaymentMode"));
+					if ($_POST["paymentsave"] != 'invoiceonly' && !$_POST["accountid"])
+						$errmsg = $langs->trans("ErrorFieldRequired", $langs->transnoentities("FinancialAccount"));
+				}
+				else {
+					if ($_POST["accountid"])
+						$errmsg = $langs->trans("ErrorDoNotProvideAccountsIfNullAmount");
+				}
+				if ($errmsg)
+					$action = 'addsubscription';
+			}
+		}
+	}
+
+	if (!$error && $action == 'cotisation') {
+
+		// Create subscription
+		$crowid = $object->cotisation($datecotisation, $cotisation, $accountid, $operation, $label, $num_chq, $emetteur_nom, $emetteur_banque, $datesubend, $option);
+		if ($crowid <= 0) {
+			$error++;
+			$errmsg = $object->error;
+			$errmsgs = $object->errors;
+		}
+
+		if (!$error) {
+			// Insert into bank account directlty (if option choosed for) + link to llx_cotisation if option is 'bankdirect'
+			if ($option == 'bankdirect' && $accountid) {
+				require_once(DOL_DOCUMENT_ROOT . '/compta/bank/class/account.class.php');
+
+				$acct = new Account($db);
+				$result = $acct->fetch($accountid);
+
+				$dateop = $paymentdate;
+
+				$insertid = $acct->addline($dateop, $operation, $label, $cotisation, $num_chq, '', $user, $emetteur_nom, $emetteur_banque);
+				if ($insertid > 0) {
+					$inserturlid = $acct->add_url_line($insertid, $object->id, DOL_URL_ROOT . '/adherents/fiche.php?rowid=', $object->getFullname($langs), 'member');
+					if ($inserturlid > 0) {
+						// Met a jour la table cotisation
+						$sql = "UPDATE " . MAIN_DB_PREFIX . "cotisation SET fk_bank=" . $insertid;
+						$sql.=" WHERE rowid=" . $crowid;
+
+						dol_syslog("card_subscriptions::cotisation sql=" . $sql);
+						$resql = $db->query($sql);
+						if (!$resql) {
+							$error++;
+							$errmsg = $db->lasterror();
+						}
+					} else {
+						$error++;
+						$errmsg = $acct->error;
+					}
+				} else {
+					$error++;
+					$errmsg = $acct->error;
+				}
+			}
+
+			// If option choosed, we create invoice
+			if (($option == 'bankviainvoice' && $accountid) || $option == 'invoiceonly') {
+				require_once(DOL_DOCUMENT_ROOT . "/compta/facture/class/facture.class.php");
+				require_once(DOL_DOCUMENT_ROOT . "/compta/facture/class/paymentterm.class.php");
+
+				$invoice = new Facture($db);
+				$customer = new Societe($db);
+				$result = $customer->fetch($object->fk_soc);
+				if ($result <= 0) {
+					$errmsg = $customer->error;
+					$error++;
+				}
+
+				// Create draft invoice
+				$invoice->type = 0;
+				$invoice->cond_reglement_id = $customer->cond_reglement_id;
+				if (empty($invoice->cond_reglement_id)) {
+					$paymenttermstatic = new PaymentTerm($db);
+					$invoice->cond_reglement_id = $paymenttermstatic->getDefaultId();
+					if (empty($invoice->cond_reglement_id)) {
+						$error++;
+						$errmsg = 'ErrorNoPaymentTermRECEPFound';
+					}
+				}
+				$invoice->socid = $object->fk_soc;
+				$invoice->date = $datecotisation;
+
+				$result = $invoice->create($user);
+				if ($result <= 0) {
+					$errmsg = $invoice->error;
+					$error++;
+				}
+
+				// Add line to draft invoice
+				$idprodsubscription = 0;
+				$vattouse = get_default_tva($mysoc, $customer, $idprodsubscription);
+				//print xx".$vattouse." - ".$mysoc." - ".$customer;exit;
+				$result = $invoice->addline($invoice->id, $label, 0, 1, $vattouse, 0, 0, $idprodsubscription, 0, $datecotisation, $datesubend, 0, 0, '', 'TTC', $cotisation, 1);
+				if ($result <= 0) {
+					$errmsg = $invoice->error;
+					$error++;
+				}
+
+				// Validate invoice
+				$result = $invoice->validate($user);
+
+				// Add payment onto invoice
+				if ($option == 'bankviainvoice' && $accountid) {
+					require_once(DOL_DOCUMENT_ROOT . '/compta/paiement/class/paiement.class.php');
+					require_once(DOL_DOCUMENT_ROOT . '/compta/bank/class/account.class.php');
+					require_once(DOL_DOCUMENT_ROOT . '/core/lib/functions.lib.php');
+
+					// Creation de la ligne paiement
+					$amounts[$invoice->id] = price2num($cotisation);
+					$paiement = new Paiement($db);
+					$paiement->datepaye = $paymentdate;
+					$paiement->amounts = $amounts;
+					$paiement->paiementid = dol_getIdFromCode($db, $operation, 'c_paiement');
+					$paiement->num_paiement = $num_chq;
+					$paiement->note = $label;
+
+					if (!$error) {
+						$paiement_id = $paiement->create($user);
+						if (!$paiement_id > 0) {
+							$errmsg = $paiement->error;
+							$error++;
+						}
+					}
+
+					if (!$error) {
+						$bank_line_id = $paiement->addPaymentToBank($user, 'payment', '(SubscriptionPayment)', $accountid, $emetteur_nom, $emetteur_banque);
+						if (!$bank_line_id > 0) {
+							$errmsg = $paiement->error;
+							$error++;
+						}
+
+						// Update fk_bank for subscriptions
+						$sql = 'UPDATE ' . MAIN_DB_PREFIX . 'cotisation SET fk_bank=' . $bank_line_id;
+						$sql.= ' WHERE rowid=' . $crowid;
+						dol_syslog('sql=' . $sql);
+						$result = $db->query($sql);
+						if (!$result) {
+							$error++;
+						}
+					}
+				}
+			}
+		}
+
+		// Send email
+		if (!$error) {
+			// Send confirmation Email
+			if ($object->email && $_POST["sendmail"]) {
+				$subjecttosend = $object->makeSubstitution($conf->global->ADHERENT_MAIL_COTIS_SUBJECT);
+				$texttosend = $object->makeSubstitution($adht->getMailOnSubscription());
+
+				$result = $object->send_an_email($texttosend, $subjecttosend, array(), array(), array(), "", "", 0, -1);
+				if ($result < 0)
+					$errmsg = $object->error;
+			}
+
+			$_POST["cotisation"] = '';
+			$_POST["accountid"] = '';
+			$_POST["operation"] = '';
+			$_POST["label"] = '';
+			$_POST["num_chq"] = '';
+		}
+	}
+	$action = '';
 }
 
 
@@ -633,7 +869,7 @@ if ($action == 'create') {
 	print '<tr><td><span class="fieldrequired">' . $langs->trans("MemberType") . '</span></td><td>';
 	$listetype = $adht->liste_array();
 	if (count($listetype)) {
-		print $form->selectarray("typeid", $listetype, GETPOST('typeid', 'int') ? GETPOST('typeid', 'int') : $typeid, 1);
+		print $form->selectarray("typeid", $listetype, GETPOST('typeid', 'int') ? GETPOST('typeid', 'int') : $typeid, 1, 0, 1);
 	} else {
 		print '<font class="error">' . $langs->trans("NoTypeDefinedGoToSetup") . '</font>';
 	}
@@ -719,7 +955,7 @@ if ($action == 'create') {
 
 	// Other attributes
 	$parameters = array();
-	$reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action);	// Note that $action and $object may have been modified by hook
+	$reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action); // Note that $action and $object may have been modified by hook
 	if (empty($reshook) && !empty($extrafields->attribute_label)) {
 		foreach ($extrafields->attribute_label as $key => $label) {
 			$value = (isset($_POST["options_" . $key]) ? GETPOST('options_' . $key, 'alpha') : $object->array_options["options_" . $key]);
@@ -768,8 +1004,7 @@ if ($action == 'edit') {
 	//if ($res < 0) { dol_print_error($db); exit; }
 
 	$adht = new AdherentType($db);
-	$adht->fetch($object->typeid);
-
+	//$adht->fetch($object->typeid);
 	// We set country_id, and country_code, country of the chosen country
 	if (isset($_POST["pays"]) || $object->country_id) {
 		$sql = "SELECT rowid, code, libelle as label from " . MAIN_DB_PREFIX . "c_pays where rowid = " . (isset($_POST["pays"]) ? $_POST["pays"] : $object->country_id);
@@ -814,15 +1049,15 @@ if ($action == 'edit') {
 	print '<form name="formsoc" action="' . $_SERVER["PHP_SELF"] . '" method="post" enctype="multipart/form-data">';
 	print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '" />';
 	print '<input type="hidden" name="action" value="update" />';
-	print '<input type="hidden" name="rowid" value="' . $rowid . '" />';
-	print '<input type="hidden" name="statut" value="' . $object->statut . '" />';
+	print '<input type="hidden" name="id" value="' . $rowid . '" />';
+	print '<input type="hidden" name="statut" value="' . $object->Status . '" />';
 	if ($backtopage)
 		print '<input type="hidden" name="backtopage" value="' . ($backtopage != '1' ? $backtopage : $_SERVER["HTTP_REFERER"]) . '">';
 
 	print '<table class="border" width="100%">';
 
 	// Ref
-	print '<tr><td>' . $langs->trans("Ref") . '</td><td class="valeur" colspan="2">' . $object->id . '</td></tr>';
+	print '<tr><td>' . $langs->trans("Ref") . '</td><td class="valeur" colspan="2">' . $object->_rev . '</td></tr>';
 
 	// Login
 	if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED)) {
@@ -853,7 +1088,7 @@ if ($action == 'edit') {
 	// Type
 	print '<tr><td><span class="fieldrequired">' . $langs->trans("Type") . '</span></td><td>';
 	if ($user->rights->adherent->creer) {
-		print $form->selectarray("typeid", $adht->liste_array(), (isset($_POST["typeid"]) ? $_POST["typeid"] : $object->typeid));
+		print $form->selectarray("typeid", $adht->liste_array(), (isset($_POST["typeid"]) ? $_POST["typeid"] : $object->typeid), 0, 0, 1);
 	} else {
 		print $adht->getNomUrl(1);
 		print '<input type="hidden" name="typeid" value="' . $object->typeid . '">';
@@ -933,7 +1168,7 @@ if ($action == 'edit') {
 
 	// Other attributes
 	$parameters = array();
-	$reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action);	// Note that $action and $object may have been modified by hook
+	$reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action); // Note that $action and $object may have been modified by hook
 	if (empty($reshook) && !empty($extrafields->attribute_label)) {
 		foreach ($extrafields->attribute_label as $key => $label) {
 			$option = "options_" . $key;
@@ -960,7 +1195,7 @@ if ($action == 'edit') {
 	// Login Dolibarr
 	print '<tr><td>' . $langs->trans("LinkedToDolibarrUser") . '</td><td colspan="2" class="valeur">';
 	if ($object->user_id) {
-		print $form->form_users($_SERVER['PHP_SELF'] . '?rowid=' . $object->id, $object->user_id, 'none');
+		print $form->form_users($_SERVER['PHP_SELF'] . '?id=' . $object->id, $object->user_id, 'none');
 	}
 	else
 		print $langs->trans("NoDolibarrAccess");
@@ -979,7 +1214,262 @@ if ($action == 'edit') {
 	print '</div>';
 }
 
-if ($rowid && $action != 'edit') {
+/*
+ * Add new subscription form
+ */
+if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') && $user->rights->adherent->cotisation->creer) {
+
+	print_fiche_titre($langs->trans("NewCotisation"));
+
+	$bankdirect = 0;  // Option to write to bank is on by default
+	$bankviainvoice = 0; // Option to write via invoice is on by default
+	$invoiceonly = 0;
+	if ($conf->banque->enabled && $conf->global->ADHERENT_BANK_USE && (empty($_POST['paymentsave']) || $_POST["paymentsave"] == 'bankdirect'))
+		$bankdirect = 1;
+	if ($conf->banque->enabled && $conf->societe->enabled && $conf->facture->enabled && $object->fk_soc)
+		$bankviainvoice = 1;
+
+	print "\n\n<!-- Form add subscription -->\n";
+
+	if ($conf->use_javascript_ajax) {
+		print "\n" . '<script type="text/javascript" language="javascript">';
+		print 'jQuery(document).ready(function () {
+                        jQuery(".bankswitchclass").' . ($bankdirect || $bankviainvoice || in_array(GETPOST('paymentsave'), array('bankdirect', 'bankviainvoice')) ? 'show()' : 'hide()') . ';
+                        jQuery(".bankswitchclass2").' . ($bankdirect || $bankviainvoice || in_array(GETPOST('paymentsave'), array('bankdirect', 'bankviainvoice')) ? 'show()' : 'hide()') . ';
+                        jQuery("#none").click(function() {
+                            jQuery(".bankswitchclass").hide();
+                            jQuery(".bankswitchclass2").hide();
+                        });
+                        jQuery("#bankdirect").click(function() {
+                            jQuery(".bankswitchclass").show();
+                            jQuery(".bankswitchclass2").show();
+                        });
+                        jQuery("#bankviainvoice").click(function() {
+                            jQuery(".bankswitchclass").show();
+                            jQuery(".bankswitchclass2").show();
+                        });
+    	                jQuery("#invoiceonly").click(function() {
+                            jQuery(".bankswitchclass").hide();
+                            jQuery(".bankswitchclass2").hide();
+                        });
+                        jQuery("#selectoperation").change(function() {
+                            code=jQuery("#selectoperation option:selected").val();
+                            if (code == \'CHQ\')
+                            {
+                                jQuery(\'.fieldrequireddyn\').addClass(\'fieldrequired\');
+                            	if (jQuery(\'#fieldchqemetteur\').val() == \'\')
+                            	{
+                                	jQuery(\'#fieldchqemetteur\').val(jQuery(\'#memberlabel\').val());
+                            	}
+                            }
+                            else
+                            {
+                                jQuery(\'.fieldrequireddyn\').removeClass(\'fieldrequired\');
+                            }
+                        });
+                        ';
+		if (GETPOST('paymentsave'))
+			print 'jQuery("#' . GETPOST('paymentsave') . '").attr(\'checked\',true);';
+		print '});';
+		print '</script>' . "\n";
+	}
+
+
+	// Confirm create third party
+	if ($_GET["action"] == 'create_thirdparty') {
+		$name = $object->getFullName($langs);
+		if (!empty($name)) {
+			if ($object->societe)
+				$name.=' (' . $object->societe . ')';
+		}
+		else {
+			$name = $object->societe;
+		}
+
+		// Create a form array
+		$formquestion = array(array('label' => $langs->trans("NameToCreate"), 'type' => 'text', 'name' => 'companyname', 'value' => $name));
+
+		$ret = $form->form_confirm($_SERVER["PHP_SELF"] . "?rowid=" . $object->id, $langs->trans("CreateDolibarrThirdParty"), $langs->trans("ConfirmCreateThirdParty"), "confirm_create_thirdparty", $formquestion, 1);
+		if ($ret == 'html')
+			print '<br>';
+	}
+
+	$adht = new AdherentType($db);
+	$result = $adht->getView('list', array("key" => $object->typeid, 'limit' => 1));
+	if (count($result->rows))
+		$adht->fetch($result->rows[0]->value->_id);
+
+	print '<form name="cotisation" method="post" action="' . $_SERVER["PHP_SELF"] . '">';
+	print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+	print '<input type="hidden" name="action" value="cotisation">';
+	print '<input type="hidden" name="id" value="' . $rowid . '">';
+	print '<input type="hidden" name="memberlabel" id="memberlabel" value="' . dol_escape_htmltag($object->getFullName($langs)) . '">';
+	print '<input type="hidden" name="thirdpartylabel" id="thirdpartylabel" value="' . dol_escape_htmltag($company->name) . '">';
+	print "<table class=\"border\" width=\"100%\">\n";
+
+	$today = dol_now();
+	$datefrom = 0;
+	$dateto = 0;
+	$paymentdate = -1;
+
+	// Date payment
+	if ($_POST["paymentyear"] && $_POST["paymentmonth"] && $_POST["paymentday"]) {
+		$paymentdate = dol_mktime(0, 0, 0, $_POST["paymentmonth"], $_POST["paymentday"], $_POST["paymentyear"]);
+	}
+
+	// Date start subscription
+	print '<tr><td width="30%" class="fieldrequired">' . $langs->trans("DateSubscription") . '</td><td>';
+	if ($_POST["reday"]) {
+		$datefrom = dol_mktime(0, 0, 0, $_POST["remonth"], $_POST["reday"], $_POST["reyear"]);
+	}
+	if (!$datefrom) {
+		if ($object->datefin > 0) {
+			$datefrom = dol_time_plus_duree($object->datefin, 1, 'd');
+		} else {
+			$datefrom = dol_now();
+		}
+	}
+	$form->select_date($datefrom, '', '', '', '', "cotisation");
+	print "</td></tr>";
+
+	// Date end subscription
+	if ($_POST["endday"]) {
+		$dateto = dol_mktime(0, 0, 0, $_POST["endmonth"], $_POST["endday"], $_POST["endyear"]);
+	}
+	if (!$dateto) {
+		$dateto = -1;  // By default, no date is suggested
+	}
+	print '<tr><td>' . $langs->trans("DateEndSubscription") . '</td><td>';
+	$form->select_date($dateto, 'end', '', '', '', "cotisation");
+	print "</td></tr>";
+
+	if ($adht->cotisation) {
+		// Amount
+		print '<tr><td class="fieldrequired">' . $langs->trans("Amount") . '</td><td><input type="text" name="cotisation" size="6" value="' . $_POST["cotisation"] . '"> ' . $langs->trans("Currency" . $conf->currency) . '</td></tr>';
+
+		// Label
+		print '<tr><td class="fieldrequired">' . $langs->trans("Label") . '</td>';
+		print '<td><input name="label" type="text" size="32" value="' . $langs->trans("Subscription") . ' ';
+		print dol_print_date(($datefrom ? $datefrom : time()), "%Y") . '" ></td></tr>';
+
+		// Complementary action
+		if ($conf->banque->enabled || $conf->facture->enabled) {
+			$company = new Societe($db);
+			if ($object->fk_soc) {
+				$result = $company->fetch($object->fk_soc);
+			}
+
+			// Title payments
+			//print '<tr><td colspan="2"><b>'.$langs->trans("Payment").'</b></td></tr>';
+			// Define a way to write payment
+			print '<tr><td valign="top" class="fieldrequired">' . $langs->trans('MoreActions');
+			print '</td>';
+			print '<td>';
+			print '<input type="radio" class="moreaction" id="none" name="paymentsave" value="none"' . (!$bankdirect && !$bankviainvoice ? ' checked="checked"' : '') . '> ' . $langs->trans("None") . '<br>';
+			if ($conf->banque->enabled) {
+				print '<input type="radio" class="moreaction" id="bankdirect" name="paymentsave" value="bankdirect"' . ($bankdirect ? ' checked="checked"' : '');
+				print '> ' . $langs->trans("MoreActionBankDirect") . '<br>';
+			}
+			if ($conf->societe->enabled && $conf->facture->enabled) {
+				print '<input type="radio" class="moreaction" id="invoiceonly" name="paymentsave" value="invoiceonly"' . ($invoiceonly ? ' checked="checked"' : '');
+				if (empty($object->fk_soc) || empty($bankviainvoice))
+					print ' disabled="disabled"';
+				print '> ' . $langs->trans("MoreActionInvoiceOnly");
+				if ($object->fk_soc)
+					print ' (' . $langs->trans("ThirdParty") . ': ' . $company->getNomUrl(1) . ')';
+				else {
+					print ' (' . $langs->trans("NoThirdPartyAssociatedToMember");
+					print ' - <a href="' . $_SERVER["PHP_SELF"] . '?rowid=' . $object->id . '&amp;action=create_thirdparty">';
+					print $langs->trans("CreateDolibarrThirdParty");
+					print '</a>)';
+				}
+				print '<br>';
+			}
+			if ($conf->banque->enabled && $conf->societe->enabled && $conf->facture->enabled) {
+				print '<input type="radio" class="moreaction" id="bankviainvoice" name="paymentsave" value="bankviainvoice"' . ($bankviainvoice ? ' checked="checked"' : '');
+				if (empty($object->fk_soc) || empty($bankviainvoice))
+					print ' disabled="disabled"';
+				print '> ' . $langs->trans("MoreActionBankViaInvoice");
+				if ($object->fk_soc)
+					print ' (' . $langs->trans("ThirdParty") . ': ' . $company->getNomUrl(1) . ')';
+				else {
+					print ' (' . $langs->trans("NoThirdPartyAssociatedToMember");
+					print ' - <a href="' . $_SERVER["PHP_SELF"] . '?rowid=' . $object->id . '&amp;action=create_thirdparty">';
+					print $langs->trans("CreateDolibarrThirdParty");
+					print '</a>)';
+				}
+				print '<br>';
+			}
+			print '</td></tr>';
+
+			// Bank account
+			print '<tr class="bankswitchclass"><td class="fieldrequired">' . $langs->trans("FinancialAccount") . '</td><td>';
+			$form->select_comptes($_POST["accountid"], 'accountid', 0, '', 1);
+			print "</td></tr>\n";
+
+			// Payment mode
+			print '<tr class="bankswitchclass"><td class="fieldrequired">' . $langs->trans("PaymentMode") . '</td><td>';
+			$form->select_types_paiements($_POST["operation"], 'operation', '', 2);
+			print "</td></tr>\n";
+
+			// Date of payment
+			print '<tr class="bankswitchclass"><td class="fieldrequired">' . $langs->trans("DatePayment") . '</td><td>';
+			$form->select_date($paymentdate ? $paymentdate : -1, 'payment', 0, 0, 1, 'cotisation', 1, 1);
+			print "</td></tr>\n";
+
+			print '<tr class="bankswitchclass2"><td>' . $langs->trans('Numero');
+			print ' <em>(' . $langs->trans("ChequeOrTransferNumber") . ')</em>';
+			print '</td>';
+			print '<td><input id="fieldnum_chq" name="num_chq" type="text" size="8" value="' . (empty($_POST['num_chq']) ? '' : $_POST['num_chq']) . '"></td></tr>';
+
+			print '<tr class="bankswitchclass2 fieldrequireddyn"><td>' . $langs->trans('CheckTransmitter');
+			print ' <em>(' . $langs->trans("ChequeMaker") . ')</em>';
+			print '</td>';
+			print '<td><input id="fieldchqemetteur" name="chqemetteur" size="32" type="text" value="' . (empty($_POST['chqemetteur']) ? $facture->client->name : $_POST['chqemetteur']) . '"></td></tr>';
+
+			print '<tr class="bankswitchclass2"><td>' . $langs->trans('Bank');
+			print ' <em>(' . $langs->trans("ChequeBank") . ')</em>';
+			print '</td>';
+			print '<td><input id="chqbank" name="chqbank" size="32" type="text" value="' . (empty($_POST['chqbank']) ? '' : $_POST['chqbank']) . '"></td></tr>';
+		}
+	}
+
+	print '<tr><td colspan="2">&nbsp;</td>';
+
+	print '<tr><td width="30%">' . $langs->trans("SendAcknowledgementByMail") . '</td>';
+	print '<td>';
+	if (!$object->email) {
+		print $langs->trans("NoEMail");
+	} else {
+		$subjecttosend = $object->makeSubstitution($conf->global->ADHERENT_MAIL_COTIS_SUBJECT);
+		$texttosend = $object->makeSubstitution($adht->getMailOnSubscription());
+
+		$tmp = '<input name="sendmail" type="checkbox"' . ((isset($_POST["sendmail"]) ? $_POST["sendmail"] : $conf->global->ADHERENT_DEFAULT_SENDINFOBYMAIL) ? ' checked="checked"' : '') . '>';
+		$helpcontent = '';
+		$helpcontent.='<b>' . $langs->trans("MailFrom") . '</b>: ' . $conf->global->ADHERENT_MAIL_FROM . '<br>' . "\n";
+		$helpcontent.='<b>' . $langs->trans("MailRecipient") . '</b>: ' . $object->email . '<br>' . "\n";
+		$helpcontent.='<b>' . $langs->trans("Subject") . '</b>:<br>' . "\n";
+		$helpcontent.=$subjecttosend . "\n";
+		$helpcontent.="<br>";
+		$helpcontent.='<b>' . $langs->trans("Content") . '</b>:<br>';
+		$helpcontent.=dol_htmlentitiesbr($texttosend) . "\n";
+
+		print $form->textwithpicto($tmp, $helpcontent, 1, 'help');
+	}
+	print '</td></tr>';
+	print '</table>';
+	print '<br>';
+
+	print '<center>';
+	print '<input type="submit" class="button" name="add" value="' . $langs->trans("AddSubscription") . '">';
+	print ' &nbsp; &nbsp; ';
+	print '<input type="submit" class="button" name="cancel" value="' . $langs->trans("Cancel") . '">';
+	print '</center>';
+
+	print '</form>';
+
+	print "\n<!-- End form subscription -->\n\n";
+} elseif ($rowid && $action != 'edit') {
 	dol_htmloutput_mesg($mesg);
 
 	/*	 * ************************************************************************* */
@@ -997,12 +1487,23 @@ if ($rowid && $action != 'edit') {
 	//if ($res < 0) { dol_print_error($db); exit; }
 
 	$adht = new AdherentType($db);
-	$res = $adht->fetch($object->typeid);
-	if ($res < 0) {
-		dol_print_error($db);
-		exit;
-	}
+	$result = $adht->getView('list', array("key" => $object->typeid, 'limit' => 1));
+	if (count($result->rows))
+		$adht->id = $result->rows[0]->value->_id;
 
+	$adht->libelle = $object->typeid;
+
+
+	/* try {
+	  $res = $adht->fetch($object->typeid);
+	  } catch (Exception $e) {
+	  $adht->libelle = $object->typeid;
+	  } */
+
+	print '<div class="row">';
+
+	$titre = $langs->trans("Member");
+	print start_box($titre, "twelve", "16-User.png");
 
 	/*
 	 * Affichage onglets
@@ -1035,7 +1536,7 @@ if ($rowid && $action != 'edit') {
 			else
 				$text.=$langs->trans("UserWillBeInternalUser");
 		}
-		$ret = $form->form_confirm($_SERVER["PHP_SELF"] . "?rowid=" . $object->id, $langs->trans("CreateDolibarrLogin"), $text, "confirm_create_user", $formquestion, 'yes');
+		$ret = $form->form_confirm($_SERVER["PHP_SELF"] . "?id=" . $object->id, $langs->trans("CreateDolibarrLogin"), $text, "confirm_create_user", $formquestion, 'yes');
 		if ($ret == 'html')
 			print '<br>';
 	}
@@ -1054,7 +1555,7 @@ if ($rowid && $action != 'edit') {
 		// Create a form array
 		$formquestion = array(array('label' => $langs->trans("NameToCreate"), 'type' => 'text', 'name' => 'companyname', 'value' => $name));
 
-		$ret = $form->form_confirm($_SERVER["PHP_SELF"] . "?rowid=" . $object->id, $langs->trans("CreateDolibarrThirdParty"), $langs->trans("ConfirmCreateThirdParty"), "confirm_create_thirdparty", $formquestion, 1);
+		$ret = $form->form_confirm($_SERVER["PHP_SELF"] . "?id=" . $object->id, $langs->trans("CreateDolibarrThirdParty"), $langs->trans("ConfirmCreateThirdParty"), "confirm_create_thirdparty", $formquestion, 1);
 		if ($ret == 'html')
 			print '<br>';
 	}
@@ -1064,7 +1565,9 @@ if ($rowid && $action != 'edit') {
 		$langs->load("mails");
 
 		$adht = new AdherentType($db);
-		$adht->fetch($object->typeid);
+		$result = $adht->getView('list', array("key" => $object->typeid, 'limit' => 1));
+		if (count($result->rows))
+			$adht->fetch($result->rows[0]->value->_id);
 
 		$subjecttosend = $object->makeSubstitution($conf->global->ADHERENT_MAIL_VALID_SUBJECT);
 		$texttosend = $object->makeSubstitution($adht->getMailOnValid());
@@ -1094,12 +1597,12 @@ if ($rowid && $action != 'edit') {
 			$langs->load("mailmanspip");
 			$formquestion[] = array('type' => 'other', 'label' => $langs->transnoentitiesnoconv("SynchroSpipEnabled"), 'value' => '');
 		}
-		print $form->formconfirm($_SERVER["PHP_SELF"] ."?rowid=" . $rowid, $langs->trans("ValidateMember"), $langs->trans("ConfirmValidateMember"), "confirm_valid", $formquestion, 1);
+		print $form->formconfirm($_SERVER["PHP_SELF"] . "?id=" . $rowid, $langs->trans("ValidateMember"), $langs->trans("ConfirmValidateMember"), "confirm_valid", $formquestion, 1);
 	}
 
 	// Confirm send card by mail
 	if ($action == 'sendinfo') {
-		print $form->formconfirm($_SERVER["PHP_SELF"] ."?rowid=" . $rowid, $langs->trans("SendCardByMail"), $langs->trans("ConfirmSendCardByMail", $object->email), "confirm_sendinfo", '', 0, 1);
+		print $form->formconfirm($_SERVER["PHP_SELF"] . "?id=" . $rowid, $langs->trans("SendCardByMail"), $langs->trans("ConfirmSendCardByMail", $object->email), "confirm_sendinfo", '', 0, 1);
 	}
 
 	// Confirm resiliate
@@ -1131,7 +1634,7 @@ if ($rowid && $action != 'edit') {
 			$formquestion[] = array('type' => 'checkbox', 'name' => 'send_mail', 'label' => $label, 'value' => ($conf->global->ADHERENT_DEFAULT_SENDINFOBYMAIL ? 'true' : 'false'));
 		if ($backtopage)
 			$formquestion[] = array('type' => 'hidden', 'name' => 'backtopage', 'value' => ($backtopage != '1' ? $backtopage : $_SERVER["HTTP_REFERER"]));
-		$ret = $form->form_confirm($_SERVER["PHP_SELF"] ."?rowid=" . $rowid, $langs->trans("ResiliateMember"), $langs->trans("ConfirmResiliateMember"), "confirm_resign", $formquestion);
+		$ret = $form->form_confirm($_SERVER["PHP_SELF"] . "?id=" . $rowid, $langs->trans("ResiliateMember"), $langs->trans("ConfirmResiliateMember"), "confirm_resign", $formquestion);
 		if ($ret == 'html')
 			print '<br>';
 	}
@@ -1141,7 +1644,7 @@ if ($rowid && $action != 'edit') {
 		$formquestion = array();
 		if ($backtopage)
 			$formquestion[] = array('type' => 'hidden', 'name' => 'backtopage', 'value' => ($backtopage != '1' ? $backtopage : $_SERVER["HTTP_REFERER"]));
-		$ret = $form->form_confirm($_SERVER["PHP_SELF"] ."?rowid=" . $rowid, $langs->trans("DeleteMember"), $langs->trans("ConfirmDeleteMember"), "confirm_delete", $formquestion, 0, 1);
+		$ret = $form->form_confirm($_SERVER["PHP_SELF"] . "?id=" . $rowid, $langs->trans("DeleteMember"), $langs->trans("ConfirmDeleteMember"), "confirm_delete", $formquestion, 0, 1);
 		if ($ret == 'html')
 			print '<br>';
 	}
@@ -1151,7 +1654,7 @@ if ($rowid && $action != 'edit') {
 	 */
 	if ($action == 'add_spip') {
 		$langs->load("mailmanspip");
-		$ret = $form->form_confirm($_SERVER["PHP_SELF"] ."?rowid=" . $rowid, "Add to spip", "Etes-vous sur de vouloir ajouter cet adherent dans spip ? (serveur : " . ADHERENT_SPIP_SERVEUR . ")", "confirm_add_spip");
+		$ret = $form->form_confirm($_SERVER["PHP_SELF"] . "?id=" . $rowid, "Add to spip", "Etes-vous sur de vouloir ajouter cet adherent dans spip ? (serveur : " . ADHERENT_SPIP_SERVEUR . ")", "confirm_add_spip");
 		if ($ret == 'html')
 			print '<br>';
 	}
@@ -1161,7 +1664,7 @@ if ($rowid && $action != 'edit') {
 	 */
 	if ($action == 'del_spip') {
 		$langs->load("mailmanspip");
-		$ret = $form->form_confirm($_SERVER["PHP_SELF"] ."?rowid=$rowid", "Supprimer dans spip", "Etes-vous sur de vouloir effacer cet adherent dans spip ? (serveur : " . ADHERENT_SPIP_SERVEUR . ")", "confirm_del_spip");
+		$ret = $form->form_confirm($_SERVER["PHP_SELF"] . "?id=$rowid", "Supprimer dans spip", "Etes-vous sur de vouloir effacer cet adherent dans spip ? (serveur : " . ADHERENT_SPIP_SERVEUR . ")", "confirm_del_spip");
 		if ($ret == 'html')
 			print '<br>';
 	}
@@ -1172,18 +1675,20 @@ if ($rowid && $action != 'edit') {
 	if ($conf->societe->enabled)
 		$rowspan++;
 
+
+
 	print '<table class="border" width="100%">';
 
 	// Ref
 	print '<tr><td width="20%">' . $langs->trans("Ref") . '</td>';
 	print '<td class="valeur" colspan="2">';
-	print $form->showrefnav($object, 'rowid');
+	print $form->showrefnav($object, 'id');
 	print '</td></tr>';
 
 	$showphoto = '<td rowspan="' . $rowspan . '" align="center" valign="middle" width="25%">';
 	$showphoto.=$form->showphoto('memberphoto', $object);
 	$showphoto.='</td>';
-	
+
 	// Login
 	if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED)) {
 		print '<tr><td>' . $langs->trans("Login") . ' / ' . $langs->trans("Id") . '</td><td class="valeur">' . $object->login . '&nbsp;</td>';
@@ -1258,11 +1763,11 @@ if ($rowid && $action != 'edit') {
 	print '<tr><td>' . $langs->trans("Public") . '</td><td class="valeur">' . yn($object->public) . '</td></tr>';
 
 	// Status
-	print '<tr><td>' . $langs->trans("Status") . '</td><td class="valeur">' . $object->getLibStatut(4) . '</td></tr>';
+	print '<tr><td>' . $langs->trans("Status") . '</td><td class="valeur">' . $object->getLibStatut() . '</td></tr>';
 
 	// Other attributes
 	$parameters = array();
-	$reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action);	// Note that $action and $object may have been modified by hook
+	$reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action); // Note that $action and $object may have been modified by hook
 	if (empty($reshook) && !empty($extrafields->attribute_label)) {
 		foreach ($extrafields->attribute_label as $key => $label) {
 			$option = "options_$key";
@@ -1280,13 +1785,13 @@ if ($rowid && $action != 'edit') {
 		print $langs->trans("LinkedToDolibarrThirdParty");
 		print '</td>';
 		if ($_GET['action'] != 'editthirdparty' && $user->rights->adherent->creer)
-			print '<td align="right"><a href="' . $_SERVER["PHP_SELF"] . '?action=editthirdparty&amp;rowid=' . $object->id . '">' . img_edit($langs->trans('SetLinkToThirdParty'), 1) . '</a></td>';
+			print '<td align="right"><a href="' . $_SERVER["PHP_SELF"] . '?action=editthirdparty&amp;id=' . $object->id . '">' . img_edit($langs->trans('SetLinkToThirdParty'), 1) . '</a></td>';
 		print '</tr></table>';
 		print '</td><td colspan="2" class="valeur">';
 		if ($_GET['action'] == 'editthirdparty') {
 			$htmlname = 'socid';
 			print '<form method="POST" action="' . $_SERVER['PHP_SELF'] . '" name="form' . $htmlname . '">';
-			print '<input type="hidden" name="rowid" value="' . $object->id . '">';
+			print '<input type="hidden" name="id" value="' . $object->id . '">';
 			print '<input type="hidden" name="action" value="set' . $htmlname . '">';
 			print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
 			print '<table class="nobordernopadding" cellpadding="0" cellspacing="0">';
@@ -1315,17 +1820,17 @@ if ($rowid && $action != 'edit') {
 	if ($_GET['action'] != 'editlogin' && $user->rights->adherent->creer) {
 		print '<td align="right">';
 		if ($user->rights->user->user->creer) {
-			print '<a href="' . $_SERVER["PHP_SELF"] . '?action=editlogin&amp;rowid=' . $object->id . '">' . img_edit($langs->trans('SetLinkToUser'), 1) . '</a>';
+			print '<a href="' . $_SERVER["PHP_SELF"] . '?action=editlogin&amp;id=' . $object->id . '">' . img_edit($langs->trans('SetLinkToUser'), 1) . '</a>';
 		}
 		print '</td>';
 	}
 	print '</tr></table>';
 	print '</td><td colspan="2" class="valeur">';
 	if ($_GET['action'] == 'editlogin') {
-		print $form->form_users($_SERVER['PHP_SELF'] . '?rowid=' . $object->id, $object->user_id, 'userid', '');
+		print $form->form_users($_SERVER['PHP_SELF'] . '?id=' . $object->id, $object->user_id, 'userid', '');
 	} else {
 		if ($object->user_id) {
-			print $form->form_users($_SERVER['PHP_SELF'] . '?rowid=' . $object->id, $object->user_id, 'none');
+			print $form->form_users($_SERVER['PHP_SELF'] . '?id=' . $object->id, $object->user_id, 'none');
 		}
 		else
 			print $langs->trans("NoDolibarrAccess");
@@ -1346,24 +1851,24 @@ if ($rowid && $action != 'edit') {
 	if ($action != 'valid' && $action != 'editlogin' && $action != 'editthirdparty') {
 		// Modify
 		if ($user->rights->adherent->creer) {
-			print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?rowid='.$rowid.'&action=edit">' . $langs->trans("Modify") . '</a>';
+			print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $rowid . '&action=edit">' . $langs->trans("Modify") . '</a>';
 		} else {
 			print "<font class=\"butActionRefused\" href=\"#\" title=\"" . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . "\">" . $langs->trans("Modify") . "</font>";
 		}
 
 		// Valider
-		if ($object->statut == -1) {
+		if ($object->Status == 0) {
 			if ($user->rights->adherent->creer) {
-				print '<a class="butAction" href="'.$_SERVER["PHP_SELF"] .'?rowid='.$rowid.'&action=valid">' . $langs->trans("Validate") . "</a>\n";
+				print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $rowid . '&action=valid">' . $langs->trans("Validate") . "</a>\n";
 			} else {
 				print "<font class=\"butActionRefused\" href=\"#\" title=\"" . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . "\">" . $langs->trans("Validate") . "</font>";
 			}
 		}
 
 		// Reactiver
-		if ($object->statut == 0) {
+		if ($object->Status == -1) {
 			if ($user->rights->adherent->creer) {
-				print '<a class="butAction" href="'. $_SERVER["PHP_SELF"] .'?rowid='.$rowid.'&action=valid">' . $langs->trans("Reenable") . "</a>\n";
+				print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $rowid . '&action=valid">' . $langs->trans("Reenable") . "</a>\n";
 			} else {
 				print "<font class=\"butActionRefused\" href=\"#\" title=\"" . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . "\">" . $langs->trans("Reenable") . "</font>";
 			}
@@ -1371,9 +1876,9 @@ if ($rowid && $action != 'edit') {
 
 		// Send card by email
 		if ($user->rights->adherent->creer) {
-			if ($object->statut >= 1) {
+			if ($object->Status >= 1) {
 				if ($object->email)
-					print '<a class="butAction" href="'. $_SERVER["PHP_SELF"] .'?rowid=$object->id&action=sendinfo">' . $langs->trans("SendCardByMail") . "</a>\n";
+					print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=$object->id&action=sendinfo">' . $langs->trans("SendCardByMail") . "</a>\n";
 				else
 					print "<a class=\"butActionRefused\" href=\"#\" title=\"" . dol_escape_htmltag($langs->trans("NoEMail")) . "\">" . $langs->trans("SendCardByMail") . "</a>\n";
 			}
@@ -1385,43 +1890,17 @@ if ($rowid && $action != 'edit') {
 		}
 
 		// Resilier
-		if ($object->statut >= 1) {
+		if ($object->Status >= 1) {
 			if ($user->rights->adherent->supprimer) {
-				print '<a class="butAction" href="'. $_SERVER["PHP_SELF"] .'?rowid='.$rowid.'&action=resign">' . $langs->trans("Resiliate") . "</a>\n";
+				print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $rowid . '&action=resign">' . $langs->trans("Resiliate") . "</a>\n";
 			} else {
 				print "<font class=\"butActionRefused\" href=\"#\" title=\"" . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . "\">" . $langs->trans("Resiliate") . "</font>";
 			}
 		}
 
-		// Create third party
-		if ($conf->societe->enabled && !$object->fk_soc) {
-			if ($user->rights->societe->creer) {
-				if ($object->statut != -1)
-					print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?rowid=' . $object->id . '&amp;action=create_thirdparty">' . $langs->trans("CreateDolibarrThirdParty") . '</a>';
-				else
-					print '<a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("ValidateBefore")) . '">' . $langs->trans("CreateDolibarrThirdParty") . '</a>';
-			}
-			else {
-				print "<font class=\"butActionRefused\" href=\"#\" title=\"" . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . "\">" . $langs->trans("CreateDolibarrThirdParty") . "</font>";
-			}
-		}
-
-		// Create user
-		if (!$user->societe_id && !$object->user_id) {
-			if ($user->rights->user->user->creer) {
-				if ($object->statut != -1)
-					print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?rowid=' . $object->id . '&amp;action=create_user">' . $langs->trans("CreateDolibarrLogin") . '</a>';
-				else
-					print '<a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("ValidateBefore")) . '">' . $langs->trans("CreateDolibarrLogin") . '</a>';
-			}
-			else {
-				print "<font class=\"butActionRefused\" href=\"#\" title=\"" . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . "\">" . $langs->trans("CreateDolibarrLogin") . "</font>";
-			}
-		}
-
 		// Delete
 		if ($user->rights->adherent->supprimer) {
-			print '<a class="butActionDelete" href="'. $_SERVER["PHP_SELF"] .'?rowid='.$object->id.'&action=delete">' . $langs->trans("Delete") . "</a>\n";
+			print '<a class="butActionDelete" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&action=delete">' . $langs->trans("Delete") . "</a>\n";
 		} else {
 			print "<font class=\"butActionRefused\" href=\"#\" title=\"" . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . "\">" . $langs->trans("Delete") . "</font>";
 		}
@@ -1433,10 +1912,10 @@ if ($rowid && $action != 'edit') {
 
 			$isinspip = $mailmanspip->is_in_spip($object);
 			if ($isinspip == 1) {
-				print '<a class="butAction" href="'. $_SERVER["PHP_SELF"] .'?rowid=$object->id&action=del_spip">' . $langs->trans("DeleteIntoSpip") . "</a>\n";
+				print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=$object->id&action=del_spip">' . $langs->trans("DeleteIntoSpip") . "</a>\n";
 			}
 			if ($isinspip == 0) {
-				print '<a class="butAction" href="'. $_SERVER["PHP_SELF"] .'?rowid=$object->id&action=add_spip\">' . $langs->trans("AddIntoSpip") . "</a>\n";
+				print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=$object->id&action=add_spip\">' . $langs->trans("AddIntoSpip") . "</a>\n";
 			}
 			if ($isinspip == -1) {
 				print '<br><br><font class="error">Failed to connect to SPIP: ' . $object->error . '</font>';
@@ -1445,7 +1924,130 @@ if ($rowid && $action != 'edit') {
 	}
 
 	print '</div>';
-	print "<br>\n";
+
+	print end_box();
+
+	print "</div>";
+
+	print '<div class="row">';
+
+	$titre = $langs->trans("Subscriptions");
+	print start_box($titre, "six", "16-Money.png");
+
+	$i = 0;
+	$obj = new stdClass();
+	print '<table class="display dt_act" id="subscription_datatable" >';
+	// Ligne des titres 
+	print'<thead>';
+	print'<th class="essential">';
+	print $langs->trans("Ref");
+	print'</th>';
+	$obj->aoColumns[$i]->mDataProp = "_id";
+	$obj->aoColumns[$i]->bUseRendered = false;
+	$obj->aoColumns[$i]->bSearchable = false;
+	$obj->aoColumns[$i]->bVisible = false;
+	$i++;
+	print'<th class="essential">';
+	print $langs->trans('DateSubscription');
+	print'</th>';
+	$obj->aoColumns[$i]->mDataProp = "dateh";
+	$obj->aoColumns[$i]->sType = "date";
+	$obj->aoColumns[$i]->sClass = "center";
+	//$obj->aoColumns[$i]->sWidth = "200px";
+	$obj->aoColumns[$i]->sDefaultContent = "";
+	$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("dateh", "date");
+	$obj->aoColumns[$i]->sDefaultContent = "";
+//$obj->aoColumns[$i]->sClass = "edit";
+	$i++;
+	print'<th class="essential">';
+	print $langs->trans('DateEnd');
+	print'</th>';
+	$obj->aoColumns[$i]->mDataProp = "datef";
+	$obj->aoColumns[$i]->sType = "date";
+	$obj->aoColumns[$i]->sClass = "center";
+	//$obj->aoColumns[$i]->sWidth = "200px";
+	$obj->aoColumns[$i]->sDefaultContent = "";
+	$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("datef", "date");
+	$obj->aoColumns[$i]->sDefaultContent = "";
+	//$obj->aoColumns[$i]->sClass = "edit";
+	$i++;
+	print'<th class="essential">';
+	print $langs->trans("Amount");
+	print'</th>';
+	$obj->aoColumns[$i]->mDataProp = "amount";
+	$obj->aoColumns[$i]->sClass = "fright";
+	$obj->aoColumns[$i]->sDefaultContent = "0";
+	//$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("Status", "status");
+	$i++;
+	print'<th class="essential">';
+	print $langs->trans('Action');
+	print'</th>';
+	$obj->aoColumns[$i]->mDataProp = "";
+	$obj->aoColumns[$i]->sClass = "center content_actions";
+	$obj->aoColumns[$i]->sDefaultContent = "";
+
+	$url = $_SERVER["PHP_SELF"];
+	$obj->aoColumns[$i]->fnRender = 'function(obj) {
+	var ar = [];
+	ar[ar.length] = "<a href=\"' . $url . '?id=";
+	ar[ar.length] = obj.aData._id.toString();
+	ar[ar.length] = "&action=edit\" class=\"sepV_a\" title=\"' . $langs->trans("Edit") . '\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/edit.png\" alt=\"\" /></a>";
+	ar[ar.length] = "<a href=\"' . $url . '?id=";
+	ar[ar.length] = obj.aData._id.toString();
+	ar[ar.length] = "&action=resign\" class=\"sepV_a\" title=\"' . $langs->trans("Resiliate") . '\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/disable.png\" alt=\"\" /></a>";
+	ar[ar.length] = "<a href=\"' . $url . '?id=";
+	ar[ar.length] = obj.aData._id.toString();
+	ar[ar.length] = "&action=delete\" class=\"sepV_a\" title=\"' . $langs->trans("Delete") . '\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/delete.png\" alt=\"\" /></a>";
+	var str = ar.join("");
+	return str;
+}';
+	print'</tr>';
+	print'</thead>';
+	print'<tfoot>';
+	print'</tfoot>';
+	print'<tbody>';
+	$result = $object->getView('cotisation', array("key" => $object->id));
+	if (count($result->rows) > 0)
+		foreach ($result->rows as $key => $aRow) {
+			print '<tr>';
+			print '<td>' . $key . '</td>';
+			print '<td>' . $aRow->value->dateh . '</td>';
+			print '<td>' . $aRow->value->datef . '</td>';
+			print '<td>' . $aRow->value->amount . '</td>';
+			print '<td></td>';
+			print '</tr>';
+		}
+	print'</tbody>';
+
+	print "</table>";
+
+	$obj->sDom = 'l<fr>t<\"clear\"rtip>';
+	$obj->bServerSide = false;
+	$obj->iDisplayLength = 10;
+	$object->datatablesCreate($obj, "subscription_datatable");
+
+
+	if ($user->rights->adherent->cotisation->creer) {
+		if ($action != 'addsubscription' && $action != 'create_thirdparty') {
+			print '<div class="tabsAction">';
+
+			if ($object->Status > 0)
+				print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $rowid . '&action=addsubscription">' . $langs->trans("AddSubscription") . "</a>";
+			else
+				print '<a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("ValidateBefore")) . '">' . $langs->trans("AddSubscription") . '</a>';
+
+			print "<br>\n";
+
+			print '</div>';
+		}
+	}
+
+	print end_box();
+
+	$titre = $langs->trans("Messenger");
+	print start_box($titre, "six", "16-Mail.png");
+
+	print end_box();
 }
 
 print dol_fiche_end();
