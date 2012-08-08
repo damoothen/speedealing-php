@@ -24,7 +24,7 @@
 
 require_once(DOL_DOCUMENT_ROOT . "/core/lib/functions2.lib.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/lib/date.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/adherent/class/cotisation.class.php");
+//require_once(DOL_DOCUMENT_ROOT."/adherent/class/cotisation.class.php");
 
 /**
  *      \class      Adherent
@@ -893,7 +893,7 @@ class Adherent extends nosqlDocument {
 		$cotisation = new stdClass($this->db);
 		$cotisation->dateh = $date;  // Date of new subscription
 		$cotisation->datef = $datefin; // End data of new subscription
-		$cotisation->amount = $montant;
+		$cotisation->amount = (float)$montant;
 		$cotisation->note = $label;
 		$cotisation->year = (int)strftime("%Y",$date);
 
@@ -1153,7 +1153,7 @@ class Adherent extends nosqlDocument {
 	 *  @return string				Label
 	 */
 	function getLibStatut() {
-		return $this->LibStatus($this->Status, $this->last_subscription_date_end);
+		return $this->LibStatus($this->Status, array("dateEnd"=> $this->last_subscription_date_end));
 	}
 
 	/**

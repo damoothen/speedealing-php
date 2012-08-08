@@ -40,7 +40,6 @@ llxHeader('', $langs->trans("Members"), 'EN:Module_Foundations|FR:Module_Adh&eac
 
 $staticmember = new Adherent($db);
 $statictype = new AdherentType($db);
-$subscriptionstatic = new Cotisation($db);
 
 print_fiche_titre($langs->trans("MembersArea"));
 
@@ -184,7 +183,7 @@ foreach ($AdherentType as $key => $adhtype) {
 	print '<td><a href="type.php?rowid=' . $adhtype->id . '">' . img_object($langs->trans("ShowType"), "group") . ' ' . $adhtype->getNomUrl(0, dol_size(16)) . '</a></td>';
 	print '<td align="right">' . (isset($MemberToValidate[$key]) && $MemberToValidate[$key] > 0 ? $MemberToValidate[$key] : '') . ' ' . $staticmember->LibStatus(0, 0) . '</td>';
 	print '<td align="right">' . (isset($MembersValidated[$key]) && ($MembersValidated[$key] - $MemberUpToDate[$key] > 0) ? $MembersValidated[$key] - $MemberUpToDate[$key] : '') . ' ' . $staticmember->LibStatus(1, 0) . '</td>';
-	print '<td align="right">' . (isset($MemberUpToDate[$key]) && $MemberUpToDate[$key] > 0 ? $MemberUpToDate[$key] : '') . ' ' . $staticmember->LibStatus(1, $now+1000) . '</td>';
+	print '<td align="right">' . (isset($MemberUpToDate[$key]) && $MemberUpToDate[$key] > 0 ? $MemberUpToDate[$key] : '') . ' ' . $staticmember->LibStatus(1, array("dateEnd"=>$now+1000)) . '</td>';
 	print '<td align="right">' . (isset($MembersResiliated[$key]) && $MembersResiliated[$key] > 0 ? $MembersResiliated[$key] : '') . ' ' . $staticmember->LibStatus(-1, 0) . '</td>';
 	print "</tr>\n";
 }
@@ -192,7 +191,7 @@ print '<tr class="liste_total">';
 print '<td class="liste_total">' . $langs->trans("Total") . '</td>';
 print '<td class="liste_total" align="right">' . $SommeA . ' ' . $staticmember->LibStatus(0, 0) . '</td>';
 print '<td class="liste_total" align="right">' . $SommeB . ' ' . $staticmember->LibStatus(1, 0) . '</td>';
-print '<td class="liste_total" align="right">' . $SommeC . ' ' . $staticmember->LibStatus(1, $now+1000) . '</td>';
+print '<td class="liste_total" align="right">' . $SommeC . ' ' . $staticmember->LibStatus(1, array("dateEnd"=>$now+1000)) . '</td>';
 print '<td class="liste_total" align="right">' . $SommeD . ' ' . $staticmember->LibStatus(-1, 0) . '</td>';
 print '</tr>';
 

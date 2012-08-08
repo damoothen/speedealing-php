@@ -22,21 +22,25 @@
                    "label": "MemberStatusActive",
                    "enable": true,
                    "cssClass": "alert_bg",
-                   "expire": {
-                       "actived": {
-                           "label": "MemberStatusPaid",
-                           "cssClass": "ok_bg"
-                       },
-                       "expired": {
-                           "label": "MemberStatusActiveLate",
-                           "cssClass": "error_bg"
-                       }
-                   }
+                   "dateEnd": [
+                       "expired",
+                       "actived"
+                   ]
                },
                "-1": {
                    "label": "MemberStatusResiliated",
                    "enable": true,
                    "cssClass": "info_bg"
+               },
+               "actived": {
+                   "enable": false,
+                   "label": "MemberStatusPaid",
+                   "cssClass": "ok_bg"
+               },
+               "expired": {
+                   "enable": false,
+                   "label": "MemberStatusActiveLate",
+                   "cssClass": "error_bg"
                }
            }
        }

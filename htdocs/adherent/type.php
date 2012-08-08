@@ -357,8 +357,14 @@ if ($rowid > 0) {
 		$obj->aoColumns[$i]->sClass = "select center";
 		$obj->aoColumns[$i]->sWidth = "180px";
 		$obj->aoColumns[$i]->sDefaultContent = "0";
-		$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("Status", "status");
-
+		$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("Status", "status", array("dateEnd"=>"last_subscription_date_end"));
+		$i++;
+		print'<th class="essential">';
+		print'</th>';
+		$obj->aoColumns[$i]->mDataProp = "last_subscription_date_end";
+		$obj->aoColumns[$i]->sDefaultContent = "";
+		//$obj->aoColumns[$i]->sClass = "edit";
+		$obj->aoColumns[$i]->bVisible = false;
 		print'</tr>';
 		print'</thead>';
 		print'<tfoot>';
@@ -373,6 +379,7 @@ if ($rowid > 0) {
 				print '<td>' . $aRow->value->lastname . '</td>';
 				print '<td>' . $aRow->value->firstname . '</td>';
 				print '<td>' . (empty($aRow->value->Status) ? "0" : $aRow->value->Status) . '</td>';
+				print '<td>' . $aRow->value->last_subscription_date_end . '</td>';
 				print '</tr>';
 			}
 		print'</tbody>';
@@ -382,6 +389,7 @@ if ($rowid > 0) {
 		$obj->sDom = 'l<fr>t<\"clear\"rtip>';
 		$obj->bServerSide = false;
 		$obj->iDisplayLength = 10;
+		$obj->aaSorting = array(array(1, 'asc'));
 		$object->datatablesCreate($obj, "member");
 		
 		print '<div class="tabsAction">';

@@ -49,14 +49,6 @@ function member_prepare_head($object)
 		$h++;
 	}
 
-    if (! empty($user->rights->adherent->cotisation->lire))
-	{
-		$head[$h][0] = DOL_URL_ROOT.'/adherent/card_subscriptions.php?id='.$object->id;
-		$head[$h][1] = $langs->trans("Subscriptions");
-		$head[$h][2] = 'subscription';
-		$h++;
-	}
-
 	// Show agenda tab
 	if (! empty($conf->agenda->enabled))
 	{

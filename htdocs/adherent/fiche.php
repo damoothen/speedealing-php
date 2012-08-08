@@ -1977,30 +1977,7 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
 	$obj->aoColumns[$i]->mDataProp = "amount";
 	$obj->aoColumns[$i]->sClass = "fright";
 	$obj->aoColumns[$i]->sDefaultContent = "0";
-	//$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("Status", "status");
-	$i++;
-	print'<th class="essential">';
-	print $langs->trans('Action');
-	print'</th>';
-	$obj->aoColumns[$i]->mDataProp = "";
-	$obj->aoColumns[$i]->sClass = "center content_actions";
-	$obj->aoColumns[$i]->sDefaultContent = "";
-
-	$url = $_SERVER["PHP_SELF"];
-	$obj->aoColumns[$i]->fnRender = 'function(obj) {
-	var ar = [];
-	ar[ar.length] = "<a href=\"' . $url . '?id=";
-	ar[ar.length] = obj.aData._id.toString();
-	ar[ar.length] = "&action=edit\" class=\"sepV_a\" title=\"' . $langs->trans("Edit") . '\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/edit.png\" alt=\"\" /></a>";
-	ar[ar.length] = "<a href=\"' . $url . '?id=";
-	ar[ar.length] = obj.aData._id.toString();
-	ar[ar.length] = "&action=resign\" class=\"sepV_a\" title=\"' . $langs->trans("Resiliate") . '\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/disable.png\" alt=\"\" /></a>";
-	ar[ar.length] = "<a href=\"' . $url . '?id=";
-	ar[ar.length] = obj.aData._id.toString();
-	ar[ar.length] = "&action=delete\" class=\"sepV_a\" title=\"' . $langs->trans("Delete") . '\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/delete.png\" alt=\"\" /></a>";
-	var str = ar.join("");
-	return str;
-}';
+	$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("amount", "price");
 	print'</tr>';
 	print'</thead>';
 	print'<tfoot>';
@@ -2014,7 +1991,6 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
 			print '<td>' . $aRow->value->dateh . '</td>';
 			print '<td>' . $aRow->value->datef . '</td>';
 			print '<td>' . $aRow->value->amount . '</td>';
-			print '<td></td>';
 			print '</tr>';
 		}
 	print'</tbody>';

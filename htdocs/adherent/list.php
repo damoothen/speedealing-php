@@ -99,7 +99,7 @@ $obj->aoColumns[$i]->mDataProp = "Status";
 $obj->aoColumns[$i]->sClass = "select center";
 $obj->aoColumns[$i]->sWidth = "180px";
 $obj->aoColumns[$i]->sDefaultContent = "0";
-$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("Status", "status");
+$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("Status", "status", array("dateEnd"=>"last_subscription_date_end"));
 $i++;
 print'<th class="essential">';
 print $langs->trans("EndSubscription");
