@@ -567,6 +567,11 @@ class DolibarrModules extends nosqlDocument {
 		$error = 0;
 		
 		$this->couchdb->useDatabase(strtolower($this->name)); // switch to the database for the module
+		if(!$this->couchdb->databaseExists()) {
+			$this->couchdb->createDatabase(); // create the database
+			$couchAdmin = new couchAdmin($this->couchdb);
+			$couchAdmin->addDatabaseReaderRole("administrator"); // add the default admin security group
+		}
 
 		$ok = 1;
 		foreach ($conf->file->dol_document_root as $dirroot) {
