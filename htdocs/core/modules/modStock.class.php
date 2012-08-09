@@ -44,91 +44,91 @@ class modStock extends DolibarrModules {
 
 		parent::__construct($db);
 
-		$this->values->numero = 52;
+		$this->numero = 52;
 
-		$this->values->family = "products";
+		$this->family = "products";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->values->name = preg_replace('/^mod/i', '', get_class($this));
-		$this->values->description = "Gestion des stocks";
+		$this->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->description = "Gestion des stocks";
 
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
-		$this->values->version = 'dolibarr';
+		$this->version = 'dolibarr';
 
-		$this->values->const_name = 'MAIN_MODULE_' . strtoupper($this->values->name);
-		$this->values->special = 0;
-		$this->values->picto = 'stock';
+		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
+		$this->special = 0;
+		$this->picto = 'stock';
 
 		// Data directories to create when module is enabled
-		$this->values->dirs = array();
+		$this->dirs = array();
 
-		$this->values->config_page_url = array("stock.php");
+		$this->config_page_url = array("stock.php");
 
 		// Dependencies
-		$this->values->depends = array("modProduct");
-		$this->values->requiredby = array();
-		$this->values->langfiles = array("stocks");
+		$this->depends = array("modProduct");
+		$this->requiredby = array();
+		$this->langfiles = array("stocks");
 
 		// Constants
-		$this->values->const = array();
+		$this->const = array();
 
 		// Boxes
-		$this->values->boxes = array();
+		$this->boxes = array();
 
 		// Permissions
-		$this->values->rights = array();
-		$this->values->rights_class = 'stock';
+		$this->rights = array();
+		$this->rights_class = 'stock';
 
-		$this->values->rights[0][0] = 1001;
-		$this->values->rights[0][1] = 'Lire les stocks';
-		$this->values->rights[0][2] = 'r';
-		$this->values->rights[0][3] = 1;
-		$this->values->rights[0][4] = 'lire';
-		$this->values->rights[0][5] = '';
+		$this->rights[0][0] = 1001;
+		$this->rights[0][1] = 'Lire les stocks';
+		$this->rights[0][2] = 'r';
+		$this->rights[0][3] = 1;
+		$this->rights[0][4] = 'lire';
+		$this->rights[0][5] = '';
 
-		$this->values->rights[1][0] = 1002;
-		$this->values->rights[1][1] = 'Creer/Modifier les stocks';
-		$this->values->rights[1][2] = 'w';
-		$this->values->rights[1][3] = 0;
-		$this->values->rights[1][4] = 'creer';
-		$this->values->rights[1][5] = '';
+		$this->rights[1][0] = 1002;
+		$this->rights[1][1] = 'Creer/Modifier les stocks';
+		$this->rights[1][2] = 'w';
+		$this->rights[1][3] = 0;
+		$this->rights[1][4] = 'creer';
+		$this->rights[1][5] = '';
 
-		$this->values->rights[2][0] = 1003;
-		$this->values->rights[2][1] = 'Supprimer les stocks';
-		$this->values->rights[2][2] = 'd';
-		$this->values->rights[2][3] = 0;
-		$this->values->rights[2][4] = 'supprimer';
-		$this->values->rights[2][5] = '';
+		$this->rights[2][0] = 1003;
+		$this->rights[2][1] = 'Supprimer les stocks';
+		$this->rights[2][2] = 'd';
+		$this->rights[2][3] = 0;
+		$this->rights[2][4] = 'supprimer';
+		$this->rights[2][5] = '';
 
-		$this->values->rights[3][0] = 1004;
-		$this->values->rights[3][1] = 'Lire mouvements de stocks';
-		$this->values->rights[3][2] = 'r';
-		$this->values->rights[3][3] = 1;
-		$this->values->rights[3][4] = 'mouvement';
-		$this->values->rights[3][5] = 'lire';
+		$this->rights[3][0] = 1004;
+		$this->rights[3][1] = 'Lire mouvements de stocks';
+		$this->rights[3][2] = 'r';
+		$this->rights[3][3] = 1;
+		$this->rights[3][4] = 'mouvement';
+		$this->rights[3][5] = 'lire';
 
-		$this->values->rights[4][0] = 1005;
-		$this->values->rights[4][1] = 'Creer/modifier mouvements de stocks';
-		$this->values->rights[4][2] = 'w';
-		$this->values->rights[4][3] = 0;
-		$this->values->rights[4][4] = 'mouvement';
-		$this->values->rights[4][5] = 'creer';
+		$this->rights[4][0] = 1005;
+		$this->rights[4][1] = 'Creer/modifier mouvements de stocks';
+		$this->rights[4][2] = 'w';
+		$this->rights[4][3] = 0;
+		$this->rights[4][4] = 'mouvement';
+		$this->rights[4][5] = 'creer';
 
 		// Exports
 		//--------
 		$r = 0;
 
 		$r++;
-		$this->values->export_code[$r] = $this->values->rights_class . '_' . $r;
-		$this->values->export_label[$r] = "WarehousesAndProducts"; // Translation key (used only if key ExportDataset_xxx_z not found)
-		$this->values->export_permission[$r] = array(array("stock", "lire"));
-		$this->values->export_fields_array[$r] = array('e.rowid' => 'IdWarehouse', 'e.label' => 'LabelWareHouse', 'e.label' => 'DescWareHouse', 'e.lieu' => 'LieuWareHouse', 'e.address' => 'Address', 'e.cp' => 'Zip', 'e.ville' => 'Town', 'p.rowid' => "ProductId", 'p.ref' => "Ref", 'p.fk_product_type' => "Type", 'p.label' => "Label", 'p.description' => "Description", 'p.note' => "Note", 'p.price' => "Price", 'p.tva_tx' => 'VAT', 'p.tosell' => "OnSell", 'p.duration' => "Duration", 'p.datec' => 'DateCreation', 'p.tms' => 'DateModification', 'ps.reel' => 'Stock');
-		$this->values->export_entities_array[$r] = array('e.rowid' => 'warehouse', 'e.label' => 'warehouse', 'e.label' => 'warehouse', 'e.lieu' => 'warehouse', 'e.address' => 'warehouse', 'e.cp' => 'warehouse', 'e.ville' => 'warehouse', 'p.rowid' => "product", 'p.ref' => "product", 'p.fk_product_type' => "product", 'p.label' => "product", 'p.description' => "product", 'p.note' => "product", 'p.price' => "product", 'p.tva_tx' => 'product', 'p.tosell' => "product", 'p.duration' => "product", 'p.datec' => 'product', 'p.tms' => 'product', 'ps.reel' => 'stock');
-		$this->values->export_aggregate_array[$r] = array('ps.reel' => 'SUM');	// TODO Not used yet
+		$this->export_code[$r] = $this->rights_class . '_' . $r;
+		$this->export_label[$r] = "WarehousesAndProducts"; // Translation key (used only if key ExportDataset_xxx_z not found)
+		$this->export_permission[$r] = array(array("stock", "lire"));
+		$this->export_fields_array[$r] = array('e.rowid' => 'IdWarehouse', 'e.label' => 'LabelWareHouse', 'e.label' => 'DescWareHouse', 'e.lieu' => 'LieuWareHouse', 'e.address' => 'Address', 'e.cp' => 'Zip', 'e.ville' => 'Town', 'p.rowid' => "ProductId", 'p.ref' => "Ref", 'p.fk_product_type' => "Type", 'p.label' => "Label", 'p.description' => "Description", 'p.note' => "Note", 'p.price' => "Price", 'p.tva_tx' => 'VAT', 'p.tosell' => "OnSell", 'p.duration' => "Duration", 'p.datec' => 'DateCreation', 'p.tms' => 'DateModification', 'ps.reel' => 'Stock');
+		$this->export_entities_array[$r] = array('e.rowid' => 'warehouse', 'e.label' => 'warehouse', 'e.label' => 'warehouse', 'e.lieu' => 'warehouse', 'e.address' => 'warehouse', 'e.cp' => 'warehouse', 'e.ville' => 'warehouse', 'p.rowid' => "product", 'p.ref' => "product", 'p.fk_product_type' => "product", 'p.label' => "product", 'p.description' => "product", 'p.note' => "product", 'p.price' => "product", 'p.tva_tx' => 'product', 'p.tosell' => "product", 'p.duration' => "product", 'p.datec' => 'product', 'p.tms' => 'product', 'ps.reel' => 'stock');
+		$this->export_aggregate_array[$r] = array('ps.reel' => 'SUM');	// TODO Not used yet
 
-		$this->values->export_sql_start[$r] = 'SELECT DISTINCT ';
-		$this->values->export_sql_end[$r] = ' FROM ' . MAIN_DB_PREFIX . 'product as p, ' . MAIN_DB_PREFIX . 'product_stock as ps, ' . MAIN_DB_PREFIX . 'entrepot as e';
-		$this->values->export_sql_end[$r] .=' WHERE p.rowid = ps.fk_product AND ps.fk_entrepot = e.rowid';
-		$this->values->export_sql_end[$r] .=' AND e.entity = ' . $conf->entity;
+		$this->export_sql_start[$r] = 'SELECT DISTINCT ';
+		$this->export_sql_end[$r] = ' FROM ' . MAIN_DB_PREFIX . 'product as p, ' . MAIN_DB_PREFIX . 'product_stock as ps, ' . MAIN_DB_PREFIX . 'entrepot as e';
+		$this->export_sql_end[$r] .=' WHERE p.rowid = ps.fk_product AND ps.fk_entrepot = e.rowid';
+		$this->export_sql_end[$r] .=' AND e.entity = ' . $conf->entity;
 	}
 
 	/**
@@ -142,7 +142,7 @@ class modStock extends DolibarrModules {
 	function init($options = '') {
 		$sql = array();
 
-		return $this->values->_init($sql, $options);
+		return $this->_init($sql, $options);
 	}
 
 	/**
@@ -156,7 +156,7 @@ class modStock extends DolibarrModules {
 	function remove($options = '') {
 		$sql = array();
 
-		return $this->values->_remove($sql, $options);
+		return $this->_remove($sql, $options);
 	}
 
 }

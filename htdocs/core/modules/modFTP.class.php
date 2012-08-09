@@ -42,73 +42,73 @@ class modFTP extends DolibarrModules {
 
 		// Id for module (must be unique).
 		// Use here a free id.
-		$this->values->numero = 2800;
+		$this->numero = 2800;
 
 		// Family can be 'crm','financial','hr','projects','product','ecm','technic','other'
 		// It is used to sort modules in module setup page
-		$this->values->family = "other";
+		$this->family = "other";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->values->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->name = preg_replace('/^mod/i', '', get_class($this));
 		// Module description used if translation string 'ModuleXXXDesc' not found (XXX is id value)
-		$this->values->description = "FTP Client";
+		$this->description = "FTP Client";
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
-		$this->values->version = 'dolibarr';
+		$this->version = 'dolibarr';
 		// Key used in llx_const table to save module status enabled/disabled (XXX is id value)
-		$this->values->const_name = 'MAIN_MODULE_' . strtoupper($this->values->name);
+		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
 		// Where to store the module in setup page (0=common,1=interface,2=others,3=very specific)
-		$this->values->special = 1;
+		$this->special = 1;
 		// Name of png file (without png) used for this module
-		$this->values->picto = 'dir';
+		$this->picto = 'dir';
 
 		// Data directories to create when module is enabled
-		$this->values->dirs = array("/ftp/temp");
+		$this->dirs = array("/ftp/temp");
 
 		// Langs file within the module
-		$this->values->langfiles = array("ftp");
+		$this->langfiles = array("ftp");
 
 		// Config pages. Put here list of php page names stored in admmin directory used to setup module
-		$this->values->config_page_url = array('ftpclient.php@ftp');
+		$this->config_page_url = array('ftpclient.php@ftp');
 
 		// Dependencies
-		$this->values->depends = array();  // List of modules id that must be enabled if this module is enabled
-		$this->values->requiredby = array(); // List of modules id to disable if this one is disabled
+		$this->depends = array();  // List of modules id that must be enabled if this module is enabled
+		$this->requiredby = array(); // List of modules id to disable if this one is disabled
 		// Constants
-		$this->values->const = array();   // List of parameters
+		$this->const = array();   // List of parameters
 		// Boxes
-		$this->values->boxes = array();   // List of boxes
+		$this->boxes = array();   // List of boxes
 		$r = 0;
 
 		// Add here list of php file(s) stored in core/boxes that contains class to show a box.
 		// Example:
-		//$this->values->boxes[$r][1] = "myboxa.php";
+		//$this->boxes[$r][1] = "myboxa.php";
 		//$r++;
-		//$this->values->boxes[$r][1] = "myboxb.php";
+		//$this->boxes[$r][1] = "myboxb.php";
 		//$r++;
 		// Permissions
-		$this->values->rights_class = 'ftp'; // Permission key
-		$this->values->rights = array();  // Permission array used by this module
+		$this->rights_class = 'ftp'; // Permission key
+		$this->rights = array();  // Permission array used by this module
 
 		$r++;
-		$this->values->rights[$r][0] = 2801;
-		$this->values->rights[$r][1] = 'Use FTP client in read mode (browse and download only)';
-		$this->values->rights[$r][2] = 'r';
-		$this->values->rights[$r][3] = 1;
-		$this->values->rights[$r][4] = 'read';
+		$this->rights[$r][0] = 2801;
+		$this->rights[$r][1] = 'Use FTP client in read mode (browse and download only)';
+		$this->rights[$r][2] = 'r';
+		$this->rights[$r][3] = 1;
+		$this->rights[$r][4] = 'read';
 
 		$r++;
-		$this->values->rights[$r][0] = 2802;
-		$this->values->rights[$r][1] = 'Use FTP client in write mode (delete or upload files)';
-		$this->values->rights[$r][2] = 'w';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'write';
+		$this->rights[$r][0] = 2802;
+		$this->rights[$r][1] = 'Use FTP client in write mode (delete or upload files)';
+		$this->rights[$r][2] = 'w';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'write';
 
 		// Menus
 		//------
-		$this->values->menus = array();   // List of menus to add
+		$this->menus = array();   // List of menus to add
 		$r = 0;
 
 		// Top menu
-		$this->values->menu[$r] = array('fk_menu' => 0,
+		$this->menu[$r] = array('fk_menu' => 0,
 			'type' => 'top',
 			'titre' => 'FTP',
 			'mainmenu' => 'ftp',
@@ -133,7 +133,7 @@ class modFTP extends DolibarrModules {
 	function init($options = '') {
 		$sql = array();
 
-		return $this->values->_init($sql, $options);
+		return $this->_init($sql, $options);
 	}
 
 	/**
@@ -147,7 +147,7 @@ class modFTP extends DolibarrModules {
 	function remove($options = '') {
 		$sql = array();
 
-		return $this->values->_remove($sql, $options);
+		return $this->_remove($sql, $options);
 	}
 
 }

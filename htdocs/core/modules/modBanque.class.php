@@ -49,93 +49,93 @@ class modBanque extends DolibarrModules
 		global $conf;
 
 		parent::__construct($db);
-		$this->values->numero = 85;
+		$this->numero = 85;
 
-		$this->values->family = "financial";
+		$this->family = "financial";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->values->name = preg_replace('/^mod/i','',get_class($this));
-		$this->values->description = "Gestion des comptes financiers de type Comptes bancaires ou postaux";
+		$this->name = preg_replace('/^mod/i','',get_class($this));
+		$this->description = "Gestion des comptes financiers de type Comptes bancaires ou postaux";
 
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
-		$this->values->version = 'dolibarr';
+		$this->version = 'dolibarr';
 
-		$this->values->const_name = 'MAIN_MODULE_'.strtoupper($this->values->name);
-		$this->values->special = 0;
-		$this->values->picto='account';
+		$this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
+		$this->special = 0;
+		$this->picto='account';
 
 		// Data directories to create when module is enabled
-		$this->values->dirs = array("/banque/temp");
+		$this->dirs = array("/banque/temp");
 
         // Config pages
         //-------------
-        $this->values->config_page_url = array("bank.php@compta/bank");
+        $this->config_page_url = array("bank.php@compta/bank");
 
 		// Dependancies
-		$this->values->depends = array();
-		$this->values->requiredby = array("modComptabilite","modAccounting");
-		$this->values->conflictwith = array();
-		$this->values->langfiles = array("banks","compta","bills","companies");
+		$this->depends = array();
+		$this->requiredby = array("modComptabilite","modAccounting");
+		$this->conflictwith = array();
+		$this->langfiles = array("banks","compta","bills","companies");
 
 		// Constants
-		$this->values->const = array();
+		$this->const = array();
 
 		// Boites
-		$this->values->boxes = array();
-		$this->values->boxes[0][1] = "box_comptes.php";
+		$this->boxes = array();
+		$this->boxes[0][1] = "box_comptes.php";
 
 		// Permissions
-		$this->values->rights = array();
-		$this->values->rights_class = 'banque';
+		$this->rights = array();
+		$this->rights_class = 'banque';
 		$r=0;
 
 		$r++;
-		$this->values->rights[$r][0] = 111; // id de la permission
-		$this->values->rights[$r][1] = 'Lire les comptes bancaires'; // libelle de la permission
-		$this->values->rights[$r][2] = 'r';
-		$this->values->rights[$r][3] = 1;
-		$this->values->rights[$r][4] = 'lire';
+		$this->rights[$r][0] = 111; // id de la permission
+		$this->rights[$r][1] = 'Lire les comptes bancaires'; // libelle de la permission
+		$this->rights[$r][2] = 'r';
+		$this->rights[$r][3] = 1;
+		$this->rights[$r][4] = 'lire';
 
 		$r++;
-		$this->values->rights[$r][0] = 112; // id de la permission
-		$this->values->rights[$r][1] = 'Creer/modifier montant/supprimer ecriture bancaire'; // libelle de la permission
-		$this->values->rights[$r][2] = 'w';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'modifier';
+		$this->rights[$r][0] = 112; // id de la permission
+		$this->rights[$r][1] = 'Creer/modifier montant/supprimer ecriture bancaire'; // libelle de la permission
+		$this->rights[$r][2] = 'w';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'modifier';
 
 		$r++;
-		$this->values->rights[$r][0] = 113; // id de la permission
-		$this->values->rights[$r][1] = 'Configurer les comptes bancaires (creer, gerer categories)'; // libelle de la permission
-		$this->values->rights[$r][2] = 'a';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'configurer';
+		$this->rights[$r][0] = 113; // id de la permission
+		$this->rights[$r][1] = 'Configurer les comptes bancaires (creer, gerer categories)'; // libelle de la permission
+		$this->rights[$r][2] = 'a';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'configurer';
 
 		$r++;
-		$this->values->rights[$r][0] = 114; // id de la permission
-		$this->values->rights[$r][1] = 'Rapprocher les ecritures bancaires'; // libelle de la permission
-		$this->values->rights[$r][2] = 'w';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'consolidate';
+		$this->rights[$r][0] = 114; // id de la permission
+		$this->rights[$r][1] = 'Rapprocher les ecritures bancaires'; // libelle de la permission
+		$this->rights[$r][2] = 'w';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'consolidate';
 
 		$r++;
-		$this->values->rights[$r][0] = 115; // id de la permission
-		$this->values->rights[$r][1] = 'Exporter transactions et releves'; // libelle de la permission
-		$this->values->rights[$r][2] = 'r';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'export';
+		$this->rights[$r][0] = 115; // id de la permission
+		$this->rights[$r][1] = 'Exporter transactions et releves'; // libelle de la permission
+		$this->rights[$r][2] = 'r';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'export';
 
 		$r++;
-		$this->values->rights[$r][0] = 116; // id de la permission
-		$this->values->rights[$r][1] = 'Virements entre comptes'; // libelle de la permission
-		$this->values->rights[$r][2] = 'w';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'transfer';
+		$this->rights[$r][0] = 116; // id de la permission
+		$this->rights[$r][1] = 'Virements entre comptes'; // libelle de la permission
+		$this->rights[$r][2] = 'w';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'transfer';
 
 		$r++;
-		$this->values->rights[$r][0] = 117; // id de la permission
-		$this->values->rights[$r][1] = 'Gerer les envois de cheques'; // libelle de la permission
-		$this->values->rights[$r][2] = 'w';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'cheque';
+		$this->rights[$r][0] = 117; // id de la permission
+		$this->rights[$r][1] = 'Gerer les envois de cheques'; // libelle de la permission
+		$this->rights[$r][2] = 'w';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'cheque';
 
 
 
@@ -144,24 +144,24 @@ class modBanque extends DolibarrModules
 		$r=0;
 
 		$r++;
-		$this->values->export_code[$r]=$this->values->rights_class.'_'.$r;
-		$this->values->export_label[$r]='Ecritures bancaires et releves';
-		$this->values->export_permission[$r]=array(array("banque","export"));
-		$this->values->export_fields_array[$r]=array('b.rowid'=>'IdTransaction','ba.ref'=>'AccountRef','ba.label'=>'AccountLabel','b.datev'=>'DateValue','b.dateo'=>'DateOperation','b.label'=>'Label','b.num_chq'=>'ChequeOrTransferNumber','-b.amount'=>'Debit','b.amount'=>'Credit','b.num_releve'=>'AccountStatement','b.datec'=>"DateCreation","bu.url_id"=>"IdThirdParty","s.nom"=>"ThirdParty","s.code_compta"=>"CustomerAccountancyCode","s.code_compta_fournisseur"=>"SupplierAccountancyCode");
-		$this->values->export_entities_array[$r]=array('b.rowid'=>'account','ba.ref'=>'account','ba.label'=>'account','b.datev'=>'account','b.dateo'=>'account','b.label'=>'account','b.num_chq'=>'account','-b.amount'=>'account','b.amount'=>'account','b.num_releve'=>'account','b.datec'=>"account","bu.url_id"=>"company","s.nom"=>"company","s.code_compta"=>"company","s.code_compta_fournisseur"=>"company");
-		$this->values->export_special_array[$r]=array('-b.amount'=>'NULLIFNEG','b.amount'=>'NULLIFNEG');
+		$this->export_code[$r]=$this->rights_class.'_'.$r;
+		$this->export_label[$r]='Ecritures bancaires et releves';
+		$this->export_permission[$r]=array(array("banque","export"));
+		$this->export_fields_array[$r]=array('b.rowid'=>'IdTransaction','ba.ref'=>'AccountRef','ba.label'=>'AccountLabel','b.datev'=>'DateValue','b.dateo'=>'DateOperation','b.label'=>'Label','b.num_chq'=>'ChequeOrTransferNumber','-b.amount'=>'Debit','b.amount'=>'Credit','b.num_releve'=>'AccountStatement','b.datec'=>"DateCreation","bu.url_id"=>"IdThirdParty","s.nom"=>"ThirdParty","s.code_compta"=>"CustomerAccountancyCode","s.code_compta_fournisseur"=>"SupplierAccountancyCode");
+		$this->export_entities_array[$r]=array('b.rowid'=>'account','ba.ref'=>'account','ba.label'=>'account','b.datev'=>'account','b.dateo'=>'account','b.label'=>'account','b.num_chq'=>'account','-b.amount'=>'account','b.amount'=>'account','b.num_releve'=>'account','b.datec'=>"account","bu.url_id"=>"company","s.nom"=>"company","s.code_compta"=>"company","s.code_compta_fournisseur"=>"company");
+		$this->export_special_array[$r]=array('-b.amount'=>'NULLIFNEG','b.amount'=>'NULLIFNEG');
 	    if (empty($conf->fournisseur->enabled))
         {
-            unset($this->values->export_fields_array[$r]['s.code_compta_fournisseur']);
-            unset($this->values->export_entities_array[$r]['s.code_compta_fournisseur']);
+            unset($this->export_fields_array[$r]['s.code_compta_fournisseur']);
+            unset($this->export_entities_array[$r]['s.code_compta_fournisseur']);
         }
-		$this->values->export_sql_start[$r]='SELECT DISTINCT ';
-		$this->values->export_sql_end[$r]  =' FROM ('.MAIN_DB_PREFIX.'bank_account as ba, '.MAIN_DB_PREFIX.'bank as b)';
-		$this->values->export_sql_end[$r] .=' LEFT JOIN '.MAIN_DB_PREFIX."bank_url as bu ON (bu.fk_bank = b.rowid AND bu.type = 'company')";
-		$this->values->export_sql_end[$r] .=' LEFT JOIN '.MAIN_DB_PREFIX.'societe as s ON bu.url_id = s.rowid';
-		$this->values->export_sql_end[$r] .=' WHERE ba.rowid = b.fk_account';
-		$this->values->export_sql_end[$r] .=' AND ba.entity = '.$conf->entity;
-		$this->values->export_sql_end[$r] .=' ORDER BY b.datev, b.num_releve';
+		$this->export_sql_start[$r]='SELECT DISTINCT ';
+		$this->export_sql_end[$r]  =' FROM ('.MAIN_DB_PREFIX.'bank_account as ba, '.MAIN_DB_PREFIX.'bank as b)';
+		$this->export_sql_end[$r] .=' LEFT JOIN '.MAIN_DB_PREFIX."bank_url as bu ON (bu.fk_bank = b.rowid AND bu.type = 'company')";
+		$this->export_sql_end[$r] .=' LEFT JOIN '.MAIN_DB_PREFIX.'societe as s ON bu.url_id = s.rowid';
+		$this->export_sql_end[$r] .=' WHERE ba.rowid = b.fk_account';
+		$this->export_sql_end[$r] .=' AND ba.entity = '.$conf->entity;
+		$this->export_sql_end[$r] .=' ORDER BY b.datev, b.num_releve';
 	}
 
 
@@ -178,11 +178,11 @@ class modBanque extends DolibarrModules
 		global $conf;
 
 		// Permissions
-		$this->values->remove($options);
+		$this->remove($options);
 
 		$sql = array();
 
-		return $this->values->_init($sql,$options);
+		return $this->_init($sql,$options);
 	}
 
     /**
@@ -197,7 +197,7 @@ class modBanque extends DolibarrModules
     {
 		$sql = array();
 
-		return $this->values->_remove($sql,$options);
+		return $this->_remove($sql,$options);
     }
 
 }

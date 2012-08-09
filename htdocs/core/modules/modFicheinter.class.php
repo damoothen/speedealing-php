@@ -46,104 +46,104 @@ class modFicheinter extends DolibarrModules {
 		global $conf;
 
 		parent::__construct($db);
-		$this->values->numero = 70;
+		$this->numero = 70;
 
-		$this->values->family = "crm";
+		$this->family = "crm";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->values->name = preg_replace('/^mod/i', '', get_class($this));
-		$this->values->description = "Gestion des fiches d'intervention";
+		$this->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->description = "Gestion des fiches d'intervention";
 
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
-		$this->values->version = 'dolibarr';
+		$this->version = 'dolibarr';
 
-		$this->values->const_name = 'MAIN_MODULE_' . strtoupper($this->values->name);
-		$this->values->special = 0;
-		$this->values->picto = "intervention";
+		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
+		$this->special = 0;
+		$this->picto = "intervention";
 
 		// Data directories to create when module is enabled
-		$this->values->dirs = array("/ficheinter/temp");
+		$this->dirs = array("/ficheinter/temp");
 
 		// Dependencies
-		$this->values->depends = array("modSociete");
-		$this->values->requiredby = array();
-		$this->values->conflictwith = array();
-		$this->values->langfiles = array("bills", "companies", "interventions");
+		$this->depends = array("modSociete");
+		$this->requiredby = array();
+		$this->conflictwith = array();
+		$this->langfiles = array("bills", "companies", "interventions");
 
 		// Config pages
-		$this->values->config_page_url = array("fichinter.php");
+		$this->config_page_url = array("fichinter.php");
 
 		// Constantes
-		$this->values->const = array();
+		$this->const = array();
 		$r = 0;
 
-		$this->values->const[$r][0] = "FICHEINTER_ADDON_PDF";
-		$this->values->const[$r][1] = "chaine";
-		$this->values->const[$r][2] = "soleil";
+		$this->const[$r][0] = "FICHEINTER_ADDON_PDF";
+		$this->const[$r][1] = "chaine";
+		$this->const[$r][2] = "soleil";
 		$r++;
 
-		$this->values->const[$r][0] = "FICHEINTER_ADDON";
-		$this->values->const[$r][1] = "chaine";
-		$this->values->const[$r][2] = "pacific";
+		$this->const[$r][0] = "FICHEINTER_ADDON";
+		$this->const[$r][1] = "chaine";
+		$this->const[$r][2] = "pacific";
 		$r++;
 
 		// Boites
-		$this->values->boxes = array();
+		$this->boxes = array();
 
 		// Permissions
-		$this->values->rights = array();
-		$this->values->rights_class = 'ficheinter';
+		$this->rights = array();
+		$this->rights_class = 'ficheinter';
 		$r = 0;
 
 		$r++;
-		$this->values->rights[$r][0] = 61;
-		$this->values->rights[$r][1] = 'Lire les fiches d\'intervention';
-		$this->values->rights[$r][2] = 'r';
-		$this->values->rights[$r][3] = 1;
-		$this->values->rights[$r][4] = 'lire';
+		$this->rights[$r][0] = 61;
+		$this->rights[$r][1] = 'Lire les fiches d\'intervention';
+		$this->rights[$r][2] = 'r';
+		$this->rights[$r][3] = 1;
+		$this->rights[$r][4] = 'lire';
 
 		$r++;
-		$this->values->rights[$r][0] = 62;
-		$this->values->rights[$r][1] = 'Creer/modifier les fiches d\'intervention';
-		$this->values->rights[$r][2] = 'w';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'creer';
+		$this->rights[$r][0] = 62;
+		$this->rights[$r][1] = 'Creer/modifier les fiches d\'intervention';
+		$this->rights[$r][2] = 'w';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'creer';
 
 		$r++;
-		$this->values->rights[$r][0] = 64;
-		$this->values->rights[$r][1] = 'Supprimer les fiches d\'intervention';
-		$this->values->rights[$r][2] = 'd';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'supprimer';
+		$this->rights[$r][0] = 64;
+		$this->rights[$r][1] = 'Supprimer les fiches d\'intervention';
+		$this->rights[$r][2] = 'd';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'supprimer';
 
 		$r++;
-		$this->values->rights[$r][0] = 67;
-		$this->values->rights[$r][1] = 'Exporter les fiches interventions';
-		$this->values->rights[$r][2] = 'r';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'export';
+		$this->rights[$r][0] = 67;
+		$this->rights[$r][1] = 'Exporter les fiches interventions';
+		$this->rights[$r][2] = 'r';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'export';
 
 		$r++;
-		$this->values->rights[$r][0] = 68;
-		$this->values->rights[$r][1] = 'Envoyer les fiches d\'intervention par courriel';
-		$this->values->rights[$r][2] = 'r';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'ficheinter_advance';	  // Visible if option MAIN_USE_ADVANCED_PERMS is on
-		$this->values->rights[$r][5] = 'send';
+		$this->rights[$r][0] = 68;
+		$this->rights[$r][1] = 'Envoyer les fiches d\'intervention par courriel';
+		$this->rights[$r][2] = 'r';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'ficheinter_advance';	  // Visible if option MAIN_USE_ADVANCED_PERMS is on
+		$this->rights[$r][5] = 'send';
 
 		//Exports
 		//--------
 		$r = 1;
 
-		$this->values->export_code[$r] = $this->values->rights_class . '_' . $r;
-		$this->values->export_label[$r] = 'InterventionCardsAndInterventionLines'; // Translation key (used only if key ExportDataset_xxx_z not found)
-		$this->values->export_permission[$r] = array(array("ficheinter", "export"));
-		$this->values->export_fields_array[$r] = array('s.rowid' => "IdCompany", 's.nom' => 'CompanyName', 's.address' => 'Address', 's.cp' => 'Zip', 's.ville' => 'Town', 's.fk_pays' => 'Country', 's.tel' => 'Phone', 's.siren' => 'ProfId1', 's.siret' => 'ProfId2', 's.ape' => 'ProfId3', 's.idprof4' => 'ProfId4', 's.code_compta' => 'CustomerAccountancyCode', 's.code_compta_fournisseur' => 'SupplierAccountancyCode', 'f.rowid' => "InterId", 'f.ref' => "InterRef", 'f.datec' => "InterDateCreation", 'f.duree' => "InterDuration", 'f.fk_statut' => 'InterStatus', 'f.description' => "InterNote", 'fd.rowid' => 'InterLineId', 'fd.date' => "InterLineDate", 'fd.duree' => "InterLineDuration", 'fd.description' => "InterLineDesc");
-		$this->values->export_entities_array[$r] = array('s.rowid' => "company", 's.nom' => 'company', 's.address' => 'company', 's.cp' => 'company', 's.ville' => 'company', 's.fk_pays' => 'company', 's.tel' => 'company', 's.siren' => 'company', 's.siret' => 'company', 's.ape' => 'company', 's.idprof4' => 'company', 's.code_compta' => 'company', 's.code_compta_fournisseur' => 'company', 'f.rowid' => "intervention", 'f.ref' => "intervention", 'f.datec' => "intervention", 'f.duree' => "intervention", 'f.fk_statut' => "intervention", 'f.description' => "intervention", 'fd.rowid' => "inter_line", 'fd.date' => "inter_line", 'fd.duree' => 'inter_line', 'fd.description' => 'inter_line');
+		$this->export_code[$r] = $this->rights_class . '_' . $r;
+		$this->export_label[$r] = 'InterventionCardsAndInterventionLines'; // Translation key (used only if key ExportDataset_xxx_z not found)
+		$this->export_permission[$r] = array(array("ficheinter", "export"));
+		$this->export_fields_array[$r] = array('s.rowid' => "IdCompany", 's.nom' => 'CompanyName', 's.address' => 'Address', 's.cp' => 'Zip', 's.ville' => 'Town', 's.fk_pays' => 'Country', 's.tel' => 'Phone', 's.siren' => 'ProfId1', 's.siret' => 'ProfId2', 's.ape' => 'ProfId3', 's.idprof4' => 'ProfId4', 's.code_compta' => 'CustomerAccountancyCode', 's.code_compta_fournisseur' => 'SupplierAccountancyCode', 'f.rowid' => "InterId", 'f.ref' => "InterRef", 'f.datec' => "InterDateCreation", 'f.duree' => "InterDuration", 'f.fk_statut' => 'InterStatus', 'f.description' => "InterNote", 'fd.rowid' => 'InterLineId', 'fd.date' => "InterLineDate", 'fd.duree' => "InterLineDuration", 'fd.description' => "InterLineDesc");
+		$this->export_entities_array[$r] = array('s.rowid' => "company", 's.nom' => 'company', 's.address' => 'company', 's.cp' => 'company', 's.ville' => 'company', 's.fk_pays' => 'company', 's.tel' => 'company', 's.siren' => 'company', 's.siret' => 'company', 's.ape' => 'company', 's.idprof4' => 'company', 's.code_compta' => 'company', 's.code_compta_fournisseur' => 'company', 'f.rowid' => "intervention", 'f.ref' => "intervention", 'f.datec' => "intervention", 'f.duree' => "intervention", 'f.fk_statut' => "intervention", 'f.description' => "intervention", 'fd.rowid' => "inter_line", 'fd.date' => "inter_line", 'fd.duree' => 'inter_line', 'fd.description' => 'inter_line');
 
-		$this->values->export_sql_start[$r] = 'SELECT DISTINCT ';
-		$this->values->export_sql_end[$r] = ' FROM (' . MAIN_DB_PREFIX . 'fichinter as f, ' . MAIN_DB_PREFIX . 'fichinterdet as fd, ' . MAIN_DB_PREFIX . 'societe as s)';
-		$this->values->export_sql_end[$r] .=' WHERE f.fk_soc = s.rowid AND f.rowid = fd.fk_fichinter';
-		$this->values->export_sql_end[$r] .=' AND f.entity = ' . $conf->entity;
+		$this->export_sql_start[$r] = 'SELECT DISTINCT ';
+		$this->export_sql_end[$r] = ' FROM (' . MAIN_DB_PREFIX . 'fichinter as f, ' . MAIN_DB_PREFIX . 'fichinterdet as fd, ' . MAIN_DB_PREFIX . 'societe as s)';
+		$this->export_sql_end[$r] .=' WHERE f.fk_soc = s.rowid AND f.rowid = fd.fk_fichinter';
+		$this->export_sql_end[$r] .=' AND f.entity = ' . $conf->entity;
 		$r++;
 	}
 
@@ -159,14 +159,14 @@ class modFicheinter extends DolibarrModules {
 		global $conf;
 
 		// Permissions
-		$this->values->remove($options);
+		$this->remove($options);
 
 		$sql = array(
-			"DELETE FROM " . MAIN_DB_PREFIX . "document_model WHERE nom = '" . $this->values->const[0][2] . "' AND entity = " . $conf->entity,
-			"INSERT INTO " . MAIN_DB_PREFIX . "document_model (nom, type, entity) VALUES('" . $this->values->const[0][2] . "','ficheinter'," . $conf->entity . ")",
+			"DELETE FROM " . MAIN_DB_PREFIX . "document_model WHERE nom = '" . $this->const[0][2] . "' AND entity = " . $conf->entity,
+			"INSERT INTO " . MAIN_DB_PREFIX . "document_model (nom, type, entity) VALUES('" . $this->const[0][2] . "','ficheinter'," . $conf->entity . ")",
 		);
 
-		return $this->values->_init($sql, $options);
+		return $this->_init($sql, $options);
 	}
 
 	/**
@@ -180,7 +180,7 @@ class modFicheinter extends DolibarrModules {
 	function remove($options = '') {
 		$sql = array();
 
-		return $this->values->_remove($sql, $options);
+		return $this->_remove($sql, $options);
 	}
 
 }

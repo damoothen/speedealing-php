@@ -41,38 +41,38 @@ class modExternalRss extends DolibarrModules {
 		global $conf;
 
 		parent::__construct($db);
-		$this->values->numero = 320;
+		$this->numero = 320;
 
-		$this->values->family = "technic";
+		$this->family = "technic";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->values->name = preg_replace('/^mod/i', '', get_class($this));
-		$this->values->description = "Ajout de files d'informations RSS dans les ecrans Dolibarr";
-		$this->values->version = 'dolibarr';						// 'experimental' or 'dolibarr' or version
-		$this->values->const_name = 'MAIN_MODULE_' . strtoupper($this->values->name);
-		$this->values->special = 1;
-		$this->values->picto = 'rss';
+		$this->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->description = "Ajout de files d'informations RSS dans les ecrans Dolibarr";
+		$this->version = 'dolibarr';						// 'experimental' or 'dolibarr' or version
+		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
+		$this->special = 1;
+		$this->picto = 'rss';
 
 		// Data directories to create when module is enabled
-		$this->values->dirs = array("/externalrss/temp");
+		$this->dirs = array("/externalrss/temp");
 
 		// Config pages
-		$this->values->config_page_url = array("external_rss.php");
+		$this->config_page_url = array("external_rss.php");
 
 		// Dependances
-		$this->values->depends = array();
-		$this->values->requiredby = array();
-		$this->values->phpmin = array(4, 2, 0);
-		$this->values->phpmax = array();
+		$this->depends = array();
+		$this->requiredby = array();
+		$this->phpmin = array(4, 2, 0);
+		$this->phpmax = array();
 
 		// Constantes
-		$this->values->const = array();
+		$this->const = array();
 
 		// Boxes
-		$this->values->boxes = array();
+		$this->boxes = array();
 		// Les boites sont ajoutees lors de la configuration des flux
 		// Permissions
-		$this->values->rights = array();
-		$this->values->rights_class = 'externalrss';
+		$this->rights = array();
+		$this->rights_class = 'externalrss';
 	}
 
 	/**
@@ -89,26 +89,26 @@ class modExternalRss extends DolibarrModules {
 		$sql = array();
 
 		// Recherche configuration de boites
-		$this->values->boxes = array();
+		$this->boxes = array();
 		$sql = "select name, value from " . MAIN_DB_PREFIX . "const";
 		$sql.= " WHERE name like 'EXTERNAL_RSS_TITLE_%'";
 		$sql.= " AND entity = " . $conf->entity;
-		$result = $this->values->db->query($sql);
+		$result = $this->db->query($sql);
 		if ($result) {
-			while ($obj = $this->values->db->fetch_object($result)) {
+			while ($obj = $this->db->fetch_object($result)) {
 				if (preg_match('/EXTERNAL_RSS_TITLE_([0-9]+)/i', $obj->name, $reg)) {
 					// Definie la boite si on a trouvee une ancienne configuration
-					$this->values->boxes[$reg[1]][0] = "(ExternalRSSInformations)";
-					$this->values->boxes[$reg[1]][1] = "box_external_rss.php";
-					$this->values->boxes[$reg[1]][2] = $reg[1] . " (" . $obj->value . ")";
+					$this->boxes[$reg[1]][0] = "(ExternalRSSInformations)";
+					$this->boxes[$reg[1]][1] = "box_external_rss.php";
+					$this->boxes[$reg[1]][2] = $reg[1] . " (" . $obj->value . ")";
 				}
 			}
-			$this->values->db->free($result);
+			$this->db->free($result);
 		}
 
 		$sql = array();
 
-		return $this->values->_init($sql, $options);
+		return $this->_init($sql, $options);
 	}
 
 	/**
@@ -123,9 +123,9 @@ class modExternalRss extends DolibarrModules {
 		$sql = array();
 
 		// Delete old declarations of RSS box
-		$this->values->boxes[0][1] = "box_external_rss.php";
+		$this->boxes[0][1] = "box_external_rss.php";
 
-		return $this->values->_remove($sql, $options);
+		return $this->_remove($sql, $options);
 	}
 
 }

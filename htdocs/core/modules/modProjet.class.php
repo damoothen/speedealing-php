@@ -44,97 +44,97 @@ class modProjet extends DolibarrModules {
 	function modProjet($db) {
 		parent::__construct($db);
 
-		$this->values->numero = 400;
+		$this->numero = 400;
 
-		$this->values->family = "projects";
+		$this->family = "projects";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->values->name = preg_replace('/^mod/i', '', get_class($this));
-		$this->values->description = "Gestion des projets";
+		$this->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->description = "Gestion des projets";
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
-		$this->values->version = 'dolibarr';
+		$this->version = 'dolibarr';
 
-		$this->values->const_name = 'MAIN_MODULE_' . strtoupper($this->values->name);
-		$this->values->special = 0;
-		$this->values->config_page_url = array("project.php");
-		$this->values->picto = 'project';
+		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
+		$this->special = 0;
+		$this->config_page_url = array("project.php");
+		$this->picto = 'project';
 
 		// Data directories to create when module is enabled
-		$this->values->dirs = array("/projet/temp");
+		$this->dirs = array("/projet/temp");
 
 		// Dependancies
-		$this->values->depends = array();
-		$this->values->requiredby = array();
+		$this->depends = array();
+		$this->requiredby = array();
 
 		// Constants
-		$this->values->const = array();
+		$this->const = array();
 		$r = 0;
 
-		$this->values->const[$r][0] = "PROJECT_ADDON_PDF";
-		$this->values->const[$r][1] = "chaine";
-		$this->values->const[$r][2] = "baleine";
-		$this->values->const[$r][3] = 'Nom du gestionnaire de generation des projets en PDF';
-		$this->values->const[$r][4] = 0;
+		$this->const[$r][0] = "PROJECT_ADDON_PDF";
+		$this->const[$r][1] = "chaine";
+		$this->const[$r][2] = "baleine";
+		$this->const[$r][3] = 'Nom du gestionnaire de generation des projets en PDF';
+		$this->const[$r][4] = 0;
 		$r++;
 
-		$this->values->const[$r][0] = "PROJECT_ADDON";
-		$this->values->const[$r][1] = "chaine";
-		$this->values->const[$r][2] = "mod_project_simple";
-		$this->values->const[$r][3] = 'Nom du gestionnaire de numerotation des projets';
-		$this->values->const[$r][4] = 0;
+		$this->const[$r][0] = "PROJECT_ADDON";
+		$this->const[$r][1] = "chaine";
+		$this->const[$r][2] = "mod_project_simple";
+		$this->const[$r][3] = 'Nom du gestionnaire de numerotation des projets';
+		$this->const[$r][4] = 0;
 		$r++;
 
 		// Boxes
-		$this->values->boxes = array();
+		$this->boxes = array();
 
 		// Permissions
-		$this->values->rights = array();
-		$this->values->rights_class = 'projet';
+		$this->rights = array();
+		$this->rights_class = 'projet';
 		$r = 0;
 
 		$r++;
-		$this->values->rights[$r][0] = 41; // id de la permission
-		$this->values->rights[$r][1] = "Lire les projets et taches (partagés ou dont je suis contact)"; // libelle de la permission
-		$this->values->rights[$r][2] = 'r'; // type de la permission (deprecie a ce jour)
-		$this->values->rights[$r][3] = 1; // La permission est-elle une permission par defaut
-		$this->values->rights[$r][4] = 'lire';
+		$this->rights[$r][0] = 41; // id de la permission
+		$this->rights[$r][1] = "Lire les projets et taches (partagés ou dont je suis contact)"; // libelle de la permission
+		$this->rights[$r][2] = 'r'; // type de la permission (deprecie a ce jour)
+		$this->rights[$r][3] = 1; // La permission est-elle une permission par defaut
+		$this->rights[$r][4] = 'lire';
 
 		$r++;
-		$this->values->rights[$r][0] = 42; // id de la permission
-		$this->values->rights[$r][1] = "Creer/modifier les projets et taches (partagés ou dont je suis contact)"; // libelle de la permission
-		$this->values->rights[$r][2] = 'w'; // type de la permission (deprecie a ce jour)
-		$this->values->rights[$r][3] = 0; // La permission est-elle une permission par defaut
-		$this->values->rights[$r][4] = 'creer';
+		$this->rights[$r][0] = 42; // id de la permission
+		$this->rights[$r][1] = "Creer/modifier les projets et taches (partagés ou dont je suis contact)"; // libelle de la permission
+		$this->rights[$r][2] = 'w'; // type de la permission (deprecie a ce jour)
+		$this->rights[$r][3] = 0; // La permission est-elle une permission par defaut
+		$this->rights[$r][4] = 'creer';
 
 		$r++;
-		$this->values->rights[$r][0] = 44; // id de la permission
-		$this->values->rights[$r][1] = "Supprimer les projets et taches (partagés ou dont je suis contact)"; // libelle de la permission
-		$this->values->rights[$r][2] = 'd'; // type de la permission (deprecie a ce jour)
-		$this->values->rights[$r][3] = 0; // La permission est-elle une permission par defaut
-		$this->values->rights[$r][4] = 'supprimer';
+		$this->rights[$r][0] = 44; // id de la permission
+		$this->rights[$r][1] = "Supprimer les projets et taches (partagés ou dont je suis contact)"; // libelle de la permission
+		$this->rights[$r][2] = 'd'; // type de la permission (deprecie a ce jour)
+		$this->rights[$r][3] = 0; // La permission est-elle une permission par defaut
+		$this->rights[$r][4] = 'supprimer';
 
 		$r++;
-		$this->values->rights[$r][0] = 141; // id de la permission
-		$this->values->rights[$r][1] = "Lire tous les projets et taches (y compris prives qui ne me sont pas affectes)"; // libelle de la permission
-		$this->values->rights[$r][2] = 'r'; // type de la permission (deprecie a ce jour)
-		$this->values->rights[$r][3] = 0; // La permission est-elle une permission par defaut
-		$this->values->rights[$r][4] = 'all';
-		$this->values->rights[$r][5] = 'lire';
+		$this->rights[$r][0] = 141; // id de la permission
+		$this->rights[$r][1] = "Lire tous les projets et taches (y compris prives qui ne me sont pas affectes)"; // libelle de la permission
+		$this->rights[$r][2] = 'r'; // type de la permission (deprecie a ce jour)
+		$this->rights[$r][3] = 0; // La permission est-elle une permission par defaut
+		$this->rights[$r][4] = 'all';
+		$this->rights[$r][5] = 'lire';
 
 		$r++;
-		$this->values->rights[$r][0] = 142; // id de la permission
-		$this->values->rights[$r][1] = "Creer/modifier tous les projets et taches (y compris prives qui ne me sont pas affectes)"; // libelle de la permission
-		$this->values->rights[$r][2] = 'w'; // type de la permission (deprecie a ce jour)
-		$this->values->rights[$r][3] = 0; // La permission est-elle une permission par defaut
-		$this->values->rights[$r][4] = 'all';
-		$this->values->rights[$r][5] = 'creer';
+		$this->rights[$r][0] = 142; // id de la permission
+		$this->rights[$r][1] = "Creer/modifier tous les projets et taches (y compris prives qui ne me sont pas affectes)"; // libelle de la permission
+		$this->rights[$r][2] = 'w'; // type de la permission (deprecie a ce jour)
+		$this->rights[$r][3] = 0; // La permission est-elle une permission par defaut
+		$this->rights[$r][4] = 'all';
+		$this->rights[$r][5] = 'creer';
 
 		$r++;
-		$this->values->rights[$r][0] = 144; // id de la permission
-		$this->values->rights[$r][1] = "Supprimer tous les projets et taches (y compris prives qui ne me sont pas affectes)"; // libelle de la permission
-		$this->values->rights[$r][2] = 'd'; // type de la permission (deprecie a ce jour)
-		$this->values->rights[$r][3] = 0; // La permission est-elle une permission par defaut
-		$this->values->rights[$r][4] = 'all';
-		$this->values->rights[$r][5] = 'supprimer';
+		$this->rights[$r][0] = 144; // id de la permission
+		$this->rights[$r][1] = "Supprimer tous les projets et taches (y compris prives qui ne me sont pas affectes)"; // libelle de la permission
+		$this->rights[$r][2] = 'd'; // type de la permission (deprecie a ce jour)
+		$this->rights[$r][3] = 0; // La permission est-elle une permission par defaut
+		$this->rights[$r][4] = 'all';
+		$this->rights[$r][5] = 'supprimer';
 	}
 
 	/**
@@ -149,14 +149,14 @@ class modProjet extends DolibarrModules {
 		global $conf;
 
 		// Permissions
-		$this->values->remove($options);
+		$this->remove($options);
 
 		$sql = array(
-			"DELETE FROM " . MAIN_DB_PREFIX . "document_model WHERE nom = '" . $this->values->const[0][2] . "' AND entity = " . $conf->entity,
-			"INSERT INTO " . MAIN_DB_PREFIX . "document_model (nom, type, entity) VALUES('" . $this->values->const[0][2] . "','project'," . $conf->entity . ")",
+			"DELETE FROM " . MAIN_DB_PREFIX . "document_model WHERE nom = '" . $this->const[0][2] . "' AND entity = " . $conf->entity,
+			"INSERT INTO " . MAIN_DB_PREFIX . "document_model (nom, type, entity) VALUES('" . $this->const[0][2] . "','project'," . $conf->entity . ")",
 		);
 
-		return $this->values->_init($sql, $options);
+		return $this->_init($sql, $options);
 	}
 
 	/**
@@ -170,7 +170,7 @@ class modProjet extends DolibarrModules {
 	function remove($options = '') {
 		$sql = array();
 
-		return $this->values->_remove($sql, $options);
+		return $this->_remove($sql, $options);
 	}
 
 }

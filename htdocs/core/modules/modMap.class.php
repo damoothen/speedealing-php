@@ -32,38 +32,38 @@ class modMap extends DolibarrModules {
 	 */
 	function modMap($DB) {
 		parent::__construct($DB);
-		$this->values->numero = 450;
+		$this->numero = 450;
 
-		$this->values->family = "technic";
+		$this->family = "technic";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->values->name = preg_replace('/^mod/i', '', get_class($this));
-		$this->values->description = "Carthographie";
-		$this->values->version = 'dolibarr';						// 'experimental' or 'dolibarr' or version
-		$this->values->const_name = 'MAIN_MODULE_' . strtoupper($this->values->name);
-		$this->values->special = 0;
-		$this->values->picto = 'globe';
-		$this->values->moddir = "map"; //directory for module in htdocs : test index.php presence
+		$this->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->description = "Carthographie";
+		$this->version = 'dolibarr';						// 'experimental' or 'dolibarr' or version
+		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
+		$this->special = 0;
+		$this->picto = 'globe';
+		$this->moddir = "map"; //directory for module in htdocs : test index.php presence
 		// Data directories to create when module is enabled
-		$this->values->dirs = array();
+		$this->dirs = array();
 
 		// Config pages
 		//-------------
-		$this->values->config_page_url = array("map.php@map");
+		$this->config_page_url = array("map.php@map");
 
 		// Dependances
 		//------------
-		$this->values->depends = array();
-		$this->values->requiredby = array();
-		$this->values->langfiles = array("map@map", "companies");
+		$this->depends = array();
+		$this->requiredby = array();
+		$this->langfiles = array("map@map", "companies");
 
 		// Constantes
 		//-----------
-		$this->values->const = array();
-		$this->values->const[0] = array("MAP_SYSTEM", "texte", "openlayers");
+		$this->const = array();
+		$this->const[0] = array("MAP_SYSTEM", "texte", "openlayers");
 
 		// Boites
 		//-------
-		$this->values->boxes = array();
+		$this->boxes = array();
 
 
 		// Menu
@@ -71,22 +71,22 @@ class modMap extends DolibarrModules {
 		// None
 		// Permissions
 		//------------
-		$this->values->rights = array();
-		$this->values->rights_class = 'map';
+		$this->rights = array();
+		$this->rights_class = 'map';
 		$r = 0;
 
-		// $this->values->rights[$r][0]     Id permission (unique tous modules confondus)
-		// $this->values->rights[$r][1]     Libelle par defaut si traduction de cle "PermissionXXX" non trouvee (XXX = Id permission)
-		// $this->values->rights[$r][2]     Non utilise
-		// $this->values->rights[$r][3]     1=Permis par defaut, 0=Non permis par defaut
-		// $this->values->rights[$r][4]     Niveau 1 pour nommer permission dans code
-		// $this->values->rights[$r][5]     Niveau 2 pour nommer permission dans code
+		// $this->rights[$r][0]     Id permission (unique tous modules confondus)
+		// $this->rights[$r][1]     Libelle par defaut si traduction de cle "PermissionXXX" non trouvee (XXX = Id permission)
+		// $this->rights[$r][2]     Non utilise
+		// $this->rights[$r][3]     1=Permis par defaut, 0=Non permis par defaut
+		// $this->rights[$r][4]     Niveau 1 pour nommer permission dans code
+		// $this->rights[$r][5]     Niveau 2 pour nommer permission dans code
 
-		$this->values->rights[$r][0] = 451;
-		$this->values->rights[$r][1] = 'See map';
-		$this->values->rights[$r][2] = 'r';
-		$this->values->rights[$r][3] = 1;
-		$this->values->rights[$r][4] = 'read';
+		$this->rights[$r][0] = 451;
+		$this->rights[$r][1] = 'See map';
+		$this->rights[$r][2] = 'r';
+		$this->rights[$r][3] = 1;
+		$this->rights[$r][4] = 'read';
 	}
 
 	/**
@@ -97,8 +97,8 @@ class modMap extends DolibarrModules {
 
 		$sql = array();
 
-		//$result=$this->values->load_tables();
-		return $this->values->_init($sql);
+		//$result=$this->load_tables();
+		return $this->_init($sql);
 	}
 
 	/**
@@ -108,7 +108,7 @@ class modMap extends DolibarrModules {
 	function remove() {
 		$sql = array();
 
-		return $this->values->_remove($sql);
+		return $this->_remove($sql);
 	}
 
 	/**
@@ -119,7 +119,7 @@ class modMap extends DolibarrModules {
 	 * 		\return		int		<=0 if KO, >0 if OK
 	 */
 	function load_tables() {
-		return $this->values->_load_tables('/map/sql/');
+		return $this->_load_tables('/map/sql/');
 	}
 
 }

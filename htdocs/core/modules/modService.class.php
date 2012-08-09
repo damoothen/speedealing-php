@@ -46,69 +46,69 @@ class modService extends DolibarrModules {
 
 		parent::__construct($db);
 
-		$this->values->numero = 53;
+		$this->numero = 53;
 
-		$this->values->family = "products";
+		$this->family = "products";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->values->name = preg_replace('/^mod/i', '', get_class($this));
-		$this->values->description = "Gestion des services";
+		$this->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->description = "Gestion des services";
 
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
-		$this->values->version = 'dolibarr';
+		$this->version = 'dolibarr';
 
-		$this->values->const_name = 'MAIN_MODULE_' . strtoupper($this->values->name);
-		$this->values->special = 0;
-		$this->values->picto = 'service';
+		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
+		$this->special = 0;
+		$this->picto = 'service';
 
 		// Data directories to create when module is enabled
-		$this->values->dirs = array("/produit/temp");
+		$this->dirs = array("/produit/temp");
 
 		// Dependancies
-		$this->values->depends = array();
-		$this->values->requiredby = array("modContrat");
+		$this->depends = array();
+		$this->requiredby = array("modContrat");
 
 		// Config pages
-		$this->values->config_page_url = array("product.php@product");
-		$this->values->langfiles = array("products", "companies", "bills");
+		$this->config_page_url = array("product.php@product");
+		$this->langfiles = array("products", "companies", "bills");
 
 		// Constants
-		$this->values->const = array();
+		$this->const = array();
 
 		// Boxes
-		$this->values->boxes = array();
-		$this->values->boxes[0][1] = "box_services_contracts.php";
+		$this->boxes = array();
+		$this->boxes[0][1] = "box_services_contracts.php";
 
 		// Permissions
-		$this->values->rights = array();
-		$this->values->rights_class = 'service';
+		$this->rights = array();
+		$this->rights_class = 'service';
 		$r = 0;
 
-		$this->values->rights[$r][0] = 531; // id de la permission
-		$this->values->rights[$r][1] = 'Lire les services'; // libelle de la permission
-		$this->values->rights[$r][2] = 'r'; // type de la permission (deprecie a ce jour)
-		$this->values->rights[$r][3] = 1; // La permission est-elle une permission par defaut
-		$this->values->rights[$r][4] = 'lire';
+		$this->rights[$r][0] = 531; // id de la permission
+		$this->rights[$r][1] = 'Lire les services'; // libelle de la permission
+		$this->rights[$r][2] = 'r'; // type de la permission (deprecie a ce jour)
+		$this->rights[$r][3] = 1; // La permission est-elle une permission par defaut
+		$this->rights[$r][4] = 'lire';
 		$r++;
 
-		$this->values->rights[$r][0] = 532; // id de la permission
-		$this->values->rights[$r][1] = 'Creer/modifier les services'; // libelle de la permission
-		$this->values->rights[$r][2] = 'w'; // type de la permission (deprecie a ce jour)
-		$this->values->rights[$r][3] = 0; // La permission est-elle une permission par defaut
-		$this->values->rights[$r][4] = 'creer';
+		$this->rights[$r][0] = 532; // id de la permission
+		$this->rights[$r][1] = 'Creer/modifier les services'; // libelle de la permission
+		$this->rights[$r][2] = 'w'; // type de la permission (deprecie a ce jour)
+		$this->rights[$r][3] = 0; // La permission est-elle une permission par defaut
+		$this->rights[$r][4] = 'creer';
 		$r++;
 
-		$this->values->rights[$r][0] = 534; // id de la permission
-		$this->values->rights[$r][1] = 'Supprimer les services'; // libelle de la permission
-		$this->values->rights[$r][2] = 'd'; // type de la permission (deprecie a ce jour)
-		$this->values->rights[$r][3] = 0; // La permission est-elle une permission par defaut
-		$this->values->rights[$r][4] = 'supprimer';
+		$this->rights[$r][0] = 534; // id de la permission
+		$this->rights[$r][1] = 'Supprimer les services'; // libelle de la permission
+		$this->rights[$r][2] = 'd'; // type de la permission (deprecie a ce jour)
+		$this->rights[$r][3] = 0; // La permission est-elle une permission par defaut
+		$this->rights[$r][4] = 'supprimer';
 		$r++;
 
-		$this->values->rights[$r][0] = 538; // Must be same permission than in product module
-		$this->values->rights[$r][1] = 'Exporter les services';
-		$this->values->rights[$r][2] = 'r';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'export';
+		$this->rights[$r][0] = 538; // Must be same permission than in product module
+		$this->rights[$r][1] = 'Exporter les services';
+		$this->rights[$r][2] = 'r';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'export';
 		$r++;
 
 
@@ -117,15 +117,15 @@ class modService extends DolibarrModules {
 		$r = 0;
 
 		$r++;
-		$this->values->export_code[$r] = $this->values->rights_class . '_' . $r;
-		$this->values->export_label[$r] = "Services"; // Translation key (used only if key ExportDataset_xxx_z not found)
-		$this->values->export_permission[$r] = array(array("service", "export"));
-		$this->values->export_fields_array[$r] = array('p.rowid' => "Id", 'p.ref' => "Ref", 'p.label' => "Label", 'p.description' => "Description", 'p.accountancy_code_sell' => "ProductAccountancySellCode", 'p.accountancy_code_buy' => "ProductAccountancyBuyCode", 'p.note' => "Note", 'p.price_base_type' => "PriceBase", 'p.price' => "UnitPriceHT", 'p.price_ttc' => "UnitPriceTTC", 'p.tva_tx' => 'VATRate', 'p.tosell' => "OnSell", 'p.duration' => "Duration", 'p.datec' => 'DateCreation', 'p.tms' => 'DateModification');
+		$this->export_code[$r] = $this->rights_class . '_' . $r;
+		$this->export_label[$r] = "Services"; // Translation key (used only if key ExportDataset_xxx_z not found)
+		$this->export_permission[$r] = array(array("service", "export"));
+		$this->export_fields_array[$r] = array('p.rowid' => "Id", 'p.ref' => "Ref", 'p.label' => "Label", 'p.description' => "Description", 'p.accountancy_code_sell' => "ProductAccountancySellCode", 'p.accountancy_code_buy' => "ProductAccountancyBuyCode", 'p.note' => "Note", 'p.price_base_type' => "PriceBase", 'p.price' => "UnitPriceHT", 'p.price_ttc' => "UnitPriceTTC", 'p.tva_tx' => 'VATRate', 'p.tosell' => "OnSell", 'p.duration' => "Duration", 'p.datec' => 'DateCreation', 'p.tms' => 'DateModification');
 		if (!empty($conf->stock->enabled))
-			$this->values->export_fields_array[$r] = array_merge($this->values->export_fields_array[$r], array('p.stock' => 'Stock'));
-		$this->values->export_entities_array[$r] = array('p.rowid' => "service", 'p.ref' => "service", 'p.label' => "service", 'p.description' => "service", 'p.accountancy_code_sell' => 'service', 'p.accountancy_code_sell' => 'service', 'p.note' => "service", 'p.price_base_type' => "service", 'p.price' => "service", 'p.price_ttc' => "service", 'p.tva_tx' => "service", 'p.tosell' => "service", 'p.duration' => "service", 'p.datec' => "service", 'p.tms' => "service");
+			$this->export_fields_array[$r] = array_merge($this->export_fields_array[$r], array('p.stock' => 'Stock'));
+		$this->export_entities_array[$r] = array('p.rowid' => "service", 'p.ref' => "service", 'p.label' => "service", 'p.description' => "service", 'p.accountancy_code_sell' => 'service', 'p.accountancy_code_sell' => 'service', 'p.note' => "service", 'p.price_base_type' => "service", 'p.price' => "service", 'p.price_ttc' => "service", 'p.tva_tx' => "service", 'p.tosell' => "service", 'p.duration' => "service", 'p.datec' => "service", 'p.tms' => "service");
 		if (!empty($conf->stock->enabled))
-			$this->values->export_entities_array[$r] = array_merge($this->values->export_entities_array[$r], array('p.stock' => 'product'));
+			$this->export_entities_array[$r] = array_merge($this->export_entities_array[$r], array('p.stock' => 'product'));
 		/*// Add extra fields
 		$sql = "SELECT name, label FROM " . MAIN_DB_PREFIX . "extrafields WHERE elementtype = 'product'";
 		$resql = $this->db->query($sql);
@@ -133,16 +133,16 @@ class modService extends DolibarrModules {
 			while ($obj = $this->db->fetch_object($resql)) {
 				$fieldname = 'extra.' . $obj->name;
 				$fieldlabel = ucfirst($obj->label);
-				$this->values->export_fields_array[$r][$fieldname] = $fieldlabel;
-				$this->values->export_entities_array[$r][$fieldname] = 'product';
+				$this->export_fields_array[$r][$fieldname] = $fieldlabel;
+				$this->export_entities_array[$r][$fieldname] = 'product';
 			}
 		}*/
 		// End add axtra fields
 
-		$this->values->export_sql_start[$r] = 'SELECT DISTINCT ';
-		$this->values->export_sql_end[$r] = ' FROM ' . MAIN_DB_PREFIX . 'product as p';
-		$this->values->export_sql_end[$r] .=' LEFT JOIN ' . MAIN_DB_PREFIX . 'product_extrafields as extra ON p.rowid = extra.fk_object';
-		$this->values->export_sql_end[$r] .=' WHERE p.fk_product_type = 1 AND p.entity IN (' . getEntity("product", 1) . ')';
+		$this->export_sql_start[$r] = 'SELECT DISTINCT ';
+		$this->export_sql_end[$r] = ' FROM ' . MAIN_DB_PREFIX . 'product as p';
+		$this->export_sql_end[$r] .=' LEFT JOIN ' . MAIN_DB_PREFIX . 'product_extrafields as extra ON p.rowid = extra.fk_object';
+		$this->export_sql_end[$r] .=' WHERE p.fk_product_type = 1 AND p.entity IN (' . getEntity("product", 1) . ')';
 
 
 		// Imports
@@ -150,13 +150,13 @@ class modService extends DolibarrModules {
 		$r = 0;
 
 		$r++;
-		$this->values->import_code[$r] = $this->values->rights_class . '_' . $r;
-		$this->values->import_label[$r] = "Products"; // Translation key
-		$this->values->import_icon[$r] = $this->values->picto;
-		$this->values->import_entities_array[$r] = array();  // We define here only fields that use another icon that the one defined into import_icon
-		$this->values->import_tables_array[$r] = array('p' => MAIN_DB_PREFIX . 'product', 'extra' => MAIN_DB_PREFIX . 'product_extrafields');
-		$this->values->import_tables_creator_array[$r] = array('p' => 'fk_user_author'); // Fields to store import user id
-		$this->values->import_fields_array[$r] = array('p.ref' => "Ref*", 'p.label' => "Label*", 'p.description' => "Description", 'p.accountancy_code_sell' => "ProductAccountancySellCode", 'p.accountancy_code_buy' => "ProductAccountancyBuyCode", 'p.note' => "Note", 'p.length' => "Length", 'p.surface' => "Surface", 'p.volume' => "Volume", 'p.weight' => "Weight", 'p.duration' => "Duration", 'p.customcode' => 'CustomCode', 'p.price' => "SellingPriceHT", 'p.price_ttc' => "SellingPriceTTC", 'p.tva_tx' => 'VAT', 'p.tosell' => "OnSell*", 'p.tobuy' => "OnBuy*", 'p.fk_product_type' => "Type*", 'p.finished' => 'Nature', 'p.datec' => 'DateCreation*');
+		$this->import_code[$r] = $this->rights_class . '_' . $r;
+		$this->import_label[$r] = "Products"; // Translation key
+		$this->import_icon[$r] = $this->picto;
+		$this->import_entities_array[$r] = array();  // We define here only fields that use another icon that the one defined into import_icon
+		$this->import_tables_array[$r] = array('p' => MAIN_DB_PREFIX . 'product', 'extra' => MAIN_DB_PREFIX . 'product_extrafields');
+		$this->import_tables_creator_array[$r] = array('p' => 'fk_user_author'); // Fields to store import user id
+		$this->import_fields_array[$r] = array('p.ref' => "Ref*", 'p.label' => "Label*", 'p.description' => "Description", 'p.accountancy_code_sell' => "ProductAccountancySellCode", 'p.accountancy_code_buy' => "ProductAccountancyBuyCode", 'p.note' => "Note", 'p.length' => "Length", 'p.surface' => "Surface", 'p.volume' => "Volume", 'p.weight' => "Weight", 'p.duration' => "Duration", 'p.customcode' => 'CustomCode', 'p.price' => "SellingPriceHT", 'p.price_ttc' => "SellingPriceTTC", 'p.tva_tx' => 'VAT', 'p.tosell' => "OnSell*", 'p.tobuy' => "OnBuy*", 'p.fk_product_type' => "Type*", 'p.finished' => 'Nature', 'p.datec' => 'DateCreation*');
 		/*// Add extra fields
 		$sql = "SELECT name, label FROM " . MAIN_DB_PREFIX . "extrafields WHERE elementtype = 'product'";
 		$resql = $this->db->query($sql);
@@ -164,13 +164,13 @@ class modService extends DolibarrModules {
 			while ($obj = $this->db->fetch_object($resql)) {
 				$fieldname = 'extra.' . $obj->name;
 				$fieldlabel = ucfirst($obj->label);
-				$this->values->import_fields_array[$r][$fieldname] = $fieldlabel;
+				$this->import_fields_array[$r][$fieldname] = $fieldlabel;
 			}
 		}*/
 		// End add extra fields
-		$this->values->import_fieldshidden_array[$r] = array('extra.fk_object' => 'lastrowid-' . MAIN_DB_PREFIX . 'product');	// aliastable.field => ('user->id' or 'lastrowid-'.tableparent)
-		$this->values->import_regex_array[$r] = array('p.ref' => '[^ ]', 'p.tosell' => '^[0|1]$', 'p.tobuy' => '^[0|1]$', 'p.fk_product_type' => '^[0|1]$', 'p.datec' => '^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$');
-		$this->values->import_examplevalues_array[$r] = array('p.ref' => "PR123456", 'p.label' => "My product", 'p.description' => "This is a description example for record", 'p.note' => "Some note", 'p.price' => "100", 'p.price_ttc' => "110", 'p.tva_tx' => '10', 'p.tosell' => "0 or 1", 'p.tobuy' => "0 or 1", 'p.fk_product_type' => "0 for product/1 for service", 'p.finished' => '', 'p.duration' => "1y", 'p.datec' => '2008-12-31');
+		$this->import_fieldshidden_array[$r] = array('extra.fk_object' => 'lastrowid-' . MAIN_DB_PREFIX . 'product');	// aliastable.field => ('user->id' or 'lastrowid-'.tableparent)
+		$this->import_regex_array[$r] = array('p.ref' => '[^ ]', 'p.tosell' => '^[0|1]$', 'p.tobuy' => '^[0|1]$', 'p.fk_product_type' => '^[0|1]$', 'p.datec' => '^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$');
+		$this->import_examplevalues_array[$r] = array('p.ref' => "PR123456", 'p.label' => "My product", 'p.description' => "This is a description example for record", 'p.note' => "Some note", 'p.price' => "100", 'p.price_ttc' => "110", 'p.tva_tx' => '10', 'p.tosell' => "0 or 1", 'p.tobuy' => "0 or 1", 'p.fk_product_type' => "0 for product/1 for service", 'p.finished' => '', 'p.duration' => "1y", 'p.datec' => '2008-12-31');
 	}
 
 	/**
@@ -183,11 +183,11 @@ class modService extends DolibarrModules {
 	 */
 	function init($options = '') {
 		// Permissions et valeurs par defaut
-		$this->values->remove($options);
+		$this->remove($options);
 
 		$sql = array();
 
-		return $this->values->_init($sql, $options);
+		return $this->_init($sql, $options);
 	}
 
 	/**
@@ -201,7 +201,7 @@ class modService extends DolibarrModules {
 	function remove($options = '') {
 		$sql = array();
 
-		return $this->values->_remove($sql, $options);
+		return $this->_remove($sql, $options);
 	}
 
 }

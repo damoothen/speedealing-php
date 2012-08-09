@@ -39,41 +39,41 @@ class modMailmanSpip extends DolibarrModules {
 	 */
 	function modMailmanSpip($db) {
 		parent::__construct($db);
-		$this->values->numero = 105;
+		$this->numero = 105;
 
-		$this->values->family = "technic";
+		$this->family = "technic";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->values->name = preg_replace('/^mod/i', '', get_class($this));
-		$this->values->description = "Mailman or Spip interface for member module";
+		$this->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->description = "Mailman or Spip interface for member module";
 
-		$this->values->version = 'dolibarr';  // 'development' or 'experimental' or 'dolibarr' or version
+		$this->version = 'dolibarr';  // 'development' or 'experimental' or 'dolibarr' or version
 
-		$this->values->const_name = 'MAIN_MODULE_' . strtoupper($this->values->name);
-		$this->values->special = 1;
-		$this->values->picto = 'technic';
+		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
+		$this->special = 1;
+		$this->picto = 'technic';
 
 		// Data directories to create when module is enabled
-		$this->values->dirs = array();
+		$this->dirs = array();
 
 		// Dependencies
-		$this->values->depends = array('modAdherent');
-		$this->values->requiredby = array();
+		$this->depends = array('modAdherent');
+		$this->requiredby = array();
 
 		// Config pages
-		$this->values->config_page_url = array('mailman.php@adherents');
+		$this->config_page_url = array('mailman.php@adherents');
 
 		// Constants
-		$this->values->const = array();
-		$this->values->const[1] = array("ADHERENT_MAILMAN_UNSUB_URL", "chaine", "http://lists.domain.com/cgi-bin/mailman/admin/%LISTE%/members?adminpw=%MAILMAN_ADMINPW%&user=%EMAIL%", "Url de désinscription aux listes mailman");
-		$this->values->const[2] = array("ADHERENT_MAILMAN_URL", "chaine", "http://lists.domain.com/cgi-bin/mailman/admin/%LISTE%/members?adminpw=%MAILMAN_ADMINPW%&send_welcome_msg_to_this_batch=1&subscribees=%EMAIL%", "Url pour les inscriptions mailman");
-		$this->values->const[3] = array("ADHERENT_MAILMAN_LISTS", "chaine", "", "Mailing-list to subscribe new members to");
+		$this->const = array();
+		$this->const[1] = array("ADHERENT_MAILMAN_UNSUB_URL", "chaine", "http://lists.domain.com/cgi-bin/mailman/admin/%LISTE%/members?adminpw=%MAILMAN_ADMINPW%&user=%EMAIL%", "Url de désinscription aux listes mailman");
+		$this->const[2] = array("ADHERENT_MAILMAN_URL", "chaine", "http://lists.domain.com/cgi-bin/mailman/admin/%LISTE%/members?adminpw=%MAILMAN_ADMINPW%&send_welcome_msg_to_this_batch=1&subscribees=%EMAIL%", "Url pour les inscriptions mailman");
+		$this->const[3] = array("ADHERENT_MAILMAN_LISTS", "chaine", "", "Mailing-list to subscribe new members to");
 
 		// Boxes
-		$this->values->boxes = array();
+		$this->boxes = array();
 
 		// Permissions
-		$this->values->rights = array();
-		$this->values->rights_class = 'clicktodial';
+		$this->rights = array();
+		$this->rights_class = 'clicktodial';
 	}
 
 	/**
@@ -89,7 +89,7 @@ class modMailmanSpip extends DolibarrModules {
 
 		$sql = array();
 
-		return $this->values->_init($sql, $options);
+		return $this->_init($sql, $options);
 	}
 
 	/**
@@ -103,7 +103,7 @@ class modMailmanSpip extends DolibarrModules {
 	function remove($options = '') {
 		$sql = array();
 
-		return $this->values->_remove($sql, $options);
+		return $this->_remove($sql, $options);
 	}
 
 }

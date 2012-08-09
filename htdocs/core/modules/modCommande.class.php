@@ -49,139 +49,139 @@ class modCommande extends DolibarrModules
 		global $conf;
 
 		parent::__construct($db);
-		$this->values->numero = 25;
+		$this->numero = 25;
 
-		$this->values->family = "crm";
+		$this->family = "crm";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->values->name = preg_replace('/^mod/i','',get_class($this));
-		$this->values->description = "Gestion des commandes clients";
+		$this->name = preg_replace('/^mod/i','',get_class($this));
+		$this->description = "Gestion des commandes clients";
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
-		$this->values->version = 'dolibarr';
+		$this->version = 'dolibarr';
 
-		$this->values->const_name = 'MAIN_MODULE_'.strtoupper($this->values->name);
-		$this->values->special = 0;
-		$this->values->picto='order';
+		$this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
+		$this->special = 0;
+		$this->picto='order';
 
 		// Data directories to create when module is enabled
-		$this->values->dirs = array("/commande/temp");
+		$this->dirs = array("/commande/temp");
 
 		// Config pages
-		$this->values->config_page_url = array("commande.php");
+		$this->config_page_url = array("commande.php");
 
 		// Dependancies
-		$this->values->depends = array("modSociete");
-		$this->values->requiredby = array("modExpedition");
-		$this->values->conflictwith = array();
-		$this->values->langfiles = array("orders","bills","companies","products");
+		$this->depends = array("modSociete");
+		$this->requiredby = array("modExpedition");
+		$this->conflictwith = array();
+		$this->langfiles = array("orders","bills","companies","products");
 
 		// Constantes
-		$this->values->const = array();
+		$this->const = array();
 		$r=0;
 
-		$this->values->const[$r][0] = "COMMANDE_ADDON_PDF";
-		$this->values->const[$r][1] = "chaine";
-		$this->values->const[$r][2] = "einstein";
-		$this->values->const[$r][3] = 'Nom du gestionnaire de generation des commandes en PDF';
-		$this->values->const[$r][4] = 0;
+		$this->const[$r][0] = "COMMANDE_ADDON_PDF";
+		$this->const[$r][1] = "chaine";
+		$this->const[$r][2] = "einstein";
+		$this->const[$r][3] = 'Nom du gestionnaire de generation des commandes en PDF';
+		$this->const[$r][4] = 0;
 
 		$r++;
-		$this->values->const[$r][0] = "COMMANDE_ADDON";
-		$this->values->const[$r][1] = "chaine";
-		$this->values->const[$r][2] = "mod_commande_marbre";
-		$this->values->const[$r][3] = 'Nom du gestionnaire de numerotation des commandes';
-		$this->values->const[$r][4] = 0;
+		$this->const[$r][0] = "COMMANDE_ADDON";
+		$this->const[$r][1] = "chaine";
+		$this->const[$r][2] = "mod_commande_marbre";
+		$this->const[$r][3] = 'Nom du gestionnaire de numerotation des commandes';
+		$this->const[$r][4] = 0;
 
 		$r++;
-		$this->values->const[$r][0] = "COMMANDE_ADDON_PDF_ODT_PATH";
-		$this->values->const[$r][1] = "chaine";
-		$this->values->const[$r][2] = "DOL_DATA_ROOT/doctemplates/orders";
-		$this->values->const[$r][3] = "";
-		$this->values->const[$r][4] = 0;
+		$this->const[$r][0] = "COMMANDE_ADDON_PDF_ODT_PATH";
+		$this->const[$r][1] = "chaine";
+		$this->const[$r][2] = "DOL_DATA_ROOT/doctemplates/orders";
+		$this->const[$r][3] = "";
+		$this->const[$r][4] = 0;
 
 		// Boites
-		$this->values->boxes = array();
-		$this->values->boxes[0][1] = "box_commandes.php";
+		$this->boxes = array();
+		$this->boxes[0][1] = "box_commandes.php";
 
 		// Permissions
-		$this->values->rights = array();
-		$this->values->rights_class = 'commande';
+		$this->rights = array();
+		$this->rights_class = 'commande';
 
 		$r=0;
 
 		$r++;
-		$this->values->rights[$r][0] = 81;
-		$this->values->rights[$r][1] = 'Lire les commandes clients';
-		$this->values->rights[$r][2] = 'r';
-		$this->values->rights[$r][3] = 1;
-		$this->values->rights[$r][4] = 'lire';
+		$this->rights[$r][0] = 81;
+		$this->rights[$r][1] = 'Lire les commandes clients';
+		$this->rights[$r][2] = 'r';
+		$this->rights[$r][3] = 1;
+		$this->rights[$r][4] = 'lire';
 
 		$r++;
-		$this->values->rights[$r][0] = 82;
-		$this->values->rights[$r][1] = 'Creer/modifier les commandes clients';
-		$this->values->rights[$r][2] = 'w';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'creer';
+		$this->rights[$r][0] = 82;
+		$this->rights[$r][1] = 'Creer/modifier les commandes clients';
+		$this->rights[$r][2] = 'w';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'creer';
 
 		$r++;
-		$this->values->rights[$r][0] = 84;
-		$this->values->rights[$r][1] = 'Valider les commandes clients';
-		$this->values->rights[$r][2] = 'd';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'valider';
+		$this->rights[$r][0] = 84;
+		$this->rights[$r][1] = 'Valider les commandes clients';
+		$this->rights[$r][2] = 'd';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'valider';
 
 		$r++;
-		$this->values->rights[$r][0] = 86;
-		$this->values->rights[$r][1] = 'Envoyer les commandes clients';
-		$this->values->rights[$r][2] = 'd';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'order_advance';
-        $this->values->rights[$r][5] = 'send';
+		$this->rights[$r][0] = 86;
+		$this->rights[$r][1] = 'Envoyer les commandes clients';
+		$this->rights[$r][2] = 'd';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'order_advance';
+        $this->rights[$r][5] = 'send';
 
 		$r++;
-		$this->values->rights[$r][0] = 87;
-		$this->values->rights[$r][1] = 'Cloturer les commandes clients';
-		$this->values->rights[$r][2] = 'd';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'cloturer';
+		$this->rights[$r][0] = 87;
+		$this->rights[$r][1] = 'Cloturer les commandes clients';
+		$this->rights[$r][2] = 'd';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'cloturer';
 
 		$r++;
-		$this->values->rights[$r][0] = 88;
-		$this->values->rights[$r][1] = 'Annuler les commandes clients';
-		$this->values->rights[$r][2] = 'd';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'annuler';
+		$this->rights[$r][0] = 88;
+		$this->rights[$r][1] = 'Annuler les commandes clients';
+		$this->rights[$r][2] = 'd';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'annuler';
 
 		$r++;
-		$this->values->rights[$r][0] = 89;
-		$this->values->rights[$r][1] = 'Supprimer les commandes clients';
-		$this->values->rights[$r][2] = 'd';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'supprimer';
+		$this->rights[$r][0] = 89;
+		$this->rights[$r][1] = 'Supprimer les commandes clients';
+		$this->rights[$r][2] = 'd';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'supprimer';
 
 		$r++;
-		$this->values->rights[$r][0] = 1421;
-		$this->values->rights[$r][1] = 'Exporter les commandes clients et attributs';
-		$this->values->rights[$r][2] = 'r';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'commande';
-		$this->values->rights[$r][5] = 'export';
+		$this->rights[$r][0] = 1421;
+		$this->rights[$r][1] = 'Exporter les commandes clients et attributs';
+		$this->rights[$r][2] = 'r';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'commande';
+		$this->rights[$r][5] = 'export';
 
 		// Exports
 		//--------
 		$r=0;
 
 		$r++;
-		$this->values->export_code[$r]=$this->values->rights_class.'_'.$r;
-		$this->values->export_label[$r]='CustomersOrdersAndOrdersLines';	// Translation key (used only if key ExportDataset_xxx_z not found)
-		$this->values->export_permission[$r]=array(array("commande","commande","export"));
-		$this->values->export_fields_array[$r]=array('s.rowid'=>"IdCompany",'s.nom'=>'CompanyName','s.address'=>'Address','s.cp'=>'Zip','s.ville'=>'Town','s.fk_pays'=>'Country','s.tel'=>'Phone','s.siren'=>'ProfId1','s.siret'=>'ProfId2','s.ape'=>'ProfId3','s.idprof4'=>'ProfId4','c.rowid'=>"Id",'c.ref'=>"Ref",'c.ref_client'=>"RefClient",'c.fk_soc'=>"IdCompany",'c.date_creation'=>"DateCreation",'c.date_commande'=>"DateOrder",'c.amount_ht'=>"Amount",'c.remise_percent'=>"GlobalDiscount",'c.total_ht'=>"TotalHT",'c.total_ttc'=>"TotalTTC",'c.facture'=>"OrderShortStatusInvoicee",'c.fk_statut'=>'Status','c.note'=>"Note",'c.date_livraison'=>'DeliveryDate','cd.rowid'=>'LineId','cd.description'=>"LineDescription",'cd.product_type'=>'TypeOfLineServiceOrProduct','cd.tva_tx'=>"LineVATRate",'cd.qty'=>"LineQty",'cd.total_ht'=>"LineTotalHT",'cd.total_tva'=>"LineTotalVAT",'cd.total_ttc'=>"LineTotalTTC",'p.rowid'=>'ProductId','p.ref'=>'ProductRef','p.label'=>'Label');
-		$this->values->export_entities_array[$r]=array('s.rowid'=>"company",'s.nom'=>'company','s.address'=>'company','s.cp'=>'company','s.ville'=>'company','s.fk_pays'=>'company','s.tel'=>'company','s.siren'=>'company','s.ape'=>'company','s.idprof4'=>'company','s.siret'=>'company','c.rowid'=>"order",'c.ref'=>"order",'c.ref_client'=>"order",'c.fk_soc'=>"order",'c.date_creation'=>"order",'c.date_commande'=>"order",'c.amount_ht'=>"order",'c.remise_percent'=>"order",'c.total_ht'=>"order",'c.total_ttc'=>"order",'c.facture'=>"order",'c.fk_statut'=>"order",'c.note'=>"order",'c.date_livraison'=>"order",'cd.rowid'=>'order_line','cd.description'=>"order_line",'cd.product_type'=>'order_line','cd.tva_tx'=>"order_line",'cd.qty'=>"order_line",'cd.total_ht'=>"order_line",'cd.total_tva'=>"order_line",'cd.total_ttc'=>"order_line",'p.rowid'=>'product','p.ref'=>'product','p.label'=>'product');
+		$this->export_code[$r]=$this->rights_class.'_'.$r;
+		$this->export_label[$r]='CustomersOrdersAndOrdersLines';	// Translation key (used only if key ExportDataset_xxx_z not found)
+		$this->export_permission[$r]=array(array("commande","commande","export"));
+		$this->export_fields_array[$r]=array('s.rowid'=>"IdCompany",'s.nom'=>'CompanyName','s.address'=>'Address','s.cp'=>'Zip','s.ville'=>'Town','s.fk_pays'=>'Country','s.tel'=>'Phone','s.siren'=>'ProfId1','s.siret'=>'ProfId2','s.ape'=>'ProfId3','s.idprof4'=>'ProfId4','c.rowid'=>"Id",'c.ref'=>"Ref",'c.ref_client'=>"RefClient",'c.fk_soc'=>"IdCompany",'c.date_creation'=>"DateCreation",'c.date_commande'=>"DateOrder",'c.amount_ht'=>"Amount",'c.remise_percent'=>"GlobalDiscount",'c.total_ht'=>"TotalHT",'c.total_ttc'=>"TotalTTC",'c.facture'=>"OrderShortStatusInvoicee",'c.fk_statut'=>'Status','c.note'=>"Note",'c.date_livraison'=>'DeliveryDate','cd.rowid'=>'LineId','cd.description'=>"LineDescription",'cd.product_type'=>'TypeOfLineServiceOrProduct','cd.tva_tx'=>"LineVATRate",'cd.qty'=>"LineQty",'cd.total_ht'=>"LineTotalHT",'cd.total_tva'=>"LineTotalVAT",'cd.total_ttc'=>"LineTotalTTC",'p.rowid'=>'ProductId','p.ref'=>'ProductRef','p.label'=>'Label');
+		$this->export_entities_array[$r]=array('s.rowid'=>"company",'s.nom'=>'company','s.address'=>'company','s.cp'=>'company','s.ville'=>'company','s.fk_pays'=>'company','s.tel'=>'company','s.siren'=>'company','s.ape'=>'company','s.idprof4'=>'company','s.siret'=>'company','c.rowid'=>"order",'c.ref'=>"order",'c.ref_client'=>"order",'c.fk_soc'=>"order",'c.date_creation'=>"order",'c.date_commande'=>"order",'c.amount_ht'=>"order",'c.remise_percent'=>"order",'c.total_ht'=>"order",'c.total_ttc'=>"order",'c.facture'=>"order",'c.fk_statut'=>"order",'c.note'=>"order",'c.date_livraison'=>"order",'cd.rowid'=>'order_line','cd.description'=>"order_line",'cd.product_type'=>'order_line','cd.tva_tx'=>"order_line",'cd.qty'=>"order_line",'cd.total_ht'=>"order_line",'cd.total_tva'=>"order_line",'cd.total_ttc'=>"order_line",'p.rowid'=>'product','p.ref'=>'product','p.label'=>'product');
 
-		$this->values->export_sql_start[$r]='SELECT DISTINCT ';
-		$this->values->export_sql_end[$r]  =' FROM ('.MAIN_DB_PREFIX.'commande as c, '.MAIN_DB_PREFIX.'societe as s, '.MAIN_DB_PREFIX.'commandedet as cd)';
-		$this->values->export_sql_end[$r] .=' LEFT JOIN '.MAIN_DB_PREFIX.'product as p on (cd.fk_product = p.rowid)';
-		$this->values->export_sql_end[$r] .=' WHERE c.fk_soc = s.rowid AND c.rowid = cd.fk_commande';
-		$this->values->export_sql_end[$r] .=' AND c.entity = '.$conf->entity;
+		$this->export_sql_start[$r]='SELECT DISTINCT ';
+		$this->export_sql_end[$r]  =' FROM ('.MAIN_DB_PREFIX.'commande as c, '.MAIN_DB_PREFIX.'societe as s, '.MAIN_DB_PREFIX.'commandedet as cd)';
+		$this->export_sql_end[$r] .=' LEFT JOIN '.MAIN_DB_PREFIX.'product as p on (cd.fk_product = p.rowid)';
+		$this->export_sql_end[$r] .=' WHERE c.fk_soc = s.rowid AND c.rowid = cd.fk_commande';
+		$this->export_sql_end[$r] .=' AND c.entity = '.$conf->entity;
 	}
 
 
@@ -198,7 +198,7 @@ class modCommande extends DolibarrModules
 		global $conf,$langs;
 
 		// Permissions
-		$this->values->remove($options);
+		$this->remove($options);
 
 		//ODT template
 		require_once(DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php');
@@ -209,16 +209,16 @@ class modCommande extends DolibarrModules
 		if ($result < 0)
 		{
 		    $langs->load("errors");
-		    $this->values->error=$langs->trans('ErrorFailToCopyFile',$src,$dest);
+		    $this->error=$langs->trans('ErrorFailToCopyFile',$src,$dest);
 		    return 0;
 		}
 
 		$sql = array(
-		 "DELETE FROM ".MAIN_DB_PREFIX."document_model WHERE nom = '".$this->values->const[0][2]."' AND entity = ".$conf->entity,
-		 "INSERT INTO ".MAIN_DB_PREFIX."document_model (nom, type, entity) VALUES('".$this->values->const[0][2]."','order',".$conf->entity.")"
+		 "DELETE FROM ".MAIN_DB_PREFIX."document_model WHERE nom = '".$this->const[0][2]."' AND entity = ".$conf->entity,
+		 "INSERT INTO ".MAIN_DB_PREFIX."document_model (nom, type, entity) VALUES('".$this->const[0][2]."','order',".$conf->entity.")"
 		 );
 
-		 return $this->values->_init($sql,$options);
+		 return $this->_init($sql,$options);
 	}
 
 
@@ -234,7 +234,7 @@ class modCommande extends DolibarrModules
     {
 		$sql = array();
 
-		return $this->values->_remove($sql,$options);
+		return $this->_remove($sql,$options);
     }
 
 }

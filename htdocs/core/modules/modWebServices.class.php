@@ -39,49 +39,49 @@ class modWebServices extends DolibarrModules {
 	 */
 	function modWebServices($db) {
 		parent::__construct($db);
-		$this->values->numero = 2600;
+		$this->numero = 2600;
 
-		$this->values->family = "technic";
+		$this->family = "technic";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->values->name = preg_replace('/^mod/i', '', get_class($this));
-		$this->values->description = "Enable the Dolibarr web services server";
-		$this->values->version = 'dolibarr';						// 'experimental' or 'dolibarr' or version
+		$this->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->description = "Enable the Dolibarr web services server";
+		$this->version = 'dolibarr';						// 'experimental' or 'dolibarr' or version
 		// Key used in llx_const table to save module status enabled/disabled (where MYMODULE is value of property name of module in uppercase)
-		$this->values->const_name = 'MAIN_MODULE_' . strtoupper($this->values->name);
+		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
 		// Where to store the module in setup page (0=common,1=interface,2=others,3=very specific)
-		$this->values->special = 1;
+		$this->special = 1;
 		// Name of image file used for this module.
-		$this->values->picto = 'technic';
+		$this->picto = 'technic';
 
 		// Data directories to create when module is enabled
-		$this->values->dirs = array();
+		$this->dirs = array();
 
 		// Config pages
 		//-------------
-		$this->values->config_page_url = array("webservices.php@webservices");
+		$this->config_page_url = array("webservices.php@webservices");
 
 		// Dependancies
 		//-------------
-		$this->values->depends = array();
-		$this->values->requiredby = array();
-		$this->values->langfiles = array("other");
+		$this->depends = array();
+		$this->requiredby = array();
+		$this->langfiles = array("other");
 
 		// Constantes
 		//-----------
-		$this->values->const = array();
+		$this->const = array();
 
 		// New pages on tabs
 		// -----------------
-		$this->values->tabs = array();
+		$this->tabs = array();
 
 		// Boxes
 		//------
-		$this->values->boxes = array();
+		$this->boxes = array();
 
 		// Permissions
 		//------------
-		$this->values->rights = array();
-		$this->values->rights_class = 'webservices';
+		$this->rights = array();
+		$this->rights_class = 'webservices';
 		$r = 0;
 	}
 
@@ -95,11 +95,11 @@ class modWebServices extends DolibarrModules {
 	 */
 	function init($options = '') {
 		// Prevent pb of modules not correctly disabled
-		//$this->values->remove($options);
+		//$this->remove($options);
 
 		$sql = array();
 
-		return $this->values->_init($sql, $options);
+		return $this->_init($sql, $options);
 	}
 
 	/**
@@ -113,7 +113,7 @@ class modWebServices extends DolibarrModules {
 	function remove($options = '') {
 		$sql = array();
 
-		return $this->values->_remove($sql, $options);
+		return $this->_remove($sql, $options);
 	}
 
 }

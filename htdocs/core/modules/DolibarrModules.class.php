@@ -573,8 +573,6 @@ class DolibarrModules extends nosqlDocument {
 			if ($ok) {
 				$dir = $dirroot . "/" . $this->name . "/json/";
 				$ok = 0;
-				
-				print $dir;exit;
 
 				// Create or upgrade views and documents
 				$handle = @opendir($dir);   // Dir may not exists

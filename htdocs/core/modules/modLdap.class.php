@@ -41,33 +41,33 @@ class modLdap extends DolibarrModules {
 	 */
 	function modLdap($db) {
 		parent::__construct($db);
-		$this->values->numero = 200;
+		$this->numero = 200;
 
-		$this->values->family = "technic";
+		$this->family = "technic";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->values->name = preg_replace('/^mod/i', '', get_class($this));
-		$this->values->description = "Synchronisation Ldap";
-		$this->values->version = 'dolibarr';	// 'experimental' or 'dolibarr' or version
-		$this->values->const_name = 'MAIN_MODULE_' . strtoupper($this->values->name);
+		$this->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->description = "Synchronisation Ldap";
+		$this->version = 'dolibarr';	// 'experimental' or 'dolibarr' or version
+		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
 		// Where to store the module in setup page (0=common,1=interface,2=others,3=very specific)
-		$this->values->special = 1;
+		$this->special = 1;
 		// Name of image file used for this module.
 		// If file is in theme/yourtheme/img directory under name object_pictovalue.png, use this->picto='pictovalue'
 		// If file is in module/images directory, use this->picto=DOL_URL_ROOT.'/module/images/file.png'
-		$this->values->picto = 'technic';
+		$this->picto = 'technic';
 
 		// Data directories to create when module is enabled
-		$this->values->dirs = array("/ldap/temp");
+		$this->dirs = array("/ldap/temp");
 
 		// Config pages
-		$this->values->config_page_url = array("ldap.php");
+		$this->config_page_url = array("ldap.php");
 
 		// Dependancies
-		$this->values->depends = array();
-		$this->values->requiredby = array();
+		$this->depends = array();
+		$this->requiredby = array();
 
 		// Constants
-		$this->values->const = array(
+		$this->const = array(
 			0 => array('LDAP_SERVER_TYPE', 'chaine', 'openldap', '', 0),
 			1 => array('LDAP_SERVER_PROTOCOLVERSION', 'chaine', '3', '', 0),
 			2 => array('LDAP_SERVER_HOST', 'chaine', 'localhost', '', 0),
@@ -85,11 +85,11 @@ class modLdap extends DolibarrModules {
 		);
 
 		// Boites
-		$this->values->boxes = array();
+		$this->boxes = array();
 
 		// Permissions
-		$this->values->rights = array();
-		$this->values->rights_class = 'ldap';
+		$this->rights = array();
+		$this->rights_class = 'ldap';
 	}
 
 	/**
@@ -103,7 +103,7 @@ class modLdap extends DolibarrModules {
 	function init($options = '') {
 		$sql = array();
 
-		return $this->values->_init($sql, $options);
+		return $this->_init($sql, $options);
 	}
 
 	/**
@@ -117,7 +117,7 @@ class modLdap extends DolibarrModules {
 	function remove($options = '') {
 		$sql = array();
 
-		return $this->values->_remove($sql, $options);
+		return $this->_remove($sql, $options);
 	}
 
 }

@@ -40,38 +40,38 @@ class modClickToDial extends DolibarrModules {
 	 */
 	function modClickToDial($db) {
 		parent::__construct($db);
-		$this->values->numero = 58;
+		$this->numero = 58;
 
-		$this->values->family = "technic";
+		$this->family = "technic";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->values->name = preg_replace('/^mod/i', '', get_class($this));
-		$this->values->description = "Gestion du Click To Dial";
+		$this->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->description = "Gestion du Click To Dial";
 
-		$this->values->version = 'dolibarr';  // 'development' or 'experimental' or 'dolibarr' or version
+		$this->version = 'dolibarr';  // 'development' or 'experimental' or 'dolibarr' or version
 
-		$this->values->const_name = 'MAIN_MODULE_' . strtoupper($this->values->name);
-		$this->values->special = 1;
-		$this->values->picto = 'phoning';
+		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
+		$this->special = 1;
+		$this->picto = 'phoning';
 
 		// Data directories to create when module is enabled
-		$this->values->dirs = array();
+		$this->dirs = array();
 
 		// Dependencies
-		$this->values->depends = array();
-		$this->values->requiredby = array();
+		$this->depends = array();
+		$this->requiredby = array();
 
 		// Config pages
-		$this->values->config_page_url = array("clicktodial.php");
+		$this->config_page_url = array("clicktodial.php");
 
 		// Constants
-		$this->values->const = array();
+		$this->const = array();
 
 		// Boxes
-		$this->values->boxes = array();
+		$this->boxes = array();
 
 		// Permissions
-		$this->values->rights = array();
-		$this->values->rights_class = 'clicktodial';
+		$this->rights = array();
+		$this->rights_class = 'clicktodial';
 	}
 
 	/**
@@ -87,7 +87,7 @@ class modClickToDial extends DolibarrModules {
 
 		$sql = array();
 
-		return $this->values->_init($sql, $options);
+		return $this->_init($sql, $options);
 	}
 
 	/**
@@ -101,7 +101,7 @@ class modClickToDial extends DolibarrModules {
 	function remove($options = '') {
 		$sql = array();
 
-		return $this->values->_remove($sql, $options);
+		return $this->_remove($sql, $options);
 	}
 
 }

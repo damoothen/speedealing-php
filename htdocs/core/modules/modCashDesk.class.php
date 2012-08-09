@@ -43,59 +43,59 @@ class modCashDesk extends DolibarrModules
 
 		// Id for module (must be unique).
 		// Use here a free id (See in Home -> System information -> Dolibarr for list of used module id).
-		$this->values->numero = 50100;
+		$this->numero = 50100;
 		// Key text used to identify module (for permission, menus, etc...)
-		$this->values->rights_class = 'cashdesk';
+		$this->rights_class = 'cashdesk';
 
-		$this->values->family = "products";
+		$this->family = "products";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->values->name = preg_replace('/^mod/i','',get_class($this));
-		$this->values->description = "CashDesk module";
+		$this->name = preg_replace('/^mod/i','',get_class($this));
+		$this->description = "CashDesk module";
 
-		$this->values->revision = '1.27';
-		$this->values->version = 'dolibarr';
+		$this->revision = '1.27';
+		$this->version = 'dolibarr';
 
-		$this->values->const_name = 'MAIN_MODULE_'.strtoupper($this->values->name);
-		$this->values->special = 0;
-		$this->values->picto = 'list';
+		$this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
+		$this->special = 0;
+		$this->picto = 'list';
 
 		// Data directories to create when module is enabled
-		$this->values->dirs = array();
+		$this->dirs = array();
 
 		// Config pages. Put here list of php page names stored in admmin directory used to setup module.
-		$this->values->config_page_url = array("cashdesk.php@cashdesk");
+		$this->config_page_url = array("cashdesk.php@cashdesk");
 
 		// Dependencies
-		$this->values->depends = array("modBanque","modFacture","modProduct");	// List of modules id that must be enabled if this module is enabled
-		$this->values->requiredby = array();			// List of modules id to disable if this one is disabled
-		$this->values->phpmin = array(4,1);					// Minimum version of PHP required by module
-		$this->values->need_dolibarr_version = array(2,4);	// Minimum version of Dolibarr required by module
-		$this->values->langfiles = array("cashdesk");
+		$this->depends = array("modBanque","modFacture","modProduct");	// List of modules id that must be enabled if this module is enabled
+		$this->requiredby = array();			// List of modules id to disable if this one is disabled
+		$this->phpmin = array(4,1);					// Minimum version of PHP required by module
+		$this->need_dolibarr_version = array(2,4);	// Minimum version of Dolibarr required by module
+		$this->langfiles = array("cashdesk");
 
 		// Constantes
-		$this->values->const = array();
+		$this->const = array();
 
 		// Boxes
-		$this->values->boxes = array();
+		$this->boxes = array();
 
 		// Permissions
-		$this->values->rights = array();
-		$this->values->rights_class = 'cashdesk';
+		$this->rights = array();
+		$this->rights_class = 'cashdesk';
 		$r=0;
 
 		$r++;
-		$this->values->rights[$r][0] = 50101;
-		$this->values->rights[$r][1] = 'Use point of sale';
-		$this->values->rights[$r][2] = 'a';
-		$this->values->rights[$r][3] = 1;
-		$this->values->rights[$r][4] = 'use';
+		$this->rights[$r][0] = 50101;
+		$this->rights[$r][1] = 'Use point of sale';
+		$this->rights[$r][2] = 'a';
+		$this->rights[$r][3] = 1;
+		$this->rights[$r][4] = 'use';
 
 		// Main menu entries
-		$this->values->menus = array();			// List of menus to add
+		$this->menus = array();			// List of menus to add
 		$r=0;
 
 		// This is to declare the Top Menu entry:
-		$this->values->menu[$r]=array(	    'fk_menu'=>0,			// Put 0 if this is a top menu
+		$this->menu[$r]=array(	    'fk_menu'=>0,			// Put 0 if this is a top menu
 									'type'=>'top',			// This is a Top menu entry
 									'titre'=>'CashDeskMenu',
 									'mainmenu'=>'cashdesk',
@@ -110,7 +110,7 @@ class modCashDesk extends DolibarrModules
 		$r++;
 
 		// This is to declare a Left Menu entry:
-		// $this->values->menu[$r]=array(	'fk_menu'=>'r=0',		// Use r=value where r is index key used for the top menu entry
+		// $this->menu[$r]=array(	'fk_menu'=>'r=0',		// Use r=value where r is index key used for the top menu entry
 		//							'type'=>'left',			// This is a Left menu entry
 		//							'titre'=>'Title left menu',
 		//							'mainmenu'=>'mymodule',
@@ -137,9 +137,9 @@ class modCashDesk extends DolibarrModules
     	$sql = array();
 
 		// Remove permissions and default values
-		$this->values->remove($options);
+		$this->remove($options);
 
-    	return $this->values->_init($sql,$options);
+    	return $this->_init($sql,$options);
   	}
 
     /**
@@ -154,7 +154,7 @@ class modCashDesk extends DolibarrModules
 	{
     	$sql = array();
 
-    	return $this->values->_remove($sql,$options);
+    	return $this->_remove($sql,$options);
   	}
 
 }

@@ -248,6 +248,7 @@ print'</th>';
 $obj->aoColumns[$i]->mDataProp = "version";
 $obj->aoColumns[$i]->sDefaultContent = "false";
 $obj->aoColumns[$i]->sClass = "center";
+$obj->aoColumns[$i]->sWidth = "100px";
 $i++;
 print'<th class="essential">';
 print $langs->trans("Status");

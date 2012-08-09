@@ -41,55 +41,55 @@ class modDocument extends DolibarrModules {
 	 */
 	function modDocument($db) {
 		parent::__construct($db);
-		$this->values->numero = 51;
+		$this->numero = 51;
 
-		$this->values->family = "technic";
+		$this->family = "technic";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->values->name = preg_replace('/^mod/i', '', get_class($this));
-		$this->values->description = "Generation de courriers/publipostages papiers";
+		$this->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->description = "Generation de courriers/publipostages papiers";
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
-		$this->values->version = 'development';
+		$this->version = 'development';
 
-		$this->values->const_name = 'MAIN_MODULE_' . strtoupper($this->values->name);
-		$this->values->special = 0;
-		$this->values->picto = 'email';
+		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
+		$this->special = 0;
+		$this->picto = 'email';
 
 		// Data directories to create when module is enabled
-		$this->values->dirs = array("/document/temp");
+		$this->dirs = array("/document/temp");
 
 		// Config pages
-		//$this->values->config_page_url = array("document.php");
+		//$this->config_page_url = array("document.php");
 		// Dependencies
-		$this->values->depends = array();
-		$this->values->requiredby = array();
-		$this->values->conflictwith = array();
-		$this->values->langfiles = array("orders", "bills", "companies");
+		$this->depends = array();
+		$this->requiredby = array();
+		$this->conflictwith = array();
+		$this->langfiles = array("orders", "bills", "companies");
 
 		// Constantes
 
-		$this->values->const = array();
+		$this->const = array();
 
 		// Boites
-		$this->values->boxes = array();
+		$this->boxes = array();
 
 		// Permissions
-		$this->values->rights = array();
-		$this->values->rights_class = 'document';
+		$this->rights = array();
+		$this->rights_class = 'document';
 
 		$r = 0;
 
-		$this->values->rights[$r][0] = 511;
-		$this->values->rights[$r][1] = 'Lire les documents';
-		$this->values->rights[$r][2] = 'r';
-		$this->values->rights[$r][3] = 1;
-		$this->values->rights[$r][4] = 'lire';
+		$this->rights[$r][0] = 511;
+		$this->rights[$r][1] = 'Lire les documents';
+		$this->rights[$r][2] = 'r';
+		$this->rights[$r][3] = 1;
+		$this->rights[$r][4] = 'lire';
 
 		$r++;
-		$this->values->rights[$r][0] = 512;
-		$this->values->rights[$r][1] = 'Supprimer les documents clients';
-		$this->values->rights[$r][2] = 'd';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'supprimer';
+		$this->rights[$r][0] = 512;
+		$this->rights[$r][1] = 'Supprimer les documents clients';
+		$this->rights[$r][2] = 'd';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'supprimer';
 	}
 
 	/**
@@ -104,11 +104,11 @@ class modDocument extends DolibarrModules {
 		global $conf;
 
 		// Permissions
-		$this->values->remove($options);
+		$this->remove($options);
 
 		$sql = array();
 
-		return $this->values->_init($sql, $options);
+		return $this->_init($sql, $options);
 	}
 
 	/**
@@ -122,7 +122,7 @@ class modDocument extends DolibarrModules {
 	function remove($options = '') {
 		$sql = array();
 
-		return $this->values->_remove($sql, $options);
+		return $this->_remove($sql, $options);
 	}
 
 }

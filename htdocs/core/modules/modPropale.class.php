@@ -46,137 +46,137 @@ class modPropale extends DolibarrModules {
 		global $conf;
 
 		parent::__construct($db);
-		$this->values->numero = 20;
+		$this->numero = 20;
 
-		$this->values->family = "crm";
+		$this->family = "crm";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->values->name = preg_replace('/^mod/i', '', get_class($this));
-		$this->values->description = "Gestion des propositions commerciales";
+		$this->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->description = "Gestion des propositions commerciales";
 
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
-		$this->values->version = 'dolibarr';
+		$this->version = 'dolibarr';
 
-		$this->values->const_name = 'MAIN_MODULE_' . strtoupper($this->values->name);
-		$this->values->special = 0;
-		$this->values->picto = 'propal';
+		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
+		$this->special = 0;
+		$this->picto = 'propal';
 
 		// Data directories to create when module is enabled
-		$this->values->dirs = array("/propale/temp");
+		$this->dirs = array("/propale/temp");
 
 		// Dependancies
-		$this->values->depends = array("modSociete");
-		$this->values->requiredby = array();
-		$this->values->config_page_url = array("propal.php");
-		$this->values->langfiles = array("propal", "bills", "companies", "deliveries", "products");
+		$this->depends = array("modSociete");
+		$this->requiredby = array();
+		$this->config_page_url = array("propal.php");
+		$this->langfiles = array("propal", "bills", "companies", "deliveries", "products");
 
 		// Constants
-		$this->values->const = array();
+		$this->const = array();
 		$r = 0;
 
-		$this->values->const[$r][0] = "PROPALE_ADDON_PDF";
-		$this->values->const[$r][1] = "chaine";
-		$this->values->const[$r][2] = "azur";
-		$this->values->const[$r][3] = 'Nom du gestionnaire de generation des propales en PDF';
-		$this->values->const[$r][4] = 0;
+		$this->const[$r][0] = "PROPALE_ADDON_PDF";
+		$this->const[$r][1] = "chaine";
+		$this->const[$r][2] = "azur";
+		$this->const[$r][3] = 'Nom du gestionnaire de generation des propales en PDF';
+		$this->const[$r][4] = 0;
 		$r++;
 
-		$this->values->const[$r][0] = "PROPALE_ADDON";
-		$this->values->const[$r][1] = "chaine";
-		$this->values->const[$r][2] = "mod_propale_marbre";
-		$this->values->const[$r][3] = 'Nom du gestionnaire de numerotation des propales';
-		$this->values->const[$r][4] = 0;
+		$this->const[$r][0] = "PROPALE_ADDON";
+		$this->const[$r][1] = "chaine";
+		$this->const[$r][2] = "mod_propale_marbre";
+		$this->const[$r][3] = 'Nom du gestionnaire de numerotation des propales';
+		$this->const[$r][4] = 0;
 		$r++;
 
-		$this->values->const[$r][0] = "PROPALE_VALIDITY_DURATION";
-		$this->values->const[$r][1] = "chaine";
-		$this->values->const[$r][2] = "15";
-		$this->values->const[$r][3] = 'Duration of validity of business proposals';
-		$this->values->const[$r][4] = 0;
+		$this->const[$r][0] = "PROPALE_VALIDITY_DURATION";
+		$this->const[$r][1] = "chaine";
+		$this->const[$r][2] = "15";
+		$this->const[$r][3] = 'Duration of validity of business proposals';
+		$this->const[$r][4] = 0;
 		$r++;
 
-		$this->values->const[$r][0] = "PROPALE_ADDON_PDF_ODT_PATH";
-		$this->values->const[$r][1] = "chaine";
-		$this->values->const[$r][2] = "DOL_DATA_ROOT/doctemplates/proposals";
-		$this->values->const[$r][3] = "";
-		$this->values->const[$r][4] = 0;
+		$this->const[$r][0] = "PROPALE_ADDON_PDF_ODT_PATH";
+		$this->const[$r][1] = "chaine";
+		$this->const[$r][2] = "DOL_DATA_ROOT/doctemplates/proposals";
+		$this->const[$r][3] = "";
+		$this->const[$r][4] = 0;
 
 		// Boxes
-		$this->values->boxes = array();
-		$this->values->boxes[0][1] = "box_propales.php";
+		$this->boxes = array();
+		$this->boxes[0][1] = "box_propales.php";
 
 		// Permissions
-		$this->values->rights = array();
-		$this->values->rights_class = 'propale';
+		$this->rights = array();
+		$this->rights_class = 'propale';
 		$r = 0;
 
 		$r++;
-		$this->values->rights[$r][0] = 21; // id de la permission
-		$this->values->rights[$r][1] = 'Lire les propositions commerciales'; // libelle de la permission
-		$this->values->rights[$r][2] = 'r'; // type de la permission (deprecie a ce jour)
-		$this->values->rights[$r][3] = 1; // La permission est-elle une permission par defaut
-		$this->values->rights[$r][4] = 'lire';
+		$this->rights[$r][0] = 21; // id de la permission
+		$this->rights[$r][1] = 'Lire les propositions commerciales'; // libelle de la permission
+		$this->rights[$r][2] = 'r'; // type de la permission (deprecie a ce jour)
+		$this->rights[$r][3] = 1; // La permission est-elle une permission par defaut
+		$this->rights[$r][4] = 'lire';
 
 		$r++;
-		$this->values->rights[$r][0] = 22; // id de la permission
-		$this->values->rights[$r][1] = 'Creer/modifier les propositions commerciales'; // libelle de la permission
-		$this->values->rights[$r][2] = 'w'; // type de la permission (deprecie a ce jour)
-		$this->values->rights[$r][3] = 0; // La permission est-elle une permission par defaut
-		$this->values->rights[$r][4] = 'creer';
+		$this->rights[$r][0] = 22; // id de la permission
+		$this->rights[$r][1] = 'Creer/modifier les propositions commerciales'; // libelle de la permission
+		$this->rights[$r][2] = 'w'; // type de la permission (deprecie a ce jour)
+		$this->rights[$r][3] = 0; // La permission est-elle une permission par defaut
+		$this->rights[$r][4] = 'creer';
 
 		$r++;
-		$this->values->rights[$r][0] = 24; // id de la permission
-		$this->values->rights[$r][1] = 'Valider les propositions commerciales'; // libelle de la permission
-		$this->values->rights[$r][2] = 'd'; // type de la permission (deprecie a ce jour)
-		$this->values->rights[$r][3] = 0; // La permission est-elle une permission par defaut
-		$this->values->rights[$r][4] = 'valider';
+		$this->rights[$r][0] = 24; // id de la permission
+		$this->rights[$r][1] = 'Valider les propositions commerciales'; // libelle de la permission
+		$this->rights[$r][2] = 'd'; // type de la permission (deprecie a ce jour)
+		$this->rights[$r][3] = 0; // La permission est-elle une permission par defaut
+		$this->rights[$r][4] = 'valider';
 
 		$r++;
-		$this->values->rights[$r][0] = 25; // id de la permission
-		$this->values->rights[$r][1] = 'Envoyer les propositions commerciales aux clients'; // libelle de la permission
-		$this->values->rights[$r][2] = 'd'; // type de la permission (deprecie a ce jour)
-		$this->values->rights[$r][3] = 0; // La permission est-elle une permission par defaut
-		$this->values->rights[$r][4] = 'propal_advance';
-		$this->values->rights[$r][5] = 'send';
+		$this->rights[$r][0] = 25; // id de la permission
+		$this->rights[$r][1] = 'Envoyer les propositions commerciales aux clients'; // libelle de la permission
+		$this->rights[$r][2] = 'd'; // type de la permission (deprecie a ce jour)
+		$this->rights[$r][3] = 0; // La permission est-elle une permission par defaut
+		$this->rights[$r][4] = 'propal_advance';
+		$this->rights[$r][5] = 'send';
 
 		$r++;
-		$this->values->rights[$r][0] = 26; // id de la permission
-		$this->values->rights[$r][1] = 'Cloturer les propositions commerciales'; // libelle de la permission
-		$this->values->rights[$r][2] = 'd'; // type de la permission (deprecie a ce jour)
-		$this->values->rights[$r][3] = 0; // La permission est-elle une permission par defaut
-		$this->values->rights[$r][4] = 'cloturer';
+		$this->rights[$r][0] = 26; // id de la permission
+		$this->rights[$r][1] = 'Cloturer les propositions commerciales'; // libelle de la permission
+		$this->rights[$r][2] = 'd'; // type de la permission (deprecie a ce jour)
+		$this->rights[$r][3] = 0; // La permission est-elle une permission par defaut
+		$this->rights[$r][4] = 'cloturer';
 
 		$r++;
-		$this->values->rights[$r][0] = 27; // id de la permission
-		$this->values->rights[$r][1] = 'Supprimer les propositions commerciales'; // libelle de la permission
-		$this->values->rights[$r][2] = 'd'; // type de la permission (deprecie a ce jour)
-		$this->values->rights[$r][3] = 0; // La permission est-elle une permission par defaut
-		$this->values->rights[$r][4] = 'supprimer';
+		$this->rights[$r][0] = 27; // id de la permission
+		$this->rights[$r][1] = 'Supprimer les propositions commerciales'; // libelle de la permission
+		$this->rights[$r][2] = 'd'; // type de la permission (deprecie a ce jour)
+		$this->rights[$r][3] = 0; // La permission est-elle une permission par defaut
+		$this->rights[$r][4] = 'supprimer';
 
 		$r++;
-		$this->values->rights[$r][0] = 28; // id de la permission
-		$this->values->rights[$r][1] = 'Exporter les propositions commerciales et attributs'; // libelle de la permission
-		$this->values->rights[$r][2] = 'r'; // type de la permission (deprecie a ce jour)
-		$this->values->rights[$r][3] = 0; // La permission est-elle une permission par defaut
-		$this->values->rights[$r][4] = 'export';
+		$this->rights[$r][0] = 28; // id de la permission
+		$this->rights[$r][1] = 'Exporter les propositions commerciales et attributs'; // libelle de la permission
+		$this->rights[$r][2] = 'r'; // type de la permission (deprecie a ce jour)
+		$this->rights[$r][3] = 0; // La permission est-elle une permission par defaut
+		$this->rights[$r][4] = 'export';
 
 		// Exports
 		//--------
 		$r = 0;
 
 		$r++;
-		$this->values->export_code[$r] = $this->values->rights_class . '_' . $r;
-		$this->values->export_label[$r] = 'ProposalsAndProposalsLines'; // Translation key (used only if key ExportDataset_xxx_z not found)
-		$this->values->export_permission[$r] = array(array("propale", "export"));
-		$this->values->export_fields_array[$r] = array('s.rowid' => "IdCompany", 's.nom' => 'CompanyName', 's.address' => 'Address', 's.cp' => 'Zip', 's.ville' => 'Town', 'cp.code' => 'Country', 's.tel' => 'Phone', 's.siren' => 'ProfId1', 's.siret' => 'ProfId2', 's.ape' => 'ProfId3', 's.idprof4' => 'ProfId4', 'c.rowid' => "Id", 'c.ref' => "Ref", 'c.ref_client' => "RefClient", 'c.fk_soc' => "IdCompany", 'c.datec' => "DateCreation", 'c.datep' => "DatePropal", 'c.fin_validite' => "DateEndPropal", 'c.remise_percent' => "GlobalDiscount", 'c.total_ht' => "TotalHT", 'c.total' => "TotalTTC", 'c.fk_statut' => 'Status', 'c.note' => "Note", 'c.date_livraison' => 'DeliveryDate', 'cd.rowid' => 'LineId', 'cd.description' => "LineDescription", 'cd.product_type' => 'TypeOfLineServiceOrProduct', 'cd.tva_tx' => "LineVATRate", 'cd.qty' => "LineQty", 'cd.total_ht' => "LineTotalHT", 'cd.total_tva' => "LineTotalVAT", 'cd.total_ttc' => "LineTotalTTC", 'p.rowid' => 'ProductId', 'p.ref' => 'ProductRef', 'p.label' => 'Label');
-		$this->values->export_entities_array[$r] = array('s.rowid' => "company", 's.nom' => 'company', 's.address' => 'company', 's.cp' => 'company', 's.ville' => 'company', 'cp.code' => 'company', 's.tel' => 'company', 's.siren' => 'company', 's.ape' => 'company', 's.idprof4' => 'company', 's.siret' => 'company', 'c.rowid' => "propal", 'c.ref' => "propal", 'c.ref_client' => "propal", 'c.fk_soc' => "propal", 'c.datec' => "propal", 'c.datep' => "propal", 'c.fin_validite' => "propal", 'c.remise_percent' => "propal", 'c.total_ht' => "propal", 'c.total' => "propal", 'c.fk_statut' => "propal", 'c.note' => "propal", 'c.date_livraison' => "propal", 'cd.rowid' => 'propal_line', 'cd.description' => "propal_line", 'cd.product_type' => 'propal_line', 'cd.tva_tx' => "propal_line", 'cd.qty' => "propal_line", 'cd.total_ht' => "propal_line", 'cd.total_tva' => "propal_line", 'cd.total_ttc' => "propal_line", 'p.rowid' => 'product', 'p.ref' => 'product', 'p.label' => 'product');
+		$this->export_code[$r] = $this->rights_class . '_' . $r;
+		$this->export_label[$r] = 'ProposalsAndProposalsLines'; // Translation key (used only if key ExportDataset_xxx_z not found)
+		$this->export_permission[$r] = array(array("propale", "export"));
+		$this->export_fields_array[$r] = array('s.rowid' => "IdCompany", 's.nom' => 'CompanyName', 's.address' => 'Address', 's.cp' => 'Zip', 's.ville' => 'Town', 'cp.code' => 'Country', 's.tel' => 'Phone', 's.siren' => 'ProfId1', 's.siret' => 'ProfId2', 's.ape' => 'ProfId3', 's.idprof4' => 'ProfId4', 'c.rowid' => "Id", 'c.ref' => "Ref", 'c.ref_client' => "RefClient", 'c.fk_soc' => "IdCompany", 'c.datec' => "DateCreation", 'c.datep' => "DatePropal", 'c.fin_validite' => "DateEndPropal", 'c.remise_percent' => "GlobalDiscount", 'c.total_ht' => "TotalHT", 'c.total' => "TotalTTC", 'c.fk_statut' => 'Status', 'c.note' => "Note", 'c.date_livraison' => 'DeliveryDate', 'cd.rowid' => 'LineId', 'cd.description' => "LineDescription", 'cd.product_type' => 'TypeOfLineServiceOrProduct', 'cd.tva_tx' => "LineVATRate", 'cd.qty' => "LineQty", 'cd.total_ht' => "LineTotalHT", 'cd.total_tva' => "LineTotalVAT", 'cd.total_ttc' => "LineTotalTTC", 'p.rowid' => 'ProductId', 'p.ref' => 'ProductRef', 'p.label' => 'Label');
+		$this->export_entities_array[$r] = array('s.rowid' => "company", 's.nom' => 'company', 's.address' => 'company', 's.cp' => 'company', 's.ville' => 'company', 'cp.code' => 'company', 's.tel' => 'company', 's.siren' => 'company', 's.ape' => 'company', 's.idprof4' => 'company', 's.siret' => 'company', 'c.rowid' => "propal", 'c.ref' => "propal", 'c.ref_client' => "propal", 'c.fk_soc' => "propal", 'c.datec' => "propal", 'c.datep' => "propal", 'c.fin_validite' => "propal", 'c.remise_percent' => "propal", 'c.total_ht' => "propal", 'c.total' => "propal", 'c.fk_statut' => "propal", 'c.note' => "propal", 'c.date_livraison' => "propal", 'cd.rowid' => 'propal_line', 'cd.description' => "propal_line", 'cd.product_type' => 'propal_line', 'cd.tva_tx' => "propal_line", 'cd.qty' => "propal_line", 'cd.total_ht' => "propal_line", 'cd.total_tva' => "propal_line", 'cd.total_ttc' => "propal_line", 'p.rowid' => 'product', 'p.ref' => 'product', 'p.label' => 'product');
 
-		$this->values->export_sql_start[$r] = 'SELECT DISTINCT ';
-		$this->values->export_sql_end[$r] = ' FROM ' . MAIN_DB_PREFIX . 'societe as s ';
-		$this->values->export_sql_end[$r] .=' LEFT JOIN ' . MAIN_DB_PREFIX . 'c_pays as cp ON s.fk_pays = cp.rowid,';
-		$this->values->export_sql_end[$r] .=' ' . MAIN_DB_PREFIX . 'propal as c, ' . MAIN_DB_PREFIX . 'propaldet as cd';
-		$this->values->export_sql_end[$r] .=' LEFT JOIN ' . MAIN_DB_PREFIX . 'product as p on (cd.fk_product = p.rowid)';
-		$this->values->export_sql_end[$r] .=' WHERE c.fk_soc = s.rowid AND c.rowid = cd.fk_propal';
-		$this->values->export_sql_end[$r] .=' AND c.entity = ' . $conf->entity;
+		$this->export_sql_start[$r] = 'SELECT DISTINCT ';
+		$this->export_sql_end[$r] = ' FROM ' . MAIN_DB_PREFIX . 'societe as s ';
+		$this->export_sql_end[$r] .=' LEFT JOIN ' . MAIN_DB_PREFIX . 'c_pays as cp ON s.fk_pays = cp.rowid,';
+		$this->export_sql_end[$r] .=' ' . MAIN_DB_PREFIX . 'propal as c, ' . MAIN_DB_PREFIX . 'propaldet as cd';
+		$this->export_sql_end[$r] .=' LEFT JOIN ' . MAIN_DB_PREFIX . 'product as p on (cd.fk_product = p.rowid)';
+		$this->export_sql_end[$r] .=' WHERE c.fk_soc = s.rowid AND c.rowid = cd.fk_propal';
+		$this->export_sql_end[$r] .=' AND c.entity = ' . $conf->entity;
 	}
 
 	/**
@@ -191,7 +191,7 @@ class modPropale extends DolibarrModules {
 		global $conf, $langs;
 
 		// Remove permissions and default values
-		$this->values->remove($options);
+		$this->remove($options);
 
 		//ODT template
 		require_once(DOL_DOCUMENT_ROOT . '/core/lib/files.lib.php');
@@ -202,16 +202,16 @@ class modPropale extends DolibarrModules {
 		$result = dol_copy($src, $dest, 0, 0);
 		if ($result < 0) {
 			$langs->load("errors");
-			$this->values->error = $langs->trans('ErrorFailToCopyFile', $src, $dest);
+			$this->error = $langs->trans('ErrorFailToCopyFile', $src, $dest);
 			return 0;
 		}
 
 		$sql = array(
-			"DELETE FROM " . MAIN_DB_PREFIX . "document_model WHERE nom = '" . $this->values->const[0][2] . "' AND entity = " . $conf->entity,
-			"INSERT INTO " . MAIN_DB_PREFIX . "document_model (nom, type, entity) VALUES('" . $this->values->const[0][2] . "','propal'," . $conf->entity . ")",
+			"DELETE FROM " . MAIN_DB_PREFIX . "document_model WHERE nom = '" . $this->const[0][2] . "' AND entity = " . $conf->entity,
+			"INSERT INTO " . MAIN_DB_PREFIX . "document_model (nom, type, entity) VALUES('" . $this->const[0][2] . "','propal'," . $conf->entity . ")",
 		);
 
-		return $this->values->_init($sql, $options);
+		return $this->_init($sql, $options);
 	}
 
 	/**
@@ -225,7 +225,7 @@ class modPropale extends DolibarrModules {
 	function remove($options = '') {
 		$sql = array();
 
-		return $this->values->_remove($sql, $options);
+		return $this->_remove($sql, $options);
 	}
 
 }

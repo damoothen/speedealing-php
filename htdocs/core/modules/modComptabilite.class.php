@@ -44,78 +44,78 @@ class modComptabilite extends DolibarrModules {
 		global $conf;
 
 		parent::__construct($db);
-		$this->values->numero = 10;
+		$this->numero = 10;
 
-		$this->values->family = "financial";
+		$this->family = "financial";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->values->name = preg_replace('/^mod/i', '', get_class($this));
-		$this->values->description = "Gestion sommaire de comptabilite";
+		$this->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->description = "Gestion sommaire de comptabilite";
 
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
-		$this->values->version = 'dolibarr';
+		$this->version = 'dolibarr';
 
-		$this->values->const_name = 'MAIN_MODULE_' . strtoupper($this->values->name);
-		$this->values->special = 0;
-		$this->values->picto = '';
+		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
+		$this->special = 0;
+		$this->picto = '';
 
 		// Config pages
-		$this->values->config_page_url = array("compta.php");
+		$this->config_page_url = array("compta.php");
 
 		// Dependances
-		$this->values->depends = array("modFacture", "modBanque");
-		$this->values->requiredby = array();
-		$this->values->conflictwith = array("modAccounting");
-		$this->values->langfiles = array("compta");
+		$this->depends = array("modFacture", "modBanque");
+		$this->requiredby = array();
+		$this->conflictwith = array("modAccounting");
+		$this->langfiles = array("compta");
 
 		// Constantes
-		$this->values->const = array();
+		$this->const = array();
 
 		// Data directories to create when module is enabled
-		$this->values->dirs = array("/comptabilite/temp",
+		$this->dirs = array("/comptabilite/temp",
 			"/comptabilite/rapport",
 			"/comptabilite/export",
 			"/comptabilite/bordereau"
 		);
 
 		// Boites
-		$this->values->boxes = array();
+		$this->boxes = array();
 
 		// Permissions
-		$this->values->rights = array();
-		$this->values->rights_class = 'compta';
+		$this->rights = array();
+		$this->rights_class = 'compta';
 		$r = 0;
 
 		$r++;
-		$this->values->rights[$r][0] = 95;
-		$this->values->rights[$r][1] = 'Lire CA, bilans, resultats';
-		$this->values->rights[$r][2] = 'r';
-		$this->values->rights[$r][3] = 1;
-		$this->values->rights[$r][4] = 'resultat';
-		$this->values->rights[$r][5] = 'lire';
+		$this->rights[$r][0] = 95;
+		$this->rights[$r][1] = 'Lire CA, bilans, resultats';
+		$this->rights[$r][2] = 'r';
+		$this->rights[$r][3] = 1;
+		$this->rights[$r][4] = 'resultat';
+		$this->rights[$r][5] = 'lire';
 
 		$r++;
-		$this->values->rights[$r][0] = 96;
-		$this->values->rights[$r][1] = 'Parametrer la ventilation';
-		$this->values->rights[$r][2] = 'r';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'ventilation';
-		$this->values->rights[$r][5] = 'parametrer';
+		$this->rights[$r][0] = 96;
+		$this->rights[$r][1] = 'Parametrer la ventilation';
+		$this->rights[$r][2] = 'r';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'ventilation';
+		$this->rights[$r][5] = 'parametrer';
 
 		$r++;
-		$this->values->rights[$r][0] = 97;
-		$this->values->rights[$r][1] = 'Lire les ventilations de factures';
-		$this->values->rights[$r][2] = 'r';
-		$this->values->rights[$r][3] = 1;
-		$this->values->rights[$r][4] = 'ventilation';
-		$this->values->rights[$r][5] = 'lire';
+		$this->rights[$r][0] = 97;
+		$this->rights[$r][1] = 'Lire les ventilations de factures';
+		$this->rights[$r][2] = 'r';
+		$this->rights[$r][3] = 1;
+		$this->rights[$r][4] = 'ventilation';
+		$this->rights[$r][5] = 'lire';
 
 		$r++;
-		$this->values->rights[$r][0] = 98;
-		$this->values->rights[$r][1] = 'Ventiler les lignes de factures';
-		$this->values->rights[$r][2] = 'r';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'ventilation';
-		$this->values->rights[$r][5] = 'creer';
+		$this->rights[$r][0] = 98;
+		$this->rights[$r][1] = 'Ventiler les lignes de factures';
+		$this->rights[$r][2] = 'r';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'ventilation';
+		$this->rights[$r][5] = 'creer';
 	}
 
 	/**
@@ -130,11 +130,11 @@ class modComptabilite extends DolibarrModules {
 		global $conf;
 
 		// Nettoyage avant activation
-		$this->values->remove($options);
+		$this->remove($options);
 
 		$sql = array();
 
-		return $this->values->_init($sql, $options);
+		return $this->_init($sql, $options);
 	}
 
 	/**
@@ -148,7 +148,7 @@ class modComptabilite extends DolibarrModules {
 	function remove($options = '') {
 		$sql = array();
 
-		return $this->values->_remove($sql, $options);
+		return $this->_remove($sql, $options);
 	}
 
 }

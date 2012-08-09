@@ -154,7 +154,7 @@ class modAdherent extends DolibarrModules {
 		$this->menus[$r]->url = "/adherent/index.php";
 		$this->menus[$r]->langs = "members";
 		$this->menus[$r]->perms = '$user->rights->adherent->lire';
-		$this->menus[$r]->enabled = '$conf->Adherent->enabled';
+		$this->menus[$r]->enabled = '$conf->adherent->enabled';
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->title = "Members";
 
@@ -164,7 +164,7 @@ class modAdherent extends DolibarrModules {
 		$this->menus[$r]->url = "/adherent/list.php";
 		$this->menus[$r]->langs = "members";
 		$this->menus[$r]->perms = '$user->rights->adherent->lire';
-		$this->menus[$r]->enabled = '$conf->Adherent->enabled';
+		$this->menus[$r]->enabled = '$conf->adherent->enabled';
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->title = "Members";
 		$this->menus[$r]->fk_menu = "menu:members";
@@ -174,7 +174,7 @@ class modAdherent extends DolibarrModules {
 		$this->menus[$r]->url = "/adherent/index.php";
 		$this->menus[$r]->langs = "compta";
 		$this->menus[$r]->perms = '$user->rights->adherent->cotisation->lire';
-		$this->menus[$r]->enabled = '$conf->Adherent->enabled';
+		$this->menus[$r]->enabled = '$conf->adherent->enabled';
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->title = "Subscriptions";
 		$this->menus[$r]->fk_menu = "menu:members";
@@ -184,7 +184,7 @@ class modAdherent extends DolibarrModules {
 		$this->menus[$r]->url = "/adherent/cotisations.php";
 		$this->menus[$r]->langs = "compta";
 		$this->menus[$r]->perms = '$user->rights->adherent->cotisation->lire';
-		$this->menus[$r]->enabled = '$conf->Adherent->enabled';
+		$this->menus[$r]->enabled = '$conf->adherent->enabled';
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->title = "List";
 		$this->menus[$r]->fk_menu = "menu:subscriptions";
@@ -194,7 +194,7 @@ class modAdherent extends DolibarrModules {
 		$this->menus[$r]->url = "/categories/index.php?type=3";
 		$this->menus[$r]->langs = "categories";
 		$this->menus[$r]->perms = '$user->rights->categorie->lire';
-		$this->menus[$r]->enabled = '$conf->Adherent->enabled && $conf->categorie->enabled';
+		$this->menus[$r]->enabled = '$conf->adherent->enabled && $conf->categorie->enabled';
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->title = "MembersCategoriesShort";
 		$this->menus[$r]->fk_menu = "menu:members";
@@ -204,7 +204,7 @@ class modAdherent extends DolibarrModules {
 		$this->menus[$r]->url = "/adherent/type.php";
 		$this->menus[$r]->langs = "members";
 		$this->menus[$r]->perms = '$user->rights->adherent->configurer';
-		$this->menus[$r]->enabled = '$conf->Adherent->enabled';
+		$this->menus[$r]->enabled = '$conf->adherent->enabled';
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->title = "MembersTypes";
 		$this->menus[$r]->fk_menu = "menu:members";
@@ -214,7 +214,7 @@ class modAdherent extends DolibarrModules {
 		$this->menus[$r]->url = "/adherent/fiche.php?action=create";
 		$this->menus[$r]->langs = "members";
 		$this->menus[$r]->perms = '$user->rights->adherent->creer';
-		$this->menus[$r]->enabled = '$conf->Adherent->enabled';
+		$this->menus[$r]->enabled = '$conf->adherent->enabled';
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->title = "NewMember";
 		$this->menus[$r]->fk_menu = "menu:members0";
@@ -224,7 +224,7 @@ class modAdherent extends DolibarrModules {
 		$this->menus[$r]->url = "/adherent/list.php";
 		$this->menus[$r]->langs = "members";
 		$this->menus[$r]->perms = '$user->rights->adherent->lire';
-		$this->menus[$r]->enabled = '$conf->Adherent->enabled';
+		$this->menus[$r]->enabled = '$conf->adherent->enabled';
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->title = "List";
 		$this->menus[$r]->fk_menu = "menu:members0";

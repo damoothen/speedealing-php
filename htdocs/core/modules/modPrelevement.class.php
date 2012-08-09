@@ -48,77 +48,77 @@ class modPrelevement extends DolibarrModules
 
 		parent::__construct($db);
 		
-		$this->values->numero = 57;
+		$this->numero = 57;
 
-		$this->values->family = "financial";
+		$this->family = "financial";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->values->name = preg_replace('/^mod/i','',get_class($this));
-		$this->values->description = "Gestion des Prelevements";
+		$this->name = preg_replace('/^mod/i','',get_class($this));
+		$this->description = "Gestion des Prelevements";
 
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
-		$this->values->version = 'speedealing';
+		$this->version = 'speedealing';
 
 		// Name of png file (without png) used for this module
-		$this->values->picto='payment';
+		$this->picto='payment';
 
 		// Data directories to create when module is enabled
-		$this->values->dirs = array("/prelevement/temp","/prelevement/receipts");
+		$this->dirs = array("/prelevement/temp","/prelevement/receipts");
 
 		// Dependancies
-		$this->values->depends = array("modFacture","modBanque");
-		$this->values->requiredby = array();
+		$this->depends = array("modFacture","modBanque");
+		$this->requiredby = array();
 
 		// Config pages
-		$this->values->config_page_url = array("prelevement.php");
+		$this->config_page_url = array("prelevement.php");
 
 		// Constantes
-		$this->values->const = array();
+		$this->const = array();
 
 		// Boites
-		$this->values->boxes = array();
+		$this->boxes = array();
 
 		// Permissions
-		$this->values->rights = array();
-		$this->values->rights_class = 'prelevement';
+		$this->rights = array();
+		$this->rights_class = 'prelevement';
 		$r=0;
 		$r++;
-		$this->values->rights[$r][0] = 151;
-		$this->values->rights[$r][1] = 'Read withdrawals';
-		$this->values->rights[$r][2] = 'r';
-		$this->values->rights[$r][3] = 1;
-		$this->values->rights[$r][4] = 'bons';
-		$this->values->rights[$r][5] = 'lire';
+		$this->rights[$r][0] = 151;
+		$this->rights[$r][1] = 'Read withdrawals';
+		$this->rights[$r][2] = 'r';
+		$this->rights[$r][3] = 1;
+		$this->rights[$r][4] = 'bons';
+		$this->rights[$r][5] = 'lire';
 
 		$r++;
-		$this->values->rights[$r][0] = 152;
-		$this->values->rights[$r][1] = 'Create/modify a withdrawals';
-		$this->values->rights[$r][2] = 'w';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'bons';
-		$this->values->rights[$r][5] = 'creer';
+		$this->rights[$r][0] = 152;
+		$this->rights[$r][1] = 'Create/modify a withdrawals';
+		$this->rights[$r][2] = 'w';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'bons';
+		$this->rights[$r][5] = 'creer';
 
 		$r++;
-		$this->values->rights[$r][0] = 153;
-		$this->values->rights[$r][1] = 'Send withdrawals to bank';
-		$this->values->rights[$r][2] = 'a';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'bons';
-		$this->values->rights[$r][5] = 'send';
+		$this->rights[$r][0] = 153;
+		$this->rights[$r][1] = 'Send withdrawals to bank';
+		$this->rights[$r][2] = 'a';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'bons';
+		$this->rights[$r][5] = 'send';
 
 		$r++;
-		$this->values->rights[$r][0] = 154;
-		$this->values->rights[$r][1] = 'credit/refuse withdrawals';
-		$this->values->rights[$r][2] = 'a';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'bons';
-		$this->values->rights[$r][5] = 'credit';
+		$this->rights[$r][0] = 154;
+		$this->rights[$r][1] = 'credit/refuse withdrawals';
+		$this->rights[$r][2] = 'a';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'bons';
+		$this->rights[$r][5] = 'credit';
 
-/*        $this->values->rights[2][0] = 154;
-        $this->values->rights[2][1] = 'Setup withdraw account';
-        $this->values->rights[2][2] = 'w';
-        $this->values->rights[2][3] = 0;
-        $this->values->rights[2][4] = 'bons';
-        $this->values->rights[2][5] = 'configurer';
+/*        $this->rights[2][0] = 154;
+        $this->rights[2][1] = 'Setup withdraw account';
+        $this->rights[2][2] = 'w';
+        $this->rights[2][3] = 0;
+        $this->rights[2][4] = 'bons';
+        $this->rights[2][5] = 'configurer';
 */
 	}
 
@@ -136,11 +136,11 @@ class modPrelevement extends DolibarrModules
 		global $conf;
 
 		// Permissions
-		$this->values->remove($options);
+		$this->remove($options);
 
 		$sql = array();
 
-		return $this->values->_init($sql,$options);
+		return $this->_init($sql,$options);
 	}
 
     /**
@@ -155,7 +155,7 @@ class modPrelevement extends DolibarrModules
     {
 		$sql = array();
 
-		return $this->values->_remove($sql,$options);
+		return $this->_remove($sql,$options);
     }
 
 }

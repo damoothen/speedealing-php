@@ -41,41 +41,41 @@ class modFckeditor extends DolibarrModules {
 	 */
 	function modFckeditor($db) {
 		parent::__construct($db);
-		$this->values->numero = 2000;
+		$this->numero = 2000;
 
-		$this->values->family = "technic";
+		$this->family = "technic";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->values->name = preg_replace('/^mod/i', '', get_class($this));
-		$this->values->description = "Editeur WYSIWYG";
-		$this->values->version = 'dolibarr';	// 'experimental' or 'dolibarr' or version
-		$this->values->const_name = 'MAIN_MODULE_' . strtoupper($this->values->name);
-		$this->values->special = 2;
+		$this->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->description = "Editeur WYSIWYG";
+		$this->version = 'dolibarr';	// 'experimental' or 'dolibarr' or version
+		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
+		$this->special = 2;
 		// Name of png file (without png) used for this module.
 		// Png file must be in theme/yourtheme/img directory under name object_pictovalue.png.
-		$this->values->picto = 'list';
+		$this->picto = 'list';
 
 		// Data directories to create when module is enabled
-		$this->values->dirs = array("/fckeditor/temp", "/fckeditor/image");
+		$this->dirs = array("/fckeditor/temp", "/fckeditor/image");
 
 		// Config pages
-		$this->values->config_page_url = array("fckeditor.php");
+		$this->config_page_url = array("fckeditor.php");
 
 		// Dependances
-		$this->values->depends = array();
-		$this->values->requiredby = array();
+		$this->depends = array();
+		$this->requiredby = array();
 
 		// Constantes
-		$this->values->const = array();
-		$this->values->const[0] = array("FCKEDITOR_ENABLE_SOCIETE", "yesno", "1", "Activation fckeditor sur notes autres");
-		$this->values->const[1] = array("FCKEDITOR_ENABLE_PRODUCTDESC", "yesno", "1", "Activation fckeditor sur notes produits");
-		$this->values->const[2] = array("FCKEDITOR_ENABLE_MAILING", "yesno", "1", "Activation fckeditor sur emailing");
+		$this->const = array();
+		$this->const[0] = array("FCKEDITOR_ENABLE_SOCIETE", "yesno", "1", "Activation fckeditor sur notes autres");
+		$this->const[1] = array("FCKEDITOR_ENABLE_PRODUCTDESC", "yesno", "1", "Activation fckeditor sur notes produits");
+		$this->const[2] = array("FCKEDITOR_ENABLE_MAILING", "yesno", "1", "Activation fckeditor sur emailing");
 
 		// Boites
-		$this->values->boxes = array();
+		$this->boxes = array();
 
 		// Permissions
-		$this->values->rights = array();
-		$this->values->rights_class = 'fckeditor';
+		$this->rights = array();
+		$this->rights_class = 'fckeditor';
 	}
 
 	/**
@@ -91,7 +91,7 @@ class modFckeditor extends DolibarrModules {
 
 		$sql = array();
 
-		return $this->values->_init($sql, $options);
+		return $this->_init($sql, $options);
 	}
 
 	/**
@@ -105,7 +105,7 @@ class modFckeditor extends DolibarrModules {
 	function remove($options = '') {
 		$sql = array();
 
-		return $this->values->_remove($sql, $options);
+		return $this->_remove($sql, $options);
 	}
 
 }

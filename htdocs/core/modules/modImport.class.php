@@ -39,49 +39,49 @@ class modImport extends DolibarrModules {
 	 */
 	function modImport($db) {
 		parent::__construct($db);
-		$this->values->numero = 250;
+		$this->numero = 250;
 
-		$this->values->family = "technic";
+		$this->family = "technic";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->values->name = preg_replace('/^mod/i', '', get_class($this));
-		$this->values->description = "Outils d'imports de donnees Dolibarr (via un assistant)";
+		$this->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->description = "Outils d'imports de donnees Dolibarr (via un assistant)";
 		// Possible values for version are: 'experimental' or 'dolibarr' or version
-		$this->values->version = 'dolibarr';						// 'experimental' or 'dolibarr' or version
-		$this->values->const_name = 'MAIN_MODULE_' . strtoupper($this->values->name);
-		$this->values->special = 0;
-		$this->values->picto = 'technic';
+		$this->version = 'dolibarr';						// 'experimental' or 'dolibarr' or version
+		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
+		$this->special = 0;
+		$this->picto = 'technic';
 
 		// Data directories to create when module is enabled
-		$this->values->dirs = array("/import/temp");
+		$this->dirs = array("/import/temp");
 
 		// Config pages
-		$this->values->config_page_url = array();
+		$this->config_page_url = array();
 
 		// D�pendances
-		$this->values->depends = array();
-		$this->values->requiredby = array();
-		$this->values->phpmin = array(4, 3, 0); // Need auto_detect_line_endings php option to solve MAC pbs.
-		$this->values->phpmax = array();
-		$this->values->need_dolibarr_version = array(2, 7, -1); // Minimum version of Dolibarr required by module
-		$this->values->need_javascript_ajax = 1;
+		$this->depends = array();
+		$this->requiredby = array();
+		$this->phpmin = array(4, 3, 0); // Need auto_detect_line_endings php option to solve MAC pbs.
+		$this->phpmax = array();
+		$this->need_dolibarr_version = array(2, 7, -1); // Minimum version of Dolibarr required by module
+		$this->need_javascript_ajax = 1;
 
 		// Constantes
-		$this->values->const = array();
+		$this->const = array();
 
 		// Boxes
-		$this->values->boxes = array();
+		$this->boxes = array();
 
 		// Permissions
-		$this->values->rights = array();
-		$this->values->rights_class = 'import';
+		$this->rights = array();
+		$this->rights_class = 'import';
 		$r = 0;
 
 		$r++;
-		$this->values->rights[$r][0] = 1251;
-		$this->values->rights[$r][1] = 'Run mass imports of external data (data load)';
-		$this->values->rights[$r][2] = 'r';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'run';
+		$this->rights[$r][0] = 1251;
+		$this->rights[$r][1] = 'Run mass imports of external data (data load)';
+		$this->rights[$r][2] = 'r';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'run';
 	}
 
 	/**
@@ -95,7 +95,7 @@ class modImport extends DolibarrModules {
 	function init($options = '') {
 		$sql = array();
 
-		return $this->values->_init($sql, $options);
+		return $this->_init($sql, $options);
 	}
 
 	/**
@@ -109,7 +109,7 @@ class modImport extends DolibarrModules {
 	function remove($options = '') {
 		$sql = array();
 
-		return $this->values->_remove($sql, $options);
+		return $this->_remove($sql, $options);
 	}
 
 }

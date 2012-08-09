@@ -42,22 +42,22 @@ class modExpedition extends DolibarrModules {
 	 */
 	function modExpedition($db) {
 		parent::__construct($db);
-		$this->values->numero = 80;
+		$this->numero = 80;
 
-		$this->values->family = "crm";
+		$this->family = "crm";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->values->name = preg_replace('/^mod/i', '', get_class($this));
-		$this->values->description = "Gestion des expeditions";
+		$this->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->description = "Gestion des expeditions";
 
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
-		$this->values->version = 'dolibarr';
+		$this->version = 'dolibarr';
 
-		$this->values->const_name = 'MAIN_MODULE_' . strtoupper($this->values->name);
-		$this->values->special = 0;
-		$this->values->picto = "sending";
+		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
+		$this->special = 0;
+		$this->picto = "sending";
 
 		// Data directories to create when module is enabled
-		$this->values->dirs = array("/expedition/temp",
+		$this->dirs = array("/expedition/temp",
 			"/expedition/sending",
 			"/expedition/sending/temp",
 			"/expedition/receipt",
@@ -65,126 +65,126 @@ class modExpedition extends DolibarrModules {
 		);
 
 		// Config pages
-		$this->values->config_page_url = array("confexped.php");
+		$this->config_page_url = array("confexped.php");
 
 		// Dependances
-		$this->values->depends = array("modCommande");
-		$this->values->requiredby = array();
+		$this->depends = array("modCommande");
+		$this->requiredby = array();
 
 		// Constantes
-		$this->values->const = array();
+		$this->const = array();
 		$r = 0;
 
-		$this->values->const[$r][0] = "EXPEDITION_ADDON_PDF";
-		$this->values->const[$r][1] = "chaine";
-		$this->values->const[$r][2] = "rouget";
-		$this->values->const[$r][3] = 'Nom du gestionnaire de generation des bons expeditions en PDF';
-		$this->values->const[$r][4] = 0;
+		$this->const[$r][0] = "EXPEDITION_ADDON_PDF";
+		$this->const[$r][1] = "chaine";
+		$this->const[$r][2] = "rouget";
+		$this->const[$r][3] = 'Nom du gestionnaire de generation des bons expeditions en PDF';
+		$this->const[$r][4] = 0;
 		$r++;
 
-		$this->values->const[$r][0] = "EXPEDITION_ADDON";
-		$this->values->const[$r][1] = "chaine";
-		$this->values->const[$r][2] = "elevement";
-		$this->values->const[$r][3] = 'Nom du gestionnaire du type d\'expedition';
-		$this->values->const[$r][4] = 0;
+		$this->const[$r][0] = "EXPEDITION_ADDON";
+		$this->const[$r][1] = "chaine";
+		$this->const[$r][2] = "elevement";
+		$this->const[$r][3] = 'Nom du gestionnaire du type d\'expedition';
+		$this->const[$r][4] = 0;
 		$r++;
 
-		$this->values->const[$r][0] = "LIVRAISON_ADDON_PDF";
-		$this->values->const[$r][1] = "chaine";
-		$this->values->const[$r][2] = "typhon";
-		$this->values->const[$r][3] = 'Nom du gestionnaire de generation des bons de reception en PDF';
-		$this->values->const[$r][4] = 0;
+		$this->const[$r][0] = "LIVRAISON_ADDON_PDF";
+		$this->const[$r][1] = "chaine";
+		$this->const[$r][2] = "typhon";
+		$this->const[$r][3] = 'Nom du gestionnaire de generation des bons de reception en PDF';
+		$this->const[$r][4] = 0;
 		$r++;
 
-		$this->values->const[$r][0] = "LIVRAISON_ADDON";
-		$this->values->const[$r][1] = "chaine";
-		$this->values->const[$r][2] = "mod_livraison_jade";
-		$this->values->const[$r][3] = 'Nom du gestionnaire de numerotation des bons de reception';
-		$this->values->const[$r][4] = 0;
+		$this->const[$r][0] = "LIVRAISON_ADDON";
+		$this->const[$r][1] = "chaine";
+		$this->const[$r][2] = "mod_livraison_jade";
+		$this->const[$r][3] = 'Nom du gestionnaire de numerotation des bons de reception';
+		$this->const[$r][4] = 0;
 		$r++;
 
-		$this->values->const[$r][0] = "EXPEDITION_ADDON_NUMBER";
-		$this->values->const[$r][1] = "chaine";
-		$this->values->const[$r][2] = "mod_expedition_safor";
-		$this->values->const[$r][3] = 'Nom du gestionnaire de numerotation des expeditions';
-		$this->values->const[$r][4] = 0;
+		$this->const[$r][0] = "EXPEDITION_ADDON_NUMBER";
+		$this->const[$r][1] = "chaine";
+		$this->const[$r][2] = "mod_expedition_safor";
+		$this->const[$r][3] = 'Nom du gestionnaire de numerotation des expeditions';
+		$this->const[$r][4] = 0;
 		$r++;
 
 		// Boxes
-		$this->values->boxes = array();
+		$this->boxes = array();
 
 		// Permissions
-		$this->values->rights = array();
-		$this->values->rights_class = 'expedition';
+		$this->rights = array();
+		$this->rights_class = 'expedition';
 		$r = 0;
 
 		$r++;
-		$this->values->rights[$r][0] = 101;
-		$this->values->rights[$r][1] = 'Lire les expeditions';
-		$this->values->rights[$r][2] = 'r';
-		$this->values->rights[$r][3] = 1;
-		$this->values->rights[$r][4] = 'lire';
+		$this->rights[$r][0] = 101;
+		$this->rights[$r][1] = 'Lire les expeditions';
+		$this->rights[$r][2] = 'r';
+		$this->rights[$r][3] = 1;
+		$this->rights[$r][4] = 'lire';
 
 		$r++;
-		$this->values->rights[$r][0] = 102;
-		$this->values->rights[$r][1] = 'Creer modifier les expeditions';
-		$this->values->rights[$r][2] = 'w';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'creer';
+		$this->rights[$r][0] = 102;
+		$this->rights[$r][1] = 'Creer modifier les expeditions';
+		$this->rights[$r][2] = 'w';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'creer';
 
 		$r++;
-		$this->values->rights[$r][0] = 104;
-		$this->values->rights[$r][1] = 'Valider les expeditions';
-		$this->values->rights[$r][2] = 'd';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'valider';
+		$this->rights[$r][0] = 104;
+		$this->rights[$r][1] = 'Valider les expeditions';
+		$this->rights[$r][2] = 'd';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'valider';
 
 		$r++;
-		$this->values->rights[$r][0] = 105; // id de la permission
-		$this->values->rights[$r][1] = 'Envoyer les expeditions aux clients'; // libelle de la permission
-		$this->values->rights[$r][2] = 'd'; // type de la permission (deprecie a ce jour)
-		$this->values->rights[$r][3] = 0; // La permission est-elle une permission par defaut
-		$this->values->rights[$r][4] = 'shipping_advance';
-		$this->values->rights[$r][5] = 'send';
+		$this->rights[$r][0] = 105; // id de la permission
+		$this->rights[$r][1] = 'Envoyer les expeditions aux clients'; // libelle de la permission
+		$this->rights[$r][2] = 'd'; // type de la permission (deprecie a ce jour)
+		$this->rights[$r][3] = 0; // La permission est-elle une permission par defaut
+		$this->rights[$r][4] = 'shipping_advance';
+		$this->rights[$r][5] = 'send';
 
 		$r++;
-		$this->values->rights[$r][0] = 109;
-		$this->values->rights[$r][1] = 'Supprimer les expeditions';
-		$this->values->rights[$r][2] = 'd';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'supprimer';
+		$this->rights[$r][0] = 109;
+		$this->rights[$r][1] = 'Supprimer les expeditions';
+		$this->rights[$r][2] = 'd';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'supprimer';
 
 		$r++;
-		$this->values->rights[$r][0] = 1101;
-		$this->values->rights[$r][1] = 'Lire les bons de livraison';
-		$this->values->rights[$r][2] = 'r';
-		$this->values->rights[$r][3] = 1;
-		$this->values->rights[$r][4] = 'livraison';
-		$this->values->rights[$r][5] = 'lire';
+		$this->rights[$r][0] = 1101;
+		$this->rights[$r][1] = 'Lire les bons de livraison';
+		$this->rights[$r][2] = 'r';
+		$this->rights[$r][3] = 1;
+		$this->rights[$r][4] = 'livraison';
+		$this->rights[$r][5] = 'lire';
 
 		$r++;
-		$this->values->rights[$r][0] = 1102;
-		$this->values->rights[$r][1] = 'Creer modifier les bons de livraison';
-		$this->values->rights[$r][2] = 'w';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'livraison';
-		$this->values->rights[$r][5] = 'creer';
+		$this->rights[$r][0] = 1102;
+		$this->rights[$r][1] = 'Creer modifier les bons de livraison';
+		$this->rights[$r][2] = 'w';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'livraison';
+		$this->rights[$r][5] = 'creer';
 
 		$r++;
-		$this->values->rights[$r][0] = 1104;
-		$this->values->rights[$r][1] = 'Valider les bons de livraison';
-		$this->values->rights[$r][2] = 'd';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'livraison';
-		$this->values->rights[$r][5] = 'valider';
+		$this->rights[$r][0] = 1104;
+		$this->rights[$r][1] = 'Valider les bons de livraison';
+		$this->rights[$r][2] = 'd';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'livraison';
+		$this->rights[$r][5] = 'valider';
 
 		$r++;
-		$this->values->rights[$r][0] = 1109;
-		$this->values->rights[$r][1] = 'Supprimer les bons de livraison';
-		$this->values->rights[$r][2] = 'd';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'livraison';
-		$this->values->rights[$r][5] = 'supprimer';
+		$this->rights[$r][0] = 1109;
+		$this->rights[$r][1] = 'Supprimer les bons de livraison';
+		$this->rights[$r][2] = 'd';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'livraison';
+		$this->rights[$r][5] = 'supprimer';
 	}
 
 	/**
@@ -199,18 +199,18 @@ class modExpedition extends DolibarrModules {
 		global $conf;
 
 		// Permissions
-		$this->values->remove($options);
+		$this->remove($options);
 
 		$sql = array();
 
 		$sql = array(
-			"DELETE FROM " . MAIN_DB_PREFIX . "document_model WHERE nom = '" . $this->values->const[0][2] . "' AND entity = " . $conf->entity,
-			"INSERT INTO " . MAIN_DB_PREFIX . "document_model (nom, type, entity) VALUES('" . $this->values->const[0][2] . "','shipping'," . $conf->entity . ")",
-			"DELETE FROM " . MAIN_DB_PREFIX . "document_model WHERE nom = '" . $this->values->const[1][2] . "' AND entity = " . $conf->entity,
-			"INSERT INTO " . MAIN_DB_PREFIX . "document_model (nom, type, entity) VALUES('" . $this->values->const[1][2] . "','delivery'," . $conf->entity . ")",
+			"DELETE FROM " . MAIN_DB_PREFIX . "document_model WHERE nom = '" . $this->const[0][2] . "' AND entity = " . $conf->entity,
+			"INSERT INTO " . MAIN_DB_PREFIX . "document_model (nom, type, entity) VALUES('" . $this->const[0][2] . "','shipping'," . $conf->entity . ")",
+			"DELETE FROM " . MAIN_DB_PREFIX . "document_model WHERE nom = '" . $this->const[1][2] . "' AND entity = " . $conf->entity,
+			"INSERT INTO " . MAIN_DB_PREFIX . "document_model (nom, type, entity) VALUES('" . $this->const[1][2] . "','delivery'," . $conf->entity . ")",
 		);
 
-		return $this->values->_init($sql, $options);
+		return $this->_init($sql, $options);
 	}
 
 	/**
@@ -224,7 +224,7 @@ class modExpedition extends DolibarrModules {
 	function remove($options = '') {
 		$sql = array();
 
-		return $this->values->_remove($sql, $options);
+		return $this->_remove($sql, $options);
 	}
 
 }

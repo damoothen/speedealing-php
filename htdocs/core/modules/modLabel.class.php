@@ -40,51 +40,51 @@ class modLabel extends DolibarrModules {
 	 */
 	function modLabel($db) {
 		parent::__construct($db);
-		$this->values->numero = 60;
+		$this->numero = 60;
 
-		$this->values->family = "other";
+		$this->family = "other";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->values->name = preg_replace('/^mod/i', '', get_class($this));
-		$this->values->description = "Gestion des etiquettes";
-		$this->values->version = 'development';  // 'development' or 'experimental' or 'dolibarr' or version
-		$this->values->const_name = 'MAIN_MODULE_' . strtoupper($this->values->name);
-		$this->values->special = 2;
-		$this->values->picto = 'label';
+		$this->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->description = "Gestion des etiquettes";
+		$this->version = 'development';  // 'development' or 'experimental' or 'dolibarr' or version
+		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
+		$this->special = 2;
+		$this->picto = 'label';
 
 		// Data directories to create when module is enabled
-		$this->values->dirs = array("/label/temp");
+		$this->dirs = array("/label/temp");
 
 		// Dependancies
-		$this->values->depends = array();
-		$this->values->requiredby = array();
+		$this->depends = array();
+		$this->requiredby = array();
 
 		// Config pages
-		$this->values->config_page_url = array("label.php");
+		$this->config_page_url = array("label.php");
 
 		// Constants
-		$this->values->const = array();
+		$this->const = array();
 
 		// Boxes
-		$this->values->boxes = array();
+		$this->boxes = array();
 
 		// Permissions
-		$this->values->rights = array();
-		$this->values->rights_class = 'label';
+		$this->rights = array();
+		$this->rights_class = 'label';
 
-		$this->values->rights[1][0] = 601; // id de la permission
-		$this->values->rights[1][1] = 'Lire les etiquettes'; // libelle de la permission
-		$this->values->rights[1][3] = 1; // La permission est-elle une permission par defaut
-		$this->values->rights[1][4] = 'lire';
+		$this->rights[1][0] = 601; // id de la permission
+		$this->rights[1][1] = 'Lire les etiquettes'; // libelle de la permission
+		$this->rights[1][3] = 1; // La permission est-elle une permission par defaut
+		$this->rights[1][4] = 'lire';
 
-		$this->values->rights[2][0] = 602; // id de la permission
-		$this->values->rights[2][1] = 'Creer/modifier les etiquettes'; // libelle de la permission
-		$this->values->rights[2][3] = 0; // La permission est-elle une permission par defaut
-		$this->values->rights[2][4] = 'creer';
+		$this->rights[2][0] = 602; // id de la permission
+		$this->rights[2][1] = 'Creer/modifier les etiquettes'; // libelle de la permission
+		$this->rights[2][3] = 0; // La permission est-elle une permission par defaut
+		$this->rights[2][4] = 'creer';
 
-		$this->values->rights[4][0] = 609; // id de la permission
-		$this->values->rights[4][1] = 'Supprimer les etiquettes'; // libelle de la permission
-		$this->values->rights[4][3] = 0; // La permission est-elle une permission par defaut
-		$this->values->rights[4][4] = 'supprimer';
+		$this->rights[4][0] = 609; // id de la permission
+		$this->rights[4][1] = 'Supprimer les etiquettes'; // libelle de la permission
+		$this->rights[4][3] = 0; // La permission est-elle une permission par defaut
+		$this->rights[4][4] = 'supprimer';
 	}
 
 	/**
@@ -97,11 +97,11 @@ class modLabel extends DolibarrModules {
 	 */
 	function init($options = '') {
 		// Permissions
-		$this->values->remove($options);
+		$this->remove($options);
 
 		$sql = array();
 
-		return $this->values->_init($sql, $options);
+		return $this->_init($sql, $options);
 	}
 
 	/**
@@ -115,7 +115,7 @@ class modLabel extends DolibarrModules {
 	function remove($options = '') {
 		$sql = array();
 
-		return $this->values->_remove($sql, $options);
+		return $this->_remove($sql, $options);
 	}
 
 }

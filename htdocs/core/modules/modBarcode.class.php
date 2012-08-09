@@ -41,58 +41,58 @@ class modBarcode extends DolibarrModules {
 	 */
 	function modBarcode($db) {
 		parent::__construct($db);
-		$this->values->numero = 55;
+		$this->numero = 55;
 
-		$this->values->family = "technic";
+		$this->family = "technic";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->values->name = preg_replace('/^mod/i', '', get_class($this));
-		$this->values->description = "Gestion des codes barres";
-		$this->values->version = 'dolibarr';  // 'development' or 'experimental' or 'dolibarr' or version
-		$this->values->const_name = 'MAIN_MODULE_' . strtoupper($this->values->name);
-		$this->values->special = 2;
-		$this->values->picto = 'barcode';
+		$this->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->description = "Gestion des codes barres";
+		$this->version = 'dolibarr';  // 'development' or 'experimental' or 'dolibarr' or version
+		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
+		$this->special = 2;
+		$this->picto = 'barcode';
 
 		// Data directories to create when module is enabled
-		$this->values->dirs = array("/barcode/temp");
+		$this->dirs = array("/barcode/temp");
 
 		// Dependances
-		$this->values->depends = array();		// May be used for product or service or third party module
-		$this->values->requiredby = array();
+		$this->depends = array();		// May be used for product or service or third party module
+		$this->requiredby = array();
 
 		// Config pages
-		$this->values->config_page_url = array("barcode.php");
+		$this->config_page_url = array("barcode.php");
 
 		// Constants
-		// Example: $this->values->const=array(0=>array('MYMODULE_MYNEWCONST1','chaine','myvalue','This is a constant to add',0),
+		// Example: $this->const=array(0=>array('MYMODULE_MYNEWCONST1','chaine','myvalue','This is a constant to add',0),
 		//                            1=>array('MYMODULE_MYNEWCONST2','chaine','myvalue','This is another constant to add',0) );
-		$this->values->const = array(
+		$this->const = array(
 				//0=>array('GENBARCODE_LOCATION','chaine',DOL_DOCUMENT_ROOT.'/includes/barcode/genbarcode/genbarcode','Path to genbarcode command line tool',0)
 		);
 
 		// Boxes
-		$this->values->boxes = array();
+		$this->boxes = array();
 
 		// Permissions
-		$this->values->rights = array();
-		$this->values->rights_class = 'barcode';
+		$this->rights = array();
+		$this->rights_class = 'barcode';
 
-		$this->values->rights[1][0] = 300; // id de la permission
-		$this->values->rights[1][1] = 'Lire les codes barres'; // libelle de la permission
-		$this->values->rights[1][2] = 'r'; // type de la permission (deprecie a ce jour)
-		$this->values->rights[1][3] = 1; // La permission est-elle une permission par defaut
-		$this->values->rights[1][4] = 'lire';
+		$this->rights[1][0] = 300; // id de la permission
+		$this->rights[1][1] = 'Lire les codes barres'; // libelle de la permission
+		$this->rights[1][2] = 'r'; // type de la permission (deprecie a ce jour)
+		$this->rights[1][3] = 1; // La permission est-elle une permission par defaut
+		$this->rights[1][4] = 'lire';
 
-		$this->values->rights[2][0] = 301; // id de la permission
-		$this->values->rights[2][1] = 'Creer/modifier les codes barres'; // libelle de la permission
-		$this->values->rights[2][2] = 'w'; // type de la permission (deprecie a ce jour)
-		$this->values->rights[2][3] = 0; // La permission est-elle une permission par defaut
-		$this->values->rights[2][4] = 'creer';
+		$this->rights[2][0] = 301; // id de la permission
+		$this->rights[2][1] = 'Creer/modifier les codes barres'; // libelle de la permission
+		$this->rights[2][2] = 'w'; // type de la permission (deprecie a ce jour)
+		$this->rights[2][3] = 0; // La permission est-elle une permission par defaut
+		$this->rights[2][4] = 'creer';
 
-		$this->values->rights[4][0] = 302; // id de la permission
-		$this->values->rights[4][1] = 'Supprimer les codes barres'; // libelle de la permission
-		$this->values->rights[4][2] = 'd'; // type de la permission (deprecie a ce jour)
-		$this->values->rights[4][3] = 0; // La permission est-elle une permission par defaut
-		$this->values->rights[4][4] = 'supprimer';
+		$this->rights[4][0] = 302; // id de la permission
+		$this->rights[4][1] = 'Supprimer les codes barres'; // libelle de la permission
+		$this->rights[4][2] = 'd'; // type de la permission (deprecie a ce jour)
+		$this->rights[4][3] = 0; // La permission est-elle une permission par defaut
+		$this->rights[4][4] = 'supprimer';
 	}
 
 	/**
@@ -105,11 +105,11 @@ class modBarcode extends DolibarrModules {
 	 */
 	function init($options = '') {
 		// Permissions
-		$this->values->remove($options);
+		$this->remove($options);
 
 		$sql = array();
 
-		return $this->values->_init($sql, $options);
+		return $this->_init($sql, $options);
 	}
 
 	/**
@@ -123,7 +123,7 @@ class modBarcode extends DolibarrModules {
 	function remove($options = '') {
 		$sql = array();
 
-		return $this->values->_remove($sql, $options);
+		return $this->_remove($sql, $options);
 	}
 
 }

@@ -41,64 +41,64 @@ class modDon extends DolibarrModules {
 	 */
 	function modDon($db) {
 		parent::__construct($db);
-		$this->values->numero = 700;
+		$this->numero = 700;
 
-		$this->values->family = "financial";
+		$this->family = "financial";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->values->name = preg_replace('/^mod/i', '', get_class($this));
-		$this->values->description = "Gestion des dons";
-		$this->values->version = 'dolibarr';	// 'experimental' or 'dolibarr' or version
-		$this->values->const_name = 'MAIN_MODULE_' . strtoupper($this->values->name);
-		$this->values->special = 0;
+		$this->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->description = "Gestion des dons";
+		$this->version = 'dolibarr';	// 'experimental' or 'dolibarr' or version
+		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
+		$this->special = 0;
 		// Name of png file (without png) used for this module.
 		// Png file must be in theme/yourtheme/img directory under name object_pictovalue.png.
-		$this->values->picto = 'bill';
+		$this->picto = 'bill';
 
 		// Data directories to create when module is enabled
-		$this->values->dirs = array("/dons/temp");
+		$this->dirs = array("/dons/temp");
 
 		// Dependancies
-		$this->values->depends = array();
-		$this->values->requiredby = array();
+		$this->depends = array();
+		$this->requiredby = array();
 
 		// Config pages
-		$this->values->config_page_url = array("dons.php");
+		$this->config_page_url = array("dons.php");
 
 		// Constants
-		$this->values->const = array();
+		$this->const = array();
 		$r = 0;
 
-		$this->values->const[$r][0] = "DON_ADDON_MODEL";
-		$this->values->const[$r][1] = "chaine";
-		$this->values->const[$r][2] = "html_cerfafr";
-		$this->values->const[$r][3] = 'Nom du gestionnaire de generation de recu de dons';
-		$this->values->const[$r][4] = 0;
+		$this->const[$r][0] = "DON_ADDON_MODEL";
+		$this->const[$r][1] = "chaine";
+		$this->const[$r][2] = "html_cerfafr";
+		$this->const[$r][3] = 'Nom du gestionnaire de generation de recu de dons';
+		$this->const[$r][4] = 0;
 		$r++;
 
 		// Boxes
-		$this->values->boxes = array();
+		$this->boxes = array();
 
 		// Permissions
-		$this->values->rights = array();
-		$this->values->rights_class = 'don';
+		$this->rights = array();
+		$this->rights_class = 'don';
 
-		$this->values->rights[1][0] = 701;
-		$this->values->rights[1][1] = 'Lire les dons';
-		$this->values->rights[1][2] = 'r';
-		$this->values->rights[1][3] = 1;
-		$this->values->rights[1][4] = 'lire';
+		$this->rights[1][0] = 701;
+		$this->rights[1][1] = 'Lire les dons';
+		$this->rights[1][2] = 'r';
+		$this->rights[1][3] = 1;
+		$this->rights[1][4] = 'lire';
 
-		$this->values->rights[2][0] = 702;
-		$this->values->rights[2][1] = 'Creer/modifier les dons';
-		$this->values->rights[2][2] = 'w';
-		$this->values->rights[2][3] = 0;
-		$this->values->rights[2][4] = 'creer';
+		$this->rights[2][0] = 702;
+		$this->rights[2][1] = 'Creer/modifier les dons';
+		$this->rights[2][2] = 'w';
+		$this->rights[2][3] = 0;
+		$this->rights[2][4] = 'creer';
 
-		$this->values->rights[3][0] = 703;
-		$this->values->rights[3][1] = 'Supprimer les dons';
-		$this->values->rights[3][2] = 'd';
-		$this->values->rights[3][3] = 0;
-		$this->values->rights[3][4] = 'supprimer';
+		$this->rights[3][0] = 703;
+		$this->rights[3][1] = 'Supprimer les dons';
+		$this->rights[3][2] = 'd';
+		$this->rights[3][3] = 0;
+		$this->rights[3][4] = 'supprimer';
 	}
 
 	/**
@@ -113,11 +113,11 @@ class modDon extends DolibarrModules {
 		global $conf;
 
 		$sql = array(
-			"DELETE FROM " . MAIN_DB_PREFIX . "document_model WHERE nom = '" . $this->values->const[0][2] . "' AND entity = " . $conf->entity,
-			"INSERT INTO " . MAIN_DB_PREFIX . "document_model (nom, type, entity) VALUES('" . $this->values->const[0][2] . "','donation'," . $conf->entity . ")",
+			"DELETE FROM " . MAIN_DB_PREFIX . "document_model WHERE nom = '" . $this->const[0][2] . "' AND entity = " . $conf->entity,
+			"INSERT INTO " . MAIN_DB_PREFIX . "document_model (nom, type, entity) VALUES('" . $this->const[0][2] . "','donation'," . $conf->entity . ")",
 		);
 
-		return $this->values->_init($sql, $options);
+		return $this->_init($sql, $options);
 	}
 
 	/**
@@ -131,7 +131,7 @@ class modDon extends DolibarrModules {
 	function remove($options = '') {
 		$sql = array();
 
-		return $this->values->_remove($sql, $options);
+		return $this->_remove($sql, $options);
 	}
 
 }

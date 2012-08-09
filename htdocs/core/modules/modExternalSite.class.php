@@ -43,55 +43,55 @@ class modExternalSite extends DolibarrModules {
 
 		// Id for module (must be unique).
 		// Use here a free id.
-		$this->values->numero = 100;
+		$this->numero = 100;
 
 		// Family can be 'crm','financial','hr','projects','product','technic','other'
 		// It is used to sort modules in module setup page
-		$this->values->family = "other";
+		$this->family = "other";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->values->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->name = preg_replace('/^mod/i', '', get_class($this));
 		// Module description used if translation string 'ModuleXXXDesc' not found (XXX is id value)
-		$this->values->description = "Include any external web site into Dolibarr menus and view it into a Dolibarr frame.";
+		$this->description = "Include any external web site into Dolibarr menus and view it into a Dolibarr frame.";
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
-		$this->values->version = 'dolibarr';
+		$this->version = 'dolibarr';
 		// Key used in llx_const table to save module status enabled/disabled (XXX is id value)
-		$this->values->const_name = 'MAIN_MODULE_' . strtoupper($this->values->name);
+		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
 		// Where to store the module in setup page (0=common,1=interface,2=other)
-		$this->values->special = 1;
+		$this->special = 1;
 		// Name of png file (without png) used for this module
-		$this->values->picto = 'bookmark';
+		$this->picto = 'bookmark';
 		// Call to inside lang's file
-		$this->values->langfiles = array("@externalsite");
+		$this->langfiles = array("@externalsite");
 
 		// Data directories to create when module is enabled
-		$this->values->dirs = array();
+		$this->dirs = array();
 
 		// Config pages. Put here list of php page names stored in admmin directory used to setup module
-		$this->values->config_page_url = array("externalsite.php@externalsite");
+		$this->config_page_url = array("externalsite.php@externalsite");
 
 		// Dependencies
-		$this->values->depends = array();  // List of modules id that must be enabled if this module is enabled
-		$this->values->requiredby = array(); // List of modules id to disable if this one is disabled
+		$this->depends = array();  // List of modules id that must be enabled if this module is enabled
+		$this->requiredby = array(); // List of modules id to disable if this one is disabled
 		// Constants
-		$this->values->const = array();   // List of parameters
+		$this->const = array();   // List of parameters
 		// Boxes
-		$this->values->boxes = array();   // List of boxes
+		$this->boxes = array();   // List of boxes
 		$r = 0;
 
 		// Add here list of php file(s) stored in core/boxes that contains class to show a box.
 		// Example:
-		//$this->values->boxes[$r][1] = "myboxa.php";
+		//$this->boxes[$r][1] = "myboxa.php";
 		//$r++;
-		//$this->values->boxes[$r][1] = "myboxb.php";
+		//$this->boxes[$r][1] = "myboxb.php";
 		//$r++;
 		// Permissions
-		$this->values->rights_class = 'externalsite'; // Permission key
-		$this->values->rights = array();  // Permission array used by this module
+		$this->rights_class = 'externalsite'; // Permission key
+		$this->rights = array();  // Permission array used by this module
 		// Menus
 		//------
 		$r = 0;
 
-		$this->values->menu[$r] = array('fk_menu' => 0,
+		$this->menu[$r] = array('fk_menu' => 0,
 			'type' => 'top',
 			'titre' => 'ExternalSites',
 			'mainmenu' => 'externalsite',
@@ -117,7 +117,7 @@ class modExternalSite extends DolibarrModules {
 	function init($options = '') {
 		$sql = array();
 
-		return $this->values->_init($sql, $options);
+		return $this->_init($sql, $options);
 	}
 
 	/**
@@ -131,7 +131,7 @@ class modExternalSite extends DolibarrModules {
 	function remove($options = '') {
 		$sql = array();
 
-		return $this->values->_remove($sql, $options);
+		return $this->_remove($sql, $options);
 	}
 
 }

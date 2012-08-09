@@ -39,53 +39,53 @@ class modExport extends DolibarrModules {
 	 */
 	function modExport($db) {
 		parent::__construct($db);
-		$this->values->numero = 240;
+		$this->numero = 240;
 
-		$this->values->family = "technic";
+		$this->family = "technic";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->values->name = preg_replace('/^mod/i', '', get_class($this));
-		$this->values->description = "Outils d'exports de donnees Dolibarr (via un assistant)";
-		$this->values->version = 'dolibarr';						// 'experimental' or 'dolibarr' or version
-		$this->values->const_name = 'MAIN_MODULE_' . strtoupper($this->values->name);
-		$this->values->special = 0;
-		$this->values->picto = 'technic';
+		$this->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->description = "Outils d'exports de donnees Dolibarr (via un assistant)";
+		$this->version = 'dolibarr';						// 'experimental' or 'dolibarr' or version
+		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
+		$this->special = 0;
+		$this->picto = 'technic';
 
 		// Data directories to create when module is enabled
-		$this->values->dirs = array("/export/temp");
+		$this->dirs = array("/export/temp");
 
 		// Config pages
-		$this->values->config_page_url = array();
+		$this->config_page_url = array();
 
 		// Dependances
-		$this->values->depends = array();
-		$this->values->requiredby = array();
-		$this->values->phpmin = array(4, 2, 0);
-		$this->values->phpmax = array();
+		$this->depends = array();
+		$this->requiredby = array();
+		$this->phpmin = array(4, 2, 0);
+		$this->phpmax = array();
 
 		// Constantes
-		$this->values->const = array();
+		$this->const = array();
 
 		// Boxes
-		$this->values->boxes = array();
+		$this->boxes = array();
 
 		// Permissions
-		$this->values->rights = array();
-		$this->values->rights_class = 'export';
+		$this->rights = array();
+		$this->rights_class = 'export';
 		$r = 0;
 
 		$r++;
-		$this->values->rights[$r][0] = 1201;
-		$this->values->rights[$r][1] = 'Lire les exports';
-		$this->values->rights[$r][2] = 'r';
-		$this->values->rights[$r][3] = 1;
-		$this->values->rights[$r][4] = 'lire';
+		$this->rights[$r][0] = 1201;
+		$this->rights[$r][1] = 'Lire les exports';
+		$this->rights[$r][2] = 'r';
+		$this->rights[$r][3] = 1;
+		$this->rights[$r][4] = 'lire';
 
 		$r++;
-		$this->values->rights[$r][0] = 1202;
-		$this->values->rights[$r][1] = 'Creer/modifier un export';
-		$this->values->rights[$r][2] = 'w';
-		$this->values->rights[$r][3] = 0;
-		$this->values->rights[$r][4] = 'creer';
+		$this->rights[$r][0] = 1202;
+		$this->rights[$r][1] = 'Creer/modifier un export';
+		$this->rights[$r][2] = 'w';
+		$this->rights[$r][3] = 0;
+		$this->rights[$r][4] = 'creer';
 	}
 
 	/**
@@ -99,7 +99,7 @@ class modExport extends DolibarrModules {
 	function init($options = '') {
 		$sql = array();
 
-		return $this->values->_init($sql, $options);
+		return $this->_init($sql, $options);
 	}
 
 	/**
@@ -113,7 +113,7 @@ class modExport extends DolibarrModules {
 	function remove($options = '') {
 		$sql = array();
 
-		return $this->values->_remove($sql, $options);
+		return $this->_remove($sql, $options);
 	}
 
 }

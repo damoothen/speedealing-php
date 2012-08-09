@@ -40,43 +40,43 @@ class modSyslog extends DolibarrModules {
 	 */
 	function modSyslog($db) {
 		parent::__construct($db);
-		$this->values->numero = 42;
+		$this->numero = 42;
 
 		// Family can be 'crm','financial','hr','projects','products','ecm','technic','other'
 		// It is used to group modules in module setup page
-		$this->values->family = "base";
+		$this->family = "base";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->values->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->name = preg_replace('/^mod/i', '', get_class($this));
 		// Module description, used if translation string 'ModuleXXXDesc' not found (where XXX is value of numeric property 'numero' of module)
-		$this->values->description = "Activate debug logs (syslog)";
+		$this->description = "Activate debug logs (syslog)";
 		// Can be enabled / disabled only in the main company
-		$this->values->core_enabled = 1;
+		$this->core_enabled = 1;
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
-		$this->values->version = 'speedealing';	// 'experimental' or 'dolibarr' or version
+		$this->version = 'speedealing';	// 'experimental' or 'dolibarr' or version
 		// Where to store the module in setup page (0=common,1=interface,2=others,3=very specific)
-		$this->values->special = 2;
+		$this->special = 2;
 		// Name of image file used for this module.
-		$this->values->picto = 'technic';
+		$this->picto = 'technic';
 
 		// Data directories to create when module is enabled
-		$this->values->dirs = array();
+		$this->dirs = array();
 
 		// Config pages
-		$this->values->config_page_url = array("syslog.php");
+		$this->config_page_url = array("syslog.php");
 
 		// Dependances
-		$this->values->depends = array();
-		$this->values->requiredby = array();
+		$this->depends = array();
+		$this->requiredby = array();
 
 		// Constantes
-		$this->values->const = array();
+		$this->const = array();
 
 		// Boites
-		$this->values->boxes = array();
+		$this->boxes = array();
 
 		// Permissions
-		$this->values->rights = array();
-		$this->values->rights_class = 'syslog';
+		$this->rights = array();
+		$this->rights_class = 'syslog';
 	}
 
 	/**
@@ -90,7 +90,7 @@ class modSyslog extends DolibarrModules {
 	function init($options = '') {
 		$sql = array();
 
-		return $this->values->_init($sql, $options);
+		return $this->_init($sql, $options);
 	}
 
 	/**
@@ -104,7 +104,7 @@ class modSyslog extends DolibarrModules {
 	function remove($options = '') {
 		$sql = array();
 
-		return $this->values->_remove($sql, $options);
+		return $this->_remove($sql, $options);
 	}
 
 }
