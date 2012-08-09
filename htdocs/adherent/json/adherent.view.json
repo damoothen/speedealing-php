@@ -8,15 +8,22 @@
        "target_id": {
            "map": "function(doc) {\n  if(doc.class && doc.class==\"Adherent\")\n  \temit(doc._id, {_id:doc._id, _rev:doc._rev});\n}"
        },
-       "count_status": {
-           "map": "function(doc) {\n  if(doc.class && doc.class==\"Adherent\")\n  emit(doc.statut, 1);\n}",
-           "reduce": "function(keys, values) {\n  return sum(values)\n}"
-       },
        "group": {
            "map": "function(doc) {\n  if(doc.class && doc.class==\"Adherent\")\n  emit(doc.typeid, doc);\n}"
        },
        "cotisation": {
            "map": "function(doc) {\nif(doc.cotisations.length > 0) {\n    for(var idx in doc.cotisations) {\n      emit(doc._id, {_id:doc._id, dateh:doc.cotisations[idx].dateh, datef:doc.cotisations[idx].datef, amount:doc.cotisations[idx].amount});\n    }\n  }\n}"
+       },
+       "cotisationAmount": {
+           "map": "function(doc) {\nif(doc.cotisations.length > 0) {\n    for(var idx in doc.cotisations) {\n      emit(doc.cotisations[idx].year, doc.cotisations[idx].amount);\n    }\n  }\n}",
+           "reduce": "function(keys, values) {\n  return sum(values)\n}"
+       },
+       "cotisationCount": {
+           "map": "function(doc) {\nif(doc.cotisations.length > 0) {\n    for(var idx in doc.cotisations) {\n      emit(doc.cotisations[idx].year, 1);\n    }\n  }\n}",
+           "reduce": "function(keys, values) {\n  return sum(values)\n}"
+       },
+       "cotisationYear": {
+           "map": "function(doc) {\nif(doc.cotisations.length > 0) {\n    for(var idx in doc.cotisations) {\n      emit(doc.cotisations[idx].year, {_id:doc._id, login:doc.login, Firstname:doc.Firstname, Lastname:doc.Lastname, dateh:doc.cotisations[idx].dateh, datef:doc.cotisations[idx].datef, note:doc.cotisations[idx].note, amount:doc.cotisations[idx].amount});\n    }\n  }\n}"
        }
    },
    "updates": {

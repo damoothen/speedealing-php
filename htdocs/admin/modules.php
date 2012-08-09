@@ -155,9 +155,9 @@ if ($action == 'set' && $user->admin) {
 		$key = $_GET['value'];
 		$objMod = $modules[$key];
 
-		foreach($objMod->values as $key => $aRow)
+		foreach($objMod as $key => $aRow)
 			$object->$key = $aRow;
-		$object->_id = "module:" . $objMod->values->name;
+		$object->_id = "module:" . $objMod->name;
 		$object->enabled = true;
 		dol_delcache("MenuTop:list"); //refresh menu
 		dol_delcache("MenuTop:submenu"); //refresh menu
@@ -344,12 +344,12 @@ foreach ($orders as $key => $value) {
 
 	// Id
 	print '<td>';
-	print $objMod->values->numero;
+	print $objMod->numero;
 	print '</td>';
 
 	// Family
 	print '<td>';
-	$family = $objMod->values->family;
+	$family = $objMod->family;
 	print $familytext = empty($familylib[$family]) ? $family : $familylib[$family];
 	print "</td>\n";
 
@@ -358,11 +358,11 @@ foreach ($orders as $key => $value) {
 	$alttext = '';
 	//if (is_array($objMod->need_dolibarr_version)) $alttext.=($alttext?' - ':'').'Dolibarr >= '.join('.',$objMod->need_dolibarr_version);
 	//if (is_array($objMod->phpmin)) $alttext.=($alttext?' - ':'').'PHP >= '.join('.',$objMod->phpmin);
-	if (!empty($objMod->values->picto)) {
-		if (preg_match('/^\//i', $objMod->values->picto))
-			print img_picto($alttext, $objMod->values->picto, ' width="14px"', 1);
+	if (!empty($objMod->picto)) {
+		if (preg_match('/^\//i', $objMod->picto))
+			print img_picto($alttext, $objMod->picto, ' width="14px"', 1);
 		else
-			print img_object($alttext, $objMod->values->picto, ' width="14px"');
+			print img_object($alttext, $objMod->picto, ' width="14px"');
 	}
 	else {
 		print img_object($alttext, 'generic');
@@ -384,7 +384,7 @@ foreach ($orders as $key => $value) {
 	print "</td>\n";
 
 	// Activate/Disable and Setup (2 columns)
-	$name = $objMod->values->name;
+	$name = $objMod->name;
 
 	if (isset($conf->$name) && !empty($conf->$name->enabled)) {
 
@@ -398,16 +398,16 @@ foreach ($orders as $key => $value) {
 			print '<span class="lbl ok_bg sl_status ">' . $langs->trans("Required") . '</span>';
 			print '</td>' . "\n";
 		} else {
-			print '<a href="' . $_SERVER['PHP_SELF'] . '?id=module:' . $objMod->values->name . '&amp;action=reset&amp;value=' . $key . '">';
+			print '<a href="' . $_SERVER['PHP_SELF'] . '?id=module:' . $objMod->name . '&amp;action=reset&amp;value=' . $key . '">';
 			print img_picto($langs->trans("Activated"), 'switch_on');
 			print '</a></td>' . "\n";
 		}
 
-		if (!empty($objMod->values->config_page_url) && !$disableSetup) {
-			if (is_array($objMod->values->config_page_url)) {
+		if (!empty($objMod->config_page_url) && !$disableSetup) {
+			if (is_array($objMod->config_page_url)) {
 				print '  <td>';
 				$i = 0;
-				foreach ($objMod->values->config_page_url as $page) {
+				foreach ($objMod->config_page_url as $page) {
 					$urlpage = $page;
 					if ($i++) {
 						print '<a href="' . $_SERVER['PHP_SELF'] . '/' . $urlpage . '" title="' . $langs->trans($page) . '">' . img_picto(ucfirst($page), "setup") . '</a>&nbsp;';
@@ -421,10 +421,10 @@ foreach ($orders as $key => $value) {
 					}
 				}
 				print "</td>\n";
-			} else if (preg_match('/^([^@]+)@([^@]+)$/i', $objMod->values->config_page_url, $regs)) {
+			} else if (preg_match('/^([^@]+)@([^@]+)$/i', $objMod->config_page_url, $regs)) {
 				print '<td><a href="' . dol_buildpath('/' . $regs[2] . '/admin/' . $regs[1], 1) . '" title="' . $langs->trans("Setup") . '">' . img_picto($langs->trans("Setup"), "setup") . '</a></td>';
 			} else {
-				print '<td><a href="' . $objMod->values->config_page_url . '" title="' . $langs->trans("Setup") . '">' . img_picto($langs->trans("Setup"), "setup") . '</a></td>';
+				print '<td><a href="' . $objMod->config_page_url . '" title="' . $langs->trans("Setup") . '">' . img_picto($langs->trans("Setup"), "setup") . '</a></td>';
 			}
 		} else {
 			print "<td>&nbsp;</td>";
@@ -432,11 +432,11 @@ foreach ($orders as $key => $value) {
 	} else {
 		print "<td>";
 
-		if ($objMod->values->version == 'dolibarr') {
+		if ($objMod->version == 'dolibarr') {
 			print "</td>\n  <td>&nbsp;</td>\n";
 		} else {
 			// Module non actif
-			print '<a href="' . $_SERVER['PHP_SELF'] . '?id=module:' . $objMod->values->name . '&amp;action=set&amp;value=' . $key . '">';
+			print '<a href="' . $_SERVER['PHP_SELF'] . '?id=module:' . $objMod->name . '&amp;action=set&amp;value=' . $key . '">';
 			print img_picto($langs->trans("Disabled"), 'switch_off');
 			print "</a></td>\n  <td>&nbsp;</td>\n";
 		}

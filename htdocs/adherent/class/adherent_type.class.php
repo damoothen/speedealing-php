@@ -145,7 +145,7 @@ class AdherentType extends nosqlDocument {
 		$result = '';
 
 		if (!empty($this->id)) {
-			$lien = '<a href="' . DOL_URL_ROOT . '/adherents/type.php?id=' . $this->id . '">';
+			$lien = '<a href="' . DOL_URL_ROOT . '/adherent/type.php?id=' . $this->id . '">';
 			$lienfin = '</a>';
 		}
 

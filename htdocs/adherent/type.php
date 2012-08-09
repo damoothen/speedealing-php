@@ -339,14 +339,14 @@ if ($rowid > 0) {
 		print'<th class="essential">';
 		print $langs->trans('Name');
 		print'</th>';
-		$obj->aoColumns[$i]->mDataProp = "lastname";
+		$obj->aoColumns[$i]->mDataProp = "Lastname";
 		$obj->aoColumns[$i]->sDefaultContent = "";
 //$obj->aoColumns[$i]->sClass = "edit";
 		$i++;
 		print'<th class="essential">';
 		print $langs->trans('Firstname');
 		print'</th>';
-		$obj->aoColumns[$i]->mDataProp = "firstname";
+		$obj->aoColumns[$i]->mDataProp = "Firstname";
 		$obj->aoColumns[$i]->sDefaultContent = "";
 		//$obj->aoColumns[$i]->sClass = "edit";
 		$i++;
@@ -354,7 +354,7 @@ if ($rowid > 0) {
 		print $langs->trans("Status");
 		print'</th>';
 		$obj->aoColumns[$i]->mDataProp = "Status";
-		$obj->aoColumns[$i]->sClass = "select center";
+		$obj->aoColumns[$i]->sClass = "center";
 		$obj->aoColumns[$i]->sWidth = "180px";
 		$obj->aoColumns[$i]->sDefaultContent = "0";
 		$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("Status", "status", array("dateEnd"=>"last_subscription_date_end"));
@@ -376,8 +376,8 @@ if ($rowid > 0) {
 				print '<tr>';
 				print '<td>' . $aRow->value->_id . '</td>';
 				print '<td>' . $aRow->value->login . '</td>';
-				print '<td>' . $aRow->value->lastname . '</td>';
-				print '<td>' . $aRow->value->firstname . '</td>';
+				print '<td>' . $aRow->value->Lastname . '</td>';
+				print '<td>' . $aRow->value->Firstname . '</td>';
 				print '<td>' . (empty($aRow->value->Status) ? "0" : $aRow->value->Status) . '</td>';
 				print '<td>' . $aRow->value->last_subscription_date_end . '</td>';
 				print '</tr>';

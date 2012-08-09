@@ -189,8 +189,8 @@ if ($action == 'update' && !$_POST["cancel"] && $user->rights->adherent->creer) 
 
 		// Change values
 		$object->civilite_id = trim($_POST["civilite_id"]);
-		$object->firstname = trim($_POST["prenom"]);
-		$object->lastname = trim($_POST["nom"]);
+		$object->Firstname = trim($_POST["prenom"]);
+		$object->Lastname = trim($_POST["nom"]);
 		$object->login = trim($_POST["login"]);
 		$object->pass = trim($_POST["pass"]);
 
@@ -347,8 +347,8 @@ if ($action == 'add' && $user->rights->adherent->creer) {
 	$socid = $_POST["socid"];
 
 	$object->civilite_id = $civilite_id;
-	$object->firstname = $prenom;
-	$object->lastname = $nom;
+	$object->Firstname = $prenom;
+	$object->Lastname = $nom;
 	$object->societe = $societe;
 	$object->address = $address;
 	$object->zip = $zip;
@@ -884,11 +884,11 @@ if ($action == 'create') {
 	print '</tr>';
 
 	// Lastname
-	print '<tr><td><span class="fieldrequired">' . $langs->trans("Lastname") . '</span></td><td><input type="text" name="nom" value="' . (GETPOST('nom', 'alpha') ? GETPOST('nom', 'alpha') : $object->lastname) . '" size="40"></td>';
+	print '<tr><td><span class="fieldrequired">' . $langs->trans("Lastname") . '</span></td><td><input type="text" name="nom" value="' . (GETPOST('nom', 'alpha') ? GETPOST('nom', 'alpha') : $object->Lastname) . '" size="40"></td>';
 	print '</tr>';
 
 	// Firstname
-	print '<tr><td><span class="fieldrequired">' . $langs->trans("Firstname") . '</td><td><input type="text" name="prenom" size="40" value="' . (GETPOST('prenom', 'alpha') ? GETPOST('prenom', 'alpha') : $object->firstname) . '"></td>';
+	print '<tr><td><span class="fieldrequired">' . $langs->trans("Firstname") . '</td><td><input type="text" name="prenom" size="40" value="' . (GETPOST('prenom', 'alpha') ? GETPOST('prenom', 'alpha') : $object->Firstname) . '"></td>';
 	print '</tr>';
 
 	// Password
@@ -1105,11 +1105,11 @@ if ($action == 'edit') {
 	print '</tr>';
 
 	// Name
-	print '<tr><td><span class="fieldrequired">' . $langs->trans("Lastname") . '</span></td><td><input type="text" name="nom" size="40" value="' . (isset($_POST["nom"]) ? $_POST["nom"] : $object->lastname) . '"></td>';
+	print '<tr><td><span class="fieldrequired">' . $langs->trans("Lastname") . '</span></td><td><input type="text" name="nom" size="40" value="' . (isset($_POST["nom"]) ? $_POST["nom"] : $object->Lastname) . '"></td>';
 	print '</tr>';
 
 	// Firstname
-	print '<tr><td><span class="fieldrequired">' . $langs->trans("Firstname") . '</td><td><input type="text" name="prenom" size="40" value="' . (isset($_POST["prenom"]) ? $_POST["prenom"] : $object->firstname) . '"></td>';
+	print '<tr><td><span class="fieldrequired">' . $langs->trans("Firstname") . '</td><td><input type="text" name="prenom" size="40" value="' . (isset($_POST["prenom"]) ? $_POST["prenom"] : $object->Firstname) . '"></td>';
 	print '</tr>';
 
 	// Password
@@ -1520,10 +1520,10 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
 		if (empty($login)) {
 			// Full firstname and name separated with a dot : firstname.name
 			include_once(DOL_DOCUMENT_ROOT . '/core/lib/functions2.lib.php');
-			$login = dol_buildlogin($object->lastname, $object->firstname);
+			$login = dol_buildlogin($object->Lastname, $object->Firstname);
 		}
 		if (empty($login))
-			$login = strtolower(substr($object->firstname, 0, 4)) . strtolower(substr($object->lastname, 0, 4));
+			$login = strtolower(substr($object->Firstname, 0, 4)) . strtolower(substr($object->Lastname, 0, 4));
 
 		// Create a form array
 		$formquestion = array(
@@ -1714,11 +1714,11 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
 	print '</tr>';
 
 	// Name
-	print '<tr><td>' . $langs->trans("Lastname") . '</td><td class="valeur">' . $object->lastname . '&nbsp;</td>';
+	print '<tr><td>' . $langs->trans("Lastname") . '</td><td class="valeur">' . $object->Lastname . '&nbsp;</td>';
 	print '</tr>';
 
 	// Firstname
-	print '<tr><td>' . $langs->trans("Firstname") . '</td><td class="valeur">' . $object->firstname . '&nbsp;</td></tr>';
+	print '<tr><td>' . $langs->trans("Firstname") . '</td><td class="valeur">' . $object->Firstname . '&nbsp;</td></tr>';
 
 	// Password
 	if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED)) {

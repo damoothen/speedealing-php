@@ -54,71 +54,41 @@ $AdherentsResilies = array();
 
 $AdherentType = array();
 
-// Liste les adherents
-$sql = "SELECT t.rowid, t.libelle, t.cotisation,";
-$sql.= " d.statut, count(d.rowid) as somme";
-$sql.= " FROM " . MAIN_DB_PREFIX . "adherent_type as t";
-$sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "adherent as d";
-$sql.= " ON t.rowid = d.fk_adherent_type";
-$sql.= " AND d.entity IN (" . getEntity() . ")";
-$sql.= " WHERE t.entity IN (" . getEntity() . ")";
-$sql.= " GROUP BY t.rowid, t.libelle, t.cotisation, d.statut";
-
-dol_syslog("index.php::select nb of members by type sql=" . $sql, LOG_DEBUG);
-$result = $db->query($sql);
-if ($result) {
-	$num = $db->num_rows($result);
-	$i = 0;
-	while ($i < $num) {
-		$objp = $db->fetch_object($result);
+$adht = new AdherentType($db);
+$result = $adht->getView('list');
+if (count($result->rows)) {
+	foreach ($result->rows as $aRow) {
+		$objp = $aRow->value;
 
 		$adhtype = new AdherentType($db);
-		$adhtype->id = $objp->rowid;
+		$adhtype->id = $objp->_id;
 		$adhtype->cotisation = $objp->cotisation;
 		$adhtype->libelle = $objp->libelle;
-		$AdherentType[$objp->rowid] = $adhtype;
-
-		if ($objp->statut == -1) {
-			$MemberToValidate[$objp->rowid] = $objp->somme;
-		}
-		if ($objp->statut == 1) {
-			$MembersValidated[$objp->rowid] = $objp->somme;
-		}
-		if ($objp->statut == 0) {
-			$MembersResiliated[$objp->rowid] = $objp->somme;
-		}
-
-		$i++;
+		$AdherentType[$objp->libelle] = $adhtype;
 	}
-	$db->free($result);
 }
 
 $now = dol_now();
 
-// List members up to date
-// current rule: uptodate = the end date is in future whatever is type
-// old rule: uptodate = if type does not need payment, that end date is null, if type need payment that end date is in future)
-$sql = "SELECT count(*) as somme , d.fk_adherent_type";
-$sql.= " FROM " . MAIN_DB_PREFIX . "adherent as d, " . MAIN_DB_PREFIX . "adherent_type as t";
-$sql.= " WHERE d.entity IN (" . getEntity() . ")";
-//$sql.= " AND d.statut = 1 AND ((t.cotisation = 0 AND d.datefin IS NULL) OR d.datefin >= ".$db->idate($now).')';
-$sql.= " AND d.statut = 1 AND d.datefin >= " . $db->idate($now);
-$sql.= " AND t.rowid = d.fk_adherent_type";
-$sql.= " GROUP BY d.fk_adherent_type";
+$doc->_id = "_temp_view";
+$doc->map = "function(doc) {\n  var now = Math.round(+new Date()/1000);\n\n  if(doc.class && doc.class==\"Adherent\"){\n    if(doc.last_subscription_date_end && doc.Status == 1) {\n      if(doc.last_subscription_date_end < now)\n        emit([doc.typeid,\"expired\"], 1);\n      else\n        emit([doc.typeid,\"actived\"], 1);\n    }\n    else\n      emit([doc.typeid,doc.Status], 1);\n  }\n}";
+$doc->reduce = "function(keys, values) {\n  return sum(values)\n}";
 
-dol_syslog("index.php::select nb of uptodate members by type sql=" . $sql, LOG_DEBUG);
-$result = $db->query($sql);
-if ($result) {
-	$num = $db->num_rows($result);
-	$i = 0;
-	while ($i < $num) {
-		$objp = $db->fetch_object($result);
-		$MemberUpToDate[$objp->fk_adherent_type] = $objp->somme;
-		$i++;
+$result = $staticmember->storeDoc($doc);
+if (count($result->rows)) {
+	foreach ($result->rows as $aRow) {
+		$Adherents[$aRow->key[0]][$aRow->key[1]] = $aRow->value;
 	}
-	$db->free();
 }
 
+foreach ($AdherentType as $key => $adhtype) {
+	foreach ($staticmember->fk_extrafields->fields->Status->values as $idx => $row) {
+		if ($Adherents[$key][$idx]) {
+			$somme[$idx]+=$Adherents[$key][$idx];
+			$total+=$Adherents[$key][$idx];
+		}
+	}
+}
 
 print '<tr><td width="30%" class="notopnoleft" valign="top">';
 
@@ -130,36 +100,25 @@ print '<table class="noborder" width="100%">';
 print '<tr class="liste_titre"><td colspan="2">' . $langs->trans("Statistics") . '</td></tr>';
 print '<tr><td align="center">';
 
-$SommeA = 0;
-$SommeB = 0;
-$SommeC = 0;
-$SommeD = 0;
 $dataval = array();
 $datalabels = array();
 $i = 0;
 foreach ($AdherentType as $key => $adhtype) {
 	$datalabels[] = array($i, $adhtype->getNomUrl(0, dol_size(16)));
-	$dataval['draft'][] = array($i, isset($MemberToValidate[$key]) ? $MemberToValidate[$key] : 0);
-	$dataval['notuptodate'][] = array($i, isset($MembersValidated[$key]) ? $MembersValidated[$key] - $MemberUpToDate[$key] : 0);
-	$dataval['uptodate'][] = array($i, isset($MemberUpToDate[$key]) ? $MemberUpToDate[$key] : 0);
-	$dataval['resiliated'][] = array($i, isset($MembersResiliated[$key]) ? $MembersResiliated[$key] : 0);
-	$SommeA+=isset($MemberToValidate[$key]) ? $MemberToValidate[$key] : 0;
-	$SommeB+=isset($MembersValidated[$key]) ? $MembersValidated[$key] - $MemberUpToDate[$key] : 0;
-	$SommeC+=isset($MemberUpToDate[$key]) ? $MemberUpToDate[$key] : 0;
-	$SommeD+=isset($MembersResiliated[$key]) ? $MembersResiliated[$key] : 0;
+	foreach ($staticmember->fk_extrafields->fields->Status->values as $idx => $row) {
+		$dataval[$key][] = array($i, $Adherents[$key][$idx]);
+	}
 	$i++;
 }
 
 $dataseries = array();
-$dataseries[] = array('label' => $langs->trans("MenuMembersNotUpToDate"), 'data' => round($SommeB));
-$dataseries[] = array('label' => $langs->trans("MenuMembersUpToDate"), 'data' => round($SommeC));
-$dataseries[] = array('label' => $langs->trans("MembersStatusResiliated"), 'data' => round($SommeD));
-$dataseries[] = array('label' => $langs->trans("MembersStatusToValid"), 'data' => round($SommeA));
+foreach ($staticmember->fk_extrafields->fields->Status->values as $idx => $row)
+	$dataseries[] = array('label' => $langs->trans($row->label), 'data' => round($somme[$idx]));
 $data = array('series' => $dataseries);
-dol_print_graph('stats', 300, 180, $data, 1, 'pie', 1);
+dol_print_graph('stats', 330, 180, $data, 1, 'pie', 1);
 print '</td></tr>';
 print '<tr class="liste_total"><td>' . $langs->trans("Total") . '</td><td align="right">';
-print $SommeA + $SommeB + $SommeC + $SommeD;
+print $total;
 print '</td></tr>';
 print '</table>';
 
@@ -171,28 +130,32 @@ $var = true;
 print '<table class="noborder" width="100%">';
 print '<tr class="liste_titre">';
 print '<td>' . $langs->trans("MembersTypes") . '</td>';
-print '<td align=right>' . $langs->trans("MembersStatusToValid") . '</td>';
-print '<td align=right>' . $langs->trans("MenuMembersNotUpToDate") . '</td>';
-print '<td align=right>' . $langs->trans("MenuMembersUpToDate") . '</td>';
-print '<td align=right>' . $langs->trans("MembersStatusResiliated") . '</td>';
+foreach ($staticmember->fk_extrafields->fields->Status->values as $aRow)
+	print '<td align=right>' . $langs->trans($aRow->label) . '</td>';
 print "</tr>\n";
 
 foreach ($AdherentType as $key => $adhtype) {
 	$var = !$var;
 	print "<tr $bc[$var]>";
-	print '<td><a href="type.php?rowid=' . $adhtype->id . '">' . img_object($langs->trans("ShowType"), "group") . ' ' . $adhtype->getNomUrl(0, dol_size(16)) . '</a></td>';
-	print '<td align="right">' . (isset($MemberToValidate[$key]) && $MemberToValidate[$key] > 0 ? $MemberToValidate[$key] : '') . ' ' . $staticmember->LibStatus(0, 0) . '</td>';
-	print '<td align="right">' . (isset($MembersValidated[$key]) && ($MembersValidated[$key] - $MemberUpToDate[$key] > 0) ? $MembersValidated[$key] - $MemberUpToDate[$key] : '') . ' ' . $staticmember->LibStatus(1, 0) . '</td>';
-	print '<td align="right">' . (isset($MemberUpToDate[$key]) && $MemberUpToDate[$key] > 0 ? $MemberUpToDate[$key] : '') . ' ' . $staticmember->LibStatus(1, array("dateEnd"=>$now+1000)) . '</td>';
-	print '<td align="right">' . (isset($MembersResiliated[$key]) && $MembersResiliated[$key] > 0 ? $MembersResiliated[$key] : '') . ' ' . $staticmember->LibStatus(-1, 0) . '</td>';
+	print '<td><a href="adherent/type.php?id=' . $adhtype->id . '">' . img_object($langs->trans("ShowType"), "group") . ' ' . $adhtype->getNomUrl(0, dol_size(16)) . '</a></td>';
+	foreach ($staticmember->fk_extrafields->fields->Status->values as $idx => $row) {
+		if ($Adherents[$key][$idx]) {
+			print '<td align="right">' . $Adherents[$key][$idx] . ' ' . $staticmember->LibStatus($idx) . '</td>';
+		}
+		else
+			print '<td></td>';
+	}
 	print "</tr>\n";
 }
 print '<tr class="liste_total">';
 print '<td class="liste_total">' . $langs->trans("Total") . '</td>';
-print '<td class="liste_total" align="right">' . $SommeA . ' ' . $staticmember->LibStatus(0, 0) . '</td>';
-print '<td class="liste_total" align="right">' . $SommeB . ' ' . $staticmember->LibStatus(1, 0) . '</td>';
-print '<td class="liste_total" align="right">' . $SommeC . ' ' . $staticmember->LibStatus(1, array("dateEnd"=>$now+1000)) . '</td>';
-print '<td class="liste_total" align="right">' . $SommeD . ' ' . $staticmember->LibStatus(-1, 0) . '</td>';
+foreach ($staticmember->fk_extrafields->fields->Status->values as $idx => $row) {
+	if ($somme[$idx])
+		print '<td class="liste_total" align="right">' . $somme[$idx] . ' ' . $staticmember->LibStatus($idx) . '</td>';
+	else
+		print '<td></td>';
+}
+
 print '</tr>';
 
 print "</table>\n";
@@ -205,27 +168,17 @@ $Number = array();
 $tot = 0;
 $numb = 0;
 
-$sql = "SELECT c.cotisation, c.dateadh";
-$sql.= " FROM " . MAIN_DB_PREFIX . "adherent as d, " . MAIN_DB_PREFIX . "cotisation as c";
-$sql.= " WHERE d.entity IN (" . getEntity() . ")";
-$sql.= " AND d.rowid = c.fk_adherent";
-if (isset($date_select) && $date_select != '') {
-	$sql .= " AND dateadh LIKE '$date_select%'";
-}
-$result = $db->query($sql);
-if ($result) {
-	$num = $db->num_rows($result);
-	$i = 0;
-	while ($i < $num) {
-		$objp = $db->fetch_object($result);
-		$year = dol_print_date($db->jdate($objp->dateadh), "%Y");
-		$Total[$year] = (isset($Total[$year]) ? $Total[$year] : 0) + $objp->cotisation;
-		$Number[$year] = (isset($Number[$year]) ? $Number[$year] : 0) + 1;
-		$tot+=$objp->cotisation;
-		$numb+=1;
-		$i++;
+$result = $staticmember->getView('cotisationCount', array("group" => true));
+if (count($result->rows) > 0)
+	foreach ($result->rows as $aRow) {
+		$Number[$aRow->key] = $aRow->value;
 	}
-}
+
+$result = $staticmember->getView('cotisationAmount', array("group" => true));
+if (count($result->rows) > 0)
+	foreach ($result->rows as $aRow) {
+		$Total[$aRow->key] = $aRow->value;
+	}
 
 print '<table class="noborder" width="100%">';
 print '<tr class="liste_titre">';
@@ -240,10 +193,12 @@ krsort($Total);
 foreach ($Total as $key => $value) {
 	$var = !$var;
 	print "<tr $bc[$var]>";
-	print "<td><a href=\"cotisations.php?date_select=$key\">$key</a></td>";
+	print "<td><a href=\"adherent/cotisations.php?date_select=$key\">$key</a></td>";
 	print "<td align=\"right\">" . $Number[$key] . "</td>";
 	print "<td align=\"right\">" . price($value) . "</td>";
 	print "<td align=\"right\">" . price(price2num($value / $Number[$key], 'MT')) . "</td>";
+	$numb+=$Number[$key];
+	$tot+=$value;
 	print "</tr>\n";
 }
 

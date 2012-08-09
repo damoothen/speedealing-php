@@ -247,15 +247,15 @@ class DolibarrModules extends nosqlDocument {
 		global $langs;
 		$langs->load("admin");
 
-		if (empty($this->values->numero))
-			$this->values->numero = 0;
+		if (empty($this->numero))
+			$this->numero = 0;
 
-		if ($langs->trans("Module" . $this->values->numero . "Name") != ("Module" . $this->values->numero . "Name")) {
+		if ($langs->trans("Module" . $this->numero . "Name") != ("Module" . $this->numero . "Name")) {
 			// Si traduction du nom du module existe
-			return $langs->trans("Module" . $this->values->numero . "Name");
+			return $langs->trans("Module" . $this->numero . "Name");
 		} else {
 			// If translation of module with its numero does not exists, we take its name
-			return $this->values->name;
+			return $this->name;
 		}
 	}
 
@@ -269,12 +269,12 @@ class DolibarrModules extends nosqlDocument {
 		global $langs;
 		$langs->load("admin");
 
-		if ($langs->trans("Permission" . $this->values->id) != ("Permission" . $this->values->id)) {
+		if ($langs->trans("Permission" . $this->id) != ("Permission" . $this->id)) {
 			// Si traduction du nom du module existe
-			return $langs->trans("Permission" . $this->values->id);
+			return $langs->trans("Permission" . $this->id);
 		} else {
 			// If translation of module with its numero does not exists, we take its name
-			$out = $this->values->desc;
+			$out = $this->desc;
 			return $out;
 		}
 	}
@@ -289,12 +289,12 @@ class DolibarrModules extends nosqlDocument {
 		global $langs;
 		$langs->load("admin");
 
-		if ($langs->trans("Module" . $this->values->numero . "Desc") != ("Module" . $this->values->numero . "Desc")) {
+		if ($langs->trans("Module" . $this->numero . "Desc") != ("Module" . $this->numero . "Desc")) {
 			// Si traduction de la description du module existe
-			return $langs->trans("Module" . $this->values->numero . "Desc");
+			return $langs->trans("Module" . $this->numero . "Desc");
 		} else {
 			// Si traduction de la description du module n'existe pas, on prend definition en dur dans module
-			return $this->values->description;
+			return $this->description;
 		}
 	}
 
@@ -310,16 +310,16 @@ class DolibarrModules extends nosqlDocument {
 		global $langs;
 		$langs->load("admin");
 
-		if ($this->values->version == 'experimental')
+		if ($this->version == 'experimental')
 			return $langs->trans("VersionExperimental");
-		elseif ($this->values->version == 'development')
+		elseif ($this->version == 'development')
 			return $langs->trans("VersionDevelopment");
-		elseif ($this->values->version == 'speedealing')
+		elseif ($this->version == 'speedealing')
 			return DOL_VERSION;
-		elseif ($this->values->version == 'dolibarr')
+		elseif ($this->version == 'dolibarr')
 			return '<span class="lbl alert_bg sl_status ">' . $langs->trans("Old") . '</span>';
-		elseif ($this->values->version)
-			return $this->values->version;
+		elseif ($this->version)
+			return $this->version;
 		else
 			return $langs->trans("VersionUnknown");
 	}
@@ -565,12 +565,16 @@ class DolibarrModules extends nosqlDocument {
 		global $db, $conf;
 
 		$error = 0;
+		
+		$this->couchdb->useDatabase(strtolower($this->name)); // switch to the database for the module
 
 		$ok = 1;
 		foreach ($conf->file->dol_document_root as $dirroot) {
 			if ($ok) {
-				$dir = $dirroot . "/" . $this->values->name . "/json/";
+				$dir = $dirroot . "/" . $this->name . "/json/";
 				$ok = 0;
+				
+				print $dir;exit;
 
 				// Create or upgrade views and documents
 				$handle = @opendir($dir);   // Dir may not exists

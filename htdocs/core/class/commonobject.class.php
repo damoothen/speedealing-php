@@ -64,8 +64,8 @@ abstract class CommonObject
     {
         global $conf;
 
-        $lastname=$this->values->Lastname;
-        $firstname=$this->values->Firstname;
+        $lastname=$this->Lastname;
+        $firstname=$this->Firstname;
         if (empty($lastname))  $lastname=($this->name?$this->name:$this->nom);
         if (empty($firstname)) $firstname=$this->prenom;
 

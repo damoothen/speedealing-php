@@ -1,4 +1,5 @@
 <?php
+
 /* Copyright (C) 2001-2002 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2003      Jean-Louis Bergamo <jlb@j1b.org>
  * Copyright (C) 2004-2009 Laurent Destailleur  <eldy@users.sourceforge.net>
@@ -20,38 +21,27 @@
 /**
  *      \file       htdocs/adherents/cotisations.php
  *      \ingroup    member
- *		\brief      Page de consultation et insertion d'une cotisation
+ * 		\brief      Page de consultation et insertion d'une cotisation
  */
-
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/adherents/class/adherent.class.php");
-require_once(DOL_DOCUMENT_ROOT."/adherents/class/cotisation.class.php");
-require_once(DOL_DOCUMENT_ROOT."/compta/bank/class/account.class.php");
+require_once(DOL_DOCUMENT_ROOT . "/adherent/class/adherent.class.php");
+require_once(DOL_DOCUMENT_ROOT . "/compta/bank/class/account.class.php");
 
 $langs->load("members");
 
-$filter=$_GET["filter"];
-$statut=isset($_GET["statut"])?$_GET["statut"]:1;
+$msg = '';
+$date_select = GETPOST("date_select");
 
-$sortfield = GETPOST("sortfield",'alpha');
-$sortorder = GETPOST("sortorder",'alpha');
-$page = GETPOST("page",'int');
-if ($page == -1) { $page = 0 ; }
-$offset = $conf->liste_limit * $page ;
-$pageprev = $page - 1;
-$pagenext = $page + 1;
-if (! $sortorder) {  $sortorder="DESC"; }
-if (! $sortfield) {  $sortfield="c.dateadh"; }
+if (!$user->rights->adherent->cotisation->lire)
+	accessforbidden();
 
-$msg='';
-$date_select=isset($_GET["date_select"])?$_GET["date_select"]:$_POST["date_select"];
-
-if (! $user->rights->adherent->cotisation->lire)
-accessforbidden();
+// Static objects
+$adherent = new Adherent($db);
+$accountstatic = new Account($db);
 
 
 /*
- *	Actions
+ * 	Actions
  */
 
 
@@ -59,172 +49,182 @@ accessforbidden();
  * View
  */
 
-llxHeader('',$langs->trans("ListOfSubscriptions"),'EN:Module_Foundations|FR:Module_Adh&eacute;rents|ES:M&oacute;dulo_Miembros');
+llxHeader('', $langs->trans("ListOfSubscriptions"), 'EN:Module_Foundations|FR:Module_Adh&eacute;rents|ES:M&oacute;dulo_Miembros');
 
-if ($msg)	print $msg.'<br>';
+if ($msg)
+	print $msg . '<br>';
 
-// Liste des cotisations
-$sql = "SELECT d.rowid, d.login, d.prenom as firstname, d.nom as lastname, d.societe,";
-$sql.= " c.rowid as crowid, c.cotisation,";
-$sql.= " c.dateadh,";
-$sql.= " c.datef,";
-$sql.= " c.fk_bank as bank, c.note,";
-$sql.= " b.fk_account";
-$sql.= " FROM ".MAIN_DB_PREFIX."adherent as d, ".MAIN_DB_PREFIX."cotisation as c";
-$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."bank as b ON c.fk_bank=b.rowid";
-$sql.= " WHERE d.rowid = c.fk_adherent";
-if (isset($date_select) && $date_select != '')
-{
-    $sql.= " AND dateadh LIKE '$date_select%'";
-}
-$sql.= $db->order($sortfield,$sortorder);
-$sql.= $db->plimit($conf->liste_limit+1, $offset);
-
-$result = $db->query($sql);
-if ($result)
-{
-    $num = $db->num_rows($result);
-    $i = 0;
-
-    $title=$langs->trans("ListOfSubscriptions");
-    if (! empty($date_select)) $title.=' ('.$langs->trans("Year").' '.$date_select.')';
-    $param.="&amp;statut=$statut&amp;date_select=$date_select";
-    print_barre_liste($title, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder,'',$num);
-
-
-    print '<table class="noborder" width="100%">';
-
-    print '<tr class="liste_titre">';
-    print_liste_field_titre($langs->trans("Ref"),"cotisations.php","c.rowid",$param,"","",$sortfield,$sortorder);
-    print_liste_field_titre($langs->trans("Name"),"cotisations.php","d.nom",$param,"","",$sortfield,$sortorder);
-    print_liste_field_titre($langs->trans("Login"),"cotisations.php","d.login",$param,"","",$sortfield,$sortorder);
-    print_liste_field_titre($langs->trans("Label"),"cotisations.php","c.note",$param,"",'align="left"',$sortfield,$sortorder);
-    if ($conf->banque->enabled)
-    {
-        print_liste_field_titre($langs->trans("Account"),"cotisations.php","b.fk_account",$pram,"","",$sortfield,$sortorder);
-    }
-    print_liste_field_titre($langs->trans("Date"),"cotisations.php","c.dateadh",$param,"",'align="center"',$sortfield,$sortorder);
-    print_liste_field_titre($langs->trans("DateEnd"),"cotisations.php","c.datef",$param,"",'align="center"',$sortfield,$sortorder);
-    print_liste_field_titre($langs->trans("Amount"),"cotisations.php","c.cotisation",$param,"",'align="right"',$sortfield,$sortorder);
-    print "</tr>\n";
-
-    // Static objects
-    $cotisation=new Cotisation($db);
-    $adherent=new Adherent($db);
-    $accountstatic=new Account($db);
-
-    $var=true;
-    $total=0;
-    while ($i < $num && $i < $conf->liste_limit)
-    {
-        $objp = $db->fetch_object($result);
-        $total+=$objp->cotisation;
-
-        $cotisation->ref=$objp->crowid;
-        $cotisation->id=$objp->crowid;
-
-        $adherent->lastname=$objp->lastname;
-        $adherent->firstname=$objp->firstname;
-        $adherent->ref=$adherent->getFullName($langs);
-        $adherent->id=$objp->rowid;
-        $adherent->login=$objp->login;
-
-        $var=!$var;
-
-        if ($allowinsertbankafter && ! $objp->fk_account && $conf->banque->enabled && $objp->cotisation)
-        {
-            print "<form method=\"post\" action=\"cotisations.php\">";
-            print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-        }
-        print "<tr $bc[$var]>";
-
-        // Ref
-        print '<td>'.$cotisation->getNomUrl(1).'</td>';
-
-        // Nom
-        print '<td>'.$adherent->getNomUrl(1).'</td>';
-
-        // Login
-        print '<td>'.$adherent->login.'</td>';
-
-        // Libelle
-        print '<td>';
-        print dol_trunc($objp->note,32);
-        print '</td>';
-
-        // Banque
-        if ($conf->banque->enabled)
-        {
-            if ($objp->fk_account)
-            {
-                $accountstatic->id=$objp->fk_account;
-                $accountstatic->fetch($objp->fk_account);
-                //$accountstatic->label=$objp->label;
-                print '<td>'.$accountstatic->getNomUrl(1).'</td>';
-            }
-            else
-            {
-                print "<td>";
-                if ($allowinsertbankafter && $objp->cotisation)
-                {
-                    print '<input type="hidden" name="action" value="2bank">';
-                    print '<input type="hidden" name="rowid" value="'.$objp->crowid.'">';
-                    $form = new Form($db);
-                    $form->select_comptes('','accountid',0,'',1);
-                    print '<br>';
-                    $form->select_types_paiements('','paymenttypeid');
-                    print '<input name="num_chq" type="text" class="flat" size="5">';
-                }
-                else
-                {
-                    print '&nbsp;';
-                }
-                print "</td>\n";
-            }
-        }
-
-        // Date start
-        print '<td align="center">'.dol_print_date($db->jdate($objp->dateadh),'day')."</td>\n";
-
-        // Date end
-        print '<td align="center">'.dol_print_date($db->jdate($objp->datef),'day')."</td>\n";
-
-        // Price
-        print '<td align="right">'.price($objp->cotisation).'</td>';
-
-        print "</tr>";
-        if ($allowinsertbankafter && ! $objp->fk_account && $conf->banque->enabled && $objp->cotisation)
-        {
-            print "</form>\n";
-        }
-        $i++;
-    }
-
-    // Total
-    $var=!$var;
-    print '<tr class="liste_total">';
-    print "<td>".$langs->trans("Total")."</td>\n";
-    print "<td align=\"right\">&nbsp;</td>\n";
-    print "<td align=\"right\">&nbsp;</td>\n";
-    print "<td align=\"right\">&nbsp;</td>\n";
-    if ($conf->banque->enabled)
-    {
-        print '<td>&nbsp;</td>';
-    }
-   	print '<td>&nbsp;</td>';
-   	print '<td>&nbsp;</td>';
-   	print "<td align=\"right\">".price($total)."</td>\n";
-    print "</tr>\n";
-
-    print "</table>";
-    print "<br>\n";
-
-
-}
+if (!empty($date_select))
+	$result = $adherent->getView('cotisationYear', array("key" => (int) $date_select));
 else
-{
-    dol_print_error($db);
+	$result = $adherent->getView('cotisationYear');
+
+$title = $langs->trans("ListOfSubscriptions");
+if (!empty($date_select))
+	$title.=' (' . $langs->trans("Year") . ' ' . $date_select . ')';
+
+print '<div class="row">';
+
+print start_box($titre, "twelve", "16-Money.png");
+
+$i = 0;
+$obj = new stdClass();
+print '<div class="datatable">';
+print '<table class="display dt_act" id="cotisation_datatable" >';
+// Ligne des titres 
+print'<thead>';
+print'<tr>';
+print'<th>';
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "_id";
+$obj->aoColumns[$i]->bUseRendered = false;
+$obj->aoColumns[$i]->bSearchable = false;
+$obj->aoColumns[$i]->bVisible = false;
+$i++;
+print'<th class="essential">';
+print $langs->trans("Id");
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "login";
+$obj->aoColumns[$i]->bUseRendered = false;
+$obj->aoColumns[$i]->bSearchable = true;
+$obj->aoColumns[$i]->fnRender = $adherent->datatablesFnRender("login", "url");
+$i++;
+print'<th class="essential">';
+print $langs->trans('Firstname');
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "Firstname";
+$obj->aoColumns[$i]->sDefaultContent = "";
+//$obj->aoColumns[$i]->sClass = "edit";
+$i++;
+print'<th class="essential">';
+print $langs->trans('Lastname');
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "Lastname";
+$obj->aoColumns[$i]->sDefaultContent = "";
+//$obj->aoColumns[$i]->sClass = "edit";
+$i++;
+print'<th class="essential">';
+print $langs->trans('Label');
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "note";
+$obj->aoColumns[$i]->sDefaultContent = "";
+//$obj->aoColumns[$i]->sClass = "edit";
+$i++;
+if ($conf->banque->enabled) {
+	print'<th class="essential">';
+	print $langs->trans('Account');
+	print'</th>';
+	$obj->aoColumns[$i]->mDataProp = "account";
+	$obj->aoColumns[$i]->sDefaultContent = "";
+	//$obj->aoColumns[$i]->sClass = "edit";
+	$i++;
 }
+print'<th class="essential">';
+print $langs->trans('Date');
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "dateh";
+$obj->aoColumns[$i]->sDefaultContent = "";
+$obj->aoColumns[$i]->sClass = "center";
+$obj->aoColumns[$i]->fnRender = $adherent->datatablesFnRender("dateh", "date");
+$i++;
+print'<th class="essential">';
+print $langs->trans('DateEnd');
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "datef";
+$obj->aoColumns[$i]->sDefaultContent = "";
+$obj->aoColumns[$i]->sClass = "center";
+$obj->aoColumns[$i]->fnRender = $adherent->datatablesFnRender("datef", "date");
+$i++;
+print'<th class="essential">';
+print $langs->trans('Amount');
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "amount";
+$obj->aoColumns[$i]->sClass = "fright";
+$obj->aoColumns[$i]->sDefaultContent = "";
+$obj->aoColumns[$i]->fnRender = $adherent->datatablesFnRender("amount", "price");
+print'</tr>';
+print'</thead>';
+print'<tfoot>';
+print'</tfoot>';
+print'<tbody>';
+$var = true;
+$total = 0;
+if (count($result->rows) > 0)
+	foreach ($result->rows as $aRow) {
+		$objp = $aRow->value;
+
+		$total+=$objp->amount;
+
+		$cotisation->ref = $objp->crowid;
+		$cotisation->id = $objp->crowid;
+
+		$adherent->Lastname = $objp->Lastname;
+		$adherent->Firstname = $objp->Firstname;
+		$adherent->ref = $adherent->getFullName($langs);
+		$adherent->id = $objp->_id;
+		$adherent->login = $objp->login;
+
+		print "<tr>";
+
+		print '<td>' . $objp->_id . '</td>';
+
+		// Login
+		print '<td>' . $objp->login . '</td>';
+		print '<td>' . $objp->Firstname . '</td>';
+		print '<td>' . $objp->Lastname . '</td>';
+
+		// Libelle
+		print '<td>';
+		print dol_trunc($objp->note, 32);
+		print '</td>';
+
+		// Banque
+		if ($conf->banque->enabled) {
+			if ($objp->fk_account) {
+				$accountstatic->id = $objp->fk_account;
+				$accountstatic->fetch($objp->fk_account);
+				//$accountstatic->label=$objp->label;
+				print '<td>' . $accountstatic->getNomUrl(1) . '</td>';
+			} else {
+				print "<td>";
+				if ($allowinsertbankafter && $objp->cotisation) {
+					print '<input type="hidden" name="action" value="2bank">';
+					print '<input type="hidden" name="rowid" value="' . $objp->crowid . '">';
+					$form = new Form($db);
+					$form->select_comptes('', 'accountid', 0, '', 1);
+					print '<br>';
+					$form->select_types_paiements('', 'paymenttypeid');
+					print '<input name="num_chq" type="text" class="flat" size="5">';
+				} else {
+					print '&nbsp;';
+				}
+				print "</td>\n";
+			}
+		}
+
+		// Date start
+		print '<td>' . $objp->dateh . "</td>\n";
+
+		// Date end
+		print '<td>' . $objp->datef . "</td>\n";
+
+		// Price
+		print '<td>' . $objp->amount . '</td>';
+
+		print "</tr>";
+		$i++;
+	}
+print'</tbody>';
+print "</table>";
+print "</div>";
+
+$obj->bServerSide = false;
+$obj->sDom = 'l<fr>t<\"clear\"rtip>';
+$obj->aaSorting = array(array(1, 'asc'));
+$adherent->datatablesCreate($obj, "cotisation_datatable");
+
+print end_box();
+print '</div>'; // end row
 
 
 $db->close();

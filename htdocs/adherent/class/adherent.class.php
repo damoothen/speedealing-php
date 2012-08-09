@@ -38,8 +38,8 @@ class Adherent extends nosqlDocument {
 	var $id;
 	var $ref;
 	var $civilite_id;
-	var $firstname;
-	var $lastname;
+	var $Firstname;
+	var $Lastname;
 	var $login;
 	var $pass;
 	var $societe;
@@ -100,11 +100,10 @@ class Adherent extends nosqlDocument {
 	function __construct($db) {
 		parent::__construct($db);
 
-		$fk_extrafields = new ExtraFields($db);
-		$this->fk_extrafields = $fk_extrafields->load("extrafields:" . get_class($this), true); // load and cache
-
 		try {
 			$this->couchdb->useDatabase('adherent');
+			$fk_extrafields = new ExtraFields($db);
+			$this->fk_extrafields = $fk_extrafields->load("extrafields:" . get_class($this), true); // load and cache
 		} catch (Exception $e) {
 			$error = "Something weird happened: " . $e->getMessage() . " (errcode=" . $e->getCode() . ")\n";
 			print $error;
@@ -184,8 +183,8 @@ class Adherent extends nosqlDocument {
 		if ($this->civilite_id)
 			$infos.= $langs->transnoentities("UserTitle") . ": " . $this->getCivilityLabel(1) . "\n";
 		$infos.= $langs->transnoentities("id") . ": " . $this->id . "\n";
-		$infos.= $langs->transnoentities("Lastname") . ": " . $this->lastname . "\n";
-		$infos.= $langs->transnoentities("Firstname") . ": " . $this->firstname . "\n";
+		$infos.= $langs->transnoentities("Lastname") . ": " . $this->Lastname . "\n";
+		$infos.= $langs->transnoentities("Firstname") . ": " . $this->Firstname . "\n";
 		$infos.= $langs->transnoentities("Company") . ": " . $this->societe . "\n";
 		$infos.= $langs->transnoentities("Address") . ": " . $this->address . "\n";
 		$infos.= $langs->transnoentities("Zip") . ": " . $this->zip . "\n";
@@ -205,8 +204,8 @@ class Adherent extends nosqlDocument {
 			'%DOL_MAIN_URL_ROOT%' => DOL_MAIN_URL_ROOT,
 			'%ID%' => $msgishtml ? dol_htmlentitiesbr($this->id) : $this->id,
 			'%CIVILITE%' => $this->getCivilityLabel($msgishtml ? 0 : 1),
-			'%FIRSTNAME%' => $msgishtml ? dol_htmlentitiesbr($this->firstname) : $this->firstname,
-			'%LASTNAME%' => $msgishtml ? dol_htmlentitiesbr($this->lastname) : $this->lastname,
+			'%FIRSTNAME%' => $msgishtml ? dol_htmlentitiesbr($this->Firstname) : $this->Firstname,
+			'%LASTNAME%' => $msgishtml ? dol_htmlentitiesbr($this->Lastname) : $this->Lastname,
 			'%FULLNAME%' => $msgishtml ? dol_htmlentitiesbr($this->getFullName($langs)) : $this->getFullName($langs),
 			'%COMPANY%' => $msgishtml ? dol_htmlentitiesbr($this->societe) : $this->societe,
 			'%ADDRESS%' => $msgishtml ? dol_htmlentitiesbr($this->address) : $this->address,
@@ -220,8 +219,8 @@ class Adherent extends nosqlDocument {
 			'%PASSWORD%' => $msgishtml ? dol_htmlentitiesbr($this->pass) : $this->pass,
 			// For backward compatibility
 			'%INFOS%' => $msgishtml ? dol_htmlentitiesbr($infos) : $infos,
-			'%PRENOM%' => $msgishtml ? dol_htmlentitiesbr($this->firstname) : $this->firstname,
-			'%NOM%' => $msgishtml ? dol_htmlentitiesbr($this->lastname) : $this->lastname,
+			'%PRENOM%' => $msgishtml ? dol_htmlentitiesbr($this->Firstname) : $this->Firstname,
+			'%NOM%' => $msgishtml ? dol_htmlentitiesbr($this->Lastname) : $this->Lastname,
 			'%SOCIETE%' => $msgishtml ? dol_htmlentitiesbr($this->societe) : $this->societe,
 			'%ADRESSE%' => $msgishtml ? dol_htmlentitiesbr($this->address) : $this->address,
 			'%CP%' => $msgishtml ? dol_htmlentitiesbr($this->zip) : $this->zip,
@@ -347,17 +346,17 @@ class Adherent extends nosqlDocument {
 		dol_syslog(get_class($this) . "::update notrigger=" . $notrigger . ", nosyncuser=" . $nosyncuser . ", nosyncuserpass=" . $nosyncuserpass . ", email=" . $this->email);
 
 		// Clean parameters
-		$this->lastname = trim($this->lastname);
-		$this->firstname = trim($this->firstname);
+		$this->Lastname = trim($this->Lastname);
+		$this->Firstname = trim($this->Firstname);
 		$this->address = ($this->address ? $this->address : $this->adresse);
 		$this->zip = ($this->zip ? $this->zip : $this->cp);
 		$this->town = ($this->town ? $this->town : $this->ville);
 		$this->country_id = ($this->country_id > 0 ? $this->country_id : $this->fk_pays);
 		$this->state_id = ($this->state_id > 0 ? $this->state_id : $this->fk_departement);
 		if (!empty($conf->global->MAIN_FIRST_TO_UPPER))
-			$this->lastname = ucwords(trim($this->lastname));
+			$this->Lastname = ucwords(trim($this->Lastname));
 		if (!empty($conf->global->MAIN_FIRST_TO_UPPER))
-			$this->firstname = ucwords(trim($this->firstname));
+			$this->Firstname = ucwords(trim($this->Firstname));
 
 		// Check parameters
 		if (!empty($conf->global->ADHERENT_MAIL_REQUIRED) && !isValidEMail($this->email)) {
@@ -1097,11 +1096,11 @@ class Adherent extends nosqlDocument {
 		$result = '';
 
 		if ($option == 'card') {
-			$lien = '<a href="' . DOL_URL_ROOT . '/adherents/fiche.php?rowid=' . $this->id . '">';
+			$lien = '<a href="' . DOL_URL_ROOT . '/adherent/fiche.php?id=' . $this->id . '">';
 			$lienfin = '</a>';
 		}
 		if ($option == 'subscription') {
-			$lien = '<a href="' . DOL_URL_ROOT . '/adherents/card_subscriptions.php?rowid=' . $this->id . '">';
+			$lien = '<a href="' . DOL_URL_ROOT . '/adherent/card_subscriptions.php?id=' . $this->id . '">';
 			$lienfin = '</a>';
 		}
 
@@ -1236,8 +1235,8 @@ class Adherent extends nosqlDocument {
 		$this->id = 0;
 		$this->specimen = 1;
 		$this->civilite_id = 0;
-		$this->lastname = 'DOLIBARR';
-		$this->firstname = 'SPECIMEN';
+		$this->Lastname = 'DOLIBARR';
+		$this->Firstname = 'SPECIMEN';
 		$this->login = 'dolibspec';
 		$this->pass = 'dolibspec';
 		$this->societe = 'Societe ABC';
