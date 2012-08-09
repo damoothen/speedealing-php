@@ -50,13 +50,12 @@ class Societe extends nosqlDocument {
 	public function __construct($db) {
 		parent::__construct($db);
 
-		$fk_extrafields = new ExtraFields($db);
-		$this->fk_extrafields = $fk_extrafields->load("extrafields:" . get_class($this), true); // load and cache
-
-
 		try {
+			$fk_extrafields = new ExtraFields($db);
+			$fk_extrafields->useDatabase(strtolower(get_class($this)));
+			$this->fk_extrafields = $fk_extrafields->load("extrafields:" . get_class($this), true); // load and cache
 			$this->fk_country = $this->couchdb->getDoc("dict:country"); //load country table
-			$this->couchdb->useDatabase('societe');
+			$this->couchdb->useDatabase(strtolower(get_class($this)));
 		} catch (Exception $e) {
 			$error = "Something weird happened: " . $e->getMessage() . " (errcode=" . $e->getCode() . ")\n";
 			print $error;
@@ -1566,7 +1565,7 @@ class Societe extends nosqlDocument {
 		$rtr.= '<div class="five column vcard">';
 		$img = '<img src="' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/ico/icSw2/16-Apartment-Building.png" alt="" />';
 		$rtr.= '<h1 class="sepH_a"><a id="view_fiche" href="#">' . $img . $this->ThirdPartyName . '</a></h1>';
-		$rtr.= '<div class="sepH_a">'.$this->getLibStatus().'</div>';
+		$rtr.= '<div class="sepH_a">' . $this->getLibStatus() . '</div>';
 		$rtr.= '<h5 class="s_color">';
 		$rtr.= dol_print_address($this->Address, 'gmap', 'thirdparty', $this->id());
 		$rtr.= '</h5>';
@@ -1712,7 +1711,7 @@ class Societe extends nosqlDocument {
 			return 1;
 		}
 	}
-	
+
 	/**
 	 *    Return label of status (activity, closed)
 	 *
