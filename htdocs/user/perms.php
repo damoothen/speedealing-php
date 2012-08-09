@@ -43,8 +43,6 @@ $canreaduser = ($user->admin || $user->rights->user->user->lire);
 $caneditperms = ($user->admin || $user->rights->user->user->creer);
 // Advanced permissions
 $canreaduser = ($user->admin || ($user->rights->user->user->lire && $user->rights->user->user_advance->readperms));
-$caneditselfperms = ($user->id == $id && $user->rights->user->self_advance->writeperms);
-$caneditperms = (($caneditperms || $caneditselfperms) ? 1 : 0);
 
 
 // Security check

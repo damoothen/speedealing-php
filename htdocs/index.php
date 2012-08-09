@@ -293,12 +293,12 @@ if ($conf->adherent->enabled && $user->rights->adherent->lire && ! $user->societ
 {
     $langs->load("members");
 
-    include_once(DOL_DOCUMENT_ROOT."/adherents/class/adherent.class.php");
+    include_once(DOL_DOCUMENT_ROOT."/adherent/class/adherent.class.php");
     $board=new Adherent($db);
     $board->load_board($user);
     $board->warning_delay=$conf->adherent->cotisation->warning_delay/60/60/24;
     $board->label=$langs->trans("MembersWithSubscriptionToReceive");
-    $board->url=DOL_URL_ROOT.'/adherents/liste.php?mainmenu=members&statut=1';
+    $board->url=DOL_URL_ROOT.'/adherent/list.php?mainmenu=members';
     $board->img=img_object($langs->trans("Members"),"user");
     $rowspan++;
     $dashboardlines[]=$board;
@@ -389,7 +389,7 @@ if ($user->societe_id == 0)
 	"/societe/class/societe.class.php",
         "/societe/class/societe.class.php",
 	"/fourn/class/fournisseur.class.php",
-	"/adherents/class/adherent.class.php",
+	"/adherent/class/adherent.class.php",
 	"/product/class/product.class.php",
 	"/product/class/service.class.php",
 	"/comm/propal/class/propal.class.php",
@@ -454,7 +454,7 @@ if ($user->societe_id == 0)
 	'/comm/list.php?type=1',
         '/comm/list.php?type=0',
 	'/fourn/liste.php',
-	'/adherents/liste.php?statut=1&amp;mainmenu=members',
+	'/adherent/list.php?mainmenu=members',
 	'/product/liste.php?type=0&amp;mainmenu=products',
 	'/product/liste.php?type=1&amp;mainmenu=products',
 	'/comm/propal.php?mainmenu=commercial',

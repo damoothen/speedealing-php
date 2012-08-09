@@ -36,7 +36,7 @@ require_once(DOL_DOCUMENT_ROOT . "/core/lib/usergroups.lib.php");
 if ($conf->ldap->enabled)
 	require_once(DOL_DOCUMENT_ROOT . "/core/class/ldap.class.php");
 if ($conf->adherent->enabled)
-	require_once(DOL_DOCUMENT_ROOT . "/adherents/class/adherent.class.php");
+	require_once(DOL_DOCUMENT_ROOT . "/adherent/class/adherent.class.php");
 if (!empty($conf->multicompany->enabled))
 	dol_include_once("/multicompany/class/actions_multicompany.class.php");
 
@@ -48,7 +48,7 @@ $confirm = GETPOST("confirm");
 // Define value to know what current user can do on users
 $canadduser = ($user->admin || $user->rights->user->user->creer);
 $canreaduser = ($user->admin || $user->rights->user->user->lire);
-$canedituser = ($user->admin || $user->rights->user->user->creer);
+$canedituser = ($user->admin || $user->id == $id);
 $candisableuser = ($user->admin || $user->rights->user->user->supprimer);
 $canreadgroup = $canreaduser;
 $caneditgroup = $canedituser;
@@ -143,7 +143,7 @@ if ($action == 'confirm_delete' && $confirm == "yes" && $candisableuser) {
 }
 
 // Action ajout user
-if (($action == 'add' || $action == 'update') && !$_POST["cancel"] && $canadduser) {
+if ((($action == 'add' && $canadduser) || ($action == 'update' && $canedituser)) && !$_POST["cancel"] ) {
 	$message = "";
 	if (!$_POST["nom"]) {
 		$message = '<div class="error">' . $langs->trans("NameNotDefined") . '</div>';
@@ -156,7 +156,7 @@ if (($action == 'add' || $action == 'update') && !$_POST["cancel"] && $canadduse
 
 	$edituser = new User($db);
 
-	if (!empty($conf->file->main_limit_users)) { // If option to limit users is set
+	if (!empty($conf->file->main_limit_users) && $action == 'add') { // If option to limit users is set
 		$nb = $edituser->getNbOfUsers("active", 1);
 		if ($nb >= $conf->file->main_limit_users) {
 			$message = '<div class="error">' . $langs->trans("YourQuotaOfUsersIsReached") . '</div>';
@@ -182,6 +182,7 @@ if (($action == 'add' || $action == 'update') && !$_POST["cancel"] && $canadduse
 		$edituser->values->rowid = $_POST["rowid"];
 
 		$id = $edituser->update($user, 0, $action);
+		
 		if ($id == $edituser->values->name) {
 			Header("Location: " . $_SERVER['PHP_SELF'] . '?id=org.couchdb.user:' . $id);
 			exit;

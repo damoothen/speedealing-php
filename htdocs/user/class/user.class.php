@@ -573,7 +573,6 @@ class User extends nosqlDocument {
 		if (isset($result->name) && $action == 'add') {
 			$this->error = 'ErrorLoginAlreadyExists';
 			dol_syslog(get_class($this) . "::create " . $this->error, LOG_WARNING);
-			$this->db->rollback();
 			return -6;
 		} else {
 			if ($action == 'add') {
@@ -602,10 +601,10 @@ class User extends nosqlDocument {
 			$this->values->_rev = $user_tmp->_rev;
 			$this->values->Status = $user_tmp->Status;
 
-			$caneditpassword = ((($user->id == $this->values->name) && $user->rights->user->self->password)
-					|| (($user->id != $this->values->name) && $user->rights->user->user->password));
+			$caneditpassword = ((($user->login == $this->values->name) && $user->rights->user->self->password)
+					|| (($user->login != $this->values->name) && $user->rights->user->user->password)) || $user->admin;
 
-			if ($caneditpassword && $this->values->pass) { // Case we can edit only password
+			if ($caneditpassword && !empty($this->values->pass)) { // Case we can edit only password
 				$this->values->password_sha = sha1($this->values->pass . $this->values->salt, false);
 			}
 
@@ -1465,34 +1464,13 @@ class User extends nosqlDocument {
 	function getNbOfUsers($limitTo = '') {
 		global $conf;
 
-		$result = $this->couchAdmin->getAllUsers();
+		try {
+			$result = $this->couchAdmin->getAllUsers();
+		} catch(Exception $e) {
+			return 0;
+		}
 
 		return count($result);
-
-		$sql = "SELECT count(rowid) as nb";
-		$sql.= " FROM " . MAIN_DB_PREFIX . "user";
-		if ($limitTo == 'superadmin') {
-			$sql.= " WHERE entity = 0";
-		} else {
-			if ($all)
-				$sql.= " WHERE entity = is not null";
-			else
-				$sql.= " WHERE entity = " . $conf->entity;
-			if ($limitTo == 'active')
-				$sql.= " AND statut = 1";
-		}
-
-		$resql = $this->db->query($sql);
-		if ($resql) {
-			$obj = $this->db->fetch_object($resql);
-			$nb = $obj->nb;
-
-			$this->db->free($resql);
-			return $nb;
-		} else {
-			$this->error = $this->db->error();
-			return -1;
-		}
 	}
 
 	function getAllUsers($include_docs) {
