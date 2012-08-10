@@ -1480,6 +1480,14 @@ class User extends nosqlDocument {
 	function getUserAdmins() {
 		return $this->couchAdmin->getUserAdmins();
 	}
+	
+	function addRoleToUser($userid, $groupid) {
+		return $this->couchAdmin->addRoleToUser($userid, $groupid);
+	}
+	
+	function removeRoleFromUser($userid, $groupid) {
+		return $this->couchAdmin->removeRoleFromUser($userid, $groupid);
+	}
 
 }
 

@@ -93,7 +93,7 @@ class UserDatabase extends nosqlDocument {
 
 		foreach ($membersRoles as $aRow) {
 			$group->id = $aRow;
-			$this->membersRoles[] = $group;
+			$this->membersRoles[] = clone $group;
 		}
 
 		$membersAdmin = $this->couchAdmin->getDatabaseAdminUsers();
@@ -104,13 +104,13 @@ class UserDatabase extends nosqlDocument {
 		foreach ($membersAdmin as $aRow) {
 			$user = $this->couchAdmin->getUser($aRow);
 			$user->Administrator = true;
-			$this->members[] = $user;
+			$this->members[] = clone $user;
 		}
 
 		foreach ($membersRolesAdmin as $aRow) {
 			$group->Administrator = true;
 			$group->id = $aRow;
-			$this->membersRoles[] = $group;
+			$this->membersRoles[] = clone $group;
 		}
 
 		$this->id = $this->values->db_name;

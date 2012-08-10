@@ -42,7 +42,7 @@ if (!empty($conf->multicompany->enabled))
 
 $id = GETPOST('id');
 $action = GETPOST("action");
-$group = GETPOST("group", "int", 3);
+$group = GETPOST("group", "alpha");
 $confirm = GETPOST("confirm");
 
 // Define value to know what current user can do on users
@@ -143,7 +143,7 @@ if ($action == 'confirm_delete' && $confirm == "yes" && $candisableuser) {
 }
 
 // Action ajout user
-if ((($action == 'add' && $canadduser) || ($action == 'update' && $canedituser)) && !$_POST["cancel"] ) {
+if ((($action == 'add' && $canadduser) || ($action == 'update' && $canedituser)) && !$_POST["cancel"]) {
 	$message = "";
 	if (!$_POST["nom"]) {
 		$message = '<div class="error">' . $langs->trans("NameNotDefined") . '</div>';
@@ -182,7 +182,7 @@ if ((($action == 'add' && $canadduser) || ($action == 'update' && $canedituser))
 		$edituser->values->rowid = $_POST["rowid"];
 
 		$id = $edituser->update($user, 0, $action);
-		
+
 		if ($id == $edituser->values->name) {
 			Header("Location: " . $_SERVER['PHP_SELF'] . '?id=org.couchdb.user:' . $id);
 			exit;
@@ -204,19 +204,18 @@ if ((($action == 'add' && $canadduser) || ($action == 'update' && $canedituser))
 // Action ajout groupe utilisateur
 if (($action == 'addgroup' || $action == 'removegroup') && $caneditfield) {
 	if ($group) {
-		$editgroup = new UserGroup($db);
-		$editgroup->fetch($group);
-		$editgroup->oldcopy = dol_clone($editgroup);
-
 		$edituser = new User($db);
 		$edituser->fetch($id);
-		if ($action == 'addgroup')
-			$edituser->SetInGroup($group, ($conf->global->MULTICOMPANY_TRANSVERSE_MODE ? GETPOST("entity") : $editgroup->entity));
-		if ($action == 'removegroup')
-			$edituser->RemoveFromGroup($group, ($conf->global->MULTICOMPANY_TRANSVERSE_MODE ? GETPOST("entity") : $editgroup->entity));
+
+		if ($action == 'addgroup') {
+			$edituser->addRoleToUser($edituser->login, $group);
+		}
+		if ($action == 'removegroup') {
+			$edituser->removeRoleFromUser($edituser->login, $group);
+		}
 
 		if ($result > 0) {
-			header("Location: " . $_SERVER['PHP_SELF'] . '?id=' . $id);
+			header("Location: fiche.php?id=" . $id);
 			exit;
 		} else {
 			$message.=$edituser->error;
@@ -914,7 +913,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
 				}
 
 
-				print '<form action="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '" method="POST">' . "\n";
+				print '<form action="' . $_SERVER['PHP_SELF'] . '?id=' . $fuser->id . '" method="POST">' . "\n";
 				print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
 				print '<input type="hidden" name="action" value="addgroup">';
 				print '<table class="noborder" width="100%">' . "\n";
@@ -965,7 +964,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
 						print '</td>';
 						print '<td>';
 						if ($user->admin) {
-							print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $fuser->id . '&amp;action=removegroup&amp;group=' . $useringroup->values->name . '">';
+							print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $fuser->id . '&amp;action=removegroup&amp;group=' . $useringroup->name . '">';
 							print img_delete($langs->trans("RemoveFromGroup"));
 						} else {
 							print "-";
@@ -1096,7 +1095,6 @@ if (($action == 'create') || ($action == 'adduserldap')) {
 						&& ($fuser->entity > 0 || $nbSuperAdmin > 1) // Don't downgrade a superadmin if alone
 				) {
 					print $form->selectyesno('admin', $fuser->values->Administrator, 1);
-
 				} else {
 					$yn = yn($fuser->values->Administrator);
 					print '<input type="hidden" name="Administrator" value="' . $fuser->values->Administrator . '">';

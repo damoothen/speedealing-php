@@ -311,10 +311,8 @@ if ($action == 'create') {
 
 			print '<tbody>';
 			if (!empty($object->members)) {
-				$var = True;
-
+				
 				foreach ($object->members as $aRow) {
-					$var = !$var;
 
 					$useringroup = new User($db);
 					$useringroup->values = $aRow;
@@ -405,10 +403,8 @@ if ($action == 'create') {
 
 			print '<tbody>';
 			if (!empty($object->membersRoles)) {
-				$var = True;
 
 				foreach ($object->membersRoles as $aRow) {
-					$var = !$var;
 
 					$useringroup = new UserGroup($db);
 					$useringroup->load("group:" . $aRow->id);
