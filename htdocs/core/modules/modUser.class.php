@@ -354,6 +354,16 @@ class modUser extends DolibarrModules {
 		$this->menus[$r]->enabled = '$conf->memcached->host';
 		$this->menus[$r]->fk_menu = "menu:systeminfo";
 		$r++;
+		
+		$this->menus[$r]->_id = "menu:phpinfo";
+		$this->menus[$r]->position = 1;
+		$this->menus[$r]->url = "/admin/system/phpinfo.php";
+		$this->menus[$r]->langs = "admin";
+		$this->menus[$r]->usertype = 2;
+		$this->menus[$r]->title = "PHPinfo";
+		$this->menus[$r]->enabled = '1';
+		$this->menus[$r]->fk_menu = "menu:systeminfo";
+		$r++;
 
 		$this->menus[$r]->_id = "menu:allparameters";
 		$this->menus[$r]->position = 1;
