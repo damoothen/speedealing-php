@@ -344,7 +344,7 @@ abstract class nosqlDocument extends CommonObject {
 	 *    @return   string        		Libelle
 	 */
 	function getLibStatus() {
-		return $this->LibStatus($this->values->Status);
+		return $this->LibStatus($this->Status);
 	}
 
 	/**
