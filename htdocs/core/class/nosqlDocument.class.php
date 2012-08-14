@@ -231,12 +231,13 @@ abstract class nosqlDocument extends CommonObject {
 
 	/**
 	 * 	store a file in document
+	 *  @param	$name		Name of the variable
 	 *  @return value of storeAttachment
 	 */
-	public function storeFile() {
+	public function storeFile($name = 'addedfile') {
 		global $_FILES;
 
-		return $this->couchdb->storeAttachment($this->values, $_FILES['addedfile']['tmp_name'], $_FILES['addedfile']['type'], $_FILES['addedfile']['name']);
+		return $this->couchdb->storeAttachment($this, $_FILES[$name]['tmp_name'], $_FILES[$name]['type'], $_FILES[$name]['name']);
 	}
 
 	/**
@@ -255,7 +256,7 @@ abstract class nosqlDocument extends CommonObject {
 	 *  @return value of storeAttachment
 	 */
 	public function deleteFile($filename) {
-		return $this->couchdb->deleteAttachment($this->values, $filename);
+		return $this->couchdb->deleteAttachment($this, $filename);
 	}
 
 	/**
@@ -457,13 +458,13 @@ abstract class nosqlDocument extends CommonObject {
 						"oTableTools": { "sSwfPath": "<?php echo DOL_URL_ROOT . '/includes/jquery/plugins/datatables/extras/TableTools/media/swf/copy_csv_xls.swf'; ?>"},
 						//if($obj->oTableTools->aButtons==null)
 						//$obj->oTableTools->aButtons = array("xls");
-																																																																																	    
+																																																																																			    
 						"oColVis": { "buttonText" : 'Voir/Cacher',
 							"aiExclude": [0,1] // Not cacheable _id and name
 						},
 						//$obj->oColVis->bRestore = true;
 						//$obj->oColVis->sAlign = 'left';
-																																																																																            
+																																																																																		            
 						// Avec export Excel
 		<?php if (!empty($obj->sDom)) : ?>
 							//"sDom": "Cl<fr>t<\"clear\"rtip>",
@@ -492,7 +493,7 @@ abstract class nosqlDocument extends CommonObject {
 		<?php if (isset($obj->fnRowCallback)): ?>
 							"fnRowCallback": <?php echo $obj->fnRowCallback; ?>,
 		<?php endif; ?>
-																																																																
+																																																																		
 		<?php if (!defined('NOLOGIN')) : ?>
 			<?php if (isset($obj->fnDrawCallback)): ?>
 									"fnDrawCallback": <?php echo $obj->fnDrawCallback; ?>,
@@ -517,7 +518,7 @@ abstract class nosqlDocument extends CommonObject {
 												"tooltip": "Cliquer pour éditer...",
 												"indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
 												"placeholder" : ""
-																																																																																																																																																																                
+																																																																																																																																																																				                
 											} );
 											$("td.select", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
 												"callback": function( sValue, y ) {
@@ -536,7 +537,7 @@ abstract class nosqlDocument extends CommonObject {
 												"tooltip": "Cliquer pour éditer...",
 												"indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
 												"placeholder" : ""
-																																																																																																																																																																                
+																																																																																																																																																																				                
 											} );
 										}
 			<?php endif; ?>
@@ -775,21 +776,20 @@ abstract class nosqlDocument extends CommonObject {
 					else
 						$rtr.= 'status["' . $key . '"]= new Array("' . $langs->trans($key) . '","' . $aRow->cssClass . '");';
 					if (isset($aRow->dateEnd)) {
-						$rtr.= 'var statusDateEnd = "'.$key.'";';
+						$rtr.= 'var statusDateEnd = "' . $key . '";';
 						foreach ($aRow->dateEnd as $idx => $row) {
 							$rtr.= 'expire["' . $idx . '"]="' . $row . '";';
 						}
 					}
 				}
-				
+
 				if (isset($params["dateEnd"])) {
-					$rtr.= 'if(obj.aData.'.$params["dateEnd"].' === undefined)
-						obj.aData.'.$params["dateEnd"].' = "";';
-					$rtr.= 'if(stat == statusDateEnd && obj.aData.'.$params["dateEnd"].' != "")';
-					$rtr.= 'if(obj.aData.'.$params["dateEnd"].' < now)';
+					$rtr.= 'if(obj.aData.' . $params["dateEnd"] . ' === undefined)
+						obj.aData.' . $params["dateEnd"] . ' = "";';
+					$rtr.= 'if(stat == statusDateEnd && obj.aData.' . $params["dateEnd"] . ' != "")';
+					$rtr.= 'if(obj.aData.' . $params["dateEnd"] . ' < now)';
 					$rtr.= 'stat = expire[0];
 							else stat = expire[1];';
-					
 				}
 				$rtr.= 'var ar = [];
 				ar[ar.length] = "<span class=\"lbl ";

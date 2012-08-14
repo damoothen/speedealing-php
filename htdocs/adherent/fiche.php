@@ -213,8 +213,9 @@ if ($action == 'update' && !$_POST["cancel"] && $user->rights->adherent->creer) 
 
 		$object->amount = $_POST["amount"];
 
-		if (GETPOST('deletephoto'))
-			$object->photo = '';
+		if (GETPOST('deletephoto')) {
+			unset($object->photo);
+		}			
 		elseif (!empty($_FILES['photo']['name']))
 			$object->photo = dol_sanitizeFileName($_FILES['photo']['name']);
 
@@ -223,6 +224,8 @@ if ($action == 'update' && !$_POST["cancel"] && $user->rights->adherent->creer) 
 		$object->public = $_POST["public"];
 
 		// Get extra fields
+		if (!is_object($object->array_options))
+			$object->array_options = new stdClass();
 		foreach ($_POST as $key => $value) {
 			if (preg_match("/^options_/", $key)) {
 				$object->array_options->$key = $_POST[$key];
@@ -245,33 +248,14 @@ if ($action == 'update' && !$_POST["cancel"] && $user->rights->adherent->creer) 
 
 		$result = $object->update($user, 0, $nosyncuser, $nosyncuserpass);
 		if ($result >= 0 && !count($object->errors)) {
-			$dir = $conf->adherent->dir_output . '/' . get_exdir($object->id, 2, 0, 1) . '/photos';
 			$file_OK = is_uploaded_file($_FILES['photo']['tmp_name']);
+
+			if (GETPOST('deletephoto')) {
+				$object->deleteFile($oldcopy->photo);
+			}
 			if ($file_OK) {
-				if (GETPOST('deletephoto')) {
-					$fileimg = $conf->adherent->dir_output . '/' . get_exdir($object->id, 2, 0, 1) . '/photos/' . $object->photo;
-					$dirthumbs = $conf->adherent->dir_output . '/' . get_exdir($object->id, 2, 0, 1) . '/photos/thumbs';
-					dol_delete_file($fileimg);
-					dol_delete_dir_recursive($dirthumbs);
-				}
-
 				if (image_format_supported($_FILES['photo']['name']) > 0) {
-					dol_mkdir($dir);
-
-					if (@is_dir($dir)) {
-						$newfile = $dir . '/' . dol_sanitizeFileName($_FILES['photo']['name']);
-						if (!dol_move_uploaded_file($_FILES['photo']['tmp_name'], $newfile, 1, 0, $_FILES['photo']['error']) > 0) {
-							$message .= '<div class="error">' . $langs->trans("ErrorFailedToSaveFile") . '</div>';
-						} else {
-							// Create small thumbs for company (Ratio is near 16/9)
-							// Used on logon for example
-							$imgThumbSmall = vignette($newfile, $maxwidthsmall, $maxheightsmall, '_small', $quality);
-
-							// Create mini thumbs for company (Ratio is near 16/9)
-							// Used on menu or for setup page for example
-							$imgThumbMini = vignette($newfile, $maxwidthmini, $maxheightmini, '_mini', $quality);
-						}
-					}
+					$object->storeFile('photo');
 				} else {
 					$errmsgs[] = "ErrorBadImageFormat";
 				}
