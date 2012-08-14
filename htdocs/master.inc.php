@@ -122,6 +122,15 @@ if (! defined('NOREQUIREDB'))
 unset($dolibarr_main_db_pass); 	// We comment this because this constant is used in a lot of pages
 unset($conf->db->pass);				// This is to avoid password to be shown in memory/swap dump
 
+// Load Memcache configuration
+if (!empty($conf->memcached->host) && class_exists('Memcached')) {
+	$memcache = new Memcached();
+	$result = $memcache->addServer($conf->memcached->host, $conf->memcached->port);
+} elseif (!empty($conf->memcached->host) && class_exists('Memcache')) {
+	$memcache = new Memcache();
+	$result = $memcache->addServer($conf->memcached->host, $conf->memcached->port);
+}
+
 /*
  * Object $user
  */

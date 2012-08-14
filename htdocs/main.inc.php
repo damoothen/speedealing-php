@@ -288,7 +288,7 @@ if (!defined('NOLOGIN')) {
 	$authmode = explode(',', $dolibarr_main_authentication);
 
 	// No authentication mode
-	if (!count($authmode) && empty($conf->login_modules)) {
+	if (!count($authmode) && empty($conf->login_modules)) {		
 		$langs->load('main');
 		dol_print_error('', $langs->trans("ErrorConfigParameterNotDefined", 'dolibarr_main_authentication'));
 		exit;
@@ -442,6 +442,7 @@ if (!defined('NOLOGIN')) {
 
 		$user = new User($db);
 		$resultFetchUser = $user->fetch("org.couchdb.user:" . $login);
+
 		if ($resultFetchUser <= 0) {
 			// Account has been removed after login
 			session_destroy();
@@ -605,19 +606,11 @@ if (!defined('NOREQUIRETRAN')) {
 	}
 }
 
-// Use php template engine
-if ($conf->global->MAIN_USE_TEMPLATE_ENGINE && !defined('NOTEMPLATEENGINE')) {
-	require_once(DOL_DOCUMENT_ROOT . '/includes/savant/Savant3.php');
-
-	$tpl = new Savant3();
-}
-
 // Case forcing style from url
 if (GETPOST('theme')) {
 	$conf->theme = GETPOST('theme', 'alpha', 1);
 	$conf->css = "/theme/" . $conf->theme . "/style.css.php";
 }
-
 
 if (!defined('NOLOGIN')) {
 	// If the login is not recovered, it is identified with an account that does not exist.
@@ -1541,8 +1534,11 @@ if (!function_exists("llxFooter")) {
 	 * @return	void
 	 */
 	function llxFooter($foot = '') {
-		global $conf, $langs, $dolibarr_auto_user, $micro_start_time;
+		global $conf, $langs, $dolibarr_auto_user, $micro_start_time, $memcache;
 
+		if (!empty($conf->memcached->host) && class_exists('Memcache') && !class_exists('Memcached'))
+			$memcache->close();
+		
 		// Core error message
 		if (defined("MAIN_CORE_ERROR") && constant("MAIN_CORE_ERROR") == 1) {
 			$title = img_warning() . ' ' . $langs->trans('CoreErrorTitle');

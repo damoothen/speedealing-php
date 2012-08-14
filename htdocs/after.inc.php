@@ -1,4 +1,5 @@
 <?PHP
+
 /* Copyright (C) 2002-2007 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2003      Xavier Dutoit        <doli@sydesy.com>
  * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
@@ -26,34 +27,25 @@
  */
 
 /**
- *	\file       htdocs/after.inc.php
+ * 	\file       htdocs/after.inc.php
  * 	\ingroup	core
  *  \brief      File that defines environment for all Dolibarr process (pages or scripts)
  * 				This script reads the conf file, init $lang, $db and and empty $user
  */
 
-
 /*
  * Load object $conf
  * After this, all parameters conf->global->CONSTANTS are loaded
  */
-if (! defined('NOREQUIREDB'))
-{
+if (!defined('NOREQUIREDB')) {
 	// By default conf->entity is 1, but we change this if we ask another value.
-	if (session_id() && ! empty($_SESSION["dol_entity"]))			// Entity inside an opened session
-	{
+	if (session_id() && !empty($_SESSION["dol_entity"])) {   // Entity inside an opened session
 		$conf->entity = $_SESSION["dol_entity"];
-	}
-	else if (! empty($_ENV["dol_entity"]))							// Entity inside a CLI script
-	{
+	} else if (!empty($_ENV["dol_entity"])) {	   // Entity inside a CLI script
 		$conf->entity = $_ENV["dol_entity"];
-	}
-	else if (isset($_POST["loginfunction"]) && GETPOST("entity"))	// Just after a login page
-	{
-		$conf->entity = GETPOST("entity",'int');
-	}
-	else if (defined('DOLENTITY') && is_int(DOLENTITY))				// For public page with MultiCompany module
-	{
+	} else if (isset($_POST["loginfunction"]) && GETPOST("entity")) { // Just after a login page
+		$conf->entity = GETPOST("entity", 'int');
+	} else if (defined('DOLENTITY') && is_int(DOLENTITY)) {	// For public page with MultiCompany module
 		$conf->entity = DOLENTITY;
 	}
 
@@ -63,34 +55,33 @@ if (! defined('NOREQUIREDB'))
 }
 
 // Overwrite database value
-if (! empty($conf->file->mailing_limit_sendbyweb))
-{
+if (!empty($conf->file->mailing_limit_sendbyweb)) {
 	$conf->global->MAILING_LIMIT_SENDBYWEB = $conf->file->mailing_limit_sendbyweb;
 }
 
 // If software has been locked. Only login $conf->global->MAIN_ONLY_LOGIN_ALLOWED is allowed.
-if (! empty($conf->global->MAIN_ONLY_LOGIN_ALLOWED))
-{
-	$ok=0;
-	if ((! session_id() || ! isset($_SESSION["dol_login"])) && ! isset($_POST["username"]) && ! empty($_SERVER["GATEWAY_INTERFACE"])) $ok=1;	// We let working pages if not logged and inside a web browser (login form, to allow login by admin)
-	elseif (isset($_POST["username"]) && $_POST["username"] == $conf->global->MAIN_ONLY_LOGIN_ALLOWED) $ok=1;				// We let working pages that is a login submission (login submit, to allow login by admin)
-	elseif (defined('NOREQUIREDB'))   $ok=1;				// We let working pages that don't need database access (xxx.css.php)
-	elseif (defined('EVEN_IF_ONLY_LOGIN_ALLOWED')) $ok=1;	// We let working pages that ask to work even if only login enabled (logout.php)
-	elseif (session_id() && isset($_SESSION["dol_login"]) && $_SESSION["dol_login"] == $conf->global->MAIN_ONLY_LOGIN_ALLOWED) $ok=1;	// We let working if user is allowed admin
-	if (! $ok)
-	{
-		if (session_id() && isset($_SESSION["dol_login"]) && $_SESSION["dol_login"] != $conf->global->MAIN_ONLY_LOGIN_ALLOWED)
-		{
-			print 'Sorry, your application is offline.'."\n";
-			print 'You are logged with user "'.$_SESSION["dol_login"].'" and only administrator user "'.$conf->global->MAIN_ONLY_LOGIN_ALLOWED.'" is allowed to connect for the moment.'."\n";
-			$nexturl=DOL_URL_ROOT.'/user/logout.php';
-			print 'Please try later or <a href="'.$nexturl.'">click here to disconnect and change login user</a>...'."\n";
-		}
-		else
-		{
-			print 'Sorry, your application is offline. Only administrator user "'.$conf->global->MAIN_ONLY_LOGIN_ALLOWED.'" is allowed to connect for the moment.'."\n";
-			$nexturl=DOL_URL_ROOT.'/';
-			print 'Please try later or <a href="'.$nexturl.'">click here to change login user</a>...'."\n";
+if (!empty($conf->global->MAIN_ONLY_LOGIN_ALLOWED)) {
+	$ok = 0;
+	if ((!session_id() || !isset($_SESSION["dol_login"])) && !isset($_POST["username"]) && !empty($_SERVER["GATEWAY_INTERFACE"]))
+		$ok = 1; // We let working pages if not logged and inside a web browser (login form, to allow login by admin)
+	elseif (isset($_POST["username"]) && $_POST["username"] == $conf->global->MAIN_ONLY_LOGIN_ALLOWED)
+		$ok = 1;	// We let working pages that is a login submission (login submit, to allow login by admin)
+	elseif (defined('NOREQUIREDB'))
+		$ok = 1;	// We let working pages that don't need database access (xxx.css.php)
+	elseif (defined('EVEN_IF_ONLY_LOGIN_ALLOWED'))
+		$ok = 1; // We let working pages that ask to work even if only login enabled (logout.php)
+	elseif (session_id() && isset($_SESSION["dol_login"]) && $_SESSION["dol_login"] == $conf->global->MAIN_ONLY_LOGIN_ALLOWED)
+		$ok = 1; // We let working if user is allowed admin
+	if (!$ok) {
+		if (session_id() && isset($_SESSION["dol_login"]) && $_SESSION["dol_login"] != $conf->global->MAIN_ONLY_LOGIN_ALLOWED) {
+			print 'Sorry, your application is offline.' . "\n";
+			print 'You are logged with user "' . $_SESSION["dol_login"] . '" and only administrator user "' . $conf->global->MAIN_ONLY_LOGIN_ALLOWED . '" is allowed to connect for the moment.' . "\n";
+			$nexturl = DOL_URL_ROOT . '/user/logout.php';
+			print 'Please try later or <a href="' . $nexturl . '">click here to disconnect and change login user</a>...' . "\n";
+		} else {
+			print 'Sorry, your application is offline. Only administrator user "' . $conf->global->MAIN_ONLY_LOGIN_ALLOWED . '" is allowed to connect for the moment.' . "\n";
+			$nexturl = DOL_URL_ROOT . '/';
+			print 'Please try later or <a href="' . $nexturl . '">click here to change login user</a>...' . "\n";
 		}
 		exit;
 	}
@@ -99,83 +90,78 @@ if (! empty($conf->global->MAIN_ONLY_LOGIN_ALLOWED))
 /*
  * Create object $mysoc (A thirdparty object that contains properties of companies managed by Dolibarr.
  */
-if (! defined('NOREQUIREDB') && ! defined('NOREQUIRESOC') )
-{
-	require_once(DOL_DOCUMENT_ROOT ."/societe/class/societe.class.php");
-	$mysoc=new Societe($db);
+if (!defined('NOREQUIREDB') && !defined('NOREQUIRESOC')) {
+	require_once(DOL_DOCUMENT_ROOT . "/societe/class/societe.class.php");
+	$mysoc = new Societe($db);
 
-	$mysoc->id=0;
-	$mysoc->nom=$conf->global->MAIN_INFO_SOCIETE_NOM; 			// TODO deprecated
-	$mysoc->name=$conf->global->MAIN_INFO_SOCIETE_NOM;
-	$mysoc->adresse=$conf->global->MAIN_INFO_SOCIETE_ADRESSE; 	// TODO deprecated
-	$mysoc->address=$conf->global->MAIN_INFO_SOCIETE_ADRESSE;
-	$mysoc->cp=$conf->global->MAIN_INFO_SOCIETE_CP; 			// TODO deprecated
-	$mysoc->zip=$conf->global->MAIN_INFO_SOCIETE_CP;
-	$mysoc->ville=$conf->global->MAIN_INFO_SOCIETE_VILLE; 		// TODO deprecated
-	$mysoc->town=$conf->global->MAIN_INFO_SOCIETE_VILLE;
-	$mysoc->state_id=$conf->global->MAIN_INFO_SOCIETE_DEPARTEMENT;
-	$mysoc->note=empty($conf->global->MAIN_INFO_SOCIETE_NOTE)?'':$conf->global->MAIN_INFO_SOCIETE_NOTE;
+	$mysoc->id = 0;
+	$mysoc->nom = $conf->global->MAIN_INFO_SOCIETE_NOM;	// TODO deprecated
+	$mysoc->name = $conf->global->MAIN_INFO_SOCIETE_NOM;
+	$mysoc->adresse = $conf->global->MAIN_INFO_SOCIETE_ADRESSE;  // TODO deprecated
+	$mysoc->address = $conf->global->MAIN_INFO_SOCIETE_ADRESSE;
+	$mysoc->cp = $conf->global->MAIN_INFO_SOCIETE_CP;	// TODO deprecated
+	$mysoc->zip = $conf->global->MAIN_INFO_SOCIETE_CP;
+	$mysoc->ville = $conf->global->MAIN_INFO_SOCIETE_VILLE;   // TODO deprecated
+	$mysoc->town = $conf->global->MAIN_INFO_SOCIETE_VILLE;
+	$mysoc->state_id = $conf->global->MAIN_INFO_SOCIETE_DEPARTEMENT;
+	$mysoc->note = empty($conf->global->MAIN_INFO_SOCIETE_NOTE) ? '' : $conf->global->MAIN_INFO_SOCIETE_NOTE;
 
-    // We define pays_id, pays_code and country
-    $tmp=explode(':',$conf->global->MAIN_INFO_SOCIETE_PAYS);
-    $country_id=$tmp[0];
-    if (! empty($tmp[1]))   // If $conf->global->MAIN_INFO_SOCIETE_PAYS is "id:code:label"
-    {
-        $country_code=$tmp[1];
-        $country_label=$tmp[2];
-    }
-    else                    // For backward compatibility
-    {
-        dol_syslog("Your country setup use an old syntax. Reedit it in setup area.", LOG_WARNING);
-        include_once(DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php');
-        $country_code=getCountry($country_id,2,$db);  // This need a SQL request, but it's the old feature
-        $country_label=getCountry($country_id,0,$db);  // This need a SQL request, but it's the old feature
-    }
-    $mysoc->pays_id=$country_id;		// TODO deprecated
-    $mysoc->country_id=$country_id;
-    $mysoc->pays_code=$country_code;	// TODO deprecated
-    $mysoc->country_code=$country_code;
-    $mysoc->country=$country_label;
-    if (is_object($langs)) $mysoc->country=($langs->trans('Country'.$country_code)!='Country'.$country_code)?$langs->trans('Country'.$country_code):$country_label;
-    $mysoc->pays=$mysoc->country;    	// TODO deprecated
+	// We define pays_id, pays_code and country
+	$tmp = explode(':', $conf->global->MAIN_INFO_SOCIETE_PAYS);
+	$country_id = $tmp[0];
+	if (!empty($tmp[1])) {   // If $conf->global->MAIN_INFO_SOCIETE_PAYS is "id:code:label"
+		$country_code = $tmp[1];
+		$country_label = $tmp[2];
+	} else {					// For backward compatibility
+		dol_syslog("Your country setup use an old syntax. Reedit it in setup area.", LOG_WARNING);
+		include_once(DOL_DOCUMENT_ROOT . '/core/lib/company.lib.php');
+		$country_code = getCountry($country_id, 2, $db);  // This need a SQL request, but it's the old feature
+		$country_label = getCountry($country_id, 0, $db);  // This need a SQL request, but it's the old feature
+	}
+	$mysoc->pays_id = $country_id;  // TODO deprecated
+	$mysoc->country_id = $country_id;
+	$mysoc->pays_code = $country_code; // TODO deprecated
+	$mysoc->country_code = $country_code;
+	$mysoc->country = $country_label;
+	if (is_object($langs))
+		$mysoc->country = ($langs->trans('Country' . $country_code) != 'Country' . $country_code) ? $langs->trans('Country' . $country_code) : $country_label;
+	$mysoc->pays = $mysoc->country;	 // TODO deprecated
 
-	$mysoc->tel=empty($conf->global->MAIN_INFO_SOCIETE_TEL)?'':$conf->global->MAIN_INFO_SOCIETE_TEL;   // TODO deprecated
-    $mysoc->phone=empty($conf->global->MAIN_INFO_SOCIETE_TEL)?'':$conf->global->MAIN_INFO_SOCIETE_TEL;
-	$mysoc->fax=empty($conf->global->MAIN_INFO_SOCIETE_FAX)?'':$conf->global->MAIN_INFO_SOCIETE_FAX;
-	$mysoc->url=empty($conf->global->MAIN_INFO_SOCIETE_WEB)?'':$conf->global->MAIN_INFO_SOCIETE_WEB;
+	$mysoc->tel = empty($conf->global->MAIN_INFO_SOCIETE_TEL) ? '' : $conf->global->MAIN_INFO_SOCIETE_TEL;   // TODO deprecated
+	$mysoc->phone = empty($conf->global->MAIN_INFO_SOCIETE_TEL) ? '' : $conf->global->MAIN_INFO_SOCIETE_TEL;
+	$mysoc->fax = empty($conf->global->MAIN_INFO_SOCIETE_FAX) ? '' : $conf->global->MAIN_INFO_SOCIETE_FAX;
+	$mysoc->url = empty($conf->global->MAIN_INFO_SOCIETE_WEB) ? '' : $conf->global->MAIN_INFO_SOCIETE_WEB;
 	// Id prof generiques
-	$mysoc->idprof1=empty($conf->global->MAIN_INFO_SIREN)?'':$conf->global->MAIN_INFO_SIREN;
-	$mysoc->idprof2=empty($conf->global->MAIN_INFO_SIRET)?'':$conf->global->MAIN_INFO_SIRET;
-	$mysoc->idprof3=empty($conf->global->MAIN_INFO_APE)?'':$conf->global->MAIN_INFO_APE;
-	$mysoc->idprof4=empty($conf->global->MAIN_INFO_RCS)?'':$conf->global->MAIN_INFO_RCS;
-	$mysoc->idprof5=empty($conf->global->MAIN_INFO_PROFID5)?'':$conf->global->MAIN_INFO_PROFID5;
-	$mysoc->idprof6=empty($conf->global->MAIN_INFO_PROFID6)?'':$conf->global->MAIN_INFO_PROFID6;
-	$mysoc->tva_intra=$conf->global->MAIN_INFO_TVAINTRA;	// VAT number, not necessarly INTRA.
-	$mysoc->idtrainer=empty($conf->global->MAIN_INFO_TRAINER)?'':$conf->global->MAIN_INFO_TRAINER;
-	$mysoc->capital=$conf->global->MAIN_INFO_CAPITAL;
-	$mysoc->forme_juridique_code=$conf->global->MAIN_INFO_SOCIETE_FORME_JURIDIQUE;
-	$mysoc->email=$conf->global->MAIN_INFO_SOCIETE_MAIL;
-	$mysoc->logo=$conf->global->MAIN_INFO_SOCIETE_LOGO;
-	$mysoc->logo_small=$conf->global->MAIN_INFO_SOCIETE_LOGO_SMALL;
-	$mysoc->logo_mini=$conf->global->MAIN_INFO_SOCIETE_LOGO_MINI;
+	$mysoc->idprof1 = empty($conf->global->MAIN_INFO_SIREN) ? '' : $conf->global->MAIN_INFO_SIREN;
+	$mysoc->idprof2 = empty($conf->global->MAIN_INFO_SIRET) ? '' : $conf->global->MAIN_INFO_SIRET;
+	$mysoc->idprof3 = empty($conf->global->MAIN_INFO_APE) ? '' : $conf->global->MAIN_INFO_APE;
+	$mysoc->idprof4 = empty($conf->global->MAIN_INFO_RCS) ? '' : $conf->global->MAIN_INFO_RCS;
+	$mysoc->idprof5 = empty($conf->global->MAIN_INFO_PROFID5) ? '' : $conf->global->MAIN_INFO_PROFID5;
+	$mysoc->idprof6 = empty($conf->global->MAIN_INFO_PROFID6) ? '' : $conf->global->MAIN_INFO_PROFID6;
+	$mysoc->tva_intra = $conf->global->MAIN_INFO_TVAINTRA; // VAT number, not necessarly INTRA.
+	$mysoc->idtrainer = empty($conf->global->MAIN_INFO_TRAINER) ? '' : $conf->global->MAIN_INFO_TRAINER;
+	$mysoc->capital = $conf->global->MAIN_INFO_CAPITAL;
+	$mysoc->forme_juridique_code = $conf->global->MAIN_INFO_SOCIETE_FORME_JURIDIQUE;
+	$mysoc->email = $conf->global->MAIN_INFO_SOCIETE_MAIL;
+	$mysoc->logo = $conf->global->MAIN_INFO_SOCIETE_LOGO;
+	$mysoc->logo_small = $conf->global->MAIN_INFO_SOCIETE_LOGO_SMALL;
+	$mysoc->logo_mini = $conf->global->MAIN_INFO_SOCIETE_LOGO_MINI;
 
 	// Define if company use vat or not (Do not use conf->global->FACTURE_TVAOPTION anymore)
-	$mysoc->tva_assuj=((isset($conf->global->FACTURE_TVAOPTION) && $conf->global->FACTURE_TVAOPTION=='franchise')?0:1);
+	$mysoc->tva_assuj = ((isset($conf->global->FACTURE_TVAOPTION) && $conf->global->FACTURE_TVAOPTION == 'franchise') ? 0 : 1);
 
 	// Define if company use local taxes
-	$mysoc->localtax1_assuj=((isset($conf->global->FACTURE_LOCAL_TAX1_OPTION) && $conf->global->FACTURE_LOCAL_TAX1_OPTION=='localtax1on')?1:0);
-	$mysoc->localtax2_assuj=((isset($conf->global->FACTURE_LOCAL_TAX2_OPTION) && $conf->global->FACTURE_LOCAL_TAX2_OPTION=='localtax2on')?1:0);
+	$mysoc->localtax1_assuj = ((isset($conf->global->FACTURE_LOCAL_TAX1_OPTION) && $conf->global->FACTURE_LOCAL_TAX1_OPTION == 'localtax1on') ? 1 : 0);
+	$mysoc->localtax2_assuj = ((isset($conf->global->FACTURE_LOCAL_TAX2_OPTION) && $conf->global->FACTURE_LOCAL_TAX2_OPTION == 'localtax2on') ? 1 : 0);
 
 	// For some countries, we need to invert our address with customer address
-	if ($mysoc->country_code == 'DE' && ! isset($conf->global->MAIN_INVERT_SENDER_RECIPIENT)) $conf->global->MAIN_INVERT_SENDER_RECIPIENT=1;
+	if ($mysoc->country_code == 'DE' && !isset($conf->global->MAIN_INVERT_SENDER_RECIPIENT))
+		$conf->global->MAIN_INVERT_SENDER_RECIPIENT = 1;
 }
 
 
 // Set default language (must be after the setValues of $conf)
-if (! defined('NOREQUIRETRAN'))
-{
+if (!defined('NOREQUIRETRAN')) {
 	$langs->setDefaultLang($conf->global->MAIN_LANG_DEFAULT);
 }
-
-
 ?>

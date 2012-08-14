@@ -113,8 +113,8 @@ foreach($sortorder as $numero=>$name)
 	{
 		foreach($modules[$numero]->rights as $rights)
 		{
-			$idperms.=($idperms?", ":"").$rights[0];
-			array_push($rights_ids, $rights[0]);
+			$idperms.=($idperms?", ":"").$rights->id;
+			array_push($rights_ids, $rights->id);
 		}
 	}
 	print '<td>'.($idperms?$idperms:"&nbsp;").'</td>';
