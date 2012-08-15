@@ -42,35 +42,7 @@ $action = GETPOST('action', 'alpha');
 $confirm = GETPOST('confirm', 'alpha');
 $message = '';
 
-$object = new Adherent($db);
-
-// Tableau des substitutions possibles
-$substitutionarray = array(
-	'__ID__' => 'IdRecord',
-	'__CAMPAGNEID__' => 'IdCampagne',
-	'__LASTNAME__' => 'Lastname',
-	'__FIRSTNAME__' => 'Firstname',
-	'__OTHER1__' => 'Other1',
-	'__OTHER2__' => 'Other2',
-	'__OTHER3__' => 'Other3',
-	'__OTHER4__' => 'Other4',
-	'__OTHER5__' => 'Other5',
-	'__SIGNATURE__' => 'Signature',
-	'__PERSONALIZED__' => 'Personalized'
-);
-$substitutionarrayfortest = array(
-	'__ID__' => 'TESTIdRecord',
-	'__CAMPAGNEID' => 'TESTIdCampagne',
-	'__LASTNAME__' => 'TESTLastname',
-	'__FIRSTNAME__' => 'TESTFirstname',
-	'__OTHER1__' => 'TESTOther1',
-	'__OTHER2__' => 'TESTOther2',
-	'__OTHER3__' => 'TESTOther3',
-	'__OTHER4__' => 'TESTOther4',
-	'__OTHER5__' => 'TESTOther5',
-	'__SIGNATURE__' => 'TESTSignature',
-	'__PERSONALIZED__' => 'TESTPersonalized'
-);
+$object = new AdherentCard($db);
 
 // Action update emailing
 if ($action == 'update' && empty($_POST["removedfile"]) && empty($_POST["cancel"])) {
@@ -79,14 +51,12 @@ if ($action == 'update' && empty($_POST["removedfile"]) && empty($_POST["cancel"
 	try {
 		$object->load($id);
 
-		$object->sujet = trim($_POST["sujet"]);
+		$object->title = trim($_POST["title"]);
 		$object->resume = trim($_POST["resume"]);
 		$object->body = trim($_POST["body"]);
 		$object->tms = dol_now();
-		$object->mod = trim($_POST["msgtype"]);
-		$object->urgent = $_POST["urgent"];
 
-		if (!$object->sujet)
+		if (!$object->title)
 			$message.=($message ? '<br>' : '') . $langs->trans("ErrorFieldRequired", $langs->trans("MailTopic"));
 		if (!$object->body)
 			$message.=($message ? '<br>' : '') . $langs->trans("ErrorFieldRequired", $langs->trans("MailBody"));
@@ -144,7 +114,7 @@ if ($action != 'edit') {
 	print '<table class="border" width="100%">';
 
 	// Subject
-	print '<tr><td width="25%">' . $langs->trans("CardTitle") . '</td><td colspan="3">' . $object->sujet . '</td></tr>';
+	print '<tr><td width="25%">' . $langs->trans("CardTitle") . '</td><td colspan="3">' . $object->title . '</td></tr>';
 
 	// Resume
 	print '<tr><td width="25%">' . $langs->trans("Year") . '</td><td colspan="3">' . $object->resume . '</td></tr>';
@@ -154,7 +124,6 @@ if ($action != 'edit') {
 	// Message
 	
 	print '<iframe src="core/ajax/iframe.php?id='.$object->id.'&html=body&class=adherent"  width="100%" height="300">';
-	//print dol_htmlentitiesbr($object->body);
 	print '</iframe>';
 	
 	
@@ -193,7 +162,7 @@ if ($action != 'edit') {
 	print '<table class="border" width="100%">';
 
 	// Subject
-	print '<tr><td width="25%" class="fieldrequired">' . $langs->trans("CardTitle") . '</td><td colspan="3"><input class="flat" type="text" size=40 name="sujet" value="' . $object->sujet . '"></td></tr>';
+	print '<tr><td width="25%" class="fieldrequired">' . $langs->trans("CardTitle") . '</td><td colspan="3"><input class="flat" type="text" size=40 name="title" value="' . $object->title . '"></td></tr>';
 
 	// Resume
 	print '<tr><td width="25%" class="fieldrequired">' . $langs->trans("Year") . '</td><td colspan="3"><input class="flat" type="text" size=40 name="resume" value="' . $object->resume . '"></td></tr>';

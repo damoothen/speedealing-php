@@ -30,6 +30,7 @@ require_once(DOL_DOCUMENT_ROOT . "/core/lib/company.lib.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/lib/images.lib.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/lib/functions2.lib.php");
 require_once(DOL_DOCUMENT_ROOT . "/adherent/class/adherent.class.php");
+require_once(DOL_DOCUMENT_ROOT . "/adherent/class/adherent_card.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/adherent/class/adherent_type.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/class/extrafields.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/compta/bank/class/account.class.php");
@@ -161,16 +162,35 @@ if ($action == 'confirm_create_thirdparty' && $confirm == 'yes' && $user->rights
 }
 
 if ($action == 'confirm_sendinfo' && $confirm == 'yes') {
-	if ($object->email) {
-		$from = $conf->email_from;
-		if ($conf->global->ADHERENT_MAIL_FROM)
-			$from = $conf->global->ADHERENT_MAIL_FROM;
+	/* if ($object->email) {
+	  $from = $conf->email_from;
+	  if ($conf->global->ADHERENT_MAIL_FROM)
+	  $from = $conf->global->ADHERENT_MAIL_FROM;
 
-		$result = $object->send_an_email($langs->transnoentitiesnoconv("ThisIsContentOfYourCard") . "\n\n%INFOS%\n\n", $langs->transnoentitiesnoconv("CardContent"));
+	  $result = $object->send_an_email($langs->transnoentitiesnoconv("ThisIsContentOfYourCard") . "\n\n%INFOS%\n\n", $langs->transnoentitiesnoconv("CardContent"));
 
-		$langs->load("mails");
-		$mesg = $langs->trans("MailSuccessfulySent", $from, $object->email);
+	  $langs->load("mails");
+	  $mesg = $langs->trans("MailSuccessfulySent", $from, $object->email);
+	  } */
+
+	$model = new AdherentCard($db);
+	$model->load('licenseCard');
+	try {
+		$card = new AdherentCard($db);
+		$card->load($object->login);
+	} catch (Exception $e) {
+		$card->_id = $object->login;
 	}
+
+	$card->resume = $model->resume;
+	$card->title = $model->title;
+	$card->body = $model->body;
+
+	$card->tms = dol_now();
+
+	$card->makeSubstitution($object);
+
+	$card->record();
 }
 
 if ($action == 'update' && !$_POST["cancel"] && $user->rights->adherent->creer) {
@@ -215,8 +235,7 @@ if ($action == 'update' && !$_POST["cancel"] && $user->rights->adherent->creer) 
 
 		if (GETPOST('deletephoto')) {
 			unset($object->photo);
-		}			
-		elseif (!empty($_FILES['photo']['name']))
+		} elseif (!empty($_FILES['photo']['name']))
 			$object->photo = dol_sanitizeFileName($_FILES['photo']['name']);
 
 		// Get status and public property
@@ -1747,7 +1766,7 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
 	print '<tr><td>' . $langs->trans("Public") . '</td><td class="valeur">' . yn($object->public) . '</td></tr>';
 
 	// Status
-	print '<tr><td>' . $langs->trans("Status") . '</td><td class="valeur">' . $object->getLibStatut() . '</td></tr>';
+	print '<tr><td>' . $langs->trans("Status") . '</td><td class="valeur">' . $object->getLibStatus() . '</td></tr>';
 
 	// Other attributes
 	$parameters = array();
@@ -1856,21 +1875,6 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
 			} else {
 				print "<font class=\"butActionRefused\" href=\"#\" title=\"" . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . "\">" . $langs->trans("Reenable") . "</font>";
 			}
-		}
-
-		// Send card by email
-		if ($user->rights->adherent->creer) {
-			if ($object->Status >= 1) {
-				if ($object->email)
-					print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=$object->id&action=sendinfo">' . $langs->trans("SendCardByMail") . "</a>\n";
-				else
-					print "<a class=\"butActionRefused\" href=\"#\" title=\"" . dol_escape_htmltag($langs->trans("NoEMail")) . "\">" . $langs->trans("SendCardByMail") . "</a>\n";
-			}
-			else {
-				print "<font class=\"butActionRefused\" href=\"#\" title=\"" . dol_escape_htmltag($langs->trans("ValidateBefore")) . "\">" . $langs->trans("SendCardByMail") . "</font>";
-			}
-		} else {
-			print "<font class=\"butActionRefused\" href=\"#\" title=\"" . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . "\">" . $langs->trans("SendCardByMail") . "</font>";
 		}
 
 		// Resilier
@@ -2006,6 +2010,33 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
 
 	$titre = $langs->trans("Messenger");
 	print start_box($titre, "six", "16-Mail.png");
+
+	print end_box();
+
+	$titre = $langs->trans("CardMember");
+	print start_box($titre, "six", "16-Mail.png");
+
+	print '<iframe src="core/ajax/iframe.php?id=' . $object->login . '&html=body&class=adherent"  width="100%" height="300">';
+	print '</iframe>';
+
+	print '<div class="tabsAction">';
+
+	// Send card by email
+	if ($user->rights->adherent->creer) {
+		if ($object->Status >= 1) {
+			if ($object->email)
+				print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&action=sendinfo">' . $langs->trans("SendCard") . "</a>\n";
+			else
+				print "<a class=\"butActionRefused\" href=\"#\" title=\"" . dol_escape_htmltag($langs->trans("NoEMail")) . "\">" . $langs->trans("SendCard") . "</a>\n";
+		}
+		else {
+			print "<font class=\"butActionRefused\" href=\"#\" title=\"" . dol_escape_htmltag($langs->trans("ValidateBefore")) . "\">" . $langs->trans("SendCard") . "</font>";
+		}
+	} else {
+		print "<font class=\"butActionRefused\" href=\"#\" title=\"" . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . "\">" . $langs->trans("SendCard") . "</font>";
+	}
+
+	print '</div>';
 
 	print end_box();
 }

@@ -1152,7 +1152,7 @@ class Adherent extends nosqlDocument {
 	 *
 	 *  @return string				Label
 	 */
-	function getLibStatut() {
+	function getLibStatus() {
 		return $this->LibStatus($this->Status, array("dateEnd"=> $this->last_subscription_date_end));
 	}
 
