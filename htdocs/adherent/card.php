@@ -71,31 +71,6 @@ $substitutionarrayfortest = array(
 	'__SIGNATURE__' => 'TESTSignature',
 	'__PERSONALIZED__' => 'TESTPersonalized'
 );
-/*
- * Add file in email form
- */
-if (!empty($_POST['addfile'])) {
-
-	$object->load($id);
-	if (!empty($_FILES['addedfile']['tmp_name'])) {
-		$object->storeFile();
-		//dol_add_file_process($upload_dir, 0, 0);
-	}
-
-	$action = "edit";
-}
-
-// Action update emailing
-if (!empty($_POST["removedfile"])) {
-	$object->load($id);
-
-	if (!empty($_POST['removedfile'])) {
-		$object->deleteFile($_POST['removedfile']);
-		//$mesg = dol_remove_file_process($_POST['removedfile'], 0);
-	}
-
-	$action = "edit";
-}
 
 // Action update emailing
 if ($action == 'update' && empty($_POST["removedfile"]) && empty($_POST["cancel"])) {
@@ -163,46 +138,25 @@ if ($action != 'edit') {
 	 * Mailing en mode visu
 	 */
 
-	if ($mesg)
-		print $mesg;
-
 	// Print mail content
 	print '<div class="row">';
 	print start_box($langs->trans("CardMember"), "six centered", "16-iPhone-4.png");
 	print '<table class="border" width="100%">';
 
 	// Subject
-	print '<tr><td width="25%">' . $langs->trans("MsgTopic") . '</td><td colspan="3">' . $object->sujet . '</td></tr>';
+	print '<tr><td width="25%">' . $langs->trans("CardTitle") . '</td><td colspan="3">' . $object->sujet . '</td></tr>';
 
 	// Resume
-	print '<tr><td width="25%">' . $langs->trans("Resume") . '</td><td colspan="3">' . $object->resume . '</td></tr>';
+	print '<tr><td width="25%">' . $langs->trans("Year") . '</td><td colspan="3">' . $object->resume . '</td></tr>';
 
-	// Joined files
-	print '<tr><td>' . $langs->trans("File") . '</td><td colspan="3">';
-	// List of files
-	if (count($object->_attachments)) {
-		foreach ($object->_attachments as $key => $aRow) {
-			print img_mime($key) . ' ' . $key;
-			print '<br>';
-		}
-	} else {
-		print $langs->trans("NoAttachedFiles") . '<br>';
-	}
-	print '</td></tr>';
-
-	// Background color
-	/* print '<tr><td width="25%">'.$langs->trans("BackgroundColorByDefault").'</td><td colspan="3">';
-	  $htmlother->select_color($object->bgcolor,'bgcolor','edit_mailing',0);
-	  print '</td></tr>'; */
-
+	print '</table></br>';
+	
 	// Message
-	print '<tr><td valign="top">' . $langs->trans("Message") . '</td>';
-	print '<td colspan="3" bgcolor="' . ($object->bgcolor ? (preg_match('/^#/', $object->bgcolor) ? '' : '#') . $object->bgcolor : 'white') . '">';
-	print dol_htmlentitiesbr($object->body);
-	print '</td>';
-	print '</tr>';
-
-	print '</table>';
+	
+	print '<iframe src="core/ajax/iframe.php?id='.$object->id.'&html=body&class=adherent"  width="100%" height="300">';
+	//print dol_htmlentitiesbr($object->body);
+	print '</iframe>';
+	
 	
 	/*
 	 * Boutons d'action
@@ -224,13 +178,8 @@ if ($action != 'edit') {
 	 * Mailing en mode edition
 	 */
 
-	if ($mesg)
-		print $mesg . "<br>";
-	if ($message)
-		print $message . "<br>";
-
 	print '<div class="row">';
-	print start_box($langs->trans("CardMember"), "six centered", "16-iPhone-4.png");
+	print start_box($langs->trans("CardMember"), "twelve", "16-iPhone-4.png");
 	
 	print "\n";
 	print '<form name="edit_mailing" action="' . $_SERVER['PHP_SELF'] . '" method="post" enctype="multipart/form-data">' . "\n";
@@ -244,67 +193,20 @@ if ($action != 'edit') {
 	print '<table class="border" width="100%">';
 
 	// Subject
-	print '<tr><td width="25%" class="fieldrequired">' . $langs->trans("MsgTopic") . '</td><td colspan="3"><input class="flat" type="text" size=40 name="sujet" value="' . $object->sujet . '"></td></tr>';
+	print '<tr><td width="25%" class="fieldrequired">' . $langs->trans("CardTitle") . '</td><td colspan="3"><input class="flat" type="text" size=40 name="sujet" value="' . $object->sujet . '"></td></tr>';
 
 	// Resume
-	print '<tr><td width="25%" class="fieldrequired">' . $langs->trans("Resume") . '</td><td colspan="3"><input class="flat" type="text" size=40 name="resume" value="' . $object->resume . '"></td></tr>';
-
-	dol_init_file_process($upload_dir);
-
-	// MesgType
-	print '<tr><td width="25%"><span class="fieldrequired">' . $langs->trans('MsgType') . '</span></td><td width="25%"><select class="flat" name="msgtype">';
-	$selected = $object->mod;
-	print '<option value="0"' . ($selected == 0 ? ' selected="selected"' : '') . '>' . $langs->trans('News') . '</option>';
-	print '<option value="1"' . ($selected == 1 ? ' selected="selected"' : '') . '>' . $langs->trans('Msg') . '</option>';
-	print '<option value="3"' . ($selected == 3 ? ' selected="selected"' : '') . '>' . $langs->trans('Sign') . '</option>';
-	print '</select> <input type="checkbox" name="urgent" value="1" ' . ($object->urgent ? "checked" : "") . '> Urgent</td>';
-
-	// Joined files
-	$addfileaction = 'addfile';
-	print '<tr><td>' . $langs->trans("File") . '</td>';
-	print '<td colspan="3">';
-	// List of files
-	// TODO Trick to have param removedfile containing nb of image to delete. But this does not works without javascript
-	$out.= '<input type="hidden" class="removedfilehidden" name="removedfile" value="">' . "\n";
-	$out.= '<script type="text/javascript" language="javascript">';
-	$out.= 'jQuery(document).ready(function () {';
-	$out.= '    jQuery(".removedfile").click(function() {';
-	$out.= '        jQuery(".removedfilehidden").val(jQuery(this).val());';
-	$out.= '    });';
-	$out.= '})';
-	$out.= '</script>' . "\n";
-	if (count($object->_attachments)) {
-		foreach ($object->_attachments as $key => $aRow) {
-			$out.= '<div id="attachfile_' . $key . '">';
-			$out.= img_mime($key) . ' ' . $key;
-			$out.= ' <input type="image" style="border: 0px;" src="' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/delete.png" value="' . $key . '" class="removedfile" id="removedfile_' . $key . '" name="removedfile_' . $key . '" />';
-			$out.= '<br></div>';
-		}
-	} else {
-		$out.= $langs->trans("NoAttachedFiles") . '<br>';
-	}
-
-	// Add link to add file
-	$out.= '<input type="file" class="flat" id="addedfile" name="addedfile" value="' . $langs->trans("Upload") . '" />';
-	$out.= ' ';
-	$out.= '<input type="submit" class="button tiny nice" id="' . $addfileaction . '" name="' . $addfileaction . '" value="' . $langs->trans("MailingAddFile") . '" />';
-	print $out;
-	print '</td></tr>';
+	print '<tr><td width="25%" class="fieldrequired">' . $langs->trans("Year") . '</td><td colspan="3"><input class="flat" type="text" size=40 name="resume" value="' . $object->resume . '"></td></tr>';
 
 	// Message
-	print '<tr><td width="25%" valign="top">' . $langs->trans("MailMessage") . '<br>';
+	print '<tr><td width="25%" valign="top">' . $langs->trans("Card") . '<br>';
 	print '<br><i>' . $langs->trans("CommonSubstitutions") . ':<br>';
-	print '__ID__ = ' . $langs->trans("IdRecord") . '<br>';
+	print '__ID__ = ' . $langs->trans("IdLicense") . '<br>';
+	print '__STATUS__ = ' . $langs->trans("Status") . '<br>';
 	print '__EMAIL__ = ' . $langs->trans("EMail") . '<br>';
-	print '__CHECK_READ__ = ' . $langs->trans("CheckRead") . '<br>';
-	print '__UNSUSCRIBE__ = ' . $langs->trans("MailUnsubcribe") . '<br>';
 	print '__LASTNAME__ = ' . $langs->trans("Lastname") . '<br>';
 	print '__FIRSTNAME__ = ' . $langs->trans("Firstname") . '<br>';
-	print '__OTHER1__ = ' . $langs->trans("Other") . '1<br>';
-	print '__OTHER2__ = ' . $langs->trans("Other") . '2<br>';
-	print '__OTHER3__ = ' . $langs->trans("Other") . '3<br>';
-	print '__OTHER4__ = ' . $langs->trans("Other") . '4<br>';
-	print '__OTHER5__ = ' . $langs->trans("Other") . '5<br>';
+	print '__PHOTO__ = ' . $langs->trans("Photo") . '<br>';
 	print '</i></td>';
 	print '<td colspan="3">';
 	// Editeur wysiwyg

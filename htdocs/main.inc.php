@@ -87,7 +87,7 @@ function test_sql_and_script_inject($val, $type) {
 	// When it found '<script', 'javascript:', '<style', 'onload\s=' on body tag, '="&' on a tag size with old browsers
 	// All examples on page: http://ha.ckers.org/xss.html#XSScalc
 	$sql_inj += preg_match('/<script/i', $val);
-	$sql_inj += preg_match('/<style/i', $val);
+	//$sql_inj += preg_match('/<style/i', $val);
 	$sql_inj += preg_match('/base[\s]+href/i', $val);
 	if ($type == 1) {
 		$sql_inj += preg_match('/javascript:/i', $val);
@@ -783,7 +783,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 			//if (!empty($conf->global->MAIN_USE_JQUERY_THEME)) $jquerytheme = $conf->global->MAIN_USE_JQUERY_THEME;
 			//else print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/css/'.$jquerytheme.'/jquery-ui-latest.custom.css" />'."\n";    // JQuery
 			//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/tiptip/tipTip.css" />'."\n";                           // Tooltip
-			//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/jnotify/jquery.jnotify-alt.min.css" />'."\n";          // JNotify
+			print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/jnotify/jquery.jnotify-alt.min.css" />'."\n";          // JNotify
 			//print '<link rel="stylesheet" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/lightbox/css/jquery.lightbox-0.5.css" media="screen" />'."\n";       // Lightbox
 			// jQuery fileupload
 			print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/fileupload/css/jquery.fileupload-ui.css" />' . "\n";
@@ -851,8 +851,8 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 			// jQuery Layout
 			print '<script type="text/javascript" src="includes/jquery/plugins/layout/jquery.layout-latest' . $ext . '"></script>' . "\n";
 			// jQuery jnotify
-			//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/jnotify/jquery.jnotify.min.js"></script>'."\n";
-			//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/core/js/jnotify.js"></script>'."\n";
+			print '<script type="text/javascript" src="includes/jquery/plugins/jnotify/jquery.jnotify.min.js"></script>'."\n";
+			print '<script type="text/javascript" src="core/js/jnotify.js"></script>'."\n";
 
 			if (!defined('NOLOGIN')) {
 				// Flot
