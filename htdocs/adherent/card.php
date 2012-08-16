@@ -123,8 +123,7 @@ if ($action != 'edit') {
 	
 	// Message
 	
-	print '<iframe src="core/ajax/iframe.php?id='.$object->id.'&html=body&class=adherent"  width="100%" height="300">';
-	print '</iframe>';
+	print $object->body;
 	
 	
 	/*

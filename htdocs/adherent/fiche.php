@@ -2015,9 +2015,16 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
 
 	$titre = $langs->trans("CardMember");
 	print start_box($titre, "six", "16-Mail.png");
-
-	print '<iframe src="core/ajax/iframe.php?id=' . $object->login . '&html=body&class=adherent"  width="100%" height="300">';
-	print '</iframe>';
+	
+	$licence = new AdherentCard($db);
+	try {
+		$licence->load($object->login);
+		print $licence->body;
+	} catch(Exception $e) {
+		print "No licence Card";
+	}
+	
+	
 
 	print '<div class="tabsAction">';
 
