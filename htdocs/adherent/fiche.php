@@ -1,9 +1,10 @@
 <?php
 
-/* Copyright (C) 2001-2004 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2002-2003 Jean-Louis Bergamo   <jlb@j1b.org>
- * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
+/* Copyright (C) 2001-2004 Rodolphe Quiedeville		<rodolphe@quiedeville.org>
+ * Copyright (C) 2002-2003 Jean-Louis Bergamo		<jlb@j1b.org>
+ * Copyright (C) 2004-2011 Laurent Destailleur		<eldy@users.sourceforge.net>
+ * Copyright (C) 2005-2012 Regis Houssin			<regis@dolibarr.fr>
+ * Copyright (C) 2011-2012	Herve Prot				<herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,11 +20,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- *       \file       htdocs/adherents/fiche.php
- *       \ingroup    member
- *       \brief      Page of member
- */
 require("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT . "/adherent/lib/member.lib.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/lib/company.lib.php");
@@ -35,6 +31,8 @@ require_once(DOL_DOCUMENT_ROOT . "/adherent/class/adherent_type.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/class/extrafields.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/compta/bank/class/account.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/class/html.formcompany.class.php");
+if ($conf->mips->enabled)
+	dol_include_once("/mips/class/mips.class.php");
 
 $langs->load("companies");
 $langs->load("bills");
@@ -190,7 +188,15 @@ if ($action == 'confirm_sendinfo' && $confirm == 'yes') {
 
 	$card->makeSubstitution($object);
 
-	$card->record();
+	$card->record(); // Save the Card
+	// Send the card
+	$send = new Mips($db);
+
+	$send->egoTitle = $card->title;
+	$send->egoBody = $card->body;
+	$send->egoMod = "licence";
+
+	$send->send($object->email, $object->login);
 }
 
 if ($action == 'update' && !$_POST["cancel"] && $user->rights->adherent->creer) {
@@ -2015,16 +2021,16 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
 
 	$titre = $langs->trans("CardMember");
 	print start_box($titre, "six", "16-Mail.png");
-	
+
 	$licence = new AdherentCard($db);
 	try {
 		$licence->load($object->login);
 		print $licence->body;
-	} catch(Exception $e) {
+	} catch (Exception $e) {
 		print "No licence Card";
 	}
-	
-	
+
+
 
 	print '<div class="tabsAction">';
 

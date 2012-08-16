@@ -3,7 +3,8 @@
 /* Copyright (C) 2004		Rodolphe Quiedeville	<rodolphe@quiedeville.org>
  * Copyright (C) 2005-2011	Laurent Destailleur		<eldy@uers.sourceforge.net>
  * Copyright (C) 2005-2012	Regis Houssin			<regis@dolibarr.fr>
- * Copyright (C) 2010-2011 Patrick Mary  <laube@hotmail.fr>
+ * Copyright (C) 2010-2011	Patrick Mary			<laube@hotmail.fr>
+ * Copyright (C) 2011-2012	Herve Prot				<herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,11 +20,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- *       \file       htdocs/comm/mailing/fiche.php
- *       \ingroup    mailing
- *       \brief      Fiche mailing, onglet general
- */
 require("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT . '/core/lib/files.lib.php');
 require_once(DOL_DOCUMENT_ROOT . "/core/class/CMailFile.class.php");
