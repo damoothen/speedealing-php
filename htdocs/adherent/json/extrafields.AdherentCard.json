@@ -1,0 +1,48 @@
+{
+   "_id": "extrafields:AdherentCard",
+   "class": "extrafields",
+   "ico": "/img/ico/icSw2/16-User.png",
+   "fields": {
+       "Status": {
+           "type": "select",
+           "enable": true,
+           "default": "0",
+           "aoColumns": {
+               "sClass": "center",
+               "bSearchable": true,
+               "bVisible": true
+           },
+           "values": {
+               "0": {
+                   "enable": true,
+                   "label": "MemberStatusDraft",
+                   "cssClass": "neutral_bg"
+               },
+               "1": {
+                   "label": "MemberStatusActive",
+                   "enable": true,
+                   "cssClass": "alert_bg",
+                   "dateEnd": [
+                       "expired",
+                       "actived"
+                   ]
+               },
+               "-1": {
+                   "label": "MemberStatusResiliated",
+                   "enable": true,
+                   "cssClass": "info_bg"
+               },
+               "actived": {
+                   "enable": false,
+                   "label": "MemberStatusPaid",
+                   "cssClass": "ok_bg"
+               },
+               "expired": {
+                   "enable": false,
+                   "label": "MemberStatusActiveLate",
+                   "cssClass": "error_bg"
+               }
+           }
+       }
+   }
+}

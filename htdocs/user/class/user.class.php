@@ -1488,6 +1488,15 @@ class User extends nosqlDocument {
 	function removeRoleFromUser($userid, $groupid) {
 		return $this->couchAdmin->removeRoleFromUser($userid, $groupid);
 	}
+	
+	/**
+	 *    Return label of status (activity, closed)
+	 *
+	 *    @return   string        		Libelle
+	 */
+	function getLibStatus() {
+		return $this->LibStatus($this->values->Status);
+	}
 
 }
 

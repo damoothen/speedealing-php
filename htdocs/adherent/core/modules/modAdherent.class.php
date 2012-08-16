@@ -228,6 +228,17 @@ class modAdherent extends DolibarrModules {
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->title = "List";
 		$this->menus[$r]->fk_menu = "menu:members0";
+		$r++;
+		$this->menus[$r]->_id = "menu:cardmemberedit";
+		$this->menus[$r]->position = 10;
+		$this->menus[$r]->url = "/adherent/card.php";
+		$this->menus[$r]->langs = "members";
+		$this->menus[$r]->perms = '$user->rights->adherent->configurer';
+		$this->menus[$r]->enabled = '$conf->adherent->enabled';
+		$this->menus[$r]->usertype = 2;
+		$this->menus[$r]->title = "CardMember";
+		$this->menus[$r]->fk_menu = "menu:members";
+		
 
         // Exports
         //--------

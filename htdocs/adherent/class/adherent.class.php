@@ -107,8 +107,7 @@ class Adherent extends nosqlDocument {
 			$fk_extrafields->useDatabase('adherent');
 			$this->fk_extrafields = $fk_extrafields->load("extrafields:" . get_class($this), true); // load and cache
 		} catch (Exception $e) {
-			$error = "Something weird happened: " . $e->getMessage() . " (errcode=" . $e->getCode() . ")\n";
-			print $error;
+			dol_print_error('',$e->getMessage());
 			exit;
 		}
 
@@ -1153,7 +1152,7 @@ class Adherent extends nosqlDocument {
 	 *
 	 *  @return string				Label
 	 */
-	function getLibStatut() {
+	function getLibStatus() {
 		return $this->LibStatus($this->Status, array("dateEnd"=> $this->last_subscription_date_end));
 	}
 

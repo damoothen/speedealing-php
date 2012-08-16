@@ -563,7 +563,7 @@ class Form {
 		$langs->load("trips");
 
 		if (count($this->cache_types_fees))
-			return 0;	// Cache already load
+			return 0; // Cache already load
 
 		$sql = "SELECT c.code, c.libelle as label";
 		$sql.= " FROM " . MAIN_DB_PREFIX . "c_type_fees as c";
@@ -683,7 +683,7 @@ class Form {
 		if (count($result->rows) > 0) {
 			foreach ($result->rows as $aRow) {
 				$obj = $aRow->value;
-				
+
 				$label = $obj->ThirdPartyName;
 				if ($showtype) {
 					if ($obj->client || $obj->fournisseur)
@@ -1142,6 +1142,7 @@ class Form {
 				if (dol_strlen($currencytextnoent) > 10)
 					$currencytextnoent = $conf->currency;   // If text is too long, we use the short code
 
+
 					
 // Multiprice
 				if ($price_level >= 1) {  // If we need a particular price level (from 1 to 6)
@@ -1521,7 +1522,7 @@ class Form {
 		global $langs;
 
 		if (count($this->cache_conditions_paiements))
-			return 0;	// Cache deja charge
+			return 0; // Cache deja charge
 
 		$sql = "SELECT rowid, code, libelle";
 		$sql.= " FROM " . MAIN_DB_PREFIX . 'c_payment_term';
@@ -1557,7 +1558,7 @@ class Form {
 		global $langs;
 
 		if (count($this->cache_availability))
-			return 0;	// Cache deja charge
+			return 0; // Cache deja charge
 
 		$sql = "SELECT rowid, code, label";
 		$sql.= " FROM " . MAIN_DB_PREFIX . 'c_availability';
@@ -1624,7 +1625,7 @@ class Form {
 		global $langs;
 
 		if (count($this->cache_demand_reason))
-			return 0;	// Cache already loaded
+			return 0; // Cache already loaded
 
 		$sql = "SELECT rowid, code, label";
 		$sql.= " FROM " . MAIN_DB_PREFIX . 'c_input_reason';
@@ -1699,7 +1700,7 @@ class Form {
 		global $langs;
 
 		if (count($this->cache_types_paiements))
-			return 0;	// Cache deja charge
+			return 0; // Cache deja charge
 
 		$sql = "SELECT id, code, libelle, type";
 		$sql.= " FROM " . MAIN_DB_PREFIX . "c_paiement";
@@ -2392,7 +2393,7 @@ class Form {
 			print '<tr><td nowrap="nowrap">';
 			if (!empty($conf->global->FACTURE_DEPOSITS_ARE_JUST_PAYMENTS)) {
 				if (!$filter || $filter == "fk_facture_source IS NULL")
-					print $langs->trans("CompanyHasAbsoluteDiscount", price($amount), $langs->transnoentities("Currency" . $conf->currency)) . ': ';	// If we want deposit to be substracted to payments only and not to total of final invoice
+					print $langs->trans("CompanyHasAbsoluteDiscount", price($amount), $langs->transnoentities("Currency" . $conf->currency)) . ': '; // If we want deposit to be substracted to payments only and not to total of final invoice
 				else
 					print $langs->trans("CompanyHasCreditNote", price($amount), $langs->transnoentities("Currency" . $conf->currency)) . ': ';
 			}
@@ -2529,7 +2530,7 @@ class Form {
 		$langs->load("dict");
 
 		if (count($this->cache_currencies))
-			return 0;	// Cache deja charge
+			return 0; // Cache deja charge
 
 		$sql = "SELECT code_iso, label, unicode";
 		$sql.= " FROM " . MAIN_DB_PREFIX . "c_currencies";
@@ -2629,7 +2630,7 @@ class Form {
 
 		$num = count($this->cache_vatrates);
 		if ($num > 0)
-			return $num;	// Cache deja charge
+			return $num; // Cache deja charge
 
 		$sql = "SELECT DISTINCT t.taux, t.recuperableonly";
 		$sql.= " FROM " . MAIN_DB_PREFIX . "c_tva as t, " . MAIN_DB_PREFIX . "c_pays as p";
@@ -2711,7 +2712,7 @@ class Form {
 		} else {
 			$code_pays = "'" . $mysoc->country_code . "'";   // Pour compatibilite ascendente
 		}
-		if (!empty($conf->global->SERVICE_ARE_ECOMMERCE_200238EC)) {	// If option to have vat for end customer for services is on
+		if (!empty($conf->global->SERVICE_ARE_ECOMMERCE_200238EC)) { // If option to have vat for end customer for services is on
 			if (!$societe_vendeuse->isInEEC() && $societe_acheteuse->isInEEC() && !$societe_acheteuse->isACompany()) {
 				// We also add the buyer
 				if (is_numeric($type)) {
@@ -3262,8 +3263,8 @@ class Form {
 			$fieldid = 'rowid';
 		if (empty($fieldref))
 			$fieldref = 'ref';
-		
-		if(isset($object->class))
+
+		if (isset($object->class))
 			return $object->_rev;
 
 		//print "paramid=$paramid,morehtml=$morehtml,shownav=$shownav,$fieldid,$fieldref,$morehtmlref,$moreparam";
@@ -3352,22 +3353,24 @@ class Form {
 			$email = $object->email;
 		}
 		else if ($modulepart == 'memberphoto') {
-			$dir = $conf->adherent->dir_output;
 			if ($object->photo)
-				$file = get_exdir($object->id, 2) . 'photos/' . $object->photo;
-			if (!empty($conf->global->MAIN_OLD_IMAGE_LINKS))
-				$altfile = $object->id . ".jpg"; // For backward compatibility
+				$file = $object->photo;
 			$email = $object->email;
 		}
 
-		if ($dir) {
+		if ($object->class) { // Photo in the database
+			if($file)
+				$ret.='<img alt="Photo" id="photologo' . (preg_replace('/[^a-z]/i', '_', $file)) . '" class="photologo" border="0" width="' . $width . '" src="' . $object->getFile($file) . '">';
+			else
+				$ret.='<img alt="No photo" border="0" width="' . $width . '" src="' . DOL_URL_ROOT . '/theme/common/nophoto.jpg">';
+		} elseif ($dir) {
 			$cache = '0';
 			if ($file && file_exists($dir . "/" . $file)) {
 				// TODO Link to large image
 				$ret.='<a href="' . DOL_URL_ROOT . '/viewimage.php?modulepart=' . $modulepart . '&entity=' . $object->entity . '&file=' . urlencode($file) . '&cache=' . $cache . '">';
 				$ret.='<img alt="Photo" id="photologo' . (preg_replace('/[^a-z]/i', '_', $file)) . '" class="photologo" border="0" width="' . $width . '" src="' . DOL_URL_ROOT . '/viewimage.php?modulepart=' . $modulepart . '&entity=' . $object->entity . '&file=' . urlencode($file) . '&cache=' . $cache . '">';
 				$ret.='</a>';
-			} else if ($altfile && file_exists($dir . "/" . $altfile)) {
+			} elseif ($altfile && file_exists($dir . "/" . $altfile)) {
 				$ret.='<a href="' . DOL_URL_ROOT . '/viewimage.php?modulepart=' . $modulepart . '&entity=' . $object->entity . '&file=' . urlencode($file) . '&cache=' . $cache . '">';
 				$ret.='<img alt="Photo alt" id="photologo' . (preg_replace('/[^a-z]/i', '_', $file)) . '" class="photologo" border="0" width="' . $width . '" src="' . DOL_URL_ROOT . '/viewimage.php?modulepart=' . $modulepart . '&entity=' . $object->entity . '&file=' . urlencode($altfile) . '&cache=' . $cache . '">';
 				$ret.='</a>';
