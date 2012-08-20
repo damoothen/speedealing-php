@@ -26,7 +26,6 @@ require_once(DOL_DOCUMENT_ROOT . "/core/lib/images.lib.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/lib/functions2.lib.php");
 require_once(DOL_DOCUMENT_ROOT . "/adherent/class/adherent.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/adherent/class/adherent_card.class.php");
-require_once(DOL_DOCUMENT_ROOT . "/adherent/class/adherent_type.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/class/extrafields.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/compta/bank/class/account.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/class/html.formcompany.class.php");
@@ -233,8 +232,7 @@ if ($action == 'update' && !$_POST["cancel"] && $user->rights->adherent->creer) 
 		$object->phone_mobile = trim($_POST["phone_mobile"]);
 		$object->email = trim($_POST["email"]);
 		$object->naiss = $datenaiss;
-
-		$object->typeid = $_POST["typeid"];
+		
 		//$object->note        = trim($_POST["comment"]);
 		$object->morphy = $_POST["morphy"];
 
@@ -375,7 +373,7 @@ if ($action == 'add' && $user->rights->adherent->creer) {
 	$object->pass = $pass;
 	$object->naiss = $datenaiss;
 	$object->photo = $photo;
-	$object->typeid = $typeid;
+	$object->Tag = array($typeid);
 	//$object->note        = $comment;
 	$object->morphy = $morphy;
 	$object->user_id = $userid;
@@ -876,14 +874,12 @@ if ($action == 'create') {
 	print "</td>\n";
 
 	// Type
-	print '<tr><td><span class="fieldrequired">' . $langs->trans("MemberType") . '</span></td><td>';
-	$listetype = $adht->liste_array();
-	if (count($listetype)) {
-		print $form->selectarray("typeid", $listetype, GETPOST('typeid', 'int') ? GETPOST('typeid', 'int') : $typeid, 1, 0, 1);
-	} else {
-		print '<font class="error">' . $langs->trans("NoTypeDefinedGoToSetup") . '</font>';
+	if ($typeid) {
+		print '<tr><td><span class="fieldrequired">' . $langs->trans("MemberType") . '</span></td><td>';
+		print '<input type="hidden" name="typeid" value="' . $typeid . '">';
+		print $typeid;
+		print "</td>\n";
 	}
-	print "</td>\n";
 
 	// Company
 	print '<tr><td>' . $langs->trans("Company") . '</td><td><input type="text" name="societe" size="40" value="' . (GETPOST('societe', 'alpha') ? GETPOST('societe', 'alpha') : $object->societe) . '"></td></tr>';
@@ -1013,7 +1009,7 @@ if ($action == 'edit') {
 	//$res=$object->fetch_optionals($object->id,$extralabels);
 	//if ($res < 0) { dol_print_error($db); exit; }
 
-	$adht = new AdherentType($db);
+	//$adht = new AdherentType($db);
 	//$adht->fetch($object->typeid);
 	// We set country_id, and country_code, country of the chosen country
 	if (isset($_POST["pays"]) || $object->country_id) {
@@ -1322,11 +1318,6 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
 			print '<br>';
 	}
 
-	$adht = new AdherentType($db);
-	$result = $adht->getView('list', array("key" => $object->typeid, 'limit' => 1));
-	if (count($result->rows))
-		$adht->fetch($result->rows[0]->value->_id);
-
 	print '<form name="cotisation" method="post" action="' . $_SERVER["PHP_SELF"] . '">';
 	print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
 	print '<input type="hidden" name="action" value="cotisation">';
@@ -1470,7 +1461,7 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
 		print $langs->trans("NoEMail");
 	} else {
 		$subjecttosend = $object->makeSubstitution($conf->global->ADHERENT_MAIL_COTIS_SUBJECT);
-		$texttosend = $object->makeSubstitution($adht->getMailOnSubscription());
+		//$texttosend = $object->makeSubstitution($adht->getMailOnSubscription());
 
 		$tmp = '<input name="sendmail" type="checkbox"' . ((isset($_POST["sendmail"]) ? $_POST["sendmail"] : $conf->global->ADHERENT_DEFAULT_SENDINFOBYMAIL) ? ' checked="checked"' : '') . '>';
 		$helpcontent = '';
@@ -1514,12 +1505,12 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
 	//$res=$object->fetch_optionals($object->id,$extralabels);
 	//if ($res < 0) { dol_print_error($db); exit; }
 
-	$adht = new AdherentType($db);
+	/*$adht = new AdherentType($db);
 	$result = $adht->getView('list', array("key" => $object->typeid, 'limit' => 1));
 	if (count($result->rows))
 		$adht->id = $result->rows[0]->value->_id;
 
-	$adht->libelle = $object->typeid;
+	$adht->libelle = $object->typeid;*/
 
 
 	/* try {

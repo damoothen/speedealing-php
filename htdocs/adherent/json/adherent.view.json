@@ -1,6 +1,5 @@
 {
    "_id": "_design/Adherent",
-   "_rev": "51-dbc7c09071680c8567b6fc3106e31f05",
    "language": "javascript",
    "views": {
        "list": {
@@ -24,7 +23,7 @@
            "map": "function(doc) {\nif(doc.cotisations.length > 0) {\n    for(var idx in doc.cotisations) {\n      emit(doc.cotisations[idx].year, {_id:doc._id, login:doc.login, Firstname:doc.Firstname, Lastname:doc.Lastname, dateh:doc.cotisations[idx].dateh, datef:doc.cotisations[idx].datef, note:doc.cotisations[idx].note, amount:doc.cotisations[idx].amount});\n    }\n  }\n}"
        },
        "tag": {
-           "map": "function(doc) {\nif(doc.typeid.length > 0) {\n    for(var idx in doc.typeid) {\n      emit(doc.typeid[idx], 1);\n    }\n  }\n}",
+           "map": "function(doc) {\nif(doc.Tag.length > 0) {\n    for(var idx in doc.Tag) {\n      emit(doc.Tag[idx], 1);\n    }\n  }\n}",
            "reduce": "function(keys, values) {\n  return sum(values)\n}"
        }
    },
