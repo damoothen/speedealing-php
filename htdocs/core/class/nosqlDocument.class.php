@@ -873,6 +873,26 @@ abstract class nosqlDocument extends CommonObject {
 			}
 			}';
 				break;
+			case "pourcentage":
+				$rtr = 'function(obj) {
+				var ar = [];
+			if(obj.aData.' . $key . ')
+			{
+				var total = obj.aData.' . $key . ';
+				price = ((Math.round(total*100))/100).toFixed(2);
+				ar[ar.length] = total;
+				ar[ar.length] = " %";
+				var str = ar.join("");
+				return str;
+			}
+			else
+			{
+				ar[ar.length] = "0.00 %";
+				var str = ar.join("");
+				return str;
+			}
+			}';
+				break;
 
 			default :
 				dol_print_error($db, "Type of fnRender must be url, date, datetime, attachment or status");
@@ -942,7 +962,7 @@ abstract class nosqlDocument extends CommonObject {
 	 *
 	 *  @return 	array	List of types of members
 	 */
-	function list_tag() {
+	function listTag() {
 		global $conf, $langs;
 
 		$list = array();
@@ -985,6 +1005,17 @@ abstract class nosqlDocument extends CommonObject {
 			}
 		}
 		return $result;
+	}
+	
+	function directory($key) {
+		$couchdb = clone $this->couchdb;
+		$couchdb->useDatabase("directory");
+		
+		$couchdb->setQueryParameters(array("key"=>$key));
+		$result = $couchdb->getView("Directory","mail");
+		
+		return $result->rows[0]->value;
+		
 	}
 
 }

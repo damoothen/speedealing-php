@@ -25,6 +25,13 @@
        "tag": {
            "map": "function(doc) {\nif(doc.Tag.length > 0) {\n    for(var idx in doc.Tag) {\n      emit(doc.Tag[idx], 1);\n    }\n  }\n}",
            "reduce": "function(keys, values) {\n  return sum(values)\n}"
+       },
+       "group": {
+           "map": "function(doc) {\nif(doc.Tag.length > 0) {\n    for(var idx in doc.Tag) {\n      emit(doc.Tag[idx], doc);\n    }\n  }\n}"
+       },
+       "tagStatus": {
+           "map": "function(doc) {\n  var now = Math.round(+new Date()/1000);\n  var status = 0;\n\n  if(doc.class && doc.class==\"Adherent\"){\n    if(doc.last_subscription_date_end && doc.Status == 1) {\n      if(doc.last_subscription_date_end < now)\n        status = \"expired\";\n      else\n        status = \"actived\";\n   }\n   else\n      status= doc.Status;\n\n   if(doc.Tag.length > 0) {\n       for(var idx in doc.Tag) {\n           emit([doc.Tag[idx],status], 1);\n       }\n    }\n\n  }\n}",
+           "reduce": "function(keys, values) {\n  return sum(values)\n}"
        }
    },
    "updates": {
