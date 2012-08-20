@@ -18,7 +18,6 @@
 
 require("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT."/adherent/class/adherent.class.php");
-require_once(DOL_DOCUMENT_ROOT."/adherent/class/adherent_type.class.php");
 
 $langs->load("members");
 $langs->load("companies");
@@ -75,7 +74,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans('Group');
 print'</th>';
-$obj->aoColumns[$i]->mDataProp = "typeid";
+$obj->aoColumns[$i]->mDataProp = "Tag";
 $obj->aoColumns[$i]->sDefaultContent = "";
 $i++;
 print'<th class="essential">';

@@ -1,9 +1,9 @@
 <?php
-
-/* Copyright (C) 2001-2004 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2002-2003 Jean-Louis Bergamo   <jlb@j1b.org>
- * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
+/* Copyright (C) 2001-2004 Rodolphe Quiedeville		<rodolphe@quiedeville.org>
+ * Copyright (C) 2002-2003 Jean-Louis Bergamo		<jlb@j1b.org>
+ * Copyright (C) 2004-2011 Laurent Destailleur		<eldy@users.sourceforge.net>
+ * Copyright (C) 2005-2012 Regis Houssin			<regis@dolibarr.fr>
+ * Copyright (C) 2011-2012	Herve Prot				<herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,11 +19,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- *       \file       htdocs/adherents/fiche.php
- *       \ingroup    member
- *       \brief      Page of member
- */
 require("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT . "/adherent/lib/member.lib.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/lib/company.lib.php");
@@ -31,10 +26,11 @@ require_once(DOL_DOCUMENT_ROOT . "/core/lib/images.lib.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/lib/functions2.lib.php");
 require_once(DOL_DOCUMENT_ROOT . "/adherent/class/adherent.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/adherent/class/adherent_card.class.php");
-require_once(DOL_DOCUMENT_ROOT . "/adherent/class/adherent_type.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/class/extrafields.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/compta/bank/class/account.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/class/html.formcompany.class.php");
+if ($conf->mips->enabled)
+	dol_include_once("/mips/class/mips.class.php");
 
 $langs->load("companies");
 $langs->load("bills");
@@ -190,7 +186,17 @@ if ($action == 'confirm_sendinfo' && $confirm == 'yes') {
 
 	$card->makeSubstitution($object);
 
-	$card->record();
+	$card->record(); // Save the Card
+	// Send the card
+	$send = new Mips($db);
+
+	$send->egoTitle = $card->title;
+	$send->egoBody = $card->body;
+	$send->egoMod = "licence";
+
+	$send->send(array("aaaa1234"), $object->login);
+
+	Header("Location:" . $_SERVER["PHP_SELF"] . "?id=" . $object->id);
 }
 
 if ($action == 'update' && !$_POST["cancel"] && $user->rights->adherent->creer) {
@@ -226,8 +232,7 @@ if ($action == 'update' && !$_POST["cancel"] && $user->rights->adherent->creer) 
 		$object->phone_mobile = trim($_POST["phone_mobile"]);
 		$object->email = trim($_POST["email"]);
 		$object->naiss = $datenaiss;
-
-		$object->typeid = $_POST["typeid"];
+		
 		//$object->note        = trim($_POST["comment"]);
 		$object->morphy = $_POST["morphy"];
 
@@ -368,7 +373,7 @@ if ($action == 'add' && $user->rights->adherent->creer) {
 	$object->pass = $pass;
 	$object->naiss = $datenaiss;
 	$object->photo = $photo;
-	$object->typeid = $typeid;
+	$object->Tag = array($typeid);
 	//$object->note        = $comment;
 	$object->morphy = $morphy;
 	$object->user_id = $userid;
@@ -869,14 +874,12 @@ if ($action == 'create') {
 	print "</td>\n";
 
 	// Type
-	print '<tr><td><span class="fieldrequired">' . $langs->trans("MemberType") . '</span></td><td>';
-	$listetype = $adht->liste_array();
-	if (count($listetype)) {
-		print $form->selectarray("typeid", $listetype, GETPOST('typeid', 'int') ? GETPOST('typeid', 'int') : $typeid, 1, 0, 1);
-	} else {
-		print '<font class="error">' . $langs->trans("NoTypeDefinedGoToSetup") . '</font>';
+	if ($typeid) {
+		print '<tr><td><span class="fieldrequired">' . $langs->trans("MemberType") . '</span></td><td>';
+		print '<input type="hidden" name="typeid" value="' . $typeid . '">';
+		print $typeid;
+		print "</td>\n";
 	}
-	print "</td>\n";
 
 	// Company
 	print '<tr><td>' . $langs->trans("Company") . '</td><td><input type="text" name="societe" size="40" value="' . (GETPOST('societe', 'alpha') ? GETPOST('societe', 'alpha') : $object->societe) . '"></td></tr>';
@@ -1006,7 +1009,7 @@ if ($action == 'edit') {
 	//$res=$object->fetch_optionals($object->id,$extralabels);
 	//if ($res < 0) { dol_print_error($db); exit; }
 
-	$adht = new AdherentType($db);
+	//$adht = new AdherentType($db);
 	//$adht->fetch($object->typeid);
 	// We set country_id, and country_code, country of the chosen country
 	if (isset($_POST["pays"]) || $object->country_id) {
@@ -1063,8 +1066,11 @@ if ($action == 'edit') {
 	print '<tr><td>' . $langs->trans("Ref") . '</td><td class="valeur" colspan="2">' . $object->_rev . '</td></tr>';
 
 	// Login
-	if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED)) {
+	if (empty($object->login)) {
 		print '<tr><td><span class="fieldrequired">' . $langs->trans("Login") . ' / ' . $langs->trans("Id") . '</span></td><td colspan="2"><input type="text" name="login" size="30" value="' . (isset($_POST["login"]) ? $_POST["login"] : $object->login) . '"></td></tr>';
+	} else {
+		print '<tr><td><span class="fieldrequired">' . $langs->trans("Login") . ' / ' . $langs->trans("Id") . '</span></td><td colspan="2">' . $object->login . '</td></tr>';
+		print '<input type="hidden" name="login" size="30" value="' . (isset($_POST["login"]) ? $_POST["login"] : $object->login) . '">';
 	}
 
 	// Physique-Moral
@@ -1089,11 +1095,26 @@ if ($action == 'edit') {
 	print '</td>';
 
 	// Type
-	print '<tr><td><span class="fieldrequired">' . $langs->trans("Type") . '</span></td><td>';
+	print '<tr><td><span class="fieldrequired">' . $langs->trans("MemberType") . '</span></td><td>';
 	if ($user->rights->adherent->creer) {
-		print $form->selectarray("typeid", $adht->liste_array(), (isset($_POST["typeid"]) ? $_POST["typeid"] : $object->typeid), 0, 0, 1);
+		print '<ul id="array_tag_handler"></ul>';
+		?>
+		<script>
+			$(document).ready(function() {
+				$("#array_tag_handler").tagHandler({
+					getData: { id: '<?php echo $object->id; ?>', class: '<?php echo get_class($object); ?>' },
+					getURL: '<?php echo DOL_URL_ROOT . '/core/ajax/loadtaghandler.php'; ?>',
+					updateData: { id: '<?php echo $object->id; ?>',class: '<?php echo get_class($object); ?>' },
+					updateURL: '<?php echo DOL_URL_ROOT . '/core/ajax/savetaghandler.php'; ?>',
+					autocomplete: true,
+					autoUpdate: true
+				});
+			});
+		</script>
+		<?php
+		//print $form->selectarray("typeid", $adht->liste_array(), (isset($_POST["typeid"]) ? $_POST["typeid"] : $object->typeid), 0, 0, 1);
 	} else {
-		print $adht->getNomUrl(1);
+		print $object->getTagUrl(1);
 		print '<input type="hidden" name="typeid" value="' . $object->typeid . '">';
 	}
 	print "</td></tr>";
@@ -1297,11 +1318,6 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
 			print '<br>';
 	}
 
-	$adht = new AdherentType($db);
-	$result = $adht->getView('list', array("key" => $object->typeid, 'limit' => 1));
-	if (count($result->rows))
-		$adht->fetch($result->rows[0]->value->_id);
-
 	print '<form name="cotisation" method="post" action="' . $_SERVER["PHP_SELF"] . '">';
 	print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
 	print '<input type="hidden" name="action" value="cotisation">';
@@ -1445,7 +1461,7 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
 		print $langs->trans("NoEMail");
 	} else {
 		$subjecttosend = $object->makeSubstitution($conf->global->ADHERENT_MAIL_COTIS_SUBJECT);
-		$texttosend = $object->makeSubstitution($adht->getMailOnSubscription());
+		//$texttosend = $object->makeSubstitution($adht->getMailOnSubscription());
 
 		$tmp = '<input name="sendmail" type="checkbox"' . ((isset($_POST["sendmail"]) ? $_POST["sendmail"] : $conf->global->ADHERENT_DEFAULT_SENDINFOBYMAIL) ? ' checked="checked"' : '') . '>';
 		$helpcontent = '';
@@ -1489,12 +1505,12 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
 	//$res=$object->fetch_optionals($object->id,$extralabels);
 	//if ($res < 0) { dol_print_error($db); exit; }
 
-	$adht = new AdherentType($db);
+	/*$adht = new AdherentType($db);
 	$result = $adht->getView('list', array("key" => $object->typeid, 'limit' => 1));
 	if (count($result->rows))
 		$adht->id = $result->rows[0]->value->_id;
 
-	$adht->libelle = $object->typeid;
+	$adht->libelle = $object->typeid;*/
 
 
 	/* try {
@@ -1707,7 +1723,7 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
 	print '</tr>';
 
 	// Type
-	print '<tr><td>' . $langs->trans("Type") . '</td><td class="valeur">' . $adht->getNomUrl(1) . "</td></tr>\n";
+	print '<tr><td>' . $langs->trans("MemberType") . '</td><td class="valeur">' . $object->getTagUrl(1) . "</td></tr>\n";
 
 	// Company
 	print '<tr><td>' . $langs->trans("Company") . '</td><td class="valeur">' . $object->societe . '</td></tr>';
@@ -2015,16 +2031,16 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
 
 	$titre = $langs->trans("CardMember");
 	print start_box($titre, "six", "16-Mail.png");
-	
+
 	$licence = new AdherentCard($db);
 	try {
 		$licence->load($object->login);
 		print $licence->body;
-	} catch(Exception $e) {
+	} catch (Exception $e) {
 		print "No licence Card";
 	}
-	
-	
+
+
 
 	print '<div class="tabsAction">';
 

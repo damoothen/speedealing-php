@@ -26,7 +26,6 @@
  */
 require("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT . "/adherent/class/adherent.class.php");
-require_once(DOL_DOCUMENT_ROOT . "/adherent/class/adherent_type.class.php");
 
 $langs->load("companies");
 $langs->load("members");
@@ -39,7 +38,6 @@ $langs->load("members");
 llxHeader('', $langs->trans("Members"), 'EN:Module_Foundations|FR:Module_Adh&eacute;rents|ES:M&oacute;dulo_Miembros');
 
 $staticmember = new Adherent($db);
-$statictype = new AdherentType($db);
 
 print_fiche_titre($langs->trans("MembersArea"));
 
@@ -54,24 +52,17 @@ $AdherentsResilies = array();
 
 $AdherentType = array();
 
-$adht = new AdherentType($db);
-$result = $adht->getView('list');
+$result = $staticmember->getView('tag',array("group"=>true));
 if (count($result->rows)) {
 	foreach ($result->rows as $aRow) {
-		$objp = $aRow->value;
-
-		$adhtype = new AdherentType($db);
-		$adhtype->id = $objp->_id;
-		$adhtype->cotisation = $objp->cotisation;
-		$adhtype->libelle = $objp->libelle;
-		$AdherentType[$objp->libelle] = $adhtype;
+		$AdherentType[$aRow->key] = $aRow->value;
 	}
 }
 
 $now = dol_now();
 
 $doc->_id = "_temp_view";
-$doc->map = "function(doc) {\n  var now = Math.round(+new Date()/1000);\n\n  if(doc.class && doc.class==\"Adherent\"){\n    if(doc.last_subscription_date_end && doc.Status == 1) {\n      if(doc.last_subscription_date_end < now)\n        emit([doc.typeid,\"expired\"], 1);\n      else\n        emit([doc.typeid,\"actived\"], 1);\n    }\n    else\n      emit([doc.typeid,doc.Status], 1);\n  }\n}";
+$doc->map = "function(doc) {\n  var now = Math.round(+new Date()/1000);\n  var status = 0;\n\n  if(doc.class && doc.class==\"Adherent\"){\n    if(doc.last_subscription_date_end && doc.Status == 1) {\n      if(doc.last_subscription_date_end < now)\n        status = \"expired\";\n      else\n        status = \"actived\";\n   }\n   else\n      status= doc.Status;\n\n   if(doc.Tag.length > 0) {\n       for(var idx in doc.Tag) {\n           emit([doc.Tag[idx],status], 1);\n       }\n    }\n\n  }\n}";
 $doc->reduce = "function(keys, values) {\n  return sum(values)\n}";
 
 $result = $staticmember->storeDoc($doc);
@@ -104,7 +95,7 @@ $dataval = array();
 $datalabels = array();
 $i = 0;
 foreach ($AdherentType as $key => $adhtype) {
-	$datalabels[] = array($i, $adhtype->getNomUrl(0, dol_size(16)));
+	$datalabels[] = array($i, $staticmember->getTagUrl(0, dol_size(16)));
 	foreach ($staticmember->fk_extrafields->fields->Status->values as $idx => $row) {
 		$dataval[$key][] = array($i, $Adherents[$key][$idx]);
 	}
@@ -137,7 +128,7 @@ print "</tr>\n";
 foreach ($AdherentType as $key => $adhtype) {
 	$var = !$var;
 	print "<tr $bc[$var]>";
-	print '<td><a href="adherent/type.php?id=' . $adhtype->id . '">' . img_object($langs->trans("ShowType"), "group") . ' ' . $adhtype->getNomUrl(0, dol_size(16)) . '</a></td>';
+	print '<td><a href="adherent/type.php?id=' . $key . '">' . img_object($langs->trans("ShowType"), "group") . ' ' . $key . '</a></td>';
 	foreach ($staticmember->fk_extrafields->fields->Status->values as $idx => $row) {
 		if ($Adherents[$key][$idx]) {
 			print '<td align="right">' . $Adherents[$key][$idx] . ' ' . $staticmember->LibStatus($idx) . '</td>';

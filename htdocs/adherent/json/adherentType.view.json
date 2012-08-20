@@ -1,9 +1,0 @@
-{
-   "_id": "_design/AdherentType",
-   "language": "javascript",
-   "views": {
-       "list": {
-           "map": "function(doc) {\n  if(doc.class && doc.class==\"AdherentType\")\n  emit(doc.libelle, doc);\n}"
-       }
-   }
-}

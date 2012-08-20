@@ -103,9 +103,9 @@ abstract class nosqlDocument extends CommonObject {
 	 */
 	public function set($key, $value) {
 		if (is_numeric($value))
-			$this->values->$key = (int) $value;
+			$this->$key = (int) $value;
 		else
-			$this->values->$key = $value;
+			$this->$key = $value;
 
 		$params = new stdClass();
 
@@ -239,7 +239,7 @@ abstract class nosqlDocument extends CommonObject {
 
 		return $this->couchdb->storeAttachment($this, $_FILES[$name]['tmp_name'], $_FILES[$name]['type'], $_FILES[$name]['name']);
 	}
-	
+
 	/**
 	 * 	get an attachement file in base64
 	 *  @param	$filename		Name of the file
@@ -248,7 +248,6 @@ abstract class nosqlDocument extends CommonObject {
 	public function getFileBase64($filename) {
 		return $this->couchdb->getAttachment($this, $filename);
 	}
-
 
 	/**
 	 * 	get URL a of file in document
@@ -468,13 +467,13 @@ abstract class nosqlDocument extends CommonObject {
 						"oTableTools": { "sSwfPath": "<?php echo DOL_URL_ROOT . '/includes/jquery/plugins/datatables/extras/TableTools/media/swf/copy_csv_xls.swf'; ?>"},
 						//if($obj->oTableTools->aButtons==null)
 						//$obj->oTableTools->aButtons = array("xls");
-																																																																																					    
+																																																																																									    
 						"oColVis": { "buttonText" : 'Voir/Cacher',
 							"aiExclude": [0,1] // Not cacheable _id and name
 						},
 						//$obj->oColVis->bRestore = true;
 						//$obj->oColVis->sAlign = 'left';
-																																																																																				            
+																																																																																								            
 						// Avec export Excel
 		<?php if (!empty($obj->sDom)) : ?>
 							//"sDom": "Cl<fr>t<\"clear\"rtip>",
@@ -503,7 +502,7 @@ abstract class nosqlDocument extends CommonObject {
 		<?php if (isset($obj->fnRowCallback)): ?>
 							"fnRowCallback": <?php echo $obj->fnRowCallback; ?>,
 		<?php endif; ?>
-																																																																				
+																																																																								
 		<?php if (!defined('NOLOGIN')) : ?>
 			<?php if (isset($obj->fnDrawCallback)): ?>
 									"fnDrawCallback": <?php echo $obj->fnDrawCallback; ?>,
@@ -528,7 +527,7 @@ abstract class nosqlDocument extends CommonObject {
 												"tooltip": "Cliquer pour éditer...",
 												"indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
 												"placeholder" : ""
-																																																																																																																																																																								                
+																																																																																																																																																																																                
 											} );
 											$("td.select", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
 												"callback": function( sValue, y ) {
@@ -547,7 +546,7 @@ abstract class nosqlDocument extends CommonObject {
 												"tooltip": "Cliquer pour éditer...",
 												"indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
 												"placeholder" : ""
-																																																																																																																																																																								                
+																																																																																																																																																																																                
 											} );
 										}
 			<?php endif; ?>
@@ -874,6 +873,26 @@ abstract class nosqlDocument extends CommonObject {
 			}
 			}';
 				break;
+			case "pourcentage":
+				$rtr = 'function(obj) {
+				var ar = [];
+			if(obj.aData.' . $key . ')
+			{
+				var total = obj.aData.' . $key . ';
+				price = ((Math.round(total*100))/100).toFixed(2);
+				ar[ar.length] = total;
+				ar[ar.length] = " %";
+				var str = ar.join("");
+				return str;
+			}
+			else
+			{
+				ar[ar.length] = "0.00 %";
+				var str = ar.join("");
+				return str;
+			}
+			}';
+				break;
 
 			default :
 				dol_print_error($db, "Type of fnRender must be url, date, datetime, attachment or status");
@@ -936,6 +955,67 @@ abstract class nosqlDocument extends CommonObject {
 			usort($array, function($a, $b) use ($key) {
 						return $a->$key > $b->$key ? 1 : -1;
 					});
+	}
+
+	/**
+	 *  Return list of tags in an object
+	 *
+	 *  @return 	array	List of types of members
+	 */
+	function listTag() {
+		global $conf, $langs;
+
+		$list = array();
+
+		$result = $this->getView('tag', array("group" => true));
+
+		if (count($result->rows) > 0)
+			foreach ($result->rows as $aRow) {
+				$list[] = $langs->trans($aRow->key);
+			}
+
+		return $list;
+	}
+
+	/**
+	 *    	Renvoie tags list clicable (avec eventuellement le picto)
+	 *
+	 * 		@param		int		$withpicto		0=Pas de picto, 1=Inclut le picto dans le lien, 2=Picto seul
+	 * 		@param		int		$maxlen			length max libelle
+	 * 		@return		string					String with URL
+	 */
+	function getTagUrl($withpicto = 0, $maxlen = 0) {
+		global $langs;
+
+		$result = '';
+
+		if (count($this->Tag)) {
+			for ($i = 0; $i < count($this->Tag); $i++) {
+				$lien = '<a href="' . DOL_URL_ROOT . '/adherent/type.php?id=' . $this->Tag[$i] . '">';
+				$lienfin = '</a> ';
+
+				$picto = 'group';
+				$label = $langs->trans("ShowTypeCard", $this->Tag[$i]);
+
+				if ($withpicto)
+					$result.=($lien . img_object($label, $picto) . $lienfin);
+				if ($withpicto && $withpicto != 2)
+					$result.=' ';
+				$result.=$lien . ($maxlen ? dol_trunc($this->Tag[$i], $maxlen) : $this->Tag[$i]) . $lienfin;
+			}
+		}
+		return $result;
+	}
+	
+	function directory($key) {
+		$couchdb = clone $this->couchdb;
+		$couchdb->useDatabase("directory");
+		
+		$couchdb->setQueryParameters(array("key"=>$key));
+		$result = $couchdb->getView("Directory","mail");
+		
+		return $result->rows[0]->value;
+		
 	}
 
 }

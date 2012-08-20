@@ -3,13 +3,10 @@
    "language": "javascript",
    "views": {
        "list": {
-           "map": "function(doc) {\n  if(doc.class && doc.class==\"Adherent\")\n  emit(doc.lastname, doc);\n}"
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Adherent\")\n  emit(doc.Lastname, doc);\n}"
        },
        "target_id": {
            "map": "function(doc) {\n  if(doc.class && doc.class==\"Adherent\")\n  \temit(doc._id, {_id:doc._id, _rev:doc._rev});\n}"
-       },
-       "group": {
-           "map": "function(doc) {\n  if(doc.class && doc.class==\"Adherent\")\n  emit(doc.typeid, doc);\n}"
        },
        "cotisation": {
            "map": "function(doc) {\nif(doc.cotisations.length > 0) {\n    for(var idx in doc.cotisations) {\n      emit(doc._id, {_id:doc._id, dateh:doc.cotisations[idx].dateh, datef:doc.cotisations[idx].datef, amount:doc.cotisations[idx].amount});\n    }\n  }\n}"
@@ -24,6 +21,17 @@
        },
        "cotisationYear": {
            "map": "function(doc) {\nif(doc.cotisations.length > 0) {\n    for(var idx in doc.cotisations) {\n      emit(doc.cotisations[idx].year, {_id:doc._id, login:doc.login, Firstname:doc.Firstname, Lastname:doc.Lastname, dateh:doc.cotisations[idx].dateh, datef:doc.cotisations[idx].datef, note:doc.cotisations[idx].note, amount:doc.cotisations[idx].amount});\n    }\n  }\n}"
+       },
+       "tag": {
+           "map": "function(doc) {\nif(doc.Tag.length > 0) {\n    for(var idx in doc.Tag) {\n      emit(doc.Tag[idx], 1);\n    }\n  }\n}",
+           "reduce": "function(keys, values) {\n  return sum(values)\n}"
+       },
+       "group": {
+           "map": "function(doc) {\nif(doc.Tag.length > 0) {\n    for(var idx in doc.Tag) {\n      emit(doc.Tag[idx], doc);\n    }\n  }\n}"
+       },
+       "tagStatus": {
+           "map": "function(doc) {\n  var now = Math.round(+new Date()/1000);\n  var status = 0;\n\n  if(doc.class && doc.class==\"Adherent\"){\n    if(doc.last_subscription_date_end && doc.Status == 1) {\n      if(doc.last_subscription_date_end < now)\n        status = \"expired\";\n      else\n        status = \"actived\";\n   }\n   else\n      status= doc.Status;\n\n   if(doc.Tag.length > 0) {\n       for(var idx in doc.Tag) {\n           emit([doc.Tag[idx],status], 1);\n       }\n    }\n\n  }\n}",
+           "reduce": "function(keys, values) {\n  return sum(values)\n}"
        }
    },
    "updates": {
