@@ -798,6 +798,8 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 			// jQuery multiselect
 			//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/multiselect/css/ui.multiselect.css" />'."\n";
 			print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/wysiwyg/css/jquery.wysiwyg.css" />' . "\n";
+			// jQuery taghandler
+			print '<link rel="stylesheet" href="includes/jquery/plugins/tagHandler/css/jquery.taghandler.css" media="all" />' . "\n";
 
 			print '<!-- Includes for Speedealing, modules or specific pages-->' . "\n";
 			// Output style sheets (optioncss='print' or '')
@@ -890,6 +892,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 				print '<script type="text/javascript" src="includes/js/jquery.inputmask.js"></script>' . "\n";
 				print '<script type="text/javascript" src="includes/js/jquery.inputmask.extentions.js"></script>' . "\n";
 				print '<script type="text/javascript" src="includes/jquery/plugins/spinner/ui.spinner.min.js"></script>' . "\n";
+				print '<script src="includes/jquery/plugins/tagHandler/js/jquery.taghandler.min.js"></script>' . "\n";
 			}
 			// jQuery DataTables
 			print '<script type="text/javascript" src="includes/jquery/plugins/datatables/media/js/jquery.dataTables.min' . $ext . '"></script>' . "\n";

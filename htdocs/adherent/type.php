@@ -33,28 +33,6 @@ $langs->load("members");
 $rowid = GETPOST('id', 'alpha');
 $action = GETPOST('action', 'alpha');
 
-$search_lastname = GETPOST('search_nom', 'alpha');
-$search_login = GETPOST('search_login', 'alpha');
-$search_email = GETPOST('search_email', 'alpha');
-$type = GETPOST('type', 'alpha');
-$status = GETPOST('status', 'alpha');
-
-$sortfield = GETPOST('sortfield', 'alpha');
-$sortorder = GETPOST('sortorder', 'alpha');
-$page = GETPOST('page', 'int');
-if ($page == -1) {
-	$page = 0;
-}
-$offset = $conf->liste_limit * $page;
-$pageprev = $page - 1;
-$pagenext = $page + 1;
-if (!$sortorder) {
-	$sortorder = "DESC";
-}
-if (!$sortfield) {
-	$sortfield = "d.nom";
-}
-
 // Security check
 $result = restrictedArea($user, 'adherent', $rowid, 'adherent_type');
 
@@ -66,67 +44,7 @@ if (GETPOST('button_removefilter')) {
 	$sall = "";
 }
 
-$object = new AdherentType($db);
-
-/*
- * 	Actions
- */
-if ($action == 'add' && $user->rights->adherent->configurer) {
-	if ($_POST["button"] != $langs->trans("Cancel")) {
-		$adht = new AdherentType($db);
-
-		$adht->libelle = trim($_POST["libelle"]);
-		$adht->cotisation = trim($_POST["cotisation"]);
-		$adht->note = trim($_POST["comment"]);
-		$adht->mail_valid = trim($_POST["mail_valid"]);
-		$adht->vote = trim($_POST["vote"]);
-
-		if ($adht->libelle) {
-			$id = $adht->create($user->id);
-			if ($id > 0) {
-				Header("Location: " . $_SERVER["PHP_SELF"]);
-				exit;
-			} else {
-				$mesg = $adht->error;
-				$action = 'create';
-			}
-		} else {
-			$mesg = $langs->trans("ErrorFieldRequired", $langs->transnoentities("Label"));
-			$action = 'create';
-		}
-	}
-}
-
-if ($action == 'update' && $user->rights->adherent->configurer) {
-	if ($_POST["button"] != $langs->trans("Cancel")) {
-		$adht = new AdherentType($db);
-		$adht->load($rowid);
-		$adht->libelle = trim($_POST["libelle"]);
-		$adht->cotisation = trim($_POST["cotisation"]);
-		$adht->note = trim($_POST["comment"]);
-		$adht->mail_valid = trim($_POST["mail_valid"]);
-		$adht->vote = trim($_POST["vote"]);
-
-		$adht->update($user->id);
-
-		Header("Location: " . $_SERVER["PHP_SELF"] . "?id=" . $rowid);
-		exit;
-	}
-}
-
-if ($action == 'delete' && $user->rights->adherent->configurer) {
-
-	$adht->delete($rowid);
-	Header("Location: " . $_SERVER["PHP_SELF"]);
-	exit;
-}
-
-if ($action == 'commentaire' && $user->rights->adherent->configurer) {
-	$don = new Don($db);
-	$don->fetch($rowid);
-	$don->update_note($_POST["commentaire"]);
-}
-
+$object = new Adherent($db);
 
 /*
  * View
@@ -143,7 +61,7 @@ if (!$rowid && $action != 'create' && $action != 'edit') {
 
 	print_fiche_titre($langs->trans("MembersTypes"));
 
-	$result = $object->getView('list');
+	$result = $object->getView('tag', array("group" => true));
 
 	$i = 0;
 
@@ -357,7 +275,7 @@ if ($rowid > 0) {
 		$obj->aoColumns[$i]->sClass = "center";
 		$obj->aoColumns[$i]->sWidth = "180px";
 		$obj->aoColumns[$i]->sDefaultContent = "0";
-		$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("Status", "status", array("dateEnd"=>"last_subscription_date_end"));
+		$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("Status", "status", array("dateEnd" => "last_subscription_date_end"));
 		$i++;
 		print'<th class="essential">';
 		print'</th>';
@@ -391,7 +309,7 @@ if ($rowid > 0) {
 		$obj->iDisplayLength = 10;
 		$obj->aaSorting = array(array(1, 'asc'));
 		$object->datatablesCreate($obj, "member");
-		
+
 		print '<div class="tabsAction">';
 
 		// Add

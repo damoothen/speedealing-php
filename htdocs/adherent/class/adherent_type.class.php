@@ -126,7 +126,7 @@ class AdherentType extends nosqlDocument {
 		if (count($result->rows) > 0)
 			foreach ($result->rows as $aRow) {
 				$obj = $aRow->value;
-				$projets[$obj->_id] = $langs->trans($obj->libelle);
+				$projets[] = $langs->trans($obj->libelle);
 			}
 
 		return $projets;

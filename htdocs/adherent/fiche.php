@@ -1,5 +1,4 @@
 <?php
-
 /* Copyright (C) 2001-2004 Rodolphe Quiedeville		<rodolphe@quiedeville.org>
  * Copyright (C) 2002-2003 Jean-Louis Bergamo		<jlb@j1b.org>
  * Copyright (C) 2004-2011 Laurent Destailleur		<eldy@users.sourceforge.net>
@@ -196,7 +195,9 @@ if ($action == 'confirm_sendinfo' && $confirm == 'yes') {
 	$send->egoBody = $card->body;
 	$send->egoMod = "licence";
 
-	$send->send($object->email, $object->login);
+	$send->send(array("aaaa1234"), $object->login);
+
+	Header("Location:" . $_SERVER["PHP_SELF"] . "?id=" . $object->id);
 }
 
 if ($action == 'update' && !$_POST["cancel"] && $user->rights->adherent->creer) {
@@ -1069,8 +1070,11 @@ if ($action == 'edit') {
 	print '<tr><td>' . $langs->trans("Ref") . '</td><td class="valeur" colspan="2">' . $object->_rev . '</td></tr>';
 
 	// Login
-	if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED)) {
+	if (empty($object->login)) {
 		print '<tr><td><span class="fieldrequired">' . $langs->trans("Login") . ' / ' . $langs->trans("Id") . '</span></td><td colspan="2"><input type="text" name="login" size="30" value="' . (isset($_POST["login"]) ? $_POST["login"] : $object->login) . '"></td></tr>';
+	} else {
+		print '<tr><td><span class="fieldrequired">' . $langs->trans("Login") . ' / ' . $langs->trans("Id") . '</span></td><td colspan="2">' . $object->login . '</td></tr>';
+		print '<input type="hidden" name="login" size="30" value="' . (isset($_POST["login"]) ? $_POST["login"] : $object->login) . '">';
 	}
 
 	// Physique-Moral
@@ -1095,11 +1099,26 @@ if ($action == 'edit') {
 	print '</td>';
 
 	// Type
-	print '<tr><td><span class="fieldrequired">' . $langs->trans("Type") . '</span></td><td>';
+	print '<tr><td><span class="fieldrequired">' . $langs->trans("MemberType") . '</span></td><td>';
 	if ($user->rights->adherent->creer) {
-		print $form->selectarray("typeid", $adht->liste_array(), (isset($_POST["typeid"]) ? $_POST["typeid"] : $object->typeid), 0, 0, 1);
+		print '<ul id="array_tag_handler"></ul>';
+		?>
+		<script>
+			$(document).ready(function() {
+				$("#array_tag_handler").tagHandler({
+					getData: { id: '<?php echo $object->id; ?>', class: '<?php echo get_class($object); ?>' },
+					getURL: '<?php echo DOL_URL_ROOT . '/core/ajax/loadtaghandler.php'; ?>',
+					updateData: { id: '<?php echo $object->id; ?>',class: '<?php echo get_class($object); ?>' },
+					updateURL: '<?php echo DOL_URL_ROOT . '/core/ajax/savetaghandler.php'; ?>',
+					autocomplete: true,
+					autoUpdate: true
+				});
+			});
+		</script>
+		<?php
+		//print $form->selectarray("typeid", $adht->liste_array(), (isset($_POST["typeid"]) ? $_POST["typeid"] : $object->typeid), 0, 0, 1);
 	} else {
-		print $adht->getNomUrl(1);
+		print $object->getTagUrl(1);
 		print '<input type="hidden" name="typeid" value="' . $object->typeid . '">';
 	}
 	print "</td></tr>";
@@ -1713,7 +1732,7 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
 	print '</tr>';
 
 	// Type
-	print '<tr><td>' . $langs->trans("Type") . '</td><td class="valeur">' . $adht->getNomUrl(1) . "</td></tr>\n";
+	print '<tr><td>' . $langs->trans("MemberType") . '</td><td class="valeur">' . $object->getTagUrl(1) . "</td></tr>\n";
 
 	// Company
 	print '<tr><td>' . $langs->trans("Company") . '</td><td class="valeur">' . $object->societe . '</td></tr>';
