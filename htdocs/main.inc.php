@@ -219,6 +219,26 @@ if (!defined('NOREQUIREAJAX') && $conf->use_javascript_ajax)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
@@ -288,7 +308,7 @@ if (!defined('NOLOGIN')) {
 	$authmode = explode(',', $dolibarr_main_authentication);
 
 	// No authentication mode
-	if (!count($authmode) && empty($conf->login_modules)) {		
+	if (!count($authmode) && empty($conf->login_modules)) {
 		$langs->load('main');
 		dol_print_error('', $langs->trans("ErrorConfigParameterNotDefined", 'dolibarr_main_authentication'));
 		exit;
@@ -697,8 +717,37 @@ if (!function_exists("llxHeader")) {
 	 * @return	void
 	 */
 	function llxHeader($head = '', $title = '', $help_url = '', $target = '', $disablejs = 0, $disablehead = 0, $arrayofjs = '', $arrayofcss = '', $morequerystring = '') {
+
 		top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss); // Show html headers
-		top_menu($head, $title, $target, $disablejs, $disablehead, $arrayofjs, $arrayofcss, $morequerystring);
+
+		if (!defined('NOHEADER'))
+			print '<body class="clearfix with-menu with-shortcuts">';
+		else
+			print '<body style="background: white;">';
+
+
+		// Displays title
+		$appli = 'Speedealing';
+		if (!empty($conf->global->MAIN_APPLICATION_TITLE))
+			$appli = $conf->global->MAIN_APPLICATION_TITLE;
+
+		print '<header role="banner" id="title-bar">';
+
+		if ($title)
+			print '<h2>' . $appli . ' - ' . $title . '</h2>';
+		else
+			print "<h2>" . $appli . "</h2>";
+		print "\n";
+
+		print '</header>';
+		?>
+		<!-- Button to open/hide menu -->
+		<a href="#" id="open-menu"><span>Menu</span></a>
+
+		<!-- Button to open/hide shortcuts -->
+		<a href="#" id="open-shortcuts"><span class="icon-thumbs"></span></a>	
+
+		<?php
 		main_area($title);
 	}
 
@@ -741,217 +790,289 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 	if (empty($conf->css))
 		$conf->css = '/theme/eldy/style.css.php'; // If not defined, eldy by default
 	?>
-	<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-	<?php
-	if (!empty($conf->global->MAIN_USE_CACHE_MANIFEST))
-		print '<html manifest="cache.manifest">' . "\n";
-	else
-		print '<html>' . "\n";
+	<!DOCTYPE html>
 
-	if (empty($disablehead)) {
-		?>
-		<head>
+	<!--[if IEMobile 7]><html class="no-js iem7 oldie"><![endif]-->
+	<!--[if (IE 7)&!(IEMobile)]><html class="no-js ie7 oldie" lang="en"><![endif]-->
+	<!--[if (IE 8)&!(IEMobile)]><html class="no-js ie8 oldie" lang="en"><![endif]-->
+	<!--[if (IE 9)&!(IEMobile)]><html class="no-js ie9" lang="en"><![endif]-->
+	<!--[if (gt IE 9)|(gt IEMobile 7)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 
-			<meta charset="utf-8" />
-			<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-			<meta name="robots" content="noindex,nofollow" />
-			<meta name="author" content="Speedealing Development Team" />
-			<?php
-			// Displays title
-			$appli = 'Speedealing';
-			if (!empty($conf->global->MAIN_APPLICATION_TITLE))
-				$appli = $conf->global->MAIN_APPLICATION_TITLE;
+		<?php
+		if (!empty($conf->global->MAIN_USE_CACHE_MANIFEST))
+			print '<html manifest="cache.manifest">' . "\n";
+		else
+			print '<html>' . "\n";
 
-			if ($title)
-				print '<title>' . $appli . ' - ' . $title . '</title>';
-			else
-				print "<title>" . $appli . "</title>";
-			print "\n";
+		if (empty($disablehead)) {
 			?>
-			<base href="<?php echo 'http://' . $_SERVER['HTTP_HOST'] . DOL_URL_ROOT . '/'; ?>" />
-			<link rel="shortcut icon" type="image/x-icon" href="favicon.ico"/>
-			<?php
-			print '<!-- Includes for JQuery (Ajax library) -->' . "\n";
-			//$jquerytheme = 'smoothness';
-			//if (!empty($conf->global->MAIN_USE_JQUERY_THEME)) $jquerytheme = $conf->global->MAIN_USE_JQUERY_THEME;
-			//else print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/css/'.$jquerytheme.'/jquery-ui-latest.custom.css" />'."\n";    // JQuery
-			//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/tiptip/tipTip.css" />'."\n";                           // Tooltip
-			print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/jnotify/jquery.jnotify-alt.min.css" />'."\n";          // JNotify
-			//print '<link rel="stylesheet" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/lightbox/css/jquery.lightbox-0.5.css" media="screen" />'."\n";       // Lightbox
-			// jQuery fileupload
-			print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/fileupload/css/jquery.fileupload-ui.css" />' . "\n";
-			// jQuery datatables
-			//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/media/css/jquery.dataTables.css" />'."\n";
-			//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/media/css/jquery.dataTables_jui.css" />'."\n";
-			print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/extras/ColReorder/media/css/ColReorder.css" />' . "\n";
-			//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/ColVis/media/css/ColVis.css" />'."\n";
-			//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/ColVis/media/css/ColVisAlt.css" />'."\n";
-			//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/TableTools/media/css/TableTools.css" />'."\n";
-			print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/extras/AutoFill/media/css/AutoFill.css" />' . "\n";
-			// jQuery multiselect
-			//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/multiselect/css/ui.multiselect.css" />'."\n";
-			print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/wysiwyg/css/jquery.wysiwyg.css" />' . "\n";
-			// jQuery taghandler
-			print '<link rel="stylesheet" href="includes/jquery/plugins/tagHandler/css/jquery.taghandler.css" media="all" />' . "\n";
+			<head>
+				<meta charset="utf-8" />
+				<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-			print '<!-- Includes for Speedealing, modules or specific pages-->' . "\n";
-			// Output style sheets (optioncss='print' or '')
-			$themepath = dol_buildpath((empty($conf->global->MAIN_FORCETHEMEDIR) ? '' : $conf->global->MAIN_FORCETHEMEDIR) . $conf->css, 1);
-			$themeparam = '?lang=' . $langs->defaultlang . '&amp;theme=' . $conf->theme . (GETPOST('optioncss') ? '&amp;optioncss=' . GETPOST('optioncss', 'alpha', 1) : '');
-			if (!empty($_SESSION['dol_resetcache']))
-				$themeparam.='&amp;dol_resetcache=' . $_SESSION['dol_resetcache'];
-			//print 'themepath='.$themepath.' themeparam='.$themeparam;exit;
-			print '<link rel="stylesheet" type="text/css" title="default" href="' . $themepath . $themeparam . '">' . "\n";
-			// CSS forced by modules (relative url starting with /)
-			if (is_array($conf->css_modules)) {
-				foreach ($conf->css_modules as $key => $cssfile) {
-					// cssfile is an absolute path
-					print '<link rel="stylesheet" type="text/css" title="default" href="' . dol_buildpath($cssfile, 1);
-					// We add params only if page is not static, because some web server setup does not return content type text/css if url has parameters, so browser cache is not used.
-					if (!preg_match('/\.css$/i', $cssfile))
-						print $themeparam;
-					print '"><!-- Added by module ' . $key . '-->' . "\n";
+				<meta name="HandheldFriendly" content="True">
+				<meta name="MobileOptimized" content="320">
+				<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+				<meta name="robots" content="noindex,nofollow" />
+				<meta name="author" content="Speedealing Development Team" />
+				<?php
+				// Displays title
+				$appli = 'Speedealing';
+				if (!empty($conf->global->MAIN_APPLICATION_TITLE))
+					$appli = $conf->global->MAIN_APPLICATION_TITLE;
+
+				if ($title)
+					print '<title>' . $appli . ' - ' . $title . '</title>';
+				else
+					print "<title>" . $appli . "</title>";
+				print "\n";
+				?>
+				<base href="<?php echo 'http://' . $_SERVER['HTTP_HOST'] . DOL_URL_ROOT . '/'; ?>" />
+
+
+				<!-- For all browsers -->
+				<link rel="stylesheet" href="theme/developr/html/css/reset.css?v=1">
+				<link rel="stylesheet" href="theme/developr/html/css/style.css?v=1">
+				<link rel="stylesheet" href="theme/developr/html/css/colors.css?v=1">
+				<link rel="stylesheet" media="print" href="theme/developr/html/css/print.css?v=1">
+				<!-- For progressively larger displays -->
+				<link rel="stylesheet" media="only all and (min-width: 480px)" href="theme/developr/html/css/480.css?v=1">
+				<link rel="stylesheet" media="only all and (min-width: 768px)" href="theme/developr/html/css/768.css?v=1">
+				<link rel="stylesheet" media="only all and (min-width: 992px)" href="theme/developr/html/css/992.css?v=1">
+				<link rel="stylesheet" media="only all and (min-width: 1200px)" href="theme/developr/html/css/1200.css?v=1">
+				<!-- For Retina displays -->
+				<link rel="stylesheet" media="only all and (-webkit-min-device-pixel-ratio: 1.5), only screen and (-o-min-device-pixel-ratio: 3/2), only screen and (min-device-pixel-ratio: 1.5)" href="theme/developr/html/css/2x.css?v=1">
+
+				<!-- Webfonts -->
+				<link href='http://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
+
+				<!-- Additional styles -->
+				<link rel="stylesheet" href="theme/developr/html/css/styles/agenda.css?v=1">
+				<link rel="stylesheet" href="theme/developr/html/css/styles/dashboard.css?v=1">
+				<link rel="stylesheet" href="theme/developr/html/css/styles/form.css?v=1">
+				<link rel="stylesheet" href="theme/developr/html/css/styles/modal.css?v=1">
+				<link rel="stylesheet" href="theme/developr/html/css/styles/progress-slider.css?v=1">
+				<link rel="stylesheet" href="theme/developr/html/css/styles/switches.css?v=1">
+
+				<!-- JavaScript at bottom except for Modernizr -->
+				<script src="theme/developr/html/js/libs/modernizr.custom.js"></script>
+
+				<!-- For Modern Browsers -->
+				<link rel="shortcut icon" href="theme/developr/html/img/favicons/favicon.png">
+				<!-- For everything else -->
+				<link rel="shortcut icon" href="theme/developr/html/img/favicons/favicon.ico">
+				<!--<link rel="shortcut icon" type="image/x-icon" href="favicon.ico"/> -->
+				<!-- For retina screens -->
+				<link rel="apple-touch-icon-precomposed" sizes="114x114" href="theme/developr/html/img/favicons/apple-touch-icon-retina.png">
+				<!-- For iPad 1-->
+				<link rel="apple-touch-icon-precomposed" sizes="72x72" href="theme/developr/html/img/favicons/apple-touch-icon-ipad.png">
+				<!-- For iPhone 3G, iPod Touch and Android -->
+				<link rel="apple-touch-icon-precomposed" href="theme/developr/html/img/favicons/apple-touch-icon.png">
+
+				<!-- iOS web-app metas -->
+				<meta name="apple-mobile-web-app-capable" content="yes">
+				<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+				<!-- Startup image for web apps -->
+				<link rel="apple-touch-startup-image" href="theme/developr/html/img/splash/ipad-landscape.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)">
+				<link rel="apple-touch-startup-image" href="theme/developr/html/img/splash/ipad-portrait.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)">
+				<link rel="apple-touch-startup-image" href="theme/developr/html/img/splash/iphone.png" media="screen and (max-device-width: 320px)">
+
+				<!-- Microsoft clear type rendering -->
+				<meta http-equiv="cleartype" content="on">
+
+				<!-- IE9 Pinned Sites: http://msdn.microsoft.com/en-us/library/gg131029.aspx -->
+				<meta name="application-name" content="Developr Admin Skin">
+				<meta name="msapplication-tooltip" content="Cross-platform admin template.">
+				<meta name="msapplication-starturl" content="http://www.display-inline.fr/demo/developr">
+				<!-- These custom tasks are examples, you need to edit them to show actual pages -->
+				<meta name="msapplication-task" content="name=Agenda;action-uri=http://www.display-inline.fr/demo/developr/html/agenda.html;icon-uri=http://www.display-inline.fr/demo/developr/html/img/favicons/favicon.ico">
+				<meta name="msapplication-task" content="name=My profile;action-uri=http://www.display-inline.fr/demo/developr/html/profile.html;icon-uri=http://www.display-inline.fr/demo/developr/html/img/favicons/favicon.ico">
+
+
+
+				<?php
+				print '<!-- Includes for JQuery (Ajax library) -->' . "\n";
+				//$jquerytheme = 'smoothness';
+				//if (!empty($conf->global->MAIN_USE_JQUERY_THEME)) $jquerytheme = $conf->global->MAIN_USE_JQUERY_THEME;
+				//else print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/css/'.$jquerytheme.'/jquery-ui-latest.custom.css" />'."\n";    // JQuery
+				//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/tiptip/tipTip.css" />'."\n";                           // Tooltip
+				print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/jnotify/jquery.jnotify-alt.min.css" />' . "\n"; // JNotify
+				//print '<link rel="stylesheet" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/lightbox/css/jquery.lightbox-0.5.css" media="screen" />'."\n";       // Lightbox
+				// jQuery fileupload
+				print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/fileupload/css/jquery.fileupload-ui.css" />' . "\n";
+				// jQuery datatables
+				//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/media/css/jquery.dataTables.css" />'."\n";
+				//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/media/css/jquery.dataTables_jui.css" />'."\n";
+				print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/extras/ColReorder/media/css/ColReorder.css" />' . "\n";
+				//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/ColVis/media/css/ColVis.css" />'."\n";
+				//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/ColVis/media/css/ColVisAlt.css" />'."\n";
+				//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/TableTools/media/css/TableTools.css" />'."\n";
+				print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/extras/AutoFill/media/css/AutoFill.css" />' . "\n";
+				// jQuery multiselect
+				//print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/multiselect/css/ui.multiselect.css" />'."\n";
+				print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/wysiwyg/css/jquery.wysiwyg.css" />' . "\n";
+				// jQuery taghandler
+				print '<link rel="stylesheet" href="includes/jquery/plugins/tagHandler/css/jquery.taghandler.css" media="all" />' . "\n";
+
+				print '<!-- Includes for Speedealing, modules or specific pages-->' . "\n";
+				// Output style sheets (optioncss='print' or '')
+				$themepath = dol_buildpath((empty($conf->global->MAIN_FORCETHEMEDIR) ? '' : $conf->global->MAIN_FORCETHEMEDIR) . $conf->css, 1);
+				$themeparam = '?lang=' . $langs->defaultlang . '&amp;theme=' . $conf->theme . (GETPOST('optioncss') ? '&amp;optioncss=' . GETPOST('optioncss', 'alpha', 1) : '');
+				if (!empty($_SESSION['dol_resetcache']))
+					$themeparam.='&amp;dol_resetcache=' . $_SESSION['dol_resetcache'];
+				//print 'themepath='.$themepath.' themeparam='.$themeparam;exit;
+				print '<link rel="stylesheet" type="text/css" title="default" href="' . $themepath . $themeparam . '">' . "\n";
+				// CSS forced by modules (relative url starting with /)
+				if (is_array($conf->css_modules)) {
+					foreach ($conf->css_modules as $key => $cssfile) {
+						// cssfile is an absolute path
+						print '<link rel="stylesheet" type="text/css" title="default" href="' . dol_buildpath($cssfile, 1);
+						// We add params only if page is not static, because some web server setup does not return content type text/css if url has parameters, so browser cache is not used.
+						if (!preg_match('/\.css$/i', $cssfile))
+							print $themeparam;
+						print '"><!-- Added by module ' . $key . '-->' . "\n";
+					}
 				}
-			}
-			// CSS forced by page in top_htmlhead call (relative url starting with /)
-			if (is_array($arrayofcss)) {
-				foreach ($arrayofcss as $cssfile) {
-					print '<link rel="stylesheet" type="text/css" title="default" href="' . dol_buildpath($cssfile, 1);
-					// We add params only if page is not static, because some web server setup does not return content type text/css if url has parameters and browser cache is not used.
-					if (!preg_match('/\.css$/i', $cssfile))
-						print $themeparam;
-					print '"><!-- Added by page -->' . "\n";
+				// CSS forced by page in top_htmlhead call (relative url starting with /)
+				if (is_array($arrayofcss)) {
+					foreach ($arrayofcss as $cssfile) {
+						print '<link rel="stylesheet" type="text/css" title="default" href="' . dol_buildpath($cssfile, 1);
+						// We add params only if page is not static, because some web server setup does not return content type text/css if url has parameters and browser cache is not used.
+						if (!preg_match('/\.css$/i', $cssfile))
+							print $themeparam;
+						print '"><!-- Added by page -->' . "\n";
+					}
 				}
-			}
 
-			if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER))
-				print '<link rel="top" title="' . $langs->trans("Home") . '" href="' . (DOL_URL_ROOT ? DOL_URL_ROOT : '/') . '">' . "\n";
-			if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER))
-				print '<link rel="copyright" title="GNU General Public License" href="http://www.gnu.org/copyleft/gpl.html#SEC1">' . "\n";
-			if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER))
-				print '<link rel="author" title="Speedealing Development Team" href="http://www.speedealing.com">' . "\n";
+				if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER))
+					print '<link rel="top" title="' . $langs->trans("Home") . '" href="' . (DOL_URL_ROOT ? DOL_URL_ROOT : '/') . '">' . "\n";
+				if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER))
+					print '<link rel="copyright" title="GNU General Public License" href="http://www.gnu.org/copyleft/gpl.html#SEC1">' . "\n";
+				if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER))
+					print '<link rel="author" title="Speedealing Development Team" href="http://www.speedealing.com">' . "\n";
 
-			// Output standard javascript links
-			$ext = '.js';
-			if (isset($conf->global->MAIN_OPTIMIZE_SPEED) && ($conf->global->MAIN_OPTIMIZE_SPEED & 0x01)) {
-				$ext = '.jgz';
-			} // mini='_mini', ext='.gz'
-			// JQuery. Must be before other includes
-			print '<!-- Includes JS for JQuery -->' . "\n";
-			print '<script type="text/javascript" src="includes/jquery/js/jquery-latest.min' . $ext . '"></script>' . "\n";
-			print '<script type="text/javascript" src="includes/jquery/js/jquery-ui-latest.custom.min' . $ext . '"></script>' . "\n";
-			print '<script type="text/javascript" src="includes/jquery/plugins/tablednd/jquery.tablednd_0_5' . $ext . '"></script>' . "\n";
-			print '<script type="text/javascript" src="includes/jquery/plugins/tiptip/jquery.tipTip.min' . $ext . '"></script>' . "\n";
-			print '<script type="text/javascript" src="includes/jquery/plugins/lightbox/js/jquery.lightbox-0.5.min' . $ext . '"></script>' . "\n";
-			// jQuery Layout
-			print '<script type="text/javascript" src="includes/jquery/plugins/layout/jquery.layout-latest' . $ext . '"></script>' . "\n";
-			// jQuery jnotify
-			print '<script type="text/javascript" src="includes/jquery/plugins/jnotify/jquery.jnotify.min.js"></script>'."\n";
-			print '<script type="text/javascript" src="core/js/jnotify.js"></script>'."\n";
+				// Output standard javascript links
+				$ext = '.js';
+				if (isset($conf->global->MAIN_OPTIMIZE_SPEED) && ($conf->global->MAIN_OPTIMIZE_SPEED & 0x01)) {
+					$ext = '.jgz';
+				} // mini='_mini', ext='.gz'
+				// JQuery. Must be before other includes
+				print '<!-- Includes JS for JQuery -->' . "\n";
+				print '<script type="text/javascript" src="includes/jquery/js/jquery-latest.min' . $ext . '"></script>' . "\n";
+				print '<script type="text/javascript" src="includes/jquery/js/jquery-ui-latest.custom.min' . $ext . '"></script>' . "\n";
+				print '<script type="text/javascript" src="includes/jquery/plugins/tablednd/jquery.tablednd_0_5' . $ext . '"></script>' . "\n";
+				print '<script type="text/javascript" src="includes/jquery/plugins/tiptip/jquery.tipTip.min' . $ext . '"></script>' . "\n";
+				print '<script type="text/javascript" src="includes/jquery/plugins/lightbox/js/jquery.lightbox-0.5.min' . $ext . '"></script>' . "\n";
+				// jQuery Layout
+				print '<script type="text/javascript" src="includes/jquery/plugins/layout/jquery.layout-latest' . $ext . '"></script>' . "\n";
+				// jQuery jnotify
+				print '<script type="text/javascript" src="includes/jquery/plugins/jnotify/jquery.jnotify.min.js"></script>' . "\n";
+				print '<script type="text/javascript" src="core/js/jnotify.js"></script>' . "\n";
 
-			if (!defined('NOLOGIN')) {
-				// Flot
-				print '<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="includes/jquery/plugins/flot/excanvas.min.js"></script><![endif]-->' . "\n";
-				print '<script type="text/javascript" src="includes/jquery/plugins/flot/jquery.flot.min.js"></script>' . "\n";
-				print '<script type="text/javascript" src="includes/jquery/plugins/flot/jquery.flot.pie.min.js"></script>' . "\n";
-				print '<script type="text/javascript" src="includes/jquery/plugins/flot/jquery.flot.stack.min.js"></script>' . "\n";
-				// jQuery jeditable
-				print '<script type="text/javascript" src="includes/jquery/plugins/jeditable/jquery.jeditable.min' . $ext . '"></script>' . "\n";
-				print '<script type="text/javascript" src="includes/jquery/plugins/jeditable/jquery.jeditable.ui-datepicker.js"></script>' . "\n";
-				print '<script type="text/javascript" src="includes/jquery/plugins/jeditable/jquery.jeditable.ui-autocomplete.js"></script>' . "\n";
-				print '<script type="text/javascript" src="includes/jquery/plugins/jeditable/jquery.jeditable.wysiwyg.js"></script>' . "\n";
-				print '<script type="text/javascript" src="includes/jquery/plugins/wysiwyg/jquery.wysiwyg.js"></script>' . "\n";
-				print '<script type="text/javascript">' . "\n";
-				//print 'var urlSaveInPlace = \'http://www.example.com/save.php\';'."\n";
-				print 'var urlSaveInPlace = \'core/ajax/saveinplace.php\';' . "\n";
-				print 'var urlLoadInPlace = \'core/ajax/loadinplace.php\';' . "\n";
-				print 'var tooltipInPlace = \'' . $langs->transnoentities('ClickToEdit') . '\';' . "\n";
-				print 'var placeholderInPlace = \'' . $langs->trans('ClickToEdit') . '\';' . "\n";
-				print 'var cancelInPlace = \'' . $langs->trans('Cancel') . '\';' . "\n";
-				print 'var submitInPlace = \'' . $langs->trans('Ok') . '\';' . "\n";
-				print 'var indicatorInPlace = \'<img src="' . "theme/" . $conf->theme . "/img/working.gif" . '">\';' . "\n";
-				print 'var ckeditorConfig = \'' . dol_buildpath('/theme/' . $conf->theme . '/ckeditor/config.js', 1) . '\';' . "\n";
-				print '</script>' . "\n";
-				print '<script type="text/javascript" src="core/js/editinplace.js"></script>' . "\n";
-				print '<script type="text/javascript" src="includes/jquery/plugins/jeditable/jquery.jeditable.ckeditor.js"></script>' . "\n";
-				// jQuery File Upload
-				print '<script type="text/javascript" src="includes/jquery/plugins/template/tmpl.min.js"></script>' . "\n";
-				//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/fileupload/js/jquery.iframe-transport.js"></script>'."\n";
-				print '<script type="text/javascript" src="includes/jquery/plugins/fileupload/js/jquery.fileupload.js"></script>' . "\n";
-				print '<script type="text/javascript" src="includes/jquery/plugins/fileupload/js/jquery.fileupload-fp.js"></script>' . "\n";
-				print '<script type="text/javascript" src="includes/jquery/plugins/fileupload/js/jquery.fileupload-ui.js"></script>' . "\n";
-				print '<script type="text/javascript" src="includes/jquery/plugins/fileupload/js/jquery.fileupload-jui.js"></script>' . "\n";
-				print '<script type="text/javascript" src="includes/lib/chosen/chosen.jquery.min.js"></script>' . "\n";
-				print '<script type="text/javascript" src="includes/js/jquery.inputmask.js"></script>' . "\n";
-				print '<script type="text/javascript" src="includes/js/jquery.inputmask.extentions.js"></script>' . "\n";
-				print '<script type="text/javascript" src="includes/jquery/plugins/spinner/ui.spinner.min.js"></script>' . "\n";
-				print '<script src="includes/jquery/plugins/tagHandler/js/jquery.taghandler.min.js"></script>' . "\n";
-			}
-			// jQuery DataTables
-			print '<script type="text/javascript" src="includes/jquery/plugins/datatables/media/js/jquery.dataTables.min' . $ext . '"></script>' . "\n";
-			//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/js/dataTables.plugins.js"></script>';
-			print '<script type="text/javascript" src="includes/jquery/plugins/datatables/extras/ColReorder/media/js/ColReorder.min' . $ext . '"></script>' . "\n";
-			print '<script type="text/javascript" src="includes/jquery/plugins/datatables/extras/ColVis/media/js/ColVis.min' . $ext . '"></script>' . "\n";
-			print '<script type="text/javascript" src="includes/jquery/plugins/datatables/extras/TableTools/media/js/TableTools.min' . $ext . '"></script>' . "\n";
-			print '<script type="text/javascript" src="includes/jquery/plugins/datatables/extras/AutoFill/media/js/AutoFill.min' . $ext . '"></script>' . "\n";
-			print '<script type="text/javascript" src="includes/jquery/plugins/datatables/extras/AjaxReload/media/js/fnReloadAjax.js"></script>' . "\n";
-			//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/js/initXHR'.$ext.'"></script>'."\n";
-			//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/js/searchColumns'.$ext.'"></script>'."\n";
-			//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/js/ZeroClipboard'.$ext.'"></script>'."\n";
-			// jQuery Multiselect
-			print '<script type="text/javascript" src="includes/jquery/plugins/multiselect/js/ui.multiselect.js"></script>' . "\n";
+				if (!defined('NOLOGIN')) {
+					// Flot
+					print '<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="includes/jquery/plugins/flot/excanvas.min.js"></script><![endif]-->' . "\n";
+					print '<script type="text/javascript" src="includes/jquery/plugins/flot/jquery.flot.min.js"></script>' . "\n";
+					print '<script type="text/javascript" src="includes/jquery/plugins/flot/jquery.flot.pie.min.js"></script>' . "\n";
+					print '<script type="text/javascript" src="includes/jquery/plugins/flot/jquery.flot.stack.min.js"></script>' . "\n";
+					// jQuery jeditable
+					print '<script type="text/javascript" src="includes/jquery/plugins/jeditable/jquery.jeditable.min' . $ext . '"></script>' . "\n";
+					print '<script type="text/javascript" src="includes/jquery/plugins/jeditable/jquery.jeditable.ui-datepicker.js"></script>' . "\n";
+					print '<script type="text/javascript" src="includes/jquery/plugins/jeditable/jquery.jeditable.ui-autocomplete.js"></script>' . "\n";
+					print '<script type="text/javascript" src="includes/jquery/plugins/jeditable/jquery.jeditable.wysiwyg.js"></script>' . "\n";
+					print '<script type="text/javascript" src="includes/jquery/plugins/wysiwyg/jquery.wysiwyg.js"></script>' . "\n";
+					print '<script type="text/javascript">' . "\n";
+					//print 'var urlSaveInPlace = \'http://www.example.com/save.php\';'."\n";
+					print 'var urlSaveInPlace = \'core/ajax/saveinplace.php\';' . "\n";
+					print 'var urlLoadInPlace = \'core/ajax/loadinplace.php\';' . "\n";
+					print 'var tooltipInPlace = \'' . $langs->transnoentities('ClickToEdit') . '\';' . "\n";
+					print 'var placeholderInPlace = \'' . $langs->trans('ClickToEdit') . '\';' . "\n";
+					print 'var cancelInPlace = \'' . $langs->trans('Cancel') . '\';' . "\n";
+					print 'var submitInPlace = \'' . $langs->trans('Ok') . '\';' . "\n";
+					print 'var indicatorInPlace = \'<img src="' . "theme/" . $conf->theme . "/img/working.gif" . '">\';' . "\n";
+					print 'var ckeditorConfig = \'' . dol_buildpath('/theme/' . $conf->theme . '/ckeditor/config.js', 1) . '\';' . "\n";
+					print '</script>' . "\n";
+					print '<script type="text/javascript" src="core/js/editinplace.js"></script>' . "\n";
+					print '<script type="text/javascript" src="includes/jquery/plugins/jeditable/jquery.jeditable.ckeditor.js"></script>' . "\n";
+					// jQuery File Upload
+					print '<script type="text/javascript" src="includes/jquery/plugins/template/tmpl.min.js"></script>' . "\n";
+					//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/fileupload/js/jquery.iframe-transport.js"></script>'."\n";
+					print '<script type="text/javascript" src="includes/jquery/plugins/fileupload/js/jquery.fileupload.js"></script>' . "\n";
+					print '<script type="text/javascript" src="includes/jquery/plugins/fileupload/js/jquery.fileupload-fp.js"></script>' . "\n";
+					print '<script type="text/javascript" src="includes/jquery/plugins/fileupload/js/jquery.fileupload-ui.js"></script>' . "\n";
+					print '<script type="text/javascript" src="includes/jquery/plugins/fileupload/js/jquery.fileupload-jui.js"></script>' . "\n";
+					print '<script type="text/javascript" src="includes/lib/chosen/chosen.jquery.min.js"></script>' . "\n";
+					print '<script type="text/javascript" src="includes/js/jquery.inputmask.js"></script>' . "\n";
+					print '<script type="text/javascript" src="includes/js/jquery.inputmask.extentions.js"></script>' . "\n";
+					print '<script type="text/javascript" src="includes/jquery/plugins/spinner/ui.spinner.min.js"></script>' . "\n";
+					print '<script src="includes/jquery/plugins/tagHandler/js/jquery.taghandler.min.js"></script>' . "\n";
+				}
+				// jQuery DataTables
+				print '<script type="text/javascript" src="includes/jquery/plugins/datatables/media/js/jquery.dataTables.min' . $ext . '"></script>' . "\n";
+				//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/js/dataTables.plugins.js"></script>';
+				print '<script type="text/javascript" src="includes/jquery/plugins/datatables/extras/ColReorder/media/js/ColReorder.min' . $ext . '"></script>' . "\n";
+				print '<script type="text/javascript" src="includes/jquery/plugins/datatables/extras/ColVis/media/js/ColVis.min' . $ext . '"></script>' . "\n";
+				print '<script type="text/javascript" src="includes/jquery/plugins/datatables/extras/TableTools/media/js/TableTools.min' . $ext . '"></script>' . "\n";
+				print '<script type="text/javascript" src="includes/jquery/plugins/datatables/extras/AutoFill/media/js/AutoFill.min' . $ext . '"></script>' . "\n";
+				print '<script type="text/javascript" src="includes/jquery/plugins/datatables/extras/AjaxReload/media/js/fnReloadAjax.js"></script>' . "\n";
+				//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/js/initXHR'.$ext.'"></script>'."\n";
+				//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/js/searchColumns'.$ext.'"></script>'."\n";
+				//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/js/ZeroClipboard'.$ext.'"></script>'."\n";
+				// jQuery Multiselect
+				print '<script type="text/javascript" src="includes/jquery/plugins/multiselect/js/ui.multiselect.js"></script>' . "\n";
 
-			// CKEditor
-			print '<script type="text/javascript">var CKEDITOR_BASEPATH = \'' . DOL_URL_ROOT . '/includes/ckeditor/\';</script>' . "\n";
-			print '<script type="text/javascript" src="includes/ckeditor/ckeditor_basic.js"></script>' . "\n";
+				// CKEditor
+				print '<script type="text/javascript">var CKEDITOR_BASEPATH = \'' . DOL_URL_ROOT . '/includes/ckeditor/\';</script>' . "\n";
+				print '<script type="text/javascript" src="includes/ckeditor/ckeditor_basic.js"></script>' . "\n";
 
-			// BEGIN THEME
-			//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/lib/jQueryUI/jquery-ui-1.8.18.custom.min.js"></script>';
-			print '<script type="text/javascript" src="includes/js/s_scripts.js"></script>';
-			print '<script type="text/javascript" src="includes/js/jquery.ui.extend.js"></script>';
-			print '<script type="text/javascript" src="includes/jquery/plugins/qtip2/jquery.qtip.min.js"></script>';
-			//print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/lib/jQplot/jquery.jqplot.min.js"></script>';
-			//print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/lib/jQplot/jqplot.plugins.js"></script>';
-			print '<script type="text/javascript" src="includes/lib/fullcalendar/fullcalendar.min.js"></script>';
-			print '<script type="text/javascript" src="includes/lib/stepy/js/jquery.stepy.min.js"></script>';
-			print '<script type="text/javascript" src="includes/lib/validate/jquery.validate.min.js"></script>';
-			print '<script type="text/javascript" src="includes/lib/validate/localization/messages_' . substr($langs->getDefaultLang(), 0, 2) . '.js"></script>'; //localization for validation plugin
-			//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/js/jquery.list.min.js"></script>';
-			print '<script type="text/javascript" src="includes/js/pertho.js"></script>';
-			print '<script type="text/javascript" src="includes/js/jquery.rwd-table.js"></script>';
-			// END THEME
+				// BEGIN THEME
+				//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/lib/jQueryUI/jquery-ui-1.8.18.custom.min.js"></script>';
+				print '<script type="text/javascript" src="includes/js/s_scripts.js"></script>';
+				print '<script type="text/javascript" src="includes/js/jquery.ui.extend.js"></script>';
+				print '<script type="text/javascript" src="includes/jquery/plugins/qtip2/jquery.qtip.min.js"></script>';
+				//print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/lib/jQplot/jquery.jqplot.min.js"></script>';
+				//print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/lib/jQplot/jqplot.plugins.js"></script>';
+				print '<script type="text/javascript" src="includes/lib/fullcalendar/fullcalendar.min.js"></script>';
+				print '<script type="text/javascript" src="includes/lib/stepy/js/jquery.stepy.min.js"></script>';
+				print '<script type="text/javascript" src="includes/lib/validate/jquery.validate.min.js"></script>';
+				print '<script type="text/javascript" src="includes/lib/validate/localization/messages_' . substr($langs->getDefaultLang(), 0, 2) . '.js"></script>'; //localization for validation plugin
+				//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/js/jquery.list.min.js"></script>';
+				print '<script type="text/javascript" src="includes/js/pertho.js"></script>';
+				print '<script type="text/javascript" src="includes/js/jquery.rwd-table.js"></script>';
+				// END THEME
 
-			if (!defined('NOLOGIN')) {
-				// Global js function
-				print '<!-- Includes JS of Speedealing -->' . "\n";
-				print '<script type="text/javascript" src="core/js/lib_head.js"></script>' . "\n";
-			}
+				if (!defined('NOLOGIN')) {
+					// Global js function
+					print '<!-- Includes JS of Speedealing -->' . "\n";
+					print '<script type="text/javascript" src="core/js/lib_head.js"></script>' . "\n";
+				}
 
-			// Add datepicker default options
-			//print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/core/js/datepicker.js.php?lang=' . $langs->defaultlang . '"></script>' . "\n";
+				// Add datepicker default options
+				//print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/core/js/datepicker.js.php?lang=' . $langs->defaultlang . '"></script>' . "\n";
 
-			print'<!-- Foundation framework -->';
-			print '<link rel="stylesheet" href="theme/pertho_sample/foundation/stylesheets/foundation.css">';
-			print '<!-- jquery UI -->';
-			print '<link rel="stylesheet" href="theme/pertho_sample/lib/jQueryUI/css/Aristo/Aristo.css" media="all" />';
-			print '<!-- jQplot (charts) -->';
-			print '<link rel="stylesheet" href="theme/pertho_sample/lib/jQplot/jquery.jqplot.css" media="all" />';
-			print '<!-- fancybox -->';
-			print '<link rel="stylesheet" href="theme/pertho_sample/lib/fancybox/jquery.fancybox-1.3.4.css" media="all" />';
-			print '<!-- fullcalendar -->';
-			print '<link rel="stylesheet" href="theme/pertho_sample/lib/fullcalendar/fullcalendar.css" media="all" />';
-			print '<!-- tooltips -->';
-			print '<link rel="stylesheet" href="theme/pertho_sample/lib/qtip2/jquery.qtip.min.css" />';
-			print '<!-- chosen (select element extended) -->';
-			print '<link rel="stylesheet" href="theme/pertho_sample/lib/chosen/chosen.css" media="all" />';
-			print '<!-- datatables -->';
-			print '<link rel="stylesheet" href="theme/pertho_sample/lib/datatables/css/demo_table_jui.css" media="all" />';
-			print '<!-- main styles -->';
-			print '<link rel="stylesheet" href="theme/eldy/style.css" />';
+				print'<!-- Foundation framework -->';
+				print '<link rel="stylesheet" href="theme/pertho_sample/foundation/stylesheets/foundation.css">';
+				print '<!-- jquery UI -->';
+				print '<link rel="stylesheet" href="theme/pertho_sample/lib/jQueryUI/css/Aristo/Aristo.css" media="all" />';
+				print '<!-- jQplot (charts) -->';
+				print '<link rel="stylesheet" href="theme/pertho_sample/lib/jQplot/jquery.jqplot.css" media="all" />';
+				print '<!-- fancybox -->';
+				print '<link rel="stylesheet" href="theme/pertho_sample/lib/fancybox/jquery.fancybox-1.3.4.css" media="all" />';
+				print '<!-- fullcalendar -->';
+				print '<link rel="stylesheet" href="theme/pertho_sample/lib/fullcalendar/fullcalendar.css" media="all" />';
+				print '<!-- tooltips -->';
+				print '<link rel="stylesheet" href="theme/pertho_sample/lib/qtip2/jquery.qtip.min.css" />';
+				print '<!-- chosen (select element extended) -->';
+				print '<link rel="stylesheet" href="theme/pertho_sample/lib/chosen/chosen.css" media="all" />';
+				print '<!-- datatables -->';
+				print '<link rel="stylesheet" href="theme/pertho_sample/lib/datatables/css/demo_table_jui.css" media="all" />';
+				//print '<!-- main styles -->';
+				//print '<link rel="stylesheet" href="theme/eldy/style.css" />';
 
-			print '<!-- Google fonts -->';
-			//print '<link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet" />';
-			print '<style type="text/css" media="screen, print">
+				print '<!-- Google fonts -->';
+				//print '<link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet" />';
+				print '<style type="text/css" media="screen, print">
 		@font-face {
 		font-family: "Open Sans Condensed";
 		font-style: normal;
@@ -960,7 +1081,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 			url("http://themes.googleusercontent.com/static/fonts/opensanscondensed/v6/gk5FxslNkTTHtojXrkp-xF1YPouZEKgzpqZW9wN-3Ek.woff") format("woff");
 		}
 		</style>';
-			print '<style type="text/css" media="screen, print">
+				print '<style type="text/css" media="screen, print">
 		@font-face {
 		font-family: "Terminal Dosis";
 		font-style: normal;
@@ -970,105 +1091,117 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 		}
 		</style>';
 
-			print '<!-- Favicons and the like (avoid using transparent .png) -->';
-			print '<link rel="apple-touch-icon-precomposed" href="icon.png" />';
+				print '<!-- Favicons and the like (avoid using transparent .png) -->';
+				print '<link rel="apple-touch-icon-precomposed" href="icon.png" />';
 
-			print '<!--[if lt IE 9]>';
-			print '<link rel="stylesheet" href="foundation/stylesheets/ie.css">';
-			print '<script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>';
-			print '<script src="lib/jQplot/excanvas.min.js"></script>';
-			print '<![endif]-->';
+				print '<!--[if lt IE 9]>';
+				print '<link rel="stylesheet" href="foundation/stylesheets/ie.css">';
+				print '<script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>';
+				print '<script src="lib/jQplot/excanvas.min.js"></script>';
+				print '<![endif]-->';
 
-			// For new theme
-			print '<script>
+				// For new theme
+				print '<script>
 		$(document).ready(function() {
 			prth_common.init();
 			});
 		</script>';
 
-			// Output module javascript
-			if (is_array($arrayofjs)) {
-				print '<!-- Includes JS specific to page -->' . "\n";
-				foreach ($arrayofjs as $jsfile) {
-					if (preg_match('/^http/i', $jsfile)) {
-						print '<script type="text/javascript" src="' . $jsfile . '"></script>' . "\n";
-					} else {
-						if (!preg_match('/^\//', $jsfile))
-							$jsfile = '/' . $jsfile; // For backward compatibility
-						print '<script type="text/javascript" src="' . dol_buildpath($jsfile, 1) . '"></script>' . "\n";
+				// Output module javascript
+				if (is_array($arrayofjs)) {
+					print '<!-- Includes JS specific to page -->' . "\n";
+					foreach ($arrayofjs as $jsfile) {
+						if (preg_match('/^http/i', $jsfile)) {
+							print '<script type="text/javascript" src="' . $jsfile . '"></script>' . "\n";
+						} else {
+							if (!preg_match('/^\//', $jsfile))
+								$jsfile = '/' . $jsfile; // For backward compatibility
+							print '<script type="text/javascript" src="' . dol_buildpath($jsfile, 1) . '"></script>' . "\n";
+						}
 					}
 				}
-			}
 
-			if (!empty($head))
-				print $head . "\n";
-			if (!empty($conf->global->MAIN_HTML_HEADER))
-				print $conf->global->MAIN_HTML_HEADER . "\n";
-			?>
-		</head>
-		<?php
+				if (!empty($head))
+					print $head . "\n";
+				if (!empty($conf->global->MAIN_HTML_HEADER))
+					print $conf->global->MAIN_HTML_HEADER . "\n";
+				?>
+			</head>
+			<?php
+		}
+
+		$conf->headerdone = 1; // To tell header was output
 	}
 
-	$conf->headerdone = 1; // To tell header was output
-}
-
-/**
- *  Show an HTML header + a BODY + The top menu bar
- *
- *  @param      string	$head    			Lines in the HEAD
- *  @param      string	$title   			Title of web page
- *  @param      string	$target  			Target to use in menu links
- * 	@param		int		$disablejs			Do not output links to js (Ex: qd fonction utilisee par sous formulaire Ajax)
- * 	@param		int		$disablehead		Do not output head section
- * 	@param		array	$arrayofjs			Array of js files to add in header
- * 	@param		array	$arrayofcss			Array of css files to add in header
- *  @param		string	$morequerystring	Query string to add to the link "print" to get same parameters (use only if autodetect fails)
- *  @return		void
- */
-function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead = 0, $arrayofjs = '', $arrayofcss = '', $morequerystring = '') {
-	global $user, $conf, $langs, $db;
-	global $dolibarr_main_authentication;
-	global $hookmanager;
-
-	// Instantiate hooks of thirdparty module only if not already define
-	if (!is_object($hookmanager)) {
-		include_once(DOL_DOCUMENT_ROOT . '/core/class/hookmanager.class.php');
-		$hookmanager = new HookManager($db);
-	}
-	$hookmanager->initHooks(array('toprightmenu'));
-
-	$toprightmenu = '';
-
-	$conf->top_menu = 'auguria_backoffice.php';
-
-	// For backward compatibility with old modules
-	//if (empty($conf->headerdone)) top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss);
-
-	if (!defined('NOHEADER'))
-		print '<body class="ptrn_a grdnt_b mhover_c fullW">'; // fullW full size width
-	else
-		print '<body style="background: white;">'; // fullW full size width
-
-	/*
-	 * Top menu
+	/**
+	 *  Show The top menu bar
+	 *
+	 *  @return		void
 	 */
-	$top_menu = $conf->top_menu;
+	function top_menu() {
+		global $user, $conf, $langs, $db;
+		global $dolibarr_main_authentication;
 
-	// Load the top menu manager
-	// Load the top menu manager (only if not already done)
-	if (!class_exists('MenuTop')) {
-		$top_menu = 'auguria_backoffice.php';
-		include_once(DOL_DOCUMENT_ROOT . "/core/menus/standard/" . $top_menu);
-	}
-	?> <!-- Start top horizontal menu ' . $top_menu . ' -->
+		$toprightmenu = '';
+
+		$conf->top_menu = 'auguria_backoffice.php';
+
+		// For backward compatibility with old modules
+		//if (empty($conf->headerdone)) top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss);
+
+		/*
+		 * Top menu
+		 */
+		$top_menu = $conf->top_menu;
+
+		// Load the top menu manager
+		// Load the top menu manager (only if not already done)
+		if (!class_exists('MenuTop')) {
+			$top_menu = 'auguria_backoffice.php';
+			include_once(DOL_DOCUMENT_ROOT . "/core/menus/standard/" . $top_menu);
+		}
+		?>
+		<!-- Side tabs shortcuts -->
+		<style type="text/css">
+			a.s_dashb::before {
+				background-image: url(theme/eldy/img/modules/s_map.png) !important;
+			}
+			/*a.s_dashb, span.s_dashb {
+				background-image: url(theme/eldy/img/modules/s_map.png) !important;
+			}*/
+			a.s_agenda::before {
+				background-image: url(theme/eldy/img/modules/s_agenda.png) !important;
+			}
+			/*a.s_agenda, span.s_agenda {
+				background-image: url(theme/eldy/img/modules/s_agenda.png) !important;
+			}*/
+			a.s_mail::before {
+				background-image: url(theme/eldy/img/modules/s_mail.png) !important;
+			}
+			/*a.s_mail, span.s_mail {
+				background-image: url(theme/eldy/img/modules/s_mail.png) !important;
+			}*/
+		</style>
+		<ul id="shortcuts" role="complementary" class="children-tooltip tooltip-right">
+			<li class="current"><a href="./" class="shortcut-dashboard s_dashb" title="Dashboard">Dashboard</a></li>
+			<li><a href="inbox.html" class="shortcut-dashboard s_mail" style="background-image: url(theme/eldy/img/modules/s_mail.png);" title="Messages">Messages</a></li>
+			<li><a href="agenda.html" class="shortcut-dashboard s_agenda" style="background-image: url(theme/eldy/img/modules/s_agenda.png);" title="Agenda">Agenda</a></li>
+			<li><a href="tables.html" class="shortcut-contacts" title="Contacts">Contacts</a></li>
+			<li><a href="explorer.html" class="shortcut-medias" title="Medias">Medias</a></li>
+			<li><a href="sliders.html" class="shortcut-stats" title="Stats">Stats</a></li>
+			<li><a href="form.html" class="shortcut-settings" title="Settings">Settings</a></li>
+			<li><span class="shortcut-notes" title="Notes">Notes</span></li>
+		</ul>
+		<?php
+		?> <!-- Start top horizontal menu ' . $top_menu . ' -->
 	<?php if (!defined('NOHEADER')) : ?>
-		<header>
-			<div class="container head_s_a">
-				<div class="row sepH_b">
-					<div class="six columns">
-						<div class="row">
-							<div class="five phone-two columns">
-								<div id="logo"><?php
+			<header>
+				<div class="container head_s_a">
+					<div class="row sepH_b">
+						<div class="six columns">
+							<div class="row">
+								<div class="five phone-two columns">
+									<div id="logo"><?php
 		$mysoc->logo_mini = $conf->global->MAIN_INFO_SOCIETE_LOGO_MINI;
 		if (!empty($mysoc->logo_mini) && is_readable($conf->mycompany->dir_output . '/logos/thumbs/' . $mysoc->logo_mini))
 			$urllogo = DOL_URL_ROOT . '/viewimage.php?cache=1&amp;modulepart=companylogo&amp;file=' . urlencode('thumbs/' . $mysoc->logo_mini);
@@ -1076,182 +1209,114 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 			$urllogo = 'logo.png';
 		print '<a href="' . DOL_URL_ROOT . '/index.php?idmenu=menu:home"><img src="' . $urllogo . '" alt="' . $conf->global->MAIN_INFO_SOCIETE_NOM . '" title="' . $conf->global->MAIN_INFO_SOCIETE_NOM . '"/></a>';
 		?>
+									</div>
 								</div>
-							</div>
 		<?php if (!defined('NOLOGIN')) : ?>
-								<div class = "seven phone-two columns">
-									<form action = "search.php" id = "search_box" method = "post">
-										<input name = "query" id = "query" type = "text" size = "40" placeholder = "Find&hellip;" autocomplete = "off" />
-									</form>
-								</div>
-								<script>
-									$(document).ready(function() {
-										$('#query').sautocomplete('search/data.php', {
-											delay		: 10,
-											minChars	: 2,
-											max			: 6,
-											matchCase	: 1,
-											width		: 212
-										}).result(function(event, query_val) {
-											$.fancybox({
-												href	: 'search/search_result.php',
-												ajax : {
-													type	: "POST",
-													data	: "search_item=" + query_val
-												},
-												'overlayOpacity'	: '0.2',
-												'transitionIn'		: 'elastic',
-												'transitionOut'		: 'fade',
-												onComplete			: function() {
-													$('#query').blur();
-												}
+									<div class = "seven phone-two columns">
+										<form action = "search.php" id = "search_box" method = "post">
+											<input name = "query" id = "query" type = "text" size = "40" placeholder = "Find&hellip;" autocomplete = "off" />
+										</form>
+									</div>
+									<script>
+										$(document).ready(function() {
+											$('#query').sautocomplete('search/data.php', {
+												delay		: 10,
+												minChars	: 2,
+												max			: 6,
+												matchCase	: 1,
+												width		: 212
+											}).result(function(event, query_val) {
+												$.fancybox({
+													href	: 'search/search_result.php',
+													ajax : {
+														type	: "POST",
+														data	: "search_item=" + query_val
+													},
+													'overlayOpacity'	: '0.2',
+													'transitionIn'		: 'elastic',
+													'transitionOut'		: 'fade',
+													onComplete			: function() {
+														$('#query').blur();
+													}
+												});
+											});
+											$('#search_box').submit(function() {
+												var query_val = $("#query").val();
+												$.fancybox({
+													href	: 'search/search_result.php',
+													ajax : {
+														type	: "POST",
+														data	: "search_item=" + query_val
+													},
+													'overlayOpacity'	: '0.2',
+													'transitionIn'		: 'elastic',
+													'transitionOut'		: 'fade'
+												});
+												return false;
 											});
 										});
-										$('#search_box').submit(function() {
-											var query_val = $("#query").val();
-											$.fancybox({
-												href	: 'search/search_result.php',
-												ajax : {
-													type	: "POST",
-													data	: "search_item=" + query_val
-												},
-												'overlayOpacity'	: '0.2',
-												'transitionIn'		: 'elastic',
-												'transitionOut'		: 'fade'
-											});
-											return false;
-										});
-									});
-								</script>
+									</script>
+								</div>
 							</div>
-						</div>
-						<div class = "six columns">
-							<div class = "user_box cf">
-								<div class = "user_avatar">
-									<img src = "theme/pertho_sample/img/user_female.png" alt = "" />
-								</div>
-								<div class = "user_info user_sep">
-									<p class = "sepH_a">
-										<strong><?php echo $user->values->Firstname; ?> <?php echo $user->values->Lastname; ?></strong>
-									</p>
-									<span>
-										<a href = "user/fiche.php?id=<?php echo $user->id; ?>" class = "sep">Settings</a>
-										<a href = "user/logout.php">Log out</a>
-									</span>
-								</div>
-								<div class = "ntf_bar user_sep">
-									<a href = "#ntf_mail_panel" class = "ntf_item" style = "background-image: url(theme/pertho_sample/img/ico/icSw2/32-Mail.png)">
-										<span class = "ntf_tip ntf_tip_red"><span>12</span></span>
-									</a>
-									<a href = "#ntf_tickets_panel" class = "ntf_item" style = "background-image: url(theme/pertho_sample/img/ico/icSw2/32-Day-Calendar.png)">
-										<span class = "ntf_tip ntf_tip_red"><span>122</span></span>
-									</a>
-									<a href = "#ntf_comments_panel" class = "ntf_item" style = "background-image: url(theme/pertho_sample/img/ico/icSw2/32-Speech-Bubble.png)">
-										<span class = "ntf_tip ntf_tip_blue"><span>8</span></span>
-									</a>
+							<div class = "six columns">
+								<div class = "user_box cf">
+									<div class = "user_avatar">
+										<img src = "theme/pertho_sample/img/user_female.png" alt = "" />
+									</div>
+									<div class = "user_info user_sep">
+										<p class = "sepH_a">
+											<strong><?php echo $user->values->Firstname; ?> <?php echo $user->values->Lastname; ?></strong>
+										</p>
+										<span>
+											<a href = "user/fiche.php?id=<?php echo $user->id; ?>" class = "sep">Settings</a>
+											<a href = "user/logout.php">Log out</a>
+										</span>
+									</div>
+									<div class = "ntf_bar user_sep">
+										<a href = "#ntf_mail_panel" class = "ntf_item" style = "background-image: url(theme/pertho_sample/img/ico/icSw2/32-Mail.png)">
+											<span class = "ntf_tip ntf_tip_red"><span>12</span></span>
+										</a>
+										<a href = "#ntf_tickets_panel" class = "ntf_item" style = "background-image: url(theme/pertho_sample/img/ico/icSw2/32-Day-Calendar.png)">
+											<span class = "ntf_tip ntf_tip_red"><span>122</span></span>
+										</a>
+										<a href = "#ntf_comments_panel" class = "ntf_item" style = "background-image: url(theme/pertho_sample/img/ico/icSw2/32-Speech-Bubble.png)">
+											<span class = "ntf_tip ntf_tip_blue"><span>8</span></span>
+										</a>
+									</div>
 								</div>
 							</div>
 						</div>
-					</div>
 
 
 			<?php if (!defined('NOREQUIREMENU')) : ?>
-						<div class = "row">
-							<div class = "twelve columns">
+							<div class = "row">
+								<div class = "twelve columns">
 
-								<?php
-								// Show menu
-								$menutop = new MenuTop($db);
-								$menutop->atarget = $target;
-								$menutop->showmenu();   // This contains a \n
-								?>
+									<?php
+									// Show menu
+									$menutop = new MenuTop($db);
+									$menutop->atarget = $target;
+									$menutop->showmenu();   // This contains a \n
+									?>
+								</div>
 							</div>
-						</div>
-						<script>
-							$(document).ready(function() {
-								if(!jQuery.browser.mobile) {
-									//* main navigatin
-									prth_main_nav.h_nav();
-								} else {
-									//* mobile navigatin
-									prth_main_nav.mobile_nav();
-								}
-							});
-						</script>
-						<!--End Menu-->
+							<script>
+								$(document).ready(function() {
+									if(!jQuery.browser.mobile) {
+										//* main navigatin
+										prth_main_nav.h_nav();
+									} else {
+										//* mobile navigatin
+										prth_main_nav.mobile_nav();
+									}
+								});
+							</script>
+							<!--End Menu-->
 			<?php endif; ?>
 
-				</div>
+					</div>
 
-				<!--notifications content-->
-				<div style = "display:none">
-					<div id = "ntf_tickets_panel" style = "display:none">
-						<p class = "sticky-title">New Tickets</p>
-						<ul class = "sticky-list">
-							<li>
-								<a href = "#">Admin should not break if URL&hellip;
-								</a>
-								<p><span class = "s_color small">updated 01.04.2012</span></p>
-							</li>
-							<li>
-								<a href = "#">Displaying submenus in custom&hellip;
-								</a>
-								<p><span class = "s_color small">updated 01.04.2012</span></p>
-							</li>
-							<li>
-								<a href = "#">Featured image on post types.</a>
-								<p><span class = "s_color small">updated 24.03.2012</span></p>
-							</li>
-							<li>
-								<a href = "#">Multiple feed fixes and&hellip;
-								</a>
-								<p><span class = "s_color small">updated 22.03.2012</span></p>
-							</li>
-							<li>
-								<a href = "#">Automatic line breaks in&hellip;
-								</a>
-								<p><span class = "s_color small">updated 18.03.2012</span></p>
-							</li>
-							<li>
-								<a href = "#">Wysiwyg bug with shortcodes.</a>
-								<p><span class = "s_color small">updated 08.10.2012</span></p>
-							</li>
-						</ul>
-						<a href = "#" class = "gh_button btn-small">Show all tickets</a>
-					</div>
-					<div id = "ntf_comments_panel" style = "display:none">
-						<p class = "sticky-title">New Comments</p>
-						<ul class = "sticky-list">
-							<li>
-								<a href = "#">Lorem ipsum dolor sit amet&hellip;
-								</a>
-								<p><span class = "s_color small">John Smith on Maiden Castle, Dorset (29.10.2012)</span></p>
-							</li>
-							<li>
-								<a href = "#">Lorem ipsum dolor sit&hellip;
-								</a>
-								<p><span class = "s_color small">John Smith on Draining and development & hellip;
-										(29.10.2012)</span></p>
-							</li>
-						</ul>
-						<a href = "#" class = "gh_button btn-small">Show all comments</a>
-					</div>
-					<div id = "ntf_mail_panel" style = "display:none">
-						<p class = "sticky-title">New Messages</p>
-						<ul class = "sticky-list">
-							<li>
-								<a href = "#">Lorem ipsum dolor sit amet&hellip;
-								</a>
-								<p><span class = "s_color small">From John Smith (29.10.2012)</span></p>
-							</li>
-							<li>
-								<a href = "#">Lorem ipsum dolor sit&hellip;
-								</a>
-								<p><span class = "s_color small">From John Smith (28.10.2012)</span></p>
-							</li>
-						</ul>
-						<a href = "#" class = "gh_button btn-small">Show all messages</a>
-					</div>
+
 				</div>
 		<?php endif; ?>
 		</header>
@@ -1288,7 +1353,157 @@ function left_menu($menu_array_before, $helppagename = '', $moresearchform = '',
 	$hookmanager->initHooks(array('searchform', 'leftblock'));
 
 	print "\n";
+	?>
+	<!-- Sidebar/drop-down menu -->
+	<section id="menu" role="complementary">
 
+		<!-- This wrapper is used by several responsive layouts -->
+		<div id="menu-content">
+
+			<header>
+				Administrator
+			</header>
+
+			<div id="profile">
+				<img src="theme/developr/html/img/user.png" width="64" height="64" alt="User name" class="user-icon">
+				Hello
+				<span class="name"><?php echo $user->values->Firstname; ?> <b><?php echo $user->values->Lastname; ?></b></span>
+			</div>
+
+			<!-- By default, this section is made for 4 icons, see the doc to learn how to change this, in "basic markup explained" -->
+			<ul id="access" class="children-tooltip">
+				<li><a href="inbox.html" title="Messages"><span class="icon-inbox"></span><span class="count">2</span></a></li>
+				<li><a href="calendars.html" title="Calendar"><span class="icon-calendar"></span></a></li>
+				<li><a href="login.html" title="Profile"><span class="icon-user"></span></a></li>
+				<li class="disabled"><span class="icon-gear"></span></li>
+			</ul>
+
+			<section class="navigable">
+				<ul class="big-menu">
+					<li class="with-right-arrow">
+						<span><span class="list-count">11</span>Main styles</span>
+						<ul class="big-menu">
+							<li><a href="typography.html">Typography</a></li>
+							<li><a href="columns.html">Columns</a></li>
+							<li><a href="tables.html">Tables</a></li>
+							<li><a href="colors.html">Colors &amp; backgrounds</a></li>
+							<li><a href="icons.html">Icons</a></li>
+							<li><a href="files.html">Files &amp; Gallery</a></li>
+							<li class="with-right-arrow">
+								<span><span class="list-count">4</span>Forms &amp; buttons</span>
+								<ul class="big-menu">
+									<li><a href="buttons.html">Buttons</a></li>
+									<li><a href="form.html">Form elements</a></li>
+									<li><a href="textareas.html">Textareas &amp; WYSIWYG</a></li>
+									<li><a href="form-layouts.html">Form layouts</a></li>
+									<li><a href="wizard.html">Wizard</a></li>
+								</ul>
+							</li>
+							<li class="with-right-arrow">
+								<span><span class="list-count">2</span>Agenda &amp; Calendars</span>
+								<ul class="big-menu">
+									<li><a href="agenda.html">Agenda</a></li>
+									<li><a href="calendars.html">Calendars</a></li>
+								</ul>
+							</li>
+							<li><a href="blocks.html">Blocks &amp; infos</a></li>
+						</ul>
+					</li>
+					<li class="with-right-arrow">
+						<span><span class="list-count">8</span>Main features</span>
+						<ul class="big-menu">
+							<li><a href="auto-setup.html">Automatic setup</a></li>
+							<li><a href="responsive.html">Responsiveness</a></li>
+							<li><a href="tabs.html">Tabs</a></li>
+							<li><a href="sliders.html">Slider &amp; progress</a></li>
+							<li><a href="modals.html">Modal windows</a></li>
+							<li class="with-right-arrow">
+								<span><span class="list-count">3</span>Messages &amp; notifications</span>
+								<ul class="big-menu">
+									<li><a href="messages.html">Messages</a></li>
+									<li><a href="notifications.html">Notifications</a></li>
+									<li><a href="tooltips.html">Tooltips</a></li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+					<li class="with-right-arrow">
+						<a href="ajax-demo/submenu.html" class="navigable-ajax" title="Menu title">With ajax sub-menu</a>
+					</li>
+				</ul>
+			</section>
+
+			<ul class="unstyled-list">
+				<li class="title-menu">Today's event</li>
+				<li>
+					<ul class="calendar-menu">
+						<li>
+							<a href="#" title="See event">
+								<time datetime="2011-02-24"><b>24</b> Feb</time>
+								<small class="green">10:30</small>
+								Event's description
+							</a>
+						</li>
+					</ul>
+				</li>
+				<li class="title-menu">New messages</li>
+				<li>
+					<ul class="message-menu">
+						<li>
+							<span class="message-status">
+								<a href="#" class="starred" title="Starred">Starred</a>
+								<a href="#" class="new-message" title="Mark as read">New</a>
+							</span>
+							<span class="message-info">
+								<span class="blue">17:12</span>
+								<a href="#" class="attach" title="Download attachment">Attachment</a>
+							</span>
+							<a href="#" title="Read message">
+								<strong class="blue">John Doe</strong><br>
+								<strong>Mail subject</strong>
+							</a>
+						</li>
+						<li>
+							<a href="#" title="Read message">
+								<span class="message-status">
+									<span class="unstarred">Not starred</span>
+									<span class="new-message">New</span>
+								</span>
+								<span class="message-info">
+									<span class="blue">15:47</span>
+								</span>
+								<strong class="blue">May Starck</strong><br>
+								<strong>Mail subject a bit longer</strong>
+							</a>
+						</li>
+						<li>
+							<span class="message-status">
+								<span class="unstarred">Not starred</span>
+							</span>
+							<span class="message-info">
+								<span class="blue">15:12</span>
+							</span>
+							<strong class="blue">May Starck</strong><br>
+							Read message
+						</li>
+					</ul>
+				</li>
+			</ul>
+
+		</div>
+		<!-- End content wrapper -->
+
+		<!-- This is optional -->
+		<footer id="menu-footer">
+			<p class="button-height">
+				<input type="checkbox" name="auto-refresh" id="auto-refresh" checked="checked" class="switch float-right">
+				<label for="auto-refresh">Auto-refresh</label>
+			</p>
+		</footer>
+
+	</section>
+	<!-- End sidebar/drop-down menu -->
+	<?php
 	// Define $searchform
 	if ($conf->societe->enabled && $conf->global->MAIN_SEARCHFORM_SOCIETE && $user->rights->societe->lire) {
 		$langs->load("companies");
@@ -1337,111 +1552,100 @@ function left_menu($menu_array_before, $helppagename = '', $moresearchform = '',
 		}
 	}
 
-	/*
-	  // Left column
-	  print '<!--Begin left area - menu '.$left_menu.'-->'."\n";
 
-	  print '<div class = "row">'."\n";
-	  print '<div class = "three columns hide-on-phones">'."\n";
+	// Left column
+	print '<!--Begin left area - menu ' . $left_menu . '-->' . "\n";
 
-	  //$menuleft=new MenuLeft($db,$menu_array_before,$menu_array_after);
-	  //$menuleft->showmenu(); // output menu_array and menu found in database
+	print '<div class = "row">' . "\n";
+	print '<div class = "three columns hide-on-phones">' . "\n";
 
+	//$menuleft=new MenuLeft($db,$menu_array_before,$menu_array_after);
+	//$menuleft->showmenu(); // output menu_array and menu found in database
+	// Show other forms
+	if ($searchform) {
+		print "\n";
+		print "<!-- Begin SearchForm -->\n";
+		print '<div id = "blockvmenusearch" class = "blockvmenusearch">' . "\n";
+		print $searchform;
+		print '</div>' . "\n";
+		print "<!-- End SearchForm -->\n";
+	}
 
-	  // Show other forms
-	  if ($searchform)
-	  {
-	  print "\n";
-	  print "<!-- Begin SearchForm -->\n";
-	  print '<div id = "blockvmenusearch" class = "blockvmenusearch">'."\n";
-	  print $searchform;
-	  print '</div>'."\n";
-	  print "<!-- End SearchForm -->\n";
-	  }
+	// More search form
+	if ($moresearchform) {
+		print $moresearchform;
+	}
 
-	  // More search form
-	  if ($moresearchform)
-	  {
-	  print $moresearchform;
-	  }
+	// Bookmarks
+	if ($bookmarks) {
+		print "\n";
+		print "<!-- Begin Bookmarks -->\n";
+		print '<div id = "blockvmenubookmarks" class = "blockvmenubookmarks">' . "\n";
+		print $bookmarks;
+		print '</div>' . "\n";
+		print "<!-- End Bookmarks -->\n";
+	}
 
-	  // Bookmarks
-	  if ($bookmarks)
-	  {
-	  print "\n";
-	  print "<!-- Begin Bookmarks -->\n";
-	  print '<div id = "blockvmenubookmarks" class = "blockvmenubookmarks">'."\n";
-	  print $bookmarks;
-	  print '</div>'."\n";
-	  print "<!-- End Bookmarks -->\n";
-	  }
+	// Link to Speedealing wiki pages
+	if ($helppagename && empty($conf->global->MAIN_HELP_DISABLELINK)) {
+		$langs->load("help");
 
-	  // Link to Speedealing wiki pages
-	  if ($helppagename && empty($conf->global->MAIN_HELP_DISABLELINK))
-	  {
-	  $langs->load("help");
+		$helpbaseurl = '';
+		$helppage = '';
+		$mode = '';
 
-	  $helpbaseurl='';
-	  $helppage='';
-	  $mode='';
+		// Get helpbaseurl, helppage and mode from helppagename and langs
+		$arrayres = getHelpParamFor($helppagename, $langs);
+		$helpbaseurl = $arrayres['helpbaseurl'];
+		$helppage = $arrayres['helppage'];
+		$mode = $arrayres['mode'];
 
-	  // Get helpbaseurl, helppage and mode from helppagename and langs
-	  $arrayres=getHelpParamFor($helppagename,$langs);
-	  $helpbaseurl=$arrayres['helpbaseurl'];
-	  $helppage=$arrayres['helppage'];
-	  $mode=$arrayres['mode'];
+		// Link to help pages
+		if ($helpbaseurl && $helppage) {
+			print '<div id = "blockvmenuhelp" class = "blockvmenuhelp">';
+			print '<a class = "help" target = "_blank" title = "' . $langs->trans($mode == 'wiki' ? 'GoToWikiHelpPage' : 'GoToHelpPage');
+			if ($mode == 'wiki')
+				print ' - ' . $langs->trans("PageWiki") . ' &quot;' . dol_escape_htmltag(strtr($helppage, '_', ' ')) . '&quot;';
+			print '" href = "';
+			print sprintf($helpbaseurl, urlencode(html_entity_decode($helppage)));
+			print '">';
+			print img_picto('', 'helpdoc') . ' ';
+			print $langs->trans($mode == 'wiki' ? 'OnlineHelp' : 'Help');
+			//if ($mode == 'wiki') print ' ('.dol_trunc(strtr($helppage,'_',' '),8).')';
+			print '</a>';
+			print '</div>';
+		}
+	}
 
-	  // Link to help pages
-	  if ($helpbaseurl && $helppage)
-	  {
-	  print '<div id = "blockvmenuhelp" class = "blockvmenuhelp">';
-	  print '<a class = "help" target = "_blank" title = "'.$langs->trans($mode == 'wiki' ? 'GoToWikiHelpPage': 'GoToHelpPage');
-	  if ($mode == 'wiki') print ' - '.$langs->trans("PageWiki").' &quot;'.dol_escape_htmltag(strtr($helppage,'_',' ')).'&quot;';
-	  print '" href = "';
-	  print sprintf($helpbaseurl,urlencode(html_entity_decode($helppage)));
-	  print '">';
-	  print img_picto('', 'helpdoc').' ';
-	  print $langs->trans($mode == 'wiki' ? 'OnlineHelp': 'Help');
-	  //if ($mode == 'wiki') print ' ('.dol_trunc(strtr($helppage,'_',' '),8).')';
-	  print '</a>';
-	  print '</div>';
-	  }
-	  }
+	// Link to bugtrack
+	if (!empty($conf->global->MAIN_SHOW_BUGTRACK_LINK)) {
+		$bugbaseurl = 'http://savannah.nongnu.org/bugs/?';
+		$bugbaseurl.='func=additem&group=dolibarr&privacy=1&';
+		$bugbaseurl.="&details=";
+		$bugbaseurl.=urlencode("\n\n\n\n\n-------------\n");
+		$bugbaseurl.=urlencode($langs->trans("Version") . ": " . DOL_VERSION . "\n");
+		$bugbaseurl.=urlencode($langs->trans("Server") . ": " . $_SERVER["SERVER_SOFTWARE"] . "\n");
+		$bugbaseurl.=urlencode($langs->trans("Url") . ": " . $_SERVER["REQUEST_URI"] . "\n");
+		print '<div class="help"><a class="help" target="_blank" href="' . $bugbaseurl . '">' . $langs->trans("FindBug") . '</a></div>';
+	}
+	print "\n";
 
-	  // Link to bugtrack
-	  if (! empty($conf->global->MAIN_SHOW_BUGTRACK_LINK))
-	  {
-	  $bugbaseurl='http://savannah.nongnu.org/bugs/?';
-	  $bugbaseurl.='func=additem&group=dolibarr&privacy=1&';
-	  $bugbaseurl.="&details=";
-	  $bugbaseurl.=urlencode("\n\n\n\n\n-------------\n");
-	  $bugbaseurl.=urlencode($langs->trans("Version") . ": " . DOL_VERSION . "\n");
-	  $bugbaseurl.=urlencode($langs->trans("Server") . ": " . $_SERVER["SERVER_SOFTWARE"] . "\n");
-	  $bugbaseurl.=urlencode($langs->trans("Url") . ": " . $_SERVER["REQUEST_URI"] . "\n");
-	  print '<div class="help"><a class="help" target="_blank" href="' . $bugbaseurl . '">' . $langs->trans("FindBug") . '</a></div>';
-	  }
-	  print "\n";
+	print "</div>\n";
+	print "<!-- End left vertical menu -->\n";
 
-	  print "</div>\n";
-	  print "<!-- End left vertical menu -->\n";
+	print "\n";
 
-	  print "\n";
+	// Execute hook printLeftBlock
+	$parameters = array();
+	$leftblock = $hookmanager->executeHooks('printLeftBlock', $parameters); // Note that $action and $object may have been modified by some hooks
+	print $leftblock;
 
-	  // Execute hook printLeftBlock
-	  $parameters = array();
-	  $leftblock = $hookmanager->executeHooks('printLeftBlock', $parameters);	// Note that $action and $object may have been modified by some hooks
-	  print $leftblock;
+	//print '</td>';
 
-	  //print '</td>';
-
-	  print "\n";
-	  print '<!-- End of left area -->' . "\n";
-	  print "\n";
-	  print '<!-- Begin right area -->'."\n";
-	 */
-
-	if (empty($leftmenuwithoutmainarea))
-		main_area($title);
+	print "\n";
+	print '<!-- End of left area -->' . "\n";
+	print "\n";
+	print '<!-- Begin right area -->' . "\n";
 }
 
 /**
@@ -1453,7 +1657,10 @@ function left_menu($menu_array_before, $helppagename = '', $moresearchform = '',
 function main_area($title = '') {
 	global $conf, $langs;
 
-	print '<div class="container">';
+	print '<!-- Main content -->';
+	print '<section role="main" id="main">';
+
+	print '<noscript class="message black-gradient simpler">Your browser does not support JavaScript! Some features won\'t work as expected...</noscript>';
 
 	if (!empty($conf->global->MAIN_ONLY_LOGIN_ALLOWED))
 		print info_admin($langs->trans("WarningYouAreInMaintenanceMode", $conf->global->MAIN_ONLY_LOGIN_ALLOWED));
@@ -1527,53 +1734,57 @@ function printSearchForm($urlaction, $urlobject, $title, $htmlmodesearch, $htmli
 	return $ret;
 }
 
-if (!function_exists("llxFooter")) {
+/**
+ * Show HTML footer
+ * Close div /DIV data-role=page + /DIV class=fiche + /DIV /DIV main layout + /BODY + /HTML.
+ *
+ * @param	string	$foot    		A text to add in HTML generated page
+ * @return	void
+ */
+function llxFooter($foot = '') {
+	global $conf, $langs, $dolibarr_auto_user, $micro_start_time, $memcache;
+	?>
+	</section>
+	<!-- End main content -->
+	<?php
+	top_menu(); // print the left menu
 
-	/**
-	 * Show HTML footer
-	 * Close div /DIV data-role=page + /DIV class=fiche + /DIV /DIV main layout + /BODY + /HTML.
-	 *
-	 * @param	string	$foot    		A text to add in HTML generated page
-	 * @return	void
-	 */
-	function llxFooter($foot = '') {
-		global $conf, $langs, $dolibarr_auto_user, $micro_start_time, $memcache;
+	left_menu(); // print the right menu
 
-		if (!empty($conf->memcached->host) && class_exists('Memcache') && !class_exists('Memcached'))
-			$memcache->close();
-		
-		// Core error message
-		if (defined("MAIN_CORE_ERROR") && constant("MAIN_CORE_ERROR") == 1) {
-			$title = img_warning() . ' ' . $langs->trans('CoreErrorTitle');
-			print ajax_dialog($title, $langs->trans('CoreErrorMessage'));
+	if (!empty($conf->memcached->host) && class_exists('Memcache') && !class_exists('Memcached'))
+		$memcache->close();
 
-			define("MAIN_CORE_ERROR", 0);
-		}
-		?>
-		</div> <!-- end div class="container" -->
+	// Core error message
+	if (defined("MAIN_CORE_ERROR") && constant("MAIN_CORE_ERROR") == 1) {
+		$title = img_warning() . ' ' . $langs->trans('CoreErrorTitle');
+		print ajax_dialog($title, $langs->trans('CoreErrorMessage'));
 
-
-		<?php if (!defined('NOHEADER')) : ?>
-
-			<footer class="container" id="footer">
-				<div class="row">
-					<div class="twelve columns">
-						Copyright &copy; 2012 speedealing.com - tzd-themes.com
-					</div>
-				</div>
-			</footer>
-			<div class="sw_width">
-				<img class="sw_full" title="switch to full width" alt="" src="theme/blank.gif" />
-				<img style="display:none" class="sw_fixed" title="switch to fixed width (980px)" alt="" src="theme/blank.gif" />
-			</div>
-			<?php
-			printCommonFooter();
-			?>
-		<?php endif; ?>
-		<?php
-		print "</body>\n";
-		print "</html>\n";
+		define("MAIN_CORE_ERROR", 0);
 	}
+	?>
 
+	<?php if (!defined('NOHEADER')) : ?>
+		<script src="theme/developr/html/js/setup.js"></script>
+
+		<script src="theme/developr/html/js/developr.scroll.js"></script>
+
+		<footer class="container" id="footer">
+			<div class="row">
+				<div class="twelve columns">
+					Copyright &copy; 2012 speedealing.com - tzd-themes.com
+				</div>
+			</div>
+		</footer>
+		<div class="sw_width">
+			<img class="sw_full" title="switch to full width" alt="" src="theme/blank.gif" />
+			<img style="display:none" class="sw_fixed" title="switch to fixed width (980px)" alt="" src="theme/blank.gif" />
+		</div>
+		<?php
+		printCommonFooter();
+		?>
+	<?php endif; ?>
+	<?php
+	print "</body>\n";
+	print "</html>\n";
 }
 ?>

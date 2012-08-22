@@ -1,0 +1,508 @@
+﻿<!DOCTYPE html>
+
+<!--[if IEMobile 7]><html class="no-js iem7 oldie linen"><![endif]-->
+<!--[if (IE 7)&!(IEMobile)]><html class="no-js ie7 oldie linen" lang="en"><![endif]-->
+<!--[if (IE 8)&!(IEMobile)]><html class="no-js ie8 oldie linen" lang="en"><![endif]-->
+<!--[if (IE 9)&!(IEMobile)]><html class="no-js ie9 linen" lang="en"><![endif]-->
+<!--[if (gt IE 9)|(gt IEMobile 7)]><!--><html class="no-js linen" lang="en"><!--<![endif]-->
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+	<title>Developr</title>
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<!-- http://davidbcalhoun.com/2010/viewport-metatag -->
+	<meta name="HandheldFriendly" content="True">
+	<meta name="MobileOptimized" content="320">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<!-- For all browsers -->
+	<link rel="stylesheet" href="css/reset.css?v=1">
+	<link rel="stylesheet" href="css/style.css?v=1">
+	<link rel="stylesheet" href="css/colors.css?v=1">
+	<link rel="stylesheet" media="print" href="css/print.css?v=1">
+	<!-- For progressively larger displays -->
+	<link rel="stylesheet" media="only all and (min-width: 480px)" href="css/480.css?v=1">
+	<link rel="stylesheet" media="only all and (min-width: 768px)" href="css/768.css?v=1">
+	<link rel="stylesheet" media="only all and (min-width: 992px)" href="css/992.css?v=1">
+	<link rel="stylesheet" media="only all and (min-width: 1200px)" href="css/1200.css?v=1">
+	<!-- For Retina displays -->
+	<link rel="stylesheet" media="only all and (-webkit-min-device-pixel-ratio: 1.5), only screen and (-o-min-device-pixel-ratio: 3/2), only screen and (min-device-pixel-ratio: 1.5)" href="css/2x.css?v=1">
+
+	<!-- Additional styles -->
+	<link rel="stylesheet" href="css/styles/form.css?v=1">
+	<link rel="stylesheet" href="css/styles/switches.css?v=1">
+
+	<!-- jQuery Form Validation -->
+	<link rel="stylesheet" href="js/libs/formValidator/developr.validationEngine.css?v=1">
+
+	<!-- JavaScript at bottom except for Modernizr -->
+	<script src="js/libs/modernizr.custom.js"></script>
+
+	<!-- For Modern Browsers -->
+	<link rel="shortcut icon" href="img/favicons/favicon.png">
+	<!-- For everything else -->
+	<link rel="shortcut icon" href="img/favicons/favicon.ico">
+	<!-- For retina screens -->
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/favicons/apple-touch-icon-retina.png">
+	<!-- For iPad 1-->
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/favicons/apple-touch-icon-ipad.png">
+	<!-- For iPhone 3G, iPod Touch and Android -->
+	<link rel="apple-touch-icon-precomposed" href="img/favicons/apple-touch-icon.png">
+
+	<!-- iOS web-app metas -->
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+	<!-- Startup image for web apps -->
+	<link rel="apple-touch-startup-image" href="img/splash/ipad-landscape.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)">
+	<link rel="apple-touch-startup-image" href="img/splash/ipad-portrait.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)">
+	<link rel="apple-touch-startup-image" href="img/splash/iphone.png" media="screen and (max-device-width: 320px)">
+
+	<!-- Microsoft clear type rendering -->
+	<meta http-equiv="cleartype" content="on">
+
+	<!-- IE9 Pinned Sites: http://msdn.microsoft.com/en-us/library/gg131029.aspx -->
+	<meta name="application-name" content="Developr Admin Skin">
+	<meta name="msapplication-tooltip" content="Cross-platform admin template.">
+	<meta name="msapplication-starturl" content="http://www.display-inline.fr/demo/developr">
+	<!-- These custom tasks are examples, you need to edit them to show actual pages -->
+	<meta name="msapplication-task" content="name=Agenda;action-uri=http://www.display-inline.fr/demo/developr/agenda.html;icon-uri=http://www.display-inline.fr/demo/developr/img/favicons/favicon.ico">
+	<meta name="msapplication-task" content="name=My profile;action-uri=http://www.display-inline.fr/demo/developr/profile.html;icon-uri=http://www.display-inline.fr/demo/developr/img/favicons/favicon.ico">
+</head>
+
+<body class="full-page-wizard">
+
+	<form method="post" action="index.html" class="block wizard same-height">
+
+		<h3 class="block-title">Wizard</h3>
+
+		<fieldset class="wizard-fieldset fields-list">
+
+			<legend class="legend">About you</legend>
+
+			<div class="field-block">
+				<h4>Hello!</h4>
+				<p>Please fill this form to complete your registration:</p>
+			</div>
+
+			<div class="field-block button-height">
+				<label for="first_name" class="label"><b>First name</b></label>
+				<input type="text" name="first_name" id="first_name" value="" class="input validate[required]">
+			</div>
+
+			<div class="field-block button-height">
+				<label for="last_name" class="label"><b>Last name</b></label>
+				<input type="text" name="last_name" id="last_name" value="" class="input validate[required]">
+			</div>
+
+			<div class="field-block button-height">
+				<span class="label"><b>Gender</b></span>
+				<input type="radio" name="gender" id="gender_male" value="male" class="radio"> <label for="gender_male">Male</label><br>
+				<input type="radio" name="gender" id="gender_female" value="female" class="radio"> <label for="gender_female">Female</label>
+			</div>
+
+		</fieldset>
+
+		<fieldset class="wizard-fieldset fields-list">
+
+			<legend class="legend">Profile</legend>
+
+			<div class="field-block button-height">
+				<small class="input-info">This is the name that will be displayed on profile page</small>
+				<label for="login" class="label"><b>User login</b></label>
+				<input type="text" name="login" id="login" value="" class="input validate[required,custom[onlyLetterNumber]]">
+			</div>
+
+			<div class="field-block button-height">
+				<label for="file" class="label"><b>Avatar</b> (*.jpg)</label>
+				<span class="input file"><span class="file-text"></span><span class="button compact">Select file</span><input type="file" name="file-input" id="file-input" value="" class="file withClearFunctions"></span>
+				<small class="input-info">Max file size: 2MB</small>
+			</div>
+
+			<div class="field-drop button-height black-inputs">
+				<label for="resize_height" class="label"><b>Resize height</b> (in px)</label>
+				<span class="number input margin-right">
+					<button type="button" class="button number-down">-</button>
+					<input type="text" name="resize_height" id="resize_height" value="320" class="input-unstyled" data-number-options='{"min":100,"max":400}'>
+					<button type="button" class="button number-up">+</button>
+				</span>
+
+				<input type="checkbox" name="crop" id="crop" class="switch medium" checked="checked"> &nbsp; <label for="crop">Enable crop</label>
+			</div>
+
+		</fieldset>
+
+		<fieldset class="wizard-fieldset fields-list">
+
+			<legend class="legend">Contacts</legend>
+
+			<div class="field-block button-height">
+				<label for="mail" class="label"><b>Mail</b></label>
+				<input type="text" name="mail" id="mail" value="" class="input validate[required,custom[email]]">
+			</div>
+
+			<div class="field-block button-height">
+				<label for="twitter" class="label"><b>Twitter username</b></label>
+				<input type="text" name="twitter" id="twitter" value="" class="input">
+			</div>
+
+			<div class="field-block button-height">
+				<label for="mobile" class="label"><b>Mobile Phone</b></label>
+				<input type="text" name="mobile" id="mobile" value="" class="input">
+			</div>
+
+			<div class="field-block button-height">
+				<span class="label"><b>Address</b></span>
+				<input type="text" name="street" id="street" value="" class="input" placeholder="Street"><br>
+				<input type="text" name="zip_code" id="zip_code" value="" class="input" placeholder="Zip" size="3"> <input type="text" name="city" id="city" value="" class="input" placeholder="City"><br>
+				<select name="country" class="select">
+					<option value="USA">USA</option>
+					<option value="United Kingdom">United Kingdom</option>
+					<option value="Afghanistan">Afghanistan</option>
+					<option value="Albania">Albania</option>
+					<option value="Algeria">Algeria</option>
+					<option value="American Samoa">American Samoa</option>
+					<option value="Andorra">Andorra</option>
+					<option value="Angola">Angola</option>
+					<option value="Anguilla">Anguilla</option>
+					<option value="Antarctica">Antarctica</option>
+					<option value="Antigua and Barbuda">Antigua and Barbuda</option>
+					<option value="Argentina">Argentina</option>
+					<option value="Armenia">Armenia</option>
+					<option value="Aruba">Aruba</option>
+					<option value="Australia">Australia</option>
+					<option value="Austria">Austria</option>
+					<option value="Azerbaijan">Azerbaijan</option>
+					<option value="Bahamas">Bahamas</option>
+					<option value="Bahrain">Bahrain</option>
+					<option value="Bangladesh">Bangladesh</option>
+					<option value="Barbados">Barbados</option>
+					<option value="Belarus">Belarus</option>
+					<option value="Belgium">Belgium</option>
+					<option value="Belize">Belize</option>
+					<option value="Benin">Benin</option>
+					<option value="Bermuda">Bermuda</option>
+					<option value="Bhutan">Bhutan</option>
+					<option value="Bolivia">Bolivia</option>
+					<option value="Bosnia and Herzegovina">Bosnia and Herzegovina</option>
+					<option value="Botswana">Botswana</option>
+					<option value="Bouvet Island">Bouvet Island</option>
+					<option value="Brazil">Brazil</option>
+					<option value="British Indian Ocean Territory">British Indian Ocean Territory</option>
+					<option value="Brunei Darussalam">Brunei Darussalam</option>
+					<option value="Bulgaria">Bulgaria</option>
+					<option value="Burkina Faso">Burkina Faso</option>
+					<option value="Burundi">Burundi</option>
+					<option value="Cambodia">Cambodia</option>
+					<option value="Cameroon">Cameroon</option>
+					<option value="Canada">Canada</option>
+					<option value="Cape Verde">Cape Verde</option>
+					<option value="Cayman Islands">Cayman Islands</option>
+					<option value="Central African Republic">Central African Republic</option>
+					<option value="Chad">Chad</option>
+					<option value="Chile">Chile</option>
+					<option value="China">China</option>
+					<option value="Christmas Island">Christmas Island</option>
+					<option value="Cocos (Keeling) Islands">Cocos (Keeling) Islands</option>
+					<option value="Colombia">Colombia</option>
+					<option value="Comoros">Comoros</option>
+					<option value="Congo">Congo</option>
+					<option value="Congo, The Democratic Republic of The">Congo, The Democratic Republic of The</option>
+					<option value="Cook Islands">Cook Islands</option>
+					<option value="Costa Rica">Costa Rica</option>
+					<option value="Cote D'ivoire">Cote D'ivoire</option>
+					<option value="Croatia">Croatia</option>
+					<option value="Cuba">Cuba</option>
+					<option value="Cyprus">Cyprus</option>
+					<option value="Czech Republic">Czech Republic</option>
+					<option value="Denmark">Denmark</option>
+					<option value="Djibouti">Djibouti</option>
+					<option value="Dominica">Dominica</option>
+					<option value="Dominican Republic">Dominican Republic</option>
+					<option value="Ecuador">Ecuador</option>
+					<option value="Egypt">Egypt</option>
+					<option value="El Salvador">El Salvador</option>
+					<option value="Equatorial Guinea">Equatorial Guinea</option>
+					<option value="Eritrea">Eritrea</option>
+					<option value="Estonia">Estonia</option>
+					<option value="Ethiopia">Ethiopia</option>
+					<option value="Falkland Islands (Malvinas)">Falkland Islands (Malvinas)</option>
+					<option value="Faroe Islands">Faroe Islands</option>
+					<option value="Fiji">Fiji</option>
+					<option value="Finland">Finland</option>
+					<option value="France">France</option>
+					<option value="French Guiana">French Guiana</option>
+					<option value="French Polynesia">French Polynesia</option>
+					<option value="French Southern Territories">French Southern Territories</option>
+					<option value="Gabon">Gabon</option>
+					<option value="Gambia">Gambia</option>
+					<option value="Georgia">Georgia</option>
+					<option value="Germany">Germany</option>
+					<option value="Ghana">Ghana</option>
+					<option value="Gibraltar">Gibraltar</option>
+					<option value="Greece">Greece</option>
+					<option value="Greenland">Greenland</option>
+					<option value="Grenada">Grenada</option>
+					<option value="Guadeloupe">Guadeloupe</option>
+					<option value="Guam">Guam</option>
+					<option value="Guatemala">Guatemala</option>
+					<option value="Guinea">Guinea</option>
+					<option value="Guinea-bissau">Guinea-bissau</option>
+					<option value="Guyana">Guyana</option>
+					<option value="Haiti">Haiti</option>
+					<option value="Heard Island and Mcdonald Islands">Heard Island and Mcdonald Islands</option>
+					<option value="Holy See (Vatican City State)">Holy See (Vatican City State)</option>
+					<option value="Honduras">Honduras</option>
+					<option value="Hong Kong">Hong Kong</option>
+					<option value="Hungary">Hungary</option>
+					<option value="Iceland">Iceland</option>
+					<option value="India">India</option>
+					<option value="Indonesia">Indonesia</option>
+					<option value="Iran, Islamic Republic of">Iran, Islamic Republic of</option>
+					<option value="Iraq">Iraq</option>
+					<option value="Ireland">Ireland</option>
+					<option value="Israel">Israel</option>
+					<option value="Italy">Italy</option>
+					<option value="Jamaica">Jamaica</option>
+					<option value="Japan">Japan</option>
+					<option value="Jordan">Jordan</option>
+					<option value="Kazakhstan">Kazakhstan</option>
+					<option value="Kenya">Kenya</option>
+					<option value="Kiribati">Kiribati</option>
+					<option value="Korea, Democratic People's Republic of">Korea, Democratic People's Republic of</option>
+					<option value="Korea, Republic of">Korea, Republic of</option>
+					<option value="Kuwait">Kuwait</option>
+					<option value="Kyrgyzstan">Kyrgyzstan</option>
+					<option value="Lao People's Democratic Republic">Lao People's Democratic Republic</option>
+					<option value="Latvia">Latvia</option>
+					<option value="Lebanon">Lebanon</option>
+					<option value="Lesotho">Lesotho</option>
+					<option value="Liberia">Liberia</option>
+					<option value="Libyan Arab Jamahiriya">Libyan Arab Jamahiriya</option>
+					<option value="Liechtenstein">Liechtenstein</option>
+					<option value="Lithuania">Lithuania</option>
+					<option value="Luxembourg">Luxembourg</option>
+					<option value="Macao">Macao</option>
+					<option value="Macedonia, The Former Yugoslav Republic of">Macedonia, The Former Yugoslav Republic of</option>
+					<option value="Madagascar">Madagascar</option>
+					<option value="Malawi">Malawi</option>
+					<option value="Malaysia">Malaysia</option>
+					<option value="Maldives">Maldives</option>
+					<option value="Mali">Mali</option>
+					<option value="Malta">Malta</option>
+					<option value="Marshall Islands">Marshall Islands</option>
+					<option value="Martinique">Martinique</option>
+					<option value="Mauritania">Mauritania</option>
+					<option value="Mauritius">Mauritius</option>
+					<option value="Mayotte">Mayotte</option>
+					<option value="Mexico">Mexico</option>
+					<option value="Micronesia, Federated States of">Micronesia, Federated States of</option>
+					<option value="Moldova, Republic of">Moldova, Republic of</option>
+					<option value="Monaco">Monaco</option>
+					<option value="Mongolia">Mongolia</option>
+					<option value="Montserrat">Montserrat</option>
+					<option value="Morocco">Morocco</option>
+					<option value="Mozambique">Mozambique</option>
+					<option value="Myanmar">Myanmar</option>
+					<option value="Namibia">Namibia</option>
+					<option value="Nauru">Nauru</option>
+					<option value="Nepal">Nepal</option>
+					<option value="Netherlands">Netherlands</option>
+					<option value="Netherlands Antilles">Netherlands Antilles</option>
+					<option value="New Caledonia">New Caledonia</option>
+					<option value="New Zealand">New Zealand</option>
+					<option value="Nicaragua">Nicaragua</option>
+					<option value="Niger">Niger</option>
+					<option value="Nigeria">Nigeria</option>
+					<option value="Niue">Niue</option>
+					<option value="Norfolk Island">Norfolk Island</option>
+					<option value="Northern Mariana Islands">Northern Mariana Islands</option>
+					<option value="Norway">Norway</option>
+					<option value="Oman">Oman</option>
+					<option value="Pakistan">Pakistan</option>
+					<option value="Palau">Palau</option>
+					<option value="Palestinian Territory, Occupied">Palestinian Territory, Occupied</option>
+					<option value="Panama">Panama</option>
+					<option value="Papua New Guinea">Papua New Guinea</option>
+					<option value="Paraguay">Paraguay</option>
+					<option value="Peru">Peru</option>
+					<option value="Philippines">Philippines</option>
+					<option value="Pitcairn">Pitcairn</option>
+					<option value="Poland">Poland</option>
+					<option value="Portugal">Portugal</option>
+					<option value="Puerto Rico">Puerto Rico</option>
+					<option value="Qatar">Qatar</option>
+					<option value="Reunion">Reunion</option>
+					<option value="Romania">Romania</option>
+					<option value="Russian Federation">Russian Federation</option>
+					<option value="Rwanda">Rwanda</option>
+					<option value="Saint Helena">Saint Helena</option>
+					<option value="Saint Kitts and Nevis">Saint Kitts and Nevis</option>
+					<option value="Saint Lucia">Saint Lucia</option>
+					<option value="Saint Pierre and Miquelon">Saint Pierre and Miquelon</option>
+					<option value="Saint Vincent and The Grenadines">Saint Vincent and The Grenadines</option>
+					<option value="Samoa">Samoa</option>
+					<option value="San Marino">San Marino</option>
+					<option value="Sao Tome and Principe">Sao Tome and Principe</option>
+					<option value="Saudi Arabia">Saudi Arabia</option>
+					<option value="Senegal">Senegal</option>
+					<option value="Serbia and Montenegro">Serbia and Montenegro</option>
+					<option value="Seychelles">Seychelles</option>
+					<option value="Sierra Leone">Sierra Leone</option>
+					<option value="Singapore">Singapore</option>
+					<option value="Slovakia">Slovakia</option>
+					<option value="Slovenia">Slovenia</option>
+					<option value="Solomon Islands">Solomon Islands</option>
+					<option value="Somalia">Somalia</option>
+					<option value="South Africa">South Africa</option>
+					<option value="South Georgia and The South Sandwich Islands">South Georgia and The South Sandwich Islands</option>
+					<option value="Spain">Spain</option>
+					<option value="Sri Lanka">Sri Lanka</option>
+					<option value="Sudan">Sudan</option>
+					<option value="Suriname">Suriname</option>
+					<option value="Svalbard and Jan Mayen">Svalbard and Jan Mayen</option>
+					<option value="Swaziland">Swaziland</option>
+					<option value="Sweden">Sweden</option>
+					<option value="Switzerland">Switzerland</option>
+					<option value="Syrian Arab Republic">Syrian Arab Republic</option>
+					<option value="Taiwan, Province of China">Taiwan, Province of China</option>
+					<option value="Tajikistan">Tajikistan</option>
+					<option value="Tanzania, United Republic of">Tanzania, United Republic of</option>
+					<option value="Thailand">Thailand</option>
+					<option value="Timor-leste">Timor-leste</option>
+					<option value="Togo">Togo</option>
+					<option value="Tokelau">Tokelau</option>
+					<option value="Tonga">Tonga</option>
+					<option value="Trinidad and Tobago">Trinidad and Tobago</option>
+					<option value="Tunisia">Tunisia</option>
+					<option value="Turkey">Turkey</option>
+					<option value="Turkmenistan">Turkmenistan</option>
+					<option value="Turks and Caicos Islands">Turks and Caicos Islands</option>
+					<option value="Tuvalu">Tuvalu</option>
+					<option value="Uganda">Uganda</option>
+					<option value="Ukraine">Ukraine</option>
+					<option value="United Arab Emirates">United Arab Emirates</option>
+					<option value="United Kingdom">United Kingdom</option>
+					<option value="United States">United States</option>
+					<option value="United States Minor Outlying Islands">United States Minor Outlying Islands</option>
+					<option value="Uruguay">Uruguay</option>
+					<option value="Uzbekistan">Uzbekistan</option>
+					<option value="Vanuatu">Vanuatu</option>
+					<option value="Venezuela">Venezuela</option>
+					<option value="Viet Nam">Viet Nam</option>
+					<option value="Virgin Islands, British">Virgin Islands, British</option>
+					<option value="Virgin Islands, U.S.">Virgin Islands, U.S.</option>
+					<option value="Wallis and Futuna">Wallis and Futuna</option>
+					<option value="Western Sahara">Western Sahara</option>
+					<option value="Yemen">Yemen</option>
+					<option value="Zambia">Zambia</option>
+					<option value="Zimbabwe">Zimbabwe</option>
+				</select>
+			</div>
+
+		</fieldset>
+
+		<fieldset class="wizard-fieldset fields-list">
+
+			<legend class="legend">Preferences</legend>
+
+			<div class="field-block button-height">
+				<label for="newsletter" class="label"><b>Subscribe to newsletter</b></label>
+				<input type="checkbox" name="newsletter" id="newsletter" value="1" class="switch" checked data-text-on="YES" data-text-off="NO">
+			</div>
+
+			<div class="field-block button-height">
+				<label for="newsletter_html" class="label"><b>Newsletter format</b></label>
+				<input type="checkbox" name="newsletter_html" id="newsletter_html" value="1" class="switch wide orange-active" checked data-text-on="HTML" data-text-off="TEXT">
+				<small class="input-info">If you are not sure, use HTML</small>
+			</div>
+
+			<div class="field-block button-height">
+				<span class="label"><b>Mail notifications</b></span>
+				<input type="checkbox" name="notifications[]" id="notifications_mention" value="mention" class="checkbox"> <label for="notifications_mention">When I am mentioned</label><br>
+				<input type="checkbox" name="notifications[]" id="notifications_message" value="message" class="checkbox"> <label for="notifications_message">When someone sends me a message</label><br>
+				<input type="checkbox" name="notifications[]" id="notifications_reply" value="reply" class="checkbox"> <label for="notifications_reply">When someone replies to one of my messages</label><br>
+				<input type="checkbox" name="notifications[]" id="notifications_reviewed" value="reviewed" class="checkbox"> <label for="notifications_reviewed">When a new review is published on one of my products</label>
+			</div>
+
+			<div class="field-block button-height wizard-controls align-right">
+
+				<button type="submit" class="button glossy mid-margin-right">
+					<span class="button-icon"><span class="icon-tick"></span></span>
+					Save
+				</button>
+
+			</div>
+
+		</fieldset>
+
+	</form>
+
+	<!-- JavaScript at the bottom for fast page loading -->
+
+	<!-- Scripts -->
+	<script src="js/libs/jquery-1.7.2.min.js"></script>
+	<script src="js/setup.js"></script>
+
+	<!-- Template functions -->
+	<script src="js/developr.input.js"></script>
+	<script src="js/developr.message.js"></script>
+	<script src="js/developr.notify.js"></script>
+	<script src="js/developr.scroll.js"></script>
+	<script src="js/developr.tooltip.js"></script>
+	<script src="js/developr.wizard.js"></script>
+
+	<!-- jQuery Form Validation -->
+	<script src="js/libs/formValidator/jquery.validationEngine.js?v=1"></script>
+	<script src="js/libs/formValidator/languages/jquery.validationEngine-en.js?v=1"></script>
+
+	<script>
+
+		$(document).ready(function()
+		{
+				// Elements
+			var form = $('.wizard'),
+
+				// If layout is centered
+				centered;
+
+			// Handle resizing (mostly for debugging)
+			function handleWizardResize()
+			{
+				centerWizard(false);
+			};
+
+			// Register and first call
+			$(window).bind('normalized-resize', handleWizardResize);
+
+			/*
+			 * Center function
+			 * @param boolean animate whether or not to animate the position change
+			 * @return void
+			 */
+			function centerWizard(animate)
+			{
+				form[animate ? 'animate' : 'css']({ marginTop: Math.max(0, Math.round(($.template.viewportHeight-30-form.outerHeight())/2))+'px' });
+			};
+
+			// Initial vertical adjust
+			centerWizard(false);
+
+			// Refresh position on change step
+			form.on('wizardchange', function() { centerWizard(true); });
+
+			// Validation
+			if ($.validationEngine)
+			{
+				form.validationEngine();
+			}
+		});
+
+	</script>
+
+</body>
+</html>

@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+
+<!--[if IEMobile 7]><html class="no-js iem7 oldie"><![endif]-->
+<!--[if (IE 7)&!(IEMobile)]><html class="no-js ie7 oldie" lang="en"><![endif]-->
+<!--[if (IE 8)&!(IEMobile)]><html class="no-js ie8 oldie" lang="en"><![endif]-->
+<!--[if (IE 9)&!(IEMobile)]><html class="no-js ie9" lang="en"><![endif]-->
+<!--[if (gt IE 9)|(gt IEMobile 7)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+	<title>Developr</title>
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<!-- http://davidbcalhoun.com/2010/viewport-metatag -->
+	<meta name="HandheldFriendly" content="True">
+	<meta name="MobileOptimized" content="320">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<!-- For all browsers -->
+	<link rel="stylesheet" href="css/reset.css?v=1">
+	<link rel="stylesheet" href="css/style.css?v=1">
+	<link rel="stylesheet" href="css/colors.css?v=1">
+	<link rel="stylesheet" media="print" href="css/print.css?v=1">
+	<!-- For progressively larger displays -->
+	<link rel="stylesheet" media="only all and (min-width: 480px)" href="css/480.css?v=1">
+	<link rel="stylesheet" media="only all and (min-width: 768px)" href="css/768.css?v=1">
+	<link rel="stylesheet" media="only all and (min-width: 992px)" href="css/992.css?v=1">
+	<link rel="stylesheet" media="only all and (min-width: 1200px)" href="css/1200.css?v=1">
+	<!-- For Retina displays -->
+	<link rel="stylesheet" media="only all and (-webkit-min-device-pixel-ratio: 1.5), only screen and (-o-min-device-pixel-ratio: 3/2), only screen and (min-device-pixel-ratio: 1.5)" href="css/2x.css?v=1">
+
+	<!-- Webfonts -->
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
+
+	<!-- Additional styles -->
+	<link rel="stylesheet" href="css/styles/form.css?v=1">
+	<link rel="stylesheet" href="css/styles/modal.css?v=1">
+	<link rel="stylesheet" href="css/styles/switches.css?v=1">
+
+	<!-- JavaScript at bottom except for Modernizr -->
+	<script src="js/libs/modernizr.custom.js"></script>
+
+	<!-- For Modern Browsers -->
+	<link rel="shortcut icon" href="img/favicons/favicon.png">
+	<!-- For everything else -->
+	<link rel="shortcut icon" href="img/favicons/favicon.ico">
+	<!-- For retina screens -->
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/favicons/apple-touch-icon-retina.png">
+	<!-- For iPad 1-->
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/favicons/apple-touch-icon-ipad.png">
+	<!-- For iPhone 3G, iPod Touch and Android -->
+	<link rel="apple-touch-icon-precomposed" href="img/favicons/apple-touch-icon.png">
+
+	<!-- iOS web-app metas -->
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+	<!-- Startup image for web apps -->
+	<link rel="apple-touch-startup-image" href="img/splash/ipad-landscape.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)">
+	<link rel="apple-touch-startup-image" href="img/splash/ipad-portrait.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)">
+	<link rel="apple-touch-startup-image" href="img/splash/iphone.png" media="screen and (max-device-width: 320px)">
+
+	<!-- Microsoft clear type rendering -->
+	<meta http-equiv="cleartype" content="on">
+</head>
+
+<body class="clearfix with-menu with-shortcuts">
+
+	<!-- Prompt IE 6 users to install Chrome Frame -->
+	<!--[if lt IE 7]><p class="message red-gradient simpler">Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
+
+	<!-- Title bar -->
+	<header role="banner" id="title-bar">
+		<h2>Developr</h2>
+	</header>
+
+	<!-- Button to open/hide menu -->
+	<a href="#" id="open-menu"><span>Menu</span></a>
+
+	<!-- Button to open/hide shortcuts -->
+	<a href="#" id="open-shortcuts"><span class="icon-thumbs"></span></a>
+
+	<!-- Main content -->
+	<section role="main" id="main">
+
+		<noscript class="message black-gradient simpler">Your browser does not support JavaScript! Some features won't work as expected...</noscript>
+
+		<hgroup id="main-title" class="thin">
+			<h1>Notifications</h1>
+		</hgroup>
+
+		<div class="with-padding">
+
+			<div class="boxed margin-bottom">
+				<p>The template includes a complete and powerful notification functionality:</p>
+				<ul class="bullet-list">
+					<li>6 different positions: <b>left</b>, <b>center</b> and <b>right</b>, each on <b>top</b> or at <b>bottom</b></li>
+					<li><b>25+ options</b> to tweak every aspect of the notifications</li>
+					<li>Similar messages can be <b>grouped</b> to prevent filling the screen</li>
+					<li>The number of simultaneous messages is <b>limited</b>, postponed messages are released as soon as older messages are closed</li>
+					<li>When available (Chrome only currently), the <b>desktop notification API</b> can be used using a single option - fallback to standard notification on other browsers</li>
+				</ul>
+			</div>
+
+			<h3 class="thin underline">Test the notifications</h3>
+
+			<form method="post" action="" id="notifications-form" class="columns button-height">
+
+				<div class="six-columns twelve-columns-tablet">
+
+					<p class="inline-label">
+						<span class="label">Title</span>
+						<input type="text" name="title" id="title" class="input full-width" value="Notification title">
+					</p>
+
+					<p class="inline-label">
+						<span class="label">Message</span>
+						<input type="text" name="message" id="message" class="input full-width" value="This is a demo notification">
+					</p>
+
+					<p class="inline-label">
+						<span class="label">Icon</span>
+
+						<input type="checkbox" name="icon" id="icon" value="1" class="switch mid-margin-right" data-text-on="YES" data-text-off="NO">
+						<span class="button-group">
+							<label for="icon-position-outside" class="button green-active">
+								<input type="radio" name="icon-position" id="icon-position-outside" value="1" checked>
+								Outside
+							</label>
+							<label for="icon-position-inside" class="button green-active">
+								<input type="radio" name="icon-position" id="icon-position-inside" value="0">
+								Inside
+							</label>
+						</span>
+					</p>
+
+					<p class="inline-label">
+						<label for="system" class="label">Notification API</label>
+						<input type="checkbox" name="system" id="system" value="1" class="switch wider mid-margin-right" data-text-on="ENABLED" data-text-off="DISABLED">
+						<span class="grey">(Chrome only currently)</span>
+					</p>
+
+				</div>
+
+				<div class="six-columns twelve-columns-tablet">
+
+					<p class="inline-label">
+						<span class="label">Position</span>
+
+						<span class="button-group">
+							<label for="position-top" class="button green-active">
+								<input type="radio" name="position-vertical" id="position-top" value="top" checked>
+								Top
+							</label>
+							<label for="position-bottom" class="button green-active">
+								<input type="radio" name="position-vertical" id="position-bottom" value="bottom">
+								Bottom
+							</label>
+						</span>
+
+						<span class="button-group">
+							<label for="position-left" class="button green-active">
+								<input type="radio" name="position-horizontal" id="position-left" value="left">
+								Left
+							</label>
+							<label for="position-center" class="button green-active">
+								<input type="radio" name="position-horizontal" id="position-center" value="center">
+								Center
+							</label>
+							<label for="position-right" class="button green-active">
+								<input type="radio" name="position-horizontal" id="position-right" value="right" checked>
+								Right
+							</label>
+						</span>
+					</p>
+
+					<p class="inline-label">
+						<span class="label">Close button</span>
+
+						<span class="button-group">
+							<label for="close-none" class="button green-active">
+								<input type="radio" name="close" id="close-none" value="none">
+								None
+							</label>
+							<label for="close-always" class="button green-active">
+								<input type="radio" name="close" id="close-always" value="always">
+								Visible
+							</label>
+							<label for="close-hover" class="button green-active">
+								<input type="radio" name="close" id="close-hover" value="hover" checked>
+								On hover
+							</label>
+						</span>
+					</p>
+
+					<p class="inline-label">
+						<label for="auto-close" class="label">Auto-close</label>
+						<input type="checkbox" name="auto-close" id="auto-close" value="1" class="switch mid-margin-right" checked data-text-on="YES" data-text-off="NO">
+						<span class="grey">(after 8 seconds)</span>
+					</p>
+
+					<p class="inline-label">
+						<label for="group-similar" class="label">Group similar</label>
+						<input type="checkbox" name="group-similar" id="group-similar" value="1" class="switch" checked data-text-on="YES" data-text-off="NO">
+					</p>
+
+					<p class="inline-label">
+						<button type="submit" class="button blue-gradient">Show notification</button>
+					</p>
+
+				</div>
+
+			</form>
+
+		</div>
+
+	</section>
+	<!-- End main content -->
+
+	<!-- Side tabs shortcuts -->
+	<ul id="shortcuts" role="complementary" class="children-tooltip tooltip-right">
+		<li class="current"><a href="./" class="shortcut-dashboard" title="Dashboard">Dashboard</a></li>
+		<li><a href="inbox.html" class="shortcut-messages" title="Messages">Messages</a></li>
+		<li><a href="agenda.html" class="shortcut-agenda" title="Agenda">Agenda</a></li>
+		<li><a href="tables.html" class="shortcut-contacts" title="Contacts">Contacts</a></li>
+		<li><a href="explorer.html" class="shortcut-medias" title="Medias">Medias</a></li>
+		<li><a href="sliders.html" class="shortcut-stats" title="Stats">Stats</a></li>
+		<li><a href="form.html" class="shortcut-settings" title="Settings">Settings</a></li>
+		<li><span class="shortcut-notes" title="Notes">Notes</span></li>
+	</ul>
+
+	<!-- Sidebar/drop-down menu -->
+	<section id="menu" role="complementary">
+
+		<!-- This wrapper is used by several responsive layouts -->
+		<div id="menu-content">
+
+			<header>
+				Administrator
+			</header>
+
+			<div id="profile">
+				<img src="img/user.png" width="64" height="64" alt="User name" class="user-icon">
+				Hello
+				<span class="name">John <b>Doe</b></span>
+			</div>
+
+			<!-- By default, this section is made for 4 icons, see the doc to learn how to change this, in "basic markup explained" -->
+			<ul id="access" class="children-tooltip">
+				<li><a href="inbox.html" title="Messages"><span class="icon-inbox"></span><span class="count">2</span></a></li>
+				<li><a href="calendars.html" title="Calendar"><span class="icon-calendar"></span></a></li>
+				<li><a href="login.html" title="Profile"><span class="icon-user"></span></a></li>
+				<li class="disabled"><span class="icon-gear"></span></li>
+			</ul>
+
+			<section class="navigable">
+				<ul class="big-menu">
+					<li class="with-right-arrow">
+						<span><span class="list-count">11</span>Main styles</span>
+						<ul class="big-menu">
+							<li><a href="typography.html">Typography</a></li>
+							<li><a href="columns.html">Columns</a></li>
+							<li><a href="tables.html">Tables</a></li>
+							<li><a href="colors.html">Colors &amp; backgrounds</a></li>
+							<li><a href="icons.html">Icons</a></li>
+							<li><a href="files.html">Files &amp; Gallery</a></li>
+							<li class="with-right-arrow">
+								<span><span class="list-count">4</span>Forms &amp; buttons</span>
+								<ul class="big-menu">
+									<li><a href="buttons.html">Buttons</a></li>
+									<li><a href="form.html">Form elements</a></li>
+									<li><a href="textareas.html">Textareas &amp; WYSIWYG</a></li>
+									<li><a href="form-layouts.html">Form layouts</a></li>
+									<li><a href="wizard.html">Wizard</a></li>
+								</ul>
+							</li>
+							<li class="with-right-arrow">
+								<span><span class="list-count">2</span>Agenda &amp; Calendars</span>
+								<ul class="big-menu">
+									<li><a href="agenda.html">Agenda</a></li>
+									<li><a href="calendars.html">Calendars</a></li>
+								</ul>
+							</li>
+							<li><a href="blocks.html">Blocks &amp; infos</a></li>
+						</ul>
+					</li>
+					<li class="with-right-arrow">
+						<span><span class="list-count">8</span>Main features</span>
+						<ul class="big-menu">
+							<li><a href="auto-setup.html">Automatic setup</a></li>
+							<li><a href="responsive.html">Responsiveness</a></li>
+							<li><a href="tabs.html">Tabs</a></li>
+							<li><a href="sliders.html">Slider &amp; progress</a></li>
+							<li><a href="modals.html">Modal windows</a></li>
+							<li class="with-right-arrow">
+								<span><span class="list-count">3</span>Messages &amp; notifications</span>
+								<ul class="big-menu">
+									<li><a href="messages.html">Messages</a></li>
+									<li><a href="notifications.html" class="current navigable-current">Notifications</a></li>
+									<li><a href="tooltips.html">Tooltips</a></li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+					<li class="with-right-arrow">
+						<a href="ajax-demo/submenu.html" class="navigable-ajax" title="Menu title">With ajax sub-menu</a>
+					</li>
+				</ul>
+			</section>
+
+			<ul class="unstyled-list">
+				<li class="title-menu">Today's event</li>
+				<li>
+					<ul class="calendar-menu">
+						<li>
+							<a href="#" title="See event">
+								<time datetime="2011-02-24"><b>24</b> Feb</time>
+								<small class="green">10:30</small>
+								Event's description
+							</a>
+						</li>
+					</ul>
+				</li>
+				<li class="title-menu">New messages</li>
+				<li>
+					<ul class="message-menu">
+						<li>
+							<span class="message-status">
+								<a href="#" class="starred" title="Starred">Starred</a>
+								<a href="#" class="new-message" title="Mark as read">New</a>
+							</span>
+							<span class="message-info">
+								<span class="blue">17:12</span>
+								<a href="#" class="attach" title="Download attachment">Attachment</a>
+							</span>
+							<a href="#" title="Read message">
+								<strong class="blue">John Doe</strong><br>
+								<strong>Mail subject</strong>
+							</a>
+						</li>
+						<li>
+							<a href="#" title="Read message">
+								<span class="message-status">
+									<span class="unstarred">Not starred</span>
+									<span class="new-message">New</span>
+								</span>
+								<span class="message-info">
+									<span class="blue">15:47</span>
+								</span>
+								<strong class="blue">May Starck</strong><br>
+								<strong>Mail subject a bit longer</strong>
+							</a>
+						</li>
+						<li>
+							<span class="message-status">
+								<span class="unstarred">Not starred</span>
+							</span>
+							<span class="message-info">
+								<span class="blue">15:12</span>
+							</span>
+							<strong class="blue">May Starck</strong><br>
+							Read message
+						</li>
+					</ul>
+				</li>
+			</ul>
+
+		</div>
+		<!-- End content wrapper -->
+
+		<!-- This is optional -->
+		<footer id="menu-footer">
+			<p class="button-height">
+				<input type="checkbox" name="auto-refresh" id="auto-refresh" checked="checked" class="switch float-right">
+				<label for="auto-refresh">Auto-refresh</label>
+			</p>
+		</footer>
+
+	</section>
+	<!-- End sidebar/drop-down menu -->
+
+	<!-- JavaScript at the bottom for fast page loading -->
+
+	<!-- Scripts -->
+	<script src="js/libs/jquery-1.7.2.min.js"></script>
+	<script src="js/setup.js"></script>
+
+	<!-- Template functions -->
+	<script src="js/developr.input.js"></script>
+	<script src="js/developr.modal.js"></script>
+	<script src="js/developr.navigable.js"></script>
+	<script src="js/developr.notify.js"></script>
+	<script src="js/developr.scroll.js"></script>
+	<script src="js/developr.tooltip.js"></script>
+
+	<script>
+
+		// Call template init (optional, but faster if called manually)
+		$.template.init();
+
+		// Set notifications if needed
+		$('#system').change(function(event)
+		{
+			if (this.checked)
+			{
+				if (notify.hasNotificationAPI())
+				{
+					if (!notify.isNotificationPermissionSet())
+					{
+						notify.showNotificationPermission('Your browser supports desktop notification, click here to enable them.', function()
+						{
+							// Confirmation message
+							if (notify.hasNotificationPermission())
+							{
+								notify('Notifications API enabled!', 'You can now see notifications even when the application is in background', {
+									icon: 'img/demo/icon.png',
+									system: true
+								});
+							}
+							else
+							{
+								notify('Notifications API disabled!', 'Desktop notifications will not be used.', {
+									icon: 'img/demo/icon.png'
+								});
+							}
+						});
+					}
+				}
+				else
+				{
+					$.modal.alert('Your browser does not support the notification API');
+				}
+			}
+		});
+
+		// Messages form
+		$('#notifications-form').submit(function(event)
+		{
+			var positionHorizontal, positionVertical,
+				closeButton, showCloseOnHover;
+
+			event.preventDefault();
+
+			// Positions
+			if ($('#position-top').prop('checked'))
+			{
+				positionVertical = 'top';
+			}
+			else
+			{
+				positionVertical = 'bottom';
+			}
+			if ($('#position-left').prop('checked'))
+			{
+				positionHorizontal = 'left';
+			}
+			else if ($('#position-center').prop('checked'))
+			{
+				positionHorizontal = 'center';
+			}
+			else
+			{
+				positionHorizontal = 'right';
+			}
+
+			// Close button
+			if ($('#close-none').prop('checked'))
+			{
+				closeButton = false;
+				showCloseOnHover = false;
+			}
+			else if ($('#close-always').prop('checked'))
+			{
+				closeButton = true;
+				showCloseOnHover = false;
+			}
+			else
+			{
+				closeButton = true;
+				showCloseOnHover = true;
+			}
+
+			// Gather options
+			notify($('#title').val(), $('#message').val(), {
+				system:				$('#system').prop('checked'),
+				vPos:				positionVertical,
+				hPos:				positionHorizontal,
+				autoClose:			$('#auto-close').prop('checked'),
+				icon:				$('#icon').prop('checked') ? 'img/demo/icon.png' : '',
+				iconOutside:		$('#icon-position-outside').prop('checked'),
+				closeButton:		closeButton,
+				showCloseOnHover:	showCloseOnHover,
+				groupSimilar:		$('#group-similar').prop('checked')
+			});
+		});
+
+	</script>
+</body>
+</html>
