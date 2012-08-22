@@ -37,11 +37,13 @@
 	.with-menu #title-bar {
 		padding-right: 10px;
 	}
-	#title-bar ~ #menu,
-	#title-bar ~ #shortcuts {
-	/*#title-bar ~ #menu {*/
+	#title-bar ~ #menu {
 		top: 35px;
 	}
+	/*#title-bar ~ #shortcuts {
+	/*#title-bar ~ #menu {
+		top: 4px;
+	}*/
 	
 body.with-menu #main {
 	margin-right: 260px;

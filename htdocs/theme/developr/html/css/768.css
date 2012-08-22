@@ -140,25 +140,26 @@ h2 {
 		margin-top: 40px;
 	}
 	#title-bar ~ #shortcuts {
-		top: 40px;
+		top: 4px;
 	}
 
 #open-shortcuts {
-	display: none;
+	/*display: none;*/
+	position: fixed;
 }
 
 #open-menu {
 	position: fixed;
 }
 
-.with-shortcuts #main {
+/*.with-shortcuts #main {
 	margin-left: 68px;
 }
 .with-shortcuts.reversed #main {
 	margin-left: 0;
 	margin-right: 68px;
-}
-#shortcuts {
+}*/
+/*#shortcuts {
 	position: fixed;
 	display: block;
 	z-index: 1;
@@ -250,7 +251,7 @@ h2 {
 				#shortcuts > li > a:before {
 					background-color: white;
 					/*background-image: url(../img/standard/shortcuts.png);*/
-					right: 0;
+					/*right: 0;
 					width: 64px;
 					-webkit-border-radius: 7px 0 0 7px;
 					-moz-border-radius: 7px 0 0 7px;
@@ -349,7 +350,7 @@ h2 {
 				a.shortcut-stats:before		{ background-position: -70px -355px; }
 				a.shortcut-settings:before	{ background-position: -70px -425px; }
 				a.shortcut-notes:before		{ background-position: -70px -495px; }
-
+*/
 #menu {
 	position: fixed;
 	display: none;
