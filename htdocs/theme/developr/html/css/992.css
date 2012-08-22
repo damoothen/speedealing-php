@@ -37,9 +37,9 @@
 	.with-menu #title-bar {
 		padding-right: 10px;
 	}
-	/*#title-bar ~ #menu,
-	#title-bar ~ #shortcuts {*/
-	#title-bar ~ #menu {
+	#title-bar ~ #menu,
+	#title-bar ~ #shortcuts {
+	/*#title-bar ~ #menu {*/
 		top: 35px;
 	}
 	

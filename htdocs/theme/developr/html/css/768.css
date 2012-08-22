@@ -139,9 +139,9 @@ h2 {
 	#title-bar ~ #main {
 		margin-top: 40px;
 	}
-	/*#title-bar ~ #shortcuts {
+	#title-bar ~ #shortcuts {
 		top: 40px;
-	}*/
+	}
 
 #open-shortcuts {
 	display: none;
@@ -159,7 +159,7 @@ h2 {
 	margin-right: 68px;
 }
 #shortcuts {
-	/*position: fixed;*/
+	position: fixed;
 	display: block;
 	z-index: 1;
 	top: 0;
@@ -249,7 +249,7 @@ h2 {
 				}
 				#shortcuts > li > a:before {
 					background-color: white;
-					background-image: url(../img/standard/shortcuts.png);
+					/*background-image: url(../img/standard/shortcuts.png);*/
 					right: 0;
 					width: 64px;
 					-webkit-border-radius: 7px 0 0 7px;

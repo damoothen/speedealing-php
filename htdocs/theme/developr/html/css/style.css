@@ -2336,7 +2336,7 @@ li.message-menu {
 		#shortcuts > li > a,
 		#shortcuts > li > span {
 			display: block;
-			background-image: url(../img/standard/shortcuts.png);
+			/*background-image: url(../img/standard/shortcuts.png);*/
 			background-repeat: no-repeat;
 			width: 70px;
 			height: 5px;

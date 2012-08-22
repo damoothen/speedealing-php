@@ -239,6 +239,9 @@ if (!defined('NOREQUIREAJAX') && $conf->use_javascript_ajax)
 
 
 
+
+
+
 	
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
@@ -1038,7 +1041,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 				print '<script type="text/javascript" src="includes/lib/validate/jquery.validate.min.js"></script>';
 				print '<script type="text/javascript" src="includes/lib/validate/localization/messages_' . substr($langs->getDefaultLang(), 0, 2) . '.js"></script>'; //localization for validation plugin
 				//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/js/jquery.list.min.js"></script>';
-				print '<script type="text/javascript" src="includes/js/pertho.js"></script>';
+				//print '<script type="text/javascript" src="includes/js/pertho.js"></script>';
 				print '<script type="text/javascript" src="includes/js/jquery.rwd-table.js"></script>';
 				// END THEME
 
@@ -1101,11 +1104,11 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 				print '<![endif]-->';
 
 				// For new theme
-				print '<script>
-		$(document).ready(function() {
-			prth_common.init();
-			});
-		</script>';
+				/* print '<script>
+				  $(document).ready(function() {
+				  prth_common.init();
+				  });
+				  </script>'; */
 
 				// Output module javascript
 				if (is_array($arrayofjs)) {
@@ -1161,39 +1164,71 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 			include_once(DOL_DOCUMENT_ROOT . "/core/menus/standard/" . $top_menu);
 		}
 		?>
+
 		<!-- Side tabs shortcuts -->
 		<style type="text/css">
+			a.s_dashb, span.s_dashb {
+				background-image: url(/speedealing/theme/eldy/img/modules/s_map.png);
+			}
 			a.s_dashb::before {
-				background-image: url(theme/eldy/img/modules/s_map.png) !important;
+				background-image: url(/speedealing/theme/eldy/img/modules/s_map.png);
 			}
-			/*a.s_dashb, span.s_dashb {
-				background-image: url(theme/eldy/img/modules/s_map.png) !important;
-			}*/
+			a.s_agenda, span.s_agenda {
+				background-image: url(/speedealing/theme/eldy/img/modules/s_agenda.png) !important;
+			}
 			a.s_agenda::before {
-				background-image: url(theme/eldy/img/modules/s_agenda.png) !important;
+				background-image: url(/speedealing/theme/eldy/img/modules/s_agenda.png);
 			}
-			/*a.s_agenda, span.s_agenda {
-				background-image: url(theme/eldy/img/modules/s_agenda.png) !important;
-			}*/
+			a.s_mail, span.s_mail {
+				background-image: url(/speedealing/theme/eldy/img/modules/s_mail.png);
+			}
 			a.s_mail::before {
-				background-image: url(theme/eldy/img/modules/s_mail.png) !important;
+				background-image: url(/speedealing/theme/eldy/img/modules/s_mail.png);
 			}
-			/*a.s_mail, span.s_mail {
-				background-image: url(theme/eldy/img/modules/s_mail.png) !important;
-			}*/
+			a.s_contacts, span.s_contacts {
+				background-image: url(/speedealing/theme/eldy/img/modules/s_contacts.png);
+			}
+			a.s_contacts::before {
+				background-image: url(/speedealing/theme/eldy/img/modules/s_contacts.png);
+			}
+			a.s_stats, span.s_stats {
+				background-image: url(/speedealing/theme/eldy/img/modules/s_stats.png);
+			}
+			a.s_stats::before {
+				background-image: url(/speedealing/theme/eldy/img/modules/s_stats.png);
+			}
+			a.s_media, span.s_media {
+				background-image: url(/speedealing/theme/eldy/img/modules/s_media.png);
+			}
+			a.s_media::before {
+				background-image: url(/speedealing/theme/eldy/img/modules/s_media.png);
+			}
+			a.s_settings, span.s_settings {
+				background-image: url(/speedealing/theme/eldy/img/modules/s_settings.png);
+			}
+			a.s_settings::before {
+				background-image: url(/speedealing/theme/eldy/img/modules/s_settings.png);
+			}
+			a.s_notes, span.s_notes {
+				background-image: url(/speedealing/theme/eldy/img/modules/s_notes.png);
+			}
+			a.s_notes::before {
+				background-image: url(/speedealing/theme/eldy/img/modules/s_notes.png);
+			}
 		</style>
 		<ul id="shortcuts" role="complementary" class="children-tooltip tooltip-right">
 			<li class="current"><a href="./" class="shortcut-dashboard s_dashb" title="Dashboard">Dashboard</a></li>
-			<li><a href="inbox.html" class="shortcut-dashboard s_mail" style="background-image: url(theme/eldy/img/modules/s_mail.png);" title="Messages">Messages</a></li>
-			<li><a href="agenda.html" class="shortcut-dashboard s_agenda" style="background-image: url(theme/eldy/img/modules/s_agenda.png);" title="Agenda">Agenda</a></li>
-			<li><a href="tables.html" class="shortcut-contacts" title="Contacts">Contacts</a></li>
-			<li><a href="explorer.html" class="shortcut-medias" title="Medias">Medias</a></li>
-			<li><a href="sliders.html" class="shortcut-stats" title="Stats">Stats</a></li>
-			<li><a href="form.html" class="shortcut-settings" title="Settings">Settings</a></li>
-			<li><span class="shortcut-notes" title="Notes">Notes</span></li>
+			<li><a href="inbox.html" class="shortcut-dashboard s_mail" title="Messages">Messages</a></li>
+			<li><a href="agenda.html" class="shortcut-dashboard s_agenda" title="Agenda">Agenda</a></li>
+			<li><a href="tables.html" class="shortcut-dashboard s_contacts" title="Contacts">Contacts</a></li>
+			<li><a href="explorer.html" class="shortcut-dashboard s_media" title="Medias">Medias</a></li>
+			<li><a href="sliders.html" class="shortcut-dashboard s_stats" title="Stats">Stats</a></li>
+			<li><a href="form.html" class="shortcut-dashboard s_settings" title="Settings">Settings</a></li>
+			<li><span class="shortcut-dashboard s_notes" title="Notes">Notes</span></li>
 		</ul>
-		<?php
-		?> <!-- Start top horizontal menu ' . $top_menu . ' -->
+
+		<?php ?> <!-- Start top horizontal menu ' . $top_menu . ' -->
+
 	<?php if (!defined('NOHEADER')) : ?>
 			<header>
 				<div class="container head_s_a">
@@ -1300,7 +1335,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 									?>
 								</div>
 							</div>
-							<script>
+							<!--<script>
 								$(document).ready(function() {
 									if(!jQuery.browser.mobile) {
 										//* main navigatin
@@ -1310,7 +1345,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 										prth_main_nav.mobile_nav();
 									}
 								});
-							</script>
+							</script>-->
 							<!--End Menu-->
 			<?php endif; ?>
 
@@ -1555,97 +1590,97 @@ function left_menu($menu_array_before, $helppagename = '', $moresearchform = '',
 
 	// Left column
 	print '<!--Begin left area - menu ' . $left_menu . '-->' . "\n";
+	/*
+	  print '<div class = "row">' . "\n";
+	  print '<div class = "three columns hide-on-phones">' . "\n";
 
-	print '<div class = "row">' . "\n";
-	print '<div class = "three columns hide-on-phones">' . "\n";
+	  //$menuleft=new MenuLeft($db,$menu_array_before,$menu_array_after);
+	  //$menuleft->showmenu(); // output menu_array and menu found in database
+	  // Show other forms
+	  if ($searchform) {
+	  print "\n";
+	  print "<!-- Begin SearchForm -->\n";
+	  print '<div id = "blockvmenusearch" class = "blockvmenusearch">' . "\n";
+	  print $searchform;
+	  print '</div>' . "\n";
+	  print "<!-- End SearchForm -->\n";
+	  }
 
-	//$menuleft=new MenuLeft($db,$menu_array_before,$menu_array_after);
-	//$menuleft->showmenu(); // output menu_array and menu found in database
-	// Show other forms
-	if ($searchform) {
-		print "\n";
-		print "<!-- Begin SearchForm -->\n";
-		print '<div id = "blockvmenusearch" class = "blockvmenusearch">' . "\n";
-		print $searchform;
-		print '</div>' . "\n";
-		print "<!-- End SearchForm -->\n";
-	}
+	  // More search form
+	  if ($moresearchform) {
+	  print $moresearchform;
+	  }
 
-	// More search form
-	if ($moresearchform) {
-		print $moresearchform;
-	}
+	  // Bookmarks
+	  if ($bookmarks) {
+	  print "\n";
+	  print "<!-- Begin Bookmarks -->\n";
+	  print '<div id = "blockvmenubookmarks" class = "blockvmenubookmarks">' . "\n";
+	  print $bookmarks;
+	  print '</div>' . "\n";
+	  print "<!-- End Bookmarks -->\n";
+	  }
 
-	// Bookmarks
-	if ($bookmarks) {
-		print "\n";
-		print "<!-- Begin Bookmarks -->\n";
-		print '<div id = "blockvmenubookmarks" class = "blockvmenubookmarks">' . "\n";
-		print $bookmarks;
-		print '</div>' . "\n";
-		print "<!-- End Bookmarks -->\n";
-	}
+	  // Link to Speedealing wiki pages
+	  if ($helppagename && empty($conf->global->MAIN_HELP_DISABLELINK)) {
+	  $langs->load("help");
 
-	// Link to Speedealing wiki pages
-	if ($helppagename && empty($conf->global->MAIN_HELP_DISABLELINK)) {
-		$langs->load("help");
+	  $helpbaseurl = '';
+	  $helppage = '';
+	  $mode = '';
 
-		$helpbaseurl = '';
-		$helppage = '';
-		$mode = '';
+	  // Get helpbaseurl, helppage and mode from helppagename and langs
+	  $arrayres = getHelpParamFor($helppagename, $langs);
+	  $helpbaseurl = $arrayres['helpbaseurl'];
+	  $helppage = $arrayres['helppage'];
+	  $mode = $arrayres['mode'];
 
-		// Get helpbaseurl, helppage and mode from helppagename and langs
-		$arrayres = getHelpParamFor($helppagename, $langs);
-		$helpbaseurl = $arrayres['helpbaseurl'];
-		$helppage = $arrayres['helppage'];
-		$mode = $arrayres['mode'];
+	  // Link to help pages
+	  if ($helpbaseurl && $helppage) {
+	  print '<div id = "blockvmenuhelp" class = "blockvmenuhelp">';
+	  print '<a class = "help" target = "_blank" title = "' . $langs->trans($mode == 'wiki' ? 'GoToWikiHelpPage' : 'GoToHelpPage');
+	  if ($mode == 'wiki')
+	  print ' - ' . $langs->trans("PageWiki") . ' &quot;' . dol_escape_htmltag(strtr($helppage, '_', ' ')) . '&quot;';
+	  print '" href = "';
+	  print sprintf($helpbaseurl, urlencode(html_entity_decode($helppage)));
+	  print '">';
+	  print img_picto('', 'helpdoc') . ' ';
+	  print $langs->trans($mode == 'wiki' ? 'OnlineHelp' : 'Help');
+	  //if ($mode == 'wiki') print ' ('.dol_trunc(strtr($helppage,'_',' '),8).')';
+	  print '</a>';
+	  print '</div>';
+	  }
+	  }
 
-		// Link to help pages
-		if ($helpbaseurl && $helppage) {
-			print '<div id = "blockvmenuhelp" class = "blockvmenuhelp">';
-			print '<a class = "help" target = "_blank" title = "' . $langs->trans($mode == 'wiki' ? 'GoToWikiHelpPage' : 'GoToHelpPage');
-			if ($mode == 'wiki')
-				print ' - ' . $langs->trans("PageWiki") . ' &quot;' . dol_escape_htmltag(strtr($helppage, '_', ' ')) . '&quot;';
-			print '" href = "';
-			print sprintf($helpbaseurl, urlencode(html_entity_decode($helppage)));
-			print '">';
-			print img_picto('', 'helpdoc') . ' ';
-			print $langs->trans($mode == 'wiki' ? 'OnlineHelp' : 'Help');
-			//if ($mode == 'wiki') print ' ('.dol_trunc(strtr($helppage,'_',' '),8).')';
-			print '</a>';
-			print '</div>';
-		}
-	}
+	  // Link to bugtrack
+	  if (!empty($conf->global->MAIN_SHOW_BUGTRACK_LINK)) {
+	  $bugbaseurl = 'http://savannah.nongnu.org/bugs/?';
+	  $bugbaseurl.='func=additem&group=dolibarr&privacy=1&';
+	  $bugbaseurl.="&details=";
+	  $bugbaseurl.=urlencode("\n\n\n\n\n-------------\n");
+	  $bugbaseurl.=urlencode($langs->trans("Version") . ": " . DOL_VERSION . "\n");
+	  $bugbaseurl.=urlencode($langs->trans("Server") . ": " . $_SERVER["SERVER_SOFTWARE"] . "\n");
+	  $bugbaseurl.=urlencode($langs->trans("Url") . ": " . $_SERVER["REQUEST_URI"] . "\n");
+	  print '<div class="help"><a class="help" target="_blank" href="' . $bugbaseurl . '">' . $langs->trans("FindBug") . '</a></div>';
+	  }
+	  print "\n";
 
-	// Link to bugtrack
-	if (!empty($conf->global->MAIN_SHOW_BUGTRACK_LINK)) {
-		$bugbaseurl = 'http://savannah.nongnu.org/bugs/?';
-		$bugbaseurl.='func=additem&group=dolibarr&privacy=1&';
-		$bugbaseurl.="&details=";
-		$bugbaseurl.=urlencode("\n\n\n\n\n-------------\n");
-		$bugbaseurl.=urlencode($langs->trans("Version") . ": " . DOL_VERSION . "\n");
-		$bugbaseurl.=urlencode($langs->trans("Server") . ": " . $_SERVER["SERVER_SOFTWARE"] . "\n");
-		$bugbaseurl.=urlencode($langs->trans("Url") . ": " . $_SERVER["REQUEST_URI"] . "\n");
-		print '<div class="help"><a class="help" target="_blank" href="' . $bugbaseurl . '">' . $langs->trans("FindBug") . '</a></div>';
-	}
-	print "\n";
+	  print "</div>\n";
+	  print "<!-- End left vertical menu -->\n";
 
-	print "</div>\n";
-	print "<!-- End left vertical menu -->\n";
+	  print "\n";
 
-	print "\n";
+	  // Execute hook printLeftBlock
+	  $parameters = array();
+	  $leftblock = $hookmanager->executeHooks('printLeftBlock', $parameters); // Note that $action and $object may have been modified by some hooks
+	  print $leftblock;
 
-	// Execute hook printLeftBlock
-	$parameters = array();
-	$leftblock = $hookmanager->executeHooks('printLeftBlock', $parameters); // Note that $action and $object may have been modified by some hooks
-	print $leftblock;
+	  //print '</td>';
 
-	//print '</td>';
-
-	print "\n";
-	print '<!-- End of left area -->' . "\n";
-	print "\n";
-	print '<!-- Begin right area -->' . "\n";
+	  print "\n";
+	  print '<!-- End of left area -->' . "\n";
+	  print "\n";
+	  print '<!-- Begin right area -->' . "\n"; */
 }
 
 /**
@@ -1766,9 +1801,15 @@ function llxFooter($foot = '') {
 	<?php if (!defined('NOHEADER')) : ?>
 		<script src="theme/developr/html/js/setup.js"></script>
 
+		<script src="theme/developr/html/js/developr.navigable.js"></script>
 		<script src="theme/developr/html/js/developr.scroll.js"></script>
 
-		<footer class="container" id="footer">
+		<script src="theme/developr/html/js/developr.tabs.js"></script>		<!-- Must be loaded last -->
+
+		<!-- Tinycon -->
+		<script src="theme/developr/html/js/libs/tinycon.min.js"></script>
+
+		<!--<footer class="container" id="footer">
 			<div class="row">
 				<div class="twelve columns">
 					Copyright &copy; 2012 speedealing.com - tzd-themes.com
@@ -1778,7 +1819,7 @@ function llxFooter($foot = '') {
 		<div class="sw_width">
 			<img class="sw_full" title="switch to full width" alt="" src="theme/blank.gif" />
 			<img style="display:none" class="sw_fixed" title="switch to fixed width (980px)" alt="" src="theme/blank.gif" />
-		</div>
+		</div>-->
 		<?php
 		printCommonFooter();
 		?>
