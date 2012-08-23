@@ -1510,10 +1510,13 @@ function main_area($title = '') {
 
 	if (!empty($conf->global->MAIN_ONLY_LOGIN_ALLOWED))
 		print info_admin($langs->trans("WarningYouAreInMaintenanceMode", $conf->global->MAIN_ONLY_LOGIN_ALLOWED));
+	
+	$now = dol_now();
+	
 	?>
 	<hgroup id="main-title" class="thin">
 		<h1>Dashboard</h1>
-		<h2>nov <strong>10</strong></h2>
+		<h2><?php echo strtolower($langs->trans(date('F',$now)));?> <strong><?php echo date('d',$now);?></strong></h2>
 	</hgroup>
 	<?php
 	
