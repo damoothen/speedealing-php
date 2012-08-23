@@ -448,7 +448,7 @@ abstract class nosqlDocument extends CommonObject {
 		<?php endif; ?>
 						"aLengthMenu": [[5, 10, 25, 50, 100],[5, 10, 25, 50, 100]],
 						"bProcessing": true,
-						"bJQueryUI": true,
+						"bJQueryUI": false,
 						"bAutoWidth": false,
 						/*"sScrollY": "500px",
 						"oScroller": {
@@ -462,7 +462,7 @@ abstract class nosqlDocument extends CommonObject {
 						"bDeferRender": true,
 						"oLanguage": { "sUrl": "<?php echo DOL_URL_ROOT . '/includes/jquery/plugins/datatables/langs/' . ($langs->defaultlang ? $langs->defaultlang : "en_US") . ".txt"; ?>"},
 						/*$obj->sDom = '<\"top\"Tflpi<\"clear\">>rt<\"bottom\"pi<\"clear\">>';*/
-						/*$obj->sPaginationType = 'full_numbers';*/
+						"sPaginationType": 'full_numbers',
 						/*$obj->sDom = 'TC<\"clear\">lfrtip';*/
 						"oTableTools": { "sSwfPath": "<?php echo DOL_URL_ROOT . '/includes/jquery/plugins/datatables/extras/TableTools/media/swf/copy_csv_xls.swf'; ?>"},
 						//if($obj->oTableTools->aButtons==null)
@@ -479,7 +479,8 @@ abstract class nosqlDocument extends CommonObject {
 							//"sDom": "Cl<fr>t<\"clear\"rtip>",
 							"sDom": "<?php echo $obj->sDom; ?>",
 		<?php else : ?>
-							"sDom": "C<\"clear\"fr>lt<\"clear\"rtip>",
+							//"sDom": "C<\"clear\"fr>lt<\"clear\"rtip>",
+							"sDom": "<\"dataTables_header\"lfr>t<\"dataTables_footer\"ip>",
 							//"sDom": "C<\"clear\"fr>tiS",
 							//"sDom": "TC<\"clear\"fr>lt<\"clear\"rtip>",
 		<?php endif; ?>
@@ -514,7 +515,7 @@ abstract class nosqlDocument extends CommonObject {
 													"<?php echo $aRow->mDataProp; ?>",
 				<?php endforeach; ?>
 											];
-											$("td.edit", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
+											$("td.dol_edit", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
 												"callback": function( sValue, y ) {
 													oTable.fnDraw();
 													//oTable.fnReloadAjax();
@@ -529,7 +530,7 @@ abstract class nosqlDocument extends CommonObject {
 												"placeholder" : ""
 																																																																																																																																																																																                
 											} );
-											$("td.select", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
+											$("td.dol_select", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
 												"callback": function( sValue, y ) {
 													oTable.fnDraw();
 													//oTable.fnReloadAjax();

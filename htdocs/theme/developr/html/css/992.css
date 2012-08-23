@@ -34,9 +34,9 @@
 #title-bar ~ #main {
 	margin-top: 35px;
 	}
-	.with-menu #title-bar {
+	/*.with-menu #title-bar {
 		padding-right: 10px;
-	}
+	}*/
 	#title-bar ~ #menu {
 		top: 35px;
 	}

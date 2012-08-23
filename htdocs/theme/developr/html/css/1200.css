@@ -20,9 +20,9 @@
 .columns:last-child {
 	margin-bottom: -25px;
 }
-.columns > div {
+/*.columns > div {
 	margin-bottom: 25px;
-}
+}*/
 
 /* These styles define the columns size. They must be redefined for each responsive size */
 .column,

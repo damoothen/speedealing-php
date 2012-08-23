@@ -351,10 +351,10 @@ table.dataTable th:active {
 	vertical-align: 0.15em;
 	}
 	.sorting_asc:before {
-		content: '▼';
+		content: '▲';
 	}
 	.sorting_desc:before {
-		content: '▲';
+		content: '▼';
 	}
 
 

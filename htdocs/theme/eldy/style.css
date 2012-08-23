@@ -191,7 +191,7 @@
 ----------------------------------------- */
 
 	/* header */
-		header {min-height: 82px;padding-bottom:30px}
+		/*header {min-height: 82px;padding-bottom:30px}*/
 		header .head_s_a {padding-top:10px;border-top:5px solid #949494;border-top:5px solid rgba(0,0,0,.4)}
 		#logo img {padding:20px 20px 0 0px}
 		header .head_s_a .row {position:relative}
@@ -249,11 +249,11 @@
 
 	/* search top*/
 		#search_box {position:relative}
-		#search_box input[type="text"] {font-size:13px;margin-top:27px;background: url(img/mag_glass.png) no-repeat 10px center #fff;border: 1px solid #d1d1d1;color: #888;width: 100px;padding: 6px 15px 6px 35px;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px;width:120px;box-shadow: 2px 2px 0px rgba(0,0,0,.08)}
+		#search_box input[type="text"] {font-size:13px;/*margin-top:27px;*/background: url(img/mag_glass.png) no-repeat 10px center #fff;border: 1px solid #d1d1d1;color: #888;padding: 4px 15px 4px 35px;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px;width:150px;box-shadow: 2px 2px 0px rgba(0,0,0,.08)}
 		#search_box input[type="text"]:focus {color:#222}
 
 	/* autocomplete */
-		.ac_results {padding: 0px;background-color: Window;overflow-x: hidden;box-shadow:0 5px 12px #ccc;z-index:9999}
+		.ac_results {padding: 0px;background-color: Window;overflow-x: hidden;box-shadow:0 5px 12px #ccc;z-index:9999;}
 		.ac_results ul {width: 100%;list-style-position: outside;list-style: none;padding: 0;margin: 0;overflow:hidden !important}
 		.ac_results li {margin: 0px;padding: 2px 5px;cursor: pointer;display: block;width: 100%;font-size: 12px;overflow: hidden}
 		.ac_results strong {color:#fe6001}
@@ -770,13 +770,13 @@
 	/* Mobile Landscape Size to Tablet Portrait (devices and browsers) */
 		@media only screen and (min-width: 480px) and (max-width: 767px) {
 			.ntf_bar {padding-left:20px}
-			#search_box input[type="text"] {width:122px}
+			#search_box input[type="text"] {width:240px}
 		}
 
 	/* Mobile Portrait Size to Mobile Landscape Size (devices and browsers) */
 		@media only screen and (max-width: 479px) {
             #logo img {padding:16px 0 0 5px}
-			#search_box input[type="text"] {width:82px}
+			#search_box input[type="text"] {width:150px}
 			.user_box {padding:10px 10px 5px;float:none;margin-top:0}
 			.user_box .user_info {overflow:hidden;float:left;padding:0}
 			.user_box .user_info {max-width:106px;border:none !important;margin:0 !important;padding-top:2px}

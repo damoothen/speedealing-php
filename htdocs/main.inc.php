@@ -242,6 +242,7 @@ if (!defined('NOREQUIREAJAX') && $conf->use_javascript_ajax)
 
 
 
+
 	
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
@@ -724,9 +725,9 @@ if (!function_exists("llxHeader")) {
 		top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss); // Show html headers
 
 		if (!defined('NOHEADER'))
-			print '<body class="clearfix with-menu with-shortcuts">';
+			print '<body class="clearfix with-menu with-shortcuts ptrn_a grdnt_b mhover_c fullW">';
 		else
-			print '<body style="background: white;">';
+			print '<body class="fullW" style="background: white;">';
 
 
 		// Displays title
@@ -856,6 +857,12 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 				<link rel="stylesheet" href="theme/developr/html/css/styles/modal.css?v=1">
 				<link rel="stylesheet" href="theme/developr/html/css/styles/progress-slider.css?v=1">
 				<link rel="stylesheet" href="theme/developr/html/css/styles/switches.css?v=1">
+				
+				<!-- Additional styles -->
+				<link rel="stylesheet" href="theme/developr/html/css/styles/table.css?v=1">
+
+				<!-- DataTables -->
+				<link rel="stylesheet" href="theme/developr/html/js/libs/DataTables/jquery.dataTables.css?v=1">
 
 				<!-- JavaScript at bottom except for Modernizr -->
 				<script src="theme/developr/html/js/libs/modernizr.custom.js"></script>
@@ -891,8 +898,6 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 				<!-- These custom tasks are examples, you need to edit them to show actual pages -->
 				<meta name="msapplication-task" content="name=Agenda;action-uri=http://www.display-inline.fr/demo/developr/html/agenda.html;icon-uri=http://www.display-inline.fr/demo/developr/html/img/favicons/favicon.ico">
 				<meta name="msapplication-task" content="name=My profile;action-uri=http://www.display-inline.fr/demo/developr/html/profile.html;icon-uri=http://www.display-inline.fr/demo/developr/html/img/favicons/favicon.ico">
-
-
 
 				<?php
 				print '<!-- Includes for JQuery (Ajax library) -->' . "\n";
@@ -1041,7 +1046,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 				print '<script type="text/javascript" src="includes/lib/validate/jquery.validate.min.js"></script>';
 				print '<script type="text/javascript" src="includes/lib/validate/localization/messages_' . substr($langs->getDefaultLang(), 0, 2) . '.js"></script>'; //localization for validation plugin
 				//print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/js/jquery.list.min.js"></script>';
-				//print '<script type="text/javascript" src="includes/js/pertho.js"></script>';
+				print '<script type="text/javascript" src="includes/js/pertho.js"></script>';
 				print '<script type="text/javascript" src="includes/js/jquery.rwd-table.js"></script>';
 				// END THEME
 
@@ -1070,8 +1075,8 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 				print '<link rel="stylesheet" href="theme/pertho_sample/lib/chosen/chosen.css" media="all" />';
 				print '<!-- datatables -->';
 				print '<link rel="stylesheet" href="theme/pertho_sample/lib/datatables/css/demo_table_jui.css" media="all" />';
-				//print '<!-- main styles -->';
-				//print '<link rel="stylesheet" href="theme/eldy/style.css" />';
+				print '<!-- main styles -->';
+				print '<link rel="stylesheet" href="theme/eldy/style.css" />';
 
 				print '<!-- Google fonts -->';
 				//print '<link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet" />';
@@ -1104,11 +1109,11 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 				print '<![endif]-->';
 
 				// For new theme
-				/* print '<script>
+				print '<script>
 				  $(document).ready(function() {
 				  prth_common.init();
 				  });
-				  </script>'; */
+				  </script>';
 
 				// Output module javascript
 				if (is_array($arrayofjs)) {
@@ -1217,7 +1222,8 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 			}
 		</style>
 		<ul id="shortcuts" role="complementary" class="children-tooltip tooltip-right">
-			<li class="current"><a href="./" class="shortcut-dashboard s_dashb" title="Dashboard">Dashboard</a></li>
+			<li class="current"><a href="./" title="Dashboard">
+			<img src="img/apps/apps-icons/messagerie.png" style="width:65px; height:50px;">Dashboard</a></li>
 			<li><a href="inbox.html" class="shortcut-dashboard s_mail" title="Messages">Messages</a></li>
 			<li><a href="agenda.html" class="shortcut-dashboard s_agenda" title="Agenda">Agenda</a></li>
 			<li><a href="tables.html" class="shortcut-dashboard s_contacts" title="Contacts">Contacts</a></li>
@@ -1247,77 +1253,6 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 									</div>
 								</div>
 		<?php if (!defined('NOLOGIN')) : ?>
-									<div class = "seven phone-two columns">
-										<form action = "search.php" id = "search_box" method = "post">
-											<input name = "query" id = "query" type = "text" size = "40" placeholder = "Find&hellip;" autocomplete = "off" />
-										</form>
-									</div>
-									<script>
-										$(document).ready(function() {
-											$('#query').sautocomplete('search/data.php', {
-												delay		: 10,
-												minChars	: 2,
-												max			: 6,
-												matchCase	: 1,
-												width		: 212
-											}).result(function(event, query_val) {
-												$.fancybox({
-													href	: 'search/search_result.php',
-													ajax : {
-														type	: "POST",
-														data	: "search_item=" + query_val
-													},
-													'overlayOpacity'	: '0.2',
-													'transitionIn'		: 'elastic',
-													'transitionOut'		: 'fade',
-													onComplete			: function() {
-														$('#query').blur();
-													}
-												});
-											});
-											$('#search_box').submit(function() {
-												var query_val = $("#query").val();
-												$.fancybox({
-													href	: 'search/search_result.php',
-													ajax : {
-														type	: "POST",
-														data	: "search_item=" + query_val
-													},
-													'overlayOpacity'	: '0.2',
-													'transitionIn'		: 'elastic',
-													'transitionOut'		: 'fade'
-												});
-												return false;
-											});
-										});
-									</script>
-								</div>
-							</div>
-							<div class = "six columns">
-								<div class = "user_box cf">
-									<div class = "user_avatar">
-										<img src = "theme/pertho_sample/img/user_female.png" alt = "" />
-									</div>
-									<div class = "user_info user_sep">
-										<p class = "sepH_a">
-											<strong><?php echo $user->values->Firstname; ?> <?php echo $user->values->Lastname; ?></strong>
-										</p>
-										<span>
-											<a href = "user/fiche.php?id=<?php echo $user->id; ?>" class = "sep">Settings</a>
-											<a href = "user/logout.php">Log out</a>
-										</span>
-									</div>
-									<div class = "ntf_bar user_sep">
-										<a href = "#ntf_mail_panel" class = "ntf_item" style = "background-image: url(theme/pertho_sample/img/ico/icSw2/32-Mail.png)">
-											<span class = "ntf_tip ntf_tip_red"><span>12</span></span>
-										</a>
-										<a href = "#ntf_tickets_panel" class = "ntf_item" style = "background-image: url(theme/pertho_sample/img/ico/icSw2/32-Day-Calendar.png)">
-											<span class = "ntf_tip ntf_tip_red"><span>122</span></span>
-										</a>
-										<a href = "#ntf_comments_panel" class = "ntf_item" style = "background-image: url(theme/pertho_sample/img/ico/icSw2/32-Speech-Bubble.png)">
-											<span class = "ntf_tip ntf_tip_blue"><span>8</span></span>
-										</a>
-									</div>
 								</div>
 							</div>
 						</div>
@@ -1335,7 +1270,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 									?>
 								</div>
 							</div>
-							<!--<script>
+							<script>
 								$(document).ready(function() {
 									if(!jQuery.browser.mobile) {
 										//* main navigatin
@@ -1345,7 +1280,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 										prth_main_nav.mobile_nav();
 									}
 								});
-							</script>-->
+							</script>
 							<!--End Menu-->
 			<?php endif; ?>
 
@@ -1394,10 +1329,51 @@ function left_menu($menu_array_before, $helppagename = '', $moresearchform = '',
 
 		<!-- This wrapper is used by several responsive layouts -->
 		<div id="menu-content">
-
 			<header>
-				Administrator
+				<form action = "search.php" id = "search_box" method = "post">
+					<input name = "query" id = "query" type = "text" size = "40" placeholder = "<?php echo $langs->trans("SearchOf"); ?>..." autocomplete = "off" />
+				</form>
 			</header>
+			<script>
+				$(document).ready(function() {
+					$('#query').sautocomplete('search/data.php', {
+						delay		: 10,
+						minChars	: 2,
+						max			: 6,
+						matchCase	: 1,
+						width		: 212
+					}).result(function(event, query_val) {
+						$.fancybox({
+							href	: 'search/search_result.php',
+							ajax : {
+								type	: "POST",
+								data	: "search_item=" + query_val
+							},
+							'overlayOpacity'	: '0.2',
+							'transitionIn'		: 'elastic',
+							'transitionOut'		: 'fade',
+							onComplete			: function() {
+								$('#query').blur();
+							}
+						});
+					});
+					$('#search_box').submit(function() {
+						var query_val = $("#query").val();
+						$.fancybox({
+							href	: 'search/search_result.php',
+							ajax : {
+								type	: "POST",
+								data	: "search_item=" + query_val
+							},
+							'overlayOpacity'	: '0.2',
+							'transitionIn'		: 'elastic',
+							'transitionOut'		: 'fade'
+						});
+						return false;
+					});
+				});
+			</script>
+
 
 			<div id="profile">
 				<img src="theme/developr/html/img/user.png" width="64" height="64" alt="User name" class="user-icon">
@@ -1407,10 +1383,11 @@ function left_menu($menu_array_before, $helppagename = '', $moresearchform = '',
 
 			<!-- By default, this section is made for 4 icons, see the doc to learn how to change this, in "basic markup explained" -->
 			<ul id="access" class="children-tooltip">
+				<li><a href="index.php" title="<?php echo $langs->trans("Home");?>"><span class="icon-home"></span></a></li>
 				<li><a href="inbox.html" title="Messages"><span class="icon-inbox"></span><span class="count">2</span></a></li>
 				<li><a href="calendars.html" title="Calendar"><span class="icon-calendar"></span></a></li>
-				<li><a href="login.html" title="Profile"><span class="icon-user"></span></a></li>
-				<li class="disabled"><span class="icon-gear"></span></li>
+				<li><a href="user/fiche.php?id=<?php echo $user->id; ?>" title="Profile"><span class="icon-gear"></span></a></li>
+				<li><a href="user/logout.php" title="Log out"><span class="icon-unlock"></span></a></li>
 			</ul>
 
 			<section class="navigable">
@@ -1694,7 +1671,7 @@ function main_area($title = '') {
 
 	print '<!-- Main content -->';
 	print '<section role="main" id="main">';
-
+	print '<div class="container">';
 	print '<noscript class="message black-gradient simpler">Your browser does not support JavaScript! Some features won\'t work as expected...</noscript>';
 
 	if (!empty($conf->global->MAIN_ONLY_LOGIN_ALLOWED))
@@ -1780,6 +1757,7 @@ function llxFooter($foot = '') {
 	global $conf, $langs, $dolibarr_auto_user, $micro_start_time, $memcache;
 	?>
 	</section>
+	</div>
 	<!-- End main content -->
 	<?php
 	top_menu(); // print the left menu
@@ -1809,17 +1787,13 @@ function llxFooter($foot = '') {
 		<!-- Tinycon -->
 		<script src="theme/developr/html/js/libs/tinycon.min.js"></script>
 
-		<!--<footer class="container" id="footer">
+		<footer class="container" id="footer">
 			<div class="row">
 				<div class="twelve columns">
 					Copyright &copy; 2012 speedealing.com - tzd-themes.com
 				</div>
 			</div>
 		</footer>
-		<div class="sw_width">
-			<img class="sw_full" title="switch to full width" alt="" src="theme/blank.gif" />
-			<img style="display:none" class="sw_fixed" title="switch to fixed width (980px)" alt="" src="theme/blank.gif" />
-		</div>-->
 		<?php
 		printCommonFooter();
 		?>

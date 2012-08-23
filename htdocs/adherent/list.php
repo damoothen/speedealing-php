@@ -38,7 +38,7 @@ print start_box($titre,"twelve","16-Users.png");
 $i=0;
 $obj=new stdClass();
 print '<div class="datatable">';
-print '<table class="display dt_act" id="member" >';
+print '<table class="table responsive-table" id="member" >';
 // Ligne des titres 
 print'<thead>';
 print'<tr>';
@@ -95,7 +95,7 @@ print'<th class="essential">';
 print $langs->trans("Status");
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "Status";
-$obj->aoColumns[$i]->sClass = "select center";
+$obj->aoColumns[$i]->sClass = "dol_select center";
 $obj->aoColumns[$i]->sWidth = "180px";
 $obj->aoColumns[$i]->sDefaultContent = "0";
 $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("Status", "status", array("dateEnd"=>"last_subscription_date_end"));
@@ -115,6 +115,7 @@ print $langs->trans('Action');
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "";
 $obj->aoColumns[$i]->sClass = "center content_actions";
+$obj->aoColumns[$i]->sWidth = "100px";
 $obj->aoColumns[$i]->sDefaultContent = "";
 
 $url = "adherent/fiche.php";
