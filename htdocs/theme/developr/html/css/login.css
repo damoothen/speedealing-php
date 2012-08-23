@@ -96,7 +96,7 @@ form {
 		text-shadow: 0 2px 7px rgba(0, 0, 0, 0.5);
 		}
 		#login-title h1.login-title-image {
-			background: url(../img/login-title.png) no-repeat center center;
+			background: url(../../../../logo.png) no-repeat center center;
 			overflow: hidden;
 			height: 55px;
 			text-align: left;
