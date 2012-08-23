@@ -63,7 +63,7 @@ if (!$rowid && $action != 'create' && $action != 'edit') {
 	$i = 0;
 	$obj = new stdClass();
 	print '<div class="datatable">';
-	print '<table class="display dt_act" id="membertype" >';
+	print '<table class="table responsive-table" id="membertype" >';
 // Ligne des titres 
 	print'<thead>';
 	print'<tr>';
@@ -162,7 +162,7 @@ if ($rowid) {
 
 	$i = 0;
 	$obj = new stdClass();
-	print '<table class="display dt_act" id="member" >';
+	print '<table class="table responsive-table" id="member" >';
 	// Ligne des titres 
 	print'<thead>';
 	print'<tr>';

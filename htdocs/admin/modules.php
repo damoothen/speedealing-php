@@ -159,8 +159,8 @@ if ($action == 'set' && $user->admin) {
 			$object->$key = $aRow;
 		$object->_id = "module:" . $objMod->name;
 		$object->enabled = true;
-		dol_delcache("MenuTop:list"); //refresh menu
-		dol_delcache("MenuTop:submenu"); //refresh menu
+		dol_delcache("MenuAuguria:list"); //refresh menu
+		dol_delcache("MenuAuguria:submenu"); //refresh menu
 		dol_delcache("extrafields:" . $object->class); //refresh extrafields
 		dol_delcache("const"); //delete $conf
 		dol_delcache("DolibarrModules:list"); //refresh menu
@@ -208,7 +208,7 @@ print start_box($langs->trans("ModulesSetup"), 'twelve', '16-Cog-4.png', false);
 $obj = new stdClass();
 $i = 0;
 
-print '<table class="display dt_act" id="list_modules">';
+print '<table class="table responsive-table" id="list_modules">';
 
 print'<thead>';
 print'<tr>';

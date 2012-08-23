@@ -837,8 +837,6 @@ if ($action == 'create') {
 		$object->country = $tmparray['label'];
 	}
 
-	$adht = new AdherentType($db);
-
 	print_fiche_titre($langs->trans("NewMember"));
 
 	dol_htmloutput_mesg($errmsg, $errmsgs, 'error');
@@ -1940,7 +1938,7 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
 
 	$i = 0;
 	$obj = new stdClass();
-	print '<table class="display dt_act" id="subscription_datatable" >';
+	print '<table class="table responsive-table" id="subscription_datatable" >';
 	// Ligne des titres 
 	print'<thead>';
 	print'<th class="essential">';
@@ -2001,7 +1999,7 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
 
 	print "</table>";
 
-	$obj->sDom = 'l<fr>t<\"clear\"rtip>';
+	//$obj->sDom = 'l<fr>t<\"clear\"rtip>';
 	$obj->bServerSide = false;
 	$obj->iDisplayLength = 10;
 	$object->datatablesCreate($obj, "subscription_datatable");

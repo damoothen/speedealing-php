@@ -262,7 +262,7 @@ class modSociete extends DolibarrModules {
 		$this->menus[$r]->enabled = '$conf->societe->enabled';
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->title = "MenuNewThirdParty";
-		$this->menus[$r]->fk_menu = "menu:thirdparty";
+		$this->menus[$r]->fk_menu = "menu:companies";
 		$r++;
 
 		// Exports

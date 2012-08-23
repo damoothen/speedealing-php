@@ -1692,7 +1692,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 			$var = !$var;
 
 			// Module Adherent
-			if ($conf->adherent->enabled) {
+			/*if ($conf->adherent->enabled) {
 				$langs->load("members");
 				print '<tr ' . $bc[$var] . '><td width="25%" valign="top">' . $langs->trans("LinkedToDolibarrMember") . '</td>';
 				print '<td colspan="3">';
@@ -1707,7 +1707,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 				print '</td>';
 				print "</tr>\n";
 				$var = !$var;
-			}
+			}*/
 
 			print '</table>';
 

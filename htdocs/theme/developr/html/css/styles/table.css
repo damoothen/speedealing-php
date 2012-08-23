@@ -35,7 +35,7 @@
 	.table > thead > tr > td,
 	.table > tfoot > tr > th,
 	.table > tfoot > tr > td {
-		padding: 9px 10px;
+		padding: 4px 8px;
 		border: 1px solid #cccccc;
 		-webkit-box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.85);
 		-moz-box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.85);
@@ -48,9 +48,10 @@
 
 	.table > tbody > tr > th,
 	.table > tbody > tr > td {
-		padding: 9px 10px;
+		padding: 4px 8px;
 		border-top: 1px solid #e6e6e6;
 		border-left: 1px dotted #cfcfcf;
+		font-size: 90%;
 		}
 
 		/* Even rows styling */

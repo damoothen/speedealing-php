@@ -179,6 +179,16 @@ class modAdherent extends DolibarrModules {
 		$this->menus[$r]->title = "Subscriptions";
 		$this->menus[$r]->fk_menu = "menu:members";
 		$r++;
+		$this->menus[$r]->_id = "menu:memberstatic";
+		$this->menus[$r]->position = 2;
+		$this->menus[$r]->url = "/adherent/index.php";
+		$this->menus[$r]->langs = "compta";
+		$this->menus[$r]->perms = '$user->rights->adherent->cotisation->lire';
+		$this->menus[$r]->enabled = '$conf->adherent->enabled';
+		$this->menus[$r]->usertype = 2;
+		$this->menus[$r]->title = "Statistics";
+		$this->menus[$r]->fk_menu = "menu:subscriptions";
+		$r++;
 		$this->menus[$r]->_id = "menu:subscriptionslist";
 		$this->menus[$r]->position = 1;
 		$this->menus[$r]->url = "/adherent/cotisations.php";

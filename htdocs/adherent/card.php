@@ -106,7 +106,7 @@ if ($action != 'edit') {
 
 	// Print mail content
 	print '<div class="row">';
-	print start_box($langs->trans("CardMember"), "six centered", "16-iPhone-4.png");
+	print start_box($langs->trans("CardMember"), "ten centered", "16-iPhone-4.png");
 	print '<table class="border" width="100%">';
 
 	// Subject

@@ -324,13 +324,13 @@
 		.enhanced th.essential,.enhanced td.essential{display:table-cell}
 
 	/* tooltips */
-		.tooltip {display:none;font-size:10px;padding:3px 6px;color:#fff;background:#000;background:rgba(0, 0, 0, 0.7);text-align:center;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px}
+/*		.tooltip {display:none;font-size:10px;padding:3px 6px;color:#fff;background:#000;background:rgba(0, 0, 0, 0.7);text-align:center;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px}
 		.tooltip:after {content: "";position: absolute}
 		.tooltip.t_t:after {top: 100%;left: 50%;margin-left:-4px;border-width:4px 4px 0;border-style: solid;border-color: #000 transparent transparent;border-color: rgba(0, 0, 0, 0.7) transparent transparent}
 		.tooltip.t_b:after {bottom: 100%;left: 50%;margin-left:-4px;border-width:0 4px 4px;border-style: solid;border-color: transparent transparent #000;border-color: transparent transparent rgba(0, 0, 0, 0.7)}
 		.tooltip.t_l:after {top: 50%;left: 100%;margin-top:-3px;border-width:3px 0 3px 5px;border-style: solid;border-color: transparent transparent transparent #000;border-color: transparent transparent transparent rgba(0, 0, 0, 0.7)}
 		.tooltip.t_r:after {top: 50%;right: 100%;margin-top:-3px;border-width:3px 5px 3px 0;border-style: solid;border-color: transparent  #000 transparent transparent;border-color: transparent  rgba(0, 0, 0, 0.7) transparent transparent}
-
+*/
 	/* tabs */
 		.tabs li {display:block;float:left;height:30px;font-family: Helvetica, Arial, sans-serif;}
 		.tabs li a{display:block;line-height:31px;padding:0 10px;border-width:0 1px;border-style:solid;border-color:transparent;font-size:12px;position:relative}

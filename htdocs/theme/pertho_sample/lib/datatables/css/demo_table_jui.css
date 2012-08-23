@@ -55,7 +55,7 @@ table.display td .fancyImg img {display:block}
 .sorting {background:url(../images/sort_both.gif) no-repeat right center}
 /*.display tr td{background-color:#fff}*/
 /*.display tr:nth-child(2n) td{background-color:#f5f5f5}*/
-.top,.bottom{background-color:#F5F5F5;border:1px solid #CCC;padding:15px}
+/*.top,.bottom{background-color:#F5F5F5;border:1px solid #CCC;padding:15px}*/
 .top .dataTables_info{float:none}
 table.display tfoot input{width:100%;color:#444;margin:.5em 0}
 table.display tfoot input.search_init{color:#999}

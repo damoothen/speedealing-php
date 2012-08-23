@@ -870,16 +870,16 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 				<script src="theme/developr/html/js/libs/modernizr.custom.js"></script>
 
 				<!-- For Modern Browsers -->
-				<link rel="shortcut icon" href="theme/developr/html/img/favicons/favicon.png">
+				<link rel="shortcut icon" href="favicon.png">
 				<!-- For everything else -->
-				<link rel="shortcut icon" href="theme/developr/html/img/favicons/favicon.ico">
+				<link rel="shortcut icon" href="favicon.ico">
 				<!--<link rel="shortcut icon" type="image/x-icon" href="favicon.ico"/> -->
 				<!-- For retina screens -->
-				<link rel="apple-touch-icon-precomposed" sizes="114x114" href="theme/developr/html/img/favicons/apple-touch-icon-retina.png">
+				<link rel="apple-touch-icon-precomposed" sizes="114x114" href="apple-touch-icon-retina.png">
 				<!-- For iPad 1-->
-				<link rel="apple-touch-icon-precomposed" sizes="72x72" href="theme/developr/html/img/favicons/apple-touch-icon-ipad.png">
+				<link rel="apple-touch-icon-precomposed" sizes="72x72" href="apple-touch-icon-ipad.png">
 				<!-- For iPhone 3G, iPod Touch and Android -->
-				<link rel="apple-touch-icon-precomposed" href="theme/developr/html/img/favicons/apple-touch-icon.png">
+				<link rel="apple-touch-icon-precomposed" href="apple-touch-icon.png">
 
 				<!-- iOS web-app metas -->
 				<meta name="apple-mobile-web-app-capable" content="yes">
@@ -1100,9 +1100,6 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 			url("http://themes.googleusercontent.com/static/fonts/terminaldosis/v5/_IcvjW_kWHsIHjjUsLbdpFGxLvFzKVP0OsRYGzgS_zk.woff") format("woff");
 		}
 		</style>';
-
-				print '<!-- Favicons and the like (avoid using transparent .png) -->';
-				print '<link rel="apple-touch-icon-precomposed" href="icon.png" />';
 
 				print '<!--[if lt IE 9]>';
 				print '<link rel="stylesheet" href="foundation/stylesheets/ie.css">';
@@ -1627,11 +1624,29 @@ function llxFooter($foot = '') {
 
 		<script src="theme/developr/html/js/developr.navigable.js"></script>
 		<script src="theme/developr/html/js/developr.scroll.js"></script>
+		
+		<!--<script src="theme/developr/html/js/developr.input.js"></script>-->
+		<script src="theme/developr/html/js/developr.message.js"></script>
+		<script src="theme/developr/html/js/developr.modal.js"></script>
+		<script src="theme/developr/html/js/developr.notify.js"></script>
+		<script src="theme/developr/html/js/developr.progress-slider.js"></script>
+		<script src="theme/developr/html/js/developr.tooltip.js"></script>
+		<script src="theme/developr/html/js/developr.confirm.js"></script>
+		<script src="theme/developr/html/js/developr.agenda.js"></script>
 
 		<script src="theme/developr/html/js/developr.tabs.js"></script>		<!-- Must be loaded last -->
 
 		<!-- Tinycon -->
 		<script src="theme/developr/html/js/libs/tinycon.min.js"></script>
+		
+		<script>
+
+			// Call template init (optional, but faster if called manually)
+			$.template.init();
+
+			// Favicon count
+			Tinycon.setBubble(2);
+		</script>
 
 		<footer class="container" id="footer">
 			<div class="row">
