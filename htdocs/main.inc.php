@@ -1172,7 +1172,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 		}
 		?>
 		<ul id="shortcuts" role="complementary" class="children-tooltip tooltip-right">
-			<li class="current"><a href="./" title="Dashboard"><img src="theme/eldy/img/modules/Maps.png"/>Dashboard</a></li>
+			<li class="current"><a href="index.php?idmenu=menu:home" title="Dashboard"><img src="theme/eldy/img/modules/Maps.png"/>Dashboard</a></li>
 			<li><a href="inbox.html" title="Messages"><img src="theme/eldy/img/modules/Mail_alt.png"/>Messages</a></li>
 			<li><a href="agenda.html" title="Agenda"><img src="theme/eldy/img/modules/Calendar.png"/>Agenda</a></li>
 			<li><a href="tables.html" title="Contacts"><img src="theme/eldy/img/modules/Contacts.png"/>Contacts</a></li>
@@ -1182,82 +1182,14 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 			<li><span title="Notes"><img src="theme/eldy/img/modules/Notes.png"/>Notes</span></li>
 		</ul>
 
-		<?php ?> <!-- Start top horizontal menu ' . $top_menu . ' -->
-
-	<?php if (!defined('NOHEADER')) : ?>
-			<header>
-				<div class="container head_s_a">
-					<div class="row sepH_b">
-						<div class="six columns">
-							<div class="row">
-								<div class="five phone-two columns">
-									<div id="logo"><?php
-		$mysoc->logo_mini = $conf->global->MAIN_INFO_SOCIETE_LOGO_MINI;
-		if (!empty($mysoc->logo_mini) && is_readable($conf->mycompany->dir_output . '/logos/thumbs/' . $mysoc->logo_mini))
-			$urllogo = DOL_URL_ROOT . '/viewimage.php?cache=1&amp;modulepart=companylogo&amp;file=' . urlencode('thumbs/' . $mysoc->logo_mini);
-		else
-			$urllogo = 'logo.png';
-		print '<a href="' . DOL_URL_ROOT . '/index.php?idmenu=menu:home"><img src="' . $urllogo . '" alt="' . $conf->global->MAIN_INFO_SOCIETE_NOM . '" title="' . $conf->global->MAIN_INFO_SOCIETE_NOM . '"/></a>';
-		?>
-									</div>
-								</div>
-		<?php if (!defined('NOLOGIN')) : ?>
-								</div>
-							</div>
-						</div>
-
-
-			<?php if (!defined('NOREQUIREMENU')) : ?>
-							<div class = "row">
-								<div class = "twelve columns">
-
-									<?php
-									// Show menu
-									$menutop = new MenuTop($db);
-									$menutop->atarget = $target;
-									$menutop->showmenu();   // This contains a \n
-									?>
-								</div>
-							</div>
-							<script>
-								$(document).ready(function() {
-									if(!jQuery.browser.mobile) {
-										//* main navigatin
-										prth_main_nav.h_nav();
-									} else {
-										//* mobile navigatin
-										prth_main_nav.mobile_nav();
-									}
-								});
-							</script>
-							<!--End Menu-->
-			<?php endif; ?>
-
-					</div>
-
-
-				</div>
-		<?php endif; ?>
-		</header>
-	<?php endif; ?>
-	<!-- End top horizontal menu -->
 	<?php
 }
 
 /**
  *  Show left menu bar
- *
- *  @param  array	$menu_array_before 	       	Table of menu entries to show before entries of menu handler
- *  @param  string	$helppagename    	       	Name of wiki page for help ('' by default).
- * 				     		                   	Syntax is: For a wiki page: EN:EnglishPage|FR:FrenchPage|ES:SpanishPage
- * 									         		       For other external page: http://server/url
- *  @param  string	$moresearchform             Search Form Permanent Supplemental
- *  @param  array	$menu_array_after           Table of menu entries to show after entries of menu handler
- *  @param  int		$leftmenuwithoutmainarea    Must be set to 1. 0 by default for backward compatibility with old modules.
- *  @param  string	$title                      Title of web page
  *  @return	void
  */
-function left_menu($menu_array_before, $helppagename = '', $moresearchform = '', $menu_array_after = '', $leftmenuwithoutmainarea = 0, $title = '') {
+function left_menu() {
 	global $user, $conf, $langs, $db;
 	global $hookmanager;
 
@@ -1332,67 +1264,21 @@ function left_menu($menu_array_before, $helppagename = '', $moresearchform = '',
 
 			<!-- By default, this section is made for 4 icons, see the doc to learn how to change this, in "basic markup explained" -->
 			<ul id="access" class="children-tooltip">
-				<li><a href="index.php" title="<?php echo $langs->trans("Home"); ?>"><span class="icon-home"></span></a></li>
+				<li><a href="index.php?idmenu=menu:home" title="<?php echo $langs->trans("Home"); ?>"><span class="icon-home"></span></a></li>
 				<li><a href="inbox.html" title="Messages"><span class="icon-inbox"></span><span class="count">2</span></a></li>
 				<li><a href="calendars.html" title="Calendar"><span class="icon-calendar"></span></a></li>
 				<li><a href="user/fiche.php?id=<?php echo $user->id; ?>" title="Profile"><span class="icon-gear"></span></a></li>
 				<li><a href="user/logout.php" title="Log out"><span class="icon-unlock"></span></a></li>
 			</ul>
-
-			<section class="navigable">
-				<ul class="big-menu">
-					<li class="with-right-arrow">
-						<span><span class="list-count">11</span>Main styles</span>
-						<ul class="big-menu">
-							<li><a href="typography.html">Typography</a></li>
-							<li><a href="columns.html">Columns</a></li>
-							<li><a href="tables.html">Tables</a></li>
-							<li><a href="colors.html">Colors &amp; backgrounds</a></li>
-							<li><a href="icons.html">Icons</a></li>
-							<li><a href="files.html">Files &amp; Gallery</a></li>
-							<li class="with-right-arrow">
-								<span><span class="list-count">4</span>Forms &amp; buttons</span>
-								<ul class="big-menu">
-									<li><a href="buttons.html">Buttons</a></li>
-									<li><a href="form.html">Form elements</a></li>
-									<li><a href="textareas.html">Textareas &amp; WYSIWYG</a></li>
-									<li><a href="form-layouts.html">Form layouts</a></li>
-									<li><a href="wizard.html">Wizard</a></li>
-								</ul>
-							</li>
-							<li class="with-right-arrow">
-								<span><span class="list-count">2</span>Agenda &amp; Calendars</span>
-								<ul class="big-menu">
-									<li><a href="agenda.html">Agenda</a></li>
-									<li><a href="calendars.html">Calendars</a></li>
-								</ul>
-							</li>
-							<li><a href="blocks.html">Blocks &amp; infos</a></li>
-						</ul>
-					</li>
-					<li class="with-right-arrow">
-						<span><span class="list-count">8</span>Main features</span>
-						<ul class="big-menu">
-							<li><a href="auto-setup.html">Automatic setup</a></li>
-							<li><a href="responsive.html">Responsiveness</a></li>
-							<li><a href="tabs.html">Tabs</a></li>
-							<li><a href="sliders.html">Slider &amp; progress</a></li>
-							<li><a href="modals.html">Modal windows</a></li>
-							<li class="with-right-arrow">
-								<span><span class="list-count">3</span>Messages &amp; notifications</span>
-								<ul class="big-menu">
-									<li><a href="messages.html">Messages</a></li>
-									<li><a href="notifications.html">Notifications</a></li>
-									<li><a href="tooltips.html">Tooltips</a></li>
-								</ul>
-							</li>
-						</ul>
-					</li>
-					<li class="with-right-arrow">
-						<a href="ajax-demo/submenu.html" class="navigable-ajax" title="Menu title">With ajax sub-menu</a>
-					</li>
-				</ul>
-			</section>
+			
+			<?php
+			
+			// Show menu
+			$menu = new MenuAuguria($db);
+			$menu->atarget = $target;
+			$menu->showmenuTop();   // This contains a \n
+			
+			?>
 
 			<ul class="unstyled-list">
 				<li class="title-menu">Today's event</li>
@@ -1499,7 +1385,7 @@ function left_menu($menu_array_before, $helppagename = '', $moresearchform = '',
 	}
 
 // Load the top menu manager (only if not already done)
-	if (!class_exists('MenuLeft')) {
+	/*if (!class_exists('MenuLeft')) {
 		$menufound = 0;
 		$dirmenus = array_merge(array("/core/menus/"), $conf->menus_modules);
 		foreach ($dirmenus as $dirmenu) {
@@ -1511,7 +1397,7 @@ function left_menu($menu_array_before, $helppagename = '', $moresearchform = '',
 			$top_menu = 'eldy_backoffice.php';
 			include_once(DOL_DOCUMENT_ROOT . "/core/menus/standard/" . $top_menu);
 		}
-	}
+	}*/
 
 
 	// Left column

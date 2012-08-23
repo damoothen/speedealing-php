@@ -18,12 +18,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-class MenuTop extends nosqlDocument {
+class MenuAuguria extends nosqlDocument {
 
 	protected $db;
 	var $require_left = array("auguria_backoffice");  // Si doit etre en phase avec un gestionnaire de menu gauche particulier
 	var $hideifnotallowed = 0;   // Put 0 for back office menu, 1 for front office menu
-	var $atarget = "";	// Valeur du target a utiliser dans les liens
+	var $atarget = ""; // Valeur du target a utiliser dans les liens
 	var $topmenu = array(); // array of level 0
 	var $submenu = array(); // array of level > 0
 	var $selected = array();  // array of selected
@@ -49,7 +49,11 @@ class MenuTop extends nosqlDocument {
 
 		// Construct submenu
 		foreach ($submenu->rows as $key => $aRow) {
-			$this->submenu[$aRow->key[0]][] = $aRow->value;
+			$menu = $aRow->value;
+			$newTabMenu = $this->verifyMenu($menu);
+			if ($newTabMenu->enabled == true && $newTabMenu->perms == true) {
+				$this->submenu[$aRow->key[0]][] = $newTabMenu;
+			}
 		}
 
 		return 1;
@@ -60,7 +64,7 @@ class MenuTop extends nosqlDocument {
 	 *
 	 * 	@return	void
 	 */
-	function showmenu() {
+	function showmenuTop() {
 		$this->print_auguria_menu($this->hideifnotallowed);
 	}
 
@@ -97,30 +101,12 @@ class MenuTop extends nosqlDocument {
 				if ($newTabMenu->perms == true) { // Is allowed
 					$url = $this->menuURL($newTabMenu, $newTabMenu->_id);
 
-					//print $url;exit;
 					// Define the class (top menu selected or not)
-					$classname = 'mb_parent';
-					if ($i == 0)
-						$classname.=' first_el';
-					if(empty($this->idmenu))
+					if (empty($this->idmenu))
 						$this->idmenu = dol_getcache('idmenu'); // For cache optimisation
 
-					if (!empty($this->idmenu) && $this->menuSelected($newTabMenu)) {
-						$classname.=' pageselected';
-						$this->selected[0]->name = $newTabMenu->title;
-						$this->selected[0]->url = $url;
-					}
-
-					print '<li>';
-					print '<a class="' . $classname . '" href="' . $url . '">';
-					print $newTabMenu->title;
-					print '</a>';
 					// Submenu level 1
-					$selected = $this->print_submenu($newTabMenu->_id, 1);
-					if ($selected) {
-						$this->selected[0]->name = $newTabMenu->title;
-						$this->selected[0]->url = $url;
-					}
+					$selected = $this->print_submenu($newTabMenu, 1);
 
 					print '</li>';
 					$i++;
@@ -139,8 +125,8 @@ class MenuTop extends nosqlDocument {
 	 */
 	function print_start_menu_array_auguria() {
 		global $conf;
-		print '<nav id="smoothmenu_h" class="ddsmoothmenu tinyNav">';
-		print '<ul class="cf">';
+		print '<section class="navigable">';
+		print '<ul class="big-menu">';
 	}
 
 	/**
@@ -151,84 +137,48 @@ class MenuTop extends nosqlDocument {
 	function print_end_menu_array_auguria() {
 		global $conf;
 		print '</ul>';
-		print '</nav>';
-		print '<ul id="breadcrumbs" class="cf">
-		<li>You are here:</li>';
-
-		for ($i = 0; $i < count($this->selected); $i++) {
-			print '<li><a href="' . $this->selected[$i]->url . '">' . $this->selected[$i]->name . '</a></li>';
-		}
-		//print '<li><span>'.$selectnav[count($selectnav)-1]->name.'</span></a></li>';
-		print '</ul>' . "\n";
-		print '</div>';
+		print '</section>';
 	}
 
 	/**
 	 * Core function to output submenu auguria
 	 *
-	 * @param	string		$id		    Id name menu father
-	 * @param       int		$level              Level for the navigation
+	 * @param	string		$menu		    menu father
+	 * @param       int		$level          Level for the navigation
 	 * @return	void
 	 */
-	function print_submenu($id, $level) {
+	function print_submenu($menuFather, $level) {
 		global $user, $conf, $langs;
 
 		$selectnow = false;
 
-		$result = $this->submenu[$id];
+		$result = $this->submenu[$menuFather->_id];
 
-		if (count($result) == 0)
+		if (count($result) == 0) { // be a <li> link menu
+			print '<li>';
+			if (!empty($this->idmenu) && $this->menuSelected($menuFather))
+				$classname = "current navigable-current";
+
+			$url = $this->menuURL($menuFather, $menuFather->_id);
+			print '<a class="' . $classname . '" href="' . $url . '">';
+			print $menuFather->title;
+			print '</a>';
+			print '</li>';
 			return false;
-
-		foreach ($result as $key => $aRow) {
-			$menu = $aRow;
-			$newTabMenu = $this->verifyMenu($menu);
-			if ($newTabMenu->enabled == true && $newTabMenu->perms == true) {
-				$newResult[] = $newTabMenu;
-			}
 		}
 
-		if (count($newResult) == 0)
-			return false;
-
-		print '<ul style="display:none">';
-		foreach ($newResult as $aRow) {
+		print '<li class="with-right-arrow">';
+		print '<span><span class="list-count">'.count($result).'</span>'.$menuFather->title.'</span>';
+		print '<ul class="big-menu">';
+		
+		foreach ($result as $aRow) {
 			$menu = $aRow;
-			//print_r($menu);exit;
+			$selected = $this->print_submenu($menu, ($level + 1));
 
-			$url = $this->menuURL($menu, $menu->_id);
-
-			//print $url;exit;
-			// Define the class (top menu selected or not)
-			$classname = 'mb_parent';
-			if ($i == 0)
-				$classname.=' first_el';
-			
-			if (!empty($this->idmenu) && $this->menuSelected($menu)) {
-				$classname.=' pageselected';
-				$this->selected[$level]->name = $menu->title;
-				$this->selected[$level]->url = $url;
-				$selectnow = true;
-			}
-
-			print '<li>';
-			print '<a class="' . $classname . '" href="' . $url . '">';
-			print '<!-- Add menu entry with mainmenu=' . $menu->_id . ' -->' . "\n";
-			print $menu->title;
-			print '</a>';
-			// Submenu level 1
-			//if(isset($newTabMenu->submenu))
-			$selected = $this->print_submenu($menu->_id, ($level + 1));
-			if ($selected) {
-				$this->selected[$level]->name = $menu->title;
-				$this->selected[$level]->url = $url;
-				$selectnow = true;
-			}
-			print '</li>';
-			$i++;
 		}
 
 		print '</ul>';
+		print '</li>';
 
 		return $selectnow;
 	}
