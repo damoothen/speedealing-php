@@ -243,6 +243,8 @@ if (!defined('NOREQUIREAJAX') && $conf->use_javascript_ajax)
 
 
 
+
+
 	
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
@@ -857,7 +859,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 				<link rel="stylesheet" href="theme/developr/html/css/styles/modal.css?v=1">
 				<link rel="stylesheet" href="theme/developr/html/css/styles/progress-slider.css?v=1">
 				<link rel="stylesheet" href="theme/developr/html/css/styles/switches.css?v=1">
-				
+
 				<!-- Additional styles -->
 				<link rel="stylesheet" href="theme/developr/html/css/styles/table.css?v=1">
 
@@ -1169,68 +1171,15 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 			include_once(DOL_DOCUMENT_ROOT . "/core/menus/standard/" . $top_menu);
 		}
 		?>
-
-		<!-- Side tabs shortcuts -->
-		<style type="text/css">
-			a.s_dashb, span.s_dashb {
-				background-image: url(/speedealing/theme/eldy/img/modules/s_map.png);
-			}
-			a.s_dashb::before {
-				background-image: url(/speedealing/theme/eldy/img/modules/s_map.png);
-			}
-			a.s_agenda, span.s_agenda {
-				background-image: url(/speedealing/theme/eldy/img/modules/s_agenda.png) !important;
-			}
-			a.s_agenda::before {
-				background-image: url(/speedealing/theme/eldy/img/modules/s_agenda.png);
-			}
-			a.s_mail, span.s_mail {
-				background-image: url(/speedealing/theme/eldy/img/modules/s_mail.png);
-			}
-			a.s_mail::before {
-				background-image: url(/speedealing/theme/eldy/img/modules/s_mail.png);
-			}
-			a.s_contacts, span.s_contacts {
-				background-image: url(/speedealing/theme/eldy/img/modules/s_contacts.png);
-			}
-			a.s_contacts::before {
-				background-image: url(/speedealing/theme/eldy/img/modules/s_contacts.png);
-			}
-			a.s_stats, span.s_stats {
-				background-image: url(/speedealing/theme/eldy/img/modules/s_stats.png);
-			}
-			a.s_stats::before {
-				background-image: url(/speedealing/theme/eldy/img/modules/s_stats.png);
-			}
-			a.s_media, span.s_media {
-				background-image: url(/speedealing/theme/eldy/img/modules/s_media.png);
-			}
-			a.s_media::before {
-				background-image: url(/speedealing/theme/eldy/img/modules/s_media.png);
-			}
-			a.s_settings, span.s_settings {
-				background-image: url(/speedealing/theme/eldy/img/modules/s_settings.png);
-			}
-			a.s_settings::before {
-				background-image: url(/speedealing/theme/eldy/img/modules/s_settings.png);
-			}
-			a.s_notes, span.s_notes {
-				background-image: url(/speedealing/theme/eldy/img/modules/s_notes.png);
-			}
-			a.s_notes::before {
-				background-image: url(/speedealing/theme/eldy/img/modules/s_notes.png);
-			}
-		</style>
 		<ul id="shortcuts" role="complementary" class="children-tooltip tooltip-right">
-			<li class="current"><a href="./" title="Dashboard">
-			<img src="img/apps/apps-icons/messagerie.png" style="width:65px; height:50px;">Dashboard</a></li>
-			<li><a href="inbox.html" class="shortcut-dashboard s_mail" title="Messages">Messages</a></li>
-			<li><a href="agenda.html" class="shortcut-dashboard s_agenda" title="Agenda">Agenda</a></li>
-			<li><a href="tables.html" class="shortcut-dashboard s_contacts" title="Contacts">Contacts</a></li>
-			<li><a href="explorer.html" class="shortcut-dashboard s_media" title="Medias">Medias</a></li>
-			<li><a href="sliders.html" class="shortcut-dashboard s_stats" title="Stats">Stats</a></li>
-			<li><a href="form.html" class="shortcut-dashboard s_settings" title="Settings">Settings</a></li>
-			<li><span class="shortcut-dashboard s_notes" title="Notes">Notes</span></li>
+			<li class="current"><a href="./" title="Dashboard"><img src="theme/eldy/img/modules/Maps.png"/>Dashboard</a></li>
+			<li><a href="inbox.html" title="Messages"><img src="theme/eldy/img/modules/Mail_alt.png"/>Messages</a></li>
+			<li><a href="agenda.html" title="Agenda"><img src="theme/eldy/img/modules/Calendar.png"/>Agenda</a></li>
+			<li><a href="tables.html" title="Contacts"><img src="theme/eldy/img/modules/Contacts.png"/>Contacts</a></li>
+			<li><a href="explorer.html" title="Medias"><img src="theme/eldy/img/modules/Photos.png"/>Medias</a></li>
+			<li><a href="sliders.html" title="Stats"><img src="theme/eldy/img/modules/Stocks.png"/>Stats</a></li>
+			<li><a href="form.html" title="Settings"><img src="theme/eldy/img/modules/Settings.png"/>Settings</a></li>
+			<li><span title="Notes"><img src="theme/eldy/img/modules/Notes.png"/>Notes</span></li>
 		</ul>
 
 		<?php ?> <!-- Start top horizontal menu ' . $top_menu . ' -->
@@ -1383,7 +1332,7 @@ function left_menu($menu_array_before, $helppagename = '', $moresearchform = '',
 
 			<!-- By default, this section is made for 4 icons, see the doc to learn how to change this, in "basic markup explained" -->
 			<ul id="access" class="children-tooltip">
-				<li><a href="index.php" title="<?php echo $langs->trans("Home");?>"><span class="icon-home"></span></a></li>
+				<li><a href="index.php" title="<?php echo $langs->trans("Home"); ?>"><span class="icon-home"></span></a></li>
 				<li><a href="inbox.html" title="Messages"><span class="icon-inbox"></span><span class="count">2</span></a></li>
 				<li><a href="calendars.html" title="Calendar"><span class="icon-calendar"></span></a></li>
 				<li><a href="user/fiche.php?id=<?php echo $user->id; ?>" title="Profile"><span class="icon-gear"></span></a></li>
@@ -1671,11 +1620,18 @@ function main_area($title = '') {
 
 	print '<!-- Main content -->';
 	print '<section role="main" id="main">';
-	print '<div class="container">';
 	print '<noscript class="message black-gradient simpler">Your browser does not support JavaScript! Some features won\'t work as expected...</noscript>';
 
 	if (!empty($conf->global->MAIN_ONLY_LOGIN_ALLOWED))
 		print info_admin($langs->trans("WarningYouAreInMaintenanceMode", $conf->global->MAIN_ONLY_LOGIN_ALLOWED));
+	?>
+	<hgroup id="main-title" class="thin">
+		<h1>Dashboard</h1>
+		<h2>nov <strong>10</strong></h2>
+	</hgroup>
+	<?php
+	
+	print '<div class="container">';
 }
 
 /**
@@ -1756,8 +1712,9 @@ function printSearchForm($urlaction, $urlobject, $title, $htmlmodesearch, $htmli
 function llxFooter($foot = '') {
 	global $conf, $langs, $dolibarr_auto_user, $micro_start_time, $memcache;
 	?>
-	</section>
 	</div>
+	</section>
+	
 	<!-- End main content -->
 	<?php
 	top_menu(); // print the left menu
