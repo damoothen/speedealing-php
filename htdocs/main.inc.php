@@ -727,7 +727,7 @@ if (!function_exists("llxHeader")) {
 		top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss); // Show html headers
 
 		if (!defined('NOHEADER'))
-			print '<body class="clearfix with-menu with-shortcuts ptrn_a grdnt_b mhover_c fullW">';
+			print '<body class="clearfix with-menu with-shortcuts ptrn_a grdnt_c mhover_c fullW">';
 		else
 			print '<body class="fullW" style="background: white;">';
 
