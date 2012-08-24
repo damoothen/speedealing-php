@@ -1,5 +1,5 @@
 {
-   "_id": "_design/MenuTop",
+   "_id": "_design/MenuAuguria",
    "language": "javascript",
    "views": {
        "submenu": {
