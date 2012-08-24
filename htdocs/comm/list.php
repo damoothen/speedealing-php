@@ -96,7 +96,7 @@ print start_box($titre,"twelve","16-Companies.png");
 $i=0;
 $obj=new stdClass();
 print '<div class="datatable">';
-print '<table class="table responsive-table" id="societe" >';
+print '<table class="display dt_act" id="societe" >';
 // Ligne des titres 
 print'<thead>';
 print'<tr>';

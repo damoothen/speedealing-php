@@ -77,17 +77,17 @@
 ----------------------------------*/
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default { border: 1px solid #B6B6B6; font-weight: normal; color: #4F4F4F; }
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
-	background: #ededed url(images/bg_fallback.png) 0 0 repeat-x; /* Old browsers */
-		background: -moz-linear-gradient(bottom, #8CA0B9 15%, #D2DCEB 100%); /* FF3.6+ */
-		background: -webkit-gradient(linear, left top, left bottom, color-stop(15%,#8CA0B9), color-stop(100%,#D2DCEB)); /* Chrome,Safari4+ */
-		background: -webkit-linear-gradient(bottom, #8CA0B9 15%, #D2DCEB 100%); /* Chrome10+,Safari5.1+ */
-		background: -o-linear-gradient(bottom, #8CA0B9 15%, #D2DCEB 100%); /* Opera11.10+ */
-		background: -ms-linear-gradient(bottom, #8CA0B9 15%, #D2DCEB 100%); /* IE10+ */
-		background: linear-gradient(bottom, #8CA0B9 15%, #D2DCEB 100%); /* W3C */
+	background: #1693a5;
+	background: -moz-linear-gradient(top, #1693a5 0%, #137b89 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#1693a5), color-stop(100%,#137b89));
+	background: -webkit-linear-gradient(top, #1693a5 0%,#137b89 100%);
+	background: -o-linear-gradient(top, #1693a5 0%,#137b89 100%);
+	background: -ms-linear-gradient(top, #1693a5 0%,#137b89 100%);
+	background: linear-gradient(top, #1693a5 0%,#137b89 100%);
+	color:#fff;
 	-webkit-box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset;
 	-moz-box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset;
 	box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset;
-	color: #101010;
 }
 .ui-state-default a, .ui-state-default a:link, .ui-state-default a:visited { color: #4F4F4F; text-decoration: none; }
 .ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus { border: 1px solid #9D9D9D; font-weight: normal; color: #313131; }
@@ -128,6 +128,7 @@
 .ui-widget-content .ui-icon {background-image: url(images/ui-icons_222222_256x240.png); }
 .ui-widget-header .ui-icon {background-image: url(images/ui-icons_222222_256x240.png); }
 .ui-state-default .ui-icon { background-image: url(images/ui-icons_454545_256x240.png); }
+span.DataTables_sort_icon.ui-icon { background-image: url(images/ui-icons_FFFFFF_256x240.png); }
 .ui-state-hover .ui-icon, .ui-state-focus .ui-icon {background-image: url(images/ui-icons_454545_256x240.png); }
 .ui-state-active .ui-icon {background-image: url(images/ui-icons_454545_256x240.png); }
 .ui-state-highlight .ui-icon {background-image: url(images/ui-icons_454545_256x240.png); }

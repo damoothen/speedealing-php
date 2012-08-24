@@ -1938,7 +1938,7 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
 
 	$i = 0;
 	$obj = new stdClass();
-	print '<table class="table responsive-table" id="subscription_datatable" >';
+	print '<table class="display dt_act" id="subscription_datatable" >';
 	// Ligne des titres 
 	print'<thead>';
 	print'<th class="essential">';

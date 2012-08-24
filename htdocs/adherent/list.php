@@ -38,7 +38,7 @@ print start_box($titre,"twelve","16-Users.png");
 $i=0;
 $obj=new stdClass();
 print '<div class="datatable">';
-print '<table class="table responsive-table" id="member" >';
+print '<table class="display dt_act" id="member" >';
 // Ligne des titres 
 print'<thead>';
 print'<tr>';

@@ -864,7 +864,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 				<link rel="stylesheet" href="theme/developr/html/css/styles/table.css?v=1">
 
 				<!-- DataTables -->
-				<link rel="stylesheet" href="theme/developr/html/js/libs/DataTables/jquery.dataTables.css?v=1">
+				<!--<link rel="stylesheet" href="theme/developr/html/js/libs/DataTables/jquery.dataTables.css?v=1">-->
 
 				<!-- JavaScript at bottom except for Modernizr -->
 				<script src="theme/developr/html/js/libs/modernizr.custom.js"></script>

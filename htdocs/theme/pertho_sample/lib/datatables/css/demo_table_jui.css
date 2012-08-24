@@ -5,8 +5,8 @@
 .dataTables_wrapper select {display:inline;margin:2px 0;}
 .dataTables_paginate{width:auto;float:right;text-align:right;position:relative;top:-4px}
 .dataTables_info{float:left}
-table.display thead th,table.display tfoot th{text-align:left;font-size:10px;border:1px solid #ccc;padding:6px 8px 4px;text-transform:uppercase;vertical-align:middle}
-table.display thead th {cursor:pointer;background-color:#e0e0e0;font-weight:700}
+table.display thead th,table.display tfoot th{text-align:left;font-size:14px; font-family: 'Terminal Dosis', sans-serif; border:1px solid #ccc;padding:8px 8px 6px;/*text-transform:uppercase;*/vertical-align:middle}
+table.display thead th {cursor:pointer;/*background-color:#e0e0e0;font-weight:700*/}
 table.display thead th.sorting_disabled{cursor:default}
 div.dataTables_wrapper .ui-widget-header{font-weight:400}
 table.display thead th div.DataTables_sort_wrapper{position:relative}
@@ -44,7 +44,7 @@ box-shadow: 3px 3px 3px #CCC;
 border-radius: 0.2em;}
 table.display tfoot th{font-weight:400;padding:2px 8px 2px 8px}
 table.display tr.heading2 td{border-bottom:1px solid #aaa}
-table.display td{padding:2px 8px;border:1px solid #ccc;font-size:12px;vertical-align:middle}
+table.display td{padding:6px 8px;border:1px solid #ccc;font-size:12px;vertical-align:middle}
 table.noborder td{;border:0px;}
 table.display td .fancyImg {display:block;border:1px solid #dcdcdc;padding:2px;background:#fff;float:left}
 table.display td .fancyImg img {display:block}
@@ -90,7 +90,7 @@ table.display tr.even.gradeU {background-color: #eee;}
 table.display tr.odd {background-color: #f5f5f5;}
 table.display tr.even {background-color: white;}
 .TableTools {margin-bottom:0px; float: left}
-.ColVis_Button {border: medium none;cursor: pointer;display: inline-block;font-family: "Helvetica Neue","Helvetica",Arial,Verdana,sans-serif;font-weight: bold;line-height: 1;margin: 0;outline: medium none;position: relative;text-align: center;text-decoration: none;font-size: 10px;padding: 6px 14px 8px;width: auto;background-color: #E9E9E9;color: #333333}
+.ColVis_Button {border: medium none;cursor: pointer;display: inline-block;line-height: 1;margin: 0;outline: medium none;position: relative;text-align: center;text-decoration: none;font-size: 10px;padding: 6px 14px 8px;width: auto;}
 .ColVis_collection {border:1px solid #dcdcdc;margin-top:-1px;background:#fff;padding:4px 0;margin-left:1px}
 .ColVis_collection .ColVis_Button {border:none;background:none;text-align:left;padding:4px 6px}
 .DTTT_container {margin-bottom:0px; float: left}

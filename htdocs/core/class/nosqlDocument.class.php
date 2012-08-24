@@ -448,7 +448,7 @@ abstract class nosqlDocument extends CommonObject {
 		<?php endif; ?>
 						"aLengthMenu": [[5, 10, 25, 50, 100],[5, 10, 25, 50, 100]],
 						"bProcessing": true,
-						"bJQueryUI": false,
+						"bJQueryUI": true,
 						"bAutoWidth": false,
 						/*"sScrollY": "500px",
 						"oScroller": {
@@ -462,7 +462,7 @@ abstract class nosqlDocument extends CommonObject {
 						"bDeferRender": true,
 						"oLanguage": { "sUrl": "<?php echo DOL_URL_ROOT . '/includes/jquery/plugins/datatables/langs/' . ($langs->defaultlang ? $langs->defaultlang : "en_US") . ".txt"; ?>"},
 						/*$obj->sDom = '<\"top\"Tflpi<\"clear\">>rt<\"bottom\"pi<\"clear\">>';*/
-						"sPaginationType": 'full_numbers',
+						/*"sPaginationType": 'full_numbers',*/
 						/*$obj->sDom = 'TC<\"clear\">lfrtip';*/
 						"oTableTools": { "sSwfPath": "<?php echo DOL_URL_ROOT . '/includes/jquery/plugins/datatables/extras/TableTools/media/swf/copy_csv_xls.swf'; ?>"},
 						//if($obj->oTableTools->aButtons==null)
