@@ -688,14 +688,14 @@ li.message-menu {
 .columns {
 	margin-left: -2.25%;
 	}
-	/*.columns:last-child {
+	.columns:last-child {
 		margin-bottom: -20px;
-	}*/
-	/*.columns > div,
+	}
+	.columns > div,
 	.columns > form {
 		float: left;
 		margin: 0 0 20px 2.25%;
-	}*/
+	}
 
 	/* These styles define the columns size. They must be redefined for each responsive size */
 	.column,
