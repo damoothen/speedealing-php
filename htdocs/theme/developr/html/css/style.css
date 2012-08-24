@@ -688,9 +688,9 @@ li.message-menu {
 .columns {
 	margin-left: -2.25%;
 	}
-	.columns:last-child {
+	/*.columns:last-child {
 		margin-bottom: -20px;
-	}
+	}*/
 	/*.columns > div,
 	.columns > form {
 		float: left;
