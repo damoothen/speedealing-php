@@ -70,7 +70,7 @@ print start_box($title, "twelve", "16-Money.png");
 $i = 0;
 $obj = new stdClass();
 print '<div class="datatable">';
-print '<table class="table responsive-table" id="cotisation_datatable" >';
+print '<table class="display dt_act" id="cotisation_datatable" >';
 // Ligne des titres 
 print'<thead>';
 print'<tr>';
