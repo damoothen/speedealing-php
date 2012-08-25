@@ -332,7 +332,7 @@
 	Buttons
 	-------------------------------------------------- */
 
-	.button {
+/*	.button {
 		background: #00a6fc;
 		display: inline-block;
 		text-align: center;
@@ -348,7 +348,7 @@
 		border: none;
 		outline: none;
 		margin: 0;
-	}
+	}*/
 
   	/* Don't use native buttons on iOS */
 	input[type=submit].button, button.button { -webkit-appearance: none; }

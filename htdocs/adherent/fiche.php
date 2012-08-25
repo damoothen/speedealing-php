@@ -1028,6 +1028,10 @@ if ($action == 'edit') {
 
 	$head = member_prepare_head($object);
 
+	$titre = $langs->trans("Member");
+	print_fiche_titre($titre);
+	print '<div class="container">';
+	print '<div class="row">';
 	dol_fiche_head($head, 'general', $langs->trans("Member"), 0, 'user');
 
 	dol_htmloutput_errors($errmsg, $errmsgs);
@@ -1233,7 +1237,7 @@ if ($action == 'edit') {
 
 	print '</form>';
 
-	print '</div>';
+	print '</div></div>';
 }
 
 /*

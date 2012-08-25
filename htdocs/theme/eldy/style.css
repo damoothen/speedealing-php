@@ -75,7 +75,7 @@
 		ul.pagination {margin-bottom:14px}
 		ul.pagination a:hover {text-decoration:none}
 		input.input-text:focus, textarea:focus {background: #f3fee7}
-		input,textarea,select {font-family:inherit}
+		/*input,textarea,select {font-family:inherit}*/
 		label + input.input-text, label + textarea, label + select, label + div.dropdown, select + div.dropdown {margin-top: -6px}
 		.form-field.error label {color: inherit}
 		form.custom div.custom.dropdown a:hover {text-decoration:none}
