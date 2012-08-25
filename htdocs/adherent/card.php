@@ -105,8 +105,13 @@ if ($action != 'edit') {
 	 */
 
 	// Print mail content
+	$titre = $langs->trans("CardMember");
+	
+	print_fiche_titre($titre);
+	print '<div class="container">';
 	print '<div class="row">';
-	print start_box($langs->trans("CardMember"), "ten centered", "16-iPhone-4.png");
+	
+	print start_box($titre, "seven centered", "16-iPhone-4.png");
 	print '<table class="border" width="100%">';
 
 	// Subject
@@ -136,14 +141,18 @@ if ($action != 'edit') {
 	
 	print end_box();
 
-	print '</div>';
+	print '</div></div>';
 } else {
 	/*
 	 * Mailing en mode edition
 	 */
 
+	$titre = $langs->trans("CardMember");
+	print_fiche_titre($titre);
+	print '<div class="container">';
 	print '<div class="row">';
-	print start_box($langs->trans("CardMember"), "twelve", "16-iPhone-4.png");
+	
+	print start_box($titre, "twelve", "16-iPhone-4.png",false);
 	
 	print "\n";
 	print '<form name="edit_mailing" action="' . $_SERVER['PHP_SELF'] . '" method="post" enctype="multipart/form-data">' . "\n";
@@ -190,7 +199,7 @@ if ($action != 'edit') {
 	print '</form>';
 
 	print end_box();
-	print '</div>';
+	print '</div></div>';
 }
 
 llxFooter();

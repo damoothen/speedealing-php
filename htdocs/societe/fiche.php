@@ -1299,11 +1299,15 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 				exit;
 			}
 
+			$title = $langs->trans("ThirdParty");
+			
+			print_fiche_titre($title);
+			print '<div class="container">';
 			print '<div class="row">';
 
 			$head = societe_prepare_head($object);
 
-			print start_box($langs->trans("ThirdParty"), "eight", "16-Apartment-Building.png", true);
+			print start_box($title, "eight", "16-Apartment-Building.png", true);
 			// First onglet
 
 			for ($i = 0; $i < count($object->fk_extrafields->block); $i++) {
@@ -1764,7 +1768,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 		}
 	}
 
-	print '</div>'; // end row
+	print '</div></div>'; // end row
 // End of page
 	llxFooter();
 	$db->close();

@@ -59,6 +59,8 @@ $form = new Form($db);
 if (!$rowid && $action != 'create' && $action != 'edit') {
 
 	print_fiche_titre($langs->trans("MembersTypes"));
+	print '<div class="container">';
+	print '<div class="row">';
 
 	$i = 0;
 	$obj = new stdClass();
@@ -119,9 +121,7 @@ if (!$rowid && $action != 'create' && $action != 'edit') {
 	$obj->sDom = 'l<fr>t<\"clear\"rtip>';
 	$object->datatablesCreate($obj, "membertype", false, true);
 
-	print "</div>";
-	
-	print dol_fiche_end();
+	print "</div></div>";
 }
 
 
@@ -132,33 +132,18 @@ if (!$rowid && $action != 'create' && $action != 'edit') {
 /* * ************************************************************************* */
 if ($rowid) {
 
-	print '<div class="row">';
-
 	$titre = $langs->trans("MemberType");
-	print start_box($titre, "twelve", "16-Users.png");
 
-	dol_fiche_head($head, 'card', $langs->trans("MemberType"), 0, 'group');
+	
 
-
-	print '<table class="border" width="100%">';
-
-	// Label
-	print '<tr><td width="15%">' . $langs->trans("Label") . '</td><td>' . $rowid . '</td></tr>';
-
-	print '</table>';
-
-	print '</div>';
-
-	print end_box();
-	print "</div>";
-
+	print_fiche_titre($titre . " - " . $rowid);
+	print '<div class="container">';
+	print '<div class="row">';
 
 	// Show list of members (nearly same code than in page liste.php)
 
-	print '<div class="row">';
-
 	$titre = $langs->trans("Members");
-	print start_box($titre, "six", "16-User.png");
+	print start_box($titre, "six", "16-Users.png");
 
 	$i = 0;
 	$obj = new stdClass();
@@ -253,6 +238,7 @@ if ($rowid) {
 	print start_box($titre, "six", "16-Mail.png");
 
 	print end_box();
+	print '</div></div>';
 }
 
 $db->close();

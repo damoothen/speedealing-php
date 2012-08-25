@@ -35,7 +35,7 @@
 	.taj{text-align:justify}
 
 	a {color:#21759b}
-	a:hover {color:#21759b;text-decoration:underline}
+	a:hover {color:#21759b;}
 	a:active,a:focus {color: #21759b}
 	a.inv {text-decoration:underline}
 	a.inv:hover {text-decoration:none}

@@ -1517,9 +1517,11 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
 	  $adht->libelle = $object->typeid;
 	  } */
 
-	print '<div class="row">';
-
 	$titre = $langs->trans("Member");
+	print_fiche_titre($titre);
+	print '<div class="container">';
+	print '<div class="row">';
+	
 	print start_box($titre, "twelve", "16-User.png");
 
 	/*
@@ -2062,7 +2064,7 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
 	print end_box();
 }
 
-print dol_fiche_end();
+print '</div></div>';
 
 llxFooter();
 
