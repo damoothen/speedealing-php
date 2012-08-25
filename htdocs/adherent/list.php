@@ -30,10 +30,13 @@ $object = new Adherent($db);
 
 llxHeader('',$langs->trans("Member"),'EN:Module_Foundations|FR:Module_Adh&eacute;rents|ES:M&oacute;dulo_Miembros');
 
+$titre=$langs->trans("MembersList");
+
+print_fiche_titre($titre);
+print '<div class="container">';
 print '<div class="row">';
 
-$titre=$langs->trans("MembersList");
-print start_box($titre,"twelve","16-Users.png");
+//print start_box($titre,"twelve","16-Users.png");
 
 $i=0;
 $obj=new stdClass();
@@ -146,8 +149,7 @@ print "</div>";
 $obj->bServerSide = true;
 $object->datatablesCreate($obj,"member",true,true);
 
-print end_box();
-print '</div>'; // end row
+print '</div></div>'; // end row
 
 llxFooter();
 ?>

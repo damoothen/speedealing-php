@@ -41,6 +41,9 @@ $staticmember = new Adherent($db);
 
 print_fiche_titre($langs->trans("MembersArea"));
 
+print '<div class="container">';
+print '<div class="row">';
+
 print '<table border="0" width="100%" class="notopnoleftnoright">';
 
 $var = True;
@@ -205,7 +208,7 @@ print "</table><br>\n";
 print '</td></tr>';
 print '</table>';
 
-print dol_fiche_end();
+print '</div></div>';
 
 llxFooter();
 $db->close();

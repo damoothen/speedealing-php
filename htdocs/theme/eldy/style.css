@@ -286,7 +286,7 @@
 		.ntf_tip_blue span {background: url(img/ntf_tip.png) no-repeat right -17px}
 
 	/* widget box */
-		.box_c,.box_s,.box_s_reg {margin-bottom:25px}
+		.box_c,.box_s,.box_s_reg {margin-bottom:20px}
 		.box_c_heading {height:30px;border:1px solid #dcdcdc;font-size:16px;line-height:30px;position:relative}
 		.box_c_heading .ff_icon {color:#bdbdbd;font-size:20px}
 		.box_c_heading .box_c_ico {width:36px;border-right:1px solid #dcdcdc;box-shadow: 1px 0 0 rgba(255,255,255,.5);background: transparent;background: rgba(0, 0, 0, .2);float:left;text-align:center;line-height:34px;height:30px;overflow:hidden}
@@ -296,7 +296,7 @@
 		.box_c_heading .gh_button-group {margin:4px 12px 0 0}
 		.box_c_heading .gh_button-group a {color:#333 !important}
 		.box_c_heading .gh_button-group a:hover {color:#fff !important}
-		.box_c_content {padding:12px;border-width:0 1px 1px;border-style:solid;border-color: #dcdcdc;background:#fff}
+		.box_c_content {padding:12px 6px;border-width:0 1px 1px;border-style:solid;border-color: #dcdcdc;background:#fff}
 		.cntn_noP {padding:0}
 		.bAct_hide,.bAct_toggle {background: url(img/bAct_bg.png) no-repeat 0 0;display:block;float:right;height:18px;width:18px;overflow:hidden;margin:7px 5px 0 0}
 		.bAct_hide img,.bAct_toggle	img {display:block;cursor:pointer;background-image: url(img/bAct_bg.png);background-repeat: no-repeat;height:18px;width:18px}
@@ -798,4 +798,4 @@
 .vcard .fright li{text-align: right}
 .vcard li img{vertical-align: bottom; margin: 0 5px}
 .info{background-image: url(img/ico/icSw2/16-Alert-2.png); background-repeat: no-repeat;background-position: right;  padding-right: 18px;}
-.datatable {min-height:350px;}
+.datatable {min-height:470px;}

@@ -89,9 +89,11 @@ if ($type != '') {
 else
     $titre = $langs->trans("ListOfAll");
 
+print_fiche_titre($titre);
+print '<div class="container">';
 print '<div class="row">';
 
-print start_box($titre,"twelve","16-Companies.png");
+//print start_box($titre,"twelve","16-Companies.png");
 
 $i=0;
 $obj=new stdClass();
@@ -187,8 +189,8 @@ print "</div>";
 $obj->bServerSide = true;
 $object->datatablesCreate($obj,"societe",true,true);
 
-print end_box();
-print '</div>'; // end row
+//print end_box();
+print '</div></div>'; // end row/container
 
 llxFooter();
 ?>

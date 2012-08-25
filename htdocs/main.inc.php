@@ -727,7 +727,7 @@ if (!function_exists("llxHeader")) {
 		top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss); // Show html headers
 
 		if (!defined('NOHEADER'))
-			print '<body class="clearfix with-menu with-shortcuts ptrn_a grdnt_c mhover_c fullW">';
+			print '<body class="clearfix with-menu with-shortcuts grdnt_c mhover_c fullW">';
 		else
 			print '<body class="fullW" style="background: white;">';
 
@@ -1508,18 +1508,7 @@ function main_area($title = '') {
 	if (!empty($conf->global->MAIN_ONLY_LOGIN_ALLOWED))
 		print info_admin($langs->trans("WarningYouAreInMaintenanceMode", $conf->global->MAIN_ONLY_LOGIN_ALLOWED));
 	
-	$now = dol_now();
-	
-	?>
-	<hgroup id="main-title" class="thin">
-		<h1>Dashboard</h1>
-		<h2><?php echo strtolower($langs->trans(date('F',$now)));?> <strong><?php echo date('d',$now);?></strong></h2>
-	</hgroup>
-	<?php
-	
-	print '<div class="container">';
 }
-
 /**
  *  Return helpbaseurl, helppage and mode
  *
@@ -1598,7 +1587,6 @@ function printSearchForm($urlaction, $urlobject, $title, $htmlmodesearch, $htmli
 function llxFooter($foot = '') {
 	global $conf, $langs, $dolibarr_auto_user, $micro_start_time, $memcache;
 	?>
-	</div>
 	</section>
 	
 	<!-- End main content -->
@@ -1646,12 +1634,13 @@ function llxFooter($foot = '') {
 
 			// Favicon count
 			Tinycon.setBubble(2);
+			
 		</script>
 
-		<footer class="container" id="footer">
+		<footer id="footer">
 			<div class="row">
-				<div class="twelve columns">
-					Copyright &copy; 2012 speedealing.com - tzd-themes.com
+				<div class="eleven centered columns">
+					Copyright &copy; 2012 speedealing.com - symeos.com - tzd-themes.com - themeforest.net/user/displayinline
 				</div>
 			</div>
 		</footer>

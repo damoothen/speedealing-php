@@ -1,5 +1,4 @@
 <?php
-
 /* Copyright (C) 2000-2007 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2003      Jean-Louis Bergamo   <jlb@j1b.org>
  * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
@@ -215,12 +214,11 @@ function dol_shutdown() {
 function dol_syslog($message, $level = LOG_INFO, $module = "undefined") {
 	global $conf, $user, $langs, $_REQUEST, $couch;
 
-	if(is_object($couch))
-	{
+	if (is_object($couch)) {
 		$logdb = clone $couch;
-		$logdb-> useDatabase("syslog");
+		$logdb->useDatabase("syslog");
 	}
-	
+
 	$log = new stdClass();
 	$log->module = $module;
 
@@ -830,10 +828,16 @@ function dol_print_date($time, $format = '', $tzoutput = 'tzserver', $outputlang
 
 
 
+
+
+
 		
 // If date undefined or "", we return ""
 	if (dol_strlen($time) == 0)
 		return '';  // $time=0 allowed (it means 01/01/1970 00:00:00)
+
+
+
 
 
 
@@ -2373,14 +2377,19 @@ function end_box() {
  * 	@param	int		$id					To force an id on html objects
  * 	@return	void
  */
-function print_fiche_titre($titre, $mesg = '', $picto = 'title.png', $pictoisfullpath = 0, $id = '') {
-	print '<div class="row">';
-	print start_box($titre, "twelve", "16-Apartment-Building.png");
-	//print load_fiche_titre($titre, $mesg, $picto, $pictoisfullpath, $id);
-	//print '</div>';
-	//print '</div>';
-	//print '<div class="row">';
-	//print '<div class="tweelve columns">';
+function print_fiche_titre($title, $showDate = false) {
+	global $langs;
+	
+	if ($showDate)
+		$now = dol_now();
+	?>
+	<hgroup id="main-title" class="thin">
+		<h1><?php echo $title; ?></h1>
+		<?php if ($showDate): ?>
+			<h2><?php echo strtolower($langs->trans(date('F', $now))); ?> <strong><?php echo date('d', $now); ?></strong></h2>
+		<?php endif ?>
+	</hgroup>
+	<?php
 }
 
 /**
@@ -2711,6 +2720,9 @@ function price2num($amount, $rounding = '', $alreadysqlnb = 0) {
 			$nbofdectoround = $conf->global->MAIN_MAX_DECIMALS_SHOWN;
 		elseif ($rounding == '2')
 			$nbofdectoround = 2;  // For admin info page
+
+
+
 
 
 
@@ -3079,6 +3091,9 @@ function dol_mkdir($dir) {
 			$ccdir = $cdir[$i];
 		if (preg_match("/^.:$/", $ccdir, $regs))
 			continue; // Si chemin Windows incomplet, on poursuit par rep suivant
+
+
+
 
 
 

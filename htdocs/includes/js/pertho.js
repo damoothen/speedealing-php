@@ -407,7 +407,7 @@
 		resize: function() {
 			var docHeight = $(document.body).height() - $("#sticky-footer-push").height();
 			if(docHeight < $(window).height()){
-				var diff = $(window).height() - docHeight;
+				var diff = $(window).height() - docHeight - 10;
 				if ($("#sticky-footer-push").length == 0) {
 					$('#footer').before('<div id="sticky-footer-push"></div>');
 				}
