@@ -78,8 +78,8 @@ print_fiche_titre($langs->trans("Dashboard"), true);
 <div class="dashboard">
 	<div class="row">
 
-		<div class="nine columns" id="demo-chart">
-			<!-- This div will hold the chart generated in the footer -->
+		<div class="nine columns">
+			<div id="demo-chart" style="height: 300px; min-width: 100px"></div>
 		</div>
 
 		<div class="three columns">
@@ -594,106 +594,96 @@ if ($user->admin && empty($conf->global->MAIN_REMOVE_INSTALL_WARNING)) {
 print '</div></div>';
 ?>
 <!-- Charts library -->
-<!-- Load the AJAX API -->
-<script src="http://www.google.com/jsapi"></script>
-<script>
+<script type="text/javascript">
+	(function($){ // encapsulate jQuery
 
-	/*
-	 * This script is dedicated to building and refreshing the demo chart
-	 * Remove if not needed
-	 */
+		$(function() {
+			var seriesOptions = [],
+			yAxisOptions = [],
+			seriesCounter = 0,
+			names = ['MSFT', 'AAPL', 'GOOG'],
+			colors = Highcharts.getOptions().colors;
 
-	// Demo chart
-	var chartInit = false,
-	drawVisitorsChart = function()
-	{
-		// Create our data table.
-		var data = new google.visualization.DataTable();
-		var raw_data = [['Website', 50, 73, 104, 129, 146, 176, 139, 149, 218, 194, 96, 53],
-			['Shop', 82, 77, 98, 94, 105, 81, 104, 104, 92, 83, 107, 91],
-			['Forum', 50, 39, 39, 41, 47, 49, 59, 59, 52, 64, 59, 51],
-			['Others', 45, 35, 35, 39, 53, 76, 56, 59, 48, 40, 48, 21]];
+			$.each(names, function(i, name) {
 
-		var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+				$.getJSON('http://www.highcharts.com/samples/data/jsonp.php?filename='+ name.toLowerCase() +'-c.json&callback=?',	function(data) {
 
-		data.addColumn('string', 'Month');
-		for (var i = 0; i < raw_data.length; ++i)
-		{
-			data.addColumn('number', raw_data[i][0]);
-		}
+					seriesOptions[i] = {
+						name: name,
+						data: data
+					};
 
-		data.addRows(months.length);
+					// As we're loading the data asynchronously, we don't know what order it will arrive. So
+					// we keep a counter and create the chart when all the data is loaded.
+					seriesCounter++;
 
-		for (var j = 0; j < months.length; ++j)
-		{
-			data.setValue(j, 0, months[j]);
-		}
-		for (var i = 0; i < raw_data.length; ++i)
-		{
-			for (var j = 1; j < raw_data[i].length; ++j)
-			{
-				data.setValue(j-1, i+1, raw_data[i][j]);
-			}
-		}
-
-		// Create and draw the visualization.
-		// Learn more on configuration for the LineChart: http://code.google.com/apis/chart/interactive/docs/gallery/linechart.html
-		var div = $('#demo-chart'),
-		divWidth = div.width();
-		new google.visualization.LineChart(div.get(0)).draw(data, {
-			title: 'Monthly unique visitors count',
-			width: divWidth,
-			height: $.template.mediaQuery.is('mobile') ? 180 : 265,
-			legend: 'right',
-			yAxis: {title: '(thousands)'},
-			backgroundColor: ($.template.ie7 || $.template.ie8) ? '#494C50' : 'transparent',	// IE8 and lower do not support transparency
-			legendTextStyle: { color: 'white' },
-			titleTextStyle: { color: 'white' },
-			hAxis: {
-				textStyle: { color: 'white' }
-			},
-			vAxis: {
-				textStyle: { color: 'white' },
-				baselineColor: '#666666'
-			},
-			chartArea: {
-				top: 35,
-				left: 30,
-				width: divWidth-40
-			},
-			legend: 'bottom'
-		});
-
-		// Message only when resizing
-		if (chartInit)
-		{
-			notify('Chart resized', 'The width change event has been triggered.', {
-				icon: 'img/demo/icon.png'
+					if (seriesCounter == names.length) {
+						createChart();
+					}
+				});
 			});
-		}
 
-		// Ready
-		chartInit = true;
-	};
 
-	// Load the Visualization API and the piechart package.
-	google.load('visualization', '1', {
-		'packages': ['corechart']
-	});
 
-	// Set a callback to run when the Google Visualization API is loaded.
-	google.setOnLoadCallback(drawVisitorsChart);
+			// create the chart when all data is loaded
+			function createChart() {
 
-	// Watch for block resizing
-	$('#demo-chart').widthchange(drawVisitorsChart);
+				chart = new Highcharts.StockChart({
+					chart: {
+						renderTo: 'demo-chart',
+						borderRadius: 0
+					},
+					credits: {
+						enabled:false
+					},
+					navigator : {
+						enabled : false
+					},
+					rangeSelector: {
+						selected: 4
+					},
 
-	// Respond.js hook (media query polyfill)
-	$(document).on('respond-ready', drawVisitorsChart);
+					yAxis: {
+						labels: {
+							formatter: function() {
+								return (this.value > 0 ? '+' : '') + this.value + '%';
+							}
+						},
+						plotLines: [{
+								value: 0,
+								width: 2,
+								color: 'silver'
+							}]
+					},
+		    
+					plotOptions: {
+						series: {
+							compare: 'percent'
+						}
+					},
+		    
+					tooltip: {
+						pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.change}%)<br/>',
+						valueDecimals: 2
+					},
+		    
+					series: seriesOptions
+				});
+			}
 
+		});
+	})(jQuery);
 </script>
+
 <?php
 llxFooter();
-
+/* ?>
+  <script>
+  $('#demo-chart').onresize(function () {
+  chart.setSize(document.getElementById("demo-chart").offsetWidth,300);
+  });
+  </script>
+  <?php */
 $db->close();
 
 /**

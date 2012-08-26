@@ -245,6 +245,7 @@ if (!defined('NOREQUIREAJAX') && $conf->use_javascript_ajax)
 
 
 
+
 	
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
@@ -1032,6 +1033,12 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 				// jQuery Multiselect
 				print '<script type="text/javascript" src="includes/jquery/plugins/multiselect/js/ui.multiselect.js"></script>' . "\n";
 
+				// Highstock
+				//print '<script src="https://ajax.googleapis.com/ajax/libs/mootools/1.4.2/mootools-yui-compressed.js" type="text/javascript"></script>';
+				//print '<script src="includes/jquery/plugins/Highstock/js/adapters/mootools-adapter.js" type="text/javascript"></script>';
+				print '<script type="text/javascript" src="includes/jquery/plugins/Highstock/js/highstock.js"></script>';
+				print '<script type="text/javascript" src="includes/jquery/plugins/Highstock/js/themes/gray.js"></script>';
+
 				// CKEditor
 				print '<script type="text/javascript">var CKEDITOR_BASEPATH = \'' . DOL_URL_ROOT . '/includes/ckeditor/\';</script>' . "\n";
 				print '<script type="text/javascript" src="includes/ckeditor/ckeditor_basic.js"></script>' . "\n";
@@ -1179,416 +1186,413 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 			<li><span title="Notes"><img src="theme/eldy/img/modules/Notes.png"/>Notes</span></li>
 		</ul>
 
-	<?php
-}
-
-/**
- *  Show left menu bar
- *  @return	void
- */
-function left_menu() {
-	global $user, $conf, $langs, $db;
-	global $hookmanager;
-
-	$searchform = '';
-	$bookmarks = '';
-
-	// Instantiate hooks of thirdparty module
-	if (!is_object($hookmanager)) {
-		include_once(DOL_DOCUMENT_ROOT . '/core/class/hookmanager.class.php');
-		$hookmanager = new HookManager($db);
+		<?php
 	}
-	$hookmanager->initHooks(array('searchform', 'leftblock'));
 
-	print "\n";
-	?>
-	<!-- Sidebar/drop-down menu -->
-	<section id="menu" role="complementary">
+	/**
+	 *  Show left menu bar
+	 *  @return	void
+	 */
+	function left_menu() {
+		global $user, $conf, $langs, $db;
+		global $hookmanager;
 
-		<!-- This wrapper is used by several responsive layouts -->
-		<div id="menu-content">
-			<header>
-				<form action = "search.php" id = "search_box" method = "post">
-					<input name = "query" id = "query" type = "text" size = "40" placeholder = "<?php echo $langs->trans("SearchOf"); ?>..." autocomplete = "off" />
-				</form>
-			</header>
-			<script>
-				$(document).ready(function() {
-					$('#query').sautocomplete('search/data.php', {
-						delay		: 10,
-						minChars	: 2,
-						max			: 6,
-						matchCase	: 1,
-						width		: 212
-					}).result(function(event, query_val) {
-						$.fancybox({
-							href	: 'search/search_result.php',
-							ajax : {
-								type	: "POST",
-								data	: "search_item=" + query_val
-							},
-							'overlayOpacity'	: '0.2',
-							'transitionIn'		: 'elastic',
-							'transitionOut'		: 'fade',
-							onComplete			: function() {
-								$('#query').blur();
-							}
+		$searchform = '';
+		$bookmarks = '';
+
+		// Instantiate hooks of thirdparty module
+		if (!is_object($hookmanager)) {
+			include_once(DOL_DOCUMENT_ROOT . '/core/class/hookmanager.class.php');
+			$hookmanager = new HookManager($db);
+		}
+		$hookmanager->initHooks(array('searchform', 'leftblock'));
+
+		print "\n";
+		?>
+		<!-- Sidebar/drop-down menu -->
+		<section id="menu" role="complementary">
+
+			<!-- This wrapper is used by several responsive layouts -->
+			<div id="menu-content">
+				<header>
+					<form action = "search.php" id = "search_box" method = "post">
+						<input name = "query" id = "query" type = "text" size = "40" placeholder = "<?php echo $langs->trans("SearchOf"); ?>..." autocomplete = "off" />
+					</form>
+				</header>
+				<script>
+					$(document).ready(function() {
+						$('#query').sautocomplete('search/data.php', {
+							delay		: 10,
+							minChars	: 2,
+							max			: 6,
+							matchCase	: 1,
+							width		: 212
+						}).result(function(event, query_val) {
+							$.fancybox({
+								href	: 'search/search_result.php',
+								ajax : {
+									type	: "POST",
+									data	: "search_item=" + query_val
+								},
+								'overlayOpacity'	: '0.2',
+								'transitionIn'		: 'elastic',
+								'transitionOut'		: 'fade',
+								onComplete			: function() {
+									$('#query').blur();
+								}
+							});
+						});
+						$('#search_box').submit(function() {
+							var query_val = $("#query").val();
+							$.fancybox({
+								href	: 'search/search_result.php',
+								ajax : {
+									type	: "POST",
+									data	: "search_item=" + query_val
+								},
+								'overlayOpacity'	: '0.2',
+								'transitionIn'		: 'elastic',
+								'transitionOut'		: 'fade'
+							});
+							return false;
 						});
 					});
-					$('#search_box').submit(function() {
-						var query_val = $("#query").val();
-						$.fancybox({
-							href	: 'search/search_result.php',
-							ajax : {
-								type	: "POST",
-								data	: "search_item=" + query_val
-							},
-							'overlayOpacity'	: '0.2',
-							'transitionIn'		: 'elastic',
-							'transitionOut'		: 'fade'
-						});
-						return false;
-					});
-				});
-			</script>
+				</script>
 
 
-			<div id="profile">
-				<img src="theme/developr/html/img/user.png" width="64" height="64" alt="User name" class="user-icon">
-				Hello
-				<span class="name"><?php echo $user->values->Firstname; ?> <b><?php echo $user->values->Lastname; ?></b></span>
-			</div>
+				<div id="profile">
+					<img src="theme/developr/html/img/user.png" width="64" height="64" alt="User name" class="user-icon">
+					Hello
+					<span class="name"><?php echo $user->values->Firstname; ?> <b><?php echo $user->values->Lastname; ?></b></span>
+				</div>
 
-			<!-- By default, this section is made for 4 icons, see the doc to learn how to change this, in "basic markup explained" -->
-			<ul id="access" class="children-tooltip">
-				<li><a href="index.php?idmenu=menu:home" title="<?php echo $langs->trans("Home"); ?>"><span class="icon-home"></span></a></li>
-				<li><a href="inbox.html" title="Messages"><span class="icon-inbox"></span><span class="count">2</span></a></li>
-				<li><a href="calendars.html" title="Calendar"><span class="icon-calendar"></span></a></li>
-				<li><a href="user/fiche.php?id=<?php echo $user->id; ?>" title="Profile"><span class="icon-gear"></span></a></li>
-				<li><a href="user/logout.php" title="Log out"><span class="icon-unlock"></span></a></li>
-			</ul>
-			
-			<?php
-			
-			// Show menu
-			$menu = new MenuAuguria($db);
-			$menu->atarget = $target;
-			$menu->showmenuTop();   // This contains a \n
-			
-			?>
+				<!-- By default, this section is made for 4 icons, see the doc to learn how to change this, in "basic markup explained" -->
+				<ul id="access" class="children-tooltip">
+					<li><a href="index.php?idmenu=menu:home" title="<?php echo $langs->trans("Home"); ?>"><span class="icon-home"></span></a></li>
+					<li><a href="inbox.html" title="Messages"><span class="icon-inbox"></span><span class="count">2</span></a></li>
+					<li><a href="calendars.html" title="Calendar"><span class="icon-calendar"></span></a></li>
+					<li><a href="user/fiche.php?id=<?php echo $user->id; ?>" title="Profile"><span class="icon-gear"></span></a></li>
+					<li><a href="user/logout.php" title="Log out"><span class="icon-unlock"></span></a></li>
+				</ul>
 
-			<ul class="unstyled-list">
-				<li class="title-menu">Today's event</li>
-				<li>
-					<ul class="calendar-menu">
-						<li>
-							<a href="#" title="See event">
-								<time datetime="2011-02-24"><b>24</b> Feb</time>
-								<small class="green">10:30</small>
-								Event's description
-							</a>
-						</li>
-					</ul>
-				</li>
-				<li class="title-menu">New messages</li>
-				<li>
-					<ul class="message-menu">
-						<li>
-							<span class="message-status">
-								<a href="#" class="starred" title="Starred">Starred</a>
-								<a href="#" class="new-message" title="Mark as read">New</a>
-							</span>
-							<span class="message-info">
-								<span class="blue">17:12</span>
-								<a href="#" class="attach" title="Download attachment">Attachment</a>
-							</span>
-							<a href="#" title="Read message">
-								<strong class="blue">John Doe</strong><br>
-								<strong>Mail subject</strong>
-							</a>
-						</li>
-						<li>
-							<a href="#" title="Read message">
+				<?php
+				// Show menu
+				$menu = new MenuAuguria($db);
+				$menu->atarget = $target;
+				$menu->showmenuTop();   // This contains a \n
+				?>
+
+				<ul class="unstyled-list">
+					<li class="title-menu">Today's event</li>
+					<li>
+						<ul class="calendar-menu">
+							<li>
+								<a href="#" title="See event">
+									<time datetime="2011-02-24"><b>24</b> Feb</time>
+									<small class="green">10:30</small>
+									Event's description
+								</a>
+							</li>
+						</ul>
+					</li>
+					<li class="title-menu">New messages</li>
+					<li>
+						<ul class="message-menu">
+							<li>
 								<span class="message-status">
-									<span class="unstarred">Not starred</span>
-									<span class="new-message">New</span>
+									<a href="#" class="starred" title="Starred">Starred</a>
+									<a href="#" class="new-message" title="Mark as read">New</a>
 								</span>
 								<span class="message-info">
-									<span class="blue">15:47</span>
+									<span class="blue">17:12</span>
+									<a href="#" class="attach" title="Download attachment">Attachment</a>
+								</span>
+								<a href="#" title="Read message">
+									<strong class="blue">John Doe</strong><br>
+									<strong>Mail subject</strong>
+								</a>
+							</li>
+							<li>
+								<a href="#" title="Read message">
+									<span class="message-status">
+										<span class="unstarred">Not starred</span>
+										<span class="new-message">New</span>
+									</span>
+									<span class="message-info">
+										<span class="blue">15:47</span>
+									</span>
+									<strong class="blue">May Starck</strong><br>
+									<strong>Mail subject a bit longer</strong>
+								</a>
+							</li>
+							<li>
+								<span class="message-status">
+									<span class="unstarred">Not starred</span>
+								</span>
+								<span class="message-info">
+									<span class="blue">15:12</span>
 								</span>
 								<strong class="blue">May Starck</strong><br>
-								<strong>Mail subject a bit longer</strong>
-							</a>
-						</li>
-						<li>
-							<span class="message-status">
-								<span class="unstarred">Not starred</span>
-							</span>
-							<span class="message-info">
-								<span class="blue">15:12</span>
-							</span>
-							<strong class="blue">May Starck</strong><br>
-							Read message
-						</li>
-					</ul>
-				</li>
-			</ul>
+								Read message
+							</li>
+						</ul>
+					</li>
+				</ul>
 
-		</div>
-		<!-- End content wrapper -->
+			</div>
+			<!-- End content wrapper -->
 
-		<!-- This is optional -->
-		<footer id="menu-footer">
-			<p class="button-height">
-				<input type="checkbox" name="auto-refresh" id="auto-refresh" checked="checked" class="switch float-right">
-				<label for="auto-refresh">Auto-refresh</label>
-			</p>
-		</footer>
+			<!-- This is optional -->
+			<footer id="menu-footer">
+				<p class="button-height">
+					<input type="checkbox" name="auto-refresh" id="auto-refresh" checked="checked" class="switch float-right">
+					<label for="auto-refresh">Auto-refresh</label>
+				</p>
+			</footer>
 
-	</section>
-	<!-- End sidebar/drop-down menu -->
-	<?php
-	// Define $searchform
-	if ($conf->societe->enabled && $conf->global->MAIN_SEARCHFORM_SOCIETE && $user->rights->societe->lire) {
-		$langs->load("companies");
-		$searchform.=printSearchForm(DOL_URL_ROOT . '/societe/societe.php', DOL_URL_ROOT . '/societe/societe.php', img_object('', 'company') . ' ' . $langs->trans("ThirdParties"), 'soc', 'socname');
-	}
+		</section>
+		<!-- End sidebar/drop-down menu -->
+		<?php
+		// Define $searchform
+		if ($conf->societe->enabled && $conf->global->MAIN_SEARCHFORM_SOCIETE && $user->rights->societe->lire) {
+			$langs->load("companies");
+			$searchform.=printSearchForm(DOL_URL_ROOT . '/societe/societe.php', DOL_URL_ROOT . '/societe/societe.php', img_object('', 'company') . ' ' . $langs->trans("ThirdParties"), 'soc', 'socname');
+		}
 
-	if ($conf->societe->enabled && $conf->global->MAIN_SEARCHFORM_CONTACT && $user->rights->societe->lire) {
-		$langs->load("companies");
-		$searchform.=printSearchForm(DOL_URL_ROOT . '/contact/list.php', DOL_URL_ROOT . '/contact/list.php', img_object('', 'contact') . ' ' . $langs->trans("Contacts"), 'contact', 'contactname');
-	}
+		if ($conf->societe->enabled && $conf->global->MAIN_SEARCHFORM_CONTACT && $user->rights->societe->lire) {
+			$langs->load("companies");
+			$searchform.=printSearchForm(DOL_URL_ROOT . '/contact/list.php', DOL_URL_ROOT . '/contact/list.php', img_object('', 'contact') . ' ' . $langs->trans("Contacts"), 'contact', 'contactname');
+		}
 
-	if ((($conf->product->enabled && $user->rights->produit->lire) || ($conf->service->enabled && $user->rights->service->lire))
-			&& $conf->global->MAIN_SEARCHFORM_PRODUITSERVICE) {
-		$langs->load("products");
-		$searchform.=printSearchForm(DOL_URL_ROOT . '/product/liste.php', DOL_URL_ROOT . '/product/liste.php', img_object('', 'product') . ' ' . $langs->trans("Products") . "/" . $langs->trans("Services"), 'products', 'sall');
-	}
+		if ((($conf->product->enabled && $user->rights->produit->lire) || ($conf->service->enabled && $user->rights->service->lire))
+				&& $conf->global->MAIN_SEARCHFORM_PRODUITSERVICE) {
+			$langs->load("products");
+			$searchform.=printSearchForm(DOL_URL_ROOT . '/product/liste.php', DOL_URL_ROOT . '/product/liste.php', img_object('', 'product') . ' ' . $langs->trans("Products") . "/" . $langs->trans("Services"), 'products', 'sall');
+		}
 
-	if ($conf->adherent->enabled && $conf->global->MAIN_SEARCHFORM_ADHERENT && $user->rights->adherent->lire) {
-		$langs->load("members");
-		$searchform.=printSearchForm(DOL_URL_ROOT . '/adherents/liste.php', DOL_URL_ROOT . '/adherents/liste.php', img_object('', 'user') . ' ' . $langs->trans("Members"), 'member', 'sall');
-	}
+		if ($conf->adherent->enabled && $conf->global->MAIN_SEARCHFORM_ADHERENT && $user->rights->adherent->lire) {
+			$langs->load("members");
+			$searchform.=printSearchForm(DOL_URL_ROOT . '/adherents/liste.php', DOL_URL_ROOT . '/adherents/liste.php', img_object('', 'user') . ' ' . $langs->trans("Members"), 'member', 'sall');
+		}
 
-	// Execute hook printSearchForm
-	$parameters = array();
-	$searchform.=$hookmanager->executeHooks('printSearchForm', $parameters); // Note that $action and $object may have been modified by some hooks
-	// Define $bookmarks
-	if ($conf->bookmark->enabled && $user->rights->bookmark->lire) {
-		include_once (DOL_DOCUMENT_ROOT . '/bookmarks/bookmarks.lib.php');
-		$langs->load("bookmarks");
+		// Execute hook printSearchForm
+		$parameters = array();
+		$searchform.=$hookmanager->executeHooks('printSearchForm', $parameters); // Note that $action and $object may have been modified by some hooks
+		// Define $bookmarks
+		if ($conf->bookmark->enabled && $user->rights->bookmark->lire) {
+			include_once (DOL_DOCUMENT_ROOT . '/bookmarks/bookmarks.lib.php');
+			$langs->load("bookmarks");
 
-		$bookmarks = printBookmarksList($db, $langs);
-	}
+			$bookmarks = printBookmarksList($db, $langs);
+		}
 
 // Load the top menu manager (only if not already done)
-	/*if (!class_exists('MenuLeft')) {
-		$menufound = 0;
-		$dirmenus = array_merge(array("/core/menus/"), $conf->menus_modules);
-		foreach ($dirmenus as $dirmenu) {
-			$menufound = dol_include_once($dirmenu . "standard/" . $left_menu);
-			if ($menufound)
-				break;
-		}
-		if (!$menufound) { // If failed to include, we try with standard
-			$top_menu = 'eldy_backoffice.php';
-			include_once(DOL_DOCUMENT_ROOT . "/core/menus/standard/" . $top_menu);
-		}
-	}*/
+		/* if (!class_exists('MenuLeft')) {
+		  $menufound = 0;
+		  $dirmenus = array_merge(array("/core/menus/"), $conf->menus_modules);
+		  foreach ($dirmenus as $dirmenu) {
+		  $menufound = dol_include_once($dirmenu . "standard/" . $left_menu);
+		  if ($menufound)
+		  break;
+		  }
+		  if (!$menufound) { // If failed to include, we try with standard
+		  $top_menu = 'eldy_backoffice.php';
+		  include_once(DOL_DOCUMENT_ROOT . "/core/menus/standard/" . $top_menu);
+		  }
+		  } */
 
 
-	// Left column
-	print '<!--Begin left area - menu ' . $left_menu . '-->' . "\n";
-	/*
-	  print '<div class = "row">' . "\n";
-	  print '<div class = "three columns hide-on-phones">' . "\n";
+		// Left column
+		print '<!--Begin left area - menu ' . $left_menu . '-->' . "\n";
+		/*
+		  print '<div class = "row">' . "\n";
+		  print '<div class = "three columns hide-on-phones">' . "\n";
 
-	  //$menuleft=new MenuLeft($db,$menu_array_before,$menu_array_after);
-	  //$menuleft->showmenu(); // output menu_array and menu found in database
-	  // Show other forms
-	  if ($searchform) {
-	  print "\n";
-	  print "<!-- Begin SearchForm -->\n";
-	  print '<div id = "blockvmenusearch" class = "blockvmenusearch">' . "\n";
-	  print $searchform;
-	  print '</div>' . "\n";
-	  print "<!-- End SearchForm -->\n";
-	  }
+		  //$menuleft=new MenuLeft($db,$menu_array_before,$menu_array_after);
+		  //$menuleft->showmenu(); // output menu_array and menu found in database
+		  // Show other forms
+		  if ($searchform) {
+		  print "\n";
+		  print "<!-- Begin SearchForm -->\n";
+		  print '<div id = "blockvmenusearch" class = "blockvmenusearch">' . "\n";
+		  print $searchform;
+		  print '</div>' . "\n";
+		  print "<!-- End SearchForm -->\n";
+		  }
 
-	  // More search form
-	  if ($moresearchform) {
-	  print $moresearchform;
-	  }
+		  // More search form
+		  if ($moresearchform) {
+		  print $moresearchform;
+		  }
 
-	  // Bookmarks
-	  if ($bookmarks) {
-	  print "\n";
-	  print "<!-- Begin Bookmarks -->\n";
-	  print '<div id = "blockvmenubookmarks" class = "blockvmenubookmarks">' . "\n";
-	  print $bookmarks;
-	  print '</div>' . "\n";
-	  print "<!-- End Bookmarks -->\n";
-	  }
+		  // Bookmarks
+		  if ($bookmarks) {
+		  print "\n";
+		  print "<!-- Begin Bookmarks -->\n";
+		  print '<div id = "blockvmenubookmarks" class = "blockvmenubookmarks">' . "\n";
+		  print $bookmarks;
+		  print '</div>' . "\n";
+		  print "<!-- End Bookmarks -->\n";
+		  }
 
-	  // Link to Speedealing wiki pages
-	  if ($helppagename && empty($conf->global->MAIN_HELP_DISABLELINK)) {
-	  $langs->load("help");
+		  // Link to Speedealing wiki pages
+		  if ($helppagename && empty($conf->global->MAIN_HELP_DISABLELINK)) {
+		  $langs->load("help");
 
-	  $helpbaseurl = '';
-	  $helppage = '';
-	  $mode = '';
+		  $helpbaseurl = '';
+		  $helppage = '';
+		  $mode = '';
 
-	  // Get helpbaseurl, helppage and mode from helppagename and langs
-	  $arrayres = getHelpParamFor($helppagename, $langs);
-	  $helpbaseurl = $arrayres['helpbaseurl'];
-	  $helppage = $arrayres['helppage'];
-	  $mode = $arrayres['mode'];
+		  // Get helpbaseurl, helppage and mode from helppagename and langs
+		  $arrayres = getHelpParamFor($helppagename, $langs);
+		  $helpbaseurl = $arrayres['helpbaseurl'];
+		  $helppage = $arrayres['helppage'];
+		  $mode = $arrayres['mode'];
 
-	  // Link to help pages
-	  if ($helpbaseurl && $helppage) {
-	  print '<div id = "blockvmenuhelp" class = "blockvmenuhelp">';
-	  print '<a class = "help" target = "_blank" title = "' . $langs->trans($mode == 'wiki' ? 'GoToWikiHelpPage' : 'GoToHelpPage');
-	  if ($mode == 'wiki')
-	  print ' - ' . $langs->trans("PageWiki") . ' &quot;' . dol_escape_htmltag(strtr($helppage, '_', ' ')) . '&quot;';
-	  print '" href = "';
-	  print sprintf($helpbaseurl, urlencode(html_entity_decode($helppage)));
-	  print '">';
-	  print img_picto('', 'helpdoc') . ' ';
-	  print $langs->trans($mode == 'wiki' ? 'OnlineHelp' : 'Help');
-	  //if ($mode == 'wiki') print ' ('.dol_trunc(strtr($helppage,'_',' '),8).')';
-	  print '</a>';
-	  print '</div>';
-	  }
-	  }
+		  // Link to help pages
+		  if ($helpbaseurl && $helppage) {
+		  print '<div id = "blockvmenuhelp" class = "blockvmenuhelp">';
+		  print '<a class = "help" target = "_blank" title = "' . $langs->trans($mode == 'wiki' ? 'GoToWikiHelpPage' : 'GoToHelpPage');
+		  if ($mode == 'wiki')
+		  print ' - ' . $langs->trans("PageWiki") . ' &quot;' . dol_escape_htmltag(strtr($helppage, '_', ' ')) . '&quot;';
+		  print '" href = "';
+		  print sprintf($helpbaseurl, urlencode(html_entity_decode($helppage)));
+		  print '">';
+		  print img_picto('', 'helpdoc') . ' ';
+		  print $langs->trans($mode == 'wiki' ? 'OnlineHelp' : 'Help');
+		  //if ($mode == 'wiki') print ' ('.dol_trunc(strtr($helppage,'_',' '),8).')';
+		  print '</a>';
+		  print '</div>';
+		  }
+		  }
 
-	  // Link to bugtrack
-	  if (!empty($conf->global->MAIN_SHOW_BUGTRACK_LINK)) {
-	  $bugbaseurl = 'http://savannah.nongnu.org/bugs/?';
-	  $bugbaseurl.='func=additem&group=dolibarr&privacy=1&';
-	  $bugbaseurl.="&details=";
-	  $bugbaseurl.=urlencode("\n\n\n\n\n-------------\n");
-	  $bugbaseurl.=urlencode($langs->trans("Version") . ": " . DOL_VERSION . "\n");
-	  $bugbaseurl.=urlencode($langs->trans("Server") . ": " . $_SERVER["SERVER_SOFTWARE"] . "\n");
-	  $bugbaseurl.=urlencode($langs->trans("Url") . ": " . $_SERVER["REQUEST_URI"] . "\n");
-	  print '<div class="help"><a class="help" target="_blank" href="' . $bugbaseurl . '">' . $langs->trans("FindBug") . '</a></div>';
-	  }
-	  print "\n";
+		  // Link to bugtrack
+		  if (!empty($conf->global->MAIN_SHOW_BUGTRACK_LINK)) {
+		  $bugbaseurl = 'http://savannah.nongnu.org/bugs/?';
+		  $bugbaseurl.='func=additem&group=dolibarr&privacy=1&';
+		  $bugbaseurl.="&details=";
+		  $bugbaseurl.=urlencode("\n\n\n\n\n-------------\n");
+		  $bugbaseurl.=urlencode($langs->trans("Version") . ": " . DOL_VERSION . "\n");
+		  $bugbaseurl.=urlencode($langs->trans("Server") . ": " . $_SERVER["SERVER_SOFTWARE"] . "\n");
+		  $bugbaseurl.=urlencode($langs->trans("Url") . ": " . $_SERVER["REQUEST_URI"] . "\n");
+		  print '<div class="help"><a class="help" target="_blank" href="' . $bugbaseurl . '">' . $langs->trans("FindBug") . '</a></div>';
+		  }
+		  print "\n";
 
-	  print "</div>\n";
-	  print "<!-- End left vertical menu -->\n";
+		  print "</div>\n";
+		  print "<!-- End left vertical menu -->\n";
 
-	  print "\n";
+		  print "\n";
 
-	  // Execute hook printLeftBlock
-	  $parameters = array();
-	  $leftblock = $hookmanager->executeHooks('printLeftBlock', $parameters); // Note that $action and $object may have been modified by some hooks
-	  print $leftblock;
+		  // Execute hook printLeftBlock
+		  $parameters = array();
+		  $leftblock = $hookmanager->executeHooks('printLeftBlock', $parameters); // Note that $action and $object may have been modified by some hooks
+		  print $leftblock;
 
-	  //print '</td>';
+		  //print '</td>';
 
-	  print "\n";
-	  print '<!-- End of left area -->' . "\n";
-	  print "\n";
-	  print '<!-- Begin right area -->' . "\n"; */
-}
-
-/**
- *  Begin main area
- *
- *  @param	string	$title		Title
- *  @return	void
- */
-function main_area($title = '') {
-	global $conf, $langs;
-
-	print '<!-- Main content -->';
-	print '<section role="main" id="main">';
-	print '<noscript class="message black-gradient simpler">Your browser does not support JavaScript! Some features won\'t work as expected...</noscript>';
-
-	if (!empty($conf->global->MAIN_ONLY_LOGIN_ALLOWED))
-		print info_admin($langs->trans("WarningYouAreInMaintenanceMode", $conf->global->MAIN_ONLY_LOGIN_ALLOWED));
-	
-}
-/**
- *  Return helpbaseurl, helppage and mode
- *
- *  @param	string		$helppagename		Page name (EN:xxx,ES:eee,FR:fff...)
- *  @param  Translate	$langs				Language
- *  @return	array		Array of help urls
- */
-function getHelpParamFor($helppagename, $langs) {
-	if (preg_match('/^http/i', $helppagename)) {
-		// If complete URL
-		$helpbaseurl = '%s';
-		$helppage = $helppagename;
-		$mode = 'local';
-	} else {
-		// If WIKI URL
-		if (preg_match('/^es/i', $langs->defaultlang)) {
-			$helpbaseurl = 'http://wiki.dolibarr.org/index.php/%s';
-			if (preg_match('/ES:([^|]+)/i', $helppagename, $reg))
-				$helppage = $reg[1];
-		}
-		if (preg_match('/^fr/i', $langs->defaultlang)) {
-			$helpbaseurl = 'http://wiki.dolibarr.org/index.php/%s';
-			if (preg_match('/FR:([^|]+)/i', $helppagename, $reg))
-				$helppage = $reg[1];
-		}
-		if (empty($helppage)) { // If help page not already found
-			$helpbaseurl = 'http://wiki.dolibarr.org/index.php/%s';
-			if (preg_match('/EN:([^|]+)/i', $helppagename, $reg))
-				$helppage = $reg[1];
-		}
-		$mode = 'wiki';
+		  print "\n";
+		  print '<!-- End of left area -->' . "\n";
+		  print "\n";
+		  print '<!-- Begin right area -->' . "\n"; */
 	}
-	return array('helpbaseurl' => $helpbaseurl, 'helppage' => $helppage, 'mode' => $mode);
-}
 
-/**
- *  Show a search area
- *
- *  @param  string	$urlaction          Url post
- *  @param  string	$urlobject          Url of the link under the search box
- *  @param  string	$title              Title search area
- *  @param  string	$htmlmodesearch     Value to set into parameter "mode_search" ('soc','contact','products','member',...)
- *  @param  string	$htmlinputname      Field Name input form
- *  @return	void
- */
-function printSearchForm($urlaction, $urlobject, $title, $htmlmodesearch, $htmlinputname) {
-	global $conf, $langs;
+	/**
+	 *  Begin main area
+	 *
+	 *  @param	string	$title		Title
+	 *  @return	void
+	 */
+	function main_area($title = '') {
+		global $conf, $langs;
 
-	$ret = '';
-	$ret.='<div class="menu_titre">';
-	$ret.='<a class="vsmenu" href="' . $urlobject . '">';
-	$ret.=$title . '</a><br>';
-	$ret.='</div>';
-	$ret.='<form action="' . $urlaction . '" method="post">';
-	$ret.='<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
-	$ret.='<input type="hidden" name="mode" value="search">';
-	$ret.='<input type="hidden" name="mode_search" value="' . $htmlmodesearch . '">';
-	$ret.='<input type="text" class="flat" ';
-	if (!empty($conf->global->MAIN_HTML5_PLACEHOLDER))
-		$ret.=' placeholder="' . $langs->trans("SearchOf") . '' . strip_tags($title) . '"';
-	else
-		$ret.=' title="' . $langs->trans("SearchOf") . '' . strip_tags($title) . '"';
-	$ret.=' name="' . $htmlinputname . '" size="10" />&nbsp;';
-	$ret.='<input type="submit" class="button" value="' . $langs->trans("Go") . '">';
-	$ret.="</form>\n";
-	return $ret;
-}
+		print '<!-- Main content -->';
+		print '<section role="main" id="main">';
+		print '<noscript class="message black-gradient simpler">Your browser does not support JavaScript! Some features won\'t work as expected...</noscript>';
 
-/**
- * Show HTML footer
- * Close div /DIV data-role=page + /DIV class=fiche + /DIV /DIV main layout + /BODY + /HTML.
- *
- * @param	string	$foot    		A text to add in HTML generated page
- * @return	void
- */
-function llxFooter($foot = '') {
-	global $conf, $langs, $dolibarr_auto_user, $micro_start_time, $memcache;
-	?>
+		if (!empty($conf->global->MAIN_ONLY_LOGIN_ALLOWED))
+			print info_admin($langs->trans("WarningYouAreInMaintenanceMode", $conf->global->MAIN_ONLY_LOGIN_ALLOWED));
+	}
+
+	/**
+	 *  Return helpbaseurl, helppage and mode
+	 *
+	 *  @param	string		$helppagename		Page name (EN:xxx,ES:eee,FR:fff...)
+	 *  @param  Translate	$langs				Language
+	 *  @return	array		Array of help urls
+	 */
+	function getHelpParamFor($helppagename, $langs) {
+		if (preg_match('/^http/i', $helppagename)) {
+			// If complete URL
+			$helpbaseurl = '%s';
+			$helppage = $helppagename;
+			$mode = 'local';
+		} else {
+			// If WIKI URL
+			if (preg_match('/^es/i', $langs->defaultlang)) {
+				$helpbaseurl = 'http://wiki.dolibarr.org/index.php/%s';
+				if (preg_match('/ES:([^|]+)/i', $helppagename, $reg))
+					$helppage = $reg[1];
+			}
+			if (preg_match('/^fr/i', $langs->defaultlang)) {
+				$helpbaseurl = 'http://wiki.dolibarr.org/index.php/%s';
+				if (preg_match('/FR:([^|]+)/i', $helppagename, $reg))
+					$helppage = $reg[1];
+			}
+			if (empty($helppage)) { // If help page not already found
+				$helpbaseurl = 'http://wiki.dolibarr.org/index.php/%s';
+				if (preg_match('/EN:([^|]+)/i', $helppagename, $reg))
+					$helppage = $reg[1];
+			}
+			$mode = 'wiki';
+		}
+		return array('helpbaseurl' => $helpbaseurl, 'helppage' => $helppage, 'mode' => $mode);
+	}
+
+	/**
+	 *  Show a search area
+	 *
+	 *  @param  string	$urlaction          Url post
+	 *  @param  string	$urlobject          Url of the link under the search box
+	 *  @param  string	$title              Title search area
+	 *  @param  string	$htmlmodesearch     Value to set into parameter "mode_search" ('soc','contact','products','member',...)
+	 *  @param  string	$htmlinputname      Field Name input form
+	 *  @return	void
+	 */
+	function printSearchForm($urlaction, $urlobject, $title, $htmlmodesearch, $htmlinputname) {
+		global $conf, $langs;
+
+		$ret = '';
+		$ret.='<div class="menu_titre">';
+		$ret.='<a class="vsmenu" href="' . $urlobject . '">';
+		$ret.=$title . '</a><br>';
+		$ret.='</div>';
+		$ret.='<form action="' . $urlaction . '" method="post">';
+		$ret.='<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+		$ret.='<input type="hidden" name="mode" value="search">';
+		$ret.='<input type="hidden" name="mode_search" value="' . $htmlmodesearch . '">';
+		$ret.='<input type="text" class="flat" ';
+		if (!empty($conf->global->MAIN_HTML5_PLACEHOLDER))
+			$ret.=' placeholder="' . $langs->trans("SearchOf") . '' . strip_tags($title) . '"';
+		else
+			$ret.=' title="' . $langs->trans("SearchOf") . '' . strip_tags($title) . '"';
+		$ret.=' name="' . $htmlinputname . '" size="10" />&nbsp;';
+		$ret.='<input type="submit" class="button" value="' . $langs->trans("Go") . '">';
+		$ret.="</form>\n";
+		return $ret;
+	}
+
+	/**
+	 * Show HTML footer
+	 * Close div /DIV data-role=page + /DIV class=fiche + /DIV /DIV main layout + /BODY + /HTML.
+	 *
+	 * @return	void
+	 */
+	function llxFooter() {
+		global $conf, $langs, $dolibarr_auto_user, $micro_start_time, $memcache;
+		?>
 	</section>
-	
+
 	<!-- End main content -->
 	<?php
 	top_menu(); // print the left menu
@@ -1612,7 +1616,7 @@ function llxFooter($foot = '') {
 
 		<script src="theme/developr/html/js/developr.navigable.js"></script>
 		<script src="theme/developr/html/js/developr.scroll.js"></script>
-		
+
 		<!--<script src="theme/developr/html/js/developr.input.js"></script>-->
 		<script src="theme/developr/html/js/developr.message.js"></script>
 		<script src="theme/developr/html/js/developr.modal.js"></script>
@@ -1626,7 +1630,7 @@ function llxFooter($foot = '') {
 
 		<!-- Tinycon -->
 		<script src="theme/developr/html/js/libs/tinycon.min.js"></script>
-		
+
 		<script>
 
 			// Call template init (optional, but faster if called manually)
@@ -1634,7 +1638,7 @@ function llxFooter($foot = '') {
 
 			// Favicon count
 			Tinycon.setBubble(2);
-			
+					
 		</script>
 
 		<footer id="footer">
