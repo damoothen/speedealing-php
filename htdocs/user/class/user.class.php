@@ -116,11 +116,11 @@ class User extends nosqlDocument {
 		$this->all_permissions_are_loaded = 0;
 		$this->admin = 0;
 
-		$this->conf = (object) array();
-		$this->rights = (object) array();
-		$this->rights->user = (object) array();
-		$this->rights->user->user = (object) array();
-		$this->rights->user->self = (object) array();
+		$this->conf = new stdClass();
+		$this->rights = new stdClass();
+		$this->rights->user = new stdClass();
+		$this->rights->user->user = new stdClass();
+		$this->rights->user->self = new stdClass();
 	}
 
 	/**
@@ -411,7 +411,7 @@ class User extends nosqlDocument {
 
 				// Add default rights
 
-				if (count($perm) == 1)
+				if (count($perm) == 1) 
 					$this->rights->$rights_class->$perm[0] = $aRow->value->Status;
 				elseif (count($perm) == 2) {
 					if (isset($this->rights->$rights_class->$perm[0]))
