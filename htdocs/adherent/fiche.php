@@ -1801,52 +1801,6 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
 		}
 	}
 
-	// Third party Dolibarr
-	if ($conf->societe->enabled) {
-		print '<tr><td>';
-		print '<table class="nobordernopadding" width="100%"><tr><td>';
-		print $langs->trans("LinkedToDolibarrThirdParty");
-		print '</td>';
-		if ($_GET['action'] != 'editthirdparty' && $user->rights->adherent->creer)
-			print '<td align="right"><a href="' . $_SERVER["PHP_SELF"] . '?action=editthirdparty&amp;id=' . $object->id . '">' . img_edit($langs->trans('SetLinkToThirdParty'), 1) . '</a></td>';
-		print '</tr></table>';
-		print '</td><td colspan="2" class="valeur">';
-		if ($_GET['action'] == 'editthirdparty') {
-			$htmlname = 'socid';
-			print '<form method="POST" action="' . $_SERVER['PHP_SELF'] . '" name="form' . $htmlname . '">';
-			print '<input type="hidden" name="id" value="' . $object->id . '">';
-			print '<input type="hidden" name="action" value="set' . $htmlname . '">';
-			print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
-			print '<table class="nobordernopadding" cellpadding="0" cellspacing="0">';
-			print '<tr><td>';
-			print $form->select_company($object->fk_soc, 'socid', '', 1);
-			print '</td>';
-			print '<td align="left"><input type="submit" class="button" value="' . $langs->trans("Modify") . '"></td>';
-			print '</tr></table></form>';
-		} else {
-			if (!empty($object->fk_soc)) {
-				$company = new Societe($db);
-				$result = $company->fetch($object->fk_soc);
-				print $company->getNomUrl(1);
-			} else {
-				print $langs->trans("NoThirdPartyAssociatedToMember");
-			}
-		}
-		print '</td></tr>';
-	}
-
-	// Login Dolibarr
-	print '<tr><td>';
-	print '<table class="nobordernopadding" width="100%"><tr><td>';
-	print $langs->trans("LinkedToDolibarrUser");
-	print '</td>';
-	if ($_GET['action'] != 'editlogin' && $user->rights->adherent->creer) {
-		print '<td align="right">';
-		if ($user->rights->user->user->creer) {
-			print '<a href="' . $_SERVER["PHP_SELF"] . '?action=editlogin&amp;id=' . $object->id . '">' . img_edit($langs->trans('SetLinkToUser'), 1) . '</a>';
-		}
-		print '</td>';
-	}
 	print '</tr></table>';
 	print '</td><td colspan="2" class="valeur">';
 	if ($_GET['action'] == 'editlogin') {

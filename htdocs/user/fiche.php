@@ -180,10 +180,29 @@ if ((($action == 'add' && $canadduser) || ($action == 'update' && $canedituser))
 		$edituser->values->ldap_sid = $_POST["ldap_sid"];
 		$edituser->values->pass = $_POST["password"];
 		$edituser->values->rowid = $_POST["rowid"];
+		
+		if (GETPOST('deletephoto')) {
+		    $del_photo = $edituser->values->Photo;
+		    unset($edituser->values->Photo);
+		} elseif (!empty($_FILES['photo']['name']))
+		$edituser->values->Photo = dol_sanitizeFileName($_FILES['photo']['name']);
 
 		$id = $edituser->update($user, 0, $action);
 
 		if ($id == $edituser->values->name) {
+		    $file_OK = is_uploaded_file($_FILES['photo']['tmp_name']);
+
+		    if (GETPOST('deletephoto') && !empty($del_photo)) {
+		        $edituser->deleteFile($del_photo);
+		    }
+		    
+		    if ($file_OK) {
+		        if (image_format_supported($_FILES['photo']['name']) > 0) {
+		            $edituser->storeFile('photo');
+		        } else {
+		            $errmsgs[] = "ErrorBadImageFormat";
+		        }
+		    }
 			Header("Location: " . $_SERVER['PHP_SELF'] . '?id=org.couchdb.user:' . $id);
 			exit;
 		} else {
@@ -585,6 +604,8 @@ if (($action == 'create') || ($action == 'adduserldap')) {
 
 		$title = $langs->trans("User");
 
+		print_fiche_titre($title);
+		print '<div class="container">';
 		print '<div class="row">';
 		print start_box($title, "twelve", "16-User.png", false);
 

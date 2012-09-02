@@ -1,0 +1,294 @@
+@CHARSET "UTF-8";
+/* le body occupe 100% du viewport pour pouvoir afficher le background sur toute la surface visible */ 
+html, body {
+		height: 100%;			/* IE6: treated as min-height */
+	}
+	/* prise en compte du footer fixe. Le header fixe est pris en compte déjà dans les styles de Developr */
+	html, body > .fixed-footer-bar {
+		margin-bottom: 40px;
+	}
+/* style de base pour le footer et prise en compte du footer fixe */	
+#footer-bar {
+	height: 40px;
+	line-height: 38px;
+	text-align: center;
+	z-index: 3;
+	padding: 0 10px;
+	}
+	.fixed-footer-bar > #footer-bar {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+	}
+/* Prise en compte du footer fixe par le #main. Le header fixe est pris en compte déjà dans les styles de Developr */
+#main {
+/*		min-height:100%; 	*/	/* fills the whole viewport */
+		margin-bottom: 0px;
+	}
+	.fixed-footer-bar > #main {
+		margin-bottom: 40px;
+	}
+/* Custom buttom : pour gérer le back button, home button, etc... */
+.back-button {
+	display: inline-block; 
+	*display: inline; 
+	zoom: 1;
+	vertical-align: middle;
+	*vertical-align: middle;
+	position: relative;
+	text-indent: 10px;
+	text-align: center;
+	color: #000000;
+	font-weight: bold;
+	text-transform: none;
+	padding: 0 5px;
+	font-size: 11px;
+	line-height: 18px;
+	height: 18px;
+	*line-height: 26px;
+	*height: 26px;
+	min-width: 6px;
+	-webkit-appearance: none;
+/*	background-position: center center !important; 
+	/* This is required for glossy gradients image fallbacck*/
+	background : url('../img/IphoneNavigationButton_Back.png');
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+}	
+
+/* taille des icones dans le shortcuts */
+#shortcuts > li > a > img {
+	width : 70px;
+}
+/* Icones et images dans des timbres
+ */
+.ego-icon {
+	display:block;
+	height: 84px !important;
+	margin-left: 10px;
+}
+.ego-icon > img.ego-icon-inner {
+
+	width: 60px !important; 
+	height: 66px !important; 
+	background-color: #7092BB; 
+	display:block;
+
+	transform: rotate(-10.5deg);
+	-webkit-transform: rotate(-10.5deg); 
+	-moz-transform: rotate(-10.5deg); 
+	-ms-transform: rotate(-10.5deg); 
+	-o-transform: rotate(-10.5deg); 
+	-webkit-transform-origin:50% 50%; /* Safari and Chrome */
+	-moz-transform-origin:50% 50%; /* Safari and Chrome */
+	-ms-transform-origin:50% 50%; /* Safari and Chrome */
+	-o-transform-origin:50% 50%; /* Safari and Chrome */
+
+	position: absolute;
+	margin-left: 10px;
+	margin-top: 11px;
+	z-index: 0; 
+}
+.ego-icon > img.ego-icon-outer {
+	height: 84px !important; 
+	display:block;
+
+	position:absolute;
+	z-index: 1;
+}
+
+/* Micros Icones et images dans des timbres (pour les messages de notifications)
+*/
+.micro .ego-icon,
+.ego-icon.micro {
+	position:relative;
+	width: 40px !important;
+	height: 43px !important;
+	display:block;
+/*	top:0;
+	left:0;
+	right:0; */
+}
+.micro .ego-icon > img.ego-icon-inner,
+.micro.ego-icon > img.ego-icon-inner {
+
+	width: 30px !important; 
+	height: 33px !important; 
+	margin-left: 5px;
+	margin-top: 5px;
+
+}
+.micro .ego-icon > img.ego-icon-outer,
+.micro.ego-icon > img.ego-icon-outer {
+	width: 40px !important; 
+	height: 43px !important; 
+
+	display:block;
+	position:absolute;
+	z-index: 1;
+
+}
+
+/* Petites Icones et images dans des timbres
+*/
+.tiny .ego-icon,
+.ego-icon.tiny {
+	position:relative;
+	width: 60px !important;
+	height: 64px !important;
+	display:block;
+/*	top:0;
+	left:0;
+	right:0; */
+}
+.tiny .ego-icon > img.ego-icon-inner,
+.tiny.ego-icon > img.ego-icon-inner {
+
+	width: 45px !important; 
+	height: 50px !important; 
+	margin-left: 7px;
+	margin-top: 7px;
+
+}
+.tiny .ego-icon > img.ego-icon-outer,
+.tiny.ego-icon > img.ego-icon-outer {
+	width: 60px !important; 
+	height: 64px !important; 
+
+	display:block;
+	position:absolute;
+	z-index: 1;
+
+}
+
+/* Grandes Icones et images dans des timbres
+ */
+.big .ego-icon {
+	position:relative;
+	width: 95x !important;
+	height: 102px !important;
+	display:block;
+}
+.big .ego-icon > img.ego-icon-inner {
+
+	width: 72px !important; 
+	height: 80px !important; 
+
+	margin-left: 11px;
+	margin-top: 11px;
+}
+.big .ego-icon > img.ego-icon-outer {
+	width: 95px !important; 
+	height: 102px !important; 
+
+	position:absolute;
+	display:block;
+	z-index: 1;
+}
+
+/**
+ * 	Scroll Menu.
+ *  Ne "casse" pas avec le framework Developr quand on utilise les icones .ego-icon
+ *  inspiré par:
+ *  http://valums.com/scroll-menu-jquery/
+ */
+div.ego-scroll-menu {
+  position: relative;
+  width: 100%; 
+}
+
+div.ego-scroll-menu.horizontal  {
+  /* Set it so we could calculate the offsetLeft */
+ display:block;
+ overflow-y:hidden;
+ height: 112px; 
+ float: left;
+}
+div.ego-scroll-menu.horizontal.tiny {
+  height: 92px; 
+}
+div.ego-scroll-menu.horizontal.big {
+  height: 130px; 
+}
+
+ul.ego-scroll-menu {
+  display: block;
+  height: 120px; /* 110 */
+  /* Max width here, for users without Javascript */
+  width: 100%; /* 1500px; */
+/*  padding: 15px 0 0 15px; 
+  padding: 15px 0 0 15px; */
+  padding: 0 0 0 0;
+  /* Remove default margin */
+  margin: 0;
+/*  background: url('navigation.png'); */
+  list-style: none;
+}
+
+.ego-scroll-menu li {
+  position: relative;
+  display: block;
+  float: left;
+  padding: 0 4px;
+}
+
+.ego-scroll-menu a {
+  display: block;
+  text-decoration: none;
+}
+
+.ego-scroll-menu span {
+  /* We want a caption to display on the next line */
+  display: block;
+  margin-top: 3px;
+  text-align: center;
+  font-size: 12px;
+  color: #fff;
+}
+
+/* raoul ++ */
+div.ego-scroll-menu.horizontal ul.ego-scroll-menu  {
+  display: inline-block;
+  height: 105px; /* 110 */
+  /* Max width here, for users without Javascript */
+  width: 100%; /* 1500px; */
+/*  padding: 15px 0 0 15px; 
+  padding: 15px 0 0 15px; */
+  padding: 0 0 0 0;
+  /* Remove default margin */
+  margin: 0;
+/*  background: url('navigation.png'); */
+  list-style: none;
+}
+
+div.ego-scroll-menu.horizontal .ego-scroll-menu  li {
+  position: relative;
+  display: inline;
+  float: left;
+  padding: 0 4px;
+}
+
+div.ego-scroll-menu.horizontal .ego-scroll-menu >a {
+  display: inline;
+  float:left;
+  text-decoration: none;
+}
+
+.ego-scroll-menu span {
+  /* We want a caption to display on the next line */
+  display: block;
+  margin-top: 3px;
+  text-align: center;
+  font-size: 12px;
+  color: #fff;
+}
+
+/* pour retourner une image ou une icone */
+.updown {
+	transform: scaleY(-1);
+	-moz-transform: scaleY(-1);
+	-webkit-transform: scaleY(-1);
+	-o-transform: scaleY(-1);
+	-ms-transform: scaleY(-1);
+}

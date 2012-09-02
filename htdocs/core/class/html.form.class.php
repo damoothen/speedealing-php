@@ -3345,11 +3345,8 @@ class Form {
 				$file = $object->id . '/logos/thumbs/' . $smallfile;
 		}
 		else if ($modulepart == 'userphoto') {
-			$dir = $conf->user->dir_output;
-			if ($object->photo)
-				$file = get_exdir($object->id, 2) . $object->photo;
-			if (!empty($conf->global->MAIN_OLD_IMAGE_LINKS))
-				$altfile = $object->id . ".jpg"; // For backward compatibility
+			if ($object->values->Photo)
+				$file = $object->values->Photo;
 			$email = $object->email;
 		}
 		else if ($modulepart == 'memberphoto') {

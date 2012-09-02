@@ -622,9 +622,10 @@ class User extends nosqlDocument {
 			return -3;
 		}
 
-
 		if ($result) {
 			$this->id = $this->values->name;
+			$this->_id = $result->id;
+			$this->_rev = $result->rev;
 
 			if (!$notrigger) {
 				// Appel des triggers

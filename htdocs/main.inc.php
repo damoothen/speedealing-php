@@ -828,6 +828,9 @@ print "\n";
 	media="only all and (-webkit-min-device-pixel-ratio: 1.5), only screen and (-o-min-device-pixel-ratio: 3/2), only screen and (min-device-pixel-ratio: 1.5)"
 	href="theme/developr/html/css/2x.css?v=1">
 
+<!-- Symeos -->
+<link rel="stylesheet" href="theme/developr/html/css/symeos.css?v=1">
+	
 <!-- Webfonts -->
 <link href='http://fonts.googleapis.com/css?family=Open+Sans:300'
 	rel='stylesheet' type='text/css'>
@@ -1269,11 +1272,24 @@ if (is_array($conf->css_modules)) {
                     });
                 </script>
 
-
-		<div id="profile">
-			<img src="theme/developr/html/img/user.png" width="64" height="64"
-				alt="User name" class="user-icon"> Hello <span class="name"><?php echo $user->values->Firstname; ?>
-				<b><?php echo $user->values->Lastname; ?> </b> </span>
+		<div id="profile" class="row" style="min-width: 0px;">
+			<div class="five columns">
+				<div class="ego-icon big">
+					<?php if(!empty($user->values->Photo)) :?>
+					<img alt="User name" class="ego-icon-inner" border="0" width="64"
+						src="<?php echo $user->getFile($user->values->Photo);?>">
+					<?php else :?>
+					<img src="theme/developr/html/img/user.png" width="64" height="64"
+						alt="User name" class="ego-icon-inner">
+					<?php endif;?>
+					<img class="ego-icon-outer"
+						src="theme/developr/html/img/timbre base 90x100.png">
+				</div>
+			</div>
+			<div class="seven columns">
+			    Hello <span class="name"><?php echo $user->values->Firstname; ?>
+			    <b><?php echo $user->values->Lastname; ?> </b> </span>
+			</div>
 		</div>
 
 		<!-- By default, this section is made for 4 icons, see the doc to learn how to change this, in "basic markup explained" -->
@@ -1341,11 +1357,9 @@ if (is_array($conf->css_modules)) {
 
 	<!-- This is optional -->
 	<footer id="menu-footer">
-		<p class="button-height">
-			<input type="checkbox" name="auto-refresh" id="auto-refresh"
-				checked="checked" class="switch float-right"> <label
-				for="auto-refresh">Auto-refresh</label>
-		</p>
+	    <div>
+			<p>Copyright 2012 - Symeos</p>
+		</div>
 	</footer>
 
 </section>
