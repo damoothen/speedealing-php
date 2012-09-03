@@ -4,9 +4,7 @@
 	src: url('../fonts/permanent-marker/PermanentMarker.ttf');	
 }
 /* le body occupe 100% du viewport pour pouvoir afficher le background sur toute la surface visible */ 
-html, body {
-		height: 100%;			/* IE6: treated as min-height */
-	}
+
 	/* prise en compte du footer fixe. Le header fixe est pris en compte déjà dans les styles de Developr */
 	html, body > .fixed-footer-bar {
 		margin-bottom: 40px;

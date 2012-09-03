@@ -64,8 +64,7 @@ if (!empty($date_select))
 	$title.=' (' . $langs->trans("Year") . ' ' . $date_select . ')';
 
 print_fiche_titre($title);
-print '<div class="container">';
-print '<div class="row">';
+print '<div class="with-padding">';
 
 //print start_box($title, "twelve", "16-Money.png");
 

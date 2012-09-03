@@ -2332,7 +2332,7 @@ function start_box($title, $nbcolumn = 'twelve', $icon = '16-Abacus.png', $box_a
 	if (empty($conf->theme))
 		$conf->theme = "eldy";
 
-	$rtr = '<div class="' . $nbcolumn . ' columns">';
+	$rtr = '<div class="' . $nbcolumn . '-columns twelve-columns-mobile">';
 	$rtr.= '<div class="box_c">';
 	if ($box_action && empty($head))
 		$rtr.= '<div class="box_c_heading cf box_actions">';

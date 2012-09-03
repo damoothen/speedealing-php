@@ -201,9 +201,9 @@
 	/* To fix the grid into a certain size, set max-width to width */
 	.row .row { min-width: 0; }
 
-	.column, .columns { margin-left: 2.4%; float: left; min-height: 1px; position: relative; }
-	.column:first-child, .columns:first-child { margin-left: 0; }
-	[class*="column"] + [class*="column"]:last-child { float: right; }
+	/*.column, .columns { margin-left: 2.4%; float: left; min-height: 1px; position: relative; }*/
+	/*.column:first-child, .columns:first-child { margin-left: 0; }*/
+	/*[class*="column"] + [class*="column"]:last-child { float: right; }*/
 
 	/* +1% sur chaque ligne ci dessous*/
 	.row .one 		{ width: 5.3%; }
@@ -397,7 +397,7 @@
 
 	/* Sizes ---------- */
 	.tiny.button			{ font-size: 10px; padding: 6px 14px 8px; width: auto; }
-	.small.button 			{ font-size: 11px; padding: 8px 20px 10px; width: auto; }
+	.small.button 			{ font-size: 11px; /*padding: 8px 20px 10px;*/ width: auto; }
 	.medium.button 			{ font-size: 13px; width: auto; }
 	.large.button 			{ font-size: 18px; padding: 11px 48px 13px; width: auto; }
 
@@ -672,7 +672,6 @@
 		.row .row .column, .row .row .columns { padding: 0; }
 		.column, .columns { width: auto !important; float: none; margin-left: 0; margin-right: 0; }
 		.column:last-child, .columns:last-child { margin-right: 0; float: none; }
-		[class*="column"] + [class*="column"]:last-child { float: none; }
 		[class*="column"]:before, [class*="column"]:after { content:""; display:table; }
 		[class*="column"]:after { clear: both; }
 

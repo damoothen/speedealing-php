@@ -1030,8 +1030,8 @@ if ($action == 'edit') {
 
 	$titre = $langs->trans("Member");
 	print_fiche_titre($titre);
-	print '<div class="container">';
-	print '<div class="row">';
+	print '<div class="with-padding">';
+	print '<div class="columns">';
 	dol_fiche_head($head, 'general', $langs->trans("Member"), 0, 'user');
 
 	dol_htmloutput_errors($errmsg, $errmsgs);
@@ -1523,8 +1523,8 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
 
 	$titre = $langs->trans("Member");
 	print_fiche_titre($titre);
-	print '<div class="container">';
-	print '<div class="row">';
+	print '<div class="with-padding">';
+	print '<div class="columns">';
 	
 	print start_box($titre, "twelve", "16-User.png");
 
@@ -1888,10 +1888,6 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
 	print '</div>';
 
 	print end_box();
-
-	print "</div>";
-
-	print '<div class="row">';
 
 	$titre = $langs->trans("Subscriptions");
 	print start_box($titre, "six", "16-Money.png");

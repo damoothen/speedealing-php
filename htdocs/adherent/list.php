@@ -33,8 +33,8 @@ llxHeader('',$langs->trans("Member"),'EN:Module_Foundations|FR:Module_Adh&eacute
 $titre=$langs->trans("MembersList");
 
 print_fiche_titre($titre);
-print '<div class="container">';
-print '<div class="row">';
+print '<div class="with-padding">';
+//print '<div class="columns">';
 
 //print start_box($titre,"twelve","16-Users.png");
 
@@ -149,7 +149,7 @@ print "</div>";
 $obj->bServerSide = true;
 $object->datatablesCreate($obj,"member",true,true);
 
-print '</div></div>'; // end row
+print '</div>'; // end
 
 llxFooter();
 ?>

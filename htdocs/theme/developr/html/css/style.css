@@ -76,7 +76,7 @@ body, button, input, textarea {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 13px;
 	line-height: 16px;
-	color: #666666;
+	/*color: #666666;*/
 }
 
 
@@ -688,14 +688,14 @@ li.message-menu {
 .columns {
 	margin-left: -2.25%;
 	}
-	/*.columns:last-child {
+	.columns:last-child {
 		margin-bottom: -20px;
 	}
 	.columns > div,
 	.columns > form {
 		float: left;
 		margin: 0 0 20px 2.25%;
-	}*/
+	}
 
 	/* These styles define the columns size. They must be redefined for each responsive size */
 	.column,
@@ -2260,9 +2260,9 @@ li.message-menu {
 		position: relative;
 		background-color: white;
 		}
-		#main-title + .with-padding {
+		/*#main-title + .with-padding {
 			padding-top: 0 !important;
-		}
+		}*/
 		#main-title h1,
 		#main-title h2 {
 			margin: 0;

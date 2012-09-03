@@ -108,10 +108,10 @@ if ($action != 'edit') {
 	$titre = $langs->trans("CardMember");
 	
 	print_fiche_titre($titre);
-	print '<div class="container">';
-	print '<div class="row">';
+	print '<div class="with-padding">';
+	print '<div class="columns">';
 	
-	print start_box($titre, "seven centered", "16-iPhone-4.png");
+	print start_box($titre, "twelve", "16-iPhone-4.png");
 	print '<table class="border" width="100%">';
 
 	// Subject
@@ -149,8 +149,8 @@ if ($action != 'edit') {
 
 	$titre = $langs->trans("CardMember");
 	print_fiche_titre($titre);
-	print '<div class="container">';
-	print '<div class="row">';
+	print '<div class="with-padding">';
+	print '<div class="columns">';
 	
 	print start_box($titre, "twelve", "16-iPhone-4.png",false);
 	

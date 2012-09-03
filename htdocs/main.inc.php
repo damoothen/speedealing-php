@@ -1,34 +1,34 @@
 <?php
 /* Copyright (C) 2002-2007 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2003      Xavier Dutoit        <doli@sydesy.com>
-* Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
-* Copyright (C) 2004      Sebastien Di Cintio  <sdicintio@ressource-toi.org>
-* Copyright (C) 2004      Benoit Mortier       <benoit.mortier@opensides.be>
-* Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
-* Copyright (C) 2011      Philippe Grand       <philippe.grand@atoo-net.com>
-* Copyright (C) 2008      Matteli
-* Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
-* Copyright (C) 2011      Juanjo Menent        <jmenent@2byte.es>
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2004      Sebastien Di Cintio  <sdicintio@ressource-toi.org>
+ * Copyright (C) 2004      Benoit Mortier       <benoit.mortier@opensides.be>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2011      Philippe Grand       <philippe.grand@atoo-net.com>
+ * Copyright (C) 2008      Matteli
+ * Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
+ * Copyright (C) 2011      Juanjo Menent        <jmenent@2byte.es>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /**
  * 	\file       htdocs/main.inc.php
-* 	\ingroup	core
-* 	\brief      File that defines environment for Speedealing pages only (variables not required by scripts)
-*/
+ * 	\ingroup	core
+ * 	\brief      File that defines environment for Speedealing pages only (variables not required by scripts)
+ */
 //@ini_set('memory_limit', '64M');	// This may be useless if memory is hard limited by your PHP
 // For optionnal tuning. Enabled if environment variable DOL_TUNING is defined.
 // A call first. Is the equivalent function dol_microtime_float not yet loaded.
@@ -213,6 +213,8 @@ if (!defined('NOREQUIREHTML'))
 if (!defined('NOREQUIREAJAX') && $conf->use_javascript_ajax)
     require_once(DOL_DOCUMENT_ROOT . '/core/lib/ajax.lib.php'); // Need 22ko memory
 
+
+    
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
     dol_syslog("main.inc: A previous install or upgrade was not complete. Redirect to install page.", LOG_WARNING);
@@ -266,7 +268,7 @@ if (!empty($_SESSION["disablemodules"])) {
 
 /*
  * Phase authentication / login
-*/
+ */
 $login = '';
 if (!defined('NOLOGIN')) {
     // $authmode lists the different means of identification to be tested in order of preference.
@@ -400,35 +402,35 @@ if (!defined('NOLOGIN')) {
         $user = new User($db);
         $resultFetchUser = $user->fetch("org.couchdb.user:" . $login);
         /*
-         if ($resultFetchUser <= 0)
-         {
-        dol_syslog('User not found, connexion refused');
-        session_destroy();
-        session_name($sessionname);
-        session_start();    // Fixing the bug of register_globals here is useless since session is empty
+          if ($resultFetchUser <= 0)
+          {
+          dol_syslog('User not found, connexion refused');
+          session_destroy();
+          session_name($sessionname);
+          session_start();    // Fixing the bug of register_globals here is useless since session is empty
 
-        if ($resultFetchUser == 0)
-        {
-        $langs->load('main');
-        $langs->load('errors');
+          if ($resultFetchUser == 0)
+          {
+          $langs->load('main');
+          $langs->load('errors');
 
-        $user->trigger_mesg='ErrorCantLoadUserFromDolibarrDatabase - login='.$login;
-        $_SESSION["dol_loginmesg"]=$langs->trans("ErrorCantLoadUserFromDolibarrDatabase",$login);
-        }
-        if ($resultFetchUser < 0)
-        {
-        $user->trigger_mesg=$user->error;
-        $_SESSION["dol_loginmesg"]=$user->error;
-        }
+          $user->trigger_mesg='ErrorCantLoadUserFromDolibarrDatabase - login='.$login;
+          $_SESSION["dol_loginmesg"]=$langs->trans("ErrorCantLoadUserFromDolibarrDatabase",$login);
+          }
+          if ($resultFetchUser < 0)
+          {
+          $user->trigger_mesg=$user->error;
+          $_SESSION["dol_loginmesg"]=$user->error;
+          }
 
-        // Call triggers
-        include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
-        $interface=new Interfaces($db);
-        $result=$interface->run_triggers('USER_LOGIN_FAILED',$user,$user,$langs,$conf,$_POST["entity"]);
-        if ($result < 0) {
-        $error++;
-        }
-        // End call triggers */
+          // Call triggers
+          include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+          $interface=new Interfaces($db);
+          $result=$interface->run_triggers('USER_LOGIN_FAILED',$user,$user,$langs,$conf,$_POST["entity"]);
+          if ($result < 0) {
+          $error++;
+          }
+          // End call triggers */
     } else {
         // We are already into an authenticated session
         $login = $_SESSION["dol_login"];
@@ -463,119 +465,119 @@ if (!defined('NOLOGIN')) {
 
             header('Location: ' . DOL_URL_ROOT . '/index.php');
             exit;
-    } else {
-        if (!empty($conf->global->MAIN_ACTIVATE_UPDATESESSIONTRIGGER)) { // We do not execute such trigger at each page load by default
-            // Call triggers
-            include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
-            $interface = new Interfaces($db);
-            $result = $interface->run_triggers('USER_UPDATE_SESSION', $user, $user, $langs, $conf, $conf->entity);
-            if ($result < 0) {
-                $error++;
+        } else {
+            if (!empty($conf->global->MAIN_ACTIVATE_UPDATESESSIONTRIGGER)) { // We do not execute such trigger at each page load by default
+                // Call triggers
+                include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+                $interface = new Interfaces($db);
+                $result = $interface->run_triggers('USER_UPDATE_SESSION', $user, $user, $langs, $conf, $conf->entity);
+                if ($result < 0) {
+                    $error++;
+                }
+                // End call triggers
             }
-            // End call triggers
         }
     }
-}
 
 // Is it a new session that has started ?
 // If we are here, this means authentication was successfull.
-if (!isset($_SESSION["dol_login"])) {
-    $error = 0;
+    if (!isset($_SESSION["dol_login"])) {
+        $error = 0;
 
-    // New session for this login
-    $_SESSION["dol_login"] = $user->values->name;
-    $_SESSION["dol_authmode"] = isset($dol_authmode) ? $dol_authmode : '';
-    $_SESSION["dol_tz"] = isset($dol_tz) ? $dol_tz : '';
-    $_SESSION["dol_tz_string"] = isset($dol_tz_string) ? $dol_tz_string : '';
-    $_SESSION["dol_dst"] = isset($dol_dst) ? $dol_dst : '';
-    $_SESSION["dol_dst_observed"] = isset($dol_dst_observed) ? $dol_dst_observed : '';
-    $_SESSION["dol_dst_first"] = isset($dol_dst_first) ? $dol_dst_first : '';
-    $_SESSION["dol_dst_second"] = isset($dol_dst_second) ? $dol_dst_second : '';
-    $_SESSION["dol_screenwidth"] = isset($dol_screenwidth) ? $dol_screenwidth : '';
-    $_SESSION["dol_screenheight"] = isset($dol_screenheight) ? $dol_screenheight : '';
-    $_SESSION["dol_company"] = $conf->global->MAIN_INFO_SOCIETE_NOM;
-    $_SESSION["dol_entity"] = $conf->entity;
-    dol_syslog("This is a new started user session. _SESSION['dol_login']=" . $_SESSION["dol_login"] . ' Session id=' . session_id());
+        // New session for this login
+        $_SESSION["dol_login"] = $user->values->name;
+        $_SESSION["dol_authmode"] = isset($dol_authmode) ? $dol_authmode : '';
+        $_SESSION["dol_tz"] = isset($dol_tz) ? $dol_tz : '';
+        $_SESSION["dol_tz_string"] = isset($dol_tz_string) ? $dol_tz_string : '';
+        $_SESSION["dol_dst"] = isset($dol_dst) ? $dol_dst : '';
+        $_SESSION["dol_dst_observed"] = isset($dol_dst_observed) ? $dol_dst_observed : '';
+        $_SESSION["dol_dst_first"] = isset($dol_dst_first) ? $dol_dst_first : '';
+        $_SESSION["dol_dst_second"] = isset($dol_dst_second) ? $dol_dst_second : '';
+        $_SESSION["dol_screenwidth"] = isset($dol_screenwidth) ? $dol_screenwidth : '';
+        $_SESSION["dol_screenheight"] = isset($dol_screenheight) ? $dol_screenheight : '';
+        $_SESSION["dol_company"] = $conf->global->MAIN_INFO_SOCIETE_NOM;
+        $_SESSION["dol_entity"] = $conf->entity;
+        dol_syslog("This is a new started user session. _SESSION['dol_login']=" . $_SESSION["dol_login"] . ' Session id=' . session_id());
 
-    $db->begin();
+        $db->begin();
 
-    $user->update_last_login_date();
+        $user->update_last_login_date();
 
-    // Call triggers
-    include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
-    $interface = new Interfaces($db);
-    $result = $interface->run_triggers('USER_LOGIN', $user, $user, $langs, $conf, $_POST["entity"]);
-    if ($result < 0) {
-        $error++;
-    }
-    // End call triggers
+        // Call triggers
+        include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+        $interface = new Interfaces($db);
+        $result = $interface->run_triggers('USER_LOGIN', $user, $user, $langs, $conf, $_POST["entity"]);
+        if ($result < 0) {
+            $error++;
+        }
+        // End call triggers
 
-    if ($error) {
-        $db->rollback();
-        session_destroy();
-        dol_print_error($db, 'Error in some triggers on action USER_LOGIN', LOG_ERR);
+        if ($error) {
+            $db->rollback();
+            session_destroy();
+            dol_print_error($db, 'Error in some triggers on action USER_LOGIN', LOG_ERR);
+            exit;
+        } else {
+            $db->commit();
+        }
+
+        // Create entity cookie, just used for login page
+        if (!empty($conf->multicompany->enabled) && !empty($conf->global->MULTICOMPANY_COOKIE_ENABLED) && isset($_POST["entity"])) {
+            include_once(DOL_DOCUMENT_ROOT . "/core/class/cookie.class.php");
+
+            $entity = $_SESSION["dol_login"] . '|' . $_POST["entity"];
+
+            $prefix = dol_getprefix();
+            $entityCookieName = 'DOLENTITYID_' . $prefix;
+            // TTL : is defined in the config page multicompany
+            $ttl = (!empty($conf->global->MULTICOMPANY_COOKIE_TTL) ? dol_now() + $conf->global->MULTICOMPANY_COOKIE_TTL : dol_now() + 60 * 60 * 8 );
+            // Cryptkey : will be created randomly in the config page multicompany
+            $cryptkey = (!empty($conf->file->cookie_cryptkey) ? $conf->file->cookie_cryptkey : '' );
+
+            $entityCookie = new DolCookie($cryptkey);
+            $entityCookie->_setCookie($entityCookieName, $entity, $ttl);
+        }
+
+        // Hooks on successfull login
+        $action = '';
+        include_once(DOL_DOCUMENT_ROOT . '/core/class/hookmanager.class.php');
+        $hookmanager = new HookManager($db);
+        $hookmanager->initHooks(array('login'));
+        $parameters = array('dol_authmode' => $dol_authmode);
+        $reshook = $hookmanager->executeHooks('afterLogin', $parameters, $user, $action); // Note that $action and $object may have been modified by some hooks
+        if ($reshook < 0)
+            $error++;
+
+        header('Location: ' . DOL_URL_ROOT . '/index.php?idmenu=menu:home'); // TODO Add default database
         exit;
-    } else {
-        $db->commit();
     }
-
-    // Create entity cookie, just used for login page
-    if (!empty($conf->multicompany->enabled) && !empty($conf->global->MULTICOMPANY_COOKIE_ENABLED) && isset($_POST["entity"])) {
-        include_once(DOL_DOCUMENT_ROOT . "/core/class/cookie.class.php");
-
-        $entity = $_SESSION["dol_login"] . '|' . $_POST["entity"];
-
-        $prefix = dol_getprefix();
-        $entityCookieName = 'DOLENTITYID_' . $prefix;
-        // TTL : is defined in the config page multicompany
-        $ttl = (!empty($conf->global->MULTICOMPANY_COOKIE_TTL) ? dol_now() + $conf->global->MULTICOMPANY_COOKIE_TTL : dol_now() + 60 * 60 * 8 );
-        // Cryptkey : will be created randomly in the config page multicompany
-        $cryptkey = (!empty($conf->file->cookie_cryptkey) ? $conf->file->cookie_cryptkey : '' );
-
-        $entityCookie = new DolCookie($cryptkey);
-        $entityCookie->_setCookie($entityCookieName, $entity, $ttl);
-    }
-
-    // Hooks on successfull login
-    $action = '';
-    include_once(DOL_DOCUMENT_ROOT . '/core/class/hookmanager.class.php');
-    $hookmanager = new HookManager($db);
-    $hookmanager->initHooks(array('login'));
-    $parameters = array('dol_authmode' => $dol_authmode);
-    $reshook = $hookmanager->executeHooks('afterLogin', $parameters, $user, $action); // Note that $action and $object may have been modified by some hooks
-    if ($reshook < 0)
-        $error++;
-
-    header('Location: ' . DOL_URL_ROOT . '/index.php?idmenu=menu:home'); // TODO Add default database
-    exit;
-}
 
 
 // If user admin, we force the rights-based modules
-if ($user->admin) {
-    $user->rights->user->user->lire = 1;
-    $user->rights->user->user->creer = 1;
-    $user->rights->user->user->password = 1;
-    $user->rights->user->user->supprimer = 1;
-    $user->rights->user->self->creer = 1;
-    $user->rights->user->self->password = 1;
-}
+    if ($user->admin) {
+        $user->rights->user->user->lire = 1;
+        $user->rights->user->user->creer = 1;
+        $user->rights->user->user->password = 1;
+        $user->rights->user->user->supprimer = 1;
+        $user->rights->user->self->creer = 1;
+        $user->rights->user->self->password = 1;
+    }
 
-/*
- * Overwrite configs global by personal configs
-*/
+    /*
+     * Overwrite configs global by personal configs
+     */
 // Set liste_limit
-if (isset($user->conf->MAIN_SIZE_LISTE_LIMIT)) { // Can be 0
-    $conf->liste_limit = $user->conf->MAIN_SIZE_LISTE_LIMIT;
-}
-if (isset($user->conf->PRODUIT_LIMIT_SIZE)) {  // Can be 0
-    $conf->product->limit_size = $user->conf->PRODUIT_LIMIT_SIZE;
-}
+    if (isset($user->conf->MAIN_SIZE_LISTE_LIMIT)) { // Can be 0
+        $conf->liste_limit = $user->conf->MAIN_SIZE_LISTE_LIMIT;
+    }
+    if (isset($user->conf->PRODUIT_LIMIT_SIZE)) {  // Can be 0
+        $conf->product->limit_size = $user->conf->PRODUIT_LIMIT_SIZE;
+    }
 // Replace conf->css by personalized value
-if (isset($user->conf->MAIN_THEME) && $user->conf->MAIN_THEME) {
-    $conf->theme = $user->conf->MAIN_THEME;
-    $conf->css = "/theme/" . $conf->theme . "/style.css.php";
-}
+    if (isset($user->conf->MAIN_THEME) && $user->conf->MAIN_THEME) {
+        $conf->theme = $user->conf->MAIN_THEME;
+        $conf->css = "/theme/" . $conf->theme . "/style.css.php";
+    }
 
 // If theme support option like flip-hide left menu and we use a smartphone, we force it
 }
@@ -714,14 +716,14 @@ if (!function_exists("llxHeader")) {
 
         print '</header>';
         ?>
-<!-- Button to open/hide menu -->
-<a href="#" id="open-menu"><span>Menu</span> </a>
+        <!-- Button to open/hide menu -->
+        <a href="#" id="open-menu"><span>Menu</span> </a>
 
-<!-- Button to open/hide shortcuts -->
-<a href="#" id="open-shortcuts"><span class="icon-thumbs"></span> </a>
+        <!-- Button to open/hide shortcuts -->
+        <a href="#" id="open-shortcuts"><span class="icon-thumbs"></span> </a>
 
-<?php
-main_area($title);
+        <?php
+        main_area($title);
     }
 
 }
@@ -763,180 +765,180 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
     if (empty($conf->css))
         $conf->css = '/theme/eldy/style.css.php'; // If not defined, eldy by default
     ?>
-<!DOCTYPE html>
+    <!DOCTYPE html>
 
-<!--[if IEMobile 7]><html class="no-js iem7 oldie"><![endif]-->
-<!--[if (IE 7)&!(IEMobile)]><html class="no-js ie7 oldie" lang="en"><![endif]-->
-<!--[if (IE 8)&!(IEMobile)]><html class="no-js ie8 oldie" lang="en"><![endif]-->
-<!--[if (IE 9)&!(IEMobile)]><html class="no-js ie9" lang="en"><![endif]-->
-<!--[if (gt IE 9)|(gt IEMobile 7)]><!-->
-<html
-	class="no-js" lang="en">
-<!--<![endif]-->
+    <!--[if IEMobile 7]><html class="no-js iem7 oldie"><![endif]-->
+    <!--[if (IE 7)&!(IEMobile)]><html class="no-js ie7 oldie" lang="en"><![endif]-->
+    <!--[if (IE 8)&!(IEMobile)]><html class="no-js ie8 oldie" lang="en"><![endif]-->
+    <!--[if (IE 9)&!(IEMobile)]><html class="no-js ie9" lang="en"><![endif]-->
+    <!--[if (gt IE 9)|(gt IEMobile 7)]><!-->
+    <html
+        class="no-js" lang="en">
+        <!--<![endif]-->
 
-<?php
-if (!empty($conf->global->MAIN_USE_CACHE_MANIFEST))
-    print '<html manifest="cache.manifest">' . "\n";
-else
-    print '<html>' . "\n";
+        <?php
+        if (!empty($conf->global->MAIN_USE_CACHE_MANIFEST))
+            print '<html manifest="cache.manifest">' . "\n";
+        else
+            print '<html>' . "\n";
 
-if (empty($disablehead)) {
+        if (empty($disablehead)) {
             ?>
-<head>
-<meta charset="utf-8" />
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+            <head>
+                <meta charset="utf-8" />
+                <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-<meta name="HandheldFriendly" content="True">
-<meta name="MobileOptimized" content="320">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="robots" content="noindex,nofollow" />
-<meta name="author" content="Speedealing Development Team" />
-<?php
+                <meta name="HandheldFriendly" content="True">
+                <meta name="MobileOptimized" content="320">
+                <meta name="viewport"
+                      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+                <meta name="robots" content="noindex,nofollow" />
+                <meta name="author" content="Speedealing Development Team" />
+                <?php
 // Displays title
-$appli = 'Speedealing';
-if (!empty($conf->global->MAIN_APPLICATION_TITLE))
-    $appli = $conf->global->MAIN_APPLICATION_TITLE;
+                $appli = 'Speedealing';
+                if (!empty($conf->global->MAIN_APPLICATION_TITLE))
+                    $appli = $conf->global->MAIN_APPLICATION_TITLE;
 
-if ($title)
-    print '<title>' . $appli . ' - ' . $title . '</title>';
-else
-    print "<title>" . $appli . "</title>";
-print "\n";
-?>
-<base
-	href="<?php echo 'http://' . $_SERVER['HTTP_HOST'] . DOL_URL_ROOT . '/'; ?>" />
+                if ($title)
+                    print '<title>' . $appli . ' - ' . $title . '</title>';
+                else
+                    print "<title>" . $appli . "</title>";
+                print "\n";
+                ?>
+                <base
+                    href="<?php echo 'http://' . $_SERVER['HTTP_HOST'] . DOL_URL_ROOT . '/'; ?>" />
 
 
-<!-- For all browsers -->
-<link rel="stylesheet" href="theme/developr/html/css/reset.css?v=1">
-<link rel="stylesheet" href="theme/developr/html/css/style.css?v=1">
-<link rel="stylesheet" href="theme/developr/html/css/colors.css?v=1">
-<link rel="stylesheet" media="print"
-	href="theme/developr/html/css/print.css?v=1">
-<!-- For progressively larger displays -->
-<link rel="stylesheet" media="only all and (min-width: 480px)"
-	href="theme/developr/html/css/480.css?v=1">
-<link rel="stylesheet" media="only all and (min-width: 768px)"
-	href="theme/developr/html/css/768.css?v=1">
-<link rel="stylesheet" media="only all and (min-width: 992px)"
-	href="theme/developr/html/css/992.css?v=1">
-<link rel="stylesheet" media="only all and (min-width: 1200px)"
-	href="theme/developr/html/css/1200.css?v=1">
-<!-- For Retina displays -->
-<link rel="stylesheet"
-	media="only all and (-webkit-min-device-pixel-ratio: 1.5), only screen and (-o-min-device-pixel-ratio: 3/2), only screen and (min-device-pixel-ratio: 1.5)"
-	href="theme/developr/html/css/2x.css?v=1">
+                <!-- For all browsers -->
+                <link rel="stylesheet" href="theme/developr/html/css/reset.css?v=1">
+                <link rel="stylesheet" href="theme/developr/html/css/style.css?v=1">
+                <link rel="stylesheet" href="theme/developr/html/css/colors.css?v=1">
+                <link rel="stylesheet" media="print"
+                      href="theme/developr/html/css/print.css?v=1">
+                <!-- For progressively larger displays -->
+                <link rel="stylesheet" media="only all and (min-width: 480px)"
+                      href="theme/developr/html/css/480.css?v=1">
+                <link rel="stylesheet" media="only all and (min-width: 768px)"
+                      href="theme/developr/html/css/768.css?v=1">
+                <link rel="stylesheet" media="only all and (min-width: 992px)"
+                      href="theme/developr/html/css/992.css?v=1">
+                <link rel="stylesheet" media="only all and (min-width: 1200px)"
+                      href="theme/developr/html/css/1200.css?v=1">
+                <!-- For Retina displays -->
+                <link rel="stylesheet"
+                      media="only all and (-webkit-min-device-pixel-ratio: 1.5), only screen and (-o-min-device-pixel-ratio: 3/2), only screen and (min-device-pixel-ratio: 1.5)"
+                      href="theme/developr/html/css/2x.css?v=1">
 
-<!-- Symeos -->
-<link rel="stylesheet" href="theme/developr/html/css/symeos.css?v=1">
-	
-<!-- Webfonts -->
-<link href='http://fonts.googleapis.com/css?family=Open+Sans:300'
-	rel='stylesheet' type='text/css'>
+                <!-- Symeos -->
+                <link rel="stylesheet" href="theme/developr/html/css/symeos.css?v=1">
 
-<!-- Additional styles -->
-<link rel="stylesheet"
-	href="theme/developr/html/css/styles/agenda.css?v=1">
-<link rel="stylesheet"
-	href="theme/developr/html/css/styles/dashboard.css?v=1">
-<link rel="stylesheet"
-	href="theme/developr/html/css/styles/form.css?v=1">
-<link rel="stylesheet"
-	href="theme/developr/html/css/styles/modal.css?v=1">
-<link rel="stylesheet"
-	href="theme/developr/html/css/styles/progress-slider.css?v=1">
-<link rel="stylesheet"
-	href="theme/developr/html/css/styles/switches.css?v=1">
+                <!-- Webfonts -->
+                <link href='http://fonts.googleapis.com/css?family=Open+Sans:300'
+                      rel='stylesheet' type='text/css'>
 
-<!-- Additional styles -->
-<link rel="stylesheet"
-	href="theme/developr/html/css/styles/table.css?v=1">
+                <!-- Additional styles -->
+                <link rel="stylesheet"
+                      href="theme/developr/html/css/styles/agenda.css?v=1">
+                <link rel="stylesheet"
+                      href="theme/developr/html/css/styles/dashboard.css?v=1">
+                <link rel="stylesheet"
+                      href="theme/developr/html/css/styles/form.css?v=1">
+                <link rel="stylesheet"
+                      href="theme/developr/html/css/styles/modal.css?v=1">
+                <link rel="stylesheet"
+                      href="theme/developr/html/css/styles/progress-slider.css?v=1">
+                <link rel="stylesheet"
+                      href="theme/developr/html/css/styles/switches.css?v=1">
 
-<!-- DataTables -->
-<!--<link rel="stylesheet" href="theme/developr/html/js/libs/DataTables/jquery.dataTables.css?v=1">-->
+                <!-- Additional styles -->
+                <link rel="stylesheet"
+                      href="theme/developr/html/css/styles/table.css?v=1">
 
-<!-- JavaScript at bottom except for Modernizr -->
-<script src="theme/developr/html/js/libs/modernizr.custom.js"></script>
+                <!-- DataTables -->
+                <!--<link rel="stylesheet" href="theme/developr/html/js/libs/DataTables/jquery.dataTables.css?v=1">-->
 
-<!-- For Modern Browsers -->
-<link rel="shortcut icon" href="favicon.png">
-<!-- For everything else -->
-<link rel="shortcut icon" href="favicon.ico">
-<!--<link rel="shortcut icon" type="image/x-icon" href="favicon.ico"/> -->
-<!-- For retina screens -->
-<link rel="apple-touch-icon-precomposed" sizes="114x114"
-	href="apple-touch-icon-retina.png">
-<!-- For iPad 1-->
-<link rel="apple-touch-icon-precomposed" sizes="72x72"
-	href="apple-touch-icon-ipad.png">
-<!-- For iPhone 3G, iPod Touch and Android -->
-<link rel="apple-touch-icon-precomposed" href="apple-touch-icon.png">
+                <!-- JavaScript at bottom except for Modernizr -->
+                <script src="theme/developr/html/js/libs/modernizr.custom.js"></script>
 
-<!-- iOS web-app metas -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
+                <!-- For Modern Browsers -->
+                <link rel="shortcut icon" href="favicon.png">
+                <!-- For everything else -->
+                <link rel="shortcut icon" href="favicon.ico">
+                <!--<link rel="shortcut icon" type="image/x-icon" href="favicon.ico"/> -->
+                <!-- For retina screens -->
+                <link rel="apple-touch-icon-precomposed" sizes="114x114"
+                      href="apple-touch-icon-retina.png">
+                <!-- For iPad 1-->
+                <link rel="apple-touch-icon-precomposed" sizes="72x72"
+                      href="apple-touch-icon-ipad.png">
+                <!-- For iPhone 3G, iPod Touch and Android -->
+                <link rel="apple-touch-icon-precomposed" href="apple-touch-icon.png">
 
-<!-- Startup image for web apps -->
-<link rel="apple-touch-startup-image"
-	href="theme/developr/html/img/splash/ipad-landscape.png"
-	media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)">
-<link rel="apple-touch-startup-image"
-	href="theme/developr/html/img/splash/ipad-portrait.png"
-	media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)">
-<link rel="apple-touch-startup-image"
-	href="theme/developr/html/img/splash/iphone.png"
-	media="screen and (max-device-width: 320px)">
+                <!-- iOS web-app metas -->
+                <meta name="apple-mobile-web-app-capable" content="yes">
+                <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-<!-- Microsoft clear type rendering -->
-<meta http-equiv="cleartype" content="on">
+                <!-- Startup image for web apps -->
+                <link rel="apple-touch-startup-image"
+                      href="theme/developr/html/img/splash/ipad-landscape.png"
+                      media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)">
+                <link rel="apple-touch-startup-image"
+                      href="theme/developr/html/img/splash/ipad-portrait.png"
+                      media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)">
+                <link rel="apple-touch-startup-image"
+                      href="theme/developr/html/img/splash/iphone.png"
+                      media="screen and (max-device-width: 320px)">
 
-<!-- IE9 Pinned Sites: http://msdn.microsoft.com/en-us/library/gg131029.aspx -->
-<meta name="application-name" content="Developr Admin Skin">
-<meta name="msapplication-tooltip"
-	content="Cross-platform admin template.">
-<meta name="msapplication-starturl"
-	content="http://www.display-inline.fr/demo/developr">
-<!-- These custom tasks are examples, you need to edit them to show actual pages -->
-<meta name="msapplication-task"
-	content="name=Agenda;action-uri=http://www.display-inline.fr/demo/developr/html/agenda.html;icon-uri=http://www.display-inline.fr/demo/developr/html/img/favicons/favicon.ico">
-<meta name="msapplication-task"
-	content="name=My profile;action-uri=http://www.display-inline.fr/demo/developr/html/profile.html;icon-uri=http://www.display-inline.fr/demo/developr/html/img/favicons/favicon.ico">
+                <!-- Microsoft clear type rendering -->
+                <meta http-equiv="cleartype" content="on">
 
-<?php
-print '<!-- Includes for JQuery (Ajax library) -->' . "\n";
+                <!-- IE9 Pinned Sites: http://msdn.microsoft.com/en-us/library/gg131029.aspx -->
+                <meta name="application-name" content="Developr Admin Skin">
+                <meta name="msapplication-tooltip"
+                      content="Cross-platform admin template.">
+                <meta name="msapplication-starturl"
+                      content="http://www.display-inline.fr/demo/developr">
+                <!-- These custom tasks are examples, you need to edit them to show actual pages -->
+                <meta name="msapplication-task"
+                      content="name=Agenda;action-uri=http://www.display-inline.fr/demo/developr/html/agenda.html;icon-uri=http://www.display-inline.fr/demo/developr/html/img/favicons/favicon.ico">
+                <meta name="msapplication-task"
+                      content="name=My profile;action-uri=http://www.display-inline.fr/demo/developr/html/profile.html;icon-uri=http://www.display-inline.fr/demo/developr/html/img/favicons/favicon.ico">
+
+                <?php
+                print '<!-- Includes for JQuery (Ajax library) -->' . "\n";
 //$jquerytheme = 'smoothness';
 //if (!empty($conf->global->MAIN_USE_JQUERY_THEME)) $jquerytheme = $conf->global->MAIN_USE_JQUERY_THEME;
 //else print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/css/'.$jquerytheme.'/jquery-ui-latest.custom.css" />'."\n";    // JQuery
 //print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/tiptip/tipTip.css" />'."\n";                           // Tooltip
-print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/jnotify/jquery.jnotify-alt.min.css" />' . "\n"; // JNotify
+                print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/jnotify/jquery.jnotify-alt.min.css" />' . "\n"; // JNotify
 //print '<link rel="stylesheet" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/lightbox/css/jquery.lightbox-0.5.css" media="screen" />'."\n";       // Lightbox
 // jQuery fileupload
-print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/fileupload/css/jquery.fileupload-ui.css" />' . "\n";
+                print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/fileupload/css/jquery.fileupload-ui.css" />' . "\n";
 // jQuery datatables
 //print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/media/css/jquery.dataTables.css" />'."\n";
 //print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/media/css/jquery.dataTables_jui.css" />'."\n";
-print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/extras/ColReorder/media/css/ColReorder.css" />' . "\n";
+                print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/extras/ColReorder/media/css/ColReorder.css" />' . "\n";
 //print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/ColVis/media/css/ColVis.css" />'."\n";
 //print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/ColVis/media/css/ColVisAlt.css" />'."\n";
 //print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/extras/TableTools/media/css/TableTools.css" />'."\n";
-print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/extras/AutoFill/media/css/AutoFill.css" />' . "\n";
+                print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/datatables/extras/AutoFill/media/css/AutoFill.css" />' . "\n";
 // jQuery multiselect
 //print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/includes/jquery/plugins/multiselect/css/ui.multiselect.css" />'."\n";
-print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/wysiwyg/css/jquery.wysiwyg.css" />' . "\n";
+                print '<link rel="stylesheet" type="text/css" href="includes/jquery/plugins/wysiwyg/css/jquery.wysiwyg.css" />' . "\n";
 // jQuery taghandler
-print '<link rel="stylesheet" href="includes/jquery/plugins/tagHandler/css/jquery.taghandler.css" media="all" />' . "\n";
+                print '<link rel="stylesheet" href="includes/jquery/plugins/tagHandler/css/jquery.taghandler.css" media="all" />' . "\n";
 
-print '<!-- Includes for Speedealing, modules or specific pages-->' . "\n";
+                print '<!-- Includes for Speedealing, modules or specific pages-->' . "\n";
 // Output style sheets (optioncss='print' or '')
-$themepath = dol_buildpath((empty($conf->global->MAIN_FORCETHEMEDIR) ? '' : $conf->global->MAIN_FORCETHEMEDIR) . $conf->css, 1);
-$themeparam = '?lang=' . $langs->defaultlang . '&amp;theme=' . $conf->theme . (GETPOST('optioncss') ? '&amp;optioncss=' . GETPOST('optioncss', 'alpha', 1) : '');
-if (!empty($_SESSION['dol_resetcache']))
-    $themeparam.='&amp;dol_resetcache=' . $_SESSION['dol_resetcache'];
+                $themepath = dol_buildpath((empty($conf->global->MAIN_FORCETHEMEDIR) ? '' : $conf->global->MAIN_FORCETHEMEDIR) . $conf->css, 1);
+                $themeparam = '?lang=' . $langs->defaultlang . '&amp;theme=' . $conf->theme . (GETPOST('optioncss') ? '&amp;optioncss=' . GETPOST('optioncss', 'alpha', 1) : '');
+                if (!empty($_SESSION['dol_resetcache']))
+                    $themeparam.='&amp;dol_resetcache=' . $_SESSION['dol_resetcache'];
 //print 'themepath='.$themepath.' themeparam='.$themeparam;exit;
-print '<link rel="stylesheet" type="text/css" title="default" href="' . $themepath . $themeparam . '">' . "\n";
+                print '<link rel="stylesheet" type="text/css" title="default" href="' . $themepath . $themeparam . '">' . "\n";
 // CSS forced by modules (relative url starting with /)
-if (is_array($conf->css_modules)) {
+                if (is_array($conf->css_modules)) {
                     foreach ($conf->css_modules as $key => $cssfile) {
                         // cssfile is an absolute path
                         print '<link rel="stylesheet" type="text/css" title="default" href="' . dol_buildpath($cssfile, 1);
@@ -1069,8 +1071,6 @@ if (is_array($conf->css_modules)) {
                 // Add datepicker default options
                 //print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/core/js/datepicker.js.php?lang=' . $langs->defaultlang . '"></script>' . "\n";
 
-                print'<!-- Foundation framework -->';
-                print '<link rel="stylesheet" href="theme/pertho_sample/foundation/stylesheets/foundation.css">';
                 print '<!-- jquery UI -->';
                 print '<link rel="stylesheet" href="theme/pertho_sample/lib/jQueryUI/css/Aristo/Aristo.css" media="all" />';
                 print '<!-- jQplot (charts) -->';
@@ -1141,8 +1141,8 @@ if (is_array($conf->css_modules)) {
                 if (!empty($conf->global->MAIN_HTML_HEADER))
                     print $conf->global->MAIN_HTML_HEADER . "\n";
                 ?>
-</head>
-<?php
+            </head>
+            <?php
         }
 
         $conf->headerdone = 1; // To tell header was output
@@ -1166,7 +1166,7 @@ if (is_array($conf->css_modules)) {
 
         /*
          * Top menu
-        */
+         */
         $top_menu = $conf->top_menu;
 
         // Load the top menu manager
@@ -1176,28 +1176,28 @@ if (is_array($conf->css_modules)) {
             include_once(DOL_DOCUMENT_ROOT . "/core/menus/standard/" . $top_menu);
         }
         ?>
-<ul id="shortcuts" role="complementary"
-	class="children-tooltip tooltip-right">
-	<li class="current"><a href="index.php?idmenu=menu:home"
-		title="Dashboard"><img src="theme/eldy/img/modules/Maps.png" />Dashboard</a>
-	</li>
-	<li><a href="inbox.html" title="Messages"><img
-			src="theme/eldy/img/modules/Mail_alt.png" />Messages</a></li>
-	<li><a href="agenda.html" title="Agenda"><img
-			src="theme/eldy/img/modules/Calendar.png" />Agenda</a></li>
-	<li><a href="tables.html" title="Contacts"><img
-			src="theme/eldy/img/modules/Contacts.png" />Contacts</a></li>
-	<li><a href="explorer.html" title="Medias"><img
-			src="theme/eldy/img/modules/Photos.png" />Medias</a></li>
-	<li><a href="sliders.html" title="Stats"><img
-			src="theme/eldy/img/modules/Stocks.png" />Stats</a></li>
-	<li><a href="form.html" title="Settings"><img
-			src="theme/eldy/img/modules/Settings.png" />Settings</a></li>
-	<li><span title="Notes"><img src="theme/eldy/img/modules/Notes.png" />Notes</span>
-	</li>
-</ul>
+        <ul id="shortcuts" role="complementary"
+            class="children-tooltip tooltip-right">
+            <li class="current"><a href="index.php?idmenu=menu:home"
+                                   title="Dashboard"><img src="theme/eldy/img/modules/Maps.png" />Dashboard</a>
+            </li>
+            <li><a href="inbox.html" title="Messages"><img
+                        src="theme/eldy/img/modules/Mail_alt.png" />Messages</a></li>
+            <li><a href="agenda.html" title="Agenda"><img
+                        src="theme/eldy/img/modules/Calendar.png" />Agenda</a></li>
+            <li><a href="tables.html" title="Contacts"><img
+                        src="theme/eldy/img/modules/Contacts.png" />Contacts</a></li>
+            <li><a href="explorer.html" title="Medias"><img
+                        src="theme/eldy/img/modules/Photos.png" />Medias</a></li>
+            <li><a href="sliders.html" title="Stats"><img
+                        src="theme/eldy/img/modules/Stocks.png" />Stats</a></li>
+            <li><a href="form.html" title="Settings"><img
+                        src="theme/eldy/img/modules/Settings.png" />Settings</a></li>
+            <li><span title="Notes"><img src="theme/eldy/img/modules/Notes.png" />Notes</span>
+            </li>
+        </ul>
 
-<?php
+        <?php
     }
 
     /**
@@ -1220,19 +1220,19 @@ if (is_array($conf->css_modules)) {
 
         print "\n";
         ?>
-<!-- Sidebar/drop-down menu -->
-<section id="menu" role="complementary">
+        <!-- Sidebar/drop-down menu -->
+        <section id="menu" role="complementary">
 
-	<!-- This wrapper is used by several responsive layouts -->
-	<div id="menu-content">
-		<header>
-			<form action="search.php" id="search_box" method="post">
-				<input name="query" id="query" type="text" size="40"
-					placeholder="<?php echo $langs->trans("SearchOf"); ?>..."
-					autocomplete="off" />
-			</form>
-		</header>
-		<script>
+            <!-- This wrapper is used by several responsive layouts -->
+            <div id="menu-content">
+                <header>
+                    <form action="search.php" id="search_box" method="post">
+                        <input name="query" id="query" type="text" size="40"
+                               placeholder="<?php echo $langs->trans("SearchOf"); ?>..."
+                               autocomplete="off" />
+                    </form>
+                </header>
+                <script>
                     $(document).ready(function() {
                         $('#query').sautocomplete('search/data.php', {
                             delay		: 10,
@@ -1272,101 +1272,103 @@ if (is_array($conf->css_modules)) {
                     });
                 </script>
 
-		<div id="profile" class="row" style="min-width: 0px;">
-			<div class="five columns">
-				<div class="ego-icon big">
-					<?php if(!empty($user->values->Photo)) :?>
-					<img alt="User name" class="ego-icon-inner" border="0" width="64"
-						src="<?php echo $user->getFile($user->values->Photo);?>">
-					<?php else :?>
-					<img src="theme/developr/html/img/user.png" width="64" height="64"
-						alt="User name" class="ego-icon-inner">
-					<?php endif;?>
-					<img class="ego-icon-outer"
-						src="theme/developr/html/img/timbre base 90x100.png">
-				</div>
-			</div>
-			<div class="seven columns">
-			    Hello <span class="name"><?php echo $user->values->Firstname; ?>
-			    <b><?php echo $user->values->Lastname; ?> </b> </span>
-			</div>
-		</div>
+                <div id="profile" class="with-small-padding">
+                    <div class="columns">
+                        <div class="five-columns">
+                            <div class="ego-icon big">
+    <?php if (!empty($user->values->Photo)) : ?>
+                                    <img alt="User name" class="ego-icon-inner" border="0" width="64"
+                                         src="<?php echo $user->getFile($user->values->Photo); ?>">
+    <?php else : ?>
+                                    <img src="theme/developr/html/img/user.png" width="64" height="64"
+                                         alt="User name" class="ego-icon-inner">
+    <?php endif; ?>
+                                <img class="ego-icon-outer"
+                                     src="theme/developr/html/img/timbre base 90x100.png">
+                            </div>
+                        </div>
+                        <div class="seven-columns">
+                            Hello <span class="name"><?php echo $user->values->Firstname; ?>
+                                <b><?php echo $user->values->Lastname; ?> </b> </span>
+                        </div>
+                    </div>
+                </div>
 
-		<!-- By default, this section is made for 4 icons, see the doc to learn how to change this, in "basic markup explained" -->
-		<ul id="access" class="children-tooltip">
-			<li><a href="index.php?idmenu=menu:home"
-				title="<?php echo $langs->trans("Home"); ?>"><span class="icon-home"></span>
-			</a></li>
-			<li><a href="inbox.html" title="Messages"><span class="icon-inbox"></span><span
-					class="count">2</span> </a></li>
-			<li><a href="calendars.html" title="Calendar"><span
-					class="icon-calendar"></span> </a></li>
-			<li><a href="user/fiche.php?id=<?php echo $user->id; ?>"
-				title="Profile"><span class="icon-gear"></span> </a></li>
-			<li><a href="user/logout.php" title="Log out"><span
-					class="icon-unlock"></span> </a></li>
-		</ul>
+                <!-- By default, this section is made for 4 icons, see the doc to learn how to change this, in "basic markup explained" -->
+                <ul id="access" class="children-tooltip">
+                    <li><a href="index.php?idmenu=menu:home"
+                           title="<?php echo $langs->trans("Home"); ?>"><span class="icon-home"></span>
+                        </a></li>
+                    <li><a href="inbox.html" title="Messages"><span class="icon-inbox"></span><span
+                                class="count">2</span> </a></li>
+                    <li><a href="calendars.html" title="Calendar"><span
+                                class="icon-calendar"></span> </a></li>
+                    <li><a href="user/fiche.php?id=<?php echo $user->id; ?>"
+                           title="Profile"><span class="icon-gear"></span> </a></li>
+                    <li><a href="user/logout.php" title="Log out"><span
+                                class="icon-unlock"></span> </a></li>
+                </ul>
 
-		<?php
-		// Show menu
-		$menu = new MenuAuguria($db);
-		$menu->atarget = $target;
-		$menu->showmenuTop();   // This contains a \n
-		?>
+                <?php
+                // Show menu
+                $menu = new MenuAuguria($db);
+                $menu->atarget = $target;
+                $menu->showmenuTop();   // This contains a \n
+                ?>
 
-		<ul class="unstyled-list">
-			<li class="title-menu">Today's event</li>
-			<li>
-				<ul class="calendar-menu">
-					<li><a href="#" title="See event"> <time datetime="2011-02-24">
-								<b>24</b> Feb
-							</time> <small class="green">10:30</small> Event's description
-					</a>
-					</li>
-				</ul>
-			</li>
-			<li class="title-menu">New messages</li>
-			<li>
-				<ul class="message-menu">
-					<li><span class="message-status"> <a href="#" class="starred"
-							title="Starred">Starred</a> <a href="#" class="new-message"
-							title="Mark as read">New</a>
-					</span> <span class="message-info"> <span class="blue">17:12</span>
-							<a href="#" class="attach" title="Download attachment">Attachment</a>
-					</span> <a href="#" title="Read message"> <strong class="blue">John
-								Doe</strong><br> <strong>Mail subject</strong>
-					</a>
-					</li>
-					<li><a href="#" title="Read message"> <span class="message-status">
-								<span class="unstarred">Not starred</span> <span
-								class="new-message">New</span>
-						</span> <span class="message-info"> <span class="blue">15:47</span>
-						</span> <strong class="blue">May Starck</strong><br> <strong>Mail
-								subject a bit longer</strong>
-					</a>
-					</li>
-					<li><span class="message-status"> <span class="unstarred">Not
-								starred</span>
-					</span> <span class="message-info"> <span class="blue">15:12</span>
-					</span> <strong class="blue">May Starck</strong><br> Read message</li>
-				</ul>
-			</li>
-		</ul>
-	</div>
-	<!-- End content wrapper -->
+                <ul class="unstyled-list">
+                    <li class="title-menu">Today's event</li>
+                    <li>
+                        <ul class="calendar-menu">
+                            <li><a href="#" title="See event"> <time datetime="2011-02-24">
+                                        <b>24</b> Feb
+                                    </time> <small class="green">10:30</small> Event's description
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="title-menu">New messages</li>
+                    <li>
+                        <ul class="message-menu">
+                            <li><span class="message-status"> <a href="#" class="starred"
+                                                                 title="Starred">Starred</a> <a href="#" class="new-message"
+                                                                 title="Mark as read">New</a>
+                                </span> <span class="message-info"> <span class="blue">17:12</span>
+                                    <a href="#" class="attach" title="Download attachment">Attachment</a>
+                                </span> <a href="#" title="Read message"> <strong class="blue">John
+                                        Doe</strong><br> <strong>Mail subject</strong>
+                                </a>
+                            </li>
+                            <li><a href="#" title="Read message"> <span class="message-status">
+                                        <span class="unstarred">Not starred</span> <span
+                                            class="new-message">New</span>
+                                    </span> <span class="message-info"> <span class="blue">15:47</span>
+                                    </span> <strong class="blue">May Starck</strong><br> <strong>Mail
+                                        subject a bit longer</strong>
+                                </a>
+                            </li>
+                            <li><span class="message-status"> <span class="unstarred">Not
+                                        starred</span>
+                                </span> <span class="message-info"> <span class="blue">15:12</span>
+                                </span> <strong class="blue">May Starck</strong><br> Read message</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <!-- End content wrapper -->
 
-	<!-- This is optional -->
-	<footer id="menu-footer">
-	    <div>
-			<p>Copyright 2012 - Symeos</p>
-		</div>
-	</footer>
+            <!-- This is optional -->
+            <footer id="menu-footer">
+                <div>
+                    <p>Copyright 2012 - Symeos</p>
+                </div>
+            </footer>
 
-</section>
-<!-- End sidebar/drop-down menu -->
-<?php
+        </section>
+        <!-- End sidebar/drop-down menu -->
+        <?php
 // Define $searchform
-if ($conf->societe->enabled && $conf->global->MAIN_SEARCHFORM_SOCIETE && $user->rights->societe->lire) {
+        if ($conf->societe->enabled && $conf->global->MAIN_SEARCHFORM_SOCIETE && $user->rights->societe->lire) {
             $langs->load("companies");
             $searchform.=printSearchForm(DOL_URL_ROOT . '/societe/societe.php', DOL_URL_ROOT . '/societe/societe.php', img_object('', 'company') . ' ' . $langs->trans("ThirdParties"), 'soc', 'socname');
         }
@@ -1417,96 +1419,96 @@ if ($conf->societe->enabled && $conf->global->MAIN_SEARCHFORM_SOCIETE && $user->
         // Left column
         print '<!--Begin left area - menu ' . $left_menu . '-->' . "\n";
         /*
-         print '<div class = "row">' . "\n";
-        print '<div class = "three columns hide-on-phones">' . "\n";
+          print '<div class = "row">' . "\n";
+          print '<div class = "three columns hide-on-phones">' . "\n";
 
-        //$menuleft=new MenuLeft($db,$menu_array_before,$menu_array_after);
-        //$menuleft->showmenu(); // output menu_array and menu found in database
-        // Show other forms
-        if ($searchform) {
+          //$menuleft=new MenuLeft($db,$menu_array_before,$menu_array_after);
+          //$menuleft->showmenu(); // output menu_array and menu found in database
+          // Show other forms
+          if ($searchform) {
           print "\n";
-        print "<!-- Begin SearchForm -->\n";
-        print '<div id = "blockvmenusearch" class = "blockvmenusearch">' . "\n";
-        print $searchform;
-        print '</div>' . "\n";
-        print "<!-- End SearchForm -->\n";
-        }
+          print "<!-- Begin SearchForm -->\n";
+          print '<div id = "blockvmenusearch" class = "blockvmenusearch">' . "\n";
+          print $searchform;
+          print '</div>' . "\n";
+          print "<!-- End SearchForm -->\n";
+          }
 
-        // More search form
-        if ($moresearchform) {
+          // More search form
+          if ($moresearchform) {
           print $moresearchform;
-        }
+          }
 
-        // Bookmarks
-        if ($bookmarks) {
+          // Bookmarks
+          if ($bookmarks) {
           print "\n";
-        print "<!-- Begin Bookmarks -->\n";
-        print '<div id = "blockvmenubookmarks" class = "blockvmenubookmarks">' . "\n";
-        print $bookmarks;
-        print '</div>' . "\n";
-        print "<!-- End Bookmarks -->\n";
-        }
+          print "<!-- Begin Bookmarks -->\n";
+          print '<div id = "blockvmenubookmarks" class = "blockvmenubookmarks">' . "\n";
+          print $bookmarks;
+          print '</div>' . "\n";
+          print "<!-- End Bookmarks -->\n";
+          }
 
-        // Link to Speedealing wiki pages
-        if ($helppagename && empty($conf->global->MAIN_HELP_DISABLELINK)) {
+          // Link to Speedealing wiki pages
+          if ($helppagename && empty($conf->global->MAIN_HELP_DISABLELINK)) {
           $langs->load("help");
 
-        $helpbaseurl = '';
-        $helppage = '';
-        $mode = '';
+          $helpbaseurl = '';
+          $helppage = '';
+          $mode = '';
 
-        // Get helpbaseurl, helppage and mode from helppagename and langs
-        $arrayres = getHelpParamFor($helppagename, $langs);
-        $helpbaseurl = $arrayres['helpbaseurl'];
-        $helppage = $arrayres['helppage'];
-        $mode = $arrayres['mode'];
+          // Get helpbaseurl, helppage and mode from helppagename and langs
+          $arrayres = getHelpParamFor($helppagename, $langs);
+          $helpbaseurl = $arrayres['helpbaseurl'];
+          $helppage = $arrayres['helppage'];
+          $mode = $arrayres['mode'];
 
-        // Link to help pages
-        if ($helpbaseurl && $helppage) {
+          // Link to help pages
+          if ($helpbaseurl && $helppage) {
           print '<div id = "blockvmenuhelp" class = "blockvmenuhelp">';
-        print '<a class = "help" target = "_blank" title = "' . $langs->trans($mode == 'wiki' ? 'GoToWikiHelpPage' : 'GoToHelpPage');
-        if ($mode == 'wiki')
-            print ' - ' . $langs->trans("PageWiki") . ' &quot;' . dol_escape_htmltag(strtr($helppage, '_', ' ')) . '&quot;';
-        print '" href = "';
-        print sprintf($helpbaseurl, urlencode(html_entity_decode($helppage)));
-        print '">';
-        print img_picto('', 'helpdoc') . ' ';
-        print $langs->trans($mode == 'wiki' ? 'OnlineHelp' : 'Help');
-        //if ($mode == 'wiki') print ' ('.dol_trunc(strtr($helppage,'_',' '),8).')';
-        print '</a>';
-        print '</div>';
-        }
-        }
+          print '<a class = "help" target = "_blank" title = "' . $langs->trans($mode == 'wiki' ? 'GoToWikiHelpPage' : 'GoToHelpPage');
+          if ($mode == 'wiki')
+          print ' - ' . $langs->trans("PageWiki") . ' &quot;' . dol_escape_htmltag(strtr($helppage, '_', ' ')) . '&quot;';
+          print '" href = "';
+          print sprintf($helpbaseurl, urlencode(html_entity_decode($helppage)));
+          print '">';
+          print img_picto('', 'helpdoc') . ' ';
+          print $langs->trans($mode == 'wiki' ? 'OnlineHelp' : 'Help');
+          //if ($mode == 'wiki') print ' ('.dol_trunc(strtr($helppage,'_',' '),8).')';
+          print '</a>';
+          print '</div>';
+          }
+          }
 
-        // Link to bugtrack
-        if (!empty($conf->global->MAIN_SHOW_BUGTRACK_LINK)) {
+          // Link to bugtrack
+          if (!empty($conf->global->MAIN_SHOW_BUGTRACK_LINK)) {
           $bugbaseurl = 'http://savannah.nongnu.org/bugs/?';
-        $bugbaseurl.='func=additem&group=dolibarr&privacy=1&';
-        $bugbaseurl.="&details=";
-        $bugbaseurl.=urlencode("\n\n\n\n\n-------------\n");
-        $bugbaseurl.=urlencode($langs->trans("Version") . ": " . DOL_VERSION . "\n");
-        $bugbaseurl.=urlencode($langs->trans("Server") . ": " . $_SERVER["SERVER_SOFTWARE"] . "\n");
-        $bugbaseurl.=urlencode($langs->trans("Url") . ": " . $_SERVER["REQUEST_URI"] . "\n");
-        print '<div class="help"><a class="help" target="_blank" href="' . $bugbaseurl . '">' . $langs->trans("FindBug") . '</a></div>';
-        }
-        print "\n";
+          $bugbaseurl.='func=additem&group=dolibarr&privacy=1&';
+          $bugbaseurl.="&details=";
+          $bugbaseurl.=urlencode("\n\n\n\n\n-------------\n");
+          $bugbaseurl.=urlencode($langs->trans("Version") . ": " . DOL_VERSION . "\n");
+          $bugbaseurl.=urlencode($langs->trans("Server") . ": " . $_SERVER["SERVER_SOFTWARE"] . "\n");
+          $bugbaseurl.=urlencode($langs->trans("Url") . ": " . $_SERVER["REQUEST_URI"] . "\n");
+          print '<div class="help"><a class="help" target="_blank" href="' . $bugbaseurl . '">' . $langs->trans("FindBug") . '</a></div>';
+          }
+          print "\n";
 
-        print "</div>\n";
-        print "<!-- End left vertical menu -->\n";
+          print "</div>\n";
+          print "<!-- End left vertical menu -->\n";
 
-        print "\n";
+          print "\n";
 
-        // Execute hook printLeftBlock
-        $parameters = array();
-        $leftblock = $hookmanager->executeHooks('printLeftBlock', $parameters); // Note that $action and $object may have been modified by some hooks
-        print $leftblock;
+          // Execute hook printLeftBlock
+          $parameters = array();
+          $leftblock = $hookmanager->executeHooks('printLeftBlock', $parameters); // Note that $action and $object may have been modified by some hooks
+          print $leftblock;
 
-        //print '</td>';
+          //print '</td>';
 
-        print "\n";
-        print '<!-- End of left area -->' . "\n";
-        print "\n";
-        print '<!-- Begin right area -->' . "\n"; */
+          print "\n";
+          print '<!-- End of left area -->' . "\n";
+          print "\n";
+          print '<!-- Begin right area -->' . "\n"; */
     }
 
     /**
@@ -1585,9 +1587,9 @@ if ($conf->societe->enabled && $conf->global->MAIN_SEARCHFORM_SOCIETE && $user->
         $ret.='<input type="hidden" name="mode_search" value="' . $htmlmodesearch . '">';
         $ret.='<input type="text" class="flat" ';
         if (!empty($conf->global->MAIN_HTML5_PLACEHOLDER))
-        	$ret.=' placeholder="' . $langs->trans("SearchOf") . '' . strip_tags($title) . '"';
+            $ret.=' placeholder="' . $langs->trans("SearchOf") . '' . strip_tags($title) . '"';
         else
-        	$ret.=' title="' . $langs->trans("SearchOf") . '' . strip_tags($title) . '"';
+            $ret.=' title="' . $langs->trans("SearchOf") . '' . strip_tags($title) . '"';
         $ret.=' name="' . $htmlinputname . '" size="10" />&nbsp;';
         $ret.='<input type="submit" class="button" value="' . $langs->trans("Go") . '">';
         $ret.="</form>\n";
@@ -1603,19 +1605,19 @@ if ($conf->societe->enabled && $conf->global->MAIN_SEARCHFORM_SOCIETE && $user->
     function llxFooter() {
         global $conf, $langs, $dolibarr_auto_user, $micro_start_time, $memcache;
         ?>
-</section>
+    </section>
 
-<!-- End main content -->
-<?php
-top_menu(); // print the left menu
+    <!-- End main content -->
+    <?php
+    top_menu(); // print the left menu
 
-left_menu(); // print the right menu
+    left_menu(); // print the right menu
 
-if (!empty($conf->memcached->host) && class_exists('Memcache') && !class_exists('Memcached'))
-	$memcache->close();
+    if (!empty($conf->memcached->host) && class_exists('Memcache') && !class_exists('Memcached'))
+        $memcache->close();
 
 // Core error message
-if (defined("MAIN_CORE_ERROR") && constant("MAIN_CORE_ERROR") == 1) {
+    if (defined("MAIN_CORE_ERROR") && constant("MAIN_CORE_ERROR") == 1) {
         $title = img_warning() . ' ' . $langs->trans('CoreErrorTitle');
         print ajax_dialog($title, $langs->trans('CoreErrorMessage'));
 
@@ -1623,50 +1625,51 @@ if (defined("MAIN_CORE_ERROR") && constant("MAIN_CORE_ERROR") == 1) {
     }
     ?>
 
-<?php if (!defined('NOHEADER')) : ?>
-<script src="theme/developr/html/js/setup.js"></script>
+    <?php if (!defined('NOHEADER')) : ?>
+        <script src="theme/developr/html/js/setup.js"></script>
 
-<script src="theme/developr/html/js/developr.navigable.js"></script>
-<script src="theme/developr/html/js/developr.scroll.js"></script>
+        <script src="theme/developr/html/js/developr.navigable.js"></script>
+        <script src="theme/developr/html/js/developr.scroll.js"></script>
 
-<!--<script src="theme/developr/html/js/developr.input.js"></script>-->
-<script src="theme/developr/html/js/developr.message.js"></script>
-<script src="theme/developr/html/js/developr.modal.js"></script>
-<script src="theme/developr/html/js/developr.notify.js"></script>
-<script src="theme/developr/html/js/developr.progress-slider.js"></script>
-<script src="theme/developr/html/js/developr.tooltip.js"></script>
-<script src="theme/developr/html/js/developr.confirm.js"></script>
-<script src="theme/developr/html/js/developr.agenda.js"></script>
+                <!--<script src="theme/developr/html/js/developr.input.js"></script>-->
+        <script src="theme/developr/html/js/developr.message.js"></script>
+        <script src="theme/developr/html/js/developr.modal.js"></script>
+        <script src="theme/developr/html/js/developr.notify.js"></script>
+        <script src="theme/developr/html/js/developr.progress-slider.js"></script>
+        <script src="theme/developr/html/js/developr.tooltip.js"></script>
+        <script src="theme/developr/html/js/developr.confirm.js"></script>
+        <script src="theme/developr/html/js/developr.agenda.js"></script>
 
-<script src="theme/developr/html/js/developr.tabs.js"></script>
-<!-- Must be loaded last -->
+        <script src="theme/developr/html/js/developr.tabs.js"></script>
+        <!-- Must be loaded last -->
 
-<!-- Tinycon -->
-<script src="theme/developr/html/js/libs/tinycon.min.js"></script>
+        <!-- Tinycon -->
+        <script src="theme/developr/html/js/libs/tinycon.min.js"></script>
 
-<script>
+        <script>
 
             // Call template init (optional, but faster if called manually)
             $.template.init();
 
             // Favicon count
             Tinycon.setBubble(2);
-        					
+                        					
         </script>
 
-<footer id="footer">
-	<div class="row">
-		<div class="eleven centered columns">Copyright &copy; 2012
-			speedealing.com - symeos.com - tzd-themes.com -
-			themeforest.net/user/displayinline</div>
-	</div>
-</footer>
-<?php
-printCommonFooter();
-?>
-<?php endif; ?>
-<?php
-print "</body>\n";
-print "</html>\n";
+        <footer id="footer">
+            <div class="with-mid-padding">
+                <div>Copyright &copy; 2012
+                    speedealing.com - symeos.com - tzd-themes.com -
+                    themeforest.net/user/displayinline
+                </div>
+            </div>
+        </footer>
+        <?php
+        printCommonFooter();
+        ?>
+    <?php endif; ?>
+    <?php
+    print "</body>\n";
+    print "</html>\n";
 }
 ?>

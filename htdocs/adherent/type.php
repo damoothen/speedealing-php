@@ -59,8 +59,7 @@ $form = new Form($db);
 if (!$rowid && $action != 'create' && $action != 'edit') {
 
 	print_fiche_titre($langs->trans("MembersTypes"));
-	print '<div class="container">';
-	print '<div class="row">';
+	print '<div class="with-padding">';
 
 	$i = 0;
 	$obj = new stdClass();
@@ -121,7 +120,7 @@ if (!$rowid && $action != 'create' && $action != 'edit') {
 	$obj->sDom = 'l<fr>t<\"clear\"rtip>';
 	$object->datatablesCreate($obj, "membertype", false, true);
 
-	print "</div></div>";
+	print "</div>";
 }
 
 
@@ -137,8 +136,8 @@ if ($rowid) {
 	
 
 	print_fiche_titre($titre . " - " . $rowid);
-	print '<div class="container">';
-	print '<div class="row">';
+	print '<div class="with-padding">';
+	print '<div class="columns">';
 
 	// Show list of members (nearly same code than in page liste.php)
 
