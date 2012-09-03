@@ -90,8 +90,7 @@ else
     $titre = $langs->trans("ListOfAll");
 
 print_fiche_titre($titre);
-print '<div class="container">';
-print '<div class="row">';
+print '<div class="with-padding">';
 
 //print start_box($titre,"twelve","16-Companies.png");
 
@@ -190,7 +189,7 @@ $obj->bServerSide = true;
 $object->datatablesCreate($obj,"societe",true,true);
 
 //print end_box();
-print '</div></div>'; // end row/container
+print '</div>'; // end 
 
 llxFooter();
 ?>

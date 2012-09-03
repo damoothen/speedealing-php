@@ -26,6 +26,7 @@
  */
 require("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT . "/adherent/class/adherent.class.php");
+dol_include_once("/mips/class/mips.class.php");
 
 $langs->load("members");
 
@@ -36,11 +37,11 @@ $action = GETPOST('action', 'alpha');
 $result = restrictedArea($user, 'adherent', $rowid, 'adherent_type');
 
 if (GETPOST('button_removefilter')) {
-	$search_lastname = "";
-	$search_login = "";
-	$search_email = "";
-	$type = "";
-	$sall = "";
+    $search_lastname = "";
+    $search_login = "";
+    $search_email = "";
+    $type = "";
+    $sall = "";
 }
 
 $object = new Adherent($db);
@@ -58,69 +59,69 @@ $form = new Form($db);
 
 if (!$rowid && $action != 'create' && $action != 'edit') {
 
-	print_fiche_titre($langs->trans("MembersTypes"));
-	print '<div class="with-padding">';
+    print_fiche_titre($langs->trans("MembersTypes"));
+    print '<div class="with-padding">';
 
-	$i = 0;
-	$obj = new stdClass();
-	print '<div class="datatable">';
-	print '<table class="display dt_act" id="membertype" >';
+    $i = 0;
+    $obj = new stdClass();
+    print '<div class="datatable">';
+    print '<table class="display dt_act" id="membertype" >';
 // Ligne des titres 
-	print'<thead>';
-	print'<tr>';
-	print'<th>';
-	print'</th>';
-	$obj->aoColumns[$i]->mDataProp = "_id";
-	$obj->aoColumns[$i]->bUseRendered = false;
-	$obj->aoColumns[$i]->bSearchable = false;
-	$obj->aoColumns[$i]->bVisible = false;
-	$i++;
-	print'<th class="essential">';
-	print $langs->trans("Id");
-	print'</th>';
-	$obj->aoColumns[$i]->mDataProp = "tag";
-	$obj->aoColumns[$i]->bUseRendered = false;
-	$obj->aoColumns[$i]->bSearchable = true;
-	$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("tag", "url", array("url" => $_SERVER["PHP_SELF"] . '?id='));
-	$i++;
-	print'<th class="essential">';
-	print $langs->trans('Total');
-	print'</th>';
-	$obj->aoColumns[$i]->mDataProp = "nb";
-	$obj->aoColumns[$i]->sDefaultContent = 0;
-	$i++;
-	print'</tr>';
-	print'</thead>';
-	print'<tfoot>';
-	print'</tfoot>';
-	print'<tbody>';
+    print'<thead>';
+    print'<tr>';
+    print'<th>';
+    print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "_id";
+    $obj->aoColumns[$i]->bUseRendered = false;
+    $obj->aoColumns[$i]->bSearchable = false;
+    $obj->aoColumns[$i]->bVisible = false;
+    $i++;
+    print'<th class="essential">';
+    print $langs->trans("Id");
+    print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "tag";
+    $obj->aoColumns[$i]->bUseRendered = false;
+    $obj->aoColumns[$i]->bSearchable = true;
+    $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("tag", "url", array("url" => $_SERVER["PHP_SELF"] . '?id='));
+    $i++;
+    print'<th class="essential">';
+    print $langs->trans('Total');
+    print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "nb";
+    $obj->aoColumns[$i]->sDefaultContent = 0;
+    $i++;
+    print'</tr>';
+    print'</thead>';
+    print'<tfoot>';
+    print'</tfoot>';
+    print'<tbody>';
 
-	$result = $object->getView('tag', array("group" => true));
-	if (count($result->rows) > 0)
-		foreach ($result->rows as $aRow) {
-			$nb = $aRow->value;
-			$tmp_id = $aRow->key;
+    $result = $object->getView('tag', array("group" => true));
+    if (count($result->rows) > 0)
+        foreach ($result->rows as $aRow) {
+            $nb = $aRow->value;
+            $tmp_id = $aRow->key;
 
-			print "<tr>";
-			print '<td>';
-			print $tmp_id;
-			print '</td>';
-			print '<td>';
-			print $tmp_id . '</td>';
-			print '<td align="right">' . $nb . '</td>';
-			print "</tr>";
-			$i++;
-		}
-	print'</tbody>';
-	print "</table>";
-	print "</div>";
+            print "<tr>";
+            print '<td>';
+            print $tmp_id;
+            print '</td>';
+            print '<td>';
+            print $tmp_id . '</td>';
+            print '<td align="right">' . $nb . '</td>';
+            print "</tr>";
+            $i++;
+        }
+    print'</tbody>';
+    print "</table>";
+    print "</div>";
 
-	$obj->bServerSide = false;
-	$obj->aaSorting = array(array(1, "asc"));
-	$obj->sDom = 'l<fr>t<\"clear\"rtip>';
-	$object->datatablesCreate($obj, "membertype", false, true);
+    $obj->bServerSide = false;
+    $obj->aaSorting = array(array(1, "asc"));
+    $obj->sDom = 'l<fr>t<\"clear\"rtip>';
+    $object->datatablesCreate($obj, "membertype", false, true);
 
-	print "</div>";
+    print "</div>";
 }
 
 
@@ -131,113 +132,184 @@ if (!$rowid && $action != 'create' && $action != 'edit') {
 /* * ************************************************************************* */
 if ($rowid) {
 
-	$titre = $langs->trans("MemberType");
+    $titre = $langs->trans("MemberType");
 
-	
 
-	print_fiche_titre($titre . " - " . $rowid);
-	print '<div class="with-padding">';
-	print '<div class="columns">';
 
-	// Show list of members (nearly same code than in page liste.php)
+    print_fiche_titre($titre . " - " . $rowid);
+    print '<div class="with-padding">';
+    print '<div class="columns">';
 
-	$titre = $langs->trans("Members");
-	print start_box($titre, "six", "16-Users.png");
+    // Show list of members (nearly same code than in page liste.php)
 
-	$i = 0;
-	$obj = new stdClass();
-	print '<table class="display dt_act" id="member" >';
-	// Ligne des titres 
-	print'<thead>';
-	print'<tr>';
-	print'<th>';
-	print'</th>';
-	$obj->aoColumns[$i]->mDataProp = "_id";
-	$obj->aoColumns[$i]->bUseRendered = false;
-	$obj->aoColumns[$i]->bSearchable = false;
-	$obj->aoColumns[$i]->bVisible = false;
-	$i++;
-	print'<th class="essential">';
-	print $langs->trans("Id");
-	print'</th>';
-	$obj->aoColumns[$i]->mDataProp = "login";
-	$obj->aoColumns[$i]->bUseRendered = false;
-	$obj->aoColumns[$i]->bSearchable = true;
-	$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("login", "url");
-	$i++;
-	print'<th class="essential">';
-	print $langs->trans('Name');
-	print'</th>';
-	$obj->aoColumns[$i]->mDataProp = "Lastname";
-	$obj->aoColumns[$i]->sDefaultContent = "";
+    $titre = $langs->trans("Members");
+    print start_box($titre, "six", "16-Users.png");
+
+    $i = 0;
+    $obj = new stdClass();
+    print '<table class="display dt_act" id="member" >';
+    // Ligne des titres 
+    print'<thead>';
+    print'<tr>';
+    print'<th>';
+    print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "_id";
+    $obj->aoColumns[$i]->bUseRendered = false;
+    $obj->aoColumns[$i]->bSearchable = false;
+    $obj->aoColumns[$i]->bVisible = false;
+    $i++;
+    print'<th class="essential">';
+    print $langs->trans("Id");
+    print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "login";
+    $obj->aoColumns[$i]->bUseRendered = false;
+    $obj->aoColumns[$i]->bSearchable = true;
+    $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("login", "url");
+    $i++;
+    print'<th class="essential">';
+    print $langs->trans('Name');
+    print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "Lastname";
+    $obj->aoColumns[$i]->sDefaultContent = "";
 //$obj->aoColumns[$i]->sClass = "edit";
-	$i++;
-	print'<th class="essential">';
-	print $langs->trans('Firstname');
-	print'</th>';
-	$obj->aoColumns[$i]->mDataProp = "Firstname";
-	$obj->aoColumns[$i]->sDefaultContent = "";
-	//$obj->aoColumns[$i]->sClass = "edit";
-	$i++;
-	print'<th class="essential">';
-	print $langs->trans("Status");
-	print'</th>';
-	$obj->aoColumns[$i]->mDataProp = "Status";
-	$obj->aoColumns[$i]->sClass = "center";
-	$obj->aoColumns[$i]->sWidth = "180px";
-	$obj->aoColumns[$i]->sDefaultContent = "0";
-	$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("Status", "status", array("dateEnd" => "last_subscription_date_end"));
-	$i++;
-	print'<th class="essential">';
-	print'</th>';
-	$obj->aoColumns[$i]->mDataProp = "last_subscription_date_end";
-	$obj->aoColumns[$i]->sDefaultContent = "";
-	//$obj->aoColumns[$i]->sClass = "edit";
-	$obj->aoColumns[$i]->bVisible = false;
-	print'</tr>';
-	print'</thead>';
-	print'<tfoot>';
-	print'</tfoot>';
-	print'<tbody>';
-	$result = $object->getView('group', array("key" => $rowid));
-	if (count($result->rows) > 0)
-		foreach ($result->rows as $aRow) {
-			print '<tr>';
-			print '<td>' . $aRow->value->_id . '</td>';
-			print '<td>' . $aRow->value->login . '</td>';
-			print '<td>' . $aRow->value->Lastname . '</td>';
-			print '<td>' . $aRow->value->Firstname . '</td>';
-			print '<td>' . (empty($aRow->value->Status) ? "0" : $aRow->value->Status) . '</td>';
-			print '<td>' . $aRow->value->last_subscription_date_end . '</td>';
-			print '</tr>';
-		}
-	print'</tbody>';
+    $i++;
+    print'<th class="essential">';
+    print $langs->trans('Firstname');
+    print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "Firstname";
+    $obj->aoColumns[$i]->sDefaultContent = "";
+    //$obj->aoColumns[$i]->sClass = "edit";
+    $i++;
+    print'<th class="essential">';
+    print $langs->trans("Status");
+    print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "Status";
+    $obj->aoColumns[$i]->sClass = "center";
+    $obj->aoColumns[$i]->sWidth = "180px";
+    $obj->aoColumns[$i]->sDefaultContent = "0";
+    $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("Status", "status", array("dateEnd" => "last_subscription_date_end"));
+    $i++;
+    print'<th class="essential">';
+    print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "last_subscription_date_end";
+    $obj->aoColumns[$i]->sDefaultContent = "";
+    //$obj->aoColumns[$i]->sClass = "edit";
+    $obj->aoColumns[$i]->bVisible = false;
+    print'</tr>';
+    print'</thead>';
+    print'<tfoot>';
+    print'</tfoot>';
+    print'<tbody>';
+    $result = $object->getView('group', array("key" => $rowid));
+    if (count($result->rows) > 0)
+        foreach ($result->rows as $aRow) {
+            print '<tr>';
+            print '<td>' . $aRow->value->_id . '</td>';
+            print '<td>' . $aRow->value->login . '</td>';
+            print '<td>' . $aRow->value->Lastname . '</td>';
+            print '<td>' . $aRow->value->Firstname . '</td>';
+            print '<td>' . (empty($aRow->value->Status) ? "0" : $aRow->value->Status) . '</td>';
+            print '<td>' . $aRow->value->last_subscription_date_end . '</td>';
+            print '</tr>';
+        }
+    print'</tbody>';
 
-	print "</table>";
+    print "</table>";
 
-	$obj->sDom = 'l<fr>t<\"clear\"rtip>';
-	$obj->bServerSide = false;
-	$obj->iDisplayLength = 10;
-	$obj->aaSorting = array(array(1, 'asc'));
-	$object->datatablesCreate($obj, "member");
+    $obj->sDom = 'l<fr>t<\"clear\"rtip>';
+    $obj->bServerSide = false;
+    $obj->iDisplayLength = 10;
+    $obj->aaSorting = array(array(1, 'asc'));
+    $object->datatablesCreate($obj, "member");
 
-	print '<div class="tabsAction">';
+    print '<div class="tabsAction">';
 
-	// Add
-	print '<a class="butAction" href="adherent/fiche.php?action=create&typeid=' . $rowid . '">' . $langs->trans("AddMember") . '</a>';
+    // Add
+    print '<a class="butAction" href="adherent/fiche.php?action=create&typeid=' . $rowid . '">' . $langs->trans("AddMember") . '</a>';
 
-	print "</div>";
+    print "</div>";
 
-	print end_box();
+    print end_box();
 
 
-	// Messaging
+    // Messaging
 
-	$titre = $langs->trans("Messenger");
-	print start_box($titre, "six", "16-Mail.png");
+    $titre = $langs->trans("Messenger");
+    print start_box($titre, "six", "16-Mail.png");
 
-	print end_box();
-	print '</div></div>';
+    $i = 0;
+    $obj = new stdClass();
+    $mips = new Mips($db);
+    print '<table class="display dt_act" id="mail_datatable" >';
+    // Ligne des titres 
+    print'<thead>';
+    print'<th class="essential">';
+    print $langs->trans("Ref");
+    print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "_id";
+    $obj->aoColumns[$i]->bUseRendered = false;
+    $obj->aoColumns[$i]->bSearchable = false;
+    $obj->aoColumns[$i]->bVisible = false;
+    $i++;
+    print'<th class="essential">';
+    print $langs->trans('Title');
+    print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "title";
+    //$obj->aoColumns[$i]->sWidth = "200px";
+    $obj->aoColumns[$i]->sDefaultContent = "";
+    $obj->aoColumns[$i]->fnRender = $mips->datatablesFnRender("title", "url", array("url" => "modules/ego/fiche.php?id="));
+    $obj->aoColumns[$i]->sDefaultContent = "";
+    $i++;
+    print'<th class="essential">';
+    print $langs->trans('DateSend');
+    print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "datef";
+    $obj->aoColumns[$i]->sType = "date";
+    $obj->aoColumns[$i]->sClass = "center";
+    //$obj->aoColumns[$i]->sWidth = "200px";
+    $obj->aoColumns[$i]->sDefaultContent = "";
+    $obj->aoColumns[$i]->fnRender = $mips->datatablesFnRender("datef", "date");
+    $obj->aoColumns[$i]->sDefaultContent = "";
+    //$obj->aoColumns[$i]->sClass = "edit";
+    $i++;
+    print'<th class="essential">';
+    print $langs->trans("Status");
+    print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "Status";
+    $obj->aoColumns[$i]->sClass = "fright";
+    $obj->aoColumns[$i]->sDefaultContent = "0";
+    $obj->aoColumns[$i]->fnRender = $mips->datatablesFnRender("Status", "status");
+    print'</tr>';
+    print'</thead>';
+    print'<tfoot>';
+    print'</tfoot>';
+    print'<tbody>';
+    // Recup ID Mips of Users
+
+    /* $keystart[0]=$object->email;
+      $keyend[0]=$object->email;
+      $keyend[1]=new stdClass(); */
+    $result = $mips->getView("egoMail", array('key' => $object->tag));
+    if (count($result->rows) > 0)
+        foreach ($result->rows as $key => $aRow) {
+            print '<tr>';
+            print '<td>' . $aRow->value->egoId . '</td>';
+            print '<td>' . $aRow->value->egoTitle . '</td>';
+            print '<td>' . $aRow->value->egoDateC . '</td>';
+            print '<td>' . $aRow->value->egoStatus . '</td>';
+            print '</tr>';
+        }
+    print'</tbody>';
+
+    print "</table>";
+
+    //$obj->sDom = 'l<fr>t<\"clear\"rtip>';
+    $obj->bServerSide = false;
+    $obj->iDisplayLength = 10;
+    $object->datatablesCreate($obj, "mail_datatable");
+
+    print end_box();
+    print '</div></div>';
 }
 
 $db->close();
