@@ -16,12 +16,12 @@
                "0": {
                    "enable": true,
                    "label": "MemberStatusDraft",
-                   "cssClass": "neutral_bg"
+                   "cssClass": "grey-gradient"
                },
                "1": {
                    "label": "MemberStatusActive",
                    "enable": true,
-                   "cssClass": "alert_bg",
+                   "cssClass": "orange-gradient",
                    "dateEnd": [
                        "expired",
                        "actived"
@@ -30,17 +30,17 @@
                "-1": {
                    "label": "MemberStatusResiliated",
                    "enable": true,
-                   "cssClass": "info_bg"
+                   "cssClass": "blue-gradient"
                },
                "actived": {
                    "enable": false,
                    "label": "MemberStatusPaid",
-                   "cssClass": "ok_bg"
+                   "cssClass": "green-gradient"
                },
                "expired": {
                    "enable": false,
                    "label": "MemberStatusActiveLate",
-                   "cssClass": "error_bg"
+                   "cssClass": "red-gradient"
                }
            }
        }

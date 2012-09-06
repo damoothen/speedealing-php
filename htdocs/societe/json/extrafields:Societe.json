@@ -125,37 +125,37 @@
                "ST_NO": {
                    "enable": true,
                    "type": "closed",
-                   "cssClass": "error_bg"
+                   "cssClass": "red-gradient"
                },
                "ST_NEVER": {
                    "enable": true,
                    "type": "never",
-                   "cssClass": "neutral_bg"
+                   "cssClass": "grey-gradient"
                },
                "ST_PCOLD": {
                    "enable": true,
                    "type": "prospect",
-                   "cssClass": "info_bg"
+                   "cssClass": "blue-gradient"
                },
                "ST_PHOT": {
                    "enable": true,
                    "type": "prospect",
-                   "cssClass": "error_bg"
+                   "cssClass": "red-gradient"
                },
                "ST_CLESS3": {
                    "enable": true,
                    "type": "customer",
-                   "cssClass": "alert_bg"
+                   "cssClass": "orange-gradient"
                },
                "ST_CUST": {
                    "enable": true,
                    "type": "customer",
-                   "cssClass": "ok_bg"
+                   "cssClass": "green-gradient"
                },
                "ST_CPAR": {
                    "enable": false,
                    "type": "customer",
-                   "cssClass": "ok_bg"
+                   "cssClass": "green-gradient"
                }
            }
        },

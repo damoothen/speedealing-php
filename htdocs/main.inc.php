@@ -696,7 +696,7 @@ if (!function_exists("llxHeader")) {
         top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss); // Show html headers
 
         if (!defined('NOHEADER'))
-            print '<body class="clearfix with-menu with-shortcuts grdnt_c mhover_c fullW">';
+            print '<body class="clearfix with-menu with-shortcuts grdnt_c mhover_c">';
         else
             print '<body class="fullW" style="background: white;">';
 
@@ -1296,16 +1296,16 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
                 <!-- By default, this section is made for 4 icons, see the doc to learn how to change this, in "basic markup explained" -->
                 <ul id="access" class="children-tooltip">
-                    <li><a href="index.php?idmenu=menu:home"
+                    <li style="width: 20%;"><a href="index.php?idmenu=menu:home"
                            title="<?php echo $langs->trans("Home"); ?>"><span class="icon-home"></span>
                         </a></li>
-                    <li><a href="inbox.html" title="Messages"><span class="icon-inbox"></span><span
+                    <li style="width: 20%;"><a href="inbox.html" title="Messages"><span class="icon-inbox"></span><span
                                 class="count">2</span> </a></li>
-                    <li><a href="calendars.html" title="Calendar"><span
+                    <li style="width: 20%;"><a href="calendars.html" title="Calendar"><span
                                 class="icon-calendar"></span> </a></li>
-                    <li><a href="user/fiche.php?id=<?php echo $user->id; ?>"
+                    <li style="width: 20%;"><a href="user/fiche.php?id=<?php echo $user->id; ?>"
                            title="Profile"><span class="icon-gear"></span> </a></li>
-                    <li><a href="user/logout.php" title="Log out"><span
+                    <li style="width: 20%;"><a href="user/logout.php" title="Log out"><span
                                 class="icon-unlock"></span> </a></li>
                 </ul>
 

@@ -398,9 +398,9 @@ abstract class nosqlDocument extends CommonObject {
 		}
 
 		if (isset($this->fk_extrafields->fields->Status->values->$status->label))
-			return '<span class="lbl ' . $this->fk_extrafields->fields->Status->values->$status->cssClass . ' sl_status ">' . $langs->trans($this->fk_extrafields->fields->Status->values->$status->label) . '</span>';
+			return '<span class="tag ' . $this->fk_extrafields->fields->Status->values->$status->cssClass . '">' . $langs->trans($this->fk_extrafields->fields->Status->values->$status->label) . '</span>';
 		else
-			return '<span class="lbl ' . $this->fk_extrafields->fields->Status->values->$status->cssClass . ' sl_status ">' . $langs->trans($status) . '</span>';
+			return '<span class="tag ' . $this->fk_extrafields->fields->Status->values->$status->cssClass . '">' . $langs->trans($status) . '</span>';
 	}
 
 	/**
@@ -811,9 +811,9 @@ abstract class nosqlDocument extends CommonObject {
 							else stat = expire[1];';
 				}
 				$rtr.= 'var ar = [];
-				ar[ar.length] = "<span class=\"lbl ";
+				ar[ar.length] = "<span class=\"tag ";
 				ar[ar.length] = status[stat][1];
-				ar[ar.length] = " sl_status\">";
+				ar[ar.length] = " \">";
 				ar[ar.length] = status[stat][0];
 				ar[ar.length] = "</span>";
 				var str = ar.join("");

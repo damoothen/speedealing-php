@@ -405,7 +405,11 @@
 			prth_stickyFooter.resize();
 		},
 		resize: function() {
-			var docHeight = $(document.body).height() - $("#sticky-footer-push").height();
+                        if($("#sticky-footer-push").height() === "undefined")
+                            var docHeight = $(document.body).height();
+                        else
+                            var docHeight = $(document.body).height() - $("#sticky-footer-push").height();
+                        
 			if(docHeight < $(window).height()){
 				var diff = $(window).height() - docHeight - 10;
 				if ($("#sticky-footer-push").length == 0) {
