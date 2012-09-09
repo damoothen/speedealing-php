@@ -71,7 +71,8 @@ class AdherentCard extends Adherent {
 		$photoName = $object->photo;
 		$photoType = $object->_attachments->$photoName->content_type;
 		$photoBase64 = $object->getFileBase64($object->photo);
-		$photo = '<img src="data:' . $PhotoType . ';base64,' . $photoBase64 . '"/>';
+		$photo = '<img alt="User name" class="ego-icon-inner"
+                           src="data:' . $PhotoType . ';base64,' . $photoBase64 . '"/>';
 
 		// Substitutions
 		$substitutionarray = array(

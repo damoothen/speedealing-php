@@ -834,8 +834,8 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                 <link rel="stylesheet" href="theme/developr/html/css/symeos.css?v=1">
 
                 <!-- Webfonts -->
-                <link href='http://fonts.googleapis.com/css?family=Open+Sans:300'
-                      rel='stylesheet' type='text/css'>
+                <!--<link href='http://fonts.googleapis.com/css?family=Open+Sans:300'
+                      rel='stylesheet' type='text/css'>-->
 
                 <!-- Additional styles -->
                 <link rel="stylesheet"
@@ -1088,27 +1088,6 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                 print '<!-- main styles -->';
                 print '<link rel="stylesheet" href="theme/eldy/style.css" />';
 
-                print '<!-- Google fonts -->';
-                //print '<link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet" />';
-                print '<style type="text/css" media="screen, print">
-                        @font-face {
-                        font-family: "Open Sans Condensed";
-                        font-style: normal;
-                        font-weight: 300;
-                        src: url("theme/pertho_sample/lib/google/OpenSans-CondensedLight.woff") format("woff"),
-                        url("http://themes.googleusercontent.com/static/fonts/opensanscondensed/v6/gk5FxslNkTTHtojXrkp-xF1YPouZEKgzpqZW9wN-3Ek.woff") format("woff");
-		}
-                        </style>';
-                print '<style type="text/css" media="screen, print">
-                @font-face {
-                font-family: "Terminal Dosis";
-                font-style: normal;
-                font-weight: 400;
-                src: url("theme/pertho_sample/lib/google/Dosis-Regular.woff") format("woff"),
-                url("http://themes.googleusercontent.com/static/fonts/terminaldosis/v5/_IcvjW_kWHsIHjjUsLbdpFGxLvFzKVP0OsRYGzgS_zk.woff") format("woff");
-		}
-                </style>';
-
                 print '<!--[if lt IE 9]>';
                 print '<link rel="stylesheet" href="foundation/stylesheets/ie.css">';
                 print '<script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>';
@@ -1277,10 +1256,10 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                         <div class="five-columns">
                             <div class="ego-icon big">
     <?php if (!empty($user->values->Photo)) : ?>
-                                    <img alt="User name" class="ego-icon-inner" border="0" width="64"
+                                    <img alt="User name" class="ego-icon-inner"
                                          src="<?php echo $user->getFile($user->values->Photo); ?>">
     <?php else : ?>
-                                    <img src="theme/developr/html/img/user.png" width="64" height="64"
+                                    <img src="theme/developr/html/img/user.png"
                                          alt="User name" class="ego-icon-inner">
     <?php endif; ?>
                                 <img class="ego-icon-outer"
