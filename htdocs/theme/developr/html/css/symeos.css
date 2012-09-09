@@ -72,7 +72,7 @@
 .ego-icon {
 	display:block;
 	height: 84px !important;
-	margin-left: 10px;
+        width: 100%;
 }
 .ego-icon > img.ego-icon-inner {
 
@@ -237,6 +237,7 @@ ul.ego-scroll-menu {
   display: block;
   float: left;
   padding: 0 4px;
+  width: 30%;
 }
 
 .ego-scroll-menu a {
@@ -269,25 +270,12 @@ div.ego-scroll-menu.horizontal ul.ego-scroll-menu  {
 }
 
 div.ego-scroll-menu.horizontal .ego-scroll-menu  li {
-  position: relative;
-  display: inline;
-  float: left;
-  padding: 0 4px;
 }
 
 div.ego-scroll-menu.horizontal .ego-scroll-menu >a {
   display: inline;
   float:left;
   text-decoration: none;
-}
-
-.ego-scroll-menu span {
-  /* We want a caption to display on the next line */
-  display: block;
-  margin-top: 3px;
-  text-align: center;
-  font-size: 12px;
-  color: #fff;
 }
 
 /* pour retourner une image ou une icone */

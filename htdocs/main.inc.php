@@ -1272,7 +1272,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                     });
                 </script>
 
-                <div id="profile" class="with-small-padding">
+                <div id="profile" class="with-mid-padding">
                     <div class="columns">
                         <div class="five-columns">
                             <div class="ego-icon big">

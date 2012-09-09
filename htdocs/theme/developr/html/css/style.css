@@ -768,6 +768,11 @@ to {		background-position: -80px 0;	}
     clear: left;
 }
 
+.centered-columns {
+    margin-left: auto;
+    margin-right: auto;
+}
+
 /* Fixed columns */
 .left-column-200px .left-column,
 .right-column-200px .right-column {
@@ -1086,12 +1091,10 @@ to {		background-position: -80px 0;	}
 
 /* Tags */
 .tag {
-    padding: 2px 6px;
+    padding: 0 4px 2px;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     border-radius: 4px;
-    font-size: 10px;
-    top: -1px;
 }
 .ie9 .tag {
     padding: 1px 4px;
