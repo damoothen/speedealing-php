@@ -15,6 +15,12 @@
     font-weight: 400;
     src: url("../fonts/google/Dosis-Regular.woff") format("woff");
 }
+@font-face {
+    font-family: "Open Sans";
+    font-style: normal;
+    font-weight: 300;
+    src: url("../fonts/google/Open-Sans.woff") format("woff");
+}
 
 /* le body occupe 100% du viewport pour pouvoir afficher le background sur toute la surface visible */ 
 
