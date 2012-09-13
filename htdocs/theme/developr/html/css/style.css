@@ -1091,10 +1091,11 @@ to {		background-position: -80px 0;	}
 
 /* Tags */
 .tag {
-    padding: 0 4px 2px;
+    padding: 1px 4px 2px;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     border-radius: 4px;
+    font-family: 'Terminal Dosis', sans-serif;
 }
 .ie9 .tag {
     padding: 1px 4px;

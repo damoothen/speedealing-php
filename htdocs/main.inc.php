@@ -1071,6 +1071,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                 // Add datepicker default options
                 //print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/core/js/datepicker.js.php?lang=' . $langs->defaultlang . '"></script>' . "\n";
 
+                //print '<link rel="stylesheet" href="theme/pertho_sample/foundation/stylesheets/foundation.css">';
                 print '<!-- jquery UI -->';
                 print '<link rel="stylesheet" href="theme/pertho_sample/lib/jQueryUI/css/Aristo/Aristo.css" media="all" />';
                 print '<!-- jQplot (charts) -->';
@@ -1263,7 +1264,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                                          alt="User name" class="ego-icon-inner">
     <?php endif; ?>
                                 <img class="ego-icon-outer"
-                                     src="theme/developr/html/img/timbre base 90x100.png">
+                                     src="theme/developr/html/img/timbrebase90x100.png">
                             </div>
                         </div>
                         <div class="seven-columns">

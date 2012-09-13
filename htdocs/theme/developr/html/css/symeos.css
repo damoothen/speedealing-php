@@ -83,9 +83,9 @@ html, body > .fixed-footer-bar {
 }	
 
 /* taille des icones dans le shortcuts */
-#shortcuts > li > a > img {
+/*#shortcuts > li > a > img {
     width : 70px;
-}
+}*/
 /* Icones et images dans des timbres
 */
 .ego-icon {
