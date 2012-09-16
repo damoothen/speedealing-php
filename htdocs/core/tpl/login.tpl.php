@@ -195,7 +195,7 @@ header("Content-type: text/html; charset=" . $conf->file->character_set_client);
 
     <?php if (!empty($conf->global->MAIN_HTML_FOOTER)) print $conf->global->MAIN_HTML_FOOTER; ?>
 
-    <script src="includes/jquery/js/jquery-1.8.1.min.js"></script>
+    <script src="includes/jquery/js/jquery-latest.min.js"></script>
     <script src="includes/lib/validate/jquery.validate.min.js"></script>
     <script src="theme/symeos/js/setup.js"></script>
 
@@ -376,7 +376,7 @@ header("Content-type: text/html; charset=" . $conf->file->character_set_client);
             notify('Bienvenue sur Speedealing', 'Bonne découverte.', {
                 autoClose: false,
                 delay: 2500,
-                icon: 'theme/symeos/img/demo/icon.png'
+                icon: 'theme/common/emotes/face-smile.png'
             });
         });
     </script>

@@ -1158,21 +1158,21 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
         <ul id="shortcuts" role="complementary"
             class="children-tooltip tooltip-right">
             <li class="current"><a href="index.php?idmenu=menu:home"
-                                   title="Dashboard"><img src="theme/symeos/img/modules/Maps.png" />Dashboard</a>
+                                   title="Dashboard"><img src="theme/common/modules/Maps.png" />Dashboard</a>
             </li>
             <li><a href="inbox.html" title="Messages"><img
-                        src="theme/symeos/img/modules/Mail_alt.png" />Messages</a></li>
+                        src="theme/common/modules/Mail_alt.png" />Messages</a></li>
             <li><a href="agenda.html" title="Agenda"><img
-                        src="theme/symeos/img/modules/Calendar.png" />Agenda</a></li>
+                        src="theme/common/modules/Calendar.png" />Agenda</a></li>
             <li><a href="tables.html" title="Contacts"><img
-                        src="theme/symeos/img/modules/Contacts.png" />Contacts</a></li>
+                        src="theme/common/modules/Contacts.png" />Contacts</a></li>
             <li><a href="explorer.html" title="Medias"><img
-                        src="theme/symeos/img/modules/Photos.png" />Medias</a></li>
+                        src="theme/common/modules/Photos.png" />Medias</a></li>
             <li><a href="sliders.html" title="Stats"><img
-                        src="theme/symeos/img/modules/Stocks.png" />Stats</a></li>
+                        src="theme/common/modules/Stocks.png" />Stats</a></li>
             <li><a href="form.html" title="Settings"><img
-                        src="theme/symeos/img/modules/Settings.png" />Settings</a></li>
-            <li><span title="Notes"><img src="theme/symeos/img/modules/Notes.png" />Notes</span>
+                        src="theme/common/modules/Settings.png" />Settings</a></li>
+            <li><span title="Notes"><img src="theme/common/modules/Notes.png" />Notes</span>
             </li>
         </ul>
 
