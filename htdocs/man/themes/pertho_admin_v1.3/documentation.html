@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<title>Pertho Admin Panel</title>
+
+		<!-- Foundation framework -->
+			<link rel="stylesheet" href="foundation/stylesheets/foundation.css" />
+		<!-- jquery UI -->
+			<link rel="stylesheet" href="lib/jQueryUI/css/Aristo/Aristo.css" media="all" />
+		<!-- fancybox -->
+			<link rel="stylesheet" href="lib/fancybox/jquery.fancybox-1.3.4.css" media="all" />
+		<!-- syntax highlighter -->
+			<link rel="stylesheet" href="lib/syntaxhighlighter/styles/shCoreDefault.css">
+		<!-- main styles -->
+			<link rel="stylesheet" href="css/style.css">
+
+		<!-- Google fonts -->
+			<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' />
+			<link href='http://fonts.googleapis.com/css?family=Terminal+Dosis' rel='stylesheet' />
+
+		<!-- Favicons and the like (avoid using transparent .png) -->
+			<link rel="shortcut icon" href="favicon.ico" />
+			<link rel="apple-touch-icon-precomposed" href="icon.png" />
+
+		<!--[if lt IE 9]>
+			<link rel="stylesheet" href="foundation/stylesheets/ie.css" />
+			<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+
+	</head>
+	<body class="ptrn_a grdnt_a mhover_a">
+		<header>
+			<div class="container head_s_a">
+				<div class="row sepH_b">
+					<div class="six columns">
+						<div class="row">
+							<div class="five phone-two columns">
+								<div id="logo">
+									<img src="img/logo.png" alt="Pertho Admin" />
+								</div>
+							</div>
+							<div class="seven phone-two columns">
+								<form action="search.php" id="search_box" method="post">
+									<input name="query" id="query" type="text" size="40" placeholder="Find a city&hellip;" autocomplete="off" />
+								</form>
+							</div>
+						</div>
+					</div>
+					<div class="six columns">
+						<div class="user_box cf">
+							<div class="user_avatar">
+								<img src="img/user_female.png" alt="" />
+							</div>
+							<div class="user_info user_sep">
+								<p class="sepH_a">
+									<strong>Mary Adams</strong>
+								</p>
+								<span>
+									<a href="#" class="sep">Settings</a>
+									<a href="login.html">Log out</a>
+								</span>
+							</div>
+							<div class="ntf_bar user_sep">
+								<a href="#ntf_mail_panel" class="ntf_item" style="background-image: url(img/ico/icSw2/32-Mail.png)">
+									<span class="ntf_tip ntf_tip_red"><span>12</span></span>
+								</a>
+								<a href="#ntf_tickets_panel" class="ntf_item" style="background-image: url(img/ico/icSw2/32-Day-Calendar.png)">
+									<span class="ntf_tip ntf_tip_red"><span>122</span></span>
+								</a>
+								<a href="#ntf_comments_panel" class="ntf_item" style="background-image: url(img/ico/icSw2/32-Speech-Bubble.png)">
+									<span class="ntf_tip ntf_tip_blue"><span>8</span></span>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="twelve columns">
+						<nav id="smoothmenu_h" class="ddsmoothmenu">
+							<ul class="cf">
+								<li><a href="dashboard.html" class="mb_parent first_el">Dashboard</a></li>
+								<li>
+									<a href="javascript:void(0)" class="mb_parent">Forms</a>
+									<ul style="display:none">
+										<li><a href="form_elements.html">Form elements</a></li>
+										<li><a href="form_extended.html">Form elements (extended)</a></li>
+										<li><a href="form_validation.html">Form validation</a></li>
+										<li><a href="form_example.html">Form example</a></li>
+									</ul>
+								</li>
+								<li>
+									<a href="javascript:void(0)" class="mb_parent">UI Elements</a>
+									<ul style="display:none">
+										<li><a href="ui_alertbox_btn_ico_tip.html">Alerts, Buttons, Icons, Tooltips</a></li>
+										<li><a href="ui_gallery.html">Gallery</a></li>
+										<li><a href="ui_grid.html">Grid</a></li>
+										<li><a href="ui_pricingtable.html">Pricing Table</a></li>
+										<li><a href="ui_scrollable.html">Scrollable</a></li>
+										<li><a href="search_page.html">Search Page</a></li>
+										<li><a href="ui_sidebar.html">Sidebar</a></li>
+										<li><a href="ui_tabs.html">Tabs / Accordion</a></li>
+										<li><a href="ui_typography.html">Typography</a></li>
+										<li><a href="ui_widgets.html">Widgets</a></li>
+									</ul>
+								</li>
+								<li>
+									<a href="javascript:void(0)" class="mb_parent">Plugins</a>
+									<ul style="display:none">
+										<li><a href="plugin_charts.html">Charts</a></li>
+										<li><a href="plugin_tables.html">Data tables</a></li>
+										<li><a href="plugin_explorer.html">File explorer</a></li>
+										<li><a href="plugin_help.html">Help/Faq</a></li>
+										<li><a href="plugin_dialogs.html">Dialog boxes/Notifications</a></li>
+										<li><a href="plugin_wizard.html">Wizard</a></li>
+									</ul>
+								</li>
+								<li>
+									<a href="javascript:void(0)" class="mb_parent">Navigation</a>
+									<ul style="display:none">
+										<li><a href="nav_sticky.html">Sticky navigation</a></li>
+										<li><a href="nav_sticky_center.html">Sticky navigation (centered)</a></li>
+										<li><a href="nav_sidebar.html">Sidebar navigation</a></li>
+									</ul>
+								</li>
+								<li>
+									<a href="javascript:void(0)" class="mb_parent">Error Pages</a>
+									<ul style="display:none">
+										<li><a href="error_401.html">401</a></li>
+										<li><a href="error_403.html">403</a></li>
+										<li><a href="error_404.html">404</a></li>
+										<li><a href="error_500.html">500</a></li>
+										<li><a href="error_503.html">503</a></li>
+										<li><a href="error_unexpected.html">Unexpected error</a></li>
+									</ul>
+								</li>
+								<li>
+									<a href="javascript:void(0)" class="mb_parent">Sub-levels</a>
+									<ul style="display:none">
+										<li>
+											<a href="#">First level</a>
+											<ul style="display:none">
+												<li>
+													<a href="#">Second level</a>
+													<ul style="display:none">
+														<li><a href="#">Third level</a></li>
+														<li><a href="#">Third level</a></li>
+													</ul>
+												</li>
+												<li><a href="#">Second level</a></li>
+											</ul>
+										</li>
+										<li><a href="#">First level</a></li>
+										<li><a href="#">First level</a></li>
+										<li><a href="#">First level</a></li>
+									</ul>
+								</li>
+								<li>
+									<a href="documentation.html" class="mb_parent pageselected">Documentation</a>
+								</li>
+							</ul>
+						</nav>
+						<ul id="breadcrumbs" class="cf">
+							<li>You are here:</li>
+							<li><a href="#">Content</a></li>
+							<li><a href="#">Article</a></li>
+							<li><span>Lorem Ipsum&hellip;</span></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<!-- notifications content -->
+			<div style="display:none">
+				<div id="ntf_tickets_panel" style="display:none">
+					<p class="sticky-title">New Tickets</p>
+					<ul class="sticky-list">
+						<li>
+							<a href="#">Admin should not break if URL&hellip;</a>
+							<p><span class="s_color small">updated 01.04.2012</span></p>
+						</li>
+						<li>
+							<a href="#">Displaying submenus in custom&hellip;</a>
+							<p><span class="s_color small">updated 01.04.2012</span></p>
+						</li>
+						<li>
+							<a href="#">Featured image on post types.</a>
+							<p><span class="s_color small">updated 24.03.2012</span></p>
+						</li>
+						<li>
+							<a href="#">Multiple feed fixes and&hellip;</a>
+							<p><span class="s_color small">updated 22.03.2012</span></p>
+						</li>
+						<li>
+							<a href="#">Automatic line breaks in&hellip;</a>
+							<p><span class="s_color small">updated 18.03.2012</span></p>
+						</li>
+						<li>
+							<a href="#">Wysiwyg bug with shortcodes.</a>
+							<p><span class="s_color small">updated 08.10.2012</span></p>
+						</li>
+					</ul>
+					<a href="#" class="gh_button btn-small">Show all tickets</a>
+				</div>
+				<div id="ntf_comments_panel" style="display:none">
+					<p class="sticky-title">New Comments</p>
+					<ul class="sticky-list">
+						<li>
+							<a href="#">Lorem ipsum dolor sit amet&hellip;</a>
+							<p><span class="s_color small">John Smith on Maiden Castle, Dorset (29.10.2012)</span></p>
+						</li>
+						<li>
+							<a href="#">Lorem ipsum dolor sit&hellip;</a>
+							<p><span class="s_color small">John Smith on Draining and development&hellip; (29.10.2012)</span></p>
+						</li>
+					</ul>
+					<a href="#" class="gh_button btn-small">Show all comments</a>
+				</div>
+				<div id="ntf_mail_panel" style="display:none">
+					<p class="sticky-title">New Messages</p>
+					<ul class="sticky-list">
+						<li>
+							<a href="#">Lorem ipsum dolor sit amet&hellip;</a>
+							<p><span class="s_color small">From John Smith (29.10.2012)</span></p>
+						</li>
+						<li>
+							<a href="#">Lorem ipsum dolor sit&hellip;</a>
+							<p><span class="s_color small">From John Smith (28.10.2012)</span></p>
+						</li>
+					</ul>
+					<a href="#" class="gh_button btn-small">Show all messages</a>
+				</div>
+			</div>
+		</header>
+        <div class="container">
+            <div class="row">
+                <div class="twelve columns">
+                    <div class="box_c">
+                        <div class="box_c_heading cf box_actions">
+                            <p>Documentation</p>
+                        </div>
+                        <div class="box_c_content">
+                            <h3 class="sepH_a_line">Pertho Admin Documentation</h3>
+                            <ul class="sepH_c">
+                                <li>Version: <span class="lbl info_bg">1.3</span></li>
+                                <li>Created: 28/03/2012</li>
+                                <li>Last update: 09/07/2012</li>
+                                <li>Author: <a href="http://tzd-themes.com">tzd-themes.com</a></li>
+                                <li>Email: <a href="mailto:support@tzd-themes.com">support@tzd-themes.com</a></li>
+                            </ul>
+                            <p class="sepH_a_line">Thank You for purchasing Pertho Admin template. If you have any questions that are beyond the scope of this help file, please feel free to send me a message via user page contact form <a href="http://themeforest.net/user/tzd">here</a>.</p>
+                            <div id="st-navBox" class="sepH_a_line"></div>
+                            <div id="st-documentation" class="st-accordion">
+                                <ul>
+                                    <li id="doc_about" class="top_H">
+                                        <a href="#" class="top_Ha">01. About Pertho Admin template.<span class="st-arrow">Open or Close</span></a>
+                                        <div class="st-content">
+                                            <p class="sepH_b">Pertho Admin is a HTML5/CSS (CSS3) admin backend template build on <a href="http://foundation.zurb.com/">Foundation framework</a> enchanced with many third party components.</p>
+                                            <p><a href="http://foundation.zurb.com/docs/index.php">Here</a> you can find extended documentation for this framework.</p>
+                                            <p class="sepH_a">JS/jQuery plugin used in this template:</p>
+                                            <ul class="disc">
+                                                <li><a href="http://www.adipalaz.com/experiments/jquery/nested_accordion.html">Accordion</a> <small>Nested Accordion</small></li>
+                                                <li><a href="https://github.com/agarzola/jQueryAutocompletePlugin">Autocomplete</a> <small>jQuery Autocomplete Plugin</small></li>
+                                                <li><a href="http://jacklmoore.com/autosize">Autosize</a> <small>jQuery plugin to enable automatic height for textarea elements</small></li>
+                                                <li><a href="http://arshaw.com/fullcalendar/">Calendar</a> <small>jQuery Plugin FullCalendar</small></li>
+                                                <li><a href="http://harvesthq.github.com/chosen/">Chosen</a> <small>Select box enhancement plugin</small></li>
+                                                <li><a href="http://www.eyecon.ro">Color Picker</a> <small>jQuery colorpicker</small></li>
+                                                <li><a href="http://www.datatables.net/">Data Tables</a> <small>Dynamic tables</small></li>
+                                                <li><a href="https://github.com/Studio-42/elFinder/wiki">Elfinder</a> <small>File explorer</small></li>
+                                                <li><a href="http://fancybox.net/">Fancybox</a> <small>tool for displaying images, HTML content and multi-media</small></li>
+                                                <li><a href="http://www.plupload.com/">File uploader</a> <small>A highly usable upload handler for your Content Management Systems or similar</small></li>
+                                                <li><a href="http://tympanus.net/codrops/2011/10/12/flexible-slide-to-top-accordion/">Flexible Accordion</a> <small>Flexible Slide-to-top Accordion</small></li>
+                                                <li><a href="http://dreamerslab.com/blog/en/get-hidden-elements-width-and-height-with-jquery/">Get hidden width/height</a> <small>jQuery plugin that gets the actual width of hidden DOM elements</small></li>
+                                                <li><a href="http://cherne.net/brian/resources/jquery.hoverIntent.html">hoverIntent</a> <small>plug-in that attempts to determine the user's intent</small></li>
+                                                <li><a href="http://blog.pengoworks.com/index.cfm/2009/9/3/Create-iPhonestyle-buttons-with-the-iButton-jQuery-Plugin">iButtons</a> <small>iPhone-style buttons</small></li>
+                                                <li><a href="https://github.com/RobinHerbots/jquery.inputmask">Input Mask</a> <small>jQuery Input Mask </small></li>
+                                                <li><a href="http://jquery.com">jQuery</a> <small>JS framework</small></li>
+                                                <li><a href="http://gsgd.co.uk/sandbox/jquery/easing/">jQuery Easing</a> <small>jQuery easing</small></li>
+                                                <li><a href="http://flowplayer.org/tools/">jQuery Tools</a> <small>jQuery Tools</small></li>
+                                                <li><a href="http://jqueryui.com">jQuery UI</a> <small>user interface library</small></li>
+                                                <li><a href="http://www.fusioncharts.com/free/">jQplot charts</a> <small>JS charting component</small></li>
+                                                <li><a href="https://github.com/jquery/jquery-metadata">jQuery metadata</a> <small>Extracting metadata from classes, random attributes, and child elements</small></li>
+                                                <li><a href="http://bassistance.de/jquery-plugins/jquery-plugin-validation/">JS validation</a> <small>jQuery plugin: Validation</small></li>
+                                                <li><a href="https://github.com/filamentgroup/RWD-Table-Patterns">Mobile Navigation</a> <small>jQuery Mobile Select</small></li>
+                                                <li><a href="http://mths.be/placeholder">Placeholder</a> <small>plugin that enables HTML5 placeholder behavior</small></li>
+                                                <li><a href="http://mths.be/placeholder">Mobile table</a> <small>Rwd table.</small></li>
+                                                <li><a href="https://github.com/louisremi/jquery-smartresize">Smart resize</a> <small>Debounced Resize Event for jQuery</small></li>
+                                                <li><a href="http://www.wbotelhos.com/raty/">Rating</a> <small>A Star Rating Plugin</small></li>
+                                                <li><a href="http://benalman.com/projects/jquery-misc-plugins/">serializeObject</a> <small>Serialize a form into an object</small></li>
+                                                <li><a href="http://showMessage.dingobytes.com/">showMessage</a> <small>showMessage jquery plugin</small></li>
+                                                <li><a href="http://www.dynamicdrive.com/dynamicindex1/ddsmoothmenu.htm">Smooth Navigational Menu</a> <small>Smooth Navigation Menu is a multi level, CSS list based menu</small></li>
+                                                <li><a href="http://thrivingkings.com/sticky/">Sticky</a> <small>A super simple notification system for jQuery</small></li>
+                                                <li><a href="http://listjs.com/">Super flexible HTML lists</a> <small>searchable, sortable and filterable list</small></li>
+                                                <li><a href="http://ioncache.github.com/Tag-Handler/">Tag Handler</a> <small>managing tag-type metadata</small></li>
+                                                <li><a href="http://trentrichardson.com/examples/timepicker/">Timepicker</a> <small>timepicker addon to jQuery UI datepicker</small></li>
+                                                <li><a href="http://www.tinymce.com/">Tiny MCE</a> <small>Javascript HTML WYSIWYG editor</small></li>
+                                                <li><a href="https://github.com/aaronrussell/jquery-simply-countable">Textarea Limiter</a> <small>jQuery plugin that provides a character counter</small></li>
+                                                <li><a href="http://craigsworks.com/projects/qtip2/">Tooltips</a> <small>qtip2 tooltips</small></li>
+                                                <li><a href="http://www.mattvarone.com/web-design/uitotop-jquery-plugin/">UItoTop</a> <small>UItoTop jQuery Plugin</small></li>
+                                                <li><a href="http://www.wbotelhos.com/stepy/">Wizard</a> <small>Customizable wizard</small></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li id="doc_file_structure" class="top_H">
+                                        <a href="#" class="top_Ha">02. File structure.<span class="st-arrow">Open or Close</span></a>
+                                        <div class="st-content">
+                                            <p class="sepH_b">General structure for Pertho Admin template:</p>
+                                            <ul class="disc">
+                                                <li>
+                                                    Pertho admin/
+                                                    <ul class="circle">
+                                                        <li>css/ <small>CSS files</small></li>
+                                                        <li>foundation/ <small>Foundation framework</small></li>
+                                                        <li>gallery/ <small>Gallery images</small></li>
+                                                        <li>img/ <small>Images and Icons used in this template</small></li>
+                                                        <li>js/ <small>Javascript plugins &amp; configuration files</small></li>
+                                                        <li>lib/ <small>Third party components</small></li>
+                                                        <li>*.html files &amp; favicon.ico </li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li id="doc_html_structure" class="top_H">
+                                        <a href="#" class="top_Ha">03. HTML Structure & Layout.<span class="st-arrow">Open or Close</span></a>
+                                        <div class="st-content">
+                                        	<h5 class="sepH_a">Fixed/Fluid width</h5>
+                                        	<p class="sepH_c">In Pertho Admin template you can use liquid or fixed width layout (default is fixed, 980px) to enable fluid width (100%) add class <code>fullW</code> to <code>&lt;body&gt;</code></p>
+											<h5 class="sepH_a">Top Navigation highlight</h5>
+                                        	<p class="sepH_c">Add <code>pageselected</code> class to parent li to have this item highlighted.</p>
+                                            <p>Main structure:</p>
+                                            <script type="syntaxhighlighter" class="brush: html"><![CDATA[
+                                            <body>
+                                              <!-- header -->
+                                              <header>
+                                                <div class="container head_s_a">
+                                                  <div class="row sepH_b">
+                                                    <div class="six columns">
+                                                      <div class="row">
+                                                        <div class="five phone-two columns">
+                                                          <div id="logo">
+                                                            <img src="img/logo.png" alt="" />
+                                                          </div>
+                                                        </div>
+                                                        <div class="seven phone-two columns">
+                                                          <!-- search box witch autocomplete -->
+                                                          <form action="search.php" id="search_box" method="post">
+                                                            <input name="query" id="query" type="text" size="40" placeholder="&hellip;" autocomplete="off" />
+                                                          </form>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                    <div class="six columns">
+                                                      <!-- user box -->
+                                                      <div class="user_box cf">
+                                                        <div class="user_avatar">
+                                                          <img src="img/user_female.png" alt="" />
+                                                        </div>
+                                                        <div class="user_info user_sep">
+                                                          <p class="sepH_a">
+                                                            <strong>Mary Adams</strong>
+                                                          </p>
+                                                          &hellip;
+                                                        </div>
+                                                        <div class="ntf_bar user_sep">
+                                                          <a href="#" class="ntf_item">&hellip;</a>
+                                                          <a href="#" class="ntf_item">&hellip;</a>
+                                                          <a href="#" class="ntf_item">&hellip;</a>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                  <div class="row">
+                                                    <div class="twelve columns">
+                                                      <!-- main navigation -->
+                                                      <nav id="smoothmenu_h" class="ddsmoothmenu">
+                                                        <ul class="cf">
+                                                          <li><a href="" class="mb_parent first_el ">&hellip;</a></li>
+                                                          <li>
+                                                            <a href="javascript:void(0)" class="mb_parent">&hellip;</a>
+                                                            <ul style="display:none">
+                                                              <li><a href="">&hellip;</a></li>
+                                                              <li><a href="">&hellip;</a></li>
+                                                              <li><a href="">&hellip;</a></li>
+                                                            </ul>
+                                                          </li>
+                                                          &hellip;
+                                                        </ul>
+                                                      </nav>
+                                                      <!-- breadcrumbs -->
+                                                      <ul id="breadcrumbs" class="cf">
+                                                        <li>You are here:</li>
+                                                        <li><a href="#">&hellip;</a></li>
+                                                        <li><a href="#">&hellip;</a></li>
+                                                        <li><span>&hellip;</span></li>
+                                                      </ul>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </header>
+                                              <!-- main content -->
+                                              <div class="container">
+                                                <div class="row">
+                                                  <div class="twelve columns">
+                                                    &hellip;
+                                                  </div>
+                                                </div>
+                                              </div>
+                                              <!-- footer -->
+                                              <footer class="container" id="footer">
+                                                <div class="row">
+                                                  <div class="twelve columns">
+                                                    Copyright &copy; 2012 tzd-themes.com
+                                                  </div>
+                                                </div>
+                                              </footer>
+
+                                              </body>
+                                            </html>
+                                            ]]></script>
+                                        </div>
+                                    </li>
+                                    <li id="doc_css_structure" class="top_H">
+                                        <a href="#" class="top_Ha">04. CSS Structure & Elements.<span class="st-arrow">Open or Close</span></a>
+                                        <div class="st-content">
+                                            <div class="sepH_c">
+                                                <p>There are couple of css files used in Pertho Admin template:</p>
+                                                <ul class="circle sepH_c">
+                                                    <li>foundation/stylesheets/foundation.css <small>Foundation framowork styles</small></li>
+                                                    <li>foundation/stylesheets/ie.css <small>styles for ie < 9</small></li>
+                                                    <li>css/gh_buttons.css <small><a href="http://nicolasgallagher.com/lab/css3-github-buttons/">Github styles buttons</a></small></li>
+                                                    <li>css/style.css <small>Pertho Admin template main styles</small></li>
+                                                </ul>
+                                                <p>Additionals css files for plugins are located in <code>lib/</code> folder.</p>
+                                            </div>
+                                            <p class="sepH_a_line">Pertho Admin template elements:</p>
+                                            <div class="row sepH_c">
+                                                <div class="two columns"><strong>Alerts, UI Elements</strong></div>
+                                                <div class="ten columns">
+                                                    <a href="http://foundation.zurb.com/docs/ui.php">Foundation UI Elements</a>
+                                                </div>
+                                            </div>
+                                            <div class="row sepH_c">
+                                                <div class="two columns"><strong>Buttons</strong></div>
+                                                <div class="ten columns">
+                                                    <p class="sepH_a"><a href="http://foundation.zurb.com/docs/buttons.php">Foundation Buttons</a></p>
+                                                    <a href="http://nicolasgallagher.com/lab/css3-github-buttons/">GitHub styles Buttons</a><br />
+                                                    <code>.button</code> class changed to <code>.gh_button</code>, <code>.button-group</code> to <code>.gh_button-group</code> to avoid conflicts with foundation buttons
+                                                </div>
+                                            </div>
+                                            <div class="row sepH_c">
+                                                <div class="two columns"><strong>Icons</strong></div>
+                                                <div class="ten columns">
+                                                    <a href="http://iconsweets2.com/">Iconsweet2 icons</a> are located in <code>img/ico/icSw2</code> and comes in 2 sizes 16x16 and 32x32.
+                                                </div>
+                                            </div>
+                                            <div class="row sepH_c">
+                                                <div class="two columns"><strong>Elements separation:</strong></div>
+                                                <div class="ten columns">
+                                                    Margin-bottom:5px - class="<code>sepH_a</code>"<br/>
+                                                    Margin-bottom:10px - class="<code>sepH_b</code>"<br/>
+                                                    <p class="sepH_a">Margin-bottom:20px - class="<code>sepH_c</code>"</p>
+                                                    Margin-right:5px - class="<code>sepV_a</code>"<br/>
+                                                    Margin-right:10px - class="<code>sepV_b</code>"<br/>
+                                                    Margin-right:20px - class="<code>sepV_c</code>"
+                                                </div>
+                                            </div>
+                                            <div class="row sepH_c">
+                                                <div class="two columns"><strong>Small labels:</strong></div>
+                                                <div class="ten columns">
+                                                    <ul class="block-grid five-up mobile sepH_c">
+                                                        <li><span class="lbl ok_bg sepV_b">class="lbl ok_bg"</span></li>
+                                                        <li><span class="lbl info_bg sepV_b">class="lbl info_bg"</span></li>
+                                                        <li><span class="lbl error_bg sepV_b">class="lbl error_bg"</span></li>
+                                                        <li><span class="lbl alert_bg sepV_b">class="lbl alert_bg"</span></li>
+                                                        <li><span class="lbl neutral_bg">class="lbl neutral_bg"</span></li>
+                                                    </ul>
+                                                    This paragraph has an inline label. <span class="lbl info_bg">23/03/2012</span> Lorem ipsum&hellip;
+                                                </div>
+                                            </div>
+                                            <div class="row sepH_c">
+                                                <div class="two columns"><strong>Widget box:</strong></div>
+                                                <div class="ten columns">
+                                                    <div class="box_c">
+                                                        <div class="box_c_heading cf box_actions">
+                                                            <div class="box_c_ico"><img src="img/ico/icSw2/16-Create-Write.png" alt="" /></div>
+                                                            <p>class <code>.box_c_heading</code></p>
+                                                        </div>
+                                                        <div class="box_c_content">
+                                                            Add class <code>.box_actions</code> to box heading to activate show/hide, close/remove actions.<br/>
+                                                            &hellip;
+                                                        </div>
+                                                    </div>
+                                                    <script type="syntaxhighlighter" class="brush: html"><![CDATA[
+                                                    <div class="box_c">
+                                                      <div class="box_c_heading cf box_actions">
+                                                        <div class="box_c_ico"><img src="img/ico/&hellip;" alt="" /></div>
+                                                        <p>&hellip;</p>
+                                                      </div>
+                                                      <div class="box_c_content">
+                                                        &hellip;
+                                                      </div>
+                                                    </div>
+                                                    ]]></script>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="two columns"><strong>Panels:</strong></div>
+                                                <div class="ten columns">
+                                                    <div class="panel">
+                                                        <h4 class="sepH_c">Lorem ipsum dolor sit&hellip;</h4>
+                                                        <p>
+                                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean quis dui et mi consectetur facilisis. Vestibulum tincidunt condimentum malesuada. Cras orci purus, ullamcorper sed adipiscing nec, scelerisque sagittis leo. Nullam vitae sapien ac dui viverra tincidunt. Donec eros ipsum, bibendum a iaculis vel, facilisis et magna. Suspendisse ligula tellus, posuere a egestas nec, porttitor tristique justo. Vestibulum a magna dui. Ut placerat rutrum ante non consequat. Aliquam eget velit ac odio tincidunt placerat. Donec fringilla est sit amet erat tristique convallis. Curabitur ac erat turpis, et bibendum elit. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Phasellus et lorem quam, sit amet fringilla lorem.
+                                                        </p>
+                                                    </div>
+                                                    <script type="syntaxhighlighter" class="brush: html"><![CDATA[
+                                                    <div class="panel">
+                                                      <h4 class="sepH_c">&hellip;</h4>
+                                                      <p>&hellip;</p>
+                                                    </div>
+                                                    ]]></script>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li id="doc_grid" class="top_H">
+                                        <a href="#" class="top_Ha">05. Grid Structure.<span class="st-arrow">Open or Close</span></a>
+                                        <div class="st-content">
+                                            <p class="sepH_b">Pertho Admin template uses Foundation Framework Grid to create page layouts for mobile devices and the desktop.</p>
+                                            <a href="http://foundation.zurb.com/docs/grid.php">Foundation Framework Grid</a> extended documentation.
+                                        </div>
+                                    </li>
+                                    <li id="doc_styles" class="top_H">
+                                        <a href="#" class="top_Ha">06. Colors, backgrounds, gradients<span class="st-arrow">Open or Close</span></a>
+                                        <div class="st-content">
+                                            <div class="row sepH_c">
+                                                <div class="two columns"><strong>Backgrounds:</strong></div>
+                                                <div class="ten columns">
+                                                    <div class="medium sepH_b">Add one of the following class to <code>&lt;body&gt;</code> or any block element to change background. </div>
+                                                    <ul class="block-grid five-up mobile">
+                                                        <li><div class="bc_show ptrn_a"><span>.ptrn_a</span></div></li>
+                                                        <li><div class="bc_show ptrn_b"><span>.ptrn_b</span></div></li>
+                                                        <li><div class="bc_show ptrn_c"><span>.ptrn_c</span></div></li>
+                                                        <li><div class="bc_show ptrn_d"><span>.ptrn_d</span></div></li>
+                                                        <li><div class="bc_show ptrn_e"><span>.ptrn_e</span></div></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="row sepH_c">
+                                                <div class="two columns"><strong>Bar gradients:</strong></div>
+                                                <div class="ten columns">
+                                                    <div class="medium sepH_b">Add one of the following class to <code>&lt;body&gt;</code> to change bar gradient.</div>
+                                                    <ul class="block-grid five-up mobile">
+                                                        <li><div class="bc_show ssw_grdnt_a"><span>.grdnt_a</span></div></li>
+                                                        <li><div class="bc_show ssw_grdnt_b"><span>.grdnt_b</span></div></li>
+                                                        <li><div class="bc_show ssw_grdnt_c"><span>.grdnt_c</span></div></li>
+                                                        <li><div class="bc_show ssw_grdnt_d"><span>.grdnt_d</span></div></li>
+                                                        <li><div class="bc_show ssw_grdnt_e"><span>.grdnt_e</span></div></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="row sepH_c">
+                                                <div class="two columns"><strong>Menu hover colors:</strong></div>
+                                                <div class="ten columns">
+                                                    <div class="medium sepH_b">Add one of the following class to <code>&lt;body&gt;</code> to change main navigation hover color.</div>
+                                                    <ul class="block-grid five-up mobile">
+                                                        <li><div class="bc_show ssw_mhover_a"><span>.mhover_a</span></div></li>
+                                                        <li><div class="bc_show ssw_mhover_b"><span>.mhover_b</span></div></li>
+                                                        <li><div class="bc_show ssw_mhover_c"><span>.mhover_c</span></div></li>
+                                                        <li><div class="bc_show ssw_mhover_d"><span>.mhover_d</span></div></li>
+                                                        <li><div class="bc_show ssw_mhover_e"><span>.mhover_e</span></div></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="row sepH_c">
+                                                <div class="two columns"><strong>Custom colors:</strong></div>
+                                                <div class="ten columns">
+                                                    Add your custom colors to <code>&lt;header&gt;</code> section:
+                                                    <script type="syntaxhighlighter" class="brush: html"><![CDATA[
+                                                    &hellip;
+                                                      <style type="text/css">
+                                                        body {
+                                                          background-color: &hellip;
+                                                          color: &hellip;
+                                                        }
+                                                        a { color: &hellip; }
+                                                      </style>
+                                                    </header>
+                                                    ]]></script>
+                                                    or add them at the end of main stylesheet - <code>css/style.css</code>
+                                                    <script type="syntaxhighlighter" class="brush: html"><![CDATA[
+                                                    body {
+                                                      background-color: &hellip;
+                                                      color: &hellip;
+                                                    }
+                                                    a { color: &hellip; }
+                                                    ]]></script>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li id="doc_plugins" class="top_H">
+                                        <a href="#" class="top_Ha">07. jQuery plugins.<span class="st-arrow">Open or Close</span></a>
+                                        <div class="st-content">
+                                            <p class="sepH_a">You can find extended documentation for plugins on <a href="#doc_about">plugin pages</a>.</p>
+                                            <p class="sepH_a">Plugins are split into 2 folders:</p>
+                                            <ul class="disc sepH_b">
+                                                <li><code>js/</code> folder contains small scripts (jQuery tools, listnav, sparklines, etc.), combined scripts (s_scripts.js), jQuery framework, jQuery UI, and configuration file (pertho.js).</li>
+                                                <li><code>lib/</code> folder contains more complex plugins (TinyMCE, Elfinder, Datatables etc.).</li>
+                                            </ul>
+                                            <p>Configuration for all the plugins is in <code>js/pertho.js</code>.</p>
+                                        </div>
+                                    </li>
+                                    <li id="doc_credits" class="top_H">
+                                        <a href="#" class="top_Ha">08. Credits<span class="st-arrow">Open or Close</span></a>
+                                        <div class="st-content">
+                                            <ul class="disc sepH_c">
+                                                <li>Icons - iconsweets2 set by <a href="http://www.yummygum.nl/">YummyYum</a> and <a href="http://www.greepit.com/">gcons</a></li>
+                                                <li>Error page icon from Hand Drawn Web icons set by <a href="http://177designs.com/">177DESIGNS</a></li>
+                                                <li>Background Patterns by <a href="http://www.atlemo.com/">Atle Mo</a>, <a href="http://subtlepatterns.com/">Subtle Patterns</a></li>
+                                                <li>Terminal Dosis and Open Sans Condensed from <a href="http://www.google.com/webfonts">Goggle web fonts</a></li>
+                                                <li>Third party components mentioned <a href="#doc_about">here</a></li>
+                                            </ul>
+                                            <p>Once again, thank you so much for purchasing this template. If you have any questions relating to this template I'll be glad to help you. You can visit the forums and ask your question in the "Item Discussion" section or send me an email <a href="mailto:support@tzd-themes.com">support@tzd-themes.com</a>.</p>
+                                        </div>
+                                    </li>
+                                    <li id="doc_changelog" class="top_H">
+                                        <a href="#" class="top_Ha">09. Changelog<span class="st-arrow">Open or Close</span></a>
+                                        <div class="st-content">
+                                            <p class="sepH_a">v 1.0 (28/03/2012)</p>
+                                            <ul class="disc sepH_c">
+                                                <li>Initial release</li>
+                                            </ul>
+											<p class="sepH_a">v 1.1 (16/04/2012)</p>
+                                            <ul class="disc sepH_c">
+                                                <li>Added Tag Handler plugin</li>
+                                                <li>Added Mask Input plugin</li>
+                                                <li>Added Centered sticky nav</li>
+												<li>Inproved compatibilty with ie7</li>
+                                            </ul>
+											<p class="sepH_a">v 1.2 (19/05/2012)</p>
+                                            <ul class="disc sepH_c">
+                                                <li>Fixed x-scroll datatables plugin</li>
+												<li>Fixed server-side/hidden row datatables plugin</li>
+												<li>Improved sticky footer</li>
+												<li>Added Search Page</li>
+												<li>Fixed minor bugs</li>
+                                            </ul>
+											<p class="sepH_a">v 1.3 (09/07/2012)</p>
+                                            <ul class="disc sepH_c">
+                                                <li>Added drag&drop boxes with position saving</li>
+												<li>Updated showMessage plugin</li>
+												<li>Improved sticky footer</li>
+												<li>Added hover for vertical menu</li>
+												<li>Fixed oveflow content in tabs</li>
+                                            </ul>
+                                        </div>
+                                    </li>
+									<li id="doc_ie" class="top_H">
+                                        <a href="#" class="top_Ha">10. IE7 support<span class="st-arrow">Open or Close</span></a>
+                                        <div class="st-content">
+                                            <p class="sepH_a">To enable ie7 support include <code>foundation/stylesheets/ie.css</code> in your aplication and add this to header:</p>
+											<script type="syntaxhighlighter" class="brush: html"><![CDATA[
+												<!--[if lt IE 8]> <html class="lt-ie8" lang="en"> <![endif]-->
+												<!--[if gte IE 8]><!--> <html lang="en"> <!--<![endif]-->
+											]]></script>
+											<p>Check <code>ie7.html</code> for details.</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+		<footer class="container" id="footer">
+			<div class="row">
+				<div class="twelve columns">
+                    Copyright &copy; 2012 tzd-themes.com
+				</div>
+			</div>
+		</footer>
+		<div class="sw_width">
+			<img class="sw_full" title="switch to full width" alt="" src="img/blank.gif" />
+			<img style="display:none" class="sw_fixed" title="switch to fixed width (980px)" alt="" src="img/blank.gif" />
+		</div>
+
+		<script src="js/jquery.min.js"></script>
+		<script src="lib/jQueryUI/jquery-ui-1.8.18.custom.min.js"></script>
+		<script src="js/s_scripts.js"></script>
+		<script src="js/jquery.ui.extend.js"></script>
+		<script src="js/jquery.st_accordion.js"></script>
+        <script src="lib/syntaxhighlighter/scripts/shCore.js"></script>
+        <script src="lib/syntaxhighlighter/scripts/shBrushCss.js"></script>
+        <script src="lib/syntaxhighlighter/scripts/shBrushXml.js"></script>
+        <script src="lib/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+		<script src="js/pertho.js"></script>
+		<script>
+			$(document).ready(function() {
+				//* common functions
+				prth_common.init();
+
+				prth_documentation.navigator();
+				prth_documentation.init();
+				SyntaxHighlighter.defaults['toolbar'] = false;
+				SyntaxHighlighter.all();
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<title>Pertho Admin Panel</title>
+
+        <!-- Foundation framework -->
+            <link rel="stylesheet" href="foundation/stylesheets/foundation.css" />
+        <!-- jquery UI -->
+            <link rel="stylesheet" href="lib/jQueryUI/css/Aristo/Aristo.css" media="all" />
+        <!-- main styles -->
+            <link rel="stylesheet" href="css/style.css">
+    
+        <!-- Google fonts -->
+            <link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' />
+            <link href='http://fonts.googleapis.com/css?family=Terminal+Dosis' rel='stylesheet' />
+    
+        <!-- Favicons and the like (avoid using transparent .png) -->
+            <link rel="shortcut icon" href="favicon.ico" />
+            <link rel="apple-touch-icon-precomposed" href="icon.png" />
+    
+        <!--[if lt IE 9]>
+            <link rel="stylesheet" href="foundation/stylesheets/ie.css">
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+	</head>
+	<body class="ptrn_a grdnt_a mhover_a">
+		<header>
+			<div class="container head_s_a">
+				<div class="row sepH_b">
+					<div class="six columns">
+						<div class="row">
+							<div class="five phone-two columns">
+								<div id="logo">
+									<img src="img/logo.png" alt="Pertho Admin" />
+								</div>
+							</div>
+							<div class="seven phone-two columns">
+								<form action="search.php" id="search_box" method="post">
+									<input name="query" id="query" type="text" size="40" placeholder="&hellip;" autocomplete="off" />
+								</form>
+							</div>
+						</div>
+					</div>
+					<div class="six columns">
+						<div class="user_box cf">
+							<div class="user_avatar">
+								<img src="img/user_female.png" alt="" />
+							</div>
+							<div class="user_info user_sep">
+								<p class="sepH_a">
+									<strong>Mary Adams</strong>
+								</p>
+								<span>
+									<a href="#" class="sep">Settings</a>
+									<a href="login.html">Log out</a>
+								</span>
+							</div>
+							<div class="ntf_bar user_sep">
+								<a href="#ntf_mail_panel" class="ntf_item" style="background-image: url(img/ico/icSw2/32-Mail.png)">
+									<span class="ntf_tip ntf_tip_red"><span>12</span></span>
+								</a>
+								<a href="#ntf_tickets_panel" class="ntf_item" style="background-image: url(img/ico/icSw2/32-Day-Calendar.png)">
+									<span class="ntf_tip ntf_tip_red"><span>122</span></span>
+								</a>
+								<a href="#ntf_comments_panel" class="ntf_item" style="background-image: url(img/ico/icSw2/32-Speech-Bubble.png)">
+									<span class="ntf_tip ntf_tip_blue"><span>8</span></span>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="twelve columns">
+						<nav id="smoothmenu_h" class="ddsmoothmenu">
+							<ul class="cf">
+								<li><a href="#" class="mb_parent first_el selected">Lorem ipsum</a></li>
+								<li>
+									<a href="javascript:void(0)" class="mb_parent">Sub-levels</a>
+									<ul style="display:none">
+										<li>
+											<a href="#">First level</a>
+											<ul style="display:none">
+												<li>
+													<a href="#">Second level</a>
+													<ul style="display:none">
+														<li><a href="#">Third level</a></li>
+														<li><a href="#">Third level</a></li>
+													</ul>
+												</li>
+												<li><a href="#">Second level</a></li>
+											</ul>
+										</li>
+										<li><a href="#">First level</a></li>
+										<li><a href="#">First level</a></li>
+										<li><a href="#">First level</a></li>
+									</ul>
+								</li>
+							</ul>
+						</nav>
+						<ul id="breadcrumbs" class="cf">
+							<li>You are here:</li>
+							<li><a href="#">Content</a></li>
+							<li><a href="#">Article</a></li>
+							<li><span>Lorem Ipsum&hellip;</span></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<!-- notifications content -->
+			<div style="display:none">
+				<div id="ntf_tickets_panel" style="display:none">
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+				</div>
+				<div id="ntf_comments_panel" style="display:none">
+					Lorem ipsum dolor sit amet, consectetur adipiscing.
+				</div>
+				<div id="ntf_mail_panel" style="display:none">
+					Lorem ipsum dolor sit amet, consectetur.
+				</div>
+			</div>
+		</header>
+		<div class="container">
+			<div class="row">
+				<div class="twelve columns">
+					<div class="box_c">
+						<div class="box_c_heading cf box_actions">
+							<p>Lorem ipsum</p>
+						</div>
+						<div class="box_c_content">
+							Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis facilisis pulvinar lorem eu laoreet. In eget est nibh, vitae condimentum libero. Morbi nisl dui, vestibulum a semper fermentum, consectetur vel ligula. Morbi sit amet malesuada odio. Etiam ac lorem nec augue suscipit egestas in vel dui. Pellentesque ac lacinia nulla. Mauris dictum pretium arcu, eu porta enim lacinia in. Ut ut varius nisi. Integer lorem turpis, facilisis a scelerisque eget, ornare eget justo. Nulla nunc purus, suscipit in posuere in, aliquet in diam. Praesent sit amet orci metus, sed lacinia justo. Ut nec nulla sed lectus luctus mattis sed vel lacus. Nunc id facilisis elit. Nulla iaculis eros vel diam ultrices pellentesque iaculis velit lobortis.
+                            Curabitur malesuada risus eu libero condimentum euismod. Donec quis metus nec nunc pulvinar lobortis vel sit amet nulla. Mauris ac felis quis ligula bibendum semper a a orci. Nulla vel dui felis. Nunc a eros vitae risus euismod porta a et turpis. Donec eu sodales nibh. Maecenas viverra mi ut purus tincidunt ut mollis massa eleifend. Sed est enim, scelerisque id fermentum nec, varius vel ligula. Aliquam tempor tincidunt est eget vestibulum. Vivamus justo nisl, semper id dignissim quis, feugiat sit amet arcu. Donec sagittis velit gravida felis sollicitudin non posuere risus aliquet. Nulla tristique tempus ornare. 
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<footer class="container" id="footer">
+			<div class="row">
+				<div class="twelve columns">
+                    Copyright &copy; 2012 tzd-themes.com
+				</div>
+			</div>
+		</footer>
+		<div class="sw_width">
+			<img class="sw_full" title="switch to full width" alt="" src="img/blank.gif" />
+			<img style="display:none" class="sw_fixed" title="switch to fixed width (980px)" alt="" src="img/blank.gif" />
+		</div>
+
+        <script src="js/jquery.min.js"></script>
+		<script src="lib/jQueryUI/jquery-ui-1.8.18.custom.min.js"></script>
+		<script src="js/s_scripts.js"></script>
+		<script src="js/jquery.ui.extend.js"></script>
+        <script src="js/pertho.js"></script>
+		<script>
+			$(document).ready(function() {
+				//* common functions
+				prth_common.init();
+			});
+		</script>
+	</body>
+</html>

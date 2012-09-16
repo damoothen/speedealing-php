@@ -6,3 +6,6 @@
 [submodule "htdocs/includes/php-amqplib"]
 	path = htdocs/includes/php-amqplib
 	url = git://github.com/videlalvaro/php-amqplib.git
+[submodule "htdocs/theme/symeos"]
+	path = htdocs/theme/symeos
+	url = git@git.symeos.com:module-theme-symeos.git

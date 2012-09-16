@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Pertho Admin Panel - Login Page</title>
+
+		<!-- Foundation framework -->
+			<link rel="stylesheet" href="foundation/stylesheets/foundation.css" />
+			<link rel="stylesheet" href="css/style.css" />
+
+		<!-- Favicons and the like (avoid using transparent .png) -->
+			<link rel="shortcut icon" href="favicon.ico" />
+			<link rel="apple-touch-icon-precomposed" href="icon.png" />
+	</head>
+	<body class="ptrn_a grdnt_a">
+		<div class="container">
+            <div class="row">
+                <div class="eight columns centered">
+                    
+                </div>
+            </div>
+			<div class="row">
+				<div class="eight columns centered">
+					<div class="login_box">
+						<div class="lb_content">
+                            <div class="login_logo"><img src="img/logo.png" alt="" /></div>
+							<div class="cf">
+								<h2 class="lb_ribbon lb_blue"><span>Login to your account</span><span style="display:none">New password</span></h2>
+								<a href="#" class="right small sl_link">
+									<span>Forgot your password?</span>
+									<span style="display:none">Back to login form</span>
+								</a>
+							</div>
+							<div class="row m_cont">
+								<div class="eight columns centered">
+									<div class="l_pane">
+										<form action="dashboard.html" method="post" class="nice" id="l_form">
+											<div class="sepH_c">
+												<div class="elVal">
+													<label for="username">Username</label>
+													<input type="text" id="username" name="username" class="oversize expand input-text" />
+												</div>
+												<div class="elVal">
+													<label for="password">Password</label>
+													<input type="password" id="password" name="password" class="oversize expand input-text" />
+												</div>
+											</div>
+											<div class="cf">
+												<label for="remember" class="left"><input type="checkbox" id="remember"> Remember me</label>
+												<input type="submit" class="button small radius right black" value="Login" />
+											</div>
+										</form>
+									</div>
+									<div class="l_pane" style="display:none">
+										<form action="dashboard.html" method="post" class="nice" id="rp_form">
+											<div class="sepH_c">
+												<p class="sepH_b">Please enter your email address. You will receive a link to create a new password via email.</p>
+												<div class="elVal">
+													<label for="upname">E-mail:</label>
+													<input type="text" id="upname" name="upname" class="oversize expand input-text" />
+												</div>
+											</div>
+											<div class="cf">
+												<input type="submit" class="button small radius right black" value="Get new password" />
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script src="js/jquery.min.js"></script>
+		<script src="js/s_scripts.js"></script>
+		<script src="lib/validate/jquery.validate.min.js"></script>
+		<script>
+			$(document).ready(function() {
+				$(".sl_link").click(function(event){
+					$('.l_pane').slideToggle('normal').toggleClass('dn');
+					$('.sl_link,.lb_ribbon').children('span').toggle();
+					event.preventDefault();
+				});
+
+				$("#l_form").validate({
+					highlight: function(element) {
+						$(element).closest('.elVal').addClass("form-field error");
+					},
+					unhighlight: function(element) {
+						$(element).closest('.elVal').removeClass("form-field error");
+					},
+					rules: {
+						username: "required",
+						password: "required"
+					},
+					messages: {
+						username: "Please enter your username (type anything)",
+						password: "Please enter a password (type anything)"
+					},
+					errorPlacement: function(error, element) {
+						error.appendTo( element.closest(".elVal") );
+					}
+				});
+
+				$("#rp_form").validate({
+					highlight: function(element) {
+						$(element).closest('.elVal').addClass("form-field error");
+					},
+					unhighlight: function(element) {
+						$(element).closest('.elVal').removeClass("form-field error");
+					},
+					rules: {
+						upname: {
+							required: true,
+							email: true
+						}
+					},
+					messages: {
+						upname: "Please enter a valid email address"
+					},
+					errorPlacement: function(error, element) {
+						error.appendTo( element.closest(".elVal") );
+					}
+				});
+			});
+		</script>
+	</body>
+</html>
