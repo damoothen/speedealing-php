@@ -214,6 +214,8 @@ if (!defined('NOREQUIREAJAX') && $conf->use_javascript_ajax)
     require_once(DOL_DOCUMENT_ROOT . '/core/lib/ajax.lib.php'); // Need 22ko memory
 
 
+
+
     
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
@@ -811,27 +813,27 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
 
                 <!-- For all browsers -->
-                <link rel="stylesheet" href="theme/developr/html/css/reset.css?v=1">
-                <link rel="stylesheet" href="theme/developr/html/css/style.css?v=1">
-                <link rel="stylesheet" href="theme/developr/html/css/colors.css?v=1">
+                <link rel="stylesheet" href="theme/symeos/css/reset.css?v=1">
+                <link rel="stylesheet" href="theme/symeos/css/style.css?v=1">
+                <link rel="stylesheet" href="theme/symeos/css/colors.css?v=1">
                 <link rel="stylesheet" media="print"
-                      href="theme/developr/html/css/print.css?v=1">
+                      href="theme/symeos/css/print.css?v=1">
                 <!-- For progressively larger displays -->
                 <link rel="stylesheet" media="only all and (min-width: 480px)"
-                      href="theme/developr/html/css/480.css?v=1">
+                      href="theme/symeos/css/480.css?v=1">
                 <link rel="stylesheet" media="only all and (min-width: 768px)"
-                      href="theme/developr/html/css/768.css?v=1">
+                      href="theme/symeos/css/768.css?v=1">
                 <link rel="stylesheet" media="only all and (min-width: 992px)"
-                      href="theme/developr/html/css/992.css?v=1">
+                      href="theme/symeos/css/992.css?v=1">
                 <link rel="stylesheet" media="only all and (min-width: 1200px)"
-                      href="theme/developr/html/css/1200.css?v=1">
+                      href="theme/symeos/css/1200.css?v=1">
                 <!-- For Retina displays -->
                 <link rel="stylesheet"
                       media="only all and (-webkit-min-device-pixel-ratio: 1.5), only screen and (-o-min-device-pixel-ratio: 3/2), only screen and (min-device-pixel-ratio: 1.5)"
-                      href="theme/developr/html/css/2x.css?v=1">
+                      href="theme/symeos/css/2x.css?v=1">
 
                 <!-- Symeos -->
-                <link rel="stylesheet" href="theme/developr/html/css/symeos.css?v=1">
+                <link rel="stylesheet" href="theme/symeos/css/symeos.css?v=1">
 
                 <!-- Webfonts -->
                 <!--<link href='http://fonts.googleapis.com/css?family=Open+Sans:300'
@@ -839,27 +841,27 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
                 <!-- Additional styles -->
                 <link rel="stylesheet"
-                      href="theme/developr/html/css/styles/agenda.css?v=1">
+                      href="theme/symeos/css/styles/agenda.css?v=1">
                 <link rel="stylesheet"
-                      href="theme/developr/html/css/styles/dashboard.css?v=1">
+                      href="theme/symeos/css/styles/dashboard.css?v=1">
                 <link rel="stylesheet"
-                      href="theme/developr/html/css/styles/form.css?v=1">
+                      href="theme/symeos/css/styles/form.css?v=1">
                 <link rel="stylesheet"
-                      href="theme/developr/html/css/styles/modal.css?v=1">
+                      href="theme/symeos/css/styles/modal.css?v=1">
                 <link rel="stylesheet"
-                      href="theme/developr/html/css/styles/progress-slider.css?v=1">
+                      href="theme/symeos/css/styles/progress-slider.css?v=1">
                 <link rel="stylesheet"
-                      href="theme/developr/html/css/styles/switches.css?v=1">
+                      href="theme/symeos/css/styles/switches.css?v=1">
 
                 <!-- Additional styles -->
                 <link rel="stylesheet"
-                      href="theme/developr/html/css/styles/table.css?v=1">
+                      href="theme/symeos/css/styles/table.css?v=1">
 
                 <!-- DataTables -->
                 <!--<link rel="stylesheet" href="theme/developr/html/js/libs/DataTables/jquery.dataTables.css?v=1">-->
 
                 <!-- JavaScript at bottom except for Modernizr -->
-                <script src="theme/developr/html/js/libs/modernizr.custom.js"></script>
+                <script src="includes/js/modernizr.custom.js"></script>
 
                 <!-- For Modern Browsers -->
                 <link rel="shortcut icon" href="favicon.png">
@@ -880,7 +882,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
                 <!-- Startup image for web apps -->
-                <link rel="apple-touch-startup-image"
+                <!--<link rel="apple-touch-startup-image"
                       href="theme/developr/html/img/splash/ipad-landscape.png"
                       media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)">
                 <link rel="apple-touch-startup-image"
@@ -888,7 +890,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                       media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)">
                 <link rel="apple-touch-startup-image"
                       href="theme/developr/html/img/splash/iphone.png"
-                      media="screen and (max-device-width: 320px)">
+                      media="screen and (max-device-width: 320px)">-->
 
                 <!-- Microsoft clear type rendering -->
                 <meta http-equiv="cleartype" content="on">
@@ -1048,7 +1050,6 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
                 // BEGIN THEME
                 //print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/lib/jQueryUI/jquery-ui-1.8.18.custom.min.js"></script>';
-                print '<script type="text/javascript" src="includes/js/s_scripts.js"></script>';
                 print '<script type="text/javascript" src="includes/js/jquery.ui.extend.js"></script>';
                 print '<script type="text/javascript" src="includes/jquery/plugins/qtip2/jquery.qtip.min.js"></script>';
                 //print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/includes/lib/jQplot/jquery.jqplot.min.js"></script>';
@@ -1058,7 +1059,6 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                 print '<script type="text/javascript" src="includes/lib/validate/jquery.validate.min.js"></script>';
                 print '<script type="text/javascript" src="includes/lib/validate/localization/messages_' . substr($langs->getDefaultLang(), 0, 2) . '.js"></script>'; //localization for validation plugin
                 //print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/js/jquery.list.min.js"></script>';
-                print '<script type="text/javascript" src="includes/js/pertho.js"></script>';
                 print '<script type="text/javascript" src="includes/js/jquery.rwd-table.js"></script>';
                 // END THEME
 
@@ -1070,22 +1070,21 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
                 // Add datepicker default options
                 //print '<script type="text/javascript" src="' . DOL_URL_ROOT . '/core/js/datepicker.js.php?lang=' . $langs->defaultlang . '"></script>' . "\n";
-
                 //print '<link rel="stylesheet" href="theme/pertho_sample/foundation/stylesheets/foundation.css">';
                 print '<!-- jquery UI -->';
-                print '<link rel="stylesheet" href="theme/pertho_sample/lib/jQueryUI/css/Aristo/Aristo.css" media="all" />';
+                print '<link rel="stylesheet" href="includes/jquery/plugins/jQueryUI/css/Aristo/Aristo.css" media="all" />';
                 print '<!-- jQplot (charts) -->';
-                print '<link rel="stylesheet" href="theme/pertho_sample/lib/jQplot/jquery.jqplot.css" media="all" />';
+                print '<link rel="stylesheet" href="includes/jquery/plugins/jQplot/jquery.jqplot.css" media="all" />';
                 print '<!-- fancybox -->';
-                print '<link rel="stylesheet" href="theme/pertho_sample/lib/fancybox/jquery.fancybox-1.3.4.css" media="all" />';
+                print '<link rel="stylesheet" href="includes/jquery/plugins/fancybox/jquery.fancybox-1.3.4.css" media="all" />';
                 print '<!-- fullcalendar -->';
-                print '<link rel="stylesheet" href="theme/pertho_sample/lib/fullcalendar/fullcalendar.css" media="all" />';
+                print '<link rel="stylesheet" href="includes/jquery/plugins/fullcalendar/fullcalendar.css" media="all" />';
                 print '<!-- tooltips -->';
-                print '<link rel="stylesheet" href="theme/pertho_sample/lib/qtip2/jquery.qtip.min.css" />';
+                print '<link rel="stylesheet" href="includes/jquery/plugins/qtip2/jquery.qtip.min.css" />';
                 print '<!-- chosen (select element extended) -->';
-                print '<link rel="stylesheet" href="theme/pertho_sample/lib/chosen/chosen.css" media="all" />';
+                print '<link rel="stylesheet" href="includes/jquery/plugins/chosen/chosen.css" media="all" />';
                 print '<!-- datatables -->';
-                print '<link rel="stylesheet" href="theme/pertho_sample/lib/datatables/css/demo_table_jui.css" media="all" />';
+                print '<link rel="stylesheet" href="includes/jquery/plugins/datatables/css/demo_table_jui.css" media="all" />';
                 print '<!-- main styles -->';
                 print '<link rel="stylesheet" href="theme/eldy/style.css" />';
 
@@ -1095,7 +1094,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                 print '<script src="lib/jQplot/excanvas.min.js"></script>';
                 print '<![endif]-->';
 
-                // For new theme
+                // For new theme TODO script init A revoir
                 print '<script>
                 $(document).ready(function() {
                 prth_common.init();
@@ -1159,21 +1158,21 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
         <ul id="shortcuts" role="complementary"
             class="children-tooltip tooltip-right">
             <li class="current"><a href="index.php?idmenu=menu:home"
-                                   title="Dashboard"><img src="theme/eldy/img/modules/Maps.png" />Dashboard</a>
+                                   title="Dashboard"><img src="theme/symeos/img/modules/Maps.png" />Dashboard</a>
             </li>
             <li><a href="inbox.html" title="Messages"><img
-                        src="theme/eldy/img/modules/Mail_alt.png" />Messages</a></li>
+                        src="theme/symeos/img/modules/Mail_alt.png" />Messages</a></li>
             <li><a href="agenda.html" title="Agenda"><img
-                        src="theme/eldy/img/modules/Calendar.png" />Agenda</a></li>
+                        src="theme/symeos/img/modules/Calendar.png" />Agenda</a></li>
             <li><a href="tables.html" title="Contacts"><img
-                        src="theme/eldy/img/modules/Contacts.png" />Contacts</a></li>
+                        src="theme/symeos/img/modules/Contacts.png" />Contacts</a></li>
             <li><a href="explorer.html" title="Medias"><img
-                        src="theme/eldy/img/modules/Photos.png" />Medias</a></li>
+                        src="theme/symeos/img/modules/Photos.png" />Medias</a></li>
             <li><a href="sliders.html" title="Stats"><img
-                        src="theme/eldy/img/modules/Stocks.png" />Stats</a></li>
+                        src="theme/symeos/img/modules/Stocks.png" />Stats</a></li>
             <li><a href="form.html" title="Settings"><img
-                        src="theme/eldy/img/modules/Settings.png" />Settings</a></li>
-            <li><span title="Notes"><img src="theme/eldy/img/modules/Notes.png" />Notes</span>
+                        src="theme/symeos/img/modules/Settings.png" />Settings</a></li>
+            <li><span title="Notes"><img src="theme/symeos/img/modules/Notes.png" />Notes</span>
             </li>
         </ul>
 
@@ -1260,11 +1259,11 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                                     <img alt="User name" class="ego-icon-inner"
                                          src="<?php echo $user->getFile($user->values->Photo); ?>">
     <?php else : ?>
-                                    <img src="theme/developr/html/img/user.png"
+                                    <img src="theme/symeos/img/user.png"
                                          alt="User name" class="ego-icon-inner">
     <?php endif; ?>
                                 <img class="ego-icon-outer"
-                                     src="theme/developr/html/img/timbrebase90x100.png">
+                                     src="theme/symeos/img/timbrebase90x100.png">
                             </div>
                         </div>
                         <div class="seven-columns">
@@ -1277,14 +1276,14 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                 <!-- By default, this section is made for 4 icons, see the doc to learn how to change this, in "basic markup explained" -->
                 <ul id="access" class="children-tooltip">
                     <li style="width: 20%;"><a href="index.php?idmenu=menu:home"
-                           title="<?php echo $langs->trans("Home"); ?>"><span class="icon-home"></span>
+                                               title="<?php echo $langs->trans("Home"); ?>"><span class="icon-home"></span>
                         </a></li>
                     <li style="width: 20%;"><a href="inbox.html" title="Messages"><span class="icon-inbox"></span><span
                                 class="count">2</span> </a></li>
                     <li style="width: 20%;"><a href="calendars.html" title="Calendar"><span
                                 class="icon-calendar"></span> </a></li>
                     <li style="width: 20%;"><a href="user/fiche.php?id=<?php echo $user->id; ?>"
-                           title="Profile"><span class="icon-gear"></span> </a></li>
+                                               title="Profile"><span class="icon-gear"></span> </a></li>
                     <li style="width: 20%;"><a href="user/logout.php" title="Log out"><span
                                 class="icon-unlock"></span> </a></li>
                 </ul>
@@ -1606,25 +1605,28 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
     ?>
 
     <?php if (!defined('NOHEADER')) : ?>
-        <script src="theme/developr/html/js/setup.js"></script>
+        <script src="theme/symeos/js/setup.js"></script>
 
-        <script src="theme/developr/html/js/developr.navigable.js"></script>
-        <script src="theme/developr/html/js/developr.scroll.js"></script>
+        <script src="theme/symeos/js/developr.navigable.js"></script>
+        <script src="theme/symeos/js/developr.scroll.js"></script>
+        
+        <script src="theme/symeos/js/s_scripts.js"></script>
+        <script src="theme/symeos/js/symeos.js"></script>
 
-                <!--<script src="theme/developr/html/js/developr.input.js"></script>-->
-        <script src="theme/developr/html/js/developr.message.js"></script>
-        <script src="theme/developr/html/js/developr.modal.js"></script>
-        <script src="theme/developr/html/js/developr.notify.js"></script>
-        <script src="theme/developr/html/js/developr.progress-slider.js"></script>
-        <script src="theme/developr/html/js/developr.tooltip.js"></script>
-        <script src="theme/developr/html/js/developr.confirm.js"></script>
-        <script src="theme/developr/html/js/developr.agenda.js"></script>
+        <!--<script src="theme/developr/html/js/developr.input.js"></script>-->
+        <script src="theme/symeos/js/developr.message.js"></script>
+        <script src="theme/symeos/js/developr.modal.js"></script>
+        <script src="theme/symeos/js/developr.notify.js"></script>
+        <script src="theme/symeos/js/developr.progress-slider.js"></script>
+        <script src="theme/symeos/js/developr.tooltip.js"></script>
+        <script src="theme/symeos/js/developr.confirm.js"></script>
+        <script src="theme/symeos/js/developr.agenda.js"></script>
 
-        <script src="theme/developr/html/js/developr.tabs.js"></script>
+        <script src="theme/symeos/js/developr.tabs.js"></script>
         <!-- Must be loaded last -->
 
         <!-- Tinycon -->
-        <script src="theme/developr/html/js/libs/tinycon.min.js"></script>
+        <script src="includes/js/tinycon.min.js"></script>
 
         <script>
 
@@ -1633,7 +1635,33 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
             // Favicon count
             Tinycon.setBubble(2);
-                        					
+                                        					
+        </script>
+
+        <script>
+            //* sticky footer
+            prth_stickyFooter = {
+                init: function() {
+                    prth_stickyFooter.resize();
+                },
+                resize: function() {
+                    //prth_stickyFooter.sleep(1000);
+                    if($("#sticky-footer-push").height() === undefined)
+                        var docHeight = $(document.body).height();
+                    else
+                        var docHeight = $(document.body).height() - $("#sticky-footer-push").height();
+
+                    if(docHeight < $(window).height()){
+                        var diff = $(window).height() - docHeight +1;
+                        if ($("#sticky-footer-push").length == 0) {
+                            $('#footer').before('<div id="sticky-footer-push"></div>');
+                        }
+                        $("#sticky-footer-push").height(diff - 1);
+                    } else {
+                        $("#sticky-footer-push").remove();
+                    }
+                }
+            };
         </script>
 
         <footer id="footer">
