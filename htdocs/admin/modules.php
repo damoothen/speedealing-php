@@ -4,7 +4,7 @@
  * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2004      Eric Seigne          <eric.seigne@ryxeo.com>
  * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
- * Copyright (C) 2011      Herve Prot           <herve.prot@symeos.com>
+ * Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
  * Copyright (C) 2011	   Juanjo Menent        <jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -201,14 +201,18 @@ if ($action == 'reset' && $user->admin) {
 $help_url = 'EN:First_setup|FR:Premiers_paramétrages|ES:Primeras_configuraciones';
 llxHeader('', $langs->trans("Setup"), $help_url);
 
-print '<div class="row">';
+print_fiche_titre($langs->trans("Setup"));
+
+print '<div class="with-padding">';
+print '<div class="columns">';
+
 print start_box($langs->trans("ModulesSetup"), 'twelve', '16-Cog-4.png', false);
 
 
 $obj = new stdClass();
 $i = 0;
 
-print '<table class="table responsive-table" id="list_modules">';
+print '<table class="display dt_act" id="list_modules">';
 
 print'<thead>';
 print'<tr>';
@@ -456,7 +460,7 @@ $obj->bServerSide = false;
 print $object->datatablesCreate($obj, "list_modules");
 
 print end_box();
-print '</div>';
+print '</div></div>';
 
 llxFooter();
 
