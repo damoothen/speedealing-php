@@ -208,13 +208,13 @@ if (count($result->rows)) {
 	foreach ($result->rows as $aRow) {
 		print'<tr>';
 
-		$object->values->name = $aRow->value->name;
-		$object->values->numero = $aRow->value->numero;
-		$object->values->rights_class = $aRow->value->rights_class;
-		$object->values->id = $aRow->value->id;
-		$object->values->perm = $aRow->value->perm;
-		$object->values->desc = $aRow->value->desc;
-		$object->values->Status = ($aRow->value->Status == true ? "true" : "false");
+		$object->name = $aRow->value->name;
+		$object->numero = $aRow->value->numero;
+		$object->rights_class = $aRow->value->rights_class;
+		$object->id = $aRow->value->id;
+		$object->perm = $aRow->value->perm;
+		$object->desc = $aRow->value->desc;
+		$object->Status = ($aRow->value->Status == true ? "true" : "false");
 
 		print '<td>' . $aRow->value->id . '</td>';
 		print '<td>' . img_object('', $aRow->value->picto) . " " . $object->getName() . '</td>';
@@ -227,7 +227,7 @@ if (count($result->rows)) {
 		if ($caneditperms) {
 			if ($aRow->value->Status)
 				print $object->getLibStatus(); // Enable by default
-			elseif ($fuser->values->rights->$perm)
+			elseif ($fuser->rights->$perm)
 				print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $fuser->id . '&pid=' . $aRow->value->id . '&amp;action=remove#' . $aRow->value->id . '">' . img_edit_remove() . '</a>';
 			else
 				print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $fuser->id . '&pid=' . $aRow->value->id . '&amp;action=add#' . $aRow->value->id . '">' . img_edit_add() . '</a>';

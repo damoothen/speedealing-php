@@ -1,0 +1,9 @@
+{
+   "_id": "_design/Agenda",
+   "language": "javascript",
+   "views": {
+       "list": {
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Agenda\")\n  emit(doc.datep, doc);\n}"
+       }
+   }
+}

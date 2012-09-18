@@ -1,0 +1,115 @@
+{
+    "_id": "extrafields:Agenda",
+    "class": "extrafields",
+    "ico": "/img/ico/icSw2/16-Month-Calendar.png",
+    "fields": {
+        "Status": {
+            "type": "select",
+            "enable": true,
+            "default": "0",
+            "aoColumns": {
+                "sClass": "center",
+                "bSearchable": true,
+                "bVisible": true
+            },
+            "values": {
+                "0": {
+                    "enable": true,
+                    "label": "StatusActionToDo",
+                    "cssClass": "blue-gradient",
+                    "dateEnd": [
+                    "expired",
+                    "ontime"
+                    ]
+                },
+                "50": {
+                    "label": "StatusActionInProcess",
+                    "enable": true,
+                    "cssClass": "orange-gradient",
+                    "dateEnd": [
+                    "expired",
+                    "ontime"
+                    ]
+                },
+                "-1": {
+                    "label": "StatusNotApplicable",
+                    "enable": true,
+                    "cssClass": "grey-gradient"
+                },
+                "100": {
+                    "enable": true,
+                    "label": "StatusActionDone",
+                    "cssClass": "green-gradient"
+                },
+                "ontime": {
+                    "enable": false,
+                    "label": "StatusActionToDo",
+                    "cssClass": "blue-gradient"
+                },
+                "expired": {
+                    "enable": false,
+                    "label": "StatusActionTooLate",
+                    "cssClass": "red-gradient"
+                }
+            }
+        },
+        "type_code": {
+            "type": "select",
+            "enable": true,
+            "default": "AC_RDV",
+            "aoColumns": {
+                "sClass": "",
+                "bSearchable": true,
+                "bVisible": true
+            },
+            "values": {
+                "AC_RDV": {
+                    "enable": true,
+                    "label": "Rendez-vous",
+                    "event": true
+                },
+                "AC_TEL": {
+                    "enable": true,
+                    "label": "Phone call",
+                    "event": true
+                },
+                "AC_FAX": {
+                    "enable": true,
+                    "label": "Send Fax"
+                },
+                "AC_EMAIL": {
+                    "enable": true,
+                    "label": "Send Email"
+                },
+                "AC_OTH": {
+                    "enable": false,
+                    "label": "Other"
+                },
+                "AC_FAC": {
+                    "enable": true,
+                    "label": "Send customer invoice by email"
+                },
+                "AC_SUP_INV": {
+                    "enable": true,
+                    "label": "Send supplier invoice by email"
+                },
+                "AC_COM": {
+                    "enable": true,
+                    "label": "Send customer order by email"
+                },
+                "AC_SUP_ORD": {
+                    "enable": true,
+                    "label": "Send supplier order by email"
+                },
+                "AC_PROP": {
+                    "enable": true,
+                    "label": "Send commercial proposal by email"
+                },
+                "AC_SHIP": {
+                    "enable": true,
+                    "label": "Send shipping by email"
+                }
+            }
+        }
+    }
+}

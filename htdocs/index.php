@@ -144,12 +144,12 @@ print '</tr>';
 //
 // Number of actions to do (late)
 if ($conf->agenda->enabled && $user->rights->agenda->myactions->read) {
-    include_once(DOL_DOCUMENT_ROOT . "/comm/action/class/actioncomm.class.php");
-    $board = new ActionComm($db);
+    include_once(DOL_DOCUMENT_ROOT . "/agenda/class/agenda.class.php");
+    $board = new Agenda($db);
     $board->load_board($user);
     $board->warning_delay = $conf->actions->warning_delay / 60 / 60 / 24;
     $board->label = $langs->trans("ActionsToDo");
-    $board->url = DOL_URL_ROOT . '/comm/action/listactions.php?status=todo&mainmenu=agenda';
+    $board->url = DOL_URL_ROOT . '/agenda/listactions.php?status=todo&mainmenu=agenda';
     $board->img = img_object($langs->trans("Actions"), "action");
     $rowspan++;
     $dashboardlines[] = $board;

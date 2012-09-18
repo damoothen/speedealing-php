@@ -116,7 +116,7 @@ class FormActions
         global $langs,$conf,$user;
         global $bc;
 
-        require_once(DOL_DOCUMENT_ROOT."/comm/action/class/actioncomm.class.php");
+        require_once(DOL_DOCUMENT_ROOT."/agenda/class/actioncomm.class.php");
 
         $actioncomm = new ActionComm($this->db);
         $actioncomm->getActions($socid, $object->id, $typeelement);
@@ -159,32 +159,6 @@ class FormActions
         }
 
         return $num;
-    }
-
-
-    /**
-     *  Output list of type of event
-     *
-     *  @param	string		$selected        Type pre-selectionne
-     *  @param  string		$htmlname        Nom champ formulaire
-     * 	@return	void
-     */
-    function select_type_actions($selected='',$htmlname='actioncode',$active=1,$idorcode='code',$type='1,2')
-    {
-        global $langs,$user;
-
-        require_once(DOL_DOCUMENT_ROOT."/comm/action/class/cactioncomm.class.php");
-        require_once(DOL_DOCUMENT_ROOT."/core/class/html.form.class.php");
-        $caction=new CActionComm($this->db);
-        $form=new Form($this->db);
-
-        $arraylist=array();
-        $arraylist=$caction->liste_array($active,$idorcode,$type);
-        $arraylist[0]='&nbsp;';
-        asort($arraylist);
-
-        print $form->selectarray($htmlname, $arraylist, $selected);
-        if ($user->admin) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"),1);
     }
 
 }
