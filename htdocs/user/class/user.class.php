@@ -123,26 +123,34 @@ class User extends nosqlDocument {
 		$this->rights->user->self = new stdClass();
 	}
 
-	/**
-	 * 	Load a user from database with its id or ref (login)
-	 *
-	 * 	@param	string	$id		       		Si defini, id a utiliser pour recherche
-	 * 	@param  string	$login       		Si defini, login a utiliser pour recherche
-	 * 	@param  strinf	$sid				Si defini, sid a utiliser pour recherche
-	 * 	@param	int		$loadpersonalconf	Also load personal conf of user (in $user->conf->xxx)
-	 * 	@return	int							<0 if KO, 0 not found, >0 if OK
-	 */
-	function fetch($login) {
-		global $conf;
+    /**
+     * 	Load a user from database with its id or ref (login)
+     *
+     * 	@param	string	$id		       		Si defini, id a utiliser pour recherche
+     * 	@param  string	$login       		Si defini, login a utiliser pour recherche
+     * 	@param  strinf	$sid				Si defini, sid a utiliser pour recherche
+     * 	@param	int		$loadpersonalconf	Also load personal conf of user (in $user->conf->xxx)
+     * 	@return	int							<0 if KO, 0 not found, >0 if OK
+     */
+    function fetch($login = "") {
+        global $conf;
 
 		// Clean parametersadmin
 		$login = trim($login);
 
-		try {
-			$this->values = $this->couchdb->getDoc($login);
-		} catch (Exception $e) {
-			return 0;
-		}
+        if (empty($login)) {
+            //try {
+                $login = "org.couchdb.user:" . $this->couchAdmin->getLoginSession();
+            //} catch (Exception $e) {
+            //    return 0;
+            //}
+        }
+
+        try {
+            $this->values = $this->couchdb->getDoc($login);
+        } catch (Exception $e) {
+            return 0;
+        }
 
 		// Test if User is a global administrator
 		try {

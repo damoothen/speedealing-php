@@ -296,7 +296,9 @@ if (!defined('NOLOGIN')) {
     // At the end of this phase, the variable $login is defined.
     $resultFetchUser = '';
     $test = true;
-    if (!isset($_SESSION["dol_login"]) || !isset($_COOKIE["AuthSession"])) {
+    $user = new User($db);
+    //print $user->fetch();exit;
+    if (!isset($_COOKIE["AuthSession"]) || !$user->fetch()) {
         // It is not already authenticated and it requests the login / password
         include_once(DOL_DOCUMENT_ROOT . '/core/lib/security2.lib.php');
 
@@ -401,8 +403,8 @@ if (!defined('NOLOGIN')) {
             exit;
         }
 
-        $user = new User($db);
-        $resultFetchUser = $user->fetch("org.couchdb.user:" . $login);
+		$user = new User($db);
+		$resultFetchUser = $user->fetch("org.couchdb.user:" . $login);
         /*
           if ($resultFetchUser <= 0)
           {
@@ -435,11 +437,11 @@ if (!defined('NOLOGIN')) {
           // End call triggers */
     } else {
         // We are already into an authenticated session
-        $login = $_SESSION["dol_login"];
+        //$login = $_SESSION["dol_login"];
 
-        $user = new User($db);
-        $resultFetchUser = $user->fetch("org.couchdb.user:" . $login);
-
+        //$resultFetchUser = $user->fetch("org.couchdb.user:" . $login);
+        $resultFetchUser = $user->fetch();
+        
         if ($resultFetchUser <= 0) {
             // Account has been removed after login
             session_destroy();
@@ -450,7 +452,7 @@ if (!defined('NOLOGIN')) {
             $langs->load('errors');
 
 
-            //$_SESSION["dol_loginmesg"] =
+            //$_SESSION["dol_loginmesg"] = 
             //}
             //if ($resultFetchUser < 0) {
             $user->trigger_mesg = 'SessionExpire - login=' . $login;
@@ -481,8 +483,8 @@ if (!defined('NOLOGIN')) {
         }
     }
 
-// Is it a new session that has started ?
-// If we are here, this means authentication was successfull.
+    // Is it a new session that has started ?
+    // If we are here, this means authentication was successfull.
     if (!isset($_SESSION["dol_login"])) {
         $error = 0;
 
@@ -550,12 +552,12 @@ if (!defined('NOLOGIN')) {
         if ($reshook < 0)
             $error++;
 
-        header('Location: ' . DOL_URL_ROOT . '/index.php?idmenu=menu:home'); // TODO Add default database
-        exit;
+        //header('Location: ' . DOL_URL_ROOT . '/index.php?idmenu=menu:home'); // TODO Add default database
+        //exit;
     }
 
 
-// If user admin, we force the rights-based modules
+    // If user admin, we force the rights-based modules
     if ($user->admin) {
         $user->rights->user->user->lire = 1;
         $user->rights->user->user->creer = 1;
@@ -568,20 +570,20 @@ if (!defined('NOLOGIN')) {
     /*
      * Overwrite configs global by personal configs
      */
-// Set liste_limit
+    // Set liste_limit
     if (isset($user->conf->MAIN_SIZE_LISTE_LIMIT)) { // Can be 0
         $conf->liste_limit = $user->conf->MAIN_SIZE_LISTE_LIMIT;
     }
     if (isset($user->conf->PRODUIT_LIMIT_SIZE)) {  // Can be 0
         $conf->product->limit_size = $user->conf->PRODUIT_LIMIT_SIZE;
     }
-// Replace conf->css by personalized value
+    // Replace conf->css by personalized value
     if (isset($user->conf->MAIN_THEME) && $user->conf->MAIN_THEME) {
         $conf->theme = $user->conf->MAIN_THEME;
         $conf->css = "/theme/" . $conf->theme . "/style.css.php";
     }
 
-// If theme support option like flip-hide left menu and we use a smartphone, we force it
+    // If theme support option like flip-hide left menu and we use a smartphone, we force it
 }
 
 // Init the 4 global objects

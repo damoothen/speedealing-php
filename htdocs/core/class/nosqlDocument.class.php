@@ -421,14 +421,14 @@ abstract class nosqlDocument extends CommonObject {
         $nb = count($obj->aoColumns);
         foreach ($obj->aoColumns as $i => $aRow):
             ?>
-                                    {
+                                {
             <?php foreach ($aRow as $key => $fields): ?>
                 <?php if ($key == "mDataProp" || $key == "sClass" || $key == "sDefaultContent" || $key == "sType" || $key == "sWidth") : ?>
-                                                        "<?php echo $key; ?>":"<?php echo $fields; ?>",
+                                                "<?php echo $key; ?>":"<?php echo $fields; ?>",
                 <?php elseif ($key == "fnRender") : ?>
-                                                        "<?php echo $key; ?>": <?php echo $fields; ?>,	    
+                                                "<?php echo $key; ?>": <?php echo $fields; ?>,	    
                 <?php else : ?>
-                                                        "<?php echo $key; ?>": <?php echo ($fields ? "true" : "false"); ?>,
+                                                "<?php echo $key; ?>": <?php echo ($fields ? "true" : "false"); ?>,
                 <?php endif; ?>
                 <?php
             endforeach;
@@ -445,9 +445,9 @@ abstract class nosqlDocument extends CommonObject {
         <?php endif; ?>
         <?php if ($json) : ?>
             <?php if (!empty($obj->sAjaxSource)): ?>
-                                        "sAjaxSource": "<?php echo $obj->sAjaxSource; ?>",
+                                    "sAjaxSource": "<?php echo $obj->sAjaxSource; ?>",
             <?php else : ?>
-                                        "sAjaxSource" : "<?php echo DOL_URL_ROOT . '/core/ajax/listDatatables.php'; ?>?json=list&bServerSide=<?php echo $obj->bServerSide; ?>&class=<?php echo get_class($this); ?>",
+                                    "sAjaxSource" : "<?php echo DOL_URL_ROOT . '/core/ajax/listDatatables.php'; ?>?json=list&bServerSide=<?php echo $obj->bServerSide; ?>&class=<?php echo get_class($this); ?>",
             <?php endif; ?>
         <?php endif; ?>
         <?php if (!empty($obj->iDisplayLength)): ?>
@@ -471,18 +471,14 @@ abstract class nosqlDocument extends CommonObject {
                         "bDeferRender": true,
                         "oLanguage": { "sUrl": "<?php echo DOL_URL_ROOT . '/includes/jquery/plugins/datatables/langs/' . ($langs->defaultlang ? $langs->defaultlang : "en_US") . ".txt"; ?>"},
                         /*$obj->sDom = '<\"top\"Tflpi<\"clear\">>rt<\"bottom\"pi<\"clear\">>';*/
-                        /*"sPaginationType": 'full_numbers',*/
-                        /*$obj->sDom = 'TC<\"clear\">lfrtip';*/
-                        "oTableTools": { "sSwfPath": "<?php echo DOL_URL_ROOT . '/includes/jquery/plugins/datatables/extras/TableTools/media/swf/copy_csv_xls.swf'; ?>"},
-                        //if($obj->oTableTools->aButtons==null)
-                        //$obj->oTableTools->aButtons = array("xls");
-        																																																																																									    
+                        /*$obj->sPaginationType = 'full_numbers';*/
+                        /*$obj->sDom = 'TC<\"clear\">lfrtip';*/																																																																																								    
                         "oColVis": { "buttonText" : 'Voir/Cacher',
                             "aiExclude": [0,1] // Not cacheable _id and name
                         },
                         //$obj->oColVis->bRestore = true;
                         //$obj->oColVis->sAlign = 'left';
-        																																																																																								            
+                        																																																																																								            
                         // Avec export Excel
         <?php if (!empty($obj->sDom)) : ?>
                             //"sDom": "Cl<fr>t<\"clear\"rtip>",
@@ -496,69 +492,83 @@ abstract class nosqlDocument extends CommonObject {
                         // bottons
         <?php if ($obj->oTableTools->aButtons != null) : ?>
                             "oTableTools" : { "aButtons": [
-            <?php foreach ($obj->oTableTools->aButtons as $i => $aRow): ?>
-                                                {
-                <?php foreach ($aRow as $key => $fields): ?>
-                    <?php if ($key == "fnClick" || $key == "fnAjaxComplete") : ?>
-                                                                            "<?php echo $key; ?>": <?php echo $fields; ?>,	    
-                    <?php else : ?>
-                                                                            "<?php echo $key; ?>":"<?php echo $fields; ?>",
-                    <?php endif; ?>
-                <?php endforeach; ?>
+            <?php foreach ($obj->oTableTools->aButtons as $i => $aRow): ?>                           
+                <?php if (is_array($aRow)): ?>
+                                                    {
+                    <?php foreach ($aRow as $key => $fields): ?>
+                        <?php if ($key == "fnClick" || $key == "fnAjaxComplete") : ?>
+                                                                        "<?php echo $key; ?>": <?php echo $fields; ?>,	    
+                        <?php else : ?>
+                                                                        "<?php echo $key; ?>":"<?php echo $fields; ?>",
+                        <?php endif; ?>
+                    <?php endforeach; ?>
                                                         },
+                <?php else : ?>
+                {
+                    "sExtends": "<?php echo $aRow; ?>",
+                    "sFieldBoundary": '"',
+                    //"sFieldSeperator": "-",
+                    "sCharSet": "utf8",
+                    "sFileName": "export.csv",
+                    "bSelectedOnly": false
+                },
+                <?php endif; ?>
             <?php endforeach; ?>
-                                        ]},
+                                    ],
+                                    "sSwfPath": "<?php echo DOL_URL_ROOT . '/includes/jquery/plugins/datatables/extras/TableTools/media/swf/copy_csv_xls.swf'; ?>",
+                                    "sRowSelect": "multi"
+                                },
         <?php endif; ?>
         <?php if (isset($obj->fnRowCallback)): ?>
                             "fnRowCallback": <?php echo $obj->fnRowCallback; ?>,
         <?php endif; ?>
-        																																																																								
+                        																																																																								
         <?php if (!defined('NOLOGIN')) : ?>
             <?php if (isset($obj->fnDrawCallback)): ?>
-                                        "fnDrawCallback": <?php echo $obj->fnDrawCallback; ?>,
+                                    "fnDrawCallback": <?php echo $obj->fnDrawCallback; ?>,
             <?php else : ?>
-                                        // jeditable
-                                        "fnDrawCallback": function () {
-                                            var columns = [
+                                    // jeditable
+                                    "fnDrawCallback": function () {
+                                        var columns = [
                 <?php foreach ($obj->aoColumns as $i => $aRow) : ?>
-                                                            "<?php echo $aRow->mDataProp; ?>",
+                                                    "<?php echo $aRow->mDataProp; ?>",
                 <?php endforeach; ?>
-                                                    ];
-                                                    $("td.dol_edit", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
-                                                        "callback": function( sValue, y ) {
-                                                            oTable.fnDraw();
-                                                            //oTable.fnReloadAjax();
-                                                        },
-                                                        "submitdata": function ( value, settings ) {
-                                                            return { "id": oTable.fnGetData( this.parentNode, 0), 
-                                                                "key": columns[oTable.fnGetPosition( this )[2]]};
-                                                        },
-                                                        "height": "14px",
-                                                        "tooltip": "Cliquer pour éditer...",
-                                                        "indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
-                                                        "placeholder" : ""
-                																																																																																																																																																																																                
-                                                    } );
-                                                    $("td.dol_select", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
-                                                        "callback": function( sValue, y ) {
-                                                            oTable.fnDraw();
-                                                            //oTable.fnReloadAjax();
-                                                        },
-                                                        "submitdata": function ( value, settings ) {
-                                                            //alert( 'Number of rows: '+ oTable.fnGetData( this.parentNode, oTable.fnGetPosition( this )[2] ));
-                                                            return { "id": oTable.fnGetData( this.parentNode, 0), 
-                                                                "key": columns[oTable.fnGetPosition( this )[2]]};
-                                                        },
-                                                        "loadurl" : '<?php echo DOL_URL_ROOT . '/core/ajax/loadinplace.php'; ?>?json=Status&class=<?php echo get_class($this); ?>',
-                                                        "type" : 'select',
-                                                        "submit" : 'OK',
-                                                        "height": "14px",
-                                                        "tooltip": "Cliquer pour éditer...",
-                                                        "indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
-                                                        "placeholder" : ""
-                																																																																																																																																																																																                
-                                                    } );
-                                                }
+                                            ];
+                                            $("td.dol_edit", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
+                                                "callback": function( sValue, y ) {
+                                                    oTable.fnDraw();
+                                                    //oTable.fnReloadAjax();
+                                                },
+                                                "submitdata": function ( value, settings ) {
+                                                    return { "id": oTable.fnGetData( this.parentNode, 0), 
+                                                        "key": columns[oTable.fnGetPosition( this )[2]]};
+                                                },
+                                                "height": "14px",
+                                                "tooltip": "Cliquer pour éditer...",
+                                                "indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
+                                                "placeholder" : ""
+                                                																																																																																																																																																																																                
+                                            } );
+                                            $("td.dol_select", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
+                                                "callback": function( sValue, y ) {
+                                                    oTable.fnDraw();
+                                                    //oTable.fnReloadAjax();
+                                                },
+                                                "submitdata": function ( value, settings ) {
+                                                    //alert( 'Number of rows: '+ oTable.fnGetData( this.parentNode, oTable.fnGetPosition( this )[2] ));
+                                                    return { "id": oTable.fnGetData( this.parentNode, 0), 
+                                                        "key": columns[oTable.fnGetPosition( this )[2]]};
+                                                },
+                                                "loadurl" : '<?php echo DOL_URL_ROOT . '/core/ajax/loadinplace.php'; ?>?json=Status&class=<?php echo get_class($this); ?>',
+                                                "type" : 'select',
+                                                "submit" : 'OK',
+                                                "height": "14px",
+                                                "tooltip": "Cliquer pour éditer...",
+                                                "indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
+                                                "placeholder" : ""
+                                                																																																																																																																																																																																                
+                                            } );
+                                        }
             <?php endif; ?>
         <?php endif; ?>
                     });
