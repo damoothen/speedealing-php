@@ -556,8 +556,8 @@ if (!defined('NOLOGIN')) {
         if ($reshook < 0)
             $error++;
 
-        header('Location: ' . DOL_URL_ROOT . '/index.php?idmenu=menu:home'); // TODO Add default database
-        exit;
+        //header('Location: ' . DOL_URL_ROOT . '/index.php?idmenu=menu:home'); // TODO Add default database
+        //exit;
     }
 
 
