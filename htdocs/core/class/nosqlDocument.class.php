@@ -494,11 +494,19 @@ abstract class nosqlDocument extends CommonObject {
                     <?php endforeach; ?>
                                                         },
                 <?php else : ?>
-                                                    "<?php echo $aRow; ?>",
+                {
+                    "sExtends": "<?php echo $aRow; ?>",
+                    "sFieldBoundary": '"',
+                    //"sFieldSeperator": "-",
+                    "sCharSet": "utf8",
+                    "sFileName": "export.csv",
+                    "bSelectedOnly": false
+                },
                 <?php endif; ?>
             <?php endforeach; ?>
                                     ],
-                                    "sSwfPath": "<?php echo DOL_URL_ROOT . '/includes/jquery/plugins/datatables/extras/TableTools/media/swf/copy_csv_xls.swf'; ?>"
+                                    "sSwfPath": "<?php echo DOL_URL_ROOT . '/includes/jquery/plugins/datatables/extras/TableTools/media/swf/copy_csv_xls.swf'; ?>",
+                                    "sRowSelect": "multi"
                                 },
         <?php endif; ?>
         <?php if (isset($obj->fnRowCallback)): ?>
