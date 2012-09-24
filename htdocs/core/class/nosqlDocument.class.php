@@ -512,7 +512,10 @@ abstract class nosqlDocument extends CommonObject {
         <?php if (isset($obj->fnRowCallback)): ?>
                             "fnRowCallback": <?php echo $obj->fnRowCallback; ?>,
         <?php endif; ?>
-                        																																																																								
+        <?php if (isset($obj->fnFooterCallback)): ?>
+                            "fnFooterCallback": <?php echo $obj->fnFooterCallback; ?>,
+        <?php endif; ?>
+
         <?php if (!defined('NOLOGIN')) : ?>
             <?php if (isset($obj->fnDrawCallback)): ?>
                                     "fnDrawCallback": <?php echo $obj->fnDrawCallback; ?>,
