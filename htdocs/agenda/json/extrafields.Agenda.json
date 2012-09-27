@@ -3,7 +3,7 @@
     "class": "extrafields",
     "ico": "/img/ico/icSw2/16-Month-Calendar.png",
     "fields": {
-        "Status": {
+        "status": {
             "type": "select",
             "enable": true,
             "default": "0",

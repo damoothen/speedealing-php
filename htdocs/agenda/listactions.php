@@ -95,7 +95,7 @@ if ($pid)
     $param.="&projectid=" . $pid;
 if ($type)
     $param.="&type=" . $type;
-
+/*
 $sql = "SELECT s.nom as societe, s.rowid as socid, s.client,";
 $sql.= " a.id, a.datep as dp, a.datep2 as dp2,";
 //$sql.= " a.datea as da, a.datea2 as da2,";
@@ -150,11 +150,11 @@ $sql.= $db->plimit($limit + 1, $offset);
 
 dol_syslog("comm/action/listactions.php sql=" . $sql);
 $resql = $db->query($sql);
-
+$num = $db->num_rows($resql);
+ * 
+ */
 $object = new Agenda($db);
 $societestatic = new Societe($db);
-
-$num = $db->num_rows($resql);
 
 $title = $langs->trans("DoneAndToDoActions");
 if ($status == 'done')
@@ -339,7 +339,7 @@ $obj->aoColumns[$i]->bSearchable = false;
 $obj->aoColumns[$i]->bVisible = false;
 $i++;
 print'<th class="essential">';
-print $langs->trans("Action");
+print $langs->trans("Titre");
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "label";
 $obj->aoColumns[$i]->bUseRendered = false;
@@ -350,15 +350,16 @@ print'<th class="essential">';
 print $langs->trans('DateEchAction');
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "datef";
+$obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->sDefaultContent = "";
+$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("datef", "datetime");
 //$obj->aoColumns[$i]->sClass = "edit";
 $i++;
 print'<th class="essential">';
 print $langs->trans('Company');
 print'</th>';
-$obj->aoColumns[$i]->mDataProp = "societe";
+$obj->aoColumns[$i]->mDataProp = "societe.name";
 $obj->aoColumns[$i]->sDefaultContent = "";
-//$obj->aoColumns[$i]->sClass = "edit";
 $i++;
 print'<th class="essential">';
 print $langs->trans('Contact');
@@ -391,7 +392,7 @@ $obj->aoColumns[$i]->mDataProp = "Status";
 $obj->aoColumns[$i]->sClass = "dol_select center";
 $obj->aoColumns[$i]->sWidth = "180px";
 $obj->aoColumns[$i]->sDefaultContent = "0";
-$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("Status", "status", array("dateEnd"=>"last_subscription_date_end"));
+$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("status", "status", array("dateEnd"=>"last_subscription_date_end"));
 $i++;
 print'<th class="essential">';
 print $langs->trans('Action');
@@ -402,15 +403,12 @@ $obj->aoColumns[$i]->sWidth = "100px";
 $obj->aoColumns[$i]->bSortable = false;
 $obj->aoColumns[$i]->sDefaultContent = "";
 
-$url = "adherent/fiche.php";
+$url = "agenda/fiche.php";
 $obj->aoColumns[$i]->fnRender = 'function(obj) {
 	var ar = [];
 	ar[ar.length] = "<a href=\"'. $url . '?id=";
 	ar[ar.length] = obj.aData._id.toString();
 	ar[ar.length] = "&action=edit&backtopage='. $_SERVER['PHP_SELF'] . '\" class=\"sepV_a\" title=\"'.$langs->trans("Edit").'\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/edit.png\" alt=\"\" /></a>";
-	ar[ar.length] = "<a href=\"'. $url . '?id=";
-	ar[ar.length] = obj.aData._id.toString();
-	ar[ar.length] = "&action=resign&backtopage='. $_SERVER['PHP_SELF'] . '\" class=\"sepV_a\" title=\"'.$langs->trans("Resiliate").'\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/disable.png\" alt=\"\" /></a>";
 	ar[ar.length] = "<a href=\"'. $url . '?id=";
 	ar[ar.length] = obj.aData._id.toString();
 	ar[ar.length] = "&action=delete&backtopage='. $_SERVER['PHP_SELF'] . '\" class=\"sepV_a\" title=\"'.$langs->trans("Delete").'\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/delete.png\" alt=\"\" /></a>";

@@ -4,6 +4,9 @@
    "views": {
        "list": {
            "map": "function(doc) {\n  if(doc.class && doc.class==\"Agenda\")\n  emit(doc.datep, doc);\n}"
+       },
+       "actionsToDo": {
+           "map": "function(doc) {\nif (doc.class == \"Agenda\" && (!doc.status || doc.status == \"0\"))\n  emit(doc.label, doc);\n}"
        }
    }
 }

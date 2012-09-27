@@ -99,6 +99,11 @@ if ($action == 'add_action') {
     $datep = dol_mktime($fulldayevent ? '00' : $_POST["aphour"], $fulldayevent ? '00' : $_POST["apmin"], 0, $_POST["apmonth"], $_POST["apday"], $_POST["apyear"]);
     $datef = dol_mktime($fulldayevent ? '23' : $_POST["p2hour"], $fulldayevent ? '59' : $_POST["p2min"], $fulldayevent ? '59' : '0', $_POST["p2month"], $_POST["p2day"], $_POST["p2year"]);
 
+    /*
+      echo '<pre>'.print_r($datep, true).'</pre>';
+      echo '<pre>'.print_r($datef, true).'</pre>';
+      die();
+     */
     // Check parameters
     if (!$datef && $_POST["percentage"] == 100) {
         $error++;
@@ -112,15 +117,16 @@ if ($action == 'add_action') {
         $action = 'create';
         $mesg = '<div class="error">' . $langs->trans("ErrorFieldRequired", $langs->trans("Type")) . '</div>';
     } else {
-        $result = $cactioncomm->fetch($_POST["actioncode"]);
+        //$result = $cactioncomm->fetch($_POST["actioncode"]);
+        $object->type_code = $_POST["actioncode"];
     }
-
-    if ($cactioncomm->type == 2) { //ACTION
-        if ($_POST["percentage"] == 100)
-            $datef = dol_now();
-        else
-            $datef = '';
-    }
+    /*
+      if ($cactioncomm->type == 2) { //ACTION
+      if ($_POST["percentage"] == 100)
+      $datef = dol_now();
+      else
+      $datef = '';
+      } */
 
     // Check parameters
     if (!$datef && $_POST["percentage"] == 100) {
@@ -130,8 +136,8 @@ if ($action == 'add_action') {
     }
 
     // Initialisation objet actioncomm
-    $object->type_id = $cactioncomm->id;
-    $object->type_code = $cactioncomm->code;
+    $object->type_id = null;
+    $object->type_code = $_POST["actioncode"];
     $object->priority = isset($_POST["priority"]) ? $_POST["priority"] : 0;
     $object->fulldayevent = $_POST["fullday"] ? 1 : 0;
     $object->location = isset($_POST["location"]) ? $_POST["location"] : '';
@@ -154,40 +160,49 @@ if ($action == 'add_action') {
     $object->fk_task = isset($_POST["fk_task"]) ? $_POST["fk_task"] : 0;
     $object->datep = $datep;
     $object->datef = $datef;
-    if ($cactioncomm->type == 2) //ACTION
+    $object->status = GETPOST('status');
+    if ($object->type_code == "AC_RDV") //ACTION
+        $object->durationp = $object->datef - $object->datep;
+    else
         $object->durationp = !empty($_POST["duration"]) ? $_POST["duration"] * 3600 : 3600;
+    /*
+      if ($cactioncomm->type == 1) { //RDV
+      // RDV
+      if ($object->datef && $object->datef < dol_now('tzref')) {
+      $object->percentage = 100;
+      } else {
+      $object->percentage = 0;
+      }
+      } else {
+      $object->percentage = isset($_POST["percentage"]) ? $_POST["percentage"] : 0;
+      }
+      $object->duree = (($_POST["dureehour"] * 60) + $_POST["dureemin"]) * 60;
+     */
+    $object->author = $user->values->name;
+    $object->usermod = null;
 
-    if ($cactioncomm->type == 1) { //RDV
-        // RDV
-        if ($object->datef && $object->datef < dol_now('tzref')) {
-            $object->percentage = 100;
-        } else {
-            $object->percentage = 0;
-        }
-    } else {
-        $object->percentage = isset($_POST["percentage"]) ? $_POST["percentage"] : 0;
-    }
-    $object->duree = (($_POST["dureehour"] * 60) + $_POST["dureemin"]) * 60;
+    if (strlen($_POST["affectedto"]) > 0)
+        $object->usertodo = GETPOST("affectedto");
+    /*
+      $userdone = new User($db);
+      if ($_POST["doneby"] > 0) {
+      $userdone->fetch($_POST["doneby"]);
+      }
+      $object->userdone = $userdone;
+     * 
+     */
 
-    $usertodo = new User($db);
-    if ($_POST["affectedto"] > 0) {
-        $usertodo->fetch($_POST["affectedto"]);
-    }
-    $object->usertodo = $usertodo;
-    $userdone = new User($db);
-    if ($_POST["doneby"] > 0) {
-        $userdone->fetch($_POST["doneby"]);
-    }
-    $object->userdone = $userdone;
+    if (strlen($_POST["doneby"]) > 0)
+        $object->userdone = GETPOST("doneby");
 
     $object->note = trim($_POST["note"]);
     if (isset($_POST["contactid"]))
         $object->contact = $contact;
-    if (GETPOST('socid', 'int') > 0) {
+    if (GETPOST('socid', 'alpha') > 0) {
         $societe = new Societe($db);
-        $societe->fetch(GETPOST('socid', 'int'));
-        $object->societe = $societe;
-        $object->socid = $object->societe->id;
+        $societe->simpleFetch(GETPOST('socid', 'alpha'));
+        $object->societe->id = $societe->values->_id;
+        $object->societe->name = $societe->values->ThirdPartyName;
     }
 
     // Special for module webcal and phenix
@@ -202,17 +217,22 @@ if ($action == 'add_action') {
         $action = 'create';
         $mesg = '<div class="error">' . $langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("DateEnd")) . '</div>';
     }
-    if ($datea && $_POST["percentage"] == 0) {
-        $error++;
-        $action = 'create';
-        $mesg = '<div class="error">' . $langs->trans("ErrorStatusCantBeZeroIfStarted") . '</div>';
-    }
-
+    /*
+      if ($datea && $_POST["percentage"] == 0) {
+      $error++;
+      $action = 'create';
+      $mesg = '<div class="error">' . $langs->trans("ErrorStatusCantBeZeroIfStarted") . '</div>';
+      }
+     */
     if (!$_POST["apyear"] && !$_POST["adyear"]) {
         $error++;
         $action = 'create';
         $mesg = '<div class="error">' . $langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Date")) . '</div>';
     }
+
+    //echo '<pre>'.print_r($_POST, true).'</pre>';
+    //echo '<pre>'.print_r($object, true).'</pre>';
+    //die();
 
     if (!$error) {
 
@@ -276,7 +296,7 @@ if ($action == 'confirm_delete' && GETPOST("confirm") == 'yes') {
         $result = $object->delete();
 
         if ($result >= 0) {
-            Header("Location: index.php");
+            Header("Location: /agenda/listactions.php");
             exit;
         } else {
             $mesg = $object->error;
@@ -317,7 +337,6 @@ if ($action == 'update') {
         $object->priority = $_POST["priority"];
         $object->fulldayevent = $_POST["fullday"] ? 1 : 0;
         $object->location = isset($_POST["location"]) ? $_POST["location"] : '';
-        $object->societe->id = $_POST["socid"];
         $object->contact->id = $_POST["contactid"];
         $object->fk_project = $_POST["projectid"];
         $object->fk_lead = $_POST["leadid"];
@@ -325,27 +344,35 @@ if ($action == 'update') {
         $object->note = $_POST["note"];
         $object->pnote = $_POST["note"];
         $object->fk_task = $_POST["fk_task"];
-        $object->type = $cactioncomm->type;
-
-        if ($object->type == 2) //ACTION
+        //$object->type = $cactioncomm->type;
+        $object->status = $_POST["status"];
+        if ($object->type_code == "AC_RDV") //ACTION
+            $object->durationp = $object->datef - $object->datep;
+        else
             $object->durationp = !empty($_POST["duration"]) ? $_POST["duration"] * 3600 : 3600;
+        /*
+          if ($object->type == 2) //ACTION
+          $object->durationp = !empty($_POST["duration"]) ? $_POST["duration"] * 3600 : 3600;
 
-        if ($object->type == 1 && !$datef && $object->percentage == 100) {
-            $error = $langs->trans("ErrorFieldRequired", $langs->trans("DateEnd"));
-            $action = 'edit';
-        }
-
+          if ($object->type == 1 && !$datef && $object->percentage == 100) {
+          $error = $langs->trans("ErrorFieldRequired", $langs->trans("DateEnd"));
+          $action = 'edit';
+          }
+         */
         // Users
-        $usertodo = new User($db);
-        if ($_POST["affectedto"]) {
-            $usertodo->fetch($_POST["affectedto"]);
-        }
-        $object->usertodo = $usertodo;
-        $userdone = new User($db);
-        if ($_POST["doneby"]) {
-            $userdone->fetch($_POST["doneby"]);
-        }
-        $object->userdone = $userdone;
+        $object->usertodo = $_POST["affectedto"];
+        $object->userdone = $_POST["doneby"];
+
+        if (GETPOST("socid", "alpha")) {
+            $societe = new Societe($db);
+            $societe->fetch($_POST["socid"]);
+            $object->societe->id = $_POST["socid"];
+            $object->societe->name = $societe->ThirdPartyName;
+        } else
+            $object->societe = (object) array();
+
+        //debug($object);
+        //die();
 
         if (!$error) {
             $db->begin();
@@ -381,6 +408,9 @@ if ($action == 'update') {
 
 $help_url = 'EN:Module_Agenda_En|FR:Module_Agenda|ES:M&omodulodulo_Agenda';
 llxHeader('', $langs->trans("Agenda"), $help_url);
+print_fiche_titre($langs->trans("Agenda"));
+print '<div class="with-padding">';
+
 
 $form = new Form($db);
 $htmlactions = new FormActions($db);
@@ -449,7 +479,7 @@ if ($action == 'create') {
                      {
                             var typeselected=jQuery("#actioncode option:selected").val();
                             var type=typeselected.split("_");
-                            if (type[0] == "RDV")
+                            if (type[1] == "RDV")
                             {
                                 $("#jqfullday").css("display","table-row");
                                 $("#jqech").hide();
@@ -483,7 +513,7 @@ if ($action == 'create') {
                     });
                })';
         print '</script>' . "\n";
-        /*   print "\n".'<script type="text/javascript" language="javascript">';
+        /*  print "\n".'<script type="text/javascript" language="javascript">';
           print 'jQuery(document).ready(function () {
           function setday()
           {
@@ -530,7 +560,7 @@ if ($action == 'create') {
         print_fiche_titre($langs->trans("AddAnAction"));
 
     print '<div class="with-padding">';
-    
+
     dol_htmloutput_mesg($mesg);
 
     print '<div class="tabBar">';
@@ -727,34 +757,34 @@ if ($id) {
         dol_print_error($db, $object->error);
         exit;
     }
+    /*
+      $societe = new Societe($db);
+      if ($object->societe->id) {
+      $result = $societe->fetch($object->societe->id);
+      }
+      $object->societe = $societe;
 
-    $societe = new Societe($db);
-    if ($object->societe->id) {
-        $result = $societe->fetch($object->societe->id);
-    }
-    $object->societe = $societe;
-
-    if ($object->author->id > 0) {
-        $tmpuser = new User($db);
-        $res = $tmpuser->fetch($object->author->id);
-        $object->author = $tmpuser;
-    }
-    if ($object->usermod->id > 0) {
-        $tmpuser = new User($db);
-        $res = $tmpuser->fetch($object->usermod->id);
-        $object->usermod = $tmpuser;
-    }
-    if ($object->usertodo->id > 0) {
-        $tmpuser = new User($db);
-        $res = $tmpuser->fetch($object->usertodo->id);
-        $object->usertodo = $tmpuser;
-    }
-    if ($object->userdone->id > 0) {
-        $tmpuser = new User($db);
-        $res = $tmpuser->fetch($object->userdone->id);
-        $object->userdone = $tmpuser;
-    }
-
+      if ($object->author->id > 0) {
+      $tmpuser = new User($db);
+      $res = $tmpuser->fetch($object->author->id);
+      $object->author = $tmpuser;
+      }
+      if ($object->usermod->id > 0) {
+      $tmpuser = new User($db);
+      $res = $tmpuser->fetch($object->usermod->id);
+      $object->usermod = $tmpuser;
+      }
+      if ($object->usertodo->id > 0) {
+      $tmpuser = new User($db);
+      $res = $tmpuser->fetch($object->usertodo->id);
+      $object->usertodo = $tmpuser;
+      }
+      if ($object->userdone->id > 0) {
+      $tmpuser = new User($db);
+      $res = $tmpuser->fetch($object->userdone->id);
+      $object->userdone = $tmpuser;
+      }
+     */
     $contact = new Contact($db);
     if ($object->contact->id) {
         $result = $contact->fetch($object->contact->id, $user);
@@ -773,7 +803,7 @@ if ($id) {
 
     // Confirmation suppression action
     if ($action == 'delete') {
-        $ret = $form->form_confirm("fiche.php?id=" . $id, $langs->trans("DeleteAction"), $langs->trans("ConfirmDeleteAction"), "confirm_delete", '', '', 1);
+        $ret = $form->form_confirm("/agenda/fiche.php?id=" . $id, $langs->trans("DeleteAction"), $langs->trans("ConfirmDeleteAction"), "confirm_delete", '', '', 1);
         if ($ret == 'html')
             print '<br>';
     }
@@ -811,6 +841,46 @@ if ($id) {
                         });
                    })';
             print '</script>' . "\n";
+            print "\n" . '<script type="text/javascript" language="javascript">';
+            print 'jQuery(document).ready(function () {
+                     function settype()
+                     {
+                            var typeselected=jQuery("#actioncode").val();
+                            var type=typeselected.split("_");
+                            if (type[1] == "RDV")
+                            {
+                                $("#jqfullday").css("display","table-row");
+                                $("#jqech").hide();
+                                $("#jqstart").show();
+                                $("#jqend").css("display","table-row");
+                                $("#jqloc").css("display","table-row");
+                                $(".fulldaystarthour").show();
+                                $(".fulldaystartmin").show();
+                                $(".fulldayendhour").show();
+                                $(".fulldayendmin").show();
+                                jQuery(".fulldaystartmin").val("00");
+                                jQuery(".fulldayendmin").val("00");
+                                $("#jqduration").hide();
+                            }
+                            else
+                            {
+                                $("#jqfullday").css("display","none");
+                                $("#jqech").show();
+                                $("#jqstart").hide();
+                                $("#jqend").css("display","none");
+                                $("#jqloc").css("display","none");
+                                $(".fulldayendhour").hide();
+                                $(".fulldayendmin").hide();
+                                jQuery(".fulldaystartmin").val("00");
+                                $("#jqduration").show();
+                            }
+                    }
+                    settype();
+                    jQuery("#actioncode").change(function() {
+                        settype();
+                    });
+               })';
+            print '</script>' . "\n";
         }
 
         // Fiche action en mode edition
@@ -819,6 +889,7 @@ if ($id) {
         print '<input type="hidden" name="action" value="update">';
         print '<input type="hidden" name="id" value="' . $id . '">';
         print '<input type="hidden" name="ref_ext" value="' . $object->ref_ext . '">';
+        print '<input type="hidden" id="actioncode" name="actioncode" value="' . $object->type_code . '">';
         if ($backtopage)
             print '<input type="hidden" name="backtopage" value="' . ($backtopage != '1' ? $backtopage : $_SERVER["HTTP_REFERER"]) . '">';
 
@@ -833,39 +904,37 @@ if ($id) {
         // Title
         print '<tr><td>' . $langs->trans("Title") . '</td><td colspan="3"><input type="text" name="label" size="50" value="' . $object->label . '"></td></tr>';
 
-        if ($object->type == 1) { //RDV
-            // Full day event
-            print '<tr><td>' . $langs->trans("EventOnFullDay") . '</td><td colspan="3"><input type="checkbox" id="fullday" name="fullday" ' . ($object->fulldayevent ? ' checked="true"' : '') . '></td></tr>';
-        }
-
+        // Full day
+        print '<tr id="jqfullday"><td>' . $langs->trans("EventOnFullDay") . '</td><td><input type="checkbox" id="fullday" name="fullday" ' . (GETPOST('fullday') ? ' checked="checked"' : '') . '></td></tr>';
 
         // Date start
-        print '<tr><td nowrap="nowrap" class="fieldrequired">' . ($object->type == 2 ? $langs->trans("DateEchAction") : $langs->trans("DateActionStart")) . '</td><td colspan="3">';
+        $datep = $object->datep;
+        if (GETPOST('datep', 'int', 1))
+            $datep = dol_stringtotime(GETPOST('datep', 'int', 1), 0);
+        print '<tr><td width="30%" nowrap="nowrap"><span class="fieldrequired" id="jqech">' . $langs->trans("DateEchAction") . '</span><span class="fieldrequired" id="jqstart">' . $langs->trans("DateActionStart") . '</span></td><td>';
         if (GETPOST("afaire") == 1)
-            $form->select_date($object->datep, 'ap', 1, 1, 0, "action", 1, 1, 0, 0, 'fulldaystart');
+            $form->select_date($datep, 'ap', 1, 1, 0, "action", 1, 1, 0, 0, 'fulldayend');
         else if (GETPOST("afaire") == 2)
-            $form->select_date($object->datep, 'ap', 1, 1, 1, "action", 1, 1, 0, 0, 'fulldaystart');
-        //else if ($object->type==2) //ACTION
-        //    $html->select_date($object->datep,'ap',0,0,1,"action",1,1,0,0,'fulldaystart');
-        //else
-        $form->select_date($object->datep, 'ap', 1, 1, 1, "action", 1, 1, 0, 0, 'fulldaystart');
+            $form->select_date($datep, 'ap', 1, 1, 1, "action", 1, 1, 0, 0, 'fulldayend');
+        //  $html->select_date($datep,'ap',0,0,1,"action",1,1,0,0,'fulldaystart');
+        $form->select_date($datep, 'ap', 1, 1, 0, "action", 1, 1, 0, 0, 'fulldaystart');
         print '</td></tr>';
 
-        if ($object->type == 1) { //RDV
-            // Date end
-            print '<tr><td>' . $langs->trans("DateActionEnd") . '</td><td colspan="3">';
-            if (GETPOST("afaire") == 1)
-                $form->select_date($object->datef, 'p2', 1, 1, 1, "action", 1, 1, 0, 0, 'fulldayend');
-            else if (GETPOST("afaire") == 2)
-                $form->select_date($object->datef, 'p2', 1, 1, 1, "action", 1, 1, 0, 0, 'fulldayend');
-            else
-                $form->select_date($object->datef, 'p2', 1, 1, 1, "action", 1, 1, 0, 0, 'fulldayend');
-            print '</td></tr>';
-        }
-        else {
-            // duration task
-            print '<tr id="jqduration"><td>' . $langs->trans("Duration") . '</td><td colspan="3"><input type="text" name="duration" size="3" value="' . ($object->durationp / 3600) . '"></td></tr>';
-        }
+        // Date end
+        $datef = $object->datef;
+        if (GETPOST('datef', 'int', 1))
+            $datef = dol_stringtotime(GETPOST('datef', 'int', 1), 0);
+        print '<tr id="jqend"><td>' . $langs->trans("DateActionEnd") . '</td><td>';
+        if (GETPOST("afaire") == 1)
+            $form->select_date($datef, 'p2', 1, 1, 1, "action", 1, 1, 0, 0, 'fulldayend');
+        else if (GETPOST("afaire") == 2)
+            $form->select_date($datef, 'p2', 1, 1, 1, "action", 1, 1, 0, 0, 'fulldayend');
+        else
+            $form->select_date($datef, 'p2', 1, 1, 0, "action", 1, 1, 0, 0, 'fulldayend');
+        print '</td></tr>';
+
+        // duration task
+        print '<tr id="jqduration"><td>' . $langs->trans("Duration") . '</td><td colspan="3"><input type="text" name="duration" size="3" value="' . (empty($object->durationp) ? 1 : $object->durationp / 3600) . '"></td></tr>';
 
         // Status
         print '<tr><td nowrap>' . $langs->trans("Status") . ' / ' . $langs->trans("Percentage") . '</td><td colspan="3">';
@@ -873,7 +942,7 @@ if ($id) {
         print $htmlactions->form_select_status_action('formaction', $percent, 1);
         print '</td></tr>';
 
-        if ($object->type == 1) { //RDV
+        if ($object->type_code == "AC_RDV") { //RDV
             // Location
             print '<tr><td>' . $langs->trans("Location") . '</td><td colspan="3"><input type="text" name="location" size="50" value="' . $object->location . '"></td></tr>';
         }
@@ -883,17 +952,17 @@ if ($id) {
         // Input by
         $var = false;
         print '<tr><td width="30%" nowrap="nowrap">' . $langs->trans("ActionAskedBy") . '</td><td colspan="3">';
-        print $object->author->getNomUrl(1);
+        print $object->author;
         print '</td></tr>';
 
         // Affected to
         print '<tr><td nowrap="nowrap">' . $langs->trans("ActionAffectedTo") . '</td><td colspan="3">';
-        print $form->select_dolusers($object->usertodo->id > 0 ? $object->usertodo->id : -1, 'affectedto', 1);
+        print $form->select_dolusers($object->usertodo ? $object->usertodo : -1, 'affectedto', 1);
         print '</td></tr>';
 
         // Realised by
         print '<tr><td nowrap="nowrap">' . $langs->trans("ActionDoneBy") . '</td><td colspan="3">';
-        print $form->select_dolusers($object->userdone->id > 0 ? $object->userdone->id : -1, 'doneby', 1);
+        print $form->select_dolusers($object->userdone ? $object->userdone : -1, 'doneby', 1);
         print '</td></tr>';
 
         print '</table><br><br>';
@@ -908,7 +977,7 @@ if ($id) {
 
         // Contact
         print '<td>' . $langs->trans("Contact") . '</td><td width="30%">';
-        print $form->selectarray("contactid", (empty($object->societe->id) ? array() : $object->societe->contact_array()), $object->contact->id, 1);
+        //print $form->selectarray("contactid", (empty($object->societe->id) ? array() : $object->societe->contact_array()), $object->contact->id, 1);
         print '</td></tr>';
 
         // Lead
@@ -973,7 +1042,7 @@ if ($id) {
         print '</td></tr>';
 
         // Type
-        print '<tr><td>' . $langs->trans("Type") . '</td><td colspan="3">' . $object->type . '</td></tr>';
+        print '<tr><td>' . $langs->trans("Type") . '</td><td colspan="3">' . $object->getType() . '</td></tr>';
 
         // Title
         print '<tr><td>' . $langs->trans("Title") . '</td><td colspan="3">' . $object->label . '</td></tr>';
@@ -1054,33 +1123,30 @@ if ($id) {
         // Input by
         $var = false;
         print '<tr><td width="30%" nowrap="nowrap">' . $langs->trans("ActionAskedBy") . '</td><td colspan="3">';
-        if ($object->author->id > 0)
-            print $object->author->getNomUrl(1);
-        else
-            print '&nbsp;';
+        print $object->author;
         print '</td></tr>';
 
         // Affecte a
         print '<tr><td nowrap="nowrap">' . $langs->trans("ActionAffectedTo") . '</td><td colspan="3">';
-        if ($object->usertodo->id > 0)
-            print $object->usertodo->getNomUrl(1);
+        print $object->usertodo;
         print '</td></tr>';
 
         // Done by
         print '<tr><td nowrap="nowrap">' . $langs->trans("ActionDoneBy") . '</td><td colspan="3">';
-        if ($object->userdone->id > 0)
-            print $object->userdone->getNomUrl(1);
+        print $object->userdone;
         print '</td></tr>';
 
         print '</table><br><br><table class="border" width="100%">';
 
         // Third party - Contact
-        print '<tr><td width="30%">' . $langs->trans("ActionOnCompany") . '</td><td>' . ($object->societe->id ? $object->societe->getNomUrl(1) : $langs->trans("None"));
-        if ($object->societe->id && $object->type_code == 'AC_TEL') {
-            if ($object->societe->fetch($object->societe->id)) {
-                print "<br>" . dol_print_phone($object->societe->tel);
-            }
-        }
+        print '<tr><td width="30%">' . $langs->trans("ActionOnCompany") . '</td><td>' . /* ($object->societe->id ? $object->societe->getNomUrl(1) : $langs->trans("None")) */ "";
+        /*
+          if ($object->societe->id && $object->type_code == 'AC_TEL') {
+          if ($object->societe->fetch($object->societe->id)) {
+          print "<br>" . dol_print_phone($object->societe->tel);
+          }
+          } */
+        print $object->societe->name;
         print '</td>';
         print '<td>' . $langs->trans("Contact") . '</td>';
         print '<td>';
@@ -1156,10 +1222,10 @@ if ($id) {
 
         if ($user->rights->agenda->allactions->create ||
                 (($object->author->id == $user->id || $object->usertodo->id == $user->id) && $user->rights->agenda->myactions->create)) {
-            print '<a class="butAction" href="'.$_SERVER['PHP_SELF'].'?action=create&fk_task=' . $object->id . ($object->socid ? "&socid=" . $object->socid : "") . ($object->contact->id ? "&contactid=" . $object->contact->id : "") . ($object->fk_lead ? "&leadid=" . $object->fk_lead : "") . ($object->fk_project ? "&projectid=" . $object->fk_project : "") . "&backtopage=" . DOL_URL_ROOT . '/comm/action/fiche.php?id=' . $object->id . '">' . $langs->trans("AddAction") . '</a>';
-            print '<a class="butAction" href="'.$_SERVER['PHP_SELF'].'?action=edit&id=' . $object->id . '">' . $langs->trans("Modify") . '</a>';
+            print '<a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?action=create&fk_task=' . $object->id . ($object->socid ? "&socid=" . $object->socid : "") . ($object->contact->id ? "&contactid=" . $object->contact->id : "") . ($object->fk_lead ? "&leadid=" . $object->fk_lead : "") . ($object->fk_project ? "&projectid=" . $object->fk_project : "") . "&backtopage=" . DOL_URL_ROOT . '/comm/action/fiche.php?id=' . $object->id . '">' . $langs->trans("AddAction") . '</a>';
+            print '<a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?action=edit&id=' . $object->id . '">' . $langs->trans("Modify") . '</a>';
             if ($object->percentage < 100)
-                print '<a class="butAction" href="'.$_SERVER['PHP_SELF'].'?action=close&id=' . $object->id . '">' . $langs->trans("Close") . '</a>';
+                print '<a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?action=close&id=' . $object->id . '">' . $langs->trans("Close") . '</a>';
             else
                 print '<a class="butActionRefused" href="#" title="' . $langs->trans("NotAllowed") . '">' . $langs->trans("Close") . '</a>';
         }
@@ -1171,7 +1237,7 @@ if ($id) {
 
         if ($user->rights->agenda->allactions->delete ||
                 (($object->author->id == $user->id || $object->usertodo->id == $user->id) && $user->rights->agenda->myactions->delete)) {
-            print '<a class="butActionDelete" href="'.$_SERVER['PHP_SELF'].'?action=delete&id=' . $object->id . '">' . $langs->trans("Delete") . '</a>';
+            print '<a class="butActionDelete" href="' . $_SERVER['PHP_SELF'] . '?action=delete&id=' . $object->id . '">' . $langs->trans("Delete") . '</a>';
         } else {
             print '<a class="butActionRefused" href="#" title="' . $langs->trans("NotAllowed") . '">' . $langs->trans("Delete") . '</a>';
         }
@@ -1198,6 +1264,7 @@ if ($id) {
     }
 }
 
+print "</div>";
 print "</div>";
 
 $db->close();

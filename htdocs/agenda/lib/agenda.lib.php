@@ -1,4 +1,5 @@
 <?php
+
 /* Copyright (C) 2008-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2011	   Juanjo Menent        <jmenent@2byte.es>
@@ -24,7 +25,6 @@
  *  \brief		Set of function for the agenda module
  */
 
-
 /**
  * Show filter form in agenda view
  *
@@ -43,126 +43,201 @@
  * @param	array	$showextcals	Array with list of external calendars, or -1 to show no legend
  * @return	void
  */
-function print_actions_filter($form,$canedit,$status,$year,$month,$day,$showbirthday,$filtera,$filtert,$filterd,$pid,$socid,$showextcals=array())
-{
-	global $conf,$langs,$db;
+function print_actions_filter($form, $canedit, $status, $year, $month, $day, $showbirthday, $filtera, $filtert, $filterd, $pid, $socid, $showextcals = array()) {
+    global $conf, $langs, $db;
 
-	// Filters
-	if ($canedit || $conf->projet->enabled)
-	{
-		print '<form name="listactionsfilter" class="listactionsfilter" action="'.$_SERVER["PHP_SELF"].'" method="POST">';
-		print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-		print '<input type="hidden" name="status" value="'.$status.'">';
-		print '<input type="hidden" name="year" value="'.$year.'">';
-		print '<input type="hidden" name="month" value="'.$month.'">';
-		print '<input type="hidden" name="day" value="'.$day.'">';
-		print '<input type="hidden" name="showbirthday" value="'.$showbirthday.'">';
-		print '<table class="nobordernopadding" width="100%">';
-		if ($canedit || $conf->projet->enabled)
-		{
-			print '<tr><td nowrap="nowrap">';
+    // Filters
+    if ($canedit || $conf->projet->enabled) {
+        print '<form name="listactionsfilter" class="listactionsfilter" action="' . $_SERVER["PHP_SELF"] . '" method="POST">';
+        print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
+        print '<input type="hidden" name="status" value="' . $status . '">';
+        print '<input type="hidden" name="year" value="' . $year . '">';
+        print '<input type="hidden" name="month" value="' . $month . '">';
+        print '<input type="hidden" name="day" value="' . $day . '">';
+        print '<input type="hidden" name="showbirthday" value="' . $showbirthday . '">';
+        print '<table class="nobordernopadding" width="100%">';
+        if ($canedit || $conf->projet->enabled) {
+            print '<tr><td nowrap="nowrap">';
 
-			print '<table class="nobordernopadding">';
+            print '<table class="nobordernopadding">';
 
-			if ($canedit)
-			{
-				print '<tr>';
-				print '<td nowrap="nowrap">';
-				print $langs->trans("ActionsAskedBy");
-				print ' &nbsp;</td><td nowrap="nowrap">';
-				print $form->select_dolusers($filtera,'userasked',1,'',!$canedit);
-				print '</td>';
-				print '</tr>';
+            if ($canedit) {
+                print '<tr>';
+                print '<td nowrap="nowrap">';
+                print $langs->trans("ActionsAskedBy");
+                print ' &nbsp;</td><td nowrap="nowrap">';
+                print $form->select_dolusers($filtera, 'userasked', 1, '', !$canedit);
+                print '</td>';
+                print '</tr>';
 
-				print '<tr>';
-				print '<td nowrap="nowrap">';
-				print $langs->trans("or").' '.$langs->trans("ActionsToDoBy");
-				print ' &nbsp;</td><td nowrap="nowrap">';
-				print $form->select_dolusers($filtert,'usertodo',1,'',!$canedit);
-				print '</td></tr>';
+                print '<tr>';
+                print '<td nowrap="nowrap">';
+                print $langs->trans("or") . ' ' . $langs->trans("ActionsToDoBy");
+                print ' &nbsp;</td><td nowrap="nowrap">';
+                print $form->select_dolusers($filtert, 'usertodo', 1, '', !$canedit);
+                print '</td></tr>';
 
-				print '<tr>';
-				print '<td nowrap="nowrap">';
-				print $langs->trans("or").' '.$langs->trans("ActionsDoneBy");
-				print ' &nbsp;</td><td nowrap="nowrap">';
-				print $form->select_dolusers($filterd,'userdone',1,'',!$canedit);
-				print '</td></tr>';
+                print '<tr>';
+                print '<td nowrap="nowrap">';
+                print $langs->trans("or") . ' ' . $langs->trans("ActionsDoneBy");
+                print ' &nbsp;</td><td nowrap="nowrap">';
+                print $form->select_dolusers($filterd, 'userdone', 1, '', !$canedit);
+                print '</td></tr>';
 
-				include_once(DOL_DOCUMENT_ROOT.'/core/class/html.formactions.class.php');
-				$formactions=new FormActions($db);
-				print '<tr>';
-				print '<td nowrap="nowrap">';
-				print $langs->trans("Type");
-				print ' &nbsp;</td><td nowrap="nowrap">';
-				print $formactions->select_type_actions(GETPOST('actioncode'), "actioncode");
-				print '</td></tr>';
-			}
+                include_once(DOL_DOCUMENT_ROOT . '/core/class/html.formactions.class.php');
+                $formactions = new FormActions($db);
+                print '<tr>';
+                print '<td nowrap="nowrap">';
+                print $langs->trans("Type");
+                print ' &nbsp;</td><td nowrap="nowrap">';
+                print $formactions->select_type_actions(GETPOST('actioncode'), "actioncode");
+                print '</td></tr>';
+            }
 
-			if ($conf->projet->enabled)
-			{
-				print '<tr>';
-				print '<td nowrap="nowrap">';
-				print $langs->trans("Project").' &nbsp; ';
-				print '</td><td nowrap="nowrap">';
-				select_projects($socid?$socid:-1, $pid, 'projectid', 64);
-				print '</td></tr>';
-			}
+            if ($conf->projet->enabled) {
+                print '<tr>';
+                print '<td nowrap="nowrap">';
+                print $langs->trans("Project") . ' &nbsp; ';
+                print '</td><td nowrap="nowrap">';
+                select_projects($socid ? $socid : -1, $pid, 'projectid', 64);
+                print '</td></tr>';
+            }
 
-			print '</table>';
-			print '</td>';
+            print '</table>';
+            print '</td>';
 
-			// Buttons
-			print '<td align="center" valign="middle" nowrap="nowrap">';
-			print img_picto($langs->trans("ViewCal"),'object_calendar').' <input type="submit" class="button" style="width:120px" name="viewcal" value="'.$langs->trans("ViewCal").'">';
-			print '<br>';
-			print img_picto($langs->trans("ViewWeek"),'object_calendarweek').' <input type="submit" class="button" style="width:120px" name="viewweek" value="'.$langs->trans("ViewWeek").'">';
-			print '<br>';
-            print img_picto($langs->trans("ViewDay"),'object_calendarday').' <input type="submit" class="button" style="width:120px" name="viewday" value="'.$langs->trans("ViewDay").'">';
-			print '<br>';
-			print img_picto($langs->trans("ViewList"),'object_list').' <input type="submit" class="button" style="width:120px" name="viewlist" value="'.$langs->trans("ViewList").'">';
-			print '</td>';
+            // Buttons
+            print '<td align="center" valign="middle" nowrap="nowrap">';
+            print img_picto($langs->trans("ViewCal"), 'object_calendar') . ' <input type="submit" class="button" style="width:120px" name="viewcal" value="' . $langs->trans("ViewCal") . '">';
+            print '<br>';
+            print img_picto($langs->trans("ViewWeek"), 'object_calendarweek') . ' <input type="submit" class="button" style="width:120px" name="viewweek" value="' . $langs->trans("ViewWeek") . '">';
+            print '<br>';
+            print img_picto($langs->trans("ViewDay"), 'object_calendarday') . ' <input type="submit" class="button" style="width:120px" name="viewday" value="' . $langs->trans("ViewDay") . '">';
+            print '<br>';
+            print img_picto($langs->trans("ViewList"), 'object_list') . ' <input type="submit" class="button" style="width:120px" name="viewlist" value="' . $langs->trans("ViewList") . '">';
+            print '</td>';
 
-			// Legend
-			if ($conf->use_javascript_ajax && is_array($showextcals))
-			{
-    			print '<td align="center" valign="middle" nowrap="nowrap">';
-                print '<script type="text/javascript">'."\n";
-                print 'jQuery(document).ready(function () {'."\n";
-                print 'jQuery("#check_mytasks").click(function() { jQuery(".family_mytasks").toggle(); jQuery(".family_other").toggle(); });'."\n";
-                print 'jQuery("#check_birthday").click(function() { jQuery(".family_birthday").toggle(); });'."\n";
-                print 'jQuery(".family_birthday").toggle();'."\n";
-                print '});'."\n";
-                print '</script>'."\n";
+            // Legend
+            if ($conf->use_javascript_ajax && is_array($showextcals)) {
+                print '<td align="center" valign="middle" nowrap="nowrap">';
+                print '<script type="text/javascript">' . "\n";
+                print 'jQuery(document).ready(function () {' . "\n";
+                print 'jQuery("#check_mytasks").click(function() { jQuery(".family_mytasks").toggle(); jQuery(".family_other").toggle(); });' . "\n";
+                print 'jQuery("#check_birthday").click(function() { jQuery(".family_birthday").toggle(); });' . "\n";
+                print 'jQuery(".family_birthday").toggle();' . "\n";
+                print '});' . "\n";
+                print '</script>' . "\n";
                 print '<table>';
-                if (! empty($conf->global->MAIN_JS_SWITCH_AGENDA))
-                {
-                    if (count($showextcals) > 0)
-                    {
-                        print '<tr><td><input type="checkbox" id="check_mytasks" name="check_mytasks" checked="true" disabled="disabled"> '.$langs->trans("LocalAgenda").'</td></tr>';
-                        foreach($showextcals as $val)
-                        {
-                            $htmlname=dol_string_nospecial($val['name']);
-                            print '<script type="text/javascript">'."\n";
-                            print 'jQuery(document).ready(function () {'."\n";
-                            print 'jQuery("#check_'.$htmlname.'").click(function() { jQuery(".family_'.$htmlname.'").toggle(); });'."\n";
-                            print '});'."\n";
-                            print '</script>'."\n";
-                            print '<tr><td><input type="checkbox" id="check_'.$htmlname.'" name="check_'.$htmlname.'" checked="true"> '.$val['name'].'</td></tr>';
+                if (!empty($conf->global->MAIN_JS_SWITCH_AGENDA)) {
+                    if (count($showextcals) > 0) {
+                        print '<tr><td><input type="checkbox" id="check_mytasks" name="check_mytasks" checked="true" disabled="disabled"> ' . $langs->trans("LocalAgenda") . '</td></tr>';
+                        foreach ($showextcals as $val) {
+                            $htmlname = dol_string_nospecial($val['name']);
+                            print '<script type="text/javascript">' . "\n";
+                            print 'jQuery(document).ready(function () {' . "\n";
+                            print 'jQuery("#check_' . $htmlname . '").click(function() { jQuery(".family_' . $htmlname . '").toggle(); });' . "\n";
+                            print '});' . "\n";
+                            print '</script>' . "\n";
+                            print '<tr><td><input type="checkbox" id="check_' . $htmlname . '" name="check_' . $htmlname . '" checked="true"> ' . $val['name'] . '</td></tr>';
                         }
                     }
                 }
-                print '<tr><td><input type="checkbox" id="check_birthday" name="check_birthday checked="false"> '.$langs->trans("AgendaShowBirthdayEvents").'</td></tr>';
+                print '<tr><td><input type="checkbox" id="check_birthday" name="check_birthday checked="false"> ' . $langs->trans("AgendaShowBirthdayEvents") . '</td></tr>';
                 print '</table>';
                 print '</td>';
-			}
+            }
 
-			print '</tr>';
-		}
-		print '</table>';
-		print '</form>';
-	}
+            print '</tr>';
+        }
+        print '</table>';
+        print '</form>';
+    }
 }
 
+function show_array_actions_to_do($max = 5, $fk_task = 0) {
+    global $langs, $conf, $user, $db, $bc, $socid;
+    $titre = $langs->trans("ActionsToDo");
+    print start_box($titre, "twelve", "16-Mail.png");
+
+    $i = 0;
+    $obj = new stdClass();
+    $object = new Agenda($db);
+    print '<table class="display dt_act" id="actionsToDo_datatable" >';
+    // Ligne des titres
+
+    print '<thead>';
+    print'<tr>';
+    print'<th>';
+    print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "_id";
+    $obj->aoColumns[$i]->bUseRendered = false;
+    $obj->aoColumns[$i]->bSearchable = false;
+    $obj->aoColumns[$i]->bVisible = false;
+    $i++;
+    print'<th class="essential">';
+    print $langs->trans("Titre");
+    print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "label";
+    $obj->aoColumns[$i]->bUseRendered = false;
+    $obj->aoColumns[$i]->bSearchable = true;
+    $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("label", "url");
+    $i++;
+    print'<th class="essential">';
+    print $langs->trans('DateEchAction');
+    print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "datef";
+    $obj->aoColumns[$i]->sClass = "center";
+    $obj->aoColumns[$i]->sDefaultContent = "";
+    $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("datef", "datetime");
+//$obj->aoColumns[$i]->sClass = "edit";
+    $i++;
+    print'<th class="essential">';
+    print $langs->trans('Company');
+    print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "societe.name";
+    $obj->aoColumns[$i]->sDefaultContent = "";
+//$obj->aoColumns[$i]->sClass = "edit";
+    $i++;
+    print'<th class="essential">';
+    print $langs->trans('AffectedTo');
+    print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "usertodo";
+    $obj->aoColumns[$i]->sDefaultContent = "";
+    $i++;
+    print'<th class="essential">';
+    print $langs->trans("Status");
+    print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "Status";
+    $obj->aoColumns[$i]->sClass = "dol_select center";
+    $obj->aoColumns[$i]->sDefaultContent = "0";
+    $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("status", "status", array("dateEnd" => "last_subscription_date_end"));
+    $i++;
+    print '</tr>';
+    print '</thead>';
+    print'<tfoot>';
+    print'</tfoot>';
+    print'<tbody>';
+    $result = $object->getView('actionsToDo');
+    if (count($result->rows) > 0)
+        foreach ($result->rows as $key => $aRow) {
+            print '<tr>';
+            print'<td></td>';
+            print '<td>' . $aRow->value->label . '</td>';
+            print '<td>' . $aRow->value->datef . '</td>';
+            print '<td>' . $aRow->value->societe->name . '</td>';
+            print '<td>' . $aRow->value->usertodo . '</td>';
+            print '<td>' . $aRow->value->status . '</td>';
+            print '</tr>';
+        }
+    print'</tbody>';
+    print "</table>";
+
+    $obj->bServerSide = false;
+    $obj->iDisplayLength = 10;
+    $object->datatablesCreate($obj, "actionsToDo_datatable");
+
+    print end_box();
+}
 
 /**
  *  Show actions to do array
@@ -170,101 +245,191 @@ function print_actions_filter($form,$canedit,$status,$year,$month,$day,$showbirt
  *  @param	int		$max		Max nb of records
  *  @return	void
  */
-function show_array_actions_to_do($max=5, $fk_task=0)
-{
-	global $langs, $conf, $user, $db, $bc, $socid;
+/*
+  function show_array_actions_to_do($max = 5, $fk_task = 0) {
+  global $langs, $conf, $user, $db, $bc, $socid;
 
-	$now=dol_now();
+  $now = dol_now();
 
-	include_once(DOL_DOCUMENT_ROOT.'/comm/action/class/actioncomm.class.php');
-	include_once(DOL_DOCUMENT_ROOT.'/societe/class/client.class.php');
+  include_once(DOL_DOCUMENT_ROOT . '/agenda/class/agenda.class.php');
+  include_once(DOL_DOCUMENT_ROOT . '/societe/class/client.class.php');
 
-	$sql = "SELECT a.id, a.label, a.datep as dp, a.fk_user_author, a.percent,a.note,";
-	$sql.= " c.code, c.libelle,c.type,";
-	$sql.= " s.nom as sname, s.rowid, s.client";
-	$sql.= " FROM ".MAIN_DB_PREFIX."actioncomm as a";
-	$sql.= ", ".MAIN_DB_PREFIX."c_actioncomm as c";
-	$sql.= ", ".MAIN_DB_PREFIX."societe as s";
-	if (!$user->rights->societe->client->voir && !$socid) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
-	$sql.= ")";
-    $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."societe as s ON a.fk_soc = s.rowid";
-	$sql.= " WHERE c.id = a.fk_action";
-	$sql.= " AND a.percent < 100";
-	$sql.= " AND s.rowid = a.fk_soc";
-	$sql.= " AND s.entity = ".$conf->entity;
-        if ($fk_task) $sql.= " AND a.fk_task = ".$fk_task;
-	if (!$user->rights->societe->client->voir && !$socid) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
-	if ($socid) $sql.= " AND s.rowid = ".$socid;
-	$sql.= " ORDER BY a.datep DESC, a.id DESC";
-	$sql.= $db->plimit($max, 0);
+  $sql = "SELECT a.id, a.label, a.datep as dp, a.fk_user_author, a.percent,a.note,";
+  $sql.= " c.code, c.libelle,c.type,";
+  $sql.= " s.nom as sname, s.rowid, s.client";
+  $sql.= " FROM " . MAIN_DB_PREFIX . "actioncomm as a";
+  $sql.= ", " . MAIN_DB_PREFIX . "c_actioncomm as c";
+  $sql.= ", " . MAIN_DB_PREFIX . "societe as s";
+  if (!$user->rights->societe->client->voir && !$socid)
+  $sql.= ", " . MAIN_DB_PREFIX . "societe_commerciaux as sc";
+  $sql.= ")";
+  $sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "societe as s ON a.fk_soc = s.rowid";
+  $sql.= " WHERE c.id = a.fk_action";
+  $sql.= " AND a.percent < 100";
+  $sql.= " AND s.rowid = a.fk_soc";
+  $sql.= " AND s.entity = " . $conf->entity;
+  if ($fk_task)
+  $sql.= " AND a.fk_task = " . $fk_task;
+  if (!$user->rights->societe->client->voir && !$socid)
+  $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " . $user->id;
+  if ($socid)
+  $sql.= " AND s.rowid = " . $socid;
+  $sql.= " ORDER BY a.datep DESC, a.id DESC";
+  $sql.= $db->plimit($max, 0);
 
-	$resql=$db->query($sql);
-	if ($resql)
-	{
-	    $num = $db->num_rows($resql);
-	    if ($num > 0)
-	    {
-	        print '<table class="noborder" width="100%">';
-	        print '<tr class="liste_titre"><td colspan="3">'.$langs->trans("LastActionsToDo",$max).($fk_task?" ".$langs->trans("LinkToThisTask"):'').'</td>';
-			print '<td colspan="2" align="right"><a href="'.DOL_URL_ROOT.'/comm/action/listactions.php?status=todo">'.$langs->trans("FullList").'</a>';
-			print '</tr>';
-	        $var = true;
-	        $i = 0;
+  $resql = $db->query($sql);
+  if ($resql) {
+  $num = $db->num_rows($resql);
+  if ($num > 0) {
+  print '<table class="noborder" width="100%">';
+  print '<tr class="liste_titre"><td colspan="3">' . $langs->trans("LastActionsToDo", $max) . ($fk_task ? " " . $langs->trans("LinkToThisTask") : '') . '</td>';
+  print '<td colspan="2" align="right"><a href="' . DOL_URL_ROOT . '/comm/action/listactions.php?status=todo">' . $langs->trans("FullList") . '</a>';
+  print '</tr>';
+  $var = true;
+  $i = 0;
 
-		    $staticaction=new ActionComm($db);
-	        $customerstatic=new Client($db);
+  $staticaction = new Agenda($db);
+  $customerstatic = new Client($db);
 
-	        while ($i < $num)
-	        {
-	            $obj = $db->fetch_object($resql);
-	            $var=!$var;
+  while ($i < $num) {
+  $obj = $db->fetch_object($resql);
+  $var = !$var;
 
-	            print "<tr $bc[$var]>";
+  print "<tr $bc[$var]>";
 
-	            $staticaction->type_code=$obj->code;
-	            $staticaction->libelle=$obj->libelle;
-	            $staticaction->id=$obj->id;
-                    $staticaction->type=$obj->type;
-                    $staticaction->note=$obj->note;
-	            print '<td>'.$staticaction->getNomUrl(1,16).'</td>';
+  $staticaction->type_code = $obj->code;
+  $staticaction->libelle = $obj->libelle;
+  $staticaction->id = $obj->id;
+  $staticaction->type = $obj->type;
+  $staticaction->note = $obj->note;
+  print '<td>' . $staticaction->getNomUrl(1, 16) . '</td>';
 
-	            print '<td>'.dol_trunc($obj->label,22).'</td>';
+  print '<td>' . dol_trunc($obj->label, 22) . '</td>';
 
-	            $customerstatic->id=$obj->rowid;
-	            $customerstatic->nom=$obj->sname;
-	            $customerstatic->client=$obj->client;
-	            print '<td>'.$customerstatic->getNomUrl(1,'',24).'</td>';
+  $customerstatic->id = $obj->rowid;
+  $customerstatic->nom = $obj->sname;
+  $customerstatic->client = $obj->client;
+  print '<td>' . $customerstatic->getNomUrl(1, '', 24) . '</td>';
 
-	            $datep=$db->jdate($obj->dp);
-	            $datep2=$db->jdate($obj->dp2);
+  $datep = $db->jdate($obj->dp);
+  $datep2 = $db->jdate($obj->dp2);
 
-	            // Date
-				print '<td width="100" align="right">'.dol_print_date($datep,'day').'&nbsp;';
-				$late=0;
-				if ($obj->percent <= 0 && $datep && $datep < time()) $late=1;
-				if ($obj->percent == 0 && ! $datep && $datep2 && $datep2 < time()) $late=1;
-				if ($obj->percent > 0 && $obj->percent < 100 && $datep2 && $datep2 < time()) $late=1;
-				if ($obj->percent > 0 && $obj->percent < 100 && ! $datep2 && $datep && $datep < time()) $late=1;
-				if ($late) print img_warning($langs->trans("Late"));
-				print "</td>";
+  // Date
+  print '<td width="100" align="right">' . dol_print_date($datep, 'day') . '&nbsp;';
+  $late = 0;
+  if ($obj->percent <= 0 && $datep && $datep < time())
+  $late = 1;
+  if ($obj->percent == 0 && !$datep && $datep2 && $datep2 < time())
+  $late = 1;
+  if ($obj->percent > 0 && $obj->percent < 100 && $datep2 && $datep2 < time())
+  $late = 1;
+  if ($obj->percent > 0 && $obj->percent < 100 && !$datep2 && $datep && $datep < time())
+  $late = 1;
+  if ($late)
+  print img_warning($langs->trans("Late"));
+  print "</td>";
 
-				// Statut
-				print '<td align="right" width="14">'.$staticaction->LibStatut($obj->percent,3).'</td>';
+  // Statut
+  print '<td align="right" width="14">' . $staticaction->LibStatut($obj->percent, 3) . '</td>';
 
-				print "</tr>\n";
+  print "</tr>\n";
 
-	            $i++;
-	        }
-	        print "</table><br>";
-	    }
-	    $db->free($resql);
-	}
-	else
-	{
-	    dol_print_error($db);
-	}
+  $i++;
+  }
+  print "</table><br>";
+  }
+  $db->free($resql);
+  }
+  else {
+  dol_print_error($db);
+  }
+  }
+ * 
+ */
+
+function show_array_last_actions_done($max = 5, $fk_task = 0) {
+    global $langs, $conf, $user, $db, $bc, $socid;
+    $titre = $langs->trans("ActionsDone");
+    print start_box($titre, "twelve", "16-Mail.png");
+
+    $i = 0;
+    $obj = new stdClass();
+    $object = new Agenda($db);
+    print '<table class="display dt_act" id="actionsDone_datatable" >';
+    // Ligne des titres
+
+    print '<thead>';
+    print'<tr>';
+    print'<th>';
+    print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "_id";
+    $obj->aoColumns[$i]->bUseRendered = false;
+    $obj->aoColumns[$i]->bSearchable = false;
+    $obj->aoColumns[$i]->bVisible = false;
+    $i++;
+    print'<th class="essential">';
+    print $langs->trans("Titre");
+    print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "label";
+    $obj->aoColumns[$i]->bUseRendered = false;
+    $obj->aoColumns[$i]->bSearchable = true;
+    $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("label", "url");
+    $i++;
+    print'<th class="essential">';
+    print $langs->trans('DateEchAction');
+    print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "datef";
+    $obj->aoColumns[$i]->sClass = "center";
+    $obj->aoColumns[$i]->sDefaultContent = "";
+    $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("datef", "date");
+//$obj->aoColumns[$i]->sClass = "edit";
+    $i++;
+    print'<th class="essential">';
+    print $langs->trans('Company');
+    print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "societe.name";
+    $obj->aoColumns[$i]->sDefaultContent = "";
+//$obj->aoColumns[$i]->sClass = "edit";
+    $i++;
+    print'<th class="essential">';
+    print $langs->trans('AffectedTo');
+    print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "usertodo";
+    $obj->aoColumns[$i]->sDefaultContent = "";
+    $i++;
+    print'<th class="essential">';
+    print $langs->trans("Status");
+    print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "status";
+    $obj->aoColumns[$i]->sClass = "dol_select center";
+    $obj->aoColumns[$i]->sDefaultContent = "0";
+    $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("status", "status", array("dateEnd" => "last_subscription_date_end"));
+    $i++;
+    print '</tr>';
+    print '</thead>';
+    print'<tfoot>';
+    print'</tfoot>';
+    print'<tbody>';
+    $result = $object->getView('actionsDone');
+    if (count($result->rows) > 0)
+        foreach ($result->rows as $key => $aRow) {
+            print '<tr>';
+            print'<td></td>';
+            print '<td>' . $aRow->value->label . '</td>';
+            print '<td>' . $aRow->value->datef . '</td>';
+            print '<td>' . $aRow->value->societe->ThirdPartyName . '</td>';
+            print '<td>' . $aRow->value->usertodo . '</td>';
+            print '<td>' . $aRow->value->status . '</td>';
+            print '</tr>';
+        }
+    print'</tbody>';
+    print "</table>";
+
+    $obj->bServerSide = false;
+    $obj->iDisplayLength = 10;
+    $object->datatablesCreate($obj, "actionsDone_datatable");
+    print end_box();
 }
-
 
 /**
  *  Show last actions array
@@ -272,116 +437,114 @@ function show_array_actions_to_do($max=5, $fk_task=0)
  *  @param	int		$max		Max nb of records
  *  @return	void
  */
-function show_array_last_actions_done($max=5)
-{
-	global $langs, $conf, $user, $db, $bc, $socid;
+/*
+  function show_array_last_actions_done($max = 5) {
+  global $langs, $conf, $user, $db, $bc, $socid;
 
-	$sql = "SELECT a.id, a.percent, a.datep as da, a.datep2 as da2, a.fk_user_author, a.label, a.note,";
-	$sql.= " c.code, c.libelle, c.type,";
-	$sql.= " s.rowid, s.nom as sname, s.client";
-	$sql.= " FROM ".MAIN_DB_PREFIX."actioncomm as a";
-	$sql.= ", ".MAIN_DB_PREFIX."c_actioncomm as c";
-	$sql.= ", ".MAIN_DB_PREFIX."societe as s";
-	if (!$user->rights->societe->client->voir && !$socid) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
-	$sql.= " WHERE c.id = a.fk_action";
-	$sql.= " AND a.percent >= 100";
-	$sql.= " AND s.rowid = a.fk_soc";
-	$sql.= " AND s.entity = ".$conf->entity;
-        if ($fk_task) $sql.= " AND a.fk_task = ".$fk_task;
-	if ($socid)	$sql.= " AND s.rowid = ".$socid;
-	if (!$user->rights->societe->client->voir && !$socid) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
-	$sql .= " ORDER BY a.datep2 DESC";
-	$sql .= $db->plimit($max, 0);
+  $sql = "SELECT a.id, a.percent, a.datep as da, a.datep2 as da2, a.fk_user_author, a.label, a.note,";
+  $sql.= " c.code, c.libelle, c.type,";
+  $sql.= " s.rowid, s.nom as sname, s.client";
+  $sql.= " FROM " . MAIN_DB_PREFIX . "actioncomm as a";
+  $sql.= ", " . MAIN_DB_PREFIX . "c_actioncomm as c";
+  $sql.= ", " . MAIN_DB_PREFIX . "societe as s";
+  if (!$user->rights->societe->client->voir && !$socid)
+  $sql.= ", " . MAIN_DB_PREFIX . "societe_commerciaux as sc";
+  $sql.= " WHERE c.id = a.fk_action";
+  $sql.= " AND a.percent >= 100";
+  $sql.= " AND s.rowid = a.fk_soc";
+  $sql.= " AND s.entity = " . $conf->entity;
+  if ($fk_task)
+  $sql.= " AND a.fk_task = " . $fk_task;
+  if ($socid)
+  $sql.= " AND s.rowid = " . $socid;
+  if (!$user->rights->societe->client->voir && !$socid)
+  $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " . $user->id;
+  $sql .= " ORDER BY a.datep2 DESC";
+  $sql .= $db->plimit($max, 0);
 
-	$resql=$db->query($sql);
-	if ($resql)
-	{
-		$num = $db->num_rows($resql);
-                if ($num > 0)
-                {
+  $resql = $db->query($sql);
+  if ($resql) {
+  $num = $db->num_rows($resql);
+  if ($num > 0) {
 
-                    print '<table class="noborder" width="100%">';
-                    print '<tr class="liste_titre"><td colspan="3">'.$langs->trans("LastDoneTasks",$max).($fk_task?(" ".$langs->trans("LinkToThisTask")):"").'</td>';
-                    print '<td colspan="2" align="right"><a href="'.DOL_URL_ROOT.'/comm/action/listactions.php?status=done">'.$langs->trans("FullList").'</a>';
-                    print '</td></tr>';
-                    $var = true;
-                    $i = 0;
+  print '<table class="noborder" width="100%">';
+  print '<tr class="liste_titre"><td colspan="3">' . $langs->trans("LastDoneTasks", $max) . ($fk_task ? (" " . $langs->trans("LinkToThisTask")) : "") . '</td>';
+  print '<td colspan="2" align="right"><a href="' . DOL_URL_ROOT . '/comm/action/listactions.php?status=done">' . $langs->trans("FullList") . '</a>';
+  print '</td></tr>';
+  $var = true;
+  $i = 0;
 
-	    $staticaction=new ActionComm($db);
-	    $customerstatic=new Societe($db);
+  $object = new Agenda($db);
+  $customerstatic = new Societe($db);
 
-		while ($i < $num)
-		{
-			$obj = $db->fetch_object($resql);
-			$var=!$var;
+  while ($i < $num) {
+  $obj = $db->fetch_object($resql);
+  $var = !$var;
 
-			print '<tr '.$bc[$var].'>';
+  print '<tr ' . $bc[$var] . '>';
 
-			$staticaction->type_code=$obj->code;
-			$staticaction->libelle=$obj->label;
-			$staticaction->id=$obj->id;
-                        $staticaction->type=$obj->type;
-                        $staticaction->note=$obj->note;
-			print '<td>'.$staticaction->getNomUrl(1,16).'</td>';
+  $object->type_code = $obj->code;
+  $object->libelle = $obj->label;
+  $object->id = $obj->id;
+  $object->type = $obj->type;
+  $object->note = $obj->note;
+  print '<td>' . $object->getNomUrl(1, 16) . '</td>';
 
-                        print '<td>'.dol_trunc($obj->label,22).'</td>';
+  print '<td>' . dol_trunc($obj->label, 22) . '</td>';
 
-			$customerstatic->id=$obj->rowid;
-			$customerstatic->nom=$obj->sname;
-			$customerstatic->client=$obj->client;
-			print '<td>'.$customerstatic->getNomUrl(1,'',24).'</td>';
+  $customerstatic->id = $obj->rowid;
+  $customerstatic->nom = $obj->sname;
+  $customerstatic->client = $obj->client;
+  print '<td>' . $customerstatic->getNomUrl(1, '', 24) . '</td>';
 
-			// Date
-			print '<td width="100" align="right">'.dol_print_date($db->jdate($obj->da2),'day');
-			print "</td>";
+  // Date
+  print '<td width="100" align="right">' . dol_print_date($db->jdate($obj->da2), 'day');
+  print "</td>";
 
-			// Statut
-			print '<td align="right" width="14">'.$staticaction->LibStatut($obj->percent,3).'</td>';
+  // Statut
+  print '<td align="right" width="14">' . $object->LibStatut($obj->percent, 3) . '</td>';
 
-			print "</tr>\n";
-			$i++;
-                    }
-                    // TODO Ajouter rappel pour "il y a des contrats a mettre en service"
-                    // TODO Ajouter rappel pour "il y a des contrats qui arrivent a expiration"
-                    print "</table><br>";
-                }
-		$db->free($resql);
-	}
-	else
-	{
-		dol_print_error($db);
-	}
-}
-
+  print "</tr>\n";
+  $i++;
+  }
+  // TODO Ajouter rappel pour "il y a des contrats a mettre en service"
+  // TODO Ajouter rappel pour "il y a des contrats qui arrivent a expiration"
+  print "</table><br>";
+  }
+  $db->free($resql);
+  } else {
+  dol_print_error($db);
+  }
+  }
+ */
 
 /**
  * Prepare array with list of tabs
  *
  * @return  array				Array of tabs to shoc
  */
-function agenda_prepare_head()
-{
-	global $langs, $conf, $user;
-	$h = 0;
-	$head = array();
+function agenda_prepare_head() {
+    global $langs, $conf, $user;
+    $h = 0;
+    $head = array();
 
-	$head[$h][0] = DOL_URL_ROOT."/admin/agenda.php";
-	$head[$h][1] = $langs->trans("AutoActions");
-	$head[$h][2] = 'autoactions';
-	$h++;
+    $head[$h][0] = DOL_URL_ROOT . "/admin/agenda.php";
+    $head[$h][1] = $langs->trans("AutoActions");
+    $head[$h][2] = 'autoactions';
+    $h++;
 
-	$head[$h][0] = DOL_URL_ROOT."/admin/agenda_xcal.php";
-	$head[$h][1] = $langs->trans("ExportCal");
-	$head[$h][2] = 'xcal';
-	$h++;
+    $head[$h][0] = DOL_URL_ROOT . "/admin/agenda_xcal.php";
+    $head[$h][1] = $langs->trans("ExportCal");
+    $head[$h][2] = 'xcal';
+    $h++;
 
-	$head[$h][0] = DOL_URL_ROOT."/admin/agenda_extsites.php";
-	$head[$h][1] = $langs->trans("ExtSites");
-	$head[$h][2] = 'extsites';
-	$h++;
+    $head[$h][0] = DOL_URL_ROOT . "/admin/agenda_extsites.php";
+    $head[$h][1] = $langs->trans("ExtSites");
+    $head[$h][2] = 'extsites';
+    $h++;
 
 
-	return $head;
+    return $head;
 }
 
 /**
@@ -390,34 +553,31 @@ function agenda_prepare_head()
  * @param   Object	$object		Object related to tabs
  * @return  array				Array of tabs to shoc
  */
-function actions_prepare_head($object)
-{
-	global $langs, $conf, $user;
+function actions_prepare_head($object) {
+    global $langs, $conf, $user;
 
-	$h = 0;
-	$head = array();
+    $h = 0;
+    $head = array();
 
-	$head[$h][0] = DOL_URL_ROOT.'/comm/action/fiche.php?id='.$object->id;
-	$head[$h][1] = $langs->trans("CardAction");
-	$head[$h][2] = 'card';
-	$h++;
+    $head[$h][0] = DOL_URL_ROOT . '/comm/action/fiche.php?id=' . $object->id;
+    $head[$h][1] = $langs->trans("CardAction");
+    $head[$h][2] = 'card';
+    $h++;
 
-        if($conf->ecm->enabled)
-        {
-	$head[$h][0] = DOL_URL_ROOT.'/comm/action/document.php?id='.$object->id;
-	$head[$h][1] = $langs->trans('Documents');
-	$head[$h][2] = 'documents';
-	$h++;
-        }
+    if ($conf->ecm->enabled) {
+        $head[$h][0] = DOL_URL_ROOT . '/comm/action/document.php?id=' . $object->id;
+        $head[$h][1] = $langs->trans('Documents');
+        $head[$h][2] = 'documents';
+        $h++;
+    }
 
-	$head[$h][0] = DOL_URL_ROOT.'/comm/action/info.php?id='.$object->id;
-	$head[$h][1] = $langs->trans('Info');
-	$head[$h][2] = 'info';
-	$h++;
+    $head[$h][0] = DOL_URL_ROOT . '/comm/action/info.php?id=' . $object->id;
+    $head[$h][1] = $langs->trans('Info');
+    $head[$h][2] = 'info';
+    $h++;
 
-	return $head;
+    return $head;
 }
-
 
 /**
  *  Define head array for tabs of agenda setup pages
@@ -425,27 +585,107 @@ function actions_prepare_head($object)
  *  @param	string	$param		Parameters to add to url
  *  @return array			    Array of head
  */
-function calendars_prepare_head($param)
-{
+function calendars_prepare_head($param) {
     global $langs, $conf, $user;
 
     $h = 0;
     $head = array();
 
-    $head[$h][0] = DOL_URL_ROOT.'/comm/action/index.php'.($param?'?'.$param:'');
+    $head[$h][0] = DOL_URL_ROOT . '/comm/action/index.php' . ($param ? '?' . $param : '');
     $head[$h][1] = $langs->trans("Agenda");
     $head[$h][2] = 'card';
     $h++;
 
-	$object=(object) array();
+    $object = (object) array();
 
     // Show more tabs from modules
     // Entries must be declared in modules descriptor with line
     // $this->tabs = array('entity:+tabname:Title:@mymodule:/mymodule/mypage.php?id=__ID__');   to add new tab
     // $this->tabs = array('entity:-tabname:Title:@mymodule:/mymodule/mypage.php?id=__ID__');   to remove a tab
-    complete_head_from_modules($conf,$langs,$object,$head,$h,'agenda');
+    complete_head_from_modules($conf, $langs, $object, $head, $h, 'agenda');
 
     return $head;
+}
+
+function print_calendar($date) {
+
+    global $db;
+    
+    $nbDaysInMonth = date('t', $date);
+    $firstDayTimestamp = dol_mktime(-1, -1, -1, date('n', $date), 1, date('Y', $date));
+    $lastDayTimestamp = dol_mktime(23, 59, 59, date('n', $date), $nbDaysInMonth, date('Y', $date));
+    $todayTimestamp = dol_mktime(-1, -1, -1, date('n'), date('j'), date('Y'));
+    $firstDayOfMonth = date('w', $firstDayTimestamp);
+    
+    $object = new Agenda($db);
+    $events = $object->getView("list", array("startkey" => $firstDayTimestamp , "endkey" => $lastDayTimestamp ));
+
+    print '<table class="calendar large-margin-bottom with-events largest" style="width: 100%;">';
+
+    // Month an scroll arrows
+    print '<caption>';
+    print '<span class="cal-prev" >◄</span>';
+    print '<a class="cal-next" href="#">►</a>';
+    print date('F', $date) . ' ' . date('Y', $date);
+    print '</caption>';
+
+    // Days names 
+    print '<thead>';
+    print '<tr>';
+    print '<th scope="col" style="width: 209px;">Sun</th>';
+    print '<th scope="col" style="width: 209px;">Mon</th>';
+    print '<th scope="col" style="width: 209px;">Tue</th>';
+    print '<th scope="col" style="width: 209px;">Wed</th>';
+    print '<th scope="col" style="width: 209px;">Thu</th>';
+    print '<th scope="col" style="width: 209px;">Fri</th>';
+    print '<th scope="col" style="width: 209px;">Sat</th>';
+    print '</tr>';
+    print '</thead>';
+    print '<tbody>';
+    print '<tr>';
+
+    $calendarCounter = 1;
+    for ($i = $firstDayOfMonth; $i > 0; $i--, $calendarCounter++) {
+        $previousTimestamp = strtotime($i . " day ago", $firstDayTimestamp);
+        print '<td style="height: 130px;" class="prev-month"><span class="cal-day">' . date('d', $previousTimestamp) . '</span></td>';
+    }
+
+    $cursor = 0;
+    for ($i = 1; $i <= $nbDaysInMonth; $i++, $calendarCounter++) {
+        $dayTimestamp = dol_mktime(-1, -1, -1, date('n', $date), $i, date('Y', $date));
+        if ($calendarCounter > 1 && ($calendarCounter - 1) % 7 == 0)
+            print '</tr><tr>';
+        print '<td style="height: 130px;" class="'.((date('w', $dayTimestamp) == 0 || date('w', $dayTimestamp) == 6) ? 'week-end ' : '').' '.(($dayTimestamp == $todayTimestamp) ? 'today ' : '').'"><span class="cal-day">' . $i . '</span>';
+        print '<ul class="cal-events" style="width: 201px;">';
+
+        if (!empty($events->rows[$cursor])) {
+            for ($j = 0; $j < count($events->rows); $j++) {
+                if ($events->rows[$cursor]->key >= $dayTimestamp && $events->rows[$cursor]->key < $dayTimestamp + 3600 * 24) {
+                    print '<li class="important">'.$events->rows[$cursor]->value->label.'</li>';
+                    $cursor++;
+                } else break;
+            }
+        }
+        
+        print '</ul>';
+        print '</td>';
+    }
+    
+    $calendarCounter--;
+    
+    $i = 1;
+    while ($calendarCounter++ % 7 != 0) {
+        print '<td style="height: 130px;" class="next-month"><span class="cal-day">' . $i++ . '</span></td>';
+    }
+
+    print '</tr>';
+
+    print '</tbody>';
+    print '</table>';
+}
+
+function debug($var, $label = '') {
+    echo '<pre>' . ($label ? $label . ': ' : '') . '' . print_r($var, true) . '</pre>';
 }
 
 ?>

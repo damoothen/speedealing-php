@@ -25,7 +25,6 @@
  *       \ingroup    commercial
  *       \brief      File of class to manage agenda events (actions)
  */
-require_once(DOL_DOCUMENT_ROOT . '/agenda/class/cactioncomm.class.php');
 require_once(DOL_DOCUMENT_ROOT . '/core/class/commonobject.class.php');
 
 /**     \class      ActionComm
@@ -69,6 +68,7 @@ class Agenda extends nosqlDocument {
     var $icalname;
     var $icalcolor;
     var $actions = array();
+    var $status = 0; // Status of the action
 
     /**
      *      Constructor
@@ -88,13 +88,11 @@ class Agenda extends nosqlDocument {
             dol_print_error('', $e->getMessage());
             exit;
         }
-
-        $this->Status = 0;
-
-        $this->author = (object) array();
-        $this->usermod = (object) array();
-        $this->usertodo = (object) array();
-        $this->userdone = (object) array();
+        $this->status = 0;
+        $this->author = null;
+        $this->usermod = null;
+        $this->usertodo = null;
+        $this->userdone = null;
         $this->societe = (object) array();
         $this->contact = (object) array();
     }
@@ -156,6 +154,7 @@ class Agenda extends nosqlDocument {
             $this->userdone->id = $user->id;
         }
         $this->record();
+        /*
         $sql = "INSERT INTO " . MAIN_DB_PREFIX . "actioncomm";
         $sql.= "(datec,";
         $sql.= "datep,";
@@ -203,7 +202,7 @@ class Agenda extends nosqlDocument {
         $sql.= ")";
 
         dol_syslog(get_class($this) . "::add sql=" . $sql);
-
+        */
         if (!$notrigger) {
             // Appel des triggers
             include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
@@ -326,14 +325,15 @@ class Agenda extends nosqlDocument {
         global $user, $langs, $conf;
 
         $error = 0;
-
+        $this->deleteDoc();
+        /*
         $this->db->begin();
 
         $sql = "DELETE FROM " . MAIN_DB_PREFIX . "actioncomm";
         $sql.= " WHERE id=" . $this->id;
-
-        dol_syslog(get_class($this) . "::delete sql=" . $sql, LOG_DEBUG);
-        if ($this->db->query($sql)) {
+        */
+        //dol_syslog(get_class($this) . "::delete sql=" . $sql, LOG_DEBUG);
+        //if ($this->db->query($sql)) {
             if (!$notrigger) {
                 // Appel des triggers
                 include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
@@ -347,18 +347,18 @@ class Agenda extends nosqlDocument {
             }
 
             if (!$error) {
-                $this->db->commit();
+                //$this->db->commit();
                 return 1;
             } else {
-                $this->db->rollback();
+                //$this->db->rollback();
                 return -2;
             }
-        } else {
+        /*} else {
             $this->db->rollback();
             $this->error = $this->db->lasterror();
             dol_syslog(get_class($this) . "::delete " . $this->error, LOG_ERR);
             return -1;
-        }
+        }*/
     }
 
     /**
@@ -409,8 +409,8 @@ class Agenda extends nosqlDocument {
             $this->percentage = 100;
         if ($this->percentage == 100 && !$this->dateend)
             $this->dateend = $this->date;
-        if ($this->datep && $this->datef)
-            $this->durationp = ($this->datef - $this->datep);
+        //if ($this->datep && $this->datef)
+        //    $this->durationp = ($this->datef - $this->datep);
         if ($this->date && $this->dateend)
             $this->durationa = ($this->dateend - $this->date);
         if ($this->datep && $this->datef && $this->datep > $this->datef)
@@ -442,7 +442,7 @@ class Agenda extends nosqlDocument {
         }
 
         $this->record();
-
+        /*
         //print 'eeea'.$this->datep.'-'.(strval($this->datep) != '').'-'.$this->db->idate($this->datep);
         $sql = "UPDATE " . MAIN_DB_PREFIX . "actioncomm ";
         $sql.= " SET percent='" . $this->percentage . "'";
@@ -468,7 +468,7 @@ class Agenda extends nosqlDocument {
 
         //print $sql;exit;
 
-
+        */
         if (!$notrigger) {
             // Appel des triggers
             include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
@@ -1039,11 +1039,9 @@ class Agenda extends nosqlDocument {
     function select_type_actions($htmlname = 'actioncode', $active = 1, $idorcode = 'code', $type = '1,2') {
         global $langs, $user;
 
-        require_once(DOL_DOCUMENT_ROOT . "/agenda/class/cactioncomm.class.php");
         require_once(DOL_DOCUMENT_ROOT . "/core/class/html.form.class.php");
-        $caction = new CActionComm($this->db);
         $form = new Form($this->db);
-
+        
         foreach ($this->fk_extrafields->fields->type_code->values as $key => $row) {
             if ($row->enable)
                 $arraylist[$key] = $langs->trans($row->label);
@@ -1055,7 +1053,21 @@ class Agenda extends nosqlDocument {
         if ($user->admin)
             print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"), 1);
     }
-
+    
+    /**
+     *  Get label from type_code
+     *
+     * 	@return	string
+     */
+    function getType(){
+        global $langs;
+        if ($this->type_code) {
+            $typeCode = $this->type_code;
+            return $langs->trans($this->fk_extrafields->fields->type_code->values->$typeCode->label);
+        }
+        return null;
+    }
+    
 }
 
 ?>

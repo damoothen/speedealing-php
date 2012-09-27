@@ -113,9 +113,10 @@ if (! defined('NOREQUIREDB'))
 		dol_print_error($db,"host=".$conf->db->host.", port=".$conf->db->port.", user=".$conf->db->user.", databasename=".$conf->db->name.", ".$db->error);
 		exit;
 	}
-	
+    	
 	$couch = new couchClient($conf->Couchdb->host . ':' . $conf->Couchdb->port . '/', $conf->Couchdb->name);
 	$couch->setSessionCookie("AuthSession=" . $_COOKIE['AuthSession']);
+    
 }
 
 // Now database connexion is known, so we can forget password
