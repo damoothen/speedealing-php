@@ -35,6 +35,7 @@ require_once(DOL_DOCUMENT_ROOT . "/agenda/lib/agenda.lib.php");
 if ($conf->projet->enabled)
     require_once(DOL_DOCUMENT_ROOT . "/core/lib/project.lib.php");
 
+/*
 if (!isset($conf->global->AGENDA_MAX_EVENTS_DAY_VIEW))
     $conf->global->AGENDA_MAX_EVENTS_DAY_VIEW = 3;
 
@@ -86,11 +87,14 @@ if (GETPOST('viewday')) {
 $langs->load("other");
 $langs->load("commercial");
 
+*/
 
 
 /*
  * Actions
  */
+
+/*
 if (GETPOST("viewlist")) {
     $param = '';
     foreach ($_POST as $key => $val) {
@@ -108,7 +112,9 @@ if ($action == 'delete_action') {
     $event->fetch($actionid);
     $result = $event->delete();
 }
+*/
 
+$view = GETPOST('view', 'alpha') ? GETPOST('view', 'alpha') : 'month';
 
 
 /*
@@ -118,7 +124,38 @@ if ($action == 'delete_action') {
 $help_url = 'EN:Module_Agenda_En|FR:Module_Agenda|ES:M&oacute;dulo_Agenda';
 llxHeader('', $langs->trans("Calendar"), $help_url);
 print_fiche_titre($langs->trans("Calendar"), true);
-print_calendar(dol_now());
+
+if ($conf->use_javascript_ajax) {
+    print "\n" . '<script type="text/javascript" language="javascript">';
+    print 'jQuery(document).ready(function () {
+                
+                jQuery("#button-view-month").click(function(){
+                    window.location = "'.$_SERVER['PHP_SELF'].'?view=month";
+                    return false;
+                });
+                
+                jQuery("#button-view-week").click(function(){
+                    window.location = "'.$_SERVER['PHP_SELF'].'?view=week";
+                    return false;
+                });
+
+            });';
+}
+print '</script>' . "\n";
+
+print '<span class="button-group">';
+print '<a class="button" href="#" id="button-view-month" >' . $langs->trans('Month') . '</a>';
+print '<a class="button" href="#" id="button-view-week" >' . $langs->trans('Week') . '</a>';
+print '</span>';
+
+//print_calendar(dol_now());
+switch ($view) {
+    case 'week': 
+        print_week(dol_now());
+        break;
+    default:
+        print_calendar(dol_now());
+}
 
 llxFooter();
 ?>

@@ -163,8 +163,11 @@ if ($action == 'add_action') {
     $object->status = GETPOST('status');
     if ($object->type_code == "AC_RDV") //ACTION
         $object->durationp = $object->datef - $object->datep;
-    else
-        $object->durationp = !empty($_POST["duration"]) ? $_POST["duration"] * 3600 : 3600;
+    else {
+        $object->durationp = $_POST["durationhour"] * 3600 + $_POST["durationmin"] * 60;
+        $object->datef = $object->datep + $object->durationp;
+    }
+
     /*
       if ($cactioncomm->type == 1) { //RDV
       // RDV
@@ -348,8 +351,10 @@ if ($action == 'update') {
         $object->status = $_POST["status"];
         if ($object->type_code == "AC_RDV") //ACTION
             $object->durationp = $object->datef - $object->datep;
-        else
-            $object->durationp = !empty($_POST["duration"]) ? $_POST["duration"] * 3600 : 3600;
+        else {
+            $object->durationp = $_POST["durationhour"] * 3600 + $_POST["durationmin"] * 60;
+            $object->datef = $object->datep + $object->durationp;
+        }
         /*
           if ($object->type == 2) //ACTION
           $object->durationp = !empty($_POST["duration"]) ? $_POST["duration"] * 3600 : 3600;
@@ -594,11 +599,11 @@ if ($action == 'create') {
         $datep = dol_stringtotime(GETPOST('datep', 'int', 1), 0);
     print '<tr><td width="30%" nowrap="nowrap"><span class="fieldrequired" id="jqech">' . $langs->trans("DateEchAction") . '</span><span class="fieldrequired" id="jqstart">' . $langs->trans("DateActionStart") . '</span></td><td>';
     if (GETPOST("afaire") == 1)
-        $form->select_date($datep, 'ap', 1, 1, 0, "action", 1, 1, 0, 0, 'fulldayend');
+        $form->select_date($datep, 'ap', 1, 1, 0, "action", 1, 1, 0, 0, 'fulldayend', array('stepMinutes' => 30));
     else if (GETPOST("afaire") == 2)
-        $form->select_date($datep, 'ap', 1, 1, 1, "action", 1, 1, 0, 0, 'fulldayend');
+        $form->select_date($datep, 'ap', 1, 1, 1, "action", 1, 1, 0, 0, 'fulldayend', array('stepMinutes' => 30));
     //  $html->select_date($datep,'ap',0,0,1,"action",1,1,0,0,'fulldaystart');
-    $form->select_date($datep, 'ap', 1, 1, 0, "action", 1, 1, 0, 0, 'fulldaystart');
+    $form->select_date($datep, 'ap', 1, 1, 0, "action", 1, 1, 0, 0, 'fulldaystart', array('stepMinutes' => 30));
     print '</td></tr>';
     // Date end
 
@@ -607,15 +612,18 @@ if ($action == 'create') {
         $datef = dol_stringtotime(GETPOST('datef', 'int', 1), 0);
     print '<tr id="jqend"><td>' . $langs->trans("DateActionEnd") . '</td><td>';
     if (GETPOST("afaire") == 1)
-        $form->select_date($datef, 'p2', 1, 1, 1, "action", 1, 1, 0, 0, 'fulldayend');
+        $form->select_date($datef, 'p2', 1, 1, 1, "action", 1, 1, 0, 0, 'fulldayend', array('stepMinutes' => 30));
     else if (GETPOST("afaire") == 2)
-        $form->select_date($datef, 'p2', 1, 1, 1, "action", 1, 1, 0, 0, 'fulldayend');
+        $form->select_date($datef, 'p2', 1, 1, 1, "action", 1, 1, 0, 0, 'fulldayend', array('stepMinutes' => 30));
     else
-        $form->select_date($datef, 'p2', 1, 1, 0, "action", 1, 1, 0, 0, 'fulldayend');
+        $form->select_date($datef, 'p2', 1, 1, 0, "action", 1, 1, 0, 0, 'fulldayend', array('stepMinutes' => 30));
     print '</td></tr>';
 
     // duration task
-    print '<tr id="jqduration"><td>' . $langs->trans("Duration") . '</td><td colspan="3"><input type="text" name="duration" size="3" value="' . (empty($object->durationp) ? 1 : $object->durationp / 3600) . '"></td></tr>';
+    print '<tr id="jqduration"><td>' . $langs->trans("Duration") . '</td><td colspan="3">';
+    //<input type="text" name="duration" size="3" value="' . (empty($object->durationp) ? 1 : $object->durationp / 3600) . '">
+    $form->select_duration('duration', '', 0, array('stepMinutes' => 30));
+    print '</td></tr>';
 
 
     // Status
@@ -913,11 +921,11 @@ if ($id) {
             $datep = dol_stringtotime(GETPOST('datep', 'int', 1), 0);
         print '<tr><td width="30%" nowrap="nowrap"><span class="fieldrequired" id="jqech">' . $langs->trans("DateEchAction") . '</span><span class="fieldrequired" id="jqstart">' . $langs->trans("DateActionStart") . '</span></td><td>';
         if (GETPOST("afaire") == 1)
-            $form->select_date($datep, 'ap', 1, 1, 0, "action", 1, 1, 0, 0, 'fulldayend');
+            $form->select_date($datep, 'ap', 1, 1, 0, "action", 1, 1, 0, 0, 'fulldayend', array('stepMinutes' => 30));
         else if (GETPOST("afaire") == 2)
-            $form->select_date($datep, 'ap', 1, 1, 1, "action", 1, 1, 0, 0, 'fulldayend');
+            $form->select_date($datep, 'ap', 1, 1, 1, "action", 1, 1, 0, 0, 'fulldayend', array('stepMinutes' => 30));
         //  $html->select_date($datep,'ap',0,0,1,"action",1,1,0,0,'fulldaystart');
-        $form->select_date($datep, 'ap', 1, 1, 0, "action", 1, 1, 0, 0, 'fulldaystart');
+        $form->select_date($datep, 'ap', 1, 1, 0, "action", 1, 1, 0, 0, 'fulldaystart', array('stepMinutes' => 30));
         print '</td></tr>';
 
         // Date end
@@ -926,15 +934,18 @@ if ($id) {
             $datef = dol_stringtotime(GETPOST('datef', 'int', 1), 0);
         print '<tr id="jqend"><td>' . $langs->trans("DateActionEnd") . '</td><td>';
         if (GETPOST("afaire") == 1)
-            $form->select_date($datef, 'p2', 1, 1, 1, "action", 1, 1, 0, 0, 'fulldayend');
+            $form->select_date($datef, 'p2', 1, 1, 1, "action", 1, 1, 0, 0, 'fulldayend', array('stepMinutes' => 30));
         else if (GETPOST("afaire") == 2)
-            $form->select_date($datef, 'p2', 1, 1, 1, "action", 1, 1, 0, 0, 'fulldayend');
+            $form->select_date($datef, 'p2', 1, 1, 1, "action", 1, 1, 0, 0, 'fulldayend', array('stepMinutes' => 30));
         else
-            $form->select_date($datef, 'p2', 1, 1, 0, "action", 1, 1, 0, 0, 'fulldayend');
+            $form->select_date($datef, 'p2', 1, 1, 0, "action", 1, 1, 0, 0, 'fulldayend', array('stepMinutes' => 30));
         print '</td></tr>';
 
         // duration task
-        print '<tr id="jqduration"><td>' . $langs->trans("Duration") . '</td><td colspan="3"><input type="text" name="duration" size="3" value="' . (empty($object->durationp) ? 1 : $object->durationp / 3600) . '"></td></tr>';
+        print '<tr id="jqduration"><td>' . $langs->trans("Duration") . '</td><td colspan="3">';
+        //<input type="text" name="duration" size="3" value="' . (empty($object->durationp) ? 1 : $object->durationp / 3600) . '">
+        $form->select_duration('duration', $object->durationp, 0, array('stepMinutes' => 30));
+        print '</td></tr>';
 
         // Status
         print '<tr><td nowrap>' . $langs->trans("Status") . ' / ' . $langs->trans("Percentage") . '</td><td colspan="3">';
