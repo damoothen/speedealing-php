@@ -478,7 +478,7 @@ abstract class nosqlDocument extends CommonObject {
                         },
                         //$obj->oColVis->bRestore = true;
                         //$obj->oColVis->sAlign = 'left';
-                                																																																																																								            
+                        																																																																																								            
                         // Avec export Excel
         <?php if (!empty($obj->sDom)) : ?>
                             //"sDom": "Cl<fr>t<\"clear\"rtip>",
@@ -504,14 +504,14 @@ abstract class nosqlDocument extends CommonObject {
                     <?php endforeach; ?>
                                                         },
                 <?php else : ?>
-                                                    {
-                                                        "sExtends": "<?php echo $aRow; ?>",
-                                                        "sFieldBoundary": '"',
-                                                        //"sFieldSeperator": "-",
-                                                        "sCharSet": "utf8",
-                                                        "sFileName": "export.csv",
-                                                        "bSelectedOnly": false
-                                                    },
+                {
+                    "sExtends": "<?php echo $aRow; ?>",
+                    "sFieldBoundary": '"',
+                    //"sFieldSeperator": "-",
+                    "sCharSet": "utf8",
+                    "sFileName": "export.csv",
+                    "bSelectedOnly": false
+                },
                 <?php endif; ?>
             <?php endforeach; ?>
                                     ],
@@ -522,7 +522,10 @@ abstract class nosqlDocument extends CommonObject {
         <?php if (isset($obj->fnRowCallback)): ?>
                             "fnRowCallback": <?php echo $obj->fnRowCallback; ?>,
         <?php endif; ?>
-                                																																																																								
+        <?php if (isset($obj->fnFooterCallback)): ?>
+                            "fnFooterCallback": <?php echo $obj->fnFooterCallback; ?>,
+        <?php endif; ?>
+
         <?php if (!defined('NOLOGIN')) : ?>
             <?php if (isset($obj->fnDrawCallback)): ?>
                                     "fnDrawCallback": <?php echo $obj->fnDrawCallback; ?>,
@@ -774,7 +777,7 @@ abstract class nosqlDocument extends CommonObject {
 			if(obj.aData.' . $key . ')
 			{
 				var date = new Date(obj.aData.' . $key . '*1000);
-				return date.toLocaleDateString();
+				return Globalize.format(date,"d","fr");
 			}
 			else
 				return null;
@@ -786,7 +789,7 @@ abstract class nosqlDocument extends CommonObject {
 			if(obj.aData.' . $key . ')
 			{
 				var date = new Date(obj.aData.' . $key . '*1000);
-				return date.toLocaleDateString()+"\n"+date.toLocaleTimeString();
+				return Globalize.format(date,"F","fr");
 			}
 			else
 				return null;
