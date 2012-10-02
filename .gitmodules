@@ -3,3 +3,6 @@
 	url = git@github.com:speedealing/PHP-on-Couch.git
 [submodule "htdocs/custom"]
         path = htdocs/custom
+[submodule "htdocs/includes/jquery/plugins/globalize"]
+	path = htdocs/includes/jquery/plugins/globalize
+	url = git://github.com/jquery/globalize.git
