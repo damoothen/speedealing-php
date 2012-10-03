@@ -76,6 +76,7 @@ if (!empty($json) && !empty($class)) {
 		$bServerSide = 0;
 
 	//print_r($result);
+        //error_log(json_encode($result));
 	//exit;
 	$output["iTotalRecords"] = dol_getcache("total_rows");
 	$output["iTotalDisplayRecords"] = $result->total_rows;
@@ -87,7 +88,7 @@ if (!empty($json) && !empty($class)) {
 			$output["aaData"][] = clone $aRow->value;
 			unset($aRow);
 		}
-	//error_log(json_encode($result));
+	//error_log(json_encode($output));
 	//sorting
 	if($bServerSide)
 		$object->sortDatatable($output["aaData"], $_GET['mDataProp_'.$_GET['iSortCol_0']], $_GET['sSortDir_0']);
