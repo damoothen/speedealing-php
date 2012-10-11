@@ -304,7 +304,7 @@ if ($conf->commande->enabled && $user->rights->commande->lire)
 {
 	$langs->load("orders");
 
-	$sql = "SELECT c.rowid, c.ref_client as ref, c.total_ttc, s.rowid as socid, s.nom as name, s.client, s.canvas";
+	$sql = "SELECT c.rowid, c.ref, c.total_ttc, s.rowid as socid, s.nom as name, s.client, s.canvas";
 	$sql.= " FROM ".MAIN_DB_PREFIX."commande as c";
 	$sql.= ", ".MAIN_DB_PREFIX."societe as s";
 	if (!$user->rights->societe->client->voir && !$socid) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";

@@ -111,6 +111,18 @@ if (!empty($object->hooks)) {
     }
 }
 
+if ($action == 'cstc')
+{
+	$sql = "UPDATE ".MAIN_DB_PREFIX."propal SET fk_statut = ".$_GET["status"];
+	$sql .= " WHERE rowid = ".$_GET["id"];
+	$db->query($sql);
+
+        if (! empty($_GET["backtopage"]))
+        {
+            header("Location: ".$_GET["backtopage"]);
+        }
+}
+
 // Action clone object
 if ($action == 'confirm_clone' && $confirm == 'yes') {
     if (1 == 0 && !GETPOST('clone_content') && !GETPOST('clone_receivers')) {
@@ -1301,7 +1313,12 @@ if ($id > 0 || !empty($ref)) {
     print '<td>' . $langs->trans("Currency" . $conf->monnaie) . '</td></tr>';
 
     // Statut
-    print '<tr><td height="10">' . $langs->trans('Status') . '</td><td align="left" colspan="3">' . $object->getLibStatut(4) . '</td></tr>';
+    print '<tr><td height="10">' . $langs->trans('Status') . '</td><td align="left">' . $object->getLibStatut(4) . '</td>';
+    print '<td colspan="2">';
+    // Affichage icone de changement de statut prospect
+    print $object->getIconList($_SERVER['PHP_SELF'].'?id='.$object->id.'&amp;action=cstc');
+    print '</td>';
+    print '</tr>';
     print '</table><br>';
 
     /*
