@@ -2301,7 +2301,7 @@ class Propal extends CommonObject
 	 *      @param      get_params      Parametres added to url
 	 *      @return     string          String with URL
 	 */
-	function getNomUrl($withpicto=0,$option='', $get_params='')
+	function getNomUrl($withpicto=0,$option='', $get_params='',$maxlen=0)
 	{
 		global $langs;
 
@@ -2325,7 +2325,7 @@ class Propal extends CommonObject
 
 		if ($withpicto) $result.=($lien.img_object($label,$picto).$lienfin);
 		if ($withpicto && $withpicto != 2) $result.=' ';
-		$result.=$lien.$this->ref.$lienfin;
+		$result.=$lien.($maxlen?dol_trunc($this->ref,$maxlen):$this->ref).$lienfin;
 		return $result;
 	}
 

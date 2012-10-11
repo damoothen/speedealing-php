@@ -238,7 +238,7 @@ if ($conf->societe->enabled && $user->rights->societe->lire)
  */
 if ($conf->propal->enabled && $user->rights->propale->lire)
 {
-	$sql = "SELECT p.rowid, p.ref, p.total_ht, s.rowid as socid, s.nom as name, s.client, s.canvas";
+	$sql = "SELECT p.rowid, p.ref_client as ref, p.total_ht, s.rowid as socid, s.nom as name, s.client, s.canvas";
 	$sql.= " FROM ".MAIN_DB_PREFIX."propal as p";
 	$sql.= ", ".MAIN_DB_PREFIX."societe as s";
 	if (!$user->rights->societe->client->voir && !$socid) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
@@ -268,7 +268,7 @@ if ($conf->propal->enabled && $user->rights->propale->lire)
 				print '<tr '.$bc[$var].'><td  nowrap="nowrap">';
 				$propalstatic->id=$obj->rowid;
 				$propalstatic->ref=$obj->ref;
-				print $propalstatic->getNomUrl(1);
+				print $propalstatic->getNomUrl(1,'','',20);
 				print '</td>';
 				print '<td nowrap="nowrap">';
 				$companystatic->id=$obj->socid;
@@ -304,7 +304,7 @@ if ($conf->commande->enabled && $user->rights->commande->lire)
 {
 	$langs->load("orders");
 
-	$sql = "SELECT c.rowid, c.ref, c.total_ttc, s.rowid as socid, s.nom as name, s.client, s.canvas";
+	$sql = "SELECT c.rowid, c.ref_client as ref, c.total_ttc, s.rowid as socid, s.nom as name, s.client, s.canvas";
 	$sql.= " FROM ".MAIN_DB_PREFIX."commande as c";
 	$sql.= ", ".MAIN_DB_PREFIX."societe as s";
 	if (!$user->rights->societe->client->voir && !$socid) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
@@ -331,7 +331,7 @@ if ($conf->commande->enabled && $user->rights->commande->lire)
 			{
 				$var=!$var;
 				$obj = $db->fetch_object($resql);
-				print '<tr '.$bc[$var].'><td nowrap="nowrap"><a href="../commande/fiche.php?id='.$obj->rowid.'">'.img_object($langs->trans("ShowOrder"),"order").' '.$obj->ref.'</a></td>';
+				print '<tr '.$bc[$var].'><td nowrap="nowrap"><a href="../commande/fiche.php?id='.$obj->rowid.'">'.img_object($langs->trans("ShowOrder"),"order").' '.dol_trunc($obj->ref,20).'</a></td>';
 				print '<td nowrap="nowrap">';
 				$companystatic->id=$obj->socid;
 				$companystatic->name=$obj->name;
@@ -692,7 +692,7 @@ if ($conf->propal->enabled && $user->rights->propale->lire)
 {
 	$langs->load("propal");
 
-	$sql = "SELECT s.nom, s.rowid, p.rowid as propalid, p.total as total_ttc, p.total_ht, p.ref, p.fk_statut, p.datep as dp";
+	$sql = "SELECT s.nom, s.rowid, p.rowid as propalid, p.total as total_ttc, p.total_ht, p.ref_client as ref, p.fk_statut, p.datep as dp";
 	$sql.= " FROM ".MAIN_DB_PREFIX."societe as s";
 	$sql.= ", ".MAIN_DB_PREFIX."propal as p";
 	if (!$user->rights->societe->client->voir && !$socid) $sql.= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
@@ -729,7 +729,7 @@ if ($conf->propal->enabled && $user->rights->propale->lire)
 
 				print '<table class="nobordernopadding"><tr class="nocellnopadd">';
 				print '<td class="nobordernopadding" nowrap="nowrap">';
-				print $propalstatic->getNomUrl(1);
+				print $propalstatic->getNomUrl(1,'','',20);
 				print '</td>';
 				print '<td width="18" class="nobordernopadding" nowrap="nowrap">';
 				if ($db->jdate($obj->dp) < ($now - $conf->propal->cloture->warning_delay)) print img_warning($langs->trans("Late"));
