@@ -24,12 +24,12 @@
  *       \brief      Page de gestion des documents attaches a une proposition commerciale
  */
 
-require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/comm/propal/class/propal.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/propal.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/images.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
+require '../../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/comm/propal/class/propal.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/propal.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 
 $langs->load('compta');
 $langs->load('other');
@@ -75,43 +75,8 @@ if (GETPOST('sendit') && ! empty($conf->global->MAIN_UPLOAD_DOC))
 {
 	if ($object->id > 0)
     {
-        $object->fetch_thirdparty();
-
     	$upload_dir = $conf->propal->dir_output . "/" . dol_sanitizeFileName($object->ref);
-
-		if (dol_mkdir($upload_dir) >= 0)
-		{
-			$resupload=dol_move_uploaded_file($_FILES['userfile']['tmp_name'], $upload_dir . "/" . dol_unescapefile($_FILES['userfile']['name']),0,0,$_FILES['userfile']['error']);
-			if (is_numeric($resupload) && $resupload > 0)
-			{
-	            if (image_format_supported($upload_dir . "/" . $_FILES['userfile']['name']) == 1)
-                {
-                    // Create small thumbs for image (Ratio is near 16/9)
-                    // Used on logon for example
-                    $imgThumbSmall = vignette($upload_dir . "/" . $_FILES['userfile']['name'], $maxwidthsmall, $maxheightsmall, '_small', $quality, "thumbs");
-                    // Create mini thumbs for image (Ratio is near 16/9)
-                    // Used on menu or for setup page for example
-                    $imgThumbMini = vignette($upload_dir . "/" . $_FILES['userfile']['name'], $maxwidthmini, $maxheightmini, '_mini', $quality, "thumbs");
-                }
-			    $mesg = '<div class="ok">'.$langs->trans("FileTransferComplete").'</div>';
-			}
-			else
-			{
-				$langs->load("errors");
-				if ($resupload < 0)	// Unknown error
-				{
-					$mesg = '<div class="error">'.$langs->trans("ErrorFileNotUploaded").'</div>';
-				}
-				else if (preg_match('/ErrorFileIsInfectedWithAVirus/',$resupload))	// Files infected by a virus
-				{
-					$mesg = '<div class="error">'.$langs->trans("ErrorFileIsInfectedWithAVirus").'</div>';
-				}
-				else	// Known error
-				{
-					$mesg = '<div class="error">'.$langs->trans($resupload).'</div>';
-				}
-			}
-		}
+    	dol_add_file_process($upload_dir,0,1,'userfile');
     }
 }
 
@@ -124,9 +89,10 @@ if ($action == 'confirm_deletefile' && $confirm == 'yes')
 
         $upload_dir = $conf->propal->dir_output . "/" . dol_sanitizeFileName($object->ref);
     	$file = $upload_dir . '/' . GETPOST('urlfile');	// Do not use urldecode here ($_GET and $_REQUEST are already decoded by PHP).
-    	dol_delete_file($file,0,0,0,$object);
-        $_SESSION['dol_message'] = '<div class="ok">'.$langs->trans("FileWasRemoved",GETPOST('urlfile')).'</div>';
-    	Header('Location: '.$_SERVER["PHP_SELF"].'?id='.$id);
+    	$ret=dol_delete_file($file,0,0,0,$object);
+    	if ($ret) setEventMessage($langs->trans("FileWasRemoved", GETPOST('urlfile')));
+    	else setEventMessage($langs->trans("ErrorFailToDeleteFile", GETPOST('urlfile')), 'errors');
+    	header('Location: '.$_SERVER["PHP_SELF"].'?id='.$id);
     	exit;
     }
 }
@@ -136,7 +102,7 @@ if ($action == 'confirm_deletefile' && $confirm == 'yes')
  * View
  */
 
-llxHeader();
+llxHeader('',$langs->trans('Proposal'),'EN:Commercial_Proposals|FR:Proposition_commerciale|ES:Presupuestos');
 
 $form = new Form($db);
 
@@ -146,7 +112,6 @@ if ($object->id > 0)
 
 	$head = propal_prepare_head($object);
 	dol_fiche_head($head, 'document', $langs->trans('Proposal'), 0, 'propal');
-
 
 	// Construit liste des fichiers
 	$filearray=dol_dir_list($upload_dir,"files",0,'','\.meta$',$sortfield,(strtolower($sortorder)=='desc'?SORT_DESC:SORT_ASC),1);
@@ -188,11 +153,9 @@ if ($object->id > 0)
 
 	print '</div>';
 
-	dol_htmloutput_mesg($mesg,$mesgs);
-
 	/*
 	 * Confirmation suppression fichier
-	*/
+	 */
 	if ($action == 'delete')
 	{
 		$ret=$form->form_confirm($_SERVER["PHP_SELF"].'?id='.$object->id.'&urlfile='.urlencode(GETPOST("urlfile")), $langs->trans('DeleteFile'), $langs->trans('ConfirmDeleteFile'), 'confirm_deletefile', '', 0, 1);
@@ -201,12 +164,11 @@ if ($object->id > 0)
 
 	// Affiche formulaire upload
 	$formfile=new FormFile($db);
-	$formfile->form_attach_new_file($_SERVER['PHP_SELF'].'?id='.$object->id,'',0,0,$user->rights->propale->creer,50,$object);
+	$formfile->form_attach_new_file($_SERVER['PHP_SELF'].'?id='.$object->id,'',0,0,$user->rights->propal->creer,50,$object);
 
 
 	// List of document
-	$param='&id='.$object->id;
-	$formfile->list_of_documents($filearray,$object,'propal',$param);
+	$formfile->list_of_documents($filearray,$object,'propal');
 }
 else
 {

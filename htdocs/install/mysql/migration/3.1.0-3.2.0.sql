@@ -30,10 +30,14 @@ update llx_facture_rec set fk_projet = null where fk_projet not in (select rowid
 update llx_fichinter set fk_projet = null where fk_projet not in (select rowid from llx_projet);
 update llx_projet_task set fk_projet = null where fk_projet not in (select rowid from llx_projet);
 
+update llx_propal set fk_user_author = null where fk_user_author not in (select rowid from llx_user);
+update llx_propal set fk_user_valid = null where fk_user_valid not in (select rowid from llx_user);
+update llx_propal set fk_user_cloture = null where fk_user_cloture not in (select rowid from llx_user);
 update llx_commande set fk_user_author = null where fk_user_author not in (select rowid from llx_user);
+update llx_commande set fk_user_valid = null where fk_user_valid not in (select rowid from llx_user);
 
 
-ALTER TABLE llx_extrafields ADD COLUMN TYPE VARCHAR(8);
+ALTER TABLE llx_extrafields ADD COLUMN type VARCHAR(8);
 
 UPDATE llx_c_paper_format SET active=1 WHERE active=0;
 
@@ -451,6 +455,12 @@ ALTER TABLE llx_facture_fourn ADD COLUMN extraparams varchar(255) AFTER import_k
 
 ALTER TABLE llx_boxes ADD COLUMN maxline integer NULL;
 
-ALTER TABLE llx_commande_fournisseur ADD COLUMN date_livraison date NULL;
-
 ALTER TABLE llx_product_fournisseur_price MODIFY fk_product_fournisseur integer DEFAULT 0;
+
+UPDATE llx_product SET canvas = NULL where canvas = 'default@product';
+UPDATE llx_product SET canvas = NULL where canvas = 'product@product';
+UPDATE llx_product SET canvas = NULL where canvas = 'service@product';
+
+DELETE FROM llx_const WHERE __DECRYPT('name')__ = 'SOCIETE_CODECOMPTA_ADDON' AND __DECRYPT('value')__ = 'mod_codecompta_digitaria';
+
+ALTER TABLE llx_c_barcode_type ADD UNIQUE INDEX uk_c_barcode_type(code, entity);

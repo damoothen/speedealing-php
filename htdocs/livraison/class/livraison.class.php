@@ -25,11 +25,11 @@
  *  \brief      Fichier de la classe de gestion des bons de livraison
  */
 
-require_once(DOL_DOCUMENT_ROOT."/core/class/commonobject.class.php");
-require_once(DOL_DOCUMENT_ROOT."/expedition/class/expedition.class.php");
-require_once(DOL_DOCUMENT_ROOT."/product/stock/class/mouvementstock.class.php");
-if ($conf->propal->enabled)   require_once(DOL_DOCUMENT_ROOT."/comm/propal/class/propal.class.php");
-if ($conf->commande->enabled) require_once(DOL_DOCUMENT_ROOT."/commande/class/commande.class.php");
+require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/expedition/class/expedition.class.php';
+require_once DOL_DOCUMENT_ROOT.'/product/stock/class/mouvementstock.class.php';
+if (! empty($conf->propal->enabled))   require_once DOL_DOCUMENT_ROOT.'/comm/propal/class/propal.class.php';
+if (! empty($conf->commande->enabled)) require_once DOL_DOCUMENT_ROOT.'/commande/class/commande.class.php';
 
 
 /**
@@ -62,7 +62,7 @@ class Livraison extends CommonObject
 	 *
 	 * @param	DoliDB	$db		Database handler
 	 */
-	function Livraison($db)
+	function __construct($db)
 	{
 		$this->db = $db;
 		$this->lines = array();
@@ -289,9 +289,6 @@ class Livraison extends CommonObject
 
 				if ($this->statut == 0) $this->brouillon = 1;
 
-				$file = $conf->livraison->dir_output . "/" .get_exdir($livraison->id,2) . "/" . $this->id.".pdf";
-				$this->pdf_filename = $file;
-
 				/*
 				 * Lignes
 				 */
@@ -327,7 +324,7 @@ class Livraison extends CommonObject
 	function valid($user)
 	{
 		global $conf, $langs;
-        require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
+        require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
 		dol_syslog(get_class($this)."::valid begin");
 
@@ -337,7 +334,7 @@ class Livraison extends CommonObject
 
 		if ($user->rights->expedition->livraison->valider)
 		{
-			if ($conf->global->LIVRAISON_ADDON)
+			if (! empty($conf->global->LIVRAISON_ADDON))
 			{
 				// Definition du nom de module de numerotation de commande
 				$modName = $conf->global->LIVRAISON_ADDON;
@@ -357,14 +354,14 @@ class Livraison extends CommonObject
 					$livref = substr($this->ref, 1, 4);
 					if ($livref == 'PROV')
 					{
-						$this->ref = $objMod->livraison_get_num($soc,$this);
+						$numref = $objMod->livraison_get_num($soc,$this);
 					}
 
 					// Tester si non deja au statut valide. Si oui, on arrete afin d'eviter
 					// de decrementer 2 fois le stock.
 					$sql = "SELECT ref";
 					$sql.= " FROM ".MAIN_DB_PREFIX."livraison";
-					$sql.= " WHERE ref = '".$this->ref."'";
+					$sql.= " WHERE ref = '".$numref."'";
 					$sql.= " AND fk_statut <> 0";
 					$sql.= " AND entity = ".$conf->entity;
 
@@ -379,7 +376,7 @@ class Livraison extends CommonObject
 					}
 
 					$sql = "UPDATE ".MAIN_DB_PREFIX."livraison SET";
-					$sql.= " ref='".$this->db->escape($this->ref)."'";
+					$sql.= " ref='".$this->db->escape($numref)."'";
 					$sql.= ", fk_statut = 1";
 					$sql.= ", date_valid = ".$this->db->idate($now);
 					$sql.= ", fk_user_valid = ".$user->id;
@@ -389,26 +386,29 @@ class Livraison extends CommonObject
 					$resql=$this->db->query($sql);
 					if ($resql)
 					{
-						// On efface le repertoire de pdf provisoire
-						$numref = dol_sanitizeFileName($this->ref);
-						if ($conf->expedition->dir_output)
+
+						$this->oldref='';
+
+						// Rename directory if dir was a temporary ref
+						if (preg_match('/^[\(]?PROV/i', $this->ref))
 						{
-							$dir = $conf->livraison->dir_output . "/" . $numref ;
-							$file = $dir . "/" . $numref . ".pdf";
-							if (file_exists($file))
+							// On renomme repertoire ($this->ref = ancienne ref, $numfa = nouvelle ref)
+							// afin de ne pas perdre les fichiers attaches
+							$oldref = dol_sanitizeFileName($this->ref);
+							$newref = dol_sanitizeFileName($numref);
+							$dirsource = $conf->expedition->dir_output.'/receipt/'.$oldref;
+							$dirdest = $conf->expedition->dir_output.'/receipt/'.$newref;
+							if (file_exists($dirsource))
 							{
-								if (!dol_delete_file($file))
+								dol_syslog(get_class($this)."::valid rename dir ".$dirsource." into ".$dirdest);
+
+								if (@rename($dirsource, $dirdest))
 								{
-									$this->error=$langs->trans("ErrorCanNotDeleteFile",$file);
-									return 0;
-								}
-							}
-							if (file_exists($dir))
-							{
-								if (!dol_delete_dir($dir))
-								{
-									$this->error=$langs->trans("ErrorCanNotDeleteDir",$dir);
-									return 0;
+									$this->oldref = $oldref;
+
+									dol_syslog("Rename ok");
+									// Suppression ancien fichier PDF dans nouveau rep
+									dol_delete_file($dirdest.'/'.$oldref.'*.*');
 								}
 							}
 						}
@@ -440,7 +440,7 @@ class Livraison extends CommonObject
 		}
 
 		// Appel des triggers
-		include_once(DOL_DOCUMENT_ROOT.'/core/class/interfaces.class.php');
+		include_once DOL_DOCUMENT_ROOT.'/core/class/interfaces.class.php';
 		$interface = new Interfaces($this->db);
 		$result = $interface->run_triggers('DELIVERY_VALIDATE', $this, $user, $langs, $conf);
 		// Fin appel triggers
@@ -550,7 +550,9 @@ class Livraison extends CommonObject
 	 */
 	function delete()
 	{
-        require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
+		global $conf, $langs, $user;
+
+        require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 		$this->db->begin();
 
 		$error=0;
@@ -567,21 +569,20 @@ class Livraison extends CommonObject
 			{
 				$sql = "DELETE FROM ".MAIN_DB_PREFIX."livraison";
 				$sql.= " WHERE rowid = ".$this->id;
-				if ( $this->db->query($sql) )
+				if ($this->db->query($sql))
 				{
 					$this->db->commit();
 
 					// On efface le repertoire de pdf provisoire
-					$livref = dol_sanitizeFileName($this->ref);
-					if ($conf->livraison->dir_output)
+					$ref = dol_sanitizeFileName($this->ref);
+					if (! empty($conf->expedition->dir_output))
 					{
-						$dir = $conf->livraison->dir_output . "/" . $livref ;
-						$file = $conf->livraison->dir_output . "/" . $livref . "/" . $livref . ".pdf";
+						$dir = $conf->expedition->dir_output . '/receipt/' . $ref ;
+						$file = $dir . '/' . $ref . '.pdf';
 						if (file_exists($file))
 						{
 							if (!dol_delete_file($file))
 							{
-								$this->error=$langs->trans("ErrorCanNotDeleteFile",$file);
 								return 0;
 							}
 						}
@@ -594,6 +595,15 @@ class Livraison extends CommonObject
 							}
 						}
 					}
+
+					// Call triggers
+					include_once DOL_DOCUMENT_ROOT.'/core/class/interfaces.class.php';
+					$interface=new Interfaces($this->db);
+					$result=$interface->run_triggers('DELIVERY_DELETE',$this,$user,$langs,$conf);
+					if ($result < 0) {
+						$error++; $this->errors=$interface->errors;
+					}
+					// End call triggers
 
 					return 1;
 				}
@@ -655,8 +665,8 @@ class Livraison extends CommonObject
 		$this->lines = array();
 
 		$sql = "SELECT ld.rowid, ld.fk_product, ld.description, ld.subprice, ld.total_ht, ld.qty as qty_shipped,";
-		$sql.= " cd.qty as qty_asked,";
-		$sql.= " p.ref, p.fk_product_type as fk_product_type, p.label as label, p.description as product_desc";
+		$sql.= " cd.qty as qty_asked, cd.label as custom_label,";
+		$sql.= " p.ref as product_ref, p.fk_product_type as fk_product_type, p.label as product_label, p.description as product_desc";
 		$sql.= " FROM ".MAIN_DB_PREFIX."commandedet as cd, ".MAIN_DB_PREFIX."livraisondet as ld";
 		$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product as p on p.rowid = ld.fk_product";
 		$sql.= " WHERE ld.fk_origin_line = cd.rowid";
@@ -674,19 +684,21 @@ class Livraison extends CommonObject
 
 				$obj = $this->db->fetch_object($resql);
 
-				$line->description    = $obj->description;
-				$line->fk_product     = $obj->fk_product;
-				$line->qty_asked      = $obj->qty_asked;
-				$line->qty_shipped    = $obj->qty_shipped;
+				$line->label			= $obj->custom_label;
+				$line->description		= $obj->description;
+				$line->fk_product		= $obj->fk_product;
+				$line->qty_asked		= $obj->qty_asked;
+				$line->qty_shipped		= $obj->qty_shipped;
 
-				$line->ref            = $obj->ref;
-				$line->libelle        = $obj->label;           // Label produit
-				$line->label          = $obj->label;
-				$line->product_desc   = $obj->product_desc;    // Description produit
-				$line->product_type   = $obj->fk_product_type;
+				$line->ref				= $obj->product_ref;		// deprecated
+				$line->libelle			= $obj->product_label;		// deprecated
+				$line->product_label	= $obj->product_label;		// Product label
+				$line->product_ref		= $obj->product_ref;		// Product ref
+				$line->product_desc		= $obj->product_desc;		// Product description
+				$line->product_type		= $obj->fk_product_type;
 
-				$line->price          = $obj->price;
-				$line->total_ht       = $obj->total_ht;
+				$line->price			= $obj->price;
+				$line->total_ht			= $obj->total_ht;
 
 				$this->lines[$i] = $line;
 
@@ -901,7 +913,7 @@ class LivraisonLigne
 	 *
 	 *	@param	DoliDB	$db		Database handler
 	 */
-	function LivraisonLigne($db)
+	function __construct($db)
 	{
 		$this->db=$db;
 	}

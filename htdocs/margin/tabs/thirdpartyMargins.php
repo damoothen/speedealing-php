@@ -21,10 +21,10 @@
  *	\brief      Page des marges des factures clients pour un tiers
  */
 
-require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/compta/facture/class/facture.class.php");
-require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
+require '../../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
+require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 
 $langs->load("companies");
 $langs->load("bills");
@@ -104,20 +104,20 @@ if ($socid > 0)
     }
 
 		// Total Margin
-		print '<tr style="font-weight: bold"><td>'.$langs->trans("TotalMargin").'</td><td colspan="3">';
+		print '<tr><td>'.$langs->trans("TotalMargin").'</td><td colspan="3">';
 		print '<span id="totalMargin"></span>'; // set by jquery (see below)
 		print '</td></tr>';
 
 		// Margin Rate
 		if (! empty($conf->global->DISPLAY_MARGIN_RATES)) {
-			print '<tr style="font-weight: bold"><td>'.$langs->trans("MarginRate").'</td><td colspan="3">';
+			print '<tr><td>'.$langs->trans("MarginRate").'</td><td colspan="3">';
 			print '<span id="marginRate"></span>'; // set by jquery (see below)
 			print '</td></tr>';
 		}
 
 		// Mark Rate
 		if (! empty($conf->global->DISPLAY_MARK_RATES)) {
-			print '<tr style="font-weight: bold"><td>'.$langs->trans("MarkRate").'</td><td colspan="3">';
+			print '<tr><td>'.$langs->trans("MarkRate").'</td><td colspan="3">';
 			print '<span id="markRate"></span>'; // set by jquery (see below)
 			print '</td></tr>';
 		}
@@ -138,6 +138,9 @@ if ($socid > 0)
 		$sql.= " AND s.entity = ".$conf->entity;
 		$sql.= " AND d.fk_facture = f.rowid";
 		$sql.= " AND f.fk_soc = $socid";
+		$sql .= " AND d.buy_price_ht IS NOT NULL";
+		if (isset($conf->global->ForceBuyingPriceIfNull) && $conf->global->ForceBuyingPriceIfNull == 1)
+			$sql .= " AND d.buy_price_ht <> 0";
 		$sql.= " GROUP BY f.rowid";
 		$sql.= " ORDER BY $sortfield $sortorder ";
 		$sql.= $db->plimit($conf->liste_limit +1, $offset);
@@ -156,18 +159,20 @@ if ($socid > 0)
 			print_liste_field_titre($langs->trans("Invoice"),$_SERVER["PHP_SELF"],"f.facnumber","","&amp;socid=".$_REQUEST["socid"],'',$sortfield,$sortorder);
 			print_liste_field_titre($langs->trans("DateInvoice"),$_SERVER["PHP_SELF"],"f.datef","","&amp;socid=".$_REQUEST["socid"],'align="center"',$sortfield,$sortorder);
 			print_liste_field_titre($langs->trans("SellingPrice"),$_SERVER["PHP_SELF"],"selling_price","","&amp;socid=".$_REQUEST["socid"],'align="right"',$sortfield,$sortorder);
-			print_liste_field_titre($langs->trans("BuyingPrice"),$_SERVER["PHP_SELF"],"buyng_price","","&amp;socid=".$_REQUEST["socid"],'align="right"',$sortfield,$sortorder);
+			print_liste_field_titre($langs->trans("BuyingPrice"),$_SERVER["PHP_SELF"],"buying_price","","&amp;socid=".$_REQUEST["socid"],'align="right"',$sortfield,$sortorder);
 			print_liste_field_titre($langs->trans("Margin"),$_SERVER["PHP_SELF"],"marge","","&amp;socid=".$_REQUEST["socid"],'align="right"',$sortfield,$sortorder);
 			if (! empty($conf->global->DISPLAY_MARGIN_RATES))
-				print_liste_field_titre($langs->trans("MarginRate"),$_SERVER["PHP_SELF"],"d.marge_tx","","&amp;socid=".$_REQUEST["socid"],'align="right"',$sortfield,$sortorder);
+				print_liste_field_titre($langs->trans("MarginRate"),$_SERVER["PHP_SELF"],"","","&amp;socid=".$_REQUEST["socid"],'align="right"',$sortfield,$sortorder);
 			if (! empty($conf->global->DISPLAY_MARK_RATES))
-				print_liste_field_titre($langs->trans("MarkRate"),$_SERVER["PHP_SELF"],"d.marque_tx","","&amp;socid=".$_REQUEST["socid"],'align="right"',$sortfield,$sortorder);
+				print_liste_field_titre($langs->trans("MarkRate"),$_SERVER["PHP_SELF"],"","","&amp;socid=".$_REQUEST["socid"],'align="right"',$sortfield,$sortorder);
 			print_liste_field_titre($langs->trans("Status"),$_SERVER["PHP_SELF"],"f.paye,f.fk_statut","","&amp;socid=".$_REQUEST["socid"],'align="right"',$sortfield,$sortorder);
 			print "</tr>\n";
 
 			$cumul_achat = 0;
 			$cumul_vente = 0;
 			$cumul_qty = 0;
+			$rounding = min($conf->global->MAIN_MAX_DECIMALS_UNIT,$conf->global->MAIN_MAX_DECIMALS_TOT);
+
 			if ($num > 0)
 			{
 				$var=True;
@@ -198,8 +203,8 @@ if ($socid > 0)
 					print '<td align="right">'.$invoicestatic->LibStatut($objp->paye,$objp->statut,5).'</td>';
 					print "</tr>\n";
 					$i++;
-					$cumul_achat += $objp->buying_price;
-					$cumul_vente += $objp->selling_price;
+					$cumul_achat += round($objp->buying_price, $rounding);
+					$cumul_vente += round($objp->selling_price, $rounding);
 				}
 			}
 

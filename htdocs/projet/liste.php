@@ -24,8 +24,10 @@
  *	\brief      Page to list projects
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/projet/class/project.class.php");
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
+
+$langs->load('projects');
 
 $title = $langs->trans("Projects");
 

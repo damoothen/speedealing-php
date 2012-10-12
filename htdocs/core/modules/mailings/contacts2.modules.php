@@ -84,6 +84,7 @@ class mailing_contacts2 extends MailingTargets
         $sql.= " ".MAIN_DB_PREFIX."societe as s";
         $sql.= " WHERE s.rowid = sp.fk_soc";
     	$sql.= " AND sp.email != ''";  // Note that null != '' is false
+    	$sql.= " AND sp.no_email = 0";
     	//$sql.= " AND sp.poste != ''";
     	$sql.= " AND sp.entity IN (".getEntity('societe', 1).")";
     	if ($filtersarray[0]<>'all') $sql.= " AND sp.poste ='".$filtersarray[0]."'";
@@ -103,7 +104,7 @@ class mailing_contacts2 extends MailingTargets
                             'firstname' => $obj->firstname,
                             'other' =>
                                 ($langs->transnoentities("ThirdParty").'='.$obj->companyname).';'.
-                                ($langs->transnoentities("Civility").'='.($obj->civilite?$langs->transnoentities("Civility".$obj->civilite):'')),
+                                ($langs->transnoentities("UserTitle").'='.($obj->civilite?$langs->transnoentities("Civility".$obj->civilite):'')),
                             'source_url' => $this->url($obj->id),
                             'source_id' => $obj->id,
                             'source_type' => 'contact'
@@ -165,6 +166,7 @@ class mailing_contacts2 extends MailingTargets
         $sql.= " WHERE s.rowid = sp.fk_soc";
         $sql.= " AND sp.entity IN (".getEntity('societe', 1).")";
     	$sql.= " AND sp.email != ''";  // Note that null != '' is false
+    	$sql.= " AND sp.no_email = 0";
     	//$sql.= " AND sp.poste != ''";
     	// La requete doit retourner un champ "nb" pour etre comprise
     	// par parent::getNbOfRecipients
@@ -189,6 +191,7 @@ class mailing_contacts2 extends MailingTargets
         $sql.= " WHERE s.rowid = sp.fk_soc";
         $sql.= " AND sp.entity IN (".getEntity('societe', 1).")";
         $sql.= " AND sp.email != ''";    // Note that null != '' is false
+        $sql.= " AND sp.no_email = 0";
         $sql.= " AND (sp.poste IS NOT NULL AND sp.poste != '')";
         $sql.= " GROUP BY sp.poste";
         $sql.= " ORDER BY sp.poste";

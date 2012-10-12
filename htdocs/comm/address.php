@@ -23,10 +23,10 @@
  *      \brief      Tab address of thirdparty
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formcompany.class.php");
-require_once(DOL_DOCUMENT_ROOT."/societe/class/address.class.php");
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
+require_once DOL_DOCUMENT_ROOT.'/societe/class/address.class.php';
 
 $langs->load("companies");
 $langs->load("commercial");
@@ -80,27 +80,27 @@ if ($action == 'add' || $action == 'update')
         {
         	if (! empty($backtopage))
         	{
-        		Header("Location: ".$backtopage);
+        		header("Location: ".$backtopage);
         		exit;
         	}
             else if ($origin == 'commande')
             {
-                Header("Location: ../commande/contact.php?action=editdelivery_adress&socid=".$socid."&id=".$originid);
+                header("Location: ../commande/contact.php?action=editdelivery_adress&socid=".$socid."&id=".$originid);
                 exit;
             }
             elseif ($origin == 'propal')
             {
-                Header("Location: ../comm/propal/contact.php?action=editdelivery_adress&socid=".$socid."&id=".$originid);
+                header("Location: ../comm/propal/contact.php?action=editdelivery_adress&socid=".$socid."&id=".$originid);
                 exit;
             }
             elseif ($origin == 'shipment')
             {
-            	Header("Location: ../expedition/fiche.php?id=".$originid);
+            	header("Location: ../expedition/fiche.php?id=".$originid);
             	exit;
             }
             else
             {
-                Header("Location: ".$_SERVER['PHP_SELF']."?socid=".$socid);
+                header("Location: ".$_SERVER['PHP_SELF']."?socid=".$socid);
                 exit;
             }
         }
@@ -120,27 +120,27 @@ if ($action == 'add' || $action == 'update')
         {
         	if (! empty($backtopage))
         	{
-        		Header("Location: ".$backtopage);
+        		header("Location: ".$backtopage);
         		exit;
         	}
             else if ($origin == 'commande')
             {
-                Header("Location: ../commande/contact.php?id=".$originid);
+                header("Location: ../commande/contact.php?id=".$originid);
                 exit;
             }
             elseif ($origin == 'propal')
             {
-                Header("Location: ../comm/propal/contact.php?id=".$originid);
+                header("Location: ../comm/propal/contact.php?id=".$originid);
                 exit;
             }
             elseif ($origin == 'shipment')
             {
-                Header("Location: ../expedition/fiche.php?id=".$originid);
+                header("Location: ../expedition/fiche.php?id=".$originid);
                 exit;
             }
             else
             {
-                Header("Location: ".$_SERVER['PHP_SELF']."?socid=".$socid);
+                header("Location: ".$_SERVER['PHP_SELF']."?socid=".$socid);
                 exit;
             }
         }
@@ -160,7 +160,7 @@ else if ($action == 'confirm_delete' && $confirm == 'yes' && $user->rights->soci
 
     if ($result == 0)
     {
-        Header("Location: ".$_SERVER['PHP_SELF']."?socid=".$socid);
+        header("Location: ".$_SERVER['PHP_SELF']."?socid=".$socid);
         exit ;
     }
     else

@@ -23,12 +23,12 @@
  *	\brief      Project card
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/projet/class/project.class.php");
-require_once(DOL_DOCUMENT_ROOT."/projet/class/task.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/project.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/modules/project/modules_project.php");
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
+require_once DOL_DOCUMENT_ROOT.'/projet/class/task.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/project.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/modules/project/modules_project.php';
 
 $langs->load("projects");
 $langs->load('companies');
@@ -49,12 +49,20 @@ $socid=0;
 if ($user->societe_id > 0) $socid=$user->societe_id;
 $result = restrictedArea($user, 'projet', $id);
 
+// Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
+include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
+$hookmanager=new HookManager($db);
+$hookmanager->initHooks(array('projectcard'));
+
 $object = new Project($db);
 $object->fetch($id,$ref);
 if ($object->id > 0)
 {
 	$object->fetch_thirdparty();
 }
+
+$date_start=dol_mktime(0,0,0,GETPOST('projectmonth','int'),GETPOST('projectday','int'),GETPOST('projectyear','int'));
+$date_end=dol_mktime(0,0,0,GETPOST('projectendmonth','int'),GETPOST('projectendday','int'),GETPOST('projectendyear','int'));;
 
 
 /*
@@ -69,7 +77,7 @@ if (GETPOST("cancel") && ! empty($backtopage))
 	    $result=$object->delete($user);
 	    if ($result > 0)
 	    {
-	        Header("Location: index.php");
+	        header("Location: index.php");
 	        exit;
 	    }
 	    else
@@ -88,7 +96,7 @@ if (GETPOST("cancel") && (GETPOST("comefromclone")==1))
     $result=$object->delete($user);
     if ($result > 0)
     {
-        Header("Location: index.php");
+        header("Location: index.php");
         exit;
     }
     else
@@ -124,8 +132,8 @@ if ($action == 'add' && $user->rights->projet->creer)
         $object->description     = GETPOST('description','alpha');
         $object->public          = GETPOST('public','alpha');
         $object->datec=dol_now();
-        $object->date_start=dol_mktime(0,0,0,GETPOST('projectmonth','int'),GETPOST('projectday','int'),GETPOST('projectyear','int'));
-        $object->date_end=dol_mktime(0,0,0,GETPOST('projectendmonth','int'),GETPOST('projectendday','int'),GETPOST('projectendyear','int'));
+        $object->date_start=$date_start;
+        $object->date_end=$date_end;
 
         $result = $object->create($user);
         if ($result > 0)
@@ -150,7 +158,7 @@ if ($action == 'add' && $user->rights->projet->creer)
         {
             $db->commit();
 
-            Header("Location:fiche.php?id=".$object->id);
+            header("Location:fiche.php?id=".$object->id);
             exit;
         }
         else
@@ -188,13 +196,13 @@ if ($action == 'update' && ! $_POST["cancel"] && $user->rights->projet->creer)
 
 		$old_start_date = $object->date_start;
 
-        $object->ref             = GETPOST('ref','alpha');
-        $object->title           = GETPOST('title','alpha');
-        $object->socid           = GETPOST('socid','int');
-        $object->description     = GETPOST('description','alpha');
-        $object->public          = GETPOST('public','alpha');
-        $object->date_start   = empty($_POST["project"])?'':dol_mktime(0,0,0,GETPOST('projectmonth'),GETPOST('projectday'),GETPOST('projectyear'));
-        $object->date_end     = empty($_POST["projectend"])?'':dol_mktime(0,0,0,GETPOST('projectendmonth'),GETPOST('projectendday'),GETPOST('projectendyear'));
+        $object->ref          = GETPOST('ref','alpha');
+        $object->title        = GETPOST('title','alpha');
+        $object->socid        = GETPOST('socid','int');
+        $object->description  = GETPOST('description','alpha');
+        $object->public       = GETPOST('public','alpha');
+        $object->date_start   = empty($_POST["project"])?'':$date_start;
+        $object->date_end     = empty($_POST["projectend"])?'':$date_end;
 
         $result=$object->update($user);
 
@@ -236,7 +244,7 @@ if ($action == 'builddoc' && $user->rights->projet->creer)
     }
     else
     {
-        Header('Location: '.$_SERVER["PHP_SELF"].'?id='.$object->id.(empty($conf->global->MAIN_JUMP_TAG)?'':'#builddoc'));
+        header('Location: '.$_SERVER["PHP_SELF"].'?id='.$object->id.(empty($conf->global->MAIN_JUMP_TAG)?'':'#builddoc'));
         exit;
     }
 }
@@ -244,15 +252,16 @@ if ($action == 'builddoc' && $user->rights->projet->creer)
 // Delete file in doc form
 if ($action == 'remove_file' && $user->rights->projet->creer)
 {
-    require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
+    require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
     if ($object->id > 0)
     {
         $langs->load("other");
         $upload_dir =	$conf->projet->dir_output . "/";
         $file =	$upload_dir	. '/' .	GETPOST('file');
-        dol_delete_file($file);
-        $mesg	= '<div	class="ok">'.$langs->trans("FileWasRemoved",GETPOST('file')).'</div>';
+        $ret=dol_delete_file($file);
+        if ($ret) setEventMessage($langs->trans("FileWasRemoved", GETPOST('urlfile')));
+        else setEventMessage($langs->trans("ErrorFailToDeleteFile", GETPOST('urlfile')), 'errors');
     }
 }
 
@@ -290,7 +299,7 @@ if ($action == 'confirm_delete' && GETPOST("confirm") == "yes" && $user->rights-
     $result=$object->delete($user);
     if ($result > 0)
     {
-        Header("Location: index.php");
+        header("Location: index.php");
         exit;
     }
     else
@@ -313,7 +322,7 @@ if ($action == 'confirm_clone' && $user->rights->projet->creer && GETPOST('confi
     }
     else
     {
-    	$object->id=$result;
+    	$object->fetch($result);	// Load new object
     	$action='edit';
     	$comefromclone=true;
     }
@@ -353,7 +362,7 @@ if ($action == 'create' && $user->rights->projet->creer)
     $obj = empty($conf->global->PROJECT_ADDON)?'mod_project_simple':$conf->global->PROJECT_ADDON;
     if (! empty($conf->global->PROJECT_ADDON) && is_readable(DOL_DOCUMENT_ROOT ."/core/modules/project/".$conf->global->PROJECT_ADDON.".php"))
     {
-        require_once(DOL_DOCUMENT_ROOT ."/core/modules/project/".$conf->global->PROJECT_ADDON.".php");
+        require_once DOL_DOCUMENT_ROOT ."/core/modules/project/".$conf->global->PROJECT_ADDON.'.php';
         $modProject = new $obj;
         $defaultref = $modProject->getNextValue($soc,$object);
     }
@@ -381,12 +390,12 @@ if ($action == 'create' && $user->rights->projet->creer)
 
     // Date start
     print '<tr><td>'.$langs->trans("DateStart").'</td><td>';
-    print $form->select_date('','project');
+    print $form->select_date(($date_start?$date_start:''),'project');
     print '</td></tr>';
 
     // Date end
     print '<tr><td>'.$langs->trans("DateEnd").'</td><td>';
-    print $form->select_date(-1,'projectend');
+    print $form->select_date(($date_end?$date_end:-1),'projectend');
     print '</td></tr>';
 
     // Description
@@ -394,6 +403,10 @@ if ($action == 'create' && $user->rights->projet->creer)
     print '<td>';
     print '<textarea name="description" wrap="soft" cols="80" rows="'.ROWS_3.'">'.$_POST["description"].'</textarea>';
     print '</td></tr>';
+
+    // Other options
+    $parameters=array();
+    $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action); // Note that $action and $object may have been modified by hook
 
     print '</table>';
 
@@ -493,7 +506,9 @@ else
 
         // Customer
         print '<tr><td>'.$langs->trans("Company").'</td><td>';
-        print $form->select_company($object->societe->id,'socid','',1,1);
+        $text=$form->select_company($object->societe->id,'socid','',1,1);
+        $texthelp=$langs->trans("IfNeedToUseOhterObjectKeepEmpty");
+        print $form->textwithtooltip($text.' '.img_help(),$texthelp,1);
         print '</td></tr>';
 
         // Visibility
@@ -507,10 +522,10 @@ else
 
         // Date start
         print '<tr><td>'.$langs->trans("DateStart").'</td><td>';
-        print $form->select_date($object->date_start,'project');
-        print '<input type="checkbox" name="reportdate" value="yes" ';
+        print $form->select_date($object->date_start?$object->date_start:-1,'project');
+        print ' &nbsp; &nbsp; <input type="checkbox" name="reportdate" value="yes" ';
         if ($comefromclone){print ' checked="checked" ';}
-		print '/>'. $langs->trans("ProjectReportDate");
+		print '/> '. $langs->trans("ProjectReportDate");
         print '</td></tr>';
 
         // Date end
@@ -524,6 +539,10 @@ else
         print '<textarea name="description" wrap="soft" cols="80" rows="'.ROWS_3.'">'.$object->description.'</textarea>';
         print '</td></tr>';
 
+        // Other options
+        $parameters=array();
+        $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action); // Note that $action and $object may have been modified by hook
+
         print '</table>';
 
         print '<div align="center"><br>';
@@ -536,6 +555,8 @@ else
     {
         print '<table class="border" width="100%">';
 
+        $linkback = '<a href="'.DOL_URL_ROOT.'/projet/liste.php">'.$langs->trans("BackToList").'</a>';
+
         // Ref
         print '<tr><td width="30%">'.$langs->trans("Ref").'</td><td>';
         // Define a complementary filter for search of next/prev ref.
@@ -544,7 +565,7 @@ else
             $objectsListId = $object->getProjectsAuthorizedForUser($user,$mine,0);
             $object->next_prev_filter=" rowid in (".(count($objectsListId)?join(',',array_keys($objectsListId)):'0').")";
         }
-        print $form->showrefnav($object,'ref','',1,'ref','ref');
+        print $form->showrefnav($object, 'ref', $linkback, 1, 'ref', 'ref');
         print '</td></tr>';
 
         // Label
@@ -579,6 +600,10 @@ else
         print '<td valign="top">'.$langs->trans("Description").'</td><td>';
         print nl2br($object->description);
         print '</td></tr>';
+
+        // Other options
+        $parameters=array();
+        $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action); // Note that $action and $object may have been modified by hook
 
         print '</table>';
     }
@@ -696,7 +721,7 @@ else
         print '</td><td valign="top" width="50%">';
 
         // List of actions on element
-        include_once(DOL_DOCUMENT_ROOT.'/core/class/html.formactions.class.php');
+        include_once DOL_DOCUMENT_ROOT.'/core/class/html.formactions.class.php';
         $formactions=new FormActions($db);
         $somethingshown=$formactions->showactions($object,'project',$socid);
 

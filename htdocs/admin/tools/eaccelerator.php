@@ -20,7 +20,7 @@
  *     \brief      Page administration de eaccelerator
  */
 
-require("../../main.inc.php");
+require '../../main.inc.php';
 
 $langs->load("admin");
 
@@ -262,7 +262,7 @@ $var=true;
 	</tr>
 	<tr <?php $var = ! $var; print $bc[$var]; ?>>
 		<td>Cached keys</td>
-		<td align="right"><?php print $info['cachedKeys']; ?></td>
+		<td align="right"><?php print (isset($info['cachedKeys'])?$info['cachedKeys']:''); ?></td>
 	</tr>
 </table>
 <?php

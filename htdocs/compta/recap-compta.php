@@ -1,6 +1,6 @@
 <?php
 /* Copyright (C) 2001-2006 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,12 +22,12 @@
  *  \brief      Page de fiche recap compta
  */
 
-require('../main.inc.php');
-require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/compta/facture/class/facture.class.php");
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
 
 $langs->load("companies");
-if ($conf->facture->enabled) $langs->load("bills");
+if (! empty($conf->facture->enabled)) $langs->load("bills");
 
 // Security check
 $socid = $_GET["socid"];
@@ -79,7 +79,7 @@ if ($socid > 0)
 
 	print '</div>';
 
-	if ($conf->facture->enabled && $user->rights->facture->lire)
+	if (! empty($conf->facture->enabled) && $user->rights->facture->lire)
 	{
 		// Factures
 		print_fiche_titre($langs->trans("CustomerPreview"));
@@ -133,14 +133,15 @@ if ($socid > 0)
 				$totalpaye = $fac->getSommePaiement();
 
 				$var=!$var;
-				print "<tr $bc[$var]>";
+				print "<tr ".$bc[$var].">";
 
 				print "<td align=\"center\">".dol_print_date($fac->date)."</td>\n";
 				print '<td><a href="'.DOL_URL_ROOT.'/compta/facture.php?facid='.$fac->id.'">'.img_object($langs->trans("ShowBill"),"bill")." ".$fac->ref."</a></td>\n";
 
 				print '<td aling="left">'.$fac->getLibStatut(2,$totalpaye).'</td>';
 				print '<td align="right">'.price($fac->total_ttc)."</td>\n";
-				$solde = $solde + $fac->total_ttc;
+				if (($fac->statut == 3 ) || ($fac->statut == 2 && ! $fact->close_code) )  $solde = $solde = $solde + $totalpaye;
+				else $solde = $solde + $fac->total_ttc;
 
 				print '<td align="right">&nbsp;</td>';
 				print '<td align="right">'.price($solde)."</td>\n";

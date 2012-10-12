@@ -71,7 +71,7 @@ function check_user_password_ldap($usertotest,$passwordtotest,$entitytotest)
 
 		if ($ldapdebug) print "DEBUG: Logging LDAP steps<br>\n";
 
-		require_once(DOL_DOCUMENT_ROOT."/core/class/ldap.class.php");
+		require_once DOL_DOCUMENT_ROOT.'/core/class/ldap.class.php';
 		$ldap=new Ldap();
 		$ldap->server=array($ldaphost);
 		$ldap->serverPort=$ldapport;
@@ -146,7 +146,7 @@ function check_user_password_ldap($usertotest,$passwordtotest,$entitytotest)
 				$login=$usertotest;
 
 				// ldap2dolibarr synchronisation
-				if ($login && $conf->ldap->enabled && $conf->global->LDAP_SYNCHRO_ACTIVE == 'ldap2dolibarr')
+				if ($login && ! empty($conf->ldap->enabled) && $conf->global->LDAP_SYNCHRO_ACTIVE == 'ldap2dolibarr')
 				{
 					// On charge les attributs du user ldap
 					if ($ldapdebug) print "DEBUG: login ldap = ".$login."<br>\n";

@@ -22,9 +22,9 @@
  *       \brief      Page to setup limits
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/price.lib.php");
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
 
 $langs->load("companies");
 $langs->load("products");
@@ -73,7 +73,7 @@ if ($action == 'update')
 
         dolibarr_set_const($db, "MAIN_ROUNDING_RULE_TOT",   $_POST["MAIN_ROUNDING_RULE_TOT"],'chaine',0,'',$conf->entity);
 
-        Header("Location: ".$_SERVER["PHP_SELF"]."?mainmenu=home&leftmenu=setup");
+        header("Location: ".$_SERVER["PHP_SELF"]."?mainmenu=home&leftmenu=setup");
         exit;
     }
 }

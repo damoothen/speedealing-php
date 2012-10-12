@@ -1,8 +1,8 @@
 <?php
-/* Copyright (C) 2003-2005 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2009      Regis Houssin        <regis@dolibarr.fr>
- * Copyright (C) 2010-2011 Juanjo Menent        <jmenent@2byte.es>
+/* Copyright (C) 2003-2005	Rodolphe Quiedeville	<rodolphe@quiedeville.org>
+ * Copyright (C) 2004-2012	Laurent Destailleur		<eldy@users.sourceforge.net>
+ * Copyright (C) 2009-2012	Regis Houssin			<regis@dolibarr.fr>
+ * Copyright (C) 2010-2011	Juanjo Menent			<jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,9 +24,9 @@
  *	\brief      Fichier de la classe des factures recurentes
  */
 
-require_once(DOL_DOCUMENT_ROOT."/core/class/notify.class.php");
-require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
-require_once(DOL_DOCUMENT_ROOT."/compta/facture/class/facture.class.php");
+require_once DOL_DOCUMENT_ROOT.'/core/class/notify.class.php';
+require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
+require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
 
 
 /**
@@ -62,17 +62,19 @@ class FactureRec extends Facture
 	var $rang;
 	var $special_code;
 
+	var $usenewprice=0;
+
 	var $lines=array();
 
 
 	/**
 	 *	Constructor
 	 *
-	 * 	@param		DoliDB		$DB		Database handler
+	 * 	@param		DoliDB		$db		Database handler
 	 */
-	function FactureRec($DB)
+	function __construct($db)
 	{
-		$this->db = $DB ;
+		$this->db = $db;
 	}
 
 	/**
@@ -82,22 +84,15 @@ class FactureRec extends Facture
 	 * 	@param		int		$facid		Id of source invoice
 	 *	@return		int					<0 if KO, id of invoice if OK
 	 */
-	function create($user,$facid)
+	function create($user, $facid)
 	{
-		global $conf, $langs;
+		global $conf;
 
 		$error=0;
 		$now=dol_now();
 
 		// Clean parameters
 		$this->titre=trim($this->titre);
-
-		// Validate parameters
-		if (empty($this->titre))
-		{
-			$this->error=$langs->trans("ErrorFieldRequired",$langs->trans("Title"));
-			return -3;
-		}
 
 		$this->db->begin();
 
@@ -121,6 +116,7 @@ class FactureRec extends Facture
 			$sql.= ", fk_projet";
 			$sql.= ", fk_cond_reglement";
 			$sql.= ", fk_mode_reglement";
+			$sql.= ", usenewprice";
 			$sql.= ") VALUES (";
 			$sql.= "'".$this->titre."'";
 			$sql.= ", '".$facsrc->socid."'";
@@ -130,12 +126,13 @@ class FactureRec extends Facture
 			$sql.= ", '".$facsrc->remise."'";
 			$sql.= ", '".$this->db->escape($this->note)."'";
 			$sql.= ", '".$user->id."'";
-			$sql.= ", ".($facsrc->fk_project?"'".$facsrc->fk_project."'":"null");
+			$sql.= ", ".(! empty($facsrc->fk_project)?"'".$facsrc->fk_project."'":"null");
 			$sql.= ", '".$facsrc->cond_reglement_id."'";
 			$sql.= ", '".$facsrc->mode_reglement_id."'";
+			$sql.= ", '".$this->usenewprice."'";
 			$sql.= ")";
 
-			if ( $this->db->query($sql) )
+			if ($this->db->query($sql))
 			{
 				$this->id = $this->db->last_insert_id(MAIN_DB_PREFIX."facture_rec");
 
@@ -159,7 +156,8 @@ class FactureRec extends Facture
                         0,
                         $facsrc->lines[$i]->product_type,
                         $facsrc->lines[$i]->rang,
-                        $facsrc->lines[$i]->special_code
+                        $facsrc->lines[$i]->special_code,
+                    	$facsrc->lines[$i]->label
                     );
 
 					if ($result_insert < 0)
@@ -257,23 +255,6 @@ class FactureRec extends Facture
 				$this->modelpdf               = $obj->model_pdf;
 				$this->rang					  = $obj->rang;
 				$this->special_code			  = $obj->special_code;
-				$this->commande_id            = $obj->fk_commande;
-
-				if ($this->commande_id)
-				{
-					$sql = "SELECT ref";
-					$sql.= " FROM ".MAIN_DB_PREFIX."commande";
-					$sql.= " WHERE rowid = ".$this->commande_id;
-
-					$resqlcomm = $this->db->query($sql);
-
-					if ($resqlcomm)
-					{
-						$objc = $this->db->fetch_object($resqlcomm);
-						$this->commande_ref = $objc->ref;
-						$this->db->free($resqlcomm);
-					}
-				}
 
 				if ($this->statut == 0)	$this->brouillon = 1;
 
@@ -312,11 +293,11 @@ class FactureRec extends Facture
  	 */
 	function fetch_lines()
 	{
-		$sql = 'SELECT l.rowid, l.fk_product, l.product_type, l.description, l.price, l.qty, l.tva_tx, ';
+		$sql = 'SELECT l.rowid, l.fk_product, l.product_type, l.label as custom_label, l.description, l.price, l.qty, l.tva_tx, ';
 		$sql.= ' l.remise, l.remise_percent, l.subprice,';
 		$sql.= ' l.total_ht, l.total_tva, l.total_ttc,';
 		$sql.= ' l.rang, l.special_code,';
-		$sql.= ' p.ref as product_ref, p.fk_product_type as fk_product_type, p.label as label, p.description as product_desc';
+		$sql.= ' p.ref as product_ref, p.fk_product_type as fk_product_type, p.label as product_label, p.description as product_desc';
 		$sql.= ' FROM '.MAIN_DB_PREFIX.'facturedet_rec as l';
 		$sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'product as p ON l.fk_product = p.rowid';
 		$sql.= ' WHERE l.fk_facture = '.$this->id;
@@ -333,12 +314,13 @@ class FactureRec extends Facture
 				$line = new FactureLigne($this->db);
 
 				$line->rowid	        = $objp->rowid;
-				$line->desc             = $objp->description;     // Description line
-				$line->product_type     = $objp->product_type;	// Type of line
-				$line->product_ref      = $objp->product_ref;     // Ref product
-				$line->libelle          = $objp->label;           // Label product
-				$line->product_label	= $objp->product_label;
-				$line->product_desc     = $objp->product_desc;    // Description product
+				$line->label            = $objp->custom_label;		// Label line
+				$line->desc             = $objp->description;		// Description line
+				$line->product_type     = $objp->product_type;		// Type of line
+				$line->product_ref      = $objp->product_ref;		// Ref product
+				$line->libelle          = $objp->product_label;		// deprecated
+				$line->product_label	= $objp->product_label;		// Label product
+				$line->product_desc     = $objp->product_desc;		// Description product
 				$line->fk_product_type  = $objp->fk_product_type;	// Type of product
 				$line->qty              = $objp->qty;
 				$line->subprice         = $objp->subprice;
@@ -428,12 +410,13 @@ class FactureRec extends Facture
      *	@param		int			$type				Type of line (0=product, 1=service)
      *	@param      int			$rang               Position of line
      *	@param		int			$special_code		Special code
+     *	@param		string		$label				Label of the line
      *	@return    	int             				<0 if KO, Id of line if OK
 	 */
-	function addline($facid, $desc, $pu_ht, $qty, $txtva, $fk_product=0, $remise_percent=0, $price_base_type='HT', $info_bits=0, $fk_remise_except='', $pu_ttc=0, $type=0, $rang=-1, $special_code=0)
+	function addline($facid, $desc, $pu_ht, $qty, $txtva, $fk_product=0, $remise_percent=0, $price_base_type='HT', $info_bits=0, $fk_remise_except='', $pu_ttc=0, $type=0, $rang=-1, $special_code=0, $label='')
 	{
 		dol_syslog("FactureRec::addline facid=$facid,desc=$desc,pu_ht=$pu_ht,qty=$qty,txtva=$txtva,fk_product=$fk_product,remise_percent=$remise_percent,date_start=$date_start,date_end=$date_end,ventil=$ventil,info_bits=$info_bits,fk_remise_except=$fk_remise_except,price_base_type=$price_base_type,pu_ttc=$pu_ttc,type=$type", LOG_DEBUG);
-		include_once(DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php');
+		include_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
 
 		// Check parameters
 		if ($type < 0) return -1;
@@ -477,6 +460,7 @@ class FactureRec extends Facture
 
 			$sql = "INSERT INTO ".MAIN_DB_PREFIX."facturedet_rec (";
 			$sql.= "fk_facture";
+			$sql.= ", label";
 			$sql.= ", description";
 			$sql.= ", price";
 			$sql.= ", qty";
@@ -493,11 +477,12 @@ class FactureRec extends Facture
 			$sql.= ", special_code";
 			$sql.= ") VALUES (";
 			$sql.= "'".$facid."'";
+			$sql.= ", ".(! empty($label)?"'".$this->db->escape($label)."'":"null");
 			$sql.= ", '".$this->db->escape($desc)."'";
 			$sql.= ", ".price2num($pu_ht);
 			$sql.= ", ".price2num($qty);
 			$sql.= ", ".price2num($txtva);
-			$sql.= ", ".($fk_product?"'".$fk_product."'":"null");
+			$sql.= ", ".(! empty($fk_product)?"'".$fk_product."'":"null");
 			$sql.= ", ".$product_type;
 			$sql.= ", '".price2num($remise_percent)."'";
 			$sql.= ", '".price2num($pu_ht)."'";

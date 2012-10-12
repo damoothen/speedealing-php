@@ -24,9 +24,9 @@
  *  \brief      Fiche creation compte bancaire
  */
 
-require("./pre.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/bank.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
+require 'pre.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/bank.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
 
 $langs->load("banks");
 $langs->load("bills");
@@ -135,10 +135,12 @@ if (($_GET["id"] || $_GET["ref"]) && $action != 'edit')
 
 	print '<table class="border" width="100%">';
 
+	$linkback = '<a href="'.DOL_URL_ROOT.'/compta/bank/index.php">'.$langs->trans("BackToList").'</a>';
+
 	// Ref
 	print '<tr><td valign="top" width="25%">'.$langs->trans("Ref").'</td>';
 	print '<td colspan="3">';
-	print $form->showrefnav($account,'ref','',1,'ref');
+	print $form->showrefnav($account, 'ref', $linkback, 1, 'ref');
 	print '</td></tr>';
 
 	// Label

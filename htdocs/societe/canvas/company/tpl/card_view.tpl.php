@@ -69,7 +69,7 @@ dol_fiche_head($head, 'card', $langs->trans("ThirdParty"),0,'company');
 </tr>
 <?php } ?>
 
-<?php if ($conf->global->MAIN_MODULE_BARCODE) { ?>
+<?php if (! empty($conf->barcode->enabled)) { ?>
 <tr>
 	<td><?php echo $langs->trans('Gencod'); ?></td>
 	<td colspan="3"><?php echo $this->control->tpl['barcode']; ?></td>
@@ -164,7 +164,7 @@ for ($i=1; $i<=4; $i++) {
 	<td><?php echo $this->control->tpl['effectif']; ?></td>
 </tr>
 
-<?php if ($conf->global->MAIN_MULTILANGS) { ?>
+<?php if (! empty($conf->global->MAIN_MULTILANGS)) { ?>
 <tr>
 	<td><?php echo $langs->trans("DefaultLang"); ?></td>
 	<td colspan="3"><?php echo $this->control->tpl['default_lang']; ?></td>
@@ -225,7 +225,7 @@ for ($i=1; $i<=4; $i++) {
 	<td colspan="3"><?php echo $this->control->tpl['sales_representatives'];	?></td>
 </tr>
 
-<?php if ($conf->adherent->enabled) { ?>
+<?php if (! empty($conf->adherent->enabled)) { ?>
 <tr>
 	<td width="25%" valign="top"><?php echo $langs->trans("LinkedToDolibarrMember"); ?></td>
 	<td colspan="3"><?php echo $this->control->tpl['linked_member']; ?></td>

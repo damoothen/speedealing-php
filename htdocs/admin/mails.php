@@ -21,9 +21,9 @@
  *       \brief      Page to setup emails sending
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
 $langs->load("companies");
 $langs->load("products");
@@ -40,8 +40,8 @@ $substitutionarrayfortest=array(
 '__EMAIL__' => 'TESTEMail',
 '__LASTNAME__' => 'TESTLastname',
 '__FIRSTNAME__' => 'TESTFirstname',
-'__SIGNATURE__' => 'TESTSignature',
-'__PERSONALIZED__' => 'TESTPersonalized'
+'__SIGNATURE__' => (($user->signature && empty($conf->global->MAIL_DO_NOT_USE_SIGN))?$user->signature:''),
+//'__PERSONALIZED__' => 'TESTPersonalized'	// Hiden because not used yet
 );
 complete_substitutions_array($substitutionarrayfortest, $langs);
 
@@ -68,7 +68,7 @@ if ($action == 'update' && empty($_POST["cancel"]))
 	dolibarr_set_const($db, "MAIN_MAIL_ERRORS_TO",		GETPOST("MAIN_MAIL_ERRORS_TO"),  'chaine',0,'',$conf->entity);
 	dolibarr_set_const($db, "MAIN_MAIL_AUTOCOPY_TO",    GETPOST("MAIN_MAIL_AUTOCOPY_TO"),'chaine',0,'',$conf->entity);
 
-	Header("Location: ".$_SERVER["PHP_SELF"]."?mainmenu=home&leftmenu=setup");
+	header("Location: ".$_SERVER["PHP_SELF"]."?mainmenu=home&leftmenu=setup");
 	exit;
 }
 
@@ -78,45 +78,12 @@ if ($action == 'update' && empty($_POST["cancel"]))
  */
 if (GETPOST('addfile') || GETPOST('addfilehtml'))
 {
-	require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
+	require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
 	// Set tmp user directory
 	$vardir=$conf->user->dir_output."/".$user->id;
 	$upload_dir = $vardir.'/temp';
-
-	if (dol_mkdir($upload_dir) >= 0)
-	{
-		$resupload=dol_move_uploaded_file($_FILES['addedfile']['tmp_name'], $upload_dir . "/" . $_FILES['addedfile']['name'], 1, 0, $_FILES['addedfile']['error']);
-		if (is_numeric($resupload) && $resupload > 0)
-		{
-			$mesg = '<div class="ok">'.$langs->trans("FileTransferComplete").'</div>';
-
-			include_once(DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php');
-			$formmail = new FormMail($db);
-			$formmail->add_attached_files($upload_dir . "/" . $_FILES['addedfile']['name'],$_FILES['addedfile']['name'],$_FILES['addedfile']['type']);
-		}
-		else
-		{
-			$langs->load("errors");
-			if ($resupload < 0)	// Unknown error
-			{
-				$mesg = '<div class="error">'.$langs->trans("ErrorFileNotUploaded").'</div>';
-			}
-			else if (preg_match('/ErrorFileIsInfectedWithAVirus/',$resupload))	// Files infected by a virus
-			{
-				$mesg = '<div class="error">'.$langs->trans("ErrorFileIsInfectedWithAVirus").'</div>';
-			}
-			else	// Known error
-			{
-				$mesg = '<div class="error">'.$langs->trans($resupload).'</div>';
-			}
-		}
-	}
-	else
-	{
-		$langs->load("errors");
-		$mesg = '<div class="error">'.$langs->trans("ErrorFailToCreateDir",$upload_dir).'</div>';
-	}
+	dol_add_file_process($upload_dir,0,0);
 
 	if ($_POST['addfile'])     $action='test';
 	if ($_POST['addfilehtml']) $action='testhtml';
@@ -148,11 +115,9 @@ if (! empty($_POST['removedfile']) || ! empty($_POST['removedfilehtml']))
 		$result = dol_delete_file($pathtodelete,1);
 		if ($result >= 0)
 		{
-            $langs->load("other");
-		    $message = '<div class="ok">'.$langs->trans("FileWasRemoved",$filetodelete).'</div>';
-			//print_r($_FILES);
+			setEventMessage($langs->trans("FileWasRemoved"), $filetodelete);
 
-			include_once(DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php');
+			include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
 			$formmail = new FormMail($db);
 			$formmail->remove_attached_files($keytodelete);
 		}
@@ -189,7 +154,7 @@ if (($action == 'send' || $action == 'sendhtml') && ! GETPOST('addfile') && ! GE
 	$deliveryreceipt= $_POST["deliveryreceipt"];
 
 	// Create form object
-	include_once(DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php');
+	include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
 	$formmail = new FormMail($db);
 
 	$attachedfiles=$formmail->get_attached_files();
@@ -219,7 +184,7 @@ if (($action == 'send' || $action == 'sendhtml') && ! GETPOST('addfile') && ! GE
 		$subject=make_substitutions($subject,$substitutionarrayfortest);
 		$body=make_substitutions($body,$substitutionarrayfortest);
 
-		require_once(DOL_DOCUMENT_ROOT."/core/class/CMailFile.class.php");
+		require_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
         $mailfile = new CMailFile(
             $subject,
             $sendto,
@@ -662,7 +627,7 @@ else
 
 	print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?action=test&amp;mode=init">'.$langs->trans("DoTestSend").'</a>';
 
-	if ($conf->fckeditor->enabled)
+	if (! empty($conf->fckeditor->enabled))
 	{
 		print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?action=testhtml&amp;mode=init">'.$langs->trans("DoTestSendHTML").'</a>';
 	}
@@ -679,7 +644,7 @@ else
 		// If we use SSL/TLS
 		if (! empty($conf->global->MAIN_MAIL_EMAIL_TLS) && function_exists('openssl_open')) $server='ssl://'.$server;
 
-		include_once(DOL_DOCUMENT_ROOT."/core/class/CMailFile.class.php");
+		include_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
 		$mail = new CMailFile('','','','');
 		$result=$mail->check_server_port($server,$port);
 		if ($result) print '<div class="ok">'.$langs->trans("ServerAvailableOnIPOrPort",$server,$port).'</div>';
@@ -699,7 +664,7 @@ else
 		print_titre($langs->trans("DoTestSend"));
 
 		// Cree l'objet formulaire mail
-		include_once(DOL_DOCUMENT_ROOT."/core/class/html.formmail.class.php");
+		include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
 		$formmail = new FormMail($db);
 		$formmail->fromname = (isset($_POST['fromname'])?$_POST['fromname']:$conf->global->MAIN_MAIL_EMAIL_FROM);
 		$formmail->frommail = (isset($_POST['frommail'])?$_POST['frommail']:$conf->global->MAIN_MAIL_EMAIL_FROM);
@@ -744,7 +709,7 @@ else
 		print_titre($langs->trans("DoTestSendHTML"));
 
 		// Cree l'objet formulaire mail
-		include_once(DOL_DOCUMENT_ROOT."/core/class/html.formmail.class.php");
+		include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
 		$formmail = new FormMail($db);
 		$formmail->fromname = (isset($_POST['fromname'])?$_POST['fromname']:$conf->global->MAIN_MAIL_EMAIL_FROM);
 		$formmail->frommail = (isset($_POST['frommail'])?$_POST['frommail']:$conf->global->MAIN_MAIL_EMAIL_FROM);

@@ -35,7 +35,7 @@ if (! defined('NOLOGIN')) define('NOLOGIN',1);					// Not disabled cause need to
 if (! defined('NOREQUIREMENU'))  define('NOREQUIREMENU',1);
 if (! defined('NOREQUIREHTML'))  define('NOREQUIREHTML',1);
 
-require_once("../main.inc.php");
+require_once '../main.inc.php';
 
 if (GETPOST('lang')) $langs->setDefaultLang(GETPOST('lang'));	// If language was forced on URL by the main.inc.php
 $langs->load("main");
@@ -232,8 +232,8 @@ function displayBox($selectedDate,$month,$year)
 
 		// Sur click dans calendrier, appelle fonction dpClickDay
 		echo "<TD class=\"".$dayclass."\"";
-		echo " onMouseOver=\"dpHighlightDay(".$mydate["year"].",".dol_print_date($thedate,"%m").",".$mydate["mday"].",tradMonths)\"";
-		echo " onClick=\"dpClickDay(".$mydate["year"].",".dol_print_date($thedate,"%m").",".$mydate["mday"].",'".$langs->trans("FormatDateShortJava")."')\"";
+		echo " onMouseOver=\"dpHighlightDay(".$mydate["year"].",parseInt('".dol_print_date($thedate,"%m")."',10),".$mydate["mday"].",tradMonths)\"";
+		echo " onClick=\"dpClickDay(".$mydate["year"].",parseInt('".dol_print_date($thedate,"%m")."',10),".$mydate["mday"].",'".$langs->trans("FormatDateShortJava")."')\"";
 		echo ">".sprintf("%02s",$mydate["mday"])."</TD>";
 		$cols++;
 

@@ -24,8 +24,8 @@
  *		\brief      Page to setup sending module
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 
 $langs->load("admin");
 $langs->load("sendings");
@@ -40,13 +40,13 @@ $action=GETPOST('action','alpha');
 if ($action == 'activate_sending')
 {
     dolibarr_set_const($db, "MAIN_SUBMODULE_EXPEDITION", "1",'chaine',0,'',$conf->entity);
-    Header("Location: confexped.php");
+    header("Location: confexped.php");
     exit;
 }
 else if ($action == 'disable_sending')
 {
 	dolibarr_del_const($db, "MAIN_SUBMODULE_EXPEDITION",$conf->entity);
-    Header("Location: confexped.php");
+    header("Location: confexped.php");
     exit;
 }
 // Delivery note
@@ -54,13 +54,13 @@ else if ($action == 'activate_delivery')
 {
     dolibarr_set_const($db, "MAIN_SUBMODULE_EXPEDITION", "1",'chaine',0,'',$conf->entity);    // We must also enable this
     dolibarr_set_const($db, "MAIN_SUBMODULE_LIVRAISON", "1",'chaine',0,'',$conf->entity);
-	Header("Location: confexped.php");
+	header("Location: confexped.php");
 	exit;
 }
 else if ($action == 'disable_delivery')
 {
 	dolibarr_del_const($db, "MAIN_SUBMODULE_LIVRAISON",$conf->entity);
-    Header("Location: confexped.php");
+    header("Location: confexped.php");
     exit;
 }
 
@@ -84,14 +84,14 @@ $head[$h][1] = $langs->trans("Setup");
 $hselected=$h;
 $h++;
 
-if ($conf->global->MAIN_SUBMODULE_EXPEDITION)
+if (! empty($conf->global->MAIN_SUBMODULE_EXPEDITION))
 {
 	$head[$h][0] = DOL_URL_ROOT."/admin/expedition.php";
 	$head[$h][1] = $langs->trans("Sending");
 	$h++;
 }
 
-if ($conf->global->MAIN_SUBMODULE_LIVRAISON)
+if (! empty($conf->global->MAIN_SUBMODULE_LIVRAISON))
 {
 	$head[$h][0] = DOL_URL_ROOT."/admin/livraison.php";
 	$head[$h][1] = $langs->trans("Receivings");

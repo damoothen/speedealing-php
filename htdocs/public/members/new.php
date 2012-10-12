@@ -3,6 +3,7 @@
  * Copyright (C) 2001-2002	Jean-Louis Bergamo		<jlb@j1b.org>
  * Copyright (C) 2006-2011	Laurent Destailleur		<eldy@users.sourceforge.net>
  * Copyright (C) 2012		Regis Houssin			<regis@dolibarr.fr>
+ * Copyright (C) 2012		J. Fernando Lagrange 		<fernando@demo-tic.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,12 +45,12 @@ if (is_int($entity))
 	define("DOLENTITY", $entity);
 }
 
-require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/adherents/class/adherent.class.php");
-require_once(DOL_DOCUMENT_ROOT."/adherents/class/adherent_type.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/extrafields.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formcompany.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
+require '../../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
+require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent_type.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
 
 // Init vars
 $errmsg='';
@@ -179,7 +180,7 @@ if ($action == 'add')
     if (! in_array(GETPOST('morphy'),array('mor','phy')))
     {
         $error+=1;
-        $errmsg .= $langs->trans("ErrorFieldRequired",$langs->transnoentitiesnoconv("MorPhy"))."<br>\n";
+        $errmsg .= $langs->trans("ErrorFieldRequired",$langs->transnoentitiesnoconv('Nature'))."<br>\n";
     }
     if (empty($_POST["nom"]))
     {
@@ -253,14 +254,42 @@ if ($action == 'add')
         $result=$adh->create($user->id);
         if ($result > 0)
         {
+			require_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
+
             // Send email to say it has been created and will be validated soon...
             if (! empty($conf->global->ADHERENT_AUTOREGISTER_MAIL) && ! empty($conf->global->ADHERENT_AUTOREGISTER_MAIL_SUBJECT))
             {
                 $result=$adh->send_an_email($conf->global->ADHERENT_AUTOREGISTER_MAIL,$conf->global->ADHERENT_AUTOREGISTER_MAIL_SUBJECT,array(),array(),array(),"","",0,-1);
             }
 
+            // Send email to the foundation to say a new member subscribed with autosubscribe form
+            if (! empty($conf->global->MAIN_INFO_SOCIETE_MAIL) && ! empty($conf->global->ADHERENT_AUTOREGISTER_NOTIF_MAIL_SUBJECT) &&
+                  ! empty($conf->global->ADHERENT_AUTOREGISTER_NOTIF_MAIL) )
+            {
+            	$to=$adh->makeSubstitution($conf->global->MAIN_INFO_SOCIETE_MAIL);
+            	$from=$conf->global->ADHERENT_MAIL_FROM;
+				$mailfile = new CMailFile(
+					$conf->global->ADHERENT_AUTOREGISTER_NOTIF_MAIL_SUBJECT,
+					$to,
+					$from,
+					$adh->makeSubstitution($conf->global->ADHERENT_AUTOREGISTER_NOTIF_MAIL),
+					array(),
+					array(),
+					array(),
+					"",
+					"",
+					0,
+					-1
+				);
+
+            	if (! $mailfile->sendfile())
+            	{
+            		dol_syslog($langs->trans("ErrorFailedToSendMail",$from,$to), LOG_ERR);
+            	}
+            }
+
             if (! empty($backtopage)) $urlback=$backtopage;
-            else if ($conf->global->MEMBER_URL_REDIRECT_SUBSCRIPTION)
+            else if (! empty($conf->global->MEMBER_URL_REDIRECT_SUBSCRIPTION))
             {
                 $urlback=$conf->global->MEMBER_URL_REDIRECT_SUBSCRIPTION;
                 // TODO Make replacement of __AMOUNT__, etc...
@@ -406,7 +435,7 @@ $morphys["phy"] = $langs->trans("Physical");
 $morphys["mor"] = $langs->trans("Moral");
 if (empty($conf->global->MEMBER_NEWFORM_FORCEMORPHY))
 {
-    print '<tr class="morphy"><td>'.$langs->trans("MorPhy").' <FONT COLOR="red">*</FONT></td><td>'."\n";
+    print '<tr class="morphy"><td>'.$langs->trans('Nature').' <FONT COLOR="red">*</FONT></td><td>'."\n";
     print $form->selectarray("morphy",  $morphys, GETPOST('morphy'), 1);
     print '</td></tr>'."\n";
 }
@@ -416,7 +445,7 @@ else
     print '<input type="hidden" id="morphy" name="morphy" value="'.$conf->global->MEMBER_NEWFORM_FORCEMORPHY.'">';
 }
 // Civility
-print '<tr><td>'.$langs->trans("Civility").'</td><td>';
+print '<tr><td>'.$langs->trans('UserTitle').'</td><td>';
 print $formcompany->select_civility(GETPOST('civilite_id'),'civilite_id').'</td></tr>'."\n";
 // Lastname
 print '<tr><td>'.$langs->trans("Lastname").' <FONT COLOR="red">*</FONT></td><td><input type="text" name="nom" size="40" value="'.dol_escape_htmltag(GETPOST('nom')).'"></td></tr>'."\n";
@@ -485,7 +514,7 @@ foreach($extrafields->attribute_label as $key=>$value)
 }
 // Comments
 print '<tr>';
-print '<td valign="top">'.$langs->trans("Comments").' :</td>';
+print '<td valign="top">'.$langs->trans("Comments").'</td>';
 print '<td valign="top"><textarea name="comment" wrap="soft" cols="60" rows="'.ROWS_4.'">'.dol_escape_htmltag(GETPOST('comment')).'</textarea></td>';
 print '</tr>'."\n";
 
@@ -537,6 +566,10 @@ if (! empty($conf->global->MEMBER_NEWFORM_AMOUNT)
 {
     // $conf->global->MEMBER_NEWFORM_SHOWAMOUNT is an amount
     $amount=0;
+    if (! empty($conf->global->MEMBER_NEWFORM_AMOUNT)) {
+        $amount=$conf->global->MEMBER_NEWFORM_AMOUNT;
+    }
+
     if (! empty($conf->global->MEMBER_NEWFORM_PAYONLINE))
     {
         $amount=GETPOST('amount')?GETPOST('amount'):$conf->global->MEMBER_NEWFORM_AMOUNT;

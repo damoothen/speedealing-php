@@ -42,7 +42,7 @@ function pdf_getFormat()
 
 	if (empty($conf->global->MAIN_PDF_FORMAT))
 	{
-		include_once(DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php');
+		include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 		$pdfformat=dol_getDefaultFormat();
 	}
 	else $pdfformat=$conf->global->MAIN_PDF_FORMAT;
@@ -81,9 +81,9 @@ function pdf_getInstance($format='',$metric='mm',$pagetype='P')
     	return "Error MAIN_USE_FPDF and MAIN_DISABLE_FPDI can't be set together";
 
 	// We use by default TCPDF
-	if (empty($conf->global->MAIN_USE_FPDF)) require_once(TCPDF_PATH.'tcpdf.php');
+	if (empty($conf->global->MAIN_USE_FPDF)) require_once TCPDF_PATH.'tcpdf.php';
 	// We need to instantiate fpdi object (instead of tcpdf) to use merging features. But we can disable it.
-	if (empty($conf->global->MAIN_DISABLE_FPDI)) require_once(FPDI_PATH.'fpdi.php');
+	if (empty($conf->global->MAIN_DISABLE_FPDI)) require_once FPDI_PATH.'fpdi.php';
 
 	//$arrayformat=pdf_getFormat();
 	//$format=array($arrayformat['width'],$arrayformat['height']);
@@ -105,7 +105,7 @@ function pdf_getInstance($format='',$metric='mm',$pagetype='P')
 		 */
 		if (! empty($conf->global->MAIN_USE_FPDF))
 		{
-			require_once(FPDI_PATH.'fpdi_protection.php');
+			require_once FPDI_PATH.'fpdi_protection.php';
 			$pdf = new FPDI_Protection($pagetype,$metric,$format);
 			// For FPDF, we specify permission we want to open
 			$pdfrights = array('print');
@@ -177,7 +177,7 @@ function pdf_getPDFFontSize($outputlangs)
 function pdf_getHeightForLogo($logo)
 {
     $height=22; $maxwidth=130;
-    include_once(DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php');
+    include_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
     $tmp=dol_getImageSize($logo);
     if ($tmp['height'])
     {
@@ -218,7 +218,7 @@ function pdf_build_address($outputlangs,$sourcecompany,$targetcompany='',$target
 	{
 		$stringaddress .= ($stringaddress ? "\n" : '' ).$outputlangs->convToOutputCharset(dol_format_address($sourcecompany))."\n";
 
-		if (! empty($conf->global->MAIN_PDF_ADDALSOSOURCEDETAILS))
+		if (empty($conf->global->MAIN_PDF_DISABLESOURCEDETAILS))
 		{
     		// Tel
     		if ($sourcecompany->tel) $stringaddress .= ($stringaddress ? "\n" : '' ).$outputlangs->transnoentities("Phone").": ".$outputlangs->convToOutputCharset($sourcecompany->tel);
@@ -524,12 +524,12 @@ function pdf_bank(&$pdf,$outputlangs,$curx,$cury,$account,$onlynumber=0,$default
  *  @param  Translate	$outputlangs	Object lang for output
  * 	@param	string		$paramfreetext	Constant name of free text
  * 	@param	Societe		$fromcompany	Object company
- * 	@param	int			$marge_basse	Margin bottom
- * 	@param	int			$marge_gauche	Margin left
- * 	@param	int			$page_hauteur	Page height
+ * 	@param	int			$marge_basse	Margin bottom we use for the autobreak
+ * 	@param	int			$marge_gauche	Margin left (no more used)
+ * 	@param	int			$page_hauteur	Page height (no more used)
  * 	@param	Object		$object			Object shown in PDF
- * 	@param	int			$showdetails	Show company details
- * 	@return	void
+ * 	@param	int			$showdetails	Show company details into footer. This param seems to not be used by standard version.
+ * 	@return	int							Return height of bottom margin including footer text
  */
 function pdf_pagefoot(&$pdf,$outputlangs,$paramfreetext,$fromcompany,$marge_basse,$marge_gauche,$page_hauteur,$object,$showdetails=0)
 {
@@ -537,6 +537,8 @@ function pdf_pagefoot(&$pdf,$outputlangs,$paramfreetext,$fromcompany,$marge_bass
 
 	$outputlangs->load("dict");
 	$line='';
+
+	$dims=$pdf->getPageDimensions();
 
 	// Line of free text
 	if (! empty($conf->global->$paramfreetext))
@@ -659,25 +661,26 @@ function pdf_pagefoot(&$pdf,$outputlangs,$paramfreetext,$fromcompany,$marge_bass
 	$nbofline=dol_nboflines_bis($line,0,$outputlangs->charset_output);
 	//print 'nbofline='.$nbofline; exit;
 	//print 'e'.$line.'t'.dol_nboflines($line);exit;
-	$posy=$marge_basse + ($nbofline*3) + (! empty($line1)?3:0) + (! empty($line2)?3:0) + (! empty($line3)?3:0) + (! empty($line4)?3:0);
+	$marginwithfooter=$marge_basse + ($nbofline*3) + (! empty($line1)?3:0) + (! empty($line2)?3:0) + (! empty($line3)?3:0) + (! empty($line4)?3:0);
+	$posy=$marginwithfooter+0;
 
 	if ($line)	// Free text
 	{
-		$pdf->SetXY($marge_gauche,-$posy);
+		$pdf->SetXY($dims['lm'],-$posy);
 		$width=20000; $align='L';	// By default, ask a manual break: We use a large value 20000, to not have automatic wrap. This make user understand, he need to add CR on its text.
-		if ($conf->global->MAIN_USE_AUTOWRAP_ON_FREETEXT) { $width=200; $align='C'; }
+		if (! empty($conf->global->MAIN_USE_AUTOWRAP_ON_FREETEXT)) { $width=200; $align='C'; }
 		$pdf->MultiCell($width, 3, $line, 0, $align, 0);
 		$posy-=($nbofline*3);	// 6 of ligne + 3 of MultiCell
 	}
 
 	$pdf->SetY(-$posy);
-	$pdf->line($marge_gauche, $page_hauteur-$posy, 200, $page_hauteur-$posy);
+	$pdf->line($dims['lm'], $dims['hk']-$posy, $dims['wk']-$dims['rm'], $dims['hk']-$posy);
 	$posy--;
 
 	if (! empty($line1))
 	{
 		$pdf->SetFont('','B',7);
-		$pdf->SetXY($marge_gauche,-$posy);
+		$pdf->SetXY($dims['lm'],-$posy);
 		$pdf->MultiCell(200, 2, $line1, 0, 'C', 0);
 		$posy-=3;
 		$pdf->SetFont('','',7);
@@ -686,7 +689,7 @@ function pdf_pagefoot(&$pdf,$outputlangs,$paramfreetext,$fromcompany,$marge_bass
 	if (! empty($line2))
 	{
 		$pdf->SetFont('','B',7);
-		$pdf->SetXY($marge_gauche,-$posy);
+		$pdf->SetXY($dims['lm'],-$posy);
 		$pdf->MultiCell(200, 2, $line2, 0, 'C', 0);
 		$posy-=3;
 		$pdf->SetFont('','',7);
@@ -694,14 +697,14 @@ function pdf_pagefoot(&$pdf,$outputlangs,$paramfreetext,$fromcompany,$marge_bass
 
 	if (! empty($line3))
 	{
-		$pdf->SetXY($marge_gauche,-$posy);
+		$pdf->SetXY($dims['lm'],-$posy);
 		$pdf->MultiCell(200, 2, $line3, 0, 'C', 0);
 	}
 
 	if (! empty($line4))
 	{
 		$posy-=3;
-		$pdf->SetXY($marge_gauche,-$posy);
+		$pdf->SetXY($dims['lm'],-$posy);
 		$pdf->MultiCell(200, 2, $line4, 0, 'C', 0);
 	}
 
@@ -712,6 +715,8 @@ function pdf_pagefoot(&$pdf,$outputlangs,$paramfreetext,$fromcompany,$marge_bass
 		$pdf->MultiCell(11, 2, $pdf->PageNo().'/'.$pdf->getAliasNbPages(), 0, 'R', 0);
 		//print 'xxx'.$pdf->getAliasNbPages().'-'.$pdf->getAliasNumPage();exit;
 	}
+
+	return $marginwithfooter;
 }
 
 /**
@@ -808,7 +813,7 @@ function pdf_getlinedesc($object,$i,$outputlangs,$hideref=0,$hidedesc=0,$issuppl
 	global $db, $conf, $langs;
 
 	$idprod=(! empty($object->lines[$i]->fk_product)?$object->lines[$i]->fk_product:false);
-	$label=(! empty($object->lines[$i]->label)?$object->lines[$i]->label:(! empty($object->lines[$i]->libelle)?$object->lines[$i]->libelle:''));
+	$label=(! empty($object->lines[$i]->label)?$object->lines[$i]->label:(! empty($object->lines[$i]->product_label)?$object->lines[$i]->product_label:''));
 	$desc=(! empty($object->lines[$i]->desc)?$object->lines[$i]->desc:(! empty($object->lines[$i]->description)?$object->lines[$i]->description:''));
 	$ref_supplier=(! empty($object->lines[$i]->ref_supplier)?$object->lines[$i]->ref_supplier:(! empty($object->lines[$i]->ref_fourn)?$object->lines[$i]->ref_fourn:''));    // TODO Not yet saved for supplier invoices, only supplier orders
 	$note=(! empty($object->lines[$i]->note)?$object->lines[$i]->note:'');
@@ -820,9 +825,9 @@ function pdf_getlinedesc($object,$i,$outputlangs,$hideref=0,$hidedesc=0,$issuppl
 	{
 		$prodser->fetch($idprod);
 		// If a predefined product and multilang and on other lang, we renamed label with label translated
-		if ($conf->global->MAIN_MULTILANGS && ($outputlangs->defaultlang != $langs->defaultlang))
+		if (! empty($conf->global->MAIN_MULTILANGS) && ($outputlangs->defaultlang != $langs->defaultlang))
 		{
-			if (! empty($prodser->multilangs[$outputlangs->defaultlang]["libelle"]) && $label == $prodser->label)     $label=$prodser->multilangs[$outputlangs->defaultlang]["libelle"];
+			if (! empty($prodser->multilangs[$outputlangs->defaultlang]["label"]) && $label == $prodser->label)     $label=$prodser->multilangs[$outputlangs->defaultlang]["label"];
 			if (! empty($prodser->multilangs[$outputlangs->defaultlang]["description"]) && $desc == $prodser->description) $desc=$prodser->multilangs[$outputlangs->defaultlang]["description"];
 			if (! empty($prodser->multilangs[$outputlangs->defaultlang]["note"]) && $note == $prodser->note)        $note=$prodser->multilangs[$outputlangs->defaultlang]["note"];
 		}
@@ -832,7 +837,7 @@ function pdf_getlinedesc($object,$i,$outputlangs,$hideref=0,$hidedesc=0,$issuppl
 	$libelleproduitservice=$label;
 
 	// Description long of product line
-	if ($desc && ($desc != $label))
+	if (! empty($desc) && ($desc != $label))
 	{
 		if ($libelleproduitservice && empty($hidedesc))
 		{
@@ -1041,9 +1046,9 @@ function pdf_getlineupexcltax($object,$i,$outputlangs,$hidedetails=0,$hookmanage
     global $conf;
 
     $sign=1;
-    if ($object->type == 2 && ! empty($conf->global->INVOICE_POSITIVE_CREDIT_NOTE)) $sign=-1;
+    if (isset($object->type) && $object->type == 2 && ! empty($conf->global->INVOICE_POSITIVE_CREDIT_NOTE)) $sign=-1;
 
-    if (is_object($hookmanager) && ( ($object->lines[$i]->product_type == 9 && !empty($object->lines[$i]->special_code) ) || ! empty($object->lines[$i]->fk_parent_line) ) )
+    if (is_object($hookmanager) && (($object->lines[$i]->product_type == 9 && !empty($object->lines[$i]->special_code)) || ! empty($object->lines[$i]->fk_parent_line)))
 	{
 		$special_code = $object->lines[$i]->special_code;
 		if (! empty($object->lines[$i]->fk_parent_line)) $special_code = $object->getSpecialCode($object->lines[$i]->fk_parent_line);
@@ -1211,7 +1216,7 @@ function pdf_getlineqty_keeptoship($object,$i,$outputlangs,$hidedetails=0,$hookm
  */
 function pdf_getlineremisepercent($object,$i,$outputlangs,$hidedetails=0,$hookmanager=false)
 {
-	include_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
+	include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 
 	if ($object->lines[$i]->special_code != 3)
 	{
@@ -1245,7 +1250,7 @@ function pdf_getlinetotalexcltax($object,$i,$outputlangs,$hidedetails=0,$hookman
     global $conf;
 
     $sign=1;
-    if ($object->type == 2 && ! empty($conf->global->INVOICE_POSITIVE_CREDIT_NOTE)) $sign=-1;
+    if (isset($object->type) && $object->type == 2 && ! empty($conf->global->INVOICE_POSITIVE_CREDIT_NOTE)) $sign=-1;
 
 	if ($object->lines[$i]->special_code == 3)
 	{
@@ -1253,7 +1258,7 @@ function pdf_getlinetotalexcltax($object,$i,$outputlangs,$hidedetails=0,$hookman
 	}
 	else
 	{
-		if (is_object($hookmanager) && ( ($object->lines[$i]->product_type == 9 && ! empty($object->lines[$i]->special_code) ) || ! empty($object->lines[$i]->fk_parent_line) ) )
+		if (is_object($hookmanager) && (($object->lines[$i]->product_type == 9 && ! empty($object->lines[$i]->special_code)) || ! empty($object->lines[$i]->fk_parent_line)))
 		{
 			$special_code = $object->lines[$i]->special_code;
 			if (! empty($object->lines[$i]->fk_parent_line)) $special_code = $object->getSpecialCode($object->lines[$i]->fk_parent_line);

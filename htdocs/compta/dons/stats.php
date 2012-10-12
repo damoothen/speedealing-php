@@ -22,7 +22,7 @@
  *      \brief      Page des statistiques de dons
  */
 
-require("../../main.inc.php");
+require '../../main.inc.php';
 
 $langs->load("donations");
 
@@ -33,7 +33,7 @@ if (!$user->rights->don->lire) accessforbidden();
  * View
  */
 
-llxHeader('',$langs->trans("Donations"),'EN:Module_Donations|FR:Module_Dons|ES:M&oacute;dulo_Subvenciones');
+llxHeader('',$langs->trans("Donations"),'EN:Module_Donations|FR:Module_Dons|ES:M&oacute;dulo_Donaciones');
 
 
 print_fiche_titre($langs->trans("Statistics"));

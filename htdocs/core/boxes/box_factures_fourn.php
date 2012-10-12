@@ -22,7 +22,7 @@
  *      \ingroup    supplier
  *		\brief      Fichier de gestion d'une box des factures fournisseurs
  */
-include_once(DOL_DOCUMENT_ROOT."/core/boxes/modules_boxes.php");
+include_once DOL_DOCUMENT_ROOT.'/core/boxes/modules_boxes.php';
 
 
 /**
@@ -44,7 +44,7 @@ class box_factures_fourn extends ModeleBoxes
 	/**
      *  Constructor
 	 */
-	function box_factures_fourn()
+	function __construct()
 	{
 		global $langs;
 		$langs->load("boxes");
@@ -64,7 +64,7 @@ class box_factures_fourn extends ModeleBoxes
 
 		$this->max=$max;
 
-		include_once(DOL_DOCUMENT_ROOT."/fourn/class/fournisseur.facture.class.php");
+		include_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.facture.class.php';
 		$facturestatic=new FactureFournisseur($db);
 
 		$this->info_box_head = array(
@@ -139,7 +139,9 @@ class box_factures_fourn extends ModeleBoxes
 				if ($num==0) $this->info_box_contents[$i][0] = array('td' => 'align="center"','text'=>$langs->trans("NoModifiedSupplierBills"));
 			}
 			else {
-				dol_print_error($db);
+				$this->info_box_contents[0][0] = array(	'td' => 'align="left"',
+    	        										'maxlength'=>500,
+	            										'text' => ($db->error().' sql='.$sql));
 			}
 		}
 		else {

@@ -25,7 +25,7 @@
  *  \ingroup    mymodule
  *  \brief      Description and activation file for module MyModule
  */
-include_once(DOL_DOCUMENT_ROOT ."/core/modules/DolibarrModules.class.php");
+include_once DOL_DOCUMENT_ROOT .'/core/modules/DolibarrModules.class.php';
 
 
 /**
@@ -38,7 +38,7 @@ class modMyModule extends DolibarrModules
 	 *
 	 *   @param      DoliDB		$db      Database handler
 	 */
-	function modMyModule($db)
+	function __construct($db)
 	{
         global $langs,$conf;
 
@@ -73,16 +73,18 @@ class modMyModule extends DolibarrModules
 		// for specific path of parts (eg: /mymodule/core/modules/barcode)
 		// for specific css file (eg: /mymodule/css/mymodule.css.php)
 		//$this->module_parts = array(
-		//                        	'triggers' => 0,                                 // Set this to 1 if module has its own trigger directory (core/triggers)
-		//							'login' => 0,                                    // Set this to 1 if module has its own login method directory (core/login)
-		//							'substitutions' => 0,                            // Set this to 1 if module has its own substitution function file (core/substitutions)
-		//							'menus' => 0,                                    // Set this to 1 if module has its own menus handler directory (core/menus)
-		//							'theme' => 0,                                    // Set this to 1 if module has its own theme directory (core/theme)
-		//                        	'tpl' => 0,                                      // Set this to 1 if module overwrite template dir (core/tpl)
-		//							'barcode' => 0,                                  // Set this to 1 if module has its own barcode directory (core/modules/barcode)
-		//							'models' => 0,                                   // Set this to 1 if module has its own models directory (core/modules/xxx)
-		//							'css' => '/mymodule/css/mymodule.css.php',       // Set this to relative path of css if module has its own css file
-		//							'hooks' => array('hookcontext1','hookcontext2')  // Set here all hooks context managed by module
+		//                        	'triggers' => 0,                                 	// Set this to 1 if module has its own trigger directory (core/triggers)
+		//							'login' => 0,                                    	// Set this to 1 if module has its own login method directory (core/login)
+		//							'substitutions' => 0,                            	// Set this to 1 if module has its own substitution function file (core/substitutions)
+		//							'menus' => 0,                                    	// Set this to 1 if module has its own menus handler directory (core/menus)
+		//							'theme' => 0,                                    	// Set this to 1 if module has its own theme directory (core/theme)
+		//                        	'tpl' => 0,                                      	// Set this to 1 if module overwrite template dir (core/tpl)
+		//							'barcode' => 0,                                  	// Set this to 1 if module has its own barcode directory (core/modules/barcode)
+		//							'models' => 0,                                   	// Set this to 1 if module has its own models directory (core/modules/xxx)
+		//							'css' => array('/mymodule/css/mymodule.css.php'),	// Set this to relative path of css file if module has its own css file
+	 	//							'js' => array('/mymodule/js/mymodule.js'),          // Set this to relative path of js file if module must load a js on all pages
+		//							'hooks' => array('hookcontext1','hookcontext2')  	// Set here all hooks context managed by module
+		//							'dir' => array('output' => 'othermodulename'),      // To force the default directories names
 		//							'workflow' => array('WORKFLOW_MODULE1_YOURACTIONTYPE_MODULE2'=>array('enabled'=>'! empty($conf->module1->enabled) && ! empty($conf->module2->enabled)', 'picto'=>'yourpicto@mymodule')) // Set here all workflow context managed by module
 		//                        );
 		$this->module_parts = array();
@@ -195,25 +197,12 @@ class modMyModule extends DolibarrModules
 		//							'target'=>'',
 		//							'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
 		// $r++;
-		// $this->menu[$r]=array(	'fk_menu'=>'r=0',		                // Use r=value where r is index key used for the parent menu entry (higher parent must be a top menu entry)
-		//							'type'=>'left',			                // This is a Left menu entry
-		//							'titre'=>'MyModule left menu',
-		//							'mainmenu'=>'mymodule',
-		//							'leftmenu'=>'mymodule',
-		//							'url'=>'/mymodule/pagelevel1.php',
-		//							'langs'=>'mylangfile@mymodule',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
-		//							'position'=>100,
-		//							'enabled'=>'$conf->mymodule->enabled',	// Define condition to show or hide menu entry. Use '$conf->mymodule->enabled' if entry must be visible if module is enabled.
-		//							'perms'=>'1',			                // Use 'perms'=>'$user->rights->mymodule->level1->level2' if you want your menu with a permission rules
-		//							'target'=>'',
-		//							'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
-		// $r++;
 		//
 		// Example to declare a Left Menu entry into an existing Top menu entry:
-		// $this->menu[$r]=array(	'fk_menu'=>'fk_mainmenu=mainmenucode',	// Use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy'
+		// $this->menu[$r]=array(	'fk_menu'=>'fk_mainmenu=xxx',		    // Use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
 		//							'type'=>'left',			                // This is a Left menu entry
 		//							'titre'=>'MyModule left menu',
-		//							'mainmenu'=>'mainmenucode',
+		//							'mainmenu'=>'xxx',
 		//							'leftmenu'=>'mymodule',
 		//							'url'=>'/mymodule/pagelevel2.php',
 		//							'langs'=>'mylangfile@mymodule',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.

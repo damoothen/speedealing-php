@@ -23,13 +23,13 @@
  *	\brief      Page de gestion des documents attachees a une tache d'un projet
  */
 
-require('../../main.inc.php');
-require_once(DOL_DOCUMENT_ROOT."/projet/class/project.class.php");
-require_once(DOL_DOCUMENT_ROOT."/projet/class/task.class.php");
-require_once(DOL_DOCUMENT_ROOT.'/core/lib/project.lib.php');
-require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/images.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
+require '../../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
+require_once DOL_DOCUMENT_ROOT.'/projet/class/task.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/project.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 
 
 $langs->load('projects');
@@ -68,55 +68,6 @@ $projectstatic = new Project($db);
  * Actions
  */
 
-// Envoi fichier
-if ($_POST["sendit"] && ! empty($conf->global->MAIN_UPLOAD_DOC))
-{
-	if (dol_mkdir($upload_dir) >= 0)
-	{
-		$resupload=dol_move_uploaded_file($_FILES['userfile']['tmp_name'], $upload_dir . "/" . dol_unescapefile($_FILES['userfile']['name']),0,0,$_FILES['userfile']['error']);
-		if (is_numeric($resupload) && $resupload > 0)
-		{
-            if (image_format_supported($upload_dir . "/" . $_FILES['userfile']['name']) == 1)
-            {
-                // Create small thumbs for image (Ratio is near 16/9)
-                // Used on logon for example
-                $imgThumbSmall = vignette($upload_dir . "/" . $_FILES['userfile']['name'], $maxwidthsmall, $maxheightsmall, '_small', $quality, "thumbs");
-                // Create mini thumbs for image (Ratio is near 16/9)
-                // Used on menu or for setup page for example
-                $imgThumbMini = vignette($upload_dir . "/" . $_FILES['userfile']['name'], $maxwidthmini, $maxheightmini, '_mini', $quality, "thumbs");
-            }
-		    $mesg = '<div class="ok">'.$langs->trans("FileTransferComplete").'</div>';
-		}
-		else
-		{
-			$langs->load("errors");
-			if ($resupload < 0)	// Unknown error
-			{
-				$mesg = '<div class="error">'.$langs->trans("ErrorFileNotUploaded").'</div>';
-			}
-			else if (preg_match('/ErrorFileIsInfectedWithAVirus/',$resupload))	// Files infected by a virus
-			{
-				$mesg = '<div class="error">'.$langs->trans("ErrorFileIsInfectedWithAVirus").'</div>';
-			}
-			else	// Known error
-			{
-				$mesg = '<div class="error">'.$langs->trans($resupload).'</div>';
-			}
-		}
-	}
-}
-
-// Delete
-if ($action=='delete')
-{
-    $langs->load("other");
-	$file = $upload_dir . '/' . GETPOST('urlfile');	// Do not use urldecode here ($_GET and $_REQUEST are already decoded by PHP).
-	dol_delete_file($file);
-	$_SESSION['dol_message'] = '<div class="ok">'.$langs->trans("FileWasRemoved",GETPOST('urlfile')).'</div>';
-    Header('Location: '.$_SERVER["PHP_SELF"].'?id='.$id);
-    exit;
-}
-
 // Retreive First Task ID of Project if withprojet is on to allow project prev next to work
 if (! empty($project_ref) && ! empty($withproject))
 {
@@ -130,7 +81,7 @@ if (! empty($project_ref) && ! empty($withproject))
 		}
 		else
 		{
-			Header("Location: ".DOL_URL_ROOT.'/projet/tasks.php?id='.$projectstatic->id.($withproject?'&withproject=1':'').(empty($mode)?'':'&mode='.$mode));
+			header("Location: ".DOL_URL_ROOT.'/projet/tasks.php?id='.$projectstatic->id.($withproject?'&withproject=1':'').(empty($mode)?'':'&mode='.$mode));
 			exit;
 		}
 	}
@@ -151,13 +102,32 @@ if ($id > 0 || ! empty($ref))
 		dol_print_error($db);
 	}
 }
+
+// Envoi fichier
+if (GETPOST('sendit') && ! empty($conf->global->MAIN_UPLOAD_DOC))
+{
+	dol_add_file_process($upload_dir,0,1,'userfile');
+}
+
+// Delete
+if ($action=='delete')
+{
+    $langs->load("other");
+	$file = $upload_dir . '/' . GETPOST('urlfile');	// Do not use urldecode here ($_GET and $_REQUEST are already decoded by PHP).
+	$ret=dol_delete_file($file);
+	if ($ret) setEventMessage($langs->trans("FileWasRemoved", GETPOST('urlfile')));
+	else setEventMessage($langs->trans("ErrorFailToDeleteFile", GETPOST('urlfile')), 'errors');
+    header('Location: '.$_SERVER["PHP_SELF"].'?id='.$id);
+    exit;
+}
+
 /*
  * View
  */
 
 $form = new Form($db);
 
-llxHeader('',$langs->trans('Project'));
+llxHeader('',$langs->trans('Task'));
 
 if ($object->id > 0)
 {
@@ -270,8 +240,6 @@ if ($object->id > 0)
 
 	print '<br>';
 
-	dol_htmloutput_mesg($mesg);
-
 
 	// Affiche formulaire upload
 	$formfile=new FormFile($db);
@@ -284,7 +252,7 @@ if ($object->id > 0)
 }
 else
 {
-	Header('Location: index.php');
+	header('Location: index.php');
 	exit;
 }
 

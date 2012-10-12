@@ -1,5 +1,6 @@
 -- ============================================================================
--- Copyright (C) 2010 Laurent Destailleur <eldy@users.sourceforge.net>
+-- Copyright (C) 2010	Laurent Destailleur	<eldy@users.sourceforge.net>
+-- Copyright (C) 2012	Regis Houssin		<regis@dolibarr.fr>
 --
 -- This program is free software; you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -18,4 +19,8 @@
 
 
 ALTER TABLE llx_ecm_directories ADD UNIQUE INDEX idx_ecm_directories (label, fk_parent, entity);
-	
+ALTER TABLE llx_ecm_directories ADD INDEX idx_ecm_directories_fk_user_c (fk_user_c);
+ALTER TABLE llx_ecm_directories ADD INDEX idx_ecm_directories_fk_user_m (fk_user_m);
+
+ALTER TABLE llx_ecm_directories ADD CONSTRAINT fk_ecm_directories_fk_user_c      FOREIGN KEY (fk_user_c)         REFERENCES llx_user (rowid);
+ALTER TABLE llx_ecm_directories ADD CONSTRAINT fk_ecm_directories_fk_user_m      FOREIGN KEY (fk_user_m)         REFERENCES llx_user (rowid);

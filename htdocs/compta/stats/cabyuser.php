@@ -22,10 +22,10 @@
  *      \brief       Page reporting Salesover by user
  */
 
-require('../../main.inc.php');
-require_once(DOL_DOCUMENT_ROOT."/core/lib/report.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/tax.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/date.lib.php");
+require '../../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/report.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/tax.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 
 // Security check
 $socid = isset($_REQUEST["socid"])?$_REQUEST["socid"]:'';
@@ -282,9 +282,9 @@ if (count($amount))
 
         // Other stats
         print '<td align="center">';
-        if ($conf->propal->enabled && $key>0) print '&nbsp;<a href="'.DOL_URL_ROOT.'/comm/propal/stats/index.php?userid='.$key.'">'.img_picto($langs->trans("ProposalStats"),"stats").'</a>&nbsp;';
-        if ($conf->commande->enabled && $key>0) print '&nbsp;<a href="'.DOL_URL_ROOT.'/commande/stats/index.php?userid='.$key.'">'.img_picto($langs->trans("OrderStats"),"stats").'</a>&nbsp;';
-        if ($conf->facture->enabled && $key>0) print '&nbsp;<a href="'.DOL_URL_ROOT.'/compta/facture/stats/index.php?userid='.$key.'">'.img_picto($langs->trans("InvoiceStats"),"stats").'</a>&nbsp;';
+        if (! empty($conf->propal->enabled) && $key>0) print '&nbsp;<a href="'.DOL_URL_ROOT.'/comm/propal/stats/index.php?userid='.$key.'">'.img_picto($langs->trans("ProposalStats"),"stats").'</a>&nbsp;';
+        if (! empty($conf->commande->enabled) && $key>0) print '&nbsp;<a href="'.DOL_URL_ROOT.'/commande/stats/index.php?userid='.$key.'">'.img_picto($langs->trans("OrderStats"),"stats").'</a>&nbsp;';
+        if (! empty($conf->facture->enabled) && $key>0) print '&nbsp;<a href="'.DOL_URL_ROOT.'/compta/facture/stats/index.php?userid='.$key.'">'.img_picto($langs->trans("InvoiceStats"),"stats").'</a>&nbsp;';
         print '</td>';
 
         print "</tr>\n";

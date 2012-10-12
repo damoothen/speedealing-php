@@ -24,12 +24,12 @@
  *     \brief      Onglet de gestion des contacts de commande
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/commande/class/commande.class.php");
-require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/order.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formother.class.php");
-require_once(DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php');
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/commande/class/commande.class.php';
+require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/order.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
 
 $langs->load("orders");
 $langs->load("sendings");
@@ -61,7 +61,7 @@ if ($action == 'addcontact' && $user->rights->commande->creer)
 
 	if ($result >= 0)
 	{
-		Header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
+		header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
 		exit;
 	}
 	else
@@ -99,7 +99,7 @@ else if ($action == 'deletecontact' && $user->rights->commande->creer)
 
 	if ($result >= 0)
 	{
-		Header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
+		header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
 		exit;
 	}
 	else {
@@ -153,9 +153,11 @@ if ($id > 0 || ! empty($ref))
 		*/
 		print '<table class="border" width="100%">';
 
+		$linkback = '<a href="'.DOL_URL_ROOT.'/commande/liste.php'.(! empty($socid)?'?socid='.$socid:'').'">'.$langs->trans("BackToList").'</a>';
+
 		// Ref
 		print '<tr><td width="18%">'.$langs->trans("Ref").'</td><td colspan="3">';
-		print $form->showrefnav($object,'ref','',1,'ref','ref');
+		print $form->showrefnav($object, 'ref', $linkback, 1, 'ref', 'ref');
 		print "</td></tr>";
 
 		// Ref commande client
@@ -176,7 +178,7 @@ if ($id > 0 || ! empty($ref))
 		print '<td colspan="3">'.$object->client->getNomUrl(1).'</td></tr>';
 
 		// Delivery address
-		if ($conf->global->SOCIETE_ADDRESSES_MANAGEMENT)
+		if (! empty($conf->global->SOCIETE_ADDRESSES_MANAGEMENT))
 		{
 			print '<tr><td>';
 			print '<table class="nobordernopadding" width="100%"><tr><td>';
@@ -208,7 +210,7 @@ if ($id > 0 || ! empty($ref))
 		$dirtpls=array_merge($conf->modules_parts['tpl'],array('/core/tpl'));
 		foreach($dirtpls as $reldir)
 		{
-		    $res=@include(dol_buildpath($reldir.'/contacts.tpl.php'));
+		    $res=@include dol_buildpath($reldir.'/contacts.tpl.php');
 		    if ($res) break;
 		}
 	}

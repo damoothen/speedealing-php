@@ -24,8 +24,8 @@
  */
 
 require ("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT.'/core/lib/contract.lib.php');
-require_once(DOL_DOCUMENT_ROOT."/contrat/class/contrat.class.php");
+require_once DOL_DOCUMENT_ROOT.'/core/lib/contract.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/contrat/class/contrat.class.php';
 
 $langs->load("companies");
 $langs->load("contracts");
@@ -85,8 +85,10 @@ if ($id > 0 || ! empty($ref))
 
     print '<table class="border" width="100%">';
 
+    $linkback = '<a href="'.DOL_URL_ROOT.'/contrat/liste.php'.(! empty($socid)?'?socid='.$socid:'').'">'.$langs->trans("BackToList").'</a>';
+
     // Reference
-	print '<tr><td width="25%">'.$langs->trans('Ref').'</td><td colspan="5">'.$object->ref.'</td></tr>';
+	print '<tr><td width="25%">'.$langs->trans('Ref').'</td><td colspan="5">'.$form->showrefnav($object, 'ref', $linkback, 1, 'ref', 'ref', '').'</td></tr>';
 
     // Societe
     print '<tr><td>'.$langs->trans("Customer").'</td>';
@@ -107,7 +109,7 @@ if ($id > 0 || ! empty($ref))
 
 	print '<br>';
 
-	include(DOL_DOCUMENT_ROOT.'/core/tpl/notes.tpl.php');
+	include DOL_DOCUMENT_ROOT.'/core/tpl/notes.tpl.php';
 
 	dol_fiche_end();
 

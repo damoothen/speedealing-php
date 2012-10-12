@@ -23,13 +23,13 @@
  *		\brief      Page of donation card
  */
 
-require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/modules/dons/modules_don.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formcompany.class.php");
-require_once(DOL_DOCUMENT_ROOT."/compta/dons/class/don.class.php");
-require_once(DOL_DOCUMENT_ROOT."/compta/paiement/class/paiement.class.php");
-if ($conf->projet->enabled) require_once(DOL_DOCUMENT_ROOT.'/core/lib/project.lib.php');
+require '../../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/modules/dons/modules_don.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
+require_once DOL_DOCUMENT_ROOT.'/compta/dons/class/don.class.php';
+require_once DOL_DOCUMENT_ROOT.'/compta/paiement/class/paiement.class.php';
+if (! empty($conf->projet->enabled)) require_once DOL_DOCUMENT_ROOT.'/core/lib/project.lib.php';
 
 $langs->load("companies");
 $langs->load("donations");
@@ -49,6 +49,11 @@ $donation_date=dol_mktime(12, 0, 0, GETPOST('remonth'), GETPOST('reday'), GETPOS
 // Security check
 $result = restrictedArea($user, 'don', $id);
 
+// Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
+include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
+$hookmanager=new HookManager($db);
+$hookmanager->initHooks(array('doncard'));
+
 
 /*
  * Actions
@@ -58,7 +63,7 @@ if ($action == 'update')
 {
 	if (! empty($cancel))
 	{
-		Header("Location: ".$_SERVER['PHP_SELF']."?id=".$id);
+		header("Location: ".$_SERVER['PHP_SELF']."?id=".$id);
 		exit;
 	}
 
@@ -102,7 +107,7 @@ if ($action == 'update')
 
 		if ($don->update($user) > 0)
 		{
-			Header("Location: ".$_SERVER['PHP_SELF']."?id=".$don->id);
+			header("Location: ".$_SERVER['PHP_SELF']."?id=".$don->id);
 			exit;
 		}
 	}
@@ -112,7 +117,7 @@ if ($action == 'add')
 {
 	if (! empty($cancel))
 	{
-		Header("Location: index.php");
+		header("Location: index.php");
 		exit;
 	}
 
@@ -154,7 +159,7 @@ if ($action == 'add')
 
 		if ($don->create($user) > 0)
 		{
-			Header("Location: index.php");
+			header("Location: index.php");
 			exit;
 		}
 	}
@@ -163,7 +168,7 @@ if ($action == 'add')
 if ($action == 'delete')
 {
 	$don->delete($id);
-	Header("Location: liste.php");
+	header("Location: liste.php");
 	exit;
 }
 if ($action == 'commentaire')
@@ -175,7 +180,7 @@ if ($action == 'valid_promesse')
 {
 	if ($don->valid_promesse($id, $user->id) >= 0)
 	{
-		Header("Location: ".$_SERVER['PHP_SELF']."?id=".$id);
+		header("Location: ".$_SERVER['PHP_SELF']."?id=".$id);
 		exit;
 	}
     else $mesg=$don->error;
@@ -184,7 +189,7 @@ if ($action == 'set_cancel')
 {
     if ($don->set_cancel($id) >= 0)
     {
-        Header("Location: ".$_SERVER['PHP_SELF']."?id=".$id);
+        header("Location: ".$_SERVER['PHP_SELF']."?id=".$id);
         exit;
     }
     else $mesg=$don->error;
@@ -193,7 +198,7 @@ if ($action == 'set_paid')
 {
 	if ($don->set_paye($id, $modepaiement) >= 0)
 	{
-		Header("Location: ".$_SERVER['PHP_SELF']."?id=".$id);
+		header("Location: ".$_SERVER['PHP_SELF']."?id=".$id);
 		exit;
 	}
     else $mesg=$don->error;
@@ -202,7 +207,7 @@ if ($action == 'set_encaisse')
 {
 	if ($don->set_encaisse($id) >= 0)
 	{
-        Header("Location: ".$_SERVER['PHP_SELF']."?id=".$id);
+        header("Location: ".$_SERVER['PHP_SELF']."?id=".$id);
 		exit;
 	}
     else $mesg=$don->error;
@@ -239,7 +244,7 @@ if ($action == 'builddoc')
 	}
 	else
 	{
-		Header('Location: '.$_SERVER["PHP_SELF"].'?id='.$donation->id.(empty($conf->global->MAIN_JUMP_TAG)?'':'#builddoc'));
+		header('Location: '.$_SERVER["PHP_SELF"].'?id='.$donation->id.(empty($conf->global->MAIN_JUMP_TAG)?'':'#builddoc'));
 		exit;
 	}
 }
@@ -249,7 +254,7 @@ if ($action == 'builddoc')
  * View
  */
 
-llxHeader('',$langs->trans("Donations"),'EN:Module_Donations|FR:Module_Dons|ES:M&oacute;dulo_Subvenciones');
+llxHeader('',$langs->trans("Donations"),'EN:Module_Donations|FR:Module_Dons|ES:M&oacute;dulo_Donaciones');
 
 $form=new Form($db);
 $formfile = new FormFile($db);
@@ -275,7 +280,7 @@ if ($action == 'create')
 	print '<input type="hidden" name="action" value="add">';
 
     $nbrows=11;
-    if ($conf->projet->enabled) $nbrows++;
+    if (! empty($conf->projet->enabled)) $nbrows++;
 
     // Date
 	print '<tr><td class="fieldrequired">'.$langs->trans("Date").'</td><td>';
@@ -313,13 +318,17 @@ if ($action == 'create')
     $form->select_types_paiements('', 'modepaiement', 'CRDT', 0, 1);
     print "</td></tr>\n";
 
-	if ($conf->projet->enabled)
+	if (! empty($conf->projet->enabled))
     {
         // Si module projet actif
         print "<tr><td>".$langs->trans("Project")."</td><td>";
         select_projects('',$_POST["projectid"],"projectid");
         print "</td></tr>\n";
     }
+
+    // Other attributes
+    $parameters=array('colspan' => ' colspan="1"');
+    $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$don,$action);    // Note that $action and $object may have been modified by hook
 
 	print "</table>\n";
 	print '<br><center><input type="submit" class="button" name="save" value="'.$langs->trans("Save").'"> &nbsp; &nbsp; <input type="submit" class="button" name="cancel" value="'.$langs->trans("Cancel").'"></center>';
@@ -359,7 +368,7 @@ if (! empty($id) && $action == 'edit')
 	print '</tr>';
 
     $nbrows=12;
-    if ($conf->projet->enabled) $nbrows++;
+    if (! empty($conf->projet->enabled)) $nbrows++;
 
     // Date
 	print "<tr>".'<td width="25%" class="fieldrequired">'.$langs->trans("Date").'</td><td>';
@@ -410,6 +419,10 @@ if (! empty($id) && $action == 'edit')
         print '</td></tr>';
     }
 
+    // Other attributes
+    $parameters=array('colspan' => ' colspan="1"');
+    $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$don,$action);    // Note that $action and $object may have been modified by hook
+
 	print "</table>\n";
 
 	print '<br><center><input type="submit" class="button" name="save" value="'.$langs->trans("Save").'"> &nbsp; &nbsp; <input type="submit" class="button" name="cancel" value="'.$langs->trans("Cancel").'"></center>';
@@ -442,12 +455,14 @@ if (! empty($id) && $action != 'edit')
 	print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 	print '<table class="border" width="100%">';
 
+	$linkback = '<a href="'.DOL_URL_ROOT.'/compta/dons/liste.php'.(! empty($socid)?'?socid='.$socid:'').'">'.$langs->trans("BackToList").'</a>';
+
     $nbrows=12;
-    if ($conf->projet->enabled) $nbrows++;
+    if (! empty($conf->projet->enabled)) $nbrows++;
 
 	// Ref
 	print "<tr>".'<td>'.$langs->trans("Ref").'</td><td colspan="2">';
-	print $form->showrefnav($don,'rowid','',1,'rowid','ref','');
+	print $form->showrefnav($don, 'rowid', $linkback, 1, 'rowid', 'ref', '');
 	print '</td>';
 	print '</tr>';
 
@@ -487,10 +502,14 @@ if (! empty($id) && $action != 'edit')
 	print "<tr>".'<td>'.$langs->trans("Status").'</td><td>'.$don->getLibStatut(4).'</td></tr>';
 
     // Project
-    if ($conf->projet->enabled)
+    if (! empty($conf->projet->enabled))
     {
         print "<tr>".'<td>'.$langs->trans("Project").'</td><td>'.$don->projet.'</td></tr>';
     }
+
+    // Other attributes
+    $parameters=array('colspan' => ' colspan="1"');
+    $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$don,$action);    // Note that $action and $object may have been modified by hook
 
 	print "</table>\n";
 	print "</form>\n";

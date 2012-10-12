@@ -24,7 +24,7 @@
  *	\ingroup    banque
  *	\brief      File of class to manage bank accounts
  */
-require_once(DOL_DOCUMENT_ROOT ."/core/class/commonobject.class.php");
+require_once DOL_DOCUMENT_ROOT .'/core/class/commonobject.class.php';
 
 
 /**
@@ -35,7 +35,8 @@ class Account extends CommonObject
     public $element='bank_account';
     public $table_element='bank_account';
 
-    var $rowid;
+    var $rowid;	 	// deprecated
+    var $id;
     var $ref;
     var $label;
     //! 1=Compte courant/check/carte, 2=Compte liquide, 0=Compte épargne
@@ -548,7 +549,7 @@ class Account extends CommonObject
         $this->country_id = ($this->country_id?$this->country_id:$this->fk_pays);
 
         // Chargement librairie pour acces fonction controle RIB
-        require_once(DOL_DOCUMENT_ROOT.'/core/lib/bank.lib.php');
+        require_once DOL_DOCUMENT_ROOT.'/core/lib/bank.lib.php';
 
         dol_syslog(get_class($this)."::update_bban $this->code_banque,$this->code_guichet,$this->number,$this->cle_rib,$this->iban");
 
@@ -630,8 +631,8 @@ class Account extends CommonObject
             {
                 $obj = $this->db->fetch_object($result);
 
-                $this->id            = $obj->rowid;		// deprecated
-                $this->rowid         = $obj->rowid;
+                $this->id            = $obj->rowid;
+                $this->rowid         = $obj->rowid;		// deprecated
                 $this->ref           = $obj->ref;
                 $this->label         = $obj->label;
                 $this->type          = $obj->courant;
@@ -702,7 +703,7 @@ class Account extends CommonObject
         $sql.= " WHERE rowid  = ".$this->rowid;
         $sql.= " AND entity = ".$conf->entity;
 
-        dol_syslog("Account::delete sql=".$sql);
+        dol_syslog(get_class($this)."::delete sql=".$sql);
         $result = $this->db->query($sql);
         if ($result) {
             return 1;
@@ -961,7 +962,7 @@ class Account extends CommonObject
         // If this class is linked to a third party
         if (! empty($this->socid))
         {
-            require_once(DOL_DOCUMENT_ROOT ."/societe/class/societe.class.php");
+            require_once DOL_DOCUMENT_ROOT .'/societe/class/societe.class.php';
             $company=new Societe($this->db);
             $result=$company->fetch($this->socid);
             if (! empty($company->country_code)) return $company->country_code;
@@ -988,6 +989,18 @@ class Account extends CommonObject
         if (in_array($country_code,array('AU'))) return 2;           // Australia
         return 0;
     }
+
+    /**
+     *	Load miscellaneous information for tab "Info"
+     *
+     *	@param  int		$id		Id of object to load
+     *	@return	void
+     */
+    function info($id)
+    {
+
+    }
+
 
     /**
      *  Initialise an instance with random values.
@@ -1055,7 +1068,7 @@ class AccountLine extends CommonObject
      *
      *  @param	DoliDB	$db		Database handler
      */
-    function AccountLine($db)
+    function __construct($db)
     {
         $this->db = $db;
     }
@@ -1347,38 +1360,38 @@ class AccountLine extends CommonObject
     /**
      * 	Increase value date of a rowid
      *
-     *	@param	int		$rowid		Id of line to change
-     *	@return	int					>0 if OK, 0 if KO
+     *	@param	int		$id		Id of line to change
+     *	@return	int				>0 if OK, 0 if KO
      */
-    function datev_next($rowid)
+    function datev_next($id)
     {
-        return $this->datev_change($rowid,1);
+        return $this->datev_change($id,1);
     }
 
     /**
      * 	Decrease value date of a rowid
      *
-     *	@param	int		$rowid		Id of line to change
-     *	@return	int					>0 if OK, 0 if KO
+     *	@param	int		$id		Id of line to change
+     *	@return	int				>0 if OK, 0 if KO
      */
-    function datev_previous($rowid)
+    function datev_previous($id)
     {
-        return $this->datev_change($rowid,-1);
+        return $this->datev_change($id,-1);
     }
 
 
     /**
-     *      Charge les informations d'ordre info dans l'objet
+     *	Load miscellaneous information for tab "Info"
      *
-     *      @param	int		$rowid       Id of object
-     *      @return	void
+     *	@param  int		$id		Id of object to load
+     *	@return	void
      */
-    function info($rowid)
+    function info($id)
     {
         $sql = 'SELECT b.rowid, b.datec,';
         $sql.= ' b.fk_user_author, b.fk_user_rappro';
         $sql.= ' FROM '.MAIN_DB_PREFIX.'bank as b';
-        $sql.= ' WHERE b.rowid = '.$rowid;
+        $sql.= ' WHERE b.rowid = '.$id;
 
         $result=$this->db->query($sql);
         if ($result)
