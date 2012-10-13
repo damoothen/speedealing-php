@@ -23,12 +23,12 @@
  *       \brief      Page to setup PDF options
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/usergroups.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formother.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formadmin.class.php");
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formadmin.class.php';
 
 $langs->load("admin");
 $langs->load("languages");
@@ -63,7 +63,7 @@ if ($action == 'update')
 		dolibarr_set_const($db, "MAIN_GENERATE_DOCUMENTS_HIDE_REF",     $_POST["MAIN_GENERATE_DOCUMENTS_HIDE_REF"],'chaine',0,'',$conf->entity);
 	}
 	
-	Header("Location: ".$_SERVER["PHP_SELF"]."?mainmenu=home&leftmenu=setup");
+	header("Location: ".$_SERVER["PHP_SELF"]."?mainmenu=home&leftmenu=setup");
 	exit;
 }
 
@@ -256,7 +256,7 @@ else	// Show
     $pdfformatlabel='';
     if (empty($conf->global->MAIN_PDF_FORMAT))
     {
-        include_once(DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php');
+        include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
         $pdfformatlabel=dol_getDefaultFormat();
     }
     else $pdfformatlabel=$conf->global->MAIN_PDF_FORMAT;
@@ -269,7 +269,9 @@ else	// Show
         if ($resql)
         {
             $obj=$db->fetch_object($resql);
-            $pdfformatlabel=$obj->label.' - '.round($obj->width).'x'.round($obj->height).' '.$obj->unit;
+            $paperKey = $langs->trans('PaperFormat'.$obj->code);
+            $unitKey = $langs->trans('SizeUnit'.$obj->unit);
+            $pdfformatlabel = ($paperKey == 'PaperFormat'.$obj->code ? $obj->label : $paperKey).' - '.round($obj->width).'x'.round($obj->height).' '.($unitKey == 'SizeUnit'.$obj->unit ? $obj->unit : $unitKey);
         }
     }
     print $pdfformatlabel;

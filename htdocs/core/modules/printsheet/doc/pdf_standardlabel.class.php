@@ -50,8 +50,8 @@
  *	\brief      Fichier de la classe permettant d'editer au format PDF des etiquettes au format Avery ou personnalise
  */
 
-require_once(DOL_DOCUMENT_ROOT.'/core/lib/pdf.lib.php');
-require_once(DOL_DOCUMENT_ROOT.'/core/lib/format_cards.lib.php');
+require_once DOL_DOCUMENT_ROOT.'/core/lib/pdf.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/format_cards.lib.php';
 
 
 /**
@@ -447,7 +447,7 @@ class pdf_standardlabel
         $pdf->SetCreator("Dolibarr ".DOL_VERSION);
         $pdf->SetAuthor($outputlangs->convToOutputCharset($user->getFullName($outputlangs)));
         $pdf->SetKeyWords($outputlangs->transnoentities('MembersLabels')." ".$outputlangs->transnoentities("Foundation")." ".$outputlangs->convToOutputCharset($mysoc->name));
-        if ($conf->global->MAIN_DISABLE_PDF_COMPRESSION) $pdf->SetCompression(false);
+        if (! empty($conf->global->MAIN_DISABLE_PDF_COMPRESSION)) $pdf->SetCompression(false);
 
         $pdf->SetMargins(0,0);
         $pdf->SetAutoPageBreak(false);

@@ -1,8 +1,8 @@
 <?php
-/* Copyright (C) 2003-2006 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2005-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
- * Copyright (C) 2012 	   Juanjo Menent        <jmenent@2byte.es>
+/* Copyright (C) 2003-2006	Rodolphe Quiedeville	<rodolphe@quiedeville.org>
+ * Copyright (C) 2005-2012	Laurent Destailleur		<eldy@users.sourceforge.net>
+ * Copyright (C) 2005-2012	Regis Houssin			<regis@dolibarr.fr>
+ * Copyright (C) 2012		Juanjo Menent			<jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,17 +23,31 @@
  *	\ingroup    expedition
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
-require_once(DOL_DOCUMENT_ROOT."/expedition/class/expedition.class.php");
-require_once(DOL_DOCUMENT_ROOT."/product/class/html.formproduct.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/order.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/sendings.lib.php");
-if (! empty($conf->product->enabled) || ! empty($conf->service->enabled))  require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
-if (! empty($conf->projet->enabled))   require_once(DOL_DOCUMENT_ROOT."/projet/class/project.class.php");
-if (! empty($conf->propal->enabled))   require_once(DOL_DOCUMENT_ROOT."/comm/propal/class/propal.class.php");
-if (! empty($conf->commande->enabled)) require_once(DOL_DOCUMENT_ROOT."/commande/class/commande.class.php");
-if (! empty($conf->stock->enabled))    require_once(DOL_DOCUMENT_ROOT."/product/stock/class/entrepot.class.php");
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/expedition/class/expedition.class.php';
+require_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/order.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/sendings.lib.php';
+if (! empty($conf->projet->enabled))
+	require DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
+if (! empty($conf->stock->enabled))
+	require DOL_DOCUMENT_ROOT.'/product/stock/class/entrepot.class.php';
+if (! empty($conf->propal->enabled)) {
+	if (! class_exists('Propal')) {
+		require DOL_DOCUMENT_ROOT.'/comm/propal/class/propal.class.php';
+	}
+}
+if (! empty($conf->commande->enabled)) {
+	if (! class_exists('Commande')) {
+		require DOL_DOCUMENT_ROOT.'/commande/class/commande.class.php';
+	}
+}
+if (! empty($conf->product->enabled) || ! empty($conf->service->enabled)) {
+	if (! class_exists('Product')) {
+		require DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
+	}
+}
 
 $langs->load('orders');
 $langs->load("companies");
@@ -158,7 +172,7 @@ if ($id > 0 || ! empty($ref))
 
 		// Onglet commande
 		$nbrow=7;
-		if ($conf->projet->enabled) $nbrow++;
+		if (! empty($conf->projet->enabled)) $nbrow++;
 
 		print '<table class="border" width="100%">';
 
@@ -300,7 +314,7 @@ if ($id > 0 || ! empty($ref))
 		print '</td></tr>';
 
 		// Project
-		if ($conf->projet->enabled)
+		if (! empty($conf->projet->enabled))
 		{
 			$langs->load('projects');
 			print '<tr><td height="10">';
@@ -350,7 +364,7 @@ if ($id > 0 || ! empty($ref))
 		 */
 		print '<table class="liste" width="100%">';
 
-		$sql = "SELECT cd.rowid, cd.fk_product, cd.product_type, cd.description,";
+		$sql = "SELECT cd.rowid, cd.fk_product, cd.product_type, cd.label, cd.description,";
 		$sql.= " cd.price, cd.tva_tx, cd.subprice,";
 		$sql.= " cd.qty,";
 		$sql.= ' cd.date_start,';
@@ -375,7 +389,7 @@ if ($id > 0 || ! empty($ref))
 			print '<td align="center">'.$langs->trans("QtyOrdered").'</td>';
 			print '<td align="center">'.$langs->trans("QtyShipped").'</td>';
 			print '<td align="center">'.$langs->trans("KeepToShip").'</td>';
-			if ($conf->stock->enabled)
+			if (! empty($conf->stock->enabled))
 			{
 				print '<td align="center">'.$langs->trans("Stock").'</td>';
 			}
@@ -420,10 +434,10 @@ if ($id > 0 || ! empty($ref))
 							$outputlangs->setDefaultLang($newlang);
 						}
 
-						$label = (! empty($prod->multilangs[$outputlangs->defaultlang]["libelle"])) ? $prod->multilangs[$outputlangs->defaultlang]["libelle"] : $objp->product_label;
+						$label = (! empty($prod->multilangs[$outputlangs->defaultlang]["label"])) ? $prod->multilangs[$outputlangs->defaultlang]["label"] : $objp->product_label;
 					}
 					else
-						$label = $objp->product_label;
+						$label = (! empty($objp->label)?$objp->label:$objp->product_label);
 
 					print '<td>';
 					print '<a name="'.$objp->rowid.'"></a>'; // ancre pour retourner sur la ligne
@@ -432,7 +446,6 @@ if ($id > 0 || ! empty($ref))
 					$product_static->type=$objp->fk_product_type;
 					$product_static->id=$objp->fk_product;
 					$product_static->ref=$objp->ref;
-					$product_static->libelle=$label;
 					$text=$product_static->getNomUrl(1);
 					$text.= ' - '.$label;
 					$description=($conf->global->PRODUIT_DESC_IN_FORM?'':dol_htmlentitiesbr($objp->description));
@@ -442,7 +455,7 @@ if ($id > 0 || ! empty($ref))
 					print_date_range($db->jdate($objp->date_start),$db->jdate($objp->date_end));
 
 					// Add description in form
-					if ($conf->global->PRODUIT_DESC_IN_FORM)
+					if (! empty($conf->global->PRODUIT_DESC_IN_FORM))
 					{
 						print ($objp->description && $objp->description!=$objp->product_label)?'<br>'.dol_htmlentitiesbr($objp->description):'';
 					}
@@ -454,7 +467,13 @@ if ($id > 0 || ! empty($ref))
 					print "<td>";
 					if ($type==1) $text = img_object($langs->trans('Service'),'service');
 					else $text = img_object($langs->trans('Product'),'product');
-					print $text.' '.nl2br($objp->description);
+
+					if (! empty($objp->label)) {
+						$text.= ' <strong>'.$objp->label.'</strong>';
+						print $form->textwithtooltip($text,$objp->description,3,'','',$i);
+					} else {
+						print $text.' '.nl2br($objp->description);
+					}
 
 					// Show range
 					print_date_range($db->jdate($objp->date_start),$db->jdate($objp->date_end));
@@ -492,7 +511,7 @@ if ($id > 0 || ! empty($ref))
 					$product->fetch($objp->fk_product);
 				}
 
-				if ($objp->fk_product > 0 && $type == 0 && $conf->stock->enabled)
+				if ($objp->fk_product > 0 && $type == 0 && ! empty($conf->stock->enabled))
 				{
 					print '<td align="center">';
 					print $product->stock_reel;
@@ -563,12 +582,12 @@ if ($id > 0 || ! empty($ref))
 		 * Boutons Actions
 		 */
 
-		if ($user->societe_id == 0)
+		if (empty($user->societe_id))
 		{
 			print '<div class="tabsAction">';
 
             // Bouton expedier sans gestion des stocks
-            if (! $conf->stock->enabled && ($commande->statut > 0 && $commande->statut < 3))
+            if (empty($conf->stock->enabled) && ($commande->statut > 0 && $commande->statut < 3))
 			{
 				if ($user->rights->expedition->creer)
 				{
@@ -588,7 +607,7 @@ if ($id > 0 || ! empty($ref))
 
 
         // Bouton expedier avec gestion des stocks
-        if ($conf->stock->enabled && ($commande->statut > 0 && $commande->statut < 3))
+        if (! empty($conf->stock->enabled) && ($commande->statut > 0 && $commande->statut < 3))
 		{
 			if ($user->rights->expedition->creer)
 			{
@@ -605,14 +624,14 @@ if ($id > 0 || ! empty($ref))
 
 				print '<tr>';
 
-				if ($conf->stock->enabled)
+				if (! empty($conf->stock->enabled))
 				{
 					print '<td>'.$langs->trans("WarehouseSource").'</td>';
 					print '<td>';
 					print $formproduct->selectWarehouses(-1,'entrepot_id','',1);
 					if (count($formproduct->cache_warehouses) <= 0)
 					{
-						print ' &nbsp; No warehouse defined, <a href="'.DOL_URL_ROOT.'/product/stock/fiche.php?action=create">add one</a>';
+						print ' &nbsp; '.$langs->trans("WarehouseSourceNotDefined").' <a href="'.DOL_URL_ROOT.'/product/stock/fiche.php?action=create">'.$langs->trans("AddOne").'</a>';
 					}
 					print '</td>';
 				}

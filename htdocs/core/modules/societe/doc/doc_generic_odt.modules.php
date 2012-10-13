@@ -22,11 +22,11 @@
  *	\brief      File of class to build ODT documents for third parties
  */
 
-require_once(DOL_DOCUMENT_ROOT."/core/modules/societe/modules_societe.class.php");
-require_once(DOL_DOCUMENT_ROOT."/societe/class/societe.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/doc.lib.php");
+require_once DOL_DOCUMENT_ROOT.'/core/modules/societe/modules_societe.class.php';
+require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/doc.lib.php';
 
 
 /**
@@ -109,7 +109,7 @@ class doc_generic_odt extends ModeleThirdPartyDoc
 			if (! is_dir($tmpdir)) $texttitle.=img_warning($langs->trans("ErrorDirNotFound",$tmpdir),0);
 			else
 			{
-				$tmpfiles=dol_dir_list($tmpdir,'files',0,'\.odt');
+				$tmpfiles=dol_dir_list($tmpdir,'files',0,'\.odt','','name',SORT_ASC,0,true); // Disable hook for the moment
 				if (count($tmpfiles)) $listoffiles=array_merge($listoffiles,$tmpfiles);
 			}
 		}
@@ -212,7 +212,7 @@ class doc_generic_odt extends ModeleThirdPartyDoc
 				dol_mkdir($conf->societe->multidir_temp[$object->entity]);
 
 				// Open and load template
-				require_once(ODTPHP_PATH.'odf.php');
+				require_once ODTPHP_PATH.'odf.php';
 				$odfHandler = new odf(
 				    $srctemplatepath,
 				    array(

@@ -22,9 +22,9 @@
  *	\brief      Onglet exports-imports d'un contact
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/contact.lib.php");
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/contact.lib.php';
 
 $langs->load("companies");
 
@@ -56,9 +56,11 @@ dol_fiche_head($head, 'exportimport', $langs->trans("ContactsAddresses"), 0, 'co
  */
 print '<table class="border" width="100%">';
 
+$linkback = '<a href="'.DOL_URL_ROOT.'/contact/list.php">'.$langs->trans("BackToList").'</a>';
+
 // Ref
 print '<tr><td>'.$langs->trans("Ref").'</td><td colspan="3">';
-print $form->showrefnav($contact,'id');
+print $form->showrefnav($contact, 'id', $linkback);
 print '</td></tr>';
 
 // Name

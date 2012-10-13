@@ -20,10 +20,15 @@
 
 /**
  *       \file       htdocs/comm/action/class/ical.class.php
- *       \ingroup    commercial
+ *       \ingroup    agenda
  *       \brief      File of class to parse ical calendars
  */
-class ical
+
+
+/**
+ *		Class to parse ICal calendars
+ */
+class ICal
 {
     var $file_text; // Text in file
     var $cal; // Array to save iCalendar parse data

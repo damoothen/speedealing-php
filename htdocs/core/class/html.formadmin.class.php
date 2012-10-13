@@ -38,26 +38,10 @@ class FormAdmin
 	 *
 	 *  @param		DoliDB		$db      Database handler
 	 */
-	function FormAdmin($db)
+	function __construct($db)
 	{
 		$this->db = $db;
 		return 1;
-	}
-
-	/**
-	 *    	Output list with available languages
-	 *
-	 *    	@param		string		$selected       Langue pre-selectionnee
-	 *    	@param  	string		$htmlname       Nom de la zone select
-	 *    	@param  	int			$showauto       Affiche choix auto
-	 * 		@param		int			$filter			Array of keys to exclude in list
-	 * 		@param		int			$showempty		Add empty value
-	 * 		@return		void
-	 *      @deprecated                 		Use select_language instead
-	 */
-	function select_lang($selected='',$htmlname='lang_id',$showauto=0,$filter=0,$showempty=0)
-	{
-		print $this->select_language($selected,$htmlname,$showauto,$filter,$showempty);
 	}
 
 	/**
@@ -355,7 +339,9 @@ class FormAdmin
             while ($i < $num)
             {
                 $obj=$this->db->fetch_object($resql);
-                $paperformat[$obj->code]=$obj->label.' - '.round($obj->width).'x'.round($obj->height).' '.$obj->unit;
+                $unitKey = $langs->trans('SizeUnit'.$obj->unit);
+
+                $paperformat[$obj->code]= $langs->trans('PaperFormat'.strtoupper($obj->code)).' - '.round($obj->width).'x'.round($obj->height).' '.($unitKey == 'SizeUnit'.$obj->unit ? $obj->unit : $unitKey);
 
                 $i++;
             }

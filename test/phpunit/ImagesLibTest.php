@@ -59,7 +59,7 @@ class ImagesLibTest extends PHPUnit_Framework_TestCase
 	 *
 	 * @return ImagesLibTest
 	 */
-	function ImagesLibTest()
+	function __construct()
 	{
 		//$this->sharedFixture
 		global $conf,$user,$langs,$db;
@@ -139,7 +139,7 @@ class ImagesLibTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($tmp['width'],250);
 		$this->assertEquals($tmp['height'],20);*/
 
-		return $result;
+		return 1;
     }
 
 }

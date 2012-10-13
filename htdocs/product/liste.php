@@ -2,6 +2,7 @@
 /* Copyright (C) 2001-2006 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2012      Marcos García        <marcosgdf@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,12 +24,12 @@
  *  \brief      Page to list products and services
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT.'/product/class/product.class.php');
-require_once(DOL_DOCUMENT_ROOT."/fourn/class/fournisseur.product.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formother.class.php");
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
+require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.product.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
 if (! empty($conf->categorie->enabled))
-	require_once(DOL_DOCUMENT_ROOT."/categories/class/categorie.class.php");
+	require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 
 $langs->load("products");
 $langs->load("stocks");
@@ -65,7 +66,7 @@ $canvas=GETPOST("canvas");
 $objcanvas='';
 if (! empty($canvas))
 {
-    require_once(DOL_DOCUMENT_ROOT."/core/class/canvas.class.php");
+    require_once DOL_DOCUMENT_ROOT.'/core/class/canvas.class.php';
     $objcanvas = new Canvas($db,$action);
     $objcanvas->getCanvas('product','list',$canvas);
 }
@@ -129,7 +130,15 @@ else
     if (! empty($search_categ) || ! empty($catid)) $sql.= ' LEFT JOIN '.MAIN_DB_PREFIX."categorie_product as cp ON p.rowid = cp.fk_product"; // We'll need this table joined to the select in order to filter by categ
    	$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product_fournisseur_price as pfp ON p.rowid = pfp.fk_product";
     $sql.= ' WHERE p.entity IN ('.getEntity('product', 1).')';
-    if ($sall) $sql.= " AND (p.ref LIKE '%".$db->escape($sall)."%' OR p.label LIKE '%".$db->escape($sall)."%' OR p.description LIKE '%".$db->escape($sall)."%' OR p.note LIKE '%".$db->escape($sall)."%')";
+    if ($sall)
+    {
+        $sql.= " AND (p.ref LIKE '%".$db->escape($sall)."%' OR p.label LIKE '%".$db->escape($sall)."%' OR p.description LIKE '%".$db->escape($sall)."%' OR p.note LIKE '%".$db->escape($sall)."%'";
+        if (! empty($conf->barcode->enabled))
+        {
+            $sql.= " OR p.barcode LIKE '%".$db->escape($sall)."%'";
+        }
+        $sql.= ')';
+    }
     // if the type is not 1, we show all products (type = 0,2,3)
     if (dol_strlen($type))
     {
@@ -165,7 +174,7 @@ else
     	if ($num == 1 && ($sall || $snom || $sref || $sbarcode) && $action != 'list')
     	{
     		$objp = $db->fetch_object($resql);
-    		Header("Location: fiche.php?id=".$objp->rowid);
+    		header("Location: fiche.php?id=".$objp->rowid);
     		exit;
     	}
 
@@ -218,7 +227,7 @@ else
     			$template_dir = DOL_DOCUMENT_ROOT . '/theme/'.$conf->theme.'/tpl/product/'.$canvas.'/';
     		}
 
-    		include($template_dir.'list.tpl.php');	// Include native PHP templates
+    		include $template_dir.'list.tpl.php';	// Include native PHP templates
     	}
     	else
     	{
@@ -398,7 +407,7 @@ else
         			    if ($product_fourn->product_fourn_price_id > 0)
         			    {
         			        $htmltext=$product_fourn->display_price_product_fournisseur();
-                            if ($conf->fournisseur->enabled && $user->rights->fournisseur->lire) print $form->textwithpicto(price($product_fourn->fourn_unitprice).' '.$langs->trans("HT"),$htmltext);
+                            if (! empty($conf->fournisseur->enabled) && $user->rights->fournisseur->lire) print $form->textwithpicto(price($product_fourn->fourn_unitprice).' '.$langs->trans("HT"),$htmltext);
                             else print price($product_fourn->fourn_unitprice).' '.$langs->trans("HT");
         			    }
         			}

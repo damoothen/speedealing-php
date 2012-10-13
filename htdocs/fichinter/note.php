@@ -22,9 +22,9 @@
  *	\brief      Fiche d'information sur une fiche d'intervention
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/fichinter/class/fichinter.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/fichinter.lib.php");
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/fichinter/class/fichinter.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/fichinter.lib.php';
 
 $langs->load('companies');
 $langs->load("interventions");
@@ -78,8 +78,10 @@ if ($id > 0 || ! empty($ref))
 
 		print '<table class="border" width="100%">';
 
+		$linkback = '<a href="'.DOL_URL_ROOT.'/fichinter/list.php'.(! empty($socid)?'?socid='.$socid:'').'">'.$langs->trans("BackToList").'</a>';
+
 		print '<tr><td width="25%">'.$langs->trans('Ref').'</td><td colspan="3">';
-		print $form->showrefnav($object,'ref','',1,'ref','ref');
+		print $form->showrefnav($object, 'ref', $linkback, 1, 'ref', 'ref');
 		print '</td></tr>';
 
 		// Company
@@ -89,7 +91,7 @@ if ($id > 0 || ! empty($ref))
 
 		print '<br>';
 
-		include(DOL_DOCUMENT_ROOT.'/core/tpl/notes.tpl.php');
+		include DOL_DOCUMENT_ROOT.'/core/tpl/notes.tpl.php';
 
 		dol_fiche_end();
 	}

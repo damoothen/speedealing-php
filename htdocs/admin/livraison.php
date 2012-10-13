@@ -27,13 +27,14 @@
  *      \ingroup    livraison
  *      \brief      Page d'administration/configuration du module Livraison
  */
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/livraison/class/livraison.class.php");
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/livraison/class/livraison.class.php';
 
 $langs->load("admin");
 $langs->load("sendings");
 $langs->load("deliveries");
+$langs->load('other');
 
 if (!$user->admin) accessforbidden();
 
@@ -105,7 +106,7 @@ if ($action == 'specimen')
 
 	if ($filefound)
 	{
-		require_once($file);
+		require_once $file;
 
 		$module = new $classname($db);
 
@@ -188,7 +189,7 @@ $head[$h][0] = DOL_URL_ROOT."/admin/confexped.php";
 $head[$h][1] = $langs->trans("Setup");
 $h++;
 
-if ($conf->global->MAIN_SUBMODULE_EXPEDITION)
+if (! empty($conf->global->MAIN_SUBMODULE_EXPEDITION))
 {
 	$head[$h][0] = DOL_URL_ROOT."/admin/expedition.php";
 	$head[$h][1] = $langs->trans("Sending");
@@ -235,7 +236,7 @@ foreach ($dirmodels as $reldir)
 				{
 					$file = substr($file, 0, dol_strlen($file)-4);
 
-					require_once(DOL_DOCUMENT_ROOT ."/core/modules/livraison/".$file.".php");
+					require_once DOL_DOCUMENT_ROOT ."/core/modules/livraison/".$file.'.php';
 
 					$module = new $file;
 
@@ -370,7 +371,7 @@ foreach ($dirmodels as $reldir)
 	    			print '<tr '.$bc[$var].'><td>';
 	    			print $name;
 	    			print "</td><td>\n";
-	    			require_once($dir.$file);
+	    			require_once $dir.$file;
 	    			$module = new $classname($db);
 
 	    			print $module->description;

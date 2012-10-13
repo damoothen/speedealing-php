@@ -23,9 +23,9 @@
  *  \brief      Page list of expenses
  */
 
-require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/compta/tva/class/tva.class.php");
-require_once(DOL_DOCUMENT_ROOT."/compta/deplacement/class/deplacement.class.php");
+require '../../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/compta/tva/class/tva.class.php';
+require_once DOL_DOCUMENT_ROOT.'/compta/deplacement/class/deplacement.class.php';
 
 $langs->load("companies");
 $langs->load("users");
@@ -54,7 +54,7 @@ $limit = $conf->liste_limit;
 
 $tripandexpense_static=new Deplacement($db);
 
-//$help_url='EN:Module_Donations|FR:Module_Dons|ES:M&oacute;dulo_Subvenciones';
+//$help_url='EN:Module_Donations|FR:Module_Dons|ES:M&oacute;dulo_Donaciones';
 $help_url='';
 llxHeader('',$langs->trans("ListOfFees"),$help_url);
 

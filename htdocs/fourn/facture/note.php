@@ -23,10 +23,10 @@
  *      \brief      Fiche de notes sur une facture fournisseur
  */
 
-require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT.'/core/lib/fourn.lib.php');
-require_once(DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.class.php');
-require_once(DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.facture.class.php');
+require '../../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/fourn.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.class.php';
+require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.facture.class.php';
 
 $langs->load('bills');
 $langs->load("companies");
@@ -87,9 +87,11 @@ if ($id)
 
     print '<table class="border" width="100%">';
 
+    $linkback = '<a href="'.DOL_URL_ROOT.'/fourn/facture/index.php'.(! empty($socid)?'?socid='.$socid:'').'">'.$langs->trans("BackToList").'</a>';
+
     // Ref
     print '<tr><td width="20%" nowrap="nowrap">'.$langs->trans("Ref").'</td><td colspan="3">';
-    print $form->showrefnav($object,'facid','',1,'rowid','ref',$morehtmlref);
+    print $form->showrefnav($object, 'facid', $linkback, 1, 'rowid', 'ref', $morehtmlref);
     print '</td>';
     print "</tr>\n";
 
@@ -149,7 +151,7 @@ if ($id)
     print '<br>';
 
     $colwidth=20;
-    include(DOL_DOCUMENT_ROOT.'/core/tpl/notes.tpl.php');
+    include DOL_DOCUMENT_ROOT.'/core/tpl/notes.tpl.php';
 
     dol_fiche_end();
 }

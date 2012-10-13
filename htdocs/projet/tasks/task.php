@@ -24,10 +24,10 @@
  */
 
 require ("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/projet/class/project.class.php");
-require_once(DOL_DOCUMENT_ROOT."/projet/class/task.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/project.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formother.class.php");
+require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
+require_once DOL_DOCUMENT_ROOT.'/projet/class/task.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/project.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
 
 $id=GETPOST('id','int');
 $ref=GETPOST('ref','alpha');
@@ -40,6 +40,11 @@ $project_ref=GETPOST('project_ref','alpha');
 $socid=0;
 if ($user->societe_id > 0) $socid = $user->societe_id;
 if (! $user->rights->projet->lire) accessforbidden();
+
+// Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
+include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
+$hookmanager=new HookManager($db);
+$hookmanager->initHooks(array('projecttaskcard'));
 
 $object = new Task($db);
 $projectstatic = new Project($db);
@@ -93,7 +98,7 @@ if ($action == 'confirm_delete' && $confirm == "yes" && $user->rights->projet->s
 
 		if ($object->delete($user) > 0)
 		{
-			Header("Location: index.php");
+			header("Location: index.php");
 			exit;
 		}
 		else
@@ -117,7 +122,7 @@ if (! empty($project_ref) && ! empty($withproject))
 		}
 		else
 		{
-			Header("Location: ".DOL_URL_ROOT.'/projet/tasks.php?id='.$projectstatic->id.(empty($mode)?'':'&mode='.$mode));
+			header("Location: ".DOL_URL_ROOT.'/projet/tasks.php?id='.$projectstatic->id.(empty($mode)?'':'&mode='.$mode));
 		}
 	}
 }
@@ -126,7 +131,9 @@ if (! empty($project_ref) && ! empty($withproject))
  * View
  */
 
-llxHeader("",$langs->trans("Task"));
+$langs->load('projects');
+
+llxHeader('', $langs->trans("Task"));
 
 $form = new Form($db);
 $formother = new FormOther($db);
@@ -279,6 +286,10 @@ if ($id > 0 || ! empty($ref))
 			print '<textarea name="description" wrap="soft" cols="80" rows="'.ROWS_3.'">'.$object->description.'</textarea>';
 			print '</td></tr>';
 
+                        // Other options
+                        $parameters=array();
+                        $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action); // Note that $action and $object may have been modified by hook
+
 			print '</table>';
 
 			print '<center><br>';
@@ -354,6 +365,10 @@ if ($id > 0 || ! empty($ref))
 			print '<td valign="top">'.$langs->trans("Description").'</td><td colspan="3">';
 			print nl2br($object->description);
 			print '</td></tr>';
+
+                        // Other options
+                        $parameters=array();
+                        $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action); // Note that $action and $object may have been modified by hook
 
 			print '</table>';
 

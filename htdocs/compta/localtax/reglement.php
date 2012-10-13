@@ -21,8 +21,8 @@
  *		\brief      List of IRPF payments
  */
 
-require('../../main.inc.php');
-require_once(DOL_DOCUMENT_ROOT."/compta/localtax/class/localtax.class.php");
+require '../../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/compta/localtax/class/localtax.class.php';
 
 $langs->load("compta");
 $langs->load("compta");
@@ -38,7 +38,7 @@ $result = restrictedArea($user, 'tax', '', '', 'charges');
 
 llxHeader();
 
-$localtax_static = new localtax($db);
+$localtax_static = new Localtax($db);
 
 print_fiche_titre($langs->transcountry("LT2Payments",$mysoc->country_code));
 

@@ -23,7 +23,7 @@
  * \ingroup    fournisseurs
  * \brief      Module that generates the latest supplier orders box
  */
-include_once(DOL_DOCUMENT_ROOT."/core/boxes/modules_boxes.php");
+include_once DOL_DOCUMENT_ROOT.'/core/boxes/modules_boxes.php';
 
 /**
  * Class that manages the box showing latest supplier orders
@@ -43,7 +43,7 @@ class box_supplier_orders extends ModeleBoxes
     /**
      *  Constructor
      */
-    function box_supplier_orders()
+    function __construct()
     {
         global $langs;
         $langs->load("boxes");
@@ -64,7 +64,7 @@ class box_supplier_orders extends ModeleBoxes
 
         $this->max = $max;
 
-        include_once(DOL_DOCUMENT_ROOT."/fourn/class/fournisseur.commande.class.php");
+        include_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.commande.class.php';
         $supplierorderstatic=new CommandeFournisseur($db);
 
         $this->info_box_head = array('text' => $langs->trans("BoxTitleLatestSupplierOrders", $max));
@@ -129,7 +129,9 @@ class box_supplier_orders extends ModeleBoxes
             }
             else
             {
-                dol_print_error($db);
+                $this->info_box_contents[0][0] = array( 'td' => 'align="left"',
+                                                        'maxlength'=>500,
+                                                        'text' => ($db->error().' sql='.$sql));
             }
         }
         else

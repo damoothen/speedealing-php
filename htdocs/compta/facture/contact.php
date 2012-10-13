@@ -24,12 +24,12 @@
  *       \brief      Onglet de gestion des contacts des factures
  */
 
-require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/compta/facture/class/facture.class.php");
-require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
-require_once(DOL_DOCUMENT_ROOT.'/core/class/discount.class.php');
-require_once(DOL_DOCUMENT_ROOT.'/core/lib/invoice.lib.php');
-require_once(DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php');
+require '../../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
+require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/discount.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/invoice.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
 
 $langs->load("bills");
 $langs->load("companies");
@@ -63,7 +63,7 @@ if ($action == 'addcontact' && $user->rights->facture->creer)
 
 	if ($result >= 0)
 	{
-		Header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
+		header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
 		exit;
 	}
 	else
@@ -101,7 +101,7 @@ else if ($action == 'deletecontact' && $user->rights->facture->creer)
 
 	if ($result >= 0)
 	{
-		Header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
+		header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
 		exit;
 	}
 	else {
@@ -144,6 +144,8 @@ if ($id > 0 || ! empty($ref))
 		 */
 		print '<table class="border" width="100%">';
 
+		$linkback = '<a href="'.DOL_URL_ROOT.'/compta/facture/list.php'.(! empty($socid)?'?socid='.$socid:'').'">'.$langs->trans("BackToList").'</a>';
+
 		// Ref
 		print '<tr><td width="20%">'.$langs->trans('Ref').'</td>';
 		print '<td colspan="3">';
@@ -158,7 +160,7 @@ if ($id > 0 || ! empty($ref))
 		{
 			dol_print_error('',$discount->error);
 		}
-		print $form->showrefnav($object,'ref','',1,'facnumber','ref',$morehtmlref);
+		print $form->showrefnav($object, 'ref', $linkback, 1, 'facnumber', 'ref', $morehtmlref);
 		print '</td></tr>';
 
 		// Ref customer
@@ -185,7 +187,7 @@ if ($id > 0 || ! empty($ref))
 		$dirtpls=array_merge($conf->modules_parts['tpl'],array('/core/tpl'));
 		foreach($dirtpls as $reldir)
 		{
-		    $res=@include(dol_buildpath($reldir.'/contacts.tpl.php'));
+		    $res=@include dol_buildpath($reldir.'/contacts.tpl.php');
 		    if ($res) break;
 		}
 

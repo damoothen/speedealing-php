@@ -23,7 +23,7 @@
  *	\brief      Module to build boxe for events
  */
 
-include_once(DOL_DOCUMENT_ROOT."/core/boxes/modules_boxes.php");
+include_once DOL_DOCUMENT_ROOT.'/core/boxes/modules_boxes.php';
 
 /**
  * Class to manage the box to show last events
@@ -45,7 +45,7 @@ class box_actions extends ModeleBoxes
 	/**
 	 *  Constructor
 	 */
-	function box_actions()
+	function __construct()
 	{
 		global $langs;
 		$langs->load("boxes");
@@ -65,7 +65,7 @@ class box_actions extends ModeleBoxes
 
 		$this->max=$max;
 
-		include_once(DOL_DOCUMENT_ROOT."/comm/action/class/actioncomm.class.php");
+		include_once DOL_DOCUMENT_ROOT.'/comm/action/class/actioncomm.class.php';
 		$actionstatic=new ActionComm($db);
 
 		$this->info_box_head = array('text' => $langs->trans("BoxTitleLastActionsToDo",$max));

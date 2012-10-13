@@ -24,11 +24,11 @@
  *	\brief      Page to add new time spent on a task
  */
 
-require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/projet/class/project.class.php");
-require_once(DOL_DOCUMENT_ROOT."/projet/class/task.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/project.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/date.lib.php");
+require '../../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
+require_once DOL_DOCUMENT_ROOT.'/projet/class/task.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/project.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 
 $langs->load('projects');
 
@@ -156,7 +156,7 @@ if (! empty($project_ref) && ! empty($withproject))
 		}
 		else
 		{
-			Header("Location: ".DOL_URL_ROOT.'/projet/tasks.php?id='.$projectstatic->id.($withproject?'&withproject=1':'').(empty($mode)?'':'&mode='.$mode));
+			header("Location: ".DOL_URL_ROOT.'/projet/tasks.php?id='.$projectstatic->id.($withproject?'&withproject=1':'').(empty($mode)?'':'&mode='.$mode));
 			exit;
 		}
 	}
@@ -170,6 +170,7 @@ if (! empty($project_ref) && ! empty($withproject))
 llxHeader("",$langs->trans("Task"));
 
 $form = new Form($db);
+$userstatic = new User($db);
 
 if ($id > 0 || ! empty($ref))
 {
@@ -403,17 +404,17 @@ if ($id > 0 || ! empty($ref))
   		    print '</td>';
 
   		    // User
-			$user->id = $task_time->fk_user;
 			print '<td>';
 			if ($_GET['action'] == 'editline' && $_GET['lineid'] == $task_time->rowid)
 			{
-				print $form->select_users($user->id,'userid_line');
+				print $form->select_users($task_time->fk_user,'userid_line');
 			}
 			else
 			{
-				$user->nom		= $task_time->name;
-				$user->prenom 	= $task_time->firstname;
-				print $user->getNomUrl(1);
+				$userstatic->id         = $task_time->fk_user;
+				$userstatic->nom		= $task_time->name;
+				$userstatic->prenom 	= $task_time->firstname;
+				print $userstatic->getNomUrl(1);
 			}
 		    print '</td>';
 

@@ -25,11 +25,11 @@
  *		\remarks	Nearly same file than fournisseur/paiement/fiche.php
  */
 
-require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT.'/compta/paiement/class/paiement.class.php');
-require_once(DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php');
-require_once(DOL_DOCUMENT_ROOT ."/core/modules/facture/modules_facture.php");
-if ($conf->banque->enabled) require_once(DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php');
+require '../../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/compta/paiement/class/paiement.class.php';
+require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
+require_once DOL_DOCUMENT_ROOT .'/core/modules/facture/modules_facture.php';
+if (! empty($conf->banque->enabled)) require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 
 $langs->load('bills');
 $langs->load('banks');
@@ -79,7 +79,7 @@ if ($action == 'confirm_delete' && $confirm == 'yes' && $user->rights->facture->
 	if ($result > 0)
 	{
         $db->commit();
-        Header("Location: liste.php");
+        header("Location: liste.php");
         exit;
 	}
 	else
@@ -115,7 +115,7 @@ if ($action == 'confirm_valide' && $confirm == 'yes' && $user->rights->facture->
 			if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) facture_pdf_create($db, $fac, $fac->modelpdf, $outputlangs, $hookmanager);
 		}
 
-		Header('Location: '.$_SERVER['PHP_SELF'].'?id='.$object->id);
+		header('Location: '.$_SERVER['PHP_SELF'].'?id='.$object->id);
 		exit;
 	}
 	else
@@ -238,7 +238,7 @@ print $form->editfieldval("Note",'note',$object->note,$object,$user->rights->fac
 print '</td></tr>';
 
 // Bank account
-if ($conf->banque->enabled)
+if (! empty($conf->banque->enabled))
 {
     if ($object->bank_account)
     {
@@ -355,7 +355,7 @@ print '</div>';
 
 print '<div class="tabsAction">';
 
-if ($conf->global->BILL_ADD_PAYMENT_VALIDATION)
+if (! empty($conf->global->BILL_ADD_PAYMENT_VALIDATION))
 {
 	if ($user->societe_id == 0 && $object->statut == 0 && $_GET['action'] == '')
 	{

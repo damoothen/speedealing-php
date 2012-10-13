@@ -23,11 +23,9 @@
  *	\brief      Home page of proposal area
  */
 
-require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
-require_once(DOL_DOCUMENT_ROOT ."/comm/propal/class/propal.class.php");
-
-if (!$user->rights->propale->lire) accessforbidden();
+require '../../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT .'/comm/propal/class/propal.class.php';
 
 $langs->load("propal");
 $langs->load("companies");
@@ -39,7 +37,7 @@ if (isset($user->societe_id) && $user->societe_id  > 0)
 	$action = '';
 	$socid = $user->societe_id;
 }
-
+$result = restrictedArea($user, 'propal');
 
 
 /*
@@ -64,8 +62,8 @@ print '<tr><td valign="top" width="30%" class="notopnoleft">';
  * Search form
  */
 $var=false;
-print '<table class="noborder" width="100%">';
-print '<form method="post" action="'.DOL_URL_ROOT.'/comm/propal.php">';
+print '<table class="noborder nohover" width="100%">';
+print '<form method="post" action="'.DOL_URL_ROOT.'/comm/propal/list.php">';
 print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 print '<tr class="liste_titre"><td colspan="3">'.$langs->trans("SearchPropal").'</td></tr>';
 print '<tr '.$bc[$var].'><td>';
@@ -153,7 +151,7 @@ else
 /*
  * Draft proposals
  */
-if ($conf->propal->enabled)
+if (! empty($conf->propal->enabled))
 {
 	$sql = "SELECT c.rowid, c.ref, s.nom as socname, s.rowid as socid, s.canvas, s.client";
 	$sql.= " FROM ".MAIN_DB_PREFIX."propal as c";
@@ -259,7 +257,7 @@ if ($resql)
 			$filename=dol_sanitizeFileName($obj->ref);
 			$filedir=$conf->propal->dir_output . '/' . dol_sanitizeFileName($obj->ref);
 			$urlsource=$_SERVER['PHP_SELF'].'?id='.$obj->rowid;
-			$formfile->show_documents('commande',$filename,$filedir,$urlsource,'','','',1,'',1);
+			print $formfile->getDocumentsLink($propalstatic->element, $filename, $filedir);
 			print '</td></tr></table>';
 
 			print '</td>';
@@ -336,7 +334,7 @@ if (! empty($conf->propal->enabled) && $user->rights->propale->lire)
 				$filename=dol_sanitizeFileName($obj->ref);
 				$filedir=$conf->propal->dir_output . '/' . dol_sanitizeFileName($obj->ref);
 				$urlsource=$_SERVER['PHP_SELF'].'?id='.$obj->propalid;
-				$formfile->show_documents('propal',$filename,$filedir,$urlsource,'','','',1,'',1);
+				print $formfile->getDocumentsLink($propalstatic->element, $filename, $filedir);
 				print '</td></tr></table>';
 
 				print "</td>";
@@ -371,7 +369,7 @@ if (! empty($conf->propal->enabled) && $user->rights->propale->lire)
  * Proposals to process
  */
 /*
-if ($conf->propal->enabled)
+if (! empty($conf->propal->enabled))
 {
 	$sql = "SELECT c.rowid, c.ref, c.fk_statut, s.nom, s.rowid as socid";
 	$sql.=" FROM ".MAIN_DB_PREFIX."propal as c";
@@ -420,7 +418,7 @@ if ($conf->propal->enabled)
 				$filename=dol_sanitizeFileName($obj->ref);
 				$filedir=$conf->commande->dir_output . '/' . dol_sanitizeFileName($obj->ref);
 				$urlsource=$_SERVER['PHP_SELF'].'?id='.$obj->rowid;
-				$formfile->show_documents('commande',$filename,$filedir,$urlsource,'','','',1,'',1);
+				print $formfile->getDocumentsLink($propalstatic->element, $filename, $filedir);
 				print '</td></tr></table>';
 
 				print '</td>';
@@ -443,7 +441,7 @@ if ($conf->propal->enabled)
 /*
  * Proposal that are in a shipping process
  */
-/*if ($conf->propal->enabled)
+/*if (! empty($conf->propal->enabled))
 {
 	$sql = "SELECT c.rowid, c.ref, c.fk_statut, c.facture, s.nom, s.rowid as socid";
 	$sql.= " FROM ".MAIN_DB_PREFIX."commande as c";
@@ -492,7 +490,7 @@ if ($conf->propal->enabled)
 				$filename=dol_sanitizeFileName($obj->ref);
 				$filedir=$conf->commande->dir_output . '/' . dol_sanitizeFileName($obj->ref);
 				$urlsource=$_SERVER['PHP_SELF'].'?id='.$obj->rowid;
-				$formfile->show_documents('commande',$filename,$filedir,$urlsource,'','','',1,'',1);
+				print $formfile->getDocumentsLink($propalstatic->element, $filename, $filedir);
 				print '</td></tr></table>';
 
 				print '</td>';

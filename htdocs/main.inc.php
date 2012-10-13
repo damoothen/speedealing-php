@@ -216,6 +216,7 @@ if (!defined('NOREQUIREAJAX') && $conf->use_javascript_ajax)
 
 
 
+
     
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
@@ -296,7 +297,9 @@ if (!defined('NOLOGIN')) {
     // At the end of this phase, the variable $login is defined.
     $resultFetchUser = '';
     $test = true;
-    if (!isset($_SESSION["dol_login"]) || !isset($_COOKIE["AuthSession"])) {
+    $user = new User($db);
+    //print $user->fetch();exit;
+    if (!isset($_COOKIE["AuthSession"]) || !$user->fetch()) {
         // It is not already authenticated and it requests the login / password
         include_once(DOL_DOCUMENT_ROOT . '/core/lib/security2.lib.php');
 
@@ -435,10 +438,9 @@ if (!defined('NOLOGIN')) {
           // End call triggers */
     } else {
         // We are already into an authenticated session
-        $login = $_SESSION["dol_login"];
-
-        $user = new User($db);
-        $resultFetchUser = $user->fetch("org.couchdb.user:" . $login);
+        //$login = $_SESSION["dol_login"];
+        //$resultFetchUser = $user->fetch("org.couchdb.user:" . $login);
+        $resultFetchUser = $user->fetch();
 
         if ($resultFetchUser <= 0) {
             // Account has been removed after login
@@ -450,7 +452,7 @@ if (!defined('NOLOGIN')) {
             $langs->load('errors');
 
 
-            //$_SESSION["dol_loginmesg"] =
+            //$_SESSION["dol_loginmesg"] = 
             //}
             //if ($resultFetchUser < 0) {
             $user->trigger_mesg = 'SessionExpire - login=' . $login;
@@ -481,8 +483,8 @@ if (!defined('NOLOGIN')) {
         }
     }
 
-// Is it a new session that has started ?
-// If we are here, this means authentication was successfull.
+    // Is it a new session that has started ?
+    // If we are here, this means authentication was successfull.
     if (!isset($_SESSION["dol_login"])) {
         $error = 0;
 
@@ -550,12 +552,12 @@ if (!defined('NOLOGIN')) {
         if ($reshook < 0)
             $error++;
 
-        header('Location: ' . DOL_URL_ROOT . '/index.php?idmenu=menu:home'); // TODO Add default database
-        exit;
+        //header('Location: ' . DOL_URL_ROOT . '/index.php?idmenu=menu:home'); // TODO Add default database
+        //exit;
     }
 
 
-// If user admin, we force the rights-based modules
+    // If user admin, we force the rights-based modules
     if ($user->admin) {
         $user->rights->user->user->lire = 1;
         $user->rights->user->user->creer = 1;
@@ -568,20 +570,20 @@ if (!defined('NOLOGIN')) {
     /*
      * Overwrite configs global by personal configs
      */
-// Set liste_limit
+    // Set liste_limit
     if (isset($user->conf->MAIN_SIZE_LISTE_LIMIT)) { // Can be 0
         $conf->liste_limit = $user->conf->MAIN_SIZE_LISTE_LIMIT;
     }
     if (isset($user->conf->PRODUIT_LIMIT_SIZE)) {  // Can be 0
         $conf->product->limit_size = $user->conf->PRODUIT_LIMIT_SIZE;
     }
-// Replace conf->css by personalized value
+    // Replace conf->css by personalized value
     if (isset($user->conf->MAIN_THEME) && $user->conf->MAIN_THEME) {
         $conf->theme = $user->conf->MAIN_THEME;
         $conf->css = "/theme/" . $conf->theme . "/style.css.php";
     }
 
-// If theme support option like flip-hide left menu and we use a smartphone, we force it
+    // If theme support option like flip-hide left menu and we use a smartphone, we force it
 }
 
 // Init the 4 global objects
@@ -980,6 +982,8 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                 print '<script type="text/javascript" src="includes/jquery/plugins/tablednd/jquery.tablednd_0_5' . $ext . '"></script>' . "\n";
                 print '<script type="text/javascript" src="includes/jquery/plugins/tiptip/jquery.tipTip.min' . $ext . '"></script>' . "\n";
                 print '<script type="text/javascript" src="includes/jquery/plugins/lightbox/js/jquery.lightbox-0.5.min' . $ext . '"></script>' . "\n";
+                print '<script type="text/javascript" src="includes/jquery/plugins/globalize/lib/globalize.js"></script>' . "\n";
+                print '<script type="text/javascript" src="includes/jquery/plugins/globalize/lib/cultures/globalize.cultures.js"></script>' . "\n";
                 // jQuery Layout
                 print '<script type="text/javascript" src="includes/jquery/plugins/layout/jquery.layout-latest' . $ext . '"></script>' . "\n";
                 // jQuery jnotify
@@ -1255,13 +1259,13 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                     <div class="columns">
                         <div class="five-columns">
                             <div class="ego-icon big">
-    <?php if (!empty($user->values->Photo)) : ?>
+                                <?php if (!empty($user->values->Photo)) : ?>
                                     <img alt="User name" class="ego-icon-inner"
                                          src="<?php echo $user->getFile($user->values->Photo); ?>">
-    <?php else : ?>
+                                     <?php else : ?>
                                     <img src="theme/symeos/img/user.png"
                                          alt="User name" class="ego-icon-inner">
-    <?php endif; ?>
+                                     <?php endif; ?>
                                 <img class="ego-icon-outer"
                                      src="theme/symeos/img/timbrebase90x100.png">
                             </div>
@@ -1609,11 +1613,11 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
         <script src="theme/symeos/js/developr.navigable.js"></script>
         <script src="theme/symeos/js/developr.scroll.js"></script>
-        
+
         <script src="theme/symeos/js/s_scripts.js"></script>
         <script src="theme/symeos/js/symeos.js"></script>
 
-        <!--<script src="theme/developr/html/js/developr.input.js"></script>-->
+                <!--<script src="theme/developr/html/js/developr.input.js"></script>-->
         <script src="theme/symeos/js/developr.message.js"></script>
         <script src="theme/symeos/js/developr.modal.js"></script>
         <script src="theme/symeos/js/developr.notify.js"></script>
@@ -1635,7 +1639,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
             // Favicon count
             Tinycon.setBubble(2);
-                                        					
+                                                					
         </script>
 
         <script>

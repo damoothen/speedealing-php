@@ -27,16 +27,16 @@
  *  \brief      Page to show product
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/canvas.class.php");
-require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
-require_once(DOL_DOCUMENT_ROOT."/product/class/html.formproduct.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/extrafields.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/product.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
-if (! empty($conf->propal->enabled))   require_once(DOL_DOCUMENT_ROOT."/comm/propal/class/propal.class.php");
-if (! empty($conf->facture->enabled))  require_once(DOL_DOCUMENT_ROOT."/compta/facture/class/facture.class.php");
-if (! empty($conf->commande->enabled)) require_once(DOL_DOCUMENT_ROOT."/commande/class/commande.class.php");
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/canvas.class.php';
+require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
+require_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+if (! empty($conf->propal->enabled))   require_once DOL_DOCUMENT_ROOT.'/comm/propal/class/propal.class.php';
+if (! empty($conf->facture->enabled))  require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
+if (! empty($conf->commande->enabled)) require_once DOL_DOCUMENT_ROOT.'/commande/class/commande.class.php';
 
 $langs->load("products");
 $langs->load("other");
@@ -62,7 +62,7 @@ $canvas = $object->canvas?$object->canvas:GETPOST("canvas");
 $objcanvas='';
 if (! empty($canvas))
 {
-    require_once(DOL_DOCUMENT_ROOT."/core/class/canvas.class.php");
+    require_once DOL_DOCUMENT_ROOT.'/core/class/canvas.class.php';
     $objcanvas = new Canvas($db,$action);
     $objcanvas->getCanvas('product','card',$canvas);
 }
@@ -73,7 +73,7 @@ $fieldtype = (! empty($ref) ? 'ref' : 'rowid');
 $result=restrictedArea($user,'produit|service',$fieldvalue,'product&product','','',$fieldtype,$objcanvas);
 
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
-include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
+include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
 $hookmanager=new HookManager($db);
 $hookmanager->initHooks(array('productcard'));
 
@@ -94,7 +94,7 @@ if (empty($reshook))
     {
         $object->fetch($id);
     	$result = $object->setValueFrom('fk_product_type', GETPOST('fk_product_type'));
-    	Header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
+    	header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
     	exit;
     }
 
@@ -103,7 +103,7 @@ if (empty($reshook))
     {
     	$object->fetch($id);
     	$result = $object->setValueFrom('fk_barcode_type', GETPOST('fk_barcode_type'));
-    	Header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
+    	header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
     	exit;
     }
 
@@ -113,7 +113,7 @@ if (empty($reshook))
     	$object->fetch($id);
     	//Todo: ajout verification de la validite du code barre en fonction du type
     	$result = $object->setValueFrom('barcode', GETPOST('barcode'));
-    	Header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
+    	header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
     	exit;
     }
 
@@ -144,7 +144,7 @@ if (empty($reshook))
     {
         $error=0;
 
-        if (GETPOST('libelle'))
+        if (! GETPOST('libelle'))
         {
             $mesg='<div class="error">'.$langs->trans('ErrorFieldRequired',$langs->transnoentities('Label')).'</div>';
             $action = "create";
@@ -200,7 +200,7 @@ if (empty($reshook))
             {
                 for($i=2;$i<=$conf->global->PRODUIT_MULTIPRICES_LIMIT;$i++)
                 {
-                    if($_POST["price_".$i])
+                    if (isset($_POST["price_".$i]))
                     {
                         $object->multiprices["$i"] = price2num($_POST["price_".$i],'MU');
                         $object->multiprices_base_type["$i"] = $_POST["multiprices_base_type_".$i];
@@ -225,7 +225,7 @@ if (empty($reshook))
 
             if ($id > 0)
             {
-                Header("Location: ".$_SERVER['PHP_SELF']."?id=".$id);
+                header("Location: ".$_SERVER['PHP_SELF']."?id=".$id);
                 exit;
             }
             else
@@ -239,7 +239,7 @@ if (empty($reshook))
     // Update a product or service
     if ($action == 'update' && ($user->rights->produit->creer || $user->rights->service->creer))
     {
-        if (GETPOST('cancel'))
+    	if (GETPOST('cancel'))
         {
             $action = '';
         }
@@ -334,7 +334,7 @@ if (empty($reshook))
                         $db->commit();
                         $db->close();
 
-                        Header("Location: ".$_SERVER["PHP_SELF"]."?id=".$id);
+                        header("Location: ".$_SERVER["PHP_SELF"]."?id=".$id);
                         exit;
                     }
                     else
@@ -384,7 +384,7 @@ if (empty($reshook))
 
         if ($result > 0)
         {
-            Header('Location: '.DOL_URL_ROOT.'/product/liste.php?delprod='.urlencode($object->ref));
+            header('Location: '.DOL_URL_ROOT.'/product/liste.php?delprod='.urlencode($object->ref));
             exit;
         }
         else
@@ -470,7 +470,7 @@ if (empty($reshook))
         );
         if ($result > 0)
         {
-            Header("Location: ".DOL_URL_ROOT."/comm/propal.php?id=".$propal->id);
+            header("Location: ".DOL_URL_ROOT."/comm/propal.php?id=".$propal->id);
             return;
         }
 
@@ -548,14 +548,14 @@ if (empty($reshook))
             $prod->id,
             GETPOST('remise_percent'),
             '',
-            '', // TODO voir si fk_remise_except est encore valable car n'apparait plus dans les propales
+            '',
             $price_base_type,
             $pu_ttc
         );
 
         if ($result > 0)
         {
-            Header("Location: ".DOL_URL_ROOT."/commande/fiche.php?id=".$commande->id);
+            header("Location: ".DOL_URL_ROOT."/commande/fiche.php?id=".$commande->id);
             exit;
         }
     }
@@ -640,7 +640,7 @@ if (empty($reshook))
 
         if ($result > 0)
         {
-            Header("Location: ".DOL_URL_ROOT."/compta/facture.php?facid=".$facture->id);
+            header("Location: ".DOL_URL_ROOT."/compta/facture.php?facid=".$facture->id);
             exit;
         }
     }
@@ -649,7 +649,7 @@ if (empty($reshook))
 if (GETPOST("cancel") == $langs->trans("Cancel"))
 {
     $action = '';
-    Header("Location: ".$_SERVER["PHP_SELF"]."?id=".$id);
+    header("Location: ".$_SERVER["PHP_SELF"]."?id=".$id);
     exit;
 }
 
@@ -695,12 +695,23 @@ else
     if ($action == 'create' && ($user->rights->produit->creer || $user->rights->service->creer))
     {
         //WYSIWYG Editor
-        require_once(DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php");
+        require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+
+		// Load object modCodeProduct
+        $module=(! empty($conf->global->PRODUCT_CODEPRODUCT_ADDON)?$conf->global->PRODUCT_CODEPRODUCT_ADDON:'mod_codeproduct_leopard');
+        if (substr($module, 0, 16) == 'mod_codeproduct_' && substr($module, -3) == 'php')
+        {
+            $module = substr($module, 0, dol_strlen($module)-4);
+        }
+        dol_include_once('/core/modules/product/'.$module.'.php');
+        $modCodeProduct = new $module;
 
         print '<form action="fiche.php" method="post">';
         print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
         print '<input type="hidden" name="action" value="add">';
         print '<input type="hidden" name="type" value="'.$type.'">'."\n";
+		if (! empty($modCodeProduct->code_auto))
+			print '<input type="hidden" name="code_auto" value="1">';
 
         if ($type==1) $title=$langs->trans("NewService");
         else $title=$langs->trans("NewProduct");
@@ -710,7 +721,10 @@ else
 
         print '<table class="border" width="100%">';
         print '<tr>';
-        print '<td class="fieldrequired" width="20%">'.$langs->trans("Ref").'</td><td><input name="ref" size="40" maxlength="32" value="'.$ref.'">';
+        $tmpcode='';
+		if (! empty($modCodeProduct->code_auto))
+			$tmpcode=$modCodeProduct->getNextValue($object,$type);
+        print '<td class="fieldrequired" width="20%">'.$langs->trans("Ref").'</td><td><input name="ref" size="40" maxlength="32" value="'.$tmpcode.'">';
         if ($_error)
         {
             print $langs->trans("RefAlreadyExists");
@@ -733,7 +747,7 @@ else
         print '</td></tr>';
 
         // Stock min level
-        if ($type != 1 && $conf->stock->enabled)
+        if ($type != 1 && ! empty($conf->stock->enabled))
         {
             print '<tr><td>'.$langs->trans("StockLimit").'</td><td>';
             print '<input name="seuil_stock_alerte" size="4" value="'.GETPOST('seuil_stock_alerte').'">';
@@ -823,7 +837,8 @@ else
         // Note (private, no output on invoices, propales...)
         print '<tr><td valign="top">'.$langs->trans("NoteNotVisibleOnBill").'</td><td>';
 
-        $doleditor = new DolEditor('note', GETPOST('note'), '', 180, 'dolibarr_notes', '', false, true, $conf->global->FCKEDITOR_ENABLE_PRODUCTDESC, 8, 70);
+        // We use dolibarr_details as type of DolEditor here, because we must not accept images as description is included into PDF and not accepted by TCPDF.
+        $doleditor = new DolEditor('note', GETPOST('note'), '', 180, 'dolibarr_details', '', false, true, $conf->global->FCKEDITOR_ENABLE_PRODUCTDESC, 8, 70);
         $doleditor->Create();
 
         print "</td></tr>";
@@ -831,7 +846,7 @@ else
 
         print '<br>';
 
-        if ($conf->global->PRODUIT_MULTIPRICES)
+        if (! empty($conf->global->PRODUIT_MULTIPRICES))
         {
             // We do no show price array on create when multiprices enabled.
             // We must set them on prices tab.
@@ -880,7 +895,7 @@ else
         if ($action == 'edit' && ($user->rights->produit->creer || $user->rights->service->creer))
         {
             //WYSIWYG Editor
-            require_once(DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php");
+            require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
 
             $type = $langs->trans('Product');
             if ($object->isservice()) $type = $langs->trans('Service');
@@ -936,8 +951,9 @@ else
 
             // Description (used in invoice, propal...)
             print '<tr><td valign="top">'.$langs->trans("Description").'</td><td colspan="2">';
-            
-            $doleditor = new DolEditor('desc', $object->description, '', 160, 'dolibarr_notes', '', false, true, $conf->global->FCKEDITOR_ENABLE_PRODUCTDESC, 4, 90);
+
+	        // We use dolibarr_details as type of DolEditor here, because we must not accept images as description is included into PDF and not accepted by TCPDF.
+            $doleditor = new DolEditor('desc', $object->description, '', 160, 'dolibarr_details', '', false, true, $conf->global->FCKEDITOR_ENABLE_PRODUCTDESC, 4, 90);
             $doleditor->Create();
 
             print "</td></tr>";
@@ -952,7 +968,7 @@ else
                 print '</td></tr>';
             }
 
-            if ($object->isproduct() && $conf->stock->enabled)
+            if ($object->isproduct() && ! empty($conf->stock->enabled))
             {
                 print "<tr>".'<td>'.$langs->trans("StockLimit").'</td><td colspan="2">';
                 print '<input name="seuil_stock_alerte" size="4" value="'.$object->seuil_stock_alerte.'">';
@@ -1029,7 +1045,7 @@ else
 
             // Note
             print '<tr><td valign="top">'.$langs->trans("NoteNotVisibleOnBill").'</td><td colspan="2">';
-            
+
             $doleditor = new DolEditor('note', $object->note, '', 200, 'dolibarr_notes', '', false, true, $conf->global->FCKEDITOR_ENABLE_PRODUCTDESC, 8, 70);
             $doleditor->Create();
 
@@ -1070,10 +1086,11 @@ else
             print '<tr><td>'.$langs->trans("Label").'</td><td colspan="2">'.$object->libelle.'</td>';
 
             $nblignes=8;
+            if (! empty($conf->produit->enabled) && ! empty($conf->service->enabled)) $nblignes++;
+            if ($showbarcode) $nblignes+=2;
             if ($object->type!=1) $nblignes++;
             if ($object->isservice()) $nblignes++;
             else $nblignes+=4;
-            if ($showbarcode) $nblignes+=2;
 
             // Photo
             if ($showphoto || $showbarcode)
@@ -1088,7 +1105,7 @@ else
             print '</tr>';
 
             // Type
-            if ($conf->produit->enabled && $conf->service->enabled)
+            if (! empty($conf->produit->enabled) && ! empty($conf->service->enabled))
             {
             	// TODO change for compatibility with edit in place
             	$typeformat='select;0:'.$langs->trans("Product").',1:'.$langs->trans("Service");
@@ -1109,9 +1126,9 @@ else
                 print '</td><td colspan="2">';
                 if ($action == 'editbarcodetype')
                 {
-                    require_once(DOL_DOCUMENT_ROOT."/core/class/html.formbarcode.class.php");
+                    require_once DOL_DOCUMENT_ROOT.'/core/class/html.formbarcode.class.php';
                     $formbarcode = new FormBarCode($db);
-                    $formbarcode->form_barcode_type($_SERVER['PHP_SELF'].'?id='.$object->id,$object->barcode_type,'barcodetype_id');
+                    $formbarcode->form_barcode_type($_SERVER['PHP_SELF'].'?id='.$object->id,$object->barcode_type,'fk_barcode_type');
                 }
                 else
                 {
@@ -1269,7 +1286,7 @@ else
     }
     else if ($action != 'create')
     {
-        Header("Location: index.php");
+        header("Location: index.php");
         exit;
     }
 }
@@ -1329,7 +1346,7 @@ if ($action == '' || $action == 'view')
     if (($object->type == 0 && $user->rights->produit->supprimer)
     || ($object->type == 1 && $user->rights->service->supprimer))
     {
-        if (! $object_is_used && isset($object->no_button_delete) && $object->no_button_delete <> 1)
+        if (empty($object_is_used) && (! isset($object->no_button_delete) || $object->no_button_delete <> 1))
         {
             if (! empty($conf->use_javascript_ajax))
             {

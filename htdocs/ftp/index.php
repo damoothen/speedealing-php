@@ -23,10 +23,10 @@
  *	\author		Laurent Destailleur
  */
 
-require("./pre.inc.php");	// We use pre.inc.php to have a dynamic menu
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/treeview.lib.php");
+require 'pre.inc.php';	// We use pre.inc.php to have a dynamic menu
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/treeview.lib.php';
 
 // Load traductions files
 $langs->load("ftp");
@@ -82,7 +82,7 @@ $conn_id=0;	// FTP connection ID
 // Envoie fichier
 if ( $_POST["sendit"] && ! empty($conf->global->MAIN_UPLOAD_DOC))
 {
-	require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
+	require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
 	$result=$ecmdir->fetch($_REQUEST["section"]);
 	if (! $result > 0)
@@ -106,15 +106,15 @@ if ( $_POST["sendit"] && ! empty($conf->global->MAIN_UPLOAD_DOC))
 			$langs->load("errors");
 			if ($resupload < 0)	// Unknown error
 			{
-				$mesg = '<div class="error">'.$langs->trans("ErrorFileNotUploaded").'</div>';
+				setEventMessage($langs->trans("ErrorFileNotUploaded"), 'errors');
 			}
 			else if (preg_match('/ErrorFileIsInfectedWithAVirus/',$resupload))	// Files infected by a virus
 			{
-				$mesg = '<div class="error">'.$langs->trans("ErrorFileIsInfectedWithAVirus").'</div>';
+				setEventMessage($langs->trans("ErrorFileIsInfectedWithAVirus"), 'errors');
 			}
 			else	// Known error
 			{
-				$mesg = '<div class="error">'.$langs->trans($resupload).'</div>';
+				setEventMessage($langs->trans($resupload), 'errors');
 			}
 		}
 	}
@@ -136,7 +136,7 @@ if ($_POST["action"] == 'add' && $user->rights->ftp->setup)
 	$id = $ecmdir->create($user);
 	if ($id > 0)
 	{
-		Header("Location: ".$_SERVER["PHP_SELF"]);
+		header("Location: ".$_SERVER["PHP_SELF"]);
 		exit;
 	}
 	else

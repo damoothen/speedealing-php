@@ -24,10 +24,10 @@
 // This is to make Dolibarr working with Plesk
 set_include_path($_SERVER['DOCUMENT_ROOT'].'/htdocs');
 
-require_once("../master.inc.php");
-require_once(NUSOAP_PATH.'/nusoap.php');		// Include SOAP
-require_once(DOL_DOCUMENT_ROOT."/core/lib/ws.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/user/class/user.class.php");
+require_once '../master.inc.php';
+require_once NUSOAP_PATH.'/nusoap.php';		// Include SOAP
+require_once DOL_DOCUMENT_ROOT.'/core/lib/ws.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
 
 
 dol_syslog("Call User webservices interfaces");
@@ -180,7 +180,10 @@ function getUser($authentication,$id,$ref='',$ref_ext='')
     {
         $fuser->getrights();
 
-        if ($fuser->rights->user->user->lire)
+        if ($fuser->rights->user->user->lire
+        	|| ($fuser->rights->user->self->creer && $id && $id==$fuser->id)
+        	|| ($fuser->rights->user->self->creer && $ref && $ref==$fuser->login)
+        	|| ($fuser->rights->user->self->creer && $ref_ext && $ref_ext==$fuser->ref_ext))
         {
             $user=new User($db);
             $result=$user->fetch($id,$ref,$ref_ext);

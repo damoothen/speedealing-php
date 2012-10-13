@@ -43,9 +43,8 @@ function propal_prepare_head($object)
 	$head[$h][2] = 'comm';
 	$h++;
 
-	if ((!$conf->commande->enabled &&
-	(($conf->expedition_bon->enabled && $user->rights->expedition->lire)
-	|| ($conf->livraison_bon->enabled && $user->rights->expedition->livraison->lire))))
+	if ((empty($conf->commande->enabled) &&	((! empty($conf->expedition_bon->enabled) && $user->rights->expedition->lire)
+	|| (! empty($conf->livraison_bon->enabled) && $user->rights->expedition->livraison->lire))))
 	{
 		$langs->load("sendings");
 		$head[$h][0] = DOL_URL_ROOT.'/expedition/propal.php?id='.$object->id;
@@ -62,7 +61,7 @@ function propal_prepare_head($object)
 		$head[$h][2] = 'preview';
 		$h++;
 	}
-	
+
 	if (empty($conf->global->MAIN_DISABLE_CONTACTS_TAB))
 	{
 		$head[$h][0] = DOL_URL_ROOT.'/comm/propal/contact.php?id='.$object->id;
@@ -87,7 +86,7 @@ function propal_prepare_head($object)
 
 	$head[$h][0] = DOL_URL_ROOT.'/comm/propal/document.php?id='.$object->id;
 	/*$filesdir = $conf->propal->dir_output . "/" . dol_sanitizeFileName($propal->ref);
-	include_once(DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php');
+	include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 	$listoffiles=dol_dir_list($filesdir,'files',1);
 	$head[$h][1] = (count($listoffiles)?$langs->trans('DocumentsNb',count($listoffiles)):$langs->trans('Documents'));*/
 	$head[$h][1] = $langs->trans('Documents');

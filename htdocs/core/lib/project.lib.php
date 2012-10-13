@@ -23,7 +23,7 @@
  *		\brief      Functions used by project module
  *      \ingroup    project
  */
-require_once(DOL_DOCUMENT_ROOT."/projet/class/project.class.php");
+require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 
 
 /**
@@ -48,8 +48,9 @@ function project_prepare_head($object)
     $head[$h][2] = 'contact';
     $h++;
 
-    if ($conf->fournisseur->enabled || $conf->propal->enabled || $conf->commande->enabled || $conf->facture->enabled || $conf->contrat->enabled
-    || $conf->ficheinter->enabled || $conf->agenda->enabled || $conf->deplacement->enabled)
+    if (! empty($conf->fournisseur->enabled) || ! empty($conf->propal->enabled) || ! empty($conf->commande->enabled)
+    || ! empty($conf->facture->enabled) || ! empty($conf->contrat->enabled)
+    || ! empty($conf->ficheinter->enabled) || ! empty($conf->agenda->enabled) || ! empty($conf->deplacement->enabled))
     {
         $head[$h][0] = DOL_URL_ROOT.'/projet/element.php?id='.$object->id;
         $head[$h][1] = $langs->trans("Referers");
@@ -65,7 +66,7 @@ function project_prepare_head($object)
 
     $head[$h][0] = DOL_URL_ROOT.'/projet/document.php?id='.$object->id;
     /*$filesdir = $conf->projet->dir_output . "/" . dol_sanitizeFileName($object->ref);
-     include_once(DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php');
+     include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
     $listoffiles=dol_dir_list($filesdir,'files',1);
     $head[$h][1] = (count($listoffiles)?$langs->trans('DocumentsNb',count($listoffiles)):$langs->trans('Documents'));*/
     $head[$h][1] = $langs->trans('Documents');
@@ -134,7 +135,7 @@ function task_prepare_head($object)
 
     $head[$h][0] = DOL_URL_ROOT.'/projet/tasks/document.php?id='.$object->id.(GETPOST('withproject')?'&withproject=1':'');;
     /*$filesdir = $conf->projet->dir_output . "/" . dol_sanitizeFileName($object->ref);
-     include_once(DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php');
+     include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
     $listoffiles=dol_dir_list($filesdir,'files',1);
     $head[$h][1] = (count($listoffiles)?$langs->trans('DocumentsNb',count($listoffiles)):$langs->trans('Documents'));*/
     $head[$h][1] = $langs->trans('Documents');
@@ -266,9 +267,10 @@ function select_projects($socid=-1, $selected='', $htmlname='projectid', $maxlen
  * @param 	int			$showproject		Show project columns
  * @param	int			&$taskrole			Array of roles of user for each tasks
  * @param	int			$projectsListId		List of id of project allowed to user (separated with comma)
+ * @param	int			$addordertick		Add a tick to move task
  * @return	void
  */
-function projectLinesa(&$inc, $parent, &$lines, &$level, $var, $showproject, &$taskrole, $projectsListId='')
+function projectLinesa(&$inc, $parent, &$lines, &$level, $var, $showproject, &$taskrole, $projectsListId='', $addordertick=0)
 {
     global $user, $bc, $langs;
 	global $projectstatic, $taskstatic;
@@ -324,7 +326,7 @@ function projectLinesa(&$inc, $parent, &$lines, &$level, $var, $showproject, &$t
                     $lastprojectid=$lines[$i]->fk_project;
                 }
 
-                print "<tr ".$bc[$var].">\n";
+                print '<tr '.$bc[$var].' id="row-'.$lines[$i]->id.'">'."\n";
 
                 // Project
                 if ($showproject)
@@ -393,6 +395,12 @@ function projectLinesa(&$inc, $parent, &$lines, &$level, $var, $showproject, &$t
                 if ($showlineingray) print '</i>';
                 else print '</a>';
                 print '</td>';
+
+                // Tick to drag and drop
+                if ($addordertick)
+                {
+                	print '<td align="center" class="tdlineupdown">&nbsp;</td>';
+                }
 
                 print "</tr>\n";
 
@@ -659,7 +667,7 @@ function print_projecttasks_array($db, $socid, $projectsListId, $mytasks=0)
 {
     global $langs,$conf,$user,$bc;
 
-    require_once(DOL_DOCUMENT_ROOT."/projet/class/project.class.php");
+    require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 
     $projectstatic=new Project($db);
 

@@ -22,10 +22,10 @@
  *       \ingroup    factures
  *       \brief      Fichier de la classe de gestion des stats des factures
  */
-include_once DOL_DOCUMENT_ROOT . "/core/class/stats.class.php";
-include_once DOL_DOCUMENT_ROOT . "/compta/facture/class/facture.class.php";
-include_once DOL_DOCUMENT_ROOT . "/fourn/class/fournisseur.facture.class.php";
-include_once DOL_DOCUMENT_ROOT . "/core/lib/date.lib.php";
+include_once DOL_DOCUMENT_ROOT . '/core/class/stats.class.php';
+include_once DOL_DOCUMENT_ROOT . '/compta/facture/class/facture.class.php';
+include_once DOL_DOCUMENT_ROOT . '/fourn/class/fournisseur.facture.class.php';
+include_once DOL_DOCUMENT_ROOT . '/core/lib/date.lib.php';
 
 /**
  *       \class      FactureStats
@@ -51,7 +51,7 @@ class FactureStats extends Stats
      * 	@param	int			$userid    	Id user for filter
 	 * 	@return FactureStats
 	 */
-	function FactureStats($db, $socid, $mode, $userid=0)
+	function __construct($db, $socid, $mode, $userid=0)
 	{
 		global $conf;
 

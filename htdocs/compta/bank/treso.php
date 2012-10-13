@@ -23,12 +23,12 @@
  *	\brief      Page de detail du budget de tresorerie
  */
 
-require("./pre.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/bank.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/societe/class/societe.class.php");
-require_once(DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php');
-require_once(DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.facture.class.php');
-require_once(DOL_DOCUMENT_ROOT.'/compta/sociales/class/chargesociales.class.php');
+require 'pre.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/bank.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
+require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
+require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.facture.class.php';
+require_once DOL_DOCUMENT_ROOT.'/compta/sociales/class/chargesociales.class.php';
 
 $langs->load("banks");
 $langs->load("bills");
@@ -96,10 +96,12 @@ if ($_REQUEST["account"] || $_REQUEST["ref"])
 
 	print '<table class="border" width="100%">';
 
+	$linkback = '<a href="'.DOL_URL_ROOT.'/compta/bank/index.php">'.$langs->trans("BackToList").'</a>';
+
 	// Ref
 	print '<tr><td valign="top" width="25%">'.$langs->trans("Ref").'</td>';
 	print '<td colspan="3">';
-	print $form->showrefnav($acct,'ref','',1,'ref');
+	print $form->showrefnav($acct, 'ref', $linkback, 1, 'ref');
 	print '</td></tr>';
 
 	// Label

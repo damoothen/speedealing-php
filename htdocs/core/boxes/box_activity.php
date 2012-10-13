@@ -20,7 +20,7 @@
  *	\brief      Module to show box of bills, orders & propal of the current year
  */
 
-include_once(DOL_DOCUMENT_ROOT."/core/boxes/modules_boxes.php");
+include_once DOL_DOCUMENT_ROOT.'/core/boxes/modules_boxes.php';
 
 /**
  * Class to manage the box of customer activity (invoice, order, proposal)
@@ -41,15 +41,16 @@ class box_activity extends ModeleBoxes
 	/**
 	 *	Constructor
 	 */
-	function box_activity()
+	function __construct()
 	{
 		global $langs;
+
 		$langs->load("boxes");
 		$langs->load("bills");
 		$langs->load("projects");
-		$langs->trans("orders");
+		$langs->load("orders");
 
-		$this->boxlabel=$langs->transnoentitiesnoconv("BoxGlobalActivity");
+		$this->boxlabel = $langs->transnoentitiesnoconv("BoxGlobalActivity");
 	}
 
 	/**
@@ -65,9 +66,9 @@ class box_activity extends ModeleBoxes
 		$totalMnt = 0;
 		$totalnb = 0;
 
-		include_once(DOL_DOCUMENT_ROOT."/compta/facture/class/facture.class.php");
-		include_once(DOL_DOCUMENT_ROOT."/comm/propal/class/propal.class.php");
-		include_once(DOL_DOCUMENT_ROOT."/commande/class/commande.class.php");
+		include_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/comm/propal/class/propal.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/commande/class/commande.class.php';
 		$facturestatic=new Facture($db);
 		$propalstatic=new Propal($db);
 		$commandestatic=new Commande($db);
@@ -76,7 +77,7 @@ class box_activity extends ModeleBoxes
 		$this->info_box_head = array('text' => $textHead, 'limit'=> dol_strlen($textHead));
 
 		// list the summary of the bills
-		if ($conf->facture->enabled && $user->rights->facture->lire)
+		if (! empty($conf->facture->enabled) && $user->rights->facture->lire)
 		{
 			$sql = "SELECT f.paye, f.fk_statut, sum(f.total_ttc) as Mnttot, count(*) as nb";
 			$sql.= " FROM ".MAIN_DB_PREFIX."societe as s,".MAIN_DB_PREFIX."facture as f";
@@ -132,7 +133,7 @@ class box_activity extends ModeleBoxes
 		}
 
 		// list the summary of the orders
-		if ($conf->commande->enabled && $user->rights->commande->lire)
+		if (! empty($conf->commande->enabled) && $user->rights->commande->lire)
 		{
 			$sql = "SELECT c.fk_statut,c.facture, sum(c.total_ttc) as Mnttot, count(*) as nb";
 			$sql.= " FROM ".MAIN_DB_PREFIX."societe as s, ".MAIN_DB_PREFIX."commande as c";
@@ -174,7 +175,7 @@ class box_activity extends ModeleBoxes
 		}
 
 		// list the summary of the propals
-		if ($conf->propal->enabled && $user->rights->propal->lire)
+		if (! empty($conf->propal->enabled) && $user->rights->propal->lire)
 		{
 			$sql = "SELECT p.fk_statut, sum(p.total) as Mnttot, count(*) as nb";
 			$sql.= " FROM ".MAIN_DB_PREFIX."societe as s, ".MAIN_DB_PREFIX."propal as p";

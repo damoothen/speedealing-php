@@ -21,10 +21,10 @@
  *		\brief      Page to add payment of a tax
  */
 
-require('../main.inc.php');
-require_once(DOL_DOCUMENT_ROOT."/compta/sociales/class/chargesociales.class.php");
-require_once(DOL_DOCUMENT_ROOT."/compta/sociales/class/paymentsocialcontribution.class.php");
-require_once(DOL_DOCUMENT_ROOT."/compta/bank/class/account.class.php");
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/compta/sociales/class/chargesociales.class.php';
+require_once DOL_DOCUMENT_ROOT.'/compta/sociales/class/paymentsocialcontribution.class.php';
+require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 
 $langs->load("bills");
 
@@ -50,7 +50,7 @@ if ($_POST["action"] == 'add_payment')
 	if ($_POST["cancel"])
 	{
 		$loc = DOL_URL_ROOT.'/compta/sociales/charges.php?id='.$chid;
-		Header("Location: ".$loc);
+		header("Location: ".$loc);
 		exit;
 	}
 
@@ -66,7 +66,7 @@ if ($_POST["action"] == 'add_payment')
 		$mesg = $langs->trans("ErrorFieldRequired",$langs->transnoentities("Date"));
 		$error++;
 	}
-    if ($conf->banque->enabled && ! $_POST["accountid"] > 0)
+    if (! empty($conf->banque->enabled) && ! $_POST["accountid"] > 0)
     {
         $mesg = $langs->trans("ErrorFieldRequired",$langs->transnoentities("AccountToCredit"));
         $error++;
@@ -129,7 +129,7 @@ if ($_POST["action"] == 'add_payment')
             {
                 $db->commit();
                 $loc = DOL_URL_ROOT.'/compta/sociales/charges.php?id='.$chid;
-                Header('Location: '.$loc);
+                header('Location: '.$loc);
                 exit;
             }
             else

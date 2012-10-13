@@ -2,7 +2,7 @@
 /* Copyright (C) 2004-2007 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005      Simon Tosser         <simon@kornog-computing.com>
- * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2010	   Pierre Morin         <pierre.morin@auguria.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -34,10 +34,10 @@ if (! defined('NOREQUIREAJAX')) define('NOREQUIREAJAX','1');
 
 if (! isset($mode) || $mode != 'noajax')    // For ajax call
 {
-    require_once("../../main.inc.php");
-    require_once(DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php');
-    require_once(DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php');
-    require_once(DOL_DOCUMENT_ROOT."/ecm/class/ecmdirectory.class.php");
+    require_once '../../main.inc.php';
+    require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+    require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+    require_once DOL_DOCUMENT_ROOT.'/ecm/class/ecmdirectory.class.php';
 
 	$action=GETPOST("action");
     $file=urldecode(GETPOST('file'));
@@ -54,15 +54,15 @@ if (! isset($mode) || $mode != 'noajax')    // For ajax call
     $pagenext = $page + 1;
     if (! $sortorder) $sortorder="ASC";
     if (! $sortfield) $sortfield="name";
-    
+
     $upload_dir = dirname(str_replace("../","/", $conf->ecm->dir_output.'/'.$file));
 
     $ecmdir = new EcmDirectory($db);
     $result=$ecmdir->fetch($section);
     if (! $result > 0)
     {
-        dol_print_error($db,$ecmdir->error);
-        exit;
+        //dol_print_error($db,$ecmdir->error);
+        //exit;
     }
 }
 else    // For no ajax call
@@ -121,7 +121,7 @@ if (! isset($mode) || $mode != 'noajax')
 	// Ajout directives pour resoudre bug IE
     header('Cache-Control: Public, must-revalidate');
     header('Pragma: public');
-	
+
     top_httphead();
 }
 
@@ -137,7 +137,7 @@ if (! dol_is_dir($upload_dir))
 }
 
 print '<!-- TYPE='.$type.' -->'."\n";
-print '<!-- Page called with mode='.$mode.' url='.$_SERVER["PHP_SELF"].'?'.$_SERVER["QUERY_STRING"].' -->'."\n";
+print '<!-- Page called with mode='.(isset($mode)?$mode:'').' url='.$_SERVER["PHP_SELF"].'?'.$_SERVER["QUERY_STRING"].' -->'."\n";
 
 $param='';
 $param.=($sortfield?'&sortfield='.$sortfield:'').($sortorder?'&sortorder='.$sortorder:'');
@@ -223,6 +223,16 @@ if ($type == 'directory')
 
         $formfile->list_of_autoecmfiles($upload_dir,$filearray,$module,$param,1,'',$user->rights->ecm->upload,1,$textifempty,$maxlengthname,$url);
     }
+    else if ($module == 'product')  // Auto area for products
+    {
+        $upload_dir = $conf->product->dir_output;
+        $filearray=dol_dir_list($upload_dir,"files",1,'',array('^SPECIMEN\.pdf$','^\.','\.meta$','^temp$','^CVS$','^thumbs$'),$sortfield,(strtolower($sortorder)=='desc'?SORT_DESC:SORT_ASC),1);
+
+        $param.='&module='.$module;
+        $textifempty=($section?$langs->trans("NoFileFound"):($showonrightsize=='featurenotyetavailable'?$langs->trans("FeatureNotYetAvailable"):$langs->trans("NoFileFound")));
+
+        $formfile->list_of_autoecmfiles($upload_dir,$filearray,$module,$param,1,'',$user->rights->ecm->upload,1,$textifempty,$maxlengthname,$url);
+    }
     else if ($module == 'tax')  // Auto area for suppliers invoices
     {
         $upload_dir = $conf->tax->dir_output;
@@ -237,11 +247,17 @@ if ($type == 'directory')
     {
         $relativepath=$ecmdir->getRelativePath();
         $upload_dir = $conf->ecm->dir_output.'/'.$relativepath;
+
         $filearray=dol_dir_list($upload_dir,"files",0,'',array('^\.','\.meta$','^temp$','^CVS$'),$sortfield,(strtolower($sortorder)=='desc'?SORT_DESC:SORT_ASC),1);
 
         if ($section) $param.='&section='.$section;
         $textifempty=($section?$langs->trans("NoFileFound"):($showonrightsize=='featurenotyetavailable'?$langs->trans("FeatureNotYetAvailable"):$langs->trans("ECMSelectASection")));
-
+        // If $section defined with value 0
+        if ($section === '0')
+        {
+        	$filearray=array();
+        	$textifempty='<br><div align="center"><font class="warning">'.$langs->trans("DirNotSynchronizedSyncFirst").'</font></div><br>';
+        }
         $formfile->list_of_documents($filearray,'','ecm',$param,1,$relativepath,$user->rights->ecm->upload,1,$textifempty,$maxlengthname,'',$url);
     }
 
@@ -252,8 +268,8 @@ if (! empty($conf->use_javascript_ajax) && empty($conf->global->MAIN_ECM_DISABLE
     if ($section)
     {
     	$param.=($param?'?':'').(preg_replace('/^&/','',$param));
-    	
-        require_once(DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php');
+
+        require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
         $useglobalvars=1;
         $form = new Form($db);
         $formquestion=array('urlfile'=>array('type'=>'hidden','value'=>'','name'=>'urlfile'));

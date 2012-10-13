@@ -28,12 +28,13 @@
  *		\brief      Setup page for commercial proposal module
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/comm/propal/class/propal.class.php");
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/comm/propal/class/propal.class.php';
 
 $langs->load("admin");
 $langs->load("errors");
+$langs->load('other');
 
 if (! $user->admin) accessforbidden();
 
@@ -88,7 +89,7 @@ if ($action == 'specimen')
 
 	if ($filefound)
 	{
-		require_once($file);
+		require_once $file;
 
 		$module = new $classname($db);
 
@@ -256,7 +257,7 @@ foreach ($dirmodels as $reldir)
 				{
 					$file = substr($file, 0, dol_strlen($file)-4);
 
-					require_once($dir.$file.".php");
+					require_once $dir.$file.'.php';
 
 					$module = new $file;
 
@@ -274,7 +275,7 @@ foreach ($dirmodels as $reldir)
                         // Show example of numbering module
                         print '<td nowrap="nowrap">';
                         $tmp=$module->getExample();
-                        if (preg_match('/^Error/',$tmp)) { $langs->load("errors"); print '<div class="error">'.$langs->trans($tmp).'</div>'; }
+                        if (preg_match('/^Error/',$tmp)) print '<div class="error">'.$langs->trans($tmp).'</div>';
                         elseif ($tmp=='NotConfigured') print $langs->trans($tmp);
                         else print $tmp;
                         print '</td>'."\n";
@@ -398,7 +399,7 @@ foreach ($dirmodels as $reldir)
                     		$name = substr($file, 4, dol_strlen($file) -16);
 	                        $classname = substr($file, 0, dol_strlen($file) -12);
 
-	                        require_once($dir.'/'.$file);
+	                        require_once $dir.'/'.$file;
 	                        $module = new $classname($db);
 
 	                        $modulequalified=1;
@@ -455,7 +456,7 @@ foreach ($dirmodels as $reldir)
 								$htmltooltip.='<br>'.$langs->trans("PaymentMode").': '.yn($module->option_modereg,1,1);
 								$htmltooltip.='<br>'.$langs->trans("PaymentConditions").': '.yn($module->option_condreg,1,1);
 								$htmltooltip.='<br>'.$langs->trans("MultiLanguage").': '.yn($module->option_multilang,1,1);
-								//$htmltooltip.='<br>'.$langs->trans("Escompte").': '.yn($module->option_escompte,1,1);
+								//$htmltooltip.='<br>'.$langs->trans("Discounts").': '.yn($module->option_escompte,1,1);
 								//$htmltooltip.='<br>'.$langs->trans("CreditNote").': '.yn($module->option_credit_note,1,1);
 								$htmltooltip.='<br>'.$langs->trans("WatermarkOnDraftProposal").': '.yn($module->option_draft_watermark,1,1);
 

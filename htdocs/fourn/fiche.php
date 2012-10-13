@@ -25,12 +25,12 @@
  *	\brief      Page for supplier third party card (view, edit)
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/fourn/class/fournisseur.class.php");
-require_once(DOL_DOCUMENT_ROOT."/fourn/class/fournisseur.facture.class.php");
-require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
-if ($conf->adherent->enabled) require_once(DOL_DOCUMENT_ROOT."/adherents/class/adherent.class.php");
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.class.php';
+require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.facture.class.php';
+require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+if (! empty($conf->adherent->enabled)) require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
 
 $langs->load('suppliers');
 $langs->load('products');
@@ -179,12 +179,12 @@ if ($object->fetch($id))
 	}
 
     // TVA Intra
-    print '<tr><td nowrap>'.$langs->trans('VATIntraVeryShort').'</td><td colspan="3">';
+    print '<tr><td nowrap>'.$langs->trans('VATIntra').'</td><td colspan="3">';
     print $object->tva_intra;
     print '</td></tr>';
 
     // Module Adherent
-    if ($conf->adherent->enabled)
+    if (! empty($conf->adherent->enabled))
     {
         $langs->load("members");
         $langs->load("users");
@@ -223,7 +223,7 @@ if ($object->fetch($id))
 	/*
 	 * List of products
 	 */
-	if ($conf->product->enabled || $conf->service->enabled)
+	if (! empty($conf->product->enabled) || ! empty($conf->service->enabled))
 	{
 		$langs->load("products");
 		print '<table class="noborder" width="100%">';
@@ -382,7 +382,7 @@ if ($object->fetch($id))
 	}
 
     // Add action
-    if ($conf->agenda->enabled && ! empty($conf->global->MAIN_REPEATTASKONEACHTAB))
+    if (! empty($conf->agenda->enabled) && ! empty($conf->global->MAIN_REPEATTASKONEACHTAB))
     {
         if ($user->rights->agenda->myactions->create)
         {
