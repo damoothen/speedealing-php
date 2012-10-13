@@ -56,7 +56,7 @@ abstract class ActionsContactCardCommon
 	        if (file_exists($modelclassfile))
 	        {
 	            // Include dataservice class (model)
-	            $ret = require_once($modelclassfile);
+	            $ret = require_once $modelclassfile;
 	            if ($ret)
 	            {
 	            	// Instantiate dataservice class (model)
@@ -155,7 +155,7 @@ abstract class ActionsContactCardCommon
                 $id =  $this->object->create($user);
                 if ($id > 0)
                 {
-                    Header("Location: ".$_SERVER["PHP_SELF"]."?id=".$id);
+                    header("Location: ".$_SERVER["PHP_SELF"]."?id=".$id);
                     exit;
                 }
                 else
@@ -176,7 +176,7 @@ abstract class ActionsContactCardCommon
             $result = $this->object->delete();
             if ($result > 0)
             {
-                Header("Location: list.php");
+                header("Location: list.php");
                 exit;
             }
             else
@@ -189,7 +189,7 @@ abstract class ActionsContactCardCommon
         {
         	if ($_POST["cancel"])
         	{
-        		Header("Location: ".$_SERVER["PHP_SELF"]."?id=".$this->object->id);
+        		header("Location: ".$_SERVER["PHP_SELF"]."?id=".$this->object->id);
         		exit;
         	}
 
@@ -211,7 +211,7 @@ abstract class ActionsContactCardCommon
 
                 if ($result > 0)
                 {
-                    Header("Location: ".$_SERVER["PHP_SELF"]."?id=".$this->object->id);
+                    header("Location: ".$_SERVER["PHP_SELF"]."?id=".$this->object->id);
                     exit;
                 }
                 else
@@ -310,7 +310,7 @@ abstract class ActionsContactCardCommon
         if ($action == 'view' || $action == 'edit' || $action == 'delete')
         {
         	// Emailing
-        	if ($conf->mailing->enabled)
+        	if (! empty($conf->mailing->enabled))
 			{
 				$langs->load("mails");
 				$this->tpl['nb_emailing'] = $this->object->getNbOfEMailings();
@@ -322,25 +322,25 @@ abstract class ActionsContactCardCommon
 
         	$this->object->load_ref_elements();
 
-        	if ($conf->commande->enabled)
+        	if (! empty($conf->commande->enabled))
         	{
         		$this->tpl['contact_element'][$i]['linked_element_label'] = $langs->trans("ContactForOrders");
         		$this->tpl['contact_element'][$i]['linked_element_value'] = $this->object->ref_commande?$this->object->ref_commande:$langs->trans("NoContactForAnyOrder");
         		$i++;
         	}
-        	if ($conf->propal->enabled)
+        	if (! empty($conf->propal->enabled))
         	{
         		$this->tpl['contact_element'][$i]['linked_element_label'] = $langs->trans("ContactForProposals");
         		$this->tpl['contact_element'][$i]['linked_element_value'] = $this->object->ref_propal?$this->object->ref_propal:$langs->trans("NoContactForAnyProposal");
         		$i++;
         	}
-        	if ($conf->contrat->enabled)
+        	if (! empty($conf->contrat->enabled))
         	{
         		$this->tpl['contact_element'][$i]['linked_element_label'] = $langs->trans("ContactForContracts");
         		$this->tpl['contact_element'][$i]['linked_element_value'] = $this->object->ref_contrat?$this->object->ref_contrat:$langs->trans("NoContactForAnyContract");
         		$i++;
         	}
-        	if ($conf->facture->enabled)
+        	if (! empty($conf->facture->enabled))
         	{
         		$this->tpl['contact_element'][$i]['linked_element_label'] = $langs->trans("ContactForInvoices");
         		$this->tpl['contact_element'][$i]['linked_element_value'] = $this->object->ref_facturation?$this->object->ref_facturation:$langs->trans("NoContactForAnyInvoice");
@@ -396,8 +396,8 @@ abstract class ActionsContactCardCommon
         if ($action == 'create_user')
         {
         	// Full firstname and name separated with a dot : firstname.name
-        	include_once(DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php');
-            require_once(DOL_DOCUMENT_ROOT."/core/lib/security2.lib.php");
+        	include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+            require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
         	$login=dol_buildlogin($this->object->nom, $this->object->prenom);
 
        		$generated_password=getRandomPassword('');

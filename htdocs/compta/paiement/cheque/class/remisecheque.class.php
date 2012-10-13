@@ -23,7 +23,7 @@
  *	\ingroup    compta
  *	\brief      Fichier de la classe des bordereau de remise de cheque
  */
-require_once(DOL_DOCUMENT_ROOT ."/core/class/commonobject.class.php");
+require_once DOL_DOCUMENT_ROOT .'/core/class/commonobject.class.php';
 
 
 /**
@@ -43,11 +43,11 @@ class RemiseCheque extends CommonObject
 	/**
 	 *	Constructor
 	 *
-	 *  @param		DoliDB		$DB      Database handler
+	 *  @param		DoliDB		$db      Database handler
 	 */
-	function RemiseCheque($DB)
+	function __construct($db)
 	{
-		$this->db = $DB;
+		$this->db = $db;
 		$this->next_id = 0;
 		$this->previous_id = 0;
 	}
@@ -490,8 +490,8 @@ class RemiseCheque extends CommonObject
 		$file = "pdf_".$model.".class.php";
 		if (file_exists($dir.$file))
 		{
-			require_once(DOL_DOCUMENT_ROOT ."/compta/bank/class/account.class.php");
-			require_once($dir.$file);
+			require_once DOL_DOCUMENT_ROOT .'/compta/bank/class/account.class.php';
+			require_once $dir.$file;
 
 			$classname='BordereauCheque'.ucfirst($model);
 			$docmodel = new $classname($this->db);
@@ -513,6 +513,7 @@ class RemiseCheque extends CommonObject
 				$i = 0;
 				while ($objp = $this->db->fetch_object($result))
 				{
+					$docmodel->lines[$i] = (object) array();
 					$docmodel->lines[$i]->bank_chq = $objp->banque;
 					$docmodel->lines[$i]->emetteur_chq = $objp->emetteur;
 					$docmodel->lines[$i]->amount_chq = $objp->amount;

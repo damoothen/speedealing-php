@@ -22,9 +22,9 @@
  */
 
 require ("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/projet/class/project.class.php");
-require_once(DOL_DOCUMENT_ROOT."/projet/class/task.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/project.lib.php");
+require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
+require_once DOL_DOCUMENT_ROOT.'/projet/class/task.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/project.lib.php';
 
 $langs->load('projects');
 
@@ -73,23 +73,25 @@ if (! empty($project_ref) && ! empty($withproject))
 		}
 		else
 		{
-			Header("Location: ".DOL_URL_ROOT.'/projet/tasks.php?id='.$projectstatic->id.(empty($mode)?'':'&mode='.$mode));
+			header("Location: ".DOL_URL_ROOT.'/projet/tasks.php?id='.$projectstatic->id.(empty($mode)?'':'&mode='.$mode));
 		}
 	}
 }
+
+$permission=($user->rights->projet->creer || $user->rights->projet->all->creer);
 
 
 /*
  * Actions
  */
 
-if ($action == 'setnote_public' && $user->rights->ficheinter->creer)
+if ($action == 'setnote_public' && ! empty($permission))
 {
     $result=$object->update_note_public(dol_html_entity_decode(GETPOST('note_public'), ENT_QUOTES));
     if ($result < 0) dol_print_error($db,$object->error);
 }
 
-else if ($action == 'setnote_private' && $user->rights->ficheinter->creer)
+else if ($action == 'setnote_private' && ! empty($permission))
 {
     $result=$object->update_note(dol_html_entity_decode(GETPOST('note_private'), ENT_QUOTES));
     if ($result < 0) dol_print_error($db,$object->error);
@@ -101,7 +103,7 @@ else if ($action == 'setnote_private' && $user->rights->ficheinter->creer)
  * View
  */
 
-llxHeader();
+llxHeader('', $langs->trans("Task"));
 
 $form = new Form($db);
 $userstatic = new User($db);
@@ -203,9 +205,8 @@ if ($object->id > 0)
 	print '<br>';
 
 	$colwidth=30;
-	$permission=($user->rights->projet->creer || $user->rights->projet->all->creer);
     $moreparam=$param;
-	include(DOL_DOCUMENT_ROOT.'/core/tpl/notes.tpl.php');
+	include DOL_DOCUMENT_ROOT.'/core/tpl/notes.tpl.php';
 
 	dol_fiche_end();
 }

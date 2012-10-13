@@ -22,8 +22,8 @@
  *	\brief      Fichier de la classe des commandes de la boutique online
  */
 
-require_once(DOL_DOCUMENT_ROOT ."/societe/class/address.class.php");
-include_once(DOL_DOCUMENT_ROOT.'/boutique/commande/class/boutiquecommande.class.php');
+require_once DOL_DOCUMENT_ROOT .'/societe/class/address.class.php';
+include_once DOL_DOCUMENT_ROOT.'/boutique/commande/class/boutiquecommande.class.php';
 
 
 /**
@@ -43,7 +43,7 @@ class BoutiqueCommande
      *
      * @param	DoliDB	$db		Database handler
      */
-    function BoutiqueCommande($db)
+    function __construct($db)
     {
         $this->db = $db;
 

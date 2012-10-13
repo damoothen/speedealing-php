@@ -21,7 +21,7 @@
  *		\ingroup    facture
  *		\brief      Fichier de la classe des charges sociales
  */
-require_once(DOL_DOCUMENT_ROOT."/core/class/commonobject.class.php");
+require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
 
 
 /**     \class      ChargeSociales
@@ -52,7 +52,7 @@ class ChargeSociales extends CommonObject
      *
      * @param	DoliDB		$db		Database handler
      */
-    function ChargeSociales($db)
+    function __construct($db)
     {
         $this->db = $db;
         return 1;
@@ -165,7 +165,7 @@ class ChargeSociales extends CommonObject
         $this->db->begin();
 
         // Get bank transaction lines for this social contributions
-        include_once(DOL_DOCUMENT_ROOT."/compta/bank/class/account.class.php");
+        include_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
         $account=new Account($this->db);
         $lines_url=$account->get_url('',$this->id,'sc');
 

@@ -23,10 +23,10 @@
  *  \brief      Page to list stocks
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT.'/product/class/product.class.php');
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formother.class.php");
-require_once(DOL_DOCUMENT_ROOT."/categories/class/categorie.class.php");
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 
 $langs->load("products");
 $langs->load("stocks");
@@ -66,7 +66,7 @@ $canvas=GETPOST("canvas");
 $objcanvas='';
 if (! empty($canvas))
 {
-	require_once(DOL_DOCUMENT_ROOT."/core/class/canvas.class.php");
+	require_once DOL_DOCUMENT_ROOT.'/core/class/canvas.class.php';
 	$objcanvas = new Canvas($db,$action);
 	$objcanvas->getCanvas('product','list',$canvas);
 }
@@ -171,7 +171,7 @@ if ($resql)
 	if ($num == 1 && ($sall or $snom or $sref))
 	{
 		$objp = $db->fetch_object($resql);
-		Header("Location: fiche.php?id=$objp->rowid");
+		header("Location: fiche.php?id=$objp->rowid");
 		exit;
 	}
 
@@ -240,7 +240,7 @@ if ($resql)
 	print "<tr class=\"liste_titre\">";
 	print_liste_field_titre($langs->trans("Ref"),"reassort.php", "p.ref",$param,"","",$sortfield,$sortorder);
 	print_liste_field_titre($langs->trans("Label"),"reassort.php", "p.label",$param,"","",$sortfield,$sortorder);
-	if ($conf->service->enabled && $type == 1) print_liste_field_titre($langs->trans("Duration"),"reassort.php", "p.duration",$param,"",'align="center"',$sortfield,$sortorder);
+	if (! empty($conf->service->enabled) && $type == 1) print_liste_field_titre($langs->trans("Duration"),"reassort.php", "p.duration",$param,"",'align="center"',$sortfield,$sortorder);
 	print_liste_field_titre($langs->trans("MininumStock"),"reassort.php", "p.seuil_stock_alerte",$param,"",'align="right"',$sortfield,$sortorder);
 	print_liste_field_titre($langs->trans("PhysicalStock"),"reassort.php", "stock_physique",$param,"",'align="right"',$sortfield,$sortorder);
 	// TODO Add info of running suppliers/customers orders

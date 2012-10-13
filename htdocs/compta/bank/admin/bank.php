@@ -23,9 +23,9 @@
  *		\brief      Page to setup the bank module
  */
 
-require("../../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
-require_once(DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php');
+require '../../../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
 
 $langs->load("admin");
 $langs->load("companies");
@@ -65,7 +65,7 @@ if ($action == 'setbankorder')
 {
 	if (dolibarr_set_const($db, "BANK_SHOW_ORDER_OPTION",GETPOST('value','alpha'),'chaine',0,'',$conf->entity) > 0)
 	{
-		Header("Location: ".$_SERVER["PHP_SELF"]);
+		header("Location: ".$_SERVER["PHP_SELF"]);
 		exit;
 	}
 	else

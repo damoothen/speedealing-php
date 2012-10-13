@@ -23,9 +23,9 @@
  *		\brief       Page reporting mensuel Entrees/Sorties d'un compte bancaire
  */
 
-require("./pre.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/bank.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/compta/bank/class/account.class.php");
+require 'pre.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/bank.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 
 // Security check
 if (isset($_GET["account"]) || isset($_GET["ref"]))
@@ -133,6 +133,8 @@ $lien=($year_start?"<a href='".$_SERVER["PHP_SELF"]."?account=".$acct->id."&year
 
 print '<table class="border" width="100%">';
 
+$linkback = '<a href="'.DOL_URL_ROOT.'/compta/bank/index.php">'.$langs->trans("BackToList").'</a>';
+
 // Ref
 print '<tr><td valign="top" width="25%">'.$langs->trans("Ref").'</td>';
 print '<td colspan="3">';
@@ -140,7 +142,7 @@ if ($_GET["account"])
 {
 	if (! preg_match('/,/',$_GET["account"]))
 	{
-		print $form->showrefnav($acct,'ref','',1,'ref');
+		print $form->showrefnav($acct, 'ref', $linkback, 1, 'ref');
 	}
 	else
 	{

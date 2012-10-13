@@ -23,10 +23,10 @@
  *		\brief      Onglet vcard d'un contact
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
-require_once(DOL_DOCUMENT_ROOT."/societe/class/societe.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/vcard.class.php");
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
+require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/vcard.class.php';
 
 
 $contact = new Contact($db);
@@ -89,10 +89,10 @@ $filenameurlencoded = dol_sanitizeFileName(urlencode($filename));
 //$filename = dol_sanitizeFileName($filename);
 
 
-Header("Content-Disposition: attachment; filename=\"".$filename."\"");
-Header("Content-Length: ".dol_strlen($output));
-Header("Connection: close");
-Header("Content-Type: text/x-vcard; name=\"".$filename."\"");
+header("Content-Disposition: attachment; filename=\"".$filename."\"");
+header("Content-Length: ".dol_strlen($output));
+header("Connection: close");
+header("Content-Type: text/x-vcard; name=\"".$filename."\"");
 
 print $output;
 

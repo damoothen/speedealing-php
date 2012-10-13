@@ -26,12 +26,12 @@
  *		\brief      Page d'administration/configuration du module Ldap adherent
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/adherents/class/adherent.class.php");
-require_once(DOL_DOCUMENT_ROOT."/adherents/class/adherent_type.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/ldap.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/ldap.lib.php");
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
+require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent_type.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/ldap.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/ldap.lib.php';
 
 $langs->load("admin");
 $langs->load("errors");
@@ -373,7 +373,7 @@ print info_admin($langs->trans("LDAPDescValues"));
 /*
  * Test de la connexion
  */
-if ($conf->global->LDAP_MEMBER_ACTIVE)
+if (! empty($conf->global->LDAP_MEMBER_ACTIVE))
 {
 	$butlabel=$langs->trans("LDAPTestSynchroMember");
 	$testlabel='testmember';

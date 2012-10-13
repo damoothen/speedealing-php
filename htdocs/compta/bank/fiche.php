@@ -24,11 +24,11 @@
  *		\brief      Page to create/view a bank account
  */
 
-require("./pre.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/bank.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formcompany.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formbank.class.php");
+require 'pre.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/bank.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formbank.class.php';
 
 $langs->load("banks");
 $langs->load("companies");
@@ -281,7 +281,7 @@ if ($action == 'create')
 	print '</td></tr>';
 
 	// Accountancy code
-    if ($conf->global->MAIN_BANK_ACCOUNTANCY_CODE_ALWAYS_REQUIRED)
+    if (! empty($conf->global->MAIN_BANK_ACCOUNTANCY_CODE_ALWAYS_REQUIRED))
     {
         print '<tr><td valign="top" class="fieldrequired">'.$langs->trans("AccountancyCode").'</td>';
         print '<td colspan="3"><input type="text" name="account_number" value="'.$account->account_number.'"></td></tr>';
@@ -300,7 +300,7 @@ if ($action == 'create')
 	print '<tr><td valign="top">'.$langs->trans("Comment").'</td>';
 	print '<td colspan="3">';
     // Editor wysiwyg
-	require_once(DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php");
+	require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
 	$doleditor=new DolEditor('account_comment',$account->comment,'',200,'dolibarr_notes','',false,true,$conf->global->FCKEDITOR_ENABLE_SOCIETE,10,70);
 	$doleditor->Create();
 	print '</td></tr>';
@@ -367,10 +367,12 @@ else
 
 		print '<table class="border" width="100%">';
 
+		$linkback = '<a href="'.DOL_URL_ROOT.'/compta/bank/index.php">'.$langs->trans("BackToList").'</a>';
+
 		// Ref
 		print '<tr><td valign="top" width="25%">'.$langs->trans("Ref").'</td>';
 		print '<td colspan="3">';
-		print $form->showrefnav($account,'ref','',1,'ref');
+		print $form->showrefnav($account, 'ref', $linkback, 1, 'ref');
 		print '</td></tr>';
 
 		// Label
@@ -561,7 +563,7 @@ else
         print '</td></tr>';
 
         // Accountancy code
-        if ($conf->global->MAIN_BANK_ACCOUNTANCY_CODE_ALWAYS_REQUIRED)
+        if (! empty($conf->global->MAIN_BANK_ACCOUNTANCY_CODE_ALWAYS_REQUIRED))
         {
             print '<tr><td valign="top" class="fieldrequired">'.$langs->trans("AccountancyCode").'</td>';
             print '<td colspan="3"><input type="text" name="account_number" value="'.(isset($_POST["account_number"])?$_POST["account_number"]:$account->account_number).'"></td></tr>';
@@ -588,7 +590,7 @@ else
 		print '<tr><td valign="top">'.$langs->trans("Comment").'</td>';
 		print '<td colspan="3">';
 	   // Editor wysiwyg
-		require_once(DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php");
+		require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
 		$doleditor=new DolEditor('account_comment',(isset($_POST["account_comment"])?$_POST["account_comment"]:$account->comment),'',200,'dolibarr_notes','',false,true,$conf->global->FCKEDITOR_ENABLE_SOCIETE,10,70);
 		$doleditor->Create();
 		print '</td></tr>';

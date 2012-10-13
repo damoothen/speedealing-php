@@ -20,9 +20,9 @@
  * We set here login choices into session.
  */
 
-include('../main.inc.php');
-require_once(DOL_DOCUMENT_ROOT.'/cashdesk/include/environnement.php');
-require_once(DOL_DOCUMENT_ROOT.'/cashdesk/class/Auth.class.php');
+include '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/cashdesk/include/environnement.php';
+require_once DOL_DOCUMENT_ROOT.'/cashdesk/class/Auth.class.php';
 
 $langs->load("main");
 $langs->load("admin");
@@ -32,6 +32,9 @@ $username = GETPOST("txtUsername");
 $password = GETPOST("pwdPassword");
 $thirdpartyid = (GETPOST('socid','int')!='')?GETPOST('socid','int'):$conf->global->CASHDESK_ID_THIRDPARTY;
 $warehouseid = (GETPOST("warehouseid")!='')?GETPOST("warehouseid"):$conf->global->CASHDESK_ID_WAREHOUSE;
+$bankid_cash = (GETPOST("CASHDESK_ID_BANKACCOUNT_CASH")!='')?GETPOST("CASHDESK_ID_BANKACCOUNT_CASH"):$conf->global->CASHDESK_ID_BANKACCOUNT_CASH;
+$bankid_cheque = (GETPOST("CASHDESK_ID_BANKACCOUNT_CHEQUE")!='')?GETPOST("CASHDESK_ID_BANKACCOUNT_CHEQUE"):$conf->global->CASHDESK_ID_BANKACCOUNT_CHEQUE;
+$bankid_cb = (GETPOST("CASHDESK_ID_BANKACCOUNT_CB")!='')?GETPOST("CASHDESK_ID_BANKACCOUNT_CB"):$conf->global->CASHDESK_ID_BANKACCOUNT_CB;
 
 // Check username
 if (empty($username))
@@ -49,22 +52,22 @@ if (! ($thirdpartyid > 0))
 }
 
 // If we setup stock module to ask movement on invoices, we must not allow access if required setup not finished.
-if ($conf->stock->enabled && $conf->global->STOCK_CALCULATE_ON_BILL &&  ! ($warehouseid > 0))
+if (! empty($conf->stock->enabled) && $conf->global->STOCK_CALCULATE_ON_BILL &&  ! ($warehouseid > 0))
 {
 	$retour=$langs->trans("CashDeskSetupStock");
 	header('Location: '.DOL_URL_ROOT.'/cashdesk/index.php?err='.urlencode($retour).'&user='.$username.'&socid='.$thirdpartyid.'&warehouseid='.$warehouseid);
 	exit;
 }
 
-if (! empty($_POST['txtUsername']) && $conf->banque->enabled && (empty($conf_fkaccount_cash) || empty($conf_fkaccount_cheque) || empty($conf_fkaccount_cb)))
+/*
+if (! empty($_POST['txtUsername']) && ! empty($conf->banque->enabled) && (empty($conf_fkaccount_cash) && empty($conf_fkaccount_cheque) && empty($conf_fkaccount_cb)))
 {
 	$langs->load("errors");
 	$retour=$langs->trans("ErrorModuleSetupNotComplete");
     header('Location: '.DOL_URL_ROOT.'/cashdesk/index.php?err='.urlencode($retour).'&user='.$username.'&socid='.$thirdpartyid.'&warehouseid='.$warehouseid);
     exit;
 }
-
-
+*/
 
 // Check password
 $auth = new Auth($db);
@@ -95,7 +98,10 @@ if ( $retour >= 0 )
 		$_SESSION['prenom'] = $tab['firstname'];
 		$_SESSION['CASHDESK_ID_THIRDPARTY'] = $thirdpartyid;
         $_SESSION['CASHDESK_ID_WAREHOUSE'] = $warehouseid;
-		//var_dump($_SESSION);exit;
+        $_SESSION['CASHDESK_ID_BANKACCOUNT_CASH'] = ($bankid_cash > 0 ? $bankid_cash : '');
+        $_SESSION['CASHDESK_ID_BANKACCOUNT_CHEQUE'] = ($bankid_cheque > 0 ? $bankid_cheque : '');
+        $_SESSION['CASHDESK_ID_BANKACCOUNT_CB'] = ($bankid_cb > 0 ? $bankid_cb : '');
+        //var_dump($_SESSION);exit;
 
 		header('Location: '.DOL_URL_ROOT.'/cashdesk/affIndex.php?menu=facturation&id=NOUV');
 		exit;

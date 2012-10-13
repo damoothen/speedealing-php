@@ -1,7 +1,7 @@
 <?php
 
 /* Copyright (C) 2002-2005 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2005-2008 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2005-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2010 Regis Houssin        <regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -21,19 +21,21 @@
 /**
  * 		\file       htdocs/projet/class/project.class.php
  * 		\ingroup    projet
- * 		\brief      Fichier de la classe de gestion des projets
+ * 		\brief      File of class to manage projects
  */
-require_once(DOL_DOCUMENT_ROOT . "/core/class/commonobject.class.php");
+require_once DOL_DOCUMENT_ROOT . '/core/class/commonobject.class.php';
 
 /**
- * 		\class      Project
- * 		\brief      Class to manage projects
+ *	Class to manage projects
  */
 class Project extends CommonObject
 {
 
     public $element = 'project';    //!< Id that identify managed objects
     public $table_element = 'projet';  //!< Name of table without prefix where object is stored
+    public $table_element_line = 'projet_task';
+    public $fk_element = 'fk_projet';
+
     var $id;
     var $ref;
     var $description;
@@ -82,7 +84,7 @@ class Project extends CommonObject
         if (!trim($this->ref))
         {
             $this->error = 'ErrorFieldsRequired';
-            dol_syslog(get_class($this)."::Create error -1 ref null", LOG_ERR);
+            dol_syslog(get_class($this)."::create error -1 ref null", LOG_ERR);
             return -1;
         }
 
@@ -124,7 +126,7 @@ class Project extends CommonObject
             if (!$notrigger)
             {
                 // Call triggers
-                include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+                include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
                 $interface = new Interfaces($this->db);
                 $result = $interface->run_triggers('PROJECT_CREATE', $this, $user, $langs, $conf);
                 if ($result < 0)
@@ -139,7 +141,7 @@ class Project extends CommonObject
         {
             $this->error = $this->db->lasterror();
             $this->errno = $this->db->lasterrno();
-            dol_syslog(get_class($this)."::Create error -2 " . $this->error, LOG_ERR);
+            dol_syslog(get_class($this)."::create error -2 " . $this->error, LOG_ERR);
             $error++;
         }
 
@@ -198,7 +200,7 @@ class Project extends CommonObject
                 if (!$notrigger)
                 {
                     // Call triggers
-                    include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+                    include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
                     $interface = new Interfaces($this->db);
                     $result = $interface->run_triggers('PROJECT_MODIFY', $this, $user, $langs, $conf);
                     if ($result < 0)
@@ -208,7 +210,7 @@ class Project extends CommonObject
                     }
                     // End call triggers
                 }
-                
+
                 if (! $error && (is_object($this->oldcopy) && $this->oldcopy->ref != $this->ref))
                 {
                 	// We remove directory
@@ -427,7 +429,7 @@ class Project extends CommonObject
     function delete($user, $notrigger=0)
     {
         global $langs, $conf;
-        require_once(DOL_DOCUMENT_ROOT . "/core/lib/files.lib.php");
+        require_once DOL_DOCUMENT_ROOT . '/core/lib/files.lib.php';
 
         $error = 0;
 
@@ -479,7 +481,7 @@ class Project extends CommonObject
             if (!$notrigger)
             {
                 // Call triggers
-                include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+                include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
                 $interface = new Interfaces($this->db);
                 $result = $interface->run_triggers('PROJECT_DELETE', $this, $user, $langs, $conf);
                 if ($result < 0)
@@ -529,7 +531,7 @@ class Project extends CommonObject
             if ($resql)
             {
                 // Appel des triggers
-                include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+                include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
                 $interface = new Interfaces($this->db);
                 $result = $interface->run_triggers('PROJECT_VALIDATE', $this, $user, $langs, $conf);
                 if ($result < 0)
@@ -541,7 +543,8 @@ class Project extends CommonObject
 
                 if (!$error)
                 {
-                    $this->db->commit();
+                	$this->statut=1;
+                	$this->db->commit();
                     return 1;
                 }
                 else
@@ -589,7 +592,7 @@ class Project extends CommonObject
             if ($resql)
             {
                 // Appel des triggers
-                include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+                include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
                 $interface = new Interfaces($this->db);
                 $result = $interface->run_triggers('PROJECT_CLOSE', $this, $user, $langs, $conf);
                 if ($result < 0)
@@ -601,6 +604,7 @@ class Project extends CommonObject
 
                 if (!$error)
                 {
+                    $this->statut = 2;
                     $this->db->commit();
                     return 1;
                 }
@@ -970,7 +974,7 @@ class Project extends CommonObject
     	if (! empty($conf->global->PROJECT_ADDON) && is_readable(DOL_DOCUMENT_ROOT ."/core/modules/project/".$conf->global->PROJECT_ADDON.".php"))
     	{
 
-        	require_once(DOL_DOCUMENT_ROOT ."/core/modules/project/".$conf->global->PROJECT_ADDON.".php");
+        	require_once DOL_DOCUMENT_ROOT ."/core/modules/project/".$conf->global->PROJECT_ADDON.'.php';
         	$modProject = new $obj;
         	$defaultref = $modProject->getNextValue($clone_project->societe->id,$clone_project);
     	}
@@ -1065,7 +1069,7 @@ class Project extends CommonObject
 			//Duplicate file
 			if ($clone_file)
 			{
-				require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
+				require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
 				$clone_project_dir = $conf->projet->dir_output . "/" . dol_sanitizeFileName($defaultref);
 				$ori_project_dir = $conf->projet->dir_output . "/" . dol_sanitizeFileName($orign_project_ref);
@@ -1202,17 +1206,18 @@ class Project extends CommonObject
 		    		$this->error.=$task->error;
 		    	}
 	    	}
+			//print "$this->date_start + $tasktoshiftdate->date_start - $old_project_dt_start";exit;
 
 	    	//Calcultate new task start date with difference between old proj start date and origin task start date
 	    	if (!empty($tasktoshiftdate->date_start))
 	    	{
-				$task->date_start			= $this->date_start + ($tasktoshiftdate->date_start - $old_project_dt_st);
+				$task->date_start			= $this->date_start + ($tasktoshiftdate->date_start - $old_project_dt_start);
 	    	}
 
 	    	//Calcultate new task end date with difference between origin proj end date and origin task end date
 	    	if (!empty($tasktoshiftdate->date_end))
 	    	{
-				$task->date_end		    	= $this->date_start + ($tasktoshiftdate->date_end - $old_project_dt_st);
+				$task->date_end		    	= $this->date_start + ($tasktoshiftdate->date_end - $old_project_dt_start);
 	    	}
 
 			if ($to_update)

@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once(DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php');
+include_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
 
 
 /**
@@ -72,7 +72,7 @@ class Facturation
     /**
      *	Constructor
      */
-    public function Facturation()
+    public function __construct()
     {
         $this->raz();
         $this->razPers();
@@ -144,7 +144,7 @@ class Facturation
         $newcartarray[$i]['price']=$product->price;
         $newcartarray[$i]['price_ttc']=$product->price_ttc;
 
-        if ($conf->global->PRODUIT_MULTIPRICES)
+        if (! empty($conf->global->PRODUIT_MULTIPRICES))
         {
             if (isset($product->multiprices[$societe->price_level]))
             {

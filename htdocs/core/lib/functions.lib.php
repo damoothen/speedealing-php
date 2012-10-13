@@ -2345,7 +2345,7 @@ function start_box($title, $nbcolumn = 'twelve', $icon = '16-Abacus.png', $box_a
 	if (!empty($head)) {
 		$rtr.='<ul class="tabs cf right">';
 		foreach ($head as $aRow) {
-			$rtr.='<li><a href="#">' . $aRow[1] . '</a></li>';
+			$rtr.='<li><a href="#" id="'.$aRow[2].'">' . $aRow[1] . '</a></li>';
 		}
 		$rtr.='</ul>';
 	}

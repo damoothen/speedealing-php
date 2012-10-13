@@ -23,9 +23,9 @@
  *       \brief      Page accueil de la zone mailing
  */
 
-require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT ."/comm/mailing/class/mailing.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
+require '../../main.inc.php';
+require_once DOL_DOCUMENT_ROOT .'/comm/mailing/class/mailing.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 
 $langs->load("commercial");
 $langs->load("orders");
@@ -51,7 +51,7 @@ print '<tr><td valign="top" width="30%" class="notopnoleft">';
 $var=false;
 print '<form method="post" action="'.DOL_URL_ROOT.'/comm/mailing/liste.php">';
 print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-print '<table class="noborder" width="100%">';
+print '<table class="noborder nohover" width="100%">';
 print '<tr class="liste_titre"><td colspan="3">'.$langs->trans("SearchAMailing").'</td></tr>';
 print '<tr '.$bc[$var].'><td nowrap>';
 print $langs->trans("Ref").':</td><td><input type="text" class="flat" name="sref" size="18"></td>';
@@ -84,7 +84,7 @@ if (is_resource($handle))
                 // Chargement de la classe
                 $file = $dir."/".$modulename.".modules.php";
                 $classname = "mailing_".$modulename;
-                require_once($file);
+                require_once $file;
                 $mailmodule = new $classname($db);
 
                 $qualified=1;

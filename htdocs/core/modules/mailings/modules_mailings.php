@@ -23,7 +23,7 @@
  *		\ingroup    mailing
  *		\brief      File with parent class of emailing target selectors modules
  */
-require_once(DOL_DOCUMENT_ROOT.'/core/lib/functions.lib.php');
+require_once DOL_DOCUMENT_ROOT.'/core/lib/functions.lib.php';
 
 
 /**
@@ -41,7 +41,7 @@ class MailingTargets    // This can't be abstract as it is used for some method
 	 *
 	 *  @param		DoliDB		$db      Database handler
 	 */
-	function MailingTargets($db)
+	function __construct($db)
 	{
         $this->db = $db;
 	}

@@ -22,7 +22,7 @@
  * \brief      Module to generate box of suppliers
  */
 
-include_once(DOL_DOCUMENT_ROOT."/core/boxes/modules_boxes.php");
+include_once DOL_DOCUMENT_ROOT.'/core/boxes/modules_boxes.php';
 
 
 /**
@@ -44,7 +44,7 @@ class box_fournisseurs extends ModeleBoxes
     /**
      *  Constructor
      */
-    function box_fournisseurs()
+    function __construct()
     {
         global $langs;
         $langs->load("boxes");
@@ -65,7 +65,7 @@ class box_fournisseurs extends ModeleBoxes
 
 		$this->max=$max;
 
-        include_once(DOL_DOCUMENT_ROOT."/societe/class/societe.class.php");
+        include_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
         $thirdpartystatic=new Societe($db);
 
 		$this->info_box_head = array('text' => $langs->trans("BoxTitleLastModifiedSuppliers",$max));
@@ -114,7 +114,9 @@ class box_fournisseurs extends ModeleBoxes
                 if ($num==0) $this->info_box_contents[$i][0] = array('td' => 'align="center"','text'=>$langs->trans("NoRecordedSuppliers"));
             }
             else {
-                dol_print_error($db);
+                $this->info_box_contents[0][0] = array( 'td' => 'align="left"',
+                                                        'maxlength'=>500,
+                                                        'text' => ($db->error().' sql='.$sql));
             }
         }
         else {

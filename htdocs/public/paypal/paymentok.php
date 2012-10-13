@@ -36,10 +36,10 @@ if (is_int($entity))
 	define("DOLENTITY", $entity);
 }
 
-require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/paypal/lib/paypal.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/paypal/lib/paypalfunctions.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
+require '../../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/paypal/lib/paypal.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/paypal/lib/paypalfunctions.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
 
 // Security check
 if (empty($conf->paypal->enabled)) accessforbidden('',1,1,1);
@@ -54,13 +54,13 @@ $langs->load("paypal");
 
 // Clean parameters
 $PAYPAL_API_USER="";
-if ($conf->global->PAYPAL_API_USER) $PAYPAL_API_USER=$conf->global->PAYPAL_API_USER;
+if (! empty($conf->global->PAYPAL_API_USER)) $PAYPAL_API_USER=$conf->global->PAYPAL_API_USER;
 $PAYPAL_API_PASSWORD="";
-if ($conf->global->PAYPAL_API_PASSWORD) $PAYPAL_API_PASSWORD=$conf->global->PAYPAL_API_PASSWORD;
+if (! empty($conf->global->PAYPAL_API_PASSWORD)) $PAYPAL_API_PASSWORD=$conf->global->PAYPAL_API_PASSWORD;
 $PAYPAL_API_SIGNATURE="";
-if ($conf->global->PAYPAL_API_SIGNATURE) $PAYPAL_API_SIGNATURE=$conf->global->PAYPAL_API_SIGNATURE;
+if (! empty($conf->global->PAYPAL_API_SIGNATURE)) $PAYPAL_API_SIGNATURE=$conf->global->PAYPAL_API_SIGNATURE;
 $PAYPAL_API_SANDBOX="";
-if ($conf->global->PAYPAL_API_SANDBOX) $PAYPAL_API_SANDBOX=$conf->global->PAYPAL_API_SANDBOX;
+if (! empty($conf->global->PAYPAL_API_SANDBOX)) $PAYPAL_API_SANDBOX=$conf->global->PAYPAL_API_SANDBOX;
 $PAYPAL_API_OK="";
 if ($urlok) $PAYPAL_API_OK=$urlok;
 $PAYPAL_API_KO="";
@@ -154,7 +154,7 @@ if ($PAYPALTOKEN)
             if (! empty($conf->global->PAYPAL_MESSAGE_OK)) print $conf->global->PAYPAL_MESSAGE_OK;
 
             // Appel des triggers
-            include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+            include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
             $interface=new Interfaces($db);
             $result=$interface->run_triggers('PAYPAL_PAYMENT_OK',$object,$user,$langs,$conf);
             if ($result < 0) { $error++; $errors=$interface->errors; }

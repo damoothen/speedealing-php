@@ -23,9 +23,9 @@
  *	\brief      Page de liste des dons
  */
 
-require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/compta/dons/class/don.class.php");
-if (! empty($conf->projet->enabled)) require_once(DOL_DOCUMENT_ROOT."/projet/class/project.class.php");
+require '../../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/compta/dons/class/don.class.php';
+if (! empty($conf->projet->enabled)) require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 
 $langs->load("companies");
 $langs->load("donations");
@@ -53,9 +53,9 @@ if (!$user->rights->don->lire) accessforbidden();
  * View
  */
 
-if ($conf->projet->enabled) $projectstatic=new Project($db);
+if (! empty($conf->projet->enabled)) $projectstatic=new Project($db);
 
-llxHeader('',$langs->trans("Donations"),'EN:Module_Donations|FR:Module_Dons|ES:M&oacute;dulo_Subvenciones');
+llxHeader('',$langs->trans("Donations"),'EN:Module_Donations|FR:Module_Dons|ES:M&oacute;dulo_Donaciones');
 
 $donationstatic=new Don($db);
 
@@ -160,7 +160,7 @@ if ($resql)
         print "<td>".$objp->societe."</td>\n";
 		print "<td>".$donationstatic->getFullName($langs)."</td>\n";
 		print '<td align="center">'.dol_print_date($db->jdate($objp->datedon),'day').'</td>';
-		if ($conf->projet->enabled)
+		if (! empty($conf->projet->enabled))
 		{
 			print "<td>";
 			if ($objp->pid)

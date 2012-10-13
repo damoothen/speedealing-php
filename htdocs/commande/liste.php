@@ -3,6 +3,7 @@
  * Copyright (C) 2004-2012 Laurent Destailleur    <eldy@users.sourceforge.net>
  * Copyright (C) 2005      Marc Barilley / Ocebo  <marc@ocebo.com>
  * Copyright (C) 2005-2012 Regis Houssin          <regis@dolibarr.fr>
+ * Copyright (C) 2012      Juanjo Menent          <jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,10 +26,10 @@
  */
 
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formother.class.php");
-require_once(DOL_DOCUMENT_ROOT."/commande/class/commande.class.php");
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/commande/class/commande.class.php';
 
 $langs->load('orders');
 $langs->load('deliveries');
@@ -98,7 +99,8 @@ $formother = new FormOther($db);
 $formfile = new FormFile($db);
 $companystatic = new Societe($db);
 
-llxHeader();
+$help_url="EN:Module_Customers_Orders|FR:Module_Commandes_Clients|ES:Módulo_Pedidos_de_clientes";
+llxHeader('',$langs->trans("Orders"),$help_url);
 
 $sql = 'SELECT s.nom, s.rowid as socid, s.client, c.rowid, c.ref, c.total_ht, c.ref_client,';
 $sql.= ' c.date_valid, c.date_commande, c.date_livraison, c.fk_statut, c.facture as facturee';
@@ -125,7 +127,7 @@ if ($sall)
 }
 if ($viewstatut <> '')
 {
-	if ($viewstatut < 4 && $viewstatut > -2)
+	if ($viewstatut < 4 && $viewstatut > -3)
 	{
 		$sql.= ' AND c.fk_statut ='.$viewstatut; // brouillon, validee, en cours, annulee
 		if ($viewstatut == 3)
@@ -141,6 +143,11 @@ if ($viewstatut <> '')
 	{
 		//$sql.= ' AND c.fk_statut IN (1,2,3) AND c.facture = 0';
 		$sql.= " AND ((c.fk_statut IN (1,2)) OR (c.fk_statut = 3 AND c.facture = 0))";    // If status is 2 and facture=1, it must be selected
+	}
+	if ($viewstatut == -3)	// To bill
+	{
+		$sql.= ' AND c.fk_statut in (1,2,3)';
+		$sql.= ' AND c.facture = 0'; // invoice not created
 	}
 }
 if ($ordermonth > 0)
@@ -214,6 +221,8 @@ if ($resql)
 	$title.=' - '.$langs->trans('StatusOrderCanceledShort');
 	if ($viewstatut == -2)
 	$title.=' - '.$langs->trans('StatusOrderToProcessShort');
+	if ($viewstatut == -3)
+	$title.=' - '.$langs->trans('StatusOrderValidated').', '.$langs->trans("StatusOrderSent").', '.$langs->trans('StatusOrderToBill');
 
 	$param='&socid='.$socid.'&viewstatut='.$viewstatut;
 	if ($ordermonth)      $param.='&ordermonth='.$ordermonth;
@@ -232,6 +241,7 @@ if ($resql)
 
 	// Lignes des champs de filtre
 	print '<form method="GET" action="'.$_SERVER["PHP_SELF"].'">';
+	print '<input type="hidden" name="viewstatut" value="'.$viewstatut.'">';
 
 	print '<table class="noborder" width="100%">';
 
@@ -296,7 +306,7 @@ if ($resql)
 
 		print '<table class="nobordernopadding"><tr class="nocellnopadd">';
 		print '<td class="nobordernopadding" nowrap="nowrap">';
-		print $generic_commande->getNomUrl(1,$objp->fk_statut);
+		print $generic_commande->getNomUrl(1,($viewstatut != 2?0:$objp->fk_statut));
 		print '</td>';
 
 		print '<td width="20" class="nobordernopadding" nowrap="nowrap">';
@@ -307,7 +317,7 @@ if ($resql)
 		$filename=dol_sanitizeFileName($objp->ref);
 		$filedir=$conf->commande->dir_output . '/' . dol_sanitizeFileName($objp->ref);
 		$urlsource=$_SERVER['PHP_SELF'].'?id='.$objp->rowid;
-		$formfile->show_documents('commande',$filename,$filedir,$urlsource,'','','',1,'',1);
+		print $formfile->getDocumentsLink($generic_commande->element, $filename, $filedir);
 		print '</td></tr></table>';
 
 		print '</td>';
@@ -318,6 +328,21 @@ if ($resql)
 		$companystatic->client=$objp->client;
 		print '<td>';
 		print $companystatic->getNomUrl(1,'customer');
+		print '&nbsp;<a href="'.DOL_URL_ROOT.'/commande/orderstoinvoice.php?socid='.$companystatic->id.'">';
+		
+		// If module invoices enabled and user with invoice creation permissions
+		if (! empty($conf->facture->enabled))
+		{
+			if ($user->rights->facture->creer)
+			{
+		
+				if (($objp->fk_statut > 0 && $objp->fk_statut < 3) || ($objp->fk_statut == 3 && $objp->facturee == 0))
+				{
+			
+					print img_picto($langs->trans("CreateInvoiceForThisCustomer").' : '.$companystatic->nom,'object_bill').'</a>';
+				}
+			}
+		}
 		print '</td>';
 
 		print '<td>'.$objp->ref_client.'</td>';

@@ -22,7 +22,7 @@
  *		\brief      File to manage password generation according to standard rule
  */
 
-require_once(DOL_DOCUMENT_ROOT ."/core/modules/security/generate/modules_genpassword.php");
+require_once DOL_DOCUMENT_ROOT .'/core/modules/security/generate/modules_genpassword.php';
 
 
 /**
@@ -48,7 +48,7 @@ class modGeneratePassStandard extends ModeleGenPassword
 	 *	@param		Translate	$langs		Handler de langue
 	 *	@param		User		$user		Handler du user connecte
 	 */
-	function modGeneratePassStandard($db, $conf, $langs, $user)
+	function __construct($db, $conf, $langs, $user)
 	{
 		$this->id = "standard";
 		$this->length = 8;

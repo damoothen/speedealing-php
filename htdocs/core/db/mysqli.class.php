@@ -1,9 +1,9 @@
 <?php
-/* Copyright (C) 2001      Fabien Seisen        <seisen@linuxfr.org>
- * Copyright (C) 2002-2005 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2006      Andre Cianfarani     <acianfa@free.fr>
- * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
+/* Copyright (C) 2001		Fabien Seisen			<seisen@linuxfr.org>
+ * Copyright (C) 2002-2005	Rodolphe Quiedeville	<rodolphe@quiedeville.org>
+ * Copyright (C) 2004-2011	Laurent Destailleur		<eldy@users.sourceforge.net>
+ * Copyright (C) 2006		Andre Cianfarani		<acianfa@free.fr>
+ * Copyright (C) 2005-2012	Regis Houssin			<regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,7 +80,7 @@ class DoliDBMysqli
 	 *	@param	    int		$port		Port of database server
 	 *	@return	    int					1 if OK, 0 if not
      */
-    function DoliDBMysqli($type, $host, $user, $pass, $name='', $port=0)
+    function __construct($type, $host, $user, $pass, $name='', $port=0)
     {
         global $conf,$langs;
 
@@ -709,7 +709,7 @@ class DoliDBMysqli
         global $conf;
 
         // Type of encryption (2: AES (recommended), 1: DES , 0: no encryption)
-        $cryptType = ($conf->db->dolibarr_main_db_encryption?$conf->db->dolibarr_main_db_encryption:0);
+        $cryptType = (!empty($conf->db->dolibarr_main_db_encryption)?$conf->db->dolibarr_main_db_encryption:0);
 
         //Encryption key
         $cryptKey = (!empty($conf->db->dolibarr_main_db_cryptkey)?$conf->db->dolibarr_main_db_cryptkey:'');
@@ -742,7 +742,7 @@ class DoliDBMysqli
         global $conf;
 
         // Type of encryption (2: AES (recommended), 1: DES , 0: no encryption)
-        $cryptType = ($conf->db->dolibarr_main_db_encryption?$conf->db->dolibarr_main_db_encryption:0);
+        $cryptType = (!empty($conf->db->dolibarr_main_db_encryption)?$conf->db->dolibarr_main_db_encryption:0);
 
         //Encryption key
         $cryptKey = (!empty($conf->db->dolibarr_main_db_cryptkey)?$conf->db->dolibarr_main_db_cryptkey:'');

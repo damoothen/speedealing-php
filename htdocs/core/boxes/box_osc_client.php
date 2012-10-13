@@ -22,7 +22,7 @@
  * \brief      Module to generate box of shop customers
  */
 
-include_once(DOL_DOCUMENT_ROOT."/core/boxes/modules_boxes.php");
+include_once DOL_DOCUMENT_ROOT.'/core/boxes/modules_boxes.php';
 
 
 /**
@@ -44,7 +44,7 @@ class box_osc_clients extends ModeleBoxes
     /**
      *  Constructor
      */
-    function box_osc_clients()
+    function __construct()
     {
         global $langs;
         $langs->load("boxes");
@@ -92,7 +92,9 @@ class box_osc_clients extends ModeleBoxes
                 }
             }
             else {
-                dol_print_error($db);
+                $this->info_box_contents[0][0] = array( 'td' => 'align="left"',
+                                                        'maxlength'=>500,
+                                                        'text' => ($db->error().' sql='.$sql));
             }
         }
         else {

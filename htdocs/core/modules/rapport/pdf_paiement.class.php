@@ -22,8 +22,8 @@
  *	\ingroup    banque
  *	\brief      File to build payment reports
  */
-require_once(DOL_DOCUMENT_ROOT.'/core/lib/pdf.lib.php');
-require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
+require_once DOL_DOCUMENT_ROOT.'/core/lib/pdf.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
 
 
 /**
@@ -76,7 +76,7 @@ class pdf_paiement
 	 */
 	function write_file($_dir, $month, $year, $outputlangs)
 	{
-		include_once(DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php');
+		include_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 
 		global $user,$langs,$conf;
 
@@ -180,7 +180,7 @@ class pdf_paiement
 		$pdf->SetCreator("Dolibarr ".DOL_VERSION);
 		$pdf->SetAuthor($outputlangs->convToOutputCharset($user->getFullName($outputlangs)));
 		//$pdf->SetKeyWords();
-		if ($conf->global->MAIN_DISABLE_PDF_COMPRESSION) $pdf->SetCompression(false);
+		if (! empty($conf->global->MAIN_DISABLE_PDF_COMPRESSION)) $pdf->SetCompression(false);
 
 		$pdf->SetMargins($this->marge_gauche, $this->marge_haute, $this->marge_droite);   // Left, Top, Right
 		$pdf->SetAutoPageBreak(1,0);

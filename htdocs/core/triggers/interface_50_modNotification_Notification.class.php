@@ -37,7 +37,7 @@ class InterfaceNotification
      *
      *   @param		DoliDB		$db      Database handler
      */
-    function InterfaceNotification($db)
+    function __construct($db)
     {
         $this->db = $db;
 
@@ -99,7 +99,7 @@ class InterfaceNotification
     {
 		if (empty($conf->notification->enabled)) return 0;     // Module not active, we do nothing
 
-		require_once(DOL_DOCUMENT_ROOT .'/core/class/notify.class.php');
+		require_once DOL_DOCUMENT_ROOT .'/core/class/notify.class.php';
 
 		if ($action == 'BILL_VALIDATE')
 		{

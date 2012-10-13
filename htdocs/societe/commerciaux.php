@@ -23,8 +23,8 @@
  *  \brief      Page of links to sales representatives
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
 
 $langs->load("companies");
 $langs->load("commercial");
@@ -51,12 +51,12 @@ if($_GET["socid"] && $_GET["commid"])
 		$soc->fetch($_GET["socid"]);
 		$soc->add_commercial($user, $_GET["commid"]);
 
-		Header("Location: commerciaux.php?socid=".$soc->id);
+		header("Location: commerciaux.php?socid=".$soc->id);
 		exit;
 	}
 	else
 	{
-		Header("Location: commerciaux.php?socid=".$_GET["socid"]);
+		header("Location: commerciaux.php?socid=".$_GET["socid"]);
 		exit;
 	}
 }
@@ -70,12 +70,12 @@ if($_GET["socid"] && $_GET["delcommid"])
 		$soc->fetch($_GET["socid"]);
 		$soc->del_commercial($user, $_GET["delcommid"]);
 
-		Header("Location: commerciaux.php?socid=".$soc->id);
+		header("Location: commerciaux.php?socid=".$soc->id);
 		exit;
 	}
 	else
 	{
-		Header("Location: commerciaux.php?socid=".$_GET["socid"]);
+		header("Location: commerciaux.php?socid=".$_GET["socid"]);
 		exit;
 	}
 }

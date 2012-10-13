@@ -24,8 +24,8 @@
  *	\brief      Fichier de la classe de gestion des stats des propales
  */
 
-include_once DOL_DOCUMENT_ROOT . "/core/class/stats.class.php";
-include_once DOL_DOCUMENT_ROOT . "/comm/propal/class/propal.class.php";
+include_once DOL_DOCUMENT_ROOT . '/core/class/stats.class.php';
+include_once DOL_DOCUMENT_ROOT . '/comm/propal/class/propal.class.php';
 
 
 /**
@@ -47,15 +47,15 @@ class PropaleStats extends Stats
 	/**
 	 * Constructor
 	 *
-	 * @param 	DoliDB	$DB		   Database handler
+	 * @param 	DoliDB	$db		   Database handler
 	 * @param 	int		$socid	   Id third party
      * @param   int		$userid    Id user for filter
 	 */
-	function PropaleStats($DB, $socid=0, $userid=0)
+	function __construct($db, $socid=0, $userid=0)
 	{
 		global $user, $conf;
 
-		$this->db = $DB;
+		$this->db = $db;
         $this->socid = $socid;
         $this->userid = $userid;
 

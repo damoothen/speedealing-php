@@ -2,7 +2,7 @@
 /* Copyright (C) 2004      Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2008 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
- * Copyright (C) 2011-2012 Juanjo Menent	    <jmenent@2byte.es>
+ * Copyright (C) 2011-2012 Juanjo Menent	      <jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,8 +24,8 @@
  *	\brief      Page to setup accountancy module
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 
 $langs->load('admin');
 $langs->load('compta');
@@ -113,7 +113,7 @@ print "</tr>\n";
 print '<tr '.$bc[false].'><td width="200"><input type="radio" name="compta_mode" value="RECETTES-DEPENSES"'.($compta_mode != 'CREANCES-DETTES' ? ' checked' : '').'> '.$langs->trans('OptionModeTrue').'</td>';
 print '<td colspan="2">'.nl2br($langs->trans('OptionModeTrueDesc'));
 // Write info on way to count VAT
-if ($conf->global->MAIN_MODULE_COMPTABILITE)
+if (! empty($conf->global->MAIN_MODULE_COMPTABILITE))
 {
 	//	print "<br>\n";
 	//	print nl2br($langs->trans('OptionModeTrueInfoModuleComptabilite'));
