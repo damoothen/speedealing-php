@@ -195,7 +195,7 @@ class MenuAuguria extends nosqlDocument {
 		// Define $right
 		$perms = true;
 		if ($newTabMenu->perms) {
-			$perms = verifCond($newTabMenu->perms);
+            $perms = verifCond($newTabMenu->perms);
 			//print "verifCond rowid=".$menu['rowid']." ".$menu['perms'].":".$perms."<br>\n";
 		}
 

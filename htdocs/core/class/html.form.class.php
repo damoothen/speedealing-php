@@ -936,7 +936,7 @@ class Form {
 
 		$object = new User($db);
 		$result = $object->getView("list");
-
+        
 		if (count($result->rows) && is_array($exclude)) {
 			foreach ($result->rows as $key => $obj) {
 				if (in_array($obj->id, $exclude, true)) {
@@ -944,7 +944,7 @@ class Form {
 				}
 			}
 		}
-
+        
 		$i = 0;
 		if (count($result->rows)) {
 			$out.= '<select class="flat" id="' . $htmlname . '" name="' . $htmlname . '"' . ($disabled ? ' disabled="disabled"' : '') . '>';
@@ -956,7 +956,7 @@ class Form {
 				$object->values->Lastname = $obj->value->Lastname;
 				$object->values->Firstname = $obj->value->Firstname;
 
-				$disableline = 0;
+                $disableline = 0;
 				if (is_array($enableonly) && count($enableonly) && !in_array($obj->value->name, $enableonly))
 					$disableline = 1;
 
@@ -972,7 +972,7 @@ class Form {
 						$out.= ' disabled="disabled"';
 					$out.= '>';
 				}
-				$out.= $object->getFullName($langs);
+				$out.= $object->getFullName($langs,0,0);
 
 				//if ($obj->admin) $out.= ' *';
 				if (!$conf->global->MAIN_SHOW_LOGIN)
@@ -2797,7 +2797,7 @@ class Form {
 	 *  @param  int			$fullday        When a checkbox with this html name is on, hour and day are set with 00:00 or 23:59
 	 * 	@return	mixed						Nothing or string if nooutput is 1
 	 */
-	function select_date($set_time = '', $prefix = 're', $h = 0, $m = 0, $empty = 0, $form_name = "", $d = 1, $addnowbutton = 0, $nooutput = 0, $disabled = 0, $fullday = '') {
+	function select_date($set_time = '', $prefix = 're', $h = 0, $m = 0, $empty = 0, $form_name = "", $d = 1, $addnowbutton = 0, $nooutput = 0, $disabled = 0, $fullday = '',$params=array()) {
 		global $conf, $langs;
 
 		$retstring = '';
@@ -2953,7 +2953,8 @@ class Form {
 			$retstring.='<select' . ($disabled ? ' disabled="disabled"' : '') . ' class="flat ' . ($fullday ? $fullday . 'min' : '') . '" name="' . $prefix . 'min">';
 			if ($empty)
 				$retstring.='<option value="-1">&nbsp;</option>';
-			for ($min = 0; $min < 60; $min++) {
+                        $stepMinutes = (isset($params['stepMinutes']) && !empty($params['stepMinutes']) && is_int($params['stepMinutes'])) ? $params['stepMinutes'] : 1;		
+			for ($min = 0; $min < 60; $min+=$stepMinutes) {
 				if (dol_strlen($min) < 2) {
 					$min = "0" . $min;
 				}
@@ -3011,8 +3012,8 @@ class Form {
 		print $retstring;
 		return;
 	}
-
-	/**
+    
+    /**
 	 * 	Function to show a form to select a duration on a page
 	 *
 	 * 	@param	string	$prefix   	prefix
@@ -3020,7 +3021,7 @@ class Form {
 	 * 	@param	int		$disabled	Disable the combo box
 	 *  @return	void
 	 */
-	function select_duration($prefix, $iSecond = '', $disabled = 0) {
+	function select_duration($prefix, $iSecond = '', $disabled = 0, $params=array()) {
 		if ($iSecond) {
 			require_once(DOL_DOCUMENT_ROOT . "/core/lib/date.lib.php");
 
@@ -3034,16 +3035,17 @@ class Form {
 			if ($hourSelected == $hour) {
 				print " selected=\"true\"";
 			}
-			print ">" . $hour . "</option>";
+			print ">" .(dol_strlen($hour) < 2 ? '0' : ''). $hour . "</option>";
 		}
 		print "</select>";
 		print "H &nbsp;";
 		print '<select class="flat" name="' . $prefix . 'min"' . ($disabled ? ' disabled="disabled"' : '') . '>';
-		for ($min = 0; $min <= 55; $min = $min + 5) {
+                $stepMinutes = (isset($params['stepMinutes']) && !empty($params['stepMinutes']) && is_int($params['stepMinutes'])) ? $params['stepMinutes'] : 1;		
+		for ($min = 0; $min < 60; $min = $min + $stepMinutes) {
 			print '<option value="' . $min . '"';
 			if ($minSelected == $min)
 				print ' selected="selected"';
-			print '>' . $min . '</option>';
+			print '>' .(dol_strlen($min) < 2 ? '0' : ''). $min . '</option>';
 		}
 		print "</select>";
 		print "M&nbsp;";

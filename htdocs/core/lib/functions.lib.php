@@ -3843,7 +3843,7 @@ function dol_eval($s) {
 	global $langs, $user, $conf;
 	global $leftmenu;
 	global $rights;
-
+    
 	//print $s."<br>\n";
 	eval($s);
 }

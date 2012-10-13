@@ -858,6 +858,8 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                 <!-- Additional styles -->
                 <link rel="stylesheet"
                       href="theme/symeos/css/styles/table.css?v=1">
+                <link rel="stylesheet"
+                      href="theme/symeos/css/styles/calendars.css?v=1">
 
                 <!-- DataTables -->
                 <!--<link rel="stylesheet" href="theme/developr/html/js/libs/DataTables/jquery.dataTables.css?v=1">-->

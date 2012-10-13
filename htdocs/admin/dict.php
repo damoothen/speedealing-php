@@ -1055,7 +1055,7 @@ if ($id) {
 			$dictid = substr($tabname[$id], 6, strlen($tabname[$id])); //retire llx_c_
 			$dictid = "dict:fk_" . $dictid;
 			// if not exist write the dictionnary in couchdb
-			$arrayConf = array(1 => true, 4 => true, 28 => true);
+			$arrayConf = array(1 => true, 4 => true, 6 => true, 28 => true);
 			if (isset($arrayConf[$id]) && $arrayConf[$id] == true) {
 				try {
 					$temp = $couch->getDoc($dictid); // test if exit

@@ -84,6 +84,21 @@ abstract class nosqlDocument extends CommonObject {
 
         return 1;
     }
+    
+    function simpleFetch($id){
+        global $conf;
+
+		// Clean parametersadmin
+		$login = trim($id);
+
+		try {
+			$this->values = $this->couchdb->getDoc($id);
+		} catch (Exception $e) {
+			return 0;
+		}
+
+		return 1;
+    }
 
     function update($user) {
         if ($this->id) // only update
@@ -303,7 +318,7 @@ abstract class nosqlDocument extends CommonObject {
                 $found = true;
             }
         }
-
+        
         if (!$found) {
             $result = new stdClass();
             try {
@@ -918,7 +933,7 @@ abstract class nosqlDocument extends CommonObject {
 			}
 			}';
                 break;
-
+            
             default :
                 dol_print_error($db, "Type of fnRender must be url, date, datetime, attachment or status");
                 exit;
