@@ -165,6 +165,7 @@ class modAgenda extends DolibarrModules {
         //							'target'=>'',
         //							'user'=>2);				// 0=Menu for internal users, 1=external users, 2=both
         // $r++;
+        /*
         $this->menus[$r]->_id = "menu:agenda";
         $this->menus[$r]->type = "top";
         $this->menus[$r]->position = 10;
@@ -318,7 +319,51 @@ class modAgenda extends DolibarrModules {
         $this->menus[$r]->title = "Reportings";
         $this->menus[$r]->fk_menu = "menu:agenda";
         $r++;
-
+        */
+        $this->menus[$r]->_id = "menu:agenda";
+        $this->menus[$r]->type = "top";
+        $this->menus[$r]->position = 10;
+        $this->menus[$r]->url = "/agenda/listactions.php";
+        $this->menus[$r]->langs = "agenda";
+        $this->menus[$r]->perms = '$user->rights->agenda->myactions->read';
+        $this->menus[$r]->enabled = '$conf->agenda->enabled';
+        $this->menus[$r]->usertype = 2;
+        $this->menus[$r]->title = "Agenda";
+        $r++;
+        
+        $this->menus[$r]->_id = "menu:newaction";
+        $this->menus[$r]->position = 101;
+        $this->menus[$r]->url = "/agenda/fiche.php?action=create";
+        $this->menus[$r]->langs = "agenda";
+        $this->menus[$r]->perms = '($user->rights->agenda->myactions->create||$user->rights->agenda->allactions->create)';
+        $this->menus[$r]->enabled = '$conf->agenda->enabled';
+        $this->menus[$r]->usertype = 2;
+        $this->menus[$r]->title = "NewAction";
+        $this->menus[$r]->fk_menu = "menu:agenda";
+        $r++;
+        
+        $this->menus[$r]->_id = "menu:actioncalendar";
+        $this->menus[$r]->position = 102;
+        $this->menus[$r]->url = "/agenda/index.php";
+        $this->menus[$r]->langs = "agenda";
+        $this->menus[$r]->perms = '$user->rights->agenda->myactions->read';
+        $this->menus[$r]->enabled = '$conf->agenda->enabled';
+        $this->menus[$r]->usertype = 2;
+        $this->menus[$r]->title = "Agenda";
+        $this->menus[$r]->fk_menu = "menu:agenda";
+        $r++;
+        
+        $this->menus[$r]->_id = "menu:agendaList";
+        $this->menus[$r]->position = 112;
+        $this->menus[$r]->url = "/agenda/listactions.php";
+        $this->menus[$r]->langs = "agenda";
+        $this->menus[$r]->perms = '$user->rights->agenda->myactions->read';
+        $this->menus[$r]->enabled = '$conf->agenda->enabled';
+        $this->menus[$r]->usertype = 2;
+        $this->menus[$r]->title = "Tasks";
+        $this->menus[$r]->fk_menu = "menu:agenda";
+        $r++;
+        
         // Exports
         //--------
         $r = 0;

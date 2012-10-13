@@ -952,6 +952,25 @@ if ($id) {
         $percent = GETPOST("percentage") ? GETPOST("percentage") : $object->percentage;
         print $htmlactions->form_select_status_action('formaction', $percent, 1);
         print '</td></tr>';
+        
+        // Percentage
+        if ($object->type_code != 'AC_RDV') {
+            // Status
+            print '<tr><td nowrap>' . $langs->trans("Percentage") . '</td><td colspan="3" style="height: 60px">';
+            $percent = GETPOST("percentage") ? GETPOST("percentage") : $object->percentage;
+            //print $htmlactions->form_select_status_action('formaction', $percent, 1);
+            print '<p class="inline-medium-label button-height" style="padding-left: 0px; margin-top:10px">';
+            print '<input type="text"  size="2" class="input demo-slider mid-margin-right" value="'.$object->percentage.'" id="demo-slider1" name="demo-slider1">';
+            print '</p>';
+            print '</td></tr>';
+            print '<script type="text/javascript" >
+                jQuery(document).ready(function(){
+                    jQuery(".demo-slider").slider({
+                        "hideInput": false
+                    });
+                });
+                </script>';
+        }
 
         if ($object->type_code == "AC_RDV") { //RDV
             // Location
@@ -1118,6 +1137,15 @@ if ($id) {
         print '<tr><td nowrap>' . $langs->trans("Status") . ' / ' . $langs->trans("Percentage") . '</td><td colspan="2">';
         print $object->getLibStatut(4);
         print '</td></tr>';
+        
+        // Percentage
+        if ($object->type_code != 'AC_RDV') {
+        print '<tr><td nowrap>' . $langs->trans("Percentage") . '</td><td colspan="2">';
+        print '<span style="width: 100px" class="progress anthracite thin">';
+        print '<span style="width: ' . $object->percentage . '%" class="progress-bar"></span>';
+        print '</span>';
+        print '</td></tr>';
+        }
         $var = !$var;
 
         // Priority

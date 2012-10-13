@@ -609,7 +609,6 @@ function calendars_prepare_head($param) {
 function print_calendar($date) {
 
     global $db, $langs;
-
     $nbDaysInMonth = date('t', $date);
     $firstDayTimestamp = dol_mktime(-1, -1, -1, date('n', $date), 1, date('Y', $date));
     $lastDayTimestamp = dol_mktime(23, 59, 59, date('n', $date), $nbDaysInMonth, date('Y', $date));
@@ -617,7 +616,7 @@ function print_calendar($date) {
     $firstDayOfMonth = date('w', $firstDayTimestamp);
 
     $object = new Agenda($db);
-    $events = $object->getView("list", array("startkey" => $firstDayTimestamp, "endkey" => $lastDayTimestamp));
+    $events = $object->getView("listRdv", array("startkey" => $firstDayTimestamp, "endkey" => $lastDayTimestamp));
 
     print '<table class="calendar large-margin-bottom with-events largest" style="width: 100%;">';
 
@@ -660,7 +659,7 @@ function print_calendar($date) {
         if (!empty($events->rows[$cursor])) {
             for ($j = 0; $j < count($events->rows); $j++) {
                 if ($events->rows[$cursor]->key >= $dayTimestamp && $events->rows[$cursor]->key < $dayTimestamp + 3600 * 24) {
-                    print '<li class="important">' . $events->rows[$cursor]->value->label . '</li>';
+                    print '<li class="important"><a href="/agenda/fiche.php?id='.$events->rows[$cursor]->id.'" >' . $events->rows[$cursor]->value->label . '</a></li>';
                     $cursor++;
                 } else
                     break;
@@ -698,7 +697,7 @@ function print_week($date) {
     }
 
     $object = new Agenda($db);
-    $events = $object->getView("list", array("startkey" => $timestamps[0]['start'], "endkey" => $timestamps[6]['end']));
+    $events = $object->getView("listRdv", array("startkey" => $timestamps[0]['start'], "endkey" => $timestamps[6]['end']));
 
     $styles = array(
         0 => 'left: 0%; right: 85.7143%; margin-left: -1px;',
@@ -762,7 +761,7 @@ function print_week($date) {
                     $hourStart = date('G', $dateStart);
                     $hourEnd = date('G', $dateEnd);
 
-                    print '<a class="agenda-event from-' . $hourStart . ' to-' . $hourEnd . ' anthracite-gradient" href="#">';
+                    print '<a class="agenda-event from-' . $hourStart . ' to-' . $hourEnd . ' anthracite-gradient" href="/agenda/fiche.php?id='.$events->rows[$cursor]->id.'">';
                     print '<time>' . $hourStart . 'h - ' . $hourEnd . 'h</time>';
                     print $events->rows[$cursor]->value->label;
                     print '</a>';

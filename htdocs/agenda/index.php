@@ -140,15 +140,78 @@ if ($conf->use_javascript_ajax) {
                 });
 
             });';
+    print '</script>' . "\n";
 }
-print '</script>' . "\n";
 
-print '<span class="button-group">';
+if ($conf->use_javascript_ajax) {
+    print "\n" . '<script type="text/javascript" language="javascript">';
+    print 'jQuery(document).ready(function () {
+                
+               var flagAllActions = true;
+               var flagMyActions = false;
+               
+               function buttonsActionsManager(obj){
+                    switch (obj.val()) {
+                        case "all-actions":
+                            flagAllActions = true;
+                            flagMyActions = false;
+                            break;
+                        case "my-actions":
+                            flagAllActions = false;
+                            flagMyActions = true;
+                            break;
+                        default: alert("ok");
+                    }
+                    jQuery("#buttons-actions .active").removeClass("active");
+                    obj.parent().addClass("active");
+                    refreshDisplay();
+                    return false;
+               }
+               
+               function refreshDisplay(){
+                    alert("refresh");
+               }
+
+               jQuery("#buttons-actions input[type=radio]").click(function(){
+                    buttonsActionsManager(jQuery(this));
+               });
+               
+
+            });';
+    print '</script>' . "\n";
+}
+
+print '<p></p>';
+print '<p class="button-height" >';
+print '<span class="button-group margin-right">';
 print '<a class="button" href="#" id="button-view-month" >' . $langs->trans('Month') . '</a>';
 print '<a class="button" href="#" id="button-view-week" >' . $langs->trans('Week') . '</a>';
 print '</span>';
 
-//print_calendar(dol_now());
+
+print '<span class="button-group margin-right" id="buttons-actions">';
+print '<label class="button green-active active" for="button-all-actions">';
+print '<input type="radio" checked="" value="all-actions" id="button-all-actions" name="button-actions">';
+print $langs->trans('AllActions');
+print '</label>';
+print '<label class="button green-active" for="button-my-actions">';
+print '<input type="radio" checked="" value="my-actions" id="button-my-actions" name="button-actions">';
+print $langs->trans('MyActions');
+print '</label>';
+print '</span>';
+
+print '<span class="button-group margin-right" id="buttons-status">';
+print '<label class="button green-active active" for="button-todo">';
+print '<input type="radio" checked="" value="todo" id="button-todo" name="button-status">';
+print $langs->trans('MenuToDoActions');
+print '</label>';
+print '<label class="button green-active" for="button-done">';
+print '<input type="radio" checked="" value="done" id="button-done" name="button-status">';
+print $langs->trans('MenuDoneActions');
+print '</label>';
+print '</span>';
+print '</p>';
+
 switch ($view) {
     case 'week': 
         print_week(dol_now());

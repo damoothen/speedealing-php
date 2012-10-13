@@ -7,6 +7,12 @@
        },
        "actionsToDo": {
            "map": "function(doc) {\nif (doc.class == \"Agenda\" && (!doc.status || doc.status == \"0\"))\n  emit(doc.label, doc);\n}"
+       },
+       "listRdv": {
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Agenda\" && doc.type_code==\"AC_RDV\")\n  emit(doc.datep, doc);\n}"
+       },
+       "listTasks": {
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Agenda\" && doc.type_code!=\"AC_RDV\")\n  emit(doc.datep, doc);\n}"
        }
    }
 }
