@@ -1,5 +1,4 @@
 <?php
-
 /* Copyright (C) 2003-2005 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
@@ -21,48 +20,51 @@
  */
 
 /**
- * 	\defgroup   expedition     Module shipping
- * 	\brief      Module pour gerer les expeditions de produits
- * 	\file       htdocs/core/modules/modExpedition.class.php
- * 	\ingroup    expedition
- * 	\brief      Fichier de description et activation du module Expedition
+ *	\defgroup   expedition     Module shipping
+ *	\brief      Module pour gerer les expeditions de produits
+ *	\file       htdocs/core/modules/modExpedition.class.php
+ *	\ingroup    expedition
+ *	\brief      Fichier de description et activation du module Expedition
  */
-include_once(DOL_DOCUMENT_ROOT . "/core/modules/DolibarrModules.class.php");
+
+include_once DOL_DOCUMENT_ROOT .'/core/modules/DolibarrModules.class.php';
+
 
 /**
- * 	\class modExpedition
- * 	\brief      Classe de description et activation du module Expedition
+ *	Classe de description et activation du module Expedition
  */
-class modExpedition extends DolibarrModules {
+class modExpedition extends DolibarrModules
+{
 
 	/**
 	 *   Constructor. Define names, constants, directories, boxes, permissions
 	 *
 	 *   @param      DoliDB		$db      Database handler
 	 */
-	function modExpedition($db) {
+	function __construct($db)
+	{
 		parent::__construct($db);
 		$this->numero = 80;
 
 		$this->family = "crm";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->name = preg_replace('/^mod/i','',get_class($this));
 		$this->description = "Gestion des expeditions";
 
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
 		$this->version = 'dolibarr';
 
-		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
+		$this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
 		$this->special = 0;
 		$this->picto = "sending";
 
 		// Data directories to create when module is enabled
 		$this->dirs = array("/expedition/temp",
-			"/expedition/sending",
-			"/expedition/sending/temp",
-			"/expedition/receipt",
-			"/expedition/receipt/temp"
-		);
+							"/expedition/sending",
+		                    "/expedition/sending/temp",
+		                    "/expedition/receipt",
+		                    "/expedition/receipt/temp"
+		                    );
 
 		// Config pages
 		$this->config_page_url = array("confexped.php");
@@ -73,7 +75,7 @@ class modExpedition extends DolibarrModules {
 
 		// Constantes
 		$this->const = array();
-		$r = 0;
+		$r=0;
 
 		$this->const[$r][0] = "EXPEDITION_ADDON_PDF";
 		$this->const[$r][1] = "chaine";
@@ -82,10 +84,10 @@ class modExpedition extends DolibarrModules {
 		$this->const[$r][4] = 0;
 		$r++;
 
-		$this->const[$r][0] = "EXPEDITION_ADDON";
+		$this->const[$r][0] = "EXPEDITION_ADDON_NUMBER";
 		$this->const[$r][1] = "chaine";
-		$this->const[$r][2] = "elevement";
-		$this->const[$r][3] = 'Nom du gestionnaire du type d\'expedition';
+		$this->const[$r][2] = "mod_expedition_safor";
+		$this->const[$r][3] = 'Nom du gestionnaire de numerotation des expeditions';
 		$this->const[$r][4] = 0;
 		$r++;
 
@@ -103,20 +105,13 @@ class modExpedition extends DolibarrModules {
 		$this->const[$r][4] = 0;
 		$r++;
 
-		$this->const[$r][0] = "EXPEDITION_ADDON_NUMBER";
-		$this->const[$r][1] = "chaine";
-		$this->const[$r][2] = "mod_expedition_safor";
-		$this->const[$r][3] = 'Nom du gestionnaire de numerotation des expeditions';
-		$this->const[$r][4] = 0;
-		$r++;
-
 		// Boxes
 		$this->boxes = array();
 
 		// Permissions
 		$this->rights = array();
 		$this->rights_class = 'expedition';
-		$r = 0;
+		$r=0;
 
 		$r++;
 		$this->rights[$r][0] = 101;
@@ -145,7 +140,7 @@ class modExpedition extends DolibarrModules {
 		$this->rights[$r][2] = 'd'; // type de la permission (deprecie a ce jour)
 		$this->rights[$r][3] = 0; // La permission est-elle une permission par defaut
 		$this->rights[$r][4] = 'shipping_advance';
-		$this->rights[$r][5] = 'send';
+        $this->rights[$r][5] = 'send';
 
 		$r++;
 		$this->rights[$r][0] = 109;
@@ -185,17 +180,20 @@ class modExpedition extends DolibarrModules {
 		$this->rights[$r][3] = 0;
 		$this->rights[$r][4] = 'livraison';
 		$this->rights[$r][5] = 'supprimer';
+
 	}
 
+
 	/**
-	 * 		Function called when module is enabled.
-	 * 		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
-	 * 		It also creates data directories
+	 *		Function called when module is enabled.
+	 *		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
+	 *		It also creates data directories
 	 *
-	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
+     *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
 	 */
-	function init($options = '') {
+	function init($options='')
+	{
 		global $conf;
 
 		// Permissions
@@ -204,29 +202,29 @@ class modExpedition extends DolibarrModules {
 		$sql = array();
 
 		$sql = array(
-			"DELETE FROM " . MAIN_DB_PREFIX . "document_model WHERE nom = '" . $this->const[0][2] . "' AND entity = " . $conf->entity,
-			"INSERT INTO " . MAIN_DB_PREFIX . "document_model (nom, type, entity) VALUES('" . $this->const[0][2] . "','shipping'," . $conf->entity . ")",
-			"DELETE FROM " . MAIN_DB_PREFIX . "document_model WHERE nom = '" . $this->const[1][2] . "' AND entity = " . $conf->entity,
-			"INSERT INTO " . MAIN_DB_PREFIX . "document_model (nom, type, entity) VALUES('" . $this->const[1][2] . "','delivery'," . $conf->entity . ")",
+			 "DELETE FROM ".MAIN_DB_PREFIX."document_model WHERE nom = '".$this->const[0][2]."' AND entity = ".$conf->entity,
+			 "INSERT INTO ".MAIN_DB_PREFIX."document_model (nom, type, entity) VALUES('".$this->const[0][2]."','shipping',".$conf->entity.")",
+			 "DELETE FROM ".MAIN_DB_PREFIX."document_model WHERE nom = '".$this->const[2][2]."' AND entity = ".$conf->entity,
+			 "INSERT INTO ".MAIN_DB_PREFIX."document_model (nom, type, entity) VALUES('".$this->const[2][2]."','delivery',".$conf->entity.")",
 		);
 
-		return $this->_init($sql, $options);
+		return $this->_init($sql,$options);
 	}
 
-	/**
-	 * 		Function called when module is disabled.
+    /**
+	 *		Function called when module is disabled.
 	 *      Remove from database constants, boxes and permissions from Dolibarr database.
-	 * 		Data directories are not deleted
+	 *		Data directories are not deleted
 	 *
-	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
+     *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
-	 */
-	function remove($options = '') {
+     */
+    function remove($options='')
+    {
 		$sql = array();
 
-		return $this->_remove($sql, $options);
-	}
+		return $this->_remove($sql,$options);
+    }
 
 }
-
 ?>

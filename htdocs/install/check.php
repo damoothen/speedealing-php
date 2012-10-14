@@ -1,8 +1,8 @@
 <?php
 /* Copyright (C) 2004-2005	Rodolphe Quiedeville	<rodolphe@quiedeville.org>
- * Copyright (C) 2004-2009	Laurent Destailleur		<eldy@users.sourceforge.net>
+ * Copyright (C) 2004-2012	Laurent Destailleur		<eldy@users.sourceforge.net>
  * Copyright (C) 2005		Marc Barilley / Ocebo	<marc@ocebo.com>
- * Copyright (C) 2005-2010	Regis Houssin			<regis@dolibarr.fr>
+ * Copyright (C) 2005-2012	Regis Houssin			<regis@dolibarr.fr>
  * Copyright (C) 2012		Herve Prot				<herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -24,14 +24,14 @@
  *	\ingroup    install
  *	\brief      Test if file conf can be modified and if does not exists, test if install process can create it
  */
-include_once("./inc.php");
+include_once 'inc.php';
 
 $err = 0;
 $allowinstall = 0;
 $allowupgrade = 0;
 $checksok = 1;
 
-$setuplang=isset($_POST["selectlang"])?$_POST["selectlang"]:(isset($_GET["selectlang"])?$_GET["selectlang"]:$langs->getDefaultLang());
+$setuplang=GETPOST("selectlang",'',3)?GETPOST("selectlang",'',3):$langs->getDefaultLang();
 $langs->setDefaultLang($setuplang);
 
 $langs->load("install");
@@ -152,8 +152,8 @@ else
 
 
 // Check memory
-$memrequiredorig='32M';
-$memrequired=32*1024*1024;
+$memrequiredorig='64M';
+$memrequired=64*1024*1024;
 $memmaxorig=@ini_get("memory_limit");
 $memmax=@ini_get("memory_limit");
 if ($memmaxorig != '')
@@ -181,7 +181,7 @@ if (is_readable($conffile) && filesize($conffile) > 8)
 {
 	dolibarr_install_syslog("conf file '$conffile' already defined");
 	$confexists=1;
-	include_once($conffile);
+	include_once $conffile;
 
 	$databaseok=1;
 	if ($databaseok)
@@ -275,6 +275,7 @@ else
 
 		$allowinstall=1;
 	}
+	print "<br>\n";
 
 	// Si prerequis ok, on affiche le bouton pour passer a l'etape suivante
 	if ($checksok)
@@ -284,7 +285,7 @@ else
 		// Try to create db connexion
 		if (file_exists($conffile))
 		{
-			include_once($conffile);
+			include_once $conffile;
 			if (! empty($dolibarr_main_db_type) && ! empty($dolibarr_main_document_root))
 			{
 				if (! file_exists($dolibarr_main_document_root."/core/lib/admin.lib.php"))
@@ -294,7 +295,7 @@ else
 				}
 				else
 				{
-                    require_once($dolibarr_main_document_root."/core/lib/admin.lib.php");
+                    require_once $dolibarr_main_document_root.'/core/lib/admin.lib.php';
 
     				// $conf is already instancied inside inc.php
     				$conf->db->type = $dolibarr_main_db_type;
@@ -341,6 +342,7 @@ else
 			print $langs->trans("VersionProgram").': <b><font class="ok">'.DOL_VERSION.'</font></b>';
 			//print ' '.img_warning($langs->trans("RunningUpdateProcessMayBeRequired"));
 			print '<br>';
+			print '<br>';
 		}
 		else print "\n";
 
@@ -349,6 +351,7 @@ else
 
 
 		$foundrecommandedchoice=0;
+
 
 		// Array of install choices
 		print '<table class="display dt_act">';
@@ -389,9 +392,9 @@ else
 		if (defined("MAIN_NOT_INSTALLED")) $allowupgrade=false;
 		$migrationscript=array( //array('from'=>'2.0.0', 'to'=>'2.1.0'),
 								//array('from'=>'2.1.0', 'to'=>'2.2.0'),
-								array('from'=>'2.2.0', 'to'=>'2.4.0'),
-								array('from'=>'2.4.0', 'to'=>'2.5.0'),
-								array('from'=>'2.5.0', 'to'=>'2.6.0'),
+								//array('from'=>'2.2.0', 'to'=>'2.4.0'),
+								//array('from'=>'2.4.0', 'to'=>'2.5.0'),
+								//array('from'=>'2.5.0', 'to'=>'2.6.0'),
 								array('from'=>'2.6.0', 'to'=>'2.7.0'),
 								array('from'=>'2.7.0', 'to'=>'2.8.0'),
 								array('from'=>'2.8.0', 'to'=>'2.9.0'),

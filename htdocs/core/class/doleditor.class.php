@@ -61,7 +61,7 @@ class DolEditor
      *      @param  int		$rows                   Size of rows for textarea tool
 	 *      @param  int		$cols                   Size of cols for textarea tool
 	 */
-    function DolEditor($htmlname,$content,$width='',$height=200,$toolbarname='Basic',$toolbarlocation='In',$toolbarstartexpanded=false,$uselocalbrowser=true,$okforextendededitor=true,$rows=0,$cols=0)
+    function __construct($htmlname,$content,$width='',$height=200,$toolbarname='Basic',$toolbarlocation='In',$toolbarstartexpanded=false,$uselocalbrowser=true,$okforextendededitor=true,$rows=0,$cols=0)
     {
     	global $conf,$langs;
 
@@ -82,7 +82,7 @@ class DolEditor
         }
         if ($this->tool == 'fckeditor')
     	{
-        	require_once(DOL_DOCUMENT_ROOT."/includes/fckeditor/fckeditor.php");
+        	require_once DOL_DOCUMENT_ROOT.'/includes/fckeditor/fckeditor.php';
 
     		$content=dol_htmlentitiesbr($content);	// If content is not HTML, we convert to HTML.
 

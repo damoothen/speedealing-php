@@ -42,7 +42,7 @@ class modBoutique extends DolibarrModules
 	 *
 	 *   @param      DoliDB		$db      Database handler
 	 */
-	function modBoutique($db)
+	function __construct($db)
 	{		
 		parent::__construct($db);
 		$this->numero = 800;

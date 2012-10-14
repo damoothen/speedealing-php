@@ -89,7 +89,7 @@ function dol_hash($chain,$type=0)
  *
  *	@param	User	$user      	  	User to check
  *	@param  string	$features	    Features to check (in most cases, it's module name. Examples: 'societe', 'contact', 'produit|service', ...)
- *	@param  int		$objectid      	Object ID if we want to check permission on a particular record (optionnal)
+ *	@param  int		$objectid      	Object ID if we want to check a particular record (optionnal) is linked to a owned thirdparty (optionnal).
  *	@param  string	$dbtablename    'TableName&SharedElement' with Tablename is table where object is stored, SharedElement is key to define where to check entity. Not used if objectid is null (optionnal)
  *	@param  string	$feature2		Feature to check, second level of permission (optionnal)
  *  @param  string	$dbt_keyfield   Field name for socid foreign key if not fk_soc (optionnal)
@@ -277,7 +277,8 @@ function restrictedArea($user, $features, $objectid=0, $dbtablename='', $feature
             {
                 //print '<br>feature='.$feature.' creer='.$user->rights->$feature->supprimer.' write='.$user->rights->$feature->delete;
                 if (empty($user->rights->$feature->supprimer)
-                && empty($user->rights->$feature->delete)) $deleteok=0;
+                && empty($user->rights->$feature->delete)
+                && empty($user->rights->$feature->run)) $deleteok=0;
             }
         }
 
@@ -379,7 +380,7 @@ function restrictedArea($user, $features, $objectid=0, $dbtablename='', $feature
             {
                 if (! empty($conf->projet->enabled) && ! $user->rights->projet->all->lire)
                 {
-                    include_once(DOL_DOCUMENT_ROOT."/projet/class/project.class.php");
+                    include_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
                     $projectstatic=new Project($db);
                     $tmps=$projectstatic->getProjectsAuthorizedForUser($user,0,1,0);
                     $tmparray=explode(',',$tmps);
@@ -462,7 +463,7 @@ function accessforbidden($message='',$printheader=1,$printfooter=1,$showonlymess
     global $conf, $db, $user, $langs;
     if (! is_object($langs))
     {
-        include_once(DOL_DOCUMENT_ROOT.'/core/class/translate.class.php');
+        include_once DOL_DOCUMENT_ROOT.'/core/class/translate.class.php';
         $langs=new Translate('',$conf);
     }
 

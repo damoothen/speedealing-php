@@ -23,7 +23,7 @@
  *		\ingroup    societe
  *		\brief      Fichier de la classe des prospects
  */
-include_once(DOL_DOCUMENT_ROOT."/societe/class/societe.class.php");
+include_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
 
 
 /**
@@ -40,7 +40,7 @@ class Prospect extends Societe
      *
      *	@param	DoliDB	$db		Databas handler
      */
-    function Prospect($db)
+    function __construct($db)
     {
         global $config;
 

@@ -5,7 +5,6 @@
  * Copyright (C) 2006-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2006-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2007      Patrick Raguin	  	<patrick.raguin@gmail.com>
- * Copyright (C) 2010-2011 Herve Prot   	  	<herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,14 +26,12 @@
  *	\brief      File of class to manage categories
  */
 
-require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
-require_once(DOL_DOCUMENT_ROOT."/fourn/class/fournisseur.class.php");
-require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
+require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
+require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.class.php';
 
 
 /**
- *	\class      Categorie
- *	\brief      Class to manage categories
+ *	Class to manage categories
  */
 class Categorie
 {
@@ -42,31 +39,24 @@ class Categorie
 	public $table_element='category';
 
 	var $id;
-	var $id_mere;
+	var $fk_parent;
 	var $label;
 	var $description;
 	var $socid;
-	var $type;					// 0=Product, 1=Supplier, 2=Customer/Prospect, 3=Member, 5=Contact
-	var $priority;
-	var $parentId;
+	var $type;					// 0=Product, 1=Supplier, 2=Customer/Prospect, 3=Member
+	var $import_key;
 
 	var $cats=array();			// Tableau en memoire des categories
-	var $motherof = array();	// Tableau des correspondances id_fille -> id_mere
 
 
 	/**
 	 *	Constructor
 	 *
 	 *  @param		DoliDB		$db     Database handler
-	 *  @param		int			$id		Id of category to fetch during init
 	 */
 	function __construct($db)
 	{
 		$this->db = $db;
-		$this->id = $id;
-        $this->priority = 0;
-
-		if ($id != -1) $this->fetch($this->id);
 	}
 
 	/**
@@ -77,45 +67,28 @@ class Categorie
 	 */
 	function fetch($id)
 	{
-		$sql = "SELECT rowid, entity, label, description, fk_soc, visible, type, priority";
+		$sql = "SELECT rowid, fk_parent, entity, label, description, fk_soc, visible, type";
 		$sql.= " FROM ".MAIN_DB_PREFIX."categorie";
 		$sql.= " WHERE rowid = ".$id;
 
-		dol_syslog("Categorie::fetch sql=".$sql);
+		dol_syslog(get_class($this)."::fetch sql=".$sql);
 		$resql = $this->db->query($sql);
 		if ($resql)
 		{
 			$res = $this->db->fetch_array($resql);
 
 			$this->id			= $res['rowid'];
+			$this->fk_parent	= $res['fk_parent'];
 			$this->label		= $res['label'];
 			$this->description	= $res['description'];
 			$this->socid		= $res['fk_soc'];
 			$this->visible		= $res['visible'];
 			$this->type			= $res['type'];
 			$this->entity		= $res['entity'];
-			$this->priority     = $res['priority'];
 
 			$this->db->free($resql);
-		}
-		else
-		{
-			dol_print_error($this->db);
-			return -1;
-		}
 
-		$sql = "SELECT fk_categorie_mere";
-		$sql.= " FROM ".MAIN_DB_PREFIX."categorie_association";
-		$sql.= " WHERE fk_categorie_fille = ".$id;
-
-		dol_syslog("Categorie::fetch sql=".$sql);
-		$resql  = $this->db->query($sql);
-		if ($resql)
-		{
-			$res = $this->db->fetch_array($resql);
-			$this->id_mere = $res['fk_categorie_mere'];
-			$this->parentId = $res['fk_categorie_mere'] ? $res['fk_categorie_mere'] : 0;
-			return $this->id;
+			return 1;
 		}
 		else
 		{
@@ -141,39 +114,51 @@ class Categorie
 		$error=0;
 
 		// Clean parameters
+		$this->label = trim($this->label);
+		$this->description = trim($this->description);
+		$this->import_key = trim($this->import_key);
 		if (empty($this->visible)) $this->visible=0;
-		$this->parentId = ($this->id_mere) != "" ? intval($this->id_mere) : 0;
+		$this->fk_parent = ($this->fk_parent != "" ? intval($this->fk_parent) : 0);
 
 		if ($this->already_exists())
 		{
 			$this->error=$langs->trans("ImpossibleAddCat");
 			$this->error.=" : ".$langs->trans("CategoryExistsAtSameLevel");
+			dol_syslog($this->error, LOG_ERR);
 			return -4;
 		}
 
 		$this->db->begin();
 
-		$sql = "INSERT INTO ".MAIN_DB_PREFIX."categorie (label, description,";
-		if ($conf->global->CATEGORY_ASSIGNED_TO_A_CUSTOMER)
+		dol_syslog(get_class($this).'::create sql='.$sql);
+		$sql = "INSERT INTO ".MAIN_DB_PREFIX."categorie (";
+		$sql.= "fk_parent,";
+		$sql.= " label,";
+		$sql.= " description,";
+		if (! empty($conf->global->CATEGORY_ASSIGNED_TO_A_CUSTOMER))
 		{
 			$sql.= "fk_soc,";
 		}
 		$sql.= " visible,";
 		$sql.= " type,";
-		$sql.= " priority";
+		$sql.= " import_key,";
 		$sql.= " entity";
-		//$sql.= ", fk_parent_id";
-		$sql.= ")";
-		$sql.= " VALUES ('".$this->db->escape($this->label)."', '".$this->db->escape($this->description)."',";
-		if ($conf->global->CATEGORY_ASSIGNED_TO_A_CUSTOMER)
+		$sql.= ") VALUES (";
+		$sql.= $this->fk_parent.",";
+		$sql.= "'".$this->db->escape($this->label)."',";
+		$sql.= "'".$this->db->escape($this->description)."',";
+		if (! empty($conf->global->CATEGORY_ASSIGNED_TO_A_CUSTOMER))
 		{
 			$sql.= ($this->socid != -1 ? $this->socid : 'null').",";
 		}
-		$sql.= "'".$this->visible."','".$this->type."','".$this->priority."',".$conf->entity;
-		//$sql.= ",".$this->parentId;
+		$sql.= "'".$this->visible."',";
+		$sql.= $this->type.",";
+		$sql.= (! empty($this->import_key)?"'".$this->db->escape($this->import_key)."'":'null').",";
+		$sql.= $conf->entity;
 		$sql.= ")";
 
-		$res  = $this->db->query($sql);
+		dol_syslog(get_class($this).'::create sql='.$sql);
+		$res = $this->db->query($sql);
 		if ($res)
 		{
 			$id = $this->db->last_insert_id(MAIN_DB_PREFIX."categorie");
@@ -181,18 +166,9 @@ class Categorie
 			if ($id > 0)
 			{
 				$this->id = $id;
-				if($this->id_mere != "")
-				{
-					if($this->add_fille() < 0)
-					{
-						$this->error=$langs->trans("ImpossibleAssociateCategory");
-						$this->db->rollback();
-						return -3;
-					}
-				}
 
 				// Appel des triggers
-				include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+				include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
 				$interface=new Interfaces($this->db);
 				$result=$interface->run_triggers('CATEGORY_CREATE',$this,$user,$langs,$conf);
 				if ($result < 0) { $error++; $this->errors=$interface->errors; }
@@ -233,8 +209,8 @@ class Categorie
 		// Clean parameters
 		$this->label=trim($this->label);
 		$this->description=trim($this->description);
-		$this->parentId = ($this->id_mere) != "" ? intval($this->id_mere) : 0;
-		$this->visible = ($this->visible) != "" ? intval($this->visible) : 0;
+		$this->fk_parent = ($this->fk_parent != "" ? intval($this->fk_parent) : 0);
+		$this->visible = ($this->visible != "" ? intval($this->visible) : 0);
 
 		if ($this->already_exists())
 		{
@@ -245,53 +221,27 @@ class Categorie
 
 		$this->db->begin();
 
-		$sql = 'DELETE FROM '.MAIN_DB_PREFIX.'categorie_association';
-		$sql.= ' WHERE fk_categorie_fille = '.$this->id;
-
-		dol_syslog("Categorie::update sql=".$sql);
-		if (! $this->db->query($sql))
-		{
-			$this->db->rollback();
-			dol_print_error($this->db);
-			return -1;
-		}
-
-		if($this->id_mere !="" && $this->id_mere!=$this->id)
-		{
-			$sql = 'INSERT INTO '.MAIN_DB_PREFIX.'categorie_association(fk_categorie_mere,fk_categorie_fille)';
-			$sql.= ' VALUES ('.$this->id_mere.', '.$this->id.')';
-
-			dol_syslog("Categorie::update sql=".$sql);
-			if (! $this->db->query($sql))
-			{
-				$this->db->rollback();
-				dol_print_error($this->db);
-				return -1;
-			}
-		}
-
 		$sql = "UPDATE ".MAIN_DB_PREFIX."categorie";
 		$sql.= " SET label = '".$this->db->escape($this->label)."'";
-		if ($this->description)
+		if (! empty($this->description))
 		{
 			$sql .= ", description = '".$this->db->escape($this->description)."'";
 		}
-		if ($conf->global->CATEGORY_ASSIGNED_TO_A_CUSTOMER)
+		if (! empty($conf->global->CATEGORY_ASSIGNED_TO_A_CUSTOMER))
 		{
 			$sql .= ", fk_soc = ".($this->socid != -1 ? $this->socid : 'null');
 		}
 		$sql .= ", visible = '".$this->visible."'";
-		$sql .= ", priority = '".$this->priority."'";
-		//$sql .= ", fk_parent_id = ".$this->parentId;
+		$sql .= ", fk_parent = ".$this->fk_parent;
 		$sql .= " WHERE rowid = ".$this->id;
 
-		dol_syslog("Categorie::update sql=".$sql);
+		dol_syslog(get_class($this)."::update sql=".$sql);
 		if ($this->db->query($sql))
 		{
 			$this->db->commit();
 
 			// Appel des triggers
-			include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+			include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
 			$interface=new Interfaces($this->db);
 			$result=$interface->run_triggers('CATEGORY_MODIFY',$this,$user,$langs,$conf);
 			if ($result < 0) { $error++; $this->errors=$interface->errors; }
@@ -319,7 +269,7 @@ class Categorie
 
 		$error=0;
 
-		dol_syslog("Categorie::remove");
+		dol_syslog(get_class($this)."::remove");
 
 		$this->db->begin();
 
@@ -368,20 +318,6 @@ class Categorie
 			}
 		}
 
-		// Link childs to parent
-		if (! $error)
-		{
-			$sql  = "DELETE FROM ".MAIN_DB_PREFIX."categorie_association";
-			$sql .= " WHERE fk_categorie_mere  = ".$this->id;
-			$sql .= " OR fk_categorie_fille = ".$this->id;
-			if (!$this->db->query($sql))
-			{
-				$this->error=$this->db->lasterror();
-				dol_syslog("Error sql=".$sql." ".$this->error, LOG_ERR);
-				$error++;
-			}
-		}
-
 		// Delete category
 		if (! $error)
 		{
@@ -396,7 +332,7 @@ class Categorie
 			else
 			{
 				// Appel des triggers
-				include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+				include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
 				$interface=new Interfaces($this->db);
 				$result=$interface->run_triggers('CATEGORY_DELETE',$this,$user,$langs,$conf);
 				if ($result < 0) { $error++; $this->errors=$interface->errors; $this->error=join(',',$this->errors); }
@@ -412,58 +348,6 @@ class Categorie
 		else
 		{
 			$this->db->rollback();
-			return -1;
-		}
-	}
-
-
-	/**
-	 * 	Ajout d'une sous-categorie
-	 *
-	 * 	@return		int		 1 : OK
-	 *          			-2 : $fille est deja dans la famille de $this
-	 *          			-3 : categorie ($this ou $fille) invalide
-	 */
-	function add_fille()
-	{
-		$sql = "INSERT INTO ".MAIN_DB_PREFIX."categorie_association (fk_categorie_mere, fk_categorie_fille)";
-		$sql.= " VALUES (".$this->id_mere.", ".$this->id.")";
-
-		if ($this->db->query($sql))
-		{
-			return 1;
-		}
-		else
-		{
-			dol_print_error($this->db);
-			return -1;
-		}
-	}
-
-	/**
-	 * 	Suppression d'une sous-categorie (seulement "desassociation")
-	 *
-	 * 	@param	Category	$fille		Objet category
-	 *  @return	int						1 : OK
-	 *          		   				-3 : categorie ($this ou $fille) invalide
-	 */
-	function del_fille($fille)
-	{
-		if (!$this->check() || !$fille->check())
-		{
-			return -3;
-		}
-
-		$sql  = "DELETE FROM ".MAIN_DB_PREFIX."categorie_association";
-		$sql .= " WHERE fk_categorie_mere = ".$this->id." and fk_categorie_fille = ".$fille->id;
-
-		if ($this->db->query($sql))
-		{
-			return 1;
-		}
-		else
-		{
-			$this->error=$this->db->error().' sql='.$sql;
 			return -1;
 		}
 	}
@@ -544,13 +428,13 @@ class Categorie
 		// Clean parameters
 		if (empty($category_table)) $category_table=$field;
 		if (empty($object_table)) $object_table=$field;
-/*
+
 		$sql = "SELECT c.fk_".$field;
 		$sql.= " FROM ".MAIN_DB_PREFIX."categorie_".$category_table." as c";
 		$sql.= ", ".MAIN_DB_PREFIX.$object_table." as o";
-		$sql.= " WHERE c.fk_categorie = ".$this->id;
+		$sql.= " WHERE o.entity IN (".getEntity($field, 1).")";
+		$sql.= " AND c.fk_categorie = ".$this->id;
 		$sql.= " AND c.fk_".$field." = o.rowid";
-		$sql.= " AND o.entity IN (".getEntity($field, 1).")";
 
 		dol_syslog(get_class($this)."::get_type sql=".$sql);
 		$resql = $this->db->query($sql);
@@ -569,85 +453,6 @@ class Categorie
 			$this->error=$this->db->error().' sql='.$sql;
 			dol_syslog(get_class($this)."::get_type ".$this->error, LOG_ERR);
 			return -1;
-		}*/
-                $objr=array();
-                $objr=$this->get_typer($field,$table,$this->id);
-                
-                foreach ($objr as $obj)
-		{
-                        $elem = new $classname($this->db);
-			$elem->fetch($obj);
-			$objs[] = $elem;
-		}
-                asort($objs);
-		return $objs;
-	}
-        /**
-	 * 	\brief	Return list of contents Recursive of a category
-	 * 	\param	field	Field name for select in table. Full field name will be fk_field.
-	 * 	\param	class	PHP Class of object to store entity
-	 * 	\param	table	Table name for select in table. Full table name will be PREFIX_categorie_table.
-	 */
-	function get_typer($field,$table='', $id_mother=null)
-	{
-                global $conf;
-		$objs = array();
-                $i=0;
-                $offset=0;
-
-		// Clean parameters
-		if (empty($table)) $table=$field;
-
-		$sql = "SELECT fk_".$field." FROM ".MAIN_DB_PREFIX."categorie_".$table;
-                $sql.= " WHERE fk_categorie ".(($id_mother == null) ? 'is null' : ' = '.$id_mother);
-                $sql.= $this->db->plimit($conf->liste_limit+1, $offset);
-
-		dol_syslog("Categorie::get_type sql=".$sql);
-		$resql = $this->db->query($sql);
-		if ($resql)
-		{
-			while ($rec = $this->db->fetch_array($resql))
-			{
-                                $objs[$rec['fk_'.$field]]=$rec['fk_'.$field];
-                        }
-                        $resql->free();
-                }
-		else
-		{
-			$this->error=$this->db->error().' sql='.$sql;
-			dol_syslog("Categorie::get_type ".$this->error, LOG_ERR);
-			return -1;
-		}
-                
-                $sql= " SELECT fk_categorie_fille FROM ".MAIN_DB_PREFIX."categorie_association";
-		$sql.= " WHERE fk_categorie_mere".(($id_mother == null) ? 'is null' : ' = '.$id_mother);
-                
-                //print $sql;
-                
-                dol_syslog("Categorie::get_type sql=".$sql);
-		$resql = $this->db->query($sql);
-		if ($resql)
-		{
-			while ($rec = $this->db->fetch_array($resql))
-                        {
-                                if($rec['fk_categorie_fille']!=null)
-                                {
-                                    $obj=array();
-                                    $obj=$this->get_typer($field,$table,$rec['fk_categorie_fille']);
-                                    foreach ($obj as $elem)
-                                    {
-                                        $objs[$elem]=$elem;
-                                    }
-                                }
-			}
-                        $resql->free();
-			return $objs;
-                }
-		else
-		{
-			$this->error=$this->db->error().' sql='.$sql;
-			dol_syslog("Categorie::get_type ".$this->error, LOG_ERR);
-			return -1;
 		}
 	}
 
@@ -659,8 +464,8 @@ class Categorie
 	 */
 	function get_filles()
 	{
-		$sql  = "SELECT fk_categorie_fille FROM ".MAIN_DB_PREFIX."categorie_association ";
-		$sql .= "WHERE fk_categorie_mere = ".$this->id;
+		$sql = "SELECT rowid FROM ".MAIN_DB_PREFIX."categorie";
+		$sql.= " WHERE fk_parent = ".$this->id;
 
 		$res  = $this->db->query($sql);
 
@@ -670,7 +475,7 @@ class Categorie
 			while ($rec = $this->db->fetch_array($res))
 			{
 				$cat = new Categorie($this->db);
-				$cat->fetch($rec['fk_categorie_fille']);
+				$cat->fetch($rec['rowid']);
 				$cats[] = $cat;
 			}
 			return $cats;
@@ -688,6 +493,7 @@ class Categorie
 	 *
 	 * @param	int		$cate		Category id
 	 * @return	string				Description
+	 * @deprecated function not used ?
 	 */
 	function get_desc($cate)
 	{
@@ -703,13 +509,14 @@ class Categorie
 	/**
 	 * La categorie $fille est-elle une fille de cette categorie ?
 	 *
-	 * @param	Category	$fille		Object category
+	 * @param	Category	$child		Object category
 	 * @return	void
+	 * @deprecated function not used ?
 	 */
-	function is_fille($fille)
+	function is_fille($child)
 	{
-		$sql  = "SELECT count(fk_categorie_fille) FROM ".MAIN_DB_PREFIX."categorie_association ";
-		$sql .= "WHERE fk_categorie_mere = ".$this->id." AND fk_categorie_fille = ".$fille->id;
+		$sql = "SELECT rowid FROM ".MAIN_DB_PREFIX."categorie";
+		$sql.= " WHERE fk_parent = ".$this->id." AND rowid = ".$child->id;
 
 		$res  = $this->db->query($sql);
 		$n    = $this->db->fetch_array($res);
@@ -736,56 +543,25 @@ class Categorie
 	{
 		$this->cats = array();
 
-		// Charge tableau des meres
-		$sql = "SELECT ca.fk_categorie_mere as id_mere, ca.fk_categorie_fille as id_fille";
-		$sql.= " FROM ".MAIN_DB_PREFIX."categorie_association ca";
-		$sql.= ", ".MAIN_DB_PREFIX."categorie as c";
-		$sql.= " WHERE ca.fk_categorie_mere = c.rowid";
-		$sql.= " AND c.entity IN (".getEntity('category',1).")";
-
-		// Load array this->motherof
-		dol_syslog("Categorie::get_full_arbo build motherof array sql=".$sql, LOG_DEBUG);
-		$resql = $this->db->query($sql);
-		if ($resql)
-		{
-			while ($obj=$this->db->fetch_object($resql))
-			{
-				$this->motherof[$obj->id_fille]=$obj->id_mere;
-			}
-		}
-		else
-		{
-			dol_print_error($this->db);
-			return -1;
-		}
-
 		// Init $this->cats array
-		$sql = "SELECT DISTINCT c.rowid, c.label as label, ca.fk_categorie_fille as rowid_fille, c.priority";	// Distinct reduce pb with old tables with duplicates
+		$sql = "SELECT DISTINCT c.rowid, c.label, c.description, c.fk_parent";	// Distinct reduce pb with old tables with duplicates
 		$sql.= " FROM ".MAIN_DB_PREFIX."categorie as c";
-		$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."categorie_association as ca";
-		$sql.= " ON c.rowid = ca.fk_categorie_mere";
-		$sql.= " WHERE c.type = ".$type;
-		$sql.= " AND c.entity IN (".getEntity('category',1).")";
-		$sql.= " ORDER BY c.label, c.rowid";
+		$sql.= " WHERE c.entity IN (".getEntity('category',1).")";
+		$sql.= " AND c.type = ".$type;
 
-		dol_syslog("Categorie::get_full_arbo get category list sql=".$sql, LOG_DEBUG);
+		dol_syslog(get_class($this)."::get_full_arbo get category list sql=".$sql, LOG_DEBUG);
 		$resql = $this->db->query($sql);
 		if ($resql)
 		{
 			$i=0;
 			while ($obj = $this->db->fetch_object($resql))
 			{
+				$this->cats[$obj->rowid]['rowid'] = $obj->rowid;
 				$this->cats[$obj->rowid]['id'] = $obj->rowid;
-				if (isset($this->motherof[$obj->rowid])) $this->cats[$obj->rowid]['id_mere'] = $this->motherof[$obj->rowid];
+				$this->cats[$obj->rowid]['fk_parent'] = $obj->fk_parent;
 				$this->cats[$obj->rowid]['label'] = $obj->label;
-                $this->cats[$obj->rowid]['priority'] = $obj->priority;
-
-				if ($obj->rowid_fille)
-				{
-					$this->cats[$obj->rowid]['id_children'][]=$obj->rowid_fille;
-				}
+				$this->cats[$obj->rowid]['description'] = $obj->description;
 				$i++;
-
 			}
 		}
 		else
@@ -795,10 +571,9 @@ class Categorie
 		}
 
 		// We add the fullpath property to each elements of first level (no parent exists)
-		dol_syslog("Categorie::get_full_arbo call to build_path_from_id_categ", LOG_DEBUG);
+		dol_syslog(get_class($this)."::get_full_arbo call to build_path_from_id_categ", LOG_DEBUG);
 		foreach($this->cats as $key => $val)
 		{
-			if (isset($this->motherof[$key])) continue;
 			$this->build_path_from_id_categ($key,0);	// Process a branch from the root category key (this category has no parent)
 		}
 
@@ -822,7 +597,7 @@ class Categorie
             }
         }
 
-		dol_syslog("Categorie::get_full_arbo dol_sort_array", LOG_DEBUG);
+		dol_syslog(get_class($this)."::get_full_arbo dol_sort_array", LOG_DEBUG);
 		$this->cats=dol_sort_array($this->cats, 'fulllabel', 'asc', true, false);
 
 		//$this->debug_cats();
@@ -839,31 +614,32 @@ class Categorie
 	 */
 	function build_path_from_id_categ($id_categ,$protection=0)
 	{
-		dol_syslog("Categorie::build_path_from_id_categ id_categ=".$id_categ." protection=".$protection, LOG_DEBUG);
+		dol_syslog(get_class($this)."::build_path_from_id_categ id_categ=".$id_categ." protection=".$protection, LOG_DEBUG);
 
 		//if (! empty($this->cats[$id_categ]['fullpath']))
 		//{
 		// Already defined
-		//	dol_syslog("Categorie::build_path_from_id_categ fullpath and fulllabel already defined", LOG_WARNING);
+		//	dol_syslog(get_class($this)."::build_path_from_id_categ fullpath and fulllabel already defined", LOG_WARNING);
 		//	return;
 		//}
 
 		// Define fullpath and fulllabel
-		if (isset($this->cats[$id_categ]['id_mere']))
+		if (! empty($this->cats[$id_categ]['fk_parent']))
 		{
-			$this->cats[$id_categ]['fullpath'] =$this->cats[$this->cats[$id_categ]['id_mere']]['fullpath'];
-			$this->cats[$id_categ]['fullpath'].='_'.$id_categ;
-			$this->cats[$id_categ]['fulllabel'] =$this->cats[$this->cats[$id_categ]['id_mere']]['fulllabel'];
-			$this->cats[$id_categ]['fulllabel'].=' >> '.$this->cats[$id_categ]['label'];
+			$this->cats[$id_categ]['fullpath'] = $this->cats[$this->cats[$id_categ]['fk_parent']]['fullpath'];
+			$this->cats[$id_categ]['fullpath'].= '_'.$id_categ;
+			$this->cats[$id_categ]['fulllabel'] = $this->cats[$this->cats[$id_categ]['fk_parent']]['fulllabel'];
+			$this->cats[$id_categ]['fulllabel'].= ' >> '.$this->cats[$id_categ]['label'];
 		}
 		else
 		{
-			$this->cats[$id_categ]['fullpath']='_'.$id_categ;
-			$this->cats[$id_categ]['fulllabel']=$this->cats[$id_categ]['label'];
+			$this->cats[$id_categ]['fullpath'] = '_'.$id_categ;
+			$this->cats[$id_categ]['fulllabel'] = $this->cats[$id_categ]['label'];
 		}
 		// We count number of _ to have level
 		$this->cats[$id_categ]['level']=dol_strlen(preg_replace('/[^_]/i','',$this->cats[$id_categ]['fullpath']));
 
+		/*
 		// Process all childs on several levels of this category
 		$protection++;
 		if ($protection > 10) return;	// On ne traite pas plus de 10 niveaux de profondeurs
@@ -873,12 +649,13 @@ class Categorie
 			// Protection when a category has itself as a child (should not happen)
 			if ($idchild == $id_categ)
 			{
-				dol_syslog("Categorie::build_path_from_id_categ bad couple (".$idchild.",".$id_categ.") in association table: An entry should not have itself has child", LOG_WARNING);
+				dol_syslog(get_class($this)."::build_path_from_id_categ bad couple (".$idchild.",".$id_categ.") in association table: An entry should not have itself has child", LOG_WARNING);
 				continue;
 			}
 
 			$this->build_path_from_id_categ($idchild,$protection);
 		}
+		*/
 
 		return;
 	}
@@ -895,8 +672,8 @@ class Categorie
 		{
 			print 'id: '.$this->cats[$key]['id'];
 			print ' label: '.$this->cats[$key]['label'];
-			print ' mother: '.$this->cats[$key]['id_mere'];
-			print ' children: '.(is_array($this->cats[$key]['id_children'])?join(',',$this->cats[$key]['id_children']):'');
+			print ' mother: '.$this->cats[$key]['fk_parent'];
+			//print ' children: '.(is_array($this->cats[$key]['id_children'])?join(',',$this->cats[$key]['id_children']):'');
 			print ' fullpath: '.$this->cats[$key]['fullpath'];
 			print ' fulllabel: '.$this->cats[$key]['fulllabel'];
 			print "<br>\n";
@@ -907,14 +684,18 @@ class Categorie
 	/**
 	 * 	Retourne toutes les categories
 	 *
+	 *	@param		int			Type of category
+	 *	@param		boolean		Just parent categories if true
 	 *	@return		array		Tableau d'objet Categorie
 	 */
-	function get_all_categories ()
+	function get_all_categories($type=null, $parent=false)
 	{
-		global $conf;
-		
 		$sql = "SELECT rowid FROM ".MAIN_DB_PREFIX."categorie";
 		$sql.= " WHERE entity IN (".getEntity('category',1).")";
+		if (! is_null($type))
+			$sql.= " AND type = ".$type;
+		if ($parent)
+			$sql.= " AND fk_parent = 0";
 
 		$res = $this->db->query($sql);
 		if ($res)
@@ -924,7 +705,7 @@ class Categorie
 			{
 				$cat = new Categorie($this->db);
 				$cat->fetch($rec['rowid']);
-				$cats[$record['rowid']] = $cat;
+				$cats[$rec['rowid']] = $cat;
 			}
 			return $cats;
 		}
@@ -939,11 +720,10 @@ class Categorie
 	 * 	Retourne le nombre total de categories
 	 *
 	 *	@return		int		Nombre de categories
+	 *	@deprecated function not used ?
 	 */
 	function get_nb_categories()
 	{
-		global $conf;
-		
 		$sql = "SELECT count(rowid)";
 		$sql.= " FROM ".MAIN_DB_PREFIX."categorie";
 		$sql.= " WHERE entity IN (".getEntity('category',1).")";
@@ -967,33 +747,16 @@ class Categorie
 	 */
 	function already_exists()
 	{
-		if($this->id_mere != "")					// mother_id defined
-		{
-			/* We have to select any rowid from llx_categorie which category's mother and label
-			 * are equals to those of the calling category
-			 */
-			$sql = "SELECT c.rowid";
-			$sql.= " FROM ".MAIN_DB_PREFIX."categorie as c ";
-			$sql.= " JOIN ".MAIN_DB_PREFIX."categorie_association as ca";
-			$sql.= " ON c.rowid=ca.fk_categorie_fille";
-			$sql.= " WHERE ca.fk_categorie_mere=".$this->id_mere;
-			$sql.= " AND c.label='".$this->db->escape($this->label)."'";
-			$sql.= " AND c.entity IN (".getEntity('category',1).")";
-		}
-		else 										// mother_id undefined (so it's root)
-		{
-			/* We have to select any rowid from llx_categorie which which category's type and label
-			 * are equals to those of the calling category, AND which doesn't exist in categorie association
-			 * as children (rowid != fk_categorie_fille)
-			 */
-			$sql = "SELECT c.rowid";
-			$sql.= " FROM ".MAIN_DB_PREFIX."categorie as c ";
-			$sql.= " JOIN ".MAIN_DB_PREFIX."categorie_association as ca";
-			$sql.= " ON c.rowid!=ca.fk_categorie_fille";
-			$sql.= " WHERE c.type=".$this->type;
-			$sql.= " AND c.label='".$this->db->escape($this->label)."'";
-			$sql.= " AND c.entity IN (".getEntity('category',1).")";
-		}
+		/* We have to select any rowid from llx_categorie which category's mother and label
+		 * are equals to those of the calling category
+		 */
+		$sql = "SELECT c.rowid";
+		$sql.= " FROM ".MAIN_DB_PREFIX."categorie as c ";
+		$sql.= " WHERE c.entity IN (".getEntity('category',1).")";
+		$sql.= " AND c.type = ".$this->type;
+		$sql.= " AND c.fk_parent = ".$this->fk_parent;
+		$sql.= " AND c.label = '".$this->db->escape($this->label)."'";
+
 		dol_syslog(get_class($this)."::already_exists sql=".$sql, LOG_DEBUG);
 		$resql = $this->db->query($sql);
 		if ($resql)
@@ -1026,30 +789,12 @@ class Categorie
 	/**
 	 *	Retourne les categories de premier niveau (qui ne sont pas filles)
 	 *
+	 *	@param		int			Type of category
 	 *	@return		void
 	 */
-	function get_main_categories()
+	function get_main_categories($type=null)
 	{
-		$allcats = $this->get_all_categories();
-		$maincats = array ();
-		$filles   = array ();
-
-		$sql = "SELECT fk_categorie_fille FROM ".MAIN_DB_PREFIX."categorie_association";
-		$res = $this->db->query($sql);
-		while ($res = $this->db->fetch_array($res))
-		{
-			$filles[] = $res['fk_categorie_fille'];
-		}
-
-		foreach ($allcats as $cat)
-		{
-			if (! in_array($cat->id, $filles))
-			{
-				$maincats[] = $cat;
-			}
-		}
-
-		return $maincats;
+		return $this->get_all_categories($type, true);
 	}
 
 	/**
@@ -1060,7 +805,7 @@ class Categorie
 	 * @param	string	$url	Url
 	 * @return	void
 	 */
-	function print_all_ways ($sep = " &gt;&gt; ", $url='')
+	function print_all_ways($sep = " &gt;&gt; ", $url='')
 	{
 		$ways = array ();
 
@@ -1091,10 +836,11 @@ class Categorie
 	 *	@param	int		$id		Id of category
 	 *	@param	string	$type	Type of category
 	 *	@return	void
+	 *	@deprecated function not used ?
 	 */
 	function get_primary_way($id, $type="")
 	{
-		$primary_way = Array("taille"=>-1,"chemin"=>Array());
+		$primary_way = array("taille" => -1, "chemin" => array());
 		$meres = $this->containing($id,$type);
 		foreach ($meres as $mere)
 		{
@@ -1119,10 +865,11 @@ class Categorie
 	 *	@param	string	$url	Url
 	 *	@param	string	$type	Type
 	 *	@return	void
+	 *	@deprecated function not used ?
 	 */
 	function print_primary_way($id, $sep= " &gt;&gt; ", $url="", $type="")
 	{
-		$primary_way = Array();
+		$primary_way = array();
 		$way = $this->get_primary_way($id,$type);
 		$w = array();
 		foreach ($way as $cat)
@@ -1147,10 +894,10 @@ class Categorie
 	 */
 	function get_meres()
 	{
-		$meres = array();
+		$parents = array();
 
-		$sql  = "SELECT fk_categorie_mere FROM ".MAIN_DB_PREFIX."categorie_association ";
-		$sql .= "WHERE fk_categorie_fille = ".$this->id;
+		$sql = "SELECT fk_parent FROM ".MAIN_DB_PREFIX."categorie";
+		$sql.= " WHERE rowid = ".$this->id;
 
 		$res  = $this->db->query($sql);
 
@@ -1158,11 +905,14 @@ class Categorie
 		{
 			while ($rec = $this->db->fetch_array($res))
 			{
-				$cat = new Categorie($this->db);
-				$cat->fetch($rec['fk_categorie_mere']);
-				$meres[] = $cat;
+				if ($rec['fk_parent'] > 0)
+				{
+					$cat = new Categorie($this->db);
+					$cat->fetch($rec['fk_parent']);
+					$parents[] = $cat;
+				}
 			}
-			return $meres;
+			return $parents;
 		}
 		else
 		{
@@ -1177,7 +927,7 @@ class Categorie
 	 *
 	 *	@return		void
 	 */
-	function get_all_ways ()
+	function get_all_ways()
 	{
 		$ways = array();
 
@@ -1218,8 +968,6 @@ class Categorie
 		if ($typeid == 1)  { $table='societe'; $type='fournisseur'; }
 		if ($typeid == 2)  { $table='societe'; $type='societe'; }
 		if ($typeid == 3)  { $table='member'; $type='member'; }
-        if ($typeid == 4)  { $table='lead'; $type='lead'; }
-		if ($typeid == 5)  { $table='contact'; $type='contact'; }
 
 		$sql = "SELECT ct.fk_categorie";
 		$sql.= " FROM ".MAIN_DB_PREFIX."categorie_".$type." as ct";
@@ -1254,12 +1002,13 @@ class Categorie
 	 * 	@param		int			$id			Id
 	 * 	@param		string		$nom		Name
 	 * 	@param		string		$type		Type
-	 * 	@param		boolean		$exact		Ture or false
-	 * 	@return		array		Array of category id
+	 * 	@param		boolean		$exact		Exact string search (true/false)
+	 * 	@param		boolean		$case		Case sensitive (true/false)
+	 * 	@return		array					Array of category id
 	 */
-	function rechercher($id, $nom, $type, $exact = false)
+	function rechercher($id, $nom, $type, $exact = false, $case = false)
 	{
-		$cats = array ();
+		$cats = array();
 
 		// Generation requete recherche
 		$sql = "SELECT rowid FROM ".MAIN_DB_PREFIX."categorie";
@@ -1268,14 +1017,15 @@ class Categorie
 		if ($nom)
 		{
 			if (! $exact)
-			{
 				$nom = '%'.str_replace('*', '%', $nom).'%';
-			}
-			$sql.= "AND label LIKE '".$nom."'";
+			if (! $case)
+				$sql.= " AND label LIKE '".$this->db->escape($nom)."'";
+			else
+				$sql.= " AND label LIKE BINARY '".$this->db->escape($nom)."'";
 		}
 		if ($id)
 		{
-			$sql.="AND rowid = '".$id."'";
+			$sql.=" AND rowid = '".$id."'";
 		}
 
 		$res  = $this->db->query($sql);
@@ -1293,7 +1043,7 @@ class Categorie
 		else
 		{
 			$this->error=$this->db->error().' sql='.$sql;
-			dol_syslog("Categorie::rechercher ".$this->error, LOG_ERR);
+			dol_syslog(get_class($this)."::rechercher ".$this->error, LOG_ERR);
 			return -1;
 		}
 	}
@@ -1337,7 +1087,7 @@ class Categorie
 	 */
 	function add_photo($sdir, $file, $maxWidth = 160, $maxHeight = 120)
 	{
-		require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
+		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
 		$dir = $sdir .'/'. get_exdir($this->id,2) . $this->id ."/";
 		$dir .= "photos/";
@@ -1372,7 +1122,7 @@ class Categorie
 	 */
 	function add_thumb($file, $maxWidth = 160, $maxHeight = 120)
 	{
-		require_once(DOL_DOCUMENT_ROOT ."/core/lib/images.lib.php");
+		require_once DOL_DOCUMENT_ROOT .'/core/lib/images.lib.php';
 
 		if (file_exists($file))
 		{
@@ -1390,7 +1140,7 @@ class Categorie
 	 */
 	function liste_photos($dir,$nbmax=0)
 	{
-		include_once(DOL_DOCUMENT_ROOT ."/core/lib/files.lib.php");
+		include_once DOL_DOCUMENT_ROOT .'/core/lib/files.lib.php';
 
 		$nbphoto=0;
 		$tabobj=array();
@@ -1444,7 +1194,7 @@ class Categorie
 	 */
 	function delete_photo($file)
 	{
-        require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
+        require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
 	    $dir = dirname($file).'/'; // Chemin du dossier contenant l'image d'origine
 		$dirthumb = $dir.'/thumbs/'; // Chemin du dossier contenant la vignette
@@ -1493,7 +1243,7 @@ class Categorie
 
         // Initialise parametres
         $this->id=0;
-        $this->id_mere=0;
+        $this->fk_parent=0;
         $this->label = 'SPECIMEN';
         $this->specimen=1;
         $this->description = 'This is a description';

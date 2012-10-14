@@ -26,8 +26,7 @@
 
 
 /**
- *	\class      MouvementStock
- *	\brief      Class to manage stock movements
+ *	Class to manage stock movements
  */
 class MouvementStock
 {
@@ -37,11 +36,11 @@ class MouvementStock
     /**
 	 *  Constructor
 	 *
-	 *  @param      DoliDB		$DB      Database handler
+	 *  @param      DoliDB		$db      Database handler
      */
-	function MouvementStock($DB)
+	function __construct($db)
 	{
-		$this->db = $DB;
+		$this->db = $db;
 	}
 
 	/**
@@ -59,15 +58,15 @@ class MouvementStock
 	 *	@param		string	$datem			Force date of movement
 	 *	@return		int						<0 if KO, 0 if fk_product is null, >0 if OK
 	 */
-	function _create($user, $fk_product, $entrepot_id, $qty, $type, $price=0, $fk_expedition='', $label='', $datem='')
+	function _create($user, $fk_product, $entrepot_id, $qty, $type, $price=0, $label='', $datem='')
 	{
 		global $conf, $langs;
 
 		$error = 0;
-		dol_syslog("MouvementStock::_create start userid=$user->id, fk_product=$fk_product, warehouse=$entrepot_id, qty=$qty, type=$type, price=$price label=$label");
+		dol_syslog(get_class($this)."::_create start userid=$user->id, fk_product=$fk_product, warehouse=$entrepot_id, qty=$qty, type=$type, price=$price label=$label");
 
 		if (empty($fk_product)) return 0;
-		
+
 		$now=(! empty($datem) ? $datem : dol_now());
 
 		$this->db->begin();
@@ -86,13 +85,13 @@ class MouvementStock
 		if ($movestock && $entrepot_id > 0)	// Change stock for current product, change for subproduct is done after
 		{
 			$sql = "INSERT INTO ".MAIN_DB_PREFIX."stock_mouvement";
-			$sql.= " (datem, fk_product, fk_entrepot, value, type_mouvement, fk_user_author, label, price, fk_expedition)";
+			$sql.= " (datem, fk_product, fk_entrepot, value, type_mouvement, fk_user_author, label, price)";
 			$sql.= " VALUES ('".$this->db->idate($now)."', ".$fk_product.", ".$entrepot_id.", ".$qty.", ".$type.",";
 			$sql.= " ".$user->id.",";
 			$sql.= " '".$this->db->escape($label)."',";
-			$sql.= " '".price2num($price)."',".(empty($fk_expedition)?"''":$fk_expedition).")";
-                        
-			dol_syslog("MouvementStock::_create sql=".$sql, LOG_DEBUG);
+			$sql.= " '".price2num($price)."')";
+
+			dol_syslog(get_class($this)."::_create sql=".$sql, LOG_DEBUG);
 			$resql = $this->db->query($sql);
 			if ($resql)
 			{
@@ -101,9 +100,10 @@ class MouvementStock
 			else
 			{
 				$this->error=$this->db->lasterror();
-				dol_syslog("MouvementStock::_create ".$this->error, LOG_ERR);
+				dol_syslog(get_class($this)."::_create ".$this->error, LOG_ERR);
 				$error = -1;
 			}
+
 			// Define current values for qty and pmp
 			$oldqty=$product->stock_reel;
 			$oldqtywarehouse=0;
@@ -117,7 +117,7 @@ class MouvementStock
 				$sql = "SELECT rowid, reel, pmp FROM ".MAIN_DB_PREFIX."product_stock";
 				$sql.= " WHERE fk_entrepot = ".$entrepot_id." AND fk_product = ".$fk_product;
 
-				dol_syslog("MouvementStock::_create sql=".$sql);
+				dol_syslog(get_class($this)."::_create sql=".$sql);
 				$resql=$this->db->query($sql);
 				if ($resql)
 				{
@@ -133,7 +133,7 @@ class MouvementStock
 				else
 				{
 					$this->error=$this->db->lasterror();
-					dol_syslog("MouvementStock::_create echec update ".$this->error, LOG_ERR);
+					dol_syslog(get_class($this)."::_create echec update ".$this->error, LOG_ERR);
 					$error = -2;
 				}
 			}
@@ -181,41 +181,41 @@ class MouvementStock
 					$sql.= " (".$newpmpwarehouse.", ".$qty.", ".$entrepot_id.", ".$fk_product.")";
 				}
 
-				dol_syslog("MouvementStock::_create sql=".$sql);
+				dol_syslog(get_class($this)."::_create sql=".$sql);
 				$resql=$this->db->query($sql);
 				if (! $resql)
 				{
 					$this->error=$this->db->lasterror();
-					dol_syslog("MouvementStock::_create ".$this->error, LOG_ERR);
+					dol_syslog(get_class($this)."::_create ".$this->error, LOG_ERR);
 					$error = -3;
 				}
 			}
 
 			if (! $error)
 			{
-				$sql = "UPDATE ".MAIN_DB_PREFIX."product SET pmp = ".$newpmp.", stock = stock + ".$qty;
+				$sql = "UPDATE ".MAIN_DB_PREFIX."product SET pmp = ".$newpmp.", stock = ".$this->db->ifsql("stock IS NULL", 0, "stock") . " + ".$qty;
 				$sql.= " WHERE rowid = ".$fk_product;
 
-				dol_syslog("MouvementStock::_create sql=".$sql);
+				dol_syslog(get_class($this)."::_create sql=".$sql);
 				$resql=$this->db->query($sql);
 				if (! $resql)
 				{
 					$this->error=$this->db->lasterror();
-					dol_syslog("MouvementStock::_create ".$this->error, LOG_ERR);
+					dol_syslog(get_class($this)."::_create ".$this->error, LOG_ERR);
 					$error = -4;
 				}
 			}
 		}
 
 		// Add movement for sub products (recursive call)
-		if (! $error && $conf->global->PRODUIT_SOUSPRODUITS)
+		if (! $error && ! empty($conf->global->PRODUIT_SOUSPRODUITS))
 		{
 			$error = $this->_createSubProduct($user, $fk_product, $entrepot_id, $qty, $type, 0, $label);	// pmp is not change for subproduct
 		}
 
 		// Composition module (this is an external module)
 		/* Removed. This code must be provided by module on trigger STOCK_MOVEMENT
-		if (! $error && $qty < 0 && $conf->global->MAIN_MODULE_COMPOSITION)
+		if (! $error && $qty < 0 && ! empty($conf->global->MAIN_MODULE_COMPOSITION))
 		{
 			$error = $this->_createProductComposition($user, $fk_product, $entrepot_id, $qty, $type, 0, $label);	// pmp is not change for subproduct
 		}*/
@@ -223,7 +223,7 @@ class MouvementStock
 		if ($movestock && ! $error)
 		{
 			// Appel des triggers
-			include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+			include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
 			$interface=new Interfaces($this->db);
 
 			$this->product_id = $fk_product;
@@ -243,7 +243,7 @@ class MouvementStock
 		else
 		{
 			$this->db->rollback();
-			dol_syslog("MouvementStock::_create error code=".$error, LOG_ERR);
+			dol_syslog(get_class($this)."::_create error code=".$error, LOG_ERR);
 			return -6;
 		}
 	}
@@ -271,7 +271,7 @@ class MouvementStock
 		$sql.= " FROM ".MAIN_DB_PREFIX."product_association";
 		$sql.= " WHERE fk_product_pere = ".$idProduct;
 
-		dol_syslog("MouvementStock::_createSubProduct sql=".$sql, LOG_DEBUG);
+		dol_syslog(get_class($this)."::_createSubProduct sql=".$sql, LOG_DEBUG);
 		$resql=$this->db->query($sql);
 		if ($resql)
 		{
@@ -286,7 +286,7 @@ class MouvementStock
 		}
 		else
 		{
-			dol_syslog("MouvementStock::_createSubProduct ".$this->error, LOG_ERR);
+			dol_syslog(get_class($this)."::_createSubProduct ".$this->error, LOG_ERR);
 			$error = -2;
 		}
 
@@ -312,9 +312,9 @@ class MouvementStock
 	 * 	@param		string	$datem			Force date of movement
 	 * 	@return		int						<0 if KO, >0 if OK
 	 */
-	function livraison($user, $fk_product, $entrepot_id, $qty, $price=0, $fk_expedition='', $label='', $datem='')
+	function livraison($user, $fk_product, $entrepot_id, $qty, $price=0, $label='', $datem='')
 	{
-		return $this->_create($user, $fk_product, $entrepot_id, (0 - $qty), 2, $price, $fk_expedition, $label, $datem);
+		return $this->_create($user, $fk_product, $entrepot_id, (0 - $qty), 2, $price, $label, $datem);
 	}
 
 
@@ -329,9 +329,9 @@ class MouvementStock
 	 * 	@param		string	$label			Label of stock movement
 	 *	@return		int						<0 if KO, >0 if OK
 	 */
-	function reception($user, $fk_product, $entrepot_id, $qty, $price=0, $fk_expedition='', $label='')
+	function reception($user, $fk_product, $entrepot_id, $qty, $price=0, $label='')
 	{
-		return $this->_create($user, $fk_product, $entrepot_id, $qty, 3, $price, $fk_expedition, $label);
+		return $this->_create($user, $fk_product, $entrepot_id, $qty, 3, $price, $label);
 	}
 
 
@@ -352,7 +352,6 @@ class MouvementStock
 			$obj=$this->db->fetch_object($resql);
 			$nbSP=$obj->nb;
 		}
-		$this->db->free($resql);
 		return $nbSP;
 	}
 

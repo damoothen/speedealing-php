@@ -26,7 +26,7 @@
  *	\ingroup    produit
  *	\brief      File of class to manage predefined products or services
  */
-require_once(DOL_DOCUMENT_ROOT ."/core/class/commonobject.class.php");
+require_once DOL_DOCUMENT_ROOT .'/core/class/commonobject.class.php';
 
 
 /**
@@ -153,7 +153,7 @@ class Product extends CommonObject
 	 *
 	 *  @param      DoliDB		$db      Database handler
 	 */
-	function Product($db)
+	function __construct($db)
 	{
 		global $langs;
 
@@ -280,7 +280,7 @@ class Product extends CommonObject
 		    return -2;
 		}
 
-		dol_syslog(get_class($this)."::create ref=".$this->ref." price=".$this->price." price_ttc=".$this->price_ttc." tva_tx=".$this->tva_tx." price_base_type=".$this->price_base_type." Category : ".$this->catid, LOG_DEBUG);
+		dol_syslog(get_class($this)."::create ref=".$this->ref." price=".$this->price." price_ttc=".$this->price_ttc." tva_tx=".$this->tva_tx." price_base_type=".$this->price_base_type, LOG_DEBUG);
 
         $now=dol_now();
 
@@ -321,10 +321,10 @@ class Product extends CommonObject
 				$sql.= $this->db->idate($now);
 				$sql.= ", ".$conf->entity;
 				$sql.= ", '".$this->db->escape($this->ref)."'";
-				$sql.= ", ".($this->ref_ext?"'".$this->db->escape($this->ref_ext)."'":"null");
+				$sql.= ", ".(! empty($this->ref_ext)?"'".$this->db->escape($this->ref_ext)."'":"null");
 				$sql.= ", ".price2num($price_min_ht);
 				$sql.= ", ".price2num($price_min_ttc);
-				$sql.= ", ".($this->libelle?"'".$this->db->escape($this->libelle)."'":"null");
+				$sql.= ", ".(! empty($this->libelle)?"'".$this->db->escape($this->libelle)."'":"null");
 				$sql.= ", ".$user->id;
 				$sql.= ", ".$this->type;
 				$sql.= ", ".price2num($price_ht);
@@ -357,12 +357,15 @@ class Product extends CommonObject
 						{
 							if ($this->update($id, $user, true) > 0)
 							{
+								// FIXME: not use here
+								/*
 								if ($this->catid > 0)
 								{
-									require_once(DOL_DOCUMENT_ROOT ."/categories/class/categorie.class.php");
+									require_once DOL_DOCUMENT_ROOT .'/categories/class/categorie.class.php';
 									$cat = new Categorie($this->db, $this->catid);
 									$cat->add_type($this,"product");
 								}
+								*/
 							}
 							else
 							{
@@ -392,6 +395,7 @@ class Product extends CommonObject
 			{
 				// Product already exists with this ref
 				$langs->load("products");
+				$error++;
 				$this->error = "ErrorProductAlreadyExists";
 			}
 		}
@@ -404,7 +408,7 @@ class Product extends CommonObject
 		if (! $error && ! $notrigger)
 		{
 			// Appel des triggers
-			include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+			include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
 			$interface=new Interfaces($this->db);
 			$result=$interface->run_triggers('PRODUCT_CREATE',$this,$user,$langs,$conf);
 			if ($result < 0) { $error++; $this->errors=$interface->errors; }
@@ -505,7 +509,7 @@ class Product extends CommonObject
 			$this->id = $id;
 
 			// Multilangs
-			if($conf->global->MAIN_MULTILANGS)
+			if (! empty($conf->global->MAIN_MULTILANGS))
 			{
 				if ( $this->setMultiLangs() < 0)
 				{
@@ -515,7 +519,7 @@ class Product extends CommonObject
 			}
 
 			// Actions on extra fields (by external module or standard code)
-			include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
+			include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
 			$hookmanager=new HookManager($this->db);
 			$hookmanager->initHooks(array('productdao'));
 			$parameters=array('id'=>$this->id);
@@ -533,7 +537,7 @@ class Product extends CommonObject
 			if (! $error && ! $notrigger)
 			{
 				// Appel des triggers
-				include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+				include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
 				$interface=new Interfaces($this->db);
 				$result=$interface->run_triggers('PRODUCT_MODIFY',$this,$user,$langs,$conf);
 				if ($result < 0) { $error++; $this->errors=$interface->errors; }
@@ -549,6 +553,7 @@ class Product extends CommonObject
 					$newdir = $conf->product->dir_output . "/" . dol_sanitizeFileName($this->ref);
 					if (file_exists($olddir))
 					{
+						include_once DOL_DOCUMENT_ROOT . '/core/lib/files.lib.php';
 						$res=@dol_move($olddir, $newdir);
 						if (! $res)
 						{
@@ -575,11 +580,13 @@ class Product extends CommonObject
 			if ($this->db->errno() == 'DB_ERROR_RECORD_ALREADY_EXISTS')
 			{
 				$this->error=$langs->trans("Error")." : ".$langs->trans("ErrorProductAlreadyExists",$this->ref);
+				$this->db->rollback();
 				return -1;
 			}
 			else
 			{
 				$this->error=$langs->trans("Error")." : ".$this->db->error()." - ".$sql;
+				$this->db->rollback();
 				return -2;
 			}
 		}
@@ -607,7 +614,7 @@ class Product extends CommonObject
 			    if (! $error)
 			    {
 			        // Appel des triggers
-			        include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+			        include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
 			        $interface=new Interfaces($this->db);
 			        $result=$interface->run_triggers('PRODUCT_DELETE',$this,$user,$langs,$conf);
 			        if ($result < 0) {
@@ -727,14 +734,20 @@ class Product extends CommonObject
 					$sql2.= "','".$this->db->escape($this->description);
 					$sql2.= "','".$this->db->escape($this->note)."')";
 				}
-				if (!$this->db->query($sql2)) return -1;
+				dol_syslog(get_class($this).'::setMultiLangs sql='.$sql2);
+				if (! $this->db->query($sql2))
+				{
+					$this->error=$this->db->lasterror();
+					dol_syslog(get_class($this).'::setMultiLangs error='.$this->error, LOG_ERR);
+					return -1;
+				}
 			}
 			else if (isset($this->multilangs["$key"]))
 			{
 				if ($this->db->num_rows($result)) // si aucune ligne dans la base
 				{
 					$sql2 = "UPDATE ".MAIN_DB_PREFIX."product_lang";
-					$sql2.= " SET label='".$this->db->escape($this->multilangs["$key"]["libelle"])."',";
+					$sql2.= " SET label='".$this->db->escape($this->multilangs["$key"]["label"])."',";
 					$sql2.= " description='".$this->db->escape($this->multilangs["$key"]["description"])."',";
 					$sql2.= " note='".$this->db->escape($this->multilangs["$key"]["note"])."'";
 					$sql2.= " WHERE fk_product=".$this->id." AND lang='".$key."'";
@@ -742,14 +755,20 @@ class Product extends CommonObject
 				else
 				{
 					$sql2 = "INSERT INTO ".MAIN_DB_PREFIX."product_lang (fk_product, lang, label, description, note)";
-					$sql2.= " VALUES(".$this->id.",'".$key."','". $this->db->escape($this->multilangs["$key"]["libelle"]);
+					$sql2.= " VALUES(".$this->id.",'".$key."','". $this->db->escape($this->multilangs["$key"]["label"]);
 					$sql2.= "','".$this->db->escape($this->multilangs["$key"]["description"]);
 					$sql2.= "','".$this->db->escape($this->multilangs["$key"]["note"])."')";
 				}
 
 				// on ne sauvegarde pas des champs vides
-				if ( $this->multilangs["$key"]["libelle"] || $this->multilangs["$key"]["description"] || $this->multilangs["$key"]["note"] )
-				if (!$this->db->query($sql2)) return -1;
+				if ( $this->multilangs["$key"]["label"] || $this->multilangs["$key"]["description"] || $this->multilangs["$key"]["note"] )
+				dol_syslog(get_class($this).'::setMultiLangs sql='.$sql2);
+				if (! $this->db->query($sql2))
+				{
+					$this->error=$this->db->lasterror();
+					dol_syslog(get_class($this).'::setMultiLangs error='.$this->error, LOG_ERR);
+					return -1;
+				}
 			}
 		}
 		return 1;
@@ -779,12 +798,12 @@ class Product extends CommonObject
 				//print 'lang='.$obj->lang.' current='.$current_lang.'<br>';
 				if( $obj->lang == $current_lang ) // si on a les traduct. dans la langue courante on les charge en infos principales.
 				{
-					$this->libelle		= $obj->label;
+					$this->label		= $obj->label;
 					$this->description	= $obj->description;
 					$this->note			= $obj->note;
 
 				}
-				$this->multilangs["$obj->lang"]["libelle"]		= $obj->label;
+				$this->multilangs["$obj->lang"]["label"]		= $obj->label;
 				$this->multilangs["$obj->lang"]["description"]	= $obj->description;
 				$this->multilangs["$obj->lang"]["note"]			= $obj->note;
 			}
@@ -1055,6 +1074,16 @@ class Product extends CommonObject
                                 $this->ecotax_ttc   = $ecotax_ttc;
 
 				$this->_log_price($user,$level);
+
+				// Appel des triggers
+				include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+				$interface=new Interfaces($this->db);
+				$result=$interface->run_triggers('PRODUCT_PRICE_MODIFY',$this,$user,$langs,$conf);
+				if ($result < 0)
+				{
+					$error++; $this->errors=$interface->errors;
+				}
+				// Fin appel triggers
 			}
 			else
 			{
@@ -1076,7 +1105,7 @@ class Product extends CommonObject
 	 */
 	function fetch($id='',$ref='',$ref_ext='')
 	{
-	    include_once(DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php');
+	    include_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
 
 		global $langs, $conf;
 
@@ -1809,7 +1838,7 @@ class Product extends CommonObject
 
 	/**
 	 *  Add a supplier price for the product.
-	 *  Note: Duplicate ref is accepted for different quantity only or for different companies.
+	 *  Note: Duplicate ref is accepted for different quantity only, or for different companies.
 	 *
 	 *  @param      User	$user       User that make link
 	 *  @param      int		$id_fourn   Supplier id
@@ -1885,7 +1914,7 @@ class Product extends CommonObject
 				$sql.= ", 0";
 				$sql.= ")";
 
-				dol_syslog(get_class($this)."add_fournisseur sql=".$sql);
+				dol_syslog(get_class($this)."::add_fournisseur sql=".$sql);
 				if ($this->db->query($sql))
 				{
 					$this->product_fourn_price_id = $this->db->last_insert_id(MAIN_DB_PREFIX."product_fournisseur_price");
@@ -2423,7 +2452,7 @@ class Product extends CommonObject
 		{
 			$this->db->begin();
 
-			require_once(DOL_DOCUMENT_ROOT ."/product/stock/class/mouvementstock.class.php");
+			require_once DOL_DOCUMENT_ROOT .'/product/stock/class/mouvementstock.class.php';
 
 			$op[0] = "+".trim($nbpiece);
 			$op[1] = "-".trim($nbpiece);
@@ -2501,7 +2530,7 @@ class Product extends CommonObject
 	 */
 	function add_photo($sdir, $file, $maxWidth = 160, $maxHeight = 120)
 	{
-		require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
+		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
 		$dir = $sdir .'/'. get_exdir($this->id,2) . $this->id ."/photos";
 
@@ -2533,7 +2562,7 @@ class Product extends CommonObject
 	 */
 	function add_thumb($file, $maxWidth = 160, $maxHeight = 120)
 	{
-		require_once(DOL_DOCUMENT_ROOT ."/core/lib/images.lib.php");
+		require_once DOL_DOCUMENT_ROOT .'/core/lib/images.lib.php';
 
 		$file_osencoded=dol_osencode($file);
 		if (file_exists($file_osencoded))
@@ -2586,7 +2615,7 @@ class Product extends CommonObject
 	 */
 	function is_photo_available($sdir)
 	{
-		include_once(DOL_DOCUMENT_ROOT ."/core/lib/files.lib.php");
+		include_once DOL_DOCUMENT_ROOT .'/core/lib/files.lib.php';
 
 		$pdir = get_exdir($this->id,2) . $this->id ."/photos/";
 		$dir = $sdir . '/'. $pdir;
@@ -2628,8 +2657,8 @@ class Product extends CommonObject
 	{
 		global $conf,$user,$langs;
 
-		include_once(DOL_DOCUMENT_ROOT ."/core/lib/files.lib.php");
-		include_once(DOL_DOCUMENT_ROOT ."/core/lib/images.lib.php");
+		include_once DOL_DOCUMENT_ROOT .'/core/lib/files.lib.php';
+		include_once DOL_DOCUMENT_ROOT .'/core/lib/images.lib.php';
 
 		$pdir = get_exdir($this->id,2) . $this->id ."/photos/";
 		$dir = $sdir . '/'. $pdir;
@@ -2637,23 +2666,6 @@ class Product extends CommonObject
 		$pdirthumb = $pdir.'thumbs/';
 
 		$return ='<!-- Photo -->'."\n";
-        /*$return.="<script type=\"text/javascript\">
-        jQuery(function() {
-            jQuery('a.lightbox').lightBox({
-                overlayBgColor: '#888',
-                overlayOpacity: 0.6,
-                imageLoading: '".DOL_URL_ROOT."/theme/eldy/img/working.gif',
-                imageBtnClose: '".DOL_URL_ROOT."/theme/eldy/img/previous.png',
-                imageBtnPrev: '".DOL_URL_ROOT."/theme/eldy/img/1leftarrow.png',
-                imageBtnNext: '".DOL_URL_ROOT."/theme/eldy/img/1rightarrow.png',
-                containerResizeSpeed: 350,
-                txtImage: '".$langs->trans("Image")."',
-                txtOf: '".$langs->trans("on")."',
-                fixedNavigation:false
-            	});
-            });
-        </script>\n";
-        */
 		$nbphoto=0;
 
 		$dir_osencoded=dol_osencode($dir);
@@ -2691,7 +2703,7 @@ class Product extends CommonObject
     						if ($nbbyrow) $return.= '<td width="'.ceil(100/$nbbyrow).'%" class="photo">';
 
     						$return.= "\n";
-    						$return.= '<a href="'.DOL_URL_ROOT.'/viewimage.php?modulepart=product&entity='.$this->entity.'&file='.urlencode($pdir.$photo).'" class="lightbox" target="_blank">';
+    						$return.= '<a href="'.DOL_URL_ROOT.'/viewimage.php?modulepart=product&entity='.$this->entity.'&file='.urlencode($pdir.$photo).'" class="aphoto" target="_blank">';
 
     						// Show image (width height=$maxHeight)
     						// Si fichier vignette disponible et image source trop grande, on utilise la vignette, sinon on utilise photo origine
@@ -2788,7 +2800,7 @@ class Product extends CommonObject
 	 */
 	function liste_photos($dir,$nbmax=0)
 	{
-		include_once(DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php');
+		include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
 		$nbphoto=0;
 		$tabobj=array();
@@ -2841,7 +2853,7 @@ class Product extends CommonObject
 	 */
 	function delete_photo($file)
 	{
-        require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
+        require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
         $dir = dirname($file).'/'; // Chemin du dossier contenant l'image d'origine
 		$dirthumb = $dir.'/thumbs/'; // Chemin du dossier contenant la vignette

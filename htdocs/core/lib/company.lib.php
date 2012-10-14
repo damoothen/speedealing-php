@@ -52,7 +52,7 @@ function societe_prepare_head($object)
         $head[$h][2] = 'prospect';
         $h++;
     }
-    if ($object->client==1 || $object->client==3 || (is_object($object->object) && $object->object->client==1) || (is_object($object->object) && $object->object->client==3))
+    if ($object->client==1 || $object->client==3 || (isset($object->object) && $object->object->client==1) || (isset($object->object) && $object->object->client==3))
     {
         $head[$h][0] = DOL_URL_ROOT.'/comm/fiche.php?socid='.$object->id;
         $head[$h][1] = $langs->trans("Customer");
@@ -203,8 +203,13 @@ function societe_admin_prepare_head($object)
     complete_head_from_modules($conf,$langs,$object,$head,$h,'company_admin');
 
     $head[$h][0] = DOL_URL_ROOT.'/societe/admin/societe_extrafields.php';
-    $head[$h][1] = $langs->trans("ExtraFields");
+    $head[$h][1] = $langs->trans("ExtraFieldsThirdParties");
     $head[$h][2] = 'attributes';
+    $h++;
+
+    $head[$h][0] = DOL_URL_ROOT.'/societe/admin/contact_extrafields.php';
+    $head[$h][1] = $langs->trans("ExtraFieldsContacts");
+    $head[$h][2] = 'attributes_contacts';
     $h++;
 
     complete_head_from_modules($conf,$langs,$object,$head,$h,'company_admin','remove');
@@ -232,12 +237,18 @@ function getCountry($id,$withcode='',$dbtouse=0,$outputlangs='',$entconv=1)
 {
     global $db,$langs;
 
+    // Check parameters
+    if (empty($id))
+    {
+    	if ($withcode === 'all') return array('id'=>'','code'=>'','label'=>'');
+    	else return '';
+    }
     if (! is_object($dbtouse)) $dbtouse=$db;
     if (! is_object($outputlangs)) $outputlangs=$langs;
 
     $sql = "SELECT rowid, code, libelle FROM ".MAIN_DB_PREFIX."c_pays";
     if (is_numeric($id)) $sql.= " WHERE rowid=".$id;
-    else $sql.= " WHERE code='".$id."'";
+    else $sql.= " WHERE code='".$db->escape($id)."'";
 
     dol_syslog("Company.lib::getCountry sql=".$sql);
     $resql=$dbtouse->query($sql);
@@ -261,10 +272,11 @@ function getCountry($id,$withcode='',$dbtouse=0,$outputlangs='',$entconv=1)
         }
         else
         {
-            return "NotDefined";
+            return 'NotDefined';
         }
     }
     else dol_print_error($dbtouse,'');
+    return 'Error';
 }
 
 /**
@@ -403,12 +415,12 @@ function show_projects($conf,$langs,$db,$object,$backtopage='')
 
     $i = -1 ;
 
-    if ($conf->projet->enabled && $user->rights->projet->lire)
+    if (! empty($conf->projet->enabled) && $user->rights->projet->lire)
     {
         $langs->load("projects");
 
         $buttoncreate='';
-        if ($conf->projet->enabled && $user->rights->projet->creer)
+        if (! empty($conf->projet->enabled) && $user->rights->projet->creer)
         {
             //$buttoncreate='<a class="butAction" href="'.DOL_URL_ROOT.'/projet/fiche.php?socid='.$object->id.'&action=create&amp;backtopage='.urlencode($backtopage).'">'.$langs->trans("AddProject").'</a>';
 			$buttoncreate='<a class="addnewrecord" href="'.DOL_URL_ROOT.'/projet/fiche.php?socid='.$object->id.'&amp;action=create&amp;backtopage='.urlencode($backtopage).'">'.$langs->trans("AddProject").' '.img_picto($langs->trans("AddProject"),'filenew').'</a>'."\n";
@@ -434,7 +446,7 @@ function show_projects($conf,$langs,$db,$object,$backtopage='')
 
             if ($num > 0)
             {
-                require_once(DOL_DOCUMENT_ROOT."/projet/class/project.class.php");
+                require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 
                 $projectstatic = new Project($db);
 
@@ -505,7 +517,7 @@ function show_contacts($conf,$langs,$db,$object,$backtopage='')
 
     $contactstatic = new Contact($db);
 
-    if ($conf->clicktodial->enabled)
+    if (! empty($conf->clicktodial->enabled))
     {
         $user->fetch_clicktodial(); // lecture des infos de clicktodial
     }
@@ -576,7 +588,7 @@ function show_contacts($conf,$langs,$db,$object,$backtopage='')
             print dol_print_email($obj->email,$obj->rowid,$object->id,'AC_EMAIL');
             print '</td>';
 
-            if ($conf->agenda->enabled && $user->rights->agenda->myactions->create)
+            if (! empty($conf->agenda->enabled) && $user->rights->agenda->myactions->create)
             {
                 print '<td align="center"><a href="'.DOL_URL_ROOT.'/comm/action/fiche.php?action=create&actioncode=AC_RDV&contactid='.$obj->rowid.'&socid='.$object->id.'&backtopage='.urlencode($backtopage).'">';
                 print img_object($langs->trans("Rendez-Vous"),"action");
@@ -623,7 +635,7 @@ function show_addresses($conf,$langs,$db,$object,$backtopage='')
 	global $user;
 	global $bc;
 
-	require_once(DOL_DOCUMENT_ROOT."/societe/class/address.class.php");
+	require_once DOL_DOCUMENT_ROOT.'/societe/class/address.class.php';
 
 	$addressstatic = new Address($db);
 	$num = $addressstatic->fetch_lines($object->id);
@@ -712,7 +724,7 @@ function show_addresses($conf,$langs,$db,$object,$backtopage='')
  * 		@param	Object		$object		Object third party or member
  * 		@param	Contact		$objcon		Object contact
  *      @param  int			$noprint	Return string but does not output it
- *      @return	void
+ *      @return	mixed					Return html part or void if noprint is 1
  */
 function show_actions_todo($conf,$langs,$db,$object,$objcon='',$noprint=0)
 {
@@ -724,9 +736,9 @@ function show_actions_todo($conf,$langs,$db,$object,$objcon='',$noprint=0)
     $now=dol_now();
     $out='';
 
-    if ($conf->agenda->enabled)
+    if (! empty($conf->agenda->enabled))
     {
-        require_once(DOL_DOCUMENT_ROOT."/comm/action/class/actioncomm.class.php");
+        require_once DOL_DOCUMENT_ROOT.'/comm/action/class/actioncomm.class.php';
         $actionstatic=new ActionComm($db);
         $userstatic=new User($db);
         $contactstatic = new Contact($db);
@@ -871,7 +883,7 @@ function show_actions_todo($conf,$langs,$db,$object,$objcon='',$noprint=0)
  * 		@param	Object		$object		Object third party or member
  * 		@param	Contact		$objcon		Object contact
  *      @param  int			$noprint    Return string but does not output it
- *      @return	void
+ *      @return	mixed					Return html part or void if noprint is 1
  * TODO change function to be able to list event linked to an object.
  */
 function show_actions_done($conf,$langs,$db,$object,$objcon='',$noprint=0)
@@ -886,7 +898,7 @@ function show_actions_done($conf,$langs,$db,$object,$objcon='',$noprint=0)
     $numaction = 0 ;
     $now=dol_now();
 
-    if ($conf->agenda->enabled)
+    if (! empty($conf->agenda->enabled))
     {
         // Recherche histo sur actioncomm
         $sql = "SELECT a.id, a.label,";
@@ -996,12 +1008,12 @@ function show_actions_done($conf,$langs,$db,$object,$objcon='',$noprint=0)
     }
 
 
-    if ($conf->agenda->enabled || ($conf->mailing->enabled && ! empty($objcon->email)))
+    if (! empty($conf->agenda->enabled) || (! empty($conf->mailing->enabled) && ! empty($objcon->email)))
     {
-        require_once(DOL_DOCUMENT_ROOT."/comm/action/class/actioncomm.class.php");
-        require_once(DOL_DOCUMENT_ROOT."/comm/propal/class/propal.class.php");
-        require_once(DOL_DOCUMENT_ROOT."/commande/class/commande.class.php");
-        require_once(DOL_DOCUMENT_ROOT."/compta/facture/class/facture.class.php");
+        require_once DOL_DOCUMENT_ROOT.'/comm/action/class/actioncomm.class.php';
+        require_once DOL_DOCUMENT_ROOT.'/comm/propal/class/propal.class.php';
+        require_once DOL_DOCUMENT_ROOT.'/commande/class/commande.class.php';
+        require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
         $actionstatic=new ActionComm($db);
         $userstatic=new User($db);
         $contactstatic = new Contact($db);

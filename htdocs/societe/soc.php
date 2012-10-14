@@ -27,29 +27,29 @@
  *  \brief      Third party card page
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/images.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formadmin.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formcompany.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/extrafields.class.php");
-require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
-if ($conf->adherent->enabled) require_once(DOL_DOCUMENT_ROOT."/adherents/class/adherent.class.php");
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formadmin.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
+if (! empty($conf->adherent->enabled)) require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
 
 $langs->load("companies");
 $langs->load("commercial");
 $langs->load("bills");
 $langs->load("banks");
 $langs->load("users");
-if ($conf->notification->enabled) $langs->load("mails");
+if (! empty($conf->notification->enabled)) $langs->load("mails");
 
 $mesg=''; $error=0; $errors=array();
 
 $action		= (GETPOST('action') ? GETPOST('action') : 'view');
 $confirm	= GETPOST('confirm');
-$socid		= GETPOST('socid');
+$socid		= GETPOST('socid','int');
 if ($user->societe_id) $socid=$user->societe_id;
 
 $object = new Societe($db);
@@ -58,9 +58,10 @@ $extrafields = new ExtraFields($db);
 // Get object canvas (By default, this is not defined, so standard usage of dolibarr)
 $object->getCanvas($socid);
 $canvas = $object->canvas?$object->canvas:GETPOST("canvas");
+$objcanvas='';
 if (! empty($canvas))
 {
-    require_once(DOL_DOCUMENT_ROOT."/core/class/canvas.class.php");
+    require_once DOL_DOCUMENT_ROOT.'/core/class/canvas.class.php';
     $objcanvas = new Canvas($db, $action);
     $objcanvas->getCanvas('thirdparty', 'card', $canvas);
 }
@@ -69,7 +70,7 @@ if (! empty($canvas))
 $result = restrictedArea($user, 'societe', $socid, '&societe', '', 'fk_soc', 'rowid', $objcanvas);
 
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
-include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
+include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
 $hookmanager=new HookManager($db);
 $hookmanager->initHooks(array('thirdpartycard'));
 
@@ -100,11 +101,11 @@ if (empty($reshook))
     if ((! GETPOST('getcustomercode') && ! GETPOST('getsuppliercode'))
     && ($action == 'add' || $action == 'update') && $user->rights->societe->creer)
     {
-        require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
+        require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 
         if ($action == 'update')
         {
-        	$ret=$object->load($socid);
+        	$ret=$object->fetch($socid);
         	$object->oldcopy=dol_clone($object);
         }
 		else $object->canvas=$canvas;
@@ -113,67 +114,67 @@ if (empty($reshook))
         {
             $object->particulier       = GETPOST("private");
 
-            $object->name              = empty($conf->global->MAIN_FIRSTNAME_NAME_POSITION)?trim($_POST["prenom"].' '.$_POST["nom"]):trim($_POST["nom"].' '.$_POST["prenom"]);
-            $object->civilite_id       = $_POST["civilite_id"];
+            $object->name              = empty($conf->global->MAIN_FIRSTNAME_NAME_POSITION)?GETPOST('prenom').' '.GETPOST('nom'):GETPOST('nom').' '.GETPOST('prenom');
+            $object->civilite_id       = GETPOST('civilite_id');
             // Add non official properties
-            $object->name_bis          = $_POST["nom"];
-            $object->firstname         = $_POST["prenom"];
+            $object->name_bis          = GETPOST('nom');
+            $object->firstname         = GETPOST('prenom');
         }
         else
         {
-            $object->name              = $_POST["nom"];
+            $object->name              = GETPOST('nom');
         }
-        $object->address               = $_POST["adresse"];
-        $object->zip                   = $_POST["zipcode"];
-        $object->town                  = $_POST["town"];
-        $object->country_code          = $_POST["country_id"];
-        $object->state_id              = $_POST["departement_id"];
-        $object->tel                   = $_POST["tel"];
-        $object->fax                   = $_POST["fax"];
-        $object->email                 = trim($_POST["email"]);
-        $object->url                   = trim($_POST["url"]);
-        $object->idprof1               = $_POST["idprof1"];
-        $object->idprof2               = $_POST["idprof2"];
-        $object->idprof3               = $_POST["idprof3"];
-        $object->idprof4               = $_POST["idprof4"];
-        $object->prefix_comm           = $_POST["prefix_comm"];
-        $object->code_client           = $_POST["code_client"];
-        $object->code_fournisseur      = $_POST["code_fournisseur"];
-        $object->capital               = $_POST["capital"];
-        $object->barcode               = $_POST["barcode"];
+        $object->address               = GETPOST('adresse');
+        $object->zip                   = GETPOST('zipcode');
+        $object->town                  = GETPOST('town');
+        $object->country_id            = GETPOST('country_id');
+        $object->state_id              = GETPOST('departement_id');
+        $object->phone                 = GETPOST('phone');
+        $object->fax                   = GETPOST('fax');
+        $object->email                 = GETPOST('email');
+        $object->url                   = GETPOST('url');
+        $object->idprof1               = GETPOST('idprof1');
+        $object->idprof2               = GETPOST('idprof2');
+        $object->idprof3               = GETPOST('idprof3');
+        $object->idprof4               = GETPOST('idprof4');
+        $object->prefix_comm           = GETPOST('prefix_comm');
+        $object->code_client           = GETPOST('code_client');
+        $object->code_fournisseur      = GETPOST('code_fournisseur');
+        $object->capital               = GETPOST('capital');
+        $object->barcode               = GETPOST('barcode');
 
-        $object->tva_intra             = $_POST["tva_intra"];
-        $object->tva_assuj             = $_POST["assujtva_value"];
-        $object->status                = $_POST["status"];
+        $object->tva_intra             = GETPOST('tva_intra');
+        $object->tva_assuj             = GETPOST('assujtva_value');
+        $object->status                = GETPOST('status');
 
         // Local Taxes
-        $object->localtax1_assuj       = $_POST["localtax1assuj_value"];
-        $object->localtax2_assuj       = $_POST["localtax2assuj_value"];
+        $object->localtax1_assuj       = GETPOST('localtax1assuj_value');
+        $object->localtax2_assuj       = GETPOST('localtax2assuj_value');
 
-        $object->forme_juridique_code  = $_POST["forme_juridique_code"];
-        $object->effectif_id           = $_POST["effectif_id"];
+        $object->forme_juridique_code  = GETPOST('forme_juridique_code');
+        $object->effectif_id           = GETPOST('effectif_id');
         if (GETPOST("private") == 1)
         {
             $object->typent_id         = 8; // TODO predict another method if the field "special" change of rowid
         }
         else
         {
-            $object->typent_id         = $_POST["typent_id"];
+            $object->typent_id         = GETPOST('typent_id');
         }
 
-        $object->client                = $_POST["client"];
-        $object->fournisseur           = $_POST["fournisseur"];
-        $object->fournisseur_categorie = $_POST["fournisseur_categorie"];
+        $object->client                = GETPOST('client');
+        $object->fournisseur           = GETPOST('fournisseur');
+        $object->fournisseur_categorie = GETPOST('fournisseur_categorie');
 
-        $object->commercial_id         = $_POST["commercial_id"];
-        $object->default_lang          = $_POST["default_lang"];
+        $object->commercial_id         = GETPOST('commercial_id');
+        $object->default_lang          = GETPOST('default_lang');
 
         // Get extra fields
         foreach($_POST as $key => $value)
         {
             if (preg_match("/^options_/",$key))
             {
-                $object->array_options[$key]=$_POST[$key];
+                $object->array_options[$key]=GETPOST($key);
             }
         }
 
@@ -228,7 +229,7 @@ if (empty($reshook))
                 if (empty($object->client))      $object->code_client='';
                 if (empty($object->fournisseur)) $object->code_fournisseur='';
 
-                $result = $object->record();
+                $result = $object->create($user);
                 if ($result >= 0)
                 {
                     if ($object->particulier)
@@ -247,7 +248,7 @@ if (empty($reshook))
                         $contact->socid				= $object->id;	// fk_soc
                         $contact->status			= 1;
                         $contact->email				= $object->email;
-						$contact->phone_pro			= $object->tel;
+						$contact->phone_pro			= $object->phone;
 						$contact->fax				= $object->fax;
                         $contact->priv				= 0;
 
@@ -303,7 +304,7 @@ if (empty($reshook))
                     $url=$_SERVER["PHP_SELF"]."?socid=".$object->id;
                     if (($object->client == 1 || $object->client == 3) && empty($conf->global->SOCIETE_DISABLE_CUSTOMERS)) $url=DOL_URL_ROOT."/comm/fiche.php?socid=".$object->id;
                     else if ($object->fournisseur == 1) $url=DOL_URL_ROOT."/fourn/fiche.php?socid=".$object->id;
-                    Header("Location: ".$url);
+                    header("Location: ".$url);
                     exit;
                 }
                 else
@@ -317,7 +318,7 @@ if (empty($reshook))
             {
                 if ($_POST["cancel"])
                 {
-                    Header("Location: ".$_SERVER["PHP_SELF"]."?socid=".$socid);
+                    header("Location: ".$_SERVER["PHP_SELF"]."?socid=".$socid);
                     exit;
                 }
 
@@ -380,7 +381,7 @@ if (empty($reshook))
                 if (! $error && ! count($errors))
                 {
 
-                    Header("Location: ".$_SERVER["PHP_SELF"]."?socid=".$socid);
+                    header("Location: ".$_SERVER["PHP_SELF"]."?socid=".$socid);
                     exit;
                 }
                 else
@@ -395,12 +396,12 @@ if (empty($reshook))
     // Delete third party
     if ($action == 'confirm_delete' && $confirm == 'yes' && $user->rights->societe->supprimer)
     {
-        $object->load($socid);
+        $object->fetch($socid);
         $result = $object->delete($socid);
 
         if ($result > 0)
         {
-            Header("Location: ".DOL_URL_ROOT."/societe/societe.php?delsoc=".urlencode($object->name));
+            header("Location: ".DOL_URL_ROOT."/societe/societe.php?delsoc=".urlencode($object->name));
             exit;
         }
         else
@@ -423,9 +424,9 @@ if (empty($reshook))
         }
         else
         {
-            require_once(DOL_DOCUMENT_ROOT.'/core/modules/societe/modules_societe.class.php');
+            require_once DOL_DOCUMENT_ROOT.'/core/modules/societe/modules_societe.class.php';
 
-            $object->load($socid);
+            $object->fetch($socid);
 
             // Define output language
             $outputlangs = $langs;
@@ -445,7 +446,7 @@ if (empty($reshook))
             }
             else
             {
-                Header('Location: '.$_SERVER["PHP_SELF"].'?socid='.$object->id.(empty($conf->global->MAIN_JUMP_TAG)?'':'#builddoc'));
+                header('Location: '.$_SERVER["PHP_SELF"].'?socid='.$object->id.(empty($conf->global->MAIN_JUMP_TAG)?'':'#builddoc'));
                 exit;
             }
         }
@@ -454,15 +455,16 @@ if (empty($reshook))
     // Remove file in doc form
     else if ($action == 'remove_file')
     {
-    	if ($object->load($socid))
+    	if ($object->fetch($socid))
     	{
-    		require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
+    		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
     		$langs->load("other");
     		$upload_dir = $conf->societe->dir_output;
     		$file = $upload_dir . '/' . GETPOST('file');
-    		dol_delete_file($file,0,0,0,$object);
-    		$mesg = '<div class="ok">'.$langs->trans("FileWasRemoved",GETPOST('file')).'</div>';
+    		$ret=dol_delete_file($file,0,0,0,$object);
+    		if ($ret) setEventMessage($langs->trans("FileWasRemoved", GETPOST('urlfile')));
+    		else setEventMessage($langs->trans("ErrorFailToDeleteFile", GETPOST('urlfile')), 'errors');
     	}
     }
 }
@@ -495,7 +497,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
     if (empty($object->error) && $socid)
  	{
 	     $object = new Societe($db);
-	     $object->load($socid);
+	     $object->fetch($socid);
  	}
    	$objcanvas->assign_values($action, $socid);	// Set value for templates
     $objcanvas->display_canvas($action);		// Show template
@@ -512,8 +514,7 @@ else
          */
 
         // Load object modCodeTiers
-        $module=$conf->global->SOCIETE_CODECLIENT_ADDON;
-        if (! $module) dolibarr_error('',$langs->trans("ErrorModuleThirdPartyCodeInCompanyModuleNotDefined"));
+        $module=(! empty($conf->global->SOCIETE_CODECLIENT_ADDON)?$conf->global->SOCIETE_CODECLIENT_ADDON:'mod_codeclient_leopard');
         if (substr($module, 0, 15) == 'mod_codeclient_' && substr($module, -3) == 'php')
         {
             $module = substr($module, 0, dol_strlen($module)-4);
@@ -521,7 +522,7 @@ else
         $dirsociete=array_merge(array('/core/modules/societe/'),$conf->societe_modules);
         foreach ($dirsociete as $dirroot)
         {
-            $res=dol_include_once($dirroot.$module.".php");
+            $res=dol_include_once($dirroot.$module.'.php');
             if ($res) break;
         }
         $modCodeClient = new $module;
@@ -534,7 +535,7 @@ else
         $dirsociete=array_merge(array('/core/modules/societe/'),$conf->societe_modules);
         foreach ($dirsociete as $dirroot)
         {
-            $res=dol_include_once($dirroot.$module.".php");
+            $res=dol_include_once($dirroot.$module.'.php');
             if ($res) break;
         }
         $modCodeFournisseur = new $module;
@@ -543,52 +544,52 @@ else
         if (GETPOST("type")!='f')  { $object->client=3; }
         if (GETPOST("type")=='c')  { $object->client=1; }
         if (GETPOST("type")=='p')  { $object->client=2; }
-        if ($conf->fournisseur->enabled && (GETPOST("type")=='f' || GETPOST("type")==''))  { $object->fournisseur=1; }
+        if (! empty($conf->fournisseur->enabled) && (GETPOST("type")=='f' || GETPOST("type")==''))  { $object->fournisseur=1; }
         if (GETPOST("private")==1) { $object->particulier=1; }
 
-        $object->name				= $_POST["nom"];
-        $object->firstname			= $_POST["prenom"];
+        $object->name				= GETPOST('nom');
+        $object->firstname			= GETPOST('prenom');
         $object->particulier		= GETPOST('private', 'int');
-        $object->prefix_comm		= $_POST["prefix_comm"];
-        $object->client				= $_POST["client"]?$_POST["client"]:$object->client;
-        $object->code_client		= $_POST["code_client"];
-        $object->fournisseur		= $_POST["fournisseur"]?$_POST["fournisseur"]:$object->fournisseur;
-        $object->code_fournisseur	= $_POST["code_fournisseur"];
-        $object->address			= $_POST["adresse"];
-        $object->zip				= $_POST["zipcode"];
-        $object->town				= $_POST["town"];
-        $object->state_id			= $_POST["departement_id"];
-        $object->tel				= $_POST["tel"];
-        $object->fax				= $_POST["fax"];
-        $object->email				= $_POST["email"];
-        $object->url				= $_POST["url"];
-        $object->capital			= $_POST["capital"];
-        $object->barcode			= $_POST["barcode"];
-        $object->idprof1			= $_POST["idprof1"];
-        $object->idprof2			= $_POST["idprof2"];
-        $object->idprof3			= $_POST["idprof3"];
-        $object->idprof4			= $_POST["idprof4"];
-        $object->typent_id			= $_POST["typent_id"];
-        $object->effectif_id		= $_POST["effectif_id"];
-        $object->civility_id		= $_POST["civilite_id"];
+        $object->prefix_comm		= GETPOST('prefix_comm');
+        $object->client				= GETPOST('client')?GETPOST('client'):$object->client;
+        $object->code_client		= GETPOST('code_client');
+        $object->fournisseur		= GETPOST('fournisseur')?GETPOST('fournisseur'):$object->fournisseur;
+        $object->code_fournisseur	= GETPOST('code_fournisseur');
+        $object->address			= GETPOST('adresse');
+        $object->zip				= GETPOST('zipcode');
+        $object->town				= GETPOST('town');
+        $object->state_id			= GETPOST('departement_id');
+        $object->phone				= GETPOST('phone');
+        $object->fax				= GETPOST('fax');
+        $object->email				= GETPOST('email');
+        $object->url				= GETPOST('url');
+        $object->capital			= GETPOST('capital');
+        $object->barcode			= GETPOST('barcode');
+        $object->idprof1			= GETPOST('idprof1');
+        $object->idprof2			= GETPOST('idprof2');
+        $object->idprof3			= GETPOST('idprof3');
+        $object->idprof4			= GETPOST('idprof4');
+        $object->typent_id			= GETPOST('typent_id');
+        $object->effectif_id		= GETPOST('effectif_id');
+        $object->civility_id		= GETPOST('civilite_id');
 
-        $object->tva_assuj			= $_POST["assujtva_value"];
-        $object->status				= $_POST["status"];
+        $object->tva_assuj			= GETPOST('assujtva_value');
+        $object->status				= GETPOST('status');
 
         //Local Taxes
-        $object->localtax1_assuj	= $_POST["localtax1assuj_value"];
-        $object->localtax2_assuj	= $_POST["localtax2assuj_value"];
+        $object->localtax1_assuj	= GETPOST('localtax1assuj_value');
+        $object->localtax2_assuj	= GETPOST('localtax2assuj_value');
 
-        $object->tva_intra			= $_POST["tva_intra"];
+        $object->tva_intra			= GETPOST('tva_intra');
 
-        $object->commercial_id		= $_POST["commercial_id"];
-        $object->default_lang		= $_POST["default_lang"];
+        $object->commercial_id		= GETPOST('commercial_id');
+        $object->default_lang		= GETPOST('default_lang');
 
-        $object->logo = dol_sanitizeFileName($_FILES['photo']['name']);
+        $object->logo = (isset($_FILES['photo'])?dol_sanitizeFileName($_FILES['photo']['name']):'');
 
         // Gestion du logo de la société
-        $dir     = $conf->societe->multidir_output[$object->entity]."/".$object->id."/logos";
-        $file_OK = is_uploaded_file($_FILES['photo']['tmp_name']);
+        $dir     = $conf->societe->multidir_output[$conf->entity]."/".$object->id."/logos";
+        $file_OK = (isset($_FILES['photo'])?is_uploaded_file($_FILES['photo']['tmp_name']):false);
         if ($file_OK)
         {
             if (image_format_supported($_FILES['photo']['name']))
@@ -619,19 +620,19 @@ else
         }
 
         // We set country_id, country_code and country for the selected country
-        $object->country_id=$_POST["country_id"]?$_POST["country_id"]:$mysoc->country_id;
+        $object->country_id=GETPOST('country_id')?GETPOST('country_id'):$mysoc->country_id;
         if ($object->country_id)
         {
             $tmparray=getCountry($object->country_id,'all');
             $object->country_code=$tmparray['code'];
             $object->country=$tmparray['label'];
         }
-        $object->forme_juridique_code=$_POST['forme_juridique_code'];
+        $object->forme_juridique_code=GETPOST('forme_juridique_code');
         /* Show create form */
 
         print_fiche_titre($langs->trans("NewThirdParty"));
 
-        if ($conf->use_javascript_ajax)
+        if (! empty($conf->use_javascript_ajax))
         {
             print "\n".'<script type="text/javascript">';
             print '$(document).ready(function () {
@@ -741,7 +742,7 @@ else
 
         print '</td></tr>';
 
-        if ($conf->fournisseur->enabled && ! empty($user->rights->fournisseur->lire))
+        if (! empty($conf->fournisseur->enabled) && ! empty($user->rights->fournisseur->lire))
         {
             // Supplier
             print '<tr>';
@@ -770,7 +771,7 @@ else
                     {
                         print '<tr>';
                         print '<td>'.$langs->trans('SupplierCategory').'</td><td colspan="3">';
-                        print $form->selectarray("fournisseur_categorie",$object->SupplierCategories,$_POST["fournisseur_categorie"],1);
+                        print $form->selectarray("fournisseur_categorie",$object->SupplierCategories,GETPOST('fournisseur_categorie'),1);
                         print '</td></tr>';
                     }
                 }
@@ -783,7 +784,7 @@ else
         print '</td></tr>';
 
         // Barcode
-        if ($conf->global->MAIN_MODULE_BARCODE)
+        if (! empty($conf->barcode->enabled))
         {
             print '<tr><td>'.$langs->trans('Gencod').'</td><td colspan="3"><input type="text" name="barcode" value="'.$object->barcode.'">';
             print '</td></tr>';
@@ -817,10 +818,10 @@ else
         }
 
         // Phone / Fax
-        print '<tr><td>'.$langs->trans('Phone').'</td><td><input type="text" name="tel" value="'.$object->tel.'"></td>';
+        print '<tr><td>'.$langs->trans('Phone').'</td><td><input type="text" name="phone" value="'.$object->phone.'"></td>';
         print '<td>'.$langs->trans('Fax').'</td><td><input type="text" name="fax" value="'.$object->fax.'"></td></tr>';
 
-        print '<tr><td>'.$langs->trans('EMail').($conf->global->SOCIETE_MAIL_REQUIRED?'*':'').'</td><td><input type="text" name="email" size="32" value="'.$object->email.'"></td>';
+        print '<tr><td>'.$langs->trans('EMail').(! empty($conf->global->SOCIETE_MAIL_REQUIRED)?'*':'').'</td><td><input type="text" name="email" size="32" value="'.$object->email.'"></td>';
         print '<td>'.$langs->trans('Web').'</td><td><input type="text" name="url" size="32" value="'.$object->url.'"></td></tr>';
 
         // Prof ids
@@ -856,7 +857,7 @@ else
         {
             $s.=' ';
 
-            if ($conf->use_javascript_ajax)
+            if (! empty($conf->use_javascript_ajax))
             {
                 print "\n";
                 print '<script language="JavaScript" type="text/javascript">';
@@ -930,7 +931,7 @@ else
             }
         }
 
-        if ($conf->global->MAIN_MULTILANGS)
+        if (! empty($conf->global->MAIN_MULTILANGS))
         {
             print '<tr><td>'.$langs->trans("DefaultLang").'</td><td colspan="3">'."\n";
             print $formadmin->select_language(($object->default_lang?$object->default_lang:$conf->global->MAIN_LANG_DEFAULT),'default_lang',0,0,1);
@@ -944,7 +945,7 @@ else
             print '<tr>';
             print '<td>'.$langs->trans("AllocateCommercial").'</td>';
             print '<td colspan="3">';
-            $form->select_users($object->commercial_id,'commercial_id',1);
+            $form->select_users((! empty($object->commercial_id)?$object->commercial_id:$user->id),'commercial_id',1); // Add current user by default
             print '</td></tr>';
         }
 
@@ -955,7 +956,7 @@ else
         {
             foreach($extrafields->attribute_label as $key=>$label)
             {
-                $value=(isset($_POST["options_".$key])?$_POST["options_".$key]:$object->array_options["options_".$key]);
+                $value=(isset($_POST["options_".$key])?$_POST["options_".$key]:(isset($object->array_options["options_".$key])?$object->array_options["options_".$key]:''));
                 print '<tr><td>'.$label.'</td><td colspan="3">';
                 print $extrafields->showInputField($key,$value);
                 print '</td></tr>'."\n";
@@ -989,9 +990,9 @@ else
         if ($socid)
         {
             $object = new Societe($db);
-            $res=$object->load($socid);
+            $res=$object->fetch($socid);
             if ($res < 0) { dol_print_error($db,$object->error); exit; }
-            //$res=$object->fetch_optionals($object->id,$extralabels);
+            $res=$object->fetch_optionals($object->id,$extralabels);
             //if ($res < 0) { dol_print_error($db); exit; }
 
 
@@ -1001,8 +1002,7 @@ else
 
 
             // Load object modCodeTiers
-            $module=$conf->global->SOCIETE_CODECLIENT_ADDON;
-            if (! $module) dolibarr_error('',$langs->trans("ErrorModuleThirdPartyCodeInCompanyModuleNotDefined"));
+            $module=(! empty($conf->global->SOCIETE_CODECLIENT_ADDON)?$conf->global->SOCIETE_CODECLIENT_ADDON:'mod_codeclient_leopard');
             if (substr($module, 0, 15) == 'mod_codeclient_' && substr($module, -3) == 'php')
             {
                 $module = substr($module, 0, dol_strlen($module)-4);
@@ -1010,10 +1010,10 @@ else
             $dirsociete=array_merge(array('/core/modules/societe/'),$conf->societe_modules);
             foreach ($dirsociete as $dirroot)
             {
-                $res=dol_include_once($dirroot.$module.".php");
+                $res=dol_include_once($dirroot.$module.'.php');
                 if ($res) break;
             }
-            $modCodeClient = new $module;
+            $modCodeClient = new $module($db);
             // We verified if the tag prefix is used
             if ($modCodeClient->code_auto)
             {
@@ -1028,58 +1028,58 @@ else
             $dirsociete=array_merge(array('/core/modules/societe/'),$conf->societe_modules);
             foreach ($dirsociete as $dirroot)
             {
-                $res=dol_include_once($dirroot.$module.".php");
+                $res=dol_include_once($dirroot.$module.'.php');
                 if ($res) break;
             }
-            $modCodeFournisseur = new $module;
+            $modCodeFournisseur = new $module($db);
             // On verifie si la balise prefix est utilisee
             if ($modCodeFournisseur->code_auto)
             {
                 $prefixSupplierIsUsed = $modCodeFournisseur->verif_prefixIsUsed();
             }
 
-            if (! empty($_POST["nom"]))
+            if (GETPOST('nom'))
             {
                 // We overwrite with values if posted
-                $object->name					= $_POST["nom"];
-                $object->prefix_comm			= $_POST["prefix_comm"];
-                $object->client					= $_POST["client"];
-                $object->code_client			= $_POST["code_client"];
-                $object->fournisseur			= $_POST["fournisseur"];
-                $object->code_fournisseur		= $_POST["code_fournisseur"];
-                $object->address				= $_POST["adresse"];
-                $object->zip					= $_POST["zipcode"];
-                $object->town					= $_POST["town"];
-                $object->country_code				= $_POST["country_id"]?$_POST["country_id"]:$mysoc->country_id;
-                $object->state_id				= $_POST["departement_id"];
-                $object->tel					= $_POST["tel"];
-                $object->fax					= $_POST["fax"];
-                $object->email					= $_POST["email"];
-                $object->url					= $_POST["url"];
-                $object->capital				= $_POST["capital"];
-                $object->idprof1				= $_POST["idprof1"];
-                $object->idprof2				= $_POST["idprof2"];
-                $object->idprof3				= $_POST["idprof3"];
-                $object->idprof4				= $_POST["idprof4"];
-                $object->typent_id				= $_POST["typent_id"];
-                $object->effectif_id			= $_POST["effectif_id"];
-                $object->barcode				= $_POST["barcode"];
-                $object->forme_juridique_code	= $_POST["forme_juridique_code"];
-                $object->default_lang			= $_POST["default_lang"];
+                $object->name					= GETPOST('nom');
+                $object->prefix_comm			= GETPOST('prefix_comm');
+                $object->client					= GETPOST('client');
+                $object->code_client			= GETPOST('code_client');
+                $object->fournisseur			= GETPOST('fournisseur');
+                $object->code_fournisseur		= GETPOST('code_fournisseur');
+                $object->address				= GETPOST('adresse');
+                $object->zip					= GETPOST('zipcode');
+                $object->town					= GETPOST('town');
+                $object->country_id				= GETPOST('country_id')?GETPOST('country_id'):$mysoc->country_id;
+                $object->state_id				= GETPOST('departement_id');
+                $object->phone					= GETPOST('phone');
+                $object->fax					= GETPOST('fax');
+                $object->email					= GETPOST('email');
+                $object->url					= GETPOST('url');
+                $object->capital				= GETPOST('capital');
+                $object->idprof1				= GETPOST('idprof1');
+                $object->idprof2				= GETPOST('idprof2');
+                $object->idprof3				= GETPOST('idprof3');
+                $object->idprof4				= GETPOST('idprof4');
+                $object->typent_id				= GETPOST('typent_id');
+                $object->effectif_id			= GETPOST('effectif_id');
+                $object->barcode				= GETPOST('barcode');
+                $object->forme_juridique_code	= GETPOST('forme_juridique_code');
+                $object->default_lang			= GETPOST('default_lang');
 
-                $object->tva_assuj				= $_POST["assujtva_value"];
-                $object->tva_intra				= $_POST["tva_intra"];
-                $object->status					= $_POST["status"];
+                $object->tva_assuj				= GETPOST('assujtva_value');
+                $object->tva_intra				= GETPOST('tva_intra');
+                $object->status					= GETPOST('status');
 
                 //Local Taxes
-                $object->localtax1_assuj		= $_POST["localtax1assuj_value"];
-                $object->localtax2_assuj		= $_POST["localtax2assuj_value"];
+                $object->localtax1_assuj		= GETPOST('localtax1assuj_value');
+                $object->localtax2_assuj		= GETPOST('localtax2assuj_value');
 
                 // We set country_id, and pays_code label of the chosen country
                 // TODO move to DAO class
-                if ($object->country_code)
+                if ($object->country_id)
                 {
-                    $sql = "SELECT code, libelle from ".MAIN_DB_PREFIX."c_pays where rowid = ".$object->country_code;
+                    $sql = "SELECT code, libelle from ".MAIN_DB_PREFIX."c_pays where rowid = ".$object->country_id;
                     $resql=$db->query($sql);
                     if ($resql)
                     {
@@ -1089,8 +1089,8 @@ else
                     {
                         dol_print_error($db);
                     }
-                    //$object->country_code	= $obj->code;
-                    $object->country		= $langs->trans("Country".$object->country_code)?$langs->trans("Country".$object->country_code):$obj->libelle;
+                    $object->country_code	= $obj->code;
+                    $object->country		= $langs->trans("Country".$obj->code)?$langs->trans("Country".$obj->code):$obj->libelle;
                 }
             }
 
@@ -1169,7 +1169,7 @@ else
             print '</td></tr>';
 
             // Supplier
-            if ($conf->fournisseur->enabled && ! empty($user->rights->fournisseur->lire))
+            if (! empty($conf->fournisseur->enabled) && ! empty($user->rights->fournisseur->lire))
             {
                 print '<tr>';
                 print '<td><span class="fieldrequired">'.$langs->trans('Supplier').'</span></td><td>';
@@ -1201,7 +1201,7 @@ else
                 print '</td></tr>';
 
                 // Category
-                if ($conf->categorie->enabled && $object->fournisseur)
+                if (! empty($conf->categorie->enabled) && $object->fournisseur)
                 {
                     $load = $object->LoadSupplierCateg();
                     if ( $load == 0)
@@ -1218,7 +1218,7 @@ else
             }
 
             // Barcode
-            if ($conf->global->MAIN_MODULE_BARCODE)
+            if (! empty($conf->barcode->enabled))
             {
                 print '<tr><td valign="top">'.$langs->trans('Gencod').'</td><td colspan="3"><input type="text" name="barcode" value="'.$object->barcode.'">';
                 print '</td></tr>';
@@ -1243,7 +1243,7 @@ else
 
             // Country
             print '<tr><td>'.$langs->trans('Country').'</td><td colspan="3">';
-            print $form->select_country($object->country_code,'country_id');
+            print $form->select_country($object->country_id,'country_id');
             if ($user->admin) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"),1);
             print '</td></tr>';
 
@@ -1256,7 +1256,7 @@ else
             }
 
             // Phone / Fax
-            print '<tr><td>'.$langs->trans('Phone').'</td><td><input type="text" name="tel" value="'.$object->tel.'"></td>';
+            print '<tr><td>'.$langs->trans('Phone').'</td><td><input type="text" name="phone" value="'.$object->phone.'"></td>';
             print '<td>'.$langs->trans('Fax').'</td><td><input type="text" name="fax" value="'.$object->fax.'"></td></tr>';
 
             // EMail / Web
@@ -1363,7 +1363,7 @@ else
             print '<tr><td>'.$langs->trans("Capital").'</td><td colspan="3"><input type="text" name="capital" size="10" value="'.$object->capital.'"> '.$langs->trans("Currency".$conf->currency).'</td></tr>';
 
             // Default language
-            if ($conf->global->MAIN_MULTILANGS)
+            if (! empty($conf->global->MAIN_MULTILANGS))
             {
                 print '<tr><td>'.$langs->trans("DefaultLang").'</td><td colspan="3">'."\n";
                 print $formadmin->select_language($object->default_lang,'default_lang',0,0,1);
@@ -1423,11 +1423,10 @@ else
          * View
          */
         $object = new Societe($db);
-        $res=$object->load($socid);
-		
+        $res=$object->fetch($socid);
         if ($res < 0) { dol_print_error($db,$object->error); exit; }
-        //$res=$object->fetch_optionals($object->id,$extralabels);
-        if ($res < 0) { dol_print_error($db); exit; }
+        $res=$object->fetch_optionals($object->id,$extralabels);
+        //if ($res < 0) { dol_print_error($db); exit; }
 
 
         $head = societe_prepare_head($object);
@@ -1456,12 +1455,12 @@ else
         print $fuser->id;
         print '</td>';
         print '</tr>';
-		*/
+        */
 
         // Name
         print '<tr><td width="20%">'.$langs->trans('ThirdPartyName').'</td>';
         print '<td colspan="3">';
-        print $form->showrefnav($object,'socid','',($user->societe_id?0:1),'rowid','nom');
+        print $form->showrefnav($object, 'socid', '', ($user->societe_id?0:1), 'rowid', 'nom');
         print '</td>';
         print '</tr>';
 
@@ -1470,7 +1469,7 @@ else
         if (! empty($conf->global->SOCIETE_USEPREFIX)) $rowspan++;
         if (! empty($object->client)) $rowspan++;
         if (! empty($conf->fournisseur->enabled) && $object->fournisseur && ! empty($user->rights->fournisseur->lire)) $rowspan++;
-        if (! empty($conf->global->MAIN_MODULE_BARCODE)) $rowspan++;
+        if (! empty($conf->barcode->enabled)) $rowspan++;
         if (empty($conf->global->SOCIETE_DISABLE_STATE)) $rowspan++;
         $htmllogobar='';
         if ($showlogo || $showbarcode)
@@ -1515,7 +1514,7 @@ else
         }
 
         // Barcode
-        if (! empty($conf->global->MAIN_MODULE_BARCODE))
+        if (! empty($conf->barcode->enabled))
         {
             print '<tr><td>';
             print $langs->trans('Gencod').'</td><td colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'">'.$object->barcode;
@@ -1527,14 +1526,14 @@ else
         // Status
         print '<tr><td>'.$langs->trans("Status").'</td>';
         print '<td colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'">';
-        print $object->getLibStatus();
+        print $object->getLibStatut(2);
         print '</td>';
         print $htmllogobar; $htmllogobar='';
         print '</tr>';
 
         // Address
         print "<tr><td valign=\"top\">".$langs->trans('Address').'</td><td colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'">';
-        print dol_print_address($object->address,'gmap','thirdparty',$object->id);
+        dol_print_address($object->address,'gmap','thirdparty',$object->id);
         print "</td></tr>";
 
         // Zip / Town
@@ -1553,7 +1552,7 @@ else
         // State
         if (empty($conf->global->SOCIETE_DISABLE_STATE)) print '<tr><td>'.$langs->trans('State').'</td><td colspan="'.(2+(($showlogo || $showbarcode)?0:1)).'">'.$object->state.'</td>';
 
-        print '<tr><td>'.$langs->trans('Phone').'</td><td style="min-width: 25%;">'.dol_print_phone($object->tel,$object->country_code,0,$object->id,'AC_TEL').'</td>';
+        print '<tr><td>'.$langs->trans('Phone').'</td><td style="min-width: 25%;">'.dol_print_phone($object->phone,$object->country_code,0,$object->id,'AC_TEL').'</td>';
         print '<td>'.$langs->trans('Fax').'</td><td style="min-width: 25%;">'.dol_print_phone($object->fax,$object->country_code,0,$object->id,'AC_FAX').'</td></tr>';
 
         // EMail
@@ -1678,9 +1677,9 @@ else
         print '</td></tr>';
 
         // Default language
-        if ($conf->global->MAIN_MULTILANGS)
+        if (! empty($conf->global->MAIN_MULTILANGS))
         {
-            require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
+            require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
             print '<tr><td>'.$langs->trans("DefaultLang").'</td><td colspan="3">';
             //$s=picto_from_langcode($object->default_lang);
             //print ($s?$s.' ':'');
@@ -1739,7 +1738,7 @@ else
             if ($object->parent)
             {
                 $socm = new Societe($db);
-                $socm->load($object->parent);
+                $socm->fetch($object->parent);
                 print $socm->getNomUrl(1).' '.($socm->code_client?"(".$socm->code_client.")":"");
                 print $socm->town?' - '.$socm->town:'';
             }
@@ -1750,10 +1749,10 @@ else
         }
 
         // Sales representative
-        include(DOL_DOCUMENT_ROOT.'/societe/tpl/linesalesrepresentative.tpl.php');
+        include DOL_DOCUMENT_ROOT.'/societe/tpl/linesalesrepresentative.tpl.php';
 
         // Module Adherent
-        if ($conf->adherent->enabled)
+        if (! empty($conf->adherent->enabled))
         {
             $langs->load("members");
             print '<tr><td width="25%" valign="top">'.$langs->trans("LinkedToDolibarrMember").'</td>';
@@ -1818,7 +1817,7 @@ else
 
             $var=true;
 
-            $somethingshown=$formfile->show_documents('company',$object->id,$filedir,$urlsource,$genallowed,$delallowed,'',0,0,0,28,0,'',0,'',$object->default_lang);
+            $somethingshown=$formfile->show_documents('company',$object->id,$filedir,$urlsource,$genallowed,$delallowed,'',0,0,0,28,0,'',0,'',$object->default_lang,$hookmanager);
 
             print '</td>';
             print '<td></td>';

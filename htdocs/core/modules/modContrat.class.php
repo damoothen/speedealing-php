@@ -1,5 +1,4 @@
 <?php
-
 /* Copyright (C) 2005      Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2008 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2010 Regis Houssin        <regis@dolibarr.fr>
@@ -21,40 +20,43 @@
  */
 
 /**
- * 	\defgroup   contrat     Module contract
- * 	\brief      Module pour gerer la tenue de contrat de services
- * 	\file       htdocs/core/modules/modContrat.class.php
- * 	\ingroup    contrat
- * 	\brief      Fichier de description et activation du module Contrat
+ *	\defgroup   contrat     Module contract
+ *	\brief      Module pour gerer la tenue de contrat de services
+ *	\file       htdocs/core/modules/modContrat.class.php
+ *	\ingroup    contrat
+ *	\brief      Fichier de description et activation du module Contrat
  */
-include_once(DOL_DOCUMENT_ROOT . "/core/modules/DolibarrModules.class.php");
+
+include_once DOL_DOCUMENT_ROOT .'/core/modules/DolibarrModules.class.php';
+
 
 /**
-  \class      modContrat
-  \brief      Classe de description et activation du module Contrat
+ *	Classe de description et activation du module Contrat
  */
-class modContrat extends DolibarrModules {
+class modContrat extends DolibarrModules
+{
 
 	/**
 	 *   Constructor. Define names, constants, directories, boxes, permissions
 	 *
 	 *   @param      DoliDB		$db      Database handler
 	 */
-	function modContrat($db) {
+	function __construct($db)
+	{
 		parent::__construct($db);
 		$this->numero = 54;
 
 		$this->family = "crm";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->name = preg_replace('/^mod/i','',get_class($this));
 		$this->description = "Gestion des contrats de services";
 
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
 		$this->version = 'dolibarr';
 
-		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
+		$this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
 		$this->special = 0;
-		$this->picto = 'contract';
+		$this->picto='contract';
 
 		// Data directories to create when module is enabled
 		$this->dirs = array("/contracts/temp");
@@ -64,7 +66,7 @@ class modContrat extends DolibarrModules {
 		$this->requiredby = array();
 
 		// Config pages
-		$this->config_page_url = array("contract.php@contrat");
+		$this->config_page_url = array("contract.php");
 
 		// Constantes
 		$this->const = array();
@@ -73,7 +75,6 @@ class modContrat extends DolibarrModules {
 		$this->const[0][2] = "mod_contract_serpis";
 		$this->const[0][3] = 'Nom du gestionnaire de numerotation des contrats';
 		$this->const[0][4] = 0;
-		$this->const[1] = array("CONTRAT_ADDON_PDF_ODT_PATH", "chaine", "DOL_DATA_ROOT/doctemplates/contracts", "Directory models");
 
 		// Boxes
 		$this->boxes = array();
@@ -113,17 +114,20 @@ class modContrat extends DolibarrModules {
 		$this->rights[5][2] = 'd';
 		$this->rights[5][3] = 0;
 		$this->rights[5][4] = 'supprimer';
+
 	}
 
+
 	/**
-	 * 		Function called when module is enabled.
-	 * 		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
-	 * 		It also creates data directories
+	 *		Function called when module is enabled.
+	 *		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
+	 *		It also creates data directories
 	 *
-	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
+     *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
 	 */
-	function init($options = '') {
+	function init($options='')
+	{
 		global $conf;
 
 		// Nettoyage avant activation
@@ -131,23 +135,23 @@ class modContrat extends DolibarrModules {
 
 		$sql = array();
 
-		return $this->_init($sql, $options);
+		return $this->_init($sql,$options);
 	}
 
-	/**
-	 * 		Function called when module is disabled.
+    /**
+	 *		Function called when module is disabled.
 	 *      Remove from database constants, boxes and permissions from Dolibarr database.
-	 * 		Data directories are not deleted
+	 *		Data directories are not deleted
 	 *
-	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
+     *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
-	 */
-	function remove($options = '') {
+     */
+    function remove($options='')
+    {
 		$sql = array();
 
-		return $this->_remove($sql, $options);
-	}
+		return $this->_remove($sql,$options);
+    }
 
 }
-
 ?>

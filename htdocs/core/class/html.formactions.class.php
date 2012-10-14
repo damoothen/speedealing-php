@@ -1,6 +1,6 @@
 <?php
 /* Copyright (c) 2008-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2010-2011 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2010-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2010      Juanjo Menent        <jmenent@2byte.es>
  * Copyright (C) 2011      Herve Prot           <herve.prot@symeos.com>
  *
@@ -39,7 +39,7 @@ class FormActions
 	 *
 	 *  @param		DoliDB		$db      Database handler
      */
-    function FormActions($db)
+    function __construct($db)
     {
         $this->db = $db;
         return 1;
@@ -50,7 +50,7 @@ class FormActions
      *  Show list of action status
      *
      * 	@param	string	$formname	Name of form where select in included
-     * 	@param	string	$selected	Preselected value
+     * 	@param	string	$selected	Preselected value (-1..100)
      * 	@param	int		$canedit	1=can edit, 0=read only
      *  @param  string	$htmlname   Name of html prefix for html fields (selectX and valX)
      * 	@return	void
@@ -67,7 +67,7 @@ class FormActions
                             '50'=>$langs->trans("ActionRunningShort"),
                             '100'=>$langs->trans("ActionDoneShort"));
 
-        if ($conf->use_javascript_ajax)
+        if (! empty($conf->use_javascript_ajax))
         {
             print "\n";
             print '<script type="text/javascript">'."\n";

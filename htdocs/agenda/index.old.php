@@ -26,17 +26,31 @@
  *  \brief      Home page of calendar events
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/societe/class/societe.class.php");
-require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
-require_once(DOL_DOCUMENT_ROOT."/agenda/class/agenda.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/date.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/agenda/lib/agenda.lib.php");
-if ($conf->projet->enabled) require_once(DOL_DOCUMENT_ROOT."/core/lib/project.lib.php");
+require '../../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
+require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
+require_once DOL_DOCUMENT_ROOT.'/comm/action/class/actioncomm.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/agenda.lib.php';
+if (! empty($conf->projet->enabled)) require_once DOL_DOCUMENT_ROOT.'/core/lib/project.lib.php';
 
 if (! isset($conf->global->AGENDA_MAX_EVENTS_DAY_VIEW)) $conf->global->AGENDA_MAX_EVENTS_DAY_VIEW=3;
 
+$filter=GETPOST("filter",'',3);
+$filtera = GETPOST("userasked","int",3)?GETPOST("userasked","int",3):GETPOST("filtera","int",3);
+$filtert = GETPOST("usertodo","int",3)?GETPOST("usertodo","int",3):GETPOST("filtert","int",3);
+$filterd = GETPOST("userdone","int",3)?GETPOST("userdone","int",3):GETPOST("filterd","int",3);
 $showbirthday = empty($conf->use_javascript_ajax)?GETPOST("showbirthday","int"):1;
+
+
+$sortfield = GETPOST("sortfield",'alpha');
+$sortorder = GETPOST("sortorder",'alpha');
+$page = GETPOST("page","int");
+if ($page == -1) { $page = 0; }
+$limit = $conf->liste_limit;
+$offset = $limit * $page;
+if (! $sortorder) $sortorder="ASC";
+if (! $sortfield) $sortfield="a.datec";
 
 // Security check
 $socid = GETPOST("socid","int",1);
@@ -98,7 +112,7 @@ if (GETPOST("viewlist"))
 
 if ($action=='delete_action')
 {
-    $event = new Agenda($db);
+    $event = new ActionComm($db);
     $event->fetch($actionid);
     $result=$event->delete();
 }
@@ -202,7 +216,9 @@ if ($action == 'show_day')
 //print dol_print_date($firstdaytoshow,'day');
 //print dol_print_date($lastdaytoshow,'day');
 
-$title=$langs->trans("Agenda");
+$title=$langs->trans("DoneAndToDoActions");
+if ($status == 'done') $title=$langs->trans("DoneActions");
+if ($status == 'todo') $title=$langs->trans("ToDoActions");
 
 $param='';
 $region='';
@@ -219,10 +235,61 @@ if ($type)   $param.="&type=".$type;
 if ($action == 'show_day' || $action == 'show_week') $param.='&action='.$action;
 $param.="&maxprint=".$maxprint;
 
-llxHeader('', $langs->trans("Agenda"), $help_url);
+// Show navigation bar
+if (empty($action) || $action=='show_month')
+{
+    $nav ="<a href=\"?year=".$prev_year."&amp;month=".$prev_month."&amp;region=".$region.$param."\">".img_previous($langs->trans("Previous"))."</a>\n";
+    $nav.=" <span id=\"month_name\">".dol_print_date(dol_mktime(0,0,0,$month,1,$year),"%b %Y");
+    $nav.=" </span>\n";
+    $nav.="<a href=\"?year=".$next_year."&amp;month=".$next_month."&amp;region=".$region.$param."\">".img_next($langs->trans("Next"))."</a>\n";
+    $picto='calendar';
+}
+if ($action=='show_week')
+{
+    $nav ="<a href=\"?year=".$prev_year."&amp;month=".$prev_month."&amp;day=".$prev_day."&amp;region=".$region.$param."\">".img_previous($langs->trans("Previous"))."</a>\n";
+    $nav.=" <span id=\"month_name\">".dol_print_date(dol_mktime(0,0,0,$month,1,$year),"%Y").", ".$langs->trans("Week")." ".$week;
+    $nav.=" </span>\n";
+    $nav.="<a href=\"?year=".$next_year."&amp;month=".$next_month."&amp;day=".$next_day."&amp;region=".$region.$param."\">".img_next($langs->trans("Next"))."</a>\n";
+    $picto='calendarweek';
+}
+if ($action=='show_day')
+{
+    $nav ="<a href=\"?year=".$prev_year."&amp;month=".$prev_month."&amp;day=".$prev_day."&amp;region=".$region.$param."\">".img_previous($langs->trans("Previous"))."</a>\n";
+    $nav.=" <span id=\"month_name\">".dol_print_date(dol_mktime(0,0,0,$month,$day,$year),"daytextshort");
+    $nav.=" </span>\n";
+    $nav.="<a href=\"?year=".$next_year."&amp;month=".$next_month."&amp;day=".$next_day."&amp;region=".$region.$param."\">".img_next($langs->trans("Next"))."</a>\n";
+    $picto='calendarday';
+}
 
-print_fiche_titre($title, true);
-print '<div class="with-padding">';
+// Must be after the nav definition
+$param.='&year='.$year.'&month='.$month.($day?'&day='.$day:'');
+//print 'x'.$param;
+
+
+
+
+$head = calendars_prepare_head('');
+
+dol_fiche_head($head, 'card', $langs->trans('Events'), 0, $picto);
+print_actions_filter($form,$canedit,$status,$year,$month,$day,$showbirthday,$filtera,$filtert,$filterd,$pid,$socid,$listofextcals);
+dol_fiche_end();
+
+$link='';
+// Add link to show birthdays
+if (empty($conf->use_javascript_ajax))
+{
+	$newparam=$param;   // newparam is for birthday links
+    $newparam=preg_replace('/showbirthday=[0-1]/i','showbirthday='.(empty($showbirthday)?1:0),$newparam);
+    if (! preg_match('/showbirthday=/i',$newparam)) $newparam.='&showbirthday=1';
+    $link='<a href="'.$_SERVER['PHP_SELF'];
+    $link.='?'.$newparam;
+    $link.='">';
+    if (empty($showbirthday)) $link.=$langs->trans("AgendaShowBirthdayEvents");
+    else $link.=$langs->trans("AgendaHideBirthdayEvents");
+    $link.='</a>';
+}
+
+print_fiche_titre($title,$link.' &nbsp; &nbsp; '.$nav, '');
 
 
 // Get event in an array
@@ -244,10 +311,7 @@ $sql.= " ".MAIN_DB_PREFIX.'user as u,';
 $sql.= " ".MAIN_DB_PREFIX."actioncomm as a)";
 $sql.= ' WHERE a.fk_action = ca.id';
 $sql.= ' AND a.fk_user_author = u.rowid';
-$sql.= ' AND ca.type=1'; // limite aux rendez-vous
-$sql.= ' AND u.entity in (0,'.$conf->entity.')';    // To limit to entity
 $sql.= ' AND a.entity IN ('.getEntity().')';
-if ($user->societe_id) $sql.= ' AND a.fk_soc = '.$user->societe_id; // To limit to external user company
 if ($actioncode) $sql.=" AND ca.code='".$db->escape($actioncode)."'";
 if ($pid) $sql.=" AND a.fk_project=".$db->escape($pid);
 if (! $user->rights->societe->client->voir && ! $socid) $sql.= " AND a.fk_soc = sc.fk_soc AND sc.fk_user = " .$user->id;
@@ -305,7 +369,7 @@ if ($resql)
         $obj = $db->fetch_object($resql);
 
         // Create a new object action
-        $event=new Agenda($db);
+        $event=new ActionComm($db);
         $event->id=$obj->id;
         $event->datep=$db->jdate($obj->datep);      // datep and datef are GMT date
         $event->datef=$db->jdate($obj->datep2);
@@ -456,14 +520,14 @@ if ($showbirthday)
 
 if (count($listofextcals))
 {
-    require_once(DOL_DOCUMENT_ROOT."/comm/action/class/ical.class.php");
+    require_once DOL_DOCUMENT_ROOT.'/comm/action/class/ical.class.php';
     foreach($listofextcals as $extcal)
     {
         $url=$extcal['src'];    // Example: https://www.google.com/calendar/ical/eldy10%40gmail.com/private-cde92aa7d7e0ef6110010a821a2aaeb/basic.ics
         $namecal = $extcal['name'];
         $colorcal = $extcal['color'];
         //print "url=".$url." namecal=".$namecal." colorcal=".$colorcal;
-        $ical=new ical();
+        $ical=new ICal();
         $ical->parse($url);
         // After this $ical->cal['VEVENT'] contains array of events, $ical->cal['DAYLIGHT'] contains daylight info, $ical->cal['STANDARD'] contains non daylight info, ...
         //var_dump($ical->cal); exit;
@@ -675,7 +739,7 @@ $cachecontacts=array();
 $color_file = DOL_DOCUMENT_ROOT."/theme/".$conf->theme."/graph-color.php";
 if (is_readable($color_file))
 {
-    include_once($color_file);
+    include_once $color_file;
 }
 if (! is_array($theme_datacolor)) $theme_datacolor=array(array(120,130,150), array(200,160,180), array(190,190,220));
 
@@ -683,11 +747,13 @@ if (! is_array($theme_datacolor)) $theme_datacolor=array(array(120,130,150), arr
 if (empty($action) || $action == 'show_month')      // View by month
 {
     $newparam=$param;   // newparam is for birthday links
+    $newparam=preg_replace('/showbirthday=/i','showbirthday_=',$newparam);	// To avoid replacement when replace day= is done
     $newparam=preg_replace('/action=show_month&?/i','',$newparam);
     $newparam=preg_replace('/action=show_week&?/i','',$newparam);
-    $newparam=preg_replace('/day=[0-9][0-9]&?/i','',$newparam);
-    $newparam=preg_replace('/month=[0-9][0-9]&?/i','',$newparam);
+    $newparam=preg_replace('/day=[0-9]+&?/i','',$newparam);
+    $newparam=preg_replace('/month=[0-9]+&?/i','',$newparam);
     $newparam=preg_replace('/year=[0-9]+&?/i','',$newparam);
+    $newparam=preg_replace('/showbirthday_=/i','showbirthday=',$newparam);	// Restore correct parameter
     echo '<table width="100%" class="nocellnopadd">';
     echo ' <tr class="liste_titre">';
     $i=0;
@@ -749,11 +815,13 @@ if (empty($action) || $action == 'show_month')      // View by month
 elseif ($action == 'show_week') // View by week
 {
     $newparam=$param;   // newparam is for birthday links
+    $newparam=preg_replace('/showbirthday=/i','showbirthday_=',$newparam);	// To avoid replacement when replace day= is done
     $newparam=preg_replace('/action=show_month&?/i','',$newparam);
     $newparam=preg_replace('/action=show_week&?/i','',$newparam);
-    $newparam=preg_replace('/day=[0-9][0-9]&?/i','',$newparam);
-    $newparam=preg_replace('/month=[0-9][0-9]&?/i','',$newparam);
+    $newparam=preg_replace('/day=[0-9]+&?/i','',$newparam);
+    $newparam=preg_replace('/month=[0-9]+&?/i','',$newparam);
     $newparam=preg_replace('/year=[0-9]+&?/i','',$newparam);
+    $newparam=preg_replace('/showbirthday_=/i','showbirthday=',$newparam);	// Restore correct parameter
     echo '<table width="100%" class="nocellnopadd">';
     echo ' <tr class="liste_titre">';
     $i=0;
@@ -805,9 +873,6 @@ else    // View by day
     $newparam=$param;   // newparam is for birthday links
     $newparam=preg_replace('/action=show_month&?/i','',$newparam);
     $newparam=preg_replace('/action=show_week&?/i','',$newparam);
-    $newparam=preg_replace('/day=[0-9][0-9]&?/i','',$newparam);
-    $newparam=preg_replace('/month=[0-9][0-9]&?/i','',$newparam);
-    $newparam=preg_replace('/year=[0-9]+&?/i','',$newparam);
     // Code to show just one day
     $style='cal_current_month';
     $today=0;
@@ -830,7 +895,7 @@ else    // View by day
     echo '</table>';
 }
 
-print "</div>";
+
 $db->close();
 
 /* TODO Export
@@ -1097,124 +1162,3 @@ function show_day_events($db, $day, $month, $year, $monthshown, $style, &$eventa
 }
 
 ?>
-<table class="calendar large-margin-bottom with-events largest" style="width: 100%;">
-
-				<!-- Month and scroll arrows -->
-				<caption>
-					<span class="cal-prev">◄</span>
-					<a class="cal-next" href="#">►</a>
-					March 2012
-				</caption>
-
-				<!-- Days names -->
-				<thead>
-					<tr>
-						<th scope="col" style="width: 209px;">Sun</th>
-						<th scope="col" style="width: 209px;">Mon</th>
-						<th scope="col" style="width: 209px;">Tue</th>
-						<th scope="col" style="width: 209px;">Wed</th>
-						<th scope="col" style="width: 209px;">Thu</th>
-						<th scope="col" style="width: 209px;">Fri</th>
-						<th scope="col" style="width: 209px;">Sat</th>
-					</tr>
-				</thead>
-
-				<!-- Dates -->
-				<tbody>
-					<tr>
-						<td class="week-end prev-month" style="height: 130px;"><span class="cal-day">30</span></td>
-						<td style="height: 130px;">
-							<span class="cal-day">1</span>
-							<ul class="cal-events" style="width: 201px;">
-								<li class="to-next-day">Event description</li>
-							</ul>
-						</td>
-						<td style="height: 130px;">
-							<span class="cal-day">2</span>
-							<ul class="cal-events" style="width: 201px;">
-								<li class="to-previous-day to-next-day">Event description</li>
-							</ul>
-						</td>
-						<td style="height: 130px;">
-							<span class="cal-day">3</span>
-							<ul class="cal-events" style="width: 201px;">
-								<li class="to-previous-day">Event description</li>
-							</ul>
-						</td>
-						<td style="height: 130px;"><span class="cal-day">4</span></td>
-						<td style="height: 130px;">
-							<span class="cal-day">5</span>
-							<ul class="cal-events" style="width: 201px;">
-								<li class="important">Event description</li>
-							</ul>
-						</td>
-						<td class="week-end" style="height: 130px;"><span class="cal-day">6</span></td>
-					</tr>
-					<tr>
-						<td class="week-end" style="height: 130px;"><span class="cal-day">7</span></td>
-						<td style="height: 130px;"><span class="cal-day">8</span></td>
-						<td class="today" style="height: 130px;">
-							<span class="cal-day">9</span>
-							<ul class="cal-events" style="width: 201px;">
-								<li>Event description</li>
-							</ul>
-						</td>
-						<td style="height: 130px;">
-							<span class="cal-day">10</span>
-							<ul class="cal-events" style="width: 201px;">
-								<li class="important">Event description</li>
-							</ul>
-						</td>
-						<td style="height: 130px;"><span class="cal-day">11</span></td>
-						<td style="height: 130px;"><span class="cal-day">12</span></td>
-						<td class="week-end" style="height: 130px;"><span class="cal-day">13</span></td>
-					</tr>
-					<tr>
-						<td class="week-end" style="height: 130px;"><span class="cal-day">14</span></td>
-						<td style="height: 130px;"><span class="cal-day">15</span></td>
-						<td style="height: 130px;"><span class="cal-day">16</span></td>
-						<td style="height: 130px;"><span class="cal-day">17</span></td>
-						<td style="height: 130px;"><span class="cal-day">18</span></td>
-						<td class="selected" style="height: 130px;">
-							<span class="cal-day">19</span>
-							<ul class="cal-events" style="width: 201px;">
-								<li class="important">Event description</li>
-							</ul>
-						</td>
-						<td class="week-end" style="height: 130px;"><span class="cal-day">20</span></td>
-					</tr>
-					<tr>
-						<td class="week-end" style="height: 130px;">
-							<span class="cal-day">21</span>
-							<ul class="cal-events" style="width: 201px;">
-								<li>Event description</li>
-							</ul>
-						</td>
-						<td style="height: 130px;"><span class="cal-day">22</span></td>
-						<td style="height: 130px;"><span class="cal-day">23</span></td>
-						<td style="height: 130px;">
-							<span class="cal-day">24</span>
-							<ul class="cal-events" style="width: 201px;">
-								<li>Event description</li>
-								<li class="important">Event description</li>
-							</ul>
-						</td>
-						<td style="height: 130px;"><span class="cal-day">25</span></td>
-						<td style="height: 130px;"><span class="cal-day">26</span></td>
-						<td class="week-end" style="height: 130px;"><span class="cal-day">27</span></td>
-					</tr>
-					<tr>
-						<td class="week-end" style="height: 130px;"><span class="cal-day">28</span></td>
-						<td style="height: 130px;"><span class="cal-day">29</span></td>
-						<td style="height: 130px;"><span class="cal-day">30</span></td>
-						<td style="height: 130px;"><span class="cal-day">31</span></td>
-						<td class="next-month" style="height: 130px;"><span class="cal-day">1</span></td>
-						<td class="next-month" style="height: 130px;"><span class="cal-day">2</span></td>
-						<td class="week-end next-month" style="height: 130px;"><span class="cal-day">3</span></td>
-					</tr>
-				</tbody>
-				<!-- End dates -->
-
-			</table>
-
-<?php llxFooter(); ?>

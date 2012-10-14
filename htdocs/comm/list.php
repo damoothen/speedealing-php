@@ -1,5 +1,4 @@
 <?php
-
 /* Copyright (C) 2001-2006 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
@@ -27,8 +26,8 @@
  *	\brief      List of customers
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formother.class.php");
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
 
 $langs->load("companies");
 $langs->load("customers");
@@ -192,4 +191,3 @@ print '</div>'; // end
 
 llxFooter();
 ?>
- 

@@ -8,7 +8,7 @@
 	convertWarningsToExceptions="true"
 	colors="true"
 	processIsolation="false"
-	stopOnFailure="false"
+	stopOnFailure="true"
 	syntaxCheck="true">
 <filter>
   <blacklist>
@@ -18,7 +18,6 @@
     <directory suffix=".php">../../test/</directory>
     <directory suffix=".php">../../htdocs/core/menus/smartphone/</directory>
     <directory suffix=".php">../../htdocs/custom/</directory>
-    <directory suffix=".php">../../htdocs/custom2/</directory>
     <directory suffix=".php">../../htdocs/products/canvas/</directory>
     <directory suffix=".php">../../htdocs/contact/canvas/</directory>
     <directory suffix=".php">../../htdocs/societe/canvas/</directory>
@@ -42,7 +41,6 @@
     <directory suffix=".php">../../test/</directory>
     <directory suffix=".php">../../htdocs/core/menus/smartphone</directory>
     <directory suffix=".php">../../htdocs/custom/</directory>
-    <directory suffix=".php">../../htdocs/custom2/</directory>
     <directory suffix=".php">../../htdocs/products/canvas/</directory>
     <directory suffix=".php">../../htdocs/contact/canvas/</directory>
     <directory suffix=".php">../../htdocs/societe/canvas/</directory>
@@ -51,6 +49,7 @@
     <file>../../htdocs/boutique/osc_master.inc.php</file>
     <file>../../htdocs/compta/bank/pre.inc.php</file>
     <file>../../htdocs/compta/paiement/cheque/pre.inc.php</file>
+    <file>../../htdocs/holiday/common.inc.php</file>
     <file>../../htdocs/ftp/pre.inc.php</file>
     </exclude>
   </whitelist>

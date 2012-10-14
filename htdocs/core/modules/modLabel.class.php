@@ -1,5 +1,4 @@
 <?php
-
 /* Copyright (C) 2007-2009 Regis Houssin       <regis@dolibarr.fr>
  * Copyright (C) 2008      Laurent Destailleur <eldy@users.sourceforge.net>
  * Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
@@ -19,37 +18,40 @@
  */
 
 /**
- * 	\defgroup   label         Module labels
- * 	\brief      Module pour gerer les formats d'impression des etiquettes
- * 	\file       htdocs/core/modules/modLabel.class.php
- * 	\ingroup    other
- * 	\brief      Fichier de description et activation du module Label
+ *	\defgroup   label         Module labels
+ *	\brief      Module pour gerer les formats d'impression des etiquettes
+ *	\file       htdocs/core/modules/modLabel.class.php
+ *	\ingroup    other
+ *	\brief      Fichier de description et activation du module Label
  */
-include_once(DOL_DOCUMENT_ROOT . "/core/modules/DolibarrModules.class.php");
+
+include_once DOL_DOCUMENT_ROOT .'/core/modules/DolibarrModules.class.php';
+
 
 /**
- * 	\class      modLabel
- * 	\brief      Classe de description et activation du module Label
+ *	Classe de description et activation du module Label
  */
-class modLabel extends DolibarrModules {
+class modLabel extends DolibarrModules
+{
 
 	/**
 	 *   Constructor. Define names, constants, directories, boxes, permissions
 	 *
 	 *   @param      DoliDB		$db      Database handler
 	 */
-	function modLabel($db) {
+	function __construct($db)
+	{
 		parent::__construct($db);
 		$this->numero = 60;
 
 		$this->family = "other";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->name = preg_replace('/^mod/i','',get_class($this));
 		$this->description = "Gestion des etiquettes";
-		$this->version = 'development';  // 'development' or 'experimental' or 'dolibarr' or version
-		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
+		$this->version = 'development';		// 'development' or 'experimental' or 'dolibarr' or version
+		$this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
 		$this->special = 2;
-		$this->picto = 'label';
+		$this->picto='label';
 
 		// Data directories to create when module is enabled
 		$this->dirs = array("/label/temp");
@@ -85,39 +87,42 @@ class modLabel extends DolibarrModules {
 		$this->rights[4][1] = 'Supprimer les etiquettes'; // libelle de la permission
 		$this->rights[4][3] = 0; // La permission est-elle une permission par defaut
 		$this->rights[4][4] = 'supprimer';
+
 	}
 
+
 	/**
-	 * 		Function called when module is enabled.
-	 * 		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
-	 * 		It also creates data directories
+	 *		Function called when module is enabled.
+	 *		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
+	 *		It also creates data directories
 	 *
-	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
+     *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
 	 */
-	function init($options = '') {
+	function init($options='')
+	{
 		// Permissions
 		$this->remove($options);
 
 		$sql = array();
 
-		return $this->_init($sql, $options);
+		return $this->_init($sql,$options);
 	}
 
-	/**
-	 * 		Function called when module is disabled.
+    /**
+	 *		Function called when module is disabled.
 	 *      Remove from database constants, boxes and permissions from Dolibarr database.
-	 * 		Data directories are not deleted
+	 *		Data directories are not deleted
 	 *
-	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
+     *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
-	 */
-	function remove($options = '') {
+     */
+    function remove($options='')
+    {
 		$sql = array();
 
-		return $this->_remove($sql, $options);
-	}
+		return $this->_remove($sql,$options);
+    }
 
 }
-
 ?>

@@ -1,5 +1,4 @@
 <?php
-
 /* Copyright (C) 2005      Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2005-2009 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2010 Regis Houssin        <regis@dolibarr.fr>
@@ -19,42 +18,44 @@
  */
 
 /**
- * 	\defgroup   user  Module user management
- * 	\brief      Module pour gerer les utilisateurs
- * 	\file       htdocs/core/modules/modUser.class.php
- * 	\ingroup    user
- * 	\brief      Fichier de description et activation du module Utilisateur
+ *	\defgroup   user  Module user management
+ *	\brief      Module pour gerer les utilisateurs
+ *	\file       htdocs/core/modules/modUser.class.php
+ *	\ingroup    user
+ *	\brief      Fichier de description et activation du module Utilisateur
  */
-include_once(DOL_DOCUMENT_ROOT . "/core/modules/DolibarrModules.class.php");
+
+include_once DOL_DOCUMENT_ROOT .'/core/modules/DolibarrModules.class.php';
 
 /**
- * 	\class      modUser
- * 	\brief      Classe de description et activation du module User
+ *	Classe de description et activation du module User
  */
-class modUser extends DolibarrModules {
+class modUser extends DolibarrModules
+{
 
 	/**
 	 *   Constructor. Define names, constants, directories, boxes, permissions
 	 *
 	 *   @param      DoliDB		$db      Database handler
 	 */
-	function __construct($db) {
+	function __construct($db)
+	{
 		global $conf;
 
 		//$this->couchdb = $db; // Just for first install
 		parent::__construct($db);
 		$this->numero = 0;
 
-		$this->family = "base";  // Family for module (or "base" if core module)
+		$this->family = "base";		// Family for module (or "base" if core module)
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->name = preg_replace('/^mod/i','',get_class($this));
 		$this->description = "Gestion des utilisateurs (requis)";
 		$this->always_enabled = 1; // Can't be disabled
 		// Possible values for version are: 'development', 'experimental', 'speedealing' or version
 		$this->version = 'speedealing';
 
 		$this->special = 0;
-		$this->picto = 'group';
+		$this->picto='group';
 
 		// Data directories to create when module is enabled
 		$this->dirs = array("/users/temp");
@@ -65,7 +66,7 @@ class modUser extends DolibarrModules {
 		// Dependancies
 		$this->depends = array();
 		$this->requiredby = array();
-		$this->langfiles = array("main", "users", "companies");
+		$this->langfiles = array("main","users","companies");
 
 		// Constants
 		$this->const = array();
@@ -521,54 +522,35 @@ class modUser extends DolibarrModules {
 
 		// Exports
 		//--------
-		$r = 0;
+		$r=0;
 
 		$r++;
-		$this->export_code[$r] = $this->rights_class . '_' . $r;
-		$this->export_label[$r] = 'Liste des utilisateurs Dolibarr et attributs';
-		$this->export_permission[$r] = array(array("user",
-				"user",
-				"export"));
-		$this->export_fields_array[$r] = array('u.rowid' => "Id",
-			'u.login' => "Login",
-			'u.name' => "Lastname",
-			'u.firstname' => "Firstname",
-			'u.office_phone' => 'Tel', 'u.office_fax' => 'Fax', 'u.email' => 'EMail', 'u.datec' => "DateCreation",
-			'u.tms' => "DateLastModification",
-			'u.admin' => "Admin",
-			'u.statut' => 'Status', 'u.note' => "Note",
-			'u.datelastlogin' => 'LastConnexion', 'u.datepreviouslogin' => 'PreviousConnexion', 'u.fk_socpeople' => "IdContact",
-			'u.fk_societe' => "IdCompany",
-			'u.fk_member' => "MemberId");
-		$this->export_entities_array[$r] = array('u.rowid' => "user",
-			'u.login' => "user",
-			'u.name' => "user",
-			'u.firstname' => "user",
-			'u.office_phone' => 'user', 'u.office_fax' => 'user', 'u.email' => 'user', 'u.datec' => "user",
-			'u.tms' => "user",
-			'u.admin' => "user",
-			'u.statut' => 'user', 'u.note' => "user",
-			'u.datelastlogin' => 'user', 'u.datepreviouslogin' => 'user', 'u.fk_socpeople' => "contact",
-			'u.fk_societe' => "company",
-			'u.fk_member' => "member");
-		if (empty($conf->adherent->enabled)) {
-			unset($this->export_fields_array[$r]['u.fk_member']);
-			unset($this->export_entities_array[$r]['u.fk_member']);
-		}
-		$this->export_sql_start[$r] = 'SELECT DISTINCT ';
-		$this->export_sql_end[$r] = ' FROM ' . MAIN_DB_PREFIX . 'user as u';
-		$this->export_sql_end[$r] .=' WHERE u.entity IN (0,' . $conf->entity . ')';
+		$this->export_code[$r]=$this->rights_class.'_'.$r;
+		$this->export_label[$r]='Liste des utilisateurs Dolibarr et attributs';
+		$this->export_permission[$r]=array(array("user","user","export"));
+		$this->export_fields_array[$r]=array('u.rowid'=>"Id",'u.login'=>"Login",'u.name'=>"Lastname",'u.firstname'=>"Firstname",'u.office_phone'=>'Telephone','u.office_fax'=>'Fax','u.email'=>'EMail','u.datec'=>"DateCreation",'u.tms'=>"DateLastModification",'u.admin'=>"Admin",'u.statut'=>'Status','u.note'=>"Note",'u.datelastlogin'=>'LastConnexion','u.datepreviouslogin'=>'PreviousConnexion','u.fk_socpeople'=>"IdContact",'u.fk_societe'=>"IdCompany",'u.fk_member'=>"MemberId");
+		$this->export_entities_array[$r]=array('u.rowid'=>"user",'u.login'=>"user",'u.name'=>"user",'u.firstname'=>"user",'u.office_phone'=>'user','u.office_fax'=>'user','u.email'=>'user','u.datec'=>"user",'u.tms'=>"user",'u.admin'=>"user",'u.statut'=>'user','u.note'=>"user",'u.datelastlogin'=>'user','u.datepreviouslogin'=>'user','u.fk_socpeople'=>"contact",'u.fk_societe'=>"company",'u.fk_member'=>"member");
+        if (empty($conf->adherent->enabled))
+        {
+            unset($this->export_fields_array[$r]['u.fk_member']);
+            unset($this->export_entities_array[$r]['u.fk_member']);
+        }
+		$this->export_sql_start[$r]='SELECT DISTINCT ';
+		$this->export_sql_end[$r]  =' FROM '.MAIN_DB_PREFIX.'user as u';
+		$this->export_sql_end[$r] .=' WHERE u.entity IN (0,'.$conf->entity.')';
 	}
 
-	/**
-	 * 		Function called when module is enabled.
-	 * 		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
-	 * 		It also creates data directories
+
+    /**
+	 *		Function called when module is enabled.
+	 *		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
+	 *		It also creates data directories
 	 *
-	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
+     *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
-	 */
-	function init($options = '') {
+     */
+	function init($options='')
+	{
 		global $conf;
 
 		// Permissions
@@ -579,23 +561,23 @@ class modUser extends DolibarrModules {
 
 		$sql = array();
 
-		return $this->_init($sql, $options);
+		return $this->_init($sql,$options);
 	}
 
-	/**
-	 * 		Function called when module is disabled.
+    /**
+	 *		Function called when module is disabled.
 	 *      Remove from database constants, boxes and permissions from Dolibarr database.
-	 * 		Data directories are not deleted
+	 *		Data directories are not deleted
 	 *
-	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
+     *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
-	 */
-	function remove($options = '') {
+     */
+    function remove($options='')
+    {
 		$sql = array();
 
-		return $this->_remove($sql, $options);
-	}
+		return $this->_remove($sql,$options);
+    }
 
 }
-
 ?>
