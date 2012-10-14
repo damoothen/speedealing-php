@@ -24,14 +24,14 @@
 /**
  *	\file       htdocs/contrat/class/contrat.class.php
  *	\ingroup    contrat
- *	\brief      Fichier de la classe des contrats
+ *	\brief      File of class to manage contracts
  */
 
-require_once(DOL_DOCUMENT_ROOT."/core/class/commonobject.class.php");
+require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
+
 
 /**
- *	\class      Contrat
- *	\brief      Classe permettant la gestion des contrats
+ *	Class to manage contracts
  */
 class Contrat extends CommonObject
 {
@@ -73,7 +73,7 @@ class Contrat extends CommonObject
 	 *
 	 *  @param		DoliDB		$db      Database handler
 	 */
-	function Contrat($db)
+	function __construct($db)
 	{
 		$this->db = $db;
 	}
@@ -101,7 +101,7 @@ class Contrat extends CommonObject
 		// Chargement de la classe de numerotation
 		$classname = $conf->global->CONTRACT_ADDON;
 
-		$result=include_once($dir.'/'.$file);
+		$result=include_once $dir.'/'.$file;
 		if ($result)
 		{
 			$obj = new $classname();
@@ -157,7 +157,7 @@ class Contrat extends CommonObject
 		if ($resql)
 		{
 			// Appel des triggers
-			include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+			include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
 			$interface=new Interfaces($this->db);
 			$result=$interface->run_triggers('CONTRACT_SERVICE_ACTIVATE',$this,$user,$langs,$conf);
 			if ($result < 0) { $error++; $this->errors=$interface->errors; }
@@ -205,7 +205,7 @@ class Contrat extends CommonObject
 		if ($resql)
 		{
 			// Appel des triggers
-			include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+			include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
 			$interface=new Interfaces($this->db);
 			$result=$interface->run_triggers('CONTRACT_SERVICE_CLOSE',$this,$user,$langs,$conf);
 			if ($result < 0) { $error++; $this->errors=$interface->errors; }
@@ -291,7 +291,7 @@ class Contrat extends CommonObject
 		if ($resql)
 		{
 			// Appel des triggers
-			include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+			include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
 			$interface=new Interfaces($this->db);
 			$result=$interface->run_triggers('CONTRACT_VALIDATE',$this,$user,$langs,$conf);
 			if ($result < 0) { $error++; $this->errors=$interface->errors; }
@@ -655,7 +655,7 @@ class Contrat extends CommonObject
 			if (! $error)
 			{
 				// Appel des triggers
-				include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+				include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
 				$interface=new Interfaces($this->db);
 				$result=$interface->run_triggers('CONTRACT_CREATE',$this,$user,$langs,$conf);
 				if ($result < 0) { $error++; $this->errors=$interface->errors; }
@@ -796,7 +796,7 @@ class Contrat extends CommonObject
 		if (! $error)
 		{
 			// Appel des triggers
-			include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+			include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
 			$interface=new Interfaces($this->db);
 			$result=$interface->run_triggers('CONTRACT_DELETE',$this,$user,$langs,$conf);
 			if ($result < 0) {
@@ -1110,7 +1110,7 @@ class Contrat extends CommonObject
 			}
 
 			// Appel des triggers
-			include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+			include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
 			$interface=new Interfaces($this->db);
 			$result=$interface->run_triggers('CONTRACTLINE_DELETE',$this,$user,$langs,$conf);
 			if ($result < 0) { $error++; $this->errors=$interface->errors; }
@@ -1622,7 +1622,7 @@ class ContratLigne
      *
      *  @param      DoliDb		$db      Database handler
 	 */
-	function ContratLigne($db)
+	function __construct($db)
 	{
 		$this->db = $db;
 	}
@@ -1938,7 +1938,7 @@ class ContratLigne
 		if (! $notrigger)
 		{
 			// Appel des triggers
-			include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+			include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
 			$interface=new Interfaces($this->db);
 			$result=$interface->run_triggers('MYOBJECT_MODIFY',$this,$user,$langs,$conf);
 			if ($result < 0) { $error++; $this->errors=$interface->errors; }

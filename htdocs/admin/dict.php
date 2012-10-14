@@ -8,6 +8,9 @@
  * Copyright (C) 2011      Philippe Grand       <philippe.grand@atoo-net.com>
  * Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
  * Copyright (C) 2011      Remy Younes          <ryounes@gmail.com>
+ * Copyright (C) 2012      Marcos García        <marcosgdf@gmail.com>
+ * Copyright (C) 2012      Christophe Battarel	<christophe.battarel@ltairis.fr>
+ * Copyright (C) 2011-2012 Alexandre Spangaro	  <alexandre.spangaro@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,23 +27,24 @@
  */
 
 /**
- * 	    \file       htdocs/admin/dict.php
- * 		\ingroup    setup
- * 		\brief      Page to administer data tables
+ *	    \file       htdocs/admin/dict.php
+ *		\ingroup    setup
+ *		\brief      Page to administer data tables
  */
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT . "/core/class/html.formadmin.class.php");
-require_once(DOL_DOCUMENT_ROOT . "/core/class/html.formcompany.class.php");
-require_once(DOL_DOCUMENT_ROOT . "/core/lib/admin.lib.php");
+
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formadmin.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 
 $langs->load("errors");
 $langs->load("admin");
 $langs->load("companies");
 
-$action = GETPOST('action', 'alpha') ? GETPOST('action', 'alpha') : 'view';
-$confirm = GETPOST('confirm', 'alpha');
-$id = GETPOST('id', 'int');
-$rowid = GETPOST('rowid', 'alpha');
+$action=GETPOST('action','alpha')?GETPOST('action','alpha'):'view';
+$confirm=GETPOST('confirm','alpha');
+$id=GETPOST('id','int');
+$rowid=GETPOST('rowid','alpha');
 
 if (!$user->admin)
 	accessforbidden();

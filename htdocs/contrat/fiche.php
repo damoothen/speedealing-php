@@ -59,19 +59,13 @@ $result=restrictedArea($user,'contrat',$id);
 
 $usehm=(! empty($conf->global->MAIN_USE_HOURMIN_IN_DATE_RANGE)?$conf->global->MAIN_USE_HOURMIN_IN_DATE_RANGE:0);
 
+// Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
+include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
+$hookmanager=new HookManager($db);
+$hookmanager->initHooks(array('contractcard'));
+
 $object = new Contrat($db);
 
-// Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
-include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
-$hookmanager=new HookManager($db);
-$hookmanager->initHooks(array('contrat_extrafields'));
-
-/*
- * Actions Extrafields
- */
-$parameters=array('id'=>$contratid);
-$reshook=$hookmanager->executeHooks('doActions',$parameters,$object,$action);    // Note that $action and $object may have been modified by some hooks
-$error=$hookmanager->error; $errors=$hookmanager->errors;
 
 /*
  * Actions
@@ -84,7 +78,7 @@ if ($action == 'confirm_active' && $confirm == 'yes' && $user->rights->contrat->
 
     if ($result > 0)
     {
-        Header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
+        header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
         exit;
     }
     else {
@@ -99,7 +93,7 @@ else if ($action == 'confirm_closeline' && $confirm == 'yes' && $user->rights->c
 
     if ($result > 0)
     {
-        Header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
+        header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
         exit;
     }
     else {
@@ -200,7 +194,7 @@ if ($action == 'add' && $user->rights->contrat->creer)
         $result = $object->create($user,$langs,$conf);
         if ($result > 0)
         {
-            Header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
+            header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
             exit;
         }
         else {
@@ -467,7 +461,7 @@ else if ($action == 'confirm_deleteline' && $confirm == 'yes' && $user->rights->
 
     if ($result >= 0)
     {
-        Header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
+        header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
         exit;
     }
     else
@@ -496,7 +490,7 @@ else if ($action == 'confirm_delete' && $confirm == 'yes' && $user->rights->cont
 	$result=$object->delete($user);
 	if ($result >= 0)
 	{
-		Header("Location: index.php");
+		header("Location: index.php");
 		return;
 	}
 	else
@@ -515,7 +509,7 @@ else if ($action == 'confirm_move' && $confirm == 'yes' && $user->rights->contra
 		$result=$contractline->update($user,1);
 		if ($result >= 0)
 		{
-			Header("Location: ".$_SERVER['PHP_SELF']."?id=".$id);
+			header("Location: ".$_SERVER['PHP_SELF']."?id=".$id);
 			return;
 		}
 		else
@@ -555,7 +549,7 @@ if (! empty($conf->global->MAIN_DISABLE_CONTACTS_TAB))
 
 		if ($result >= 0)
 		{
-			Header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
+			header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
 			exit;
 		}
 		else
@@ -593,7 +587,7 @@ if (! empty($conf->global->MAIN_DISABLE_CONTACTS_TAB))
 
 		if ($result >= 0)
 		{
-			Header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
+			header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
 			exit;
 		}
 		else {
@@ -711,7 +705,7 @@ if ($action == 'create')
     $form->select_date($datecontrat,'',0,0,'',"contrat");
     print "</td></tr>";
 
-    if ($conf->projet->enabled)
+    if (! empty($conf->projet->enabled))
     {
         print '<tr><td>'.$langs->trans("Project").'</td><td>';
         select_projects($soc->id,GETPOST("projectid"),"projectid");
@@ -719,16 +713,27 @@ if ($action == 'create')
     }
 
     print '<tr><td>'.$langs->trans("NotePublic").'</td><td valign="top">';
+
+    require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+    $doleditor=new DolEditor('note_public', GETPOST('note_public'), '', '100', 'dolibarr_notes', 'In', 1, true, true, ROWS_3, 70);
+    print $doleditor->Create(1);
+    /*
     print '<textarea name="note_public" wrap="soft" cols="70" rows="'.ROWS_3.'">';
     print GETPOST("note_public");
     print '</textarea></td></tr>';
+	*/
 
     if (! $user->societe_id)
     {
         print '<tr><td>'.$langs->trans("NotePrivate").'</td><td valign="top">';
+        require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+        $doleditor=new DolEditor('note', GETPOST('note'), '', '100', 'dolibarr_notes', 'In', 1, true, true, ROWS_3, 70);
+        print $doleditor->Create(1);
+        /*
         print '<textarea name="note" wrap="soft" cols="70" rows="'.ROWS_3.'">';
         print GETPOST("note");
-        print '</textarea></td></tr>';
+        print '</textarea>';*/
+        print '</td></tr>';
     }
 
     print "</table>\n";
@@ -801,41 +806,15 @@ elseif ($action == 'edit')
     
     // Other attributes
     $parameters=array('colspan' => ' colspan="3"');
-    $reshook=$hookmanager->executeHooks('showInputFields',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
-
-    if ($conf->projet->enabled)
-    {
-        print '<tr><td>'.$langs->trans("Project").'</td><td>';
-        select_projects($soc->id,GETPOST("projectid"),"projectid");
-        print "</td></tr>";
-    }
-
-    print '<tr><td>'.$langs->trans("NotePublic").'</td><td valign="top">';
-    print '<textarea name="note_public" wrap="soft" cols="70" rows="'.ROWS_3.'">';
-    print GETPOST("note_public");
-    print '</textarea></td></tr>';
-
-    if (! $user->societe_id)
-    {
-        print '<tr><td>'.$langs->trans("NotePrivate").'</td><td valign="top">';
-        print '<textarea name="note" wrap="soft" cols="70" rows="'.ROWS_3.'">';
-        print GETPOST("note");
-        print '</textarea></td></tr>';
-    }
+    $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
 
     print "</table>\n";
 
-    print '<br>';
-
-    print '<center>';
-    print '<input type="submit" class="button" name="save" value="'.$langs->trans("Save").'">';
-    print ' &nbsp; &nbsp; ';
-    print '<input type="submit" class="button" name="cancel" value="'.$langs->trans("Cancel").'">';
-    print '</center>';
+    print '<br><center><input type="submit" class="button" value="'.$langs->trans("Create").'"></center>';
 
     print "</form>\n";
 
-    }
+    dol_fiche_end();
 }
 else
 /* *************************************************************************** */
@@ -921,9 +900,11 @@ else
 
         print '<table class="border" width="100%">';
 
+        $linkback = '<a href="'.DOL_URL_ROOT.'/contrat/liste.php'.(! empty($socid)?'?socid='.$socid:'').'">'.$langs->trans("BackToList").'</a>';
+
         // Ref du contrat
         print '<tr><td width="25%">'.$langs->trans("Ref").'</td><td colspan="3">';
-        print $form->showrefnav($object,'ref','',1,'ref','ref','');
+        print $form->showrefnav($object, 'ref', $linkback, 1, 'ref', 'ref', '');
         print "</td></tr>";
 
         // Customer
@@ -957,7 +938,7 @@ else
 
 
         // Projet
-        if ($conf->projet->enabled)
+        if (! empty($conf->projet->enabled))
         {
             $langs->load("projects");
             print '<tr><td>';
@@ -978,6 +959,10 @@ else
             print "</td></tr>";
         }
 
+        // Other attributes
+        $parameters=array('colspan' => ' colspan="3"');
+        $reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$object,$action);    // Note that $action and $object may have been modified by hook
+
         print "</table>";
 
         if (! empty($object->brouillon) && $user->rights->contrat->creer)
@@ -989,19 +974,19 @@ else
 
         if (! empty($conf->global->MAIN_DISABLE_CONTACTS_TAB))
         {
-        	require_once(DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php');
+        	require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
         	$formcompany= new FormCompany($db);
 
         	$blocname = 'contacts';
         	$title = $langs->trans('ContactsAddresses');
-        	include(DOL_DOCUMENT_ROOT.'/core/tpl/bloc_showhide.tpl.php');
+        	include DOL_DOCUMENT_ROOT.'/core/tpl/bloc_showhide.tpl.php';
         }
 
         if (! empty($conf->global->MAIN_DISABLE_NOTES_TAB))
         {
         	$blocname = 'notes';
         	$title = $langs->trans('Notes');
-        	include(DOL_DOCUMENT_ROOT.'/core/tpl/bloc_showhide.tpl.php');
+        	include DOL_DOCUMENT_ROOT.'/core/tpl/bloc_showhide.tpl.php';
         }
 
 
@@ -1183,7 +1168,7 @@ else
                     print '</td>';
                     print '<td align="right"><input size="5" type="text" name="elprice" value="'.price($objp->subprice).'"></td>';
                     print '<td align="center"><input size="2" type="text" name="elqty" value="'.$objp->qty.'"></td>';
-                    print '<td align="right"><input size="1" type="text" name="elremise_percent" value="'.$objp->remise_percent.'">%</td>';
+                    print '<td align="right" nowrap="nowrap"><input size="1" type="text" name="elremise_percent" value="'.$objp->remise_percent.'">%</td>';
                     print '<td align="center" rowspan="2" valign="middle"><input type="submit" class="button" name="save" value="'.$langs->trans("Modify").'">';
                     print '<br><input type="submit" class="button" name="cancel" value="'.$langs->trans("Cancel").'">';
                     print '</td>';
@@ -1462,10 +1447,11 @@ else
             print "<tr ".$bc[$var].">";
             print '<td colspan="3">';
             // multiprix
-            if($conf->global->PRODUIT_MULTIPRICES)
-            $form->select_produits('','idprod',1,$conf->product->limit_size,$object->thirdparty->price_level);
+            if (! empty($conf->global->PRODUIT_MULTIPRICES))
+            	$form->select_produits('','idprod',1,$conf->product->limit_size,$object->thirdparty->price_level);
             else
-            $form->select_produits('','idprod',1,$conf->product->limit_size);
+				$form->select_produits('','idprod',1,$conf->product->limit_size);
+            print '<br>';
             print '<textarea name="desc" cols="70" rows="'.ROWS_2.'"></textarea>';
             print '</td>';
 
@@ -1544,7 +1530,7 @@ else
                 else print '<a class="butActionRefused" href="#" title="'.$langs->trans("NotEnoughPermissions").'">'.$langs->trans("Validate").'</a>';
             }
 
-            if ($conf->facture->enabled && $object->statut > 0)
+            if (! empty($conf->facture->enabled) && $object->statut > 0 && $object->nbofservicesclosed < $nbofservices)
             {
                 $langs->load("bills");
                 if ($user->rights->facture->creer) print '<a class="butAction" href="'.DOL_URL_ROOT.'/compta/facture.php?action=create&amp;origin='.$object->element.'&amp;originid='.$object->id.'&amp;socid='.$object->thirdparty->id.'">'.$langs->trans("CreateBill").'</a>';

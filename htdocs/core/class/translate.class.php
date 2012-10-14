@@ -49,7 +49,7 @@ class Translate
 	 *  @param	string	$dir            Force directory that contains /langs subdirectory (value is sometine '..' like into install/* pages or support/* pages).
 	 *  @param  Conf	$conf			Object with Dolibarr configuration
 	 */
-	function Translate($dir,$conf)
+	function __construct($dir,$conf)
 	{
 		if (! empty($conf->file->character_set_client)) $this->charset_output=$conf->file->character_set_client;	// If charset output is forced
 		if ($dir) $this->dir=array($dir);
@@ -224,7 +224,7 @@ class Translate
 				{
 			        //dol_syslog('Translate::Load we will cache result into usecachekey '.$usecachekey);
 
-				    require_once(DOL_DOCUMENT_ROOT ."/core/lib/memory.lib.php");
+				    require_once DOL_DOCUMENT_ROOT .'/core/lib/memory.lib.php';
 					$tmparray=dol_getcache($usecachekey);
 					if (is_array($tmparray) && count($tmparray))
 					{
@@ -327,6 +327,7 @@ class Translate
 
 	/**
 	 * Return translated value of key. Search in lang file, then into database.
+	 * Key must be any complete entry into lang file: CurrencyEUR, ...
 	 * If not found, return key.
 	 * WARNING: To avoid infinite loop (getLabelFromKey->transnoentities->getTradFromKey), getLabelFromKey must
 	 * not be called with same value than input.
@@ -334,9 +335,11 @@ class Translate
 	 * @param	string		$key		Key to translate
 	 * @return 	string					Translated string
 	 */
-	function getTradFromKey($key)
+	private function getTradFromKey($key)
 	{
 		global $db;
+
+		//print 'xx'.$key;
 		$newstr=$key;
 		if (preg_match('/^Currency([A-Z][A-Z][A-Z])$/i',$key,$reg))
 		{
@@ -603,7 +606,7 @@ class Translate
 			$fonc='numberwords';
 			if (file_exists($newdir.'/functions_'.$fonc.'.lib.php'))
 			{
-				include_once($newdir.'/functions_'.$fonc.'.lib.php');
+				include_once $newdir.'/functions_'.$fonc.'.lib.php';
 				$newnumber=numberwords_getLabelFromNumber($this,$number,$isamount);
 				break;
 			}
@@ -614,25 +617,28 @@ class Translate
 
 
 	/**
-	 *      Return a label for a key. Store key-label into cache variable $this->cache_labels to save SQL requests to get labels.
-	 *      This function can be used to get label in database but more often to get code from key id.
+	 *      Return a label for a key.
+	 *      Search into translation array, then into cache, then if still not found, search into database.
+	 *      Store key-label found into cache variable $this->cache_labels to save SQL requests to get labels.
 	 *
-	 * 		@param	DoliBD	$db			Database handler
-	 * 		@param	string	$key		Key to get label (key in language file)
-	 * 		@param	string	$tablename	Table name without prefix
-	 * 		@param	string	$fieldkey	Field for key
-	 * 		@param	string	$fieldlabel	Field for label
-	 *      @return string				Label in UTF8 (but without entities)
+	 * 		@param	DoliBD	$db				Database handler
+	 * 		@param	string	$key			Key to get label (key in language file)
+	 * 		@param	string	$tablename		Table name without prefix
+	 * 		@param	string	$fieldkey		Field for key
+	 * 		@param	string	$fieldlabel		Field for label
+	 *      @return string					Label in UTF8 (but without entities)
 	 */
 	function getLabelFromKey($db,$key,$tablename,$fieldkey,$fieldlabel)
 	{
 		// If key empty
 		if ($key == '') return '';
 
-		// Check in language array
-		if ($this->transnoentities($key) != $key)
+        //print 'param: '.$key.'-'.$keydatabase.'-'.$this->trans($key); exit;
+
+		// Check if in language array (this can call getTradFromKey)
+		if ($this->transnoentitiesnoconv($key) != $key)
 		{
-			return $this->transnoentities($key);    // Found in language array
+			return $this->transnoentitiesnoconv($key);    // Found in language array
 		}
 
 		// Check in cache

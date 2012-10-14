@@ -1,7 +1,7 @@
 <?php
 /* Copyright (C) 2003      Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2003      Jean-Louis Bergamo   <jlb@j1b.org>
- * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2004      Sebastien Di Cintio  <sdicintio@ressource-toi.org>
  * Copyright (C) 2004      Benoit Mortier       <benoit.mortier@opensides.be>
  * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
@@ -22,17 +22,18 @@
  */
 
 /**
- *   	\file       htdocs/adherents/admin/adherent.php
- *		\ingroup    member
- *		\brief      Page to setup the module Foundation
+ *   	\file       htdocs/adherents/admin/spip.php
+ *		\ingroup    mailmanspip
+ *		\brief      Page to setup the module MailmanSpip (SPIP)
  */
 
-require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/mailmanspip.lib.php");
+require '../../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/mailmanspip.lib.php';
 
 $langs->load("admin");
 $langs->load("members");
+$langs->load("mailmanspip");
 
 if (! $user->admin) accessforbidden();
 
@@ -111,7 +112,7 @@ $linkback='<a href="'.DOL_URL_ROOT.'/admin/modules.php">'.$langs->trans("BackToM
 print_fiche_titre($langs->trans("MailmanSpipSetup"),$linkback,'setup');
 
 
-$head = mailmanspip_admin_prepare_head($adh);
+$head = mailmanspip_admin_prepare_head();
 
 dol_fiche_head($head, 'spip', $langs->trans("Setup"), 0, 'user');
 
@@ -122,7 +123,7 @@ dol_htmloutput_mesg($mesg);
  * Spip
  */
 $var=!$var;
-if ($conf->global->ADHERENT_USE_SPIP)
+if (! empty($conf->global->ADHERENT_USE_SPIP))
 {
     //$lien=img_picto($langs->trans("Active"),'tick').' ';
     $lien='<a href="'.$_SERVER["PHP_SELF"].'?action=unset&value=0&name=ADHERENT_USE_SPIP">';
@@ -137,7 +138,7 @@ if ($conf->global->ADHERENT_USE_SPIP)
     	'ADHERENT_SPIP_PASS'
 	);
 
-    print_fiche_titre("SPIP CMS",$lien,'');
+    print_fiche_titre($langs->trans('SPIPTitle'), $lien, '');
     form_constantes($constantes);
     print '<br>';
 }
@@ -147,7 +148,7 @@ else
     //$lien.=$langs->trans("Activate");
     $lien.=img_picto($langs->trans("Disabled"),'switch_off');
     $lien.='</a>';
-    print_fiche_titre("SPIP - CMS",$lien,'');
+    print_fiche_titre($langs->trans('SPIPTitle'), $lien, '');
 }
 
 

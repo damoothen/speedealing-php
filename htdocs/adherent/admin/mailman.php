@@ -22,14 +22,14 @@
  */
 
 /**
- *   	\file       htdocs/adherents/admin/adherent.php
- *		\ingroup    member
- *		\brief      Page to setup the module Foundation
+ *   	\file       htdocs/adherents/admin/mailman.php
+ *		\ingroup    mailmanspip
+ *		\brief      Page to setup the module MailmanSpip (Mailman)
  */
 
-require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/mailmanspip.lib.php");
+require '../../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/mailmanspip.lib.php';
 
 $langs->load("admin");
 $langs->load("members");
@@ -99,7 +99,7 @@ if (($action == 'testsubscribe' || $action == 'testunsubscribe') && ! empty($con
     }
     else
     {
-        include_once(DOL_DOCUMENT_ROOT.'/mailmanspip/class/mailmanspip.class.php');
+        include_once DOL_DOCUMENT_ROOT.'/mailmanspip/class/mailmanspip.class.php';
         $mailmanspip=new MailmanSpip($db);
 
         $object=new stdClass();
@@ -151,7 +151,7 @@ $linkback='<a href="'.DOL_URL_ROOT.'/admin/modules.php">'.$langs->trans("BackToM
 print_fiche_titre($langs->trans("MailmanSpipSetup"),$linkback,'setup');
 
 
-$head = mailmanspip_admin_prepare_head($adh);
+$head = mailmanspip_admin_prepare_head();
 
 dol_fiche_head($head, 'mailman', $langs->trans("Setup"), 0, 'user');
 
@@ -163,7 +163,7 @@ dol_htmloutput_mesg($mesg);
  * Mailman
  */
 $var=!$var;
-if ($conf->global->ADHERENT_USE_MAILMAN)
+if (! empty($conf->global->ADHERENT_USE_MAILMAN))
 {
     //$lien=img_picto($langs->trans("Active"),'tick').' ';
     $lien='<a href="'.$_SERVER["PHP_SELF"].'?action=unset&value=0&name=ADHERENT_USE_MAILMAN">';
@@ -214,17 +214,17 @@ else
 
 dol_fiche_end();
 
-if ($conf->global->ADHERENT_USE_MAILMAN)
+if (! empty($conf->global->ADHERENT_USE_MAILMAN))
 {
     print '<form action="'.$_SERVER["PHP_SELF"].'">';
     print '<input type="hidden" name="action" value="testsubscribe">';
     print $langs->trans("TestSubscribe").'<br>';
-    print $langs->trans("EMail").' <input type="text" name="testsubscribeemail" value="'.GETPOST('testsubscribeemail').'"> <input class="button" type="submit" value="'.$langs->trans("Test").'"><br>';
+    print $langs->trans("EMail").' <input type="email" name="testsubscribeemail" value="'.GETPOST('testsubscribeemail').'"> <input class="button" type="submit" value="'.$langs->trans("Test").'"><br>';
     print '</form>';
     print '<form action="'.$_SERVER["PHP_SELF"].'">';
     print '<input type="hidden" name="action" value="testunsubscribe">';
     print $langs->trans("TestUnSubscribe").'<br>';
-    print $langs->trans("EMail").' <input type="text" name="testunsubscribeemail" value="'.GETPOST('testunsubscribeemail').'"> <input class="button" type="submit" value="'.$langs->trans("Test").'"><br>';
+    print $langs->trans("EMail").' <input type="email" name="testunsubscribeemail" value="'.GETPOST('testunsubscribeemail').'"> <input class="button" type="submit" value="'.$langs->trans("Test").'"><br>';
     print '</form>';
 }
 

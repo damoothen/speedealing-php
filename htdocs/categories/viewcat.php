@@ -25,9 +25,9 @@
  *       \brief      Page to show a category card
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/categories/class/categorie.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/categories.lib.php");
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/categories.lib.php';
 
 $langs->load("categories");
 $langs->load("products");
@@ -185,7 +185,6 @@ else
 		$var=true;
 		foreach ($cats as $cat)
 		{
-			$i++;
 			$var=!$var;
 			print "\t<tr ".$bc[$var].">\n";
 			print "\t\t<td nowrap=\"nowrap\">";
@@ -231,11 +230,9 @@ if ($object->type == 0)
 
 		if (count($prods) > 0)
 		{
-			$i = 0;
 			$var=true;
 			foreach ($prods as $prod)
 			{
-				$i++;
 				$var=!$var;
 				print "\t<tr ".$bc[$var].">\n";
 				print '<td nowrap="nowrap" valign="top">';
@@ -269,11 +266,9 @@ if ($object->type == 1)
 
 		if (count($socs) > 0)
 		{
-			$i = 0;
 			$var=true;
 			foreach ($socs as $soc)
 			{
-				$i++;
 				$var=!$var;
 				print "\t<tr ".$bc[$var].">\n";
 
@@ -332,7 +327,7 @@ if($object->type == 2)
 // List of members
 if ($object->type == 3)
 {
-	require_once(DOL_DOCUMENT_ROOT."/adherents/class/adherent.class.php");
+	require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
 
 	$prods = $object->get_type("member","Adherent","","adherent");
 	if ($prods < 0)
@@ -347,11 +342,9 @@ if ($object->type == 3)
 
 		if (count($prods) > 0)
 		{
-			$i = 0;
 			$var=true;
 			foreach ($prods as $key => $member)
 			{
-				$i++;
 				$var=!$var;
 				print "\t<tr ".$bc[$var].">\n";
 				print '<td nowrap="nowrap" valign="top">';

@@ -29,11 +29,10 @@ if (! defined('NOREQUIREAJAX'))  define('NOREQUIREAJAX','1');
 if (! defined('NOREQUIRESOC'))   define('NOREQUIRESOC','1');
 if (! defined('NOCSRFCHECK'))    define('NOCSRFCHECK','1');
 
-require('../../main.inc.php');
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formcompany.class.php");
+require '../../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
 
-$zip=GETPOST('Zip','alpha');
-$town=GETPOST('Town','alpha');
+
 
 /*
  * View
@@ -52,12 +51,16 @@ dol_syslog("GET is ".join(',',$_GET).', MAIN_USE_ZIPTOWN_DICTIONNARY='.(empty($c
 //var_dump($_GET);
 
 // Generation of list of zip-town
-if (! empty($zip) || ! empty($town))
+if (! empty($_GET['zipcode']) || ! empty($_GET['town']))
 {
 	$return_arr = array();
 	$formcompany = new FormCompany($db);
 
-	if ($conf->global->MAIN_USE_ZIPTOWN_DICTIONNARY)   // Use zip-town table
+	// Define filter on text typed
+	$zipcode = $_GET['zipcode']?$_GET['zipcode']:'';
+	$town = $_GET['town']?$_GET['town']:'';
+
+	if (! empty($conf->global->MAIN_USE_ZIPTOWN_DICTIONNARY))   // Use zip-town table
 	{
     	$sql = "SELECT z.rowid, z.zip, z.town, z.fk_county, z.fk_pays as fk_country";
     	$sql.= ", p.rowid as fk_country, p.code as country_code, p.libelle as country";
@@ -67,7 +70,7 @@ if (! empty($zip) || ! empty($town))
     	$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."c_regions as r ON d.fk_region = r.code_region";
     	$sql.= " WHERE z.fk_pays = p.rowid";
     	$sql.= " AND z.active = 1 AND p.active = 1";
-    	if ($zip) $sql.=" AND z.zip LIKE '" . $db->escape($zip) . "%'";
+    	if ($zipcode) $sql.=" AND z.zip LIKE '" . $db->escape($zipcode) . "%'";
     	if ($town)    $sql.=" AND z.town LIKE '%" . $db->escape($town) . "%'";
     	$sql.= " ORDER BY z.zip, z.town";
         $sql.= $db->plimit(50); // Avoid pb with bad criteria
@@ -81,7 +84,7 @@ if (! empty($zip) || ! empty($town))
         $sql.= " LEFT JOIN ".MAIN_DB_PREFIX ."c_departements as d ON fk_departement = d.rowid";
         $sql.= " LEFT JOIN ".MAIN_DB_PREFIX.'c_pays as p ON fk_pays = p.rowid';
         $sql.= " WHERE";
-        if ($zip) $sql.= " s.cp LIKE '".$db->escape($zip)."%'";
+        if ($zipcode) $sql.= " s.cp LIKE '".$db->escape($zipcode)."%'";
         if ($town)    $sql.= " s.ville LIKE '%" . $db->escape($town) . "%'";
         $sql.= " ORDER BY s.fk_pays, s.cp, s.ville";
         $sql.= $db->plimit(50); // Avoid pb with bad criteria

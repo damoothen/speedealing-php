@@ -21,10 +21,10 @@
  *       \brief      Page to show user setup for display
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/usergroups.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formadmin.class.php");
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formadmin.class.php';
 
 $langs->load("companies");
 $langs->load("products");
@@ -41,7 +41,7 @@ $action = GETPOST('action');
 if ($id)
 {
     // $user est le user qui edite, $id est l'id de l'utilisateur edite
-    $caneditfield=( (($user->id == $id) && $user->rights->user->self->creer)
+    $caneditfield=((($user->id == $id) && $user->rights->user->self->creer)
     || (($user->id != $id) && $user->rights->user->user->creer));
 }
 
@@ -102,7 +102,7 @@ if ($action == 'update' && ($caneditfield  || $user->admin))
 
         $_SESSION["mainmenu"]="";   // Le gestionnaire de menu a pu changer
 
-        Header('Location: '.$_SERVER["PHP_SELF"].'?id='.$id);
+        header('Location: '.$_SERVER["PHP_SELF"].'?id='.$id);
         exit;
     }
 }

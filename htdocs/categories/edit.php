@@ -25,8 +25,8 @@
  *      \brief      Page d'edition de categorie produit
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/categories/class/categorie.class.php");
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 
 
 $id=GETPOST('id','int');
@@ -34,6 +34,12 @@ $ref=GETPOST('ref');
 $type=GETPOST('type');
 $action=GETPOST('action');
 $confirm=GETPOST('confirm');
+
+$socid=GETPOST('socid','int');
+$nom=GETPOST('nom');
+$description=GETPOST('description');
+$visible=GETPOST('visible');
+$parent=GETPOST('parent');
 
 if ($id == "")
 {
@@ -56,28 +62,28 @@ if ($action == 'update' && $user->rights->categorie->creer)
 	$categorie = new Categorie($db);
 	$result=$categorie->fetch($id);
 
-	$categorie->label          = $_POST["nom"];
-	$categorie->description    = $_POST["description"];
-	$categorie->socid          = ($_POST["socid"] ? $_POST["socid"] : 'null');
-	$categorie->visible        = $_POST["visible"];
+	$categorie->label          = $nom;
+	$categorie->description    = $description;
+	$categorie->socid          = ($socid ? $socid : 'null');
+	$categorie->visible        = $visible;
 
-	if($_POST['catMere'] != "-1")
-		$categorie->id_mere = $_POST['catMere'];
+	if ($parent != "-1")
+		$categorie->fk_parent = $parent;
 	else
-		$categorie->id_mere = "";
+		$categorie->fk_parent = "";
 
 
-	if (! $categorie->label)
+	if (empty($categorie->label))
 	{
-		$_GET["action"] = 'create';
+		$action = 'create';
 		$mesg = $langs->trans("ErrorFieldRequired",$langs->transnoentities("Label"));
 	}
-	if (! $categorie->description)
+	if (empty($categorie->description))
 	{
-		$_GET["action"] = 'create';
+		$action = 'create';
 		$mesg = $langs->trans("ErrorFieldRequired",$langs->transnoentities("Description"));
 	}
-	if (! $categorie->error)
+	if (empty($categorie->error))
 	{
 		if ($categorie->update($user) > 0)
 		{
@@ -138,14 +144,14 @@ print '</tr>';
 print '<tr>';
 print '<td width="25%">'.$langs->trans("Description").'</td>';
 print '<td>';
-require_once(DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php");
+require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
 $doleditor=new DolEditor('description',$object->description,'',200,'dolibarr_notes','',false,true,$conf->fckeditor->enabled,ROWS_6,50);
 $doleditor->Create();
 print '</td></tr>';
 
 // Parent category
 print '<tr><td>'.$langs->trans("In").'</td><td>';
-print $form->select_all_categories($type,$object->id_mere,'catMere',64,$object->id);
+print $form->select_all_categories($type,$object->fk_parent,'parent',64,$object->id);
 print '</td></tr>';
 
 // Priority

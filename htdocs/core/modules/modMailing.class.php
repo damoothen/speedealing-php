@@ -1,5 +1,4 @@
 <?php
-
 /* Copyright (C) 2005      Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2005-2008 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
@@ -19,55 +18,58 @@
  */
 
 /**
- * 	\defgroup   mailing  Module emailing
- * 	\brief      Module to manage EMailings
- * 	\file       htdocs/core/modules/modMailing.class.php
- * 	\ingroup    mailing
- * 	\brief      Fichier de description et activation du module Mailing
+ *	\defgroup   mailing  Module emailing
+ *	\brief      Module to manage EMailings
+ *	\file       htdocs/core/modules/modMailing.class.php
+ *	\ingroup    mailing
+ *	\brief      Fichier de description et activation du module Mailing
  */
-include_once(DOL_DOCUMENT_ROOT . "/core/modules/DolibarrModules.class.php");
+
+include_once DOL_DOCUMENT_ROOT .'/core/modules/DolibarrModules.class.php';
+
 
 /**
- * 	\class      modMailing
- * 	\brief      Classe de description et activation du module Mailing
+ *	Classe de description et activation du module Mailing
  */
-class modMailing extends DolibarrModules {
+class modMailing extends DolibarrModules
+{
 
 	/**
 	 *   Constructor. Define names, constants, directories, boxes, permissions
 	 *
 	 *   @param      DoliDB		$db      Database handler
 	 */
-	function modMailing($db) {
+	function __construct($db)
+	{
 		parent::__construct($db);
 		$this->numero = 22;
 
 		$this->family = "technic";
-// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->name = preg_replace('/^mod/i', '', get_class($this));
+		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
+		$this->name = preg_replace('/^mod/i','',get_class($this));
 		$this->description = "Gestion des EMailings";
 		$this->version = 'speedealing'; // 'experimental' or 'speedealing' or version
 		$this->special = 0;
-		$this->picto = 'email';
+		$this->picto='email';
 
-// Data directories to create when module is enabled
+		// Data directories to create when module is enabled
 		$this->dirs = array("/mailing/temp");
 
-// Dependances
+		// Dependances
 		$this->depends = array();
 		$this->requiredby = array();
 		$this->langfiles = array("mails");
 
-// Config pages
+		// Config pages
 		$this->config_page_url = array("mailing.php");
 
-// Constantes
+		// Constantes
 		$this->const = array();
 
-// Boites
+		// Boites
 		$this->boxes = array();
 
-// Permissions
+		// Permissions
 		$this->rights = array();
 		$this->rights_class = 'mailing';
 
@@ -118,7 +120,9 @@ class modMailing extends DolibarrModules {
 		$this->menus[$r]->enabled = '$conf->Mailing->enabled || $conf->Export->enabled || $conf->Import->enabled';
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->title = "Tools";
+		
 		$r++;
+
 		$this->menus[$r]->_id = "menu:emailings";
 		$this->menus[$r]->position = 1;
 		$this->menus[$r]->url = "/comm/mailing/index.php";
@@ -129,6 +133,7 @@ class modMailing extends DolibarrModules {
 		$this->menus[$r]->title = "EMailings";
 		$this->menus[$r]->fk_menu = "menu:tools";
 		$r++;
+
 		$this->menus[$r]->_id = "menu:newmailing";
 		$this->menus[$r]->position = 1;
 		$this->menus[$r]->url = "/comm/mailing/fiche.php?action=create";
@@ -139,6 +144,7 @@ class modMailing extends DolibarrModules {
 		$this->menus[$r]->title = "NewMailing";
 		$this->menus[$r]->fk_menu = "menu:emailings";
 		$r++;
+
 		$this->menus[$r]->_id = "menu:list17";
 		$this->menus[$r]->position = 2;
 		$this->menus[$r]->url = "/comm/mailing/liste.php";
@@ -150,37 +156,39 @@ class modMailing extends DolibarrModules {
 		$this->menus[$r]->fk_menu = "menu:emailings";
 	}
 
+
 	/**
-	 * 		Function called when module is enabled.
-	 * 		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
-	 * 		It also creates data directories
+	 *		Function called when module is enabled.
+	 *		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
+	 *		It also creates data directories
 	 *
-	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
+     *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
 	 */
-	function init($options = '') {
-// Permissions
+	function init($options='')
+	{
+		// Permissions
 		$this->remove($options);
 
 		$sql = array();
 
-		return $this->_init($sql, $options);
+		return $this->_init($sql,$options);
 	}
 
-	/**
-	 * 		Function called when module is disabled.
+    /**
+	 *		Function called when module is disabled.
 	 *      Remove from database constants, boxes and permissions from Dolibarr database.
-	 * 		Data directories are not deleted
+	 *		Data directories are not deleted
 	 *
-	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
+     *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
-	 */
-	function remove($options = '') {
+     */
+    function remove($options='')
+    {
 		$sql = array();
 
-		return $this->_remove($sql, $options);
-	}
+		return $this->_remove($sql,$options);
+    }
 
 }
-
 ?>

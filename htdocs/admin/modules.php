@@ -25,8 +25,9 @@
  *  \file       htdocs/admin/modules.php
  *  \brief      Page to activate/disable all modules
  */
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT . "/core/lib/admin.lib.php");
+
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 
 $langs->load("errors");
 $langs->load("admin");

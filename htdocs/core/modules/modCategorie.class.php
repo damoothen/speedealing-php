@@ -1,5 +1,4 @@
 <?php
-
 /* Copyright (C) 2005      Matthieu Valleton    <mv@seeschloss.org>
  * Copyright (C) 2005-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
@@ -25,34 +24,35 @@
  *      \ingroup    category
  *      \brief      Fichier de description et activation du module Categorie
  */
-include_once(DOL_DOCUMENT_ROOT . "/core/modules/DolibarrModules.class.php");
+include_once DOL_DOCUMENT_ROOT .'/core/modules/DolibarrModules.class.php';
+
 
 /**
- *       \class      modCategorie
- *       \brief      Classe de description et activation du module Categorie
+ *	Classe de description et activation du module Categorie
  */
-class modCategorie extends DolibarrModules {
-
+class modCategorie extends DolibarrModules
+{
 	/**
 	 *   Constructor. Define names, constants, directories, boxes, permissions
 	 *
 	 *   @param      DoliDB		$db      Database handler
 	 */
-	function modCategorie($db) {
-		global $conf;
+	function __construct($db)
+	{
+	    global $conf;
 
-		parent::__construct($db);
+		$this->db = $db;
 		$this->numero = 1780;
 
 		$this->family = "technic";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->name = preg_replace('/^mod/i','',get_class($this));
 		$this->description = "Gestion des categories (produits, clients, fournisseurs...)";
 
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
 		$this->version = 'dolibarr';
 
-		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
+		$this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
 		$this->special = 2;
 		$this->picto = 'category';
 
@@ -64,7 +64,7 @@ class modCategorie extends DolibarrModules {
 
 		// Config pages
 		$this->config_page_url = array();
-		$this->langfiles = array("products", "companies", "categories");
+		$this->langfiles = array("products","companies","categories");
 
 		// Constantes
 		$this->const = array();
@@ -76,7 +76,7 @@ class modCategorie extends DolibarrModules {
 		$this->rights = array();
 		$this->rights_class = 'categorie';
 
-		$r = 0;
+		$r=0;
 
 		$this->rights[$r][0] = 241; // id de la permission
 		$this->rights[$r][1] = 'Lire les categories'; // libelle de la permission
@@ -142,7 +142,7 @@ class modCategorie extends DolibarrModules {
 
 		// Exports
 		//--------
-		$r = 0;
+		$r=0;
 
 		$r++;
 		$this->export_code[$r] = 'category_' . $r;
@@ -214,37 +214,39 @@ class modCategorie extends DolibarrModules {
 		$this->export_sql_end[$r] .=' AND u.type = 3'; // Supplier categories
 	}
 
-	/**
-	 * 		Function called when module is enabled.
-	 * 		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
-	 * 		It also creates data directories
+
+    /**
+	 *		Function called when module is enabled.
+	 *		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
+	 *		It also creates data directories
 	 *
-	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
+     *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
-	 */
-	function init($options = '') {
+     */
+	function init($options='')
+	{
 		// Permissions
 		$this->remove($options);
 
 		$sql = array();
 
-		return $this->_init($sql, $options);
+		return $this->_init($sql,$options);
 	}
 
-	/**
-	 * 		Function called when module is disabled.
+    /**
+	 *		Function called when module is disabled.
 	 *      Remove from database constants, boxes and permissions from Dolibarr database.
-	 * 		Data directories are not deleted
+	 *		Data directories are not deleted
 	 *
-	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
+     *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
-	 */
-	function remove($options = '') {
+     */
+    function remove($options='')
+    {
 		$sql = array();
 
-		return $this->_remove($sql, $options);
-	}
+		return $this->_remove($sql,$options);
+    }
 
 }
-
 ?>

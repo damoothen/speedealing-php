@@ -1,5 +1,4 @@
 <?php
-
 /* Copyright (C) 2005-2009 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
@@ -21,33 +20,37 @@
 /**
  *  \defgroup   import      Module import
  *  \brief      Module to make generic import of data into dolibarr database
- * 	\file       htdocs/core/modules/modImport.class.php
- * 	\ingroup    import
- * 	\brief      Fichier de description et activation du module Import
+ *	\file       htdocs/core/modules/modImport.class.php
+ *	\ingroup    import
+ *	\brief      Fichier de description et activation du module Import
  */
-include_once(DOL_DOCUMENT_ROOT . "/core/modules/DolibarrModules.class.php");
 
-/**     \class      modImport
- * 		\brief      Classe de description et activation du module Import
+include_once DOL_DOCUMENT_ROOT .'/core/modules/DolibarrModules.class.php';
+
+
+/**
+ *	Classe de description et activation du module Import
  */
-class modImport extends DolibarrModules {
+class modImport extends DolibarrModules
+{
 
 	/**
 	 *   Constructor. Define names, constants, directories, boxes, permissions
 	 *
 	 *   @param      DoliDB		$db      Database handler
 	 */
-	function modImport($db) {
+	function __construct($db)
+	{
 		parent::__construct($db);
 		$this->numero = 250;
 
 		$this->family = "technic";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->name = preg_replace('/^mod/i','',get_class($this));
 		$this->description = "Outils d'imports de donnees Dolibarr (via un assistant)";
 		// Possible values for version are: 'experimental' or 'dolibarr' or version
-		$this->version = 'dolibarr';						// 'experimental' or 'dolibarr' or version
-		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
+		$this->version = 'dolibarr';                        // 'experimental' or 'dolibarr' or version
+		$this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
 		$this->special = 0;
 		$this->picto = 'technic';
 
@@ -60,9 +63,9 @@ class modImport extends DolibarrModules {
 		// D�pendances
 		$this->depends = array();
 		$this->requiredby = array();
-		$this->phpmin = array(4, 3, 0); // Need auto_detect_line_endings php option to solve MAC pbs.
+		$this->phpmin = array(4,3,0);	// Need auto_detect_line_endings php option to solve MAC pbs.
 		$this->phpmax = array();
-		$this->need_dolibarr_version = array(2, 7, -1); // Minimum version of Dolibarr required by module
+		$this->need_dolibarr_version = array(2,7,-1);	// Minimum version of Dolibarr required by module
 		$this->need_javascript_ajax = 1;
 
 		// Constantes
@@ -74,7 +77,7 @@ class modImport extends DolibarrModules {
 		// Permissions
 		$this->rights = array();
 		$this->rights_class = 'import';
-		$r = 0;
+		$r=0;
 
 		$r++;
 		$this->rights[$r][0] = 1251;
@@ -85,33 +88,34 @@ class modImport extends DolibarrModules {
 	}
 
 	/**
-	 * 		Function called when module is enabled.
-	 * 		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
-	 * 		It also creates data directories
+	 *		Function called when module is enabled.
+	 *		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
+	 *		It also creates data directories
 	 *
-	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
+     *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
 	 */
-	function init($options = '') {
+	function init($options='')
+	{
 		$sql = array();
 
-		return $this->_init($sql, $options);
+		return $this->_init($sql,$options);
 	}
 
-	/**
-	 * 		Function called when module is disabled.
+    /**
+	 *		Function called when module is disabled.
 	 *      Remove from database constants, boxes and permissions from Dolibarr database.
-	 * 		Data directories are not deleted
+	 *		Data directories are not deleted
 	 *
-	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
+     *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
-	 */
-	function remove($options = '') {
+     */
+    function remove($options='')
+    {
 		$sql = array();
 
-		return $this->_remove($sql, $options);
-	}
+		return $this->_remove($sql,$options);
+    }
 
 }
-
 ?>

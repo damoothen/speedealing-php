@@ -1,5 +1,4 @@
 <?php
-
 /* Copyright (C) 2003-2006 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2008 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
@@ -20,26 +19,29 @@
  */
 
 /**
- * 	\defgroup   	stock     Module stocks
- * 	\brief      	Module pour gerer la tenue de stocks produits
- * 	\file       htdocs/core/modules/modStock.class.php
- * 	\ingroup    stock
- * 	\brief      Fichier de description et activation du module Stock
+ *	\defgroup   	stock     Module stocks
+ *	\brief      	Module pour gerer la tenue de stocks produits
+ *	\file       htdocs/core/modules/modStock.class.php
+ *	\ingroup    stock
+ *	\brief      Fichier de description et activation du module Stock
  */
-include_once(DOL_DOCUMENT_ROOT . "/core/modules/DolibarrModules.class.php");
+
+include_once DOL_DOCUMENT_ROOT .'/core/modules/DolibarrModules.class.php';
+
 
 /**
- * 	\class      modStock
- * 	\brief      Classe de description et activation du module Stock
+ *	Classe de description et activation du module Stock
  */
-class modStock extends DolibarrModules {
+class modStock extends DolibarrModules
+{
 
 	/**
 	 *   Constructor. Define names, constants, directories, boxes, permissions
 	 *
 	 *   @param      DoliDB		$db      Database handler
 	 */
-	function modStock($db) {
+	function __construct($db)
+	{
 		global $conf;
 
 		parent::__construct($db);
@@ -48,15 +50,15 @@ class modStock extends DolibarrModules {
 
 		$this->family = "products";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->name = preg_replace('/^mod/i','',get_class($this));
 		$this->description = "Gestion des stocks";
 
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
 		$this->version = 'dolibarr';
 
-		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
+		$this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
 		$this->special = 0;
-		$this->picto = 'stock';
+		$this->picto='stock';
 
 		// Data directories to create when module is enabled
 		$this->dirs = array();
@@ -115,50 +117,52 @@ class modStock extends DolibarrModules {
 
 		// Exports
 		//--------
-		$r = 0;
+		$r=0;
 
 		$r++;
-		$this->export_code[$r] = $this->rights_class . '_' . $r;
-		$this->export_label[$r] = "WarehousesAndProducts"; // Translation key (used only if key ExportDataset_xxx_z not found)
-		$this->export_permission[$r] = array(array("stock", "lire"));
-		$this->export_fields_array[$r] = array('e.rowid' => 'IdWarehouse', 'e.label' => 'LabelWareHouse', 'e.label' => 'DescWareHouse', 'e.lieu' => 'LieuWareHouse', 'e.address' => 'Address', 'e.cp' => 'Zip', 'e.ville' => 'Town', 'p.rowid' => "ProductId", 'p.ref' => "Ref", 'p.fk_product_type' => "Type", 'p.label' => "Label", 'p.description' => "Description", 'p.note' => "Note", 'p.price' => "Price", 'p.tva_tx' => 'VAT', 'p.tosell' => "OnSell", 'p.duration' => "Duration", 'p.datec' => 'DateCreation', 'p.tms' => 'DateModification', 'ps.reel' => 'Stock');
-		$this->export_entities_array[$r] = array('e.rowid' => 'warehouse', 'e.label' => 'warehouse', 'e.label' => 'warehouse', 'e.lieu' => 'warehouse', 'e.address' => 'warehouse', 'e.cp' => 'warehouse', 'e.ville' => 'warehouse', 'p.rowid' => "product", 'p.ref' => "product", 'p.fk_product_type' => "product", 'p.label' => "product", 'p.description' => "product", 'p.note' => "product", 'p.price' => "product", 'p.tva_tx' => 'product', 'p.tosell' => "product", 'p.duration' => "product", 'p.datec' => 'product', 'p.tms' => 'product', 'ps.reel' => 'stock');
-		$this->export_aggregate_array[$r] = array('ps.reel' => 'SUM');	// TODO Not used yet
+		$this->export_code[$r]=$this->rights_class.'_'.$r;
+		$this->export_label[$r]="WarehousesAndProducts";	// Translation key (used only if key ExportDataset_xxx_z not found)
+		$this->export_permission[$r]=array(array("stock","lire"));
+		$this->export_fields_array[$r]=array('e.rowid'=>'IdWarehouse','e.label'=>'LocationSummary','e.description'=>'DescWareHouse','e.lieu'=>'LieuWareHouse','e.address'=>'Address','e.cp'=>'Zip','e.ville'=>'Town','p.rowid'=>"ProductId",'p.ref'=>"Ref",'p.fk_product_type'=>"Type",'p.label'=>"Label",'p.description'=>"Description",'p.note'=>"Note",'p.price'=>"Price",'p.tva_tx'=>'VAT','p.tosell'=>"OnSell",'p.duration'=>"Duration",'p.datec'=>'DateCreation','p.tms'=>'DateModification','ps.reel'=>'Stock');
+		$this->export_entities_array[$r]=array('e.rowid'=>'warehouse','e.label'=>'warehouse','e.description'=>'warehouse','e.lieu'=>'warehouse','e.address'=>'warehouse','e.cp'=>'warehouse','e.ville'=>'warehouse','p.rowid'=>"product",'p.ref'=>"product",'p.fk_product_type'=>"product",'p.label'=>"product",'p.description'=>"product",'p.note'=>"product",'p.price'=>"product",'p.tva_tx'=>'product','p.tosell'=>"product",'p.duration'=>"product",'p.datec'=>'product','p.tms'=>'product','ps.reel'=>'stock');
+		$this->export_aggregate_array[$r]=array('ps.reel'=>'SUM');    // TODO Not used yet
+		$this->export_dependencies_array[$r]=array('stock'=>array('p.rowid','e.rowid')); // To add unique key if we ask a field of a child to avoid the DISTINCT to discard them
 
-		$this->export_sql_start[$r] = 'SELECT DISTINCT ';
-		$this->export_sql_end[$r] = ' FROM ' . MAIN_DB_PREFIX . 'product as p, ' . MAIN_DB_PREFIX . 'product_stock as ps, ' . MAIN_DB_PREFIX . 'entrepot as e';
+		$this->export_sql_start[$r]='SELECT DISTINCT ';
+		$this->export_sql_end[$r]  =' FROM '.MAIN_DB_PREFIX.'product as p, '.MAIN_DB_PREFIX.'product_stock as ps, '.MAIN_DB_PREFIX.'entrepot as e';
 		$this->export_sql_end[$r] .=' WHERE p.rowid = ps.fk_product AND ps.fk_entrepot = e.rowid';
-		$this->export_sql_end[$r] .=' AND e.entity = ' . $conf->entity;
+		$this->export_sql_end[$r] .=' AND e.entity = '.$conf->entity;
 	}
 
 	/**
-	 * 		Function called when module is enabled.
-	 * 		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
-	 * 		It also creates data directories
+	 *		Function called when module is enabled.
+	 *		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
+	 *		It also creates data directories
 	 *
-	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
+     *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
 	 */
-	function init($options = '') {
+	function init($options='')
+	{
 		$sql = array();
 
-		return $this->_init($sql, $options);
+		return $this->_init($sql,$options);
 	}
 
-	/**
-	 * 		Function called when module is disabled.
+    /**
+	 *		Function called when module is disabled.
 	 *      Remove from database constants, boxes and permissions from Dolibarr database.
-	 * 		Data directories are not deleted
+	 *		Data directories are not deleted
 	 *
-	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
+     *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
-	 */
-	function remove($options = '') {
+     */
+    function remove($options='')
+    {
 		$sql = array();
 
-		return $this->_remove($sql, $options);
-	}
+		return $this->_remove($sql,$options);
+    }
 
 }
-
 ?>

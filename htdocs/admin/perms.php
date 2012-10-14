@@ -19,10 +19,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT . "/core/lib/admin.lib.php");
-require_once(DOL_DOCUMENT_ROOT . "/core/lib/functions2.lib.php");
-require_once(DOL_DOCUMENT_ROOT . "/core/modules/DolibarrModules.class.php");
+/**
+ *   	\file       htdocs/admin/perms.php
+ *      \ingroup    core
+ *		\brief      Page d'administration/configuration des permissions par defaut
+ */
+
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 
 $langs->load("admin");
 $langs->load("users");

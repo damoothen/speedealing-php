@@ -23,12 +23,11 @@
  *      \ingroup    pos
  *      \brief      File to enable/disable module Point Of Sales
  */
-include_once(DOL_DOCUMENT_ROOT ."/core/modules/DolibarrModules.class.php");
+include_once DOL_DOCUMENT_ROOT .'/core/modules/DolibarrModules.class.php';
 
 
 /**
- *       \class      modCashDesk
- *       \brief      Class to describe and enable module Point Of Sales
+ *	Class to describe and enable module Point Of Sales
  */
 class modCashDesk extends DolibarrModules
 {
@@ -37,7 +36,7 @@ class modCashDesk extends DolibarrModules
 	 *
 	 *   @param      DoliDB		$db      Database handler
 	 */
-	function modCashDesk ($db)
+	function __construct($db)
 	{
 		parent::__construct($db);
 

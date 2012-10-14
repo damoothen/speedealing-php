@@ -27,7 +27,8 @@ if (! defined('NOREQUIREAJAX'))  define('NOREQUIREAJAX','1');
 if (! defined('NOREQUIRESOC'))   define('NOREQUIRESOC','1');
 //if (! defined('NOREQUIRETRAN'))  define('NOREQUIRETRAN','1');
 
-require('../../main.inc.php');
+require '../../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/genericobject.class.php';
 
 $json = GETPOST('json','alpha');
 $class = GETPOST('class','alpha');
@@ -74,22 +75,23 @@ if (! empty($json) && ! empty($class))
 	echo json_encode($return);
 }
 // Load original field value
-else if (! empty($field) && ! empty($element) && ! empty($table_element) && ! empty($fk_element))
+if (! empty($field) && ! empty($element) && ! empty($table_element) && ! empty($fk_element))
 {
 	$ext_element	= GETPOST('ext_element','alpha');
 	$field			= substr($field, 8); // remove prefix val_
 	$type			= GETPOST('type','alpha');
 	$loadmethod		= (GETPOST('loadmethod','alpha') ? GETPOST('loadmethod','alpha') : 'getValueFrom');
-	
+
 	if ($element != 'order_supplier' && $element != 'invoice_supplier' && preg_match('/^([^_]+)_([^_]+)/i',$element,$regs))
 	{
 		$element = $regs[1];
 		$subelement = $regs[2];
 	}
-	
+
 	if ($element == 'propal') $element = 'propale';
 	else if ($element == 'fichinter') $element = 'ficheinter';
 	else if ($element == 'product') $element = 'produit';
+	else if ($element == 'member') $element = 'adherent';
 	else if ($element == 'order_supplier') {
 		$element = 'fournisseur';
 		$subelement = 'commande';
@@ -98,7 +100,7 @@ else if (! empty($field) && ! empty($element) && ! empty($table_element) && ! em
 		$element = 'fournisseur';
 		$subelement = 'facture';
 	}
-	
+
 	if ($user->rights->$element->lire || $user->rights->$element->read
 	|| (isset($subelement) && ($user->rights->$element->$subelement->lire || $user->rights->$element->$subelement->read))
 	|| ($element == 'payment' && $user->rights->facture->lire)
@@ -108,7 +110,7 @@ else if (! empty($field) && ! empty($element) && ! empty($table_element) && ! em
 		{
 			$methodname	= 'load_cache_'.$loadmethod;
 			$cachename = 'cache_'.GETPOST('loadmethod','alpha');
-			
+
 			$form = new Form($db);
 			if (method_exists($form, $methodname))
 			{
@@ -123,7 +125,7 @@ else if (! empty($field) && ! empty($element) && ! empty($table_element) && ! em
 					$module = $regs[1];
 					$subelement = $regs[2];
 				}
-				
+
 				dol_include_once('/'.$module.'/class/actions_'.$subelement.'.class.php');
 				$classname = 'Actions'.ucfirst($subelement);
 				$object = new $classname($db);
