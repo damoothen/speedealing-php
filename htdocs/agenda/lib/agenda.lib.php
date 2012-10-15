@@ -1,4 +1,5 @@
 <?php
+
 /* Copyright (C) 2008-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2011	   Juanjo Menent        <jmenent@2byte.es>
@@ -659,7 +660,7 @@ function print_calendar($date) {
         if (!empty($events->rows[$cursor])) {
             for ($j = 0; $j < count($events->rows); $j++) {
                 if ($events->rows[$cursor]->key >= $dayTimestamp && $events->rows[$cursor]->key < $dayTimestamp + 3600 * 24) {
-                    print '<li class="important"><a href="/agenda/fiche.php?id='.$events->rows[$cursor]->id.'" >' . $events->rows[$cursor]->value->label . '</a></li>';
+                    print '<li class="important"><a href="' . DOL_URL_ROOT . '/agenda/fiche.php?id=' . $events->rows[$cursor]->id . '" >' . $events->rows[$cursor]->value->label . '</a></li>';
                     $cursor++;
                 } else
                     break;
@@ -761,7 +762,7 @@ function print_week($date) {
                     $hourStart = date('G', $dateStart);
                     $hourEnd = date('G', $dateEnd);
 
-                    print '<a class="agenda-event from-' . $hourStart . ' to-' . $hourEnd . ' anthracite-gradient" href="/agenda/fiche.php?id='.$events->rows[$cursor]->id.'">';
+                    print '<a class="agenda-event from-' . $hourStart . ' to-' . $hourEnd . ' anthracite-gradient" href="/agenda/fiche.php?id=' . $events->rows[$cursor]->id . '">';
                     print '<time>' . $hourStart . 'h - ' . $hourEnd . 'h</time>';
                     print $events->rows[$cursor]->value->label;
                     print '</a>';
@@ -776,10 +777,10 @@ function print_week($date) {
 
     print '</div>';
     print '</div>';
-    
 }
 
 function debug($var, $label = '') {
     echo '<pre>' . ($label ? $label . ': ' : '') . '' . print_r($var, true) . '</pre>';
 }
+
 ?>

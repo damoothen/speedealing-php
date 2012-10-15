@@ -1029,44 +1029,6 @@ class Agenda extends nosqlDocument {
         $this->priority = 'Priority X';
         $this->note = 'Note';
     }
-
-    /**
-     *  Output list of type of event
-     *
-     *  @param  string		$htmlname        Nom champ formulaire
-     * 	@return	void
-     */
-    function select_type_actions($htmlname = 'actioncode', $active = 1, $idorcode = 'code', $type = '1,2') {
-        global $langs, $user;
-
-        require_once(DOL_DOCUMENT_ROOT . "/core/class/html.form.class.php");
-        $form = new Form($this->db);
-        
-        foreach ($this->fk_extrafields->fields->type_code->values as $key => $row) {
-            if ($row->enable)
-                $arraylist[$key] = $langs->trans($row->label);
-        }
-        $arraylist[0] = '&nbsp;';
-        asort($arraylist);
-
-        print $form->selectarray($htmlname, $arraylist, $this->type_code);
-        if ($user->admin)
-            print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"), 1);
-    }
-    
-    /**
-     *  Get label from type_code
-     *
-     * 	@return	string
-     */
-    function getType(){
-        global $langs;
-        if ($this->type_code) {
-            $typeCode = $this->type_code;
-            return $langs->trans($this->fk_extrafields->fields->type_code->values->$typeCode->label);
-        }
-        return null;
-    }
     
 }
 

@@ -60,7 +60,7 @@ $socid = GETPOST('socid', 'int');
 $id = GETPOST('id', 'alpha');
 if ($user->societe_id)
     $socid = $user->societe_id;
-//$result = restrictedArea($user, 'agenda', $id, 'actioncomm', 'actions', '', 'id');
+$result = restrictedArea($user, 'agenda', $id, 'actioncomm', 'actions', '', 'id');
 
 $error = GETPOST("error");
 $mesg = '';
@@ -413,8 +413,10 @@ if ($action == 'update') {
 
 $help_url = 'EN:Module_Agenda_En|FR:Module_Agenda|ES:M&omodulodulo_Agenda';
 llxHeader('', $langs->trans("Agenda"), $help_url);
+
 print_fiche_titre($langs->trans("Agenda"));
 print '<div class="with-padding">';
+print '<div class="columns">';
 
 
 $form = new Form($db);
@@ -431,6 +433,13 @@ if ($action == 'create') {
     }
 
     $object->fk_task = GETPOST("fk_task") ? GETPOST("fk_task") : 0;
+    
+    if (GETPOST("actioncode") == 'AC_RDV')
+        $title = $langs->trans("AddActionRendezVous");
+    else
+        $title = $langs->trans("AddAnAction");
+
+    print start_box($title, "twelve", $object->fk_extrafields->ico, false);
 
     if ($conf->use_javascript_ajax) {
         print "\n" . '<script type="text/javascript" language="javascript">';
@@ -551,20 +560,13 @@ if ($action == 'create') {
           });
           })';
           print '</script>'."\n"; */
-    }
+    }   
 
     print '<form name="formaction" action="' . $_SERVER["PHP_SELF"] . '" method="POST">';
     print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
     print '<input type="hidden" name="action" value="add_action">';
     if ($backtopage)
         print '<input type="hidden" name="backtopage" value="' . ($backtopage != '1' ? $backtopage : $_SERVER["HTTP_REFERER"]) . '">';
-
-    if (GETPOST("actioncode") == 'AC_RDV')
-        print_fiche_titre($langs->trans("AddActionRendezVous"));
-    else
-        print_fiche_titre($langs->trans("AddAnAction"));
-
-    print '<div class="with-padding">';
 
     dol_htmloutput_mesg($mesg);
 
@@ -583,7 +585,7 @@ if ($action == 'create') {
       else
       { */
     //$htmlactions->select_type_actions($object->type_code, "actioncode");
-    $object->select_type_actions("actioncode");
+    print $object->select_fk_extrafields("type_code","actioncode");
     //}
     print '</td></tr>';
 
@@ -749,6 +751,8 @@ if ($action == 'create') {
     print '<input type="submit" class="button" name="cancel" value="' . $langs->trans("Cancel") . '">';
 
     print "</form>";
+    
+    print end_box();
 }
 
 // View or edit
@@ -1072,7 +1076,7 @@ if ($id) {
         print '</td></tr>';
 
         // Type
-        print '<tr><td>' . $langs->trans("Type") . '</td><td colspan="3">' . $object->getType() . '</td></tr>';
+        print '<tr><td>' . $langs->trans("Type") . '</td><td colspan="3">' . $object->print_fk_extrafields("type_code") . '</td></tr>';
 
         // Title
         print '<tr><td>' . $langs->trans("Title") . '</td><td colspan="3">' . $object->label . '</td></tr>';

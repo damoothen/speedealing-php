@@ -1,7 +1,7 @@
 {
     "_id": "extrafields:Agenda",
     "class": "extrafields",
-    "ico": "/img/ico/icSw2/16-Month-Calendar.png",
+    "ico": "16-Month-Calendar.png",
     "fields": {
         "status": {
             "type": "select",
