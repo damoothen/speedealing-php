@@ -192,7 +192,7 @@ class mod_codeclient_monkey extends ModeleThirdPartyCode {
         $couchdb->setQueryParameters($params);
         $result = $couchdb->getView("Societe", "list_customer_id");
 
-        if (count($result->rows) == 0)
+        if (count($result->rows) == 0 || (count($result->rows) == 1 && $result->rows[0]->value == $soc->id))
             return 0;
         else
             return -1;

@@ -670,7 +670,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             print '<tr class="individualline"><td>' . $langs->trans('FirstName') . '</td><td><input type="text" size="30" name="prenom" value="' . $object->firstname . '"></td>';
             print '<td colspan=2>&nbsp;</td></tr>';
             print '<tr class="individualline"><td>' . $langs->trans("UserTitle") . '</td><td>';
-            print $object->select_fk_extrafields('civilite_id','civilite_id') . '</td>';
+            print $object->select_fk_extrafields('civilite_id', 'civilite_id') . '</td>';
             print '<td colspan=2>&nbsp;</td></tr>';
         }
 
