@@ -154,13 +154,9 @@ class Societe extends nosqlDocument {
 
         $error = 0;
 
-        // Clean parameters
-        if (empty($this->status))
-            $this->status = 0;
-        $this->name = $this->name ? trim($this->name) : trim($this->nom);
-        if (!empty($conf->global->MAIN_FIRST_TO_UPPER))
-            $this->name = ucwords($this->name);
-        $this->nom = $this->name; // For backward compatibility
+        $this->name = trim($this->name);
+        $this->name = ucwords($this->name);
+
         if (empty($this->client))
             $this->client = 0;
         if (empty($this->fournisseur))
@@ -177,8 +173,7 @@ class Societe extends nosqlDocument {
         }
 
         $now = dol_now();
-
-        $this->db->begin();
+        $this->datec = $now;
 
         // For automatic creation during create action (not used by Dolibarr GUI, can be used by scripts)
         if ($this->code_client == -1)
@@ -191,69 +186,41 @@ class Societe extends nosqlDocument {
         $result = $this->verify();
 
         if ($result >= 0) {
-            $sql = "INSERT INTO " . MAIN_DB_PREFIX . "societe (nom, entity, datec, datea, fk_user_creat, canvas, status, ref_int, ref_ext, fk_stcomm, import_key)";
-            $sql.= " VALUES ('" . $this->db->escape($this->name) . "', " . $conf->entity . ", '" . $this->db->idate($now) . "', '" . $this->db->idate($now) . "'";
-            $sql.= ", " . (!empty($user->id) ? "'" . $user->id . "'" : "null");
-            $sql.= ", " . (!empty($this->canvas) ? "'" . $this->canvas . "'" : "null");
-            $sql.= ", " . $this->status;
-            $sql.= ", " . (!empty($this->ref_int) ? "'" . $this->ref_int . "'" : "null");
-            $sql.= ", " . (!empty($this->ref_ext) ? "'" . $this->ref_ext . "'" : "null");
-            $sql.= ", 0";
-            $sql.= ", " . (!empty($this->import_key) ? "'" . $this->import_key . "'" : "null") . ")";
 
             dol_syslog(get_class($this) . "::create sql=" . $sql);
-            $result = $this->db->query($sql);
-            if ($result) {
-                $this->id = $this->db->last_insert_id(MAIN_DB_PREFIX . "societe");
 
-                $ret = $this->update($this->id, $user, 0, 1, 1, 'add');
+            // Ajout du commercial affecte
+            if ($this->commercial_id != '' && $this->commercial_id != "-1") {
+                $this->commercial_id = trim($this->commercial_id);
+            }
+            // si un commercial cree un client il lui est affecte automatiquement
+            else {
+                $this->commercial_id = $user->login;
+            }
+            
+            $ret = $this->update('', $user, 0, 1, 1, 'add'); // Record
 
-                // Ajout du commercial affecte
-                if ($this->commercial_id != '' && $this->commercial_id != -1) {
-                    $this->add_commercial($user, $this->commercial_id);
+            // si le fournisseur est classe on l'ajoute
+            $this->AddFournisseurInCategory($this->fournisseur_categorie);
+
+            if ($ret >= 0) {
+                // Appel des triggers
+                include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
+                $interface = new Interfaces($this->db);
+                $result = $interface->run_triggers('COMPANY_CREATE', $this, $user, $langs, $conf);
+                if ($result < 0) {
+                    $error++;
+                    $this->errors = $interface->errors;
                 }
-                // si un commercial cree un client il lui est affecte automatiquement
-                else if (!$user->rights->societe->client->voir) {
-                    $this->add_commercial($user, $user->id);
-                }
+                // Fin appel triggers
 
-                // si le fournisseur est classe on l'ajoute
-                $this->AddFournisseurInCategory($this->fournisseur_categorie);
-
-                if ($ret >= 0) {
-                    // Appel des triggers
-                    include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
-                    $interface = new Interfaces($this->db);
-                    $result = $interface->run_triggers('COMPANY_CREATE', $this, $user, $langs, $conf);
-                    if ($result < 0) {
-                        $error++;
-                        $this->errors = $interface->errors;
-                    }
-                    // Fin appel triggers
-
-                    dol_syslog(get_class($this) . "::Create success id=" . $this->id);
-                    $this->db->commit();
-                    return $this->id;
-                } else {
-                    dol_syslog(get_class($this) . "::Create echec update " . $this->error, LOG_ERR);
-                    $this->db->rollback();
-                    return -3;
-                }
+                dol_syslog(get_class($this) . "::Create success id=" . $this->id);
+                return $this->id;
             } else {
-                if ($this->db->errno() == 'DB_ERROR_RECORD_ALREADY_EXISTS') {
-
-                    $this->error = $langs->trans("ErrorCompanyNameAlreadyExists", $this->name);
-                    $result = -1;
-                } else {
-                    $this->error = $this->db->lasterror();
-                    dol_syslog(get_class($this) . "::Create fails insert sql=" . $sql, LOG_ERR);
-                    $result = -2;
-                }
-                $this->db->rollback();
-                return $result;
+                dol_syslog(get_class($this) . "::Create echec update " . $this->error, LOG_ERR);
+                return -3;
             }
         } else {
-            $this->db->rollback();
             dol_syslog(get_class($this) . "::Create fails verify " . join(',', $this->errors), LOG_WARNING);
             return -3;
         }
@@ -343,22 +310,16 @@ class Societe extends nosqlDocument {
 
         // Clean parameters
         $this->id = $id;
-        $this->name = $this->name ? trim($this->name) : trim($this->nom);
-        $this->nom = trim($this->nom);  // TODO obsolete
+        $this->name = trim($this->name);
         $this->ref_ext = trim($this->ref_ext);
-        $this->address = $this->address ? trim($this->address) : trim($this->adresse);
-        $this->adresse = $this->address;  // TODO obsolete
-        $this->zip = $this->zip ? trim($this->zip) : trim($this->cp);
-        $this->cp = $this->zip;   // TODO obsolete
-        $this->town = $this->town ? trim($this->town) : trim($this->ville);
-        $this->ville = $this->town;   // TODO obsolete
-        $this->state_id = trim($this->state_id);
-        $this->country_id = ($this->country_id > 0) ? $this->country_id : $this->pays_id;
-        $this->pays_id = $this->country_id; // TODO obsolete
-        $this->phone = trim($this->phone ? $this->phone : $this->tel);
+        $this->address = trim($this->address);
+        $this->zip = trim($this->zip);
+        $this->town = trim($this->town);
+        $this->state = trim($this->state_id);
+        $this->country = $this->country_id;
+        $this->phone = trim($this->phone);
         $this->phone = preg_replace("/\s/", "", $this->phone);
         $this->phone = preg_replace("/\./", "", $this->phone);
-        $this->tel = $this->phone;   // TODO obsolete
         $this->fax = trim($this->fax);
         $this->fax = preg_replace("/\s/", "", $this->fax);
         $this->fax = preg_replace("/\./", "", $this->fax);
@@ -374,9 +335,12 @@ class Societe extends nosqlDocument {
 
         $this->tva_assuj = trim($this->tva_assuj);
         $this->tva_intra = dol_sanitizeFileName($this->tva_intra, '');
-        if (empty($this->status))
-            $this->status = 0;
-
+        
+        $this->tms = $now;
+        
+        if (empty($this->Status))
+            $this->Status = $this->fk_extrafields->fields->Status->default;
+        
         // Local taxes
         $this->localtax1_assuj = trim($this->localtax1_assuj);
         $this->localtax2_assuj = trim($this->localtax2_assuj);
@@ -436,82 +400,15 @@ class Societe extends nosqlDocument {
             $supplier = true;
         }
 
-        $this->db->begin();
-
         // Check name is required and codes are ok or unique.
         // If error, this->errors[] is filled
         $result = $this->verify();
 
         if ($result >= 0) {
             dol_syslog(get_class($this) . "::Update verify ok");
-
-            $sql = "UPDATE " . MAIN_DB_PREFIX . "societe SET ";
-            $sql .= "nom = '" . $this->db->escape($this->name) . "'"; // Required
-            $sql .= ",ref_ext = " . (!empty($this->ref_ext) ? "'" . $this->db->escape($this->ref_ext) . "'" : "null");
-            $sql .= ",datea = '" . $this->db->idate($now) . "'";
-            $sql .= ",address = '" . $this->db->escape($this->address) . "'";
-
-            $sql .= ",cp = " . (!empty($this->zip) ? "'" . $this->zip . "'" : "null");
-            $sql .= ",ville = " . (!empty($this->town) ? "'" . $this->db->escape($this->town) . "'" : "null");
-
-            $sql .= ",fk_departement = '" . (!empty($this->state_id) ? $this->state_id : '0') . "'";
-            $sql .= ",fk_pays = '" . (!empty($this->country_id) ? $this->country_id : '0') . "'";
-
-            $sql .= ",tel = " . (!empty($this->phone) ? "'" . $this->db->escape($this->phone) . "'" : "null");
-            $sql .= ",fax = " . (!empty($this->fax) ? "'" . $this->db->escape($this->fax) . "'" : "null");
-            $sql .= ",email = " . (!empty($this->email) ? "'" . $this->db->escape($this->email) . "'" : "null");
-            $sql .= ",url = " . (!empty($this->url) ? "'" . $this->db->escape($this->url) . "'" : "null");
-
-            $sql .= ",siren   = '" . $this->db->escape($this->idprof1) . "'";
-            $sql .= ",siret   = '" . $this->db->escape($this->idprof2) . "'";
-            $sql .= ",ape     = '" . $this->db->escape($this->idprof3) . "'";
-            $sql .= ",idprof4 = '" . $this->db->escape($this->idprof4) . "'";
-            $sql .= ",idprof5 = '" . $this->db->escape($this->idprof5) . "'";
-            $sql .= ",idprof6 = '" . $this->db->escape($this->idprof6) . "'";
-
-            $sql .= ",tva_assuj = " . ($this->tva_assuj != '' ? "'" . $this->tva_assuj . "'" : "null");
-            $sql .= ",tva_intra = '" . $this->db->escape($this->tva_intra) . "'";
-            $sql .= ",status = " . $this->status;
-
-            // Local taxes
-            $sql .= ",localtax1_assuj = " . ($this->localtax1_assuj != '' ? "'" . $this->localtax1_assuj . "'" : "null");
-            $sql .= ",localtax2_assuj = " . ($this->localtax2_assuj != '' ? "'" . $this->localtax2_assuj . "'" : "null");
-
-            $sql .= ",capital = " . $this->capital;
-
-            $sql .= ",prefix_comm = " . (!empty($this->prefix_comm) ? "'" . $this->db->escape($this->prefix_comm) . "'" : "null");
-
-            $sql .= ",fk_effectif = " . (!empty($this->effectif_id) ? "'" . $this->effectif_id . "'" : "null");
-
-            $sql .= ",fk_typent = " . (!empty($this->typent_id) ? "'" . $this->typent_id . "'" : "0");
-
-            $sql .= ",fk_forme_juridique = " . (!empty($this->forme_juridique_code) ? "'" . $this->forme_juridique_code . "'" : "null");
-
-            $sql .= ",client = " . (!empty($this->client) ? $this->client : 0);
-            $sql .= ",fournisseur = " . (!empty($this->fournisseur) ? $this->fournisseur : 0);
-            $sql .= ",barcode = " . (!empty($this->barcode) ? "'" . $this->barcode . "'" : "null");
-            $sql .= ",default_lang = " . (!empty($this->default_lang) ? "'" . $this->default_lang . "'" : "null");
-            $sql .= ",logo = " . (!empty($this->logo) ? "'" . $this->logo . "'" : "null");
-
-            if ($customer) {
-                //$this->check_codeclient();
-
-                $sql .= ", code_client = " . (!empty($this->code_client) ? "'" . $this->db->escape($this->code_client) . "'" : "null");
-                $sql .= ", code_compta = " . (!empty($this->code_compta) ? "'" . $this->db->escape($this->code_compta) . "'" : "null");
-            }
-
-            if ($supplier) {
-                //$this->check_codefournisseur();
-
-                $sql .= ", code_fournisseur = " . (!empty($this->code_fournisseur) ? "'" . $this->db->escape($this->code_fournisseur) . "'" : "null");
-                $sql .= ", code_compta_fournisseur = " . (!empty($this->code_compta_fournisseur) ? "'" . $this->db->escape($this->code_compta_fournisseur) . "'" : "null");
-            }
-            $sql .= ", fk_user_modif = " . (!empty($user->id) ? "'" . $user->id . "'" : "null");
-            $sql .= " WHERE rowid = '" . $id . "'";
-
-
-            dol_syslog(get_class($this) . "::Update sql=" . $sql);
-            $resql = $this->db->query($sql);
+            
+            $resql = $this->record();
+            
             if ($resql) {
                 unset($this->country_code);
                 unset($this->country);
@@ -549,10 +446,8 @@ class Societe extends nosqlDocument {
 
                 if (!$error) {
                     dol_syslog(get_class($this) . "::Update success");
-                    $this->db->commit();
                     return 1;
                 } else {
-                    $this->db->rollback();
                     return -1;
                 }
             } else {
@@ -566,11 +461,9 @@ class Societe extends nosqlDocument {
                     dol_syslog(get_class($this) . "::Update fails update sql=" . $sql, LOG_ERR);
                     $result = -2;
                 }
-                $this->db->rollback();
                 return $result;
             }
         } else {
-            $this->db->rollback();
             dol_syslog(get_class($this) . "::Update fails verify " . join(',', $this->errors), LOG_WARNING);
             return -3;
         }
@@ -912,48 +805,6 @@ class Societe extends nosqlDocument {
     }
 
     /**
-     * 	Add link to sales representative
-     *
-     * 	@param	User	$user		Object user
-     * 	@param	int		$commid		Id of user
-     * 	@return	void
-     */
-    function add_commercial($user, $commid) {
-        if ($this->id > 0 && $commid > 0) {
-            $sql = "DELETE FROM  " . MAIN_DB_PREFIX . "societe_commerciaux";
-            $sql.= " WHERE fk_soc = " . $this->id . " AND fk_user =" . $commid;
-
-            $this->db->query($sql);
-
-            $sql = "INSERT INTO " . MAIN_DB_PREFIX . "societe_commerciaux";
-            $sql.= " ( fk_soc, fk_user )";
-            $sql.= " VALUES (" . $this->id . "," . $commid . ")";
-
-            if (!$this->db->query($sql)) {
-                dol_syslog(get_class($this) . "::add_commercial Erreur");
-            }
-        }
-    }
-
-    /**
-     * 	Add link to sales representative
-     *
-     * 	@param	User	$user		Object user
-     * 	@param	int		$commid		Id of user
-     * 	@return	void
-     */
-    function del_commercial($user, $commid) {
-        if ($this->id > 0 && $commid > 0) {
-            $sql = "DELETE FROM  " . MAIN_DB_PREFIX . "societe_commerciaux ";
-            $sql .= " WHERE fk_soc = " . $this->id . " AND fk_user =" . $commid;
-
-            if (!$this->db->query($sql)) {
-                dol_syslog(get_class($this) . "::del_commercial Erreur");
-            }
-        }
-    }
-
-    /**
      *    	Return a link on thirdparty (with picto)
      *
      * 		@param	int		$withpicto		Add picto into link (0=No picto, 1=Include picto with link, 2=Picto only)
@@ -1157,14 +1008,9 @@ class Societe extends nosqlDocument {
     function display_rib() {
         global $langs;
 
-        require_once DOL_DOCUMENT_ROOT . '/societe/class/companybankaccount.class.php';
-
-        $bac = new CompanyBankAccount($this->db);
-        $bac->fetch(0, $this->id);
-
-        if ($bac->code_banque || $bac->code_guichet || $bac->number || $bac->cle_rib) {
-            $rib = $bac->code_banque . " " . $bac->code_guichet . " " . $bac->number;
-            $rib.=($bac->cle_rib ? " (" . $bac->cle_rib . ")" : "");
+        if ($this->bac->code_banque || $this->bac->code_guichet || $this->bac->number || $this->bac->cle_rib) {
+            $rib = $this->bac->code_banque . " " . $this->bac->code_guichet . " " . $this->bac->number;
+            $rib.=($this->bac->cle_rib ? " (" . $this->bac->cle_rib . ")" : "");
         } else {
             $rib = $langs->trans("NoRIB");
         }
@@ -1914,80 +1760,6 @@ class Societe extends nosqlDocument {
     }
 
     /**
-     * return box address for a company
-     *
-     *  @return	@string
-     */
-    function content_box_information($id = 0) {
-        global $conf, $user, $langs;
-
-        $rtr = '<div class="row">';
-        $rtr.= '<div class="two column vcard avatar">';
-        $rtr.= '<div class="avatar sepH_b">';
-        $rtr.= '<img src="' . DOL_URL_ROOT . '/theme/companies.png" alt="" />';
-        $rtr.= '</div>';
-        $rtr.= '</div>';
-        $rtr.= '<div class="five column vcard">';
-        $img = '<img src="' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/ico/icSw2/16-Apartment-Building.png" alt="" />';
-        $rtr.= '<h1 class="sepH_a"><a id="view_fiche" href="#">' . $img . $this->ThirdPartyName . '</a></h1>';
-        $rtr.= '<div class="sepH_a">' . $this->getLibStatus() . '</div>';
-        $rtr.= '<h5 class="s_color">';
-        $rtr.= dol_print_address($this->Address, 'gmap', 'thirdparty', $this->id());
-        $rtr.= '</h5>';
-        //$img=picto_from_langcode($object->country_id);
-        $rtr.= '<h3 class="sepH_a country">' . $this->Zip . ($this->Zip && $this->Town ? " " : "") . $this->Town;
-        // MAP GPS
-        $rtr.= "&nbsp" . img_picto(($this->gps[0] . ',' . $this->gps[1]), (($this->gps[0] && $this->gps[1]) ? "green-dot" : "red-dot"));
-        $rtr.= '</h3>';
-        $rtr.= '</div>';
-
-        // Partie droite
-        $rtr.= '<div class="five column">';
-        $rtr.= '<div class="row sepH_b">';
-
-
-        if ($user->rights->societe->supprimer) {
-            $rtr.= '<div class="gh_button-group right">';
-            if ($user->rights->societe->creer) {
-                $rtr.= '<a class="gh_button pill icon edit" id="edit_fiche" href="' . $_SERVER["PHP_SELF"] . '?id=' . $this->id . '&amp;action=edit">' . $langs->trans("Modify") . '</a>' . "\n";
-            }
-            $rtr.= '<span id="action-delete" class="gh_button pill icon trash danger">' . $langs->trans('Delete') . '</span>' . "\n";
-            $rtr.= '</div>';
-        } else {
-            if ($user->rights->societe->creer)
-                $rtr.= '<a class="gh_button pill primary right" href="' . $_SERVER["PHP_SELF"] . '?id=' . $this->id() . '&amp;action=edit">' . $langs->trans("Modify") . '</a>' . "\n"; // bouton rond
-        }
-
-        $rtr.= '</div>';
-
-        if ($this->CustomerCode || $this->SupplierCode) {
-            $rtr.= '<div class="row vcard sepH_b inner_heading">';
-            $rtr.= '<ul>';
-            if ($this->CustomerCode) {
-                $key = 'CustomerCode';
-                $label = $langs->trans($key);
-                $img = '<img src="' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/ico/icSw2/16-Money.png" title="' . $label . '" />';
-                $rtr.= '<li><span>' . $img . '</span><span class="s_color">' . $label . '</span><span> : </span><span>' . $this->$key . '</span></li>';
-            }
-            if ($this->SupplierCode) {
-                $key = 'SupplierCode';
-                $label = $langs->trans($key);
-                $img = '<img src="' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/ico/icSw2/16-Money.png" title="' . $label . '" />';
-                $rtr.= '<li><span>' . $img . '</span><span class="s_color">' . $label . '</span><span> : </span><span>' . $this->$key . '</span></li>';
-            }
-            $rtr.= '</ul>';
-            $rtr.= '</div>';
-        }
-
-        $rtr.= $this->content_box($id); //external content
-
-        $rtr.= '</div>'; // termine la colonne droite
-        $rtr.= '</div>';
-
-        return $rtr;
-    }
-
-    /**
      * return div with block note
      *
      *  @return	@string
@@ -2003,55 +1775,6 @@ class Societe extends nosqlDocument {
         $rtr.= '<p class="edit_wysiwyg ttip_l">' . $this->values->notes . '</p>';
         $rtr.= '</div>';
         $rtr.= '</div>'; // End block note
-
-        return $rtr;
-    }
-
-    /**
-     * return div with list of information content block (see extrafields block)
-     * 
-     *  @param  int	    $blockid	    id of the block in the extrafiels block attribute
-     *  @return	@string
-     */
-    function content_box($blockid) {
-        global $conf, $user, $langs;
-
-        // List of tel, fax, mail...
-        $rtr = '<div class="row vcard sepH_b">';
-        $rtr.= '<table class="display noborder">';
-        $rtr.= '<tbody>';
-
-        // list tel, fax, mail
-        for ($i = 0; $i < count($this->fk_extrafields->place[$blockid]); $i++) { // Block
-            foreach ($this->fk_extrafields->place[$blockid][$i] as $key) {
-                $aRow = $this->fk_extrafields->fields->$key;
-                if (is_object($aRow) && $aRow->enable) {
-                    $rtr.='<tr>';
-                    $label = (empty($aRow->label) ? $langs->trans($key) : $langs->trans($aRow->label));
-                    if (isset($aRow->ico))
-                        $rtr.= '<td><img src="' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/ico/' . $aRow->ico . '.png" title="' . $label . '" /></td>';
-                    else
-                        $rtr.= '<td><img src="' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/ico/icSw2/16-Money.png" title="' . $label . '" /></td>';
-
-                    if ($aRow->type == "AC_EMAIL")
-                        $rtr.= '<td class="s_color">' . $label . '</td></td><td class="ttip_r edit_text">' . $this->$key . '</td>';
-                    elseif ($aRow->type == "AC_TEL" || $aRow->type == "AC_FAX")
-                        $rtr.= '<td class="s_color">' . $label . '</td><td class="ttip_r edit_text">' . dol_print_phone($this->$key, $this->Country, 0, $this->id(), $aRow->type) . '</td>';
-                    elseif ($aRow->type == "AC_URL") {
-                        $rtr.= '<td>' . dol_print_url($label, $this->$key->value) . '</td><td class="ttip_r edit_text">' . $this->$key . '</td>';
-                    }
-                    else
-                        $rtr.= '<td class="s_color">' . $label . '</td><td class="ttip_r edit_text">' . $this->$key . '</td>';
-
-                    $rtr.='</tr>';
-                }
-            }
-        }
-
-        $rtr.= '</tbody>';
-        $rtr.= '</table>';
-
-        $rtr.= '</div>';
 
         return $rtr;
     }

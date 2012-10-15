@@ -164,8 +164,13 @@ class FormFile
      */
     function show_documents($modulepart,$filename,$filedir,$urlsource,$genallowed,$delallowed=0,$modelselected='',$allowgenifempty=1,$forcenomultilang=0,$iconPDF=0,$maxfilenamelength=28,$noform=0,$param='',$title='',$buttonlabel='',$codelang='',$hookmanager=false)
     {
+        global $langs;
+        
         $this->numoffiles=0;
+        $titre = $langs->trans("Documents");
+        print start_box($titre, "six", "16-Documents.png");
         print $this->showdocuments($modulepart,$filename,$filedir,$urlsource,$genallowed,$delallowed,$modelselected,$allowgenifempty,$forcenomultilang,$iconPDF,$maxfilenamelength,$noform,$param,$title,$buttonlabel,$codelang,$hookmanager);
+        print end_box();
         return $this->numoffiles;
     }
 

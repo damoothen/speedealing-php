@@ -514,6 +514,9 @@ function show_contacts($conf,$langs,$db,$object,$backtopage='')
     global $bc;
 
     $i=-1;
+    
+    $titre = $langs->trans("ContactsForCompany");
+    print start_box($titre, "twelve", "16-Users.png");
 
     $contactstatic = new Contact($db);
 
@@ -532,7 +535,7 @@ function show_contacts($conf,$langs,$db,$object,$backtopage='')
     print "\n";
 
     $title = (! empty($conf->global->SOCIETE_ADDRESSES_MANAGEMENT) ? $langs->trans("ContactsForCompany") : $langs->trans("ContactsAddressesForCompany"));
-    print_fiche_titre($title,$buttoncreate,'');
+    //print_fiche_titre($title,$buttoncreate,'');
 
     print "\n".'<table class="noborder" width="100%">'."\n";
 
@@ -615,7 +618,7 @@ function show_contacts($conf,$langs,$db,$object,$backtopage='')
     }
     print "\n</table>\n";
 
-    print "<br>\n";
+    print end_box();
 
     return $i;
 }

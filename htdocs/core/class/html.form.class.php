@@ -1181,6 +1181,7 @@ class Form {
 
 
 
+
                     
 // Multiprice
                 if ($price_level >= 1) {  // If we need a particular price level (from 1 to 6)
@@ -3375,7 +3376,7 @@ class Form {
             $fieldref = 'ref';
 
         if (isset($object->class))
-            return $object->_rev;
+            return $object->_id . ' / ' . $object->_rev;
 
         //print "paramid=$paramid,morehtml=$morehtml,shownav=$shownav,$fieldid,$fieldref,$morehtmlref,$moreparam";
         $object->load_previous_next_ref((isset($object->next_prev_filter) ? $object->next_prev_filter : ''), $fieldid);

@@ -28,8 +28,8 @@ abstract class nosqlDocument extends CommonObject {
     public $errors;
     public $canvas; // Contains canvas name if it is
     public $fk_extrafields;
-    public $no_save = array("no_save", "global", "token", "id", "fk_extrafields", "fk_country", "couchdb", "db", "canvas",
-        "error", "errors", "childtables", "element", "fk_element", "ismultientitymanaged", "dbversion");
+    public $no_save = array("no_save", "global", "token", "id", "fk_extrafields", "fk_country", "couchdb", "db",
+        "error", "errors", "childtables", "element", "fk_element", "ismultientitymanaged", "dbversion", "oldcopy", "state", "country", "status", "statut");
 
     /**
      * 	class constructor
@@ -84,20 +84,20 @@ abstract class nosqlDocument extends CommonObject {
 
         return 1;
     }
-    
-    function simpleFetch($id){
+
+    function simpleFetch($id) {
         global $conf;
 
-		// Clean parametersadmin
-		$login = trim($id);
+        // Clean parametersadmin
+        $login = trim($id);
 
-		try {
-			$this->values = $this->couchdb->getDoc($id);
-		} catch (Exception $e) {
-			return 0;
-		}
+        try {
+            $this->values = $this->couchdb->getDoc($id);
+        } catch (Exception $e) {
+            return 0;
+        }
 
-		return 1;
+        return 1;
     }
 
     function update($user) {
@@ -318,7 +318,7 @@ abstract class nosqlDocument extends CommonObject {
                 $found = true;
             }
         }
-        
+
         if (!$found) {
             $result = new stdClass();
             try {
@@ -493,7 +493,7 @@ abstract class nosqlDocument extends CommonObject {
                         },
                         //$obj->oColVis->bRestore = true;
                         //$obj->oColVis->sAlign = 'left';
-                        																																																																																								            
+                                                        																																																																																								            
                         // Avec export Excel
         <?php if (!empty($obj->sDom)) : ?>
                             //"sDom": "Cl<fr>t<\"clear\"rtip>",
@@ -519,14 +519,14 @@ abstract class nosqlDocument extends CommonObject {
                     <?php endforeach; ?>
                                                         },
                 <?php else : ?>
-                {
-                    "sExtends": "<?php echo $aRow; ?>",
-                    "sFieldBoundary": '"',
-                    //"sFieldSeperator": "-",
-                    "sCharSet": "utf8",
-                    "sFileName": "export.csv",
-                    "bSelectedOnly": false
-                },
+                                                    {
+                                                        "sExtends": "<?php echo $aRow; ?>",
+                                                        "sFieldBoundary": '"',
+                                                        //"sFieldSeperator": "-",
+                                                        "sCharSet": "utf8",
+                                                        "sFileName": "export.csv",
+                                                        "bSelectedOnly": false
+                                                    },
                 <?php endif; ?>
             <?php endforeach; ?>
                                     ],
@@ -565,7 +565,7 @@ abstract class nosqlDocument extends CommonObject {
                                                 "tooltip": "Cliquer pour éditer...",
                                                 "indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
                                                 "placeholder" : ""
-                                                                																																																																																																																																																																																                
+                                                                                                                                																																																																																																																																																																																                
                                             } );
                                             $("td.dol_select", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
                                                 "callback": function( sValue, y ) {
@@ -584,7 +584,7 @@ abstract class nosqlDocument extends CommonObject {
                                                 "tooltip": "Cliquer pour éditer...",
                                                 "indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
                                                 "placeholder" : ""
-                                                                																																																																																																																																																																																                
+                                                                                                                                																																																																																																																																																																																                
                                             } );
                                         }
             <?php endif; ?>
@@ -760,7 +760,7 @@ abstract class nosqlDocument extends CommonObject {
 
                 $rtr = 'function(obj) {
 				var ar = [];
-				ar[ar.length] = "<img src=\"theme/' . $conf->theme . $this->fk_extrafields->ico . '\" border=\"0\" alt=\"' . $langs->trans("See " . get_class($this)) . ' : ";
+				ar[ar.length] = "<img src=\"theme/' . $conf->theme . '/img/ico/icSw2/' . $this->fk_extrafields->ico . '\" border=\"0\" alt=\"' . $langs->trans("See " . get_class($this)) . ' : ";
 				ar[ar.length] = obj.aData.' . $key . '.toString();
 				ar[ar.length] = "\" title=\"' . $langs->trans("See " . get_class($this)) . ' : ";
 				ar[ar.length] = obj.aData.' . $key . '.toString();
@@ -933,7 +933,7 @@ abstract class nosqlDocument extends CommonObject {
 			}
 			}';
                 break;
-            
+
             default :
                 dol_print_error($db, "Type of fnRender must be url, date, datetime, attachment or status");
                 exit;
@@ -1055,6 +1055,102 @@ abstract class nosqlDocument extends CommonObject {
         $result = $couchdb->getView("Directory", "mail");
 
         return $result->rows[0]->value;
+    }
+
+    /**
+     *    	Print a select HTML for fields in extrafields
+     *
+     * 		@param		string		$key            name of the field
+     * 		@param		string		$htmlname	HTML name
+     * 		@return		string		String with URL
+     */
+    function select_fk_extrafields($key, $htmlname) {
+        global $langs,$mysoc;
+
+        $aRow = $this->fk_extrafields->fields->$key;
+
+        if (isset($aRow->label))
+            $title = $langs->trans($aRow->label);
+        else
+            $title = $langs->trans($key);
+
+        $rtr = "";
+        $rtr.= '<select data-placeholder="' . $title . '&hellip;" class="chzn-select expand" id="' . $htmlname . '" name="' . $htmlname . '" >';
+        if (isset($aRow->dict)) {
+            require_once(DOL_DOCUMENT_ROOT . "/admin/class/dict.class.php");
+            // load from dictionnary
+            try {
+                $dict = new Dict($this->db);
+                $values = $dict->load($aRow->dict, true);
+                //filter for country
+                foreach ($values->values as $idx => $row) {
+                    if (empty($row->pays_code) || $this->country_id == $row->pays_code)
+                        $aRow->values[$idx] = $row;
+                }
+            } catch (Exception $e) {
+                dol_print_error('', $e->getMessage());
+            }
+        }
+        if (empty($this->$key))
+            $this->$key = $aRow->default;
+
+        if (count($aRow->values))
+            foreach ($aRow->values as $idx => $row) {
+                if ($row->enable) {
+                    $rtr.= '<option value="' . $idx . '"';
+
+                    if ($this->$key == $idx)
+                        $rtr.= ' selected="selected"';
+
+                    $rtr.= '>';
+
+                    if (isset($row->label))
+                        $rtr.= $langs->trans($row->label);
+                    else
+                        $rtr.= $langs->trans($idx);
+                    $rtr.='</option>';
+                }
+            }
+        $rtr.= '</select>';
+
+        return $rtr;
+    }
+
+    /**
+     *    	Print a value field from extrafields
+     *
+     * 		@param		string		$key            name of the field
+     * 		@return		string		String with URL
+     */
+    function print_fk_extrafields($key) {
+        global $langs;
+
+        $aRow = $this->fk_extrafields->fields->$key;
+        $value = $this->$key;
+        if(empty($this->$key))
+            return null;
+
+        if (isset($aRow->dict)) {
+            require_once(DOL_DOCUMENT_ROOT . "/admin/class/dict.class.php");
+            // load from dictionnary
+            try {
+                $dict = new Dict($this->db);
+                $values = $dict->load($aRow->dict, true);
+                //filter for country
+
+                if (isset($values->values->$value->label))
+                    return $langs->trans($values->values->$value->label);
+                else
+                    return $langs->trans($value);
+            } catch (Exception $e) {
+                dol_print_error('', $e->getMessage());
+            }
+        }
+
+        if (isset($aRow->values->$value->label))
+            return $langs->trans($aRow->values->$value->label);
+        else
+            return $langs->trans($value);
     }
 
 }

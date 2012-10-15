@@ -21,11 +21,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- *  \file       htdocs/comm/action/index.php
- *  \ingroup    agenda
- *  \brief      Home page of calendar events
- */
 require("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT . "/societe/class/societe.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/contact/class/contact.class.php");
@@ -114,8 +109,28 @@ if ($action == 'delete_action') {
 }
 */
 
+// Security check
+$socid = GETPOST("socid", "alpha", 1);
+if ($user->societe_id)
+    $socid = $user->societe_id;
+$result = restrictedArea($user, 'agenda', 0, '', 'myactions');
+
+$canedit = 1;
+if (!$user->rights->agenda->myactions->read)
+    accessforbidden();
+if (!$user->rights->agenda->allactions->read)
+    $canedit = 0;
+if (!$user->rights->agenda->allactions->read || $filter == 'mine') {  // If no permission to see all, we show only affected to me
+    $filtera = $user->id;
+    $filtert = $user->id;
+    $filterd = $user->id;
+}
+
 $view = GETPOST('view', 'alpha') ? GETPOST('view', 'alpha') : 'month';
 
+$langs->load("agenda");
+$langs->load("other");
+$langs->load("commercial");
 
 /*
  * View
@@ -123,7 +138,10 @@ $view = GETPOST('view', 'alpha') ? GETPOST('view', 'alpha') : 'month';
 
 $help_url = 'EN:Module_Agenda_En|FR:Module_Agenda|ES:M&oacute;dulo_Agenda';
 llxHeader('', $langs->trans("Calendar"), $help_url);
+
 print_fiche_titre($langs->trans("Calendar"), true);
+print '<div class="with-padding">';
+//print '<div class="columns">';
 
 if ($conf->use_javascript_ajax) {
     print "\n" . '<script type="text/javascript" language="javascript">';
@@ -219,6 +237,8 @@ switch ($view) {
     default:
         print_calendar(dol_now());
 }
+
+print '</div></div>';
 
 llxFooter();
 ?>

@@ -618,7 +618,7 @@ function print_calendar($date) {
     $object = new Agenda($db);
     $events = $object->getView("listRdv", array("startkey" => $firstDayTimestamp, "endkey" => $lastDayTimestamp));
 
-    print '<table class="calendar large-margin-bottom with-events largest" style="width: 100%;">';
+    print '<table class="calendar fluid large-margin-bottom with-events">';
 
     // Month an scroll arrows
     print '<caption>';
@@ -630,13 +630,13 @@ function print_calendar($date) {
     // Days names 
     print '<thead>';
     print '<tr>';
-    print '<th scope="col" style="width: 209px;">Sun</th>';
-    print '<th scope="col" style="width: 209px;">Mon</th>';
-    print '<th scope="col" style="width: 209px;">Tue</th>';
-    print '<th scope="col" style="width: 209px;">Wed</th>';
-    print '<th scope="col" style="width: 209px;">Thu</th>';
-    print '<th scope="col" style="width: 209px;">Fri</th>';
-    print '<th scope="col" style="width: 209px;">Sat</th>';
+    print '<th scope="col">Sun</th>';
+    print '<th scope="col">Mon</th>';
+    print '<th scope="col">Tue</th>';
+    print '<th scope="col">Wed</th>';
+    print '<th scope="col">Thu</th>';
+    print '<th scope="col">Fri</th>';
+    print '<th scope="col">Sat</th>';
     print '</tr>';
     print '</thead>';
     print '<tbody>';
@@ -645,7 +645,7 @@ function print_calendar($date) {
     $calendarCounter = 1;
     for ($i = $firstDayOfMonth; $i > 0; $i--, $calendarCounter++) {
         $previousTimestamp = strtotime($i . " day ago", $firstDayTimestamp);
-        print '<td style="height: 130px;" class="prev-month"><span class="cal-day">' . date('d', $previousTimestamp) . '</span></td>';
+        print '<td class="prev-month"><span class="cal-day">' . date('d', $previousTimestamp) . '</span></td>';
     }
 
     $cursor = 0;
@@ -653,8 +653,8 @@ function print_calendar($date) {
         $dayTimestamp = dol_mktime(-1, -1, -1, date('n', $date), $i, date('Y', $date));
         if ($calendarCounter > 1 && ($calendarCounter - 1) % 7 == 0)
             print '</tr><tr>';
-        print '<td style="height: 130px;" class="' . ((date('w', $dayTimestamp) == 0 || date('w', $dayTimestamp) == 6) ? 'week-end ' : '') . ' ' . (($dayTimestamp == $todayTimestamp) ? 'today ' : '') . '"><span class="cal-day">' . $i . '</span>';
-        print '<ul class="cal-events" style="width: 201px;">';
+        print '<td class="' . ((date('w', $dayTimestamp) == 0 || date('w', $dayTimestamp) == 6) ? 'week-end ' : '') . ' ' . (($dayTimestamp == $todayTimestamp) ? 'today ' : '') . '"><span class="cal-day">' . $i . '</span>';
+        print '<ul class="cal-events">';
 
         if (!empty($events->rows[$cursor])) {
             for ($j = 0; $j < count($events->rows); $j++) {
@@ -673,7 +673,7 @@ function print_calendar($date) {
     $calendarCounter--;
     $i = 1;
     while ($calendarCounter++ % 7 != 0) {
-        print '<td style="height: 130px;" class="next-month"><span class="cal-day">' . $i++ . '</span></td>';
+        print '<td class="next-month"><span class="cal-day">' . $i++ . '</span></td>';
     }
 
     print '</tr>';
