@@ -157,10 +157,11 @@ class Societe extends nosqlDocument {
         // Clean parameters
         if (empty($this->status))
             $this->status = 0;
+
         $this->name = $this->name ? trim($this->name) : trim($this->nom);
-        if (!empty($conf->global->MAIN_FIRST_TO_UPPER))
-            $this->name = ucwords($this->name);
-        $this->nom = $this->name; // For backward compatibility
+
+        $this->name = ucwords($this->name);
+
         if (empty($this->client))
             $this->client = 0;
         if (empty($this->fournisseur))
@@ -344,21 +345,15 @@ class Societe extends nosqlDocument {
         // Clean parameters
         $this->id = $id;
         $this->name = $this->name ? trim($this->name) : trim($this->nom);
-        $this->nom = trim($this->nom);  // TODO obsolete
         $this->ref_ext = trim($this->ref_ext);
         $this->address = $this->address ? trim($this->address) : trim($this->adresse);
-        $this->adresse = $this->address;  // TODO obsolete
         $this->zip = $this->zip ? trim($this->zip) : trim($this->cp);
-        $this->cp = $this->zip;   // TODO obsolete
         $this->town = $this->town ? trim($this->town) : trim($this->ville);
-        $this->ville = $this->town;   // TODO obsolete
         $this->state_id = trim($this->state_id);
         $this->country_id = ($this->country_id > 0) ? $this->country_id : $this->pays_id;
-        $this->pays_id = $this->country_id; // TODO obsolete
         $this->phone = trim($this->phone ? $this->phone : $this->tel);
         $this->phone = preg_replace("/\s/", "", $this->phone);
         $this->phone = preg_replace("/\./", "", $this->phone);
-        $this->tel = $this->phone;   // TODO obsolete
         $this->fax = trim($this->fax);
         $this->fax = preg_replace("/\s/", "", $this->fax);
         $this->fax = preg_replace("/\./", "", $this->fax);
@@ -435,8 +430,6 @@ class Societe extends nosqlDocument {
 
             $supplier = true;
         }
-
-        $this->db->begin();
 
         // Check name is required and codes are ok or unique.
         // If error, this->errors[] is filled
@@ -1157,14 +1150,9 @@ class Societe extends nosqlDocument {
     function display_rib() {
         global $langs;
 
-        require_once DOL_DOCUMENT_ROOT . '/societe/class/companybankaccount.class.php';
-
-        $bac = new CompanyBankAccount($this->db);
-        $bac->fetch(0, $this->id);
-
-        if ($bac->code_banque || $bac->code_guichet || $bac->number || $bac->cle_rib) {
-            $rib = $bac->code_banque . " " . $bac->code_guichet . " " . $bac->number;
-            $rib.=($bac->cle_rib ? " (" . $bac->cle_rib . ")" : "");
+        if ($this->bac->code_banque || $this->bac->code_guichet || $this->bac->number || $this->bac->cle_rib) {
+            $rib = $this->bac->code_banque . " " . $this->bac->code_guichet . " " . $this->bac->number;
+            $rib.=($this->bac->cle_rib ? " (" . $this->bac->cle_rib . ")" : "");
         } else {
             $rib = $langs->trans("NoRIB");
         }
@@ -1914,80 +1902,6 @@ class Societe extends nosqlDocument {
     }
 
     /**
-     * return box address for a company
-     *
-     *  @return	@string
-     */
-    function content_box_information($id = 0) {
-        global $conf, $user, $langs;
-
-        $rtr = '<div class="row">';
-        $rtr.= '<div class="two column vcard avatar">';
-        $rtr.= '<div class="avatar sepH_b">';
-        $rtr.= '<img src="' . DOL_URL_ROOT . '/theme/companies.png" alt="" />';
-        $rtr.= '</div>';
-        $rtr.= '</div>';
-        $rtr.= '<div class="five column vcard">';
-        $img = '<img src="' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/ico/icSw2/16-Apartment-Building.png" alt="" />';
-        $rtr.= '<h1 class="sepH_a"><a id="view_fiche" href="#">' . $img . $this->ThirdPartyName . '</a></h1>';
-        $rtr.= '<div class="sepH_a">' . $this->getLibStatus() . '</div>';
-        $rtr.= '<h5 class="s_color">';
-        $rtr.= dol_print_address($this->Address, 'gmap', 'thirdparty', $this->id());
-        $rtr.= '</h5>';
-        //$img=picto_from_langcode($object->country_id);
-        $rtr.= '<h3 class="sepH_a country">' . $this->Zip . ($this->Zip && $this->Town ? " " : "") . $this->Town;
-        // MAP GPS
-        $rtr.= "&nbsp" . img_picto(($this->gps[0] . ',' . $this->gps[1]), (($this->gps[0] && $this->gps[1]) ? "green-dot" : "red-dot"));
-        $rtr.= '</h3>';
-        $rtr.= '</div>';
-
-        // Partie droite
-        $rtr.= '<div class="five column">';
-        $rtr.= '<div class="row sepH_b">';
-
-
-        if ($user->rights->societe->supprimer) {
-            $rtr.= '<div class="gh_button-group right">';
-            if ($user->rights->societe->creer) {
-                $rtr.= '<a class="gh_button pill icon edit" id="edit_fiche" href="' . $_SERVER["PHP_SELF"] . '?id=' . $this->id . '&amp;action=edit">' . $langs->trans("Modify") . '</a>' . "\n";
-            }
-            $rtr.= '<span id="action-delete" class="gh_button pill icon trash danger">' . $langs->trans('Delete') . '</span>' . "\n";
-            $rtr.= '</div>';
-        } else {
-            if ($user->rights->societe->creer)
-                $rtr.= '<a class="gh_button pill primary right" href="' . $_SERVER["PHP_SELF"] . '?id=' . $this->id() . '&amp;action=edit">' . $langs->trans("Modify") . '</a>' . "\n"; // bouton rond
-        }
-
-        $rtr.= '</div>';
-
-        if ($this->CustomerCode || $this->SupplierCode) {
-            $rtr.= '<div class="row vcard sepH_b inner_heading">';
-            $rtr.= '<ul>';
-            if ($this->CustomerCode) {
-                $key = 'CustomerCode';
-                $label = $langs->trans($key);
-                $img = '<img src="' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/ico/icSw2/16-Money.png" title="' . $label . '" />';
-                $rtr.= '<li><span>' . $img . '</span><span class="s_color">' . $label . '</span><span> : </span><span>' . $this->$key . '</span></li>';
-            }
-            if ($this->SupplierCode) {
-                $key = 'SupplierCode';
-                $label = $langs->trans($key);
-                $img = '<img src="' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/ico/icSw2/16-Money.png" title="' . $label . '" />';
-                $rtr.= '<li><span>' . $img . '</span><span class="s_color">' . $label . '</span><span> : </span><span>' . $this->$key . '</span></li>';
-            }
-            $rtr.= '</ul>';
-            $rtr.= '</div>';
-        }
-
-        $rtr.= $this->content_box($id); //external content
-
-        $rtr.= '</div>'; // termine la colonne droite
-        $rtr.= '</div>';
-
-        return $rtr;
-    }
-
-    /**
      * return div with block note
      *
      *  @return	@string
@@ -2003,55 +1917,6 @@ class Societe extends nosqlDocument {
         $rtr.= '<p class="edit_wysiwyg ttip_l">' . $this->values->notes . '</p>';
         $rtr.= '</div>';
         $rtr.= '</div>'; // End block note
-
-        return $rtr;
-    }
-
-    /**
-     * return div with list of information content block (see extrafields block)
-     * 
-     *  @param  int	    $blockid	    id of the block in the extrafiels block attribute
-     *  @return	@string
-     */
-    function content_box($blockid) {
-        global $conf, $user, $langs;
-
-        // List of tel, fax, mail...
-        $rtr = '<div class="row vcard sepH_b">';
-        $rtr.= '<table class="display noborder">';
-        $rtr.= '<tbody>';
-
-        // list tel, fax, mail
-        for ($i = 0; $i < count($this->fk_extrafields->place[$blockid]); $i++) { // Block
-            foreach ($this->fk_extrafields->place[$blockid][$i] as $key) {
-                $aRow = $this->fk_extrafields->fields->$key;
-                if (is_object($aRow) && $aRow->enable) {
-                    $rtr.='<tr>';
-                    $label = (empty($aRow->label) ? $langs->trans($key) : $langs->trans($aRow->label));
-                    if (isset($aRow->ico))
-                        $rtr.= '<td><img src="' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/ico/' . $aRow->ico . '.png" title="' . $label . '" /></td>';
-                    else
-                        $rtr.= '<td><img src="' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/ico/icSw2/16-Money.png" title="' . $label . '" /></td>';
-
-                    if ($aRow->type == "AC_EMAIL")
-                        $rtr.= '<td class="s_color">' . $label . '</td></td><td class="ttip_r edit_text">' . $this->$key . '</td>';
-                    elseif ($aRow->type == "AC_TEL" || $aRow->type == "AC_FAX")
-                        $rtr.= '<td class="s_color">' . $label . '</td><td class="ttip_r edit_text">' . dol_print_phone($this->$key, $this->Country, 0, $this->id(), $aRow->type) . '</td>';
-                    elseif ($aRow->type == "AC_URL") {
-                        $rtr.= '<td>' . dol_print_url($label, $this->$key->value) . '</td><td class="ttip_r edit_text">' . $this->$key . '</td>';
-                    }
-                    else
-                        $rtr.= '<td class="s_color">' . $label . '</td><td class="ttip_r edit_text">' . $this->$key . '</td>';
-
-                    $rtr.='</tr>';
-                }
-            }
-        }
-
-        $rtr.= '</tbody>';
-        $rtr.= '</table>';
-
-        $rtr.= '</div>';
 
         return $rtr;
     }

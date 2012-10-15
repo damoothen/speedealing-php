@@ -21,9 +21,9 @@
  * 	\ingroup    commercial societe
  * 	\brief      load data to display
  */
-require_once("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT . "/comm/prospect/class/prospect.class.php");
-require_once(DOL_DOCUMENT_ROOT . "/core/class/html.formother.class.php");
+require_once "../../../main.inc.php";
+require_once DOL_DOCUMENT_ROOT . "/comm/prospect/class/prospect.class.php";
+require_once DOL_DOCUMENT_ROOT . "/core/class/html.formother.class.php";
 $langs->load("companies");
 $langs->load("customers");
 $langs->load("suppliers");
@@ -32,28 +32,25 @@ $langs->load("commercial");
  * you want to insert a non-database field (for example a counter or static image)
  */
 
-$couchdb = new couchClient($conf->couchdb->host.':'.$conf->couchdb->port.'/',$conf->couchdb->name);
+//$couchdb = new couchClient($conf->couchdb->host . ':' . $conf->couchdb->port . '/', $conf->couchdb->name);
+$couchdb = clone $couch;
+$couchdb->useDatabase("societe");
 
 if (empty($conf->global->SOCIETE_DISABLE_STATE)) {
-    if($conf->categorie->enabled){
-         $aColumns = array('', 'company', 'ville', 'departement', 'cp', 'datec', 'categorie', 'sale','siren','siret','ape','idprof4', 'fk_prospectlevel', 'fk_stcomm', 'etat', 'priv');
-         $aColumnsSql = array('', 's.nom', 's.ville', 'd.nom', 's.cp', 's.datec', 'c.label', 'u.login','s.siren','s.siret','s.ape','s.idprof4','s.fk_prospectlevel', 'fk_stcomm', '', '');
+    if ($conf->categorie->enabled) {
+        $aColumns = array('', 'company', 'ville', 'departement', 'cp', 'datec', 'categorie', 'sale', 'siren', 'siret', 'ape', 'idprof4', 'fk_prospectlevel', 'fk_stcomm', 'etat', 'priv');
+        $aColumnsSql = array('', 's.nom', 's.ville', 'd.nom', 's.cp', 's.datec', 'c.label', 'u.login', 's.siren', 's.siret', 's.ape', 's.idprof4', 's.fk_prospectlevel', 'fk_stcomm', '', '');
+    } else {
+        $aColumns = array('', 'company', 'ville', 'departement', 'cp', 'datec', 'sale', 'siren', 'siret', 'ape', 'idprof4', 'fk_prospectlevel', 'fk_stcomm', 'etat', 'priv');
+        $aColumnsSql = array('', 's.nom', 's.ville', 'd.nom', 's.cp', 's.datec', 'u.login', 's.siren', 's.siret', 's.ape', 's.idprof4', 's.fk_prospectlevel', 'fk_stcomm', '', '');
     }
-    else {
-         $aColumns = array('', 'company', 'ville', 'departement', 'cp', 'datec', 'sale','siren','siret','ape','idprof4', 'fk_prospectlevel', 'fk_stcomm', 'etat', 'priv');
-         $aColumnsSql = array('', 's.nom', 's.ville', 'd.nom', 's.cp', 's.datec', 'u.login','s.siren','s.siret','s.ape','s.idprof4','s.fk_prospectlevel', 'fk_stcomm', '', '');
-    }
-}
-else {
-    if($conf->categorie->enabled){
-        $aColumns = array('', 'company', 'ville', 'cp', 'datec', 'categorie', 'sale','siren','siret','ape','idprof4', 'fk_prospectlevel', 'fk_stcomm', 'etat', 'priv');
-        $aColumnsSql = array('', 's.nom', 's.ville', 's.cp', 's.datec', 'c.label', 'u.login','s.siren','s.siret','s.ape','s.idprof4','s.fk_prospectlevel', 'fk_stcomm', '', '');
-    
-    }
-    else{
-        $aColumns = array('', 'company', 'ville', 'cp', 'datec', 'sale','siren','siret','ape','idprof4', 'fk_prospectlevel', 'fk_stcomm', 'etat', 'priv');
-        $aColumnsSql = array('', 's.nom', 's.ville', 's.cp', 's.datec', 'u.login','s.siren','s.siret','s.ape','s.idprof4','s.fk_prospectlevel', 'fk_stcomm', '', '');
-
+} else {
+    if ($conf->categorie->enabled) {
+        $aColumns = array('', 'company', 'ville', 'cp', 'datec', 'categorie', 'sale', 'siren', 'siret', 'ape', 'idprof4', 'fk_prospectlevel', 'fk_stcomm', 'etat', 'priv');
+        $aColumnsSql = array('', 's.nom', 's.ville', 's.cp', 's.datec', 'c.label', 'u.login', 's.siren', 's.siret', 's.ape', 's.idprof4', 's.fk_prospectlevel', 'fk_stcomm', '', '');
+    } else {
+        $aColumns = array('', 'company', 'ville', 'cp', 'datec', 'sale', 'siren', 'siret', 'ape', 'idprof4', 'fk_prospectlevel', 'fk_stcomm', 'etat', 'priv');
+        $aColumnsSql = array('', 's.nom', 's.ville', 's.cp', 's.datec', 'u.login', 's.siren', 's.siret', 's.ape', 's.idprof4', 's.fk_prospectlevel', 'fk_stcomm', '', '');
     }
 }
 /* get Type */
@@ -74,30 +71,27 @@ if (!$user->rights->societe->client->voir && !$socid) {
     $search_sale = $user->id;
 }
 
-$flush=0;
-if($flush)
-{
+$flush = 0;
+if ($flush) {
     // reset old value
-    $result = $couchdb->limit(50000)->getView('Societe','target_id');
-    $i=0;
-    
-    if(count($result->rows)==0)
-    {
+    $result = $couchdb->limit(50000)->getView('Societe', 'target_id');
+    $i = 0;
+
+    if (count($result->rows) == 0) {
         print "Effacement terminé";
         exit;
     }
-    
-    foreach ($result->rows AS $aRow)
-    {
-        $obj[$i]->_id=$aRow->value->_id;
-        $obj[$i]->_rev=$aRow->value->_rev;
+
+    foreach ($result->rows AS $aRow) {
+        $obj[$i]->_id = $aRow->value->_id;
+        $obj[$i]->_rev = $aRow->value->_rev;
         $i++;
     }
 
     try {
         $couchdb->deleteDocs($obj);
     } catch (Exception $e) {
-        echo "Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+        echo "Something weird happened: " . $e->getMessage() . " (errcode=" . $e->getCode() . ")\n";
         exit(1);
     }
 
@@ -107,19 +101,19 @@ if($flush)
 
 
 
-/*basic companies request query */
+/* basic companies request query */
 $sql = "SELECT s.*,";
 $sql.= " st.code as stcomm, p.code, u1.login as user_creat, u2.login as user_modif ";
-/*looking for categories ? */
+/* looking for categories ? */
 $roc = stristr($sOrder, 'c.label');
 $rsc = stristr($sWhere, 'c.label');
-if ($roc != false || $rsc!=false) {
+if ($roc != false || $rsc != false) {
     $sql.=",c.label";
 }
 /* looking for sales ? */
 $rou = stristr($sOrder, 'u.login');
 $rsu = stristr($sWhere, 'u.login');
-if ($rou != false || $rsu!=false) {
+if ($rou != false || $rsu != false) {
     $sql.=",u.login";
 }
 $sql .= " FROM (" . MAIN_DB_PREFIX . "societe as s";
@@ -130,12 +124,12 @@ $sql.= " LEFT JOIN llx_user AS u1 ON u1.rowid = s.fk_user_creat";
 $sql.= " LEFT JOIN llx_user AS u2 ON u2.rowid = s.fk_user_modif";
 
 /* requesting data on categorie filter  */
-if ($roc != false || $rsc!=false) {
+if ($roc != false || $rsc != false) {
     $sql.=" LEFT JOIN llx_categorie_societe as cs ON cs.fk_societe = s.rowid ";
     $sql.=" LEFT JOIN llx_categorie as c ON c.rowid=cs.fk_categorie ";
 }
 /* requesting data on sales filter */
-if ($rou != false || $rsu!=false || $search_sale!=0) {
+if ($rou != false || $rsu != false || $search_sale != 0) {
     $sql.=" LEFT JOIN llx_societe_commerciaux as sc ON sc.fk_soc = s.rowid";
     $sql.=" LEFT JOIN llx_user AS u ON u.rowid = sc.fk_user ";
 }
@@ -159,7 +153,7 @@ $iTotal = $db->num_rows($resultTotal);
 
 $sql.= $sWhere;
 /* usefull to regroup by the sale needed */
-if($search_sale || $_GET['sSearch_7']!=""){
+if ($search_sale || $_GET['sSearch_7'] != "") {
     $sql.= " GROUP BY s.rowid";
 }
 $sql.= $sOrder;
@@ -170,60 +164,56 @@ $resultSocietes = $db->query($sql);
 //$cb = new Couchbase;
 //$cb->default_bucket_name="dolibarr";
 //$cb->addCouchbaseServer("localhost",11211,8092);
-
 //$cb->flush();
-
 //$uuid=$cb->uuid($iTotal); //generation des uuids
 
-/*get companies. usefull to get their sales and categories */
+/* get companies. usefull to get their sales and categories */
 
-$i=0;
+$i = 0;
 
 while ($aRow = $db->fetch_object($resultSocietes)) {
-        $col[$aRow->rowid]->rowid =(int)$aRow->rowid;
-        $col[$aRow->rowid]->class="Societe";
-        $col[$aRow->rowid]->ThirdPartyName = $aRow->nom;
-        $col[$aRow->rowid]->Town = $aRow->ville;
-        $col[$aRow->rowid]->DateCreate = $db->jdate($aRow->datec);
-        $col[$aRow->rowid]->Zip = $aRow->cp;
-        $col[$aRow->rowid]->tms = $db->jdate($aRow->tms);
-        $col[$aRow->rowid]->CustomerCode = $aRow->code_client;
-        $col[$aRow->rowid]->SupplierCode = $aRow->code_fournisseur;
-        $col[$aRow->rowid]->CustomerAccount = $aRow->code_compta;
-        $col[$aRow->rowid]->SupplierAccount = $aRow->code_compta_fournisseur;
-        $col[$aRow->rowid]->Address = $aRow->address;
-        $col[$aRow->rowid]->State = $aRow->fk_departement;
-        $col[$aRow->rowid]->Country = $aRow->code; // FR
-        $col[$aRow->rowid]->Phone = $aRow->tel;
-        $col[$aRow->rowid]->Fax = $aRow->fax;
-        $col[$aRow->rowid]->EMail = $aRow->email;
-        if(!empty($aRow->url))
-            $col[$aRow->rowid]->url[] = $aRow->url;
-        $col[$aRow->rowid]->SIREN = $aRow->siren;
-        $col[$aRow->rowid]->SIRET = $aRow->siret;
-        $col[$aRow->rowid]->NAF = $aRow->ape;
-        $col[$aRow->rowid]->VATIntra = $aRow->tva_intra;
-        $col[$aRow->rowid]->VATIsUsed = (bool)$aRow->tva_assuj;
-        $col[$aRow->rowid]->Capital = (int)$aRow->capital;
-        $col[$aRow->rowid]->Status = $aRow->stcomm;
-        $col[$aRow->rowid]->Notes = $aRow->note;
-        $col[$aRow->rowid]->Prefix = $aRow->prefix_comm;
-        $col[$aRow->rowid]->ProspectLevelShort = (int)$aRow->fk_prospectlevel;
-        $col[$aRow->rowid]->UserCreate = $aRow->user_creat;
-        $col[$aRow->rowid]->UserUpdate = $aRow->user_modif;
-        $col[$aRow->rowid]->CustomerRelativeDiscountShort = (int)$aRow->remise_client;
-        $col[$aRow->rowid]->Gencode = $aRow->barcode;
-        $col[$aRow->rowid]->DefaultLang = $aRow->default_lang;
-        $col[$aRow->rowid]->PriceLevel = $aRow->price_level;
-        if($aRow->latitude && $aRow->longitude)
-        {
-            $col[$aRow->rowid]->gps[0] = (int)$aRow->latitude;
-            $col[$aRow->rowid]->gps[1] = (int)$aRow->longitude;
-        }
-        $col[$aRow->rowid]->Logo = $aRow->logo;
-        $col[$aRow->rowid]->NoMailing = (bool)!$aRow->newsletter;
-        
-        $i++;
+    $col[$aRow->rowid]->rowid = (int) $aRow->rowid;
+    $col[$aRow->rowid]->class = "Societe";
+    $col[$aRow->rowid]->name = $aRow->nom;
+    $col[$aRow->rowid]->town = $aRow->ville;
+    $col[$aRow->rowid]->datec = $db->jdate($aRow->datec);
+    $col[$aRow->rowid]->zip = $aRow->cp;
+    $col[$aRow->rowid]->tms = $db->jdate($aRow->tms);
+    $col[$aRow->rowid]->code_client = $aRow->code_client;
+    $col[$aRow->rowid]->code_fournisseur = $aRow->code_fournisseur;
+    $col[$aRow->rowid]->code_compta = $aRow->code_compta;
+    $col[$aRow->rowid]->code_compta_fournisseur = $aRow->code_compta_fournisseur;
+    $col[$aRow->rowid]->address = $aRow->address;
+    $col[$aRow->rowid]->state = $aRow->fk_departement;
+    $col[$aRow->rowid]->country = $aRow->code; // FR
+    $col[$aRow->rowid]->phone = $aRow->tel;
+    $col[$aRow->rowid]->fax = $aRow->fax;
+    $col[$aRow->rowid]->eMail = $aRow->email;
+    $col[$aRow->rowid]->url = $aRow->url;
+    $col[$aRow->rowid]->idprof1 = $aRow->siren;
+    $col[$aRow->rowid]->idprof2 = $aRow->siret;
+    $col[$aRow->rowid]->idprof3 = $aRow->ape;
+    $col[$aRow->rowid]->tva_intra = $aRow->tva_intra;
+    $col[$aRow->rowid]->tva_assuj = (bool) $aRow->tva_assuj;
+    $col[$aRow->rowid]->capital = (int) $aRow->capital;
+    $col[$aRow->rowid]->Status = $aRow->stcomm;
+    $col[$aRow->rowid]->notes = $aRow->note;
+    $col[$aRow->rowid]->prefix_comm = $aRow->prefix_comm;
+    $col[$aRow->rowid]->fk_prospectlevel = (int) $aRow->fk_prospectlevel;
+    $col[$aRow->rowid]->user_creat = $aRow->user_creat;
+    $col[$aRow->rowid]->user_modif = $aRow->user_modif;
+    $col[$aRow->rowid]->remise_client = (int) $aRow->remise_client;
+    $col[$aRow->rowid]->barcode = $aRow->barcode;
+    $col[$aRow->rowid]->default_lang = $aRow->default_lang;
+    $col[$aRow->rowid]->price_level = $aRow->price_level;
+    if ($aRow->latitude && $aRow->longitude) {
+        $col[$aRow->rowid]->gps[0] = (int) $aRow->latitude;
+        $col[$aRow->rowid]->gps[1] = (int) $aRow->longitude;
+    }
+    $col[$aRow->rowid]->logo = $aRow->logo;
+    $col[$aRow->rowid]->newsletter = (bool) !$aRow->newsletter;
+
+    $i++;
 }
 
 $db->free($resultSocietes);
@@ -231,14 +221,14 @@ unset($resultSocietes);
 
 /* sql query get sales */
 $sql = " SELECT fk_soc,login FROM (llx_societe_commerciaux as sc,llx_user as u) 
-where "/*sc.fk_soc in ($companies) and*/." sc.fk_user=u.rowid";
+where "/* sc.fk_soc in ($companies) and */ . " sc.fk_user=u.rowid";
 //$sql .= " LIMIT 100";
 $resultCommerciaux = $db->query($sql);
 
 /* init society sales array  */
 while ($aRow = $db->fetch_object($resultCommerciaux)) {
-    if(!empty($col[$aRow->fk_soc]->rowid)){
-        $col[$aRow->fk_soc]->SalesRepresentatives[]=$aRow->login;   
+    if (!empty($col[$aRow->fk_soc]->rowid)) {
+        $col[$aRow->fk_soc]->SalesRepresentatives[] = $aRow->login;
     }
 }
 $db->free($resultCommerciaux);
@@ -246,16 +236,16 @@ unset($resultCommerciaux);
 
 /* sql query get categories */
 $sql = " SELECT fk_societe,label FROM (llx_categorie_societe as cs,llx_categorie as c) 
-where "/*cs.fk_societe in ($companies) and*/ ."cs.fk_categorie=c.rowid";
+where "/* cs.fk_societe in ($companies) and */ . "cs.fk_categorie=c.rowid";
 //$sql .= " LIMIT 100";
 $resultCate = $db->query($sql);
 
 
 /* init society categories array */
 while ($aRow = $db->fetch_object($resultCate)) {
-    
-    if(!empty($col[$aRow->fk_soc]->rowid)){
-        $col[$aRow->fk_soc]->tags[]=$aRow->label;
+
+    if (!empty($col[$aRow->fk_soc]->rowid)) {
+        $col[$aRow->fk_soc]->tags[] = $aRow->label;
     }
 }
 $db->free($resultCate);
@@ -265,13 +255,13 @@ unset($resultCate);
 
 try {
     $couchdb->clean($col);
-    $result = $couchdb->storeDocs($col,false);
-    } catch (Exception $e) {
-        echo "Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
-        exit(1);
-    }
-    
+    $result = $couchdb->storeDocs($col, false);
+} catch (Exception $e) {
+    echo "Something weird happened: " . $e->getMessage() . " (errcode=" . $e->getCode() . ")\n";
+    exit(1);
+}
+
 print_r($result);
-    
-print "Import société terminée : ".count($col);
+
+print "Import société terminée : " . count($col);
 ?>

@@ -1056,6 +1056,20 @@ abstract class nosqlDocument extends CommonObject {
 
         return $result->rows[0]->value;
     }
+    
+    /**
+     *    	Print a select HTML for fields in extrafields
+     *
+     * 		@param		string		$key            name of the field
+     * 		@param		string		$htmlname	HTML name
+     *          @param          string          $selected       value selected
+     *          @param          string          $country        Code of the country
+     * 		@return		string		String with URL
+     */
+    
+    function select_fk_extrafields($key, $htmlname, $selected='', $country="FR") {
+        
+    }
 
 }
 ?>
