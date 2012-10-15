@@ -1,85 +1,23 @@
 {
    "_id": "extrafields:Societe",
    "class": "extrafields",
-   "ico": "/img/ico/icSw2/16-Apartment-Building.png",
-   "place": [
-       [
-           [
-               "ThirdPartyName",
-               "Address",
-               "Zip",
-               "Town",
-               "Country",
-               "State",
-               "DefaultLang"
-           ],
-           [
-               "Prefix",
-               "CustomerCode",
-               "SupplierCode",
-               "Gencod",
-               "Status",
-               "Logo"
-           ]
-       ],
-       [
-           [
-               "Phone",
-               "Fax",
-               "EMail"
-           ],
-           [
-               "Web",
-               "Facebook",
-               "LinkedIn"
-           ]
-       ],
-       [
-           [
-               "ProfId1",
-               "ProfId2",
-               "ProfId3",
-               "ProfId4"
-           ],
-           [
-               "ThirdPartyType",
-               "Staff",
-               "Capital"
-           ]
-       ],
-       [
-           [
-               "VATIntra",
-               "JuridicalStatus"
-           ],
-           [
-               "VATIsUsed"
-           ]
-       ]
-   ],
-   "block": [
-       "Main",
-       "AddressBook",
-       "Deal",
-       "Accounting"
-   ],
+   "ico": "16-Apartment-Building.png",
    "longList": [
-       "CustomerCode",
-       "Zip",
-       "Town",
-       "Address",
-       "Phone",
-       "SIREN",
-       "SIRET",
-       "SalesRepresentatives"
+       "code_client",
+       "zip",
+       "town",
+       "address",
+       "phone",
+       "idprof1",
+       "commercial_id"
    ],
    "shortList": [
-       "Town",
-       "Phone",
-       "SalesRepresentatives"
+       "town",
+       "phone",
+       "commercial_id"
    ],
    "fields": {
-       "ThirdPartyName": {
+       "name": {
            "type": "input",
            "length": 60,
            "enable": true,
@@ -88,12 +26,12 @@
                "minlength": 3
            }
        },
-       "Prefix": {
+       "prefix": {
            "type": "text",
            "length": 5,
            "enable": false
        },
-       "CustomerCode": {
+       "code_client": {
            "type": "text",
            "length": 15,
            "enable": true,
@@ -103,12 +41,12 @@
                "bVisible": false
            }
        },
-       "SupplierCode": {
+       "code_fournisseur": {
            "type": "text",
            "length": 15,
            "enable": false
        },
-       "Gencod": {
+       "barcode": {
            "type": "text",
            "enable": false
        },
@@ -126,6 +64,11 @@
                    "enable": true,
                    "type": "closed",
                    "cssClass": "red-gradient"
+               },
+               "ST_TODO": {
+                   "enable": false,
+                   "type": "prsopect",
+                   "cssClass": "blue-gardient"
                },
                "ST_NEVER": {
                    "enable": true,
@@ -159,7 +102,7 @@
                }
            }
        },
-       "Address": {
+       "address": {
            "type": "textarea",
            "cols": 40,
            "rows": 3,
@@ -170,19 +113,21 @@
                "bVisible": false
            }
        },
-       "Zip": {
+       "zip": {
            "type": "text",
+           "label": "Zip",
            "length": 15,
            "enable": true,
            "javascript": null,
            "aoColumns": {
                "sClass": "center edit",
                "bSearchable": true,
-               "bVisible": false
+               "bVisible": true
            }
        },
-       "Town": {
+       "town": {
            "type": "text",
+           "label": "Town",
            "length": 15,
            "enable": true,
            "javascript": null,
@@ -192,27 +137,27 @@
                "bVisible": true
            }
        },
-       "Country": {
+       "country_id": {
            "type": "select",
            "enable": true,
            "dict": "dict:country",
            "default": "substr($langs->defaultlang,3,5)"
        },
-       "State": {
+       "state_id": {
            "type": "select",
-           "enable": false,
-           "dict": null
+           "enable": true,
+           "dict": "dict:fk_departements"
        },
        "DefaultLang": {
            "type": "select",
            "enable": false,
            "dict": null
        },
-       "Logo": {
+       "logo": {
            "type": "uploadfile",
            "enable": true
        },
-       "Phone": {
+       "phone": {
            "type": "AC_TEL",
            "ico": "AC_TEL",
            "enable": true,
@@ -223,13 +168,13 @@
            },
            "mask": "+99 9 99 99 99 99"
        },
-       "Fax": {
+       "fax": {
            "type": "AC_FAX",
            "ico": "AC_FAX",
            "enable": true,
            "mask": "+99 9 99 99 99 99"
        },
-       "EMail": {
+       "email": {
            "type": "AC_EMAIL",
            "ico": "AC_EMAIL",
            "enable": true,
@@ -237,7 +182,7 @@
                "email": true
            }
        },
-       "Web": {
+       "url": {
            "type": "text",
            "ico": "AC_URL",
            "site": "www",
@@ -246,48 +191,22 @@
                "url": true
            }
        },
-       "Facebook": {
+       "idprof1": {
            "type": "text",
-           "ico": "AC_URL",
-           "site": "facebook",
-           "enable": true,
-           "validate": {
-               "url": true
-           }
-       },
-       "LinkedIn": {
-           "type": "text",
-           "ico": "AC_URL",
-           "site": "linkedin",
-           "enable": true,
-           "validate": {
-               "url": true
-           }
-       },
-       "ProfId1": {
-           "type": "text",
-           "length": "12",
-           "enable": true,
-           "aoColumns": {
-               "bSearchable": true,
-               "bVisible": false
-           }
-       },
-       "ProfId2": {
-           "type": "text",
+           "label": "ProfId1",
            "length": "25",
            "enable": true,
            "aoColumns": {
                "bSearchable": true,
-               "bVisible": false
+               "bVisible": true
            }
        },
-       "ProfId3": {
+       "idprof3": {
            "type": "text",
            "length": "12",
            "enable": true
        },
-       "ThirdPartyType": {
+       "typent_id": {
            "type": "select",
            "default": "TE_UNKNOWN",
            "enable": true,
@@ -330,7 +249,7 @@
                }
            }
        },
-       "Staff": {
+       "effectif_id": {
            "type": "select",
            "enable": true,
            "default": "EF0",
@@ -365,7 +284,7 @@
                }
            }
        },
-       "Capital": {
+       "capital": {
            "type": "text",
            "length": "20",
            "label": "Capital",
@@ -383,10 +302,20 @@
            "javascript": null,
            "enable": true
        },
-       "JuridicalStatus": {
+       "forme_juridique_code": {
            "type": "select",
            "label": "JuridicalStatus",
            "dict": "dict:fk_forme_juridique",
+           "enable": true
+       },
+       "commercial_id": {
+           "label": "SalesRepresentatives"
+       },
+       "civilite_id": {
+           "type": "select",
+           "label": "UserTitle",
+           "default": "NO",
+           "dict": "dict:fk_civilite",
            "enable": true
        }
    }

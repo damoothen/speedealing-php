@@ -1,0 +1,2415 @@
+{
+   "_id": "dict:fk_departements",
+   "values": {
+       "0": {
+           "enable": true,
+           "label": "-"
+       },
+       "10": {
+           "enable": true,
+           "label": "Cáceres",
+           "pays_code": "ES"
+       },
+       "11": {
+           "enable": true,
+           "label": "Cádiz",
+           "pays_code": "ES"
+       },
+       "12": {
+           "enable": true,
+           "label": "Castellón",
+           "pays_code": "ES"
+       },
+       "13": {
+           "enable": true,
+           "label": "Ciudad Real",
+           "pays_code": "ES"
+       },
+       "14": {
+           "enable": true,
+           "label": "Córdoba",
+           "pays_code": "ES"
+       },
+       "15": {
+           "enable": true,
+           "label": "La Coruña",
+           "pays_code": "ES"
+       },
+       "16": {
+           "enable": true,
+           "label": "Cuenca",
+           "pays_code": "ES"
+       },
+       "17": {
+           "enable": true,
+           "label": "Gerona",
+           "pays_code": "ES"
+       },
+       "18": {
+           "enable": true,
+           "label": "Granada",
+           "pays_code": "ES"
+       },
+       "19": {
+           "enable": true,
+           "label": "Guadalajara",
+           "pays_code": "ES"
+       },
+       "20": {
+           "enable": true,
+           "label": "Guipúzcoa",
+           "pays_code": "ES"
+       },
+       "21": {
+           "enable": true,
+           "label": "Huelva",
+           "pays_code": "ES"
+       },
+       "22": {
+           "enable": true,
+           "label": "Huesca",
+           "pays_code": "ES"
+       },
+       "23": {
+           "enable": true,
+           "label": "Jaén",
+           "pays_code": "ES"
+       },
+       "24": {
+           "enable": true,
+           "label": "León",
+           "pays_code": "ES"
+       },
+       "25": {
+           "enable": true,
+           "label": "Lérida",
+           "pays_code": "ES"
+       },
+       "26": {
+           "enable": true,
+           "label": "La Rioja",
+           "pays_code": "ES"
+       },
+       "27": {
+           "enable": true,
+           "label": "Lugo",
+           "pays_code": "ES"
+       },
+       "28": {
+           "enable": true,
+           "label": "Madrid",
+           "pays_code": "ES"
+       },
+       "29": {
+           "enable": true,
+           "label": "Málaga",
+           "pays_code": "ES"
+       },
+       "30": {
+           "enable": true,
+           "label": "Murcia",
+           "pays_code": "ES"
+       },
+       "31": {
+           "enable": true,
+           "label": "Navarra",
+           "pays_code": "ES"
+       },
+       "32": {
+           "enable": true,
+           "label": "Orense",
+           "pays_code": "ES"
+       },
+       "33": {
+           "enable": true,
+           "label": "Asturias",
+           "pays_code": "ES"
+       },
+       "34": {
+           "enable": true,
+           "label": "Palencia",
+           "pays_code": "ES"
+       },
+       "35": {
+           "enable": true,
+           "label": "Las Palmas",
+           "pays_code": "ES"
+       },
+       "36": {
+           "enable": true,
+           "label": "Pontevedra",
+           "pays_code": "ES"
+       },
+       "37": {
+           "enable": true,
+           "label": "Salamanca",
+           "pays_code": "ES"
+       },
+       "38": {
+           "enable": true,
+           "label": "Sta. Cruz de Tenerife",
+           "pays_code": "ES"
+       },
+       "39": {
+           "enable": true,
+           "label": "Cantabria",
+           "pays_code": "ES"
+       },
+       "40": {
+           "enable": true,
+           "label": "Segovia",
+           "pays_code": "ES"
+       },
+       "41": {
+           "enable": true,
+           "label": "Sevilla",
+           "pays_code": "ES"
+       },
+       "42": {
+           "enable": true,
+           "label": "Soria",
+           "pays_code": "ES"
+       },
+       "43": {
+           "enable": true,
+           "label": "Tarragona",
+           "pays_code": "ES"
+       },
+       "44": {
+           "enable": true,
+           "label": "Teruel",
+           "pays_code": "ES"
+       },
+       "45": {
+           "enable": true,
+           "label": "Toledo",
+           "pays_code": "ES"
+       },
+       "46": {
+           "enable": true,
+           "label": "Valencia",
+           "pays_code": "ES"
+       },
+       "47": {
+           "enable": true,
+           "label": "Valladolid",
+           "pays_code": "ES"
+       },
+       "48": {
+           "enable": true,
+           "label": "Vizcaya",
+           "pays_code": "ES"
+       },
+       "49": {
+           "enable": true,
+           "label": "Zamora",
+           "pays_code": "ES"
+       },
+       "50": {
+           "enable": true,
+           "label": "Zaragoza",
+           "pays_code": "ES"
+       },
+       "51": {
+           "enable": true,
+           "label": "Ceuta",
+           "pays_code": "ES"
+       },
+       "52": {
+           "enable": true,
+           "label": "Melilla",
+           "pays_code": "ES"
+       },
+       "53": {
+           "enable": true,
+           "label": "Otros",
+           "pays_code": "ES"
+       },
+       "54": {
+           "enable": true,
+           "label": "Meurthe-et-Moselle",
+           "pays_code": "FR"
+       },
+       "55": {
+           "enable": true,
+           "label": "Meuse",
+           "pays_code": "FR"
+       },
+       "56": {
+           "enable": true,
+           "label": "Morbihan",
+           "pays_code": "FR"
+       },
+       "57": {
+           "enable": true,
+           "label": "Moselle",
+           "pays_code": "FR"
+       },
+       "58": {
+           "enable": true,
+           "label": "Nièvre",
+           "pays_code": "FR"
+       },
+       "59": {
+           "enable": true,
+           "label": "Nord",
+           "pays_code": "FR"
+       },
+       "60": {
+           "enable": true,
+           "label": "Oise",
+           "pays_code": "FR"
+       },
+       "61": {
+           "enable": true,
+           "label": "Orne",
+           "pays_code": "FR"
+       },
+       "62": {
+           "enable": true,
+           "label": "Pas-de-Calais",
+           "pays_code": "FR"
+       },
+       "63": {
+           "enable": true,
+           "label": "Puy-de-Dôme",
+           "pays_code": "FR"
+       },
+       "64": {
+           "enable": true,
+           "label": "Pyrénées-Atlantiques",
+           "pays_code": "FR"
+       },
+       "65": {
+           "enable": true,
+           "label": "Hautes-Pyrénées",
+           "pays_code": "FR"
+       },
+       "66": {
+           "enable": true,
+           "label": "Pyrénées-Orientales",
+           "pays_code": "FR"
+       },
+       "67": {
+           "enable": true,
+           "label": "Bas-Rhin",
+           "pays_code": "FR"
+       },
+       "68": {
+           "enable": true,
+           "label": "Haut-Rhin",
+           "pays_code": "FR"
+       },
+       "69": {
+           "enable": true,
+           "label": "Rhône",
+           "pays_code": "FR"
+       },
+       "70": {
+           "enable": true,
+           "label": "Haute-Saône",
+           "pays_code": "FR"
+       },
+       "71": {
+           "enable": true,
+           "label": "Saône-et-Loire",
+           "pays_code": "FR"
+       },
+       "72": {
+           "enable": true,
+           "label": "Sarthe",
+           "pays_code": "FR"
+       },
+       "73": {
+           "enable": true,
+           "label": "Savoie",
+           "pays_code": "FR"
+       },
+       "74": {
+           "enable": true,
+           "label": "Haute-Savoie",
+           "pays_code": "FR"
+       },
+       "75": {
+           "enable": true,
+           "label": "Paris",
+           "pays_code": "FR"
+       },
+       "76": {
+           "enable": true,
+           "label": "Seine-Maritime",
+           "pays_code": "FR"
+       },
+       "77": {
+           "enable": true,
+           "label": "Seine-et-Marne",
+           "pays_code": "FR"
+       },
+       "78": {
+           "enable": true,
+           "label": "Yvelines",
+           "pays_code": "FR"
+       },
+       "79": {
+           "enable": true,
+           "label": "Deux-Sèvres",
+           "pays_code": "FR"
+       },
+       "80": {
+           "enable": true,
+           "label": "Somme",
+           "pays_code": "FR"
+       },
+       "81": {
+           "enable": true,
+           "label": "Tarn",
+           "pays_code": "FR"
+       },
+       "82": {
+           "enable": true,
+           "label": "Tarn-et-Garonne",
+           "pays_code": "FR"
+       },
+       "83": {
+           "enable": true,
+           "label": "Var",
+           "pays_code": "FR"
+       },
+       "84": {
+           "enable": true,
+           "label": "Vaucluse",
+           "pays_code": "FR"
+       },
+       "85": {
+           "enable": true,
+           "label": "Vendée",
+           "pays_code": "FR"
+       },
+       "86": {
+           "enable": true,
+           "label": "Vienne",
+           "pays_code": "FR"
+       },
+       "87": {
+           "enable": true,
+           "label": "Haute-Vienne",
+           "pays_code": "FR"
+       },
+       "88": {
+           "enable": true,
+           "label": "Vosges",
+           "pays_code": "FR"
+       },
+       "89": {
+           "enable": true,
+           "label": "Yonne",
+           "pays_code": "FR"
+       },
+       "90": {
+           "enable": true,
+           "label": "Territoire de Belfort",
+           "pays_code": "FR"
+       },
+       "91": {
+           "enable": true,
+           "label": "Essonne",
+           "pays_code": "FR"
+       },
+       "92": {
+           "enable": true,
+           "label": "Hauts-de-Seine",
+           "pays_code": "FR"
+       },
+       "93": {
+           "enable": true,
+           "label": "Seine-Saint-Denis",
+           "pays_code": "FR"
+       },
+       "94": {
+           "enable": true,
+           "label": "Val-de-Marne",
+           "pays_code": "FR"
+       },
+       "95": {
+           "enable": true,
+           "label": "Val-d'Oise",
+           "pays_code": "FR"
+       },
+       "101": {
+           "enable": true,
+           "label": "Llanquihue",
+           "pays_code": "CL"
+       },
+       "102": {
+           "enable": true,
+           "label": "Chiloé",
+           "pays_code": "CL"
+       },
+       "103": {
+           "enable": true,
+           "label": "Osorno",
+           "pays_code": "CL"
+       },
+       "104": {
+           "enable": true,
+           "label": "Palena",
+           "pays_code": "CL"
+       },
+       "111": {
+           "enable": true,
+           "label": "Coihaique",
+           "pays_code": "CL"
+       },
+       "112": {
+           "enable": true,
+           "label": "Aisén",
+           "pays_code": "CL"
+       },
+       "113": {
+           "enable": true,
+           "label": "Capitán Prat",
+           "pays_code": "CL"
+       },
+       "114": {
+           "enable": true,
+           "label": "General Carrera",
+           "pays_code": "CL"
+       },
+       "121": {
+           "enable": true,
+           "label": "Magallanes",
+           "pays_code": "CL"
+       },
+       "122": {
+           "enable": true,
+           "label": "Antártica Chilena",
+           "pays_code": "CL"
+       },
+       "123": {
+           "enable": true,
+           "label": "Tierra del Fuego",
+           "pays_code": "CL"
+       },
+       "124": {
+           "enable": true,
+           "label": "Última Esperanza",
+           "pays_code": "CL"
+       },
+       "131": {
+           "enable": true,
+           "label": "Santiago",
+           "pays_code": "CL"
+       },
+       "132": {
+           "enable": true,
+           "label": "Cordillera",
+           "pays_code": "CL"
+       },
+       "133": {
+           "enable": true,
+           "label": "Chacabuco",
+           "pays_code": "CL"
+       },
+       "134": {
+           "enable": true,
+           "label": "Maipo",
+           "pays_code": "CL"
+       },
+       "135": {
+           "enable": true,
+           "label": "Melipilla",
+           "pays_code": "CL"
+       },
+       "136": {
+           "enable": true,
+           "label": "Talagante",
+           "pays_code": "CL"
+       },
+       "141": {
+           "enable": true,
+           "label": "Valdivia",
+           "pays_code": "CL"
+       },
+       "142": {
+           "enable": true,
+           "label": "Ranco",
+           "pays_code": "CL"
+       },
+       "151": {
+           "enable": true,
+           "label": "Arica",
+           "pays_code": "CL"
+       },
+       "152": {
+           "enable": true,
+           "label": "Parinacota",
+           "pays_code": "CL"
+       },
+       "971": {
+           "enable": true,
+           "label": "Guadeloupe",
+           "pays_code": "FR"
+       },
+       "972": {
+           "enable": true,
+           "label": "Martinique",
+           "pays_code": "FR"
+       },
+       "973": {
+           "enable": true,
+           "label": "Guyane",
+           "pays_code": "FR"
+       },
+       "974": {
+           "enable": true,
+           "label": "Réunion",
+           "pays_code": "FR"
+       },
+       "2301": {
+           "enable": true,
+           "label": "Catamarca",
+           "pays_code": "AR"
+       },
+       "2302": {
+           "enable": true,
+           "label": "Jujuy",
+           "pays_code": "AR"
+       },
+       "2303": {
+           "enable": true,
+           "label": "Tucamán",
+           "pays_code": "AR"
+       },
+       "2304": {
+           "enable": true,
+           "label": "Santiago del Estero",
+           "pays_code": "AR"
+       },
+       "2305": {
+           "enable": true,
+           "label": "Salta",
+           "pays_code": "AR"
+       },
+       "2306": {
+           "enable": true,
+           "label": "Chaco",
+           "pays_code": "AR"
+       },
+       "2307": {
+           "enable": true,
+           "label": "Corrientes",
+           "pays_code": "AR"
+       },
+       "2308": {
+           "enable": true,
+           "label": "Entre Ríos",
+           "pays_code": "AR"
+       },
+       "2309": {
+           "enable": true,
+           "label": "Formosa Misiones",
+           "pays_code": "AR"
+       },
+       "2310": {
+           "enable": true,
+           "label": "Santa Fe",
+           "pays_code": "AR"
+       },
+       "2311": {
+           "enable": true,
+           "label": "La Rioja",
+           "pays_code": "AR"
+       },
+       "2312": {
+           "enable": true,
+           "label": "Mendoza",
+           "pays_code": "AR"
+       },
+       "2313": {
+           "enable": true,
+           "label": "San Juan",
+           "pays_code": "AR"
+       },
+       "2314": {
+           "enable": true,
+           "label": "San Luis",
+           "pays_code": "AR"
+       },
+       "2315": {
+           "enable": true,
+           "label": "Córdoba",
+           "pays_code": "AR"
+       },
+       "2316": {
+           "enable": true,
+           "label": "Buenos Aires",
+           "pays_code": "AR"
+       },
+       "2317": {
+           "enable": true,
+           "label": "Caba",
+           "pays_code": "AR"
+       },
+       "2318": {
+           "enable": true,
+           "label": "La Pampa",
+           "pays_code": "AR"
+       },
+       "2319": {
+           "enable": true,
+           "label": "Neuquén",
+           "pays_code": "AR"
+       },
+       "2320": {
+           "enable": true,
+           "label": "Río Negro",
+           "pays_code": "AR"
+       },
+       "2321": {
+           "enable": true,
+           "label": "Chubut",
+           "pays_code": "AR"
+       },
+       "2322": {
+           "enable": true,
+           "label": "Santa Cruz",
+           "pays_code": "AR"
+       },
+       "2323": {
+           "enable": true,
+           "label": "Tierra del Fuego",
+           "pays_code": "AR"
+       },
+       "2324": {
+           "enable": true,
+           "label": "Islas Malvinas",
+           "pays_code": "AR"
+       },
+       "2325": {
+           "enable": true,
+           "label": "Antártida",
+           "pays_code": "AR"
+       },
+       "ACT": {
+           "enable": true,
+           "label": "Australia Capital Territory",
+           "pays_code": "AU"
+       },
+       "NSW": {
+           "enable": true,
+           "label": "New South Wales",
+           "pays_code": "AU"
+       },
+       "NT": {
+           "enable": true,
+           "label": "Northern Territory",
+           "pays_code": "AU"
+       },
+       "QLD": {
+           "enable": true,
+           "label": "Queensland",
+           "pays_code": "AU"
+       },
+       "SA": {
+           "enable": true,
+           "label": "Santa Ana",
+           "pays_code": "SV"
+       },
+       "TAS": {
+           "enable": true,
+           "label": "Tasmania",
+           "pays_code": "AU"
+       },
+       "VIC": {
+           "enable": true,
+           "label": "Victoria",
+           "pays_code": "AU"
+       },
+       "WA": {
+           "enable": true,
+           "label": "Washington",
+           "pays_code": "US"
+       },
+       "CC": {
+           "enable": true,
+           "label": "Christ Church",
+           "pays_code": "BB"
+       },
+       "JA": {
+           "enable": true,
+           "label": "Saint James",
+           "pays_code": "BB"
+       },
+       "SB": {
+           "enable": true,
+           "label": "Santa Bárbara",
+           "pays_code": "HN"
+       },
+       "SC": {
+           "enable": true,
+           "label": "South Carolina",
+           "pays_code": "US"
+       },
+       "SG": {
+           "enable": true,
+           "label": "Saint-Gall",
+           "pays_code": "CH"
+       },
+       "SJ": {
+           "enable": true,
+           "label": "Saint John",
+           "pays_code": "BB"
+       },
+       "SL": {
+           "enable": true,
+           "label": "Saint Lucy",
+           "pays_code": "BB"
+       },
+       "SM": {
+           "enable": true,
+           "label": "San Miguel",
+           "pays_code": "SV"
+       },
+       "SP": {
+           "enable": true,
+           "label": "LA SPEZIA",
+           "pays_code": "IT"
+       },
+       "ST": {
+           "enable": true,
+           "label": "Saint Thomas",
+           "pays_code": "BB"
+       },
+       "01": {
+           "enable": true,
+           "label": "País Vasco",
+           "pays_code": "ES"
+       },
+       "02": {
+           "enable": true,
+           "label": "Albacete",
+           "pays_code": "ES"
+       },
+       "03": {
+           "enable": true,
+           "label": "Alicante",
+           "pays_code": "ES"
+       },
+       "04": {
+           "enable": true,
+           "label": "Almería",
+           "pays_code": "ES"
+       },
+       "05": {
+           "enable": true,
+           "label": "Avila",
+           "pays_code": "ES"
+       },
+       "06": {
+           "enable": true,
+           "label": "Badajoz",
+           "pays_code": "ES"
+       },
+       "07": {
+           "enable": true,
+           "label": "Islas Baleares",
+           "pays_code": "ES"
+       },
+       "08": {
+           "enable": true,
+           "label": "Barcelona",
+           "pays_code": "ES"
+       },
+       "09": {
+           "enable": true,
+           "label": "Burgos",
+           "pays_code": "ES"
+       },
+       "011": {
+           "enable": true,
+           "label": "Iquique",
+           "pays_code": "CL"
+       },
+       "014": {
+           "enable": true,
+           "label": "Tamarugal",
+           "pays_code": "CL"
+       },
+       "021": {
+           "enable": true,
+           "label": "Antofagasa",
+           "pays_code": "CL"
+       },
+       "022": {
+           "enable": true,
+           "label": "El Loa",
+           "pays_code": "CL"
+       },
+       "023": {
+           "enable": true,
+           "label": "Tocopilla",
+           "pays_code": "CL"
+       },
+       "031": {
+           "enable": true,
+           "label": "Copiapó",
+           "pays_code": "CL"
+       },
+       "032": {
+           "enable": true,
+           "label": "Chañaral",
+           "pays_code": "CL"
+       },
+       "033": {
+           "enable": true,
+           "label": "Huasco",
+           "pays_code": "CL"
+       },
+       "041": {
+           "enable": true,
+           "label": "Elqui",
+           "pays_code": "CL"
+       },
+       "042": {
+           "enable": true,
+           "label": "Choapa",
+           "pays_code": "CL"
+       },
+       "043": {
+           "enable": true,
+           "label": "Limarí",
+           "pays_code": "CL"
+       },
+       "051": {
+           "enable": true,
+           "label": "Valparaíso",
+           "pays_code": "CL"
+       },
+       "052": {
+           "enable": true,
+           "label": "Isla de Pascua",
+           "pays_code": "CL"
+       },
+       "053": {
+           "enable": true,
+           "label": "Los Andes",
+           "pays_code": "CL"
+       },
+       "054": {
+           "enable": true,
+           "label": "Petorca",
+           "pays_code": "CL"
+       },
+       "055": {
+           "enable": true,
+           "label": "Quillota",
+           "pays_code": "CL"
+       },
+       "056": {
+           "enable": true,
+           "label": "San Antonio",
+           "pays_code": "CL"
+       },
+       "057": {
+           "enable": true,
+           "label": "San Felipe de Aconcagua",
+           "pays_code": "CL"
+       },
+       "058": {
+           "enable": true,
+           "label": "Marga Marga",
+           "pays_code": "CL"
+       },
+       "061": {
+           "enable": true,
+           "label": "Cachapoal",
+           "pays_code": "CL"
+       },
+       "062": {
+           "enable": true,
+           "label": "Cardenal Caro",
+           "pays_code": "CL"
+       },
+       "063": {
+           "enable": true,
+           "label": "Colchagua",
+           "pays_code": "CL"
+       },
+       "071": {
+           "enable": true,
+           "label": "Talca",
+           "pays_code": "CL"
+       },
+       "072": {
+           "enable": true,
+           "label": "Cauquenes",
+           "pays_code": "CL"
+       },
+       "073": {
+           "enable": true,
+           "label": "Curicó",
+           "pays_code": "CL"
+       },
+       "074": {
+           "enable": true,
+           "label": "Linares",
+           "pays_code": "CL"
+       },
+       "081": {
+           "enable": true,
+           "label": "Concepción",
+           "pays_code": "CL"
+       },
+       "082": {
+           "enable": true,
+           "label": "Arauco",
+           "pays_code": "CL"
+       },
+       "083": {
+           "enable": true,
+           "label": "Biobío",
+           "pays_code": "CL"
+       },
+       "084": {
+           "enable": true,
+           "label": "Ñuble",
+           "pays_code": "CL"
+       },
+       "091": {
+           "enable": true,
+           "label": "Cautín",
+           "pays_code": "CL"
+       },
+       "092": {
+           "enable": true,
+           "label": "Malleco",
+           "pays_code": "CL"
+       },
+       "AMA": {
+           "enable": true,
+           "label": "Amazonas",
+           "pays_code": "CO"
+       },
+       "ANT": {
+           "enable": true,
+           "label": "Antioquia",
+           "pays_code": "CO"
+       },
+       "ARA": {
+           "enable": true,
+           "label": "Arauca",
+           "pays_code": "CO"
+       },
+       "ATL": {
+           "enable": true,
+           "label": "Atlántico",
+           "pays_code": "CO"
+       },
+       "BOG": {
+           "enable": true,
+           "label": "Bogotá",
+           "pays_code": "CO"
+       },
+       "BOL": {
+           "enable": true,
+           "label": "Bolívar",
+           "pays_code": "CO"
+       },
+       "BOY": {
+           "enable": true,
+           "label": "Boyacá",
+           "pays_code": "CO"
+       },
+       "CAL": {
+           "enable": true,
+           "label": "Caldas",
+           "pays_code": "CO"
+       },
+       "CAQ": {
+           "enable": true,
+           "label": "Caquetá",
+           "pays_code": "CO"
+       },
+       "CAS": {
+           "enable": true,
+           "label": "Casanare",
+           "pays_code": "CO"
+       },
+       "CAU": {
+           "enable": true,
+           "label": "Cauca",
+           "pays_code": "CO"
+       },
+       "CES": {
+           "enable": true,
+           "label": "Cesar",
+           "pays_code": "CO"
+       },
+       "CHO": {
+           "enable": true,
+           "label": "Chocó",
+           "pays_code": "CO"
+       },
+       "COR": {
+           "enable": true,
+           "label": "Córdoba",
+           "pays_code": "CO"
+       },
+       "CUN": {
+           "enable": true,
+           "label": "Cundinamarca",
+           "pays_code": "CO"
+       },
+       "GUA": {
+           "enable": true,
+           "label": "Guainía",
+           "pays_code": "CO"
+       },
+       "GUV": {
+           "enable": true,
+           "label": "Guaviare",
+           "pays_code": "CO"
+       },
+       "HUI": {
+           "enable": true,
+           "label": "Huila",
+           "pays_code": "CO"
+       },
+       "LAG": {
+           "enable": true,
+           "label": "La Guajira",
+           "pays_code": "CO"
+       },
+       "MAG": {
+           "enable": true,
+           "label": "Magdalena",
+           "pays_code": "CO"
+       },
+       "MET": {
+           "enable": true,
+           "label": "Meta",
+           "pays_code": "CO"
+       },
+       "NAR": {
+           "enable": true,
+           "label": "Nariño",
+           "pays_code": "CO"
+       },
+       "NDS": {
+           "enable": true,
+           "label": "Norte de Santander",
+           "pays_code": "CO"
+       },
+       "PUT": {
+           "enable": true,
+           "label": "Putumayo",
+           "pays_code": "CO"
+       },
+       "QUI": {
+           "enable": true,
+           "label": "Quindío",
+           "pays_code": "CO"
+       },
+       "RIS": {
+           "enable": true,
+           "label": "Risalda",
+           "pays_code": "CO"
+       },
+       "SAN": {
+           "enable": true,
+           "label": "Santander",
+           "pays_code": "CO"
+       },
+       "SAP": {
+           "enable": true,
+           "label": "San Andrés, Providencia y Santa Catalina",
+           "pays_code": "CO"
+       },
+       "SUC": {
+           "enable": true,
+           "label": "Sucre",
+           "pays_code": "CO"
+       },
+       "TOL": {
+           "enable": true,
+           "label": "Tolima",
+           "pays_code": "CO"
+       },
+       "VAC": {
+           "enable": true,
+           "label": "Valle del Cauca",
+           "pays_code": "CO"
+       },
+       "VAU": {
+           "enable": true,
+           "label": "Vaupés",
+           "pays_code": "CO"
+       },
+       "VID": {
+           "enable": true,
+           "label": "Vichada",
+           "pays_code": "CO"
+       },
+       "2A": {
+           "enable": true,
+           "label": "Corse-du-Sud",
+           "pays_code": "FR"
+       },
+       "2B": {
+           "enable": true,
+           "label": "Haute-Corse",
+           "pays_code": "FR"
+       },
+       "AT": {
+           "enable": true,
+           "label": "ASTI",
+           "pays_code": "IT"
+       },
+       "CH": {
+           "enable": true,
+           "label": "Chalatenango",
+           "pays_code": "SV"
+       },
+       "CL": {
+           "enable": true,
+           "label": "CALTANISSETTA",
+           "pays_code": "IT"
+       },
+       "CM": {
+           "enable": true,
+           "label": "Comayagua",
+           "pays_code": "HN"
+       },
+       "CO": {
+           "enable": true,
+           "label": "Colorado",
+           "pays_code": "US"
+       },
+       "CR": {
+           "enable": true,
+           "label": "CREMONA",
+           "pays_code": "IT"
+       },
+       "DC": {
+           "enable": true,
+           "label": "Distrito Central",
+           "pays_code": "HN"
+       },
+       "EP": {
+           "enable": true,
+           "label": "El Paraíso",
+           "pays_code": "HN"
+       },
+       "FM": {
+           "enable": true,
+           "label": "FERMO",
+           "pays_code": "IT"
+       },
+       "GD": {
+           "enable": true,
+           "label": "Gracias a Dios",
+           "pays_code": "HN"
+       },
+       "IB": {
+           "enable": true,
+           "label": "Islas de la Bahía",
+           "pays_code": "HN"
+       },
+       "IN": {
+           "enable": true,
+           "label": "Indiana",
+           "pays_code": "US"
+       },
+       "LM": {
+           "enable": true,
+           "label": "Lempira",
+           "pays_code": "HN"
+       },
+       "LP": {
+           "enable": true,
+           "label": "La Paz",
+           "pays_code": "SV"
+       },
+       "OC": {
+           "enable": true,
+           "label": "Ocotepeque",
+           "pays_code": "HN"
+       },
+       "OL": {
+           "enable": true,
+           "label": "Olancho",
+           "pays_code": "HN"
+       },
+       "VL": {
+           "enable": true,
+           "label": "Valle",
+           "pays_code": "HN"
+       },
+       "YO": {
+           "enable": true,
+           "label": "Yoro",
+           "pays_code": "HN"
+       },
+       "AN": {
+           "enable": true,
+           "label": "ANCONA",
+           "pays_code": "IT"
+       },
+       "AP": {
+           "enable": true,
+           "label": "ASCOLI PICENO",
+           "pays_code": "IT"
+       },
+       "AR": {
+           "enable": true,
+           "label": "Arkansas",
+           "pays_code": "US"
+       },
+       "AS": {
+           "enable": true,
+           "label": "Assam",
+           "pays_code": "IN"
+       },
+       "BR": {
+           "enable": true,
+           "label": "BRINDISI",
+           "pays_code": "IT"
+       },
+       "CG": {
+           "enable": true,
+           "label": "Chattisgarh",
+           "pays_code": "IN"
+       },
+       "DD": {
+           "enable": true,
+           "label": "Daman & Diu",
+           "pays_code": "IN"
+       },
+       "DL": {
+           "enable": true,
+           "label": "Delhi",
+           "pays_code": "IN"
+       },
+       "DN": {
+           "enable": true,
+           "label": "Dadra and Nagar Haveli",
+           "pays_code": "IN"
+       },
+       "GA": {
+           "enable": true,
+           "label": "Georgia",
+           "pays_code": "US"
+       },
+       "GJ": {
+           "enable": true,
+           "label": "Gujarat",
+           "pays_code": "IN"
+       },
+       "HP": {
+           "enable": true,
+           "label": "Himachal Pradesh",
+           "pays_code": "IN"
+       },
+       "HR": {
+           "enable": true,
+           "label": "Haryana",
+           "pays_code": "IN"
+       },
+       "JH": {
+           "enable": true,
+           "label": "Jharkhand",
+           "pays_code": "IN"
+       },
+       "JK": {
+           "enable": true,
+           "label": "Jammu & Kashmir",
+           "pays_code": "IN"
+       },
+       "KA": {
+           "enable": true,
+           "label": "Karnataka",
+           "pays_code": "IN"
+       },
+       "KL": {
+           "enable": true,
+           "label": "Kerala",
+           "pays_code": "IN"
+       },
+       "LD": {
+           "enable": true,
+           "label": "Lakshadweep",
+           "pays_code": "IN"
+       },
+       "MH": {
+           "enable": true,
+           "label": "Maharashtra",
+           "pays_code": "IN"
+       },
+       "ML": {
+           "enable": true,
+           "label": "Meghalaya",
+           "pays_code": "IN"
+       },
+       "MN": {
+           "enable": true,
+           "label": "Minnesota",
+           "pays_code": "US"
+       },
+       "MP": {
+           "enable": true,
+           "label": "Madhya Pradesh",
+           "pays_code": "IN"
+       },
+       "MZ": {
+           "enable": true,
+           "label": "Mizoram",
+           "pays_code": "IN"
+       },
+       "NL": {
+           "enable": true,
+           "label": "Nagaland",
+           "pays_code": "IN"
+       },
+       "OR": {
+           "enable": true,
+           "label": "Oregon",
+           "pays_code": "US"
+       },
+       "PB": {
+           "enable": true,
+           "label": "Punjab",
+           "pays_code": "IN"
+       },
+       "PY": {
+           "enable": true,
+           "label": "Puducherry",
+           "pays_code": "IN"
+       },
+       "RJ": {
+           "enable": true,
+           "label": "Rajasthan",
+           "pays_code": "IN"
+       },
+       "SK": {
+           "enable": true,
+           "label": "Sikkim",
+           "pays_code": "IN"
+       },
+       "TN": {
+           "enable": true,
+           "label": "Tennessee",
+           "pays_code": "US"
+       },
+       "TR": {
+           "enable": true,
+           "label": "TERNI",
+           "pays_code": "IT"
+       },
+       "UL": {
+           "enable": true,
+           "label": "Uttarakhand",
+           "pays_code": "IN"
+       },
+       "UP": {
+           "enable": true,
+           "label": "Uttar Pradesh",
+           "pays_code": "IN"
+       },
+       "WB": {
+           "enable": true,
+           "label": "West Bengal",
+           "pays_code": "IN"
+       },
+       "AG": {
+           "enable": true,
+           "label": "Argovie",
+           "pays_code": "CH"
+       },
+       "AL": {
+           "enable": true,
+           "label": "Alabama",
+           "pays_code": "US"
+       },
+       "AO": {
+           "enable": true,
+           "label": "AOSTA",
+           "pays_code": "IT"
+       },
+       "AQ": {
+           "enable": true,
+           "label": "L AQUILA",
+           "pays_code": "IT"
+       },
+       "AV": {
+           "enable": true,
+           "label": "AVELLINO",
+           "pays_code": "IT"
+       },
+       "BA": {
+           "enable": true,
+           "label": "BARI",
+           "pays_code": "IT"
+       },
+       "BG": {
+           "enable": true,
+           "label": "BERGAMO",
+           "pays_code": "IT"
+       },
+       "BI": {
+           "enable": true,
+           "label": "BIELLA",
+           "pays_code": "IT"
+       },
+       "BL": {
+           "enable": true,
+           "label": "Bâle Campagne",
+           "pays_code": "CH"
+       },
+       "BN": {
+           "enable": true,
+           "label": "BENEVENTO",
+           "pays_code": "IT"
+       },
+       "BO": {
+           "enable": true,
+           "label": "BOLOGNA",
+           "pays_code": "IT"
+       },
+       "BS": {
+           "enable": true,
+           "label": "Bâle Ville",
+           "pays_code": "CH"
+       },
+       "BT": {
+           "enable": true,
+           "label": "BARLETTA-ANDRIA-TRANI",
+           "pays_code": "IT"
+       },
+       "BZ": {
+           "enable": true,
+           "label": "BOLZANO",
+           "pays_code": "IT"
+       },
+       "CA": {
+           "enable": true,
+           "label": "California",
+           "pays_code": "US"
+       },
+       "CB": {
+           "enable": true,
+           "label": "CAMPOBASSO",
+           "pays_code": "IT"
+       },
+       "CE": {
+           "enable": true,
+           "label": "CASERTA",
+           "pays_code": "IT"
+       },
+       "CI": {
+           "enable": true,
+           "label": "CARBONIA-IGLESIAS",
+           "pays_code": "IT"
+       },
+       "CN": {
+           "enable": true,
+           "label": "CUNEO",
+           "pays_code": "IT"
+       },
+       "CS": {
+           "enable": true,
+           "label": "COSENZA",
+           "pays_code": "IT"
+       },
+       "CT": {
+           "enable": true,
+           "label": "Connecticut",
+           "pays_code": "US"
+       },
+       "CZ": {
+           "enable": true,
+           "label": "CATANZARO",
+           "pays_code": "IT"
+       },
+       "EN": {
+           "enable": true,
+           "label": "ENNA",
+           "pays_code": "IT"
+       },
+       "FC": {
+           "enable": true,
+           "label": "FORLI-CESENA",
+           "pays_code": "IT"
+       },
+       "FE": {
+           "enable": true,
+           "label": "FERRARA",
+           "pays_code": "IT"
+       },
+       "FG": {
+           "enable": true,
+           "label": "FOGGIA",
+           "pays_code": "IT"
+       },
+       "FI": {
+           "enable": true,
+           "label": "FIRENZE",
+           "pays_code": "IT"
+       },
+       "FR": {
+           "enable": true,
+           "label": "Fribourg",
+           "pays_code": "CH"
+       },
+       "GE": {
+           "enable": true,
+           "label": "Genève",
+           "pays_code": "CH"
+       },
+       "GO": {
+           "enable": true,
+           "label": "GORIZIA",
+           "pays_code": "IT"
+       },
+       "GR": {
+           "enable": true,
+           "label": "Grisons",
+           "pays_code": "CH"
+       },
+       "IM": {
+           "enable": true,
+           "label": "IMPERIA",
+           "pays_code": "IT"
+       },
+       "IS": {
+           "enable": true,
+           "label": "ISERNIA",
+           "pays_code": "IT"
+       },
+       "KR": {
+           "enable": true,
+           "label": "CROTONE",
+           "pays_code": "IT"
+       },
+       "LC": {
+           "enable": true,
+           "label": "LECCO",
+           "pays_code": "IT"
+       },
+       "LE": {
+           "enable": true,
+           "label": "LECCE",
+           "pays_code": "IT"
+       },
+       "LI": {
+           "enable": true,
+           "label": "LIVORNO",
+           "pays_code": "IT"
+       },
+       "LO": {
+           "enable": true,
+           "label": "LODI",
+           "pays_code": "IT"
+       },
+       "LT": {
+           "enable": true,
+           "label": "LATINA",
+           "pays_code": "IT"
+       },
+       "LU": {
+           "enable": true,
+           "label": "Lucerne",
+           "pays_code": "CH"
+       },
+       "MB": {
+           "enable": true,
+           "label": "MONZA e BRIANZA",
+           "pays_code": "IT"
+       },
+       "MC": {
+           "enable": true,
+           "label": "MACERATA",
+           "pays_code": "IT"
+       },
+       "ME": {
+           "enable": true,
+           "label": "Maine",
+           "pays_code": "US"
+       },
+       "MI": {
+           "enable": true,
+           "label": "Michigan",
+           "pays_code": "US"
+       },
+       "MO": {
+           "enable": true,
+           "label": "Missouri",
+           "pays_code": "US"
+       },
+       "MS": {
+           "enable": true,
+           "label": "Mississippi",
+           "pays_code": "US"
+       },
+       "MT": {
+           "enable": true,
+           "label": "Montana",
+           "pays_code": "US"
+       },
+       "NA": {
+           "enable": true,
+           "label": "NAPOLI",
+           "pays_code": "IT"
+       },
+       "NO": {
+           "enable": true,
+           "label": "NOVARA",
+           "pays_code": "IT"
+       },
+       "NU": {
+           "enable": true,
+           "label": "NUORO",
+           "pays_code": "IT"
+       },
+       "OG": {
+           "enable": true,
+           "label": "OGLIASTRA",
+           "pays_code": "IT"
+       },
+       "OT": {
+           "enable": true,
+           "label": "OLBIA-TEMPIO",
+           "pays_code": "IT"
+       },
+       "PA": {
+           "enable": true,
+           "label": "Pennsylvania",
+           "pays_code": "US"
+       },
+       "PC": {
+           "enable": true,
+           "label": "PIACENZA",
+           "pays_code": "IT"
+       },
+       "PD": {
+           "enable": true,
+           "label": "PADOVA",
+           "pays_code": "IT"
+       },
+       "PE": {
+           "enable": true,
+           "label": "PESCARA",
+           "pays_code": "IT"
+       },
+       "PG": {
+           "enable": true,
+           "label": "PERUGIA",
+           "pays_code": "IT"
+       },
+       "PI": {
+           "enable": true,
+           "label": "PISA",
+           "pays_code": "IT"
+       },
+       "PN": {
+           "enable": true,
+           "label": "PORDENONE",
+           "pays_code": "IT"
+       },
+       "PO": {
+           "enable": true,
+           "label": "PRATO",
+           "pays_code": "IT"
+       },
+       "PR": {
+           "enable": true,
+           "label": "PARMA",
+           "pays_code": "IT"
+       },
+       "PT": {
+           "enable": true,
+           "label": "PISTOIA",
+           "pays_code": "IT"
+       },
+       "PU": {
+           "enable": true,
+           "label": "PESARO e URBINO",
+           "pays_code": "IT"
+       },
+       "PV": {
+           "enable": true,
+           "label": "PAVIA",
+           "pays_code": "IT"
+       },
+       "PZ": {
+           "enable": true,
+           "label": "POTENZA",
+           "pays_code": "IT"
+       },
+       "RA": {
+           "enable": true,
+           "label": "RAVENNA",
+           "pays_code": "IT"
+       },
+       "RC": {
+           "enable": true,
+           "label": "REGGIO CALABRIA",
+           "pays_code": "IT"
+       },
+       "RE": {
+           "enable": true,
+           "label": "REGGIO NELL EMILIA",
+           "pays_code": "IT"
+       },
+       "RG": {
+           "enable": true,
+           "label": "RAGUSA",
+           "pays_code": "IT"
+       },
+       "RI": {
+           "enable": true,
+           "label": "Rhode Island",
+           "pays_code": "US"
+       },
+       "RM": {
+           "enable": true,
+           "label": "ROMA",
+           "pays_code": "IT"
+       },
+       "RN": {
+           "enable": true,
+           "label": "RIMINI",
+           "pays_code": "IT"
+       },
+       "RO": {
+           "enable": true,
+           "label": "ROVIGO",
+           "pays_code": "IT"
+       },
+       "SI": {
+           "enable": true,
+           "label": "SIENA",
+           "pays_code": "IT"
+       },
+       "SO": {
+           "enable": true,
+           "label": "Soleure",
+           "pays_code": "CH"
+       },
+       "SR": {
+           "enable": true,
+           "label": "SIRACUSA",
+           "pays_code": "IT"
+       },
+       "SS": {
+           "enable": true,
+           "label": "San Salvador",
+           "pays_code": "SV"
+       },
+       "SV": {
+           "enable": true,
+           "label": "San Vicente",
+           "pays_code": "SV"
+       },
+       "TA": {
+           "enable": true,
+           "label": "TARANTO",
+           "pays_code": "IT"
+       },
+       "TE": {
+           "enable": true,
+           "label": "TERAMO",
+           "pays_code": "IT"
+       },
+       "TO": {
+           "enable": true,
+           "label": "TORINO",
+           "pays_code": "IT"
+       },
+       "TP": {
+           "enable": true,
+           "label": "TRAPANI",
+           "pays_code": "IT"
+       },
+       "TS": {
+           "enable": true,
+           "label": "TRIESTE",
+           "pays_code": "IT"
+       },
+       "TV": {
+           "enable": true,
+           "label": "TREVISO",
+           "pays_code": "IT"
+       },
+       "UD": {
+           "enable": true,
+           "label": "UDINE",
+           "pays_code": "IT"
+       },
+       "VA": {
+           "enable": true,
+           "label": "Virginia",
+           "pays_code": "US"
+       },
+       "VB": {
+           "enable": true,
+           "label": "VERBANO-CUSIO-OSSOLA",
+           "pays_code": "IT"
+       },
+       "VC": {
+           "enable": true,
+           "label": "VERCELLI",
+           "pays_code": "IT"
+       },
+       "VE": {
+           "enable": true,
+           "label": "VENEZIA",
+           "pays_code": "IT"
+       },
+       "VI": {
+           "enable": true,
+           "label": "VICENZA",
+           "pays_code": "IT"
+       },
+       "VR": {
+           "enable": true,
+           "label": "VERONA",
+           "pays_code": "IT"
+       },
+       "VS": {
+           "enable": true,
+           "label": "Valais",
+           "pays_code": "CH"
+       },
+       "VT": {
+           "enable": true,
+           "label": "Vermont",
+           "pays_code": "US"
+       },
+       "VV": {
+           "enable": true,
+           "label": "VIBO VALENTIA",
+           "pays_code": "IT"
+       },
+       "AGS": {
+           "enable": true,
+           "label": "Aguascalientes",
+           "pays_code": "MX"
+       },
+       "BCN": {
+           "enable": true,
+           "label": "Baja California Norte",
+           "pays_code": "MX"
+       },
+       "BCS": {
+           "enable": true,
+           "label": "Baja California Sur",
+           "pays_code": "MX"
+       },
+       "CAM": {
+           "enable": true,
+           "label": "Campeche",
+           "pays_code": "MX"
+       },
+       "CHI": {
+           "enable": true,
+           "label": "Chihuahua",
+           "pays_code": "MX"
+       },
+       "CHP": {
+           "enable": true,
+           "label": "Chiapas",
+           "pays_code": "MX"
+       },
+       "COA": {
+           "enable": true,
+           "label": "Coahuila",
+           "pays_code": "MX"
+       },
+       "COL": {
+           "enable": true,
+           "label": "Colima",
+           "pays_code": "MX"
+       },
+       "DIF": {
+           "enable": true,
+           "label": "Distrito Federal",
+           "pays_code": "MX"
+       },
+       "DUR": {
+           "enable": true,
+           "label": "Durango",
+           "pays_code": "MX"
+       },
+       "GRO": {
+           "enable": true,
+           "label": "Guerrero",
+           "pays_code": "MX"
+       },
+       "GTO": {
+           "enable": true,
+           "label": "Guanajuato",
+           "pays_code": "MX"
+       },
+       "HGO": {
+           "enable": true,
+           "label": "Hidalgo",
+           "pays_code": "MX"
+       },
+       "JAL": {
+           "enable": true,
+           "label": "Jalisco",
+           "pays_code": "MX"
+       },
+       "MEX": {
+           "enable": true,
+           "label": "México",
+           "pays_code": "MX"
+       },
+       "MIC": {
+           "enable": true,
+           "label": "Michoacán de Ocampo",
+           "pays_code": "MX"
+       },
+       "MOR": {
+           "enable": true,
+           "label": "Morelos",
+           "pays_code": "MX"
+       },
+       "NAY": {
+           "enable": true,
+           "label": "Nayarit",
+           "pays_code": "MX"
+       },
+       "NLE": {
+           "enable": true,
+           "label": "Nuevo León",
+           "pays_code": "MX"
+       },
+       "OAX": {
+           "enable": true,
+           "label": "Oaxaca",
+           "pays_code": "MX"
+       },
+       "PUE": {
+           "enable": true,
+           "label": "Puebla",
+           "pays_code": "MX"
+       },
+       "QRO": {
+           "enable": true,
+           "label": "Querétaro",
+           "pays_code": "MX"
+       },
+       "ROO": {
+           "enable": true,
+           "label": "Quintana Roo",
+           "pays_code": "MX"
+       },
+       "SIN": {
+           "enable": true,
+           "label": "Sinaloa",
+           "pays_code": "MX"
+       },
+       "SLP": {
+           "enable": true,
+           "label": "San Luis Potosí",
+           "pays_code": "MX"
+       },
+       "SON": {
+           "enable": true,
+           "label": "Sonora",
+           "pays_code": "MX"
+       },
+       "TAB": {
+           "enable": true,
+           "label": "Tabasco",
+           "pays_code": "MX"
+       },
+       "TAM": {
+           "enable": true,
+           "label": "Tamaulipas",
+           "pays_code": "MX"
+       },
+       "TLX": {
+           "enable": true,
+           "label": "Tlaxcala",
+           "pays_code": "MX"
+       },
+       "VER": {
+           "enable": true,
+           "label": "Veracruz",
+           "pays_code": "MX"
+       },
+       "YUC": {
+           "enable": true,
+           "label": "Yucatán",
+           "pays_code": "MX"
+       },
+       "ZAC": {
+           "enable": true,
+           "label": "Zacatecas",
+           "pays_code": "MX"
+       },
+       "AH": {
+           "enable": true,
+           "label": "Ahuachapan",
+           "pays_code": "SV"
+       },
+       "CU": {
+           "enable": true,
+           "label": "Cuscatlan",
+           "pays_code": "SV"
+       },
+       "LL": {
+           "enable": true,
+           "label": "La Libertad",
+           "pays_code": "SV"
+       },
+       "US": {
+           "enable": true,
+           "label": "Usulutan",
+           "pays_code": "SV"
+       },
+       "AI": {
+           "enable": true,
+           "label": "Appenzell Rhodes intérieures",
+           "pays_code": "CH"
+       },
+       "BE": {
+           "enable": true,
+           "label": "Berne",
+           "pays_code": "CH"
+       },
+       "GL": {
+           "enable": true,
+           "label": "Glaris",
+           "pays_code": "CH"
+       },
+       "JU": {
+           "enable": true,
+           "label": "Jura",
+           "pays_code": "CH"
+       },
+       "NE": {
+           "enable": true,
+           "label": "Nebraska",
+           "pays_code": "US"
+       },
+       "NW": {
+           "enable": true,
+           "label": "Nidwald",
+           "pays_code": "CH"
+       },
+       "OW": {
+           "enable": true,
+           "label": "Obwald",
+           "pays_code": "CH"
+       },
+       "SH": {
+           "enable": true,
+           "label": "Schaffhouse",
+           "pays_code": "CH"
+       },
+       "SZ": {
+           "enable": true,
+           "label": "Schwyz",
+           "pays_code": "CH"
+       },
+       "TG": {
+           "enable": true,
+           "label": "Thurgovie",
+           "pays_code": "CH"
+       },
+       "TI": {
+           "enable": true,
+           "label": "Tessin",
+           "pays_code": "CH"
+       },
+       "UR": {
+           "enable": true,
+           "label": "Uri",
+           "pays_code": "CH"
+       },
+       "VD": {
+           "enable": true,
+           "label": "Vaud",
+           "pays_code": "CH"
+       },
+       "ZG": {
+           "enable": true,
+           "label": "Zug",
+           "pays_code": "CH"
+       },
+       "ZH": {
+           "enable": true,
+           "label": "Zürich",
+           "pays_code": "CH"
+       },
+       "AK": {
+           "enable": true,
+           "label": "Alaska",
+           "pays_code": "US"
+       },
+       "AZ": {
+           "enable": true,
+           "label": "Arizona",
+           "pays_code": "US"
+       },
+       "DE": {
+           "enable": true,
+           "label": "Delaware",
+           "pays_code": "US"
+       },
+       "FL": {
+           "enable": true,
+           "label": "Florida",
+           "pays_code": "US"
+       },
+       "HI": {
+           "enable": true,
+           "label": "Hawaii",
+           "pays_code": "US"
+       },
+       "IA": {
+           "enable": true,
+           "label": "Iowa",
+           "pays_code": "US"
+       },
+       "ID": {
+           "enable": true,
+           "label": "Idaho",
+           "pays_code": "US"
+       },
+       "IL": {
+           "enable": true,
+           "label": "Illinois",
+           "pays_code": "US"
+       },
+       "KS": {
+           "enable": true,
+           "label": "Kansas",
+           "pays_code": "US"
+       },
+       "KY": {
+           "enable": true,
+           "label": "Kentucky",
+           "pays_code": "US"
+       },
+       "LA": {
+           "enable": true,
+           "label": "Louisiana",
+           "pays_code": "US"
+       },
+       "MA": {
+           "enable": true,
+           "label": "Massachusetts",
+           "pays_code": "US"
+       },
+       "MD": {
+           "enable": true,
+           "label": "Maryland",
+           "pays_code": "US"
+       },
+       "NC": {
+           "enable": true,
+           "label": "North Carolina",
+           "pays_code": "US"
+       },
+       "ND": {
+           "enable": true,
+           "label": "North Dakota",
+           "pays_code": "US"
+       },
+       "NH": {
+           "enable": true,
+           "label": "New Hampshire",
+           "pays_code": "US"
+       },
+       "NJ": {
+           "enable": true,
+           "label": "New Jersey",
+           "pays_code": "US"
+       },
+       "NM": {
+           "enable": true,
+           "label": "New Mexico",
+           "pays_code": "US"
+       },
+       "NV": {
+           "enable": true,
+           "label": "Nevada",
+           "pays_code": "US"
+       },
+       "NY": {
+           "enable": true,
+           "label": "New York",
+           "pays_code": "US"
+       },
+       "OH": {
+           "enable": true,
+           "label": "Ohio",
+           "pays_code": "US"
+       },
+       "OK": {
+           "enable": true,
+           "label": "Oklahoma",
+           "pays_code": "US"
+       },
+       "SD": {
+           "enable": true,
+           "label": "South Dakota",
+           "pays_code": "US"
+       },
+       "TX": {
+           "enable": true,
+           "label": "Texas",
+           "pays_code": "US"
+       },
+       "UT": {
+           "enable": true,
+           "label": "Utah",
+           "pays_code": "US"
+       },
+       "WI": {
+           "enable": true,
+           "label": "Wisconsin",
+           "pays_code": "US"
+       },
+       "WV": {
+           "enable": true,
+           "label": "West Virginia",
+           "pays_code": "US"
+       },
+       "WY": {
+           "enable": true,
+           "label": "Wyoming",
+           "pays_code": "US"
+       },
+       "VE-A": {
+           "enable": true,
+           "label": "Distrito Capital",
+           "pays_code": "VE"
+       },
+       "VE-B": {
+           "enable": true,
+           "label": "Anzoátegui",
+           "pays_code": "VE"
+       },
+       "VE-C": {
+           "enable": true,
+           "label": "Apure",
+           "pays_code": "VE"
+       },
+       "VE-D": {
+           "enable": true,
+           "label": "Aragua",
+           "pays_code": "VE"
+       },
+       "VE-E": {
+           "enable": true,
+           "label": "Barinas",
+           "pays_code": "VE"
+       },
+       "VE-F": {
+           "enable": true,
+           "label": "Bolívar",
+           "pays_code": "VE"
+       },
+       "VE-G": {
+           "enable": true,
+           "label": "Carabobo",
+           "pays_code": "VE"
+       },
+       "VE-H": {
+           "enable": true,
+           "label": "Cojedes",
+           "pays_code": "VE"
+       },
+       "VE-I": {
+           "enable": true,
+           "label": "Falcón",
+           "pays_code": "VE"
+       },
+       "VE-J": {
+           "enable": true,
+           "label": "Guárico",
+           "pays_code": "VE"
+       },
+       "VE-K": {
+           "enable": true,
+           "label": "Lara",
+           "pays_code": "VE"
+       },
+       "VE-L": {
+           "enable": true,
+           "label": "Mérida",
+           "pays_code": "VE"
+       },
+       "VE-M": {
+           "enable": true,
+           "label": "Miranda",
+           "pays_code": "VE"
+       },
+       "VE-N": {
+           "enable": true,
+           "label": "Monagas",
+           "pays_code": "VE"
+       },
+       "VE-O": {
+           "enable": true,
+           "label": "Nueva Esparta",
+           "pays_code": "VE"
+       },
+       "VE-P": {
+           "enable": true,
+           "label": "Portuguesa",
+           "pays_code": "VE"
+       },
+       "VE-R": {
+           "enable": true,
+           "label": "Sucre",
+           "pays_code": "VE"
+       },
+       "VE-S": {
+           "enable": true,
+           "label": "Táchira",
+           "pays_code": "VE"
+       },
+       "VE-T": {
+           "enable": true,
+           "label": "Trujillo",
+           "pays_code": "VE"
+       },
+       "VE-U": {
+           "enable": true,
+           "label": "Yaracuy",
+           "pays_code": "VE"
+       },
+       "VE-V": {
+           "enable": true,
+           "label": "Zulia",
+           "pays_code": "VE"
+       },
+       "VE-W": {
+           "enable": true,
+           "label": "Vargas",
+           "pays_code": "VE"
+       },
+       "VE-X": {
+           "enable": true,
+           "label": "Amazonas",
+           "pays_code": "VE"
+       },
+       "VE-Y": {
+           "enable": true,
+           "label": "Delta Amacuro",
+           "pays_code": "VE"
+       },
+       "VE-Z": {
+           "enable": true,
+           "label": "Dependencias Federales",
+           "pays_code": "VE"
+       }
+   },
+   "class": "dict"
+}

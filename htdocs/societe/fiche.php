@@ -102,7 +102,7 @@ if (empty($reshook)) {
 
         if ($action == 'update') {
             $ret = $object->fetch($socid);
-            $object->oldcopy = dol_clone($object);
+            $oldcopy = dol_clone($object);
         }
         else
             $object->canvas = $canvas;
@@ -139,7 +139,7 @@ if (empty($reshook)) {
 
         $object->tva_intra = GETPOST('tva_intra');
         $object->tva_assuj = GETPOST('assujtva_value');
-        $object->status = GETPOST('status');
+        $object->Status = GETPOST('status');
 
         // Local Taxes
         $object->localtax1_assuj = GETPOST('localtax1assuj_value');
@@ -202,7 +202,7 @@ if (empty($reshook)) {
                     if ($object->id_prof_exists($i, $vallabel, $object->id)) {
                         $langs->load("errors");
                         $error++;
-                        $errors[] = $langs->transcountry('ProfId' . $i, $object->country_code) . " " . $langs->trans("ErrorProdIdAlreadyExist", $vallabel);
+                        $errors[] = $langs->transcountry('ProfId' . $i, $object->country_id) . " " . $langs->trans("ErrorProdIdAlreadyExist", $vallabel);
                         $action = ($action == 'add' ? 'create' : 'edit');
                     }
                 }
@@ -210,7 +210,6 @@ if (empty($reshook)) {
         }
         if (!$error) {
             if ($action == 'add') {
-                $db->begin();
 
                 if (empty($object->client))
                     $object->code_client = '';
@@ -232,7 +231,7 @@ if (empty($reshook)) {
                         $contact->state_id = $object->state_id;
                         $contact->country_id = $object->country_id;
                         $contact->socid = $object->id; // fk_soc
-                        $contact->status = 1;
+                        $contact->Status = 1;
                         $contact->email = $object->email;
                         $contact->phone_pro = $object->phone;
                         $contact->fax = $object->fax;
@@ -281,7 +280,7 @@ if (empty($reshook)) {
 
                     $url = $_SERVER["PHP_SELF"] . "?id=" . $object->id;
                     if (($object->client == 1 || $object->client == 3) && empty($conf->global->SOCIETE_DISABLE_CUSTOMERS))
-                        $url = DOL_URL_ROOT . "/comm/fiche.php?id=" . $object->id;
+                        $url = $_SERVER["PHP_SELF"] . "?id=" . $object->id;
                     else if ($object->fournisseur == 1)
                         $url = DOL_URL_ROOT . "/fourn/fiche.php?id=" . $object->id;
                     header("Location: " . $url);
@@ -300,13 +299,13 @@ if (empty($reshook)) {
                 }
 
                 // To not set code if third party is not concerned. But if it had values, we keep them.
-                if (empty($object->client) && empty($object->oldcopy->code_client))
+                if (empty($object->client) && empty($oldcopy->code_client))
                     $object->code_client = '';
-                if (empty($object->fournisseur) && empty($object->oldcopy->code_fournisseur))
+                if (empty($object->fournisseur) && empty($oldcopy->code_fournisseur))
                     $object->code_fournisseur = '';
                 //var_dump($object);exit;
 
-                $result = $object->update($socid, $user, 1, $object->oldcopy->codeclient_modifiable(), $object->oldcopy->codefournisseur_modifiable());
+                $result = $object->update($socid, $user, 1, $oldcopy->codeclient_modifiable(), $oldcopy->codefournisseur_modifiable());
                 if ($result <= 0) {
                     $error = $object->error;
                     $errors = $object->errors;
@@ -536,7 +535,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         $object->civility_id = GETPOST('civilite_id');
 
         $object->tva_assuj = GETPOST('assujtva_value');
-        $object->status = GETPOST('status');
+        $object->Status = GETPOST('status');
 
         //Local Taxes
         $object->localtax1_assuj = GETPOST('localtax1assuj_value');
@@ -575,17 +574,22 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             }
         }
 
-        // We set country_id, country_code and country for the selected country
-        $object->country_id = GETPOST('country_id') ? GETPOST('country_id') : $mysoc->country_id;
-        if ($object->country_id) {
-            $tmparray = getCountry($object->country_id, 'all');
-            $object->country_code = $tmparray['code'];
-            $object->country = $tmparray['label'];
-        }
+        // We set country_id country for the selected country
+        $object->country_id = GETPOST('country_id') ? GETPOST('country_id') : $mysoc->pays_code;
+        /* if ($object->country_id) {
+          $tmparray = getCountry($object->country_id, 'all');
+          $object->country_id = $tmparray['code'];
+          $object->country = $tmparray['label'];
+          } */
         $object->forme_juridique_code = GETPOST('forme_juridique_code');
         /* Show create form */
 
         print_fiche_titre($langs->trans("NewThirdParty"));
+        print '<div class="with-padding">';
+        print '<div class="columns">';
+
+        $titre = $langs->trans("NewThirdParty");
+        print start_box($titre, "twelve", $object->fk_extrafields->ico, false);
 
         if (!empty($conf->use_javascript_ajax)) {
             print "\n" . '<script type="text/javascript">';
@@ -666,7 +670,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             print '<tr class="individualline"><td>' . $langs->trans('FirstName') . '</td><td><input type="text" size="30" name="prenom" value="' . $object->firstname . '"></td>';
             print '<td colspan=2>&nbsp;</td></tr>';
             print '<tr class="individualline"><td>' . $langs->trans("UserTitle") . '</td><td>';
-            print $formcompany->select_civility($object->civility_id) . '</td>';
+            print $object->select_fk_extrafields('civilite_id','civilite_id') . '</td>';
             print '<td colspan=2>&nbsp;</td></tr>';
         }
 
@@ -732,7 +736,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
         // Status
         print '<tr><td>' . $langs->trans('Status') . '</td><td colspan="3">';
-        print $form->selectarray('status', array('0' => $langs->trans('ActivityCeased'), '1' => $langs->trans('InActivity')), 1);
+        print $object->select_fk_extrafields('Status', "status");
         print '</td></tr>';
 
         // Barcode
@@ -755,7 +759,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
         // Country
         print '<tr><td width="25%">' . $langs->trans('Country') . '</td><td colspan="3">';
-        print $form->select_country($object->country_id, 'country_id');
+        print $object->select_fk_extrafields('country_id', 'country_id');
         if ($user->admin)
             print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"), 1);
         print '</td></tr>';
@@ -764,7 +768,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         if (empty($conf->global->SOCIETE_DISABLE_STATE)) {
             print '<tr><td>' . $langs->trans('State') . '</td><td colspan="3">';
             if ($object->country_id)
-                print $formcompany->select_state($object->state_id, $object->country_code, 'departement_id');
+                print $object->select_fk_extrafields('state_id', 'departement_id');
             else
                 print $countrynotdefined;
             print '</td></tr>';
@@ -781,13 +785,13 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         $i = 1;
         $j = 0;
         while ($i <= 6) {
-            $idprof = $langs->transcountry('ProfId' . $i, $object->country_code);
+            $idprof = $langs->transcountry('ProfId' . $i, $object->country_id);
             if ($idprof != '-') {
                 if (($j % 2) == 0)
                     print '<tr>';
                 print '<td>' . $idprof . '</td><td>';
                 $key = 'idprof' . $i;
-                print $formcompany->get_input_id_prof($i, 'idprof' . $i, $object->$key, $object->country_code);
+                print $formcompany->get_input_id_prof($i, 'idprof' . $i, $object->$key, $object->country_id);
                 print '</td>';
                 if (($j % 2) == 1)
                     print '</tr>';
@@ -831,12 +835,12 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
         // Type - Size
         print '<tr><td>' . $langs->trans("ThirdPartyType") . '</td><td>' . "\n";
-        print $form->selectarray("typent_id", $formcompany->typent_array(0), $object->typent_id);
+        print $object->select_fk_extrafields("typent_id", "typent_id");
         if ($user->admin)
             print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"), 1);
         print '</td>';
         print '<td>' . $langs->trans("Staff") . '</td><td>';
-        print $form->selectarray("effectif_id", $formcompany->effectif_array(0), $object->effectif_id);
+        print $object->select_fk_extrafields("effectif_id", "effectif_id");
         if ($user->admin)
             print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"), 1);
         print '</td></tr>';
@@ -845,7 +849,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         print '<tr><td>' . $langs->trans('JuridicalStatus') . '</td>';
         print '<td colspan="3">';
         if ($object->country_id) {
-            $formcompany->select_forme_juridique($object->forme_juridique_code, $object->country_code);
+            print $object->select_fk_extrafields("forme_juridique_code", "forme_juridique_code");
         } else {
             print $countrynotdefined;
         }
@@ -856,7 +860,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
         // Local Taxes
         // TODO add specific function by country
-        if ($mysoc->country_code == 'ES') {
+        if ($mysoc->country_id == 'ES') {
             if ($mysoc->localtax1_assuj == "1" && $mysoc->localtax2_assuj == "1") {
                 print '<tr><td>' . $langs->trans("LocalTax1IsUsedES") . '</td><td>';
                 print $form->selectyesno('localtax1assuj_value', 0, 1);
@@ -917,6 +921,9 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         print '</center>' . "\n";
 
         print '</form>' . "\n";
+
+        print end_box();
+        print '</div></div>';
     } elseif ($action == 'edit') {
         /*
          * Edition
@@ -1010,7 +1017,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
                 $object->tva_assuj = GETPOST('assujtva_value');
                 $object->tva_intra = GETPOST('tva_intra');
-                $object->status = GETPOST('status');
+                $object->Status = GETPOST('status');
 
                 //Local Taxes
                 $object->localtax1_assuj = GETPOST('localtax1assuj_value');
@@ -1026,8 +1033,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
                     } else {
                         dol_print_error($db);
                     }
-                    $object->country_code = $obj->code;
-                    $object->country = $langs->trans("Country" . $obj->code) ? $langs->trans("Country" . $obj->code) : $obj->libelle;
+                    $object->country_id = $langs->trans("Country" . $obj->code) ? $langs->trans("Country" . $obj->code) : $obj->libelle;
                 }
             }
 
@@ -1150,7 +1156,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
             // Status
             print '<tr><td>' . $langs->trans("Status") . '</td><td colspan="3">';
-            print $form->selectarray('status', array('0' => $langs->trans('ActivityCeased'), '1' => $langs->trans('InActivity')), $object->Status);
+            print $object->select_fk_extrafields("Status", 'status');
             print '</td></tr>';
 
             // Address
@@ -1167,7 +1173,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
             // Country
             print '<tr><td>' . $langs->trans('Country') . '</td><td colspan="3">';
-            print $form->select_country($object->country, 'country_id');
+            print $object->select_fk_extrafields("country_id", 'country_id');
             if ($user->admin)
                 print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"), 1);
             print '</td></tr>';
@@ -1175,7 +1181,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             // State
             if (empty($conf->global->SOCIETE_DISABLE_STATE)) {
                 print '<tr><td>' . $langs->trans('State') . '</td><td colspan="3">';
-                print $formcompany->select_state($object->state, $object->country);
+                print $object->select_fk_extrafields("state_id", "departement_id");
                 print '</td></tr>';
             }
 
@@ -1191,13 +1197,13 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             $i = 1;
             $j = 0;
             while ($i <= 6) {
-                $idprof = $langs->transcountry('ProfId' . $i, $object->country);
+                $idprof = $langs->transcountry('ProfId' . $i, $object->country_id);
                 if ($idprof != '-') {
                     if (($j % 2) == 0)
                         print '<tr>';
                     print '<td>' . $idprof . '</td><td>';
                     $key = 'idprof' . $i;
-                    print $formcompany->get_input_id_prof($i, 'idprof' . $i, $object->$key, $object->country);
+                    print $formcompany->get_input_id_prof($i, 'idprof' . $i, $object->$key, $object->country_id);
                     print '</td>';
                     if (($j % 2) == 1)
                         print '</tr>';
@@ -1241,7 +1247,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
             // Local Taxes
             // TODO add specific function by country
-            if ($mysoc->country_code == 'ES') {
+            if ($mysoc->country_id == 'ES') {
                 if ($mysoc->localtax1_assuj == "1" && $mysoc->localtax2_assuj == "1") {
                     print '<tr><td>' . $langs->trans("LocalTax1IsUsedES") . '</td><td>';
                     print $form->selectyesno('localtax1assuj_value', $object->localtax1_assuj, 1);
@@ -1261,18 +1267,18 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
             // Type - Size
             print '<tr><td>' . $langs->trans("ThirdPartyType") . '</td><td>';
-            print $form->selectarray("typent_id", $formcompany->typent_array(0), $object->typent_id);
+            print $object->select_fk_extrafields("typent_id", "typent_id");
             if ($user->admin)
                 print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"), 1);
             print '</td>';
             print '<td>' . $langs->trans("Staff") . '</td><td>';
-            print $form->selectarray("effectif_id", $formcompany->effectif_array(0), $object->effectif_id);
+            print $object->select_fk_extrafields("effectif_id", "effectif_id");
             if ($user->admin)
                 print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"), 1);
             print '</td></tr>';
 
             print '<tr><td>' . $langs->trans('JuridicalStatus') . '</td><td colspan="3">';
-            $formcompany->select_forme_juridique($object->forme_juridique_code, $object->country_code);
+            print $object->select_fk_extrafields("forme_juridique_code", "forme_juridique_code");
             print '</td></tr>';
 
             // Capital
@@ -1368,7 +1374,6 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         print '<table class="border" width="100%">';
 
         // Ref
-        // Name
         print '<tr><td width="20%">' . $langs->trans('Ref') . '</td>';
         print '<td colspan="3">';
         print $form->showrefnav($object, 'id', '', ($user->societe_id ? 0 : 1), 'rowid', 'nom');
@@ -1472,19 +1477,19 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
         // Country
         print '<tr><td>' . $langs->trans("Country") . '</td><td colspan="' . (2 + (($showlogo || $showbarcode) ? 0 : 1)) . '" nowrap="nowrap">';
-        $img = picto_from_langcode($object->country);
+        $img = picto_from_langcode($object->country_id);
         if ($object->isInEEC())
-            print $form->textwithpicto(($img ? $img . ' ' : '') . $object->country, $langs->trans("CountryIsInEEC"), 1, 0);
+            print $form->textwithpicto(($img ? $img . ' ' : '') . $object->country_id, $langs->trans("CountryIsInEEC"), 1, 0);
         else
-            print ($img ? $img . ' ' : '') . $object->country;
+            print ($img ? $img . ' ' : '') . $object->country_id;
         print '</td></tr>';
 
         // State
         if (empty($conf->global->SOCIETE_DISABLE_STATE))
-            print '<tr><td>' . $langs->trans('State') . '</td><td colspan="' . (2 + (($showlogo || $showbarcode) ? 0 : 1)) . '">' . $object->state . '</td>';
+            print '<tr><td>' . $langs->trans('State') . '</td><td colspan="' . (2 + (($showlogo || $showbarcode) ? 0 : 1)) . '">' . $object->print_fk_extrafields("state_id") . '</td>';
 
-        print '<tr><td>' . $langs->trans('Phone') . '</td><td style="min-width: 25%;">' . dol_print_phone($object->phone, $object->country_code, 0, $object->id, 'AC_TEL') . '</td>';
-        print '<td>' . $langs->trans('Fax') . '</td><td style="min-width: 25%;">' . dol_print_phone($object->fax, $object->country_code, 0, $object->id, 'AC_FAX') . '</td></tr>';
+        print '<tr><td>' . $langs->trans('Phone') . '</td><td style="min-width: 25%;">' . dol_print_phone($object->phone, $object->country_id, 0, $object->id, 'AC_TEL') . '</td>';
+        print '<td>' . $langs->trans('Fax') . '</td><td style="min-width: 25%;">' . dol_print_phone($object->fax, $object->country_id, 0, $object->id, 'AC_FAX') . '</td></tr>';
 
         // EMail
         print '<tr><td>' . $langs->trans('EMail') . '</td><td width="25%">';
@@ -1500,7 +1505,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         $i = 1;
         $j = 0;
         while ($i <= 6) {
-            $idprof = $langs->transcountry('ProfId' . $i, $object->country);
+            $idprof = $langs->transcountry('ProfId' . $i, $object->country_id);
             if ($idprof != '-') {
                 if (($j % 2) == 0)
                     print '<tr>';
@@ -1564,7 +1569,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
         // Local Taxes
         // TODO add specific function by country
-        if ($mysoc->country_code == 'ES') {
+        if ($mysoc->country_id == 'ES') {
             if ($mysoc->localtax1_assuj == "1" && $mysoc->localtax2_assuj == "1") {
                 print '<tr><td>' . $langs->trans("LocalTax1IsUsedES") . '</td><td>';
                 print yn($object->localtax1_assuj);
@@ -1585,10 +1590,10 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         // Type + Staff
         $arr = $formcompany->typent_array(1);
         $object->typent = $arr[$object->typent_code];
-        print '<tr><td>' . $langs->trans("ThirdPartyType") . '</td><td>' . $object->typent . '</td><td>' . $langs->trans("Staff") . '</td><td>' . $object->effectif . '</td></tr>';
+        print '<tr><td>' . $langs->trans("ThirdPartyType") . '</td><td>' . $object->print_fk_extrafields("typent_id") . '</td><td>' . $langs->trans("Staff") . '</td><td>' . $object->print_fk_extrafields("effectif_id") . '</td></tr>';
 
         // Legal
-        print '<tr><td>' . $langs->trans('JuridicalStatus') . '</td><td colspan="3">' . $object->forme_juridique . '</td></tr>';
+        print '<tr><td>' . $langs->trans('JuridicalStatus') . '</td><td colspan="3">' . $object->print_fk_extrafields("forme_juridique_code") . '</td></tr>';
 
         // Capital
         print '<tr><td>' . $langs->trans('Capital') . '</td><td colspan="3">';

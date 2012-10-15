@@ -184,11 +184,11 @@ while ($aRow = $db->fetch_object($resultSocietes)) {
     $col[$aRow->rowid]->code_compta = $aRow->code_compta;
     $col[$aRow->rowid]->code_compta_fournisseur = $aRow->code_compta_fournisseur;
     $col[$aRow->rowid]->address = $aRow->address;
-    $col[$aRow->rowid]->state = $aRow->fk_departement;
-    $col[$aRow->rowid]->country = $aRow->code; // FR
+    $col[$aRow->rowid]->state_id = $aRow->fk_departement;
+    $col[$aRow->rowid]->country_id = $aRow->code; // FR
     $col[$aRow->rowid]->phone = $aRow->tel;
     $col[$aRow->rowid]->fax = $aRow->fax;
-    $col[$aRow->rowid]->eMail = $aRow->email;
+    $col[$aRow->rowid]->email = $aRow->email;
     $col[$aRow->rowid]->url = $aRow->url;
     $col[$aRow->rowid]->idprof1 = $aRow->siren;
     $col[$aRow->rowid]->idprof2 = $aRow->siret;
@@ -228,7 +228,7 @@ $resultCommerciaux = $db->query($sql);
 /* init society sales array  */
 while ($aRow = $db->fetch_object($resultCommerciaux)) {
     if (!empty($col[$aRow->fk_soc]->rowid)) {
-        $col[$aRow->fk_soc]->SalesRepresentatives[] = $aRow->login;
+        $col[$aRow->fk_soc]->commercial_id = $aRow->login;
     }
 }
 $db->free($resultCommerciaux);

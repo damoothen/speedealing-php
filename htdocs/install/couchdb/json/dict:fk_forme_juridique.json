@@ -1,0 +1,780 @@
+{
+   "_id": "dict:fk_forme_juridique",
+   "values": {
+       "0": {
+           "enable": true,
+           "label": "-"
+       },
+       "11": {
+           "enable": true,
+           "label": "Artisan Commerçant (EI)",
+           "pays_code": "FR"
+       },
+       "12": {
+           "enable": true,
+           "label": "Commerçant (EI)",
+           "pays_code": "FR"
+       },
+       "13": {
+           "enable": true,
+           "label": "Artisan (EI)",
+           "pays_code": "FR"
+       },
+       "14": {
+           "enable": true,
+           "label": "Officier public ou ministériel",
+           "pays_code": "FR"
+       },
+       "15": {
+           "enable": true,
+           "label": "Profession libérale (EI)",
+           "pays_code": "FR"
+       },
+       "16": {
+           "enable": true,
+           "label": "Exploitant agricole",
+           "pays_code": "FR"
+       },
+       "17": {
+           "enable": true,
+           "label": "Agent commercial",
+           "pays_code": "FR"
+       },
+       "18": {
+           "enable": true,
+           "label": "Associé Gérant de société",
+           "pays_code": "FR"
+       },
+       "19": {
+           "enable": true,
+           "label": "Personne physique",
+           "pays_code": "FR"
+       },
+       "21": {
+           "enable": true,
+           "label": "Indivision",
+           "pays_code": "FR"
+       },
+       "22": {
+           "enable": true,
+           "label": "Société créée de fait",
+           "pays_code": "FR"
+       },
+       "23": {
+           "enable": true,
+           "label": "Société en participation",
+           "pays_code": "FR"
+       },
+       "27": {
+           "enable": true,
+           "label": "Paroisse hors zone concordataire",
+           "pays_code": "FR"
+       },
+       "29": {
+           "enable": true,
+           "label": "Groupement de droit privé non doté de la personnalité morale",
+           "pays_code": "FR"
+       },
+       "31": {
+           "enable": true,
+           "label": "Personne morale de droit étranger, immatriculée au RCS",
+           "pays_code": "FR"
+       },
+       "32": {
+           "enable": true,
+           "label": "Personne morale de droit étranger, non immatriculée au RCS",
+           "pays_code": "FR"
+       },
+       "35": {
+           "enable": true,
+           "label": "Régime auto-entrepreneur",
+           "pays_code": "FR"
+       },
+       "41": {
+           "enable": true,
+           "label": "Établissement public ou régie à caractère industriel ou commercial",
+           "pays_code": "FR"
+       },
+       "51": {
+           "enable": true,
+           "label": "Société coopérative commerciale particulière",
+           "pays_code": "FR"
+       },
+       "52": {
+           "enable": true,
+           "label": "Société en nom collectif",
+           "pays_code": "FR"
+       },
+       "53": {
+           "enable": true,
+           "label": "Société en commandite",
+           "pays_code": "FR"
+       },
+       "54": {
+           "enable": true,
+           "label": "Société à responsabilité limitée (SARL)",
+           "pays_code": "FR"
+       },
+       "55": {
+           "enable": true,
+           "label": "Société anonyme à conseil d administration",
+           "pays_code": "FR"
+       },
+       "56": {
+           "enable": true,
+           "label": "Société anonyme à directoire",
+           "pays_code": "FR"
+       },
+       "57": {
+           "enable": true,
+           "label": "Société par actions simplifiée",
+           "pays_code": "FR"
+       },
+       "58": {
+           "enable": true,
+           "label": "Entreprise Unipersonnelle à Responsabilité Limitée (EURL)",
+           "pays_code": "FR"
+       },
+       "61": {
+           "enable": true,
+           "label": "Caisse d'épargne et de prévoyance",
+           "pays_code": "FR"
+       },
+       "62": {
+           "enable": true,
+           "label": "Groupement d'intérêt économique (GIE)",
+           "pays_code": "FR"
+       },
+       "63": {
+           "enable": true,
+           "label": "Société coopérative agricole",
+           "pays_code": "FR"
+       },
+       "64": {
+           "enable": true,
+           "label": "Société non commerciale d assurances",
+           "pays_code": "FR"
+       },
+       "65": {
+           "enable": true,
+           "label": "Société civile",
+           "pays_code": "FR"
+       },
+       "69": {
+           "enable": true,
+           "label": "Personnes de droit privé inscrites au RCS",
+           "pays_code": "FR"
+       },
+       "71": {
+           "enable": true,
+           "label": "Administration de l état",
+           "pays_code": "FR"
+       },
+       "72": {
+           "enable": true,
+           "label": "Collectivité territoriale",
+           "pays_code": "FR"
+       },
+       "73": {
+           "enable": true,
+           "label": "Établissement public administratif",
+           "pays_code": "FR"
+       },
+       "74": {
+           "enable": true,
+           "label": "Personne morale de droit public administratif",
+           "pays_code": "FR"
+       },
+       "81": {
+           "enable": true,
+           "label": "Organisme gérant régime de protection social à adhésion obligatoire",
+           "pays_code": "FR"
+       },
+       "82": {
+           "enable": true,
+           "label": "Organisme mutualiste",
+           "pays_code": "FR"
+       },
+       "83": {
+           "enable": true,
+           "label": "Comité d entreprise",
+           "pays_code": "FR"
+       },
+       "84": {
+           "enable": true,
+           "label": "Organisme professionnel",
+           "pays_code": "FR"
+       },
+       "85": {
+           "enable": true,
+           "label": "Organisme de retraite à adhésion non obligatoire",
+           "pays_code": "FR"
+       },
+       "91": {
+           "enable": true,
+           "label": "Syndicat de propriétaires",
+           "pays_code": "FR"
+       },
+       "92": {
+           "enable": true,
+           "label": "Association loi 1901 ou assimilé",
+           "pays_code": "FR"
+       },
+       "93": {
+           "enable": true,
+           "label": "Fondation",
+           "pays_code": "FR"
+       },
+       "99": {
+           "enable": true,
+           "label": "Personne morale de droit privé",
+           "pays_code": "FR"
+       },
+       "200": {
+           "enable": true,
+           "label": "Indépendant",
+           "pays_code": "BE"
+       },
+       "201": {
+           "enable": true,
+           "label": "SPRL - Société à responsabilité limitée",
+           "pays_code": "BE"
+       },
+       "202": {
+           "enable": true,
+           "label": "SA   - Société Anonyme",
+           "pays_code": "BE"
+       },
+       "203": {
+           "enable": true,
+           "label": "SCRL - Société coopérative à responsabilité limitée",
+           "pays_code": "BE"
+       },
+       "204": {
+           "enable": true,
+           "label": "ASBL - Association sans but Lucratif",
+           "pays_code": "BE"
+       },
+       "205": {
+           "enable": true,
+           "label": "SCRI - Société coopérative à responsabilité illimitée",
+           "pays_code": "BE"
+       },
+       "206": {
+           "enable": true,
+           "label": "SCS  - Société en commandite simple",
+           "pays_code": "BE"
+       },
+       "207": {
+           "enable": true,
+           "label": "SCA  - Société en commandite par action",
+           "pays_code": "BE"
+       },
+       "208": {
+           "enable": true,
+           "label": "SNC  - Société en nom collectif",
+           "pays_code": "BE"
+       },
+       "209": {
+           "enable": true,
+           "label": "GIE  - Groupement d intérêt économique",
+           "pays_code": "BE"
+       },
+       "210": {
+           "enable": true,
+           "label": "GEIE - Groupement européen d intérêt économique",
+           "pays_code": "BE"
+       },
+       "301": {
+           "enable": true,
+           "label": "Società semplice",
+           "pays_code": "IT"
+       },
+       "302": {
+           "enable": true,
+           "label": "Società in nome collettivo s.n.c.",
+           "pays_code": "IT"
+       },
+       "303": {
+           "enable": true,
+           "label": "Società in accomandita semplice s.a.s.",
+           "pays_code": "IT"
+       },
+       "304": {
+           "enable": true,
+           "label": "Società per azioni s.p.a.",
+           "pays_code": "IT"
+       },
+       "305": {
+           "enable": true,
+           "label": "Società a responsabilità limitata s.r.l.",
+           "pays_code": "IT"
+       },
+       "306": {
+           "enable": true,
+           "label": "Società in accomandita per azioni s.a.p.a.",
+           "pays_code": "IT"
+       },
+       "307": {
+           "enable": true,
+           "label": "Società cooperativa",
+           "pays_code": "IT"
+       },
+       "308": {
+           "enable": true,
+           "label": "Società consortile",
+           "pays_code": "IT"
+       },
+       "309": {
+           "enable": true,
+           "label": "Società europea",
+           "pays_code": "IT"
+       },
+       "310": {
+           "enable": true,
+           "label": "Società cooperativa europea",
+           "pays_code": "IT"
+       },
+       "311": {
+           "enable": true,
+           "label": "Società unipersonale",
+           "pays_code": "IT"
+       },
+       "312": {
+           "enable": true,
+           "label": "Società di professionisti",
+           "pays_code": "IT"
+       },
+       "313": {
+           "enable": true,
+           "label": "Società di fatto",
+           "pays_code": "IT"
+       },
+       "314": {
+           "enable": true,
+           "label": "Società occulta",
+           "pays_code": "IT"
+       },
+       "315": {
+           "enable": true,
+           "label": "Società apparente",
+           "pays_code": "IT"
+       },
+       "316": {
+           "enable": true,
+           "label": "Impresa individuale ",
+           "pays_code": "IT"
+       },
+       "317": {
+           "enable": true,
+           "label": "Impresa coniugale",
+           "pays_code": "IT"
+       },
+       "318": {
+           "enable": true,
+           "label": "Impresa familiare",
+           "pays_code": "IT"
+       },
+       "401": {
+           "enable": true,
+           "label": "Empresario Individual",
+           "pays_code": "ES"
+       },
+       "402": {
+           "enable": true,
+           "label": "Comunidad de Bienes",
+           "pays_code": "ES"
+       },
+       "403": {
+           "enable": true,
+           "label": "Sociedad Civil",
+           "pays_code": "ES"
+       },
+       "404": {
+           "enable": true,
+           "label": "Sociedad Colectiva",
+           "pays_code": "ES"
+       },
+       "405": {
+           "enable": true,
+           "label": "Sociedad Limitada",
+           "pays_code": "ES"
+       },
+       "406": {
+           "enable": true,
+           "label": "Sociedad Anónima",
+           "pays_code": "ES"
+       },
+       "407": {
+           "enable": true,
+           "label": "Sociedad Comandataria por Acciones",
+           "pays_code": "ES"
+       },
+       "408": {
+           "enable": true,
+           "label": "Sociedad Comandataria Simple",
+           "pays_code": "ES"
+       },
+       "409": {
+           "enable": true,
+           "label": "Sociedad Laboral",
+           "pays_code": "ES"
+       },
+       "410": {
+           "enable": true,
+           "label": "Sociedad Cooperativa",
+           "pays_code": "ES"
+       },
+       "411": {
+           "enable": true,
+           "label": "Sociedad de Garantía Recíproca",
+           "pays_code": "ES"
+       },
+       "412": {
+           "enable": true,
+           "label": "Entidad de Capital-Riesgo",
+           "pays_code": "ES"
+       },
+       "413": {
+           "enable": true,
+           "label": "Agrupación de Interés Económico",
+           "pays_code": "ES"
+       },
+       "414": {
+           "enable": true,
+           "label": "Sociedad de Inversión Mobiliaria",
+           "pays_code": "ES"
+       },
+       "415": {
+           "enable": true,
+           "label": "Agrupación sin Ánimo de Lucro",
+           "pays_code": "ES"
+       },
+       "500": {
+           "enable": true,
+           "label": "Limited liability corporation (GmbH)",
+           "pays_code": "DE"
+       },
+       "501": {
+           "enable": true,
+           "label": "Stock corporation (AG)",
+           "pays_code": "DE"
+       },
+       "502": {
+           "enable": true,
+           "label": "Partnerships general or limited (GmbH & CO. KG)",
+           "pays_code": "DE"
+       },
+       "503": {
+           "enable": true,
+           "label": "Sole proprietor / Private business",
+           "pays_code": "DE"
+       },
+       "600": {
+           "enable": true,
+           "label": "Raison Individuelle",
+           "pays_code": "CH"
+       },
+       "601": {
+           "enable": true,
+           "label": "Société Simple",
+           "pays_code": "CH"
+       },
+       "602": {
+           "enable": true,
+           "label": "Société en nom collectif",
+           "pays_code": "CH"
+       },
+       "603": {
+           "enable": true,
+           "label": "Société en commandite",
+           "pays_code": "CH"
+       },
+       "604": {
+           "enable": true,
+           "label": "Société anonyme (SA)",
+           "pays_code": "CH"
+       },
+       "605": {
+           "enable": true,
+           "label": "Société en commandite par actions",
+           "pays_code": "CH"
+       },
+       "606": {
+           "enable": true,
+           "label": "Société à responsabilité limitée (SARL)",
+           "pays_code": "CH"
+       },
+       "607": {
+           "enable": true,
+           "label": "Société coopérative",
+           "pays_code": "CH"
+       },
+       "608": {
+           "enable": true,
+           "label": "Association",
+           "pays_code": "CH"
+       },
+       "609": {
+           "enable": true,
+           "label": "Fondation",
+           "pays_code": "CH"
+       },
+       "700": {
+           "enable": true,
+           "label": "Sole Trader",
+           "pays_code": "GB"
+       },
+       "701": {
+           "enable": true,
+           "label": "Partnership",
+           "pays_code": "GB"
+       },
+       "702": {
+           "enable": true,
+           "label": "Private Limited Company by shares (LTD)",
+           "pays_code": "GB"
+       },
+       "703": {
+           "enable": true,
+           "label": "Public Limited Company",
+           "pays_code": "GB"
+       },
+       "704": {
+           "enable": true,
+           "label": "Workers Cooperative",
+           "pays_code": "GB"
+       },
+       "705": {
+           "enable": true,
+           "label": "Limited Liability Partnership",
+           "pays_code": "GB"
+       },
+       "706": {
+           "enable": true,
+           "label": "Franchise",
+           "pays_code": "GB"
+       },
+       "1000": {
+           "enable": true,
+           "label": "Société à responsabilité limitée (SARL)",
+           "pays_code": "TN"
+       },
+       "1001": {
+           "enable": true,
+           "label": "Société en Nom Collectif (SNC)",
+           "pays_code": "TN"
+       },
+       "1002": {
+           "enable": true,
+           "label": "Société en Commandite Simple (SCS)",
+           "pays_code": "TN"
+       },
+       "1003": {
+           "enable": true,
+           "label": "société en participation",
+           "pays_code": "TN"
+       },
+       "1004": {
+           "enable": true,
+           "label": "Société Anonyme (SA)",
+           "pays_code": "TN"
+       },
+       "1005": {
+           "enable": true,
+           "label": "Société Unipersonnelle à Responsabilité Limitée (SUARL)",
+           "pays_code": "TN"
+       },
+       "1006": {
+           "enable": true,
+           "label": "Groupement d'intérêt économique (GEI)",
+           "pays_code": "TN"
+       },
+       "1007": {
+           "enable": true,
+           "label": "Groupe de sociétés",
+           "pays_code": "TN"
+       },
+       "2301": {
+           "enable": true,
+           "label": "Monotributista",
+           "pays_code": "AR"
+       },
+       "2302": {
+           "enable": true,
+           "label": "Sociedad Civil",
+           "pays_code": "AR"
+       },
+       "2303": {
+           "enable": true,
+           "label": "Sociedades Comerciales",
+           "pays_code": "AR"
+       },
+       "2304": {
+           "enable": true,
+           "label": "Sociedades de Hecho",
+           "pays_code": "AR"
+       },
+       "2305": {
+           "enable": true,
+           "label": "Sociedades Irregulares",
+           "pays_code": "AR"
+       },
+       "2306": {
+           "enable": true,
+           "label": "Sociedad Colectiva",
+           "pays_code": "AR"
+       },
+       "2307": {
+           "enable": true,
+           "label": "Sociedad en Comandita Simple",
+           "pays_code": "AR"
+       },
+       "2308": {
+           "enable": true,
+           "label": "Sociedad de Capital e Industria",
+           "pays_code": "AR"
+       },
+       "2309": {
+           "enable": true,
+           "label": "Sociedad Accidental o en participación",
+           "pays_code": "AR"
+       },
+       "2310": {
+           "enable": true,
+           "label": "Sociedad de Responsabilidad Limitada",
+           "pays_code": "AR"
+       },
+       "2311": {
+           "enable": true,
+           "label": "Sociedad Anónima",
+           "pays_code": "AR"
+       },
+       "2312": {
+           "enable": true,
+           "label": "Sociedad Anónima con Participación Estatal Mayoritaria",
+           "pays_code": "AR"
+       },
+       "2313": {
+           "enable": true,
+           "label": "Sociedad en Comandita por Acciones (arts. 315 a 324, LSC)",
+           "pays_code": "AR"
+       },
+       "15201": {
+           "enable": true,
+           "label": "Mauritius Private Company Limited By Shares",
+           "pays_code": "MU"
+       },
+       "15202": {
+           "enable": true,
+           "label": "Mauritius Company Limited By Guarantee",
+           "pays_code": "MU"
+       },
+       "15203": {
+           "enable": true,
+           "label": "Mauritius Public Company Limited By Shares",
+           "pays_code": "MU"
+       },
+       "15204": {
+           "enable": true,
+           "label": "Mauritius Foreign Company",
+           "pays_code": "MU"
+       },
+       "15205": {
+           "enable": true,
+           "label": "Mauritius GBC1 (Offshore Company)",
+           "pays_code": "MU"
+       },
+       "15206": {
+           "enable": true,
+           "label": "Mauritius GBC2 (International Company)",
+           "pays_code": "MU"
+       },
+       "15207": {
+           "enable": true,
+           "label": "Mauritius General Partnership",
+           "pays_code": "MU"
+       },
+       "15208": {
+           "enable": true,
+           "label": "Mauritius Limited Partnership",
+           "pays_code": "MU"
+       },
+       "15209": {
+           "enable": true,
+           "label": "Mauritius Sole Proprietorship",
+           "pays_code": "MU"
+       },
+       "15210": {
+           "enable": true,
+           "label": "Mauritius Trusts",
+           "pays_code": "MU"
+       },
+       "15401": {
+           "enable": true,
+           "label": "Sociedad en nombre colectivo",
+           "pays_code": "MX"
+       },
+       "15402": {
+           "enable": true,
+           "label": "Sociedad en comandita simple",
+           "pays_code": "MX"
+       },
+       "15403": {
+           "enable": true,
+           "label": "Sociedad de responsabilidad limitada",
+           "pays_code": "MX"
+       },
+       "15404": {
+           "enable": true,
+           "label": "Sociedad anónima",
+           "pays_code": "MX"
+       },
+       "15405": {
+           "enable": true,
+           "label": "Sociedad en comandita por acciones",
+           "pays_code": "MX"
+       },
+       "15406": {
+           "enable": true,
+           "label": "Sociedad cooperativa",
+           "pays_code": "MX"
+       },
+       "100001": {
+           "enable": false,
+           "label": "Etudiant",
+           "pays_code": "FR"
+       },
+       "100002": {
+           "enable": false,
+           "label": "Retraité",
+           "pays_code": "FR"
+       },
+       "100003": {
+           "enable": false,
+           "label": "Artisan",
+           "pays_code": "FR"
+       },
+       "100004": {
+           "enable": false,
+           "label": "Femme de ménage",
+           "pays_code": "FR"
+       },
+       "100005": {
+           "enable": false,
+           "label": "Professeur",
+           "pays_code": "FR"
+       },
+       "100006": {
+           "enable": false,
+           "label": "Profession libérale",
+           "pays_code": "FR"
+       },
+       "100007": {
+           "enable": false,
+           "label": "Informaticien",
+           "pays_code": "FR"
+       }
+   },
+   "class": "dict"
+}

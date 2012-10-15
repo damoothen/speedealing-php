@@ -183,6 +183,7 @@ print "</table>";
 print "</div>";
 
 $obj->bServerSide = true;
+//$obj->sDom = 'C<\"clear\">lfrtip';
 $object->datatablesCreate($obj, "societe", true, true);
 
 //print end_box();
