@@ -157,7 +157,7 @@ function print_actions_filter($form, $canedit, $status, $year, $month, $day, $sh
 function show_array_actions_to_do($max = 5, $fk_task = 0) {
     global $langs, $conf, $user, $db, $bc, $socid;
     $titre = $langs->trans("ActionsToDo");
-    print start_box($titre, "twelve", "16-Mail.png");
+    print start_box($titre, "six", "16-Mail.png");
 
     $i = 0;
     $obj = new stdClass();
@@ -188,15 +188,13 @@ function show_array_actions_to_do($max = 5, $fk_task = 0) {
     $obj->aoColumns[$i]->mDataProp = "datef";
     $obj->aoColumns[$i]->sClass = "center";
     $obj->aoColumns[$i]->sDefaultContent = "";
-    $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("datef", "datetime");
-//$obj->aoColumns[$i]->sClass = "edit";
+    $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("datef", "date");
     $i++;
     print'<th class="essential">';
     print $langs->trans('Company');
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "societe.name";
     $obj->aoColumns[$i]->sDefaultContent = "";
-//$obj->aoColumns[$i]->sClass = "edit";
     $i++;
     print'<th class="essential">';
     print $langs->trans('AffectedTo');
@@ -221,7 +219,7 @@ function show_array_actions_to_do($max = 5, $fk_task = 0) {
     if (count($result->rows) > 0)
         foreach ($result->rows as $key => $aRow) {
             print '<tr>';
-            print'<td></td>';
+            print '<td>' . $aRow->value->_id . '</td>';
             print '<td>' . $aRow->value->label . '</td>';
             print '<td>' . $aRow->value->datef . '</td>';
             print '<td>' . $aRow->value->societe->name . '</td>';
@@ -232,7 +230,6 @@ function show_array_actions_to_do($max = 5, $fk_task = 0) {
     print'</tbody>';
     print "</table>";
 
-    $obj->bServerSide = false;
     $obj->iDisplayLength = 10;
     $object->datatablesCreate($obj, "actionsToDo_datatable");
 
@@ -350,7 +347,7 @@ function show_array_actions_to_do($max = 5, $fk_task = 0) {
 function show_array_last_actions_done($max = 5, $fk_task = 0) {
     global $langs, $conf, $user, $db, $bc, $socid;
     $titre = $langs->trans("ActionsDone");
-    print start_box($titre, "twelve", "16-Mail.png");
+    print start_box($titre, "six", "16-Mail.png");
 
     $i = 0;
     $obj = new stdClass();
@@ -382,14 +379,12 @@ function show_array_last_actions_done($max = 5, $fk_task = 0) {
     $obj->aoColumns[$i]->sClass = "center";
     $obj->aoColumns[$i]->sDefaultContent = "";
     $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("datef", "date");
-//$obj->aoColumns[$i]->sClass = "edit";
     $i++;
     print'<th class="essential">';
     print $langs->trans('Company');
     print'</th>';
     $obj->aoColumns[$i]->mDataProp = "societe.name";
     $obj->aoColumns[$i]->sDefaultContent = "";
-//$obj->aoColumns[$i]->sClass = "edit";
     $i++;
     print'<th class="essential">';
     print $langs->trans('AffectedTo');
@@ -414,7 +409,7 @@ function show_array_last_actions_done($max = 5, $fk_task = 0) {
     if (count($result->rows) > 0)
         foreach ($result->rows as $key => $aRow) {
             print '<tr>';
-            print'<td></td>';
+            print '<td>' . $aRow->value->_id . '</td>';
             print '<td>' . $aRow->value->label . '</td>';
             print '<td>' . $aRow->value->datef . '</td>';
             print '<td>' . $aRow->value->societe->ThirdPartyName . '</td>';
@@ -426,7 +421,7 @@ function show_array_last_actions_done($max = 5, $fk_task = 0) {
     print "</table>";
 
     $obj->bServerSide = false;
-    $obj->iDisplayLength = 10;
+    $obj->iDisplayLength = $max;
     $object->datatablesCreate($obj, "actionsDone_datatable");
     print end_box();
 }
@@ -559,22 +554,17 @@ function actions_prepare_head($object) {
     $h = 0;
     $head = array();
 
-    $head[$h][0] = DOL_URL_ROOT . '/comm/action/fiche.php?id=' . $object->id;
+    $head[$h][0] = DOL_URL_ROOT . '/agenda/fiche.php?id=' . $object->id;
     $head[$h][1] = $langs->trans("CardAction");
     $head[$h][2] = 'card';
     $h++;
 
     if ($conf->ecm->enabled) {
-        $head[$h][0] = DOL_URL_ROOT . '/comm/action/document.php?id=' . $object->id;
+        $head[$h][0] = DOL_URL_ROOT . '/agenda/document.php?id=' . $object->id;
         $head[$h][1] = $langs->trans('Documents');
         $head[$h][2] = 'documents';
         $h++;
     }
-
-    $head[$h][0] = DOL_URL_ROOT . '/comm/action/info.php?id=' . $object->id;
-    $head[$h][1] = $langs->trans('Info');
-    $head[$h][2] = 'info';
-    $h++;
 
     return $head;
 }

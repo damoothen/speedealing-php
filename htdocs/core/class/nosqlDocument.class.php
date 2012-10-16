@@ -453,7 +453,7 @@ abstract class nosqlDocument extends CommonObject {
             ?>
         <?php endforeach; ?>
                         ],
-        <?php if (!isset($obj->aaSorting) && $json) : ?>
+        <?php if (!isset($obj->aaSorting)) : ?>
                             "aaSorting" : [[1,"asc"]],
         <?php else : ?>
                             "aaSorting" : <?php echo json_encode($obj->aaSorting); ?>,

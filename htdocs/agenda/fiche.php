@@ -414,16 +414,13 @@ if ($action == 'update') {
 $help_url = 'EN:Module_Agenda_En|FR:Module_Agenda|ES:M&omodulodulo_Agenda';
 llxHeader('', $langs->trans("Agenda"), $help_url);
 
-print_fiche_titre($langs->trans("Agenda"));
-print '<div class="with-padding">';
-print '<div class="columns">';
-
 
 $form = new Form($db);
 $htmlactions = new FormActions($db);
 
 
 if ($action == 'create') {
+    
     $contact = new Contact($db);
 
     if (GETPOST("contactid")) {
@@ -433,11 +430,15 @@ if ($action == 'create') {
     }
 
     $object->fk_task = GETPOST("fk_task") ? GETPOST("fk_task") : 0;
-    
+
     if (GETPOST("actioncode") == 'AC_RDV')
         $title = $langs->trans("AddActionRendezVous");
     else
         $title = $langs->trans("AddAnAction");
+    
+    print_fiche_titre($title);
+    print '<div class="with-padding">';
+    print '<div class="columns">';
 
     print start_box($title, "twelve", $object->fk_extrafields->ico, false);
 
@@ -560,7 +561,7 @@ if ($action == 'create') {
           });
           })';
           print '</script>'."\n"; */
-    }   
+    }
 
     print '<form name="formaction" action="' . $_SERVER["PHP_SELF"] . '" method="POST">';
     print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
@@ -585,7 +586,7 @@ if ($action == 'create') {
       else
       { */
     //$htmlactions->select_type_actions($object->type_code, "actioncode");
-    print $object->select_fk_extrafields("type_code","actioncode");
+    print $object->select_fk_extrafields("type_code", "actioncode");
     //}
     print '</td></tr>';
 
@@ -751,7 +752,7 @@ if ($action == 'create') {
     print '<input type="submit" class="button" name="cancel" value="' . $langs->trans("Cancel") . '">';
 
     print "</form>";
-    
+
     print end_box();
 }
 
@@ -802,6 +803,12 @@ if ($id) {
         $result = $contact->fetch($object->contact->id, $user);
     }
     $object->contact = $contact;
+    
+    print_fiche_titre($langs->trans("Event") . " " . $object->label);
+    print '<div class="with-padding">';
+    print '<div class="columns">';
+
+    print start_box($object->print_fk_extrafields("type_code") . " : " . $object->label, "tweleve", "16-Timer.png", false);
 
     /*
      * Affichage onglets
@@ -911,7 +918,7 @@ if ($id) {
         print '<tr><td width="30%">' . $langs->trans("Ref") . '</td><td colspan="3">' . $object->id . '</td></tr>';
 
         // Type
-        print '<tr><td class="fieldrequired">' . ($object->type == 2 ? $langs->trans("Action") : $langs->trans("Event")) . '</td><td colspan="3">' . $object->type_label . '</td></tr>';
+        print '<tr><td class="fieldrequired">' . ($object->type == 2 ? $langs->trans("Action") : $langs->trans("Event")) . '</td><td colspan="3">' . $object->print_fk_extrafields("type_code") . '</td></tr>';
 
         // Title
         print '<tr><td>' . $langs->trans("Title") . '</td><td colspan="3"><input type="text" name="label" size="50" value="' . $object->label . '"></td></tr>';
@@ -1067,7 +1074,9 @@ if ($id) {
 
         print '</form>';
     } else {
-        // Affichage fiche action en mode visu
+        /**
+         * Mode View
+         */
         print '<table class="border" width="100%">';
 
         // Ref
@@ -1286,9 +1295,9 @@ if ($id) {
         }
 
         print '</div>';
-        print "<br>\n";
 
-        print '<table width="100%"><tr><td width="50%" valign="top">';
+        print end_box();
+
         /*
          * Actions to do
          */
@@ -1296,14 +1305,12 @@ if ($id) {
             show_array_actions_to_do(10, $object->id);
         }
 
-        print '</td><td width="50%" valign="top">';
         /*
          * Last actions
          */
         if ($user->rights->agenda->myactions->read) {
             show_array_last_actions_done(10, $object->id);
         }
-        print '</td></tr></table>';
     }
 }
 
