@@ -24,7 +24,7 @@
  */
 
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT . '/core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT . '/societe/lib/societe.lib.php';
 require_once DOL_DOCUMENT_ROOT . '/core/lib/images.lib.php';
 require_once DOL_DOCUMENT_ROOT . '/core/lib/files.lib.php';
 require_once DOL_DOCUMENT_ROOT . '/core/class/html.formadmin.class.php';
@@ -1712,7 +1712,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
         print end_box();
 
-        if (!$conf->enabled->ecm) {
+        if ($conf->ecm->enabled) {
 
             //print '<table width="100%"><tr><td valign="top" width="50%">';
             //print '<a name="builddoc"></a>'; // ancre
@@ -1739,14 +1739,10 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         $result = show_subsidiaries($conf, $langs, $db, $object);
 
         // Contacts list
-        if (empty($conf->global->SOCIETE_DISABLE_CONTACTS)) {
-            $result = show_contacts($conf, $langs, $db, $object, $_SERVER["PHP_SELF"] . '?id=' . $object->id);
-        }
+        $result = show_contacts($conf, $langs, $db, $object, $_SERVER["PHP_SELF"] . '?id=' . $object->id);
 
         // Addresses list
-        if (!empty($conf->global->SOCIETE_ADDRESSES_MANAGEMENT)) {
-            $result = show_addresses($conf, $langs, $db, $object, $_SERVER["PHP_SELF"] . '?id=' . $object->id);
-        }
+        //$result = show_addresses($conf, $langs, $db, $object, $_SERVER["PHP_SELF"] . '?id=' . $object->id);
 
         // Projects list
         $result = show_projects($conf, $langs, $db, $object, $_SERVER["PHP_SELF"] . '?id=' . $object->id);
