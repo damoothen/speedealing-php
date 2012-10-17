@@ -79,10 +79,7 @@ class Agenda extends nosqlDocument {
         parent::__construct($db);
 
         try {
-            $this->couchdb->useDatabase('agenda');
-
             $fk_extrafields = new ExtraFields($db);
-            $fk_extrafields->useDatabase('agenda');
             $this->fk_extrafields = $fk_extrafields->load("extrafields:Agenda", true); // load and cache
         } catch (Exception $e) {
             dol_print_error('', $e->getMessage());

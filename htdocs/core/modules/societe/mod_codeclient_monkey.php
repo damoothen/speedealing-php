@@ -109,12 +109,10 @@ class mod_codeclient_monkey extends ModeleThirdPartyCode {
         // D'abord on recupere la valeur max (reponse immediate car champ indexe)
         $posindice = 8;
 
-        $couchdb = clone $couch;
-        $couchdb->useDatabase("societe");
         $params['limit'] = 1;
         $params['descending'] = true;
-        $couchdb->setQueryParameters($params);
-        $result = $couchdb->getView("Societe", "list_customer_id");
+        $couch->setQueryParameters($params);
+        $result = $couch->getView("Societe", "list_customer_id");
 
         if (count($result->rows)) {
             $max = substr($result->rows[0]->key, $posindice - 1);
@@ -186,11 +184,9 @@ class mod_codeclient_monkey extends ModeleThirdPartyCode {
     function verif_dispo($db, $code, $soc) {
         global $conf, $mc, $couch;
 
-        $couchdb = clone $couch;
-        $couchdb->useDatabase("societe");
         $params['key'] = $code;
-        $couchdb->setQueryParameters($params);
-        $result = $couchdb->getView("Societe", "list_customer_id");
+        $couch->setQueryParameters($params);
+        $result = $couch->getView("Societe", "list_customer_id");
 
         if (count($result->rows) == 0 || (count($result->rows) == 1 && $result->rows[0]->value == $soc->id))
             return 0;

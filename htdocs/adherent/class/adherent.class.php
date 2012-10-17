@@ -101,10 +101,7 @@ class Adherent extends nosqlDocument {
 		parent::__construct($db);
 
 		try {
-			$this->couchdb->useDatabase('adherent');
-			
 			$fk_extrafields = new ExtraFields($db);
-			$fk_extrafields->useDatabase('adherent');
 			$this->fk_extrafields = $fk_extrafields->load("extrafields:" . get_class($this), true); // load and cache
 		} catch (Exception $e) {
 			dol_print_error('',$e->getMessage());
