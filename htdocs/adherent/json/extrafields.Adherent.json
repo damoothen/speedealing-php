@@ -1,7 +1,7 @@
 {
    "_id": "extrafields:Adherent",
    "class": "extrafields",
-   "ico": "/img/ico/icSw2/16-User.png",
+   "ico": "16-User.png",
    "fields": {
        "Status": {
            "type": "select",
