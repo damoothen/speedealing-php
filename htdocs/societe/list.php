@@ -154,27 +154,26 @@ print'</tr>';
 print'</thead>';
 print'<tfoot>';
 /* input search view */
-/* $i=0; //Doesn't work with bServerSide
-  print'<tr>';
-  print'<th id="'.$i.'"></th>';
-  $i++;
-  print'<th id="'.$i.'"><input type="text" placeholder="' . $langs->trans("Search Company") . '" /></th>';
-  $i++;
-  foreach ($object->fk_extrafields->longList as $aRow)
-  {
-  if($object->fk_extrafields->fields->$aRow->aoColumns->bSearchable = true)
-  print'<th id="'.$i.'"><input type="text" placeholder="' . $langs->trans("Search ".$aRow) . '" /></th>';
-  else
-  print'<th id="'.$i.'"></th>';
-  $i++;
-  }
-  print'<th id="'.$i.'"><input type="text" placeholder="' . $langs->trans("Search category") . '" /></th>';
-  $i++;
-  print'<th id="'.$i.'"><input type="text" placeholder="' . $langs->trans("Search status") . '" /></th>';
-  $i++;
-  print'<th id="'.$i.'"></th>';
-  $i++;
-  print'</tr>'; */
+$i = 0; //Doesn't work with bServerSide
+print'<tr>';
+print'<th id="' . $i . '"></th>';
+$i++;
+print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Company") . '" /></th>';
+$i++;
+foreach ($object->fk_extrafields->longList as $aRow) {
+    if ($object->fk_extrafields->fields->$aRow->aoColumns->bSearchable = true)
+        print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search " . $aRow) . '" /></th>';
+    else
+        print'<th id="' . $i . '"></th>';
+    $i++;
+}
+print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search category") . '" /></th>';
+$i++;
+print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search status") . '" /></th>';
+$i++;
+print'<th id="' . $i . '"></th>';
+$i++;
+print'</tr>';
 print'</tfoot>';
 print'<tbody>';
 print'</tbody>';
@@ -182,7 +181,7 @@ print'</tbody>';
 print "</table>";
 print "</div>";
 
-$obj->bServerSide = true;
+//$obj->bServerSide = true;
 //$obj->sDom = 'C<\"clear\">lfrtip';
 $object->datatablesCreate($obj, "societe", true, true);
 
