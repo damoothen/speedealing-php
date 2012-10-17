@@ -1214,5 +1214,177 @@ class Agenda extends nosqlDocument {
         $this->note = 'Note';
     }
 
+    function print_calendar($date) {
+
+        global $db, $langs;
+        $nbDaysInMonth = date('t', $date);
+        $firstDayTimestamp = dol_mktime(-1, -1, -1, date('n', $date), 1, date('Y', $date));
+        $lastDayTimestamp = dol_mktime(23, 59, 59, date('n', $date), $nbDaysInMonth, date('Y', $date));
+        $todayTimestamp = dol_mktime(-1, -1, -1, date('n'), date('j'), date('Y'));
+        $firstDayOfMonth = date('w', $firstDayTimestamp);
+
+        $object = new Agenda($db);
+        $events = $object->getView("list", array("startkey" => $firstDayTimestamp, "endkey" => $lastDayTimestamp));
+
+        print '<table class="calendar fluid large-margin-bottom with-events">';
+
+        // Month an scroll arrows
+        print '<caption>';
+        print '<span class="cal-prev" >◄</span>';
+        print '<a class="cal-next" href="#">►</a>';
+        print $langs->trans(date('F', $date)) . ' ' . date('Y', $date);
+        print '</caption>';
+
+        // Days names 
+        print '<thead>';
+        print '<tr>';
+        print '<th scope="col">Sun</th>';
+        print '<th scope="col">Mon</th>';
+        print '<th scope="col">Tue</th>';
+        print '<th scope="col">Wed</th>';
+        print '<th scope="col">Thu</th>';
+        print '<th scope="col">Fri</th>';
+        print '<th scope="col">Sat</th>';
+        print '</tr>';
+        print '</thead>';
+        print '<tbody>';
+        print '<tr>';
+
+        $calendarCounter = 1;
+        for ($i = $firstDayOfMonth; $i > 0; $i--, $calendarCounter++) {
+            $previousTimestamp = strtotime($i . " day ago", $firstDayTimestamp);
+            print '<td class="prev-month"><span class="cal-day">' . date('d', $previousTimestamp) . '</span></td>';
+        }
+
+        $cursor = 0;
+        for ($i = 1; $i <= $nbDaysInMonth; $i++, $calendarCounter++) {
+            $dayTimestamp = dol_mktime(-1, -1, -1, date('n', $date), $i, date('Y', $date));
+            if ($calendarCounter > 1 && ($calendarCounter - 1) % 7 == 0)
+                print '</tr><tr>';
+            print '<td class="' . ((date('w', $dayTimestamp) == 0 || date('w', $dayTimestamp) == 6) ? 'week-end ' : '') . ' ' . (($dayTimestamp == $todayTimestamp) ? 'today ' : '') . '"><span class="cal-day">' . $i . '</span>';
+            print '<ul class="cal-events">';
+
+            if (!empty($events->rows[$cursor])) {
+                for ($j = 0; $j < count($events->rows); $j++) {
+                    if ($events->rows[$cursor]->key >= $dayTimestamp && $events->rows[$cursor]->key < $dayTimestamp + 3600 * 24) {
+                        print '<li class="important"><a href="' . DOL_URL_ROOT . '/agenda/fiche.php?id=' . $events->rows[$cursor]->id . '" >' . $events->rows[$cursor]->value->label . '</a></li>';
+                        $cursor++;
+                    } else
+                        break;
+                }
+            }
+
+            print '</ul>';
+            print '</td>';
+        }
+
+        $calendarCounter--;
+        $i = 1;
+        while ($calendarCounter++ % 7 != 0) {
+            print '<td class="next-month"><span class="cal-day">' . $i++ . '</span></td>';
+        }
+
+        print '</tr>';
+
+        print '</tbody>';
+        print '</table>';
+    }
+
+    function print_week($date) {
+
+        global $db, $langs;
+
+        $timestamps = array();
+        $dayOfWeek = date('w', $date);
+        for ($i = 0, $d = -$dayOfWeek; $i < 7; $i++, $d++) {
+            $tmpTimestamp = strtotime($d . " day", $date);
+            $timestamps[$i] = array(
+                'start' => dol_mktime(0, 0, 0, date('n', $tmpTimestamp), date('j', $tmpTimestamp), date('Y', $tmpTimestamp)),
+                'end' => dol_mktime(23, 59, 59, date('n', $tmpTimestamp), date('j', $tmpTimestamp), date('Y', $tmpTimestamp)),
+            );
+        }
+
+        $object = new Agenda($db);
+        $events = $object->getView("list", array("startkey" => $timestamps[0]['start'], "endkey" => $timestamps[6]['end']));
+
+        $styles = array(
+            0 => 'left: 0%; right: 85.7143%; margin-left: -1px;',
+            1 => 'left: 14.2857%; right: 71.4286%; margin-left: 0px;',
+            2 => 'left: 28.5714%; right: 57.1429%; margin-left: 0px;',
+            3 => 'left: 42.8571%; right: 42.8571%; margin-left: 0px;',
+            4 => 'left: 57.1429%; right: 28.5714%; margin-left: 0px;',
+            5 => 'left: 71.4286%; right: 14.2857%; margin-left: 0px;',
+            6 => 'left: 85.7143%; right: 0%; margin-left: 0px;'
+        );
+
+        $days = array(
+            0 => 'Sunday',
+            1 => 'Monday',
+            2 => 'Tuesday',
+            3 => 'Wednesday',
+            4 => 'Thursday',
+            5 => 'Friday',
+            6 => 'Saturday'
+        );
+
+        print '<div class="agenda with-header auto-scroll scrolling-agenda">';
+        print '<ul class="agenda-time">
+					<li class="from-7 to-8"><span>7 AM</span></li>
+					<li class="from-8 to-9"><span>8 AM</span></li>
+					<li class="from-9 to-10"><span>9 AM</span></li>
+					<li class="from-10 to-11"><span>10 AM</span></li>
+					<li class="from-11 to-12"><span>11 AM</span></li>
+					<li class="from-12 to-13 blue"><span>NOON</span></li>
+					<li class="from-13 to-14"><span>1 PM</span></li>
+					<li class="from-14 to-15"><span>2 PM</span></li>
+					<li class="from-15 to-16"><span>3 PM</span></li>
+					<li class="from-16 to-17"><span>4 PM</span></li>
+					<li class="from-17 to-18"><span>5 PM</span></li>
+					<li class="from-18 to-19"><span>6 PM</span></li>
+					<li class="from-19 to-20"><span>7 PM</span></li>
+					<li class="at-20"><span>8 PM</span></li>
+				</ul>';
+
+        print '<div class="agenda-wrapper">';
+
+        $cursor = 0;
+        for ($i = 0; $i < 7; $i++) {
+            $extraClass = '';
+            if ($i == 0)
+                $extraClass = 'agenda-visible-first';
+            else if ($i == 6)
+                $extraClass = 'agenda-visible-last';
+            print '<div class="agenda-events agenda-day' . ($i + 1) . ' agenda-visible-column ' . $extraClass . '" style="' . $styles[$i] . '">';
+            print '<div class="agenda-header">';
+            print $langs->trans($days[$i]);
+            print '</div>';
+
+            if (!empty($events->rows[$cursor])) {
+                for ($j = 0; $j < count($events->rows); $j++) {
+                    if ($events->rows[$cursor]->key >= $timestamps[$i]['start'] && $events->rows[$cursor]->key < $timestamps[$i]['end']) {
+                        $dateStart = $events->rows[$cursor]->value->datep;
+                        $dateEnd = $events->rows[$cursor]->value->datef;
+                        if ($events->rows[$cursor]->value->type_code != 'AC_RDV')
+                            $dateEnd = $dateStart + $events->rows[$cursor]->value->durationp;
+                        $hourStart = date('G', $dateStart);
+                        $hourEnd = date('G', $dateEnd);
+
+                        print '<a class="agenda-event from-' . $hourStart . ' to-' . $hourEnd . ' anthracite-gradient" href="/agenda/fiche.php?id=' . $events->rows[$cursor]->id . '">';
+                        print '<time>' . $hourStart . 'h - ' . $hourEnd . 'h</time>';
+                        print $events->rows[$cursor]->value->label;
+                        print '</a>';
+                        $cursor++;
+                    } else
+                        break;
+                }
+            }
+
+            print '</div>';
+        }
+
+        print '</div>';
+        print '</div>';
+    }
+
 }
 ?>

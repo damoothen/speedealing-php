@@ -132,6 +132,8 @@ $langs->load("agenda");
 $langs->load("other");
 $langs->load("commercial");
 
+$object = new Agenda($db);
+
 /*
  * View
  */
@@ -232,10 +234,10 @@ print '</p>';
 
 switch ($view) {
     case 'week': 
-        print_week(dol_now());
+        $object->print_week(dol_now());
         break;
     default:
-        print_calendar(dol_now());
+        $object->print_calendar(dol_now());
 }
 
 print '</div></div>';
