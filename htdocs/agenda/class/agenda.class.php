@@ -1,5 +1,4 @@
 <?php
-
 /* Copyright (C) 2002-2004 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
@@ -75,6 +74,7 @@ class Agenda extends nosqlDocument {
      *
      *      @param		DoliDB		$db      Database handler
      */
+
     function __construct($db) {
         parent::__construct($db);
 
@@ -152,54 +152,54 @@ class Agenda extends nosqlDocument {
         }
         $this->record();
         /*
-        $sql = "INSERT INTO " . MAIN_DB_PREFIX . "actioncomm";
-        $sql.= "(datec,";
-        $sql.= "datep,";
-        $sql.= "datep2,";
-        //$sql.= "datea,";
-        //$sql.= "datea2,";
-        $sql.= "durationp,";
-        //$sql.= "durationa,";
-        $sql.= "fk_action,";
-        $sql.= "fk_soc,";
-        $sql.= "fk_project,";
-        $sql.= "fk_lead,";
-        $sql.= "fk_task,";
-        $sql.= "note,";
-        $sql.= "fk_contact,";
-        $sql.= "fk_user_author,";
-        $sql.= "fk_user_action,";
-        $sql.= "fk_user_done,";
-        $sql.= "label,percent,priority,fulldayevent,location,punctual,";
-        $sql.= "fk_element,";
-        $sql.= "elementtype,";
-        $sql.= "entity";
-        $sql.= ") VALUES (";
-        $sql.= "'" . $this->db->idate($now) . "',";
-        $sql.= (strval($this->datep) != '' ? "'" . $this->db->idate($this->datep) . "'" : "null") . ",";
-        $sql.= (strval($this->datef) != '' ? "'" . $this->db->idate($this->datef) . "'" : "null") . ",";
-        //$sql.= (strval($this->date)!=''?"'".$this->db->idate($this->date)."'":"null").",";
-        //$sql.= (strval($this->dateend)!=''?"'".$this->db->idate($this->dateend)."'":"null").",";
-        $sql.= ($this->durationp >= 0 && $this->durationp != '' ? "'" . $this->durationp . "'" : "null") . ",";
-        //$sql.= ($this->durationa >= 0 && $this->durationa != ''?"'".$this->durationa."'":"null").",";
-        $sql.= " '" . $this->type_id . "',";
-        $sql.= ($this->societe->id > 0 ? " '" . $this->societe->id . "'" : "null") . ",";
-        $sql.= ($this->fk_project > 0 ? " '" . $this->fk_project . "'" : "null") . ",";
-        $sql.= ($this->fk_lead > 0 ? " '" . $this->fk_lead . "'" : "null") . ",";
-        $sql.= ($this->fk_task > 0 ? " '" . $this->fk_task . "'" : "null") . ",";
-        $sql.= " '" . $this->db->escape($this->note) . "',";
-        $sql.= ($this->contact->id > 0 ? "'" . $this->contact->id . "'" : "null") . ",";
-        $sql.= ($user->id > 0 ? "'" . $user->id . "'" : "null") . ",";
-        $sql.= ($this->usertodo->id > 0 ? "'" . $this->usertodo->id . "'" : "null") . ",";
-        $sql.= ($this->userdone->id > 0 ? "'" . $this->userdone->id . "'" : "null") . ",";
-        $sql.= "'" . $this->db->escape($this->label) . "','" . $this->percentage . "','" . $this->priority . "','" . $this->fulldayevent . "','" . $this->db->escape($this->location) . "','" . $this->punctual . "',";
-        $sql.= ($this->fk_element ? $this->fk_element : "null") . ",";
-        $sql.= ($this->elementtype ? "'" . $this->elementtype . "'" : "null") . ",";
-        $sql.= $conf->entity;
-        $sql.= ")";
+          $sql = "INSERT INTO " . MAIN_DB_PREFIX . "actioncomm";
+          $sql.= "(datec,";
+          $sql.= "datep,";
+          $sql.= "datep2,";
+          //$sql.= "datea,";
+          //$sql.= "datea2,";
+          $sql.= "durationp,";
+          //$sql.= "durationa,";
+          $sql.= "fk_action,";
+          $sql.= "fk_soc,";
+          $sql.= "fk_project,";
+          $sql.= "fk_lead,";
+          $sql.= "fk_task,";
+          $sql.= "note,";
+          $sql.= "fk_contact,";
+          $sql.= "fk_user_author,";
+          $sql.= "fk_user_action,";
+          $sql.= "fk_user_done,";
+          $sql.= "label,percent,priority,fulldayevent,location,punctual,";
+          $sql.= "fk_element,";
+          $sql.= "elementtype,";
+          $sql.= "entity";
+          $sql.= ") VALUES (";
+          $sql.= "'" . $this->db->idate($now) . "',";
+          $sql.= (strval($this->datep) != '' ? "'" . $this->db->idate($this->datep) . "'" : "null") . ",";
+          $sql.= (strval($this->datef) != '' ? "'" . $this->db->idate($this->datef) . "'" : "null") . ",";
+          //$sql.= (strval($this->date)!=''?"'".$this->db->idate($this->date)."'":"null").",";
+          //$sql.= (strval($this->dateend)!=''?"'".$this->db->idate($this->dateend)."'":"null").",";
+          $sql.= ($this->durationp >= 0 && $this->durationp != '' ? "'" . $this->durationp . "'" : "null") . ",";
+          //$sql.= ($this->durationa >= 0 && $this->durationa != ''?"'".$this->durationa."'":"null").",";
+          $sql.= " '" . $this->type_id . "',";
+          $sql.= ($this->societe->id > 0 ? " '" . $this->societe->id . "'" : "null") . ",";
+          $sql.= ($this->fk_project > 0 ? " '" . $this->fk_project . "'" : "null") . ",";
+          $sql.= ($this->fk_lead > 0 ? " '" . $this->fk_lead . "'" : "null") . ",";
+          $sql.= ($this->fk_task > 0 ? " '" . $this->fk_task . "'" : "null") . ",";
+          $sql.= " '" . $this->db->escape($this->note) . "',";
+          $sql.= ($this->contact->id > 0 ? "'" . $this->contact->id . "'" : "null") . ",";
+          $sql.= ($user->id > 0 ? "'" . $user->id . "'" : "null") . ",";
+          $sql.= ($this->usertodo->id > 0 ? "'" . $this->usertodo->id . "'" : "null") . ",";
+          $sql.= ($this->userdone->id > 0 ? "'" . $this->userdone->id . "'" : "null") . ",";
+          $sql.= "'" . $this->db->escape($this->label) . "','" . $this->percentage . "','" . $this->priority . "','" . $this->fulldayevent . "','" . $this->db->escape($this->location) . "','" . $this->punctual . "',";
+          $sql.= ($this->fk_element ? $this->fk_element : "null") . ",";
+          $sql.= ($this->elementtype ? "'" . $this->elementtype . "'" : "null") . ",";
+          $sql.= $conf->entity;
+          $sql.= ")";
 
-        dol_syslog(get_class($this) . "::add sql=" . $sql);
-        */
+          dol_syslog(get_class($this) . "::add sql=" . $sql);
+         */
         if (!$notrigger) {
             // Appel des triggers
             include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
@@ -324,38 +324,38 @@ class Agenda extends nosqlDocument {
         $error = 0;
         $this->deleteDoc();
         /*
-        $this->db->begin();
+          $this->db->begin();
 
-        $sql = "DELETE FROM " . MAIN_DB_PREFIX . "actioncomm";
-        $sql.= " WHERE id=" . $this->id;
-        */
+          $sql = "DELETE FROM " . MAIN_DB_PREFIX . "actioncomm";
+          $sql.= " WHERE id=" . $this->id;
+         */
         //dol_syslog(get_class($this) . "::delete sql=" . $sql, LOG_DEBUG);
         //if ($this->db->query($sql)) {
-            if (!$notrigger) {
-                // Appel des triggers
-                include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
-                $interface = new Interfaces($this->db);
-                $result = $interface->run_triggers('ACTION_DELETE', $this, $user, $langs, $conf);
-                if ($result < 0) {
-                    $error++;
-                    $this->errors = $interface->errors;
-                }
-                // Fin appel triggers
+        if (!$notrigger) {
+            // Appel des triggers
+            include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+            $interface = new Interfaces($this->db);
+            $result = $interface->run_triggers('ACTION_DELETE', $this, $user, $langs, $conf);
+            if ($result < 0) {
+                $error++;
+                $this->errors = $interface->errors;
             }
+            // Fin appel triggers
+        }
 
-            if (!$error) {
-                //$this->db->commit();
-                return 1;
-            } else {
-                //$this->db->rollback();
-                return -2;
-            }
-        /*} else {
-            $this->db->rollback();
-            $this->error = $this->db->lasterror();
-            dol_syslog(get_class($this) . "::delete " . $this->error, LOG_ERR);
-            return -1;
-        }*/
+        if (!$error) {
+            //$this->db->commit();
+            return 1;
+        } else {
+            //$this->db->rollback();
+            return -2;
+        }
+        /* } else {
+          $this->db->rollback();
+          $this->error = $this->db->lasterror();
+          dol_syslog(get_class($this) . "::delete " . $this->error, LOG_ERR);
+          return -1;
+          } */
     }
 
     /**
@@ -440,32 +440,32 @@ class Agenda extends nosqlDocument {
 
         $this->record();
         /*
-        //print 'eeea'.$this->datep.'-'.(strval($this->datep) != '').'-'.$this->db->idate($this->datep);
-        $sql = "UPDATE " . MAIN_DB_PREFIX . "actioncomm ";
-        $sql.= " SET percent='" . $this->percentage . "'";
-        $sql.= ", label = " . ($this->label ? "'" . $this->db->escape($this->label) . "'" : "null");
-        $sql.= ", datep = " . (strval($this->datep) != '' ? "'" . $this->db->idate($this->datep) . "'" : 'null');
-        $sql.= ", datep2 = " . (strval($this->datef) != '' ? "'" . $this->db->idate($this->datef) . "'" : 'null');
-        //$sql.= ", datea = ".(strval($this->date)!='' ? "'".$this->db->idate($this->date)."'" : 'null');
-        //$sql.= ", datea2 = ".(strval($this->dateend)!='' ? "'".$this->db->idate($this->dateend)."'" : 'null');
-        $sql.= ", durationp = " . ($this->durationp ? "'" . $this->durationp . "'" : 'null');
-        $sql.= ", note = " . ($this->note ? "'" . $this->db->escape($this->note) . "'" : "null");
-        $sql.= ", fk_soc =" . ($this->societe->id > 0 ? "'" . $this->societe->id . "'" : "null");
-        $sql.= ", fk_project =" . ($this->fk_project > 0 ? "'" . $this->fk_project . "'" : "null");
-        $sql.= ", fk_lead =" . ($this->fk_lead > 0 ? "'" . $this->fk_lead . "'" : "null");
-        $sql.= ", fk_task =" . ($this->fk_task > 0 ? "'" . $this->fk_task . "'" : "null");
-        $sql.= ", fk_contact =" . ($this->contact->id > 0 ? "'" . $this->contact->id . "'" : "null");
-        $sql.= ", priority = '" . $this->priority . "'";
-        $sql.= ", fulldayevent = '" . $this->fulldayevent . "'";
-        $sql.= ", location = " . ($this->location ? "'" . $this->db->escape($this->location) . "'" : "null");
-        $sql.= ", fk_user_mod = '" . $user->id . "'";
-        $sql.= ", fk_user_action=" . ($this->usertodo->id > 0 ? "'" . $this->usertodo->id . "'" : "null");
-        $sql.= ", fk_user_done=" . ($this->userdone->id > 0 ? "'" . $this->userdone->id . "'" : "null");
-        $sql.= " WHERE id=" . $this->id;
+          //print 'eeea'.$this->datep.'-'.(strval($this->datep) != '').'-'.$this->db->idate($this->datep);
+          $sql = "UPDATE " . MAIN_DB_PREFIX . "actioncomm ";
+          $sql.= " SET percent='" . $this->percentage . "'";
+          $sql.= ", label = " . ($this->label ? "'" . $this->db->escape($this->label) . "'" : "null");
+          $sql.= ", datep = " . (strval($this->datep) != '' ? "'" . $this->db->idate($this->datep) . "'" : 'null');
+          $sql.= ", datep2 = " . (strval($this->datef) != '' ? "'" . $this->db->idate($this->datef) . "'" : 'null');
+          //$sql.= ", datea = ".(strval($this->date)!='' ? "'".$this->db->idate($this->date)."'" : 'null');
+          //$sql.= ", datea2 = ".(strval($this->dateend)!='' ? "'".$this->db->idate($this->dateend)."'" : 'null');
+          $sql.= ", durationp = " . ($this->durationp ? "'" . $this->durationp . "'" : 'null');
+          $sql.= ", note = " . ($this->note ? "'" . $this->db->escape($this->note) . "'" : "null");
+          $sql.= ", fk_soc =" . ($this->societe->id > 0 ? "'" . $this->societe->id . "'" : "null");
+          $sql.= ", fk_project =" . ($this->fk_project > 0 ? "'" . $this->fk_project . "'" : "null");
+          $sql.= ", fk_lead =" . ($this->fk_lead > 0 ? "'" . $this->fk_lead . "'" : "null");
+          $sql.= ", fk_task =" . ($this->fk_task > 0 ? "'" . $this->fk_task . "'" : "null");
+          $sql.= ", fk_contact =" . ($this->contact->id > 0 ? "'" . $this->contact->id . "'" : "null");
+          $sql.= ", priority = '" . $this->priority . "'";
+          $sql.= ", fulldayevent = '" . $this->fulldayevent . "'";
+          $sql.= ", location = " . ($this->location ? "'" . $this->db->escape($this->location) . "'" : "null");
+          $sql.= ", fk_user_mod = '" . $user->id . "'";
+          $sql.= ", fk_user_action=" . ($this->usertodo->id > 0 ? "'" . $this->usertodo->id . "'" : "null");
+          $sql.= ", fk_user_done=" . ($this->userdone->id > 0 ? "'" . $this->userdone->id . "'" : "null");
+          $sql.= " WHERE id=" . $this->id;
 
-        //print $sql;exit;
+          //print $sql;exit;
 
-        */
+         */
         if (!$notrigger) {
             // Appel des triggers
             include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
@@ -996,6 +996,193 @@ class Agenda extends nosqlDocument {
     }
 
     /**
+     *  Show actions
+     *
+     *  @param	int		$max		Max nb of records
+     *  @return	void
+     */
+    function show_actions($max = 5, $id = 0) {
+        global $langs, $conf, $user, $db, $bc, $socid;
+
+        $h = 0;
+        foreach ($this->fk_extrafields->fields->status->values as $key => $aRow) {
+            if ($aRow->enable) {
+                $head[$h][0] = "#";
+                $head[$h][1] = $langs->trans($aRow->label);
+                $head[$h][2] = $key;
+                $h++;
+            }
+        }
+
+        $titre = $langs->trans("ActionsToDo");
+        print start_box($titre, "six", "16-Mail.png", false, $head);
+
+        $i = 0;
+        $obj = new stdClass();
+
+        print '<table class="display dt_act" id="actions_datatable" >';
+        // Ligne des titres
+
+        print '<thead>';
+        print'<tr>';
+        print'<th>';
+        print'</th>';
+        $obj->aoColumns[$i]->mDataProp = "_id";
+        $obj->aoColumns[$i]->bUseRendered = false;
+        $obj->aoColumns[$i]->bSearchable = false;
+        $obj->aoColumns[$i]->bVisible = false;
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans("Titre");
+        print'</th>';
+        $obj->aoColumns[$i]->mDataProp = "label";
+        $obj->aoColumns[$i]->bUseRendered = false;
+        $obj->aoColumns[$i]->bSearchable = true;
+        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("label", "url");
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans('DateEchAction');
+        print'</th>';
+        $obj->aoColumns[$i]->mDataProp = "datef";
+        $obj->aoColumns[$i]->sClass = "center";
+        $obj->aoColumns[$i]->sDefaultContent = "";
+        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("datef", "date");
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans('Company');
+        print'</th>';
+        $obj->aoColumns[$i]->mDataProp = "societe.name";
+        $obj->aoColumns[$i]->sDefaultContent = "";
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans('AffectedTo');
+        print'</th>';
+        $obj->aoColumns[$i]->mDataProp = "usertodo";
+        $obj->aoColumns[$i]->sDefaultContent = "";
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans("Status");
+        print'</th>';
+        $obj->aoColumns[$i]->mDataProp = "status";
+        $obj->aoColumns[$i]->sClass = "dol_select center";
+        $obj->aoColumns[$i]->sDefaultContent = "0";
+        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("status", "status", array("dateEnd" => "last_subscription_date_end"));
+        $i++;
+        print '</tr>';
+        print '</thead>';
+        print'<tfoot>';
+        print'</tfoot>';
+        print'<tbody>';
+        print'</tbody>';
+        print "</table>";
+
+        $obj->iDisplayLength = $max;
+        $obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listDatatables.php?json=actionsTODO&class=" . get_class($this) . "&key=" . $id;
+        $this->datatablesCreate($obj, "actions_datatable", true);
+
+        foreach ($this->fk_extrafields->fields->status->values as $key => $aRow) {
+            ?>
+            <script>
+                $(document).ready(function() {
+                    var js = "var oTable = $('#actions_datatable').dataTable(); oTable.fnReloadAjax(\"<?php echo DOL_URL_ROOT . "/core/ajax/listDatatables.php?json=" . $key . "&class=" . get_class($this) . "&key=" . $id; ?>\")";
+                    $("#<?php echo $key; ?>").attr("onclick", js);
+                } );
+            </script>
+            <?php
+        }
+        print end_box();
+    }
+
+    /**
+     *  Show actions done
+     *
+     *  @param	int		$max		Max nb of records
+     *  @return	void
+     */
+    function show_actions_done($max = 5, $fk_task = 0) {
+        global $langs, $conf, $user, $db, $bc;
+
+        $titre = $langs->trans("ActionsDone");
+        print start_box($titre, "six", "16-Mail.png");
+
+        $i = 0;
+        $obj = new stdClass();
+
+        print '<table class="display dt_act" id="actionsDone_datatable" >';
+        // Ligne des titres
+
+        print '<thead>';
+        print'<tr>';
+        print'<th>';
+        print'</th>';
+        $obj->aoColumns[$i]->mDataProp = "_id";
+        $obj->aoColumns[$i]->bUseRendered = false;
+        $obj->aoColumns[$i]->bSearchable = false;
+        $obj->aoColumns[$i]->bVisible = false;
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans("Titre");
+        print'</th>';
+        $obj->aoColumns[$i]->mDataProp = "label";
+        $obj->aoColumns[$i]->bUseRendered = false;
+        $obj->aoColumns[$i]->bSearchable = true;
+        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("label", "url");
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans('DateEchAction');
+        print'</th>';
+        $obj->aoColumns[$i]->mDataProp = "datef";
+        $obj->aoColumns[$i]->sClass = "center";
+        $obj->aoColumns[$i]->sDefaultContent = "";
+        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("datef", "date");
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans('Company');
+        print'</th>';
+        $obj->aoColumns[$i]->mDataProp = "societe.name";
+        $obj->aoColumns[$i]->sDefaultContent = "";
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans('AffectedTo');
+        print'</th>';
+        $obj->aoColumns[$i]->mDataProp = "usertodo";
+        $obj->aoColumns[$i]->sDefaultContent = "";
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans("Status");
+        print'</th>';
+        $obj->aoColumns[$i]->mDataProp = "status";
+        $obj->aoColumns[$i]->sClass = "dol_select center";
+        $obj->aoColumns[$i]->sDefaultContent = "0";
+        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("status", "status", array("dateEnd" => "last_subscription_date_end"));
+        $i++;
+        print '</tr>';
+        print '</thead>';
+        print'<tfoot>';
+        print'</tfoot>';
+        print'<tbody>';
+        $result = $this->getView('actionsDone');
+        if (count($result->rows) > 0)
+            foreach ($result->rows as $key => $aRow) {
+                print '<tr>';
+                print '<td>' . $aRow->value->_id . '</td>';
+                print '<td>' . $aRow->value->label . '</td>';
+                print '<td>' . $aRow->value->datef . '</td>';
+                print '<td>' . $aRow->value->societe->ThirdPartyName . '</td>';
+                print '<td>' . $aRow->value->usertodo . '</td>';
+                print '<td>' . $aRow->value->status . '</td>';
+                print '</tr>';
+            }
+        print'</tbody>';
+        print "</table>";
+
+        $obj->bServerSide = false;
+        $obj->iDisplayLength = $max;
+        $this->datatablesCreate($obj, "actionsDone_datatable");
+        print end_box();
+    }
+
+    /**
      *  Initialise an instance with random values.
      *  Used to build previews or test instances.
      * 	id must be 0 if object instance is a specimen.
@@ -1026,7 +1213,6 @@ class Agenda extends nosqlDocument {
         $this->priority = 'Priority X';
         $this->note = 'Note';
     }
-    
-}
 
+}
 ?>

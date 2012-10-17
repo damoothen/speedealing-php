@@ -5,14 +5,14 @@
        "list": {
            "map": "function(doc) {\n  if(doc.class && doc.class==\"Agenda\")\n  emit(doc.datep, doc);\n}"
        },
-       "actionsToDo": {
-           "map": "function(doc) {\nif (doc.class == \"Agenda\" && (!doc.status || doc.status == \"0\"))\n  emit(doc.label, doc);\n}"
+       "actionsTODO": {
+           "map": "function(doc) {\nif (doc.class == \"Agenda\" && doc.status==\"TODO\") {\n if(doc.societe.id)\n  emit(doc.societe.id, doc);\n if(doc.contact.id)\n  emit(doc.contact.id, doc);\n}\n}"
        },
-       "listRdv": {
-           "map": "function(doc) {\n  if(doc.class && doc.class==\"Agenda\" && doc.type_code==\"AC_RDV\")\n  emit(doc.datep, doc);\n}"
+       "actionsDONE": {
+           "map": "function(doc) {\nif (doc.class == \"Agenda\" && doc.status==\"DONE\") {\n if(doc.societe.id)\n  emit(doc.societe.id, doc);\n if(doc.contact.id)\n  emit(doc.contact.id, doc);\n}\n}"
        },
-       "listTasks": {
-           "map": "function(doc) {\n  if(doc.class && doc.class==\"Agenda\" && doc.type_code!=\"AC_RDV\")\n  emit(doc.datep, doc);\n}"
+       "actionsON": {
+           "map": "function(doc) {\nif (doc.class == \"Agenda\" && doc.status==\"ON\") {\n if(doc.societe.id)\n  emit(doc.societe.id, doc);\n if(doc.contact.id)\n  emit(doc.contact.id, doc);\n}\n}"
        }
    }
 }

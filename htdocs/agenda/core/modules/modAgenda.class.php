@@ -323,7 +323,7 @@ class modAgenda extends DolibarrModules {
         $this->menus[$r]->_id = "menu:agenda";
         $this->menus[$r]->type = "top";
         $this->menus[$r]->position = 10;
-        $this->menus[$r]->url = "/agenda/listactions.php";
+        $this->menus[$r]->url = "/agenda/list.php";
         $this->menus[$r]->langs = "agenda";
         $this->menus[$r]->perms = '$user->rights->agenda->myactions->read';
         $this->menus[$r]->enabled = '$conf->agenda->enabled';
@@ -355,7 +355,7 @@ class modAgenda extends DolibarrModules {
         
         $this->menus[$r]->_id = "menu:agendaList";
         $this->menus[$r]->position = 112;
-        $this->menus[$r]->url = "/agenda/listactions.php";
+        $this->menus[$r]->url = "/agenda/list.php";
         $this->menus[$r]->langs = "agenda";
         $this->menus[$r]->perms = '$user->rights->agenda->myactions->read';
         $this->menus[$r]->enabled = '$conf->agenda->enabled';

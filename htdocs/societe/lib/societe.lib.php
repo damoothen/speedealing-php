@@ -697,8 +697,8 @@ function show_actions_todo($conf, $langs, $db, $object, $objcon = '', $noprint =
     $out = '';
 
     if (!empty($conf->agenda->enabled)) {
-        require_once DOL_DOCUMENT_ROOT . '/comm/action/class/actioncomm.class.php';
-        $actionstatic = new ActionComm($db);
+        require_once DOL_DOCUMENT_ROOT . '/agenda/class/agenda.class.php';
+        $actionstatic = new Agenda($db);
         $userstatic = new User($db);
         $contactstatic = new Contact($db);
 
@@ -707,7 +707,7 @@ function show_actions_todo($conf, $langs, $db, $object, $objcon = '', $noprint =
         $out.='<tr class="liste_titre">';
         $out.='<td colspan="2">';
         if (get_class($object) == 'Societe')
-            $out.='<a href="' . DOL_URL_ROOT . '/comm/action/listactions.php?socid=' . $object->id . '&amp;status=todo">';
+            $out.='<a href="' . DOL_URL_ROOT . '/agenda/list.php?socid=' . $object->id . '&amp;status=todo">';
         $out.=$langs->trans("ActionsToDoShort");
         if (get_class($object) == 'Societe')
             $out.='</a>';
@@ -715,7 +715,7 @@ function show_actions_todo($conf, $langs, $db, $object, $objcon = '', $noprint =
         $out.='<td colspan="5" align="right">';
         $permok = $user->rights->agenda->myactions->create;
         if (($object->id || $objcon->id) && $permok) {
-            $out.='<a href="' . DOL_URL_ROOT . '/comm/action/fiche.php?action=create';
+            $out.='<a href="' . DOL_URL_ROOT . '/agenda/fiche.php?action=create';
             if (get_class($object) == 'Societe')
                 $out.='&amp;socid=' . $object->id;
             $out.='&amp;contactid=' . $objcon->id . '&amp;backtopage=1&amp;percentage=-1">';

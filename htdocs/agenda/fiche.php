@@ -1299,18 +1299,12 @@ if ($id) {
         print end_box();
 
         /*
-         * Actions to do
+         * Show Actions 
          */
         if ($user->rights->agenda->myactions->read) {
-            show_array_actions_to_do(10, $object->id);
+            $object->show_actions(10);
         }
 
-        /*
-         * Last actions
-         */
-        if ($user->rights->agenda->myactions->read) {
-            show_array_last_actions_done(10, $object->id);
-        }
     }
 }
 

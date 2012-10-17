@@ -17,14 +17,14 @@
  */
 
 if (!defined('NOTOKENRENEWAL'))
-	define('NOTOKENRENEWAL', '1'); // Disables token renewal
+    define('NOTOKENRENEWAL', '1'); // Disables token renewal
 if (!defined('NOREQUIREMENU'))
-	define('NOREQUIREMENU', '1');
+    define('NOREQUIREMENU', '1');
 //if (! defined('NOREQUIREHTML'))  define('NOREQUIREHTML','1');
 if (!defined('NOREQUIREAJAX'))
-	define('NOREQUIREAJAX', '1');
+    define('NOREQUIREAJAX', '1');
 if (!defined('NOREQUIRESOC'))
-	define('NOREQUIRESOC', '1');
+    define('NOREQUIRESOC', '1');
 //if (! defined('NOREQUIRETRAN'))  define('NOREQUIRETRAN','1');
 
 require('../../main.inc.php');
@@ -43,58 +43,64 @@ top_httphead();
 
 if (!empty($json) && !empty($class)) {
 
-	$result = dol_include_once("/" . $class . "/class/" . strtolower($class) . ".class.php");
-	if (empty($result)) {
-		dol_include_once("/" . strtolower($class) . "/class/" . strtolower($class) . ".class.php"); // Old version
-	}
+    $result = dol_include_once("/" . $class . "/class/" . strtolower($class) . ".class.php");
+    if (empty($result)) {
+        dol_include_once("/" . strtolower($class) . "/class/" . strtolower($class) . ".class.php"); // Old version
+    }
 
-	$object = new $class($db);
+    $object = new $class($db);
 
-	$output = array(
-		"sEcho" => intval($_GET['sEcho']),
-		"iTotalRecords" => 0,
-		"iTotalDisplayRecords" => 0,
-		"aaData" => array()
-	);
+    $output = array(
+        "sEcho" => intval($_GET['sEcho']),
+        "iTotalRecords" => 0,
+        "iTotalDisplayRecords" => 0,
+        "aaData" => array()
+    );
 
-	if ($bServerSide && $_GET['sSearch']) {
-		$result = $object->getIndexedView($json, array('limit' => intval(empty($_GET['iDisplayLength']) ? $conf->view_limit : $_GET['iDisplayLength']),
-			'q' => $_GET['sSearch'] . "*",
-			'skip' => intval($_GET['iDisplayStart'])
-				//'sort' => $_GET['mDataProp_'.$_GET['iSortCol_0']],
-				//'stale'=> "ok"
-				));
-	} else {
-		$result = $object->getView($json, array('limit' => intval(empty($_GET['iDisplayLength']) ? $conf->view_limit : $_GET['iDisplayLength']),
-			'skip' => intval($_GET['iDisplayStart'])
-				//'stale'=> "update_after"
-				));
-		dol_setcache("total_rows", $result->total_rows);
-	}
+    if ($bServerSide && $_GET['sSearch']) {
+        if (isset($_GET['key']))
+            $params['key'] = $_GET['key'];
+        $params['limit'] = intval(empty($_GET['iDisplayLength']) ? $conf->view_limit : $_GET['iDisplayLength']);
+        $params['q'] = $_GET['sSearch'] . "*";
+        $params['skip'] = intval($_GET['iDisplayStart']);
+        //'sort' => $_GET['mDataProp_'.$_GET['iSortCol_0']],
+        //'stale'=> "ok"
 
-	if (empty($result->total_rows))
-		$bServerSide = 0;
+        $result = $object->getIndexedView($json, $params);
+    } else {
+        if (isset($_GET['key']))
+            $params['key'] = $_GET['key'];
+        $params['limit'] = intval(empty($_GET['iDisplayLength']) ? $conf->view_limit : $_GET['iDisplayLength']);
+        $params['skip'] = intval($_GET['iDisplayStart']);
+        //'stale'=> "update_after"
 
-	//print_r($result);
-        //error_log(json_encode($result));
-	//exit;
-	$output["iTotalRecords"] = dol_getcache("total_rows");
-	$output["iTotalDisplayRecords"] = $result->total_rows;
+        $result = $object->getView($json, $params);
+        dol_setcache("total_rows", $result->total_rows);
+    }
 
-	if (isset($result->rows))
-		foreach ($result->rows AS $aRow) {
-			unset($aRow->value->class);
-			unset($aRow->value->_rev);
-			$output["aaData"][] = clone $aRow->value;
-			unset($aRow);
-		}
-	//error_log(json_encode($output));
-	//sorting
-	if($bServerSide)
-            $object->sortDatatable($output["aaData"], $_GET['mDataProp_'.$_GET['iSortCol_0']], $_GET['sSortDir_0']);
+    if (empty($result->total_rows))
+        $bServerSide = 0;
 
-	header('Content-type: application/json');
-	echo json_encode($output);
-	exit;
+    //print_r($result);
+    //error_log(json_encode($result));
+    //exit;
+    $output["iTotalRecords"] = dol_getcache("total_rows");
+    $output["iTotalDisplayRecords"] = $result->total_rows;
+
+    if (isset($result->rows))
+        foreach ($result->rows AS $aRow) {
+            unset($aRow->value->class);
+            unset($aRow->value->_rev);
+            $output["aaData"][] = clone $aRow->value;
+            unset($aRow);
+        }
+    //error_log(json_encode($output));
+    //sorting
+    if ($bServerSide)
+        $object->sortDatatable($output["aaData"], $_GET['mDataProp_' . $_GET['iSortCol_0']], $_GET['sSortDir_0']);
+
+    header('Content-type: application/json');
+    echo json_encode($output);
+    exit;
 }
 ?>

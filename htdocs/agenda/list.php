@@ -426,7 +426,7 @@ print "</table>";
 print "</div>";
 
 //$obj->bServerSide = true;
-$obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listDatatables.php?json=listTasks&class=" . get_class($object);
+//$obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listDatatables.php?json=listTasks&class=" . get_class($object);
 $object->datatablesCreate($obj,"listactions",true,true);
 
 print '</div>'; // end

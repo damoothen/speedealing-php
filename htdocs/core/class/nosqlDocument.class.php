@@ -322,9 +322,6 @@ abstract class nosqlDocument extends CommonObject {
         if (!$found) {
             $result = new stdClass();
             try {
-                /* if (!empty($conf->view_limit))
-                  $params['limit'] = $conf->global->MAIN_SIZE_LISTE_LIMIT; */
-                //$params['limit'] = $conf->view_limit;
                 if (is_array($params))
                     $this->couchdb->setQueryParameters($params);
 
@@ -493,7 +490,7 @@ abstract class nosqlDocument extends CommonObject {
                         },
                         //$obj->oColVis->bRestore = true;
                         //$obj->oColVis->sAlign = 'left';
-                                                        																																																																																								            
+                                                                																																																																																								            
                         // Avec export Excel
         <?php if (!empty($obj->sDom)) : ?>
                             //"sDom": "Cl<fr>t<\"clear\"rtip>",
@@ -565,7 +562,7 @@ abstract class nosqlDocument extends CommonObject {
                                                 "tooltip": "Cliquer pour éditer...",
                                                 "indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
                                                 "placeholder" : ""
-                                                                                                                                																																																																																																																																																																																                
+                                                                                                                                                																																																																																																																																																																																                
                                             } );
                                             $("td.dol_select", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
                                                 "callback": function( sValue, y ) {
@@ -584,7 +581,7 @@ abstract class nosqlDocument extends CommonObject {
                                                 "tooltip": "Cliquer pour éditer...",
                                                 "indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
                                                 "placeholder" : ""
-                                                                                                                                																																																																																																																																																																																                
+                                                                                                                                                																																																																																																																																																																																                
                                             } );
                                         }
             <?php endif; ?>
@@ -1065,7 +1062,10 @@ abstract class nosqlDocument extends CommonObject {
      * 		@return		string		String with URL
      */
     function select_fk_extrafields($key, $htmlname) {
-        global $langs,$mysoc;
+        global $langs, $mysoc;
+
+        if (GETPOST($htmlname))
+            $this->$key = GETPOST($htmlname);
 
         $aRow = $this->fk_extrafields->fields->$key;
 
@@ -1127,7 +1127,7 @@ abstract class nosqlDocument extends CommonObject {
 
         $aRow = $this->fk_extrafields->fields->$key;
         $value = $this->$key;
-        if(empty($this->$key))
+        if (empty($this->$key))
             return null;
 
         if (isset($aRow->dict)) {

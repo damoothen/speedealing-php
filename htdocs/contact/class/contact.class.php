@@ -59,7 +59,6 @@ class Contact extends nosqlDocument {
     var $pays_code;    // deprecated
     var $pays;     // deprecated
     var $country_id;   // Id of country
-    var $country_code;   // Code of country
     var $country;    // Label of country
     var $socid;     // fk_soc
     var $status;    // 0=brouillon, 1=4=actif, 5=inactif
@@ -125,77 +124,25 @@ class Contact extends nosqlDocument {
         if (!$this->priv)
             $this->priv = 0;
 
-        $sql = "INSERT INTO " . MAIN_DB_PREFIX . "socpeople (";
-        $sql.= " datec";
-        $sql.= ", fk_soc";
-        $sql.= ", name";
-        $sql.= ", firstname";
-        $sql.= ", fk_user_creat";
-        $sql.= ", priv";
-        $sql.= ", canvas";
-        $sql.= ", entity";
-        $sql.= ") VALUES (";
-        $sql.= "'" . $this->db->idate($now) . "',";
-        if ($this->socid > 0)
-            $sql.= " " . $this->socid . ",";
-        else
-            $sql.= "null,";
-        $sql.= "'" . $this->db->escape($this->lastname) . "',";
-        $sql.= "'" . $this->db->escape($this->firstname) . "',";
-        $sql.= " " . ($user->id > 0 ? "'" . $user->id . "'" : "null") . ",";
-        $sql.= " " . $this->priv . ",";
-        $sql.= " " . ($this->canvas ? "'" . $this->canvas . "'" : "null") . ",";
-        $sql.= " " . $conf->entity;
-        $sql.= ")";
-
-        dol_syslog(get_class($this) . "::create sql=" . $sql);
-        $resql = $this->db->query($sql);
-        if ($resql) {
-            $this->id = $this->db->last_insert_id(MAIN_DB_PREFIX . "socpeople");
-
-            if (!$error) {
-                $result = $this->update($this->id, $user, 1);
-                if ($result < 0) {
-                    $error++;
-                    $this->error = $this->db->lasterror();
-                }
-            }
-
-            if (!$error) {
-                $result = $this->update_perso($this->id, $user);
-                if ($result < 0) {
-                    $error++;
-                    $this->error = $this->db->lasterror();
-                }
-            }
-
-            if (!$error) {
-                // Appel des triggers
-                include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
-                $interface = new Interfaces($this->db);
-                $result = $interface->run_triggers('CONTACT_CREATE', $this, $user, $langs, $conf);
-                if ($result < 0) {
-                    $error++;
-                    $this->errors = $interface->errors;
-                }
-                // Fin appel triggers
-            }
-
-            if (!$error) {
-                $this->db->commit();
-                return $this->id;
-            } else {
-                $this->db->rollback();
-                dol_syslog(get_class($this) . "::create " . $this->error, LOG_ERR);
-                return -2;
-            }
-        } else {
+        $result = $this->update($this->id, $user, 1);
+        if ($result < 0) {
+            $error++;
             $this->error = $this->db->lasterror();
-
-            $this->db->rollback();
-            dol_syslog(get_class($this) . "::create " . $this->error, LOG_ERR);
-            return -1;
         }
+
+        if (!$error) {
+            // Appel des triggers
+            include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
+            $interface = new Interfaces($this->db);
+            $result = $interface->run_triggers('CONTACT_CREATE', $this, $user, $langs, $conf);
+            if ($result < 0) {
+                $error++;
+                $this->errors = $interface->errors;
+            }
+            // Fin appel triggers
+        }
+
+        return $this->id;
     }
 
     /**
@@ -221,88 +168,41 @@ class Contact extends nosqlDocument {
         $this->phone_perso = trim($this->phone_perso);
         $this->phone_mobile = trim($this->phone_mobile);
         $this->fax = trim($this->fax);
-        $this->zip = ($this->zip ? $this->zip : $this->cp);
-        $this->town = ($this->town ? $this->town : $this->ville);
-        $this->country_id = ($this->country_id > 0 ? $this->country_id : $this->fk_pays);
-        $this->state_id = ($this->state_id > 0 ? $this->state_id : $this->fk_departement);
+        $this->zip = $this->zip;
+        $this->town = $this->town;
+        $this->country_id = $this->country_id;
+        $this->state_id = $this->state_id;
 
-        $this->db->begin();
+        $this->fk_user_modif = $user->login;
 
-        $sql = "UPDATE " . MAIN_DB_PREFIX . "socpeople SET ";
-        if ($this->socid > 0)
-            $sql .= " fk_soc='" . $this->db->escape($this->socid) . "',";
-        else if ($this->socid == -1)
-            $sql .= " fk_soc=null,";
-        $sql .= "  civilite='" . $this->db->escape($this->civilite_id) . "'";
-        $sql .= ", name='" . $this->db->escape($this->lastname) . "'";
-        $sql .= ", firstname='" . $this->db->escape($this->firstname) . "'";
-        $sql .= ", address='" . $this->db->escape($this->address) . "'";
-        $sql .= ", cp='" . $this->db->escape($this->zip) . "'";
-        $sql .= ", ville='" . $this->db->escape($this->town) . "'";
-        $sql .= ", fk_pays=" . ($this->country_id > 0 ? $this->country_id : 'NULL');
-        $sql .= ", fk_departement=" . ($this->state_id > 0 ? $this->state_id : 'NULL');
-        $sql .= ", poste='" . $this->db->escape($this->poste) . "'";
-        $sql .= ", fax='" . $this->db->escape($this->fax) . "'";
-        $sql .= ", email='" . $this->db->escape($this->email) . "'";
-        $sql .= ", note='" . $this->db->escape($this->note) . "'";
-        $sql .= ", phone = '" . $this->db->escape($this->phone_pro) . "'";
-        $sql .= ", phone_perso = '" . $this->db->escape($this->phone_perso) . "'";
-        $sql .= ", phone_mobile = '" . $this->db->escape($this->phone_mobile) . "'";
-        $sql .= ", jabberid = '" . $this->db->escape($this->jabberid) . "'";
-        $sql .= ", priv = '" . $this->priv . "'";
-        $sql .= ", fk_user_modif=" . ($user->id > 0 ? "'" . $user->id . "'" : "null");
-        $sql .= ", default_lang=" . ($this->default_lang ? "'" . $this->default_lang . "'" : "null");
-        $sql .= ", no_email=" . ($this->no_email ? "'" . $this->no_email . "'" : "null");
-        $sql .= " WHERE rowid=" . $id;
-
-        dol_syslog(get_class($this) . "::update sql=" . $sql, LOG_DEBUG);
-        $result = $this->db->query($sql);
-        if ($result) {
-            unset($this->country_code);
-            unset($this->country);
-            unset($this->state_code);
-            unset($this->state);
-
-            // Actions on extra fields (by external module or standard code)
-            include_once DOL_DOCUMENT_ROOT . '/core/class/hookmanager.class.php';
-            $hookmanager = new HookManager($this->db);
-            $hookmanager->initHooks(array('contactdao'));
-            $parameters = array('socid' => $this->id);
-            $reshook = $hookmanager->executeHooks('insertExtraFields', $parameters, $this, $action);    // Note that $action and $object may have been modified by some hooks
-            if (empty($reshook)) {
-                $result = $this->insertExtraFields();
-                if ($result < 0) {
-                    $error++;
-                }
-            } else if ($reshook < 0)
+        $this->record();
+        
+        // Actions on extra fields (by external module or standard code)
+        include_once DOL_DOCUMENT_ROOT . '/core/class/hookmanager.class.php';
+        $hookmanager = new HookManager($this->db);
+        $hookmanager->initHooks(array('contactdao'));
+        $parameters = array('socid' => $this->id);
+        $reshook = $hookmanager->executeHooks('insertExtraFields', $parameters, $this, $action);    // Note that $action and $object may have been modified by some hooks
+        if (empty($reshook)) {
+            $result = $this->insertExtraFields();
+            if ($result < 0) {
                 $error++;
-
-            if (!$error && !$notrigger) {
-                // Appel des triggers
-                include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
-                $interface = new Interfaces($this->db);
-                $result = $interface->run_triggers('CONTACT_MODIFY', $this, $user, $langs, $conf);
-                if ($result < 0) {
-                    $error++;
-                    $this->errors = $interface->errors;
-                }
-                // Fin appel triggers
             }
+        } else if ($reshook < 0)
+            $error++;
 
-            if (!$error) {
-                $this->db->commit();
-                return 1;
-            } else {
-                $this->error = join(',', $this->errors);
-                dol_syslog(get_class($this) . "::update Error " . $this->error, LOG_ERR);
-                $this->db->rollback();
-                return -$error;
+        if (!$error && !$notrigger) {
+            // Appel des triggers
+            include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
+            $interface = new Interfaces($this->db);
+            $result = $interface->run_triggers('CONTACT_MODIFY', $this, $user, $langs, $conf);
+            if ($result < 0) {
+                $error++;
+                $this->errors = $interface->errors;
             }
-        } else {
-            $this->error = $this->db->lasterror() . ' sql=' . $sql;
-            dol_syslog(get_class($this) . "::update Error " . $this->error, LOG_ERR);
-            $this->db->rollback();
-            return -1;
+            // Fin appel triggers
+
+            return 1;
         }
     }
 
@@ -412,61 +312,6 @@ class Contact extends nosqlDocument {
     }
 
     /**
-     *  Update field alert birthday
-     *
-     *  @param      int			$id         Id of contact
-     *  @param      User		$user		User asking to change alert or birthday
-     *  @return     int         			<0 if KO, >=0 if OK
-     */
-    function update_perso($id, $user = 0) {
-        $error = 0;
-        $result = false;
-
-        // Mis a jour contact
-        $sql = "UPDATE " . MAIN_DB_PREFIX . "socpeople SET";
-        $sql.= " birthday=" . ($this->birthday ? "'" . $this->db->idate($this->birthday) . "'" : "null");
-        if ($user)
-            $sql .= ", fk_user_modif=" . $user->id;
-        $sql.= " WHERE rowid=" . $id;
-
-        dol_syslog(get_class($this) . "::update_perso this->birthday=" . $this->birthday . " - sql=" . $sql);
-        $resql = $this->db->query($sql);
-        if (!$resql) {
-            $error++;
-            $this->error = $this->db->lasterror();
-        }
-
-        // Mis a jour alerte birthday
-        if ($this->birthday_alert) {
-            //check existing
-            $sql_check = "SELECT * FROM " . MAIN_DB_PREFIX . "user_alert WHERE type=1 AND fk_contact=" . $id . " AND fk_user=" . $user->id;
-            $result_check = $this->db->query($sql_check);
-            if (!$result_check || ($this->db->num_rows($result_check) < 1)) {
-                //insert
-                $sql = "INSERT INTO " . MAIN_DB_PREFIX . "user_alert(type,fk_contact,fk_user) ";
-                $sql.= "VALUES (1," . $id . "," . $user->id . ")";
-                $result = $this->db->query($sql);
-                if (!$result) {
-                    $error++;
-                    $this->error = $this->db->lasterror();
-                }
-            } else {
-                $result = true;
-            }
-        } else {
-            $sql = "DELETE FROM " . MAIN_DB_PREFIX . "user_alert ";
-            $sql.= "WHERE type=1 AND fk_contact=" . $id . " AND fk_user=" . $user->id;
-            $result = $this->db->query($sql);
-            if (!$result) {
-                $error++;
-                $this->error = $this->db->lasterror();
-            }
-        }
-
-        return $result;
-    }
-
-    /**
      *  Charge l'objet contact
      *
      *  @param      int		$id          id du contact
@@ -477,7 +322,15 @@ class Contact extends nosqlDocument {
         global $langs;
 
         $langs->load("companies");
-
+        
+        try {
+            $this->load($id);
+            return 1;
+        } catch (Exception $e) {
+            $this->error = $e->getMessage();
+            return -1;
+        }
+        
         $sql = "SELECT c.rowid, c.fk_soc, c.civilite as civilite_id, c.name as lastname, c.firstname,";
         $sql.= " c.address, c.cp as zip, c.ville as town,";
         $sql.= " c.fk_pays as country_id,";
