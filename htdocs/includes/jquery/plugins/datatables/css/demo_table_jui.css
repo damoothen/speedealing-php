@@ -5,7 +5,7 @@
 .dataTables_wrapper select {display:inline;margin:2px 0;}
 .dataTables_paginate{width:auto;float:right;text-align:right;position:relative;top:-4px}
 .dataTables_info{float:left}
-table.display thead th,table.display tfoot th{text-align:left;font-size:14px; font-family: 'Terminal Dosis', sans-serif; border:1px solid #ccc;padding:8px 8px 6px;/*text-transform:uppercase;*/vertical-align:middle}
+table.display thead th,table.display tfoot th{text-align:left;font-size:13px; font-family: 'Terminal Dosis', sans-serif; border:1px solid #ccc;padding:4px 7px 4px;/*text-transform:uppercase;*/vertical-align:middle}
 table.display thead th {cursor:pointer;/*background-color:#e0e0e0;font-weight:700*/}
 table.display thead th.sorting_disabled{cursor:default}
 div.dataTables_wrapper .ui-widget-header{font-weight:400}
@@ -42,7 +42,7 @@ box-shadow: 3px 3px 3px #CCC;
 -moz-border-radius: 0.2em;
 -webkit-border-radius: 0.2em;
 border-radius: 0.2em;}
-table.display tfoot th{font-weight:400;padding:2px 8px 2px 8px}
+table.display tfoot th{font-weight:400;padding:2px 8px 2px 5px}
 table.display tr.heading2 td{border-bottom:1px solid #aaa}
 table.display td{padding:6px 8px;border:1px solid #ccc;font-size:12px;vertical-align:middle}
 table.noborder td{;border:0px;}
@@ -57,7 +57,7 @@ table.display td .fancyImg img {display:block}
 /*.display tr:nth-child(2n) td{background-color:#f5f5f5}*/
 /*.top,.bottom{background-color:#F5F5F5;border:1px solid #CCC;padding:15px}*/
 .top .dataTables_info{float:none}
-table.display tfoot input{width:100%;color:#444;margin:.5em 0}
+table.display tfoot input{width:100%;color:#444;margin:.3em 0;font-size:11px;line-height:14px;padding:0;}
 table.display tfoot input.search_init{color:#999}
 table.display td.group{background-color:#d1cfd0;border-bottom:2px solid #A19B9E;border-top:2px solid #A19B9E}
 table.display td.details{background-color:#d1cfd0;border:2px solid #A19B9E}

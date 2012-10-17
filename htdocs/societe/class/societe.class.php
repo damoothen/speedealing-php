@@ -124,14 +124,11 @@ class Societe extends nosqlDocument {
      *    @param	DoliDB		$db		Database handler
      */
     public function __construct($db) {
-        global $conf;
-
         parent::__construct($db);
 
         try {
             $fk_extrafields = new ExtraFields($db);
             $this->fk_extrafields = $fk_extrafields->load("extrafields:" . get_class($this), true); // load and cache
-            $this->fk_country = $this->couchdb->getDoc("dict:country"); //load country table
         } catch (Exception $e) {
             $error = "Something weird happened: " . $e->getMessage() . " (errcode=" . $e->getCode() . ")\n";
             print $error;
