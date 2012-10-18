@@ -193,7 +193,7 @@ print start_box($langs->trans("CompanySetup"),"twelve","16-Cog-4.png",false);
 
 $head = societe_admin_prepare_head(null);
 
-dol_fiche_head($head, 'general', $langs->trans("ThirdParty"), 0, 'company');
+dol_fiche_head($head, 'general', $langs->trans("ThirdParties"), 0, 'company');
 
 dol_htmloutput_mesg($mesg);
 

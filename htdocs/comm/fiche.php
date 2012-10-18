@@ -864,13 +864,7 @@ if ($id > 0)
     {
         print load_fiche_titre($langs->trans("ActionsOnCompany"),'','');
 
-            if ($conf->lead->enabled)
-            {
-            // Leads list
-                $result=show_leads($conf,$langs,$db,$object);
-            }
-
-		// List of todo actions
+        // List of todo actions
 		show_actions_todo($conf,$langs,$db,$object);
 
         // List of done actions

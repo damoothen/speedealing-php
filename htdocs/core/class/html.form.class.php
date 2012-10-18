@@ -1,5 +1,4 @@
 <?php
-
 /* Copyright (c) 2002-2007 Rodolphe Quiedeville  <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2012 Laurent Destailleur   <eldy@users.sourceforge.net>
  * Copyright (C) 2004      Benoit Mortier        <benoit.mortier@opensides.be>
