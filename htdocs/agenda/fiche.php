@@ -420,7 +420,7 @@ $htmlactions = new FormActions($db);
 
 
 if ($action == 'create') {
-    
+
     $contact = new Contact($db);
 
     if (GETPOST("contactid")) {
@@ -435,7 +435,7 @@ if ($action == 'create') {
         $title = $langs->trans("AddActionRendezVous");
     else
         $title = $langs->trans("AddAnAction");
-    
+
     print_fiche_titre($title);
     print '<div class="with-padding">';
     print '<div class="columns">';
@@ -770,9 +770,9 @@ if ($id) {
         dol_print_error($db, $object->error);
         exit;
     }
-    /*
-      $societe = new Societe($db);
-      if ($object->societe->id) {
+
+    $societe = new Societe($db);
+    /*  if ($object->societe->id) {
       $result = $societe->fetch($object->societe->id);
       }
       $object->societe = $societe;
@@ -803,7 +803,7 @@ if ($id) {
         $result = $contact->fetch($object->contact->id, $user);
     }
     $object->contact = $contact;
-    
+
     print_fiche_titre($langs->trans("Event") . " " . $object->label);
     print '<div class="with-padding">';
     print '<div class="columns">';
@@ -1013,11 +1013,12 @@ if ($id) {
         // Company
         print '<tr><td width="30%">' . $langs->trans("ActionOnCompany") . '</td>';
         print '<td>';
-        print $form->select_company($object->societe->id, 'socid', '', 1, 1);
+        print $object->select_fk_extrafields('societe', 'socid');
         print '</td>';
 
         // Contact
         print '<td>' . $langs->trans("Contact") . '</td><td width="30%">';
+        print $object->select_fk_extrafields('contact', 'contactid');
         //print $form->selectarray("contactid", (empty($object->societe->id) ? array() : $object->societe->contact_array()), $object->contact->id, 1);
         print '</td></tr>';
 
@@ -1029,7 +1030,7 @@ if ($id) {
             print '<tr><td valign="top">' . $langs->trans("Lead") . '</td><td colspan="3">';
             $numlead = select_leads($object->societe->id, $object->fk_lead, 'leadid');
             if ($numlead == 0) {
-                print ' &nbsp; <a href="../../lead/fiche.php?socid=' . $societe->id . '&action=create">' . $langs->trans("AddLead") . '</a>';
+                print ' &nbsp; <a href="../../lead/fiche.php?socid=' . $object->societe->id . '&action=create">' . $langs->trans("AddLead") . '</a>';
             }
             print '</td></tr>';
         }
@@ -1042,7 +1043,7 @@ if ($id) {
             print '<tr><td valign="top">' . $langs->trans("Project") . '</td><td colspan="3">';
             $numprojet = select_projects($object->societe->id, $object->fk_project, 'projectid');
             if ($numprojet == 0) {
-                print ' &nbsp; <a href="../../projet/fiche.php?socid=' . $societe->id . '&action=create">' . $langs->trans("AddProject") . '</a>';
+                print ' &nbsp; <a href="../../projet/fiche.php?socid=' . $object->societe->id . '&action=create">' . $langs->trans("AddProject") . '</a>';
             }
             print '</td></tr>';
         }
@@ -1198,17 +1199,21 @@ if ($id) {
           print "<br>" . dol_print_phone($object->societe->tel);
           }
           } */
-        print $object->societe->name;
+        if (!empty($object->societe->id)) {
+            $societe->id = $object->societe->id;
+            $societe->name = $object->societe->name;
+            print $societe->getNomUrl(1);
+        } else {
+            print $langs->trans("None");
+        }
+
         print '</td>';
         print '<td>' . $langs->trans("Contact") . '</td>';
         print '<td>';
-        if ($object->contact->id > 0) {
-            print $object->contact->getNomUrl(1);
-            if ($object->contact->id && $object->type_code == 'AC_TEL') {
-                if ($object->contact->fetch($object->contact->id)) {
-                    print "<br>" . dol_print_phone($object->contact->phone_pro);
-                }
-            }
+        if (!empty($object->contact->id)) {
+            $contact->id = $object->contact->id;
+            $contact->name = $object->contact->name;
+            print $contact->getNomUrl(1);
         } else {
             print $langs->trans("None");
         }
@@ -1304,7 +1309,6 @@ if ($id) {
         if ($user->rights->agenda->myactions->read) {
             $object->show_actions(10);
         }
-
     }
 }
 

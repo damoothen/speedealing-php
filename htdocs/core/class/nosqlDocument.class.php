@@ -490,7 +490,7 @@ abstract class nosqlDocument extends CommonObject {
                         },
                         //$obj->oColVis->bRestore = true;
                         //$obj->oColVis->sAlign = 'left';
-                                                                																																																																																								            
+                                                                                                																																																																																								            
                         // Avec export Excel
         <?php if (!empty($obj->sDom)) : ?>
                             //"sDom": "Cl<fr>t<\"clear\"rtip>",
@@ -562,7 +562,7 @@ abstract class nosqlDocument extends CommonObject {
                                                 "tooltip": "Cliquer pour éditer...",
                                                 "indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
                                                 "placeholder" : ""
-                                                                                                                                                																																																																																																																																																																																                
+                                                                                                                                                                                                                																																																																																																																																																																																                
                                             } );
                                             $("td.dol_select", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
                                                 "callback": function( sValue, y ) {
@@ -581,7 +581,7 @@ abstract class nosqlDocument extends CommonObject {
                                                 "tooltip": "Cliquer pour éditer...",
                                                 "indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
                                                 "placeholder" : ""
-                                                                                                                                                																																																																																																																																																																																                
+                                                                                                                                                                                                                																																																																																																																																																																																                
                                             } );
                                         }
             <?php endif; ?>
@@ -755,14 +755,20 @@ abstract class nosqlDocument extends CommonObject {
                 else
                     $url = $params['url'];
 
+                if (empty($params['id']))
+                    $params['id'] = "_id";
+
                 $rtr = 'function(obj) {
 				var ar = [];
+                                if(obj.aData.' . $params["id"] . ' === undefined)
+                                    return ar.join("");
+
 				ar[ar.length] = "<img src=\"theme/' . $conf->theme . '/img/ico/icSw2/' . $this->fk_extrafields->ico . '\" border=\"0\" alt=\"' . $langs->trans("See " . get_class($this)) . ' : ";
 				ar[ar.length] = obj.aData.' . $key . '.toString();
 				ar[ar.length] = "\" title=\"' . $langs->trans("See " . get_class($this)) . ' : ";
 				ar[ar.length] = obj.aData.' . $key . '.toString();
 				ar[ar.length] = "\"> <a href=\"' . $url . '";
-				ar[ar.length] = obj.aData._id;
+				ar[ar.length] = obj.aData.' . $params["id"] . ';
 				ar[ar.length] = "\">";
 				ar[ar.length] = obj.aData.' . $key . '.toString();
 				ar[ar.length] = "</a>";
@@ -1074,6 +1080,8 @@ abstract class nosqlDocument extends CommonObject {
         else
             $title = $langs->trans($key);
 
+        $selected = $this->$key;
+
         $rtr = "";
         $rtr.= '<select data-placeholder="' . $title . '&hellip;" class="chzn-select expand" id="' . $htmlname . '" name="' . $htmlname . '" >';
         if (isset($aRow->dict)) {
@@ -1090,16 +1098,46 @@ abstract class nosqlDocument extends CommonObject {
             } catch (Exception $e) {
                 dol_print_error('', $e->getMessage());
             }
+        } elseif (isset($aRow->class)) { // Is an object
+            $class = $aRow->class;
+            $object = new $class($this->db);
+
+            $params = array();
+            if (count($aRow->params))
+                foreach ($aRow->params as $idx => $row) {
+                    eval("\$row = $row;");
+                    if (!empty($row))
+                        $params[$idx] = $row;
+                }
+            try {
+                $result = $object->getView($aRow->view, $params);
+            } catch (Exception $e) {
+                $this->error = "Fetch : Something weird happened: " . $e->getMessage() . " (errcode=" . $e->getCode() . ")\n";
+                dol_print_error($this->db, $this->error);
+                return 0;
+            }
+
+            $aRow->values[0]->label = "";
+            $aRow->values[0]->enable = true;
+
+            foreach ($result->rows as $row) {
+                $aRow->values[$row->value->_id]->label = $row->value->name;
+                $aRow->values[$row->value->_id]->enable = true;
+            }
+
+            $selected = $this->$key->id; // Index of key
         }
-        if (empty($this->$key))
-            $this->$key = $aRow->default;
+
+
+        if (empty($selected))
+            $selected = $aRow->default;
 
         if (count($aRow->values))
             foreach ($aRow->values as $idx => $row) {
                 if ($row->enable) {
                     $rtr.= '<option value="' . $idx . '"';
 
-                    if ($this->$key == $idx)
+                    if ($selected == $idx)
                         $rtr.= ' selected="selected"';
 
                     $rtr.= '>';
@@ -1145,6 +1183,12 @@ abstract class nosqlDocument extends CommonObject {
             } catch (Exception $e) {
                 dol_print_error('', $e->getMessage());
             }
+        } elseif (isset($aRow->class)) { // Is an object
+            $class = $aRow->class;
+            $object = new $class($this->db);
+            $object->name = $this->$key->name;
+            $object->id = $this->$key->id;
+            return $object->getNomUrl(1);
         }
 
         if (isset($aRow->values->$value->label))

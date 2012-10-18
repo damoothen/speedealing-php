@@ -85,7 +85,7 @@ class Agenda extends nosqlDocument {
             dol_print_error('', $e->getMessage());
             exit;
         }
-        $this->status = 0;
+        $this->status = "TODO";
         $this->author = null;
         $this->usermod = null;
         $this->usertodo = null;
@@ -426,7 +426,21 @@ class Agenda extends nosqlDocument {
 
         if ($this->type == 2 && $this->percentage == 100) //ACTION
             $this->datef = dol_now();
-
+        
+        if(!empty($this->societe->id)) {
+            $object = new Societe($this->db);
+            $object->load($this->societe->id);
+            $this->societe->name = $object->name;
+        } else {
+            unset($this->societe->name);
+        }
+        if(!empty($this->contact->id)) {
+            $object = new Contact($this->db);
+            $object->load($this->contact->id);
+            $this->contact->name = $object->name;
+        } else {
+            unset($this->contact->name);
+        }
 
         // Check parameters
         if ($this->percentage == 0 && $this->userdone->id > 0) {

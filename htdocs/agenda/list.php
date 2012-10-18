@@ -154,6 +154,8 @@ $num = $db->num_rows($resql);
  * 
  */
 $object = new Agenda($db);
+$contact = new Contact($db);
+$societe = new Societe($db);
 $societestatic = new Societe($db);
 
 $title = $langs->trans("DoneAndToDoActions");
@@ -210,12 +212,14 @@ print $langs->trans('Company');
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "societe.name";
 $obj->aoColumns[$i]->sDefaultContent = "";
+$obj->aoColumns[$i]->fnRender = $societe->datatablesFnRender("societe.name", "url", array('id' => "societe.id"));
 $i++;
 print'<th class="essential">';
 print $langs->trans('Contact');
 print'</th>';
-$obj->aoColumns[$i]->mDataProp = "contact";
+$obj->aoColumns[$i]->mDataProp = "contact.name";
 $obj->aoColumns[$i]->sDefaultContent = "";
+$obj->aoColumns[$i]->fnRender = $contact->datatablesFnRender("contact.name", "url", array('id' => "contact.id"));
 $i++;
 print'<th class="essential">';
 print $langs->trans('ActionUserAsk');

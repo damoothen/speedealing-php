@@ -3,6 +3,21 @@
    "class": "extrafields",
    "ico": "16-Month-Calendar.png",
    "fields": {
+       "societe": {
+           "enable": true,
+           "class": "Societe",
+           "view": "list",
+           "params": {
+           }
+       },
+       "contact": {
+           "enable": true,
+           "class": "Contact",
+           "view": "listSociete",
+           "params": {
+               "key": "$this->societe->id"
+           }
+       },
        "status": {
            "type": "select",
            "enable": true,

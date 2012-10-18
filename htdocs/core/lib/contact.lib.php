@@ -1,4 +1,5 @@
 <?php
+
 /* Copyright (C) 2006-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2010      Regis Houssin		<regis@dolibarr.fr>
  * Copyright (C) 2010-2011 Herve Prot       	<herve.prot@symeos.com>
@@ -19,8 +20,8 @@
  */
 
 /**
- *	    \file       htdocs/core/lib/contact.lib.php
- *		\brief      Ensemble de fonctions de base pour les contacts
+ * 	    \file       htdocs/core/lib/contact.lib.php
+ * 		\brief      Ensemble de fonctions de base pour les contacts
  */
 
 /**
@@ -29,57 +30,43 @@
  * @param   Object	$object		Object related to tabs
  * @return  array				Array of tabs to shoc
  */
-function contact_prepare_head($object)
-{
-	global $langs, $conf;
+function contact_prepare_head($object) {
+    global $langs, $conf;
 
-	$h = 0;
-	$head = array();
+    $h = 0;
+    $head = array();
 
-	$head[$h][0] = DOL_URL_ROOT.'/contact/fiche.php?id='.$object->id;
-	$head[$h][1] = $langs->trans("Card");
-	$head[$h][2] = 'card';
-	$h++;
+    $head[$h][0] = DOL_URL_ROOT . '/contact/fiche.php?id=' . $object->id;
+    $head[$h][1] = $langs->trans("Card");
+    $head[$h][2] = 'card';
+    $h++;
 
-	if (! empty($conf->ldap->enabled) && ! empty($conf->global->LDAP_CONTACT_ACTIVE))
-	{
-		$langs->load("ldap");
+    if (!empty($conf->ldap->enabled) && !empty($conf->global->LDAP_CONTACT_ACTIVE)) {
+        $langs->load("ldap");
 
-		$head[$h][0] = DOL_URL_ROOT.'/contact/ldap.php?id='.$object->id;
-		$head[$h][1] = $langs->trans("LDAPCard");
-		$head[$h][2] = 'ldap';
-		$h++;
-	}
+        $head[$h][0] = DOL_URL_ROOT . '/contact/ldap.php?id=' . $object->id;
+        $head[$h][1] = $langs->trans("LDAPCard");
+        $head[$h][2] = 'ldap';
+        $h++;
+    }
 
-	$head[$h][0] = DOL_URL_ROOT.'/contact/perso.php?id='.$object->id;
-	$head[$h][1] = $langs->trans("PersonalInformations");
-	$head[$h][2] = 'perso';
-	$h++;
+    $head[$h][0] = DOL_URL_ROOT . '/contact/perso.php?id=' . $object->id;
+    $head[$h][1] = $langs->trans("PersonalInformations");
+    $head[$h][2] = 'perso';
+    $h++;
 
-	$head[$h][0] = DOL_URL_ROOT.'/categories/categorie.php?id='.$_GET["id"].'&type=5';
+    $head[$h][0] = DOL_URL_ROOT . '/categories/categorie.php?id=' . $_GET["id"] . '&type=5';
     $head[$h][1] = $langs->trans("Categories");
     $head[$h][2] = 'category';
     $h++;
-
-	$head[$h][0] = DOL_URL_ROOT.'/contact/exportimport.php?id='.$object->id;
-	$head[$h][1] = $langs->trans("ExportImport");
-	$head[$h][2] = 'exportimport';
-	$h++;
 
     // Show more tabs from modules
     // Entries must be declared in modules descriptor with line
     // $this->tabs = array('entity:+tabname:Title:@mymodule:/mymodule/mypage.php?id=__ID__');   to add new tab
     // $this->tabs = array('entity:-tabname:Title:@mymodule:/mymodule/mypage.php?id=__ID__');   to remove a tab
-    complete_head_from_modules($conf,$langs,$object,$head,$h,'contact');
+    complete_head_from_modules($conf, $langs, $object, $head, $h, 'contact');
 
-    $head[$h][0] = DOL_URL_ROOT.'/contact/info.php?id='.$object->id;
-	$head[$h][1] = $langs->trans("Info");
-	$head[$h][2] = 'info';
-	$h++;
-
-
-
-	return $head;
+    return $head;
 }
 
 ?>

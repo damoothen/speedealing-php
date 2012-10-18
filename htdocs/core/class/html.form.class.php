@@ -573,22 +573,6 @@ class Form {
             return 0;
         }
 
-        // On recherche les societes
-        $sql = "SELECT s.rowid, s.nom, s.client, s.fournisseur, s.code_client, s.code_fournisseur";
-        $sql.= " FROM " . MAIN_DB_PREFIX . "societe as s";
-        if (!$user->rights->societe->client->voir && !$user->societe_id)
-            $sql .= ", " . MAIN_DB_PREFIX . "societe_commerciaux as sc";
-        $sql.= " WHERE s.entity IN (" . getEntity('societe', 1) . ")";
-        if (!empty($user->societe_id))
-            $sql.= " AND s.rowid = " . $user->societe_id;
-        if ($filter)
-            $sql.= " AND " . $filter;
-        if (!$user->rights->societe->client->voir && !$user->societe_id)
-            $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " . $user->id;
-        $sql.= " ORDER BY nom ASC";
-
-        dol_syslog(get_class($this) . "::select_company sql=" . $sql);
-
         if ($conf->use_javascript_ajax && $conf->global->COMPANY_USE_SEARCH_TO_SELECT && !$forcecombo) {
             //$minLength = (is_numeric($conf->global->COMPANY_USE_SEARCH_TO_SELECT)?$conf->global->COMPANY_USE_SEARCH_TO_SELECT:2);
 

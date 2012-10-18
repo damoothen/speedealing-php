@@ -41,26 +41,13 @@ class Contact extends nosqlDocument {
     var $civilite_id;  // In fact we stor civility_code
     var $lastname;
     var $name;         // TODO deprecated
-    var $nom;          // TODO deprecated
     var $firstname;
-    var $prenom;       // TODO deprecated
     var $address;
-    var $cp;        // TODO deprecated
     var $zip;
-    var $ville;        // TODO deprecated
     var $town;
-    var $fk_departement;  // deprecated
-    var $departement_code;  // deprecated
-    var $departement;   // deprecated
     var $state_id;          // Id of department
-    var $state_code;      // Code of department
-    var $state;           // Label of department
-    var $fk_pays;    // deprecated
-    var $pays_code;    // deprecated
-    var $pays;     // deprecated
     var $country_id;   // Id of country
-    var $country;    // Label of country
-    var $socid;     // fk_soc
+    var $societe;     // fk_soc
     var $status;    // 0=brouillon, 1=4=actif, 5=inactif
     var $code;
     var $email;
@@ -72,7 +59,6 @@ class Contact extends nosqlDocument {
     var $ref_contrat;           // Nb de reference contrat pour lequel il est contact
     var $ref_commande;          // Nb de reference commande pour lequel il est contact
     var $ref_propal;            // Nb de reference propal pour lequel il est contact
-    var $user_id;
     var $user_login;
     var $import_key;
     var $oldcopy;  // To contains a clone of this when we need to save old properties of object
@@ -94,6 +80,8 @@ class Contact extends nosqlDocument {
             print $error;
             exit;
         }
+
+        $this->societe = (object) array();
 
         return 1;
     }
@@ -121,14 +109,14 @@ class Contact extends nosqlDocument {
             $this->firstname = ucwords($this->firstname);
         if (!$this->socid)
             $this->socid = 0;
-        if (!$this->priv)
-            $this->priv = 0;
 
         $result = $this->update($this->id, $user, 1);
         if ($result < 0) {
             $error++;
             $this->error = $this->db->lasterror();
         }
+
+        $this->date_create = dol_now();
 
         if (!$error) {
             // Appel des triggers
@@ -174,9 +162,20 @@ class Contact extends nosqlDocument {
         $this->state_id = $this->state_id;
 
         $this->fk_user_modif = $user->login;
+        $this->tms = dol_now();
+
+        $this->name = $this->firstname . " " . $this->lastname;
+        
+        if(!empty($this->societe->id)) {
+            $object = new Societe($this->db);
+            $object->load($this->societe->id);
+            $this->societe->name = $object->name;
+        } else {
+            unset($this->societe->name);
+        }
 
         $this->record();
-        
+
         // Actions on extra fields (by external module or standard code)
         include_once DOL_DOCUMENT_ROOT . '/core/class/hookmanager.class.php';
         $hookmanager = new HookManager($this->db);
@@ -322,7 +321,7 @@ class Contact extends nosqlDocument {
         global $langs;
 
         $langs->load("companies");
-        
+
         try {
             $this->load($id);
             return 1;
@@ -330,7 +329,7 @@ class Contact extends nosqlDocument {
             $this->error = $e->getMessage();
             return -1;
         }
-        
+
         $sql = "SELECT c.rowid, c.fk_soc, c.civilite as civilite_id, c.name as lastname, c.firstname,";
         $sql.= " c.address, c.cp as zip, c.ville as town,";
         $sql.= " c.fk_pays as country_id,";
@@ -397,7 +396,6 @@ class Contact extends nosqlDocument {
 
                 $this->email = $obj->email;
                 $this->jabberid = $obj->jabberid;
-                $this->priv = $obj->priv;
                 $this->mail = $obj->email;
 
                 $this->birthday = $this->db->jdate($obj->birthday);
@@ -812,20 +810,6 @@ class Contact extends nosqlDocument {
             elseif ($statut == 5)
                 return $langs->trans('StatusContactValidatedShort') . ' ' . img_picto($langs->trans('StatusContactValidatedShort'), 'statut5');
         }
-    }
-
-    /**
-     * 	Return translated label of Public or Private
-     *
-     * 	@param      int			$statut		Type (0 = public, 1 = private)
-     *  @return     string					Label translated
-     */
-    function LibPubPriv($statut) {
-        global $langs;
-        if ($statut == '1')
-            return $langs->trans('ContactPrivate');
-        else
-            return $langs->trans('ContactPublic');
     }
 
     /**

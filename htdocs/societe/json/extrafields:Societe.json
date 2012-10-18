@@ -50,6 +50,11 @@
            "type": "text",
            "enable": false
        },
+       "contact": {
+           "enable": true,
+           "class": "Contact",
+           "view": "list"
+       },
        "Status": {
            "type": "select",
            "enable": true,

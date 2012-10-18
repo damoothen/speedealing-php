@@ -142,7 +142,6 @@ if (empty($reshook)) {
         $object->fax = $_POST["fax"];
         $object->jabberid = $_POST["jabberid"];
         $object->no_email = $_POST["no_email"];
-        $object->priv = $_POST["priv"];
         $object->note = $_POST["note"];
 
         // Note: Correct date should be completed with location to have exact GM time of birth.
@@ -231,7 +230,6 @@ if (empty($reshook)) {
             $object->fax = $_POST["fax"];
             $object->jabberid = $_POST["jabberid"];
             $object->no_email = $_POST["no_email"];
-            $object->priv = $_POST["priv"];
             $object->note = $_POST["note"];
 
             // Get extra fields
@@ -470,12 +468,6 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             // Instant message and no email
             print '<tr><td>' . $langs->trans("IM") . '</td><td colspan="3"><input name="jabberid" type="text" size="50" maxlength="80" value="' . (isset($_POST["jabberid"]) ? $_POST["jabberid"] : $object->jabberid) . '"></td></tr>';
 
-            // Visibility
-            print '<tr><td>' . $langs->trans("ContactVisibility") . '</td><td colspan="3">';
-            $selectarray = array('0' => $langs->trans("ContactPublic"), '1' => $langs->trans("ContactPrivate"));
-            print $form->selectarray('priv', $selectarray, (isset($_POST["priv"]) ? $_POST["priv"] : $object->priv), 0);
-            print '</td></tr>';
-
             // Note
             print '<tr><td valign="top">' . $langs->trans("Note") . '</td><td colspan="3" valign="top"><textarea name="note" cols="70" rows="' . ROWS_3 . '">' . (isset($_POST["note"]) ? $_POST["note"] : $object->note) . '</textarea></td></tr>';
 
@@ -595,7 +587,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             if (empty($conf->global->SOCIETE_DISABLE_CONTACTS)) {
                 print '<tr><td>' . $langs->trans("Company") . '</td>';
                 print '<td colspan="3">';
-                print $object->select_fk_extrafields('socid', 'socid');
+                print $object->select_fk_extrafields('societe', 'socid');
                 print '</td>';
                 print '</tr>';
             }
@@ -628,7 +620,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
             // Country
             print '<tr><td>' . $langs->trans("Country") . '</td><td colspan="2">';
-            print $form->select_country(isset($_POST["country_id"]) ? $_POST["country_id"] : $object->country_id, 'country_id');
+            print $object->select_fk_extrafields("country_id","country_id");
             if ($user->admin)
                 print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"), 1);
             print '</td></tr>';
@@ -636,7 +628,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             // State
             if (empty($conf->global->SOCIETE_DISABLE_STATE)) {
                 print '<tr><td>' . $langs->trans('State') . '</td><td colspan="2">';
-                print $formcompany->select_state($object->state_id, isset($_POST["country_id"]) ? $_POST["country_id"] : $object->country_id, 'state_id');
+                print $object->select_fk_extrafields("state_id",'state_id');
                 print '</td></tr>';
             }
 
@@ -666,12 +658,6 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
                 print '<td colspan="2">&nbsp;</td>';
             }
             print '</tr>';
-
-            // Visibility
-            print '<tr><td>' . $langs->trans("ContactVisibility") . '</td><td colspan="3">';
-            $selectarray = array('0' => $langs->trans("ContactPublic"), '1' => $langs->trans("ContactPrivate"));
-            print $form->selectarray('priv', $selectarray, $object->priv, 0);
-            print '</td></tr>';
 
             // Note
             print '<tr><td valign="top">' . $langs->trans("Note") . '</td><td colspan="3">';
@@ -798,9 +784,8 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         // Company
         if (empty($conf->global->SOCIETE_DISABLE_CONTACTS)) {
             print '<tr><td>' . $langs->trans("Company") . '</td><td colspan="3">';
-            if ($object->socid > 0) {
-                $objsoc->fetch($object->socid);
-                print $objsoc->getNomUrl(1);
+            if (!empty($object->societe->id)) {
+                print $object->print_fk_extrafields("societe");
             } else {
                 print $langs->trans("ContactNotLinkedToCompany");
             }
@@ -866,10 +851,6 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             print '<td colspan="2">&nbsp;</td>';
         }
         print '</tr>';
-
-        print '<tr><td>' . $langs->trans("ContactVisibility") . '</td><td colspan="3">';
-        print $object->LibPubPriv($object->priv);
-        print '</td></tr>';
 
         // Note
         print '<tr><td valign="top">' . $langs->trans("Note") . '</td><td colspan="3">';

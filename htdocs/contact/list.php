@@ -69,6 +69,7 @@ $title = (!empty($conf->global->SOCIETE_ADDRESSES_MANAGEMENT) ? $langs->trans("C
 llxHeader('', $title, 'EN:Module_Third_Parties|FR:Module_Tiers|ES:M&oacute;dulo_Empresas');
 
 $object = new Contact($db);
+$soc = new Societe($db);
 
 print_fiche_titre($title);
 print '<div class="with-padding">';
@@ -116,7 +117,7 @@ print $langs->trans('Company');
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "societe.name";
 $obj->aoColumns[$i]->sDefaultContent = "";
-$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("societe.name", "url");
+$obj->aoColumns[$i]->fnRender = $soc->datatablesFnRender("societe.name", "url", array('id' => "societe.id"));
 $i++;
 print'<th class="essential">';
 print $langs->trans('Phone');
@@ -139,10 +140,10 @@ $i++;
 print'<th class="essential">';
 print $langs->trans('DateModificationShort');
 print'</th>';
-$obj->aoColumns[$i]->mDataProp = "datef";
+$obj->aoColumns[$i]->mDataProp = "tms";
 $obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->sDefaultContent = "";
-$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("datef", "datetime");
+$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("tms", "date");
 //$obj->aoColumns[$i]->sClass = "edit";
 $i++;
 print'<th class="essential">';
