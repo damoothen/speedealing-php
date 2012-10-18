@@ -165,8 +165,8 @@ class Contact extends nosqlDocument {
         $this->tms = dol_now();
 
         $this->name = $this->firstname . " " . $this->lastname;
-        
-        if(!empty($this->societe->id)) {
+
+        if (!empty($this->societe->id)) {
             $object = new Societe($this->db);
             $object->load($this->societe->id);
             $this->societe->name = $object->name;
@@ -736,9 +736,9 @@ class Contact extends nosqlDocument {
      *  @param      int			$mode       0=libelle long, 1=libelle court, 2=Picto + Libelle court, 3=Picto, 4=Picto + Libelle long, 5=Libelle court + Picto
      *  @return     string      			Libelle
      */
-    function getLibStatut($mode) {
-        return $this->LibStatut($this->status, $mode);
-    }
+    /* function getLibStatut($mode) {
+      return $this->LibStatut($this->status, $mode);
+      } */
 
     /**
      * 	Renvoi le libelle d'un statut donne
@@ -747,70 +747,70 @@ class Contact extends nosqlDocument {
      *  @param      int			$mode       0=libelle long, 1=libelle court, 2=Picto + Libelle court, 3=Picto, 4=Picto + Libelle long, 5=Libelle court + Picto
      *  @return     string					Libelle
      */
-    function LibStatut($statut, $mode) {
-        global $langs;
+    /* function LibStatut($statut, $mode) {
+      global $langs;
 
-        if ($mode == 0) {
-            if ($statut == 0)
-                return $langs->trans('StatusContactDraft');
-            elseif ($statut == 1)
-                return $langs->trans('StatusContactValidated');
-            elseif ($statut == 4)
-                return $langs->trans('StatusContactValidated');
-            elseif ($statut == 5)
-                return $langs->trans('StatusContactValidated');
-        }
-        elseif ($mode == 1) {
-            if ($statut == 0)
-                return $langs->trans('StatusContactDraftShort');
-            elseif ($statut == 1)
-                return $langs->trans('StatusContactValidatedShort');
-            elseif ($statut == 4)
-                return $langs->trans('StatusContactValidatedShort');
-            elseif ($statut == 5)
-                return $langs->trans('StatusContactValidatedShort');
-        }
-        elseif ($mode == 2) {
-            if ($statut == 0)
-                return img_picto($langs->trans('StatusContactDraftShort'), 'statut0') . ' ' . $langs->trans('StatusContactDraft');
-            elseif ($statut == 1)
-                return img_picto($langs->trans('StatusContactValidatedShort'), 'statut1') . ' ' . $langs->trans('StatusContactValidated');
-            elseif ($statut == 4)
-                return img_picto($langs->trans('StatusContactValidatedShort'), 'statut4') . ' ' . $langs->trans('StatusContactValidated');
-            elseif ($statut == 5)
-                return img_picto($langs->trans('StatusContactValidatedShort'), 'statut5') . ' ' . $langs->trans('StatusContactValidated');
-        }
-        elseif ($mode == 3) {
-            if ($statut == 0)
-                return img_picto($langs->trans('StatusContactDraft'), 'statut0');
-            elseif ($statut == 1)
-                return img_picto($langs->trans('StatusContactValidated'), 'statut1');
-            elseif ($statut == 4)
-                return img_picto($langs->trans('StatusContactValidated'), 'statut4');
-            elseif ($statut == 5)
-                return img_picto($langs->trans('StatusContactValidated'), 'statut5');
-        }
-        elseif ($mode == 4) {
-            if ($statut == 0)
-                return img_picto($langs->trans('StatusContactDraft'), 'statut0') . ' ' . $langs->trans('StatusContactDraft');
-            elseif ($statut == 1)
-                return img_picto($langs->trans('StatusContactValidated'), 'statut1') . ' ' . $langs->trans('StatusContactValidated');
-            elseif ($statut == 4)
-                return img_picto($langs->trans('StatusContactValidated'), 'statut4') . ' ' . $langs->trans('StatusContactValidated');
-            elseif ($statut == 5)
-                return img_picto($langs->trans('StatusContactValidated'), 'statut5') . ' ' . $langs->trans('StatusContactValidated');
-        }
-        elseif ($mode == 5) {
-            if ($statut == 0)
-                return $langs->trans('StatusContactDraftShort') . ' ' . img_picto($langs->trans('StatusContactDraftShort'), 'statut0');
-            elseif ($statut == 1)
-                return $langs->trans('StatusContactValidatedShort') . ' ' . img_picto($langs->trans('StatusContactValidatedShort'), 'statut1');
-            elseif ($statut == 4)
-                return $langs->trans('StatusContactValidatedShort') . ' ' . img_picto($langs->trans('StatusContactValidatedShort'), 'statut4');
-            elseif ($statut == 5)
-                return $langs->trans('StatusContactValidatedShort') . ' ' . img_picto($langs->trans('StatusContactValidatedShort'), 'statut5');
-        }
-    }
+      if ($mode == 0) {
+      if ($statut == 0)
+      return $langs->trans('StatusContactDraft');
+      elseif ($statut == 1)
+      return $langs->trans('StatusContactValidated');
+      elseif ($statut == 4)
+      return $langs->trans('StatusContactValidated');
+      elseif ($statut == 5)
+      return $langs->trans('StatusContactValidated');
+      }
+      elseif ($mode == 1) {
+      if ($statut == 0)
+      return $langs->trans('StatusContactDraftShort');
+      elseif ($statut == 1)
+      return $langs->trans('StatusContactValidatedShort');
+      elseif ($statut == 4)
+      return $langs->trans('StatusContactValidatedShort');
+      elseif ($statut == 5)
+      return $langs->trans('StatusContactValidatedShort');
+      }
+      elseif ($mode == 2) {
+      if ($statut == 0)
+      return img_picto($langs->trans('StatusContactDraftShort'), 'statut0') . ' ' . $langs->trans('StatusContactDraft');
+      elseif ($statut == 1)
+      return img_picto($langs->trans('StatusContactValidatedShort'), 'statut1') . ' ' . $langs->trans('StatusContactValidated');
+      elseif ($statut == 4)
+      return img_picto($langs->trans('StatusContactValidatedShort'), 'statut4') . ' ' . $langs->trans('StatusContactValidated');
+      elseif ($statut == 5)
+      return img_picto($langs->trans('StatusContactValidatedShort'), 'statut5') . ' ' . $langs->trans('StatusContactValidated');
+      }
+      elseif ($mode == 3) {
+      if ($statut == 0)
+      return img_picto($langs->trans('StatusContactDraft'), 'statut0');
+      elseif ($statut == 1)
+      return img_picto($langs->trans('StatusContactValidated'), 'statut1');
+      elseif ($statut == 4)
+      return img_picto($langs->trans('StatusContactValidated'), 'statut4');
+      elseif ($statut == 5)
+      return img_picto($langs->trans('StatusContactValidated'), 'statut5');
+      }
+      elseif ($mode == 4) {
+      if ($statut == 0)
+      return img_picto($langs->trans('StatusContactDraft'), 'statut0') . ' ' . $langs->trans('StatusContactDraft');
+      elseif ($statut == 1)
+      return img_picto($langs->trans('StatusContactValidated'), 'statut1') . ' ' . $langs->trans('StatusContactValidated');
+      elseif ($statut == 4)
+      return img_picto($langs->trans('StatusContactValidated'), 'statut4') . ' ' . $langs->trans('StatusContactValidated');
+      elseif ($statut == 5)
+      return img_picto($langs->trans('StatusContactValidated'), 'statut5') . ' ' . $langs->trans('StatusContactValidated');
+      }
+      elseif ($mode == 5) {
+      if ($statut == 0)
+      return $langs->trans('StatusContactDraftShort') . ' ' . img_picto($langs->trans('StatusContactDraftShort'), 'statut0');
+      elseif ($statut == 1)
+      return $langs->trans('StatusContactValidatedShort') . ' ' . img_picto($langs->trans('StatusContactValidatedShort'), 'statut1');
+      elseif ($statut == 4)
+      return $langs->trans('StatusContactValidatedShort') . ' ' . img_picto($langs->trans('StatusContactValidatedShort'), 'statut4');
+      elseif ($statut == 5)
+      return $langs->trans('StatusContactValidatedShort') . ' ' . img_picto($langs->trans('StatusContactValidatedShort'), 'statut5');
+      }
+      } */
 
     /**
      *  Initialise an instance with random values.
@@ -853,6 +853,183 @@ class Contact extends nosqlDocument {
         $this->socid = $socids[$socid];
     }
 
+    /**
+     * 	Show html area for list of contacts
+     *
+     * 	@param	Conf		$conf		Object conf
+     * 	@param	Translate	$langs		Object langs
+     * 	@param	DoliDB		$db			Database handler
+     * 	@param	Object		$object		Third party object
+     *  @param  string		$backtopage	Url to go once contact is created
+     *  @return	void
+     */
+    function show($max = 5, $id = 0) {
+        global $langs, $conf, $user, $db, $bc, $socid;
+
+        $titre = $langs->trans("ContactsForCompany");
+        print start_box($titre, "six", "16-Users.png");
+
+        $i = 0;
+        $obj = new stdClass();
+        $societe = new Societe($this->db);
+
+        print '<table class="display dt_act" id="contacts_datatable" >';
+        // Ligne des titres
+
+        print '<thead>';
+        print'<tr>';
+        print'<th>';
+        print'</th>';
+        $obj->aoColumns[$i]->mDataProp = "_id";
+        $obj->aoColumns[$i]->bUseRendered = false;
+        $obj->aoColumns[$i]->bSearchable = false;
+        $obj->aoColumns[$i]->bVisible = false;
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans("Name");
+        print'</th>';
+        $obj->aoColumns[$i]->mDataProp = "name";
+        $obj->aoColumns[$i]->bUseRendered = false;
+        $obj->aoColumns[$i]->bSearchable = true;
+        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("name", "url");
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans('PostOrFunction');
+        print'</th>';
+        $obj->aoColumns[$i]->mDataProp = "poste";
+        $obj->aoColumns[$i]->sDefaultContent = "";
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans('Mobile');
+        print'</th>';
+        $obj->aoColumns[$i]->mDataProp = "phone_mobile";
+        $obj->aoColumns[$i]->sDefaultContent = "";
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans('EMail');
+        print'</th>';
+        $obj->aoColumns[$i]->mDataProp = "email";
+        $obj->aoColumns[$i]->sDefaultContent = "";
+        $i++;
+        print '</tr>';
+        print '</thead>';
+        print'<tfoot>';
+        print'</tfoot>';
+        print'<tbody>';
+        print'</tbody>';
+        print "</table>";
+
+        $obj->iDisplayLength = $max;
+        $obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listDatatables.php?json=listSociete&class=" . get_class($this) . "&key=" . $id;
+        $this->datatablesCreate($obj, "contacts_datatable", true);
+
+        print end_box();
+    }
+
+    /* function show_contacts($conf, $langs, $db, $object, $backtopage = '') {
+      global $user, $couch;
+      global $bc;
+
+      $i = -1;
+
+      $titre = $langs->trans("ContactsForCompany");
+      print start_box($titre, "twelve", "16-Users.png");
+
+      $contactstatic = new Contact($db);
+
+      if (!empty($conf->clicktodial->enabled)) {
+      $user->fetch_clicktodial(); // lecture des infos de clicktodial
+      }
+
+      $buttoncreate = '';
+      if ($user->rights->societe->contact->creer) {
+      $addcontact = (!empty($conf->global->SOCIETE_ADDRESSES_MANAGEMENT) ? $langs->trans("AddContact") : $langs->trans("AddContactAddress"));
+      $buttoncreate = '<a class="addnewrecord" href="' . DOL_URL_ROOT . '/contact/fiche.php?socid=' . $object->id . '&amp;action=create&amp;backtopage=' . urlencode($backtopage) . '">' . $addcontact . ' ' . img_picto($addcontact, 'filenew') . '</a>' . "\n";
+      }
+
+      print "\n";
+
+      $title = (!empty($conf->global->SOCIETE_ADDRESSES_MANAGEMENT) ? $langs->trans("ContactsForCompany") : $langs->trans("ContactsAddressesForCompany"));
+      //print_fiche_titre($title,$buttoncreate,'');
+
+      print "\n" . '<table class="noborder" width="100%">' . "\n";
+
+      print '<tr class="liste_titre"><td>' . $langs->trans("Name") . '</td>';
+      print '<td>' . $langs->trans("Poste") . '</td><td>' . $langs->trans("Tel") . '</td>';
+      print '<td>' . $langs->trans("Fax") . '</td><td>' . $langs->trans("EMail") . '</td>';
+      print "<td>&nbsp;</td>";
+      if (!empty($conf->agenda->enabled) && $user->rights->agenda->myactions->create) {
+      print '<td>&nbsp;</td>';
+      }
+      print "</tr>";
+
+      $sql = "SELECT p.rowid, p.name, p.firstname, p.fk_pays, p.poste, p.phone, p.fax, p.email, p.note ";
+      $sql .= " FROM " . MAIN_DB_PREFIX . "socpeople as p";
+      $sql .= " WHERE p.fk_soc = " . $object->id;
+      $sql .= " ORDER by p.datec";
+
+      $result = $db->query($sql);
+      $num = $db->num_rows($result);
+
+      if ($num) {
+      $i = 0;
+      $var = true;
+
+      while ($i < $num) {
+      $obj = $db->fetch_object($result);
+      $var = !$var;
+
+      print "<tr " . $bc[$var] . ">";
+
+      print '<td>';
+      $contactstatic->id = $obj->rowid;
+      $contactstatic->name = $obj->name;
+      $contactstatic->firstname = $obj->firstname;
+      print $contactstatic->getNomUrl(1);
+      print '</td>';
+
+      print '<td>' . $obj->poste . '</td>';
+
+      $country_code = getCountry($obj->fk_pays, 2);
+
+      // Lien click to dial
+      print '<td>';
+      print dol_print_phone($obj->phone, $country_code, $obj->rowid, $object->id, 'AC_TEL');
+      print '</td>';
+      print '<td>';
+      print dol_print_phone($obj->fax, $country_code, $obj->rowid, $object->id, 'AC_FAX');
+      print '</td>';
+      print '<td>';
+      print dol_print_email($obj->email, $obj->rowid, $object->id, 'AC_EMAIL');
+      print '</td>';
+
+      if (!empty($conf->agenda->enabled) && $user->rights->agenda->myactions->create) {
+      print '<td align="center"><a href="' . DOL_URL_ROOT . '/comm/action/fiche.php?action=create&actioncode=AC_RDV&contactid=' . $obj->rowid . '&socid=' . $object->id . '&backtopage=' . urlencode($backtopage) . '">';
+      print img_object($langs->trans("Rendez-Vous"), "action");
+      print '</a></td>';
+      }
+
+      if ($user->rights->societe->contact->creer) {
+      print '<td align="right">';
+      print '<a href="' . DOL_URL_ROOT . '/contact/fiche.php?action=edit&amp;id=' . $obj->rowid . '&amp;backtopage=' . urlencode($backtopage) . '">';
+      print img_edit();
+      print '</a></td>';
+      }
+
+      print "</tr>\n";
+      $i++;
+      }
+      } else {
+      //print "<tr ".$bc[$var].">";
+      //print '<td>'.$langs->trans("NoContactsYetDefined").'</td>';
+      //print "</tr>\n";
+      }
+      print "\n</table>\n";
+
+      print end_box();
+
+      return $i;
+      } */
 }
 
 ?>

@@ -67,7 +67,7 @@ class Agenda extends nosqlDocument {
     var $icalname;
     var $icalcolor;
     var $actions = array();
-    var $status = 0; // Status of the action
+    var $Status = "TODO"; // Status of the action
 
     /**
      *      Constructor
@@ -85,7 +85,7 @@ class Agenda extends nosqlDocument {
             dol_print_error('', $e->getMessage());
             exit;
         }
-        $this->status = "TODO";
+        $this->Status = "TODO";
         $this->author = null;
         $this->usermod = null;
         $this->usertodo = null;
@@ -359,30 +359,6 @@ class Agenda extends nosqlDocument {
     }
 
     /**
-     *    Cloture l'action : pourcentage = 100
-     *    @return     int     <0 si ko, >0 si ok
-     */
-    function close() {
-        global $user;
-
-        if ($this->type == 2) { //ACTION
-            $sql = "UPDATE " . MAIN_DB_PREFIX . "actioncomm";
-            $sql.= " SET percent=100, fk_user_done=" . $user->id . ", datep2=" . $this->db->idate(dol_now()) . " WHERE id=" . $this->id;
-        } else {
-            $sql = "UPDATE " . MAIN_DB_PREFIX . "actioncomm";
-            $sql.= " SET percent=100, fk_user_done=" . $user->id . " WHERE id=" . $this->id;
-        }
-
-        dol_syslog("ActionComm::close sql=" . $sql, LOG_DEBUG);
-        if ($this->db->query($sql)) {
-            return 1;
-        } else {
-            $this->error = $this->db->error() . " sql=" . $sql;
-            return -1;
-        }
-    }
-
-    /**
      *    Update action into database
      * 	  If percentage = 100, on met a jour date 100%
      *
@@ -632,9 +608,9 @@ class Agenda extends nosqlDocument {
      *      @param  int		$hidenastatus   1=Show nothing if status is "Not applicable"
      *    	@return string          		String with status
      */
-    function getLibStatut($mode, $hidenastatus = 0) {
+    /*function getLibStatut($mode, $hidenastatus = 0) {
         return $this->LibStatut($this->percentage, $mode, $hidenastatus);
-    }
+    }*/
 
     /**
      * 		Return label of action status
@@ -644,7 +620,7 @@ class Agenda extends nosqlDocument {
      *      @param  int		$hidenastatus   1=Show nothing if status is "Not applicable"
      *    	@return string		    		Label
      */
-    function LibStatut($percent, $mode, $hidenastatus = 0) {
+    /*function LibStatut($percent, $mode, $hidenastatus = 0) {
         global $langs;
 
         if ($mode == 0) {
@@ -718,7 +694,7 @@ class Agenda extends nosqlDocument {
                 return img_picto($langs->trans('StatusActionDone'), 'statut6');
         }
         return '';
-    }
+    }*/
 
     /**
      *    	Renvoie nom clicable (avec eventuellement le picto)
@@ -1015,11 +991,11 @@ class Agenda extends nosqlDocument {
      *  @param	int		$max		Max nb of records
      *  @return	void
      */
-    function show_actions($max = 5, $id = 0) {
+    function show($max = 5, $id = 0) {
         global $langs, $conf, $user, $db, $bc, $socid;
 
         $h = 0;
-        foreach ($this->fk_extrafields->fields->status->values as $key => $aRow) {
+        foreach ($this->fk_extrafields->fields->Status->values as $key => $aRow) {
             if ($aRow->enable) {
                 $head[$h][0] = "#";
                 $head[$h][1] = $langs->trans($aRow->label);
@@ -1028,11 +1004,14 @@ class Agenda extends nosqlDocument {
             }
         }
 
-        $titre = $langs->trans("ActionsToDo");
+        $langs->load("agenda");
+        
+        $titre = $langs->trans("Actions");
         print start_box($titre, "six", "16-Mail.png", false, $head);
 
         $i = 0;
         $obj = new stdClass();
+        $societe = new Societe($this->db);
 
         print '<table class="display dt_act" id="actions_datatable" >';
         // Ligne des titres
@@ -1067,6 +1046,7 @@ class Agenda extends nosqlDocument {
         print'</th>';
         $obj->aoColumns[$i]->mDataProp = "societe.name";
         $obj->aoColumns[$i]->sDefaultContent = "";
+        $obj->aoColumns[$i]->fnRender = $societe->datatablesFnRender("societe.name", "url", array('id' => "societe.id"));
         $i++;
         print'<th class="essential">';
         print $langs->trans('AffectedTo');
@@ -1077,10 +1057,10 @@ class Agenda extends nosqlDocument {
         print'<th class="essential">';
         print $langs->trans("Status");
         print'</th>';
-        $obj->aoColumns[$i]->mDataProp = "status";
+        $obj->aoColumns[$i]->mDataProp = "Status";
         $obj->aoColumns[$i]->sClass = "dol_select center";
         $obj->aoColumns[$i]->sDefaultContent = "0";
-        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("status", "status", array("dateEnd" => "last_subscription_date_end"));
+        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("Status", "status", array("dateEnd" => "last_subscription_date_end"));
         $i++;
         print '</tr>';
         print '</thead>';
@@ -1094,105 +1074,16 @@ class Agenda extends nosqlDocument {
         $obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listDatatables.php?json=actionsTODO&class=" . get_class($this) . "&key=" . $id;
         $this->datatablesCreate($obj, "actions_datatable", true);
 
-        foreach ($this->fk_extrafields->fields->status->values as $key => $aRow) {
+        foreach ($this->fk_extrafields->fields->Status->values as $key => $aRow) {
             ?>
             <script>
                 $(document).ready(function() {
-                    var js = "var oTable = $('#actions_datatable').dataTable(); oTable.fnReloadAjax(\"<?php echo DOL_URL_ROOT . "/core/ajax/listDatatables.php?json=" . $key . "&class=" . get_class($this) . "&key=" . $id; ?>\")";
+                    var js = "var oTable = $('#actions_datatable').dataTable(); oTable.fnReloadAjax(\"<?php echo DOL_URL_ROOT . "/core/ajax/listDatatables.php?json=actions" . $key . "&class=" . get_class($this) . "&key=" . $id; ?>\")";
                     $("#<?php echo $key; ?>").attr("onclick", js);
                 } );
             </script>
             <?php
         }
-        print end_box();
-    }
-
-    /**
-     *  Show actions done
-     *
-     *  @param	int		$max		Max nb of records
-     *  @return	void
-     */
-    function show_actions_done($max = 5, $fk_task = 0) {
-        global $langs, $conf, $user, $db, $bc;
-
-        $titre = $langs->trans("ActionsDone");
-        print start_box($titre, "six", "16-Mail.png");
-
-        $i = 0;
-        $obj = new stdClass();
-
-        print '<table class="display dt_act" id="actionsDone_datatable" >';
-        // Ligne des titres
-
-        print '<thead>';
-        print'<tr>';
-        print'<th>';
-        print'</th>';
-        $obj->aoColumns[$i]->mDataProp = "_id";
-        $obj->aoColumns[$i]->bUseRendered = false;
-        $obj->aoColumns[$i]->bSearchable = false;
-        $obj->aoColumns[$i]->bVisible = false;
-        $i++;
-        print'<th class="essential">';
-        print $langs->trans("Titre");
-        print'</th>';
-        $obj->aoColumns[$i]->mDataProp = "label";
-        $obj->aoColumns[$i]->bUseRendered = false;
-        $obj->aoColumns[$i]->bSearchable = true;
-        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("label", "url");
-        $i++;
-        print'<th class="essential">';
-        print $langs->trans('DateEchAction');
-        print'</th>';
-        $obj->aoColumns[$i]->mDataProp = "datef";
-        $obj->aoColumns[$i]->sClass = "center";
-        $obj->aoColumns[$i]->sDefaultContent = "";
-        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("datef", "date");
-        $i++;
-        print'<th class="essential">';
-        print $langs->trans('Company');
-        print'</th>';
-        $obj->aoColumns[$i]->mDataProp = "societe.name";
-        $obj->aoColumns[$i]->sDefaultContent = "";
-        $i++;
-        print'<th class="essential">';
-        print $langs->trans('AffectedTo');
-        print'</th>';
-        $obj->aoColumns[$i]->mDataProp = "usertodo";
-        $obj->aoColumns[$i]->sDefaultContent = "";
-        $i++;
-        print'<th class="essential">';
-        print $langs->trans("Status");
-        print'</th>';
-        $obj->aoColumns[$i]->mDataProp = "status";
-        $obj->aoColumns[$i]->sClass = "dol_select center";
-        $obj->aoColumns[$i]->sDefaultContent = "0";
-        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("status", "status", array("dateEnd" => "last_subscription_date_end"));
-        $i++;
-        print '</tr>';
-        print '</thead>';
-        print'<tfoot>';
-        print'</tfoot>';
-        print'<tbody>';
-        $result = $this->getView('actionsDone');
-        if (count($result->rows) > 0)
-            foreach ($result->rows as $key => $aRow) {
-                print '<tr>';
-                print '<td>' . $aRow->value->_id . '</td>';
-                print '<td>' . $aRow->value->label . '</td>';
-                print '<td>' . $aRow->value->datef . '</td>';
-                print '<td>' . $aRow->value->societe->ThirdPartyName . '</td>';
-                print '<td>' . $aRow->value->usertodo . '</td>';
-                print '<td>' . $aRow->value->status . '</td>';
-                print '</tr>';
-            }
-        print'</tbody>';
-        print "</table>";
-
-        $obj->bServerSide = false;
-        $obj->iDisplayLength = $max;
-        $this->datatablesCreate($obj, "actionsDone_datatable");
         print end_box();
     }
 

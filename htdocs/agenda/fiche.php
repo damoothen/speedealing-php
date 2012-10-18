@@ -53,10 +53,10 @@ $langs->load("agenda");
 $action = GETPOST('action', 'alpha');
 $cancel = GETPOST('cancel', 'alpha');
 $backtopage = GETPOST('backtopage', 'alpha');
-$contactid = GETPOST('contactid', 'int');
+$contactid = GETPOST('contactid', 'alpha');
 
 // Security check
-$socid = GETPOST('socid', 'int');
+$socid = GETPOST('socid', 'alpha');
 $id = GETPOST('id', 'alpha');
 if ($user->societe_id)
     $socid = $user->societe_id;
@@ -160,7 +160,7 @@ if ($action == 'add_action') {
     $object->fk_task = isset($_POST["fk_task"]) ? $_POST["fk_task"] : 0;
     $object->datep = $datep;
     $object->datef = $datef;
-    $object->status = GETPOST('status');
+    $object->Status = GETPOST('status');
     if ($object->type_code == "AC_RDV") //ACTION
         $object->durationp = $object->datef - $object->datep;
     else {
@@ -249,9 +249,9 @@ if ($action == 'add_action') {
                     dol_syslog("Back to " . $backtopage);
                     Header("Location: " . $backtopage);
                 } elseif ($idaction) {
-                    Header("Location: " . DOL_URL_ROOT . '/comm/action/fiche.php?id=' . $idaction);
+                    Header("Location: " . DOL_URL_ROOT . '/agenda/fiche.php?id=' . $idaction);
                 } else {
-                    Header("Location: " . DOL_URL_ROOT . '/comm/action/index.php');
+                    Header("Location: " . DOL_URL_ROOT . '/agenda/index.php');
                 }
                 exit;
             } else {
@@ -274,17 +274,15 @@ if ($action == 'add_action') {
  * Action cloturer l'action
  */
 if (GETPOST("action") == 'close') {
-    $object->fetch($id);
+    $object->load($id);
 
     if ($user->rights->agenda->myactions->create || $user->rights->agenda->allactions->create) {
-        $result = $object->close();
+        $object->Status = "DONE";
+        $object->percentage = 100;
+        $object->record();
 
-        if ($result >= 0) {
-            Header("Location: " . DOL_URL_ROOT . '/comm/action/fiche.php?id=' . $id);
-            exit;
-        } else {
-            $mesg = $object->error;
-        }
+        Header("Location: " . DOL_URL_ROOT . '/agenda/fiche.php?id=' . $id);
+        exit;
     }
 }
 
@@ -348,13 +346,14 @@ if ($action == 'update') {
         $object->pnote = $_POST["note"];
         $object->fk_task = $_POST["fk_task"];
         //$object->type = $cactioncomm->type;
-        $object->status = $_POST["status"];
+        $object->Status = $_POST["status"];
         if ($object->type_code == "AC_RDV") //ACTION
             $object->durationp = $object->datef - $object->datep;
         else {
             $object->durationp = $_POST["durationhour"] * 3600 + $_POST["durationmin"] * 60;
             $object->datef = $object->datep + $object->durationp;
         }
+
         /*
           if ($object->type == 2) //ACTION
           $object->durationp = !empty($_POST["duration"]) ? $_POST["duration"] * 3600 : 3600;
@@ -642,7 +641,7 @@ if ($action == 'create') {
         if (GETPOST("afaire") == 2)
             $percent = 100;
     }
-    print $htmlactions->form_select_status_action('formaction', $percent, 1, 'complete');
+    print $object->select_fk_extrafields("Status", "status");
     print '</td></tr>';
 
     // Location
@@ -959,9 +958,8 @@ if ($id) {
         print '</td></tr>';
 
         // Status
-        print '<tr><td nowrap>' . $langs->trans("Status") . ' / ' . $langs->trans("Percentage") . '</td><td colspan="3">';
-        $percent = GETPOST("percentage") ? GETPOST("percentage") : $object->percentage;
-        print $htmlactions->form_select_status_action('formaction', $percent, 1);
+        print '<tr><td nowrap>' . $langs->trans("Status") . '</td><td colspan="3">';
+        print $object->select_fk_extrafields('Status', 'status');
         print '</td></tr>';
 
         // Percentage
@@ -1149,7 +1147,7 @@ if ($id) {
 
         // Status
         print '<tr><td nowrap>' . $langs->trans("Status") . ' / ' . $langs->trans("Percentage") . '</td><td colspan="2">';
-        print $object->getLibStatut(4);
+        print $object->getLibStatus();
         print '</td></tr>';
 
         // Percentage
@@ -1279,7 +1277,7 @@ if ($id) {
 
         if ($user->rights->agenda->allactions->create ||
                 (($object->author->id == $user->id || $object->usertodo->id == $user->id) && $user->rights->agenda->myactions->create)) {
-            print '<a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?action=create&fk_task=' . $object->id . ($object->socid ? "&socid=" . $object->socid : "") . ($object->contact->id ? "&contactid=" . $object->contact->id : "") . ($object->fk_lead ? "&leadid=" . $object->fk_lead : "") . ($object->fk_project ? "&projectid=" . $object->fk_project : "") . "&backtopage=" . DOL_URL_ROOT . '/comm/action/fiche.php?id=' . $object->id . '">' . $langs->trans("AddAction") . '</a>';
+            //print '<a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?action=create&fk_task=' . $object->id . ($object->socid ? "&socid=" . $object->socid : "") . ($object->contact->id ? "&contactid=" . $object->contact->id : "") . ($object->fk_lead ? "&leadid=" . $object->fk_lead : "") . ($object->fk_project ? "&projectid=" . $object->fk_project : "") . "&backtopage=" . DOL_URL_ROOT . '/agenda/fiche.php?id=' . $object->id . '">' . $langs->trans("AddAction") . '</a>';
             print '<a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?action=edit&id=' . $object->id . '">' . $langs->trans("Modify") . '</a>';
             if ($object->percentage < 100)
                 print '<a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?action=close&id=' . $object->id . '">' . $langs->trans("Close") . '</a>';
@@ -1302,13 +1300,6 @@ if ($id) {
         print '</div>';
 
         print end_box();
-
-        /*
-         * Show Actions 
-         */
-        if ($user->rights->agenda->myactions->read) {
-            $object->show_actions(10);
-        }
     }
 }
 

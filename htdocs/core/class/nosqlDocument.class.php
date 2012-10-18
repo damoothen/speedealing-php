@@ -490,7 +490,7 @@ abstract class nosqlDocument extends CommonObject {
                         },
                         //$obj->oColVis->bRestore = true;
                         //$obj->oColVis->sAlign = 'left';
-                                                                                                																																																																																								            
+                                                                                                                                                																																																																																								            
                         // Avec export Excel
         <?php if (!empty($obj->sDom)) : ?>
                             //"sDom": "Cl<fr>t<\"clear\"rtip>",
@@ -562,7 +562,7 @@ abstract class nosqlDocument extends CommonObject {
                                                 "tooltip": "Cliquer pour éditer...",
                                                 "indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
                                                 "placeholder" : ""
-                                                                                                                                                                                                                																																																																																																																																																																																                
+                                                                                                                                                                                                                                                                                                                																																																																																																																																																																																                
                                             } );
                                             $("td.dol_select", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
                                                 "callback": function( sValue, y ) {
@@ -581,7 +581,7 @@ abstract class nosqlDocument extends CommonObject {
                                                 "tooltip": "Cliquer pour éditer...",
                                                 "indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
                                                 "placeholder" : ""
-                                                                                                                                                                                                                																																																																																																																																																																																                
+                                                                                                                                                                                                                                                                                                                																																																																																																																																																																																                
                                             } );
                                         }
             <?php endif; ?>
@@ -609,10 +609,37 @@ abstract class nosqlDocument extends CommonObject {
                         } );
         <?php endif; ?>
                     // Select_all
-                    $(document).ready(function() {
-                        $('.chSel_all').click(function () {
-                            $(this).closest('table').find('input[name=row_sel]').attr('checked', this.checked);
-                        });
+                                                            
+                    $('.chSel_all').click(function () {
+                        $(this).closest('table').find('input[name=row_sel]').attr('checked', this.checked);
+                    });
+                    function delEnqBtn() {
+                        var aPos = oTable.fnGetPosition(this.parentNode);
+                        var aData = oTable.fnGetData(aPos[0]);
+                        alert(aData["_id"]);
+                        //$.ajax({
+                        //    type: "GET",
+                        //    url: "enquiry_del.php",
+                        //    data: "enq_id="+aData[1],
+                        //    success: function(msg){
+                        oTable.fnDeleteRow(aPos[0]);
+                        //    }
+                        // });
+                        return false;
+                    };
+                    $("tbody tr td .delEnqBtn").live('click', function(){
+                        var aPos = oTable.fnGetPosition(this.parentNode);
+                        var aData = oTable.fnGetData(aPos[0]);
+                        alert(aData["_id"]);
+                        //$.ajax({
+                        //    type: "GET",
+                        //    url: "enquiry_del.php",
+                        //    data: "enq_id="+aData[1],
+                        //    success: function(msg){
+                        oTable.fnDeleteRow(aPos[0]);
+                        //    }
+                        // });
+                        return false;
                     });
                 });
         </script>

@@ -34,6 +34,8 @@ require_once DOL_DOCUMENT_ROOT . '/core/class/extrafields.class.php';
 require_once DOL_DOCUMENT_ROOT . '/contact/class/contact.class.php';
 if (!empty($conf->adherent->enabled))
     require_once DOL_DOCUMENT_ROOT . '/adherent/class/adherent.class.php';
+if (!empty($conf->agenda->enabled))
+    require_once DOL_DOCUMENT_ROOT . '/agenda/class/agenda.class.php';
 
 $langs->load("companies");
 $langs->load("commercial");
@@ -55,6 +57,7 @@ if ($user->societe_id)
 
 $object = new Societe($db);
 $extrafields = new ExtraFields($db);
+$contact = new Contact($db);
 
 // Get object canvas (By default, this is not defined, so standard usage of dolibarr)
 $object->getCanvas($socid);
@@ -220,7 +223,6 @@ if (empty($reshook)) {
                 if ($result >= 0) {
                     if ($object->particulier) {
                         dol_syslog("This thirdparty is a personal people", LOG_DEBUG);
-                        $contact = new Contact($db);
 
                         $contact->civilite_id = $object->civilite_id;
                         $contact->name = $object->name_bis;
@@ -287,7 +289,6 @@ if (empty($reshook)) {
                     exit;
                 }
                 else {
-                    $db->rollback();
                     $action = 'create';
                 }
             }
@@ -826,7 +827,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
                 $s.='<a href="#" onclick="javascript: CheckVAT(document.formsoc.tva_intra.value);">' . $langs->trans("VATIntraCheck") . '</a>';
                 $s = $form->textwithpicto($s, $langs->trans("VATIntraCheckDesc", $langs->trans("VATIntraCheck")), 1);
             } else {
-                $s.='<a href="' . $langs->transcountry("VATIntraCheckURL", $object->id_pays) . '" target="_blank">' . img_picto($langs->trans("VATIntraCheckableOnEUSite"), 'help') . '</a>';
+                $s.='<a href="' . $langs->transcountry("VATIntraCheckURL", $object->country_id) . '" target="_blank">' . img_picto($langs->trans("VATIntraCheckableOnEUSite"), 'help') . '</a>';
             }
         }
         print $s;
@@ -1736,14 +1737,19 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         }
 
         // Subsidiaries list
-        $result = show_subsidiaries($conf, $langs, $db, $object);
+        //$result = show_subsidiaries($conf, $langs, $db, $object);
 
         // Contacts list
-        $result = show_contacts($conf, $langs, $db, $object, $_SERVER["PHP_SELF"] . '?id=' . $object->id);
+        $contact->show(25,$object->id);
+        //$result = show_contacts($conf, $langs, $db, $object, $_SERVER["PHP_SELF"] . '?id=' . $object->id);
+
+        // Show actions
+
+        $cal = new Agenda($db);
+        $cal->show(25, $object->id);
 
         // Addresses list
         //$result = show_addresses($conf, $langs, $db, $object, $_SERVER["PHP_SELF"] . '?id=' . $object->id);
-
         // Projects list
         $result = show_projects($conf, $langs, $db, $object, $_SERVER["PHP_SELF"] . '?id=' . $object->id);
 

@@ -557,6 +557,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 								$(\'input[name="town"]\').val("' . addslashes($objsoc->town) . '");
 								$(\'select[name="country_id"]\').val("' . addslashes($objsoc->country_id) . '");
 								$(\'select[name="state_id"]\').val("' . addslashes($objsoc->state_id) . '");
+                                                                return false;
             				});
 						})' . "\n";
                 print '</script>' . "\n";
@@ -609,7 +610,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
             print '<td valign="middle" align="center" rowspan="' . $rowspan . '">';
             if ($conf->use_javascript_ajax)
-                print '<a href="#" id="copyaddressfromsoc">' . $langs->trans('CopyAddressFromSoc') . '</a>';
+                print '<a href="" id="copyaddressfromsoc">' . $langs->trans('CopyAddressFromSoc') . '</a>';
             print '</td></tr>';
 
             // Zip / Town
@@ -931,7 +932,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         print end_box();
 
         $agenda = new Agenda($db);
-        print $agenda->show_actions(25);
+        print $agenda->show(25, $object->id);
     }
 }
 
