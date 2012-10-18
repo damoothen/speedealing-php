@@ -252,7 +252,7 @@ print $langs->trans('Action');
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "";
 $obj->aoColumns[$i]->sClass = "center content_actions";
-$obj->aoColumns[$i]->sWidth = "100px";
+$obj->aoColumns[$i]->sWidth = "60px";
 $obj->aoColumns[$i]->bSortable = false;
 $obj->aoColumns[$i]->sDefaultContent = "";
 
@@ -262,9 +262,8 @@ $obj->aoColumns[$i]->fnRender = 'function(obj) {
 	ar[ar.length] = "<a href=\"'. $url . '?id=";
 	ar[ar.length] = obj.aData._id.toString();
 	ar[ar.length] = "&action=edit&backtopage='. $_SERVER['PHP_SELF'] . '\" class=\"sepV_a\" title=\"'.$langs->trans("Edit").'\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/edit.png\" alt=\"\" /></a>";
-	ar[ar.length] = "<a href=\"'. $url . '?id=";
-	ar[ar.length] = obj.aData._id.toString();
-	ar[ar.length] = "&action=delete&backtopage='. $_SERVER['PHP_SELF'] . '\" class=\"sepV_a\" title=\"'.$langs->trans("Delete").'\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/delete.png\" alt=\"\" /></a>";
+	ar[ar.length] = "<a href=\"\"";
+	ar[ar.length] = " class=\"delEnqBtn\" title=\"' . $langs->trans("Delete") . '\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/delete.png\" alt=\"\" /></a>";
 	var str = ar.join("");
 	return str;
 }';

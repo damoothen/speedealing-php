@@ -125,7 +125,7 @@
            "enable": true,
            "javascript": null,
            "aoColumns": {
-               "sClass": "center edit",
+               "sClass": "center dol_edit",
                "bSearchable": true,
                "bVisible": true
            }
@@ -137,7 +137,7 @@
            "enable": true,
            "javascript": null,
            "aoColumns": {
-               "sClass": "edit",
+               "sClass": "dol_edit",
                "bSearchable": true,
                "bVisible": true
            }

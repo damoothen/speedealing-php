@@ -368,7 +368,7 @@ class Agenda extends nosqlDocument {
      */
     function update($user, $notrigger = 0) {
         global $user, $langs, $conf;
-
+        
         // Clean parameters
         $this->label = trim($this->label);
         $this->note = trim($this->note);
