@@ -76,7 +76,6 @@ print '<div class="with-padding">';
 
 $i = 0;
 $obj = new stdClass();
-print '<div class="datatable">';
 print '<table class="display dt_act" id="list_contacts" >';
 // Ligne des titres 
 print'<thead>';
@@ -209,7 +208,6 @@ print'<tbody>';
 print'</tbody>';
 
 print "</table>";
-print "</div>";
 
 //$obj->bServerSide = true;
 //$obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listDatatables.php?json=listTasks&class=" . get_class($object);

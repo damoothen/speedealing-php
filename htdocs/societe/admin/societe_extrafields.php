@@ -130,7 +130,7 @@ if ($action != 'create' && $action != 'edit') {
 
 $i = 0;
 $obj = new stdClass();
-print '<div class="datatable">';
+//print '<div class="datatable">';
 print '<table class="display dt_act" id="list_fields" >';
 // Ligne des titres 
 print'<thead>';
@@ -210,7 +210,7 @@ foreach ($object->fk_extrafields->fields as $key => $aRow) {
 
 print "</tbody>";
 print "</table>";
-print '</div>';
+//print '</div>';
 
 $obj->iDisplayLength = 100;
 print $object->datatablesCreate($obj, "list_fields");

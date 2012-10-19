@@ -1651,7 +1651,6 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                     prth_stickyFooter.resize();
                 },
                 resize: function() {
-                    //prth_stickyFooter.sleep(1000);
                     if($("#sticky-footer-push").height() === undefined)
                         var docHeight = $(document.body).height();
                     else
@@ -1662,7 +1661,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                         if ($("#sticky-footer-push").length == 0) {
                             $('#footer').before('<div id="sticky-footer-push"></div>');
                         }
-                        $("#sticky-footer-push").height(diff - 1);
+                        $("#sticky-footer-push").height(diff - $("#title-bar").height() - 2);
                     } else {
                         $("#sticky-footer-push").remove();
                     }

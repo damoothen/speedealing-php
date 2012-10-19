@@ -92,7 +92,6 @@ print '<div class="with-padding">';
 
 $i = 0;
 $obj = new stdClass();
-print '<div class="datatable">';
 print '<table class="display dt_act" id="societe" >';
 // Ligne des titres 
 print'<thead>';
@@ -200,9 +199,7 @@ print'</tr>';
 print'</tfoot>';
 print'<tbody>';
 print'</tbody>';
-
 print "</table>";
-print "</div>";
 
 //$obj->bServerSide = true;
 //$obj->sDom = 'C<\"clear\">lfrtip';
