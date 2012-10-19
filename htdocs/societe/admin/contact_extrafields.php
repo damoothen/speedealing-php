@@ -25,7 +25,7 @@
  */
 
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/societe/lib/societe.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
 
 $langs->load("companies");
@@ -51,8 +51,6 @@ if (!$user->admin) accessforbidden();
  */
 
 require DOL_DOCUMENT_ROOT.'/core/admin_extrafields.inc.php';
-
-
 
 /*
  * View

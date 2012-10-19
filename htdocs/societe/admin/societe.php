@@ -27,7 +27,7 @@
  */
 require '../../main.inc.php';
 require_once DOL_DOCUMENT_ROOT . '/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT . '/core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT . '/societe/lib/societe.lib.php';
 
 $langs->load("admin");
 
@@ -189,14 +189,13 @@ print_fiche_titre($langs->trans("CompanySetup"));
 print '<div class="with-padding">';
 print '<div class="columns">';
 
-print start_box($langs->trans("CompanySetup"),"twelve","16-Cog-4.png",false);
+print start_box($langs->trans("CompanySetup"), "twelve", "16-Cog-4.png", false);
 
 $head = societe_admin_prepare_head(null);
 
 dol_fiche_head($head, 'general', $langs->trans("ThirdParties"), 0, 'company');
 
 dol_htmloutput_mesg($mesg);
-
 
 $dirsociete = array_merge(array('/core/modules/societe/'), $conf->societe_modules);
 
@@ -463,68 +462,6 @@ foreach ($dirsociete as $dirroot) {
 print '</table>';
 
 print '<br>';
-
-//IDProf
-print_titre($langs->trans("CompanyIdProfChecker"));
-
-print '<table class="noborder" width="100%">';
-print '<tr class="liste_titre">';
-print '<td>' . $langs->trans("Name") . '</td>';
-print '<td>' . $langs->trans("Description") . '</td>';
-print '<td align="center">' . $langs->trans("MustBeUnique") . '</td>';
-print "</tr>\n";
-
-$profid[0][0] = $langs->trans("ProfId1");
-$profid[0][1] = $langs->transcountry('ProfId1', $mysoc->country_code);
-$profid[1][0] = $langs->trans("ProfId2");
-$profid[1][1] = $langs->transcountry('ProfId2', $mysoc->country_code);
-$profid[2][0] = $langs->trans("ProfId3");
-$profid[2][1] = $langs->transcountry('ProfId3', $mysoc->country_code);
-$profid[3][0] = $langs->trans("ProfId4");
-$profid[3][1] = $langs->transcountry('ProfId4', $mysoc->country_code);
-
-$var = true;
-$i = 0;
-
-$nbofloop = count($profid);
-while ($i < $nbofloop) {
-    $var = !$var;
-
-    print '<tr ' . $bc[$var] . '>';
-    print '<td>' . $profid[$i][0] . "</td><td>\n";
-    print $profid[$i][1];
-    print '</td>';
-
-    switch ($i) {
-        case 0:
-            $verif = (empty($conf->global->SOCIETE_IDPROF1_UNIQUE) ? false : true);
-            break;
-        case 1:
-            $verif = (empty($conf->global->SOCIETE_IDPROF2_UNIQUE) ? false : true);
-            break;
-        case 2:
-            $verif = (empty($conf->global->SOCIETE_IDPROF3_UNIQUE) ? false : true);
-            break;
-        case 3:
-            $verif = (empty($conf->global->SOCIETE_IDPROF4_UNIQUE) ? false : true);
-            break;
-    }
-
-    if ($verif) {
-        print '<td align="center"><a href="' . $_SERVER['PHP_SELF'] . '?action=setprofid&value=' . ($i + 1) . '&status=0">';
-        print img_picto($langs->trans("Activated"), 'switch_on');
-        print '</a></td>';
-    } else {
-        print '<td align="center"><a href="' . $_SERVER['PHP_SELF'] . '?action=setprofid&value=' . ($i + 1) . '&status=1">';
-        print img_picto($langs->trans("Disabled"), 'switch_off');
-        print '</a></td>';
-    }
-    print "</tr>\n";
-    $i++;
-}
-
-print "</table><br>\n";
-
 
 print_titre($langs->trans("Other"));
 

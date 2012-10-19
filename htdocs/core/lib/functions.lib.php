@@ -701,8 +701,6 @@ function dol_get_fiche_head($links = array(), $active = '0', $title = '', $notab
  */
 function dol_fiche_end($notab = 0) {
     print dol_get_fiche_end($notab);
-    print end_box();
-    print '</div>';
 }
 
 /**

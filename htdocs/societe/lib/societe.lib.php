@@ -119,12 +119,6 @@ function societe_prepare_head($object) {
         }
     }
 
-    // Log
-    $head[$h][0] = DOL_URL_ROOT . '/societe/info.php?socid=' . $object->id;
-    $head[$h][1] = $langs->trans("Info");
-    $head[$h][2] = 'info';
-    $h++;
-
     complete_head_from_modules($conf, $langs, $object, $head, $h, 'thirdparty', 'remove');
 
     return $head;

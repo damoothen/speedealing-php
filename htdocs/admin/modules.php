@@ -1,4 +1,5 @@
 <?php
+
 /* Copyright (C) 2003-2007 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2003      Jean-Louis Bergamo   <jlb@j1b.org>
  * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
@@ -25,9 +26,8 @@
  *  \file       htdocs/admin/modules.php
  *  \brief      Page to activate/disable all modules
  */
-
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT . '/core/lib/admin.lib.php';
 
 $langs->load("errors");
 $langs->load("admin");
@@ -36,26 +36,26 @@ $mesg = GETPOST("mesg");
 $action = GETPOST('action');
 
 if (!$user->admin)
-	accessforbidden();
+    accessforbidden();
 
 $object = new DolibarrModules($db);
 
 // Search modules dirs
 $modulesdir = array();
 foreach ($conf->file->dol_document_root as $type => $dirroot) {
-	$modulesdir[$dirroot . '/core/modules/'] = $dirroot . '/core/modules/';
+    $modulesdir[$dirroot . '/core/modules/'] = $dirroot . '/core/modules/';
 
-	$handle = @opendir($dirroot);
-	if (is_resource($handle)) {
-		while (($file = readdir($handle)) !== false) {
-			if (is_dir($dirroot . '/' . $file) && substr($file, 0, 1) <> '.' && substr($file, 0, 3) <> 'CVS' && $file != 'includes') {
-				if (is_dir($dirroot . '/' . $file . '/core/modules/')) {
-					$modulesdir[$dirroot . '/' . $file . '/core/modules/'] = $dirroot . '/' . $file . '/core/modules/';
-				}
-			}
-		}
-		closedir($handle);
-	}
+    $handle = @opendir($dirroot);
+    if (is_resource($handle)) {
+        while (($file = readdir($handle)) !== false) {
+            if (is_dir($dirroot . '/' . $file) && substr($file, 0, 1) <> '.' && substr($file, 0, 3) <> 'CVS' && $file != 'includes') {
+                if (is_dir($dirroot . '/' . $file . '/core/modules/')) {
+                    $modulesdir[$dirroot . '/' . $file . '/core/modules/'] = $dirroot . '/' . $file . '/core/modules/';
+                }
+            }
+        }
+        closedir($handle);
+    }
 }
 //var_dump($modulesdir);
 
@@ -71,67 +71,67 @@ $modNameLoaded = array();
 
 foreach ($modulesdir as $dir) {
 
-	// Load modules attributes in arrays (name, numero, orders) from dir directory
-	//print $dir."\n<br>";
-	$handle = @opendir($dir);
-	if (is_resource($handle)) {
-		while (($file = readdir($handle)) !== false) {
-			//print "$i ".$file."\n<br>";
-			if (is_readable($dir . $file) && substr($file, 0, 3) == 'mod' && substr($file, dol_strlen($file) - 10) == '.class.php') {
-				$modName = substr($file, 0, dol_strlen($file) - 10);
+    // Load modules attributes in arrays (name, numero, orders) from dir directory
+    //print $dir."\n<br>";
+    $handle = @opendir($dir);
+    if (is_resource($handle)) {
+        while (($file = readdir($handle)) !== false) {
+            //print "$i ".$file."\n<br>";
+            if (is_readable($dir . $file) && substr($file, 0, 3) == 'mod' && substr($file, dol_strlen($file) - 10) == '.class.php') {
+                $modName = substr($file, 0, dol_strlen($file) - 10);
 
-				if ($modName) {
-					if (!empty($modNameLoaded[$modName])) {
-						$mesg = "Error: Module " . $modName . " was found twice: Into " . $modNameLoaded[$modName] . " and " . $dir . ". You probably have an old file on your disk.<br>";
-						dol_syslog($mesg, LOG_ERR);
-						continue;
-					}
+                if ($modName) {
+                    if (!empty($modNameLoaded[$modName])) {
+                        $mesg = "Error: Module " . $modName . " was found twice: Into " . $modNameLoaded[$modName] . " and " . $dir . ". You probably have an old file on your disk.<br>";
+                        dol_syslog($mesg, LOG_ERR);
+                        continue;
+                    }
 
-					try {
-						$res = include_once($dir . $file);
-						$objMod = new $modName($db);
-						$modNameLoaded[$modName] = $dir;
+                    try {
+                        $res = include_once($dir . $file);
+                        $objMod = new $modName($db);
+                        $modNameLoaded[$modName] = $dir;
 
-						if ($objMod->numero > 0) {
-							$j = $objMod->numero;
-						} else {
-							$j = 1000 + $i;
-						}
+                        if ($objMod->numero > 0) {
+                            $j = $objMod->numero;
+                        } else {
+                            $j = 1000 + $i;
+                        }
 
-						$modulequalified = 1;
+                        $modulequalified = 1;
 
-						// We discard modules according to features level (PS: if module is activated we always show it)
-						$const_name = 'MAIN_MODULE_' . strtoupper(preg_replace('/^mod/i', '', get_class($objMod)));
-						if ($objMod->version == 'development' && $conf->global->MAIN_FEATURES_LEVEL < 2 && !$conf->global->$const_name)
-							$modulequalified = 0;
-						if ($objMod->version == 'experimental' && $conf->global->MAIN_FEATURES_LEVEL < 1 && !$conf->global->$const_name)
-							$modulequalified = 0;
+                        // We discard modules according to features level (PS: if module is activated we always show it)
+                        $const_name = 'MAIN_MODULE_' . strtoupper(preg_replace('/^mod/i', '', get_class($objMod)));
+                        if ($objMod->version == 'development' && $conf->global->MAIN_FEATURES_LEVEL < 2 && !$conf->global->$const_name)
+                            $modulequalified = 0;
+                        if ($objMod->version == 'experimental' && $conf->global->MAIN_FEATURES_LEVEL < 1 && !$conf->global->$const_name)
+                            $modulequalified = 0;
 
-						if ($modulequalified) {
-							$modules[$i] = $objMod;
-							$filename[$i] = $modName;
-							$orders[$i] = $objMod->family . "_" . $j;   // Tri par famille puis numero module
-							//print "x".$modName." ".$orders[$i]."\n<br>";
-							if (isset($categ[$objMod->special]))
-								$categ[$objMod->special]++;  // Array of all different modules categories
-							else
-								$categ[$objMod->special] = 1;
-							$dirmod[$i] = $dir;
-							$j++;
-							$i++;
-						}
-						else
-							dol_syslog("Module " . get_class($objMod) . " not qualified");
-					} catch (Exception $e) {
-						dol_syslog("Failed to load " . $dir . $file . " " . $e->getMessage(), LOG_ERR);
-					}
-				}
-			}
-		}
-		closedir($handle);
-	} else {
-		dol_syslog("htdocs/admin/modules.php: Failed to open directory " . $dir . ". See permission and open_basedir option.", LOG_WARNING);
-	}
+                        if ($modulequalified) {
+                            $modules[$i] = $objMod;
+                            $filename[$i] = $modName;
+                            $orders[$i] = $objMod->family . "_" . $j;   // Tri par famille puis numero module
+                            //print "x".$modName." ".$orders[$i]."\n<br>";
+                            if (isset($categ[$objMod->special]))
+                                $categ[$objMod->special]++;  // Array of all different modules categories
+                            else
+                                $categ[$objMod->special] = 1;
+                            $dirmod[$i] = $dir;
+                            $j++;
+                            $i++;
+                        }
+                        else
+                            dol_syslog("Module " . get_class($objMod) . " not qualified");
+                    } catch (Exception $e) {
+                        dol_syslog("Failed to load " . $dir . $file . " " . $e->getMessage(), LOG_ERR);
+                    }
+                }
+            }
+        }
+        closedir($handle);
+    } else {
+        dol_syslog("htdocs/admin/modules.php: Failed to open directory " . $dir . ". See permission and open_basedir option.", LOG_WARNING);
+    }
 }
 
 asort($orders);
@@ -146,53 +146,53 @@ dol_htmloutput_errors($mesg);
  * Actions
  */
 if ($action == 'set' && $user->admin) {
-	try {
-		$object->load($_GET['id']); // update if module exist
-	} catch (Exception $e) {
-		
-	}
+    try {
+        $object->load($_GET['id']); // update if module exist
+    } catch (Exception $e) {
+        
+    }
 
-	try {
-		$key = $_GET['value'];
-		$objMod = $modules[$key];
+    try {
+        $key = $_GET['value'];
+        $objMod = $modules[$key];
 
-		foreach($objMod as $key => $aRow)
-			$object->$key = $aRow;
-		$object->_id = "module:" . $objMod->name;
-		$object->enabled = true;
-		dol_delcache("MenuAuguria:list"); //refresh menu
-		dol_delcache("MenuAuguria:submenu"); //refresh menu
-		dol_delcache("extrafields:" . $object->class); //refresh extrafields
-		dol_delcache("const"); //delete $conf
-		dol_delcache("DolibarrModules:list"); //refresh menu
-		dol_delcache("DolibarrModules:default_right");
-		
-		$object->record();
-		$object->_load_documents();
-	} catch (Exception $e) {
-		$mesg = $e->getMessage();
-	}
-	Header("Location: " . $_SERVER['PHP_SELF'] . "?&mesg=" . urlencode($mesg));
-	exit;
+        foreach ($objMod as $key => $aRow)
+            $object->$key = $aRow;
+        $object->_id = "module:" . $objMod->name;
+        $object->enabled = true;
+        dol_delcache("MenuAuguria:list"); //refresh menu
+        dol_delcache("MenuAuguria:submenu"); //refresh menu
+        dol_delcache("extrafields:" . $object->class); //refresh extrafields
+        dol_delcache("const"); //delete $conf
+        dol_delcache("DolibarrModules:list"); //refresh menu
+        dol_delcache("DolibarrModules:default_right");
+
+        $object->record();
+        $object->_load_documents();
+    } catch (Exception $e) {
+        $mesg = $e->getMessage();
+    }
+    Header("Location: " . $_SERVER['PHP_SELF'] . "?&mesg=" . urlencode($mesg));
+    exit;
 }
 
 if ($action == 'reset' && $user->admin) {
-	try {
-		$object->load($_GET['id']);
-		unset($object->enabled);
-		
-		dol_delcache("MenuTop:list"); //refresh menu
-		dol_delcache("MenuTop:submenu"); //refresh menu
-		dol_delcache("const"); //delete $conf
-		dol_delcache("DolibarrModules:list"); //refresh menu
-		dol_delcache("DolibarrModules:default_right");
+    try {
+        $object->load($_GET['id']);
+        unset($object->enabled);
 
-		$object->record();
-	} catch (Exception $e) {
-		$mesg = $e->getMessage();
-	}
-	Header("Location: " . $_SERVER['PHP_SELF'] . "?&mesg=" . urlencode($mesg));
-	exit;
+        dol_delcache("MenuTop:list"); //refresh menu
+        dol_delcache("MenuTop:submenu"); //refresh menu
+        dol_delcache("const"); //delete $conf
+        dol_delcache("DolibarrModules:list"); //refresh menu
+        dol_delcache("DolibarrModules:default_right");
+
+        $object->record();
+    } catch (Exception $e) {
+        $mesg = $e->getMessage();
+    }
+    Header("Location: " . $_SERVER['PHP_SELF'] . "?&mesg=" . urlencode($mesg));
+    exit;
 }
 
 /*
@@ -311,144 +311,144 @@ $var = true;
 $oldfamily = '';
 
 $familylib = array(
-	'base' => $langs->trans("ModuleFamilyBase"),
-	'crm' => $langs->trans("ModuleFamilyCrm"),
-	'products' => $langs->trans("ModuleFamilyProducts"),
-	'hr' => $langs->trans("ModuleFamilyHr"),
-	'projects' => $langs->trans("ModuleFamilyProjects"),
-	'financial' => $langs->trans("ModuleFamilyFinancial"),
-	'ecm' => $langs->trans("ModuleFamilyECM"),
-	'technic' => $langs->trans("ModuleFamilyTechnic"),
-	'other' => $langs->trans("ModuleFamilyOther")
+    'base' => $langs->trans("ModuleFamilyBase"),
+    'crm' => $langs->trans("ModuleFamilyCrm"),
+    'products' => $langs->trans("ModuleFamilyProducts"),
+    'hr' => $langs->trans("ModuleFamilyHr"),
+    'projects' => $langs->trans("ModuleFamilyProjects"),
+    'financial' => $langs->trans("ModuleFamilyFinancial"),
+    'ecm' => $langs->trans("ModuleFamilyECM"),
+    'technic' => $langs->trans("ModuleFamilyTechnic"),
+    'other' => $langs->trans("ModuleFamilyOther")
 );
 
 foreach ($orders as $key => $value) {
-	$tab = explode('_', $value);
-	$family = $tab[0];
-	$numero = $tab[1];
+    $tab = explode('_', $value);
+    $family = $tab[0];
+    $numero = $tab[1];
 
-	$modName = $filename[$key];
-	$objMod = $modules[$key];
-	//var_dump($objMod);
+    $modName = $filename[$key];
+    $objMod = $modules[$key];
+    //var_dump($objMod);
 
-	if (!$objMod->getName()) {
-		dol_syslog("Error for module " . $key . " - Property name of module looks empty", LOG_WARNING);
-		continue;
-	}
+    if (!$objMod->getName()) {
+        dol_syslog("Error for module " . $key . " - Property name of module looks empty", LOG_WARNING);
+        continue;
+    }
 
-	$const_name = 'MAIN_MODULE_' . strtoupper(preg_replace('/^mod/i', '', get_class($objMod)));
+    $const_name = 'MAIN_MODULE_' . strtoupper(preg_replace('/^mod/i', '', get_class($objMod)));
 
-	// Load all lang files of module
-	if (isset($objMod->langfiles) && is_array($objMod->langfiles)) {
-		foreach ($objMod->langfiles as $domain) {
-			$langs->load($domain);
-		}
-	}
+    // Load all lang files of module
+    if (isset($objMod->langfiles) && is_array($objMod->langfiles)) {
+        foreach ($objMod->langfiles as $domain) {
+            $langs->load($domain);
+        }
+    }
 
-	//print "\n<!-- Module ".$objMod->numero." ".$objMod->getName()." found into ".$dirmod[$key]." -->\n";
-	print '<tr>';
+    //print "\n<!-- Module ".$objMod->numero." ".$objMod->getName()." found into ".$dirmod[$key]." -->\n";
+    print '<tr>';
 
-	// Id
-	print '<td>';
-	print $objMod->numero;
-	print '</td>';
+    // Id
+    print '<td>';
+    print $objMod->numero;
+    print '</td>';
 
-	// Family
-	print '<td>';
-	$family = $objMod->family;
-	print $familytext = empty($familylib[$family]) ? $family : $familylib[$family];
-	print "</td>\n";
+    // Family
+    print '<td>';
+    $family = $objMod->family;
+    print $familytext = empty($familylib[$family]) ? $family : $familylib[$family];
+    print "</td>\n";
 
-	// Picto
-	print '  <td>';
-	$alttext = '';
-	//if (is_array($objMod->need_dolibarr_version)) $alttext.=($alttext?' - ':'').'Dolibarr >= '.join('.',$objMod->need_dolibarr_version);
-	//if (is_array($objMod->phpmin)) $alttext.=($alttext?' - ':'').'PHP >= '.join('.',$objMod->phpmin);
-	if (!empty($objMod->picto)) {
-		if (preg_match('/^\//i', $objMod->picto))
-			print img_picto($alttext, $objMod->picto, ' width="14px"', 1);
-		else
-			print img_object($alttext, $objMod->picto, ' width="14px"');
-	}
-	else {
-		print img_object($alttext, 'generic');
-	}
+    // Picto
+    print '  <td>';
+    $alttext = '';
+    //if (is_array($objMod->need_dolibarr_version)) $alttext.=($alttext?' - ':'').'Dolibarr >= '.join('.',$objMod->need_dolibarr_version);
+    //if (is_array($objMod->phpmin)) $alttext.=($alttext?' - ':'').'PHP >= '.join('.',$objMod->phpmin);
+    if (!empty($objMod->picto)) {
+        if (preg_match('/^\//i', $objMod->picto))
+            print img_picto($alttext, $objMod->picto, ' width="14px"', 1);
+        else
+            print img_object($alttext, $objMod->picto, ' width="14px"');
+    }
+    else {
+        print img_object($alttext, 'generic');
+    }
 
 
-	// Name
-	print ' ' . $objMod->getName();
-	print "</td>\n";
+    // Name
+    print ' ' . $objMod->getName();
+    print "</td>\n";
 
-	// Desc
-	print "<td>";
-	print nl2br($objMod->getDesc());
-	print "</td>\n";
+    // Desc
+    print "<td>";
+    print nl2br($objMod->getDesc());
+    print "</td>\n";
 
-	// Version
-	print "<td>";
-	print $objMod->getVersion();
-	print "</td>\n";
+    // Version
+    print "<td>";
+    print $objMod->getVersion();
+    print "</td>\n";
 
-	// Activate/Disable and Setup (2 columns)
-	$name = $objMod->name;
+    // Activate/Disable and Setup (2 columns)
+    $name = $objMod->name;
 
-	if (isset($conf->$name) && !empty($conf->$name->enabled)) {
+    if (isset($conf->$name) && !empty($conf->$name->enabled)) {
 
-		$disableSetup = 0;
+        $disableSetup = 0;
 
-		print "<td>";
+        print "<td>";
 
-		// Module actif
-		if (!empty($conf->$name->always_enabled)) {
+        // Module actif
+        if (!empty($conf->$name->always_enabled)) {
 
-			print '<span class="lbl ok_bg sl_status ">' . $langs->trans("Required") . '</span>';
-			print '</td>' . "\n";
-		} else {
-			print '<a href="' . $_SERVER['PHP_SELF'] . '?id=module:' . $objMod->name . '&amp;action=reset&amp;value=' . $key . '">';
-			print img_picto($langs->trans("Activated"), 'switch_on');
-			print '</a></td>' . "\n";
-		}
+            print '<span class="lbl ok_bg sl_status ">' . $langs->trans("Required") . '</span>';
+            print '</td>' . "\n";
+        } else {
+            print '<a href="' . $_SERVER['PHP_SELF'] . '?id=module:' . $objMod->name . '&amp;action=reset&amp;value=' . $key . '">';
+            print img_picto($langs->trans("Activated"), 'switch_on');
+            print '</a></td>' . "\n";
+        }
 
-		if (!empty($objMod->config_page_url) && !$disableSetup) {
-			if (is_array($objMod->config_page_url)) {
-				print '  <td>';
-				$i = 0;
-				foreach ($objMod->config_page_url as $page) {
-					$urlpage = $page;
-					if ($i++) {
-						print '<a href="' . $_SERVER['PHP_SELF'] . '/' . $urlpage . '" title="' . $langs->trans($page) . '">' . img_picto(ucfirst($page), "setup") . '</a>&nbsp;';
-						//    print '<a href="'.$page.'">'.ucfirst($page).'</a>&nbsp;';
-					} else {
-						if (preg_match('/^([^@]+)@([^@]+)$/i', $urlpage, $regs)) {
-							print '<a href="' . dol_buildpath('/' . $regs[2] . '/admin/' . $regs[1], 1) . '" title="' . $langs->trans("Setup") . '">' . img_picto($langs->trans("Setup"), "setup") . '</a>&nbsp;';
-						} else {
-							print '<a href="' . DOL_URL_ROOT . '/admin/' . $urlpage . '" title="' . $langs->trans("Setup") . '">' . img_picto($langs->trans("Setup"), "setup") . '</a>&nbsp;';
-						}
-					}
-				}
-				print "</td>\n";
-			} else if (preg_match('/^([^@]+)@([^@]+)$/i', $objMod->config_page_url, $regs)) {
-				print '<td><a href="' . dol_buildpath('/' . $regs[2] . '/admin/' . $regs[1], 1) . '" title="' . $langs->trans("Setup") . '">' . img_picto($langs->trans("Setup"), "setup") . '</a></td>';
-			} else {
-				print '<td><a href="' . $objMod->config_page_url . '" title="' . $langs->trans("Setup") . '">' . img_picto($langs->trans("Setup"), "setup") . '</a></td>';
-			}
-		} else {
-			print "<td>&nbsp;</td>";
-		}
-	} else {
-		print "<td>";
+        if (!empty($objMod->config_page_url) && !$disableSetup) {
+            if (is_array($objMod->config_page_url)) {
+                print '  <td>';
+                $i = 0;
+                foreach ($objMod->config_page_url as $page) {
+                    $urlpage = $page;
+                    if ($i++) {
+                        print '<a href="' . $_SERVER['PHP_SELF'] . '/' . $urlpage . '" title="' . $langs->trans($page) . '">' . img_picto(ucfirst($page), "setup") . '</a>&nbsp;';
+                        //    print '<a href="'.$page.'">'.ucfirst($page).'</a>&nbsp;';
+                    } else {
+                        if (preg_match('/^([^@]+)@([^@]+)$/i', $urlpage, $regs)) {
+                            print '<a href="' . dol_buildpath('/' . $regs[2] . '/admin/' . $regs[1], 1) . '" title="' . $langs->trans("Setup") . '">' . img_picto($langs->trans("Setup"), "setup") . '</a>&nbsp;';
+                        } else {
+                            print '<a href="' . DOL_URL_ROOT . '/admin/' . $urlpage . '" title="' . $langs->trans("Setup") . '">' . img_picto($langs->trans("Setup"), "setup") . '</a>&nbsp;';
+                        }
+                    }
+                }
+                print "</td>\n";
+            } else if (preg_match('/^([^@]+)@([^@]+)$/i', $objMod->config_page_url, $regs)) {
+                print '<td><a href="' . dol_buildpath('/' . $regs[2] . '/admin/' . $regs[1], 1) . '" title="' . $langs->trans("Setup") . '">' . img_picto($langs->trans("Setup"), "setup") . '</a></td>';
+            } else {
+                print '<td><a href="' . $objMod->config_page_url . '" title="' . $langs->trans("Setup") . '">' . img_picto($langs->trans("Setup"), "setup") . '</a></td>';
+            }
+        } else {
+            print "<td>&nbsp;</td>";
+        }
+    } else {
+        print "<td>";
 
-		if ($objMod->version == 'dolibarr') {
-			print "</td>\n  <td>&nbsp;</td>\n";
-		} else {
-			// Module non actif
-			print '<a href="' . $_SERVER['PHP_SELF'] . '?id=module:' . $objMod->name . '&amp;action=set&amp;value=' . $key . '">';
-			print img_picto($langs->trans("Disabled"), 'switch_off');
-			print "</a></td>\n  <td>&nbsp;</td>\n";
-		}
-	}
+        if ($objMod->version == 'dolibarr') {
+            print "</td>\n  <td>&nbsp;</td>\n";
+        } else {
+            // Module non actif
+            print '<a href="' . $_SERVER['PHP_SELF'] . '?id=module:' . $objMod->name . '&amp;action=set&amp;value=' . $key . '">';
+            print img_picto($langs->trans("Disabled"), 'switch_off');
+            print "</a></td>\n  <td>&nbsp;</td>\n";
+        }
+    }
 
-	print "</tr>\n";
+    print "</tr>\n";
 }
 print'</tbody>';
 print'</table>';
