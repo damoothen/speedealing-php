@@ -1,5 +1,4 @@
 <?php
-
 /* Copyright (C) 2001-2002 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2003      Jean-Louis Bergamo   <jlb@j1b.org>
  * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
@@ -91,27 +90,91 @@ dol_htmloutput_errors($mesg);
 
 /* * ************************************************************************* */
 /*                                                                            */
-/* Creation d'un champ optionnel
-  /* */
-/* * ************************************************************************* */
-
-if ($action == 'create') {
-    print "<br>";
-    print_titre($langs->trans('NewAttribute'));
-
-    require DOL_DOCUMENT_ROOT . '/core/tpl/admin_extrafields_add.tpl.php';
-}
-
-/* * ************************************************************************* */
-/*                                                                            */
 /* Edition d'un champ optionnel                                               */
 /*                                                                            */
 /* * ************************************************************************* */
-if ($action == 'edit' && !empty($attrname)) {
+if ($action == 'create' || $action == 'edit' && !empty($attrname)) {
     print "<br>";
-    print_titre($langs->trans("FieldEdition", $attrname));
+    if ($action == 'create')
+        print_titre($langs->trans('NewAttribute'));
+    else
+        print_titre($langs->trans("FieldEdition", $attrname));
+    ?>
+    <script type="text/javascript">
+        jQuery(document).ready(function() {
+            function init_typeoffields(type)
+            {
+                var size = jQuery("#size");
+                if (type == 'date') { size.val('').attr('disabled','disabled'); }
+                else if (type == 'datetime') { size.val('').attr('disabled','disabled'); }
+                else if (type == 'double') { size.val('24,8').removeAttr('disabled'); }
+                else if (type == 'int') { size.val('10').removeAttr('disabled'); }
+                else if (type == 'text') { size.val('2000').removeAttr('disabled'); }
+                else if (type == 'varchar') { size.val('255').removeAttr('disabled'); }
+                else size.val('').attr('disabled','disabled');
+            }
+            init_typeoffields('');
+            jQuery("#type").change(function() {
+                init_typeoffields($(this).val());
+            });
+        });
+    </script>
 
-    require DOL_DOCUMENT_ROOT . '/core/tpl/admin_extrafields_edit.tpl.php';
+    <?php if ($action == 'create') : ?>
+        <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="post">
+            <input type="hidden" name="token" value="<?php echo $_SESSION['newtoken']; ?>">
+            <input type="hidden" name="action" value="add">
+
+            <table summary="listofattributes" class="border centpercent">
+
+                <!-- Label -->
+                <tr><td class="fieldrequired"><?php echo $langs->trans("Label"); ?></td><td class="valeur"><input type="text" name="label" size="40" value="<?php echo GETPOST('label'); ?>"></td></tr>
+                <!-- Code -->
+                <tr><td class="fieldrequired"><?php echo $langs->trans("AttributeCode"); ?> (<?php echo $langs->trans("AlphaNumOnlyCharsAndNoSpace"); ?>)</td><td class="valeur"><input type="text" name="attrname" size="10" value="<?php echo GETPOST('attrname'); ?>"></td></tr>
+                <!-- Type -->
+                <tr><td class="fieldrequired"><?php echo $langs->trans("Type"); ?></td><td class="valeur">
+                        <?php print $form->selectarray('type', $type2label, GETPOST('type')); ?>
+                    </td></tr>
+                <!-- Size -->
+                <tr><td class="fieldrequired"><?php echo $langs->trans("Size"); ?></td><td class="valeur"><input id="size" type="text" name="size" size="5" value="<?php echo (GETPOST('size') ? GETPOST('size') : ''); ?>"></td></tr>
+            </table>
+
+            <div align="center"><br><input type="submit" name="button" class="button" value="<?php echo $langs->trans("Save"); ?>"> &nbsp;
+                <input type="submit" name="button" class="button" value="<?php echo $langs->trans("Cancel"); ?>"></div>
+
+        </form>
+    <?php else : ?>
+        <form action="<?php echo $_SERVER["PHP_SELF"]; ?>?attrname=<?php echo $attrname; ?>" method="post">
+            <input type="hidden" name="token" value="<?php echo $_SESSION['newtoken']; ?>">
+            <input type="hidden" name="attrname" value="<?php echo $attrname; ?>">
+            <input type="hidden" name="action" value="update">
+
+            <table summary="listofattributes" class="border centpercent">
+
+                <!-- Label -->
+                <tr><td class="fieldrequired"><?php echo $langs->trans("Label"); ?></td><td class="valeur"><input type="text" name="label" size="40" value="<?php echo $extrafields->attribute_label[$attrname]; ?>"></td></tr>
+                <!-- Code -->
+                <tr><td class="fieldrequired"><?php echo $langs->trans("AttributeCode"); ?></td><td class="valeur"><?php echo $attrname; ?></td></tr>
+                <!-- Type -->
+                <?php
+                $type = $extrafields->attribute_type[$attrname];
+                $size = $extrafields->attribute_size[$attrname];
+                $unique = $extrafields->attribute_unique[$attrname];
+                ?>
+                <tr><td class="fieldrequired"><?php echo $langs->trans("Type"); ?></td><td class="valeur">
+                        <?php print $type2label[$type]; ?>
+                        <input type="hidden" name="type" id="type" value="<?php print $type; ?>">
+                    </td></tr>
+                <!-- Size -->
+                <tr><td class="fieldrequired"><?php echo $langs->trans("Size"); ?></td><td><input id="size" type="text" name="size" size="5" value="<?php echo $size; ?>"></td></tr>
+            </table>
+
+            <div align="center"><br><input type="submit" name="button" class="button" value="<?php echo $langs->trans("Save"); ?>"> &nbsp;
+                <input type="submit" name="button" class="button" value="<?php echo $langs->trans("Cancel"); ?>"></div>
+
+        </form>
+    <?php endif; ?>
+    <?php
 }
 
 dol_fiche_end();
