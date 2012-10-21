@@ -126,14 +126,8 @@ class Societe extends nosqlDocument {
     public function __construct($db) {
         parent::__construct($db);
 
-        try {
-            $fk_extrafields = new ExtraFields($db);
-            $this->fk_extrafields = $fk_extrafields->load("extrafields:" . get_class($this), true); // load and cache
-        } catch (Exception $e) {
-            $error = "Something weird happened: " . $e->getMessage() . " (errcode=" . $e->getCode() . ")\n";
-            print $error;
-            exit;
-        }
+        $this->fk_extrafields = new ExtraFields($db);
+        $this->fk_extrafields->fetch(get_class($this));
 
         return 1;
     }
@@ -192,9 +186,8 @@ class Societe extends nosqlDocument {
             else {
                 $this->commercial_id = $user->login;
             }
-            
-            $ret = $this->update('', $user, 0, 1, 1, 'add'); // Record
 
+            $ret = $this->update('', $user, 0, 1, 1, 'add'); // Record
             // si le fournisseur est classe on l'ajoute
             $this->AddFournisseurInCategory($this->fournisseur_categorie);
 
@@ -330,12 +323,12 @@ class Societe extends nosqlDocument {
 
         $this->tva_assuj = trim($this->tva_assuj);
         $this->tva_intra = dol_sanitizeFileName($this->tva_intra, '');
-        
+
         $this->tms = $now;
-        
+
         if (empty($this->Status))
             $this->Status = $this->fk_extrafields->fields->Status->default;
-        
+
         // Local taxes
         $this->localtax1_assuj = trim($this->localtax1_assuj);
         $this->localtax2_assuj = trim($this->localtax2_assuj);
@@ -401,9 +394,9 @@ class Societe extends nosqlDocument {
 
         if ($result >= 0) {
             dol_syslog(get_class($this) . "::Update verify ok");
-            
+
             $resql = $this->record();
-            
+
             if ($resql) {
                 unset($this->country_code);
                 unset($this->country);

@@ -192,12 +192,16 @@ abstract class nosqlDocument extends CommonObject {
             $this->id = $result->id;
             $this->_id = $result->id;
             $this->_rev = $result->rev;
+            $values->_id = $this->_id;
+            $values->id = $this->_id;
+            $values->_rev = $this->_rev;
             if ($cache) {
-                dol_setcache($id, $values);
+                dol_setcache($this->id, $values);
             }
         } catch (Exception $e) {
             dol_print_error("", $e->getMessage());
-            $this->dol_syslog(get_class($this) . "::get " . $error, LOG_WARN);
+            dol_syslog(get_class($this) . "::get " . $error, LOG_WARN);
+            exit;
         }
 
         return $result;
