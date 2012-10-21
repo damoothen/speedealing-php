@@ -93,7 +93,7 @@ if ($action == 'add') {
         if (!$error) {
             // Type et taille non encore pris en compte => varchar(255)
             if (isset($_POST["attrname"]) && preg_match("/^\w[a-zA-Z0-9-_]*$/", $_POST['attrname'])) {
-                $result = $object->fk_extrafields->addExtraField($_POST['attrname'], $_POST['label'], $_POST['type'], $_POST['pos'], $extrasize);
+                $result = $object->fk_extrafields->addExtraField($_POST['attrname'], $_POST['label'], $_POST['type'], $extrasize);
                 if ($result > 0) {
                     header("Location: " . $_SERVER["PHP_SELF"]);
                     exit;

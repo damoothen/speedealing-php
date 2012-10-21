@@ -67,13 +67,12 @@ class ExtraFields extends nosqlDocument {
      *  @param	string	$attrname           Code of attribute
      *  @param  string	$label              label of attribute
      *  @param  int		$type               Type of attribute ('int', 'text', 'varchar', 'date', 'datehour')
-     *  @param  int		$pos                Position of attribute
      *  @param  int		$size               Size/length of attribute
      *  @param  string	$elementtype        Element type ('member', 'product', 'company', ...)
      *  @param	int		$unique				Is field unique or not
      *  @return int      					<=0 if KO, >0 if OK
      */
-    function addExtraField($attrname, $label, $type, $pos, $size) {
+    function addExtraField($attrname, $label, $type, $size) {
         if (empty($attrname))
             return -1;
         if (empty($label))
@@ -81,18 +80,20 @@ class ExtraFields extends nosqlDocument {
 
         // Create field into database
         if ($attrname != '' && preg_match("/^\w[a-zA-Z0-9-_]*$/", $attrname)) {
-            $field_desc = array('type' => $type, 'value' => $length);
-            $this->fields->$attrname->type = $type;
-            $this->fields->$attrname->label = $label;
+            $maxpos = 0;
+            foreach ($this->fields as $row) {
+                if($row->optional) {
+                    if($row->pos > $maxpos)
+                        $maxpos = $row->pos;
+                }
+            }
+            
             $this->fields->$attrname->enable = true;
-            $this->fields->$attrname->length = $length;
-            $this->fields->$attrname->pos = $pos;
-            $this->fields->$attrname->size = $size;
+            $this->fields->$attrname->pos = $maxpos;
             $this->fields->$attrname->edit = true;
             $this->fields->$attrname->optional = true; // Is an extrafields create by user
-            unset($this->type2label);
-            $this->record(true);
-            return 1;
+            
+            return $this->update($attrname, $label, $type, $size);
         } else {
             return -1;
         }
@@ -151,11 +152,10 @@ class ExtraFields extends nosqlDocument {
         $table = '';
 
         if (isset($attrname) && $attrname != '' && preg_match("/^\w[a-zA-Z0-9-_]*$/", $attrname)) {
-            $field_desc = array('type' => $type, 'value' => $length);
-
+            
             $this->fields->$attrname->type = $type;
             $this->fields->$attrname->label = $label;
-            $this->fields->$attrname->length = $length;
+            $this->fields->$attrname->size = $length;
 
             unset($this->type2label);
             $this->record(true);

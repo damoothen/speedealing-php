@@ -29,7 +29,8 @@
        "prefix": {
            "type": "text",
            "length": 5,
-           "enable": false
+           "enable": false,
+           "edit": true
        },
        "code_client": {
            "type": "text",
