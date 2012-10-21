@@ -86,7 +86,6 @@ include_once(DOL_DOCUMENT_ROOT . '/core/class/hookmanager.class.php');
 $hookmanager = new HookManager($db);
 $hookmanager->initHooks(array('membercard'));
 
-
 /*
  * 	Actions
  */
@@ -811,9 +810,6 @@ if ($user->rights->adherent->cotisation->creer && $action == 'cotisation' && !$_
 $form = new Form($db);
 $formcompany = new FormCompany($db);
 
-// fetch optionals attributes and labels
-$extralabels = $extrafields->fetch_name_optionals_label('member');
-
 $help_url = 'EN:Module_Foundations|FR:Module_Adh&eacute;rents|ES:M&oacute;dulo_Miembros';
 llxHeader('', $langs->trans("Member"), $help_url);
 
@@ -1004,11 +1000,7 @@ if ($action == 'edit') {
         dol_print_error($db, $object->error);
         exit;
     }
-    //$res=$object->fetch_optionals($object->id,$extralabels);
-    //if ($res < 0) { dol_print_error($db); exit; }
-    //$adht = new AdherentType($db);
-    //$adht->fetch($object->typeid);
-    // We set country_id, and country_code, country of the chosen country
+    
     if (isset($_POST["pays"]) || $object->country_id) {
         $sql = "SELECT rowid, code, libelle as label from " . MAIN_DB_PREFIX . "c_pays where rowid = " . (isset($_POST["pays"]) ? $_POST["pays"] : $object->country_id);
         $resql = $db->query($sql);
@@ -1125,7 +1117,7 @@ if ($action == 'edit') {
 
     // Civilite
     print '<tr><td width="20%">' . $langs->trans("UserTitle") . '</td><td width="35%">';
-    print $formcompany->select_civility(isset($_POST["civilite_id"]) ? $_POST["civilite_id"] : $object->civilite_id) . "\n";
+    print $object->select_fk_extrafields("civilite_id","civilite_id") . "\n";
     print '</td>';
     print '</tr>';
 
@@ -1157,7 +1149,7 @@ if ($action == 'edit') {
     // Country
     //$object->country_id=$object->country_id?$object->country_id:$mysoc->country_id;    // In edit mode we don't force to company country if not defined
     print '<tr><td width="25%">' . $langs->trans('Country') . '</td><td>';
-    print $form->select_country(isset($_POST["country_id"]) ? $_POST["country_id"] : $object->country_id, 'country_id');
+    print $object->select_fk_extrafields("country_id","country_id");
     if ($user->admin)
         print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"), 1);
     print '</td></tr>';
@@ -1165,7 +1157,7 @@ if ($action == 'edit') {
     // State
     if (empty($conf->global->MEMBER_DISABLE_STATE)) {
         print '<tr><td>' . $langs->trans('State') . '</td><td>';
-        print $formcompany->select_state($object->fk_departement, isset($_POST["country_id"]) ? $_POST["country_id"] : $object->country_id);
+        print $object->select_fk_extrafields("fk_departement","state_id");
         print '</td></tr>';
     }
 
@@ -1503,8 +1495,6 @@ if ($rowid && ($action == 'addsubscription' || $action == 'create_thirdparty') &
         dol_print_error($db, $object->error);
         exit;
     }
-    //$res=$object->fetch_optionals($object->id,$extralabels);
-    //if ($res < 0) { dol_print_error($db); exit; }
 
     /* $adht = new AdherentType($db);
       $result = $adht->getView('list', array("key" => $object->typeid, 'limit' => 1));

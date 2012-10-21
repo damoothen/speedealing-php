@@ -208,7 +208,7 @@ llxHeader('', $langs->trans("CompanySetup"), $help_url);
 
 $linkback = '<a href="' . DOL_URL_ROOT . '/admin/modules.php">' . $langs->trans("BackToModuleList") . '</a>';
 
-print_fiche_titre($langs->trans("CompanySetup"), $linkback, 'setup');
+print_fiche_titre($langs->trans("CompanySetup"));
 print '<div class="with-padding">';
 print '<div class="columns">';
 
@@ -297,7 +297,25 @@ if ($action == 'create' || $action == 'edit' && !empty($attrname)) {
                 <tr><td class="fieldrequired"><?php echo $langs->trans("Type"); ?></td><td class="valeur">
                         <?php print $form->selectarray('type', $type2label, $type); ?>
                     </td></tr>
-                <!-- Size -->
+                <?php /*if ($type == "select") : ?>
+                    <tr><td><span class="fieldrequired"><?php echo $langs->trans("List"); ?></span></td><td>
+                            <ul id="array_select_handler"></ul></tr>'
+
+                            <script>
+                                $(document).ready(function() {
+                                    $("#array_select_handler").tagHandler({
+                                        getData: { id: '<?php echo $object->id; ?>', class: '<?php echo get_class($object); ?>' },
+                                        getURL: '<?php echo DOL_URL_ROOT . '/core/ajax/loadextrafieldandler.php'; ?>',
+                                        updateData: { id: '<?php echo $object->id; ?>',class: '<?php echo get_class($object); ?>' },
+                                        updateURL: '<?php echo DOL_URL_ROOT . '/core/ajax/saveextrafieldhandler.php'; ?>',
+                                        autocomplete: true,
+                                        autoUpdate: true
+                                    });
+                                });
+                            </script>
+                        <?php endif;*/ ?>
+
+                        <!-- Size -->
                 <tr><td class="fieldrequired"><?php echo $langs->trans("Size"); ?></td><td><input id="size" type="text" name="size" size="5" value="<?php echo $size; ?>"></td></tr>
             </table>
 

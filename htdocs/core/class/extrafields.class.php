@@ -54,6 +54,7 @@ class ExtraFields extends nosqlDocument {
             'text' => 'TextLong',
             'int' => 'Int',
             'double' => 'Float',
+            'select' => "Select",
             'date' => 'Date',
             'datetime' => 'DateAndTime'
         );
