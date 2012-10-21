@@ -1,0 +1,16 @@
+{
+   "_id": "_design/Contact",
+   "language": "javascript",
+   "views": {
+       "list": {
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Contact\")\n  emit(doc._id, doc);\n}"
+       },
+       "listSociete": {
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Contact\" && doc.societe.id)\n  emit(doc.societe.id, doc);\n}"
+       },
+       "tag": {
+           "map": "function(doc) {\nif(doc.class==\"Contact\" && doc.Tag.length > 0) {\n    for(var idx in doc.Tag) {\n      emit(doc.Tag[idx], 1);\n    }\n  }\n}",
+           "reduce": "function(keys, values) {\n  return sum(values)\n}"
+       }
+   }
+}

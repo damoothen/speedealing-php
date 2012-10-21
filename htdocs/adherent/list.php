@@ -79,6 +79,9 @@ print $langs->trans('Group');
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "Tag";
 $obj->aoColumns[$i]->sDefaultContent = "";
+$obj->aoColumns[$i]->sClass = "center";
+$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("Tag", "tag");
+
 $i++;
 print'<th class="essential">';
 print $langs->trans('Person');

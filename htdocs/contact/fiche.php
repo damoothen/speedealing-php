@@ -1,5 +1,4 @@
 <?php
-
 /* Copyright (C) 2004-2005 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2004      Benoit Mortier       <benoit.mortier@opensides.be>
@@ -31,7 +30,6 @@ require_once DOL_DOCUMENT_ROOT . '/contact/class/contact.class.php';
 require_once DOL_DOCUMENT_ROOT . '/core/lib/contact.lib.php';
 require_once DOL_DOCUMENT_ROOT . '/societe/lib/societe.lib.php';
 require_once DOL_DOCUMENT_ROOT . '/core/class/html.formcompany.class.php';
-require_once DOL_DOCUMENT_ROOT . '/core/class/extrafields.class.php';
 
 $langs->load("companies");
 $langs->load("users");
@@ -51,7 +49,6 @@ if ($user->societe_id)
     $socid = $user->societe_id;
 
 $object = new Contact($db);
-$extrafields = new ExtraFields($db);
 
 // Get object canvas (By default, this is not defined, so standard usage of dolibarr)
 $object->getCanvas($id);
@@ -259,9 +256,6 @@ if (empty($reshook)) {
  * 	View
  */
 
-// fetch optionals attributes and labels
-$extralabels = $extrafields->fetch_name_optionals_label('contact');
-
 $help_url = 'EN:Module_Third_Parties|FR:Module_Tiers|ES:Empresas';
 llxHeader('', $langs->trans("ContactsAddresses"), $help_url);
 
@@ -305,8 +299,6 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         // Si edition contact deja existant
         $object = new Contact($db);
         $res = $object->fetch($id);
-
-        $res = $object->fetch_optionals($object->id, $extralabels);
 
         // Show tabs
         $head = contact_prepare_head($object);
@@ -474,12 +466,14 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             // Other attributes
             $parameters = array('colspan' => ' colspan="3"');
             $reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action);    // Note that $action and $object may have been modified by hook
-            if (empty($reshook) && !empty($extrafields->attribute_label)) {
-                foreach ($extrafields->attribute_label as $key => $label) {
-                    $value = (isset($_POST["options_" . $key]) ? $_POST["options_" . $key] : (isset($object->array_options["options_" . $key]) ? $object->array_options["options_" . $key] : ''));
-                    print '<tr><td>' . $label . '</td><td colspan="3">';
-                    print $extrafields->showInputField($key, $value);
-                    print '</td></tr>' . "\n";
+            if (empty($reshook)) {
+                foreach ($object->fk_extrafields->fields as $key => $aRow) {
+                    if ($aRow->optional && $aRow->enable) {
+                        $value = (isset($_POST["options_" . $key]) ? $_POST["options_" . $key] : (isset($object->array_options["options_" . $key]) ? $object->array_options["options_" . $key] : ''));
+                        print '<tr><td>' . $aRow->label . '</td><td colspan="3">';
+                        print $object->fk_extrafields->showInputField($key, $value);
+                        print '</td></tr>' . "\n";
+                    }
                 }
             }
 
@@ -522,7 +516,6 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
             print "</form>";
             print end_box();
-            
         } elseif ($action == 'edit' && !empty($id)) {
             /*
              * Fiche en mode edition
@@ -621,7 +614,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
             // Country
             print '<tr><td>' . $langs->trans("Country") . '</td><td colspan="2">';
-            print $object->select_fk_extrafields("country_id","country_id");
+            print $object->select_fk_extrafields("country_id", "country_id");
             if ($user->admin)
                 print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"), 1);
             print '</td></tr>';
@@ -629,7 +622,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             // State
             if (empty($conf->global->SOCIETE_DISABLE_STATE)) {
                 print '<tr><td>' . $langs->trans('State') . '</td><td colspan="2">';
-                print $object->select_fk_extrafields("state_id",'state_id');
+                print $object->select_fk_extrafields("state_id", 'state_id');
                 print '</td></tr>';
             }
 
@@ -651,6 +644,25 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             }
             print '</tr>';
 
+            //Tag list
+            print '<tr><td>' . $langs->trans("Categories") . '</td><td colspan="3">';
+            print '<ul id="array_tag_handler"></ul>';
+            ?>
+            <script>
+                $(document).ready(function() {
+                    $("#array_tag_handler").tagHandler({
+                        getData: { id: '<?php echo $object->id; ?>', class: '<?php echo get_class($object); ?>' },
+                        getURL: '<?php echo DOL_URL_ROOT . '/core/ajax/loadtaghandler.php'; ?>',
+                        updateData: { id: '<?php echo $object->id; ?>',class: '<?php echo get_class($object); ?>' },
+                        updateURL: '<?php echo DOL_URL_ROOT . '/core/ajax/savetaghandler.php'; ?>',
+                        autocomplete: true,
+                        autoUpdate: true
+                    });
+                });
+            </script>
+            <?php
+            print "</td></tr>";
+
             // Jabberid
             print '<tr><td>Jabberid</td><td><input name="jabberid" type="text" size="40" maxlength="80" value="' . (isset($_POST["jabberid"]) ? $_POST["jabberid"] : $object->jabberid) . '"></td>';
             if (!empty($conf->mailing->enabled)) {
@@ -669,12 +681,14 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             // Other attributes
             $parameters = array('colspan' => ' colspan="3"');
             $reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action);    // Note that $action and $object may have been modified by hook
-            if (empty($reshook) && !empty($extrafields->attribute_label)) {
-                foreach ($extrafields->attribute_label as $key => $label) {
-                    $value = (isset($_POST["options_" . $key]) ? $_POST["options_" . $key] : $object->array_options["options_" . $key]);
-                    print '<tr><td>' . $label . '</td><td colspan="3">';
-                    print $extrafields->showInputField($key, $value);
-                    print "</td></tr>\n";
+            if (empty($reshook)) {
+                foreach ($object->fk_extrafields->fields as $key => $aRow) {
+                    if ($aRow->optional && $aRow->enable) {
+                        $value = (isset($_POST["options_" . $key]) ? $_POST["options_" . $key] : (isset($object->array_options["options_" . $key]) ? $object->array_options["options_" . $key] : ''));
+                        print '<tr><td>' . $aRow->label . '</td><td colspan="3">';
+                        print $object->fk_extrafields->showInputField($key, $value);
+                        print '</td></tr>' . "\n";
+                    }
                 }
             }
 
@@ -724,10 +738,9 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             print '</center>';
 
             print "</form>";
-            
+
             print end_box();
         }
-        
     }
 
     if (!empty($id) && $action != 'edit' && $action != 'create') {
@@ -843,6 +856,9 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             print '<td colspan="2">&nbsp;</td>';
         }
         print '</tr>';
+        
+        // Tag
+        print '<tr><td>' . $langs->trans("Categories") . '</td><td colspan="3" class="valeur">' . $object->getTagUrl(1) . "</td></tr>\n";
 
         // Instant message and no email
         print '<tr><td>' . $langs->trans("IM") . '</td><td>' . $object->jabberid . '</td>';
@@ -861,12 +877,14 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         // Other attributes
         $parameters = array('socid' => $socid, 'colspan' => ' colspan="3"');
         $reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action);    // Note that $action and $object may have been modified by hook
-        if (empty($reshook) && !empty($extrafields->attribute_label)) {
-            foreach ($extrafields->attribute_label as $key => $label) {
-                $value = (isset($_POST["options_" . $key]) ? $_POST["options_" . $key] : (isset($object->array_options['options_' . $key]) ? $object->array_options['options_' . $key] : ''));
-                print '<tr><td>' . $label . '</td><td colspan="3">';
-                print $extrafields->showOutputField($key, $value);
-                print "</td></tr>\n";
+        if (empty($reshook)) {
+            foreach ($object->fk_extrafields->fields as $key => $aRow) {
+                if ($aRow->optional && $aRow->enable) {
+                    $value = (isset($_POST["options_" . $key]) ? $_POST["options_" . $key] : (isset($object->array_options["options_" . $key]) ? $object->array_options["options_" . $key] : ''));
+                    print '<tr><td>' . $aRow->label . '</td><td colspan="3">';
+                    print $object->fk_extrafields->showOutputField($key, $value);
+                    print '</td></tr>' . "\n";
+                }
             }
         }
 
@@ -915,20 +933,20 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             print '<div class="tabsAction">';
 
             if ($user->rights->societe->contact->creer) {
-                print '<a class="butAction" href="'.$_SERVER["PHP_SELF"] .'?id=' . $object->id . '&amp;action=edit">' . $langs->trans('Modify') . '</a>';
+                print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=edit">' . $langs->trans('Modify') . '</a>';
             }
 
             if (!$object->user_id && $user->rights->user->user->creer) {
-                print '<a class="butAction" href="'.$_SERVER["PHP_SELF"] .'?id=' . $object->id . '&amp;action=create_user">' . $langs->trans("CreateDolibarrLogin") . '</a>';
+                print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=create_user">' . $langs->trans("CreateDolibarrLogin") . '</a>';
             }
 
             if ($user->rights->societe->contact->supprimer) {
-                print '<a class="butActionDelete" href="'.$_SERVER["PHP_SELF"] .'?id=' . $object->id . '&amp;action=delete">' . $langs->trans('Delete') . '</a>';
+                print '<a class="butActionDelete" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=delete">' . $langs->trans('Delete') . '</a>';
             }
 
             print "</div>";
         }
-        
+
         print end_box();
 
         $agenda = new Agenda($db);

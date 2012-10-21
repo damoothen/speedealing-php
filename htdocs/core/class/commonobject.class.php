@@ -2007,62 +2007,6 @@ abstract class CommonObject
         }
     }
 
-
-    /**
-     *  Function to get extra fields of a member into $this->array_options
-     *
-     *  @param	int		$rowid			Id of line
-     *  @param  array	$optionsArray   Array resulting of call of extrafields->fetch_name_optionals_label()
-     *  @return	void
-     */
-    function fetch_optionals($rowid,$optionsArray='')
-    {
-        if (! is_array($optionsArray))
-        {
-            // optionsArray not already loaded, so we load it
-            require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
-            $extrafields = new ExtraFields($this->db);
-            $optionsArray = $extrafields->fetch_name_optionals_label();
-        }
-
-        // Request to get complementary values
-        if (count($optionsArray) > 0)
-        {
-            $sql = "SELECT rowid";
-            foreach ($optionsArray as $name => $label)
-            {
-                $sql.= ", ".$name;
-            }
-            $sql.= " FROM ".MAIN_DB_PREFIX.$this->table_element."_extrafields";
-            $sql.= " WHERE fk_object = ".$rowid;
-
-            dol_syslog(get_class($this)."::fetch_optionals sql=".$sql, LOG_DEBUG);
-            $resql=$this->db->query($sql);
-            if ($resql)
-            {
-                if ($this->db->num_rows($resql))
-                {
-                    $tab = $this->db->fetch_array($resql);
-
-                    foreach ($tab as $key => $value)
-                    {
-                        if ($key != 'rowid' && $key != 'tms' && $key != 'fk_member')
-                        {
-                            // we can add this attribute to adherent object
-                            $this->array_options["options_$key"]=$value;
-                        }
-                    }
-                }
-                $this->db->free($resql);
-            }
-            else
-            {
-                dol_print_error($this->db);
-            }
-        }
-    }
-
-
     /**
      *	Add/Update all extra fields values for the current object.
      *  All data to describe values to insert are stored into $this->array_options=array('keyextrafield'=>'valueextrafieldtoadd')

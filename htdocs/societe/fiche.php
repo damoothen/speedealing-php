@@ -1,5 +1,4 @@
 <?php
-
 /* Copyright (C) 2001-2007 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2003      Brian Fraval         <brian@fraval.org>
  * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
@@ -1158,6 +1157,25 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             print '<tr><td>' . $langs->trans("Status") . '</td><td colspan="3">';
             print $object->select_fk_extrafields("Status", 'status');
             print '</td></tr>';
+            
+            //Tag list
+            print '<tr><td>' . $langs->trans("Categories") . '</td><td colspan="3">';
+            print '<ul id="array_tag_handler"></ul>';
+            ?>
+            <script>
+                $(document).ready(function() {
+                    $("#array_tag_handler").tagHandler({
+                        getData: { id: '<?php echo $object->id; ?>', class: '<?php echo get_class($object); ?>' },
+                        getURL: '<?php echo DOL_URL_ROOT . '/core/ajax/loadtaghandler.php'; ?>',
+                        updateData: { id: '<?php echo $object->id; ?>',class: '<?php echo get_class($object); ?>' },
+                        updateURL: '<?php echo DOL_URL_ROOT . '/core/ajax/savetaghandler.php'; ?>',
+                        autocomplete: true,
+                        autoUpdate: true
+                    });
+                });
+            </script>
+            <?php
+            print "</td></tr>";
 
             // Address
             print '<tr><td valign="top">' . $langs->trans('Address') . '</td><td colspan="3"><textarea name="adresse" cols="40" rows="3" wrap="soft">';
@@ -1465,6 +1483,9 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         print $htmllogobar;
         $htmllogobar = '';
         print '</tr>';
+
+        // Tag
+        print '<tr><td>' . $langs->trans("Categories") . '</td><td colspan="' . (2 + (($showlogo || $showbarcode) ? 0 : 1)) . '" class="valeur">' . $object->getTagUrl(1) . "</td></tr>\n";
 
         // Address
         print "<tr><td valign=\"top\">" . $langs->trans('Address') . '</td><td colspan="' . (2 + (($showlogo || $showbarcode) ? 0 : 1)) . '">';

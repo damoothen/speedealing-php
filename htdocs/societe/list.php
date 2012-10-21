@@ -129,9 +129,10 @@ foreach ($object->fk_extrafields->longList as $aRow) {
 print'<th class="essential">';
 print $langs->trans('Categories');
 print'</th>';
-$obj->aoColumns[$i]->mDataProp = "tag";
+$obj->aoColumns[$i]->mDataProp = "Tag";
+$obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->sDefaultContent = "";
-$obj->aoColumns[$i]->sClass = "dol_edit";
+$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("Tag", "tag");
 $i++;
 print'<th class="essential">';
 print $langs->trans("Date");
