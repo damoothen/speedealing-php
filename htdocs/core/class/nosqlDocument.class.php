@@ -414,9 +414,9 @@ abstract class nosqlDocument extends CommonObject {
         }
 
         if (isset($this->fk_extrafields->fields->Status->values->$status->label))
-            return '<span class="tag ' . $this->fk_extrafields->fields->Status->values->$status->cssClass . '">' . $langs->trans($this->fk_extrafields->fields->Status->values->$status->label) . '</span>';
+            return '<span class="tag ' . $this->fk_extrafields->fields->Status->values->$status->cssClass . ' glossy">' . $langs->trans($this->fk_extrafields->fields->Status->values->$status->label) . '</span>';
         else
-            return '<span class="tag ' . $this->fk_extrafields->fields->Status->values->$status->cssClass . '">' . $langs->trans($status) . '</span>';
+            return '<span class="tag ' . $this->fk_extrafields->fields->Status->values->$status->cssClass . ' glossy">' . $langs->trans($status) . '</span>';
     }
 
     /**
