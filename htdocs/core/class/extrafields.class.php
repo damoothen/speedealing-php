@@ -193,11 +193,9 @@ class ExtraFields extends nosqlDocument {
     function showInputField($key, $value, $moreparam = '') {
         global $conf;
 
-        $label = $this->attribute_label[$key];
-        $type = $this->attribute_type[$key];
-        $size = $this->attribute_size[$key];
-        $elementtype = $this->attribute_elementtype[$key];
-        $unique = $this->attribute_unique[$key];
+        $label = $this->fields->$key->label;
+        $type = $this->fields->$key->type;
+        $size = $this->fields->$key->size;
         if ($type == 'date') {
             $showsize = 10;
         } elseif ($type == 'datetime') {
@@ -218,9 +216,9 @@ class ExtraFields extends nosqlDocument {
             $tmp = explode(',', $size);
             $newsize = $tmp[0];
             $out = '<input type="text" name="options_' . $key . '" size="' . $showsize . '" maxlength="' . $newsize . '" value="' . $value . '"' . ($moreparam ? $moreparam : '') . '>';
-        } else if ($type == 'varchar') {
-            $out = '<input type="text" name="options_' . $key . '" size="' . $showsize . '" maxlength="' . $size . '" value="' . $value . '"' . ($moreparam ? $moreparam : '') . '>';
         } else if ($type == 'text') {
+            $out = '<input type="text" name="options_' . $key . '" size="' . $showsize . '" maxlength="' . $size . '" value="' . $value . '"' . ($moreparam ? $moreparam : '') . '>';
+        } else if ($type == 'textarea') {
             require_once DOL_DOCUMENT_ROOT . '/core/class/doleditor.class.php';
             $doleditor = new DolEditor('options_' . $key, $value, '', 200, 'dolibarr_notes', 'In', false, false, !empty($conf->fckeditor->enabled) && $conf->global->FCKEDITOR_ENABLE_SOCIETE, 5, 100);
             $out = $doleditor->Create(1);
@@ -242,11 +240,10 @@ class ExtraFields extends nosqlDocument {
      * @return	string					Formated value
      */
     function showOutputField($key, $value, $moreparam = '') {
-        $label = $this->attribute_label[$key];
-        $type = $this->attribute_type[$key];
-        $size = $this->attribute_size[$key];
-        $elementtype = $this->attribute_elementtype[$key];
-        $unique = $this->attribute_unique[$key];
+        $label = $this->fields->$key->label;
+        $type = $this->fields->$key->type;
+        $size = $this->fields->$key->size;
+        
         if ($type == 'date') {
             $showsize = 10;
         } elseif ($type == 'datetime') {

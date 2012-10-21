@@ -56,7 +56,6 @@ if ($user->societe_id)
     $socid = $user->societe_id;
 
 $object = new Societe($db);
-$extrafields = new ExtraFields($db);
 $contact = new Contact($db);
 
 // Get object canvas (By default, this is not defined, so standard usage of dolibarr)
@@ -433,8 +432,6 @@ if (empty($reshook)) {
  *  View
  */
 
-// fetch optionals attributes and labels
-//$extralabels = $extrafields->fetch_name_optionals_label('company');
 
 $help_url = 'EN:Module_Third_Parties|FR:Module_Tiers|ES:Empresas';
 llxHeader('', $langs->trans("ThirdParty"), $help_url);
@@ -898,12 +895,14 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         // Other attributes
         $parameters = array('colspan' => ' colspan="3"');
         $reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action);    // Note that $action and $object may have been modified by hook
-        if (empty($reshook) && !empty($extrafields->attribute_label)) {
-            foreach ($extrafields->attribute_label as $key => $label) {
-                $value = (isset($_POST["options_" . $key]) ? $_POST["options_" . $key] : (isset($object->array_options["options_" . $key]) ? $object->array_options["options_" . $key] : ''));
-                print '<tr><td>' . $label . '</td><td colspan="3">';
-                print $extrafields->showInputField($key, $value);
-                print '</td></tr>' . "\n";
+        if (empty($reshook)) {
+            foreach ($object->fk_extrafields->fields as $key => $aRow) {
+                if ($aRow->optional && $aRow->enable) {
+                    $value = (isset($_POST["options_" . $key]) ? $_POST["options_" . $key] : (isset($object->array_options["options_" . $key]) ? $object->array_options["options_" . $key] : ''));
+                    print '<tr><td>' . $aRow->label . '</td><td colspan="3">';
+                    print $object->fk_extrafields->showInputField($key, $value);
+                    print '</td></tr>' . "\n";
+                }
             }
         }
 
@@ -1296,12 +1295,14 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             // Other attributes
             $parameters = array('colspan' => ' colspan="3"');
             $reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action);    // Note that $action and $object may have been modified by hook
-            if (empty($reshook) && !empty($extrafields->attribute_label)) {
-                foreach ($extrafields->attribute_label as $key => $label) {
-                    $value = (isset($_POST["options_" . $key]) ? $_POST["options_" . $key] : $object->array_options["options_" . $key]);
-                    print '<tr><td>' . $label . '</td><td colspan="3">';
-                    print $extrafields->showInputField($key, $value);
-                    print "</td></tr>\n";
+            if (empty($reshook)) {
+                foreach ($object->fk_extrafields->fields as $key => $aRow) {
+                    if ($aRow->optional && $aRow->enable) {
+                        $value = (isset($_POST["options_" . $key]) ? $_POST["options_" . $key] : (isset($object->array_options["options_" . $key]) ? $object->array_options["options_" . $key] : ''));
+                        print '<tr><td>' . $aRow->label . '</td><td colspan="3">';
+                        print $object->fk_extrafields->showInputField($key, $value);
+                        print '</td></tr>' . "\n";
+                    }
                 }
             }
 
@@ -1619,12 +1620,13 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         // Other attributes
         $parameters = array('socid' => $socid, 'colspan' => ' colspan="3"');
         $reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action);    // Note that $action and $object may have been modified by hook
-        if (empty($reshook) && !empty($extrafields->attribute_label)) {
-            foreach ($extrafields->attribute_label as $key => $label) {
-                $value = (isset($_POST["options_" . $key]) ? $_POST["options_" . $key] : (isset($object->array_options['options_' . $key]) ? $object->array_options['options_' . $key] : ''));
-                print '<tr><td>' . $label . '</td><td colspan="3">';
-                print $extrafields->showOutputField($key, $value);
-                print "</td></tr>\n";
+        if (empty($reshook)) {
+            foreach ($object->fk_extrafields->fields as $key => $aRow) {
+                if ($aRow->optional && $aRow->enable) {
+                    print '<tr><td>' . $aRow->label . '</td><td colspan="3">';
+                    print $object->print_fk_extrafields($key);
+                    print '</td></tr>' . "\n";
+                }
             }
         }
 
@@ -1738,11 +1740,9 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
         // Subsidiaries list
         //$result = show_subsidiaries($conf, $langs, $db, $object);
-
         // Contacts list
-        $contact->show(25,$object->id);
+        $contact->show(25, $object->id);
         //$result = show_contacts($conf, $langs, $db, $object, $_SERVER["PHP_SELF"] . '?id=' . $object->id);
-
         // Show actions
 
         $cal = new Agenda($db);
