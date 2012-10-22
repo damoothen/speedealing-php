@@ -1951,7 +1951,7 @@ class Societe extends nosqlDocument {
                             series: [{
                                     type: "pie",
                                     name: "<?php echo $langs->trans("Quantity"); ?>",
-                                    //size: 250,
+                                    size: 150,
                                     data: seriesOptions
                                 }]
                         });
