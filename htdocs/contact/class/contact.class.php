@@ -107,8 +107,6 @@ class Contact extends nosqlDocument {
             $this->lastname = ucwords($this->lastname);
         if (!empty($conf->global->MAIN_FIRST_TO_UPPER))
             $this->firstname = ucwords($this->firstname);
-        if (!$this->socid)
-            $this->socid = 0;
 
         $result = $this->update($this->id, $user, 1);
         if ($result < 0) {
@@ -249,9 +247,9 @@ class Contact extends nosqlDocument {
 
         if ($this->poste)
             $info["title"] = $this->poste;
-        if ($this->socid > 0) {
+        if (isset($this->societe->id)) {
             $soc = new Societe($this->db);
-            $soc->fetch($this->socid);
+            $soc->fetch($this->socete->id);
 
             $info[$conf->global->LDAP_CONTACT_FIELD_COMPANY] = $soc->nom;
             if ($soc->client == 1)
@@ -385,7 +383,6 @@ class Contact extends nosqlDocument {
                 $this->pays = ($obj->country_id > 0) ? $langs->transnoentitiesnoconv("Country" . $obj->country_code) : '';
                 $this->country = ($obj->country_id > 0) ? $langs->transnoentitiesnoconv("Country" . $obj->country_code) : '';
 
-                $this->socid = $obj->fk_soc;
                 $this->socname = $obj->socname;
                 $this->poste = $obj->poste;
 
@@ -718,29 +715,6 @@ class Contact extends nosqlDocument {
     }
 
     /**
-     *    Return label of a civility contact
-     *
-     *    @return     string      Translated name of civility
-     */
-    function getCivilityLabel() {
-        global $langs;
-        $langs->load("dict");
-
-        $code = $this->civilite_id;
-        return $langs->trans("Civility" . $code) != "Civility" . $code ? $langs->trans("Civility" . $code) : '';
-    }
-
-    /**
-     *  Retourne le libelle du statut du contact
-     *
-     *  @param      int			$mode       0=libelle long, 1=libelle court, 2=Picto + Libelle court, 3=Picto, 4=Picto + Libelle long, 5=Libelle court + Picto
-     *  @return     string      			Libelle
-     */
-    /* function getLibStatut($mode) {
-      return $this->LibStatut($this->status, $mode);
-      } */
-
-    /**
      * 	Renvoi le libelle d'un statut donne
      *
      *  @param      int			$statut     Id statut
@@ -864,7 +838,7 @@ class Contact extends nosqlDocument {
      *  @return	void
      */
     function show($max = 5, $id = 0) {
-        global $langs, $conf, $user, $db, $bc, $socid;
+        global $langs, $conf, $user, $db, $bc;
 
         $titre = $langs->trans("ContactsForCompany");
         print start_box($titre, "six", "16-Users.png");
@@ -872,6 +846,17 @@ class Contact extends nosqlDocument {
         $i = 0;
         $obj = new stdClass();
         $societe = new Societe($this->db);
+        
+        /*
+         * Barre d'actions
+         *
+         */
+
+        print '<p class="button-height right">';
+        print '<span class="button-group">';
+        print '<a class="button compact" href="' . strtolower(get_class($object)) . '/fiche.php?action=create&socid=' . $id . '&backtopage=' . $_SERVER['PHP_SELF'] . '?id=' . $id . '"><span class="button-icon blue-gradient glossy"><span class="icon-star"></span></span>' . $langs->trans("NewContact") . '</a>';
+        print "</span>";
+        print "</p>";
 
         print '<table class="display dt_act" id="contacts_datatable" >';
         // Ligne des titres

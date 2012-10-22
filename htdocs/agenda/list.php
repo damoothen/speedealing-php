@@ -96,61 +96,61 @@ if ($pid)
 if ($type)
     $param.="&type=" . $type;
 /*
-$sql = "SELECT s.nom as societe, s.rowid as socid, s.client,";
-$sql.= " a.id, a.datep as dp, a.datep2 as dp2,";
-//$sql.= " a.datea as da, a.datea2 as da2,";
-$sql.= " a.fk_contact, a.note, a.label, a.percent as percent,";
-$sql.= " c.code as acode, c.libelle, c.type, a.note,";
-$sql.= " ua.login as loginauthor, ua.rowid as useridauthor,";
-$sql.= " ut.login as logintodo, ut.rowid as useridtodo,";
-$sql.= " ud.login as logindone, ud.rowid as useriddone,";
-$sql.= " sp.name, sp.firstname";
-$sql.= " FROM (" . MAIN_DB_PREFIX . "c_actioncomm as c,";
-if (!$user->rights->societe->client->voir && !$socid)
-    $sql.= " " . MAIN_DB_PREFIX . "societe_commerciaux as sc,";
-$sql.= " " . MAIN_DB_PREFIX . 'user as u,';
-$sql.= " " . MAIN_DB_PREFIX . "actioncomm as a)";
-$sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "societe as s ON a.fk_soc = s.rowid";
-$sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "socpeople as sp ON a.fk_contact = sp.rowid";
-$sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "user as ua ON a.fk_user_author = ua.rowid";
-$sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "user as ut ON a.fk_user_action = ut.rowid";
-$sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "user as ud ON a.fk_user_done = ud.rowid";
-$sql.= " WHERE c.id = a.fk_action";
-$sql.= ' AND a.fk_user_author = u.rowid';
-$sql.= ' AND a.entity IN (' . getEntity() . ')'; // To limit to entity
-if ($actioncode)
-    $sql.=" AND c.code='" . $db->escape($actioncode) . "'";
-if ($pid)
-    $sql.=" AND a.fk_project=" . $db->escape($pid);
-if (!$user->rights->societe->client->voir && !$socid)
-    $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " . $user->id;
-if ($socid)
-    $sql.= " AND s.rowid = " . $socid;
-if ($type)
-    $sql.= " AND c.id = " . $type;
-if ($status == 'done') {
-    $sql.= " AND (a.percent = 100 OR (a.percent = -1 AND a.datep2 <= '" . $db->idate($now) . "'))";
-}
-if ($status == 'todo') {
-    $sql.= " AND ((a.percent >= 0 AND a.percent < 100) OR (a.percent = -1 AND a.datep2 > '" . $db->idate($now) . "'))";
-}
-if ($filtera > 0 || $filtert > 0 || $filterd > 0) {
-    $sql.= " AND (";
-    if ($filtera > 0)
-        $sql.= " a.fk_user_author = " . $filtera;
-    if ($filtert > 0)
-        $sql.= ($filtera > 0 ? " OR " : "") . " a.fk_user_action = " . $filtert;
-    if ($filterd > 0)
-        $sql.= ($filtera > 0 || $filtert > 0 ? " OR " : "") . " a.fk_user_done = " . $filterd;
-    $sql.= ")";
-}
-$sql.= $db->order($sortfield, $sortorder);
-$sql.= $db->plimit($limit + 1, $offset);
-//print $sql;
+  $sql = "SELECT s.nom as societe, s.rowid as socid, s.client,";
+  $sql.= " a.id, a.datep as dp, a.datep2 as dp2,";
+  //$sql.= " a.datea as da, a.datea2 as da2,";
+  $sql.= " a.fk_contact, a.note, a.label, a.percent as percent,";
+  $sql.= " c.code as acode, c.libelle, c.type, a.note,";
+  $sql.= " ua.login as loginauthor, ua.rowid as useridauthor,";
+  $sql.= " ut.login as logintodo, ut.rowid as useridtodo,";
+  $sql.= " ud.login as logindone, ud.rowid as useriddone,";
+  $sql.= " sp.name, sp.firstname";
+  $sql.= " FROM (" . MAIN_DB_PREFIX . "c_actioncomm as c,";
+  if (!$user->rights->societe->client->voir && !$socid)
+  $sql.= " " . MAIN_DB_PREFIX . "societe_commerciaux as sc,";
+  $sql.= " " . MAIN_DB_PREFIX . 'user as u,';
+  $sql.= " " . MAIN_DB_PREFIX . "actioncomm as a)";
+  $sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "societe as s ON a.fk_soc = s.rowid";
+  $sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "socpeople as sp ON a.fk_contact = sp.rowid";
+  $sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "user as ua ON a.fk_user_author = ua.rowid";
+  $sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "user as ut ON a.fk_user_action = ut.rowid";
+  $sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "user as ud ON a.fk_user_done = ud.rowid";
+  $sql.= " WHERE c.id = a.fk_action";
+  $sql.= ' AND a.fk_user_author = u.rowid';
+  $sql.= ' AND a.entity IN (' . getEntity() . ')'; // To limit to entity
+  if ($actioncode)
+  $sql.=" AND c.code='" . $db->escape($actioncode) . "'";
+  if ($pid)
+  $sql.=" AND a.fk_project=" . $db->escape($pid);
+  if (!$user->rights->societe->client->voir && !$socid)
+  $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " . $user->id;
+  if ($socid)
+  $sql.= " AND s.rowid = " . $socid;
+  if ($type)
+  $sql.= " AND c.id = " . $type;
+  if ($status == 'done') {
+  $sql.= " AND (a.percent = 100 OR (a.percent = -1 AND a.datep2 <= '" . $db->idate($now) . "'))";
+  }
+  if ($status == 'todo') {
+  $sql.= " AND ((a.percent >= 0 AND a.percent < 100) OR (a.percent = -1 AND a.datep2 > '" . $db->idate($now) . "'))";
+  }
+  if ($filtera > 0 || $filtert > 0 || $filterd > 0) {
+  $sql.= " AND (";
+  if ($filtera > 0)
+  $sql.= " a.fk_user_author = " . $filtera;
+  if ($filtert > 0)
+  $sql.= ($filtera > 0 ? " OR " : "") . " a.fk_user_action = " . $filtert;
+  if ($filterd > 0)
+  $sql.= ($filtera > 0 || $filtert > 0 ? " OR " : "") . " a.fk_user_done = " . $filterd;
+  $sql.= ")";
+  }
+  $sql.= $db->order($sortfield, $sortorder);
+  $sql.= $db->plimit($limit + 1, $offset);
+  //print $sql;
 
-dol_syslog("comm/action/listactions.php sql=" . $sql);
-$resql = $db->query($sql);
-$num = $db->num_rows($resql);
+  dol_syslog("comm/action/listactions.php sql=" . $sql);
+  $resql = $db->query($sql);
+  $num = $db->num_rows($resql);
  * 
  */
 $object = new Agenda($db);
@@ -176,8 +176,19 @@ if ($socid) {
 print_fiche_titre($newtitle);
 print '<div class="with-padding">';
 
-$i=0;
-$obj=new stdClass();
+/*
+ * Barre d'actions
+ *
+ */
+
+print '<p class="button-height right">';
+print '<span class="button-group">';
+print '<a class="button" href="' . strtolower(get_class($object)) . '/fiche.php?action=create"><span class="button-icon blue-gradient glossy"><span class="icon-star"></span></span>' . $langs->trans("NewAction") . '</a>';
+print "</span>";
+print "</p>";
+
+$i = 0;
+$obj = new stdClass();
 print '<table class="display dt_act" id="listactions" >';
 // Ligne des titres 
 print'<thead>';
@@ -195,7 +206,7 @@ print'</th>';
 $obj->aoColumns[$i]->mDataProp = "label";
 $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->bSearchable = true;
-$obj->aoColumns[$i]->fnRender= $object->datatablesFnRender("label", "url");
+$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("label", "url");
 $i++;
 print'<th class="essential">';
 print $langs->trans('DateEchAction');
@@ -244,7 +255,7 @@ print'</th>';
 $obj->aoColumns[$i]->mDataProp = "Status";
 $obj->aoColumns[$i]->sClass = "dol_select center";
 $obj->aoColumns[$i]->sDefaultContent = "0";
-$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("Status", "status", array("dateEnd"=>"last_subscription_date_end"));
+$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("Status", "status", array("dateEnd" => "last_subscription_date_end"));
 $i++;
 print'<th class="essential">';
 print $langs->trans('Action');
@@ -258,9 +269,9 @@ $obj->aoColumns[$i]->sDefaultContent = "";
 $url = "agenda/fiche.php";
 $obj->aoColumns[$i]->fnRender = 'function(obj) {
 	var ar = [];
-	ar[ar.length] = "<a href=\"'. $url . '?id=";
+	ar[ar.length] = "<a href=\"' . $url . '?id=";
 	ar[ar.length] = obj.aData._id.toString();
-	ar[ar.length] = "&action=edit&backtopage='. $_SERVER['PHP_SELF'] . '\" class=\"sepV_a\" title=\"'.$langs->trans("Edit").'\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/edit.png\" alt=\"\" /></a>";
+	ar[ar.length] = "&action=edit&backtopage=' . $_SERVER['PHP_SELF'] . '\" class=\"sepV_a\" title=\"' . $langs->trans("Edit") . '\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/edit.png\" alt=\"\" /></a>";
 	ar[ar.length] = "<a href=\"\"";
 	ar[ar.length] = " class=\"delEnqBtn\" title=\"' . $langs->trans("Delete") . '\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/delete.png\" alt=\"\" /></a>";
 	var str = ar.join("");
@@ -277,7 +288,7 @@ print "</table>";
 
 //$obj->bServerSide = true;
 //$obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listDatatables.php?json=listTasks&class=" . get_class($object);
-$object->datatablesCreate($obj,"listactions",true,true);
+$object->datatablesCreate($obj, "listactions", true, true);
 
 print '</div>'; // end
 

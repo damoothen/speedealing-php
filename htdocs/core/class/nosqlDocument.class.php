@@ -28,8 +28,8 @@ abstract class nosqlDocument extends CommonObject {
     public $errors;
     public $canvas; // Contains canvas name if it is
     public $fk_extrafields;
-    public $no_save = array("no_save", "global", "token", "id", "fk_extrafields", "fk_country", "couchdb", "db",
-        "error", "errors", "childtables", "element", "fk_element", "ismultientitymanaged", "dbversion", "oldcopy", "state", "country", "status", "statut");
+    public $no_save = array("no_save", "global", "token", "id", "fk_extrafields", "couchdb", "db",
+        "error", "errors", "childtables", "table_element", "element", "fk_element", "ismultientitymanaged", "dbversion", "oldcopy", "state", "country", "status", "statut");
 
     /**
      * 	class constructor
@@ -89,7 +89,7 @@ abstract class nosqlDocument extends CommonObject {
         global $conf;
 
         // Clean parametersadmin
-        $login = trim($id);
+        //$login = trim($id);
 
         try {
             $this->values = $this->couchdb->getDoc($id);
@@ -806,6 +806,9 @@ abstract class nosqlDocument extends CommonObject {
             case "email":
                 $rtr = 'function(obj) {
 				var ar = [];
+                                if(obj.aData.' . $key . ' === undefined)
+                                    return ar.join("");
+                                    
 				ar[ar.length] = "<a href=\"mailto:";
 				ar[ar.length] = obj.aData.' . $key . '.toString();
 				ar[ar.length] = "\">";

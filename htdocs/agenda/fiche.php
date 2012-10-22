@@ -21,18 +21,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- *       \file       htdocs/comm/action/fiche.php
- *       \ingroup    agenda
- *       \brief      Page for event card
- */
 require("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT . "/agenda/lib/agenda.lib.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/lib/project.lib.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/lib/date.lib.php");
 require_once(DOL_DOCUMENT_ROOT . "/contact/class/contact.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/user/class/user.class.php");
-require_once(DOL_DOCUMENT_ROOT . "/agenda/class/cactioncomm.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/agenda/class/agenda.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/class/html.formactions.class.php");
 require_once(DOL_DOCUMENT_ROOT . '/comm/propal/class/propal.class.php');
@@ -65,7 +59,6 @@ $result = restrictedArea($user, 'agenda', $id, 'actioncomm', 'actions', '', 'id'
 $error = GETPOST("error");
 $mesg = '';
 
-$cactioncomm = new CActionComm($db);
 $object = new Agenda($db);
 $contact = new Contact($db);
 //var_dump($_POST);
@@ -78,9 +71,6 @@ if ($action == 'add_action') {
     $error = 0;
 
     if (empty($backtopage)) {
-        if ($socid > 0)
-            $backtopage = DOL_URL_ROOT . '/societe/agenda.php?socid=' . $socid;
-        else
             $backtopage = DOL_URL_ROOT . '/agenda/index.php';
     }
 
@@ -201,11 +191,11 @@ if ($action == 'add_action') {
     $object->note = trim($_POST["note"]);
     if (isset($_POST["contactid"]))
         $object->contact = $contact;
-    if (GETPOST('socid', 'alpha') > 0) {
+    if (!empty($socid)) {
         $societe = new Societe($db);
-        $societe->simpleFetch(GETPOST('socid', 'alpha'));
-        $object->societe->id = $societe->values->_id;
-        $object->societe->name = $societe->values->ThirdPartyName;
+        $societe->fetch($socid);
+        $object->societe->id = $societe->id;
+        $object->societe->name = $societe->name;
     }
 
     // Special for module webcal and phenix
@@ -670,11 +660,11 @@ if ($action == 'create') {
 
     // Societe, contact
     print '<tr><td width="30%" nowrap="nowrap">' . $langs->trans("ActionOnCompany") . '</td><td>';
-    if (GETPOST('socid', 'int') > 0) {
+    if (!empty($socid)) {
         $societe = new Societe($db);
-        $societe->fetch(GETPOST('socid', 'int'));
+        $societe->fetch($socid);
         print $societe->getNomUrl(1);
-        print '<input type="hidden" name="socid" value="' . GETPOST('socid', 'int') . '">';
+        print '<input type="hidden" name="socid" value="' . $socid . '">';
     } else {
         print $form->select_company('', 'socid', '', 1, 1);
     }
@@ -744,13 +734,16 @@ if ($action == 'create') {
     print '</td></tr>';
 
     print '</table>';
-    print '</div>';
 
+    print '<br><center>';
     print '<input type="submit" class="button" value="' . $langs->trans("Add") . '">';
     print ' &nbsp; &nbsp; ';
     print '<input type="submit" class="button" name="cancel" value="' . $langs->trans("Cancel") . '">';
+    print "</center>";
 
     print "</form>";
+    
+    print "</div>";
 
     print end_box();
 }
@@ -1065,13 +1058,14 @@ if ($id) {
         $doleditor->Create();
         print '</td></tr>';
 
-        print '</table>';
+        print '</table><br>';
 
-        print '<center><br><input type="submit" class="button" name="edit" value="' . $langs->trans("Save") . '">';
+        print '<center><input type="submit" class="button" name="edit" value="' . $langs->trans("Save") . '">';
         print ' &nbsp; &nbsp; <input type="submit" class="button" name="cancel" value="' . $langs->trans("Cancel") . '">';
         print '</center>';
 
         print '</form>';
+        print '</div>';
     } else {
         /**
          * Mode View

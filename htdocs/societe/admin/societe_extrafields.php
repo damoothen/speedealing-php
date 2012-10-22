@@ -336,7 +336,7 @@ dol_fiche_end();
 if ($action != 'create' && $action != 'edit') {
     print '<p class="button-height right">';
     print '<span class="button-group">';
-    print '<a class="button compact" href=' . $_SERVER["PHP_SELF"] . '?action=create&fields=' . $key . ' ><span class="button-icon blue-gradient glossy"><span class="icon-star"></span></span>' . $langs->trans("NewAttribute") . '</a>';
+    print '<a class="button compact" href="' . $_SERVER["PHP_SELF"] . '?action=create&fields=' . $key . '"><span class="button-icon blue-gradient glossy"><span class="icon-star"></span></span>' . $langs->trans("NewAttribute") . '</a>';
     print "</span>";
     print "</p>";
 }

@@ -368,7 +368,7 @@ class Agenda extends nosqlDocument {
      */
     function update($user, $notrigger = 0) {
         global $user, $langs, $conf;
-        
+
         // Clean parameters
         $this->label = trim($this->label);
         $this->note = trim($this->note);
@@ -402,15 +402,15 @@ class Agenda extends nosqlDocument {
 
         if ($this->type == 2 && $this->percentage == 100) //ACTION
             $this->datef = dol_now();
-        
-        if(!empty($this->societe->id)) {
+
+        if (!empty($this->societe->id)) {
             $object = new Societe($this->db);
             $object->load($this->societe->id);
             $this->societe->name = $object->name;
         } else {
             unset($this->societe->name);
         }
-        if(!empty($this->contact->id)) {
+        if (!empty($this->contact->id)) {
             $object = new Contact($this->db);
             $object->load($this->contact->id);
             $this->contact->name = $object->name;
@@ -608,9 +608,9 @@ class Agenda extends nosqlDocument {
      *      @param  int		$hidenastatus   1=Show nothing if status is "Not applicable"
      *    	@return string          		String with status
      */
-    /*function getLibStatut($mode, $hidenastatus = 0) {
-        return $this->LibStatut($this->percentage, $mode, $hidenastatus);
-    }*/
+    /* function getLibStatut($mode, $hidenastatus = 0) {
+      return $this->LibStatut($this->percentage, $mode, $hidenastatus);
+      } */
 
     /**
      * 		Return label of action status
@@ -620,81 +620,81 @@ class Agenda extends nosqlDocument {
      *      @param  int		$hidenastatus   1=Show nothing if status is "Not applicable"
      *    	@return string		    		Label
      */
-    /*function LibStatut($percent, $mode, $hidenastatus = 0) {
-        global $langs;
+    /* function LibStatut($percent, $mode, $hidenastatus = 0) {
+      global $langs;
 
-        if ($mode == 0) {
-            if ($percent == -1 && !$hidenastatus)
-                return $langs->trans('StatusNotApplicable');
-            else if ($percent == 0)
-                return $langs->trans('StatusActionToDo') . ' (0%)';
-            else if ($percent > 0 && $percent < 100)
-                return $langs->trans('StatusActionInProcess') . ' (' . $percent . '%)';
-            else if ($percent >= 100)
-                return $langs->trans('StatusActionDone') . ' (100%)';
-        }
-        else if ($mode == 1) {
-            if ($percent == -1 && !$hidenastatus)
-                return $langs->trans('StatusNotApplicable');
-            else if ($percent == 0)
-                return $langs->trans('StatusActionToDo');
-            else if ($percent > 0 && $percent < 100)
-                return $percent . '%';
-            else if ($percent >= 100)
-                return $langs->trans('StatusActionDone');
-        }
-        else if ($mode == 2) {
-            if ($percent == -1 && !$hidenastatus)
-                return img_picto($langs->trans('StatusNotApplicable'), 'statut9') . ' ' . $langs->trans('StatusNotApplicable');
-            else if ($percent == 0)
-                return img_picto($langs->trans('StatusActionToDo'), 'statut1') . ' ' . $langs->trans('StatusActionToDo');
-            else if ($percent > 0 && $percent < 100)
-                return img_picto($langs->trans('StatusActionInProcess'), 'statut3') . ' ' . $percent . '%';
-            else if ($percent >= 100)
-                return img_picto($langs->trans('StatusActionDone'), 'statut6') . ' ' . $langs->trans('StatusActionDone');
-        }
-        else if ($mode == 3) {
-            if ($percent == -1 && !$hidenastatus)
-                return img_picto($langs->trans("Status") . ': ' . $langs->trans('StatusNotApplicable'), 'statut9');
-            else if ($percent == 0)
-                return img_picto($langs->trans("Status") . ': ' . $langs->trans('StatusActionToDo') . ' (0%)', 'statut1');
-            else if ($percent > 0 && $percent < 100)
-                return img_picto($langs->trans("Status") . ': ' . $langs->trans('StatusActionInProcess') . ' (' . $percent . '%)', 'statut3');
-            else if ($percent >= 100)
-                return img_picto($langs->trans("Status") . ': ' . $langs->trans('StatusActionDone') . ' (100%)', 'statut6');
-        }
-        else if ($mode == 4) {
-            if ($percent == -1 && !$hidenastatus)
-                return img_picto($langs->trans('StatusNotApplicable'), 'statut9') . ' ' . $langs->trans('StatusNotApplicable');
-            else if ($percent == 0)
-                return img_picto($langs->trans('StatusActionToDo'), 'statut1') . ' ' . $langs->trans('StatusActionToDo') . ' (0%)';
-            else if ($percent > 0 && $percent < 100)
-                return img_picto($langs->trans('StatusActionInProcess'), 'statut3') . ' ' . $langs->trans('StatusActionInProcess') . ' (' . $percent . '%)';
-            else if ($percent >= 100)
-                return img_picto($langs->trans('StatusActionDone'), 'statut6') . ' ' . $langs->trans('StatusActionDone') . ' (100%)';
-        }
-        else if ($mode == 5) {
-            if ($percent == -1 && !$hidenastatus)
-                return img_picto($langs->trans('StatusNotApplicable'), 'statut9');
-            else if ($percent == 0)
-                return '0% ' . img_picto($langs->trans('StatusActionToDo'), 'statut1');
-            else if ($percent > 0 && $percent < 100)
-                return $percent . '% ' . img_picto($langs->trans('StatusActionInProcess') . ' - ' . $percent . '%', 'statut3');
-            else if ($percent >= 100)
-                return $langs->trans('StatusActionDone') . ' ' . img_picto($langs->trans('StatusActionDone'), 'statut6');
-        }
-        else if ($mode == 6) {
-            if ($percent == -1 && !$hidenastatus)
-                return img_picto($langs->trans('StatusNotApplicable'), 'statut9');
-            else if ($percent == 0)
-                return '0% ' . img_picto($langs->trans('StatusActionToDo'), 'statut1');
-            else if ($percent > 0 && $percent < 100)
-                return $percent . '% ' . img_picto($langs->trans('StatusActionInProcess') . ' - ' . $percent . '%', 'statut3');
-            else if ($percent >= 100)
-                return img_picto($langs->trans('StatusActionDone'), 'statut6');
-        }
-        return '';
-    }*/
+      if ($mode == 0) {
+      if ($percent == -1 && !$hidenastatus)
+      return $langs->trans('StatusNotApplicable');
+      else if ($percent == 0)
+      return $langs->trans('StatusActionToDo') . ' (0%)';
+      else if ($percent > 0 && $percent < 100)
+      return $langs->trans('StatusActionInProcess') . ' (' . $percent . '%)';
+      else if ($percent >= 100)
+      return $langs->trans('StatusActionDone') . ' (100%)';
+      }
+      else if ($mode == 1) {
+      if ($percent == -1 && !$hidenastatus)
+      return $langs->trans('StatusNotApplicable');
+      else if ($percent == 0)
+      return $langs->trans('StatusActionToDo');
+      else if ($percent > 0 && $percent < 100)
+      return $percent . '%';
+      else if ($percent >= 100)
+      return $langs->trans('StatusActionDone');
+      }
+      else if ($mode == 2) {
+      if ($percent == -1 && !$hidenastatus)
+      return img_picto($langs->trans('StatusNotApplicable'), 'statut9') . ' ' . $langs->trans('StatusNotApplicable');
+      else if ($percent == 0)
+      return img_picto($langs->trans('StatusActionToDo'), 'statut1') . ' ' . $langs->trans('StatusActionToDo');
+      else if ($percent > 0 && $percent < 100)
+      return img_picto($langs->trans('StatusActionInProcess'), 'statut3') . ' ' . $percent . '%';
+      else if ($percent >= 100)
+      return img_picto($langs->trans('StatusActionDone'), 'statut6') . ' ' . $langs->trans('StatusActionDone');
+      }
+      else if ($mode == 3) {
+      if ($percent == -1 && !$hidenastatus)
+      return img_picto($langs->trans("Status") . ': ' . $langs->trans('StatusNotApplicable'), 'statut9');
+      else if ($percent == 0)
+      return img_picto($langs->trans("Status") . ': ' . $langs->trans('StatusActionToDo') . ' (0%)', 'statut1');
+      else if ($percent > 0 && $percent < 100)
+      return img_picto($langs->trans("Status") . ': ' . $langs->trans('StatusActionInProcess') . ' (' . $percent . '%)', 'statut3');
+      else if ($percent >= 100)
+      return img_picto($langs->trans("Status") . ': ' . $langs->trans('StatusActionDone') . ' (100%)', 'statut6');
+      }
+      else if ($mode == 4) {
+      if ($percent == -1 && !$hidenastatus)
+      return img_picto($langs->trans('StatusNotApplicable'), 'statut9') . ' ' . $langs->trans('StatusNotApplicable');
+      else if ($percent == 0)
+      return img_picto($langs->trans('StatusActionToDo'), 'statut1') . ' ' . $langs->trans('StatusActionToDo') . ' (0%)';
+      else if ($percent > 0 && $percent < 100)
+      return img_picto($langs->trans('StatusActionInProcess'), 'statut3') . ' ' . $langs->trans('StatusActionInProcess') . ' (' . $percent . '%)';
+      else if ($percent >= 100)
+      return img_picto($langs->trans('StatusActionDone'), 'statut6') . ' ' . $langs->trans('StatusActionDone') . ' (100%)';
+      }
+      else if ($mode == 5) {
+      if ($percent == -1 && !$hidenastatus)
+      return img_picto($langs->trans('StatusNotApplicable'), 'statut9');
+      else if ($percent == 0)
+      return '0% ' . img_picto($langs->trans('StatusActionToDo'), 'statut1');
+      else if ($percent > 0 && $percent < 100)
+      return $percent . '% ' . img_picto($langs->trans('StatusActionInProcess') . ' - ' . $percent . '%', 'statut3');
+      else if ($percent >= 100)
+      return $langs->trans('StatusActionDone') . ' ' . img_picto($langs->trans('StatusActionDone'), 'statut6');
+      }
+      else if ($mode == 6) {
+      if ($percent == -1 && !$hidenastatus)
+      return img_picto($langs->trans('StatusNotApplicable'), 'statut9');
+      else if ($percent == 0)
+      return '0% ' . img_picto($langs->trans('StatusActionToDo'), 'statut1');
+      else if ($percent > 0 && $percent < 100)
+      return $percent . '% ' . img_picto($langs->trans('StatusActionInProcess') . ' - ' . $percent . '%', 'statut3');
+      else if ($percent >= 100)
+      return img_picto($langs->trans('StatusActionDone'), 'statut6');
+      }
+      return '';
+      } */
 
     /**
      *    	Renvoie nom clicable (avec eventuellement le picto)
@@ -992,7 +992,7 @@ class Agenda extends nosqlDocument {
      *  @return	void
      */
     function show($max = 5, $id = 0) {
-        global $langs, $conf, $user, $db, $bc, $socid;
+        global $langs, $conf, $user, $db, $bc;
 
         $h = 0;
         foreach ($this->fk_extrafields->fields->Status->values as $key => $aRow) {
@@ -1005,13 +1005,24 @@ class Agenda extends nosqlDocument {
         }
 
         $langs->load("agenda");
-        
+
         $titre = $langs->trans("Actions");
         print start_box($titre, "six", "16-Mail.png", false, $head);
 
         $i = 0;
         $obj = new stdClass();
         $societe = new Societe($this->db);
+
+        /*
+         * Barre d'actions
+         *
+         */
+
+        print '<p class="button-height right">';
+        print '<span class="button-group">';
+        print '<a class="button compact" href="' . strtolower(get_class($object)) . '/fiche.php?action=create&socid=' . $id . '&backtopage=' . $_SERVER['PHP_SELF'] . '?id=' . $id . '"><span class="button-icon blue-gradient glossy"><span class="icon-star"></span></span>' . $langs->trans("NewAction") . '</a>';
+        print "</span>";
+        print "</p>";
 
         print '<table class="display dt_act" id="actions_datatable" >';
         // Ligne des titres

@@ -332,7 +332,7 @@
 		.tooltip.t_r:after {top: 50%;right: 100%;margin-top:-3px;border-width:3px 5px 3px 0;border-style: solid;border-color: transparent  #000 transparent transparent;border-color: transparent  rgba(0, 0, 0, 0.7) transparent transparent}
 */
 	/* tabs */
-		.tabs li {display:block;float:left;height:30px;font-family: Helvetica, Arial, sans-serif;}
+		.tabs li {display:block;float:left;/*height:30px;*/font-family: Helvetica, Arial, sans-serif;}
 		.tabs li a{display:block;line-height:31px;padding:0 10px;border-width:0 1px;border-style:solid;border-color:transparent;font-size:12px;position:relative}
 		.tabs li a:hover {text-decoration:none}
 		.tabs li:last-child a {border-right:none}

@@ -149,7 +149,7 @@ if (empty($reshook)) {
         $object->forme_juridique_code = GETPOST('forme_juridique_code');
         $object->effectif_id = GETPOST('effectif_id');
         if (GETPOST("private") == 1) {
-            $object->typent_id = 8; // TODO predict another method if the field "special" change of rowid
+            $object->typent_id = "TE_PRIVATE";
         } else {
             $object->typent_id = GETPOST('typent_id');
         }
@@ -230,12 +230,11 @@ if (empty($reshook)) {
                         $contact->town = $object->town;
                         $contact->state_id = $object->state_id;
                         $contact->country_id = $object->country_id;
-                        $contact->socid = $object->id; // fk_soc
-                        $contact->Status = 1;
+                        $contact->societe->id = $object->id; // fk_soc
+                        $contact->societe->name = $object->name; // fk_soc
                         $contact->email = $object->email;
                         $contact->phone_pro = $object->phone;
                         $contact->fax = $object->fax;
-                        $contact->priv = 0;
 
                         $result = $contact->create($user);
                         if (!$result >= 0) {
@@ -276,7 +275,6 @@ if (empty($reshook)) {
                 }
 
                 if ($result >= 0) {
-                    $db->commit();
 
                     $url = $_SERVER["PHP_SELF"] . "?id=" . $object->id;
                     if (($object->client == 1 || $object->client == 3) && empty($conf->global->SOCIETE_DISABLE_CUSTOMERS))

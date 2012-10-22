@@ -34,9 +34,17 @@ $titre=$langs->trans("MembersList");
 
 print_fiche_titre($titre);
 print '<div class="with-padding">';
-//print '<div class="columns">';
+/*
+ * Barre d'actions
+ *
+ */
 
-//print start_box($titre,"twelve","16-Users.png");
+print '<p class="button-height right">';
+print '<span class="button-group">';
+print '<a class="button" href="' . strtolower(get_class($object)) . '/fiche.php?action=create"><span class="button-icon blue-gradient glossy"><span class="icon-star"></span></span>' . $langs->trans("NewMember") . '</a>';
+print "</span>";
+print "</p>";
+
 
 $i=0;
 $obj=new stdClass();

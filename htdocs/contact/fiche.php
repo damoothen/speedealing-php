@@ -122,7 +122,7 @@ if (empty($reshook)) {
         if ($canvas)
             $object->canvas = $canvas;
 
-        $object->socid = $_POST["socid"];
+        $object->societe->id = $_POST["socid"];
         $object->lastname = $_POST["lastname"];
         $object->firstname = $_POST["firstname"];
         $object->civilite_id = $_POST["civilite_id"];
@@ -208,7 +208,7 @@ if (empty($reshook)) {
             $object->old_name = $_POST["old_name"];
             $object->old_firstname = $_POST["old_firstname"];
 
-            $object->socid = $_POST["socid"];
+            $object->societe->id = $_POST["socid"];
             $object->lastname = $_POST["lastname"];
             $object->firstname = $_POST["firstname"];
             $object->civilite_id = $_POST["civilite_id"];
@@ -264,7 +264,7 @@ $formcompany = new FormCompany($db);
 
 $countrynotdefined = $langs->trans("ErrorSetACountryFirst") . ' (' . $langs->trans("SeeAbove") . ')';
 
-if ($socid > 0) {
+if (!empty($socid)) {
     $objsoc = new Societe($db);
     $objsoc->fetch($socid);
 }
@@ -367,7 +367,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
             // Company
             if (empty($conf->global->SOCIETE_DISABLE_CONTACTS)) {
-                if ($socid > 0) {
+                if (!empty($socid)) {
                     print '<tr><td>' . $langs->trans("Company") . '</td>';
                     print '<td colspan="3">';
                     print $objsoc->getNomUrl(1);
@@ -376,7 +376,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
                     print '</td></tr>';
                 } else {
                     print '<tr><td>' . $langs->trans("Company") . '</td><td colspan="3">';
-                    print $form->select_company($socid, 'socid', '', 1);
+                    print $object->select_fk_extrafields('societe','socid');
                     print '</td></tr>';
                 }
             }
@@ -531,7 +531,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             }
 
             $objsoc = new Societe($db);
-            $objsoc->fetch($object->socid);
+            $objsoc->fetch($object->societe->id);
 
             // Affiche les erreurs
             dol_htmloutput_errors($error, $errors);
@@ -772,7 +772,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             );
             $text = $langs->trans("ConfirmCreateContact") . '<br>';
             if (!empty($conf->societe->enabled)) {
-                if ($object->socid > 0)
+                if ($object->societe->id > 0)
                     $text.=$langs->trans("UserWillBeExternalUser");
                 else
                     $text.=$langs->trans("UserWillBeInternalUser");
@@ -808,7 +808,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
         // Civility
         print '<tr><td width="15%">' . $langs->trans("UserTitle") . '</td><td colspan="3">';
-        print $object->getCivilityLabel();
+        print $object->print_fk_extrafields("civilite_id");
         print '</td></tr>';
 
         // Role
@@ -840,14 +840,14 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         }
 
         // Phone
-        print '<tr><td>' . $langs->trans("PhonePro") . '</td><td>' . dol_print_phone($object->phone_pro, $object->country_code, $object->id, $object->socid, 'AC_TEL') . '</td>';
-        print '<td>' . $langs->trans("PhonePerso") . '</td><td>' . dol_print_phone($object->phone_perso, $object->country_code, $object->id, $object->socid, 'AC_TEL') . '</td></tr>';
+        print '<tr><td>' . $langs->trans("PhonePro") . '</td><td>' . dol_print_phone($object->phone_pro, $object->country_code, $object->id, $object->societe->id, 'AC_TEL') . '</td>';
+        print '<td>' . $langs->trans("PhonePerso") . '</td><td>' . dol_print_phone($object->phone_perso, $object->country_code, $object->id, $object->societe->id, 'AC_TEL') . '</td></tr>';
 
-        print '<tr><td>' . $langs->trans("PhoneMobile") . '</td><td>' . dol_print_phone($object->phone_mobile, $object->country_code, $object->id, $object->socid, 'AC_TEL') . '</td>';
-        print '<td>' . $langs->trans("Fax") . '</td><td>' . dol_print_phone($object->fax, $object->country_code, $object->id, $object->socid, 'AC_FAX') . '</td></tr>';
+        print '<tr><td>' . $langs->trans("PhoneMobile") . '</td><td>' . dol_print_phone($object->phone_mobile, $object->country_code, $object->id, $object->societe->id, 'AC_TEL') . '</td>';
+        print '<td>' . $langs->trans("Fax") . '</td><td>' . dol_print_phone($object->fax, $object->country_code, $object->id, $object->societe->id, 'AC_FAX') . '</td></tr>';
 
         // Email
-        print '<tr><td>' . $langs->trans("EMail") . '</td><td>' . dol_print_email($object->email, $object->id, $object->socid, 'AC_EMAIL') . '</td>';
+        print '<tr><td>' . $langs->trans("EMail") . '</td><td>' . dol_print_email($object->email, $object->id, $object->societe->id, 'AC_EMAIL') . '</td>';
         if (!empty($conf->mailing->enabled)) {
             $langs->load("mails");
             print '<td nowrap>' . $langs->trans("NbOfEMailingsReceived") . '</td>';

@@ -74,6 +74,17 @@ $soc = new Societe($db);
 print_fiche_titre($title);
 print '<div class="with-padding">';
 
+/*
+ * Barre d'actions
+ *
+ */
+
+print '<p class="button-height right">';
+print '<span class="button-group">';
+print '<a class="button" href="' . strtolower(get_class($object)) . '/fiche.php?action=create"><span class="button-icon blue-gradient glossy"><span class="icon-star"></span></span>' . $langs->trans("NewContact") . '</a>';
+print "</span>";
+print "</p>";
+
 $i = 0;
 $obj = new stdClass();
 print '<table class="display dt_act" id="list_contacts" >';
