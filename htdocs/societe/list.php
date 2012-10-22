@@ -1,5 +1,4 @@
 <?php
-
 /* Copyright (C) 2001-2006 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
@@ -86,6 +85,22 @@ else
     $titre = $langs->trans("ListOfAll");
 
 print_fiche_titre($titre);
+?>
+<div class="dashboard">
+    <div class="columns">
+        <div class="three-columns twelve-columns-mobile">
+            <div id="pie-status" style="width: 280px; height: 280px; margin: 0 auto"></div>
+        </div>
+
+        <div class="nine-columns twelve-columns-mobile new-row-mobile">
+            <div id="demo-chart" style="height: 250px; min-width: 100px"></div>
+        </div>
+    </div>
+</div>
+<?php
+
+$object->societePieStatus("pie-status");
+
 print '<div class="with-padding">';
 
 //print start_box($titre,"twelve","16-Companies.png");

@@ -1,5 +1,4 @@
 <?php
-
 /* Copyright (C) 2002-2006 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2004      Eric Seigne          <eric.seigne@ryxeo.com>
@@ -1869,6 +1868,100 @@ class Societe extends nosqlDocument {
         $this->localtax2_assuj = ((isset($conf->global->FACTURE_LOCAL_TAX2_OPTION) && $conf->global->FACTURE_LOCAL_TAX2_OPTION == 'localtax2on') ? 1 : 0);
     }
 
-}
+    /*
+     * Comptes par status
+     *
+     */
 
+    function societePieStatus($idname) {
+        global $user, $conf, $langs;
+
+        //$color = array(-1 => "#A51B00", 0 => "#CCC", 1 => "#000", 2 => "#FEF4AE", 3 => "#666", 4 => "#1f17c1", 5 => "#DE7603", 6 => "#D40000", 7 => "#7ac52e", 8 => "#1b651b", 9 => "#66c18c", 10 => "#2e99a0");
+        $total = 0;
+        $i = 0;
+        ?>
+        <script type="text/javascript">
+            (function($){ // encapsulate jQuery
+
+                $(function() {
+                    var seriesOptions = [],
+                    yAxisOptions = [],
+                    seriesCounter = 0,
+                    colors = Highcharts.getOptions().colors;
+
+                    $.getJSON('<?php echo DOL_URL_ROOT . '/core/ajax/viewGraph.php'; ?>?json=count_status&class=<?php echo get_class($this); ?>&attr=Status&callback=?',	function(data) {
+
+                        seriesOptions = data;
+
+                        createChart();
+
+                    });
+
+
+                    // create the chart when all data is loaded
+                    function createChart() {
+                        var chart;
+                                
+                        Highcharts.getOptions().colors = $.map(Highcharts.getOptions().colors, function(color) {
+                            return {
+                                radialGradient: { cx: 0.5, cy: 0.3, r: 0.7 },
+                                stops: [
+                                    [0, color],
+                                    [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
+                                ]
+                            };
+                        });
+                                                                                            
+                        chart = new Highcharts.Chart({
+                            chart: {
+                                renderTo: "<?php print $idname; ?>",
+                                //defaultSeriesType: "bar",
+                                plotBackgroundColor: null,
+                                plotBorderWidth: null,
+                                plotShadow: false
+                            },
+                            legend: {
+                                layout: "vertical", backgroundColor: Highcharts.theme.legendBackgroundColor || "#FFFFFF", align: "left", verticalAlign: "bottom", x: 0, y: 20, floating: true, shadow: true,
+                                enabled: false
+                            },
+                            title: {
+                                text: null
+                            },
+
+                            tooltip: {
+                                enabled:true,
+                                pointFormat: '{series.name}: <b>{point.percentage}%</b>',
+                                percentageDecimals: 2
+                            },
+                            plotOptions: {
+                                pie: {
+                                    allowPointSelect: true,
+                                    cursor: 'pointer',
+                                    dataLabels: {
+                                        enabled: true,
+                                        color: '#FFF',
+                                        connectorColor: '#FFF',
+                                        distance : 20,
+                                        formatter: function() {
+                                            return '<b>'+ this.point.name +'</b>: '+ Math.round(this.percentage) +' %';
+                                        }
+                                    }
+                                }
+                            },
+                            series: [{
+                                    type: "pie",
+                                    name: "<?php echo $langs->trans("Quantity"); ?>",
+                                    //size: 250,
+                                    data: seriesOptions
+                                }]
+                        });
+                    }
+
+                });
+            })(jQuery);
+        </script>
+        <?php
+    }
+
+}
 ?>

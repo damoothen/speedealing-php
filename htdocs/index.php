@@ -77,8 +77,8 @@ print_fiche_titre($langs->trans("Dashboard"), true);
 ?>
 <div class="dashboard">
     <div class="columns">
-        <div class="nine-columns twelve-columns-mobile" style="position: relative; ">
-            <div id="demo-chart" style="height: 300px; min-width: 100px"></div>
+        <div class="nine-columns twelve-columns-mobile chart">
+            <div id="demo-chart" style="height: 280px; min-width: 100px"></div>
         </div>
 
         <div class="three-columns twelve-columns-mobile new-row-mobile">
@@ -624,14 +624,10 @@ print '</div></div>';
 
                 chart = new Highcharts.StockChart({
                     chart: {
-                        renderTo: 'demo-chart',
-                        borderRadius: 0
-                    },
-                    credits: {
-                        enabled:false
+                        renderTo: 'demo-chart'
                     },
                     navigator : {
-                        enabled : false
+                        enabled : true
                     },
                     rangeSelector: {
                         selected: 4
