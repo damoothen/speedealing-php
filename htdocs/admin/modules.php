@@ -401,7 +401,7 @@ foreach ($orders as $key => $value) {
         // Module actif
         if (!empty($conf->$name->always_enabled)) {
 
-            print '<span class="lbl ok_bg sl_status ">' . $langs->trans("Required") . '</span>';
+            print '<span class="tag green-gradient glossy">' . $langs->trans("Required") . '</span>';
             print '</td>' . "\n";
         } else {
             print '<a href="' . $_SERVER['PHP_SELF'] . '?id=module:' . $objMod->name . '&amp;action=reset&amp;value=' . $key . '">';

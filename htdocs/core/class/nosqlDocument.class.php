@@ -89,7 +89,7 @@ abstract class nosqlDocument extends CommonObject {
         global $conf;
 
         // Clean parametersadmin
-        //$login = trim($id);
+        $id = trim($id);
 
         try {
             $this->values = $this->couchdb->getDoc($id);
