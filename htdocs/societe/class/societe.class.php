@@ -1927,7 +1927,7 @@ class Societe extends nosqlDocument {
                         // create the chart when all data is loaded
                         function createChart() {
                             var chart;
-                                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                                                        
                             chart = new Highcharts.Chart({
                                 chart: {
                                     renderTo: "pie-status",
@@ -1961,7 +1961,7 @@ class Societe extends nosqlDocument {
                                             enabled: true,
                                             color: '#FFF',
                                             connectorColor: '#FFF',
-                                            distance : 20,
+                                            distance : 30,
                                             formatter: function() {
                                                 return '<b>'+ this.point.name +'</b><br> '+ Math.round(this.percentage) +' %';
                                             }
@@ -1971,7 +1971,7 @@ class Societe extends nosqlDocument {
                                 series: [{
                                         type: "pie",
                                         name: "<?php echo $langs->trans("Quantity"); ?>",
-                                        size: 150,
+                                        //size: 150,
                                         data: seriesOptions
                                     }]
                             });
@@ -1992,11 +1992,9 @@ class Societe extends nosqlDocument {
     function graphBarStatus($json = false) {
         global $user, $conf, $langs;
 
-        //$color = array(-1 => "#A51B00", 0 => "#CCC", 1 => "#000", 2 => "#FEF4AE", 3 => "#666", 4 => "#1f17c1", 5 => "#DE7603", 6 => "#D40000", 7 => "#7ac52e", 8 => "#1b651b", 9 => "#66c18c", 10 => "#2e99a0");
-
+        $langs->load("companies");
+        
         if ($json) { // For Data see viewgraph.php
-            $langs->load("companies");
-
             $keystart[0] = $_GET["name"];
             $keyend[0] = $_GET["name"];
             $keyend[1] = new stdClass();
@@ -2070,7 +2068,7 @@ class Societe extends nosqlDocument {
                             // create the chart when all data is loaded
                             function createChart() {
                                 var chart;
-                                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                                                        
                                 chart = new Highcharts.Chart({
                                     chart: {
                                         renderTo: 'bar-status',
@@ -2105,7 +2103,7 @@ class Societe extends nosqlDocument {
                                             min: 0
                                         },
                                         title: {
-                                            text: null
+                                            text: "<?php echo $langs->trans("SalesRepresentatives");?>"
                                         },
                                         legend: {
                                             layout: 'vertical',

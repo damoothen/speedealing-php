@@ -149,6 +149,8 @@ function checkLoginPassEntity($usertotest, $passwordtotest, $entitytotest, $auth
 
     if (!empty($usertotest)) {
 
+        $usertotest = strtolower($usertotest);
+        
         try {
             $parts = parse_url($conf->Couchdb->host);
             //$host = substr($conf->Couchdb->host, 7);
