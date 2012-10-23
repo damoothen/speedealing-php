@@ -88,18 +88,16 @@ print_fiche_titre($titre);
 ?>
 <div class="dashboard">
     <div class="columns">
-        <div class="three-columns twelve-columns-mobile graph">
-            <div id="pie-status" style="width: 280px; height: 280px; margin: 0 auto"></div>
+        <div class="four-columns twelve-columns-mobile graph">
+            <?php $object->graphPieStatus();?>
         </div>
 
-        <div class="nine-columns twelve-columns-mobile new-row-mobile graph">
-            <div id="demo-chart" style="height: 280px; min-width: 100px"></div>
+        <div class="eight-columns twelve-columns-mobile new-row-mobile graph">
+            <?php $object->graphBarStatus();?>
         </div>
     </div>
 </div>
 <?php
-
-$object->societePieStatus("pie-status");
 
 print '<div class="with-padding">';
 

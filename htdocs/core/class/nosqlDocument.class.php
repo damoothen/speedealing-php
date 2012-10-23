@@ -463,7 +463,7 @@ abstract class nosqlDocument extends CommonObject {
             <?php if (!empty($obj->sAjaxSource)): ?>
                                     "sAjaxSource": "<?php echo $obj->sAjaxSource; ?>",
             <?php else : ?>
-                                    "sAjaxSource" : "<?php echo DOL_URL_ROOT . '/core/ajax/listDatatables.php'; ?>?json=list&bServerSide=<?php echo $obj->bServerSide; ?>&class=<?php echo get_class($this); ?>",
+                                    "sAjaxSource" : "<?php echo DOL_URL_ROOT . '/core/ajax/listdatatables.php'; ?>?json=list&bServerSide=<?php echo $obj->bServerSide; ?>&class=<?php echo get_class($this); ?>",
             <?php endif; ?>
         <?php endif; ?>
         <?php if (!empty($obj->iDisplayLength)): ?>

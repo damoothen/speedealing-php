@@ -49,36 +49,9 @@ if (!empty($json) && !empty($class)) {
     }
 
     $object = new $class($db);
-    $langs->load("companies");
-
-    $params = array('group' => true);
-    $result = $object->getView($json, $params);
-
-    //print_r($result);
-    $i = 0;
-
-    foreach ($result->rows as $aRow) {
-        if (isset($_GET["attr"])) {
-            $attr = $_GET["attr"];
-            $key = $aRow->key;
-            $label = $object->fk_extrafields->fields->$attr->values->$key->label;
-        }
-        if (empty($label))
-            $label = $langs->trans($aRow->key);
-
-        if ($i == 0) { // first element
-            $output[$i]->name = $label;
-            $output[$i]->y = $aRow->value;
-            $output[$i]->sliced = true;
-            $output[$i]->selected = true;
-        }
-        else
-            $output[$i] = array($label, $aRow->value);
-        $i++;
-    }
-
+    
     header('Content-type: application/json');
-    echo $_GET["callback"] . '(' . json_encode($output) . ');';
+    echo $_GET["callback"] . '(' . json_encode($object->$json(true)) . ');';
     exit;
 }
 ?>
