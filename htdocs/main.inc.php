@@ -1052,7 +1052,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                 //print '<script src="https://ajax.googleapis.com/ajax/libs/mootools/1.4.2/mootools-yui-compressed.js" type="text/javascript"></script>';
                 //print '<script src="includes/jquery/plugins/Highstock/js/adapters/mootools-adapter.js" type="text/javascript"></script>';
                 print '<script type="text/javascript" src="includes/jquery/plugins/highstock/js/highstock.js"></script>';
-                print '<script type="text/javascript" src="includes/jquery/plugins/highstock/js/themes/symeos.js"></script>';
+                print '<script type="text/javascript" src="includes/jquery/plugins/highcharts/js/themes/symeos.js"></script>';
                 
                 // CKEditor
                 print '<script type="text/javascript">var CKEDITOR_BASEPATH = \'' . DOL_URL_ROOT . '/includes/ckeditor/\';</script>' . "\n";
