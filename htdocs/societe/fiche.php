@@ -1155,7 +1155,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             print '<tr><td>' . $langs->trans("Status") . '</td><td colspan="3">';
             print $object->select_fk_extrafields("Status", 'status');
             print '</td></tr>';
-            
+
             //Tag list
             print '<tr><td>' . $langs->trans("Categories") . '</td><td colspan="3">';
             print '<ul id="array_tag_handler"></ul>';
@@ -1693,22 +1693,24 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         // Sales representative
         include DOL_DOCUMENT_ROOT . '/societe/tpl/linesalesrepresentative.tpl.php';
 
+
+
         // Module Adherent
-        /* if (!empty($conf->adherent->enabled)) {
-          $langs->load("members");
-          print '<tr><td width="25%" valign="top">' . $langs->trans("LinkedToDolibarrMember") . '</td>';
-          print '<td colspan="3">';
-          $adh = new Adherent($db);
-          $result = $adh->fetch('', '', $object->id);
-          if ($result > 0) {
-          $adh->ref = $adh->getFullName($langs);
-          print $adh->getNomUrl(1);
-          } else {
-          print $langs->trans("UserNotLinkedToMember");
-          }
-          print '</td>';
-          print "</tr>\n";
-          } */
+        if (!empty($conf->adherent->enabled)) {
+            $langs->load("members");
+            print '<tr><td width="25%" valign="top">' . $langs->trans("LinkedToDolibarrMember") . '</td>';
+            print '<td colspan="3">';
+            $adh = new Adherent($db);
+            $result = $adh->fetch('', '', $object->id);
+            if ($result > 0) {
+                $adh->ref = $adh->getFullName($langs);
+                print $adh->getNomUrl(1);
+            } else {
+                print $langs->trans("UserNotLinkedToMember");
+            }
+            print '</td>';
+            print "</tr>\n";
+        }
 
         print '</table>';
         print '</div>';
@@ -1733,6 +1735,9 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         print '</div>';
 
         print end_box();
+        
+        // Print Notes
+        $object->notes();
 
         if ($conf->ecm->enabled) {
 

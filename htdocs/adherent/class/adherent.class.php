@@ -685,7 +685,8 @@ class Adherent extends nosqlDocument {
 	function fetch($rowid, $ref = '', $fk_soc = '') {
 		global $langs;
 
-		$result = $this->load($rowid);
+                if(!empty($rowid))
+                    $result = $this->load($rowid);
 		return $result;
 
 		/* $sql = "SELECT d.rowid, d.civilite, d.prenom as firstname, d.nom as lastname, d.societe, d.fk_soc, d.statut, d.public, d.adresse as address, d.cp as zip, d.ville as town, d.note,";

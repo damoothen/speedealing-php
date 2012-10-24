@@ -1721,49 +1721,27 @@ class Societe extends nosqlDocument {
         $now = dol_now();
 
         // Initialize parameters
-        $this->values->id = 0;
-        $this->values->name = 'THIRDPARTY SPECIMEN ' . dol_print_date($now, 'dayhourlog');
-        $this->values->specimen = 1;
-        $this->values->zip = '99999';
-        $this->values->town = 'MyTown';
-        $this->values->country_id = 1;
-        $this->values->country_code = 'FR';
+        $this->id = 0;
+        $this->name = 'THIRDPARTY SPECIMEN ' . dol_print_date($now, 'dayhourlog');
+        $this->specimen = 1;
+        $this->zip = '99999';
+        $this->town = 'MyTown';
+        $this->country_id = 'FR';
 
-        $this->values->code_client = 'CC-' . dol_print_date($now, 'dayhourlog');
-        $this->values->code_fournisseur = 'SC-' . dol_print_date($now, 'dayhourlog');
-        $this->values->capital = 10000;
-        $this->values->client = 1;
-        $this->values->prospect = 1;
-        $this->values->fournisseur = 1;
-        $this->values->tva_assuj = 1;
-        $this->values->tva_intra = 'EU1234567';
-        $this->values->note_public = 'This is a comment (public)';
-        $this->values->note = 'This is a comment (private)';
+        $this->code_client = 'CC-' . dol_print_date($now, 'dayhourlog');
+        $this->code_fournisseur = 'SC-' . dol_print_date($now, 'dayhourlog');
+        $this->capital = 10000;
+        $this->client = 1;
+        $this->prospect = 1;
+        $this->fournisseur = 1;
+        $this->tva_assuj = 1;
+        $this->tva_intra = 'EU1234567';
+        $this->note = 'This is a comment';
 
-        $this->values->idprof1 = 'idprof1';
-        $this->values->idprof2 = 'idprof2';
-        $this->values->idprof3 = 'idprof3';
-        $this->values->idprof4 = 'idprof4';
-    }
-
-    /**
-     * return div with block note
-     *
-     *  @return	@string
-     */
-    function content_note() {
-        global $conf, $user, $langs;
-
-        // Notes
-        $rtr = '<div class="row vcard">';
-        $rtr.= '<div class="twelve column">';
-        $img = '<img src="' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/ico/icSw2/16-Info-_-About.png" title="' . $langs->trans($key) . '" />';
-        $rtr.= '<h4 class="inner_heading">' . $img . $langs->trans("Notes") . '</h4>';
-        $rtr.= '<p class="edit_wysiwyg ttip_l">' . $this->values->notes . '</p>';
-        $rtr.= '</div>';
-        $rtr.= '</div>'; // End block note
-
-        return $rtr;
+        $this->idprof1 = 'idprof1';
+        $this->idprof2 = 'idprof2';
+        $this->idprof3 = 'idprof3';
+        $this->idprof4 = 'idprof4';
     }
 
     /**

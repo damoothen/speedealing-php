@@ -494,7 +494,7 @@ abstract class nosqlDocument extends CommonObject {
                         },
                         //$obj->oColVis->bRestore = true;
                         //$obj->oColVis->sAlign = 'left';
-                                                                                                                                                                                                                																																																																																								            
+                                                                                                                                                                                                                                                        																																																																																								            
                         // Avec export Excel
         <?php if (!empty($obj->sDom)) : ?>
                             //"sDom": "Cl<fr>t<\"clear\"rtip>",
@@ -556,7 +556,7 @@ abstract class nosqlDocument extends CommonObject {
                 <?php endforeach; ?>
                                             ];
                                             prth_stickyFooter.resize();
-                                            $("td.dol_edit", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
+                                            $("td.dol_edit", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?class=<?php echo get_class($this); ?>', {
                                                 "callback": function( sValue, y ) {
                                                     oTable.fnDraw();
                                                     //oTable.fnReloadAjax();
@@ -569,9 +569,9 @@ abstract class nosqlDocument extends CommonObject {
                                                 "tooltip": "Cliquer pour éditer...",
                                                 "indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
                                                 "placeholder" : ""
-                                                                                                                                                                                                                                                                                                                                                                                                                                                																																																																																																																																																																																                
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                																																																																																																																																																																																                
                                             } );
-                                            $("td.dol_select", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
+                                            $("td.dol_select", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?class=<?php echo get_class($this); ?>', {
                                                 "callback": function( sValue, y ) {
                                                     oTable.fnDraw();
                                                     //oTable.fnReloadAjax();
@@ -588,7 +588,7 @@ abstract class nosqlDocument extends CommonObject {
                                                 "tooltip": "Cliquer pour éditer...",
                                                 "indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
                                                 "placeholder" : ""
-                                                                                                                                                                                                                                                                                                                                                                                                                                                																																																																																																																																																																																                
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                																																																																																																																																																																																                
                                             } );
                                         }
             <?php endif; ?>
@@ -616,7 +616,7 @@ abstract class nosqlDocument extends CommonObject {
                         } );
         <?php endif; ?>
                     // Select_all
-                                                                                                                            
+                                                                                                                                                                    
                     $('.chSel_all').click(function () {
                         $(this).closest('table').find('input[name=row_sel]').attr('checked', this.checked);
                     });
@@ -1248,6 +1248,30 @@ abstract class nosqlDocument extends CommonObject {
             $out.= $langs->trans($value);
 
         return $out;
+    }
+
+    /**
+     * return div with block note
+     *
+     *  @return	@string
+     */
+    function notes($edit = true) {
+        global $conf, $user, $langs;
+
+        print start_box($langs->trans("Notes"), "twelve", "16-Info-_-About.png");
+
+        // Notes
+        if ($edit) {
+            print '<input id="element_id" type="hidden" value="' . $this->id . '"/>';
+            print '<input id="element_class" type="hidden" value="' . get_class($this) . '"/>';
+            print '<div id="notes" class="edit_wysiwyg ttip_l">' . $this->notes . '</div>';
+        }
+        else
+            print $this->notes;
+
+        print end_box();
+
+        return 1;
     }
 
 }
