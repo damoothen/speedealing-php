@@ -905,7 +905,7 @@ class Contact extends nosqlDocument {
         print "</table>";
 
         $obj->iDisplayLength = $max;
-        $obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listDatatables.php?json=listSociete&class=" . get_class($this) . "&key=" . $id;
+        $obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listdatatables.php?json=listSociete&class=" . get_class($this) . "&key=" . $id;
         $this->datatablesCreate($obj, "contacts_datatable", true);
 
         print end_box();

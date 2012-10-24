@@ -2103,7 +2103,8 @@ class Societe extends nosqlDocument {
                                             min: 0
                                         },
                                         title: {
-                                            text: "<?php echo $langs->trans("SalesRepresentatives");?>"
+                                            //text: "<?php echo $langs->trans("SalesRepresentatives");?>"
+                                            text: null
                                         },
                                         legend: {
                                             layout: 'vertical',

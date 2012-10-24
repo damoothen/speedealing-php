@@ -1082,14 +1082,14 @@ class Agenda extends nosqlDocument {
         print "</table>";
 
         $obj->iDisplayLength = $max;
-        $obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listDatatables.php?json=actionsTODO&class=" . get_class($this) . "&key=" . $id;
+        $obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listdatatables.php?json=actionsTODO&class=" . get_class($this) . "&key=" . $id;
         $this->datatablesCreate($obj, "actions_datatable", true);
 
         foreach ($this->fk_extrafields->fields->Status->values as $key => $aRow) {
             ?>
             <script>
                 $(document).ready(function() {
-                    var js = "var oTable = $('#actions_datatable').dataTable(); oTable.fnReloadAjax(\"<?php echo DOL_URL_ROOT . "/core/ajax/listDatatables.php?json=actions" . $key . "&class=" . get_class($this) . "&key=" . $id; ?>\")";
+                    var js = "var oTable = $('#actions_datatable').dataTable(); oTable.fnReloadAjax(\"<?php echo DOL_URL_ROOT . "/core/ajax/listdatatables.php?json=actions" . $key . "&class=" . get_class($this) . "&key=" . $id; ?>\")";
                     $("#<?php echo $key; ?>").attr("onclick", js);
                 } );
             </script>

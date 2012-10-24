@@ -38,7 +38,7 @@ function societe_prepare_head($object) {
     $h = 0;
     $head = array();
 
-    $head[$h][0] = DOL_URL_ROOT . '/societe/soc.php?socid=' . $object->id;
+    $head[$h][0] = DOL_URL_ROOT . '/societe/fiche.php?socid=' . $object->id;
     $head[$h][1] = $langs->trans("Card");
     $head[$h][2] = 'card';
     $h++;
@@ -61,22 +61,6 @@ function societe_prepare_head($object) {
         $head[$h][0] = DOL_URL_ROOT . '/fourn/fiche.php?socid=' . $object->id;
         $head[$h][1] = $langs->trans("Supplier");
         $head[$h][2] = 'supplier';
-        $h++;
-    }
-    if (!empty($conf->agenda->enabled)) {
-        $head[$h][0] = DOL_URL_ROOT . '/societe/agenda.php?socid=' . $object->id;
-        $head[$h][1] = $langs->trans("Agenda");
-        $head[$h][2] = 'agenda';
-        $h++;
-    }
-    //show categorie tab
-    if (!empty($conf->categorie->enabled)) {
-        $type = 2;
-        if ($object->fournisseur)
-            $type = 1;
-        $head[$h][0] = DOL_URL_ROOT . '/categories/categorie.php?socid=' . $object->id . "&type=" . $type;
-        $head[$h][1] = $langs->trans('Categories');
-        $head[$h][2] = 'category';
         $h++;
     }
 
