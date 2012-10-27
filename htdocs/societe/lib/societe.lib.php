@@ -198,7 +198,7 @@ function societe_admin_prepare_head($object) {
  *    @param      int		$entconv       	0=Return value without entities and not converted to output charset
  *    @return     mixed       				String with country code or translated country name or Array('id','code','label')
  */
-function getCountry($id, $withcode = '', $dbtouse = 0, $outputlangs = '', $entconv = 1) {
+/*function getCountry($id, $withcode = '', $dbtouse = 0, $outputlangs = '', $entconv = 1) {
     global $db, $langs;
 
     // Check parameters
@@ -250,7 +250,7 @@ function getCountry($id, $withcode = '', $dbtouse = 0, $outputlangs = '', $entco
     else
         dol_print_error($dbtouse, '');
     return 'Error';
-}
+}*/
 
 /**
  *    Return state translated from an id

@@ -3,7 +3,7 @@
    "language": "javascript",
    "views": {
        "list": {
-           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\")\n  emit(doc.name, doc);\n}"
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc._id != \"societe:mysoc\")\n  emit(doc.name, doc);\n}"
        },
        "target_id": {
            "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\")\n  \temit(doc._id, {_id:doc._id, _rev:doc._rev});\n}"
@@ -20,6 +20,10 @@
        },
        "tag": {
            "map": "function(doc) {\nif(doc.class==\"Societe\" && doc.Tag.length > 0) {\n    for(var idx in doc.Tag) {\n      emit(doc.Tag[idx], 1);\n    }\n  }\n}",
+           "reduce": "function(keys, values) {\n  return sum(values)\n}"
+       },
+       "list_commercial": {
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc.commercial_id)\n  emit([doc.commercial_id,doc.Status], 1);\n}",
            "reduce": "function(keys, values) {\n  return sum(values)\n}"
        }
    },

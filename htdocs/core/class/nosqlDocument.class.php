@@ -29,7 +29,8 @@ abstract class nosqlDocument extends CommonObject {
     public $canvas; // Contains canvas name if it is
     public $fk_extrafields;
     public $no_save = array("no_save", "global", "token", "id", "fk_extrafields", "couchdb", "db",
-        "error", "errors", "childtables", "table_element", "element", "fk_element", "ismultientitymanaged", "dbversion", "oldcopy", "state", "country", "status", "statut");
+        "error", "errors", "childtables", "table_element", "element", "fk_element", "ismultientitymanaged",
+        "dbversion", "oldcopy", "state", "country", "status", "statut");
 
     /**
      * 	class constructor
@@ -183,6 +184,9 @@ abstract class nosqlDocument extends CommonObject {
         foreach (get_object_vars($this) as $key => $aRow)
             if (!empty($aRow) && !in_array($key, $this->no_save))
                 $values->$key = $aRow;
+            
+        if(empty($this->_id) && !empty($this->id))
+            $this->_id = $this->id;
 
         $values->class = get_class($this);
 
