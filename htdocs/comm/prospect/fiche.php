@@ -375,7 +375,7 @@ if ($socid > 0)
 	{
 		$propal_static=new Propal($db);
 		
-		$sql = "SELECT s.nom, s.rowid as socid, p.rowid as propalid, p.fk_statut, p.total_ht, p.ref, p.remise, ";
+		$sql = "SELECT s.nom, s.rowid as socid, p.ref_client, p.rowid as propalid, p.fk_statut, p.total_ht, p.ref, p.remise, ";
 		$sql.= " p.datep as dp, p.fin_validite as datelimite,";
 		$sql.= " c.label as statut, c.id as statutid";
 		$sql.= " FROM ".MAIN_DB_PREFIX."societe as s";
@@ -412,7 +412,7 @@ if ($socid > 0)
 				print "<tr $bc[$var]>";
 				print "<td><a href=\"../propal.php?id=$objp->propalid\">";
 				print img_object($langs->trans("ShowPropal"),"propal");
-				print " ".$objp->label."</a>\n";
+				print " ".$objp->ref_client."</a>\n";
 				if ($db->jdate($objp->dp) < ($now - $conf->propal->cloture->warning_delay) && $objp->fk_statut == 1)
 				{
 					print " ".img_warning();
