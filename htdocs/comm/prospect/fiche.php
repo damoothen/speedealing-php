@@ -412,7 +412,7 @@ if ($socid > 0)
 				print "<tr $bc[$var]>";
 				print "<td><a href=\"../propal.php?id=$objp->propalid\">";
 				print img_object($langs->trans("ShowPropal"),"propal");
-				print " ".$objp->ref."</a>\n";
+				print " ".$objp->label."</a>\n";
 				if ($db->jdate($objp->dp) < ($now - $conf->propal->cloture->warning_delay) && $objp->fk_statut == 1)
 				{
 					print " ".img_warning();
