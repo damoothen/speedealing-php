@@ -454,6 +454,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->_id = "menu:users";
                 $this->menus[$r]->position = 3;
 		$this->menus[$r]->langs = "users";
+                $this->menus[$r]->url = "/user/index.php";
 		$this->menus[$r]->perms = '$user->rights->user->user->lire || $user->admin';
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->title = "Users";
@@ -463,6 +464,7 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->_id = "menu:groups";
 		$this->menus[$r]->position = 4;
 		$this->menus[$r]->langs = "users";
+                $this->menus[$r]->url = "/user/group/index.php";
 		$this->menus[$r]->perms = '($conf->global->MAIN_USE_ADVANCED_PERMS?$user->rights->user->group_advance->read:$user->rights->user->user->lire) || $user->admin';
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->title = "Groups";
@@ -472,66 +474,11 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->_id = "menu:databases";
 		$this->menus[$r]->position = 5;
 		$this->menus[$r]->langs = "users";
+                $this->menus[$r]->url = "/user/database/index.php";
 		$this->menus[$r]->perms = '($user->rights->user->user->lire) || $user->admin';
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->title = "Databases";
 		$this->menus[$r]->fk_menu = "menu:parameters";
-		$r++;
-
-		$this->menus[$r]->_id = "menu:newuser";
-		$this->menus[$r]->url = "/user/fiche.php?action=create";
-		$this->menus[$r]->langs = "users";
-		$this->menus[$r]->perms = '$user->rights->user->user->creer || $user->admin';
-		$this->menus[$r]->usertype = 2;
-		$this->menus[$r]->title = "NewUser";
-		$this->menus[$r]->fk_menu = "menu:users";
-		$r++;
-                
-                $this->menus[$r]->_id = "menu:userslist";
-		$this->menus[$r]->url = "/user/index.php";
-		$this->menus[$r]->langs = "users";
-		$this->menus[$r]->perms = '$user->rights->user->user->lire || $user->admin';
-		$this->menus[$r]->usertype = 2;
-		$this->menus[$r]->title = "List";
-		$this->menus[$r]->fk_menu = "menu:users";
-		$r++;
-
-		$this->menus[$r]->_id = "menu:newgroup";
-		$this->menus[$r]->url = "/user/group/fiche.php?action=create";
-		$this->menus[$r]->langs = "users";
-		$this->menus[$r]->perms = '$user->rights->user->group_advance->write || $user->admin';
-		$this->menus[$r]->usertype = 2;
-		$this->menus[$r]->title = "NewGroup";
-		$this->menus[$r]->fk_menu = "menu:groups";
-		$r++;
-                
-                $this->menus[$r]->_id = "menu:groupslist";
-		$this->menus[$r]->position = 1;
-		$this->menus[$r]->url = "/user/group/index.php";
-		$this->menus[$r]->langs = "users";
-		$this->menus[$r]->perms = '($conf->global->MAIN_USE_ADVANCED_PERMS?$user->rights->user->group_advance->read:$user->rights->user->user->lire) || $user->admin';
-		$this->menus[$r]->usertype = 2;
-		$this->menus[$r]->title = "List";
-		$this->menus[$r]->fk_menu = "menu:groups";
-		$r++;
-
-		$this->menus[$r]->_id = "menu:newdatabase";
-		$this->menus[$r]->url = "/user/database/fiche.php?action=create";
-		$this->menus[$r]->langs = "users";
-		$this->menus[$r]->perms = '$user->admin';
-		$this->menus[$r]->usertype = 2;
-		$this->menus[$r]->title = "NewDatabase";
-		$this->menus[$r]->fk_menu = "menu:databases";
-                $r++;
-
-                $this->menus[$r]->_id = "menu:databaseslist";
-		$this->menus[$r]->position = 2;
-		$this->menus[$r]->url = "/user/database/index.php";
-		$this->menus[$r]->langs = "users";
-		$this->menus[$r]->perms = '($user->rights->user->user->lire) || $user->admin';
-		$this->menus[$r]->usertype = 2;
-		$this->menus[$r]->title = "List";
-		$this->menus[$r]->fk_menu = "menu:databases";
 		$r++;
 
 		// Exports

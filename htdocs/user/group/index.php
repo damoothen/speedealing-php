@@ -31,32 +31,32 @@ $object = new UserGroup($db);
  */
 
 if ($_GET['json'] == "list") {
-	$output = array(
-		"sEcho" => intval($_GET['sEcho']),
-		"iTotalRecords" => 0,
-		"iTotalDisplayRecords" => 0,
-		"aaData" => array()
-	);
+    $output = array(
+        "sEcho" => intval($_GET['sEcho']),
+        "iTotalRecords" => 0,
+        "iTotalDisplayRecords" => 0,
+        "aaData" => array()
+    );
 
-	try {
-		$result = $object->getView("list");
-	} catch (Exception $exc) {
-		print $exc->getMessage();
-	}
+    try {
+        $result = $object->getView("list");
+    } catch (Exception $exc) {
+        print $exc->getMessage();
+    }
 
-	//print_r ($result);
+    //print_r ($result);
 
-	$iTotal = count($result->rows);
-	$output["iTotalRecords"] = $iTotal;
-	$output["iTotalDisplayRecords"] = $iTotal;
+    $iTotal = count($result->rows);
+    $output["iTotalRecords"] = $iTotal;
+    $output["iTotalDisplayRecords"] = $iTotal;
 
-	foreach ($result->rows as $aRow) {
-		$output["aaData"][] = $aRow->value;
-	}
+    foreach ($result->rows as $aRow) {
+        $output["aaData"][] = $aRow->value;
+    }
 
-	header('Content-type: application/json');
-	echo json_encode($output);
-	exit;
+    header('Content-type: application/json');
+    echo json_encode($output);
+    exit;
 }
 
 /*
@@ -72,14 +72,19 @@ print '<div class="with-padding">';
 print '<div class="columns">';
 print start_box($title, "twelve", "16-Users-2.png", false);
 
-print ' <div class="row sepH_b">';
-print ' <div class="right">';
+/*
+ * Barre d'actions
+ *
+ */
+
 if ($user->admin) {
-	//print '<a class="gh_button primary pill icon add" href="'.DOL_URL_ROOT.'/user/database/fiche.php?action=create">'.$langs->trans("Create").'</a>';
-	//$object->buttonCreate(DOL_URL_ROOT . '/user/database/fiche.php');
+    print '<p class="button-height right">';
+    print '<span class="button-group">';
+    print '<a class="button" href="user/group/fiche.php?action=create"><span class="button-icon blue-gradient glossy"><span class="icon-star"></span></span>' . $langs->trans("CreateGroup") . '</a>';
+    print "</span>";
+    print "</p>";
 }
-print "</div>\n";
-print "</div>\n";
+
 
 $i = 0;
 $obj = new stdClass();

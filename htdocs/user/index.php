@@ -87,6 +87,17 @@ print '<div class="with-padding">';
 print '<div class="columns">';
 print start_box($title, "twelve", "16-User.png", false);
 
+/*
+ * Barre d'actions
+ *
+ */
+
+print '<p class="button-height right">';
+print '<span class="button-group">';
+print '<a class="button" href="user/fiche.php?action=create"><span class="button-icon blue-gradient glossy"><span class="icon-star"></span></span>' . $langs->trans("CreateUser") . '</a>';
+print "</span>";
+print "</p>";
+
 $i = 0;
 $obj = new stdClass();
 

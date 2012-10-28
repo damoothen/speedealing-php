@@ -139,14 +139,13 @@ print '<div class="with-padding">';
 print '<div class="columns">';
 print start_box($title, "twelve", "16-Cloud.png", false);
 
-print ' <div class="row sepH_b">';
-print ' <div class="right">';
 if ($user->admin) {
-    //print '<a class="gh_button primary pill icon add" href="'.DOL_URL_ROOT.'/user/database/fiche.php?action=create">'.$langs->trans("Create").'</a>';
-    //$object->buttonCreate(DOL_URL_ROOT.'/user/database/fiche.php');
+    print '<p class="button-height right">';
+    print '<span class="button-group">';
+    print '<a class="button" href="user/database/fiche.php?action=create"><span class="button-icon blue-gradient glossy"><span class="icon-star"></span></span>' . $langs->trans("CreateDatabase") . '</a>';
+    print "</span>";
+    print "</p>";
 }
-print "</div>\n";
-print "</div>\n";
 
 $i = 0;
 $obj = new stdClass();
