@@ -44,7 +44,7 @@ $canreadperms = ($user->admin || ($user->rights->user->group_advance->read && $u
 $caneditperms = ($user->admin || $user->rights->user->group_advance->write);
 
 if (!$canreadperms)
-	accessforbidden();
+    accessforbidden();
 
 $fgroup = new Usergroup($db);
 $object = new DolibarrModules($db);
@@ -53,31 +53,31 @@ $object = new DolibarrModules($db);
  * Actions
  */
 if ($action == 'add' && $caneditperms) {
-	$editgroup = new Usergroup($db);
-	try {
-		$editgroup->load($id);
+    $editgroup = new Usergroup($db);
+    try {
+        $editgroup->load($id);
 
-		$editgroup->values->rights->$_GET['pid'] = true;
-		$editgroup->record();
-	} catch (Exception $e) {
-		$mesg = $e->getMessage();
-	}
-	Header("Location: " . $_SERVER['PHP_SELF'] . "?id=".$id."&mesg=" . urlencode($mesg));
-	exit;
+        $editgroup->values->rights->$_GET['pid'] = true;
+        $editgroup->record();
+    } catch (Exception $e) {
+        $mesg = $e->getMessage();
+    }
+    Header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $id . "&mesg=" . urlencode($mesg));
+    exit;
 }
 
 if ($action == 'remove' && $caneditperms) {
-	$editgroup = new Usergroup($db);
-	try {
-		$editgroup->load($id);
-		unset($editgroup->values->rights->$_GET['pid']);
+    $editgroup = new Usergroup($db);
+    try {
+        $editgroup->load($id);
+        unset($editgroup->values->rights->$_GET['pid']);
 
-		$editgroup->record();
-	} catch (Exception $e) {
-		$mesg = $e->getMessage();
-	}
-	Header("Location: " . $_SERVER['PHP_SELF'] . "?id=".$id."&mesg=" . urlencode($mesg));
-	exit;
+        $editgroup->record();
+    } catch (Exception $e) {
+        $mesg = $e->getMessage();
+    }
+    Header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $id . "&mesg=" . urlencode($mesg));
+    exit;
 }
 
 
@@ -90,67 +90,70 @@ llxHeader('', $langs->trans("Permissions"));
 
 if ($id) {
 
-	$fgroup->load($id);
+    $fgroup->load($id);
 
-	/*
-	 * Affichage onglets
-	 */
-	$head = group_prepare_head($fgroup);
-	$title = $langs->trans("Group");
+    /*
+     * Affichage onglets
+     */
+    $head = group_prepare_head($fgroup);
+    $title = $langs->trans("Group") . " : " . $fgroup->name;
 
-	print '<div class="row">';
-	print start_box($title, "twelve", "16-Users-2.png", false);
+    print_fiche_titre($title);
+    print '<div class="with-padding">';
+    print '<div class="columns">';
 
-	dol_fiche_head($head, 'rights', $title, 0, 'group');
+    print start_box($title, "twelve", "16-Users-2.png", false);
 
-	/*
-	 * Ecran ajout/suppression permission
-	 */
+    dol_fiche_head($head, 'rights', $title, 0, 'group');
 
-	$i = 0;
-	$obj = new stdClass();
+    /*
+     * Ecran ajout/suppression permission
+     */
 
-	if ($user->admin)
-		print info_admin($langs->trans("WarningOnlyPermissionOfActivatedModules"));
+    $i = 0;
+    $obj = new stdClass();
 
-	print '<table class="display dt_act" id="rights">';
+    if ($user->admin)
+        print info_admin($langs->trans("WarningOnlyPermissionOfActivatedModules"));
 
-	print'<thead>';
-	print'<tr>';
+    print '<table class="display dt_act" id="rights">';
 
-	print'<th>';
-	print'</th>';
-	$obj->aoColumns[$i]->mDataProp = "id";
-	$obj->aoColumns[$i]->sDefaultContent = "";
-	$obj->aoColumns[$i]->bVisible = false;
-	$i++;
+    print'<thead>';
+    print'<tr>';
 
-	print'<th class="essential">';
-	print $langs->trans("Module");
-	print'</th>';
-	$obj->aoColumns[$i]->mDataProp = "name";
-	$obj->aoColumns[$i]->sDefaultContent = "";
-	$obj->aoColumns[$i]->sWidth = "18em";
-	$i++;
+    print'<th>';
+    print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "id";
+    $obj->aoColumns[$i]->sDefaultContent = "";
+    $obj->aoColumns[$i]->bVisible = false;
+    $i++;
 
-	print'<th>';
-	print $langs->trans("Permission");
-	print'</th>';
-	$obj->aoColumns[$i]->mDataProp = "desc";
-	$obj->aoColumns[$i]->sDefaultContent = "";
-	$obj->aoColumns[$i]->bVisible = true;
-	$i++;
+    print'<th class="essential">';
+    print $langs->trans("Module");
+    print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "name";
+    $obj->aoColumns[$i]->sDefaultContent = "";
+    $obj->aoColumns[$i]->sWidth = "18em";
+    $i++;
 
-	print'<th class="essential">';
-	print $langs->trans("Enabled");
-	print'</th>';
-	$obj->aoColumns[$i]->mDataProp = "Status";
-	$obj->aoColumns[$i]->sDefaultContent = "false";
-	$obj->aoColumns[$i]->sClass = "center";
+    print'<th>';
+    print $langs->trans("Permission");
+    print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "desc";
+    $obj->aoColumns[$i]->sDefaultContent = "";
+    $obj->aoColumns[$i]->bVisible = true;
+    $i++;
 
-	print'</tr>';
-	print'</thead>';
-	$obj->fnDrawCallback = "function(oSettings){
+    print'<th class="essential">';
+    print $langs->trans("Enabled");
+    print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "Status";
+    $obj->aoColumns[$i]->sDefaultContent = "false";
+    $obj->aoColumns[$i]->sClass = "center";
+
+    print'</tr>';
+    print'</thead>';
+    $obj->fnDrawCallback = "function(oSettings){
                 if ( oSettings.aiDisplay.length == 0 )
                 {
                     return;
@@ -178,64 +181,65 @@ if ($id) {
                 }
 	}";
 
-	$i = 0;
-	print'<tfoot>';
-	print'</tfoot>';
-	print'<tbody>';
+    $i = 0;
+    print'<tfoot>';
+    print'</tfoot>';
+    print'<tbody>';
 
-	try {
-		$result = $object->getView("default_right");
-	} catch (Exception $exc) {
-		print $exc->getMessage();
-	}
+    try {
+        $result = $object->getView("default_right");
+    } catch (Exception $exc) {
+        print $exc->getMessage();
+    }
 
-	if (count($result->rows)) {
+    if (count($result->rows)) {
 
-		foreach ($result->rows as $aRow) {
-			print'<tr>';
+        foreach ($result->rows as $aRow) {
+            print'<tr>';
 
-			$object->name = $aRow->value->name;
-			$object->numero = $aRow->value->numero;
-			$object->rights_class = $aRow->value->rights_class;
-			$object->id = $aRow->value->id;
-			$object->perm = $aRow->value->perm;
-			$object->desc = $aRow->value->desc;
-			$object->Status = ($aRow->value->Status == true ? "true" : "false");
+            $object->name = $aRow->value->name;
+            $object->numero = $aRow->value->numero;
+            $object->rights_class = $aRow->value->rights_class;
+            $object->id = $aRow->value->id;
+            $object->perm = $aRow->value->perm;
+            $object->desc = $aRow->value->desc;
+            $object->Status = ($aRow->value->Status == true ? "true" : "false");
 
-			print '<td>' . $aRow->value->id . '</td>';
-			print '<td>' . img_object('', $aRow->value->picto) . " " . $object->getName() . '</td>';
-			print '<td>' . $object->getPermDesc() . '<a name="' . $aRow->value->id . '">&nbsp;</a></td>';
-			print '<td>';
+            print '<td>' . $aRow->value->id . '</td>';
+            print '<td>' . img_object('', $aRow->value->picto) . " " . $object->getName() . '</td>';
+            print '<td>' . $object->getPermDesc() . '<a name="' . $aRow->value->id . '">&nbsp;</a></td>';
+            print '<td>';
 
-			$perm = $aRow->value->id;
+            $perm = $aRow->value->id;
 
-			if ($caneditperms) {
-				if ($aRow->value->Status)
-					print $object->getLibStatus(); // Enable by default
-				elseif ($fgroup->rights->$perm)
-					print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $fgroup->id . '&pid=' . $aRow->value->id . '&amp;action=remove#' . $aRow->value->id . '">' . img_edit_remove() . '</a>';
-				else
-					print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $fgroup->id . '&pid=' . $aRow->value->id . '&amp;action=add#' . $aRow->value->id . '">' . img_edit_add() . '</a>';
-			}
-			else {
-					print $object->getLibStatus();
-			}
-			print '</td>';
+            if ($caneditperms) {
+                if ($aRow->value->Status)
+                    print $object->getLibStatus(); // Enable by default
+                elseif ($fgroup->rights->$perm)
+                    print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $fgroup->id . '&pid=' . $aRow->value->id . '&amp;action=remove#' . $aRow->value->id . '">' . img_edit_remove() . '</a>';
+                else
+                    print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $fgroup->id . '&pid=' . $aRow->value->id . '&amp;action=add#' . $aRow->value->id . '">' . img_edit_add() . '</a>';
+            }
+            else {
+                print $object->getLibStatus();
+            }
+            print '</td>';
 
-			print'</tr>';
-		}
-	}
-	print'</tbody>';
-	print'</table>';
+            print'</tr>';
+        }
+    }
+    print'</tbody>';
+    print'</table>';
 
-	$obj->aaSorting = array(array(1, 'asc'));
-	$obj->sDom = 'l<fr>t<\"clear\"rtip>';
-	$obj->iDisplayLength = -1;
+    $obj->aaSorting = array(array(1, 'asc'));
+    $obj->sDom = 'l<fr>t<\"clear\"rtip>';
+    $obj->iDisplayLength = -1;
 
-	print $object->datatablesCreate($obj, "rights");
+    print $object->datatablesCreate($obj, "rights");
 }
 
 print end_box();
+print '</div>';
 print '</div>';
 
 $db->close();

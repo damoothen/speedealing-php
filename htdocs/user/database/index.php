@@ -32,89 +32,89 @@ $object = new UserDatabase($db);
  */
 
 if ($_GET['json'] == "list") {
-	$output = array(
-		"sEcho" => intval($_GET['sEcho']),
-		"iTotalRecords" => 0,
-		"iTotalDisplayRecords" => 0,
-		"aaData" => array()
-	);
+    $output = array(
+        "sEcho" => intval($_GET['sEcho']),
+        "iTotalRecords" => 0,
+        "iTotalDisplayRecords" => 0,
+        "aaData" => array()
+    );
 
-	try {
-		$result = $object->couchdb->listDatabases();
-	} catch (Exception $exc) {
-		print $exc->getMessage();
-	}
+    try {
+        $result = $object->couchdb->listDatabases();
+    } catch (Exception $exc) {
+        print $exc->getMessage();
+    }
 
-	//print_r ($result);
+    //print_r ($result);
 
-	$iTotal = 0;
-	$output["iTotalRecords"] = $iTotal;
-	$output["iTotalDisplayRecords"] = $iTotal;
+    $iTotal = 0;
+    $output["iTotalRecords"] = $iTotal;
+    $output["iTotalDisplayRecords"] = $iTotal;
 
-	foreach ($result as $aRow) {
-		if ($aRow[0] != "_") { // Not _users and _replicator
-			try {
-				$object->fetch($aRow);
-				$info = $object->values;
-				$secu = $object->couchAdmin->getSecurity();
+    foreach ($result as $aRow) {
+        if ($aRow[0] != "_") { // Not _users and _replicator
+            try {
+                $object->fetch($aRow);
+                $info = $object->values;
+                $secu = $object->couchAdmin->getSecurity();
 
-				if (count($secu->readers->names) + count($secu->readers->roles) > 0)
-					$info->Status = "SECURE";
-				else
-					$info->Status = "INSECURE";
-			} catch (Exception $exc) {
-				print $exc->getMessage();
-			}
+                if (count($secu->readers->names) + count($secu->readers->roles) > 0)
+                    $info->Status = "SECURE";
+                else
+                    $info->Status = "INSECURE";
+            } catch (Exception $exc) {
+                print $exc->getMessage();
+            }
 
-			$output["aaData"][] = $info;
-		}
-	}
+            $output["aaData"][] = $info;
+        }
+    }
 
-	$iTotal = count($output["aaData"]);
-	$output["iTotalRecords"] = $iTotal;
-	$output["iTotalDisplayRecords"] = $iTotal;
+    $iTotal = count($output["aaData"]);
+    $output["iTotalRecords"] = $iTotal;
+    $output["iTotalDisplayRecords"] = $iTotal;
 
-	header('Content-type: application/json');
-	echo json_encode($output);
-	exit;
+    header('Content-type: application/json');
+    echo json_encode($output);
+    exit;
 }
 
 if ($action == 'confirm_delete' && $confirm == "yes") {
-	if ($user->admin) {
-		$object->id = $id;
-		$object->delete();
-		Header("Location: index.php");
-		exit;
-	} else {
-		$langs->load("errors");
-		$message = '<div class="error">' . $langs->trans('ErrorForbidden') . '</div>';
-	}
+    if ($user->admin) {
+        $object->id = $id;
+        $object->delete();
+        Header("Location: index.php");
+        exit;
+    } else {
+        $langs->load("errors");
+        $message = '<div class="error">' . $langs->trans('ErrorForbidden') . '</div>';
+    }
 }
 
-if ($action == 'commit' ) {
-	if ($user->admin) {
-		$object->id = $id;
-		$object->commit();
-		Header("Location: index.php");
-		exit;
-	} else {
-		$langs->load("errors");
-		$message = '<div class="error">' . $langs->trans('ErrorForbidden') . '</div>';
-	}
+if ($action == 'commit') {
+    if ($user->admin) {
+        $object->id = $id;
+        $object->commit();
+        Header("Location: index.php");
+        exit;
+    } else {
+        $langs->load("errors");
+        $message = '<div class="error">' . $langs->trans('ErrorForbidden') . '</div>';
+    }
 }
 
-if ($action == 'compact' ) {
-	if ($user->admin) {
-		$object->id = $id;
-		//$object->purgeDatabase(); //Need Optimization
-		$object->compact();
-		$object->compactView();
-		Header("Location: index.php");
-		exit;
-	} else {
-		$langs->load("errors");
-		$message = '<div class="error">' . $langs->trans('ErrorForbidden') . '</div>';
-	}
+if ($action == 'compact') {
+    if ($user->admin) {
+        $object->id = $id;
+        //$object->purgeDatabase(); //Need Optimization
+        $object->compact();
+        $object->compactView();
+        Header("Location: index.php");
+        exit;
+    } else {
+        $langs->load("errors");
+        $message = '<div class="error">' . $langs->trans('ErrorForbidden') . '</div>';
+    }
 }
 
 /*
@@ -126,20 +126,24 @@ llxHeader();
 $form = new Form($db);
 
 if ($action == 'delete') {
-	$ret = $form->form_confirm($_SERVER['PHP_SELF'] . "?id=" . $id, $langs->trans("DeleteADatabase"), $langs->trans("ConfirmDatabase", $id), "confirm_delete", '', 0, 1);
-	if ($ret == 'html')
-		print '<br>';
+    $ret = $form->form_confirm($_SERVER['PHP_SELF'] . "?id=" . $id, $langs->trans("DeleteADatabase"), $langs->trans("ConfirmDatabase", $id), "confirm_delete", '', 0, 1);
+    if ($ret == 'html')
+        print '<br>';
 }
 
 
-print '<div class="row">';
-print start_box($langs->trans("ListOfDatabases"), "twelve", "16-Cloud.png", false);
+$title = $langs->trans("ListOfDatabases");
+
+print_fiche_titre($title);
+print '<div class="with-padding">';
+print '<div class="columns">';
+print start_box($title, "twelve", "16-Cloud.png", false);
 
 print ' <div class="row sepH_b">';
 print ' <div class="right">';
 if ($user->admin) {
-	//print '<a class="gh_button primary pill icon add" href="'.DOL_URL_ROOT.'/user/database/fiche.php?action=create">'.$langs->trans("Create").'</a>';
-	//$object->buttonCreate(DOL_URL_ROOT.'/user/database/fiche.php');
+    //print '<a class="gh_button primary pill icon add" href="'.DOL_URL_ROOT.'/user/database/fiche.php?action=create">'.$langs->trans("Create").'</a>';
+    //$object->buttonCreate(DOL_URL_ROOT.'/user/database/fiche.php');
 }
 print "</div>\n";
 print "</div>\n";
@@ -228,13 +232,13 @@ $obj->aoColumns[$i]->sDefaultContent = "";
 
 $obj->aoColumns[$i]->fnRender = 'function(obj) {
 	var ar = [];
-	ar[ar.length] = "<a href=\"'. $_SERVER['PHP_SELF'] . '?id=";
+	ar[ar.length] = "<a href=\"' . $_SERVER['PHP_SELF'] . '?id=";
 	ar[ar.length] = obj.aData.db_name.toString();
 	ar[ar.length] = "&action=compact\" class=\"sepV_a\" title=\"Compact Database\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/processing.png\" alt=\"\" /></a>";
-	ar[ar.length] = "<a href=\"'. $_SERVER['PHP_SELF'] . '?id=";
+	ar[ar.length] = "<a href=\"' . $_SERVER['PHP_SELF'] . '?id=";
 	ar[ar.length] = obj.aData.db_name.toString();
 	ar[ar.length] = "&action=commit\" class=\"sepV_a\" title=\"Commit\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/save.png\" alt=\"\" /></a>";
-	ar[ar.length] = "<a href=\"'. $_SERVER['PHP_SELF'] . '?id=";
+	ar[ar.length] = "<a href=\"' . $_SERVER['PHP_SELF'] . '?id=";
 	ar[ar.length] = obj.aData.db_name.toString();
 	ar[ar.length] = "&action=delete\" class=\"sepV_a\" title=\"Delete\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/delete.png\" alt=\"\" /></a>";
 	var str = ar.join("");
@@ -260,6 +264,7 @@ $object->datatablesCreate($obj, "user", true);
 
 
 print end_box();
+print '<div>';
 print '<div>';
 
 llxFooter();

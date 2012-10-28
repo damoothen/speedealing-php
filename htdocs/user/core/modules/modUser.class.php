@@ -171,13 +171,13 @@ class modUser extends DolibarrModules
 
 		// Menus
 		$r = 0;
-		$this->menus[$r]->_id = "menu:home";
+		$this->menus[$r]->_id = "menu:parameters";
 		$this->menus[$r]->type = "top";
-		$this->menus[$r]->position = 1;
+		$this->menus[$r]->position = 1000;
 		$this->menus[$r]->url = "/index.php";
-		$this->menus[$r]->enabled = "1";
+		$this->menus[$r]->enabled = '$user->admin';
 		$this->menus[$r]->usertype = 2;
-		$this->menus[$r]->title = "Home";
+		$this->menus[$r]->title = "Parameters";
 
 		$r++;
 		$this->menus[$r]->_id = "menu:setup";
@@ -187,37 +187,25 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->enabled = '$user->admin';
 		$this->menus[$r]->title = "Setup";
-		$this->menus[$r]->fk_menu = "menu:home";
+		$this->menus[$r]->fk_menu = "menu:parameters";
 		$r++;
 
 		$this->menus[$r]->_id = "menu:systeminfo";
 		$this->menus[$r]->position = 1;
-		$this->menus[$r]->url = "/admin/system/index.php";
 		$this->menus[$r]->langs = "admin";
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->enabled = '$user->admin';
 		$this->menus[$r]->title = "SystemInfo";
-		$this->menus[$r]->fk_menu = "menu:home";
+		$this->menus[$r]->fk_menu = "menu:parameters";
 		$r++;
 
 		$this->menus[$r]->_id = "menu:systemtools";
 		$this->menus[$r]->position = 2;
-		$this->menus[$r]->url = "/admin/tools/index.php";
 		$this->menus[$r]->langs = "admin";
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->enabled = '$user->admin';
 		$this->menus[$r]->title = "SystemTools";
-		$this->menus[$r]->fk_menu = "menu:home";
-		$r++;
-
-		$this->menus[$r]->_id = "menu:menuusersandgroups";
-		$this->menus[$r]->position = 3;
-		$this->menus[$r]->url = "/user/home.php";
-		$this->menus[$r]->langs = "users";
-		$this->menus[$r]->usertype = 2;
-		$this->menus[$r]->enabled = '$user->admin';
-		$this->menus[$r]->title = "MenuUsersAndGroups";
-		$this->menus[$r]->fk_menu = "menu:home";
+		$this->menus[$r]->fk_menu = "menu:parameters";
 		$r++;
 
 		$this->menus[$r]->_id = "menu:menucompanysetup";
@@ -337,12 +325,12 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->fk_menu = "menu:setup";
 		$r++;
 
-		$this->menus[$r]->_id = "menu:dolibarr";
+		$this->menus[$r]->_id = "menu:params";
 		$this->menus[$r]->url = "/admin/system/dolibarr.php";
 		$this->menus[$r]->position = 0;
 		$this->menus[$r]->langs = "admin";
 		$this->menus[$r]->usertype = 2;
-		$this->menus[$r]->title = "Dolibarr";
+		$this->menus[$r]->title = "Infos";
 		$this->menus[$r]->fk_menu = "menu:systeminfo";
 		$r++;
 		
@@ -357,49 +345,48 @@ class modUser extends DolibarrModules
 		$r++;
 		
 		$this->menus[$r]->_id = "menu:phpinfo";
-		$this->menus[$r]->position = 1;
+		$this->menus[$r]->position = 3;
 		$this->menus[$r]->url = "/admin/system/phpinfo.php";
 		$this->menus[$r]->langs = "admin";
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->title = "PHPinfo";
-		$this->menus[$r]->enabled = '1';
 		$this->menus[$r]->fk_menu = "menu:systeminfo";
 		$r++;
 
 		$this->menus[$r]->_id = "menu:allparameters";
-		$this->menus[$r]->position = 1;
+		$this->menus[$r]->position = 4;
 		$this->menus[$r]->url = "/admin/system/constall.php";
 		$this->menus[$r]->langs = "admin";
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->title = "AllParameters";
-		$this->menus[$r]->fk_menu = "menu:dolibarr";
+		$this->menus[$r]->fk_menu = "menu:systeminfo";
 		$r++;
 
 		$this->menus[$r]->_id = "menu:modules0";
-		$this->menus[$r]->position = 2;
+		$this->menus[$r]->position = 5;
 		$this->menus[$r]->url = "/admin/system/modules.php";
 		$this->menus[$r]->langs = "admin";
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->title = "Modules";
-		$this->menus[$r]->fk_menu = "menu:dolibarr";
+		$this->menus[$r]->fk_menu = "menu:systeminfo";
 		$r++;
 
 		$this->menus[$r]->_id = "menu:triggers";
-		$this->menus[$r]->position = 3;
+		$this->menus[$r]->position = 6;
 		$this->menus[$r]->url = "/admin/triggers.php";
 		$this->menus[$r]->langs = "admin";
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->title = "Triggers";
-		$this->menus[$r]->fk_menu = "menu:dolibarr";
+		$this->menus[$r]->fk_menu = "menu:systeminfo";
 		$r++;
 
 		$this->menus[$r]->_id = "menu:about";
-		$this->menus[$r]->position = 4;
+		$this->menus[$r]->position = 7;
 		$this->menus[$r]->url = "/admin/system/about.php";
 		$this->menus[$r]->langs = "admin";
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->title = "About";
-		$this->menus[$r]->fk_menu = "menu:dolibarr";
+		$this->menus[$r]->fk_menu = "menu:systeminfo";
 		$r++;
 
 		$this->menus[$r]->_id = "menu:backup";
@@ -465,32 +452,30 @@ class modUser extends DolibarrModules
 		$r++;
 
 		$this->menus[$r]->_id = "menu:users";
-		$this->menus[$r]->url = "/user/index.php";
+                $this->menus[$r]->position = 3;
 		$this->menus[$r]->langs = "users";
 		$this->menus[$r]->perms = '$user->rights->user->user->lire || $user->admin';
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->title = "Users";
-		$this->menus[$r]->fk_menu = "menu:menuusersandgroups";
+		$this->menus[$r]->fk_menu = "menu:parameters";
 		$r++;
 
 		$this->menus[$r]->_id = "menu:groups";
-		$this->menus[$r]->position = 1;
-		$this->menus[$r]->url = "/user/group/index.php";
+		$this->menus[$r]->position = 4;
 		$this->menus[$r]->langs = "users";
 		$this->menus[$r]->perms = '($conf->global->MAIN_USE_ADVANCED_PERMS?$user->rights->user->group_advance->read:$user->rights->user->user->lire) || $user->admin';
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->title = "Groups";
-		$this->menus[$r]->fk_menu = "menu:menuusersandgroups";
+		$this->menus[$r]->fk_menu = "menu:parameters";
 		$r++;
 
 		$this->menus[$r]->_id = "menu:databases";
-		$this->menus[$r]->position = 2;
-		$this->menus[$r]->url = "/user/database/index.php";
+		$this->menus[$r]->position = 5;
 		$this->menus[$r]->langs = "users";
 		$this->menus[$r]->perms = '($user->rights->user->user->lire) || $user->admin';
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->title = "Databases";
-		$this->menus[$r]->fk_menu = "menu:menuusersandgroups";
+		$this->menus[$r]->fk_menu = "menu:parameters";
 		$r++;
 
 		$this->menus[$r]->_id = "menu:newuser";
@@ -499,6 +484,15 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->perms = '$user->rights->user->user->creer || $user->admin';
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->title = "NewUser";
+		$this->menus[$r]->fk_menu = "menu:users";
+		$r++;
+                
+                $this->menus[$r]->_id = "menu:userslist";
+		$this->menus[$r]->url = "/user/index.php";
+		$this->menus[$r]->langs = "users";
+		$this->menus[$r]->perms = '$user->rights->user->user->lire || $user->admin';
+		$this->menus[$r]->usertype = 2;
+		$this->menus[$r]->title = "List";
 		$this->menus[$r]->fk_menu = "menu:users";
 		$r++;
 
@@ -510,6 +504,16 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->title = "NewGroup";
 		$this->menus[$r]->fk_menu = "menu:groups";
 		$r++;
+                
+                $this->menus[$r]->_id = "menu:groupslist";
+		$this->menus[$r]->position = 1;
+		$this->menus[$r]->url = "/user/group/index.php";
+		$this->menus[$r]->langs = "users";
+		$this->menus[$r]->perms = '($conf->global->MAIN_USE_ADVANCED_PERMS?$user->rights->user->group_advance->read:$user->rights->user->user->lire) || $user->admin';
+		$this->menus[$r]->usertype = 2;
+		$this->menus[$r]->title = "List";
+		$this->menus[$r]->fk_menu = "menu:groups";
+		$r++;
 
 		$this->menus[$r]->_id = "menu:newdatabase";
 		$this->menus[$r]->url = "/user/database/fiche.php?action=create";
@@ -518,7 +522,17 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->title = "NewDatabase";
 		$this->menus[$r]->fk_menu = "menu:databases";
+                $r++;
 
+                $this->menus[$r]->_id = "menu:databaseslist";
+		$this->menus[$r]->position = 2;
+		$this->menus[$r]->url = "/user/database/index.php";
+		$this->menus[$r]->langs = "users";
+		$this->menus[$r]->perms = '($user->rights->user->user->lire) || $user->admin';
+		$this->menus[$r]->usertype = 2;
+		$this->menus[$r]->title = "List";
+		$this->menus[$r]->fk_menu = "menu:databases";
+		$r++;
 
 		// Exports
 		//--------

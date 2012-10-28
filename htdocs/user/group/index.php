@@ -65,8 +65,12 @@ if ($_GET['json'] == "list") {
 
 llxHeader();
 
-print '<div class="row">';
-print start_box($langs->trans("ListOfGroups"), "twelve", "16-Users-2.png", false);
+$title = $langs->trans("ListOfGroups");
+
+print_fiche_titre($title);
+print '<div class="with-padding">';
+print '<div class="columns">';
+print start_box($title, "twelve", "16-Users-2.png", false);
 
 print ' <div class="row sepH_b">';
 print ' <div class="right">';
