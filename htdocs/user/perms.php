@@ -35,7 +35,7 @@ $confirm = GETPOST('confirm', 'alpha');
 $module = GETPOST('module');
 
 if (!isset($id) || empty($id))
-	accessforbidden();
+    accessforbidden();
 
 // Defini si peux lire les permissions
 $canreaduser = ($user->admin || $user->rights->user->user->lire);
@@ -48,15 +48,15 @@ $canreaduser = ($user->admin || ($user->rights->user->user->lire && $user->right
 // Security check
 $socid = 0;
 if ($user->societe_id > 0)
-	$socid = $user->societe_id;
+    $socid = $user->societe_id;
 $feature2 = (($socid && $user->rights->user->self->creer) ? '' : 'user');
 if ($user->id == $id && (empty($conf->global->MAIN_USE_ADVANCED_PERMS) || $user->rights->user->self_advance->readperms)) { // A user can always read its own card if not advanced perms enabled, or if he has advanced perms
-	$feature2 = '';
-	$canreaduser = 1;
+    $feature2 = '';
+    $canreaduser = 1;
 }
 $result = restrictedArea($user, 'user', $id, '&user', $feature2);
 if ($user->id <> $id && !$canreaduser)
-	accessforbidden();
+    accessforbidden();
 
 $fuser = new User($db);
 
@@ -64,29 +64,29 @@ $fuser = new User($db);
  * Actions
  */
 if ($action == 'add' && $caneditperms) {
-	try {
-		$fuser->load($id);
+    try {
+        $fuser->load($id);
 
-		$fuser->values->rights->$_GET['pid'] = true;
-		$fuser->record();
-	} catch (Exception $e) {
-		$mesg = $e->getMessage();
-	}
-	Header("Location: " . $_SERVER['PHP_SELF'] . "?id=".$id."&mesg=" . urlencode($mesg));
-	exit;
+        $fuser->values->rights->$_GET['pid'] = true;
+        $fuser->record();
+    } catch (Exception $e) {
+        $mesg = $e->getMessage();
+    }
+    Header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $id . "&mesg=" . urlencode($mesg));
+    exit;
 }
 
 if ($action == 'remove' && $caneditperms) {
-	try {
-		$fuser->load($id);
-		unset($fuser->values->rights->$_GET['pid'] );
+    try {
+        $fuser->load($id);
+        unset($fuser->values->rights->$_GET['pid']);
 
-		$fuser->record();
-	} catch (Exception $e) {
-		$mesg = $e->getMessage();
-	}
-	Header("Location: " . $_SERVER['PHP_SELF'] . "?id=".$id."&mesg=" . urlencode($mesg));
-	exit;
+        $fuser->record();
+    } catch (Exception $e) {
+        $mesg = $e->getMessage();
+    }
+    Header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $id . "&mesg=" . urlencode($mesg));
+    exit;
 }
 
 
@@ -99,8 +99,6 @@ if ($action == 'remove' && $caneditperms) {
 
 llxHeader('', $langs->trans("Permissions"));
 
-$form = new Form($db);
-
 $fuser->fetch($id);
 
 $object = new DolibarrModules($db);
@@ -110,9 +108,12 @@ $object = new DolibarrModules($db);
  */
 $head = user_prepare_head($fuser);
 
-$title = $langs->trans("User");
+$title = $langs->trans("Permissions");
 
-print '<div class="row">';
+print_fiche_titre($title);
+print '<div class="with-padding">';
+print '<div class="columns">';
+
 print start_box($title, "twelve", "16-User-2.png", false);
 dol_fiche_head($head, 'rights', $title, 0, 'user');
 // Search all modules with permission and reload permissions def.
@@ -122,7 +123,7 @@ dol_fiche_head($head, 'rights', $title, 0, 'user');
  */
 
 if ($user->admin)
-	print info_admin($langs->trans("WarningOnlyPermissionOfActivatedModules"));
+    print info_admin($langs->trans("WarningOnlyPermissionOfActivatedModules"));
 
 $i = 0;
 $obj = new stdClass();
@@ -198,47 +199,47 @@ print'</tfoot>';
 print'<tbody>';
 
 try {
-	$result = $object->getView("default_right");
+    $result = $object->getView("default_right");
 } catch (Exception $exc) {
-	print $exc->getMessage();
+    print $exc->getMessage();
 }
 
 if (count($result->rows)) {
 
-	foreach ($result->rows as $aRow) {
-		print'<tr>';
+    foreach ($result->rows as $aRow) {
+        print'<tr>';
 
-		$object->name = $aRow->value->name;
-		$object->numero = $aRow->value->numero;
-		$object->rights_class = $aRow->value->rights_class;
-		$object->id = $aRow->value->id;
-		$object->perm = $aRow->value->perm;
-		$object->desc = $aRow->value->desc;
-		$object->Status = ($aRow->value->Status == true ? "true" : "false");
+        $object->name = $aRow->value->name;
+        $object->numero = $aRow->value->numero;
+        $object->rights_class = $aRow->value->rights_class;
+        $object->id = $aRow->value->id;
+        $object->perm = $aRow->value->perm;
+        $object->desc = $aRow->value->desc;
+        $object->Status = ($aRow->value->Status == true ? "true" : "false");
 
-		print '<td>' . $aRow->value->id . '</td>';
-		print '<td>' . img_object('', $aRow->value->picto) . " " . $object->getName() . '</td>';
-		print '<td>' . $object->getPermDesc() . '<a name="' . $aRow->value->id . '">&nbsp;</a></td>';
-		print '<td>';
-		
-		$perm = $aRow->value->id;
-		
+        print '<td>' . $aRow->value->id . '</td>';
+        print '<td>' . img_object('', $aRow->value->picto) . " " . $object->getName() . '</td>';
+        print '<td>' . $object->getPermDesc() . '<a name="' . $aRow->value->id . '">&nbsp;</a></td>';
+        print '<td>';
 
-		if ($caneditperms) {
-			if ($aRow->value->Status)
-				print $object->getLibStatus(); // Enable by default
-			elseif ($fuser->rights->$perm)
-				print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $fuser->id . '&pid=' . $aRow->value->id . '&amp;action=remove#' . $aRow->value->id . '">' . img_edit_remove() . '</a>';
-			else
-				print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $fuser->id . '&pid=' . $aRow->value->id . '&amp;action=add#' . $aRow->value->id . '">' . img_edit_add() . '</a>';
-		}
-		else {
-				print $object->getLibStatus();
-		}
-		print '</td>';
+        $perm = $aRow->value->id;
 
-		print'</tr>';
-	}
+
+        if ($caneditperms) {
+            if ($aRow->value->Status)
+                print $object->getLibStatus(); // Enable by default
+            elseif ($fuser->rights->$perm)
+                print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $fuser->id . '&pid=' . $aRow->value->id . '&amp;action=remove#' . $aRow->value->id . '">' . img_edit_remove() . '</a>';
+            else
+                print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $fuser->id . '&pid=' . $aRow->value->id . '&amp;action=add#' . $aRow->value->id . '">' . img_edit_add() . '</a>';
+        }
+        else {
+            print $object->getLibStatus();
+        }
+        print '</td>';
+
+        print'</tr>';
+    }
 }
 print'</tbody>';
 print'</table>';
@@ -251,7 +252,7 @@ print $object->datatablesCreate($obj, "rights");
 
 
 print end_box();
-print '</div>';
+print '</div></div>';
 
 llxFooter();
 ?>
