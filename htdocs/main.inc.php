@@ -217,6 +217,8 @@ if (!defined('NOREQUIREAJAX') && $conf->use_javascript_ajax)
 
 
 
+
+
     
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
@@ -696,6 +698,7 @@ if (!function_exists("llxHeader")) {
      * @return	void
      */
     function llxHeader($head = '', $title = '', $help_url = '', $target = '', $disablejs = 0, $disablehead = 0, $arrayofjs = '', $arrayofcss = '', $morequerystring = '') {
+        global $mysoc;
 
         top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss); // Show html headers
 
@@ -706,9 +709,12 @@ if (!function_exists("llxHeader")) {
 
 
         // Displays title
-        $appli = 'Speedealing';
-        if (!empty($conf->global->MAIN_APPLICATION_TITLE))
-            $appli = $conf->global->MAIN_APPLICATION_TITLE;
+        if (empty($mysoc->name))
+            $appli = 'Speedealing';
+        else
+            $appli = $mysoc->name;
+        //if (!empty($conf->global->MAIN_APPLICATION_TITLE))
+        //    $appli = $conf->global->MAIN_APPLICATION_TITLE;
 
         print '<header role="banner" id="title-bar">';
 
@@ -762,7 +768,7 @@ function top_httphead() {
  * @return	void
  */
 function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arrayofjs = '', $arrayofcss = '') {
-    global $user, $conf, $langs, $db;
+    global $user, $mysoc, $conf, $langs, $db;
 
     top_httphead();
 
@@ -800,9 +806,12 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                 <meta name="author" content="Speedealing Development Team" />
                 <?php
 // Displays title
-                $appli = 'Speedealing';
-                if (!empty($conf->global->MAIN_APPLICATION_TITLE))
-                    $appli = $conf->global->MAIN_APPLICATION_TITLE;
+                if (empty($mysoc->name))
+                    $appli = 'Speedealing';
+                else
+                    $appli = $mysoc->name;
+                //if (!empty($conf->global->MAIN_APPLICATION_TITLE))
+                //    $appli = $conf->global->MAIN_APPLICATION_TITLE;
 
                 if ($title)
                     print '<title>' . $appli . ' - ' . $title . '</title>';
@@ -1043,17 +1052,16 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                 //print '<script type="text/javascript" src="'.DOL_URL_ROOT.'/includes/jquery/plugins/datatables/js/ZeroClipboard'.$ext.'"></script>'."\n";
                 // jQuery Multiselect
                 print '<script type="text/javascript" src="includes/jquery/plugins/multiselect/js/ui.multiselect.js"></script>' . "\n";
-                
+
                 // HightChart
                 print '<script type="text/javascript" src="includes/jquery/plugins/highcharts/js/highcharts.js"></script>';
                 //print '<script type="text/javascript" src="includes/jquery/plugins/highcharts/js/themes/symeos.js"></script>';
-
                 // Highstock
                 //print '<script src="https://ajax.googleapis.com/ajax/libs/mootools/1.4.2/mootools-yui-compressed.js" type="text/javascript"></script>';
                 //print '<script src="includes/jquery/plugins/Highstock/js/adapters/mootools-adapter.js" type="text/javascript"></script>';
                 print '<script type="text/javascript" src="includes/jquery/plugins/highstock/js/highstock.js"></script>';
                 print '<script type="text/javascript" src="includes/jquery/plugins/highcharts/js/themes/symeos.js"></script>';
-                
+
                 // CKEditor
                 print '<script type="text/javascript">var CKEDITOR_BASEPATH = \'' . DOL_URL_ROOT . '/includes/ckeditor/\';</script>' . "\n";
                 print '<script type="text/javascript" src="includes/ckeditor/ckeditor_basic.js"></script>' . "\n";
@@ -1265,13 +1273,13 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                     <div class="columns">
                         <div class="five-columns">
                             <div class="ego-icon big">
-                                <?php if (!empty($user->values->Photo)) : ?>
+    <?php if (!empty($user->values->Photo)) : ?>
                                     <img alt="User name" class="ego-icon-inner"
                                          src="<?php echo $user->getFile($user->values->Photo); ?>">
-                                     <?php else : ?>
+    <?php else : ?>
                                     <img src="theme/symeos/img/user.png"
                                          alt="User name" class="ego-icon-inner">
-                                     <?php endif; ?>
+    <?php endif; ?>
                                 <img class="ego-icon-outer"
                                      src="theme/symeos/img/timbrebase90x100.png">
                             </div>
@@ -1623,7 +1631,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
         <script src="theme/symeos/js/s_scripts.js"></script>
         <script src="theme/symeos/js/symeos.js"></script>
 
-                <!--<script src="theme/developr/html/js/developr.input.js"></script>-->
+                                <!--<script src="theme/developr/html/js/developr.input.js"></script>-->
         <script src="theme/symeos/js/developr.message.js"></script>
         <script src="theme/symeos/js/developr.modal.js"></script>
         <script src="theme/symeos/js/developr.notify.js"></script>
@@ -1645,7 +1653,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
             // Favicon count
             Tinycon.setBubble(2);
-                                                					
+                                                                					
         </script>
 
         <script>
