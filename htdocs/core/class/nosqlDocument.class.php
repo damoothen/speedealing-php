@@ -189,6 +189,7 @@ abstract class nosqlDocument extends CommonObject {
             $this->_id = $this->id;
 
         $values->class = get_class($this);
+        $values->entity = $conf->Couchdb->name;
 
         try {
             $this->couchdb->clean($values);
