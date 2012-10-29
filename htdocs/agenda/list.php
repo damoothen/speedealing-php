@@ -174,6 +174,35 @@ if ($socid) {
 
 
 print_fiche_titre($newtitle);
+
+?>
+<div class="dashboard">
+    <div class="columns">
+        <div class="nine-columns twelve-columns-mobile graph">
+            <?php $object->graphEisenhower();?>
+        </div>
+
+        <div class="three-columns twelve-columns-mobile new-row-mobile">
+            <ul class="stats split-on-mobile">
+                <li><a href="#">
+                        <strong>21</strong> new <br>accounts
+                    </a></li>
+                <li><a href="#">
+                        <strong>15</strong> referred new <br>accounts
+                    </a></li>
+                <li>
+                    <strong>5</strong> new <br>items
+                </li>
+                <li>
+                    <strong>235</strong> new <br>comments
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<?php
+
+
 print '<div class="with-padding">';
 
 /*

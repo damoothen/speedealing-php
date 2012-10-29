@@ -523,24 +523,6 @@ if ($user->societe_id == 0) {
     print end_box();
 }
 
-if ($conf->agenda->enabled && $user->rights->agenda->myactions->read && $conf->highcharts->enabled && $user->rights->highcharts->read) {
-    print start_box($langs->trans("Action"), "eight", "16-Cog-4.png");
-    dol_include_once("/highCharts/class/highCharts.class.php");
-
-    $langs->load("highcharts@highCharts");
-
-    $graph = new HighCharts($db);
-    $graph->width = "100%";
-    $graph->height = "250px";
-    $graph->name = "ActionsToDo";
-    $graph->label = $langs->trans("ActionsToDo");
-    if ($user->rights->highcharts->all) {
-        $graph->mine = 0;
-    }
-    $graph->eisenhower();
-    print end_box();
-}
-
 print '</div>';
 
 /*
@@ -686,25 +668,37 @@ $db->close();
  *  @param      string  $options        More parameters on img tag
  *  @return     string                  Return img tag of weather
  */
-function showWeather($totallate,$text,$options)
-{
+function showWeather($totallate, $text, $options) {
     global $conf;
 
-    $out='';
-    $offset=0;
-    $cursor=10; // By default
+    $out = '';
+    $offset = 0;
+    $cursor = 10; // By default
     //if (! empty($conf->global->MAIN_METEO_OFFSET)) $offset=$conf->global->MAIN_METEO_OFFSET;
     //if (! empty($conf->global->MAIN_METEO_GAP)) $cursor=$conf->global->MAIN_METEO_GAP;
-    $level0=$offset;           if (! empty($conf->global->MAIN_METEO_LEVEL0)) $level0=$conf->global->MAIN_METEO_LEVEL0;
-    $level1=$offset+1*$cursor; if (! empty($conf->global->MAIN_METEO_LEVEL1)) $level1=$conf->global->MAIN_METEO_LEVEL1;
-    $level2=$offset+2*$cursor; if (! empty($conf->global->MAIN_METEO_LEVEL2)) $level2=$conf->global->MAIN_METEO_LEVEL2;
-    $level3=$offset+3*$cursor; if (! empty($conf->global->MAIN_METEO_LEVEL3)) $level3=$conf->global->MAIN_METEO_LEVEL3;
+    $level0 = $offset;
+    if (!empty($conf->global->MAIN_METEO_LEVEL0))
+        $level0 = $conf->global->MAIN_METEO_LEVEL0;
+    $level1 = $offset + 1 * $cursor;
+    if (!empty($conf->global->MAIN_METEO_LEVEL1))
+        $level1 = $conf->global->MAIN_METEO_LEVEL1;
+    $level2 = $offset + 2 * $cursor;
+    if (!empty($conf->global->MAIN_METEO_LEVEL2))
+        $level2 = $conf->global->MAIN_METEO_LEVEL2;
+    $level3 = $offset + 3 * $cursor;
+    if (!empty($conf->global->MAIN_METEO_LEVEL3))
+        $level3 = $conf->global->MAIN_METEO_LEVEL3;
 
-    if ($totallate <= $level0) $out.=img_picto_common($text,'weather/weather-clear.png',$options);
-    if ($totallate > $level0 && $totallate <= $level1) $out.=img_picto_common($text,'weather/weather-few-clouds.png',$options);
-    if ($totallate > $level1 && $totallate <= $level2) $out.=img_picto_common($text,'weather/weather-clouds.png',$options);
-    if ($totallate > $level2 && $totallate <= $level3) $out.=img_picto_common($text,'weather/weather-many-clouds.png',$options);
-    if ($totallate > $level3) $out.=img_picto_common($text,'weather/weather-storm.png',$options);
+    if ($totallate <= $level0)
+        $out.=img_picto_common($text, 'weather/weather-clear.png', $options);
+    if ($totallate > $level0 && $totallate <= $level1)
+        $out.=img_picto_common($text, 'weather/weather-few-clouds.png', $options);
+    if ($totallate > $level1 && $totallate <= $level2)
+        $out.=img_picto_common($text, 'weather/weather-clouds.png', $options);
+    if ($totallate > $level2 && $totallate <= $level3)
+        $out.=img_picto_common($text, 'weather/weather-many-clouds.png', $options);
+    if ($totallate > $level3)
+        $out.=img_picto_common($text, 'weather/weather-storm.png', $options);
     return $out;
 }
 ?>

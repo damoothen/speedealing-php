@@ -40,36 +40,9 @@ if ($user->societe_id)
 $result = restrictedArea($user, 'societe', $socid, '');
 
 $object = new Societe($db);
-
-// Select every potentiels.
-$sql = "SELECT code, label, sortorder";
-$sql.= " FROM " . MAIN_DB_PREFIX . "c_prospectlevel";
-$sql.= " WHERE active > 0";
-$sql.= " ORDER BY sortorder";
-$resql = $db->query($sql);
-if ($resql) {
-    $tab_level = array();
-    while ($obj = $db->fetch_object($resql)) {
-        $level = $obj->code;
-        // Put it in the array sorted by sortorder
-        $tab_level[$obj->sortorder] = $level;
-    }
-
-    // Added by Matelli (init list option)
-    $options = '<option value="">&nbsp;</option>';
-    foreach ($tab_level as $tab_level_label) {
-        $options .= '<option value="' . $tab_level_label . '">';
-        $options .= $langs->trans($tab_level_label);
-        $options .= '</option>';
-    }
-}
-
 /*
  * View
  */
-
-$htmlother = new FormOther($db);
-
 
 llxHeader('', $langs->trans("ThirdParty"), $help_url, '', '', '', '');
 

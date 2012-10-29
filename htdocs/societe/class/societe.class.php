@@ -1905,7 +1905,7 @@ class Societe extends nosqlDocument {
                         // create the chart when all data is loaded
                         function createChart() {
                             var chart;
-                                                                                                                                                                                                                                                                                                                                                        
+                                                                                                                                                                                                                                                                                                                                                                    
                             chart = new Highcharts.Chart({
                                 chart: {
                                     renderTo: "pie-status",
@@ -1971,7 +1971,7 @@ class Societe extends nosqlDocument {
         global $user, $conf, $langs;
 
         $langs->load("companies");
-        
+
         if ($json) { // For Data see viewgraph.php
             $keystart[0] = $_GET["name"];
             $keyend[0] = $_GET["name"];
@@ -2046,7 +2046,7 @@ class Societe extends nosqlDocument {
                             // create the chart when all data is loaded
                             function createChart() {
                                 var chart;
-                                                                                                                                                                                                                                                                                                                                                        
+                                                                                                                                                                                                                                                                                                                                                                    
                                 chart = new Highcharts.Chart({
                                     chart: {
                                         renderTo: 'bar-status',
@@ -2081,7 +2081,7 @@ class Societe extends nosqlDocument {
                                             min: 0
                                         },
                                         title: {
-                                            //text: "<?php echo $langs->trans("SalesRepresentatives");?>"
+                                            //text: "<?php echo $langs->trans("SalesRepresentatives"); ?>"
                                             text: null
                                         },
                                         legend: {

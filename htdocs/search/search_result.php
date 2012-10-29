@@ -63,12 +63,10 @@ try {
 <div class="search_results search_pop">
     <?php if ($valuefounded == true) { ?>
         <h5 class="sepH_b">Showing <?php echo $result->total_rows; ?> results for <mark><?php echo $sParam; ?></mark></h5>
-        <ol>
-            <?php
-            if (isset($result->rows))
-                foreach ($result->rows AS $aRow) :
-                    ?>
-                    <li>
+        <ol><?php
+    if (isset($result->rows))
+        foreach ($result->rows AS $aRow) :
+                ?><li>
                         <a href="societe/fiche.php?id=<?php echo $aRow->value->_id; ?>"><?php echo $aRow->value->name . " (" . $langs->trans($aRow->value->class) . ")"; ?></a>
                         <p><?php echo $aRow->value->address; ?> <?php echo $aRow->value->Zip; ?> <?php echo $aRow->value->Town; ?></br>
                             <?php echo "RCS : " . $aRow->value->idprof1; ?> <?php echo $aRow->value->CustomerCode; ?></br>

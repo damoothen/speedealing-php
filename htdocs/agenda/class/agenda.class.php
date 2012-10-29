@@ -3,7 +3,7 @@
  * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2011	   Juanjo Menent        <jmenent@2byte.es>
- * Copyright (C) 2011	   Herve Prot           <herve.prot@symeos.com>
+ * Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1300,6 +1300,158 @@ class Agenda extends nosqlDocument {
 
         print '</div>';
         print '</div>';
+    }
+
+    /*
+     * Graph Eisenhower matrix
+     *
+     */
+
+    function graphEisenhower($json = false) {
+        global $user, $conf, $langs;
+
+        $langs->load("companies");
+
+        if ($json) { // For Data see viewgraph.php
+            $keystart[0] = $_GET["name"];
+            $keyend[0] = $_GET["name"];
+            $keyend[1] = new stdClass();
+
+            $params = array('group' => true, 'group_level' => 2, 'startkey' => $keystart, 'endkey' => $keyend);
+            $result = $this->getView("list_commercial", $params);
+
+            foreach ($this->fk_extrafields->fields->Status->values as $key => $aRow) {
+                //print_r($aRow);
+                $label = $langs->trans($key);
+                if ($aRow->enable) {
+                    $tab[$key]->label = $label;
+                    $tab[$key]->value = 0;
+                }
+            }
+
+            foreach ($result->rows as $aRow) // Update counters from view
+                $tab[$aRow->key[1]]->value+=$aRow->value;
+
+            foreach ($tab as $aRow)
+                $output[] = array($aRow->label, $aRow->value);
+
+            return $output;
+        } else {
+            $total = 0;
+            $i = 0;
+            ?>
+            <div id="eisenhower" style="min-width: 100px; height: 280px; margin: 0 auto"></div>
+            <script type="text/javascript">
+                (function($){ // encapsulate jQuery
+
+                    $(function() {
+                        var seriesOptions = [],
+                        yAxisOptions = [],
+                        seriesCounter = 0,
+                        names = [<?php
+            $params = array('group' => true, 'group_level' => 1);
+            $result = $this->getView("list_commercial", $params);
+
+            if (count($result->rows)) {
+                foreach ($result->rows as $aRow) {
+                    if ($i == 0)
+                        echo "'" . $aRow->key[0] . "'";
+                    else
+                        echo ",'" . $aRow->key[0] . "'";
+                    $i++;
+                }
+            }
+            ?>],
+                            colors = Highcharts.getOptions().colors;
+                            $.each(names, function(i, name) {
+
+                                $.getJSON('<?php echo DOL_URL_ROOT . '/core/ajax/viewgraph.php'; ?>?json=graphEisenhower&class=<?php echo get_class($this); ?>&name='+ name.toString() +'&callback=?',	function(data) {
+
+                                    seriesOptions[i] = {
+                                        name: name,
+                                        data: data
+                                    };
+
+                                    // As we're loading the data asynchronously, we don't know what order it will arrive. So
+                                    // we keep a counter and create the chart when all the data is loaded.
+                                    seriesCounter++;
+
+                                    if (seriesCounter == names.length) {
+                                        createChart();
+                                    }
+                                });
+                            });
+
+
+                            // create the chart when all data is loaded
+                            function createChart() {
+                                var chart;
+                                                                                                                                                                                                                                                                                                                                                                    
+                                chart = new Highcharts.Chart({
+                                    chart: {
+                                        renderTo: 'eisenhower',
+                                        defaultSeriesType: "column",
+                                        zoomType: "x",
+                                        marginBottom: 30
+                                    },
+                                    credits: {
+                                        enabled:false
+                                    },
+                                    xAxis: {
+                                        categories: [<?php
+            $i = 0;
+            foreach ($this->fk_extrafields->fields->Status->values as $key => $aRow) {
+                $label = $langs->trans($key);
+                if ($aRow->enable) {
+                    if ($i == 0)
+                        echo "'" . $label . "'";
+                    else
+                        echo ",'" . $label . "'";
+
+                    $i++;
+                }
+            }
+            ?>],
+                                            maxZoom: 1
+                                            //labels: {rotation: 90, align: "left"}
+                                        },
+                                        yAxis: {
+                                            title: {text: "Total"},
+                                            allowDecimals: false,
+                                            min: 0
+                                        },
+                                        title: {
+                                            //text: "<?php echo $langs->trans("SalesRepresentatives"); ?>"
+                                            text: null
+                                        },
+                                        legend: {
+                                            layout: 'vertical',
+                                            align: 'right',
+                                            verticalAlign: 'top',
+                                            x: -5,
+                                            y: 5,
+                                            floating: true,
+                                            borderWidth: 1,
+                                            backgroundColor: '#000',
+                                            shadow: true
+                                        },
+                                        tooltip: {
+                                            enabled:true,
+                                            formatter: function() {
+                                                //return this.point.name + ' : ' + this.y;
+                                                return '<b>'+ this.x +'</b><br/>'+
+                                                    this.series.name +': '+ this.y;
+                                            }
+                                        },
+                                        series: seriesOptions
+                                    });
+                                }
+
+                            });
+                        })(jQuery);
+            </script>
+            <?php
+        }
     }
 
 }
