@@ -178,8 +178,8 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->enabled = '$user->admin';
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->title = "Parameters";
-
 		$r++;
+                
 		$this->menus[$r]->_id = "menu:setup";
 		$this->menus[$r]->url = "/admin/index.php";
 		$this->menus[$r]->langs = "admin";

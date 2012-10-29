@@ -249,7 +249,7 @@ class modSociete extends DolibarrModules {
         $this->menus[$r]->perms = '$user->rights->societe->lire';
         $this->menus[$r]->enabled = '$conf->societe->enabled';
         $this->menus[$r]->usertype = 2;
-        $this->menus[$r]->title = 'ContactsAddresses||Contacts@$conf->global->SOCIETE_ADDRESSES_MANAGEMENT';
+        $this->menus[$r]->title = 'ListContacts';
         $this->menus[$r]->fk_menu = "menu:companies";
         $r++;
 

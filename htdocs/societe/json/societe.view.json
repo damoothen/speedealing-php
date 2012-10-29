@@ -12,7 +12,7 @@
            "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\")\n  emit(doc.rowid, doc._id);\n}"
        },
        "count_status": {
-           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\")\n  emit(doc.Status, 1);\n}",
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc._id != \"societe:mysoc\")\n  emit(doc.Status, 1);\n}",
            "reduce": "function(keys, values) {\n  return sum(values)\n}"
        },
        "list_customer_id": {
