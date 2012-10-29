@@ -407,190 +407,173 @@ abstract class nosqlDocument extends CommonObject {
         <script type="text/javascript" charset="utf-8">
             $(document).ready(function() {
                 var oTable = $('#<?php echo $ref_css ?>').dataTable( {
-                    "aoColumns" : [
-        <?php
+                    "aoColumns" : [<?php
         $nb = count($obj->aoColumns);
         foreach ($obj->aoColumns as $i => $aRow):
-            ?>
-                                {
+            ?>{
             <?php foreach ($aRow as $key => $fields): ?>
                 <?php if ($key == "mDataProp" || $key == "sClass" || $key == "sDefaultContent" || $key == "sType" || $key == "sWidth") : ?>
-                                                "<?php echo $key; ?>":"<?php echo $fields; ?>",
+                                            "<?php echo $key; ?>":"<?php echo $fields; ?>",
                 <?php elseif ($key == "fnRender") : ?>
-                                                "<?php echo $key; ?>": <?php echo $fields; ?>,	    
+                                            "<?php echo $key; ?>": <?php echo $fields; ?>,	    
                 <?php else : ?>
-                                                "<?php echo $key; ?>": <?php echo ($fields ? "true" : "false"); ?>,
-                <?php endif; ?>
-                <?php
+                                            "<?php echo $key; ?>": <?php echo ($fields ? "true" : "false"); ?>,
+                <?php endif; ?><?php
             endforeach;
             if ($nb - 1 == $i)
                 echo "}"; else
                 echo"},";
-            ?>
-        <?php endforeach; ?>
-                        ],
-        <?php if (!isset($obj->aaSorting) && $json) : ?>
-                            "aaSorting" : [[1,"asc"]],
+            ?><?php endforeach; ?>],<?php if (!isset($obj->aaSorting) && $json) : ?>
+                        "aaSorting" : [[1,"asc"]],
         <?php else : ?>
-                            "aaSorting" : <?php echo json_encode($obj->aaSorting); ?>,
+                        "aaSorting" : <?php echo json_encode($obj->aaSorting); ?>,
         <?php endif; ?>
         <?php if ($json) : ?>
             <?php if (!empty($obj->sAjaxSource)): ?>
-                                    "sAjaxSource": "<?php echo $obj->sAjaxSource; ?>",
+                                "sAjaxSource": "<?php echo $obj->sAjaxSource; ?>",
             <?php else : ?>
-                                    "sAjaxSource" : "<?php echo DOL_URL_ROOT . '/core/ajax/listDatatables.php'; ?>?json=list&bServerSide=<?php echo $obj->bServerSide; ?>&class=<?php echo get_class($this); ?>",
+                                "sAjaxSource" : "<?php echo DOL_URL_ROOT . '/core/ajax/listDatatables.php'; ?>?json=list&bServerSide=<?php echo $obj->bServerSide; ?>&class=<?php echo get_class($this); ?>",
             <?php endif; ?>
         <?php endif; ?>
         <?php if (!empty($obj->iDisplayLength)): ?>
-                            "iDisplayLength": <?php echo $obj->iDisplayLength; ?>,
+                        "iDisplayLength": <?php echo $obj->iDisplayLength; ?>,
         <?php else : ?>
-                            "iDisplayLength": <?php echo (int) $conf->global->MAIN_SIZE_LISTE_LIMIT; ?>,
+                        "iDisplayLength": <?php echo (int) $conf->global->MAIN_SIZE_LISTE_LIMIT; ?>,
         <?php endif; ?>
-                        "aLengthMenu": [[5, 10, 25, 50, 100],[5, 10, 25, 50, 100]],
-                        "bProcessing": true,
-                        "bJQueryUI": true,
-                        "bAutoWidth": false,
-                        /*"sScrollY": "500px",
-                                        "oScroller": {
-                                                "loadingIndicator": true
-                                        },*/
+                    "aLengthMenu": [[5, 10, 25, 50, 100],[5, 10, 25, 50, 100]],
+                    "bProcessing": true,
+                    "bJQueryUI": true,
+                    "bAutoWidth": false,
         <?php if ($obj->bServerSide) : ?>
-                            "bServerSide": true,
+                        "bServerSide": true,
         <?php else : ?>
-                            "bServerSide": false,
+                        "bServerSide": false,
         <?php endif; ?>
-                        "bDeferRender": true,
-                        "oLanguage": { "sUrl": "<?php echo DOL_URL_ROOT . '/includes/jquery/plugins/datatables/langs/' . ($langs->defaultlang ? $langs->defaultlang : "en_US") . ".txt"; ?>"},
-                        /*$obj->sDom = '<\"top\"Tflpi<\"clear\">>rt<\"bottom\"pi<\"clear\">>';*/
-                        /*$obj->sPaginationType = 'full_numbers';*/
-                        /*$obj->sDom = 'TC<\"clear\">lfrtip';*/																																																																																								    
-                        "oColVis": { "buttonText" : 'Voir/Cacher',
-                            "aiExclude": [0,1] // Not cacheable _id and name
-                        },
-                        //$obj->oColVis->bRestore = true;
-                        //$obj->oColVis->sAlign = 'left';
-                        																																																																																								            
-                        // Avec export Excel
+                    "bDeferRender": true,
+                    "oLanguage": { "sUrl": "<?php echo DOL_URL_ROOT . '/includes/jquery/plugins/datatables/langs/' . ($langs->defaultlang ? $langs->defaultlang : "en_US") . ".txt"; ?>"},																																																																																								    
+                    "oColVis": { "buttonText" : 'Voir/Cacher',
+                        "aiExclude": [0,1] // Not cacheable _id and name
+                    },          																																																																																								            
+                    // Avec export Excel
         <?php if (!empty($obj->sDom)) : ?>
-                            //"sDom": "Cl<fr>t<\"clear\"rtip>",
-                            "sDom": "<?php echo $obj->sDom; ?>",
+                        //"sDom": "Cl<fr>t<\"clear\"rtip>",
+                        "sDom": "<?php echo $obj->sDom; ?>",
         <?php else : ?>
-                            "sDom": "C<\"clear\"fr>lt<\"clear\"rtip>",
-                            //"sDom": "C<\"clear\"fr>tiS",
-                            //"sDom": "TC<\"clear\"fr>lt<\"clear\"rtip>",
+                        "sDom": "C<\"clear\"fr>lt<\"clear\"rtip>",
+                        //"sDom": "C<\"clear\"fr>tiS",
+                        //"sDom": "TC<\"clear\"fr>lt<\"clear\"rtip>",
         <?php endif; ?>
-                        // bottons
+                    // bottons
         <?php if ($obj->oTableTools->aButtons != null) : ?>
-                            "oTableTools" : { "aButtons": [
+                        "oTableTools" : { "aButtons": [
             <?php foreach ($obj->oTableTools->aButtons as $i => $aRow): ?>                           
                 <?php if (is_array($aRow)): ?>
-                                                    {
+                                                {
                     <?php foreach ($aRow as $key => $fields): ?>
                         <?php if ($key == "fnClick" || $key == "fnAjaxComplete") : ?>
-                                                                        "<?php echo $key; ?>": <?php echo $fields; ?>,	    
+                                                                    "<?php echo $key; ?>": <?php echo $fields; ?>,	    
                         <?php else : ?>
-                                                                        "<?php echo $key; ?>":"<?php echo $fields; ?>",
+                                                                    "<?php echo $key; ?>":"<?php echo $fields; ?>",
                         <?php endif; ?>
                     <?php endforeach; ?>
-                                                        },
+                                                    },
                 <?php else : ?>
-                {
-                    "sExtends": "<?php echo $aRow; ?>",
-                    "sFieldBoundary": '"',
-                    //"sFieldSeperator": "-",
-                    "sCharSet": "utf8",
-                    "sFileName": "export.csv",
-                    "bSelectedOnly": false
-                },
+                                                {
+                                                    "sExtends": "<?php echo $aRow; ?>",
+                                                    "sFieldBoundary": '"',
+                                                    //"sFieldSeperator": "-",
+                                                    "sCharSet": "utf8",
+                                                    "sFileName": "export.csv",
+                                                    "bSelectedOnly": false
+                                                },
                 <?php endif; ?>
             <?php endforeach; ?>
-                                    ],
-                                    "sSwfPath": "<?php echo DOL_URL_ROOT . '/includes/jquery/plugins/datatables/extras/TableTools/media/swf/copy_csv_xls.swf'; ?>",
-                                    "sRowSelect": "multi"
-                                },
+                                ],
+                                "sSwfPath": "<?php echo DOL_URL_ROOT . '/includes/jquery/plugins/datatables/extras/TableTools/media/swf/copy_csv_xls.swf'; ?>",
+                                "sRowSelect": "multi"
+                            },
         <?php endif; ?>
         <?php if (isset($obj->fnRowCallback)): ?>
-                            "fnRowCallback": <?php echo $obj->fnRowCallback; ?>,
+                        "fnRowCallback": <?php echo $obj->fnRowCallback; ?>,
         <?php endif; ?>
         <?php if (isset($obj->fnFooterCallback)): ?>
-                            "fnFooterCallback": <?php echo $obj->fnFooterCallback; ?>,
+                        "fnFooterCallback": <?php echo $obj->fnFooterCallback; ?>,
         <?php endif; ?>
 
         <?php if (!defined('NOLOGIN')) : ?>
             <?php if (isset($obj->fnDrawCallback)): ?>
-                                    "fnDrawCallback": <?php echo $obj->fnDrawCallback; ?>,
+                                "fnDrawCallback": <?php echo $obj->fnDrawCallback; ?>,
             <?php else : ?>
-                                    // jeditable
-                                    "fnDrawCallback": function () {
-                                        var columns = [
+                                // jeditable
+                                "fnDrawCallback": function () {
+                                    var columns = [
                 <?php foreach ($obj->aoColumns as $i => $aRow) : ?>
-                                                    "<?php echo $aRow->mDataProp; ?>",
+                                                "<?php echo $aRow->mDataProp; ?>",
                 <?php endforeach; ?>
-                                            ];
-                                            $("td.edit", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
-                                                "callback": function( sValue, y ) {
-                                                    oTable.fnDraw();
-                                                    //oTable.fnReloadAjax();
-                                                },
-                                                "submitdata": function ( value, settings ) {
-                                                    return { "id": oTable.fnGetData( this.parentNode, 0), 
-                                                        "key": columns[oTable.fnGetPosition( this )[2]]};
-                                                },
-                                                "height": "14px",
-                                                "tooltip": "Cliquer pour éditer...",
-                                                "indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
-                                                "placeholder" : ""
-                                                																																																																																																																																																																																                
-                                            } );
-                                            $("td.select", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
-                                                "callback": function( sValue, y ) {
-                                                    oTable.fnDraw();
-                                                    //oTable.fnReloadAjax();
-                                                },
-                                                "submitdata": function ( value, settings ) {
-                                                    //alert( 'Number of rows: '+ oTable.fnGetData( this.parentNode, oTable.fnGetPosition( this )[2] ));
-                                                    return { "id": oTable.fnGetData( this.parentNode, 0), 
-                                                        "key": columns[oTable.fnGetPosition( this )[2]]};
-                                                },
-                                                "loadurl" : '<?php echo DOL_URL_ROOT . '/core/ajax/loadinplace.php'; ?>?json=Status&class=<?php echo get_class($this); ?>',
-                                                "type" : 'select',
-                                                "submit" : 'OK',
-                                                "height": "14px",
-                                                "tooltip": "Cliquer pour éditer...",
-                                                "indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
-                                                "placeholder" : ""
-                                                																																																																																																																																																																																                
-                                            } );
-                                        }
+                                        ];
+                                        $("td.edit", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
+                                            "callback": function( sValue, y ) {
+                                                oTable.fnDraw();
+                                            },
+                                            "submitdata": function ( value, settings ) {
+                                                return { "id": oTable.fnGetData( this.parentNode, 0), 
+                                                    "key": columns[oTable.fnGetPosition( this )[2]]};
+                                            },
+                                            "height": "14px",
+                                            "tooltip": "Cliquer pour éditer...",
+                                            "indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
+                                            "placeholder" : ""
+                                                                																																																																																																																																																																																                
+                                        } );
+                                        $("td.select", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?json=edit&class=<?php echo get_class($this); ?>', {
+                                            "callback": function( sValue, y ) {
+                                                oTable.fnDraw();
+                                                //oTable.fnReloadAjax();
+                                            },
+                                            "submitdata": function ( value, settings ) {
+                                                //alert( 'Number of rows: '+ oTable.fnGetData( this.parentNode, oTable.fnGetPosition( this )[2] ));
+                                                return { "id": oTable.fnGetData( this.parentNode, 0), 
+                                                    "key": columns[oTable.fnGetPosition( this )[2]]};
+                                            },
+                                            "loadurl" : '<?php echo DOL_URL_ROOT . '/core/ajax/loadinplace.php'; ?>?json=Status&class=<?php echo get_class($this); ?>',
+                                            "type" : 'select',
+                                            "submit" : 'OK',
+                                            "height": "14px",
+                                            "tooltip": "Cliquer pour éditer...",
+                                            "indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
+                                            "placeholder" : ""
+                                                                																																																																																																																																																																																                
+                                        } );
+                                    }
             <?php endif; ?>
         <?php endif; ?>
-                    });
-        <?php if ($ColSearch) : ?>
-                        $("tfoot input").keyup( function () {
-                            /* Filter on the column */
-                            var id = $(this).parent().attr("id");
-                            oTable.fnFilter( this.value, id);
-                        } );
-                        /*send selected level value to server */        
-                        $("tfoot #level").change( function () {
-                            /* Filter on the column */
-                            var id = $(this).parent().attr("id");
-                            var value = $(this).val();
-                            oTable.fnFilter( value, id);
-                        } );
-                        /*send selected stcomm value to server */   
-                        $("tfoot .flat").change( function () {
-                            /* Filter on the column */
-                            var id = $(this).parent().attr("id");
-                            var value = $(this).val();
-                            oTable.fnFilter( value, id);
-                        } );
-        <?php endif; ?>
-                    // Select_all
-                    $(document).ready(function() {
-                        prth_datatable.dt_actions();
-                    });
                 });
+        <?php if ($ColSearch) : ?>
+                    $("tfoot input").keyup( function () {
+                        /* Filter on the column */
+                        var id = $(this).parent().attr("id");
+                        oTable.fnFilter( this.value, id);
+                    } );
+                    /*send selected level value to server */        
+                    $("tfoot #level").change( function () {
+                        /* Filter on the column */
+                        var id = $(this).parent().attr("id");
+                        var value = $(this).val();
+                        oTable.fnFilter( value, id);
+                    });
+                    /*send selected stcomm value to server */   
+                    $("tfoot .flat").change( function () {
+                        /* Filter on the column */
+                        var id = $(this).parent().attr("id");
+                        var value = $(this).val();
+                        oTable.fnFilter( value, id);
+                    });
+        <?php endif; ?>
+                // Select_all
+                $(document).ready(function() {
+                    prth_datatable.dt_actions();
+                });
+            });
         </script>
         <?php
         //$output.= "});"; // ATTENTION AUTOFILL NOT COMPATIBLE WITH COLVIS !!!!
@@ -940,17 +923,17 @@ abstract class nosqlDocument extends CommonObject {
         </div>
         <?php ?>
         <script type="text/javascript" charset="utf-8">
-                $(document).ready(function() {
-                    $("#fd3").fancybox({
-                        'overlayOpacity'	: '0.2',
-                        'transitionIn'		: 'elastic',
-                        'transitionOut'		: 'fade',
-                        'onCleanup'			: function() {
-                            if($('.fd3_pane:first').is(':hidden')){$('.fd3_pane').toggle();$.fancybox.resize();}
-                            $('.fd3_pane label.error').remove();
-                        }
-                    });
+            $(document).ready(function() {
+                $("#fd3").fancybox({
+                    'overlayOpacity'	: '0.2',
+                    'transitionIn'		: 'elastic',
+                    'transitionOut'		: 'fade',
+                    'onCleanup'			: function() {
+                        if($('.fd3_pane:first').is(':hidden')){$('.fd3_pane').toggle();$.fancybox.resize();}
+                        $('.fd3_pane label.error').remove();
+                    }
                 });
+            });
         </script>
         <?php
         return 1;
