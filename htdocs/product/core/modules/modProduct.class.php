@@ -49,7 +49,7 @@ class modProduct extends DolibarrModules {
 
         $this->family = "products";
         // Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-        $this->name = preg_replace('/^mod/i', '', strtolower(get_class($this)));
+        $this->name = preg_replace('/^mod/i', '', get_class($this));
         $this->description = "Gestion des produits";
 
         // Possible values for version are: 'development', 'experimental', 'dolibarr' or version
@@ -129,17 +129,19 @@ class modProduct extends DolibarrModules {
         $this->menus[$r]->type = "top";
         $this->menus[$r]->langs = "products";
         $this->menus[$r]->position = 3;
-        $this->menus[$r]->enabled = '$user->rights->produit->lire || $user->rights->service->lire';
+        $this->menus[$r]->perms = '$user->rights->produit->lire || $user->rights->service->lire';
+        $this->menus[$r]->enabled = '$conf->produit->enabled || $conf->service->enabled';
         $this->menus[$r]->usertype = 2;
         $this->menus[$r]->title = "Products/Services";
         $r++;
-        
+
         $this->menus[$r]->_id = "menu:productlist";
-        $this->menus[$r]->url = "/product/liste.php?type=0";
+        $this->menus[$r]->url = "/product/list.php?type=0";
         $this->menus[$r]->langs = "products";
         $this->menus[$r]->position = 1;
         $this->menus[$r]->usertype = 2;
-        $this->menus[$r]->enabled = '$user->rights->produit->lire';
+        $this->menus[$r]->perms = '$user->rights->produit->lire';
+        $this->menus[$r]->enabled = '$conf->produit->enabled';
         $this->menus[$r]->title = "ListProducts";
         $this->menus[$r]->fk_menu = "menu:products";
         $r++;

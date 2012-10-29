@@ -206,7 +206,7 @@ class Conf extends nosqlDocument {
 
         $result = $object->getView("list", array(), true);
         foreach ($result->rows as $aRow) {
-            $modulename = $aRow->key;
+            $modulename = strtolower($aRow->key);
             $this->$modulename = $aRow->value;
             $this->modules[] = $modulename;
         }
@@ -242,8 +242,9 @@ class Conf extends nosqlDocument {
 
 
 
+
             
-// Variable globales LDAP
+        // Variable globales LDAP
         if (empty($this->global->LDAP_FIELD_FULLNAME))
             $this->global->LDAP_FIELD_FULLNAME = '';
         if (!isset($this->global->LDAP_KEY_USERS))
@@ -342,14 +343,10 @@ class Conf extends nosqlDocument {
 
 
 
+
             
 // conf->use_javascript_ajax
         $this->use_javascript_ajax = 1;
-        if (isset($this->global->MAIN_DISABLE_JAVASCRIPT))
-            $this->use_javascript_ajax = !$this->global->MAIN_DISABLE_JAVASCRIPT;
-        // If no javascript_ajax, Ajax features are disabled.
-        if (!$this->use_javascript_ajax)
-            $this->global->PRODUIT_USE_SEARCH_TO_SELECT = 0;
 
         // conf->currency
         if (empty($this->global->MAIN_MONNAIE))
@@ -359,6 +356,7 @@ class Conf extends nosqlDocument {
         // conf->global->COMPTA_MODE = Option des modules Comptabilites (simple ou expert). Defini le mode de calcul des etats comptables (CA,...)
         if (empty($this->global->COMPTA_MODE))
             $this->global->COMPTA_MODE = 'RECETTES-DEPENSES';  // By default. Can be 'RECETTES-DEPENSES' ou 'CREANCES-DETTES'
+
 
 
 

@@ -1,7 +1,7 @@
 <?php
 
-/* Copyright (C) 2012      Patrick Mary             <laube@hotmail.fr>
- * Copyright (C) 2012      Herve Prot               <herve.prot@symeos.com>
+/* Copyright (C) 2012      Herve Prot               <herve.prot@symeos.com>
+ * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -32,7 +32,7 @@ $couchdb = clone $couch;
 $flush = 0;
 if ($flush) {
     // reset old value
-    $result = $couchdb->limit(50000)->getView('Societe', 'target_id');
+    $result = $couchdb->limit(50000)->getView('Product', 'target_id');
     $i = 0;
 
     if (count($result->rows) == 0) {

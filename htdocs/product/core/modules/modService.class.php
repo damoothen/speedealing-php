@@ -50,7 +50,7 @@ class modService extends DolibarrModules {
 
         $this->family = "products";
         // Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-        $this->name = preg_replace('/^mod/i', '', strtolower(get_class($this)));
+        $this->name = preg_replace('/^mod/i', '', get_class($this));
         $this->description = "Gestion des services";
 
         // Possible values for version are: 'development', 'experimental', 'dolibarr' or version
@@ -112,11 +112,12 @@ class modService extends DolibarrModules {
         $r = 0;
         
         $this->menus[$r]->_id = "menu:servicelist";
-        $this->menus[$r]->url = "/product/liste.php?type=1";
+        $this->menus[$r]->url = "/product/list.php?type=1";
         $this->menus[$r]->langs = "products";
         $this->menus[$r]->position = 2;
         $this->menus[$r]->usertype = 2;
-        $this->menus[$r]->enabled = '$user->rights->service->lire';
+        $this->menus[$r]->perms = '$user->rights->service->lire';
+        $this->menus[$r]->enabled = '$conf->service->enabled';
         $this->menus[$r]->title = "ListServices";
         $this->menus[$r]->fk_menu = "menu:products";
         $r++;

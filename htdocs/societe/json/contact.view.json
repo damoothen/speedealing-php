@@ -11,6 +11,9 @@
        "tag": {
            "map": "function(doc) {\nif(doc.class==\"Contact\" && doc.Tag.length > 0) {\n    for(var idx in doc.Tag) {\n      emit(doc.Tag[idx], 1);\n    }\n  }\n}",
            "reduce": "function(keys, values) {\n  return sum(values)\n}"
+       },
+       "target_id": {
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Contact\")\n  \temit(doc._id, {_id:doc._id, _rev:doc._rev});\n}"
        }
    }
 }

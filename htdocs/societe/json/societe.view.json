@@ -6,7 +6,7 @@
            "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc._id != \"societe:mysoc\")\n  emit(doc.name, doc);\n}"
        },
        "target_id": {
-           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\")\n  \temit(doc._id, {_id:doc._id, _rev:doc._rev});\n}"
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc._id != \"societe:mysoc\")\n  \temit(doc._id, {_id:doc._id, _rev:doc._rev});\n}"
        },
        "rowid": {
            "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\")\n  emit(doc.rowid, doc._id);\n}"
