@@ -162,7 +162,7 @@ if ($action == 'set' && $user->admin) {
         $object->enabled = true;
         dol_delcache("MenuAuguria:list"); //refresh menu
         dol_delcache("MenuAuguria:submenu"); //refresh menu
-        dol_delcache("extrafields:" . $object->class); //refresh extrafields
+        dol_delcache("extrafields:" . $objMod->name); //refresh extrafields
         dol_delcache("const"); //delete $conf
         dol_delcache("DolibarrModules:list"); //refresh menu
         dol_delcache("DolibarrModules:default_right");

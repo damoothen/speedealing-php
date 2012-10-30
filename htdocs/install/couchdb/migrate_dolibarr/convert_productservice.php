@@ -87,57 +87,64 @@ while ($aRow = $db->fetch_object($result)) {
     $col[$aRow->rowid]->ref_ext = $aRow->ref_ext;
     $col[$aRow->rowid]->datec = $db->jdate($aRow->datec);
     $col[$aRow->rowid]->virtual = $aRow->virtual;
+    if ($aRow->type == 0) {
+        if ($aRow->finished == 1)
+            $col[$aRow->rowid]->finished = "finished";
+        else
+            $col[$aRow->rowid]->finished = "rowmaterial";
+    }
     $col[$aRow->rowid]->tms = $db->jdate($aRow->tms);
     $col[$aRow->rowid]->label = $aRow->label;
     $col[$aRow->rowid]->description = $aRow->description;
     $col[$aRow->rowid]->notes = $aRow->note;
     $col[$aRow->rowid]->customcode = $aRow->customcode;
     $col[$aRow->rowid]->country_id = $aRow->code; // FR
-    $col[$aRow->rowid]->recuperableonly = (bool)$aRow->recuperableonly;
+    $col[$aRow->rowid]->recuperableonly = (bool) $aRow->recuperableonly;
     $col[$aRow->rowid]->fk_user_author = $aRow->user_author;
-    
-    if((bool)$aRow->tosell)
+
+    if ((bool) $aRow->tosell)
         $col[$aRow->rowid]->Status = "SELL";
-    if((bool)$aRow->tobuy){
-        if((bool)$aRow->tosell)
+    if ((bool) $aRow->tobuy) {
+        if ((bool) $aRow->tosell)
             $col[$aRow->rowid]->Status = "SELLBUY";
         else
             $col[$aRow->rowid]->Status = "BUY";
     }
-    if(empty($col[$aRow->rowid]->Status))
+    if (empty($col[$aRow->rowid]->Status))
         $col[$aRow->rowid]->Status = "DISABLE";
-    
-    if((int)$aRow->fk_product_type)
+
+    if ((int) $aRow->fk_product_type)
         $col[$aRow->rowid]->type = "SERVICE";
     else
         $col[$aRow->rowid]->type = "PRODUCT";
-    
+
     $col[$aRow->rowid]->duration = $aRow->duration;
     $col[$aRow->rowid]->seuil_stock_alerte = $aRow->seuil_stock_alerte;
     $col[$aRow->rowid]->barcode = $aRow->barcode;
     $col[$aRow->rowid]->fk_barcode_type = $aRow->fk_barcode_type;
-    
-    
+
+
     $col[$aRow->rowid]->accountancy_code_sell = $aRow->accountancy_code_sell;
     $col[$aRow->rowid]->accountancy_code_buy = $aRow->accountancy_code_buy;
-    
+
     $col[$aRow->rowid]->entity = $conf->Couchdb->name;
-    
+
     $col[$aRow->rowid]->partnumber = $aRow->partnumber;
-    $col[$aRow->rowid]->weight = (float)$aRow->weight;
+    $col[$aRow->rowid]->weight = (float) $aRow->weight;
     $col[$aRow->rowid]->weight_units = $aRow->weight_units;
-    $col[$aRow->rowid]->length = (float)$aRow->length;
+    $col[$aRow->rowid]->length = (float) $aRow->length;
     $col[$aRow->rowid]->length_units = $aRow->length_units;
-    $col[$aRow->rowid]->surface = (float)$aRow->surface;
+    $col[$aRow->rowid]->surface = (float) $aRow->surface;
     $col[$aRow->rowid]->surface_units = $aRow->surface_units;
     $col[$aRow->rowid]->volume = $aRow->volume;
     $col[$aRow->rowid]->volume_units = $aRow->volume_units;
     $col[$aRow->rowid]->stock = $aRow->stock;
-    $col[$aRow->rowid]->pmp = (float)$aRow->pmp;
+    $col[$aRow->rowid]->pmp = (float) $aRow->pmp;
     $col[$aRow->rowid]->hidden = $aRow->hidden;
-    
+
+    $col[$aRow->rowid]->price = array();
     //print count($col[$aRow->rowid]->country_id);exit;
-    
+
     $i++;
 }
 
@@ -160,25 +167,25 @@ while ($aRow = $db->fetch_object($result)) {
     if (!empty($col[$aRow->fk_product]->import_key)) {
         $obj = new stdClass();
         $obj->tms = $db->jdate($aRow->tms);
-        $obj->price = (float)$aRow->price;
-        $obj->price_ttc = (float)$aRow->price_ttc;
-        $obj->price_min = (float)$aRow->price_min;
-        $obj->price_min_ttc = (float)$aRow->price_min_ttc;
-        $obj->price_level = (int)$aRow->price_level;
-        $obj->ecotax = (float)$aRow->ecotax;
-        $obj->ecotax_ttc = (float)$aRow->ecotax_ttc;
+        $obj->price = (float) $aRow->price;
+        $obj->price_ttc = (float) $aRow->price_ttc;
+        $obj->price_min = (float) $aRow->price_min;
+        $obj->price_min_ttc = (float) $aRow->price_min_ttc;
+        $obj->price_level = (int) $aRow->price_level;
+        $obj->ecotax = (float) $aRow->ecotax;
+        $obj->ecotax_ttc = (float) $aRow->ecotax_ttc;
         $obj->price_base_type = $aRow->price_base_type;
-        $obj->tva_tx = (float)$aRow->tva_tx;
-        $obj->recuperableonly = (bool)$aRow->recuperableonly;
-        $obj->localtax1_tx = (float)$aRow->localtax1_tx;
-        $obj->localtax2_tx = (float)$aRow->localtax2_tx;
+        $obj->tva_tx = (float) $aRow->tva_tx;
+        $obj->recuperableonly = (bool) $aRow->recuperableonly;
+        $obj->localtax1_tx = (float) $aRow->localtax1_tx;
+        $obj->localtax2_tx = (float) $aRow->localtax2_tx;
         $obj->fk_user_author = $aRow->user_author;
-        
+
         //print_r($obj);exit;
-        if(isset($col[$aRow->fk_product]->price[(int)$aRow->price_level-1])) 
-            $col[$aRow->fk_product]->history_price[] = clone $col[$aRow->fk_product]->price[(int)$aRow->price_level-1];
-          
-        $col[$aRow->fk_product]->price[(int)$aRow->price_level-1] = clone $obj;
+        if (isset($col[$aRow->fk_product]->price[(int) $aRow->price_level - 1]))
+            $col[$aRow->fk_product]->history_price[] = clone $col[$aRow->fk_product]->price[(int) $aRow->price_level - 1];
+
+        $col[$aRow->fk_product]->price[(int) $aRow->price_level - 1] = clone $obj;
     }
 }
 $db->free($result);
@@ -190,7 +197,6 @@ unset($result);
 $sql = " SELECT fk_product,label FROM (llx_categorie_product as cs,llx_categorie as c) 
 where "/* cs.fk_societe in ($companies) and */ . "cs.fk_categorie=c.rowid";
 //$sql .= " LIMIT 100";
-
 //print $sql;exit;
 
 $result = $db->query($sql);

@@ -37,6 +37,159 @@
                    "cssClass": "blue-gradient"
                }
            }
+       },
+       "country_id": {
+           "type": "select",
+           "enable": true,
+           "dict": "dict:country",
+           "default": "substr($langs->defaultlang,3,5)"
+       },
+       "weight_units": {
+           "type": "select",
+           "enable": true,
+           "default": "kg",
+           "values": {
+               "ton": {
+                   "enable": true,
+                   "label": "WeightUnitton"
+               },
+               "kg": {
+                   "enable": true,
+                   "label": "WeightUnitkg"
+               },
+               "g": {
+                   "enable": true,
+                   "label": "WeightUnitg"
+               },
+               "mg": {
+                   "enable": true,
+                   "label": "WeightUnitmg"
+               },
+               "pound": {
+                   "enable": true,
+                   "label": "WeightUnitpound"
+               }
+           }
+       },
+       "size_units": {
+           "type": "select",
+           "enable": true,
+           "default": "m",
+           "values": {
+               "m": {
+                   "enable": true,
+                   "label": "SizeUnitm"
+               },
+               "dm": {
+                   "enable": true,
+                   "label": "SizeUnitdm"
+               },
+               "cm": {
+                   "enable": true,
+                   "label": "SizeUnitcm"
+               },
+               "mm": {
+                   "enable": true,
+                   "label": "SizeUnitmm"
+               },
+               "foot": {
+                   "enable": true,
+                   "label": "SizeUnitfoot"
+               },
+               "inch": {
+                   "enable": true,
+                   "label": "SizeUnitinch"
+               }
+           }
+       },
+       "surface_units": {
+           "type": "select",
+           "enable": true,
+           "default": "m2",
+           "values": {
+               "m2": {
+                   "enable": true,
+                   "label": "SurfaceUnitm2"
+               },
+               "dm2": {
+                   "enable": true,
+                   "label": "SurfaceUnitdm2"
+               },
+               "cm2": {
+                   "enable": true,
+                   "label": "SurfaceUnitcm2"
+               },
+               "mm2": {
+                   "enable": true,
+                   "label": "SurfaceUnitmm2"
+               },
+               "foot2": {
+                   "enable": true,
+                   "label": "SurfaceUnitfoot2"
+               },
+               "inch2": {
+                   "enable": true,
+                   "label": "SurfaceUnitinch2"
+               }
+           }
+       },
+       "volume_units": {
+           "type": "select",
+           "enable": true,
+           "default": "m3",
+           "values": {
+               "m3": {
+                   "enable": true,
+                   "label": "VolumeUnitm3"
+               },
+               "dm3": {
+                   "enable": true,
+                   "label": "VolumeUnitdm3"
+               },
+               "cm3": {
+                   "enable": true,
+                   "label": "VolumeUnitcm3"
+               },
+               "mm3": {
+                   "enable": true,
+                   "label": "VolumeUnitmm3"
+               },
+               "foot3": {
+                   "enable": true,
+                   "label": "VolumeUnitfoot3"
+               },
+               "inch3": {
+                   "enable": true,
+                   "label": "VolumeUnitinch3"
+               },
+               "ounce": {
+                   "enable": true,
+                   "label": "VolumeUnitounce"
+               },
+               "l": {
+                   "enable": true,
+                   "label": "VolumeUnitlitre"
+               },
+               "gallon": {
+                   "enable": true,
+                   "label": "VolumeUnitgallon"
+               }
+           }
+       },
+       "finished": {
+           "type": "select",
+           "enable": true,
+           "default": "finished",
+           "values": {
+               "finished": {
+                   "enable": true,
+                   "label": "Finished"
+               },
+               "rowmaterial": {
+                   "enable": true,
+                   "label": "RowMaterial"
+               }
+           }
        }
    }
 }

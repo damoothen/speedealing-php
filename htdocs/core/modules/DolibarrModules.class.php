@@ -575,7 +575,7 @@ class DolibarrModules extends nosqlDocument {
         $ok = 1;
         foreach ($conf->file->dol_document_root as $dirroot) {
             if ($ok) {
-                $dir = $dirroot . "/" . $this->name . "/json/";
+                $dir = $dirroot . "/" . strtolower($this->name) . "/json/";
                 $ok = 0;
 
                 // Create or upgrade views and documents

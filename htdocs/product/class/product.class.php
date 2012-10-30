@@ -138,8 +138,8 @@ class Product extends nosqlDocument {
      */
     function __construct($db) {
         global $langs;
-        
-         parent::__construct($db);
+
+        parent::__construct($db);
 
         try {
             $fk_extrafields = new ExtraFields($db);
@@ -929,6 +929,8 @@ class Product extends nosqlDocument {
             if (empty($localtax2))
                 $localtax2 = 0; // If = '' then = 0
 
+
+
                 
 // Ne pas mettre de quote sur les numeriques decimaux.
             // Ceci provoque des stockages avec arrondis en base au lieu des valeurs exactes.
@@ -989,143 +991,36 @@ class Product extends nosqlDocument {
      *  @param	string	$ref_ext	Ref ext of product/service to load
      *  @return int     			<0 if KO, >0 if OK
      */
-    function fetch($id = '', $ref = '', $ref_ext = '') {
-        include_once DOL_DOCUMENT_ROOT . '/core/lib/company.lib.php';
+    function fetch($id = '') {
+        //include_once DOL_DOCUMENT_ROOT . '/core/lib/company.lib.php';
 
         global $langs, $conf;
 
         dol_syslog(get_class($this) . "::fetch id=" . $id . " ref=" . $ref . " ref_ext=" . $ref_ext);
 
         // Check parameters
-        if (!$id && !$ref && !$ref_ext) {
+        if (!$id) {
             $this->error = 'ErrorWrongParameters';
             dol_print_error(get_class($this) . "::fetch " . $this->error, LOG_ERR);
             return -1;
         }
 
-        $sql = "SELECT rowid, ref, label, description, note, customcode, fk_country, price, price_ttc,";
-        $sql.= " price_min, price_min_ttc, price_base_type, tva_tx, recuperableonly as tva_npr, localtax1_tx, localtax2_tx, tosell, ecotax, ecotax_ttc,";
-        $sql.= " tobuy, fk_product_type, duration, seuil_stock_alerte, canvas,";
-        $sql.= " weight, weight_units, length, length_units, surface, surface_units, volume, volume_units, barcode, fk_barcode_type, finished,";
-        $sql.= " accountancy_code_buy, accountancy_code_sell, stock, pmp,";
-        $sql.= " datec, tms, import_key, entity";
-        $sql.= " FROM " . MAIN_DB_PREFIX . "product";
-        if ($id)
-            $sql.= " WHERE rowid = '" . $id . "'";
-        else {
-            $sql.= " WHERE entity IN (" . getEntity($this->element, 1) . ")";
-            if ($ref)
-                $sql.= " AND ref = '" . $this->db->escape($ref) . "'";
-            else if ($ref_ext)
-                $sql.= " AND ref_ext = '" . $this->db->escape($ref_ext) . "'";
+        $this->load($id);
+        
+        // Old compatibility
+        if(!isset($this->duration_unit)) {
+            $this->duration_value = substr($this->duration, 0, dol_strlen($this->duration) - 1);
+            $this->duration_unit = substr($this->duration, -1);
         }
+        
+        // multilangs
+        if (!empty($conf->global->MAIN_MULTILANGS))
+            $this->getMultiLangs();
 
-        dol_syslog(get_class($this) . "::fetch sql=" . $sql);
-        $resql = $this->db->query($sql);
-        if ($resql) {
-            if ($this->db->num_rows($resql) > 0) {
-                $obj = $this->db->fetch_object($resql);
+        //$res = $this->load_stock();
+        $res =1;
 
-                $this->id = $obj->rowid;
-                $this->ref = $obj->ref;
-                $this->libelle = $obj->label;  // TODO deprecated
-                $this->label = $obj->label;
-                $this->description = $obj->description;
-                $this->note = $obj->note;
-
-                $this->type = $obj->fk_product_type;
-                $this->Status = $obj->tosell;
-                $this->Status_buy = $obj->tobuy;
-
-                $this->customcode = $obj->customcode;
-                $this->country_id = $obj->fk_country;
-                $this->country_code = getCountry($this->country_id, 2, $this->db);
-                $this->price = $obj->price;
-                $this->price_ttc = $obj->price_ttc;
-                $this->price_min = $obj->price_min;
-                //! ecotaxe
-                $this->ecotax = $obj->ecotax;
-                $this->ecotax_ttc = $obj->ecotax_ttc;
-                $this->price_min_ttc = $obj->price_min_ttc;
-                $this->price_base_type = $obj->price_base_type;
-                $this->tva_tx = $obj->tva_tx;
-                //! French VAT NPR
-                $this->tva_npr = $obj->tva_npr;
-                //! Spanish local taxes
-                $this->localtax1_tx = $obj->localtax1_tx;
-                $this->localtax2_tx = $obj->localtax2_tx;
-
-                $this->finished = $obj->finished;
-                $this->duration = $obj->duration;
-                $this->duration_value = substr($obj->duration, 0, dol_strlen($obj->duration) - 1);
-                $this->duration_unit = substr($obj->duration, -1);
-                $this->canvas = $obj->canvas;
-                $this->weight = $obj->weight;
-                $this->weight_units = $obj->weight_units;
-                $this->length = $obj->length;
-                $this->length_units = $obj->length_units;
-                $this->surface = $obj->surface;
-                $this->surface_units = $obj->surface_units;
-                $this->volume = $obj->volume;
-                $this->volume_units = $obj->volume_units;
-                $this->barcode = $obj->barcode;
-                $this->barcode_type = $obj->fk_barcode_type;
-
-                $this->accountancy_code_buy = $obj->accountancy_code_buy;
-                $this->accountancy_code_sell = $obj->accountancy_code_sell;
-
-                $this->seuil_stock_alerte = $obj->seuil_stock_alerte;
-                $this->stock_reel = $obj->stock;
-                $this->pmp = $obj->pmp;
-
-                $this->date_creation = $obj->datec;
-                $this->date_modification = $obj->tms;
-                $this->import_key = $obj->import_key;
-                $this->entity = $obj->entity;
-
-                $this->db->free($resql);
-
-                // multilangs
-                if (!empty($conf->global->MAIN_MULTILANGS))
-                    $this->getMultiLangs();
-
-                // Load multiprices array
-                if (!empty($conf->global->PRODUIT_MULTIPRICES)) {
-                    for ($i = 1; $i <= $conf->global->PRODUIT_MULTIPRICES_LIMIT; $i++) {
-                        $sql = "SELECT price, price_ttc, price_min, price_min_ttc,";
-                        $sql.= " price_base_type, tva_tx, tosell";
-                        $sql.= " FROM " . MAIN_DB_PREFIX . "product_price";
-                        $sql.= " WHERE price_level=" . $i;
-                        $sql.= " AND fk_product = '" . $this->id . "'";
-                        $sql.= " ORDER BY date_price DESC";
-                        $sql.= " LIMIT 1";
-                        $resql = $this->db->query($sql);
-                        if ($resql) {
-                            $result = $this->db->fetch_array($resql);
-
-                            $this->multiprices[$i] = $result["price"];
-                            $this->multiprices_ttc[$i] = $result["price_ttc"];
-                            $this->multiprices_min[$i] = $result["price_min"];
-                            $this->multiprices_min_ttc[$i] = $result["price_min_ttc"];
-                            $this->multiprices_base_type[$i] = $result["price_base_type"];
-                            $this->multiprices_tva_tx[$i] = $result["tva_tx"];
-                        } else {
-                            dol_print_error($this->db);
-                            return -1;
-                        }
-                    }
-                }
-
-                $res = $this->load_stock();
-
-                return $res;
-            } else {
-                return 0;
-            }
-        } else {
-            dol_print_error($this->db);
-            return -1;
-        }
+        return $res;
     }
 
     /**
@@ -2674,7 +2569,7 @@ class Product extends nosqlDocument {
      * @return  boolean     True if it's a product
      */
     function isproduct() {
-        return ($this->type != 1 ? true : false);
+        return ($this->type == "PRODUCT" ? true : false);
     }
 
     /**
@@ -2683,7 +2578,7 @@ class Product extends nosqlDocument {
      * @return  boolean     True if it's a service
      */
     function isservice() {
-        return ($this->type == 1 ? true : false);
+        return ($this->type == "SERVICE" ? true : false);
     }
 
     /**
