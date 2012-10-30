@@ -203,7 +203,7 @@ $resultCate = $db->query($sql);
 while ($aRow = $db->fetch_object($resultCate)) {
 
     if (!empty($col[$aRow->fk_soc]->rowid)) {
-        $col[$aRow->fk_soc]->tags[] = $aRow->label;
+        $col[$aRow->fk_soc]->Tag[] = $aRow->label;
     }
 }
 $db->free($resultCate);

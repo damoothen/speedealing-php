@@ -57,66 +57,17 @@ if ($flush) {
     exit;
 }
 
-
-
-/* basic companies request query */
-$sql = "SELECT s.*,";
-$sql.= " st.code as stcomm, p.code, u1.login as user_creat, u2.login as user_modif ";
-/* looking for categories ? */
-$roc = stristr($sOrder, 'c.label');
-$rsc = stristr($sWhere, 'c.label');
-if ($roc != false || $rsc != false) {
-    $sql.=",c.label";
-}
-/* looking for sales ? */
-$rou = stristr($sOrder, 'u.login');
-$rsu = stristr($sWhere, 'u.login');
-if ($rou != false || $rsu != false) {
-    $sql.=",u.login";
-}
-$sql .= " FROM (" . MAIN_DB_PREFIX . "societe as s";
+$sql = "SELECT p.*, c.code, u1.login as user_author ";
+$sql .= " FROM (" . MAIN_DB_PREFIX . "product as p";
 $sql.= " ) ";
-$sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "c_pays as p on (p.rowid = s.fk_pays)";
-$sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "c_stcomm as st ON st.id = s.fk_stcomm";
-$sql.= " LEFT JOIN llx_user AS u1 ON u1.rowid = s.fk_user_creat";
-$sql.= " LEFT JOIN llx_user AS u2 ON u2.rowid = s.fk_user_modif";
+$sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "c_pays as c on (c.rowid = p.fk_country)";
+$sql.= " LEFT JOIN llx_user AS u1 ON u1.rowid = p.fk_user_author";
 
-/* requesting data on categorie filter  */
-if ($roc != false || $rsc != false) {
-    $sql.=" LEFT JOIN llx_categorie_societe as cs ON cs.fk_societe = s.rowid ";
-    $sql.=" LEFT JOIN llx_categorie as c ON c.rowid=cs.fk_categorie ";
-}
-/* requesting data on sales filter */
-if ($rou != false || $rsu != false || $search_sale != 0) {
-    $sql.=" LEFT JOIN llx_societe_commerciaux as sc ON sc.fk_soc = s.rowid";
-    $sql.=" LEFT JOIN llx_user AS u ON u.rowid = sc.fk_user ";
-}
-$sql.= " WHERE s.client in (1,2,3)";
-
-if ($type != '')
-    $sql.= " AND st.type=" . $type;
-$sql.= " AND s.entity = " . $conf->entity;
-
-// Insert sale filter
-if ($search_sale) {
-    $sql .= " AND u.rowid= " . $db->escape($search_sale);
-}
-// Insert stcomm filter
-if ($pstcomm) {
-    $sql .= " AND st.id= " . $db->escape($pstcomm);
-}
 /* get the total of entries */
 $resultTotal = $db->query($sql);
 $iTotal = $db->num_rows($resultTotal);
 
-$sql.= $sWhere;
-/* usefull to regroup by the sale needed */
-if ($search_sale || $_GET['sSearch_7'] != "") {
-    $sql.= " GROUP BY s.rowid";
-}
-$sql.= $sOrder;
-$sql.= $sLimit;
-$resultSocietes = $db->query($sql);
+$result = $db->query($sql);
 
 //$cb = new couchClient("http://193.169.46.49:5984/","dolibarr");
 //$cb = new Couchbase;
@@ -129,90 +80,137 @@ $resultSocietes = $db->query($sql);
 
 $i = 0;
 
-while ($aRow = $db->fetch_object($resultSocietes)) {
-    $col[$aRow->rowid]->rowid = (int) $aRow->rowid;
-    $col[$aRow->rowid]->class = "Societe";
-    $col[$aRow->rowid]->name = $aRow->nom;
-    $col[$aRow->rowid]->town = $aRow->ville;
+while ($aRow = $db->fetch_object($result)) {
+    $col[$aRow->rowid]->import_key = (int) $aRow->rowid;
+    $col[$aRow->rowid]->class = "Product";
+    $col[$aRow->rowid]->name = $aRow->ref;
+    $col[$aRow->rowid]->ref_ext = $aRow->ref_ext;
     $col[$aRow->rowid]->datec = $db->jdate($aRow->datec);
-    $col[$aRow->rowid]->zip = $aRow->cp;
+    $col[$aRow->rowid]->virtual = $aRow->virtual;
     $col[$aRow->rowid]->tms = $db->jdate($aRow->tms);
-    $col[$aRow->rowid]->code_client = $aRow->code_client;
-    $col[$aRow->rowid]->code_fournisseur = $aRow->code_fournisseur;
-    $col[$aRow->rowid]->code_compta = $aRow->code_compta;
-    $col[$aRow->rowid]->code_compta_fournisseur = $aRow->code_compta_fournisseur;
-    $col[$aRow->rowid]->address = $aRow->address;
-    $col[$aRow->rowid]->state_id = $aRow->fk_departement;
-    $col[$aRow->rowid]->country_id = $aRow->code; // FR
-    $col[$aRow->rowid]->phone = $aRow->tel;
-    $col[$aRow->rowid]->fax = $aRow->fax;
-    $col[$aRow->rowid]->email = $aRow->email;
-    $col[$aRow->rowid]->url = $aRow->url;
-    $col[$aRow->rowid]->idprof1 = $aRow->siren;
-    $col[$aRow->rowid]->idprof2 = $aRow->siret;
-    $col[$aRow->rowid]->idprof3 = $aRow->ape;
-    $col[$aRow->rowid]->tva_intra = $aRow->tva_intra;
-    $col[$aRow->rowid]->tva_assuj = (bool) $aRow->tva_assuj;
-    $col[$aRow->rowid]->capital = (int) $aRow->capital;
-    $col[$aRow->rowid]->Status = $aRow->stcomm;
+    $col[$aRow->rowid]->label = $aRow->label;
+    $col[$aRow->rowid]->description = $aRow->description;
     $col[$aRow->rowid]->notes = $aRow->note;
-    $col[$aRow->rowid]->prefix_comm = $aRow->prefix_comm;
-    $col[$aRow->rowid]->fk_prospectlevel = (int) $aRow->fk_prospectlevel;
-    $col[$aRow->rowid]->user_creat = $aRow->user_creat;
-    $col[$aRow->rowid]->user_modif = $aRow->user_modif;
-    $col[$aRow->rowid]->remise_client = (int) $aRow->remise_client;
-    $col[$aRow->rowid]->barcode = $aRow->barcode;
-    $col[$aRow->rowid]->default_lang = $aRow->default_lang;
-    $col[$aRow->rowid]->price_level = $aRow->price_level;
-    if ($aRow->latitude && $aRow->longitude) {
-        $col[$aRow->rowid]->gps[0] = (int) $aRow->latitude;
-        $col[$aRow->rowid]->gps[1] = (int) $aRow->longitude;
+    $col[$aRow->rowid]->customcode = $aRow->customcode;
+    $col[$aRow->rowid]->country_id = $aRow->code; // FR
+    $col[$aRow->rowid]->recuperableonly = (bool)$aRow->recuperableonly;
+    $col[$aRow->rowid]->fk_user_author = $aRow->user_author;
+    
+    $col[$aRow->rowid]->tosell = (bool)$aRow->tosell;
+    $col[$aRow->rowid]->tobuy = (bool)$aRow->tobuy;
+    
+    if((bool)$aRow->tosell)
+        $col[$aRow->rowid]->Status = "SELL";
+    if((bool)$aRow->tobuy){
+        if((bool)$aRow->tosell)
+            $col[$aRow->rowid]->Status = "SELLBUY";
+        else
+            $col[$aRow->rowid]->Status = "BUY";
     }
-    $col[$aRow->rowid]->logo = $aRow->logo;
-    $col[$aRow->rowid]->newsletter = (bool) !$aRow->newsletter;
-
+    if(empty($col[$aRow->rowid]->Status))
+        $col[$aRow->rowid]->Status = "DISABLE";
+    
+    $col[$aRow->rowid]->type = (int)$aRow->fk_product_type;
+    
+    $col[$aRow->rowid]->duration = $aRow->duration;
+    $col[$aRow->rowid]->seuil_stock_alerte = $aRow->seuil_stock_alerte;
+    $col[$aRow->rowid]->barcode = $aRow->barcode;
+    $col[$aRow->rowid]->fk_barcode_type = $aRow->fk_barcode_type;
+    
+    
+    $col[$aRow->rowid]->accountancy_code_sell = $aRow->accountancy_code_sell;
+    $col[$aRow->rowid]->accountancy_code_buy = $aRow->accountancy_code_buy;
+    
+    $col[$aRow->rowid]->entity = $conf->Couchdb->name;
+    
+    $col[$aRow->rowid]->partnumber = $aRow->partnumber;
+    $col[$aRow->rowid]->weight = (float)$aRow->weight;
+    $col[$aRow->rowid]->weight_units = $aRow->weight_units;
+    $col[$aRow->rowid]->length = (float)$aRow->length;
+    $col[$aRow->rowid]->length_units = $aRow->length_units;
+    $col[$aRow->rowid]->surface = (float)$aRow->surface;
+    $col[$aRow->rowid]->surface_units = $aRow->surface_units;
+    $col[$aRow->rowid]->volume = $aRow->volume;
+    $col[$aRow->rowid]->volume_units = $aRow->volume_units;
+    $col[$aRow->rowid]->stock = $aRow->stock;
+    $col[$aRow->rowid]->pmp = (float)$aRow->pmp;
+    $col[$aRow->rowid]->hidden = $aRow->hidden;
+    
+    //print count($col[$aRow->rowid]->country_id);exit;
+    
     $i++;
 }
 
-$db->free($resultSocietes);
-unset($resultSocietes);
+$db->free($result);
+unset($result);
 
-/* sql query get sales */
-$sql = " SELECT fk_soc,login FROM (llx_societe_commerciaux as sc,llx_user as u) 
-where "/* sc.fk_soc in ($companies) and */ . " sc.fk_user=u.rowid";
-//$sql .= " LIMIT 100";
-$resultCommerciaux = $db->query($sql);
+/* sql query get price */
+$sql = " SELECT p.*, u1.login as user_author ";
+$sql .= " FROM (" . MAIN_DB_PREFIX . "product_price as p";
+$sql.= " ) ";
+$sql.= " LEFT JOIN llx_user AS u1 ON u1.rowid = p.fk_user_author";
+$sql.= " ORDER BY p.tms";
+
+
+//print $sql;exit;
+$result = $db->query($sql);
 
 /* init society sales array  */
-while ($aRow = $db->fetch_object($resultCommerciaux)) {
-    if (!empty($col[$aRow->fk_soc]->rowid)) {
-        $col[$aRow->fk_soc]->commercial_id = $aRow->login;
+while ($aRow = $db->fetch_object($result)) {
+    if (!empty($col[$aRow->fk_product]->import_key)) {
+        $obj = new stdClass();
+        $obj->tms = $db->jdate($aRow->tms);
+        $obj->price = (float)$aRow->price;
+        $obj->price_ttc = (float)$aRow->price_ttc;
+        $obj->price_min = (float)$aRow->price_min;
+        $obj->price_min_ttc = (float)$aRow->price_min_ttc;
+        $obj->price_level = (int)$aRow->price_level;
+        $obj->ecotax = (float)$aRow->ecotax;
+        $obj->ecotax_ttc = (float)$aRow->ecotax_ttc;
+        $obj->price_base_type = $aRow->price_base_type;
+        $obj->tva_tx = (float)$aRow->tva_tx;
+        $obj->recuperableonly = (bool)$aRow->recuperableonly;
+        $obj->localtax1_tx = (float)$aRow->localtax1_tx;
+        $obj->localtax2_tx = (float)$aRow->localtax2_tx;
+        $obj->fk_user_author = $aRow->user_author;
+        
+        //print_r($obj);exit;
+        if(isset($col[$aRow->fk_product]->price[(int)$aRow->price_level-1])) 
+            $col[$aRow->fk_product]->history_price[] = clone $col[$aRow->fk_product]->price[(int)$aRow->price_level-1];
+          
+        $col[$aRow->fk_product]->price[(int)$aRow->price_level-1] = clone $obj;
     }
 }
-$db->free($resultCommerciaux);
-unset($resultCommerciaux);
+$db->free($result);
+unset($result);
+
+//print_r($col);exit;
 
 /* sql query get categories */
-$sql = " SELECT fk_societe,label FROM (llx_categorie_societe as cs,llx_categorie as c) 
+$sql = " SELECT fk_product,label FROM (llx_categorie_product as cs,llx_categorie as c) 
 where "/* cs.fk_societe in ($companies) and */ . "cs.fk_categorie=c.rowid";
 //$sql .= " LIMIT 100";
-$resultCate = $db->query($sql);
+
+//print $sql;exit;
+
+$result = $db->query($sql);
 
 
 /* init society categories array */
-while ($aRow = $db->fetch_object($resultCate)) {
+while ($aRow = $db->fetch_object($result)) {
 
-    if (!empty($col[$aRow->fk_soc]->rowid)) {
-        $col[$aRow->fk_soc]->tags[] = $aRow->label;
+    if (!empty($col[$aRow->fk_product]->import_key)) {
+        $col[$aRow->fk_product]->Tag[] = $aRow->label;
     }
 }
-$db->free($resultCate);
-unset($resultCate);
+$db->free($result);
+unset($result);
 
 //print_r($col);exit;
 
 try {
     $couchdb->clean($col);
+    //print_r($col);exit;
     $result = $couchdb->storeDocs($col, false);
 } catch (Exception $e) {
     echo "Something weird happened: " . $e->getMessage() . " (errcode=" . $e->getCode() . ")\n";
