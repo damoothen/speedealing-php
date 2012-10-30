@@ -88,9 +88,9 @@ print '<div class="with-padding">';
  */
 
 print '<p class="button-height right">';
-if($type == "SERVICE" || empty($type))
+if ($type == "SERVICE" || empty($type))
     print '<a class="button icon-star" href="' . strtolower(get_class($object)) . '/fiche.php?action=create&type=SERVICE">' . $langs->trans("NewService") . '</a> ';
-if($type == "PRODUCT" || empty($type))
+if ($type == "PRODUCT" || empty($type))
     print '<a class="button icon-star" href="' . strtolower(get_class($object)) . '/fiche.php?action=create&type=PRODUCT">' . $langs->trans("NewProduct") . '</a>';
 print "</p>";
 
@@ -145,6 +145,17 @@ $obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("price[\"0\"].tms", "date");
 $i++;
+if (empty($type)) {
+    print'<th class="essential">';
+    print $langs->trans("Type");
+    print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "type";
+    $obj->aoColumns[$i]->sClass = "center";
+    $obj->aoColumns[$i]->sWidth = "60px";
+    $obj->aoColumns[$i]->sDefaultContent = "PRODUCT";
+    $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("type", "status");
+    $i++;
+}
 print'<th class="essential">';
 print $langs->trans("Status");
 print'</th>';
@@ -192,6 +203,10 @@ print'<th id="' . $i . '"></th>';
 $i++;
 print'<th id="' . $i . '"></th>';
 $i++;
+if (empty($type)) {
+    print'<th id="' . $i . '"></th>';
+    $i++;
+}
 print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search status") . '" /></th>';
 $i++;
 print'<th id="' . $i . '"></th>';

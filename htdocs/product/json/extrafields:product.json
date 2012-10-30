@@ -6,6 +6,28 @@
        "products"
    ],
    "fields": {
+       "type": {
+           "type": "select",
+           "enable": true,
+           "default": "PRODUCT",
+           "aoColumns": {
+               "sClass": "center",
+               "bSearchable": true,
+               "bVisible": true
+           },
+           "values": {
+               "PRODUCT": {
+                   "enable": true,
+                   "label": "Product",
+                   "cssClass": "blue-gradient"
+               },
+               "SERVICE": {
+                   "label": "Service",
+                   "enable": true,
+                   "cssClass": "green-gradient"
+               }
+           }
+       },
        "Status": {
            "type": "select",
            "enable": true,
