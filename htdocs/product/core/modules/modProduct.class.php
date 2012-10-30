@@ -136,13 +136,24 @@ class modProduct extends DolibarrModules {
         $r++;
 
         $this->menus[$r]->_id = "menu:productlist";
-        $this->menus[$r]->url = "/product/list.php?type=0";
+        $this->menus[$r]->url = "/product/list.php?type=PRODUCT";
         $this->menus[$r]->langs = "products";
         $this->menus[$r]->position = 1;
         $this->menus[$r]->usertype = 2;
         $this->menus[$r]->perms = '$user->rights->produit->lire';
         $this->menus[$r]->enabled = '$conf->produit->enabled';
         $this->menus[$r]->title = "ListProducts";
+        $this->menus[$r]->fk_menu = "menu:products";
+        $r++;
+        
+        $this->menus[$r]->_id = "menu:prodservlistall";
+        $this->menus[$r]->url = "/product/list.php";
+        $this->menus[$r]->langs = "products";
+        $this->menus[$r]->position = 4;
+        $this->menus[$r]->usertype = 2;
+        $this->menus[$r]->perms = '$user->rights->produit->lire || $user->rights->service->lire';
+        $this->menus[$r]->enabled = '$conf->produit->enabled && $conf->service->enabled';
+        $this->menus[$r]->title = "ListAll";
         $this->menus[$r]->fk_menu = "menu:products";
         $r++;
 

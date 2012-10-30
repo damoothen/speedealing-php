@@ -16,8 +16,6 @@
    Shared Styles
 ----------------------------------------- */
 
-	html {overflow-y:scroll}
-	body {font:100 13px/1.4 Helvetica, Arial, sans-serif;color:#222;background-color:#eee}
 	code,pre{border-radius:3px 3px 3px 3px;font-family:Monaco,Andale Mono,Courier New,monospace;font-size:12px;padding:0 3px 2px}
 	code{background-color:#FEE9CC;color:rgba(0,0,0,0.75);padding:1px 3px}
 	pre{background-color:#F5F5F5;border:1px solid rgba(0,0,0,0.15);border-radius:3px 3px 3px 3px;display:block;font-size:12px;line-height:18px;white-space:pre-wrap;word-wrap:break-word;margin:0 0 18px;padding:8.5px}
@@ -56,11 +54,11 @@
 		.sepH_no {margin-bottom:0}
 
 	/* no borders for buttons (ie7) */
-		button {*border: none !important;*border-color: transparent !important}
+		/*button {*border: none !important;*border-color: transparent !important}*/
 
 	/* webkit extra margin fix*/
 		@media screen and (-webkit-min-device-pixel-ratio:0) {
-			button {margin: 0px}
+			/*button {margin: 0px}*/
 		}
 
 	/* text styles */
@@ -80,7 +78,6 @@
 		.form-field.error label {color: inherit}
 		form.custom div.custom.dropdown a:hover {text-decoration:none}
 		form.nice div.form-field input,form.nice div.form-field textarea{border-color: #C00000}
-		p {line-height: 1.4}
 		.row .row {max-width: 100%; min-width: 0}
 		.form-field.error input:focus, .form-field.error textarea:focus {background-color: rgba(255,0,0,0.25)}
 		.alert-box a.close {padding:3px}

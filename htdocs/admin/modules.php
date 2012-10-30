@@ -390,7 +390,7 @@ foreach ($orders as $key => $value) {
     print "</td>\n";
 
     // Activate/Disable and Setup (2 columns)
-    $name = $objMod->name;
+    $name = strtolower($objMod->name);
 
     if (isset($conf->$name) && !empty($conf->$name->enabled)) {
 

@@ -2,6 +2,9 @@
    "_id": "extrafields:Societe",
    "class": "extrafields",
    "ico": "16-Apartment-Building.png",
+   "langs": [
+       "companies"
+   ],
    "longList": [
        "code_client",
        "zip",

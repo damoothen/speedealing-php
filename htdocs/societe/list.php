@@ -26,7 +26,6 @@
  * 	\brief      List of customers
  */
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT . '/core/class/html.formother.class.php';
 
 $langs->load("companies");
 $langs->load("customers");
@@ -62,16 +61,15 @@ print_fiche_titre($titre);
 <div class="dashboard">
     <div class="columns">
         <div class="four-columns twelve-columns-mobile graph">
-            <?php $object->graphPieStatus();?>
+            <?php $object->graphPieStatus(); ?>
         </div>
 
         <div class="eight-columns twelve-columns-mobile new-row-mobile graph">
-            <?php $object->graphBarStatus();?>
+            <?php $object->graphBarStatus(); ?>
         </div>
     </div>
 </div>
 <?php
-
 print '<div class="with-padding">';
 
 //print start_box($titre,"twelve","16-Companies.png");
@@ -82,9 +80,7 @@ print '<div class="with-padding">';
  */
 
 print '<p class="button-height right">';
-print '<span class="button-group">';
-print '<a class="button" href="' . strtolower(get_class($object)) . '/fiche.php?action=create"><span class="button-icon blue-gradient glossy"><span class="icon-star"></span></span>' . $langs->trans("NewThirdParty") . '</a>';
-print "</span>";
+print '<a class="button icon-star" href="' . strtolower(get_class($object)) . '/fiche.php?action=create">' . $langs->trans("NewThirdParty") . '</a>';
 print "</p>";
 
 $i = 0;

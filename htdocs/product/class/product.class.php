@@ -143,15 +143,14 @@ class Product extends nosqlDocument {
 
         try {
             $fk_extrafields = new ExtraFields($db);
-            $this->fk_extrafields = $fk_extrafields->load("extrafields:Agenda", true); // load and cache
+            $this->fk_extrafields = $fk_extrafields->load("extrafields:Product", true); // load and cache
         } catch (Exception $e) {
             dol_print_error('', $e->getMessage());
             exit;
         }
 
         $this->db = $db;
-        $this->Status = 0;
-        $this->Status_buy = 0;
+        $this->Status = "DISABLE";
         $this->nbphoto = 0;
         $this->stock_reel = 0;
         $this->seuil_stock_alerte = 0;

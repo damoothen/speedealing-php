@@ -112,7 +112,7 @@ class modService extends DolibarrModules {
         $r = 0;
         
         $this->menus[$r]->_id = "menu:servicelist";
-        $this->menus[$r]->url = "/product/list.php?type=1";
+        $this->menus[$r]->url = "/product/list.php?type=SERVICE";
         $this->menus[$r]->langs = "products";
         $this->menus[$r]->position = 2;
         $this->menus[$r]->usertype = 2;

@@ -1020,7 +1020,7 @@ class Agenda extends nosqlDocument {
 
         print '<p class="button-height right">';
         print '<span class="button-group">';
-        print '<a class="button compact" href="' . strtolower(get_class($object)) . '/fiche.php?action=create&socid=' . $id . '&backtopage=' . $_SERVER['PHP_SELF'] . '?id=' . $id . '"><span class="button-icon blue-gradient glossy"><span class="icon-star"></span></span>' . $langs->trans("NewAction") . '</a>';
+        print '<a class="button compact icon-star" href="' . strtolower(get_class($object)) . '/fiche.php?action=create&socid=' . $id . '&backtopage=' . $_SERVER['PHP_SELF'] . '?id=' . $id . '">' . $langs->trans("NewAction") . '</a>';
         print "</span>";
         print "</p>";
 

@@ -59,9 +59,12 @@ if (!empty($key) && !empty($id) && !empty($class)) {
     if (!$res) // old dolibarr
         dol_include_once("/" . strtolower($class) . "/class/" . strtolower($class) . ".class.php");
 
-    $object = new $class($db);    
+    $object = new $class($db);
 
-    $langs->load('companies');
+    // Load langs files
+    if (count($object->fk_extrafields->langs))
+        foreach ($object->fk_extrafields->langs as $row)
+            $langs->load($row);
 
     try {
 

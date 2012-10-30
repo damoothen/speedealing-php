@@ -80,9 +80,7 @@ print '<div class="with-padding">';
  */
 
 print '<p class="button-height right">';
-print '<span class="button-group">';
-print '<a class="button" href="' . strtolower(get_class($object)) . '/fiche.php?action=create"><span class="button-icon blue-gradient glossy"><span class="icon-star"></span></span>' . $langs->trans("NewContact") . '</a>';
-print "</span>";
+print '<a class="button icon-star" href="' . strtolower(get_class($object)) . '/fiche.php?action=create">' . $langs->trans("NewContact") . '</a>';
 print "</p>";
 
 $i = 0;

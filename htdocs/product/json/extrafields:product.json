@@ -1,0 +1,42 @@
+{
+   "_id": "extrafields:Product",
+   "class": "extrafields",
+   "ico": "16-Shopping-Cart.png",
+   "langs": [
+       "products"
+   ],
+   "fields": {
+       "Status": {
+           "type": "select",
+           "enable": true,
+           "default": "DISABLE",
+           "aoColumns": {
+               "sClass": "center",
+               "bSearchable": true,
+               "bVisible": true
+           },
+           "values": {
+               "DISABLE": {
+                   "enable": true,
+                   "label": "NotOnSell",
+                   "cssClass": "red-gradient"
+               },
+               "BUY": {
+                   "label": "OnBuy",
+                   "enable": true,
+                   "cssClass": "orange-gradient"
+               },
+               "SELL": {
+                   "enable": true,
+                   "label": "OnSell",
+                   "cssClass": "green-gradient"
+               },
+               "SELLBUY": {
+                   "label": "OnBuySell",
+                   "enable": true,
+                   "cssClass": "blue-gradient"
+               }
+           }
+       }
+   }
+}

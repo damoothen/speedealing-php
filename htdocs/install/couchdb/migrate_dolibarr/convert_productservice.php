@@ -96,9 +96,6 @@ while ($aRow = $db->fetch_object($result)) {
     $col[$aRow->rowid]->recuperableonly = (bool)$aRow->recuperableonly;
     $col[$aRow->rowid]->fk_user_author = $aRow->user_author;
     
-    $col[$aRow->rowid]->tosell = (bool)$aRow->tosell;
-    $col[$aRow->rowid]->tobuy = (bool)$aRow->tobuy;
-    
     if((bool)$aRow->tosell)
         $col[$aRow->rowid]->Status = "SELL";
     if((bool)$aRow->tobuy){
@@ -110,7 +107,10 @@ while ($aRow = $db->fetch_object($result)) {
     if(empty($col[$aRow->rowid]->Status))
         $col[$aRow->rowid]->Status = "DISABLE";
     
-    $col[$aRow->rowid]->type = (int)$aRow->fk_product_type;
+    if((int)$aRow->fk_product_type)
+        $col[$aRow->rowid]->type = "SERVICE";
+    else
+        $col[$aRow->rowid]->type = "PRODUCT";
     
     $col[$aRow->rowid]->duration = $aRow->duration;
     $col[$aRow->rowid]->seuil_stock_alerte = $aRow->seuil_stock_alerte;
