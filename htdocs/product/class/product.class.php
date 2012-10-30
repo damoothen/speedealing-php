@@ -144,6 +144,11 @@ class Product extends nosqlDocument {
         try {
             $fk_extrafields = new ExtraFields($db);
             $this->fk_extrafields = $fk_extrafields->load("extrafields:Product", true); // load and cache
+            // Load langs files
+            if (count($this->fk_extrafields->langs))
+                foreach ($this->fk_extrafields->langs as $row)
+                    $langs->load($row);
+            
         } catch (Exception $e) {
             dol_print_error('', $e->getMessage());
             exit;
@@ -931,6 +936,7 @@ class Product extends nosqlDocument {
 
 
 
+
                 
 // Ne pas mettre de quote sur les numeriques decimaux.
             // Ceci provoque des stockages avec arrondis en base au lieu des valeurs exactes.
@@ -1006,19 +1012,19 @@ class Product extends nosqlDocument {
         }
 
         $this->load($id);
-        
+
         // Old compatibility
-        if(!isset($this->duration_unit)) {
+        if (!isset($this->duration_unit)) {
             $this->duration_value = substr($this->duration, 0, dol_strlen($this->duration) - 1);
             $this->duration_unit = substr($this->duration, -1);
         }
-        
+
         // multilangs
         if (!empty($conf->global->MAIN_MULTILANGS))
             $this->getMultiLangs();
 
         //$res = $this->load_stock();
-        $res =1;
+        $res = 1;
 
         return $res;
     }
