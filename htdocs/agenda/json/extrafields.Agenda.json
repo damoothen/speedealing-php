@@ -2,6 +2,10 @@
    "_id": "extrafields:Agenda",
    "class": "extrafields",
    "ico": "16-Month-Calendar.png",
+   "langs": [
+       "agenda",
+       "commercial"
+   ],
    "fields": {
        "societe": {
            "enable": true,
@@ -22,6 +26,7 @@
            "type": "select",
            "enable": true,
            "default": "TODO",
+           "status": true,
            "aoColumns": {
                "sClass": "center",
                "bSearchable": true,

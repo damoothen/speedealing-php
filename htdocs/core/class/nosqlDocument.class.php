@@ -383,8 +383,8 @@ abstract class nosqlDocument extends CommonObject {
      *
      *    @return   string        		Libelle
      */
-    function getLibStatus() {
-        return $this->LibStatus($this->Status);
+    function getLibStatus($key = "Status") {
+        return $this->LibStatus($this->$key, array("key" => $key));
     }
 
     /**
@@ -409,20 +409,23 @@ abstract class nosqlDocument extends CommonObject {
     function LibStatus($status, $params = array()) {
         global $langs, $conf;
 
-        //if (empty($status))
-        //	$status = $this->fk_extrafields->fields->Status->default;
+        if(empty($params["key"]))
+            $key = "Status";
+        else
+            $key = $params["key"];
+        
 
-        if (isset($params["dateEnd"]) && isset($this->fk_extrafields->fields->Status->values->$status->dateEnd)) {
+        if (isset($params["dateEnd"]) && isset($this->fk_extrafields->fields->$key->values->$status->dateEnd)) {
             if ($params["dateEnd"] < dol_now())
-                $status = $this->fk_extrafields->fields->Status->values->$status->dateEnd[0];
+                $status = $this->fk_extrafields->fields->$key->values->$status->dateEnd[0];
             else
-                $status = $this->fk_extrafields->fields->Status->values->$status->dateEnd[1];
+                $status = $this->fk_extrafields->fields->$key->values->$status->dateEnd[1];
         }
 
-        if (isset($this->fk_extrafields->fields->Status->values->$status->label))
-            return '<span class="tag ' . $this->fk_extrafields->fields->Status->values->$status->cssClass . ' glossy">' . $langs->trans($this->fk_extrafields->fields->Status->values->$status->label) . '</span>';
+        if (isset($this->fk_extrafields->fields->$key->values->$status->label))
+            return '<span class="tag ' . $this->fk_extrafields->fields->$key->values->$status->cssClass . ' glossy">' . $langs->trans($this->fk_extrafields->fields->$key->values->$status->label) . '</span>';
         else
-            return '<span class="tag ' . $this->fk_extrafields->fields->Status->values->$status->cssClass . ' glossy">' . $langs->trans($status) . '</span>';
+            return '<span class="tag ' . $this->fk_extrafields->fields->$key->values->$status->cssClass . ' glossy">' . $langs->trans($status) . '</span>';
     }
 
     /**
@@ -500,7 +503,7 @@ abstract class nosqlDocument extends CommonObject {
                         },
                         //$obj->oColVis->bRestore = true;
                         //$obj->oColVis->sAlign = 'left';
-                                                                                                                                                                                                                                                                                																																																																																								            
+                                                                                                                                                                                                                                                                                                                																																																																																								            
                         // Avec export Excel
         <?php if (!empty($obj->sDom)) : ?>
                             //"sDom": "Cl<fr>t<\"clear\"rtip>",
@@ -562,39 +565,43 @@ abstract class nosqlDocument extends CommonObject {
                 <?php endforeach; ?>
                                             ];
                                             prth_stickyFooter.resize();
-                                            $("td.dol_edit", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?class=<?php echo get_class($this); ?>', {
+                                            $("td.dol_edit", this.fnGetNodes()).editable( urlSaveInPlace, {
                                                 "callback": function( sValue, y ) {
                                                     oTable.fnDraw();
-                                                    //oTable.fnReloadAjax();
                                                 },
                                                 "submitdata": function ( value, settings ) {
-                                                    return { "id": oTable.fnGetData( this.parentNode, 0), 
-                                                        "key": columns[oTable.fnGetPosition( this )[2]]};
+                                                    return { "id": oTable.fnGetData( this.parentNode, 0),
+                                                        "element_class" : "<?php echo get_class($this); ?>",
+                                                        "key": "editval_"+columns[oTable.fnGetPosition( this )[2]]};
                                                 },
                                                 "height": "14px",
-                                                "tooltip": "Cliquer pour éditer...",
-                                                "indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
+                                                "tooltip": tooltipInPlace,
+                                                "indicator" : indicatorInPlace,
                                                 "placeholder" : ""
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                																																																																																																																																																																																                
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                																																																																																																																																																																																                
                                             } );
-                                            $("td.dol_select", this.fnGetNodes()).editable( '<?php echo DOL_URL_ROOT . '/core/ajax/saveinplace.php'; ?>?class=<?php echo get_class($this); ?>', {
+                                            $("td.dol_select", this.fnGetNodes()).editable( urlSaveInPlace, {
                                                 "callback": function( sValue, y ) {
                                                     oTable.fnDraw();
-                                                    //oTable.fnReloadAjax();
                                                 },
                                                 "submitdata": function ( value, settings ) {
-                                                    //alert( 'Number of rows: '+ oTable.fnGetData( this.parentNode, oTable.fnGetPosition( this )[2] ));
-                                                    return { "id": oTable.fnGetData( this.parentNode, 0), 
-                                                        "key": columns[oTable.fnGetPosition( this )[2]]};
+                                                    return { "id": oTable.fnGetData( this.parentNode, 0),
+                                                        "element_class" : "<?php echo get_class($this); ?>",
+                                                        "key": "editval_"+columns[oTable.fnGetPosition( this )[2]]};
                                                 },
-                                                "loadurl" : '<?php echo DOL_URL_ROOT . '/core/ajax/loadinplace.php'; ?>?json=Status&class=<?php echo get_class($this); ?>',
+                                                "loaddata": function ( value, settings ) {
+                                                    return { "id": oTable.fnGetData( this.parentNode, 0),
+                                                        "element_class" : "<?php echo get_class($this); ?>",
+                                                        "key": "editval_"+columns[oTable.fnGetPosition( this )[2]]};
+                                                },
+                                                "loadurl" : urlLoadInPlace,
                                                 "type" : 'select',
-                                                "submit" : 'OK',
+                                                "submit" : submitInPlace,
                                                 "height": "14px",
-                                                "tooltip": "Cliquer pour éditer...",
-                                                "indicator" : "<?php echo '<div style=\"text-align: center;\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/working.gif\" border=\"0\" alt=\"Saving...\" title=\"Enregistrement en cours\" /></div>'; ?>",
+                                                "tooltip": tooltipInPlace,
+                                                "indicator" : indicatorInPlace,
                                                 "placeholder" : ""
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                																																																																																																																																																																																                
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                																																																																																																																																																																																                
                                             } );
                                         }
             <?php endif; ?>
@@ -622,7 +629,7 @@ abstract class nosqlDocument extends CommonObject {
                         } );
         <?php endif; ?>
                     // Select_all
-                                                                                                                                                                                            
+                                                                                                                                                                                                                            
                     $('.chSel_all').click(function () {
                         $(this).closest('table').find('input[name=row_sel]').attr('checked', this.checked);
                     });
@@ -1120,13 +1127,13 @@ abstract class nosqlDocument extends CommonObject {
      *
      * 		@param		string		$key            name of the field
      * 		@param		string		$htmlname	HTML name
+     * 		@param		string		$value          if needed : value of the key
+     * 		@param		int		$lengh          max number of characters in label select
+     * 		@param		boolean         $returnIndex    return index or value from select
      * 		@return		string		String with URL
      */
-    function select_fk_extrafields($key, $htmlname) {
+    function select_fk_extrafields($key, $htmlname, $value = null, $returnIndex = true, $lengh = 40) {
         global $langs, $mysoc;
-
-        if (GETPOST($htmlname))
-            $this->$key = GETPOST($htmlname);
 
         $aRow = $this->fk_extrafields->fields->$key;
 
@@ -1135,7 +1142,12 @@ abstract class nosqlDocument extends CommonObject {
         else
             $title = $langs->trans($key);
 
-        $selected = $this->$key;
+        if (GETPOST($htmlname))
+            $selected = GETPOST($htmlname);
+        elseif (!empty($value)) // Using value from the function
+            $selected = $value;
+        else
+            $selected = $this->$key;
 
         $rtr = "";
         $rtr.= '<select data-placeholder="' . $title . '&hellip;" class="chzn-select expand" id="' . $htmlname . '" name="' . $htmlname . '" >';
@@ -1146,10 +1158,23 @@ abstract class nosqlDocument extends CommonObject {
                 $dict = new Dict($this->db);
                 $values = $dict->load($aRow->dict, true);
                 //filter for country
+                if ($aRow->dict == "dict:fk_tva")
+                    $country_id = $mysoc->country_id;
+                else
+                    $country_id = $this->country_id;
+
                 foreach ($values->values as $idx => $row) {
-                    if (empty($row->pays_code) || $this->country_id == $row->pays_code)
-                        $aRow->values[$idx] = $row;
+                    if (empty($row->pays_code) || $country_id == $row->pays_code) {
+                        if ($returnIndex)
+                            $aRow->values[$idx] = $row;
+                        else
+                            $aRow->values[] = $row;
+                    }
                 }
+                //print_r($aRow->values);
+
+                if (count($aRow->values) == 0)
+                    return '<font class="error">' . $langs->trans("ErrorYourCountryIsNotDefined") . '</div>';
             } catch (Exception $e) {
                 dol_print_error('', $e->getMessage());
             }
@@ -1184,24 +1209,32 @@ abstract class nosqlDocument extends CommonObject {
         }
 
         if (empty($selected)) {
-            if(!empty($aRow->default))
-                eval('$selected = '.$aRow->default.';');
+            if (!empty($aRow->default))
+                eval('$selected = ' . $aRow->default . ';');
         }
 
         if (count($aRow->values))
             foreach ($aRow->values as $idx => $row) {
                 if ($row->enable) {
-                    $rtr.= '<option value="' . $idx . '"';
+                    if ($returnIndex)
+                        $rtr.= '<option value="' . $idx . '"';
+                    else
+                        $rtr.= '<option value="' . $row->label . '"';
 
-                    if ($selected == $idx)
-                        $rtr.= ' selected="selected"';
+                    if ($returnIndex) {
+                        if ($selected == $idx)
+                            $rtr.= ' selected="selected"';
+                    } else {
+                        if ($selected == $row->label)
+                            $rtr.= ' selected="selected"';
+                    }
 
                     $rtr.= '>';
 
                     if (isset($row->label))
-                        $rtr.= $langs->trans($row->label);
+                        $rtr.= dol_trunc($langs->trans($row->label), $lengh);
                     else
-                        $rtr.= $langs->trans($idx);
+                        $rtr.= dol_trunc($langs->trans($idx), $lengh);
                     $rtr.='</option>';
                 }
             }
@@ -1270,7 +1303,7 @@ abstract class nosqlDocument extends CommonObject {
         if ($edit) {
             print '<input id="element_id" type="hidden" value="' . $this->id . '"/>';
             print '<input id="element_class" type="hidden" value="' . get_class($this) . '"/>';
-            print '<div id="notes" class="edit_wysiwyg ttip_l">' . $this->notes . '</div>';
+            print '<div id="editval_notes" class="edit_wysiwyg ttip_l">' . $this->notes . '</div>';
         }
         else
             print $this->notes;

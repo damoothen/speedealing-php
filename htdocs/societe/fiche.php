@@ -1019,19 +1019,6 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
                 //Local Taxes
                 $object->localtax1_assuj = GETPOST('localtax1assuj_value');
                 $object->localtax2_assuj = GETPOST('localtax2assuj_value');
-
-                // We set country_id, and pays_code label of the chosen country
-                // TODO move to DAO class
-                if ($object->country_id) {
-                    $sql = "SELECT code, libelle from " . MAIN_DB_PREFIX . "c_pays where rowid = " . $object->country_id;
-                    $resql = $db->query($sql);
-                    if ($resql) {
-                        $obj = $db->fetch_object($resql);
-                    } else {
-                        dol_print_error($db);
-                    }
-                    $object->country_id = $langs->trans("Country" . $obj->code) ? $langs->trans("Country" . $obj->code) : $obj->libelle;
-                }
             }
 
             dol_htmloutput_errors($error, $errors);
@@ -1502,7 +1489,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         if ($object->isInEEC())
             print $form->textwithpicto(($img ? $img . ' ' : '') . $object->country_id, $langs->trans("CountryIsInEEC"), 1, 0);
         else
-            print ($img ? $img . ' ' : '') . $object->country_id;
+            print ($img ? $img . ' ' : '') . $object->print_fk_extrafields("country_id");
         print '</td></tr>';
 
         // State

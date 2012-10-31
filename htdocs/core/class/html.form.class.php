@@ -81,7 +81,7 @@ class Form {
         $ret = '';
 
         // TODO change for compatibility
-        if (!empty($conf->global->MAIN_USE_JQUERY_JEDITABLE) && !preg_match('/^select;/', $typeofdata)) {
+        if (!preg_match('/^select;/', $typeofdata)) {
             if ($perm) {
                 $tmp = explode(':', $typeofdata);
                 $ret.= '<div class="editkey_' . $tmp[0] . (!empty($tmp[1]) ? ' ' . $tmp[1] : '') . '" id="' . $htmlname . '">';
@@ -124,7 +124,7 @@ class Form {
 
         // When option to edit inline is activated
         // TODO change for compatibility
-        if (!empty($conf->global->MAIN_USE_JQUERY_JEDITABLE) && !preg_match('/^select;/', $typeofdata)) {
+        if (!preg_match('/^select;/', $typeofdata)) {
             $ret.=$this->editInPlace($object, $value, $htmlname, $perm, $typeofdata, $editvalue, $extObject, $success);
         } else {
             if (GETPOST('action') == 'edit' . $htmlname) {
@@ -283,13 +283,12 @@ class Form {
                 if (!empty($tmp[4]))
                     $savemethod = $tmp[4];
 
-                if (!empty($conf->fckeditor->enabled)) {
-                    $out.= '<input id="ckeditor_toolbar" value="' . $toolbar . '" type="hidden"/>' . "\n";
-                } else {
-                    $inputType = 'textarea';
-                }
+                $out.= '<input id="ckeditor_toolbar" value="' . $toolbar . '" type="hidden"/>' . "\n";
             }
 
+            $out.= '<input id="element_id" type="hidden" value="' . $object->id . '"/>';
+            $out.= '<input id="element_class" type="hidden" value="' . get_class($object) . '"/>';
+            
             $out.= '<input id="element_' . $htmlname . '" value="' . $element . '" type="hidden"/>' . "\n";
             $out.= '<input id="table_element_' . $htmlname . '" value="' . $table_element . '" type="hidden"/>' . "\n";
             $out.= '<input id="fk_element_' . $htmlname . '" value="' . $fk_element . '" type="hidden"/>' . "\n";
@@ -301,7 +300,12 @@ class Form {
             if (!empty($success))
                 $out.= '<input id="success_' . $htmlname . '" value="' . $success . '" type="hidden"/>' . "\n";
 
-            $out.= '<span id="viewval_' . $htmlname . '" class="viewval_' . $inputType . ($button_only ? ' inactive' : ' active') . '">' . $value . '</span>' . "\n";
+            $out.= '<span id="viewval_' . $htmlname . '" class="viewval_' . $inputType . ($button_only ? ' inactive' : ' active') . '">';
+            if (isset($object->fk_extrafields->fields->$htmlname->status))
+                $out.= $object->LibStatus($value, array("key" => $htmlname));
+            else
+                $out.= $value;
+            $out.= '</span>' . "\n";
             $out.= '<span id="editval_' . $htmlname . '" class="editval_' . $inputType . ($button_only ? ' inactive' : ' active') . ' hideobject">' . (!empty($editvalue) ? $editvalue : $value) . '</span>' . "\n";
         }
         else {

@@ -33,17 +33,18 @@ if (!defined('NOREQUIREAJAX'))
 require '../../main.inc.php';
 require_once DOL_DOCUMENT_ROOT . '/core/class/genericobject.class.php';
 
-$class = GETPOST('class', 'alpha');
-if (empty($class))
-    $class = GETPOST('element_class', 'alpha');
+$class = GETPOST('element_class', 'alpha');
 $key = GETPOST('key', 'alpha');
 $id = GETPOST('id', 'alpha');
 $value = GETPOST('value', 'alpha');
+$type = GETPOST('type', 'alpha', 2);
 
 $field = GETPOST('field', 'alpha', 2);
 $element = GETPOST('element', 'alpha', 2);
 $table_element = GETPOST('table_element', 'alpha', 2);
 $fk_element = GETPOST('fk_element', 'alpha', 2);
+
+$key = substr($key, 8); // remove prefix editval_
 
 /*
  * View
@@ -55,9 +56,7 @@ top_httphead();
 //print_r($_POST);
 
 if (!empty($key) && !empty($id) && !empty($class)) {
-    $res = dol_include_once("/" . $class . "/class/" . strtolower($class) . ".class.php");
-    if (!$res) // old dolibarr
-        dol_include_once("/" . strtolower($class) . "/class/" . strtolower($class) . ".class.php");
+    dol_include_once("/" . strtolower($class) . "/class/" . strtolower($class) . ".class.php");
 
     $object = new $class($db);
 
@@ -71,8 +70,13 @@ if (!empty($key) && !empty($id) && !empty($class)) {
         $object->id = $id;
         $res = $object->set($key, $value);
         if ($res == $value) {
-            if ($key == 'Status')
-                echo $object->LibStatus($value);
+            if ($type == 'numeric')
+                $value = price($value);
+            elseif ($type == 'textarea')
+                $value = dol_nl2br($value);
+
+            if (isset($object->fk_extrafields->fields->$key->status))
+                echo $object->LibStatus($value, array("key" => $key));
             else
                 echo $value;
         }

@@ -1036,25 +1036,34 @@ if ($id) {
                 }
 
                 // for export couchdb
-                if ($obj->code) {
-                    $values = new stdClass();
-                    $code = $obj->code;
-                    $values->enable = (bool) $obj->active;
-                    $values->label = $obj->libelle;
-                    if (!empty($obj->pays_code))
-                        $values->pays_code = $obj->pays_code;
 
-                    switch ($id) {
-                        case 28:
-                            $arrayType = array(-1 => "closed", 0 => "suspect", 1 => "prospect", 2 => "customer");
-                            $arrayColor = array(-1 => "error_bg", 0 => "neutral_bg", 1 => "info_bg", 2 => "ok_bg"); // definie CSS for color
+                $values = new stdClass();
+                $values->enable = (bool) $obj->active;
+                $values->label = $obj->libelle;
+                if (!empty($obj->pays_code))
+                    $values->pays_code = $obj->pays_code;
 
-                            $values->type = $arrayType[$obj->type];
-                            $values->cssClass = $arrayColor[$obj->type];
-                            break;
-                    }
-                    $dict->values->$code = $values;
+                switch ($id) {
+                    case 28:
+                        $arrayType = array(-1 => "closed", 0 => "suspect", 1 => "prospect", 2 => "customer");
+                        $arrayColor = array(-1 => "error_bg", 0 => "neutral_bg", 1 => "info_bg", 2 => "ok_bg"); // definie CSS for color
+
+                        $values->type = $arrayType[$obj->type];
+                        $values->cssClass = $arrayColor[$obj->type];
+                        break;
+                    case 10:
+                        $values->label = (float) $obj->taux;
+                        $values->recuperableonly = (bool) $obj->recuperableonly;
+                        $values->localtax1 = (float) $obj->localtax1;
+                        $values->localtax2 = (float) $obj->localtax2;
+                        $values->accountancy_code = $obj->accountancy_code;
+                        $values->notes = $obj->note;
+                        break;
                 }
+                if (!empty($code))
+                    $dict->values->$code = $values;
+                else
+                    $dict->values[] = $values;
 
                 $i++;
             }
@@ -1063,7 +1072,8 @@ if ($id) {
             $dictid = substr($tabname[$id], 6, strlen($tabname[$id])); //retire llx_c_
             $dictid = "dict:fk_" . $dictid;
             // if not exist write the dictionnary in couchdb
-            $arrayConf = array(1 => true, 2 => true, 3 => true, 4 => true, 5 => true, 6 => true, 9 => true, 28 => true);
+            $arrayConf = array(1 => true, 2 => true, 3 => true, 4 => true, 5 => true, 6 => true, 9 => true,
+                10 => true, 28 => true);
             if (isset($arrayConf[$id]) && $arrayConf[$id] == true) {
                 try {
                     $temp = $couch->getDoc($dictid); // test if exit
@@ -1163,7 +1173,7 @@ llxFooter();
  * 	@return		void
  */
 function fieldList($fieldlist, $obj = '', $tabname = '') {
-    global $conf, $langs, $db;
+    global $conf, $langs, $db, $mysoc;
     global $form;
     global $region_id;
     global $elementList, $sourceList;
@@ -1178,7 +1188,7 @@ function fieldList($fieldlist, $obj = '', $tabname = '') {
                 continue;
             } // For region page, we do not show the country input
             print '<td>';
-            print $form->select_country((!empty($obj->pays_code) ? $obj->pays_code : (!empty($obj->pays) ? $obj->pays : '')), 'pays');
+            print $mysoc->select_fk_extrafields("country_id", "pays", $obj->pays_code, true, 20);
             print '</td>';
         } elseif ($fieldlist[$field] == 'pays_id') {
             $pays_id = (!empty($obj->$fieldlist[$field])) ? $obj->$fieldlist[$field] : 0;

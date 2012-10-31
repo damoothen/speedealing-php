@@ -38,29 +38,21 @@ class Product extends nosqlDocument {
     public $table_element = 'product';
     public $fk_element = 'fk_product';
     protected $childtables = array('propaldet', 'commandedet', 'facturedet', 'contratdet');    // To test if we can delete object
-    protected $isnolinkedbythird = 1;     // No field fk_soc
-    protected $ismultientitymanaged = 1; // 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
     //! Identifiant unique
     var $id;
     //! Ref
     var $ref;
-    var $libelle;            // TODO deprecated
     var $label;
     var $description;
     //! Type 0 for regular product, 1 for service (Advanced feature: 2 for assembly kit, 3 for stock kit)
     var $type;
     //! Selling price
-    var $price;    // Price net
+    var $price = array();    // Price net
     var $price_ttc;   // Price with tax
     var $price_min;         // Minimum price net
     var $price_min_ttc;     // Minimum price with tax
     //! Base price ('TTC' for price including tax or 'HT' for net price)
     var $price_base_type;
-    //! Arrays for multiprices
-    var $multiprices = array();
-    var $multiprices_ttc = array();
-    var $multiprices_base_type = array();
-    var $multiprices_tva_tx = array();
     //! Default VAT rate of product
     var $tva_tx;
     //! French VAT NPR (0 or 1)
@@ -91,7 +83,6 @@ class Product extends nosqlDocument {
     var $finished;
     var $customcode;       // Customs code
     var $country_id;       // Country origin id
-    var $country_code;     // Country origin code (US, FR, ...)
     //! Unites de mesure
     var $weight;
     var $weight_units;
@@ -119,7 +110,6 @@ class Product extends nosqlDocument {
     var $imgHeight;
     //! Canevas a utiliser si le produit n'est pas un produit generique
     var $canvas;
-    var $import_key;
     var $date_creation;
     var $date_modification;
     //! Id du fournisseur
@@ -129,7 +119,6 @@ class Product extends nosqlDocument {
     var $nbphoto;
     //! Contains detail of stock of product into each warehouse
     var $stock_warehouse = array();
-    var $oldcopy;
 
     /**
      *  Constructor
@@ -148,13 +137,11 @@ class Product extends nosqlDocument {
             if (count($this->fk_extrafields->langs))
                 foreach ($this->fk_extrafields->langs as $row)
                     $langs->load($row);
-            
         } catch (Exception $e) {
             dol_print_error('', $e->getMessage());
             exit;
         }
 
-        $this->db = $db;
         $this->Status = "DISABLE";
         $this->nbphoto = 0;
         $this->stock_reel = 0;
@@ -168,13 +155,13 @@ class Product extends nosqlDocument {
      *    @return     int         >1 if OK, <=0 if KO
      */
     function check() {
-        $this->ref = dol_sanitizeFileName(stripslashes($this->ref));
+        $this->name = dol_sanitizeFileName(stripslashes($this->name));
 
         $err = 0;
-        if (dol_strlen(trim($this->ref)) == 0)
+        if (dol_strlen(trim($this->name)) == 0)
             $err++;
 
-        if (dol_strlen(trim($this->libelle)) == 0)
+        if (dol_strlen(trim($this->label)) == 0)
             $err++;
 
         if ($err > 0) {
@@ -197,40 +184,41 @@ class Product extends nosqlDocument {
         $error = 0;
 
         // Clean parameters
-        $this->ref = dol_string_nospecial(trim($this->ref));
-        $this->libelle = trim($this->libelle);
-        $this->price_ttc = price2num($this->price_ttc);
-        $this->price = price2num($this->price);
-        $this->price_min_ttc = price2num($this->price_min_ttc);
-        $this->price_min = price2num($this->price_min);
-        $this->ecotax = price2num($this->ecotax);
-        $this->ecotax_ttc = price2num($this->ecotax_ttc);
+        $this->name = dol_string_nospecial(trim($this->name));
+        $this->label = trim($this->label);
 
-        if (empty($this->tva_tx))
-            $this->tva_tx = 0;
-        if (empty($this->tva_npr))
-            $this->tva_npr = 0;
+        $obj = $this->price[0];
+
+        $obj->price_ttc = price2num($obj->price_ttc);
+        $obj->price = price2num($obj->price);
+        $obj->price_min_ttc = price2num($obj->price_min_ttc);
+        $obj->price_min = price2num($obj->price_min);
+        $obj->ecotax = price2num($obj->ecotax);
+        $obj->ecotax_ttc = price2num($obj->ecotax_ttc);
+
+        if (empty($obj->tva_tx))
+            $obj->tva_tx = 0;
+        if (empty($obj->tva_npr))
+            $obj->tva_npr = 0;
         //Local taxes
-        if (empty($this->localtax1_tx))
-            $this->localtax1_tx = 0;
-        if (empty($this->localtax2_tx))
-            $this->localtax2_tx = 0;
+        if (empty($obj->localtax1_tx))
+            $obj->localtax1_tx = 0;
+        if (empty($obj->localtax2_tx))
+            $obj->localtax2_tx = 0;
 
-        if (empty($this->price))
-            $this->price = 0;
-        if (empty($this->price_min))
-            $this->price_min = 0;
-        if (empty($this->status))
-            $this->status = 0;
-        if (empty($this->status_buy))
-            $this->status_buy = 0;
+        if (empty($obj->price))
+            $obj->price = 0;
+        if (empty($obj->price_min))
+            $obj->price_min = 0;
+        if (empty($this->Status))
+            $this->Status = "DISABLE";
         if (empty($this->finished))
-            $this->finished = 0;
+            $this->finished = "FINISHED";
 
-        if (empty($this->ecotax))
-            $this->ecotax = 0;
-        if (empty($this->ecotax_ttc))
-            $this->ecotax_ttc = 0;
+        if (empty($obj->ecotax))
+            $obj->ecotax = 0;
+        if (empty($obj->ecotax_ttc))
+            $obj->ecotax_ttc = 0;
 
         $price_ht = 0;
         $price_ttc = 0;
@@ -238,147 +226,67 @@ class Product extends nosqlDocument {
         $price_min_ttc = 0;
         $ecotax_ht = 0;
         $ecotax_ttc = 0;
-        if ($this->price_base_type == 'TTC' && $this->price_ttc > 0) {
-            $price_ttc = price2num($this->price_ttc, 'MU');
-            $price_ht = price2num($this->price_ttc / (1 + ($this->tva_tx / 100)), 'MU');
+        if ($obj->price_base_type == 'TTC' && $obj->price_ttc > 0) {
+            $price_ttc = price2num($obj->price_ttc, 'MU');
+            $price_ht = price2num($obj->price_ttc / (1 + ($obj->tva_tx / 100)), 'MU');
         }
-        if ($this->price_base_type != 'TTC' && $this->price > 0) {
-            $price_ht = price2num($this->price, 'MU');
-            $price_ttc = price2num($this->price * (1 + ($this->tva_tx / 100)), 'MU');
+        if ($obj->price_base_type != 'TTC' && $obj->price > 0) {
+            $price_ht = price2num($obj->price, 'MU');
+            $price_ttc = price2num($obj->price * (1 + ($obj->tva_tx / 100)), 'MU');
         }
-        if ($this->price_base_type == 'TTC' && $this->ecotax_ttc > 0) {
-            $ecotax_ttc = price2num($this->ecotax_ttc, 'MU');
-            $ecotax_ht = price2num($this->ecotax_ttc / (1 + ($this->tva_tx / 100)), 'MU');
+        if ($obj->price_base_type == 'TTC' && $obj->ecotax_ttc > 0) {
+            $ecotax_ttc = price2num($obj->ecotax_ttc, 'MU');
+            $ecotax_ht = price2num($obj->ecotax_ttc / (1 + ($obj->tva_tx / 100)), 'MU');
         }
-        if ($this->price_base_type != 'TTC' && $this->ecotax > 0) {
-            $ecotax_ht = price2num($this->ecotax, 'MU');
-            $ecotax_ttc = price2num($this->ecotax * (1 + ($this->tva_tx / 100)), 'MU');
+        if ($obj->price_base_type != 'TTC' && $obj->ecotax > 0) {
+            $ecotax_ht = price2num($obj->ecotax, 'MU');
+            $ecotax_ttc = price2num($obj->ecotax * (1 + ($obj->tva_tx / 100)), 'MU');
         }
-        if (($this->price_min_ttc > 0) && ($this->price_base_type == 'TTC')) {
-            $price_min_ttc = price2num($this->price_min_ttc, 'MU');
-            $price_min_ht = price2num($this->price_min_ttc / (1 + ($this->tva_tx / 100)), 'MU');
+        if (($obj->price_min_ttc > 0) && ($obj->price_base_type == 'TTC')) {
+            $price_min_ttc = price2num($obj->price_min_ttc, 'MU');
+            $price_min_ht = price2num($obj->price_min_ttc / (1 + ($obj->tva_tx / 100)), 'MU');
         }
-        if (($this->price_min > 0) && ($this->price_base_type != 'TTC')) {
-            $price_min_ht = price2num($this->price_min, 'MU');
-            $price_min_ttc = price2num($this->price_min * (1 + ($this->tva_tx / 100)), 'MU');
+        if (($obj->price_min > 0) && ($obj->price_base_type != 'TTC')) {
+            $price_min_ht = price2num($obj->price_min, 'MU');
+            $price_min_ttc = price2num($obj->price_min * (1 + ($obj->tva_tx / 100)), 'MU');
         }
 
+        $obj->price_min = price2num($price_min_ht);
+        $obj->price_min_ttc = price2num($price_min_ttc);
+        $obj->price = price2num($price_ht);
+        $obj->price_ttc = price2num($price_ttc);
+        $obj->ecotax = price2num($ecotax_ht);
+        $obj->ecotax_ttc = price2num($ecotax_ttc);
+
+        $this->price[0] = $obj;
+
+        $now = dol_now();
+        $this->datec = $now;
+        $this->fk_user_author = $user->login;
+
+
         // Check parameters
-        if (empty($this->libelle)) {
+        if (empty($this->label)) {
             $this->error = 'ErrorWrongParameters';
             return -1;
         }
-        if (empty($this->ref)) {
+        if (empty($this->name)) {
             $this->error = 'ErrorWrongParameters';
             return -2;
         }
 
-        dol_syslog(get_class($this) . "::create ref=" . $this->ref . " price=" . $this->price . " price_ttc=" . $this->price_ttc . " tva_tx=" . $this->tva_tx . " price_base_type=" . $this->price_base_type, LOG_DEBUG);
+        dol_syslog(get_class($this) . "::create ref=" . $this->name . " price=" . $this->price . " price_ttc=" . $this->price_ttc . " tva_tx=" . $this->tva_tx . " price_base_type=" . $this->price_base_type, LOG_DEBUG);
 
-        $now = dol_now();
 
-        $this->db->begin();
-
-        $sql = "SELECT count(*) as nb";
-        $sql.= " FROM " . MAIN_DB_PREFIX . "product";
-        $sql.= " WHERE entity IN (" . getEntity('product', 1) . ")";
-        $sql.= " AND ref = '" . $this->ref . "'";
-
-        $result = $this->db->query($sql);
-        if ($result) {
-            $obj = $this->db->fetch_object($result);
-            if ($obj->nb == 0) {
-                // Produit non deja existant
-                $sql = "INSERT INTO " . MAIN_DB_PREFIX . "product (";
-                $sql.= "datec";
-                $sql.= ", entity";
-                $sql.= ", ref";
-                $sql.= ", ref_ext";
-                $sql.= ", price_min";
-                $sql.= ", price_min_ttc";
-                $sql.= ", label";
-                $sql.= ", fk_user_author";
-                $sql.= ", fk_product_type";
-                $sql.= ", price";
-                $sql.= ", price_ttc";
-                $sql.= ", price_base_type";
-                $sql.= ", tobuy";
-                $sql.= ", tosell";
-                $sql.= ", canvas";
-                $sql.= ", finished";
-                $sql.= ", ecotax";
-                $sql.= ", ecotax_ttc";
-                $sql.= ") VALUES (";
-                $sql.= $this->db->idate($now);
-                $sql.= ", " . $conf->entity;
-                $sql.= ", '" . $this->db->escape($this->ref) . "'";
-                $sql.= ", " . (!empty($this->ref_ext) ? "'" . $this->db->escape($this->ref_ext) . "'" : "null");
-                $sql.= ", " . price2num($price_min_ht);
-                $sql.= ", " . price2num($price_min_ttc);
-                $sql.= ", " . (!empty($this->libelle) ? "'" . $this->db->escape($this->libelle) . "'" : "null");
-                $sql.= ", " . $user->id;
-                $sql.= ", " . $this->type;
-                $sql.= ", " . price2num($price_ht);
-                $sql.= ", " . price2num($price_ttc);
-                $sql.= ", '" . $this->price_base_type . "'";
-                $sql.= ", " . $this->Status;
-                $sql.= ", " . $this->Status_buy;
-                $sql.= ", '" . $this->canvas . "'";
-                $sql.= ", " . $this->finished;
-                $sql.= ", " . price2num($ecotax_ht);
-                $sql.= ", " . price2num($ecotax_ttc);
-                $sql.= ")";
-
-                dol_syslog(get_class($this) . "::Create sql=" . $sql);
-                $result = $this->db->query($sql);
-                if ($result) {
-                    $id = $this->db->last_insert_id(MAIN_DB_PREFIX . "product");
-
-                    if ($id > 0) {
-                        $this->id = $id;
-                        $this->price = $price_ht;
-                        $this->price_ttc = $price_ttc;
-                        $this->price_min = $price_min_ht;
-                        $this->price_min_ttc = $price_min_ttc;
-
-                        $result = $this->_log_price($user);
-                        if ($result > 0) {
-                            if ($this->update($id, $user, true) > 0) {
-                                // FIXME: not use here
-                                /*
-                                  if ($this->catid > 0)
-                                  {
-                                  require_once DOL_DOCUMENT_ROOT .'/categories/class/categorie.class.php';
-                                  $cat = new Categorie($this->db, $this->catid);
-                                  $cat->add_type($this,"product");
-                                  }
-                                 */
-                            } else {
-                                $error++;
-                                $this->error = 'ErrorFailedToUpdateRecord';
-                            }
-                        } else {
-                            $error++;
-                            $this->error = $this->db->lasterror();
-                        }
-                    } else {
-                        $error++;
-                        $this->error = 'ErrorFailedToGetInsertedId';
-                    }
-                } else {
-                    $error++;
-                    $this->error = $this->db->lasterror();
-                }
-            } else {
-                // Product already exists with this ref
-                $langs->load("products");
-                $error++;
+        $error = $this->update($id, $user, true);
+        if ($error < 0) {
+            if ($error == -1)
+                $this->error = 'ErrorFailedToUpdateRecord';
+            else
+            // Product already exists with this ref
                 $this->error = "ErrorProductAlreadyExists";
-            }
-        } else {
-            $error++;
-            $this->error = $this->db->lasterror();
         }
+
 
         if (!$error && !$notrigger) {
             // Appel des triggers
@@ -393,10 +301,8 @@ class Product extends nosqlDocument {
         }
 
         if (!$error) {
-            $this->db->commit();
             return $this->id;
         } else {
-            $this->db->rollback();
             return -$error;
         }
     }
@@ -414,17 +320,30 @@ class Product extends nosqlDocument {
 
         $error = 0;
 
-        $this->db->begin();
-
         // Verification parametres
-        if (!$this->libelle)
-            $this->libelle = 'MISSING LABEL';
+        if (!$this->label)
+            $this->label = 'MISSING LABEL';
+
+        $result = $this->getView("list", array("key" => $this->name));
+
+        if (count($result->rows) != 0) {
+            // Produit non deja existant
+            $error = 0;
+            foreach ($result->rows as $aRow) {
+                if ($aRow->value->_id != $this->id)
+                    $error++;
+            }
+            if ($error) {
+                $this->error = "ErrorProductAlreadyExists";
+                return -3;
+            }
+        }
 
         // Clean parameters
-        $this->ref = dol_string_nospecial(trim($this->ref));
-        $this->libelle = trim($this->libelle);
+        $this->name = dol_string_nospecial(trim($this->name));
+        $this->label = trim($this->label);
         $this->description = trim($this->description);
-        $this->note = trim($this->note);
+        $this->notes = trim($this->notes);
         $this->weight = price2num($this->weight);
         $this->weight_units = trim($this->weight_units);
         $this->length = price2num($this->length);
@@ -433,59 +352,19 @@ class Product extends nosqlDocument {
         $this->surface_units = trim($this->surface_units);
         $this->volume = price2num($this->volume);
         $this->volume_units = trim($this->volume_units);
-        if (empty($this->tva_tx))
-            $this->tva_tx = 0;
-        if (empty($this->tva_npr))
-            $this->tva_npr = 0;
-        //Local taxes
-        if (empty($this->localtax1_tx))
-            $this->localtax1_tx = 0;
-        if (empty($this->localtax2_tx))
-            $this->localtax2_tx = 0;
 
         if (empty($this->finished))
-            $this->finished = 0;
-        if (empty($this->country_id))
-            $this->country_id = 0;
+            $this->finished = "FINISHED";
 
         $this->accountancy_code_buy = trim($this->accountancy_code_buy);
         $this->accountancy_code_sell = trim($this->accountancy_code_sell);
 
-        $sql = "UPDATE " . MAIN_DB_PREFIX . "product";
-        $sql.= " SET label = '" . $this->db->escape($this->libelle) . "'";
-        $sql.= ",ref = '" . $this->ref . "'";
-        $sql.= ",tva_tx = " . $this->tva_tx;
-        $sql.= ",recuperableonly = " . $this->tva_npr;
-
-        //Local taxes
-        $sql.= ",localtax1_tx = " . $this->localtax1_tx;
-        $sql.= ",localtax2_tx = " . $this->localtax2_tx;
-
-        $sql.= ",tosell = " . $this->Status;
-        $sql.= ",tobuy = " . $this->Status_buy;
-        $sql.= ",finished = " . ($this->finished < 0 ? "null" : $this->finished);
-        $sql.= ",weight = " . ($this->weight != '' ? "'" . $this->weight . "'" : 'null');
-        $sql.= ",weight_units = " . ($this->weight_units != '' ? "'" . $this->weight_units . "'" : 'null');
-        $sql.= ",length = " . ($this->length != '' ? "'" . $this->length . "'" : 'null');
-        $sql.= ",length_units = " . ($this->length_units != '' ? "'" . $this->length_units . "'" : 'null');
-        $sql.= ",surface = " . ($this->surface != '' ? "'" . $this->surface . "'" : 'null');
-        $sql.= ",surface_units = " . ($this->surface_units != '' ? "'" . $this->surface_units . "'" : 'null');
-        $sql.= ",volume = " . ($this->volume != '' ? "'" . $this->volume . "'" : 'null');
-        $sql.= ",volume_units = " . ($this->volume_units != '' ? "'" . $this->volume_units . "'" : 'null');
-        $sql.= ",seuil_stock_alerte = " . ((isset($this->seuil_stock_alerte) && $this->seuil_stock_alerte != '') ? "'" . $this->seuil_stock_alerte . "'" : "null");
-        $sql.= ",description = '" . $this->db->escape($this->description) . "'";
-        $sql.= ",customcode = '" . $this->db->escape($this->customcode) . "'";
-        $sql.= ",fk_country = " . ($this->country_id > 0 ? $this->country_id : 'null');
-        $sql.= ",note = '" . $this->db->escape($this->note) . "'";
-        $sql.= ",duration = '" . $this->duration_value . $this->duration_unit . "'";
-        $sql.= ",accountancy_code_buy = '" . $this->accountancy_code_buy . "'";
-        $sql.= ",accountancy_code_sell= '" . $this->accountancy_code_sell . "'";
-        $sql.= " WHERE rowid = " . $id;
-
         dol_syslog(get_class($this) . "update sql=" . $sql);
-        $resql = $this->db->query($sql);
-        if ($resql) {
-            $this->id = $id;
+
+        $result = $this->record();
+
+        if ($result) {
+            $this->id = $result->id;
 
             // Multilangs
             if (!empty($conf->global->MAIN_MULTILANGS)) {
@@ -538,22 +417,14 @@ class Product extends nosqlDocument {
             }
 
             if (!$error) {
-                $this->db->commit();
-                return 1;
+                return 0;
             } else {
-                $this->db->rollback();
                 return -$error;
             }
         } else {
-            if ($this->db->errno() == 'DB_ERROR_RECORD_ALREADY_EXISTS') {
-                $this->error = $langs->trans("Error") . " : " . $langs->trans("ErrorProductAlreadyExists", $this->ref);
-                $this->db->rollback();
-                return -1;
-            } else {
-                $this->error = $langs->trans("Error") . " : " . $this->db->error() . " - " . $sql;
-                $this->db->rollback();
-                return -2;
-            }
+            $this->error = $langs->trans("Error") . " : " . $this->db->error() . " - " . $sql;
+            $this->db->rollback();
+            return -2;
         }
     }
 
@@ -933,6 +804,11 @@ class Product extends nosqlDocument {
                 $localtax1 = 0; // If = '' then = 0
             if (empty($localtax2))
                 $localtax2 = 0; // If = '' then = 0
+
+
+
+
+
 
 
 
@@ -2041,87 +1917,6 @@ class Product extends nosqlDocument {
         }
         $result.=$lien . $newref . $lienfin;
         return $result;
-    }
-
-    /**
-     * 	Return label of status of object
-     *
-     * 	@param      int	$mode       0=long label, 1=short label, 2=Picto + short label, 3=Picto, 4=Picto + long label, 5=Short label + Picto
-     * 	@param      int	$type       0=Shell, 1=Buy
-     * 	@return     string      	Label of status
-     */
-    function getLibStatut($mode = 0, $type = 0) {
-        if ($type == 0)
-            return $this->LibStatut($this->Status, $mode, $type);
-        else
-            return $this->LibStatut($this->Status_buy, $mode, $type);
-    }
-
-    /**
-     * 	Return label of a given status
-     *
-     * 	@param      int		$status     Statut
-     * 	@param      int		$mode       0=long label, 1=short label, 2=Picto + short label, 3=Picto, 4=Picto + long label, 5=Short label + Picto
-     * 	@param      int		$type       0=Status "to sell", 1=Status "to buy"
-     * 	@return     string      		Label of status
-     */
-    function LibStatut($status, $mode = 0, $type = 0) {
-        global $langs;
-        $langs->load('products');
-
-        if ($mode == 0) {
-            if ($status == 0)
-                return ($type == 0 ? $langs->trans('ProductStatusNotOnSellShort') : $langs->trans('ProductStatusNotOnBuyShort'));
-            if ($status == 1)
-                return ($type == 0 ? $langs->trans('ProductStatusOnSellShort') : $langs->trans('ProductStatusOnBuyShort'));
-        }
-        if ($mode == 1) {
-            if ($status == 0)
-                return ($type == 0 ? $langs->trans('ProductStatusNotOnSell') : $langs->trans('ProductStatusNotOnBuy'));
-            if ($status == 1)
-                return ($type == 0 ? $langs->trans('ProductStatusOnSell') : $langs->trans('ProductStatusOnBuy'));
-        }
-        if ($mode == 2) {
-            if ($status == 0)
-                return img_picto($langs->trans('ProductStatusNotOnSell'), 'statut5') . ' ' . ($type == 0 ? $langs->trans('ProductStatusNotOnSellShort') : $langs->trans('ProductStatusNotOnBuyShort'));
-            if ($status == 1)
-                return img_picto($langs->trans('ProductStatusOnSell'), 'statut4') . ' ' . ($type == 0 ? $langs->trans('ProductStatusOnSellShort') : $langs->trans('ProductStatusOnBuyShort'));
-        }
-        if ($mode == 3) {
-            if ($status == 0)
-                return img_picto(($type == 0 ? $langs->trans('ProductStatusNotOnSell') : $langs->trans('ProductStatusNotOnBuy')), 'statut5');
-            if ($status == 1)
-                return img_picto(($type == 0 ? $langs->trans('ProductStatusOnSell') : $langs->trans('ProductStatusOnBuy')), 'statut4');
-        }
-        if ($mode == 4) {
-            if ($status == 0)
-                return img_picto($langs->trans('ProductStatusNotOnSell'), 'statut5') . ' ' . ($type == 0 ? $langs->trans('ProductStatusNotOnSell') : $langs->trans('ProductStatusNotOnBuy'));
-            if ($status == 1)
-                return img_picto($langs->trans('ProductStatusOnSell'), 'statut4') . ' ' . ($type == 0 ? $langs->trans('ProductStatusOnSell') : $langs->trans('ProductStatusOnBuy'));
-        }
-        if ($mode == 5) {
-            if ($status == 0)
-                return ($type == 0 ? $langs->trans('ProductStatusNotOnSellShort') : $langs->trans('ProductStatusNotOnBuyShort')) . ' ' . img_picto(($type == 0 ? $langs->trans('ProductStatusNotOnSell') : $langs->trans('ProductStatusNotOnBuy')), 'statut5');
-            if ($status == 1)
-                return ($type == 0 ? $langs->trans('ProductStatusOnSellShort') : $langs->trans('ProductStatusOnBuyShort')) . ' ' . img_picto(($type == 0 ? $langs->trans('ProductStatusOnSell') : $langs->trans('ProductStatusOnBuy')), 'statut4');
-        }
-        return $langs->trans('Unknown');
-    }
-
-    /**
-     *  Retourne le libelle du finished du produit
-     *
-     *  @return     string		Libelle
-     */
-    function getLibFinished() {
-        global $langs;
-        $langs->load('products');
-
-        if ($this->finished == '0')
-            return $langs->trans("RowMaterial");
-        if ($this->finished == '1')
-            return $langs->trans("Finished");
-        return '';
     }
 
     /**

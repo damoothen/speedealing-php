@@ -34,13 +34,15 @@ if (!defined('NOREQUIRESOC'))
 require '../../main.inc.php';
 require_once DOL_DOCUMENT_ROOT . '/core/class/genericobject.class.php';
 
-$json = GETPOST('json', 'alpha');
-$class = GETPOST('class', 'alpha');
+$key = GETPOST('key', 'alpha');
+$class = GETPOST('element_class', 'alpha');
 
 $field = GETPOST('field', 'alpha');
 $element = GETPOST('element', 'alpha');
 $table_element = GETPOST('table_element', 'alpha');
 $fk_element = GETPOST('fk_element', 'alpha');
+
+$key = substr($key, 8); // remove prefix editval_
 
 /*
  * View
@@ -48,12 +50,10 @@ $fk_element = GETPOST('fk_element', 'alpha');
 
 top_httphead();
 
-//print '<!-- Ajax page called with url '.$_SERVER["PHP_SELF"].'?'.$_SERVER["QUERY_STRING"].' -->'."\n";
+//error_log(print_r($_GET, true));
 
-if (!empty($json) && !empty($class)) {
-    $res = dol_include_once("/" . $class . "/class/" . strtolower($class) . ".class.php");
-    if (!$res) // old dolibarr
-        dol_include_once("/" . strtolower($class) . "/class/" . strtolower($class) . ".class.php");
+if (!empty($key) && !empty($class)) {
+    dol_include_once("/" . strtolower($class) . "/class/" . strtolower($class) . ".class.php");
 
     $return = array();
 
@@ -64,16 +64,16 @@ if (!empty($json) && !empty($class)) {
         foreach ($object->fk_extrafields->langs as $row)
             $langs->load($row);
 
-    foreach ($object->fk_extrafields->fields->$json->values as $key => $aRow) {
+    foreach ($object->fk_extrafields->fields->$key->values as $keys => $aRow) {
         if ($aRow->enable) {
             if (isset($aRow->label))
-                $return[$key] = $langs->trans($aRow->label);
+                $return[$keys] = $langs->trans($aRow->label);
             else
-                $return[$key] = $langs->trans($key);
+                $return[$keys] = $langs->trans($keys);
         }
     }
 
-    $return['selected'] = $object->fk_extrafields->fields->$json->default;
+    $return['selected'] = $object->fk_extrafields->fields->$key->default;
 
     echo json_encode($return);
 }

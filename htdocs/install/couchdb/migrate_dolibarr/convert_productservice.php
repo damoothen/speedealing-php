@@ -142,7 +142,23 @@ while ($aRow = $db->fetch_object($result)) {
     $col[$aRow->rowid]->pmp = (float) $aRow->pmp;
     $col[$aRow->rowid]->hidden = $aRow->hidden;
 
-    $col[$aRow->rowid]->price = array();
+    $obj = new stdClass();
+    $obj->tms = $db->jdate($aRow->tms);
+    $obj->price = (float) $aRow->price;
+    $obj->price_ttc = (float) $aRow->price_ttc;
+    $obj->price_min = (float) $aRow->price_min;
+    $obj->price_min_ttc = (float) $aRow->price_min_ttc;
+    $obj->price_level = (int) $aRow->price_level;
+    $obj->ecotax = (float) $aRow->ecotax;
+    $obj->ecotax_ttc = (float) $aRow->ecotax_ttc;
+    $obj->price_base_type = $aRow->price_base_type;
+    $obj->tva_tx = (float) $aRow->tva_tx;
+    $obj->recuperableonly = (bool) $aRow->recuperableonly;
+    $obj->localtax1_tx = (float) $aRow->localtax1_tx;
+    $obj->localtax2_tx = (float) $aRow->localtax2_tx;
+    $obj->fk_user_author = $aRow->user_author;
+
+    $col[$aRow->rowid]->price[] = clone $obj;
     //print count($col[$aRow->rowid]->country_id);exit;
 
     $i++;
@@ -182,10 +198,10 @@ while ($aRow = $db->fetch_object($result)) {
         $obj->fk_user_author = $aRow->user_author;
 
         //print_r($obj);exit;
-        if (isset($col[$aRow->fk_product]->price[(int) $aRow->price_level - 1]))
-            $col[$aRow->fk_product]->history_price[] = clone $col[$aRow->fk_product]->price[(int) $aRow->price_level - 1];
+        if (isset($col[$aRow->fk_product]->price[(int) $aRow->price_level]))
+            $col[$aRow->fk_product]->history_price[] = clone $col[$aRow->fk_product]->price[(int) $aRow->price_level];
 
-        $col[$aRow->fk_product]->price[(int) $aRow->price_level - 1] = clone $obj;
+        $col[$aRow->fk_product]->price[(int) $aRow->price_level] = clone $obj;
     }
 }
 $db->free($result);

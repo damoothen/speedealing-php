@@ -1,5 +1,6 @@
 // Copyright (C) 2011-2012	Regis Houssin		<regis@dolibarr.fr>
 // Copyright (C) 2011		Laurent Destailleur	<eldy@users.sourceforge.net>
+// Copyright (C) 2012		Herve Prot              <herve.prot@symeos.com>
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,11 +17,6 @@
 // or see http://www.gnu.org/
 //
 
-//
-// \file       htdocs/core/js/editinplace.js
-// \brief      File that include javascript functions for edit in place
-//
-
 $(document).ready(function() {
     var element = $('#jeditable_element').html();
     var table_element = $('#jeditable_table_element').html();
@@ -34,7 +30,7 @@ $(document).ready(function() {
 	
     $('.edit_area').editable(urlSaveInPlace, {
         type		: 'text',
-        id		: 'field',
+        id		: 'key',
         height		: '64px',
         width		: 300,
         tooltip		: tooltipInPlace,
@@ -86,7 +82,7 @@ $(document).ready(function() {
     $('.editval_textarea').editable(urlSaveInPlace, {
         type		: 'textarea',
         rows		: 4,
-        id			: 'field',
+        id		: 'key',
         tooltip		: tooltipInPlace,
         placeholder	: '&nbsp;',
         cancel		: cancelInPlace,
@@ -98,9 +94,6 @@ $(document).ready(function() {
         },
         submitdata	: function(result, settings) {
             return getParameters(this, 'textarea');
-        },
-        callback	: function(result, settings) {
-            getResult(this, result);
         },
         onreset		: function(result, settings) {
             getDefault(settings);
@@ -128,7 +121,7 @@ $(document).ready(function() {
 
     $('.editval_ckeditor').editable(urlSaveInPlace, {
         type		: 'ckeditor',
-        id		: 'field',
+        id		: 'key',
         onblur		: 'ignore',
         tooltip		: tooltipInPlace,
         placeholder	: '&nbsp;',
@@ -141,9 +134,6 @@ $(document).ready(function() {
         },
         submitdata	: function(result, settings) {
             return getParameters(this, 'ckeditor');
-        },
-        callback	: function(result, settings) {
-            getResult(this, result);
         },
         onreset		: function(result, settings) {
             getDefault(settings);
@@ -190,7 +180,7 @@ $(document).ready(function() {
 	
     $('.editval_string').editable(urlSaveInPlace, {
         type		: 'text',
-        id		: 'field',
+        id		: 'key',
         width		: 300,
         tooltip		: tooltipInPlace,
         placeholder	: placeholderInPlace,
@@ -199,9 +189,6 @@ $(document).ready(function() {
         indicator	: indicatorInPlace,
         submitdata	: function(result, settings) {
             return getParameters(this, 'string');
-        },
-        callback	: function(result, settings) {
-            getResult(this, result);
         },
         onreset		: function(result, settings) {
             getDefault(settings);
@@ -229,7 +216,7 @@ $(document).ready(function() {
 	
     $('.editval_numeric').editable(urlSaveInPlace, {
         type		: 'text',
-        id		: 'field',
+        id		: 'key',
         width		: 100,
         tooltip		: tooltipInPlace,
         placeholder	: placeholderInPlace,
@@ -238,9 +225,6 @@ $(document).ready(function() {
         indicator	: indicatorInPlace,
         submitdata	: function(result, settings) {
             return getParameters(this, 'numeric');
-        },
-        callback	: function(result, settings) {
-            getResult(this, result);
         },
         onreset		: function(result, settings) {
             getDefault(settings);
@@ -268,7 +252,7 @@ $(document).ready(function() {
 	
     $('.editval_datepicker').editable(urlSaveInPlace, {
         type		: 'datepicker',
-        id		: 'field',
+        id		: 'key',
         onblur		: 'ignore',
         tooltip		: tooltipInPlace,
         placeholder	: '&nbsp;',
@@ -277,9 +261,6 @@ $(document).ready(function() {
         indicator	: indicatorInPlace,
         submitdata	: function(result, settings) {
             return getParameters(this, 'datepicker');
-        },
-        callback	: function(result, settings) {
-            getResult(this, result);
         },
         onreset		: function(result, settings) {
             getDefault(settings);
@@ -304,7 +285,7 @@ $(document).ready(function() {
 	
     $('.editval_select').editable(urlSaveInPlace, {
         type		: 'select',
-        id		: 'field',
+        id		: 'key',
         onblur		: 'ignore',
         cssclass	: 'flat',
         tooltip		: tooltipInPlace,
@@ -318,9 +299,6 @@ $(document).ready(function() {
         },
         submitdata	: function(result, settings) {
             return getParameters(this, 'select');
-        },
-        callback	: function(result, settings) {
-            getResult(this, result);
         },
         onreset		: function(result, settings) {
             getDefault(settings);
@@ -346,7 +324,7 @@ $(document).ready(function() {
     // for test only (not stable)
     $('.editval_autocomplete').editable(urlSaveInPlace, {
         type		: 'autocomplete',
-        id		: 'field',
+        id		: 'key',
         width		: 300,
         onblur		: 'ignore',
         tooltip		: tooltipInPlace,
@@ -362,9 +340,6 @@ $(document).ready(function() {
         },
         submitdata	: function(result, settings) {
             return getParameters(this, 'select');
-        },
-        callback	: function(result, settings) {
-            getResult(this, result);
         },
         onreset		: function(result, settings) {
             getDefault(settings);
@@ -413,7 +388,7 @@ $(document).ready(function() {
         };
     }
 	
-    function getResult(obj, result) {
+    /*function getResult(obj, result) {
         var res = $.parseJSON(result);
         if (res.error) {
             $(obj).html(obj.revert);
@@ -429,7 +404,7 @@ $(document).ready(function() {
             $('#viewval_' + htmlname).html(res.view);
             $('#viewval_' + htmlname).show();
         }
-    }
+    }*/
 	
     function getDefault(settings) {
         var htmlname = $(settings).attr('id').substr(8);

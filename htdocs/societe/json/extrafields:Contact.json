@@ -1,6 +1,5 @@
 {
    "_id": "extrafields:Contact",
-   "_rev": "3-fdbb4858e6ee41628f45a84d5bfc9f56",
    "class": "extrafields",
    "ico": "16-User.png",
    "longList": [
@@ -36,6 +35,7 @@
            "type": "select",
            "enable": true,
            "default": "ST_NEVER",
+           "status": true,
            "aoColumns": {
                "sClass": "center",
                "bSearchable": true,
