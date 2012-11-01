@@ -813,6 +813,13 @@ class Product extends nosqlDocument {
 
 
 
+
+
+
+
+
+
+
                 
 // Ne pas mettre de quote sur les numeriques decimaux.
             // Ceci provoque des stockages avec arrondis en base au lieu des valeurs exactes.
@@ -2407,6 +2414,151 @@ class Product extends nosqlDocument {
         $this->note = 'This is a comment (private)';
     }
 
-}
+    /**
+     *  Show price
+     *
+     *  @param	int		$max		Max nb of records
+     *  @return	void
+     */
+    function show_price($max = 5, $id = 0) {
+        global $langs, $conf, $user, $db, $bc;
 
+        $titre = $langs->trans("SellingPrice");
+        print start_box($titre, "tweleve", "16-Money.png", false);
+
+        $i = 0;
+        $obj = new stdClass();
+        $societe = new Societe($this->db);
+
+        /*
+         * Barre d'actions
+         *
+         */
+
+        if ($user->rights->produit->creer || $user->rights->service->creer) {
+            print '<p class="button-height right">';
+            print '<span class="button-group">';
+            print '<a class="button compact icon-star" href="' . strtolower(get_class($object)) . '/fiche.php?action=create&socid=' . $id . '&backtopage=' . $_SERVER['PHP_SELF'] . '?id=' . $id . '">' . $langs->trans("UpdatePrice") . '</a>';
+            print "</span>";
+            print "</p>";
+        }
+
+        print '<table class="display dt_act" id="price_datatable" >';
+        // Ligne des titres
+
+        print '<thead>';
+        print'<tr>';
+        print'<th>';
+        print'</th>';
+        $obj->aoColumns[$i]->mDataProp = "_id";
+        $obj->aoColumns[$i]->bUseRendered = false;
+        $obj->aoColumns[$i]->bSearchable = false;
+        $obj->aoColumns[$i]->bVisible = false;
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans("AppliedPricesFrom");
+        print'</th>';
+        $obj->aoColumns[$i]->mDataProp = "tms";
+        $obj->aoColumns[$i]->bUseRendered = false;
+        $obj->aoColumns[$i]->bSearchable = true;
+        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("tms", "datetime");
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans('MultiPriceLevelsName');
+        print'</th>';
+        $obj->aoColumns[$i]->mDataProp = "price_level";
+        $obj->aoColumns[$i]->sDefaultContent = "";
+        $obj->aoColumns[$i]->sClass = "fright";
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans('PriceBase');
+        print'</th>';
+        $obj->aoColumns[$i]->mDataProp = "price_base_type";
+        $obj->aoColumns[$i]->sClass = "center";
+        $obj->aoColumns[$i]->sDefaultContent = "";
+        $i++;
+        print'<th class="essential">';
+        print $langs->trans('VAT');
+        print'</th>';
+        $obj->aoColumns[$i]->mDataProp = "tva_tx";
+        $obj->aoColumns[$i]->sClass = "fright";
+        $obj->aoColumns[$i]->sDefaultContent = "";
+        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("tva_tx", "pourcentage");
+        $i++;
+        if ($this->fk_extrafields->defaultprice == 'HT') {
+            print'<th class="essential">';
+            print $langs->trans('HT');
+            print'</th>';
+            $obj->aoColumns[$i]->mDataProp = "price";
+            $obj->aoColumns[$i]->sClass = "fright";
+            $obj->aoColumns[$i]->sDefaultContent = "";
+            $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("price", "price");
+            $i++;
+            if ($conf->global->PRODUCT_USE_ECOTAX && $this->type == "PRODUCT") {
+                print'<th class="essential">';
+                print $langs->trans('Ecotax');
+                print'</th>';
+                $obj->aoColumns[$i]->mDataProp = "ecotax";
+                $obj->aoColumns[$i]->sClass = "fright";
+                $obj->aoColumns[$i]->sDefaultContent = "";
+                $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("ecotax", "price");
+                $i++;
+            }
+            print'<th class="essential">';
+            print $langs->trans("MinPrice") . ' ' . $langs->trans("HT");
+            print'</th>';
+            $obj->aoColumns[$i]->mDataProp = "min_price";
+            $obj->aoColumns[$i]->sClass = "fright";
+            $obj->aoColumns[$i]->sDefaultContent = "";
+            $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("min_price", "price");
+            $i++;
+        } else {
+            print'<th class="essential">';
+            print $langs->trans('TTC');
+            print'</th>';
+            $obj->aoColumns[$i]->mDataProp = "price_ttc";
+            $obj->aoColumns[$i]->sClass = "fright";
+            $obj->aoColumns[$i]->sDefaultContent = "";
+            $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("price_ttc", "price");
+            $i++;
+            if ($conf->global->PRODUCT_USE_ECOTAX && $this->type == "PRODUCT") {
+                print $langs->trans('EcotaxTTC');
+                print'</th>';
+                $obj->aoColumns[$i]->mDataProp = "ecotax_ttc";
+                $obj->aoColumns[$i]->sClass = "fright";
+                $obj->aoColumns[$i]->sDefaultContent = "";
+                $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("ecotax_ttc", "price");
+                $i++;
+            }
+            print'<th class="essential">';
+            print $langs->trans("MinPrice") . ' ' . $langs->trans("TTC");
+            print'</th>';
+            $obj->aoColumns[$i]->mDataProp = "min_price_ttc";
+            $obj->aoColumns[$i]->sClass = "fright";
+            $obj->aoColumns[$i]->sDefaultContent = "";
+            $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("min_price_ttc", "price");
+            $i++;
+        }
+        print'<th class="essential">';
+        print $langs->trans('ChangedBy');
+        print'</th>';
+        $obj->aoColumns[$i]->mDataProp = "fk_user_author";
+        $obj->aoColumns[$i]->sDefaultContent = "";
+        print '</tr>';
+        print '</thead>';
+        print'<tfoot>';
+        print'</tfoot>';
+        print'<tbody>';
+        print'</tbody>';
+        print "</table>";
+
+        $obj->iDisplayLength = $max;
+        $obj->aaSorting = array(array(1, "desc"));
+        $obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listdatatables.php?json=listPrices&class=" . get_class($this) . "&key=" . $id;
+        $this->datatablesCreate($obj, "price_datatable", true);
+
+        print end_box();
+    }
+
+}
 ?>

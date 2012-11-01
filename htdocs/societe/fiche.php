@@ -1724,7 +1724,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         print end_box();
         
         // Print Notes
-        $object->notes();
+        print $object->show_notes();
 
         if ($conf->ecm->enabled) {
 

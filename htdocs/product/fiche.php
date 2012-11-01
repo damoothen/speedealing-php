@@ -197,7 +197,7 @@ if (empty($reshook)) {
 
             $obj->fk_user_author = $user->login;
 
-            $object->price[0] = $obj;
+            $object->price = $obj;
 
             /* // MultiPrix
               if (!empty($conf->global->PRODUIT_MULTIPRICES)) {
@@ -296,18 +296,14 @@ if (empty($reshook)) {
             $originalId = $id;
             if ($object->fetch($id, $ref) > 0) {
                 $object->ref = GETPOST('clone_ref');
-                $object->status = 0;
-                $object->status_buy = 0;
-                $object->finished = 1;
-                $object->id = null;
+                $object->Status = "DISABLE";
+                $object->finished = "FINISHED";
+                unset($object->id);
 
                 if ($object->check()) {
                     $id = $object->create($user);
                     if ($id > 0) {
                         // $object->clone_fournisseurs($originalId, $id);
-
-                        $db->commit();
-                        $db->close();
 
                         header("Location: " . $_SERVER["PHP_SELF"] . "?id=" . $id);
                         exit;
@@ -315,7 +311,6 @@ if (empty($reshook)) {
                         $id = $originalId;
 
                         if ($object->error == 'ErrorProductAlreadyExists') {
-                            $db->rollback();
 
                             $_error++;
                             $action = "";
@@ -325,14 +320,12 @@ if (empty($reshook)) {
                             $mesg.='</div>';
                             //dol_print_error($object->db);
                         } else {
-                            $db->rollback();
                             $mesg = $object->error;
                             dol_print_error($db, $object->error);
                         }
                     }
                 }
             } else {
-                $db->rollback();
                 dol_print_error($db, $object->error);
             }
         }
@@ -357,193 +350,6 @@ if (empty($reshook)) {
             $mesg = $object->error;
             $reload = 0;
             $action = '';
-        }
-    }
-
-
-    // Add product into proposal
-    if ($action == 'addinpropal') {
-        $propal = new Propal($db);
-        $result = $propal->fetch(GETPOST('propalid'));
-        if ($result <= 0) {
-            dol_print_error($db, $propal->error);
-            exit;
-        }
-
-        $soc = new Societe($db);
-        $result = $soc->fetch($propal->socid);
-        if ($result <= 0) {
-            dol_print_error($db, $soc->error);
-            exit;
-        }
-
-        $prod = new Product($db);
-        $result = $prod->fetch($id);
-        if ($result <= 0) {
-            dol_print_error($db, $prod->error);
-            exit;
-        }
-
-        $desc = $prod->description;
-
-        $tva_tx = get_default_tva($mysoc, $soc, $prod->id);
-        $localtax1_tx = get_localtax($tva_tx, 1, $soc);
-        $localtax2_tx = get_localtax($tva_tx, 2, $soc);
-
-        $pu_ht = $prod->price;
-        $pu_ttc = $prod->price_ttc;
-        $price_base_type = $prod->price_base_type;
-
-        // If multiprice
-        if ($conf->global->PRODUIT_MULTIPRICES && $soc->price_level) {
-            $pu_ht = $prod->multiprices[$soc->price_level];
-            $pu_ttc = $prod->multiprices_ttc[$soc->price_level];
-            $price_base_type = $prod->multiprices_base_type[$soc->price_level];
-        }
-
-        // On reevalue prix selon taux tva car taux tva transaction peut etre different
-        // de ceux du produit par defaut (par exemple si pays different entre vendeur et acheteur).
-        if ($tva_tx != $prod->tva_tx) {
-            if ($price_base_type != 'HT') {
-                $pu_ht = price2num($pu_ttc / (1 + ($tva_tx / 100)), 'MU');
-            } else {
-                $pu_ttc = price2num($pu_ht * (1 + ($tva_tx / 100)), 'MU');
-            }
-        }
-
-        $result = $propal->addline(
-                $propal->id, $desc, $pu_ht, GETPOST('qty'), $tva_tx, $localtax1_tx, // localtax1
-                $localtax2_tx, // localtax2
-                $prod->id, GETPOST('remise_percent'), $price_base_type, $pu_ttc
-        );
-        if ($result > 0) {
-            header("Location: " . DOL_URL_ROOT . "/comm/propal.php?id=" . $propal->id);
-            return;
-        }
-
-        $mesg = $langs->trans("ErrorUnknown") . ": $result";
-    }
-
-    // Add product into order
-    if ($action == 'addincommande') {
-        $commande = new Commande($db);
-        $result = $commande->fetch(GETPOST('commandeid'));
-        if ($result <= 0) {
-            dol_print_error($db, $commande->error);
-            exit;
-        }
-
-        $soc = new Societe($db);
-        $result = $soc->fetch($commande->socid);
-        if ($result <= 0) {
-            dol_print_error($db, $soc->error);
-            exit;
-        }
-
-        $prod = new Product($db);
-        $result = $prod->fetch($id);
-        if ($result <= 0) {
-            dol_print_error($db, $prod->error);
-            exit;
-        }
-
-        $desc = $prod->description;
-
-        $tva_tx = get_default_tva($mysoc, $soc, $prod->id);
-        $localtax1_tx = get_localtax($tva_tx, 1, $soc);
-        $localtax2_tx = get_localtax($tva_tx, 2, $soc);
-
-
-        $pu_ht = $prod->price;
-        $pu_ttc = $prod->price_ttc;
-        $price_base_type = $prod->price_base_type;
-
-        // If multiprice
-        if ($conf->global->PRODUIT_MULTIPRICES && $soc->price_level) {
-            $pu_ht = $prod->multiprices[$soc->price_level];
-            $pu_ttc = $prod->multiprices_ttc[$soc->price_level];
-            $price_base_type = $prod->multiprices_base_type[$soc->price_level];
-        }
-
-        // On reevalue prix selon taux tva car taux tva transaction peut etre different
-        // de ceux du produit par defaut (par exemple si pays different entre vendeur et acheteur).
-        if ($tva_tx != $prod->tva_tx) {
-            if ($price_base_type != 'HT') {
-                $pu_ht = price2num($pu_ttc / (1 + ($tva_tx / 100)), 'MU');
-            } else {
-                $pu_ttc = price2num($pu_ht * (1 + ($tva_tx / 100)), 'MU');
-            }
-        }
-
-        $result = $commande->addline(
-                $commande->id, $desc, $pu_ht, GETPOST('qty'), $tva_tx, $localtax1_tx, // localtax1
-                $localtax2_tx, // localtax2
-                $prod->id, GETPOST('remise_percent'), '', '', $price_base_type, $pu_ttc
-        );
-
-        if ($result > 0) {
-            header("Location: " . DOL_URL_ROOT . "/commande/fiche.php?id=" . $commande->id);
-            exit;
-        }
-    }
-
-    // Add product into invoice
-    if ($action == 'addinfacture' && $user->rights->facture->creer) {
-        $facture = New Facture($db);
-        $result = $facture->fetch(GETPOST('factureid'));
-        if ($result <= 0) {
-            dol_print_error($db, $facture->error);
-            exit;
-        }
-
-        $soc = new Societe($db);
-        $soc->fetch($facture->socid);
-        if ($result <= 0) {
-            dol_print_error($db, $soc->error);
-            exit;
-        }
-
-        $prod = new Product($db);
-        $result = $prod->fetch($id, $ref);
-        if ($result <= 0) {
-            dol_print_error($db, $prod->error);
-            exit;
-        }
-
-        $desc = $prod->description;
-
-        $tva_tx = get_default_tva($mysoc, $soc, $prod->id);
-        $localtax1_tx = get_localtax($tva_tx, 1, $soc);
-        $localtax2_tx = get_localtax($tva_tx, 2, $soc);
-
-        $pu_ht = $prod->price;
-        $pu_ttc = $prod->price_ttc;
-        $price_base_type = $prod->price_base_type;
-
-        // If multiprice
-        if ($conf->global->PRODUIT_MULTIPRICES && $soc->price_level) {
-            $pu_ht = $prod->multiprices[$soc->price_level];
-            $pu_ttc = $prod->multiprices_ttc[$soc->price_level];
-            $price_base_type = $prod->multiprices_base_type[$soc->price_level];
-        }
-
-        // On reevalue prix selon taux tva car taux tva transaction peut etre different
-        // de ceux du produit par defaut (par exemple si pays different entre vendeur et acheteur).
-        if ($tva_tx != $prod->tva_tx) {
-            if ($price_base_type != 'HT') {
-                $pu_ht = price2num($pu_ttc / (1 + ($tva_tx / 100)), 'MU');
-            } else {
-                $pu_ttc = price2num($pu_ht * (1 + ($tva_tx / 100)), 'MU');
-            }
-        }
-
-        $result = $facture->addline(
-                $facture->id, $desc, $pu_ht, GETPOST('qty'), $tva_tx, $localtax1_tx, $localtax2_tx, $prod->id, GETPOST('remise_percent'), '', '', '', '', '', $price_base_type, $pu_ttc
-        );
-
-        if ($result > 0) {
-            header("Location: " . DOL_URL_ROOT . "/compta/facture.php?facid=" . $facture->id);
-            exit;
         }
     }
 }
@@ -731,32 +537,27 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
         print '<br>';
 
-        if (!empty($conf->global->PRODUIT_MULTIPRICES)) {
-            // We do no show price array on create when multiprices enabled.
-            // We must set them on prices tab.
-        } else {
-            print '<table class="border" width="100%">';
+        print '<table class="border" width="100%">';
 
-            // PRIX
-            print '<tr><td>' . $langs->trans("SellingPrice") . '</td>';
-            print '<td><input name="price" size="10" value="' . $object->price[0]->price . '">';
-            print $object->select_fk_extrafields("price_base_type", "price_base_type", $object->price[0]->price_base_type);
-            print '</td></tr>';
+        // PRIX
+        print '<tr><td>' . $langs->trans("SellingPrice") . '</td>';
+        print '<td><input name="price" size="10" value="' . $object->price[0]->price . '">';
+        print $object->select_fk_extrafields("price_base_type", "price_base_type", $object->price[0]->price_base_type);
+        print '</td></tr>';
 
-            // MIN PRICE
-            print '<tr><td>' . $langs->trans("MinPrice") . '</td>';
-            print '<td><input name="price_min" size="10" value="' . $object->price[0]->price_min . '">';
-            print '</td></tr>';
+        // MIN PRICE
+        print '<tr><td>' . $langs->trans("MinPrice") . '</td>';
+        print '<td><input name="price_min" size="10" value="' . $object->price[0]->price_min . '">';
+        print '</td></tr>';
 
-            // VAT
-            print '<tr><td width="20%">' . $langs->trans("VATRate") . '</td><td>';
-            print $object->select_fk_extrafields("tva_tx", "tva_tx", '', false);
-            print '</td></tr>';
+        // VAT
+        print '<tr><td width="20%">' . $langs->trans("VATRate") . '</td><td>';
+        print $object->select_fk_extrafields("tva_tx", "tva_tx", '', false);
+        print '</td></tr>';
 
-            print '</table>';
+        print '</table>';
 
-            print '<br>';
-        }
+        print '<br>';
 
         print '<center><input type="submit" class="button" value="' . $langs->trans("Create") . '"></center>';
 
@@ -914,9 +715,8 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
             print end_box();
             print '</div><div>';
-        }
-        // Fiche en mode visu
-        else {
+        } else {
+            // Fiche en mode visu
             dol_htmloutput_mesg($mesg);
 
             $head = product_prepare_head($object, $user);
@@ -947,7 +747,9 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             print '<tr><td>' . $langs->trans("Name") . '</td><td colspan="2">' . $object->name . '</td>';
 
             // Label
-            print '<tr><td>' . $langs->trans("Label") . '</td><td colspan="2">' . $object->label . '</td>';
+            print '<tr><td>' . $form->editfieldkey("Label", 'label', $object->label, $object, $user->rights->produit->creer || $user->rights->service->creer, 'string') . '</td><td colspan="2">';
+            print $form->editfieldval("Label", 'label', $object->label, $object, $user->rights->produit->creer || $user->rights->service->creer, 'string');
+            print '</td>';
 
             $nblignes = 8;
             if (!empty($conf->produit->enabled) && !empty($conf->service->enabled))
@@ -1033,9 +835,11 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             print $form->editfieldval("ProductAccountancyBuyCode", 'accountancy_code_buy', $object->accountancy_code_buy, $object, $user->rights->produit->creer || $user->rights->service->creer, 'string');
             print '</td></tr>';
 
-            // Status (to sell)
-            print '<tr><td>' . $langs->trans("Status") . '</td><td colspan="2">';
-            print $object->getLibStatus();
+            // Status
+            //print '<tr><td>' . $langs->trans("Status") . '</td><td colspan="2">';
+            print '<tr><td>' . $form->editfieldkey("Status", 'Status', $object->Status, $object, $user->rights->produit->creer || $user->rights->service->creer, "select") . '</td><td colspan="2">';
+            print $form->editfieldval("Status", 'Status', $object->Status, $object, $user->rights->produit->creer || $user->rights->service->creer, "select");
+            //print $object->getLibStatus();
             print '</td></tr>';
 
             // Description
@@ -1117,9 +921,6 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
                 }
             }
 
-            // Note
-            print '<tr><td valign="top">' . $langs->trans("Note") . '</td><td colspan="' . (2 + (($showphoto || $showbarcode) ? 1 : 0)) . '">' . (dol_textishtml($object->note) ? $object->note : dol_nl2br($object->note, 1, true)) . '</td></tr>';
-
             print "</table>\n";
 
             dol_fiche_end();
@@ -1168,6 +969,10 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             print "</div>";
 
             print end_box();
+
+            print $object->show_notes();
+
+            print $object->show_price(10, $object->id);
 
             print '</div></div>';
         }

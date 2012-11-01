@@ -35,15 +35,15 @@ if ($flush) {
     $result = $couchdb->limit(50000)->getView('Product', 'target_id');
     $i = 0;
 
-    if (count($result->rows) == 0) {
-        print "Effacement terminé";
-        exit;
-    }
-
     foreach ($result->rows AS $aRow) {
         $obj[$i]->_id = $aRow->value->_id;
         $obj[$i]->_rev = $aRow->value->_rev;
         $i++;
+    }
+
+    if (count($obj) == 0) {
+        print "Effacement terminé";
+        exit;
     }
 
     try {
@@ -80,8 +80,12 @@ $result = $db->query($sql);
 
 $i = 0;
 
+$uuid = $couchdb->getUuids($iTotal);
+
+$price = array();
+
 while ($aRow = $db->fetch_object($result)) {
-    $col[$aRow->rowid]->import_key = (int) $aRow->rowid;
+    $col[$aRow->rowid]->_id = $uuid[$i];
     $col[$aRow->rowid]->class = "Product";
     $col[$aRow->rowid]->name = $aRow->ref;
     $col[$aRow->rowid]->ref_ext = $aRow->ref_ext;
@@ -158,7 +162,13 @@ while ($aRow = $db->fetch_object($result)) {
     $obj->localtax2_tx = (float) $aRow->localtax2_tx;
     $obj->fk_user_author = $aRow->user_author;
 
-    $col[$aRow->rowid]->price[] = clone $obj;
+    $col[$aRow->rowid]->price = clone $obj;
+
+    $obj->price_level = "base";
+    $obj->class = "Price";
+    $obj->fk_product = $uuid[$i];
+
+    $price[] = clone $obj;
     //print count($col[$aRow->rowid]->country_id);exit;
 
     $i++;
@@ -180,8 +190,10 @@ $result = $db->query($sql);
 
 /* init society sales array  */
 while ($aRow = $db->fetch_object($result)) {
-    if (!empty($col[$aRow->fk_product]->import_key)) {
+    if (!empty($col[$aRow->fk_product]->_id)) {
         $obj = new stdClass();
+        $obj->class = "Price";
+        $obj->fk_product = $col[$aRow->fk_product]->_id;
         $obj->tms = $db->jdate($aRow->tms);
         $obj->price = (float) $aRow->price;
         $obj->price_ttc = (float) $aRow->price_ttc;
@@ -198,10 +210,9 @@ while ($aRow = $db->fetch_object($result)) {
         $obj->fk_user_author = $aRow->user_author;
 
         //print_r($obj);exit;
-        if (isset($col[$aRow->fk_product]->price[(int) $aRow->price_level]))
-            $col[$aRow->fk_product]->history_price[] = clone $col[$aRow->fk_product]->price[(int) $aRow->price_level];
+        $obj->price_level = "level" . $aRow->price_level;
 
-        $col[$aRow->fk_product]->price[(int) $aRow->price_level] = clone $obj;
+        $price[] = clone $obj;
     }
 }
 $db->free($result);
@@ -221,7 +232,7 @@ $result = $db->query($sql);
 /* init society categories array */
 while ($aRow = $db->fetch_object($result)) {
 
-    if (!empty($col[$aRow->fk_product]->import_key)) {
+    if (!empty($col[$aRow->fk_product]->_id)) {
         $col[$aRow->fk_product]->Tag[] = $aRow->label;
     }
 }
@@ -232,14 +243,17 @@ unset($result);
 
 try {
     $couchdb->clean($col);
+    $couchdb->clean($price);
     //print_r($col);exit;
     $result = $couchdb->storeDocs($col, false);
+    $result1 = $couchdb->storeDocs($price, false);
 } catch (Exception $e) {
     echo "Something weird happened: " . $e->getMessage() . " (errcode=" . $e->getCode() . ")\n";
     exit(1);
 }
 
 print_r($result);
+print_r($result1);
 
 print "Import société terminée : " . count($col);
 ?>

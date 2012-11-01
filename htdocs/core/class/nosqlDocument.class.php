@@ -1294,23 +1294,22 @@ abstract class nosqlDocument extends CommonObject {
      *
      *  @return	@string
      */
-    function notes($edit = true) {
+    function show_notes($edit = true) {
         global $conf, $user, $langs;
 
-        print start_box($langs->trans("Notes"), "twelve", "16-Info-_-About.png");
+        $out = start_box($langs->trans("Notes"), "twelve", "16-Info-_-About.png");
 
         // Notes
         if ($edit) {
-            print '<input id="element_id" type="hidden" value="' . $this->id . '"/>';
-            print '<input id="element_class" type="hidden" value="' . get_class($this) . '"/>';
-            print '<div id="editval_notes" class="edit_wysiwyg ttip_l">' . $this->notes . '</div>';
+            $out.= '<input id="element_id" type="hidden" value="' . $this->id . '"/>';
+            $out.= '<input id="element_class" type="hidden" value="' . get_class($this) . '"/>';
+            $out.= '<div id="editval_notes" class="edit_wysiwyg ttip_l">' . $this->notes . '</div>';
         }
         else
-            print $this->notes;
+            $out.= $this->notes;
 
-        print end_box();
-
-        return 1;
+        $out.= end_box();
+        return $out;
     }
 
 }
