@@ -287,13 +287,15 @@ class Form {
                 $out.= '<input id="ckeditor_toolbar" value="' . $toolbar . '" type="hidden"/>' . "\n";
             }
 
-            $out.= '<input id="element_id" type="hidden" value="' . $object->id . '"/>';
-            $out.= '<input id="element_class" type="hidden" value="' . get_class($object) . '"/>';
+            $out.= '<input id="element_id_' . $htmlname . '" type="hidden" value="' . $object->id . '"/>';
+            $out.= '<input id="element_class_' . $htmlname . '" type="hidden" value="' . get_class($object) . '"/>';
 
-            $out.= '<input id="element_' . $htmlname . '" value="' . $element . '" type="hidden"/>' . "\n";
-            $out.= '<input id="table_element_' . $htmlname . '" value="' . $table_element . '" type="hidden"/>' . "\n";
-            $out.= '<input id="fk_element_' . $htmlname . '" value="' . $fk_element . '" type="hidden"/>' . "\n";
-            $out.= '<input id="loadmethod_' . $htmlname . '" value="' . $loadmethod . '" type="hidden"/>' . "\n";
+            //$out.= '<input id="element_' . $htmlname . '" value="' . $element . '" type="hidden"/>' . "\n";
+            //$out.= '<input id="table_element_' . $htmlname . '" value="' . $table_element . '" type="hidden"/>' . "\n";
+            //$out.= '<input id="fk_element_' . $htmlname . '" value="' . $fk_element . '" type="hidden"/>' . "\n";
+
+            if (!empty($loadmethod))
+                $out.= '<input id="loadmethod_' . $htmlname . '" value="' . $loadmethod . '" type="hidden"/>' . "\n";
             if (!empty($savemethod))
                 $out.= '<input id="savemethod_' . $htmlname . '" value="' . $savemethod . '" type="hidden"/>' . "\n";
             if (!empty($ext_element))
@@ -1099,6 +1101,7 @@ class Form {
                     $currencytext = $conf->currency; // If text is too long, we use the short code
                 if (dol_strlen($currencytextnoent) > 10)
                     $currencytextnoent = $conf->currency;   // If text is too long, we use the short code
+
 
 
 

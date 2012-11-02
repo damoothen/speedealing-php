@@ -89,61 +89,6 @@ class FormCompany
 	}
 
 	/**
-	 *  Affiche formulaire de selection des modes de reglement
-	 *
-	 *  @param	int		$page        	Page
-	 *  @param  int		$selected    	Id or code preselected
-	 *  @param  string	$htmlname   	Nom du formulaire select
-	 *	@param	int		$empty			Add empty value in list
-	 *	@return	void
-	 */
-	function form_prospect_level($page, $selected='', $htmlname='prospect_level_id', $empty=0)
-	{
-		global $langs;
-
-		print '<form method="post" action="'.$page.'">';
-		print '<input type="hidden" name="action" value="setprospectlevel">';
-		print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-		print '<table class="nobordernopadding" cellpadding="0" cellspacing="0">';
-		print '<tr><td>';
-
-		print '<select class="flat" name="'.$htmlname.'">';
-		if ($empty) print '<option value="">&nbsp;</option>';
-
-		dol_syslog(get_class($this).'::form_prospect_level',LOG_DEBUG);
-		$sql = "SELECT code, label";
-		$sql.= " FROM ".MAIN_DB_PREFIX."c_prospectlevel";
-		$sql.= " WHERE active > 0";
-		$sql.= " ORDER BY sortorder";
-		$resql = $this->db->query($sql);
-		if ($resql)
-		{
-			$num = $this->db->num_rows($resql);
-			$i = 0;
-			while ($i < $num)
-			{
-				$obj = $this->db->fetch_object($resql);
-
-				print '<option value="'.$obj->code.'"';
-				if ($selected == $obj->code) print ' selected="selected"';
-				print '>';
-				$level=$langs->trans($obj->code);
-				if ($level == $obj->code) $level=$langs->trans($obj->label);
-				print $level;
-				print '</option>';
-
-				$i++;
-			}
-		}
-		else dol_print_error($this->db);
-		print '</select>';
-
-		print '</td>';
-		print '<td align="left"><input type="submit" class="button" value="'.$langs->trans("Modify").'"></td>';
-		print '</tr></table></form>';
-	}
-
-	/**
 	 *   Retourne la liste deroulante des regions actives dont le pays est actif
 	 *   La cle de la liste est le code (il peut y avoir plusieurs entree pour
 	 *   un code donnee mais dans ce cas, le champ pays et lang differe).

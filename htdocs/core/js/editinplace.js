@@ -364,15 +364,15 @@ $(document).ready(function() {
     
     $('.array_tag_handler').tagHandler({
         getData: {
-            id: $('#element_id').val(),
-            element_class: $('#element_class').val(),
+            id: $('#element_id_Tag').val(),
+            element_class: $('#element_class_Tag').val(),
             type: "tag",
             key: "editval_Tag"
         },
         getURL: tagLoadInPlace,
         updateData: {
-            id: $('#element_id').val(),
-            element_class: $('#element_class').val(),
+            id: $('#element_id_Tag').val(),
+            element_class: $('#element_class_Tag').val(),
             type: "tag",
             key: "editval_Tag"
         },
@@ -382,7 +382,9 @@ $(document).ready(function() {
     });
 	
     function getParameters(obj, type) {
-        var htmlname		= $(obj).attr('id');
+        //console.log(obj);
+        var htmlname		= $(obj).attr('id').substr(8);
+        //console.log(htmlname);
         var element		= $('#element_' + htmlname).val();
         var table_element	= $('#table_element_' + htmlname).val();
         var fk_element		= $('#fk_element_' + htmlname).val();
@@ -390,8 +392,8 @@ $(document).ready(function() {
         var savemethod		= $('#savemethod_' + htmlname).val();
         var ext_element		= $('#ext_element_' + htmlname).val();
         var timestamp		= $('#timestamp').val();
-        var element_class       = $('#element_class').val();
-        var element_id          = $('#element_id').val();
+        var element_class       = $('#element_class_' + htmlname).val();
+        var element_id          = $('#element_id_' + htmlname).val();
 		
         return {
             type: type,

@@ -572,11 +572,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
         // We set country_id country for the selected country
         $object->country_id = GETPOST('country_id') ? GETPOST('country_id') : $mysoc->pays_code;
-        /* if ($object->country_id) {
-          $tmparray = getCountry($object->country_id, 'all');
-          $object->country_id = $tmparray['code'];
-          $object->country = $tmparray['label'];
-          } */
+
         $object->forme_juridique_code = GETPOST('forme_juridique_code');
         /* Show create form */
 
@@ -1262,6 +1258,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
                 print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"), 1);
             print '</td></tr>';
 
+            // Juridical status
             print '<tr><td>' . $langs->trans('JuridicalStatus') . '</td><td colspan="3">';
             print $object->select_fk_extrafields("forme_juridique_code", "forme_juridique_code");
             print '</td></tr>';
@@ -1342,7 +1339,6 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         $titre = $langs->trans("ThirdParty");
         print start_box($titre, "twelve", $object->fk_extrafields->ico, false);
 
-        $head = societe_prepare_head($object);
         dol_fiche_head($head, 'card', $langs->trans("ThirdParty"), 0, 'company');
 
         // Confirm delete third party
@@ -1408,11 +1404,19 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
         // Customer code
         if ($object->client) {
-            print '<tr><td>';
-            print $langs->trans('CustomerCode') . '</td><td colspan="' . (2 + (($showlogo || $showbarcode) ? 0 : 1)) . '">';
+            $langs->load("compta");
+
+            print '<tr><td nowrap>';
+            print $langs->trans('CustomerCode') . '</td><td>';
             print $object->code_client;
             if ($object->check_codeclient() <> 0)
                 print ' <font class="error">(' . $langs->trans("WrongCustomerCode") . ')</font>';
+            print '</td>';
+
+            print '<td>';
+            print $form->editfieldkey("CustomerAccountancyCode", 'customeraccountancycode', $object->code_compta, $object, $user->rights->societe->creer);
+            print '</td><td colspan="' . ((($showlogo || $showbarcode) ? 0 : 1)) . '">';
+            print $form->editfieldval("CustomerAccountancyCode", 'customeraccountancycode', $object->code_compta, $object, $user->rights->societe->creer);
             print '</td>';
             print $htmllogobar;
             $htmllogobar = '';
@@ -1422,10 +1426,15 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         // Supplier code
         if (!empty($conf->fournisseur->enabled) && $object->fournisseur && !empty($user->rights->fournisseur->lire)) {
             print '<tr><td>';
-            print $langs->trans('SupplierCode') . '</td><td colspan="' . (2 + (($showlogo || $showbarcode) ? 0 : 1)) . '">';
+            print $langs->trans('SupplierCode') . '</td><td>';
             print $object->code_fournisseur;
             if ($object->check_codefournisseur() <> 0)
                 print ' <font class="error">(' . $langs->trans("WrongSupplierCode") . ')</font>';
+            print '<td>';
+
+            print $form->editfieldkey("SupplierAccountancyCode", 'code_compta_fournisseur', $object->code_compta_fournisseur, $object, $user->rights->societe->creer);
+            print '</td><td colspan="' . ((($showlogo || $showbarcode) ? 0 : 1)) . '">';
+            print $form->editfieldval("SupplierAccountancyCode", 'code_compta_fournisseur', $object->code_compta_fournisseur, $object, $user->rights->societe->creer);
             print '</td>';
             print $htmllogobar;
             $htmllogobar = '';
@@ -1444,8 +1453,15 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
         // Status
         print '<tr><td>' . $form->editfieldkey("Status", 'Status', $object->Status, $object, $user->rights->societe->creer, "select") . '</td>';
-        print '<td colspan="' . (2 + (($showlogo || $showbarcode) ? 0 : 1)) . '">';
+        print '<td>';
         print $form->editfieldval("Status", 'Status', $object->Status, $object, $user->rights->societe->creer, "select");
+        print '</td>';
+
+
+        // Potential
+        print '<td>' . $form->editfieldkey("ProspectLevelShort", 'prospectlevel', $object->prospectlevel, $object, $user->rights->societe->creer, "select") . '</td>';
+        print '<td colspan="' . ((($showlogo || $showbarcode) ? 0 : 1)) . '">';
+        print $form->editfieldval("ProspectLevelShort", 'prospectlevel', $object->prospectlevel, $object, $user->rights->societe->creer, "select");
         print '</td>';
         print $htmllogobar;
         $htmllogobar = '';
@@ -1603,6 +1619,13 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             print '</td></tr>';
         }
 
+        // Price level
+        if ($conf->product->enabled || $conf->service->enabled) {
+            print '<tr><td>' . $form->editfieldkey("PriceLevel", 'price_level', $object->price_level, $object, $user->rights->societe->creer, "select") . '</td><td colspan="' . (2 + (($showlogo || $showbarcode) ? 0 : 1)) . '">';
+            print $form->editfieldval("PriceLevel", 'price_level', $object->price_level, $object, $user->rights->societe->creer, "select");
+            print "</td></tr>";
+        }
+
         // Tag
         print '<tr><td>' . $form->editfieldkey("Categories", 'Tag', $object->Tag, $object, $user->rights->societe->creer, "tag") . '</td><td colspan="' . (2 + (($showlogo || $showbarcode) ? 0 : 1)) . '">';
         print $form->editfieldval("Categories", 'Tag', $object->Tag, $object, $user->rights->societe->creer, "tag");
@@ -1638,29 +1661,76 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             print '</td></tr>';
         }
 
-        // Parent company
-        if (empty($conf->global->SOCIETE_DISABLE_PARENTCOMPANY)) {
-            print '<tr><td>';
-            print '<table width="100%" class="nobordernopadding"><tr><td>';
-            print $langs->trans('ParentCompany');
-            print '<td><td align="right">';
-            if ($user->rights->societe->creer)
-                print '<a href="' . DOL_URL_ROOT . '/societe/lien.php?id=' . $object->id . '">' . img_edit() . '</a>';
-            else
-                print '&nbsp;';
-            print '</td></tr></table>';
-            print '</td>';
-            print '<td colspan="3">';
-            if ($object->parent) {
-                $socm = new Societe($db);
-                $socm->fetch($object->parent);
-                print $socm->getNomUrl(1) . ' ' . ($socm->code_client ? "(" . $socm->code_client . ")" : "");
-                print $socm->town ? ' - ' . $socm->town : '';
-            } else {
-                print $langs->trans("NoParentCompany");
-            }
-            print '</td></tr>';
+        // Conditions de reglement par defaut
+        $langs->load('bills');
+
+        print '<tr><td nowrap>';
+        print '<table width="100%" class="nobordernopadding"><tr><td nowrap>';
+        print $langs->trans('PaymentConditions');
+        print '<td>';
+        if (($action != 'editconditions') && $user->rights->societe->creer)
+            print '<td align="right"><a href="' . $_SERVER["PHP_SELF"] . '?action=editconditions&amp;socid=' . $object->id . '">' . img_edit($langs->trans('SetConditions'), 1) . '</a></td>';
+        print '</tr></table>';
+        print '</td><td colspan="3">';
+        if ($action == 'editconditions') {
+            $form->form_conditions_reglement($_SERVER['PHP_SELF'] . '?socid=' . $object->id, $object->cond_reglement, 'cond_reglement_id', -1, 1);
+        } else {
+            $form->form_conditions_reglement($_SERVER['PHP_SELF'] . '?socid=' . $object->id, $object->cond_reglement, 'none');
         }
+        print "</td>";
+        print '</tr>';
+
+        // Mode de reglement par defaut
+        print '<tr><td nowrap>';
+        print '<table width="100%" class="nobordernopadding"><tr><td nowrap>';
+        print $langs->trans('PaymentMode');
+        print '<td>';
+        if (($action != 'editmode') && $user->rights->societe->creer)
+            print '<td align="right"><a href="' . $_SERVER["PHP_SELF"] . '?action=editmode&amp;socid=' . $object->id . '">' . img_edit($langs->trans('SetMode'), 1) . '</a></td>';
+        print '</tr></table>';
+        print '</td><td colspan="3">';
+        if ($action == 'editmode') {
+            $form->form_modes_reglement($_SERVER['PHP_SELF'] . '?socid=' . $object->id, $object->mode_reglement, 'mode_reglement_id');
+        } else {
+            $form->form_modes_reglement($_SERVER['PHP_SELF'] . '?socid=' . $object->id, $object->mode_reglement, 'none');
+        }
+        print "</td>";
+        print '</tr>';
+
+        // Relative discounts (Discounts-Drawbacks-Rebates)
+        print '<tr><td nowrap>';
+        print '<table width="100%" class="nobordernopadding"><tr><td nowrap>';
+        print $langs->trans("CustomerRelativeDiscountShort");
+        print '<td><td align="right">';
+        if ($user->rights->societe->creer && !$user->societe_id > 0) {
+            print '<a href="' . DOL_URL_ROOT . '/comm/remise.php?id=' . $object->id . '">' . img_edit($langs->trans("Modify")) . '</a>';
+        }
+        print '</td></tr></table>';
+        print '</td><td colspan="3">' . ($object->remise_client ? '<a href="' . DOL_URL_ROOT . '/comm/remise.php?id=' . $object->id . '">' . $object->remise_client . '%</a>' : $langs->trans("DiscountNone")) . '</td>';
+        print '</tr>';
+
+        // Absolute discounts (Discounts-Drawbacks-Rebates)
+        print '<tr><td nowrap>';
+        print '<table width="100%" class="nobordernopadding">';
+        print '<tr><td nowrap>';
+        print $langs->trans("CustomerAbsoluteDiscountShort");
+        print '<td><td align="right">';
+        if ($user->rights->societe->creer && !$user->societe_id > 0) {
+            print '<a href="' . DOL_URL_ROOT . '/comm/remx.php?id=' . $object->id . '&backtopage=' . urlencode($_SERVER["PHP_SELF"] . '?socid=' . $object->id) . '">' . img_edit($langs->trans("Modify")) . '</a>';
+        }
+        print '</td></tr></table>';
+        print '</td>';
+        print '<td colspan="3">';
+        $amount_discount = $object->getAvailableDiscounts();
+        if ($amount_discount < 0)
+            dol_print_error($db, $object->error);
+        if ($amount_discount > 0)
+            print '<a href="' . DOL_URL_ROOT . '/comm/remx.php?id=' . $object->id . '&backtopage=' . urlencode($_SERVER["PHP_SELF"] . '?socid=' . $object->id) . '">' . price($amount_discount) . '</a>&nbsp;' . $langs->trans("Currency" . $conf->currency);
+        else
+            print $langs->trans("DiscountNone");
+        print '</td>';
+        print '</tr>';
+
 
         // Sales representative
         include DOL_DOCUMENT_ROOT . '/societe/tpl/linesalesrepresentative.tpl.php';

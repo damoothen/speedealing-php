@@ -50,7 +50,7 @@ $key = substr($key, 8); // remove prefix editval_
 
 top_httphead();
 
-//error_log(print_r($_GET, true));
+error_log(print_r($_GET, true));
 
 if (!empty($key) && !empty($class)) {
     dol_include_once("/" . strtolower($class) . "/class/" . strtolower($class) . ".class.php");

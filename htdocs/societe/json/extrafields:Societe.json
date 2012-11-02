@@ -78,7 +78,7 @@
                "ST_TODO": {
                    "enable": false,
                    "type": "prsopect",
-                   "cssClass": "blue-gardient"
+                   "cssClass": "blue-gradient"
                },
                "ST_NEVER": {
                    "enable": true,
@@ -327,6 +327,62 @@
            "default": "NO",
            "dict": "dict:fk_civilite",
            "enable": true
+       },
+       "price_level": {
+           "type": "select",
+           "enable": true,
+           "default": "base",
+           "values": {
+               "base": {
+                   "enable": true,
+                   "label": "base"
+               },
+               "level1": {
+                   "enable": true,
+                   "label": "level1"
+               },
+               "level2": {
+                   "enable": true,
+                   "label": "level2"
+               },
+               "level3": {
+                   "enable": true,
+                   "label": "level3"
+               },
+               "level4": {
+                   "enable": true,
+                   "label": "level4"
+               }
+           }
+       },
+       "prospectlevel": {
+           "type": "select",
+           "enable": true,
+           "default": "UNKNOWN",
+           "status": true,
+           "aoColumns": {
+               "sClass": "center",
+               "bSearchable": true,
+               "bVisible": true
+           },
+           "values": {
+               "UNKNOWN": {
+                   "enable": false,
+                   "cssClass": "grey-gradient"
+               },
+               "LOW": {
+                   "enable": true,
+                   "cssClass": "blue-gradient"
+               },
+               "MEDIUM": {
+                   "enable": true,
+                   "cssClass": "orange-gradient"
+               },
+               "HIGHT": {
+                   "enable": true,
+                   "cssClass": "red-gradient"
+               }
+           }
        }
    }
 }
