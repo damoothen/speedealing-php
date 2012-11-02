@@ -1,4 +1,5 @@
 <?php
+
 /* Copyright (C) 2004-2005 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2004      Benoit Mortier       <benoit.mortier@opensides.be>
@@ -301,7 +302,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         $res = $object->fetch($id);
 
         // Show tabs
-        $head = contact_prepare_head($object);
+        //$head = contact_prepare_head($object);
 
         $title = (!empty($conf->global->SOCIETE_ADDRESSES_MANAGEMENT) ? $langs->trans("Contacts") : $langs->trans("ContactsAddresses"));
         print_fiche_titre($object->firstname . " " . $object->lastname);
@@ -335,9 +336,8 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             // Affiche les erreurs
             dol_htmloutput_errors(is_numeric($error) ? '' : $error, $errors);
 
-            if ($conf->use_javascript_ajax) {
-                print "\n" . '<script type="text/javascript" language="javascript">' . "\n";
-                print 'jQuery(document).ready(function () {
+            print "\n" . '<script type="text/javascript" language="javascript">' . "\n";
+            print 'jQuery(document).ready(function () {
 							jQuery("#selectcountry_id").change(function() {
 								document.formsoc.action.value="create";
 								document.formsoc.submit();
@@ -351,8 +351,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 								$(\'select[name="state_id"]\').val("' . addslashes($objsoc->state_id) . '");
             				});
 						})' . "\n";
-                print '</script>' . "\n";
-            }
+            print '</script>' . "\n";
 
             print '<br>';
             print '<form method="post" name="formsoc" action="' . $_SERVER["PHP_SELF"] . '">';
@@ -376,7 +375,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
                     print '</td></tr>';
                 } else {
                     print '<tr><td>' . $langs->trans("Company") . '</td><td colspan="3">';
-                    print $object->select_fk_extrafields('societe','socid');
+                    print $object->select_fk_extrafields('societe', 'socid');
                     print '</td></tr>';
                 }
             }
@@ -521,24 +520,14 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
              * Fiche en mode edition
              */
 
-            // We set country_id, and country_code label of the chosen country
-            if (isset($_POST["country_id"]) || $object->country_id) {
-                $tmparray = getCountry($object->country_id, 'all');
-                $object->pays_code = $tmparray['code'];
-                $object->pays = $tmparray['label'];
-                $object->country_code = $tmparray['code'];
-                $object->country = $tmparray['label'];
-            }
-
             $objsoc = new Societe($db);
             $objsoc->fetch($object->societe->id);
 
             // Affiche les erreurs
             dol_htmloutput_errors($error, $errors);
 
-            if ($conf->use_javascript_ajax) {
-                print "\n" . '<script type="text/javascript" language="javascript">' . "\n";
-                print 'jQuery(document).ready(function () {
+            print "\n" . '<script type="text/javascript" language="javascript">' . "\n";
+            print 'jQuery(document).ready(function () {
 							jQuery("#selectcountry_id").change(function() {
 								document.formsoc.action.value="edit";
 								document.formsoc.submit();
@@ -553,8 +542,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
                                                                 return false;
             				});
 						})' . "\n";
-                print '</script>' . "\n";
-            }
+            print '</script>' . "\n";
 
             print '<form method="post" action="' . $_SERVER["PHP_SELF"] . '?id=' . $id . '" name="formsoc">';
             print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
@@ -644,25 +632,6 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             }
             print '</tr>';
 
-            //Tag list
-            print '<tr><td>' . $langs->trans("Categories") . '</td><td colspan="3">';
-            print '<ul id="array_tag_handler"></ul>';
-            ?>
-            <script>
-                $(document).ready(function() {
-                    $("#array_tag_handler").tagHandler({
-                        getData: { id: '<?php echo $object->id; ?>', class: '<?php echo get_class($object); ?>' },
-                        getURL: '<?php echo DOL_URL_ROOT . '/core/ajax/loadtaghandler.php'; ?>',
-                        updateData: { id: '<?php echo $object->id; ?>',class: '<?php echo get_class($object); ?>' },
-                        updateURL: '<?php echo DOL_URL_ROOT . '/core/ajax/savetaghandler.php'; ?>',
-                        autocomplete: true,
-                        autoUpdate: true
-                    });
-                });
-            </script>
-            <?php
-            print "</td></tr>";
-
             // Jabberid
             print '<tr><td>Jabberid</td><td><input name="jabberid" type="text" size="40" maxlength="80" value="' . (isset($_POST["jabberid"]) ? $_POST["jabberid"] : $object->jabberid) . '"></td>';
             if (!empty($conf->mailing->enabled)) {
@@ -671,12 +640,6 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
                 print '<td colspan="2">&nbsp;</td>';
             }
             print '</tr>';
-
-            // Note
-            print '<tr><td valign="top">' . $langs->trans("Note") . '</td><td colspan="3">';
-            print '<textarea name="note" cols="70" rows="' . ROWS_3 . '">';
-            print isset($_POST["note"]) ? $_POST["note"] : $object->note;
-            print '</textarea></td></tr>';
 
             // Other attributes
             $parameters = array('colspan' => ' colspan="3"');
@@ -856,9 +819,6 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             print '<td colspan="2">&nbsp;</td>';
         }
         print '</tr>';
-        
-        // Tag
-        print '<tr><td>' . $langs->trans("Categories") . '</td><td colspan="3" class="valeur">' . $object->getTagUrl(1) . "</td></tr>\n";
 
         // Instant message and no email
         print '<tr><td>' . $langs->trans("IM") . '</td><td>' . $object->jabberid . '</td>';
@@ -869,10 +829,10 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         }
         print '</tr>';
 
-        // Note
-        print '<tr><td valign="top">' . $langs->trans("Note") . '</td><td colspan="3">';
-        print nl2br($object->note);
-        print '</td></tr>';
+        // Tag
+        print '<tr><td>' . $form->editfieldkey("Categories", 'Tag', $object->Tag, $object, $user->rights->societe->creer, "tag") . '</td><td colspan="' . (2 + (($showlogo || $showbarcode) ? 0 : 1)) . '">';
+        print $form->editfieldval("Categories", 'Tag', $object->Tag, $object, $user->rights->societe->creer, "tag");
+        print "</td></tr>";
 
         // Other attributes
         $parameters = array('socid' => $socid, 'colspan' => ' colspan="3"');
@@ -948,6 +908,8 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         }
 
         print end_box();
+
+        print $object->show_notes();
 
         $agenda = new Agenda($db);
         print $agenda->show(25, $object->id);

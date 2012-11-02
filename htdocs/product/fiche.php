@@ -684,6 +684,25 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             if ($user->admin)
                 print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"), 1);
             print '</td></tr>';
+            
+            //Tag list
+            print '<tr><td>' . $langs->trans("Categories") . '</td><td colspan="3">';
+            print '<ul id="array_tag_handler"></ul>';
+            ?>
+            <script>
+                $(document).ready(function() {
+                    $("#array_tag_handler").tagHandler({
+                        getData: { id: '<?php echo $object->id; ?>', class: '<?php echo get_class($object); ?>' },
+                        getURL: '<?php echo DOL_URL_ROOT . '/core/ajax/loadtaghandler.php'; ?>',
+                        updateData: { id: '<?php echo $object->id; ?>',class: '<?php echo get_class($object); ?>' },
+                        updateURL: '<?php echo DOL_URL_ROOT . '/core/ajax/savetaghandler.php'; ?>',
+                        autocomplete: true,
+                        autoUpdate: true
+                    });
+                });
+            </script>
+            <?php
+            print "</td></tr>";
 
             // Other attributes
             $parameters = array('colspan' => ' colspan="2"');
@@ -836,10 +855,8 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             print '</td></tr>';
 
             // Status
-            //print '<tr><td>' . $langs->trans("Status") . '</td><td colspan="2">';
             print '<tr><td>' . $form->editfieldkey("Status", 'Status', $object->Status, $object, $user->rights->produit->creer || $user->rights->service->creer, "select") . '</td><td colspan="2">';
             print $form->editfieldval("Status", 'Status', $object->Status, $object, $user->rights->produit->creer || $user->rights->service->creer, "select");
-            //print $object->getLibStatus();
             print '</td></tr>';
 
             // Description
@@ -908,6 +925,11 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
                 print ($img ? $img . ' ' : '') . $object->print_fk_extrafields("country_id");
             }
             print '</td>';
+            
+            //Tag list
+            print '<tr><td>' . $form->editfieldkey("Categories", 'Tag', $object->Tag, $object, $user->rights->produit->creer || $user->rights->service->creer, "tag") . '</td><td colspan="2">';
+            print $form->editfieldval("Categories", 'Tag', $object->Tag, $object, $user->rights->produit->creer || $user->rights->service->creer, "tag");
+            print "</td></tr>";
 
             // Other attributes
             $parameters = array('colspan' => ' colspan="' . (2 + (($showphoto || $showbarcode) ? 1 : 0)) . '"');

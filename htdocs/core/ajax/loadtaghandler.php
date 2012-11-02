@@ -29,15 +29,16 @@ if (!defined('NOREQUIRESOC'))
 
 require('../../main.inc.php');
 
+$key = GETPOST('key', 'alpha');
+$class = GETPOST('element_class', 'alpha');
 $id = GETPOST('id', 'alpha');
-$class = GETPOST('class', 'alpha');
-$key = "Tag";
+
+$key = substr($key, 8); // remove prefix editval_
 /*
  * View
  */
-/* $error = var_export($_GET,true);
-
-  error_log($error); */
+/*$error = var_export($_GET, true);
+error_log($error);*/
 
 top_httphead();
 
@@ -47,9 +48,6 @@ if (!empty($id) && !empty($class)) {
     $res = dol_include_once("/" . $class . "/class/" . strtolower($class) . ".class.php");
     if (!$res) // old dolibarr
         dol_include_once("/" . strtolower($class) . "/class/" . strtolower($class) . ".class.php");
-
-    $langs->load("companies");
-    $langs->load("members");
 
     $return = array();
 

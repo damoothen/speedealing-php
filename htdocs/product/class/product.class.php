@@ -2542,7 +2542,7 @@ class Product extends nosqlDocument {
         print'<th class="essential">';
         print $langs->trans('ChangedBy');
         print'</th>';
-        $obj->aoColumns[$i]->mDataProp = "fk_user_author";
+        $obj->aoColumns[$i]->mDataProp = "user_mod";
         $obj->aoColumns[$i]->sDefaultContent = "";
         print '</tr>';
         print '</thead>';

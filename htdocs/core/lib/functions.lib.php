@@ -648,16 +648,6 @@ function dol_fiche_head($links = array(), $active = '0', $title = '', $notab = 0
 function dol_get_fiche_head($links = array(), $active = '0', $title = '', $notab = 0, $picto = '') {
     $out = "\n" . '<div>' . "\n";
 
-    // Affichage titre
-    if (!empty($title)) {
-        $limittitle = 30;
-        $out.='<a class="tabTitle">';
-        if ($picto)
-            $out.=img_object('', $picto) . ' ';
-        $out.=dol_trunc($title, $limittitle);
-        $out.='</a>';
-    }
-
     // Define max of key (max may be higher than sizeof because of hole due to module disabling some tabs).
     $maxkey = -1;
     if (is_array($links) && !empty($links)) {

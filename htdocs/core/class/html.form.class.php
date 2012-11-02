@@ -1,4 +1,5 @@
 <?php
+
 /* Copyright (c) 2002-2007 Rodolphe Quiedeville  <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2012 Laurent Destailleur   <eldy@users.sourceforge.net>
  * Copyright (C) 2004      Benoit Mortier        <benoit.mortier@opensides.be>
@@ -288,7 +289,7 @@ class Form {
 
             $out.= '<input id="element_id" type="hidden" value="' . $object->id . '"/>';
             $out.= '<input id="element_class" type="hidden" value="' . get_class($object) . '"/>';
-            
+
             $out.= '<input id="element_' . $htmlname . '" value="' . $element . '" type="hidden"/>' . "\n";
             $out.= '<input id="table_element_' . $htmlname . '" value="' . $table_element . '" type="hidden"/>' . "\n";
             $out.= '<input id="fk_element_' . $htmlname . '" value="' . $fk_element . '" type="hidden"/>' . "\n";
@@ -301,15 +302,25 @@ class Form {
                 $out.= '<input id="success_' . $htmlname . '" value="' . $success . '" type="hidden"/>' . "\n";
 
             $out.= '<span id="viewval_' . $htmlname . '" class="viewval_' . $inputType . ($button_only ? ' inactive' : ' active') . '">';
-            if (isset($object->fk_extrafields->fields->$htmlname->status))
+            if (!preg_match('/^tag/', $inputType)) {
+                if (isset($object->fk_extrafields->fields->$htmlname->status))
+                    $out.= $object->LibStatus($value, array("key" => $htmlname));
+                else
+                    $out.= $value;
+            }
+            $out.= '</span>' . "\n";
+            if (preg_match('/^tag/', $inputType)) {
+                $out.= '<ul class="array_tag_handler" id="editval_' . $htmlname . '"></ul>';
+            }
+            else
+                $out.= '<span id="editval_' . $htmlname . '" class="editval_' . $inputType . ($button_only ? ' inactive' : ' active') . ' hideobject">' . (!empty($editvalue) ? $editvalue : $value) . '</span>' . "\n";
+        } else {
+            if (preg_match('/^tag/', $inputType)) {
+                $out.= $object->LibTag($value, array("key" => $htmlname));
+            } elseif (isset($object->fk_extrafields->fields->$htmlname->status))
                 $out.= $object->LibStatus($value, array("key" => $htmlname));
             else
                 $out.= $value;
-            $out.= '</span>' . "\n";
-            $out.= '<span id="editval_' . $htmlname . '" class="editval_' . $inputType . ($button_only ? ' inactive' : ' active') . ' hideobject">' . (!empty($editvalue) ? $editvalue : $value) . '</span>' . "\n";
-        }
-        else {
-            $out = $value;
         }
 
         return $out;
@@ -1088,6 +1099,10 @@ class Form {
                     $currencytext = $conf->currency; // If text is too long, we use the short code
                 if (dol_strlen($currencytextnoent) > 10)
                     $currencytextnoent = $conf->currency;   // If text is too long, we use the short code
+
+
+
+
 
 
 

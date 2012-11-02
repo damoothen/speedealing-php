@@ -361,6 +361,25 @@ $(document).ready(function() {
         $('#viewval_' + $(this).attr('id')).hide();
         $('#editval_' + $(this).attr('id')).show().click();
     });
+    
+    $('.array_tag_handler').tagHandler({
+        getData: {
+            id: $('#element_id').val(),
+            element_class: $('#element_class').val(),
+            type: "tag",
+            key: "editval_Tag"
+        },
+        getURL: tagLoadInPlace,
+        updateData: {
+            id: $('#element_id').val(),
+            element_class: $('#element_class').val(),
+            type: "tag",
+            key: "editval_Tag"
+        },
+        updateURL: tagSaveInPlace,
+        autocomplete: true,
+        autoUpdate: true
+    });
 	
     function getParameters(obj, type) {
         var htmlname		= $(obj).attr('id');

@@ -104,7 +104,7 @@ while ($aRow = $db->fetch_object($result)) {
     $col[$aRow->rowid]->customcode = $aRow->customcode;
     $col[$aRow->rowid]->country_id = $aRow->code; // FR
     $col[$aRow->rowid]->recuperableonly = (bool) $aRow->recuperableonly;
-    $col[$aRow->rowid]->fk_user_author = $aRow->user_author;
+    $col[$aRow->rowid]->user_mod = $aRow->user_author;
 
     if ((bool) $aRow->tosell)
         $col[$aRow->rowid]->Status = "SELL";
@@ -160,13 +160,14 @@ while ($aRow = $db->fetch_object($result)) {
     $obj->recuperableonly = (bool) $aRow->recuperableonly;
     $obj->localtax1_tx = (float) $aRow->localtax1_tx;
     $obj->localtax2_tx = (float) $aRow->localtax2_tx;
-    $obj->fk_user_author = $aRow->user_author;
+    $obj->user_mod = $aRow->user_author;
 
     $col[$aRow->rowid]->price = clone $obj;
 
     $obj->price_level = "base";
     $obj->class = "Price";
-    $obj->fk_product = $uuid[$i];
+    $obj->product->id = $uuid[$i];
+    $obj->product->name = $col[$aRow->rowid]->name;
 
     $price[] = clone $obj;
     //print count($col[$aRow->rowid]->country_id);exit;
@@ -193,7 +194,8 @@ while ($aRow = $db->fetch_object($result)) {
     if (!empty($col[$aRow->fk_product]->_id)) {
         $obj = new stdClass();
         $obj->class = "Price";
-        $obj->fk_product = $col[$aRow->fk_product]->_id;
+        $obj->product->id = $col[$aRow->fk_product]->_id;
+        $obj->product->name = $col[$aRow->fk_product]->name;
         $obj->tms = $db->jdate($aRow->tms);
         $obj->price = (float) $aRow->price;
         $obj->price_ttc = (float) $aRow->price_ttc;
@@ -207,7 +209,7 @@ while ($aRow = $db->fetch_object($result)) {
         $obj->recuperableonly = (bool) $aRow->recuperableonly;
         $obj->localtax1_tx = (float) $aRow->localtax1_tx;
         $obj->localtax2_tx = (float) $aRow->localtax2_tx;
-        $obj->fk_user_author = $aRow->user_author;
+        $obj->user_mod = $aRow->user_author;
 
         //print_r($obj);exit;
         $obj->price_level = "level" . $aRow->price_level;

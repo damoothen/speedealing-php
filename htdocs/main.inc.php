@@ -1016,7 +1016,9 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                     print '<script type="text/javascript">' . "\n";
                     //print 'var urlSaveInPlace = \'http://www.example.com/save.php\';'."\n";
                     print 'var urlSaveInPlace = \'core/ajax/saveinplace.php\';' . "\n";
+                    print 'var tagSaveInPlace = \'core/ajax/savetaghandler.php\';' . "\n";
                     print 'var urlLoadInPlace = \'core/ajax/loadinplace.php\';' . "\n";
+                    print 'var tagLoadInPlace = \'core/ajax/loadtaghandler.php\';' . "\n";
                     print 'var tooltipInPlace = \'' . $langs->transnoentities('ClickToEdit') . '\';' . "\n";
                     print 'var placeholderInPlace = \'' . $langs->trans('ClickToEdit') . '\';' . "\n";
                     print 'var cancelInPlace = \'' . $langs->trans('Cancel') . '\';' . "\n";

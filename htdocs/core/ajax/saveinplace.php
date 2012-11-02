@@ -52,8 +52,8 @@ $key = substr($key, 8); // remove prefix editval_
 
 top_httphead();
 
-print '<!-- Ajax page called with url ' . $_SERVER["PHP_SELF"] . '?' . $_SERVER["QUERY_STRING"] . ' -->' . "\n";
-print_r($_POST);
+//print '<!-- Ajax page called with url ' . $_SERVER["PHP_SELF"] . '?' . $_SERVER["QUERY_STRING"] . ' -->' . "\n";
+//print_r($_POST);
 
 if (!empty($key) && !empty($id) && !empty($class)) {
     dol_include_once("/" . strtolower($class) . "/class/" . strtolower($class) . ".class.php");

@@ -28,10 +28,12 @@ if (!defined('NOREQUIREAJAX'))
 
 require('../../main.inc.php');
 
-$class = GETPOST('class', 'alpha');
-$key = "Tag";
+$key = GETPOST('key', 'alpha');
+$class = GETPOST('element_class', 'alpha');
 $id = GETPOST('id', 'alpha');
 $value = $_POST['tags'];
+
+$key = substr($key, 8); // remove prefix editval_
 
 /*
  * View
@@ -39,7 +41,6 @@ $value = $_POST['tags'];
 
 
 /*$error = var_export($_POST,true);
-
 error_log($error);*/
 
 top_httphead();
@@ -54,11 +55,7 @@ if (!empty($key) && !empty($id) && !empty($class)) {
 
 	$object = new $class($db);
 
-	$langs->load('companies');
-
-
 	try {
-
 		$object->id = $id;
 		$object->load($id);
 		$object->$key = $value;
@@ -69,10 +66,9 @@ if (!empty($key) && !empty($id) && !empty($class)) {
 		
 	} catch (Exception $exc) {
 		error_log($exc->getMessage());
+                $return=new stdClass();
 		$return->status = "not found";
 	}
-	
-	
 	
 	echo json_encode($return);
 }

@@ -409,11 +409,11 @@ abstract class nosqlDocument extends CommonObject {
     function LibStatus($status, $params = array()) {
         global $langs, $conf;
 
-        if(empty($params["key"]))
+        if (empty($params["key"]))
             $key = "Status";
         else
             $key = $params["key"];
-        
+
 
         if (isset($params["dateEnd"]) && isset($this->fk_extrafields->fields->$key->values->$status->dateEnd)) {
             if ($params["dateEnd"] < dol_now())
@@ -423,9 +423,19 @@ abstract class nosqlDocument extends CommonObject {
         }
 
         if (isset($this->fk_extrafields->fields->$key->values->$status->label))
-            return '<span class="tag ' . $this->fk_extrafields->fields->$key->values->$status->cssClass . ' glossy">' . $langs->trans($this->fk_extrafields->fields->$key->values->$status->label) . '</span>';
+            $label = $langs->trans($this->fk_extrafields->fields->$key->values->$status->label);
         else
-            return '<span class="tag ' . $this->fk_extrafields->fields->$key->values->$status->cssClass . ' glossy">' . $langs->trans($status) . '</span>';
+            $label = $langs->trans($status);
+
+        if (isset($params["maxlen"]))
+            $label = dol_trunc($label, $params["maxlen"]);
+        
+        if ($this->fk_extrafields->fields->$key->status) // Is a type status with defined color
+            $color = $this->fk_extrafields->fields->$key->values->$status->cssClass;
+        else
+            $color = "anthracite-gradient";
+
+        return '<span class="tag ' . $color . ' glossy">' . $label . '</span>';
     }
 
     /**
@@ -503,7 +513,7 @@ abstract class nosqlDocument extends CommonObject {
                         },
                         //$obj->oColVis->bRestore = true;
                         //$obj->oColVis->sAlign = 'left';
-                                                                                                                                                                                                                                                                                                                																																																																																								            
+                                                                                                                                                                                                                                                                                                                                																																																																																								            
                         // Avec export Excel
         <?php if (!empty($obj->sDom)) : ?>
                             //"sDom": "Cl<fr>t<\"clear\"rtip>",
@@ -578,7 +588,7 @@ abstract class nosqlDocument extends CommonObject {
                                                 "tooltip": tooltipInPlace,
                                                 "indicator" : indicatorInPlace,
                                                 "placeholder" : ""
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                																																																																																																																																																																																                
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                																																																																																																																																																																																                
                                             } );
                                             $("td.dol_select", this.fnGetNodes()).editable( urlSaveInPlace, {
                                                 "callback": function( sValue, y ) {
@@ -601,7 +611,7 @@ abstract class nosqlDocument extends CommonObject {
                                                 "tooltip": tooltipInPlace,
                                                 "indicator" : indicatorInPlace,
                                                 "placeholder" : ""
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                																																																																																																																																																																																                
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                																																																																																																																																																																																                
                                             } );
                                         }
             <?php endif; ?>
@@ -629,7 +639,7 @@ abstract class nosqlDocument extends CommonObject {
                         } );
         <?php endif; ?>
                     // Select_all
-                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                            
                     $('.chSel_all').click(function () {
                         $(this).closest('table').find('input[name=row_sel]').attr('checked', this.checked);
                     });
@@ -1107,6 +1117,31 @@ abstract class nosqlDocument extends CommonObject {
                 if ($withpicto && $withpicto != 2)
                     $result.=' ';
                 $result.=$lien . ($maxlen ? dol_trunc($this->Tag[$i], $maxlen) : $this->Tag[$i]) . $lienfin;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     *    	Renvoie tags list clicable (avec eventuellement le picto)
+     *
+     * 		@param		int		$withpicto		0=Pas de picto, 1=Inclut le picto dans le lien, 2=Picto seul
+     * 		@param		int		$maxlen			length max libelle
+     * 		@return		string					String with URL
+     */
+    function LibTag($values, $params = array()) {
+        global $langs, $conf;
+
+        if (empty($params["key"]))
+            $key = "Tag";
+        else
+            $key = $params["key"];
+
+        $result = '';
+
+        if (count($values)) {
+            for ($i = 0; $i < count($values); $i++) {
+                $result.= $this->LibStatus($values[$i], $params);
             }
         }
         return $result;
