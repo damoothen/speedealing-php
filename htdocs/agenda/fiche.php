@@ -1169,17 +1169,17 @@ if ($id) {
         // Input by
         $var = false;
         print '<tr><td width="30%" nowrap="nowrap">' . $langs->trans("ActionAskedBy") . '</td><td colspan="3">';
-        print $object->author;
+        print $object->print_fk_extrafields('author');
         print '</td></tr>';
 
         // Affecte a
         print '<tr><td nowrap="nowrap">' . $langs->trans("ActionAffectedTo") . '</td><td colspan="3">';
-        print $object->usertodo;
+        print $object->print_fk_extrafields('usertodo');
         print '</td></tr>';
 
         // Done by
         print '<tr><td nowrap="nowrap">' . $langs->trans("ActionDoneBy") . '</td><td colspan="3">';
-        print $object->userdone;
+        print $object->print_fk_extrafields('userdone');
         print '</td></tr>';
 
         print '</table><br><br><table class="border" width="100%">';

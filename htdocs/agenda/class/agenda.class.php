@@ -324,17 +324,17 @@ class Agenda extends nosqlDocument {
 
         if ($this->type == 2 && $this->percentage == 100) //ACTION
             $this->datef = dol_now();
-        
+
         // Check parameters
-        if ($this->percentage == 0 && $this->userdone->id) {
+        if ($this->Status == "TODO" && $this->userdone->id) {
             //$this->error="ErrorCantSaveADoneUserWithZeroPercentage";
             //return -1;
             unset($this->userdone->id);
             unset($this->userdone->name);
         }
-        if ($this->percentage == 100 && !$this->userdone->id) {
+        if ($this->Status == "DONE" && !$this->userdone->id) {
             $this->userdone->id = $user->id;
-            $this->userdone->id = $user->login;
+            $this->userdone->name = $user->name;
         }
 
         if (!empty($this->societe->id)) {
@@ -346,21 +346,21 @@ class Agenda extends nosqlDocument {
         }
         if (!empty($this->contact->id)) {
             $object = new Contact($this->db);
-            $object->load($this->contact->id);
+            $object->fetch($this->contact->id);
             $this->contact->name = $object->name;
         } else {
             unset($this->contact->name);
         }
         if (!empty($this->usertodo->id)) {
             $object = new User($this->db);
-            $object->load($this->usertodo->id);
+            $object->fetch($this->usertodo->id);
             $this->usertodo->name = $object->name;
         } else {
             unset($this->usertodo->name);
         }
         if (!empty($this->userdone->id)) {
             $object = new User($this->db);
-            $object->load($this->userdone->id);
+            $object->fetch($this->userdone->id);
             $this->userdone->name = $object->name;
         } else {
             unset($this->userdone->name);
@@ -1224,28 +1224,31 @@ class Agenda extends nosqlDocument {
 
         $langs->load("companies");
 
-        if ($json) { // For Data see viewgraph.php
-            $keystart[0] = $_GET["name"];
-            $keyend[0] = $_GET["name"];
-            $keyend[1] = new stdClass();
+        if ($json) {
+            // For Data see viewgraph.php
+            $params = array('startkey' => array($user->id, mktime(0, 0, 0, date("m") - 1, date("d"), date("Y"))),
+                'endkey' => array($user->id, mktime(0, 0, 0, date("m") + 1, date("d"), date("Y"))));
+            $result = $this->getView("list" . $_GET["name"], $params);
 
-            $params = array('group' => true, 'group_level' => 2, 'startkey' => $keystart, 'endkey' => $keyend);
-            $result = $this->getView("list_commercial", $params);
+            //error_log(print_r($result,true));
 
-            foreach ($this->fk_extrafields->fields->Status->values as $key => $aRow) {
-                //print_r($aRow);
-                $label = $langs->trans($key);
-                if ($aRow->enable) {
-                    $tab[$key]->label = $label;
-                    $tab[$key]->value = 0;
-                }
+            foreach ($result->rows as $aRow) {
+                $type_code = $aRow->value->type_code;
+                $priority = $this->fk_extrafields->fields->type_code->values->$type_code->priority;
+
+                $obj = new stdClass();
+                $obj->x = $aRow->value->datep * 1000;
+                $obj->y = $priority;
+                $obj->name = $aRow->value->label;
+                $obj->id = $aRow->value->_id;
+                if (!isset($aRow->value->societe->name))
+                    $obj->soc = $langs->trans("None");
+                else
+                    $obj->soc = $aRow->value->societe->name;
+                $obj->usertodo = $aRow->value->usertodo->name;
+
+                $output[] = clone $obj;
             }
-
-            foreach ($result->rows as $aRow) // Update counters from view
-                $tab[$aRow->key[1]]->value+=$aRow->value;
-
-            foreach ($tab as $aRow)
-                $output[] = array($aRow->label, $aRow->value);
 
             return $output;
         } else {
@@ -1260,110 +1263,136 @@ class Agenda extends nosqlDocument {
                         var seriesOptions = [],
                         yAxisOptions = [],
                         seriesCounter = 0,
-                        names = [<?php
-            $params = array('group' => true, 'group_level' => 1);
-            $result = $this->getView("list_commercial", $params);
+                        names = ['MyTasks','MyDelegatedTasks'],
+                        colors = Highcharts.getOptions().colors;
+                        var translate = [];
+                        translate['MyTasks'] = "<?php echo $langs->trans('MyTasks');?>";
+                        translate['MyDelegatedTasks'] = "<?php echo $langs->trans('MyDelegatedTasks');?>";
+                        $.each(names, function(i, name) {
 
-            if (count($result->rows)) {
-                foreach ($result->rows as $aRow) {
-                    if ($i == 0)
-                        echo "'" . $aRow->key[0] . "'";
-                    else
-                        echo ",'" . $aRow->key[0] . "'";
-                    $i++;
-                }
-            }
-            ?>],
-                            colors = Highcharts.getOptions().colors;
-                            $.each(names, function(i, name) {
+                            $.getJSON('<?php echo DOL_URL_ROOT . '/core/ajax/viewgraph.php'; ?>?json=graphEisenhower&class=<?php echo get_class($this); ?>&name='+ name.toString() +'&callback=?',	function(data) {
 
-                                $.getJSON('<?php echo DOL_URL_ROOT . '/core/ajax/viewgraph.php'; ?>?json=graphEisenhower&class=<?php echo get_class($this); ?>&name='+ name.toString() +'&callback=?',	function(data) {
+                                seriesOptions[i] = {
+                                    type: 'scatter',
+                                    name: translate[name],
+                                    data: data
+                                };
 
-                                    seriesOptions[i] = {
-                                        name: name,
-                                        data: data
-                                    };
+                                // As we're loading the data asynchronously, we don't know what order it will arrive. So
+                                // we keep a counter and create the chart when all the data is loaded.
+                                seriesCounter++;
 
-                                    // As we're loading the data asynchronously, we don't know what order it will arrive. So
-                                    // we keep a counter and create the chart when all the data is loaded.
-                                    seriesCounter++;
-
-                                    if (seriesCounter == names.length) {
-                                        createChart();
-                                    }
-                                });
-                            });
-
-
-                            // create the chart when all data is loaded
-                            function createChart() {
-                                var chart;
-                                                                                                                                                                                                                                                                                                                                                                                
-                                chart = new Highcharts.Chart({
-                                    chart: {
-                                        renderTo: 'eisenhower',
-                                        defaultSeriesType: "column",
-                                        zoomType: "x",
-                                        marginBottom: 30
-                                    },
-                                    credits: {
-                                        enabled:false
-                                    },
-                                    xAxis: {
-                                        categories: [<?php
-            $i = 0;
-            foreach ($this->fk_extrafields->fields->Status->values as $key => $aRow) {
-                $label = $langs->trans($key);
-                if ($aRow->enable) {
-                    if ($i == 0)
-                        echo "'" . $label . "'";
-                    else
-                        echo ",'" . $label . "'";
-
-                    $i++;
-                }
-            }
-            ?>],
-                                            maxZoom: 1
-                                            //labels: {rotation: 90, align: "left"}
-                                        },
-                                        yAxis: {
-                                            title: {text: "Total"},
-                                            allowDecimals: false,
-                                            min: 0
-                                        },
-                                        title: {
-                                            //text: "<?php echo $langs->trans("SalesRepresentatives"); ?>"
-                                            text: null
-                                        },
-                                        legend: {
-                                            layout: 'vertical',
-                                            align: 'right',
-                                            verticalAlign: 'top',
-                                            x: -5,
-                                            y: 5,
-                                            floating: true,
-                                            borderWidth: 1,
-                                            backgroundColor: '#000',
-                                            shadow: true
-                                        },
-                                        tooltip: {
-                                            enabled:true,
-                                            formatter: function() {
-                                                //return this.point.name + ' : ' + this.y;
-                                                return '<b>'+ this.x +'</b><br/>'+
-                                                    this.series.name +': '+ this.y;
-                                            }
-                                        },
-                                        series: seriesOptions
-                                    });
+                                if (seriesCounter == names.length) {
+                                    createChart();
                                 }
-
                             });
-                        })(jQuery);
+                        });
+
+
+                        // create the chart when all data is loaded
+                        function createChart() {
+                            var chart;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+                            chart = new Highcharts.Chart({
+                                chart: {
+                                    renderTo: 'eisenhower',
+                                    defaultSeriesType: "column",
+                                    zoomType: "x",
+                                    marginBottom: 35
+                                },
+                                credits: {
+                                    enabled:false
+                                },
+                                xAxis: {
+                                    title: {text: "Urgence"},
+                                    min: <?php echo ((dol_now() * 1000) - (37 * 24 * 3600 * 1000)); ?>,
+                                    max: <?php echo ((dol_now() * 1000) + (30 * 24 * 3600 * 1000)); ?>,
+                                    type: "datetime",
+                                    tickInterval: 7 * 24 * 3600 * 1000 * 2,
+                                    tickWidth: 0,
+                                    gridLineWidth: 1,
+                                    labels: {
+                                        align: "left",
+                                        x: 3,
+                                        y: -3
+                                    },
+                                    plotBands: [{
+                                            from: <?php echo ((dol_now() * 1000) - (7 * 24 * 3600 * 1000)); ?>,
+                                            to: <?php echo (dol_now() * 1000); ?>,
+                                            color: "#edc9c9"
+                                        }],
+                                    plotLines: [{
+                                            value: <?php echo (dol_now() * 1000); ?>,
+                                            width: 4,
+                                            color: "red",
+                                            label: {
+                                                text: Highcharts.dateFormat("%e. %b %H:%M",<?php echo (dol_now() * 1000); ?>),
+                                                style: { color: "white" }
+                                            }
+                                        }]
+                                },                                   
+                                yAxis: {
+                                    min: 0,
+                                    max: <?php echo 10; ?>,
+                                    title: {text: "Importance"},
+                                    plotLines: [{
+                                            value: <? echo 5; ?>,
+                                            width: 2,
+                                            color: "red"
+                                        }],
+                                    labels: {
+                                        enabled: false
+                                    }
+                                },
+                                title: {
+                                    text: null
+                                },
+                                tooltip: {
+                                    enabled:true,
+                                    formatter: function() {
+                                        return '<b>' + this.point.soc + "</b><br><i>" + this.point.name + "</i><br>" + Highcharts.dateFormat("%e. %b",this.x) + "<br><i>" + this.point.usertodo + "</i>";
+                                    }
+                                },
+                                plotOptions: {
+                                    series: { cursor: "pointer",
+                                        point: {
+                                            events: {click: function() {location.href = 'agenda/fiche.php?id=' + this.options.id;}}
+                                        }
+                                    }
+                                },                                                               
+                                legend: {
+                                    layout: 'vertical',
+                                    align: 'right',
+                                    verticalAlign: 'top',
+                                    x: -5,
+                                    y: 5,
+                                    floating: true,
+                                    borderWidth: 1,
+                                    backgroundColor: Highcharts.theme.legendBackgroundColor || '#FFFFFF',
+                                    shadow: true,
+                                    enabled:true
+                                },
+                                series: seriesOptions
+                            });
+                        }
+
+                    });
+                })(jQuery);
             </script>
             <?php
         }
+    }
+
+    /*
+     * Calcul des priorités
+     *
+     */
+
+    function fibonacci($n) {
+        if ($n <= 1)
+            return $n;
+        else
+            return $this->fibonacci($n - 1) + $this->fibonacci($n - 2);
     }
 
 }

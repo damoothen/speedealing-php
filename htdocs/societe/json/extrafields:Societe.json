@@ -4,7 +4,8 @@
    "ico": "16-Apartment-Building.png",
    "langs": [
        "companies",
-       "bills"
+       "bills",
+       "compta"
    ],
    "longList": [
        "code_client",
@@ -12,13 +13,11 @@
        "town",
        "address",
        "phone",
-       "idprof1",
-       "commercial_id"
+       "idprof1"
    ],
    "shortList": [
        "town",
-       "phone",
-       "commercial_id"
+       "phone"
    ],
    "fields": {
        "name": {
@@ -320,7 +319,10 @@
            "enable": true
        },
        "commercial_id": {
-           "label": "SalesRepresentatives"
+           "type": "select",
+           "label": "SalesRepresentatives",
+           "class": "User",
+           "view": "list"
        },
        "civilite_id": {
            "type": "select",

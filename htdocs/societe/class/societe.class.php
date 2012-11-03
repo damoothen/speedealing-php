@@ -1905,7 +1905,7 @@ class Societe extends nosqlDocument {
                         // create the chart when all data is loaded
                         function createChart() {
                             var chart;
-                                                                                                                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                                                                                                                                
                             chart = new Highcharts.Chart({
                                 chart: {
                                     renderTo: "pie-status",
@@ -2046,7 +2046,7 @@ class Societe extends nosqlDocument {
                             // create the chart when all data is loaded
                             function createChart() {
                                 var chart;
-                                                                                                                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                                                                                                                                
                                 chart = new Highcharts.Chart({
                                     chart: {
                                         renderTo: 'bar-status',
@@ -2092,7 +2092,7 @@ class Societe extends nosqlDocument {
                                             y: 5,
                                             floating: true,
                                             borderWidth: 1,
-                                            backgroundColor: '#000',
+                                            backgroundColor: Highcharts.theme.legendBackgroundColor || '#FFFFFF',
                                             shadow: true
                                         },
                                         tooltip: {

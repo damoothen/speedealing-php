@@ -1,7 +1,7 @@
 {
    "_id": "extrafields:UserGroup",
    "class": "extrafields",
-   "ico": "/img/ico/icSw2/16-Users-2.png",
+   "ico": "6-Users-2.png",
    "labelCreate": "Entrer le nom du group",
    "fields": {
        "Status": {

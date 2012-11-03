@@ -178,6 +178,7 @@ class User extends nosqlDocument {
 
         $this->id = $this->values->_id;
         $this->login = $this->values->name;
+        $this->name = $this->values->name;
 
         return 1;
     }

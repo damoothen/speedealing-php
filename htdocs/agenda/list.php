@@ -71,87 +71,6 @@ llxHeader('', $langs->trans("Agenda"), $help_url);
 
 $form = new Form($db);
 
-// Define list of all external calendars
-$listofextcals = array();
-
-
-$param = '';
-if ($status)
-    $param = "&status=" . $status;
-if ($filter)
-    $param.="&filter=" . $filter;
-if ($filtera)
-    $param.="&filtera=" . $filtera;
-if ($filtert)
-    $param.="&filtert=" . $filtert;
-if ($filterd)
-    $param.="&filterd=" . $filterd;
-if ($socid)
-    $param.="&socid=" . $socid;
-if ($showbirthday)
-    $param.="&showbirthday=1";
-if ($pid)
-    $param.="&projectid=" . $pid;
-if ($type)
-    $param.="&type=" . $type;
-/*
-  $sql = "SELECT s.nom as societe, s.rowid as socid, s.client,";
-  $sql.= " a.id, a.datep as dp, a.datep2 as dp2,";
-  //$sql.= " a.datea as da, a.datea2 as da2,";
-  $sql.= " a.fk_contact, a.note, a.label, a.percent as percent,";
-  $sql.= " c.code as acode, c.libelle, c.type, a.note,";
-  $sql.= " ua.login as loginauthor, ua.rowid as useridauthor,";
-  $sql.= " ut.login as logintodo, ut.rowid as useridtodo,";
-  $sql.= " ud.login as logindone, ud.rowid as useriddone,";
-  $sql.= " sp.name, sp.firstname";
-  $sql.= " FROM (" . MAIN_DB_PREFIX . "c_actioncomm as c,";
-  if (!$user->rights->societe->client->voir && !$socid)
-  $sql.= " " . MAIN_DB_PREFIX . "societe_commerciaux as sc,";
-  $sql.= " " . MAIN_DB_PREFIX . 'user as u,';
-  $sql.= " " . MAIN_DB_PREFIX . "actioncomm as a)";
-  $sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "societe as s ON a.fk_soc = s.rowid";
-  $sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "socpeople as sp ON a.fk_contact = sp.rowid";
-  $sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "user as ua ON a.fk_user_author = ua.rowid";
-  $sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "user as ut ON a.fk_user_action = ut.rowid";
-  $sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "user as ud ON a.fk_user_done = ud.rowid";
-  $sql.= " WHERE c.id = a.fk_action";
-  $sql.= ' AND a.fk_user_author = u.rowid';
-  $sql.= ' AND a.entity IN (' . getEntity() . ')'; // To limit to entity
-  if ($actioncode)
-  $sql.=" AND c.code='" . $db->escape($actioncode) . "'";
-  if ($pid)
-  $sql.=" AND a.fk_project=" . $db->escape($pid);
-  if (!$user->rights->societe->client->voir && !$socid)
-  $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " . $user->id;
-  if ($socid)
-  $sql.= " AND s.rowid = " . $socid;
-  if ($type)
-  $sql.= " AND c.id = " . $type;
-  if ($status == 'done') {
-  $sql.= " AND (a.percent = 100 OR (a.percent = -1 AND a.datep2 <= '" . $db->idate($now) . "'))";
-  }
-  if ($status == 'todo') {
-  $sql.= " AND ((a.percent >= 0 AND a.percent < 100) OR (a.percent = -1 AND a.datep2 > '" . $db->idate($now) . "'))";
-  }
-  if ($filtera > 0 || $filtert > 0 || $filterd > 0) {
-  $sql.= " AND (";
-  if ($filtera > 0)
-  $sql.= " a.fk_user_author = " . $filtera;
-  if ($filtert > 0)
-  $sql.= ($filtera > 0 ? " OR " : "") . " a.fk_user_action = " . $filtert;
-  if ($filterd > 0)
-  $sql.= ($filtera > 0 || $filtert > 0 ? " OR " : "") . " a.fk_user_done = " . $filterd;
-  $sql.= ")";
-  }
-  $sql.= $db->order($sortfield, $sortorder);
-  $sql.= $db->plimit($limit + 1, $offset);
-  //print $sql;
-
-  dol_syslog("comm/action/listactions.php sql=" . $sql);
-  $resql = $db->query($sql);
-  $num = $db->num_rows($resql);
- * 
- */
 $object = new Agenda($db);
 $contact = new Contact($db);
 $societe = new Societe($db);
@@ -178,22 +97,38 @@ print_fiche_titre($newtitle);
 <div class="dashboard">
     <div class="columns">
         <div class="nine-columns twelve-columns-mobile graph">
-<?php $object->graphEisenhower(); ?>
+            <?php echo $object->graphEisenhower(); ?>
         </div>
 
         <div class="three-columns twelve-columns-mobile new-row-mobile">
             <ul class="stats split-on-mobile">
-                <li><a href="#">
-                        <strong>21</strong> new <br>accounts
-                    </a></li>
-                <li><a href="#">
-                        <strong>15</strong> referred new <br>accounts
-                    </a></li>
                 <li>
-                    <strong>5</strong> new <br>items
+                    <?php
+                    $agenda = new Agenda($db);
+                    $result = $agenda->getView("countTODO", array("group" => true, "key" => $user->id));                        
+                    print '<strong>'.(int)$result->rows[0]->value.'</strong>';
+                    print $langs->trans('NewActions');
+                    ?>
                 </li>
                 <li>
-                    <strong>235</strong> new <br>comments
+                    <?php
+                    $result = $agenda->getView("countON", array("group" => true, "key" => $user->id));
+                    print '<strong>'.(int)$result->rows[0]->value.'</strong>';
+                    print $langs->trans('DoActions');
+                    ?>
+                </li>
+                <li><?php
+                    $result = $agenda->getView("countByUser", array("group" => true,"group_level"=>"none", "startkey" => array($user->id, mktime(0, 0, 0, 1, 1, date(Y))),"endkey"=>array($user->id, new stdClass())));
+                    print '<strong>'.(int)$result->rows[0]->value.'</strong>';
+                    print $langs->trans('SumMyActions');
+                    ?>
+                </li>
+                <li>
+                    <?php
+                    $result = $agenda->getView("count", array("group" => true,"group_level"=>"none", "startkey" => mktime(0, 0, 0, 1, 1, date(Y)),"endkey"=>new stdClass()));
+                    print '<strong>'.(int)$result->rows[0]->value.'</strong>';
+                    print $langs->trans('SumActions');
+                    ?>
                 </li>
             </ul>
         </div>
@@ -285,7 +220,7 @@ print'<th class="essential">';
 print $langs->trans("Status");
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "Status";
-$obj->aoColumns[$i]->sClass = "dol_select center";
+$obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->sDefaultContent = "0";
 $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("Status", "status", array("dateEnd" => "last_subscription_date_end"));
 $i++;

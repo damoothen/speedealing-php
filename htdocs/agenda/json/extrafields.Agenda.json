@@ -86,50 +86,79 @@
                "AC_RDV": {
                    "enable": true,
                    "label": "Rendez-vous",
-                   "event": true
+                   "event": true,
+                   "priority": 7
                },
                "AC_TEL": {
                    "enable": true,
                    "label": "Phone call",
-                   "event": true
+                   "event": true,
+                   "priority": 6
                },
                "AC_FAX": {
                    "enable": true,
-                   "label": "Send Fax"
+                   "label": "Send Fax",
+                   "priority": 1
                },
                "AC_EMAIL": {
                    "enable": true,
-                   "label": "Send Email"
+                   "label": "Send Email",
+                   "priority": 2
                },
                "AC_OTH": {
                    "enable": false,
-                   "label": "Other"
+                   "label": "Other",
+                   "priority": 0
                },
                "AC_FAC": {
                    "enable": true,
-                   "label": "Send customer invoice by email"
+                   "label": "Send customer invoice by email",
+                   "priority": 7
                },
                "AC_SUP_INV": {
                    "enable": true,
-                   "label": "Send supplier invoice by email"
+                   "label": "Send supplier invoice by email",
+                   "priority": 5
                },
                "AC_COM": {
                    "enable": true,
-                   "label": "Send customer order by email"
+                   "label": "Send customer order by email",
+                   "priority": 9
                },
                "AC_SUP_ORD": {
                    "enable": true,
-                   "label": "Send supplier order by email"
+                   "label": "Send supplier order by email",
+                   "priority": 5
                },
                "AC_PROP": {
                    "enable": true,
-                   "label": "Send commercial proposal by email"
+                   "label": "Send commercial proposal by email",
+                   "priority": 10
                },
                "AC_SHIP": {
                    "enable": true,
-                   "label": "Send shipping by email"
+                   "label": "Send shipping by email",
+                   "priority": 4
                }
            }
+       },
+       "author": {
+           "type": "select",
+           "label": "ActionAskedBy",
+           "class": "User",
+           "view": "list"
+       },
+       "usertodo": {
+           "type": "select",
+           "label": "ActionAffectedTo",
+           "class": "User",
+           "view": "list"
+       },
+       "userdone": {
+           "type": "select",
+           "label": "ActionDoneBy",
+           "class": "User",
+           "view": "list"
        }
    }
 }
