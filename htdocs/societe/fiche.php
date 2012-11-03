@@ -1662,40 +1662,14 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         }
 
         // Conditions de reglement par defaut
-        $langs->load('bills');
-
-        print '<tr><td nowrap>';
-        print '<table width="100%" class="nobordernopadding"><tr><td nowrap>';
-        print $langs->trans('PaymentConditions');
-        print '<td>';
-        if (($action != 'editconditions') && $user->rights->societe->creer)
-            print '<td align="right"><a href="' . $_SERVER["PHP_SELF"] . '?action=editconditions&amp;socid=' . $object->id . '">' . img_edit($langs->trans('SetConditions'), 1) . '</a></td>';
-        print '</tr></table>';
-        print '</td><td colspan="3">';
-        if ($action == 'editconditions') {
-            $form->form_conditions_reglement($_SERVER['PHP_SELF'] . '?socid=' . $object->id, $object->cond_reglement, 'cond_reglement_id', -1, 1);
-        } else {
-            $form->form_conditions_reglement($_SERVER['PHP_SELF'] . '?socid=' . $object->id, $object->cond_reglement, 'none');
-        }
-        print "</td>";
-        print '</tr>';
+        print '<tr><td>' . $form->editfieldkey("PaymentConditions", 'cond_reglement', $object->cond_reglement, $object, $user->rights->societe->creer, "select") . '</td><td colspan="' . (2 + (($showlogo || $showbarcode) ? 0 : 1)) . '">';
+        print $form->editfieldval("PaymentConditions", 'cond_reglement', $object->cond_reglement, $object, $user->rights->societe->creer, "select");
+        print "</td></tr>";
 
         // Mode de reglement par defaut
-        print '<tr><td nowrap>';
-        print '<table width="100%" class="nobordernopadding"><tr><td nowrap>';
-        print $langs->trans('PaymentMode');
-        print '<td>';
-        if (($action != 'editmode') && $user->rights->societe->creer)
-            print '<td align="right"><a href="' . $_SERVER["PHP_SELF"] . '?action=editmode&amp;socid=' . $object->id . '">' . img_edit($langs->trans('SetMode'), 1) . '</a></td>';
-        print '</tr></table>';
-        print '</td><td colspan="3">';
-        if ($action == 'editmode') {
-            $form->form_modes_reglement($_SERVER['PHP_SELF'] . '?socid=' . $object->id, $object->mode_reglement, 'mode_reglement_id');
-        } else {
-            $form->form_modes_reglement($_SERVER['PHP_SELF'] . '?socid=' . $object->id, $object->mode_reglement, 'none');
-        }
-        print "</td>";
-        print '</tr>';
+        print '<tr><td>' . $form->editfieldkey("PaymentMode", 'mode_reglement', $object->mode_reglement, $object, $user->rights->societe->creer, "select") . '</td><td colspan="' . (2 + (($showlogo || $showbarcode) ? 0 : 1)) . '">';
+        print $form->editfieldval("PaymentMode", 'mode_reglement', $object->mode_reglement, $object, $user->rights->societe->creer, "select");
+        print "</td></tr>";
 
         // Relative discounts (Discounts-Drawbacks-Rebates)
         print '<tr><td nowrap>';

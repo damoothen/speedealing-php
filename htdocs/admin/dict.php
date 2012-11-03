@@ -1040,17 +1040,11 @@ if ($id) {
                 $values = new stdClass();
                 $values->enable = (bool) $obj->active;
                 $values->label = $obj->libelle;
+                $code = $obj->code;
                 if (!empty($obj->pays_code))
                     $values->pays_code = $obj->pays_code;
 
                 switch ($id) {
-                    case 28:
-                        $arrayType = array(-1 => "closed", 0 => "suspect", 1 => "prospect", 2 => "customer");
-                        $arrayColor = array(-1 => "error_bg", 0 => "neutral_bg", 1 => "info_bg", 2 => "ok_bg"); // definie CSS for color
-
-                        $values->type = $arrayType[$obj->type];
-                        $values->cssClass = $arrayColor[$obj->type];
-                        break;
                     case 10:
                         $values->label = (float) $obj->taux;
                         $values->recuperableonly = (bool) $obj->recuperableonly;
@@ -1058,6 +1052,23 @@ if ($id) {
                         $values->localtax2 = (float) $obj->localtax2;
                         $values->accountancy_code = $obj->accountancy_code;
                         $values->notes = $obj->note;
+                        break;
+                    case 12:
+                        $values->label_pdf = $obj->libelle_facture;
+                        $values->fdm = (bool) $obj->fdm;
+                        $values->nbjour = (int) $obj->nbjour;
+                        $values->decalage = (int) $obj->decalage;
+                        break;
+                    case 13:
+                        if (empty($code))
+                            $code = "NONE";
+                        break;
+                    case 28:
+                        $arrayType = array(-1 => "closed", 0 => "suspect", 1 => "prospect", 2 => "customer");
+                        $arrayColor = array(-1 => "error_bg", 0 => "neutral_bg", 1 => "info_bg", 2 => "ok_bg"); // definie CSS for color
+
+                        $values->type = $arrayType[$obj->type];
+                        $values->cssClass = $arrayColor[$obj->type];
                         break;
                 }
                 if (!empty($code))
@@ -1073,7 +1084,7 @@ if ($id) {
             $dictid = "dict:fk_" . $dictid;
             // if not exist write the dictionnary in couchdb
             $arrayConf = array(1 => true, 2 => true, 3 => true, 4 => true, 5 => true, 6 => true, 9 => true,
-                10 => true, 28 => true);
+                10 => true, 12 => true, 13 => true, 28 => true);
             if (isset($arrayConf[$id]) && $arrayConf[$id] == true) {
                 try {
                     $temp = $couch->getDoc($dictid); // test if exit

@@ -1316,6 +1316,8 @@ abstract class nosqlDocument extends CommonObject {
             $object->name = $this->$key->name;
             $object->id = $this->$key->id;
             return $object->getNomUrl(1);
+        } elseif (isset($aRow->status)) { // Is a status
+            return $this->LibStatus($value, array("key" => $key));
         }
 
         if (isset($aRow->values->$value->label)) {

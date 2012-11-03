@@ -3,7 +3,8 @@
    "class": "extrafields",
    "ico": "16-Apartment-Building.png",
    "langs": [
-       "companies"
+       "companies",
+       "bills"
    ],
    "longList": [
        "code_client",
@@ -358,7 +359,7 @@
        "prospectlevel": {
            "type": "select",
            "enable": true,
-           "default": "UNKNOWN",
+           "default": "PL_NONE",
            "status": true,
            "aoColumns": {
                "sClass": "center",
@@ -366,23 +367,35 @@
                "bVisible": true
            },
            "values": {
-               "UNKNOWN": {
+               "PL_NONE": {
                    "enable": false,
                    "cssClass": "grey-gradient"
                },
-               "LOW": {
+               "PL_LOW": {
                    "enable": true,
                    "cssClass": "blue-gradient"
                },
-               "MEDIUM": {
+               "PL_MEDIUM": {
                    "enable": true,
                    "cssClass": "orange-gradient"
                },
-               "HIGHT": {
+               "PL_HIGH": {
                    "enable": true,
                    "cssClass": "red-gradient"
                }
            }
+       },
+       "cond_reglement": {
+           "type": "select",
+           "label": "PaymentConditions",
+           "dict": "dict:fk_payment_term",
+           "enable": true
+       },
+       "mode_reglement": {
+           "type": "select",
+           "label": "PaymentMode",
+           "dict": "dict:fk_paiement",
+           "enable": true
        }
    }
 }

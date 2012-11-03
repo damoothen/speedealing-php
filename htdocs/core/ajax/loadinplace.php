@@ -36,6 +36,7 @@ require_once DOL_DOCUMENT_ROOT . '/core/class/genericobject.class.php';
 
 $key = GETPOST('key', 'alpha');
 $class = GETPOST('element_class', 'alpha');
+$id = GETPOST('id', 'alpha');
 
 $field = GETPOST('field', 'alpha');
 $element = GETPOST('element', 'alpha');
@@ -55,14 +56,72 @@ error_log(print_r($_GET, true));
 if (!empty($key) && !empty($class)) {
     dol_include_once("/" . strtolower($class) . "/class/" . strtolower($class) . ".class.php");
 
-    $return = array();
+    $return = array();    
 
     $object = new $class($db);
+    $object->load($id);
 
     // Load langs files
     if (count($object->fk_extrafields->langs))
         foreach ($object->fk_extrafields->langs as $row)
             $langs->load($row);
+
+    $aRow = $object->fk_extrafields->fields->$key;
+    if (isset($aRow->dict)) {
+        require_once(DOL_DOCUMENT_ROOT . "/admin/class/dict.class.php");
+        // load from dictionnary
+        try {
+            $dict = new Dict($db);
+            $values = $dict->load($aRow->dict, true);
+            //filter for country
+            if ($aRow->dict == "dict:fk_tva")
+                $country_id = $mysoc->country_id;
+            else
+                $country_id = $object->country_id;
+
+            foreach ($values->values as $idx => $row) {
+                if (empty($row->pays_code) || $country_id == $row->pays_code) {
+                    if ($aRow->noIndex) // No code : example for fk_tva set true
+                        $aRow->values[] = $row;
+                    else
+                        $aRow->values[$idx] = $row;
+                }
+            }
+            //print_r($aRow->values);
+        } catch (Exception $e) {
+            dol_print_error('', $e->getMessage());
+        }
+    } 
+    /*elseif (isset($aRow->class)) { // Is an object
+        $class_obj = $aRow->class;
+        dol_include_once("/" . strtolower($class_obj) . "/class/" . strtolower($class_obj) . ".class.php");
+        $object_tmp = new $class_obj($object->db);
+
+        $params = array();
+        if (count($aRow->params))
+            foreach ($aRow->params as $idx => $row) {
+                eval("\$row = $row;");
+                if (!empty($row))
+                    $params[$idx] = $row;
+            }
+        try {
+            $result = $object_tmp->getView($aRow->view, $params);
+        } catch (Exception $e) {
+            $this->error = "Fetch : Something weird happened: " . $e->getMessage() . " (errcode=" . $e->getCode() . ")\n";
+            dol_print_error($this->db, $this->error);
+            return 0;
+        }
+
+        $aRow->values[0]->label = "";
+        $aRow->values[0]->enable = true;
+
+        foreach ($result->rows as $row) {
+            $aRow->values[$row->value->_id]->label = $row->value->name;
+            $aRow->values[$row->value->_id]->enable = true;
+        }
+
+        $selected = $this->$key->id; // Index of key
+    }*/
 
     foreach ($object->fk_extrafields->fields->$key->values as $keys => $aRow) {
         if ($aRow->enable) {
@@ -73,74 +132,11 @@ if (!empty($key) && !empty($class)) {
         }
     }
 
-    $return['selected'] = $object->fk_extrafields->fields->$key->default;
+    if (!empty($object->$key))
+        $return['selected'] = $object->$key;
+    else
+        $return['selected'] = $object->fk_extrafields->fields->$key->default;
 
     echo json_encode($return);
-}
-// Load original field value
-if (!empty($field) && !empty($element) && !empty($table_element) && !empty($fk_element)) {
-    $ext_element = GETPOST('ext_element', 'alpha');
-    $field = substr($field, 8); // remove prefix val_
-    $type = GETPOST('type', 'alpha');
-    $loadmethod = (GETPOST('loadmethod', 'alpha') ? GETPOST('loadmethod', 'alpha') : 'getValueFrom');
-
-    if ($element != 'order_supplier' && $element != 'invoice_supplier' && preg_match('/^([^_]+)_([^_]+)/i', $element, $regs)) {
-        $element = $regs[1];
-        $subelement = $regs[2];
-    }
-
-    if ($element == 'propal')
-        $element = 'propale';
-    else if ($element == 'fichinter')
-        $element = 'ficheinter';
-    else if ($element == 'product')
-        $element = 'produit';
-    else if ($element == 'member')
-        $element = 'adherent';
-    else if ($element == 'order_supplier') {
-        $element = 'fournisseur';
-        $subelement = 'commande';
-    } else if ($element == 'invoice_supplier') {
-        $element = 'fournisseur';
-        $subelement = 'facture';
-    }
-
-    if ($user->rights->$element->lire || $user->rights->$element->read
-            || (isset($subelement) && ($user->rights->$element->$subelement->lire || $user->rights->$element->$subelement->read))
-            || ($element == 'payment' && $user->rights->facture->lire)
-            || ($element == 'payment_supplier' && $user->rights->fournisseur->facture->lire)) {
-        if ($type == 'select') {
-            $methodname = 'load_cache_' . $loadmethod;
-            $cachename = 'cache_' . GETPOST('loadmethod', 'alpha');
-
-            $form = new Form($db);
-            if (method_exists($form, $methodname)) {
-                $ret = $form->$methodname();
-                if ($ret > 0)
-                    echo json_encode($form->$cachename);
-            }
-            else if (!empty($ext_element)) {
-                $module = $subelement = $ext_element;
-                if (preg_match('/^([^_]+)_([^_]+)/i', $ext_element, $regs)) {
-                    $module = $regs[1];
-                    $subelement = $regs[2];
-                }
-
-                dol_include_once('/' . $module . '/class/actions_' . $subelement . '.class.php');
-                $classname = 'Actions' . ucfirst($subelement);
-                $object = new $classname($db);
-                $ret = $object->$methodname();
-                if ($ret > 0)
-                    echo json_encode($object->$cachename);
-            }
-        }
-        else {
-            $object = new GenericObject($db);
-            $value = $object->$loadmethod($table_element, $fk_element, $field);
-            echo $value;
-        }
-    } else {
-        echo $langs->transnoentities('NotEnoughPermissions');
-    }
 }
 ?>

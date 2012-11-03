@@ -75,10 +75,7 @@ if (!empty($key) && !empty($id) && !empty($class)) {
             elseif ($type == 'textarea')
                 $value = dol_nl2br($value);
 
-            if (isset($object->fk_extrafields->fields->$key->status))
-                echo $object->LibStatus($value, array("key" => $key));
-            else
-                echo $value;
+            echo $object->print_fk_extrafields($key);
         }
         else {
             print $res . "</br>";

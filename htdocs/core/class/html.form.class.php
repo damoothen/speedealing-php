@@ -124,72 +124,7 @@ class Form {
         $ret = '';
 
         // When option to edit inline is activated
-        // TODO change for compatibility
-        if (!preg_match('/^select;/', $typeofdata)) {
-            $ret.=$this->editInPlace($object, $value, $htmlname, $perm, $typeofdata, $editvalue, $extObject, $success);
-        } else {
-            if (GETPOST('action') == 'edit' . $htmlname) {
-                $ret.="\n";
-                $ret.='<form method="post" action="' . $_SERVER["PHP_SELF"] . ($moreparam ? '?' . $moreparam : '') . '">';
-                $ret.='<input type="hidden" name="action" value="set' . $htmlname . '">';
-                $ret.='<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
-                $ret.='<input type="hidden" name="id" value="' . $object->id . '">';
-                $ret.='<table class="nobordernopadding" cellpadding="0" cellspacing="0">';
-                $ret.='<tr><td>';
-                if (preg_match('/^(string|email|numeric)/', $typeofdata)) {
-                    $tmp = explode(':', $typeofdata);
-                    $ret.='<input type="text" id="' . $htmlname . '" name="' . $htmlname . '" value="' . ($editvalue ? $editvalue : $value) . '"' . ($tmp[1] ? ' size="' . $tmp[1] . '"' : '') . '>';
-                } else if (preg_match('/^text/', $typeofdata) || preg_match('/^note/', $typeofdata)) {
-                    $tmp = explode(':', $typeofdata);
-                    $ret.='<textarea id="' . $htmlname . '" name="' . $htmlname . '" wrap="soft" rows="' . ($tmp[1] ? $tmp[1] : '20') . '" cols="' . ($tmp[2] ? $tmp[2] : '100') . '">' . ($editvalue ? $editvalue : $value) . '</textarea>';
-                } else if ($typeofdata == 'day' || $typeofdata == 'datepicker') {
-                    $ret.=$this->form_date($_SERVER['PHP_SELF'] . '?id=' . $object->id, $value, $htmlname);
-                } else if (preg_match('/^select;/', $typeofdata)) {
-                    $arraydata = explode(',', preg_replace('/^select;/', '', $typeofdata));
-                    foreach ($arraydata as $val) {
-                        $tmp = explode(':', $val);
-                        $arraylist[$tmp[0]] = $tmp[1];
-                    }
-                    $ret.=$this->selectarray($htmlname, $arraylist, $value);
-                } else if (preg_match('/^ckeditor/', $typeofdata)) {
-                    $tmp = explode(':', $typeofdata);
-                    require_once DOL_DOCUMENT_ROOT . '/core/class/doleditor.class.php';
-                    $doleditor = new DolEditor($htmlname, ($editvalue ? $editvalue : $value), ($tmp[2] ? $tmp[2] : ''), ($tmp[3] ? $tmp[3] : '100'), ($tmp[1] ? $tmp[1] : 'dolibarr_notes'), 'In', ($tmp[5] ? $tmp[5] : 0), true, true, ($tmp[6] ? $tmp[6] : '20'), ($tmp[7] ? $tmp[7] : '100'));
-                    $ret.=$doleditor->Create(1);
-                }
-                $ret.='</td>';
-                if ($typeofdata != 'day' && $typeofdata != 'datepicker')
-                    $ret.='<td align="left"><input type="submit" class="button" value="' . $langs->trans("Modify") . '"></td>';
-                $ret.='</tr></table>' . "\n";
-                $ret.='</form>' . "\n";
-            }
-            else {
-                if ($typeofdata == 'email')
-                    $ret.=dol_print_email($value, 0, 0, 0, 0, 1);
-                elseif (preg_match('/^text/', $typeofdata) || preg_match('/^note/', $typeofdata))
-                    $ret.=dol_htmlentitiesbr($value);
-                elseif ($typeofdata == 'day' || $typeofdata == 'datepicker')
-                    $ret.=dol_print_date($value, 'day');
-                else if (preg_match('/^select;/', $typeofdata)) {
-                    $arraydata = explode(',', preg_replace('/^select;/', '', $typeofdata));
-                    foreach ($arraydata as $val) {
-                        $tmp = explode(':', $val);
-                        $arraylist[$tmp[0]] = $tmp[1];
-                    }
-                    $ret.=$arraylist[$value];
-                } else if (preg_match('/^ckeditor/', $typeofdata)) {
-                    $tmpcontent = dol_htmlentitiesbr($value);
-                    if (!empty($conf->global->MAIN_DISABLE_NOTES_TAB)) {
-                        $firstline = preg_replace('/<br>.*/', '', $tmpcontent);
-                        $firstline = preg_replace('/[\n\r].*/', '', $firstline);
-                        $tmpcontent = $firstline . ((strlen($firstline) != strlen($tmpcontent)) ? '...' : '');
-                    }
-                    $ret.=$tmpcontent;
-                }
-                else
-                    $ret.=$value;
-            }
-        }
+        $ret.=$this->editInPlace($object, $value, $htmlname, $perm, $typeofdata, $editvalue, $extObject, $success);
         return $ret;
     }
 
@@ -304,25 +239,22 @@ class Form {
                 $out.= '<input id="success_' . $htmlname . '" value="' . $success . '" type="hidden"/>' . "\n";
 
             $out.= '<span id="viewval_' . $htmlname . '" class="viewval_' . $inputType . ($button_only ? ' inactive' : ' active') . '">';
-            if (!preg_match('/^tag/', $inputType)) {
-                if (isset($object->fk_extrafields->fields->$htmlname->status))
-                    $out.= $object->LibStatus($value, array("key" => $htmlname));
-                else
-                    $out.= $value;
+            if (preg_match('/^select/', $inputType)) {
+                $out.= $object->print_fk_extrafields($htmlname);
             }
             $out.= '</span>' . "\n";
             if (preg_match('/^tag/', $inputType)) {
                 $out.= '<ul class="array_tag_handler" id="editval_' . $htmlname . '"></ul>';
+            } else {
+                $out.= '<span id="editval_' . $htmlname . '" class="editval_' . $inputType . ($button_only ? ' inactive' : ' active') . ' hideobject">';
+                $out.= (!empty($editvalue) ? $editvalue : $value);
+                $out.= '</span>' . "\n";
             }
-            else
-                $out.= '<span id="editval_' . $htmlname . '" class="editval_' . $inputType . ($button_only ? ' inactive' : ' active') . ' hideobject">' . (!empty($editvalue) ? $editvalue : $value) . '</span>' . "\n";
         } else {
             if (preg_match('/^tag/', $inputType)) {
                 $out.= $object->LibTag($value, array("key" => $htmlname));
-            } elseif (isset($object->fk_extrafields->fields->$htmlname->status))
-                $out.= $object->LibStatus($value, array("key" => $htmlname));
-            else
-                $out.= $value;
+            } else
+                $out.= $object->print_fk_extrafields($htmlname);
         }
 
         return $out;
@@ -1110,6 +1042,8 @@ class Form {
 
 
 
+
+
                     
 // Multiprice
                 if ($price_level >= 1) {  // If we need a particular price level (from 1 to 6)
@@ -1503,42 +1437,6 @@ class Form {
     }
 
     /**
-     *      Charge dans cache la liste des conditions de paiements possibles
-     *
-     *      @return     int             Nb lignes chargees, 0 si deja chargees, <0 si ko
-     */
-    function load_cache_conditions_paiements() {
-        global $langs;
-
-        if (count($this->cache_conditions_paiements))
-            return 0;    // Cache deja charge
-
-        $sql = "SELECT rowid, code, libelle";
-        $sql.= " FROM " . MAIN_DB_PREFIX . 'c_payment_term';
-        $sql.= " WHERE active=1";
-        $sql.= " ORDER BY sortorder";
-        dol_syslog(get_class($this) . '::load_cache_conditions_paiements sql=' . $sql, LOG_DEBUG);
-        $resql = $this->db->query($sql);
-        if ($resql) {
-            $num = $this->db->num_rows($resql);
-            $i = 0;
-            while ($i < $num) {
-                $obj = $this->db->fetch_object($resql);
-
-                // Si traduction existe, on l'utilise, sinon on prend le libelle par defaut
-                $libelle = ($langs->trans("PaymentConditionShort" . $obj->code) != ("PaymentConditionShort" . $obj->code) ? $langs->trans("PaymentConditionShort" . $obj->code) : ($obj->libelle != '-' ? $obj->libelle : ''));
-                $this->cache_conditions_paiements[$obj->rowid]['code'] = $obj->code;
-                $this->cache_conditions_paiements[$obj->rowid]['label'] = $libelle;
-                $i++;
-            }
-            return 1;
-        } else {
-            dol_print_error($this->db);
-            return -1;
-        }
-    }
-
-    /**
      *      Charge dans cache la liste des délais de livraison possibles
      *
      *      @return     int             Nb lignes chargees, 0 si deja chargees, <0 si ko
@@ -1677,143 +1575,6 @@ class Form {
         }
         print '</select>';
         if ($user->admin)
-            print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"), 1);
-    }
-
-    /**
-     *      Charge dans cache la liste des types de paiements possibles
-     *
-     *      @return     int             Nb lignes chargees, 0 si deja chargees, <0 si ko
-     */
-    function load_cache_types_paiements() {
-        global $langs;
-
-        if (count($this->cache_types_paiements))
-            return 0;    // Cache deja charge
-
-        $sql = "SELECT id, code, libelle, type";
-        $sql.= " FROM " . MAIN_DB_PREFIX . "c_paiement";
-        $sql.= " WHERE active > 0";
-        $sql.= " ORDER BY id";
-        dol_syslog(get_class($this) . "::load_cache_types_paiements sql=" . $sql, LOG_DEBUG);
-        $resql = $this->db->query($sql);
-        if ($resql) {
-            $num = $this->db->num_rows($resql);
-            $i = 0;
-            while ($i < $num) {
-                $obj = $this->db->fetch_object($resql);
-
-                // Si traduction existe, on l'utilise, sinon on prend le libelle par defaut
-                $libelle = ($langs->trans("PaymentTypeShort" . $obj->code) != ("PaymentTypeShort" . $obj->code) ? $langs->trans("PaymentTypeShort" . $obj->code) : ($obj->libelle != '-' ? $obj->libelle : ''));
-                $this->cache_types_paiements[$obj->id]['code'] = $obj->code;
-                $this->cache_types_paiements[$obj->id]['label'] = $libelle;
-                $this->cache_types_paiements[$obj->id]['type'] = $obj->type;
-                $i++;
-            }
-            return $num;
-        } else {
-            dol_print_error($this->db);
-            return -1;
-        }
-    }
-
-    /**
-     *      Retourne la liste des types de paiements possibles
-     *
-     *      @param	string	$selected        Id du type de paiement pre-selectionne
-     *      @param  string	$htmlname        Nom de la zone select
-     *      @param  string	$filtertype      Pour filtre
-     * 		@param	int		$addempty		Ajoute entree vide
-     * 		@return	void
-     */
-    function select_conditions_paiements($selected = '', $htmlname = 'condid', $filtertype = -1, $addempty = 0) {
-        global $langs, $user;
-
-        $this->load_cache_conditions_paiements();
-
-        print '<select class="flat" name="' . $htmlname . '">';
-        if ($addempty)
-            print '<option value="0">&nbsp;</option>';
-        foreach ($this->cache_conditions_paiements as $id => $arrayconditions) {
-            if ($selected == $id) {
-                print '<option value="' . $id . '" selected="selected">';
-            } else {
-                print '<option value="' . $id . '">';
-            }
-            print $arrayconditions['label'];
-            print '</option>';
-        }
-        print '</select>';
-        if ($user->admin)
-            print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"), 1);
-    }
-
-    /**
-     *      Return list of payment methods
-     *
-     *      @param	string	$selected       Id du mode de paiement pre-selectionne
-     *      @param  string	$htmlname       Nom de la zone select
-     *      @param  string	$filtertype     To filter on field type in llx_c_paiement (array('code'=>xx,'label'=>zz))
-     *      @param  int		$format         0=id+libelle, 1=code+code, 2=code+libelle, 3=id+code
-     *      @param  int		$empty			1=peut etre vide, 0 sinon
-     * 		@param	int		$noadmininfo	0=Add admin info, 1=Disable admin info
-     *      @param  int		$maxlength      Max length of label
-     * 		@return	void
-     */
-    function select_types_paiements($selected = '', $htmlname = 'paiementtype', $filtertype = '', $format = 0, $empty = 0, $noadmininfo = 0, $maxlength = 0) {
-        global $langs, $user;
-
-        dol_syslog(get_class($this) . "::select_type_paiements " . $selected . ", " . $htmlname . ", " . $filtertype . ", " . $format, LOG_DEBUG);
-
-        $filterarray = array();
-        if ($filtertype == 'CRDT')
-            $filterarray = array(0, 2);
-        elseif ($filtertype == 'DBIT')
-            $filterarray = array(1, 2);
-        elseif ($filtertype != '' && $filtertype != '-1')
-            $filterarray = explode(',', $filtertype);
-
-        $this->load_cache_types_paiements();
-
-        print '<select id="select' . $htmlname . '" class="flat selectpaymenttypes" name="' . $htmlname . '">';
-        if ($empty)
-            print '<option value="">&nbsp;</option>';
-        foreach ($this->cache_types_paiements as $id => $arraytypes) {
-            // On passe si on a demande de filtrer sur des modes de paiments particuliers
-            if (count($filterarray) && !in_array($arraytypes['type'], $filterarray))
-                continue;
-
-            // We discard empty line if showempty is on because an empty line has already been output.
-            if ($empty && empty($arraytypes['code']))
-                continue;
-
-            if ($format == 0)
-                print '<option value="' . $id . '"';
-            if ($format == 1)
-                print '<option value="' . $arraytypes['code'] . '"';
-            if ($format == 2)
-                print '<option value="' . $arraytypes['code'] . '"';
-            if ($format == 3)
-                print '<option value="' . $id . '"';
-            // Si selected est text, on compare avec code, sinon avec id
-            if (preg_match('/[a-z]/i', $selected) && $selected == $arraytypes['code'])
-                print ' selected="selected"';
-            elseif ($selected == $id)
-                print ' selected="selected"';
-            print '>';
-            if ($format == 0)
-                $value = ($maxlength ? dol_trunc($arraytypes['label'], $maxlength) : $arraytypes['label']);
-            if ($format == 1)
-                $value = $arraytypes['code'];
-            if ($format == 2)
-                $value = ($maxlength ? dol_trunc($arraytypes['label'], $maxlength) : $arraytypes['label']);
-            if ($format == 3)
-                $value = $arraytypes['code'];
-            print $value ? $value : '&nbsp;';
-            print '</option>';
-        }
-        print '</select>';
-        if ($user->admin && !$noadmininfo)
             print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"), 1);
     }
 
@@ -2224,37 +1985,6 @@ class Form {
     }
 
     /**
-     * 	Show a form to select payment conditions
-     *
-     *  @param	int		$page        	Page
-     *  @param  string	$selected    	Id condition pre-selectionne
-     *  @param  string	$htmlname    	Name of select html field
-     * 	@param	int		$addempty		Ajoute entree vide
-     *  @return	void
-     */
-    function form_conditions_reglement($page, $selected = '', $htmlname = 'cond_reglement_id', $addempty = 0) {
-        global $langs;
-        if ($htmlname != "none") {
-            print '<form method="post" action="' . $page . '">';
-            print '<input type="hidden" name="action" value="setconditions">';
-            print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
-            print '<table class="nobordernopadding" cellpadding="0" cellspacing="0">';
-            print '<tr><td>';
-            $this->select_conditions_paiements($selected, $htmlname, -1, $addempty);
-            print '</td>';
-            print '<td align="left"><input type="submit" class="button" value="' . $langs->trans("Modify") . '"></td>';
-            print '</tr></table></form>';
-        } else {
-            if ($selected) {
-                $this->load_cache_conditions_paiements();
-                print $this->cache_conditions_paiements[$selected]['label'];
-            } else {
-                print "&nbsp;";
-            }
-        }
-    }
-
-    /**
      *  Show a form to select a delivery delay
      *
      *  @param  int		$page        	Page
@@ -2383,36 +2113,6 @@ class Form {
                 $theuser = new User($this->db);
                 $theuser->fetch($selected);
                 print $theuser->getNomUrl(1);
-            } else {
-                print "&nbsp;";
-            }
-        }
-    }
-
-    /**
-     *    Affiche formulaire de selection des modes de reglement
-     *
-     *    @param	string	$page        Page
-     *    @param    int		$selected    Id mode pre-selectionne
-     *    @param    string	$htmlname    Name of select html field
-     *    @return	void
-     */
-    function form_modes_reglement($page, $selected = '', $htmlname = 'mode_reglement_id') {
-        global $langs;
-        if ($htmlname != "none") {
-            print '<form method="POST" action="' . $page . '">';
-            print '<input type="hidden" name="action" value="setmode">';
-            print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
-            print '<table class="nobordernopadding" cellpadding="0" cellspacing="0">';
-            print '<tr><td>';
-            $this->select_types_paiements($selected, $htmlname);
-            print '</td>';
-            print '<td align="left"><input type="submit" class="button" value="' . $langs->trans("Modify") . '"></td>';
-            print '</tr></table></form>';
-        } else {
-            if ($selected) {
-                $this->load_cache_types_paiements();
-                print $this->cache_types_paiements[$selected]['label'];
             } else {
                 print "&nbsp;";
             }
