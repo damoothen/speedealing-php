@@ -171,11 +171,12 @@ if ($action == 'add_action') {
       }
       $object->duree = (($_POST["dureehour"] * 60) + $_POST["dureemin"]) * 60;
      */
-    $object->author = $user->values->name;
+    $object->author->id = $user->id;
+    $object->author->name = $user->login;
     $object->usermod = null;
 
     if (strlen($_POST["affectedto"]) > 0)
-        $object->usertodo = GETPOST("affectedto");
+        $object->usertodo->id = GETPOST("affectedto");
     /*
       $userdone = new User($db);
       if ($_POST["doneby"] > 0) {
@@ -186,7 +187,7 @@ if ($action == 'add_action') {
      */
 
     if (strlen($_POST["doneby"]) > 0)
-        $object->userdone = GETPOST("doneby");
+        $object->userdone->id = GETPOST("doneby");
 
     $object->note = trim($_POST["note"]);
     if (isset($_POST["contactid"]))
@@ -354,8 +355,8 @@ if ($action == 'update') {
           }
          */
         // Users
-        $object->usertodo = $_POST["affectedto"];
-        $object->userdone = $_POST["doneby"];
+        $object->usertodo->id = $_POST["affectedto"];
+        $object->userdone->id = $_POST["doneby"];
 
         if (GETPOST("socid", "alpha")) {
             $societe = new Societe($db);
@@ -984,17 +985,17 @@ if ($id) {
         // Input by
         $var = false;
         print '<tr><td width="30%" nowrap="nowrap">' . $langs->trans("ActionAskedBy") . '</td><td colspan="3">';
-        print $object->author;
+        print $object->print_fk_extrafields("author");
         print '</td></tr>';
 
         // Affected to
         print '<tr><td nowrap="nowrap">' . $langs->trans("ActionAffectedTo") . '</td><td colspan="3">';
-        print $form->select_dolusers($object->usertodo ? $object->usertodo : -1, 'affectedto', 1);
+        print $object->select_fk_extrafields("usertodo", 'affectedto');
         print '</td></tr>';
 
         // Realised by
         print '<tr><td nowrap="nowrap">' . $langs->trans("ActionDoneBy") . '</td><td colspan="3">';
-        print $form->select_dolusers($object->userdone ? $object->userdone : -1, 'doneby', 1);
+        print $object->select_fk_extrafields("userdone", 'doneby');
         print '</td></tr>';
 
         print '</table><br><br>';

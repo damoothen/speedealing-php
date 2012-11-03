@@ -232,84 +232,6 @@ class Agenda extends nosqlDocument {
             $this->error = $e->getMessage();
             return -1;
         }
-
-        $sql = "SELECT a.id,";
-        $sql.= " a.id as ref,";
-        $sql.= " a.ref_ext,";
-        $sql.= " a.datep,";
-        $sql.= " a.datep2,";
-        $sql.= " a.datec,";
-        $sql.= " a.durationp,";
-        $sql.= " a.tms as datem,";
-        $sql.= " a.note, a.label,";
-        $sql.= " a.fk_soc,";
-        $sql.= " a.fk_project,";
-        $sql.= " a.fk_lead,";
-        $sql.= " a.fk_user_author, a.fk_user_mod,";
-        $sql.= " a.fk_user_action, a.fk_user_done,";
-        $sql.= " a.fk_task,";
-        $sql.= " a.fk_contact, a.percent as percentage,";
-        $sql.= " a.fk_element, a.elementtype,";
-        $sql.= " a.priority, a.fulldayevent, a.location,";
-        $sql.= " c.id as type_id, c.code as type_code, c.libelle,";
-        $sql.= " s.nom as socname,";
-        $sql.= " u.firstname, u.name as lastname";
-        $sql.= " FROM (" . MAIN_DB_PREFIX . "c_actioncomm as c, " . MAIN_DB_PREFIX . "actioncomm as a)";
-        $sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "user as u on u.rowid = a.fk_user_author";
-        $sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "societe as s on s.rowid = a.fk_soc";
-        $sql.= " WHERE a.id=" . $id . " AND a.fk_action=c.id";
-
-        dol_syslog(get_class($this) . "::fetch sql=" . $sql);
-        $resql = $this->db->query($sql);
-        if ($resql) {
-            if ($this->db->num_rows($resql)) {
-                $obj = $this->db->fetch_object($resql);
-
-                $this->id = $obj->id;
-                $this->ref = $obj->ref;
-                $this->ref_ext = $obj->ref_ext;
-
-                $this->type_id = $obj->type_id;
-                $this->type_code = $obj->type_code;
-                $transcode = $langs->trans("Action" . $obj->type_code);
-                $type_libelle = ($transcode != "Action" . $obj->type_code ? $transcode : $obj->libelle);
-                $this->type = $type_libelle;
-
-                $this->label = $obj->label;
-                $this->datep = $this->db->jdate($obj->datep);
-                $this->datef = $this->db->jdate($obj->datep2);
-
-                $this->datec = $this->db->jdate($obj->datec);
-                $this->datem = $this->db->jdate($obj->datem);
-
-                $this->note = $obj->note;
-                $this->percentage = $obj->percentage;
-
-                $this->author->id = $obj->fk_user_author;
-                $this->author->firstname = $obj->firstname;
-                $this->author->lastname = $obj->lastname;
-                $this->usermod->id = $obj->fk_user_mod;
-
-                $this->usertodo->id = $obj->fk_user_action;
-                $this->userdone->id = $obj->fk_user_done;
-                $this->priority = $obj->priority;
-                $this->fulldayevent = $obj->fulldayevent;
-                $this->location = $obj->location;
-
-                $this->socid = $obj->fk_soc; // To have fetch_thirdparty method working
-                $this->societe->id = $obj->fk_soc;
-                $this->contact->id = $obj->fk_contact;
-                $this->fk_project = $obj->fk_project;
-
-                $this->fk_element = $obj->fk_element;
-                $this->elementtype = $obj->elementtype;
-            }
-            $this->db->free($resql);
-            return 1;
-        } else {
-            $this->error = $this->db->lasterror();
-            return -1;
-        }
     }
 
     /**
@@ -402,6 +324,18 @@ class Agenda extends nosqlDocument {
 
         if ($this->type == 2 && $this->percentage == 100) //ACTION
             $this->datef = dol_now();
+        
+        // Check parameters
+        if ($this->percentage == 0 && $this->userdone->id) {
+            //$this->error="ErrorCantSaveADoneUserWithZeroPercentage";
+            //return -1;
+            unset($this->userdone->id);
+            unset($this->userdone->name);
+        }
+        if ($this->percentage == 100 && !$this->userdone->id) {
+            $this->userdone->id = $user->id;
+            $this->userdone->id = $user->login;
+        }
 
         if (!empty($this->societe->id)) {
             $object = new Societe($this->db);
@@ -417,45 +351,23 @@ class Agenda extends nosqlDocument {
         } else {
             unset($this->contact->name);
         }
-
-        // Check parameters
-        if ($this->percentage == 0 && $this->userdone->id > 0) {
-            //$this->error="ErrorCantSaveADoneUserWithZeroPercentage";
-            //return -1;
-            $this->userdone->id = "";
+        if (!empty($this->usertodo->id)) {
+            $object = new User($this->db);
+            $object->load($this->usertodo->id);
+            $this->usertodo->name = $object->name;
+        } else {
+            unset($this->usertodo->name);
         }
-        if ($this->percentage == 100 && !$this->userdone->id > 0) {
-            $this->userdone->id = $user->id;
+        if (!empty($this->userdone->id)) {
+            $object = new User($this->db);
+            $object->load($this->userdone->id);
+            $this->userdone->name = $object->name;
+        } else {
+            unset($this->userdone->name);
         }
 
         $this->record();
-        /*
-          //print 'eeea'.$this->datep.'-'.(strval($this->datep) != '').'-'.$this->db->idate($this->datep);
-          $sql = "UPDATE " . MAIN_DB_PREFIX . "actioncomm ";
-          $sql.= " SET percent='" . $this->percentage . "'";
-          $sql.= ", label = " . ($this->label ? "'" . $this->db->escape($this->label) . "'" : "null");
-          $sql.= ", datep = " . (strval($this->datep) != '' ? "'" . $this->db->idate($this->datep) . "'" : 'null');
-          $sql.= ", datep2 = " . (strval($this->datef) != '' ? "'" . $this->db->idate($this->datef) . "'" : 'null');
-          //$sql.= ", datea = ".(strval($this->date)!='' ? "'".$this->db->idate($this->date)."'" : 'null');
-          //$sql.= ", datea2 = ".(strval($this->dateend)!='' ? "'".$this->db->idate($this->dateend)."'" : 'null');
-          $sql.= ", durationp = " . ($this->durationp ? "'" . $this->durationp . "'" : 'null');
-          $sql.= ", note = " . ($this->note ? "'" . $this->db->escape($this->note) . "'" : "null");
-          $sql.= ", fk_soc =" . ($this->societe->id > 0 ? "'" . $this->societe->id . "'" : "null");
-          $sql.= ", fk_project =" . ($this->fk_project > 0 ? "'" . $this->fk_project . "'" : "null");
-          $sql.= ", fk_lead =" . ($this->fk_lead > 0 ? "'" . $this->fk_lead . "'" : "null");
-          $sql.= ", fk_task =" . ($this->fk_task > 0 ? "'" . $this->fk_task . "'" : "null");
-          $sql.= ", fk_contact =" . ($this->contact->id > 0 ? "'" . $this->contact->id . "'" : "null");
-          $sql.= ", priority = '" . $this->priority . "'";
-          $sql.= ", fulldayevent = '" . $this->fulldayevent . "'";
-          $sql.= ", location = " . ($this->location ? "'" . $this->db->escape($this->location) . "'" : "null");
-          $sql.= ", fk_user_mod = '" . $user->id . "'";
-          $sql.= ", fk_user_action=" . ($this->usertodo->id > 0 ? "'" . $this->usertodo->id . "'" : "null");
-          $sql.= ", fk_user_done=" . ($this->userdone->id > 0 ? "'" . $this->userdone->id . "'" : "null");
-          $sql.= " WHERE id=" . $this->id;
 
-          //print $sql;exit;
-
-         */
         if (!$notrigger) {
             // Appel des triggers
             include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
@@ -1386,7 +1298,7 @@ class Agenda extends nosqlDocument {
                             // create the chart when all data is loaded
                             function createChart() {
                                 var chart;
-                                                                                                                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                                                                                                                                
                                 chart = new Highcharts.Chart({
                                     chart: {
                                         renderTo: 'eisenhower',

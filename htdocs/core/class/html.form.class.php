@@ -161,7 +161,7 @@ class Form {
             $loadmethod = false;
             $savemethod = false;
             $ext_element = false;
-            $button_only = false;
+            $button_only = true;
 
             if (is_object($object)) {
                 $element = $object->element;
@@ -758,101 +758,6 @@ class Form {
             dol_print_error($this->db);
             return -1;
         }
-    }
-
-    /**
-     * 	Return select list of users
-     *
-     *  @param	string	$selected       Id user preselected
-     *  @param  string	$htmlname       Field name in form
-     *  @param  int		$show_empty     0=liste sans valeur nulle, 1=ajoute valeur inconnue
-     *  @param  array	$exclude        Array list of users id to exclude
-     * 	@param	int		$disabled		If select list must be disabled
-     *  @param  array	$include        Array list of users id to include
-     * 	@param	int		$enableonly		Array list of users id to be enabled. All other must be disabled
-     *  @param	int		$force_entity	Possibility to force entity
-     * 	@return	void
-     */
-    function select_users($selected = '', $htmlname = 'userid', $show_empty = 0, $exclude = '', $disabled = 0, $include = '', $enableonly = '', $force_entity = false) {
-        print $this->select_dolusers($selected, $htmlname, $show_empty, $exclude, $disabled, $include, $enableonly, $force_entity);
-    }
-
-    /**
-     * 	Return select list of users
-     *
-     *  @param	string	$selected       User id or user object of user preselected. If -1, we use id of current user.
-     *  @param  string	$htmlname       Field name in form
-     *  @param  int		$show_empty     0=liste sans valeur nulle, 1=ajoute valeur inconnue
-     *  @param  array	$exclude        Array list of users id to exclude
-     * 	@param	int		$disabled		If select list must be disabled
-     *  @param  array	$include        Array list of users id to include
-     * 	@param	int		$enableonly		Array list of users id to be enabled. All other must be disabled
-     *  @param	int		$force_entity	Possibility to force entity
-     * 	@return	string					HTML select string
-     */
-    function select_dolusers($selected = '', $htmlname = 'userid', $show_empty = 0, $exclude = '', $disabled = 0, $include = '', $enableonly = '') {
-        global $conf, $user, $langs;
-
-        // If no preselected user defined, we take current user
-        if ($selected < -1 && empty($conf->global->SOCIETE_DISABLE_DEFAULT_SALESREPRESENTATIVE))
-            $selected = $user->id;
-
-        $out = '';
-
-        $object = new User($db);
-        $result = $object->getView("list");
-
-        if (count($result->rows) && is_array($exclude)) {
-            foreach ($result->rows as $key => $obj) {
-                if (in_array($obj->id, $exclude, true)) {
-                    unset($result->rows[$key]);
-                }
-            }
-        }
-
-        $i = 0;
-        if (count($result->rows)) {
-            $out.= '<select class="flat" id="' . $htmlname . '" name="' . $htmlname . '"' . ($disabled ? ' disabled="disabled"' : '') . '>';
-            if ($show_empty)
-                $out.= '<option value="-1"' . ($selected == -1 ? ' selected="selected"' : '') . '>&nbsp;</option>' . "\n";
-
-            foreach ($result->rows as $obj) {
-                $object->id = $obj->id;
-                $object->Lastname = $obj->value->Lastname;
-                $object->Firstname = $obj->value->Firstname;
-
-                $disableline = 0;
-                if (is_array($enableonly) && count($enableonly) && !in_array($obj->value->name, $enableonly))
-                    $disableline = 1;
-
-                if ((is_object($selected) && $selected->id == $obj->value->name) || (!is_object($selected) && $selected == $obj->value->name)) {
-                    $out.= '<option value="' . $obj->value->name . '"';
-                    if ($disableline)
-                        $out.= ' disabled="disabled"';
-                    $out.= ' selected="selected">';
-                }
-                else {
-                    $out.= '<option value="' . $obj->value->name . '"';
-                    if ($disableline)
-                        $out.= ' disabled="disabled"';
-                    $out.= '>';
-                }
-                $out.= $object->getFullName($langs, 0, 0);
-
-                //if ($obj->admin) $out.= ' *';
-                if (!$conf->global->MAIN_SHOW_LOGIN)
-                    $out.= ' (' . $obj->value->name . ')';
-                $out.= '</option>';
-                $i++;
-            }
-        }
-        else {
-            $out.= '<select class="flat" name="' . $htmlname . '" disabled="disabled">';
-            $out.= '<option value="">' . $langs->trans("None") . '</option>';
-        }
-        $out.= '</select>';
-
-        return $out;
     }
 
     /**

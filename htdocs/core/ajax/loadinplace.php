@@ -51,7 +51,7 @@ $key = substr($key, 8); // remove prefix editval_
 
 top_httphead();
 
-error_log(print_r($_GET, true));
+//error_log(print_r($_GET, true));
 
 if (!empty($key) && !empty($class)) {
     dol_include_once("/" . strtolower($class) . "/class/" . strtolower($class) . ".class.php");
@@ -65,6 +65,11 @@ if (!empty($key) && !empty($class)) {
     if (count($object->fk_extrafields->langs))
         foreach ($object->fk_extrafields->langs as $row)
             $langs->load($row);
+    
+    if (!empty($object->$key))
+        $return['selected'] = $object->$key;
+    else
+        $return['selected'] = $object->fk_extrafields->fields->$key->default;
 
     $aRow = $object->fk_extrafields->fields->$key;
     if (isset($aRow->dict)) {
@@ -92,10 +97,10 @@ if (!empty($key) && !empty($class)) {
             dol_print_error('', $e->getMessage());
         }
     } 
-    /*elseif (isset($aRow->class)) { // Is an object
+    elseif (isset($aRow->class)) { // Is an object
         $class_obj = $aRow->class;
         dol_include_once("/" . strtolower($class_obj) . "/class/" . strtolower($class_obj) . ".class.php");
-        $object_tmp = new $class_obj($object->db);
+        $object_tmp = new $class_obj($db);
 
         $params = array();
         if (count($aRow->params))
@@ -107,8 +112,8 @@ if (!empty($key) && !empty($class)) {
         try {
             $result = $object_tmp->getView($aRow->view, $params);
         } catch (Exception $e) {
-            $this->error = "Fetch : Something weird happened: " . $e->getMessage() . " (errcode=" . $e->getCode() . ")\n";
-            dol_print_error($this->db, $this->error);
+            $error = "Fetch : Something weird happened: " . $e->getMessage() . " (errcode=" . $e->getCode() . ")\n";
+            dol_print_error($db, $error);
             return 0;
         }
 
@@ -120,8 +125,8 @@ if (!empty($key) && !empty($class)) {
             $aRow->values[$row->value->_id]->enable = true;
         }
 
-        $selected = $this->$key->id; // Index of key
-    }*/
+        $return['selected'] = $object->$key->id; // Index of key
+    }
 
     foreach ($object->fk_extrafields->fields->$key->values as $keys => $aRow) {
         if ($aRow->enable) {
@@ -132,10 +137,7 @@ if (!empty($key) && !empty($class)) {
         }
     }
 
-    if (!empty($object->$key))
-        $return['selected'] = $object->$key;
-    else
-        $return['selected'] = $object->fk_extrafields->fields->$key->default;
+    
 
     echo json_encode($return);
 }

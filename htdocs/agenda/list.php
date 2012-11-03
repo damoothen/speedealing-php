@@ -1,5 +1,4 @@
 <?php
-
 /* Copyright (C) 2001-2004 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2003      Eric Seigne          <erics@rycks.com>
  * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
@@ -157,6 +156,7 @@ $object = new Agenda($db);
 $contact = new Contact($db);
 $societe = new Societe($db);
 $societestatic = new Societe($db);
+$userstatic = new User($db);
 
 $title = $langs->trans("DoneAndToDoActions");
 if ($status == 'done')
@@ -174,12 +174,11 @@ if ($socid) {
 
 
 print_fiche_titre($newtitle);
-
 ?>
 <div class="dashboard">
     <div class="columns">
         <div class="nine-columns twelve-columns-mobile graph">
-            <?php $object->graphEisenhower();?>
+<?php $object->graphEisenhower(); ?>
         </div>
 
         <div class="three-columns twelve-columns-mobile new-row-mobile">
@@ -201,8 +200,6 @@ print_fiche_titre($newtitle);
     </div>
 </div>
 <?php
-
-
 print '<div class="with-padding">';
 
 /*
@@ -210,11 +207,13 @@ print '<div class="with-padding">';
  *
  */
 
-print '<p class="button-height right">';
-print '<span class="button-group">';
-print '<a class="button" href="' . strtolower(get_class($object)) . '/fiche.php?action=create"><span class="button-icon blue-gradient glossy"><span class="icon-star"></span></span>' . $langs->trans("NewAction") . '</a>';
-print "</span>";
-print "</p>";
+if ($user->rights->agenda->myactions->create || $user->rights->agenda->allactions->create) {
+    print '<p class="button-height right">';
+    print '<span class="button-group">';
+    print '<a class="button icon-star" href="' . strtolower(get_class($object)) . '/fiche.php?action=create">' . $langs->trans("NewAction") . '</a>';
+    print "</span>";
+    print "</p>";
+}
 
 $i = 0;
 $obj = new stdClass();
@@ -265,18 +264,22 @@ print $langs->trans('ActionUserAsk');
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "author";
 $obj->aoColumns[$i]->sDefaultContent = "";
+$obj->aoColumns[$i]->fnRender = $userstatic->datatablesFnRender("author.name", "url", array('id' => "author.id"));
 $i++;
 print'<th class="essential">';
 print $langs->trans('AffectedTo');
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "usertodo";
+$obj->aoColumns[$i]->sClass = "dol_select";
 $obj->aoColumns[$i]->sDefaultContent = "";
+$obj->aoColumns[$i]->fnRender = $userstatic->datatablesFnRender("usertodo.name", "url", array('id' => "usertodo.id"));
 $i++;
 print'<th class="essential">';
 print $langs->trans('DoneBy');
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "userdone";
 $obj->aoColumns[$i]->sDefaultContent = "";
+$obj->aoColumns[$i]->fnRender = $userstatic->datatablesFnRender("userdone.name", "url", array('id' => "userdone.id"));
 $i++;
 print'<th class="essential">';
 print $langs->trans("Status");
@@ -309,6 +312,30 @@ $obj->aoColumns[$i]->fnRender = 'function(obj) {
 print'</tr>';
 print'</thead>';
 print'<tfoot>';
+/* input search view */
+$i = 0; //Doesn't work with bServerSide
+print'<tr>';
+print'<th id="' . $i . '"></th>';
+$i++;
+print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Name") . '" /></th>';
+$i++;
+print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Date") . '" /></th>';
+$i++;
+print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Company") . '" /></th>';
+$i++;
+print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Contact") . '" /></th>';
+$i++;
+print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search author") . '" /></th>';
+$i++;
+print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search usertodo") . '" /></th>';
+$i++;
+print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search userdone") . '" /></th>';
+$i++;
+print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Status") . '" /></th>';
+$i++;
+print'<th id="' . $i . '"></th>';
+$i++;
+print'</tr>';
 print'</tfoot>';
 print'<tbody>';
 print'</tbody>';

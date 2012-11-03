@@ -1403,25 +1403,21 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         }
 
         // Customer code
-        if ($object->client) {
-            $langs->load("compta");
+        print '<tr><td nowrap>';
+        print $langs->trans('CustomerCode') . '</td><td>';
+        print $object->code_client;
+        if ($object->check_codeclient() <> 0)
+            print ' <font class="error">(' . $langs->trans("WrongCustomerCode") . ')</font>';
+        print '</td>';
 
-            print '<tr><td nowrap>';
-            print $langs->trans('CustomerCode') . '</td><td>';
-            print $object->code_client;
-            if ($object->check_codeclient() <> 0)
-                print ' <font class="error">(' . $langs->trans("WrongCustomerCode") . ')</font>';
-            print '</td>';
-
-            print '<td>';
-            print $form->editfieldkey("CustomerAccountancyCode", 'customeraccountancycode', $object->code_compta, $object, $user->rights->societe->creer);
-            print '</td><td colspan="' . ((($showlogo || $showbarcode) ? 0 : 1)) . '">';
-            print $form->editfieldval("CustomerAccountancyCode", 'customeraccountancycode', $object->code_compta, $object, $user->rights->societe->creer);
-            print '</td>';
-            print $htmllogobar;
-            $htmllogobar = '';
-            print '</tr>';
-        }
+        print '<td>';
+        print $form->editfieldkey("CustomerAccountancyCode", 'customeraccountancycode', $object->code_compta, $object, $user->rights->societe->creer);
+        print '</td><td colspan="' . ((($showlogo || $showbarcode) ? 0 : 1)) . '">';
+        print $form->editfieldval("CustomerAccountancyCode", 'customeraccountancycode', $object->code_compta, $object, $user->rights->societe->creer);
+        print '</td>';
+        print $htmllogobar;
+        $htmllogobar = '';
+        print '</tr>';
 
         // Supplier code
         if (!empty($conf->fournisseur->enabled) && $object->fournisseur && !empty($user->rights->fournisseur->lire)) {
@@ -1672,43 +1668,38 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         print "</td></tr>";
 
         // Relative discounts (Discounts-Drawbacks-Rebates)
-        print '<tr><td nowrap>';
-        print '<table width="100%" class="nobordernopadding"><tr><td nowrap>';
-        print $langs->trans("CustomerRelativeDiscountShort");
-        print '<td><td align="right">';
-        if ($user->rights->societe->creer && !$user->societe_id > 0) {
-            print '<a href="' . DOL_URL_ROOT . '/comm/remise.php?id=' . $object->id . '">' . img_edit($langs->trans("Modify")) . '</a>';
-        }
-        print '</td></tr></table>';
-        print '</td><td colspan="3">' . ($object->remise_client ? '<a href="' . DOL_URL_ROOT . '/comm/remise.php?id=' . $object->id . '">' . $object->remise_client . '%</a>' : $langs->trans("DiscountNone")) . '</td>';
-        print '</tr>';
+        print '<tr><td>' . $form->editfieldkey("CustomerRelativeDiscountShort", 'remise_client', $object->remise_client, $object, $user->rights->societe->creer, "numeric") . '</td><td colspan="' . (2 + (($showlogo || $showbarcode) ? 0 : 1)) . '">';
+        print $form->editfieldval("CustomerRelativeDiscountShort", 'remise_client', $object->remise_client, $object, $user->rights->societe->creer, "numeric");
+        print "</td></tr>";
 
         // Absolute discounts (Discounts-Drawbacks-Rebates)
-        print '<tr><td nowrap>';
-        print '<table width="100%" class="nobordernopadding">';
-        print '<tr><td nowrap>';
-        print $langs->trans("CustomerAbsoluteDiscountShort");
-        print '<td><td align="right">';
-        if ($user->rights->societe->creer && !$user->societe_id > 0) {
-            print '<a href="' . DOL_URL_ROOT . '/comm/remx.php?id=' . $object->id . '&backtopage=' . urlencode($_SERVER["PHP_SELF"] . '?socid=' . $object->id) . '">' . img_edit($langs->trans("Modify")) . '</a>';
-        }
-        print '</td></tr></table>';
-        print '</td>';
-        print '<td colspan="3">';
-        $amount_discount = $object->getAvailableDiscounts();
-        if ($amount_discount < 0)
-            dol_print_error($db, $object->error);
-        if ($amount_discount > 0)
-            print '<a href="' . DOL_URL_ROOT . '/comm/remx.php?id=' . $object->id . '&backtopage=' . urlencode($_SERVER["PHP_SELF"] . '?socid=' . $object->id) . '">' . price($amount_discount) . '</a>&nbsp;' . $langs->trans("Currency" . $conf->currency);
-        else
-            print $langs->trans("DiscountNone");
-        print '</td>';
-        print '</tr>';
+        /*
+          print '<tr><td nowrap>';
+          print '<table width="100%" class="nobordernopadding">';
+          print '<tr><td nowrap>';
+          print $langs->trans("CustomerAbsoluteDiscountShort");
+          print '<td><td align="right">';
+          if ($user->rights->societe->creer && !$user->societe_id > 0) {
+          print '<a href="' . DOL_URL_ROOT . '/comm/remx.php?id=' . $object->id . '&backtopage=' . urlencode($_SERVER["PHP_SELF"] . '?socid=' . $object->id) . '">' . img_edit($langs->trans("Modify")) . '</a>';
+          }
+          print '</td></tr></table>';
+          print '</td>';
+          print '<td colspan="3">';
+          $amount_discount = $object->getAvailableDiscounts();
+          if ($amount_discount < 0)
+          dol_print_error($db, $object->error);
+          if ($amount_discount > 0)
+          print '<a href="' . DOL_URL_ROOT . '/comm/remx.php?id=' . $object->id . '&backtopage=' . urlencode($_SERVER["PHP_SELF"] . '?socid=' . $object->id) . '">' . price($amount_discount) . '</a>&nbsp;' . $langs->trans("Currency" . $conf->currency);
+          else
+          print $langs->trans("DiscountNone");
+          print '</td>';
+          print '</tr>'; */
 
 
         // Sales representative
-        include DOL_DOCUMENT_ROOT . '/societe/tpl/linesalesrepresentative.tpl.php';
-
+        print '<tr><td>' . $form->editfieldkey("SalesRepresentatives", 'commercial_id', $object->commercial_id->name, $object, $user->rights->societe->creer, "select") . '</td><td colspan="' . (2 + (($showlogo || $showbarcode) ? 0 : 1)) . '">';
+        print $form->editfieldval("SalesRepresentatives", 'commercial_id', $object->commercial_id->name, $object, $user->rights->societe->creer, "select");
+        print "</td></tr>";
 
 
         // Module Adherent

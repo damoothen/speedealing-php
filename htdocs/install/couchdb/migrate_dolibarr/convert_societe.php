@@ -17,7 +17,6 @@
  */
 
 require_once "../../../main.inc.php";
-require_once DOL_DOCUMENT_ROOT . "/comm/prospect/class/prospect.class.php";
 require_once DOL_DOCUMENT_ROOT . "/core/class/html.formother.class.php";
 $langs->load("companies");
 $langs->load("customers");
@@ -186,7 +185,8 @@ $resultCommerciaux = $db->query($sql);
 /* init society sales array  */
 while ($aRow = $db->fetch_object($resultCommerciaux)) {
     if (!empty($col[$aRow->fk_soc]->rowid)) {
-        $col[$aRow->fk_soc]->commercial_id = $aRow->login;
+        $col[$aRow->fk_soc]->commercial_id->id = "org.couchdb.user:" . $aRow->login;
+        $col[$aRow->fk_soc]->commercial_id->name = $aRow->login;
     }
 }
 $db->free($resultCommerciaux);

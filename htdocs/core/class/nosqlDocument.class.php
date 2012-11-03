@@ -1294,7 +1294,9 @@ abstract class nosqlDocument extends CommonObject {
         $value = $this->$key;
         if (empty($this->$key))
             return null;
-
+        if(is_object($this->$key) && empty($this->$key->id))
+            return null;
+        
         if (isset($aRow->dict)) {
             require_once(DOL_DOCUMENT_ROOT . "/admin/class/dict.class.php");
             // load from dictionnary
@@ -1312,6 +1314,7 @@ abstract class nosqlDocument extends CommonObject {
             }
         } elseif (isset($aRow->class)) { // Is an object
             $class = $aRow->class;
+            dol_include_once("/" . strtolower($class) . "/class/" . strtolower($class) . ".class.php");
             $object = new $class($this->db);
             $object->name = $this->$key->name;
             $object->id = $this->$key->id;

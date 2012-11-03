@@ -219,6 +219,8 @@ if (!defined('NOREQUIREAJAX') && $conf->use_javascript_ajax)
 
 
 
+
+
     
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
@@ -1298,10 +1300,14 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                     <li style="width: 20%;"><a href="index.php?idmenu=menu:home"
                                                title="<?php echo $langs->trans("Home"); ?>"><span class="icon-home"></span>
                         </a></li>
-                    <li style="width: 20%;"><a href="inbox.html" title="Messages"><span class="icon-inbox"></span><span
-                                class="count">2</span> </a></li>
-                    <li style="width: 20%;"><a href="calendars.html" title="Calendar"><span
-                                class="icon-calendar"></span> </a></li>
+                    <li style="width: 20%;"><a href="inbox.html" title="Messages"><span class="icon-inbox"></span>
+                        </a></li>
+                    <li style="width: 20%;"><a href="agenda/list.php?idmenu=menu:agendaList" title="<?php echo $langs->trans("Agenda"); ?>"><span class="icon-calendar"></span><?php
+                        $agenda = new Agenda($db);
+                        $result = $agenda->getView("countTODO", array("group" => true, "key" => $user->id));
+                        if ($result->rows[0]->value)
+                            print '<span class="count">' . $result->rows[0]->value . '</span>';
+                        ?> </a></li>
                     <li style="width: 20%;"><a href="user/fiche.php?id=<?php echo $user->id; ?>"
                                                title="Profile"><span class="icon-gear"></span> </a></li>
                     <li style="width: 20%;"><a href="user/logout.php" title="Log out"><span
@@ -1633,7 +1639,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
         <script src="theme/symeos/js/s_scripts.js"></script>
         <script src="theme/symeos/js/symeos.js"></script>
 
-                                <!--<script src="theme/developr/html/js/developr.input.js"></script>-->
+                                                <!--<script src="theme/developr/html/js/developr.input.js"></script>-->
         <script src="theme/symeos/js/developr.message.js"></script>
         <script src="theme/symeos/js/developr.modal.js"></script>
         <script src="theme/symeos/js/developr.notify.js"></script>
@@ -1655,7 +1661,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
             // Favicon count
             Tinycon.setBubble(2);
-                                                                					
+                                                                                					
         </script>
 
         <script>

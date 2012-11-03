@@ -123,7 +123,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans('Company');
 print'</th>';
-$obj->aoColumns[$i]->mDataProp = "societe.name";
+$obj->aoColumns[$i]->mDataProp = "societe";
 $obj->aoColumns[$i]->sDefaultContent = "";
 $obj->aoColumns[$i]->fnRender = $soc->datatablesFnRender("societe.name", "url", array('id' => "societe.id"));
 $i++;
