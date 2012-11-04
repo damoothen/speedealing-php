@@ -142,7 +142,7 @@ print start_box($title, "twelve", "16-Cloud.png", false);
 if ($user->admin) {
     print '<p class="button-height right">';
     print '<span class="button-group">';
-    print '<a class="button" href="user/database/fiche.php?action=create"><span class="button-icon blue-gradient glossy"><span class="icon-star"></span></span>' . $langs->trans("CreateDatabase") . '</a>';
+    print '<a class="button icon-star" href="user/database/fiche.php?action=create">' . $langs->trans("CreateDatabase") . '</a>';
     print "</span>";
     print "</p>";
 }
@@ -162,7 +162,7 @@ $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->bSearchable = true;
 $obj->aoColumns[$i]->fnRender = 'function(obj) {
 				var ar = [];
-				ar[ar.length] = "<img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . $object->fk_extrafields->ico . '\" border=\"0\" alt=\"' . $langs->trans("See " . get_class($object)) . ' : ";
+				ar[ar.length] = "<img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/ico/icSw2/' . $object->fk_extrafields->ico . '\" border=\"0\" alt=\"' . $langs->trans("See " . get_class($object)) . ' : ";
 				ar[ar.length] = obj.aData.db_name.toString();
 				ar[ar.length] = "\" title=\"' . $langs->trans("See " . get_class($object)) . ' : ";
 				ar[ar.length] = obj.aData.db_name.toString();

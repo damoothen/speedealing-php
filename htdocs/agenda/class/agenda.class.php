@@ -1296,8 +1296,7 @@ class Agenda extends nosqlDocument {
                             chart = new Highcharts.Chart({
                                 chart: {
                                     renderTo: 'eisenhower',
-                                    defaultSeriesType: "column",
-                                    zoomType: "x",
+                                    defaultSeriesType: "columnrange",
                                     marginBottom: 35
                                 },
                                 credits: {

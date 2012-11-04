@@ -94,7 +94,7 @@ print start_box($title, "twelve", "16-User.png", false);
 
 print '<p class="button-height right">';
 print '<span class="button-group">';
-print '<a class="button" href="user/fiche.php?action=create"><span class="button-icon blue-gradient glossy"><span class="icon-star"></span></span>' . $langs->trans("CreateUser") . '</a>';
+print '<a class="button icon-star" href="user/fiche.php?action=create">' . $langs->trans("CreateUser") . '</a>';
 print "</span>";
 print "</p>";
 
@@ -123,7 +123,7 @@ $url = strtolower(get_class($object)) . '/fiche.php?id=';
 $key = "name";
 $obj->aoColumns[$i]->fnRender = 'function(obj) {
 				var ar = [];
-				ar[ar.length] = "<img src=\"theme/' . $conf->theme . $object->fk_extrafields->ico . '\" border=\"0\" alt=\"' . $langs->trans("See " . get_class($object)) . ' : ";
+				ar[ar.length] = "<img src=\"theme/' . $conf->theme . '/img/ico/icSw2/' . $object->fk_extrafields->ico . '\" border=\"0\" alt=\"' . $langs->trans("See " . get_class($object)) . ' : ";
 				ar[ar.length] = obj.aData.' . $key . '.toString();
 				ar[ar.length] = "\" title=\"' . $langs->trans("See " . get_class($object)) . ' : ";
 				ar[ar.length] = obj.aData.' . $key . '.toString();

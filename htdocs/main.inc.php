@@ -1303,6 +1303,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                     <li style="width: 20%;"><a href="inbox.html" title="Messages"><span class="icon-inbox"></span>
                         </a></li>
                     <li style="width: 20%;"><a href="agenda/list.php?idmenu=menu:agendaList" title="<?php echo $langs->trans("Agenda"); ?>"><span class="icon-calendar"></span><?php
+                        require_once(DOL_DOCUMENT_ROOT . "/agenda/class/agenda.class.php");
                         $agenda = new Agenda($db);
                         $result = $agenda->getView("countTODO", array("group" => true, "key" => $user->id));
                         if ($result->rows[0]->value)
@@ -1639,7 +1640,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
         <script src="theme/symeos/js/s_scripts.js"></script>
         <script src="theme/symeos/js/symeos.js"></script>
 
-                                                <!--<script src="theme/developr/html/js/developr.input.js"></script>-->
+        <!--<script src="theme/developr/html/js/developr.input.js"></script>-->
         <script src="theme/symeos/js/developr.message.js"></script>
         <script src="theme/symeos/js/developr.modal.js"></script>
         <script src="theme/symeos/js/developr.notify.js"></script>
