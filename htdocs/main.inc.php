@@ -221,6 +221,7 @@ if (!defined('NOREQUIREAJAX') && $conf->use_javascript_ajax)
 
 
 
+
     
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
@@ -804,8 +805,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                     print "<title>" . $appli . "</title>";
                 print "\n";
                 ?>
-                <base
-                    href="<?php echo 'http://' . $_SERVER['HTTP_HOST'] . DOL_URL_ROOT . '/'; ?>" />
+                <base href="<?php echo 'http://' . $_SERVER['HTTP_HOST'] . DOL_URL_ROOT . '/'; ?>" />
 
 
                 <!-- For all browsers -->
@@ -1288,7 +1288,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                     <li style="width: 20%;"><a href="agenda/list.php?idmenu=menu:agendaList" title="<?php echo $langs->trans("Agenda"); ?>"><span class="icon-calendar"></span><?php
                         require_once(DOL_DOCUMENT_ROOT . "/agenda/class/agenda.class.php");
                         $agenda = new Agenda($db);
-                        $result = $agenda->getView("countTODO", array("group" => true, "key" => $user->id),true);
+                        $result = $agenda->getView("countTODO", array("group" => true, "key" => $user->id), true);
                         if ($result->rows[0]->value)
                             print '<span class="count">' . $result->rows[0]->value . '</span>';
                         ?> </a></li>
@@ -1623,7 +1623,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
         <script src="theme/symeos/js/s_scripts.js"></script>
         <script src="theme/symeos/js/symeos.js"></script>
 
-        <!--<script src="theme/developr/html/js/developr.input.js"></script>-->
+                <!--<script src="theme/developr/html/js/developr.input.js"></script>-->
         <script src="theme/symeos/js/developr.message.js"></script>
         <script src="theme/symeos/js/developr.modal.js"></script>
         <script src="theme/symeos/js/developr.notify.js"></script>
@@ -1645,7 +1645,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
             // Favicon count
             Tinycon.setBubble(2);
-                                                                                					
+                                                                                        					
         </script>
 
         <script>
