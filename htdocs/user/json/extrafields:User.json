@@ -7,6 +7,7 @@
            "type": "select",
            "enable": true,
            "default": "DISABLE",
+           "status": true,
            "aoColumns": {
                "sClass": "center",
                "bSearchable": true,
@@ -15,11 +16,13 @@
            "values": {
                "DISABLE": {
                    "enable": true,
-                   "cssClass": "error_bg"
+                   "label": "Bloqué",
+                   "cssClass": "red-gradient"
                },
                "ENABLE": {
                    "enable": true,
-                   "cssClass": "ok_bg"
+                   "label": "Actif",
+                   "cssClass": "green-gradient"
                }
            }
        }
