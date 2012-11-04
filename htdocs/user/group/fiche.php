@@ -47,22 +47,6 @@ $result = restrictedArea($user, 'user', $id, 'usergroup&usergroup', 'user');
 
 $object = new Usergroup($db);
 
-
-/**
- *  Action remove group
- */
-if ($action == 'confirm_delete' && $confirm == "yes") {
-    if ($caneditperms) {
-        $object->fetch($id);
-        $object->delete();
-        Header("Location: index.php");
-        exit;
-    } else {
-        $langs->load("errors");
-        $message = '<div class="error">' . $langs->trans('ErrorForbidden') . '</div>';
-    }
-}
-
 /**
  *  Action add group
  */
@@ -116,41 +100,6 @@ if ($action == 'adduser' || $action == 'removeuser') {
         $message = '<div class="error">' . $langs->trans('ErrorForbidden') . '</div>';
     }
 }
-
-// Add/Remove database into roles
-if ($action == 'adddatabase' || $action == 'removedatabase') {
-    if ($caneditperms) {
-        if ($databaseid) {
-
-            $object->load($id);
-
-            $database = new UserDatabase($db);
-            $database->fetch($databaseid);
-
-            if ($action == 'adddatabase') {
-                if ($_POST['admin'])
-                    $database->couchAdmin->addDatabaseAdminRole($object->name);
-                else
-                    $database->couchAdmin->addDatabaseReaderRole($object->name);
-            }
-            if ($action == 'removedatabase') {
-                $database->couchAdmin->removeDatabaseAdminRole($object->name);
-                $database->couchAdmin->removeDatabaseReaderRole($object->name);
-            }
-
-            if ($result > 0) {
-                header("Location: fiche.php?id=" . $object->id);
-                exit;
-            } else {
-                $message.=$edituser->error;
-            }
-        }
-    } else {
-        $langs->load("errors");
-        $message = '<div class="error">' . $langs->trans('ErrorForbidden') . '</div>';
-    }
-}
-
 
 if ($action == 'update') {
     if ($caneditperms) {
@@ -223,14 +172,14 @@ if ($action == 'create') {
 
     print "</form>";
     dol_fiche_end();
-}
 
 
-/* * ************************************************************************* */
-/*                                                                            */
-/* Visu et edition                                                            */
-/*                                                                            */
-/* * ************************************************************************* */ else {
+    /**
+     *
+     * Visu et edition
+     *
+     */
+} else {
     if ($id) {
         $object->load($id);
 
@@ -247,52 +196,12 @@ if ($action == 'create') {
 
         dol_fiche_head($head, 'group', $title, 0, 'group');
 
-        /*
-         * Confirmation suppression
-         */
-        if ($action == 'delete') {
-            $ret = $form->form_confirm($_SERVER['PHP_SELF'] . "?id=" . $object->id, $langs->trans("DeleteAGroup"), $langs->trans("ConfirmDeleteGroup", $object->name), "confirm_delete", '', 0, 1);
-            if ($ret == 'html')
-                print '<br>';
-        }
 
         /*
          * Fiche en mode visu
          */
 
         if ($action != 'edit') {
-            /*
-             * Barre d'actions
-             */
-            print '<div class="row sepH_a">';
-            print '<div class="right">';
-
-            //if ($caneditperms) {
-            //	print '<a class="gh_button pill primary" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=edit">' . $langs->trans("Modify") . '</a>';
-            //}
-
-            if ($candisableperms) {
-                print '<a class="gh_button pill icon trash danger" href="' . $_SERVER['PHP_SELF'] . '?action=delete&amp;id=' . $object->id . '">' . $langs->trans("Delete") . '</a>';
-            }
-
-            print "</div>\n";
-            print "</div>\n";
-
-            print '<table class="border" width="100%">';
-
-            // Ref
-            print '<tr><td width="25%" valign="top">' . $langs->trans("Ref") . '</td>';
-            print '<td colspan="2">';
-            print $form->showrefnav($object, 'id', '', $user->rights->user->user->lire || $user->admin);
-            print '</td>';
-            print '</tr>';
-
-            // Name
-            print '<tr><td width="25%" valign="top">' . $langs->trans("Name") . '</td>';
-            print '<td width="75%" class="valeur">' . $object->name;
-            print "</td></tr>\n";
-
-            print "</table>\n";
 
             print "</div>\n";
 
@@ -326,7 +235,7 @@ if ($action == 'create') {
                 print '<table class="noborder" width="100%">' . "\n";
                 print '<tr class="liste_titre"><td class="liste_titre" width="25%">' . $langs->trans("NonAffectedUsers") . '</td>' . "\n";
                 print '<td>';
-                print $form->select_dolusers('', 'user', 1, $exclude, 0, '', '');
+                print $object->select_fk_extrafields('user', 'user');
                 print '</td><td>';
                 print '<input type="submit" class="tiny nice button" value="' . $langs->trans("Add") . '">';
                 print '</td></tr>' . "\n";
@@ -355,9 +264,9 @@ if ($action == 'create') {
             $obj->aoColumns[$i]->mDataProp = "";
             $obj->aoColumns[$i]->sClass = "center";
             $i++;
-            print '<th></th>';
+            print '<th>' . $langs->trans('Action') . '</th>';
             $obj->aoColumns[$i]->mDataProp = "";
-            $obj->aoColumns[$i]->sClass = "fright content_actions";
+            $obj->aoColumns[$i]->sClass = "center content_actions";
             $i++;
             print "</tr>\n";
             print '</thead>';
@@ -400,93 +309,6 @@ if ($action == 'create') {
             $obj->sDom = 'l<fr>t<\"clear\"rtip>';
 
             $object->datatablesCreate($obj, "users");
-
-            print end_box();
-
-            /*
-             * Liste des databases du groupe / role
-             */
-
-            print start_box($langs->trans("ListOfRolesInDatabase"), "twelve", "16-Cloud.png", false);
-
-            // On selectionne les users qui ne sont pas deja dans le groupe
-            $exclude = array();
-
-            //print_r($object->database);
-
-            if (count($object->databases)) {
-                foreach ($object->databases as $dbingroup) {
-                    $exclude[] = $dbingroup->db_name;
-                }
-            }
-
-            if ($caneditperms) {
-                print '<form action="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '" method="POST">' . "\n";
-                print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
-                print '<input type="hidden" name="action" value="adddatabase">';
-                print '<table class="noborder" width="100%">' . "\n";
-                print '<tr class="liste_titre"><td class="liste_titre" width="25%">' . $langs->trans("NonAffectedGroupsDatabase") . '</td>' . "\n";
-                print '<td>';
-                print $form->select_doldatabases('', 'databaseid', 1, $exclude, 0, '', '');
-                print "</td>\n";
-                //print '<td valign="top">' . $langs->trans("Administrator") . '</td>';
-                //print "<td>" . $form->selectyesno('admin', 0, 1);
-                //print "</td>\n";
-                print '</td><td>';
-                print '<input type="submit" class="tiny nice button" value="' . $langs->trans("Add") . '">';
-                print '</td></tr>' . "\n";
-                print '</table></form>' . "\n";
-                print '<br>';
-            }
-
-            /*
-             * Group members
-             */
-            $obj = new stdClass();
-            $i = 0;
-            print '<table class="display" id="databases">';
-            print '<thead>';
-            print '<tr>';
-            print '<th>' . $langs->trans("Group") . '</th>';
-            $obj->aoColumns[$i]->mDataProp = "";
-            $i++;
-            print '<th></th>';
-            $obj->aoColumns[$i]->mDataProp = "";
-            $obj->aoColumns[$i]->sClass = "fright content_actions";
-            $i++;
-            print "</tr>\n";
-            print '</thead>';
-
-            print '<tbody>';
-            if (count($object->databases)) {
-                $var = True;
-
-                foreach ($object->databases as $aRow) {
-                    $var = !$var;
-
-                    print "<tr $bc[$var]>";
-                    print '<td>';
-                    print '<a href="' . DOL_URL_ROOT . '/user/database/fiche.php?id=' . $aRow->db_name . '">' . img_object($langs->trans("ShowDatabase"), "database") . ' ' . $aRow->db_name . '</a>';
-                    if ($aRow->Administrator)
-                        print img_picto($langs->trans("Administrator"), 'star');
-                    print '</td>';
-                    print '<td>';
-                    if ($user->admin) {
-                        print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=removedatabase&amp;databaseid=' . $aRow->db_name . '">';
-                        print img_delete($langs->trans("RemoveFromGroup"));
-                    } else {
-                        print "-";
-                    }
-                    print "</td></tr>\n";
-                }
-            }
-            print '<tbody>';
-            print "</table>";
-
-            $obj->aaSorting = array(array(0, "asc"));
-            $obj->sDom = 'l<fr>t<\"clear\"rtip>';
-
-            $object->datatablesCreate($obj, "databases");
 
             print end_box();
         }

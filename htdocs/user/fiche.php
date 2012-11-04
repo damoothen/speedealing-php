@@ -871,7 +871,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
                 if (!empty($conf->global->MAIN_ONLY_LOGIN_ALLOWED)) {
                     print '<a class="button" href="#" title="' . dol_escape_htmltag($langs->trans("DisabledInMonoUserMode")) . '">' . $langs->trans("Modify") . '</a>';
                 } else {
-                    print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $fuser->id . '&amp;action=edit"><span class="button-icon blue-gradient glossy"><span class="icon-pencil"></span></span>' . $langs->trans("Modify") . '</a>';
+                    print '<a class="button icon-pencil" href="' . $_SERVER["PHP_SELF"] . '?id=' . $fuser->id . '&amp;action=edit">' . $langs->trans("Modify") . '</a>';
                 }
             } elseif ($caneditpassword && !$fuser->ldap_sid) {
                 print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $fuser->id . '&amp;action=edit">' . $langs->trans("EditPassword") . '</a>';
@@ -880,32 +880,32 @@ if (($action == 'create') || ($action == 'adduserldap')) {
             // Si on a un gestionnaire de generation de mot de passe actif
             if ($conf->global->USER_PASSWORD_GENERATED != 'none') {
                 if ($fuser->values->Status == "DISABLE") {
-                    print '<a class="button pill disable" href="#" title="' . dol_escape_htmltag($langs->trans("UserDisabled")) . '">' . $langs->trans("ReinitPassword") . '</a>';
+                    print '<a class="button disabled" href="#" title="' . dol_escape_htmltag($langs->trans("UserDisabled")) . '">' . $langs->trans("ReinitPassword") . '</a>';
                 } elseif (($user->id != $id && $caneditpassword) && $fuser->login && !$fuser->ldap_sid) {
-                    print '<a class="button pill" href="' . $_SERVER["PHP_SELF"] . '?id=' . $fuser->id . '&amp;action=password">' . $langs->trans("ReinitPassword") . '</a>';
+                    print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $fuser->id . '&amp;action=password">' . $langs->trans("ReinitPassword") . '</a>';
                 }
 
                 if ($fuser->values->Status == "DISABLE") {
-                    print '<a class="button pill disable" href="#" title="' . dol_escape_htmltag($langs->trans("UserDisabled")) . '">' . $langs->trans("SendNewPassword") . '</a>';
+                    print '<a class="button disabled" href="#" title="' . dol_escape_htmltag($langs->trans("UserDisabled")) . '">' . $langs->trans("SendNewPassword") . '</a>';
                 } else if (($user->id != $id && $caneditpassword) && $fuser->login && !$fuser->ldap_sid) {
                     if ($fuser->email)
-                        print '<a class="button pill" href="' . $_SERVER["PHP_SELF"] . '?id=' . $fuser->id . '&amp;action=passwordsend">' . $langs->trans("SendNewPassword") . '</a>';
+                        print '<a class="button " href="' . $_SERVER["PHP_SELF"] . '?id=' . $fuser->id . '&amp;action=passwordsend">' . $langs->trans("SendNewPassword") . '</a>';
                     else
-                        print '<a class="button pill disable" href="#" title="' . dol_escape_htmltag($langs->trans("NoEMail")) . '">' . $langs->trans("SendNewPassword") . '</a>';
+                        print '<a class="button disabled" href="#" title="' . dol_escape_htmltag($langs->trans("NoEMail")) . '">' . $langs->trans("SendNewPassword") . '</a>';
                 }
             }
 
             // Activer
             if ($user->id <> $id && $candisableuser && $fuser->values->Status != "ENABLE") {
-                print '<a class="gh_button pill icon unlock" href="' . $_SERVER["PHP_SELF"] . '?id=' . $fuser->id . '&amp;action=enable">' . $langs->trans("Reactivate") . '</a>';
+                print '<a class="button icon-unlock" href="' . $_SERVER["PHP_SELF"] . '?id=' . $fuser->id . '&amp;action=enable">' . $langs->trans("Reactivate") . '</a>';
             }
             // Desactiver
             if ($user->id <> $id && $candisableuser && $fuser->values->Status == "ENABLE") {
-                print '<a class="gh_button pill icon lock" href="' . $_SERVER["PHP_SELF"] . '?action=disable&amp;id=' . $fuser->id . '">' . $langs->trans("DisableUser") . '</a>';
+                print '<a class="button icon-lock" href="' . $_SERVER["PHP_SELF"] . '?action=disable&amp;id=' . $fuser->id . '">' . $langs->trans("DisableUser") . '</a>';
             }
             // Delete
             if ($user->id <> $id && $candisableuser) {
-                print '<a class="gh_button pill icon trash danger" href="' . $_SERVER["PHP_SELF"] . '?action=delete&amp;id=' . $fuser->id . '">' . $langs->trans("DeleteUser") . '</a>';
+                print '<a class="button red-gradient icon-trash" href="' . $_SERVER["PHP_SELF"] . '?action=delete&amp;id=' . $fuser->id . '">' . $langs->trans("DeleteUser") . '</a>';
             }
 
             print "</span></div>";
