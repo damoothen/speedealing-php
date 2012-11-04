@@ -367,6 +367,8 @@ class Agenda extends nosqlDocument {
         }
 
         $this->record();
+        
+        dol_delcache(get_class($this) . ":countTODO"); //Reset stats cache for agenda
 
         if (!$notrigger) {
             // Appel des triggers
