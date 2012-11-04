@@ -373,7 +373,7 @@ header("Content-type: text/html; charset=" . $conf->file->character_set_client);
             });
 
             // What about a notification?
-            notify('Bienvenue sur Speedealing', 'Bonne découverte.', {
+            notify('Bienvenue sur Speedealing', 'Votre CRM/ERP.', {
                 autoClose: false,
                 delay: 2500,
                 icon: 'theme/common/emotes/face-smile.png'

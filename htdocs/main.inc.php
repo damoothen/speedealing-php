@@ -529,23 +529,6 @@ if (!defined('NOLOGIN')) {
             $db->commit();
         }
 
-        // Create entity cookie, just used for login page
-        if (!empty($conf->multicompany->enabled) && !empty($conf->global->MULTICOMPANY_COOKIE_ENABLED) && isset($_POST["entity"])) {
-            include_once(DOL_DOCUMENT_ROOT . "/core/class/cookie.class.php");
-
-            $entity = $_SESSION["dol_login"] . '|' . $_POST["entity"];
-
-            $prefix = dol_getprefix();
-            $entityCookieName = 'DOLENTITYID_' . $prefix;
-            // TTL : is defined in the config page multicompany
-            $ttl = (!empty($conf->global->MULTICOMPANY_COOKIE_TTL) ? dol_now() + $conf->global->MULTICOMPANY_COOKIE_TTL : dol_now() + 60 * 60 * 8 );
-            // Cryptkey : will be created randomly in the config page multicompany
-            $cryptkey = (!empty($conf->file->cookie_cryptkey) ? $conf->file->cookie_cryptkey : '' );
-
-            $entityCookie = new DolCookie($cryptkey);
-            $entityCookie->_setCookie($entityCookieName, $entity, $ttl);
-        }
-
         // Hooks on successfull login
         $action = '';
         include_once(DOL_DOCUMENT_ROOT . '/core/class/hookmanager.class.php');
