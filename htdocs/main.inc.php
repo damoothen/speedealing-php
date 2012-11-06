@@ -225,6 +225,8 @@ if (!defined('NOREQUIREAJAX') && $conf->use_javascript_ajax)
 
 
 
+
+
     
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
@@ -658,9 +660,18 @@ if (empty($conf->browser->firefox)) {
 $heightforframes = 52;
 
 // Switch to another entity
-if (!empty($conf->multicompany->enabled) && GETPOST('action') == 'switchentity') {
-    if ($mc->switchEntity(GETPOST('entity')) >= 0) {
-        Header("Location: " . DOL_URL_ROOT . '/');
+if ($conf->urlrewrite) {
+    if (!GETPOST("db"))
+        $tmp_db = $conf->Couchdb->name; // First connecte using $user->entity for default
+    else
+        $tmp_db = GETPOST("db");
+
+    if (dol_getcache('dol_db') != $tmp_db || strpos(DOL_URL_ROOT,$tmp_db)==0) {
+        dol_flushcache(); // reset cache
+        dol_setcache("dol_db", $tmp_db);
+        
+        Header("Location: /" . $tmp_db . '/');
+        unset($tmp_db);
         exit;
     }
 }
@@ -1626,7 +1637,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
         <script src="theme/symeos/js/s_scripts.js"></script>
         <script src="theme/symeos/js/symeos.js"></script>
 
-                                        <!--<script src="theme/developr/html/js/developr.input.js"></script>-->
+                                                        <!--<script src="theme/developr/html/js/developr.input.js"></script>-->
         <script src="theme/symeos/js/developr.message.js"></script>
         <script src="theme/symeos/js/developr.modal.js"></script>
         <script src="theme/symeos/js/developr.notify.js"></script>
@@ -1648,7 +1659,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
             // Favicon count
             Tinycon.setBubble(2);
-                                                                                                                					
+                                                                                                                                					
         </script>
 
         <script>

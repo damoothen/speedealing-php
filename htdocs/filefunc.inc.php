@@ -113,11 +113,6 @@ if (empty($force_charset_do_notuse))
     $force_charset_do_notuse = 'UTF-8';
 if (empty($dolibarr_strict_mode))
     $dolibarr_strict_mode = 0; // For debug in php strict mode
-if (empty($multicompany_transverse_mode))
-    $multicompany_transverse_mode = 0;
-if (empty($multicompany_force_entity))
-    $multicompany_force_entity = 0; // To force entity in login page
-
 
     
 // Security: CSRF protection
@@ -188,8 +183,8 @@ $uri = preg_replace('/^http(s?):\/\//i', '', constant('DOL_MAIN_URL_ROOT')); // 
 $suburi = strstr($uri, '/');            // $suburi contains url without domain
 if ($suburi == '/')
     $suburi = '';           // If $suburi is /, it is now ''
-if (!empty($dolibarr_urlrewrite) && !empty($_GET['entity'])) //URL rewrite + entity in url www.speedealing.com/[entity]/...
-    $suburi .= "/" . $_GET['entity'];
+if (!empty($dolibarr_urlrewrite) && !empty($_GET['db'])) //URL rewrite + entity in url www.speedealing.com/[entity]/...
+    $suburi .= "/" . $_GET['db'];
 define('DOL_URL_ROOT', $suburi);           // URL relative root ('', '/dolibarr', ...)
 // Define DOL_MAIN_URL_ROOT_ALT and DOL_URL_ROOT_ALT
 if (!empty($dolibarr_main_url_root_alt)) {
