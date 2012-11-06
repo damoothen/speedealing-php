@@ -222,6 +222,9 @@ if (!defined('NOREQUIREAJAX') && $conf->use_javascript_ajax)
 
 
 
+
+
+
     
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
@@ -1623,7 +1626,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
         <script src="theme/symeos/js/s_scripts.js"></script>
         <script src="theme/symeos/js/symeos.js"></script>
 
-                <!--<script src="theme/developr/html/js/developr.input.js"></script>-->
+                                        <!--<script src="theme/developr/html/js/developr.input.js"></script>-->
         <script src="theme/symeos/js/developr.message.js"></script>
         <script src="theme/symeos/js/developr.modal.js"></script>
         <script src="theme/symeos/js/developr.notify.js"></script>
@@ -1645,7 +1648,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
             // Favicon count
             Tinycon.setBubble(2);
-                                                                                        					
+                                                                                                                					
         </script>
 
         <script>

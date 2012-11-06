@@ -189,7 +189,7 @@ $suburi = strstr($uri, '/');            // $suburi contains url without domain
 if ($suburi == '/')
     $suburi = '';           // If $suburi is /, it is now ''
 if (!empty($dolibarr_urlrewrite) && !empty($_GET['entity'])) //URL rewrite + entity in url www.speedealing.com/[entity]/...
-    $suburi = "/" . $_GET['entity'];
+    $suburi .= "/" . $_GET['entity'];
 define('DOL_URL_ROOT', $suburi);           // URL relative root ('', '/dolibarr', ...)
 // Define DOL_MAIN_URL_ROOT_ALT and DOL_URL_ROOT_ALT
 if (!empty($dolibarr_main_url_root_alt)) {
