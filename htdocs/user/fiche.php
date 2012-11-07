@@ -21,10 +21,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- *       \file       htdocs/user/fiche.php
- *       \brief      Tab of user card
- */
 require("../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT . "/user/class/user.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/user/class/usergroup.class.php");
@@ -78,25 +74,23 @@ $langs->load("companies");
 $langs->load("ldap");
 
 $form = new Form($db);
+$edituser = new User($db);
 
 /**
  * Actions
  */
 if ($_GET["subaction"] == 'addrights' && $canedituser) {
-    $edituser = new User($db);
     $edituser->fetch($id);
     $edituser->addrights($_GET["rights"]);
 }
 
 if ($_GET["subaction"] == 'delrights' && $canedituser) {
-    $edituser = new User($db);
     $edituser->fetch($id);
     $edituser->delrights($_GET["rights"]);
 }
 
 if ($action == 'confirm_disable' && $confirm == "yes" && $candisableuser) {
     if ($id <> $user->id) {
-        $edituser = new User($db);
         $edituser->fetch($id);
         $edituser->setstatus(0);
         Header("Location: " . $_SERVER['PHP_SELF'] . '?id=' . $id);
@@ -107,7 +101,6 @@ if ($action == 'confirm_enable' && $confirm == "yes" && $candisableuser) {
     if ($id <> $user->id) {
         $message = '';
 
-        $edituser = new User($db);
         $edituser->fetch($id);
 
         if (!empty($conf->file->main_limit_users)) {
@@ -127,7 +120,6 @@ if ($action == 'confirm_enable' && $confirm == "yes" && $candisableuser) {
 
 if ($action == 'confirm_delete' && $confirm == "yes" && $candisableuser) {
     if ($id <> $user->id) {
-        $edituser = new User($db);
         $edituser->id = $id;
         $result = $edituser->delete();
         if ($result < 0) {
@@ -151,8 +143,6 @@ if ((($action == 'add' && $canadduser) || ($action == 'update' && $canedituser))
         $message = '<div class="error">' . $langs->trans("LoginNotDefined") . '</div>';
         $action = "create"; // Go back to create page
     }
-
-    $edituser = new User($db);
 
     if (!empty($conf->file->main_limit_users) && $action == 'add') { // If option to limit users is set
         $nb = $edituser->getNbOfUsers("active", 1);
@@ -217,7 +207,6 @@ if ((($action == 'add' && $canadduser) || ($action == 'update' && $canedituser))
 // Action ajout groupe utilisateur
 if (($action == 'addgroup' || $action == 'removegroup') && $caneditfield) {
     if ($group) {
-        $edituser = new User($db);
         $edituser->fetch($id);
 
         if ($action == 'addgroup') {
@@ -238,8 +227,7 @@ if (($action == 'addgroup' || $action == 'removegroup') && $caneditfield) {
 
 // Change password with a new generated one
 if ((($action == 'confirm_password' && $confirm == 'yes')
-        || ($action == 'confirm_passwordsend' && $confirm == 'yes')) && $caneditpassword) {
-    $edituser = new User($db);
+        || ($action == 'confirm_passwordsend' && $confirm == 'yes')) && $caneditpassword) {    
     $edituser->fetch($id);
 
     $newpassword = $edituser->setPassword($user, '');

@@ -20,11 +20,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- *       \file       htdocs/contact/fiche.php
- *       \ingroup    societe
- *       \brief      Card of a contact
- */
 require '../main.inc.php';
 require_once DOL_DOCUMENT_ROOT . '/agenda/class/agenda.class.php';
 require_once DOL_DOCUMENT_ROOT . '/contact/class/contact.class.php';

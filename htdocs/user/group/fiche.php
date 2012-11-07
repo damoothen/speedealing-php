@@ -19,10 +19,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- *       \file       htdocs/user/group/fiche.php
- *       \brief      Onglet groupes utilisateurs
- */
 require("../../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT . "/user/class/usergroup.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/lib/usergroups.lib.php");

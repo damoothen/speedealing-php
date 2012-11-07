@@ -422,6 +422,7 @@ if (!defined('NOLOGIN')) {
 
         $user_config = new UserAdmin($db);
         $user_config->fetch($user->name); // Load for default entity
+        
         //$user_config->set("LastConnection", $user_config->NewConnection);
         //$user_config->set("NewConnection", dol_now());
 

@@ -1499,7 +1499,6 @@ class User extends nosqlDocument {
     function getLibStatus() {
         return $this->LibStatus($this->Status);
     }
-
 }
 
 ?>
