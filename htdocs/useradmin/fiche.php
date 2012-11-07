@@ -1,11 +1,5 @@
 <?php
-/* Copyright (C) 2002-2006 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2002-2003 Jean-Louis Bergamo   <jlb@j1b.org>
- * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2004      Eric Seigne          <eric.seigne@ryxeo.com>
- * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
- * Copyright (C) 2005      Lionel Cousteix      <etm_ltd@tiscali.co.uk>
- * Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
+/* Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,26 +15,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- *       \file       htdocs/user/fiche.php
- *       \brief      Tab of user card
- */
 require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT . "/user/class/user.class.php");
-require_once(DOL_DOCUMENT_ROOT . "/user/class/usergroup.class.php");
-require_once(DOL_DOCUMENT_ROOT . "/contact/class/contact.class.php");
+require_once(DOL_DOCUMENT_ROOT . "/useradmin/class/useradmin.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/lib/images.lib.php");
-require_once(DOL_DOCUMENT_ROOT . "/core/lib/usergroups.lib.php");
-if ($conf->ldap->enabled)
-    require_once(DOL_DOCUMENT_ROOT . "/core/class/ldap.class.php");
-if ($conf->adherent->enabled)
-    require_once(DOL_DOCUMENT_ROOT . "/adherent/class/adherent.class.php");
-if (!empty($conf->multicompany->enabled))
-    dol_include_once("/multicompany/class/actions_multicompany.class.php");
 
 $id = GETPOST('id');
 $action = GETPOST("action");
-$group = GETPOST("group", "alpha");
 $confirm = GETPOST("confirm");
 
 // Define value to know what current user can do on users
@@ -152,7 +132,7 @@ if ((($action == 'add' && $canadduser) || ($action == 'update' && $canedituser))
         $action = "create"; // Go back to create page
     }
 
-    $edituser = new User($db);
+    $edituser = new UserAdmin($db);
 
     if (!empty($conf->file->main_limit_users) && $action == 'add') { // If option to limit users is set
         $nb = $edituser->getNbOfUsers("active", 1);
@@ -166,12 +146,10 @@ if ((($action == 'add' && $canadduser) || ($action == 'update' && $canedituser))
         $edituser->Lastname = $_POST["nom"];
         $edituser->Firstname = $_POST["prenom"];
         $edituser->name = $_POST["login"];
-        $edituser->Administrator = (bool) $_POST["admin"];
         $edituser->PhonePro = $_POST["PhonePro"];
         $edituser->Fax = $_POST["Fax"];
         $edituser->PhoneMobile = $_POST["user_mobile"];
         $edituser->EMail = $_POST["EMail"];
-        $edituser->Signature = $_POST["signature"];
         $edituser->pass = $_POST["password"];
         $edituser->entity = $_POST["default_entity"];
 
@@ -214,28 +192,6 @@ if ((($action == 'add' && $canadduser) || ($action == 'update' && $canedituser))
     }
 }
 
-// Action ajout groupe utilisateur
-if (($action == 'addgroup' || $action == 'removegroup') && $caneditfield) {
-    if ($group) {
-        $edituser = new User($db);
-        $edituser->fetch($id);
-
-        if ($action == 'addgroup') {
-            $edituser->addRoleToUser($edituser->login, $group);
-        }
-        if ($action == 'removegroup') {
-            $edituser->removeRoleFromUser($edituser->login, $group);
-        }
-
-        if ($result > 0) {
-            header("Location: fiche.php?id=" . $id);
-            exit;
-        } else {
-            $message.=$edituser->error;
-        }
-    }
-}
-
 // Change password with a new generated one
 if ((($action == 'confirm_password' && $confirm == 'yes')
         || ($action == 'confirm_passwordsend' && $confirm == 'yes')) && $caneditpassword) {
@@ -262,54 +218,6 @@ if ((($action == 'confirm_password' && $confirm == 'yes')
     }
 }
 
-// Action initialisation donnees depuis record LDAP
-if ($action == 'adduserldap') {
-    $selecteduser = $_POST['users'];
-
-    $required_fields = array(
-        $conf->global->LDAP_FIELD_NAME,
-        $conf->global->LDAP_FIELD_FIRSTNAME,
-        $conf->global->LDAP_FIELD_LOGIN,
-        $conf->global->LDAP_FIELD_LOGIN_SAMBA,
-        $conf->global->LDAP_FIELD_PASSWORD,
-        $conf->global->LDAP_FIELD_PASSWORD_CRYPTED,
-        $conf->global->LDAP_FIELD_PHONE,
-        $conf->global->LDAP_FIELD_FAX,
-        $conf->global->LDAP_FIELD_MOBILE,
-        $conf->global->LDAP_FIELD_MAIL,
-        $conf->global->LDAP_FIELD_SID);
-
-    $ldap = new Ldap();
-    $result = $ldap->connect_bind();
-    if ($result >= 0) {
-        // Remove from required_fields all entries not configured in LDAP (empty) and duplicated
-        $required_fields = array_unique(array_values(array_filter($required_fields, "dol_validElement")));
-
-        $ldapusers = $ldap->getRecords($selecteduser, $conf->global->LDAP_USER_DN, $conf->global->LDAP_KEY_USERS, $required_fields);
-        //print_r($ldapusers);
-
-        if (is_array($ldapusers)) {
-            foreach ($ldapusers as $key => $attribute) {
-                $ldap_nom = $attribute[$conf->global->LDAP_FIELD_NAME];
-                $ldap_prenom = $attribute[$conf->global->LDAP_FIELD_FIRSTNAME];
-                $ldap_login = $attribute[$conf->global->LDAP_FIELD_LOGIN];
-                $ldap_loginsmb = $attribute[$conf->global->LDAP_FIELD_LOGIN_SAMBA];
-                $ldap_pass = $attribute[$conf->global->LDAP_FIELD_PASSWORD];
-                $ldap_pass_crypted = $attribute[$conf->global->LDAP_FIELD_PASSWORD_CRYPTED];
-                $ldap_phone = $attribute[$conf->global->LDAP_FIELD_PHONE];
-                $ldap_fax = $attribute[$conf->global->LDAP_FIELD_FAX];
-                $ldap_mobile = $attribute[$conf->global->LDAP_FIELD_MOBILE];
-                $ldap_mail = $attribute[$conf->global->LDAP_FIELD_MAIL];
-                $ldap_sid = $attribute[$conf->global->LDAP_FIELD_SID];
-            }
-        }
-    } else {
-        $message = '<div class="error">' . $ldap->error . '</div>';
-    }
-}
-
-
-
 /*
  * View
  */
@@ -332,72 +240,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
     print "<br>";
     print "<br>";
 
-    if ($conf->ldap->enabled && $conf->global->LDAP_SYNCHRO_ACTIVE == 'ldap2dolibarr') {
-        /*
-         * Affiche formulaire d'ajout d'un compte depuis LDAP
-         * si on est en synchro LDAP vers Dolibarr
-         */
-
-        $ldap = new Ldap();
-        $result = $ldap->connect_bind();
-        if ($result >= 0) {
-            $required_fields = array($conf->global->LDAP_KEY_USERS,
-                $conf->global->LDAP_FIELD_FULLNAME,
-                $conf->global->LDAP_FIELD_NAME,
-                $conf->global->LDAP_FIELD_FIRSTNAME,
-                $conf->global->LDAP_FIELD_LOGIN,
-                $conf->global->LDAP_FIELD_LOGIN_SAMBA);
-
-            // Remove from required_fields all entries not configured in LDAP (empty) and duplicated
-            $required_fields = array_unique(array_values(array_filter($required_fields, "dol_validElement")));
-
-            // Get from LDAP database an array of results
-            $ldapusers = $ldap->getRecords('*', $conf->global->LDAP_USER_DN, $conf->global->LDAP_KEY_USERS, $required_fields, 1);
-            if (is_array($ldapusers)) {
-                $liste = array();
-                foreach ($ldapusers as $key => $ldapuser) {
-                    // Define the label string for this user
-                    $label = '';
-                    foreach ($required_fields as $value) {
-                        if ($value) {
-                            $label.=$value . "=" . $ldapuser[$value] . " ";
-                        }
-                    }
-                    $liste[$key] = $label;
-                }
-            } else {
-                $message = '<div class="error">' . $ldap->error . '</div>';
-            }
-        } else {
-            $message = '<div class="error">' . $ldap->error . '</div>';
-        }
-    }
-
     dol_htmloutput_errors($message);
-
-    if ($conf->ldap->enabled && $conf->global->LDAP_SYNCHRO_ACTIVE == 'ldap2dolibarr') {
-        // Si la liste des users est rempli, on affiche la liste deroulante
-        if (is_array($liste)) {
-            print "\n\n<!-- Form liste LDAP debut -->\n";
-
-            print '<form name="add_user_ldap" action="' . $_SERVER["PHP_SELF"] . '" method="post">';
-            print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
-            print '<table width="100%" class="border"><tr>';
-            print '<td width="160">';
-            print $langs->trans("LDAPUsers");
-            print '</td>';
-            print '<td>';
-            print '<input type="hidden" name="action" value="adduserldap">';
-            print $form->selectarray('users', $liste, '', 1);
-            print '</td><td align="center">';
-            print '<input type="submit" class="button" value="' . $langs->trans('Get') . '">';
-            print '</td></tr></table>';
-            print '</form>';
-
-            print "\n<!-- Form liste LDAP fin -->\n\n";
-            print '<br>';
-        }
-    }
 
     print '<form action="' . $_SERVER["PHP_SELF"] . '" method="post" name="createuser">';
     print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
@@ -475,29 +318,29 @@ if (($action == 'create') || ($action == 'adduserldap')) {
         print '<td>';
         print $form->selectyesno('admin', $_POST["admin"], 1);
         ?><script type="text/javascript">
-            $(function() {
-                $("select[name=admin]").change(function() {
-                    if ( $(this).val() == 0 ) {
-                        $("input[name=superadmin]")
-                        .attr("disabled", true)
-                        .attr("checked", false);
-                        $("select[name=entity]")
-                        .attr("disabled", false);
-                    } else {
-                        $("input[name=superadmin]")
-                        .attr("disabled", false);
-                    }
-                });
-                $("input[name=superadmin]").change(function() {
-                    if ( $(this).attr("checked") == "checked" ) {
-                        $("select[name=entity]")
-                        .attr("disabled", true);
-                    } else {
-                        $("select[name=entity]")
-                        .attr("disabled", false);
-                    }
-                });
-            });
+                    $(function() {
+                        $("select[name=admin]").change(function() {
+                            if ( $(this).val() == 0 ) {
+                                $("input[name=superadmin]")
+                                .attr("disabled", true)
+                                .attr("checked", false);
+                                $("select[name=entity]")
+                                .attr("disabled", false);
+                            } else {
+                                $("input[name=superadmin]")
+                                .attr("disabled", false);
+                            }
+                        });
+                        $("input[name=superadmin]").change(function() {
+                            if ( $(this).attr("checked") == "checked" ) {
+                                $("select[name=entity]")
+                                .attr("disabled", true);
+                            } else {
+                                $("select[name=entity]")
+                                .attr("disabled", false);
+                            }
+                        });
+                    });
         </script><?php
         $checked = ($_POST["superadmin"] ? ' checked' : '');
         $disabled = ($_POST["superadmin"] ? '' : ' disabled');
@@ -555,26 +398,6 @@ if (($action == 'create') || ($action == 'adduserldap')) {
     }
     print '</td></tr>';
 
-    // Signature
-    print '<tr><td valign="top">' . $langs->trans("Signature") . '</td>';
-    print '<td>';
-    print '<textarea rows="' . ROWS_5 . '" cols="90" name="signature">' . $_POST["signature"] . '</textarea>';
-    print '</td></tr>';
-
-    // Autres caracteristiques issus des autres modules
-    // Module Webcalendar
-    if ($conf->webcalendar->enabled) {
-        print "<tr>" . '<td valign="top">' . $langs->trans("LoginWebcal") . '</td>';
-        print '<td><input size="30" type="text" name="webcal_login" value="' . $_POST["webcal_login"] . '"></td></tr>';
-    }
-
-    // Module Phenix
-    if ($conf->phenix->enabled) {
-        print "<tr>" . '<td valign="top">' . $langs->trans("LoginPenix") . '</td>';
-        print '<td><input size="30" type="text" name="phenix_login" value="' . $_POST["phenix_login"] . '"></td></tr>';
-        print "<tr>" . '<td valign="top">' . $langs->trans("PassPenix") . '</td>';
-        print '<td><input size="30" type="text" name="phenix_pass" value="' . $_POST["phenix_pass"] . '"></td></tr>';
-    }
     print "</table>\n";
 
     print '<center><br><input class="button" value="' . $langs->trans("CreateUser") . '" name="create" type="submit"></center>';
@@ -582,18 +405,14 @@ if (($action == 'create') || ($action == 'adduserldap')) {
     print "</form>";
     print "</div>";
 } else {
-    /*     * ************************************************************************* */
-    /*                                                                            */
-    /* Visu et edition                                                            */
-    /*                                                                            */
-    /*     * ************************************************************************* */
-
+    /**
+     *
+     * Visu et edition
+     *
+     * */
     if ($id) {
-        $fuser = new User($db);
+        $fuser = new UserAdmin($db);
         $fuser->fetch($id);
-
-        // Show tabs
-        $head = user_prepare_head($fuser);
 
         $title = $langs->trans("User");
 
@@ -666,14 +485,6 @@ if (($action == 'create') || ($action == 'adduserldap')) {
             print '</tr>' . "\n";
 
             $rowspan = 14;
-            if ($conf->societe->enabled)
-                $rowspan++;
-            if ($conf->adherent->enabled)
-                $rowspan++;
-            if ($conf->webcalendar->enabled)
-                $rowspan++;
-            if ($conf->phenix->enabled)
-                $rowspan+=2;
 
             // Lastname
             print '<tr><td valign="top">' . $langs->trans("Lastname") . '</td>';
@@ -793,66 +604,6 @@ if (($action == 'create') || ($action == 'adduserldap')) {
                 print '<td>' . $fuser->openid . '</td>';
                 print "</tr>\n";
             }
-            // Autres caracteristiques issus des autres modules
-            // Module Webcalendar
-            if ($conf->webcalendar->enabled) {
-                $langs->load("other");
-                print '<tr><td valign="top">' . $langs->trans("LoginWebcal") . '</td>';
-                print '<td>' . $fuser->webcal_login . '&nbsp;</td>';
-                print '</tr>' . "\n";
-            }
-
-            // Module Phenix
-            if ($conf->phenix->enabled) {
-                $langs->load("other");
-                print '<tr><td valign="top">' . $langs->trans("LoginPhenix") . '</td>';
-                print '<td>' . $fuser->phenix_login . '&nbsp;</td>';
-                print "</tr>\n";
-                print '<tr><td valign="top">' . $langs->trans("PassPhenix") . '</td>';
-                print '<td>' . preg_replace('/./i', '*', $fuser->phenix_pass_crypted) . '&nbsp;</td>';
-                print '</tr>' . "\n";
-            }
-
-            // Company / Contact
-            if ($conf->societe->enabled) {
-                print '<tr><td valign="top">' . $langs->trans("LinkToCompanyContact") . '</td>';
-                print '<td>';
-                if ($fuser->societe_id > 0) {
-                    $societe = new Societe($db);
-                    $societe->fetch($fuser->societe_id);
-                    print $societe->getNomUrl(1, '');
-                } else {
-                    print $langs->trans("ThisUserIsNot");
-                }
-                if ($fuser->contact_id) {
-                    $contact = new Contact($db);
-                    $contact->fetch($fuser->contact_id);
-                    if ($fuser->societe_id > 0)
-                        print ' / ';
-                    else
-                        print '<br>';
-                    print '<a href="' . DOL_URL_ROOT . '/contact/fiche.php?id=' . $fuser->contact_id . '">' . img_object($langs->trans("ShowContact"), 'contact') . ' ' . dol_trunc($contact->getFullName($langs), 32) . '</a>';
-                }
-                print '</td>';
-                print '</tr>' . "\n";
-            }
-
-            // Module Adherent
-            if ($conf->adherent->enabled) {
-                $langs->load("members");
-                print '<tr><td valign="top">' . $langs->trans("LinkedToDolibarrMember") . '</td>';
-                print '<td>';
-                if ($fuser->fk_member) {
-                    $adh = new Adherent($db);
-                    $adh->fetch($fuser->fk_member);
-                    $adh->ref = $adh->getFullname($langs); // Force to show login instead of id
-                    print $adh->getNomUrl(1);
-                } else {
-                    print $langs->trans("UserNotLinkedToMember");
-                }
-                print '</td>';
-                print '</tr>' . "\n";
-            }
 
             print "</table>\n";
 
@@ -908,94 +659,6 @@ if (($action == 'create') || ($action == 'adduserldap')) {
             print '</div>';
 
             print end_box();
-
-            /*
-             * Liste des groupes dans lequel est l'utilisateur
-             */
-
-            if ($canreadgroup) {
-
-                print start_box($langs->trans("ListOfGroups"), "twelve", "16-Users-2.png", false);
-
-                // On selectionne les users qui ne sont pas deja dans le groupe
-                $exclude = array();
-
-                if (!empty($fuser->roles)) {
-                    foreach ($fuser->roles as $useringroup) {
-                        $exclude[] = $useringroup;
-                    }
-                }
-
-
-                print '<form action="' . $_SERVER['PHP_SELF'] . '?id=' . $fuser->id . '" method="POST">' . "\n";
-                print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
-                print '<input type="hidden" name="action" value="addgroup">';
-                print '<table class="noborder" width="100%">' . "\n";
-                print '<tr class="liste_titre"><td class="liste_titre" width="25%">' . $langs->trans("NonAffectedUsers") . '</td>' . "\n";
-                print '<td>';
-                print $form->select_dolgroups('', 'group', 1, $exclude, 0, '', '');
-                print '</td>';
-                //print '<td valign="top">' . $langs->trans("Administrator") . '</td>';
-                //print "<td>" . $form->selectyesno('admin', 0, 1);
-                //print "</td>\n";
-                print '<td><input type="submit" class="tiny nice button" value="' . $langs->trans("Add") . '">';
-                print '</td></tr>' . "\n";
-                print '</table></form>' . "\n";
-                print '<br>';
-
-
-                /*
-                 * Groupes affectes
-                 */
-                print '<table class="display" id="group">';
-                print '<thead>';
-                print '<tr>';
-                print '<th>' . $langs->trans("Group") . '</th>';
-                $obj->aoColumns[$i]->mDataProp = "";
-                $i++;
-                print '<th></th>';
-                $obj->aoColumns[$i]->mDataProp = "";
-                $obj->aoColumns[$i]->sClass = "fright content_actions";
-                $i++;
-                print "</tr>\n";
-                print '</thead>';
-
-                print '<tbody>';
-                if (!empty($fuser->roles)) {
-                    $var = True;
-
-                    foreach ($fuser->roles as $aRow) {
-                        $var = !$var;
-
-                        $useringroup = new UserGroup($db);
-                        $useringroup->load("group:" . $aRow);
-
-                        print "<tr $bc[$var]>";
-                        print '<td>';
-                        print '<a href="' . DOL_URL_ROOT . '/user/group/fiche.php?id=' . $useringroup->id . '">' . img_object($langs->trans("ShowGroup"), "group") . ' ' . $useringroup->name . '</a>';
-                        if ($useringroup->admin)
-                            print img_picto($langs->trans("Administrator"), 'star');
-                        print '</td>';
-                        print '<td>';
-                        if ($user->admin) {
-                            print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $fuser->id . '&amp;action=removegroup&amp;group=' . $useringroup->name . '">';
-                            print img_delete($langs->trans("RemoveFromGroup"));
-                        } else {
-                            print "-";
-                        }
-                        print "</td></tr>\n";
-                    }
-                }
-                print '<tbody>';
-                print "</table>";
-
-                $obj->aaSorting = array(array(0, "asc"));
-                $obj->sDom = 'l<fr>t<\"clear\"rtip>';
-
-                $fuser->datatablesCreate($obj, "group");
-
-                print end_box();
-            }
         }
 
 
@@ -1012,15 +675,6 @@ if (($action == 'create') || ($action == 'adduserldap')) {
 
             $rowspan = 12;
 
-            if ($conf->societe->enabled)
-                $rowspan++;
-            if ($conf->adherent->enabled)
-                $rowspan++;
-            if ($conf->webcalendar->enabled)
-                $rowspan++;
-            if ($conf->phenix->enabled)
-                $rowspan+=2;
-
             print '<tr><td width="25%" valign="top">' . $langs->trans("Ref") . '</td>';
             print '<td colspan="2">';
             print $fuser->id;
@@ -1031,13 +685,9 @@ if (($action == 'create') || ($action == 'adduserldap')) {
             print "<tr>";
             print '<td valign="top" class="fieldrequired">' . $langs->trans("Lastname") . '</td>';
             print '<td>';
-            if ($caneditfield && !$fuser->ldap_sid) {
-                print '<input size="30" type="text" class="flat" name="nom" value="' . $fuser->Lastname . '">';
-            } else {
-                print '<input type="hidden" name="nom" value="' . $fuser->Lastname . '">';
-                print $fuser->nom;
-            }
+            print '<input size="30" type="text" class="flat" name="nom" value="' . $fuser->Lastname . '">';
             print '</td>';
+
             // Photo
             print '<td align="center" valign="middle" width="25%" rowspan="' . $rowspan . '">';
             print $form->showphoto('userphoto', $fuser);
@@ -1058,18 +708,13 @@ if (($action == 'create') || ($action == 'adduserldap')) {
             // Firstname
             print "<tr>" . '<td valign="top">' . $langs->trans("Firstname") . '</td>';
             print '<td>';
-            if ($caneditfield && !$fuser->ldap_sid) {
-                print '<input size="30" type="text" class="flat" name="prenom" value="' . $fuser->Firstname . '">';
-            } else {
-                print '<input type="hidden" name="prenom" value="' . $fuser->Firstname . '">';
-                print $fuser->Firstname;
-            }
+            print '<input size="30" type="text" class="flat" name="prenom" value="' . $fuser->Firstname . '">';
             print '</td></tr>';
 
             // Login
             print "<tr>" . '<td valign="top"><span class="fieldrequired">' . $langs->trans("Login") . '</span></td>';
             print '<td>';
-            if (!$user->name) {
+            if (!$fuser->name) {
                 print '<input size="12" maxlength="24" type="text" class="flat" name="login" value="' . $fuser->name . '">';
             } else {
                 print '<input type="hidden" name="login" value="' . $fuser->name . '">';
@@ -1178,86 +823,11 @@ if (($action == 'create') || ($action == 'adduserldap')) {
             }
             print '</td></tr>';
 
-            // Signature
-            print "<tr>" . '<td valign="top">' . $langs->trans("Signature") . '</td>';
-            print '<td>';
-            print '<textarea name="Signature" rows="5" cols="90">' . dol_htmlentitiesbr_decode($fuser->Signature) . '</textarea>';
-            print '</td></tr>';
-
             // Statut
             print '<tr><td valign="top">' . $langs->trans("Status") . '</td>';
             print '<td>';
             print $fuser->getLibStatus();
             print '</td></tr>';
-
-            // Autres caracteristiques issus des autres modules
-            // Module Webcalendar
-            if ($conf->webcalendar->enabled) {
-                $langs->load("other");
-                print "<tr>" . '<td valign="top">' . $langs->trans("LoginWebcal") . '</td>';
-                print '<td>';
-                if ($caneditfield)
-                    print '<input size="30" type="text" class="flat" name="webcal_login" value="' . $fuser->webcal_login . '">';
-                else
-                    print $fuser->webcal_login;
-                print '</td></tr>';
-            }
-
-            // Module Phenix
-            if ($conf->phenix->enabled) {
-                $langs->load("other");
-                print "<tr>" . '<td valign="top">' . $langs->trans("LoginPhenix") . '</td>';
-                print '<td>';
-                if ($caneditfield)
-                    print '<input size="30" type="text" class="flat" name="phenix_login" value="' . $fuser->phenix_login . '">';
-                else
-                    print $fuser->phenix_login;
-                print '</td></tr>';
-                print "<tr>" . '<td valign="top">' . $langs->trans("PassPhenix") . '</td>';
-                print '<td>';
-                if ($caneditfield)
-                    print '<input size="30" type="password" class="flat" name="phenix_pass" value="' . $fuser->phenix_pass_crypted . '">';
-                else
-                    print preg_replace('/./i', '*', $fuser->phenix_pass_crypted);
-                print '</td></tr>';
-            }
-
-            // Company / Contact
-            if ($conf->societe->enabled) {
-                print '<tr><td width="25%" valign="top">' . $langs->trans("LinkToCompanyContact") . '</td>';
-                print '<td>';
-                if ($fuser->societe_id > 0) {
-                    $societe = new Societe($db);
-                    $societe->fetch($fuser->societe_id);
-                    print $societe->getNomUrl(1, '');
-                    if ($fuser->contact_id) {
-                        $contact = new Contact($db);
-                        $contact->fetch($fuser->contact_id);
-                        print ' / <a href="' . DOL_URL_ROOT . '/contact/fiche.php?id=' . $fuser->contact_id . '">' . img_object($langs->trans("ShowContact"), 'contact') . ' ' . dol_trunc($contact->getFullName($langs), 32) . '</a>';
-                    }
-                } else {
-                    print $langs->trans("ThisUserIsNot");
-                }
-                print '</td>';
-                print "</tr>\n";
-            }
-
-            // Module Adherent
-            if ($conf->adherent->enabled) {
-                $langs->load("members");
-                print '<tr><td width="25%" valign="top">' . $langs->trans("LinkedToDolibarrMember") . '</td>';
-                print '<td>';
-                if ($fuser->fk_member) {
-                    $adh = new Adherent($db);
-                    $adh->fetch($fuser->fk_member);
-                    $adh->ref = $adh->login; // Force to show login instead of id
-                    print $adh->getNomUrl(1);
-                } else {
-                    print $langs->trans("UserNotLinkedToMember");
-                }
-                print '</td>';
-                print "</tr>\n";
-            }
 
             print '</table>';
 

@@ -3,6 +3,7 @@
 /* Copyright (c) 2005      Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (c) 2005-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (c) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2012      Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -97,9 +98,9 @@ class UserDatabase extends nosqlDocument {
 		}
 
 		$membersAdmin = $this->couchAdmin->getDatabaseAdminUsers();
-		$membersRolesAdmin = $this->couchAdmin->getDatabaseAdminRoles();
+		//$membersRolesAdmin = $this->couchAdmin->getDatabaseAdminRoles();
 
-		$this->membersRoles = array_merge($this->membersRoles, $membersRolesAdmin);
+		//$this->membersRoles = array_merge($this->membersRoles, $membersRolesAdmin);
 
 		foreach ($membersAdmin as $aRow) {
 			$user = $this->couchAdmin->getUser($aRow);
@@ -107,11 +108,11 @@ class UserDatabase extends nosqlDocument {
 			$this->members[] = clone $user;
 		}
 
-		foreach ($membersRolesAdmin as $aRow) {
+		/*foreach ($membersRolesAdmin as $aRow) {
 			$group->Administrator = true;
 			$group->id = $aRow;
 			$this->membersRoles[] = clone $group;
-		}
+		}*/
 
 		$this->id = $this->values->db_name;
 		return 1;

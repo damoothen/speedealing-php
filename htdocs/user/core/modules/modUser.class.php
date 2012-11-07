@@ -2,6 +2,7 @@
 /* Copyright (C) 2005      Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2005-2009 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2010 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2012      Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -470,9 +471,19 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->title = "Groups";
 		$this->menus[$r]->fk_menu = "menu:parameters";
 		$r++;
+                
+                $this->menus[$r]->_id = "menu:directoryusers";
+                $this->menus[$r]->position = 5;
+		$this->menus[$r]->langs = "users";
+                $this->menus[$r]->url = "/useradmin/index.php";
+		$this->menus[$r]->perms = '$user->superadmin';
+		$this->menus[$r]->usertype = 2;
+		$this->menus[$r]->title = "Directory";
+		$this->menus[$r]->fk_menu = "menu:parameters";
+		$r++;
 
 		$this->menus[$r]->_id = "menu:databases";
-		$this->menus[$r]->position = 5;
+		$this->menus[$r]->position = 6;
 		$this->menus[$r]->langs = "users";
                 $this->menus[$r]->url = "/user/database/index.php";
 		$this->menus[$r]->perms = '($user->rights->user->user->lire) || $user->admin';

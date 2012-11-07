@@ -55,6 +55,7 @@ if ($_GET['json'] == "list") {
     }
 
     header('Content-type: application/json');
+    //echo $_GET["callback"] . '(' . json_encode($output) . ');';
     echo json_encode($output);
     exit;
 }

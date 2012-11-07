@@ -30,7 +30,7 @@ abstract class nosqlDocument extends CommonObject {
     public $fk_extrafields;
     public $no_save = array("no_save", "global", "token", "id", "fk_extrafields", "couchdb", "db",
         "error", "errors", "childtables", "table_element", "element", "fk_element", "ismultientitymanaged",
-        "dbversion", "oldcopy", "state", "country", "status", "statut", "import_key");
+        "dbversion", "oldcopy", "state", "country", "status", "statut", "import_key", "couchAdmin");
 
     /**
      * 	class constructor
@@ -126,7 +126,10 @@ abstract class nosqlDocument extends CommonObject {
         $params = new stdClass();
 
         $params->field = $key;
-        $params->value = $value;
+        if (is_numeric($value))
+            $params->value = (int) $value;
+        else
+            $params->value = $value;
 
         return $this->couchdb->updateDoc(get_class($this), "in-place", $params, $this->id);
     }
@@ -182,7 +185,7 @@ abstract class nosqlDocument extends CommonObject {
         global $conf;
 
         foreach (get_object_vars($this) as $key => $aRow)
-            if (!empty($aRow) && !in_array($key, $this->no_save))
+            if (!in_array($key, $this->no_save))
                 $values->$key = $aRow;
 
         if (empty($this->_id) && !empty($this->id))
@@ -516,7 +519,7 @@ abstract class nosqlDocument extends CommonObject {
                         },
                         //$obj->oColVis->bRestore = true;
                         //$obj->oColVis->sAlign = 'left';
-                                                                                                                                                                                                                                                                                                                                        																																																																																								            
+                                                                                                                                                                                                                                                                                                                                                																																																																																								            
                         // Avec export Excel
         <?php if (!empty($obj->sDom)) : ?>
                             //"sDom": "Cl<fr>t<\"clear\"rtip>",
@@ -591,7 +594,7 @@ abstract class nosqlDocument extends CommonObject {
                                                 "tooltip": tooltipInPlace,
                                                 "indicator" : indicatorInPlace,
                                                 "placeholder" : ""
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                																																																																																																																																																																																                
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                																																																																																																																																																																																                
                                             } );
                                             $("td.dol_select", this.fnGetNodes()).editable( urlSaveInPlace, {
                                                 "callback": function( sValue, y ) {
@@ -614,7 +617,7 @@ abstract class nosqlDocument extends CommonObject {
                                                 "tooltip": tooltipInPlace,
                                                 "indicator" : indicatorInPlace,
                                                 "placeholder" : ""
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                																																																																																																																																																																																                
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                																																																																																																																																																																																                
                                             } );
                                         }
             <?php endif; ?>
@@ -642,7 +645,7 @@ abstract class nosqlDocument extends CommonObject {
                         } );
         <?php endif; ?>
                     // Select_all
-                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                            
                     $('.chSel_all').click(function () {
                         $(this).closest('table').find('input[name=row_sel]').attr('checked', this.checked);
                     });
@@ -1294,9 +1297,9 @@ abstract class nosqlDocument extends CommonObject {
         $value = $this->$key;
         if (empty($this->$key))
             return null;
-        if(is_object($this->$key) && empty($this->$key->id))
+        if (is_object($this->$key) && empty($this->$key->id))
             return null;
-        
+
         if (isset($aRow->dict)) {
             require_once(DOL_DOCUMENT_ROOT . "/admin/class/dict.class.php");
             // load from dictionnary

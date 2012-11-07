@@ -227,6 +227,9 @@ if (!defined('NOREQUIREAJAX') && $conf->use_javascript_ajax)
 
 
 
+
+
+
     
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
@@ -414,8 +417,25 @@ if (!defined('NOLOGIN')) {
             exit;
         }
 
+
+        require_once(DOL_DOCUMENT_ROOT . "/useradmin/class/useradmin.class.php");
+
+        $user_config = new UserAdmin($db);
+        $user_config->fetch($user->name); // Load for default entity
+        //$user_config->set("LastConnection", $user_config->NewConnection);
+        //$user_config->set("NewConnection", dol_now());
+
+        //print_r($user_config->entity);
+
+        $couch->useDatabase($user_config->entity);
+        $conf->Couchdb->name = $user_config->entity;
+        dol_setcache("dol_entity", $user_config->entity);
+        unset($user_config);
+
         $user = new User($db);
-        $resultFetchUser = $user->fetch("org.couchdb.user:" . $login);
+        $resultFetchUser = $user->fetch("user:" . $login);
+        //$user->update_last_login_date();
+
         /*
           if ($resultFetchUser <= 0)
           {
@@ -499,7 +519,7 @@ if (!defined('NOLOGIN')) {
         $error = 0;
 
         // New session for this login
-        $_SESSION["dol_login"] = $user->values->name;
+        $_SESSION["dol_login"] = $user->name;
         $_SESSION["dol_authmode"] = isset($dol_authmode) ? $dol_authmode : '';
         $_SESSION["dol_tz"] = isset($dol_tz) ? $dol_tz : '';
         $_SESSION["dol_tz_string"] = isset($dol_tz_string) ? $dol_tz_string : '';
@@ -512,10 +532,6 @@ if (!defined('NOLOGIN')) {
         $_SESSION["dol_company"] = $conf->global->MAIN_INFO_SOCIETE_NOM;
         $_SESSION["dol_entity"] = $conf->entity;
         dol_syslog("This is a new started user session. _SESSION['dol_login']=" . $_SESSION["dol_login"] . ' Session id=' . session_id());
-
-        $db->begin();
-
-        $user->update_last_login_date();
 
         // Call triggers
         include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
@@ -607,11 +623,11 @@ if (GETPOST('theme')) {
 if (!defined('NOLOGIN')) {
     // If the login is not recovered, it is identified with an account that does not exist.
     // Hacking attempt?
-    if (!$user->values->name)
+    if (!$user->name)
         accessforbidden();
 
     // Check if user is active
-    if ($user->values->Status != "ENABLE") {
+    if ($user->Status != "ENABLE") {
         // If not active, we refuse the user
         $langs->load("other");
         dol_syslog("Authentification ko as login is disabled");
@@ -659,17 +675,19 @@ if (empty($conf->browser->firefox)) {
 
 $heightforframes = 52;
 
-// Switch to another entity
+// If URL Rewriting for multicompany
 if ($conf->urlrewrite) {
     if (!GETPOST("db"))
         $tmp_db = $conf->Couchdb->name; // First connecte using $user->entity for default
     else
         $tmp_db = GETPOST("db");
 
-    if (dol_getcache('dol_db') != $tmp_db || strpos(DOL_URL_ROOT,$tmp_db)==0) {
+    $_SERVER['PHP_SELF'] = '/' . $conf->Couchdb->name . $_SERVER['PHP_SELF']; // Add Entity in the url
+    // Switch to another entity
+    if (dol_getcache('dol_db') != $tmp_db || strpos(DOL_URL_ROOT, $tmp_db) == 0) {
         dol_flushcache(); // reset cache
         dol_setcache("dol_db", $tmp_db);
-        
+
         Header("Location: /" . $tmp_db . '/');
         unset($tmp_db);
         exit;
@@ -1274,9 +1292,9 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                     <div class="columns">
                         <div class="five-columns">
                             <div class="ego-icon big">
-    <?php if (!empty($user->values->Photo)) : ?>
+    <?php if (!empty($user->Photo)) : ?>
                                     <img alt="User name" class="ego-icon-inner"
-                                         src="<?php echo $user->getFile($user->values->Photo); ?>">
+                                         src="<?php echo $user->getFile($user->Photo); ?>">
     <?php else : ?>
                                     <img src="theme/symeos/img/user.png"
                                          alt="User name" class="ego-icon-inner">
@@ -1286,8 +1304,8 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                             </div>
                         </div>
                         <div class="seven-columns">
-                            Hello <span class="name"><?php echo $user->values->Firstname; ?>
-                                <b><?php echo $user->values->Lastname; ?> </b> </span>
+                            Hello <span class="name"><?php echo $user->Firstname; ?>
+                                <b><?php echo $user->Lastname; ?> </b> </span>
                         </div>
                     </div>
                 </div>
@@ -1637,7 +1655,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
         <script src="theme/symeos/js/s_scripts.js"></script>
         <script src="theme/symeos/js/symeos.js"></script>
 
-                                                        <!--<script src="theme/developr/html/js/developr.input.js"></script>-->
+                                                                                <!--<script src="theme/developr/html/js/developr.input.js"></script>-->
         <script src="theme/symeos/js/developr.message.js"></script>
         <script src="theme/symeos/js/developr.modal.js"></script>
         <script src="theme/symeos/js/developr.notify.js"></script>
@@ -1659,7 +1677,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
             // Favicon count
             Tinycon.setBubble(2);
-                                                                                                                                					
+                                                                                                                                                        					
         </script>
 
         <script>

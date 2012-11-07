@@ -39,12 +39,8 @@
 if (!defined('NOREQUIREDB')) {
     // Here we read database (llx_const table) and define $conf->global->XXX var.
     // if no db specified, using default database form user profile (entity)
-    if ($conf->Couchdb->name == "_users") {
-        $couch->useDatabase($user->values->entity);
-        $conf->Couchdb->name = $user->values->entity;
-        dol_setcache("dol_entity", $user->values->entity);
-    }
-    
+    // Just after login : we choose the default entity
+
     $conf->useDatabase();
     $conf->setValues();
 }

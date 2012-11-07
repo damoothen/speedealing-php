@@ -1,8 +1,7 @@
 <?php
 
-/* Copyright (C) 2002-2005 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2011 Regis Houssin        <regis@dolibarr.fr>
+/* Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
+ * 
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,14 +17,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- *      \file       htdocs/user/index.php
- * 		\ingroup	core
- *      \brief      Page of users
- */
 require("../main.inc.php");
+require_once(DOL_DOCUMENT_ROOT . "/useradmin/class/useradmin.class.php");
 
-if (!$user->rights->user->user->lire && !$user->admin)
+if (!$user->superadmin)
     accessforbidden();
 
 $langs->load("users");
@@ -36,7 +31,7 @@ $socid = 0;
 if ($user->societe_id > 0)
     $socid = $user->societe_id;
 
-$object = new User($db);
+$object = new UserAdmin($db);
 $companystatic = new Societe($db);
 
 if ($_GET['json'] == "list") {
@@ -48,25 +43,25 @@ if ($_GET['json'] == "list") {
     );
 
     try {
-        $result = $object->getView('list');
-        $admins = $object->getDatabaseAdminUsers();
+        $result = $object->getAllUsers(true);
+        $admins = $object->getUserAdmins();
     } catch (Exception $exc) {
         print $exc->getMessage();
     }
 
-    //print_r ($admins);
+    //print_r ($result);
 
     $iTotal = count($result);
     $output["iTotalRecords"] = $iTotal;
     $output["iTotalDisplayRecords"] = $iTotal;
     $i = 0;
-    foreach ($result->rows as $aRow) {
-        $name = substr($aRow->value->id, 5);
-        if (in_array($name, $admins))
-            $aRow->value->admin = true;
+    foreach ($result as $aRow) {
+        $name = substr($aRow->doc->_id, 17);
+        if (isset($admins->$name))
+            $aRow->doc->admin = true;
         else
-            $aRow->value->admin = false;
-        $output["aaData"][] = $aRow->value;
+            $aRow->doc->admin = false;
+        $output["aaData"][] = $aRow->doc;
     }
 
     header('Content-type: application/json');
@@ -94,7 +89,7 @@ print start_box($title, "twelve", "16-User.png", false);
 
 print '<p class="button-height right">';
 print '<span class="button-group">';
-print '<a class="button icon-star" href="user/fiche.php?action=create">' . $langs->trans("CreateUser") . '</a>';
+print '<a class="button icon-star" href="useradmin/fiche.php?action=create">' . $langs->trans("CreateUser") . '</a>';
 print "</span>";
 print "</p>";
 
@@ -154,6 +149,14 @@ print'</th>';
 $obj->aoColumns[$i]->mDataProp = "Firstname";
 $obj->aoColumns[$i]->sDefaultContent = "";
 $obj->aoColumns[$i]->sClass = "";
+$i++;
+print'<th class="essential">';
+print $langs->trans('Database');
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "entityList";
+$obj->aoColumns[$i]->sDefaultContent = "";
+$obj->aoColumns[$i]->sClass = "center";
+$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("entityList", "tag");
 $i++;
 print'<th class="essential">';
 print $langs->trans('LastConnexion');

@@ -33,7 +33,6 @@ $id = GETPOST('id', 'alpha');
 $action = GETPOST('action', 'alpha');
 $confirm = GETPOST('confirm', 'alpha');
 $userid = GETPOST('user', 'alpha');
-$groupid = GETPOST('group', 'alpha');
 
 // Security check
 $result = restrictedArea($user, 'user', $id, 'usergroup&usergroup', 'user');
@@ -69,7 +68,7 @@ if ($action == 'add') {
     }
 }
 
-// Add/Remove user into group
+// Add/Remove user into database
 if ($action == 'adduser' || $action == 'removeuser') {
     if ($caneditperms) {
         if ($userid) {
@@ -266,7 +265,7 @@ if ($action == 'create') {
          */
         if ($action == 'edit' && $caneditperms) {
             print start_box($title, "twelve", "16-Cloud.png", false);
-            
+
             print '<form action="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '" method="post" name="updategroup" enctype="multipart/form-data">';
             print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
             print '<input type="hidden" name="action" value="update">';
