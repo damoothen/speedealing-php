@@ -313,7 +313,7 @@ if (!defined('NOLOGIN')) {
     $test = true;
     $user = new User($db);
     //print $user->fetch();exit;
-    if (!isset($_COOKIE["AuthSession"])) {
+    if (empty($_COOKIE["AuthSession"])) {
         // It is not already authenticated and it requests the login / password
         include_once(DOL_DOCUMENT_ROOT . '/core/lib/security2.lib.php');
 

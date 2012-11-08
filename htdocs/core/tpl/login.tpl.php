@@ -232,6 +232,67 @@ header("Content-type: text/html; charset=" . $conf->file->character_set_client);
 
             // If layout is centered
             centered;
+            
+            /*
+             * AJAX login
+             * This function will handle the login process through AJAX
+             */
+            formLogin.submit(function(event)
+            {
+                // Values
+                var login = $.trim($('#login').val()),
+                pass = $.trim($('#pass').val());
+
+                // Check inputs
+                if (login.length === 0)
+                {
+                    // Display message
+                    displayError('Please fill in your login');
+                    return false;
+                }
+                else if (pass.length === 0)
+                {
+                    // Remove empty login message if displayed
+                    formLogin.clearMessages('Please fill in your login');
+
+                    // Display message
+                    displayError('Please fill in your password');
+                    return false;
+                }
+                else
+                {
+                    // Remove previous messages
+                    formLogin.clearMessages();
+
+                    // Show progress
+                    displayLoading('Checking credentials...');
+                    event.preventDefault();
+
+                    // Stop normal behavior
+                    event.preventDefault();
+                    $.ajax({
+                        type: "POST", url: this.urlPrefix + "/db/_session", dataType: "json",
+                        data: {name: login, password: pass},
+                        beforeSend: function(xhr) {
+                            xhr.setRequestHeader('Accept', 'application/json');
+                        },
+                        complete: function(req) {
+                            var resp = $.parseJSON(req.responseText);
+                            if (req.status == 200) {
+                                document.location.href = 'index.php';
+                            } else {
+                                formLogin.clearMessages();
+                                displayError('Invalid user/password, please try again');
+                            }
+                        },
+                        error: function()
+                        {
+                            formLogin.clearMessages();
+                            displayError('Error while contacting server, please try again');
+                        }
+                    });
+                }
+            });
 			
             // Handle resizing (mostly for debugging)
             function handleLoginResize()
@@ -360,12 +421,15 @@ header("Content-type: text/html; charset=" . $conf->file->character_set_client);
                     $(element).closest('.elVal').removeClass("form-field error");
                 },
                 rules: {
-                    username: "required",
+                    username: { 
+                        required:true,
+                        email: true
+                    },
                     password: "required"
                 },
                 messages: {
-                    username: "Please enter your username (type anything)",
-                    password: "Please enter a password (type anything)"
+                    username: "Please enter your username (type a mail)",
+                    password: "Please enter a password"
                 },
                 errorPlacement: function(error, element) {
                     error.appendTo( element.closest(".elVal") );
