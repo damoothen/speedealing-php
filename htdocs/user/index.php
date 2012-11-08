@@ -62,7 +62,7 @@ if ($_GET['json'] == "list") {
     $output["iTotalDisplayRecords"] = $iTotal;
     $i = 0;
     foreach ($result->rows as $aRow) {
-        $name = substr($aRow->value->id, 5);
+        $name = $aRow->value->email;
         if (in_array($name, $admins)) // Is Localadministrator
             $aRow->value->admin = true;
         else

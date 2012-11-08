@@ -65,16 +65,16 @@ class UserAdmin extends nosqlDocument {
      *
      *    @param   DoliDb  $db     Database handler
      */
-
     function __construct($db) {
         $this->db = $db;
 
         parent::__construct($db);
-        
+
         $fk_extrafields = new ExtraFields($db);
         try {
             $this->fk_extrafields = $fk_extrafields->load("extrafields:" . get_class($this), true); // load and cache
         } catch (Exception $e) {
+            
         }
 
         $this->useDatabase("_users");
@@ -109,13 +109,15 @@ class UserAdmin extends nosqlDocument {
         // Clean parametersadmin
         $login = trim($login);
 
-        if (empty($login)) {
+        /*if (empty($login)) {
             //try {
             $login = "org.couchdb.user:" . $this->couchAdmin->getLoginSession();
             //} catch (Exception $e) {
             //    return 0;
             //}
-        }
+        }*/
+        
+        print $login . "<br>";
 
         try {
             $this->load($login);
@@ -530,10 +532,11 @@ class UserAdmin extends nosqlDocument {
 
         dol_syslog(get_class($this) . "::create login=" . $this->name . ", user=" . (is_object($user) ? $user->id : ''), LOG_DEBUG);
 
+
         // Check parameters
-        if (!empty($conf->global->USER_MAIL_REQUIRED) && !isValidEMail($this->EMail)) {
+        if (!isValidEMail($this->name)) {
             $langs->load("errors");
-            $this->error = $langs->trans("ErrorBadEMail", $this->Email);
+            $this->error = $langs->trans("ErrorBadEMail", $this->name);
             return -1;
         }
 
@@ -545,7 +548,7 @@ class UserAdmin extends nosqlDocument {
         try {
             $result = $this->couchAdmin->getUser($this->name);
         } catch (Exception $e) {
-            
+            // User doesn-t exist
         }
 
         if (isset($result->name) && $action == 'add') {
@@ -554,10 +557,11 @@ class UserAdmin extends nosqlDocument {
             return -6;
         } else {
             if ($action == 'add') {
-                $this->Status = "DISABLE";
-
                 try {
-                    $this->couchAdmin->createUser($this->name, $this->pass);
+                    if ($this->admin)
+                        $this->couchAdmin->createAdmin($this->name, $this->pass);
+                    else
+                        $this->couchAdmin->createUser($this->name, $this->pass);
                 } catch (Exception $e) {
                     $this->error = $e->getMessage();
                     dol_syslog(get_class($this) . "::create " . $this->error, LOG_ERR);
@@ -578,6 +582,9 @@ class UserAdmin extends nosqlDocument {
             $this->_id = $user_tmp->_id;
             $this->_rev = $user_tmp->_rev;
             $this->Status = $user_tmp->Status;
+
+            if ($action == 'add')
+                $this->Status = "DISABLE";
 
             $caneditpassword = ((($user->login == $this->name) && $user->rights->user->self->password)
                     || (($user->login != $this->name) && $user->rights->user->user->password)) || $user->admin;

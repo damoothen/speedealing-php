@@ -230,6 +230,7 @@ if (!defined('NOREQUIREAJAX') && $conf->use_javascript_ajax)
 
 
 
+
     
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
@@ -312,7 +313,7 @@ if (!defined('NOLOGIN')) {
     $test = true;
     $user = new User($db);
     //print $user->fetch();exit;
-    if (!isset($_COOKIE["AuthSession"]) || !$user->fetch()) {
+    if (!isset($_COOKIE["AuthSession"])) {
         // It is not already authenticated and it requests the login / password
         include_once(DOL_DOCUMENT_ROOT . '/core/lib/security2.lib.php');
 
@@ -417,17 +418,13 @@ if (!defined('NOLOGIN')) {
             exit;
         }
 
-
         require_once(DOL_DOCUMENT_ROOT . "/useradmin/class/useradmin.class.php");
 
         $user_config = new UserAdmin($db);
         $user_config->fetch($user->name); // Load for default entity
-        
         //$user_config->set("LastConnection", $user_config->NewConnection);
         //$user_config->set("NewConnection", dol_now());
-
         //print_r($user_config->entity);
-
         $couch->useDatabase($user_config->entity);
         $conf->Couchdb->name = $user_config->entity;
         dol_setcache("dol_entity", $user_config->entity);
@@ -1656,7 +1653,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
         <script src="theme/symeos/js/s_scripts.js"></script>
         <script src="theme/symeos/js/symeos.js"></script>
 
-                                                                                <!--<script src="theme/developr/html/js/developr.input.js"></script>-->
+                                                                                        <!--<script src="theme/developr/html/js/developr.input.js"></script>-->
         <script src="theme/symeos/js/developr.message.js"></script>
         <script src="theme/symeos/js/developr.modal.js"></script>
         <script src="theme/symeos/js/developr.notify.js"></script>
@@ -1678,7 +1675,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
             // Favicon count
             Tinycon.setBubble(2);
-                                                                                                                                                        					
+                                                                                                                                                                					
         </script>
 
         <script>

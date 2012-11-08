@@ -129,13 +129,33 @@ class User extends nosqlDocument {
 
         if (empty($login)) {
             //try {
-            $login = "user:" . $this->couchAdmin->getLoginSession();
+            $login = $this->couchAdmin->getLoginSession();
             //} catch (Exception $e) {
             //    return 0;
             //}
         }
 
+        if ($conf->Couchdb->name == '_users') {
+            require_once(DOL_DOCUMENT_ROOT . "/useradmin/class/useradmin.class.php");
+
+            $user_config = new UserAdmin($db);
+            $user_config->fetch("org.couchdb.user:" . $login); // Load for default entity
+            //$user_config->set("LastConnection", $user_config->NewConnection);
+            //$user_config->set("NewConnection", dol_now());
+            //print_r($user_config->entity);
+            //$couch->useDatabase($user_config->entity);
+            $conf->Couchdb->name = $user_config->entity;
+            dol_setcache("dol_entity", $user_config->entity);
+            $this->useDatabase($user_config->entity);
+            unset($user_config);
+        }
+
         try {
+            if (isValidEmail($login)) {
+                $result = $this->getView("login", array("key" => $login));
+                $login = $result->rows[0]->value;
+            }
+
             $this->load($login, true);
         } catch (Exception $e) {
             return 0;
@@ -480,9 +500,8 @@ class User extends nosqlDocument {
         if ($this->Status == $status)
             return 0;
         else {
-            
-            $userid = substr($this->id, 5); // remove "user:"
-            
+            $userid = $this->email;
+
             if ($status == 'ENABLE') {
                 if ($this->admin == true)
                     $this->couchAdmin->addDatabaseAdminUser($userid);
@@ -495,6 +514,7 @@ class User extends nosqlDocument {
             }
 
             $this->set("Status", $status);
+            dol_delcache($this->id);
         }
 
         return 1;
@@ -1469,7 +1489,7 @@ class User extends nosqlDocument {
     function getDatabaseReaderUsers() {
         return $this->couchAdmin->getDatabaseReaderUsers();
     }
-    
+
     function getLibStatus() {
         return $this->LibStatus($this->Status);
     }
@@ -1483,10 +1503,11 @@ class User extends nosqlDocument {
 
         $admins = $this->getDatabaseAdminUsers();
         $enabled = $this->getDatabaseReaderUsers();
-        
-        print_r($enabled);
 
-        $name = substr($this->id, 5); // remove "user:"
+        print_r($enabled);
+        print_r($admins);
+
+        $name = $this->email;
         if (in_array($name, $admins)) // Is Localadministrator
             $this->admin = true;
         else
@@ -1500,7 +1521,7 @@ class User extends nosqlDocument {
             else
                 $status = "DISABLE";
         }
-        
+
         $this->Status = $status;
 
         return parent::LibStatus($status);

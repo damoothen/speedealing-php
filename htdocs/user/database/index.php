@@ -54,7 +54,11 @@ if ($_GET['json'] == "list") {
     foreach ($result as $aRow) {
         if ($aRow[0] != "_") { // Not _users and _replicator
             try {
-                $object->fetch($aRow);
+                try {
+                    $object->fetch($aRow);
+                } catch (Exception $e) {
+                    
+                }
                 $info = $object->values;
                 $secu = $object->couchAdmin->getSecurity();
 

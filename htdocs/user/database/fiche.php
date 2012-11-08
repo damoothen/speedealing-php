@@ -20,6 +20,7 @@
 require("../../main.inc.php");
 require_once(DOL_DOCUMENT_ROOT . "/user/class/userdatabase.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/user/class/usergroup.class.php");
+require_once(DOL_DOCUMENT_ROOT . "/useradmin/class/useradmin.class.php");
 
 // Defini si peux lire/modifier utilisateurs et permisssions
 $canreadperms = ($user->admin );
@@ -73,6 +74,8 @@ if ($action == 'adduser' || $action == 'removeuser') {
     if ($caneditperms) {
         if ($userid) {
             $object->fetch($id);
+            
+            $userid = $name = substr($userid, 17); // suppress org.couchdb.user:
 
             if ($action == 'adduser') {
                 if ($_POST['admin'] == true)
@@ -139,8 +142,10 @@ if ($action == 'create') {
         try {
             $object->fetch($id);
         } catch (Exception $e) {
-            $action = 'edit';
-            $object->values->name = $id;
+            print $e->getMessage();
+            exit;
+            //$action = 'edit';
+            //$object->values->name = $id;
         }
 
         /*
@@ -215,7 +220,7 @@ if ($action == 'create') {
             $i++;
             print '<th></th>';
             $obj->aoColumns[$i]->mDataProp = "";
-            $obj->aoColumns[$i]->sClass = "fright content_actions";
+            $obj->aoColumns[$i]->sClass = "center content_actions";
             $i++;
             print "</tr>\n";
             print '</thead>';
@@ -225,20 +230,20 @@ if ($action == 'create') {
 
                 foreach ($object->members as $aRow) {
 
-                    $useringroup = new User($db);
+                    $useringroup = new UserAdmin($db);
                     $useringroup->values = $aRow;
-                    $useringroup->admin = $useringroup->values->Administrator;
+                    $useringroup->admin = $useringroup->values->admin;
                     $useringroup->id = $useringroup->values->_id;
 
                     print "<tr $bc[$var]>";
                     print '<td>';
-                    print '<a href="' . DOL_URL_ROOT . '/user/fiche.php?id=' . $useringroup->id . '">' . img_object($langs->trans("ShowUser"), "user") . ' ' . $useringroup->values->name . '</a>';
+                    print '<a href="' . DOL_URL_ROOT . '/useradmin/fiche.php?id=' . $useringroup->id . '">' . img_object($langs->trans("ShowUser"), "user") . ' ' . $useringroup->values->name . '</a>';
                     if ($useringroup->admin)
                         print img_picto($langs->trans("Administrator"), 'star');
                     print '</td>';
                     print '<td>' . $useringroup->values->Lastname . '</td>';
                     print '<td>' . $useringroup->values->Firstname . '</td>';
-                    print '<td>' . $useringroup->getLibStatus() . '</td>';
+                    print '<td>' . $useringroup->LibStatus($useringroup->values->Status) . '</td>';
                     print '<td>';
                     if ($user->admin) {
                         print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=removeuser&amp;user=' . $useringroup->values->name . '">';

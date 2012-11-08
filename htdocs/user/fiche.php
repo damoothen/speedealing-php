@@ -174,7 +174,7 @@ if ((($action == 'add' && $canadduser) || ($action == 'update' && $canedituser))
             $edituser->Photo = dol_sanitizeFileName($_FILES['photo']['name']);
 
         $id = $edituser->update($user, 0, $action);
-        
+
         print $id;
 
         if ($id == $edituser->id) {
@@ -560,7 +560,6 @@ if (($action == 'create') || ($action == 'adduserldap')) {
                 print "</tr>\n";
             }
             // Autres caracteristiques issus des autres modules
-
             // Company / Contact
             if ($conf->societe->enabled) {
                 print '<tr><td valign="top">' . $langs->trans("LinkToCompanyContact") . '</td>';
@@ -898,7 +897,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
             // EMail
             print "<tr>" . '<td valign="top" class="fieldrequired">' . $langs->trans("EMail") . '</td>';
             print '<td>';
-            if ($caneditfield) {
+            if ($caneditfield && $fuser->Status == "DISABLE") {
                 print '<input size="40" type="text" name="email" class="flat" value="' . $fuser->email . '">';
             } else {
                 print '<input type="hidden" name="email" value="' . $fuser->email . '">';
