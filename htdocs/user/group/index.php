@@ -39,19 +39,27 @@ if ($_GET['json'] == "list") {
     );
 
     try {
-        $result = $object->getView("list");
+        $result1 = $object->getView("list");
+        $result2 = $object->getView("count_list", array("group"=>true));
     } catch (Exception $exc) {
         print $exc->getMessage();
     }
 
-    //print_r ($result);
-
-    $iTotal = count($result->rows);
+    $iTotal = count($result1->rows);
     $output["iTotalRecords"] = $iTotal;
     $output["iTotalDisplayRecords"] = $iTotal;
-
-    foreach ($result->rows as $aRow) {
-        $output["aaData"][] = $aRow->value;
+    
+    $result = array();
+    foreach ($result1->rows as $aRow) {
+        $result[$aRow->value->name] = $aRow->value;
+    }
+    
+    foreach ($result2->rows as $aRow) {
+        $result[$aRow->key]->nb = $aRow->value;
+    }
+    
+    foreach ($result as $aRow) {
+        $output["aaData"][] = $aRow;
     }
 
     header('Content-type: application/json');
@@ -118,7 +126,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans('NbUsers');
 print'</th>';
-$obj->aoColumns[$i]->mDataProp = "doc_count";
+$obj->aoColumns[$i]->mDataProp = "nb";
 $obj->aoColumns[$i]->sDefaultContent = 0;
 $obj->aoColumns[$i]->sClass = "fright";
 $i++;

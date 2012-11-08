@@ -50,11 +50,12 @@ if ($_GET['json'] == "list") {
     try {
         $result = $object->getView('list');
         $admins = $object->getDatabaseAdminUsers();
+        $enabled = $object->getDatabaseReaderUsers();
     } catch (Exception $exc) {
         print $exc->getMessage();
     }
 
-    //print_r ($admins);
+    //print_r ($enabled);
 
     $iTotal = count($result);
     $output["iTotalRecords"] = $iTotal;
@@ -62,10 +63,19 @@ if ($_GET['json'] == "list") {
     $i = 0;
     foreach ($result->rows as $aRow) {
         $name = substr($aRow->value->id, 5);
-        if (in_array($name, $admins))
+        if (in_array($name, $admins)) // Is Localadministrator
             $aRow->value->admin = true;
         else
             $aRow->value->admin = false;
+
+        if (in_array($name, $enabled)) // Is Status = ENABLE
+            $aRow->value->Status = "ENABLE";
+        else {
+            if ($aRow->value->admin)
+                $aRow->value->Status = "ENABLE";
+            else
+                $aRow->value->Status = "DISABLE";
+        }
         $output["aaData"][] = $aRow->value;
     }
 
@@ -142,6 +152,13 @@ $obj->aoColumns[$i]->fnRender = 'function(obj) {
 			}';
 $i++;
 print'<th class="essential">';
+print $langs->trans('EMail');
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "email";
+$obj->aoColumns[$i]->sDefaultContent = "";
+$obj->aoColumns[$i]->sClass = "";
+$i++;
+print'<th class="essential">';
 print $langs->trans('LastName');
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "Lastname";
@@ -154,6 +171,14 @@ print'</th>';
 $obj->aoColumns[$i]->mDataProp = "Firstname";
 $obj->aoColumns[$i]->sDefaultContent = "";
 $obj->aoColumns[$i]->sClass = "";
+$i++;
+print'<th class="essential">';
+print $langs->trans('Services');
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "group";
+$obj->aoColumns[$i]->sDefaultContent = "";
+$obj->aoColumns[$i]->sClass = "center";
+$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("group", "tag");
 $i++;
 print'<th class="essential">';
 print $langs->trans('LastConnexion');

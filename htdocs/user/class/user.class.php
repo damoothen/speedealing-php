@@ -47,7 +47,7 @@ class User extends nosqlDocument {
     var $Lastname;
     var $Firstname;
     var $note;
-    var $EMail;
+    var $email;
     var $Signature;
     var $office_phone;
     var $office_fax;
@@ -134,7 +134,7 @@ class User extends nosqlDocument {
             //    return 0;
             //}
         }
-        
+
         try {
             $this->load($login, true);
         } catch (Exception $e) {
@@ -479,10 +479,23 @@ class User extends nosqlDocument {
         // Check parameters
         if ($this->Status == $status)
             return 0;
+        else {
+            
+            $userid = substr($this->id, 5); // remove "user:"
+            
+            if ($status == 'ENABLE') {
+                if ($this->admin == true)
+                    $this->couchAdmin->addDatabaseAdminUser($userid);
+                else
+                    $this->couchAdmin->addDatabaseReaderUser($userid);
+            }
+            elseif ($status == 'DISABLE') {
+                $this->couchAdmin->removeDatabaseAdminUser($userid);
+                $this->couchAdmin->removeDatabaseReaderUser($userid);
+            }
 
-
-
-        $this->set("Status", $status);
+            $this->set("Status", $status);
+        }
 
         return 1;
     }
@@ -561,9 +574,9 @@ class User extends nosqlDocument {
         dol_syslog(get_class($this) . "::create login=" . $this->name . ", user=" . (is_object($user) ? $user->id : ''), LOG_DEBUG);
 
         // Check parameters
-        if (!empty($conf->global->USER_MAIL_REQUIRED) && !isValidEMail($this->EMail)) {
+        if (!isValidEMail($this->email)) {
             $langs->load("errors");
-            $this->error = $langs->trans("ErrorBadEMail", $this->Email);
+            $this->error = $langs->trans("ErrorBadEMail", $this->email);
             return -1;
         }
 
@@ -572,52 +585,14 @@ class User extends nosqlDocument {
 
         $error = 0;
 
-        try {
-            //$result = $this->couchAdmin->getUser($this->name);
-        } catch (Exception $e) {
-            
+        if ($action == 'add') {
+            $this->Status = "DISABLE";
+            $this->_id = "user:" . $this->name;
         }
 
-        if (isset($result->name) && $action == 'add') {
-            $this->error = 'ErrorLoginAlreadyExists';
-            dol_syslog(get_class($this) . "::create " . $this->error, LOG_WARNING);
-            return -6;
-        } else {
-            if ($action == 'add') {
-                $this->Status = "DISABLE";
-
-                try {
-                    $this->couchAdmin->createUser($this->name, $this->pass);
-                } catch (Exception $e) {
-                    $this->error = $e->getMessage();
-                    dol_syslog(get_class($this) . "::create " . $this->error, LOG_ERR);
-                    dol_print_error("", $this->error);
-                    exit;
-                    return -4;
-                }
-            }
-        }
 
         try {
-            //$user_tmp = $this->couchAdmin->getUser($this->name);
-
-            $this->salt = $user_tmp->salt;
-            $this->password_sha = $user_tmp->password_sha;
-            $this->type = $user_tmp->type;
-            $this->_id = $user_tmp->_id;
-            $this->_rev = $user_tmp->_rev;
-            $this->Status = $user_tmp->Status;
-
-            $caneditpassword = ((($user->login == $this->name) && $user->rights->user->self->password)
-                    || (($user->login != $this->name) && $user->rights->user->user->password)) || $user->admin;
-
-            if ($caneditpassword && !empty($this->pass)) { // Case we can edit only password
-                $this->password_sha = sha1($this->pass . $this->salt, false);
-            }
-
-            unset($this->pass);
-
-            //print_r($this->values);exit;
+            //print_r($this);
             $result = $this->record(true); // Save all specific parameters
         } catch (Exception $e) {
             $this->error = $e->getMessage();
@@ -1486,9 +1461,17 @@ class User extends nosqlDocument {
     function getUserAdmins() {
         return $this->couchAdmin->getUserAdmins();
     }
-    
+
     function getDatabaseAdminUsers() {
         return $this->couchAdmin->getDatabaseAdminUsers();
+    }
+
+    function getDatabaseReaderUsers() {
+        return $this->couchAdmin->getDatabaseReaderUsers();
+    }
+    
+    function getLibStatus() {
+        return $this->LibStatus($this->Status);
     }
 
     /**
@@ -1496,9 +1479,33 @@ class User extends nosqlDocument {
      *
      *    @return   string        		Libelle
      */
-    function getLibStatus() {
-        return $this->LibStatus($this->Status);
+    function LibStatus($status) {
+
+        $admins = $this->getDatabaseAdminUsers();
+        $enabled = $this->getDatabaseReaderUsers();
+        
+        print_r($enabled);
+
+        $name = substr($this->id, 5); // remove "user:"
+        if (in_array($name, $admins)) // Is Localadministrator
+            $this->admin = true;
+        else
+            $this->admin = false;
+
+        if (in_array($name, $enabled)) // Is Status = ENABLE
+            $status = "ENABLE";
+        else {
+            if ($this->admin)
+                $status = "ENABLE";
+            else
+                $status = "DISABLE";
+        }
+        
+        $this->Status = $status;
+
+        return parent::LibStatus($status);
     }
+
 }
 
 ?>

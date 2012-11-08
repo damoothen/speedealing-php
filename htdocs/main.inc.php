@@ -435,7 +435,7 @@ if (!defined('NOLOGIN')) {
 
         $user = new User($db);
         $resultFetchUser = $user->fetch("user:" . $login);
-        //$user->update_last_login_date();
+        $user->update_last_login_date();
 
         /*
           if ($resultFetchUser <= 0)

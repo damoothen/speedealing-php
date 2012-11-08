@@ -192,7 +192,11 @@ abstract class nosqlDocument extends CommonObject {
             $this->_id = $this->id;
 
         $values->class = get_class($this);
-        if ($values->class != "User" && $values->class != "UserAdmin")
+
+        // Specific for users
+        if ($values->class == "User" || $values->class == "UserAdmin")
+            unset($values->rights);
+        else
             $values->entity = $conf->Couchdb->name;
 
         try {
@@ -520,7 +524,7 @@ abstract class nosqlDocument extends CommonObject {
                         },
                         //$obj->oColVis->bRestore = true;
                         //$obj->oColVis->sAlign = 'left';
-                                                                                                                                                                                                                                                                                                                                                        																																																																																								            
+                                                                                                                                                                                                                                                                                                                                                                																																																																																								            
                         // Avec export Excel
         <?php if (!empty($obj->sDom)) : ?>
                             //"sDom": "Cl<fr>t<\"clear\"rtip>",
@@ -595,7 +599,7 @@ abstract class nosqlDocument extends CommonObject {
                                                 "tooltip": tooltipInPlace,
                                                 "indicator" : indicatorInPlace,
                                                 "placeholder" : ""
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                																																																																																																																																																																																                
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                																																																																																																																																																																																                
                                             } );
                                             $("td.dol_select", this.fnGetNodes()).editable( urlSaveInPlace, {
                                                 "callback": function( sValue, y ) {
@@ -618,7 +622,7 @@ abstract class nosqlDocument extends CommonObject {
                                                 "tooltip": tooltipInPlace,
                                                 "indicator" : indicatorInPlace,
                                                 "placeholder" : ""
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                																																																																																																																																																																																                
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                																																																																																																																																																																																                
                                             } );
                                         }
             <?php endif; ?>
@@ -646,7 +650,7 @@ abstract class nosqlDocument extends CommonObject {
                         } );
         <?php endif; ?>
                     // Select_all
-                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                            
                     $('.chSel_all').click(function () {
                         $(this).closest('table').find('input[name=row_sel]').attr('checked', this.checked);
                     });

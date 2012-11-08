@@ -18,14 +18,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- *	\defgroup   user  Module user management
- *	\brief      Module pour gerer les utilisateurs
- *	\file       htdocs/core/modules/modUser.class.php
- *	\ingroup    user
- *	\brief      Fichier de description et activation du module Utilisateur
- */
-
 include_once DOL_DOCUMENT_ROOT .'/core/modules/DolibarrModules.class.php';
 
 /**
@@ -451,15 +443,45 @@ class modUser extends DolibarrModules
 		$this->menus[$r]->title = "HelpCenter";
 		$this->menus[$r]->fk_menu = "menu:systemtools";
 		$r++;
+                
+                $this->menus[$r]->_id = "menu:directoryusers";
+                $this->menus[$r]->position = 5;
+		$this->menus[$r]->langs = "users";
+                $this->menus[$r]->url = "/useradmin/index.php";
+		$this->menus[$r]->perms = '$user->superadmin';
+		$this->menus[$r]->usertype = 2;
+		$this->menus[$r]->title = "Users";
+		$this->menus[$r]->fk_menu = "menu:parameters";
+		$r++;
 
-		$this->menus[$r]->_id = "menu:users";
+		$this->menus[$r]->_id = "menu:databases";
+		$this->menus[$r]->position = 6;
+		$this->menus[$r]->langs = "users";
+                $this->menus[$r]->url = "/user/database/index.php";
+		$this->menus[$r]->perms = '$user->superadmin';
+		$this->menus[$r]->usertype = 2;
+		$this->menus[$r]->title = "Databases";
+		$this->menus[$r]->fk_menu = "menu:parameters";
+		$r++;
+                
+                // Module RH
+                
+                $this->menus[$r]->_id = "menu:rh";
+		$this->menus[$r]->type = "top";
+		$this->menus[$r]->position = 999;
+		$this->menus[$r]->enabled = '$user->admin';
+		$this->menus[$r]->usertype = 2;
+		$this->menus[$r]->title = "RH";
+		$r++;
+                
+                $this->menus[$r]->_id = "menu:team";
                 $this->menus[$r]->position = 3;
 		$this->menus[$r]->langs = "users";
                 $this->menus[$r]->url = "/user/index.php";
 		$this->menus[$r]->perms = '$user->rights->user->user->lire || $user->admin';
 		$this->menus[$r]->usertype = 2;
-		$this->menus[$r]->title = "Users";
-		$this->menus[$r]->fk_menu = "menu:parameters";
+		$this->menus[$r]->title = "Collaborator";
+		$this->menus[$r]->fk_menu = "menu:rh";
 		$r++;
 
 		$this->menus[$r]->_id = "menu:groups";
@@ -468,28 +490,8 @@ class modUser extends DolibarrModules
                 $this->menus[$r]->url = "/user/group/index.php";
 		$this->menus[$r]->perms = '($conf->global->MAIN_USE_ADVANCED_PERMS?$user->rights->user->group_advance->read:$user->rights->user->user->lire) || $user->admin';
 		$this->menus[$r]->usertype = 2;
-		$this->menus[$r]->title = "Groups";
-		$this->menus[$r]->fk_menu = "menu:parameters";
-		$r++;
-                
-                $this->menus[$r]->_id = "menu:directoryusers";
-                $this->menus[$r]->position = 5;
-		$this->menus[$r]->langs = "users";
-                $this->menus[$r]->url = "/useradmin/index.php";
-		$this->menus[$r]->perms = '$user->superadmin';
-		$this->menus[$r]->usertype = 2;
-		$this->menus[$r]->title = "Directory";
-		$this->menus[$r]->fk_menu = "menu:parameters";
-		$r++;
-
-		$this->menus[$r]->_id = "menu:databases";
-		$this->menus[$r]->position = 6;
-		$this->menus[$r]->langs = "users";
-                $this->menus[$r]->url = "/user/database/index.php";
-		$this->menus[$r]->perms = '($user->rights->user->user->lire) || $user->admin';
-		$this->menus[$r]->usertype = 2;
-		$this->menus[$r]->title = "Databases";
-		$this->menus[$r]->fk_menu = "menu:parameters";
+		$this->menus[$r]->title = "Services";
+		$this->menus[$r]->fk_menu = "menu:rh";
 		$r++;
 
 		// Exports

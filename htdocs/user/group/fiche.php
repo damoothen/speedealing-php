@@ -77,60 +77,26 @@ if ($action == 'adduser' || $action == 'removeuser') {
 
             $object->load($id);
 
+            $edituser = new User($db);
+            $edituser->fetch($userid);
+
             if ($action == 'adduser') {
-                $object->couchAdmin->addRoleToUser($userid, $object->name);
+                $edituser->group[] = $object->name;
             }
             if ($action == 'removeuser') {
-                $object->couchAdmin->removeRoleFromUser($userid, $object->name);
+                unset($edituser->group[array_search($object->name, $edituser->group)]);
+                $edituser->group = array_merge($edituser->group);
             }
+            $edituser->record(true);
 
-            if ($result > 0) {
-                header("Location: fiche.php?id=" . $object->id);
-                exit;
-            } else {
-                $message.=$edituser->error;
-            }
+            header("Location: fiche.php?id=" . $object->id);
+            exit;
         }
     } else {
         $langs->load("errors");
         $message = '<div class="error">' . $langs->trans('ErrorForbidden') . '</div>';
     }
 }
-
-if ($action == 'update') {
-    if ($caneditperms) {
-        $message = "";
-
-        $db->begin();
-
-        $object->fetch($id);
-
-        $object->oldcopy = dol_clone($object);
-
-        $object->nom = trim($_POST["group"]);
-        $object->note = dol_htmlcleanlastbr($_POST["note"]);
-
-        if ($conf->multicompany->enabled && !empty($conf->global->MULTICOMPANY_TRANSVERSE_MODE))
-            $object->entity = 0;
-        else
-            $object->entity = $_POST["entity"];
-
-        $ret = $object->update();
-
-        if ($ret >= 0 && !count($object->errors)) {
-            $message.='<div class="ok">' . $langs->trans("GroupModified") . '</div>';
-            $db->commit();
-        } else {
-            $message.='<div class="error">' . $object->error . '</div>';
-            $db->rollback();
-        }
-    } else {
-        $langs->load("errors");
-        $message = '<div class="error">' . $langs->trans('ErrorForbidden') . '</div>';
-    }
-}
-
-
 
 /*
  * View
@@ -216,7 +182,7 @@ if ($action == 'create') {
             $exclude = array();
 
             $userstatic = new User($db);
-            $result = $userstatic->getView("roles", array('key' => $object->name));
+            $result = $userstatic->getView("group", array('key' => $object->name));
 
             if (count($result->rows)) {
                 foreach ($result->rows as $useringroup) {
@@ -287,10 +253,10 @@ if ($action == 'create') {
                     print '</td>';
                     print '<td>' . $useringroup->values->Lastname . '</td>';
                     print '<td>' . $useringroup->values->Firstname . '</td>';
-                    print '<td>' . $useringroup->getLibStatus() . '</td>';
+                    print '<td>' . $useringroup->LibStatus($useringroup->values->Status) . '</td>';
                     print '<td>';
                     if ($user->admin) {
-                        print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=removeuser&amp;user=' . $useringroup->values->name . '">';
+                        print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=removeuser&amp;user=' . $useringroup->values->_id . '">';
                         print img_delete($langs->trans("RemoveFromGroup"));
                     } else {
                         print "-";
