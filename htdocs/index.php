@@ -24,7 +24,6 @@ define('NOCSRFCHECK', 1); // This is login page. We must be able to go on it fro
 require("./main.inc.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/class/html.formother.class.php");
 
-
 // If not defined, we select menu "home"
 $action = GETPOST('action');
 

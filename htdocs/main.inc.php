@@ -24,11 +24,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * 	\file       htdocs/main.inc.php
- * 	\ingroup	core
- * 	\brief      File that defines environment for Speedealing pages only (variables not required by scripts)
- */
 //@ini_set('memory_limit', '64M');	// This may be useless if memory is hard limited by your PHP
 // For optionnal tuning. Enabled if environment variable DOL_TUNING is defined.
 // A call first. Is the equivalent function dol_microtime_float not yet loaded.
@@ -469,8 +464,11 @@ if (GETPOST('theme')) {
 if (!defined('NOLOGIN')) {
     // If the login is not recovered, it is identified with an account that does not exist.
     // Hacking attempt?
-    if (!$user->name)
+
+    if (empty($user->name)) {
         accessforbidden();
+        exit;
+    }
 
     // Check if user is active
     if ($user->Status != "ENABLE") {

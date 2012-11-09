@@ -55,7 +55,7 @@ if ($action == 'add') {
         }
 
         if (!$message) {
-            $object->name = trim($_POST["nom"]);
+            $object->name = strtolower(trim($_POST["nom"]));
             $object->note = trim($_POST["note"]);
             $object->_id = "group:" . $object->name;
 

@@ -98,7 +98,7 @@ if ($user->admin) {
 $i = 0;
 $obj = new stdClass();
 
-print '<table class="display dt_act" id="user" >';
+print '<table class="display dt_act" id="group" >';
 // Ligne des titres 
 print'<thead>';
 print'<tr>';
@@ -144,7 +144,7 @@ $obj->sAjaxSource = $_SERVER['PHP_SELF'] . '?json=list';
 
 $obj->aaSorting = array(array(0, "asc"));
 
-$object->datatablesCreate($obj, "user", true);
+$object->datatablesCreate($obj, "group", true);
 
 
 

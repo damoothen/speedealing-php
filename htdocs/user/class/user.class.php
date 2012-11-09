@@ -197,7 +197,6 @@ class User extends nosqlDocument {
         }*/
 
         $this->id = $this->_id;
-        $this->login = $this->name;
 
         return 1;
     }
@@ -424,7 +423,7 @@ class User extends nosqlDocument {
         try {
             $result = $object->getView("default_right", '', true);
             foreach ($this->group as $aRow) // load groups
-                $groups[] = $object->load("group:" . $aRow);
+                $groups[] = $object->load("group:" . $aRow, true);
         } catch (Exception $exc) {
             print $exc->getMessage();
         }
@@ -450,7 +449,7 @@ class User extends nosqlDocument {
 
                 // Add user rights
 
-                if ((is_array($this->rights) && isset($this->rights->$key)) || $this->admin) {
+                if ((is_array($this->rights) && isset($this->rights->$key)) || (is_array($this->own_rights) && isset($this->own_rights->$key)) || $this->admin) {
                     if (count($perm) == 1)
                         $this->rights->$rights_class->$perm[0] = true;
                     elseif (count($perm) == 2)

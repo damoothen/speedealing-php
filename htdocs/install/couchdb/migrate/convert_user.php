@@ -125,7 +125,7 @@ while ($aRow = $db->fetch_object($result)) {
     }
 
     $col[$aRow->rowid]->_id = "user:" . $aRow->login;
-    $col[$aRow->rowid]->login = $aRow->login;
+    $col[$aRow->rowid]->name = $aRow->login;
     $col[$aRow->rowid]->tms = $db->jdate($aRow->tms);
     $col[$aRow->rowid]->Lastname = $aRow->name;
     $col[$aRow->rowid]->Firstname = $aRow->firstname;
@@ -143,10 +143,8 @@ while ($aRow = $db->fetch_object($result)) {
 
     $col[$aRow->rowid]->Lang = $aRow->lang;
     $col[$aRow->rowid]->class = "User";
-    if ($aRow->login == "admin")
-        $col[$aRow->rowid]->group = array("administrator");
-    else
-        $col[$aRow->rowid]->group = array();
+
+    $col[$aRow->rowid]->group = array();
 
 
     //print_r($col[$aRow->rowid]);
@@ -158,7 +156,7 @@ while ($aRow = $db->fetch_object($result)) {
 $db->free($result);
 unset($result);
 
-/* sql query get sales */
+/* sql query get groups */
 $sql = "SELECT g.rowid, g.nom, ug.fk_user";
 $sql.= " FROM " . MAIN_DB_PREFIX . "usergroup as g,";
 $sql.= " " . MAIN_DB_PREFIX . "usergroup_user as ug";
@@ -168,10 +166,11 @@ $result = $db->query($sql);
 /* create group  */
 while ($aRow = $db->fetch_object($result)) {
     if (!empty($col[$aRow->fk_user]->rowid)) {
-        $group[$aRow->nom]->_id = 'group:' . strtolower($aRow->nom);
-        $group[$aRow->nom]->name = $aRow->nom;
-        $group[$aRow->nom]->class = "UserGroup";
-        $group[$aRow->nom]->right = new stdClass();
+        $group[$aRow->rowid]->_id = 'group:' . strtolower($aRow->nom);
+        $group[$aRow->rowid]->name = strtolower($aRow->nom);
+        $group[$aRow->rowid]->rowid = $aRow->rowid;
+        $group[$aRow->rowid]->class = "UserGroup";
+        $group[$aRow->rowid]->right = new stdClass();
 
         $col[$aRow->fk_user]->group[] = strtolower($aRow->nom);
         //$couchAdmin->addRoleToUser($col[$aRow->fk_user]->name, $aRow->nom);
@@ -180,7 +179,37 @@ while ($aRow = $db->fetch_object($result)) {
 $db->free($result);
 unset($result);
 
-//print_r($col);exit;
+// Get right
+$sql = "SELECT *";
+$sql.= " FROM " . MAIN_DB_PREFIX . "user_rights";
+$result = $db->query($sql);
+
+/* user right  */
+while ($aRow = $db->fetch_object($result)) {
+    if (!empty($col[$aRow->fk_user]->rowid)) {
+        $id = $aRow->fk_id;
+        $col[$aRow->fk_user]->own_rights->$id = true;
+    }
+}
+$db->free($result);
+unset($result);
+
+// Get right
+$sql = "SELECT *";
+$sql.= " FROM " . MAIN_DB_PREFIX . "usergroup_rights";
+$result = $db->query($sql);
+
+/* group right  */
+while ($aRow = $db->fetch_object($result)) {
+    if (!empty($group[$aRow->fk_usergroup]->rowid)) {
+        $id = $aRow->fk_id;
+        $group[$aRow->fk_usergroup]->rights->$id = true;
+    }
+}
+$db->free($result);
+unset($result);
+
+//print_r($group);exit;
 
 try {
     $result = $couchdb->storeDocs($col, false);
