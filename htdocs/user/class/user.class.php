@@ -140,14 +140,21 @@ class User extends nosqlDocument {
 
             $user_config = new UserAdmin($db);
             $user_config->fetch("org.couchdb.user:" . $login); // Load for default entity
-            //$user_config->set("LastConnection", $user_config->NewConnection);
-            //$user_config->set("NewConnection", dol_now());
+            if (!empty($user_config->NewConnection))
+                $user_config->set("LastConnection", $user_config->NewConnection);
+            $user_config->set("NewConnection", dol_now());
             //print_r($user_config->entity);
             //$couch->useDatabase($user_config->entity);
             $conf->Couchdb->name = $user_config->entity;
             dol_setcache("dol_entity", $user_config->entity);
             $this->useDatabase($user_config->entity);
             unset($user_config);
+
+            if (!$conf->urlrewrite) {
+                $this->LastConnection = $this->NewConnection;
+                $this->NewConnection = dol_now();
+                $this->record(true);
+            }
         }
 
         try {
@@ -184,17 +191,17 @@ class User extends nosqlDocument {
                 $this->admin = false;
         }
 
-        /*try {
-            $database = new UserDatabase($this->db);
-            $database->fetch($conf->Couchdb->name);
-            $result = $database->couchAdmin->getDatabaseAdminUsers(); // Administrateur local de la bd
+        /* try {
+          $database = new UserDatabase($this->db);
+          $database->fetch($conf->Couchdb->name);
+          $result = $database->couchAdmin->getDatabaseAdminUsers(); // Administrateur local de la bd
 
-            if (in_array($this->name, $result)) {
-                $this->admin = true;
-            }
-        } catch (Exception $e) {
-            
-        }*/
+          if (in_array($this->name, $result)) {
+          $this->admin = true;
+          }
+          } catch (Exception $e) {
+
+          } */
 
         $this->id = $this->_id;
 

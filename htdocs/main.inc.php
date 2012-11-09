@@ -531,6 +531,12 @@ if ($conf->urlrewrite) {
     if (dol_getcache('dol_db') != $tmp_db || strpos(DOL_URL_ROOT, $tmp_db) == 0) {
         dol_flushcache(); // reset cache
         dol_setcache("dol_db", $tmp_db);
+        
+        $user->useDatabase($tmp_db);
+        
+        if(!empty($user->NewConnection))
+            $user->set("LastConnection",$user->NewConnection);
+        $user->set("NewConnection", dol_now());
 
         Header("Location: /" . $tmp_db . '/');
         unset($tmp_db);
