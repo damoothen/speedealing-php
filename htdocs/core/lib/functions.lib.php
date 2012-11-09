@@ -4119,33 +4119,6 @@ function colorArrayToHex($arraycolor, $colorifnotfound = '888888') {
     return dechex($arraycolor[0]) . dechex($arraycolor[1]) . dechex($arraycolor[2]);
 }
 
-/**
- * 	Convert a currency code into its symbol
- *
- *  @param		string	$currency_code		Currency code
- *  @return		string						Currency symbol encoded into UTF8
- */
-function getCurrencySymbol($currency_code) {
-    global $db, $form;
-
-    $currency_sign = '';
-
-    if (!is_object($form))
-        $form = new Form($db);
-
-    $form->load_cache_currencies();
-
-    if (function_exists("mb_convert_encoding") && isset($form->cache_currencies[$currency_code]) && is_array($form->cache_currencies[$currency_code]['unicode']) && !empty($form->cache_currencies[$currency_code]['unicode'])) {
-        foreach ($form->cache_currencies[$currency_code]['unicode'] as $unicode) {
-            $currency_sign .= mb_convert_encoding("&#{$unicode};", "UTF-8", 'HTML-ENTITIES');
-        }
-    } else {
-        $currency_sign = $currency_code;
-    }
-
-    return $currency_sign;
-}
-
 if (!function_exists('getmypid')) {
 
     /**

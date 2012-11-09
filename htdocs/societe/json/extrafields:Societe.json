@@ -1,5 +1,6 @@
 {
    "_id": "extrafields:Societe",
+   "_rev": "80-ad235a89f974be968571a33ebaa6b7f6",
    "class": "extrafields",
    "ico": "16-Apartment-Building.png",
    "langs": [
@@ -397,6 +398,12 @@
            "type": "select",
            "label": "PaymentMode",
            "dict": "dict:fk_paiement",
+           "enable": true
+       },
+       "currency": {
+           "type": "select",
+           "label": "CompanyCurrency",
+           "dict": "dict:fk_currencies",
            "enable": true
        }
    }

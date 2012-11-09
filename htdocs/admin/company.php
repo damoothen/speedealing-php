@@ -616,8 +616,7 @@ if ($action == 'edit' || $action == 'updateedit') {
 
     $var = !$var;
     print '<tr ' . $bc[$var] . '><td width="35%">' . $langs->trans("CompanyCurrency") . '</td><td>';
-    print currency_name($conf->currency, 1);
-    print ' (' . getCurrencySymbol($conf->currency) . ')';
+    print $mysoc->print_fk_extrafields("currency");
     print '</td></tr>';
 
     $var = !$var;

@@ -1045,6 +1045,9 @@ if ($id) {
                     $values->pays_code = $obj->pays_code;
 
                 switch ($id) {
+                    case 9:
+                        $values->unicode =  (array) json_decode($obj->unicode, true);
+                        break;
                     case 10:
                         $values->label = (float) $obj->taux;
                         $values->recuperableonly = (bool) $obj->recuperableonly;
