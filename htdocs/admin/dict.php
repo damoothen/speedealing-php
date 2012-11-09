@@ -1045,8 +1045,21 @@ if ($id) {
                     $values->pays_code = $obj->pays_code;
 
                 switch ($id) {
+                    case 6:
+                        $values->priority = (int) $obj->priority;
+                        if ($values->priority > 10)
+                            $values->priority = 10;
+                        if ($obj->type == 0)
+                            $values->type = null;
+                        elseif (($obj->type == 1))
+                            $values->type = "event";
+                        else
+                            $values->type = "task";
+                        $values->order = (int) $obj->position;
+
+                        break;
                     case 9:
-                        $values->unicode =  (array) json_decode($obj->unicode, true);
+                        $values->unicode = (array) json_decode($obj->unicode, true);
                         break;
                     case 10:
                         $values->label = (float) $obj->taux;
@@ -1066,12 +1079,23 @@ if ($id) {
                         if (empty($code))
                             $code = "NONE";
                         break;
+                    case 16:
+                        $arrayColor = array("PL_NONE" => "grey-gradient", "PL_LOW" => "blue-gradient", "PL_MEDIUM" => "orange-gradient", "PL_HIGH" => "red-gradient");
+
+                        $values->cssClass = $arrayColor[$obj->code];
+                        if (empty($values->cssClass))
+                            $values->cssClass = "grey-gradient";
+                        break;
                     case 28:
                         $arrayType = array(-1 => "closed", 0 => "suspect", 1 => "prospect", 2 => "customer");
-                        $arrayColor = array(-1 => "error_bg", 0 => "neutral_bg", 1 => "info_bg", 2 => "ok_bg"); // definie CSS for color
+                        $arrayColor = array("ST_NO" => "red-gradient", "ST_TODO" => "blue-gradient", "ST_NEVER" => "grey-gradient", "ST_PFROI" => "blue-gradient",
+                            "ST_PCHAU" => "red-gradient", "ST_CINF3" => "orange-gradient", "ST_CREC" => "green-gradient", "ST_CPAR" => "green-gradient",
+                            "ST_PEND" => "grey-gradient", "ST_DONE" => "green-gradient", "ST_PTIED" => "orange-gradient", "ST_CFID" => "green-gradient",); // definie CSS for color
 
                         $values->type = $arrayType[$obj->type];
-                        $values->cssClass = $arrayColor[$obj->type];
+                        $values->cssClass = $arrayColor[$obj->code];
+                        if (empty($values->cssClass))
+                            $values->cssClass = "grey-gradient";
                         break;
                 }
                 if (!empty($code))
@@ -1086,8 +1110,8 @@ if ($id) {
             $dictid = substr($tabname[$id], 6, strlen($tabname[$id])); //retire llx_c_
             $dictid = "dict:fk_" . $dictid;
             // if not exist write the dictionnary in couchdb
-            $arrayConf = array(1 => true, 2 => true, 3 => true, 4 => true, 5 => true, 6 => true, 9 => true,
-                10 => true, 12 => true, 13 => true, 28 => true);
+            $arrayConf = array(1 => true, 2 => true, 3 => true, 4 => true, 5 => true, 6 => true, 8 => true, 9 => true,
+                10 => true, 12 => true, 13 => true, 16 => true, 19 => true, 28 => true);
             if (isset($arrayConf[$id]) && $arrayConf[$id] == true) {
                 try {
                     $temp = $couch->getDoc($dictid); // test if exit

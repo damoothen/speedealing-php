@@ -1981,7 +1981,7 @@ class Societe extends nosqlDocument {
             $result = $this->getView("list_commercial", $params);
 
             foreach ($this->fk_extrafields->fields->Status->values as $key => $aRow) {
-                //print_r($aRow);
+                //print_r($aRow);exit;
                 $label = $langs->trans($key);
                 if ($aRow->enable) {
                     $tab[$key]->label = $label;

@@ -76,16 +76,16 @@ print_fiche_titre($langs->trans("Dashboard"), true);
         <div class="three-columns twelve-columns-mobile new-row-mobile">
             <ul class="stats split-on-mobile">
                 <li><a href="#">
-                        <strong>21</strong> new <br>accounts
+                        <strong>-</strong> new <br>accounts
                     </a></li>
                 <li><a href="#">
-                        <strong>15</strong> referred new <br>accounts
+                        <strong>-</strong> referred new <br>accounts
                     </a></li>
                 <li>
-                    <strong>5</strong> new <br>items
+                    <strong>-</strong> new <br>items
                 </li>
                 <li>
-                    <strong>235</strong> new <br>comments
+                    <strong>-</strong> new <br>comments
                 </li>
             </ul>
         </div>

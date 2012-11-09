@@ -331,7 +331,8 @@ if (!defined('NOLOGIN')) {
             //}
             //if ($resultFetchUser < 0) {
             $user->trigger_mesg = 'SessionExpire - login=' . $login;
-            $_SESSION["dol_loginmesg"] = $langs->trans("ErrorCantLoadUserFromDolibarrDatabase", $login); // TODO Session Expire
+            $_SESSION["dol_loginmesg"] = $langs->trans("Session expired", $login); // TODO Session Expire
+            setcookie('AuthSession', '', 1, '/'); // Reset auth cookie
             //}
             // Call triggers
             include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");

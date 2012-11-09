@@ -83,17 +83,17 @@ class ExtraFields extends nosqlDocument {
         if ($attrname != '' && preg_match("/^\w[a-zA-Z0-9-_]*$/", $attrname)) {
             $maxpos = 0;
             foreach ($this->fields as $row) {
-                if($row->optional) {
-                    if($row->pos > $maxpos)
+                if ($row->optional) {
+                    if ($row->pos > $maxpos)
                         $maxpos = $row->pos;
                 }
             }
-            
+
             $this->fields->$attrname->enable = true;
             $this->fields->$attrname->pos = $maxpos;
             $this->fields->$attrname->edit = true;
             $this->fields->$attrname->optional = true; // Is an extrafields create by user
-            
+
             return $this->update($attrname, $label, $type, $size);
         } else {
             return -1;
@@ -153,7 +153,7 @@ class ExtraFields extends nosqlDocument {
         $table = '';
 
         if (isset($attrname) && $attrname != '' && preg_match("/^\w[a-zA-Z0-9-_]*$/", $attrname)) {
-            
+
             $this->fields->$attrname->type = $type;
             $this->fields->$attrname->label = $label;
             $this->fields->$attrname->size = $length;
@@ -172,8 +172,18 @@ class ExtraFields extends nosqlDocument {
      *  @return	void
      */
     function fetch($class) {
+        require_once(DOL_DOCUMENT_ROOT . "/admin/class/dict.class.php");
+
         try {
             $this->load("extrafields:" . $class, true); // load and cache
+            foreach ($this->fields as $aRow) {
+                if (isset($aRow->dict)) {
+                    $dict = new Dict($this->db);
+                    $values = $dict->load($aRow->dict, true);
+                    $aRow->values = clone $values->values;
+                }
+            }
+            //print_r($this->fields->Status);
         } catch (Exception $e) {
             $error = "Something weird happened: " . $e->getMessage() . " (errcode=" . $e->getCode() . ")\n";
             print $error;
@@ -243,7 +253,7 @@ class ExtraFields extends nosqlDocument {
         $label = $this->fields->$key->label;
         $type = $this->fields->$key->type;
         $size = $this->fields->$key->size;
-        
+
         if ($type == 'date') {
             $showsize = 10;
         } elseif ($type == 'datetime') {
