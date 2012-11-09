@@ -204,32 +204,13 @@ if (!empty($conf->file->main_force_https)) {
     }
 }
 
-
 // Chargement des includes complementaires de presentation
 if (!defined('NOREQUIREMENU'))
     require_once(DOL_DOCUMENT_ROOT . "/core/class/menu.class.php");   // Need 10ko memory (11ko in 2.2)
 if (!defined('NOREQUIREHTML'))
     require_once(DOL_DOCUMENT_ROOT . "/core/class/html.form.class.php");  // Need 660ko memory (800ko in 2.2)
-if (!defined('NOREQUIREAJAX') && $conf->use_javascript_ajax)
+if (!defined('NOREQUIREAJAX'))
     require_once(DOL_DOCUMENT_ROOT . '/core/lib/ajax.lib.php'); // Need 22ko memory
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     
 // If install or upgrade process not done or not completely finished, we call the install page.
@@ -261,15 +242,16 @@ if (!defined('NOTOKENRENEWAL')) {
         $_SESSION['token'] = $_SESSION['newtoken'];
     $_SESSION['newtoken'] = $token;
 }
-if (!empty($conf->global->MAIN_SECURITY_CSRF)) { // Check validity of token, only if option enabled (this option breaks some features sometimes)
-    if (isset($_POST['token']) && isset($_SESSION['token'])) {
-        if (($_POST['token'] != $_SESSION['token'])) {
-            dol_syslog("Invalid token in " . $_SERVER['HTTP_REFERER'] . ", action=" . $_POST['action'] . ", _POST['token']=" . $_POST['token'] . ", _SESSION['token']=" . $_SESSION['token'], LOG_WARNING);
-            //print 'Unset POST by CSRF protection in main.inc.php.';	// Do not output anything because this create problems when using the BACK button on browsers.
-            unset($_POST);
-        }
+
+// Check validity of token, only if option enabled (this option breaks some features sometimes)
+if (isset($_POST['token']) && isset($_SESSION['token'])) {
+    if (($_POST['token'] != $_SESSION['token'])) {
+        dol_syslog("Invalid token in " . $_SERVER['HTTP_REFERER'] . ", action=" . $_POST['action'] . ", _POST['token']=" . $_POST['token'] . ", _SESSION['token']=" . $_SESSION['token'], LOG_WARNING);
+        //print 'Unset POST by CSRF protection in main.inc.php.';	// Do not output anything because this create problems when using the BACK button on browsers.
+        unset($_POST);
     }
 }
+
 
 // Disable modules (this must be after session_start and after conf has been loaded)
 if (GETPOST('disablemodules'))
@@ -314,160 +296,25 @@ if (!defined('NOLOGIN')) {
     $user = new User($db);
     //print $user->fetch();exit;
     if (empty($_COOKIE["AuthSession"])) {
+        // Check URL for urlrewrite
+        if($conf->urlrewrite && DOL_URL_ROOT != '') {
+            header('Location: /index.php');
+            exit;
+        }
+        
+        
         // It is not already authenticated and it requests the login / password
         include_once(DOL_DOCUMENT_ROOT . '/core/lib/security2.lib.php');
 
-        // If in demo mode, we check we go to home page through the public/demo/index.php page
-        if ($dolibarr_main_demo && $_SERVER['PHP_SELF'] == DOL_URL_ROOT . '/index.php') {  // We ask index page
-            if (!preg_match('/public/', $_SERVER['HTTP_REFERER'])) {
-                dol_syslog("Call index page from another url than demo page");
-                header("Location: " . DOL_URL_ROOT . '/public/demo/index.php');
-                exit;
-            }
+        // We show login page
+        if (!is_object($langs)) { // This can occurs when calling page with NOREQUIRETRAN defined
+            include_once(DOL_DOCUMENT_ROOT . "/core/class/translate.class.php");
+            $langs = new Translate("", $conf);
         }
-
-        // Verification security graphic code
-        if (GETPOST("username", "alpha", 2) && !empty($conf->global->MAIN_SECURITY_ENABLECAPTCHA)) {
-            $sessionkey = 'dol_antispam_value';
-            $ok = (array_key_exists($sessionkey, $_SESSION) === TRUE && (strtolower($_SESSION[$sessionkey]) == strtolower($_POST['code'])));
-
-            // Verifie code
-            if (!$ok) {
-                dol_syslog('Bad value for code, connexion refused');
-                $langs->load('main');
-                $langs->load('errors');
-
-                $user->trigger_mesg = 'ErrorBadValueForCode - login=' . GETPOST("username", "alpha", 2);
-                $_SESSION["dol_loginmesg"] = $langs->trans("ErrorBadValueForCode");
-                $test = false;
-
-                // Appel des triggers
-                include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
-                $interface = new Interfaces($db);
-                $result = $interface->run_triggers('USER_LOGIN_FAILED', $user, $user, $langs, $conf, GETPOST('entity'));
-                if ($result < 0) {
-                    $error++;
-                }
-                // Fin appel triggers
-            }
-        }
-
-        $usertotest = (!empty($_COOKIE['login_dolibarr']) ? $_COOKIE['login_dolibarr'] : GETPOST("username", "alpha", 2));
-        $passwordtotest = (!empty($_COOKIE['password_dolibarr']) ? $_COOKIE['password_dolibarr'] : $_POST["password"]);
-
-        // Validation of login/pass/entity
-        // If ok, the variable login will be returned
-        // If error, we will put error message in session under the name dol_loginmesg
-        $goontestloop = false;
-        if (isset($_SERVER["REMOTE_USER"]) && in_array('http', $authmode))
-            $goontestloop = true;
-        if (GETPOST("username", "alpha", 2) || !empty($_COOKIE['login_dolibarr']) || GETPOST('openid_mode', 'alpha', 1))
-            $goontestloop = true;
-
-        if ($test && $goontestloop) {
-            $login = checkLoginPassEntity($usertotest, $passwordtotest, $entitytotest, $authmode);
-            if ($login) {
-                $dol_authmode = $conf->authmode; // This properties is defined only when logged to say what mode was successfully used
-                $dol_tz = $_POST["tz"];
-                $dol_tz_string = $_POST["tz_string"];
-                $dol_dst = 0;
-                if (isset($_POST["dst_first"]) && isset($_POST["dst_second"])) {
-                    include_once(DOL_DOCUMENT_ROOT . "/core/lib/date.lib.php");
-                    $datenow = dol_now();
-                    $datefirst = dol_stringtotime($_POST["dst_first"]);
-                    $datesecond = dol_stringtotime($_POST["dst_second"]);
-                    if ($datenow >= $datefirst && $datenow < $datesecond)
-                        $dol_dst = 1;
-                }
-                //print $datefirst.'-'.$datesecond.'-'.$datenow; exit;
-                $dol_dst_observed = $_POST["dst_observed"];
-                $dol_dst_first = $_POST["dst_first"];
-                $dol_dst_second = $_POST["dst_second"];
-                $dol_screenwidth = $_POST["screenwidth"];
-                $dol_screenheight = $_POST["screenheight"];
-            }
-
-            if (!$login) {
-                dol_syslog('Bad password, connexion refused', LOG_DEBUG);
-                $langs->load('main');
-                $langs->load('errors');
-
-                // Bad password. No authmode has found a good password.
-                $user->trigger_mesg = $langs->trans("ErrorBadLoginPassword") . ' - login=' . GETPOST("username", "alpha", 2);
-                $_SESSION["dol_loginmesg"] = $langs->trans("ErrorBadLoginPassword");
-
-                // Appel des triggers
-                include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
-                $interface = new Interfaces($db);
-                $result = $interface->run_triggers('USER_LOGIN_FAILED', $user, $user, $langs, $conf, GETPOST("username", "alpha", 2));
-                if ($result < 0) {
-                    $error++;
-                }
-                // Fin appel triggers
-            }
-        }
-
-        // End test login / passwords
-        if (!$login) {
-            // We show login page
-            if (!is_object($langs)) { // This can occurs when calling page with NOREQUIRETRAN defined
-                include_once(DOL_DOCUMENT_ROOT . "/core/class/translate.class.php");
-                $langs = new Translate("", $conf);
-            }
-            dol_loginfunction($langs, $conf, $mysoc);
-            exit;
-        }
-
-        require_once(DOL_DOCUMENT_ROOT . "/useradmin/class/useradmin.class.php");
-
-        $user_config = new UserAdmin($db);
-        $user_config->fetch($user->name); // Load for default entity
-        //$user_config->set("LastConnection", $user_config->NewConnection);
-        //$user_config->set("NewConnection", dol_now());
-        //print_r($user_config->entity);
-        $couch->useDatabase($user_config->entity);
-        $conf->Couchdb->name = $user_config->entity;
-        dol_setcache("dol_entity", $user_config->entity);
-        unset($user_config);
-
-        $user = new User($db);
-        $resultFetchUser = $user->fetch("user:" . $login);
-        $user->update_last_login_date();
-
-        /*
-          if ($resultFetchUser <= 0)
-          {
-          dol_syslog('User not found, connexion refused');
-          session_destroy();
-          session_name($sessionname);
-          session_start();    // Fixing the bug of register_globals here is useless since session is empty
-
-          if ($resultFetchUser == 0)
-          {
-          $langs->load('main');
-          $langs->load('errors');
-
-          $user->trigger_mesg='ErrorCantLoadUserFromDolibarrDatabase - login='.$login;
-          $_SESSION["dol_loginmesg"]=$langs->trans("ErrorCantLoadUserFromDolibarrDatabase",$login);
-          }
-          if ($resultFetchUser < 0)
-          {
-          $user->trigger_mesg=$user->error;
-          $_SESSION["dol_loginmesg"]=$user->error;
-          }
-
-          // Call triggers
-          include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
-          $interface=new Interfaces($db);
-          $result=$interface->run_triggers('USER_LOGIN_FAILED',$user,$user,$langs,$conf,$_POST["entity"]);
-          if ($result < 0) {
-          $error++;
-          }
-          // End call triggers */
+        dol_loginfunction($langs, $conf, $mysoc);
+        exit;
     } else {
         // We are already into an authenticated session
-        //$login = $_SESSION["dol_login"];
-        //$resultFetchUser = $user->fetch("org.couchdb.user:" . $login);
         $resultFetchUser = $user->fetch();
 
         if ($resultFetchUser <= 0) {
@@ -1290,13 +1137,13 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                     <div class="columns">
                         <div class="five-columns">
                             <div class="ego-icon big">
-    <?php if (!empty($user->Photo)) : ?>
+                                <?php if (!empty($user->Photo)) : ?>
                                     <img alt="User name" class="ego-icon-inner"
                                          src="<?php echo $user->getFile($user->Photo); ?>">
-    <?php else : ?>
+                                     <?php else : ?>
                                     <img src="theme/symeos/img/user.png"
                                          alt="User name" class="ego-icon-inner">
-    <?php endif; ?>
+                                     <?php endif; ?>
                                 <img class="ego-icon-outer"
                                      src="theme/symeos/img/timbrebase90x100.png">
                             </div>
@@ -1316,12 +1163,12 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                     <li style="width: 20%;"><a href="inbox.html" title="Messages"><span class="icon-inbox"></span>
                         </a></li>
                     <li style="width: 20%;"><a href="agenda/list.php?idmenu=menu:agendaList" title="<?php echo $langs->trans("Agenda"); ?>"><span class="icon-calendar"></span><?php
-                        require_once(DOL_DOCUMENT_ROOT . "/agenda/class/agenda.class.php");
-                        $agenda = new Agenda($db);
-                        $result = $agenda->getView("countTODO", array("group" => true, "key" => $user->id), true);
-                        if ($result->rows[0]->value)
-                            print '<span class="count">' . $result->rows[0]->value . '</span>';
-                        ?> </a></li>
+                                 require_once(DOL_DOCUMENT_ROOT . "/agenda/class/agenda.class.php");
+                                 $agenda = new Agenda($db);
+                                 $result = $agenda->getView("countTODO", array("group" => true, "key" => $user->id), true);
+                                 if ($result->rows[0]->value)
+                                     print '<span class="count">' . $result->rows[0]->value . '</span>';
+                                     ?> </a></li>
                     <li style="width: 20%;"><a href="user/fiche.php?id=<?php echo $user->id; ?>"
                                                title="Profile"><span class="icon-gear"></span> </a></li>
                     <li style="width: 20%;"><a href="user/logout.php" title="Log out"><span
@@ -1653,7 +1500,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
         <script src="theme/symeos/js/s_scripts.js"></script>
         <script src="theme/symeos/js/symeos.js"></script>
 
-                                                                                        <!--<script src="theme/developr/html/js/developr.input.js"></script>-->
+                                                                                                        <!--<script src="theme/developr/html/js/developr.input.js"></script>-->
         <script src="theme/symeos/js/developr.message.js"></script>
         <script src="theme/symeos/js/developr.modal.js"></script>
         <script src="theme/symeos/js/developr.notify.js"></script>
@@ -1675,7 +1522,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
             // Favicon count
             Tinycon.setBubble(2);
-                                                                                                                                                                					
+                                                                                                                                                                                					
         </script>
 
         <script>

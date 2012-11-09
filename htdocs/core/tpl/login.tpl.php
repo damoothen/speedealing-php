@@ -130,15 +130,13 @@ header("Content-type: text/html; charset=" . $conf->file->character_set_client);
                 <div class="elVal">
                     <ul class="inputs black-input large">
                         <!-- The autocomplete="off" attributes is the only way to prevent webkit browsers from filling the inputs with yellow -->
-                        <li><span class="icon-user mid-margin-right"></span><input type="text" name="username" id="login" value="<?php echo GETPOST('username') ? GETPOST('username') : $login; ?>" class="input-unstyled" placeholder="<?php echo $langs->trans('Login'); ?>" autocomplete="off"></li>
+                        <li><span class="icon-user mid-margin-right"></span><input type="text" name="username" id="login" value="<?php echo $login; ?>" class="input-unstyled" placeholder="<?php echo $langs->trans('EMail'); ?>" autocomplete="off"></li>
                         <li><span class="icon-lock mid-margin-right"></span><input type="password" name="password" id="pass" value="" class="input-unstyled" placeholder="<?php echo $langs->trans('Password'); ?>" autocomplete="off"></li>
                     </ul>
                     <button type="submit" class="button glossy full-width huge"><?php echo $langs->trans('Connection'); ?></button>
                 </div>
             </form>
-        </div>
-
-        <?php
+        </div><?php
         if (!empty($_SESSION['dol_loginmesg'])) {
             ?>
         <center>
@@ -151,28 +149,20 @@ header("Content-type: text/html; charset=" . $conf->file->character_set_client);
                     </td>
                 </tr>
             </table>
-        </center>
-        <?php
-    }
-    ?>
+        </center><?php
+                    }
 
-    <?php
-    if ($main_home) {
-        ?>
-        <center>
+                    if ($main_home) {
+                            ?><center>
             <table summary="info" cellpadding="0" cellspacing="0" border="0" align="center" width="750">
                 <tr>
                     <td align="center"><?php echo $main_home; ?></td>
                 </tr>
             </table>
-        </center>
-        <?php
-    }
-    ?>
-
-    <?php
-    if (!empty($conf->global->MAIN_GOOGLE_AD_CLIENT) && !empty($conf->global->MAIN_GOOGLE_AD_SLOT)) {
-        ?>
+        </center><?php
+}
+if (!empty($conf->global->MAIN_GOOGLE_AD_CLIENT) && !empty($conf->global->MAIN_GOOGLE_AD_SLOT)) {
+                            ?>
         <div align="center"><br>
             <script type="text/javascript"><!--
                 google_ad_client = "<?php echo $conf->global->MAIN_GOOGLE_AD_CLIENT ?>";
@@ -233,6 +223,11 @@ header("Content-type: text/html; charset=" . $conf->file->character_set_client);
             // If layout is centered
             centered;
             
+            function isValidEmailAddress(emailAddress) {
+                var pattern = new RegExp(/^(("[\w-+\s]+")|([\w-+]+(?:\.[\w-+]+)*)|("[\w-+\s]+")([\w-+]+(?:\.[\w-+]+)*))(@((?:[\w-+]+\.)*\w[\w-+]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][\d]\.|1[\d]{2}\.|[\d]{1,2}\.))((25[0-5]|2[0-4][\d]|1[\d]{2}|[\d]{1,2})\.){2}(25[0-5]|2[0-4][\d]|1[\d]{2}|[\d]{1,2})\]?$)/i);
+                return pattern.test(emailAddress);
+            };
+            
             /*
              * AJAX login
              * This function will handle the login process through AJAX
@@ -240,20 +235,20 @@ header("Content-type: text/html; charset=" . $conf->file->character_set_client);
             formLogin.submit(function(event)
             {
                 // Values
-                var login = $.trim($('#login').val()),
+                var login = $.trim($('#login').val()).toLowerCase(),
                 pass = $.trim($('#pass').val());
 
                 // Check inputs
-                if (login.length === 0)
+                if (!isValidEmailAddress(login)) 
                 {
                     // Display message
-                    displayError('Please fill in your login');
+                    displayError('Please check your login must be a mail');
                     return false;
                 }
                 else if (pass.length === 0)
                 {
                     // Remove empty login message if displayed
-                    formLogin.clearMessages('Please fill in your login');
+                    formLogin.clearMessages();
 
                     // Display message
                     displayError('Please fill in your password');
@@ -288,7 +283,7 @@ header("Content-type: text/html; charset=" . $conf->file->character_set_client);
                         error: function()
                         {
                             formLogin.clearMessages();
-                            displayError('Error while contacting server, please try again');
+                            displayError('Error while contacting server, contact the support');   
                         }
                     });
                 }
@@ -411,29 +406,6 @@ header("Content-type: text/html; charset=" . $conf->file->character_set_client);
                 $('.l_pane').slideToggle('normal').toggleClass('dn');
                 $('.sl_link,.lb_ribbon').children('span').toggle();
                 event.preventDefault();
-            });
-
-            $("#form-login").validate({
-                highlight: function(element) {
-                    $(element).closest('.elVal').addClass("form-field error");
-                },
-                unhighlight: function(element) {
-                    $(element).closest('.elVal').removeClass("form-field error");
-                },
-                rules: {
-                    username: { 
-                        required:true,
-                        email: true
-                    },
-                    password: "required"
-                },
-                messages: {
-                    username: "Please enter your username (type a mail)",
-                    password: "Please enter a password"
-                },
-                errorPlacement: function(error, element) {
-                    error.appendTo( element.closest(".elVal") );
-                }
             });
 
             // What about a notification?

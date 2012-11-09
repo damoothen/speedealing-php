@@ -164,7 +164,7 @@ class User extends nosqlDocument {
         // Test if User is a global administrator
         try {
             $admins = $this->couchAdmin->getUserAdmins();
-            $name = substr($login, 5); // suppress org.couchdb.user:
+            $name = $this->couchAdmin->getLoginSession();
             if (isset($admins->$name))
                 $this->superadmin = true;
             else
