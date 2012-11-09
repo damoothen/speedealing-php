@@ -184,7 +184,7 @@ class User extends nosqlDocument {
                 $this->admin = false;
         }
 
-        try {
+        /*try {
             $database = new UserDatabase($this->db);
             $database->fetch($conf->Couchdb->name);
             $result = $database->couchAdmin->getDatabaseAdminUsers(); // Administrateur local de la bd
@@ -194,7 +194,7 @@ class User extends nosqlDocument {
             }
         } catch (Exception $e) {
             
-        }
+        }*/
 
         $this->id = $this->_id;
         $this->login = $this->name;

@@ -36,8 +36,6 @@ $langs->load("commercial");
 
 $couchdb = clone $couch;
 
-$couchdb->useDatabase("_users");
-
 /*
  * Paging
  */
@@ -50,13 +48,13 @@ if (!$user->rights->societe->client->voir && !$socid) {
     $search_sale = $user->id;
 }
 
+$entity = $conf->Couchdb->name;
+
 $flush = 0;
 if ($flush) {
 
-    $entity = $conf->Couchdb->name;
-
     // reset old value
-    $couchdb->setQueryParameters(array("key" => $entity));
+    //$couchdb->setQueryParameters(array("key" => $entity));
     $result = $couchdb->limit(50000)->getView('User', 'target_id');
     $i = 0;
 
@@ -105,34 +103,54 @@ $result = $db->query($sql);
 //print $sql;
 
 $couchAdmin = new couchAdmin($couchdb);
+$user = new User($db);
 
 $i = 0;
 
 while ($aRow = $db->fetch_object($result)) {
     try {
-        $couchAdmin->createUser($aRow->login, $aRow->pass);
-
-        $col[$aRow->rowid] = $couchAdmin->getUser($aRow->login);
-        $col[$aRow->rowid]->tms = $db->jdate($aRow->tms);
-        $col[$aRow->rowid]->Lastname = $aRow->name;
-        $col[$aRow->rowid]->Firstname = $aRow->firstname;
-        $col[$aRow->rowid]->PhonePro = $aRow->office_phone;
-        $col[$aRow->rowid]->Fax = $aRow->office_fax;
-        $col[$aRow->rowid]->PhoneMobile = $aRow->user_mobile;
-        $col[$aRow->rowid]->EMail = $aRow->email;
-        $col[$aRow->rowid]->Signature = $aRow->signature;
-        $col[$aRow->rowid]->Status = (bool) $aRow->statut;
-        $col[$aRow->rowid]->Photo = $aRow->photo;
-        $col[$aRow->rowid]->Lang = $aRow->lang;
-        $col[$aRow->rowid]->entity = $conf->Couchdb->name;
-        $col[$aRow->rowid]->entityList[] = $conf->Couchdb->name;
+        //$couchAdmin->createUser($aRow->login, $aRow->pass);
+        //$col[$aRow->rowid] = $couchAdmin->getUser($aRow->login);
+        $user->load("user:" . $aRow->login);
+        $col[$aRow->rowid]->_rev = $user->_rev;
     } catch (Exception $e) {
         print $e->getMessage();
-        print " <b>User exist</b><br>";
+        print " <b>Not exist</b><br>";
+    }
+    // Verification email sinon construction automatique
+    if (empty($aRow->email)) {
+        $aRow->email = $aRow->login . '@' . $entity . '.fr';
+        if ($aRow->login == "admin")
+            $aRow->email = "admin@speedealing.com";
     }
 
-    print_r($col[$aRow->rowid]);
-    exit;
+    $col[$aRow->rowid]->_id = "user:" . $aRow->login;
+    $col[$aRow->rowid]->login = $aRow->login;
+    $col[$aRow->rowid]->tms = $db->jdate($aRow->tms);
+    $col[$aRow->rowid]->Lastname = $aRow->name;
+    $col[$aRow->rowid]->Firstname = $aRow->firstname;
+    $col[$aRow->rowid]->PhonePro = $aRow->office_phone;
+    $col[$aRow->rowid]->Fax = $aRow->office_fax;
+    $col[$aRow->rowid]->PhoneMobile = $aRow->user_mobile;
+    $col[$aRow->rowid]->email = $aRow->email;
+    $col[$aRow->rowid]->rowid = $aRow->rowid;
+    $col[$aRow->rowid]->signature = $aRow->signature;
+    $col[$aRow->rowid]->Status = (bool) $aRow->statut;
+    if ($col[$aRow->rowid]->Status)
+        $col[$aRow->rowid]->Status = "ENABLE";
+    else
+        $col[$aRow->rowid]->Status = "DISABLE";
+
+    $col[$aRow->rowid]->Lang = $aRow->lang;
+    $col[$aRow->rowid]->class = "User";
+    if ($aRow->login == "admin")
+        $col[$aRow->rowid]->group = array("administrator");
+    else
+        $col[$aRow->rowid]->group = array();
+
+
+    //print_r($col[$aRow->rowid]);
+    //exit;
 
     $i++;
 }
@@ -147,10 +165,16 @@ $sql.= " " . MAIN_DB_PREFIX . "usergroup_user as ug";
 $sql.= " WHERE ug.fk_usergroup = g.rowid";
 $result = $db->query($sql);
 
-/* init society sales array  */
+/* create group  */
 while ($aRow = $db->fetch_object($result)) {
     if (!empty($col[$aRow->fk_user]->rowid)) {
-        $couchAdmin->addRoleToUser($col[$aRow->fk_user]->name, $aRow->nom);
+        $group[$aRow->nom]->_id = 'group:' . strtolower($aRow->nom);
+        $group[$aRow->nom]->name = $aRow->nom;
+        $group[$aRow->nom]->class = "UserGroup";
+        $group[$aRow->nom]->right = new stdClass();
+
+        $col[$aRow->fk_user]->group[] = strtolower($aRow->nom);
+        //$couchAdmin->addRoleToUser($col[$aRow->fk_user]->name, $aRow->nom);
     }
 }
 $db->free($result);
@@ -160,6 +184,7 @@ unset($result);
 
 try {
     $result = $couchdb->storeDocs($col, false);
+    $result = $couchdb->storeDocs($group, false);
 } catch (Exception $e) {
     echo "Something weird happened: " . $e->getMessage() . " (errcode=" . $e->getCode() . ")\n";
     exit(1);
