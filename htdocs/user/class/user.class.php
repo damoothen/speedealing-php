@@ -1504,8 +1504,8 @@ class User extends nosqlDocument {
         $admins = $this->getDatabaseAdminUsers();
         $enabled = $this->getDatabaseReaderUsers();
 
-        print_r($enabled);
-        print_r($admins);
+        //print_r($enabled);
+        //print_r($admins);
 
         $name = $this->email;
         if (in_array($name, $admins)) // Is Localadministrator

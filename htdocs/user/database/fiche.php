@@ -246,7 +246,7 @@ if ($action == 'create') {
                     print '<td>' . $useringroup->LibStatus($useringroup->values->Status) . '</td>';
                     print '<td>';
                     if ($user->admin) {
-                        print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=removeuser&amp;user=' . $useringroup->values->name . '">';
+                        print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=removeuser&amp;user=' . $useringroup->id . '">';
                         print img_delete($langs->trans("RemoveFromGroup"));
                     } else {
                         print "-";

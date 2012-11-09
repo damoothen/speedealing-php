@@ -610,37 +610,15 @@ if (($action == 'create') || ($action == 'adduserldap')) {
             print '<div class="tabsAction">';
             print '<span class="button-group">';
             if ($caneditfield) {
-                if (!empty($conf->global->MAIN_ONLY_LOGIN_ALLOWED)) {
-                    print '<a class="button" href="#" title="' . dol_escape_htmltag($langs->trans("DisabledInMonoUserMode")) . '">' . $langs->trans("Modify") . '</a>';
-                } else {
                     print '<a class="button icon-pencil" href="' . $_SERVER["PHP_SELF"] . '?id=' . $fuser->id . '&amp;action=edit">' . $langs->trans("Modify") . '</a>';
-                }
-            }
-
-            // Si on a un gestionnaire de generation de mot de passe actif
-            if ($conf->global->USER_PASSWORD_GENERATED != 'none') {
-                if ($fuser->Status == "DISABLE") {
-                    print '<a class="button disabled" href="#" title="' . dol_escape_htmltag($langs->trans("UserDisabled")) . '">' . $langs->trans("ReinitPassword") . '</a>';
-                } elseif (($user->id != $id && $caneditpassword) && $fuser->login && !$fuser->ldap_sid) {
-                    print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $fuser->id . '&amp;action=password">' . $langs->trans("ReinitPassword") . '</a>';
-                }
-
-                if ($fuser->Status == "DISABLE") {
-                    print '<a class="button disabled" href="#" title="' . dol_escape_htmltag($langs->trans("UserDisabled")) . '">' . $langs->trans("SendNewPassword") . '</a>';
-                } else if (($user->id != $id && $caneditpassword) && $fuser->login && !$fuser->ldap_sid) {
-                    if ($fuser->email)
-                        print '<a class="button " href="' . $_SERVER["PHP_SELF"] . '?id=' . $fuser->id . '&amp;action=passwordsend">' . $langs->trans("SendNewPassword") . '</a>';
-                    else
-                        print '<a class="button disabled" href="#" title="' . dol_escape_htmltag($langs->trans("NoEMail")) . '">' . $langs->trans("SendNewPassword") . '</a>';
-                }
             }
 
             // Activer
-            if ($user->id <> $id && $candisableuser && $fuser->Status != "ENABLE") {
+            if ($candisableuser && $fuser->Status != "ENABLE") {
                 print '<a class="button icon-unlock" href="' . $_SERVER["PHP_SELF"] . '?id=' . $fuser->id . '&amp;action=enable">' . $langs->trans("Reactivate") . '</a>';
             }
             // Desactiver
-            if ($user->id <> $id && $candisableuser && $fuser->Status == "ENABLE") {
+            if ($candisableuser && $fuser->Status == "ENABLE") {
                 print '<a class="button icon-lock" href="' . $_SERVER["PHP_SELF"] . '?action=disable&amp;id=' . $fuser->id . '">' . $langs->trans("DisableUser") . '</a>';
             }
             // Delete

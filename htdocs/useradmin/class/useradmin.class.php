@@ -117,7 +117,7 @@ class UserAdmin extends nosqlDocument {
             //}
         }*/
         
-        print $login . "<br>";
+        //print $login . "<br>";
 
         try {
             $this->load($login);

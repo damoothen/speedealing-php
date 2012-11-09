@@ -1042,18 +1042,18 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
             <li class="current"><a href="index.php?idmenu=menu:home"
                                    title="Dashboard"><img src="theme/common/modules/Maps.png" />Dashboard</a>
             </li>
-            <li><a href="inbox.html" title="Messages"><img
-                        src="theme/common/modules/Mail_alt.png" />Messages</a></li>
-            <li><a href="agenda.html" title="Agenda"><img
+            <li><span href="inbox.html" title="Messages"><img
+                        src="theme/common/modules/Mail_alt.png" />Messages</span></li>
+            <li><a href="agenda/list.php?idmenu=menu:agendaList" title="Agenda"><img
                         src="theme/common/modules/Calendar.png" />Agenda</a></li>
-            <li><a href="tables.html" title="Contacts"><img
-                        src="theme/common/modules/Contacts.png" />Contacts</a></li>
-            <li><a href="explorer.html" title="Medias"><img
-                        src="theme/common/modules/Photos.png" />Medias</a></li>
-            <li><a href="sliders.html" title="Stats"><img
-                        src="theme/common/modules/Stocks.png" />Stats</a></li>
-            <li><a href="form.html" title="Settings"><img
-                        src="theme/common/modules/Settings.png" />Settings</a></li>
+            <li><span href="tables.html" title="Contacts"><img
+                        src="theme/common/modules/Contacts.png" />Contacts</span></li>
+            <li><span href="explorer.html" title="Medias"><img
+                        src="theme/common/modules/Photos.png" />Medias</span></li>
+            <li><span href="sliders.html" title="Stats"><img
+                        src="theme/common/modules/Stocks.png" />Stats</span></li>
+            <li><span href="form.html" title="Settings"><img
+                        src="theme/common/modules/Settings.png" />Settings</span></li>
             <li><span title="Notes"><img src="theme/common/modules/Notes.png" />Notes</span>
             </li>
         </ul>
@@ -1160,8 +1160,8 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                     <li style="width: 20%;"><a href="index.php?idmenu=menu:home"
                                                title="<?php echo $langs->trans("Home"); ?>"><span class="icon-home"></span>
                         </a></li>
-                    <li style="width: 20%;"><a href="inbox.html" title="Messages"><span class="icon-inbox"></span>
-                        </a></li>
+                    <li style="width: 20%;"><span href="inbox.html" title="Messages"><span class="icon-inbox"></span>
+                        </span></li>
                     <li style="width: 20%;"><a href="agenda/list.php?idmenu=menu:agendaList" title="<?php echo $langs->trans("Agenda"); ?>"><span class="icon-calendar"></span><?php
                                  require_once(DOL_DOCUMENT_ROOT . "/agenda/class/agenda.class.php");
                                  $agenda = new Agenda($db);

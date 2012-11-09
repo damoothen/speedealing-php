@@ -1,9 +1,9 @@
 <?php
 /* Copyright (C) 2001-2004	Rodolphe Quiedeville	<rodolphe@quiedeville.org>
- * Copyright (C) 2004-2012	Laurent Destailleur		<eldy@users.sourceforge.net>
- * Copyright (C) 2005-2012	Regis Houssin			<regis@dolibarr.fr>
- * Copyright (C) 2011-2012  Herve Prot              <herve.prot@symeos.com>
- * Copyright (C) 2011   	Juanjo Menent			<jmenent@2byte.es>
+ * Copyright (C) 2004-2012	Laurent Destailleur	<eldy@users.sourceforge.net>
+ * Copyright (C) 2005-2012	Regis Houssin		<regis@dolibarr.fr>
+ * Copyright (C) 2011-2012      Herve Prot              <herve.prot@symeos.com>
+ * Copyright (C) 2011   	Juanjo Menent		<jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,10 +19,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * 	\file       htdocs/index.php
- * 	\brief      Speedealing home page
- */
 define('NOCSRFCHECK', 1); // This is login page. We must be able to go on it from another web site.
 
 require("./main.inc.php");
@@ -30,8 +26,6 @@ require_once(DOL_DOCUMENT_ROOT . "/core/class/html.formother.class.php");
 
 
 // If not defined, we select menu "home"
-if (!isset($_GET["mainmenu"]))
-    $_GET["mainmenu"] = "home";
 $action = GETPOST('action');
 
 
@@ -49,8 +43,6 @@ if (!isset($conf->global->MAIN_INFO_SOCIETE_NOM) || empty($conf->global->MAIN_IN
     header("Location: " . DOL_URL_ROOT . "/admin/company.php?mainmenu=home&leftmenu=setup&mesg=setupnotcomplete");
     exit;
 }
-
-
 
 /*
  * View
@@ -125,7 +117,7 @@ print end_box();
 /*
  * Speedealing Working Board with weather
  */
-$showweather = empty($conf->global->MAIN_DISABLE_METEO) ? 1 : 0;
+/*$showweather = empty($conf->global->MAIN_DISABLE_METEO) ? 1 : 0;
 $rowspan = 0;
 $dashboardlines = array();
 print start_box($langs->trans("DolibarrWorkBoard"), "eight", "16-Cloud.png");
@@ -366,7 +358,7 @@ foreach ($dashboardlines as $key => $board) {
 
 print '</table>';   // End table array
 print end_box();
-
+*/
 /*
  * Dashboard Speedealing states (statistics)
  * Hidden for external users
@@ -375,7 +367,7 @@ $langs->load("commercial");
 $langs->load("bills");
 $langs->load("orders");
 
-if ($user->societe_id == 0) {
+/*if ($user->societe_id == 0) {
     print start_box($langs->trans("DolibarrStateBoard"), 'four', '16-Graph.png');
     print '<table class="noborder" width="100%">';
 
@@ -521,17 +513,15 @@ if ($user->societe_id == 0) {
 
     print '</table>';
     print end_box();
-}
-
-print '</div>';
+}*/
 
 /*
  * Show boxes
  */
 
-print '<div class="twelve-columns">';
-FormOther::printBoxesArea($user, "0");
-print '</div></div>';
+//print '<div class="twelve-columns">';
+//FormOther::printBoxesArea($user, "0");
+//print '</div></div>';
 /*
  * Show security warnings
  */
