@@ -35,6 +35,8 @@ $langs->load("commercial");
 //print substr($conf->couchdb->host, 7);exit;
 
 $couchdb = clone $couch;
+$couchdbuser = clone $couch;
+$couchdbuser->useDatabase("_users");
 
 /*
  * Paging
@@ -56,9 +58,13 @@ if ($flush) {
     // reset old value
     //$couchdb->setQueryParameters(array("key" => $entity));
     $result = $couchdb->limit(50000)->getView('User', 'target_id');
+
+    $couchdbuser->setQueryParameters(array("key" => $entity));
+    $result2 = $couchdbuser->limit(50000)->getView('UserAdmin', 'target_id');
+
     $i = 0;
 
-    if (count($result->rows) == 0) {
+    if (count($result->rows) == 0 && count($result2->rows) == 0) {
         print "Effacement terminé";
         exit;
     }
@@ -69,8 +75,18 @@ if ($flush) {
         $i++;
     }
 
+    $i = 0;
+    foreach ($result2->rows AS $aRow) {
+        $obj2[$i]->_id = $aRow->value->_id;
+        $obj2[$i]->_rev = $aRow->value->_rev;
+        $i++;
+    }
+
     try {
-        $couchdb->deleteDocs($obj);
+        if (count($obj))
+            $couchdb->deleteDocs($obj);
+        if (count($obj2))
+            $couchdbuser->deleteDocs($obj2);
     } catch (Exception $e) {
         echo "Something weird happened: " . $e->getMessage() . " (errcode=" . $e->getCode() . ")\n";
         exit(1);
@@ -103,16 +119,17 @@ $result = $db->query($sql);
 //print $sql;
 
 $couchAdmin = new couchAdmin($couchdb);
-$user = new User($db);
+$object = new User($db);
 
 $i = 0;
 
 while ($aRow = $db->fetch_object($result)) {
+
+    $aRow->login = strtolower(dol_delaccents($aRow->login)); // supprime les accents
+
     try {
-        //$couchAdmin->createUser($aRow->login, $aRow->pass);
-        //$col[$aRow->rowid] = $couchAdmin->getUser($aRow->login);
-        $user->load("user:" . $aRow->login);
-        $col[$aRow->rowid]->_rev = $user->_rev;
+        $object->load("user:" . $aRow->login);
+        $col[$aRow->rowid]->_rev = $object->_rev;
     } catch (Exception $e) {
         print $e->getMessage();
         print " <b>Not exist</b><br>";
@@ -122,6 +139,17 @@ while ($aRow = $db->fetch_object($result)) {
         $aRow->email = $aRow->login . '@' . $entity . '.fr';
         if ($aRow->login == "admin")
             $aRow->email = "admin@speedealing.com";
+    }
+
+    try {
+        if ($user->superadmin) {
+            $colAdmin[$aRow->rowid] = $couchAdmin->getUser($aRow->email);
+            $exist = true;
+        }
+    } catch (Exception $e) {
+        $couchAdmin->createUser($aRow->email, $aRow->pass);
+        $colAdmin[$aRow->rowid] = $couchAdmin->getUser($aRow->email);
+        $exist = false;
     }
 
     $col[$aRow->rowid]->_id = "user:" . $aRow->login;
@@ -146,12 +174,32 @@ while ($aRow = $db->fetch_object($result)) {
 
     $col[$aRow->rowid]->group = array();
 
+    if ($exist) {
+        if (!in_array($entity, $colAdmin[$aRow->rowid]->entityList)) // Not already in the list
+            $colAdmin[$aRow->rowid]->entityList[] = $entity;
+    } else {
+        $colAdmin[$aRow->rowid]->Status = $col[$aRow->rowid]->Status;
+        $colAdmin[$aRow->rowid]->Lastname = $aRow->name;
+        $colAdmin[$aRow->rowid]->Firstname = $aRow->firstname;
+        $colAdmin[$aRow->rowid]->entity = $entity;
+        $colAdmin[$aRow->rowid]->CreateDate = dol_now();
+        $colAdmin[$aRow->rowid]->entityList[] = $entity;
+    }
+
+    if ($aRow->email != "admin@speedealing.com") { // Already a super admin
+        if ($aRow->admin)
+            $couchAdmin->addDatabaseAdminUser($aRow->email);
+        else
+            $couchAdmin->addDatabaseReaderUser($aRow->email); // Add database reader role for user
+    }
 
     //print_r($col[$aRow->rowid]);
     //exit;
 
     $i++;
 }
+
+//print_r($colAdmin);
 
 $db->free($result);
 unset($result);
@@ -209,11 +257,12 @@ while ($aRow = $db->fetch_object($result)) {
 $db->free($result);
 unset($result);
 
-//print_r($group);exit;
+//print_r($colAdmin);exit;
 
 try {
     $result = $couchdb->storeDocs($col, false);
     $result = $couchdb->storeDocs($group, false);
+    $result = $couchdbuser->storeDocs($colAdmin, false);
 } catch (Exception $e) {
     echo "Something weird happened: " . $e->getMessage() . " (errcode=" . $e->getCode() . ")\n";
     exit(1);
@@ -221,5 +270,5 @@ try {
 
 print_r($result);
 
-print "Import société terminée : " . count($col);
+print "Import user terminée : " . count($col);
 ?>

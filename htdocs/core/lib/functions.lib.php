@@ -3235,6 +3235,30 @@ function dol_htmlcleanlastbr($stringtodecode) {
 }
 
 /**
+ * 	This function remove all accent in a text
+ *
+ * 	@param	string	$str		String with accent
+ * 	@return	string			String without accent
+ */
+function dol_delaccents($str, $encoding='utf-8')
+{
+    // transformer les caractères accentués en entités HTML
+    $str = htmlentities($str, ENT_NOQUOTES, $encoding);
+ 
+    // remplacer les entités HTML pour avoir juste le premier caractères non accentués
+    // Exemple : "&ecute;" => "e", "&Ecute;" => "E", "Ã " => "a" ...
+    $str = preg_replace('#&([A-za-z])(?:acute|grave|cedil|circ|orn|ring|slash|th|tilde|uml);#', '\1', $str);
+ 
+    // Remplacer les ligatures tel que : Œ, Æ ...
+    // Exemple "Å“" => "oe"
+    $str = preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $str);
+    // Supprimer tout le reste
+    $str = preg_replace('#&[^;]+;#', '', $str);
+ 
+    return $str;
+}
+
+/**
  * Replace html_entity_decode functions to manage errors
  *
  * @param   string	$a		Operand a
