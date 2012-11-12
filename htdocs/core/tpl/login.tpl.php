@@ -196,25 +196,7 @@ if (!empty($conf->global->MAIN_GOOGLE_AD_CLIENT) && !empty($conf->global->MAIN_G
     <script src="theme/symeos/js/developr.tooltip.js"></script>
 
     <script>
-
-        /*
-         * How do I hook my login script to this?
-         * --------------------------------------
-         *
-         * This script is meant to be non-obtrusive: if the user has disabled javascript or if an error occurs, the login form
-         * works fine without ajax.
-         *
-         * The only part you need to edit is the login script between the EDIT SECTION tags, which does inputs validation
-         * and send data to server. For instance, you may keep the validation and add an AJAX call to the server with the
-         * credentials, then redirect to the dashboard or display an error depending on server return.
-         *
-         * Or if you don't trust AJAX calls, just remove the event.preventDefault() part and let the form be submitted.
-         */
         $(document).ready(function() {
-            /*
-             * JS login effect
-             * This script will enable effects for the login page
-             */
             // Elements
             var doc = $('html').addClass('js-login'),
             container = $('#container'),
@@ -228,10 +210,6 @@ if (!empty($conf->global->MAIN_GOOGLE_AD_CLIENT) && !empty($conf->global->MAIN_G
                 return pattern.test(emailAddress);
             };
             
-            /*
-             * AJAX login
-             * This function will handle the login process through AJAX
-             */
             formLogin.submit(function(event)
             {
                 // Values
@@ -262,11 +240,18 @@ if (!empty($conf->global->MAIN_GOOGLE_AD_CLIENT) && !empty($conf->global->MAIN_G
                     // Show progress
                     displayLoading('Checking credentials...');
                     event.preventDefault();
+                    
+                    var urlPrefix;
+                    
+                    if(this.urlPrefix === undefined)
+                        urlPrefix = "";
+                    else
+                        urlPrefix = this.urlPrefix + "";
 
                     // Stop normal behavior
                     event.preventDefault();
                     $.ajax({
-                        type: "POST", url: this.urlPrefix + "/db/_session", dataType: "json",
+                        type: "POST", url: urlPrefix + "/db/_session", dataType: "json",
                         data: {name: login, password: pass},
                         beforeSend: function(xhr) {
                             xhr.setRequestHeader('Accept', 'application/json');

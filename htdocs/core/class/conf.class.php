@@ -144,6 +144,7 @@ class Conf extends nosqlDocument {
             try {
                 $result = $this->load('const');
                 //print_r($result);
+                
                 dol_setcache("const", $result);
             } catch (Exception $e) {
                 dol_print_error("", $e->getMessage());

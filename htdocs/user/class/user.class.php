@@ -122,17 +122,16 @@ class User extends nosqlDocument {
      * 	@return	int							<0 if KO, 0 not found, >0 if OK
      */
     function fetch($login = "") {
-        global $conf;
+        global $conf, $couch;
 
         // Clean parametersadmin
         $login = trim($login);
 
         if (empty($login)) {
-            //try {
+
             $login = $this->couchAdmin->getLoginSession();
-            //} catch (Exception $e) {
-            //    return 0;
-            //}
+            if (empty($login))
+                return 0;
         }
 
         if ($conf->Couchdb->name == '_users') {
@@ -140,11 +139,12 @@ class User extends nosqlDocument {
 
             $user_config = new UserAdmin($db);
             $user_config->fetch("org.couchdb.user:" . $login); // Load for default entity
-            if (!empty($user_config->NewConnection))
-                $user_config->set("LastConnection", $user_config->NewConnection);
-            $user_config->set("NewConnection", dol_now());
-            //print_r($user_config->entity);
-            //$couch->useDatabase($user_config->entity);
+            $user_config->LastConnection = $user_config->NewConnection;
+            $user_config->NewConnection = dol_now();
+            $user_config->record();
+            //print_r($login);
+            //exit;
+            $couch->useDatabase($user_config->entity);
             $conf->Couchdb->name = $user_config->entity;
             dol_setcache("dol_entity", $user_config->entity);
             $this->useDatabase($user_config->entity);

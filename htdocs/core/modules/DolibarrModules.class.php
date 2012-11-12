@@ -57,10 +57,11 @@ class DolibarrModules extends nosqlDocument {
 
     function __construct($db) {
         global $couch;
+        
         parent::__construct($db);
 
         try {
-            $this->global = $couch->getDoc("const");
+            $this->global = $couch->getDoc("const", true);
         } catch (Exception $e) {
             dol_print_error('', "Error : no const document in database" . $e->getMessage());
         }
