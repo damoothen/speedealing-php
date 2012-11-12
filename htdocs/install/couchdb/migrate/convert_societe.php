@@ -185,8 +185,8 @@ $resultCommerciaux = $db->query($sql);
 /* init society sales array  */
 while ($aRow = $db->fetch_object($resultCommerciaux)) {
     if (!empty($col[$aRow->fk_soc]->rowid)) {
-        $col[$aRow->fk_soc]->commercial_id->id = "org.couchdb.user:" . $aRow->login;
-        $col[$aRow->fk_soc]->commercial_id->name = $aRow->login;
+        $col[$aRow->fk_soc]->commercial_id->id = "user:" . strtolower(dol_delaccents($aRow->login));
+        $col[$aRow->fk_soc]->commercial_id->name = strtolower(dol_delaccents($aRow->login));
     }
 }
 $db->free($resultCommerciaux);

@@ -1860,13 +1860,27 @@ class Societe extends nosqlDocument {
             $langs->load("companies");
 
             $params = array('group' => true);
-            $result = $this->getView("count_status", $params);
+            if ($user->rights->societe->client->voir) { // See ALL
+                $params = array('group' => true);
+                $result = $this->getView("count_status", $params);
+                $filter = false;
+            } else {
+                $params = array('group' => true, "startkey" => array($user->id), "endkey"=>array($user->id, new stdClass()));
+                $result = $this->getView("count_statusByComm", $params);
+                $filter = true;
+            }
 
             //print_r($result);
             $i = 0;
 
             foreach ($result->rows as $aRow) {
-                $label = $langs->trans($aRow->key);
+                if($filter)
+                    $key = $aRow->key[1];
+                else
+                    $key = $aRow->key;
+                $label = $langs->trans($this->fk_extrafields->fields->Status->values->$key->label);
+                if (empty($label))
+                    $label = $langs->trans($aRow->key);
 
                 if ($i == 0) { // first element
                     $output[$i]->name = $label;
@@ -1905,7 +1919,7 @@ class Societe extends nosqlDocument {
                         // create the chart when all data is loaded
                         function createChart() {
                             var chart;
-                                                                                                                                                                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                                                                                                                                                                                        
                             chart = new Highcharts.Chart({
                                 chart: {
                                     renderTo: "pie-status",
@@ -2046,7 +2060,7 @@ class Societe extends nosqlDocument {
                             // create the chart when all data is loaded
                             function createChart() {
                                 var chart;
-                                                                                                                                                                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                                                                                                                                                                                        
                                 chart = new Highcharts.Chart({
                                     chart: {
                                         renderTo: 'bar-status',
@@ -2061,7 +2075,9 @@ class Societe extends nosqlDocument {
                                         categories: [<?php
             $i = 0;
             foreach ($this->fk_extrafields->fields->Status->values as $key => $aRow) {
-                $label = $langs->trans($key);
+                $label = $langs->trans($aRow->label);
+                if (empty($label))
+                    $label = $langs->trans($key);
                 if ($aRow->enable) {
                     if ($i == 0)
                         echo "'" . $label . "'";
