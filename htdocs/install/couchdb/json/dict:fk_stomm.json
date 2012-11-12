@@ -1,0 +1,79 @@
+{
+   "_id": "dict:fk_stcomm",
+   "_rev": "5-bc0094ac81e7dc608b4c7d9e342aeb1d",
+   "values": {
+       "ST_NO": {
+           "enable": true,
+           "label": "Ne pas contacter",
+           "type": "closed",
+           "cssClass": "red-gradient"
+       },
+       "ST_NEVER": {
+           "enable": true,
+           "label": "Jamais contacté",
+           "type": "suspect",
+           "cssClass": "grey-gradient"
+       },
+       "ST_TODO": {
+           "enable": false,
+           "label": "A contacter",
+           "type": "suspect",
+           "cssClass": "blue-gradient"
+       },
+       "ST_PEND": {
+           "enable": false,
+           "label": "Contact en cours",
+           "type": "suspect",
+           "cssClass": "grey-gradient"
+       },
+       "ST_DONE": {
+           "enable": false,
+           "label": "Contactée",
+           "type": "suspect",
+           "cssClass": "green-gradient"
+       },
+       "ST_PFROI": {
+           "enable": true,
+           "label": "Prospect froid",
+           "type": "prospect",
+           "cssClass": "blue-gradient"
+       },
+       "ST_PTIED": {
+           "enable": false,
+           "label": "Prospect tiède",
+           "type": "prospect",
+           "cssClass": "orange-gradient"
+       },
+       "ST_PCHAU": {
+           "enable": true,
+           "label": "Prospect chaud",
+           "type": "prospect",
+           "cssClass": "red-gradient"
+       },
+       "ST_CINF3": {
+           "enable": true,
+           "label": "Client -3 mois",
+           "type": "customer",
+           "cssClass": "orange-gradient"
+       },
+       "ST_CREC": {
+           "enable": true,
+           "label": "Client récurrent",
+           "type": "customer",
+           "cssClass": "green-gradient"
+       },
+       "ST_CFID": {
+           "enable": true,
+           "label": "Client fidèle",
+           "type": "customer",
+           "cssClass": "green-gradient"
+       },
+       "ST_CPAR": {
+           "enable": false,
+           "label": "Client partenaire",
+           "type": "customer",
+           "cssClass": "green-gradient"
+       }
+   },
+   "class": "dict"
+}

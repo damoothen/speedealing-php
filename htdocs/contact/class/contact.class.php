@@ -72,14 +72,10 @@ class Contact extends nosqlDocument {
     function __construct($db) {
         parent::__construct($db);
 
-        try {
-            $fk_extrafields = new ExtraFields($db);
-            $this->fk_extrafields = $fk_extrafields->load("extrafields:" . get_class($this), true); // load and cache
-        } catch (Exception $e) {
-            $error = "Something weird happened: " . $e->getMessage() . " (errcode=" . $e->getCode() . ")\n";
-            print $error;
-            exit;
-        }
+
+        $this->fk_extrafields = new ExtraFields($db);
+        $this->fk_extrafields->fetch(get_class($this));
+
 
         $this->societe = (object) array();
 
@@ -846,7 +842,7 @@ class Contact extends nosqlDocument {
         $i = 0;
         $obj = new stdClass();
         $societe = new Societe($this->db);
-        
+
         /*
          * Barre d'actions
          *

@@ -515,9 +515,6 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
              * Fiche en mode edition
              */
 
-            $objsoc = new Societe($db);
-            $objsoc->fetch($object->societe->id);
-
             // Affiche les erreurs
             dol_htmloutput_errors($error, $errors);
 
@@ -553,7 +550,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
             // Ref
             print '<tr><td>' . $langs->trans("Ref") . '</td><td colspan="3">';
-            print $object->ref;
+            print $form->showrefnav($object, 'ref', '', 1, 'ref');
             print '</td></tr>';
 
             // Name

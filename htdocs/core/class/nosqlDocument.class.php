@@ -1197,34 +1197,7 @@ abstract class nosqlDocument extends CommonObject {
 
         $rtr = "";
         $rtr.= '<select data-placeholder="' . $title . '&hellip;" class="chzn-select expand" id="' . $htmlname . '" name="' . $htmlname . '" >';
-        if (isset($aRow->dict)) {
-            require_once(DOL_DOCUMENT_ROOT . "/admin/class/dict.class.php");
-            // load from dictionnary
-            try {
-                $dict = new Dict($this->db);
-                $values = $dict->load($aRow->dict, true);
-                //filter for country
-                if ($aRow->dict == "dict:fk_tva")
-                    $country_id = $mysoc->country_id;
-                else
-                    $country_id = $this->country_id;
-
-                foreach ($values->values as $idx => $row) {
-                    if (empty($row->pays_code) || $country_id == $row->pays_code) {
-                        if ($returnIndex)
-                            $aRow->values[$idx] = $row;
-                        else
-                            $aRow->values[] = $row;
-                    }
-                }
-                //print_r($aRow->values);
-
-                if (count($aRow->values) == 0)
-                    return '<font class="error">' . $langs->trans("ErrorYourCountryIsNotDefined") . '</div>';
-            } catch (Exception $e) {
-                dol_print_error('', $e->getMessage());
-            }
-        } elseif (isset($aRow->class)) { // Is an object
+        if (isset($aRow->class)) { // Is an object
             $class = $aRow->class;
             $object = new $class($this->db);
 
@@ -1305,28 +1278,7 @@ abstract class nosqlDocument extends CommonObject {
         if (is_object($this->$key) && empty($this->$key->id))
             return null;
 
-        if (isset($aRow->dict)) {
-            require_once(DOL_DOCUMENT_ROOT . "/admin/class/dict.class.php");
-            // load from dictionnary
-            try {
-                $dict = new Dict($this->db);
-                $values = $dict->load($aRow->dict, true);
-                //filter for country
-
-                if (isset($values->values->$value->label)) {
-                    if (isset($values->values->$value->unicode)) {// For Currency symbol
-                        foreach ($values->values->$value->unicode as $unicode)
-                            return mb_convert_encoding("&#{$unicode};", "UTF-8", 'HTML-ENTITIES');
-                    }
-                    else
-                        return $langs->trans($values->values->$value->label);
-                }
-                else
-                    return $langs->trans($value);
-            } catch (Exception $e) {
-                dol_print_error('', $e->getMessage());
-            }
-        } elseif (isset($aRow->class)) { // Is an object
+        if (isset($aRow->class)) { // Is an object
             $class = $aRow->class;
             dol_include_once("/" . strtolower($class) . "/class/" . strtolower($class) . ".class.php");
             $object = new $class($this->db);
@@ -1337,7 +1289,7 @@ abstract class nosqlDocument extends CommonObject {
             return $this->LibStatus($value, array("key" => $key));
         }
 
-        if (isset($aRow->values->$value->label)) {
+       if (isset($aRow->values->$value->label)) {
             $out.= $langs->trans($aRow->values->$value->label);
         }
         else

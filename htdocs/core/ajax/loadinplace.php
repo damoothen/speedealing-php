@@ -72,32 +72,7 @@ if (!empty($key) && !empty($class)) {
         $return['selected'] = $object->fk_extrafields->fields->$key->default;
 
     $aRow = $object->fk_extrafields->fields->$key;
-    if (isset($aRow->dict)) {
-        require_once(DOL_DOCUMENT_ROOT . "/admin/class/dict.class.php");
-        // load from dictionnary
-        try {
-            $dict = new Dict($db);
-            $values = $dict->load($aRow->dict, true);
-            //filter for country
-            if ($aRow->dict == "dict:fk_tva")
-                $country_id = $mysoc->country_id;
-            else
-                $country_id = $object->country_id;
-
-            foreach ($values->values as $idx => $row) {
-                if (empty($row->pays_code) || $country_id == $row->pays_code) {
-                    if ($aRow->noIndex) // No code : example for fk_tva set true
-                        $aRow->values[] = $row;
-                    else
-                        $aRow->values[$idx] = $row;
-                }
-            }
-            //print_r($aRow->values);
-        } catch (Exception $e) {
-            dol_print_error('', $e->getMessage());
-        }
-    } 
-    elseif (isset($aRow->class)) { // Is an object
+    if (isset($aRow->class)) { // Is an object
         $class_obj = $aRow->class;
         dol_include_once("/" . strtolower($class_obj) . "/class/" . strtolower($class_obj) . ".class.php");
         $object_tmp = new $class_obj($db);
