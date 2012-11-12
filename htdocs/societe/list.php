@@ -220,6 +220,9 @@ print "</table>";
 
 //$obj->bServerSide = true;
 //$obj->sDom = 'C<\"clear\">lfrtip';
+if (!$user->rights->societe->client->voir)
+    $obj->sAjaxSource = "core/ajax/listdatatables.php?json=listByCommercial&key=" . $user->id . "&class=" . get_class($object);
+
 $object->datatablesCreate($obj, "societe", true, true);
 
 //print end_box();

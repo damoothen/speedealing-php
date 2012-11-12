@@ -1865,8 +1865,8 @@ class Societe extends nosqlDocument {
                 $result = $this->getView("count_status", $params);
                 $filter = false;
             } else {
-                $params = array('group' => true, "startkey" => array($user->id), "endkey"=>array($user->id, new stdClass()));
-                $result = $this->getView("count_statusByComm", $params);
+                $params = array('group' => true, "startkey" => array($user->name), "endkey" => array($user->name, new stdClass()));
+                $result = $this->getView("commercial_status", $params);
                 $filter = true;
             }
 
@@ -1874,7 +1874,7 @@ class Societe extends nosqlDocument {
             $i = 0;
 
             foreach ($result->rows as $aRow) {
-                if($filter)
+                if ($filter)
                     $key = $aRow->key[1];
                 else
                     $key = $aRow->key;
@@ -1919,7 +1919,7 @@ class Societe extends nosqlDocument {
                         // create the chart when all data is loaded
                         function createChart() {
                             var chart;
-                                                                                                                                                                                                                                                                                                                                                                                                        
+                                                                                                                                                                                                                                                                                                                                                                                                                    
                             chart = new Highcharts.Chart({
                                 chart: {
                                     renderTo: "pie-status",
@@ -1992,7 +1992,7 @@ class Societe extends nosqlDocument {
             $keyend[1] = new stdClass();
 
             $params = array('group' => true, 'group_level' => 2, 'startkey' => $keystart, 'endkey' => $keyend);
-            $result = $this->getView("list_commercial", $params);
+            $result = $this->getView("commercial_status", $params);
 
             foreach ($this->fk_extrafields->fields->Status->values as $key => $aRow) {
                 //print_r($aRow);exit;
@@ -2023,8 +2023,13 @@ class Societe extends nosqlDocument {
                         yAxisOptions = [],
                         seriesCounter = 0,
                         names = [<?php
-            $params = array('group' => true, 'group_level' => 1);
-            $result = $this->getView("list_commercial", $params);
+            if ($user->rights->societe->client->voir) { // See ALL
+                $params = array('group' => true, 'group_level' => 1);
+                $result = $this->getView("commercial_status", $params);
+            } else {
+                $result->rows[0]->key = array($user->name);
+            }
+
 
             if (count($result->rows)) {
                 foreach ($result->rows as $aRow) {
@@ -2060,7 +2065,7 @@ class Societe extends nosqlDocument {
                             // create the chart when all data is loaded
                             function createChart() {
                                 var chart;
-                                                                                                                                                                                                                                                                                                                                                                                                        
+                                                                                                                                                                                                                                                                                                                                                                                                                    
                                 chart = new Highcharts.Chart({
                                     chart: {
                                         renderTo: 'bar-status',
