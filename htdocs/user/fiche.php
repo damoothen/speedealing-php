@@ -868,7 +868,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
 
                 $obj->aaSorting = array(array(1, 'asc'));
                 $obj->sDom = 'l<fr>t<\"clear\"rtip>';
-                $obj->iDisplayLength = -1;
+                $obj->iDisplayLength = 50;
 
                 print $object->datatablesCreate($obj, "perm_rights");
 

@@ -98,6 +98,34 @@ if ($action == 'adduser' || $action == 'removeuser') {
     }
 }
 
+if ($action == 'add_right' && $caneditperms) {
+    $editgroup = new Usergroup($db);
+    try {
+        $editgroup->load($id);
+
+        $editgroup->values->rights->$_GET['pid'] = true;
+        $editgroup->record();
+    } catch (Exception $e) {
+        $mesg = $e->getMessage();
+    }
+    Header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $id . "&mesg=" . urlencode($mesg));
+    exit;
+}
+
+if ($action == 'remove_right' && $caneditperms) {
+    $editgroup = new Usergroup($db);
+    try {
+        $editgroup->load($id);
+        unset($editgroup->values->rights->$_GET['pid']);
+
+        $editgroup->record();
+    } catch (Exception $e) {
+        $mesg = $e->getMessage();
+    }
+    Header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $id . "&mesg=" . urlencode($mesg));
+    exit;
+}
+
 /*
  * View
  */
@@ -148,26 +176,17 @@ if ($action == 'create') {
         /*
          * Affichage onglets
          */
-        $head = group_prepare_head($object);
         $title = $langs->trans("GroupCard") . " : " . $object->name;
 
         print_fiche_titre($title);
         print '<div class="with-padding">';
         print '<div class="columns">';
-        print start_box($title, "twelve", "16-Users-2.png", false);
-
-        dol_fiche_head($head, 'group', $title, 0, 'group');
-
-
+        
         /*
          * Fiche en mode visu
          */
 
         if ($action != 'edit') {
-
-            print "</div>\n";
-
-            print end_box();
 
 
             dol_htmloutput_mesg($message);
@@ -178,7 +197,7 @@ if ($action == 'create') {
 
             print start_box($langs->trans("ListOfUsersInGroup"), "twelve", "16-User-2.png", false);
 
-            // On selectionne les users qui ne sont pas deja dans le groupe
+// On selectionne les users qui ne sont pas deja dans le groupe
             $exclude = array();
 
             $userstatic = new User($db);
@@ -271,6 +290,144 @@ if ($action == 'create') {
             $obj->sDom = 'l<fr>t<\"clear\"rtip>';
 
             $object->datatablesCreate($obj, "users");
+
+            print end_box();
+
+            print start_box($title, "twelve", "16-Users-2.png", false);
+
+            /*
+             * Ecran ajout/suppression permission
+             */
+
+            $i = 0;
+            $obj = new stdClass();
+
+            if ($user->admin)
+                print info_admin($langs->trans("WarningOnlyPermissionOfActivatedModules"));
+
+            print '<table class="display dt_act" id="perms_rights">';
+
+            print'<thead>';
+            print'<tr>';
+
+            print'<th>';
+            print'</th>';
+            $obj->aoColumns[$i]->mDataProp = "id";
+            $obj->aoColumns[$i]->sDefaultContent = "";
+            $obj->aoColumns[$i]->bVisible = false;
+            $i++;
+
+            print'<th class="essential">';
+            print $langs->trans("Module");
+            print'</th>';
+            $obj->aoColumns[$i]->mDataProp = "name";
+            $obj->aoColumns[$i]->sDefaultContent = "";
+            $obj->aoColumns[$i]->sWidth = "18em";
+            $i++;
+
+            print'<th>';
+            print $langs->trans("Permission");
+            print'</th>';
+            $obj->aoColumns[$i]->mDataProp = "desc";
+            $obj->aoColumns[$i]->sDefaultContent = "";
+            $obj->aoColumns[$i]->bVisible = true;
+            $i++;
+
+            print'<th class="essential">';
+            print $langs->trans("Enabled");
+            print'</th>';
+            $obj->aoColumns[$i]->mDataProp = "Status";
+            $obj->aoColumns[$i]->sDefaultContent = "false";
+            $obj->aoColumns[$i]->sClass = "center";
+
+            print'</tr>';
+            print'</thead>';
+            $obj->fnDrawCallback = "function(oSettings){
+                if ( oSettings.aiDisplay.length == 0 )
+                {
+                    return;
+                }
+                var nTrs = jQuery('#perms_rights tbody tr');
+                var iColspan = nTrs[0].getElementsByTagName('td').length;
+                var sLastGroup = '';
+                for ( var i=0 ; i<nTrs.length ; i++ )
+                {
+                    var iDisplayIndex = oSettings._iDisplayStart + i;
+                     var sGroup = oSettings.aoData[ oSettings.aiDisplay[iDisplayIndex] ]._aData['name'];
+                         if (sGroup!=null && sGroup!='' && sGroup != sLastGroup)
+                            {
+                                var nGroup = document.createElement('tr');
+                                var nCell = document.createElement('td');
+                                nCell.colSpan = iColspan;
+                                nCell.className = 'group';
+                                nCell.innerHTML = sGroup;
+                                nGroup.appendChild( nCell );
+                                nTrs[i].parentNode.insertBefore( nGroup, nTrs[i] );
+                                sLastGroup = sGroup;
+                            }
+                    
+                    
+                }
+	}";
+
+            $i = 0;
+            print'<tfoot>';
+            print'</tfoot>';
+            print'<tbody>';
+
+            $objectM = new DolibarrModules($db);
+
+            try {
+                $result = $objectM->getView("default_right");
+            } catch (Exception $exc) {
+                print $exc->getMessage();
+            }
+
+            if (count($result->rows)) {
+
+                foreach ($result->rows as $aRow) {
+                    print'<tr>';
+
+                    $objectM->name = $aRow->value->name;
+                    $objectM->numero = $aRow->value->numero;
+                    $objectM->rights_class = $aRow->value->rights_class;
+                    $objectM->id = $aRow->value->id;
+                    $objectM->perm = $aRow->value->perm;
+                    $objectM->desc = $aRow->value->desc;
+                    $objectM->Status = ($aRow->value->Status == true ? "true" : "false");
+
+                    print '<td>' . $aRow->value->id . '</td>';
+                    print '<td>' . img_object('', $aRow->value->picto) . " " . $objectM->getName() . '</td>';
+                    print '<td>' . $objectM->getPermDesc() . '<a name="' . $aRow->value->id . '">&nbsp;</a></td>';
+                    print '<td>';
+
+                    $perm = $aRow->value->id;
+
+                    if ($caneditperms) {
+                        if ($aRow->value->Status)
+                            print $objectM->getLibStatus(); // Enable by default
+                        elseif ($fgroup->rights->$perm)
+                            print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&pid=' . $aRow->value->id . '&amp;action=remove_right#' . $aRow->value->id . '">' . img_edit_remove() . '</a>';
+                        else
+                            print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&pid=' . $aRow->value->id . '&amp;action=add_right#' . $aRow->value->id . '">' . img_edit_add() . '</a>';
+                    }
+                    else {
+                        print $objectM->getLibStatus();
+                    }
+                    print '</td>';
+
+                    print'</tr>';
+                }
+            }
+            print'</tbody>';
+            print'</table>';
+
+            $obj->aaSorting = array(array(1, 'asc'));
+            $obj->sDom = 'l<fr>t<\"clear\"rtip>';
+            $obj->iDisplayLength = 50;
+
+            print $objectM->datatablesCreate($obj, "perms_rights");
+
 
             print end_box();
         }
