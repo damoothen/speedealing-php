@@ -44,6 +44,7 @@ $canadduser = ($user->admin || $user->rights->user->user->creer);
 $canreaduser = ($user->admin || $user->rights->user->user->lire);
 $canedituser = ($user->admin || $user->id == $id);
 $candisableuser = ($user->admin || $user->rights->user->user->supprimer);
+$caneditperms = ($user->admin || $user->rights->user->user->creer);
 $canreadgroup = $canreaduser;
 $caneditgroup = $canedituser;
 // Define value to know what current user can do on properties of edited user
@@ -79,14 +80,30 @@ $edituser = new User($db);
 /**
  * Actions
  */
-if ($_GET["subaction"] == 'addrights' && $canedituser) {
-    $edituser->fetch($id);
-    $edituser->addrights($_GET["rights"]);
+if ($action == 'add_right' && $caneditperms) {
+    try {
+        $fuser->load($id);
+
+        $fuser->values->rights->$_GET['pid'] = true;
+        $fuser->record();
+    } catch (Exception $e) {
+        $mesg = $e->getMessage();
+    }
+    Header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $id . "&mesg=" . urlencode($mesg));
+    exit;
 }
 
-if ($_GET["subaction"] == 'delrights' && $canedituser) {
-    $edituser->fetch($id);
-    $edituser->delrights($_GET["rights"]);
+if ($action == 'remove_right' && $caneditperms) {
+    try {
+        $fuser->load($id);
+        unset($fuser->values->rights->$_GET['pid']);
+
+        $fuser->record();
+    } catch (Exception $e) {
+        $mesg = $e->getMessage();
+    }
+    Header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $id . "&mesg=" . urlencode($mesg));
+    exit;
 }
 
 if ($action == 'confirm_disable' && $confirm == "yes" && $candisableuser) {
@@ -304,29 +321,29 @@ if (($action == 'create') || ($action == 'adduserldap')) {
         print '<td>';
         print $form->selectyesno('admin', $_POST["admin"], 1);
         ?><script type="text/javascript">
-            $(function() {
-                $("select[name=admin]").change(function() {
-                    if ( $(this).val() == 0 ) {
-                        $("input[name=superadmin]")
-                        .attr("disabled", true)
-                        .attr("checked", false);
-                        $("select[name=entity]")
-                        .attr("disabled", false);
-                    } else {
-                        $("input[name=superadmin]")
-                        .attr("disabled", false);
-                    }
-                });
-                $("input[name=superadmin]").change(function() {
-                    if ( $(this).attr("checked") == "checked" ) {
-                        $("select[name=entity]")
-                        .attr("disabled", true);
-                    } else {
-                        $("select[name=entity]")
-                        .attr("disabled", false);
-                    }
-                });
-            });
+                    $(function() {
+                        $("select[name=admin]").change(function() {
+                            if ( $(this).val() == 0 ) {
+                                $("input[name=superadmin]")
+                                .attr("disabled", true)
+                                .attr("checked", false);
+                                $("select[name=entity]")
+                                .attr("disabled", false);
+                            } else {
+                                $("input[name=superadmin]")
+                                .attr("disabled", false);
+                            }
+                        });
+                        $("input[name=superadmin]").change(function() {
+                            if ( $(this).attr("checked") == "checked" ) {
+                                $("select[name=entity]")
+                                .attr("disabled", true);
+                            } else {
+                                $("select[name=entity]")
+                                .attr("disabled", false);
+                            }
+                        });
+                    });
         </script><?php
         $checked = ($_POST["superadmin"] ? ' checked' : '');
         $disabled = ($_POST["superadmin"] ? '' : ' disabled');
@@ -610,7 +627,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
             print '<div class="tabsAction">';
             print '<span class="button-group">';
             if ($caneditfield) {
-                    print '<a class="button icon-pencil" href="' . $_SERVER["PHP_SELF"] . '?id=' . $fuser->id . '&amp;action=edit">' . $langs->trans("Modify") . '</a>';
+                print '<a class="button icon-pencil" href="' . $_SERVER["PHP_SELF"] . '?id=' . $fuser->id . '&amp;action=edit">' . $langs->trans("Modify") . '</a>';
             }
 
             // Activer
@@ -716,6 +733,145 @@ if (($action == 'create') || ($action == 'adduserldap')) {
                 $obj->sDom = 'l<fr>t<\"clear\"rtip>';
 
                 $fuser->datatablesCreate($obj, "group");
+                print end_box();
+
+                print start_box($langs->trans("Permissions"), "twelve", "16-User-2.png", false);
+                // Search all modules with permission and reload permissions def.
+
+                /*
+                 * Ecran ajout/suppression permission
+                 */
+
+                if ($user->admin)
+                    print info_admin($langs->trans("WarningOnlyPermissionOfActivatedModules"));
+
+                $i = 0;
+                $obj = new stdClass();
+
+                print '<table class="display dt_act" id="perm_rights">';
+
+                print'<thead>';
+                print'<tr>';
+
+                print'<th>';
+                print'</th>';
+                $obj->aoColumns[$i]->mDataProp = "id";
+                $obj->aoColumns[$i]->sDefaultContent = "";
+                $obj->aoColumns[$i]->bVisible = false;
+                $i++;
+
+                print'<th class="essential">';
+                print $langs->trans("Module");
+                print'</th>';
+                $obj->aoColumns[$i]->mDataProp = "name";
+                $obj->aoColumns[$i]->sDefaultContent = "";
+                $obj->aoColumns[$i]->sWidth = "18em";
+                $i++;
+
+                print'<th>';
+                print $langs->trans("Permission");
+                print'</th>';
+                $obj->aoColumns[$i]->mDataProp = "desc";
+                $obj->aoColumns[$i]->sDefaultContent = "";
+                $obj->aoColumns[$i]->bVisible = true;
+                $i++;
+
+                print'<th class="essential">';
+                print $langs->trans("Enabled");
+                print'</th>';
+                $obj->aoColumns[$i]->mDataProp = "Status";
+                $obj->aoColumns[$i]->sDefaultContent = "false";
+                $obj->aoColumns[$i]->sClass = "center";
+
+                print'</tr>';
+                print'</thead>';
+                $obj->fnDrawCallback = "function(oSettings){
+                if ( oSettings.aiDisplay.length == 0 )
+                {
+                    return;
+                }
+                var nTrs = jQuery('#perm_rights tbody tr');
+                var iColspan = nTrs[0].getElementsByTagName('td').length;
+                var sLastGroup = '';
+                for ( var i=0 ; i<nTrs.length ; i++ )
+                {
+                    var iDisplayIndex = oSettings._iDisplayStart + i;
+                     var sGroup = oSettings.aoData[ oSettings.aiDisplay[iDisplayIndex] ]._aData['name'];
+                         if (sGroup!=null && sGroup!='' && sGroup != sLastGroup)
+                            {
+                                var nGroup = document.createElement('tr');
+                                var nCell = document.createElement('td');
+                                nCell.colSpan = iColspan;
+                                nCell.className = 'group';
+                                nCell.innerHTML = sGroup;
+                                nGroup.appendChild( nCell );
+                                nTrs[i].parentNode.insertBefore( nGroup, nTrs[i] );
+                                sLastGroup = sGroup;
+                            }
+                    
+                    
+                }
+	}";
+
+                $i = 0;
+                print'<tfoot>';
+                print'</tfoot>';
+                print'<tbody>';
+
+                $object = new DolibarrModules($db);
+                
+                try {
+                    $result = $object->getView("default_right");
+                } catch (Exception $exc) {
+                    print $exc->getMessage();
+                }
+
+                if (count($result->rows)) {
+
+                    foreach ($result->rows as $aRow) {
+                        print'<tr>';
+
+                        $object->name = $aRow->value->name;
+                        $object->numero = $aRow->value->numero;
+                        $object->rights_class = $aRow->value->rights_class;
+                        $object->id = $aRow->value->id;
+                        $object->perm = $aRow->value->perm;
+                        $object->desc = $aRow->value->desc;
+                        $object->Status = ($aRow->value->Status == true ? "true" : "false");
+
+                        print '<td>' . $aRow->value->id . '</td>';
+                        print '<td>' . img_object('', $aRow->value->picto) . " " . $object->getName() . '</td>';
+                        print '<td>' . $object->getPermDesc() . '<a name="' . $aRow->value->id . '">&nbsp;</a></td>';
+                        print '<td>';
+
+                        $perm = $aRow->value->id;
+
+
+                        if ($caneditperms) {
+                            if ($aRow->value->Status)
+                                print $object->getLibStatus(); // Enable by default
+                            elseif ($fuser->rights->$perm)
+                                print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $fuser->id . '&pid=' . $aRow->value->id . '&amp;action=remove_right#' . $aRow->value->id . '">' . img_edit_remove() . '</a>';
+                            else
+                                print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $fuser->id . '&pid=' . $aRow->value->id . '&amp;action=add_right#' . $aRow->value->id . '">' . img_edit_add() . '</a>';
+                        }
+                        else {
+                            print $object->getLibStatus();
+                        }
+                        print '</td>';
+
+                        print'</tr>';
+                    }
+                }
+                print'</tbody>';
+                print'</table>';
+
+                $obj->aaSorting = array(array(1, 'asc'));
+                $obj->sDom = 'l<fr>t<\"clear\"rtip>';
+                $obj->iDisplayLength = -1;
+
+                print $object->datatablesCreate($obj, "perm_rights");
+
 
                 print end_box();
             }

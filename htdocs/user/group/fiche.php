@@ -242,8 +242,8 @@ if ($action == 'create') {
 
                     $useringroup = new User($db);
                     $useringroup->values = $aRow->value;
-                    $useringroup->admin = $useringroup->values->Administrator;
                     $useringroup->id = $useringroup->values->_id;
+                    $useringroup->email = $useringroup->values->email;
 
                     print "<tr $bc[$var]>";
                     print '<td>';
@@ -253,7 +253,7 @@ if ($action == 'create') {
                     print '</td>';
                     print '<td>' . $useringroup->values->Lastname . '</td>';
                     print '<td>' . $useringroup->values->Firstname . '</td>';
-                    print '<td>' . $useringroup->LibStatus($useringroup->values->Status) . '</td>';
+                    print '<td>' . $useringroup->LibStatus($useringroup->Status) . '</td>';
                     print '<td>';
                     if ($user->admin) {
                         print '<a href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=removeuser&amp;user=' . $useringroup->values->_id . '">';

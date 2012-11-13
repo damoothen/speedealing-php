@@ -207,6 +207,10 @@ if (!defined('NOREQUIREHTML'))
 if (!defined('NOREQUIREAJAX'))
     require_once(DOL_DOCUMENT_ROOT . '/core/lib/ajax.lib.php'); // Need 22ko memory
 
+
+
+
+
     
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
@@ -292,12 +296,12 @@ if (!defined('NOLOGIN')) {
     //print $user->fetch();exit;
     if (empty($_COOKIE["AuthSession"])) {
         // Check URL for urlrewrite
-        if($conf->urlrewrite && DOL_URL_ROOT != '') {
+        if ($conf->urlrewrite && DOL_URL_ROOT != '') {
             header('Location: /index.php');
             exit;
         }
-        
-        
+
+
         // It is not already authenticated and it requests the login / password
         include_once(DOL_DOCUMENT_ROOT . '/core/lib/security2.lib.php');
 
@@ -531,11 +535,11 @@ if ($conf->urlrewrite) {
     if (dol_getcache('dol_db') != $tmp_db || strpos(DOL_URL_ROOT, $tmp_db) == 0) {
         dol_flushcache(); // reset cache
         dol_setcache("dol_db", $tmp_db);
-        
+
         $user->useDatabase($tmp_db);
-        
-        if(!empty($user->NewConnection))
-            $user->set("LastConnection",$user->NewConnection);
+
+        if (!empty($user->NewConnection))
+            $user->set("LastConnection", $user->NewConnection);
         $user->set("NewConnection", dol_now());
 
         Header("Location: /" . $tmp_db . '/');
@@ -678,8 +682,6 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                     $appli = 'Speedealing';
                 else
                     $appli = $mysoc->name;
-                //if (!empty($conf->global->MAIN_APPLICATION_TITLE))
-                //    $appli = $conf->global->MAIN_APPLICATION_TITLE;
 
                 if ($title)
                     print '<title>' . $appli . ' - ' . $title . '</title>';
@@ -1142,13 +1144,13 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                     <div class="columns">
                         <div class="five-columns">
                             <div class="ego-icon big">
-                                <?php if (!empty($user->Photo)) : ?>
+    <?php if (!empty($user->Photo)) : ?>
                                     <img alt="User name" class="ego-icon-inner"
                                          src="<?php echo $user->getFile($user->Photo); ?>">
-                                     <?php else : ?>
+    <?php else : ?>
                                     <img src="theme/symeos/img/user.png"
                                          alt="User name" class="ego-icon-inner">
-                                     <?php endif; ?>
+    <?php endif; ?>
                                 <img class="ego-icon-outer"
                                      src="theme/symeos/img/timbrebase90x100.png">
                             </div>
@@ -1168,12 +1170,12 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                     <li style="width: 20%;"><span href="inbox.html" title="Messages"><span class="icon-inbox"></span>
                         </span></li>
                     <li style="width: 20%;"><a href="agenda/list.php?idmenu=menu:agendaList" title="<?php echo $langs->trans("Agenda"); ?>"><span class="icon-calendar"></span><?php
-                                 require_once(DOL_DOCUMENT_ROOT . "/agenda/class/agenda.class.php");
-                                 $agenda = new Agenda($db);
-                                 $result = $agenda->getView("countTODO", array("group" => true, "key" => $user->id), true);
-                                 if ($result->rows[0]->value)
-                                     print '<span class="count">' . $result->rows[0]->value . '</span>';
-                                     ?> </a></li>
+                        require_once(DOL_DOCUMENT_ROOT . "/agenda/class/agenda.class.php");
+                        $agenda = new Agenda($db);
+                        $result = $agenda->getView("countTODO", array("group" => true, "key" => $user->id), true);
+                        if ($result->rows[0]->value)
+                            print '<span class="count">' . $result->rows[0]->value . '</span>';
+                        ?> </a></li>
                     <li style="width: 20%;"><a href="user/fiche.php?id=<?php echo $user->id; ?>"
                                                title="Profile"><span class="icon-gear"></span> </a></li>
                     <li style="width: 20%;"><a href="user/logout.php" title="Log out"><span
@@ -1190,40 +1192,48 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                 <ul class="unstyled-list">
                     <li class="title-menu">Today's event</li>
                     <li>
-                        <ul class="calendar-menu">
-                            <li><a href="#" title="See event"> <time datetime="2011-02-24">
-                                        <b>24</b> Feb
-                                    </time> <small class="green">10:30</small> Event's description
-                                </a>
-                            </li>
+                        <ul class="calendar-menu"><?php
+                $agenda = new Agenda($db);
+                $params = array('startkey' => array($user->id, mktime(0, 0, 0, date("m"), date("d"), date("Y"))),
+                    'endkey' => array($user->id, mktime(23, 59, 59, date("m"), date("d"), date("Y"))));
+                $result = $agenda->getView("listMyTasks", $params);
+                if (count($result->rows))
+                    foreach ($result->rows as $aRow) {
+                        print '<li><a href="agenda/fiche.php?id=' . $aRow->value->_id . '" title="' . $aRow->value->societe->name . '"> <time datetime="' . dol_print_date($aRow->value->datep, "day") . '">';
+                        print '<b>' . date("d", $aRow->value->datep) . '</b> ' . date("M", $aRow->value->datep);
+                        print '</time> <small class="green">' . dol_print_date($aRow->value->datep, "hour") . '</small> ' . $aRow->value->label;
+                        print '</a></li>';
+                    }
+                ?>
                         </ul>
                     </li>
-                    <li class="title-menu">New messages</li>
-                    <li>
-                        <ul class="message-menu">
-                            <li><span class="message-status"> <a href="#" class="starred"
-                                                                 title="Starred">Starred</a> <a href="#" class="new-message"
-                                                                 title="Mark as read">New</a>
-                                </span> <span class="message-info"> <span class="blue">17:12</span>
-                                    <a href="#" class="attach" title="Download attachment">Attachment</a>
-                                </span> <a href="#" title="Read message"> <strong class="blue">John
-                                        Doe</strong><br> <strong>Mail subject</strong>
-                                </a>
-                            </li>
-                            <li><a href="#" title="Read message"> <span class="message-status">
-                                        <span class="unstarred">Not starred</span> <span
-                                            class="new-message">New</span>
-                                    </span> <span class="message-info"> <span class="blue">15:47</span>
-                                    </span> <strong class="blue">May Starck</strong><br> <strong>Mail
-                                        subject a bit longer</strong>
-                                </a>
-                            </li>
-                            <li><span class="message-status"> <span class="unstarred">Not
-                                        starred</span>
-                                </span> <span class="message-info"> <span class="blue">15:12</span>
-                                </span> <strong class="blue">May Starck</strong><br> Read message</li>
-                        </ul>
-                    </li>
+                    <?php /*
+                      <li class="title-menu">New messages</li>
+                      <li>
+                      <ul class="message-menu">
+                      <li><span class="message-status"> <a href="#" class="starred"
+                      title="Starred">Starred</a> <a href="#" class="new-message"
+                      title="Mark as read">New</a>
+                      </span> <span class="message-info"> <span class="blue">17:12</span>
+                      <a href="#" class="attach" title="Download attachment">Attachment</a>
+                      </span> <a href="#" title="Read message"> <strong class="blue">John
+                      Doe</strong><br> <strong>Mail subject</strong>
+                      </a>
+                      </li>
+                      <li><a href="#" title="Read message"> <span class="message-status">
+                      <span class="unstarred">Not starred</span> <span
+                      class="new-message">New</span>
+                      </span> <span class="message-info"> <span class="blue">15:47</span>
+                      </span> <strong class="blue">May Starck</strong><br> <strong>Mail
+                      subject a bit longer</strong>
+                      </a>
+                      </li>
+                      <li><span class="message-status"> <span class="unstarred">Not
+                      starred</span>
+                      </span> <span class="message-info"> <span class="blue">15:12</span>
+                      </span> <strong class="blue">May Starck</strong><br> Read message</li>
+                      </ul>
+                      </li> */ ?>
                 </ul>
             </div>
             <!-- End content wrapper -->
@@ -1505,7 +1515,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
         <script src="theme/symeos/js/s_scripts.js"></script>
         <script src="theme/symeos/js/symeos.js"></script>
 
-                                                                                                        <!--<script src="theme/developr/html/js/developr.input.js"></script>-->
+                                                                                                                                        <!--<script src="theme/developr/html/js/developr.input.js"></script>-->
         <script src="theme/symeos/js/developr.message.js"></script>
         <script src="theme/symeos/js/developr.modal.js"></script>
         <script src="theme/symeos/js/developr.notify.js"></script>
@@ -1527,7 +1537,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
             // Favicon count
             Tinycon.setBubble(2);
-                                                                                                                                                                                					
+                                                                                                                                                                                                                					
         </script>
 
         <script>

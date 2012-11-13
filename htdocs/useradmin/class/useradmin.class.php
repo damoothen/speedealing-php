@@ -70,12 +70,8 @@ class UserAdmin extends nosqlDocument {
 
         parent::__construct($db);
 
-        $fk_extrafields = new ExtraFields($db);
-        try {
-            $this->fk_extrafields = $fk_extrafields->load("extrafields:" . get_class($this), true); // load and cache
-        } catch (Exception $e) {
-            
-        }
+        $this->fk_extrafields = new ExtraFields($db);
+        $this->fk_extrafields->fetch(get_class($this));
 
         $this->useDatabase("_users");
         $this->couchAdmin = new couchAdmin($this->couchdb);

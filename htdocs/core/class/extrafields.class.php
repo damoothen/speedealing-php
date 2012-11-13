@@ -172,10 +172,16 @@ class ExtraFields extends nosqlDocument {
      *  @return	void
      */
     function fetch($class) {
+        global $langs;
         require_once(DOL_DOCUMENT_ROOT . "/admin/class/dict.class.php");
 
         try {
             $this->load("extrafields:" . $class, true); // load and cache
+            //print_r($this->fields->Status);
+        } catch (Exception $e) {
+            
+        }
+        if (count($this->fields))
             foreach ($this->fields as $aRow) {
                 if (isset($aRow->dict)) {
                     $dict = new Dict($this->db);
@@ -183,12 +189,11 @@ class ExtraFields extends nosqlDocument {
                     $aRow->values = clone $values->values;
                 }
             }
-            //print_r($this->fields->Status);
-        } catch (Exception $e) {
-            $error = "Something weird happened: " . $e->getMessage() . " (errcode=" . $e->getCode() . ")\n";
-            print $error;
-            exit;
-        }
+
+        /* if(count($this->langs))
+          foreach ($this->langs as $aRow)
+          $langs->load($aRow);
+         */
         return 1;
     }
 

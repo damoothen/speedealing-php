@@ -105,7 +105,7 @@ print_fiche_titre($newtitle);
                 <li>
                     <?php
                     $agenda = new Agenda($db);
-                    $result = $agenda->getView("countTODO", array("group" => true, "key" => $user->id));                        
+                    $result = $agenda->getView("countTODO", array("group" => true, "key" => $user->id));
                     print '<strong>'.(int)$result->rows[0]->value.'</strong>';
                     print $langs->trans('NewActions');
                     ?>
