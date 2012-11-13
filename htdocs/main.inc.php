@@ -525,17 +525,8 @@ $heightforframes = 52;
 
 // If URL Rewriting for multicompany
 if ($conf->urlrewrite) {
-    if (!GETPOST("db"))
+    if (!GETPOST("db")) {
         $tmp_db = $conf->Couchdb->name; // First connecte using $user->entity for default
-    else
-        $tmp_db = GETPOST("db");
-
-    $_SERVER['PHP_SELF'] = '/' . $conf->Couchdb->name . $_SERVER['PHP_SELF']; // Add Entity in the url
-    // Switch to another entity
-    if (dol_getcache('dol_db') != $tmp_db || strpos(DOL_URL_ROOT, $tmp_db) == 0) {
-        dol_flushcache(); // reset cache
-        dol_setcache("dol_db", $tmp_db);
-
         $user->useDatabase($tmp_db);
 
         if (!empty($user->NewConnection))
@@ -543,9 +534,27 @@ if ($conf->urlrewrite) {
         $user->set("NewConnection", dol_now());
 
         Header("Location: /" . $tmp_db . '/');
-        unset($tmp_db);
         exit;
     }
+    else
+        $tmp_db = GETPOST("db");
+
+    $_SERVER['PHP_SELF'] = '/' . $conf->Couchdb->name . $_SERVER['PHP_SELF']; // Add Entity in the url
+    // Switch to another entity
+    /*if (dol_getcache('dol_db') != $tmp_db || strpos(DOL_URL_ROOT, $tmp_db) == 0) {
+        dol_flushcache(); // reset cache
+        dol_setcache("dol_db", $tmp_db);*/
+
+        //$user->useDatabase($tmp_db);
+
+        /*if (!empty($user->NewConnection))
+            $user->set("LastConnection", $user->NewConnection);
+        $user->set("NewConnection", dol_now());*/
+
+        //Header("Location: /" . $tmp_db . '/');
+        //unset($tmp_db);
+        //exit;
+    //}
 }
 
 

@@ -24,10 +24,10 @@
 global $shmkeys, $shmoffset;
 
 $shmkeys = array('main' => 1, 'admin' => 2, 'dict' => 3, 'companies' => 4, 'suppliers' => 5, 'products' => 6,
-	'commercial' => 7, 'compta' => 8, 'projects' => 9, 'cashdesk' => 10, 'agenda' => 11, 'bills' => 12,
-	'propal' => 13, 'boxes' => 14, 'banks' => 15, 'other' => 16, 'errors' => 17, 'members' => 18, 'ecm' => 19,
-	'orders' => 20, 'users' => 21, 'help' => 22, 'stocks' => 23, 'interventions' => 24,
-	'donations' => 25, 'contracts' => 26);
+    'commercial' => 7, 'compta' => 8, 'projects' => 9, 'cashdesk' => 10, 'agenda' => 11, 'bills' => 12,
+    'propal' => 13, 'boxes' => 14, 'banks' => 15, 'other' => 16, 'errors' => 17, 'members' => 18, 'ecm' => 19,
+    'orders' => 20, 'users' => 21, 'help' => 22, 'stocks' => 23, 'interventions' => 24,
+    'donations' => 25, 'contracts' => 26);
 $shmoffset = 100;
 
 /**
@@ -38,47 +38,49 @@ $shmoffset = 100;
  * 	@return	int							<0 if KO, Nb of bytes written if OK
  */
 function dol_setcache($memoryid, $data) {
-	global $conf, $memcache;
-	$result = -1;
+    global $conf, $memcache;
+    $result = -1;
+    
+    $memoryid = $conf->Couchdb->name . '.' . $memoryid; // For multi-entity
 
-	// Using a memcached server
-	if (!empty($conf->memcached->host) && class_exists('Memcached')) {
-		$memoryid = session_name() . '_' . $memoryid;
-		//$m = new Memcached();
-		//$result = $m->addServer($conf->memcached->host, $conf->memcached->port);
-		//$m->setOption(Memcached::OPT_COMPRESSION, false);
-		//print "Add memoryid=".$memoryid;
-		$memcache->set($memoryid, $data, 3600);	// This fails if key already exists
-		$rescode = $memcache->getResultCode();
-		if ($rescode == 0) {
-			return count($data);
-		} else {
-			return -$rescode;
-		}
-	} else if (!empty($conf->memcached->host) && class_exists('Memcache')) {
-		$memoryid = session_name() . '_' . $memoryid;
-		//$m = new Memcache();
-		//$result = $m->addServer($conf->memcached->host, $conf->memcached->port);
-		//$m->setOption(Memcached::OPT_COMPRESSION, false);
-		$result = $memcache->set($memoryid, $data);	// This fails if key already exists
-		if ($result) {
-			return count($data);
-		} else {
-			return -1;
-		}
-	}
-	// Using shmop
-	else if (isset($conf->global->MAIN_OPTIMIZE_SPEED) && ($conf->global->MAIN_OPTIMIZE_SPEED & 0x02)) {
-		$result = dol_setshmop($memoryid, $data);
-	}
-	// Using SESSION
-	else {
-		$_SESSION[$memoryid] = $data;
-		$result = 1;
-	}
+    // Using a memcached server
+    if (!empty($conf->memcached->host) && class_exists('Memcached')) {
+        $memoryid = session_name() . '_' . $memoryid;
+        //$m = new Memcached();
+        //$result = $m->addServer($conf->memcached->host, $conf->memcached->port);
+        //$m->setOption(Memcached::OPT_COMPRESSION, false);
+        //print "Add memoryid=".$memoryid;
+        $memcache->set($memoryid, $data, 3600); // This fails if key already exists
+        $rescode = $memcache->getResultCode();
+        if ($rescode == 0) {
+            return count($data);
+        } else {
+            return -$rescode;
+        }
+    } else if (!empty($conf->memcached->host) && class_exists('Memcache')) {
+        $memoryid = session_name() . '_' . $memoryid;
+        //$m = new Memcache();
+        //$result = $m->addServer($conf->memcached->host, $conf->memcached->port);
+        //$m->setOption(Memcached::OPT_COMPRESSION, false);
+        $result = $memcache->set($memoryid, $data); // This fails if key already exists
+        if ($result) {
+            return count($data);
+        } else {
+            return -1;
+        }
+    }
+    // Using shmop
+    else if (isset($conf->global->MAIN_OPTIMIZE_SPEED) && ($conf->global->MAIN_OPTIMIZE_SPEED & 0x02)) {
+        $result = dol_setshmop($memoryid, $data);
+    }
+    // Using SESSION
+    else {
+        $_SESSION[$memoryid] = $data;
+        $result = 1;
+    }
 
 
-	return $result;
+    return $result;
 }
 
 /**
@@ -88,49 +90,50 @@ function dol_setcache($memoryid, $data) {
  * 	@return	int						<0 if KO, data if OK
  */
 function dol_getcache($memoryid) {
-	global $conf, $memcache;
+    global $conf, $memcache;
 
-	// Using a memcached server
-	if (!empty($conf->memcached->host) && class_exists('Memcached')) {
-		$memoryid = session_name() . '_' . $memoryid;
-		//$memcache = new Memcached();
-		//$result = $memcache->addServer($conf->memcached->host, $conf->memcached->port);
-		//$m->setOption(Memcached::OPT_COMPRESSION, false);
-		//print "Get memoryid=".$memoryid;
-		$data = $memcache->get($memoryid);
-		$rescode = $memcache->getResultCode();
-		//print "memoryid=".$memoryid." - rescode=".$rescode." - data=".count($data)."\n<br>";
-		//var_dump($data);
-		if ($rescode == 0) {
-			return $data;
-		} else {
-			return -$rescode;
-		}
-	} else if (!empty($conf->memcached->host) && class_exists('Memcache')) {
-		$memoryid = session_name() . '_' . $memoryid;
-		//$memcache = new Memcache();
-		//$result = $memcache->addServer($conf->memcached->host, $conf->memcached->port);
-		//$m->setOption(Memcached::OPT_COMPRESSION, false);
-		$data = $memcache->get($memoryid);
-		//print "memoryid=".$memoryid." - rescode=".$rescode." - data=".count($data)."\n<br>";
-		//var_dump($data);
-		if ($data) {
-			return $data;
-		} else {
-			return -1;
-		}
-	}
-	// Using shmop
-	else if (isset($conf->global->MAIN_OPTIMIZE_SPEED) && ($conf->global->MAIN_OPTIMIZE_SPEED & 0x02)) {
-		$data = dol_getshmop($memoryid);
-		return $data;
-	}
-	// Using SESSION
-	else {
-		return $_SESSION[$memoryid];
-	}
+    $memoryid = $conf->Couchdb->name . '.' . $memoryid; // For multi-entity
+    // Using a memcached server
+    if (!empty($conf->memcached->host) && class_exists('Memcached')) {
+        $memoryid = session_name() . '_' . $memoryid;
+        //$memcache = new Memcached();
+        //$result = $memcache->addServer($conf->memcached->host, $conf->memcached->port);
+        //$m->setOption(Memcached::OPT_COMPRESSION, false);
+        //print "Get memoryid=".$memoryid;
+        $data = $memcache->get($memoryid);
+        $rescode = $memcache->getResultCode();
+        //print "memoryid=".$memoryid." - rescode=".$rescode." - data=".count($data)."\n<br>";
+        //var_dump($data);
+        if ($rescode == 0) {
+            return $data;
+        } else {
+            return -$rescode;
+        }
+    } else if (!empty($conf->memcached->host) && class_exists('Memcache')) {
+        $memoryid = session_name() . '_' . $memoryid;
+        //$memcache = new Memcache();
+        //$result = $memcache->addServer($conf->memcached->host, $conf->memcached->port);
+        //$m->setOption(Memcached::OPT_COMPRESSION, false);
+        $data = $memcache->get($memoryid);
+        //print "memoryid=".$memoryid." - rescode=".$rescode." - data=".count($data)."\n<br>";
+        //var_dump($data);
+        if ($data) {
+            return $data;
+        } else {
+            return -1;
+        }
+    }
+    // Using shmop
+    else if (isset($conf->global->MAIN_OPTIMIZE_SPEED) && ($conf->global->MAIN_OPTIMIZE_SPEED & 0x02)) {
+        $data = dol_getshmop($memoryid);
+        return $data;
+    }
+    // Using SESSION
+    else {
+        return $_SESSION[$memoryid];
+    }
 
-	return 0;
+    return 0;
 }
 
 /**
@@ -140,47 +143,49 @@ function dol_getcache($memoryid) {
  * 	@return	int							<0 if KO, Nb of bytes written if OK
  */
 function dol_delcache($memoryid) {
-	global $conf, $memcache;
-	$result = -1;
+    global $conf, $memcache;
+    $result = -1;
+    
+    $memoryid = $conf->Couchdb->name . '.' . $memoryid; // For multi-entity
 
-	// Using a memcached server
-	if (!empty($conf->memcached->host) && class_exists('Memcached')) {
-		$memoryid = session_name() . '_' . $memoryid;
-		//$m = new Memcached();
-		//$result = $m->addServer($conf->memcached->host, $conf->memcached->port);
-		//$m->setOption(Memcached::OPT_COMPRESSION, false);
-		//print "Add memoryid=".$memoryid;
-		$memcache->delete($memoryid);	// This fails if key already exists
-		$rescode = $memcache->getResultCode();
-		if ($rescode == 0) {
-			return 1;
-		} else {
-			return -$rescode;
-		}
-	} else if (!empty($conf->memcached->host) && class_exists('Memcache')) {
-		$memoryid = session_name() . '_' . $memoryid;
-		//$m = new Memcache();
-		//$result = $m->addServer($conf->memcached->host, $conf->memcached->port);
-		//$m->setOption(Memcached::OPT_COMPRESSION, false);
-		$result = $memcache->delete($memoryid);	// This fails if key already exists
-		if ($result) {
-			return 1;
-		} else {
-			return -1;
-		}
-	}
-	/* // Using shmop
-	  else if (isset($conf->global->MAIN_OPTIMIZE_SPEED) && ($conf->global->MAIN_OPTIMIZE_SPEED & 0x02))
-	  {
-	  $result=dol_setshmop($memoryid,$data);
-	  } */
-	// Using SESSION
-	else {
-		unset($_SESSION[$memoryid]);
-		return 1;
-	}
+    // Using a memcached server
+    if (!empty($conf->memcached->host) && class_exists('Memcached')) {
+        $memoryid = session_name() . '_' . $memoryid;
+        //$m = new Memcached();
+        //$result = $m->addServer($conf->memcached->host, $conf->memcached->port);
+        //$m->setOption(Memcached::OPT_COMPRESSION, false);
+        //print "Add memoryid=".$memoryid;
+        $memcache->delete($memoryid); // This fails if key already exists
+        $rescode = $memcache->getResultCode();
+        if ($rescode == 0) {
+            return 1;
+        } else {
+            return -$rescode;
+        }
+    } else if (!empty($conf->memcached->host) && class_exists('Memcache')) {
+        $memoryid = session_name() . '_' . $memoryid;
+        //$m = new Memcache();
+        //$result = $m->addServer($conf->memcached->host, $conf->memcached->port);
+        //$m->setOption(Memcached::OPT_COMPRESSION, false);
+        $result = $memcache->delete($memoryid); // This fails if key already exists
+        if ($result) {
+            return 1;
+        } else {
+            return -1;
+        }
+    }
+    /* // Using shmop
+      else if (isset($conf->global->MAIN_OPTIMIZE_SPEED) && ($conf->global->MAIN_OPTIMIZE_SPEED & 0x02))
+      {
+      $result=dol_setshmop($memoryid,$data);
+      } */
+    // Using SESSION
+    else {
+        unset($_SESSION[$memoryid]);
+        return 1;
+    }
 
-	return $result;
+    return $result;
 }
 
 /**
@@ -189,47 +194,47 @@ function dol_delcache($memoryid) {
  * 	@return	int							<0 if KO, Nb of bytes written if OK
  */
 function dol_flushcache() {
-	global $conf, $memcache;
-	$result = -1;
+    global $conf, $memcache;
+    $result = -1;
 
-	// Using a memcached server
-	if (!empty($conf->memcached->host) && class_exists('Memcached')) {
-		$memoryid = session_name() . '_' . $memoryid;
-		//$m = new Memcached();
-		//$result = $m->addServer($conf->memcached->host, $conf->memcached->port);
-		//$m->setOption(Memcached::OPT_COMPRESSION, false);
-		//print "Add memoryid=".$memoryid;
-		$memcache->flush();	// This fails if key already exists
-		$rescode = $memcache->getResultCode();
-		if ($rescode == 0) {
-			return 1;
-		} else {
-			return -$rescode;
-		}
-	} else if (!empty($conf->memcached->host) && class_exists('Memcache')) {
-		$memoryid = session_name() . '_' . $memoryid;
-		//$m = new Memcache();
-		//$result = $m->addServer($conf->memcached->host, $conf->memcached->port);
-		//$m->setOption(Memcached::OPT_COMPRESSION, false);
-		$result = $memcache->flush();	// This fails if key already exists
-		if ($result) {
-			return 1;
-		} else {
-			return -1;
-		}
-	}
-	/* // Using shmop
-	  else if (isset($conf->global->MAIN_OPTIMIZE_SPEED) && ($conf->global->MAIN_OPTIMIZE_SPEED & 0x02))
-	  {
-	  $result=dol_setshmop($memoryid,$data);
-	  } */
-	// SESSION
-	else {
-		
-		session_destroy();
-	}
+    // Using a memcached server
+    if (!empty($conf->memcached->host) && class_exists('Memcached')) {
+        $memoryid = session_name() . '_' . $memoryid;
+        //$m = new Memcached();
+        //$result = $m->addServer($conf->memcached->host, $conf->memcached->port);
+        //$m->setOption(Memcached::OPT_COMPRESSION, false);
+        //print "Add memoryid=".$memoryid;
+        $memcache->flush(); // This fails if key already exists
+        $rescode = $memcache->getResultCode();
+        if ($rescode == 0) {
+            return 1;
+        } else {
+            return -$rescode;
+        }
+    } else if (!empty($conf->memcached->host) && class_exists('Memcache')) {
+        $memoryid = session_name() . '_' . $memoryid;
+        //$m = new Memcache();
+        //$result = $m->addServer($conf->memcached->host, $conf->memcached->port);
+        //$m->setOption(Memcached::OPT_COMPRESSION, false);
+        $result = $memcache->flush(); // This fails if key already exists
+        if ($result) {
+            return 1;
+        } else {
+            return -1;
+        }
+    }
+    /* // Using shmop
+      else if (isset($conf->global->MAIN_OPTIMIZE_SPEED) && ($conf->global->MAIN_OPTIMIZE_SPEED & 0x02))
+      {
+      $result=dol_setshmop($memoryid,$data);
+      } */
+    // SESSION
+    else {
 
-	return $result;
+        session_destroy();
+    }
+
+    return $result;
 }
 
 /**
@@ -239,10 +244,10 @@ function dol_flushcache() {
  * 	@return	int						<0 if KO, Memoy address of shared memory for key
  */
 function dol_getshmopaddress($memoryid) {
-	global $shmkeys, $shmoffset;
-	if (empty($shmkeys[$memoryid]))
-		return 0;
-	return $shmkeys[$memoryid] + $shmoffset;
+    global $shmkeys, $shmoffset;
+    if (empty($shmkeys[$memoryid]))
+        return 0;
+    return $shmkeys[$memoryid] + $shmoffset;
 }
 
 /**
@@ -251,15 +256,15 @@ function dol_getshmopaddress($memoryid) {
  * 	@return	int						0=Nothing is done, <0 if KO, >0 if OK
  */
 function dol_listshmop() {
-	global $shmkeys, $shmoffset;
+    global $shmkeys, $shmoffset;
 
-	$resarray = array();
-	foreach ($shmkeys as $key => $val) {
-		$result = dol_getshmop($key);
-		if (!is_numeric($result) || $result > 0)
-			$resarray[$key] = $result;
-	}
-	return $resarray;
+    $resarray = array();
+    foreach ($shmkeys as $key => $val) {
+        $result = dol_getshmop($key);
+        if (!is_numeric($result) || $result > 0)
+            $resarray[$key] = $result;
+    }
+    return $resarray;
 }
 
 /**
@@ -270,28 +275,28 @@ function dol_listshmop() {
  * 	@return	int						<0 if KO, Nb of bytes written if OK
  */
 function dol_setshmop($memoryid, $data) {
-	global $shmkeys, $shmoffset;
+    global $shmkeys, $shmoffset;
 
-	//print 'dol_setshmop memoryid='.$memoryid."<br>\n";
-	if (empty($shmkeys[$memoryid]) || !function_exists("shmop_write"))
-		return 0;
-	$shmkey = dol_getshmopaddress($memoryid);
-	$newdata = serialize($data);
-	$size = strlen($newdata);
-	//print 'dol_setshmop memoryid='.$memoryid." shmkey=".$shmkey." newdata=".$size."bytes<br>\n";
-	$handle = shmop_open($shmkey, 'c', 0644, 6 + $size);
-	if ($handle) {
-		$shm_bytes_written1 = shmop_write($handle, str_pad($size, 6), 0);
-		$shm_bytes_written2 = shmop_write($handle, $newdata, 6);
-		if (($shm_bytes_written1 + $shm_bytes_written2) != (6 + dol_strlen($newdata))) {
-			print "Couldn't write the entire length of data\n";
-		}
-		shmop_close($handle);
-		return ($shm_bytes_written1 + $shm_bytes_written2);
-	} else {
-		print 'Error in shmop_open for memoryid=' . $memoryid . ' shmkey=' . $shmkey . ' 6+size=6+' . $size;
-		return -1;
-	}
+    //print 'dol_setshmop memoryid='.$memoryid."<br>\n";
+    if (empty($shmkeys[$memoryid]) || !function_exists("shmop_write"))
+        return 0;
+    $shmkey = dol_getshmopaddress($memoryid);
+    $newdata = serialize($data);
+    $size = strlen($newdata);
+    //print 'dol_setshmop memoryid='.$memoryid." shmkey=".$shmkey." newdata=".$size."bytes<br>\n";
+    $handle = shmop_open($shmkey, 'c', 0644, 6 + $size);
+    if ($handle) {
+        $shm_bytes_written1 = shmop_write($handle, str_pad($size, 6), 0);
+        $shm_bytes_written2 = shmop_write($handle, $newdata, 6);
+        if (($shm_bytes_written1 + $shm_bytes_written2) != (6 + dol_strlen($newdata))) {
+            print "Couldn't write the entire length of data\n";
+        }
+        shmop_close($handle);
+        return ($shm_bytes_written1 + $shm_bytes_written2);
+    } else {
+        print 'Error in shmop_open for memoryid=' . $memoryid . ' shmkey=' . $shmkey . ' 6+size=6+' . $size;
+        return -1;
+    }
 }
 
 /**
@@ -301,26 +306,26 @@ function dol_setshmop($memoryid, $data) {
  * 	@return	int						<0 if KO, data if OK
  */
 function dol_getshmop($memoryid) {
-	global $shmkeys, $shmoffset;
+    global $shmkeys, $shmoffset;
 
-	if (empty($shmkeys[$memoryid]) || !function_exists("shmop_open"))
-		return 0;
-	$shmkey = dol_getshmopaddress($memoryid);
-	;
-	//print 'dol_getshmop memoryid='.$memoryid." shmkey=".$shmkey."<br>\n";
-	$handle = @shmop_open($shmkey, 'a', 0, 0);
-	if ($handle) {
-		$size = trim(shmop_read($handle, 0, 6));
-		if ($size)
-			$data = unserialize(shmop_read($handle, 6, $size));
-		else
-			return -1;
-		shmop_close($handle);
-	}
-	else {
-		return -2;
-	}
-	return $data;
+    if (empty($shmkeys[$memoryid]) || !function_exists("shmop_open"))
+        return 0;
+    $shmkey = dol_getshmopaddress($memoryid);
+    ;
+    //print 'dol_getshmop memoryid='.$memoryid." shmkey=".$shmkey."<br>\n";
+    $handle = @shmop_open($shmkey, 'a', 0, 0);
+    if ($handle) {
+        $size = trim(shmop_read($handle, 0, 6));
+        if ($size)
+            $data = unserialize(shmop_read($handle, 6, $size));
+        else
+            return -1;
+        shmop_close($handle);
+    }
+    else {
+        return -2;
+    }
+    return $data;
 }
 
 ?>
