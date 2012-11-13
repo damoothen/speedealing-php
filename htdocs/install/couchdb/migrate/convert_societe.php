@@ -202,8 +202,8 @@ $resultCate = $db->query($sql);
 /* init society categories array */
 while ($aRow = $db->fetch_object($resultCate)) {
 
-    if (!empty($col[$aRow->fk_soc]->rowid)) {
-        $col[$aRow->fk_soc]->Tag[] = $aRow->label;
+    if (!empty($col[$aRow->fk_societe]->rowid)) {
+        $col[$aRow->fk_societe]->Tag[] = $aRow->label;
     }
 }
 $db->free($resultCate);

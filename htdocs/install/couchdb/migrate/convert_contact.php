@@ -57,11 +57,16 @@ if ($flush) {
     exit;
 }
 
+$objsoc = New Societe($db);
 
+$result = $objsoc->getView("list");
+foreach ($result->rows as $aRow) {
+    $soc[$aRow->value->rowid] = $aRow->value;
+}   
 
 /* basic companies request query */
 $sql = "SELECT s.*,";
-$sql.= " st.code as stcomm, p.code, u1.login as user_creat, u2.login as user_modif ";
+$sql.= " p.code, u1.login as user_creat, u2.login as user_modif";
 /* looking for categories ? */
 $roc = stristr($sOrder, 'c.label');
 $rsc = stristr($sWhere, 'c.label');
@@ -74,49 +79,22 @@ $rsu = stristr($sWhere, 'u.login');
 if ($rou != false || $rsu != false) {
     $sql.=",u.login";
 }
-$sql .= " FROM (" . MAIN_DB_PREFIX . "societe as s";
+$sql .= " FROM (" . MAIN_DB_PREFIX . "socpeople as s";
 $sql.= " ) ";
 $sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "c_pays as p on (p.rowid = s.fk_pays)";
-$sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "c_stcomm as st ON st.id = s.fk_stcomm";
 $sql.= " LEFT JOIN llx_user AS u1 ON u1.rowid = s.fk_user_creat";
 $sql.= " LEFT JOIN llx_user AS u2 ON u2.rowid = s.fk_user_modif";
-
-/* requesting data on categorie filter  */
-if ($roc != false || $rsc != false) {
-    $sql.=" LEFT JOIN llx_categorie_societe as cs ON cs.fk_societe = s.rowid ";
-    $sql.=" LEFT JOIN llx_categorie as c ON c.rowid=cs.fk_categorie ";
-}
-/* requesting data on sales filter */
-if ($rou != false || $rsu != false || $search_sale != 0) {
-    $sql.=" LEFT JOIN llx_societe_commerciaux as sc ON sc.fk_soc = s.rowid";
-    $sql.=" LEFT JOIN llx_user AS u ON u.rowid = sc.fk_user ";
-}
-$sql.= " WHERE s.client in (1,2,3)";
 
 if ($type != '')
     $sql.= " AND st.type=" . $type;
 $sql.= " AND s.entity = " . $conf->entity;
 
-// Insert sale filter
-if ($search_sale) {
-    $sql .= " AND u.rowid= " . $db->escape($search_sale);
-}
-// Insert stcomm filter
-if ($pstcomm) {
-    $sql .= " AND st.id= " . $db->escape($pstcomm);
-}
 /* get the total of entries */
 $resultTotal = $db->query($sql);
 $iTotal = $db->num_rows($resultTotal);
+//print $sql;exit;
 
-$sql.= $sWhere;
-/* usefull to regroup by the sale needed */
-if ($search_sale || $_GET['sSearch_7'] != "") {
-    $sql.= " GROUP BY s.rowid";
-}
-$sql.= $sOrder;
-$sql.= $sLimit;
-$resultSocietes = $db->query($sql);
+$resultContacts = $db->query($sql);
 
 //$cb = new couchClient("http://193.169.46.49:5984/","dolibarr");
 //$cb = new Couchbase;
@@ -129,71 +107,51 @@ $resultSocietes = $db->query($sql);
 
 $i = 0;
 
-while ($aRow = $db->fetch_object($resultSocietes)) {
+while ($aRow = $db->fetch_object($resultContacts)) {
     $col[$aRow->rowid]->rowid = (int) $aRow->rowid;
-    $col[$aRow->rowid]->class = "Societe";
-    $col[$aRow->rowid]->name = $aRow->nom;
+    $col[$aRow->rowid]->class = "Contact";
+    $col[$aRow->rowid]->firtname = $aRow->firstname;
+    $col[$aRow->rowid]->lastname = $aRow->lastname;
+    $col[$aRow->rowid]->name = $aRow->firstname . " " . $aRow->lastname;
     $col[$aRow->rowid]->town = $aRow->ville;
     $col[$aRow->rowid]->datec = $db->jdate($aRow->datec);
     $col[$aRow->rowid]->zip = $aRow->cp;
     $col[$aRow->rowid]->tms = $db->jdate($aRow->tms);
-    $col[$aRow->rowid]->code_client = $aRow->code_client;
-    $col[$aRow->rowid]->code_fournisseur = $aRow->code_fournisseur;
-    $col[$aRow->rowid]->code_compta = $aRow->code_compta;
-    $col[$aRow->rowid]->code_compta_fournisseur = $aRow->code_compta_fournisseur;
+    $col[$aRow->rowid]->birthday = $db->jdate($aRow->birthday);
     $col[$aRow->rowid]->address = $aRow->address;
+    $col[$aRow->rowid]->civilite = $aRow->civilite;
     $col[$aRow->rowid]->state_id = $aRow->fk_departement;
     $col[$aRow->rowid]->country_id = $aRow->code; // FR
-    $col[$aRow->rowid]->phone = $aRow->tel;
+    $col[$aRow->rowid]->poste = $aRow->poste;
+    $col[$aRow->rowid]->phone = $aRow->phone;
+    $col[$aRow->rowid]->phone_perso = $aRow->phone_perso;
+    $col[$aRow->rowid]->phone_mobile = $aRow->phone_mobile;
     $col[$aRow->rowid]->fax = $aRow->fax;
     $col[$aRow->rowid]->email = $aRow->email;
-    $col[$aRow->rowid]->url = $aRow->url;
-    $col[$aRow->rowid]->idprof1 = $aRow->siren;
-    $col[$aRow->rowid]->idprof2 = $aRow->siret;
-    $col[$aRow->rowid]->idprof3 = $aRow->ape;
-    $col[$aRow->rowid]->tva_intra = $aRow->tva_intra;
-    $col[$aRow->rowid]->tva_assuj = (bool) $aRow->tva_assuj;
-    $col[$aRow->rowid]->capital = (int) $aRow->capital;
-    $col[$aRow->rowid]->Status = $aRow->stcomm;
     $col[$aRow->rowid]->notes = $aRow->note;
-    $col[$aRow->rowid]->prefix_comm = $aRow->prefix_comm;
-    $col[$aRow->rowid]->fk_prospectlevel = (int) $aRow->fk_prospectlevel;
+    $col[$aRow->rowid]->Status = "ST_NEVER";
     $col[$aRow->rowid]->user_creat = $aRow->user_creat;
     $col[$aRow->rowid]->user_modif = $aRow->user_modif;
-    $col[$aRow->rowid]->remise_client = (int) $aRow->remise_client;
-    $col[$aRow->rowid]->barcode = $aRow->barcode;
     $col[$aRow->rowid]->default_lang = $aRow->default_lang;
-    $col[$aRow->rowid]->price_level = $aRow->price_level;
-    if ($aRow->latitude && $aRow->longitude) {
-        $col[$aRow->rowid]->gps[0] = (int) $aRow->latitude;
-        $col[$aRow->rowid]->gps[1] = (int) $aRow->longitude;
-    }
-    $col[$aRow->rowid]->logo = $aRow->logo;
+    
     $col[$aRow->rowid]->newsletter = (bool) !$aRow->newsletter;
+    
+    if(isset($soc[$aRow->fk_soc]->rowid)) {
+        $col[$aRow->rowid]->societe->id = $soc[$aRow->fk_soc]->_id;
+        $col[$aRow->rowid]->societe->name = $soc[$aRow->fk_soc]->name;
+    }
 
     $i++;
 }
 
-$db->free($resultSocietes);
-unset($resultSocietes);
+$db->free($resultContacts);
+unset($resultContacts);
 
-/* sql query get sales */
-$sql = " SELECT fk_soc,login FROM (llx_societe_commerciaux as sc,llx_user as u) 
-where "/* sc.fk_soc in ($companies) and */ . " sc.fk_user=u.rowid";
-//$sql .= " LIMIT 100";
-$resultCommerciaux = $db->query($sql);
-
-/* init society sales array  */
-while ($aRow = $db->fetch_object($resultCommerciaux)) {
-    if (!empty($col[$aRow->fk_soc]->rowid)) {
-        $col[$aRow->fk_soc]->commercial_id = $aRow->login;
-    }
-}
-$db->free($resultCommerciaux);
-unset($resultCommerciaux);
+//print_r($col);
+//exit;
 
 /* sql query get categories */
-$sql = " SELECT fk_societe,label FROM (llx_categorie_societe as cs,llx_categorie as c) 
+$sql = " SELECT fk_contact,label FROM (llx_categorie_contact as cs,llx_categorie as c) 
 where "/* cs.fk_societe in ($companies) and */ . "cs.fk_categorie=c.rowid";
 //$sql .= " LIMIT 100";
 $resultCate = $db->query($sql);
@@ -202,8 +160,8 @@ $resultCate = $db->query($sql);
 /* init society categories array */
 while ($aRow = $db->fetch_object($resultCate)) {
 
-    if (!empty($col[$aRow->fk_soc]->rowid)) {
-        $col[$aRow->fk_soc]->tags[] = $aRow->label;
+    if (!empty($col[$aRow->fk_contact]->rowid)) {
+        $col[$aRow->fk_contact]->Tag[] = $aRow->label;
     }
 }
 $db->free($resultCate);
