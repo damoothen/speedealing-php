@@ -59,7 +59,54 @@ if ($type == "c") {
     $urlfiche = "";
 }
 
+$object = new Contact($db);
+$soc = new Societe($db);
 
+if ($_GET['json'] == "list") {
+    $output = array(
+        "sEcho" => intval($_GET['sEcho']),
+        "iTotalRecords" => 0,
+        "iTotalDisplayRecords" => 0,
+        "aaData" => array()
+    );
+
+    $keystart[0] = $viewname;
+    $keyend[0] = $viewname;
+    $keyend[1] = new stdClass();
+
+    $result = array();
+    try {
+        $resultsoc = $soc->getView("listByCommercial", array("key" => $user->id));
+    } catch (Exception $exc) {
+        print $exc->getMessage();
+    }
+
+    if (count($resultsoc->rows)) {
+        foreach ($resultsoc->rows as $aRow) {
+            $resultcontact = $object->getView("listSociete", array("key" => $aRow->id));
+            if (count($resultcontact->rows)) {
+                foreach ($resultcontact->rows as $row) {
+                    $result[] = $row;
+                }
+            }
+        }
+    }
+    //print_r($result);
+    //exit;
+
+    $iTotal = count($result);
+    $output["iTotalRecords"] = $iTotal;
+    $output["iTotalDisplayRecords"] = $iTotal;
+    $i = 0;
+    foreach ($result as $aRow) {
+        $output["aaData"][] = $aRow->value;
+        unset($element);
+    }
+
+    header('Content-type: application/json');
+    echo json_encode($output);
+    exit;
+}
 
 /*
  * View
@@ -67,9 +114,6 @@ if ($type == "c") {
 
 $title = (!empty($conf->global->SOCIETE_ADDRESSES_MANAGEMENT) ? $langs->trans("Contacts") : $langs->trans("ContactsAddresses"));
 llxHeader('', $title, 'EN:Module_Third_Parties|FR:Module_Tiers|ES:M&oacute;dulo_Empresas');
-
-$object = new Contact($db);
-$soc = new Societe($db);
 
 print_fiche_titre($title);
 print '<div class="with-padding">';
@@ -104,14 +148,14 @@ $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->bSearchable = true;
 $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("name", "url");
 $i++;
-/*print'<th class="essential">';
-print $langs->trans("Firstname");
-print'</th>';
-$obj->aoColumns[$i]->mDataProp = "firstname";
-$obj->aoColumns[$i]->bUseRendered = false;
-$obj->aoColumns[$i]->bSearchable = true;
-$obj->aoColumns[$i]->sDefaultContent = "";
-$i++;*/
+/* print'<th class="essential">';
+  print $langs->trans("Firstname");
+  print'</th>';
+  $obj->aoColumns[$i]->mDataProp = "firstname";
+  $obj->aoColumns[$i]->bUseRendered = false;
+  $obj->aoColumns[$i]->bSearchable = true;
+  $obj->aoColumns[$i]->sDefaultContent = "";
+  $i++; */
 print'<th class="essential">';
 print $langs->trans("PostOrFunction");
 print'</th>';
@@ -230,7 +274,9 @@ print'</tbody>';
 print "</table>";
 
 //$obj->bServerSide = true;
-//$obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listDatatables.php?json=listTasks&class=" . get_class($object);
+if (!$user->rights->societe->client->voir)
+    $obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=list&class=" . get_class($object) . "&key=" . $user->id;
+
 $object->datatablesCreate($obj, "list_contacts", true, true);
 
 print '</div>'; // end
