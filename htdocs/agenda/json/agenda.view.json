@@ -1,18 +1,50 @@
 {
    "_id": "_design/Agenda",
+   "_rev": "62-0d768537850dcb4fa36b1ca6c07582a2",
    "language": "javascript",
    "views": {
        "list": {
            "map": "function(doc) {\n  if(doc.class && doc.class==\"Agenda\")\n  emit(doc.datep, doc);\n}"
        },
        "actionsTODO": {
-           "map": "function(doc) {\nif (doc.class == \"Agenda\" && doc.status==\"TODO\") {\n if(doc.societe.id)\n  emit(doc.societe.id, doc);\n if(doc.contact.id)\n  emit(doc.contact.id, doc);\n}\n}"
+           "map": "function(doc) {\nif (doc.class == \"Agenda\" && (doc.Status==\"TODO\" || doc.Status==\"ON\")) {\n if(doc.societe.id)\n  emit(doc.societe.id, doc);\n if(doc.contact.id)\n  emit(doc.contact.id, doc);\n}\n}"
        },
        "actionsDONE": {
-           "map": "function(doc) {\nif (doc.class == \"Agenda\" && doc.status==\"DONE\") {\n if(doc.societe.id)\n  emit(doc.societe.id, doc);\n if(doc.contact.id)\n  emit(doc.contact.id, doc);\n}\n}"
+           "map": "function(doc) {\nif (doc.class == \"Agenda\" && doc.Status==\"DONE\") {\n if(doc.societe.id)\n  emit(doc.societe.id, doc);\n if(doc.contact.id)\n  emit(doc.contact.id, doc);\n}\n}"
        },
-       "actionsON": {
-           "map": "function(doc) {\nif (doc.class == \"Agenda\" && doc.status==\"ON\") {\n if(doc.societe.id)\n  emit(doc.societe.id, doc);\n if(doc.contact.id)\n  emit(doc.contact.id, doc);\n}\n}"
+       "countTODO": {
+           "map": "function(doc) {\nif (doc.class == \"Agenda\" && doc.Status==\"TODO\") {\n if(doc.usertodo.id)\n  emit(doc.usertodo.id, 1);\n}\n}",
+           "reduce": "function(keys, values) {\n  return sum(values)\n}"
+       },
+       "countON": {
+           "map": "function(doc) {\nif (doc.class == \"Agenda\" && doc.Status==\"ON\") {\n if(doc.userdone.id)\n  emit(doc.userdone.id, 1);\n}\n}",
+           "reduce": "function(keys, values) {\n  return sum(values)\n}"
+       },
+       "count": {
+           "map": "function(doc) {\nif (doc.class == \"Agenda\" && doc.Status) {\n  emit(doc.datep, 1);\n}\n}",
+           "reduce": "function(keys, values) {\n  return sum(values)\n}"
+       },
+       "countByUser": {
+           "map": "function(doc) {\nif (doc.class == \"Agenda\" && doc.Status) {\nif(doc.userdone.id)\n  emit([doc.userdone.id,doc.datep], 1);\n}\n}",
+           "reduce": "function(keys, values) {\n  return sum(values)\n}"
+       },
+       "listMyTasks": {
+           "map": "function(doc) {\nif (doc.class == \"Agenda\" && doc.Status!='DONE') {\nif(doc.usertodo.id)\n  emit([doc.usertodo.id,doc.datep], doc);\n}\n}"
+       },
+       "listMyDelegatedTasks": {
+           "map": "function(doc) {\nif (doc.class == \"Agenda\" && doc.Status!='DONE') {\nif(doc.author.id != doc.usertodo.id)\n  emit([doc.author.id,doc.datep], doc);\n}\n}"
+       },
+       "target_id": {
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Agenda\")\n  \temit(doc._id, {_id:doc._id, _rev:doc._rev});\n}"
+       },
+       "listTODOByUser": {
+           "map": "function(doc) {\nif (doc.class == \"Agenda\" && doc.Status!='DONE') {\nif(doc.usertodo.id)\n  emit([doc.usertodo.id,doc.datep], doc);\nelse if(doc.author.id)\n  emit([doc.author.id,doc.datep], doc);\n}\n}"
+       },
+       "listDONEByUser": {
+           "map": "function(doc) {\nif (doc.class == \"Agenda\" && doc.Status =='DONE') {\nif(doc.usertodo.id)\n  emit([doc.usertodo.id,doc.datep], doc);\nelse if(doc.author.id)\n  emit([doc.author.id,doc.datep], doc);\nelse if(doc.userdone.id)\n  emit([doc.userdone.id,doc.datep], doc);\n}\n}"
        }
+   },
+   "updates": {
+       "in-place": "function (doc, req) {\n var field = req.query.field;\n var value = req.query.value;\n doc[field] = value;\n  return [doc, value];\n }"
    }
 }

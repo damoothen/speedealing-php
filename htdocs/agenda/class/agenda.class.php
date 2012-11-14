@@ -150,6 +150,9 @@ class Agenda extends nosqlDocument {
         if ($this->percentage == 100 && !$this->userdone->id > 0) {
             $this->userdone->id = $user->id;
         }
+        
+        $this->datec = $now;
+        
         $this->record();
         /*
           $sql = "INSERT INTO " . MAIN_DB_PREFIX . "actioncomm";
@@ -324,6 +327,11 @@ class Agenda extends nosqlDocument {
 
         if ($this->type == 2 && $this->percentage == 100) //ACTION
             $this->datef = dol_now();
+        
+        if($this->Status == "ON" && !$this->userdone->id) {
+            $this->userdone->id = $user->id;
+            $this->userdone->name = $user->name;
+        }
 
         // Check parameters
         if ($this->Status == "TODO" && $this->userdone->id) {
@@ -336,6 +344,11 @@ class Agenda extends nosqlDocument {
             $this->userdone->id = $user->id;
             $this->userdone->name = $user->name;
         }
+        
+        if($this->Status== "DONE")
+            $this->percentage = 100;
+        elseif($this->Status== "TODO")
+            $this->percentage = 0;
 
         if (!empty($this->societe->id)) {
             $object = new Societe($this->db);
@@ -909,14 +922,13 @@ class Agenda extends nosqlDocument {
         global $langs, $conf, $user, $db, $bc;
 
         $h = 0;
-        foreach ($this->fk_extrafields->fields->Status->values as $key => $aRow) {
-            if ($aRow->enable) {
-                $head[$h][0] = "#";
-                $head[$h][1] = $langs->trans($aRow->label);
-                $head[$h][2] = $key;
-                $h++;
-            }
-        }
+        $head[$h][0] = "#";
+        $head[$h][1] = $langs->trans("StatusActionToDo");
+        $head[$h][2] = "TODO";
+        $h++;
+        $head[$h][0] = "#";
+        $head[$h][1] = $langs->trans("StatusActionDone");
+        $head[$h][2] = "DONE";
 
         $langs->load("agenda");
 
@@ -961,10 +973,11 @@ class Agenda extends nosqlDocument {
         print'<th class="essential">';
         print $langs->trans('DateEchAction');
         print'</th>';
-        $obj->aoColumns[$i]->mDataProp = "datef";
+        $obj->aoColumns[$i]->mDataProp = "datep";
         $obj->aoColumns[$i]->sClass = "center";
         $obj->aoColumns[$i]->sDefaultContent = "";
-        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("datef", "date");
+        $obj->aoColumns[$i]->bUseRendered = false;
+        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("datep", "date");
         $i++;
         print'<th class="essential">';
         print $langs->trans('Company');
@@ -976,16 +989,16 @@ class Agenda extends nosqlDocument {
         print'<th class="essential">';
         print $langs->trans('AffectedTo');
         print'</th>';
-        $obj->aoColumns[$i]->mDataProp = "usertodo";
+        $obj->aoColumns[$i]->mDataProp = "usertodo.name";
         $obj->aoColumns[$i]->sDefaultContent = "";
         $i++;
         print'<th class="essential">';
         print $langs->trans("Status");
         print'</th>';
         $obj->aoColumns[$i]->mDataProp = "Status";
-        $obj->aoColumns[$i]->sClass = "dol_select center";
-        $obj->aoColumns[$i]->sDefaultContent = "0";
-        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("Status", "status", array("dateEnd" => "last_subscription_date_end"));
+        $obj->aoColumns[$i]->sClass = "center";
+        $obj->aoColumns[$i]->sDefaultContent = "TODO";
+        $obj->aoColumns[$i]->fnRender = $this->datatablesFnRender("Status", "status", array("dateEnd" => "datep"));
         $i++;
         print '</tr>';
         print '</thead>';
@@ -996,15 +1009,16 @@ class Agenda extends nosqlDocument {
         print "</table>";
 
         $obj->iDisplayLength = $max;
+        $obj->aaSorting = array(array(2, 'desc'));
         $obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listdatatables.php?json=actionsTODO&class=" . get_class($this) . "&key=" . $id;
         $this->datatablesCreate($obj, "actions_datatable", true);
 
-        foreach ($this->fk_extrafields->fields->Status->values as $key => $aRow) {
+        foreach ($head as $aRow) {
             ?>
             <script>
                 $(document).ready(function() {
-                    var js = "var oTable = $('#actions_datatable').dataTable(); oTable.fnReloadAjax(\"<?php echo DOL_URL_ROOT . "/core/ajax/listdatatables.php?json=actions" . $key . "&class=" . get_class($this) . "&key=" . $id; ?>\")";
-                    $("#<?php echo $key; ?>").attr("onclick", js);
+                    var js = "var oTable = $('#actions_datatable').dataTable(); oTable.fnReloadAjax(\"<?php echo DOL_URL_ROOT . "/core/ajax/listdatatables.php?json=actions" . $aRow[2] . "&class=" . get_class($this) . "&key=" . $id; ?>\")";
+                    $("#<?php echo $aRow[2]; ?>").attr("onclick", js);
                 } );
             </script>
             <?php

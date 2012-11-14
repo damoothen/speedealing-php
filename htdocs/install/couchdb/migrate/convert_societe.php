@@ -131,6 +131,7 @@ $i = 0;
 while ($aRow = $db->fetch_object($resultSocietes)) {
     $col[$aRow->rowid]->rowid = (int) $aRow->rowid;
     $col[$aRow->rowid]->class = "Societe";
+    $col[$aRow->rowid]->entity = $conf->Couchdb->name;
     $col[$aRow->rowid]->name = $aRow->nom;
     $col[$aRow->rowid]->town = $aRow->ville;
     $col[$aRow->rowid]->datec = $db->jdate($aRow->datec);

@@ -1,6 +1,6 @@
 {
    "_id": "extrafields:Agenda",
-   "_rev": "20-d25f47faf8bf7674b43d1fc10848f430",
+   "_rev": "21-fce2eb873a2a2d5ee4d8e39bfdf8e7ab",
    "class": "extrafields",
    "ico": "16-Month-Calendar.png",
    "langs": [
@@ -38,19 +38,13 @@
                    "enable": true,
                    "label": "StatusActionToDo",
                    "cssClass": "blue-gradient",
-                   "dateEnd": [
-                       "expired",
-                       "ontime"
-                   ]
+                   "dateEnd": "expired"
                },
                "ON": {
                    "label": "StatusActionInProcess",
                    "enable": true,
                    "cssClass": "orange-gradient",
-                   "dateEnd": [
-                       "expired",
-                       "ontime"
-                   ]
+                   "dateEnd": "expired"
                },
                "DONE": {
                    "enable": true,
@@ -61,11 +55,6 @@
                    "label": "StatusNotApplicable",
                    "enable": false,
                    "cssClass": "grey-gradient"
-               },
-               "ontime": {
-                   "enable": false,
-                   "label": "StatusActionToDo",
-                   "cssClass": "blue-gradient"
                },
                "expired": {
                    "enable": false,

@@ -143,6 +143,7 @@ require_once("filefunc.inc.php");
 $prefix = dol_getprefix();
 $sessionname = 'DOLSESSID_' . $prefix;
 $sessiontimeout = 'DOLSESSTIMEOUT_' . $prefix;
+$count_icon = 0; // For counter favicon
 if (!empty($_COOKIE[$sessiontimeout]))
     ini_set('session.gc_maxlifetime', $_COOKIE[$sessiontimeout]);
 session_name($sessionname);
@@ -206,6 +207,8 @@ if (!defined('NOREQUIREHTML'))
     require_once(DOL_DOCUMENT_ROOT . "/core/class/html.form.class.php");  // Need 660ko memory (800ko in 2.2)
 if (!defined('NOREQUIREAJAX'))
     require_once(DOL_DOCUMENT_ROOT . '/core/lib/ajax.lib.php'); // Need 22ko memory
+
+
 
 
 
@@ -410,17 +413,6 @@ if (!defined('NOLOGIN')) {
         //exit;
     }
 
-
-    // If user admin, we force the rights-based modules
-    if ($user->admin) {
-        $user->rights->user->user->lire = 1;
-        $user->rights->user->user->creer = 1;
-        $user->rights->user->user->password = 1;
-        $user->rights->user->user->supprimer = 1;
-        $user->rights->user->self->creer = 1;
-        $user->rights->user->self->password = 1;
-    }
-
     /*
      * Overwrite configs global by personal configs
      */
@@ -541,19 +533,19 @@ if ($conf->urlrewrite) {
 
     $_SERVER['PHP_SELF'] = '/' . $conf->Couchdb->name . $_SERVER['PHP_SELF']; // Add Entity in the url
     // Switch to another entity
-    /*if (dol_getcache('dol_db') != $tmp_db || strpos(DOL_URL_ROOT, $tmp_db) == 0) {
-        dol_flushcache(); // reset cache
-        dol_setcache("dol_db", $tmp_db);*/
+    /* if (dol_getcache('dol_db') != $tmp_db || strpos(DOL_URL_ROOT, $tmp_db) == 0) {
+      dol_flushcache(); // reset cache
+      dol_setcache("dol_db", $tmp_db); */
 
-        //$user->useDatabase($tmp_db);
+    //$user->useDatabase($tmp_db);
 
-        /*if (!empty($user->NewConnection))
-            $user->set("LastConnection", $user->NewConnection);
-        $user->set("NewConnection", dol_now());*/
+    /* if (!empty($user->NewConnection))
+      $user->set("LastConnection", $user->NewConnection);
+      $user->set("NewConnection", dol_now()); */
 
-        //Header("Location: /" . $tmp_db . '/');
-        //unset($tmp_db);
-        //exit;
+    //Header("Location: /" . $tmp_db . '/');
+    //unset($tmp_db);
+    //exit;
     //}
 }
 
@@ -1083,7 +1075,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
      */
     function left_menu() {
         global $user, $conf, $langs, $db;
-        global $hookmanager;
+        global $hookmanager, $count_icon;
 
         $searchform = '';
         $bookmarks = '';
@@ -1182,8 +1174,10 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                         require_once(DOL_DOCUMENT_ROOT . "/agenda/class/agenda.class.php");
                         $agenda = new Agenda($db);
                         $result = $agenda->getView("countTODO", array("group" => true, "key" => $user->id), true);
-                        if ($result->rows[0]->value)
+                        if ($result->rows[0]->value) {
                             print '<span class="count">' . $result->rows[0]->value . '</span>';
+                            $count_icon+=$result->rows[0]->value;
+                        }
                         ?> </a></li>
                     <li style="width: 20%;"><a href="user/fiche.php?id=<?php echo $user->id; ?>"
                                                title="Profile"><span class="icon-gear"></span> </a></li>
@@ -1195,28 +1189,31 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                 // Show menu
                 $menu = new MenuAuguria($db);
                 $menu->atarget = $target;
-                $menu->showmenuTop();   // This contains a \n
-                ?>
+                $menu->showmenuTop();
 
-                <ul class="unstyled-list">
-                    <li class="title-menu">Today's event</li>
-                    <li>
-                        <ul class="calendar-menu"><?php
                 $agenda = new Agenda($db);
                 $params = array('startkey' => array($user->id, mktime(0, 0, 0, date("m"), date("d"), date("Y"))),
                     'endkey' => array($user->id, mktime(23, 59, 59, date("m"), date("d"), date("Y"))));
                 $result = $agenda->getView("listMyTasks", $params);
-                if (count($result->rows))
+                if (count($result->rows)) :
+                    ?>
+
+                    <ul class="unstyled-list">
+                        <li class="title-menu">Today's event</li>
+                        <li>
+                            <ul class="calendar-menu"><?php
                     foreach ($result->rows as $aRow) {
                         print '<li><a href="agenda/fiche.php?id=' . $aRow->value->_id . '" title="' . $aRow->value->societe->name . '"> <time datetime="' . dol_print_date($aRow->value->datep, "day") . '">';
                         print '<b>' . date("d", $aRow->value->datep) . '</b> ' . date("M", $aRow->value->datep);
                         print '</time> <small class="green">' . dol_print_date($aRow->value->datep, "hour") . '</small> ' . $aRow->value->label;
                         print '</a></li>';
                     }
-                ?>
-                        </ul>
-                    </li>
-                    <?php /*
+                    ?>
+                            </ul>
+                        </li>
+                    <?php
+                    endif;
+                    /*
                       <li class="title-menu">New messages</li>
                       <li>
                       <ul class="message-menu">
@@ -1242,7 +1239,8 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                       </span> <span class="message-info"> <span class="blue">15:12</span>
                       </span> <strong class="blue">May Starck</strong><br> Read message</li>
                       </ul>
-                      </li> */ ?>
+                      </li> */
+                    ?>
                 </ul>
             </div>
             <!-- End content wrapper -->
@@ -1493,7 +1491,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
      * @return	void
      */
     function llxFooter() {
-        global $conf, $langs, $dolibarr_auto_user, $micro_start_time, $memcache;
+        global $conf, $langs, $dolibarr_auto_user, $micro_start_time, $memcache, $count_icon;
         ?>
     </section>
 
@@ -1524,7 +1522,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
         <script src="theme/symeos/js/s_scripts.js"></script>
         <script src="theme/symeos/js/symeos.js"></script>
 
-                                                                                                                                        <!--<script src="theme/developr/html/js/developr.input.js"></script>-->
+                                                                                                                                                        <!--<script src="theme/developr/html/js/developr.input.js"></script>-->
         <script src="theme/symeos/js/developr.message.js"></script>
         <script src="theme/symeos/js/developr.modal.js"></script>
         <script src="theme/symeos/js/developr.notify.js"></script>
@@ -1545,8 +1543,8 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
             $.template.init();
 
             // Favicon count
-            Tinycon.setBubble(2);
-                                                                                                                                                                                                                					
+            Tinycon.setBubble(<?php echo $count_icon;?>);
+                                                                                                                                                                                                                                					
         </script>
 
         <script>

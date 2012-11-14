@@ -19,6 +19,7 @@
 
 require_once "../../../main.inc.php";
 require_once DOL_DOCUMENT_ROOT . "/core/class/html.formother.class.php";
+
 $langs->load("companies");
 $langs->load("customers");
 $langs->load("suppliers");
@@ -62,7 +63,7 @@ $objsoc = New Societe($db);
 $result = $objsoc->getView("list");
 foreach ($result->rows as $aRow) {
     $soc[$aRow->value->rowid] = $aRow->value;
-}   
+}
 
 /* basic companies request query */
 $sql = "SELECT s.*,";
@@ -110,9 +111,13 @@ $i = 0;
 while ($aRow = $db->fetch_object($resultContacts)) {
     $col[$aRow->rowid]->rowid = (int) $aRow->rowid;
     $col[$aRow->rowid]->class = "Contact";
+    $col[$aRow->rowid]->entity = $conf->Couchdb->name;
     $col[$aRow->rowid]->firtname = $aRow->firstname;
     $col[$aRow->rowid]->lastname = $aRow->lastname;
-    $col[$aRow->rowid]->name = $aRow->firstname . " " . $aRow->lastname;
+    if(empty($aRow->lastname) && empty($aRow->firtname))
+        $col[$aRow->rowid]->name = "Unknown";
+    else
+        $col[$aRow->rowid]->name = $aRow->firstname . " " . $aRow->lastname;
     $col[$aRow->rowid]->town = $aRow->ville;
     $col[$aRow->rowid]->datec = $db->jdate($aRow->datec);
     $col[$aRow->rowid]->zip = $aRow->cp;

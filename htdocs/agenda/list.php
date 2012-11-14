@@ -32,13 +32,10 @@ $langs->load("companies");
 $langs->load("agenda");
 $langs->load("commercial");
 
-
 $showbirthday = empty($conf->use_javascript_ajax) ? GETPOST("showbirthday", "int") : 1;
 
-
-
 // Security check
-$socid = GETPOST("socid", 'int');
+$socid = GETPOST("socid", 'alpha');
 if ($user->societe_id)
     $socid = $user->societe_id;
 $result = restrictedArea($user, 'agenda', 0, '', 'myactions');
@@ -54,7 +51,49 @@ if (!$user->rights->agenda->allactions->read || $filter == 'mine') { // If no pe
     $filterd = $user->id;
 }
 
+$type = GETPOST('type');
+$all = (GETPOST('all') && $user->rights->agenda->allactions->read);
 
+$object = new Agenda($db);
+
+if (!empty($_GET['json'])) {
+    $output = array(
+        "sEcho" => intval($_GET['sEcho']),
+        "iTotalRecords" => 0,
+        "iTotalDisplayRecords" => 0,
+        "aaData" => array()
+    );
+
+    $keystart[0] = $user->id;
+    $keyend[0] = $user->id;
+    $keyend[1] = new stdClass();
+
+    /* $params = array('startkey' => array($user->id, mktime(0, 0, 0, date("m") - 1, date("d"), date("Y"))),
+      'endkey' => array($user->id, mktime(0, 0, 0, date("m") + 1, date("d"), date("Y")))); */
+
+    try {
+        $result = $object->getView($_GET["json"], array('startkey' => $keystart, 'endkey' => $keyend));
+    } catch (Exception $exc) {
+        print $exc->getMessage();
+    }
+
+    $iTotal = count($result->rows);
+    $output["iTotalRecords"] = $iTotal;
+    $output["iTotalDisplayRecords"] = $iTotal;
+    $i = 0;
+    foreach ($result->rows as $aRow) {
+        $output["aaData"][] = $aRow->value;
+    }
+
+    header('Content-type: application/json');
+    echo json_encode($output);
+    exit;
+}
+
+$contact = new Contact($db);
+$societe = new Societe($db);
+$societestatic = new Societe($db);
+$userstatic = new User($db);
 
 /*
  * 	Actions
@@ -69,18 +108,10 @@ $now = dol_now();
 $help_url = 'EN:Module_Agenda_En|FR:Module_Agenda|ES:M&omodulodulo_Agenda';
 llxHeader('', $langs->trans("Agenda"), $help_url);
 
-$form = new Form($db);
-
-$object = new Agenda($db);
-$contact = new Contact($db);
-$societe = new Societe($db);
-$societestatic = new Societe($db);
-$userstatic = new User($db);
-
 $title = $langs->trans("DoneAndToDoActions");
-if ($status == 'done')
+if ($type == 'DONE')
     $title = $langs->trans("DoneActions");
-if ($status == 'todo')
+if ($type == 'TOTO')
     $title = $langs->trans("ToDoActions");
 
 if ($socid) {
@@ -106,27 +137,27 @@ print_fiche_titre($newtitle);
                     <?php
                     $agenda = new Agenda($db);
                     $result = $agenda->getView("countTODO", array("group" => true, "key" => $user->id));
-                    print '<strong>'.(int)$result->rows[0]->value.'</strong>';
+                    print '<strong>' . (int) $result->rows[0]->value . '</strong>';
                     print $langs->trans('NewActions');
                     ?>
                 </li>
                 <li>
                     <?php
                     $result = $agenda->getView("countON", array("group" => true, "key" => $user->id));
-                    print '<strong>'.(int)$result->rows[0]->value.'</strong>';
+                    print '<strong>' . (int) $result->rows[0]->value . '</strong>';
                     print $langs->trans('DoActions');
                     ?>
                 </li>
                 <li><?php
-                    $result = $agenda->getView("countByUser", array("group" => true,"group_level"=>"none", "startkey" => array($user->id, mktime(0, 0, 0, 1, 1, date(Y))),"endkey"=>array($user->id, new stdClass())));
-                    print '<strong>'.(int)$result->rows[0]->value.'</strong>';
+                    $result = $agenda->getView("countByUser", array("group" => true, "group_level" => "none", "startkey" => array($user->id, mktime(0, 0, 0, 1, 1, date(Y))), "endkey" => array($user->id, new stdClass())));
+                    print '<strong>' . (int) $result->rows[0]->value . '</strong>';
                     print $langs->trans('SumMyActions');
                     ?>
                 </li>
                 <li>
                     <?php
-                    $result = $agenda->getView("count", array("group" => true,"group_level"=>"none", "startkey" => mktime(0, 0, 0, 1, 1, date(Y)),"endkey"=>new stdClass()));
-                    print '<strong>'.(int)$result->rows[0]->value.'</strong>';
+                    $result = $agenda->getView("count", array("group" => true, "group_level" => "none", "startkey" => mktime(0, 0, 0, 1, 1, date(Y)), "endkey" => new stdClass()));
+                    print '<strong>' . (int) $result->rows[0]->value . '</strong>';
                     print $langs->trans('SumActions');
                     ?>
                 </li>
@@ -174,10 +205,11 @@ $i++;
 print'<th class="essential">';
 print $langs->trans('DateEchAction');
 print'</th>';
-$obj->aoColumns[$i]->mDataProp = "datef";
+$obj->aoColumns[$i]->mDataProp = "datep";
 $obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->sDefaultContent = "";
-$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("datef", "datetime");
+$obj->aoColumns[$i]->bUseRendered = false;
+$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("datep", "datetime");
 //$obj->aoColumns[$i]->sClass = "edit";
 $i++;
 print'<th class="essential">';
@@ -194,13 +226,13 @@ $obj->aoColumns[$i]->mDataProp = "contact.name";
 $obj->aoColumns[$i]->sDefaultContent = "";
 $obj->aoColumns[$i]->fnRender = $contact->datatablesFnRender("contact.name", "url", array('id' => "contact.id"));
 $i++;
-print'<th class="essential">';
-print $langs->trans('ActionUserAsk');
-print'</th>';
-$obj->aoColumns[$i]->mDataProp = "author";
-$obj->aoColumns[$i]->sDefaultContent = "";
-$obj->aoColumns[$i]->fnRender = $userstatic->datatablesFnRender("author.name", "url", array('id' => "author.id"));
-$i++;
+/* print'<th class="essential">';
+  print $langs->trans('ActionUserAsk');
+  print'</th>';
+  $obj->aoColumns[$i]->mDataProp = "author";
+  $obj->aoColumns[$i]->sDefaultContent = "";
+  $obj->aoColumns[$i]->fnRender = $userstatic->datatablesFnRender("author.name", "url", array('id' => "author.id"));
+  $i++; */
 print'<th class="essential">';
 print $langs->trans('AffectedTo');
 print'</th>';
@@ -221,8 +253,8 @@ print $langs->trans("Status");
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "Status";
 $obj->aoColumns[$i]->sClass = "center";
-$obj->aoColumns[$i]->sDefaultContent = "0";
-$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("Status", "status", array("dateEnd" => "last_subscription_date_end"));
+$obj->aoColumns[$i]->sDefaultContent = "TODO";
+$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("Status", "status", array("dateEnd" => "datep"));
 $i++;
 print'<th class="essential">';
 print $langs->trans('Action');
@@ -260,8 +292,8 @@ print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Sea
 $i++;
 print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Contact") . '" /></th>';
 $i++;
-print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search author") . '" /></th>';
-$i++;
+/* print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search author") . '" /></th>';
+  $i++; */
 print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search usertodo") . '" /></th>';
 $i++;
 print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search userdone") . '" /></th>';
@@ -277,10 +309,22 @@ print'</tbody>';
 
 print "</table>";
 
+$obj->aaSorting = array(array(2, 'asc'));
 //$obj->bServerSide = true;
-//$obj->sAjaxSource = DOL_URL_ROOT . "/core/ajax/listDatatables.php?json=listTasks&class=" . get_class($object);
-$object->datatablesCreate($obj, "listactions", true, true);
 
+if ($all) {
+    if ($type == "DONE")
+        $obj->sAjaxSource = "core/ajax/listdatatables.php?json=actionsDONE&class=" . get_class($object);
+    else
+        $obj->sAjaxSource = "core/ajax/listdatatables.php?json=actionsTODO&class=" . get_class($object);
+} else {
+    if ($type == "DONE")
+        $obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=listDONEByUser";
+    else
+        $obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=listTODOByUser";
+}
+
+$object->datatablesCreate($obj, "listactions", true, true);
 print '</div>'; // end
 
 llxFooter();

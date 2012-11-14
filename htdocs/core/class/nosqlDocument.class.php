@@ -882,6 +882,7 @@ abstract class nosqlDocument extends CommonObject {
 					var now = Math.round(+new Date()/1000);
 					var status = new Array();
 					var expire = new Array();
+                                        var statusDateEnd = "";
 					var stat = obj.aData.' . $key . ';
 					if(stat === undefined)
 						stat = "' . $this->fk_extrafields->fields->$key->default . '";';
@@ -891,20 +892,17 @@ abstract class nosqlDocument extends CommonObject {
                     else
                         $rtr.= 'status["' . $key . '"]= new Array("' . $langs->trans($key) . '","' . $aRow->cssClass . '");';
                     if (isset($aRow->dateEnd)) {
-                        $rtr.= 'var statusDateEnd = "' . $key . '";';
-                        foreach ($aRow->dateEnd as $idx => $row) {
-                            $rtr.= 'expire["' . $idx . '"]="' . $row . '";';
-                        }
+                        $rtr.= 'expire["' . $key . '"]="' . $aRow->dateEnd . '";';
                     }
                 }
 
                 if (isset($params["dateEnd"])) {
                     $rtr.= 'if(obj.aData.' . $params["dateEnd"] . ' === undefined)
-						obj.aData.' . $params["dateEnd"] . ' = "";';
-                    $rtr.= 'if(stat == statusDateEnd && obj.aData.' . $params["dateEnd"] . ' != "")';
-                    $rtr.= 'if(obj.aData.' . $params["dateEnd"] . ' < now)';
-                    $rtr.= 'stat = expire[0];
-							else stat = expire[1];';
+				obj.aData.' . $params["dateEnd"] . ' = "";';
+                    $rtr.= 'if(obj.aData.' . $params["dateEnd"] . ' != "")';
+                    $rtr.= 'if(parseInt(obj.aData.' . $params["dateEnd"] . ') < now)';
+                    $rtr.= 'if(expire[stat] !== undefined)
+                                stat = expire[stat];';
                 }
                 $rtr.= 'var ar = [];
 				ar[ar.length] = "<span class=\"tag ";

@@ -1,5 +1,6 @@
 {
    "_id": "extrafields:Adherent",
+   "_rev": "17-1faa0f5ffd52f332fc10c94ab7524491",
    "class": "extrafields",
    "ico": "16-User.png",
    "langs": [
@@ -25,21 +26,13 @@
                "1": {
                    "label": "MemberStatusActive",
                    "enable": true,
-                   "cssClass": "orange-gradient",
-                   "dateEnd": [
-                       "expired",
-                       "actived"
-                   ]
+                   "cssClass": "green-gradient",
+                   "dateEnd": "expired"
                },
                "-1": {
                    "label": "MemberStatusResiliated",
                    "enable": true,
                    "cssClass": "blue-gradient"
-               },
-               "actived": {
-                   "enable": false,
-                   "label": "MemberStatusPaid",
-                   "cssClass": "green-gradient"
                },
                "expired": {
                    "enable": false,

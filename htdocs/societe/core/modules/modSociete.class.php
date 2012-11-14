@@ -230,10 +230,20 @@ class modSociete extends DolibarrModules {
         $this->menus[$r]->enabled = '$conf->societe->enabled || $conf->fournisseur->enabled';
         $this->menus[$r]->usertype = 2;
         $this->menus[$r]->title = "ThirdParties";
+        $r++;
 
+        $this->menus[$r]->_id = "menu:newcompany";
+        $this->menus[$r]->position = 1;
+        $this->menus[$r]->url = "/societe/fiche.php?action=create";
+        $this->menus[$r]->langs = "companies";
+        $this->menus[$r]->perms = '$user->rights->societe->creer';
+        $this->menus[$r]->enabled = '$conf->societe->enabled';
+        $this->menus[$r]->usertype = 2;
+        $this->menus[$r]->title = "MenuNewThirdParty";
+        $this->menus[$r]->fk_menu = "menu:companies";
         $r++;
         $this->menus[$r]->_id = "menu:thirdparty";
-        $this->menus[$r]->position = 1;
+        $this->menus[$r]->position = 2;
         $this->menus[$r]->url = "/societe/list.php";
         $this->menus[$r]->langs = "companies";
         $this->menus[$r]->perms = '$user->rights->societe->lire';
@@ -242,14 +252,25 @@ class modSociete extends DolibarrModules {
         $this->menus[$r]->title = "ListCustomersShort";
         $this->menus[$r]->fk_menu = "menu:companies";
         $r++;
+        
+        $this->menus[$r]->_id = "menu:newcontact";
+        $this->menus[$r]->position = 10;
+        $this->menus[$r]->url = "/contact/fiche.php?action=create";
+        $this->menus[$r]->langs = "companies";
+        $this->menus[$r]->perms = '$user->rights->societe->creer';
+        $this->menus[$r]->enabled = '$conf->societe->enabled';
+        $this->menus[$r]->usertype = 2;
+        $this->menus[$r]->title = "NewContact";
+        $this->menus[$r]->fk_menu = "menu:companies";
+        $r++;
         $this->menus[$r]->_id = "menu:contactsaddresses";
-        $this->menus[$r]->position = 3;
+        $this->menus[$r]->position = 11;
         $this->menus[$r]->url = "/contact/list.php";
         $this->menus[$r]->langs = "companies";
         $this->menus[$r]->perms = '$user->rights->societe->lire';
         $this->menus[$r]->enabled = '$conf->societe->enabled';
         $this->menus[$r]->usertype = 2;
-        $this->menus[$r]->title = 'ListContacts';
+        $this->menus[$r]->title = 'ListOfContacts';
         $this->menus[$r]->fk_menu = "menu:companies";
         $r++;
 

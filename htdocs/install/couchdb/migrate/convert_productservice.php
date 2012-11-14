@@ -17,7 +17,6 @@
  */
 
 require_once "../../../main.inc.php";
-require_once DOL_DOCUMENT_ROOT . "/comm/prospect/class/prospect.class.php";
 require_once DOL_DOCUMENT_ROOT . "/core/class/html.formother.class.php";
 $langs->load("companies");
 $langs->load("customers");
@@ -87,6 +86,7 @@ $price = array();
 while ($aRow = $db->fetch_object($result)) {
     $col[$aRow->rowid]->_id = $uuid[$i];
     $col[$aRow->rowid]->class = "Product";
+    $col[$aRow->rowid]->entity = $conf->Couchdb->name;
     $col[$aRow->rowid]->name = $aRow->ref;
     $col[$aRow->rowid]->ref_ext = $aRow->ref_ext;
     $col[$aRow->rowid]->datec = $db->jdate($aRow->datec);
@@ -130,8 +130,6 @@ while ($aRow = $db->fetch_object($result)) {
 
     $col[$aRow->rowid]->accountancy_code_sell = $aRow->accountancy_code_sell;
     $col[$aRow->rowid]->accountancy_code_buy = $aRow->accountancy_code_buy;
-
-    $col[$aRow->rowid]->entity = $conf->Couchdb->name;
 
     $col[$aRow->rowid]->partnumber = $aRow->partnumber;
     $col[$aRow->rowid]->weight = (float) $aRow->weight;
