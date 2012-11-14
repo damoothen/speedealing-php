@@ -176,7 +176,7 @@ if ((($action == 'add' && $canadduser) || ($action == 'update' && $canedituser))
         $edituser->Lastname = $_POST["nom"];
         $edituser->Firstname = $_POST["prenom"];
         $edituser->name = $_POST["login"];
-        $edituser->Administrator = (bool) $_POST["admin"];
+        $edituser->admin = (bool) $_POST["admin"];
         $edituser->PhonePro = $_POST["PhonePro"];
         $edituser->Fax = $_POST["Fax"];
         $edituser->PhoneMobile = $_POST["user_mobile"];
@@ -321,29 +321,29 @@ if (($action == 'create') || ($action == 'adduserldap')) {
         print '<td>';
         print $form->selectyesno('admin', $_POST["admin"], 1);
         ?><script type="text/javascript">
-                    $(function() {
-                        $("select[name=admin]").change(function() {
-                            if ( $(this).val() == 0 ) {
-                                $("input[name=superadmin]")
-                                .attr("disabled", true)
-                                .attr("checked", false);
-                                $("select[name=entity]")
-                                .attr("disabled", false);
-                            } else {
-                                $("input[name=superadmin]")
-                                .attr("disabled", false);
-                            }
-                        });
-                        $("input[name=superadmin]").change(function() {
-                            if ( $(this).attr("checked") == "checked" ) {
-                                $("select[name=entity]")
-                                .attr("disabled", true);
-                            } else {
-                                $("select[name=entity]")
-                                .attr("disabled", false);
-                            }
-                        });
-                    });
+            $(function() {
+                $("select[name=admin]").change(function() {
+                    if ( $(this).val() == 0 ) {
+                        $("input[name=superadmin]")
+                        .attr("disabled", true)
+                        .attr("checked", false);
+                        $("select[name=entity]")
+                        .attr("disabled", false);
+                    } else {
+                        $("input[name=superadmin]")
+                        .attr("disabled", false);
+                    }
+                });
+                $("input[name=superadmin]").change(function() {
+                    if ( $(this).attr("checked") == "checked" ) {
+                        $("select[name=entity]")
+                        .attr("disabled", true);
+                    } else {
+                        $("select[name=entity]")
+                        .attr("disabled", false);
+                    }
+                });
+            });
         </script><?php
         $checked = ($_POST["superadmin"] ? ' checked' : '');
         $disabled = ($_POST["superadmin"] ? '' : ' disabled');
@@ -819,7 +819,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
                 print'<tbody>';
 
                 $object = new DolibarrModules($db);
-                
+
                 try {
                     $result = $object->getView("default_right");
                 } catch (Exception $exc) {
@@ -910,7 +910,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
                 print '<input size="30" type="text" class="flat" name="nom" value="' . $fuser->Lastname . '">';
             } else {
                 print '<input type="hidden" name="nom" value="' . $fuser->Lastname . '">';
-                print $fuser->nom;
+                print $fuser->Lastname;
             }
             print '</td>';
             // Photo
@@ -955,26 +955,17 @@ if (($action == 'create') || ($action == 'adduserldap')) {
 
             // Administrator
             print '<tr><td valign="top">' . $langs->trans("Administrator") . '</td>';
-            if ($fuser->societe_id > 0) {
-                print '<td>';
-                print '<input type="hidden" name="admin" value="' . $fuser->Administrator . '">' . yn($fuser->Administrator);
-                print ' (' . $langs->trans("ExternalUser") . ')';
-                print '</td></tr>';
+            print '<td>';
+            if ($user->admin
+                    && $user->id != $fuser->id) {  // Don't downgrade ourself
+                print $form->selectyesno('admin', $fuser->admin, 1);
             } else {
-                print '<td>';
-                $nbSuperAdmin = $user->getNbOfUsers('superadmin');
-                if ($user->admin
-                        && ($user->id != $fuser->id)  // Don't downgrade ourself
-                        && ($fuser->entity > 0 || $nbSuperAdmin > 1) // Don't downgrade a superadmin if alone
-                ) {
-                    print $form->selectyesno('admin', $fuser->Administrator, 1);
-                } else {
-                    $yn = yn($fuser->Administrator);
-                    print '<input type="hidden" name="Administrator" value="' . $fuser->Administrator . '">';
-                    print $yn;
-                }
-                print '</td></tr>';
+                $yn = yn($fuser->admin);
+                print '<input type="hidden" name="admin" value="' . $fuser->admin . '">';
+                print $yn;
             }
+            print '</td></tr>';
+
 
             // Type
             print '<tr><td width="25%" valign="top">' . $langs->trans("Type") . '</td>';

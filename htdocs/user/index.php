@@ -143,8 +143,8 @@ $obj->aoColumns[$i]->fnRender = 'function(obj) {
 				ar[ar.length] = obj.aData.' . $key . '.toString();
 				ar[ar.length] = "</a> ";
 				if(obj.aData.admin) {
-					ar[ar.length] = "<img src=\"theme/' . $conf->theme . '/img/redstar.png\" border=\"0\" ";
-					ar[ar.length] = "\" title=\"' . $langs->trans("SuperAdmin") . '";
+					ar[ar.length] = "<img src=\"theme/' . $conf->theme . '/img/star.png\" border=\"0\" ";
+					ar[ar.length] = "\" title=\"' . $langs->trans("Administrator") . '";
 					ar[ar.length] = "\">";
 				}
 				var str = ar.join("");

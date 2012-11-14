@@ -168,7 +168,7 @@ class User extends nosqlDocument {
         try {
             $admins = $this->couchAdmin->getUserAdmins();
             $name = $this->couchAdmin->getLoginSession();
-            if (isset($admins->$name))
+            if (isset($admins->$name) && $this->email == $name)
                 $this->superadmin = true;
             else
                 $this->superadmin = false;
@@ -181,7 +181,7 @@ class User extends nosqlDocument {
             $this->admin = true;
         } else {
             $membersAdmin = $this->couchAdmin->getDatabaseAdminUsers();
-            if (in_array($name, $membersAdmin))
+            if (in_array($this->email, $membersAdmin))
                 $this->admin = true;
             else
                 $this->admin = false;
@@ -1502,6 +1502,7 @@ class User extends nosqlDocument {
      *    @return   string        		Libelle
      */
     function LibStatus($status) {
+        global $langs;
 
         $admins = $this->getDatabaseAdminUsers();
         $enabled = $this->getDatabaseReaderUsers();
@@ -1526,7 +1527,10 @@ class User extends nosqlDocument {
 
         $this->Status = $status;
 
-        return parent::LibStatus($status);
+        if ($this->admin)
+            $out = img_picto($langs->trans("Administrator"), 'star');
+
+        return parent::LibStatus($status) . " " . $out;
     }
 
 }
