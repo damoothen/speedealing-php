@@ -807,7 +807,6 @@ if ($id) {
      * Affichage onglets
      */
 
-    $head = actions_prepare_head($object);
     dol_fiche_head($head, 'card', $langs->trans("Action"), 0, 'action');
 
     $now = dol_now();

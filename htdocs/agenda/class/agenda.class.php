@@ -78,13 +78,9 @@ class Agenda extends nosqlDocument {
     function __construct($db) {
         parent::__construct($db);
 
-        try {
-            $fk_extrafields = new ExtraFields($db);
-            $this->fk_extrafields = $fk_extrafields->load("extrafields:Agenda", true); // load and cache
-        } catch (Exception $e) {
-            dol_print_error('', $e->getMessage());
-            exit;
-        }
+        $this->fk_extrafields = new ExtraFields($db);
+        $this->fk_extrafields->fetch(get_class($this));
+
         $this->Status = "TODO";
         $this->author = null;
         $this->usermod = null;
@@ -150,9 +146,9 @@ class Agenda extends nosqlDocument {
         if ($this->percentage == 100 && !$this->userdone->id > 0) {
             $this->userdone->id = $user->id;
         }
-        
+
         $this->datec = $now;
-        
+
         $this->record();
         /*
           $sql = "INSERT INTO " . MAIN_DB_PREFIX . "actioncomm";
@@ -327,8 +323,8 @@ class Agenda extends nosqlDocument {
 
         if ($this->type == 2 && $this->percentage == 100) //ACTION
             $this->datef = dol_now();
-        
-        if($this->Status == "ON" && !$this->userdone->id) {
+
+        if ($this->Status == "ON" && !$this->userdone->id) {
             $this->userdone->id = $user->id;
             $this->userdone->name = $user->name;
         }
@@ -344,10 +340,10 @@ class Agenda extends nosqlDocument {
             $this->userdone->id = $user->id;
             $this->userdone->name = $user->name;
         }
-        
-        if($this->Status== "DONE")
+
+        if ($this->Status == "DONE")
             $this->percentage = 100;
-        elseif($this->Status== "TODO")
+        elseif ($this->Status == "TODO")
             $this->percentage = 0;
 
         if (!empty($this->societe->id)) {
@@ -380,7 +376,7 @@ class Agenda extends nosqlDocument {
         }
 
         $this->record();
-        
+
         dol_delcache(get_class($this) . ":countTODO"); //Reset stats cache for agenda
 
         if (!$notrigger) {
@@ -1059,8 +1055,8 @@ class Agenda extends nosqlDocument {
     }
 
     function print_calendar($date) {
+        global $db, $langs, $user;
 
-        global $db, $langs;
         $nbDaysInMonth = date('t', $date);
         $firstDayTimestamp = dol_mktime(-1, -1, -1, date('n', $date), 1, date('Y', $date));
         $lastDayTimestamp = dol_mktime(23, 59, 59, date('n', $date), $nbDaysInMonth, date('Y', $date));
@@ -1068,7 +1064,7 @@ class Agenda extends nosqlDocument {
         $firstDayOfMonth = date('w', $firstDayTimestamp);
 
         $object = new Agenda($db);
-        $events = $object->getView("list", array("startkey" => $firstDayTimestamp, "endkey" => $lastDayTimestamp));
+        $events = $object->getView("listMyTasks", array("startkey" => array($user->id, $firstDayTimestamp), "endkey" => array($user->id, $lastDayTimestamp)));
 
         print '<table class="calendar fluid large-margin-bottom with-events">';
 
@@ -1110,8 +1106,8 @@ class Agenda extends nosqlDocument {
 
             if (!empty($events->rows[$cursor])) {
                 for ($j = 0; $j < count($events->rows); $j++) {
-                    if ($events->rows[$cursor]->key >= $dayTimestamp && $events->rows[$cursor]->key < $dayTimestamp + 3600 * 24) {
-                        print '<li class="important"><a href="' . DOL_URL_ROOT . '/agenda/fiche.php?id=' . $events->rows[$cursor]->id . '" >' . $events->rows[$cursor]->value->label . '</a></li>';
+                    if ($events->rows[$cursor]->key[1] >= $dayTimestamp && $events->rows[$cursor]->key[1] < $dayTimestamp + 3600 * 24) {
+                        print '<li><a href="agenda/fiche.php?id=' . $events->rows[$cursor]->id . '" >' . "[" . $events->rows[$cursor]->value->societe->name . "] " . $events->rows[$cursor]->value->label . '</a></li>';
                         $cursor++;
                     } else
                         break;
@@ -1136,7 +1132,7 @@ class Agenda extends nosqlDocument {
 
     function print_week($date) {
 
-        global $db, $langs;
+        global $db, $langs, $user;
 
         $timestamps = array();
         $dayOfWeek = date('w', $date);
@@ -1149,7 +1145,7 @@ class Agenda extends nosqlDocument {
         }
 
         $object = new Agenda($db);
-        $events = $object->getView("list", array("startkey" => $timestamps[0]['start'], "endkey" => $timestamps[6]['end']));
+        $events = $object->getView("listMyTasks", array("startkey" => array($user->id, $timestamps[0]['start']), "endkey" => array($user->id, $timestamps[6]['end'])));
 
         $styles = array(
             0 => 'left: 0%; right: 85.7143%; margin-left: -1px;',
@@ -1178,7 +1174,7 @@ class Agenda extends nosqlDocument {
 					<li class="from-9 to-10"><span>9 AM</span></li>
 					<li class="from-10 to-11"><span>10 AM</span></li>
 					<li class="from-11 to-12"><span>11 AM</span></li>
-					<li class="from-12 to-13 blue"><span>NOON</span></li>
+					<li class="from-12 to-13 blue"><span>12 AM</span></li>
 					<li class="from-13 to-14"><span>1 PM</span></li>
 					<li class="from-14 to-15"><span>2 PM</span></li>
 					<li class="from-15 to-16"><span>3 PM</span></li>
@@ -1205,7 +1201,7 @@ class Agenda extends nosqlDocument {
 
             if (!empty($events->rows[$cursor])) {
                 for ($j = 0; $j < count($events->rows); $j++) {
-                    if ($events->rows[$cursor]->key >= $timestamps[$i]['start'] && $events->rows[$cursor]->key < $timestamps[$i]['end']) {
+                    if ($events->rows[$cursor]->key[1] >= $timestamps[$i]['start'] && $events->rows[$cursor]->key[1] < $timestamps[$i]['end']) {
                         $dateStart = $events->rows[$cursor]->value->datep;
                         $dateEnd = $events->rows[$cursor]->value->datef;
                         if ($events->rows[$cursor]->value->type_code != 'AC_RDV')
@@ -1213,8 +1209,10 @@ class Agenda extends nosqlDocument {
                         $hourStart = date('G', $dateStart);
                         $hourEnd = date('G', $dateEnd);
 
-                        print '<a class="agenda-event from-' . $hourStart . ' to-' . $hourEnd . ' anthracite-gradient" href="/agenda/fiche.php?id=' . $events->rows[$cursor]->id . '">';
+                        print '<a class="agenda-event from-' . $hourStart . ' to-' . $hourEnd . ' anthracite-gradient" href="agenda/fiche.php?id=' . $events->rows[$cursor]->id . '">';
                         print '<time>' . $hourStart . 'h - ' . $hourEnd . 'h</time>';
+                        if (isset($events->rows[$cursor]->value->societe->name))
+                            print "[" . $events->rows[$cursor]->value->societe->name . "] ";
                         print $events->rows[$cursor]->value->label;
                         print '</a>';
                         $cursor++;
@@ -1247,24 +1245,26 @@ class Agenda extends nosqlDocument {
             $result = $this->getView("list" . $_GET["name"], $params);
 
             //error_log(print_r($result,true));
+            $output=array();
 
-            foreach ($result->rows as $aRow) {
-                $type_code = $aRow->value->type_code;
-                $priority = $this->fk_extrafields->fields->type_code->values->$type_code->priority;
+            if (count($result->rows))
+                foreach ($result->rows as $aRow) {
+                    $type_code = $aRow->value->type_code;
+                    $priority = $this->fk_extrafields->fields->type_code->values->$type_code->priority;
 
-                $obj = new stdClass();
-                $obj->x = $aRow->value->datep * 1000;
-                $obj->y = $priority;
-                $obj->name = $aRow->value->label;
-                $obj->id = $aRow->value->_id;
-                if (!isset($aRow->value->societe->name))
-                    $obj->soc = $langs->trans("None");
-                else
-                    $obj->soc = $aRow->value->societe->name;
-                $obj->usertodo = $aRow->value->usertodo->name;
+                    $obj = new stdClass();
+                    $obj->x = $aRow->value->datep * 1000;
+                    $obj->y = $priority;
+                    $obj->name = $aRow->value->label;
+                    $obj->id = $aRow->value->_id;
+                    if (!isset($aRow->value->societe->name))
+                        $obj->soc = $langs->trans("None");
+                    else
+                        $obj->soc = $aRow->value->societe->name;
+                    $obj->usertodo = $aRow->value->usertodo->name;
 
-                $output[] = clone $obj;
-            }
+                    $output[] = clone $obj;
+                }
 
             return $output;
         } else {
@@ -1282,8 +1282,8 @@ class Agenda extends nosqlDocument {
                         names = ['MyTasks','MyDelegatedTasks'],
                         colors = Highcharts.getOptions().colors;
                         var translate = [];
-                        translate['MyTasks'] = "<?php echo $langs->trans('MyTasks');?>";
-                        translate['MyDelegatedTasks'] = "<?php echo $langs->trans('MyDelegatedTasks');?>";
+                        translate['MyTasks'] = "<?php echo $langs->trans('MyTasks'); ?>";
+                        translate['MyDelegatedTasks'] = "<?php echo $langs->trans('MyDelegatedTasks'); ?>";
                         $.each(names, function(i, name) {
 
                             $.getJSON('<?php echo DOL_URL_ROOT . '/core/ajax/viewgraph.php'; ?>?json=graphEisenhower&class=<?php echo get_class($this); ?>&name='+ name.toString() +'&callback=?',	function(data) {
@@ -1308,7 +1308,7 @@ class Agenda extends nosqlDocument {
                         // create the chart when all data is loaded
                         function createChart() {
                             var chart;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
                             chart = new Highcharts.Chart({
                                 chart: {
                                     renderTo: 'eisenhower',

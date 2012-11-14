@@ -882,7 +882,8 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             print '<tr>';
             print '<td>' . $langs->trans("AllocateCommercial") . '</td>';
             print '<td colspan="3">';
-            $form->select_users((!empty($object->commercial_id) ? $object->commercial_id : $user->id), 'commercial_id', 1); // Add current user by default
+            $object->commercial_id->id = $user->id;
+            print $object->select_fk_extrafields("commercial_id", "commercial_id");
             print '</td></tr>';
         }
 

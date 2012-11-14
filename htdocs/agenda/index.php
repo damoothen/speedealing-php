@@ -31,58 +31,58 @@ if ($conf->projet->enabled)
     require_once(DOL_DOCUMENT_ROOT . "/core/lib/project.lib.php");
 
 /*
-if (!isset($conf->global->AGENDA_MAX_EVENTS_DAY_VIEW))
-    $conf->global->AGENDA_MAX_EVENTS_DAY_VIEW = 3;
+  if (!isset($conf->global->AGENDA_MAX_EVENTS_DAY_VIEW))
+  $conf->global->AGENDA_MAX_EVENTS_DAY_VIEW = 3;
 
-$showbirthday = empty($conf->use_javascript_ajax) ? GETPOST("showbirthday", "int") : 1;
+  $showbirthday = empty($conf->use_javascript_ajax) ? GETPOST("showbirthday", "int") : 1;
 
-// Security check
-$socid = GETPOST("socid", "int", 1);
-if ($user->societe_id)
-    $socid = $user->societe_id;
-$result = restrictedArea($user, 'agenda', 0, '', 'myactions');
+  // Security check
+  $socid = GETPOST("socid", "int", 1);
+  if ($user->societe_id)
+  $socid = $user->societe_id;
+  $result = restrictedArea($user, 'agenda', 0, '', 'myactions');
 
-$canedit = 1;
-if (!$user->rights->agenda->myactions->read)
-    accessforbidden();
-if (!$user->rights->agenda->allactions->read)
-    $canedit = 0;
-if (!$user->rights->agenda->allactions->read || $filter == 'mine') {  // If no permission to see all, we show only affected to me
-    $filtera = $user->id;
-    $filtert = $user->id;
-    $filterd = $user->id;
-}
+  $canedit = 1;
+  if (!$user->rights->agenda->myactions->read)
+  accessforbidden();
+  if (!$user->rights->agenda->allactions->read)
+  $canedit = 0;
+  if (!$user->rights->agenda->allactions->read || $filter == 'mine') {  // If no permission to see all, we show only affected to me
+  $filtera = $user->id;
+  $filtert = $user->id;
+  $filterd = $user->id;
+  }
 
-$action = GETPOST('action', 'alpha');
-//$year=GETPOST("year");
-$year = GETPOST("year", "int") ? GETPOST("year", "int") : date("Y");
-$month = GETPOST("month", "int") ? GETPOST("month", "int") : date("m");
-$week = GETPOST("week", "int") ? GETPOST("week", "int") : date("W");
-$day = GETPOST("day", "int") ? GETPOST("day", "int") : 0;
-$actioncode = GETPOST("actioncode", "alpha", 3);
-$pid = GETPOST("projectid", "int", 3);
-$status = GETPOST("status");
-$type = GETPOST("type");
-$maxprint = (isset($_GET["maxprint"]) ? GETPOST("maxprint") : $conf->global->AGENDA_MAX_EVENTS_DAY_VIEW);
+  $action = GETPOST('action', 'alpha');
+  //$year=GETPOST("year");
+  $year = GETPOST("year", "int") ? GETPOST("year", "int") : date("Y");
+  $month = GETPOST("month", "int") ? GETPOST("month", "int") : date("m");
+  $week = GETPOST("week", "int") ? GETPOST("week", "int") : date("W");
+  $day = GETPOST("day", "int") ? GETPOST("day", "int") : 0;
+  $actioncode = GETPOST("actioncode", "alpha", 3);
+  $pid = GETPOST("projectid", "int", 3);
+  $status = GETPOST("status");
+  $type = GETPOST("type");
+  $maxprint = (isset($_GET["maxprint"]) ? GETPOST("maxprint") : $conf->global->AGENDA_MAX_EVENTS_DAY_VIEW);
 
-if (GETPOST('viewcal')) {
-    $action = 'show_month';
-    $day = '';
-}                                                   // View by month
-if (GETPOST('viewweek')) {
-    $action = 'show_week';
-    $week = ($week ? $week : date("W"));
-    $day = ($day ? $day : date("d"));
-}  // View by week
-if (GETPOST('viewday')) {
-    $action = 'show_day';
-    $day = ($day ? $day : date("d"));
-}                                  // View by day
+  if (GETPOST('viewcal')) {
+  $action = 'show_month';
+  $day = '';
+  }                                                   // View by month
+  if (GETPOST('viewweek')) {
+  $action = 'show_week';
+  $week = ($week ? $week : date("W"));
+  $day = ($day ? $day : date("d"));
+  }  // View by week
+  if (GETPOST('viewday')) {
+  $action = 'show_day';
+  $day = ($day ? $day : date("d"));
+  }                                  // View by day
 
-$langs->load("other");
-$langs->load("commercial");
+  $langs->load("other");
+  $langs->load("commercial");
 
-*/
+ */
 
 
 /*
@@ -90,24 +90,24 @@ $langs->load("commercial");
  */
 
 /*
-if (GETPOST("viewlist")) {
-    $param = '';
-    foreach ($_POST as $key => $val) {
-        if ($key == 'token')
-            continue;
-        $param.='&' . $key . '=' . urlencode($val);
-    }
-    //print $param;
-    header("Location: " . DOL_URL_ROOT . '/comm/action/listactions.php?' . $param);
-    exit;
-}
+  if (GETPOST("viewlist")) {
+  $param = '';
+  foreach ($_POST as $key => $val) {
+  if ($key == 'token')
+  continue;
+  $param.='&' . $key . '=' . urlencode($val);
+  }
+  //print $param;
+  header("Location: " . DOL_URL_ROOT . '/comm/action/listactions.php?' . $param);
+  exit;
+  }
 
-if ($action == 'delete_action') {
-    $event = new Agenda($db);
-    $event->fetch($actionid);
-    $result = $event->delete();
-}
-*/
+  if ($action == 'delete_action') {
+  $event = new Agenda($db);
+  $event->fetch($actionid);
+  $result = $event->delete();
+  }
+ */
 
 // Security check
 $socid = GETPOST("socid", "alpha", 1);
@@ -143,102 +143,15 @@ llxHeader('', $langs->trans("Calendar"), $help_url);
 
 print_fiche_titre($langs->trans("Calendar"), true);
 print '<div class="with-padding">';
-//print '<div class="columns">';
+print '<div class="columns">';
 
-if ($conf->use_javascript_ajax) {
-    print "\n" . '<script type="text/javascript" language="javascript">';
-    print 'jQuery(document).ready(function () {
-                
-                jQuery("#button-view-month").click(function(){
-                    window.location = "'.$_SERVER['PHP_SELF'].'?view=month";
-                    return false;
-                });
-                
-                jQuery("#button-view-week").click(function(){
-                    window.location = "'.$_SERVER['PHP_SELF'].'?view=week";
-                    return false;
-                });
+print '<div class="twelve-columns">';
+$object->print_week(dol_now());
+print '</div>';
 
-            });';
-    print '</script>' . "\n";
-}
-
-if ($conf->use_javascript_ajax) {
-    print "\n" . '<script type="text/javascript" language="javascript">';
-    print 'jQuery(document).ready(function () {
-                
-               var flagAllActions = true;
-               var flagMyActions = false;
-               
-               function buttonsActionsManager(obj){
-                    switch (obj.val()) {
-                        case "all-actions":
-                            flagAllActions = true;
-                            flagMyActions = false;
-                            break;
-                        case "my-actions":
-                            flagAllActions = false;
-                            flagMyActions = true;
-                            break;
-                        default: alert("ok");
-                    }
-                    jQuery("#buttons-actions .active").removeClass("active");
-                    obj.parent().addClass("active");
-                    refreshDisplay();
-                    return false;
-               }
-               
-               function refreshDisplay(){
-                    alert("refresh");
-               }
-
-               jQuery("#buttons-actions input[type=radio]").click(function(){
-                    buttonsActionsManager(jQuery(this));
-               });
-               
-
-            });';
-    print '</script>' . "\n";
-}
-
-print '<p></p>';
-print '<p class="button-height" >';
-print '<span class="button-group margin-right">';
-print '<a class="button" href="#" id="button-view-month" >' . $langs->trans('Month') . '</a>';
-print '<a class="button" href="#" id="button-view-week" >' . $langs->trans('Week') . '</a>';
-print '</span>';
-
-
-print '<span class="button-group margin-right" id="buttons-actions">';
-print '<label class="button green-active active" for="button-all-actions">';
-print '<input type="radio" checked="" value="all-actions" id="button-all-actions" name="button-actions">';
-print $langs->trans('AllActions');
-print '</label>';
-print '<label class="button green-active" for="button-my-actions">';
-print '<input type="radio" checked="" value="my-actions" id="button-my-actions" name="button-actions">';
-print $langs->trans('MyActions');
-print '</label>';
-print '</span>';
-
-print '<span class="button-group margin-right" id="buttons-status">';
-print '<label class="button green-active active" for="button-todo">';
-print '<input type="radio" checked="" value="todo" id="button-todo" name="button-status">';
-print $langs->trans('MenuToDoActions');
-print '</label>';
-print '<label class="button green-active" for="button-done">';
-print '<input type="radio" checked="" value="done" id="button-done" name="button-status">';
-print $langs->trans('MenuDoneActions');
-print '</label>';
-print '</span>';
-print '</p>';
-
-switch ($view) {
-    case 'week': 
-        $object->print_week(dol_now());
-        break;
-    default:
-        $object->print_calendar(dol_now());
-}
+print '<div class="twelve-columns">';
+$object->print_calendar(dol_now());
+print '</div>';
 
 print '</div></div>';
 
