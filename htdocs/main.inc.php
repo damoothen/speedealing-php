@@ -1170,7 +1170,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                         </a></li>
                     <li style="width: 20%;"><span href="inbox.html" title="Messages"><span class="icon-inbox"></span>
                         </span></li>
-                    <li style="width: 20%;"><a href="agenda/list.php?idmenu=menu:agendaList" title="<?php echo $langs->trans("Agenda"); ?>"><span class="icon-calendar"></span><?php
+                    <li style="width: 20%;"><a href="agenda/list.php?idmenu=menu:myagendaListTODO" title="<?php echo $langs->trans("Agenda"); ?>"><span class="icon-calendar"></span><?php
                         require_once(DOL_DOCUMENT_ROOT . "/agenda/class/agenda.class.php");
                         $agenda = new Agenda($db);
                         $result = $agenda->getView("countTODO", array("group" => true, "key" => $user->id), true);
