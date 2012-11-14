@@ -28,7 +28,7 @@ $langs->load("commercial");
 
 $couchdb = clone $couch;
 
-$flush = 0;
+$flush = $_GET["flush"];
 if ($flush) {
     // reset old value
     $result = $couchdb->limit(50000)->getView('Societe', 'target_id');

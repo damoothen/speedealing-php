@@ -52,7 +52,7 @@ if (!$user->rights->societe->client->voir && !$socid) {
 
 $entity = $conf->Couchdb->name;
 
-$flush = 0;
+$flush = $_GET["flush"];
 if ($flush) {
 
     // reset old value

@@ -29,13 +29,13 @@ require_once("../../../main.inc.php");
 
 
 $couchdb = clone $couch;
-$couchdb->useDatabase('demo');
 
-$flush=1;
+$flush = $_GET["flush"];
 if($flush)
 {
     // reset old value
-    $result = $couchdb->limit(50000)->getView('unlink','link');
+    //$result = $couchdb->limit(50000)->getView('unlink','link');
+    $result = $couchdb->limit(50000)->getView('unlink','target_id');
     $i=0;
     
     if(count($result->rows)==0)

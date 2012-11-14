@@ -30,7 +30,7 @@ $langs->load("commercial");
 
 $couchdb = clone $couch;
 
-$flush = 0;
+$flush = $_GET["flush"];
 if ($flush) {
     // reset old value
     $result = $couchdb->limit(50000)->getView('Contact', 'target_id');
@@ -114,7 +114,7 @@ while ($aRow = $db->fetch_object($resultContacts)) {
     $col[$aRow->rowid]->entity = $conf->Couchdb->name;
     $col[$aRow->rowid]->firtname = $aRow->firstname;
     $col[$aRow->rowid]->lastname = $aRow->lastname;
-    if(empty($aRow->lastname) && empty($aRow->firtname))
+    if (empty($aRow->lastname) && empty($aRow->firtname))
         $col[$aRow->rowid]->name = "Unknown";
     else
         $col[$aRow->rowid]->name = $aRow->firstname . " " . $aRow->lastname;
@@ -138,10 +138,10 @@ while ($aRow = $db->fetch_object($resultContacts)) {
     $col[$aRow->rowid]->user_creat = $aRow->user_creat;
     $col[$aRow->rowid]->user_modif = $aRow->user_modif;
     $col[$aRow->rowid]->default_lang = $aRow->default_lang;
-    
+
     $col[$aRow->rowid]->newsletter = (bool) !$aRow->newsletter;
-    
-    if(isset($soc[$aRow->fk_soc]->rowid)) {
+
+    if (isset($soc[$aRow->fk_soc]->rowid)) {
         $col[$aRow->rowid]->societe->id = $soc[$aRow->fk_soc]->_id;
         $col[$aRow->rowid]->societe->name = $soc[$aRow->fk_soc]->name;
     }

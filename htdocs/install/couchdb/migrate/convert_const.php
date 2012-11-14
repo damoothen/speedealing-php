@@ -22,7 +22,8 @@
  * 	\brief      load data to display
  */
 require_once("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/menubase.class.php");;
+require_once(DOL_DOCUMENT_ROOT . "/core/class/menubase.class.php");
+;
 $langs->load("companies");
 $langs->load("customers");
 $langs->load("suppliers");
@@ -31,33 +32,29 @@ $langs->load("commercial");
  * you want to insert a non-database field (for example a counter or static image)
  */
 
-$couchdb = new couchClient("http://"."Administrator:admin@".substr($conf->couchdb->host, 7).':'.$conf->couchdb->port.'/',$conf->couchdb->name);
+$couchdb = new couchClient("http://" . "Administrator:admin@" . substr($conf->couchdb->host, 7) . ':' . $conf->couchdb->port . '/', $conf->couchdb->name);
 
-
-$flush=0;
-if($flush)
-{
+$flush = $_GET["flush"];
+if ($flush) {
     // reset old value
-    $result = $couchdb->limit(50000)->getView('MenuTop','target_id');
-    $i=0;
-    
-    if(count($result->rows)==0)
-    {
+    $result = $couchdb->limit(50000)->getView('MenuTop', 'target_id');
+    $i = 0;
+
+    if (count($result->rows) == 0) {
         print "Effacement terminé";
         exit;
     }
-    
-    foreach ($result->rows AS $aRow)
-    {
-        $obj[$i]->_id=$aRow->value->_id;
-        $obj[$i]->_rev=$aRow->value->_rev;
+
+    foreach ($result->rows AS $aRow) {
+        $obj[$i]->_id = $aRow->value->_id;
+        $obj[$i]->_rev = $aRow->value->_rev;
         $i++;
     }
 
     try {
         $couchdb->deleteDocs($obj);
     } catch (Exception $e) {
-        echo "Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
+        echo "Something weird happened: " . $e->getMessage() . " (errcode=" . $e->getCode() . ")\n";
         exit(1);
     }
 
@@ -66,24 +63,26 @@ if($flush)
 }
 
 $obj = new stdClass();
-$obj->_id="const";
+$obj->_id = "const";
 
-try{
-	$obj = $couchdb->getDoc("const");
-}catch(Exception $e) {}
+try {
+    $obj = $couchdb->getDoc("const");
+} catch (Exception $e) {
+    
+}
 
 
-$obj->class="system";
-$obj->values=$conf->global;
+$obj->class = "system";
+$obj->values = $conf->global;
 
 //print_r($obj);
 //exit;
 
 try {
     print_r($couchdb->storeDoc($obj));
-    } catch (Exception $e) {
-        $error = "Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
-		dol_print_error("", $error);
-        exit(1);
-    }
+} catch (Exception $e) {
+    $error = "Something weird happened: " . $e->getMessage() . " (errcode=" . $e->getCode() . ")\n";
+    dol_print_error("", $error);
+    exit(1);
+}
 ?>
