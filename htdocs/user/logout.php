@@ -67,12 +67,14 @@ unset($_SESSION['dol_entity']);
 
 // Destroy session
 $prefix = dol_getprefix();
+dol_flushcache(); // reset cache
 $sessionname = 'DOLSESSID_' . $prefix;
 $sessiontimeout = 'DOLSESSTIMEOUT_' . $prefix;
 if (!empty($_COOKIE[$sessiontimeout]))
     ini_set('session.gc_maxlifetime', $_COOKIE[$sessiontimeout]);
 session_name($sessionname);
 session_destroy();
+
 
 //if (preg_match('/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i', $_SERVER["SERVER_NAME"], $regs))
 //	setcookie('AuthSession', '', 1, '/', "." . $regs["domain"]); // destroy couchdb cookie

@@ -295,8 +295,7 @@ class Agenda extends nosqlDocument {
         $this->note = trim($this->note);
         if (empty($this->percentage))
             $this->percentage = 0;
-        if (empty($this->priority))
-            $this->priority = 0;
+        
         if (empty($this->fulldayevent))
             $this->fulldayevent = 0;
         if ($this->percentage > 100)
@@ -323,6 +322,12 @@ class Agenda extends nosqlDocument {
 
         if ($this->type == 2 && $this->percentage == 100) //ACTION
             $this->datef = dol_now();
+        
+        if($this->percentage > 0 && $this->percentage < 100)
+            $this->Status = "ON";
+        
+        if($this->percentage == 100)
+            $this->Status = "DONE";
 
         if ($this->Status == "ON" && !$this->userdone->id) {
             $this->userdone->id = $user->id;

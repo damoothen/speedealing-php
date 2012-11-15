@@ -164,7 +164,8 @@ function restrictedArea($user, $features, $objectid = 0, $dbtablename = '', $fea
 
     if ($user->admin)
         return 1;
-
+    //print $readok;
+    
     if (!$readok)
         accessforbidden();
     //print "Read access is ok";
@@ -314,20 +315,12 @@ function restrictedArea($user, $features, $objectid = 0, $dbtablename = '', $fea
                 }
                 // If internal user: Check permission for internal users that are restricted on their objects
                 else if (!empty($conf->societe->enabled) && ($user->rights->societe->lire && !$user->rights->societe->client->voir)) {
-                    $sql = "SELECT sc.fk_soc";
-                    $sql.= " FROM (" . MAIN_DB_PREFIX . "societe_commerciaux as sc";
-                    $sql.= ", " . MAIN_DB_PREFIX . "societe as s)";
-                    $sql.= " WHERE sc.fk_soc = " . $objectid;
-                    $sql.= " AND sc.fk_user = " . $user->id;
-                    $sql.= " AND sc.fk_soc = s.rowid";
-                    $sql.= " AND s.entity IN (" . getEntity($sharedelement, 1) . ")";
-                }
-                // If multicompany and internal users with all permissions, check user is in correct entity
-                else if (!empty($conf->multicompany->enabled)) {
-                    $sql = "SELECT s.rowid";
-                    $sql.= " FROM " . MAIN_DB_PREFIX . "societe as s";
-                    $sql.= " WHERE s.rowid = " . $objectid;
-                    $sql.= " AND s.entity IN (" . getEntity($sharedelement, 1) . ")";
+                    $object = new Societe($db);
+                    $object->load($objectid);
+                    if ($object->commercial_id->id == $user->id)
+                        $readok = true;
+                    else
+                        $readok = false;
                 }
             } else if (in_array($feature, $checkother)) {
                 // If external user: Check permission for external users
@@ -339,19 +332,12 @@ function restrictedArea($user, $features, $objectid = 0, $dbtablename = '', $fea
                 }
                 // If internal user: Check permission for internal users that are restricted on their objects
                 else if (!empty($conf->societe->enabled) && ($user->rights->societe->lire && !$user->rights->societe->client->voir)) {
-                    $sql = "SELECT dbt.rowid";
-                    $sql.= " FROM " . MAIN_DB_PREFIX . $dbtablename . " as dbt";
-                    $sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "societe_commerciaux as sc ON dbt.fk_soc = sc.fk_soc AND sc.fk_user = '" . $user->id . "'";
-                    $sql.= " WHERE dbt.rowid = " . $objectid;
-                    $sql.= " AND (dbt.fk_soc IS NULL OR sc.fk_soc IS NOT NULL)"; // Contact not linked to a company or to a company of user
-                    $sql.= " AND dbt.entity IN (" . getEntity($sharedelement, 1) . ")";
-                }
-                // If multicompany and internal users with all permissions, check user is in correct entity
-                else if (!empty($conf->multicompany->enabled)) {
-                    $sql = "SELECT dbt.rowid";
-                    $sql.= " FROM " . MAIN_DB_PREFIX . $dbtablename . " as dbt";
-                    $sql.= " WHERE dbt.rowid = " . $objectid;
-                    $sql.= " AND dbt.entity IN (" . getEntity($sharedelement, 1) . ")";
+                    $object = new Societe($db);
+                    $object->load($objectid);
+                    if ($object->commercial_id->id == $user->id)
+                        $readok = true;
+                    else
+                        $readok = false;
                 }
             } else if (in_array($feature, $checkproject)) {
                 if (!empty($conf->projet->enabled) && !$user->rights->projet->all->lire) {
@@ -388,13 +374,6 @@ function restrictedArea($user, $features, $objectid = 0, $dbtablename = '', $fea
                     $sql.= " AND s.entity IN (" . getEntity($sharedelement, 1) . ")";
                     $sql.= " AND sc.fk_user = " . $user->id;
                 }
-                // If multicompany and internal users with all permissions, check user is in correct entity
-                else if (!empty($conf->multicompany->enabled)) {
-                    $sql = "SELECT dbt." . $dbt_select;
-                    $sql.= " FROM " . MAIN_DB_PREFIX . $dbtablename . " as dbt";
-                    $sql.= " WHERE dbt." . $dbt_select . " = " . $objectid;
-                    $sql.= " AND dbt.entity IN (" . getEntity($sharedelement, 1) . ")";
-                }
             }
 
             //print $sql."<br>";
@@ -408,7 +387,8 @@ function restrictedArea($user, $features, $objectid = 0, $dbtablename = '', $fea
                     dol_syslog("security.lib:restrictedArea sql=" . $sql, LOG_ERR);
                     accessforbidden();
                 }
-            }
+            } else if (!$readok)
+                accessforbidden();
         }
     }
 
@@ -456,7 +436,7 @@ function accessforbidden($message = '', $printheader = 1, $printfooter = 1, $sho
         }
     }
     if ($printfooter && function_exists("llxFooter"))
-       llxFooter();
+        llxFooter();
     exit;
 }
 

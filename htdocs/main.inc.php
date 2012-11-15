@@ -1174,6 +1174,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                         require_once(DOL_DOCUMENT_ROOT . "/agenda/class/agenda.class.php");
                         $agenda = new Agenda($db);
                         $result = $agenda->getView("countTODO", array("group" => true, "key" => $user->id), true);
+                        print_r($user->id);
                         if ($result->rows[0]->value) {
                             print '<span class="count">' . $result->rows[0]->value . '</span>';
                             $count_icon+=$result->rows[0]->value;

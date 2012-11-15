@@ -54,7 +54,7 @@ $socid = GETPOST('socid', 'alpha');
 $id = GETPOST('id', 'alpha');
 if ($user->societe_id)
     $socid = $user->societe_id;
-$result = restrictedArea($user, 'agenda', $id, 'actioncomm', 'actions', '', 'id');
+$result = restrictedArea($user, 'agenda', $id, 'actioncomm', 'myactions', '', 'id');
 
 $error = GETPOST("error");
 $mesg = '';
@@ -128,7 +128,6 @@ if ($action == 'add_action') {
     // Initialisation objet actioncomm
     $object->type_id = null;
     $object->type_code = $_POST["actioncode"];
-    $object->priority = isset($_POST["priority"]) ? $_POST["priority"] : 0;
     $object->fulldayevent = $_POST["fullday"] ? 1 : 0;
     $object->location = isset($_POST["location"]) ? $_POST["location"] : '';
     $object->label = trim($_POST["label"]);
@@ -326,7 +325,6 @@ if ($action == 'update') {
         //$object->date        = $datea;
         //$object->dateend     = $datea2;
         $object->percentage = $_POST["percentage"];
-        $object->priority = $_POST["priority"];
         $object->fulldayevent = $_POST["fullday"] ? 1 : 0;
         $object->location = isset($_POST["location"]) ? $_POST["location"] : '';
         $object->contact->id = $_POST["contactid"];
@@ -720,11 +718,6 @@ if ($action == 'create') {
         $object->datep = dol_mktime(0, 0, 0, $reg[2], $reg[3], $reg[1]);
     }
 
-    // Priority
-    print '<tr><td nowrap>' . $langs->trans("Priority") . '</td><td colspan="3">';
-    print '<input type="text" name="priority" value="' . (GETPOST('priority') ? GETPOST('priority') : ($object->priority ? $object->priority : '')) . '" size="5">';
-    print '</td></tr>';
-
     add_row_for_calendar_link();
 
     // Description
@@ -962,7 +955,7 @@ if ($id) {
             $percent = GETPOST("percentage") ? GETPOST("percentage") : $object->percentage;
             //print $htmlactions->form_select_status_action('formaction', $percent, 1);
             print '<p class="inline-medium-label button-height" style="padding-left: 0px; margin-top:10px">';
-            print '<input type="text"  size="2" class="input demo-slider mid-margin-right" value="' . $object->percentage . '" id="demo-slider1" name="demo-slider1">';
+            print '<input type="text"  size="2" class="input demo-slider mid-margin-right" value="' . $percent . '" id="demo-slider1" name="percentage">';
             print '</p>';
             print '</td></tr>';
             print '<script type="text/javascript" >
@@ -1038,11 +1031,6 @@ if ($id) {
             }
             print '</td></tr>';
         }
-
-        // Priority
-        print '<tr><td nowrap>' . $langs->trans("Priority") . '</td><td colspan="3">';
-        print '<input type="text" name="priority" value="' . ($object->priority ? $object->priority : '') . '" size="5">';
-        print '</td></tr>';
 
         // Object linked
         if (!empty($object->fk_element) && !empty($object->elementtype)) {
@@ -1154,12 +1142,6 @@ if ($id) {
         }
         $var = !$var;
 
-        // Priority
-        print '<tr><td nowrap id="label">' . $langs->trans("Priority") . '</td><td colspan="2" id="value">';
-        print $object->priority;
-        print '</td></tr>';
-        $var = !$var;
-
         // Location
         print '<tr><td>' . $langs->trans("Location") . '</td><td colspan="2">' . $object->location . '</td></tr>';
 
@@ -1236,11 +1218,6 @@ if ($id) {
             print '</td></tr>';
             $var = !$var;
         }
-
-        // Priority
-        print '<tr><td nowrap>' . $langs->trans("Priority") . '</td><td colspan="3">';
-        print ($object->priority ? $object->priority : '');
-        print '</td></tr>';
 
         // Object linked
         if (!empty($object->fk_element) && !empty($object->elementtype)) {

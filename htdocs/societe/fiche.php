@@ -571,7 +571,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         }
 
         // We set country_id country for the selected country
-        $object->country_id = GETPOST('country_id') ? GETPOST('country_id') : $mysoc->pays_code;
+        $object->country_id = GETPOST('country_id') ? GETPOST('country_id') : $mysoc->country_id;
 
         $object->forme_juridique_code = GETPOST('forme_juridique_code');
         /* Show create form */
@@ -877,15 +877,20 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             print '</tr>';
         }
 
+
+        // Assign a Name
+        print '<tr>';
+        print '<td>' . $langs->trans("AllocateCommercial") . '</td>';
+        print '<td colspan="3">';
         if ($user->rights->societe->client->voir) {
-            // Assign a Name
-            print '<tr>';
-            print '<td>' . $langs->trans("AllocateCommercial") . '</td>';
-            print '<td colspan="3">';
             $object->commercial_id->id = $user->id;
             print $object->select_fk_extrafields("commercial_id", "commercial_id");
-            print '</td></tr>';
+        } else {
+            print $user->name;
+            print '<input type="hidden" name="commercial_id" value=' . $user->id . '>';
         }
+        print '</td></tr>';
+
 
         // Other attributes
         $parameters = array('colspan' => ' colspan="3"');
