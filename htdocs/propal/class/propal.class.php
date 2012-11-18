@@ -111,9 +111,13 @@ class Propal extends nosqlDocument {
      * 	@param      int		$propalid   Id proposal
      */
     function __construct($db, $socid = "", $propalid = 0) {
-        global $conf, $langs;
-
-        $this->db = $db;
+        global $langs;
+        
+        parent::__construct($db);
+        
+        $this->fk_extrafields = new ExtraFields($db);
+        $this->fk_extrafields->fetch(get_class($this));
+        
         $this->socid = $socid;
         $this->id = $propalid;
         $this->products = array();
