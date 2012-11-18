@@ -45,7 +45,7 @@ class modAdherent extends DolibarrModules {
 
 		$this->family = "hr";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->name = strtolower(preg_replace('/^mod/i', '', get_class($this)));
+		$this->name = preg_replace('/^mod/i', '', get_class($this));
 		$this->description = "Gestion des adhérents d'une association";
 		$this->version = 'speedealing';						// 'experimental' or 'dolibarr' or version
 		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
@@ -178,6 +178,16 @@ class modAdherent extends DolibarrModules {
 		$this->menus[$r]->usertype = 2;
 		$this->menus[$r]->title = "Subscriptions";
 		$this->menus[$r]->fk_menu = "menu:members";
+		$r++;
+		$this->menus[$r]->_id = "menu:memberstatic";
+		$this->menus[$r]->position = 2;
+		$this->menus[$r]->url = "/adherent/index.php";
+		$this->menus[$r]->langs = "compta";
+		$this->menus[$r]->perms = '$user->rights->adherent->cotisation->lire';
+		$this->menus[$r]->enabled = '$conf->adherent->enabled';
+		$this->menus[$r]->usertype = 2;
+		$this->menus[$r]->title = "Statistics";
+		$this->menus[$r]->fk_menu = "menu:subscriptions";
 		$r++;
 		$this->menus[$r]->_id = "menu:subscriptionslist";
 		$this->menus[$r]->position = 1;

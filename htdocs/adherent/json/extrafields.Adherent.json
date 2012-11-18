@@ -1,12 +1,17 @@
 {
    "_id": "extrafields:Adherent",
+   "_rev": "17-1faa0f5ffd52f332fc10c94ab7524491",
    "class": "extrafields",
-   "ico": "/img/ico/icSw2/16-User.png",
+   "ico": "16-User.png",
+   "langs": [
+       "members"
+   ],
    "fields": {
        "Status": {
            "type": "select",
            "enable": true,
            "default": "0",
+           "status": true,
            "aoColumns": {
                "sClass": "center",
                "bSearchable": true,
@@ -16,33 +21,43 @@
                "0": {
                    "enable": true,
                    "label": "MemberStatusDraft",
-                   "cssClass": "neutral_bg"
+                   "cssClass": "grey-gradient"
                },
                "1": {
                    "label": "MemberStatusActive",
                    "enable": true,
-                   "cssClass": "alert_bg",
-                   "dateEnd": [
-                       "expired",
-                       "actived"
-                   ]
+                   "cssClass": "green-gradient",
+                   "dateEnd": "expired"
                },
                "-1": {
                    "label": "MemberStatusResiliated",
                    "enable": true,
-                   "cssClass": "info_bg"
-               },
-               "actived": {
-                   "enable": false,
-                   "label": "MemberStatusPaid",
-                   "cssClass": "ok_bg"
+                   "cssClass": "blue-gradient"
                },
                "expired": {
                    "enable": false,
                    "label": "MemberStatusActiveLate",
-                   "cssClass": "error_bg"
+                   "cssClass": "red-gradient"
                }
            }
+       },
+       "civilite_id": {
+           "type": "select",
+           "label": "UserTitle",
+           "default": "NO",
+           "dict": "dict:fk_civilite",
+           "enable": true
+       },
+       "country_id": {
+           "type": "select",
+           "enable": true,
+           "dict": "dict:country",
+           "default": "substr($langs->defaultlang,3,5)"
+       },
+       "state_id": {
+           "type": "select",
+           "enable": true,
+           "dict": "dict:fk_departements"
        }
    }
 }

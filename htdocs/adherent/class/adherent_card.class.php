@@ -35,10 +35,7 @@ class AdherentCard extends Adherent {
 		parent::__construct($db);
 
 		try {
-			$this->couchdb->useDatabase('adherent');
-
 			$fk_extrafields = new ExtraFields($db);
-			$fk_extrafields->useDatabase('adherent');
 			$this->fk_extrafields = $fk_extrafields->load("extrafields:" . get_class($this), true); // load and cache
 		} catch (Exception $e) {
 			dol_print_error('', $e->getMessage());
@@ -71,7 +68,8 @@ class AdherentCard extends Adherent {
 		$photoName = $object->photo;
 		$photoType = $object->_attachments->$photoName->content_type;
 		$photoBase64 = $object->getFileBase64($object->photo);
-		$photo = '<img src="data:' . $PhotoType . ';base64,' . $photoBase64 . '"/>';
+		$photo = '<img alt="User name" class="ego-icon-inner"
+                           src="data:' . $PhotoType . ';base64,' . $photoBase64 . '"/>';
 
 		// Substitutions
 		$substitutionarray = array(

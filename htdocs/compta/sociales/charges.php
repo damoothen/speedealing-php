@@ -22,10 +22,10 @@
  *		\brief      Social contribution car page
  */
 
-require('../../main.inc.php');
-require_once(DOL_DOCUMENT_ROOT."/compta/sociales/class/chargesociales.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formsocialcontrib.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/tax.lib.php");
+require '../../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/compta/sociales/class/chargesociales.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formsocialcontrib.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/tax.lib.php';
 
 $langs->load("compta");
 $langs->load("bills");
@@ -68,7 +68,7 @@ if ($action == 'confirm_delete' && $_REQUEST["confirm"] == 'yes')
 	$result=$chargesociales->delete($user);
 	if ($result > 0)
 	{
-		Header("Location: index.php");
+		header("Location: index.php");
 		exit;
 	}
 	else

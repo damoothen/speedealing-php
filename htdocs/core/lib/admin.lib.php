@@ -22,6 +22,7 @@
  *  \brief			Library of admin functions
  */
 
+
 /**
  *  Renvoi une version en chaine depuis une version en tableau
  *
@@ -252,7 +253,7 @@ function run_sql($sqlfile,$silent=1,$entity='',$usesavepoint=1,$handler='',$oker
             dol_syslog('Admin.lib::run_sql Request '.($i+1).' sql='.$newsql, LOG_DEBUG);
 
             // Replace for encrypt data
-            if (preg_match_all('/__ENCRYPT\(\'([^\,]+)\'\)__/i',$newsql,$reg))
+            if (preg_match_all('/__ENCRYPT\(\'([A-Za-z0-9_]+)\'\)__/i',$newsql,$reg))
             {
                 $num=count($reg[0]);
 
@@ -265,7 +266,7 @@ function run_sql($sqlfile,$silent=1,$entity='',$usesavepoint=1,$handler='',$oker
             }
 
             // Replace for decrypt data
-            if (preg_match_all('/__DECRYPT\(\'([^\,]+)\'\)__/i',$newsql,$reg))
+            if (preg_match_all('/__DECRYPT\(\'([A-Za-z0-9_]+)\'\)__/i',$newsql,$reg))
             {
                 $num=count($reg[0]);
 
@@ -461,6 +462,15 @@ function dolibarr_set_const($couchdb, $name, $value, $type='chaine', $visible=0,
 
     //dol_syslog("dolibarr_set_const name=$name, value=$value type=$type, visible=$visible, note=$note entity=$entity");
 
+    $db->begin();
+
+    $sql = "DELETE FROM ".MAIN_DB_PREFIX."const";
+    $sql.= " WHERE name = ".$db->encrypt($name,1);
+    if ($entity >= 0) $sql.= " AND entity = ".$entity;
+
+    dol_syslog("admin.lib::dolibarr_set_const sql=".$sql, LOG_DEBUG);
+    $resql=$db->query($sql);
+
     if (strcmp($value,''))	// true if different. Must work for $value='0' or $value=0
     {
 		$conf->global->values->$name = $value;
@@ -654,7 +664,7 @@ function activateModule($value,$withdeps=1)
     {
         if (file_exists($dir.$modFile))
         {
-            $found=@include_once($dir.$modFile);
+            $found=@include_once $dir.$modFile;
             if ($found) break;
         }
     }
@@ -686,7 +696,6 @@ function activateModule($value,$withdeps=1)
 
     $result=$objMod->init();
     if ($result <= 0) $ret=$objMod->error;
-    
 
     if (! $ret && $withdeps)
     {
@@ -774,7 +783,7 @@ function unActivateModule($value, $requiredby=1)
     {
         if (file_exists($dir.$modFile))
         {
-            $found=@include_once($dir.$modFile);
+            $found=@include_once $dir.$modFile;
             if ($found) break;
         }
     }
@@ -878,7 +887,7 @@ function complete_dictionnary_with_modules(&$taborder,&$tabname,&$tablib,&$tabsq
 
                     if ($modName)
                     {
-                        include_once($dir.$file);
+                        include_once $dir.$file;
                         $objMod = new $modName($db);
 
                         if ($objMod->numero > 0)
@@ -994,7 +1003,7 @@ function form_constantes($tableau)
         $sql.= ", note";
         $sql.= " FROM ".MAIN_DB_PREFIX."const";
         $sql.= " WHERE ".$db->decrypt('name')." = '".$const."'";
-        $sql.= " AND entity in (0, ".$conf->entity.")";
+        $sql.= " AND entity IN (0, ".$conf->entity.")";
         $sql.= " ORDER BY name ASC, entity DESC";
         $result = $db->query($sql);
 
@@ -1003,6 +1012,11 @@ function form_constantes($tableau)
         {
             $obj = $db->fetch_object($result);	// Take first result of select
             $var=!$var;
+
+            // For avoid warning in strict mode
+            if (empty($obj)) {
+            	$obj = (object) array('rowid'=>'','name'=>'','value'=>'','type'=>'','note'=>'');
+            }
 
             print "\n".'<form action="'.$_SERVER["PHP_SELF"].'" method="POST">';
 
@@ -1016,9 +1030,9 @@ function form_constantes($tableau)
             print '<input type="hidden" name="constname" value="'.$const.'">';
             print '<input type="hidden" name="constnote" value="'.nl2br(dol_escape_htmltag($obj->note)).'">';
 
-            print $langs->trans("Desc".$const) != ("Desc".$const) ? $langs->trans("Desc".$const) : ($obj->note?$obj->note:$const);
+            print $langs->trans('Desc'.$const);
 
-            if ($const=='ADHERENT_MAILMAN_URL')
+            if ($const == 'ADHERENT_MAILMAN_URL')
             {
                 print '. '.$langs->trans("Example").': <a href="#" id="exampleclick1">'.img_down().'</a><br>';
                 //print 'http://lists.domain.com/cgi-bin/mailman/admin/%LISTE%/members?adminpw=%MAILMAN_ADMINPW%&subscribees=%EMAIL%&send_welcome_msg_to_this_batch=1';
@@ -1026,7 +1040,7 @@ function form_constantes($tableau)
                 print 'http://lists.domain.com/cgi-bin/mailman/admin/%LISTE%/members/add?subscribees_upload=%EMAIL%&amp;adminpw=%MAILMAN_ADMINPW%&amp;subscribe_or_invite=0&amp;send_welcome_msg_to_this_batch=0&amp;notification_to_list_owner=0';
                 print '</div>';
             }
-            if ($const=='ADHERENT_MAILMAN_UNSUB_URL')
+            if ($const == 'ADHERENT_MAILMAN_UNSUB_URL')
             {
                 print '. '.$langs->trans("Example").': <a href="#" id="exampleclick2">'.img_down().'</a><br>';
                 print '<div id="example2" class="hidden">';
@@ -1042,7 +1056,7 @@ function form_constantes($tableau)
             {
                 print '<td>';
                 // List of possible labels (defined into $_Avery_Labels variable set into format_cards.lib.php)
-                require_once(DOL_DOCUMENT_ROOT.'/core/lib/format_cards.lib.php');
+                require_once DOL_DOCUMENT_ROOT.'/core/lib/format_cards.lib.php';
                 $arrayoflabels=array();
                 foreach(array_keys($_Avery_Labels) as $codecards)
                 {
@@ -1065,9 +1079,9 @@ function form_constantes($tableau)
                     print '</td><td>';
                     print '<input type="hidden" name="consttype" value="texte">';
                 }
-                else if (in_array($const,array('ADHERENT_AUTOREGISTER_MAIL','ADHERENT_MAIL_VALID','ADHERENT_MAIL_COTIS','ADHERENT_MAIL_RESIL')))
+                else if (in_array($const,array('ADHERENT_AUTOREGISTER_NOTIF_MAIL','ADHERENT_AUTOREGISTER_MAIL','ADHERENT_MAIL_VALID','ADHERENT_MAIL_COTIS','ADHERENT_MAIL_RESIL')))
                 {
-                    require_once(DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php");
+                    require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
                     $doleditor=new DolEditor('constvalue_'.$const,$obj->value,'',160,'dolibarr_notes','',false,false,$conf->fckeditor->enabled,5,60);
                     $doleditor->Create();
 
@@ -1167,4 +1181,34 @@ function delDocumentModel($name, $type)
 		return -1;
 	}
 }
+
+
+/**
+ *	Return the php_info into an array
+ *
+ *	@return		array		Array with PHP infos
+ */
+function phpinfo_array()
+{
+	ob_start();
+	phpinfo();
+	$info_arr = array();
+	$info_lines = explode("\n", strip_tags(ob_get_clean(), "<tr><td><h2>"));	// end of ob_start()
+	$cat = "General";
+	foreach($info_lines as $line)
+	{
+		// new cat?
+		preg_match("~<h2>(.*)</h2>~", $line, $title) ? $cat = $title[1] : null;
+		if(preg_match("~<tr><td[^>]+>([^<]*)</td><td[^>]+>([^<]*)</td></tr>~", $line, $val))
+		{
+			$info_arr[trim($cat)][trim($val[1])] = $val[2];
+		}
+		elseif(preg_match("~<tr><td[^>]+>([^<]*)</td><td[^>]+>([^<]*)</td><td[^>]+>([^<]*)</td></tr>~", $line, $val))
+		{
+			$info_arr[trim($cat)][trim($val[1])] = array("local" => $val[2], "master" => $val[3]);
+		}
+	}
+	return $info_arr;
+}
+
 ?>

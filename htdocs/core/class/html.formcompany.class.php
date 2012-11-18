@@ -1,5 +1,6 @@
 <?php
-/* Copyright (C) 2008-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
+/* Copyright (C) 2008-2012	Laurent Destailleur	<eldy@users.sourceforge.net>
+ * Copyright (C) 2008-2012	Regis Houssin		<regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,7 +39,7 @@ class FormCompany
 	 *
 	 *	@param	DoliDB	$db		Database handler
 	 */
-	function FormCompany($db)
+	function __construct($db)
 	{
 		$this->db = $db;
 
@@ -86,202 +87,6 @@ class FormCompany
 
 		return $effs;
 	}
-
-	/**
-	 *	Renvoie la liste des types d'effectifs possibles (pas de traduction car nombre)
-	 *
-	 *	@param	int		$mode		0=renvoi id+libelle, 1=renvoi code+libelle
-	 *  @return array				Array of types d'effectifs
-	 */
-	function effectif_array($mode=0)
-	{
-		$effs = array();
-
-		$sql = "SELECT id, code, libelle";
-		$sql .= " FROM ".MAIN_DB_PREFIX."c_effectif";
-		$sql.= " WHERE active = 1";
-		$sql .= " ORDER BY id ASC";
-		dol_syslog(get_class($this).'::effectif_array sql='.$sql,LOG_DEBUG);
-		$resql=$this->db->query($sql);
-		if ($resql)
-		{
-			$num = $this->db->num_rows($resql);
-			$i = 0;
-
-			while ($i < $num)
-			{
-				$objp = $this->db->fetch_object($resql);
-				if (! $mode) $key=$objp->id;
-				else $key=$objp->code;
-
-				$effs[$key] = $objp->libelle!='-'?$objp->libelle:'';
-				$i++;
-			}
-			$this->db->free($resql);
-		}
-		return $effs;
-	}
-
-
-	/**
-	 *  Affiche formulaire de selection des modes de reglement
-	 *
-	 *  @param	int		$page        	Page
-	 *  @param  int		$selected    	Id or code preselected
-	 *  @param  string	$htmlname   	Nom du formulaire select
-	 *	@param	int		$empty			Add empty value in list
-	 *	@return	void
-	 */
-	function form_prospect_level($page, $selected='', $htmlname='prospect_level_id', $empty=0)
-	{
-		global $langs;
-
-		print '<form method="post" action="'.$page.'">';
-		print '<input type="hidden" name="action" value="setprospectlevel">';
-		print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-		print '<table class="nobordernopadding" cellpadding="0" cellspacing="0">';
-		print '<tr><td>';
-
-		print '<select class="flat" name="'.$htmlname.'">';
-		if ($empty) print '<option value="">&nbsp;</option>';
-
-		dol_syslog(get_class($this).'::form_prospect_level',LOG_DEBUG);
-		$sql = "SELECT code, label";
-		$sql.= " FROM ".MAIN_DB_PREFIX."c_prospectlevel";
-		$sql.= " WHERE active > 0";
-		$sql.= " ORDER BY sortorder";
-		$resql = $this->db->query($sql);
-		if ($resql)
-		{
-			$num = $this->db->num_rows($resql);
-			$i = 0;
-			while ($i < $num)
-			{
-				$obj = $this->db->fetch_object($resql);
-
-				print '<option value="'.$obj->code.'"';
-				if ($selected == $obj->code) print ' selected="selected"';
-				print '>';
-				$level=$langs->trans($obj->code);
-				if ($level == $obj->code) $level=$langs->trans($obj->label);
-				print $level;
-				print '</option>';
-
-				$i++;
-			}
-		}
-		else dol_print_error($this->db);
-		print '</select>';
-
-		print '</td>';
-		print '<td align="left"><input type="submit" class="button" value="'.$langs->trans("Modify").'"></td>';
-		print '</tr></table></form>';
-	}
-
-	/**
-	 *   Retourne la liste deroulante des departements/province/cantons tout pays confondu ou pour un pays donne.
-	 *   Dans le cas d'une liste tout pays confondus, l'affichage fait une rupture sur le pays.
-	 *   La cle de la liste est le code (il peut y avoir plusieurs entree pour
-	 *   un code donnee mais dans ce cas, le champ pays differe).
-	 *   Ainsi les liens avec les departements se font sur un departement independemment de son nom.
-	 *
-	 *   @param     string	$selected        	Code state preselected
-	 *   @param     int		$country_codeid     0=list for all countries, otherwise country code or country rowid to show
-	 *   @param     string	$htmlname			Id of department
-	 *   @return	void
-	 */
-	function select_departement($selected='',$country_codeid=0, $htmlname='departement_id')
-	{
-		print $this->select_state($selected,$country_codeid, $htmlname);
-	}
-
-	/**
-	 *    Retourne la liste deroulante des departements/province/cantons tout pays confondu ou pour un pays donne.
-	 *    Dans le cas d'une liste tout pays confondus, l'affichage fait une rupture sur le pays.
-	 *    La cle de la liste est le code (il peut y avoir plusieurs entree pour
-	 *    un code donnee mais dans ce cas, le champ pays differe).
-	 *    Ainsi les liens avec les departements se font sur un departement independemment de son nom.
-	 *
-	 *    @param	string	$selected        	Code state preselected
-	 *    @param    string	$country_codeid    	Country code or id: 0=list for all countries, otherwise country code or country rowid to show
-	 *    @param    string	$htmlname			Id of department
-	 * 	  @return	void
-	 */
-	function select_state($selected='',$country_codeid=0, $htmlname='departement_id')
-	{
-		global $conf,$langs,$user;
-
-		dol_syslog(get_class($this)."::select_departement selected=".$selected.", country_codeid=".$country_codeid,LOG_DEBUG);
-
-		$langs->load("dict");
-
-		$out='';
-
-		// On recherche les departements/cantons/province active d'une region et pays actif
-		$sql = "SELECT d.rowid, d.code_departement as code , d.nom, d.active, p.libelle as country, p.code as country_code FROM";
-		$sql .= " ".MAIN_DB_PREFIX ."c_departements as d, ".MAIN_DB_PREFIX."c_regions as r,".MAIN_DB_PREFIX."c_pays as p";
-		$sql .= " WHERE d.fk_region=r.code_region and r.fk_pays=p.rowid";
-		$sql .= " AND d.active = 1 AND r.active = 1 AND p.active = 1";
-		if ($country_codeid && is_numeric($country_codeid))   $sql .= " AND p.rowid = '".$country_codeid."'";
-		if ($country_codeid && ! is_numeric($country_codeid)) $sql .= " AND p.code = '".$country_codeid."'";
-		$sql .= " ORDER BY p.code, d.code_departement";
-
-		dol_syslog(get_class($this)."::select_departement sql=".$sql);
-		$result=$this->db->query($sql);
-		if ($result)
-		{
-			if (!empty($htmlname)) $out.= '<select id="'.$htmlname.'" class="flat" name="'.$htmlname.'">';
-			if ($country_codeid) $out.= '<option value="0">&nbsp;</option>';
-			$num = $this->db->num_rows($result);
-			$i = 0;
-			dol_syslog(get_class($this)."::select_departement num=".$num,LOG_DEBUG);
-			if ($num)
-			{
-				$pays='';
-				while ($i < $num)
-				{
-					$obj = $this->db->fetch_object($result);
-					if ($obj->code == '0')		// Le code peut etre une chaine
-					{
-						$out.= '<option value="0">&nbsp;</option>';
-					}
-					else {
-						if (! $pays || $pays != $obj->country)
-						{
-							// Affiche la rupture si on est en mode liste multipays
-							if (! $country_codeid && $obj->country_code)
-							{
-								$out.= '<option value="-1" disabled="disabled">----- '.$obj->country." -----</option>\n";
-								$pays=$obj->country;
-							}
-						}
-
-						if ($selected > 0 && $selected == $obj->rowid)
-						{
-							$out.= '<option value="'.$obj->rowid.'" selected="selected">';
-						}
-						else
-						{
-							$out.= '<option value="'.$obj->rowid.'">';
-						}
-						// Si traduction existe, on l'utilise, sinon on prend le libelle par defaut
-						$out.= $obj->code . ' - ' . ($langs->trans($obj->code)!=$obj->code?$langs->trans($obj->code):($obj->nom!='-'?$obj->nom:''));
-						$out.= '</option>';
-					}
-					$i++;
-				}
-			}
-			if (! empty($htmlname)) $out.= '</select>';
-			if (! empty($htmlname) && $user->admin) $out.= info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"),1);
-		}
-		else
-		{
-			dol_print_error($this->db);
-		}
-
-		return $out;
-	}
-
 
 	/**
 	 *   Retourne la liste deroulante des regions actives dont le pays est actif
@@ -349,156 +154,6 @@ class FormCompany
 	}
 
 	/**
-	 *  Return combo list with people title
-	 *
-	 *  @param  string	$selected   Title preselected
-	 * 	@param	string	$htmlname	Name of HTML select combo field
-	 *  @return	void
-	 */
-	function select_civility($selected='',$htmlname='civilite_id')
-	{
-		global $conf,$langs,$user;
-		$langs->load("dict");
-
-		$out='';
-
-		$sql = "SELECT rowid, code, civilite, active FROM ".MAIN_DB_PREFIX."c_civilite";
-		$sql.= " WHERE active = 1";
-
-		dol_syslog("Form::select_civility sql=".$sql);
-		$resql=$this->db->query($sql);
-		if ($resql)
-		{
-			$out.= '<select class="flat" name="'.$htmlname.'">';
-			$out.= '<option value="">&nbsp;</option>';
-			$num = $this->db->num_rows($resql);
-			$i = 0;
-			if ($num)
-			{
-				while ($i < $num)
-				{
-					$obj = $this->db->fetch_object($resql);
-					if ($selected == $obj->code)
-					{
-						$out.= '<option value="'.$obj->code.'" selected="selected">';
-					}
-					else
-					{
-						$out.= '<option value="'.$obj->code.'">';
-					}
-					// Si traduction existe, on l'utilise, sinon on prend le libelle par defaut
-					$out.= ($langs->trans("Civility".$obj->code)!="Civility".$obj->code ? $langs->trans("Civility".$obj->code) : ($obj->civilite!='-'?$obj->civilite:''));
-					$out.= '</option>';
-					$i++;
-				}
-			}
-			$out.= '</select>';
-			if ($user->admin) $out.= info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"),1);
-		}
-		else
-		{
-			dol_print_error($this->db);
-		}
-
-		return $out;
-	}
-
-	/**
-	 *    Retourne la liste deroulante des formes juridiques tous pays confondus ou pour un pays donne.
-	 *    Dans le cas d'une liste tous pays confondu, on affiche une rupture sur le pays.
-	 *
-	 *    @param	string		$selected        	Code forme juridique a pre-selectionne
-	 *    @param    mixed		$country_codeid		0=liste tous pays confondus, sinon code du pays a afficher
-	 *    @param    string		$filter          	Add a SQL filter on list
-	 *    @return	void
-	 */
-	function select_forme_juridique($selected='', $country_codeid=0, $filter='')
-	{
-		print $this->select_juridicalstatus($selected, $country_codeid, $filter);
-	}
-
-	/**
-	 *    Retourne la liste deroulante des formes juridiques tous pays confondus ou pour un pays donne.
-	 *    Dans le cas d'une liste tous pays confondu, on affiche une rupture sur le pays
-	 *
-	 *    @param	string		$selected        	Code forme juridique a pre-selectionne
-	 *    @param    int			$country_codeid     0=liste tous pays confondus, sinon code du pays a afficher
-     *    @param    string		$filter          	Add a SQL filter on list
-     *    @return	string							String with HTML select
-	 */
-	function select_juridicalstatus($selected='', $country_codeid=0, $filter='')
-	{
-		global $conf,$langs,$user;
-		$langs->load("dict");
-
-		$out='';
-
-		// On recherche les formes juridiques actives des pays actifs
-		$sql  = "SELECT f.rowid, f.code as code , f.libelle as nom, f.active, p.libelle as country, p.code as country_code";
-		$sql .= " FROM ".MAIN_DB_PREFIX."c_forme_juridique as f, ".MAIN_DB_PREFIX."c_pays as p";
-		$sql .= " WHERE f.fk_pays=p.rowid";
-		$sql .= " AND f.active = 1 AND p.active = 1";
-		if ($country_codeid) $sql .= " AND p.code = '".$country_codeid."'";
-		if ($filter) $sql .= " ".$filter;
-		$sql .= " ORDER BY p.code, f.code";
-
-		dol_syslog("Form::select_forme_juridique sql=".$sql);
-		$result=$this->db->query($sql);
-		if ($result)
-		{
-			$out.= '<div id="particulier2" class="visible">';
-			$out.= '<select class="flat" name="forme_juridique_code">';
-			if ($country_codeid) $out.= '<option value="0">&nbsp;</option>';
-			$num = $this->db->num_rows($result);
-			$i = 0;
-			if ($num)
-			{
-				$pays='';
-				while ($i < $num)
-				{
-					$obj = $this->db->fetch_object($result);
-					if ($obj->code == 0) {
-						$out.= '<option value="0">&nbsp;</option>';
-					}
-					else {
-						if (! $pays || $pays != $obj->country) {
-							// Affiche la rupture si on est en mode liste multipays
-							if (! $country_codeid && $obj->country_code) {
-								$out.= '<option value="0">----- '.$obj->country." -----</option>\n";
-								$pays=$obj->country;
-							}
-						}
-
-						if ($selected > 0 && $selected == $obj->code)
-						{
-							$out.= '<option value="'.$obj->code.'" selected="selected">';
-						}
-						else
-						{
-							$out.= '<option value="'.$obj->code.'">';
-						}
-						// Si translation exists, we use it, otherwise we use default label in database
-						$out.= $obj->code . ' - ';
-						$out.= ($langs->trans("JuridicalStatus".$obj->code)!="JuridicalStatus".$obj->code?$langs->trans("JuridicalStatus".$obj->code):($obj->nom!='-'?$obj->nom:''));	// $obj->nom is alreay in output charset (converted by database driver)
-						$out.= '</option>';
-					}
-					$i++;
-				}
-			}
-			$out.= '</select>';
-			if ($user->admin) $out.= info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionnarySetup"),1);
-			$out.= '</div>';
-		}
-		else
-		{
-			dol_print_error($this->db);
-		}
-
-		return $out;
-	}
-
-
-	/**
 	 *    Return list of third parties
 	 *
 	 *  @param  Object		$object         Object we try to find contacts
@@ -520,7 +175,7 @@ class FormCompany
 		$sql = "SELECT s.rowid, s.nom FROM";
 		$sql.= " ".MAIN_DB_PREFIX."societe as s";
 		$sql.= " WHERE s.entity IN (".getEntity('societe', 1).")";
-		if ($selected && $conf->use_javascript_ajax && $conf->global->COMPANY_USE_SEARCH_TO_SELECT) $sql.= " AND rowid = ".$selected;
+		if ($selected && $conf->use_javascript_ajax && ! empty($conf->global->COMPANY_USE_SEARCH_TO_SELECT)) $sql.= " AND rowid = ".$selected;
 		else
 		{
 			// For ajax search we limit here. For combo list, we limit later
@@ -535,7 +190,7 @@ class FormCompany
 		$resql = $this->db->query($sql);
 		if ($resql)
 		{
-			if ($conf->use_javascript_ajax && $conf->global->COMPANY_USE_SEARCH_TO_SELECT)
+			if ($conf->use_javascript_ajax && ! empty($conf->global->COMPANY_USE_SEARCH_TO_SELECT))
 			{
 				$minLength = (is_numeric($conf->global->COMPANY_USE_SEARCH_TO_SELECT)?$conf->global->COMPANY_USE_SEARCH_TO_SELECT:2);
 
@@ -626,10 +281,13 @@ class FormCompany
 	{
 		$lesTypes = $object->liste_type_contact($source, $order);
 		print '<select class="flat" name="'.$htmlname.'" id="'.$htmlname.'">';
-		if ($showempty) print print '<option value="0"></option>';
+		if ($showempty) print '<option value="0"></option>';
 		foreach($lesTypes as $key=>$value)
 		{
-			print '<option value="'.$key.'">'.$value.'</option>';
+			print '<option value="'.$key.'"';
+			if ($key == $selected)
+			    print ' selected';
+			print '>'.$value.'</option>';
 		}
 		print "</select>\n";
 	}
@@ -655,7 +313,7 @@ class FormCompany
 		$size='';
 		if (!empty($fieldsize)) $size='size="'.$fieldsize.'"';
 
-		$out.= '<input id="'.$htmlname.'" type="text" name="'.$htmlname.'" '.$size.' value="'.$selected.'" class="input-text large" >'."\n";
+		$out.= '<input id="'.$htmlname.'" type="text" name="'.$htmlname.'" '.$size.' value="'.$selected.'" class="input-text" >'."\n";
                 $out.= ajax_multiautocompleter($htmlname,$fields,DOL_URL_ROOT.'/core/ajax/ziptown.php')."\n";
 
 		return $out;
@@ -675,26 +333,32 @@ class FormCompany
         global $conf,$langs;
 
         $formlength=0;
-        if ($country_code == 'FR' && empty($conf->global->MAIN_DISABLEPROFIDRULES))
-        {
-            if ($idprof==1) $formlength=9;
-            if ($idprof==2) $formlength=14;
-            if ($idprof==3) $formlength=5;      // 4 chiffres et 1 lettre depuis janvier
-            if ($idprof==4) $formlength=32;     // No maximum as we need to include a town name in this id
-        }
-        if ($country_code == 'ES' && empty($conf->global->MAIN_DISABLEPROFIDRULES))
-        {
-            if ($idprof==1) $formlength=9;  //CIF/NIF/NIE 9 digits
-            if ($idprof==2) $formlength=12; //NASS 12 digits without /
-            if ($idprof==3) $formlength=5;  //CNAE 5 digits
-            if ($idprof==4) $formlength=32; //depend of college
+        if (empty($conf->global->MAIN_DISABLEPROFIDRULES)) {
+        	if ($country_code == 'FR')
+        	{
+        		if (isset($idprof)) {
+        			if ($idprof==1) $formlength=9;
+        			else if ($idprof==2) $formlength=14;
+        			else if ($idprof==3) $formlength=5;      // 4 chiffres et 1 lettre depuis janvier
+        			else if ($idprof==4) $formlength=32;     // No maximum as we need to include a town name in this id
+        		}
+        	}
+        	else if ($country_code == 'ES')
+        	{
+        		if ($idprof==1) $formlength=9;  //CIF/NIF/NIE 9 digits
+        		if ($idprof==2) $formlength=12; //NASS 12 digits without /
+        		if ($idprof==3) $formlength=5;  //CNAE 5 digits
+        		if ($idprof==4) $formlength=32; //depend of college
+        	}
         }
 
         $selected=$preselected;
-        if (! $selected && $idprof==1) $selected=$this->idprof1;
-        if (! $selected && $idprof==2) $selected=$this->idprof2;
-        if (! $selected && $idprof==3) $selected=$this->idprof3;
-        if (! $selected && $idprof==4) $selected=$this->idprof4;
+        if (! $selected && isset($idprof)) {
+        	if ($idprof==1 && ! empty($this->idprof1)) $selected=$this->idprof1;
+        	else if ($idprof==2 && ! empty($this->idprof2)) $selected=$this->idprof2;
+        	else if ($idprof==3 && ! empty($this->idprof3)) $selected=$this->idprof3;
+        	else if ($idprof==4 && ! empty($this->idprof4)) $selected=$this->idprof4;
+        }
 
         $maxlength=$formlength;
         if (empty($formlength)) { $formlength=24; $maxlength=128; }

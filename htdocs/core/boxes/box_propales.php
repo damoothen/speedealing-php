@@ -23,7 +23,7 @@
  * \brief      Module de generation de l'affichage de la box propales
  */
 
-include_once(DOL_DOCUMENT_ROOT."/core/boxes/modules_boxes.php");
+include_once DOL_DOCUMENT_ROOT.'/core/boxes/modules_boxes.php';
 
 
 /**
@@ -46,7 +46,7 @@ class box_propales extends ModeleBoxes
     /**
      *  Constructor
      */
-    function box_propales()
+    function __construct()
     {
     	global $langs;
       $langs->load("boxes");
@@ -66,7 +66,7 @@ class box_propales extends ModeleBoxes
 
     	$this->max=$max;
 
-    	include_once(DOL_DOCUMENT_ROOT."/comm/propal/class/propal.class.php");
+    	include_once DOL_DOCUMENT_ROOT.'/comm/propal/class/propal.class.php';
       $propalstatic=new Propal($db);
 
       $this->info_box_head = array('text' => $langs->trans("BoxTitleLastPropals",$max));
@@ -134,7 +134,9 @@ class box_propales extends ModeleBoxes
         }
         else
         {
-        	dol_print_error($db);
+        	$this->info_box_contents[0][0] = array(    'td' => 'align="left"',
+                                                        'maxlength'=>500,
+                                                        'text' => ($db->error().' sql='.$sql));
         }
       }
       else

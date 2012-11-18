@@ -23,9 +23,9 @@
  *       \brief      Home page of shipping area.
  */
 
-require("../main.inc.php");
-require(DOL_DOCUMENT_ROOT."/commande/class/commande.class.php");
-require(DOL_DOCUMENT_ROOT."/expedition/class/expedition.class.php");
+require '../main.inc.php';
+require DOL_DOCUMENT_ROOT.'/commande/class/commande.class.php';
+require DOL_DOCUMENT_ROOT.'/expedition/class/expedition.class.php';
 
 $langs->load("orders");
 $langs->load("sendings");
@@ -47,7 +47,7 @@ print '<table class="notopnoleftnoright" width="100%">';
 print '<tr><td valign="top" width="30%" class="notopnoleft">';
 
 $var=false;
-print '<table class="noborder" width="100%">';
+print '<table class="noborder nohover" width="100%">';
 print '<form method="post" action="liste.php">';
 print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 print '<tr class="liste_titre"><td colspan="3">'.$langs->trans("SearchASending").'</td></tr>';

@@ -2,6 +2,7 @@
 /* Copyright (C) 2001-2004 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2012      Marcos García        <marcosgdf@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,9 +24,9 @@
  *	\brief      Page to show a third party
  */
 
-require_once("../main.inc.php");
-include_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formother.class.php");
+require_once '../main.inc.php';
+include_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
 
 $langs->load("companies");
 $langs->load("customers");
@@ -50,9 +51,9 @@ $search_categ=trim(GETPOST("search_categ"));
 $mode=GETPOST("mode");
 $modesearch=GETPOST("mode_search");
 
-$sortfield=GETPOST("sortfield");
-$sortorder=GETPOST("sortorder");
-$page=GETPOST("page");
+$sortfield=GETPOST("sortfield",'alpha');
+$sortorder=GETPOST("sortorder",'alpha');
+$page=GETPOST("page",'int');
 if (! $sortorder) $sortorder="ASC";
 if (! $sortfield) $sortfield="s.nom";
 if ($page == -1) { $page = 0 ; }
@@ -81,6 +82,12 @@ if ($mode == 'search')
 	$sql.= " OR s.code_client LIKE '%".$db->escape($socname)."%'";
 	$sql.= " OR s.email LIKE '%".$db->escape($socname)."%'";
 	$sql.= " OR s.url LIKE '%".$db->escape($socname)."%'";
+
+	if (!empty($conf->barcode->enabled))
+	{
+		$sql.= "OR s.barcode LIKE '".$db->escape($socname)."'";
+	}
+
 	$sql.= ")";
 	if (!$user->rights->societe->client->voir && !$socid) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
 	if ($socid) $sql.= " AND s.rowid = ".$socid;
@@ -295,7 +302,7 @@ if ($resql)
     // Filter on categories
     /* Not possible in this page because list is for ALL third parties type
 	$moreforfilter='';
-    if ($conf->categorie->enabled)
+    if (! empty($conf->categorie->enabled))
     {
         $moreforfilter.=$langs->trans('Categories'). ': ';
         $moreforfilter.=$htmlother->select_categories(2,$search_categ,'search_categ');
@@ -394,7 +401,7 @@ if ($resql)
 		    $companystatic->name=$langs->trans("Prospect");
             $s.=$companystatic->getNomUrl(0,'prospect');
 		}
-		if ($conf->fournisseur->enabled && $obj->fournisseur)
+		if (! empty($conf->fournisseur->enabled) && $obj->fournisseur)
 		{
 			if ($s) $s.=" / ";
             $companystatic->name=$langs->trans("Supplier");

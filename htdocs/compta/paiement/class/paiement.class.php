@@ -22,7 +22,7 @@
  *	\ingroup    facture
  *	\brief      File of class to manage payments of customers invoices
  */
-require_once(DOL_DOCUMENT_ROOT ."/core/class/commonobject.class.php");
+require_once DOL_DOCUMENT_ROOT .'/core/class/commonobject.class.php';
 
 
 /**     \class      Paiement
@@ -58,9 +58,9 @@ class Paiement extends CommonObject
 	 *
 	 *  @param		DoliDB		$db      Database handler
 	 */
-	function Paiement($db)
+	function __construct($db)
 	{
-		$this->db = $db ;
+		$this->db = $db;
 	}
 
 	/**
@@ -137,17 +137,22 @@ class Paiement extends CommonObject
 
         // Clean parameters
         $totalamount = 0;
+        $atleastonepaymentnotnull = 0;
 		foreach ($this->amounts as $key => $value)	// How payment is dispatch
 		{
 			$newvalue = price2num($value,'MT');
 			$this->amounts[$key] = $newvalue;
 			$totalamount += $newvalue;
+			if (! empty($newvalue)) $atleastonepaymentnotnull++;
 		}
 		$totalamount = price2num($totalamount);
 
 		// Check parameters
-        if ($totalamount == 0) return -1; // On accepte les montants negatifs pour les rejets de prelevement mais pas null
-
+        if (empty($totalamount) && empty($atleastonepaymentnotnull))	 // We accept negative amounts for withdraw reject but not empty arrays
+        {
+        	$this->error='TotalAmountEmpty';
+        	return -1;
+        }
 
 		$this->db->begin();
 
@@ -192,7 +197,7 @@ class Paiement extends CommonObject
                                 // This payment might be this one or a previous one
                                 if ($paym['type']=='PRE')
                                 {
-                                    if ($conf->prelevement->enabled)
+                                    if (! empty($conf->prelevement->enabled))
                                     {
                                         // TODO Check if this payment has a withdraw request
                                         // if not, $mustwait++;      // This will disable automatic close on invoice to allow to process
@@ -222,7 +227,7 @@ class Paiement extends CommonObject
 			if (! $error)
 			{
 				// Appel des triggers
-				include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+				include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
 				$interface=new Interfaces($this->db);
 				$result=$interface->run_triggers('PAYMENT_CUSTOMER_CREATE',$this,$user,$langs,$conf);
 				if ($result < 0) { $error++; $this->errors=$interface->errors; }
@@ -337,7 +342,7 @@ class Paiement extends CommonObject
 			if (! $notrigger)
 			{
 				// Appel des triggers
-				include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+				include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
 				$interface=new Interfaces($this->db);
 				$result=$interface->run_triggers('PAYMENT_DELETE',$this,$user,$langs,$conf);
 				if ($result < 0) { $error++; $this->errors=$interface->errors; }
@@ -377,9 +382,9 @@ class Paiement extends CommonObject
         $bank_line_id=0;
         $this->fk_account=$accountid;
 
-        if ($conf->banque->enabled)
+        if (! empty($conf->banque->enabled))
         {
-            require_once(DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php');
+            require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 
             dol_syslog("$user->id,$mode,$label,$this->fk_account,$emetteur_nom,$emetteur_banque");
 
@@ -480,7 +485,7 @@ class Paiement extends CommonObject
 	            if (! $error && ! $notrigger)
 				{
 					// Appel des triggers
-					include_once(DOL_DOCUMENT_ROOT . "/core/class/interfaces.class.php");
+					include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
 					$interface=new Interfaces($this->db);
 					$result=$interface->run_triggers('PAYMENT_ADD_TO_BANK',$this,$user,$langs,$conf);
 					if ($result < 0) { $error++; $this->errors=$interface->errors; }

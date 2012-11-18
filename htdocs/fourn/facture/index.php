@@ -23,11 +23,11 @@
  *       \brief      List of suppliers invoices
  */
 
-require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/fourn/class/fournisseur.facture.class.php");
-require_once(DOL_DOCUMENT_ROOT."/fourn/class/fournisseur.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formother.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/date.lib.php");
+require '../../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.facture.class.php';
+require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 
 if (!$user->rights->fournisseur->facture->lire) accessforbidden();
 
@@ -47,9 +47,9 @@ if ($user->societe_id > 0)
 $mode=GETPOST("mode");
 $modesearch=GETPOST("mode_search");
 
-$page=GETPOST("page");
-$sortorder = GETPOST("sortorder");
-$sortfield = GETPOST("sortfield");
+$page=GETPOST("page",'int');
+$sortorder = GETPOST("sortorder",'alpha');
+$sortfield = GETPOST("sortfield",'alpha');
 
 if ($page == -1) { $page = 0 ; }
 $limit = $conf->liste_limit;

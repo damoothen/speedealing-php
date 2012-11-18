@@ -25,10 +25,10 @@
  *	\brief      Page to create a payment
  */
 
-require('../main.inc.php');
-require_once(DOL_DOCUMENT_ROOT.'/compta/paiement/class/paiement.class.php');
-require_once(DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php');
-require_once(DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php');
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/compta/paiement/class/paiement.class.php';
+require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
+require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 
 $langs->load('companies');
 $langs->load('bills');
@@ -42,9 +42,9 @@ $socname	= GETPOST('socname');
 $accountid	= GETPOST('accountid');
 $paymentnum	= GETPOST('num_paiement');
 
-$sortfield	= GETPOST('sortfield');
-$sortorder	= GETPOST('sortorder');
-$page		= GETPOST('page');
+$sortfield	= GETPOST('sortfield','alpha');
+$sortorder	= GETPOST('sortorder','alpha');
+$page		= GETPOST('page','int');
 
 $amounts=array();
 $amountsresttopay=array();
@@ -68,6 +68,8 @@ if ($action == 'add_paiement' || ($action == 'confirm_paiement' && $confirm=='ye
 
     $datepaye = dol_mktime(12, 0, 0, $_POST['remonth'], $_POST['reday'], $_POST['reyear']);
     $paiement_id = 0;
+    $totalpaiement = 0;
+    $atleastonepaymentnotnull = 0;
 
     // Verifie si des paiements sont superieurs au montant facture
     foreach ($_POST as $key => $value)
@@ -77,6 +79,7 @@ if ($action == 'add_paiement' || ($action == 'confirm_paiement' && $confirm=='ye
             $cursorfacid = substr($key,7);
             $amounts[$cursorfacid] = price2num(trim($_POST[$key]));
             $totalpaiement = $totalpaiement + $amounts[$cursorfacid];
+            if (! empty($amounts[$cursorfacid])) $atleastonepaymentnotnull++;
             $tmpfacture=new Facture($db);
             $tmpfacture->fetch($cursorfacid);
             $amountsresttopay[$cursorfacid]=price2num($tmpfacture->total_ttc-$tmpfacture->getSommePaiement());
@@ -97,7 +100,7 @@ if ($action == 'add_paiement' || ($action == 'confirm_paiement' && $confirm=='ye
         $error++;
     }
 
-    if ($conf->banque->enabled)
+    if (! empty($conf->banque->enabled))
     {
         // Si module bank actif, un compte est obligatoire lors de la saisie
         // d'un paiement
@@ -108,7 +111,7 @@ if ($action == 'add_paiement' || ($action == 'confirm_paiement' && $confirm=='ye
         }
     }
 
-    if ($totalpaiement == 0)
+    if (empty($totalpaiement) && empty($atleastonepaymentnotnull))
     {
         $fiche_erreur_message = '<div class="error">'.$langs->transnoentities('ErrorFieldRequired',$langs->trans('PaymentAmount')).'</div>';
         $error++;
@@ -154,8 +157,8 @@ if ($action == 'confirm_paiement' && $confirm == 'yes')
 
     if (! $error)
     {
-        $paiement_id = $paiement->create($user,(GETPOST('closepaidinvoices')=='on'?1:0));
-        if ($paiement_id < 0)
+    	$paiement_id = $paiement->create($user,(GETPOST('closepaidinvoices')=='on'?1:0));
+    	if ($paiement_id < 0)
         {
             $errmsg=$paiement->error;
             $error++;
@@ -189,7 +192,7 @@ if ($action == 'confirm_paiement' && $confirm == 'yes')
         }
         if ($invoiceid > 0) $loc = DOL_URL_ROOT.'/compta/facture.php?facid='.$invoiceid;
         else $loc = DOL_URL_ROOT.'/compta/paiement/fiche.php?id='.$paiement_id;
-        Header('Location: '.$loc);
+        header('Location: '.$loc);
         exit;
     }
     else
@@ -227,6 +230,7 @@ if ($action == 'create' || $action == 'confirm_paiement' || $action == 'add_paie
 		// Bouchon
 		if ($facture->type == 2)
 		{
+            $langs->load('other');
 			print $langs->trans("FeatureNotYetAvailable");
 			llxFooter();
 			exit;
@@ -244,7 +248,7 @@ if ($action == 'create' || $action == 'confirm_paiement' || $action == 'add_paie
 
 		// Invoice with Paypal transaction
 		// TODO add hook possibility (regis)
-		if ($conf->paypalplus->enabled && $conf->global->PAYPAL_ENABLE_TRANSACTION_MANAGEMENT && ! empty($facture->ref_int))
+		if (! empty($conf->paypalplus->enabled) && $conf->global->PAYPAL_ENABLE_TRANSACTION_MANAGEMENT && ! empty($facture->ref_int))
 		{
 			if (! empty($conf->global->PAYPAL_BANK_ACCOUNT)) $accountid=$conf->global->PAYPAL_BANK_ACCOUNT;
 			$paymentnum=$facture->ref_int;
@@ -263,7 +267,7 @@ if ($action == 'create' || $action == 'confirm_paiement' || $action == 'add_paie
             			{
             				var code = $("#selectpaiementcode option:selected").val();
 
-            				if (code == \'CHQ\')
+                            if (code == \'CHQ\' || code == \'VIR\')
             				{
             					$(\'.fieldrequireddyn\').addClass(\'fieldrequired\');
             					if ($(\'#fieldchqemetteur\').val() == \'\')
@@ -384,7 +388,7 @@ if ($action == 'create' || $action == 'confirm_paiement' || $action == 'add_paie
 
         // Bank account
         print '<tr>';
-        if ($conf->banque->enabled)
+        if (! empty($conf->banque->enabled))
         {
             if ($facture->type != 2) print '<td><span class="fieldrequired">'.$langs->trans('AccountToCredit').'</span></td>';
             if ($facture->type == 2) print '<td><span class="fieldrequired">'.$langs->trans('AccountToDebit').'</span></td>';
@@ -588,10 +592,10 @@ if ($action == 'create' || $action == 'confirm_paiement' || $action == 'add_paie
         {
             //			print '<tr><td colspan="3" align="center">';
             print '<center><br><input type="checkbox" checked="checked" name="closepaidinvoices"> '.$langs->trans("ClosePaidInvoicesAutomatically");
-            /*if ($conf->prelevement->enabled)
+            /*if (! empty($conf->prelevement->enabled))
             {
                 $langs->load("withdrawals");
-                if ($conf->global->WITHDRAW_DISABLE_AUTOCREATE_ONPAYMENTS) print '<br>'.$langs->trans("IfInvoiceNeedOnWithdrawPaymentWontBeClosed");
+                if (! empty($conf->global->WITHDRAW_DISABLE_AUTOCREATE_ONPAYMENTS)) print '<br>'.$langs->trans("IfInvoiceNeedOnWithdrawPaymentWontBeClosed");
             }*/
             print '<br><input type="submit" class="button" value="'.$langs->trans('Save').'"><br><br></center>';
             //			print '</td></tr>';

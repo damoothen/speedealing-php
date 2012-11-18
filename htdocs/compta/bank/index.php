@@ -1,7 +1,7 @@
 <?php
 /* Copyright (C) 2001-2005 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copytight (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
+ * Copytight (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,10 +23,10 @@
  *       \brief      Home page of bank module
  */
 
-require("./pre.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/bank.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/compta/tva/class/tva.class.php");
-require_once(DOL_DOCUMENT_ROOT."/compta/sociales/class/chargesociales.class.php");
+require 'pre.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/bank.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/compta/tva/class/tva.class.php';
+require_once DOL_DOCUMENT_ROOT.'/compta/sociales/class/chargesociales.class.php';
 
 $langs->load("banks");
 $langs->load("categories");
@@ -35,7 +35,7 @@ $langs->load("categories");
 if ($user->societe_id) $socid=$user->societe_id;
 $result=restrictedArea($user,'banque');
 
-$statut=isset($_GET["statut"])?$_GET["statut"]:'';
+$statut=GETPOST('statut');
 
 
 

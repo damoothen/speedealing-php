@@ -1,5 +1,4 @@
 <?php
-
 /* Copyright (C) 2003      Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2008 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2004      Sebastien Di Cintio  <sdicintio@ressource-toi.org>
@@ -27,20 +26,23 @@
  * \ingroup    comptabilite
  * \brief      Fichier de description et activation du module Comptabilite
  */
-include_once(DOL_DOCUMENT_ROOT . "/core/modules/DolibarrModules.class.php");
+
+include_once DOL_DOCUMENT_ROOT .'/core/modules/DolibarrModules.class.php';
+
 
 /**
- * 		\class 		modComptabilite
- *      \brief      Classe de description et activation du module Comptabilite
+ *	Classe de description et activation du module Comptabilite
  */
-class modComptabilite extends DolibarrModules {
+class modComptabilite extends DolibarrModules
+{
 
-	/**
+   /**
 	 *   Constructor. Define names, constants, directories, boxes, permissions
 	 *
 	 *   @param      DoliDB		$db      Database handler
-	 */
-	function modComptabilite($db) {
+    */
+	function __construct($db)
+	{
 		global $conf;
 
 		parent::__construct($db);
@@ -48,21 +50,21 @@ class modComptabilite extends DolibarrModules {
 
 		$this->family = "financial";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->name = preg_replace('/^mod/i','',get_class($this));
 		$this->description = "Gestion sommaire de comptabilite";
 
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
 		$this->version = 'dolibarr';
 
-		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
+		$this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
 		$this->special = 0;
-		$this->picto = '';
+        $this->picto='';
 
 		// Config pages
 		$this->config_page_url = array("compta.php");
 
 		// Dependances
-		$this->depends = array("modFacture", "modBanque");
+		$this->depends = array("modFacture","modBanque");
 		$this->requiredby = array();
 		$this->conflictwith = array("modAccounting");
 		$this->langfiles = array("compta");
@@ -72,10 +74,10 @@ class modComptabilite extends DolibarrModules {
 
 		// Data directories to create when module is enabled
 		$this->dirs = array("/comptabilite/temp",
-			"/comptabilite/rapport",
-			"/comptabilite/export",
-			"/comptabilite/bordereau"
-		);
+		                    "/comptabilite/rapport",
+		                    "/comptabilite/export",
+		                    "/comptabilite/bordereau"
+		                    );
 
 		// Boites
 		$this->boxes = array();
@@ -83,7 +85,7 @@ class modComptabilite extends DolibarrModules {
 		// Permissions
 		$this->rights = array();
 		$this->rights_class = 'compta';
-		$r = 0;
+		$r=0;
 
 		$r++;
 		$this->rights[$r][0] = 95;
@@ -118,15 +120,17 @@ class modComptabilite extends DolibarrModules {
 		$this->rights[$r][5] = 'creer';
 	}
 
-	/**
-	 * 		Function called when module is enabled.
-	 * 		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
-	 * 		It also creates data directories
+
+   /**
+	 *		Function called when module is enabled.
+	 *		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
+	 *		It also creates data directories
 	 *
-	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
+     *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
-	 */
-	function init($options = '') {
+    */
+	function init($options='')
+	{
 		global $conf;
 
 		// Nettoyage avant activation
@@ -134,23 +138,23 @@ class modComptabilite extends DolibarrModules {
 
 		$sql = array();
 
-		return $this->_init($sql, $options);
+		return $this->_init($sql,$options);
 	}
 
-	/**
-	 * 		Function called when module is disabled.
+    /**
+	 *		Function called when module is disabled.
 	 *      Remove from database constants, boxes and permissions from Dolibarr database.
-	 * 		Data directories are not deleted
+	 *		Data directories are not deleted
 	 *
-	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
+     *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
-	 */
-	function remove($options = '') {
+     */
+    function remove($options='')
+    {
 		$sql = array();
 
-		return $this->_remove($sql, $options);
-	}
+		return $this->_remove($sql,$options);
+    }
 
 }
-
 ?>

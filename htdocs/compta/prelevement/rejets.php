@@ -1,7 +1,8 @@
-<?PHP
+<?php
 /* Copyright (C) 2005      Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2010-2012 Juanjo Menent 		<jmenent@2byte.es>
+ * Copyright (C) 2005-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,12 +19,14 @@
  */
 
 /**
- * 
+ *      \file       htdocs/compta/prelevement/rejets.php
+ *      \ingroup    prelevement
+ *      \brief      Reject page
  */
 
-require("../bank/pre.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/compta/prelevement/class/rejet-prelevement.class.php");
-require_once(DOL_DOCUMENT_ROOT."/compta/paiement/class/paiement.class.php");
+require '../bank/pre.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/compta/prelevement/class/rejetprelevement.class.php';
+require_once DOL_DOCUMENT_ROOT.'/compta/paiement/class/paiement.class.php';
 
 $langs->load("withdrawals");
 $langs->load("companies");

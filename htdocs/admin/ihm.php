@@ -1,7 +1,7 @@
 <?php
-/* Copyright (C) 2001-2005 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2010 Regis Houssin        <regis@dolibarr.fr>
+/* Copyright (C) 2001-2005	Rodolphe Quiedeville	<rodolphe@quiedeville.org>
+ * Copyright (C) 2004-2012	Laurent Destailleur		<eldy@users.sourceforge.net>
+ * Copyright (C) 2005-2012	Regis Houssin			<regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,12 +22,12 @@
  *       \brief      Page to setup GUI display options
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/usergroups.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formother.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formadmin.class.php");
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formadmin.class.php';
 
 $langs->load("admin");
 $langs->load("languages");
@@ -57,7 +57,6 @@ if ($action == 'update')
 	dolibarr_set_const($db, "MAIN_MULTILANGS",         $_POST["main_multilangs"],'chaine',0,'',$conf->entity);
 	dolibarr_set_const($db, "MAIN_SIZE_LISTE_LIMIT",   $_POST["main_size_liste_limit"],'chaine',0,'',$conf->entity);
 	dolibarr_set_const($db, "MAIN_DISABLE_JAVASCRIPT", $_POST["main_disable_javascript"],'chaine',0,'',$conf->entity);
-	dolibarr_set_const($db, "MAIN_USE_PREVIEW_TABS",   $_POST["main_use_preview_tabs"],'chaine',0,'',$conf->entity);
 	dolibarr_set_const($db, "MAIN_BUTTON_HIDE_UNAUTHORIZED", $_POST["MAIN_BUTTON_HIDE_UNAUTHORIZED"],'chaine',0,'',$conf->entity);
 	dolibarr_set_const($db, "MAIN_START_WEEK",         $_POST["MAIN_START_WEEK"],'chaine',0,'',$conf->entity);
 	dolibarr_set_const($db, "MAIN_SHOW_LOGO",          $_POST["MAIN_SHOW_LOGO"],'chaine',0,'',$conf->entity);
@@ -74,11 +73,14 @@ if ($action == 'update')
 	dolibarr_set_const($db, "MAIN_MOTD",                   dol_htmlcleanlastbr($_POST["main_motd"]),'chaine',0,'',$conf->entity);
 	dolibarr_set_const($db, "MAIN_HOME",                   dol_htmlcleanlastbr($_POST["main_home"]),'chaine',0,'',$conf->entity);
 	dolibarr_set_const($db, "MAIN_HELP_DISABLELINK",       $_POST["MAIN_HELP_DISABLELINK"],'chaine',0,'',0);	    // Param for all entities
-	dolibarr_set_const($db, "MAIN_BUGTRACK_ENABLELINK",    $_POST["MAIN_BUGTRACK_ENABLELINK"],'chaine',0,'',$conf->entity);
+
+	// This one is not always defined
+	if (isset($_POST["MAIN_USE_PREVIEW_TABS"])) dolibarr_set_const($db, "MAIN_USE_PREVIEW_TABS", $_POST["MAIN_USE_PREVIEW_TABS"],'chaine',0,'',$conf->entity);
+	if (isset($_POST["MAIN_BUGTRACK_ENABLELINK"])) dolibarr_set_const($db, "MAIN_BUGTRACK_ENABLELINK", $_POST["MAIN_BUGTRACK_ENABLELINK"],'chaine',0,'',$conf->entity);
 
 	$_SESSION["mainmenu"]="";   // Le gestionnaire de menu a pu changer
 
-	Header("Location: ".$_SERVER["PHP_SELF"]."?mainmenu=home&leftmenu=setup");
+	header("Location: ".$_SERVER["PHP_SELF"]."?mainmenu=home&leftmenu=setup");
 	exit;
 }
 
@@ -103,7 +105,7 @@ print "<br>\n";
 if ($action == 'edit')	// Edit
 {
     //WYSIWYG Editor
-    require_once(DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php");
+    require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
 
     print '<form method="post" action="'.$_SERVER["PHP_SELF"].'">';
     print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
@@ -187,7 +189,7 @@ if ($action == 'edit')	// Edit
 	{
 	    $var=!$var;
 	    print '<tr '.$bc[$var].'><td width="35%">'.$langs->trans("UsePreviewTabs").'</td><td>';
-	    print $form->selectyesno('main_use_preview_tabs',isset($conf->global->MAIN_USE_PREVIEW_TABS)?$conf->global->MAIN_USE_PREVIEW_TABS:0,1);
+	    print $form->selectyesno('MAIN_USE_PREVIEW_TABS',isset($conf->global->MAIN_USE_PREVIEW_TABS)?$conf->global->MAIN_USE_PREVIEW_TABS:0,1);
 	    print '</td>';
 		print '<td width="20">&nbsp;</td>';
 		print '</tr>';
@@ -234,10 +236,21 @@ if ($action == 'edit')	// Edit
 	print '<td width="20">&nbsp;</td>';
 	print '</tr>';
 
+	if ($conf->global->MAIN_FEATURES_LEVEL >= 1 || ! empty($conf->global->MAIN_BUGTRACK_ENABLELINK))
+	{
+		 // Show bugtrack link
+		$var=!$var;
+		print '<tr '.$bc[$var].'><td width="35%">'.$langs->trans("ShowBugTrackLink").'</td><td>';
+		print $form->selectyesno('MAIN_BUGTRACK_ENABLELINK',$conf->global->MAIN_BUGTRACK_ENABLELINK,1);
+		print '</td>';
+		print '<td width="20">&nbsp;</td>';
+		print '</tr>';
+	}
+
     // Message on login page
 	$var=!$var;
     print '<tr '.$bc[$var].'><td width="35%">'.$langs->trans("MessageLogin").'</td><td colspan="2">';
-	
+
     $doleditor = new DolEditor('main_home', (isset($conf->global->MAIN_HOME)?$conf->global->MAIN_HOME:''), '', 142, 'dolibarr_notes', 'In', false, true, true, ROWS_4, 90);
 	$doleditor->Create();
 
@@ -246,21 +259,11 @@ if ($action == 'edit')	// Edit
 	// Message of the day on home page
     $var=!$var;
     print '<tr '.$bc[$var].'><td width="35%">'.$langs->trans("MessageOfDay").'</td><td colspan="2">';
-	
+
     $doleditor = new DolEditor('main_motd', (isset($conf->global->MAIN_MOTD)?$conf->global->MAIN_MOTD:''), '', 142, 'dolibarr_notes', 'In', false, true, true, ROWS_4, 90);
 	$doleditor->Create();
 
 	print '</td></tr>'."\n";
-
-	/*
-	// Show bugtrack link
-    $var=!$var;
-    print '<tr '.$bc[$var].'><td width="35%">'.$langs->trans("ShowBugTrackLink").'</td><td>';
-    print $form->selectyesno('main_show_bugtrack_link',$conf->global->MAIN_BUGTRACK_ENABLELINK,1);
-    print '</td>';
-	print '<td width="20">&nbsp;</td>';
-	print '</tr>';
-	*/
 
 	print '</table>'."\n";
 
@@ -387,6 +390,16 @@ else	// Show
     print yn((isset($conf->global->MAIN_HELP_DISABLELINK)?$conf->global->MAIN_HELP_DISABLELINK:0),1);
     print '</td></tr>';
 
+    if ($conf->global->MAIN_FEATURES_LEVEL >= 1 || ! empty($conf->global->MAIN_BUGTRACK_ENABLELINK))
+    {
+    	// Show bugtrack link
+    	$var=!$var;
+    	print '<tr '.$bc[$var].'"><td width="35%">'.$langs->trans("ShowBugTrackLink").'</td><td>';
+    	print yn($conf->global->MAIN_BUGTRACK_ENABLELINK)."</td>";
+    	print '<td width="20">&nbsp;</td>';
+    	print "</tr>";
+    }
+
     // Message login
     $var=!$var;
     print '<tr '.$bc[$var].'><td width="35%">'.$langs->trans("MessageLogin").'</td><td colspan="2">';
@@ -400,15 +413,6 @@ else	// Show
     if (isset($conf->global->MAIN_MOTD)) print dol_htmlcleanlastbr($conf->global->MAIN_MOTD);
     else print '&nbsp;';
     print '</td></tr>'."\n";
-
-    /*
-    // Show bugtrack link
-	$var=!$var;
-    print '<tr '.$bc[$var].'"><td width="35%">'.$langs->trans("ShowBugTrackLink").'</td><td>';
-    print yn($conf->global->MAIN_BUGTRACK_ENABLELINK)."</td>";
-	print '<td width="20">&nbsp;</td>';
-	print "</tr>";
-	*/
 
     print '</table>'."\n";
 

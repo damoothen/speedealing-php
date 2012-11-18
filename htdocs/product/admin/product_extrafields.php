@@ -1,7 +1,9 @@
 <?php
-/* Copyright (C) 2001-2002 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2003      Jean-Louis Bergamo   <jlb@j1b.org>
- * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
+/* Copyright (C) 2001-2002	Rodolphe Quiedeville	<rodolphe@quiedeville.org>
+ * Copyright (C) 2003		Jean-Louis Bergamo		<jlb@j1b.org>
+ * Copyright (C) 2004-2011	Laurent Destailleur		<eldy@users.sourceforge.net>
+ * Copyright (C) 2012		Marcos García			<marcosgdf@gmail.com>
+ * Copyright (C) 2012		Regis Houssin			<regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,9 +25,9 @@
  *		\brief      Page to setup extra fields of third party
  */
 
-require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/product.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/extrafields.class.php");
+require '../../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
 
 $langs->load("companies");
 $langs->load("admin");
@@ -35,15 +37,12 @@ $extrafields = new ExtraFields($db);
 $form = new Form($db);
 
 // List of supported format
-$type2label=array(
-'varchar'=>$langs->trans('String'),
-'text'=>$langs->trans('Text'),
-'int'=>$langs->trans('Int'),
-//'date'=>$langs->trans('Date'),
-//'datetime'=>$langs->trans('DateAndTime')
-);
+$tmptype2label=getStaticMember(get_class($extrafields),'type2label');
+$type2label=array('');
+foreach ($tmptype2label as $key => $val) $type2label[$key]=$langs->trans($val);
 
-$action=GETPOST("action");
+$action=GETPOST('action', 'alpha');
+$attrname=GETPOST('attrname', 'alpha');
 $elementtype='product';
 
 if (!$user->admin) accessforbidden();
@@ -53,7 +52,7 @@ if (!$user->admin) accessforbidden();
  * Actions
  */
 
-require(DOL_DOCUMENT_ROOT."/core/admin_extrafields.inc.php");
+require DOL_DOCUMENT_ROOT.'/core/admin_extrafields.inc.php';
 
 
 
@@ -87,7 +86,7 @@ $head = product_admin_prepare_head();
 dol_fiche_head($head, 'attributes', $tab, 0, 'product');
 
 
-print $langs->trans("DefineHereComplementaryAttributes",$textobject).'<br>'."\n";
+print $langs->trans('DefineHereComplementaryAttributes', $tab).'<br>'."\n";
 print '<br>';
 
 dol_htmloutput_errors($mesg);
@@ -102,6 +101,7 @@ print '<td>'.$langs->trans("Label").'</td>';
 print '<td>'.$langs->trans("AttributeCode").'</td>';
 print '<td>'.$langs->trans("Type").'</td>';
 print '<td align="right">'.$langs->trans("Size").'</td>';
+print '<td align="right">'.$langs->trans("Unique").'</td>';
 print '<td width="80">&nbsp;</td>';
 print "</tr>\n";
 
@@ -109,11 +109,12 @@ $var=True;
 foreach($extrafields->attribute_type as $key => $value)
 {
     $var=!$var;
-    print "<tr $bc[$var]>";
+    print "<tr ".$bc[$var].">";
     print "<td>".$extrafields->attribute_label[$key]."</td>\n";
     print "<td>".$key."</td>\n";
     print "<td>".$type2label[$extrafields->attribute_type[$key]]."</td>\n";
     print '<td align="right">'.$extrafields->attribute_size[$key]."</td>\n";
+    print '<td align="right">'.yn($extrafields->attribute_unique[$key])."</td>\n";
     print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=edit&attrname='.$key.'">'.img_edit().'</a>';
     print "&nbsp; <a href=\"".$_SERVER["PHP_SELF"]."?action=delete&attrname=$key\">".img_delete()."</a></td>\n";
     print "</tr>";
@@ -124,10 +125,8 @@ print "</table>";
 
 dol_fiche_end();
 
-/*
- * Barre d'actions
- *
- */
+
+// Buttons
 if ($action != 'create' && $action != 'edit')
 {
     print '<div class="tabsAction">';
@@ -147,29 +146,7 @@ if ($action == 'create')
     print "<br>";
     print_titre($langs->trans('NewAttribute'));
 
-    print '<form action="'.$_SERVER["PHP_SELF"].'" method="post">';
-    print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-    print '<table summary="listofattributes" class="border" width="100%">';
-
-    print '<input type="hidden" name="action" value="add">';
-
-    // Label
-    print '<tr><td class="fieldrequired" required>'.$langs->trans("Label").'</td><td class="valeur"><input type="text" name="label" size="40" value="'.GETPOST('label').'"></td></tr>';
-    // Code
-    print '<tr><td class="fieldrequired" required>'.$langs->trans("AttributeCode").' ('.$langs->trans("AlphaNumOnlyCharsAndNoSpace").')</td><td class="valeur"><input type="text" name="attrname" size="10" value="'.GETPOST('attrname').'"></td></tr>';
-    // Type
-    print '<tr><td class="fieldrequired" required>'.$langs->trans("Type").'</td><td class="valeur">';
-    print $form->selectarray('type',$type2label,GETPOST('type'));
-    print '</td></tr>';
-    // Size
-    print '<tr><td class="fieldrequired" required>'.$langs->trans("Size").'</td><td><input type="text" name="size" size="5" value="'.(GETPOST('size')?GETPOST('size'):'255').'"></td></tr>';
-
-    print "</table>\n";
-
-    print '<center><br><input type="submit" name="button" class="button" value="'.$langs->trans("Save").'"> &nbsp; ';
-    print '<input type="submit" name="button" class="button" value="'.$langs->trans("Cancel").'"></center>';
-
-    print "</form>\n";
+    require DOL_DOCUMENT_ROOT.'/core/tpl/admin_extrafields_add.tpl.php';
 }
 
 /* ************************************************************************** */
@@ -177,32 +154,32 @@ if ($action == 'create')
 /* Edition d'un champ optionnel                                               */
 /*                                                                            */
 /* ************************************************************************** */
-if ($_GET["attrname"] && $action == 'edit')
+if ($action == 'edit' && ! empty($attrname))
 {
     print "<br>";
-    print_titre($langs->trans("FieldEdition",$_GET["attrname"]));
+    print_titre($langs->trans("FieldEdition", $attrname));
 
     /*
      * formulaire d'edition
      */
-    print '<form method="post" action="'.$_SERVER["PHP_SELF"].'?attrname='.$_GET["attrname"].'">';
+    print '<form method="post" action="'.$_SERVER["PHP_SELF"].'?attrname='.$attrname.'">';
     print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-    print '<input type="hidden" name="attrname" value="'.$_GET["attrname"].'">';
+    print '<input type="hidden" name="attrname" value="'.$attrname.'">';
     print '<input type="hidden" name="action" value="update">';
     print '<table summary="listofattributes" class="border" width="100%">';
 
     // Label
     print '<tr>';
-    print '<td class="fieldrequired" required>'.$langs->trans("Label").'</td><td class="valeur"><input type="text" name="label" size="40" value="'.$extrafields->attribute_label[$_GET["attrname"]].'"></td>';
+    print '<td class="fieldrequired" required>'.$langs->trans("Label").'</td><td class="valeur"><input type="text" name="label" size="40" value="'.$extrafields->attribute_label[$attrname].'"></td>';
     print '</tr>';
     // Code
     print '<tr>';
     print '<td class="fieldrequired" required>'.$langs->trans("AttributeCode").'</td>';
-    print '<td class="valeur">'.$_GET["attrname"].'&nbsp;</td>';
+    print '<td class="valeur">'.$attrname.'&nbsp;</td>';
     print '</tr>';
     // Type
-    $type=$extrafields->attribute_type[$_GET["attrname"]];
-    $size=$extrafields->attribute_size[$_GET["attrname"]];
+    $type=$extrafields->attribute_type[$attrname];
+    $size=$extrafields->attribute_size[$attrname];
     print '<tr><td class="fieldrequired" required>'.$langs->trans("Type").'</td>';
     print '<td class="valeur">';
     print $type2label[$type];

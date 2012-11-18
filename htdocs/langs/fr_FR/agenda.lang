@@ -31,6 +31,10 @@ ActionsToDoBy=Action affectés à
 ActionsDoneBy=Action réalisés par
 AllMyActions=Toutes mes actions
 AllActions=Toutes les actions
+NewActions=Nouvelles<br>actions
+DoActions=Actions<br>en cours
+SumMyActions=Actions réalisées<br>par moi cette année
+SumActions=Actions au total<br>cette année
 ViewList=Vue liste
 ViewCal=Vue mois
 ViewDay=Vue jour
@@ -71,6 +75,10 @@ AgendaUrlOptions4=<b>logint=%s</b> pour limiter l'export aux actions affectées 
 AgendaUrlOptions5=<b>logind=%s</b> pour limiter l'export aux actions réalisées par l'utilisateur <b>%s</b>.
 AgendaShowBirthdayEvents=Afficher anniversaires contacts
 AgendaHideBirthdayEvents=Cacher anniversaires contacts
+StatusActionTooLate=Action en retard
+MyTasks=Mes tâches
+MyDelegatedTasks=Mes tâches déléguées
+
 
 # External Sites ical
 ExportCal=Export calendrier

@@ -1,5 +1,6 @@
 <?php
-/* Copyright (C) 2008-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
+/* Copyright (C) 2008-2012	Laurent Destailleur	<eldy@users.sourceforge.net>
+ * Copyright (C) 2008-2012	Regis Houssin		<regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,11 +26,12 @@
 // Use its own include to not share the include of Dolibarr
 // This is a standalone feature with no information from Dolibarr to show
 // and no database access to do.
-include_once("./inc.php");
+include_once 'inc.php';
 $uri=preg_replace('/^http(s?):\/\//i','',$dolibarr_main_url_root);
 $pos = strstr($uri, '/');      // $pos contient alors url sans nom domaine
 if ($pos == '/') $pos = '';     // si $pos vaut /, on le met a ''
-define('DOL_URL_ROOT', $pos);	// URL racine relative
+if (! defined('DOL_URL_ROOT'))
+	define('DOL_URL_ROOT', $pos);	// URL racine relative
 
 $langs->load("other");
 $langs->load("help");

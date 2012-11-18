@@ -30,10 +30,21 @@ $object = new Adherent($db);
 
 llxHeader('',$langs->trans("Member"),'EN:Module_Foundations|FR:Module_Adh&eacute;rents|ES:M&oacute;dulo_Miembros');
 
-print '<div class="row">';
-
 $titre=$langs->trans("MembersList");
-print start_box($titre,"twelve","16-Users.png");
+
+print_fiche_titre($titre);
+print '<div class="with-padding">';
+/*
+ * Barre d'actions
+ *
+ */
+
+print '<p class="button-height right">';
+print '<span class="button-group">';
+print '<a class="button icon-star" href="' . strtolower(get_class($object)) . '/fiche.php?action=create">' . $langs->trans("NewMember") . '</a>';
+print "</span>";
+print "</p>";
+
 
 $i=0;
 $obj=new stdClass();
@@ -76,6 +87,9 @@ print $langs->trans('Group');
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "Tag";
 $obj->aoColumns[$i]->sDefaultContent = "";
+$obj->aoColumns[$i]->sClass = "center";
+$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("Tag", "tag");
+
 $i++;
 print'<th class="essential">';
 print $langs->trans('Person');
@@ -95,8 +109,8 @@ print'<th class="essential">';
 print $langs->trans("Status");
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "Status";
-$obj->aoColumns[$i]->sClass = "select center";
-$obj->aoColumns[$i]->sWidth = "180px";
+$obj->aoColumns[$i]->sClass = "dol_select center";
+//$obj->aoColumns[$i]->sWidth = "160px";
 $obj->aoColumns[$i]->sDefaultContent = "0";
 $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("Status", "status", array("dateEnd"=>"last_subscription_date_end"));
 $i++;
@@ -106,7 +120,6 @@ print'</th>';
 $obj->aoColumns[$i]->mDataProp = "last_subscription_date_end";
 $obj->aoColumns[$i]->sType="date";
 $obj->aoColumns[$i]->sClass = "center";
-$obj->aoColumns[$i]->sWidth = "200px";
 $obj->aoColumns[$i]->sDefaultContent = "";
 $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("last_subscription_date_end", "date");
 $i++;
@@ -115,6 +128,7 @@ print $langs->trans('Action');
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "";
 $obj->aoColumns[$i]->sClass = "center content_actions";
+$obj->aoColumns[$i]->sWidth = "100px";
 $obj->aoColumns[$i]->sDefaultContent = "";
 
 $url = "adherent/fiche.php";
@@ -145,8 +159,7 @@ print "</div>";
 $obj->bServerSide = true;
 $object->datatablesCreate($obj,"member",true,true);
 
-print end_box();
-print '</div>'; // end row
+print '</div>'; // end
 
 llxFooter();
 ?>

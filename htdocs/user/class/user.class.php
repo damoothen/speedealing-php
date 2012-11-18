@@ -7,7 +7,7 @@
  * Copyright (C) 2004      Benoit Mortier       <benoit.mortier@opensides.be>
  * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2005      Lionel Cousteix      <etm_ltd@tiscali.co.uk>
- * Copyright (C) 2011      Herve Prot           <herve.prot@symeos.com>
+ * Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,15 +44,11 @@ class User extends nosqlDocument {
     protected $ismultientitymanaged = 1; // 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
     protected $couchAdmin;
     var $id;
-    var $ldap_sid;
-    var $search_sid;
-    var $nom;  // TODO deprecated
-    var $prenom; // TODO deprecated
-    var $lastname;
-    var $firstname;
+    var $Lastname;
+    var $Firstname;
     var $note;
     var $email;
-    var $signature;
+    var $Signature;
     var $office_phone;
     var $office_fax;
     var $user_mobile;
@@ -70,22 +66,17 @@ class User extends nosqlDocument {
     var $societe_id;
     var $contact_id;
     var $fk_member;
-    var $webcal_login;
-    var $phenix_login;
-    var $phenix_pass;
-    var $phenix_pass_crypted;
     var $datelastlogin;
     var $datepreviouslogin;
-    var $statut;
-    var $photo;
-    var $lang;
+    var $Status;
+    var $Photo;
+    var $Lang;
     //! Liste des entrepots auquel a acces l'utilisateur
     var $entrepots;
     var $rights;   // Array of permissions user->rights->permx
     var $all_permissions_are_loaded; /*     * < \private all_permissions_are_loaded */
     private $_tab_loaded = array();  // Array of cache of already loaded permissions
     var $conf;  // To store personal config
-    var $oldcopy; // To contains a clone of this when we need to save old properties of object
 
     /**
      *    Constructor de la classe
@@ -98,16 +89,10 @@ class User extends nosqlDocument {
 
         parent::__construct($db);
 
-        $fk_extrafields = new ExtraFields($db);
-        try {
-            $this->fk_extrafields = $fk_extrafields->load("extrafields:" . get_class($this), true); // load and cache
-        } catch (Exception $e) {
-            
-        }
+        $this->fk_extrafields = new ExtraFields($db);
+        $this->fk_extrafields->fetch(get_class($this));
 
         $this->couchAdmin = new couchAdmin($this->couchdb);
-        $this->useDatabase("_users");
-
 
         // Preference utilisateur
         $this->liste_limit = 0;
@@ -116,11 +101,11 @@ class User extends nosqlDocument {
         $this->all_permissions_are_loaded = 0;
         $this->admin = 0;
 
-        $this->conf = (object) array();
-        $this->rights = (object) array();
-        $this->rights->user = (object) array();
-        $this->rights->user->user = (object) array();
-        $this->rights->user->self = (object) array();
+        $this->conf = new stdClass();
+        $this->rights = new stdClass();
+        $this->rights->user = new stdClass();
+        $this->rights->user->user = new stdClass();
+        $this->rights->user->self = new stdClass();
     }
 
     /**
@@ -133,21 +118,48 @@ class User extends nosqlDocument {
      * 	@return	int							<0 if KO, 0 not found, >0 if OK
      */
     function fetch($login = "") {
-        global $conf;
+        global $conf, $couch;
 
         // Clean parametersadmin
         $login = trim($login);
 
         if (empty($login)) {
-            //try {
-                $login = "org.couchdb.user:" . $this->couchAdmin->getLoginSession();
-            //} catch (Exception $e) {
-            //    return 0;
-            //}
+
+            $login = $this->couchAdmin->getLoginSession();
+            if (empty($login))
+                return 0;
+        }
+
+        if ($conf->Couchdb->name == '_users') {
+            require_once(DOL_DOCUMENT_ROOT . "/useradmin/class/useradmin.class.php");
+
+            $user_config = new UserAdmin($db);
+            $user_config->fetch("org.couchdb.user:" . $login); // Load for default entity
+            $user_config->LastConnection = $user_config->NewConnection;
+            $user_config->NewConnection = dol_now();
+            $user_config->record();
+            //print_r($login);
+            //exit;
+            $couch->useDatabase($user_config->entity);
+            $conf->Couchdb->name = $user_config->entity;
+            dol_setcache("dol_entity", $user_config->entity);
+            $this->useDatabase($user_config->entity);
+            unset($user_config);
+
+            if (!$conf->urlrewrite) {
+                $this->LastConnection = $this->NewConnection;
+                $this->NewConnection = dol_now();
+                $this->record(true);
+            }
         }
 
         try {
-            $this->values = $this->couchdb->getDoc($login);
+            if (isValidEmail($login)) {
+                $result = $this->getView("login", array("key" => $login));
+                $login = $result->rows[0]->value;
+            }
+
+            $this->load($login, true);
         } catch (Exception $e) {
             return 0;
         }
@@ -155,29 +167,39 @@ class User extends nosqlDocument {
         // Test if User is a global administrator
         try {
             $admins = $this->couchAdmin->getUserAdmins();
-            $name = substr($login, 17); // suppress org.couchdb.user:
-            if (isset($admins->$name))
+            $name = $this->couchAdmin->getLoginSession();
+            if (isset($admins->$name) && $this->email == $name)
+                $this->superadmin = true;
+            else
+                $this->superadmin = false;
+        } catch (Exception $e) {
+            $this->superadmin = false;
+        }
+
+        // Test if User is a local administrator for a specific databses
+        if ($this->superadmin) {
+            $this->admin = true;
+        } else {
+            $membersAdmin = $this->couchAdmin->getDatabaseAdminUsers();
+            if (in_array($this->email, $membersAdmin))
                 $this->admin = true;
             else
                 $this->admin = false;
-        } catch (Exception $e) {
-            $this->admin = false;
         }
 
-        try {
-            $database = new UserDatabase($this->db);
-            $database->fetch($conf->Couchdb->name); // TODO Modify to put it in SESSION
-            $result = $database->couchAdmin->getDatabaseAdminUsers(); // Administrateur local de la bd
+        /* try {
+          $database = new UserDatabase($this->db);
+          $database->fetch($conf->Couchdb->name);
+          $result = $database->couchAdmin->getDatabaseAdminUsers(); // Administrateur local de la bd
 
-            if (in_array($this->values->name, $result)) {
-                $this->admin = true;
-            }
-        } catch (Exception $e) {
-            
-        }
+          if (in_array($this->name, $result)) {
+          $this->admin = true;
+          }
+          } catch (Exception $e) {
 
-        $this->id = $this->values->_id;
-        $this->login = $this->values->name;
+          } */
+
+        $this->id = $this->_id;
 
         return 1;
     }
@@ -403,18 +425,18 @@ class User extends nosqlDocument {
 
         try {
             $result = $object->getView("default_right", '', true);
-            foreach ($this->values->roles as $aRow) // load groups
-                $groups[] = $object->couchdb->getDoc("group:" . $aRow);
+            foreach ($this->group as $aRow) // load groups
+                $groups[] = $object->load("group:" . $aRow, true);
         } catch (Exception $exc) {
             print $exc->getMessage();
         }
 
         if (count($result->rows)) {
             foreach ($result->rows as $aRow) {
-                //$object->values->name = $aRow->value->name;
-                //$object->values->numero = $aRow->value->numero;
+                //$object->name = $aRow->value->name;
+                //$object->numero = $aRow->value->numero;
                 $rights_class = $aRow->value->rights_class;
-                //$object->values->id = $aRow->value->id;
+                //$object->id = $aRow->value->id;
                 $perm = $aRow->value->perm;
 
                 // Add default rights
@@ -430,7 +452,7 @@ class User extends nosqlDocument {
 
                 // Add user rights
 
-                if ((is_array($this->values->rights) && isset($this->values->rights->$key)) || $this->admin) {
+                if ((is_array($this->rights) && isset($this->rights->$key)) || (is_array($this->own_rights) && isset($this->own_rights->$key)) || $this->admin) {
                     if (count($perm) == 1)
                         $this->rights->$rights_class->$perm[0] = true;
                     elseif (count($perm) == 2)
@@ -477,12 +499,25 @@ class User extends nosqlDocument {
             $status = "ENABLE";
 
         // Check parameters
-        if ($this->values->Status == $status)
+        if ($this->Status == $status)
             return 0;
+        else {
+            $userid = $this->email;
 
+            if ($status == 'ENABLE') {
+                if ($this->admin == true)
+                    $this->couchAdmin->addDatabaseAdminUser($userid);
+                else
+                    $this->couchAdmin->addDatabaseReaderUser($userid);
+            }
+            elseif ($status == 'DISABLE') {
+                $this->couchAdmin->removeDatabaseAdminUser($userid);
+                $this->couchAdmin->removeDatabaseReaderUser($userid);
+            }
 
-
-        $this->set("Status", $status);
+            $this->set("Status", $status);
+            dol_delcache($this->id);
+        }
 
         return 1;
     }
@@ -556,72 +591,31 @@ class User extends nosqlDocument {
         global $mysoc;
 
         // Clean parameters
-        $this->values->name = trim($this->values->name);
+        $this->name = trim($this->name);
 
-        dol_syslog(get_class($this) . "::create login=" . $this->values->name . ", user=" . (is_object($user) ? $user->id : ''), LOG_DEBUG);
+        dol_syslog(get_class($this) . "::create login=" . $this->name . ", user=" . (is_object($user) ? $user->id : ''), LOG_DEBUG);
 
         // Check parameters
-        if (!empty($conf->global->USER_MAIL_REQUIRED) && !isValidEMail($this->values->EMail)) {
+        if (!isValidEMail($this->email)) {
             $langs->load("errors");
-            $this->error = $langs->trans("ErrorBadEMail", $this->values->Email);
+            $this->error = $langs->trans("ErrorBadEMail", $this->email);
             return -1;
         }
 
-        $this->values->CreateDate = dol_now();
-        trim($this->values->pass);
+        $this->CreateDate = dol_now();
+        trim($this->pass);
 
         $error = 0;
 
-        try {
-            $result = $this->couchAdmin->getUser($this->values->name);
-        } catch (Exception $e) {
-            
+        if ($action == 'add') {
+            $this->Status = "DISABLE";
+            $this->_id = "user:" . $this->name;
         }
 
-        if (isset($result->name) && $action == 'add') {
-            $this->error = 'ErrorLoginAlreadyExists';
-            dol_syslog(get_class($this) . "::create " . $this->error, LOG_WARNING);
-            return -6;
-        } else {
-            if ($action == 'add') {
-                $this->values->Status = "DISABLE";
-
-                try {
-                    $this->couchAdmin->createUser($this->values->name, $this->values->pass);
-                } catch (Exception $e) {
-                    $this->error = $e->getMessage();
-                    dol_syslog(get_class($this) . "::create " . $this->error, LOG_ERR);
-                    dol_print_error("", $this->error);
-                    exit;
-                    return -4;
-                }
-            }
-        }
 
         try {
-            $user_tmp = $this->couchAdmin->getUser($this->values->name);
-
-            $this->values->salt = $user_tmp->salt;
-            $this->values->password_sha = $user_tmp->password_sha;
-            $this->values->type = $user_tmp->type;
-            $this->values->roles = $user_tmp->roles;
-            $this->values->_id = $user_tmp->_id;
-            $this->values->_rev = $user_tmp->_rev;
-            $this->values->Status = $user_tmp->Status;
-
-            $caneditpassword = ((($user->login == $this->values->name) && $user->rights->user->self->password)
-                    || (($user->login != $this->values->name) && $user->rights->user->user->password)) || $user->admin;
-
-            if ($caneditpassword && !empty($this->values->pass)) { // Case we can edit only password
-                $this->values->password_sha = sha1($this->values->pass . $this->values->salt, false);
-            }
-
-            unset($this->values->pass);
-
-            $this->couchdb->clean($this->values);
-
-            //print_r($this->values);exit;
-            $result = $this->couchdb->storeDoc($this->values); // Save all specific parameters
+            //print_r($this);
+            $result = $this->record(true); // Save all specific parameters
         } catch (Exception $e) {
             $this->error = $e->getMessage();
             dol_syslog(get_class($this) . "::create " . $this->error, LOG_ERR);
@@ -630,9 +624,10 @@ class User extends nosqlDocument {
             return -3;
         }
 
-
         if ($result) {
-            $this->id = $this->values->name;
+            $this->id = $this->name;
+            $this->_id = $result->id;
+            $this->_rev = $result->rev;
 
             if (!$notrigger) {
                 // Appel des triggers
@@ -828,9 +823,9 @@ class User extends nosqlDocument {
     function update_last_login_date() {
         $now = dol_now();
 
-        $this->values->LastConnection = $this->values->NewConnection;
-        $this->values->NewConnection = $now;
-        $this->couchdb->storeDoc($this->values);
+        $this->LastConnection = $this->NewConnection;
+        $this->NewConnection = $now;
+        $this->record(true);
     }
 
     /**
@@ -1482,19 +1477,23 @@ class User extends nosqlDocument {
     }
 
     function getAllUsers($include_docs) {
-        return $this->couchAdmin->getAllUsers($include_docs);
+        return $this->getView('list');
     }
 
     function getUserAdmins() {
         return $this->couchAdmin->getUserAdmins();
     }
 
-    function addRoleToUser($userid, $groupid) {
-        return $this->couchAdmin->addRoleToUser($userid, $groupid);
+    function getDatabaseAdminUsers() {
+        return $this->couchAdmin->getDatabaseAdminUsers();
     }
 
-    function removeRoleFromUser($userid, $groupid) {
-        return $this->couchAdmin->removeRoleFromUser($userid, $groupid);
+    function getDatabaseReaderUsers() {
+        return $this->couchAdmin->getDatabaseReaderUsers();
+    }
+
+    function getLibStatus() {
+        return $this->LibStatus($this->Status);
     }
 
     /**
@@ -1502,8 +1501,36 @@ class User extends nosqlDocument {
      *
      *    @return   string        		Libelle
      */
-    function getLibStatus() {
-        return $this->LibStatus($this->values->Status);
+    function LibStatus($status) {
+        global $langs;
+
+        $admins = $this->getDatabaseAdminUsers();
+        $enabled = $this->getDatabaseReaderUsers();
+
+        //print_r($enabled);
+        //print_r($admins);
+
+        $name = $this->email;
+        if (in_array($name, $admins)) // Is Localadministrator
+            $this->admin = true;
+        else
+            $this->admin = false;
+
+        if (in_array($name, $enabled)) // Is Status = ENABLE
+            $status = "ENABLE";
+        else {
+            if ($this->admin)
+                $status = "ENABLE";
+            else
+                $status = "DISABLE";
+        }
+
+        $this->Status = $status;
+
+        if ($this->admin)
+            $out = img_picto($langs->trans("Administrator"), 'star');
+
+        return parent::LibStatus($status) . " " . $out;
     }
 
 }

@@ -16,8 +16,6 @@
    Shared Styles
 ----------------------------------------- */
 
-	html {overflow-y:scroll}
-	body {font:100 13px/1.4 Helvetica, Arial, sans-serif;color:#222;background-color:#eee}
 	code,pre{border-radius:3px 3px 3px 3px;font-family:Monaco,Andale Mono,Courier New,monospace;font-size:12px;padding:0 3px 2px}
 	code{background-color:#FEE9CC;color:rgba(0,0,0,0.75);padding:1px 3px}
 	pre{background-color:#F5F5F5;border:1px solid rgba(0,0,0,0.15);border-radius:3px 3px 3px 3px;display:block;font-size:12px;line-height:18px;white-space:pre-wrap;word-wrap:break-word;margin:0 0 18px;padding:8.5px}
@@ -35,7 +33,7 @@
 	.taj{text-align:justify}
 
 	a {color:#21759b}
-	a:hover {color:#21759b;text-decoration:underline}
+	a:hover {color:#21759b;}
 	a:active,a:focus {color: #21759b}
 	a.inv {text-decoration:underline}
 	a.inv:hover {text-decoration:none}
@@ -56,11 +54,11 @@
 		.sepH_no {margin-bottom:0}
 
 	/* no borders for buttons (ie7) */
-		button {*border: none !important;*border-color: transparent !important}
+		/*button {*border: none !important;*border-color: transparent !important}*/
 
 	/* webkit extra margin fix*/
 		@media screen and (-webkit-min-device-pixel-ratio:0) {
-			button {margin: 0px}
+			/*button {margin: 0px}*/
 		}
 
 	/* text styles */
@@ -75,12 +73,11 @@
 		ul.pagination {margin-bottom:14px}
 		ul.pagination a:hover {text-decoration:none}
 		input.input-text:focus, textarea:focus {background: #f3fee7}
-		input,textarea,select {font-family:inherit}
+		/*input,textarea,select {font-family:inherit}*/
 		label + input.input-text, label + textarea, label + select, label + div.dropdown, select + div.dropdown {margin-top: -6px}
 		.form-field.error label {color: inherit}
 		form.custom div.custom.dropdown a:hover {text-decoration:none}
 		form.nice div.form-field input,form.nice div.form-field textarea{border-color: #C00000}
-		p {line-height: 1.4}
 		.row .row {max-width: 100%; min-width: 0}
 		.form-field.error input:focus, .form-field.error textarea:focus {background-color: rgba(255,0,0,0.25)}
 		.alert-box a.close {padding:3px}
@@ -191,7 +188,7 @@
 ----------------------------------------- */
 
 	/* header */
-		header {min-height: 82px;padding-bottom:30px}
+		/*header {min-height: 82px;padding-bottom:30px}*/
 		header .head_s_a {padding-top:10px;border-top:5px solid #949494;border-top:5px solid rgba(0,0,0,.4)}
 		#logo img {padding:20px 20px 0 0px}
 		header .head_s_a .row {position:relative}
@@ -249,11 +246,11 @@
 
 	/* search top*/
 		#search_box {position:relative}
-		#search_box input[type="text"] {font-size:13px;margin-top:27px;background: url(img/mag_glass.png) no-repeat 10px center #fff;border: 1px solid #d1d1d1;color: #888;width: 100px;padding: 6px 15px 6px 35px;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px;width:120px;box-shadow: 2px 2px 0px rgba(0,0,0,.08)}
+		#search_box input[type="text"] {font-size:13px;/*margin-top:27px;*/background: url(img/mag_glass.png) no-repeat 10px center #fff;border: 1px solid #d1d1d1;color: #888;padding: 4px 15px 4px 35px;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px;width:150px;box-shadow: 2px 2px 0px rgba(0,0,0,.08)}
 		#search_box input[type="text"]:focus {color:#222}
 
 	/* autocomplete */
-		.ac_results {padding: 0px;background-color: Window;overflow-x: hidden;box-shadow:0 5px 12px #ccc;z-index:9999}
+		.ac_results {padding: 0px;background-color: Window;overflow-x: hidden;box-shadow:0 5px 12px #ccc;z-index:9999;}
 		.ac_results ul {width: 100%;list-style-position: outside;list-style: none;padding: 0;margin: 0;overflow:hidden !important}
 		.ac_results li {margin: 0px;padding: 2px 5px;cursor: pointer;display: block;width: 100%;font-size: 12px;overflow: hidden}
 		.ac_results strong {color:#fe6001}
@@ -286,7 +283,7 @@
 		.ntf_tip_blue span {background: url(img/ntf_tip.png) no-repeat right -17px}
 
 	/* widget box */
-		.box_c,.box_s,.box_s_reg {margin-bottom:25px}
+		/*.box_c,.box_s,.box_s_reg {margin-bottom:20px}*/
 		.box_c_heading {height:30px;border:1px solid #dcdcdc;font-size:16px;line-height:30px;position:relative}
 		.box_c_heading .ff_icon {color:#bdbdbd;font-size:20px}
 		.box_c_heading .box_c_ico {width:36px;border-right:1px solid #dcdcdc;box-shadow: 1px 0 0 rgba(255,255,255,.5);background: transparent;background: rgba(0, 0, 0, .2);float:left;text-align:center;line-height:34px;height:30px;overflow:hidden}
@@ -296,7 +293,7 @@
 		.box_c_heading .gh_button-group {margin:4px 12px 0 0}
 		.box_c_heading .gh_button-group a {color:#333 !important}
 		.box_c_heading .gh_button-group a:hover {color:#fff !important}
-		.box_c_content {padding:12px;border-width:0 1px 1px;border-style:solid;border-color: #dcdcdc;background:#fff}
+		.box_c_content {padding:12px 6px;border-width:0 1px 1px;border-style:solid;border-color: #dcdcdc;background:#fff}
 		.cntn_noP {padding:0}
 		.bAct_hide,.bAct_toggle {background: url(img/bAct_bg.png) no-repeat 0 0;display:block;float:right;height:18px;width:18px;overflow:hidden;margin:7px 5px 0 0}
 		.bAct_hide img,.bAct_toggle	img {display:block;cursor:pointer;background-image: url(img/bAct_bg.png);background-repeat: no-repeat;height:18px;width:18px}
@@ -324,15 +321,15 @@
 		.enhanced th.essential,.enhanced td.essential{display:table-cell}
 
 	/* tooltips */
-		.tooltip {display:none;font-size:10px;padding:3px 6px;color:#fff;background:#000;background:rgba(0, 0, 0, 0.7);text-align:center;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px}
+/*		.tooltip {display:none;font-size:10px;padding:3px 6px;color:#fff;background:#000;background:rgba(0, 0, 0, 0.7);text-align:center;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px}
 		.tooltip:after {content: "";position: absolute}
 		.tooltip.t_t:after {top: 100%;left: 50%;margin-left:-4px;border-width:4px 4px 0;border-style: solid;border-color: #000 transparent transparent;border-color: rgba(0, 0, 0, 0.7) transparent transparent}
 		.tooltip.t_b:after {bottom: 100%;left: 50%;margin-left:-4px;border-width:0 4px 4px;border-style: solid;border-color: transparent transparent #000;border-color: transparent transparent rgba(0, 0, 0, 0.7)}
 		.tooltip.t_l:after {top: 50%;left: 100%;margin-top:-3px;border-width:3px 0 3px 5px;border-style: solid;border-color: transparent transparent transparent #000;border-color: transparent transparent transparent rgba(0, 0, 0, 0.7)}
 		.tooltip.t_r:after {top: 50%;right: 100%;margin-top:-3px;border-width:3px 5px 3px 0;border-style: solid;border-color: transparent  #000 transparent transparent;border-color: transparent  rgba(0, 0, 0, 0.7) transparent transparent}
-
+*/
 	/* tabs */
-		.tabs li {display:block;float:left;height:30px;font-family: Helvetica, Arial, sans-serif;}
+		.tabs li {display:block;float:left;/*height:30px;*/font-family: Helvetica, Arial, sans-serif;}
 		.tabs li a{display:block;line-height:31px;padding:0 10px;border-width:0 1px;border-style:solid;border-color:transparent;font-size:12px;position:relative}
 		.tabs li a:hover {text-decoration:none}
 		.tabs li:last-child a {border-right:none}
@@ -417,7 +414,7 @@
 		#toTop:active,#toTop:focus{outline:none}
 
 	/* footer */
-		#footer {font-size:11px;margin-top:2px;height:30px}
+		#footer {font-size:11px;margin-top:2px;/*height:30px*/}
 
 /* -----------------------------------------
    Form elements
@@ -770,13 +767,13 @@
 	/* Mobile Landscape Size to Tablet Portrait (devices and browsers) */
 		@media only screen and (min-width: 480px) and (max-width: 767px) {
 			.ntf_bar {padding-left:20px}
-			#search_box input[type="text"] {width:122px}
+			#search_box input[type="text"] {width:240px}
 		}
 
 	/* Mobile Portrait Size to Mobile Landscape Size (devices and browsers) */
 		@media only screen and (max-width: 479px) {
             #logo img {padding:16px 0 0 5px}
-			#search_box input[type="text"] {width:82px}
+			#search_box input[type="text"] {width:150px}
 			.user_box {padding:10px 10px 5px;float:none;margin-top:0}
 			.user_box .user_info {overflow:hidden;float:left;padding:0}
 			.user_box .user_info {max-width:106px;border:none !important;margin:0 !important;padding-top:2px}
@@ -798,4 +795,4 @@
 .vcard .fright li{text-align: right}
 .vcard li img{vertical-align: bottom; margin: 0 5px}
 .info{background-image: url(img/ico/icSw2/16-Alert-2.png); background-repeat: no-repeat;background-position: right;  padding-right: 18px;}
-.datatable {min-height:350px;}
+.datatable {min-height:470px;}

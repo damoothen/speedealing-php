@@ -1,4 +1,4 @@
-<?PHP
+<?php
 /* Copyright (C) 2001-2006	Rodolphe Quiedeville	<rodolphe@quiedeville.org>
  * Copyright (C) 2004-2012	Laurent Destailleur		<eldy@users.sourceforge.net>
  * Copyright (C) 2005-2012	Regis Houssin			<regis@dolibarr.fr>
@@ -24,10 +24,10 @@
  *	 \brief      Home page of supplier's orders area
  */
 
-require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
-require_once(DOL_DOCUMENT_ROOT."/fourn/class/fournisseur.commande.class.php");
-require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
+require '../../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.commande.class.php';
+require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
 
 // Security check
 $orderid = GETPOST('orderid');
@@ -58,7 +58,7 @@ print '<tr valign="top"><td class="notopnoleft" width="30%">';
  * Search form
 */
 $var=false;
-print '<table class="noborder" width="100%">';
+print '<table class="noborder nohover" width="100%">';
 print '<form method="post" action="liste.php">';
 print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 print '<tr class="liste_titre"><td colspan="3">'.$langs->trans("SearchOrder").'</td></tr>';
@@ -348,7 +348,7 @@ if ($resql)
             $filename=dol_sanitizeFileName($obj->ref);
             $filedir=$conf->commande->dir_output . '/' . dol_sanitizeFileName($obj->ref);
             $urlsource=$_SERVER['PHP_SELF'].'?id='.$obj->rowid;
-            $formfile->show_documents('commande',$filename,$filedir,$urlsource,'','','',1,'',1);
+            print $formfile->getDocumentsLink($commandestatic->element, $filename, $filedir);
             print '</td></tr></table>';
 
             print '</td>';
@@ -416,7 +416,7 @@ print '<td width="16" align="right" class="nobordernopadding">';
 $filename=dol_sanitizeFileName($obj->ref);
 $filedir=$conf->commande->dir_output . '/' . dol_sanitizeFileName($obj->ref);
 $urlsource=$_SERVER['PHP_SELF'].'?id='.$obj->rowid;
-$formfile->show_documents('commande',$filename,$filedir,$urlsource,'','','',1,'',1);
+print $formfile->getDocumentsLink($commandestatic->element, $filename, $filedir);
 print '</td></tr></table>';
 
 print '</td>';

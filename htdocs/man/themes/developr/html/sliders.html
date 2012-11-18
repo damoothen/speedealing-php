@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+
+<!--[if IEMobile 7]><html class="no-js iem7 oldie"><![endif]-->
+<!--[if (IE 7)&!(IEMobile)]><html class="no-js ie7 oldie" lang="en"><![endif]-->
+<!--[if (IE 8)&!(IEMobile)]><html class="no-js ie8 oldie" lang="en"><![endif]-->
+<!--[if (IE 9)&!(IEMobile)]><html class="no-js ie9" lang="en"><![endif]-->
+<!--[if (gt IE 9)|(gt IEMobile 7)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+	<title>Developr</title>
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<!-- http://davidbcalhoun.com/2010/viewport-metatag -->
+	<meta name="HandheldFriendly" content="True">
+	<meta name="MobileOptimized" content="320">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<!-- For all browsers -->
+	<link rel="stylesheet" href="css/reset.css?v=1">
+	<link rel="stylesheet" href="css/style.css?v=1">
+	<link rel="stylesheet" href="css/colors.css?v=1">
+	<link rel="stylesheet" media="print" href="css/print.css?v=1">
+	<!-- For progressively larger displays -->
+	<link rel="stylesheet" media="only all and (min-width: 480px)" href="css/480.css?v=1">
+	<link rel="stylesheet" media="only all and (min-width: 768px)" href="css/768.css?v=1">
+	<link rel="stylesheet" media="only all and (min-width: 992px)" href="css/992.css?v=1">
+	<link rel="stylesheet" media="only all and (min-width: 1200px)" href="css/1200.css?v=1">
+	<!-- For Retina displays -->
+	<link rel="stylesheet" media="only all and (-webkit-min-device-pixel-ratio: 1.5), only screen and (-o-min-device-pixel-ratio: 3/2), only screen and (min-device-pixel-ratio: 1.5)" href="css/2x.css?v=1">
+
+	<!-- Webfonts -->
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
+
+	<!-- Additional styles -->
+	<link rel="stylesheet" href="css/styles/form.css?v=1">
+	<link rel="stylesheet" href="css/styles/progress-slider.css?v=1">
+	<link rel="stylesheet" href="css/styles/switches.css?v=1">
+
+	<!-- JavaScript at bottom except for Modernizr -->
+	<script src="js/libs/modernizr.custom.js"></script>
+
+	<!-- For Modern Browsers -->
+	<link rel="shortcut icon" href="img/favicons/favicon.png">
+	<!-- For everything else -->
+	<link rel="shortcut icon" href="img/favicons/favicon.ico">
+	<!-- For retina screens -->
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/favicons/apple-touch-icon-retina.png">
+	<!-- For iPad 1-->
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/favicons/apple-touch-icon-ipad.png">
+	<!-- For iPhone 3G, iPod Touch and Android -->
+	<link rel="apple-touch-icon-precomposed" href="img/favicons/apple-touch-icon.png">
+
+	<!-- iOS web-app metas -->
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+	<!-- Startup image for web apps -->
+	<link rel="apple-touch-startup-image" href="img/splash/ipad-landscape.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)">
+	<link rel="apple-touch-startup-image" href="img/splash/ipad-portrait.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)">
+	<link rel="apple-touch-startup-image" href="img/splash/iphone.png" media="screen and (max-device-width: 320px)">
+
+	<!-- Microsoft clear type rendering -->
+	<meta http-equiv="cleartype" content="on">
+</head>
+
+<body class="clearfix with-menu with-shortcuts">
+
+	<!-- Prompt IE 6 users to install Chrome Frame -->
+	<!--[if lt IE 7]><p class="message red-gradient simpler">Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
+
+	<!-- Title bar -->
+	<header role="banner" id="title-bar">
+		<h2>Developr</h2>
+	</header>
+
+	<!-- Button to open/hide menu -->
+	<a href="#" id="open-menu"><span>Menu</span></a>
+
+	<!-- Button to open/hide shortcuts -->
+	<a href="#" id="open-shortcuts"><span class="icon-thumbs"></span></a>
+
+	<!-- Main content -->
+	<section role="main" id="main">
+
+		<noscript class="message black-gradient simpler">Your browser does not support JavaScript! Some features won't work as expected...</noscript>
+
+		<hgroup id="main-title" class="thin">
+			<h1>Sliders &amp; progress</h1>
+		</hgroup>
+
+		<div class="with-padding">
+
+			<div class="columns">
+
+				<div class="four-columns twelve-columns-mobile">
+
+					<div class="boxed">
+						<p>The template provides a complete set of styles to build sliders and progress share, both available as raw code and through a powerful API:</p>
+						<ul class="bullet-list">
+							<li><b>Fluid</b> or <b>fixed size</b></li>
+							<li><b>Vertical</b> or <b>horizontal</b></li>
+							<li>3 different sizes: <b>thin</b>, <b>normal</b> and <b>large</b></li>
+							<li>Possibility to have <b>marks</b> inside and on top, at bottom or both</li>
+							<li>Outer marks can be <b>inset</b> or <b>outset</b></li>
+							<li><b>Automatic spacing</b> when using external marks</li>
+							<li>Easy configuration through <b>classes</b> and <b>inline options</b> - no script needed</li>
+							<li>Sliders may be <b>bound to input</b> or <b>standalone</b></li>
+							<li><b>70+ options</b> to tweak to look and behavior</li>
+						</ul>
+					</div>
+
+				</div>
+
+				<div class="five-columns eight-columns-tablet twelve-columns-mobile">
+					<h3 class="thin">Progress horizontal</h3>
+
+					<h6 class="underline margin-bottom">Raw markup</h6>
+
+					<p class="inline-medium-label">
+						<span class="label">Thin basic</span>
+						<span class="progress anthracite thin" style="width: 100px">
+							<span class="progress-bar" style="width: 45%"></span>
+						</span>
+					</p>
+
+					<p class="inline-medium-label button-height">
+						<span class="label">Complete &amp; fluid</span>
+						<span class="progress" style="width: 100%">
+
+							<!-- inner progression marks -->
+							<span class="inner-mark" style="left: 25%"></span>
+							<span class="inner-mark" style="left: 50%"></span>
+							<span class="inner-mark" style="left: 75%"></span>
+
+							<!-- top and bottom progression marks -->
+							<span class="top-mark" style="left: 1px"><span class="mark-label align-right">0%</span></span>
+							<span class="top-mark" style="left: 25%"><span class="mark-label">25%</span></span>
+							<span class="top-mark" style="left: 50%"><span class="mark-label">50%</span></span>
+							<span class="top-mark" style="left: 75%"><span class="mark-label">75%</span></span>
+							<span class="top-mark" style="left: 100%"><span class="mark-label align-left">100%</span></span>
+							<span class="bottom-mark" style="left: 1px"><span class="mark-label align-right">Nope</span></span>
+							<span class="bottom-mark" style="left: 25%"><span class="mark-label">Go on</span></span>
+							<span class="bottom-mark" style="left: 50%"><span class="mark-label">Better</span></span>
+							<span class="bottom-mark" style="left: 75%"><span class="mark-label">Almost</span></span>
+							<span class="bottom-mark" style="left: 100%"><span class="mark-label align-left">Yeah!</span></span>
+
+							<!-- background-text, revealed when progress bar is too small -->
+							<span class="progress-text">35%</span>
+
+							<!-- progress bar with foreground text -->
+							<span class="progress-bar red-gradient glossy" style="width: 35%">
+								<span class="progress-text">35%</span>
+							</span>
+						</span>
+					</p>
+
+					<p class="inline-medium-label button-height">
+						<span class="label">Large with stripes</span>
+						<span class="progress large" style="width: 100%">
+
+							<!-- inner progression marks -->
+							<span class="inner-mark" style="left: 25%"></span>
+							<span class="inner-mark" style="left: 50%"></span>
+							<span class="inner-mark" style="left: 75%"></span>
+
+							<!-- background-text, revealed when progress bar is too small -->
+							<span class="progress-text">65%</span>
+
+							<!-- progress bar with foreground text -->
+							<span class="progress-bar green-gradient glossy" style="width: 65%">
+								<span class="stripes animated"></span>
+								<span class="progress-text">65%</span>
+							</span>
+						</span>
+					</p>
+
+					<h6 class="underline margin-bottom">Using API</h6>
+
+					<p class="inline-medium-label">
+						<span class="label">Thin basic</span>
+						<span class="demo-progress thin" data-progress-options='{"value":45,"style":"thin","size":100}'></span>
+					</p>
+
+					<p class="inline-medium-label button-height">
+						<span class="label">Complete &amp; fluid</span>
+						<span class="demo-progress" data-progress-options='{"size":false,"barClasses":["red-gradient","glossy"],"innerMarks":25,"topMarks":25,"topLabel":"[value]%","bottomMarks":[{"value":0,"label":"Nope."},{"value":25,"label":"Go on"},{"value":50,"label":"Better"},{"value":75,"label":"Almost"},{"value":100,"label":"Yeah!"}],"insetExtremes":true}'>35%</span>
+					</p>
+
+					<p class="inline-medium-label button-height">
+						<span class="label">Large with stripes</span>
+						<span class="demo-progress large" data-progress-options='{"size":false,"style":"large","barClasses":["green-gradient","glossy"],"innerMarks":25,"stripes":true,"darkStripes":false}'>65%</span>
+					</p>
+
+					<div class="wrapped align-center progress-controls">
+						Change value
+						<button type="button" class="button mid-margin-left">3%</button>
+						<button type="button" class="button">57</button>
+						<button type="button" class="button">72%</button>
+					</div>
+				</div>
+
+				<div class="new-row-tablet three-columns four-columns-tablet twelve-columns-mobile">
+					<h3 class="thin">Progress vertical</h3>
+
+					<h6 class="underline margin-bottom">Raw markup</h6>
+
+					<p class="align-center">
+						<span class="progress vertical thin" style="height: 120px; margin-right: 20px">
+							<span class="progress-bar green-gradient glossy" style="height: 75%"></span>
+						</span>
+
+						<span class="progress vertical" style="height: 120px; margin-right: 45px">
+							<span class="progress-bar orange-gradient glossy" style="height: 55%"></span>
+						</span>
+
+						<span class="progress vertical large" style="height: 120px; margin-right: 65px">
+
+							<!-- inner progression marks -->
+							<span class="inner-mark" style="bottom: 25%"></span>
+							<span class="inner-mark" style="bottom: 50%"></span>
+							<span class="inner-mark" style="bottom: 75%"></span>
+
+							<!-- top and bottom progression marks -->
+							<span class="left-mark" style="bottom: 1px"><span class="mark-label align-bottom">0%</span></span>
+							<span class="left-mark" style="bottom: 25%"><span class="mark-label">25%</span></span>
+							<span class="left-mark" style="bottom: 50%"><span class="mark-label">50%</span></span>
+							<span class="left-mark" style="bottom: 75%"><span class="mark-label">75%</span></span>
+							<span class="left-mark" style="bottom: 100%"><span class="mark-label align-top">100%</span></span>
+							<span class="right-mark" style="bottom: 1px"><span class="mark-label align-bottom">Nope</span></span>
+							<span class="right-mark" style="bottom: 25%"><span class="mark-label">Go on</span></span>
+							<span class="right-mark" style="bottom: 50%"><span class="mark-label">Better</span></span>
+							<span class="right-mark" style="bottom: 75%"><span class="mark-label">Almost</span></span>
+							<span class="right-mark" style="bottom: 100%"><span class="mark-label align-top">Yeah!</span></span>
+
+							<!-- background-text, revealed when progress bar is too small -->
+							<span class="progress-text">35%</span>
+
+							<!-- progress bar with foreground text -->
+							<span class="progress-bar red-gradient glossy" style="height: 35%">
+								<span class="stripes animated"></span>
+								<span class="progress-text">35%</span>
+							</span>
+						</span>
+					</p>
+
+					<h6 class="underline margin-bottom">Using API</h6>
+
+					<p class="align-center">
+						<span class="demo-progress thin" data-progress-options='{"value":75,"size":120,"css":{"marginRight":"20px"},"orientation":"vertical","barClasses":["green-gradient","glossy"]}'></span>
+						<span class="demo-progress" data-progress-options='{"size":120,"css":{"marginRight":"10px"},"orientation":"vertical","barClasses":["orange-gradient","glossy"]}'>55</span>
+						<span class="demo-progress large" data-progress-options='{"size":120,"orientation":"vertical","barClasses":["red-gradient","glossy"],"innerMarks":25,"autoSpacing":true,"leftMarks":25,"leftLabel":"[value]%","rightMarks":[{"value":0,"label":"Nope."},{"value":25,"label":"Go on"},{"value":50,"label":"Better"},{"value":75,"label":"Almost"},{"value":100,"label":"Yeah!"}],"insetExtremes":true,"stripes":true,"darkStripes":false}'>35%</span>
+					</p>
+
+					<div class="wrapped align-center progress-controls">
+						Change value
+						<button type="button" class="button mid-margin-left">10%</button>
+						<button type="button" class="button">50</button>
+						<button type="button" class="button">75%</button>
+					</div>
+				</div>
+
+				<div class="eight-columns eight-columns-tablet twelve-columns-mobile">
+
+					<h3 class="thin">Sliders</h3>
+
+					<h6 class="underline margin-bottom">Values</h6>
+
+					<p class="inline-medium-label button-height">
+						<label for="demo-slider1" class="label">With visible input</label>
+						<input type="text" name="demo-slider1" id="demo-slider1" value="15" class="input demo-slider mid-margin-right" size="2" data-slider-options='{"hideInput":false,"topMarks":20,"topLabel":"[value]%","innerMarks":20,"innerMarksOverBar":true,"bottomMarks":[{"value":0,"label":"Doh!"},{"value":100,"label":"Yeah!"}],"insetExtremes":true}'>
+					</p>
+
+					<p class="inline-medium-label button-height">
+						<span class="label">Fixed steps</span>
+						<input type="text" name="demo-slider2" id="demo-slider2" value="35" class="input demo-slider" data-slider-options='{"size":false,"innerMarks":20,"step":20,"stickToStep":false,"autoSpacing":true,"topMarks":20,"bottomMarks":20,"barMode":"max","barClasses":["anthracite-gradient","glossy"]}'>
+					</p>
+
+					<p class="inline-medium-label button-height">
+						<span class="label">Sticky steps</span>
+						<span class="demo-slider" data-slider-options='{"size":false,"innerMarks":20,"step":20,"knob":true,"tooltip":"bottom","topMarks":[{"value":0,"label":"Doh!"},{"value":20,"label":"Nope."},{"value":40,"label":"Go on"},{"value":60,"label":"Better"},{"value":80,"label":"Almost"},{"value":100,"label":"Yeah!"}],"insetExtremes":true,"barClasses":"orange-gradient"}'></span>
+					</p>
+
+					<h6 class="underline margin-bottom">Ranges</h6>
+
+					<p class="inline-medium-label large-margin-bottom button-height">
+						<label for="demo-range1" class="label">With visible inputs</label>
+						<input type="text" name="demo-range1" id="demo-range1" value="15" class="input mid-margin-right" size="2">
+						<input type="text" name="demo-range2" id="demo-range2" value="75" class="input mid-margin-right" size="2">
+						<span class="demo-slider" data-slider-options='{"min":-50,"max":250,"inputs":["#demo-range1","#demo-range2"],"hideInput":false,"topMarks":50,"topLabel":true,"innerMarks":50,"innerMarksOverBar":true,"bottomMarks":[{"value":-50,"label":"Doh!"},{"value":250,"label":"Yeah!"}],"insetExtremes":true}'></span>
+					</p>
+
+					<p class="inline-medium-label button-height">
+						<label for="demo-range1" class="label">Uneven steps</label>
+						<span class="demo-slider" data-slider-options='{"size":false,"values":[15,72],"tooltip":["left","right"],"tooltipOnHover":false,"topMarks":[5,15,35,45,75,95],"topLabel":true,"topLabelAlign":"right","step":[5,15,35,45,75,95],"barClasses":["red-gradient","glossy"]}'></span>
+					</p>
+
+				</div>
+
+				<div class="four-columns twelve-columns-tablet">
+
+					<h3 class="thin">Vertical sliders</h3>
+
+					<div class="align-center">
+						<input type="text" name="demo-slider3" id="demo-slider3" value="15" class="input demo-slider" size="2" data-slider-options='{"orientation":"vertical","size":300,"leftMarks":20,"leftLabel":"[value]%","innerMarks":20,"innerMarksOverBar":true,"insetExtremes":true,"autoSpacing":true,"autoSpacingRight":"20px"}'>
+						<input type="text" name="demo-slider4" id="demo-slider4" value="35" class="input demo-slider" data-slider-options='{"orientation":"vertical","size":300,"innerMarks":20,"step":20,"stickToStep":false,"leftMarks":20,"rightMarks":20,"barMode":"max","barClasses":["anthracite-gradient","glossy"],"autoSpacing":true,"autoSpacingRight":"20px"}'>
+						<span class="demo-slider" data-slider-options='{"orientation":"vertical","size":300,"innerMarks":20,"step":20,"knob":true,"tooltip":"bottom","leftMarks":[{"value":0,"label":"Doh!"},{"value":20,"label":"Nope."},{"value":40,"label":"Go on"},{"value":60,"label":"Better"},{"value":80,"label":"Almost"},{"value":100,"label":"Yeah!"}],"insetExtremes":true,"barClasses":"orange-gradient","autoSpacing":true,"autoSpacingRight":"20px"}'></span>
+						<input type="text" name="demo-range3" id="demo-range3" value="15" class="input" size="2">
+						<input type="text" name="demo-range4" id="demo-range4" value="75" class="input" size="2">
+						<span class="demo-slider" data-slider-options='{"orientation":"vertical","size":300,"min":-50,"max":250,"inputs":["#demo-range3","#demo-range4"],"leftMarks":50,"leftLabel":true,"innerMarks":50,"innerMarksOverBar":true,"rightMarks":[{"value":-50,"label":"Doh!"},{"value":250,"label":"Yeah!"}],"insetExtremes":true,"autoSpacing":true,"autoSpacingRight":"20px"}'></span>
+						<span class="demo-slider" data-slider-options='{"orientation":"vertical","size":300,"values":[15,72],"tooltip":["bottom","top"],"tooltipOnHover":false,"leftMarks":[5,15,35,45,75,95],"leftLabel":true,"step":[5,15,35,45,75,95],"barClasses":["red-gradient","glossy"],"autoSpacing":true}'></span>
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</section>
+	<!-- End main content -->
+
+	<!-- Side tabs shortcuts -->
+	<ul id="shortcuts" role="complementary" class="children-tooltip tooltip-right">
+		<li><a href="./" class="shortcut-dashboard" title="Dashboard">Dashboard</a></li>
+		<li><a href="inbox.html" class="shortcut-messages" title="Messages">Messages</a></li>
+		<li><a href="agenda.html" class="shortcut-agenda" title="Agenda">Agenda</a></li>
+		<li><a href="tables.html" class="shortcut-contacts" title="Contacts">Contacts</a></li>
+		<li><a href="explorer.html" class="shortcut-medias" title="Medias">Medias</a></li>
+		<li class="current"><a href="sliders.html" class="shortcut-stats" title="Stats">Stats</a></li>
+		<li><a href="form.html" class="shortcut-settings" title="Settings">Settings</a></li>
+		<li><span class="shortcut-notes" title="Notes">Notes</span></li>
+	</ul>
+
+	<!-- Sidebar/drop-down menu -->
+	<section id="menu" role="complementary">
+
+		<!-- This wrapper is used by several responsive layouts -->
+		<div id="menu-content">
+
+			<header>
+				Administrator
+			</header>
+
+			<div id="profile">
+				<img src="img/user.png" width="64" height="64" alt="User name" class="user-icon">
+				Hello
+				<span class="name">John <b>Doe</b></span>
+			</div>
+
+			<!-- By default, this section is made for 4 icons, see the doc to learn how to change this, in "basic markup explained" -->
+			<ul id="access" class="children-tooltip">
+				<li><a href="inbox.html" title="Messages"><span class="icon-inbox"></span><span class="count">2</span></a></li>
+				<li><a href="calendars.html" title="Calendar"><span class="icon-calendar"></span></a></li>
+				<li><a href="login.html" title="Profile"><span class="icon-user"></span></a></li>
+				<li class="disabled"><span class="icon-gear"></span></li>
+			</ul>
+
+			<section class="navigable">
+				<ul class="big-menu">
+					<li class="with-right-arrow">
+						<span><span class="list-count">11</span>Main styles</span>
+						<ul class="big-menu">
+							<li><a href="typography.html">Typography</a></li>
+							<li><a href="columns.html">Columns</a></li>
+							<li><a href="tables.html">Tables</a></li>
+							<li><a href="colors.html">Colors &amp; backgrounds</a></li>
+							<li><a href="icons.html">Icons</a></li>
+							<li><a href="files.html">Files &amp; Gallery</a></li>
+							<li class="with-right-arrow">
+								<span><span class="list-count">4</span>Forms &amp; buttons</span>
+								<ul class="big-menu">
+									<li><a href="buttons.html">Buttons</a></li>
+									<li><a href="form.html">Form elements</a></li>
+									<li><a href="textareas.html">Textareas &amp; WYSIWYG</a></li>
+									<li><a href="form-layouts.html">Form layouts</a></li>
+									<li><a href="wizard.html">Wizard</a></li>
+								</ul>
+							</li>
+							<li class="with-right-arrow">
+								<span><span class="list-count">2</span>Agenda &amp; Calendars</span>
+								<ul class="big-menu">
+									<li><a href="agenda.html">Agenda</a></li>
+									<li><a href="calendars.html">Calendars</a></li>
+								</ul>
+							</li>
+							<li><a href="blocks.html">Blocks &amp; infos</a></li>
+						</ul>
+					</li>
+					<li class="with-right-arrow">
+						<span><span class="list-count">8</span>Main features</span>
+						<ul class="big-menu">
+							<li><a href="auto-setup.html">Automatic setup</a></li>
+							<li><a href="responsive.html">Responsiveness</a></li>
+							<li><a href="tabs.html">Tabs</a></li>
+							<li><a href="sliders.html" class="current navigable-current">Slider &amp; progress</a></li>
+							<li><a href="modals.html">Modal windows</a></li>
+							<li class="with-right-arrow">
+								<span><span class="list-count">3</span>Messages &amp; notifications</span>
+								<ul class="big-menu">
+									<li><a href="messages.html">Messages</a></li>
+									<li><a href="notifications.html">Notifications</a></li>
+									<li><a href="tooltips.html">Tooltips</a></li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+					<li class="with-right-arrow">
+						<a href="ajax-demo/submenu.html" class="navigable-ajax" title="Menu title">With ajax sub-menu</a>
+					</li>
+				</ul>
+			</section>
+
+			<ul class="unstyled-list">
+				<li class="title-menu">Today's event</li>
+				<li>
+					<ul class="calendar-menu">
+						<li>
+							<a href="#" title="See event">
+								<time datetime="2011-02-24"><b>24</b> Feb</time>
+								<small class="green">10:30</small>
+								Event's description
+							</a>
+						</li>
+					</ul>
+				</li>
+				<li class="title-menu">New messages</li>
+				<li>
+					<ul class="message-menu">
+						<li>
+							<span class="message-status">
+								<a href="#" class="starred" title="Starred">Starred</a>
+								<a href="#" class="new-message" title="Mark as read">New</a>
+							</span>
+							<span class="message-info">
+								<span class="blue">17:12</span>
+								<a href="#" class="attach" title="Download attachment">Attachment</a>
+							</span>
+							<a href="#" title="Read message">
+								<strong class="blue">John Doe</strong><br>
+								<strong>Mail subject</strong>
+							</a>
+						</li>
+						<li>
+							<a href="#" title="Read message">
+								<span class="message-status">
+									<span class="unstarred">Not starred</span>
+									<span class="new-message">New</span>
+								</span>
+								<span class="message-info">
+									<span class="blue">15:47</span>
+								</span>
+								<strong class="blue">May Starck</strong><br>
+								<strong>Mail subject a bit longer</strong>
+							</a>
+						</li>
+						<li>
+							<span class="message-status">
+								<span class="unstarred">Not starred</span>
+							</span>
+							<span class="message-info">
+								<span class="blue">15:12</span>
+							</span>
+							<strong class="blue">May Starck</strong><br>
+							Read message
+						</li>
+					</ul>
+				</li>
+			</ul>
+
+		</div>
+		<!-- End content wrapper -->
+
+		<!-- This is optional -->
+		<footer id="menu-footer">
+			<p class="button-height">
+				<input type="checkbox" name="auto-refresh" id="auto-refresh" checked="checked" class="switch float-right">
+				<label for="auto-refresh">Auto-refresh</label>
+			</p>
+		</footer>
+
+	</section>
+	<!-- End sidebar/drop-down menu -->
+
+	<!-- JavaScript at the bottom for fast page loading -->
+
+	<!-- Scripts -->
+	<script src="js/libs/jquery-1.7.2.min.js"></script>
+	<script src="js/setup.js"></script>
+
+	<!-- Template functions -->
+	<script src="js/developr.input.js"></script>
+	<script src="js/developr.navigable.js"></script>
+	<script src="js/developr.notify.js"></script>
+	<script src="js/developr.scroll.js"></script>
+	<script src="js/developr.progress-slider.js"></script>
+	<script src="js/developr.tooltip.js"></script>
+
+	<script>
+
+		// Call template init (optional, but faster if called manually)
+		$.template.init();
+
+		// Progress
+		$('.demo-progress').progress();
+
+		// Slider
+		$('.demo-slider').slider();
+
+		// Buttons to change progress value
+		$(document).on('click', '.progress-controls button', function(event)
+		{
+			$(this).parent().parent().find('.demo-progress').setProgressValue($(this).text());
+		});
+
+	</script>
+</body>
+</html>

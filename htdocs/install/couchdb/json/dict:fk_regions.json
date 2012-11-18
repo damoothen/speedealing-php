@@ -1,0 +1,731 @@
+{
+   "_id": "dict:fk_regions",
+   "values": {
+       "1": {
+           "enable": true,
+           "label": "Guadeloupe",
+           "pays_code": "FR"
+       },
+       "2": {
+           "enable": true,
+           "label": "Martinique",
+           "pays_code": "FR"
+       },
+       "3": {
+           "enable": true,
+           "label": "Guyane",
+           "pays_code": "FR"
+       },
+       "4": {
+           "enable": true,
+           "label": "Réunion",
+           "pays_code": "FR"
+       },
+       "11": {
+           "enable": true,
+           "label": "Île-de-France",
+           "pays_code": "FR"
+       },
+       "21": {
+           "enable": true,
+           "label": "Champagne-Ardenne",
+           "pays_code": "FR"
+       },
+       "22": {
+           "enable": true,
+           "label": "Picardie",
+           "pays_code": "FR"
+       },
+       "23": {
+           "enable": true,
+           "label": "Haute-Normandie",
+           "pays_code": "FR"
+       },
+       "24": {
+           "enable": true,
+           "label": "Centre",
+           "pays_code": "FR"
+       },
+       "25": {
+           "enable": true,
+           "label": "Basse-Normandie",
+           "pays_code": "FR"
+       },
+       "26": {
+           "enable": true,
+           "label": "Bourgogne",
+           "pays_code": "FR"
+       },
+       "31": {
+           "enable": true,
+           "label": "Nord-Pas-de-Calais",
+           "pays_code": "FR"
+       },
+       "41": {
+           "enable": true,
+           "label": "Lorraine",
+           "pays_code": "FR"
+       },
+       "42": {
+           "enable": true,
+           "label": "Alsace",
+           "pays_code": "FR"
+       },
+       "43": {
+           "enable": true,
+           "label": "Franche-Comté",
+           "pays_code": "FR"
+       },
+       "52": {
+           "enable": true,
+           "label": "Pays de la Loire",
+           "pays_code": "FR"
+       },
+       "53": {
+           "enable": true,
+           "label": "Bretagne",
+           "pays_code": "FR"
+       },
+       "54": {
+           "enable": true,
+           "label": "Poitou-Charentes",
+           "pays_code": "FR"
+       },
+       "72": {
+           "enable": true,
+           "label": "Aquitaine",
+           "pays_code": "FR"
+       },
+       "73": {
+           "enable": true,
+           "label": "Midi-Pyrénées",
+           "pays_code": "FR"
+       },
+       "74": {
+           "enable": true,
+           "label": "Limousin",
+           "pays_code": "FR"
+       },
+       "82": {
+           "enable": true,
+           "label": "Rhône-Alpes",
+           "pays_code": "FR"
+       },
+       "83": {
+           "enable": true,
+           "label": "Auvergne",
+           "pays_code": "FR"
+       },
+       "91": {
+           "enable": true,
+           "label": "Languedoc-Roussillon",
+           "pays_code": "FR"
+       },
+       "93": {
+           "enable": true,
+           "label": "Provence-Alpes-Côte d'Azur",
+           "pays_code": "FR"
+       },
+       "94": {
+           "enable": true,
+           "label": "Corse",
+           "pays_code": "FR"
+       },
+       "201": {
+           "enable": true,
+           "label": "Flandre",
+           "pays_code": "BE"
+       },
+       "202": {
+           "enable": true,
+           "label": "Wallonie",
+           "pays_code": "BE"
+       },
+       "203": {
+           "enable": true,
+           "label": "Bruxelles-Capitale",
+           "pays_code": "BE"
+       },
+       "301": {
+           "enable": true,
+           "label": "Abruzzo",
+           "pays_code": "IT"
+       },
+       "302": {
+           "enable": true,
+           "label": "Basilicata",
+           "pays_code": "IT"
+       },
+       "303": {
+           "enable": true,
+           "label": "Calabria",
+           "pays_code": "IT"
+       },
+       "304": {
+           "enable": true,
+           "label": "Campania",
+           "pays_code": "IT"
+       },
+       "305": {
+           "enable": true,
+           "label": "Emilia-Romagna",
+           "pays_code": "IT"
+       },
+       "306": {
+           "enable": true,
+           "label": "Friuli-Venezia Giulia",
+           "pays_code": "IT"
+       },
+       "307": {
+           "enable": true,
+           "label": "Lazio",
+           "pays_code": "IT"
+       },
+       "308": {
+           "enable": true,
+           "label": "Liguria",
+           "pays_code": "IT"
+       },
+       "309": {
+           "enable": true,
+           "label": "Lombardia",
+           "pays_code": "IT"
+       },
+       "310": {
+           "enable": true,
+           "label": "Marche",
+           "pays_code": "IT"
+       },
+       "311": {
+           "enable": true,
+           "label": "Molise",
+           "pays_code": "IT"
+       },
+       "312": {
+           "enable": true,
+           "label": "Piemonte",
+           "pays_code": "IT"
+       },
+       "313": {
+           "enable": true,
+           "label": "Puglia",
+           "pays_code": "IT"
+       },
+       "314": {
+           "enable": true,
+           "label": "Sardegna",
+           "pays_code": "IT"
+       },
+       "315": {
+           "enable": true,
+           "label": "Sicilia",
+           "pays_code": "IT"
+       },
+       "316": {
+           "enable": true,
+           "label": "Toscana",
+           "pays_code": "IT"
+       },
+       "317": {
+           "enable": true,
+           "label": "Trentino-Alto Adige",
+           "pays_code": "IT"
+       },
+       "318": {
+           "enable": true,
+           "label": "Umbria",
+           "pays_code": "IT"
+       },
+       "319": {
+           "enable": true,
+           "label": "Valle d Aosta",
+           "pays_code": "IT"
+       },
+       "320": {
+           "enable": true,
+           "label": "Veneto",
+           "pays_code": "IT"
+       },
+       "401": {
+           "enable": true,
+           "label": "Andalucia",
+           "pays_code": "ES"
+       },
+       "402": {
+           "enable": true,
+           "label": "Aragón",
+           "pays_code": "ES"
+       },
+       "403": {
+           "enable": true,
+           "label": "Castilla y León",
+           "pays_code": "ES"
+       },
+       "404": {
+           "enable": true,
+           "label": "Castilla la Mancha",
+           "pays_code": "ES"
+       },
+       "405": {
+           "enable": true,
+           "label": "Canarias",
+           "pays_code": "ES"
+       },
+       "406": {
+           "enable": true,
+           "label": "Cataluña",
+           "pays_code": "ES"
+       },
+       "407": {
+           "enable": true,
+           "label": "Comunidad de Ceuta",
+           "pays_code": "ES"
+       },
+       "408": {
+           "enable": true,
+           "label": "Comunidad Foral de Navarra",
+           "pays_code": "ES"
+       },
+       "409": {
+           "enable": true,
+           "label": "Comunidad de Melilla",
+           "pays_code": "ES"
+       },
+       "410": {
+           "enable": true,
+           "label": "Cantabria",
+           "pays_code": "ES"
+       },
+       "411": {
+           "enable": true,
+           "label": "Comunidad Valenciana",
+           "pays_code": "ES"
+       },
+       "412": {
+           "enable": true,
+           "label": "Extemadura",
+           "pays_code": "ES"
+       },
+       "413": {
+           "enable": true,
+           "label": "Galicia",
+           "pays_code": "ES"
+       },
+       "414": {
+           "enable": true,
+           "label": "Islas Baleares",
+           "pays_code": "ES"
+       },
+       "415": {
+           "enable": true,
+           "label": "La Rioja",
+           "pays_code": "ES"
+       },
+       "416": {
+           "enable": true,
+           "label": "Comunidad de Madrid",
+           "pays_code": "ES"
+       },
+       "417": {
+           "enable": true,
+           "label": "Región de Murcia",
+           "pays_code": "ES"
+       },
+       "418": {
+           "enable": true,
+           "label": "Principado de Asturias",
+           "pays_code": "ES"
+       },
+       "419": {
+           "enable": true,
+           "label": "Pais Vasco",
+           "pays_code": "ES"
+       },
+       "420": {
+           "enable": true,
+           "label": "Otros",
+           "pays_code": "ES"
+       },
+       "601": {
+           "enable": true,
+           "label": "Cantons",
+           "pays_code": "CH"
+       },
+       "1001": {
+           "enable": true,
+           "label": "Ariana",
+           "pays_code": "TN"
+       },
+       "1002": {
+           "enable": true,
+           "label": "Béja",
+           "pays_code": "TN"
+       },
+       "1003": {
+           "enable": true,
+           "label": "Ben Arous",
+           "pays_code": "TN"
+       },
+       "1004": {
+           "enable": true,
+           "label": "Bizerte",
+           "pays_code": "TN"
+       },
+       "1005": {
+           "enable": true,
+           "label": "Gabès",
+           "pays_code": "TN"
+       },
+       "1006": {
+           "enable": true,
+           "label": "Gafsa",
+           "pays_code": "TN"
+       },
+       "1007": {
+           "enable": true,
+           "label": "Jendouba",
+           "pays_code": "TN"
+       },
+       "1008": {
+           "enable": true,
+           "label": "Kairouan",
+           "pays_code": "TN"
+       },
+       "1009": {
+           "enable": true,
+           "label": "Kasserine",
+           "pays_code": "TN"
+       },
+       "1010": {
+           "enable": true,
+           "label": "Kébili",
+           "pays_code": "TN"
+       },
+       "1011": {
+           "enable": true,
+           "label": "La Manouba",
+           "pays_code": "TN"
+       },
+       "1012": {
+           "enable": true,
+           "label": "Le Kef",
+           "pays_code": "TN"
+       },
+       "1013": {
+           "enable": true,
+           "label": "Mahdia",
+           "pays_code": "TN"
+       },
+       "1014": {
+           "enable": true,
+           "label": "Médenine",
+           "pays_code": "TN"
+       },
+       "1015": {
+           "enable": true,
+           "label": "Monastir",
+           "pays_code": "TN"
+       },
+       "1016": {
+           "enable": true,
+           "label": "Nabeul",
+           "pays_code": "TN"
+       },
+       "1017": {
+           "enable": true,
+           "label": "Sfax",
+           "pays_code": "TN"
+       },
+       "1018": {
+           "enable": true,
+           "label": "Sidi Bouzid",
+           "pays_code": "TN"
+       },
+       "1019": {
+           "enable": true,
+           "label": "Siliana",
+           "pays_code": "TN"
+       },
+       "1020": {
+           "enable": true,
+           "label": "Sousse",
+           "pays_code": "TN"
+       },
+       "1021": {
+           "enable": true,
+           "label": "Tataouine",
+           "pays_code": "TN"
+       },
+       "1022": {
+           "enable": true,
+           "label": "Tozeur",
+           "pays_code": "TN"
+       },
+       "1023": {
+           "enable": true,
+           "label": "Tunis",
+           "pays_code": "TN"
+       },
+       "1024": {
+           "enable": true,
+           "label": "Zaghouan",
+           "pays_code": "TN"
+       },
+       "1101": {
+           "enable": true,
+           "label": "United-States",
+           "pays_code": "US"
+       },
+       "2301": {
+           "enable": true,
+           "label": "Norte",
+           "pays_code": "AR"
+       },
+       "2302": {
+           "enable": true,
+           "label": "Litoral",
+           "pays_code": "AR"
+       },
+       "2303": {
+           "enable": true,
+           "label": "Cuyana",
+           "pays_code": "AR"
+       },
+       "2304": {
+           "enable": true,
+           "label": "Central",
+           "pays_code": "AR"
+       },
+       "2305": {
+           "enable": true,
+           "label": "Patagonia",
+           "pays_code": "AR"
+       },
+       "2801": {
+           "enable": true,
+           "label": "Australia",
+           "pays_code": "AU"
+       },
+       "4601": {
+           "enable": true,
+           "label": "Barbados",
+           "pays_code": "BB"
+       },
+       "6701": {
+           "enable": true,
+           "label": "Tarapacá",
+           "pays_code": "CL"
+       },
+       "6702": {
+           "enable": true,
+           "label": "Antofagasta",
+           "pays_code": "CL"
+       },
+       "6703": {
+           "enable": true,
+           "label": "Atacama",
+           "pays_code": "CL"
+       },
+       "6704": {
+           "enable": true,
+           "label": "Coquimbo",
+           "pays_code": "CL"
+       },
+       "6705": {
+           "enable": true,
+           "label": "Valparaíso",
+           "pays_code": "CL"
+       },
+       "6706": {
+           "enable": true,
+           "label": "General Bernardo O Higgins",
+           "pays_code": "CL"
+       },
+       "6707": {
+           "enable": true,
+           "label": "Maule",
+           "pays_code": "CL"
+       },
+       "6708": {
+           "enable": true,
+           "label": "Biobío",
+           "pays_code": "CL"
+       },
+       "6709": {
+           "enable": true,
+           "label": "Raucanía",
+           "pays_code": "CL"
+       },
+       "6710": {
+           "enable": true,
+           "label": "Los Lagos",
+           "pays_code": "CL"
+       },
+       "6711": {
+           "enable": true,
+           "label": "Aysén General Carlos Ibáñez del Campo",
+           "pays_code": "CL"
+       },
+       "6712": {
+           "enable": true,
+           "label": "Magallanes y Antártica Chilena",
+           "pays_code": "CL"
+       },
+       "6713": {
+           "enable": true,
+           "label": "Santiago",
+           "pays_code": "CL"
+       },
+       "6714": {
+           "enable": true,
+           "label": "Los Ríos",
+           "pays_code": "CL"
+       },
+       "6715": {
+           "enable": true,
+           "label": "Arica y Parinacota",
+           "pays_code": "CL"
+       },
+       "7001": {
+           "enable": true,
+           "label": "Colombie",
+           "pays_code": "CO"
+       },
+       "8601": {
+           "enable": true,
+           "label": "Central",
+           "pays_code": "SV"
+       },
+       "8602": {
+           "enable": true,
+           "label": "Oriental",
+           "pays_code": "SV"
+       },
+       "8603": {
+           "enable": true,
+           "label": "Occidental",
+           "pays_code": "SV"
+       },
+       "11401": {
+           "enable": true,
+           "label": "Honduras",
+           "pays_code": "HN"
+       },
+       "11701": {
+           "enable": true,
+           "label": "India",
+           "pays_code": "IN"
+       },
+       "15201": {
+           "enable": true,
+           "label": "Rivière Noire",
+           "pays_code": "MU"
+       },
+       "15202": {
+           "enable": true,
+           "label": "Flacq",
+           "pays_code": "MU"
+       },
+       "15203": {
+           "enable": true,
+           "label": "Grand Port",
+           "pays_code": "MU"
+       },
+       "15204": {
+           "enable": true,
+           "label": "Moka",
+           "pays_code": "MU"
+       },
+       "15205": {
+           "enable": true,
+           "label": "Pamplemousses",
+           "pays_code": "MU"
+       },
+       "15206": {
+           "enable": true,
+           "label": "Plaines Wilhems",
+           "pays_code": "MU"
+       },
+       "15207": {
+           "enable": true,
+           "label": "Port-Louis",
+           "pays_code": "MU"
+       },
+       "15208": {
+           "enable": true,
+           "label": "Rivière du Rempart",
+           "pays_code": "MU"
+       },
+       "15209": {
+           "enable": true,
+           "label": "Savanne",
+           "pays_code": "MU"
+       },
+       "15210": {
+           "enable": true,
+           "label": "Rodrigues",
+           "pays_code": "MU"
+       },
+       "15211": {
+           "enable": true,
+           "label": "Les îles Agaléga",
+           "pays_code": "MU"
+       },
+       "15212": {
+           "enable": true,
+           "label": "Les écueils des Cargados Carajos",
+           "pays_code": "MU"
+       },
+       "15401": {
+           "enable": true,
+           "label": "Mexique",
+           "pays_code": "MX"
+       },
+       "23201": {
+           "enable": true,
+           "label": "Los Andes",
+           "pays_code": "VE"
+       },
+       "23202": {
+           "enable": true,
+           "label": "Capital",
+           "pays_code": "VE"
+       },
+       "23203": {
+           "enable": true,
+           "label": "Central",
+           "pays_code": "VE"
+       },
+       "23204": {
+           "enable": true,
+           "label": "Cento Occidental",
+           "pays_code": "VE"
+       },
+       "23205": {
+           "enable": true,
+           "label": "Guayana",
+           "pays_code": "VE"
+       },
+       "23206": {
+           "enable": true,
+           "label": "Insular",
+           "pays_code": "VE"
+       },
+       "23207": {
+           "enable": true,
+           "label": "Los Llanos",
+           "pays_code": "VE"
+       },
+       "23208": {
+           "enable": true,
+           "label": "Nor-Oriental",
+           "pays_code": "VE"
+       },
+       "23209": {
+           "enable": true,
+           "label": "Zuliana",
+           "pays_code": "VE"
+       }
+   },
+   "class": "dict"
+}

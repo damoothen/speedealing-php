@@ -1,0 +1,30 @@
+{
+   "_id": "extrafields:UserAdmin",
+   "class": "extrafields",
+   "ico": "16-User.png",
+   "fields": {
+       "Status": {
+           "type": "select",
+           "enable": true,
+           "default": "DISABLE",
+           "status": true,
+           "aoColumns": {
+               "sClass": "center",
+               "bSearchable": true,
+               "bVisible": true
+           },
+           "values": {
+               "DISABLE": {
+                   "enable": true,
+                   "label": "Bloqué",
+                   "cssClass": "red-gradient"
+               },
+               "ENABLE": {
+                   "enable": true,
+                   "label": "Actif",
+                   "cssClass": "green-gradient"
+               }
+           }
+       }
+   }
+}

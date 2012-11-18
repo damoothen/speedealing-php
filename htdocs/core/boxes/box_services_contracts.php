@@ -23,7 +23,7 @@
  *      \brief      Module de generation de l'affichage de la box services_vendus
  */
 
-include_once(DOL_DOCUMENT_ROOT."/core/boxes/modules_boxes.php");
+include_once DOL_DOCUMENT_ROOT.'/core/boxes/modules_boxes.php';
 
 
 /**
@@ -45,7 +45,7 @@ class box_services_contracts extends ModeleBoxes
 	/**
      *  Constructor
 	 */
-	function box_services_contracts()
+	function __construct()
 	{
 		global $langs;
 		$langs->load("boxes");
@@ -65,7 +65,7 @@ class box_services_contracts extends ModeleBoxes
 
 		$this->max=$max;
 
-		include_once(DOL_DOCUMENT_ROOT."/contrat/class/contrat.class.php");
+		include_once DOL_DOCUMENT_ROOT.'/contrat/class/contrat.class.php';
 		$contratlignestatic=new ContratLigne($db);
 
 		$this->info_box_head = array('text' => $langs->trans("BoxLastProductsInContract",$max));
@@ -105,7 +105,7 @@ class box_services_contracts extends ModeleBoxes
 					$datem=$db->jdate($objp->datem);
 
 					// Multilangs
-					if ($conf->global->MAIN_MULTILANGS) // si l'option est active
+					if (! empty($conf->global->MAIN_MULTILANGS)) // si l'option est active
 					{
 						$sqld = "SELECT label";
 						$sqld.= " FROM ".MAIN_DB_PREFIX."product_lang";

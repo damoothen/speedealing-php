@@ -1,4 +1,4 @@
-<?PHP
+<?php
 /* Copyright (C) 2003 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2007 Laurent Destailleur  <eldy@users.sourceforge.net>
  *
@@ -23,7 +23,7 @@
  *	\brief      Fichier contenant la classe mere de generation de bon de livraison en PDF
  *				et la classe mere de numerotation des bons de livraisons
  */
-require_once(DOL_DOCUMENT_ROOT.'/core/lib/pdf.lib.php');
+require_once DOL_DOCUMENT_ROOT.'/core/lib/pdf.lib.php';
 
 
 /**
@@ -36,7 +36,7 @@ class ModeleShippingMethod
      *
      * @param	DoliDB		$db		Database handler
      */
-	function ModeleShippingMethod($db)
+	function __construct($db)
 	{
 		$this->db = $db;
 		$this->name = "NOT DEFINED";
@@ -58,7 +58,7 @@ class ModeleShippingMethod
 		$type='???';
 		$liste=array();
 
-		include_once(DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php');
+		include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 		$liste=getListOfModels($db,$type,$maxfilenamelength);
 
 		return $liste;

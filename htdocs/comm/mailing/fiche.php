@@ -1,4 +1,4 @@
-<?PHP
+<?php
 /* Copyright (C) 2004		Rodolphe Quiedeville	<rodolphe@quiedeville.org>
  * Copyright (C) 2005-2012	Laurent Destailleur		<eldy@uers.sourceforge.net>
  * Copyright (C) 2005-2012	Regis Houssin			<regis@dolibarr.fr>
@@ -23,14 +23,14 @@
  *       \brief      Fiche mailing, onglet general
  */
 
-require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/emailing.lib.php");
-require_once(DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php');
-require_once(DOL_DOCUMENT_ROOT."/core/class/CMailFile.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/comm/mailing/class/mailing.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formother.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/extrafields.class.php");
+require '../../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/emailing.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/comm/mailing/class/mailing.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
 
 $langs->load("mails");
 
@@ -47,7 +47,7 @@ $result=$object->fetch($id);
 $extrafields = new ExtraFields($db);
 
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
-include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
+include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
 $hookmanager=new HookManager($db);
 $hookmanager->initHooks(array('mailingcard'));
 
@@ -58,22 +58,22 @@ $object->substitutionarray=array(
     '__EMAIL__' => 'EMail',
     '__LASTNAME__' => 'Lastname',
     '__FIRSTNAME__' => 'Firstname',
-    '__MAILTOEMAIL__' => 'MailtoEmail',
+    '__MAILTOEMAIL__' => 'TagMailtoEmail',
     '__OTHER1__' => 'Other1',
     '__OTHER2__' => 'Other2',
     '__OTHER3__' => 'Other3',
     '__OTHER4__' => 'Other4',
     '__OTHER5__' => 'Other5',
-    '__SIGNATURE__' => 'Signature',
-    '__PERSONALIZED__' => 'Personalized'
+    '__SIGNATURE__' => 'TagSignature',
+    //'__PERSONALIZED__' => 'Personalized'	// Hidden because not used yet
 );
-if ($conf->global->MAILING_EMAIL_UNSUBSCRIBE)
+if (! empty($conf->global->MAILING_EMAIL_UNSUBSCRIBE))
 {
     $object->substitutionarray=array_merge(
         $object->substitutionarray,
         array(
-            '__CHECK_READ__' => 'CheckMail',
-            '__UNSUBSCRIBE__' => 'Unsubscribe'
+            '__CHECK_READ__' => 'TagCheckMail',
+            '__UNSUBSCRIBE__' => 'TagUnsubscribe'
         )
     );
 }
@@ -90,10 +90,10 @@ $object->substitutionarrayfortest=array(
     '__OTHER3__' => 'TESTOther3',
     '__OTHER4__' => 'TESTOther4',
     '__OTHER5__' => 'TESTOther5',
-    '__SIGNATURE__' => 'TESTSignature',
-    '__PERSONALIZED__' => 'TESTPersonalized'
+	'__SIGNATURE__' => (($user->signature && empty($conf->global->MAIL_DO_NOT_USE_SIGN))?$user->signature:''),
+    //'__PERSONALIZED__' => 'TESTPersonalized'	// Not used yet
 );
-if ($conf->global->MAILING_EMAIL_UNSUBSCRIBE)
+if (!empty($conf->global->MAILING_EMAIL_UNSUBSCRIBE))
 {
     $object->substitutionarrayfortest=array_merge(
         $object->substitutionarrayfortest,
@@ -443,15 +443,15 @@ if ($action == 'add')
 	$object->bgcolor        = trim($_POST["bgcolor"]);
 	$object->bgimage        = trim($_POST["bgimage"]);
 
-	if (! $object->titre) $mesg.=($mesg?'<br>':'').$langs->trans("ErrorFieldRequired",$langs->trans("MailTitle"));
-	if (! $object->sujet) $mesg.=($mesg?'<br>':'').$langs->trans("ErrorFieldRequired",$langs->trans("MailTopic"));
-	if (! $object->body)  $mesg.=($mesg?'<br>':'').$langs->trans("ErrorFieldRequired",$langs->trans("MailBody"));
+	if (! $object->titre) $mesg.=($mesg?'<br>':'').$langs->trans("ErrorFieldRequired",$langs->transnoentities("MailTitle"));
+	if (! $object->sujet) $mesg.=($mesg?'<br>':'').$langs->trans("ErrorFieldRequired",$langs->transnoentities("MailTopic"));
+	if (! $object->body)  $mesg.=($mesg?'<br>':'').$langs->trans("ErrorFieldRequired",$langs->transnoentities("MailMessage"));
 
 	if (! $mesg)
 	{
 		if ($object->create($user) >= 0)
 		{
-			Header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
+			header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
 			exit;
 		}
 		$mesg=$object->error;
@@ -478,7 +478,7 @@ if ($action == 'settitre' || $action == 'setemail_from' || $actino == 'setreplyt
 	{
 		if ($object->update($user) >= 0)
 		{
-			Header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
+			header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
 			exit;
 		}
 		$mesg=$object->error;
@@ -495,10 +495,10 @@ if (! empty($_POST['addfile']))
 {
 	$upload_dir = $conf->mailing->dir_output . "/" . get_exdir($object->id,2,0,1);
 
-	require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
+	require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
     // Set tmp user directory
-    $mesg=dol_add_file_process($upload_dir,0,0);
+    dol_add_file_process($upload_dir,0,0);
 
 	$action="edit";
 }
@@ -508,9 +508,9 @@ if (! empty($_POST["removedfile"]))
 {
 	$upload_dir = $conf->mailing->dir_output . "/" . get_exdir($object->id,2,0,1);
 
-	require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
+	require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
-    $mesg=dol_remove_file_process($_POST['removedfile'],0);
+    dol_remove_file_process($_POST['removedfile'],0);
 
 	$action="edit";
 }
@@ -518,7 +518,7 @@ if (! empty($_POST["removedfile"]))
 // Action update emailing
 if ($action == 'update' && empty($_POST["removedfile"]) && empty($_POST["cancel"]))
 {
-	require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
+	require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
 	$isupload=0;
 
@@ -529,14 +529,14 @@ if ($action == 'update' && empty($_POST["removedfile"]) && empty($_POST["cancel"
 		$object->bgcolor        = trim($_POST["bgcolor"]);
 		$object->bgimage        = trim($_POST["bgimage"]);
 
-		if (! $object->sujet) $mesg.=($mesg?'<br>':'').$langs->trans("ErrorFieldRequired",$langs->trans("MailTopic"));
-		if (! $object->body)  $mesg.=($mesg?'<br>':'').$langs->trans("ErrorFieldRequired",$langs->trans("MailBody"));
+		if (! $object->sujet) $mesg.=($mesg?'<br>':'').$langs->trans("ErrorFieldRequired",$langs->transnoentities("MailTopic"));
+		if (! $object->body)  $mesg.=($mesg?'<br>':'').$langs->trans("ErrorFieldRequired",$langs->transnoentities("MailMessage"));
 
 		if (! $mesg)
 		{
 			if ($object->update($user) >= 0)
 			{
-				Header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
+				header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
 				exit;
 			}
 			$mesg=$object->error;
@@ -557,10 +557,8 @@ if ($action == 'confirm_valid' && $confirm == 'yes')
 	if ($object->id > 0)
 	{
 		$object->valid($user);
-
-		$_SESSION['dol_message']='<div class="ok">'.$langs->trans("MailingSuccessfullyValidated").'</div>';
-
-		Header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
+		setEventMessage($langs->trans("MailingSuccessfullyValidated"));
+		header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
 		exit;
 	}
 	else
@@ -585,7 +583,7 @@ if ($action == 'confirm_reset' && $confirm == 'yes')
 		if ($result > 0)
 		{
 			$db->commit();
-			Header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
+			header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
 			exit;
 		}
 		else
@@ -606,7 +604,7 @@ if ($action == 'confirm_delete' && $confirm == 'yes')
 	if ($object->delete($object->id))
 	{
 		$url= (! empty($urlfrom) ? $urlfrom : 'liste.php');
-		Header("Location: ".$url);
+		header("Location: ".$url);
 		exit;
 	}
 }
@@ -678,7 +676,7 @@ if ($action == 'create')
 	print '</i></td>';
 	print '<td>';
 	// Editeur wysiwyg
-	require_once(DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php");
+	require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
 	$doleditor=new DolEditor('body',$_POST['body'],'',320,'dolibarr_mailings','',true,true,$conf->global->FCKEDITOR_ENABLE_MAILING,20,70);
 	$doleditor->Create();
 	print '</td></tr>';
@@ -757,9 +755,11 @@ else
 
 			print '<table class="border" width="100%">';
 
+			$linkback = '<a href="'.DOL_URL_ROOT.'/comm/mailing/liste.php">'.$langs->trans("BackToList").'</a>';
+
 			print '<tr><td width="15%">'.$langs->trans("Ref").'</td>';
 			print '<td colspan="3">';
-			print $form->showrefnav($object,'id');
+			print $form->showrefnav($object,'id', $linkback);
 			print '</td></tr>';
 
 			// Description
@@ -940,7 +940,7 @@ else
 				print_titre($langs->trans("TestMailing"));
 
 				// Create l'objet formulaire mail
-				include_once(DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php');
+				include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
 				$formmail = new FormMail($db);
 				$formmail->fromname = $object->email_from;
 				$formmail->frommail = $object->email_from;
@@ -1130,7 +1130,7 @@ else
 			print '</i></td>';
 			print '<td colspan="3">';
 			// Editeur wysiwyg
-			require_once(DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php");
+			require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
 			$doleditor=new DolEditor('body',$object->body,'',320,'dolibarr_mailings','',true,true,$conf->global->FCKEDITOR_ENABLE_MAILING,20,70);
 			$doleditor->Create();
 			print '</td></tr>';

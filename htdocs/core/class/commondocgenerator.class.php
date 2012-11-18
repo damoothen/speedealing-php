@@ -1,8 +1,8 @@
 <?php
-/* Copyright (C) 2003-2005 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2004      Eric Seigne          <eric.seigne@ryxeo.com>
- * Copyright (C) 2005-2007 Regis Houssin        <regis@dolibarr.fr>
+/* Copyright (C) 2003-2005	Rodolphe Quiedeville	<rodolphe@quiedeville.org>
+ * Copyright (C) 2004-2010	Laurent Destailleur		<eldy@users.sourceforge.net>
+ * Copyright (C) 2004		Eric Seigne				<eric.seigne@ryxeo.com>
+ * Copyright (C) 2005-2012	Regis Houssin			<regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,11 +50,11 @@ abstract class CommonDocGenerator
             'myuser_lastname'=>$user->lastname,
             'myuser_firstname'=>$user->firstname,
             'myuser_login'=>$user->login,
-            'myuser_phone'=>$user->officephone,
-            'myuser_fax'=>$user->officefax,
+            'myuser_phone'=>$user->office_phone,
+            'myuser_fax'=>$user->office_fax,
             'myuser_mobile'=>$user->user_mobile,
-            'myuser_email'=>$user->user_email,
-            'myuser_web'=>$user->url
+            'myuser_email'=>$user->email,
+            'myuser_web'=>''	// url not exist in $user object
         );
     }
 
@@ -165,6 +165,25 @@ abstract class CommonDocGenerator
         );
     }
 
+	/**
+	 * Rect pdf
+	 *
+	 * @param	PDF		$pdf			Object PDF
+	 * @param	float	$x				Abscissa of first point
+	 * @param	float	$y		        Ordinate of first point
+	 * @param	float	$l				??
+	 * @param	float	$h				??
+	 * @param	int		$hidetop		1=Hide top bar of array and title, 0=Hide nothing, -1=Hide only title
+	 * @param	int		$hidebottom		Hide bottom
+	 * @return	void
+	 */
+    function printRect($pdf, $x, $y, $l, $h, $hidetop=0, $hidebottom=0)
+    {
+	    if (empty($hidetop) || $hidetop==-1) $pdf->line($x, $y, $x+$l, $y);
+	    $pdf->line($x+$l, $y, $x+$l, $y+$h);
+	    if (empty($hidebottom)) $pdf->line($x+$l, $y+$h, $x, $y+$h);
+	    $pdf->line($x, $y+$h, $x, $y);
+    }
 }
 
 ?>

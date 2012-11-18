@@ -1,0 +1,30 @@
+{
+   "_id": "dict:fk_civilite",
+   "values": {
+       "NO": {
+           "enable": true,
+           "label": "-"
+       },
+       "DR": {
+           "enable": true,
+           "label": "Docteur"
+       },
+       "MME": {
+           "enable": true,
+           "label": "Madame"
+       },
+       "MLE": {
+           "enable": true,
+           "label": "Mademoiselle"
+       },
+       "MTRE": {
+           "enable": true,
+           "label": "Maître"
+       },
+       "MR": {
+           "enable": true,
+           "label": "Monsieur"
+       }
+   },
+   "class": "dict"
+}

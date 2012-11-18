@@ -1,6 +1,6 @@
 <?php
 /* Copyright (C) 2001-2002 Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2006-2009 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2006-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2010      Regis Houssin        <regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -27,7 +27,7 @@
 define("NOLOGIN",1);	// This means this output page does not require to be logged.
 define("NOCSRFCHECK",1);	// We accept to go on this page from external web site.
 
-require("../../main.inc.php");
+require '../../main.inc.php';
 
 $langs->load("main");
 $langs->load("install");
@@ -38,17 +38,11 @@ global $dolibarr_main_demo;
 if (empty($dolibarr_main_demo)) accessforbidden('Parameter dolibarr_main_demo must be defined in conf file with value "default login,default pass" to enable the demo entry page',1,1,1);
 
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
-include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
+include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
 $hookmanager=new HookManager($db);
 $hookmanager->initHooks(array('demo'));
 
 $demoprofiles=array(
-	array('default'=>'-1', 'key'=>'profdemofun','label'=>'DemoFundation',
-	'disablemodules'=>'banque,barcode,boutique,cashdesk,commande,commercial,compta,comptabilite,contrat,expedition,externalsite,facture,ficheinter,fournisseur,mailmanspip,prelevement,product,projet,propal,propale,service,societe,stock,tax',
-	'icon'=>DOL_URL_ROOT.'/public/demo/dolibarr_screenshot6.png'),
-	array('default'=>'0', 'key'=>'profdemofun2','label'=>'DemoFundation2',
-	'disablemodules'=>'barcode,boutique,cashdesk,commande,commercial,compta,comptabilite,contrat,expedition,externalsite,facture,ficheinter,fournisseur,mailmanspip,prelevement,product,projet,propal,propale,service,societe,stock,tax',
-	'icon'=>DOL_URL_ROOT.'/public/demo/dolibarr_screenshot6.png'),
 	array('default'=>'1', 'key'=>'profdemoservonly','label'=>'DemoCompanyServiceOnly',
 	'disablemodules'=>'adherent,barcode,boutique,cashdesk,categorie,don,expedition,externalsite,mailmanspip,prelevement,product,stock',
 	'icon'=>DOL_URL_ROOT.'/public/demo/dolibarr_screenshot8.png'),
@@ -60,8 +54,14 @@ $demoprofiles=array(
 	'icon'=>DOL_URL_ROOT.'/public/demo/dolibarr_screenshot2.png'),
 	array('default'=>'0', 'key'=>'profdemoall','label'=>'DemoCompanyAll',
 	'disablemodules'=>'adherent,boutique,don,externalsite,mailmanspip',
-	'icon'=>DOL_URL_ROOT.'/public/demo/dolibarr_screenshot9.png')
-	);
+	'icon'=>DOL_URL_ROOT.'/public/demo/dolibarr_screenshot9.png'),
+	array('default'=>'-1', 'key'=>'profdemofun','label'=>'DemoFundation',
+	'disablemodules'=>'banque,barcode,boutique,cashdesk,commande,commercial,compta,comptabilite,contrat,expedition,externalsite,facture,ficheinter,fournisseur,mailmanspip,prelevement,product,projet,propal,propale,service,societe,stock,tax',
+	'icon'=>DOL_URL_ROOT.'/public/demo/dolibarr_screenshot6.png'),
+	array('default'=>'0', 'key'=>'profdemofun2','label'=>'DemoFundation2',
+	'disablemodules'=>'barcode,boutique,cashdesk,commande,commercial,compta,comptabilite,contrat,expedition,externalsite,facture,ficheinter,fournisseur,mailmanspip,prelevement,product,projet,propal,propale,service,societe,stock,tax',
+	'icon'=>DOL_URL_ROOT.'/public/demo/dolibarr_screenshot6.png')
+);
 
 
 $tmpaction = 'view';
@@ -83,7 +83,7 @@ $alwayshiddencheckedmodules=array('accounting','barcode','bookmark','clicktodial
                                 'memcached','numberwords','zipautofillfr');
 $alwayshiddenuncheckedmodules=array('boutique','ftp',
                                 // Extended modules
-                                'awstats','bittorrent','cabinetmed','cmcic','concatpdf','dolicloud','filemanager','mantis','monitoring','moretemplates','nltechno','numberingpack','openstreetmap',
+                                'awstats','bittorrent','cabinetmed','cmcic','concatpdf','dolicloud','filemanager','lightbox','mantis','monitoring','moretemplates','nltechno','numberingpack','openstreetmap',
                                 'ovh','phenix','phpsysinfo','pibarcode','postnuke','skincoloreditor','submiteverywhere','survey','thomsonphonebook','topten','tvacerfa','voyage','webcalendar','webmail');
 
 // Search modules
@@ -140,7 +140,7 @@ foreach ($modulesdir as $dir)
                 {
 		            try
 		            {
-                        include_once($dir.$file);
+                        include_once $dir.$file;
                         $objMod = new $modName($db);
 
                         if ($objMod->numero > 0)

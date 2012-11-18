@@ -22,8 +22,8 @@
  *      \ingroup    banque
  *      \brief      Module to generate box for bank accounts
  */
-include_once(DOL_DOCUMENT_ROOT."/core/boxes/modules_boxes.php");
-include_once(DOL_DOCUMENT_ROOT."/compta/bank/class/account.class.php");
+include_once DOL_DOCUMENT_ROOT.'/core/boxes/modules_boxes.php';
+include_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 
 
 /**
@@ -46,7 +46,7 @@ class box_comptes extends ModeleBoxes
 	/**
 	 *  Constructor
 	 */
-	function box_comptes()
+	function __construct()
 	{
 		global $langs;
 		$langs->load("boxes");
@@ -141,7 +141,9 @@ class box_comptes extends ModeleBoxes
 				}
 			}
 			else {
-				dol_print_error($db);
+				$this->info_box_contents[0][0] = array(	'td' => 'align="left"',
+    	        										'maxlength'=>500,
+	            										'text' => ($db->error().' sql='.$sql));
 			}
 		}
 		else {

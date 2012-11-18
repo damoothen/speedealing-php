@@ -21,10 +21,10 @@
  *  \ingroup    contract
  *  \brief      File of class to manage contract numbering rules Serpis
  */
-require_once(DOL_DOCUMENT_ROOT ."/core/modules/contract/modules_contract.php");
+require_once DOL_DOCUMENT_ROOT .'/core/modules/contract/modules_contract.php';
 
-/**	    \class      mod_commande_serpis
- *      \brief      Class to manage contract numbering rules Serpis
+/**
+ * 	Class to manage contract numbering rules Serpis
  */
 class mod_contract_serpis extends ModelNumRefContracts
 {

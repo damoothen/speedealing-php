@@ -1,12 +1,13 @@
 {
    "_id": "extrafields:UserDatabase",
    "class": "extrafields",
-   "ico": "/img/object_database.png",
+   "ico": "16-Cloud.png",
    "labelCreate": "Entrer le nom de la database",
    "fields": {
        "Status": {
            "type": "select",
            "enable": true,
+           "status": true,
            "default": "INSECURE",
            "aoColumns": {
                "sClass": "center",
@@ -16,11 +17,13 @@
            "values": {
                "INSECURE": {
                    "enable": true,
-                   "cssClass": "error_bg"
+                   "label": "Non protégée",
+                   "cssClass": "red-gradient"
                },
                "SECURE": {
                    "enable": true,
-                   "cssClass": "ok_bg"
+                   "label": "Sécurisée",
+                   "cssClass": "green-gradient"
                }
            }
        }

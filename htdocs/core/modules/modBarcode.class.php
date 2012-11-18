@@ -20,17 +20,17 @@
  */
 
 /**
- * 	\defgroup   barcode         Module barcode
- * 	\brief      Module pour gerer les codes barres
- * 	\file       htdocs/core/modules/modBarcode.class.php
- * 	\ingroup    barcode,produit
- * 	\brief      Fichier de description et activation du module Barcode
+ *	\defgroup   barcode         Module barcode
+ *	\brief      Module pour gerer les codes barres
+ *	\file       htdocs/core/modules/modBarcode.class.php
+ *	\ingroup    barcode,produit
+ *	\brief      Fichier de description et activation du module Barcode
  */
-include_once(DOL_DOCUMENT_ROOT . "/core/modules/DolibarrModules.class.php");
+
+include_once DOL_DOCUMENT_ROOT .'/core/modules/DolibarrModules.class.php';
 
 /**
- * 	\class      modBarcode
- * 	\brief      Classe de description et activation du module Barcode
+ *	Classe de description et activation du module Barcode
  */
 class modBarcode extends DolibarrModules {
 
@@ -95,19 +95,27 @@ class modBarcode extends DolibarrModules {
 		$this->rights[4][4] = 'supprimer';
 	}
 
-	/**
-	 *      Function called when module is enabled.
-	 *      The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
-	 *      It also creates data directories.
-	 *
-	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
+
+    /**
+     *      Function called when module is enabled.
+     *      The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
+     *      It also creates data directories.
+     *
+     *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
 	 */
 	function init($options = '') {
 		// Permissions
 		$this->remove($options);
 
-		$sql = array();
+		$sql = array(
+				array('sql'=>'INSERT INTO llx_c_barcode_type (code, libelle, coder, example, entity) VALUES ("EAN8", "EAN8", 0, "1234567", __ENTITY__)','ignoreerror'=>1),
+				array('sql'=>'INSERT INTO llx_c_barcode_type (code, libelle, coder, example, entity) VALUES ("EAN13", "EAN13", 0, "123456789012", __ENTITY__)','ignoreerror'=>1),
+				array('sql'=>'INSERT INTO llx_c_barcode_type (code, libelle, coder, example, entity) VALUES ("UPC", "UPC", 0, "123456789012", __ENTITY__)','ignoreerror'=>1),
+				array('sql'=>'INSERT INTO llx_c_barcode_type (code, libelle, coder, example, entity) VALUES ("ISBN", "ISBN", 0, "123456789", __ENTITY__)','ignoreerror'=>1),
+				array('sql'=>'INSERT INTO llx_c_barcode_type (code, libelle, coder, example, entity) VALUES ("C39", "Code 39", 0, "1234567890", __ENTITY__)','ignoreerror'=>1),
+				array('sql'=>'INSERT INTO llx_c_barcode_type (code, libelle, coder, example, entity) VALUES ("C128", "Code 128", 0, "ABCD1234567890", __ENTITY__)','ignoreerror'=>1)
+		);
 
 		return $this->_init($sql, $options);
 	}
@@ -127,5 +135,4 @@ class modBarcode extends DolibarrModules {
 	}
 
 }
-
 ?>

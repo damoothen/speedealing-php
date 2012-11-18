@@ -17,14 +17,14 @@
  */
 
 if (!defined('NOTOKENRENEWAL'))
-	define('NOTOKENRENEWAL', '1'); // Disables token renewal
+    define('NOTOKENRENEWAL', '1'); // Disables token renewal
 if (!defined('NOREQUIREMENU'))
-	define('NOREQUIREMENU', '1');
+    define('NOREQUIREMENU', '1');
 //if (! defined('NOREQUIREHTML'))  define('NOREQUIREHTML','1');
 if (!defined('NOREQUIREAJAX'))
-	define('NOREQUIREAJAX', '1');
+    define('NOREQUIREAJAX', '1');
 if (!defined('NOREQUIRESOC'))
-	define('NOREQUIRESOC', '1');
+    define('NOREQUIRESOC', '1');
 //if (! defined('NOREQUIRETRAN'))  define('NOREQUIRETRAN','1');
 
 require('../main.inc.php');
@@ -34,23 +34,22 @@ $object = new Search($db);
 
 $sParam = $_GET['q'];
 if (!$sParam)
-	exit;
+    exit;
 
-$object->useDatabase('societe');
 $result = $object->getIndexedView("list", array('limit' => 6,
-	'q' => $sParam . "*"
-		));
+    'q' => $sParam . "*"
+        ));
 
 //print_r($result);
 
 if ($result->total_rows <= 0)
-	exit;
+    exit;
 
 if (isset($result->rows))
-	foreach ($result->rows AS $aRow) {
-		foreach ($aRow->value as $key => $aCol) {
-			if ($key !="_id" && $key != "_rev" && is_string($aCol) && strpos(strtolower($aCol), strtolower($sParam)) !== false)
-				echo $aCol . "\n";
-		}
-	}
+    foreach ($result->rows AS $aRow) {
+        foreach ($aRow->value as $key => $aCol) {
+            if ($key != "_id" && $key != "_rev" && is_string($aCol) && strpos(strtolower($aCol), strtolower($sParam)) !== false)
+                echo $aCol . "\n";
+        }
+    }
 ?>

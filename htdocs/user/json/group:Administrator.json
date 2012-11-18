@@ -1,6 +1,5 @@
 {
    "_id": "group:administrator",
-   "_rev": "39-ba1ac214085dfbae06056aea42f95325",
    "name": "administrator",
    "class": "UserGroup",
    "rights": {

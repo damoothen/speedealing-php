@@ -23,12 +23,12 @@
  *     \brief      Onglet de gestion des contacts de expedition
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/expedition/class/expedition.class.php");
-require_once(DOL_DOCUMENT_ROOT."/contact/class/contact.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/sendings.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formother.class.php");
-require_once(DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php');
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/expedition/class/expedition.class.php';
+require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/sendings.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
 
 $langs->load("orders");
 $langs->load("sendings");
@@ -55,12 +55,12 @@ if ($id > 0 || ! empty($ref))
     }
 
     // Linked documents
-    if ($typeobject == 'commande' && $object->$typeobject->id && $conf->commande->enabled)
+    if ($typeobject == 'commande' && $object->$typeobject->id && ! empty($conf->commande->enabled))
     {
         $objectsrc=new Commande($db);
         $objectsrc->fetch($object->$typeobject->id);
     }
-    if ($typeobject == 'propal' && $object->$typeobject->id && $conf->propal->enabled)
+    if ($typeobject == 'propal' && $object->$typeobject->id && ! empty($conf->propal->enabled))
     {
         $objectsrc=new Propal($db);
         $objectsrc->fetch($object->$typeobject->id);
@@ -81,7 +81,7 @@ if ($action == 'addcontact' && $user->rights->expedition->creer)
 
 	if ($result >= 0)
 	{
-		Header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
+		header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
 		exit;
 	}
 	else
@@ -111,7 +111,7 @@ else if ($action == 'deleteline' && $user->rights->expedition->creer)
 
 	if ($result >= 0)
 	{
-		Header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
+		header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
 		exit;
 	}
 	else {
@@ -165,9 +165,11 @@ if ($id > 0 || ! empty($ref))
 	*/
 	print '<table class="border" width="100%">';
 
+	$linkback = '<a href="'.DOL_URL_ROOT.'/expedition/liste.php">'.$langs->trans("BackToList").'</a>';
+
 	// Ref
 	print '<tr><td width="18%">'.$langs->trans("Ref").'</td><td colspan="3">';
-	print $form->showrefnav($object,'ref','',1,'ref','ref');
+	print $form->showrefnav($object, 'ref', $linkback, 1, 'ref', 'ref');
 	print "</td></tr>";
 
 	// Customer
@@ -176,7 +178,7 @@ if ($id > 0 || ! empty($ref))
 	print "</tr>";
 
 	// Linked documents
-	if ($typeobject == 'commande' && $object->$typeobject->id && $conf->commande->enabled)
+	if ($typeobject == 'commande' && $object->$typeobject->id && ! empty($conf->commande->enabled))
 	{
 		print '<tr><td>';
 		$objectsrc=new Commande($db);
@@ -187,7 +189,7 @@ if ($id > 0 || ! empty($ref))
 		print "</td>\n";
 		print '</tr>';
 	}
-	if ($typeobject == 'propal' && $object->$typeobject->id && $conf->propal->enabled)
+	if ($typeobject == 'propal' && $object->$typeobject->id && ! empty($conf->propal->enabled))
 	{
 		print '<tr><td>';
 		$objectsrc=new Propal($db);
@@ -211,7 +213,7 @@ if ($id > 0 || ! empty($ref))
 	print '</tr>';
 	
 	// Delivery address
-	if ($conf->global->SOCIETE_ADDRESSES_MANAGEMENT)
+	if (! empty($conf->global->SOCIETE_ADDRESSES_MANAGEMENT))
 	{
 		print '<tr><td>';
 		print '<table class="nobordernopadding" width="100%"><tr><td>';

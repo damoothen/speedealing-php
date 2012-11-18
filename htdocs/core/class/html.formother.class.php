@@ -47,7 +47,7 @@ class FormOther
      *
      *	@param	DoliDB		$db      Database handler
      */
-    function FormOther($db)
+    function __construct($db)
     {
         $this->db = $db;
 
@@ -253,7 +253,7 @@ class FormOther
     function select_categories($type,$selected=0,$htmlname='search_categ',$nocateg=0)
     {
         global $langs;
-        require_once(DOL_DOCUMENT_ROOT."/categories/class/categorie.class.php");
+        require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 
         // Load list of "categories"
         $static_categs = new Categorie($this->db);
@@ -262,7 +262,7 @@ class FormOther
         // Print a select with each of them
         $moreforfilter ='<select class="flat" name="'.$htmlname.'">';
         $moreforfilter.='<option value="">&nbsp;</option>';	// Should use -1 to say nothing
-        
+
         if (is_array($tab_categs))
         {
             foreach ($tab_categs as $categ)
@@ -272,7 +272,7 @@ class FormOther
                 $moreforfilter.='>'.dol_trunc($categ['fulllabel'],50,'middle').'</option>';
             }
         }
-        if ($nocateg) 
+        if ($nocateg)
         {
         	$langs->load("categories");
         	$moreforfilter.='<option value="-2"'.($selected == -2 ? ' selected="selected"':'').'>- '.$langs->trans("NotCategorized").' -</option>';
@@ -356,7 +356,7 @@ class FormOther
     {
         global $user, $langs;
 
-        require_once(DOL_DOCUMENT_ROOT."/projet/class/task.class.php");
+        require_once DOL_DOCUMENT_ROOT.'/projet/class/task.class.php';
 
         //print $modeproject.'-'.$modetask;
         $task=new Task($this->db);
@@ -652,7 +652,7 @@ class FormOther
     {
         global $langs;
 
-        require_once(DOL_DOCUMENT_ROOT."/core/lib/date.lib.php");
+        require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 
         $montharray = monthArray($langs);	// Get array
 
@@ -833,7 +833,7 @@ class FormOther
         {
             if ($selected)
             {
-                require_once(DOL_DOCUMENT_ROOT ."/societe/class/address.class.php");
+                require_once DOL_DOCUMENT_ROOT .'/societe/class/address.class.php';
                 $address=new Address($this->db);
                 $result=$address->fetch_address($selected);
                 print '<a href='.DOL_URL_ROOT.'/comm/address.php?socid='.$address->socid.'&id='.$address->id.'&action=edit&origin='.$origin.'&originid='.$originid.'>'.$address->label.'</a>';
@@ -859,18 +859,18 @@ class FormOther
     {
         global $conf,$langs,$db;
 
-        include_once(DOL_DOCUMENT_ROOT.'/core/class/infobox.class.php');
+        include_once DOL_DOCUMENT_ROOT.'/core/class/infobox.class.php';
 
         //$infobox=new InfoBox($db);
-        $boxactivated=InfoBox::listboxes($db,'activated',$areacode,$user);
+        $boxactivated=InfoBox::listBoxes($db,'activated',$areacode,$user);
         $arrayboxactivatedid=array();
         foreach($boxactivated as $box) $arrayboxactivatedid[$box->id]=$box->id;
 
         $selectboxlist='';
-        if ($conf->use_javascript_ajax)
+        if (! empty($conf->use_javascript_ajax))
         {
             $emptyuser=new User($db);
-            $boxavailable=InfoBox::listboxes($db,'activated',$areacode,$emptyuser,$arrayboxactivatedid);    // Available here is activated for empty user
+            $boxavailable=InfoBox::listBoxes($db,'activated',$areacode,$emptyuser,$arrayboxactivatedid);    // Get list of box available for empty user (minus already activated for user)
 
             $arrayboxtoactivatelabel=array();
             foreach($boxavailable as $box)
@@ -882,30 +882,34 @@ class FormOther
             $selectboxlist=$form->selectarray('boxcombo', $arrayboxtoactivatelabel,'',1);
         }
 
-        print '<script type="text/javascript" language="javascript">
-        jQuery(document).ready(function() {
-        	jQuery("#boxcombo").change(function() {
-        	var boxid=jQuery("#boxcombo").val();
-        		if (boxid > 0) {
-            		var left_list = cleanSerialize(jQuery("#left").sortable("serialize"));
-            		var right_list = cleanSerialize(jQuery("#right").sortable("serialize"));
-            		var boxorder = \'A:\' + left_list + \'-B:\' + right_list;
-    				jQuery.ajax({ url: \''.DOL_URL_ROOT.'/core/ajax/box.php?boxorder=\'+boxorder+\'&boxid=\'+boxid+\'&zone='.$areacode.'&userid='.$user->id.'\',
-    			        async:   false
-    		        });
-        			//jQuery.get(\''.DOL_URL_ROOT.'/core/ajax/box.php?boxorder=\'+boxorder+\'&boxid=\'+boxid+\'&zone='.$areacode.'&userid='.$user->id.'\');
-        			window.location.search=\'mainmenu='.GETPOST("mainmenu").'&leftmenu='.GETPOST('leftmenu').'&action=addbox&boxid=\'+boxid;
-    				//window.location.href=\''.$_SERVER["PHP_SELF"].'\';
-                }
-        	});';
-        if (! count($arrayboxtoactivatelabel)) print 'jQuery("#boxcombo").hide();';
-        print  '
-    	});
-        </script>';
+        if (! empty($conf->use_javascript_ajax))
+        {
+	        print '<script type="text/javascript" language="javascript">
+	        jQuery(document).ready(function() {
+	        	jQuery("#boxcombo").change(function() {
+	        	var boxid=jQuery("#boxcombo").val();
+	        		if (boxid > 0) {
+	            		var left_list = cleanSerialize(jQuery("#left").sortable("serialize"));
+	            		var right_list = cleanSerialize(jQuery("#right").sortable("serialize"));
+	            		var boxorder = \'A:\' + left_list + \'-B:\' + right_list;
+	    				jQuery.ajax({
+	    					url: \''.DOL_URL_ROOT.'/core/ajax/box.php?boxorder=\'+boxorder+\'&boxid=\'+boxid+\'&zone='.$areacode.'&userid='.$user->id.'\',
+	    			        async: false
+	    		        });
+	        			window.location.search=\'mainmenu='.GETPOST("mainmenu").'&leftmenu='.GETPOST('leftmenu').'&action=addbox&boxid=\'+boxid;
+	                }
+	        	});';
+	        if (! count($arrayboxtoactivatelabel)) print 'jQuery("#boxcombo").hide();';
+	        print  '
+	    	});
+	        </script>';
+        }
 
-        print load_fiche_titre((count($boxactivated)?$langs->trans("OtherInformationsBoxes"):''),$selectboxlist,'','','otherboxes');
+        $nbboxactivated=count($boxactivated);
 
-        if (count($boxactivated))
+        print load_fiche_titre(($nbboxactivated?$langs->trans("OtherInformationsBoxes"):''),$selectboxlist,'','','otherboxes');
+
+        if ($nbboxactivated)
         {
             print '<table width="100%" class="notopnoleftnoright">';
             print '<tr><td class="notopnoleftnoright">'."\n";
@@ -922,7 +926,8 @@ class FormOther
             $ii=0;
             foreach ($boxactivated as $key => $box)
             {
-                if (preg_match('/^A/i',$box->box_order)) // column A
+				if (empty($box->box_order) && $ii < ($nbboxactivated / 2)) $box->box_order='A'.sprintf("%02d",($ii+1));	// When box_order was not yet set to Axx or Bxx and is still 0
+            	if (preg_match('/^A/i',$box->box_order)) // column A
                 {
                     $ii++;
                     //print 'box_id '.$boxactivated[$ii]->box_id.' ';
@@ -950,7 +955,8 @@ class FormOther
             $ii=0;
             foreach ($boxactivated as $key => $box)
             {
-                if (preg_match('/^B/i',$box->box_order)) // colonne B
+				if (empty($box->box_order) && $ii < ($nbboxactivated / 2)) $box->box_order='B'.sprintf("%02d",($ii+1));	// When box_order was not yet set to Axx or Bxx and is still 0
+            	if (preg_match('/^B/i',$box->box_order)) // colonne B
                 {
                     $ii++;
                     //print 'box_id '.$boxactivated[$ii]->box_id.' ';
@@ -990,16 +996,32 @@ class FormOther
                                 containment: \'.fiche\',
                                 connectWith: \'.connectedSortable\',
                                 stop: function(event, ui) {
-                                    updateOrder(0);
+                                    updateBoxOrder(0);
                                 }
                             });
                         });
                 '."\n";
-                print 'function updateOrder() {
-                		var left_list = cleanSerialize(jQuery("#left").sortable("serialize"));
-                		var right_list = cleanSerialize(jQuery("#right").sortable("serialize"));
-                		var boxorder = \'A:\' + left_list + \'-B:\' + right_list;
-    					jQuery.get(\''.DOL_URL_ROOT.'/core/ajax/box.php?boxorder=\'+boxorder+\'&zone='.$areacode.'&userid=\'+'.$user->id.');
+                // To update list of activated boxes
+                print 'function updateBoxOrder(closing) {
+	                		var left_list = cleanSerialize(jQuery("#left").sortable("serialize"));
+	                		var right_list = cleanSerialize(jQuery("#right").sortable("serialize"));
+	                		var boxorder = \'A:\' + left_list + \'-B:\' + right_list;
+	    					if (boxorder==\'A:A-B:B\' && closing == 1)	// There is no more boxes on screen, and we are after a delete of a box so we must hide title
+	    					{
+		    					jQuery.ajax({
+		    						url: \''.DOL_URL_ROOT.'/core/ajax/box.php?boxorder=\'+boxorder+\'&zone='.$areacode.'&userid=\'+'.$user->id.',
+		    						async: false
+		    					});
+	    						// We force reload to be sure to get all boxes into list
+			        			window.location.search=\'mainmenu='.GETPOST("mainmenu").'&leftmenu='.GETPOST('leftmenu').'&action=delbox\';
+	    					}
+	    					else
+	    					{
+	    						jQuery.ajax({
+		    						url: \''.DOL_URL_ROOT.'/core/ajax/box.php?boxorder=\'+boxorder+\'&zone='.$areacode.'&userid=\'+'.$user->id.',
+		    						async: true
+		    					});
+	    					}
                 		}'."\n";
                 // For closing
                 print 'jQuery(document).ready(function() {
@@ -1007,7 +1029,7 @@ class FormOther
                           		var self = this;	// because JQuery can modify this
                               	var boxid=self.id.substring(8);
                                 jQuery(\'#boxto_\'+boxid).remove();
-                                updateOrder();
+                                updateBoxOrder(1);
                            	});
                        });'."\n";
                 print '</script>'."\n";

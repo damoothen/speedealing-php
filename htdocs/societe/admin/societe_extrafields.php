@@ -2,7 +2,8 @@
 /* Copyright (C) 2001-2002 Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2003      Jean-Louis Bergamo   <jlb@j1b.org>
  * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2012-2012 Herve Prot           <herve.prot@symeos.com>
+ * Copyright (C) 2012	   Regis Houssin
+ * Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,410 +21,416 @@
 
 /**
  *      \file       htdocs/societe/admin/societe_extrafields.php
- *		\ingroup    societe
- *		\brief      Page to setup extra fields of third party
+ * 		\ingroup    societe
+ * 		\brief      Page to setup extra fields of third party
  */
-
-require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/extrafields.class.php");
+require '../../main.inc.php';
+require_once DOL_DOCUMENT_ROOT . '/societe/lib/societe.lib.php';
+require_once DOL_DOCUMENT_ROOT . '/core/class/extrafields.class.php';
 
 $langs->load("companies");
 $langs->load("admin");
 
-$extrafields = new ExtraFields($db);
+$object = new Societe($db);
 $form = new Form($db);
 
 // List of supported format
-$type2label=array(
-'varchar'=>$langs->trans('String'),
-'text'=>$langs->trans('Text'),
-'int'=>$langs->trans('Int'),
-//'date'=>$langs->trans('Date'),
-//'datetime'=>$langs->trans('DateAndTime')
-);
+$tmptype2label = $object->fk_extrafields->type2label;
+foreach ($tmptype2label as $key => $val)
+    $type2label[$key] = $langs->trans($val);
 
-$yesno=array($langs->trans('No'),$langs->trans('Yes'));
+$action = GETPOST('action', 'alpha');
+$attrname = GETPOST('attrname', 'alpha');
 
-$action=GETPOST("action");
-$elementtype='Societe';
+if (!$user->admin)
+    accessforbidden();
 
-if (!$user->admin) accessforbidden();
-
-$acts[0] = "activate";
+$acts[0] = "enable";
 $acts[1] = "disable";
-$actl[0] = img_picto($langs->trans("Disabled"),'switch_off');
-$actl[1] = img_picto($langs->trans("Activated"),'switch_on');
+$actl[0] = img_picto($langs->trans("Disabled"), 'switch_off');
+$actl[1] = img_picto($langs->trans("Activated"), 'switch_on');
 
 /*
  * Actions
  */
 
-$maxsizestring=255;
-$maxsizeint=10;
+$maxsizestring = 255;
+$maxsizeint = 10;
 
-if($action==$acts[0] || $action==$acts[1])
-{
-	if(isset($_GET["attrname"]) && preg_match("/^\w[a-zA-Z0-9-_]*$/",$_GET["attrname"]))
-	{
-		try {
-			$object=$couchdb->getDoc("extrafields:".$elementtype);
-			if($action == $acts[0])
-				$object->fields->$_GET["fields"]->$_GET["attrname"]->enable = true;
-			else
-				$object->fields->$_GET["fields"]->$_GET["attrname"]->enable = false;
-			$couchdb->storeDoc($object);
-		}
-		catch (Exception $e) {
-			$error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
-			print $error;
-			exit;
-		}
-		Header("Location: ".$_SERVER["PHP_SELF"]);
-		exit;
-	}
-	else
-	{
-	    $error++;
-		$langs->load("errors");
-		$mesg=$langs->trans("ErrorFieldCanNotContainSpecialCharacters",$langs->transnoentities("AttributeCode"));
-	}
+$extrasize = GETPOST('size');
+if (GETPOST('type') == 'double' && strpos($extrasize, ',') === false)
+    $extrasize = '24,8';
+if (GETPOST('type') == 'date')
+    $extrasize = '';
+if (GETPOST('type') == 'datetime')
+    $extrasize = '';
+
+
+// Add attribute
+if ($action == 'add') {
+    if ($_POST["button"] != $langs->trans("Cancel")) {
+        // Check values
+        if (!GETPOST('type')) {
+            $error++;
+            $langs->load("errors");
+            $mesg = $langs->trans("ErrorFieldRequired", $langs->trans("Type"));
+            $action = 'create';
+        }
+
+        if (GETPOST('type') == 'varchar' && $extrasize > $maxsizestring) {
+            $error++;
+            $langs->load("errors");
+            $mesg = $langs->trans("ErrorSizeTooLongForVarcharType", $maxsizestring);
+            $action = 'create';
+        }
+        if (GETPOST('type') == 'int' && $extrasize > $maxsizeint) {
+            $error++;
+            $langs->load("errors");
+            $mesg = $langs->trans("ErrorSizeTooLongForIntType", $maxsizeint);
+            $action = 'create';
+        }
+
+        if (!$error) {
+            // Type et taille non encore pris en compte => varchar(255)
+            if (isset($_POST["attrname"]) && preg_match("/^\w[a-zA-Z0-9-_]*$/", $_POST['attrname'])) {
+                $result = $object->fk_extrafields->addExtraField($_POST['attrname'], $_POST['label'], $_POST['type'], $extrasize);
+                if ($result > 0) {
+                    header("Location: " . $_SERVER["PHP_SELF"]);
+                    exit;
+                } else {
+                    $error++;
+                    $mesg = $object->fk_extrafields->error;
+                }
+            } else {
+                $error++;
+                $langs->load("errors");
+                $mesg = $langs->trans("ErrorFieldCanNotContainSpecialCharacters", $langs->transnoentities("AttributeCode"));
+                $action = 'create';
+            }
+        }
+    }
 }
 
-
 // Rename field
-if ($action == 'update' || $action == 'add')
-{
-	if ($_POST["button"] != $langs->trans("Cancel"))
-	{
+if ($action == 'update') {
+    if ($_POST["button"] != $langs->trans("Cancel")) {
         // Check values
-        if (GETPOST('type')=='varchar' && GETPOST('size') > $maxsizestring)
-        {
+        if (!GETPOST('type')) {
             $error++;
             $langs->load("errors");
-            $mesg=$langs->trans("ErrorSizeTooLongForVarcharType",$maxsizestring);
-            if($action='update')
-                $action = 'edit';
-            else
-                $action = 'create';
+            $mesg = $langs->trans("ErrorFieldRequired", $langs->trans("Type"));
+            $action = 'create';
         }
-        if (GETPOST('type')=='int' && GETPOST('size') > $maxsizeint)
-        {
+        if (GETPOST('type') == 'varchar' && $extrasize > $maxsizestring) {
             $error++;
             $langs->load("errors");
-            $mesg=$langs->trans("ErrorSizeTooLongForIntType",$maxsizeint);
-            if($action='update')
-                $action = 'edit';
-            else
-                $action = 'create';
+            $mesg = $langs->trans("ErrorSizeTooLongForVarcharType", $maxsizestring);
+            $action = 'edit';
+        }
+        if (GETPOST('type') == 'int' && $extrasize > $maxsizeint) {
+            $error++;
+            $langs->load("errors");
+            $mesg = $langs->trans("ErrorSizeTooLongForIntType", $maxsizeint);
+            $action = 'edit';
         }
 
-	    if (! $error)
-	    {
-	    	if (isset($_POST["attrname"]) && preg_match("/^\w[a-zA-Z0-9-_]*$/",$_POST['attrname']))
-    		{
-    			try {
-    				$object=$couchdb->getDoc("extrafields:".$elementtype);
-    			}
-    			catch (Exception $e) {
-    				$error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
-    				print $error;
-    				exit;
-    			}
-    			
-    			$object->fields->$_POST['fields']->$_POST['attrname']->type=$_POST['type'];
-    			$object->fields->$_POST['fields']->$_POST['attrname']->length=$_POST['size'];
-    			$object->fields->$_POST['fields']->$_POST['attrname']->enable=$_POST['enable'];
-    			
-    			if (isset($_POST['label']))
-    			{
-    				$object->fields->$_POST['fields']->$_POST['attrname']->label=$_POST['label'];
-    			}
-    			foreach ($object->fields as $key => $value) {
-    				$array = new ArrayObject($object->fields->$key);
-    				$array->uasort(array("ExtraFields","compare")); //trie suivant la position
-    				$value=$array;
-    			}
-    			
-    			//print_r ($object->fields);exit;
-    			
-    			try {
-    				$couchdb->storeDoc($object);
-    			}
-    			catch (Exception $e) {
-    				$error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
-    				print $error;
-    				exit;
-    			}
-    			
-    			Header("Location: ".$_SERVER["PHP_SELF"]);
-    			exit;
-    		}
-    		else
-    		{
-    			$error++;
-    			$langs->load("errors");
-    			$mesg=$langs->trans("ErrorFieldCanNotContainSpecialCharacters",$langs->transnoentities("AttributeCode"));
-    		}
-    	}
-	}
+        if (!$error) {
+            if (isset($_POST["attrname"]) && preg_match("/^\w[a-zA-Z0-9-_]*$/", $_POST['attrname'])) {
+                $result = $object->fk_extrafields->update($_POST['attrname'], $_POST['label'], $_POST['type'], $extrasize);
+                if ($result > 0) {
+                    header("Location: " . $_SERVER["PHP_SELF"]);
+                    exit;
+                } else {
+                    $error++;
+                    $mesg = $object->fk_extrafields->error;
+                }
+            } else {
+                $error++;
+                $langs->load("errors");
+                $mesg = $langs->trans("ErrorFieldCanNotContainSpecialCharacters", $langs->transnoentities("AttributeCode"));
+            }
+        }
+    }
 }
 
 // Delete attribute
-if ($action == 'delete')
-{
-	if(isset($_GET["attrname"]) && preg_match("/^\w[a-zA-Z0-9-_]*$/",$_GET["attrname"]))
-	{
-            try {
-                    $object=$couchdb->getDoc("extrafields:".$elementtype);
-                    unset($object->fields->$_GET["fields"]->$_GET["attrname"]);
-                    $couchdb->storeDoc($object);
-            }
-            catch (Exception $e) {
-            $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
-            print $error;
+if ($action == 'delete') {
+    if (isset($_GET["attrname"]) && preg_match("/^\w[a-zA-Z0-9-_]*$/", $_GET["attrname"])) {
+        $result = $object->fk_extrafields->delete($_GET["attrname"]);
+        if ($result >= 0) {
+            header("Location: " . $_SERVER["PHP_SELF"]);
             exit;
-            }
-            Header("Location: ".$_SERVER["PHP_SELF"]);
-            exit;
-	}
-	else
-	{
-	    $error++;
-		$langs->load("errors");
-		$mesg=$langs->trans("ErrorFieldCanNotContainSpecialCharacters",$langs->transnoentities("AttributeCode"));
-	}
+        }
+        else
+            $mesg = $object->fk_extrafields->error;
+    }
+    else {
+        $error++;
+        $langs->load("errors");
+        $mesg = $langs->trans("ErrorFieldCanNotContainSpecialCharacters", $langs->transnoentities("AttributeCode"));
+    }
 }
 
+// enable or disable
+if ($action == 'enable') {
+    if (isset($_GET["attrname"]) && preg_match("/^\w[a-zA-Z0-9-_]*$/", $_GET["attrname"])) {
+        $result = $object->fk_extrafields->setStatus($_GET["attrname"], true);
+        if ($result > 0) {
+            header("Location: " . $_SERVER["PHP_SELF"]);
+            exit;
+        }
+        else
+            $mesg = $object->fk_extrafields->error;
+    }
+}
 
+if ($action == 'disable') {
+    if (isset($_GET["attrname"]) && preg_match("/^\w[a-zA-Z0-9-_]*$/", $_GET["attrname"])) {
+        $result = $object->fk_extrafields->setStatus($_GET["attrname"], false);
+        if ($result > 0) {
+            header("Location: " . $_SERVER["PHP_SELF"]);
+            exit;
+        }
+        else
+            $mesg = $object->fk_extrafields->error;
+    }
+}
 
 /*
  * View
  */
 
-$textobject=$langs->transnoentitiesnoconv("ThirdParty");
+$textobject = $langs->transnoentitiesnoconv("ThirdParty");
 
-$help_url='EN:Module Third Parties setup|FR:Paramétrage_du_module_Tiers';
-llxHeader('',$langs->trans("CompanySetup"),$help_url);
+$help_url = 'EN:Module Third Parties setup|FR:Paramétrage_du_module_Tiers';
+llxHeader('', $langs->trans("CompanySetup"), $help_url);
 
 
-$linkback='<a href="'.DOL_URL_ROOT.'/admin/modules.php">'.$langs->trans("BackToModuleList").'</a>';
-print_fiche_titre($langs->trans("CompanySetup"),$linkback,'setup');
+$linkback = '<a href="' . DOL_URL_ROOT . '/admin/modules.php">' . $langs->trans("BackToModuleList") . '</a>';
 
+print_fiche_titre($langs->trans("CompanySetup"));
+print '<div class="with-padding">';
+print '<div class="columns">';
+
+print start_box($langs->trans($langs->trans("CompanySetup")), "twelve", '16-Alert-2.png', false);
 
 $head = societe_admin_prepare_head(null);
 
-dol_fiche_head($head, 'attributes', $langs->trans("ThirdParty"), 0, 'company');
+dol_fiche_head($head, 'attributes', $langs->trans("ThirdParties"), 0, 'company');
 
 
-print $langs->trans("DefineHereComplementaryAttributes",$textobject).'<br>';
+print $langs->trans("DefineHereComplementaryAttributes", $textobject) . '<br>' . "\n";
 print '<br>';
 
 dol_htmloutput_errors($mesg);
 
-// Load attribute_label
-try {
-$extrafields->load("extrafields:".$elementtype);
-}
-catch (Exception $e) {
-    $error="Something weird happened: ".$e->getMessage()." (errcode=".$e->getCode().")\n";
-    dol_syslog("societe::load ".$error, LOG_ERR);
-    print $error;
-    exit;
-}
-
-/* ************************************************************************** */
-/*                                                                            */
-/* Creation d'un champ optionnel
- /*                                                                            */
-/* ************************************************************************** */
-
-if ($action == 'create')
-{
-    print "<br>";
-    print_titre($langs->trans('NewAttribute'));
-
-    print '<form action="'.$_SERVER["PHP_SELF"].'" method="post">';
-    print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-    print '<input type="hidden" name="fields" value="'.$_GET["fields"].'">';
-    print '<table summary="listofattributes" class="border" width="100%">';
-
-    print '<input type="hidden" name="action" value="add">';
-
-    // Label
-    print '<tr><td class="fieldrequired" required>'.$langs->trans("Label").'</td><td class="valeur"><input type="text" name="label" size="40" value="'.GETPOST('label').'"></td></tr>';
-    // Code
-    print '<tr><td class="fieldrequired" required>'.$langs->trans("AttributeCode").' ('.$langs->trans("AlphaNumOnlyCharsAndNoSpace").')</td><td class="valeur"><input type="text" name="attrname" size="10" value="'.GETPOST('attrname').'"></td></tr>';
-    // Type
-    print '<tr><td class="fieldrequired" required>'.$langs->trans("Type").'</td><td class="valeur">';
-    print $form->selectarray('type',$type2label,GETPOST('type'));
-    print '</td></tr>';
-    // Size
-    print '<tr><td class="fieldrequired" required>'.$langs->trans("Size").'</td><td><input type="text" name="size" size="5" value="'.(GETPOST('size')?GETPOST('size'):'255').'"></td></tr>';
-
-    print "</table>\n";
-
-    print '<center><br><input type="submit" name="button" class="button small radius nice" value="'.$langs->trans("Save").'"> &nbsp; ';
-    print '<input type="submit" name="button" class="button white small radius nice" value="'.$langs->trans("Cancel").'"></center>';
-
-    print "</form>\n";
-}
-
-/* ************************************************************************** */
+/* * ************************************************************************* */
 /*                                                                            */
 /* Edition d'un champ optionnel                                               */
 /*                                                                            */
-/* ************************************************************************** */
-if ($_GET["attrname"] && $action == 'edit')
-{
+/* * ************************************************************************* */
+if ($action == 'create' || $action == 'edit' && !empty($attrname)) {
     print "<br>";
-    print_titre($langs->trans("FieldEdition",$_GET["attrname"]));
-
-    /*
-     * formulaire d'edition
-     */
-    print '<form method="post" action="'.$_SERVER["PHP_SELF"].'?fields='.$_GET["fields"].'&attrname='.$_GET["attrname"].'">';
-    print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-    print '<input type="hidden" name="attrname" value="'.$_GET["attrname"].'">';
-    print '<input type="hidden" name="fields" value="'.$_GET["fields"].'">';
-    print '<input type="hidden" name="action" value="update">';
-    print '<table summary="listofattributes" class="border" width="100%">';
-
-    // Label
-    print '<tr>';
-    print '<td class="fieldrequired" required>'.$langs->trans("Label").'</td><td class="valeur"><input type="text" name="label" size="40" value="'.$extrafields->fields->$_GET["fields"]->$_GET["attrname"]->label.'"></td>';
-    print '</tr>';
-    // Code
-    print '<tr>';
-    print '<td class="fieldrequired" required>'.$langs->trans("AttributeCode").'</td>';
-    print '<td class="valeur">'.$_GET["attrname"].'&nbsp;</td>';
-    print '</tr>';
-    // Type
-    $type=$extrafields->fields->$_GET["fields"]->$_GET["attrname"]->type;
-    print '<tr><td class="fieldrequired" required>'.$langs->trans("Type").'</td>';
-    print '<td class="valeur">';
-    print $type2label[$type];
-    print '<input type="hidden" name="type" value="'.$type.'">';
-    print '</td></tr>';
-    // Size
-    $size=$extrafields->fields->$_GET["fields"]->$_GET["attrname"]->length;
-    print '<tr><td class="fieldrequired" required>'.$langs->trans("Size").'</td><td class="valeur"><input type="text" name="size" size="5" value="'.$size.'"></td></tr>';
-    // Enable
-    $enable=$extrafields->fields->$_GET["fields"]->$_GET["attrname"]->enable;
-    print '<tr><td class="fieldrequired" required>'.$langs->trans("Enable").'</td><td class="valeur">';
-    print $form->selectarray('enable',$yesno,$enable);
-    print '</td></tr>';
-
-    print '</table>';
-
-    print '<center><br><input type="submit" name="button" class="button small radius nice" value="'.$langs->trans("Save").'"> &nbsp; ';
-    print '<input type="submit" name="button" class="button white small radius nice" value="'.$langs->trans("Cancel").'"></center>';
-
-    print "</form>";
-
-}
-
-
-
-foreach ($extrafields->fields as $key => $aRow)
-{   
-    print '<div class="row">';
-    print start_box($langs->trans($key),"twelve",'16-Alert-2.png','',true);
-    
-    if($aRow->edit)
-    {
-       /*
-        * Barre d'actions
-        *
-        */
-        if ($action != 'create' && $action != 'edit')
-        {
-            print '<div class="row sepH_a">';
-            print '<div class="right">';
-                print '<a class="gh_button primary pill icon add" href='.$_SERVER["PHP_SELF"].'?action=create&fields='.$key.' >'.$langs->trans("NewAttribute").'</a>';
-            print "</div>";
-            print "</div>";
-        }
-    }
-    
-    print '<div class="row">';
-    
-    $i=0;
-    $obj=new stdClass();
-
-    print '<table cellpadding="0" cellspacing="0" border="0" class="display dt_act" id="'.$key.'" >';
-    // Ligne des titres 
-    print'<thead>';
-    print'<tr>';
-    print'<th class="center">';
-    print $langs->trans("Position");
-    print'</th>';
-    $obj->aoColumns[$i]->bSearchable = false;
-    $i++;
-    print'<th class="essential">';
-    print $langs->trans("Label");
-    print'</th>';
-    $obj->aoColumns[$i]->bSearchable = true;
-    $i++;
-    print'<th class="essential">';
-    print $langs->trans("AttributeCode");
-    print'</th>';
-    $obj->aoColumns[$i]->bSearchable = false;
-    $i++;
-    print'<th class="essential">';
-    print $langs->trans("Type");
-    print'</th>';
-    $obj->aoColumns[$i]->bSearchable = false;
-    $i++;
-    print'<th class="essential">';
-    print $langs->trans("Size");
-    print'</th>';
-    $obj->aoColumns[$i]->bSearchable = false;
-    $i++;
-    print'<th class="center">';
-    print $langs->trans("Action");
-    print'</th>';
-    $obj->aoColumns[$i]->bSearchable = false;
-    $i++;
-    print "</tr>";
-    print "</thead>";
-    print "<tbody>";
-
-    foreach($aRow as $key1 => $value)
-    {
-        if(is_object($value))
-        {
-            print "<tr>";
-            print '<td align="center">'.$value->position.'</td>';
-            print "<td>".(empty($value->label)?$langs->trans($key1):$langs->trans($value->label))."</td>";
-            print "<td>".$key1."</td>";
-            print "<td>".$value->type."</td>";
-            print '<td align="right">'.$value->length.'</td>';
-            print '<td class "content_actions" align="right">';
-            print '<a class="sepV_a" href="'.$_SERVER["PHP_SELF"].'?'.'&fields='.$key.'&attrname='.$key1.'&action='.$acts[$value->enable].'">'.$actl[$value->enable].'</a>';
-            if($aRow->edit)
+    if ($action == 'create')
+        print_titre($langs->trans('NewAttribute'));
+    else
+        print_titre($langs->trans("FieldEdition", $attrname));
+    ?>
+    <script type="text/javascript">
+        jQuery(document).ready(function() {
+            function init_typeoffields(type)
             {
-                
-                print '<a class="sepV_a" href="'.$_SERVER["PHP_SELF"].'?action=edit&fields='.$key.'&attrname='.$key1.'">'.img_edit().'</a>';
-                print '<a class="sepV_a" href="'.$_SERVER["PHP_SELF"].'?action=delete&fields='.$key.'&attrname='.$key1.'">'.img_delete().'</a>';
+                var size = jQuery("#size");
+                if (type == 'date') { size.val('').attr('disabled','disabled'); }
+                else if (type == 'datetime') { size.val('').attr('disabled','disabled'); }
+                else if (type == 'double') { size.val('24,8').removeAttr('disabled'); }
+                else if (type == 'int') { size.val('10').removeAttr('disabled'); }
+                else if (type == 'text') { size.val('2000').removeAttr('disabled'); }
+                else if (type == 'varchar') { size.val('255').removeAttr('disabled'); }
+                else size.val('').attr('disabled','disabled');
             }
-            print '</td>';
-            print "</tr>";
-        }
-    }
+            init_typeoffields('');
+            jQuery("#type").change(function() {
+                init_typeoffields($(this).val());
+            });
+        });
+    </script>
 
-    print "</tbody>";
-    print "</table>";
-    print "</div>";
-    
-    print $extrafields->_datatables($obj,$key);
-    
-    print end_box();
-    print '</div>';
+    <?php if ($action == 'create') : ?>
+        <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="post">
+            <input type="hidden" name="token" value="<?php echo $_SESSION['newtoken']; ?>">
+            <input type="hidden" name="action" value="add">
+
+            <table summary="listofattributes" class="border centpercent">
+                <!-- Label -->
+                <tr><td class="fieldrequired"><?php echo $langs->trans("Label"); ?></td><td class="valeur"><input type="text" name="label" size="40" value="<?php echo GETPOST('label'); ?>"></td></tr>
+                <!-- Code -->
+                <tr><td class="fieldrequired"><?php echo $langs->trans("AttributeCode"); ?> (<?php echo $langs->trans("AlphaNumOnlyCharsAndNoSpace"); ?>)</td><td class="valeur"><input type="text" name="attrname" size="10" value="<?php echo GETPOST('attrname'); ?>"></td></tr>
+                <!-- Type -->
+                <tr><td class="fieldrequired"><?php echo $langs->trans("Type"); ?></td><td class="valeur">
+                        <?php print $form->selectarray('type', $type2label, GETPOST('type')); ?>
+                    </td></tr>
+                <!-- Size -->
+                <tr><td class="fieldrequired"><?php echo $langs->trans("Size"); ?></td><td class="valeur"><input id="size" type="text" name="size" size="5" value="<?php echo (GETPOST('size') ? GETPOST('size') : ''); ?>"></td></tr>
+            </table>
+
+            <div align="center"><br><input type="submit" name="button" class="button" value="<?php echo $langs->trans("Save"); ?>"> &nbsp;
+                <input type="submit" name="button" class="button" value="<?php echo $langs->trans("Cancel"); ?>"></div>
+
+        </form>
+    <?php else : ?>
+        <form action="<?php echo $_SERVER["PHP_SELF"]; ?>?attrname=<?php echo $attrname; ?>" method="post">
+            <input type="hidden" name="token" value="<?php echo $_SESSION['newtoken']; ?>">
+            <input type="hidden" name="attrname" value="<?php echo $attrname; ?>">
+            <input type="hidden" name="action" value="update">
+
+            <table summary="listofattributes" class="border centpercent">
+                <!-- Label -->
+                <tr><td class="fieldrequired"><?php echo $langs->trans("Label"); ?></td><td class="valeur"><input type="text" name="label" size="40" value="<?php echo $object->fk_extrafields->fields->$attrname->label; ?>"></td></tr>
+                <!-- Code -->
+                <tr><td class="fieldrequired"><?php echo $langs->trans("AttributeCode"); ?></td><td class="valeur"><?php echo $attrname; ?></td></tr>
+                <!-- Type -->
+                <?php
+                $type = $object->fk_extrafields->fields->$attrname->type;
+                $size = $object->fk_extrafields->fields->$attrname->size;
+                ?>
+                <tr><td class="fieldrequired"><?php echo $langs->trans("Type"); ?></td><td class="valeur">
+                        <?php print $form->selectarray('type', $type2label, $type); ?>
+                    </td></tr>
+                <?php /*if ($type == "select") : ?>
+                    <tr><td><span class="fieldrequired"><?php echo $langs->trans("List"); ?></span></td><td>
+                            <ul id="array_select_handler"></ul></tr>'
+
+                            <script>
+                                $(document).ready(function() {
+                                    $("#array_select_handler").tagHandler({
+                                        getData: { id: '<?php echo $object->id; ?>', class: '<?php echo get_class($object); ?>' },
+                                        getURL: '<?php echo DOL_URL_ROOT . '/core/ajax/loadextrafieldandler.php'; ?>',
+                                        updateData: { id: '<?php echo $object->id; ?>',class: '<?php echo get_class($object); ?>' },
+                                        updateURL: '<?php echo DOL_URL_ROOT . '/core/ajax/saveextrafieldhandler.php'; ?>',
+                                        autocomplete: true,
+                                        autoUpdate: true
+                                    });
+                                });
+                            </script>
+                        <?php endif;*/ ?>
+
+                        <!-- Size -->
+                <tr><td class="fieldrequired"><?php echo $langs->trans("Size"); ?></td><td><input id="size" type="text" name="size" size="5" value="<?php echo $size; ?>"></td></tr>
+            </table>
+
+            <div align="center"><br><input type="submit" name="button" class="button" value="<?php echo $langs->trans("Save"); ?>"> &nbsp;
+                <input type="submit" name="button" class="button" value="<?php echo $langs->trans("Cancel"); ?>"></div>
+
+        </form>
+    <?php endif; ?>
+    <?php
 }
-
 
 dol_fiche_end();
+
+/*
+ * Barre d'actions
+ *
+ */
+if ($action != 'create' && $action != 'edit') {
+    print '<p class="button-height right">';
+    print '<span class="button-group">';
+    print '<a class="button compact" href="' . $_SERVER["PHP_SELF"] . '?action=create&fields=' . $key . '"><span class="button-icon blue-gradient glossy"><span class="icon-star"></span></span>' . $langs->trans("NewAttribute") . '</a>';
+    print "</span>";
+    print "</p>";
+}
+
+$i = 0;
+$obj = new stdClass();
+//print '<div class="datatable">';
+print '<table class="display dt_act" id="list_fields" >';
+// Ligne des titres 
+print'<thead>';
+print'<tr>';
+print'<th>';
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "_id";
+$obj->aoColumns[$i]->bUseRendered = false;
+$obj->aoColumns[$i]->bSearchable = false;
+$obj->aoColumns[$i]->bVisible = false;
+$i++;
+print'<th class="essential">';
+print $langs->trans("Position");
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "order";
+$obj->aoColumns[$i]->bSearchable = false;
+$obj->aoColumns[$i]->sDefaultContent = "";
+$i++;
+print'<th class="essential">';
+print $langs->trans("Label");
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "label";
+$obj->aoColumns[$i]->bSearchable = true;
+//$obj->aoColumns[$i]->sDefaultContent = "";
+$i++;
+print'<th class="essential">';
+print $langs->trans("AttributeCode");
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "key";
+$obj->aoColumns[$i]->bSearchable = false;
+//$obj->aoColumns[$i]->sDefaultContent = "";
+$i++;
+print'<th class="essential">';
+print $langs->trans("Type");
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "type";
+$obj->aoColumns[$i]->bSearchable = false;
+$obj->aoColumns[$i]->sDefaultContent = "";
+$i++;
+/* print'<th class="essential">';
+  print $langs->trans("Size");
+  print'</th>';
+  $obj->aoColumns[$i]->mDataProp = "size";
+  $obj->aoColumns[$i]->bSearchable = false;
+  $obj->aoColumns[$i]->sDefaultContent = "";
+  $i++; */
+print'<th class="essential">';
+print $langs->trans("Action");
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "action";
+$obj->aoColumns[$i]->sClass = "center content_actions";
+$obj->aoColumns[$i]->bSearchable = false;
+$obj->aoColumns[$i]->sWidth = "100px";
+print "</tr>";
+print "</thead>";
+print "<tbody>";
+
+foreach ($object->fk_extrafields->fields as $key => $aRow) {
+    if (is_object($aRow) && $aRow->edit) {
+        print "<tr>";
+        print '<td>' . $key . '</td>';
+        print '<td>' . $aRow->pos . '</td>';
+        print "<td>" . (empty($aRow->label) ? $langs->trans($key) : $langs->trans($aRow->label)) . "</td>";
+        print "<td>" . $key . "</td>";
+        print "<td>" . $aRow->type . "</td>";
+        // print '<td>' . $aRow->length . '</td>';
+        print '<td>';
+        print '<a class="sepV_a" href="' . $_SERVER["PHP_SELF"] . '?' . 'attrname=' . $key . '&action=' . $acts[$aRow->enable] . '">' . $actl[$aRow->enable] . '</a>';
+        if ($aRow->edit && $aRow->optional) {
+            print '<a class="sepV_a" href="' . $_SERVER["PHP_SELF"] . '?action=edit&attrname=' . $key . '">' . img_edit() . '</a>';
+            print '<a class="sepV_a confirm" href="' . $_SERVER["PHP_SELF"] . '?action=delete&attrname=' . $key . '">' . img_delete() . '</a>';
+        }
+        print '</td>';
+        print "</tr>";
+    }
+}
+
+print "</tbody>";
+print "</table>";
+//print '</div>';
+
+$obj->iDisplayLength = 100;
+print $object->datatablesCreate($obj, "list_fields");
+
+print end_box();
+print '</div>';
+print '</div>';
 
 llxFooter();
 

@@ -29,13 +29,14 @@
  *	\brief      Setup page of module Order
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
-require_once(DOL_DOCUMENT_ROOT.'/commande/class/commande.class.php');
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/commande/class/commande.class.php';
 
 $langs->load("admin");
 $langs->load("errors");
 $langs->load("orders");
+$langs->load('other');
 
 if (! $user->admin) accessforbidden();
 
@@ -88,7 +89,7 @@ if ($action == 'specimen')
 
 	if ($filefound)
 	{
-		require_once($file);
+		require_once $file;
 
 		$module = new $classname($db);
 
@@ -155,10 +156,12 @@ if ($action == 'setdoc')
 
 	// On active le modele
 	$type='order';
+
 	$sql_del = "DELETE FROM ".MAIN_DB_PREFIX."document_model";
 	$sql_del.= " WHERE nom = '".$db->escape($value)."'";
 	$sql_del.= " AND type = '".$type."'";
 	$sql_del.= " AND entity = ".$conf->entity;
+    dol_syslog("Delete from model table ".$sql_del);
 	$result1=$db->query($sql_del);
 
     $sql = "INSERT INTO ".MAIN_DB_PREFIX."document_model (nom, type, entity, libelle, description)";
@@ -166,13 +169,15 @@ if ($action == 'setdoc')
     $sql.= ($label?"'".$db->escape($label)."'":'null').", ";
     $sql.= (! empty($scandir)?"'".$scandir."'":"null");
     $sql.= ")";
-	$result2=$db->query($sql);
+    dol_syslog("Insert into model table ".$sql);
+    $result2=$db->query($sql);
 	if ($result1 && $result2)
 	{
 		$db->commit();
 	}
 	else
 	{
+        dol_syslog("Error ".$db->lasterror(), LOG_ERR);
 		$db->rollback();
 	}
 }
@@ -226,14 +231,13 @@ if ($action == 'set_COMMANDE_FREE_TEXT')
 
 $dirmodels=array_merge(array('/'),(array) $conf->modules_parts['models']);
 
-llxHeader();
+llxHeader("",$langs->trans("OrdersSetup"));
 
 $form=new Form($db);
 
 $linkback='<a href="'.DOL_URL_ROOT.'/admin/modules.php">'.$langs->trans("BackToModuleList").'</a>';
 print_fiche_titre($langs->trans("OrdersSetup"),$linkback,'setup');
-
-print "<br>";
+print '<br>';
 
 
 
@@ -245,12 +249,12 @@ print_titre($langs->trans("OrdersNumberingModules"));
 
 print '<table class="noborder" width="100%">';
 print '<tr class="liste_titre">';
-print '<td width="100">'.$langs->trans("Name").'</td>';
+print '<td>'.$langs->trans("Name").'</td>';
 print '<td>'.$langs->trans("Description").'</td>';
-print '<td>'.$langs->trans("Example").'</td>';
+print '<td nowrap="nowrap">'.$langs->trans("Example").'</td>';
 print '<td align="center" width="60">'.$langs->trans("Status").'</td>';
 print '<td align="center" width="16">'.$langs->trans("Infos").'</td>';
-print "</tr>\n";
+print '</tr>'."\n";
 
 clearstatcache();
 
@@ -271,7 +275,7 @@ foreach ($dirmodels as $reldir)
 				{
 					$file = substr($file, 0, dol_strlen($file)-4);
 
-					require_once(DOL_DOCUMENT_ROOT ."/core/modules/commande/".$file.".php");
+					require_once DOL_DOCUMENT_ROOT ."/core/modules/commande/".$file.'.php';
 
 					$module = new $file;
 
@@ -289,7 +293,7 @@ foreach ($dirmodels as $reldir)
                         // Show example of numbering module
                         print '<td nowrap="nowrap">';
                         $tmp=$module->getExample();
-                        if (preg_match('/^Error/',$tmp)) { $langs->load("errors"); print '<div class="error">'.$langs->trans($tmp).'</div>'; }
+                        if (preg_match('/^Error/',$tmp)) print '<div class="error">'.$langs->trans($tmp).'</div>';
                         elseif ($tmp=='NotConfigured') print $langs->trans($tmp);
                         else print $tmp;
                         print '</td>'."\n";
@@ -397,24 +401,24 @@ foreach ($dirmodels as $reldir)
             $handle=opendir($dir);
             if (is_resource($handle))
             {
-
                 while (($file = readdir($handle))!==false)
                 {
                     $filelist[]=$file;
                 }
                 closedir($handle);
                 arsort($filelist);
-
+                
                 foreach($filelist as $file)
                 {
                     if (preg_match('/\.modules\.php$/i',$file) && preg_match('/^(pdf_|doc_)/',$file))
                     {
+            		
                     	if (file_exists($dir.'/'.$file))
                     	{
                     		$name = substr($file, 4, dol_strlen($file) -16);
 	                        $classname = substr($file, 0, dol_strlen($file) -12);
 
-	                        require_once($dir.'/'.$file);
+	                        require_once $dir.'/'.$file;
 	                        $module = new $classname($db);
 
 	                        $modulequalified=1;
@@ -435,7 +439,7 @@ foreach ($dirmodels as $reldir)
 	                            if (in_array($name, $def))
 	                            {
 	                            	print '<td align="center">'."\n";
-	                            	print '<a href="'.$_SERVER["PHP_SELF"].'?action=del&amp;value='.$name.'">';
+	                            	print '<a href="'.$_SERVER["PHP_SELF"].'?action=del&value='.$name.'">';
 	                            	print img_picto($langs->trans("Enabled"),'switch_on');
 	                            	print '</a>';
 	                            	print '</td>';
@@ -443,7 +447,7 @@ foreach ($dirmodels as $reldir)
 	                            else
 	                            {
 	                                print '<td align="center">'."\n";
-	                                print '<a href="'.$_SERVER["PHP_SELF"].'?action=set&amp;value='.$name.'&amp;scandir='.$module->scandir.'&amp;label='.urlencode($module->name).'">'.img_picto($langs->trans("Disabled"),'switch_off').'</a>';
+	                                print '<a href="'.$_SERVER["PHP_SELF"].'?action=set&value='.$name.'&amp;scandir='.$module->scandir.'&amp;label='.urlencode($module->name).'">'.img_picto($langs->trans("Disabled"),'switch_off').'</a>';
 	                                print "</td>";
 	                            }
 
@@ -455,7 +459,7 @@ foreach ($dirmodels as $reldir)
 	                            }
 	                            else
 	                            {
-	                                print '<a href="'.$_SERVER["PHP_SELF"].'?action=setdoc&amp;value='.$name.'&amp;scandir='.$module->scandir.'&amp;label='.urlencode($module->name).'" alt="'.$langs->trans("Default").'">'.img_picto($langs->trans("Disabled"),'off').'</a>';
+	                                print '<a href="'.$_SERVER["PHP_SELF"].'?action=setdoc&value='.$name.'&amp;scandir='.$module->scandir.'&amp;label='.urlencode($module->name).'" alt="'.$langs->trans("Default").'">'.img_picto($langs->trans("Disabled"),'off').'</a>';
 	                            }
 	                            print '</td>';
 
@@ -471,7 +475,7 @@ foreach ($dirmodels as $reldir)
 					    		$htmltooltip.='<br>'.$langs->trans("PaymentMode").': '.yn($module->option_modereg,1,1);
 					    		$htmltooltip.='<br>'.$langs->trans("PaymentConditions").': '.yn($module->option_condreg,1,1);
 					    		$htmltooltip.='<br>'.$langs->trans("MultiLanguage").': '.yn($module->option_multilang,1,1);
-					    		//$htmltooltip.='<br>'.$langs->trans("Escompte").': '.yn($module->option_escompte,1,1);
+					    		//$htmltooltip.='<br>'.$langs->trans("Discounts").': '.yn($module->option_escompte,1,1);
 					    		//$htmltooltip.='<br>'.$langs->trans("CreditNote").': '.yn($module->option_credit_note,1,1);
 					    		$htmltooltip.='<br>'.$langs->trans("WatermarkOnDraftOrders").': '.yn($module->option_draft_watermark,1,1);
 
@@ -515,49 +519,6 @@ print '<td align="center" width="60">'.$langs->trans("Value").'</td>';
 print "<td>&nbsp;</td>\n";
 print "</tr>\n";
 $var=true;
-
-// Valider la commande apres cloture de la propale
-// permet de na pas passer par l'option commande provisoire
-/*
-$var=! $var;
-print '<form action="'.$_SERVER["PHP_SELF"].'" method="post">';
-print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-print '<input type="hidden" name="action" value="setvalidorder">';
-print '<tr '.$bc[$var].'>';
-print '<td>'.$langs->trans("ValidOrderAfterPropalClosed").'</td>';
-print '<td width="60" align="center">'.$form->selectyesno("validorder",$conf->global->COMMANDE_VALID_AFTER_CLOSE_PROPAL,1).'</td>';
-print '<td align="right"><input type="submit" class="button" value="'.$langs->trans("Modify").'"></td>';
-print '</tr>';
-print '</form>';
-*/
-
-// Ajouter une ligne de frais port indiquant le poids de la commande
-/*
-$var=! $var;
-print '<form action="'.$_SERVER["PHP_SELF"].'" method="post">';
-print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-print '<input type="hidden" name="action" value="deliverycostline">';
-print '<tr '.$bc[$var].'>';
-print '<td>'.$langs->trans("AddDeliveryCostLine").'</td>';
-print '<td width="60" align="center">'.$form->selectyesno("addline",$conf->global->COMMANDE_ADD_DELIVERY_COST_LINE,1).'</td>';
-print '<td align="right"><input type="submit" class="button" value="'.$langs->trans("Modify").'"></td>';
-print '</tr>';
-print '</form>';
-*/
-
-// Utiliser le contact de la commande dans le document
-/*
-$var=! $var;
-print '<form action="'.$_SERVER["PHP_SELF"].'" method="post">';
-print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-print '<input type="hidden" name="action" value="set_use_customer_contact_as_recipient">';
-print '<tr '.$bc[$var].'>';
-print '<td>'.$langs->trans("UseCustomerContactAsOrderRecipientIfExist").'</td>';
-print '<td width="60" align="center">'.$form->selectyesno("use_customer_contact_as_recipient",$conf->global->COMMANDE_USE_CUSTOMER_CONTACT_AS_RECIPIENT,1).'</td>';
-print '<td align="right"><input type="submit" class="button" value="'.$langs->trans("Modify").'"></td>';
-print '</tr>';
-print '</form>';
-*/
 
 $var=! $var;
 print '<form action="'.$_SERVER["PHP_SELF"].'" method="post">';

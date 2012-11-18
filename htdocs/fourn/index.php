@@ -23,10 +23,10 @@
  *	\brief      Home page of suppliers area
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.commande.class.php');
-require_once(DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.facture.class.php');
-require_once(DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php');
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.commande.class.php';
+require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.facture.class.php';
+require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 
 $langs->load("suppliers");
 $langs->load("orders");
@@ -99,7 +99,7 @@ else
 
 
 // Draft orders
-if ($conf->fournisseur->enabled)
+if (! empty($conf->fournisseur->enabled))
 {
 	$langs->load("orders");
 
@@ -158,7 +158,7 @@ if ($conf->fournisseur->enabled)
 }
 
 // Draft invoices
-if ($conf->fournisseur->enabled && $user->rights->fournisseur->facture->lire)
+if (! empty($conf->fournisseur->enabled) && $user->rights->fournisseur->facture->lire)
 {
 	$sql = "SELECT ff.facnumber, ff.rowid, ff.total_ttc, ff.type";
 	$sql.= ", s.nom, s.rowid as socid";

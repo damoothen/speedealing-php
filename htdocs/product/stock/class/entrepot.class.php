@@ -24,7 +24,7 @@
  *  \brief      Fichier de la classe de gestion des entrepots
  */
 
-require_once(DOL_DOCUMENT_ROOT."/core/class/commonobject.class.php");
+require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
 
 
 /**
@@ -204,8 +204,15 @@ class Entrepot extends CommonObject
 			$sql.= " WHERE rowid = " . $this->id;
 
 			dol_syslog(get_class($this)."::delete sql=".$sql);
-			$resql=$this->db->query($sql);
-			if ($resql)
+			$resql1=$this->db->query($sql);
+
+			// Update denormalized fields because we change content of produt_stock
+			$sql = "UPDATE ".MAIN_DB_PREFIX."product p SET p.stock= (SELECT SUM(ps.reel) FROM ".MAIN_DB_PREFIX."product_stock ps WHERE ps.fk_product = p.rowid)";
+
+			dol_syslog(get_class($this)."::delete sql=".$sql);
+			$resql2=$this->db->query($sql);
+
+			if ($resql1 && $resql2)
 			{
 				$this->db->commit();
 				return 1;
@@ -261,7 +268,7 @@ class Entrepot extends CommonObject
 			$this->town           = $obj->town;
 			$this->country_id     = $obj->country_id;
 
-			include_once(DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php');
+			include_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
             $tmp=getCountry($this->country_id,'all');
 			$this->pays=$tmp['label'];                // deprecated
 			$this->pays_code=$tmp['code'];            // deprecated

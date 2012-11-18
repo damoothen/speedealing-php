@@ -22,7 +22,7 @@
  *		\brief      File of class to manage subscriptions of foundation members
  */
 
-require_once(DOL_DOCUMENT_ROOT."/core/class/commonobject.class.php");
+require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
 
 
 /**
@@ -50,7 +50,7 @@ class Cotisation extends CommonObject
 	 *
 	 *	@param 		DoliDB		$db		Database handler
 	 */
-	function Cotisation($db)
+	function __construct($db)
 	{
 		$this->db = $db;
 	}
@@ -65,9 +65,9 @@ class Cotisation extends CommonObject
 	function create($userid)
 	{
 		global $langs;
-		
+
 		$now=dol_now();
-		
+
 		// Check parameters
 		if ($this->datef <= $this->dateh)
 		{
@@ -198,7 +198,7 @@ class Cotisation extends CommonObject
 		// It subscription is linked to a bank transaction, we get it
 		if ($this->fk_bank)
 		{
-			require_once(DOL_DOCUMENT_ROOT."/compta/bank/class/account.class.php");
+			require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 			$accountline=new AccountLine($this->db);
 			$result=$accountline->fetch($this->fk_bank);
 		}
@@ -213,12 +213,12 @@ class Cotisation extends CommonObject
 			$num=$this->db->affected_rows($resql);
 			if ($num)
 			{
-				require_once(DOL_DOCUMENT_ROOT."/adherents/class/adherent.class.php");
+				require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
 				$member=new Adherent($this->db);
 				$result=$member->fetch($this->fk_adherent);
 				$result=$member->update_end_date($user);
 
-				if ($this->fk_bank)
+				if ($accountline->rowid > 0)	// If we found bank account line (this means this->fk_bank defined)
 				{
 					$result=$accountline->delete($user);		// Return false if refused because line is conciliated
 					if ($result > 0)

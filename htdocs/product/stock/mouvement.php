@@ -24,14 +24,14 @@
  *	\brief      Page to list stock movements
  */
 
-require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/product/stock/class/entrepot.class.php");
-require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formother.class.php");
-require_once(DOL_DOCUMENT_ROOT."/product/class/html.formproduct.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/stock.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/product.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/date.lib.php");
+require '../../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/product/stock/class/entrepot.class.php';
+require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/stock.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 
 $langs->load("products");
 $langs->load("stocks");
@@ -49,9 +49,9 @@ $search_movement = isset($_REQUEST["search_movement"])?$_REQUEST["search_movemen
 $search_product = isset($_REQUEST["search_product"])?$_REQUEST["search_product"]:'';
 $search_warehouse = isset($_REQUEST["search_warehouse"])?$_REQUEST["search_warehouse"]:'';
 $search_user = isset($_REQUEST["search_user"])?$_REQUEST["search_user"]:'';
-$page = GETPOST("page");
-$sortfield = GETPOST("sortfield");
-$sortorder = GETPOST("sortorder");
+$page = GETPOST("page",'int');
+$sortfield = GETPOST("sortfield",'alpha');
+$sortorder = GETPOST("sortorder",'alpha');
 if ($page < 0) $page = 0;
 $offset = $conf->liste_limit * $page;
 
@@ -116,64 +116,51 @@ $formproduct=new FormProduct($db);
 
 $sql = "SELECT p.rowid, p.label as produit, p.fk_product_type as type,";
 $sql.= " e.label as stock, e.rowid as entrepot_id,";
-$sql.= " m.rowid as mid, m.value, m.datem, m.fk_user_author, m.label, m.fk_expedition, link.fk_target as factureid,";
+$sql.= " m.rowid as mid, m.value, m.datem, m.fk_user_author, m.label,";
 $sql.= " u.login";
 $sql.= " FROM (".MAIN_DB_PREFIX."entrepot as e,";
 $sql.= " ".MAIN_DB_PREFIX."product as p,";
 $sql.= " ".MAIN_DB_PREFIX."stock_mouvement as m)";
 $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."user as u ON m.fk_user_author = u.rowid";
-$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."expeditiondet as ed ON ed.fk_expedition = m.fk_expedition";
-$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."commandedet as cdet ON ed.fk_origin_line=cdet.rowid";
-$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."element_element as link ON (link.sourcetype='commande' AND link.targettype='facture' AND link.fk_source = cdet.fk_commande)";
-
 $sql.= " WHERE m.fk_product = p.rowid";
 $sql.= " AND m.fk_entrepot = e.rowid";
 $sql.= " AND e.entity = ".$conf->entity;
 if (empty($conf->global->STOCK_SUPPORTS_SERVICES)) $sql.= " AND p.fk_product_type = 0";
 if ($id)
 {
-	$sql.= " AND e.rowid ='".$id."'";
+    $sql.= " AND e.rowid ='".$id."'";
 }
 if ($month > 0)
 {
-	if ($year > 0)
-	$sql.= " AND m.datem BETWEEN '".$db->idate(dol_get_first_day($year,$month,false))."' AND '".$db->idate(dol_get_last_day($year,$month,false))."'";
-	else
-	$sql.= " AND date_format(m.datem, '%m') = '$month'";
+    if ($year > 0)
+    $sql.= " AND m.datem BETWEEN '".$db->idate(dol_get_first_day($year,$month,false))."' AND '".$db->idate(dol_get_last_day($year,$month,false))."'";
+    else
+    $sql.= " AND date_format(m.datem, '%m') = '$month'";
 }
 else if ($year > 0)
 {
-	$sql.= " AND m.datem BETWEEN '".$db->idate(dol_get_first_day($year,1,false))."' AND '".$db->idate(dol_get_last_day($year,12,false))."'";
+    $sql.= " AND m.datem BETWEEN '".$db->idate(dol_get_first_day($year,1,false))."' AND '".$db->idate(dol_get_last_day($year,12,false))."'";
 }
 if (! empty($search_movement))
 {
-	$sql.= " AND m.label LIKE '%".$db->escape($search_movement)."%'";
+    $sql.= " AND m.label LIKE '%".$db->escape($search_movement)."%'";
 }
 if (! empty($search_product))
 {
-	$sql.= " AND p.label LIKE '%".$db->escape($search_product)."%'";
+    $sql.= " AND p.label LIKE '%".$db->escape($search_product)."%'";
 }
 if (! empty($search_warehouse))
 {
-	$sql.= " AND e.label LIKE '%".$db->escape($search_warehouse)."%'";
+    $sql.= " AND e.label LIKE '%".$db->escape($search_warehouse)."%'";
 }
 if (! empty($search_user))
 {
-	$sql.= " AND u.login LIKE '%".$db->escape($search_user)."%'";
-}
-if (! empty($search_bl))
-{
-	$sql.= " AND m.fk_expedition LIKE '%".$db->escape($search_bl)."%'";
-}
-if (! empty($search_fac))
-{
-	//$sql.= " AND u.login LIKE '%".$db->escape($search_user)."%'";
+    $sql.= " AND u.login LIKE '%".$db->escape($search_user)."%'";
 }
 if (! empty($_GET['idproduct']))
 {
-	$sql.= " AND p.rowid = '".$idproduct."'";
+    $sql.= " AND p.rowid = '".$idproduct."'";
 }
-$sql.= " GROUP BY m.rowid";
 $sql.= $db->order($sortfield,$sortorder);
 $sql.= $db->plimit($conf->liste_limit+1, $offset);
 
@@ -181,114 +168,116 @@ $sql.= $db->plimit($conf->liste_limit+1, $offset);
 $resql = $db->query($sql);
 if ($resql)
 {
-	$num = $db->num_rows($resql);
+    $num = $db->num_rows($resql);
 
-	if ($idproduct)
-	{
-		$product = new Product($db);
-		$product->fetch($idproduct);
-	}
+    if ($idproduct)
+    {
+        $product = new Product($db);
+        $product->fetch($idproduct);
+    }
 
-	if ($_GET["id"])
-	{
-		$entrepot = new Entrepot($db);
-		$result = $entrepot->fetch($id);
-		if ($result < 0)
-		{
-	  		dol_print_error($db);
-		}
-	}
+    if ($_GET["id"])
+    {
+        $entrepot = new Entrepot($db);
+        $result = $entrepot->fetch($id);
+        if ($result < 0)
+        {
+            dol_print_error($db);
+        }
+    }
 
-	$i = 0;
+    $i = 0;
 
-	$help_url='EN:Module_Stocks_En|FR:Module_Stock|ES:M&oacute;dulo_Stocks';
-	$texte = $langs->trans("ListOfStockMovements");
-	llxHeader("",$texte,$help_url);
-
-
-	/*
-	 * Show tab only if we ask a particular warehouse
-	 */
-	if ($id)
-	{
-		$head = stock_prepare_head($entrepot);
-
-		dol_fiche_head($head, 'movements', $langs->trans("Warehouse"), 0, 'stock');
+    $help_url='EN:Module_Stocks_En|FR:Module_Stock|ES:M&oacute;dulo_Stocks';
+    $texte = $langs->trans("ListOfStockMovements");
+    llxHeader("",$texte,$help_url);
 
 
-		print '<table class="border" width="100%">';
+    /*
+     * Show tab only if we ask a particular warehouse
+     */
+    if ($id)
+    {
+        $head = stock_prepare_head($entrepot);
 
-		// Ref
-		print '<tr><td width="25%">'.$langs->trans("Ref").'</td><td colspan="3">';
-		print $form->showrefnav($entrepot,'id','',1,'rowid','libelle');
-		print '</td>';
+        dol_fiche_head($head, 'movements', $langs->trans("Warehouse"), 0, 'stock');
 
-		print '<tr><td>'.$langs->trans("LocationSummary").'</td><td colspan="3">'.$entrepot->lieu.'</td></tr>';
 
-		// Description
-		print '<tr><td valign="top">'.$langs->trans("Description").'</td><td colspan="3">'.dol_htmlentitiesbr($entrepot->description).'</td></tr>';
+        print '<table class="border" width="100%">';
 
-		// Address
-		print '<tr><td>'.$langs->trans('Address').'</td><td colspan="3">';
-		print $entrepot->address;
-		print '</td></tr>';
+        $linkback = '<a href="'.DOL_URL_ROOT.'/adherents/liste.php">'.$langs->trans("BackToList").'</a>';
 
-		// Town
-		print '<tr><td width="25%">'.$langs->trans('Zip').'</td><td width="25%">'.$entrepot->zip.'</td>';
-		print '<td width="25%">'.$langs->trans('Town').'</td><td width="25%">'.$entrepot->town.'</td></tr>';
+        // Ref
+        print '<tr><td width="25%">'.$langs->trans("Ref").'</td><td colspan="3">';
+        print $form->showrefnav($entrepot, 'id', $linkback, 1, 'rowid', 'libelle');
+        print '</td>';
 
-		// Country
-		print '<tr><td>'.$langs->trans('Country').'</td><td colspan="3">';
-		$img=picto_from_langcode($entrepot->country_code);
-		print ($img?$img.' ':'');
-		print $entrepot->country;
-		print '</td></tr>';
+        print '<tr><td>'.$langs->trans("LocationSummary").'</td><td colspan="3">'.$entrepot->lieu.'</td></tr>';
 
-		// Status
-		print '<tr><td>'.$langs->trans("Status").'</td><td colspan="3">'.$entrepot->getLibStatut(4).'</td></tr>';
+        // Description
+        print '<tr><td valign="top">'.$langs->trans("Description").'</td><td colspan="3">'.dol_htmlentitiesbr($entrepot->description).'</td></tr>';
 
-		$calcproducts=$entrepot->nb_products();
+        // Address
+        print '<tr><td>'.$langs->trans('Address').'</td><td colspan="3">';
+        print $entrepot->address;
+        print '</td></tr>';
 
-		// Nb of products
-		print '<tr><td valign="top">'.$langs->trans("NumberOfProducts").'</td><td colspan="3">';
-		print empty($calcproducts['nb'])?'0':$calcproducts['nb'];
-		print "</td></tr>";
+        // Town
+        print '<tr><td width="25%">'.$langs->trans('Zip').'</td><td width="25%">'.$entrepot->zip.'</td>';
+        print '<td width="25%">'.$langs->trans('Town').'</td><td width="25%">'.$entrepot->town.'</td></tr>';
 
-		// Value
-		print '<tr><td valign="top">'.$langs->trans("EstimatedStockValueShort").'</td><td colspan="3">';
-		print empty($calcproducts['value'])?'0':$calcproducts['value'];
-		print "</td></tr>";
+        // Country
+        print '<tr><td>'.$langs->trans('Country').'</td><td colspan="3">';
+        $img=picto_from_langcode($entrepot->country_code);
+        print ($img?$img.' ':'');
+        print $entrepot->country;
+        print '</td></tr>';
 
-		// Last movement
-		$sql = "SELECT MAX(m.datem) as datem";
-		$sql .= " FROM ".MAIN_DB_PREFIX."stock_mouvement as m";
-		$sql .= " WHERE m.fk_entrepot = '".$entrepot->id."'";
-		$resqlbis = $db->query($sql);
-		if ($resqlbis)
-		{
-			$obj = $db->fetch_object($resqlbis);
-			$lastmovementdate=$db->jdate($obj->datem);
-		}
-		else
-		{
-			dol_print_error($db);
-		}
+        // Status
+        print '<tr><td>'.$langs->trans("Status").'</td><td colspan="3">'.$entrepot->getLibStatut(4).'</td></tr>';
 
-		print '<tr><td valign="top">'.$langs->trans("LastMovement").'</td><td colspan="3">';
-		if ($lastmovementdate)
-		{
-		    print dol_print_date($lastmovementdate,'dayhour');
-		}
-		else
-		{
-		    print $langs->trans("None");
-		}
-		print "</td></tr>";
+        $calcproducts=$entrepot->nb_products();
 
-		print "</table>";
+        // Nb of products
+        print '<tr><td valign="top">'.$langs->trans("NumberOfProducts").'</td><td colspan="3">';
+        print empty($calcproducts['nb'])?'0':$calcproducts['nb'];
+        print "</td></tr>";
 
-		print '</div>';
-	}
+        // Value
+        print '<tr><td valign="top">'.$langs->trans("EstimatedStockValueShort").'</td><td colspan="3">';
+        print empty($calcproducts['value'])?'0':$calcproducts['value'];
+        print "</td></tr>";
+
+        // Last movement
+        $sql = "SELECT MAX(m.datem) as datem";
+        $sql .= " FROM ".MAIN_DB_PREFIX."stock_mouvement as m";
+        $sql .= " WHERE m.fk_entrepot = '".$entrepot->id."'";
+        $resqlbis = $db->query($sql);
+        if ($resqlbis)
+        {
+            $obj = $db->fetch_object($resqlbis);
+            $lastmovementdate=$db->jdate($obj->datem);
+        }
+        else
+        {
+            dol_print_error($db);
+        }
+
+        print '<tr><td valign="top">'.$langs->trans("LastMovement").'</td><td colspan="3">';
+        if ($lastmovementdate)
+        {
+            print dol_print_date($lastmovementdate,'dayhour');
+        }
+        else
+        {
+            print $langs->trans("None");
+        }
+        print "</td></tr>";
+
+        print "</table>";
+
+        print '</div>';
+    }
 
 
     /*
@@ -490,12 +479,12 @@ if ($resql)
     }
     $db->free($resql);
 
-	print "</table>";
+    print "</table>";
 
 }
 else
 {
-	dol_print_error($db);
+    dol_print_error($db);
 }
 
 llxFooter();

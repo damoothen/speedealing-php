@@ -1,5 +1,4 @@
 <?php
-
 /* Copyright (C) 2005-2012	Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2009	Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2007		Rodolphe Quiedeville <rodolphe@quiedeville.org>

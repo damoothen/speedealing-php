@@ -63,9 +63,10 @@ $title = $langs->trans("ListOfSubscriptions");
 if (!empty($date_select))
 	$title.=' (' . $langs->trans("Year") . ' ' . $date_select . ')';
 
-print '<div class="row">';
+print_fiche_titre($title);
+print '<div class="with-padding">';
 
-print start_box($titre, "twelve", "16-Money.png");
+//print start_box($title, "twelve", "16-Money.png");
 
 $i = 0;
 $obj = new stdClass();
@@ -223,7 +224,7 @@ $obj->sDom = 'l<fr>t<\"clear\"rtip>';
 $obj->aaSorting = array(array(1, 'asc'));
 $adherent->datatablesCreate($obj, "cotisation_datatable");
 
-print end_box();
+//print end_box();
 print '</div>'; // end row
 
 

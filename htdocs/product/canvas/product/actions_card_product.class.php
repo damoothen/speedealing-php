@@ -18,15 +18,15 @@
 /**
  *	\file       htdocs/product/canvas/product/actions_card_product.class.php
  *	\ingroup    produit
- *	\brief      Fichier de la classe des produits par defaut
+ *	\brief      File with class of actions for canvas product
  */
-include_once(DOL_DOCUMENT_ROOT.'/product/class/product.class.php');
+include_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
+
 
 /**
- *	\class      ActionsCardProduct
- *	\brief      Class with controller methods for product canvas
+ *	Class with controller methods for product canvas
  */
-class ActionsCardProduct extends Product
+class ActionsCardProduct
 {
     var $targetmodule;
     var $canvas;
@@ -43,15 +43,15 @@ class ActionsCardProduct extends Product
     /**
 	 *    Constructor
 	 *
-     *    @param	DoliDB	$DB             Database handler
+     *    @param	DoliDB	$db             Database handler
      *    @param	string	$dirmodule		Name of directory of module
      *    @param	string	$targetmodule	Name of directory where canvas is stored
      *    @param	string	$canvas         Name of canvas
      *    @param	string	$card           Name of tab (sub-canvas)
 	 */
-	function __construct($DB, $dirmodule, $targetmodule, $canvas, $card)
+	function __construct($db, $dirmodule, $targetmodule, $canvas, $card)
 	{
-        $this->db               = $DB;
+        $this->db               = $db;
         $this->dirmodule		= $dirmodule;
         $this->targetmodule     = $targetmodule;
         $this->canvas           = $canvas;
@@ -106,7 +106,7 @@ class ActionsCardProduct extends Product
 		$this->tpl['description'] = nl2br($this->description);
 
 		// Statut
-		$this->tpl['status'] = $this->getLibStatut(2);
+		$this->tpl['status'] = $this->object->getLibStatut(2);
 
 		// Note
 		$this->tpl['note'] = nl2br($this->note);

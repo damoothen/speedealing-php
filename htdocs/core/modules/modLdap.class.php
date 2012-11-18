@@ -1,5 +1,4 @@
 <?php
-
 /* Copyright (C) 2004      Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2004-2007 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
@@ -22,33 +21,34 @@
 /**
  *  \defgroup   ldap     Module ldap
  *  \brief		Module to manage LDAP interfaces with contacts or users
- * 	\file       htdocs/core/modules/modLdap.class.php
- * 	\ingroup    ldap
- * 	\brief		File to describe and activate Ldap module
+ *	\file       htdocs/core/modules/modLdap.class.php
+ *	\ingroup    ldap
+ *	\brief		File to describe and activate Ldap module
  */
-include_once(DOL_DOCUMENT_ROOT . "/core/modules/DolibarrModules.class.php");
+include_once DOL_DOCUMENT_ROOT .'/core/modules/DolibarrModules.class.php';
+
 
 /**
- *  \class 		modLdap
- * 	\brief      Classe de description et activation du module Ldap
+ *	Classe de description et activation du module Ldap
  */
-class modLdap extends DolibarrModules {
-
+class modLdap extends DolibarrModules
+{
 	/**
 	 *   Constructor. Define names, constants, directories, boxes, permissions
 	 *
 	 *   @param      DoliDB		$db      Database handler
 	 */
-	function modLdap($db) {
+	function __construct($db)
+	{
 		parent::__construct($db);
 		$this->numero = 200;
 
 		$this->family = "technic";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->name = preg_replace('/^mod/i','',get_class($this));
 		$this->description = "Synchronisation Ldap";
-		$this->version = 'dolibarr';	// 'experimental' or 'dolibarr' or version
-		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
+		$this->version = 'dolibarr';    // 'experimental' or 'dolibarr' or version
+		$this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
 		// Where to store the module in setup page (0=common,1=interface,2=others,3=very specific)
 		$this->special = 1;
 		// Name of image file used for this module.
@@ -68,20 +68,20 @@ class modLdap extends DolibarrModules {
 
 		// Constants
 		$this->const = array(
-			0 => array('LDAP_SERVER_TYPE', 'chaine', 'openldap', '', 0),
-			1 => array('LDAP_SERVER_PROTOCOLVERSION', 'chaine', '3', '', 0),
-			2 => array('LDAP_SERVER_HOST', 'chaine', 'localhost', '', 0),
-			3 => array('LDAP_USER_DN', 'chaine', 'ou=users,dc=my-domain,dc=com', '', 0),
-			4 => array('LDAP_GROUP_DN', 'chaine', 'ou=groups,dc=my-domain,dc=com', '', 0),
-			5 => array('LDAP_FILTER_CONNECTION', 'chaine', '&(objectClass=user)(objectCategory=person)', '', 0),
-			6 => array('LDAP_FIELD_LOGIN', 'chaine', 'uid', '', 0),
-			7 => array('LDAP_FIELD_FULLNAME', 'chaine', 'cn', '', 0),
-			8 => array('LDAP_FIELD_NAME', 'chaine', 'sn', '', 0),
-			9 => array('LDAP_FIELD_FIRSTNAME', 'chaine', 'givenname', '', 0),
-			10 => array('LDAP_FIELD_MAIL', 'chaine', 'mail', '', 0),
-			11 => array('LDAP_FIELD_PHONE', 'chaine', 'telephonenumber', '', 0),
-			12 => array('LDAP_FIELD_FAX', 'chaine', 'facsimiletelephonenumber', '', 0),
-			13 => array('LDAP_FIELD_MOBILE', 'chaine', 'mobile', '', 0),
+		0=>array('LDAP_SERVER_TYPE','chaine','openldap','',0),
+		1=>array('LDAP_SERVER_PROTOCOLVERSION','chaine','3','',0),
+		2=>array('LDAP_SERVER_HOST','chaine','localhost','',0),
+		3=>array('LDAP_USER_DN','chaine','ou=users,dc=my-domain,dc=com','',0),
+		4=>array('LDAP_GROUP_DN','chaine','ou=groups,dc=my-domain,dc=com','',0),
+		5=>array('LDAP_FILTER_CONNECTION','chaine','&(objectClass=user)(objectCategory=person)','',0),
+		6=>array('LDAP_FIELD_LOGIN','chaine','uid','',0),
+		7=>array('LDAP_FIELD_FULLNAME','chaine','cn','',0),
+		8=>array('LDAP_FIELD_NAME','chaine','sn','',0),
+		9=>array('LDAP_FIELD_FIRSTNAME','chaine','givenname','',0),
+		10=>array('LDAP_FIELD_MAIL','chaine','mail','',0),
+		11=>array('LDAP_FIELD_PHONE','chaine','telephonenumber','',0),
+		12=>array('LDAP_FIELD_FAX','chaine','facsimiletelephonenumber','',0),
+		13=>array('LDAP_FIELD_MOBILE','chaine','mobile','',0),
 		);
 
 		// Boites
@@ -93,33 +93,34 @@ class modLdap extends DolibarrModules {
 	}
 
 	/**
-	 * 		Function called when module is enabled.
-	 * 		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
-	 * 		It also creates data directories
+	 *		Function called when module is enabled.
+	 *		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
+	 *		It also creates data directories
 	 *
-	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
+     *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
 	 */
-	function init($options = '') {
+	function init($options='')
+	{
 		$sql = array();
 
-		return $this->_init($sql, $options);
+		return $this->_init($sql,$options);
 	}
 
-	/**
-	 * 		Function called when module is disabled.
+    /**
+	 *		Function called when module is disabled.
 	 *      Remove from database constants, boxes and permissions from Dolibarr database.
-	 * 		Data directories are not deleted
+	 *		Data directories are not deleted
 	 *
-	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
+     *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
-	 */
-	function remove($options = '') {
+     */
+    function remove($options='')
+    {
 		$sql = array();
 
-		return $this->_remove($sql, $options);
-	}
+		return $this->_remove($sql,$options);
+    }
 
 }
-
 ?>

@@ -1,0 +1,35 @@
+{
+   "_id": "dict:fk_effectif",
+   "_rev": "1-c51bad2a9cfcc88dd74c74c35e1993db",
+   "values": {
+       "EF0": {
+           "enable": true,
+           "label": "-"
+       },
+       "EF1-5": {
+           "enable": true,
+           "label": "1 - 5"
+       },
+       "EF6-10": {
+           "enable": true,
+           "label": "6 - 10"
+       },
+       "EF11-50": {
+           "enable": true,
+           "label": "11 - 50"
+       },
+       "EF51-100": {
+           "enable": true,
+           "label": "51 - 100"
+       },
+       "EF100-500": {
+           "enable": true,
+           "label": "100 - 500"
+       },
+       "EF500-": {
+           "enable": true,
+           "label": "> 500"
+       }
+   },
+   "class": "dict"
+}

@@ -23,10 +23,10 @@
  *   \brief      Page to setup boxes
  */
 
-require("../main.inc.php");
-include_once(DOL_DOCUMENT_ROOT."/core/boxes/modules_boxes.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/infobox.class.php");
-include_once(DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php");
+require '../main.inc.php';
+include_once DOL_DOCUMENT_ROOT.'/core/boxes/modules_boxes.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/infobox.class.php';
+include_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 
 $langs->load("admin");
 
@@ -91,9 +91,9 @@ if ($action == 'add')
 	    if (! $error && $fk_user != 0)    // We will add fk_user = 0 later.
 	    {
 	        $sql = "INSERT INTO ".MAIN_DB_PREFIX."boxes (";
-	        $sql.= "box_id, position, box_order, fk_user";
+	        $sql.= "box_id, position, box_order, fk_user, entity";
 	        $sql.= ") values (";
-	        $sql.= GETPOST("boxid","int").", ".GETPOST("pos","alpha").", 'A01', ".$fk_user;
+	        $sql.= GETPOST("boxid","int").", ".GETPOST("pos","alpha").", 'A01', ".$fk_user.", ".$conf->entity;
 	        $sql.= ")";
 
 	        dol_syslog("boxes.php activate box sql=".$sql);
@@ -110,9 +110,9 @@ if ($action == 'add')
 	if (! $error)
 	{
 	    $sql = "INSERT INTO ".MAIN_DB_PREFIX."boxes (";
-	    $sql.= "box_id, position, box_order, fk_user";
+	    $sql.= "box_id, position, box_order, fk_user, entity";
 	    $sql.= ") values (";
-	    $sql.= GETPOST("boxid","int").", ".GETPOST("pos","alpha").", 'A01', 0";
+	    $sql.= GETPOST("boxid","int").", ".GETPOST("pos","alpha").", 'A01', 0, ".$conf->entity;
 	    $sql.= ")";
 
 	    dol_syslog("boxes.php activate box sql=".$sql);
@@ -126,7 +126,7 @@ if ($action == 'add')
 
 	if (! $error)
 	{
-		Header("Location: ".$_SERVER['PHP_SELF']);
+		header("Location: boxes.php");
 	    $db->commit();
 		exit;
 	}
@@ -153,7 +153,9 @@ if ($action == 'delete')
         //	$resql = $db->query($sql);
 
 	    $sql = "DELETE FROM ".MAIN_DB_PREFIX."boxes";
-    	$sql.= " WHERE box_id=".$obj->box_id;
+	    $sql.= " WHERE entity = ".$conf->entity;
+    	$sql.= " AND box_id=".$obj->box_id;
+
     	$resql = $db->query($sql);
 
     	$db->commit();
@@ -183,12 +185,12 @@ if ($action == 'switch')
 	         $newsecondnum=preg_replace('/[a-zA-Z]+/','',$newsecond);
 	         $newsecond=sprintf("%s%02d",$newsecondchar?$newsecondchar:'A',$newsecondnum+1);
 	    }
-		$sql="UPDATE ".MAIN_DB_PREFIX."boxes set box_order='".$newfirst."' WHERE rowid=".$objfrom->rowid;
+		$sql="UPDATE ".MAIN_DB_PREFIX."boxes SET box_order='".$newfirst."' WHERE rowid=".$objfrom->rowid;
 		dol_syslog($sql);
 		$resultupdatefrom = $db->query($sql);
 		if (! $resultupdatefrom) { dol_print_error($db); }
 
-		$sql="UPDATE ".MAIN_DB_PREFIX."boxes set box_order='".$newsecond."' WHERE rowid=".$objto->rowid;
+		$sql="UPDATE ".MAIN_DB_PREFIX."boxes SET box_order='".$newsecond."' WHERE rowid=".$objto->rowid;
 		dol_syslog($sql);
 		$resultupdateto = $db->query($sql);
 		if (! $resultupdateto) { dol_print_error($db); }
@@ -232,8 +234,8 @@ $actives = array();
 $sql = "SELECT b.rowid, b.box_id, b.position, b.box_order,";
 $sql.= " bd.rowid as boxid";
 $sql.= " FROM ".MAIN_DB_PREFIX."boxes as b, ".MAIN_DB_PREFIX."boxes_def as bd";
-$sql.= " WHERE b.box_id = bd.rowid";
-$sql.= " AND bd.entity = ".$conf->entity;
+$sql.= " WHERE b.entity = ".$conf->entity;
+$sql.= " AND b.box_id = bd.rowid";
 $sql.= " AND b.fk_user=0";
 $sql.= " ORDER by b.position, b.box_order";
 
@@ -257,7 +259,7 @@ if ($resql)
 		// This occurs just after an insert.
 		if ($decalage)
 		{
-			$sql="UPDATE ".MAIN_DB_PREFIX."boxes set box_order='".$decalage."' WHERE rowid=".$obj->rowid;
+			$sql="UPDATE ".MAIN_DB_PREFIX."boxes SET box_order='".$decalage."' WHERE rowid=".$obj->rowid;
 			$db->query($sql);
 		}
 	}
@@ -268,7 +270,8 @@ if ($resql)
 		// This occurs just after an insert.
 		$sql = "SELECT box_order";
 		$sql.= " FROM ".MAIN_DB_PREFIX."boxes";
-		$sql.= " WHERE length(box_order) <= 2";
+		$sql.= " WHERE entity = ".$conf->entity;
+		$sql.= " AND LENGTH(box_order) <= 2";
 
 		dol_syslog("Execute requests to renumber box order sql=".$sql);
 		$result = $db->query($sql);
@@ -281,13 +284,13 @@ if ($resql)
 					if (preg_match("/[13579]{1}/",substr($record['box_order'],-1)))
 					{
 						$box_order = "A0".$record['box_order'];
-						$sql="UPDATE ".MAIN_DB_PREFIX."boxes SET box_order = '".$box_order."' WHERE box_order = '".$record['box_order']."'";
+						$sql="UPDATE ".MAIN_DB_PREFIX."boxes SET box_order = '".$box_order."' WHERE entity = ".$conf->entity." AND box_order = '".$record['box_order']."'";
 						$resql = $db->query($sql);
 					}
 					else if (preg_match("/[02468]{1}/",substr($record['box_order'],-1)))
 					{
 						$box_order = "B0".$record['box_order'];
-						$sql="UPDATE ".MAIN_DB_PREFIX."boxes SET box_order = '".$box_order."' WHERE box_order = '".$record['box_order']."'";
+						$sql="UPDATE ".MAIN_DB_PREFIX."boxes SET box_order = '".$box_order."' WHERE entity = ".$conf->entity." AND box_order = '".$record['box_order']."'";
 						$resql = $db->query($sql);
 					}
 				}
@@ -296,13 +299,13 @@ if ($resql)
 					if (preg_match("/[13579]{1}/",substr($record['box_order'],-1)))
 					{
 						$box_order = "A".$record['box_order'];
-						$sql="UPDATE ".MAIN_DB_PREFIX."boxes SET box_order = '".$box_order."' WHERE box_order = '".$record['box_order']."'";
+						$sql="UPDATE ".MAIN_DB_PREFIX."boxes SET box_order = '".$box_order."' WHERE entity = ".$conf->entity." AND box_order = '".$record['box_order']."'";
 						$resql = $db->query($sql);
 					}
 					else if (preg_match("/[02468]{1}/",substr($record['box_order'],-1)))
 					{
 						$box_order = "B".$record['box_order'];
-						$sql="UPDATE ".MAIN_DB_PREFIX."boxes SET box_order = '".$box_order."' WHERE box_order = '".$record['box_order']."'";
+						$sql="UPDATE ".MAIN_DB_PREFIX."boxes SET box_order = '".$box_order."' WHERE entity = ".$conf->entity." AND box_order = '".$record['box_order']."'";
 						$resql = $db->query($sql);
 					}
 				}
@@ -314,7 +317,7 @@ if ($resql)
 
 
 // Available boxes
-$boxtoadd=InfoBox::listboxes($db,'available',-1,$emptyuser,$actives);
+$boxtoadd=InfoBox::listBoxes($db,'available',-1,$emptyuser,$actives);
 
 print "<br>\n";
 print_titre($langs->trans("BoxesAvailable"));
@@ -353,7 +356,7 @@ foreach($boxtoadd as $box)
     print $form->selectarray("pos",$pos_name);
     print '<input type="hidden" name="action" value="add">';
     print '<input type="hidden" name="boxid" value="'.$box->box_id.'">';
-    print ' <input type="submit" class="nice button tiny" name="button" value="'.$langs->trans("Activate").'">';
+    print ' <input type="submit" class="button" name="button" value="'.$langs->trans("Activate").'">';
     print '</td>';
 
     print '</tr>';
@@ -364,7 +367,7 @@ print '</table>';
 
 
 // Activated boxes
-$boxactivated=InfoBox::listboxes($db,'activated',-1,$emptyuser);
+$boxactivated=InfoBox::listBoxes($db,'activated',-1,$emptyuser);
 
 print "<br>\n\n";
 print_titre($langs->trans("BoxesActivated"));
@@ -403,11 +406,11 @@ foreach($boxactivated as $key => $box)
 	$hasprevious=($key != 0);
 	print '<td align="center">'.($key+1).'</td>';
 	print '<td align="center">';
-	print ($hasnext?'<a href="'.$_SERVER['PHP_SELF'].'?action=switch&switchfrom='.$box->rowid.'&switchto='.$boxactivated[$key+1]->rowid.'">'.img_down().'</a>&nbsp;':'');
-	print ($hasprevious?'<a href="'.$_SERVER['PHP_SELF'].'?action=switch&switchfrom='.$box->rowid.'&switchto='.$boxactivated[$key-1]->rowid.'">'.img_up().'</a>':'');
+	print ($hasnext?'<a href="boxes.php?action=switch&switchfrom='.$box->rowid.'&switchto='.$boxactivated[$key+1]->rowid.'">'.img_down().'</a>&nbsp;':'');
+	print ($hasprevious?'<a href="boxes.php?action=switch&switchfrom='.$box->rowid.'&switchto='.$boxactivated[$key-1]->rowid.'">'.img_up().'</a>':'');
 	print '</td>';
 	print '<td align="center">';
-	print '<a href="'.$_SERVER['PHP_SELF'].'?rowid='.$box->rowid.'&amp;action=delete">'.img_delete().'</a>';
+	print '<a href="boxes.php?rowid='.$box->rowid.'&amp;action=delete">'.img_delete().'</a>';
 	print '</td>';
 
 	print '</tr>'."\n";
@@ -438,14 +441,13 @@ print '<td>';
 print '<input type="text" class="flat" size="6" name="MAIN_BOXES_MAXLINES" value="'.$conf->global->MAIN_BOXES_MAXLINES.'">';
 print '</td>';
 print '<td align="right">';
-print '<input type="submit" class="button nice tiny" value="'.$langs->trans("Save").'" name="Button">';
+print '<input type="submit" class="button" value="'.$langs->trans("Save").'" name="Button">';
 print '</td>'."\n";
 print '</tr>';
 print '</form>';
 
 print '</table>';
 
-dol_fiche_end();
 
 llxFooter();
 

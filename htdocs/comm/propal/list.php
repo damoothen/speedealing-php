@@ -29,13 +29,14 @@
  *	\brief      	Page of commercial proposals card and list
  */
 
-require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formother.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/class/html.formpropal.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/date.lib.php");
-require_once(DOL_DOCUMENT_ROOT.'/comm/propal/class/propal.class.php');
-if ($conf->projet->enabled)   require_once(DOL_DOCUMENT_ROOT.'/projet/class/project.class.php');
+require '../../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formpropal.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/comm/propal/class/propal.class.php';
+if (! empty($conf->projet->enabled))
+	require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 
 $langs->load('companies');
 $langs->load('propal');
@@ -44,12 +45,7 @@ $langs->load('bills');
 $langs->load('orders');
 $langs->load('products');
 
-$id=GETPOST('id','int');
-$ref=GETPOST('ref','alpha');
 $socid=GETPOST('socid','int');
-$action=GETPOST('action','alpha');
-$confirm=GETPOST('confirm','alpha');
-$lineid=GETPOST('lineid','int');
 
 $search_user=GETPOST('search_user','int');
 $search_sale=GETPOST('search_sale','int');
@@ -67,32 +63,21 @@ $month=GETPOST("month");
 $NBLINES=4;
 
 // Security check
-$module='propale';
-if (isset($socid))
+$module='propal';
+$dbtable='';
+$objectid='';
+if (! empty($user->societe_id))	$socid=$user->societe_id;
+if (! empty($socid))
 {
 	$objectid=$socid;
 	$module='societe';
 	$dbtable='&societe';
 }
-else if (isset($id) &&  $id > 0)
-{
-	$objectid=$id;
-	$module='propale';
-	$dbtable='propal';
-}
-if ($user->societe_id) $socid=$user->societe_id;
 $result = restrictedArea($user, $module, $objectid, $dbtable);
 
-$object = new Propal($db);
-
-// Load object
-if ($id > 0 || ! empty($ref))
-{
-	$ret=$object->fetch($id, $ref);
-}
 
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
-include_once(DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php');
+include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
 $hookmanager=new HookManager($db);
 $hookmanager->initHooks(array('propalcard'));
 
@@ -249,6 +234,7 @@ if ($result)
  	// If the user can view prospects other than his'
  	if ($user->rights->societe->client->voir || $socid)
  	{
+ 		$langs->load("commercial");
 	 	$moreforfilter.=$langs->trans('ThirdPartiesOfSaleRepresentative'). ': ';
 		$moreforfilter.=$formother->select_salesrepresentatives($search_sale,'search_sale',$user);
 	 	$moreforfilter.=' &nbsp; &nbsp; &nbsp; ';
@@ -335,7 +321,7 @@ if ($result)
 		$filename=dol_sanitizeFileName($objp->ref);
 		$filedir=$conf->propal->dir_output . '/' . dol_sanitizeFileName($objp->ref);
 		$urlsource=$_SERVER['PHP_SELF'].'?id='.$objp->propalid;
-		$formfile->show_documents('propal',$filename,$filedir,$urlsource,'','','',1,'',1);
+		print $formfile->getDocumentsLink($objectstatic->element, $filename, $filedir);
 		print '</td></tr></table>';
 
 		if ($objp->client == 1)

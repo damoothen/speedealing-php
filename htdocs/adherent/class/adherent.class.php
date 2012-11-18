@@ -101,10 +101,7 @@ class Adherent extends nosqlDocument {
 		parent::__construct($db);
 
 		try {
-			$this->couchdb->useDatabase('adherent');
-			
 			$fk_extrafields = new ExtraFields($db);
-			$fk_extrafields->useDatabase('adherent');
 			$this->fk_extrafields = $fk_extrafields->load("extrafields:" . get_class($this), true); // load and cache
 		} catch (Exception $e) {
 			dol_print_error('',$e->getMessage());
@@ -688,7 +685,8 @@ class Adherent extends nosqlDocument {
 	function fetch($rowid, $ref = '', $fk_soc = '') {
 		global $langs;
 
-		$result = $this->load($rowid);
+                if(!empty($rowid))
+                    $result = $this->load($rowid);
 		return $result;
 
 		/* $sql = "SELECT d.rowid, d.civilite, d.prenom as firstname, d.nom as lastname, d.societe, d.fk_soc, d.statut, d.public, d.adresse as address, d.cp as zip, d.ville as town, d.note,";

@@ -23,12 +23,12 @@
 // This is to make Dolibarr working with Plesk
 set_include_path($_SERVER['DOCUMENT_ROOT'].'/htdocs');
 
-require_once("../master.inc.php");
-require_once(NUSOAP_PATH.'/nusoap.php');        // Include SOAP
-require_once(DOL_DOCUMENT_ROOT."/core/lib/ws.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/user/class/user.class.php");
+require_once '../master.inc.php';
+require_once NUSOAP_PATH.'/nusoap.php';        // Include SOAP
+require_once DOL_DOCUMENT_ROOT.'/core/lib/ws.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
 
-require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
+require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 
 
 dol_syslog("Call Dolibarr webservices interfaces");
@@ -263,8 +263,8 @@ function getProductOrService($authentication,$id='',$ref='',$ref_ext='')
 			   			'ref_ext' => $product->ref_ext,
 			    		'label' => $product->label,
 			    		'description' => $product->description,
-			    		'date_creation' => $product->date_creation,
-			    		'date_modification' => $product->date_modification,
+			    		'date_creation' => dol_print_date($product->date_creation,'dayhourrfc'),
+			    		'date_modification' => dol_print_date($product->date_modification,'dayhourrfc'),
 			            'note' => $product->note,
 			            'status_tosell' => $product->status,
 			            'status_tobuy' => $product->status_buy,
@@ -342,7 +342,7 @@ function createProductOrService($authentication,$product)
 
     if (! $error)
     {
-        include_once(DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php');
+        include_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
 
         $newobject=new Product($db);
         $newobject->ref=$product['ref'];

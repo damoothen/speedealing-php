@@ -23,7 +23,7 @@
  *	\brief      Module de generation de l'affichage de la box clients
  */
 
-include_once(DOL_DOCUMENT_ROOT."/core/boxes/modules_boxes.php");
+include_once DOL_DOCUMENT_ROOT.'/core/boxes/modules_boxes.php';
 
 
 /**
@@ -45,7 +45,7 @@ class box_clients extends ModeleBoxes
 	/**
      *  Constructor
 	 */
-	function box_clients()
+	function __construct()
 	{
 		global $langs;
 		$langs->load("boxes");
@@ -61,13 +61,13 @@ class box_clients extends ModeleBoxes
 	 */
 	function loadBox($max=5)
 	{
-		global $user, $langs, $db, $conf, $couch;
+		global $user, $langs, $db, $conf;
 		$langs->load("boxes");
 
 		$this->max=$max;
 
-        include_once(DOL_DOCUMENT_ROOT."/societe/class/societe.class.php");
-        $thirdpartystatic=new Societe($couch);
+        include_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
+        $thirdpartystatic=new Societe($db);
 
         $this->info_box_head = array('text' => $langs->trans("BoxTitleLastModifiedCustomers",$max));
 

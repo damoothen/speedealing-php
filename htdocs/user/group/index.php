@@ -31,32 +31,41 @@ $object = new UserGroup($db);
  */
 
 if ($_GET['json'] == "list") {
-	$output = array(
-		"sEcho" => intval($_GET['sEcho']),
-		"iTotalRecords" => 0,
-		"iTotalDisplayRecords" => 0,
-		"aaData" => array()
-	);
+    $output = array(
+        "sEcho" => intval($_GET['sEcho']),
+        "iTotalRecords" => 0,
+        "iTotalDisplayRecords" => 0,
+        "aaData" => array()
+    );
 
-	try {
-		$result = $object->getView("list");
-	} catch (Exception $exc) {
-		print $exc->getMessage();
-	}
+    try {
+        $result1 = $object->getView("list");
+        $result2 = $object->getView("count_list", array("group"=>true));
+    } catch (Exception $exc) {
+        print $exc->getMessage();
+    }
 
-	//print_r ($result);
+    $iTotal = count($result1->rows);
+    $output["iTotalRecords"] = $iTotal;
+    $output["iTotalDisplayRecords"] = $iTotal;
+    
+    $result = array();
+    foreach ($result1->rows as $aRow) {
+        $result[$aRow->value->name] = $aRow->value;
+    }
+    
+    foreach ($result2->rows as $aRow) {
+        $result[$aRow->key]->nb = $aRow->value;
+    }
+    
+    foreach ($result as $aRow) {
+        $output["aaData"][] = $aRow;
+    }
 
-	$iTotal = count($result->rows);
-	$output["iTotalRecords"] = $iTotal;
-	$output["iTotalDisplayRecords"] = $iTotal;
-
-	foreach ($result->rows as $aRow) {
-		$output["aaData"][] = $aRow->value;
-	}
-
-	header('Content-type: application/json');
-	echo json_encode($output);
-	exit;
+    header('Content-type: application/json');
+    //echo $_GET["callback"] . '(' . json_encode($output) . ');';
+    echo json_encode($output);
+    exit;
 }
 
 /*
@@ -65,22 +74,31 @@ if ($_GET['json'] == "list") {
 
 llxHeader();
 
-print '<div class="row">';
-print start_box($langs->trans("ListOfGroups"), "twelve", "16-Users-2.png", false);
+$title = $langs->trans("ListOfGroups");
 
-print ' <div class="row sepH_b">';
-print ' <div class="right">';
+print_fiche_titre($title);
+print '<div class="with-padding">';
+print '<div class="columns">';
+print start_box($title, "twelve", "16-Users-2.png", false);
+
+/*
+ * Barre d'actions
+ *
+ */
+
 if ($user->admin) {
-	//print '<a class="gh_button primary pill icon add" href="'.DOL_URL_ROOT.'/user/database/fiche.php?action=create">'.$langs->trans("Create").'</a>';
-	//$object->buttonCreate(DOL_URL_ROOT . '/user/database/fiche.php');
+    print '<p class="button-height right">';
+    print '<span class="button-group">';
+    print '<a class="button icon-star" href="user/group/fiche.php?action=create">' . $langs->trans("CreateGroup") . '</a>';
+    print "</span>";
+    print "</p>";
 }
-print "</div>\n";
-print "</div>\n";
+
 
 $i = 0;
 $obj = new stdClass();
 
-print '<table class="display dt_act" id="user" >';
+print '<table class="display dt_act" id="group" >';
 // Ligne des titres 
 print'<thead>';
 print'<tr>';
@@ -92,7 +110,7 @@ $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->bSearchable = true;
 $obj->aoColumns[$i]->fnRender = 'function(obj) {
 	var ar = [];
-	ar[ar.length] = "<img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . $object->fk_extrafields->ico . '\" border=\"0\" alt=\"' . $langs->trans("See " . get_class($object)) . ' : ";
+	ar[ar.length] = "<img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/ico/icSw2/' . $object->fk_extrafields->ico . '\" border=\"0\" alt=\"' . $langs->trans("See " . get_class($object)) . ' : ";
 	ar[ar.length] = obj.aData.name.toString();
 	ar[ar.length] = "\" title=\"' . $langs->trans("See " . get_class($object)) . ' : ";
 	ar[ar.length] = obj.aData.name.toString();
@@ -108,7 +126,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans('NbUsers');
 print'</th>';
-$obj->aoColumns[$i]->mDataProp = "doc_count";
+$obj->aoColumns[$i]->mDataProp = "nb";
 $obj->aoColumns[$i]->sDefaultContent = 0;
 $obj->aoColumns[$i]->sClass = "fright";
 $i++;
@@ -126,7 +144,7 @@ $obj->sAjaxSource = $_SERVER['PHP_SELF'] . '?json=list';
 
 $obj->aaSorting = array(array(0, "asc"));
 
-$object->datatablesCreate($obj, "user", true);
+$object->datatablesCreate($obj, "group", true);
 
 
 

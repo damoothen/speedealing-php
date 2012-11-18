@@ -22,13 +22,13 @@
  *      \brief      Run migration script
  */
 
-include_once("./inc.php");
+include_once 'inc.php';
 if (! file_exists($conffile))
 {
     print 'Error: Dolibarr config file was not found. This may means that Dolibarr is not installed yet. Please call the page "/install/index.php" instead of "/install/upgrade.php").';
 }
-require_once($conffile); if (! isset($dolibarr_main_db_type)) $dolibarr_main_db_type='mysql';	// For backward compatibility
-require_once($dolibarr_main_document_root."/core/lib/admin.lib.php");
+require_once $conffile; if (! isset($dolibarr_main_db_type)) $dolibarr_main_db_type='mysql';	// For backward compatibility
+require_once $dolibarr_main_document_root.'/core/lib/admin.lib.php';
 
 $grant_query='';
 $etape = 2;
@@ -49,6 +49,7 @@ $versionto=GETPOST("versionto",'',3)?GETPOST("versionto",'',3):(empty($argv[2])?
 
 $langs->load("admin");
 $langs->load("install");
+$langs->load("errors");
 
 if ($dolibarr_main_db_type == "mysql") $choix=1;
 if ($dolibarr_main_db_type == "mysqli") $choix=1;
@@ -87,7 +88,7 @@ if (! GETPOST("action") || preg_match('/upgrade/i',GETPOST('action')))
     // If password is encoded, we decode it
     if (preg_match('/crypted:/i',$dolibarr_main_db_pass) || ! empty($dolibarr_main_db_encrypted_pass))
     {
-        require_once($dolibarr_main_document_root."/core/lib/security.lib.php");
+        require_once $dolibarr_main_document_root.'/core/lib/security.lib.php';
         if (preg_match('/crypted:/i',$dolibarr_main_db_pass))
         {
             $dolibarr_main_db_pass = preg_replace('/crypted:/i', '', $dolibarr_main_db_pass);
@@ -152,79 +153,103 @@ if (! GETPOST("action") || preg_match('/upgrade/i',GETPOST('action')))
         print '<tr><td>'.$langs->trans("ServerVersion").'</td>';
         print '<td align="right">'.$version.'</td></tr>';
         dolibarr_install_syslog("upgrade: ".$langs->transnoentities("ServerVersion")." : $version");
-        //print '<td align="right">'.join('.',$versionarray).'</td></tr>';
+
+        // Test database version
+        $versionmindb=getStaticMember(get_class($db),'versionmin');
+        //print join('.',$versionarray).' - '.join('.',$versionmindb);
+        if (count($versionmindb) && count($versionarray)
+        	&& versioncompare($versionarray,$versionmindb) < 0)
+        {
+        	// Warning: database version too low.
+        	print "<tr><td>".$langs->trans("ErrorDatabaseVersionTooLow",join('.',$versionarray),join('.',$versionmindb))."</td><td align=\"right\">".$langs->trans("Error")."</td></tr>\n";
+        	dolibarr_install_syslog("upgrade: ".$langs->transnoentities("ErrorDatabaseVersionTooLow",join('.',$versionarray),join('.',$versionmindb)));
+        	$ok=0;
+        }
+
     }
 
     // Force l'affichage de la progression
-    print '<tr><td colspan="2">'.$langs->trans("PleaseBePatient").'</td></tr>';
-    flush();
-
+    if ($ok)
+    {
+	    print '<tr><td colspan="2">'.$langs->trans("PleaseBePatient").'</td></tr>';
+	    flush();
+    }
 
     /*
      * Delete duplicates in table categorie_association
      */
-    $couples=array();
-    $filles=array();
-    $sql = "SELECT fk_categorie_mere, fk_categorie_fille";
-    $sql.= " FROM ".MAIN_DB_PREFIX."categorie_association";
-    dolibarr_install_syslog("upgrade: search duplicate sql=".$sql);
-    $resql = $db->query($sql);
-    if ($resql)
+    if ($ok)
     {
-        $num=$db->num_rows($resql);
-        while ($obj=$db->fetch_object($resql))
-        {
-            if (! isset($filles[$obj->fk_categorie_fille]))	// Only one record as child (a child has only on parent).
-            {
-                if ($obj->fk_categorie_mere != $obj->fk_categorie_fille)
-                {
-                    $filles[$obj->fk_categorie_fille]=1;	// Set record for this child
-                    $couples[$obj->fk_categorie_mere.'_'.$obj->fk_categorie_fille]=array('mere'=>$obj->fk_categorie_mere, 'fille'=>$obj->fk_categorie_fille);
-                }
-            }
-        }
+	    $result = $db->DDLDescTable(MAIN_DB_PREFIX."categorie_association");
+	    $obj = $db->fetch_object($result);
+	    if ($obj)	// It table categorie_association exists
+	    {
+	    	$couples=array();
+		    $filles=array();
+		    $sql = "SELECT fk_categorie_mere, fk_categorie_fille";
+		    $sql.= " FROM ".MAIN_DB_PREFIX."categorie_association";
+		    dolibarr_install_syslog("upgrade: search duplicate sql=".$sql);
+		    $resql = $db->query($sql);
+		    if ($resql)
+		    {
+		        $num=$db->num_rows($resql);
+		        while ($obj=$db->fetch_object($resql))
+		        {
+		            if (! isset($filles[$obj->fk_categorie_fille]))	// Only one record as child (a child has only on parent).
+		            {
+		                if ($obj->fk_categorie_mere != $obj->fk_categorie_fille)
+		                {
+		                    $filles[$obj->fk_categorie_fille]=1;	// Set record for this child
+		                    $couples[$obj->fk_categorie_mere.'_'.$obj->fk_categorie_fille]=array('mere'=>$obj->fk_categorie_mere, 'fille'=>$obj->fk_categorie_fille);
+		                }
+		            }
+		        }
 
-        dolibarr_install_syslog("upgrade: result is num=".$num." count(couples)=".count($couples));
+		        dolibarr_install_syslog("upgrade: result is num=".$num." count(couples)=".count($couples));
 
-        // If there is duplicates couples or child with two parents
-        if (count($couples) > 0 && $num > count($couples))
-        {
-            $error=0;
+		        // If there is duplicates couples or child with two parents
+		        if (count($couples) > 0 && $num > count($couples))
+		        {
+		            $error=0;
 
-            $db->begin();
+		            $db->begin();
 
-            $sql="DELETE FROM ".MAIN_DB_PREFIX."categorie_association";
-            dolibarr_install_syslog("upgrade: delete association sql=".$sql);
-            $resqld=$db->query($sql);
-            if ($resqld)
-            {
-                foreach($couples as $key => $val)
-                {
-                    $sql ="INSERT INTO ".MAIN_DB_PREFIX."categorie_association(fk_categorie_mere,fk_categorie_fille)";
-                    $sql.=" VALUES(".$val['mere'].", ".$val['fille'].")";
-                    dolibarr_install_syslog("upgrade: insert association sql=".$sql);
-                    $resqli=$db->query($sql);
-                    if (! $resqli) $error++;
-                }
-            }
+		            // We delete all
+		            $sql="DELETE FROM ".MAIN_DB_PREFIX."categorie_association";
+		            dolibarr_install_syslog("upgrade: delete association sql=".$sql);
+		            $resqld=$db->query($sql);
+		            if ($resqld)
+		            {
+		            	// And we insert only each record once
+		                foreach($couples as $key => $val)
+		                {
+		                    $sql ="INSERT INTO ".MAIN_DB_PREFIX."categorie_association(fk_categorie_mere,fk_categorie_fille)";
+		                    $sql.=" VALUES(".$val['mere'].", ".$val['fille'].")";
+		                    dolibarr_install_syslog("upgrade: insert association sql=".$sql);
+		                    $resqli=$db->query($sql);
+		                    if (! $resqli) $error++;
+		                }
+		            }
 
-            if (! $error)
-            {
-                print '<tr><td>'.$langs->trans("RemoveDuplicates").'</td>';
-                print '<td align="right">'.$langs->trans("Success").' ('.$num.'=>'.count($couples).')</td></tr>';
-                $db->commit();
-            }
-            else
-            {
-                print '<tr><td>'.$langs->trans("RemoveDuplicates").'</td>';
-                print '<td align="right">'.$langs->trans("Failed").'</td></tr>';
-                $db->rollback();
-            }
-        }
-    }
-    else
-    {
-        print '<div class="error">'.$langs->trans("Error").'</div>';
+		            if (! $error)
+		            {
+		                print '<tr><td>'.$langs->trans("RemoveDuplicates").'</td>';
+		                print '<td align="right">'.$langs->trans("Success").' ('.$num.'=>'.count($couples).')</td></tr>';
+		                $db->commit();
+		            }
+		            else
+		            {
+		                print '<tr><td>'.$langs->trans("RemoveDuplicates").'</td>';
+		                print '<td align="right">'.$langs->trans("Failed").'</td></tr>';
+		                $db->rollback();
+		            }
+		        }
+		    }
+		    else
+		    {
+		        print '<div class="error">'.$langs->trans("Error").' '.$db->lasterror().'</div>';
+		    }
+	    }
     }
 
 	/*
@@ -232,7 +257,7 @@ if (! GETPOST("action") || preg_match('/upgrade/i',GETPOST('action')))
 	 */
     if ($ok && preg_match('/mysql/',$db->type))
     {
-        $versioncommande=explode('.','4.0');
+        $versioncommande=array(4,0,0);
         if (count($versioncommande) && count($versionarray)
         && versioncompare($versioncommande,$versionarray) <= 0)	// Si mysql >= 4.0
         {
@@ -292,11 +317,15 @@ if (! GETPOST("action") || preg_match('/upgrade/i',GETPOST('action')))
     {
         $dir = "mysql/migration/";		// We use mysql migration scripts whatever is database driver
 
+        // For minor version
+        $newversionfrom=preg_replace('/(\.[0-9]+)$/i','.0',$versionfrom);
+        $newversionto=preg_replace('/(\.[0-9]+)$/i','.0',$versionto);
+
         $filelist=array();
         $i = 0;
         $ok = 0;
-        $from='^'.$versionfrom;
-        $to=$versionto.'\.sql$';
+        $from='^'.$newversionfrom;
+        $to=$newversionto.'\.sql$';
 
         // Get files list
         $filesindir=array();
@@ -351,10 +380,14 @@ if (empty($actiondone))
     print '<div class="error">'.$langs->trans("ErrorWrongParameters").'</div>';
 }
 
+$ret=0;
+if (! $ok && isset($argv[1])) $ret=1;
+dol_syslog("Exit ".$ret);
+
 pFooter(! $ok && empty($_GET["ignoreerrors"]),$setuplang);
 
 if ($db->connected) $db->close();
 
 // Return code if ran from command line
-if (! $ok && isset($argv[1])) exit(1);
+if ($ret) exit($ret);
 ?>

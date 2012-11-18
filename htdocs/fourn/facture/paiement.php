@@ -26,10 +26,10 @@
  *	\brief      Payment page for suppliers invoices
  */
 
-require("../../main.inc.php");
-require(DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.class.php');
-require(DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.facture.class.php');
-require(DOL_DOCUMENT_ROOT.'/fourn/class/paiementfourn.class.php');
+require '../../main.inc.php';
+require DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.class.php';
+require DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.facture.class.php';
+require DOL_DOCUMENT_ROOT.'/fourn/class/paiementfourn.class.php';
 
 $langs->load('companies');
 $langs->load('bills');
@@ -90,7 +90,7 @@ if ($action == 'add_paiement')
         $error++;
     }
 
-    if ($conf->banque->enabled)
+    if (! empty($conf->banque->enabled))
     {
         // Si module bank actif, un compte est obligatoire lors de la saisie
         // d'un paiement
@@ -161,7 +161,7 @@ if ($action == 'add_paiement')
             }
             if ($invoiceid > 0) $loc = DOL_URL_ROOT.'/fourn/facture/fiche.php?facid='.$invoiceid;
             else $loc = DOL_URL_ROOT.'/fourn/paiement/fiche.php?id='.$paiement_id;
-            Header('Location: '.$loc);
+            header('Location: '.$loc);
             exit;
         }
         else
@@ -239,7 +239,7 @@ if ($action == 'create' || $action == 'add_paiement')
             print '<td rowspan="3" valign="top">';
             print '<textarea name="comment" wrap="soft" cols="60" rows="'._ROWS_3.'">'.(empty($_POST['comment'])?'':$_POST['comment']).'</textarea></td></tr>';
             print '<tr><td>'.$langs->trans('Numero').'</td><td><input name="num_paiement" type="text" value="'.(empty($_POST['num_paiement'])?'':$_POST['num_paiement']).'"></td></tr>';
-            if ($conf->banque->enabled)
+            if (! empty($conf->banque->enabled))
             {
                 print '<tr><td class="fieldrequired">'.$langs->trans('Account').'</td><td>';
                 $form->select_comptes(empty($_POST['accountid'])?'':$_POST['accountid'],'accountid',0,'',2);

@@ -1,0 +1,25 @@
+v1.3 (09/07/2012)
+  - Added drag&drop boxes with position saving
+  - Updated showMessage plugin
+  - Improved sticky footer
+  - Added hover for vertical menu
+  - Fixed oveflow content in tabs
+  
+v1.2 (19/05/2012)
+  - Fixed x-scroll datatables plugin
+  - Fixed server-side/hidden row datatables plugin
+  - Improved sticky footer
+  - Added Search Page
+  - Fixed minor bugs
+  
+v1.1 (22/04/2012)
+  - Added Tag Handler plugin
+  - Added Mask Input plugin
+  - Added Centered sticky nav
+  - Inproved compatibilty with ie7
+  - Minor bugs
+  
+v1.0 (31/03/2012)
+  - initial release
+  
+ 

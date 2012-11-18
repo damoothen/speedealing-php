@@ -70,6 +70,7 @@ Phone=Téléphone
 PhonePro=Tél pro.
 PhonePerso=Tél perso.
 PhoneMobile=Tél portable
+No_Email=Ne pas envoyer d'emailing de masse
 Fax=Fax
 Zip=Code postal
 Town=Ville
@@ -78,6 +79,7 @@ Poste= Poste
 DefaultLang=Langue par défaut
 VATIsUsed=Assujetti à TVA
 VATIsNotUsed=Non assujetti à TVA
+CopyAddressFromSoc=Remplir adresse avec adresse du tiers
 ##### Local Taxes #####
 LocalTax1IsUsedES= Assujetti à RE
 LocalTax1IsNotUsedES= Non assujetti à RE

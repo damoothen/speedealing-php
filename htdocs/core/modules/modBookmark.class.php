@@ -25,14 +25,12 @@
  *	\brief      Fichier de description et activation du module Bookmarks
  */
 
-include_once(DOL_DOCUMENT_ROOT ."/core/modules/DolibarrModules.class.php");
+include_once DOL_DOCUMENT_ROOT .'/core/modules/DolibarrModules.class.php';
 
 
 /**
- *	\class      modBookmark
- *	\brief      Classe de description et activation du module Bookmark
+ *	Classe de description et activation du module Bookmark
  */
-
 class modBookmark extends DolibarrModules
 {
 
@@ -41,7 +39,7 @@ class modBookmark extends DolibarrModules
 	 *
 	 *   @param      DoliDB		$db      Database handler
 	 */
-	function modBookmark($db)
+	function __construct($db)
 	{
 		parent::__construct($db);
 		$this->numero = 330;

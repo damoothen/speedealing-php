@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+
+<!--[if IEMobile 7]><html class="no-js iem7 oldie"><![endif]-->
+<!--[if (IE 7)&!(IEMobile)]><html class="no-js ie7 oldie" lang="en"><![endif]-->
+<!--[if (IE 8)&!(IEMobile)]><html class="no-js ie8 oldie" lang="en"><![endif]-->
+<!--[if (IE 9)&!(IEMobile)]><html class="no-js ie9" lang="en"><![endif]-->
+<!--[if (gt IE 9)|(gt IEMobile 7)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+	<title>Developr</title>
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<!-- http://davidbcalhoun.com/2010/viewport-metatag -->
+	<meta name="HandheldFriendly" content="True">
+	<meta name="MobileOptimized" content="320">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<!-- For all browsers -->
+	<link rel="stylesheet" href="css/reset.css?v=1">
+	<link rel="stylesheet" href="css/style.css?v=1">
+	<link rel="stylesheet" href="css/colors.css?v=1">
+	<link rel="stylesheet" media="print" href="css/print.css?v=1">
+	<!-- For progressively larger displays -->
+	<link rel="stylesheet" media="only all and (min-width: 480px)" href="css/480.css?v=1">
+	<link rel="stylesheet" media="only all and (min-width: 768px)" href="css/768.css?v=1">
+	<link rel="stylesheet" media="only all and (min-width: 992px)" href="css/992.css?v=1">
+	<link rel="stylesheet" media="only all and (min-width: 1200px)" href="css/1200.css?v=1">
+	<!-- For Retina displays -->
+	<link rel="stylesheet" media="only all and (-webkit-min-device-pixel-ratio: 1.5), only screen and (-o-min-device-pixel-ratio: 3/2), only screen and (min-device-pixel-ratio: 1.5)" href="css/2x.css?v=1">
+
+	<!-- Webfonts -->
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
+
+	<!-- Additional styles -->
+	<link rel="stylesheet" href="css/styles/form.css?v=1">
+	<link rel="stylesheet" href="css/styles/switches.css?v=1">
+
+	<!-- Google code prettifier -->
+	<link rel="stylesheet" href="js/libs/google-code-prettify/sunburst.css?v=1">
+
+	<!-- JavaScript at bottom except for Modernizr -->
+	<script src="js/libs/modernizr.custom.js"></script>
+
+	<!-- For Modern Browsers -->
+	<link rel="shortcut icon" href="img/favicons/favicon.png">
+	<!-- For everything else -->
+	<link rel="shortcut icon" href="img/favicons/favicon.ico">
+	<!-- For retina screens -->
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/favicons/apple-touch-icon-retina.png">
+	<!-- For iPad 1-->
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/favicons/apple-touch-icon-ipad.png">
+	<!-- For iPhone 3G, iPod Touch and Android -->
+	<link rel="apple-touch-icon-precomposed" href="img/favicons/apple-touch-icon.png">
+
+	<!-- iOS web-app metas -->
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+	<!-- Startup image for web apps -->
+	<link rel="apple-touch-startup-image" href="img/splash/ipad-landscape.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)">
+	<link rel="apple-touch-startup-image" href="img/splash/ipad-portrait.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)">
+	<link rel="apple-touch-startup-image" href="img/splash/iphone.png" media="screen and (max-device-width: 320px)">
+
+	<!-- Microsoft clear type rendering -->
+	<meta http-equiv="cleartype" content="on">
+</head>
+
+<body class="clearfix with-menu with-shortcuts">
+
+	<!-- Prompt IE 6 users to install Chrome Frame -->
+	<!--[if lt IE 7]><p class="message red-gradient simpler">Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
+
+	<!-- Title bar -->
+	<header role="banner" id="title-bar">
+		<h2>Developr</h2>
+	</header>
+
+	<!-- Button to open/hide menu -->
+	<a href="#" id="open-menu"><span>Menu</span></a>
+
+	<!-- Button to open/hide shortcuts -->
+	<a href="#" id="open-shortcuts"><span class="icon-thumbs"></span></a>
+
+	<!-- Main content -->
+	<section role="main" id="main">
+
+		<noscript class="message black-gradient simpler">Your browser does not support JavaScript! Some features won't work as expected...</noscript>
+
+		<hgroup id="main-title" class="thin">
+			<h1>Tooltips</h1>
+		</hgroup>
+
+		<div class="with-padding">
+
+			<div class="columns">
+
+				<div class="four-columns six-columns-tablet twelve-columns-mobile">
+					<p>The template includes a complete and powerful tooltip functionality:</p>
+					<ul class="bullet-list">
+						<li>4 positions: <b>top</b>, <b>right</b>, <b>bottom</b> and <b>left</b></li>
+						<li>When tooltips are too close to the screen border, they are moved to <b>avoid crop</b></li>
+						<li><b>Easy configuration</b> through classes or inline options - no script required</li>
+						<li>Tooltips can contain <b>any content</b>, including <b>existing DOM content</b> or <b>generated DOM elements</b> (using jQuery)</li>
+						<li>Tooltips can be used as <b>menus</b> (see below)</li>
+						<li>A <b>confirmation plugin</b> is available using tooltips (see below)</li>
+					</ul>
+				</div>
+
+				<div class="four-columns six-columns-tablet twelve-columns-mobile">
+
+					<h3>Standard tooltips</h3>
+
+					<p class="button-height align-center wrapped">
+						<span class="button blue-gradient glossy with-tooltip" title="Tooltip on top" style="width: 120px">Top</span>
+					</p>
+
+					<p class="button-height align-center wrapped">
+						<span class="button blue-gradient glossy with-tooltip tooltip-left" title="Tooltip on the left" style="width: 120px">Left</span>
+					</p>
+
+					<p class="button-height align-center wrapped">
+						<span class="button blue-gradient glossy with-tooltip tooltip-right" title="Tooltip on the right" style="width: 120px">Right</span>
+					</p>
+
+					<p class="button-height align-center wrapped">
+						<span class="button blue-gradient glossy with-tooltip tooltip-bottom" title="Tooltip at bottom" style="width: 120px">Bottom</span>
+					</p>
+
+				</div>
+
+				<div class="new-row-tablet four-columns six-columns-tablet twelve-columns-mobile">
+
+					<h3>Customized tooltips</h3>
+
+					<p class="button-height align-center wrapped">
+						<span class="button blue-gradient glossy with-tooltip" title="Black glossy gradient" style="width: 120px" data-tooltip-options='{"classes":["black-gradient","glossy"]}'>Color</span>
+					</p>
+
+					<p class="button-height align-center wrapped">
+						<span class="button blue-gradient glossy with-tooltip" title="<strong>Custom content</strong><br>Use HTML to build<br>styled tooltips" style="width: 120px" data-tooltip-options='{"content":"","classes":["with-padding"]}'>Custom content</span>
+					</p>
+
+					<p class="button-height align-center wrapped">
+						<span class="button blue-gradient glossy with-tooltip" title="Delayed tooltip" style="width: 120px" data-tooltip-options='{"delay":2000}'>Delay</span>
+					</p>
+
+					<p class="button-height align-center wrapped">
+						<span class="button blue-gradient glossy with-tooltip" title="Starting timer..." style="width: 120px" id="changing-tooltip" data-tooltip-options='{"classes":["anthracite-gradient","big-text","with-padding"]}'>Changing content</span>
+					</p>
+
+				</div>
+
+				<div class="new-row-desktop four-columns six-columns-tablet twelve-columns-mobile">
+
+					<h3>Tooltips API</h3>
+
+					<div class="button-height align-center wrapped margin-bottom" style="padding-top: 50px;">
+						<div class="wrapped white-gradient" id="api-box">
+							<button type="button" class="button blue-gradient glossy" onclick="openTooltip()">Open</button>
+							<button type="button" class="button blue-gradient glossy" onclick="changeTooltip()">Change</button>
+							<button type="button" class="button blue-gradient glossy" onclick="removeTooltip()">Remove</button>
+						</div>
+					</div>
+
+					<ul class="bullet-list">
+						<li><b>17 options</b> to tweak every aspect of the tooltip</li>
+						<li>Older tooltips on the same element are <b>automatically removed</b></li>
+						<li><b>onShow</b> and <b>onRemove</b> callbacks</li>
+						<li>Some tooltips can be <b>exclusive</b> over the page - only the last one will be left open</li>
+						<li>Tooltips can <b>prevent closing</b> in the onRemove callback</li>
+						<li>And much more...</li>
+					</ul>
+
+				</div>
+
+				<div class="new-row-tablet four-columns six-columns-tablet twelve-columns-mobile">
+
+					<h3>Example menu</h3>
+
+					<p>The tooltip plugin provides a menu functionality: when the user clicks the desired element, a tooltip is displayed with any custom content (it may be a menu or anything else), and it closes when the user clicks anywhere else.<p>
+
+					<button id="menu-tooltip" type="button" class="button full-width">Click me!</button>
+					<div id="menu-content-block">
+						<select class="select multiple white-gradient easy-multiple-selection check-list" multiple>
+							<option value="1">Option 1</option>
+							<option value="2">Option 2</option>
+							<option value="3" selected="selected">Selected option</option>
+							<option value="4">Option 3</option>
+						</select>
+					</div>
+
+					<pre class="prettyprint">
+$('#menu-tooltip').menuTooltip($('#menu-content-block'));
+</pre>
+
+					<p>In this example, the content is pulled from the DOM just by giving the corresponding jQuery selection to the function. It is detached from its original location, shown as it was hidden, and when the menu closes, it is re-inserted into its original location and hidden back. No complex callbacks, everything is built-in - but of course, the tooltips callbacks can be used if needed.</p>
+
+				</div>
+
+				<div class="four-columns six-columns-tablet twelve-columns-mobile">
+
+					<h3>Confirmation plugin</h3>
+
+					<p>This plugin display a confirmation tooltip over any clicked element with the class <b>confirm</b>: if the user clicks <b>Confirm</b> then the link is opened, otherwise it is blocked.<p>
+
+					<ul class="list spaced">
+
+						<li>
+							<strong>John</strong> Krazinski
+							<div class="button-group absolute-right compact">
+								<a href="#" class="button icon-trash with-tooltip confirm" title="Delete"></a>
+							</div>
+						</li>
+
+						<li>
+							<strong>John</strong> Debogorsky
+							<div class="button-group absolute-right compact">
+								<a href="#" class="button icon-trash with-tooltip confirm" title="Delete"></a>
+							</div>
+						</li>
+
+						<li>
+							<strong>John</strong> Hutter
+							<div class="button-group absolute-right compact">
+								<a href="#" class="button icon-trash with-tooltip confirm" title="Delete"></a>
+							</div>
+						</li>
+
+					</ul>
+
+					<p>Several configuration options and callbacks are available to get the exact desired look and behavior.</p>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</section>
+	<!-- End main content -->
+
+	<!-- Side tabs shortcuts -->
+	<ul id="shortcuts" role="complementary" class="children-tooltip tooltip-right">
+		<li class="current"><a href="./" class="shortcut-dashboard" title="Dashboard">Dashboard</a></li>
+		<li><a href="inbox.html" class="shortcut-messages" title="Messages">Messages</a></li>
+		<li><a href="agenda.html" class="shortcut-agenda" title="Agenda">Agenda</a></li>
+		<li><a href="tables.html" class="shortcut-contacts" title="Contacts">Contacts</a></li>
+		<li><a href="explorer.html" class="shortcut-medias" title="Medias">Medias</a></li>
+		<li><a href="sliders.html" class="shortcut-stats" title="Stats">Stats</a></li>
+		<li><a href="form.html" class="shortcut-settings" title="Settings">Settings</a></li>
+		<li><span class="shortcut-notes" title="Notes">Notes</span></li>
+	</ul>
+
+	<!-- Sidebar/drop-down menu -->
+	<section id="menu" role="complementary">
+
+		<!-- This wrapper is used by several responsive layouts -->
+		<div id="menu-content">
+
+			<header>
+				Administrator
+			</header>
+
+			<div id="profile">
+				<img src="img/user.png" width="64" height="64" alt="User name" class="user-icon">
+				Hello
+				<span class="name">John <b>Doe</b></span>
+			</div>
+
+			<!-- By default, this section is made for 4 icons, see the doc to learn how to change this, in "basic markup explained" -->
+			<ul id="access" class="children-tooltip">
+				<li><a href="inbox.html" title="Messages"><span class="icon-inbox"></span><span class="count">2</span></a></li>
+				<li><a href="calendars.html" title="Calendar"><span class="icon-calendar"></span></a></li>
+				<li><a href="login.html" title="Profile"><span class="icon-user"></span></a></li>
+				<li class="disabled"><span class="icon-gear"></span></li>
+			</ul>
+
+			<section class="navigable">
+				<ul class="big-menu">
+					<li class="with-right-arrow">
+						<span><span class="list-count">11</span>Main styles</span>
+						<ul class="big-menu">
+							<li><a href="typography.html">Typography</a></li>
+							<li><a href="columns.html">Columns</a></li>
+							<li><a href="tables.html">Tables</a></li>
+							<li><a href="colors.html">Colors &amp; backgrounds</a></li>
+							<li><a href="icons.html">Icons</a></li>
+							<li><a href="files.html">Files &amp; Gallery</a></li>
+							<li class="with-right-arrow">
+								<span><span class="list-count">4</span>Forms &amp; buttons</span>
+								<ul class="big-menu">
+									<li><a href="buttons.html">Buttons</a></li>
+									<li><a href="form.html">Form elements</a></li>
+									<li><a href="textareas.html">Textareas &amp; WYSIWYG</a></li>
+									<li><a href="form-layouts.html">Form layouts</a></li>
+									<li><a href="wizard.html">Wizard</a></li>
+								</ul>
+							</li>
+							<li class="with-right-arrow">
+								<span><span class="list-count">2</span>Agenda &amp; Calendars</span>
+								<ul class="big-menu">
+									<li><a href="agenda.html">Agenda</a></li>
+									<li><a href="calendars.html">Calendars</a></li>
+								</ul>
+							</li>
+							<li><a href="blocks.html">Blocks &amp; infos</a></li>
+						</ul>
+					</li>
+					<li class="with-right-arrow">
+						<span><span class="list-count">8</span>Main features</span>
+						<ul class="big-menu">
+							<li><a href="auto-setup.html">Automatic setup</a></li>
+							<li><a href="responsive.html">Responsiveness</a></li>
+							<li><a href="tabs.html">Tabs</a></li>
+							<li><a href="sliders.html">Slider &amp; progress</a></li>
+							<li><a href="modals.html">Modal windows</a></li>
+							<li class="with-right-arrow">
+								<span><span class="list-count">3</span>Messages &amp; notifications</span>
+								<ul class="big-menu">
+									<li><a href="messages.html">Messages</a></li>
+									<li><a href="notifications.html">Notifications</a></li>
+									<li><a href="tooltips.html" class="current navigable-current">Tooltips</a></li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+					<li class="with-right-arrow">
+						<a href="ajax-demo/submenu.html" class="navigable-ajax" title="Menu title">With ajax sub-menu</a>
+					</li>
+				</ul>
+			</section>
+
+			<ul class="unstyled-list">
+				<li class="title-menu">Today's event</li>
+				<li>
+					<ul class="calendar-menu">
+						<li>
+							<a href="#" title="See event">
+								<time datetime="2011-02-24"><b>24</b> Feb</time>
+								<small class="green">10:30</small>
+								Event's description
+							</a>
+						</li>
+					</ul>
+				</li>
+				<li class="title-menu">New messages</li>
+				<li>
+					<ul class="message-menu">
+						<li>
+							<span class="message-status">
+								<a href="#" class="starred" title="Starred">Starred</a>
+								<a href="#" class="new-message" title="Mark as read">New</a>
+							</span>
+							<span class="message-info">
+								<span class="blue">17:12</span>
+								<a href="#" class="attach" title="Download attachment">Attachment</a>
+							</span>
+							<a href="#" title="Read message">
+								<strong class="blue">John Doe</strong><br>
+								<strong>Mail subject</strong>
+							</a>
+						</li>
+						<li>
+							<a href="#" title="Read message">
+								<span class="message-status">
+									<span class="unstarred">Not starred</span>
+									<span class="new-message">New</span>
+								</span>
+								<span class="message-info">
+									<span class="blue">15:47</span>
+								</span>
+								<strong class="blue">May Starck</strong><br>
+								<strong>Mail subject a bit longer</strong>
+							</a>
+						</li>
+						<li>
+							<span class="message-status">
+								<span class="unstarred">Not starred</span>
+							</span>
+							<span class="message-info">
+								<span class="blue">15:12</span>
+							</span>
+							<strong class="blue">May Starck</strong><br>
+							Read message
+						</li>
+					</ul>
+				</li>
+			</ul>
+
+		</div>
+		<!-- End content wrapper -->
+
+		<!-- This is optional -->
+		<footer id="menu-footer">
+			<p class="button-height">
+				<input type="checkbox" name="auto-refresh" id="auto-refresh" checked="checked" class="switch float-right">
+				<label for="auto-refresh">Auto-refresh</label>
+			</p>
+		</footer>
+
+	</section>
+	<!-- End sidebar/drop-down menu -->
+
+	<!-- JavaScript at the bottom for fast page loading -->
+
+	<!-- Scripts -->
+	<script src="js/libs/jquery-1.7.2.min.js"></script>
+	<script src="js/setup.js"></script>
+
+	<!-- Template functions -->
+	<script src="js/developr.input.js"></script>
+	<script src="js/developr.navigable.js"></script>
+	<script src="js/developr.notify.js"></script>
+	<script src="js/developr.scroll.js"></script>
+	<script src="js/developr.tooltip.js"></script>
+	<script src="js/developr.confirm.js"></script>
+
+	<!-- Google code prettifier -->
+	<script src="js/libs/google-code-prettify/prettify.js?v=1"></script>
+
+	<script>
+
+		// Call template init (optional, but faster if called manually)
+		$.template.init();
+
+		// Code display
+		prettyPrint();
+
+		// Changing tooltip
+		var changingTarget = $('#changing-tooltip'),
+			updateTimer = function()
+			{
+				// New time
+				++seconds;
+				changingTarget.tooltip('Time: '+seconds+'s');
+
+				// Next count
+				changeInt = setTimeout(updateTimer, 1000);
+			},
+			changeInt, seconds;
+
+		// Listeners
+		changingTarget.hover(function(event)
+		{
+			// Init
+			seconds = 0;
+
+			// Start counter
+			changeInt = setTimeout(updateTimer, 1000);
+
+		}, function(event)
+		{
+			clearTimeout(changeInt);
+		});
+
+		// API function
+		var apiBox = $('#api-box');
+		function openTooltip()
+		{
+			apiBox.tooltip('Hi! I am a tooltip.', {
+				classes:	['green-gradient']
+			});
+		};
+		function changeTooltip()
+		{
+			apiBox.tooltip('... and this is my new content.');
+		};
+		function removeTooltip()
+		{
+			apiBox.removeTooltip();
+		};
+
+		// Tooltip menu
+		$('#menu-tooltip').menuTooltip($('#menu-content-block').hide(), {
+			classes: ['anthracite-gradient', 'with-small-padding']
+		});
+
+		// Delete button
+		$('.list .button-group a:last-child').data('confirm-options', {
+
+			onConfirm: function()
+			{
+				// Remove element
+				$(this).closest('li').fadeAndRemove();
+
+				// Prevent default link behavior
+				return false;
+			}
+		});
+
+	</script>
+</body>
+</html>

@@ -1,5 +1,4 @@
 <?php
-
 /* Copyright (C) 2005      Rodolphe Quiedeville <rodolphe@quiedeville.org>
  * Copyright (C) 2005-2008 Laurent Destailleur  <eldy@users.sourceforge.org>
  * Copyright (C) 2011-2012 Herve Prot           <herve.prot@symeos.com>
@@ -19,19 +18,21 @@
  */
 
 /**
- * 	\defgroup   clicktodial      Module clicktodial
- * 	\brief      Module pour gerer l'appel automatique
- * 	\file       htdocs/core/modules/modClickToDial.class.php
- * 	\ingroup    clicktodial
- * 	\brief      Fichier de description et activation du module de click to Dial
+ *	\defgroup   clicktodial      Module clicktodial
+ *	\brief      Module pour gerer l'appel automatique
+ *	\file       htdocs/core/modules/modClickToDial.class.php
+ *	\ingroup    clicktodial
+ *	\brief      Fichier de description et activation du module de click to Dial
  */
-include_once(DOL_DOCUMENT_ROOT . "/core/modules/DolibarrModules.class.php");
+
+include_once DOL_DOCUMENT_ROOT .'/core/modules/DolibarrModules.class.php';
+
 
 /**
- * 	\class      modClickToDial
- * 	\brief      Classe de description et activation du module de Click to Dial
+ *	Classe de description et activation du module de Click to Dial
  */
-class modClickToDial extends DolibarrModules {
+class modClickToDial extends DolibarrModules
+{
 
 	/**
 	 *   Constructor. Define names, constants, directories, boxes, permissions
@@ -44,14 +45,14 @@ class modClickToDial extends DolibarrModules {
 
 		$this->family = "technic";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->name = preg_replace('/^mod/i', '', get_class($this));
+		$this->name = preg_replace('/^mod/i','',get_class($this));
 		$this->description = "Gestion du Click To Dial";
 
-		$this->version = 'dolibarr';  // 'development' or 'experimental' or 'dolibarr' or version
+		$this->version = 'dolibarr';		// 'development' or 'experimental' or 'dolibarr' or version
 
-		$this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
+		$this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
 		$this->special = 1;
-		$this->picto = 'phoning';
+		$this->picto='phoning';
 
 		// Data directories to create when module is enabled
 		$this->dirs = array();
@@ -74,36 +75,37 @@ class modClickToDial extends DolibarrModules {
 		$this->rights_class = 'clicktodial';
 	}
 
-	/**
-	 * 		Function called when module is enabled.
-	 * 		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
-	 * 		It also creates data directories
+    /**
+	 *		Function called when module is enabled.
+	 *		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
+	 *		It also creates data directories
 	 *
-	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
+     *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
-	 */
-	function init($options = '') {
+     */
+	function init($options='')
+	{
 		global $conf;
 
 		$sql = array();
 
-		return $this->_init($sql, $options);
+		return $this->_init($sql,$options);
 	}
 
-	/**
-	 * 		Function called when module is disabled.
+    /**
+	 *		Function called when module is disabled.
 	 *      Remove from database constants, boxes and permissions from Dolibarr database.
-	 * 		Data directories are not deleted
+	 *		Data directories are not deleted
 	 *
-	 *      @param      string	$options    Options when enabling module ('', 'noboxes')
+     *      @param      string	$options    Options when enabling module ('', 'noboxes')
 	 *      @return     int             	1 if OK, 0 if KO
-	 */
-	function remove($options = '') {
+     */
+    function remove($options='')
+    {
 		$sql = array();
 
-		return $this->_remove($sql, $options);
-	}
+		return $this->_remove($sql,$options);
+    }
 
 }
-
 ?>

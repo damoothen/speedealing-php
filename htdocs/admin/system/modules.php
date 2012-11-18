@@ -1,7 +1,7 @@
 <?php
 /* Copyright (C) 2005-2009	Laurent Destailleur		<eldy@users.sourceforge.net>
  * Copyright (C) 2007		Rodolphe Quiedeville	<rodolphe@quiedeville.org>
- * Copyright (C) 2010-2011	Regis Houssin			<regis@dolibarr.fr>
+ * Copyright (C) 2010-2012	Regis Houssin			<regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,14 +22,15 @@
  *  \brief      File to list all Dolibarr modules
  */
 
-require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
+require '../../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 
 $langs->load("admin");
 $langs->load("install");
 $langs->load("other");
 
-if (!$user->admin) accessforbidden();
+if (! $user->admin)
+	accessforbidden();
 
 
 /*
@@ -62,7 +63,7 @@ foreach($modulesdir as $dir)
 
     			if ($modName)
     			{
-    				include_once($dir.$file);
+    				include_once $dir.$file;
     				$objMod = new $modName($db);
 
     				$modules[$objMod->numero]=$objMod;
@@ -113,8 +114,8 @@ foreach($sortorder as $numero=>$name)
 	{
 		foreach($modules[$numero]->rights as $rights)
 		{
-			$idperms.=($idperms?", ":"").$rights[0];
-			array_push($rights_ids, $rights[0]);
+			$idperms.=($idperms?", ":"").$rights->id;
+			array_push($rights_ids, $rights->id);
 		}
 	}
 	print '<td>'.($idperms?$idperms:"&nbsp;").'</td>';
@@ -123,14 +124,16 @@ foreach($sortorder as $numero=>$name)
 print '</table>';
 print '<br>';
 sort($rights_ids);
+$old='';
 foreach($rights_ids as $right_id)
 {
 	if ($old == $right_id)
-	print "Warning duplicate id on permission : ".$right_id."<br>";
+		print "Warning duplicate id on permission : ".$right_id."<br>";
 	$old = $right_id;
 }
 
 print dol_fiche_end();
 
 llxFooter();
+$db->close();
 ?>

@@ -1,5 +1,6 @@
 <?php
-/* Copyright (C) 2010-2012 Laurent Destailleur <ely@users.sourceforge.net>
+/* Copyright (C) 2010-2012	Laurent Destailleur	<ely@users.sourceforge.net>
+ * Copyright (C) 2012		Regis Houssin		<regis@dolibarr.fr>
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,12 +23,12 @@
  *	\brief      File of class to build ODT documents for third parties
  */
 
-require_once(DOL_DOCUMENT_ROOT."/core/modules/facture/modules_facture.php");
-require_once(DOL_DOCUMENT_ROOT."/product/class/product.class.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/company.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/files.lib.php");
-require_once(DOL_DOCUMENT_ROOT."/core/lib/doc.lib.php");
+require_once DOL_DOCUMENT_ROOT.'/core/modules/facture/modules_facture.php';
+require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/doc.lib.php';
 
 
 /**
@@ -101,19 +102,20 @@ class doc_generic_invoice_odt extends ModelePDFFactures
 		{
         	$invoice_source->fetch($object->fk_facture_source);
 		}
-		$alreadypayed=price($object->getSommePaiement(),0,$outputlangs);
+		$sumpayed = $object->getSommePaiement();
+		$alreadypayed=price($sumpayed,0,$outputlangs);
 
         return array(
             'object_id'=>$object->id,
             'object_ref'=>$object->ref,
             'object_ref_ext'=>$object->ref_ext,
         	'object_ref_customer'=>$object->ref_client,
-            'object_ref_supplier'=>$object->ref_fournisseur,
+            'object_ref_supplier'=>(! empty($object->ref_fournisseur)?$object->ref_fournisseur:''),
             'object_source_invoice_ref'=>$invoice_source->ref,
         	'object_date'=>dol_print_date($object->date,'day'),
         	'object_date_limit'=>dol_print_date($object->date_lim_reglement,'day'),
         	'object_date_creation'=>dol_print_date($object->date_creation,'day'),
-            'object_date_modification'=>dol_print_date($object->date_modification,'day'),
+            'object_date_modification'=>(! empty($object->date_modification)?dol_print_date($object->date_modification,'day'):''),
             'object_date_validation'=>dol_print_date($object->date_validation,'dayhour'),
             'object_payment_mode_code'=>$object->mode_reglement_code,
         	'object_payment_mode'=>($outputlangs->transnoentitiesnoconv('PaymentType'.$object->mode_reglement_code)!='PaymentType'.$object->mode_reglement_code?$outputlangs->transnoentitiesnoconv('PaymentType'.$object->mode_reglement_code):$object->mode_reglement),
@@ -122,12 +124,13 @@ class doc_generic_invoice_odt extends ModelePDFFactures
         	'object_total_ht'=>price($object->total_ht,0,$outputlangs),
             'object_total_vat'=>price($object->total_tva,0,$outputlangs),
             'object_total_ttc'=>price($object->total_ttc,0,$outputlangs),
-            'object_vatrate'=>vatrate($object->tva),
+            'object_total_discount' => price($object->getTotalDiscount(), 0, $outputlangs),
+            'object_vatrate'=>(isset($object->tva)?vatrate($object->tva):''),
             'object_note_private'=>$object->note,
             'object_note'=>$object->note_public,
         	// Payments
             'object_already_payed'=>$alreadypayed,
-            'object_remain_to_pay'=>price($object->total_ttc - $alreadypayed,0,$outputlangs)
+            'object_remain_to_pay'=>price($object->total_ttc - $sumpayed,0,$outputlangs)
         );
     }
 
@@ -325,7 +328,7 @@ class doc_generic_invoice_odt extends ModelePDFFactures
                 if (! empty($usecontact))
                 {
                     // On peut utiliser le nom de la societe du contact
-                    if ($conf->global->MAIN_USE_COMPANY_NAME_OF_CONTACT) $socobject = $object->contact;
+                    if (! empty($conf->global->MAIN_USE_COMPANY_NAME_OF_CONTACT)) $socobject = $object->contact;
                     else $socobject = $object->client;
                 }
                 else
@@ -339,7 +342,7 @@ class doc_generic_invoice_odt extends ModelePDFFactures
                     '__FROM_EMAIL__' => $this->emetteur->email,
                     '__TOTAL_TTC__' => $object->total_ttc,
                     '__TOTAL_HT__' => $object->total_ht,
-                    '__TOTAL_VAT__' => $object->total_vat
+                    '__TOTAL_VAT__' => $object->total_tva
                 );
                 complete_substitutions_array($substitutionarray, $langs, $object);
 
@@ -352,7 +355,7 @@ class doc_generic_invoice_odt extends ModelePDFFactures
 			    }
 
                 // Open and load template
-				require_once(ODTPHP_PATH.'odf.php');
+				require_once ODTPHP_PATH.'odf.php';
 				$odfHandler = new odf(
 				    $srctemplatepath,
 				    array(
@@ -465,6 +468,7 @@ class doc_generic_invoice_odt extends ModelePDFFactures
                     foreach ($object->lines as $line)
                     {
                         $tmparray=$this->get_substitutionarray_lines($line,$outputlangs);
+                        complete_substitutions_array($tmparray, $outputlangs, $object, $line, "completesubstitutionarray_lines");
                         foreach($tmparray as $key => $val)
                         {
                              try

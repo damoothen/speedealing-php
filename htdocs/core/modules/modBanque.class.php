@@ -28,14 +28,12 @@
  *	\brief      Fichier de description et activation du module Banque
  */
 
-include_once(DOL_DOCUMENT_ROOT ."/core/modules/DolibarrModules.class.php");
+include_once DOL_DOCUMENT_ROOT .'/core/modules/DolibarrModules.class.php';
 
 
 /**
- *	\class      modBanque
- *	\brief      Classe de description et activation du module Banque
+ *	Classe de description et activation du module Banque
  */
-
 class modBanque extends DolibarrModules
 {
 
@@ -44,7 +42,7 @@ class modBanque extends DolibarrModules
 	 *
 	 *	@param	DoliDB	$db		Database handler
 	 */
-	function modBanque($db)
+	function __construct($db)
 	{
 		global $conf;
 
