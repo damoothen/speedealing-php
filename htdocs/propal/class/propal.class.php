@@ -43,12 +43,11 @@ class Propal extends nosqlDocument {
 
     public $element = 'propal';
     public $table_element = 'propal';
-    public $table_element_line = 'propaldet';
-    public $fk_element = 'fk_propal';
+//    public $table_element_line = 'propaldet';
+//    public $fk_element = 'fk_propal';
     protected $ismultientitymanaged = 1; // 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
     var $id;
-    var $socid;  // Id client
-    var $client;  // Objet societe client (a charger par fetch_client)
+    var $societe;  // Objet societe client (a charger par fetch_client)
     var $contactid;
     var $fk_project;
     var $author;
@@ -60,6 +59,7 @@ class Propal extends nosqlDocument {
     var $date;      // Date of proposal
     var $datep;      // Same than date
     var $date_livraison;
+    public $duree_validite;
     var $fin_validite;
     var $user_author_id;
     var $user_valid_id;
@@ -72,9 +72,7 @@ class Propal extends nosqlDocument {
     var $price;      // deprecated (for compatibility)
     var $tva;      // deprecated (for compatibility)
     var $total;      // deprecated (for compatibility)
-    var $cond_reglement_id;
     var $cond_reglement_code;
-    var $mode_reglement_id;
     var $mode_reglement_code;
     var $remise;
     var $remise_percent;
@@ -86,9 +84,7 @@ class Propal extends nosqlDocument {
     var $fk_address;
     var $address_type;
     var $adresse;
-    var $availability_id;
     var $availability_code;
-    var $demand_reason_id;
     var $demand_reason_code;
     var $products = array();
     var $extraparams = array();
@@ -112,12 +108,12 @@ class Propal extends nosqlDocument {
      */
     function __construct($db, $socid = "", $propalid = 0) {
         global $langs;
-        
+
         parent::__construct($db);
-        
+
         $this->fk_extrafields = new ExtraFields($db);
         $this->fk_extrafields->fetch(get_class($this));
-        
+
         $this->socid = $socid;
         $this->id = $propalid;
         $this->products = array();
@@ -585,10 +581,6 @@ class Propal extends nosqlDocument {
         if (empty($this->date))
             $this->date = $this->datep;
         $this->fin_validite = $this->date + ($this->duree_validite * 24 * 3600);
-        if (empty($this->availability_id))
-            $this->availability_id = 0;
-        if (empty($this->demand_reason_id))
-            $this->demand_reason_id = 0;
 
         dol_syslog(get_class($this) . "::create");
 
@@ -600,173 +592,189 @@ class Propal extends nosqlDocument {
             dol_syslog(get_class($this) . "::create " . $this->error, LOG_ERR);
             return -3;
         }
+        $this->societe = new stdclass();
+        $this->societe->id = $soc->id;
+        $this->societe->name = $soc->name;
+
         if (empty($this->date)) {
             $this->error = "Date of proposal is required";
             dol_syslog(get_class($this) . "::create " . $this->error, LOG_ERR);
             return -4;
         }
         if (!empty($this->ref)) {
-            $result = $this->verifyNumRef(); // Check ref is not yet used
+            //$result = $this->verifyNumRef(); // Check ref is not yet used
         }
 
 
-        $this->db->begin();
-
-        $this->fetch_thirdparty();
-
-        // Insert into database
-        $sql = "INSERT INTO " . MAIN_DB_PREFIX . "propal (";
-        $sql.= "fk_soc";
-        $sql.= ", price";
-        $sql.= ", remise";
-        $sql.= ", remise_percent";
-        $sql.= ", remise_absolue";
-        $sql.= ", tva";
-        $sql.= ", total";
-        $sql.= ", datep";
-        $sql.= ", datec";
-        $sql.= ", ref";
-        $sql.= ", fk_user_author";
-        $sql.= ", note";
-        $sql.= ", note_public";
-        $sql.= ", model_pdf";
-        $sql.= ", fin_validite";
-        $sql.= ", fk_cond_reglement";
-        $sql.= ", fk_mode_reglement";
-        $sql.= ", ref_client";
-        $sql.= ", date_livraison";
-        $sql.= ", fk_availability";
-        $sql.= ", fk_input_reason";
-        $sql.= ", fk_projet";
-        $sql.= ", entity";
-        $sql.= ") ";
-        $sql.= " VALUES (";
-        $sql.= $this->socid;
-        $sql.= ", 0";
-        $sql.= ", " . $this->remise;
-        $sql.= ", " . ($this->remise_percent ? $this->remise_percent : 'null');
-        $sql.= ", " . ($this->remise_absolue ? $this->remise_absolue : 'null');
-        $sql.= ", 0";
-        $sql.= ", 0";
-        $sql.= ", '" . $this->db->idate($this->date) . "'";
-        $sql.= ", '" . $this->db->idate($now) . "'";
-        $sql.= ", '(PROV)'";
-        $sql.= ", " . ($user->id > 0 ? "'" . $user->id . "'" : "null");
-        $sql.= ", '" . $this->db->escape($this->note) . "'";
-        $sql.= ", '" . $this->db->escape($this->note_public) . "'";
-        $sql.= ", '" . $this->modelpdf . "'";
-        $sql.= ", " . ($this->fin_validite != '' ? "'" . $this->db->idate($this->fin_validite) . "'" : "null");
-        $sql.= ", " . $this->cond_reglement_id;
-        $sql.= ", " . $this->mode_reglement_id;
-        $sql.= ", '" . $this->db->escape($this->ref_client) . "'";
-        $sql.= ", " . ($this->date_livraison != '' ? "'" . $this->db->idate($this->date_livraison) . "'" : "null");
-        $sql.= ", " . $this->availability_id;
-        $sql.= ", " . $this->demand_reason_id;
-        $sql.= ", " . ($this->fk_project ? $this->fk_project : "null");
-        $sql.= ", " . $conf->entity;
-        $sql.= ")";
-
-        dol_syslog(get_class($this) . "::create sql=" . $sql, LOG_DEBUG);
-        $resql = $this->db->query($sql);
-        if ($resql) {
-            $this->id = $this->db->last_insert_id(MAIN_DB_PREFIX . "propal");
-
-            if ($this->id) {
-                if (empty($this->ref))
-                    $this->ref = '(PROV' . $this->id . ')';
-                $sql = 'UPDATE ' . MAIN_DB_PREFIX . "propal SET ref='" . $this->ref . "' WHERE rowid=" . $this->id;
-
-                dol_syslog(get_class($this) . "::create sql=" . $sql);
-                $resql = $this->db->query($sql);
-                if (!$resql)
-                    $error++;
-
-                /*
-                 *  Insertion du detail des produits dans la base
-                 */
-                if (!$error) {
-                    $fk_parent_line = 0;
-                    $num = count($this->lines);
-
-                    for ($i = 0; $i < $num; $i++) {
-                        // Reset fk_parent_line for no child products and special product
-                        if (($this->lines[$i]->product_type != 9 && empty($this->lines[$i]->fk_parent_line)) || $this->lines[$i]->product_type == 9) {
-                            $fk_parent_line = 0;
-                        }
-
-                        $result = $this->addline(
-                                $this->id, $this->lines[$i]->desc, $this->lines[$i]->subprice, $this->lines[$i]->qty, $this->lines[$i]->tva_tx, $this->lines[$i]->localtax1_tx, $this->lines[$i]->localtax2_tx, $this->lines[$i]->fk_product, $this->lines[$i]->remise_percent, 'HT', 0, 0, $this->lines[$i]->product_type, $this->lines[$i]->rang, $this->lines[$i]->special_code, $fk_parent_line, $this->lines[$i]->fk_fournprice, $this->lines[$i]->pa_ht, $this->lines[$i]->label
-                        );
-
-                        if ($result < 0) {
-                            $error++;
-                            $this->error = $this->db->error;
-                            dol_print_error($this->db);
-                            break;
-                        }
-                        // Defined the new fk_parent_line
-                        if ($result > 0 && $this->lines[$i]->product_type == 9) {
-                            $fk_parent_line = $result;
-                        }
-                    }
-                }
-
-                // Add linked object
-                if (!$error && $this->origin && $this->origin_id) {
-                    $ret = $this->add_object_linked();
-                    if (!$ret)
-                        dol_print_error($this->db);
-                }
-
-                // Set delivery address
-                if (!$error && $this->fk_delivery_address) {
-                    $sql = "UPDATE " . MAIN_DB_PREFIX . "propal";
-                    $sql.= " SET fk_adresse_livraison = " . $this->fk_delivery_address;
-                    $sql.= " WHERE ref = '" . $this->ref . "'";
-                    $sql.= " AND entity = " . $conf->entity;
-
-                    $result = $this->db->query($sql);
-                }
-
-                if (!$error) {
-                    // Mise a jour infos denormalisees
-                    $resql = $this->update_price(1);
-                    if ($resql) {
-                        if (!$notrigger) {
-                            // Appel des triggers
-                            include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
-                            $interface = new Interfaces($this->db);
-                            $result = $interface->run_triggers('PROPAL_CREATE', $this, $user, $langs, $conf);
-                            if ($result < 0) {
-                                $error++;
-                                $this->errors = $interface->errors;
-                            }
-                            // Fin appel triggers
-                        }
-                    } else {
-                        $error++;
-                    }
-                }
-            } else {
+//        $this->db->begin();
+//
+//        $this->fetch_thirdparty();
+//
+//        // Insert into database
+//        $sql = "INSERT INTO " . MAIN_DB_PREFIX . "propal (";
+//        $sql.= "fk_soc";
+//        $sql.= ", price";
+//        $sql.= ", remise";
+//        $sql.= ", remise_percent";
+//        $sql.= ", remise_absolue";
+//        $sql.= ", tva";
+//        $sql.= ", total";
+//        $sql.= ", datep";
+//        $sql.= ", datec";
+//        $sql.= ", ref";
+//        $sql.= ", fk_user_author";
+//        $sql.= ", note";
+//        $sql.= ", note_public";
+//        $sql.= ", model_pdf";
+//        $sql.= ", fin_validite";
+//        $sql.= ", fk_cond_reglement";
+//        $sql.= ", fk_mode_reglement";
+//        $sql.= ", ref_client";
+//        $sql.= ", date_livraison";
+//        $sql.= ", fk_availability";
+//        $sql.= ", fk_input_reason";
+//        $sql.= ", fk_projet";
+//        $sql.= ", entity";
+//        $sql.= ") ";
+//        $sql.= " VALUES (";
+//        $sql.= $this->socid;
+//        $sql.= ", 0";
+//        $sql.= ", " . $this->remise;
+//        $sql.= ", " . ($this->remise_percent ? $this->remise_percent : 'null');
+//        $sql.= ", " . ($this->remise_absolue ? $this->remise_absolue : 'null');
+//        $sql.= ", 0";
+//        $sql.= ", 0";
+//        $sql.= ", '" . $this->db->idate($this->date) . "'";
+//        $sql.= ", '" . $this->db->idate($now) . "'";
+//        $sql.= ", '(PROV)'";
+//        $sql.= ", " . ($user->id > 0 ? "'" . $user->id . "'" : "null");
+//        $sql.= ", '" . $this->db->escape($this->note) . "'";
+//        $sql.= ", '" . $this->db->escape($this->note_public) . "'";
+//        $sql.= ", '" . $this->modelpdf . "'";
+//        $sql.= ", " . ($this->fin_validite != '' ? "'" . $this->db->idate($this->fin_validite) . "'" : "null");
+//        $sql.= ", " . $this->cond_reglement_id;
+//        $sql.= ", " . $this->mode_reglement_id;
+//        $sql.= ", '" . $this->db->escape($this->ref_client) . "'";
+//        $sql.= ", " . ($this->date_livraison != '' ? "'" . $this->db->idate($this->date_livraison) . "'" : "null");
+//        $sql.= ", " . $this->availability_id;
+//        $sql.= ", " . $this->demand_reason_id;
+//        $sql.= ", " . ($this->fk_project ? $this->fk_project : "null");
+//        $sql.= ", " . $conf->entity;
+//        $sql.= ")";
+//
+//        dol_syslog(get_class($this) . "::create sql=" . $sql, LOG_DEBUG);
+//        $resql = $this->db->query($sql);
+//        if ($resql) {
+//            $this->id = $this->db->last_insert_id(MAIN_DB_PREFIX . "propal");
+        $this->record();
+        if (!$notrigger) {
+            // Appel des triggers
+            include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
+            $interface = new Interfaces($this->db);
+            $result = $interface->run_triggers('PROPAL_CREATE', $this, $user, $langs, $conf);
+            if ($result < 0) {
                 $error++;
+                $this->errors = $interface->errors;
             }
-
-            if (!$error) {
-                $this->db->commit();
-                dol_syslog(get_class($this) . "::create done id=" . $this->id);
-                return $this->id;
-            } else {
-                $this->error = $this->db->error();
-                dol_syslog(get_class($this) . "::create -2 " . $this->error, LOG_ERR);
-                $this->db->rollback();
-                return -2;
-            }
-        } else {
-            $this->error = $this->db->error();
-            dol_syslog(get_class($this) . "::create -1 " . $this->error, LOG_ERR);
-            $this->db->rollback();
-            return -1;
+            // Fin appel triggers
         }
+        return $this->id;
+//        if ($this->id) {
+//                if (empty($this->ref))
+//                    $this->ref = '(PROV' . $this->id . ')';
+//                $sql = 'UPDATE ' . MAIN_DB_PREFIX . "propal SET ref='" . $this->ref . "' WHERE rowid=" . $this->id;
+//
+//                dol_syslog(get_class($this) . "::create sql=" . $sql);
+//                $resql = $this->db->query($sql);
+//                if (!$resql)
+//                    $error++;
+//
+//            /*
+//             *  Insertion du detail des produits dans la base
+//             */
+//            if (!$error) {
+//                $fk_parent_line = 0;
+//                $num = count($this->lines);
+//
+//                for ($i = 0; $i < $num; $i++) {
+//                    // Reset fk_parent_line for no child products and special product
+//                    if (($this->lines[$i]->product_type != 9 && empty($this->lines[$i]->fk_parent_line)) || $this->lines[$i]->product_type == 9) {
+//                        $fk_parent_line = 0;
+//                    }
+//
+//                    $result = $this->addline(
+//                            $this->id, $this->lines[$i]->desc, $this->lines[$i]->subprice, $this->lines[$i]->qty, $this->lines[$i]->tva_tx, $this->lines[$i]->localtax1_tx, $this->lines[$i]->localtax2_tx, $this->lines[$i]->fk_product, $this->lines[$i]->remise_percent, 'HT', 0, 0, $this->lines[$i]->product_type, $this->lines[$i]->rang, $this->lines[$i]->special_code, $fk_parent_line, $this->lines[$i]->fk_fournprice, $this->lines[$i]->pa_ht, $this->lines[$i]->label
+//                    );
+//
+//                    if ($result < 0) {
+//                        $error++;
+//                        $this->error = $this->db->error;
+//                        dol_print_error($this->db);
+//                        break;
+//                    }
+//                    // Defined the new fk_parent_line
+//                    if ($result > 0 && $this->lines[$i]->product_type == 9) {
+//                        $fk_parent_line = $result;
+//                    }
+//                }
+//            }
+//
+//            // Add linked object
+//            if (!$error && $this->origin && $this->origin_id) {
+//                $ret = $this->add_object_linked();
+//                if (!$ret)
+//                    dol_print_error($this->db);
+//            }
+//
+//            // Set delivery address
+//            if (!$error && $this->fk_delivery_address) {
+//                $sql = "UPDATE " . MAIN_DB_PREFIX . "propal";
+//                $sql.= " SET fk_adresse_livraison = " . $this->fk_delivery_address;
+//                $sql.= " WHERE ref = '" . $this->ref . "'";
+//                $sql.= " AND entity = " . $conf->entity;
+//
+//                $result = $this->db->query($sql);
+//            }
+//
+//            if (!$error) {
+//                // Mise a jour infos denormalisees
+//                $resql = $this->update_price(1);
+//                if ($resql) {
+//                    if (!$notrigger) {
+//                        // Appel des triggers
+//                        include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
+//                        $interface = new Interfaces($this->db);
+//                        $result = $interface->run_triggers('PROPAL_CREATE', $this, $user, $langs, $conf);
+//                        if ($result < 0) {
+//                            $error++;
+//                            $this->errors = $interface->errors;
+//                        }
+//                        // Fin appel triggers
+//                    }
+//                } else {
+//                    $error++;
+//                }
+//            }
+//        } else {
+//            $error++;
+//        }
+//
+//        if (!$error) {
+//            $this->db->commit();
+//            dol_syslog(get_class($this) . "::create done id=" . $this->id);
+//            return $this->id;
+//        } else {
+//            $this->error = $this->db->error();
+//            dol_syslog(get_class($this) . "::create -2 " . $this->error, LOG_ERR);
+//            $this->db->rollback();
+//            return -2;
+//        }
+//        } else {
+//            $this->error = $this->db->error();
+//            dol_syslog(get_class($this) . "::create -1 " . $this->error, LOG_ERR);
+//            $this->db->rollback();
+//            return -1;
+//        }
     }
 
     /**
