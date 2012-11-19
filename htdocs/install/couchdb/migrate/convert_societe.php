@@ -170,6 +170,7 @@ while ($aRow = $db->fetch_object($resultSocietes)) {
     }
     $col[$aRow->rowid]->logo = $aRow->logo;
     $col[$aRow->rowid]->newsletter = (bool) !$aRow->newsletter;
+    $col[$aRow->rowid]->commercial_id = new stdClass();
 
     $i++;
 }

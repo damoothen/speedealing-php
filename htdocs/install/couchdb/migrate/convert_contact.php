@@ -113,11 +113,12 @@ while ($aRow = $db->fetch_object($resultContacts)) {
     $col[$aRow->rowid]->class = "Contact";
     $col[$aRow->rowid]->entity = $conf->Couchdb->name;
     $col[$aRow->rowid]->firtname = $aRow->firstname;
-    $col[$aRow->rowid]->lastname = $aRow->lastname;
-    if (empty($aRow->lastname) && empty($aRow->firtname))
+    $col[$aRow->rowid]->lastname = $aRow->name;
+    if (empty($aRow->name) && empty($aRow->firtname))
         $col[$aRow->rowid]->name = "Unknown";
     else
-        $col[$aRow->rowid]->name = $aRow->firstname . " " . $aRow->lastname;
+        $col[$aRow->rowid]->name = $aRow->firstname . " " . $aRow->name;
+    $col[$aRow->rowid]->name = trim($col[$aRow->rowid]->name);
     $col[$aRow->rowid]->town = $aRow->ville;
     $col[$aRow->rowid]->datec = $db->jdate($aRow->datec);
     $col[$aRow->rowid]->zip = $aRow->cp;
@@ -140,6 +141,8 @@ while ($aRow = $db->fetch_object($resultContacts)) {
     $col[$aRow->rowid]->default_lang = $aRow->default_lang;
 
     $col[$aRow->rowid]->newsletter = (bool) !$aRow->newsletter;
+    
+    $col[$aRow->rowid]->societe = new stdClass();
 
     if (isset($soc[$aRow->fk_soc]->rowid)) {
         $col[$aRow->rowid]->societe->id = $soc[$aRow->fk_soc]->_id;

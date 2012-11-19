@@ -190,7 +190,7 @@ $obj->aoColumns[$i]->mDataProp = "email";
 $obj->aoColumns[$i]->sDefaultContent = "";
 $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("email", "email");
 $i++;
-print'<th class="essential">';
+/*print'<th class="essential">';
 print $langs->trans('DateModificationShort');
 print'</th>';
 $obj->aoColumns[$i]->mDataProp = "tms";
@@ -198,7 +198,7 @@ $obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->sDefaultContent = "";
 $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("tms", "date");
 //$obj->aoColumns[$i]->sClass = "edit";
-$i++;
+$i++;*/
 print'<th class="essential">';
 print $langs->trans('Categories');
 print'</th>';
@@ -258,8 +258,8 @@ print'<th id="' . $i . '"></th>';
 $i++;
 print'<th id="' . $i . '"></th>';
 $i++;
-print'<th id="' . $i . '"></th>';
-$i++;
+/*print'<th id="' . $i . '"></th>';
+$i++;*/
 print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Category") . '" /></th>';
 $i++;
 print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Status") . '" /></th>';
