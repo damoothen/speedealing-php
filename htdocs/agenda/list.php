@@ -314,9 +314,9 @@ $obj->aaSorting = array(array(2, 'asc'));
 
 if ($all) {
     if ($type == "DONE")
-        $obj->sAjaxSource = "core/ajax/listdatatables.php?json=actionsDONE&class=" . get_class($object);
+        $obj->sAjaxSource = "core/ajax/listdatatables.php?json=listDONEByUser&class=" . get_class($object);
     else
-        $obj->sAjaxSource = "core/ajax/listdatatables.php?json=actionsTODO&class=" . get_class($object);
+        $obj->sAjaxSource = "core/ajax/listdatatables.php?json=listTODOByUser&class=" . get_class($object);
 } else {
     if ($type == "DONE")
         $obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=listDONEByUser";
