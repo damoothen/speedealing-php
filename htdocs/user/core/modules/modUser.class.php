@@ -480,7 +480,7 @@ class modUser extends DolibarrModules
                 $this->menus[$r]->url = "/user/index.php";
 		$this->menus[$r]->perms = '$user->rights->user->user->lire || $user->admin';
 		$this->menus[$r]->usertype = 2;
-		$this->menus[$r]->title = "Collaborator";
+		$this->menus[$r]->title = "Collaborators";
 		$this->menus[$r]->fk_menu = "menu:rh";
 		$r++;
 
@@ -490,7 +490,7 @@ class modUser extends DolibarrModules
                 $this->menus[$r]->url = "/user/group/index.php";
 		$this->menus[$r]->perms = '($conf->global->MAIN_USE_ADVANCED_PERMS?$user->rights->user->group_advance->read:$user->rights->user->user->lire) || $user->admin';
 		$this->menus[$r]->usertype = 2;
-		$this->menus[$r]->title = "Services";
+		$this->menus[$r]->title = "Profiles";
 		$this->menus[$r]->fk_menu = "menu:rh";
 		$r++;
 
