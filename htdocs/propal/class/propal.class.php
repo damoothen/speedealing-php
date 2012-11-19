@@ -121,7 +121,7 @@ class Propal extends nosqlDocument {
         $this->remise = 0;
         $this->remise_percent = 0;
         $this->remise_absolue = 0;
-        $this->Status = $this->fk_extrafields->Status->default;
+        $this->Status = "DRAFT";
 
         $this->duree_validite = $conf->global->PROPALE_VALIDITY_DURATION;
 
@@ -894,188 +894,188 @@ class Propal extends nosqlDocument {
      */
     function fetch($rowid, $ref = '') {
         global $conf;
-
-        $sql = "SELECT p.rowid, p.ref, p.remise, p.remise_percent, p.remise_absolue, p.fk_soc";
-        $sql.= ", p.total, p.tva, p.localtax1, p.localtax2, p.total_ht";
-        $sql.= ", p.datec";
-        $sql.= ", p.date_valid as datev";
-        $sql.= ", p.datep as dp";
-        $sql.= ", p.fin_validite as dfv";
-        $sql.= ", p.date_livraison as date_livraison";
-        $sql.= ", p.model_pdf, p.ref_client, p.extraparams";
-        $sql.= ", p.note as note_private, p.note_public";
-        $sql.= ", p.fk_projet, p.fk_statut";
-        $sql.= ", p.fk_user_author, p.fk_user_valid, p.fk_user_cloture";
-        $sql.= ", p.fk_adresse_livraison";
-        $sql.= ", p.fk_availability";
-        $sql.= ", p.fk_input_reason";
-        $sql.= ", p.fk_cond_reglement";
-        $sql.= ", p.fk_mode_reglement";
-        $sql.= ", c.label as statut_label";
-        $sql.= ", ca.code as availability_code, ca.label as availability";
-        $sql.= ", dr.code as demand_reason_code, dr.label as demand_reason";
-        $sql.= ", cr.code as cond_reglement_code, cr.libelle as cond_reglement, cr.libelle_facture as cond_reglement_libelle_doc";
-        $sql.= ", cp.code as mode_reglement_code, cp.libelle as mode_reglement";
-        $sql.= " FROM " . MAIN_DB_PREFIX . "c_propalst as c, " . MAIN_DB_PREFIX . "propal as p";
-        $sql.= ' LEFT JOIN ' . MAIN_DB_PREFIX . 'c_paiement as cp ON p.fk_mode_reglement = cp.id';
-        $sql.= ' LEFT JOIN ' . MAIN_DB_PREFIX . 'c_payment_term as cr ON p.fk_cond_reglement = cr.rowid';
-        $sql.= ' LEFT JOIN ' . MAIN_DB_PREFIX . 'c_availability as ca ON p.fk_availability = ca.rowid';
-        $sql.= ' LEFT JOIN ' . MAIN_DB_PREFIX . 'c_input_reason as dr ON p.fk_input_reason = dr.rowid';
-        $sql.= " WHERE p.fk_statut = c.id";
-        $sql.= " AND p.entity = " . $conf->entity;
-        if ($ref)
-            $sql.= " AND p.ref='" . $ref . "'";
-        else
-            $sql.= " AND p.rowid=" . $rowid;
-
-        dol_syslog(get_class($this) . "::fetch sql=" . $sql, LOG_DEBUG);
-        $resql = $this->db->query($sql);
-        if ($resql) {
-            if ($this->db->num_rows($resql)) {
-                $obj = $this->db->fetch_object($resql);
-
-                $this->id = $obj->rowid;
-
-                $this->ref = $obj->ref;
-                $this->ref_client = $obj->ref_client;
-                $this->remise = $obj->remise;
-                $this->remise_percent = $obj->remise_percent;
-                $this->remise_absolue = $obj->remise_absolue;
-                $this->total = $obj->total; // TODO obsolete
-                $this->total_ht = $obj->total_ht;
-                $this->total_tva = $obj->tva;
-                $this->total_localtax1 = $obj->localtax1;
-                $this->total_localtax2 = $obj->localtax2;
-                $this->total_ttc = $obj->total;
-                $this->socid = $obj->fk_soc;
-                $this->fk_project = $obj->fk_projet;
-                $this->modelpdf = $obj->model_pdf;
-                $this->note = $obj->note_private; // TODO obsolete
-                $this->note_private = $obj->note_private;
-                $this->note_public = $obj->note_public;
-                $this->statut = $obj->fk_statut;
-                $this->statut_libelle = $obj->statut_label;
-
-                $this->datec = $this->db->jdate($obj->datec); // TODO obsolete
-                $this->datev = $this->db->jdate($obj->datev); // TODO obsolete
-                $this->date_creation = $this->db->jdate($obj->datec); //Creation date
-                $this->date_validation = $this->db->jdate($obj->datev); //Validation date
-                $this->date = $this->db->jdate($obj->dp); // Proposal date
-                $this->datep = $this->db->jdate($obj->dp);    // deprecated
-                $this->fin_validite = $this->db->jdate($obj->dfv);
-                $this->date_livraison = $this->db->jdate($obj->date_livraison);
-                $this->availability_id = $obj->fk_availability;
-                $this->availability_code = $obj->availability_code;
-                $this->availability = $obj->availability;
-                $this->demand_reason_id = $obj->fk_input_reason;
-                $this->demand_reason_code = $obj->demand_reason_code;
-                $this->demand_reason = $obj->demand_reason;
-                $this->fk_delivery_address = $obj->fk_adresse_livraison; // TODO obsolete
-                $this->fk_address = $obj->fk_adresse_livraison;
-
-                $this->mode_reglement_id = $obj->fk_mode_reglement;
-                $this->mode_reglement_code = $obj->mode_reglement_code;
-                $this->mode_reglement = $obj->mode_reglement;
-                $this->cond_reglement_id = $obj->fk_cond_reglement;
-                $this->cond_reglement_code = $obj->cond_reglement_code;
-                $this->cond_reglement = $obj->cond_reglement;
-                $this->cond_reglement_doc = $obj->cond_reglement_libelle_doc;
-
-                $this->extraparams = (array) json_decode($obj->extraparams, true);
-
-                $this->user_author_id = $obj->fk_user_author;
-                $this->user_valid_id = $obj->fk_user_valid;
-                $this->user_close_id = $obj->fk_user_cloture;
-
-                if ($obj->fk_statut == 0) {
-                    $this->brouillon = 1;
-                }
-
-                $this->db->free($resql);
-
-                $this->lines = array();
-
-                /*
-                 * Lignes propales liees a un produit ou non
-                 */
-                $sql = "SELECT d.rowid, d.fk_propal, d.fk_parent_line, d.label as custom_label, d.description, d.price, d.tva_tx, d.localtax1_tx, d.localtax2_tx, d.qty, d.fk_remise_except, d.remise_percent, d.subprice, d.fk_product,";
-                $sql.= " d.info_bits, d.total_ht, d.total_tva, d.total_localtax1, d.total_localtax2, d.total_ttc, d.fk_product_fournisseur_price as fk_fournprice, d.buy_price_ht as pa_ht, d.special_code, d.rang, d.product_type,";
-                $sql.= ' p.ref as product_ref, p.description as product_desc, p.fk_product_type, p.label as product_label';
-                $sql.= " FROM " . MAIN_DB_PREFIX . "propaldet as d";
-                $sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "product as p ON d.fk_product = p.rowid";
-                $sql.= " WHERE d.fk_propal = " . $this->id;
-                $sql.= " ORDER by d.rang";
-
-                $result = $this->db->query($sql);
-                if ($result) {
-                    $num = $this->db->num_rows($result);
-                    $i = 0;
-
-                    while ($i < $num) {
-                        $objp = $this->db->fetch_object($result);
-
-                        $line = new PropaleLigne($this->db);
-
-                        $line->rowid = $objp->rowid;
-                        $line->fk_propal = $objp->fk_propal;
-                        $line->fk_parent_line = $objp->fk_parent_line;
-                        $line->product_type = $objp->product_type;
-                        $line->label = $objp->custom_label;
-                        $line->desc = $objp->description;  // Description ligne
-                        $line->qty = $objp->qty;
-                        $line->tva_tx = $objp->tva_tx;
-                        $line->localtax1_tx = $objp->localtax1_tx;
-                        $line->localtax2_tx = $objp->localtax2_tx;
-                        $line->subprice = $objp->subprice;
-                        $line->fk_remise_except = $objp->fk_remise_except;
-                        $line->remise_percent = $objp->remise_percent;
-                        $line->price = $objp->price;  // TODO deprecated
-
-                        $line->info_bits = $objp->info_bits;
-                        $line->total_ht = $objp->total_ht;
-                        $line->total_tva = $objp->total_tva;
-                        $line->total_localtax1 = $objp->total_localtax1;
-                        $line->total_localtax2 = $objp->total_localtax2;
-                        $line->total_ttc = $objp->total_ttc;
-                        $line->fk_fournprice = $objp->fk_fournprice;
-                        $marginInfos = getMarginInfos($objp->subprice, $objp->remise_percent, $objp->tva_tx, $objp->localtax1_tx, $objp->localtax2_tx, $line->fk_fournprice, $objp->pa_ht);
-                        $line->pa_ht = $marginInfos[0];
-                        $line->marge_tx = $marginInfos[1];
-                        $line->marque_tx = $marginInfos[2];
-                        $line->special_code = $objp->special_code;
-                        $line->rang = $objp->rang;
-
-                        $line->fk_product = $objp->fk_product;
-
-                        $line->ref = $objp->product_ref;  // TODO deprecated
-                        $line->product_ref = $objp->product_ref;
-                        $line->libelle = $objp->product_label;  // TODO deprecated
-                        $line->product_label = $objp->product_label;
-                        $line->product_desc = $objp->product_desc;   // Description produit
-                        $line->fk_product_type = $objp->fk_product_type;
-
-                        $this->lines[$i] = $line;
-                        //dol_syslog("1 ".$line->fk_product);
-                        //print "xx $i ".$this->lines[$i]->fk_product;
-                        $i++;
-                    }
-                    $this->db->free($result);
-                } else {
-                    $this->error = $this->db->error();
-                    dol_syslog(get_class($this) . "::fetch Error " . $this->error, LOG_ERR);
-                    return -1;
-                }
-
-                return 1;
-            }
-
-            $this->error = "Record Not Found";
-            return 0;
-        } else {
-            $this->error = $this->db->error();
-            dol_syslog(get_class($this) . "::fetch Error " . $this->error, LOG_ERR);
-            return -1;
-        }
+         parent::fetch($rowid);
+//        $sql = "SELECT p.rowid, p.ref, p.remise, p.remise_percent, p.remise_absolue, p.fk_soc";
+//        $sql.= ", p.total, p.tva, p.localtax1, p.localtax2, p.total_ht";
+//        $sql.= ", p.datec";
+//        $sql.= ", p.date_valid as datev";
+//        $sql.= ", p.datep as dp";
+//        $sql.= ", p.fin_validite as dfv";
+//        $sql.= ", p.date_livraison as date_livraison";
+//        $sql.= ", p.model_pdf, p.ref_client, p.extraparams";
+//        $sql.= ", p.note as note_private, p.note_public";
+//        $sql.= ", p.fk_projet, p.fk_statut";
+//        $sql.= ", p.fk_user_author, p.fk_user_valid, p.fk_user_cloture";
+//        $sql.= ", p.fk_adresse_livraison";
+//        $sql.= ", p.fk_availability";
+//        $sql.= ", p.fk_input_reason";
+//        $sql.= ", p.fk_cond_reglement";
+//        $sql.= ", p.fk_mode_reglement";
+//        $sql.= ", c.label as statut_label";
+//        $sql.= ", ca.code as availability_code, ca.label as availability";
+//        $sql.= ", dr.code as demand_reason_code, dr.label as demand_reason";
+//        $sql.= ", cr.code as cond_reglement_code, cr.libelle as cond_reglement, cr.libelle_facture as cond_reglement_libelle_doc";
+//        $sql.= ", cp.code as mode_reglement_code, cp.libelle as mode_reglement";
+//        $sql.= " FROM " . MAIN_DB_PREFIX . "c_propalst as c, " . MAIN_DB_PREFIX . "propal as p";
+//        $sql.= ' LEFT JOIN ' . MAIN_DB_PREFIX . 'c_paiement as cp ON p.fk_mode_reglement = cp.id';
+//        $sql.= ' LEFT JOIN ' . MAIN_DB_PREFIX . 'c_payment_term as cr ON p.fk_cond_reglement = cr.rowid';
+//        $sql.= ' LEFT JOIN ' . MAIN_DB_PREFIX . 'c_availability as ca ON p.fk_availability = ca.rowid';
+//        $sql.= ' LEFT JOIN ' . MAIN_DB_PREFIX . 'c_input_reason as dr ON p.fk_input_reason = dr.rowid';
+//        $sql.= " WHERE p.fk_statut = c.id";
+//        $sql.= " AND p.entity = " . $conf->entity;
+//        if ($ref)
+//            $sql.= " AND p.ref='" . $ref . "'";
+//        else
+//            $sql.= " AND p.rowid=" . $rowid;
+//
+//        dol_syslog(get_class($this) . "::fetch sql=" . $sql, LOG_DEBUG);
+//        $resql = $this->db->query($sql);
+//        if ($resql) {
+//            if ($this->db->num_rows($resql)) {
+//                $obj = $this->db->fetch_object($resql);
+//
+//                $this->id = $obj->rowid;
+//
+//                $this->ref = $obj->ref;
+//                $this->ref_client = $obj->ref_client;
+//                $this->remise = $obj->remise;
+//                $this->remise_percent = $obj->remise_percent;
+//                $this->remise_absolue = $obj->remise_absolue;
+//                $this->total = $obj->total; // TODO obsolete
+//                $this->total_ht = $obj->total_ht;
+//                $this->total_tva = $obj->tva;
+//                $this->total_localtax1 = $obj->localtax1;
+//                $this->total_localtax2 = $obj->localtax2;
+//                $this->total_ttc = $obj->total;
+//                $this->socid = $obj->fk_soc;
+//                $this->fk_project = $obj->fk_projet;
+//                $this->modelpdf = $obj->model_pdf;
+//                $this->note = $obj->note_private; // TODO obsolete
+//                $this->note_private = $obj->note_private;
+//                $this->note_public = $obj->note_public;
+//                $this->statut = $obj->fk_statut;
+//                $this->statut_libelle = $obj->statut_label;
+//
+//                $this->datec = $this->db->jdate($obj->datec); // TODO obsolete
+//                $this->datev = $this->db->jdate($obj->datev); // TODO obsolete
+//                $this->date_creation = $this->db->jdate($obj->datec); //Creation date
+//                $this->date_validation = $this->db->jdate($obj->datev); //Validation date
+//                $this->date = $this->db->jdate($obj->dp); // Proposal date
+//                $this->datep = $this->db->jdate($obj->dp);    // deprecated
+//                $this->fin_validite = $this->db->jdate($obj->dfv);
+//                $this->date_livraison = $this->db->jdate($obj->date_livraison);
+//                $this->availability_id = $obj->fk_availability;
+//                $this->availability_code = $obj->availability_code;
+//                $this->availability = $obj->availability;
+//                $this->demand_reason_id = $obj->fk_input_reason;
+//                $this->demand_reason_code = $obj->demand_reason_code;
+//                $this->demand_reason = $obj->demand_reason;
+//                $this->fk_delivery_address = $obj->fk_adresse_livraison; // TODO obsolete
+//                $this->fk_address = $obj->fk_adresse_livraison;
+//
+//                $this->mode_reglement_id = $obj->fk_mode_reglement;
+//                $this->mode_reglement_code = $obj->mode_reglement_code;
+//                $this->mode_reglement = $obj->mode_reglement;
+//                $this->cond_reglement_id = $obj->fk_cond_reglement;
+//                $this->cond_reglement_code = $obj->cond_reglement_code;
+//                $this->cond_reglement = $obj->cond_reglement;
+//                $this->cond_reglement_doc = $obj->cond_reglement_libelle_doc;
+//
+//                $this->extraparams = (array) json_decode($obj->extraparams, true);
+//
+//                $this->user_author_id = $obj->fk_user_author;
+//                $this->user_valid_id = $obj->fk_user_valid;
+//                $this->user_close_id = $obj->fk_user_cloture;
+//
+//                if ($obj->fk_statut == 0) {
+//                    $this->brouillon = 1;
+//                }
+//
+//                $this->db->free($resql);
+//
+//                $this->lines = array();
+//
+//                /*
+//                 * Lignes propales liees a un produit ou non
+//                 */
+//                $sql = "SELECT d.rowid, d.fk_propal, d.fk_parent_line, d.label as custom_label, d.description, d.price, d.tva_tx, d.localtax1_tx, d.localtax2_tx, d.qty, d.fk_remise_except, d.remise_percent, d.subprice, d.fk_product,";
+//                $sql.= " d.info_bits, d.total_ht, d.total_tva, d.total_localtax1, d.total_localtax2, d.total_ttc, d.fk_product_fournisseur_price as fk_fournprice, d.buy_price_ht as pa_ht, d.special_code, d.rang, d.product_type,";
+//                $sql.= ' p.ref as product_ref, p.description as product_desc, p.fk_product_type, p.label as product_label';
+//                $sql.= " FROM " . MAIN_DB_PREFIX . "propaldet as d";
+//                $sql.= " LEFT JOIN " . MAIN_DB_PREFIX . "product as p ON d.fk_product = p.rowid";
+//                $sql.= " WHERE d.fk_propal = " . $this->id;
+//                $sql.= " ORDER by d.rang";
+//
+//                $result = $this->db->query($sql);
+//                if ($result) {
+//                    $num = $this->db->num_rows($result);
+//                    $i = 0;
+//
+//                    while ($i < $num) {
+//                        $objp = $this->db->fetch_object($result);
+//
+//                        $line = new PropaleLigne($this->db);
+//
+//                        $line->rowid = $objp->rowid;
+//                        $line->fk_propal = $objp->fk_propal;
+//                        $line->fk_parent_line = $objp->fk_parent_line;
+//                        $line->product_type = $objp->product_type;
+//                        $line->label = $objp->custom_label;
+//                        $line->desc = $objp->description;  // Description ligne
+//                        $line->qty = $objp->qty;
+//                        $line->tva_tx = $objp->tva_tx;
+//                        $line->localtax1_tx = $objp->localtax1_tx;
+//                        $line->localtax2_tx = $objp->localtax2_tx;
+//                        $line->subprice = $objp->subprice;
+//                        $line->fk_remise_except = $objp->fk_remise_except;
+//                        $line->remise_percent = $objp->remise_percent;
+//                        $line->price = $objp->price;  // TODO deprecated
+//
+//                        $line->info_bits = $objp->info_bits;
+//                        $line->total_ht = $objp->total_ht;
+//                        $line->total_tva = $objp->total_tva;
+//                        $line->total_localtax1 = $objp->total_localtax1;
+//                        $line->total_localtax2 = $objp->total_localtax2;
+//                        $line->total_ttc = $objp->total_ttc;
+//                        $line->fk_fournprice = $objp->fk_fournprice;
+//                        $marginInfos = getMarginInfos($objp->subprice, $objp->remise_percent, $objp->tva_tx, $objp->localtax1_tx, $objp->localtax2_tx, $line->fk_fournprice, $objp->pa_ht);
+//                        $line->pa_ht = $marginInfos[0];
+//                        $line->marge_tx = $marginInfos[1];
+//                        $line->marque_tx = $marginInfos[2];
+//                        $line->special_code = $objp->special_code;
+//                        $line->rang = $objp->rang;
+//
+//                        $line->fk_product = $objp->fk_product;
+//
+//                        $line->ref = $objp->product_ref;  // TODO deprecated
+//                        $line->product_ref = $objp->product_ref;
+//                        $line->libelle = $objp->product_label;  // TODO deprecated
+//                        $line->product_label = $objp->product_label;
+//                        $line->product_desc = $objp->product_desc;   // Description produit
+//                        $line->fk_product_type = $objp->fk_product_type;
+//
+//                        $this->lines[$i] = $line;
+//                        //dol_syslog("1 ".$line->fk_product);
+//                        //print "xx $i ".$this->lines[$i]->fk_product;
+//                        $i++;
+//                    }
+//                    $this->db->free($result);
+//                } else {
+//                    $this->error = $this->db->error();
+//                    dol_syslog(get_class($this) . "::fetch Error " . $this->error, LOG_ERR);
+//                    return -1;
+//                }
+//
+//                return 1;
+//            }
+//
+//            $this->error = "Record Not Found";
+//            return 0;
+//        } else {
+//            $this->error = $this->db->error();
+//            dol_syslog(get_class($this) . "::fetch Error " . $this->error, LOG_ERR);
+//            return -1;
+//        }
     }
 
     /**
@@ -2202,6 +2202,10 @@ class Propal extends nosqlDocument {
             dol_syslog(get_class($this) . "::getLinesArray Error sql=$sql, error=" . $this->error, LOG_ERR);
             return -1;
         }
+    }
+    
+    public function getExtraFieldLabel($field){
+        return $this->fk_extrafields->fields->{$field}->values->{$this->$field}->label;
     }
 
 }
