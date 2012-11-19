@@ -1,20 +1,10 @@
 {
    "_id": "extrafields:Contact",
+   "_rev": "12-b174d7987093177546371895840b9b5c",
    "class": "extrafields",
    "ico": "16-User.png",
-   "longList": [
-       "code_client",
-       "zip",
-       "town",
-       "address",
-       "phone",
-       "idprof1",
-       "commercial_id"
-   ],
-   "shortList": [
-       "town",
-       "phone",
-       "commercial_id"
+   "langs": [
+       "companies"
    ],
    "fields": {
        "name": {
@@ -42,45 +32,21 @@
                "bVisible": true
            },
            "values": {
-               "ST_NO": {
-                   "enable": true,
-                   "type": "closed",
-                   "cssClass": "red-gradient"
-               },
-               "ST_TODO": {
-                   "enable": false,
-                   "type": "prsopect",
-                   "cssClass": "blue-gardient"
-               },
                "ST_NEVER": {
                    "enable": true,
-                   "type": "never",
                    "cssClass": "grey-gradient"
                },
-               "ST_PCOLD": {
+               "ST_ENABLE": {
                    "enable": true,
-                   "type": "prospect",
-                   "cssClass": "blue-gradient"
+                   "cssClass": "green-gradient"
                },
-               "ST_PHOT": {
+               "ST_DISABLE": {
                    "enable": true,
-                   "type": "prospect",
+                   "cssClass": "blue-gardient"
+               },
+               "ST_OUT": {
+                   "enable": true,
                    "cssClass": "red-gradient"
-               },
-               "ST_CLESS3": {
-                   "enable": true,
-                   "type": "customer",
-                   "cssClass": "orange-gradient"
-               },
-               "ST_CUST": {
-                   "enable": true,
-                   "type": "customer",
-                   "cssClass": "green-gradient"
-               },
-               "ST_CPAR": {
-                   "enable": false,
-                   "type": "customer",
-                   "cssClass": "green-gradient"
                }
            }
        },
@@ -122,7 +88,7 @@
        "country_id": {
            "type": "select",
            "enable": true,
-           "dict": "dict:country",
+           "dict": "dict:fk_country",
            "default": "substr($langs->defaultlang,3,5)"
        },
        "state_id": {

@@ -1,5 +1,6 @@
 {
-   "_id": "dict:country",
+   "_id": "dict:fk_country",
+   "_rev": "1-8079480c34174aa3e1e949784c324233",
    "values": {
        "AD": {
            "enable": true,

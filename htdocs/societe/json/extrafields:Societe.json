@@ -1,6 +1,6 @@
 {
    "_id": "extrafields:Societe",
-   "_rev": "84-6f580d6d2bee01fb9f1b3a4adab15bc6",
+   "_rev": "99-5dd751c963a484464a28d53aa74d723e",
    "class": "extrafields",
    "ico": "16-Apartment-Building.png",
    "langs": [
@@ -13,8 +13,9 @@
        "zip",
        "town",
        "address",
+       "zonegeo",
        "phone",
-       "idprof1"
+       "idprof3"
    ],
    "shortList": [
        "town",
@@ -110,7 +111,7 @@
        "country_id": {
            "type": "select",
            "enable": true,
-           "dict": "dict:country",
+           "dict": "dict:fk_country",
            "default": "substr($langs->defaultlang,3,5)"
        },
        "state_id": {
@@ -281,6 +282,23 @@
            "label": "CompanyCurrency",
            "dict": "dict:fk_currencies",
            "enable": true
+       },
+       "zonegeo": {
+           "type": "select",
+           "label": "ZoneGeo",
+           "enable": true,
+           "aoColumns": {
+               "sClass": "center dol_select",
+               "bSearchable": true,
+               "bVisible": true
+           },
+           "class": "Societe",
+           "view": "listZoneGeo",
+           "getkey": true,
+           "params": {
+               "group": true,
+               "limit": 6
+           }
        }
    }
 }

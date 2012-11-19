@@ -1496,6 +1496,12 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
         print '<tr><td>' . $langs->trans('Phone') . '</td><td style="min-width: 25%;">' . dol_print_phone($object->phone, $object->country_id, 0, $object->id, 'AC_TEL') . '</td>';
         print '<td>' . $langs->trans('Fax') . '</td><td style="min-width: 25%;">' . dol_print_phone($object->fax, $object->country_id, 0, $object->id, 'AC_FAX') . '</td></tr>';
+        
+        /*// Zone Geo
+        print '<tr><td>' . $form->editfieldkey("zonegeo", 'zonegeo', $object->zonegeo, $object, $user->rights->societe->creer, "select") . '</td>';
+        print '<td colspan="' . (2 + (($showlogo || $showbarcode) ? 0 : 1)) . '>';
+        print $form->editfieldval("zonegeo", 'zonegeo', $object->zonegeo, $object, $user->rights->societe->creer, "select");
+        print '</td>';*/
 
         // EMail
         print '<tr><td>' . $langs->trans('EMail') . '</td><td width="25%">';

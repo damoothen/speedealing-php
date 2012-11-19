@@ -1,0 +1,997 @@
+{
+   "_id": "dict:fk_currencies",
+   "_rev": "6-e82b5506302c7f9278e75717d947c9fa",
+   "values": {
+       "AFN": {
+           "enable": true,
+           "label": "Afghanistan Afghani",
+           "unicode": [
+               1547
+           ]
+       },
+       "ALL": {
+           "enable": true,
+           "label": "Albania Lek",
+           "unicode": [
+               76,
+               101,
+               107
+           ]
+       },
+       "DZD": {
+           "enable": true,
+           "label": "Algeria Dinar",
+           "unicode": [
+           ]
+       },
+       "ARS": {
+           "enable": true,
+           "label": "Argentino Peso",
+           "unicode": [
+               36
+           ]
+       },
+       "AWG": {
+           "enable": true,
+           "label": "Aruba Guilder",
+           "unicode": [
+               402
+           ]
+       },
+       "AUD": {
+           "enable": true,
+           "label": "Australia Dollar",
+           "unicode": [
+               36
+           ]
+       },
+       "AZN": {
+           "enable": true,
+           "label": "Azerbaijan New Manat",
+           "unicode": [
+               1084,
+               1072,
+               1085
+           ]
+       },
+       "BSD": {
+           "enable": true,
+           "label": "Bahamas Dollar",
+           "unicode": [
+               36
+           ]
+       },
+       "BBD": {
+           "enable": true,
+           "label": "Barbados Dollar",
+           "unicode": [
+               36
+           ]
+       },
+       "BYR": {
+           "enable": true,
+           "label": "Belarus Ruble",
+           "unicode": [
+               112,
+               46
+           ]
+       },
+       "BZD": {
+           "enable": true,
+           "label": "Belize Dollar",
+           "unicode": [
+               66,
+               90,
+               36
+           ]
+       },
+       "BMD": {
+           "enable": true,
+           "label": "Bermuda Dollar",
+           "unicode": [
+               36
+           ]
+       },
+       "BOB": {
+           "enable": true,
+           "label": "Bolivia Boliviano",
+           "unicode": [
+               36,
+               98
+           ]
+       },
+       "BAM": {
+           "enable": true,
+           "label": "Bosnia and Herzegovina Convertible Marka",
+           "unicode": [
+               75,
+               77
+           ]
+       },
+       "BWP": {
+           "enable": true,
+           "label": "Botswana Pula",
+           "unicode": [
+               80
+           ]
+       },
+       "BRL": {
+           "enable": true,
+           "label": "Brazil Real",
+           "unicode": [
+               82,
+               36
+           ]
+       },
+       "BND": {
+           "enable": true,
+           "label": "Brunei Darussalam Dollar",
+           "unicode": [
+               36
+           ]
+       },
+       "BGN": {
+           "enable": true,
+           "label": "Bulgaria Lev",
+           "unicode": [
+               1083,
+               1074
+           ]
+       },
+       "KHR": {
+           "enable": true,
+           "label": "Cambodia Riel",
+           "unicode": [
+               6107
+           ]
+       },
+       "CAD": {
+           "enable": true,
+           "label": "Canada Dollar",
+           "unicode": [
+               36
+           ]
+       },
+       "KYD": {
+           "enable": true,
+           "label": "Cayman Islands Dollar",
+           "unicode": [
+               36
+           ]
+       },
+       "CLP": {
+           "enable": true,
+           "label": "Chile Peso",
+           "unicode": [
+               36
+           ]
+       },
+       "CNY": {
+           "enable": true,
+           "label": "China Yuan Renminbi",
+           "unicode": [
+               165
+           ]
+       },
+       "COP": {
+           "enable": true,
+           "label": "Colombia Peso",
+           "unicode": [
+               36
+           ]
+       },
+       "XOF": {
+           "enable": true,
+           "label": "Communaute Financiere Africaine (BCEAO) Franc",
+           "unicode": [
+           ]
+       },
+       "XAF": {
+           "enable": true,
+           "label": "Communaute Financiere Africaine (BEAC) CFA Franc",
+           "unicode": [
+           ]
+       },
+       "CRC": {
+           "enable": true,
+           "label": "Costa Rica Colon",
+           "unicode": [
+               8353
+           ]
+       },
+       "SKK": {
+           "enable": false,
+           "label": "Couronnes slovaques",
+           "unicode": [
+           ]
+       },
+       "HRK": {
+           "enable": true,
+           "label": "Croatia Kuna",
+           "unicode": [
+               107,
+               110
+           ]
+       },
+       "CUP": {
+           "enable": true,
+           "label": "Cuba Peso",
+           "unicode": [
+               8369
+           ]
+       },
+       "CZK": {
+           "enable": true,
+           "label": "Czech Republic Koruna",
+           "unicode": [
+               75,
+               269
+           ]
+       },
+       "DKK": {
+           "enable": true,
+           "label": "Denmark Krone",
+           "unicode": [
+               107,
+               114
+           ]
+       },
+       "DEM": {
+           "enable": false,
+           "label": "Deutsch mark",
+           "unicode": [
+           ]
+       },
+       "DOP": {
+           "enable": true,
+           "label": "Dominican Republic Peso",
+           "unicode": [
+               82,
+               68,
+               36
+           ]
+       },
+       "GRD": {
+           "enable": false,
+           "label": "Drachme (grece)",
+           "unicode": [
+           ]
+       },
+       "XCD": {
+           "enable": true,
+           "label": "East Caribbean Dollar",
+           "unicode": [
+               36
+           ]
+       },
+       "XEU": {
+           "enable": false,
+           "label": "Ecus",
+           "unicode": [
+           ]
+       },
+       "EGP": {
+           "enable": true,
+           "label": "Egypt Pound",
+           "unicode": [
+               163
+           ]
+       },
+       "SVC": {
+           "enable": true,
+           "label": "El Salvador Colon",
+           "unicode": [
+               36
+           ]
+       },
+       "PTE": {
+           "enable": false,
+           "label": "Escudos",
+           "unicode": [
+           ]
+       },
+       "EEK": {
+           "enable": true,
+           "label": "Estonia Kroon",
+           "unicode": [
+               107,
+               114
+           ]
+       },
+       "EUR": {
+           "enable": true,
+           "label": "Euro Member Countries",
+           "unicode": [
+               8364
+           ]
+       },
+       "FKP": {
+           "enable": true,
+           "label": "Falkland Islands (Malvinas) Pound",
+           "unicode": [
+               163
+           ]
+       },
+       "FJD": {
+           "enable": true,
+           "label": "Fiji Dollar",
+           "unicode": [
+               36
+           ]
+       },
+       "NLG": {
+           "enable": false,
+           "label": "Florins",
+           "unicode": [
+           ]
+       },
+       "BEF": {
+           "enable": false,
+           "label": "Francs belges",
+           "unicode": [
+           ]
+       },
+       "FRF": {
+           "enable": false,
+           "label": "Francs francais",
+           "unicode": [
+           ]
+       },
+       "LUF": {
+           "enable": false,
+           "label": "Francs luxembourgeois",
+           "unicode": [
+           ]
+       },
+       "GHC": {
+           "enable": true,
+           "label": "Ghana Cedis",
+           "unicode": [
+               162
+           ]
+       },
+       "GIP": {
+           "enable": true,
+           "label": "Gibraltar Pound",
+           "unicode": [
+               163
+           ]
+       },
+       "GTQ": {
+           "enable": true,
+           "label": "Guatemala Quetzal",
+           "unicode": [
+               81
+           ]
+       },
+       "GGP": {
+           "enable": true,
+           "label": "Guernsey Pound",
+           "unicode": [
+               163
+           ]
+       },
+       "GYD": {
+           "enable": true,
+           "label": "Guyana Dollar",
+           "unicode": [
+               36
+           ]
+       },
+       "HNL": {
+           "enable": true,
+           "label": "Honduras Lempira",
+           "unicode": [
+               76
+           ]
+       },
+       "HKD": {
+           "enable": true,
+           "label": "Hong Kong Dollar",
+           "unicode": [
+               36
+           ]
+       },
+       "HUF": {
+           "enable": true,
+           "label": "Hungary Forint",
+           "unicode": [
+               70,
+               116
+           ]
+       },
+       "ISK": {
+           "enable": true,
+           "label": "Iceland Krona",
+           "unicode": [
+               107,
+               114
+           ]
+       },
+       "INR": {
+           "enable": true,
+           "label": "India Rupee",
+           "unicode": [
+           ]
+       },
+       "IDR": {
+           "enable": true,
+           "label": "Indonesia Rupiah",
+           "unicode": [
+               82,
+               112
+           ]
+       },
+       "IRR": {
+           "enable": true,
+           "label": "Iran Rial",
+           "unicode": [
+               65020
+           ]
+       },
+       "IMP": {
+           "enable": true,
+           "label": "Isle of Man Pound",
+           "unicode": [
+               163
+           ]
+       },
+       "ILS": {
+           "enable": true,
+           "label": "Israel Shekel",
+           "unicode": [
+               8362
+           ]
+       },
+       "JMD": {
+           "enable": true,
+           "label": "Jamaica Dollar",
+           "unicode": [
+               74,
+               36
+           ]
+       },
+       "JPY": {
+           "enable": true,
+           "label": "Japan Yen",
+           "unicode": [
+               165
+           ]
+       },
+       "JEP": {
+           "enable": true,
+           "label": "Jersey Pound",
+           "unicode": [
+               163
+           ]
+       },
+       "KZT": {
+           "enable": true,
+           "label": "Kazakhstan Tenge",
+           "unicode": [
+               1083,
+               1074
+           ]
+       },
+       "KPW": {
+           "enable": true,
+           "label": "Korea (North) Won",
+           "unicode": [
+               8361
+           ]
+       },
+       "KRW": {
+           "enable": true,
+           "label": "Korea (South) Won",
+           "unicode": [
+               8361
+           ]
+       },
+       "KGS": {
+           "enable": true,
+           "label": "Kyrgyzstan Som",
+           "unicode": [
+               1083,
+               1074
+           ]
+       },
+       "LAK": {
+           "enable": true,
+           "label": "Laos Kip",
+           "unicode": [
+               8365
+           ]
+       },
+       "LVL": {
+           "enable": true,
+           "label": "Latvia Lat",
+           "unicode": [
+               76,
+               115
+           ]
+       },
+       "LBP": {
+           "enable": true,
+           "label": "Lebanon Pound",
+           "unicode": [
+               163
+           ]
+       },
+       "LRD": {
+           "enable": true,
+           "label": "Liberia Dollar",
+           "unicode": [
+               36
+           ]
+       },
+       "ITL": {
+           "enable": false,
+           "label": "Lires",
+           "unicode": [
+           ]
+       },
+       "LTL": {
+           "enable": true,
+           "label": "Lithuania Litas",
+           "unicode": [
+               76,
+               116
+           ]
+       },
+       "IEP": {
+           "enable": false,
+           "label": "Livres irlandaises",
+           "unicode": [
+           ]
+       },
+       "MKD": {
+           "enable": true,
+           "label": "Macedonia Denar",
+           "unicode": [
+               1076,
+               1077,
+               1085
+           ]
+       },
+       "MYR": {
+           "enable": true,
+           "label": "Malaysia Ringgit",
+           "unicode": [
+               82,
+               77
+           ]
+       },
+       "FIM": {
+           "enable": false,
+           "label": "Mark finlandais",
+           "unicode": [
+           ]
+       },
+       "MRO": {
+           "enable": true,
+           "label": "Mauritania Ouguiya",
+           "unicode": [
+           ]
+       },
+       "MUR": {
+           "enable": true,
+           "label": "Mauritius Rupee",
+           "unicode": [
+               8360
+           ]
+       },
+       "MXN": {
+           "enable": true,
+           "label": "Mexico Peso",
+           "unicode": [
+               36
+           ]
+       },
+       "MNT": {
+           "enable": true,
+           "label": "Mongolia Tughrik",
+           "unicode": [
+               8366
+           ]
+       },
+       "MAD": {
+           "enable": true,
+           "label": "Morocco Dirham",
+           "unicode": [
+           ]
+       },
+       "MZN": {
+           "enable": true,
+           "label": "Mozambique Metical",
+           "unicode": [
+               77,
+               84
+           ]
+       },
+       "NAD": {
+           "enable": true,
+           "label": "Namibia Dollar",
+           "unicode": [
+               36
+           ]
+       },
+       "NPR": {
+           "enable": true,
+           "label": "Nepal Rupee",
+           "unicode": [
+               8360
+           ]
+       },
+       "ANG": {
+           "enable": true,
+           "label": "Netherlands Antilles Guilder",
+           "unicode": [
+               402
+           ]
+       },
+       "NZD": {
+           "enable": true,
+           "label": "New Zealand Dollar",
+           "unicode": [
+               36
+           ]
+       },
+       "NIO": {
+           "enable": true,
+           "label": "Nicaragua Cordoba",
+           "unicode": [
+               67,
+               36
+           ]
+       },
+       "NGN": {
+           "enable": true,
+           "label": "Nigeria Naira",
+           "unicode": [
+               8358
+           ]
+       },
+       "NOK": {
+           "enable": true,
+           "label": "Norway Krone",
+           "unicode": [
+               107,
+               114
+           ]
+       },
+       "OMR": {
+           "enable": true,
+           "label": "Oman Rial",
+           "unicode": [
+               65020
+           ]
+       },
+       "PKR": {
+           "enable": true,
+           "label": "Pakistan Rupee",
+           "unicode": [
+               8360
+           ]
+       },
+       "PAB": {
+           "enable": true,
+           "label": "Panama Balboa",
+           "unicode": [
+               66,
+               47,
+               46
+           ]
+       },
+       "PYG": {
+           "enable": true,
+           "label": "Paraguay Guarani",
+           "unicode": [
+               71,
+               115
+           ]
+       },
+       "PEN": {
+           "enable": true,
+           "label": "Peru Nuevo Sol",
+           "unicode": [
+               83,
+               47,
+               46
+           ]
+       },
+       "ESP": {
+           "enable": false,
+           "label": "Pesete",
+           "unicode": [
+           ]
+       },
+       "ARP": {
+           "enable": false,
+           "label": "Pesos argentins",
+           "unicode": [
+           ]
+       },
+       "MXP": {
+           "enable": false,
+           "label": "Pesos Mexicans",
+           "unicode": [
+           ]
+       },
+       "PHP": {
+           "enable": true,
+           "label": "Philippines Peso",
+           "unicode": [
+               8369
+           ]
+       },
+       "PLN": {
+           "enable": true,
+           "label": "Poland Zloty",
+           "unicode": [
+               122,
+               322
+           ]
+       },
+       "QAR": {
+           "enable": true,
+           "label": "Qatar Riyal",
+           "unicode": [
+               65020
+           ]
+       },
+       "RON": {
+           "enable": true,
+           "label": "Romania New Leu",
+           "unicode": [
+               108,
+               101,
+               105
+           ]
+       },
+       "SUR": {
+           "enable": false,
+           "label": "Rouble",
+           "unicode": [
+           ]
+       },
+       "RUB": {
+           "enable": true,
+           "label": "Russia Ruble",
+           "unicode": [
+               1088,
+               1091,
+               1073
+           ]
+       },
+       "SHP": {
+           "enable": true,
+           "label": "Saint Helena Pound",
+           "unicode": [
+               163
+           ]
+       },
+       "SAR": {
+           "enable": true,
+           "label": "Saudi Arabia Riyal",
+           "unicode": [
+               65020
+           ]
+       },
+       "RSD": {
+           "enable": true,
+           "label": "Serbia Dinar",
+           "unicode": [
+               1044,
+               1080,
+               1085,
+               46
+           ]
+       },
+       "SCR": {
+           "enable": true,
+           "label": "Seychelles Rupee",
+           "unicode": [
+               8360
+           ]
+       },
+       "ATS": {
+           "enable": false,
+           "label": "Shiliing autrichiens",
+           "unicode": [
+           ]
+       },
+       "SGD": {
+           "enable": true,
+           "label": "Singapore Dollar",
+           "unicode": [
+               36
+           ]
+       },
+       "SBD": {
+           "enable": true,
+           "label": "Solomon Islands Dollar",
+           "unicode": [
+               36
+           ]
+       },
+       "SOS": {
+           "enable": true,
+           "label": "Somalia Shilling",
+           "unicode": [
+               83
+           ]
+       },
+       "ZAR": {
+           "enable": true,
+           "label": "South Africa Rand",
+           "unicode": [
+               82
+           ]
+       },
+       "LKR": {
+           "enable": true,
+           "label": "Sri Lanka Rupee",
+           "unicode": [
+               8360
+           ]
+       },
+       "SRD": {
+           "enable": true,
+           "label": "Suriname Dollar",
+           "unicode": [
+               36
+           ]
+       },
+       "SEK": {
+           "enable": true,
+           "label": "Sweden Krona",
+           "unicode": [
+               107,
+               114
+           ]
+       },
+       "CHF": {
+           "enable": true,
+           "label": "Switzerland Franc",
+           "unicode": [
+               67,
+               72,
+               70
+           ]
+       },
+       "SYP": {
+           "enable": true,
+           "label": "Syria Pound",
+           "unicode": [
+               163
+           ]
+       },
+       "TWD": {
+           "enable": true,
+           "label": "Taiwan New Dollar",
+           "unicode": [
+               78,
+               84,
+               36
+           ]
+       },
+       "THB": {
+           "enable": true,
+           "label": "Thailand Baht",
+           "unicode": [
+               3647
+           ]
+       },
+       "TTD": {
+           "enable": true,
+           "label": "Trinidad and Tobago Dollar",
+           "unicode": [
+               84,
+               84,
+               36
+           ]
+       },
+       "TND": {
+           "enable": true,
+           "label": "Tunisia Dinar",
+           "unicode": [
+           ]
+       },
+       "TRL": {
+           "enable": true,
+           "label": "Turkey Lira",
+           "unicode": [
+               84,
+               76
+           ]
+       },
+       "TRY": {
+           "enable": true,
+           "label": "Turkey Lira",
+           "unicode": [
+               8356
+           ]
+       },
+       "TVD": {
+           "enable": true,
+           "label": "Tuvalu Dollar",
+           "unicode": [
+               36
+           ]
+       },
+       "UAH": {
+           "enable": true,
+           "label": "Ukraine Hryvna",
+           "unicode": [
+               8372
+           ]
+       },
+       "AED": {
+           "enable": true,
+           "label": "United Arab Emirates Dirham",
+           "unicode": [
+           ]
+       },
+       "GBP": {
+           "enable": true,
+           "label": "United Kingdom Pound",
+           "unicode": [
+               163
+           ]
+       },
+       "USD": {
+           "enable": true,
+           "label": "United States Dollar",
+           "unicode": [
+               36
+           ]
+       },
+       "UYU": {
+           "enable": true,
+           "label": "Uruguay Peso",
+           "unicode": [
+               36,
+               85
+           ]
+       },
+       "UZS": {
+           "enable": true,
+           "label": "Uzbekistan Som",
+           "unicode": [
+               1083,
+               1074
+           ]
+       },
+       "VEF": {
+           "enable": true,
+           "label": "Venezuela Bolivar Fuerte",
+           "unicode": [
+               66,
+               115
+           ]
+       },
+       "VND": {
+           "enable": true,
+           "label": "Viet Nam Dong",
+           "unicode": [
+               8363
+           ]
+       },
+       "YER": {
+           "enable": true,
+           "label": "Yemen Rial",
+           "unicode": [
+               65020
+           ]
+       },
+       "ZWD": {
+           "enable": true,
+           "label": "Zimbabwe Dollar",
+           "unicode": [
+               90,
+               36
+           ]
+       }
+   },
+   "class": "dict"
+}

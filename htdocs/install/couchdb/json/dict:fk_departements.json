@@ -1,5 +1,6 @@
 {
    "_id": "dict:fk_departements",
+   "_rev": "2-4a037e1e3197a5e22856c31a621c10bd",
    "values": {
        "0": {
            "enable": true,

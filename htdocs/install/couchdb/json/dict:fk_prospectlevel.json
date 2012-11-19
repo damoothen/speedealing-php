@@ -1,25 +1,21 @@
 {
    "_id": "dict:fk_prospectlevel",
-   "_rev": "2-a00076769e6474ad3e4568e48db9b62a",
+   "_rev": "3-5ea4f220cf46e60896e38fb4547af127",
    "values": {
        "PL_NONE": {
            "enable": true,
-           "label": "None",
            "cssClass": "grey-gradient"
        },
        "PL_LOW": {
            "enable": true,
-           "label": "Low",
            "cssClass": "blue-gradient"
        },
        "PL_MEDIUM": {
            "enable": true,
-           "label": "Medium",
            "cssClass": "orange-gradient"
        },
        "PL_HIGH": {
            "enable": true,
-           "label": "High",
            "cssClass": "red-gradient"
        }
    },

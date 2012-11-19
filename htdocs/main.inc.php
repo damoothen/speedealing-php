@@ -1104,11 +1104,11 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                 <script>
                     $(document).ready(function() {
                         $('#query').sautocomplete('search/data.php', {
-                            delay		: 10,
+                            delay	: 10,
                             minChars	: 2,
-                            max			: 6,
+                            max		: 6,
                             matchCase	: 1,
-                            width		: 212
+                            width	: 212
                         }).result(function(event, query_val) {
                             $.fancybox({
                                 href	: 'search/search_result.php',
@@ -1542,6 +1542,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 
             // Call template init (optional, but faster if called manually)
             $.template.init();
+            $(".chzn-select").chosen();
 
             // Favicon count
             Tinycon.setBubble(<?php echo $count_icon;?>);

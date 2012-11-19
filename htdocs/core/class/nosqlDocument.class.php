@@ -524,7 +524,7 @@ abstract class nosqlDocument extends CommonObject {
                         },
                         //$obj->oColVis->bRestore = true;
                         //$obj->oColVis->sAlign = 'left';
-                                                                                                                                                                                                                                                                                                                                                                                        																																																																																								            
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                        																																																																																								            
                         // Avec export Excel
         <?php if (!empty($obj->sDom)) : ?>
                             //"sDom": "Cl<fr>t<\"clear\"rtip>",
@@ -593,13 +593,14 @@ abstract class nosqlDocument extends CommonObject {
                                                 "submitdata": function ( value, settings ) {
                                                     return { "id": oTable.fnGetData( this.parentNode, 0),
                                                         "element_class" : "<?php echo get_class($this); ?>",
+                                                        "type":"input",
                                                         "key": "editval_"+columns[oTable.fnGetPosition( this )[2]]};
                                                 },
                                                 "height": "14px",
                                                 "tooltip": tooltipInPlace,
                                                 "indicator" : indicatorInPlace,
                                                 "placeholder" : ""
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                																																																																																																																																																																																                
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                																																																																																																																																																																																                
                                             } );
                                             $("td.dol_select", this.fnGetNodes()).editable( urlSaveInPlace, {
                                                 "callback": function( sValue, y ) {
@@ -608,11 +609,13 @@ abstract class nosqlDocument extends CommonObject {
                                                 "submitdata": function ( value, settings ) {
                                                     return { "id": oTable.fnGetData( this.parentNode, 0),
                                                         "element_class" : "<?php echo get_class($this); ?>",
+                                                        "type":"autocomplete",
                                                         "key": "editval_"+columns[oTable.fnGetPosition( this )[2]]};
                                                 },
                                                 "loaddata": function ( value, settings ) {
                                                     return { "id": oTable.fnGetData( this.parentNode, 0),
                                                         "element_class" : "<?php echo get_class($this); ?>",
+                                                        "type":"select",
                                                         "key": "editval_"+columns[oTable.fnGetPosition( this )[2]]};
                                                 },
                                                 "loadurl" : urlLoadInPlace,
@@ -622,7 +625,64 @@ abstract class nosqlDocument extends CommonObject {
                                                 "tooltip": tooltipInPlace,
                                                 "indicator" : indicatorInPlace,
                                                 "placeholder" : ""
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                																																																																																																																																																																																                
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                																																																																																																																																																																																                
+                                            } );
+                                            $("td.dol_autocomplete", this.fnGetNodes()).editable( urlSaveInPlace, {
+                                                "callback": function( sValue, y ) {
+                                                    oTable.fnDraw();
+                                                },
+                                                "submitdata": function ( value, settings ) {
+                                                    console.log(this);
+                                                    return { "id": oTable.fnGetData( this.parentNode, 0),
+                                                        "element_class" : "<?php echo get_class($this); ?>",
+                                                        "type":"autocomplete",
+                                                        "key": "editval_"+columns[oTable.fnGetPosition( this )[2]]};
+                                                },
+                                                "loaddata": function ( value, settings ) {
+                                                    var aPos = oTable.fnGetData( this.parentNode, 0);
+                                                    return { "id": oTable.fnGetData( this.parentNode, 0),
+                                                        "element_class" : "<?php echo get_class($this); ?>",
+                                                        "type":"select",
+                                                        "key": "editval_"+columns[oTable.fnGetPosition( this )[2]]};
+                                                },
+                                                "type" : 'autocomplete',
+                                                "submit" : submitInPlace,
+                                                "height": "14px",
+                                                "tooltip": tooltipInPlace,
+                                                "indicator" : indicatorInPlace,
+                                                "placeholder" : "",
+                                                "autocomplete" : {
+                                                    /*source: function(request, response) {
+                                                        //console.log($(this).attr('element'));
+                                                        $.ajax({
+                                                            url: urlLoadInPlace,
+                                                            data: {
+                                                                //"id": oTable.fnGetData( this.parentNode, 0),
+                                                                "element_class" : "<?php echo get_class($this); ?>",
+                                                                "type":"autocomplete"
+                                                                //"key": "editval_"+columns[oTable.fnGetPosition( this )[2]]
+                                                            },
+                                                            dataType : 'json',
+                                                            type : 'GET'
+                                                        });
+                                                    },*/
+                                                    url: urlLoadInPlace,
+                                                    /*"change":{"projet":"123"},*/
+                                                    /*"data" : function ( value, settings ) {
+                                                                                                console.log("toto");
+                                                                                                return { //"id": oTable.fnGetData( this.parentNode, 0),
+                                                                                                    "element_class" : "<?php echo get_class($this); ?>",
+                                                                                                    "type":"autocomplete",
+                                                                                                    "id" : "1234"};
+                                                                                                    //"key": "editval_"+columns[oTable.fnGetPosition( this )[2]]};
+                                                                                            },*/
+                                                    "delay"	: 10,
+                                                    "minLength"	: 1,
+                                                    "max"	: 6,
+                                                    "matchCase"	: 1
+                                                    //selectOnly      : 1
+                                                    //inputSeparator  : ';'
+                                                }
                                             } );
                                         }
             <?php endif; ?>
@@ -650,7 +710,7 @@ abstract class nosqlDocument extends CommonObject {
                         } );
         <?php endif; ?>
                     // Select_all
-                                                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                                                                                                                                    
                     $('.chSel_all').click(function () {
                         $(this).closest('table').find('input[name=row_sel]').attr('checked', this.checked);
                     });
@@ -1276,7 +1336,7 @@ abstract class nosqlDocument extends CommonObject {
         if (is_object($this->$key) && empty($this->$key->id))
             return null;
 
-        if (isset($aRow->class)) { // Is an object
+        if (isset($aRow->class) && empty($aRow->getkey)) { // Is an object
             $class = $aRow->class;
             dol_include_once("/" . strtolower($class) . "/class/" . strtolower($class) . ".class.php");
             $object = new $class($this->db);

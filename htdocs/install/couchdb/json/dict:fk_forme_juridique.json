@@ -1,5 +1,6 @@
 {
    "_id": "dict:fk_forme_juridique",
+   "_rev": "4-6f56e143a85ae3f09f6955dfc3eb78e9",
    "values": {
        "0": {
            "enable": true,

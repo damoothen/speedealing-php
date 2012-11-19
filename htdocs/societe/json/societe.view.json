@@ -1,6 +1,6 @@
 {
    "_id": "_design/Societe",
-   "_rev": "74-55a319c9be7eb0a51dbab234344cb5ff",
+   "_rev": "86-2a9d3e375d0bbd058fbb2dce67611486",
    "language": "javascript",
    "views": {
        "list": {
@@ -29,6 +29,10 @@
        },
        "listByCommercial": {
            "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc.commercial_id.id && doc._id != \"societe:mysoc\")\n  emit(doc.commercial_id.id, doc);\n}"
+       },
+       "listZoneGeo": {
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Societe\" && doc._id != \"societe:mysoc\" && doc.zonegeo)\n  emit(doc.zonegeo, doc);\n}",
+           "reduce": "_counts"
        }
    },
    "updates": {

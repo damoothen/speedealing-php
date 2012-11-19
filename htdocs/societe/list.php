@@ -104,21 +104,23 @@ $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->bSearchable = true;
 $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("name", "url");
 $i++;
-print'<th class="essential">';
-print $langs->trans("SalesRepresentatives");
-print'</th>';
-$obj->aoColumns[$i]->mDataProp = "commercial_id";
-$obj->aoColumns[$i]->bUseRendered = false;
-$obj->aoColumns[$i]->bSearchable = true;
-$obj->aoColumns[$i]->sDefaultContent = "";
-$obj->aoColumns[$i]->sClass = "dol_select";
-$user_tmp = new User($db);
-$obj->aoColumns[$i]->fnRender = $user->datatablesFnRender("commercial_id.name", "url", array('id' => "commercial_id.id"));
-$i++;
+if ($user->rights->societe->client->voir) {
+    print'<th class="essential">';
+    print $langs->trans("SalesRepresentatives");
+    print'</th>';
+    $obj->aoColumns[$i]->mDataProp = "commercial_id";
+    $obj->aoColumns[$i]->bUseRendered = true;
+    $obj->aoColumns[$i]->bSearchable = true;
+    $obj->aoColumns[$i]->sDefaultContent = "";
+    $obj->aoColumns[$i]->sClass = "dol_select";
+    $user_tmp = new User($db);
+    $obj->aoColumns[$i]->fnRender = $user->datatablesFnRender("commercial_id.name", "url", array('id' => "commercial_id.id"));
+    $i++;
+}
 foreach ($object->fk_extrafields->longList as $aRow) {
     print'<th class="essential">';
     if (isset($object->fk_extrafields->fields->$aRow->label))
-        print $langs->transcountry($object->fk_extrafields->fields->$aRow->label, $mysoc->country_code);
+        print $langs->transcountry($object->fk_extrafields->fields->$aRow->label, $mysoc->country_id);
     else
         print $langs->trans($aRow);
     print'</th>';
@@ -138,14 +140,14 @@ $obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->sDefaultContent = "";
 $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("Tag", "tag");
 $i++;
-print'<th class="essential">';
-print $langs->trans("Date");
-print'</th>';
-$obj->aoColumns[$i]->mDataProp = "tms";
-$obj->aoColumns[$i]->sClass = "center";
-$obj->aoColumns[$i]->bUseRendered = false;
-$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("tms", "date");
-$i++;
+/* print'<th class="essential">';
+  print $langs->trans("Date");
+  print'</th>';
+  $obj->aoColumns[$i]->mDataProp = "tms";
+  $obj->aoColumns[$i]->sClass = "center";
+  $obj->aoColumns[$i]->bUseRendered = false;
+  $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("tms", "date");
+  $i++; */
 print'<th class="essential">';
 print $langs->trans("Status");
 print'</th>';
@@ -173,7 +175,8 @@ $obj->aoColumns[$i]->bSortable = false;
 $obj->aoColumns[$i]->sDefaultContent = "";
 
 $url = "societe/fiche.php";
-$obj->aoColumns[$i]->fnRender = 'function(obj) {
+if ($user->rights->societe->creer && $user->rights->societe->supprimer) {
+    $obj->aoColumns[$i]->fnRender = 'function(obj) {
 	var ar = [];
 	ar[ar.length] = "<a href=\"' . $url . '?id=";
 	ar[ar.length] = obj.aData._id.toString();
@@ -183,6 +186,16 @@ $obj->aoColumns[$i]->fnRender = 'function(obj) {
 	var str = ar.join("");
 	return str;
 }';
+} elseif ($user->rights->societe->creer) {
+    $obj->aoColumns[$i]->fnRender = 'function(obj) {
+	var ar = [];
+	ar[ar.length] = "<a href=\"' . $url . '?id=";
+	ar[ar.length] = obj.aData._id.toString();
+	ar[ar.length] = "&action=edit&backtopage=' . $_SERVER['PHP_SELF'] . '\" class=\"sepV_a\" title=\"' . $langs->trans("Edit") . '\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/edit.png\" alt=\"\" /></a>";
+	var str = ar.join("");
+	return str;
+}';
+}
 print'</tr>';
 print'</thead>';
 print'<tfoot>';
@@ -193,8 +206,10 @@ print'<th id="' . $i . '"></th>';
 $i++;
 print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Company") . '" /></th>';
 $i++;
-print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Commercial") . '" /></th>';
-$i++;
+if ($user->rights->societe->client->voir) {
+    print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Commercial") . '" /></th>';
+    $i++;
+}
 foreach ($object->fk_extrafields->longList as $aRow) {
     if ($object->fk_extrafields->fields->$aRow->aoColumns->bSearchable = true)
         print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search " . $aRow) . '" /></th>';
@@ -203,8 +218,6 @@ foreach ($object->fk_extrafields->longList as $aRow) {
     $i++;
 }
 print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search category") . '" /></th>';
-$i++;
-print'<th id="' . $i . '"></th>';
 $i++;
 print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search status") . '" /></th>';
 $i++;

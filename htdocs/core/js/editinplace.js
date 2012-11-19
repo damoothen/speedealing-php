@@ -333,10 +333,24 @@ $(document).ready(function() {
         submit		: submitInPlace,
         indicator	: indicatorInPlace,
         autocomplete : {
-            source : urlLoadInPlace,
-            data : function(result, settings) {
-                return getParameters(this, 'select');
-            }
+            /*source: function(request, response) {
+                console.log($(this));
+                $.ajax({
+                    url: urlLoadInPlace,
+                    data: {
+                        //"id": oTable.fnGetData( this.parentNode, 0),
+                        "id" : $(this).val(),
+                        "element_class" : "<?php echo get_class($this); ?>",
+                        "type":"autocomplete"
+                    //"key": "editval_"+columns[oTable.fnGetPosition( this )[2]]
+                    },
+                    dataType : 'json',
+                    type : 'GET'
+                });*/
+            url : urlLoadInPlace
+            //data : function(result, settings) {
+            //    return getParameters(this, 'select');
+            //}
         },
         submitdata	: function(result, settings) {
             return getParameters(this, 'select');
