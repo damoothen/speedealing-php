@@ -53,7 +53,8 @@ class Propal extends nosqlDocument {
     var $author;
     var $ref;
     var $ref_client;
-    var $statut;     // 0 (draft), 1 (validated), 2 (signed), 3 (not signed), 4 (billed)
+    //var $statut;     // 0 (draft), 1 (validated), 2 (signed), 3 (not signed), 4 (billed)
+    public $Status;
     var $datec;      // Date of creation
     var $datev;      // Date of validation
     var $date;      // Date of proposal
@@ -120,6 +121,7 @@ class Propal extends nosqlDocument {
         $this->remise = 0;
         $this->remise_percent = 0;
         $this->remise_absolue = 0;
+        $this->Status = $this->fk_extrafields->Status->default;
 
         $this->duree_validite = $conf->global->PROPALE_VALIDITY_DURATION;
 
