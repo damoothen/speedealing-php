@@ -64,10 +64,11 @@ $hookmanager->initHooks(array('propalcard'));
  */
 
 llxHeader();
-
-print_fiche_titre($langs->trans("NewProp"));
+$titre = $langs->trans("NewProp");
+print_fiche_titre($titre);
 print '<div class="with-padding" >';
-
+print '<div class="columns" >';
+print start_box($titre, "twelve", $object->fk_extrafields->ico, false);
 $form = new Form($db);
 
 // Add new proposal
@@ -336,6 +337,8 @@ if ($action == 'create') {
 }
 
 print '</div>';
+print '</div>';
+print end_box();
 llxFooter();
 $db->close();
 ?>
