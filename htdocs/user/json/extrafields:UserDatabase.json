@@ -1,5 +1,6 @@
 {
    "_id": "extrafields:UserDatabase",
+   "_rev": "16-996a1bd20ea8856e2d3b766132cb0eb9",
    "class": "extrafields",
    "ico": "16-Cloud.png",
    "labelCreate": "Entrer le nom de la database",
@@ -26,6 +27,12 @@
                    "cssClass": "green-gradient"
                }
            }
+       },
+       "user": {
+           "type": "select",
+           "label": "NonAffectedUsers",
+           "class": "UserAdmin",
+           "view": "list"
        }
    }
 }
