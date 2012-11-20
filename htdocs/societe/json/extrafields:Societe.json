@@ -1,6 +1,6 @@
 {
    "_id": "extrafields:Societe",
-   "_rev": "99-5dd751c963a484464a28d53aa74d723e",
+   "_rev": "90-6468643e744b95f37af6eb088a7b0a5a",
    "class": "extrafields",
    "ico": "16-Apartment-Building.png",
    "langs": [
@@ -55,11 +55,6 @@
        "barcode": {
            "type": "text",
            "enable": false
-       },
-       "contact": {
-           "enable": true,
-           "class": "Contact",
-           "view": "list"
        },
        "Status": {
            "type": "select",
@@ -193,7 +188,7 @@
            "type": "text",
            "length": "20",
            "label": "Capital",
-           "enable": "1",
+           "enable": true,
            "spinner": "min: 0"
        },
        "VATIsUsed": {
@@ -217,7 +212,8 @@
            "type": "select",
            "label": "SalesRepresentatives",
            "class": "User",
-           "view": "list"
+           "view": "list",
+           "enable": true
        },
        "civilite_id": {
            "type": "select",
@@ -292,13 +288,17 @@
                "bSearchable": true,
                "bVisible": true
            },
-           "class": "Societe",
            "view": "listZoneGeo",
            "getkey": true,
            "params": {
-               "group": true,
-               "limit": 6
+               "group": true
            }
+       },
+       "Tag": {
+           "type": "tag",
+           "label": "Categories",
+           "enable": true,
+           "isarray": true
        }
    }
 }

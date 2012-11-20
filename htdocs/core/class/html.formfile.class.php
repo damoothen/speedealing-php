@@ -308,7 +308,7 @@ class FormFile
                 if (is_array($genallowed)) $modellist=$genallowed;
                 else
                 {
-                    include_once DOL_DOCUMENT_ROOT.'/core/modules/export/modules_export.php';
+                    include_once DOL_DOCUMENT_ROOT.'/export/core/modules/export/modules_export.php';
                     $modellist=ModeleExports::liste_modeles($this->db);
                 }
             }

@@ -609,7 +609,7 @@ abstract class nosqlDocument extends CommonObject {
                                                 "submitdata": function ( value, settings ) {
                                                     return { "id": oTable.fnGetData( this.parentNode, 0),
                                                         "element_class" : "<?php echo get_class($this); ?>",
-                                                        "type":"autocomplete",
+                                                        "type":"select",
                                                         "key": "editval_"+columns[oTable.fnGetPosition( this )[2]]};
                                                 },
                                                 "loaddata": function ( value, settings ) {
@@ -1289,6 +1289,7 @@ abstract class nosqlDocument extends CommonObject {
             if (!empty($aRow->default))
                 eval('$selected = ' . $aRow->default . ';');
         }
+        
 
         if (count($aRow->values))
             foreach ($aRow->values as $idx => $row) {

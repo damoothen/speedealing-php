@@ -112,9 +112,9 @@ while ($aRow = $db->fetch_object($resultContacts)) {
     $col[$aRow->rowid]->rowid = (int) $aRow->rowid;
     $col[$aRow->rowid]->class = "Contact";
     $col[$aRow->rowid]->entity = $conf->Couchdb->name;
-    $col[$aRow->rowid]->firtname = $aRow->firstname;
+    $col[$aRow->rowid]->firstname = $aRow->firstname;
     $col[$aRow->rowid]->lastname = $aRow->name;
-    if (empty($aRow->name) && empty($aRow->firtname))
+    if (empty($aRow->name) && empty($aRow->firstname))
         $col[$aRow->rowid]->name = "Unknown";
     else
         $col[$aRow->rowid]->name = $aRow->firstname . " " . $aRow->name;

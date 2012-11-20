@@ -239,9 +239,9 @@ class Form {
                 $out.= '<input id="success_' . $htmlname . '" value="' . $success . '" type="hidden"/>' . "\n";
 
             $out.= '<span id="viewval_' . $htmlname . '" class="viewval_' . $inputType . ($button_only ? ' inactive' : ' active') . '">';
-            if (preg_match('/^select/', $inputType)) {
+            //if (preg_match('/^select/', $inputType)) {
                 $out.= $object->print_fk_extrafields($htmlname);
-            }
+            //}
             $out.= '</span>' . "\n";
             if (preg_match('/^tag/', $inputType)) {
                 $out.= '<ul class="array_tag_handler" id="editval_' . $htmlname . '"></ul>';
@@ -253,8 +253,9 @@ class Form {
         } else {
             if (preg_match('/^tag/', $inputType)) {
                 $out.= $object->LibTag($value, array("key" => $htmlname));
-            } else
+            } else {
                 $out.= $object->print_fk_extrafields($htmlname);
+            }
         }
 
         return $out;

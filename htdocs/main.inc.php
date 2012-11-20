@@ -214,6 +214,7 @@ if (!defined('NOREQUIREAJAX'))
 
 
 
+
     
 // If install or upgrade process not done or not completely finished, we call the install page.
 if (!empty($conf->global->MAIN_NOT_INSTALLED) || !empty($conf->global->MAIN_NOT_UPGRADED)) {
@@ -1212,7 +1213,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
                     ?>
                             </ul>
                         </li>
-                    <?php
+                        <?php
                     endif;
                     /*
                       <li class="title-menu">New messages</li>
@@ -1485,109 +1486,113 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
         return $ret;
     }
 
-    /**
-     * Show HTML footer
-     * Close div /DIV data-role=page + /DIV class=fiche + /DIV /DIV main layout + /BODY + /HTML.
-     *
-     * @return	void
-     */
-    function llxFooter() {
-        global $conf, $langs, $dolibarr_auto_user, $micro_start_time, $memcache, $count_icon;
-        ?>
-    </section>
+    if (!function_exists("llxFooter")) {
 
-    <!-- End main content -->
-    <?php
-    top_menu(); // print the left menu
+        /**
+         * Show HTML footer
+         * Close div /DIV data-role=page + /DIV class=fiche + /DIV /DIV main layout + /BODY + /HTML.
+         *
+         * @return	void
+         */
+        function llxFooter() {
+            global $conf, $langs, $dolibarr_auto_user, $micro_start_time, $memcache, $count_icon;
+            ?>
+        </section>
 
-    left_menu(); // print the right menu
+        <!-- End main content -->
+        <?php
+        top_menu(); // print the left menu
 
-    if (!empty($conf->memcached->host) && class_exists('Memcache') && !class_exists('Memcached'))
-        $memcache->close();
+        left_menu(); // print the right menu
+
+        if (!empty($conf->memcached->host) && class_exists('Memcache') && !class_exists('Memcached'))
+            $memcache->close();
 
 // Core error message
-    if (defined("MAIN_CORE_ERROR") && constant("MAIN_CORE_ERROR") == 1) {
-        $title = img_warning() . ' ' . $langs->trans('CoreErrorTitle');
-        print ajax_dialog($title, $langs->trans('CoreErrorMessage'));
+        if (defined("MAIN_CORE_ERROR") && constant("MAIN_CORE_ERROR") == 1) {
+            $title = img_warning() . ' ' . $langs->trans('CoreErrorTitle');
+            print ajax_dialog($title, $langs->trans('CoreErrorMessage'));
 
-        define("MAIN_CORE_ERROR", 0);
-    }
-    ?>
-
-    <?php if (!defined('NOHEADER')) : ?>
-        <script src="theme/symeos/js/setup.js"></script>
-
-        <script src="theme/symeos/js/developr.navigable.js"></script>
-        <script src="theme/symeos/js/developr.scroll.js"></script>
-
-        <script src="theme/symeos/js/s_scripts.js"></script>
-        <script src="theme/symeos/js/symeos.js"></script>
-
-                                                                                                                                                        <!--<script src="theme/developr/html/js/developr.input.js"></script>-->
-        <script src="theme/symeos/js/developr.message.js"></script>
-        <script src="theme/symeos/js/developr.modal.js"></script>
-        <script src="theme/symeos/js/developr.notify.js"></script>
-        <script src="theme/symeos/js/developr.progress-slider.js"></script>
-        <script src="theme/symeos/js/developr.tooltip.js"></script>
-        <script src="theme/symeos/js/developr.confirm.js"></script>
-        <script src="theme/symeos/js/developr.agenda.js"></script>
-
-        <script src="theme/symeos/js/developr.tabs.js"></script>
-        <!-- Must be loaded last -->
-
-        <!-- Tinycon -->
-        <script src="includes/js/tinycon.min.js"></script>
-
-        <script>
-
-            // Call template init (optional, but faster if called manually)
-            $.template.init();
-            $(".chzn-select").chosen();
-
-            // Favicon count
-            Tinycon.setBubble(<?php echo $count_icon;?>);
-                                                                                                                                                                                                                                					
-        </script>
-
-        <script>
-            //* sticky footer
-            prth_stickyFooter = {
-                init: function() {
-                    prth_stickyFooter.resize();
-                },
-                resize: function() {
-                    if($("#sticky-footer-push").height() === undefined)
-                        var docHeight = $(document.body).height();
-                    else
-                        var docHeight = $(document.body).height() - $("#sticky-footer-push").height();
-
-                    if(docHeight < $(window).height()){
-                        var diff = $(window).height() - docHeight +1;
-                        if ($("#sticky-footer-push").length == 0) {
-                            $('#footer').before('<div id="sticky-footer-push"></div>');
-                        }
-                        $("#sticky-footer-push").height(diff - $("#title-bar").height() - 2);
-                    } else {
-                        $("#sticky-footer-push").remove();
-                    }
-                }
-            };
-        </script>
-
-        <footer id="footer">
-            <div class="with-mid-padding">
-                <div>Copyright &copy; 2012
-                    speedealing.com - symeos.com - tzd-themes.com -
-                    themeforest.net/user/displayinline
-                </div>
-            </div>
-        </footer>
-        <?php
-        printCommonFooter();
+            define("MAIN_CORE_ERROR", 0);
+        }
         ?>
-    <?php endif; ?>
-    <?php
-    print "</body>\n";
-    print "</html>\n";
+
+        <?php if (!defined('NOHEADER')) : ?>
+            <script src="theme/symeos/js/setup.js"></script>
+
+            <script src="theme/symeos/js/developr.navigable.js"></script>
+            <script src="theme/symeos/js/developr.scroll.js"></script>
+
+            <script src="theme/symeos/js/s_scripts.js"></script>
+            <script src="theme/symeos/js/symeos.js"></script>
+
+                                                                                                                                                                    <!--<script src="theme/developr/html/js/developr.input.js"></script>-->
+            <script src="theme/symeos/js/developr.message.js"></script>
+            <script src="theme/symeos/js/developr.modal.js"></script>
+            <script src="theme/symeos/js/developr.notify.js"></script>
+            <script src="theme/symeos/js/developr.progress-slider.js"></script>
+            <script src="theme/symeos/js/developr.tooltip.js"></script>
+            <script src="theme/symeos/js/developr.confirm.js"></script>
+            <script src="theme/symeos/js/developr.agenda.js"></script>
+
+            <script src="theme/symeos/js/developr.tabs.js"></script>
+            <!-- Must be loaded last -->
+
+            <!-- Tinycon -->
+            <script src="includes/js/tinycon.min.js"></script>
+
+            <script>
+
+                // Call template init (optional, but faster if called manually)
+                $.template.init();
+                $(".chzn-select").chosen();
+
+                // Favicon count
+                Tinycon.setBubble(<?php echo $count_icon; ?>);
+                                                                                                                                                                                                                                            					
+            </script>
+
+            <script>
+                //* sticky footer
+                prth_stickyFooter = {
+                    init: function() {
+                        prth_stickyFooter.resize();
+                    },
+                    resize: function() {
+                        if($("#sticky-footer-push").height() === undefined)
+                            var docHeight = $(document.body).height();
+                        else
+                            var docHeight = $(document.body).height() - $("#sticky-footer-push").height();
+
+                        if(docHeight < $(window).height()){
+                            var diff = $(window).height() - docHeight +1;
+                            if ($("#sticky-footer-push").length == 0) {
+                                $('#footer').before('<div id="sticky-footer-push"></div>');
+                            }
+                            $("#sticky-footer-push").height(diff - $("#title-bar").height() - 2);
+                        } else {
+                            $("#sticky-footer-push").remove();
+                        }
+                    }
+                };
+            </script>
+
+            <footer id="footer">
+                <div class="with-mid-padding">
+                    <div>Copyright &copy; 2012
+                        speedealing.com - symeos.com - tzd-themes.com -
+                        themeforest.net/user/displayinline
+                    </div>
+                </div>
+            </footer>
+            <?php
+            printCommonFooter();
+            ?>
+        <?php endif; ?>
+        <?php
+        print "</body>\n";
+        print "</html>\n";
+    }
+
 }
 ?>

@@ -1,23 +1,23 @@
 {
    "_id": "dict:fk_actioncomm",
-   "_rev": "10-21f658c211392f6a11e677441512c042",
+   "_rev": "3-5cf2250e49e2f7901b548c5402e7d4ce",
    "values": {
        "AC_NEWSUS": {
-           "enable": true,
+           "enable": false,
            "label": "Nouveau suspect",
            "priority": 6,
            "type": null,
            "order": 0
        },
        "AC_SUSP": {
-           "enable": true,
+           "enable": false,
            "label": "Jamais contacté -> prospect",
            "priority": 10,
            "type": null,
            "order": 0
        },
        "AC_QUALIF": {
-           "enable": true,
+           "enable": false,
            "label": "Qualification",
            "priority": 10,
            "type": null,
@@ -72,21 +72,21 @@
            "type": null,
            "order": 11
        },
-       "RDV_RDV": {
+       "AC_RDV": {
            "enable": true,
            "label": "Rendez-vous",
            "priority": 10,
            "type": "event",
            "order": 1
        },
-       "RDV_WEB": {
+       "AC_WEB": {
            "enable": true,
            "label": "Web conference",
            "priority": 10,
            "type": "event",
            "order": 0
        },
-       "RDV_TELC": {
+       "AC_TELC": {
            "enable": true,
            "label": "Conference Telephonique",
            "priority": 10,

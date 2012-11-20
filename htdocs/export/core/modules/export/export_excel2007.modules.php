@@ -23,15 +23,16 @@
  *	\author	    Laurent Destailleur
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/export/modules_export.php';
+require_once DOL_DOCUMENT_ROOT.'/export/core/modules/export/modules_export.php';
+require_once DOL_DOCUMENT_ROOT.'/export/core/modules/export/export_excel.modules.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 
 
 /**
- *	\class      ExportExcel
+ *	\class      ExportExcel2007
  *	\brief      Class to build export files with Excel format
  */
-class ExportExcel extends ModeleExports
+class ExportExcel2007 extends ExportExcel
 {
 	var $id;
 	var $label;
@@ -58,11 +59,11 @@ class ExportExcel extends ModeleExports
 		global $conf, $langs;
 		$this->db = $db;
 
-		$this->id='excel';                  // Same value then xxx in file name export_xxx.modules.php
-		$this->label='Excel 95';             // Label of driver
-		$this->desc = $langs->trans('Excel95FormatDesc');
-		$this->extension='xls';             // Extension for generated file by this driver
-        $this->picto='mime/xls';					// Picto
+		$this->id='excel2007';                  // Same value then xxx in file name export_xxx.modules.php
+		$this->label='Excel 2007';               // Label of driver
+		$this->desc = $langs->trans('Excel2007FormatDesc');
+		$this->extension='xlsx';             // Extension for generated file by this driver
+        $this->picto='mime/xls';			// Picto
 		$this->version='1.30';             // Driver version
 
 		// If driver use an external library, put its name here
@@ -73,7 +74,7 @@ class ExportExcel extends ModeleExports
 	}
 
 	/**
-	 * getDriverId
+	 * getDriverLabel
 	 *
 	 * @return int
 	 */
@@ -188,7 +189,7 @@ class ExportExcel extends ModeleExports
 
             $this->workbook->setActiveSheetIndex(0);
             $this->workbook->getActiveSheet()->setTitle($outputlangs->trans("Sheet"));
-            $this->workbook->getActiveSheet()->getDefaultRowDimension()->setRowHeight(15);
+            $this->workbook->getActiveSheet()->getDefaultRowDimension()->setRowHeight(16);
 		}
 		return $ret;
 	}
@@ -376,7 +377,7 @@ class ExportExcel extends ModeleExports
     	else
     	{
             require_once PHPEXCEL_PATH.'PHPExcel/Writer/Excel5.php';
-    	    $objWriter = new PHPExcel_Writer_Excel5($this->workbook);
+    	    $objWriter = new PHPExcel_Writer_Excel2007($this->workbook);
             $objWriter->save($this->file);
             $this->workbook->disconnectWorksheets();
             unset($this->workbook);

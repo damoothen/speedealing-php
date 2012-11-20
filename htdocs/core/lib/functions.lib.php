@@ -3895,18 +3895,12 @@ function dol_getIdFromCode($db, $key, $tablename, $fieldkey = 'code', $fieldid =
  */
 function verifCond($strRights) {
     global $user, $conf, $langs;
-    global $leftmenu;
-    global $rights;    // To export to dol_eval function
+    //global $rights;    // To export to dol_eval function
     //print $strRights."<br>\n";
     $rights = true;
     if ($strRights != '') {
-        //$tab_rights = explode('&&', $strRights);
-        //$i = 0;
-        //while (($i < count($tab_rights)) && ($rights == true)) {
         $str = 'if(!(' . $strRights . ')) { $rights = false; }';
         dol_eval($str);
-        //	$i++;
-        //}
     }
     return $rights;
 }

@@ -71,7 +71,7 @@ if ($action == 'add_action') {
     $error = 0;
 
     if (empty($backtopage)) {
-            $backtopage = DOL_URL_ROOT . '/agenda/index.php';
+        $backtopage = DOL_URL_ROOT . '/agenda/index.php';
     }
 
     if ($contactid) {
@@ -645,12 +645,14 @@ if ($action == 'create') {
     // Affected by
     $var = false;
     print '<tr><td width="30%" nowrap="nowrap">' . $langs->trans("ActionAffectedTo") . '</td><td>';
-    $form->select_users(GETPOST("affectedto") ? GETPOST("affectedto") : ($object->usertodo->id > 0 ? $object->usertodo : $user), 'affectedto', 1);
+    print $object->select_fk_extrafields("usertodo", 'affectedto');
+    //$form->select_users(GETPOST("affectedto") ? GETPOST("affectedto") : ($object->usertodo->id > 0 ? $object->usertodo : $user), 'affectedto', 1);
     print '</td></tr>';
 
     // Realised by
     print '<tr><td nowrap>' . $langs->trans("ActionDoneBy") . '</td><td>';
-    $form->select_users(GETPOST("doneby") ? GETPOST("doneby") : (!empty($object->userdone->id) && $percent == 100 ? $object->userdone->id : 0), 'doneby', 1);
+    print $object->select_fk_extrafields("userdone", 'doneby');
+    //$form->select_users(GETPOST("doneby") ? GETPOST("doneby") : (!empty($object->userdone->id) && $percent == 100 ? $object->userdone->id : 0), 'doneby', 1);
     print '</td></tr>';
 
     print '</table>';
@@ -662,17 +664,27 @@ if ($action == 'create') {
     if (!empty($socid)) {
         $societe = new Societe($db);
         $societe->fetch($socid);
-        print $societe->getNomUrl(1);
+        if ($societe->class == "Societe")
+            print $societe->getNomUrl(1);
+        else { // Is a contact
+            $object->contact->id = $socid;
+            $socid = $societe->societe->id;
+            $societe->fetch($socid);
+            print $societe->getNomUrl(1);
+        }
         print '<input type="hidden" name="socid" value="' . $socid . '">';
     } else {
-        print $form->select_company('', 'socid', '', 1, 1);
+        print $object->select_fk_extrafields("societe", 'socid');
+        //print $form->select_company('', 'socid', '', 1, 1);
     }
     print '</td></tr>';
 
     // If company is forced, we propose contacts (may be contact is also forced)
-    if (GETPOST("contactid") > 0 || GETPOST('socid', 'int') > 0) {
+    if (!empty($socid)) {
+        $object->societe->id = $socid;
         print '<tr><td nowrap>' . $langs->trans("ActionOnContact") . '</td><td>';
-        $form->select_contacts(GETPOST('socid', 'int'), GETPOST('contactid'), 'contactid', 1);
+        print $object->select_fk_extrafields("contact", 'contactid');
+        //$form->select_contacts(GETPOST('socid', 'int'), GETPOST('contactid'), 'contactid', 1);
         print '</td></tr>';
     }
 
@@ -736,7 +748,7 @@ if ($action == 'create') {
     print "</center>";
 
     print "</form>";
-    
+
     print "</div>";
 
     print end_box();

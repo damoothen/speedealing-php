@@ -295,7 +295,7 @@ class Agenda extends nosqlDocument {
         $this->note = trim($this->note);
         if (empty($this->percentage))
             $this->percentage = 0;
-        
+
         if (empty($this->fulldayevent))
             $this->fulldayevent = 0;
         if ($this->percentage > 100)
@@ -322,11 +322,11 @@ class Agenda extends nosqlDocument {
 
         if ($this->type == 2 && $this->percentage == 100) //ACTION
             $this->datef = dol_now();
-        
-        if($this->percentage > 0 && $this->percentage < 100)
+
+        if ($this->percentage > 0 && $this->percentage < 100)
             $this->Status = "ON";
-        
-        if($this->percentage == 100)
+
+        if ($this->percentage == 100)
             $this->Status = "DONE";
 
         if ($this->Status == "ON" && !$this->userdone->id) {
@@ -947,7 +947,7 @@ class Agenda extends nosqlDocument {
 
         print '<p class="button-height right">';
         print '<span class="button-group">';
-        print '<a class="button compact icon-star" href="' . strtolower(get_class($object)) . '/fiche.php?action=create&socid=' . $id . '&backtopage=' . $_SERVER['PHP_SELF'] . '?id=' . $id . '">' . $langs->trans("NewAction") . '</a>';
+        print '<a class="button compact icon-star" href="' . strtolower(get_class($this)) . '/fiche.php?action=create&socid=' . $id . '&backtopage=' . $_SERVER['PHP_SELF'] . '?id=' . $id . '">' . $langs->trans("NewAction") . '</a>';
         print "</span>";
         print "</p>";
 
@@ -1250,7 +1250,7 @@ class Agenda extends nosqlDocument {
             $result = $this->getView("list" . $_GET["name"], $params);
 
             //error_log(print_r($result,true));
-            $output=array();
+            $output = array();
 
             if (count($result->rows))
                 foreach ($result->rows as $aRow) {
@@ -1313,7 +1313,7 @@ class Agenda extends nosqlDocument {
                         // create the chart when all data is loaded
                         function createChart() {
                             var chart;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
                             chart = new Highcharts.Chart({
                                 chart: {
                                     renderTo: 'eisenhower',

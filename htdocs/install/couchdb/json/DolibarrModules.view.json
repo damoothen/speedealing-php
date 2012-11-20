@@ -1,5 +1,6 @@
 {
    "_id": "_design/DolibarrModules",
+   "_rev": "47-e4edae37a2f57b46129e0abb3a69181c",
    "language": "javascript",
    "views": {
        "default_right": {
@@ -7,6 +8,12 @@
        },
        "list": {
            "map": "function(doc) {\n  if(doc.class && doc.class==\"DolibarrModules\")\n    emit(doc.name, {numero:doc.numero, enabled:doc.enabled, always_enabled:doc.always_enabled, family: doc.family, version: doc.version, picto: doc.picto, moddir:doc.moddir, dirs:doc.dirs, depends:doc.depends, requiredby:doc.requireby,phpmin:doc.phpmin, need_dolibarr_version:doc.need_dolibarr_version, const:doc.const, langfiles:doc.langfiles,boxes:doc.boxes})\n}"
+       },
+       "list_import": {
+           "map": "function(doc) {\n  if(doc.class==\"DolibarrModules\" && doc.import && doc.enabled) {\n     doc.import.forEach(function(tag) {\n         emit([doc.name,tag.code],{_id:doc._id,numero:doc.numero,name:doc.name,langfiles:doc.langfiles,label:tag.label,permission:tag.permission,icon:tag.icon});\n    });\n}\n}"
+       },
+       "list_export": {
+           "map": "function(doc) {\n  if(doc.class==\"DolibarrModules\" && doc.export && doc.enabled) {\n     doc.export.forEach(function(tag) {\n         emit([doc.name,tag.code],{_id:doc._id,numero:doc.numero,name:doc.name,langfiles:doc.langfiles,label:tag.label,permission:tag.permission,icon:tag.icon, class:tag.class});\n    });\n}\n}"
        }
    }
 }

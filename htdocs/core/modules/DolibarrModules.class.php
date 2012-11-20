@@ -353,26 +353,6 @@ class DolibarrModules extends nosqlDocument {
     }
 
     /**
-     *  Return translated label of an import dataset
-     *
-     *  @param	int		$r		Index of dataset
-     *  @return	string    		Label of databaset
-     */
-    function getImportDatasetLabel($r) {
-        global $langs;
-
-        $langstring = "ImportDataset_" . $this->import_code[$r];
-        //print "x".$langstring;
-        if ($langs->trans($langstring) == $langstring) {
-            // Traduction non trouvee
-            return $langs->trans($this->import_label[$r]);
-        } else {
-            // Traduction trouvee
-            return $langs->trans($langstring);
-        }
-    }
-
-    /**
      *  Insert line in dolibarr_modules table.
      *  Storage is made for information only, table is not required for Dolibarr usage
      *
