@@ -64,7 +64,7 @@ if (($action == 'update' && empty($_POST["cancel"]))
     $object->fax = $_POST["fax"];
     $object->email = $_POST["mail"];
     $object->url = $_POST["web"];
-    $object->note = $_POST["note"];
+    $object->notes = $_POST["note"];
     $object->barcode = $_POST["barcode"];
     if ($_FILES["logo"]["tmp_name"]) {
         if (preg_match('/([^\\/:]+)$/i', $_FILES["logo"]["name"], $reg)) {
@@ -335,7 +335,7 @@ if ($action == 'edit' || $action == 'updateedit') {
     // Note
     $var = !$var;
     print '<tr ' . $bc[$var] . '><td valign="top">' . $langs->trans("Note") . '</td><td>';
-    print '<textarea class="flat" name="note" cols="80" rows="' . ROWS_5 . '">' . $mysoc->note . '</textarea></td></tr>';
+    print '<textarea class="flat" name="note" cols="80" rows="' . ROWS_5 . '">' . $mysoc->notes . '</textarea></td></tr>';
     print '</td></tr>';
 
     print '</table>';

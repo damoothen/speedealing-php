@@ -1,6 +1,6 @@
 {
    "_id": "dict:fk_stcomm",
-   "_rev": "5-bc0094ac81e7dc608b4c7d9e342aeb1d",
+   "_rev": "2-4f44644d6971218a64a742032457e540",
    "values": {
        "ST_NO": {
            "enable": true,
@@ -10,7 +10,7 @@
        },
        "ST_NEVER": {
            "enable": true,
-           "label": "Jamais contacté",
+           "label": "Non Déterminé",
            "type": "suspect",
            "cssClass": "grey-gradient"
        },

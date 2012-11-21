@@ -1,6 +1,6 @@
 {
    "_id": "extrafields:Agenda",
-   "_rev": "25-a5b0e2a50c098d0d39ac9fd305367a89",
+   "_rev": "26-fd07cd68eb058be9aa239a119cb28b8b",
    "class": "extrafields",
    "ico": "16-Month-Calendar.png",
    "langs": [
@@ -66,6 +66,35 @@
                    "cssClass": "red-gradient"
                }
            }
+       },
+       "percentage": {
+           "type": "input",
+           "enable": true,
+           "settype": "int"
+       },
+       "datep": {
+           "type": "date",
+           "enable": true,
+           "settype": "int"
+       },
+       "datef": {
+           "type": "date",
+           "enable": true,
+           "settype": "int"
+       },
+       "durationp": {
+           "type": "input",
+           "enable": true,
+           "settype": "int"
+       },
+       "punctual": {
+           "type": "checkbox",
+           "enable": true,
+           "settype": "bool"
+       },
+       "location": {
+           "type": "input",
+           "enable": true
        },
        "type_code": {
            "type": "select",

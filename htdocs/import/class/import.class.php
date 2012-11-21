@@ -93,6 +93,7 @@ class Import extends nosqlDocument {
             else
                 $this->array_import_class[$i] = $aRow->key[0];
 
+            
             // Module
             $class = $this->array_import_class[$i];
             $this->array_import_module[$i] = new DolibarrModules($this->db);

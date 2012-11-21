@@ -183,8 +183,16 @@ abstract class nosqlDocument extends CommonObject {
         global $conf;
 
         foreach (get_object_vars($this) as $key => $aRow)
-            if (!in_array($key, $this->no_save))
+            if (!in_array($key, $this->no_save)) {
                 $values->$key = $aRow;
+                if (isset($this->fk_extrafields->fields->$key->settype)) // transtypage
+                    settype($values->$key, $this->fk_extrafields->fields->$key->settype);
+
+                // If empty set default value
+                if (empty($values->$key) && isset($this->fk_extrafields->fields->$key->default))
+                    $values->$key = $this->fk_extrafields->fields->$key->default;
+            }
+
 
         if (empty($this->_id) && !empty($this->id))
             $this->_id = $this->id;
@@ -392,7 +400,7 @@ abstract class nosqlDocument extends CommonObject {
     function getLibStatus($key = "Status") {
         return $this->LibStatus($this->$key, array("key" => $key));
     }
-    
+
     /**
      * returns a/some universally unique identifier(s)
      *
@@ -532,7 +540,7 @@ abstract class nosqlDocument extends CommonObject {
                         },
                         //$obj->oColVis->bRestore = true;
                         //$obj->oColVis->sAlign = 'left';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        																																																																																								            
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        																																																																																								            
                         // Avec export Excel
         <?php if (!empty($obj->sDom)) : ?>
                             //"sDom": "Cl<fr>t<\"clear\"rtip>",
@@ -608,7 +616,7 @@ abstract class nosqlDocument extends CommonObject {
                                                 "tooltip": tooltipInPlace,
                                                 "indicator" : indicatorInPlace,
                                                 "placeholder" : ""
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                																																																																																																																																																																																                
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                																																																																																																																																																																																                
                                             } );
                                             $("td.dol_select", this.fnGetNodes()).editable( urlSaveInPlace, {
                                                 "callback": function( sValue, y ) {
@@ -633,7 +641,7 @@ abstract class nosqlDocument extends CommonObject {
                                                 "tooltip": tooltipInPlace,
                                                 "indicator" : indicatorInPlace,
                                                 "placeholder" : ""
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                																																																																																																																																																																																                
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                																																																																																																																																																																																                
                                             } );
                                             $("td.dol_autocomplete", this.fnGetNodes()).editable( urlSaveInPlace, {
                                                 "callback": function( sValue, y ) {
@@ -661,29 +669,29 @@ abstract class nosqlDocument extends CommonObject {
                                                 "placeholder" : "",
                                                 "autocomplete" : {
                                                     /*source: function(request, response) {
-                                                                        //console.log($(this).attr('element'));
-                                                                        $.ajax({
-                                                                            url: urlLoadInPlace,
-                                                                            data: {
-                                                                                //"id": oTable.fnGetData( this.parentNode, 0),
-                                                                                "element_class" : "<?php echo get_class($this); ?>",
-                                                                                "type":"autocomplete"
-                                                                                //"key": "editval_"+columns[oTable.fnGetPosition( this )[2]]
-                                                                            },
-                                                                            dataType : 'json',
-                                                                            type : 'GET'
-                                                                        });
-                                                                    },*/
+                                                                                        //console.log($(this).attr('element'));
+                                                                                        $.ajax({
+                                                                                            url: urlLoadInPlace,
+                                                                                            data: {
+                                                                                                //"id": oTable.fnGetData( this.parentNode, 0),
+                                                                                                "element_class" : "<?php echo get_class($this); ?>",
+                                                                                                "type":"autocomplete"
+                                                                                                //"key": "editval_"+columns[oTable.fnGetPosition( this )[2]]
+                                                                                            },
+                                                                                            dataType : 'json',
+                                                                                            type : 'GET'
+                                                                                        });
+                                                                                    },*/
                                                     url: urlLoadInPlace,
                                                     /*"change":{"projet":"123"},*/
                                                     /*"data" : function ( value, settings ) {
-                                                                                                                console.log("toto");
-                                                                                                                return { //"id": oTable.fnGetData( this.parentNode, 0),
-                                                                                                                    "element_class" : "<?php echo get_class($this); ?>",
-                                                                                                                    "type":"autocomplete",
-                                                                                                                    "id" : "1234"};
-                                                                                                                    //"key": "editval_"+columns[oTable.fnGetPosition( this )[2]]};
-                                                                                                            },*/
+                                                                                                                                console.log("toto");
+                                                                                                                                return { //"id": oTable.fnGetData( this.parentNode, 0),
+                                                                                                                                    "element_class" : "<?php echo get_class($this); ?>",
+                                                                                                                                    "type":"autocomplete",
+                                                                                                                                    "id" : "1234"};
+                                                                                                                                    //"key": "editval_"+columns[oTable.fnGetPosition( this )[2]]};
+                                                                                                                            },*/
                                                     "delay"	: 10,
                                                     "minLength"	: 1,
                                                     "max"	: 6,
@@ -718,7 +726,7 @@ abstract class nosqlDocument extends CommonObject {
                         } );
         <?php endif; ?>
                     // Select_all
-                                                                                                                                                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                                                                                                                                                                    
                     $('.chSel_all').click(function () {
                         $(this).closest('table').find('input[name=row_sel]').attr('checked', this.checked);
                     });
@@ -1355,7 +1363,7 @@ abstract class nosqlDocument extends CommonObject {
         } elseif (isset($aRow->status)) { // Is a status
             return $this->LibStatus($value, array("key" => $key));
         }
-        
+
         if (isset($aRow->values->$value->label)) {
             $out.= $langs->trans($aRow->values->$value->label);
         } else {

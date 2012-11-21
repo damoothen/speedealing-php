@@ -306,6 +306,7 @@ class modSociete extends DolibarrModules {
         $this->import[$r]->code = $this->rights_class . '_' . $r;
         $this->import[$r]->label = 'ImportDataset_company_2';
         $this->import[$r]->icon = 'contact';
+        $this->export[$r]->class = "Contact";
 
     }
 

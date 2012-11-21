@@ -1297,15 +1297,18 @@ if ($step == 5 && $datatoimport) {
                     print $arrayrecord[0]["val"] . " " . $arrayrecord[2]["val"] . " (exist)<br>";
                     $cptupdate++;
                 } catch (Exception $e) {
-                    $id = $object->couchdb->uuid(1);
-                    print $id . " " . $arrayrecord[1]["val"] . "<br>";
+                    if (empty($arrayrecord[0]["val"]))
+                        $id = $object->getUuids(1);
+                    else
+                        $id[0] = $arrayrecord[0]["val"];
+                    print $id[0] . " " . $arrayrecord[1]["val"] . "<br>";
                     $cptinsert++;
                     // Record not exist
                 }
 
                 //var_dump($array_match_file_to_database);
                 foreach ($array_match_file_to_database as $key => $aRow) {
-                    $value = $arrayrecord[$key - 1]["val"];
+                    $value = trim($arrayrecord[$key - 1]["val"]);
                     if ($aRow == "_rev")
                         continue; // Ignore this key
 
@@ -1320,13 +1323,6 @@ if ($step == 5 && $datatoimport) {
                     } else {
                         $fields = $aRow;
                         $object->$fields = $value;
-
-                        if (isset($object->fk_extrafields->fields->$fields->settype)) // transtypage
-                            settype($object->$fields, $object->fk_extrafields->fields->$fields->settype);
-
-                        // If empty set default value
-                        if (empty($object->$fields) && isset($object->fk_extrafields->fields->$fields->default))
-                            $object->$fields = $object->fk_extrafields->fields->$fields->default;
 
                         // Is a tag list
                         if ($object->fk_extrafields->fields->$fields->isarray) {
@@ -1649,14 +1645,18 @@ if ($step == 6 && $datatoimport) {
                 $object->load($arrayrecord[0]["val"]); //_id
                 $cptupdate++;
             } catch (Exception $e) {
-                $id = $object->couchdb->uuid(1);
+                if (empty($arrayrecord[0]["val"]))
+                    $id = $object->getUuids(1);
+                else
+                    $id[0] = $arrayrecord[0]["val"];
                 $cptinsert++;
                 // Record not exist
             }
 
+
             //var_dump($array_match_file_to_database);
             foreach ($array_match_file_to_database as $key => $aRow) {
-                $value = $arrayrecord[$key - 1]["val"];
+                $value = trim($arrayrecord[$key - 1]["val"]);
                 if ($aRow == "_rev")
                     continue; // Ignore this key
 
@@ -1671,13 +1671,6 @@ if ($step == 6 && $datatoimport) {
                 } else {
                     $fields = $aRow;
                     $object->$fields = $value;
-
-                    if (isset($object->fk_extrafields->fields->$fields->settype)) // transtypage
-                        settype($object->$fields, $object->fk_extrafields->fields->$fields->settype);
-
-                    // If empty set default value
-                    if (empty($object->$fields) && isset($object->fk_extrafields->fields->$fields->default))
-                        $object->$fields = $object->fk_extrafields->fields->$fields->default;
 
                     // Is a tag list
                     if ($object->fk_extrafields->fields->$fields->isarray) {
@@ -1697,9 +1690,9 @@ if ($step == 6 && $datatoimport) {
                 //print_r($object->$fields);
                 //print "<br>";
             }
-            
+
             $object->record();
-            
+
             if (count($obj->errors))
                 $arrayoferrors[$sourcelinenb] = $obj->errors;
             if (count($obj->warnings))

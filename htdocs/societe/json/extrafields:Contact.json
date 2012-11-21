@@ -26,6 +26,11 @@
                "minlength": 3
            }
        },
+       "poste": {
+           "type": "input",
+           "length": 60,
+           "enable": true
+       },
        "societe": {
            "enable": true,
            "class": "Societe",
@@ -116,6 +121,28 @@
            "enable": true
        },
        "phone": {
+           "type": "AC_TEL",
+           "ico": "AC_TEL",
+           "enable": true,
+           "aoColumns": {
+               "sClass": "center",
+               "bSearchable": true,
+               "bVisible": false
+           },
+           "mask": "+99 9 99 99 99 99"
+       },
+       "phone_perso": {
+           "type": "AC_TEL",
+           "ico": "AC_TEL",
+           "enable": true,
+           "aoColumns": {
+               "sClass": "center",
+               "bSearchable": true,
+               "bVisible": false
+           },
+           "mask": "+99 9 99 99 99 99"
+       },
+       "phone_mobile": {
            "type": "AC_TEL",
            "ico": "AC_TEL",
            "enable": true,
