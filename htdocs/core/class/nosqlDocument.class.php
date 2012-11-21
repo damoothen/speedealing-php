@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once(DOL_DOCUMENT_ROOT . "/core/class/commonobject.class.php");
+require_once DOL_DOCUMENT_ROOT . '/core/class/commonobject.class.php';
 
 /**
  * 	Parent class of all other business classes (invoices, contracts, proposals, orders, ...)
@@ -46,8 +46,8 @@ abstract class nosqlDocument extends CommonObject {
     /**
      * load couchdb parameters
      * @param	$dbname		string			name of database
-     * @return int 
-     * 
+     * @return int
+     *
      */
     public function useDatabase($dbname = "") {
         global $conf, $couch;
@@ -115,7 +115,7 @@ abstract class nosqlDocument extends CommonObject {
     /**
      * 	Set a value and modify type for couchdb
      * @param string $key
-     * @param string $value 
+     * @param string $value
      */
     public function set($key, $value) {
 
@@ -135,7 +135,7 @@ abstract class nosqlDocument extends CommonObject {
     /**
      * 	Get a value from a key
      * @param string $key
-     * @return value 
+     * @return value
      */
     public function get($key) {
         return $this->values->$key;
@@ -181,6 +181,8 @@ abstract class nosqlDocument extends CommonObject {
      */
     public function record($cache = false) {
         global $conf;
+
+        $values = new stdClass();
 
         foreach (get_object_vars($this) as $key => $aRow)
             if (!in_array($key, $this->no_save)) {
@@ -325,7 +327,7 @@ abstract class nosqlDocument extends CommonObject {
     }
 
     /** Call a view on couchdb
-     * 
+     *
      * @param	$name			string			name of the view
      * @param	$params			array			params ['group'],['level'],['key'],...
      * @param	$cache			bool			load from cache
@@ -365,7 +367,7 @@ abstract class nosqlDocument extends CommonObject {
     }
 
     /** Call an Indexed view with lucene on couchdb
-     * 
+     *
      * @param	$name			string			name of the view
      * @param	$params			array			params ['group'],['level'],['key'],...
      * @return  array
@@ -488,7 +490,7 @@ abstract class nosqlDocument extends CommonObject {
                 <?php if ($key == "mDataProp" || $key == "sClass" || $key == "sDefaultContent" || $key == "sType" || $key == "sWidth") : ?>
                                                 "<?php echo $key; ?>":"<?php echo $fields; ?>",
                 <?php elseif ($key == "fnRender") : ?>
-                                                "<?php echo $key; ?>": <?php echo $fields; ?>,	    
+                                                "<?php echo $key; ?>": <?php echo $fields; ?>,
                 <?php else : ?>
                                                 "<?php echo $key; ?>": <?php echo ($fields ? "true" : "false"); ?>,
                 <?php endif; ?>
@@ -534,13 +536,13 @@ abstract class nosqlDocument extends CommonObject {
                         "oLanguage": { "sUrl": "<?php echo DOL_URL_ROOT . '/includes/jquery/plugins/datatables/langs/' . ($langs->defaultlang ? $langs->defaultlang : "en_US") . ".txt"; ?>"},
                         /*$obj->sDom = '<\"top\"Tflpi<\"clear\">>rt<\"bottom\"pi<\"clear\">>';*/
                         /*$obj->sPaginationType = 'full_numbers';*/
-                        /*$obj->sDom = 'TC<\"clear\">lfrtip';*/																																																																																								    
+                        /*$obj->sDom = 'TC<\"clear\">lfrtip';*/
                         "oColVis": { "buttonText" : 'Voir/Cacher',
                             "aiExclude": [0,1] // Not cacheable _id and name
                         },
                         //$obj->oColVis->bRestore = true;
                         //$obj->oColVis->sAlign = 'left';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        																																																																																								            
+
                         // Avec export Excel
         <?php if (!empty($obj->sDom)) : ?>
                             //"sDom": "Cl<fr>t<\"clear\"rtip>",
@@ -554,12 +556,12 @@ abstract class nosqlDocument extends CommonObject {
                         // bottons
         <?php if ($obj->oTableTools->aButtons != null) : ?>
                             "oTableTools" : { "aButtons": [
-            <?php foreach ($obj->oTableTools->aButtons as $i => $aRow): ?>                           
+            <?php foreach ($obj->oTableTools->aButtons as $i => $aRow): ?>
                 <?php if (is_array($aRow)): ?>
                                                     {
                     <?php foreach ($aRow as $key => $fields): ?>
                         <?php if ($key == "fnClick" || $key == "fnAjaxComplete") : ?>
-                                                                        "<?php echo $key; ?>": <?php echo $fields; ?>,	    
+                                                                        "<?php echo $key; ?>": <?php echo $fields; ?>,
                         <?php else : ?>
                                                                         "<?php echo $key; ?>":"<?php echo $fields; ?>",
                         <?php endif; ?>
@@ -616,7 +618,7 @@ abstract class nosqlDocument extends CommonObject {
                                                 "tooltip": tooltipInPlace,
                                                 "indicator" : indicatorInPlace,
                                                 "placeholder" : ""
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                																																																																																																																																																																																                
+
                                             } );
                                             $("td.dol_select", this.fnGetNodes()).editable( urlSaveInPlace, {
                                                 "callback": function( sValue, y ) {
@@ -641,7 +643,7 @@ abstract class nosqlDocument extends CommonObject {
                                                 "tooltip": tooltipInPlace,
                                                 "indicator" : indicatorInPlace,
                                                 "placeholder" : ""
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                																																																																																																																																																																																                
+
                                             } );
                                             $("td.dol_autocomplete", this.fnGetNodes()).editable( urlSaveInPlace, {
                                                 "callback": function( sValue, y ) {
@@ -710,14 +712,14 @@ abstract class nosqlDocument extends CommonObject {
                             var id = $(this).parent().attr("id");
                             oTable.fnFilter( this.value, id);
                         } );
-                        /*send selected level value to server */        
+                        /*send selected level value to server */
                         $("tfoot #level").change( function () {
                             /* Filter on the column */
                             var id = $(this).parent().attr("id");
                             var value = $(this).val();
                             oTable.fnFilter( value, id);
                         } );
-                        /*send selected stcomm value to server */   
+                        /*send selected stcomm value to server */
                         $("tfoot .flat").change( function () {
                             /* Filter on the column */
                             var id = $(this).parent().attr("id");
@@ -726,7 +728,7 @@ abstract class nosqlDocument extends CommonObject {
                         } );
         <?php endif; ?>
                     // Select_all
-                                                                                                                                                                                                                                                                                                                                                                                                                    
+
                     $('.chSel_all').click(function () {
                         $(this).closest('table').find('input[name=row_sel]').attr('checked', this.checked);
                     });
@@ -918,7 +920,7 @@ abstract class nosqlDocument extends CommonObject {
 				var ar = [];
                                 if(obj.aData.' . $key . ' === undefined)
                                     return ar.join("");
-                                    
+
 				ar[ar.length] = "<a href=\"mailto:";
 				ar[ar.length] = obj.aData.' . $key . '.toString();
 				ar[ar.length] = "\">";
@@ -1040,7 +1042,7 @@ abstract class nosqlDocument extends CommonObject {
                             ar[ar.length] = "0.00 €";
                             var str = ar.join("");
                             return str;
-                        }            
+                        }
 			else
 			{
 				var price = obj.aData.' . $key . ';
@@ -1077,7 +1079,7 @@ abstract class nosqlDocument extends CommonObject {
             case "tag":
                 $rtr = 'function(obj) {
                                 var ar = [];
-                                
+
                                 for (var i in obj.aData.' . $key . ') {
                                     ar[ar.length] = "<span class=\"tag anthracite-gradient glossy";
                                     ar[ar.length] = " \">";

@@ -86,11 +86,12 @@ print "</p>";
 $i = 0;
 $obj = new stdClass();
 print '<table class="display dt_act" id="societe" >';
-// Ligne des titres 
+// Ligne des titres
 print'<thead>';
 print'<tr>';
 print'<th>';
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "_id";
 $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->bSearchable = false;
@@ -99,6 +100,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans("Company");
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "name";
 $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->bSearchable = true;
@@ -108,6 +110,7 @@ if ($user->rights->societe->client->voir) {
     print'<th class="essential">';
     print $langs->trans("SalesRepresentatives");
     print'</th>';
+    $obj->aoColumns[$i] = new stdClass();
     $obj->aoColumns[$i]->mDataProp = "commercial_id";
     $obj->aoColumns[$i]->bUseRendered = true;
     $obj->aoColumns[$i]->bSearchable = true;
@@ -124,6 +127,7 @@ foreach ($object->fk_extrafields->longList as $aRow) {
     else
         print $langs->trans($aRow);
     print'</th>';
+    $obj->aoColumns[$i] = new stdClass();
     $obj->aoColumns[$i] = $object->fk_extrafields->fields->$aRow->aoColumns;
     if (isset($object->fk_extrafields->$aRow->default))
         $obj->aoColumns[$i]->sDefaultContent = $object->fk_extrafields->$aRow->default;
@@ -135,6 +139,7 @@ foreach ($object->fk_extrafields->longList as $aRow) {
 print'<th class="essential">';
 print $langs->trans('Categories');
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "Tag";
 $obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->sDefaultContent = "";
@@ -151,6 +156,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans("Status");
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "Status";
 $obj->aoColumns[$i]->sClass = "dol_select center";
 $obj->aoColumns[$i]->sWidth = "100px";
@@ -160,6 +166,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans("ProspectLevelShort");
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "prospectlevel";
 $obj->aoColumns[$i]->sClass = "dol_select center";
 $obj->aoColumns[$i]->sDefaultContent = "PL_NONE";
@@ -168,6 +175,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans('Action');
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "";
 $obj->aoColumns[$i]->sClass = "center content_actions";
 $obj->aoColumns[$i]->sWidth = "60px";
@@ -239,7 +247,7 @@ if (!$user->rights->societe->client->voir)
 $object->datatablesCreate($obj, "societe", true, true);
 
 //print end_box();
-print '</div>'; // end 
+print '</div>'; // end
 
 llxFooter();
 ?>
