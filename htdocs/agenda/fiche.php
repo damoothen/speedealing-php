@@ -188,7 +188,7 @@ if ($action == 'add_action') {
     if (strlen($_POST["doneby"]) > 0)
         $object->userdone->id = GETPOST("doneby");
 
-    $object->note = trim($_POST["note"]);
+    $object->notes = trim($_POST["note"]);
     if (isset($_POST["contactid"]))
         $object->contact = $contact;
     if (!empty($socid)) {
@@ -331,8 +331,7 @@ if ($action == 'update') {
         $object->fk_project = $_POST["projectid"];
         $object->fk_lead = $_POST["leadid"];
         $object->propalrowid = $_POST["propalid"];
-        $object->note = $_POST["note"];
-        $object->pnote = $_POST["note"];
+        $object->notes = $_POST["note"];
         $object->fk_task = $_POST["fk_task"];
         //$object->type = $cactioncomm->type;
         $object->Status = $_POST["status"];
@@ -735,7 +734,7 @@ if ($action == 'create') {
     // Description
     print '<tr><td valign="top">' . $langs->trans("Description") . '</td><td>';
     require_once(DOL_DOCUMENT_ROOT . "/core/class/doleditor.class.php");
-    $doleditor = new DolEditor('note', (GETPOST('note') ? GETPOST('note') : $object->note), '', 280, 'dolibarr_notes', 'In', true, true, $conf->fckeditor->enabled, ROWS_7, 90);
+    $doleditor = new DolEditor('note', (GETPOST('note') ? GETPOST('note') : $object->notes), '', 280, 'dolibarr_notes', 'In', true, true, $conf->fckeditor->enabled, ROWS_7, 90);
     $doleditor->Create();
     print '</td></tr>';
 
@@ -1054,7 +1053,7 @@ if ($id) {
         print '<tr><td valign="top">' . $langs->trans("Description") . '</td><td colspan="3">';
         // Editeur wysiwyg
         require_once(DOL_DOCUMENT_ROOT . "/core/class/doleditor.class.php");
-        $doleditor = new DolEditor('note', $object->note, '', 240, 'dolibarr_notes', 'In', true, true, $conf->fckeditor->enabled, ROWS_5, 90);
+        $doleditor = new DolEditor('note', $object->notes, '', 240, 'dolibarr_notes', 'In', true, true, $conf->fckeditor->enabled, ROWS_5, 90);
         $doleditor->Create();
         print '</td></tr>';
 
@@ -1239,7 +1238,7 @@ if ($id) {
 
         // Description
         print '<tr><td valign="top">' . $langs->trans("Description") . '</td><td colspan="3">';
-        print dol_htmlentitiesbr($object->note);
+        print dol_htmlentitiesbr($object->notes);
         print '</td></tr>';
         $var = !$var;
 

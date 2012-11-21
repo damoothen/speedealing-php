@@ -87,9 +87,32 @@ class Import extends nosqlDocument {
                 $this->array_import_label[$i] = $langs->trans($langstring);
             }
 
+            // Class
+            if(isset($aRow->value->class))
+                $this->array_import_class[$i] = $aRow->value->class;
+            else
+                $this->array_import_class[$i] = $aRow->key[0];
+
             // Module
+            $class = $this->array_import_class[$i];
             $this->array_import_module[$i] = new DolibarrModules($this->db);
             $this->array_import_module[$i]->load("module:".$aRow->key[0]);
+            
+            dol_include_once("/" . strtolower($class) . "/class/" . strtolower($class) . ".class.php");
+            $object = new $class($this->db);
+
+            $this->array_import_fields[$i]["_id"] = "_id";
+            $this->array_import_fields[$i]["_rev"] = "_rev";
+            
+            foreach ($object->fk_extrafields->fields as $idx => $row) {
+                if ($row->enable && $row->type != "uploadfile")
+                    if($row->class) {
+                        $this->array_import_fields[$i][$idx."->name"] = $idx."->name";
+                        $this->array_import_fields[$i][$idx."->id"] = $idx."->id";
+                    }
+                    else
+                        $this->array_import_fields[$i][$idx] = $idx;
+            }
 
             dol_syslog("Import loaded for module " . $modulename . " with index " . $i . ", dataset=" . $module->import_code[$r] . ", nb of fields=" . count($module->import_fields_array[$r]));
             $i++;

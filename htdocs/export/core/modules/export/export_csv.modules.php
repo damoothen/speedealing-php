@@ -181,12 +181,17 @@ class ExportCsv extends ModeleExports {
             $outputlangs->charset_output = 'ISO-8859-1';
         }
 
+        $i = 0;
         foreach ($array_selected_sorted as $code => $value) {
             //$newvalue = $outputlangs->transnoentities($array_export_fields_label[$code]);
             $newvalue = $array_export_fields_label[$code];
             $newvalue = $this->csv_clean($newvalue, $outputlangs->charset_output);
 
-            fwrite($this->handle, $newvalue . $this->separator);
+            if ($i == 0)
+                fwrite($this->handle, $newvalue);
+            else
+                fwrite($this->handle, $this->separator . $newvalue);
+            $i++;
         }
         fwrite($this->handle, "\n");
         return 0;
@@ -215,29 +220,28 @@ class ExportCsv extends ModeleExports {
             $alias = $code;
             if (empty($alias))
                 dol_print_error('', 'Bad value for field with key=' . $code . '. Try to redefine export.');
-            
-            if(is_array($objp->$alias) && count($objp->$alias)) {
-                $i=0;
-                foreach($objp->$alias as $aRow) {
-                    if($i==0)
+
+            if (is_array($objp->$alias) && count($objp->$alias)) {
+                $i = 0;
+                foreach ($objp->$alias as $aRow) {
+                    if ($i == 0)
                         $newvalue = $aRow;
                     else
-                        $newvalue .= ','.$aRow;
+                        $newvalue .= ',' . $aRow;
                     $i++;
                 }
             } else {
-                if(strpos($code, "->")) { // For commercial_id->name by sample
+                if (strpos($code, "->")) { // For commercial_id->name by sample
                     $alias = substr($code, 0, strpos($code, "->"));
-                    $alias1 = substr($code,strpos($code, "->")+2);
-                    
+                    $alias1 = substr($code, strpos($code, "->") + 2);
+
                     $newvalue = $objp->$alias->$alias1;
                 } else
                     $newvalue = $objp->$alias;
             }
-            
+
             $newvalue = $outputlangs->convToOutputCharset($newvalue);
             //print "[".$alias."]".$newvalue."<br>";
-
             // Translation newvalue
             if (preg_match('/^\((.*)\)$/i', $newvalue, $reg)) {
                 $newvalue = $outputlangs->transnoentities($reg[1]);
@@ -245,7 +249,11 @@ class ExportCsv extends ModeleExports {
 
             $newvalue = $this->csv_clean($newvalue, $outputlangs->charset_output);
 
-            fwrite($this->handle, $newvalue . $this->separator);
+            if ($this->col == 0)
+                fwrite($this->handle, $newvalue);
+            else
+                fwrite($this->handle, $this->separator . $newvalue);
+            
             $this->col++;
         }
 

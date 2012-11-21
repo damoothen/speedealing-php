@@ -106,8 +106,10 @@ if (empty($reshook)) {
             $ret = $object->fetch($socid);
             $oldcopy = dol_clone($object);
         }
-        else
+        else {
             $object->canvas = $canvas;
+            $object->commercial_id->id = GETPOST('commercial_id');
+        }
 
         if (GETPOST("private") == 1) {
             $object->particulier = GETPOST("private");
@@ -159,7 +161,6 @@ if (empty($reshook)) {
         $object->fournisseur = GETPOST('fournisseur');
         $object->fournisseur_categorie = GETPOST('fournisseur_categorie');
 
-        $object->commercial_id = GETPOST('commercial_id');
         $object->default_lang = GETPOST('default_lang');
 
         // Get extra fields
@@ -539,7 +540,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
         $object->tva_intra = GETPOST('tva_intra');
 
-        $object->commercial_id = GETPOST('commercial_id');
+        $object->commercial_id->id = GETPOST('commercial_id');
         $object->default_lang = GETPOST('default_lang');
 
         $object->logo = (isset($_FILES['photo']) ? dol_sanitizeFileName($_FILES['photo']['name']) : '');

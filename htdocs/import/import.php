@@ -76,8 +76,8 @@ $step = (GETPOST('step') ? GETPOST('step') : 1);
 $import_name = GETPOST('import_name');
 $hexa = GETPOST('hexa');
 $importmodelid = GETPOST('importmodelid');
-$excludefirstline = (GETPOST('excludefirstline') ? GETPOST('excludefirstline') : 0);
-$separator = (GETPOST('separator') ? GETPOST('separator') : (!empty($conf->global->IMPORT_CSV_SEPARATOR_TO_USE) ? $conf->global->IMPORT_CSV_SEPARATOR_TO_USE : ','));
+$excludefirstline = (GETPOST('excludefirstline') ? GETPOST('excludefirstline') : 1);
+$separator = (GETPOST('separator') ? GETPOST('separator') : (!empty($conf->global->IMPORT_CSV_SEPARATOR_TO_USE) ? $conf->global->IMPORT_CSV_SEPARATOR_TO_USE : ';'));
 $enclosure = (GETPOST('enclosure') ? GETPOST('enclosure') : '"');
 
 $objimport = new Import($db);
@@ -90,7 +90,7 @@ $htmlother = new FormOther($db);
 $formfile = new FormFile($db);
 
 // Init $array_match_file_to_database from _SESSION
-$serialized_array_match_file_to_database = isset($_SESSION["dol_array_match_file_to_database"]) ? $_SESSION["dol_array_match_file_to_database"] : '';
+$serialized_array_match_file_to_database = dol_getcache("dol_array_match_file_to_database");
 $array_match_file_to_database = array();
 $fieldsarray = explode(',', $serialized_array_match_file_to_database);
 foreach ($fieldsarray as $elem) {
@@ -216,7 +216,7 @@ if ($step == 3 && $datatoimport) {
 
 if ($step == 4 && $action == 'select_model') {
     // Reinit match arrays
-    $_SESSION["dol_array_match_file_to_database"] = '';
+    dol_delcache("dol_array_match_file_to_database");
     $serialized_array_match_file_to_database = '';
     $array_match_file_to_database = array();
 
@@ -234,7 +234,7 @@ if ($step == 4 && $action == 'select_model') {
                 $array_match_file_to_database[$key] = $val;
             }
         }
-        $_SESSION["dol_array_match_file_to_database"] = $serialized_array_match_file_to_database;
+        dol_setcache("dol_array_match_file_to_database", $serialized_array_match_file_to_database);
     }
 }
 
@@ -282,7 +282,7 @@ if ($action == 'saveorder') {
     }
 
     // We save new matching in session
-    $_SESSION["dol_array_match_file_to_database"] = $serialized_array_match_file_to_database;
+    dol_setcache("dol_array_match_file_to_database", $serialized_array_match_file_to_database);
     dol_syslog('dol_array_match_file_to_database=' . $serialized_array_match_file_to_database);
 }
 
@@ -299,7 +299,7 @@ if ($step == 1 || !$datatoimport) {
     // Clean saved file-database matching
     $serialized_array_match_file_to_database = '';
     $array_match_file_to_database = array();
-    $_SESSION["dol_array_match_file_to_database"] = '';
+    dol_delcache("dol_array_match_file_to_database");
 
     $param = '';
     if ($excludefirstline)
@@ -604,7 +604,7 @@ if ($step == 4 && $datatoimport) {
     $liste = $objmodelimport->liste_modeles($db);
 
     // Create classe to use for import
-    $dir = DOL_DOCUMENT_ROOT . "/core/modules/import/";
+    $dir = DOL_DOCUMENT_ROOT . "/import/core/modules/import/";
     $file = "import_" . $model . ".modules.php";
     $classname = "Import" . ucfirst($model);
     require_once $dir . $file;
@@ -662,7 +662,7 @@ if ($step == 4 && $datatoimport) {
             $pos++;
         }
         // Save the match array in session. We now will use the array in session.
-        $_SESSION["dol_array_match_file_to_database"] = $serialized_array_match_file_to_database;
+        dol_setcache("dol_array_match_file_to_database", $serialized_array_match_file_to_database);
     }
     $array_match_database_to_file = array_flip($array_match_file_to_database);
 
@@ -680,6 +680,11 @@ if ($step == 4 && $datatoimport) {
         $param.='&enclosure=' . urlencode($enclosure);
 
     llxHeader('', $langs->trans("NewImport"), 'EN:Module_Imports_En|FR:Module_Imports|ES:M&oacute;dulo_Importaciones');
+    print_fiche_titre($langs->trans("ImportArea"));
+    print '<div class="with-padding">';
+    print '<div class="columns">';
+
+    print start_box($langs->trans("NewImport"), "twelve", "16-User.png", false);
 
     $head = import_prepare_head($param, 4);
 
@@ -950,9 +955,8 @@ if ($step == 4 && $datatoimport) {
     dol_fiche_end();
 
 
-    if ($conf->use_javascript_ajax) {
-        print '<script type="text/javascript" language="javascript">';
-        print 'jQuery(function() {
+    print '<script type="text/javascript" language="javascript">';
+    print 'jQuery(function() {
                     jQuery("#left, #right").sortable({
                         /* placeholder: \'ui-state-highlight\', */
                         handle: \'.boxhandle\',
@@ -966,25 +970,24 @@ if ($step == 4 && $datatoimport) {
                     });
                 });
         ';
-        print "\n";
-        print 'function updateOrder(){' . "\n";
-        print 'var left_list = cleanSerialize(jQuery("#left").sortable("serialize" ));' . "\n";
-        //print 'var right_list = cleanSerialize(jQuery("#right").sortable("serialize" ));'."\n";
-        print 'var boxorder = \'A:\' + left_list;' . "\n";
-        //print 'var boxorder = \'A:\' + left_list + \'-B:\' + right_list;'."\n";
-        //print 'alert(\'boxorder=\' + boxorder);';
-        //print 'var userid = \''.$user->id.'\';'."\n";
-        //print 'var datatoimport = "'.$datatoimport.'";'."\n";
-        // print 'jQuery.ajax({ url: "ajaximport.php?step=4&boxorder=" + boxorder + "&userid=" + userid + "&datatoimport=" + datatoimport,
-        //                    async: false
-        //        });'."\n";
-        // Now reload page
-        print 'var newlocation= \'' . $_SERVER["PHP_SELF"] . '?step=4' . $param . '&action=saveorder&boxorder=\' + boxorder;' . "\n";
-        //print 'alert(newlocation);';
-        print 'window.location.href=newlocation;' . "\n";
-        print '}' . "\n";
-        print '</script>' . "\n";
-    }
+    print "\n";
+    print 'function updateOrder(){' . "\n";
+    print 'var left_list = cleanSerialize(jQuery("#left").sortable("serialize" ));' . "\n";
+    //print 'var right_list = cleanSerialize(jQuery("#right").sortable("serialize" ));'."\n";
+    print 'var boxorder = \'A:\' + left_list;' . "\n";
+    //print 'var boxorder = \'A:\' + left_list + \'-B:\' + right_list;'."\n";
+    //print 'alert(\'boxorder=\' + boxorder);';
+    //print 'var userid = \''.$user->id.'\';'."\n";
+    //print 'var datatoimport = "'.$datatoimport.'";'."\n";
+    // print 'jQuery.ajax({ url: "ajaximport.php?step=4&boxorder=" + boxorder + "&userid=" + userid + "&datatoimport=" + datatoimport,
+    //                    async: false
+    //        });'."\n";
+    // Now reload page
+    print 'var newlocation= \'' . $_SERVER["PHP_SELF"] . '?step=4' . $param . '&action=saveorder&boxorder=\' + boxorder;' . "\n";
+    //print 'alert(newlocation);';
+    print 'window.location.href=newlocation;' . "\n";
+    print '}' . "\n";
+    print '</script>' . "\n";
 
 
     if ($mesg)
@@ -997,7 +1000,7 @@ if ($step == 4 && $datatoimport) {
 
     if (count($array_match_file_to_database)) {
         if ($mandatoryfieldshavesource) {
-            print '<a class="butAction" href="import.php?step=5' . $param . '&filetoimport=' . urlencode($filetoimport) . '">' . $langs->trans("NextStep") . '</a>';
+            print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?step=5' . $param . '&filetoimport=' . urlencode($filetoimport) . '">' . $langs->trans("NextStep") . '</a>';
         } else {
             print '<a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("SomeMandatoryFieldHaveNoSource")) . '">' . $langs->trans("NextStep") . '</a>';
         }
@@ -1064,6 +1067,8 @@ if ($step == 4 && $datatoimport) {
         print '</table>';
         print '</form>';
     }
+    print end_box();
+    print '</div></div>';
 }
 
 
@@ -1073,7 +1078,7 @@ if ($step == 5 && $datatoimport) {
     $liste = $objmodelimport->liste_modeles($db);
 
     // Create classe to use for import
-    $dir = DOL_DOCUMENT_ROOT . "/core/modules/import/";
+    $dir = DOL_DOCUMENT_ROOT . "/import/core/modules/import/";
     $file = "import_" . $model . ".modules.php";
     $classname = "Import" . ucfirst($model);
     require_once $dir . $file;
@@ -1107,7 +1112,11 @@ if ($step == 5 && $datatoimport) {
     }
 
     llxHeader('', $langs->trans("NewImport"), 'EN:Module_Imports_En|FR:Module_Imports|ES:M&oacute;dulo_Importaciones');
+    print_fiche_titre($langs->trans("ImportArea"));
+    print '<div class="with-padding">';
+    print '<div class="columns">';
 
+    print start_box($langs->trans("NewImport"), "twelve", "16-User.png", false);
     $head = import_prepare_head($param, 5);
 
     dol_fiche_head($head, 'step5', $langs->trans("NewImport"));
@@ -1247,7 +1256,7 @@ if ($step == 5 && $datatoimport) {
         // Actions
         print '<center>';
         if ($user->rights->import->run) {
-            print '<a class="butAction" href="' . DOL_URL_ROOT . '/imports/import.php?leftmenu=import&step=5&action=launchsimu' . $param . '">' . $langs->trans("RunSimulateImportFile") . '</a>';
+            print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?leftmenu=import&step=5&action=launchsimu' . $param . '">' . $langs->trans("RunSimulateImportFile") . '</a>';
         } else {
             print '<a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("NotEnoughPermissions")) . '">' . $langs->trans("RunSimulateImportFile") . '</a>';
         }
@@ -1261,18 +1270,15 @@ if ($step == 5 && $datatoimport) {
         $nboferrors = 0;
         $nbofwarnings = 0;
 
-        $importid = dol_print_date(dol_now(), '%Y%m%d%H%M%S');
-
         //var_dump($array_match_file_to_database);
-
-        $db->begin();
-
         // Open input file
         $nbok = 0;
         $pathfile = $conf->import->dir_temp . '/' . $filetoimport;
         $result = $obj->import_open_file($pathfile, $langs);
         if ($result > 0) {
             $sourcelinenb = 0;
+            $cptinsert = 0;
+            $cptupdate = 0;
             // Loop on each input file record
             while ($sourcelinenb < $nboflines) {
                 $sourcelinenb++;
@@ -1281,8 +1287,65 @@ if ($step == 5 && $datatoimport) {
                 if ($excludefirstline && $sourcelinenb == 1)
                     continue;
 
-                //
-                $result = $obj->import_insert($arrayrecord, $array_match_file_to_database, $objimport, count($fieldssource), $importid);
+                // Load object if exist
+                $class = $objimport->array_import_class[0];
+                dol_include_once("/" . strtolower($class) . "/class/" . strtolower($class) . ".class.php");
+                $object = new $class($db);
+
+                try {
+                    $object->load($arrayrecord[0]["val"]); //_id
+                    print $arrayrecord[0]["val"] . " " . $arrayrecord[2]["val"] . " (exist)<br>";
+                    $cptupdate++;
+                } catch (Exception $e) {
+                    $id = $object->couchdb->uuid(1);
+                    print $id . " " . $arrayrecord[1]["val"] . "<br>";
+                    $cptinsert++;
+                    // Record not exist
+                }
+
+                //var_dump($array_match_file_to_database);
+                foreach ($array_match_file_to_database as $key => $aRow) {
+                    $value = $arrayrecord[$key - 1]["val"];
+                    if ($aRow == "_rev")
+                        continue; // Ignore this key
+
+                    if (strpos($aRow, "->")) { // For commercial_id->name by sample
+                        $fields = substr($aRow, 0, strpos($aRow, "->"));
+                        $fields1 = substr($aRow, strpos($aRow, "->") + 2);
+
+                        if (empty($value)) // Object empty
+                            $object->$fields = new stdClass();
+                        else
+                            $object->$fields->$fields1 = $value;
+                    } else {
+                        $fields = $aRow;
+                        $object->$fields = $value;
+
+                        if (isset($object->fk_extrafields->fields->$fields->settype)) // transtypage
+                            settype($object->$fields, $object->fk_extrafields->fields->$fields->settype);
+
+                        // If empty set default value
+                        if (empty($object->$fields) && isset($object->fk_extrafields->fields->$fields->default))
+                            $object->$fields = $object->fk_extrafields->fields->$fields->default;
+
+                        // Is a tag list
+                        if ($object->fk_extrafields->fields->$fields->isarray) {
+                            $object->$fields = array();
+                            $i = 0;
+                            while (strpos($value, ",")) {
+                                $object->{$fields}[$i] = trim(substr($value, 0, strpos($value, ",")));
+                                $value = substr($value, strpos($value, ",") + 1);
+                                $i++;
+                            }
+                            if (!empty($value))
+                                $object->{$fields}[$i] = trim($value);
+                        }
+                    }
+
+                    //print $fields . "=";
+                    //print_r($object->$fields);
+                    //print "<br>";
+                }
 
                 if (count($obj->errors))
                     $arrayoferrors[$sourcelinenb] = $obj->errors;
@@ -1298,10 +1361,12 @@ if ($step == 5 && $datatoimport) {
             print $langs->trans("ErrorFailedToOpenFile", $pathfile);
         }
 
-        $db->rollback();    // We force rollback because this was just a simulation.
         // Show OK
-        if (!count($arrayoferrors) && !count($arrayofwarnings))
+        if (!count($arrayoferrors) && !count($arrayofwarnings)) {
+            print $langs->trans("NbNewLines") . " : " . $cptinsert . "<br>";
+            print $langs->trans("NbUpdatesLines") . " : " . $cptupdate . "<br>";
             print img_picto($langs->trans("OK"), 'tick') . ' <b>' . $langs->trans("NoError") . '</b><br><br>';
+        }
         else
             print $langs->trans("NbOfLinesOK", $nbok) . '</b><br><br>';
 
@@ -1345,12 +1410,9 @@ if ($step == 5 && $datatoimport) {
             print '<br>';
         }
 
-        // Show import id
-        $importid = dol_print_date(dol_now(), '%Y%m%d%H%M%S');
 
         print '<center>';
-        print $langs->trans("NowClickToRunTheImport", $langs->transnoentitiesnoconv("RunImportFile")) . '<br>';
-        print $langs->trans("DataLoadedWithId", $importid) . '<br>';
+        print $langs->trans("NowClickToRunTheImport", $langs->transnoentitiesnoconv("RunImportFile"));
         print '</center>';
 
         print '<br>';
@@ -1359,7 +1421,7 @@ if ($step == 5 && $datatoimport) {
         print '<center>';
         if ($user->rights->import->run) {
             if (empty($nboferrors)) {
-                print '<a class="butAction" href="' . DOL_URL_ROOT . '/imports/import.php?leftmenu=import&step=6&importid=' . $importid . $param . '">' . $langs->trans("RunImportFile") . '</a>';
+                print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?leftmenu=import&step=6&importid=' . $importid . $param . '">' . $langs->trans("RunImportFile") . '</a>';
             } else {
                 //print '<a class="butAction" href="'.DOL_URL_ROOT.'/imports/import.php?leftmenu=import&step=5&action=launchsimu'.$param.'">'.$langs->trans("RunSimulateImportFile").'</a>';
 
@@ -1375,6 +1437,9 @@ if ($step == 5 && $datatoimport) {
 
     if ($mesg)
         print $mesg;
+
+    print end_box();
+    print '</div></div>';
 }
 
 
@@ -1382,11 +1447,9 @@ if ($step == 5 && $datatoimport) {
 if ($step == 6 && $datatoimport) {
     $model = $format;
     $liste = $objmodelimport->liste_modeles($db);
-    $importid = $_REQUEST["importid"];
-
 
     // Create classe to use for import
-    $dir = DOL_DOCUMENT_ROOT . "/core/modules/import/";
+    $dir = DOL_DOCUMENT_ROOT . "/import/core/modules/import/";
     $file = "import_" . $model . ".modules.php";
     $classname = "Import" . ucfirst($model);
     require_once $dir . $file;
@@ -1422,7 +1485,11 @@ if ($step == 6 && $datatoimport) {
         $param.='&enclosure=' . urlencode($enclosure);
 
     llxHeader('', $langs->trans("NewImport"), 'EN:Module_Imports_En|FR:Module_Imports|ES:M&oacute;dulo_Importaciones');
+    print_fiche_titre($langs->trans("ImportArea"));
+    print '<div class="with-padding">';
+    print '<div class="columns">';
 
+    print start_box($langs->trans("NewImport"), "twelve", "16-User.png", false);
     $head = import_prepare_head($param, 6);
 
     dol_fiche_head($head, 'step6', $langs->trans("NewImport"));
@@ -1556,25 +1623,83 @@ if ($step == 6 && $datatoimport) {
     $nboferrors = 0;
     $nbofwarnings = 0;
 
-    $importid = dol_print_date(dol_now(), '%Y%m%d%H%M%S');
-
     //var_dump($array_match_file_to_database);
-
-    $db->begin();
-
     // Open input file
     $nbok = 0;
     $pathfile = $conf->import->dir_temp . '/' . $filetoimport;
     $result = $obj->import_open_file($pathfile, $langs);
     if ($result > 0) {
         $sourcelinenb = 0;
+        $cptinsert = 0;
+        $cptupdate = 0;
+        // Loop on each input file record
         while ($sourcelinenb < $nboflines) {
             $sourcelinenb++;
+            // Read line and stor it into $arrayrecord
             $arrayrecord = $obj->import_read_record();
             if ($excludefirstline && $sourcelinenb == 1)
                 continue;
 
-            $result = $obj->import_insert($arrayrecord, $array_match_file_to_database, $objimport, count($fieldssource), $importid);
+            // Load object if exist
+            $class = $objimport->array_import_class[0];
+            dol_include_once("/" . strtolower($class) . "/class/" . strtolower($class) . ".class.php");
+            $object = new $class($db);
+
+            try {
+                $object->load($arrayrecord[0]["val"]); //_id
+                $cptupdate++;
+            } catch (Exception $e) {
+                $id = $object->couchdb->uuid(1);
+                $cptinsert++;
+                // Record not exist
+            }
+
+            //var_dump($array_match_file_to_database);
+            foreach ($array_match_file_to_database as $key => $aRow) {
+                $value = $arrayrecord[$key - 1]["val"];
+                if ($aRow == "_rev")
+                    continue; // Ignore this key
+
+                if (strpos($aRow, "->")) { // For commercial_id->name by sample
+                    $fields = substr($aRow, 0, strpos($aRow, "->"));
+                    $fields1 = substr($aRow, strpos($aRow, "->") + 2);
+
+                    if (empty($value)) // Object empty
+                        $object->$fields = new stdClass();
+                    else
+                        $object->$fields->$fields1 = $value;
+                } else {
+                    $fields = $aRow;
+                    $object->$fields = $value;
+
+                    if (isset($object->fk_extrafields->fields->$fields->settype)) // transtypage
+                        settype($object->$fields, $object->fk_extrafields->fields->$fields->settype);
+
+                    // If empty set default value
+                    if (empty($object->$fields) && isset($object->fk_extrafields->fields->$fields->default))
+                        $object->$fields = $object->fk_extrafields->fields->$fields->default;
+
+                    // Is a tag list
+                    if ($object->fk_extrafields->fields->$fields->isarray) {
+                        $object->$fields = array();
+                        $i = 0;
+                        while (strpos($value, ",")) {
+                            $object->{$fields}[$i] = trim(substr($value, 0, strpos($value, ",")));
+                            $value = substr($value, strpos($value, ",") + 1);
+                            $i++;
+                        }
+                        if (!empty($value))
+                            $object->{$fields}[$i] = trim($value);
+                    }
+                }
+
+                //print $fields . "=";
+                //print_r($object->$fields);
+                //print "<br>";
+            }
+            
+            $object->record();
+            
             if (count($obj->errors))
                 $arrayoferrors[$sourcelinenb] = $obj->errors;
             if (count($obj->warnings))
@@ -1589,11 +1714,6 @@ if ($step == 6 && $datatoimport) {
         print $langs->trans("ErrorFailedToOpenFile", $pathfile);
     }
 
-    if (count($arrayoferrors) > 0)
-        $db->rollback(); // We force rollback because this was errors.
-    else
-        $db->commit(); // We can commit if no errors.
-
     dol_fiche_end();
 
 
@@ -1601,12 +1721,13 @@ if ($step == 6 && $datatoimport) {
     print '<center>';
     print '<br>';
     print $langs->trans("NbOfLinesImported", $nbok) . '</b><br><br>';
-    print $langs->trans("FileWasImported", $importid) . '<br>';
-    print $langs->trans("YouCanUseImportIdToFindRecord", $importid) . '<br>';
     print '</center>';
 
     if ($mesg)
         print $mesg;
+
+    print end_box();
+    print '</div></div>';
 }
 
 

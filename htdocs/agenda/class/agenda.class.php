@@ -33,7 +33,6 @@ class Agenda extends nosqlDocument {
 
     public $element = 'action';
     public $table_element = 'actioncomm';
-    public $table_rowid = 'id';
     protected $ismultientitymanaged = 2; // 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
     var $id;
     var $type_id;
@@ -52,7 +51,7 @@ class Agenda extends nosqlDocument {
     var $percentage;    // Percentage
     var $location;      // Location
     var $priority;      // Free text ('' By default)
-    var $note;          // Description
+    var $notes;          // Description
     var $usertodo;  // Object user that must do action
     var $userdone;   // Object user that did action
     var $societe;  // Company linked to action (optionnal)
@@ -106,7 +105,7 @@ class Agenda extends nosqlDocument {
         // Clean parameters
         $this->label = dol_trunc(trim($this->label), 128);
         $this->location = dol_trunc(trim($this->location), 128);
-        $this->note = dol_htmlcleanlastbr(trim($this->note));
+        $this->notes = dol_htmlcleanlastbr(trim($this->notes));
         if (empty($this->percentage))
             $this->percentage = 0;
         if (empty($this->priority))
@@ -292,7 +291,7 @@ class Agenda extends nosqlDocument {
 
         // Clean parameters
         $this->label = trim($this->label);
-        $this->note = trim($this->note);
+        $this->notes = trim($this->notes);
         if (empty($this->percentage))
             $this->percentage = 0;
 
@@ -834,7 +833,7 @@ class Agenda extends nosqlDocument {
                     $dateend = $this->db->jdate($obj->datep2);
                     $duration = $obj->durationp;
                     $event['summary'] = $obj->label . ($obj->socname ? " (" . $obj->socname . ")" : "");
-                    $event['desc'] = $obj->note;
+                    $event['desc'] = $obj->notes;
                     $event['startdate'] = $datestart;
                     $event['duration'] = $duration; // Not required with type 'journal'
                     $event['enddate'] = $dateend;  // Not required with type 'journal'
@@ -1056,7 +1055,7 @@ class Agenda extends nosqlDocument {
         $this->percentage = 0;
         $this->location = 'Location';
         $this->priority = 'Priority X';
-        $this->note = 'Note';
+        $this->notes = 'Note';
     }
 
     function print_calendar($date) {

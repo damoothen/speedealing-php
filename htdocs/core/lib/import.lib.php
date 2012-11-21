@@ -43,7 +43,7 @@ function import_prepare_head($param, $maxstep=0)
 	$i=1;
 	while($i <= $maxstep)
 	{
-    	$head[$h][0] = DOL_URL_ROOT.'/imports/import.php?step='.$i.$param;
+    	$head[$h][0] = $_SERVER["PHP_SELF"].'?step='.$i.$param;
     	$head[$h][1] = $langs->trans("Step")." ".$i;
     	$head[$h][2] = 'step'.$i;
     	$h++;

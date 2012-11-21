@@ -1,6 +1,6 @@
 {
    "_id": "extrafields:Societe",
-   "_rev": "90-6468643e744b95f37af6eb088a7b0a5a",
+   "_rev": "92-13f084247ae057ba65c29d96b4d717ed",
    "class": "extrafields",
    "ico": "16-Apartment-Building.png",
    "langs": [
@@ -112,6 +112,7 @@
        "state_id": {
            "type": "select",
            "enable": true,
+           "settype": "int",
            "dict": "dict:fk_departements"
        },
        "DefaultLang": {
@@ -186,6 +187,7 @@
        },
        "capital": {
            "type": "text",
+           "settype": "int",
            "length": "20",
            "label": "Capital",
            "enable": true,
@@ -193,6 +195,7 @@
        },
        "VATIsUsed": {
            "type": "checkbox",
+           "settype": "bool",
            "enable": true,
            "default": true
        },
@@ -299,6 +302,10 @@
            "label": "Categories",
            "enable": true,
            "isarray": true
+       },
+       "notes": {
+           "type": "textarea",
+           "enable": true
        }
    }
 }

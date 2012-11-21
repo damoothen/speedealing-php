@@ -1,6 +1,6 @@
 {
    "_id": "extrafields:Contact",
-   "_rev": "15-6f6ceb682cd40dfd82589628fb027622",
+   "_rev": "16-723847674a04e34510b0dde67536f1cd",
    "class": "extrafields",
    "ico": "16-User.png",
    "langs": [
@@ -152,6 +152,10 @@
            "label": "Categories",
            "enable": true,
            "isarray": true
+       },
+       "notes": {
+           "type": "textarea",
+           "enable": true
        }
    }
 }

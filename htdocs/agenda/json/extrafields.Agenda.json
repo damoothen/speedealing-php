@@ -1,6 +1,6 @@
 {
    "_id": "extrafields:Agenda",
-   "_rev": "21-fce2eb873a2a2d5ee4d8e39bfdf8e7ab",
+   "_rev": "25-a5b0e2a50c098d0d39ac9fd305367a89",
    "class": "extrafields",
    "ico": "16-Month-Calendar.png",
    "langs": [
@@ -8,6 +8,10 @@
        "commercial"
    ],
    "fields": {
+       "label": {
+           "type": "text",
+           "enable": true
+       },
        "societe": {
            "enable": true,
            "class": "Societe",
@@ -75,22 +79,29 @@
            "dict": "dict:fk_actioncomm"
        },
        "author": {
+           "enable": true,
            "type": "select",
            "label": "ActionAskedBy",
            "class": "User",
            "view": "list"
        },
        "usertodo": {
+           "enable": true,
            "type": "select",
            "label": "ActionAffectedTo",
            "class": "User",
            "view": "list"
        },
        "userdone": {
+           "enable": true,
            "type": "select",
            "label": "ActionDoneBy",
            "class": "User",
            "view": "list"
+       },
+       "notes": {
+           "type": "textarea",
+           "enable": true
        }
    }
 }

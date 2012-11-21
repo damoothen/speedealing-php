@@ -240,7 +240,7 @@ class Form {
 
             $out.= '<span id="viewval_' . $htmlname . '" class="viewval_' . $inputType . ($button_only ? ' inactive' : ' active') . '">';
             //if (preg_match('/^select/', $inputType)) {
-                $out.= $object->print_fk_extrafields($htmlname);
+            $out.= $object->print_fk_extrafields($htmlname);
             //}
             $out.= '</span>' . "\n";
             if (preg_match('/^tag/', $inputType)) {
@@ -939,6 +939,7 @@ class Form {
                     $currencytext = $conf->currency; // If text is too long, we use the short code
                 if (dol_strlen($currencytextnoent) > 10)
                     $currencytextnoent = $conf->currency;   // If text is too long, we use the short code
+
 
 
 

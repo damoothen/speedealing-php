@@ -385,6 +385,11 @@ class modAgenda extends DolibarrModules {
         // Exports
         //--------
         $r = 0;
+        $this->export[$r]->code = $this->rights_class . '_' . $r;
+        $this->export[$r]->label = 'ExportDataset_agenda';
+        $this->export[$r]->icon = 'action';
+        $this->export[$r]->permission = '$user->rights->agenda->allactions->read';
+        $r++;
 
         // $this->export_code[$r]          Code unique identifiant l'export (tous modules confondus)
         // $this->export_label[$r]         Libelle par defaut si traduction de cle "ExportXXX" non trouvee (XXX = Code)
