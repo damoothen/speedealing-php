@@ -57,7 +57,7 @@ class DolibarrModules extends nosqlDocument {
 
     function __construct($db) {
         global $couch;
-        
+
         parent::__construct($db);
 
         try {
@@ -546,13 +546,6 @@ class DolibarrModules extends nosqlDocument {
 
         $error = 0;
 
-        /* $this->couchdb->useDatabase(strtolower($this->name)); // switch to the database for the module
-          if(!$this->couchdb->databaseExists()) {
-          $this->couchdb->createDatabase(); // create the database
-          $couchAdmin = new couchAdmin($this->couchdb);
-          $couchAdmin->addDatabaseReaderRole("administrator"); // add the default admin security group
-          } */
-
         $ok = 1;
         foreach ($conf->file->dol_document_root as $dirroot) {
             if ($ok) {
@@ -575,6 +568,25 @@ class DolibarrModules extends nosqlDocument {
                                     $obj->_rev = $result->_rev;
                                 } catch (Exception $e) {
                                     
+                                }
+
+                                if (!empty($result)) {
+                                    if ($result->class == "extrafields") {
+                                        if (isset($obj->shortList))
+                                            $obj->shortList = $result->shortList;
+                                        if (isset($obj->longList))
+                                            $obj->longList = $result->longList;
+
+                                        foreach ($result->fields as $key => $aRow) {
+                                            if ($aRow->optional) //specific extrafields
+                                                $obj->fields->$key = $aRow;
+
+                                            if ($aRow->enable) // Test if fields was enable or disable
+                                                $obj->fields->$key->enable = true;
+                                            else
+                                                $obj->fields->$key->enable = false;
+                                        }
+                                    }
                                 }
 
                                 try {
