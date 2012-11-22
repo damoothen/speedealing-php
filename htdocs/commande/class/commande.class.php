@@ -53,17 +53,13 @@ class Commande extends nosqlDocument
     var $ref_int;
     var $contactid;
     var $fk_project;
-    var $statut;		// -1=Canceled, 0=Draft, 1=Validated, (2=Accepted/On process not managed for customer orders), 3=Closed (Sent/Received, billed or not)
+    var $Status;		// -1=Canceled, 0=Draft, 1=Validated, (2=Accepted/On process not managed for customer orders), 3=Closed (Sent/Received, billed or not)
 
     var $facturee;		// Facturee ou non
     var $brouillon;
-    var $cond_reglement_id;
     var $cond_reglement_code;
-    var $mode_reglement_id;
     var $mode_reglement_code;
-    var $availability_id;
     var $availability_code;
-    var $demand_reason_id;
     var $demand_reason_code;
     var $fk_delivery_address;
     var $adresse;
@@ -131,7 +127,7 @@ class Commande extends nosqlDocument
         global $db, $langs, $conf;
         $langs->load("order");
 
-        $dir = DOL_DOCUMENT_ROOT . "/core/modules/commande";
+        $dir = DOL_DOCUMENT_ROOT . "/commande/core/modules/commande";
 
         if (! empty($conf->global->COMMANDE_ADDON))
         {
@@ -606,11 +602,12 @@ class Commande extends nosqlDocument
         $error=0;
 
         // Clean parameters
-        $this->brouillon = 1;		// On positionne en mode brouillon la commande
+        $this->Status = "DRAFT";		// On positionne en mode brouillon la commande
 
         dol_syslog("Commande::create user=".$user->id);
 
         // Check parameters
+                
         $soc = new Societe($this->db);
         $result=$soc->fetch($this->socid);
         if ($result < 0)
@@ -625,172 +622,165 @@ class Commande extends nosqlDocument
             dol_syslog("Commande::create ".$this->error, LOG_ERR);
             return -1;
         }
+        $this->client = new stdClass();
+        $this->client->id = $soc->id;
+        $this->client->name = $soc->name;
+        $this->client->country_code = $soc->country_code;
+        $this->client->email = $soc->email;        
+
+        // Calcul of ref
+        $this->ref = $this->getNextNumRef($soc);
 
         // $date_commande is deprecated
         $date = ($this->date_commande ? $this->date_commande : $this->date);
+        $this->date = $this->date_commande = $date;
 
         $now=dol_now();
 
-        $this->db->begin();
-
-        $sql = "INSERT INTO ".MAIN_DB_PREFIX."commande (";
-        $sql.= " ref, fk_soc, date_creation, fk_user_author, fk_projet, date_commande, source, note, note_public, ref_client, ref_int";
-        $sql.= ", model_pdf, fk_cond_reglement, fk_mode_reglement, fk_availability, fk_input_reason, date_livraison, fk_adresse_livraison";
-        $sql.= ", remise_absolue, remise_percent";
-        $sql.= ", entity";
-        $sql.= ")";
-        $sql.= " VALUES ('(PROV)',".$this->socid.", ".$this->db->idate($now).", ".$user->id;
-        $sql.= ", ".($this->fk_project?$this->fk_project:"null");
-        $sql.= ", ".$this->db->idate($date);
-        $sql.= ", ".($this->source>=0 && $this->source != '' ?$this->source:'null');
-        $sql.= ", '".$this->db->escape($this->note)."'";
-        $sql.= ", '".$this->db->escape($this->note_public)."'";
-        $sql.= ", '".$this->db->escape($this->ref_client)."'";
-        $sql.= ", ".($this->ref_int?"'".$this->db->escape($this->ref_int)."'":"null");
-        $sql.= ", '".$this->modelpdf."'";
-        $sql.= ", ".($this->cond_reglement_id>0?"'".$this->cond_reglement_id."'":"null");
-        $sql.= ", ".($this->mode_reglement_id>0?"'".$this->mode_reglement_id."'":"null");
-        $sql.= ", ".($this->availability_id>0?"'".$this->availability_id."'":"null");
-        $sql.= ", ".($this->demand_reason_id>0?"'".$this->demand_reason_id."'":"null");
-        $sql.= ", ".($this->date_livraison?"'".$this->db->idate($this->date_livraison)."'":"null");
-        $sql.= ", ".($this->fk_delivery_address>0?$this->fk_delivery_address:'NULL');
-        $sql.= ", ".($this->remise_absolue>0?$this->remise_absolue:'NULL');
-        $sql.= ", '".$this->remise_percent."'";
-        $sql.= ", ".$conf->entity;
-        $sql.= ")";
-
-        dol_syslog("Commande::create sql=".$sql);
-        $resql=$this->db->query($sql);
-        if ($resql)
-        {
-            $this->id = $this->db->last_insert_id(MAIN_DB_PREFIX.'commande');
-
-            if ($this->id)
-            {
-                $fk_parent_line=0;
-                $num=count($this->lines);
-
-                /*
-                 *  Insertion du detail des produits dans la base
-                 */
-                for ($i=0;$i<$num;$i++)
-                {
-                    // Reset fk_parent_line for no child products and special product
-                    if (($this->lines[$i]->product_type != 9 && empty($this->lines[$i]->fk_parent_line)) || $this->lines[$i]->product_type == 9) {
-                        $fk_parent_line = 0;
-                    }
-
-                    $result = $this->addline(
-                        $this->id,
-                        $this->lines[$i]->desc,
-                        $this->lines[$i]->subprice,
-                        $this->lines[$i]->qty,
-                        $this->lines[$i]->tva_tx,
-                        $this->lines[$i]->localtax1_tx,
-                        $this->lines[$i]->localtax2_tx,
-                        $this->lines[$i]->fk_product,
-                        $this->lines[$i]->remise_percent,
-                        $this->lines[$i]->info_bits,
-                        $this->lines[$i]->fk_remise_except,
-                        'HT',
-                        0,
-                        $this->lines[$i]->date_start,
-                        $this->lines[$i]->date_end,
-                        $this->lines[$i]->product_type,
-                        $this->lines[$i]->rang,
-                        $this->lines[$i]->special_code,
-                        $fk_parent_line,
-                        $this->lines[$i]->fk_fournprice,
-                        $this->lines[$i]->pa_ht,
-                    	$this->lines[$i]->label
-                    );
-                    if ($result < 0)
-                    {
-                        $this->error=$this->db->lasterror();
-                        dol_print_error($this->db);
-                        $this->db->rollback();
-                        return -1;
-                    }
-                    // Defined the new fk_parent_line
-                    if ($result > 0 && $this->lines[$i]->product_type == 9) {
-                        $fk_parent_line = $result;
-                    }
-                }
-
-                // Mise a jour ref
-                $sql = 'UPDATE '.MAIN_DB_PREFIX."commande SET ref='(PROV".$this->id.")' WHERE rowid=".$this->id;
-                if ($this->db->query($sql))
-                {
-                    if ($this->id)
-                    {
-                        $this->ref="(PROV".$this->id.")";
-
-                        // Add object linked
-                        if (is_array($this->linked_objects) && ! empty($this->linked_objects))
-                        {
-                        	foreach($this->linked_objects as $origin => $origin_id)
-                        	{
-                        		$ret = $this->add_object_linked($origin, $origin_id);
-                        		if (! $ret)
-                        		{
-                        			dol_print_error($this->db);
-                        			$error++;
-                        		}
-
-                        		// TODO mutualiser
-                        		if ($origin == 'propal' && $origin_id)
-                        		{
-                        			// On recupere les differents contact interne et externe
-                        			$prop = new Propal($this->db, $this->socid, $origin_id);
-
-                        			// On recupere le commercial suivi propale
-                        			$this->userid = $prop->getIdcontact('internal', 'SALESREPFOLL');
-
-                        			if ($this->userid)
-                        			{
-                        				//On passe le commercial suivi propale en commercial suivi commande
-                        				$this->add_contact($this->userid[0], 'SALESREPFOLL', 'internal');
-                        			}
-
-                        			// On recupere le contact client suivi propale
-                        			$this->contactid = $prop->getIdcontact('external', 'CUSTOMER');
-
-                        			if ($this->contactid)
-                        			{
-                        				//On passe le contact client suivi propale en contact client suivi commande
-                        				$this->add_contact($this->contactid[0], 'CUSTOMER', 'external');
-                        			}
-                        		}
-                        	}
-                        }
-                    }
-
-                    if (! $notrigger)
-                    {
-                        // Appel des triggers
-                        include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
-                        $interface=new Interfaces($this->db);
-                        $result=$interface->run_triggers('ORDER_CREATE',$this,$user,$langs,$conf);
-                        if ($result < 0) { $error++; $this->errors=$interface->errors; }
-                        // Fin appel triggers
-                    }
-
-                    $this->db->commit();
-                    return $this->id;
-                }
-                else
-                {
-                    $this->db->rollback();
-                    return -1;
-                }
-            }
+        dol_syslog("Commande::create");
+//        echo '<pre>'.print_r($this, true).'</pre>';die;
+        $this->record();
+        
+        if (! $notrigger) {
+            // Appel des triggers
+            include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
+            $interface=new Interfaces($this->db);
+            $result=$interface->run_triggers('ORDER_CREATE',$this,$user,$langs,$conf);
+            if ($result < 0) { $error++; $this->errors=$interface->errors; }
+            // Fin appel triggers
         }
-        else
-        {
-            dol_print_error($this->db);
-            $this->db->rollback();
-            return -1;
-        }
+        
+        return $this->id;
+//        if ($resql)
+//        {
+//            $this->id = $this->db->last_insert_id(MAIN_DB_PREFIX.'commande');
+//
+//            if ($this->id)
+//            {
+//                $fk_parent_line=0;
+//                $num=count($this->lines);
+//
+//                /*
+//                 *  Insertion du detail des produits dans la base
+//                 */
+//                for ($i=0;$i<$num;$i++)
+//                {
+//                    // Reset fk_parent_line for no child products and special product
+//                    if (($this->lines[$i]->product_type != 9 && empty($this->lines[$i]->fk_parent_line)) || $this->lines[$i]->product_type == 9) {
+//                        $fk_parent_line = 0;
+//                    }
+//
+//                    $result = $this->addline(
+//                        $this->id,
+//                        $this->lines[$i]->desc,
+//                        $this->lines[$i]->subprice,
+//                        $this->lines[$i]->qty,
+//                        $this->lines[$i]->tva_tx,
+//                        $this->lines[$i]->localtax1_tx,
+//                        $this->lines[$i]->localtax2_tx,
+//                        $this->lines[$i]->fk_product,
+//                        $this->lines[$i]->remise_percent,
+//                        $this->lines[$i]->info_bits,
+//                        $this->lines[$i]->fk_remise_except,
+//                        'HT',
+//                        0,
+//                        $this->lines[$i]->date_start,
+//                        $this->lines[$i]->date_end,
+//                        $this->lines[$i]->product_type,
+//                        $this->lines[$i]->rang,
+//                        $this->lines[$i]->special_code,
+//                        $fk_parent_line,
+//                        $this->lines[$i]->fk_fournprice,
+//                        $this->lines[$i]->pa_ht,
+//                    	$this->lines[$i]->label
+//                    );
+//                    if ($result < 0)
+//                    {
+//                        $this->error=$this->db->lasterror();
+//                        dol_print_error($this->db);
+//                        $this->db->rollback();
+//                        return -1;
+//                    }
+//                    // Defined the new fk_parent_line
+//                    if ($result > 0 && $this->lines[$i]->product_type == 9) {
+//                        $fk_parent_line = $result;
+//                    }
+//                }
+//
+//                // Mise a jour ref
+//                $sql = 'UPDATE '.MAIN_DB_PREFIX."commande SET ref='(PROV".$this->id.")' WHERE rowid=".$this->id;
+//                if ($this->db->query($sql))
+//                {
+//                    if ($this->id)
+//                    {
+//                        $this->ref="(PROV".$this->id.")";
+//
+//                        // Add object linked
+//                        if (is_array($this->linked_objects) && ! empty($this->linked_objects))
+//                        {
+//                        	foreach($this->linked_objects as $origin => $origin_id)
+//                        	{
+//                        		$ret = $this->add_object_linked($origin, $origin_id);
+//                        		if (! $ret)
+//                        		{
+//                        			dol_print_error($this->db);
+//                        			$error++;
+//                        		}
+//
+//                        		// TODO mutualiser
+//                        		if ($origin == 'propal' && $origin_id)
+//                        		{
+//                        			// On recupere les differents contact interne et externe
+//                        			$prop = new Propal($this->db, $this->socid, $origin_id);
+//
+//                        			// On recupere le commercial suivi propale
+//                        			$this->userid = $prop->getIdcontact('internal', 'SALESREPFOLL');
+//
+//                        			if ($this->userid)
+//                        			{
+//                        				//On passe le commercial suivi propale en commercial suivi commande
+//                        				$this->add_contact($this->userid[0], 'SALESREPFOLL', 'internal');
+//                        			}
+//
+//                        			// On recupere le contact client suivi propale
+//                        			$this->contactid = $prop->getIdcontact('external', 'CUSTOMER');
+//
+//                        			if ($this->contactid)
+//                        			{
+//                        				//On passe le contact client suivi propale en contact client suivi commande
+//                        				$this->add_contact($this->contactid[0], 'CUSTOMER', 'external');
+//                        			}
+//                        		}
+//                        	}
+//                        }
+//                    }
+//
+//                    if (! $notrigger)
+//                    {
+//                        // Appel des triggers
+//                        include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
+//                        $interface=new Interfaces($this->db);
+//                        $result=$interface->run_triggers('ORDER_CREATE',$this,$user,$langs,$conf);
+//                        if ($result < 0) { $error++; $this->errors=$interface->errors; }
+//                        // Fin appel triggers
+//                    }
+//
+//                    $this->db->commit();
+//                    return $this->id;
+//                }
+//                else
+//                {
+//                    $this->db->rollback();
+//                    return -1;
+//                }
+//            }
+//        }
+//        else
+//        {
+//            dol_print_error($this->db);
+//            $this->db->rollback();
+//            return -1;
+//        }
     }
 
 

@@ -199,21 +199,17 @@ else if ($action == 'add' && $user->rights->commande->creer)
 	$datelivraison = dol_mktime(12, 0, 0, GETPOST('liv_month'),GETPOST('liv_day'),GETPOST('liv_year'));
 
 	$object->socid=$socid;
-	$object->fetch_thirdparty();
-
-	$db->begin();
-
-	$object->date_commande        = $datecommande;
+        $object->date_commande        = $datecommande;
 	$object->note                 = GETPOST('note');
 	$object->note_public          = GETPOST('note_public');
 	$object->source               = GETPOST('source_id');
 	$object->fk_project           = GETPOST('projectid');
 	$object->ref_client           = GETPOST('ref_client');
 	$object->modelpdf             = GETPOST('model');
-	$object->cond_reglement_id    = GETPOST('cond_reglement_id');
-	$object->mode_reglement_id    = GETPOST('mode_reglement_id');
-	$object->availability_id      = GETPOST('availability_id');
-	$object->demand_reason_id     = GETPOST('demand_reason_id');
+	$object->cond_reglement_code    = GETPOST('cond_reglement_code');
+	$object->mode_reglement_code    = GETPOST('mode_reglement_code');
+	$object->availability_code      = GETPOST('availability_code');
+	$object->demand_reason_code     = GETPOST('demand_reason_code');
 	$object->date_livraison       = $datelivraison;
 	$object->fk_delivery_address  = GETPOST('fk_address');
 	$object->contactid            = GETPOST('contactidp');
@@ -363,7 +359,7 @@ else if ($action == 'add' && $user->rights->commande->creer)
 	}
 
 	// Insert default contacts if defined
-	if ($object_id > 0)
+	if (!empty($object_id))
 	{
 		if (GETPOST('contactidp'))
 		{
@@ -379,10 +375,9 @@ else if ($action == 'add' && $user->rights->commande->creer)
 		$action = '';
 	}
 
-	// End of object creation, we show it
-	if ($object_id > 0 && ! $error)
+        // End of object creation, we show it
+	if (!empty($object_id) && ! $error)
 	{
-		$db->commit();
 		header('Location: '.$_SERVER["PHP_SELF"].'?id='.$object_id);
 		exit;
 	}
@@ -1420,7 +1415,6 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 		print '<form name="crea_commande" action="'.$_SERVER["PHP_SELF"].'" method="POST">';
 		print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 		print '<input type="hidden" name="action" value="add">';
-		print '<input type="hidden" name="socid" value="'.$soc->id.'">' ."\n";
 		print '<input type="hidden" name="remise_percent" value="'.$soc->remise_client.'">';
 		print '<input type="hidden" name="origin" value="'.$origin.'">';
 		print '<input type="hidden" name="originid" value="'.$originid.'">';

@@ -22,7 +22,7 @@
  *  \ingroup    commande
  *  \brief      File of class to manage customer order numbering rules Marbre
  */
-require_once DOL_DOCUMENT_ROOT .'/core/modules/commande/modules_commande.php';
+require_once DOL_DOCUMENT_ROOT .'/commande/core/modules/commande/modules_commande.php';
 
 /**
  *	Class to manage customer order numbering rules Marbre
@@ -102,26 +102,8 @@ class mod_commande_marbre extends ModeleNumRefCommandes
 	function getNextValue($objsoc,$object)
 	{
 		global $db,$conf;
-
-		// D'abord on recupere la valeur max
-		$posindice=8;
-		$sql = "SELECT MAX(SUBSTRING(ref FROM ".$posindice.")) as max";
-		$sql.= " FROM ".MAIN_DB_PREFIX."commande";
-		$sql.= " WHERE ref like '".$this->prefix."____-%'";
-		$sql.= " AND entity = ".$conf->entity;
-
-		$resql=$db->query($sql);
-		if ($resql)
-		{
-			$obj = $db->fetch_object($resql);
-			if ($obj) $max = intval($obj->max);
-			else $max=0;
-		}
-		else
-		{
-			dol_syslog("mod_commande_marbre::getNextValue sql=".$sql);
-			return -1;
-		}
+                $result = $object->getView("count");
+                $max = (int) $result->rows[0]->value;
 
 		//$date=time();
 		$date=$object->date;
