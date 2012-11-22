@@ -103,7 +103,6 @@ $hookmanager = new HookManager($db);
 $hookmanager->initHooks(array('propalcard'));
 
 
-setEventMessage($langs->trans('ErrorMailRecipientIsEmpty') . '!', 'errors');
 /*
  * Actions
  */
@@ -355,8 +354,8 @@ else if ($action == 'classifybilled' && $user->rights->propal->cloturer) {
 // Reopen proposal
 else if ($action == 'confirm_reopen' && $user->rights->propal->cloturer && !GETPOST('cancel')) {
     // prevent browser refresh from reopening proposal several times
-    if ($object->statut == 2 || $object->statut == 3) {
-        $object->setStatut(1);
+    if (in_array($object->Status, array('SIGNED', 'NOT_SIGNED'))) {
+        $object->setStatut('OPENED');
     }
 }
 
@@ -367,7 +366,7 @@ else if ($action == 'setstatut' && $user->rights->propal->cloturer && !GETPOST('
         $action = 'statut';
     } else {
         // prevent browser refresh from closing proposal several times
-        if ($object->statut == 1) {
+        if ($object->Status == "OPENED") {
             $object->cloture($user, GETPOST('statut'), GETPOST('note'));
         }
     }
@@ -1399,7 +1398,7 @@ if (!empty($object->lines))
     $ret = $object->printObjectLines($action, $mysoc, $soc, $lineid, 0, $hookmanager);
 
 // Form to add new line
-if ($object->statut == 0 && $user->rights->propal->creer) {
+if ($object->Status == "DRAFT" && $user->rights->propal->creer) {
     if ($action != 'editline') {
         $var = true;
 
@@ -1437,9 +1436,8 @@ if ($action == 'statut') {
     $form_close.= '<tr><td width="150"  align="left">' . $langs->trans("CloseAs") . '</td><td align="left">';
     $form_close.= '<input type="hidden" name="action" value="setstatut">';
     $form_close.= '<select id="statut" name="statut" class="flat">';
-    $form_close.= '<option value="0">&nbsp;</option>';
-    $form_close.= '<option value="2">' . $object->labelstatut[2] . '</option>';
-    $form_close.= '<option value="3">' . $object->labelstatut[3] . '</option>';
+    $form_close.= '<option value="SIGNED">' . $langs->trans($object->fk_extrafields->fields->Status->values->SIGNED->label) . '</option>';
+    $form_close.= '<option value="NOT_SIGNED">' . $langs->trans($object->fk_extrafields->fields->Status->values->NOT_SIGNED->label) . '</option>';
     $form_close.= '</select>';
     $form_close.= '</td></tr>';
     $form_close.= '<tr><td width="150" align="left">' . $langs->trans('Note') . '</td><td align="left"><textarea cols="70" rows="' . ROWS_3 . '" wrap="soft" name="note">';
@@ -1464,7 +1462,7 @@ if ($action != 'presend') {
 
     if ($action != 'statut' && $action <> 'editline') {
         // Validate
-        if ($object->statut == 0 && $user->rights->propal->valider) {
+        if ($object->Status == "DRAFT" && $user->rights->propal->valider) {
             if (count($object->lines) > 0)
                 print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=validate">' . $langs->trans('Validate') . '</a>';
             else
@@ -1472,18 +1470,18 @@ if ($action != 'presend') {
         }
 
         // Edit
-        if ($object->statut == 1 && $user->rights->propal->creer) {
+        if ($object->Status == "OPENED" && $user->rights->propal->creer) {
             print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=modif">' . $langs->trans('Modify') . '</a>';
         }
 
         // ReOpen
-        if (($object->statut == 2 || $object->statut == 3) && $user->rights->propal->cloturer) {
+        if ((in_array($object->Status, array('SIGNED', 'NOT_SIGNED'))) && $user->rights->propal->cloturer) {
             print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=reopen' . (empty($conf->global->MAIN_JUMP_TAG) ? '' : '#reopen') . '"';
             print '>' . $langs->trans('ReOpen') . '</a>';
         }
 
         // Send
-        if ($object->statut == 1 || $object->statut == 2) {
+        if ($object->Status == "OPENED" || $object->statut == 2) {
             if (empty($conf->global->MAIN_USE_ADVANCED_PERMS) || $user->rights->propal->propal_advance->send) {
                 print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=presend&amp;mode=init">' . $langs->trans('SendByMail') . '</a>';
             }
@@ -1492,14 +1490,14 @@ if ($action != 'presend') {
         }
 
         // Create an order
-        if (!empty($conf->commande->enabled) && $object->statut == 2 && $user->societe_id == 0) {
+        if (!empty($conf->commande->enabled) && $object->Status == "SIGNED" && $user->societe_id == 0) {
             if ($user->rights->commande->creer) {
                 print '<a class="butAction" href="' . DOL_URL_ROOT . '/commande/fiche.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->socid . '">' . $langs->trans("AddOrder") . '</a>';
             }
         }
 
         // Create an invoice and classify billed
-        if ($object->statut == 2 && $user->societe_id == 0) {
+        if ($object->Status == "SIGNED" && $user->societe_id == 0) {
             if (!empty($conf->facture->enabled) && $user->rights->facture->creer) {
                 print '<a class="butAction" href="' . DOL_URL_ROOT . '/compta/facture.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->socid . '">' . $langs->trans("AddBill") . '</a>';
             }
@@ -1511,7 +1509,7 @@ if ($action != 'presend') {
         }
 
         // Close
-        if ($object->statut == 1 && $user->rights->propal->cloturer) {
+        if ($object->Status == "OPENED" && $user->rights->propal->cloturer) {
             print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=statut' . (empty($conf->global->MAIN_JUMP_TAG) ? '' : '#close') . '"';
             print '>' . $langs->trans('Close') . '</a>';
         }

@@ -592,9 +592,7 @@ class Propal extends nosqlDocument {
             dol_syslog(get_class($this) . "::create " . $this->error, LOG_ERR);
             return -3;
         }
-        $this->client = new stdclass();
-        $this->client->id = $soc->id;
-        $this->client->name = $soc->name;
+        $this->client = $soc;
 
         if (empty($this->date)) {
             $this->error = "Date of proposal is required";
@@ -1097,41 +1095,45 @@ class Propal extends nosqlDocument {
         $now = dol_now();
 
         if ($user->rights->propal->valider) {
-            $this->db->begin();
-
-            $sql = "UPDATE " . MAIN_DB_PREFIX . "propal";
-            $sql.= " SET fk_statut = 1, date_valid='" . $this->db->idate($now) . "', fk_user_valid=" . $user->id;
-            $sql.= " WHERE rowid = " . $this->id . " AND fk_statut = 0";
-
-            dol_syslog(get_class($this) . '::valid sql=' . $sql);
-            if ($this->db->query($sql)) {
-                if (!$notrigger) {
-                    // Appel des triggers
-                    include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
-                    $interface = new Interfaces($this->db);
-                    $result = $interface->run_triggers('PROPAL_VALIDATE', $this, $user, $langs, $conf);
-                    if ($result < 0) {
-                        $error++;
-                        $this->errors = $interface->errors;
-                    }
-                    // Fin appel triggers
-                }
-
-                if (!$error) {
-                    $this->brouillon = 0;
-                    $this->statut = 1;
-                    $this->user_valid_id = $user->id;
-                    $this->datev = $now;
-                    $this->db->commit();
-                    return 1;
-                } else {
-                    $this->db->rollback();
-                    return -2;
-                }
-            } else {
-                $this->db->rollback();
-                return -1;
-            }
+            $this->Status = 'OPENED';
+            $this->user_valid_login = $user->login;
+            $this->datev = $now;
+            $this->record();
+            return 1;
+//            $this->db->begin();
+//
+//            $sql = "UPDATE " . MAIN_DB_PREFIX . "propal";
+//            $sql.= " SET fk_statut = 1, date_valid='" . $this->db->idate($now) . "', fk_user_valid=" . $user->id;
+//            $sql.= " WHERE rowid = " . $this->id . " AND fk_statut = 0";
+//
+//            dol_syslog(get_class($this) . '::valid sql=' . $sql);
+//            if ($this->db->query($sql)) {
+//                if (!$notrigger) {
+//                    // Appel des triggers
+//                    include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
+//                    $interface = new Interfaces($this->db);
+//                    $result = $interface->run_triggers('PROPAL_VALIDATE', $this, $user, $langs, $conf);
+//                    if ($result < 0) {
+//                        $error++;
+//                        $this->errors = $interface->errors;
+//                    }
+//                    // Fin appel triggers
+//                }
+//
+//                if (!$error) {
+//                    $this->brouillon = 0;
+//                    $this->statut = 1;
+//                    $this->user_valid_id = $user->id;
+//                    $this->datev = $now;
+//                    $this->db->commit();
+//                    return 1;
+//                } else {
+//                    $this->db->rollback();
+//                    return -2;
+//                }
+        } else {
+            $this->db->rollback();
+            return -1;
         }
     }
 
@@ -1393,30 +1395,18 @@ class Propal extends nosqlDocument {
      */
     function cloture($user, $statut, $note) {
         global $langs, $conf;
-
-        $this->statut = $statut;
+        
         $error = 0;
         $now = dol_now();
-
-        $this->db->begin();
-
-        $sql = "UPDATE " . MAIN_DB_PREFIX . "propal";
-        $sql.= " SET fk_statut = " . $statut . ", note = '" . $this->db->escape($note) . "', date_cloture=" . $this->db->idate($now) . ", fk_user_cloture=" . $user->id;
-        $sql.= " WHERE rowid = " . $this->id;
-
-        $resql = $this->db->query($sql);
-        if ($resql) {
-            if ($statut == 2) {
-                // Classe la societe rattachee comme client
-                $soc = new Societe($this->db);
+        
+        $this->Status = $statut;
+        $this->note = $note;
+        $this->record();
+        
+        if ($this->Status == "SIGNED") {
+             $soc = new Societe($this->db);
                 $soc->id = $this->socid;
                 $result = $soc->set_as_client();
-
-                if ($result < 0) {
-                    $this->error = $this->db->error();
-                    $this->db->rollback();
-                    return -2;
-                }
 
                 // Appel des triggers
                 include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
@@ -1426,9 +1416,8 @@ class Propal extends nosqlDocument {
                     $error++;
                     $this->errors = $interface->errors;
                 }
-                // Fin appel triggers
-            } else {
-                // Appel des triggers
+        } else {
+            // Appel des triggers
                 include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
                 $interface = new Interfaces($this->db);
                 $result = $interface->run_triggers('PROPAL_CLOSE_REFUSED', $this, $user, $langs, $conf);
@@ -1436,16 +1425,56 @@ class Propal extends nosqlDocument {
                     $error++;
                     $this->errors = $interface->errors;
                 }
-                // Fin appel triggers
-            }
-
-            $this->db->commit();
-            return 1;
-        } else {
-            $this->error = $this->db->error();
-            $this->db->rollback();
-            return -1;
         }
+
+//        $this->db->begin();
+//
+//        $sql = "UPDATE " . MAIN_DB_PREFIX . "propal";
+//        $sql.= " SET fk_statut = " . $statut . ", note = '" . $this->db->escape($note) . "', date_cloture=" . $this->db->idate($now) . ", fk_user_cloture=" . $user->id;
+//        $sql.= " WHERE rowid = " . $this->id;
+//
+//        $resql = $this->db->query($sql);
+//        if ($resql) {
+//            if ($statut == 2) {
+//                // Classe la societe rattachee comme client
+//                $soc = new Societe($this->db);
+//                $soc->id = $this->socid;
+//                $result = $soc->set_as_client();
+//
+//                if ($result < 0) {
+//                    $this->error = $this->db->error();
+//                    $this->db->rollback();
+//                    return -2;
+//                }
+//
+//                // Appel des triggers
+//                include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
+//                $interface = new Interfaces($this->db);
+//                $result = $interface->run_triggers('PROPAL_CLOSE_SIGNED', $this, $user, $langs, $conf);
+//                if ($result < 0) {
+//                    $error++;
+//                    $this->errors = $interface->errors;
+//                }
+//                // Fin appel triggers
+//            } else {
+//                // Appel des triggers
+//                include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
+//                $interface = new Interfaces($this->db);
+//                $result = $interface->run_triggers('PROPAL_CLOSE_REFUSED', $this, $user, $langs, $conf);
+//                if ($result < 0) {
+//                    $error++;
+//                    $this->errors = $interface->errors;
+//                }
+//                // Fin appel triggers
+//            }
+//
+//            $this->db->commit();
+//            return 1;
+//        } else {
+//            $this->error = $this->db->error();
+//            $this->db->rollback();
+//            return -1;
+//        }
     }
 
     /**
@@ -1481,17 +1510,20 @@ class Propal extends nosqlDocument {
      */
     function set_draft($user) {
         global $conf, $langs;
+        $this->Status = "DRAFT";
+        $this->record();
+        return 1;
 
-        $sql = "UPDATE " . MAIN_DB_PREFIX . "propal SET fk_statut = 0";
-        $sql.= " WHERE rowid = " . $this->id;
-
-        if ($this->db->query($sql)) {
-            $this->statut = 0;
-            $this->brouillon = 1;
-            return 1;
-        } else {
-            return -1;
-        }
+//        $sql = "UPDATE " . MAIN_DB_PREFIX . "propal SET fk_statut = 0";
+//        $sql.= " WHERE rowid = " . $this->id;
+//
+//        if ($this->db->query($sql)) {
+//            $this->statut = 0;
+//            $this->brouillon = 1;
+//            return 1;
+//        } else {
+//            return -1;
+//        }
     }
 
     /**
@@ -2355,6 +2387,12 @@ class Propal extends nosqlDocument {
      */
     function setDocModel($user, $modelpdf) {
         $this->modelpdf = $modelpdf;
+        $this->record();
+        return 1;
+    }
+    
+    function setStatut($status) {
+        $this->Status = $status;
         $this->record();
         return 1;
     }
