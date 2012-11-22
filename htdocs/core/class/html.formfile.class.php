@@ -254,7 +254,7 @@ class FormFile
                 if (is_array($genallowed)) $modellist=$genallowed;
                 else
                 {
-                    include_once DOL_DOCUMENT_ROOT.'/core/modules/commande/modules_commande.php';
+                    include_once DOL_DOCUMENT_ROOT.'/commande/core/modules/commande/modules_commande.php';
                     $modellist=ModelePDFCommandes::liste_modeles($this->db);
                 }
             }

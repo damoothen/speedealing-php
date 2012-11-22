@@ -1041,10 +1041,9 @@ class Commande extends nosqlDocument
         // Check parameters
         if ($type < 0) return -1;
 
-        if ($this->statut == 0)
+        if ($this->Status == "DRAFT")
         {
-            $this->db->begin();
-
+            
             // Calcul du total TTC et de la TVA pour la ligne a partir de
             // qty, pu, remise_percent et txtva
             // TRES IMPORTANT: C'est au moment de l'insertion ligne qu'on doit stocker
@@ -1079,7 +1078,7 @@ class Commande extends nosqlDocument
 
             $this->line->fk_commande=$commandeid;
             $this->line->label=$label;
-            $this->line->desc=$desc;
+            $this->line->description=$desc;
             $this->line->qty=$qty;
             $this->line->tva_tx=$txtva;
             $this->line->localtax1_tx=$txlocaltax1;
@@ -1102,41 +1101,44 @@ class Commande extends nosqlDocument
             $this->line->date_start=$date_start;
             $this->line->date_end=$date_end;
 
-			// infos marge
-			$this->line->fk_fournprice = $fk_fournprice;
-			$this->line->pa_ht = $pa_ht;
+            // infos marge
+            $this->line->fk_fournprice = $fk_fournprice;
+            $this->line->pa_ht = $pa_ht;
 
             // TODO Ne plus utiliser
             $this->line->price=$price;
             $this->line->remise=$remise;
 
             $result=$this->line->insert();
-            if ($result > 0)
-            {
-                // Reorder if child line
-                if (! empty($fk_parent_line)) $this->line_order(true,'DESC');
-
-                // Mise a jour informations denormalisees au niveau de la commande meme
-                $this->id=$commandeid;	// TODO A virer
-                $result=$this->update_price(1);
-                if ($result > 0)
-                {
-                    $this->db->commit();
-                    return $this->line->rowid;
-                }
-                else
-                {
-                    $this->db->rollback();
-                    return -1;
-                }
+            if ($result > 0) {
+                $this->update_price();
             }
-            else
-            {
-                $this->error=$this->line->error;
-                dol_syslog(get_class($this)."::addline error=".$this->error, LOG_ERR);
-                $this->db->rollback();
-                return -2;
-            }
+//            if ($result > 0)
+//            {
+//                // Reorder if child line
+//                if (! empty($fk_parent_line)) $this->line_order(true,'DESC');
+//
+//                // Mise a jour informations denormalisees au niveau de la commande meme
+//                $this->id=$commandeid;	// TODO A virer
+//                $result=$this->update_price(1);
+//                if ($result > 0)
+//                {
+//                    $this->db->commit();
+//                    return $this->line->rowid;
+//                }
+//                else
+//                {
+//                    $this->db->rollback();
+//                    return -1;
+//                }
+//            }
+//            else
+//            {
+//                $this->error=$this->line->error;
+//                dol_syslog(get_class($this)."::addline error=".$this->error, LOG_ERR);
+//                $this->db->rollback();
+//                return -2;
+//            }
         }
     }
 
@@ -1232,6 +1234,7 @@ class Commande extends nosqlDocument
     function fetch($id, $ref='', $ref_ext='', $ref_int='')
     {
         global $conf;
+        return parent::fetch($id);
 
         // Check parameters
         if (empty($id) && empty($ref) && empty($ref_ext) && empty($ref_int)) return -1;
@@ -1659,71 +1662,87 @@ class Commande extends nosqlDocument
     function deleteline($lineid)
     {
         global $user;
+        if ($this->Status == "DRAFT") {
+            $line = new OrderLine($this->db);
 
-        if ($this->statut == 0)
-        {
-            $this->db->begin();
+            // For triggers
+            $line->fetch($lineid);
 
-            $sql = "SELECT fk_product, qty";
-            $sql.= " FROM ".MAIN_DB_PREFIX."commandedet";
-            $sql.= " WHERE rowid = ".$lineid;
+            if ($line->delete() > 0) {
+                $this->update_price(1);
 
-            $result = $this->db->query($sql);
-            if ($result)
-            {
-                $obj = $this->db->fetch_object($result);
-
-                if ($obj)
-                {
-                    $product = new Product($this->db);
-                    $product->id = $obj->fk_product;
-
-                    // Delete line
-                    $line = new OrderLine($this->db);
-
-                    // For triggers
-                    $line->fetch($lineid);
-
-                    if ($line->delete() > 0)
-                    {
-                        $result=$this->update_price(1);
-
-                        if ($result > 0)
-                        {
-                            $this->db->commit();
-                            return 1;
-                        }
-                        else
-                        {
-                            $this->db->rollback();
-                            $this->error=$this->db->lasterror();
-                            return -1;
-                        }
-                    }
-                    else
-                    {
-                        $this->db->rollback();
-                        $this->error=$this->db->lasterror();
-                        return -1;
-                    }
-                }
-                else
-                {
-                    $this->db->rollback();
-                    return 0;
-                }
-            }
-            else
-            {
-                $this->db->rollback();
-                $this->error=$this->db->lasterror();
+                return 1;
+            } else {
                 return -1;
             }
+        } else {
+            return -2;
         }
-        else
-        {
-            return -1;
-        }
+
+//        if ($this->statut == 0)
+//        {
+//            $this->db->begin();
+//
+//            $sql = "SELECT fk_product, qty";
+//            $sql.= " FROM ".MAIN_DB_PREFIX."commandedet";
+//            $sql.= " WHERE rowid = ".$lineid;
+//
+//            $result = $this->db->query($sql);
+//            if ($result)
+//            {
+//                $obj = $this->db->fetch_object($result);
+//
+//                if ($obj)
+//                {
+//                    $product = new Product($this->db);
+//                    $product->id = $obj->fk_product;
+//
+//                    // Delete line
+//                    $line = new OrderLine($this->db);
+//
+//                    // For triggers
+//                    $line->fetch($lineid);
+//
+//                    if ($line->delete() > 0)
+//                    {
+//                        $result=$this->update_price(1);
+//
+//                        if ($result > 0)
+//                        {
+//                            $this->db->commit();
+//                            return 1;
+//                        }
+//                        else
+//                        {
+//                            $this->db->rollback();
+//                            $this->error=$this->db->lasterror();
+//                            return -1;
+//                        }
+//                    }
+//                    else
+//                    {
+//                        $this->db->rollback();
+//                        $this->error=$this->db->lasterror();
+//                        return -1;
+//                    }
+//                }
+//                else
+//                {
+//                    $this->db->rollback();
+//                    return 0;
+//                }
+//            }
+//            else
+//            {
+//                $this->db->rollback();
+//                $this->error=$this->db->lasterror();
+//                return -1;
+//            }
+//        }
+//        else
+//        {
+//            return -1;
+//        }
     }
 
     /**
@@ -2164,10 +2183,8 @@ class Commande extends nosqlDocument
         dol_syslog(get_class($this)."::updateline $rowid, $desc, $pu, $qty, $remise_percent, $txtva, $txlocaltax1, $txlocaltax2, $price_base_type, $info_bits, $date_start, $date_end, $type");
         include_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
 
-        if (! empty($this->brouillon))
+        if ($this->Status == "DRAFT")
         {
-            $this->db->begin();
-
             // Clean parameters
             if (empty($qty)) $qty=0;
             if (empty($info_bits)) $info_bits=0;
@@ -2207,6 +2224,7 @@ class Commande extends nosqlDocument
 
             // Update line
             $this->line=new OrderLine($this->db);
+            $this->line->fetch($rowid);
 
             // Stock previous line records
             $staticline=new OrderLine($this->db);
@@ -2220,9 +2238,9 @@ class Commande extends nosqlDocument
             	$this->line->rang = $rangmax + 1;
             }
 
-            $this->line->rowid=$rowid;
+            $this->line->id=$rowid;
             $this->line->label=$label;
-            $this->line->desc=$desc;
+            $this->line->description=$desc;
             $this->line->qty=$qty;
             $this->line->tva_tx=$txtva;
             $this->line->localtax1_tx=$txlocaltax1;
@@ -2242,9 +2260,9 @@ class Commande extends nosqlDocument
             $this->line->fk_parent_line=$fk_parent_line;
             $this->line->skip_update_total=$skip_update_total;
 
-			// infos marge
-			$this->line->fk_fournprice = $fk_fournprice;
-			$this->line->pa_ht = $pa_ht;
+            // infos marge
+            $this->line->fk_fournprice = $fk_fournprice;
+            $this->line->pa_ht = $pa_ht;
 
             // TODO deprecated
             $this->line->price=$price;
@@ -2254,19 +2272,17 @@ class Commande extends nosqlDocument
             if ($result > 0)
             {
             	// Reorder if child line
-            	if (! empty($fk_parent_line)) $this->line_order(true,'DESC');
+//            	if (! empty($fk_parent_line)) $this->line_order(true,'DESC');
 
                 // Mise a jour info denormalisees
                 $this->update_price(1);
 
-                $this->db->commit();
                 return $result;
             }
             else
             {
                 $this->error=$this->db->lasterror();
-        		$this->errors=array($this->db->lasterror());
-                $this->db->rollback();
+                $this->errors=array($this->db->lasterror());
                 dol_syslog(get_class($this)."::updateline Error=".$this->error, LOG_ERR);
                 return -1;
             }
@@ -2742,73 +2758,46 @@ class Commande extends nosqlDocument
      */
     function getLinesArray()
     {
-        $lines = array();
-
-        $sql = 'SELECT l.rowid, l.fk_product, l.product_type, l.label as custom_label, l.description, l.price, l.qty, l.tva_tx, ';
-        $sql.= ' l.fk_remise_except, l.remise_percent, l.subprice, l.info_bits, l.rang, l.special_code, l.fk_parent_line,';
-        $sql.= ' l.total_ht, l.total_tva, l.total_ttc, l.fk_product_fournisseur_price as fk_fournprice, l.buy_price_ht as pa_ht, l.localtax1_tx, l.localtax2_tx,';
-        $sql.= ' l.date_start, l.date_end,';
-        $sql.= ' p.label as product_label, p.ref, p.fk_product_type, p.rowid as prodid, ';
-        $sql.= ' p.description as product_desc, p.stock as stock_reel';
-        $sql.= ' FROM '.MAIN_DB_PREFIX.'commandedet as l';
-        $sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'product as p ON l.fk_product=p.rowid';
-        $sql.= ' WHERE l.fk_commande = '.$this->id;
-        $sql.= ' ORDER BY l.rang ASC, l.rowid';
-
-        $resql = $this->db->query($sql);
-        if ($resql)
-        {
-            $num = $this->db->num_rows($resql);
-            $i = 0;
-
-            while ($i < $num)
-            {
-                $obj = $this->db->fetch_object($resql);
-
-                $this->lines[$i]->id				= $obj->rowid;
-                $this->lines[$i]->label 			= $obj->custom_label;
-                $this->lines[$i]->description 		= $obj->description;
-                $this->lines[$i]->fk_product		= $obj->fk_product;
-                $this->lines[$i]->ref				= $obj->ref;
-                $this->lines[$i]->product_label		= $obj->product_label;
-                $this->lines[$i]->product_desc		= $obj->product_desc;
-                $this->lines[$i]->fk_product_type	= $obj->fk_product_type;
-                $this->lines[$i]->product_type		= $obj->product_type;
-                $this->lines[$i]->qty				= $obj->qty;
-                $this->lines[$i]->subprice			= $obj->subprice;
-                $this->lines[$i]->fk_remise_except 	= $obj->fk_remise_except;
-                $this->lines[$i]->remise_percent	= $obj->remise_percent;
-                $this->lines[$i]->tva_tx			= $obj->tva_tx;
-                $this->lines[$i]->info_bits			= $obj->info_bits;
-                $this->lines[$i]->total_ht			= $obj->total_ht;
-                $this->lines[$i]->total_tva			= $obj->total_tva;
-                $this->lines[$i]->total_ttc			= $obj->total_ttc;
-                $this->lines[$i]->fk_parent_line	= $obj->fk_parent_line;
-                $this->lines[$i]->special_code		= $obj->special_code;
-				$this->lines[$i]->stock				= $obj->stock_reel;
-                $this->lines[$i]->rang				= $obj->rang;
-                $this->lines[$i]->date_start		= $this->db->jdate($obj->date_start);
-                $this->lines[$i]->date_end			= $this->db->jdate($obj->date_end);
-				$this->lines[$i]->fk_fournprice		= $obj->fk_fournprice;
-				$marginInfos						= getMarginInfos($obj->subprice, $obj->remise_percent, $obj->tva_tx, $obj->localtax1_tx, $obj->localtax2_tx, $this->lines[$i]->fk_fournprice, $obj->pa_ht);
-				$this->lines[$i]->pa_ht				= $marginInfos[0];
-				$this->lines[$i]->marge_tx			= $marginInfos[1];
-				$this->lines[$i]->marque_tx			= $marginInfos[2];
-
-                $i++;
-            }
-
-            $this->db->free($resql);
-
-            return 1;
+       $this->lines = array();
+        $result = $this->getView("linesPerCommande", array("key" => $this->id));
+        foreach ($result->rows as $res) {
+            $l = new OrderLine($db);
+            $l->fetch($res->value->_id);
+            $this->lines[] = $l;
         }
-        else
-        {
-            $this->error=$this->db->error();
-            dol_syslog("Error sql=$sql, error=".$this->error,LOG_ERR);
-            return -1;
-        }
+        return 1;
     }
+    
+    public function getExtraFieldLabel($field) {
+        global $langs;
+        return $langs->trans($this->fk_extrafields->fields->{$field}->values->{$this->$field}->label);
+    }
+    
+    function update_price($exclspec = 0, $roundingadjust = -1, $nodatabaseupdate = 0) {
+
+        include_once DOL_DOCUMENT_ROOT . '/core/lib/price.lib.php';
+
+        $this->total_ht = 0;
+        $this->total_localtax1 = 0;
+        $this->total_localtax2 = 0;
+        $this->total_tva = 0;
+        $this->total_ttc = 0;
+
+        $this->getLinesArray();
+
+        foreach ($this->lines as $line) {
+            $this->total_ht += $line->total_ht;
+            $this->total_localtax1 += $line->total_localtax1;
+            $this->total_localtax2 += $line->totaltaxt1;
+            $this->total_tva += $line->total_tva;
+            $this->total_ttc += $line->total_ttc;
+        }
+
+        $this->record();
+
+        return 1;
+    }
+
 
 }
 
@@ -2817,7 +2806,7 @@ class Commande extends nosqlDocument
  *  \class      OrderLine
  *  \brief      Classe de gestion des lignes de commande
  */
-class OrderLine
+class OrderLine extends nosqlDocument
 {
     var $db;
     var $error;
@@ -2829,7 +2818,7 @@ class OrderLine
     var $fk_parent_line;
     var $fk_facture;
     var $label;
-    var $desc;          	// Description ligne
+    var $description;          	// Description ligne
     var $fk_product;		// Id produit predefini
     var $product_type = 0;	// Type 0 = product, 1 = Service
 
@@ -2880,7 +2869,7 @@ class OrderLine
      */
     function __construct($db)
     {
-        $this->db= $db;
+        parent::__construct($db);
     }
 
     /**
@@ -2891,63 +2880,64 @@ class OrderLine
      */
     function fetch($rowid)
     {
-        $sql = 'SELECT cd.rowid, cd.fk_commande, cd.fk_parent_line, cd.fk_product, cd.product_type, cd.label as custom_label, cd.description, cd.price, cd.qty, cd.tva_tx, cd.localtax1_tx, cd.localtax2_tx,';
-        $sql.= ' cd.remise, cd.remise_percent, cd.fk_remise_except, cd.subprice,';
-        $sql.= ' cd.info_bits, cd.total_ht, cd.total_tva, cd.total_localtax1, cd.total_localtax2, cd.total_ttc, cd.fk_product_fournisseur_price as fk_fournprice, cd.buy_price_ht as pa_ht, cd.rang, cd.special_code,';
-        $sql.= ' p.ref as product_ref, p.label as product_libelle, p.description as product_desc,';
-        $sql.= ' cd.date_start, cd.date_end';
-        $sql.= ' FROM '.MAIN_DB_PREFIX.'commandedet as cd';
-        $sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'product as p ON cd.fk_product = p.rowid';
-        $sql.= ' WHERE cd.rowid = '.$rowid;
-        $result = $this->db->query($sql);
-        if ($result)
-        {
-            $objp = $this->db->fetch_object($result);
-            $this->rowid            = $objp->rowid;
-            $this->fk_commande      = $objp->fk_commande;
-            $this->fk_parent_line   = $objp->fk_parent_line;
-            $this->label            = $objp->custom_label;
-            $this->desc             = $objp->description;
-            $this->qty              = $objp->qty;
-            $this->price            = $objp->price;
-            $this->subprice         = $objp->subprice;
-            $this->tva_tx           = $objp->tva_tx;
-            $this->localtax1_tx		= $objp->localtax1_tx;
-            $this->localtax2_tx		= $objp->localtax2_tx;
-            $this->remise           = $objp->remise;
-            $this->remise_percent   = $objp->remise_percent;
-            $this->fk_remise_except = $objp->fk_remise_except;
-            $this->fk_product       = $objp->fk_product;
-            $this->product_type     = $objp->product_type;
-            $this->info_bits        = $objp->info_bits;
-            $this->total_ht         = $objp->total_ht;
-            $this->total_tva        = $objp->total_tva;
-            $this->total_localtax1  = $objp->total_localtax1;
-            $this->total_localtax2  = $objp->total_localtax2;
-            $this->total_ttc        = $objp->total_ttc;
-			$this->fk_fournprice	= $objp->fk_fournprice;
-			$marginInfos			= getMarginInfos($objp->subprice, $objp->remise_percent, $objp->tva_tx, $objp->localtax1_tx, $objp->localtax2_tx, $this->fk_fournprice, $objp->pa_ht);
-			$this->pa_ht			= $marginInfos[0];
-			$this->marge_tx			= $marginInfos[1];
-			$this->marque_tx		= $marginInfos[2];
-            $this->special_code		= $objp->special_code;
-            $this->rang             = $objp->rang;
-
-            $this->ref				= $objp->product_ref;      // deprecated
-            $this->product_ref		= $objp->product_ref;
-            $this->libelle			= $objp->product_libelle;  // deprecated
-            $this->product_label	= $objp->product_libelle;
-            $this->product_desc     = $objp->product_desc;
-
-            $this->date_start       = $this->db->jdate($objp->date_start);
-            $this->date_end         = $this->db->jdate($objp->date_end);
-
-            $this->db->free($result);
-        }
-        else
-        {
-            dol_print_error($this->db);
-        }
+        return parent::fetch($rowid);
+//        $sql = 'SELECT cd.rowid, cd.fk_commande, cd.fk_parent_line, cd.fk_product, cd.product_type, cd.label as custom_label, cd.description, cd.price, cd.qty, cd.tva_tx, cd.localtax1_tx, cd.localtax2_tx,';
+//        $sql.= ' cd.remise, cd.remise_percent, cd.fk_remise_except, cd.subprice,';
+//        $sql.= ' cd.info_bits, cd.total_ht, cd.total_tva, cd.total_localtax1, cd.total_localtax2, cd.total_ttc, cd.fk_product_fournisseur_price as fk_fournprice, cd.buy_price_ht as pa_ht, cd.rang, cd.special_code,';
+//        $sql.= ' p.ref as product_ref, p.label as product_libelle, p.description as product_desc,';
+//        $sql.= ' cd.date_start, cd.date_end';
+//        $sql.= ' FROM '.MAIN_DB_PREFIX.'commandedet as cd';
+//        $sql.= ' LEFT JOIN '.MAIN_DB_PREFIX.'product as p ON cd.fk_product = p.rowid';
+//        $sql.= ' WHERE cd.rowid = '.$rowid;
+//        $result = $this->db->query($sql);
+//        if ($result)
+//        {
+//            $objp = $this->db->fetch_object($result);
+//            $this->rowid            = $objp->rowid;
+//            $this->fk_commande      = $objp->fk_commande;
+//            $this->fk_parent_line   = $objp->fk_parent_line;
+//            $this->label            = $objp->custom_label;
+//            $this->description             = $objp->description;
+//            $this->qty              = $objp->qty;
+//            $this->price            = $objp->price;
+//            $this->subprice         = $objp->subprice;
+//            $this->tva_tx           = $objp->tva_tx;
+//            $this->localtax1_tx		= $objp->localtax1_tx;
+//            $this->localtax2_tx		= $objp->localtax2_tx;
+//            $this->remise           = $objp->remise;
+//            $this->remise_percent   = $objp->remise_percent;
+//            $this->fk_remise_except = $objp->fk_remise_except;
+//            $this->fk_product       = $objp->fk_product;
+//            $this->product_type     = $objp->product_type;
+//            $this->info_bits        = $objp->info_bits;
+//            $this->total_ht         = $objp->total_ht;
+//            $this->total_tva        = $objp->total_tva;
+//            $this->total_localtax1  = $objp->total_localtax1;
+//            $this->total_localtax2  = $objp->total_localtax2;
+//            $this->total_ttc        = $objp->total_ttc;
+//			$this->fk_fournprice	= $objp->fk_fournprice;
+//			$marginInfos			= getMarginInfos($objp->subprice, $objp->remise_percent, $objp->tva_tx, $objp->localtax1_tx, $objp->localtax2_tx, $this->fk_fournprice, $objp->pa_ht);
+//			$this->pa_ht			= $marginInfos[0];
+//			$this->marge_tx			= $marginInfos[1];
+//			$this->marque_tx		= $marginInfos[2];
+//            $this->special_code		= $objp->special_code;
+//            $this->rang             = $objp->rang;
+//
+//            $this->ref				= $objp->product_ref;      // deprecated
+//            $this->product_ref		= $objp->product_ref;
+//            $this->libelle			= $objp->product_libelle;  // deprecated
+//            $this->product_label	= $objp->product_libelle;
+//            $this->product_desc     = $objp->product_desc;
+//
+//            $this->date_start       = $this->db->jdate($objp->date_start);
+//            $this->date_end         = $this->db->jdate($objp->date_end);
+//
+//            $this->db->free($result);
+//        }
+//        else
+//        {
+//            dol_print_error($this->db);
+//        }
     }
 
     /**
@@ -2960,13 +2950,14 @@ class OrderLine
         global $conf, $user, $langs;
 
 		$error=0;
-
-        $sql = 'DELETE FROM '.MAIN_DB_PREFIX."commandedet WHERE rowid='".$this->rowid."';";
-
-        dol_syslog("OrderLine::delete sql=".$sql);
-        $resql=$this->db->query($sql);
-        if ($resql)
-        {
+        $this->deleteDoc();
+//
+//        $sql = 'DELETE FROM '.MAIN_DB_PREFIX."commandedet WHERE rowid='".$this->rowid."';";
+//
+//        dol_syslog("OrderLine::delete sql=".$sql);
+//        $resql=$this->db->query($sql);
+//        if ($resql)
+//        {
             // Appel des triggers
             include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
             $interface=new Interfaces($this->db);
@@ -2975,13 +2966,13 @@ class OrderLine
             // Fin appel triggers
 
             return 1;
-        }
-        else
-        {
-            $this->error=$this->db->lasterror();
-            dol_syslog("OrderLine::delete ".$this->error, LOG_ERR);
-            return -1;
-        }
+//        }
+//        else
+//        {
+//            $this->error=$this->db->lasterror();
+//            dol_syslog("OrderLine::delete ".$this->error, LOG_ERR);
+//            return -1;
+//        }
     }
 
     /**
@@ -3021,70 +3012,22 @@ class OrderLine
 
         // Check parameters
         if ($this->product_type < 0) return -1;
+        $this->record();
 
-        $this->db->begin();
-
-        // Insertion dans base de la ligne
-        $sql = 'INSERT INTO '.MAIN_DB_PREFIX.'commandedet';
-        $sql.= ' (fk_commande, fk_parent_line, label, description, qty, tva_tx, localtax1_tx, localtax2_tx,';
-        $sql.= ' fk_product, product_type, remise_percent, subprice, price, remise, fk_remise_except,';
-        $sql.= ' special_code, rang, fk_product_fournisseur_price, buy_price_ht,';
-        $sql.= ' info_bits, total_ht, total_tva, total_localtax1, total_localtax2, total_ttc, date_start, date_end)';
-        $sql.= " VALUES (".$this->fk_commande.",";
-        $sql.= " ".($this->fk_parent_line>0?"'".$this->fk_parent_line."'":"null").",";
-        $sql.= " ".(! empty($this->label)?"'".$this->db->escape($this->label)."'":"null").",";
-        $sql.= " '".$this->db->escape($this->desc)."',";
-        $sql.= " '".price2num($this->qty)."',";
-        $sql.= " '".price2num($this->tva_tx)."',";
-        $sql.= " '".price2num($this->localtax1_tx)."',";
-        $sql.= " '".price2num($this->localtax2_tx)."',";
-        $sql.= ' '.(! empty($this->fk_product)?$this->fk_product:"null").',';
-        $sql.= " '".$this->product_type."',";
-        $sql.= " '".price2num($this->remise_percent)."',";
-        $sql.= " ".($this->subprice!=''?"'".price2num($this->subprice)."'":"null").",";
-        $sql.= " ".($this->price!=''?"'".price2num($this->price)."'":"null").",";
-        $sql.= " '".price2num($this->remise)."',";
-        $sql.= ' '.(! empty($this->fk_remise_except)?$this->fk_remise_except:"null").',';
-        $sql.= ' '.$this->special_code.',';
-        $sql.= ' '.$this->rang.',';
-		$sql.= ' '.(! empty($this->fk_fournprice)?$this->fk_fournprice:"null").',';
-		$sql.= ' '.price2num($this->pa_ht).',';
-        $sql.= " '".$this->info_bits."',";
-        $sql.= " '".price2num($this->total_ht)."',";
-        $sql.= " '".price2num($this->total_tva)."',";
-        $sql.= " '".price2num($this->total_localtax1)."',";
-        $sql.= " '".price2num($this->total_localtax2)."',";
-        $sql.= " '".price2num($this->total_ttc)."',";
-        $sql.= " ".(! empty($this->date_start)?"'".$this->db->idate($this->date_start)."'":"null").',';
-        $sql.= " ".(! empty($this->date_end)?"'".$this->db->idate($this->date_end)."'":"null");
-        $sql.= ')';
-
-        dol_syslog(get_class($this)."::insert sql=".$sql, LOG_DEBUG);
-        $resql=$this->db->query($sql);
-        if ($resql)
+        dol_syslog(get_class($this)."::insert", LOG_DEBUG);
+        
+        if (! $notrigger)
         {
-            $this->rowid=$this->db->last_insert_id(MAIN_DB_PREFIX.'commandedet');
-
-            if (! $notrigger)
-            {
-                // Appel des triggers
-                include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
-                $interface=new Interfaces($this->db);
-                $result=$interface->run_triggers('LINEORDER_INSERT',$this,$user,$langs,$conf);
-                if ($result < 0) { $error++; $this->errors=$interface->errors; }
-                // Fin appel triggers
-            }
-
-            $this->db->commit();
-            return 1;
+            // Appel des triggers
+            include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
+            $interface=new Interfaces($this->db);
+            $result=$interface->run_triggers('LINEORDER_INSERT',$this,$user,$langs,$conf);
+            if ($result < 0) { $error++; $this->errors=$interface->errors; }
+            // Fin appel triggers
         }
-        else
-        {
-            $this->error=$this->db->error();
-            dol_syslog(get_class($this)."::insert Error ".$this->error, LOG_ERR);
-            $this->db->rollback();
-            return -2;
-        }
+        
+        return 1;
+
     }
 
     /**
@@ -3121,44 +3064,45 @@ class OrderLine
 			if ($this->subprice > 0 && (isset($conf->global->ForceBuyingPriceIfNull) && $conf->global->ForceBuyingPriceIfNull == 1))
 				$this->pa_ht = $this->subprice * (1 - $this->remise_percent / 100);
 		}
+            $this->record();
 
-		$this->db->begin();
-
-		// Mise a jour ligne en base
-		$sql = "UPDATE ".MAIN_DB_PREFIX."commandedet SET";
-		$sql.= " description='".$this->db->escape($this->desc)."'";
-		$sql.= " , label=".(! empty($this->label)?"'".$this->db->escape($this->label)."'":"null");
-		$sql.= " , tva_tx=".price2num($this->tva_tx);
-		$sql.= " , localtax1_tx=".price2num($this->localtax1_tx);
-		$sql.= " , localtax2_tx=".price2num($this->localtax2_tx);
-		$sql.= " , qty=".price2num($this->qty);
-		$sql.= " , subprice=".price2num($this->subprice)."";
-		$sql.= " , remise_percent=".price2num($this->remise_percent)."";
-		$sql.= " , price=".price2num($this->price)."";					// TODO A virer
-		$sql.= " , remise=".price2num($this->remise)."";				// TODO A virer
-		if (empty($this->skip_update_total))
-		{
-			$sql.= " , total_ht=".price2num($this->total_ht)."";
-			$sql.= " , total_tva=".price2num($this->total_tva)."";
-			$sql.= " , total_ttc=".price2num($this->total_ttc)."";
-			$sql.= " , total_localtax1=".price2num($this->total_localtax1);
-			$sql.= " , total_localtax2=".price2num($this->total_localtax2);
-		}
-		$sql.= " , fk_product_fournisseur_price=".(! empty($this->fk_fournprice)?$this->fk_fournprice:"null");
-		$sql.= " , buy_price_ht='".price2num($this->pa_ht)."'";
-		$sql.= " , info_bits=".$this->info_bits;
-        $sql.= " , special_code=".$this->special_code;
-		$sql.= " , date_start=".(! empty($this->date_start)?"'".$this->db->idate($this->date_start)."'":"null");
-		$sql.= " , date_end=".(! empty($this->date_end)?"'".$this->db->idate($this->date_end)."'":"null");
-		$sql.= " , product_type=".$this->product_type;
-		$sql.= " , fk_parent_line=".(! empty($this->fk_parent_line)?$this->fk_parent_line:"null");
-		if (! empty($this->rang)) $sql.= ", rang=".$this->rang;
-		$sql.= " WHERE rowid = ".$this->rowid;
-
-		dol_syslog(get_class($this)."::update sql=".$sql, LOG_DEBUG);
-		$resql=$this->db->query($sql);
-		if ($resql)
-		{
+//		$this->db->begin();
+//
+//		// Mise a jour ligne en base
+//		$sql = "UPDATE ".MAIN_DB_PREFIX."commandedet SET";
+//		$sql.= " description='".$this->db->escape($this->desc)."'";
+//		$sql.= " , label=".(! empty($this->label)?"'".$this->db->escape($this->label)."'":"null");
+//		$sql.= " , tva_tx=".price2num($this->tva_tx);
+//		$sql.= " , localtax1_tx=".price2num($this->localtax1_tx);
+//		$sql.= " , localtax2_tx=".price2num($this->localtax2_tx);
+//		$sql.= " , qty=".price2num($this->qty);
+//		$sql.= " , subprice=".price2num($this->subprice)."";
+//		$sql.= " , remise_percent=".price2num($this->remise_percent)."";
+//		$sql.= " , price=".price2num($this->price)."";					// TODO A virer
+//		$sql.= " , remise=".price2num($this->remise)."";				// TODO A virer
+//		if (empty($this->skip_update_total))
+//		{
+//			$sql.= " , total_ht=".price2num($this->total_ht)."";
+//			$sql.= " , total_tva=".price2num($this->total_tva)."";
+//			$sql.= " , total_ttc=".price2num($this->total_ttc)."";
+//			$sql.= " , total_localtax1=".price2num($this->total_localtax1);
+//			$sql.= " , total_localtax2=".price2num($this->total_localtax2);
+//		}
+//		$sql.= " , fk_product_fournisseur_price=".(! empty($this->fk_fournprice)?$this->fk_fournprice:"null");
+//		$sql.= " , buy_price_ht='".price2num($this->pa_ht)."'";
+//		$sql.= " , info_bits=".$this->info_bits;
+//        $sql.= " , special_code=".$this->special_code;
+//		$sql.= " , date_start=".(! empty($this->date_start)?"'".$this->db->idate($this->date_start)."'":"null");
+//		$sql.= " , date_end=".(! empty($this->date_end)?"'".$this->db->idate($this->date_end)."'":"null");
+//		$sql.= " , product_type=".$this->product_type;
+//		$sql.= " , fk_parent_line=".(! empty($this->fk_parent_line)?$this->fk_parent_line:"null");
+//		if (! empty($this->rang)) $sql.= ", rang=".$this->rang;
+//		$sql.= " WHERE rowid = ".$this->rowid;
+//
+//		dol_syslog(get_class($this)."::update sql=".$sql, LOG_DEBUG);
+//		$resql=$this->db->query($sql);
+//		if ($resql)
+//		{
 			if (! $notrigger)
 			{
 				// Appel des triggers
@@ -3169,16 +3113,16 @@ class OrderLine
 				// Fin appel triggers
 			}
 
-			$this->db->commit();
+//			$this->db->commit();
 			return 1;
-		}
-		else
-		{
-			$this->error=$this->db->error();
-			dol_syslog(get_class($this)."::update Error ".$this->error, LOG_ERR);
-			$this->db->rollback();
-			return -2;
-		}
+//		}
+//		else
+//		{
+//			$this->error=$this->db->error();
+//			dol_syslog(get_class($this)."::update Error ".$this->error, LOG_ERR);
+//			$this->db->rollback();
+//			return -2;
+//		}
 	}
 
     /**

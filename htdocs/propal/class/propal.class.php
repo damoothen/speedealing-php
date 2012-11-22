@@ -2336,7 +2336,8 @@ class Propal extends nosqlDocument {
     }
 
     public function getExtraFieldLabel($field) {
-        return $this->fk_extrafields->fields->{$field}->values->{$this->$field}->label;
+        global $langs;
+        return $langs->trans($this->fk_extrafields->fields->{$field}->values->{$this->$field}->label);
     }
 
     /**

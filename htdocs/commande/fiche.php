@@ -1319,12 +1319,11 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 	*/
 
 	llxHeader('',$langs->trans('Order'),'EN:Customers_Orders|FR:Commandes_Clients|ES:Pedidos de clientes');
-
 	$form = new Form($db);
 	$formfile = new FormFile($db);
 	$formorder = new FormOrder($db);
 
-
+    
 	/*********************************************************************
 	 *
 	* Mode creation
@@ -1654,16 +1653,20 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 		/* Mode vue et edition                                                         */
 		/*                                                                             */
 		/* *************************************************************************** */
+            
+        print_fiche_titre($langs->trans('Order'));
+        
 		$now=dol_now();
 
-		if ($object->id > 0)
+        if (!empty($object->id))
 		{
 			dol_htmloutput_mesg($mesg,$mesgs);
 
 			$product_static=new Product($db);
 
-			$soc = new Societe($db);
-			$soc->fetch($object->socid);
+//			$soc = new Societe($db);
+//			$soc->fetch($object->socid);
+                        $soc = $object->client;
 
 			$author = new User($db);
 			$author->fetch($object->user_author_id);
@@ -1823,8 +1826,9 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 			// Ref
 			print '<tr><td width="18%">'.$langs->trans('Ref').'</td>';
 			print '<td colspan="3">';
-			print $form->showrefnav($object, 'ref', $linkback, 1, 'ref', 'ref');
-			print '</td>';
+//			print $form->showrefnav($object, 'ref', $linkback, 1, 'ref', 'ref');
+			print $object->ref;
+                        print '</td>';
 			print '</tr>';
 
 			// Ref commande client
@@ -1854,38 +1858,38 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 
 			// Societe
 			print '<tr><td>'.$langs->trans('Company').'</td>';
-			print '<td colspan="3">'.$soc->getNomUrl(1).'</td>';
+			print '<td colspan="3">'.$object->client->name.'</td>';
 			print '</tr>';
 
 			// Ligne info remises tiers
-			print '<tr><td>'.$langs->trans('Discounts').'</td><td colspan="3">';
-			if ($soc->remise_client) print $langs->trans("CompanyHasRelativeDiscount",$soc->remise_client);
-			else print $langs->trans("CompanyHasNoRelativeDiscount");
-			print '. ';
-			$absolute_discount=$soc->getAvailableDiscounts('','fk_facture_source IS NULL');
-			$absolute_creditnote=$soc->getAvailableDiscounts('','fk_facture_source IS NOT NULL');
-			$absolute_discount=price2num($absolute_discount,'MT');
-			$absolute_creditnote=price2num($absolute_creditnote,'MT');
-			if ($absolute_discount)
-			{
-				if ($object->statut > 0)
-				{
-					print $langs->trans("CompanyHasAbsoluteDiscount",price($absolute_discount),$langs->transnoentities("Currency".$conf->currency));
-				}
-				else
-				{
-					// Remise dispo de type non avoir
-					$filter='fk_facture_source IS NULL';
-					print '<br>';
-					$form->form_remise_dispo($_SERVER["PHP_SELF"].'?id='.$object->id,0,'remise_id',$soc->id,$absolute_discount,$filter);
-				}
-			}
-			if ($absolute_creditnote)
-			{
-				print $langs->trans("CompanyHasCreditNote",price($absolute_creditnote),$langs->transnoentities("Currency".$conf->currency)).'. ';
-			}
-			if (! $absolute_discount && ! $absolute_creditnote) print $langs->trans("CompanyHasNoAbsoluteDiscount").'.';
-			print '</td></tr>';
+//			print '<tr><td>'.$langs->trans('Discounts').'</td><td colspan="3">';
+//			if ($soc->remise_client) print $langs->trans("CompanyHasRelativeDiscount",$soc->remise_client);
+//			else print $langs->trans("CompanyHasNoRelativeDiscount");
+//			print '. ';
+//			$absolute_discount=$soc->getAvailableDiscounts('','fk_facture_source IS NULL');
+//			$absolute_creditnote=$soc->getAvailableDiscounts('','fk_facture_source IS NOT NULL');
+//			$absolute_discount=price2num($absolute_discount,'MT');
+//			$absolute_creditnote=price2num($absolute_creditnote,'MT');
+//			if ($absolute_discount)
+//			{
+//				if ($object->statut > 0)
+//				{
+//					print $langs->trans("CompanyHasAbsoluteDiscount",price($absolute_discount),$langs->transnoentities("Currency".$conf->currency));
+//				}
+//				else
+//				{
+//					// Remise dispo de type non avoir
+//					$filter='fk_facture_source IS NULL';
+//					print '<br>';
+//					$form->form_remise_dispo($_SERVER["PHP_SELF"].'?id='.$object->id,0,'remise_id',$soc->id,$absolute_discount,$filter);
+//				}
+//			}
+//			if ($absolute_creditnote)
+//			{
+//				print $langs->trans("CompanyHasCreditNote",price($absolute_creditnote),$langs->transnoentities("Currency".$conf->currency)).'. ';
+//			}
+//			if (! $absolute_discount && ! $absolute_creditnote) print $langs->trans("CompanyHasNoAbsoluteDiscount").'.';
+//			print '</td></tr>';
 
 			// Date
 			print '<tr><td>';
@@ -1950,7 +1954,8 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 			}
 			else
 			{
-				$form->form_conditions_reglement($_SERVER['PHP_SELF'].'?id='.$object->id,$object->cond_reglement_id,'none',1);
+//				$form->form_conditions_reglement($_SERVER['PHP_SELF'].'?id='.$object->id,$object->cond_reglement_id,'none',1);
+                                print $object->getExtraFieldLabel('cond_reglement_code');
 			}
 			print '</td>';
 
@@ -1970,7 +1975,8 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 			}
 			else
 			{
-				$form->form_modes_reglement($_SERVER['PHP_SELF'].'?id='.$object->id,$object->mode_reglement_id,'none');
+//				$form->form_modes_reglement($_SERVER['PHP_SELF'].'?id='.$object->id,$object->mode_reglement_id,'none');
+                                print $object->getExtraFieldLabel('mode_reglement_code');
 			}
 			print '</td></tr>';
 
@@ -1988,7 +1994,8 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 			}
 			else
 			{
-				$form->form_availability($_SERVER['PHP_SELF'].'?id='.$object->id,$object->availability_id,'none',1);
+//				$form->form_availability($_SERVER['PHP_SELF'].'?id='.$object->id,$object->availability_id,'none',1);
+                                print $object->getExtraFieldLabel('availability_code');
 			}
 			print '</td></tr>';
 
@@ -2006,7 +2013,8 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 			}
 			else
 			{
-				$form->form_demand_reason($_SERVER['PHP_SELF'].'?id='.$object->id,$object->demand_reason_id,'none');
+//				$form->form_demand_reason($_SERVER['PHP_SELF'].'?id='.$object->id,$object->demand_reason_id,'none');
+                                print $object->getExtraFieldLabel('demand_reason_code');
 			}
 			// Removed because using dictionnary is an admin feature, not a user feature. Ther is already the "star" to show info to admin users.
 			// This is to avoid too heavy screens and have an uniform look and feel for all screens.
@@ -2091,7 +2099,7 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 
 			// Statut
 			print '<tr><td>'.$langs->trans('Status').'</td>';
-			print '<td colspan="2">'.$object->getLibStatut(4).'</td>';
+			print '<td colspan="2">'.$object->getExtraFieldLabel('Status').'</td>';
 			print '</tr>';
 
 			print '</table><br>';
@@ -2118,7 +2126,7 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 
 			$numlines = count($object->lines);
 
-			if (! empty($conf->use_javascript_ajax) && $object->statut == 0)
+			if (! empty($conf->use_javascript_ajax) && $object->Status == 'DRAFT')
 			{
 				include DOL_DOCUMENT_ROOT.'/core/tpl/ajaxrow.tpl.php';
 			}
@@ -2307,9 +2315,9 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 				print '</td><td valign="top" width="50%">';
 
 				// List of actions on element
-				include_once DOL_DOCUMENT_ROOT.'/core/class/html.formactions.class.php';
-				$formactions=new FormActions($db);
-				$somethingshown=$formactions->showactions($object,'order',$socid);
+//				include_once DOL_DOCUMENT_ROOT.'/core/class/html.formactions.class.php';
+//				$formactions=new FormActions($db);
+//				$somethingshown=$formactions->showactions($object,'order',$socid);
 
 				print '</td></tr></table>';
 			}
@@ -2396,7 +2404,6 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 			}
 		}
 	}
-
 
 llxFooter();
 $db->close();
