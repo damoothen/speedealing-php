@@ -1,0 +1,72 @@
+{
+   "_id": "extrafields:Commande",
+   "class": "extrafields",
+    "ico": "16-Document.png",
+   "langs": [
+       "propal"
+   ],
+   "fields": {
+       "Status": {
+           "type": "select",
+           "enable": true,
+           "default": "DRAFT",
+           "status": true,
+           "aoColumns": {
+               "sClass": "center",
+               "bSearchable": true,
+               "bVisible": true
+           },
+           "values": {
+               "DRAFT": {
+                   "enable": true,
+                   "label": "PropalStatusDraft",
+                   "cssClass": "grey-gradient"
+               }
+           }
+       },
+       "cond_reglement_code": {
+           "type": "select",
+           "enable": true,
+           "default": "RECEP",
+           "aoColumns": {
+               "sClass": "",
+               "bSearchable": true,
+               "bVisible": true
+           },
+           "dict": "dict:fk_payment_term"
+       },
+       "mode_reglement_code": {
+           "type": "select",
+           "enable": true,
+           "default": "TIP",
+           "aoColumns": {
+               "sClass": "",
+               "bSearchable": true,
+               "bVisible": true
+           },
+           "dict": "dict:fk_paiement"
+       },
+       "availability_code": {
+           "type": "select",
+           "enable": true,
+           "default": "AV_NOW",
+           "aoColumns": {
+               "sClass": "",
+               "bSearchable": true,
+               "bVisible": true
+           },
+           "dict": "dict:fk_availability"
+       },
+       "demand_reason_code": {
+           "type": "select",
+           "enable": true,
+           "default": "SRC_CAMP_EMAIL",
+           "aoColumns": {
+               "sClass": "",
+               "bSearchable": true,
+               "bVisible": true
+           },
+           "dict": "dict:fk_input_reason"
+       }
+   }
+}
