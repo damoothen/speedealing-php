@@ -1222,7 +1222,7 @@ if ($action == 'editavailability') {
 //    $form->form_availability($_SERVER['PHP_SELF'] . '?id=' . $object->id, $object->availability_id, 'availability_id', 1);
 } else {
 //    $form->form_availability($_SERVER['PHP_SELF'] . '?id=' . $object->id, $object->availability_id, 'none', 1);
-    print $object->getExtraFieldLabel('availability_code');
+    print $langs->trans($object->getExtraFieldLabel('availability_code'));
 }
 
 print '</td>';
@@ -1248,7 +1248,7 @@ if ($action == 'editdemandreason') {
 //    $form->form_demand_reason($_SERVER['PHP_SELF'] . '?id=' . $object->id, $object->demand_reason_id, 'demand_reason_id', 1);
 } else {
     //$form->form_demand_reason($_SERVER['PHP_SELF'] . '?id=' . $object->id, $object->demand_reason_id, 'none');
-    print $object->getExtraFieldLabel('demand_reason_code');
+    print $langs->trans($object->getExtraFieldLabel('demand_reason_code'));
 }
 
 print '</td>';
@@ -1274,7 +1274,7 @@ if ($action == 'editmode') {
 //    $form->form_modes_reglement($_SERVER['PHP_SELF'] . '?id=' . $object->id, $object->mode_reglement_id, 'mode_reglement_id');
 } else {
 //    $form->form_modes_reglement($_SERVER['PHP_SELF'] . '?id=' . $object->id, $object->mode_reglement_id, 'none');
-    print $object->fk_extrafields->fields->mode_reglement_code->values->{$object->mode_reglement_code}->label;
+    print $langs->trans($object->fk_extrafields->fields->mode_reglement_code->values->{$object->mode_reglement_code}->label);
 }
 print '</td></tr>';
 
@@ -1362,7 +1362,7 @@ print '<td align="right" nowrap>' . price($object->total_ttc) . '</td>';
 print '<td>' . $langs->trans("Currency" . $conf->currency) . '</td></tr>';
 
 // Statut
-print '<tr><td height="10">' . $langs->trans('Status') . '</td><td align="left" colspan="2">' . $object->getExtraFieldLabel('Status') . '</td></tr>';
+print '<tr><td height="10">' . $langs->trans('Status') . '</td><td align="left" colspan="2">' . $langs->trans($object->getExtraFieldLabel('Status')) . '</td></tr>';
 
 print '</table><br>';
 
