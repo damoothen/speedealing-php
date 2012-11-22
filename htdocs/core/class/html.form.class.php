@@ -141,13 +141,13 @@ class Form {
      * @param	string	$success		Success message
      * @return	string   		      	HTML edit in place
      */
-    private function editInPlace($object, $value, $htmlname, $condition, $inputType = 'textarea', $editvalue = null, $extObject = null, $success = null) {
+    private function editInPlace($object, $value, $htmlname, $condition, $inputType = 'text', $editvalue = null, $extObject = null, $success = null) {
         global $conf;
 
         $out = '';
 
         // Check parameters
-        if ($inputType == 'textarea')
+        if (preg_match('/^text/',$inputType))
             $value = dol_nl2br($value);
         else if (preg_match('/^numeric/', $inputType))
             $value = price($value);
@@ -200,7 +200,7 @@ class Form {
                 if (!empty($tmp[3]))
                     $button_only = true;
             }
-            else if (preg_match('/^textarea/', $inputType)) {
+            else if (preg_match('/^text/', $inputType)) {
                 $tmp = explode(':', $inputType);
                 $inputType = $tmp[0];
                 if (!empty($tmp[1]))

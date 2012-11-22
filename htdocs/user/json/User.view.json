@@ -1,10 +1,10 @@
 {
    "_id": "_design/User",
-   "_rev": "20-459f04a9c3e8cb5c092cfa094c7f3a98",
+   "_rev": "15-190656aca7ab853b4b09b8725746a010",
    "language": "javascript",
    "views": {
        "list": {
-           "map": "function(doc) {\n  if(doc.class && doc.class == \"User\")\n     emit(doc.name, doc);\n}"
+           "map": "function(doc) {\n  if(doc.class && doc.class == \"User\" && doc.Status==\"ENABLE\" && doc._id!=\"user:admin\")\n     emit(doc.name, doc);\n}"
        },
        "group": {
            "map": "function(doc) {\n  if(doc.class && doc.class==\"User\" && doc.group.length > 0) {\n    for(var idx in doc.group) {\n      emit(doc.group[idx], doc);\n    }\n  }\n}"

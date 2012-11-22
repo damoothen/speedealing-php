@@ -894,18 +894,18 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
 
         // Other attributes
-        $parameters = array('colspan' => ' colspan="3"');
+       /* $parameters = array('colspan' => ' colspan="3"');
         $reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action);    // Note that $action and $object may have been modified by hook
         if (empty($reshook)) {
             foreach ($object->fk_extrafields->fields as $key => $aRow) {
                 if ($aRow->optional && $aRow->enable) {
                     $value = (isset($_POST["options_" . $key]) ? $_POST["options_" . $key] : (isset($object->array_options["options_" . $key]) ? $object->array_options["options_" . $key] : ''));
-                    print '<tr><td>' . $aRow->label . '</td><td colspan="3">';
+                    print '<tr><td><strong class="blue">' . $aRow->label . '</strong></td><td colspan="3">';
                     print $object->fk_extrafields->showInputField($key, $value);
                     print '</td></tr>' . "\n";
                 }
             }
-        }
+        }*/
 
         // Ajout du logo
         print '<tr>';
@@ -1282,18 +1282,18 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             }
 
             // Other attributes
-            $parameters = array('colspan' => ' colspan="3"');
+            /*$parameters = array('colspan' => ' colspan="3"');
             $reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action);    // Note that $action and $object may have been modified by hook
             if (empty($reshook)) {
                 foreach ($object->fk_extrafields->fields as $key => $aRow) {
                     if ($aRow->optional && $aRow->enable) {
                         $value = (isset($_POST["options_" . $key]) ? $_POST["options_" . $key] : (isset($object->array_options["options_" . $key]) ? $object->array_options["options_" . $key] : ''));
-                        print '<tr><td>' . $aRow->label . '</td><td colspan="3">';
+                        print '<tr><td><strong class="blue">' . $aRow->label . '</strong></td><td colspan="3">';
                         print $object->fk_extrafields->showInputField($key, $value);
                         print '</td></tr>' . "\n";
                     }
                 }
-            }
+            }*/
 
             // Logo
             print '<tr>';
@@ -1646,8 +1646,8 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         if (empty($reshook)) {
             foreach ($object->fk_extrafields->fields as $key => $aRow) {
                 if ($aRow->optional && $aRow->enable) {
-                    print '<tr><td>' . $aRow->label . '</td><td colspan="3">';
-                    print $object->print_fk_extrafields($key);
+                    print '<tr><td><strong class="blue">' . $form->editfieldkey($aRow->label, $key, $object->$key, $object, $user->rights->societe->creer, $aRow->type) . '</strong></td><td colspan="3">';
+                    print $form->editfieldval($aRow->label, $key, $object->$key, $object, $user->rights->societe->creer, $aRow->type);
                     print '</td></tr>' . "\n";
                 }
             }

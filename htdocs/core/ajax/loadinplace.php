@@ -90,7 +90,7 @@ if (!empty($key) && !empty($class) && !empty($id)) {
                     $params[$idx] = $row;
             }
         try {
-            if(isset($aRow->class)) // Is view is an other class
+            if (isset($aRow->class)) // Is view is an other class
                 $result = $object_tmp->getView($aRow->view, $params);
             else
                 $result = $object->getView($aRow->view, $params);
@@ -120,20 +120,23 @@ if (!empty($key) && !empty($class) && !empty($id)) {
         }
     }
 
-    foreach ($object->fk_extrafields->fields->$key->values as $keys => $aRow) {
-        if ($aRow->enable) {
-            if ($type == "select") {
-                if (isset($aRow->label))
-                    $return[$keys] = $langs->trans($aRow->label);
-                else
-                    $return[$keys] = $langs->trans($keys);
-            } else { //autocomplete
-                echo $keys . ";";
+    // Value for select or autocomplete
+    if (isset($object->fk_extrafields->fields->$key->values)) {
+        foreach ($object->fk_extrafields->fields->$key->values as $keys => $aRow) {
+            if ($aRow->enable) {
+                if ($type == "select") {
+                    if (isset($aRow->label))
+                        $return[$keys] = $langs->trans($aRow->label);
+                    else
+                        $return[$keys] = $langs->trans($keys);
+                } else { //autocomplete
+                    echo $keys . ";";
+                }
             }
         }
     }
 
-    if ($type == "select")
-        echo json_encode($return);
+    //if ($type == "select")
+    echo json_encode($return);
 }
 ?>

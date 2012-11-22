@@ -78,6 +78,42 @@ $(document).ready(function() {
             }
         }
     });
+    
+    $('.editval_text').editable(urlSaveInPlace, {
+        type		: 'text',
+        id		: 'key',
+        width		: 300,
+        tooltip		: tooltipInPlace,
+        placeholder	: placeholderInPlace,
+        cancel		: cancelInPlace,
+        submit		: submitInPlace,
+        indicator	: indicatorInPlace,
+        submitdata	: function(result, settings) {
+            return getParameters(this, 'text');
+        },
+        onreset		: function(result, settings) {
+            getDefault(settings);
+        }
+    });
+    $('.editkey_text').hover(
+        function () {
+            $('#viewval_' + $(this).attr('id')).addClass("viewval_hover");
+        },
+        function () {
+            $('#viewval_' + $(this).attr('id')).removeClass("viewval_hover");
+        }
+        );
+    $('.editkey_text').click(function() {
+        $( '#viewval_' + $(this).attr('id') ).click();
+    });
+    $('.viewval_text.active').click(function() {
+        $('#viewval_' + $(this).attr('id').substr(8)).hide();
+        $('#editval_' + $(this).attr('id').substr(8)).show().click();
+    });
+    $('.editkey_text').click(function() {
+        $('#viewval_' + $(this).attr('id')).hide();
+        $('#editval_' + $(this).attr('id')).show().click();
+    });
 	
     $('.editval_textarea').editable(urlSaveInPlace, {
         type		: 'textarea',
