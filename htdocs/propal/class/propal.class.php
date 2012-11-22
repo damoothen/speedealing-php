@@ -47,7 +47,7 @@ class Propal extends nosqlDocument {
 //    public $fk_element = 'fk_propal';
     protected $ismultientitymanaged = 1; // 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
     var $id;
-    var $societe;  // Objet societe client (a charger par fetch_client)
+    var $client;  // Objet societe client (a charger par fetch_client)
     var $contactid;
     var $fk_project;
     var $author;
@@ -126,16 +126,16 @@ class Propal extends nosqlDocument {
         $this->duree_validite = $conf->global->PROPALE_VALIDITY_DURATION;
 
         $langs->load("propal");
-        $this->labelstatut[0] = (!empty($conf->global->PROPAL_STATUS_DRAFT_LABEL) ? $conf->global->PROPAL_STATUS_DRAFT_LABEL : $langs->trans("PropalStatusDraft"));
-        $this->labelstatut[1] = (!empty($conf->global->PROPAL_STATUS_VALIDATED_LABEL) ? $conf->global->PROPAL_STATUS_VALIDATED_LABEL : $langs->trans("PropalStatusValidated"));
-        $this->labelstatut[2] = (!empty($conf->global->PROPAL_STATUS_SIGNED_LABEL) ? $conf->global->PROPAL_STATUS_SIGNED_LABEL : $langs->trans("PropalStatusSigned"));
-        $this->labelstatut[3] = (!empty($conf->global->PROPAL_STATUS_NOTSIGNED_LABEL) ? $conf->global->PROPAL_STATUS_NOTSIGNED_LABEL : $langs->trans("PropalStatusNotSigned"));
-        $this->labelstatut[4] = (!empty($conf->global->PROPAL_STATUS_BILLED_LABEL) ? $conf->global->PROPAL_STATUS_BILLED_LABEL : $langs->trans("PropalStatusBilled"));
-        $this->labelstatut_short[0] = (!empty($conf->global->PROPAL_STATUS_DRAFTSHORT_LABEL) ? $conf->global->PROPAL_STATUS_DRAFTSHORT_LABEL : $langs->trans("PropalStatusDraftShort"));
-        $this->labelstatut_short[1] = (!empty($conf->global->PROPAL_STATUS_VALIDATEDSHORT_LABEL) ? $conf->global->PROPAL_STATUS_VALIDATEDSHORT_LABEL : $langs->trans("Opened"));
-        $this->labelstatut_short[2] = (!empty($conf->global->PROPAL_STATUS_SIGNEDSHORT_LABEL) ? $conf->global->PROPAL_STATUS_SIGNEDSHORT_LABEL : $langs->trans("PropalStatusSignedShort"));
-        $this->labelstatut_short[3] = (!empty($conf->global->PROPAL_STATUS_NOTSIGNEDSHORT_LABEL) ? $conf->global->PROPAL_STATUS_NOTSIGNEDSHORT_LABEL : $langs->trans("PropalStatusNotSignedShort"));
-        $this->labelstatut_short[4] = (!empty($conf->global->PROPAL_STATUS_BILLEDSHORT_LABEL) ? $conf->global->PROPAL_STATUS_BILLEDSHORT_LABEL : $langs->trans("PropalStatusBilledShort"));
+//        $this->labelstatut[0] = (!empty($conf->global->PROPAL_STATUS_DRAFT_LABEL) ? $conf->global->PROPAL_STATUS_DRAFT_LABEL : $langs->trans("PropalStatusDraft"));
+//        $this->labelstatut[1] = (!empty($conf->global->PROPAL_STATUS_VALIDATED_LABEL) ? $conf->global->PROPAL_STATUS_VALIDATED_LABEL : $langs->trans("PropalStatusValidated"));
+//        $this->labelstatut[2] = (!empty($conf->global->PROPAL_STATUS_SIGNED_LABEL) ? $conf->global->PROPAL_STATUS_SIGNED_LABEL : $langs->trans("PropalStatusSigned"));
+//        $this->labelstatut[3] = (!empty($conf->global->PROPAL_STATUS_NOTSIGNED_LABEL) ? $conf->global->PROPAL_STATUS_NOTSIGNED_LABEL : $langs->trans("PropalStatusNotSigned"));
+//        $this->labelstatut[4] = (!empty($conf->global->PROPAL_STATUS_BILLED_LABEL) ? $conf->global->PROPAL_STATUS_BILLED_LABEL : $langs->trans("PropalStatusBilled"));
+//        $this->labelstatut_short[0] = (!empty($conf->global->PROPAL_STATUS_DRAFTSHORT_LABEL) ? $conf->global->PROPAL_STATUS_DRAFTSHORT_LABEL : $langs->trans("PropalStatusDraftShort"));
+//        $this->labelstatut_short[1] = (!empty($conf->global->PROPAL_STATUS_VALIDATEDSHORT_LABEL) ? $conf->global->PROPAL_STATUS_VALIDATEDSHORT_LABEL : $langs->trans("Opened"));
+//        $this->labelstatut_short[2] = (!empty($conf->global->PROPAL_STATUS_SIGNEDSHORT_LABEL) ? $conf->global->PROPAL_STATUS_SIGNEDSHORT_LABEL : $langs->trans("PropalStatusSignedShort"));
+//        $this->labelstatut_short[3] = (!empty($conf->global->PROPAL_STATUS_NOTSIGNEDSHORT_LABEL) ? $conf->global->PROPAL_STATUS_NOTSIGNEDSHORT_LABEL : $langs->trans("PropalStatusNotSignedShort"));
+//        $this->labelstatut_short[4] = (!empty($conf->global->PROPAL_STATUS_BILLEDSHORT_LABEL) ? $conf->global->PROPAL_STATUS_BILLEDSHORT_LABEL : $langs->trans("PropalStatusBilledShort"));
     }
 
     /**
@@ -175,7 +175,7 @@ class Propal extends nosqlDocument {
                 $price = $prod->price;
             }
 
-            $line = new PropaleLigne($this->db);
+            $line = new PropalLine($this->db);
 
             $line->fk_product = $idproduct;
             $line->desc = $productdesc;
@@ -212,7 +212,7 @@ class Propal extends nosqlDocument {
                 return -5;
             }
 
-            $propalligne = new PropaleLigne($this->db);
+            $propalligne = new PropalLine($this->db);
             $propalligne->fk_propal = $this->id;
             $propalligne->fk_remise_except = $remise->id;
             $propalligne->desc = $remise->description;    // Description ligne
@@ -319,9 +319,8 @@ class Propal extends nosqlDocument {
         if ($type < 0)
             return -1;
 
-        if ($this->statut == 0) {
-            $this->db->begin();
-
+        if ($this->Status == "DRAFT") {
+//            $this->db->begin();
             // Calcul du total TTC et de la TVA pour la ligne a partir de
             // qty, pu, remise_percent et txtva
             // TRES IMPORTANT: C'est au moment de l'insertion ligne qu'on doit stocker
@@ -350,11 +349,11 @@ class Propal extends nosqlDocument {
             }
 
             // Insert line
-            $this->line = new PropaleLigne($this->db);
+            $this->line = new PropalLine($this->db);
 
             $this->line->fk_propal = $propalid;
             $this->line->label = $label;
-            $this->line->desc = $desc;
+            $this->line->description = $desc;
             $this->line->qty = $qty;
             $this->line->tva_tx = $txtva;
             $this->line->localtax1_tx = $txlocaltax1;
@@ -387,33 +386,35 @@ class Propal extends nosqlDocument {
             $this->line->remise = $remise;
 
             $result = $this->line->insert();
-            if ($result > 0) {
-                // Reorder if child line
-                if (!empty($fk_parent_line))
-                    $this->line_order(true, 'DESC');
-
-                // Mise a jour informations denormalisees au niveau de la propale meme
-                $result = $this->update_price(1);
-                if ($result > 0) {
-                    $this->db->commit();
-                    return $this->line->rowid;
-                } else {
-                    $this->error = $this->db->error();
-                    dol_syslog("Error sql=$sql, error=" . $this->error, LOG_ERR);
-                    $this->db->rollback();
-                    return -1;
-                }
-            } else {
-                $this->error = $this->line->error;
-                $this->db->rollback();
-                return -2;
-            }
+            $result = $this->update_price(1);
+//            if ($result > 0) {
+//                // Reorder if child line
+//                if (!empty($fk_parent_line))
+//                    $this->line_order(true, 'DESC');
+//
+//                // Mise a jour informations denormalisees au niveau de la propale meme
+//                $result = $this->update_price(1);
+//                if ($result > 0) {
+//                    $this->db->commit();
+//                    return $this->line->rowid;
+//                } else {
+//                    $this->error = $this->db->error();
+//                    dol_syslog("Error sql=$sql, error=" . $this->error, LOG_ERR);
+//                    $this->db->rollback();
+//                    return -1;
+//                }
+//            } else {
+//                $this->error = $this->line->error;
+//                $this->db->rollback();
+//                return -2;
+//            }
         }
     }
 
     /**
      *  Update a proposal line
      *
+     *  @param      int			$rowid           	Id de la propal
      *  @param      int			$rowid           	Id de la ligne
      *  @param      double		$pu		     	  	Prix unitaire (HT ou TTC selon price_base_type)
      *  @param      double		$qty            	Quantity
@@ -433,7 +434,7 @@ class Propal extends nosqlDocument {
      *  @param		int			$type				0/1=Product/service
      *  @return     int     		        		0 if OK, <0 if KO
      */
-    function updateline($rowid, $pu, $qty, $remise_percent, $txtva, $txlocaltax1 = 0, $txlocaltax2 = 0, $desc = '', $price_base_type = 'HT', $info_bits = 0, $special_code = 0, $fk_parent_line = 0, $skip_update_total = 0, $fk_fournprice = null, $pa_ht = 0, $label = '', $type = 0) {
+    function updateline($propalid, $rowid, $pu, $qty, $remise_percent, $txtva, $txlocaltax1 = 0, $txlocaltax2 = 0, $desc = '', $price_base_type = 'HT', $info_bits = 0, $special_code = 0, $fk_parent_line = 0, $skip_update_total = 0, $fk_fournprice = null, $pa_ht = 0, $label = '', $type = 0) {
         global $conf, $user, $langs;
 
         dol_syslog(get_class($this) . "::updateLine $rowid, $pu, $qty, $remise_percent, $txtva, $desc, $price_base_type, $info_bits");
@@ -452,9 +453,8 @@ class Propal extends nosqlDocument {
         if (!empty($qty) && $special_code == 3)
             $special_code = 0;    // Remove option tag
 
-        if ($this->statut == 0) {
-            $this->db->begin();
-
+        if ($this->Status == "DRAFT") {
+//            $this->db->begin();
             // Calcul du total TTC et de la TVA pour la ligne a partir de
             // qty, pu, remise_percent et txtva
             // TRES IMPORTANT: C'est au moment de l'insertion ligne qu'on doit stocker
@@ -474,22 +474,22 @@ class Propal extends nosqlDocument {
             }
 
             // Update line
-            $this->line = new PropaleLigne($this->db);
+            $this->line = new PropalLine($this->db);
+            $this->line->fetch($rowid);
 
             // Stock previous line records
-            $staticline = new PropaleLigne($this->db);
+            $staticline = new PropalLine($this->db);
             $staticline->fetch($rowid);
             $this->line->oldline = $staticline;
+//
+//            // Reorder if fk_parent_line change
+//            if (!empty($fk_parent_line) && !empty($staticline->fk_parent_line) && $fk_parent_line != $staticline->fk_parent_line) {
+//                $rangmax = $this->line_max($fk_parent_line);
+//                $this->line->rang = $rangmax + 1;
+//            }
 
-            // Reorder if fk_parent_line change
-            if (!empty($fk_parent_line) && !empty($staticline->fk_parent_line) && $fk_parent_line != $staticline->fk_parent_line) {
-                $rangmax = $this->line_max($fk_parent_line);
-                $this->line->rang = $rangmax + 1;
-            }
-
-            $this->line->rowid = $rowid;
             $this->line->label = $label;
-            $this->line->desc = $desc;
+            $this->line->description = $desc;
             $this->line->qty = $qty;
             $this->line->tva_tx = $txtva;
             $this->line->localtax1_tx = $txlocaltax1;
@@ -515,22 +515,20 @@ class Propal extends nosqlDocument {
             $this->line->remise = $remise;
 
             $result = $this->line->update();
+            $this->update_price(1);
+
             if ($result > 0) {
                 // Reorder if child line
-                if (!empty($fk_parent_line))
-                    $this->line_order(true, 'DESC');
-
-                $this->update_price(1);
-
-                $this->fk_propal = $this->id;
-                $this->rowid = $rowid;
-
-                $this->db->commit();
+//                if (!empty($fk_parent_line))
+//                    $this->line_order(true, 'DESC');
+//                $this->update_price(1);
+//                $this->fk_propal = $this->id;
+//                $this->rowid = $rowid;
+//                $this->db->commit();
                 return $result;
-            }
-            else {
+            } else {
                 $this->error = $this->db->error();
-                $this->db->rollback();
+//                $this->db->rollback();
                 dol_syslog(get_class($this) . "::updateline Error=" . $this->error, LOG_ERR);
                 return -1;
             }
@@ -547,8 +545,8 @@ class Propal extends nosqlDocument {
      *  @return     int         			>0 if OK, <0 if KO
      */
     function deleteline($lineid) {
-        if ($this->statut == 0) {
-            $line = new PropaleLigne($this->db);
+        if ($this->Status == "DRAFT") {
+            $line = new PropalLine($this->db);
 
             // For triggers
             $line->fetch($lineid);
@@ -594,9 +592,9 @@ class Propal extends nosqlDocument {
             dol_syslog(get_class($this) . "::create " . $this->error, LOG_ERR);
             return -3;
         }
-        $this->societe = new stdclass();
-        $this->societe->id = $soc->id;
-        $this->societe->name = $soc->name;
+        $this->client = new stdclass();
+        $this->client->id = $soc->id;
+        $this->client->name = $soc->name;
 
         if (empty($this->date)) {
             $this->error = "Date of proposal is required";
@@ -894,7 +892,14 @@ class Propal extends nosqlDocument {
      */
     function fetch($rowid, $ref = '') {
         global $conf;
-         parent::fetch($rowid);
+
+        parent::fetch($rowid);
+
+        // Get lines
+        $this->getLinesArray();
+
+        return 1;
+
 //        $sql = "SELECT p.rowid, p.ref, p.remise, p.remise_percent, p.remise_absolue, p.fk_soc";
 //        $sql.= ", p.total, p.tva, p.localtax1, p.localtax2, p.total_ht";
 //        $sql.= ", p.datec";
@@ -1014,7 +1019,7 @@ class Propal extends nosqlDocument {
 //                    while ($i < $num) {
 //                        $objp = $this->db->fetch_object($result);
 //
-//                        $line = new PropaleLigne($this->db);
+//                        $line = new PropalLine($this->db);
 //
 //                        $line->rowid = $objp->rowid;
 //                        $line->fk_propal = $objp->fk_propal;
@@ -1091,7 +1096,7 @@ class Propal extends nosqlDocument {
         $error = 0;
         $now = dol_now();
 
-        if ($user->rights->propale->valider) {
+        if ($user->rights->propal->valider) {
             $this->db->begin();
 
             $sql = "UPDATE " . MAIN_DB_PREFIX . "propal";
@@ -1144,20 +1149,24 @@ class Propal extends nosqlDocument {
             return -1;
         }
 
-        if ($user->rights->propale->creer) {
-            $sql = "UPDATE " . MAIN_DB_PREFIX . "propal SET datep = '" . $this->db->idate($date) . "'";
-            $sql.= " WHERE rowid = " . $this->id . " AND fk_statut = 0";
-
-            dol_syslog(get_class($this) . "::set_date sql=" . $sql);
-            if ($this->db->query($sql)) {
-                $this->date = $date;
-                $this->datep = $date;    // deprecated
-                return 1;
-            } else {
-                $this->error = $this->db->lasterror();
-                dol_syslog(get_class($this) . "::set_date " . $this->error, LOG_ERR);
-                return -1;
-            }
+        if ($user->rights->propal->creer) {
+            $this->date = $date;
+            $this->datep = $date;
+            $this->record();
+            return 1;
+//            $sql = "UPDATE " . MAIN_DB_PREFIX . "propal SET datep = '" . $this->db->idate($date) . "'";
+//            $sql.= " WHERE rowid = " . $this->id . " AND fk_statut = 0";
+//
+//            dol_syslog(get_class($this) . "::set_date sql=" . $sql);
+//            if ($this->db->query($sql)) {
+//                $this->date = $date;
+//                $this->datep = $date;    // deprecated
+//                return 1;
+//            } else {
+//                $this->error = $this->db->lasterror();
+//                dol_syslog(get_class($this) . "::set_date " . $this->error, LOG_ERR);
+//                return -1;
+//            }
         }
     }
 
@@ -1169,17 +1178,20 @@ class Propal extends nosqlDocument {
      * 	@return     int         					<0 if KO, >0 if OK
      */
     function set_echeance($user, $date_fin_validite) {
-        if ($user->rights->propale->creer) {
-            $sql = "UPDATE " . MAIN_DB_PREFIX . "propal SET fin_validite = " . ($date_fin_validite != '' ? "'" . $this->db->idate($date_fin_validite) . "'" : 'null');
-            $sql.= " WHERE rowid = " . $this->id . " AND fk_statut = 0";
-            if ($this->db->query($sql)) {
-                $this->fin_validite = $date_fin_validite;
-                return 1;
-            } else {
-                $this->error = $this->db->error();
-                dol_syslog(get_class($this) . "::set_echeance Erreur SQL" . $this->error, LOG_ERR);
-                return -1;
-            }
+        if ($user->rights->propal->creer) {
+            $this->fin_validite = $date_fin_validite;
+            $this->record();
+            return 1;
+//            $sql = "UPDATE " . MAIN_DB_PREFIX . "propal SET fin_validite = " . ($date_fin_validite != '' ? "'" . $this->db->idate($date_fin_validite) . "'" : 'null');
+//            $sql.= " WHERE rowid = " . $this->id . " AND fk_statut = 0";
+//            if ($this->db->query($sql)) {
+//                $this->fin_validite = $date_fin_validite;
+//                return 1;
+//            } else {
+//                $this->error = $this->db->error();
+//                dol_syslog(get_class($this) . "::set_echeance Erreur SQL" . $this->error, LOG_ERR);
+//                return -1;
+//            }
         }
     }
 
@@ -1191,19 +1203,22 @@ class Propal extends nosqlDocument {
      * 	@return     int         					<0 if ko, >0 if ok
      */
     function set_date_livraison($user, $date_livraison) {
-        if ($user->rights->propale->creer) {
-            $sql = "UPDATE " . MAIN_DB_PREFIX . "propal ";
-            $sql.= " SET date_livraison = " . ($date_livraison != '' ? "'" . $this->db->idate($date_livraison) . "'" : 'null');
-            $sql.= " WHERE rowid = " . $this->id;
-
-            if ($this->db->query($sql)) {
-                $this->date_livraison = $date_livraison;
-                return 1;
-            } else {
-                $this->error = $this->db->error();
-                dol_syslog(get_class($this) . "::set_date_livraison Erreur SQL");
-                return -1;
-            }
+        if ($user->rights->propal->creer) {
+            $this->date_livraison = $date_livraison;
+            $this->record();
+            return 1;
+//            $sql = "UPDATE " . MAIN_DB_PREFIX . "propal ";
+//            $sql.= " SET date_livraison = " . ($date_livraison != '' ? "'" . $this->db->idate($date_livraison) . "'" : 'null');
+//            $sql.= " WHERE rowid = " . $this->id;
+//
+//            if ($this->db->query($sql)) {
+//                $this->date_livraison = $date_livraison;
+//                return 1;
+//            } else {
+//                $this->error = $this->db->error();
+//                dol_syslog(get_class($this) . "::set_date_livraison Erreur SQL");
+//                return -1;
+//            }
         }
     }
 
@@ -1215,7 +1230,7 @@ class Propal extends nosqlDocument {
      *  @return     int           			<0 if KO, >0 if OK
      */
     function set_availability($user, $id) {
-        if ($user->rights->propale->creer) {
+        if ($user->rights->propal->creer) {
             $sql = "UPDATE " . MAIN_DB_PREFIX . "propal ";
             $sql.= " SET fk_availability = '" . $id . "'";
             $sql.= " WHERE rowid = " . $this->id;
@@ -1239,7 +1254,7 @@ class Propal extends nosqlDocument {
      *  @return     int           		<0 if KO, >0 if OK
      */
     function set_demand_reason($user, $id) {
-        if ($user->rights->propale->creer) {
+        if ($user->rights->propal->creer) {
             $sql = "UPDATE " . MAIN_DB_PREFIX . "propal ";
             $sql.= " SET fk_input_reason = '" . $id . "'";
             $sql.= " WHERE rowid = " . $this->id;
@@ -1263,19 +1278,22 @@ class Propal extends nosqlDocument {
      *  @return     int						<0 if ko, >0 if ok
      */
     function set_ref_client($user, $ref_client) {
-        if ($user->rights->propale->creer) {
-            dol_syslog('Propale::set_ref_client this->id=' . $this->id . ', ref_client=' . $ref_client);
-
-            $sql = 'UPDATE ' . MAIN_DB_PREFIX . 'propal SET ref_client = ' . (empty($ref_client) ? 'NULL' : '\'' . $this->db->escape($ref_client) . '\'');
-            $sql.= ' WHERE rowid = ' . $this->id;
-            if ($this->db->query($sql)) {
-                $this->ref_client = $ref_client;
-                return 1;
-            } else {
-                $this->error = $this->db->error();
-                dol_syslog('Propale::set_ref_client Erreur ' . $this->error . ' - ' . $sql);
-                return -2;
-            }
+        if ($user->rights->propal->creer) {
+            $this->ref_client = $ref_client;
+            $this->record();
+            return 1;
+//            dol_syslog('Propale::set_ref_client this->id=' . $this->id . ', ref_client=' . $ref_client);
+//
+//            $sql = 'UPDATE ' . MAIN_DB_PREFIX . 'propal SET ref_client = ' . (empty($ref_client) ? 'NULL' : '\'' . $this->db->escape($ref_client) . '\'');
+//            $sql.= ' WHERE rowid = ' . $this->id;
+//            if ($this->db->query($sql)) {
+//                $this->ref_client = $ref_client;
+//                return 1;
+//            } else {
+//                $this->error = $this->db->error();
+//                dol_syslog('Propale::set_ref_client Erreur ' . $this->error . ' - ' . $sql);
+//                return -2;
+//            }
         } else {
             return -1;
         }
@@ -1291,7 +1309,7 @@ class Propal extends nosqlDocument {
     function set_remise_percent($user, $remise) {
         $remise = trim($remise) ? trim($remise) : 0;
 
-        if ($user->rights->propale->creer) {
+        if ($user->rights->propal->creer) {
             $remise = price2num($remise);
 
             $sql = "UPDATE " . MAIN_DB_PREFIX . "propal SET remise_percent = " . $remise;
@@ -1319,7 +1337,7 @@ class Propal extends nosqlDocument {
     function set_remise_absolue($user, $remise) {
         $remise = trim($remise) ? trim($remise) : 0;
 
-        if ($user->rights->propale->creer) {
+        if ($user->rights->propal->creer) {
             $remise = price2num($remise);
 
             $sql = "UPDATE " . MAIN_DB_PREFIX . "propal ";
@@ -1625,7 +1643,7 @@ class Propal extends nosqlDocument {
 
         $error = 0;
 
-        $this->db->begin();
+//        $this->db->begin();
 
         if (!$error && !$notrigger) {
             // Call triggers
@@ -1640,74 +1658,111 @@ class Propal extends nosqlDocument {
         }
 
         if (!$error) {
-            $sql = "DELETE FROM " . MAIN_DB_PREFIX . "propaldet WHERE fk_propal = " . $this->id;
-            if ($this->db->query($sql)) {
-                $sql = "DELETE FROM " . MAIN_DB_PREFIX . "propal WHERE rowid = " . $this->id;
-                if ($this->db->query($sql)) {
-                    // Delete linked object
-                    $res = $this->deleteObjectLinked();
-                    if ($res < 0)
-                        $error++;
 
-                    // Delete linked contacts
-                    $res = $this->delete_linked_contact();
-                    if ($res < 0)
-                        $error++;
+            // Delete linked object
+            // Delete linked contacts
+            // Remove directory
+            $ref = dol_sanitizeFileName($this->ref);
+            if ($conf->propal->dir_output) {
+                $dir = $conf->propal->dir_output . "/" . $ref;
+                $file = $dir . "/" . $ref . ".pdf";
+                if (file_exists($file)) {
+                    dol_delete_preview($this);
 
-                    if (!$error) {
-                        // We remove directory
-                        $ref = dol_sanitizeFileName($this->ref);
-                        if ($conf->propal->dir_output) {
-                            $dir = $conf->propal->dir_output . "/" . $ref;
-                            $file = $dir . "/" . $ref . ".pdf";
-                            if (file_exists($file)) {
-                                dol_delete_preview($this);
-
-                                if (!dol_delete_file($file, 0, 0, 0, $this)) { // For triggers
-                                    $this->error = 'ErrorFailToDeleteFile';
-                                    $this->errors = array('ErrorFailToDeleteFile');
-                                    $this->db->rollback();
-                                    return 0;
-                                }
-                            }
-                            if (file_exists($dir)) {
-                                $res = @dol_delete_dir_recursive($dir);
-                                if (!$res) {
-                                    $this->error = 'ErrorFailToDeleteDir';
-                                    $this->errors = array('ErrorFailToDeleteDir');
-                                    $this->db->rollback();
-                                    return 0;
-                                }
-                            }
-                        }
-                    }
-
-                    if (!$error) {
-                        dol_syslog(get_class($this) . "::delete $this->id by $user->id", LOG_DEBUG);
-                        $this->db->commit();
-                        return 1;
-                    } else {
-                        $this->error = $this->db->lasterror();
-                        dol_syslog(get_class($this) . "::delete " . $this->error, LOG_ERR);
-                        $this->db->rollback();
+                    if (!dol_delete_file($file, 0, 0, 0, $this)) { // For triggers
+                        $this->error = 'ErrorFailToDeleteFile';
+                        $this->errors = array('ErrorFailToDeleteFile');
                         return 0;
                     }
-                } else {
-                    $this->error = $this->db->lasterror();
-                    dol_syslog(get_class($this) . "::delete " . $this->error, LOG_ERR);
-                    $this->db->rollback();
-                    return -3;
                 }
-            } else {
-                $this->error = $this->db->lasterror();
-                dol_syslog(get_class($this) . "::delete " . $this->error, LOG_ERR);
-                $this->db->rollback();
-                return -2;
+                if (file_exists($dir)) {
+                    $res = @dol_delete_dir_recursive($dir);
+                    if (!$res) {
+                        $this->error = 'ErrorFailToDeleteDir';
+                        $this->errors = array('ErrorFailToDeleteDir');
+                        return 0;
+                    }
+                }
             }
+
+            // Remove propal lines
+            $this->getLinesArray();
+            foreach ($this->lines as $line)
+                $line->delete();
+
+            // Remove propal
+            $this->deleteDoc();
+
+            return 1;
+
+//            $sql = "DELETE FROM " . MAIN_DB_PREFIX . "propaldet WHERE fk_propal = " . $this->id;
+//            if ($this->db->query($sql)) {
+//                $sql = "DELETE FROM " . MAIN_DB_PREFIX . "propal WHERE rowid = " . $this->id;
+//                if ($this->db->query($sql)) {
+//                    // Delete linked object
+//                    $res = $this->deleteObjectLinked();
+//                    if ($res < 0)
+//                        $error++;
+//
+//                    // Delete linked contacts
+//                    $res = $this->delete_linked_contact();
+//                    if ($res < 0)
+//                        $error++;
+//
+//                    if (!$error) {
+//                        // We remove directory
+//                        $ref = dol_sanitizeFileName($this->ref);
+//                        if ($conf->propal->dir_output) {
+//                            $dir = $conf->propal->dir_output . "/" . $ref;
+//                            $file = $dir . "/" . $ref . ".pdf";
+//                            if (file_exists($file)) {
+//                                dol_delete_preview($this);
+//
+//                                if (!dol_delete_file($file, 0, 0, 0, $this)) { // For triggers
+//                                    $this->error = 'ErrorFailToDeleteFile';
+//                                    $this->errors = array('ErrorFailToDeleteFile');
+//                                    $this->db->rollback();
+//                                    return 0;
+//                                }
+//                            }
+//                            if (file_exists($dir)) {
+//                                $res = @dol_delete_dir_recursive($dir);
+//                                if (!$res) {
+//                                    $this->error = 'ErrorFailToDeleteDir';
+//                                    $this->errors = array('ErrorFailToDeleteDir');
+//                                    $this->db->rollback();
+//                                    return 0;
+//                                }
+//                            }
+//                        }
+//                    }
+//
+//                    if (!$error) {
+//                        dol_syslog(get_class($this) . "::delete $this->id by $user->id", LOG_DEBUG);
+//                        $this->db->commit();
+//                        return 1;
+//                    } else {
+//                        $this->error = $this->db->lasterror();
+//                        dol_syslog(get_class($this) . "::delete " . $this->error, LOG_ERR);
+//                        $this->db->rollback();
+//                        return 0;
+//                    }
+//                } else {
+//                    $this->error = $this->db->lasterror();
+//                    dol_syslog(get_class($this) . "::delete " . $this->error, LOG_ERR);
+//                    $this->db->rollback();
+//                    return -3;
+//                }
+//            } else {
+//                $this->error = $this->db->lasterror();
+//                dol_syslog(get_class($this) . "::delete " . $this->error, LOG_ERR);
+//                $this->db->rollback();
+//                return -2;
+//            }
         } else {
             $this->error = $this->db->lasterror();
             dol_syslog(get_class($this) . "::delete " . $this->error, LOG_ERR);
-            $this->db->rollback();
+//            $this->db->rollback();
             return -1;
         }
     }
@@ -1715,23 +1770,26 @@ class Propal extends nosqlDocument {
     /**
      *  Change the delivery time
      *
-     *  @param	int	$availability_id	Id of new delivery time
+     *  @param	int	$availability_code	code of new delivery time
      *  @return int                  	>0 if OK, <0 if KO
      */
-    function availability($availability_id) {
-        dol_syslog('Propale::availability(' . $availability_id . ')');
-        if ($this->statut >= 0) {
-            $sql = 'UPDATE ' . MAIN_DB_PREFIX . 'propal';
-            $sql .= ' SET fk_availability = ' . $availability_id;
-            $sql .= ' WHERE rowid=' . $this->id;
-            if ($this->db->query($sql)) {
-                $this->availability_id = $availability_id;
-                return 1;
-            } else {
-                dol_syslog('Propale::availability Erreur ' . $sql . ' - ' . $this->db->error());
-                $this->error = $this->db->error();
-                return -1;
-            }
+    function availability($availability_code) {
+        dol_syslog('Propale::availability(' . $availability_code . ')');
+        if ($this->Status == "DRAFT") {
+            $this->availability_code = $availability_code;
+            $this->record();
+            return 1;
+//            $sql = 'UPDATE ' . MAIN_DB_PREFIX . 'propal';
+//            $sql .= ' SET fk_availability = ' . $availability_id;
+//            $sql .= ' WHERE rowid=' . $this->id;
+//            if ($this->db->query($sql)) {
+//                $this->availability_id = $availability_id;
+//                return 1;
+//            } else {
+//                dol_syslog('Propale::availability Erreur ' . $sql . ' - ' . $this->db->error());
+//                $this->error = $this->db->error();
+//                return -1;
+//            }
         } else {
             dol_syslog('Propale::availability, etat propale incompatible');
             $this->error = 'Etat propale incompatible ' . $this->statut;
@@ -1742,23 +1800,56 @@ class Propal extends nosqlDocument {
     /**
      * 	Change source demand
      *
-     * 	@param	int $demand_reason_id 	Id of new source demand
+     * 	@param	int $demand_reason_code 	Code of new source demand
      * 	@return int						>0 si ok, <0 si ko
      */
-    function demand_reason($demand_reason_id) {
-        dol_syslog('Propale::demand_reason(' . $demand_reason_id . ')');
-        if ($this->statut >= 0) {
-            $sql = 'UPDATE ' . MAIN_DB_PREFIX . 'propal';
-            $sql .= ' SET fk_input_reason = ' . $demand_reason_id;
-            $sql .= ' WHERE rowid=' . $this->id;
-            if ($this->db->query($sql)) {
-                $this->demand_reason_id = $demand_reason_id;
-                return 1;
-            } else {
-                dol_syslog('Propale::demand_reason Erreur ' . $sql . ' - ' . $this->db->error());
-                $this->error = $this->db->error();
-                return -1;
-            }
+    function demand_reason($demand_reason_code) {
+        dol_syslog('Propale::demand_reason(' . $demand_reason_code . ')');
+        if ($this->Status == "DRAFT") {
+            $this->demand_reason_code = $demand_reason_code;
+            $this->record();
+            return 1;
+//            $sql = 'UPDATE ' . MAIN_DB_PREFIX . 'propal';
+//            $sql .= ' SET fk_input_reason = ' . $demand_reason_id;
+//            $sql .= ' WHERE rowid=' . $this->id;
+//            if ($this->db->query($sql)) {
+//                $this->demand_reason_id = $demand_reason_id;
+//                return 1;
+//            } else {
+//                dol_syslog('Propale::demand_reason Erreur ' . $sql . ' - ' . $this->db->error());
+//                $this->error = $this->db->error();
+//                return -1;
+//            }
+        } else {
+            dol_syslog('Propale::demand_reason, etat propale incompatible');
+            $this->error = 'Etat propale incompatible ' . $this->statut;
+            return -2;
+        }
+    }
+
+    /**
+     * 	Change payment methods
+     *
+     * 	@param	string $mode_reglement_code 	Code of new payment term
+     * 	@return int						>0 si ok, <0 si ko
+     */
+    function setPaymentMethods($mode_reglement_code) {
+        dol_syslog('Propale::setPaymentMethods(' . $mode_reglement_code . ')');
+        if ($this->Status == "DRAFT") {
+            $this->mode_reglement_code = $mode_reglement_code;
+            $this->record();
+            return 1;
+//            $sql = 'UPDATE ' . MAIN_DB_PREFIX . 'propal';
+//            $sql .= ' SET fk_input_reason = ' . $demand_reason_id;
+//            $sql .= ' WHERE rowid=' . $this->id;
+//            if ($this->db->query($sql)) {
+//                $this->demand_reason_id = $demand_reason_id;
+//                return 1;
+//            } else {
+//                dol_syslog('Propale::demand_reason Erreur ' . $sql . ' - ' . $this->db->error());
+//                $this->error = $this->db->error();
+//                return -1;
+//            }
         } else {
             dol_syslog('Propale::demand_reason, etat propale incompatible');
             $this->error = 'Etat propale incompatible ' . $this->statut;
@@ -1993,7 +2084,7 @@ class Propal extends nosqlDocument {
         $nbp = 5;
         $xnbp = 0;
         while ($xnbp < $nbp) {
-            $line = new PropaleLigne($this->db);
+            $line = new PropalLine($this->db);
             $line->desc = $langs->trans("Description") . " " . $xnbp;
             $line->qty = 1;
             $line->subprice = 100;
@@ -2142,80 +2233,141 @@ class Propal extends nosqlDocument {
      * 	@return	int	<0 if ko, >0 if ok
      */
     function getLinesArray() {
-        $sql = 'SELECT pt.rowid, pt.label as custom_label, pt.description, pt.fk_product, pt.fk_remise_except,';
-        $sql.= ' pt.qty, pt.tva_tx, pt.remise_percent, pt.subprice, pt.info_bits,';
-        $sql.= ' pt.total_ht, pt.total_tva, pt.total_ttc, pt.fk_product_fournisseur_price as fk_fournprice, pt.buy_price_ht as pa_ht, pt.special_code, pt.localtax1_tx, pt.localtax2_tx,';
-        $sql.= ' pt.date_start, pt.date_end, pt.product_type, pt.rang, pt.fk_parent_line,';
-        $sql.= ' p.label as product_label, p.ref, p.fk_product_type, p.rowid as prodid,';
-        $sql.= ' p.description as product_desc';
-        $sql.= ' FROM ' . MAIN_DB_PREFIX . 'propaldet as pt';
-        $sql.= ' LEFT JOIN ' . MAIN_DB_PREFIX . 'product as p ON pt.fk_product=p.rowid';
-        $sql.= ' WHERE pt.fk_propal = ' . $this->id;
-        $sql.= ' ORDER BY pt.rang ASC, pt.rowid';
-
-        $resql = $this->db->query($sql);
-        if ($resql) {
-            $num = $this->db->num_rows($resql);
-            $i = 0;
-
-            while ($i < $num) {
-                $obj = $this->db->fetch_object($resql);
-
-                $this->lines[$i] = (object) array();
-                $this->lines[$i]->id = $obj->rowid; // for backward compatibility
-                $this->lines[$i]->rowid = $obj->rowid;
-                $this->lines[$i]->label = $obj->custom_label;
-                $this->lines[$i]->description = $obj->description;
-                $this->lines[$i]->fk_product = $obj->fk_product;
-                $this->lines[$i]->ref = $obj->ref;
-                $this->lines[$i]->product_label = $obj->product_label;
-                $this->lines[$i]->product_desc = $obj->product_desc;
-                $this->lines[$i]->fk_product_type = $obj->fk_product_type;  // deprecated
-                $this->lines[$i]->product_type = $obj->product_type;
-                $this->lines[$i]->qty = $obj->qty;
-                $this->lines[$i]->subprice = $obj->subprice;
-                $this->lines[$i]->fk_remise_except = $obj->fk_remise_except;
-                $this->lines[$i]->remise_percent = $obj->remise_percent;
-                $this->lines[$i]->tva_tx = $obj->tva_tx;
-                $this->lines[$i]->info_bits = $obj->info_bits;
-                $this->lines[$i]->total_ht = $obj->total_ht;
-                $this->lines[$i]->total_tva = $obj->total_tva;
-                $this->lines[$i]->total_ttc = $obj->total_ttc;
-                $this->lines[$i]->fk_fournprice = $obj->fk_fournprice;
-                $marginInfos = getMarginInfos($obj->subprice, $obj->remise_percent, $obj->tva_tx, $obj->localtax1_tx, $obj->localtax2_tx, $this->lines[$i]->fk_fournprice, $obj->pa_ht);
-                $this->lines[$i]->pa_ht = $marginInfos[0];
-                $this->lines[$i]->marge_tx = $marginInfos[1];
-                $this->lines[$i]->marque_tx = $marginInfos[2];
-                $this->lines[$i]->fk_parent_line = $obj->fk_parent_line;
-                $this->lines[$i]->special_code = $obj->special_code;
-                $this->lines[$i]->rang = $obj->rang;
-                $this->lines[$i]->date_start = $this->db->jdate($obj->date_start);
-                $this->lines[$i]->date_end = $this->db->jdate($obj->date_end);
-
-                $i++;
-            }
-            $this->db->free($resql);
-
-            return 1;
-        } else {
-            $this->error = $this->db->error();
-            dol_syslog(get_class($this) . "::getLinesArray Error sql=$sql, error=" . $this->error, LOG_ERR);
-            return -1;
+        $this->lines = array();
+        $result = $this->getView("linesPerPropal", array("key" => $this->id));
+        foreach ($result->rows as $res) {
+            $l = new PropalLine($db);
+            $l->fetch($res->value->_id);
+            $this->lines[] = $l;
         }
+        return 1;
+//        $sql = 'SELECT pt.rowid, pt.label as custom_label, pt.description, pt.fk_product, pt.fk_remise_except,';
+//        $sql.= ' pt.qty, pt.tva_tx, pt.remise_percent, pt.subprice, pt.info_bits,';
+//        $sql.= ' pt.total_ht, pt.total_tva, pt.total_ttc, pt.fk_product_fournisseur_price as fk_fournprice, pt.buy_price_ht as pa_ht, pt.special_code, pt.localtax1_tx, pt.localtax2_tx,';
+//        $sql.= ' pt.date_start, pt.date_end, pt.product_type, pt.rang, pt.fk_parent_line,';
+//        $sql.= ' p.label as product_label, p.ref, p.fk_product_type, p.rowid as prodid,';
+//        $sql.= ' p.description as product_desc';
+//        $sql.= ' FROM ' . MAIN_DB_PREFIX . 'propaldet as pt';
+//        $sql.= ' LEFT JOIN ' . MAIN_DB_PREFIX . 'product as p ON pt.fk_product=p.rowid';
+//        $sql.= ' WHERE pt.fk_propal = ' . $this->id;
+//        $sql.= ' ORDER BY pt.rang ASC, pt.rowid';
+//
+//        $resql = $this->db->query($sql);
+//        if ($resql) {
+//            $num = $this->db->num_rows($resql);
+//            $i = 0;
+//
+//            while ($i < $num) {
+//                $obj = $this->db->fetch_object($resql);
+//
+//                $this->lines[$i] = (object) array();
+//                $this->lines[$i]->id = $obj->rowid; // for backward compatibility
+//                $this->lines[$i]->rowid = $obj->rowid;
+//                $this->lines[$i]->label = $obj->custom_label;
+//                $this->lines[$i]->description = $obj->description;
+//                $this->lines[$i]->fk_product = $obj->fk_product;
+//                $this->lines[$i]->ref = $obj->ref;
+//                $this->lines[$i]->product_label = $obj->product_label;
+//                $this->lines[$i]->product_desc = $obj->product_desc;
+//                $this->lines[$i]->fk_product_type = $obj->fk_product_type;  // deprecated
+//                $this->lines[$i]->product_type = $obj->product_type;
+//                $this->lines[$i]->qty = $obj->qty;
+//                $this->lines[$i]->subprice = $obj->subprice;
+//                $this->lines[$i]->fk_remise_except = $obj->fk_remise_except;
+//                $this->lines[$i]->remise_percent = $obj->remise_percent;
+//                $this->lines[$i]->tva_tx = $obj->tva_tx;
+//                $this->lines[$i]->info_bits = $obj->info_bits;
+//                $this->lines[$i]->total_ht = $obj->total_ht;
+//                $this->lines[$i]->total_tva = $obj->total_tva;
+//                $this->lines[$i]->total_ttc = $obj->total_ttc;
+//                $this->lines[$i]->fk_fournprice = $obj->fk_fournprice;
+//                $marginInfos = getMarginInfos($obj->subprice, $obj->remise_percent, $obj->tva_tx, $obj->localtax1_tx, $obj->localtax2_tx, $this->lines[$i]->fk_fournprice, $obj->pa_ht);
+//                $this->lines[$i]->pa_ht = $marginInfos[0];
+//                $this->lines[$i]->marge_tx = $marginInfos[1];
+//                $this->lines[$i]->marque_tx = $marginInfos[2];
+//                $this->lines[$i]->fk_parent_line = $obj->fk_parent_line;
+//                $this->lines[$i]->special_code = $obj->special_code;
+//                $this->lines[$i]->rang = $obj->rang;
+//                $this->lines[$i]->date_start = $this->db->jdate($obj->date_start);
+//                $this->lines[$i]->date_end = $this->db->jdate($obj->date_end);
+//
+//                $i++;
+//            }
+//            $this->db->free($resql);
+//
+//            return 1;
+//        } else {
+//            $this->error = $this->db->error();
+//            dol_syslog(get_class($this) . "::getLinesArray Error sql=$sql, error=" . $this->error, LOG_ERR);
+//            return -1;
+//        }
     }
-    
-    public function getExtraFieldLabel($field){
+
+    public function getExtraFieldLabel($field) {
         return $this->fk_extrafields->fields->{$field}->values->{$this->$field}->label;
+    }
+
+    /**
+     * 	Update total_ht, total_ttc and total_vat for an object (sum of lines)
+     *
+     * 	@param	int		$exclspec          	Exclude special product (product_type=9)
+     *  @param  int		$roundingadjust    	-1=Use default method (MAIN_ROUNDOFTOTAL_NOT_TOTALOFROUND or 0), 0=Use total of rounding, 1=Use rounding of total
+     *  @param	int		$nodatabaseupdate	1=Do not update database. Update only properties of object.
+     * 	@return	int    			           	<0 if KO, >0 if OK
+     */
+    function update_price($exclspec = 0, $roundingadjust = -1, $nodatabaseupdate = 0) {
+
+        include_once DOL_DOCUMENT_ROOT . '/core/lib/price.lib.php';
+
+        $this->total_ht = 0;
+        $this->total_localtax1 = 0;
+        $this->total_localtax2 = 0;
+        $this->total_tva = 0;
+        $this->total_ttc = 0;
+
+        $this->getLinesArray();
+
+        foreach ($this->lines as $line) {
+            $this->total_ht += $line->total_ht;
+            $this->total_localtax1 += $line->total_localtax1;
+            $this->total_localtax2 += $line->totaltaxt1;
+            $this->total_tva += $line->total_tva;
+            $this->total_ttc += $line->total_ttc;
+        }
+
+        $this->record();
+
+        return 1;
+    }
+
+    function update_note_public($note_public) {
+        $this->note_public = $note_public;
+        $this->record();
+        return 1;
+    }
+
+    /**
+     * 		Set last model used by doc generator
+     *
+     * 		@param		User	$user		User object that make change
+     * 		@param		string	$modelpdf	Modele name
+     * 		@return		int					<0 if KO, >0 if OK
+     */
+    function setDocModel($user, $modelpdf) {
+        $this->modelpdf = $modelpdf;
+        $this->record();
+        return 1;
     }
 
 }
 
 /**
- * 	\class      PropaleLigne
+ * 	\class      PropalLine
  * 	\brief      Class to manage commercial proposal lines
  */
-class PropaleLigne {
+class PropalLine extends nosqlDocument {
 
+    public $class = "PropalLine";
     var $db;
     var $error;
     var $oldline;
@@ -2223,7 +2375,8 @@ class PropaleLigne {
     var $rowid;
     var $fk_propal;
     var $fk_parent_line;
-    var $desc;           // Description ligne
+    var $desc;           // Description ligne (deprecated)
+    public $description;           // Description ligne
     var $fk_product;  // Id produit predefini
     var $product_type = 0; // Type 0 = product, 1 = Service
     var $qty;
@@ -2266,7 +2419,7 @@ class PropaleLigne {
      */
 
     function __construct($db) {
-        $this->db = $db;
+        parent::__construct($db);
     }
 
     /**
@@ -2276,58 +2429,59 @@ class PropaleLigne {
      * 	@return	int					<0 if KO, >0 if OK
      */
     function fetch($rowid) {
-        $sql = 'SELECT pd.rowid, pd.fk_propal, pd.fk_parent_line, pd.fk_product, pd.label as custom_label, pd.description, pd.price, pd.qty, pd.tva_tx,';
-        $sql.= ' pd.remise, pd.remise_percent, pd.fk_remise_except, pd.subprice,';
-        $sql.= ' pd.info_bits, pd.total_ht, pd.total_tva, pd.total_ttc, pd.fk_product_fournisseur_price as fk_fournprice, pd.buy_price_ht as pa_ht, pd.special_code, pd.rang,';
-        $sql.= ' pd.localtax1_tx, pd.localtax2_tx, pd.total_localtax1, pd.total_localtax2,';
-        $sql.= ' p.ref as product_ref, p.label as product_label, p.description as product_desc';
-        $sql.= ' FROM ' . MAIN_DB_PREFIX . 'propaldet as pd';
-        $sql.= ' LEFT JOIN ' . MAIN_DB_PREFIX . 'product as p ON pd.fk_product = p.rowid';
-        $sql.= ' WHERE pd.rowid = ' . $rowid;
-
-        $result = $this->db->query($sql);
-        if ($result) {
-            $objp = $this->db->fetch_object($result);
-
-            $this->rowid = $objp->rowid;
-            $this->fk_propal = $objp->fk_propal;
-            $this->fk_parent_line = $objp->fk_parent_line;
-            $this->label = $objp->custom_label;
-            $this->desc = $objp->description;
-            $this->qty = $objp->qty;
-            $this->price = $objp->price;  // deprecated
-            $this->subprice = $objp->subprice;
-            $this->tva_tx = $objp->tva_tx;
-            $this->remise = $objp->remise;
-            $this->remise_percent = $objp->remise_percent;
-            $this->fk_remise_except = $objp->fk_remise_except;
-            $this->fk_product = $objp->fk_product;
-            $this->info_bits = $objp->info_bits;
-
-            $this->total_ht = $objp->total_ht;
-            $this->total_tva = $objp->total_tva;
-            $this->total_ttc = $objp->total_ttc;
-
-            $this->fk_fournprice = $objp->fk_fournprice;
-
-            $marginInfos = getMarginInfos($objp->subprice, $objp->remise_percent, $objp->tva_tx, $objp->localtax1_tx, $objp->localtax2_tx, $this->fk_fournprice, $objp->pa_ht);
-            $this->pa_ht = $marginInfos[0];
-            $this->marge_tx = $marginInfos[1];
-            $this->marque_tx = $marginInfos[2];
-
-            $this->special_code = $objp->special_code;
-            $this->rang = $objp->rang;
-
-            $this->ref = $objp->product_ref;      // deprecated
-            $this->product_ref = $objp->product_ref;
-            $this->libelle = $objp->product_label;  // deprecated
-            $this->product_label = $objp->product_label;
-            $this->product_desc = $objp->product_desc;
-
-            $this->db->free($result);
-        } else {
-            dol_print_error($this->db);
-        }
+        return parent::fetch($rowid);
+//        $sql = 'SELECT pd.rowid, pd.fk_propal, pd.fk_parent_line, pd.fk_product, pd.label as custom_label, pd.description, pd.price, pd.qty, pd.tva_tx,';
+//        $sql.= ' pd.remise, pd.remise_percent, pd.fk_remise_except, pd.subprice,';
+//        $sql.= ' pd.info_bits, pd.total_ht, pd.total_tva, pd.total_ttc, pd.fk_product_fournisseur_price as fk_fournprice, pd.buy_price_ht as pa_ht, pd.special_code, pd.rang,';
+//        $sql.= ' pd.localtax1_tx, pd.localtax2_tx, pd.total_localtax1, pd.total_localtax2,';
+//        $sql.= ' p.ref as product_ref, p.label as product_label, p.description as product_desc';
+//        $sql.= ' FROM ' . MAIN_DB_PREFIX . 'propaldet as pd';
+//        $sql.= ' LEFT JOIN ' . MAIN_DB_PREFIX . 'product as p ON pd.fk_product = p.rowid';
+//        $sql.= ' WHERE pd.rowid = ' . $rowid;
+//
+//        $result = $this->db->query($sql);
+//        if ($result) {
+//            $objp = $this->db->fetch_object($result);
+//
+//            $this->rowid = $objp->rowid;
+//            $this->fk_propal = $objp->fk_propal;
+//            $this->fk_parent_line = $objp->fk_parent_line;
+//            $this->label = $objp->custom_label;
+//            $this->desc = $objp->description;
+//            $this->qty = $objp->qty;
+//            $this->price = $objp->price;  // deprecated
+//            $this->subprice = $objp->subprice;
+//            $this->tva_tx = $objp->tva_tx;
+//            $this->remise = $objp->remise;
+//            $this->remise_percent = $objp->remise_percent;
+//            $this->fk_remise_except = $objp->fk_remise_except;
+//            $this->fk_product = $objp->fk_product;
+//            $this->info_bits = $objp->info_bits;
+//
+//            $this->total_ht = $objp->total_ht;
+//            $this->total_tva = $objp->total_tva;
+//            $this->total_ttc = $objp->total_ttc;
+//
+//            $this->fk_fournprice = $objp->fk_fournprice;
+//
+//            $marginInfos = getMarginInfos($objp->subprice, $objp->remise_percent, $objp->tva_tx, $objp->localtax1_tx, $objp->localtax2_tx, $this->fk_fournprice, $objp->pa_ht);
+//            $this->pa_ht = $marginInfos[0];
+//            $this->marge_tx = $marginInfos[1];
+//            $this->marque_tx = $marginInfos[2];
+//
+//            $this->special_code = $objp->special_code;
+//            $this->rang = $objp->rang;
+//
+//            $this->ref = $objp->product_ref;      // deprecated
+//            $this->product_ref = $objp->product_ref;
+//            $this->libelle = $objp->product_label;  // deprecated
+//            $this->product_label = $objp->product_label;
+//            $this->product_desc = $objp->product_desc;
+//
+//            $this->db->free($result);
+//        } else {
+//            dol_print_error($this->db);
+//        }
     }
 
     /**
@@ -2341,7 +2495,7 @@ class PropaleLigne {
 
         $error = 0;
 
-        dol_syslog("PropaleLigne::insert rang=" . $this->rang);
+        dol_syslog("PropalLine::insert rang=" . $this->rang);
 
         // Clean parameters
         if (empty($this->tva_tx))
@@ -2380,63 +2534,64 @@ class PropaleLigne {
         if ($this->product_type < 0)
             return -1;
 
-        $this->db->begin();
-
-        // Insert line into database
-        $sql = 'INSERT INTO ' . MAIN_DB_PREFIX . 'propaldet';
-        $sql.= ' (fk_propal, fk_parent_line, label, description, fk_product, product_type, fk_remise_except, qty, tva_tx, localtax1_tx, localtax2_tx,';
-        $sql.= ' subprice, remise_percent, ';
-        $sql.= ' info_bits, ';
-        $sql.= ' total_ht, total_tva, total_localtax1, total_localtax2, total_ttc, fk_product_fournisseur_price, buy_price_ht, special_code, rang)';
-        $sql.= " VALUES (" . $this->fk_propal . ",";
-        $sql.= " " . ($this->fk_parent_line > 0 ? "'" . $this->fk_parent_line . "'" : "null") . ",";
-        $sql.= " " . (!empty($this->label) ? "'" . $this->db->escape($this->label) . "'" : "null") . ",";
-        $sql.= " '" . $this->db->escape($this->desc) . "',";
-        $sql.= " " . ($this->fk_product ? "'" . $this->fk_product . "'" : "null") . ",";
-        $sql.= " '" . $this->product_type . "',";
-        $sql.= " " . ($this->fk_remise_except ? "'" . $this->fk_remise_except . "'" : "null") . ",";
-        $sql.= " " . price2num($this->qty) . ",";
-        $sql.= " " . price2num($this->tva_tx) . ",";
-        $sql.= " " . price2num($this->localtax1_tx) . ",";
-        $sql.= " " . price2num($this->localtax2_tx) . ",";
-        $sql.= " " . ($this->subprice ? price2num($this->subprice) : 'null') . ",";
-        $sql.= " " . price2num($this->remise_percent) . ",";
-        $sql.= " '" . $this->info_bits . "',";
-        $sql.= " " . price2num($this->total_ht) . ",";
-        $sql.= " " . price2num($this->total_tva) . ",";
-        $sql.= " " . price2num($this->total_localtax1) . ",";
-        $sql.= " " . price2num($this->total_localtax2) . ",";
-        $sql.= " " . price2num($this->total_ttc) . ",";
-        $sql.= " " . (isset($this->fk_fournprice) ? "'" . $this->fk_fournprice . "'" : "null") . ",";
-        $sql.= " " . (isset($this->pa_ht) ? "'" . price2num($this->pa_ht) . "'" : "null") . ",";
-        $sql.= ' ' . $this->special_code . ',';
-        $sql.= ' ' . $this->rang;
-        $sql.= ')';
-
-        dol_syslog(get_class($this) . '::insert sql=' . $sql, LOG_DEBUG);
-        $resql = $this->db->query($sql);
-        if ($resql) {
-            $this->rowid = $this->db->last_insert_id(MAIN_DB_PREFIX . 'propaldet');
-            if (!$notrigger) {
-                // Appel des triggers
-                include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
-                $interface = new Interfaces($this->db);
-                $result = $interface->run_triggers('LINEPROPAL_INSERT', $this, $user, $langs, $conf);
-                if ($result < 0) {
-                    $error++;
-                    $this->errors = $interface->errors;
-                }
-                // Fin appel triggers
+//        $this->db->begin();
+//
+//        // Insert line into database
+//        $sql = 'INSERT INTO ' . MAIN_DB_PREFIX . 'propaldet';
+//        $sql.= ' (fk_propal, fk_parent_line, label, description, fk_product, product_type, fk_remise_except, qty, tva_tx, localtax1_tx, localtax2_tx,';
+//        $sql.= ' subprice, remise_percent, ';
+//        $sql.= ' info_bits, ';
+//        $sql.= ' total_ht, total_tva, total_localtax1, total_localtax2, total_ttc, fk_product_fournisseur_price, buy_price_ht, special_code, rang)';
+//        $sql.= " VALUES (" . $this->fk_propal . ",";
+//        $sql.= " " . ($this->fk_parent_line > 0 ? "'" . $this->fk_parent_line . "'" : "null") . ",";
+//        $sql.= " " . (!empty($this->label) ? "'" . $this->db->escape($this->label) . "'" : "null") . ",";
+//        $sql.= " '" . $this->db->escape($this->desc) . "',";
+//        $sql.= " " . ($this->fk_product ? "'" . $this->fk_product . "'" : "null") . ",";
+//        $sql.= " '" . $this->product_type . "',";
+//        $sql.= " " . ($this->fk_remise_except ? "'" . $this->fk_remise_except . "'" : "null") . ",";
+//        $sql.= " " . price2num($this->qty) . ",";
+//        $sql.= " " . price2num($this->tva_tx) . ",";
+//        $sql.= " " . price2num($this->localtax1_tx) . ",";
+//        $sql.= " " . price2num($this->localtax2_tx) . ",";
+//        $sql.= " " . ($this->subprice ? price2num($this->subprice) : 'null') . ",";
+//        $sql.= " " . price2num($this->remise_percent) . ",";
+//        $sql.= " '" . $this->info_bits . "',";
+//        $sql.= " " . price2num($this->total_ht) . ",";
+//        $sql.= " " . price2num($this->total_tva) . ",";
+//        $sql.= " " . price2num($this->total_localtax1) . ",";
+//        $sql.= " " . price2num($this->total_localtax2) . ",";
+//        $sql.= " " . price2num($this->total_ttc) . ",";
+//        $sql.= " " . (isset($this->fk_fournprice) ? "'" . $this->fk_fournprice . "'" : "null") . ",";
+//        $sql.= " " . (isset($this->pa_ht) ? "'" . price2num($this->pa_ht) . "'" : "null") . ",";
+//        $sql.= ' ' . $this->special_code . ',';
+//        $sql.= ' ' . $this->rang;
+//        $sql.= ')';
+//
+//        dol_syslog(get_class($this) . '::insert sql=' . $sql, LOG_DEBUG);
+//        $resql = $this->db->query($sql);
+//        if ($resql) {
+//            $this->rowid = $this->db->last_insert_id(MAIN_DB_PREFIX . 'propaldet');
+        $this->record();
+        if (!$notrigger) {
+            // Appel des triggers
+            include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
+            $interface = new Interfaces($this->db);
+            $result = $interface->run_triggers('LINEPROPAL_INSERT', $this, $user, $langs, $conf);
+            if ($result < 0) {
+                $error++;
+                $this->errors = $interface->errors;
             }
-
-            $this->db->commit();
-            return 1;
-        } else {
-            $this->error = $this->db->error() . " sql=" . $sql;
-            dol_syslog(get_class($this) . '::insert Error ' . $this->error, LOG_ERR);
-            $this->db->rollback();
-            return -1;
+            // Fin appel triggers
         }
+
+//            $this->db->commit();
+        return 1;
+//        } else {
+//            $this->error = $this->db->error() . " sql=" . $sql;
+//            dol_syslog(get_class($this) . '::insert Error ' . $this->error, LOG_ERR);
+//            $this->db->rollback();
+//            return -1;
+//        }
     }
 
     /**
@@ -2448,30 +2603,30 @@ class PropaleLigne {
         global $conf, $langs, $user;
 
         $error = 0;
-        $this->db->begin();
-
-        $sql = "DELETE FROM " . MAIN_DB_PREFIX . "propaldet WHERE rowid = " . $this->rowid;
-        dol_syslog("PropaleLigne::delete sql=" . $sql, LOG_DEBUG);
-        if ($this->db->query($sql)) {
-            // Appel des triggers
-            include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
-            $interface = new Interfaces($this->db);
-            $result = $interface->run_triggers('LINEPROPAL_DELETE', $this, $user, $langs, $conf);
-            if ($result < 0) {
-                $error++;
-                $this->errors = $interface->errors;
-            }
-            // Fin appel triggers
-
-            $this->db->commit();
-
-            return 1;
-        } else {
-            $this->error = $this->db->error() . " sql=" . $sql;
-            dol_syslog("PropaleLigne::delete Error " . $this->error, LOG_ERR);
-            $this->db->rollback();
-            return -1;
+        $this->deleteDoc();
+//        $this->db->begin();
+//
+//        $sql = "DELETE FROM " . MAIN_DB_PREFIX . "propaldet WHERE rowid = " . $this->rowid;
+//        dol_syslog("PropalLine::delete sql=" . $sql, LOG_DEBUG);
+//        if ($this->db->query($sql)) {
+        // Appel des triggers
+        include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
+        $interface = new Interfaces($this->db);
+        $result = $interface->run_triggers('LINEPROPAL_DELETE', $this, $user, $langs, $conf);
+        if ($result < 0) {
+            $error++;
+            $this->errors = $interface->errors;
         }
+        // Fin appel triggers
+//            $this->db->commit();
+
+        return 1;
+//        } else {
+//            $this->error = $this->db->error() . " sql=" . $sql;
+//            dol_syslog("PropalLine::delete Error " . $this->error, LOG_ERR);
+//            $this->db->rollback();
+//            return -1;
+//        }
     }
 
     /**
@@ -2520,61 +2675,62 @@ class PropaleLigne {
                 $this->pa_ht = $this->subprice * (1 - $this->remise_percent / 100);
         }
 
-        $this->db->begin();
-
-        // Mise a jour ligne en base
-        $sql = "UPDATE " . MAIN_DB_PREFIX . "propaldet SET";
-        $sql.= " description='" . $this->db->escape($this->desc) . "'";
-        $sql.= " , label=" . (!empty($this->label) ? "'" . $this->db->escape($this->label) . "'" : "null");
-        $sql.= " , tva_tx='" . price2num($this->tva_tx) . "'";
-        $sql.= " , localtax1_tx=" . price2num($this->localtax1_tx);
-        $sql.= " , localtax2_tx=" . price2num($this->localtax2_tx);
-        $sql.= " , qty='" . price2num($this->qty) . "'";
-        $sql.= " , subprice=" . price2num($this->subprice) . "";
-        $sql.= " , remise_percent=" . price2num($this->remise_percent) . "";
-        $sql.= " , price=" . price2num($this->price) . "";     // TODO A virer
-        $sql.= " , remise=" . price2num($this->remise) . "";    // TODO A virer
-        $sql.= " , info_bits='" . $this->info_bits . "'";
-        if (empty($this->skip_update_total)) {
-            $sql.= " , total_ht=" . price2num($this->total_ht) . "";
-            $sql.= " , total_tva=" . price2num($this->total_tva) . "";
-            $sql.= " , total_ttc=" . price2num($this->total_ttc) . "";
-            $sql.= " , total_localtax1=" . price2num($this->total_localtax1) . "";
-            $sql.= " , total_localtax2=" . price2num($this->total_localtax2) . "";
-        }
-        $sql.= " , fk_product_fournisseur_price='" . $this->fk_fournprice . "'";
-        $sql.= " , buy_price_ht='" . price2num($this->pa_ht) . "'";
-        $sql.= " , info_bits=" . $this->info_bits;
-        if (strlen($this->special_code))
-            $sql.= " , special_code=" . $this->special_code;
-        $sql.= " , fk_parent_line=" . ($this->fk_parent_line > 0 ? $this->fk_parent_line : "null");
-        if (!empty($this->rang))
-            $sql.= ", rang=" . $this->rang;
-        $sql.= " WHERE rowid = " . $this->rowid;
-
-        dol_syslog(get_class($this) . "::update sql=" . $sql, LOG_DEBUG);
-        $resql = $this->db->query($sql);
-        if ($resql) {
-            if (!$notrigger) {
-                // Appel des triggers
-                include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
-                $interface = new Interfaces($this->db);
-                $result = $interface->run_triggers('LINEPROPAL_UPDATE', $this, $user, $langs, $conf);
-                if ($result < 0) {
-                    $error++;
-                    $this->errors = $interface->errors;
-                }
-                // Fin appel triggers
+        $this->record();
+//        $this->db->begin();
+//
+//        // Mise a jour ligne en base
+//        $sql = "UPDATE " . MAIN_DB_PREFIX . "propaldet SET";
+//        $sql.= " description='" . $this->db->escape($this->desc) . "'";
+//        $sql.= " , label=" . (!empty($this->label) ? "'" . $this->db->escape($this->label) . "'" : "null");
+//        $sql.= " , tva_tx='" . price2num($this->tva_tx) . "'";
+//        $sql.= " , localtax1_tx=" . price2num($this->localtax1_tx);
+//        $sql.= " , localtax2_tx=" . price2num($this->localtax2_tx);
+//        $sql.= " , qty='" . price2num($this->qty) . "'";
+//        $sql.= " , subprice=" . price2num($this->subprice) . "";
+//        $sql.= " , remise_percent=" . price2num($this->remise_percent) . "";
+//        $sql.= " , price=" . price2num($this->price) . "";     // TODO A virer
+//        $sql.= " , remise=" . price2num($this->remise) . "";    // TODO A virer
+//        $sql.= " , info_bits='" . $this->info_bits . "'";
+//        if (empty($this->skip_update_total)) {
+//            $sql.= " , total_ht=" . price2num($this->total_ht) . "";
+//            $sql.= " , total_tva=" . price2num($this->total_tva) . "";
+//            $sql.= " , total_ttc=" . price2num($this->total_ttc) . "";
+//            $sql.= " , total_localtax1=" . price2num($this->total_localtax1) . "";
+//            $sql.= " , total_localtax2=" . price2num($this->total_localtax2) . "";
+//        }
+//        $sql.= " , fk_product_fournisseur_price='" . $this->fk_fournprice . "'";
+//        $sql.= " , buy_price_ht='" . price2num($this->pa_ht) . "'";
+//        $sql.= " , info_bits=" . $this->info_bits;
+//        if (strlen($this->special_code))
+//            $sql.= " , special_code=" . $this->special_code;
+//        $sql.= " , fk_parent_line=" . ($this->fk_parent_line > 0 ? $this->fk_parent_line : "null");
+//        if (!empty($this->rang))
+//            $sql.= ", rang=" . $this->rang;
+//        $sql.= " WHERE rowid = " . $this->rowid;
+//
+//        dol_syslog(get_class($this) . "::update sql=" . $sql, LOG_DEBUG);
+//        $resql = $this->db->query($sql);
+//        if ($resql) {
+        if (!$notrigger) {
+            // Appel des triggers
+            include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
+            $interface = new Interfaces($this->db);
+            $result = $interface->run_triggers('LINEPROPAL_UPDATE', $this, $user, $langs, $conf);
+            if ($result < 0) {
+                $error++;
+                $this->errors = $interface->errors;
             }
-
-            $this->db->commit();
-            return 1;
-        } else {
-            $this->error = $this->db->error();
-            dol_syslog(get_class($this) . "::update Error " . $this->error, LOG_ERR);
-            $this->db->rollback();
-            return -2;
+            // Fin appel triggers
         }
+
+//            $this->db->commit();
+        return 1;
+//        } else {
+//            $this->error = $this->db->error();
+//            dol_syslog(get_class($this) . "::update Error " . $this->error, LOG_ERR);
+//            $this->db->rollback();
+//            return -2;
+//        }
     }
 
     /**
@@ -2593,7 +2749,7 @@ class PropaleLigne {
         $sql.= ",total_ttc=" . price2num($this->total_ttc, 'MT') . "";
         $sql.= " WHERE rowid = " . $this->rowid;
 
-        dol_syslog("PropaleLigne::update_total sql=$sql");
+        dol_syslog("PropalLine::update_total sql=$sql");
 
         $resql = $this->db->query($sql);
         if ($resql) {
@@ -2601,7 +2757,7 @@ class PropaleLigne {
             return 1;
         } else {
             $this->error = $this->db->error();
-            dol_syslog("PropaleLigne::update_total Error " . $this->error, LOG_ERR);
+            dol_syslog("PropalLine::update_total Error " . $this->error, LOG_ERR);
             $this->db->rollback();
             return -2;
         }

@@ -150,7 +150,7 @@ if ($modulepart)
 	// Wrapping pour les propales
 	else if ($modulepart == 'propal')
 	{
-		if ($user->rights->propale->lire || preg_match('/^specimen/i',$original_file))
+		if ($user->rights->propal->lire || preg_match('/^specimen/i',$original_file))
 		{
 			$accessallowed=1;
 		}

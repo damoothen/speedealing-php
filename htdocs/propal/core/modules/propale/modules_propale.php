@@ -188,8 +188,8 @@ function propale_pdf_create($db, $object, $modele, $outputlangs, $hidedetails=0,
 
 	// Search template files
 	$file=''; $classname=''; $filefound=0;
-	$dirmodels=array('/');
-	if (is_array($conf->modules_parts['models'])) $dirmodels=array_merge($dirmodels,$conf->modules_parts['models']);
+	$dirmodels=array('/propal/');
+  	if (is_array($conf->modules_parts['models'])) $dirmodels=array_merge($dirmodels,$conf->modules_parts['models']);
 	foreach($dirmodels as $reldir)
 	{
     	foreach(array('doc','pdf') as $prefix)
@@ -208,7 +208,7 @@ function propale_pdf_create($db, $object, $modele, $outputlangs, $hidedetails=0,
     	if ($filefound) break;
     }
 
-	// Charge le modele
+    // Charge le modele
 	if ($filefound)
 	{
 		require_once $file;
@@ -216,7 +216,7 @@ function propale_pdf_create($db, $object, $modele, $outputlangs, $hidedetails=0,
 		$obj = new $classname($db);
 		//$obj->message = $message;
 
-		// We save charset_output to restore it because write_file can change it if needed for
+        	// We save charset_output to restore it because write_file can change it if needed for
 		// output format that does not support UTF8.
 		$sav_charset_output=$outputlangs->charset_output;
 		if ($obj->write_file($object, $outputlangs, $srctemplatepath, $hidedetails, $hidedesc, $hideref, $hookmanager) > 0)
