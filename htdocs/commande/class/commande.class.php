@@ -33,7 +33,7 @@ require_once DOL_DOCUMENT_ROOT .'/margin/lib/margins.lib.php';
 /**
  *  Class to manage customers orders
  */
-class Commande extends CommonOrder
+class Commande extends nosqlDocument
 {
     public $element='commande';
     public $table_element='commande';
@@ -108,7 +108,10 @@ class Commande extends CommonOrder
      */
     function __construct($db)
     {
-        $this->db = $db;
+        parent::__construct($db);
+        
+        $this->fk_extrafields = new ExtraFields($db);
+        $this->fk_extrafields->fetch(get_class($this));
 
         $this->remise = 0;
         $this->remise_percent = 0;

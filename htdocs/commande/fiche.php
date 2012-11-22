@@ -54,14 +54,14 @@ $langs->load('products');
 if (! empty($conf->margin->enabled))
 	$langs->load('margins');
 
-$id=(GETPOST('id','int')?GETPOST('id','int'):GETPOST('orderid','int'));
+$id=(GETPOST('id','alpha')?GETPOST('id','alpha'):GETPOST('orderid','alpha'));
 $ref=GETPOST('ref','alpha');
-$socid=GETPOST('socid','int');
+$socid=GETPOST('socid','alpha');
 $action=GETPOST('action','alpha');
 $confirm=GETPOST('confirm','alpha');
-$lineid=GETPOST('lineid','int');
+$lineid=GETPOST('lineid','alpha');
 $origin=GETPOST('origin','alpha');
-$originid=(GETPOST('originid','int')?GETPOST('originid','int'):GETPOST('origin_id','int')); // For backward compatibility
+$originid=(GETPOST('originid','alpha')?GETPOST('originid','alpha'):GETPOST('origin_id','alpha')); // For backward compatibility
 
 $mesg    = GETPOST('mesg');
 
@@ -1436,7 +1436,7 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 		print '</tr>';
 
 		// Client
-		print '<tr><td class="fieldrequired">'.$langs->trans('Customer').'</td><td colspan="2">'.$soc->getNomUrl(1).'</td></tr>';
+		print '<tr><td class="fieldrequired">'.$langs->trans('Customer').'</td><td colspan="2">'.$form->select_company($socid, "socid").'</td></tr>';
 
 		/*
 		 * Contact de la commande
@@ -1476,23 +1476,27 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 
 		// Conditions de reglement
 		print '<tr><td nowrap="nowrap">'.$langs->trans('PaymentConditionsShort').'</td><td colspan="2">';
-		$form->select_conditions_paiements($soc->cond_reglement,'cond_reglement_id',-1,1);
-		print '</td></tr>';
+//		$form->select_conditions_paiements($soc->cond_reglement,'cond_reglement_id',-1,1);
+                print $object->select_fk_extrafields('cond_reglement_code', 'cond_reglement_code');
+                print '</td></tr>';
 
 		// Mode de reglement
 		print '<tr><td>'.$langs->trans('PaymentMode').'</td><td colspan="2">';
-		$form->select_types_paiements($soc->mode_reglement,'mode_reglement_id');
-		print '</td></tr>';
+//		$form->select_types_paiements($soc->mode_reglement,'mode_reglement_id');
+		print $object->select_fk_extrafields('mode_reglement_code', 'mode_reglement_code');
+                print '</td></tr>';
 
 		// Delivery delay
 		print '<tr><td>'.$langs->trans('AvailabilityPeriod').'</td><td colspan="2">';
-		$form->select_availability($propal->availability,'availability_id','',1);
+//		$form->select_availability($propal->availability,'availability_id','',1);
+		print $object->select_fk_extrafields('availability_code', 'availability_code');
 		print '</td></tr>';
 
 		// What trigger creation
 		print '<tr><td>'.$langs->trans('Source').'</td><td colspan="2">';
-		$form->select_demand_reason(($origin=='propal'?'SRC_COMM':''),'demand_reason_id','',1);
-		print '</td></tr>';
+//		$form->select_demand_reason(($origin=='propal'?'SRC_COMM':''),'demand_reason_id','',1);
+		print $object->select_fk_extrafields('demand_reason_code', 'demand_reason_code');
+                print '</td></tr>';
 
 		// Project
 		if (! empty($conf->projet->enabled))
@@ -1526,7 +1530,7 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 		// Template to use by default
 		print '<tr><td>'.$langs->trans('Model').'</td>';
 		print '<td colspan="2">';
-		include_once DOL_DOCUMENT_ROOT.'/core/modules/commande/modules_commande.php';
+		include_once DOL_DOCUMENT_ROOT.'/commande/core/modules/commande/modules_commande.php';
 		$liste=ModelePDFCommandes::liste_modeles($db);
 		print $form->selectarray('model',$liste,$conf->global->COMMANDE_ADDON_PDF);
 		print "</td></tr>";
