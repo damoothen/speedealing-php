@@ -2882,6 +2882,283 @@ class Commande extends nosqlDocument
         }
         return -2;
     }
+    
+        /*
+     * Graph comptes by status
+     *
+     */
+
+    function graphPieStatus($json = false) {
+        global $user, $conf, $langs;
+
+        //$color = array(-1 => "#A51B00", 0 => "#CCC", 1 => "#000", 2 => "#FEF4AE", 3 => "#666", 4 => "#1f17c1", 5 => "#DE7603", 6 => "#D40000", 7 => "#7ac52e", 8 => "#1b651b", 9 => "#66c18c", 10 => "#2e99a0");
+
+        if ($json) { // For Data see viewgraph.php
+            $langs->load("orders");
+
+            $params = array('group' => true);
+            $result = $this->getView("count_status", $params);
+            $filter = false;
+
+            //print_r($result);
+            $i = 0;
+
+            foreach ($result->rows as $aRow) {
+                if ($filter)
+                    $key = $aRow->key[1];
+                else
+                    $key = $aRow->key;
+                $label = $langs->trans($this->fk_extrafields->fields->Status->values->$key->label);
+                if (empty($label))
+                    $label = $langs->trans($aRow->key);
+
+                if ($i == 0) { // first element
+                    $output[$i]->name = $label;
+                    $output[$i]->y = $aRow->value;
+                    $output[$i]->sliced = true;
+                    $output[$i]->selected = true;
+                }
+                else
+                    $output[$i] = array($label, $aRow->value);
+                $i++;
+            }
+            return $output;
+        } else {
+            $total = 0;
+            $i = 0;
+            ?>
+            <div id="pie-status" style="min-width: 100px; height: 280px; margin: 0 auto"></div>
+            <script type="text/javascript">
+                (function($){ // encapsulate jQuery
+
+                    $(function() {
+                        var seriesOptions = [],
+                        yAxisOptions = [],
+                        seriesCounter = 0,
+                        colors = Highcharts.getOptions().colors;
+
+                        $.getJSON('<?php echo DOL_URL_ROOT . '/core/ajax/viewgraph.php'; ?>?json=graphPieStatus&class=<?php echo get_class($this); ?>&callback=?',	function(data) {
+
+                            seriesOptions = data;
+
+                            createChart();
+
+                        });
+
+
+                        // create the chart when all data is loaded
+                        function createChart() {
+                            var chart;
+                                                                                                                                                                                                                                                                                                                                                                                                                    
+                            chart = new Highcharts.Chart({
+                                chart: {
+                                    renderTo: "pie-status",
+                                    //defaultSeriesType: "bar",
+                                    margin: 0,
+                                    plotBackgroundColor: null,
+                                    plotBorderWidth: null,
+                                    plotShadow: false
+                                },
+                                legend: {
+                                    layout: "vertical", backgroundColor: Highcharts.theme.legendBackgroundColor || "#FFFFFF", align: "left", verticalAlign: "bottom", x: 0, y: 20, floating: true, shadow: true,
+                                    enabled: false
+                                },
+                                title: {
+                                    text: null
+                                },
+
+                                tooltip: {
+                                    enabled:true,
+                                    pointFormat: '{series.name}: <b>{point.percentage}%</b>',
+                                    percentageDecimals: 2
+                                },
+                                navigator: {
+                                    margin: 30
+                                },
+                                plotOptions: {
+                                    pie: {
+                                        allowPointSelect: true,
+                                        cursor: 'pointer',
+                                        dataLabels: {
+                                            enabled: true,
+                                            color: '#FFF',
+                                            connectorColor: '#FFF',
+                                            distance : 30,
+                                            formatter: function() {
+                                                return '<b>'+ this.point.name +'</b><br> '+ Math.round(this.percentage) +' %';
+                                            }
+                                        }
+                                    }
+                                },
+                                series: [{
+                                        type: "pie",
+                                        name: "<?php echo $langs->trans("Quantity"); ?>",
+                                        size: 100,
+                                        data: seriesOptions
+                                    }]
+                            });
+                        }
+
+                    });
+                })(jQuery);
+            </script>
+            <?php
+        }
+    }
+    
+        /*
+     * Graph comptes by status
+     *
+     */
+
+    function graphBarStatus($json = false) {
+        global $user, $conf, $langs;
+
+        $langs->load("orders");
+
+        if ($json) { // For Data see viewgraph.php
+            $keystart[0] = $_GET["name"];
+            $keyend[0] = $_GET["name"];
+            $keyend[1] = new stdClass();
+
+            $params = array('group' => true, 'group_level' => 2, 'startkey' => $keystart, 'endkey' => $keyend);
+            $result = $this->getView("count_status", $params);
+
+            foreach ($this->fk_extrafields->fields->Status->values as $key => $aRow) {
+                //print_r($aRow);exit;
+                $label = $langs->trans($key);
+                if ($aRow->enable) {
+                    $tab[$key]->label = $label;
+                    $tab[$key]->value = 0;
+                }
+            }
+
+            foreach ($result->rows as $aRow) // Update counters from view
+                $tab[$aRow->key[1]]->value+=$aRow->value;
+
+            foreach ($tab as $aRow)
+                $output[] = array($aRow->label, $aRow->value);
+
+            return $output;
+        } else {
+            $total = 0;
+            $i = 0;
+            ?>
+            <div id="bar-status" style="min-width: 100px; height: 280px; margin: 0 auto"></div>
+            <script type="text/javascript">
+                (function($){ // encapsulate jQuery
+
+                    $(function() {
+                        var seriesOptions = [],
+                        yAxisOptions = [],
+                        seriesCounter = 0,
+                        names = [<?php
+                $params = array('group' => true, 'group_level' => 1);
+                $result = $this->getView("commercial_status", $params);
+
+            if (count($result->rows)) {
+                foreach ($result->rows as $aRow) {
+                    if ($i == 0)
+                        echo "'" . $aRow->key[0] . "'";
+                    else
+                        echo ",'" . $aRow->key[0] . "'";
+                    $i++;
+                }
+            }
+            ?>],
+                            colors = Highcharts.getOptions().colors;
+                            $.each(names, function(i, name) {
+
+                                $.getJSON('<?php echo DOL_URL_ROOT . '/core/ajax/viewgraph.php'; ?>?json=graphBarStatus&class=<?php echo get_class($this); ?>&name='+ name.toString() +'&callback=?',	function(data) {
+
+                                    seriesOptions[i] = {
+                                        name: name,
+                                        data: data
+                                    };
+
+                                    // As we're loading the data asynchronously, we don't know what order it will arrive. So
+                                    // we keep a counter and create the chart when all the data is loaded.
+                                    seriesCounter++;
+
+                                    if (seriesCounter == names.length) {
+                                        createChart();
+                                    }
+                                });
+                            });
+
+
+                            // create the chart when all data is loaded
+                            function createChart() {
+                                var chart;
+                                                                                                                                                                                                                                                                                                                                                                                                                    
+                                chart = new Highcharts.Chart({
+                                    chart: {
+                                        renderTo: 'bar-status',
+                                        defaultSeriesType: "column",
+                                        zoomType: "x",
+                                        marginBottom: 30
+                                    },
+                                    credits: {
+                                        enabled:false
+                                    },
+                                    xAxis: {
+                                        categories: [<?php
+            $i = 0;
+            foreach ($this->fk_extrafields->fields->Status->values as $key => $aRow) {
+                $label = $langs->trans($aRow->label);
+                if (empty($label))
+                    $label = $langs->trans($key);
+                if ($aRow->enable) {
+                    if ($i == 0)
+                        echo "'" . $label . "'";
+                    else
+                        echo ",'" . $label . "'";
+
+                    $i++;
+                }
+            }
+            ?>],
+                                            maxZoom: 1
+                                            //labels: {rotation: 90, align: "left"}
+                                        },
+                                        yAxis: {
+                                            title: {text: "Total"},
+                                            allowDecimals: false,
+                                            min: 0
+                                        },
+                                        title: {
+                                            //text: "<?php echo $langs->trans("SalesRepresentatives"); ?>"
+                                            text: null
+                                        },
+                                        legend: {
+                                            layout: 'vertical',
+                                            align: 'right',
+                                            verticalAlign: 'top',
+                                            x: -5,
+                                            y: 5,
+                                            floating: true,
+                                            borderWidth: 1,
+                                            backgroundColor: Highcharts.theme.legendBackgroundColor || '#FFFFFF',
+                                            shadow: true
+                                        },
+                                        tooltip: {
+                                            enabled:true,
+                                            formatter: function() {
+                                                //return this.point.name + ' : ' + this.y;
+                                                return '<b>'+ this.x +'</b><br/>'+
+                                                    this.series.name +': '+ this.y;
+                                            }
+                                        },
+                                        series: seriesOptions
+                                    });
+                                }
+
+                            });
+                        })(jQuery);
+            </script>
+            <?php
+        }
+    }
 
 
 }

@@ -14,6 +14,10 @@
        },
        "linesPerCommande": {
            "map": "function(doc) {\nif (doc.class && doc.class == \"OrderLine\")\n  emit(doc.fk_commande, doc);\n}"
+       },
+       "count_status": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"Commande\")\n  emit(doc.Status, 1);\n}",
+           "reduce": "function(keys, values){\nreturn sum(values);\n}"
        }
    }
 }

@@ -4,6 +4,7 @@
  * Copyright (C) 2005      Marc Barilley / Ocebo  <marc@ocebo.com>
  * Copyright (C) 2005-2012 Regis Houssin          <regis@dolibarr.fr>
  * Copyright (C) 2012      Juanjo Menent          <jmenent@2byte.es>
+ * Copyright (C) 2012      David Moothen          <dmoothen@websitti.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,58 +36,42 @@ $langs->load('orders');
 $langs->load('deliveries');
 $langs->load('companies');
 
-$orderyear=GETPOST("orderyear","int");
-$ordermonth=GETPOST("ordermonth","int");
-$deliveryyear=GETPOST("deliveryyear","int");
-$deliverymonth=GETPOST("deliverymonth","int");
-$sref=GETPOST('sref','alpha');
-$sref_client=GETPOST('sref_client','alpha');
-$snom=GETPOST('snom','alpha');
-$sall=GETPOST('sall');
-$socid=GETPOST('socid','int');
-$search_user=GETPOST('search_user','int');
-$search_sale=GETPOST('search_sale','int');
+$object = new Commande($db);
+$societe = new Societe($db);
 
-// Security check
-$id = (GETPOST('orderid')?GETPOST('orderid'):GETPOST('id','int'));
-if ($user->societe_id) $socid=$user->societe_id;
-$result = restrictedArea($user, 'commande', $id,'');
+if (!empty($_GET['json'])) {
+    $output = array(
+        "sEcho" => intval($_GET['sEcho']),
+        "iTotalRecords" => 0,
+        "iTotalDisplayRecords" => 0,
+        "aaData" => array()
+    );
 
-$sortfield = GETPOST("sortfield",'alpha');
-$sortorder = GETPOST("sortorder",'alpha');
-$page = GETPOST("page",'int');
-if ($page == -1) { $page = 0; }
-$offset = $conf->liste_limit * $page;
-$pageprev = $page - 1;
-$pagenext = $page + 1;
-if (! $sortfield) $sortfield='c.rowid';
-if (! $sortorder) $sortorder='DESC';
-$limit = $conf->liste_limit;
+//    $keystart[0] = $user->id;
+//    $keyend[0] = $user->id;
+//    $keyend[1] = new stdClass();
 
-$viewstatut=GETPOST('viewstatut');
+    /* $params = array('startkey' => array($user->id, mktime(0, 0, 0, date("m") - 1, date("d"), date("Y"))),
+      'endkey' => array($user->id, mktime(0, 0, 0, date("m") + 1, date("d"), date("Y")))); */
 
+    try {
+        $result = $object->getView($_GET["json"]);
+    } catch (Exception $exc) {
+        print $exc->getMessage();
+    }
 
-/*
- * Actions
- */
+    $iTotal = count($result->rows);
+    $output["iTotalRecords"] = $iTotal;
+    $output["iTotalDisplayRecords"] = $iTotal;
+    $i = 0;
+    foreach ($result->rows as $aRow) {
+        $output["aaData"][] = $aRow->value;
+    }
 
-// Do we click on purge search criteria ?
-if (GETPOST("button_removefilter_x"))
-{
-    $search_categ='';
-    $search_user='';
-    $search_sale='';
-    $search_ref='';
-    $search_refcustomer='';
-    $search_societe='';
-    $search_montant_ht='';
-    $orderyear='';
-    $ordermonth='';
-    $deliverymonth='';
-    $deliveryyear='';
+    header('Content-type: application/json');
+    echo json_encode($output);
+    exit;
 }
-
-
 
 /*
  * View
@@ -100,295 +85,186 @@ $formfile = new FormFile($db);
 $companystatic = new Societe($db);
 
 $help_url="EN:Module_Customers_Orders|FR:Module_Commandes_Clients|ES:Módulo_Pedidos_de_clientes";
-llxHeader('',$langs->trans("Orders"),$help_url);
+$title = $langs->trans('Orders');
+llxHeader('',$title,$help_url);
+print_fiche_titre($title);
+?>
+<div class="dashboard">
+    <div class="columns">
+        <div class="four-columns twelve-columns-mobile graph">
+            <?php $object->graphPieStatus(); ?>
+        </div>
 
-$sql = 'SELECT s.nom, s.rowid as socid, s.client, c.rowid, c.ref, c.total_ht, c.ref_client,';
-$sql.= ' c.date_valid, c.date_commande, c.date_livraison, c.fk_statut, c.facture as facturee';
-$sql.= ' FROM '.MAIN_DB_PREFIX.'societe as s';
-$sql.= ', '.MAIN_DB_PREFIX.'commande as c';
-// We'll need this table joined to the select in order to filter by sale
-if ($search_sale > 0 || (! $user->rights->societe->client->voir && ! $socid)) $sql .= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
-if ($search_user > 0)
-{
-    $sql.=", ".MAIN_DB_PREFIX."element_contact as ec";
-    $sql.=", ".MAIN_DB_PREFIX."c_type_contact as tc";
+        <div class="eight-columns twelve-columns-mobile new-row-mobile graph">
+            <?php $object->graphBarStatus(); ?>
+        </div>
+    </div>
+</div>
+<?php
+print '<div class="with-padding" >';
+
+/*
+ * Barre d'actions
+ *
+ */
+
+if ($user->rights->commande->creer) {
+    print '<p class="button-height right">';
+    print '<span class="button-group">';
+    print '<a class="button icon-star" href="commande/commande.php?action=create">' . $langs->trans("NewOrder") . '</a>';
+    print "</span>";
+    print "</p>";
 }
-$sql.= ' WHERE c.fk_soc = s.rowid';
-$sql.= ' AND c.entity = '.$conf->entity;
-if ($socid)	$sql.= ' AND s.rowid = '.$socid;
-if (!$user->rights->societe->client->voir && !$socid) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$user->id;
-if ($sref)
-{
-	$sql.= " AND c.ref LIKE '%".$db->escape($sref)."%'";
-}
-if ($sall)
-{
-	$sql.= " AND (c.ref LIKE '%".$db->escape($sall)."%' OR c.note LIKE '%".$db->escape($sall)."%')";
-}
-if ($viewstatut <> '')
-{
-	if ($viewstatut < 4 && $viewstatut > -3)
-	{
-		$sql.= ' AND c.fk_statut ='.$viewstatut; // brouillon, validee, en cours, annulee
-		if ($viewstatut == 3)
-		{
-			$sql.= ' AND c.facture = 0'; // need to create invoice
-		}
-	}
-	if ($viewstatut == 4)
-	{
-		$sql.= ' AND c.facture = 1'; // invoice created
-	}
-	if ($viewstatut == -2)	// To process
-	{
-		//$sql.= ' AND c.fk_statut IN (1,2,3) AND c.facture = 0';
-		$sql.= " AND ((c.fk_statut IN (1,2)) OR (c.fk_statut = 3 AND c.facture = 0))";    // If status is 2 and facture=1, it must be selected
-	}
-	if ($viewstatut == -3)	// To bill
-	{
-		$sql.= ' AND c.fk_statut in (1,2,3)';
-		$sql.= ' AND c.facture = 0'; // invoice not created
-	}
-}
-if ($ordermonth > 0)
-{
-    if ($orderyear > 0 && empty($day))
-    $sql.= " AND c.date_valid BETWEEN '".$db->idate(dol_get_first_day($orderyear,$ordermonth,false))."' AND '".$db->idate(dol_get_last_day($orderyear,$ordermonth,false))."'";
-    else if ($orderyear > 0 && ! empty($day))
-    $sql.= " AND c.date_valid BETWEEN '".$db->idate(dol_mktime(0, 0, 0, $ordermonth, $day, $orderyear))."' AND '".$db->idate(dol_mktime(23, 59, 59, $ordermonth, $day, $orderyear))."'";
-    else
-    $sql.= " AND date_format(c.date_valid, '%m') = '".$ordermonth."'";
-}
-else if ($orderyear > 0)
-{
-    $sql.= " AND c.date_valid BETWEEN '".$db->idate(dol_get_first_day($orderyear,1,false))."' AND '".$db->idate(dol_get_last_day($orderyear,12,false))."'";
-}
-if ($deliverymonth > 0)
-{
-    if ($deliveryyear > 0 && empty($day))
-    $sql.= " AND c.date_livraison BETWEEN '".$db->idate(dol_get_first_day($deliveryyear,$deliverymonth,false))."' AND '".$db->idate(dol_get_last_day($deliveryyear,$deliverymonth,false))."'";
-    else if ($deliveryyear > 0 && ! empty($day))
-    $sql.= " AND c.date_livraison BETWEEN '".$db->idate(dol_mktime(0, 0, 0, $deliverymonth, $day, $deliveryyear))."' AND '".$db->idate(dol_mktime(23, 59, 59, $deliverymonth, $day, $deliveryyear))."'";
-    else
-    $sql.= " AND date_format(c.date_livraison, '%m') = '".$deliverymonth."'";
-}
-else if ($deliveryyear > 0)
-{
-    $sql.= " AND c.date_livraison BETWEEN '".$db->idate(dol_get_first_day($deliveryyear,1,false))."' AND '".$db->idate(dol_get_last_day($deliveryyear,12,false))."'";
-}
-if (!empty($snom))
-{
-	$sql.= ' AND s.nom LIKE \'%'.$db->escape($snom).'%\'';
-}
-if (!empty($sref_client))
-{
-	$sql.= ' AND c.ref_client LIKE \'%'.$db->escape($sref_client).'%\'';
-}
-if ($search_sale > 0) $sql.= " AND s.rowid = sc.fk_soc AND sc.fk_user = " .$search_sale;
-if ($search_user > 0)
-{
-    $sql.= " AND ec.fk_c_type_contact = tc.rowid AND tc.element='commande' AND tc.source='internal' AND ec.element_id = c.rowid AND ec.fk_socpeople = ".$search_user;
-}
+print '</div>';
 
-$sql.= ' ORDER BY '.$sortfield.' '.$sortorder;
-$sql.= $db->plimit($limit + 1,$offset);
+$i = 0;
+$obj = new stdClass();
+print '<table class="display dt_act" id="listorders" >';
+// Ligne des titres 
+print'<thead>';
+print'<tr>';
+print'<th>';
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "_id";
+$obj->aoColumns[$i]->bUseRendered = false;
+$obj->aoColumns[$i]->bSearchable = false;
+$obj->aoColumns[$i]->bVisible = false;
+$i++;
+print'<th class="essential">';
+print $langs->trans("Ref");
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "ref";
+$obj->aoColumns[$i]->bUseRendered = false;
+$obj->aoColumns[$i]->bSearchable = true;
+$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("ref", "url", array('url' => 'commande/commande.php?id='));
+$i++;
+print'<th class="essential">';
+print $langs->trans('Company');
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "client.name";
+$obj->aoColumns[$i]->sDefaultContent = "";
+$obj->aoColumns[$i]->fnRender = $societe->datatablesFnRender("client.name", "url", array('id' => "client.id"));
+$i++;
+print'<th class="essential">';
+print $langs->trans("RefCustomer");
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "ref_client";
+$obj->aoColumns[$i]->bUseRendered = false;
+$obj->aoColumns[$i]->bSearchable = true;
+$i++;
+print'<th class="essential">';
+print $langs->trans('Date');
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "date";
+$obj->aoColumns[$i]->sClass = "center";
+$obj->aoColumns[$i]->sDefaultContent = "";
+$obj->aoColumns[$i]->bUseRendered = false;
+$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("date", "datetime");
+//$obj->aoColumns[$i]->sClass = "edit";
+$i++;
+print'<th class="essential">';
+print $langs->trans('DateEnd');
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "date_livraison";
+$obj->aoColumns[$i]->sClass = "center";
+$obj->aoColumns[$i]->sDefaultContent = "";
+$obj->aoColumns[$i]->bUseRendered = false;
+$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("date_livraison", "datetime");
+//$obj->aoColumns[$i]->sClass = "edit";
+$i++;
 
-//print $sql;
-$resql = $db->query($sql);
-if ($resql)
-{
-	if ($socid)
-	{
-		$soc = new Societe($db);
-		$soc->fetch($socid);
-		$title = $langs->trans('ListOfOrders') . ' - '.$soc->nom;
-	}
-	else
-	{
-		$title = $langs->trans('ListOfOrders');
-	}
-	if (strval($viewstatut) == '0')
-	$title.=' - '.$langs->trans('StatusOrderDraftShort');
-	if ($viewstatut == 1)
-	$title.=' - '.$langs->trans('StatusOrderValidatedShort');
-	if ($viewstatut == 2)
-	$title.=' - '.$langs->trans('StatusOrderOnProcessShort');
-	if ($viewstatut == 3)
-	$title.=' - '.$langs->trans('StatusOrderToBillShort');
-	if ($viewstatut == 4)
-	$title.=' - '.$langs->trans('StatusOrderProcessedShort');
-	if ($viewstatut == -1)
-	$title.=' - '.$langs->trans('StatusOrderCanceledShort');
-	if ($viewstatut == -2)
-	$title.=' - '.$langs->trans('StatusOrderToProcessShort');
-	if ($viewstatut == -3)
-	$title.=' - '.$langs->trans('StatusOrderValidated').', '.$langs->trans("StatusOrderSent").', '.$langs->trans('StatusOrderToBill');
+//print'<th class="essential">';
+//print $langs->trans('Contact');
+//print'</th>';
+//$obj->aoColumns[$i]->mDataProp = "contact.name";
+//$obj->aoColumns[$i]->sDefaultContent = "";
+//$obj->aoColumns[$i]->fnRender = $contact->datatablesFnRender("contact.name", "url", array('id' => "contact.id"));
+//$i++;
+ print'<th class="essential">';
+  print $langs->trans('ActionUserAsk');
+  print'</th>';
+  $obj->aoColumns[$i]->mDataProp = "author";
+  $obj->aoColumns[$i]->sDefaultContent = "";
+  //$obj->aoColumns[$i]->fnRender = $userstatic->datatablesFnRender("author.name", "url", array('id' => "author.id"));
+  $i++; 
+print'<th class="essential">';
+print $langs->trans("Status");
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "Status";
+$obj->aoColumns[$i]->sClass = "center";
+$obj->aoColumns[$i]->sDefaultContent = "DRAFT";
+$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("Status", "status");
+$i++;
+print'<th class="essential">';
+print $langs->trans('Action');
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "";
+$obj->aoColumns[$i]->sClass = "center content_actions";
+$obj->aoColumns[$i]->sWidth = "60px";
+$obj->aoColumns[$i]->bSortable = false;
+$obj->aoColumns[$i]->sDefaultContent = "";
 
-	$param='&socid='.$socid.'&viewstatut='.$viewstatut;
-	if ($ordermonth)      $param.='&ordermonth='.$ordermonth;
-	if ($orderyear)       $param.='&orderyear='.$orderyear;
-	if ($deliverymonth)   $param.='&deliverymonth='.$deliverymonth;
-	if ($deliveryyear)    $param.='&deliveryyear='.$deliveryyear;
-	if ($sref)            $param.='&sref='.$sref;
-	if ($snom)            $param.='&snom='.$snom;
-	if ($sref_client)     $param.='&sref_client='.$sref_client;
-	if ($search_user > 0) $param.='&search_user='.$search_user;
-	if ($search_sale > 0) $param.='&search_sale='.$search_sale;
+$url = "commande/commande.php";
+$obj->aoColumns[$i]->fnRender = 'function(obj) {
+	var ar = [];
+	ar[ar.length] = "<a href=\"' . $url . '?id=";
+	ar[ar.length] = obj.aData._id.toString();
+	ar[ar.length] = "&action=edit&backtopage=' . $_SERVER['PHP_SELF'] . '\" class=\"sepV_a\" title=\"' . $langs->trans("Edit") . '\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/edit.png\" alt=\"\" /></a>";
+	ar[ar.length] = "<a href=\"\"";
+	ar[ar.length] = " class=\"delEnqBtn\" title=\"' . $langs->trans("Delete") . '\"><img src=\"' . DOL_URL_ROOT . '/theme/' . $conf->theme . '/img/delete.png\" alt=\"\" /></a>";
+	var str = ar.join("");
+	return str;
+}';
+print'</tr>';
+print'</thead>';
+print'<tfoot>';
+/* input search view */
+$i = 0; //Doesn't work with bServerSide
+print'<tr>';
+print'<th id="' . $i . '"></th>';
+$i++;
+print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Ref") . '" /></th>';
+$i++;
+print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Company") . '" /></th>';
+$i++;
+print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search RefCustomer") . '" /></th>';
+$i++;
+print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Date") . '" /></th>';
+$i++;
+print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search DateEnd") . '" /></th>';
+$i++;
+print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search author") . '" /></th>';
+$i++; 
+//print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Status") . '" /></th>';
+//$i++;
+print'<th id="' . $i . '"></th>';
+$i++;
+print'</tr>';
+print'</tfoot>';
+print'<tbody>';
+print'</tbody>';
 
-	$num = $db->num_rows($resql);
-	print_barre_liste($title, $page,$_SERVER["PHP_SELF"],$param,$sortfield,$sortorder,'',$num);
-	$i = 0;
+print "</table>";
 
-	// Lignes des champs de filtre
-	print '<form method="GET" action="'.$_SERVER["PHP_SELF"].'">';
-	print '<input type="hidden" name="viewstatut" value="'.$viewstatut.'">';
+$obj->aaSorting = array(array(2, 'asc'));
+//$obj->bServerSide = true;
 
-	print '<table class="noborder" width="100%">';
+//if ($all) {
+//    if ($type == "DONE")
+//        $obj->sAjaxSource = "core/ajax/listdatatables.php?json=actionsDONE&class=" . get_class($object);
+//    else
+//        $obj->sAjaxSource = "core/ajax/listdatatables.php?json=actionsTODO&class=" . get_class($object);
+//} else {
+//    if ($type == "DONE")
+//        $obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=listDONEByUser";
+//    else
+//        $obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=listTODOByUser";
+//        
+//}
+$obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=list";
 
-	$moreforfilter='';
+$object->datatablesCreate($obj, "listorders", true, true);
 
- 	// If the user can view prospects other than his'
- 	if ($user->rights->societe->client->voir || $socid)
- 	{
- 		$langs->load("commercial");
- 		$moreforfilter.=$langs->trans('ThirdPartiesOfSaleRepresentative'). ': ';
-		$moreforfilter.=$formother->select_salesrepresentatives($search_sale,'search_sale',$user);
-	 	$moreforfilter.=' &nbsp; &nbsp; &nbsp; ';
- 	}
-	// If the user can view prospects other than his'
-	if ($user->rights->societe->client->voir || $socid)
-	{
-	    $moreforfilter.=$langs->trans('LinkedToSpecificUsers'). ': ';
-	    $moreforfilter.=$form->select_dolusers($search_user,'search_user',1);
-	}
-	if (! empty($moreforfilter))
-	{
-	    print '<tr class="liste_titre">';
-	    print '<td class="liste_titre" colspan="9">';
-	    print $moreforfilter;
-	    print '</td></tr>';
-	}
-
-	print '<tr class="liste_titre">';
-	print_liste_field_titre($langs->trans('Ref'),$_SERVER["PHP_SELF"],'c.ref','',$param,'width="25%"',$sortfield,$sortorder);
-	print_liste_field_titre($langs->trans('Company'),$_SERVER["PHP_SELF"],'s.nom','',$param,'',$sortfield,$sortorder);
-	print_liste_field_titre($langs->trans('RefCustomerOrder'),$_SERVER["PHP_SELF"],'c.ref_client','',$param,'',$sortfield,$sortorder);
-	print_liste_field_titre($langs->trans('OrderDate'),$_SERVER["PHP_SELF"],'c.date_commande','',$param, 'align="right"',$sortfield,$sortorder);
-	print_liste_field_titre($langs->trans('DeliveryDate'),$_SERVER["PHP_SELF"],'c.date_livraison','',$param, 'align="right"',$sortfield,$sortorder);
-	print_liste_field_titre($langs->trans('Status'),$_SERVER["PHP_SELF"],'c.fk_statut','',$param,'align="right"',$sortfield,$sortorder);
-	print '</tr>';
-	print '<tr class="liste_titre">';
-	print '<td class="liste_titre">';
-	print '<input class="flat" size="10" type="text" name="sref" value="'.$sref.'">';
-	print '</td><td class="liste_titre" align="left">';
-	print '<input class="flat" type="text" name="snom" value="'.$snom.'">';
-	print '</td><td class="liste_titre" align="left">';
-	print '<input class="flat" type="text" size="10" name="sref_client" value="'.$sref_client.'">';
-	print '</td><td class="liste_titre">&nbsp;';
-	print '</td><td class="liste_titre">&nbsp;';
-	print '</td><td align="right" class="liste_titre">';
-	print '<input type="image" class="liste_titre" name="button_search" src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/search.png"  value="'.dol_escape_htmltag($langs->trans("Search")).'" title="'.dol_escape_htmltag($langs->trans("Search")).'">';
-	print '</td></tr>';
-
-	$var=true;
-	$total=0;
-	$subtotal=0;
-
-	$generic_commande = new Commande($db);
-	while ($i < min($num,$limit))
-	{
-		$objp = $db->fetch_object($resql);
-		$var=!$var;
-		print '<tr '.$bc[$var].'>';
-		print '<td nowrap="nowrap">';
-
-		$generic_commande->id=$objp->rowid;
-		$generic_commande->ref=$objp->ref;
-
-		print '<table class="nobordernopadding"><tr class="nocellnopadd">';
-		print '<td class="nobordernopadding" nowrap="nowrap">';
-		print $generic_commande->getNomUrl(1,($viewstatut != 2?0:$objp->fk_statut));
-		print '</td>';
-
-		print '<td width="20" class="nobordernopadding" nowrap="nowrap">';
-		if (($objp->fk_statut > 0) && ($objp->fk_statut < 3) && $db->jdate($objp->date_valid) < ($now - $conf->commande->client->warning_delay)) print img_picto($langs->trans("Late"),"warning");
-		print '</td>';
-
-		print '<td width="16" align="right" class="nobordernopadding">';
-		$filename=dol_sanitizeFileName($objp->ref);
-		$filedir=$conf->commande->dir_output . '/' . dol_sanitizeFileName($objp->ref);
-		$urlsource=$_SERVER['PHP_SELF'].'?id='.$objp->rowid;
-		print $formfile->getDocumentsLink($generic_commande->element, $filename, $filedir);
-		print '</td></tr></table>';
-
-		print '</td>';
-
-		// Company
-		$companystatic->id=$objp->socid;
-		$companystatic->nom=$objp->nom;
-		$companystatic->client=$objp->client;
-		print '<td>';
-		print $companystatic->getNomUrl(1,'customer');
-		print '&nbsp;<a href="'.DOL_URL_ROOT.'/commande/orderstoinvoice.php?socid='.$companystatic->id.'">';
-
-		// If module invoices enabled and user with invoice creation permissions
-		if (! empty($conf->facture->enabled))
-		{
-			if ($user->rights->facture->creer)
-			{
-
-				if (($objp->fk_statut > 0 && $objp->fk_statut < 3) || ($objp->fk_statut == 3 && $objp->facturee == 0))
-				{
-
-					print img_picto($langs->trans("CreateInvoiceForThisCustomer").' : '.$companystatic->nom,'object_bill').'</a>';
-				}
-			}
-		}
-		print '</td>';
-
-		print '<td>'.$objp->ref_client.'</td>';
-
-		// Order date
-		$y = dol_print_date($db->jdate($objp->date_commande),'%Y');
-		$m = dol_print_date($db->jdate($objp->date_commande),'%m');
-		$ml = dol_print_date($db->jdate($objp->date_commande),'%B');
-		$d = dol_print_date($db->jdate($objp->date_commande),'%d');
-		print '<td align="right">';
-		print $d;
-		print ' <a href="'.$_SERVER['PHP_SELF'].'?orderyear='.$y.'&amp;ordermonth='.$m.'">'.$ml.'</a>';
-		print ' <a href="'.$_SERVER['PHP_SELF'].'?orderyear='.$y.'">'.$y.'</a>';
-		print '</td>';
-
-		// Delivery date
-		$y = dol_print_date($db->jdate($objp->date_livraison),'%Y');
-		$m = dol_print_date($db->jdate($objp->date_livraison),'%m');
-		$ml = dol_print_date($db->jdate($objp->date_livraison),'%B');
-		$d = dol_print_date($db->jdate($objp->date_livraison),'%d');
-		print '<td align="right">';
-		print $d;
-		print ' <a href="'.$_SERVER['PHP_SELF'].'?deliveryyear='.$y.'&amp;deliverymonth='.$m.'">'.$ml.'</a>';
-		print ' <a href="'.$_SERVER['PHP_SELF'].'?deliveryyear='.$y.'">'.$y.'</a>';
-		print '</td>';
-
-		// Statut
-		print '<td align="right" nowrap="nowrap">'.$generic_commande->LibStatut($objp->fk_statut,$objp->facturee,5).'</td>';
-
-		print '</tr>';
-
-		$total+=$objp->total_ht;
-		$subtotal+=$objp->total_ht;
-		$i++;
-	}
-	print '</table>';
-
-	print '</form>';
-
-	$db->free($resql);
-}
-else
-{
-	print dol_print_error($db);
-}
 
 llxFooter();
 
