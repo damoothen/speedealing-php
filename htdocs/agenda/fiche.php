@@ -1236,12 +1236,6 @@ if ($id) {
             print '<td colspan="3">' . $object->getElementUrl($object->fk_element, $object->elementtype, 1) . '</td></tr>';
         }
 
-        // Description
-        print '<tr><td valign="top">' . $langs->trans("Description") . '</td><td colspan="3">';
-        print dol_htmlentitiesbr($object->notes);
-        print '</td></tr>';
-        $var = !$var;
-
         print '</table>';
     }
 
@@ -1282,6 +1276,8 @@ if ($id) {
         print '</div>';
 
         print end_box();
+        
+        print $object->show_notes();
     }
 }
 
