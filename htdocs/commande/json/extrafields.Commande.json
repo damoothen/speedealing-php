@@ -3,7 +3,7 @@
    "class": "extrafields",
     "ico": "16-Document.png",
    "langs": [
-       "propal"
+       "orders"
    ],
    "fields": {
        "Status": {
@@ -19,7 +19,32 @@
            "values": {
                "DRAFT": {
                    "enable": true,
-                   "label": "PropalStatusDraft",
+                   "label": "StatusOrderDraft",
+                   "cssClass": "grey-gradient"
+               },
+                "VALIDATED": {
+                   "enable": true,
+                   "label": "StatusOrderValidated",
+                   "cssClass": "grey-gradient"
+               },
+                "IN_PROCESS": {
+                   "enable": true,
+                   "label": "StatusOrderOnProcess",
+                   "cssClass": "grey-gradient"
+               },
+                "TO_BILL": {
+                   "enable": true,
+                   "label": "StatusOrderToBill2",
+                   "cssClass": "grey-gradient"
+               },
+                "PROCESSED": {
+                   "enable": true,
+                   "label": "StatusOrderProcessed",
+                   "cssClass": "green-gradient"
+               },
+                "CANCELED": {
+                   "enable": true,
+                   "label": "StatusOrderCanceled",
                    "cssClass": "grey-gradient"
                }
            }
