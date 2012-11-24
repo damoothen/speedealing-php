@@ -627,7 +627,7 @@ class Commande extends nosqlDocument
         $this->client->name = $soc->name;
         $this->client->country_code = $soc->country_code;
         $this->client->email = $soc->email;        
-        $this->thirdparty = $this->client;
+        $this->fetch_thirdparty();
 
         // $date_commande is deprecated
         $date = ($this->date_commande ? $this->date_commande : $this->date);
@@ -822,7 +822,7 @@ class Commande extends nosqlDocument
         $this->client->name = $soc->name;
         $this->client->country_code = $soc->country_code;
         $this->client->email = $soc->email;        
-        $this->thirdparty = $this->client;
+        $this->fetch_thirdparty();
 
         // $date_commande is deprecated
         $date = ($this->date_commande ? $this->date_commande : $this->date);
@@ -1404,9 +1404,29 @@ class Commande extends nosqlDocument
         }
     }
 
-    function fetch_thirdparty() {
-        $this->thirdparty = $this->client;
-    }
+//    function fetch_thirdparty() {
+//        
+//        $soc = new Societe($db);
+//        $soc->fetch($this->socid);
+//                
+//        $this->thirdparty = new stdClass();
+//        $this->thirdparty->name = $soc->name;
+//        $this->thirdparty->address = $soc->address;
+//        $this->thirdparty->zip = $soc->zip;
+//        $this->thirdparty->town = $soc->town;
+//        $this->thirdparty->country_code = $soc->country_id;
+//        $this->thirdparty->phone = $soc->phone;
+//        $this->thirdparty->email = $soc->email;
+//        $this->thirdparty->url = $soc->url;
+//        $this->thirdparty->idprof1 = $soc->idprof1;
+//        $this->thirdparty->idprof2 = $soc->idprof2;
+//        $this->thirdparty->idprof3 = $soc->idprof3;
+//        $this->thirdparty->idprof4 = $soc->idprof4;
+//        $this->thirdparty->url = $soc->url;
+//        $this->thirdparty->url = $soc->url;
+//        $this->thirdparty->url = $soc->url;
+//        $this->thirdparty->url = $soc->url;
+//    }
 
     /**
      *	Adding line of fixed discount in the order in DB

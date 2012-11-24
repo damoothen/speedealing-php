@@ -911,7 +911,7 @@ class pdf_einstein extends ModelePDFCommandes
 		pdf_pagehead($pdf,$outputlangs,$this->page_hauteur);
 
 		// Show Draft Watermark
-		if($object->statut==0 && (! empty($conf->global->COMMANDE_DRAFT_WATERMARK)) )
+		if($object->Status == "DRAFT" && (! empty($conf->global->COMMANDE_DRAFT_WATERMARK)) )
 		{
             pdf_watermark($pdf,$outputlangs,$this->page_hauteur,$this->page_largeur,'mm',$conf->global->COMMANDE_DRAFT_WATERMARK);
 		}
@@ -1033,7 +1033,7 @@ class pdf_einstein extends ModelePDFCommandes
 			}
 			else
 			{
-				$carac_client_name=$outputlangs->convToOutputCharset($object->client->nom);
+				$carac_client_name=$outputlangs->convToOutputCharset($object->client->name);
 			}
 
 			$carac_client=pdf_build_address($outputlangs,$this->emetteur,$object->client,($usecontact?$object->contact:''),$usecontact,'target');

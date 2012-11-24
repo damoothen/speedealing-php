@@ -467,6 +467,40 @@ else if ($action == 'confirm_delete' && $confirm == 'yes' && $user->rights->comm
 }
 
 
+ else if ($action == 'builddoc') { // In get or post
+    /*
+     * Generate order document
+     * define into /core/modules/commande/modules_commande.php
+     */
+
+    // Sauvegarde le dernier modele choisi pour generer un document
+    if ($_REQUEST['model']) {
+        $object->setDocModel($user, $_REQUEST['model']);
+    }
+
+    // Define output language
+    $outputlangs = $langs;
+    $newlang = '';
+    if ($conf->global->MAIN_MULTILANGS && empty($newlang) && !empty($_REQUEST['lang_id']))
+        $newlang = $_REQUEST['lang_id'];
+    if ($conf->global->MAIN_MULTILANGS && empty($newlang))
+        $newlang = $object->client->default_lang;
+    if (!empty($newlang)) {
+        $outputlangs = new Translate("", $conf);
+        $outputlangs->setDefaultLang($newlang);
+    }
+    $result = commande_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref, $hookmanager);
+
+    if ($result <= 0) {
+        dol_print_error($db, $result);
+        exit;
+    } else {
+        header('Location: ' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . (empty($conf->global->MAIN_JUMP_TAG) ? '' : '#builddoc'));
+        exit;
+    }
+}
+
+
 /* View **********************************************************************/
 
 $form = new Form($db);
