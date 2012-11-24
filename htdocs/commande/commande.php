@@ -345,6 +345,128 @@ else if ($action == 'confirm_delete' && $confirm == 'yes' && $user->rights->comm
 }
 
 
+ else if ($action == 'updateligne' && $user->rights->commande->creer && GETPOST('save') == $langs->trans('Save')) {
+    // Clean parameters
+    $date_start = '';
+    $date_end = '';
+    $date_start = dol_mktime(0, 0, 0, GETPOST('date_startmonth'), GETPOST('date_startday'), GETPOST('date_startyear'));
+    $date_end = dol_mktime(0, 0, 0, GETPOST('date_endmonth'), GETPOST('date_endday'), GETPOST('date_endyear'));
+    $description = dol_htmlcleanlastbr(GETPOST('product_desc'));
+    $pu_ht = GETPOST('price_ht');
+
+    // Define info_bits
+    $info_bits = 0;
+    if (preg_match('/\*/', GETPOST('tva_tx')))
+        $info_bits |= 0x01;
+
+    // Define vat_rate
+    $vat_rate = GETPOST('tva_tx');
+    $vat_rate = str_replace('*', '', $vat_rate);
+    $localtax1_rate = get_localtax($vat_rate, 1, $object->client);
+    $localtax2_rate = get_localtax($vat_rate, 2, $object->client);
+
+    // Add buying price
+    $fournprice = (GETPOST('fournprice') ? GETPOST('fournprice') : '');
+    $buyingprice = (GETPOST('buying_price') ? GETPOST('buying_price') : '');
+
+    // Check minimum price
+    $productid = GETPOST('productid', 'int');
+    if (!empty($productid)) {
+        $product = new Product($db);
+        $product->fetch($productid);
+
+        $type = $product->type;
+
+        $price_min = $product->price_min;
+        if (!empty($conf->global->PRODUIT_MULTIPRICES) && !empty($object->client->price_level))
+            $price_min = $product->multiprices_min[$object->client->price_level];
+
+        $label = ((GETPOST('update_label') && GETPOST('product_label')) ? GETPOST('product_label') : '');
+
+        if ($price_min && (price2num($pu_ht) * (1 - price2num(GETPOST('remise_percent')) / 100) < price2num($price_min))) {
+            setEventMessage($langs->trans("CantBeLessThanMinPrice", price2num($price_min, 'MU')) . getCurrencySymbol($conf->currency), 'errors');
+            $error++;
+        }
+    } else {
+        $type = GETPOST('type');
+        $label = (GETPOST('product_label') ? GETPOST('product_label') : '');
+
+        // Check parameters
+        if (GETPOST('type') < 0) {
+            setEventMessage($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Type")), 'errors');
+            $error++;
+        }
+    }
+
+    if (!$error) {
+        $result = $object->updateline(
+                GETPOST('lineid'), $description, $pu_ht, GETPOST('qty'), GETPOST('remise_percent'), $vat_rate, $localtax1_rate, $localtax2_rate, 'HT', $info_bits, $date_start, $date_end, $type, GETPOST('fk_parent_line'), 0, $fournprice, $buyingprice, $label
+        );
+
+        if ($result >= 0) {
+            if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) {
+                // Define output language
+                $outputlangs = $langs;
+                $newlang = '';
+                if ($conf->global->MAIN_MULTILANGS && empty($newlang) && GETPOST('lang_id'))
+                    $newlang = GETPOST('lang_id');
+                if ($conf->global->MAIN_MULTILANGS && empty($newlang))
+                    $newlang = $object->client->default_lang;
+                if (!empty($newlang)) {
+                    $outputlangs = new Translate("", $conf);
+                    $outputlangs->setDefaultLang($newlang);
+                }
+
+                $ret = $object->fetch($object->id);    // Reload to get new records
+                commande_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref, $hookmanager);
+            }
+
+            unset($_POST['qty']);
+            unset($_POST['type']);
+            unset($_POST['productid']);
+            unset($_POST['remise_percent']);
+            unset($_POST['price_ht']);
+            unset($_POST['price_ttc']);
+            unset($_POST['tva_tx']);
+            unset($_POST['product_ref']);
+            unset($_POST['product_label']);
+            unset($_POST['product_desc']);
+            unset($_POST['fournprice']);
+            unset($_POST['buying_price']);
+        } else {
+            setEventMessage($object->error, 'errors');
+        }
+    }
+}
+
+
+ else if ($action == 'confirm_deleteline' && $confirm == 'yes' && $user->rights->commande->creer) {
+    $result = $object->deleteline($lineid);
+    if ($result > 0) {
+        // Define output language
+        $outputlangs = $langs;
+        $newlang = '';
+        if ($conf->global->MAIN_MULTILANGS && empty($newlang) && GETPOST('lang_id'))
+            $newlang = GETPOST('lang_id');
+        if ($conf->global->MAIN_MULTILANGS && empty($newlang))
+            $newlang = $object->client->default_lang;
+        if (!empty($newlang)) {
+            $outputlangs = new Translate("", $conf);
+            $outputlangs->setDefaultLang($newlang);
+        }
+        if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) {
+            $ret = $object->fetch($object->id);    // Reload to get new records
+            commande_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref, $hookmanager);
+        }
+
+        header('Location: ' . $_SERVER["PHP_SELF"] . '?id=' . $object->id);
+        exit;
+    } else {
+        $mesg = '<div class="error">' . $object->error . '</div>';
+    }
+}
+
+
 /* View **********************************************************************/
 
 $form = new Form($db);
@@ -358,6 +480,10 @@ $formconfirm = null;
 
 if ($action == 'delete') {
     $formconfirm=$form->formconfirm($_SERVER["PHP_SELF"].'?id='.$object->id, $langs->trans('DeleteOrder'), $langs->trans('ConfirmDeleteOrder'), 'confirm_delete', '', 0, 1);
+}
+
+ else if ($action == 'ask_deleteline') {
+    $formconfirm = $form->formconfirm($_SERVER["PHP_SELF"] . '?id=' . $object->id . '&lineid=' . $lineid, $langs->trans('DeleteProductLine'), $langs->trans('ConfirmDeleteProductLine'), 'confirm_deleteline', '', 0, 1);
 }
 
 print $formconfirm;
@@ -612,6 +738,13 @@ else {
     
     print start_box($langs->trans('OrderLines'), "twelve", $object->fk_extrafields->ico, false);
     print '<table id="tablelines" class="noborder" width="100%">';
+  
+    $object->getLinesArray();
+    $nbLines = count($object->lines);
+    
+    // Show object lines
+    if (! empty($object->lines))
+        $ret=$object->printObjectLines($action,$mysoc,$soc,$lineid,1,$hookmanager);
 
     // Form to add new line
     
