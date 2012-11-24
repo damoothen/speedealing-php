@@ -625,6 +625,18 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
 
 else {
     
+    // Actions
+    if ($user->rights->commande->supprimer) {
+        print '<p class="button-height right">';
+        print '<a class="button icon-cross" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=delete">' . $langs->trans("Delete") . '</a>';
+        print "</p>";
+    }
+    if ($object->Status == "DRAFT" && $user->rights->commande->creer) {
+        print '<p class="button-height right">';
+        print '<a class="button icon-pencil" href="' . $_SERVER['PHP_SELF'] . '?id=' . $id . '&action=edit">' . $langs->trans("Modify") . '</a>';
+        print "</p>";
+    }
+    
     print start_box($title, "twelve", $object->fk_extrafields->ico, false);
     print '<table class="border" width="100%">';
     
@@ -736,7 +748,7 @@ else {
     
     // Lines
     
-    print start_box($langs->trans('OrderLines'), "twelve", $object->fk_extrafields->ico, false);
+    print start_box($langs->trans('OrderLines'), "six", $object->fk_extrafields->ico, false);
     print '<table id="tablelines" class="noborder" width="100%">';
   
     $object->getLinesArray();
@@ -773,16 +785,37 @@ else {
     print '</table>';
     print end_box();
     
-    // Actions
-    if ($user->rights->commande->supprimer) {
-        print '<p class="button-height right">';
-        print '<a class="button icon-cross" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=delete">' . $langs->trans("Delete") . '</a>';
-        print "</p>";
-    }
-    if ($object->Status == "DRAFT" && $user->rights->commande->creer) {
-        print '<p class="button-height right">';
-        print '<a class="button icon-pencil" href="' . $_SERVER['PHP_SELF'] . '?id=' . $id . '&action=edit">' . $langs->trans("Modify") . '</a>';
-        print "</p>";
+    
+    if ($action != 'presend') {
+        print '<a name="builddoc"></a>'; // ancre
+
+        /*
+         * Documents generes
+         *
+         */
+        $comref = dol_sanitizeFileName($object->ref);
+        $file = $conf->commande->dir_output . '/' . $comref . '/' . $comref . '.pdf';
+        $relativepath = $comref . '/' . $comref . '.pdf';
+        $filedir = $conf->commande->dir_output . '/' . $comref;
+        $urlsource = $_SERVER["PHP_SELF"] . "?id=" . $object->id;
+        $genallowed = $user->rights->commande->creer;
+        $delallowed = $user->rights->commande->supprimer;
+
+        $somethingshown = $formfile->show_documents('commande', $comref, $filedir, $urlsource, $genallowed, $delallowed, $object->modelpdf, 1, 0, 0, 28, 0, '', '', '', $soc->default_lang, $hookmanager);
+
+        /*
+         * Linked object block
+         */
+        $somethingshown = $object->showLinkedObjectBlock();
+
+        print '</td><td valign="top" width="50%">';
+
+        // List of actions on element
+//				include_once DOL_DOCUMENT_ROOT.'/core/class/html.formactions.class.php';
+//				$formactions=new FormActions($db);
+//				$somethingshown=$formactions->showactions($object,'order',$socid);
+
+        print '</td></tr>';
     }
     
 }
