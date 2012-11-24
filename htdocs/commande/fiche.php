@@ -77,7 +77,7 @@ $result=restrictedArea($user,'commande',$id);
 $object = new Commande($db);
 
 // Load object
-if ($id > 0 || ! empty($ref))
+if (!empty($id))
 {
 	$ret=$object->fetch($id, $ref);
 	$ret=$object->fetch_thirdparty();
@@ -444,27 +444,27 @@ else if ($action == 'setdate_livraison' && $user->rights->commande->creer)
 	}
 }
 
-else if ($action == 'setmode' && $user->rights->commande->creer)
+else if ($action == 'setconditions' && $user->rights->commande->creer)
 {
-	$result = $object->setPaymentMethods(GETPOST('mode_reglement_id','int'));
+	$result = $object->setPaymentTerms(GETPOST('cond_reglement_code','alpha'));
 	if ($result < 0) dol_print_error($db,$object->error);
 }
 
 else if ($action == 'setavailability' && $user->rights->commande->creer)
 {
-	$result=$object->availability(GETPOST('availability_id'));
+	$result=$object->setAvailability(GETPOST('availability_code'));
 	if ($result < 0) dol_print_error($db,$object->error);
 }
 
 else if ($action == 'setdemandreason' && $user->rights->commande->creer)
 {
-	$result=$object->demand_reason(GETPOST('demand_reason_id'));
+	$result=$object->setDemandReason(GETPOST('demand_reason_code', 'alpha'));
 	if ($result < 0) dol_print_error($db,$object->error);
 }
 
-else if ($action == 'setconditions' && $user->rights->commande->creer)
+else if ($action == 'setmode' && $user->rights->commande->creer)
 {
-	$result=$object->setPaymentTerms(GETPOST('cond_reglement_id','int'));
+	$result=$object->setPaymentMethods(GETPOST('mode_reglement_code','alpha'));
 	if ($result < 0)
 	{
 		dol_print_error($db,$object->error);
@@ -1836,7 +1836,7 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 			print '<table class="nobordernopadding" width="100%"><tr><td nowrap="nowrap">';
 			print $langs->trans('RefCustomer').'</td><td align="left">';
 			print '</td>';
-			if ($action != 'refcustomer' && $object->brouillon) print '<td align="right"><a href="'.$_SERVER['PHP_SELF'].'?action=refcustomer&amp;id='.$object->id.'">'.img_edit($langs->trans('Modify')).'</a></td>';
+			if ($action != 'refcustomer' && $object->Status == "DRAFT") print '<td align="right"><a href="'.$_SERVER['PHP_SELF'].'?action=refcustomer&amp;id='.$object->id.'">'.img_edit($langs->trans('Modify')).'</a></td>';
 			print '</tr></table>';
 			print '</td><td colspan="3">';
 			if ($user->rights->commande->creer && $action == 'refcustomer')
@@ -1897,7 +1897,7 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 			print $langs->trans('Date');
 			print '</td>';
 
-			if ($action != 'editdate' && $object->brouillon) print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editdate&amp;id='.$object->id.'">'.img_edit($langs->trans('SetDate'),1).'</a></td>';
+			if ($action != 'editdate' && $object->Status == "DRAFT") print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editdate&amp;id='.$object->id.'">'.img_edit($langs->trans('SetDate'),1).'</a></td>';
 			print '</tr></table>';
 			print '</td><td colspan="3">';
 			if ($action == 'editdate')
@@ -1945,12 +1945,18 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 			print '<table class="nobordernopadding" width="100%"><tr><td>';
 			print $langs->trans('PaymentConditionsShort');
 			print '</td>';
-			if ($action != 'editconditions' && $object->brouillon) print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editconditions&amp;id='.$object->id.'">'.img_edit($langs->trans('SetConditions'),1).'</a></td>';
+			if ($action != 'editconditions' && $object->Status == "DRAFT") print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editconditions&amp;id='.$object->id.'">'.img_edit($langs->trans('SetConditions'),1).'</a></td>';
 			print '</tr></table>';
 			print '</td><td colspan="2">';
 			if ($action == 'editconditions')
 			{
-				$form->form_conditions_reglement($_SERVER['PHP_SELF'].'?id='.$object->id,$object->cond_reglement_id,'cond_reglement_id',1);
+//				$form->form_conditions_reglement($_SERVER['PHP_SELF'].'?id='.$object->id,$object->cond_reglement_id,'cond_reglement_id',1);
+                                print '<form name="setconditions" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'" method="post">';
+				print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+				print '<input type="hidden" name="action" value="setconditions">';
+				print $object->select_fk_extrafields("cond_reglement_code", "cond_reglement_code", $object->cond_reglement_code);
+                                print '<input type="submit" class="button" value="'.$langs->trans('Modify').'">';
+				print '</form>';
 			}
 			else
 			{
@@ -1966,12 +1972,18 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 			print '<table class="nobordernopadding" width="100%"><tr><td>';
 			print $langs->trans('PaymentMode');
 			print '</td>';
-			if ($action != 'editmode' && $object->brouillon) print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editmode&amp;id='.$object->id.'">'.img_edit($langs->trans('SetMode'),1).'</a></td>';
+			if ($action != 'editmode' && $object->Status == "DRAFT") print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editmode&amp;id='.$object->id.'">'.img_edit($langs->trans('SetMode'),1).'</a></td>';
 			print '</tr></table>';
 			print '</td><td colspan="2">';
 			if ($action == 'editmode')
 			{
-				$form->form_modes_reglement($_SERVER['PHP_SELF'].'?id='.$object->id,$object->mode_reglement_id,'mode_reglement_id');
+//				$form->form_modes_reglement($_SERVER['PHP_SELF'].'?id='.$object->id,$object->mode_reglement_id,'mode_reglement_id');
+                                print '<form name="setmode" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'" method="post">';
+				print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+				print '<input type="hidden" name="action" value="setmode">';
+				print $object->select_fk_extrafields("mode_reglement_code", "mode_reglement_code", $object->mode_reglement_code);
+                                print '<input type="submit" class="button" value="'.$langs->trans('Modify').'">';
+				print '</form>';
 			}
 			else
 			{
@@ -1985,12 +1997,18 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 			print '<table class="nobordernopadding" width="100%"><tr><td>';
 			print $langs->trans('AvailabilityPeriod');
 			print '</td>';
-			if ($action != 'editavailability' && $object->brouillon) print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editavailability&amp;id='.$object->id.'">'.img_edit($langs->trans('SetAvailability'),1).'</a></td>';
+			if ($action != 'editavailability' && $object->Status == "DRAFT") print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editavailability&amp;id='.$object->id.'">'.img_edit($langs->trans('SetAvailability'),1).'</a></td>';
 			print '</tr></table>';
 			print '</td><td colspan="2">';
 			if ($action == 'editavailability')
 			{
-				$form->form_availability($_SERVER['PHP_SELF'].'?id='.$object->id,$object->availability_id,'availability_id',1);
+//				$form->form_availability($_SERVER['PHP_SELF'].'?id='.$object->id,$object->availability_id,'availability_id',1);
+                                print '<form name="setavailability" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'" method="post">';
+				print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+				print '<input type="hidden" name="action" value="setavailability">';
+				print $object->select_fk_extrafields("availability_code", "availability_code", $object->availability_code);
+                                print '<input type="submit" class="button" value="'.$langs->trans('Modify').'">';
+				print '</form>';
 			}
 			else
 			{
@@ -2004,12 +2022,18 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 			print '<table class="nobordernopadding" width="100%"><tr><td>';
 			print $langs->trans('Source');
 			print '</td>';
-			if ($action != 'editdemandreason' && ! empty($object->brouillon)) print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editdemandreason&amp;id='.$object->id.'">'.img_edit($langs->trans('SetDemandReason'),1).'</a></td>';
+			if ($action != 'editdemandreason' && $object->Status == "DRAFT") print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editdemandreason&amp;id='.$object->id.'">'.img_edit($langs->trans('SetDemandReason'),1).'</a></td>';
 			print '</tr></table>';
 			print '</td><td colspan="2">';
 			if ($action == 'editdemandreason')
 			{
-				$form->form_demand_reason($_SERVER['PHP_SELF'].'?id='.$object->id,$object->demand_reason_id,'demand_reason_id',1);
+//                                $form->form_demand_reason($_SERVER['PHP_SELF'].'?id='.$object->id,$object->demand_reason_id,'demand_reason_id',1);
+                                print '<form name="setdemandreason" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'" method="post">';
+				print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+				print '<input type="hidden" name="action" value="setdemandreason">';
+				print $object->select_fk_extrafields("demand_reason_code", "demand_reason_code", $object->demand_reason_code);
+                                print '<input type="submit" class="button" value="'.$langs->trans('Modify').'">';
+				print '</form>';
 			}
 			else
 			{
@@ -2140,7 +2164,7 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 			/*
 			 * Form to add new line
 			*/
-			if ($object->statut == 0 && $user->rights->commande->creer)
+			if ($object->Status == "DRAFT" && $user->rights->commande->creer)
 			{
 				if ($action != 'editline')
 				{

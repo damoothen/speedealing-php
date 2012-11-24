@@ -627,6 +627,7 @@ class Commande extends nosqlDocument
         $this->client->name = $soc->name;
         $this->client->country_code = $soc->country_code;
         $this->client->email = $soc->email;        
+        $this->thirdparty = $this->client;
 
         // Calcul of ref
         $this->ref = $this->getNextNumRef($soc);
@@ -781,6 +782,69 @@ class Commande extends nosqlDocument
 //            $this->db->rollback();
 //            return -1;
 //        }
+    }
+    
+    /**
+     *	Update order
+     *	Note that this->ref can be set or empty. If empty, we will use "(PROV)"
+     *
+     *	@param		User	$user 		Objet user that make creation
+     *	@param		int		$notrigger	Disable all triggers
+     *	@return 	int					<0 if KO, >0 if OK
+     */
+    function update($user, $notrigger=0)
+    {
+        global $conf,$langs,$mysoc;
+        $error=0;
+
+        // Clean parameters
+        
+        dol_syslog("Commande::update user=".$user->id);
+
+        // Check parameters
+                
+        $soc = new Societe($this->db);
+        $result=$soc->fetch($this->socid);
+        if ($result < 0)
+        {
+            $this->error="Failed to fetch company";
+            dol_syslog("Commande::update ".$this->error, LOG_ERR);
+            return -2;
+        }
+        if (! empty($conf->global->COMMANDE_REQUIRE_SOURCE) && $this->source < 0)
+        {
+            $this->error=$langs->trans("ErrorFieldRequired",$langs->trans("Source"));
+            dol_syslog("Commande::update ".$this->error, LOG_ERR);
+            return -1;
+        }
+        $this->client = new stdClass();
+        $this->client->id = $soc->id;
+        $this->client->name = $soc->name;
+        $this->client->country_code = $soc->country_code;
+        $this->client->email = $soc->email;        
+        $this->thirdparty = $this->client;
+
+        // $date_commande is deprecated
+        $date = ($this->date_commande ? $this->date_commande : $this->date);
+        $this->date = $this->date_commande = $date;
+
+        $now=dol_now();
+
+        dol_syslog("Commande::update");
+//        echo '<pre>'.print_r($this, true).'</pre>';die;
+        $this->record();
+        
+        if (! $notrigger) {
+            // Appel des triggers
+            include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
+            $interface=new Interfaces($this->db);
+            $result=$interface->run_triggers('ORDER_UPDATE',$this,$user,$langs,$conf);
+            if ($result < 0) { $error++; $this->errors=$interface->errors; }
+            // Fin appel triggers
+        }
+        
+        return $this->id;
+        
     }
 
 
@@ -1340,6 +1404,9 @@ class Commande extends nosqlDocument
         }
     }
 
+    function fetch_thirdparty() {
+        $this->thirdparty = $this->client;
+    }
 
     /**
      *	Adding line of fixed discount in the order in DB
@@ -1826,28 +1893,12 @@ class Commande extends nosqlDocument
     {
         if ($user->rights->commande->creer)
         {
-            $sql = "UPDATE ".MAIN_DB_PREFIX."commande";
-            $sql.= " SET date_commande = ".($date ? $this->db->idate($date) : 'null');
-            $sql.= " WHERE rowid = ".$this->id." AND fk_statut = 0";
-
-            dol_syslog("Commande::set_date sql=$sql",LOG_DEBUG);
-            $resql=$this->db->query($sql);
-            if ($resql)
-            {
-                $this->date = $date;
-                return 1;
-            }
-            else
-            {
-                $this->error=$this->db->error();
-                dol_syslog("Commande::set_date ".$this->error,LOG_ERR);
-                return -1;
-            }
+            $this->date = $date;
+            $this->date_commande = $date;
+            $this->record();
+            return 1;
         }
-        else
-        {
-            return -2;
-        }
+        return -2;
     }
 
     /**
@@ -1861,86 +1912,47 @@ class Commande extends nosqlDocument
     {
         if ($user->rights->commande->creer)
         {
-            $sql = "UPDATE ".MAIN_DB_PREFIX."commande";
-            $sql.= " SET date_livraison = ".($date_livraison ? "'".$this->db->idate($date_livraison)."'" : 'null');
-            $sql.= " WHERE rowid = ".$this->id;
-
-            dol_syslog("Commande::set_date_livraison sql=".$sql,LOG_DEBUG);
-            $resql=$this->db->query($sql);
-            if ($resql)
-            {
-                $this->date_livraison = $date_livraison;
-                return 1;
-            }
-            else
-            {
-                $this->error=$this->db->error();
-                dol_syslog("Commande::set_date_livraison ".$this->error,LOG_ERR);
-                return -1;
-            }
+          $this->date_livraison = $date_livraison;
+          $this->record();
+          return 1;
         }
-        else
-        {
-            return -2;
-        }
+        return -2;
     }
 
     /**
      *	Set availability
      *
      *	@param      User	$user		Object user making change
-     *	@param      int		$id			If of availability delay
+     *	@param      int		$code			code of availability delay
      *	@return     int           		<0 if KO, >0 if OK
      */
-    function set_availability($user, $id)
+    function set_availability($user, $code)
     {
         if ($user->rights->commande->creer)
         {
-            $sql = "UPDATE ".MAIN_DB_PREFIX."commande ";
-            $sql.= " SET fk_availability = '".$id."'";
-            $sql.= " WHERE rowid = ".$this->id;
-
-            if ($this->db->query($sql))
-            {
-                $this->fk_availability = $id;
-                return 1;
-            }
-            else
-            {
-                $this->error=$this->db->error();
-                dol_syslog("Commande::set_availability Erreur SQL");
-                return -1;
-            }
+            $this->availability_code = $code;
+            $this->record();
+            return 1;
         }
+        return -2;
     }
 
     /**
      *	Set source of demand
      *
      *	@param      User	$user		  	Object user making change
-     *	@param      int		$id				Id of source
+     *	@param      int		$code				code of source
      *	@return     int           			<0 if KO, >0 if OK
      */
-    function set_demand_reason($user, $id)
+    function set_demand_reason($user, $code)
     {
         if ($user->rights->commande->creer)
         {
-            $sql = "UPDATE ".MAIN_DB_PREFIX."commande ";
-            $sql.= " SET fk_input_reason = '".$id."'";
-            $sql.= " WHERE rowid = ".$this->id;
-
-            if ($this->db->query($sql))
-            {
-                $this->fk_input_reason = $id;
-                return 1;
-            }
-            else
-            {
-                $this->error=$this->db->error();
-                dol_syslog("Commande::set_demand_reason Erreur SQL");
-                return -1;
-            }
+           $this->demand_reason_code = $code;
+           $this->record();
+           return 1;
         }
+        return -2;
     }
 
     /**
@@ -2025,35 +2037,18 @@ class Commande extends nosqlDocument
     /**
      *	Change la source de la demande
      *
-     *  @param      int		$demand_reason_id	Id of new demand
+     *  @param      int		$demand_reason_code	code of new demand
      *  @return     int        			 		>0 if ok, <0 if ko
      */
-    function demand_reason($demand_reason_id)
+    function setDemandReason($demand_reason_code)
     {
-        dol_syslog('Commande::demand_reason('.$demand_reason_id.')');
-        if ($this->statut >= 0)
+        if ($user->rights->commande->creer)
         {
-            $sql = 'UPDATE '.MAIN_DB_PREFIX.'commande';
-            $sql .= ' SET fk_input_reason = '.$demand_reason_id;
-            $sql .= ' WHERE rowid='.$this->id;
-            if ( $this->db->query($sql) )
-            {
-                $this->demand_reason_id = $demand_reason_id;
-                return 1;
-            }
-            else
-            {
-                dol_syslog('Commande::demand_reason Erreur '.$sql.' - '.$this->db->error(), LOG_ERR);
-                $this->error=$this->db->lasterror();
-                return -1;
-            }
+            $this->demand_reason_code = $demand_reason_code;
+            $this->record();
+            return 1;
         }
-        else
-        {
-            dol_syslog('Commande::demand_reason, etat facture incompatible', LOG_ERR);
-            $this->error='Etat commande incompatible '.$this->statut;
-            return -2;
-        }
+        return -2;
     }
 
     /**
@@ -2067,28 +2062,11 @@ class Commande extends nosqlDocument
     {
         if ($user->rights->commande->creer)
         {
-            dol_syslog(get_class($this).'::set_ref_client this->id='.$this->id.', ref_client='.$ref_client);
-
-            $sql = 'UPDATE '.MAIN_DB_PREFIX.'commande SET';
-            $sql.= ' ref_client = '.(empty($ref_client) ? 'NULL' : '\''.$this->db->escape($ref_client).'\'');
-            $sql.= ' WHERE rowid = '.$this->id;
-
-            if ($this->db->query($sql) )
-            {
-                $this->ref_client = $ref_client;
-                return 1;
-            }
-            else
-            {
-                $this->error=$this->db->lasterror();
-                dol_syslog(get_class($this).'::set_ref_client Erreur '.$this->error.' - '.$sql, LOG_ERR);
-                return -2;
-            }
+            $this->ref_client = $ref_client;
+            $this->record();
+            return 1;
         }
-        else
-        {
-            return -1;
-        }
+        return -2;
     }
 
 	/**
@@ -2309,11 +2287,8 @@ class Commande extends nosqlDocument
         require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
         $error = 0;
-
-        $this->db->begin();
-
-        if (! $error && ! $notrigger)
-        {
+        
+        if (! $error && ! $notrigger) {
         	// Appel des triggers
         	include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
         	$interface=new Interfaces($this->db);
@@ -2324,75 +2299,93 @@ class Commande extends nosqlDocument
         	// Fin appel triggers
         }
 
-        if (! $error)
-        {
-        	// Delete order details
-        	$sql = 'DELETE FROM '.MAIN_DB_PREFIX."commandedet WHERE fk_commande = ".$this->id;
-        	dol_syslog(get_class($this)."::delete sql=".$sql);
-        	if (! $this->db->query($sql) )
-        	{
-        		dol_syslog(get_class($this)."::delete error", LOG_ERR);
-        		$error++;
-        	}
+        $this->deleteDoc();
+        return 1;
+        
 
-        	// Delete order
-        	$sql = 'DELETE FROM '.MAIN_DB_PREFIX."commande WHERE rowid = ".$this->id;
-        	dol_syslog(get_class($this)."::delete sql=".$sql, LOG_DEBUG);
-        	if (! $this->db->query($sql) )
-        	{
-        		dol_syslog(get_class($this)."::delete error", LOG_ERR);
-        		$error++;
-        	}
-
-        	// Delete linked object
-        	$res = $this->deleteObjectLinked();
-        	if ($res < 0) $error++;
-
-        	// Delete linked contacts
-        	$res = $this->delete_linked_contact();
-        	if ($res < 0) $error++;
-
-        	// On efface le repertoire de pdf provisoire
-        	$comref = dol_sanitizeFileName($this->ref);
-        	if ($conf->commande->dir_output)
-        	{
-        		$dir = $conf->commande->dir_output . "/" . $comref ;
-        		$file = $conf->commande->dir_output . "/" . $comref . "/" . $comref . ".pdf";
-        		if (file_exists($file))	// We must delete all files before deleting directory
-        		{
-        			dol_delete_preview($this);
-
-        			if (! dol_delete_file($file,0,0,0,$this)) // For triggers
-        			{
-        				$this->db->rollback();
-        				return 0;
-        			}
-        		}
-        		if (file_exists($dir))
-        		{
-        			if (! dol_delete_dir_recursive($dir))
-        			{
-        				$this->error=$langs->trans("ErrorCanNotDeleteDir",$dir);
-        				$this->db->rollback();
-        				return 0;
-        			}
-        		}
-        	}
-        }
-
-        if (! $error)
-        {
-        	dol_syslog(get_class($this)."::delete $this->id by $user->id", LOG_DEBUG);
-        	$this->db->commit();
-        	return 1;
-        }
-        else
-        {
-            $this->error=$this->db->lasterror();
-            dol_syslog(get_class($this)."::delete ".$this->error, LOG_ERR);
-            $this->db->rollback();
-            return -1;
-        }
+//        $this->db->begin();
+//
+//        if (! $error && ! $notrigger)
+//        {
+//        	// Appel des triggers
+//        	include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
+//        	$interface=new Interfaces($this->db);
+//        	$result=$interface->run_triggers('ORDER_DELETE',$this,$user,$langs,$conf);
+//        	if ($result < 0) {
+//        		$error++; $this->errors=$interface->errors;
+//        	}
+//        	// Fin appel triggers
+//        }
+//
+//        if (! $error)
+//        {
+//        	// Delete order details
+//        	$sql = 'DELETE FROM '.MAIN_DB_PREFIX."commandedet WHERE fk_commande = ".$this->id;
+//        	dol_syslog(get_class($this)."::delete sql=".$sql);
+//        	if (! $this->db->query($sql) )
+//        	{
+//        		dol_syslog(get_class($this)."::delete error", LOG_ERR);
+//        		$error++;
+//        	}
+//
+//        	// Delete order
+//        	$sql = 'DELETE FROM '.MAIN_DB_PREFIX."commande WHERE rowid = ".$this->id;
+//        	dol_syslog(get_class($this)."::delete sql=".$sql, LOG_DEBUG);
+//        	if (! $this->db->query($sql) )
+//        	{
+//        		dol_syslog(get_class($this)."::delete error", LOG_ERR);
+//        		$error++;
+//        	}
+//
+//        	// Delete linked object
+//        	$res = $this->deleteObjectLinked();
+//        	if ($res < 0) $error++;
+//
+//        	// Delete linked contacts
+//        	$res = $this->delete_linked_contact();
+//        	if ($res < 0) $error++;
+//
+//        	// On efface le repertoire de pdf provisoire
+//        	$comref = dol_sanitizeFileName($this->ref);
+//        	if ($conf->commande->dir_output)
+//        	{
+//        		$dir = $conf->commande->dir_output . "/" . $comref ;
+//        		$file = $conf->commande->dir_output . "/" . $comref . "/" . $comref . ".pdf";
+//        		if (file_exists($file))	// We must delete all files before deleting directory
+//        		{
+//        			dol_delete_preview($this);
+//
+//        			if (! dol_delete_file($file,0,0,0,$this)) // For triggers
+//        			{
+//        				$this->db->rollback();
+//        				return 0;
+//        			}
+//        		}
+//        		if (file_exists($dir))
+//        		{
+//        			if (! dol_delete_dir_recursive($dir))
+//        			{
+//        				$this->error=$langs->trans("ErrorCanNotDeleteDir",$dir);
+//        				$this->db->rollback();
+//        				return 0;
+//        			}
+//        		}
+//        	}
+//        }
+//
+//        if (! $error)
+//        {
+//        	dol_syslog(get_class($this)."::delete $this->id by $user->id", LOG_DEBUG);
+//        	$this->db->commit();
+//        	return 1;
+//        }
+//        else
+//        {
+//            $this->error=$this->db->lasterror();
+//            dol_syslog(get_class($this)."::delete ".$this->error, LOG_ERR);
+//            $this->db->rollback();
+//            return -1;
+//        }
     }
 
 
@@ -2796,6 +2789,51 @@ class Commande extends nosqlDocument
         $this->record();
 
         return 1;
+    }
+    
+    /**
+     * 	Change payment terms
+     *
+     * 	@param	string $code_reglement_code 	Code of new payment term
+     * 	@return int						>0 si ok, <0 si ko
+     */
+    function setPaymentTerms($cond_reglement_code) {
+        if ($this->Status == "DRAFT") {
+            $this->cond_reglement_code = $cond_reglement_code;
+            $this->record();
+            return 1;
+        }
+        return -2;
+    }
+    
+      /**
+     * 	Change payment methods
+     *
+     * 	@param	string $mode_reglement_code 	Code of new payment method
+     * 	@return int						>0 si ok, <0 si ko
+     */
+    function setPaymentMethods($mode_reglement_code) {
+        if ($this->Status == "DRAFT") {
+            $this->mode_reglement_code = $mode_reglement_code;
+            $this->record();
+            return 1;
+        }
+        return -2;
+    }
+    
+          /**
+     * 	Change availability
+     *
+     * 	@param	string $availability_code 	Code of new availability
+     * 	@return int						>0 si ok, <0 si ko
+     */
+    function setAvailability($availability_code) {
+        if ($this->Status == "DRAFT") {
+            $this->availability_code = $availability_code;
+            $this->record();
+            return 1;
+        }
+        return -2;
     }
 
 
