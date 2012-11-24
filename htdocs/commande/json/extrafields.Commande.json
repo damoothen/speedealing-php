@@ -20,22 +20,22 @@
                "DRAFT": {
                    "enable": true,
                    "label": "StatusOrderDraft",
-                   "cssClass": "grey-gradient"
+                   "cssClass": "gray-gradient"
                },
                 "VALIDATED": {
                    "enable": true,
                    "label": "StatusOrderValidated",
-                   "cssClass": "grey-gradient"
+                   "cssClass": "red-gradient"
                },
                 "IN_PROCESS": {
                    "enable": true,
                    "label": "StatusOrderOnProcess",
-                   "cssClass": "grey-gradient"
+                   "cssClass": "orange-gradient"
                },
                 "TO_BILL": {
                    "enable": true,
                    "label": "StatusOrderToBill2",
-                   "cssClass": "grey-gradient"
+                   "cssClass": "blue-gradient"
                },
                 "PROCESSED": {
                    "enable": true,
@@ -45,7 +45,7 @@
                 "CANCELED": {
                    "enable": true,
                    "label": "StatusOrderCanceled",
-                   "cssClass": "grey-gradient"
+                   "cssClass": "black-gradient"
                }
            }
        },
