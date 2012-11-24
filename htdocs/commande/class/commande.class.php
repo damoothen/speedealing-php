@@ -2298,7 +2298,34 @@ class Commande extends nosqlDocument
         	}
         	// Fin appel triggers
         }
+        
+        // On efface les lignes
+        $this->getLinesArray();
+        foreach ($this->lines as $line)
+            $line->delete();
 
+        // On efface le repertoire de pdf provisoire
+        $comref = dol_sanitizeFileName($this->ref);
+        if ($conf->commande->dir_output) {
+            $dir = $conf->commande->dir_output . "/" . $comref;
+            $file = $conf->commande->dir_output . "/" . $comref . "/" . $comref . ".pdf";
+            if (file_exists($file)) { // We must delete all files before deleting directory
+                dol_delete_preview($this);
+
+                if (!dol_delete_file($file, 0, 0, 0, $this)) { // For triggers
+                    $this->db->rollback();
+                    return 0;
+                }
+            }
+            if (file_exists($dir)) {
+                if (!dol_delete_dir_recursive($dir)) {
+                    $this->error = $langs->trans("ErrorCanNotDeleteDir", $dir);
+                    $this->db->rollback();
+                    return 0;
+                }
+            }
+        }
+        
         $this->deleteDoc();
         return 1;
         
