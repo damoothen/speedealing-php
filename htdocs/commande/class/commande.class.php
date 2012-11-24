@@ -629,12 +629,12 @@ class Commande extends nosqlDocument
         $this->client->email = $soc->email;        
         $this->thirdparty = $this->client;
 
-        // Calcul of ref
-        $this->ref = $this->getNextNumRef($soc);
-
         // $date_commande is deprecated
         $date = ($this->date_commande ? $this->date_commande : $this->date);
         $this->date = $this->date_commande = $date;
+
+        // Calcul of ref
+        $this->ref = $this->getNextNumRef($soc);
 
         $now=dol_now();
 
