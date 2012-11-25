@@ -159,7 +159,7 @@ class modCommande extends DolibarrModules
         $this->menu = array();   // List of menus to add
         $r = 0;
         
-        $this->menus[$r]->_id = "menu:commande";
+        $this->menus[$r]->_id = "menu:commandes";
         $this->menus[$r]->type = "top";
         $this->menus[$r]->position = 69;
         $this->menus[$r]->langs = "commande";
@@ -171,16 +171,16 @@ class modCommande extends DolibarrModules
 
         $this->menus[$r]->_id = "menu:newcommande";
         $this->menus[$r]->position = 690;
-        $this->menus[$r]->url = "/commande/fiche.php?action=create";
+        $this->menus[$r]->url = "/commande/commande.php?action=create";
         $this->menus[$r]->langs = "commande";
         $this->menus[$r]->perms = '$user->rights->commande->creer';
         $this->menus[$r]->enabled = '$conf->commande->enabled';
         $this->menus[$r]->usertype = 2;
         $this->menus[$r]->title = "NewOrder";
-        $this->menus[$r]->fk_menu = "menu:commande";
+        $this->menus[$r]->fk_menu = "menu:commandes";
         $r++;
         
-        $this->menus[$r]->_id = "menu:orderlist";
+        $this->menus[$r]->_id = "menu:orderslist";
         $this->menus[$r]->position = 691;
         $this->menus[$r]->url = "/commande/liste.php";
         $this->menus[$r]->langs = "commande";
@@ -188,87 +188,10 @@ class modCommande extends DolibarrModules
         $this->menus[$r]->enabled = '$conf->commande->enabled';
         $this->menus[$r]->usertype = 2;
         $this->menus[$r]->title = "List";
-        $this->menus[$r]->fk_menu = "menu:commande";
+        $this->menus[$r]->fk_menu = "menu:commandes";
         $r++;
-        
-        $this->menus[$r]->_id = "menu:drafts";
-        $this->menus[$r]->position = 6910;
-        $this->menus[$r]->url = "/commande/liste.php";
-        $this->menus[$r]->langs = "commande";
-        $this->menus[$r]->perms = '$user->rights->commande->lire';
-        $this->menus[$r]->enabled = '$conf->commande->enabled';
-        $this->menus[$r]->usertype = 2;
-        $this->menus[$r]->title = "StatusOrderDraft";
-        $this->menus[$r]->fk_menu = "menu:orderlist";
-        $r++;
-        
-        $this->menus[$r]->_id = "menu:opened";
-        $this->menus[$r]->position = 6911;
-        $this->menus[$r]->url = "/commande/liste.php";
-        $this->menus[$r]->langs = "commande";
-        $this->menus[$r]->perms = '$user->rights->commande->lire';
-        $this->menus[$r]->enabled = '$conf->commande->enabled';
-        $this->menus[$r]->usertype = 2;
-        $this->menus[$r]->title = "StatusOrderValidated";
-        $this->menus[$r]->fk_menu = "menu:orderlist";
-        $r++;
-        
-        $this->menus[$r]->_id = "menu:signed";
-        $this->menus[$r]->position = 6912;
-        $this->menus[$r]->url = "/commande/liste.php";
-        $this->menus[$r]->langs = "commande";
-        $this->menus[$r]->perms = '$user->rights->commande->lire';
-        $this->menus[$r]->enabled = '$conf->commande->enabled';
-        $this->menus[$r]->usertype = 2;
-        $this->menus[$r]->title = "StatusOrderOnProcess";
-        $this->menus[$r]->fk_menu = "menu:orderlist";
-        $r++;
-        
-        $this->menus[$r]->_id = "menu:notsigned";
-        $this->menus[$r]->position = 6913;
-        $this->menus[$r]->url = "/commande/liste.php";
-        $this->menus[$r]->langs = "commande";
-        $this->menus[$r]->perms = '$user->rights->commande->lire';
-        $this->menus[$r]->enabled = '$conf->commande->enabled';
-        $this->menus[$r]->usertype = 2;
-        $this->menus[$r]->title = "StatusOrderProcessed";
-        $this->menus[$r]->fk_menu = "menu:orderlist";
-        $r++;
-        
-        $this->menus[$r]->_id = "menu:billed";
-        $this->menus[$r]->position = 6914;
-        $this->menus[$r]->url = "/commande/liste.php";
-        $this->menus[$r]->langs = "commande";
-        $this->menus[$r]->perms = '$user->rights->commande->lire';
-        $this->menus[$r]->enabled = '$conf->commande->enabled';
-        $this->menus[$r]->usertype = 2;
-        $this->menus[$r]->title = "StatusOrderToBill2";
-        $this->menus[$r]->fk_menu = "menu:orderlist";
-        $r++;
-        
-        $this->menus[$r]->_id = "menu:approved";
-        $this->menus[$r]->position = 6915;
-        $this->menus[$r]->url = "/commande/liste.php";
-        $this->menus[$r]->langs = "commande";
-        $this->menus[$r]->perms = '$user->rights->commande->lire';
-        $this->menus[$r]->enabled = '$conf->commande->enabled';
-        $this->menus[$r]->usertype = 2;
-        $this->menus[$r]->title = "StatusOrderApproved";
-        $this->menus[$r]->fk_menu = "menu:orderlist";
-        $r++;
-        
-        $this->menus[$r]->_id = "menu:cancelled";
-        $this->menus[$r]->position = 6916;
-        $this->menus[$r]->url = "/commande/liste.php";
-        $this->menus[$r]->langs = "commande";
-        $this->menus[$r]->perms = '$user->rights->commande->lire';
-        $this->menus[$r]->enabled = '$conf->commande->enabled';
-        $this->menus[$r]->usertype = 2;
-        $this->menus[$r]->title = "StatusOrderCancelled";
-        $this->menus[$r]->fk_menu = "menu:orderlist";
-        $r++;
-        
-        $this->menus[$r]->_id = "menu:stats";
+                
+        $this->menus[$r]->_id = "menu:ordersstats";
         $this->menus[$r]->position = 692;
         $this->menus[$r]->url = "/commande/stats/index.php";
         $this->menus[$r]->langs = "commande";
@@ -276,7 +199,7 @@ class modCommande extends DolibarrModules
         $this->menus[$r]->enabled = '$conf->commande->enabled';
         $this->menus[$r]->usertype = 2;
         $this->menus[$r]->title = "OrdersStatistics";
-        $this->menus[$r]->fk_menu = "menu:commande";
+        $this->menus[$r]->fk_menu = "menu:commandes";
         $r++;
         
 		// Exports

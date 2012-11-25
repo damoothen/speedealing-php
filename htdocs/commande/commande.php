@@ -83,6 +83,7 @@ $soc = new Societe($db);
 if (!empty($id)) {
     $object->fetch($id);
     $soc->fetch($object->socid);
+    $object->getLinesArray();
 }
 
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
@@ -501,6 +502,120 @@ else if ($action == 'confirm_delete' && $confirm == 'yes' && $user->rights->comm
 }
 
 
+ else if ($action == 'confirm_validate' && $confirm == 'yes' && $user->rights->commande->valider) {
+    $idwarehouse = GETPOST('idwarehouse');
+
+    // Check parameters
+    if (!empty($conf->global->STOCK_CALCULATE_ON_VALIDATE_ORDER) && $object->hasProductsOrServices(1)) {
+        if (!$idwarehouse || $idwarehouse == -1) {
+            $error++;
+            $mesgs[] = '<div class="error">' . $langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv("Warehouse")) . '</div>';
+            $action = '';
+        }
+    }
+
+    if (!$error) {
+        $result = $object->valid($user, $idwarehouse);
+        if ($result >= 0) {
+            // Define output language
+            $outputlangs = $langs;
+            $newlang = '';
+            if ($conf->global->MAIN_MULTILANGS && empty($newlang) && !empty($_REQUEST['lang_id']))
+                $newlang = $_REQUEST['lang_id'];
+            if ($conf->global->MAIN_MULTILANGS && empty($newlang))
+                $newlang = $object->client->default_lang;
+            if (!empty($newlang)) {
+                $outputlangs = new Translate("", $conf);
+                $outputlangs->setDefaultLang($newlang);
+            }
+            if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE))
+                commande_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref, $hookmanager);
+        }
+    }
+}
+
+
+else if ($action == 'confirm_modif' && $user->rights->commande->creer) {
+    $idwarehouse = GETPOST('idwarehouse');
+
+    // Check parameters
+    if (!empty($conf->global->STOCK_CALCULATE_ON_VALIDATE_ORDER) && $object->hasProductsOrServices(1)) {
+        if (!$idwarehouse || $idwarehouse == -1) {
+            $error++;
+            $mesgs[] = '<div class="error">' . $langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv("Warehouse")) . '</div>';
+            $action = '';
+        }
+    }
+
+    if (!$error) {
+        $result = $object->set_draft($user, $idwarehouse);
+        if ($result >= 0) {
+            // Define output language
+            $outputlangs = $langs;
+            $newlang = '';
+            if ($conf->global->MAIN_MULTILANGS && empty($newlang) && !empty($_REQUEST['lang_id']))
+                $newlang = $_REQUEST['lang_id'];
+            if ($conf->global->MAIN_MULTILANGS && empty($newlang))
+                $newlang = $object->client->default_lang;
+            if (!empty($newlang)) {
+                $outputlangs = new Translate("", $conf);
+                $outputlangs->setDefaultLang($newlang);
+            }
+            if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) {
+                $ret = $object->fetch($object->id);    // Reload to get new records
+                commande_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref, $hookmanager);
+            }
+        }
+    }
+}
+
+
+ else if ($action == 'confirm_cancel' && $confirm == 'yes' && $user->rights->commande->valider) {
+    $idwarehouse = GETPOST('idwarehouse');
+
+    // Check parameters
+    if (!empty($conf->global->STOCK_CALCULATE_ON_VALIDATE_ORDER) && $object->hasProductsOrServices(1)) {
+        if (!$idwarehouse || $idwarehouse == -1) {
+            $error++;
+            $mesgs[] = '<div class="error">' . $langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv("Warehouse")) . '</div>';
+            $action = '';
+        }
+    }
+
+    if (!$error) {
+        $result = $object->cancel($idwarehouse);
+    }
+}
+
+
+ else if ($action == 'confirm_shipped' && $confirm == 'yes' && $user->rights->commande->cloturer) {
+    $result = $object->cloture($user);
+    if ($result < 0)
+        $mesgs = $object->errors;
+}
+
+
+
+// Reopen a closed order
+else if ($action == 'reopen' && $user->rights->commande->creer) {
+    if ($object->Status == "TO_BILL" || $object->Status == "PROCESSED") {
+        $result = $object->set_reopen($user);
+        if ($result > 0) {
+            header('Location: ' . $_SERVER["PHP_SELF"] . '?id=' . $object->id);
+            exit;
+        } else {
+            $mesg = '<div class="error">' . $object->error . '</div>';
+        }
+    }
+}
+
+
+else if ($action == 'classifybilled' && $user->rights->commande->creer) {
+    $ret = $object->classifyBilled();
+}
+
+
+
 /* View **********************************************************************/
 
 $form = new Form($db);
@@ -519,6 +634,70 @@ if ($action == 'delete') {
  else if ($action == 'ask_deleteline') {
     $formconfirm = $form->formconfirm($_SERVER["PHP_SELF"] . '?id=' . $object->id . '&lineid=' . $lineid, $langs->trans('DeleteProductLine'), $langs->trans('ConfirmDeleteProductLine'), 'confirm_deleteline', '', 0, 1);
 }
+
+else if ($action == 'validate') {
+    // on verifie si l'objet est en numerotation provisoire
+    $numref = $object->ref;
+    $text = $langs->trans('ConfirmValidateOrder', $numref);
+    if (!empty($conf->notification->enabled)) {
+        require_once DOL_DOCUMENT_ROOT . '/core/class/notify.class.php';
+        $notify = new Notify($db);
+        $text.='<br>';
+        $text.=$notify->confirmMessage('NOTIFY_VAL_ORDER', $object->socid);
+    }
+    $formquestion = array();
+    if (!empty($conf->global->STOCK_CALCULATE_ON_VALIDATE_ORDER) && $object->hasProductsOrServices(1)) {
+        $langs->load("stocks");
+        require_once DOL_DOCUMENT_ROOT . '/product/class/html.formproduct.class.php';
+        $formproduct = new FormProduct($db);
+        $formquestion = array(
+            //'text' => $langs->trans("ConfirmClone"),
+            //array('type' => 'checkbox', 'name' => 'clone_content',   'label' => $langs->trans("CloneMainAttributes"),   'value' => 1),
+            //array('type' => 'checkbox', 'name' => 'update_prices',   'label' => $langs->trans("PuttingPricesUpToDate"),   'value' => 1),
+            array('type' => 'other', 'name' => 'idwarehouse', 'label' => $langs->trans("SelectWarehouseForStockDecrease"), 'value' => $formproduct->selectWarehouses(GETPOST('idwarehouse'), 'idwarehouse', '', 1)));
+    }
+
+    $formconfirm = $form->formconfirm($_SERVER["PHP_SELF"] . '?id=' . $object->id, $langs->trans('ValidateOrder'), $text, 'confirm_validate', $formquestion, 0, 1, 220);
+}
+
+else if ($action == 'modify') {
+    $text = $langs->trans('ConfirmUnvalidateOrder', $object->ref);
+    $formquestion = array();
+    if (!empty($conf->global->STOCK_CALCULATE_ON_VALIDATE_ORDER) && $object->hasProductsOrServices(1)) {
+        $langs->load("stocks");
+        require_once DOL_DOCUMENT_ROOT . '/product/class/html.formproduct.class.php';
+        $formproduct = new FormProduct($db);
+        $formquestion = array(
+            //'text' => $langs->trans("ConfirmClone"),
+            //array('type' => 'checkbox', 'name' => 'clone_content',   'label' => $langs->trans("CloneMainAttributes"),   'value' => 1),
+            //array('type' => 'checkbox', 'name' => 'update_prices',   'label' => $langs->trans("PuttingPricesUpToDate"),   'value' => 1),
+            array('type' => 'other', 'name' => 'idwarehouse', 'label' => $langs->trans("SelectWarehouseForStockIncrease"), 'value' => $formproduct->selectWarehouses(GETPOST('idwarehouse'), 'idwarehouse', '', 1)));
+    }
+
+    $formconfirm = $form->formconfirm($_SERVER["PHP_SELF"] . '?id=' . $object->id, $langs->trans('UnvalidateOrder'), $text, 'confirm_modif', $formquestion, "yes", 1, 220);
+}
+
+else if ($action == 'cancel') {
+    $text = $langs->trans('ConfirmCancelOrder', $object->ref);
+    $formquestion = array();
+    if (!empty($conf->global->STOCK_CALCULATE_ON_VALIDATE_ORDER) && $object->hasProductsOrServices(1)) {
+        $langs->load("stocks");
+        require_once DOL_DOCUMENT_ROOT . '/product/class/html.formproduct.class.php';
+        $formproduct = new FormProduct($db);
+        $formquestion = array(
+            //'text' => $langs->trans("ConfirmClone"),
+            //array('type' => 'checkbox', 'name' => 'clone_content',   'label' => $langs->trans("CloneMainAttributes"),   'value' => 1),
+            //array('type' => 'checkbox', 'name' => 'update_prices',   'label' => $langs->trans("PuttingPricesUpToDate"),   'value' => 1),
+            array('type' => 'other', 'name' => 'idwarehouse', 'label' => $langs->trans("SelectWarehouseForStockIncrease"), 'value' => $formproduct->selectWarehouses(GETPOST('idwarehouse'), 'idwarehouse', '', 1)));
+    }
+
+    $formconfirm = $form->formconfirm($_SERVER["PHP_SELF"] . '?id=' . $object->id, $langs->trans('Cancel'), $text, 'confirm_cancel', $formquestion, 0, 1);
+}
+
+ else if ($action == 'shipped') {
+    $formconfirm = $form->formconfirm($_SERVER["PHP_SELF"] . '?id=' . $object->id, $langs->trans('CloseOrder'), $langs->trans('ConfirmCloseOrder'), 'confirm_shipped', '', 0, 1);
+}
+
 
 print $formconfirm;
 
@@ -659,18 +838,147 @@ if (($action == 'create' || $action == 'edit') && $user->rights->commande->creer
 
 else {
     
-    // Actions
-    if ($user->rights->commande->supprimer) {
-        print '<p class="button-height right">';
-        print '<a class="button icon-cross" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=delete">' . $langs->trans("Delete") . '</a>';
-        print "</p>";
+    /*
+     * Boutons actions
+     */
+    if ($action != 'presend') {
+        if ($user->societe_id == 0 && $action <> 'editline') {
+            print '<div class="tabsAction">';
+
+            // Ship
+            $numshipping = 0;
+            if (!empty($conf->expedition->enabled)) {
+                $numshipping = $object->nb_expedition();
+
+                if ($object->statut > 0 && $object->statut < 3 && $object->getNbOfProductsLines() > 0) {
+                    if (($conf->expedition_bon->enabled && $user->rights->expedition->creer)
+                            || ($conf->livraison_bon->enabled && $user->rights->expedition->livraison->creer)) {
+                        if ($user->rights->expedition->creer) {
+                            print '<a class="butAction" href="' . DOL_URL_ROOT . '/expedition/shipment.php?id=' . $object->id . '">' . $langs->trans('ShipProduct') . '</a>';
+                        } else {
+                            print '<a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("NotAllowed")) . '">' . $langs->trans('ShipProduct') . '</a>';
+                        }
+                    } else {
+                        $langs->load("errors");
+                        print '<a class="butActionRefused" href="#" title="' . dol_escape_htmltag($langs->trans("ErrorModuleSetupNotComplete")) . '">' . $langs->trans('ShipProduct') . '</a>';
+                    }
+                }
+            }
+
+            // Create bill and Classify billed
+
+            if (!empty($conf->facture->enabled) && $object->Status == "TO_BILL") {
+                if ($user->rights->facture->creer && empty($conf->global->WORKFLOW_DISABLE_CREATE_INVOICE_FROM_ORDER)) {
+                    print '<a class="butAction" href="' . DOL_URL_ROOT . '/compta/facture.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->socid . '">' . $langs->trans("CreateBill") . '</a>';
+                }
+                if ($user->rights->commande->creer && $object->statut > 2 && empty($conf->global->WORKFLOW_DISABLE_CLASSIFY_BILLED_FROM_ORDER) && empty($conf->global->WORsKFLOW_BILL_ON_SHIPMENT)) {
+                    print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=classifybilled">' . $langs->trans("ClassifyBilled") . '</a>';
+                }
+            }
+            
+            // Delete order
+            if ($user->rights->commande->supprimer) {
+                if ($numshipping == 0) {
+                    print '<p class="button-height right">';
+                    print '<a class="button icon-cross" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=delete">' . $langs->trans("Delete") . '</a>';
+                    print "</p>";
+                } else {
+                    print '<a class="butActionRefused" href="#" title="' . $langs->trans("ShippingExist") . '">' . $langs->trans("Delete") . '</a>';
+                }
+            }
+            
+            // Cancel order
+            if ($object->Status == "VALIDATED" && $user->rights->commande->annuler) {
+                print '<p class="button-height right">';
+                print '<a class="button icon-lightning" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=cancel">' . $langs->trans('Cancel') . '</a>';
+                print "</p>";
+            }
+            
+            // Clone
+            if ($user->rights->commande->creer) {
+                print '<p class="button-height right">';
+                print '<a class="button icon-pages" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=clone">' . $langs->trans("ToClone") . '</a>';
+                print "</p>";
+            }
+            
+            // Create bill and Classify billed
+
+//            if (!empty($conf->facture->enabled) && $object->Status == "TO_BILL") {
+//                if ($user->rights->facture->creer && empty($conf->global->WORKFLOW_DISABLE_CREATE_INVOICE_FROM_ORDER)) {
+//                    print '<a class="butAction" href="' . DOL_URL_ROOT . '/compta/facture.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->socid . '">' . $langs->trans("CreateBill") . '</a>';
+//                }
+//                if ($user->rights->commande->creer && $object->statut > 2 && empty($conf->global->WORKFLOW_DISABLE_CLASSIFY_BILLED_FROM_ORDER) && empty($conf->global->WORsKFLOW_BILL_ON_SHIPMENT)) {
+//                    print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=classifybilled">' . $langs->trans("ClassifyBilled") . '</a>';
+//                }
+//            }
+            
+            // Classify billed
+            if ($object->Status == "TO_BILL" && $user->rights->commande->cloturer) {
+                print '<p class="button-height right">';
+                print '<a class="button icon-tick" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=classifybilled">' . $langs->trans('ClassifyBilled') . '</a>';
+                print "</p>";                
+            }
+            
+            // Set to shipped (Close)
+            if (($object->Status == "VALIDATED" || $object->Status == "IN_PROCESS") && $user->rights->commande->cloturer) {
+                print '<p class="button-height right">';
+                print '<a class="button icon-tick" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=shipped">' . $langs->trans('ClassifyShipped') . '</a>';
+                print "</p>";
+            }
+            
+            // Valid
+            if ($object->Status == "DRAFT" && $object->total_ttc >= 0 && count($object->lines)> 0 && $user->rights->commande->valider) {
+                    print '<p class="button-height right">';
+                    print '<a class="button icon-tick" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=validate">' . $langs->trans('Validate') . '</a>';
+                    print "</p>";
+            }
+            
+            // Create bill and Classify billed
+            if (!empty($conf->facture->enabled) && !in_array($object->Status, array("DRAFT", "CANCELED", "PROCESSED"))) {
+                if ($user->rights->facture->creer && empty($conf->global->WORKFLOW_DISABLE_CREATE_INVOICE_FROM_ORDER)) {
+                    print '<p class="button-height right">';
+                    print '<a class="button icon-folder" href="' . DOL_URL_ROOT . '/compta/facture.php?action=create&amp;origin=' . $object->element . '&amp;originid=' . $object->id . '&amp;socid=' . $object->socid . '">' . $langs->trans("CreateBill") . '</a>';
+                    print "</p>";
+                }
+                if ($user->rights->commande->creer && $object->statut > 2 && empty($conf->global->WORKFLOW_DISABLE_CLASSIFY_BILLED_FROM_ORDER) && empty($conf->global->WORsKFLOW_BILL_ON_SHIPMENT)) {
+                    print '<p class="button-height right">';
+                    print '<a class="button icon-drawer" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=classifybilled">' . $langs->trans("ClassifyBilled") . '</a>';
+                    print "</p>";
+                }
+            }
+            
+            // Send
+            if ($object->Status != "DRAFT" && $object->Status != "CANCELED") {
+                if ((empty($conf->global->MAIN_USE_ADVANCED_PERMS) || $user->rights->commande->order_advance->send)) {
+                    print '<p class="button-height right">';
+                    print '<a class="button icon-mail" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=presend&amp;mode=init">' . $langs->trans('SendByMail') . '</a>';
+                    print "</p>";
+                } else {
+                    print '<p class="button-height right">';
+                    print '<a class="button icon-mail" href="#">' . $langs->trans('SendByMail') . '</a>';
+                    print "</p>";
+                }
+            }
+            
+            // Reopen a closed order
+            if (($object->Status == "TO_BILL" || $object->Status == "PROCESSED") && $user->rights->commande->creer) {
+                print '<p class="button-height right">';
+                print '<a class="button icon-reply" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=reopen">' . $langs->trans('ReOpen') . '</a>';
+                print "</p>";
+            }
+
+            // Edit
+            if ($object->Status == "VALIDATED" && $user->rights->commande->creer) {
+                print '<p class="button-height right">';
+                print '<a class="button icon-pencil" href="' . $_SERVER['PHP_SELF'] . '?id=' . $id . '&action=modify">' . $langs->trans("Modify") . '</a>';
+                print "</p>";
+            }
+
+            print '</div>';
+        }
+        print '<br>';
     }
-    if ($object->Status == "DRAFT" && $user->rights->commande->creer) {
-        print '<p class="button-height right">';
-        print '<a class="button icon-pencil" href="' . $_SERVER['PHP_SELF'] . '?id=' . $id . '&action=edit">' . $langs->trans("Modify") . '</a>';
-        print "</p>";
-    }
-    
+        
     print start_box($title, "twelve", $object->fk_extrafields->ico, false);
     print '<table class="border" width="100%">';
     
@@ -778,6 +1086,13 @@ else {
         $blocname = 'notes';
         $title = $langs->trans('Notes');
         include DOL_DOCUMENT_ROOT . '/core/tpl/bloc_showhide.tpl.php';
+    }
+    
+        // Actions
+    if ($object->Status == "DRAFT" && $user->rights->commande->creer) {
+        print '<p class="button-height right">';
+        print '<a class="button icon-pencil" href="' . $_SERVER['PHP_SELF'] . '?id=' . $id . '&action=edit">' . $langs->trans("Edit") . '</a>';
+        print "</p>";
     }
     
     // Lines

@@ -27,15 +27,10 @@
                    "label": "StatusOrderValidated",
                    "cssClass": "red-gradient"
                },
-                "IN_PROCESS": {
-                   "enable": true,
-                   "label": "StatusOrderOnProcess",
-                   "cssClass": "orange-gradient"
-               },
                 "TO_BILL": {
                    "enable": true,
                    "label": "StatusOrderToBill2",
-                   "cssClass": "blue-gradient"
+                   "cssClass": "orange-gradient"
                },
                 "PROCESSED": {
                    "enable": true,
