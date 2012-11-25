@@ -20,23 +20,23 @@
                "DRAFT": {
                    "enable": true,
                    "label": "PropalStatusDraft",
-                   "cssClass": "grey-gradient"
+                   "cssClass": "blue-gradient"
                },
                "OPENED": {
                    "label": "PropalStatusOpened",
                    "enable": true,
-                   "cssClass": "orange-gradient",
+                   "cssClass": "red-gradient",
                    "dateEnd": "expired"
                },
                "SIGNED": {
                    "enable": true,
                    "label": "PropalStatusSigned",
-                   "cssClass": "green-gradient"
+                   "cssClass": "orange-gradient"
                },
                "NOT_SIGNED": {
                    "label": "PropalStatusNotSigned",
                    "enable": true,
-                   "cssClass": "grey-gradient"
+                   "cssClass": "black-gradient"
                },
                "BILLED": {
                    "enable": false,

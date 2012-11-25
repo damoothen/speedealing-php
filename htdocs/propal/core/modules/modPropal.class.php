@@ -154,7 +154,7 @@ class modPropal extends DolibarrModules {
         $this->menu = array();   // List of menus to add
         $r = 0;
         
-        $this->menus[$r]->_id = "menu:propal";
+        $this->menus[$r]->_id = "menu:propals";
         $this->menus[$r]->type = "top";
         $this->menus[$r]->position = 79;
         $this->menus[$r]->langs = "propal";
@@ -172,10 +172,10 @@ class modPropal extends DolibarrModules {
         $this->menus[$r]->enabled = '$conf->propal->enabled';
         $this->menus[$r]->usertype = 2;
         $this->menus[$r]->title = "NewPropal";
-        $this->menus[$r]->fk_menu = "menu:propal";
+        $this->menus[$r]->fk_menu = "menu:propals";
         $r++;
         
-        $this->menus[$r]->_id = "menu:list";
+        $this->menus[$r]->_id = "menu:propalslist";
         $this->menus[$r]->position = 791;
         $this->menus[$r]->url = "/propal/list.php";
         $this->menus[$r]->langs = "propal";
@@ -183,65 +183,10 @@ class modPropal extends DolibarrModules {
         $this->menus[$r]->enabled = '$conf->propal->enabled';
         $this->menus[$r]->usertype = 2;
         $this->menus[$r]->title = "List";
-        $this->menus[$r]->fk_menu = "menu:propal";
+        $this->menus[$r]->fk_menu = "menu:propals";
         $r++;
-        
-        $this->menus[$r]->_id = "menu:drafts";
-        $this->menus[$r]->position = 7910;
-        $this->menus[$r]->url = "/propal/list.php";
-        $this->menus[$r]->langs = "propal";
-        $this->menus[$r]->perms = '$user->rights->propal->lire';
-        $this->menus[$r]->enabled = '$conf->propal->enabled';
-        $this->menus[$r]->usertype = 2;
-        $this->menus[$r]->title = "PropalsDraft";
-        $this->menus[$r]->fk_menu = "menu:list";
-        $r++;
-        
-        $this->menus[$r]->_id = "menu:opened";
-        $this->menus[$r]->position = 7911;
-        $this->menus[$r]->url = "/propal/list.php";
-        $this->menus[$r]->langs = "propal";
-        $this->menus[$r]->perms = '$user->rights->propal->lire';
-        $this->menus[$r]->enabled = '$conf->propal->enabled';
-        $this->menus[$r]->usertype = 2;
-        $this->menus[$r]->title = "PropalsOpened";
-        $this->menus[$r]->fk_menu = "menu:list";
-        $r++;
-        
-        $this->menus[$r]->_id = "menu:signed";
-        $this->menus[$r]->position = 7912;
-        $this->menus[$r]->url = "/propal/list.php";
-        $this->menus[$r]->langs = "propal";
-        $this->menus[$r]->perms = '$user->rights->propal->lire';
-        $this->menus[$r]->enabled = '$conf->propal->enabled';
-        $this->menus[$r]->usertype = 2;
-        $this->menus[$r]->title = "PropalStatusSigned";
-        $this->menus[$r]->fk_menu = "menu:list";
-        $r++;
-        
-        $this->menus[$r]->_id = "menu:notsigned";
-        $this->menus[$r]->position = 7913;
-        $this->menus[$r]->url = "/propal/list.php";
-        $this->menus[$r]->langs = "propal";
-        $this->menus[$r]->perms = '$user->rights->propal->lire';
-        $this->menus[$r]->enabled = '$conf->propal->enabled';
-        $this->menus[$r]->usertype = 2;
-        $this->menus[$r]->title = "PropalStatusNotSigned";
-        $this->menus[$r]->fk_menu = "menu:list";
-        $r++;
-        
-        $this->menus[$r]->_id = "menu:billed";
-        $this->menus[$r]->position = 7914;
-        $this->menus[$r]->url = "/propal/list.php";
-        $this->menus[$r]->langs = "propal";
-        $this->menus[$r]->perms = '$user->rights->propal->lire';
-        $this->menus[$r]->enabled = '$conf->propal->enabled';
-        $this->menus[$r]->usertype = 2;
-        $this->menus[$r]->title = "PropalStatusBilled";
-        $this->menus[$r]->fk_menu = "menu:list";
-        $r++;
-        
-        $this->menus[$r]->_id = "menu:stats";
+                
+        $this->menus[$r]->_id = "menu:propalsstats";
         $this->menus[$r]->position = 792;
         $this->menus[$r]->url = "/propal/stats/index.php";
         $this->menus[$r]->langs = "propal";
@@ -249,7 +194,7 @@ class modPropal extends DolibarrModules {
         $this->menus[$r]->enabled = '$conf->propal->enabled';
         $this->menus[$r]->usertype = 2;
         $this->menus[$r]->title = "Statistics";
-        $this->menus[$r]->fk_menu = "menu:propal";
+        $this->menus[$r]->fk_menu = "menu:propals";
         $r++;
         
         // Exports
