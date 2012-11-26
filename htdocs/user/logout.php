@@ -4,6 +4,7 @@
  * Copyright (C) 2003      Xavier Dutoit         <doli@sydesy.com>
  * Copyright (C) 2004-2009 Laurent Destailleur   <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2012 Regis Houssin         <regis@dolibarr.fr>
+ * Copyright (C) 2011-2012 Herve Prot            <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,10 +20,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- *      \file       htdocs/user/logout.php
- *      \brief      Page called to disconnect a user
- */
 //if (! defined('NOTOKENRENEWAL')) define('NOTOKENRENEWAL','1'); // Uncomment creates pb to relogon after a disconnect
 if (!defined('NOREQUIREMENU'))
     define('NOREQUIREMENU', '1');

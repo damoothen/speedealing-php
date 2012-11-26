@@ -78,6 +78,11 @@ if (!empty($conf->global->MAIN_ONLY_LOGIN_ALLOWED)) {
     }
 }
 
+// Set default language (must be after the setValues of $conf)
+if (!defined('NOREQUIRETRAN')) {
+    $langs->setDefaultLang($conf->global->MAIN_LANG_DEFAULT);
+}
+
 /*
  * Create object $mysoc (A thirdparty object that contains properties of companies managed by Dolibarr.
  */
@@ -89,11 +94,5 @@ if (!defined('NOREQUIREDB') && !defined('NOREQUIRESOC')) {
     // For some countries, we need to invert our address with customer address
     if ($mysoc->country_id == 'DE' && !isset($conf->global->MAIN_INVERT_SENDER_RECIPIENT))
         $conf->global->MAIN_INVERT_SENDER_RECIPIENT = 1;
-}
-
-
-// Set default language (must be after the setValues of $conf)
-if (!defined('NOREQUIRETRAN')) {
-    $langs->setDefaultLang($conf->global->MAIN_LANG_DEFAULT);
 }
 ?>

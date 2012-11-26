@@ -949,8 +949,6 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             $titre = $langs->trans("ThirdParty");
             print start_box($titre, "twelve", $object->fk_extrafields->ico, false);
 
-
-            $head = societe_prepare_head($object);
             dol_fiche_head($head, 'card', $langs->trans("ThirdParty"), 0, 'company');
 
 

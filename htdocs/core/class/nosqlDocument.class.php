@@ -671,29 +671,29 @@ abstract class nosqlDocument extends CommonObject {
                                                 "placeholder" : "",
                                                 "autocomplete" : {
                                                     /*source: function(request, response) {
-                                                                                        //console.log($(this).attr('element'));
-                                                                                        $.ajax({
-                                                                                            url: urlLoadInPlace,
-                                                                                            data: {
-                                                                                                //"id": oTable.fnGetData( this.parentNode, 0),
-                                                                                                "element_class" : "<?php echo get_class($this); ?>",
-                                                                                                "type":"autocomplete"
-                                                                                                //"key": "editval_"+columns[oTable.fnGetPosition( this )[2]]
-                                                                                            },
-                                                                                            dataType : 'json',
-                                                                                            type : 'GET'
-                                                                                        });
-                                                                                    },*/
+                                                                                                        //console.log($(this).attr('element'));
+                                                                                                        $.ajax({
+                                                                                                            url: urlLoadInPlace,
+                                                                                                            data: {
+                                                                                                                //"id": oTable.fnGetData( this.parentNode, 0),
+                                                                                                                "element_class" : "<?php echo get_class($this); ?>",
+                                                                                                                "type":"autocomplete"
+                                                                                                                //"key": "editval_"+columns[oTable.fnGetPosition( this )[2]]
+                                                                                                            },
+                                                                                                            dataType : 'json',
+                                                                                                            type : 'GET'
+                                                                                                        });
+                                                                                                    },*/
                                                     url: urlLoadInPlace,
                                                     /*"change":{"projet":"123"},*/
                                                     /*"data" : function ( value, settings ) {
-                                                                                                                                console.log("toto");
-                                                                                                                                return { //"id": oTable.fnGetData( this.parentNode, 0),
-                                                                                                                                    "element_class" : "<?php echo get_class($this); ?>",
-                                                                                                                                    "type":"autocomplete",
-                                                                                                                                    "id" : "1234"};
-                                                                                                                                    //"key": "editval_"+columns[oTable.fnGetPosition( this )[2]]};
-                                                                                                                            },*/
+                                                                                                                                                console.log("toto");
+                                                                                                                                                return { //"id": oTable.fnGetData( this.parentNode, 0),
+                                                                                                                                                    "element_class" : "<?php echo get_class($this); ?>",
+                                                                                                                                                    "type":"autocomplete",
+                                                                                                                                                    "id" : "1234"};
+                                                                                                                                                    //"key": "editval_"+columns[oTable.fnGetPosition( this )[2]]};
+                                                                                                                                            },*/
                                                     "delay"	: 10,
                                                     "minLength"	: 1,
                                                     "max"	: 6,

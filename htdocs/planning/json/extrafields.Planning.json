@@ -1,0 +1,206 @@
+{
+    "_id": "extrafields:Planning",
+    "class": "extrafields",
+    "ico": "16-Month-Calendar.png",
+    "langs": [
+    "agenda",
+    "commercial"
+    ],
+    "longList": [
+    "service",
+    "finition",
+    "notes",
+    "BAT",
+    "date_livraison",
+    "date_finale",
+    "heure_livraison",
+    "COMPO"
+    ],
+    "fields": {
+        "label": {
+            "type": "text",
+            "enable": true
+        },
+        "societe": {
+            "enable": true,
+            "class": "Societe",
+            "view": "list",
+            "params": {
+        }
+        },
+        "contact": {
+            "enable": true,
+            "class": "Contact",
+            "view": "listSociete",
+            "params": {
+                "key": "$this->societe->id"
+            }
+        },
+        "Status": {
+            "type": "select",
+            "enable": true,
+            "default": "TODO",
+            "status": true,
+            "aoColumns": {
+                "sClass": "center",
+                "bSearchable": true,
+                "bVisible": true
+            },
+            "values": {
+                "TODO": {
+                    "enable": true,
+                    "label": "Non défini",
+                    "cssClass": "grey-gradient"
+                },
+                "ACC": {
+                    "label": "Accueil",
+                    "enable": true,
+                    "cssClass": "orange-gradient"
+                },
+                "ENCOURS": {
+                    "enable": true,
+                    "label": "En cours",
+                    "cssClass": "red-gradient"
+                },
+                "EXP": {
+                    "label": "Livré",
+                    "enable": true,
+                    "cssClass": "green-gradient"
+                }
+            }
+        },
+        "notes": {
+            "type": "textarea",
+            "enable": true
+        },
+        "service" : {
+            "type":"select",
+            "enable":true,
+            "optional":true,
+            "default": "NEXPRESS",
+            "aoColumns": {
+                "sClass": "dol_select center",
+                "bSearchable": true,
+                "bVisible": true
+            },
+            "values": {
+                "NEXPRESS": {
+                    "enable": true,
+                    "label":"NEXPRESS"
+                },
+                "N_OR_B": {
+                    "enable": true,
+                    "label":"Noir et Blanc"
+                },
+                "TABLEPLAT": {
+                    "enable": true,
+                    "label":"Table à plat"
+                },
+                "PLANS": {
+                    "enable": true,
+                    "label":"Plans"
+                },
+                "PREPRESS": {
+                    "enable": true,
+                    "label":"PRE-PRESS"
+                },
+                "PLASTIFICATION": {
+                    "enable": true,
+                    "label":"Plastification"
+                },
+                "COLOR": {
+                    "enable": true,
+                    "label":"COULEUR"
+                },
+                "INFOG": {
+                    "enable": true,
+                    "label":"Infographie"
+                }
+            }
+        },
+        "finition" :
+        {
+            "type":"text",
+            "optional":true,
+            "enable":true,
+            "aoColumns": {
+                "sClass": "dol_edit center",
+                "bSearchable": true,
+                "bVisible": true
+            }
+        },
+        "BAT" :
+        {
+            "type":"text",
+            "optional":true,
+            "enable":true,
+            "aoColumns": {
+                "sClass": "dol_edit center",
+                "bSearchable": true,
+                "bVisible": true
+            }
+        },
+        "date_livraison": {
+            "type":"date",
+            "optional":true,
+            "enable":true,
+            "label":"Délai initial",
+            "aoColumns": {
+                "sClass": "dol_edit center",
+                "bSearchable": true,
+                "bVisible": true
+            }
+        },
+        "date_finale": {
+            "type":"date",
+            "optional":true,
+            "enable":true,
+            "label":"Délai final",
+            "aoColumns": {
+                "sClass": "dol_edit center",
+                "bSearchable": true,
+                "bVisible": true
+            }
+        },
+        "heure_livraison": {
+            "type":"text",
+            "optional":true,
+            "enable":true,
+            "label":"Heure livraison",
+            "aoColumns": {
+                "sClass": "dol_edit center",
+                "bSearchable": true,
+                "bVisible": true
+            }
+        },
+        "COMPO": {
+            "type": "select",
+            "enable": true,
+            "optional":true,
+            "default": "NO",
+            "status": true,
+            "aoColumns": {
+                "sClass": "dol_select center",
+                "bSearchable": true,
+                "bVisible": true
+            },
+            "values": {
+                "NO": {
+                    "enable": true,
+                    "label": "",
+                    "cssClass": "blue-gradient"
+                },
+                "ENCOMPO": {
+                    "enable": true,
+                    "label": "En Compo",
+                    "cssClass": "orange-gradient"
+                },
+                "COMPOOK": {
+                    "enable": true,
+                    "label": "Compo Ok",
+                    "cssClass": "green-gradient"
+                }
+            }
+        }
+    }
+}

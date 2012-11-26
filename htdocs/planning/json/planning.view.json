@@ -1,0 +1,12 @@
+{
+   "_id": "_design/Planning",
+   "language": "javascript",
+   "views": {
+       "list": {
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"Agenda\")\n  emit(doc.datep, doc);\n}"
+       }
+   },
+   "updates": {
+       "in-place": "function (doc, req) {\n var field = req.query.field;\n var value = req.query.value;\n doc[field] = value;\n  return [doc, value];\n }"
+   }
+}

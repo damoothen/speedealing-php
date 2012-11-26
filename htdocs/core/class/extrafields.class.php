@@ -181,6 +181,7 @@ class ExtraFields extends nosqlDocument {
         } catch (Exception $e) {
             
         }
+
         if (count($this->fields))
             foreach ($this->fields as $aRow) {
                 if (isset($aRow->dict)) {
@@ -190,10 +191,11 @@ class ExtraFields extends nosqlDocument {
                 }
             }
 
-        /* if(count($this->langs))
-          foreach ($this->langs as $aRow)
-          $langs->load($aRow);
-         */
+        if (count($this->langs))
+            foreach ($this->langs as $aRow) {
+                $langs->load($aRow);
+            }
+
         return 1;
     }
 

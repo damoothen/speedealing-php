@@ -129,6 +129,10 @@ if (!empty($key) && !empty($class) && !empty($id)) {
                         $return[$keys] = $langs->trans($aRow->label);
                     else
                         $return[$keys] = $langs->trans($keys);
+                    
+                    //if(!empty($return[$keys]) && $object->fk_extrafields->fields->$key->class != "User")
+                    //    $return[$keys] = $keys."-".$return[$keys];
+                    
                 } else { //autocomplete
                     echo $keys . ";";
                 }

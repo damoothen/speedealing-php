@@ -23,12 +23,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- *	\file       htdocs/commande/fiche.php
- *	\ingroup    commande
- *	\brief      Page to show customer order
- */
-
 require '../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formorder.class.php';
