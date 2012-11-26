@@ -540,6 +540,8 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
         $object->tva_intra = GETPOST('tva_intra');
 
+        if (! is_object($object->commercial_id))
+        	$object->commercial_id = new stdClass();
         $object->commercial_id->id = GETPOST('commercial_id');
         $object->default_lang = GETPOST('default_lang');
 
@@ -1497,7 +1499,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
         print '<tr><td>' . $langs->trans('Phone') . '</td><td style="min-width: 25%;">' . dol_print_phone($object->phone, $object->country_id, 0, $object->id, 'AC_TEL') . '</td>';
         print '<td>' . $langs->trans('Fax') . '</td><td style="min-width: 25%;">' . dol_print_phone($object->fax, $object->country_id, 0, $object->id, 'AC_FAX') . '</td></tr>';
-        
+
         // Zone Geo
         print '<tr><td>' . $form->editfieldkey("zonegeo", 'zonegeo', $object->zonegeo, $object, $user->rights->societe->creer) . '</td>';
         print '<td colspan="' . (2 + (($showlogo || $showbarcode) ? 0 : 1)) . '">';

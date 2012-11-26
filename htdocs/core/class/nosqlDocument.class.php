@@ -1292,10 +1292,12 @@ abstract class nosqlDocument extends CommonObject {
                 return 0;
             }
 
+            $aRow->values[0] = new stdClass();
             $aRow->values[0]->label = "";
             $aRow->values[0]->enable = true;
 
             foreach ($result->rows as $row) {
+				$aRow->values[$row->value->_id] = new stdClass();
                 $aRow->values[$row->value->_id]->label = $row->value->name;
                 $aRow->values[$row->value->_id]->enable = true;
             }
