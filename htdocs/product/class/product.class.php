@@ -820,7 +820,7 @@ class Product extends nosqlDocument {
 
 
 
-                
+
 // Ne pas mettre de quote sur les numeriques decimaux.
             // Ceci provoque des stockages avec arrondis en base au lieu des valeurs exactes.
             $sql = "UPDATE " . MAIN_DB_PREFIX . "product SET";
@@ -2450,6 +2450,7 @@ class Product extends nosqlDocument {
         print'<tr>';
         print'<th>';
         print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
         $obj->aoColumns[$i]->mDataProp = "_id";
         $obj->aoColumns[$i]->bUseRendered = false;
         $obj->aoColumns[$i]->bSearchable = false;
@@ -2458,6 +2459,7 @@ class Product extends nosqlDocument {
         print'<th class="essential">';
         print $langs->trans("AppliedPricesFrom");
         print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
         $obj->aoColumns[$i]->mDataProp = "tms";
         $obj->aoColumns[$i]->bUseRendered = false;
         $obj->aoColumns[$i]->bSearchable = true;
@@ -2466,6 +2468,7 @@ class Product extends nosqlDocument {
         print'<th class="essential">';
         print $langs->trans('MultiPriceLevelsName');
         print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
         $obj->aoColumns[$i]->mDataProp = "price_level";
         $obj->aoColumns[$i]->sDefaultContent = "";
         $obj->aoColumns[$i]->sClass = "fright";
@@ -2473,6 +2476,7 @@ class Product extends nosqlDocument {
         print'<th class="essential">';
         print $langs->trans('PriceBase');
         print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
         $obj->aoColumns[$i]->mDataProp = "price_base_type";
         $obj->aoColumns[$i]->sClass = "center";
         $obj->aoColumns[$i]->sDefaultContent = "";
@@ -2480,6 +2484,7 @@ class Product extends nosqlDocument {
         print'<th class="essential">';
         print $langs->trans('VAT');
         print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
         $obj->aoColumns[$i]->mDataProp = "tva_tx";
         $obj->aoColumns[$i]->sClass = "fright";
         $obj->aoColumns[$i]->sDefaultContent = "";
@@ -2489,6 +2494,7 @@ class Product extends nosqlDocument {
             print'<th class="essential">';
             print $langs->trans('HT');
             print'</th>';
+            $obj->aoColumns[$i] = new stdClass();
             $obj->aoColumns[$i]->mDataProp = "price";
             $obj->aoColumns[$i]->sClass = "fright";
             $obj->aoColumns[$i]->sDefaultContent = "";
@@ -2498,6 +2504,7 @@ class Product extends nosqlDocument {
                 print'<th class="essential">';
                 print $langs->trans('Ecotax');
                 print'</th>';
+                $obj->aoColumns[$i] = new stdClass();
                 $obj->aoColumns[$i]->mDataProp = "ecotax";
                 $obj->aoColumns[$i]->sClass = "fright";
                 $obj->aoColumns[$i]->sDefaultContent = "";
@@ -2507,6 +2514,7 @@ class Product extends nosqlDocument {
             print'<th class="essential">';
             print $langs->trans("MinPrice") . ' ' . $langs->trans("HT");
             print'</th>';
+            $obj->aoColumns[$i] = new stdClass();
             $obj->aoColumns[$i]->mDataProp = "min_price";
             $obj->aoColumns[$i]->sClass = "fright";
             $obj->aoColumns[$i]->sDefaultContent = "";
@@ -2516,6 +2524,7 @@ class Product extends nosqlDocument {
             print'<th class="essential">';
             print $langs->trans('TTC');
             print'</th>';
+            $obj->aoColumns[$i] = new stdClass();
             $obj->aoColumns[$i]->mDataProp = "price_ttc";
             $obj->aoColumns[$i]->sClass = "fright";
             $obj->aoColumns[$i]->sDefaultContent = "";
@@ -2524,6 +2533,7 @@ class Product extends nosqlDocument {
             if ($conf->global->PRODUCT_USE_ECOTAX && $this->type == "PRODUCT") {
                 print $langs->trans('EcotaxTTC');
                 print'</th>';
+                $obj->aoColumns[$i] = new stdClass();
                 $obj->aoColumns[$i]->mDataProp = "ecotax_ttc";
                 $obj->aoColumns[$i]->sClass = "fright";
                 $obj->aoColumns[$i]->sDefaultContent = "";
@@ -2533,6 +2543,7 @@ class Product extends nosqlDocument {
             print'<th class="essential">';
             print $langs->trans("MinPrice") . ' ' . $langs->trans("TTC");
             print'</th>';
+            $obj->aoColumns[$i] = new stdClass();
             $obj->aoColumns[$i]->mDataProp = "min_price_ttc";
             $obj->aoColumns[$i]->sClass = "fright";
             $obj->aoColumns[$i]->sDefaultContent = "";
@@ -2542,6 +2553,7 @@ class Product extends nosqlDocument {
         print'<th class="essential">';
         print $langs->trans('ChangedBy');
         print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
         $obj->aoColumns[$i]->mDataProp = "user_mod";
         $obj->aoColumns[$i]->sDefaultContent = "";
         print '</tr>';

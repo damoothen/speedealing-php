@@ -222,7 +222,7 @@ if ($user->rights->societe->client->voir) {
     $i++;
 }
 foreach ($object->fk_extrafields->longList as $aRow) {
-    if ($object->fk_extrafields->fields->$aRow->aoColumns->bSearchable = true)
+    if ($object->fk_extrafields->fields->$aRow->aoColumns->bSearchable == true)
         print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search " . $aRow) . '" /></th>';
     else
         print'<th id="' . $i . '"></th>';
