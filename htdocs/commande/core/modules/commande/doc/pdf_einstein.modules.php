@@ -25,9 +25,9 @@
  *	\brief      Fichier de la classe permettant de generer les commandes au modele Einstein
  */
 
-require_once DOL_DOCUMENT_ROOT .'/core/modules/commande/modules_commande.php';
+require_once DOL_DOCUMENT_ROOT .'/commande/core/modules/commande/modules_commande.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/societe/lib/societe.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/pdf.lib.php';
 
@@ -911,7 +911,7 @@ class pdf_einstein extends ModelePDFCommandes
 		pdf_pagehead($pdf,$outputlangs,$this->page_hauteur);
 
 		// Show Draft Watermark
-		if($object->statut==0 && (! empty($conf->global->COMMANDE_DRAFT_WATERMARK)) )
+		if($object->Status == "DRAFT" && (! empty($conf->global->COMMANDE_DRAFT_WATERMARK)) )
 		{
             pdf_watermark($pdf,$outputlangs,$this->page_hauteur,$this->page_largeur,'mm',$conf->global->COMMANDE_DRAFT_WATERMARK);
 		}
@@ -1033,7 +1033,7 @@ class pdf_einstein extends ModelePDFCommandes
 			}
 			else
 			{
-				$carac_client_name=$outputlangs->convToOutputCharset($object->client->nom);
+				$carac_client_name=$outputlangs->convToOutputCharset($object->client->name);
 			}
 
 			$carac_client=pdf_build_address($outputlangs,$this->emetteur,$object->client,($usecontact?$object->contact:''),$usecontact,'target');

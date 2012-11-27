@@ -536,7 +536,7 @@ class Form {
             foreach ($result->rows as $aRow) {
                 $obj = $aRow->value;
 
-                $label = $obj->ThirdPartyName;
+                $label = $obj->name;
                 if ($showtype) {
                     if ($obj->client || $obj->fournisseur)
                         $label.=' (';

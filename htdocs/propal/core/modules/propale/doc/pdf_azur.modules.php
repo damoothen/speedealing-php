@@ -24,9 +24,10 @@
  *	\ingroup    propale
  *	\brief      Fichier de la classe permettant de generer les propales au modele Azur
  */
-require_once DOL_DOCUMENT_ROOT.'/core/modules/propale/modules_propale.php';
+require_once DOL_DOCUMENT_ROOT.'/propal/core/modules/propale/modules_propale.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+//require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/societe/lib/societe.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/pdf.lib.php';
 
@@ -500,7 +501,8 @@ class pdf_azur extends ModelePDFPropales
 
             $posy=$pdf->GetY()+1;
 		}
-        elseif (isset($object->type) && $object->type != 2 && ($object->availability_code || $object->availability))    // Show availability conditions
+//        elseif (isset($object->type) && $object->type != 2 && ($object->availability_code || $object->availability))    // Show availability conditions
+        elseif (isset($object->availability_code) && !(empty($object->availabilty_code)))    // Show availability conditions
 		{
 			$pdf->SetFont('','B', $default_font_size - 2);
 			$pdf->SetXY($this->marge_gauche, $posy);
@@ -509,7 +511,8 @@ class pdf_azur extends ModelePDFPropales
 			$pdf->SetTextColor(0,0,0);
 			$pdf->SetFont('','', $default_font_size - 2);
 			$pdf->SetXY(82, $posy);
-			$lib_availability=$outputlangs->transnoentities("AvailabilityType".$object->availability_code)!=('AvailabilityType'.$object->availability_code)?$outputlangs->transnoentities("AvailabilityType".$object->availability_code):$outputlangs->convToOutputCharset($object->availability);
+//			$lib_availability=$outputlangs->transnoentities("AvailabilityType".$object->availability_code)!=('AvailabilityType'.$object->availability_code)?$outputlangs->transnoentities("AvailabilityType".$object->availability_code):$outputlangs->convToOutputCharset($object->availability);
+			$lib_availability=$outputlangs->transnoentities($object->getExtraFieldLabel('availability_code'))!=($object->getExtraFieldLabel('availability_code'))?$outputlangs->transnoentities($object->getExtraFieldLabel('availability_code')):$outputlangs->convToOutputCharset($object->getExtraFieldLabel('availability_code'));
 			$lib_availability=str_replace('\n',"\n",$lib_availability);
 			$pdf->MultiCell(80, 4, $lib_availability, 0, 'L');
 
@@ -1101,12 +1104,12 @@ class pdf_azur extends ModelePDFPropales
 			{
 				// On peut utiliser le nom de la societe du contact
 				if (! empty($conf->global->MAIN_USE_COMPANY_NAME_OF_CONTACT)) $socname = $object->contact->socname;
-				else $socname = $object->client->nom;
+				else $socname = $object->client->name;
 				$carac_client_name=$outputlangs->convToOutputCharset($socname);
 			}
 			else
 			{
-				$carac_client_name=$outputlangs->convToOutputCharset($object->client->nom);
+				$carac_client_name=$outputlangs->convToOutputCharset($object->client->name);
 			}
 
 			$carac_client=pdf_build_address($outputlangs,$this->emetteur,$object->client,($usecontact?$object->contact:''),$usecontact,'target');

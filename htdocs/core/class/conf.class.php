@@ -295,8 +295,8 @@ class Conf extends nosqlDocument {
         $this->user->dir_temp = $rootforuser . "/users/temp";
 
         // For propal storage
-        $this->propal->dir_output = $rootforuser . "/propale";
-        $this->propal->dir_temp = $rootforuser . "/propale/temp";
+        $this->propal->dir_output = $rootforuser . "/propal";
+        $this->propal->dir_temp = $rootforuser . "/propal/temp";
 
         // Exception: Some dir are not the name of module. So we keep exception here
         // for backward compatibility.

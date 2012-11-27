@@ -1,11 +1,15 @@
 <?php
-/* Copyright (C) 2001-2005 Rodolphe Quiedeville   <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2012 Laurent Destailleur    <eldy@users.sourceforge.net>
- * Copyright (C) 2005      Marc Barilley / Ocebo  <marc@ocebo.com>
- * Copyright (C) 2005-2012 Regis Houssin          <regis@dolibarr.fr>
- * Copyright (C) 2012      Juanjo Menent          <jmenent@2byte.es>
- * Copyright (C) 2012      David Moothen          <dmoothen@websitti.fr>
- *
+/* Copyright (C) 2001-2007 Rodolphe Quiedeville  <rodolphe@quiedeville.org>
+ * Copyright (C) 2004-2011 Laurent Destailleur   <eldy@users.sourceforge.net>
+ * Copyright (C) 2004      Eric Seigne           <eric.seigne@ryxeo.com>
+ * Copyright (C) 2005      Marc Barilley / Ocebo <marc@ocebo.com>
+ * Copyright (C) 2005-2012 Regis Houssin         <regis@dolibarr.fr>
+ * Copyright (C) 2006      Andre Cianfarani      <acianfa@free.fr>
+ * Copyright (C) 2010-2011 Juanjo Menent         <jmenent@2byte.es>
+ * Copyright (C) 2010-2011 Philippe Grand        <philippe.grand@atoo-net.com>
+ * Copyright (C) 2012      Christophe Battarel   <christophe.battarel@altairis.fr>
+ * Copyright (C) 2012      David Moothen   <dmoothen@websitti.fr>
+*
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -21,23 +25,64 @@
  */
 
 /**
- *	\file       htdocs/commande/liste.php
- *	\ingroup    commande
- *	\brief      Page to list orders
+ *	\file       	htdocs/comm/propal.php
+ *	\ingroup    	propale
+ *	\brief      	Page of commercial proposals card and list
  */
 
+require("../main.inc.php");
+require_once(DOL_DOCUMENT_ROOT . "/contact/class/contact.class.php");
+require_once(DOL_DOCUMENT_ROOT . "/propal/class/propal.class.php");
+require_once(DOL_DOCUMENT_ROOT . "/core/lib/date.lib.php");
+require_once(DOL_DOCUMENT_ROOT . "/agenda/lib/agenda.lib.php");
+if (!empty($conf->projet->enabled))
+    require_once(DOL_DOCUMENT_ROOT . "/core/lib/project.lib.php");
 
-require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
-require_once DOL_DOCUMENT_ROOT.'/commande/class/commande.class.php';
-
-$langs->load('orders');
-$langs->load('deliveries');
 $langs->load('companies');
+$langs->load('propal');
+$langs->load('compta');
+$langs->load('bills');
+$langs->load('orders');
+$langs->load('products');
 
-$object = new Commande($db);
-$societe = new Societe($db);
+$socid=GETPOST('socid','int');
+
+$search_user=GETPOST('search_user','int');
+$search_sale=GETPOST('search_sale','int');
+$search_ref=GETPOST('sf_ref')?GETPOST('sf_ref','alpha'):GETPOST('search_ref','alpha');
+$search_refcustomer=GETPOST('search_refcustomer','alpha');
+$search_societe=GETPOST('search_societe','alpha');
+$search_montant_ht=GETPOST('search_montant_ht','alpha');
+
+$sall=GETPOST("sall");
+$mesg=(GETPOST("msg") ? GETPOST("msg") : GETPOST("mesg"));
+$year=GETPOST("year");
+$month=GETPOST("month");
+
+// Nombre de ligne pour choix de produit/service predefinis
+$NBLINES=4;
+
+// Security check
+//$socid = GETPOST("socid", 'alpha');
+//if ($user->societe_id)
+//    $socid = $user->societe_id;
+//$result = restrictedArea($user, 'agenda', 0, '', 'myactions');
+
+$canedit = 1;
+//if (!$user->rights->agenda->myactions->read)
+//    accessforbidden();
+//if (!$user->rights->agenda->allactions->read)
+//    $canedit = 0;
+//if (!$user->rights->agenda->allactions->read || $filter == 'mine') { // If no permission to see all, we show only affected to me
+//    $filtera = $user->id;
+//    $filtert = $user->id;
+//    $filterd = $user->id;
+//}
+
+$type = GETPOST('type');
+$all = (GETPOST('all') && $user->rights->propale>lire);
+
+$object = new Propal($db);
 
 if (!empty($_GET['json'])) {
     $output = array(
@@ -73,53 +118,58 @@ if (!empty($_GET['json'])) {
     exit;
 }
 
+$contact = new Contact($db);
+$societe = new Societe($db);
+$societestatic = new Societe($db);
+$userstatic = new User($db);
+
 /*
- * View
+ * 	Actions
  */
 
-$now=dol_now();
+/*
+ *  View
+ */
 
-$form = new Form($db);
-$formother = new FormOther($db);
-$formfile = new FormFile($db);
-$companystatic = new Societe($db);
+$now = dol_now();
 
-$help_url="EN:Module_Customers_Orders|FR:Module_Commandes_Clients|ES:Módulo_Pedidos_de_clientes";
-$title = $langs->trans('Orders');
-llxHeader('',$title,$help_url);
-print_fiche_titre($title);
-?>
-<div class="dashboard">
-    <div class="columns">
-        <div class="four-columns twelve-columns-mobile graph">
-            <?php $object->graphPieStatus(); ?>
-        </div>
+$help_url = 'EN:Module_Agenda_En|FR:Module_Agenda|ES:M&omodulodulo_Agenda';
+llxHeader('', $langs->trans("Proposals"), $help_url);
 
-        <div class="eight-columns twelve-columns-mobile new-row-mobile graph">
-            <?php $object->graphBarStatus(); ?>
-        </div>
-    </div>
-</div>
-<?php
-print '<div class="with-padding" >';
+$title = $langs->trans("DoneAndToDoActions");
+if ($type == 'DONE')
+    $title = $langs->trans("DoneActions");
+if ($type == 'TOTO')
+    $title = $langs->trans("ToDoActions");
+
+if ($socid) {
+    $societe = new Societe($db);
+    $societe->fetch($socid);
+    $newtitle = $langs->trans($title) . ' ' . $langs->trans("For") . ' ' . $societe->name;
+} else {
+    $newtitle = $langs->trans($title);
+}
+
+
+print_fiche_titre($langs->trans("Proposals"));
+print '<div class="with-padding">';
 
 /*
  * Barre d'actions
  *
  */
 
-if ($user->rights->commande->creer) {
+if ($user->rights->propal->creer) {
     print '<p class="button-height right">';
     print '<span class="button-group">';
-    print '<a class="button icon-star" href="commande/commande.php?action=create">' . $langs->trans("NewOrder") . '</a>';
+    print '<a class="button icon-star" href="' . strtolower(get_class($object)) . '/addpropal.php?action=create">' . $langs->trans("NewPropal") . '</a>';
     print "</span>";
     print "</p>";
 }
-print '</div>';
 
 $i = 0;
 $obj = new stdClass();
-print '<table class="display dt_act" id="listorders" >';
+print '<table class="display dt_act" id="listpropals" >';
 // Ligne des titres 
 print'<thead>';
 print'<tr>';
@@ -136,7 +186,7 @@ print'</th>';
 $obj->aoColumns[$i]->mDataProp = "ref";
 $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->bSearchable = true;
-$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("ref", "url", array('url' => 'commande/commande.php?id='));
+$obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("ref", "url", array('url' => 'propal/propal.php?id='));
 $i++;
 print'<th class="essential">';
 print $langs->trans('Company');
@@ -204,7 +254,7 @@ $obj->aoColumns[$i]->sWidth = "60px";
 $obj->aoColumns[$i]->bSortable = false;
 $obj->aoColumns[$i]->sDefaultContent = "";
 
-$url = "commande/commande.php";
+$url = "propal/propal.php";
 $obj->aoColumns[$i]->fnRender = 'function(obj) {
 	var ar = [];
 	ar[ar.length] = "<a href=\"' . $url . '?id=";
@@ -263,10 +313,8 @@ $obj->aaSorting = array(array(2, 'asc'));
 //}
 $obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=list";
 
-$object->datatablesCreate($obj, "listorders", true, true);
-
+$object->datatablesCreate($obj, "listpropals", true, true);
+print '</div>'; // end
 
 llxFooter();
-
-$db->close();
 ?>
