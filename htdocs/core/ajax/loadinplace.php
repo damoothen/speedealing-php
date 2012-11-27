@@ -37,6 +37,7 @@ require_once DOL_DOCUMENT_ROOT . '/core/class/genericobject.class.php';
 $key = GETPOST('key', 'alpha');
 $class = GETPOST('element_class', 'alpha');
 $id = GETPOST('id', 'alpha');
+$type = GETPOST('type', 'alpha');
 
 $field = GETPOST('field', 'alpha');
 $element = GETPOST('element', 'alpha');
@@ -51,12 +52,12 @@ $key = substr($key, 8); // remove prefix editval_
 
 top_httphead();
 
-//error_log(print_r($_GET, true));
+error_log(print_r($_GET, true));
 
-if (!empty($key) && !empty($class)) {
+if (!empty($key) && !empty($class) && !empty($id)) {
     dol_include_once("/" . strtolower($class) . "/class/" . strtolower($class) . ".class.php");
 
-    $return = array();    
+    $return = array();
 
     $object = new $class($db);
     $object->load($id);
@@ -65,17 +66,21 @@ if (!empty($key) && !empty($class)) {
     if (count($object->fk_extrafields->langs))
         foreach ($object->fk_extrafields->langs as $row)
             $langs->load($row);
-    
-    if (!empty($object->$key))
-        $return['selected'] = $object->$key;
-    else
-        $return['selected'] = $object->fk_extrafields->fields->$key->default;
+
+    if ($type == "select") {
+        if (!empty($object->$key))
+            $return['selected'] = $object->$key;
+        else
+            $return['selected'] = $object->fk_extrafields->fields->$key->default;
+    }
 
     $aRow = $object->fk_extrafields->fields->$key;
-    if (isset($aRow->class)) { // Is an object
-        $class_obj = $aRow->class;
-        dol_include_once("/" . strtolower($class_obj) . "/class/" . strtolower($class_obj) . ".class.php");
-        $object_tmp = new $class_obj($db);
+    if (isset($aRow->view)) { // Is a view
+        if (isset($aRow->class)) { // Is another class
+            $class_obj = $aRow->class;
+            dol_include_once("/" . strtolower($class_obj) . "/class/" . strtolower($class_obj) . ".class.php");
+            $object_tmp = new $class_obj($db);
+        }
 
         $params = array();
         if (count($aRow->params))
@@ -85,35 +90,53 @@ if (!empty($key) && !empty($class)) {
                     $params[$idx] = $row;
             }
         try {
-            $result = $object_tmp->getView($aRow->view, $params);
+            if (isset($aRow->class)) // Is view is an other class
+                $result = $object_tmp->getView($aRow->view, $params);
+            else
+                $result = $object->getView($aRow->view, $params);
         } catch (Exception $e) {
             $error = "Fetch : Something weird happened: " . $e->getMessage() . " (errcode=" . $e->getCode() . ")\n";
             dol_print_error($db, $error);
             return 0;
         }
 
-        $aRow->values[0]->label = "";
-        $aRow->values[0]->enable = true;
+        if ($type == "select") {
+            $aRow->values[0]->label = "";
+            $aRow->values[0]->enable = true;
+        }
 
         foreach ($result->rows as $row) {
-            $aRow->values[$row->value->_id]->label = $row->value->name;
-            $aRow->values[$row->value->_id]->enable = true;
+            if (empty($aRow->getkey)) {
+                $aRow->values[$row->value->_id]->label = $row->value->name;
+                $aRow->values[$row->value->_id]->enable = true;
+            } else { // For getkey
+                $aRow->values[$row->key]->label = $row->key;
+                $aRow->values[$row->key]->enable = true;
+            }
         }
 
-        $return['selected'] = $object->$key->id; // Index of key
-    }
-
-    foreach ($object->fk_extrafields->fields->$key->values as $keys => $aRow) {
-        if ($aRow->enable) {
-            if (isset($aRow->label))
-                $return[$keys] = $langs->trans($aRow->label);
-            else
-                $return[$keys] = $langs->trans($keys);
+        if ($type == "select") {
+            $return['selected'] = $object->$key->id; // Index of key
         }
     }
 
-    
+    // Value for select or autocomplete
+    if (isset($object->fk_extrafields->fields->$key->values)) {
+        foreach ($object->fk_extrafields->fields->$key->values as $keys => $aRow) {
+            if ($aRow->enable) {
+                if ($type == "select") {
+                    if (isset($aRow->label))
+                        $return[$keys] = $langs->trans($aRow->label);
+                    else
+                        $return[$keys] = $langs->trans($keys);
+                } else { //autocomplete
+                    echo $keys . ";";
+                }
+            }
+        }
+    }
 
+    //if ($type == "select")
     echo json_encode($return);
 }
 ?>

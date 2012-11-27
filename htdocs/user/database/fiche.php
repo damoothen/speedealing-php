@@ -74,7 +74,7 @@ if ($action == 'adduser' || $action == 'removeuser') {
     if ($caneditperms) {
         if ($userid) {
             $object->fetch($id);
-            
+
             $userid = $name = substr($userid, 17); // suppress org.couchdb.user:
 
             if ($action == 'adduser') {
@@ -206,19 +206,24 @@ if ($action == 'create') {
             print '<thead>';
             print '<tr>';
             print '<th>' . $langs->trans("Login") . '</th>';
+            $obj->aoColumns[$i] = new stdClass();
             $obj->aoColumns[$i]->mDataProp = "";
             $i++;
             print '<th>' . $langs->trans("Lastname") . '</th>';
+            $obj->aoColumns[$i] = new stdClass();
             $obj->aoColumns[$i]->mDataProp = "";
             $i++;
             print '<th>' . $langs->trans("Firstname") . '</th>';
+            $obj->aoColumns[$i] = new stdClass();
             $obj->aoColumns[$i]->mDataProp = "";
             $i++;
             print '<th>' . $langs->trans("Status") . '</th>';
+            $obj->aoColumns[$i] = new stdClass();
             $obj->aoColumns[$i]->mDataProp = "";
             $obj->aoColumns[$i]->sClass = "center";
             $i++;
             print '<th></th>';
+            $obj->aoColumns[$i] = new stdClass();
             $obj->aoColumns[$i]->mDataProp = "";
             $obj->aoColumns[$i]->sClass = "center content_actions";
             $i++;

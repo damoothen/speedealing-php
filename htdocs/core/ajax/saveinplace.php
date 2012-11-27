@@ -54,6 +54,7 @@ top_httphead();
 
 //print '<!-- Ajax page called with url ' . $_SERVER["PHP_SELF"] . '?' . $_SERVER["QUERY_STRING"] . ' -->' . "\n";
 //print_r($_POST);
+error_log(print_r($_POST, true));
 
 if (!empty($key) && !empty($id) && !empty($class)) {
     dol_include_once("/" . strtolower($class) . "/class/" . strtolower($class) . ".class.php");
@@ -65,7 +66,7 @@ if (!empty($key) && !empty($id) && !empty($class)) {
         foreach ($object->fk_extrafields->langs as $row)
             $langs->load($row);
 
-    if (isset($object->fk_extrafields->fields->$key->class)) {
+    if (isset($object->fk_extrafields->fields->$key->class) && $type=="select") {
         $class_tmp = $object->fk_extrafields->fields->$key->class;
         $old_value = $value;
         $value = new stdClass();

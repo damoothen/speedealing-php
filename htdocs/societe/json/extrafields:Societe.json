@@ -1,6 +1,6 @@
 {
    "_id": "extrafields:Societe",
-   "_rev": "84-6f580d6d2bee01fb9f1b3a4adab15bc6",
+   "_rev": "92-13f084247ae057ba65c29d96b4d717ed",
    "class": "extrafields",
    "ico": "16-Apartment-Building.png",
    "langs": [
@@ -13,8 +13,9 @@
        "zip",
        "town",
        "address",
+       "zonegeo",
        "phone",
-       "idprof1"
+       "idprof3"
    ],
    "shortList": [
        "town",
@@ -54,11 +55,6 @@
        "barcode": {
            "type": "text",
            "enable": false
-       },
-       "contact": {
-           "enable": true,
-           "class": "Contact",
-           "view": "list"
        },
        "Status": {
            "type": "select",
@@ -110,12 +106,13 @@
        "country_id": {
            "type": "select",
            "enable": true,
-           "dict": "dict:country",
+           "dict": "dict:fk_country",
            "default": "substr($langs->defaultlang,3,5)"
        },
        "state_id": {
            "type": "select",
            "enable": true,
+           "settype": "int",
            "dict": "dict:fk_departements"
        },
        "DefaultLang": {
@@ -190,13 +187,15 @@
        },
        "capital": {
            "type": "text",
+           "settype": "int",
            "length": "20",
            "label": "Capital",
-           "enable": "1",
+           "enable": true,
            "spinner": "min: 0"
        },
        "VATIsUsed": {
            "type": "checkbox",
+           "settype": "bool",
            "enable": true,
            "default": true
        },
@@ -216,7 +215,8 @@
            "type": "select",
            "label": "SalesRepresentatives",
            "class": "User",
-           "view": "list"
+           "view": "list",
+           "enable": true
        },
        "civilite_id": {
            "type": "select",
@@ -280,6 +280,31 @@
            "type": "select",
            "label": "CompanyCurrency",
            "dict": "dict:fk_currencies",
+           "enable": true
+       },
+       "zonegeo": {
+           "type": "select",
+           "label": "ZoneGeo",
+           "enable": true,
+           "aoColumns": {
+               "sClass": "center dol_select",
+               "bSearchable": true,
+               "bVisible": true
+           },
+           "view": "listZoneGeo",
+           "getkey": true,
+           "params": {
+               "group": true
+           }
+       },
+       "Tag": {
+           "type": "tag",
+           "label": "Categories",
+           "enable": true,
+           "isarray": true
+       },
+       "notes": {
+           "type": "textarea",
            "enable": true
        }
    }

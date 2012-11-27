@@ -12,7 +12,7 @@
  * Copyright (C) 2007      Patrick Raguin        <patrick.raguin@gmail.com>
  * Copyright (C) 2010      Juanjo Menent         <jmenent@2byte.es>
  * Copyright (C) 2010      Philippe Grand        <philippe.grand@atoo-net.com>
- * Copyright (C) 2011      Herve Prot            <herve.prot@symeos.com>
+ * Copyright (C) 2011-2012 Herve Prot            <herve.prot@symeos.com>
  * Copyright (C) 2012      Marcos García         <marcosgdf@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -141,13 +141,13 @@ class Form {
      * @param	string	$success		Success message
      * @return	string   		      	HTML edit in place
      */
-    private function editInPlace($object, $value, $htmlname, $condition, $inputType = 'textarea', $editvalue = null, $extObject = null, $success = null) {
+    private function editInPlace($object, $value, $htmlname, $condition, $inputType = 'text', $editvalue = null, $extObject = null, $success = null) {
         global $conf;
 
         $out = '';
 
         // Check parameters
-        if ($inputType == 'textarea')
+        if (preg_match('/^text/',$inputType))
             $value = dol_nl2br($value);
         else if (preg_match('/^numeric/', $inputType))
             $value = price($value);
@@ -200,7 +200,7 @@ class Form {
                 if (!empty($tmp[3]))
                     $button_only = true;
             }
-            else if (preg_match('/^textarea/', $inputType)) {
+            else if (preg_match('/^text/', $inputType)) {
                 $tmp = explode(':', $inputType);
                 $inputType = $tmp[0];
                 if (!empty($tmp[1]))
@@ -239,9 +239,9 @@ class Form {
                 $out.= '<input id="success_' . $htmlname . '" value="' . $success . '" type="hidden"/>' . "\n";
 
             $out.= '<span id="viewval_' . $htmlname . '" class="viewval_' . $inputType . ($button_only ? ' inactive' : ' active') . '">';
-            if (preg_match('/^select/', $inputType)) {
-                $out.= $object->print_fk_extrafields($htmlname);
-            }
+            //if (preg_match('/^select/', $inputType)) {
+            $out.= $object->print_fk_extrafields($htmlname);
+            //}
             $out.= '</span>' . "\n";
             if (preg_match('/^tag/', $inputType)) {
                 $out.= '<ul class="array_tag_handler" id="editval_' . $htmlname . '"></ul>';
@@ -253,8 +253,9 @@ class Form {
         } else {
             if (preg_match('/^tag/', $inputType)) {
                 $out.= $object->LibTag($value, array("key" => $htmlname));
-            } else
+            } else {
                 $out.= $object->print_fk_extrafields($htmlname);
+            }
         }
 
         return $out;
@@ -938,6 +939,7 @@ class Form {
                     $currencytext = $conf->currency; // If text is too long, we use the short code
                 if (dol_strlen($currencytextnoent) > 10)
                     $currencytextnoent = $conf->currency;   // If text is too long, we use the short code
+
 
 
 

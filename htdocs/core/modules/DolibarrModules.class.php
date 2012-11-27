@@ -57,7 +57,7 @@ class DolibarrModules extends nosqlDocument {
 
     function __construct($db) {
         global $couch;
-        
+
         parent::__construct($db);
 
         try {
@@ -353,26 +353,6 @@ class DolibarrModules extends nosqlDocument {
     }
 
     /**
-     *  Return translated label of an import dataset
-     *
-     *  @param	int		$r		Index of dataset
-     *  @return	string    		Label of databaset
-     */
-    function getImportDatasetLabel($r) {
-        global $langs;
-
-        $langstring = "ImportDataset_" . $this->import_code[$r];
-        //print "x".$langstring;
-        if ($langs->trans($langstring) == $langstring) {
-            // Traduction non trouvee
-            return $langs->trans($this->import_label[$r]);
-        } else {
-            // Traduction trouvee
-            return $langs->trans($langstring);
-        }
-    }
-
-    /**
      *  Insert line in dolibarr_modules table.
      *  Storage is made for information only, table is not required for Dolibarr usage
      *
@@ -566,13 +546,6 @@ class DolibarrModules extends nosqlDocument {
 
         $error = 0;
 
-        /* $this->couchdb->useDatabase(strtolower($this->name)); // switch to the database for the module
-          if(!$this->couchdb->databaseExists()) {
-          $this->couchdb->createDatabase(); // create the database
-          $couchAdmin = new couchAdmin($this->couchdb);
-          $couchAdmin->addDatabaseReaderRole("administrator"); // add the default admin security group
-          } */
-
         $ok = 1;
         foreach ($conf->file->dol_document_root as $dirroot) {
             if ($ok) {
@@ -595,6 +568,25 @@ class DolibarrModules extends nosqlDocument {
                                     $obj->_rev = $result->_rev;
                                 } catch (Exception $e) {
                                     
+                                }
+
+                                if (!empty($result)) {
+                                    if ($result->class == "extrafields") {
+                                        if (isset($obj->shortList))
+                                            $obj->shortList = $result->shortList;
+                                        if (isset($obj->longList))
+                                            $obj->longList = $result->longList;
+
+                                        foreach ($result->fields as $key => $aRow) {
+                                            if ($aRow->optional) //specific extrafields
+                                                $obj->fields->$key = $aRow;
+
+                                            if ($aRow->enable) // Test if fields was enable or disable
+                                                $obj->fields->$key->enable = true;
+                                            else
+                                                $obj->fields->$key->enable = false;
+                                        }
+                                    }
                                 }
 
                                 try {

@@ -1,0 +1,154 @@
+{
+   "_id": "dict:fk_actioncomm",
+   "_rev": "3-5cf2250e49e2f7901b548c5402e7d4ce",
+   "values": {
+       "AC_NEWSUS": {
+           "enable": false,
+           "label": "Nouveau suspect",
+           "priority": 6,
+           "type": null,
+           "order": 0
+       },
+       "AC_SUSP": {
+           "enable": false,
+           "label": "Jamais contacté -> prospect",
+           "priority": 10,
+           "type": null,
+           "order": 0
+       },
+       "AC_QUALIF": {
+           "enable": false,
+           "label": "Qualification",
+           "priority": 10,
+           "type": null,
+           "order": 0
+       },
+       "AC_PROSPECT": {
+           "enable": false,
+           "label": "Prospect change",
+           "priority": 1,
+           "type": null,
+           "order": 0
+       },
+       "AC_FAC": {
+           "enable": false,
+           "label": "Send customer invoice by email",
+           "priority": 1,
+           "type": null,
+           "order": 6
+       },
+       "AC_SUP_INV": {
+           "enable": false,
+           "label": "Send supplier invoice by email",
+           "priority": 1,
+           "type": null,
+           "order": 7
+       },
+       "AC_LEAD": {
+           "enable": false,
+           "label": "Lead change",
+           "priority": 1,
+           "type": null,
+           "order": 0
+       },
+       "AC_COM": {
+           "enable": false,
+           "label": "Send customer order by email",
+           "priority": 1,
+           "type": null,
+           "order": 8
+       },
+       "AC_SUP_ORD": {
+           "enable": false,
+           "label": "Send supplier order by email",
+           "priority": 1,
+           "type": null,
+           "order": 9
+       },
+       "AC_SHIP": {
+           "enable": true,
+           "label": "Send shipping by email",
+           "priority": 0,
+           "type": null,
+           "order": 11
+       },
+       "AC_RDV": {
+           "enable": true,
+           "label": "Rendez-vous",
+           "priority": 10,
+           "type": "event",
+           "order": 1
+       },
+       "AC_WEB": {
+           "enable": true,
+           "label": "Web conference",
+           "priority": 10,
+           "type": "event",
+           "order": 0
+       },
+       "AC_TELC": {
+           "enable": true,
+           "label": "Conference Telephonique",
+           "priority": 10,
+           "type": "event",
+           "order": 0
+       },
+       "AC_TEL": {
+           "enable": true,
+           "label": "Phone call",
+           "priority": 10,
+           "type": "task",
+           "order": 2
+       },
+       "AC_FAX": {
+           "enable": true,
+           "label": "Send Fax",
+           "priority": 5,
+           "type": "task",
+           "order": 3
+       },
+       "AC_EMAIL": {
+           "enable": true,
+           "label": "Send Email",
+           "priority": 1,
+           "type": "task",
+           "order": 4
+       },
+       "AC_OTH": {
+           "enable": false,
+           "label": "Other",
+           "priority": 0,
+           "type": "task",
+           "order": 5
+       },
+       "AC_CRR": {
+           "enable": true,
+           "label": "Compte-rendu",
+           "priority": 4,
+           "type": "task",
+           "order": 0
+       },
+       "AC_DOC": {
+           "enable": true,
+           "label": "Envoye documentation",
+           "priority": 6,
+           "type": "task",
+           "order": 0
+       },
+       "AC_PRDV": {
+           "enable": true,
+           "label": "Prendre rendez-vous",
+           "priority": 10,
+           "type": "task",
+           "order": 0
+       },
+       "AC_PROP": {
+           "enable": false,
+           "label": "Send commercial proposal by email",
+           "priority": 1,
+           "type": "task",
+           "order": 10
+       }
+   },
+   "class": "dict"
+}

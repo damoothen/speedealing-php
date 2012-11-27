@@ -1,5 +1,6 @@
 {
    "_id": "extrafields:Product",
+   "_rev": "21-d5115de96f68e33c5c6bf3266fe48728",
    "class": "extrafields",
    "ico": "16-Shopping-Cart.png",
    "langs": [
@@ -67,7 +68,7 @@
        "country_id": {
            "type": "select",
            "enable": true,
-           "dict": "dict:country",
+           "dict": "dict:fk_country",
            "default": "substr($langs->defaultlang,3,5)"
        },
        "tva_tx": {

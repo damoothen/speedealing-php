@@ -1883,6 +1883,7 @@ class Societe extends nosqlDocument {
                     $label = $langs->trans($aRow->key);
 
                 if ($i == 0) { // first element
+                	$output[$i] = new stdClass();
                     $output[$i]->name = $label;
                     $output[$i]->y = $aRow->value;
                     $output[$i]->sliced = true;
@@ -1919,7 +1920,7 @@ class Societe extends nosqlDocument {
                         // create the chart when all data is loaded
                         function createChart() {
                             var chart;
-                                                                                                                                                                                                                                                                                                                                                                                                                    
+
                             chart = new Highcharts.Chart({
                                 chart: {
                                     renderTo: "pie-status",
@@ -1998,13 +1999,19 @@ class Societe extends nosqlDocument {
                 //print_r($aRow);exit;
                 $label = $langs->trans($key);
                 if ($aRow->enable) {
+					$tab[$key] = new stdClass();
                     $tab[$key]->label = $label;
                     $tab[$key]->value = 0;
                 }
             }
 
-            foreach ($result->rows as $aRow) // Update counters from view
-                $tab[$aRow->key[1]]->value+=$aRow->value;
+			foreach ($result->rows as $aRow) { // Update counters from view
+				if (! is_object($tab[$aRow->key[1]]))
+					$tab[$aRow->key[1]] = new stdClass();
+				if (isset($tab[$aRow->key[1]]->value))
+					$tab[$aRow->key[1]]->value = 0;
+				$tab[$aRow->key[1]]->value+=$aRow->value;
+			}
 
             foreach ($tab as $aRow)
                 $output[] = array($aRow->label, $aRow->value);
@@ -2065,7 +2072,7 @@ class Societe extends nosqlDocument {
                             // create the chart when all data is loaded
                             function createChart() {
                                 var chart;
-                                                                                                                                                                                                                                                                                                                                                                                                                    
+
                                 chart = new Highcharts.Chart({
                                     chart: {
                                         renderTo: 'bar-status',

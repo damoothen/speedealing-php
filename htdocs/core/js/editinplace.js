@@ -78,6 +78,42 @@ $(document).ready(function() {
             }
         }
     });
+    
+    $('.editval_text').editable(urlSaveInPlace, {
+        type		: 'text',
+        id		: 'key',
+        width		: 300,
+        tooltip		: tooltipInPlace,
+        placeholder	: placeholderInPlace,
+        cancel		: cancelInPlace,
+        submit		: submitInPlace,
+        indicator	: indicatorInPlace,
+        submitdata	: function(result, settings) {
+            return getParameters(this, 'text');
+        },
+        onreset		: function(result, settings) {
+            getDefault(settings);
+        }
+    });
+    $('.editkey_text').hover(
+        function () {
+            $('#viewval_' + $(this).attr('id')).addClass("viewval_hover");
+        },
+        function () {
+            $('#viewval_' + $(this).attr('id')).removeClass("viewval_hover");
+        }
+        );
+    $('.editkey_text').click(function() {
+        $( '#viewval_' + $(this).attr('id') ).click();
+    });
+    $('.viewval_text.active').click(function() {
+        $('#viewval_' + $(this).attr('id').substr(8)).hide();
+        $('#editval_' + $(this).attr('id').substr(8)).show().click();
+    });
+    $('.editkey_text').click(function() {
+        $('#viewval_' + $(this).attr('id')).hide();
+        $('#editval_' + $(this).attr('id')).show().click();
+    });
 	
     $('.editval_textarea').editable(urlSaveInPlace, {
         type		: 'textarea',
@@ -333,10 +369,24 @@ $(document).ready(function() {
         submit		: submitInPlace,
         indicator	: indicatorInPlace,
         autocomplete : {
-            source : urlLoadInPlace,
-            data : function(result, settings) {
-                return getParameters(this, 'select');
-            }
+            /*source: function(request, response) {
+                console.log($(this));
+                $.ajax({
+                    url: urlLoadInPlace,
+                    data: {
+                        //"id": oTable.fnGetData( this.parentNode, 0),
+                        "id" : $(this).val(),
+                        "element_class" : "<?php echo get_class($this); ?>",
+                        "type":"autocomplete"
+                    //"key": "editval_"+columns[oTable.fnGetPosition( this )[2]]
+                    },
+                    dataType : 'json',
+                    type : 'GET'
+                });*/
+            url : urlLoadInPlace
+            //data : function(result, settings) {
+            //    return getParameters(this, 'select');
+            //}
         },
         submitdata	: function(result, settings) {
             return getParameters(this, 'select');

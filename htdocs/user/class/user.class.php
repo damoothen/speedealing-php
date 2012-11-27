@@ -28,11 +28,11 @@
  * 	\brief      File of class to manage users
  *  \ingroup	core
  */
-require_once(DOL_DOCUMENT_ROOT . "/core/class/nosqlDocument.class.php");
-require_once(DOL_DOCUMENT_ROOT . "/core/class/extrafields.class.php");
-require_once(DOL_DOCUMENT_ROOT . "/core/db/couchdb/lib/couchAdmin.php");
-require_once(DOL_DOCUMENT_ROOT . "/user/class/userdatabase.class.php");
-require_once(DOL_DOCUMENT_ROOT . "/core/modules/DolibarrModules.class.php");
+require_once DOL_DOCUMENT_ROOT . '/core/class/nosqlDocument.class.php';
+require_once DOL_DOCUMENT_ROOT . '/core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT . '/core/db/couchdb/lib/couchAdmin.php';
+require_once DOL_DOCUMENT_ROOT . '/user/class/userdatabase.class.php';
+require_once DOL_DOCUMENT_ROOT . '/core/modules/DolibarrModules.class.php';
 
 /**
  * 	Class to manage Dolibarr users
@@ -440,10 +440,13 @@ class User extends nosqlDocument {
                 $perm = $aRow->value->perm;
 
                 // Add default rights
-
+                if (! is_object($this->rights->$rights_class))
+                	$this->rights->$rights_class = new stdClass();
                 if (count($perm) == 1)
                     $this->rights->$rights_class->$perm[0] = $aRow->value->Status;
                 elseif (count($perm) == 2) {
+                	if (! is_object($this->rights->$rights_class->$perm[0]))
+                		$this->rights->$rights_class->$perm[0] = new stdClass();
                     if (isset($this->rights->$rights_class->$perm[0]))
                         $this->rights->$rights_class->$perm[0]->$perm[1] = $aRow->value->Status;
                     else
@@ -539,20 +542,20 @@ class User extends nosqlDocument {
         // Supprime droits
         $sql = "DELETE FROM " . MAIN_DB_PREFIX . "user_rights WHERE fk_user = " . $this->id;
         if ($this->db->query($sql)) {
-            
+
         }
 
         // Remove group
         $sql = "DELETE FROM " . MAIN_DB_PREFIX . "usergroup_user WHERE fk_user  = " . $this->id;
         if ($this->db->query($sql)) {
-            
+
         }
 
         // Si contact, supprime lien
         if ($this->contact_id) {
             $sql = "UPDATE " . MAIN_DB_PREFIX . "socpeople SET fk_user_creat = null WHERE rowid = " . $this->contact_id;
             if ($this->db->query($sql)) {
-                
+
             }
         }
 

@@ -1,11 +1,11 @@
 <?php
 
-/* Copyright (C) 2004		Rodolphe Quiedeville	<rodolphe@quiedeville.org>
+/* Copyright (C) 2004		Rodolphe Quiedeville            <rodolphe@quiedeville.org>
  * Copyright (C) 2004		Benoit Mortier			<benoit.mortier@opensides.be>
  * Copyright (C) 2004		Sebastien DiCintio		<sdicintio@ressource-toi.org>
  * Copyright (C) 2007-2012	Laurent Destailleur		<eldy@users.sourceforge.net>
- * Copyright (C) 2012		Herve Prot
- * Copyright (C) 2012       Marcos García				<herve.prot@symeos.com>
+ * Copyright (C) 2012		Herve Prot                      <herve.prot@symeos.com>
+ * Copyright (C) 2012           Marcos García			
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

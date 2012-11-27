@@ -1,9 +1,19 @@
 {
    "_id": "_design/User",
+   "_rev": "15-190656aca7ab853b4b09b8725746a010",
    "language": "javascript",
    "views": {
        "list": {
-           "map": "function(doc) {\n  if(doc.class && doc.class == \"User\")\n     emit(doc.name, doc);\n}"
+           "map": "function(doc) {\n  if(doc.class && doc.class == \"User\" && doc.Status==\"ENABLE\" && doc._id!=\"user:admin\")\n     emit(doc.name, doc);\n}"
+       },
+       "group": {
+           "map": "function(doc) {\n  if(doc.class && doc.class==\"User\" && doc.group.length > 0) {\n    for(var idx in doc.group) {\n      emit(doc.group[idx], doc);\n    }\n  }\n}"
+       },
+       "login": {
+           "map": "function(doc) {\n  if(doc.class && doc.class == \"User\")\n     emit(doc.email, doc._id);\n}"
+       },
+       "target_id": {
+           "map": "function(doc) {\n  if(doc.class && (doc.class==\"User\" || doc.class==\"UserGroup\") && (doc._id != \"user:admin\"))\n  \temit(doc._id, {_id:doc._id, _rev:doc._rev});\n}"
        }
    },
    "updates": {

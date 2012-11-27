@@ -92,11 +92,12 @@ print "</p>";
 $i = 0;
 $obj = new stdClass();
 print '<table class="display dt_act" id="product" >';
-// Ligne des titres 
+// Ligne des titres
 print'<thead>';
 print'<tr>';
 print'<th>';
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "_id";
 $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->bSearchable = false;
@@ -105,6 +106,7 @@ $i++;
 print'<th class="essential">';
 print $title;
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "name";
 $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->bSearchable = true;
@@ -113,12 +115,14 @@ $i++;
 print'<th class="essential">';
 print $langs->trans('Label');
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "label";
 $obj->aoColumns[$i]->sDefaultContent = "";
 $i++;
 print'<th class="essential">';
 print $langs->trans('Categories');
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "Tag";
 $obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->sDefaultContent = "";
@@ -127,6 +131,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans('SellingPrice');
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "price.price";
 $obj->aoColumns[$i]->sDefaultContent = "0.00";
 $obj->aoColumns[$i]->sClass = "fright";
@@ -135,6 +140,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans("DatePriceUTD");
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "price.tms";
 $obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->bUseRendered = false;
@@ -144,6 +150,7 @@ if (empty($type)) {
     print'<th class="essential">';
     print $langs->trans("Type");
     print'</th>';
+    $obj->aoColumns[$i] = new stdClass();
     $obj->aoColumns[$i]->mDataProp = "type";
     $obj->aoColumns[$i]->sClass = "center";
     $obj->aoColumns[$i]->sWidth = "60px";
@@ -154,6 +161,7 @@ if (empty($type)) {
 print'<th class="essential">';
 print $langs->trans("Status");
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "Status";
 $obj->aoColumns[$i]->sClass = "dol_select center";
 $obj->aoColumns[$i]->sWidth = "100px";
@@ -163,6 +171,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans('Action');
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "";
 $obj->aoColumns[$i]->sClass = "center content_actions";
 $obj->aoColumns[$i]->sWidth = "60px";
@@ -219,7 +228,7 @@ if (!empty($type))
 $object->datatablesCreate($obj, "product", true, true);
 
 //print end_box();
-print '</div>'; // end 
+print '</div>'; // end
 
 llxFooter();
 ?>

@@ -24,7 +24,7 @@
  *       \ingroup    commercial
  *       \brief      File of class to manage agenda events (actions)
  */
-require_once(DOL_DOCUMENT_ROOT . '/core/class/commonobject.class.php');
+require_once DOL_DOCUMENT_ROOT . '/core/class/commonobject.class.php';
 
 /**     \class      ActionComm
  * 	    \brief      Class to manage agenda events (actions)
@@ -33,7 +33,6 @@ class Agenda extends nosqlDocument {
 
     public $element = 'action';
     public $table_element = 'actioncomm';
-    public $table_rowid = 'id';
     protected $ismultientitymanaged = 2; // 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
     var $id;
     var $type_id;
@@ -52,7 +51,7 @@ class Agenda extends nosqlDocument {
     var $percentage;    // Percentage
     var $location;      // Location
     var $priority;      // Free text ('' By default)
-    var $note;          // Description
+    var $notes;          // Description
     var $usertodo;  // Object user that must do action
     var $userdone;   // Object user that did action
     var $societe;  // Company linked to action (optionnal)
@@ -106,7 +105,7 @@ class Agenda extends nosqlDocument {
         // Clean parameters
         $this->label = dol_trunc(trim($this->label), 128);
         $this->location = dol_trunc(trim($this->location), 128);
-        $this->note = dol_htmlcleanlastbr(trim($this->note));
+        $this->notes = dol_htmlcleanlastbr(trim($this->notes));
         if (empty($this->percentage))
             $this->percentage = 0;
         if (empty($this->priority))
@@ -292,10 +291,10 @@ class Agenda extends nosqlDocument {
 
         // Clean parameters
         $this->label = trim($this->label);
-        $this->note = trim($this->note);
+        $this->notes = trim($this->notes);
         if (empty($this->percentage))
             $this->percentage = 0;
-        
+
         if (empty($this->fulldayevent))
             $this->fulldayevent = 0;
         if ($this->percentage > 100)
@@ -322,11 +321,11 @@ class Agenda extends nosqlDocument {
 
         if ($this->type == 2 && $this->percentage == 100) //ACTION
             $this->datef = dol_now();
-        
-        if($this->percentage > 0 && $this->percentage < 100)
+
+        if ($this->percentage > 0 && $this->percentage < 100)
             $this->Status = "ON";
-        
-        if($this->percentage == 100)
+
+        if ($this->percentage == 100)
             $this->Status = "DONE";
 
         if ($this->Status == "ON" && !$this->userdone->id) {
@@ -834,7 +833,7 @@ class Agenda extends nosqlDocument {
                     $dateend = $this->db->jdate($obj->datep2);
                     $duration = $obj->durationp;
                     $event['summary'] = $obj->label . ($obj->socname ? " (" . $obj->socname . ")" : "");
-                    $event['desc'] = $obj->note;
+                    $event['desc'] = $obj->notes;
                     $event['startdate'] = $datestart;
                     $event['duration'] = $duration; // Not required with type 'journal'
                     $event['enddate'] = $dateend;  // Not required with type 'journal'
@@ -947,7 +946,7 @@ class Agenda extends nosqlDocument {
 
         print '<p class="button-height right">';
         print '<span class="button-group">';
-        print '<a class="button compact icon-star" href="' . strtolower(get_class($object)) . '/fiche.php?action=create&socid=' . $id . '&backtopage=' . $_SERVER['PHP_SELF'] . '?id=' . $id . '">' . $langs->trans("NewAction") . '</a>';
+        print '<a class="button compact icon-star" href="' . strtolower(get_class($this)) . '/fiche.php?action=create&socid=' . $id . '&backtopage=' . $_SERVER['PHP_SELF'] . '?id=' . $id . '">' . $langs->trans("NewAction") . '</a>';
         print "</span>";
         print "</p>";
 
@@ -958,6 +957,7 @@ class Agenda extends nosqlDocument {
         print'<tr>';
         print'<th>';
         print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
         $obj->aoColumns[$i]->mDataProp = "_id";
         $obj->aoColumns[$i]->bUseRendered = false;
         $obj->aoColumns[$i]->bSearchable = false;
@@ -966,6 +966,7 @@ class Agenda extends nosqlDocument {
         print'<th class="essential">';
         print $langs->trans("Titre");
         print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
         $obj->aoColumns[$i]->mDataProp = "label";
         $obj->aoColumns[$i]->bUseRendered = false;
         $obj->aoColumns[$i]->bSearchable = true;
@@ -974,6 +975,7 @@ class Agenda extends nosqlDocument {
         print'<th class="essential">';
         print $langs->trans('DateEchAction');
         print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
         $obj->aoColumns[$i]->mDataProp = "datep";
         $obj->aoColumns[$i]->sClass = "center";
         $obj->aoColumns[$i]->sDefaultContent = "";
@@ -983,6 +985,7 @@ class Agenda extends nosqlDocument {
         print'<th class="essential">';
         print $langs->trans('Company');
         print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
         $obj->aoColumns[$i]->mDataProp = "societe.name";
         $obj->aoColumns[$i]->sDefaultContent = "";
         $obj->aoColumns[$i]->fnRender = $societe->datatablesFnRender("societe.name", "url", array('id' => "societe.id"));
@@ -990,12 +993,14 @@ class Agenda extends nosqlDocument {
         print'<th class="essential">';
         print $langs->trans('AffectedTo');
         print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
         $obj->aoColumns[$i]->mDataProp = "usertodo.name";
         $obj->aoColumns[$i]->sDefaultContent = "";
         $i++;
         print'<th class="essential">';
         print $langs->trans("Status");
         print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
         $obj->aoColumns[$i]->mDataProp = "Status";
         $obj->aoColumns[$i]->sClass = "center";
         $obj->aoColumns[$i]->sDefaultContent = "TODO";
@@ -1056,7 +1061,7 @@ class Agenda extends nosqlDocument {
         $this->percentage = 0;
         $this->location = 'Location';
         $this->priority = 'Priority X';
-        $this->note = 'Note';
+        $this->notes = 'Note';
     }
 
     function print_calendar($date) {
@@ -1080,7 +1085,7 @@ class Agenda extends nosqlDocument {
         print $langs->trans(date('F', $date)) . ' ' . date('Y', $date);
         print '</caption>';
 
-        // Days names 
+        // Days names
         print '<thead>';
         print '<tr>';
         print '<th scope="col">Sun</th>';
@@ -1250,7 +1255,7 @@ class Agenda extends nosqlDocument {
             $result = $this->getView("list" . $_GET["name"], $params);
 
             //error_log(print_r($result,true));
-            $output=array();
+            $output = array();
 
             if (count($result->rows))
                 foreach ($result->rows as $aRow) {
@@ -1313,7 +1318,7 @@ class Agenda extends nosqlDocument {
                         // create the chart when all data is loaded
                         function createChart() {
                             var chart;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+
                             chart = new Highcharts.Chart({
                                 chart: {
                                     renderTo: 'eisenhower',
@@ -1350,7 +1355,7 @@ class Agenda extends nosqlDocument {
                                                 style: { color: "white" }
                                             }
                                         }]
-                                },                                   
+                                },
                                 yAxis: {
                                     min: 0,
                                     max: <?php echo 10; ?>,
@@ -1379,7 +1384,7 @@ class Agenda extends nosqlDocument {
                                             events: {click: function() {location.href = 'agenda/fiche.php?id=' + this.options.id;}}
                                         }
                                     }
-                                },                                                               
+                                },
                                 legend: {
                                     layout: 'vertical',
                                     align: 'right',

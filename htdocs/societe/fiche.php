@@ -106,8 +106,10 @@ if (empty($reshook)) {
             $ret = $object->fetch($socid);
             $oldcopy = dol_clone($object);
         }
-        else
+        else {
             $object->canvas = $canvas;
+            $object->commercial_id->id = GETPOST('commercial_id');
+        }
 
         if (GETPOST("private") == 1) {
             $object->particulier = GETPOST("private");
@@ -159,7 +161,6 @@ if (empty($reshook)) {
         $object->fournisseur = GETPOST('fournisseur');
         $object->fournisseur_categorie = GETPOST('fournisseur_categorie');
 
-        $object->commercial_id = GETPOST('commercial_id');
         $object->default_lang = GETPOST('default_lang');
 
         // Get extra fields
@@ -539,7 +540,9 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
         $object->tva_intra = GETPOST('tva_intra');
 
-        $object->commercial_id = GETPOST('commercial_id');
+        if (! is_object($object->commercial_id))
+        	$object->commercial_id = new stdClass();
+        $object->commercial_id->id = GETPOST('commercial_id');
         $object->default_lang = GETPOST('default_lang');
 
         $object->logo = (isset($_FILES['photo']) ? dol_sanitizeFileName($_FILES['photo']['name']) : '');
@@ -893,18 +896,18 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 
 
         // Other attributes
-        $parameters = array('colspan' => ' colspan="3"');
+       /* $parameters = array('colspan' => ' colspan="3"');
         $reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action);    // Note that $action and $object may have been modified by hook
         if (empty($reshook)) {
             foreach ($object->fk_extrafields->fields as $key => $aRow) {
                 if ($aRow->optional && $aRow->enable) {
                     $value = (isset($_POST["options_" . $key]) ? $_POST["options_" . $key] : (isset($object->array_options["options_" . $key]) ? $object->array_options["options_" . $key] : ''));
-                    print '<tr><td>' . $aRow->label . '</td><td colspan="3">';
+                    print '<tr><td><strong class="blue">' . $aRow->label . '</strong></td><td colspan="3">';
                     print $object->fk_extrafields->showInputField($key, $value);
                     print '</td></tr>' . "\n";
                 }
             }
-        }
+        }*/
 
         // Ajout du logo
         print '<tr>';
@@ -1281,18 +1284,18 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
             }
 
             // Other attributes
-            $parameters = array('colspan' => ' colspan="3"');
+            /*$parameters = array('colspan' => ' colspan="3"');
             $reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action);    // Note that $action and $object may have been modified by hook
             if (empty($reshook)) {
                 foreach ($object->fk_extrafields->fields as $key => $aRow) {
                     if ($aRow->optional && $aRow->enable) {
                         $value = (isset($_POST["options_" . $key]) ? $_POST["options_" . $key] : (isset($object->array_options["options_" . $key]) ? $object->array_options["options_" . $key] : ''));
-                        print '<tr><td>' . $aRow->label . '</td><td colspan="3">';
+                        print '<tr><td><strong class="blue">' . $aRow->label . '</strong></td><td colspan="3">';
                         print $object->fk_extrafields->showInputField($key, $value);
                         print '</td></tr>' . "\n";
                     }
                 }
-            }
+            }*/
 
             // Logo
             print '<tr>';
@@ -1497,6 +1500,12 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         print '<tr><td>' . $langs->trans('Phone') . '</td><td style="min-width: 25%;">' . dol_print_phone($object->phone, $object->country_id, 0, $object->id, 'AC_TEL') . '</td>';
         print '<td>' . $langs->trans('Fax') . '</td><td style="min-width: 25%;">' . dol_print_phone($object->fax, $object->country_id, 0, $object->id, 'AC_FAX') . '</td></tr>';
 
+        // Zone Geo
+        print '<tr><td>' . $form->editfieldkey("zonegeo", 'zonegeo', $object->zonegeo, $object, $user->rights->societe->creer) . '</td>';
+        print '<td colspan="' . (2 + (($showlogo || $showbarcode) ? 0 : 1)) . '">';
+        print $form->editfieldval("zonegeo", 'zonegeo', $object->zonegeo, $object, $user->rights->societe->creer);
+        print '</td>';
+
         // EMail
         print '<tr><td>' . $langs->trans('EMail') . '</td><td width="25%">';
         print dol_print_email($object->email, 0, $object->id, 'AC_EMAIL');
@@ -1639,8 +1648,8 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
         if (empty($reshook)) {
             foreach ($object->fk_extrafields->fields as $key => $aRow) {
                 if ($aRow->optional && $aRow->enable) {
-                    print '<tr><td>' . $aRow->label . '</td><td colspan="3">';
-                    print $object->print_fk_extrafields($key);
+                    print '<tr><td><strong class="blue">' . $form->editfieldkey($aRow->label, $key, $object->$key, $object, $user->rights->societe->creer, $aRow->type) . '</strong></td><td colspan="3">';
+                    print $form->editfieldval($aRow->label, $key, $object->$key, $object, $user->rights->societe->creer, $aRow->type);
                     print '</td></tr>' . "\n";
                 }
             }

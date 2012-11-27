@@ -184,11 +184,12 @@ if ($user->rights->agenda->myactions->create || $user->rights->agenda->allaction
 $i = 0;
 $obj = new stdClass();
 print '<table class="display dt_act" id="listactions" >';
-// Ligne des titres 
+// Ligne des titres
 print'<thead>';
 print'<tr>';
 print'<th>';
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "_id";
 $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->bSearchable = false;
@@ -197,6 +198,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans("Titre");
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "label";
 $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->bSearchable = true;
@@ -205,6 +207,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans('DateEchAction');
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "datep";
 $obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->sDefaultContent = "";
@@ -215,6 +218,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans('Company');
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "societe.name";
 $obj->aoColumns[$i]->sDefaultContent = "";
 $obj->aoColumns[$i]->fnRender = $societe->datatablesFnRender("societe.name", "url", array('id' => "societe.id"));
@@ -222,6 +226,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans('Contact');
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "contact.name";
 $obj->aoColumns[$i]->sDefaultContent = "";
 $obj->aoColumns[$i]->fnRender = $contact->datatablesFnRender("contact.name", "url", array('id' => "contact.id"));
@@ -236,6 +241,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans('AffectedTo');
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "usertodo";
 $obj->aoColumns[$i]->sClass = "dol_select";
 $obj->aoColumns[$i]->sDefaultContent = "";
@@ -244,6 +250,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans('DoneBy');
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "userdone";
 $obj->aoColumns[$i]->sDefaultContent = "";
 $obj->aoColumns[$i]->fnRender = $userstatic->datatablesFnRender("userdone.name", "url", array('id' => "userdone.id"));
@@ -251,6 +258,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans("Status");
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "Status";
 $obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->sDefaultContent = "TODO";
@@ -259,6 +267,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans('Action');
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "";
 $obj->aoColumns[$i]->sClass = "center content_actions";
 $obj->aoColumns[$i]->sWidth = "60px";
@@ -314,9 +323,9 @@ $obj->aaSorting = array(array(2, 'asc'));
 
 if ($all) {
     if ($type == "DONE")
-        $obj->sAjaxSource = "core/ajax/listdatatables.php?json=actionsDONE&class=" . get_class($object);
+        $obj->sAjaxSource = "core/ajax/listdatatables.php?json=listDONEByUser&class=" . get_class($object);
     else
-        $obj->sAjaxSource = "core/ajax/listdatatables.php?json=actionsTODO&class=" . get_class($object);
+        $obj->sAjaxSource = "core/ajax/listdatatables.php?json=listTODOByUser&class=" . get_class($object);
 } else {
     if ($type == "DONE")
         $obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=listDONEByUser";

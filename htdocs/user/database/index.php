@@ -57,7 +57,7 @@ if ($_GET['json'] == "list") {
                 try {
                     $object->fetch($aRow);
                 } catch (Exception $e) {
-                    
+
                 }
                 $info = $object->values;
                 $secu = $object->couchAdmin->getSecurity();
@@ -155,12 +155,13 @@ $i = 0;
 $obj = new stdClass();
 
 print '<table class="display dt_act" id="database" >';
-// Ligne des titres 
+// Ligne des titres
 print'<thead>';
 print'<tr>';
 print'<th class="essential">';
 print $langs->trans("Database");
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "db_name";
 $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->bSearchable = true;
@@ -182,6 +183,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans('NbDoc');
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "doc_count";
 $obj->aoColumns[$i]->sDefaultContent = 0;
 $obj->aoColumns[$i]->sClass = "fright";
@@ -189,6 +191,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans('UpdateSeq');
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "update_seq";
 $obj->aoColumns[$i]->sDefaultContent = "";
 $obj->aoColumns[$i]->sClass = "fright";
@@ -196,6 +199,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans('Commit');
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "committed_update_seq";
 $obj->aoColumns[$i]->sDefaultContent = "";
 $obj->aoColumns[$i]->sClass = "fright";
@@ -203,6 +207,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans('DiskSize');
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "disk_size";
 $obj->aoColumns[$i]->sDefaultContent = "";
 $obj->aoColumns[$i]->sClass = "fright";
@@ -211,6 +216,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans('DataSize');
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "data_size";
 $obj->aoColumns[$i]->sType = "date";
 $obj->aoColumns[$i]->sDefaultContent = "";
@@ -220,6 +226,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans('Status');
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "Status";
 $obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->sWidth = "100px";
@@ -229,6 +236,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans('Action');
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "";
 $obj->aoColumns[$i]->sClass = "center content_actions";
 $obj->aoColumns[$i]->sDefaultContent = "";

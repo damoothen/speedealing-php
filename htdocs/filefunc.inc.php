@@ -24,11 +24,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * 	\file       htdocs/filefunc.inc.php
- * 	\ingroup	core
- *  \brief      File that include conf.php file and commons lib like functions.lib.php
- */
 if (!defined('DOL_VERSION'))
     define('DOL_VERSION', '3.3.0-alpha');
 if (!defined('EURO'))
@@ -113,6 +108,7 @@ if (empty($force_charset_do_notuse))
     $force_charset_do_notuse = 'UTF-8';
 if (empty($dolibarr_strict_mode))
     $dolibarr_strict_mode = 0; // For debug in php strict mode
+
 
     
 // Security: CSRF protection

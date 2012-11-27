@@ -71,7 +71,7 @@ if ($action == 'add_action') {
     $error = 0;
 
     if (empty($backtopage)) {
-            $backtopage = DOL_URL_ROOT . '/agenda/index.php';
+        $backtopage = DOL_URL_ROOT . '/agenda/index.php';
     }
 
     if ($contactid) {
@@ -188,7 +188,7 @@ if ($action == 'add_action') {
     if (strlen($_POST["doneby"]) > 0)
         $object->userdone->id = GETPOST("doneby");
 
-    $object->note = trim($_POST["note"]);
+    $object->notes = trim($_POST["note"]);
     if (isset($_POST["contactid"]))
         $object->contact = $contact;
     if (!empty($socid)) {
@@ -331,8 +331,7 @@ if ($action == 'update') {
         $object->fk_project = $_POST["projectid"];
         $object->fk_lead = $_POST["leadid"];
         $object->propalrowid = $_POST["propalid"];
-        $object->note = $_POST["note"];
-        $object->pnote = $_POST["note"];
+        $object->notes = $_POST["note"];
         $object->fk_task = $_POST["fk_task"];
         //$object->type = $cactioncomm->type;
         $object->Status = $_POST["status"];
@@ -645,12 +644,14 @@ if ($action == 'create') {
     // Affected by
     $var = false;
     print '<tr><td width="30%" nowrap="nowrap">' . $langs->trans("ActionAffectedTo") . '</td><td>';
-    $form->select_users(GETPOST("affectedto") ? GETPOST("affectedto") : ($object->usertodo->id > 0 ? $object->usertodo : $user), 'affectedto', 1);
+    print $object->select_fk_extrafields("usertodo", 'affectedto');
+    //$form->select_users(GETPOST("affectedto") ? GETPOST("affectedto") : ($object->usertodo->id > 0 ? $object->usertodo : $user), 'affectedto', 1);
     print '</td></tr>';
 
     // Realised by
     print '<tr><td nowrap>' . $langs->trans("ActionDoneBy") . '</td><td>';
-    $form->select_users(GETPOST("doneby") ? GETPOST("doneby") : (!empty($object->userdone->id) && $percent == 100 ? $object->userdone->id : 0), 'doneby', 1);
+    print $object->select_fk_extrafields("userdone", 'doneby');
+    //$form->select_users(GETPOST("doneby") ? GETPOST("doneby") : (!empty($object->userdone->id) && $percent == 100 ? $object->userdone->id : 0), 'doneby', 1);
     print '</td></tr>';
 
     print '</table>';
@@ -662,17 +663,27 @@ if ($action == 'create') {
     if (!empty($socid)) {
         $societe = new Societe($db);
         $societe->fetch($socid);
-        print $societe->getNomUrl(1);
+        if ($societe->class == "Societe")
+            print $societe->getNomUrl(1);
+        else { // Is a contact
+            $object->contact->id = $socid;
+            $socid = $societe->societe->id;
+            $societe->fetch($socid);
+            print $societe->getNomUrl(1);
+        }
         print '<input type="hidden" name="socid" value="' . $socid . '">';
     } else {
-        print $form->select_company('', 'socid', '', 1, 1);
+        print $object->select_fk_extrafields("societe", 'socid');
+        //print $form->select_company('', 'socid', '', 1, 1);
     }
     print '</td></tr>';
 
     // If company is forced, we propose contacts (may be contact is also forced)
-    if (GETPOST("contactid") > 0 || GETPOST('socid', 'int') > 0) {
+    if (!empty($socid)) {
+        $object->societe->id = $socid;
         print '<tr><td nowrap>' . $langs->trans("ActionOnContact") . '</td><td>';
-        $form->select_contacts(GETPOST('socid', 'int'), GETPOST('contactid'), 'contactid', 1);
+        print $object->select_fk_extrafields("contact", 'contactid');
+        //$form->select_contacts(GETPOST('socid', 'int'), GETPOST('contactid'), 'contactid', 1);
         print '</td></tr>';
     }
 
@@ -723,7 +734,7 @@ if ($action == 'create') {
     // Description
     print '<tr><td valign="top">' . $langs->trans("Description") . '</td><td>';
     require_once(DOL_DOCUMENT_ROOT . "/core/class/doleditor.class.php");
-    $doleditor = new DolEditor('note', (GETPOST('note') ? GETPOST('note') : $object->note), '', 280, 'dolibarr_notes', 'In', true, true, $conf->fckeditor->enabled, ROWS_7, 90);
+    $doleditor = new DolEditor('note', (GETPOST('note') ? GETPOST('note') : $object->notes), '', 280, 'dolibarr_notes', 'In', true, true, $conf->fckeditor->enabled, ROWS_7, 90);
     $doleditor->Create();
     print '</td></tr>';
 
@@ -736,7 +747,7 @@ if ($action == 'create') {
     print "</center>";
 
     print "</form>";
-    
+
     print "</div>";
 
     print end_box();
@@ -1042,7 +1053,7 @@ if ($id) {
         print '<tr><td valign="top">' . $langs->trans("Description") . '</td><td colspan="3">';
         // Editeur wysiwyg
         require_once(DOL_DOCUMENT_ROOT . "/core/class/doleditor.class.php");
-        $doleditor = new DolEditor('note', $object->note, '', 240, 'dolibarr_notes', 'In', true, true, $conf->fckeditor->enabled, ROWS_5, 90);
+        $doleditor = new DolEditor('note', $object->notes, '', 240, 'dolibarr_notes', 'In', true, true, $conf->fckeditor->enabled, ROWS_5, 90);
         $doleditor->Create();
         print '</td></tr>';
 
@@ -1225,12 +1236,6 @@ if ($id) {
             print '<td colspan="3">' . $object->getElementUrl($object->fk_element, $object->elementtype, 1) . '</td></tr>';
         }
 
-        // Description
-        print '<tr><td valign="top">' . $langs->trans("Description") . '</td><td colspan="3">';
-        print dol_htmlentitiesbr($object->note);
-        print '</td></tr>';
-        $var = !$var;
-
         print '</table>';
     }
 
@@ -1271,6 +1276,8 @@ if ($id) {
         print '</div>';
 
         print end_box();
+        
+        print $object->show_notes();
     }
 }
 

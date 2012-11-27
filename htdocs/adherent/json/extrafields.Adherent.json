@@ -1,6 +1,6 @@
 {
    "_id": "extrafields:Adherent",
-   "_rev": "17-1faa0f5ffd52f332fc10c94ab7524491",
+   "_rev": "18-57c520582db9a25176d7682e228f7154",
    "class": "extrafields",
    "ico": "16-User.png",
    "langs": [
@@ -51,7 +51,7 @@
        "country_id": {
            "type": "select",
            "enable": true,
-           "dict": "dict:country",
+           "dict": "dict:fk_country",
            "default": "substr($langs->defaultlang,3,5)"
        },
        "state_id": {
