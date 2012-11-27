@@ -1,0 +1,22 @@
+{
+   "_id": "dict:fk_availability",
+   "values": {
+       "AV_NOW": {
+           "enable": true,
+           "label": "Immediate"
+       },
+       "AV_1W": {
+           "enable": true,
+           "label": "1 week"
+       },
+       "AV_2W": {
+           "enable": true,
+           "label": "2 weeks"
+       },
+       "AV_3W": {
+           "enable": true,
+           "label": "3 weeks"
+       }
+   },
+   "class": "dict"
+}

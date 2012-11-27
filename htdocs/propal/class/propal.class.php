@@ -414,7 +414,7 @@ class Propal extends nosqlDocument {
     /**
      *  Update a proposal line
      *
-     *  @param      int			$rowid           	Id de la propal
+     *  @param      int			$propalid           	Id de la propal
      *  @param      int			$rowid           	Id de la ligne
      *  @param      double		$pu		     	  	Prix unitaire (HT ou TTC selon price_base_type)
      *  @param      double		$qty            	Quantity
@@ -472,7 +472,6 @@ class Propal extends nosqlDocument {
                 $remise = round(($pu * $remise_percent / 100), 2);
                 $price = $pu - $remise;
             }
-
             // Update line
             $this->line = new PropalLine($this->db);
             $this->line->fetch($rowid);
@@ -592,16 +591,16 @@ class Propal extends nosqlDocument {
             dol_syslog(get_class($this) . "::create " . $this->error, LOG_ERR);
             return -3;
         }
-        $this->client = $soc;
+        $this->client = new stdClass();
+        $this->client->id = $soc->id;
+        $this->client->name = $soc->name;
 
         if (empty($this->date)) {
             $this->error = "Date of proposal is required";
             dol_syslog(get_class($this) . "::create " . $this->error, LOG_ERR);
             return -4;
         }
-        if (!empty($this->ref)) {
-            //$result = $this->verifyNumRef(); // Check ref is not yet used
-        }
+        $this->ref = $this->getNextNumRef($soc);
 
 
 //        $this->db->begin();
@@ -1079,6 +1078,58 @@ class Propal extends nosqlDocument {
 //            dol_syslog(get_class($this) . "::fetch Error " . $this->error, LOG_ERR);
 //            return -1;
 //        }
+    }
+    
+        /**
+     * 	Update propal
+     *
+     * 	@param		User	$user 		Objet user that make creation
+     * 	@param		int		$notrigger	Disable all triggers
+     * 	@return 	int					<0 if KO, >0 if OK
+     */
+    function update($user, $notrigger = 0) {
+        global $conf, $langs, $mysoc;
+        $error = 0;
+        
+        dol_syslog("Propal::update user=" . $user->id);
+        
+        // Clean parameters
+        if (empty($this->date))
+            $this->date = $this->datep;
+        $this->fin_validite = $this->date + ($this->duree_validite * 24 * 3600);
+
+        // Check parameters
+        $soc = new Societe($this->db);
+        $result = $soc->fetch($this->socid);
+        if ($result < 0) {
+            $this->error = "Failed to fetch company";
+            dol_syslog(get_class($this) . "::create " . $this->error, LOG_ERR);
+            return -3;
+        }
+        $this->client = new stdClass();
+        $this->client->id = $soc->id;
+        $this->client->name = $soc->name;
+
+        if (empty($this->date)) {
+            $this->error = "Date of proposal is required";
+            dol_syslog(get_class($this) . "::create " . $this->error, LOG_ERR);
+            return -4;
+        }
+
+        $this->record();
+        if (!$notrigger) {
+            // Appel des triggers
+            include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
+            $interface = new Interfaces($this->db);
+            $result = $interface->run_triggers('PROPAL_UPDATE', $this, $user, $langs, $conf);
+            if ($result < 0) {
+                $error++;
+                $this->errors = $interface->errors;
+            }
+            // Fin appel triggers
+        }
+        return 1;
+
     }
 
     /**
@@ -2194,7 +2245,7 @@ class Propal extends nosqlDocument {
         global $conf, $db, $langs;
         $langs->load("propal");
 
-        $dir = DOL_DOCUMENT_ROOT . "/core/modules/propale/";
+        $dir = DOL_DOCUMENT_ROOT . "/propal/core/modules/propale/";
 
         if (!empty($conf->global->PROPALE_ADDON)) {
             $file = $conf->global->PROPALE_ADDON . ".php";
