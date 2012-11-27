@@ -48,16 +48,16 @@ if ($_GET['json'] == "list") {
     $iTotal = count($result1->rows);
     $output["iTotalRecords"] = $iTotal;
     $output["iTotalDisplayRecords"] = $iTotal;
-    
+
     $result = array();
     foreach ($result1->rows as $aRow) {
         $result[$aRow->value->name] = $aRow->value;
     }
-    
+
     foreach ($result2->rows as $aRow) {
         $result[$aRow->key]->nb = $aRow->value;
     }
-    
+
     foreach ($result as $aRow) {
         $output["aaData"][] = $aRow;
     }
@@ -99,12 +99,13 @@ $i = 0;
 $obj = new stdClass();
 
 print '<table class="display dt_act" id="group" >';
-// Ligne des titres 
+// Ligne des titres
 print'<thead>';
 print'<tr>';
 print'<th class="essential">';
 print $langs->trans("Group");
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "name";
 $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->bSearchable = true;
@@ -126,6 +127,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans('NbUsers');
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "nb";
 $obj->aoColumns[$i]->sDefaultContent = 0;
 $obj->aoColumns[$i]->sClass = "fright";

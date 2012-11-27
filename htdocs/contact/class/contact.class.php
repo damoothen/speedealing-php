@@ -861,6 +861,7 @@ class Contact extends nosqlDocument {
         print'<tr>';
         print'<th>';
         print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
         $obj->aoColumns[$i]->mDataProp = "_id";
         $obj->aoColumns[$i]->bUseRendered = false;
         $obj->aoColumns[$i]->bSearchable = false;
@@ -869,6 +870,7 @@ class Contact extends nosqlDocument {
         print'<th class="essential">';
         print $langs->trans("Name");
         print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
         $obj->aoColumns[$i]->mDataProp = "name";
         $obj->aoColumns[$i]->bUseRendered = false;
         $obj->aoColumns[$i]->bSearchable = true;
@@ -877,18 +879,21 @@ class Contact extends nosqlDocument {
         print'<th class="essential">';
         print $langs->trans('PostOrFunction');
         print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
         $obj->aoColumns[$i]->mDataProp = "poste";
         $obj->aoColumns[$i]->sDefaultContent = "";
         $i++;
         print'<th class="essential">';
         print $langs->trans('Mobile');
         print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
         $obj->aoColumns[$i]->mDataProp = "phone_mobile";
         $obj->aoColumns[$i]->sDefaultContent = "";
         $i++;
         print'<th class="essential">';
         print $langs->trans('EMail');
         print'</th>';
+        $obj->aoColumns[$i] = new stdClass();
         $obj->aoColumns[$i]->mDataProp = "email";
         $obj->aoColumns[$i]->sDefaultContent = "";
         $i++;

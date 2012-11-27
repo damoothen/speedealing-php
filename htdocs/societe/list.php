@@ -131,8 +131,11 @@ foreach ($object->fk_extrafields->longList as $aRow) {
     $obj->aoColumns[$i] = $object->fk_extrafields->fields->$aRow->aoColumns;
     if (isset($object->fk_extrafields->$aRow->default))
         $obj->aoColumns[$i]->sDefaultContent = $object->fk_extrafields->$aRow->default;
-    else
-        $obj->aoColumns[$i]->sDefaultContent = "";
+	else {
+		if (! is_object($obj->aoColumns[$i]))
+			$obj->aoColumns[$i] = new stdClass(); // to avoid strict mode warning
+		$obj->aoColumns[$i]->sDefaultContent = "";
+	}
     $obj->aoColumns[$i]->mDataProp = $aRow;
     $i++;
 }
@@ -219,7 +222,7 @@ if ($user->rights->societe->client->voir) {
     $i++;
 }
 foreach ($object->fk_extrafields->longList as $aRow) {
-    if ($object->fk_extrafields->fields->$aRow->aoColumns->bSearchable = true)
+    if ($object->fk_extrafields->fields->$aRow->aoColumns->bSearchable == true)
         print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search " . $aRow) . '" /></th>';
     else
         print'<th id="' . $i . '"></th>';

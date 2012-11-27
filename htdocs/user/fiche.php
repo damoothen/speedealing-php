@@ -76,6 +76,7 @@ $langs->load("ldap");
 
 $form = new Form($db);
 $edituser = new User($db);
+$fuser = new User($db);
 
 /**
  * Actions
@@ -691,9 +692,11 @@ if (($action == 'create') || ($action == 'adduserldap')) {
                 print '<thead>';
                 print '<tr>';
                 print '<th>' . $langs->trans("Group") . '</th>';
+                $obj->aoColumns[$i] = new stdClass();
                 $obj->aoColumns[$i]->mDataProp = "";
                 $i++;
                 print '<th></th>';
+                $obj->aoColumns[$i] = new stdClass();
                 $obj->aoColumns[$i]->mDataProp = "";
                 $obj->aoColumns[$i]->sClass = "fright content_actions";
                 $i++;
@@ -755,6 +758,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
 
                 print'<th>';
                 print'</th>';
+                $obj->aoColumns[$i] = new stdClass();
                 $obj->aoColumns[$i]->mDataProp = "id";
                 $obj->aoColumns[$i]->sDefaultContent = "";
                 $obj->aoColumns[$i]->bVisible = false;
@@ -763,6 +767,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
                 print'<th class="essential">';
                 print $langs->trans("Module");
                 print'</th>';
+                $obj->aoColumns[$i] = new stdClass();
                 $obj->aoColumns[$i]->mDataProp = "name";
                 $obj->aoColumns[$i]->sDefaultContent = "";
                 $obj->aoColumns[$i]->sWidth = "18em";
@@ -771,6 +776,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
                 print'<th>';
                 print $langs->trans("Permission");
                 print'</th>';
+                $obj->aoColumns[$i] = new stdClass();
                 $obj->aoColumns[$i]->mDataProp = "desc";
                 $obj->aoColumns[$i]->sDefaultContent = "";
                 $obj->aoColumns[$i]->bVisible = true;
@@ -779,6 +785,7 @@ if (($action == 'create') || ($action == 'adduserldap')) {
                 print'<th class="essential">';
                 print $langs->trans("Enabled");
                 print'</th>';
+                $obj->aoColumns[$i] = new stdClass();
                 $obj->aoColumns[$i]->mDataProp = "Status";
                 $obj->aoColumns[$i]->sDefaultContent = "false";
                 $obj->aoColumns[$i]->sClass = "center";
@@ -808,8 +815,8 @@ if (($action == 'create') || ($action == 'adduserldap')) {
                                 nTrs[i].parentNode.insertBefore( nGroup, nTrs[i] );
                                 sLastGroup = sGroup;
                             }
-                    
-                    
+
+
                 }
 	}";
 

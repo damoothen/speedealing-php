@@ -128,7 +128,7 @@ if (($action == 'update' && empty($_POST["cancel"]))
     $object->idprof6 = $_POST["MAIN_INFO_PROFID6"];
 
     $object->tva_intra = $_POST["tva"];
-    
+
     $object->fiscal_month_start = $_POST["fiscalmonthstart"];
 
     $object->tva_assuj = $_POST["optiontva"];
@@ -136,7 +136,7 @@ if (($action == 'update' && empty($_POST["cancel"]))
     // Local taxes
     $object->localtax1 = $_POST["optionlocaltax1"];
     $object->localtax2 = $_POST["optionlocaltax2"];
-    
+
     $object->record(true);
 
     if ($action != 'updateedit' && !$message) {
