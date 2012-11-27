@@ -1,6 +1,6 @@
 <?php
-/* Copyright (C) 2005-2008 Laurent Destailleur  <eldy@users.sourceforge.net>
- * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
+/* Copyright (C) 2005-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2005-2009 Regis Houssin        <regis@dolibarr.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,23 +18,21 @@
  */
 
 /**
- *    	\file       htdocs/core/modules/propale/mod_propale_marbre.php
- *		\ingroup    propale
- *		\brief      File of class to manage commercial proposal numbering rules Marbre
+ *  \file       htdocs/core/modules/commande/mod_commande_marbre.php
+ *  \ingroup    commande
+ *  \brief      File of class to manage customer order numbering rules Marbre
  */
+require_once DOL_DOCUMENT_ROOT .'/commande/core/modules/commande/modules_commande.php';
 
-require_once DOL_DOCUMENT_ROOT .'/core/modules/propale/modules_propale.php';
-
-
-/**	    \class      mod_propale_marbre
- *		\brief      Class to manage customer order numbering rules Marbre
+/**
+ *	Class to manage customer order numbering rules Marbre
  */
-class mod_propale_marbre extends ModeleNumRefPropales
+class mod_commande_marbre extends ModeleNumRefCommandes
 {
 	var $version='dolibarr';		// 'development', 'experimental', 'dolibarr'
-	var $prefix='PR';
+	var $prefix='CO';
 	var $error='';
-	var $nom = "Marbre";
+	var $nom='Marbre';
 
 
     /**
@@ -50,7 +48,7 @@ class mod_propale_marbre extends ModeleNumRefPropales
 
 
 	/**
-	 *  Return an example of numbering module values
+	 *  Renvoi un exemple de numerotation
 	 *
 	 *  @return     string      Example
 	 */
@@ -70,11 +68,11 @@ class mod_propale_marbre extends ModeleNumRefPropales
 	{
 		global $conf,$langs;
 
-		$pryymm=''; $max='';
+		$coyymm=''; $max='';
 
 		$posindice=8;
 		$sql = "SELECT MAX(SUBSTRING(ref FROM ".$posindice.")) as max";
-		$sql.= " FROM ".MAIN_DB_PREFIX."propal";
+		$sql.= " FROM ".MAIN_DB_PREFIX."commande";
 		$sql.= " WHERE ref LIKE '".$this->prefix."____-%'";
 		$sql.= " AND entity = ".$conf->entity;
 
@@ -82,72 +80,52 @@ class mod_propale_marbre extends ModeleNumRefPropales
 		if ($resql)
 		{
 			$row = $db->fetch_row($resql);
-			if ($row) { $pryymm = substr($row[0],0,6); $max=$row[0]; }
+			if ($row) { $coyymm = substr($row[0],0,6); $max=$row[0]; }
 		}
-
-		if (! $pryymm || preg_match('/'.$this->prefix.'[0-9][0-9][0-9][0-9]/i',$pryymm))
-		{
-			return true;
-		}
-		else
+		if ($coyymm && ! preg_match('/'.$this->prefix.'[0-9][0-9][0-9][0-9]/i',$coyymm))
 		{
 			$langs->load("errors");
-			$this->error=$langs->trans('ErrorNumRefModel',$max);
+			$this->error=$langs->trans('ErrorNumRefModel', $max);
 			return false;
 		}
+
+		return true;
 	}
 
 	/**
-	 *  Return next value
+	 * 	Return next free value
 	 *
-	 *  @param	Societe		$objsoc     Object third party
-	 * 	@param	Propal		$propal		Object commercial proposal
-	 *  @return string      			Next value
+	 *  @param	Societe		$objsoc     Object thirdparty
+	 *  @param  Object		$object		Object we need next value for
+	 *  @return string      			Value if KO, <0 if KO
 	 */
-	function getNextValue($objsoc,$propal)
+	function getNextValue($objsoc,$object)
 	{
 		global $db,$conf;
+                $result = $object->getView("count");
+                $max = (int) $result->rows[0]->value;
 
-		// D'abord on recupere la valeur max
-		$posindice=8;
-		$sql = "SELECT MAX(SUBSTRING(ref FROM ".$posindice.")) as max";	// This is standard SQL
-		$sql.= " FROM ".MAIN_DB_PREFIX."propal";
-		$sql.= " WHERE ref LIKE '".$this->prefix."____-%'";
-		$sql.= " AND entity = ".$conf->entity;
-
-		$resql=$db->query($sql);
-		if ($resql)
-		{
-			$obj = $db->fetch_object($resql);
-			if ($obj) $max = intval($obj->max);
-			else $max=0;
-		}
-		else
-		{
-			dol_syslog("mod_propale_marbre::getNextValue sql=".$sql);
-			return -1;
-		}
-
-		$date = time();
+		//$date=time();
+		$date=$object->date;
 		$yymm = strftime("%y%m",$date);
 		$num = sprintf("%04s",$max+1);
 
-		dol_syslog("mod_propale_marbre::getNextValue return ".$this->prefix.$yymm."-".$num);
+		dol_syslog("mod_commande_marbre::getNextValue return ".$this->prefix.$yymm."-".$num);
 		return $this->prefix.$yymm."-".$num;
 	}
+
 
 	/**
 	 *  Return next free value
 	 *
-	 *  @param	Societe		$objsoc      	Object third party
-	 * 	@param	Object		$objforref		Object for number to search
-	 *  @return string      				Next free value
+	 *  @param	Societe		$objsoc     Object third party
+	 * 	@param	string		$objforref	Object for number to search
+	 *  @return string      			Next free value
 	 */
-	function getNumRef($objsoc,$objforref)
+	function commande_get_num($objsoc,$objforref)
 	{
 		return $this->getNextValue($objsoc,$objforref);
 	}
 
 }
-
 ?>

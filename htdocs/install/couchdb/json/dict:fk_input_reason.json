@@ -1,0 +1,30 @@
+{
+   "_id": "dict:fk_input_reason",
+   "values": {
+       "SRC_CAMP_EMAIL": {
+           "enable": true,
+           "label": "EMailing campaign"
+       },
+       "SRC_CAMP_FAX": {
+           "enable": true,
+           "label": "Fax campaign"
+       },
+       "SRC_CAMP_PHO": {
+           "enable": true,
+           "label": "Phone campaign"
+       },
+       "SRC_COMM": {
+           "enable": true,
+           "label": "Commercial contact"
+       },
+       "SRC_INTE": {
+           "enable": true,
+           "label": "Internet"
+       },
+       "SRC_SHOP": {
+           "enable": true,
+           "label": "Shop contact"
+       }
+   },
+   "class": "dict"
+}

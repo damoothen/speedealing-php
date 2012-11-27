@@ -1,8 +1,10 @@
 <?php
-/* Copyright (C) 2003      Rodolphe Quiedeville <rodolphe@quiedeville.org>
- * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
+/* Copyright (C) 2003-2004 Rodolphe Quiedeville <rodolphe@quiedeville.org>
+ * Copyright (C) 2004-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2004      Eric Seigne          <eric.seigne@ryxeo.com>
  * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
- * Copyright (C) 2012      Juanjo Menent		<jmenent@2byte.es>
+ * Copyright (C) 2006      Andre Cianfarani     <acianfa@free.fr>
+ * Copyright (C) 2012      Juanjo Menent	    <jmenent@2byte.es>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,23 +22,23 @@
  */
 
 /**
- *  \file       htdocs/core/modules/propale/modules_propale.php
- *  \ingroup    propale
- *  \brief      Fichier contenant la classe mere de generation des propales en PDF
- *  			et la classe mere de numerotation des propales
+ *  \file			htdocs/core/modules/commande/modules_commande.php
+ *  \ingroup		commande
+ *  \brief			Fichier contenant la classe mere de generation des commandes en PDF
+ *  				et la classe mere de numerotation des commandes
  */
 
 require_once DOL_DOCUMENT_ROOT.'/core/class/commondocgenerator.class.php';
-require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';   // Requis car utilise dans les classes qui heritent
+require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';	// requis car utilise par les classes qui heritent
+require_once DOL_DOCUMENT_ROOT.'/core/class/discount.class.php';
 
 
 /**
- *	Classe mere des modeles de propale
+ *	Classe mere des modeles de commandes
  */
-abstract class ModelePDFPropales extends CommonDocGenerator
+abstract class ModelePDFCommandes extends CommonDocGenerator
 {
 	var $error='';
-
 
 	/**
 	 *  Return list of active generation modules
@@ -49,7 +51,7 @@ abstract class ModelePDFPropales extends CommonDocGenerator
 	{
 		global $conf;
 
-		$type='propal';
+		$type='order';
 		$liste=array();
 
 		include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
@@ -60,17 +62,20 @@ abstract class ModelePDFPropales extends CommonDocGenerator
 }
 
 
+
 /**
- *	Classe mere des modeles de numerotation des references de propales
+ *  \class      ModeleNumRefCommandes
+ *  \brief      Classe mere des modeles de numerotation des references de commandes
  */
-abstract class ModeleNumRefPropales
+
+abstract class ModeleNumRefCommandes
 {
 	var $error='';
 
 	/**
-	 * Return if a module can be used or not
+	 *	Return if a module can be used or not
 	 *
-	 * @return	boolean     true if module can be used
+	 *	@return		boolean     true if module can be used
 	 */
 	function isEnabled()
 	{
@@ -78,34 +83,33 @@ abstract class ModeleNumRefPropales
 	}
 
 	/**
-	 *  Renvoi la description par defaut du modele de numerotation
+	 *	Renvoie la description par defaut du modele de numerotation
 	 *
-	 * 	@return     string      Texte descripif
+	 *	@return     string      Texte descripif
 	 */
 	function info()
 	{
 		global $langs;
-		$langs->load("propale");
+		$langs->load("orders");
 		return $langs->trans("NoDescription");
 	}
 
 	/**
-	 * 	Renvoi un exemple de numerotation
+	 *	Renvoie un exemple de numerotation
 	 *
-	 *  @return     string      Example
+	 *	@return     string      Example
 	 */
 	function getExample()
 	{
 		global $langs;
-		$langs->load("propale");
+		$langs->load("orders");
 		return $langs->trans("NoExample");
 	}
 
 	/**
-	 *  Test si les numeros deja en vigueur dans la base ne provoquent pas de
-	 *  de conflits qui empechera cette numerotation de fonctionner.
+	 *	Test si les numeros deja en vigueur dans la base ne provoquent pas de conflits qui empecheraient cette numerotation de fonctionner.
 	 *
-	 *  @return     boolean     false si conflit, true si ok
+	 *	@return     boolean     false si conflit, true si ok
 	 */
 	function canBeActivated()
 	{
@@ -113,22 +117,22 @@ abstract class ModeleNumRefPropales
 	}
 
 	/**
-	 * 	Renvoi prochaine valeur attribuee
+	 *	Renvoie prochaine valeur attribuee
 	 *
-	 *	@param		Societe		$objsoc     Object third party
-	 *	@param		Propal		$propal		Object commercial proposal
-	 *	@return     string      Valeur
+	 *	@param	Societe		$objsoc     Object thirdparty
+	 *	@param	Object		$object		Object we need next value for
+	 *	@return	string      Valeur
 	 */
-	function getNextValue($objsoc,$propal)
+	function getNextValue($objsoc,$object)
 	{
 		global $langs;
 		return $langs->trans("NotAvailable");
 	}
 
 	/**
-	 *  Renvoi version du module numerotation
+	 *	Renvoie version du module numerotation
 	 *
-	 *  @return     string      Valeur
+	 *	@return     string      Valeur
 	 */
 	function getVersion()
 	{
@@ -144,22 +148,22 @@ abstract class ModeleNumRefPropales
 
 
 /**
- *  Create a document onto disk according to template module.
+ *  Create a document onto disk accordign to template module.
  *
- * 	@param	    DoliDB		$db  			Database handler
- * 	@param	    Object		$object			Object proposal
- * 	@param	    string		$modele			Force model to use ('' to not force)
- * 	@param		Translate	$outputlangs	Object langs to use for output
+ *  @param	    DoliDB		$db  			Database handler
+ *  @param	    Object		$object			Object order
+ *  @param	    string		$modele			Force le modele a utiliser ('' to not force)
+ *  @param		Translate	$outputlangs	objet lang a utiliser pour traduction
  *  @param      int			$hidedetails    Hide details of lines
  *  @param      int			$hidedesc       Hide description
  *  @param      int			$hideref        Hide ref
  *  @param      HookManager	$hookmanager	Hook manager instance
- * 	@return     int         				0 if KO, 1 if OK
+ *  @return     int         				0 if KO, 1 if OK
  */
-function propale_pdf_create($db, $object, $modele, $outputlangs, $hidedetails=0, $hidedesc=0, $hideref=0, $hookmanager=false)
+function commande_pdf_create($db, $object, $modele, $outputlangs, $hidedetails=0, $hidedesc=0, $hideref=0, $hookmanager=false)
 {
 	global $conf,$user,$langs;
-	$langs->load("propale");
+	$langs->load("orders");
 
 	$error=0;
 
@@ -168,13 +172,13 @@ function propale_pdf_create($db, $object, $modele, $outputlangs, $hidedetails=0,
 	// Positionne le modele sur le nom du modele a utiliser
 	if (! dol_strlen($modele))
 	{
-	    if (! empty($conf->global->PROPALE_ADDON_PDF))
+	    if (! empty($conf->global->COMMANDE_ADDON_PDF))
 	    {
-	        $modele = $conf->global->PROPALE_ADDON_PDF;
+	        $modele = $conf->global->COMMANDE_ADDON_PDF;
 	    }
 	    else
 	    {
-	        $modele = 'azur';
+	        $modele = 'einstein';
 	    }
 	}
 
@@ -188,7 +192,7 @@ function propale_pdf_create($db, $object, $modele, $outputlangs, $hidedetails=0,
 
 	// Search template files
 	$file=''; $classname=''; $filefound=0;
-	$dirmodels=array('/');
+	$dirmodels=array('/commande/');
 	if (is_array($conf->modules_parts['models'])) $dirmodels=array_merge($dirmodels,$conf->modules_parts['models']);
 	foreach($dirmodels as $reldir)
 	{
@@ -197,7 +201,7 @@ function propale_pdf_create($db, $object, $modele, $outputlangs, $hidedetails=0,
     	    $file = $prefix."_".$modele.".modules.php";
 
     		// On verifie l'emplacement du modele
-	        $file=dol_buildpath($reldir."core/modules/propale/doc/".$file,0);
+	        $file=dol_buildpath($reldir."core/modules/commande/doc/".$file,0);
     		if (file_exists($file))
     		{
     			$filefound=1;
@@ -233,7 +237,7 @@ function propale_pdf_create($db, $object, $modele, $outputlangs, $hidedetails=0,
 			// Appel des triggers
 			include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
 			$interface=new Interfaces($db);
-			$result=$interface->run_triggers('PROPAL_BUILDDOC',$object,$user,$langs,$conf);
+			$result=$interface->run_triggers('ORDER_BUILDDOC',$object,$user,$langs,$conf);
 			if ($result < 0) { $error++; $this->errors=$interface->errors; }
 			// Fin appel triggers
 
@@ -242,7 +246,7 @@ function propale_pdf_create($db, $object, $modele, $outputlangs, $hidedetails=0,
 		else
 		{
 			$outputlangs->charset_output=$sav_charset_output;
-			dol_print_error($db,"propal_pdf_create Error: ".$obj->error);
+			dol_print_error($db,"order_pdf_create Error: ".$obj->error);
 			return -1;
 		}
 
@@ -253,5 +257,4 @@ function propale_pdf_create($db, $object, $modele, $outputlangs, $hidedetails=0,
 		return -1;
 	}
 }
-
 ?>

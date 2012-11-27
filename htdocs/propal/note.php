@@ -3,6 +3,7 @@
  * Copyright (C) 2004-2012 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2004      Eric Seigne          <eric.seigne@ryxeo.com>
  * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2012 David Moothen        <dmoothen@websitti.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,21 +25,21 @@
  *	\brief      Fiche d'information sur une proposition commerciale
  */
 
-require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/comm/propal/class/propal.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/propal.lib.php';
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/propal/class/propal.class.php';
+require_once DOL_DOCUMENT_ROOT.'/propal/lib/propal.lib.php';
 
 $langs->load('propal');
 $langs->load('compta');
 $langs->load('bills');
 
-$id = GETPOST('id','int');
+$id = GETPOST('id','alpha');
 $ref=GETPOST('ref','alpha');
 $action=GETPOST('action','alpha');
 
 // Security check
 if ($user->societe_id) $socid=$user->societe_id;
-$result = restrictedArea($user, 'propale', $id, 'propal');
+$result = restrictedArea($user, 'propal', $id, 'propal');
 
 $object = new Propal($db);
 
@@ -47,14 +48,14 @@ $object = new Propal($db);
 /*                     Actions                                                */
 /******************************************************************************/
 
-if ($action == 'setnote_public' && $user->rights->propale->creer)
+if ($action == 'setnote_public' && $user->rights->propal->creer)
 {
 	$object->fetch($id);
 	$result=$object->update_note_public(dol_html_entity_decode(GETPOST('note_public'), ENT_QUOTES));
 	if ($result < 0) dol_print_error($db,$object->error);
 }
 
-else if ($action == 'setnote' && $user->rights->propale->creer)
+else if ($action == 'setnote' && $user->rights->propal->creer)
 {
 	$object->fetch($id);
 	$result=$object->update_note(dol_html_entity_decode(GETPOST('note'), ENT_QUOTES));
@@ -70,7 +71,7 @@ llxHeader('',$langs->trans('Proposal'),'EN:Commercial_Proposals|FR:Proposition_c
 
 $form = new Form($db);
 
-if ($id > 0 || ! empty($ref))
+if (!(empty($id)) || ! empty($ref))
 {
 	if ($mesg) print $mesg;
 
@@ -90,8 +91,9 @@ if ($id > 0 || ! empty($ref))
 
 			// Ref
 			print '<tr><td width="25%">'.$langs->trans('Ref').'</td><td colspan="3">';
-			print $form->showrefnav($object,'ref',$linkback,1,'ref','ref','');
-			print '</td></tr>';
+//			print $form->showrefnav($object,'ref',$linkback,1,'ref','ref','');
+			print $object->ref;
+                        print '</td></tr>';
 
 			// Ref client
 			print '<tr><td>';

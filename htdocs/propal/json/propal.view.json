@@ -1,0 +1,19 @@
+{
+   "_id": "_design/Propal",
+   "language": "javascript",
+   "views": {
+       "list": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"Propal\")\n  emit(doc.ref, doc);\n}"
+       },
+       "count": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"Propal\")\n  emit(doc.ref, 1);\n}",
+           "reduce": "function(keys, values){\nreturn sum(values);\n}"
+       },
+       "lines": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"PropalLine\")\n  emit(doc._id, doc);\n}"
+       },
+       "linesPerPropal": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"PropalLine\")\n  emit(doc.fk_propal, doc);\n}"
+       }
+   }
+}

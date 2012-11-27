@@ -1,6 +1,7 @@
 <?php
 /* Copyright (C) 2006-2010 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
+ * Copyright (C) 2012 David Moothen        <dmoothen@websitti.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,7 +39,7 @@ function propal_prepare_head($object)
 	$h = 0;
 	$head = array();
 
-	$head[$h][0] = DOL_URL_ROOT.'/comm/propal.php?id='.$object->id;
+	$head[$h][0] = DOL_URL_ROOT.'/propal/propal.php?id='.$object->id;
 	$head[$h][1] = $langs->trans('ProposalCard');
 	$head[$h][2] = 'comm';
 	$h++;
@@ -56,7 +57,7 @@ function propal_prepare_head($object)
 	}
 	if (! empty($conf->global->MAIN_USE_PREVIEW_TABS))
 	{
-		$head[$h][0] = DOL_URL_ROOT.'/comm/propal/apercu.php?id='.$object->id;
+		$head[$h][0] = DOL_URL_ROOT.'/propal/apercu.php?id='.$object->id;
 		$head[$h][1] = $langs->trans("Preview");
 		$head[$h][2] = 'preview';
 		$h++;
@@ -64,7 +65,7 @@ function propal_prepare_head($object)
 
 	if (empty($conf->global->MAIN_DISABLE_CONTACTS_TAB))
 	{
-		$head[$h][0] = DOL_URL_ROOT.'/comm/propal/contact.php?id='.$object->id;
+		$head[$h][0] = DOL_URL_ROOT.'/propal/contact.php?id='.$object->id;
 		$head[$h][1] = $langs->trans('ContactsAddresses');
 		$head[$h][2] = 'contact';
 		$h++;
@@ -78,13 +79,13 @@ function propal_prepare_head($object)
 
     if (empty($conf->global->MAIN_DISABLE_NOTES_TAB))
     {
-	    $head[$h][0] = DOL_URL_ROOT.'/comm/propal/note.php?id='.$object->id;
+	    $head[$h][0] = DOL_URL_ROOT.'/propal/note.php?id='.$object->id;
 		$head[$h][1] = $langs->trans('Notes');
 		$head[$h][2] = 'note';
 		$h++;
     }
 
-	$head[$h][0] = DOL_URL_ROOT.'/comm/propal/document.php?id='.$object->id;
+	$head[$h][0] = DOL_URL_ROOT.'/propal/document.php?id='.$object->id;
 	/*$filesdir = $conf->propal->dir_output . "/" . dol_sanitizeFileName($propal->ref);
 	include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 	$listoffiles=dol_dir_list($filesdir,'files',1);
@@ -93,7 +94,7 @@ function propal_prepare_head($object)
 	$head[$h][2] = 'document';
 	$h++;
 
-	$head[$h][0] = DOL_URL_ROOT.'/comm/propal/info.php?id='.$object->id;
+	$head[$h][0] = DOL_URL_ROOT.'/propal/info.php?id='.$object->id;
 	$head[$h][1] = $langs->trans('Info');
 	$head[$h][2] = 'info';
 	$h++;
