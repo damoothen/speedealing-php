@@ -25,7 +25,7 @@ $permission=(isset($permission)?$permission:(isset($user->rights->$module->creer
 $moreparam=(isset($moreparam)?$moreparam:'');
 
 // Special cases
-if ($module == 'propal')                 { $permission=$user->rights->propale->creer; }
+if ($module == 'propal')                 { $permission=$user->rights->propal->creer; }
 elseif ($module == 'fichinter')         { $permission=$user->rights->ficheinter->creer; $note_private = 'note_private'; }
 elseif ($module == 'project')           { $permission=$user->rights->projet->creer; $note_private = 'note_private'; }
 elseif ($module == 'project_task')      { $permission=$user->rights->projet->creer; $note_private = 'note_private'; }

@@ -8,6 +8,7 @@
  * Copyright (C) 2011      Philippe Grand        <philippe.grand@atoo-net.com>
  * Copyright (C) 2012      Christophe Battarel   <christophe.battarel@altairis.fr>
  * Copyright (C) 2012      Marcos García         <marcosgdf@gmail.com>
+ * Copyright (C) 2012      David Moothen         <dmoothen@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,13 +33,12 @@
 require '../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formorder.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/modules/commande/modules_commande.php';
+require_once DOL_DOCUMENT_ROOT.'/commande/core/modules/commande/modules_commande.php';
 require_once DOL_DOCUMENT_ROOT.'/commande/class/commande.class.php';
-require_once DOL_DOCUMENT_ROOT.'/comm/action/class/actioncomm.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/order.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 if (! empty($conf->propal->enabled))
-	require DOL_DOCUMENT_ROOT.'/comm/propal/class/propal.class.php';
+	require DOL_DOCUMENT_ROOT.'/propal/class/propal.class.php';
 if (! empty($conf->projet->enabled)) {
 	require DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 	require DOL_DOCUMENT_ROOT.'/core/lib/project.lib.php';
@@ -54,14 +54,14 @@ $langs->load('products');
 if (! empty($conf->margin->enabled))
 	$langs->load('margins');
 
-$id=(GETPOST('id','int')?GETPOST('id','int'):GETPOST('orderid','int'));
+$id=(GETPOST('id','alpha')?GETPOST('id','alpha'):GETPOST('orderid','alpha'));
 $ref=GETPOST('ref','alpha');
-$socid=GETPOST('socid','int');
+$socid=GETPOST('socid','alpha');
 $action=GETPOST('action','alpha');
 $confirm=GETPOST('confirm','alpha');
-$lineid=GETPOST('lineid','int');
+$lineid=GETPOST('lineid','alpha');
 $origin=GETPOST('origin','alpha');
-$originid=(GETPOST('originid','int')?GETPOST('originid','int'):GETPOST('origin_id','int')); // For backward compatibility
+$originid=(GETPOST('originid','alpha')?GETPOST('originid','alpha'):GETPOST('origin_id','alpha')); // For backward compatibility
 
 $mesg    = GETPOST('mesg');
 
@@ -77,7 +77,7 @@ $result=restrictedArea($user,'commande',$id);
 $object = new Commande($db);
 
 // Load object
-if ($id > 0 || ! empty($ref))
+if (!empty($id))
 {
 	$ret=$object->fetch($id, $ref);
 	$ret=$object->fetch_thirdparty();
@@ -199,21 +199,17 @@ else if ($action == 'add' && $user->rights->commande->creer)
 	$datelivraison = dol_mktime(12, 0, 0, GETPOST('liv_month'),GETPOST('liv_day'),GETPOST('liv_year'));
 
 	$object->socid=$socid;
-	$object->fetch_thirdparty();
-
-	$db->begin();
-
-	$object->date_commande        = $datecommande;
+        $object->date_commande        = $datecommande;
 	$object->note                 = GETPOST('note');
 	$object->note_public          = GETPOST('note_public');
 	$object->source               = GETPOST('source_id');
 	$object->fk_project           = GETPOST('projectid');
 	$object->ref_client           = GETPOST('ref_client');
 	$object->modelpdf             = GETPOST('model');
-	$object->cond_reglement_id    = GETPOST('cond_reglement_id');
-	$object->mode_reglement_id    = GETPOST('mode_reglement_id');
-	$object->availability_id      = GETPOST('availability_id');
-	$object->demand_reason_id     = GETPOST('demand_reason_id');
+	$object->cond_reglement_code    = GETPOST('cond_reglement_code');
+	$object->mode_reglement_code    = GETPOST('mode_reglement_code');
+	$object->availability_code      = GETPOST('availability_code');
+	$object->demand_reason_code     = GETPOST('demand_reason_code');
 	$object->date_livraison       = $datelivraison;
 	$object->fk_delivery_address  = GETPOST('fk_address');
 	$object->contactid            = GETPOST('contactidp');
@@ -363,7 +359,7 @@ else if ($action == 'add' && $user->rights->commande->creer)
 	}
 
 	// Insert default contacts if defined
-	if ($object_id > 0)
+	if (!empty($object_id))
 	{
 		if (GETPOST('contactidp'))
 		{
@@ -379,10 +375,9 @@ else if ($action == 'add' && $user->rights->commande->creer)
 		$action = '';
 	}
 
-	// End of object creation, we show it
-	if ($object_id > 0 && ! $error)
+        // End of object creation, we show it
+	if (!empty($object_id) && ! $error)
 	{
-		$db->commit();
 		header('Location: '.$_SERVER["PHP_SELF"].'?id='.$object_id);
 		exit;
 	}
@@ -449,27 +444,27 @@ else if ($action == 'setdate_livraison' && $user->rights->commande->creer)
 	}
 }
 
-else if ($action == 'setmode' && $user->rights->commande->creer)
+else if ($action == 'setconditions' && $user->rights->commande->creer)
 {
-	$result = $object->setPaymentMethods(GETPOST('mode_reglement_id','int'));
+	$result = $object->setPaymentTerms(GETPOST('cond_reglement_code','alpha'));
 	if ($result < 0) dol_print_error($db,$object->error);
 }
 
 else if ($action == 'setavailability' && $user->rights->commande->creer)
 {
-	$result=$object->availability(GETPOST('availability_id'));
+	$result=$object->setAvailability(GETPOST('availability_code'));
 	if ($result < 0) dol_print_error($db,$object->error);
 }
 
 else if ($action == 'setdemandreason' && $user->rights->commande->creer)
 {
-	$result=$object->demand_reason(GETPOST('demand_reason_id'));
+	$result=$object->setDemandReason(GETPOST('demand_reason_code', 'alpha'));
 	if ($result < 0) dol_print_error($db,$object->error);
 }
 
-else if ($action == 'setconditions' && $user->rights->commande->creer)
+else if ($action == 'setmode' && $user->rights->commande->creer)
 {
-	$result=$object->setPaymentTerms(GETPOST('cond_reglement_id','int'));
+	$result=$object->setPaymentMethods(GETPOST('mode_reglement_code','alpha'));
 	if ($result < 0)
 	{
 		dol_print_error($db,$object->error);
@@ -1324,12 +1319,11 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 	*/
 
 	llxHeader('',$langs->trans('Order'),'EN:Customers_Orders|FR:Commandes_Clients|ES:Pedidos de clientes');
-
 	$form = new Form($db);
 	$formfile = new FormFile($db);
 	$formorder = new FormOrder($db);
 
-
+    
 	/*********************************************************************
 	 *
 	* Mode creation
@@ -1420,7 +1414,6 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 		print '<form name="crea_commande" action="'.$_SERVER["PHP_SELF"].'" method="POST">';
 		print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 		print '<input type="hidden" name="action" value="add">';
-		print '<input type="hidden" name="socid" value="'.$soc->id.'">' ."\n";
 		print '<input type="hidden" name="remise_percent" value="'.$soc->remise_client.'">';
 		print '<input type="hidden" name="origin" value="'.$origin.'">';
 		print '<input type="hidden" name="originid" value="'.$originid.'">';
@@ -1436,7 +1429,7 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 		print '</tr>';
 
 		// Client
-		print '<tr><td class="fieldrequired">'.$langs->trans('Customer').'</td><td colspan="2">'.$soc->getNomUrl(1).'</td></tr>';
+		print '<tr><td class="fieldrequired">'.$langs->trans('Customer').'</td><td colspan="2">'.$form->select_company($socid, "socid").'</td></tr>';
 
 		/*
 		 * Contact de la commande
@@ -1476,23 +1469,27 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 
 		// Conditions de reglement
 		print '<tr><td nowrap="nowrap">'.$langs->trans('PaymentConditionsShort').'</td><td colspan="2">';
-		$form->select_conditions_paiements($soc->cond_reglement,'cond_reglement_id',-1,1);
-		print '</td></tr>';
+//		$form->select_conditions_paiements($soc->cond_reglement,'cond_reglement_id',-1,1);
+                print $object->select_fk_extrafields('cond_reglement_code', 'cond_reglement_code');
+                print '</td></tr>';
 
 		// Mode de reglement
 		print '<tr><td>'.$langs->trans('PaymentMode').'</td><td colspan="2">';
-		$form->select_types_paiements($soc->mode_reglement,'mode_reglement_id');
-		print '</td></tr>';
+//		$form->select_types_paiements($soc->mode_reglement,'mode_reglement_id');
+		print $object->select_fk_extrafields('mode_reglement_code', 'mode_reglement_code');
+                print '</td></tr>';
 
 		// Delivery delay
 		print '<tr><td>'.$langs->trans('AvailabilityPeriod').'</td><td colspan="2">';
-		$form->select_availability($propal->availability,'availability_id','',1);
+//		$form->select_availability($propal->availability,'availability_id','',1);
+		print $object->select_fk_extrafields('availability_code', 'availability_code');
 		print '</td></tr>';
 
 		// What trigger creation
 		print '<tr><td>'.$langs->trans('Source').'</td><td colspan="2">';
-		$form->select_demand_reason(($origin=='propal'?'SRC_COMM':''),'demand_reason_id','',1);
-		print '</td></tr>';
+//		$form->select_demand_reason(($origin=='propal'?'SRC_COMM':''),'demand_reason_id','',1);
+		print $object->select_fk_extrafields('demand_reason_code', 'demand_reason_code');
+                print '</td></tr>';
 
 		// Project
 		if (! empty($conf->projet->enabled))
@@ -1526,7 +1523,7 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 		// Template to use by default
 		print '<tr><td>'.$langs->trans('Model').'</td>';
 		print '<td colspan="2">';
-		include_once DOL_DOCUMENT_ROOT.'/core/modules/commande/modules_commande.php';
+		include_once DOL_DOCUMENT_ROOT.'/commande/core/modules/commande/modules_commande.php';
 		$liste=ModelePDFCommandes::liste_modeles($db);
 		print $form->selectarray('model',$liste,$conf->global->COMMANDE_ADDON_PDF);
 		print "</td></tr>";
@@ -1656,16 +1653,20 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 		/* Mode vue et edition                                                         */
 		/*                                                                             */
 		/* *************************************************************************** */
+            
+        print_fiche_titre($langs->trans('Order'));
+        
 		$now=dol_now();
 
-		if ($object->id > 0)
+        if (!empty($object->id))
 		{
 			dol_htmloutput_mesg($mesg,$mesgs);
 
 			$product_static=new Product($db);
 
-			$soc = new Societe($db);
-			$soc->fetch($object->socid);
+//			$soc = new Societe($db);
+//			$soc->fetch($object->socid);
+                        $soc = $object->client;
 
 			$author = new User($db);
 			$author->fetch($object->user_author_id);
@@ -1825,8 +1826,9 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 			// Ref
 			print '<tr><td width="18%">'.$langs->trans('Ref').'</td>';
 			print '<td colspan="3">';
-			print $form->showrefnav($object, 'ref', $linkback, 1, 'ref', 'ref');
-			print '</td>';
+//			print $form->showrefnav($object, 'ref', $linkback, 1, 'ref', 'ref');
+			print $object->ref;
+                        print '</td>';
 			print '</tr>';
 
 			// Ref commande client
@@ -1834,7 +1836,7 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 			print '<table class="nobordernopadding" width="100%"><tr><td nowrap="nowrap">';
 			print $langs->trans('RefCustomer').'</td><td align="left">';
 			print '</td>';
-			if ($action != 'refcustomer' && $object->brouillon) print '<td align="right"><a href="'.$_SERVER['PHP_SELF'].'?action=refcustomer&amp;id='.$object->id.'">'.img_edit($langs->trans('Modify')).'</a></td>';
+			if ($action != 'refcustomer' && $object->Status == "DRAFT") print '<td align="right"><a href="'.$_SERVER['PHP_SELF'].'?action=refcustomer&amp;id='.$object->id.'">'.img_edit($langs->trans('Modify')).'</a></td>';
 			print '</tr></table>';
 			print '</td><td colspan="3">';
 			if ($user->rights->commande->creer && $action == 'refcustomer')
@@ -1856,38 +1858,38 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 
 			// Societe
 			print '<tr><td>'.$langs->trans('Company').'</td>';
-			print '<td colspan="3">'.$soc->getNomUrl(1).'</td>';
+			print '<td colspan="3">'.$object->client->name.'</td>';
 			print '</tr>';
 
 			// Ligne info remises tiers
-			print '<tr><td>'.$langs->trans('Discounts').'</td><td colspan="3">';
-			if ($soc->remise_client) print $langs->trans("CompanyHasRelativeDiscount",$soc->remise_client);
-			else print $langs->trans("CompanyHasNoRelativeDiscount");
-			print '. ';
-			$absolute_discount=$soc->getAvailableDiscounts('','fk_facture_source IS NULL');
-			$absolute_creditnote=$soc->getAvailableDiscounts('','fk_facture_source IS NOT NULL');
-			$absolute_discount=price2num($absolute_discount,'MT');
-			$absolute_creditnote=price2num($absolute_creditnote,'MT');
-			if ($absolute_discount)
-			{
-				if ($object->statut > 0)
-				{
-					print $langs->trans("CompanyHasAbsoluteDiscount",price($absolute_discount),$langs->transnoentities("Currency".$conf->currency));
-				}
-				else
-				{
-					// Remise dispo de type non avoir
-					$filter='fk_facture_source IS NULL';
-					print '<br>';
-					$form->form_remise_dispo($_SERVER["PHP_SELF"].'?id='.$object->id,0,'remise_id',$soc->id,$absolute_discount,$filter);
-				}
-			}
-			if ($absolute_creditnote)
-			{
-				print $langs->trans("CompanyHasCreditNote",price($absolute_creditnote),$langs->transnoentities("Currency".$conf->currency)).'. ';
-			}
-			if (! $absolute_discount && ! $absolute_creditnote) print $langs->trans("CompanyHasNoAbsoluteDiscount").'.';
-			print '</td></tr>';
+//			print '<tr><td>'.$langs->trans('Discounts').'</td><td colspan="3">';
+//			if ($soc->remise_client) print $langs->trans("CompanyHasRelativeDiscount",$soc->remise_client);
+//			else print $langs->trans("CompanyHasNoRelativeDiscount");
+//			print '. ';
+//			$absolute_discount=$soc->getAvailableDiscounts('','fk_facture_source IS NULL');
+//			$absolute_creditnote=$soc->getAvailableDiscounts('','fk_facture_source IS NOT NULL');
+//			$absolute_discount=price2num($absolute_discount,'MT');
+//			$absolute_creditnote=price2num($absolute_creditnote,'MT');
+//			if ($absolute_discount)
+//			{
+//				if ($object->statut > 0)
+//				{
+//					print $langs->trans("CompanyHasAbsoluteDiscount",price($absolute_discount),$langs->transnoentities("Currency".$conf->currency));
+//				}
+//				else
+//				{
+//					// Remise dispo de type non avoir
+//					$filter='fk_facture_source IS NULL';
+//					print '<br>';
+//					$form->form_remise_dispo($_SERVER["PHP_SELF"].'?id='.$object->id,0,'remise_id',$soc->id,$absolute_discount,$filter);
+//				}
+//			}
+//			if ($absolute_creditnote)
+//			{
+//				print $langs->trans("CompanyHasCreditNote",price($absolute_creditnote),$langs->transnoentities("Currency".$conf->currency)).'. ';
+//			}
+//			if (! $absolute_discount && ! $absolute_creditnote) print $langs->trans("CompanyHasNoAbsoluteDiscount").'.';
+//			print '</td></tr>';
 
 			// Date
 			print '<tr><td>';
@@ -1895,7 +1897,7 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 			print $langs->trans('Date');
 			print '</td>';
 
-			if ($action != 'editdate' && $object->brouillon) print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editdate&amp;id='.$object->id.'">'.img_edit($langs->trans('SetDate'),1).'</a></td>';
+			if ($action != 'editdate' && $object->Status == "DRAFT") print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editdate&amp;id='.$object->id.'">'.img_edit($langs->trans('SetDate'),1).'</a></td>';
 			print '</tr></table>';
 			print '</td><td colspan="3">';
 			if ($action == 'editdate')
@@ -1943,16 +1945,23 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 			print '<table class="nobordernopadding" width="100%"><tr><td>';
 			print $langs->trans('PaymentConditionsShort');
 			print '</td>';
-			if ($action != 'editconditions' && $object->brouillon) print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editconditions&amp;id='.$object->id.'">'.img_edit($langs->trans('SetConditions'),1).'</a></td>';
+			if ($action != 'editconditions' && $object->Status == "DRAFT") print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editconditions&amp;id='.$object->id.'">'.img_edit($langs->trans('SetConditions'),1).'</a></td>';
 			print '</tr></table>';
 			print '</td><td colspan="2">';
 			if ($action == 'editconditions')
 			{
-				$form->form_conditions_reglement($_SERVER['PHP_SELF'].'?id='.$object->id,$object->cond_reglement_id,'cond_reglement_id',1);
+//				$form->form_conditions_reglement($_SERVER['PHP_SELF'].'?id='.$object->id,$object->cond_reglement_id,'cond_reglement_id',1);
+                                print '<form name="setconditions" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'" method="post">';
+				print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+				print '<input type="hidden" name="action" value="setconditions">';
+				print $object->select_fk_extrafields("cond_reglement_code", "cond_reglement_code", $object->cond_reglement_code);
+                                print '<input type="submit" class="button" value="'.$langs->trans('Modify').'">';
+				print '</form>';
 			}
 			else
 			{
-				$form->form_conditions_reglement($_SERVER['PHP_SELF'].'?id='.$object->id,$object->cond_reglement_id,'none',1);
+//				$form->form_conditions_reglement($_SERVER['PHP_SELF'].'?id='.$object->id,$object->cond_reglement_id,'none',1);
+                                print $object->getExtraFieldLabel('cond_reglement_code');
 			}
 			print '</td>';
 
@@ -1963,16 +1972,23 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 			print '<table class="nobordernopadding" width="100%"><tr><td>';
 			print $langs->trans('PaymentMode');
 			print '</td>';
-			if ($action != 'editmode' && $object->brouillon) print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editmode&amp;id='.$object->id.'">'.img_edit($langs->trans('SetMode'),1).'</a></td>';
+			if ($action != 'editmode' && $object->Status == "DRAFT") print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editmode&amp;id='.$object->id.'">'.img_edit($langs->trans('SetMode'),1).'</a></td>';
 			print '</tr></table>';
 			print '</td><td colspan="2">';
 			if ($action == 'editmode')
 			{
-				$form->form_modes_reglement($_SERVER['PHP_SELF'].'?id='.$object->id,$object->mode_reglement_id,'mode_reglement_id');
+//				$form->form_modes_reglement($_SERVER['PHP_SELF'].'?id='.$object->id,$object->mode_reglement_id,'mode_reglement_id');
+                                print '<form name="setmode" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'" method="post">';
+				print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+				print '<input type="hidden" name="action" value="setmode">';
+				print $object->select_fk_extrafields("mode_reglement_code", "mode_reglement_code", $object->mode_reglement_code);
+                                print '<input type="submit" class="button" value="'.$langs->trans('Modify').'">';
+				print '</form>';
 			}
 			else
 			{
-				$form->form_modes_reglement($_SERVER['PHP_SELF'].'?id='.$object->id,$object->mode_reglement_id,'none');
+//				$form->form_modes_reglement($_SERVER['PHP_SELF'].'?id='.$object->id,$object->mode_reglement_id,'none');
+                                print $object->getExtraFieldLabel('mode_reglement_code');
 			}
 			print '</td></tr>';
 
@@ -1981,16 +1997,23 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 			print '<table class="nobordernopadding" width="100%"><tr><td>';
 			print $langs->trans('AvailabilityPeriod');
 			print '</td>';
-			if ($action != 'editavailability' && $object->brouillon) print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editavailability&amp;id='.$object->id.'">'.img_edit($langs->trans('SetAvailability'),1).'</a></td>';
+			if ($action != 'editavailability' && $object->Status == "DRAFT") print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editavailability&amp;id='.$object->id.'">'.img_edit($langs->trans('SetAvailability'),1).'</a></td>';
 			print '</tr></table>';
 			print '</td><td colspan="2">';
 			if ($action == 'editavailability')
 			{
-				$form->form_availability($_SERVER['PHP_SELF'].'?id='.$object->id,$object->availability_id,'availability_id',1);
+//				$form->form_availability($_SERVER['PHP_SELF'].'?id='.$object->id,$object->availability_id,'availability_id',1);
+                                print '<form name="setavailability" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'" method="post">';
+				print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+				print '<input type="hidden" name="action" value="setavailability">';
+				print $object->select_fk_extrafields("availability_code", "availability_code", $object->availability_code);
+                                print '<input type="submit" class="button" value="'.$langs->trans('Modify').'">';
+				print '</form>';
 			}
 			else
 			{
-				$form->form_availability($_SERVER['PHP_SELF'].'?id='.$object->id,$object->availability_id,'none',1);
+//				$form->form_availability($_SERVER['PHP_SELF'].'?id='.$object->id,$object->availability_id,'none',1);
+                                print $object->getExtraFieldLabel('availability_code');
 			}
 			print '</td></tr>';
 
@@ -1999,16 +2022,23 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 			print '<table class="nobordernopadding" width="100%"><tr><td>';
 			print $langs->trans('Source');
 			print '</td>';
-			if ($action != 'editdemandreason' && ! empty($object->brouillon)) print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editdemandreason&amp;id='.$object->id.'">'.img_edit($langs->trans('SetDemandReason'),1).'</a></td>';
+			if ($action != 'editdemandreason' && $object->Status == "DRAFT") print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editdemandreason&amp;id='.$object->id.'">'.img_edit($langs->trans('SetDemandReason'),1).'</a></td>';
 			print '</tr></table>';
 			print '</td><td colspan="2">';
 			if ($action == 'editdemandreason')
 			{
-				$form->form_demand_reason($_SERVER['PHP_SELF'].'?id='.$object->id,$object->demand_reason_id,'demand_reason_id',1);
+//                                $form->form_demand_reason($_SERVER['PHP_SELF'].'?id='.$object->id,$object->demand_reason_id,'demand_reason_id',1);
+                                print '<form name="setdemandreason" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'" method="post">';
+				print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+				print '<input type="hidden" name="action" value="setdemandreason">';
+				print $object->select_fk_extrafields("demand_reason_code", "demand_reason_code", $object->demand_reason_code);
+                                print '<input type="submit" class="button" value="'.$langs->trans('Modify').'">';
+				print '</form>';
 			}
 			else
 			{
-				$form->form_demand_reason($_SERVER['PHP_SELF'].'?id='.$object->id,$object->demand_reason_id,'none');
+//				$form->form_demand_reason($_SERVER['PHP_SELF'].'?id='.$object->id,$object->demand_reason_id,'none');
+                                print $object->getExtraFieldLabel('demand_reason_code');
 			}
 			// Removed because using dictionnary is an admin feature, not a user feature. Ther is already the "star" to show info to admin users.
 			// This is to avoid too heavy screens and have an uniform look and feel for all screens.
@@ -2093,7 +2123,7 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 
 			// Statut
 			print '<tr><td>'.$langs->trans('Status').'</td>';
-			print '<td colspan="2">'.$object->getLibStatut(4).'</td>';
+			print '<td colspan="2">'.$object->getExtraFieldLabel('Status').'</td>';
 			print '</tr>';
 
 			print '</table><br>';
@@ -2120,7 +2150,7 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 
 			$numlines = count($object->lines);
 
-			if (! empty($conf->use_javascript_ajax) && $object->statut == 0)
+			if (! empty($conf->use_javascript_ajax) && $object->Status == 'DRAFT')
 			{
 				include DOL_DOCUMENT_ROOT.'/core/tpl/ajaxrow.tpl.php';
 			}
@@ -2134,7 +2164,7 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 			/*
 			 * Form to add new line
 			*/
-			if ($object->statut == 0 && $user->rights->commande->creer)
+			if ($object->Status == "DRAFT" && $user->rights->commande->creer)
 			{
 				if ($action != 'editline')
 				{
@@ -2309,9 +2339,9 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 				print '</td><td valign="top" width="50%">';
 
 				// List of actions on element
-				include_once DOL_DOCUMENT_ROOT.'/core/class/html.formactions.class.php';
-				$formactions=new FormActions($db);
-				$somethingshown=$formactions->showactions($object,'order',$socid);
+//				include_once DOL_DOCUMENT_ROOT.'/core/class/html.formactions.class.php';
+//				$formactions=new FormActions($db);
+//				$somethingshown=$formactions->showactions($object,'order',$socid);
 
 				print '</td></tr></table>';
 			}
@@ -2398,7 +2428,6 @@ if ($action == 'send' && ! GETPOST('addfile') && ! GETPOST('removedfile') && ! G
 			}
 		}
 	}
-
 
 llxFooter();
 $db->close();
