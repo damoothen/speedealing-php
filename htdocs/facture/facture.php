@@ -30,9 +30,9 @@
  */
 
 require '../main.inc.php';
-require DOL_DOCUMENT_ROOT . '/compta/facture/class/facture.class.php';
+require DOL_DOCUMENT_ROOT . '/facture/class/facture.class.php';
 require DOL_DOCUMENT_ROOT . '/compta/paiement/class/paiement.class.php';
-require DOL_DOCUMENT_ROOT . '/core/modules/facture/modules_facture.php';
+require DOL_DOCUMENT_ROOT . '/facture/core/modules/facture/modules_facture.php';
 require DOL_DOCUMENT_ROOT . '/core/class/discount.class.php';
 require DOL_DOCUMENT_ROOT . '/core/class/html.formfile.class.php';
 require DOL_DOCUMENT_ROOT . '/core/class/html.formother.class.php';
