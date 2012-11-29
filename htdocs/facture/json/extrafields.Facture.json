@@ -60,19 +60,19 @@
                    "label": "BillStatusNotPaid",
                    "cssClass": "red-gradient"
                },
-                "TO_BILL": {
+                "STARTED": {
                    "enable": true,
-                   "label": "StatusOrderToBill2",
+                   "label": "BillStatusStarted",
                    "cssClass": "orange-gradient"
                },
-                "PROCESSED": {
+                "PAID": {
                    "enable": true,
-                   "label": "StatusOrderProcessed",
+                   "label": "BillStatusPaid",
                    "cssClass": "green-gradient"
                },
                 "CANCELED": {
                    "enable": true,
-                   "label": "StatusOrderCanceled",
+                   "label": "BillStatusCanceled",
                    "cssClass": "black-gradient"
                }
            }

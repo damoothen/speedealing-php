@@ -28,7 +28,7 @@ require_once DOL_DOCUMENT_ROOT .'/core/class/commonobject.class.php';
 /**     \class      Paiement
  *		\brief      Classe permettant la gestion des paiements des factures clients
  */
-class Paiement extends CommonObject
+class Paiement extends nosqlDocument
 {
     public $element='payment';
     public $table_element='paiement';
@@ -60,7 +60,7 @@ class Paiement extends CommonObject
 	 */
 	function __construct($db)
 	{
-		$this->db = $db;
+		parent::__construct($db);
 	}
 
 	/**
@@ -71,6 +71,7 @@ class Paiement extends CommonObject
 	 */
 	function fetch($id)
 	{
+        return parent::fetch($id);
 		$sql = 'SELECT p.rowid, p.datep as dp, p.amount, p.statut, p.fk_bank,';
 		$sql.= ' c.code as type_code, c.libelle as type_libelle,';
 		$sql.= ' p.num_paiement, p.note,';
@@ -154,8 +155,23 @@ class Paiement extends CommonObject
         	return -1;
         }
 
-		$this->db->begin();
-
+        $this->record();
+        
+        foreach ($this->amounts as $factureId => $amount) {
+            $f = new Facture($this->db);
+            $f->fetch($factureId);
+            $f->addPayment();
+        }
+        
+        // Appel des triggers
+        include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
+        $interface=new Interfaces($this->db);
+        $result=$interface->run_triggers('PAYMENT_CUSTOMER_CREATE',$this,$user,$langs,$conf);
+        if ($result < 0) { $error++; $this->errors=$interface->errors; }
+        // Fin appel triggers
+        
+        return 1;
+		
 		$sql = "INSERT INTO ".MAIN_DB_PREFIX."paiement (entity, datec, datep, amount, fk_paiement, num_paiement, note, fk_user_creat)";
 		$sql.= " VALUES (".$conf->entity.", '".$this->db->idate($now)."', '".$this->db->idate($this->datepaye)."', '".$totalamount."', ".$this->paiementid.", '".$this->num_paiement."', '".$this->db->escape($this->note)."', ".$user->id.")";
 

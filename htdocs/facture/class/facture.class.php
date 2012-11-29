@@ -708,8 +708,10 @@ class Facture extends nosqlDocument {
      */
     function fetch($rowid, $ref = '', $ref_ext = '', $ref_int = '') {
         global $conf;
-
-        return parent::fetch($rowid);
+        
+        $res = parent::fetch($rowid);
+        $this->getLinesArray();
+        return $res;
 
         if (empty($rowid) && empty($ref) && empty($ref_ext) && empty($ref_int))
             return -1;
@@ -2199,7 +2201,7 @@ class Facture extends nosqlDocument {
      */
     function getSumCreditNotesUsed() {
         require_once DOL_DOCUMENT_ROOT . '/core/class/discount.class.php';
-
+        return 0;
         $discountstatic = new DiscountAbsolute($this->db);
         $result = $discountstatic->getSumCreditNotesUsed($this);
         if ($result >= 0) {
@@ -2217,7 +2219,7 @@ class Facture extends nosqlDocument {
      */
     function getSumDepositsUsed() {
         require_once DOL_DOCUMENT_ROOT . '/core/class/discount.class.php';
-
+        return 0;
         $discountstatic = new DiscountAbsolute($this->db);
         $result = $discountstatic->getSumDepositsUsed($this);
         if ($result >= 0) {
@@ -2226,6 +2228,32 @@ class Facture extends nosqlDocument {
             $this->error = $discountstatic->error;
             return -1;
         }
+    }
+    
+    function getSommePaiement(){
+        $res = $this->getView("sumPaymentsPerFacture", array("key" => $this->id));
+        return (float)$res->rows[0]->value;
+    }
+    
+    function getPaymentsList(){
+        $res = $this->getView("paymentsPerFacture", array("key" => $this->id));
+        $payments = array();
+        foreach ($res->rows as $p) {
+            $payments[] = $p->value;
+        }
+        return $payments;
+    }
+    
+    function addPayment(){
+        $amountPaid = $this->getSommePaiement();
+        if ($amountPaid > 0) {
+            if ($amountPaid < $this->total_ttc)
+                $this->Status = "STARTED";
+            else if ($amountPaid == $this->total_ttc) 
+                $this->Status = "PAID";
+        }
+        $this->record();
+        return 1;
     }
 
     /**
@@ -2767,7 +2795,7 @@ class Facture extends nosqlDocument {
             return -1;
         }
     }
-
+    
     /**
      * 	Create an array of invoice lines
      *
