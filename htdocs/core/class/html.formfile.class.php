@@ -290,7 +290,7 @@ class FormFile
                 if (is_array($genallowed)) $modellist=$genallowed;
                 else
                 {
-                    include_once DOL_DOCUMENT_ROOT.'/core/modules/facture/modules_facture.php';
+                    include_once DOL_DOCUMENT_ROOT.'/facture/core/modules/facture/modules_facture.php';
                     $modellist=ModelePDFFactures::liste_modeles($this->db);
                 }
             }

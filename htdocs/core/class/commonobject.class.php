@@ -553,7 +553,7 @@ abstract class CommonObject
 
         $thirdparty = new Societe($this->db);
         $result=$thirdparty->fetch($this->socid);
-        $this->client = $thirdparty;  // deprecated
+        //$this->client = $thirdparty;  // deprecated
         $this->thirdparty = $thirdparty;
 
         // Use first price level if level not defined for third party

@@ -116,6 +116,8 @@ class Facture extends nosqlDocument {
 
         $this->fk_extrafields = new ExtraFields($db);
         $this->fk_extrafields->fetch(get_class($this));
+        
+        $this->no_save[] = 'thirdparty';
     }
 
     /**
@@ -1466,7 +1468,7 @@ class Facture extends nosqlDocument {
         dol_syslog(get_class($this) . '::validate user=' . $user->id . ', force_number=' . $force_number . ', idwarehouse=' . $idwarehouse, LOG_WARNING);
 
         // Check parameters
-        if (!$this->brouillon) {
+        if ($this->Status  != "DRAFT") {
             dol_syslog(get_class($this) . "::validate no draft status", LOG_WARNING);
             return 0;
         }
@@ -1477,7 +1479,22 @@ class Facture extends nosqlDocument {
             return -1;
         }
 
-        $this->db->begin();
+        $this->Status = "NOT_PAID";
+        $this->date_validation = $now;
+        
+        $this->record();
+        
+        // Appel des triggers
+        include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
+        $interface = new Interfaces($this->db);
+        $result = $interface->run_triggers('BILL_VALIDATE', $this, $user, $langs, $conf);
+        if ($result < 0) {
+            $error++;
+            $this->errors = $interface->errors;
+        }
+        // Fin appel triggers
+        
+        return 1;
 
         $this->fetch_thirdparty();
         $this->fetch_lines();
@@ -1774,13 +1791,7 @@ class Facture extends nosqlDocument {
             $pu = $pu_ttc;
         }
 
-        // Check parameters
-        if ($type < 0)
-            return -1;
-
-        if (!empty($this->brouillon)) {
-            $this->db->begin();
-
+        if ($this->Status == "DRAFT") {
             // Calcul du total TTC et de la TVA pour la ligne a partir de
             // qty, pu, remise_percent et txtva
             // TRES IMPORTANT: C'est au moment de l'insertion ligne qu'on doit stocker
@@ -1808,39 +1819,43 @@ class Facture extends nosqlDocument {
             }
 
             // Insert line
-            $this->line = new FactureLigne($this->db);
-            $this->line->fk_facture = $facid;
-            $this->line->label = $label;
-            $this->line->desc = $desc;
-            $this->line->qty = ($this->type == 2 ? abs($qty) : $qty); // For credit note, quantity is always positive and unit price negative
-            $this->line->tva_tx = $txtva;
-            $this->line->localtax1_tx = $txlocaltax1;
-            $this->line->localtax2_tx = $txlocaltax2;
-            $this->line->fk_product = $fk_product;
-            $this->line->product_type = $product_type;
-            $this->line->remise_percent = $remise_percent;
-            $this->line->subprice = ($this->type == 2 ? -abs($pu_ht) : $pu_ht); // For credit note, unit price always negative, always positive otherwise
-            $this->line->date_start = $date_start;
-            $this->line->date_end = $date_end;
-            $this->line->ventil = $ventil;
-            $this->line->rang = $rangtouse;
-            $this->line->info_bits = $info_bits;
-            $this->line->fk_remise_except = $fk_remise_except;
-            $this->line->total_ht = (($this->type == 2 || $qty < 0) ? -abs($total_ht) : $total_ht);  // For credit note and if qty is negative, total is negative
-            $this->line->total_tva = (($this->type == 2 || $qty < 0) ? -abs($total_tva) : $total_tva);
-            $this->line->total_localtax1 = (($this->type == 2 || $qty < 0) ? -abs($total_localtax1) : $total_localtax1);
-            $this->line->total_localtax2 = (($this->type == 2 || $qty < 0) ? -abs($total_localtax2) : $total_localtax2);
-            $this->line->total_ttc = (($this->type == 2 || $qty < 0) ? -abs($total_ttc) : $total_ttc);
-            $this->line->special_code = $special_code;
-            $this->line->fk_parent_line = $fk_parent_line;
-            $this->line->origin = $origin;
-            $this->line->origin_id = $origin_id;
+            $line = new FactureLigne($this->db);
+            $line->fk_facture = $facid;
+            $line->label = $label;
+            $line->description = $desc;
+            $line->qty = ($this->type == 2 ? abs($qty) : $qty); // For credit note, quantity is always positive and unit price negative
+            $line->tva_tx = $txtva;
+            $line->localtax1_tx = $txlocaltax1;
+            $line->localtax2_tx = $txlocaltax2;
+            $line->fk_product = $fk_product;
+            $line->product_type = $product_type;
+            $line->remise_percent = $remise_percent;
+            $line->subprice = ($this->type == 2 ? -abs($pu_ht) : $pu_ht); // For credit note, unit price always negative, always positive otherwise
+            $line->date_start = $date_start;
+            $line->date_end = $date_end;
+            $line->ventil = $ventil;
+            $line->rang = $rangtouse;
+            $line->info_bits = $info_bits;
+            $line->fk_remise_except = $fk_remise_except;
+            $line->total_ht = (($this->type == 2 || $qty < 0) ? -abs($total_ht) : $total_ht);  // For credit note and if qty is negative, total is negative
+            $line->total_tva = (($this->type == 2 || $qty < 0) ? -abs($total_tva) : $total_tva);
+            $line->total_localtax1 = (($this->type == 2 || $qty < 0) ? -abs($total_localtax1) : $total_localtax1);
+            $line->total_localtax2 = (($this->type == 2 || $qty < 0) ? -abs($total_localtax2) : $total_localtax2);
+            $line->total_ttc = (($this->type == 2 || $qty < 0) ? -abs($total_ttc) : $total_ttc);
+            $line->special_code = $special_code;
+            $line->fk_parent_line = $fk_parent_line;
+            $line->origin = $origin;
+            $line->origin_id = $origin_id;
 
             // infos marge
-            $this->line->fk_fournprice = $fk_fournprice;
-            $this->line->pa_ht = $pa_ht;
+            $line->fk_fournprice = $fk_fournprice;
+            $line->pa_ht = $pa_ht;
 
-            $result = $this->line->insert();
+            $line->record();
+            $this->update_price();
+            
+            return 1;
+            
             if ($result > 0) {
                 // Reorder if child line
                 if (!empty($fk_parent_line))
@@ -1894,8 +1909,7 @@ class Facture extends nosqlDocument {
 
         dol_syslog(get_class($this) . "::updateline $rowid, $desc, $pu, $qty, $remise_percent, $date_start, $date_end, $txtva, $txlocaltax1, $txlocaltax2, $price_base_type, $info_bits, $type, $fk_parent_line", LOG_DEBUG);
 
-        if ($this->brouillon) {
-            $this->db->begin();
+        if ($this->Status == "DRAFT") {
 
             // Clean parameters
             if (empty($qty))
@@ -1938,50 +1952,54 @@ class Facture extends nosqlDocument {
             $price = price2num($price);
 
             // Update line into database
-            $this->line = new FactureLigne($this->db);
+            $line = new FactureLigne($this->db);
+            $line->fetch($rowid);
 
             // Stock previous line records
-            $staticline = new FactureLigne($this->db);
-            $staticline->fetch($rowid);
-            $this->line->oldline = $staticline;
+//            $staticline = new FactureLigne();
+//            $staticline->fetch($rowid);
+//            $line->oldline = $staticline;
 
             // Reorder if fk_parent_line change
             if (!empty($fk_parent_line) && !empty($staticline->fk_parent_line) && $fk_parent_line != $staticline->fk_parent_line) {
-                $rangmax = $this->line_max($fk_parent_line);
-                $this->line->rang = $rangmax + 1;
+                $rangmax = $line_max($fk_parent_line);
+                $line->rang = $rangmax + 1;
             }
 
-            $this->line->rowid = $rowid;
-            $this->line->label = $label;
-            $this->line->desc = $desc;
-            $this->line->qty = ($this->type == 2 ? abs($qty) : $qty); // For credit note, quantity is always positive and unit price negative
-            $this->line->tva_tx = $txtva;
-            $this->line->localtax1_tx = $txlocaltax1;
-            $this->line->localtax2_tx = $txlocaltax2;
-            $this->line->remise_percent = $remise_percent;
-            $this->line->subprice = ($this->type == 2 ? -abs($pu_ht) : $pu_ht); // For credit note, unit price always negative, always positive otherwise
-            $this->line->date_start = $date_start;
-            $this->line->date_end = $date_end;
-            $this->line->total_ht = (($this->type == 2 || $qty < 0) ? -abs($total_ht) : $total_ht);  // For credit note and if qty is negative, total is negative
-            $this->line->total_tva = (($this->type == 2 || $qty < 0) ? -abs($total_tva) : $total_tva);
-            $this->line->total_localtax1 = (($this->type == 2 || $qty < 0) ? -abs($total_localtax1) : $total_localtax1);
-            $this->line->total_localtax2 = (($this->type == 2 || $qty < 0) ? -abs($total_localtax2) : $total_localtax2);
-            $this->line->total_ttc = (($this->type == 2 || $qty < 0) ? -abs($total_ttc) : $total_ttc);
-            $this->line->info_bits = $info_bits;
-            $this->line->special_code = 0; // To remove special_code=3 coming from proposals copy
-            $this->line->product_type = $type;
-            $this->line->fk_parent_line = $fk_parent_line;
-            $this->line->skip_update_total = $skip_update_total;
+            $line->label = $label;
+            $line->description = $desc;
+            $line->qty = ($this->type == 2 ? abs($qty) : $qty); // For credit note, quantity is always positive and unit price negative
+            $line->tva_tx = $txtva;
+            $line->localtax1_tx = $txlocaltax1;
+            $line->localtax2_tx = $txlocaltax2;
+            $line->remise_percent = $remise_percent;
+            $line->subprice = ($this->type == 2 ? -abs($pu_ht) : $pu_ht); // For credit note, unit price always negative, always positive otherwise
+            $line->date_start = $date_start;
+            $line->date_end = $date_end;
+            $line->total_ht = (($this->type == 2 || $qty < 0) ? -abs($total_ht) : $total_ht);  // For credit note and if qty is negative, total is negative
+            $line->total_tva = (($this->type == 2 || $qty < 0) ? -abs($total_tva) : $total_tva);
+            $line->total_localtax1 = (($this->type == 2 || $qty < 0) ? -abs($total_localtax1) : $total_localtax1);
+            $line->total_localtax2 = (($this->type == 2 || $qty < 0) ? -abs($total_localtax2) : $total_localtax2);
+            $line->total_ttc = (($this->type == 2 || $qty < 0) ? -abs($total_ttc) : $total_ttc);
+            $line->info_bits = $info_bits;
+            $line->special_code = 0; // To remove special_code=3 coming from proposals copy
+            $line->product_type = $type;
+            $line->fk_parent_line = $fk_parent_line;
+            $line->skip_update_total = $skip_update_total;
 
             // infos marge
-            $this->line->fk_fournprice = $fk_fournprice;
-            $this->line->pa_ht = $pa_ht;
+            $line->fk_fournprice = $fk_fournprice;
+            $line->pa_ht = $pa_ht;
 
             // A ne plus utiliser
             //$this->line->price=$price;
             //$this->line->remise=$remise;
+            
+            $line->record();
+            $this->update_price();
+            
+            return 1;
 
-            $result = $this->line->update();
             if ($result > 0) {
                 // Reorder if child line
                 if (!empty($fk_parent_line))
@@ -2013,11 +2031,18 @@ class Facture extends nosqlDocument {
 
         dol_syslog(get_class($this) . "::deleteline rowid=" . $rowid, LOG_DEBUG);
 
-        if (!$this->brouillon) {
+        if ($this->Status != "DRAFT") {
             $this->error = 'ErrorBadStatus';
             return -1;
         }
-
+        
+        $line = new FactureLigne($this->db);
+        $line->fetch($rowid);
+        $line->delete();
+        $this->update_price();
+        
+        return 1;
+        
         $this->db->begin();
 
         // Libere remise liee a ligne de facture
@@ -2749,6 +2774,16 @@ class Facture extends nosqlDocument {
      * 	@return int		>0 if OK, <0 if KO
      */
     function getLinesArray() {
+        
+        $this->lines = array();
+        $result = $this->getView("linesPerFacture", array("key" => $this->id));
+        foreach ($result->rows as $res) {
+            $l = new FactureLigne($this->db);
+            $l->fetch($res->value->_id);
+            $this->lines[] = $l;
+        }
+        return 1;
+        
         $sql = 'SELECT l.rowid, l.label as custom_label, l.description, l.fk_product, l.product_type, l.qty, l.tva_tx,';
         $sql.= ' l.fk_remise_except, l.localtax1_tx, l.localtax2_tx,';
         $sql.= ' l.remise_percent, l.subprice, l.info_bits, l.rang, l.special_code, l.fk_parent_line,';
@@ -2875,6 +2910,31 @@ class Facture extends nosqlDocument {
         global $langs;
         return $langs->trans($this->fk_extrafields->fields->{$field}->values->{$this->$field}->label);
     }
+    
+    function update_price($exclspec = 0, $roundingadjust = -1, $nodatabaseupdate = 0) {
+
+        include_once DOL_DOCUMENT_ROOT . '/core/lib/price.lib.php';
+
+        $this->total_ht = 0;
+        $this->total_localtax1 = 0;
+        $this->total_localtax2 = 0;
+        $this->total_tva = 0;
+        $this->total_ttc = 0;
+
+       $this->getLinesArray();
+        
+        foreach ($this->lines as $line) {
+            $this->total_ht += $line->total_ht;
+            $this->total_localtax1 += $line->total_localtax1;
+            $this->total_localtax2 += $line->totaltaxt1;
+            $this->total_tva += $line->total_tva;
+            $this->total_ttc += $line->total_ttc;
+        }
+
+        $this->record();
+
+        return 1;
+    }
 
 }
 
@@ -2883,7 +2943,7 @@ class Facture extends nosqlDocument {
  * 	\brief      	Classe permettant la gestion des lignes de factures
  * 					Gere des lignes de la table llx_facturedet
  */
-class FactureLigne {
+class FactureLigne extends nosqlDocument {
 
     var $db;
     var $error;
@@ -2950,7 +3010,7 @@ class FactureLigne {
      */
 
     function __construct($db) {
-        $this->db = $db;
+        parent::__construct($db);
     }
 
     /**
@@ -2960,6 +3020,7 @@ class FactureLigne {
      * 	@return	int					<0 if KO, >0 if OK
      */
     function fetch($rowid) {
+        return parent::fetch($rowid);
         $sql = 'SELECT fd.rowid, fd.fk_facture, fd.fk_parent_line, fd.fk_product, fd.product_type, fd.label as custom_label, fd.description, fd.price, fd.qty, fd.tva_tx,';
         $sql.= ' fd.localtax1_tx, fd. localtax2_tx, fd.remise, fd.remise_percent, fd.fk_remise_except, fd.subprice,';
         $sql.= ' fd.date_start as date_start, fd.date_end as date_end, fd.fk_product_fournisseur_price as fk_fournprice, fd.buy_price_ht as pa_ht,';
@@ -3286,6 +3347,9 @@ class FactureLigne {
         global $conf, $langs, $user;
 
         $error = 0;
+        $this->deleteDoc();
+        
+        return 1;
 
         $this->db->begin();
 

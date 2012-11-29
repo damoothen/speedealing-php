@@ -55,9 +55,9 @@
                    "label": "BillStatusDraft",
                    "cssClass": "gray-gradient"
                },
-                "VALIDATED": {
+                "NOT_PAID": {
                    "enable": true,
-                   "label": "StatusOrderValidated",
+                   "label": "BillStatusNotPaid",
                    "cssClass": "red-gradient"
                },
                 "TO_BILL": {
