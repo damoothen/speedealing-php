@@ -161,7 +161,7 @@ class Facture extends nosqlDocument {
 
         $this->ref = $this->getNextNumRef($soc);
         $now = dol_now();
-                
+
         $this->record();
         // Appel des triggers
         include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
@@ -200,7 +200,6 @@ class Facture extends nosqlDocument {
 //                $this->mode_reglement_id = 0;
 //            $this->brouillon = 1;
 //        }
-        
         // Define due date if not already defined
         $datelim = (empty($forceduedate) ? $this->calculate_date_lim_reglement() : $forceduedate);
 
@@ -709,7 +708,7 @@ class Facture extends nosqlDocument {
         global $conf;
 
         return parent::fetch($rowid);
-        
+
         if (empty($rowid) && empty($ref) && empty($ref_ext) && empty($ref_int))
             return -1;
 
@@ -909,7 +908,7 @@ class Facture extends nosqlDocument {
 
         // Clean parameters
         if (empty($this->type))
-            $this->type = 0;
+            $this->type = "INVOICE_STANDARD";
         if (isset($this->facnumber))
             $this->facnumber = trim($this->ref);
         if (isset($this->ref_client))
@@ -930,6 +929,27 @@ class Facture extends nosqlDocument {
             $this->modelpdf = trim($this->modelpdf);
         if (isset($this->import_key))
             $this->import_key = trim($this->import_key);
+
+        $soc = new Societe($db);
+        $soc->fetch($this->socid);
+        if ($this->client->id != $soc->id) {
+            $this->client->id = $soc->id;
+            $this->client->name = $soc->name;
+        }
+        
+        $this->record();
+        if (!$notrigger) {
+            // Call triggers
+            include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
+            $interface = new Interfaces($this->db);
+            $result = $interface->run_triggers('BILL_MODIFY', $this, $user, $langs, $conf);
+            if ($result < 0) {
+                $error++;
+                $this->errors = $interface->errors;
+            }
+        }
+        // End call triggers
+        return 1;
 
         // Check parameters
         // Put here code to add control on parameters values
@@ -1118,7 +1138,8 @@ class Facture extends nosqlDocument {
         // TODO Test if there is at least on payment. If yes, refuse to delete.
 
         $error = 0;
-        $this->db->begin();
+        
+        $this->deleteDoc();
 
         if (!$error && !$notrigger) {
             // Appel des triggers
@@ -1131,6 +1152,8 @@ class Facture extends nosqlDocument {
             }
             // Fin appel triggers
         }
+        
+        return 1;
 
         if (!$error) {
             // Delete linked object
@@ -1227,36 +1250,15 @@ class Facture extends nosqlDocument {
      * 	@return     date     			       	Date limite de reglement si ok, <0 si ko
      */
     function calculate_date_lim_reglement($cond_reglement = 0) {
-        if (!$cond_reglement)
+        
+        if (empty($cond_reglement))
             $cond_reglement = $this->cond_reglement_code;
-        if (!$cond_reglement)
-            $cond_reglement = $this->cond_reglement_id;
+       
+        $data = $this->fk_extrafields->fields->cond_reglement_code->values->{$cond_reglement};
 
-        $cdr_nbjour = 0;
-        $cdr_fdm = 0;
-        $cdr_decalage = 0;
-
-        $sqltemp = 'SELECT c.fdm,c.nbjour,c.decalage';
-        $sqltemp.= ' FROM ' . MAIN_DB_PREFIX . 'c_payment_term as c';
-        if (is_numeric($cond_reglement))
-            $sqltemp.= " WHERE c.rowid=" . $cond_reglement;
-        else
-            $sqltemp.= " WHERE c.code='" . $this->db->escape($cond_reglement) . "'";
-
-        dol_syslog(get_class($this) . '::calculate_date_lim_reglement sql=' . $sqltemp);
-        $resqltemp = $this->db->query($sqltemp);
-        if ($resqltemp) {
-            if ($this->db->num_rows($resqltemp)) {
-                $obj = $this->db->fetch_object($resqltemp);
-                $cdr_nbjour = $obj->nbjour;
-                $cdr_fdm = $obj->fdm;
-                $cdr_decalage = $obj->decalage;
-            }
-        } else {
-            $this->error = $this->db->error();
-            return -1;
-        }
-        $this->db->free($resqltemp);
+        $cdr_nbjour = $data->nbjour;
+        $cdr_fdm = $data->fdm;
+        $cdr_decalage = $data->decalage;
 
         /* Definition de la date limite */
 
@@ -2229,7 +2231,7 @@ class Facture extends nosqlDocument {
         foreach ($conf->file->dol_document_root as $dirroot) {
             $dir = $dirroot . "/facture/core/modules/facture/";
             // Load file with numbering class (if found)
-            $mybool|=@include_once $dir.$file;
+            $mybool|=@include_once $dir . $file;
         }
 
         // For compatibility
@@ -2806,6 +2808,72 @@ class Facture extends nosqlDocument {
             dol_syslog("Error sql=" . $sql . ", error=" . $this->error, LOG_ERR);
             return -1;
         }
+    }
+    
+    /**
+     * 	Create standard invoice in database
+     *  Note: this->ref can be set or empty. If empty, we will use "(PROV)"
+     *
+     * 	@param	User	$user      		Object user that create
+     * 	@param  int		$notrigger		1=Does not execute triggers, 0 otherwise
+     * 	@param	int		$forceduedate	1=Do not recalculate due date from payment condition but force it with value
+     * 	@return	int						<0 if KO, >0 if OK
+     */
+    function createStandardInvoice($user, $notrigger = 0, $forceduedate = 0) {
+        global $langs, $conf, $mysoc;
+        $error = 0;
+
+        // Clean parameters
+        if (empty($this->type))
+            $this->type = "INVOICE_STANDARD";
+        $this->ref_client = trim($this->ref_client);
+        $this->note = (isset($this->note) ? trim($this->note) : trim($this->note_private)); // deprecated
+        $this->note_private = (isset($this->note_private) ? trim($this->note_private) : trim($this->note));
+        $this->note_public = trim($this->note_public);
+        $this->Status = "DRAFT";
+
+        dol_syslog(get_class($this) . "::create user=" . $user->id);
+
+        // Check parameters
+        if (empty($this->date) || empty($user->id)) {
+            $this->error = "ErrorBadParameter";
+            dol_syslog(get_class($this) . "::create Try to create an invoice with an empty parameter (user, date, ...)", LOG_ERR);
+            return -3;
+        }
+        
+        $this->date_lim_reglement = $this->calculate_date_lim_reglement();
+        
+        $soc = new Societe($this->db);
+        $result = $soc->fetch($this->socid);
+        if ($result < 0) {
+            $this->error = "Failed to fetch company";
+            dol_syslog(get_class($this) . "::create " . $this->error, LOG_ERR);
+            return -2;
+        }
+        $this->client = new stdClass();
+        $this->client->id = $soc->id;
+        $this->client->name = $soc->name;
+
+        $this->ref = $this->getNextNumRef($soc);
+        $now = dol_now();
+
+        $this->record();
+        // Appel des triggers
+        include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
+        $interface = new Interfaces($this->db);
+        $result = $interface->run_triggers('BILL_CREATE', $this, $user, $langs, $conf);
+        if ($result < 0) {
+            $error++;
+            $this->errors = $interface->errors;
+        }
+        // Fin appel triggers
+        return $this->id;
+        
+    }
+    
+    public function getExtraFieldLabel($field) {
+        global $langs;
+        return $langs->trans($this->fk_extrafields->fields->{$field}->values->{$this->$field}->label);
     }
 
 }

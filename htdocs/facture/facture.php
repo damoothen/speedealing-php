@@ -1012,7 +1012,9 @@ else if (($action == 'addline' || $action == 'addline_predef') && $user->rights-
             $action = '';
         }
     }
-} else if ($action == 'updateligne' && $user->rights->facture->creer && $_POST['save'] == $langs->trans('Save')) {
+} 
+
+else if ($action == 'updateligne' && $user->rights->facture->creer && $_POST['save'] == $langs->trans('Save')) {
     if (!$object->fetch($id) > 0)
         dol_print_error($db);
     $object->fetch_thirdparty();
