@@ -19,10 +19,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-require("../../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT . "/user/class/usergroup.class.php");
-require_once(DOL_DOCUMENT_ROOT . "/core/lib/usergroups.lib.php");
-require_once(DOL_DOCUMENT_ROOT . "/user/class/userdatabase.class.php");
+require '../../main.inc.php';
+require_once DOL_DOCUMENT_ROOT . '/user/class/usergroup.class.php';
+require_once DOL_DOCUMENT_ROOT . '/core/lib/usergroups.lib.php';
+require_once DOL_DOCUMENT_ROOT . '/user/class/userdatabase.class.php';
 
 // Defini si peux lire/modifier utilisateurs et permisssions
 $canreadperms = ($user->admin || $user->rights->user->user->lire);
@@ -103,6 +103,12 @@ if ($action == 'add_right' && $caneditperms) {
     try {
         $editgroup->load($id);
 
+        // For avoid error in strict mode
+        if (! is_object($editgroup->values))
+        	$editgroup->values = new stdClass();
+        if (! is_object($editgroup->values->rights))
+        	$editgroup->values->rights = new stdClass();
+
         $editgroup->values->rights->$_GET['pid'] = true;
         $editgroup->record();
     } catch (Exception $e) {
@@ -152,7 +158,8 @@ if ($action == 'create') {
     print '<td class="valeur"><input size="30" type="text" name="nom" value=""></td></tr>';
 
     print "<tr>" . '<td valign="top">' . $langs->trans("Note") . '</td><td>';
-    require_once(DOL_DOCUMENT_ROOT . "/core/class/doleditor.class.php");
+    if (! class_exists('DolEditor'))
+    	require DOL_DOCUMENT_ROOT . '/core/class/doleditor.class.php';
     $doleditor = new DolEditor('note', '', '', 240, 'dolibarr_notes', '', false, true, $conf->global->FCKEDITOR_ENABLE_SOCIETE, ROWS_8, 90);
     $doleditor->Create();
     print "</td></tr>\n";
@@ -181,7 +188,7 @@ if ($action == 'create') {
         print_fiche_titre($title);
         print '<div class="with-padding">';
         print '<div class="columns">';
-        
+
         /*
          * Fiche en mode visu
          */
@@ -233,19 +240,24 @@ if ($action == 'create') {
             print '<thead>';
             print '<tr>';
             print '<th>' . $langs->trans("Login") . '</th>';
+            $obj->aoColumns[$i] = new stdClass();
             $obj->aoColumns[$i]->mDataProp = "";
             $i++;
             print '<th>' . $langs->trans("Lastname") . '</th>';
+            $obj->aoColumns[$i] = new stdClass();
             $obj->aoColumns[$i]->mDataProp = "";
             $i++;
             print '<th>' . $langs->trans("Firstname") . '</th>';
+            $obj->aoColumns[$i] = new stdClass();
             $obj->aoColumns[$i]->mDataProp = "";
             $i++;
             print '<th>' . $langs->trans("Status") . '</th>';
+            $obj->aoColumns[$i] = new stdClass();
             $obj->aoColumns[$i]->mDataProp = "";
             $obj->aoColumns[$i]->sClass = "center";
             $i++;
             print '<th>' . $langs->trans('Action') . '</th>';
+            $obj->aoColumns[$i] = new stdClass();
             $obj->aoColumns[$i]->mDataProp = "";
             $obj->aoColumns[$i]->sClass = "center content_actions";
             $i++;
@@ -312,6 +324,7 @@ if ($action == 'create') {
 
             print'<th>';
             print'</th>';
+            $obj->aoColumns[$i] = new stdClass();
             $obj->aoColumns[$i]->mDataProp = "id";
             $obj->aoColumns[$i]->sDefaultContent = "";
             $obj->aoColumns[$i]->bVisible = false;
@@ -320,6 +333,7 @@ if ($action == 'create') {
             print'<th class="essential">';
             print $langs->trans("Module");
             print'</th>';
+            $obj->aoColumns[$i] = new stdClass();
             $obj->aoColumns[$i]->mDataProp = "name";
             $obj->aoColumns[$i]->sDefaultContent = "";
             $obj->aoColumns[$i]->sWidth = "18em";
@@ -328,6 +342,7 @@ if ($action == 'create') {
             print'<th>';
             print $langs->trans("Permission");
             print'</th>';
+            $obj->aoColumns[$i] = new stdClass();
             $obj->aoColumns[$i]->mDataProp = "desc";
             $obj->aoColumns[$i]->sDefaultContent = "";
             $obj->aoColumns[$i]->bVisible = true;
@@ -336,6 +351,7 @@ if ($action == 'create') {
             print'<th class="essential">';
             print $langs->trans("Enabled");
             print'</th>';
+            $obj->aoColumns[$i] = new stdClass();
             $obj->aoColumns[$i]->mDataProp = "Status";
             $obj->aoColumns[$i]->sDefaultContent = "false";
             $obj->aoColumns[$i]->sClass = "center";
@@ -365,8 +381,8 @@ if ($action == 'create') {
                                 nTrs[i].parentNode.insertBefore( nGroup, nTrs[i] );
                                 sLastGroup = sGroup;
                             }
-                    
-                    
+
+
                 }
 	}";
 
@@ -447,7 +463,8 @@ if ($action == 'create') {
 
             print '<tr><td width="25%" valign="top">' . $langs->trans("Note") . '</td>';
             print '<td class="valeur">';
-            require_once(DOL_DOCUMENT_ROOT . "/core/class/doleditor.class.php");
+            if (! class_exists('DolEditor'))
+            	require DOL_DOCUMENT_ROOT . '/core/class/doleditor.class.php';
             $doleditor = new DolEditor('note', $object->note, '', 240, 'dolibarr_notes', '', true, false, $conf->global->FCKEDITOR_ENABLE_SOCIETE, ROWS_8, 90);
             $doleditor->Create();
             print '</td>';

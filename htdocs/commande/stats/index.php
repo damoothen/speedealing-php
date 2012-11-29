@@ -256,7 +256,7 @@ print '<td align="center" valign="top">';
 	print '</td></tr>';
 	// User
 	print '<tr><td>'.$langs->trans("User").'/'.$langs->trans("SalesRepresentative").'</td><td>';
-	print $form->select_users($userid,'userid',1);
+	//print $form->select_users($userid,'userid',1); // FIXME Where is this method ?
 	print '</td></tr>';
 	// Year
 	print '<tr><td>'.$langs->trans("Year").'</td><td>';

@@ -575,7 +575,7 @@ class Commande extends nosqlDocument {
                 }
             }
         }
-        
+
         if ($error > 0) {
             return -1;
         } else {
@@ -1466,10 +1466,10 @@ class Commande extends nosqlDocument {
     }
 
 //    function fetch_thirdparty() {
-//        
+//
 //        $soc = new Societe($db);
 //        $soc->fetch($this->socid);
-//                
+//
 //        $this->thirdparty = new stdClass();
 //        $this->thirdparty->name = $soc->name;
 //        $this->thirdparty->address = $soc->address;
@@ -2097,7 +2097,7 @@ class Commande extends nosqlDocument {
 
         $this->Status = "PROCESSED";
         $this->record();
-            
+
         // Appel des triggers
         include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
         $interface = new Interfaces($this->db);
@@ -2109,7 +2109,7 @@ class Commande extends nosqlDocument {
         // Fin appel triggers
 
         return 1;
-        
+
 //        $this->db->begin();
 //
 //        $sql = 'UPDATE ' . MAIN_DB_PREFIX . 'commande SET facture = 1';
@@ -2812,7 +2812,8 @@ class Commande extends nosqlDocument {
 
     public function getExtraFieldLabel($field) {
         global $langs;
-        return $langs->trans($this->fk_extrafields->fields->{$field}->values->{$this->$field}->label);
+        if (! empty($field) && ! empty($this->$field)) // for avoid error
+        	return $langs->trans($this->fk_extrafields->fields->{$field}->values->{$this->$field}->label);
     }
 
     function update_price($exclspec = 0, $roundingadjust = -1, $nodatabaseupdate = 0) {
@@ -2951,7 +2952,7 @@ class Commande extends nosqlDocument {
                         // create the chart when all data is loaded
                         function createChart() {
                             var chart;
-                                                                                                                                                                                                                                                                                                                                                                                                                                
+
                             chart = new Highcharts.Chart({
                                 chart: {
                                     renderTo: "pie-status",
@@ -3092,7 +3093,7 @@ class Commande extends nosqlDocument {
                             // create the chart when all data is loaded
                             function createChart() {
                                 var chart;
-                                                                                                                                                                                                                                                                                                                                                                                                                                
+
                                 chart = new Highcharts.Chart({
                                     chart: {
                                         renderTo: 'bar-status',

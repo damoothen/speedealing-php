@@ -21,17 +21,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT . "/user/class/user.class.php");
-require_once(DOL_DOCUMENT_ROOT . "/user/class/usergroup.class.php");
-require_once(DOL_DOCUMENT_ROOT . "/contact/class/contact.class.php");
-require_once(DOL_DOCUMENT_ROOT . "/core/lib/images.lib.php");
-require_once(DOL_DOCUMENT_ROOT . "/core/lib/usergroups.lib.php");
-if ($conf->ldap->enabled)
-    require_once(DOL_DOCUMENT_ROOT . "/core/class/ldap.class.php");
-if ($conf->adherent->enabled)
-    require_once(DOL_DOCUMENT_ROOT . "/adherent/class/adherent.class.php");
-if (!empty($conf->multicompany->enabled))
+require '../main.inc.php';
+require_once DOL_DOCUMENT_ROOT . '/user/class/user.class.php';
+require_once DOL_DOCUMENT_ROOT . '/user/class/usergroup.class.php';
+require_once DOL_DOCUMENT_ROOT . '/contact/class/contact.class.php';
+require_once DOL_DOCUMENT_ROOT . '/core/lib/images.lib.php';
+require_once DOL_DOCUMENT_ROOT . '/core/lib/usergroups.lib.php';
+if (! empty($conf->ldap->enabled))
+    require_once DOL_DOCUMENT_ROOT . '/core/class/ldap.class.php';
+if (! empty($conf->adherent->enabled))
+    require_once DOL_DOCUMENT_ROOT . '/adherent/class/adherent.class.php';
+if (! empty($conf->multicompany->enabled))
     dol_include_once("/multicompany/class/actions_multicompany.class.php");
 
 $id = GETPOST('id');
@@ -84,6 +84,12 @@ $fuser = new User($db);
 if ($action == 'add_right' && $caneditperms) {
     try {
         $fuser->load($id);
+
+        // For avoid error in strict mode
+        if (! is_object($fuser->values))
+        	$fuser->values = new stdClass();
+        if (! is_object($fuser->values->rights))
+        	$fuser->values->rights = new stdClass();
 
         $fuser->values->rights->$_GET['pid'] = true;
         $fuser->record();
