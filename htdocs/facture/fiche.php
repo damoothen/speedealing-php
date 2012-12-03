@@ -78,8 +78,17 @@ $hidedetails = (GETPOST('hidedetails', 'int') ? GETPOST('hidedetails', 'int') : 
 $hidedesc = (GETPOST('hidedesc', 'int') ? GETPOST('hidedesc', 'int') : (!empty($conf->global->MAIN_GENERATE_DOCUMENTS_HIDE_DESC) ? 1 : 0));
 $hideref = (GETPOST('hideref', 'int') ? GETPOST('hideref', 'int') : (!empty($conf->global->MAIN_GENERATE_DOCUMENTS_HIDE_REF) ? 1 : 0));
 
-
 $object = new Facture($db);
+$societe = new Societe($db);
+
+if (!empty($socid)) {
+    $societe->fetch($socid);
+} else {
+    $result = $societe->getView('list');
+    if (!empty($result->rows))
+        $socid = $result->rows[0]->value->_id;
+}
+
 $title = $langs->trans("Bill");
 
 // Load object
@@ -92,14 +101,58 @@ include_once DOL_DOCUMENT_ROOT . '/core/class/hookmanager.class.php';
 $hookmanager = new HookManager($db);
 $hookmanager->initHooks(array('invoicecard'));
 
-
 /* Actions ****************************************************************** */
 
 
 if ($action == 'create') {
     $title = $langs->trans('NewBill');
-} else if ($action == 'add' && $user->rights->facture->creer) {
+} 
 
+else if ($action == 'add' && $user->rights->facture->creer) {
+
+    // Replacement invoice
+    if ($_POST['type'] == "INVOICE_REPLACEMENT") {
+
+        $datefacture = dol_mktime(12, 0, 0, $_POST['remonth'], $_POST['reday'], $_POST['reyear']);
+        if (empty($datefacture)) {
+            $error++;
+            $mesgs[] = '<div class="error">' . $langs->trans("ErrorFieldRequired", $langs->trans("Date")) . '</div>';
+        }
+
+        if (empty($_POST['fac_replacement'])) {
+            $error++;
+            $mesgs[] = '<div class="error">' . $langs->trans("ErrorFieldRequired", $langs->trans("ReplaceInvoice")) . '</div>';
+        }
+
+        if (!$error) {
+            // This is a replacement invoice
+            $result = $object->fetch($_POST['fac_replacement']);
+            $object->fetch_thirdparty();
+
+            $object->date = $datefacture;
+            $object->note_public = trim($_POST['note_public']);
+            $object->note = trim($_POST['note']);
+            $object->ref_client = $_POST['ref_client'];
+            $object->ref_int = $_POST['ref_int'];
+            $object->modelpdf = $_POST['model'];
+            $object->fk_project = $_POST['projectid'];
+            $object->cond_reglement_code = $_POST['cond_reglement_code'];
+            $object->mode_reglement_code = $_POST['mode_reglement_code'];
+            $object->remise_absolue = $_POST['remise_absolue'];
+            $object->remise_percent = $_POST['remise_percent'];
+
+            // Proprietes particulieres a facture de remplacement
+            $object->fk_facture_source = $_POST['fac_replacement'];
+            $object->type = "INVOICE_REPLACEMENT";
+            
+            echo '<pre>' . print_r($object, true) . '</pre>';die;
+
+            $id = $object->createFromCurrent($user);
+            if ($id <= 0)
+                $mesgs[] = $object->error;
+        }
+    }
+    
     // Standard or deposit or proforma invoice
     if (($_POST['type'] == "INVOICE_STANDARD" || $_POST['type'] == "INVOICE_DEPOSIT" || $_POST['type'] == 4) && $_POST['fac_rec'] <= 0) {
 
@@ -918,11 +971,18 @@ print '<div class="columns" >';
 
 
 if ($action == 'create' && $user->rights->facture->creer) {
-
+    
+    print '<script type="text/javascript" >
+            $(document).ready(function(){
+                $("#socid").change(function(){
+                    window.location = "' . $_SERVER['PHP_SELF'] . '?action=create&socid=" + $(this).val();
+                });
+            });
+        </script>';
 
     print start_box($title, "twelve", $object->fk_extrafields->ico, false);
 
-    print '<form name="add" action="' . $_SERVER["PHP_SELF"] . '" method="POST">';
+    print '<form id="form-add" name="add" action="' . $_SERVER["PHP_SELF"] . '?action=add" method="POST">';
     print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
     print '<input type="hidden" name="action" value="add">';
     print '<input name="facnumber" type="hidden" value="provisoire">';
@@ -934,7 +994,7 @@ if ($action == 'create' && $user->rights->facture->creer) {
 
     // Tiers
     print '<tr><td class="fieldrequired">' . $langs->trans('Customer') . '</td><td colspan="2">';
-    print $form->select_company($object->socid, "socid");
+    print $form->select_company($socid, "socid");
     print '</td>';
     print '</tr>' . "\n";
 
@@ -969,8 +1029,9 @@ if ($action == 'create' && $user->rights->facture->creer) {
     }
 
     // Replacement
+    $options = $object->selectReplaceableInvoiceOptions($socid);
     print '<tr height="18"><td valign="middle">';
-    print '<input type="radio" name="type" value="1"' . (GETPOST('type') == 1 ? ' checked="checked"' : '');
+    print '<input type="radio" id="fac_replacement_radio" name="type" value="INVOICE_REPLACEMENT"' . (GETPOST('type') == "INVOICE_REPLACEMENT" ? ' checked="checked"' : '');
     if (!$options)
         print ' disabled="disabled"';
     print '>';
@@ -1089,11 +1150,12 @@ if ($action == 'create' && $user->rights->facture->creer) {
     print '</table>';
 
     // Button "Create Draft"
-    print '<br><center><input type="submit" class="button" name="bouton" value="' . $langs->trans('CreateDraft') . '"></center>';
+    print '<br><center><input type="submit" id="submit-form-add" class="button" name="bouton" value="' . $langs->trans('CreateDraft') . '"></center>';
 
     print "</form>\n";
 
     print end_box();
+    
 }
 
 

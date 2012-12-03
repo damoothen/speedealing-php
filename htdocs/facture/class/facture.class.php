@@ -436,32 +436,33 @@ class Facture extends nosqlDocument {
         $facture->ref_client = $this->ref_client;
         $facture->modelpdf = $this->modelpdf;
         $facture->fk_project = $this->fk_project;
-        $facture->cond_reglement_id = $this->cond_reglement_id;
-        $facture->mode_reglement_id = $this->mode_reglement_id;
+        $facture->cond_reglement_code = $this->cond_reglement_code;
+        $facture->mode_reglement_code = $this->mode_reglement_code;
         $facture->remise_absolue = $this->remise_absolue;
         $facture->remise_percent = $this->remise_percent;
+        $facture->Status = "NOT_PAID";
 
-        $facture->lines = $this->lines; // Tableau des lignes de factures
-        $facture->products = $this->lines; // Tant que products encore utilise
-        // Loop on each line of new invoice
-        foreach ($facture->lines as $i => $line) {
-            if ($invertdetail) {
-                $facture->lines[$i]->subprice = -$facture->lines[$i]->subprice;
-                $facture->lines[$i]->total_ht = -$facture->lines[$i]->total_ht;
-                $facture->lines[$i]->total_tva = -$facture->lines[$i]->total_tva;
-                $facture->lines[$i]->total_localtax1 = -$facture->lines[$i]->total_localtax1;
-                $facture->lines[$i]->total_localtax2 = -$facture->lines[$i]->total_localtax2;
-                $facture->lines[$i]->total_ttc = -$facture->lines[$i]->total_ttc;
-            }
-        }
+//        $facture->lines = $this->lines; // Tableau des lignes de factures
+//        $facture->products = $this->lines; // Tant que products encore utilise
+//        // Loop on each line of new invoice
+//        foreach ($facture->lines as $i => $line) {
+//            if ($invertdetail) {
+//                $facture->lines[$i]->subprice = -$facture->lines[$i]->subprice;
+//                $facture->lines[$i]->total_ht = -$facture->lines[$i]->total_ht;
+//                $facture->lines[$i]->total_tva = -$facture->lines[$i]->total_tva;
+//                $facture->lines[$i]->total_localtax1 = -$facture->lines[$i]->total_localtax1;
+//                $facture->lines[$i]->total_localtax2 = -$facture->lines[$i]->total_localtax2;
+//                $facture->lines[$i]->total_ttc = -$facture->lines[$i]->total_ttc;
+//            }
+//        }
 
         dol_syslog(get_class($this) . "::createFromCurrent invertdetail=" . $invertdetail . " socid=" . $this->socid . " nboflines=" . count($facture->lines));
 
         $facid = $facture->create($user);
-        if ($facid <= 0) {
-            $this->error = $facture->error;
-            $this->errors = $facture->errors;
-        }
+//        if ($facid <= 0) {
+//            $this->error = $facture->error;
+//            $this->errors = $facture->errors;
+//        }
 
         return $facid;
     }
@@ -3282,6 +3283,17 @@ class Facture extends nosqlDocument {
             </script>
             <?php
         }
+    }
+    
+    public function selectReplaceableInvoiceOptions($socid){
+        $options = '';
+        $result = $this->getView('listNotPaidPerSociete', array('key' => $socid));
+        if (!empty($result->rows)) {
+            foreach ($result->rows as $f) {
+                $options .= '<option value="' . $f->value->_id . '">' . $f->value->ref . '</option>';
+            }
+        }
+        return $options;
     }
 
 }
