@@ -1301,6 +1301,20 @@ class Facture extends nosqlDocument {
     function set_paid($user, $close_code = '', $close_note = '') {
         global $conf, $langs;
         $error = 0;
+        if ($close_code)
+            $this->Status = "PAID_PARTIALLY";
+        else $this->Status = "PAID";
+        $this->record();
+        // Appel des triggers
+        include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
+        $interface = new Interfaces($this->db);
+        $result = $interface->run_triggers('BILL_PAYED', $this, $user, $langs, $conf);
+        if ($result < 0) {
+            $error++;
+            $this->errors = $interface->errors;
+        }
+        // Fin appel triggers
+        return 1;
 
         if ($this->paye != 1) {
             $this->db->begin();
@@ -1356,7 +1370,21 @@ class Facture extends nosqlDocument {
     function set_unpaid($user) {
         global $conf, $langs;
         $error = 0;
-
+        if ($this->getSommePaiement() > 0) 
+            $this->Status = "STARTED";
+        else
+            $this->Status = "NOT_PAID";
+        $this->record();
+        // Appel des triggers
+        include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
+        $interface = new Interfaces($this->db);
+        $result = $interface->run_triggers('BILL_UNPAYED', $this, $user, $langs, $conf);
+        if ($result < 0) {
+            $error++;
+            $this->errors = $interface->errors;
+        }
+        // Fin appel triggers
+        return 1;
         $this->db->begin();
 
         $sql = 'UPDATE ' . MAIN_DB_PREFIX . 'facture';
@@ -1404,6 +1432,18 @@ class Facture extends nosqlDocument {
         global $conf, $langs;
 
         $error = 0;
+        $this->Status = "CANCELED";
+        $this->record();
+        // Appel des triggers
+        include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
+        $interface = new Interfaces($this->db);
+        $result = $interface->run_triggers('BILL_CANCEL', $this, $user, $langs, $conf);
+        if ($result < 0) {
+            $error++;
+            $this->errors = $interface->errors;
+        }
+        // Fin appel triggers
+        return 1;
 
         dol_syslog(get_class($this) . "::set_canceled rowid=" . $this->id, LOG_DEBUG);
 
@@ -1671,8 +1711,10 @@ class Facture extends nosqlDocument {
      */
     function set_draft($user, $idwarehouse = -1) {
         global $conf, $langs;
-
         $error = 0;
+        $this->Status = "DRAFT";
+        $this->record();
+        return 1;
 
         if ($this->statut == 0) {
             dol_syslog(get_class($this) . "::set_draft already draft status", LOG_WARNING);

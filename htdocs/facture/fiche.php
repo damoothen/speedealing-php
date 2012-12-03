@@ -60,7 +60,7 @@ if (!empty($conf->margin->enabled))
 $sall = trim(GETPOST('sall'));
 $projectid = (GETPOST('projectid') ? GETPOST('projectid', 'int') : 0);
 
-$id = (GETPOST('id', 'alpha') ? GETPOST('id', 'akpha') : GETPOST('facid', 'alpha'));  // For backward compatibility
+$id = (GETPOST('id', 'alpha') ? GETPOST('id', 'alpha') : GETPOST('facid', 'alpha'));  // For backward compatibility
 $ref = GETPOST('ref', 'alpha');
 $socid = GETPOST('socid', 'alpha');
 $action = GETPOST('action', 'alpha');
@@ -571,6 +571,96 @@ else if ($action == 'confirm_valid' && $confirm == 'yes' && $user->rights->factu
 }
 
 
+else if ($action == 'confirm_modif' && ((empty($conf->global->MAIN_USE_ADVANCED_PERMS) && $user->rights->facture->valider) || $user->rights->facture->invoice_advance->unvalidate)) {
+    $idwarehouse = GETPOST('idwarehouse');
+
+    $object->fetch($id);
+    $object->fetch_thirdparty();
+
+    // Check parameters
+    if ($object->type != 3 && !empty($conf->global->STOCK_CALCULATE_ON_BILL) && $object->hasProductsOrServices(1)) {
+        if (!$idwarehouse || $idwarehouse == -1) {
+        $error++;
+            $mesgs[] = $langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv("Warehouse"));
+            $action = '';
+        }
+    }
+    
+    
+    if (!$error) {
+            
+        // On verifie si aucun paiement n'a ete effectue
+        if ($object->getSommePaiement() == 0 && $ventilExportCompta == 0) {
+            
+            $res = $object->set_draft($user, $idwarehouse);
+
+            // Define output language
+            $outputlangs = $langs;
+            $newlang = '';
+            if ($conf->global->MAIN_MULTILANGS && empty($newlang) && !empty($_REQUEST['lang_id']))
+                $newlang = $_REQUEST['lang_id'];
+            if ($conf->global->MAIN_MULTILANGS && empty($newlang))
+                $newlang = $object->client->default_lang;
+            if (!empty($newlang)) {
+                $outputlangs = new Translate("", $conf);
+                $outputlangs->setDefaultLang($newlang);
+            }
+            if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE)) {
+                $ret = $object->fetch($id);    // Reload to get new records
+                facture_pdf_create($db, $object, $object->modelpdf, $outputlangs, $hidedetails, $hidedesc, $hideref, $hookmanager);
+            }
+        }
+    }
+}
+
+
+// Classify "abandoned"
+else if ($action == 'confirm_canceled' && $confirm == 'yes') {
+    $object->fetch($id);
+    $close_code = $_POST["close_code"];
+    $close_note = $_POST["close_note"];
+    if ($close_code) {
+        $result = $object->set_canceled($user, $close_code, $close_note);
+    } else {
+        $mesgs[] = '<div class="error">' . $langs->trans("ErrorFieldRequired", $langs->trans("Reason")) . '</div>';
+    }
+}
+
+
+// Change status of invoice
+else if ($action == 'reopen' && $user->rights->facture->creer) {
+    $result = $object->fetch($id);
+    if ($object->Status == "PAID" || $object->Status == "PAID_PARTIALLY" || ($object->Status == "CANCELED" && $object->close_code != 'replaced')) {
+        $result = $object->set_unpaid($user);
+        if ($result > 0) {
+            header('Location: ' . $_SERVER["PHP_SELF"] . '?id=' . $id);
+            exit;
+        } else {
+            $mesgs[] = '<div class="error">' . $object->error . '</div>';
+        }
+    }
+}
+
+
+// Classify "paid"
+else if ($action == 'confirm_paid' && $confirm == 'yes' && $user->rights->facture->paiement) {
+    $object->fetch($id);
+    $result = $object->set_paid($user);
+}
+// Classif  "paid partialy"
+else if ($action == 'confirm_paid_partially' && $confirm == 'yes' && $user->rights->facture->paiement) {
+    $object->fetch($id);
+    $close_code = $_POST["close_code"];
+    $close_note = $_POST["close_note"];
+    if ($close_code) {
+        $result = $object->set_paid($user, $close_code, $close_note);
+    } else {
+        $mesgs[] = '<div class="error">' . $langs->trans("ErrorFieldRequired", $langs->trans("Reason")) . '</div>';
+    }
+}
+
+
+
 /* View ********************************************************************* */
 
 $form = new Form($db);
@@ -624,6 +714,102 @@ if ($action == 'valid') {
         $text.='<br>' . img_warning() . ' ' . $langs->trans("ErrorInvoiceOfThisTypeMustBePositive");
     }
     $formconfirm = $form->formconfirm($_SERVER["PHP_SELF"] . '?id=' . $object->id, $langs->trans('ValidateBill'), $text, 'confirm_valid', $formquestion, (($object->type != 2 && $object->total_ttc < 0) ? "no" : "yes"), ($conf->notification->enabled ? 0 : 2));
+}
+
+ // Confirm back to draft status
+if ($action == 'modif') {
+    $text = $langs->trans('ConfirmUnvalidateBill', $object->ref);
+    $formquestion = array();
+    if ($object->type != 3 && !empty($conf->global->STOCK_CALCULATE_ON_BILL) && $object->hasProductsOrServices(1)) {
+        $langs->load("stocks");
+        require_once DOL_DOCUMENT_ROOT . '/product/class/html.formproduct.class.php';
+        $formproduct = new FormProduct($db);
+        $label = $object->type == 2 ? $langs->trans("SelectWarehouseForStockDecrease") : $langs->trans("SelectWarehouseForStockIncrease");
+        $formquestion = array(
+            //'text' => $langs->trans("ConfirmClone"),
+            //array('type' => 'checkbox', 'name' => 'clone_content',   'label' => $langs->trans("CloneMainAttributes"),   'value' => 1),
+            //array('type' => 'checkbox', 'name' => 'update_prices',   'label' => $langs->trans("PuttingPricesUpToDate"),   'value' => 1),
+            array('type' => 'other', 'name' => 'idwarehouse', 'label' => $label, 'value' => $formproduct->selectWarehouses(GETPOST('idwarehouse'), 'idwarehouse', '', 1)));
+    }
+
+    $formconfirm = $form->formconfirm($_SERVER["PHP_SELF"] . '?id=' . $object->id, $langs->trans('UnvalidateBill'), $text, 'confirm_modif', $formquestion, "yes", 1);
+}
+
+
+// Confirmation du classement abandonne
+if ($action == 'canceled') {
+    // S'il y a une facture de remplacement pas encore validee (etat brouillon),
+    // on ne permet pas de classer abandonner la facture.
+    if ($objectidnext) {
+        $facturereplacement = new Facture($db);
+        $facturereplacement->fetch($objectidnext);
+        $statusreplacement = $facturereplacement->statut;
+    }
+    if ($objectidnext && $statusreplacement == 0) {
+        print '<div class="error">' . $langs->trans("ErrorCantCancelIfReplacementInvoiceNotValidated") . '</div>';
+    } else {
+        // Code
+        $close[1]['code'] = 'badcustomer';
+        $close[2]['code'] = 'abandon';
+        // Help
+        $close[1]['label'] = $langs->trans("ConfirmClassifyPaidPartiallyReasonBadCustomerDesc");
+        $close[2]['label'] = $langs->trans("ConfirmClassifyAbandonReasonOtherDesc");
+        // Texte
+        $close[1]['reason'] = $form->textwithpicto($langs->transnoentities("ConfirmClassifyPaidPartiallyReasonBadCustomer", $object->ref), $close[1]['label'], 1);
+        $close[2]['reason'] = $form->textwithpicto($langs->transnoentities("ConfirmClassifyAbandonReasonOther"), $close[2]['label'], 1);
+        // arrayreasons
+        $arrayreasons[$close[1]['code']] = $close[1]['reason'];
+        $arrayreasons[$close[2]['code']] = $close[2]['reason'];
+
+        // Cree un tableau formulaire
+        $formquestion = array(
+            'text' => $langs->trans("ConfirmCancelBillQuestion"),
+            array('type' => 'radio', 'name' => 'close_code', 'label' => $langs->trans("Reason"), 'values' => $arrayreasons),
+            array('type' => 'text', 'name' => 'close_note', 'label' => $langs->trans("Comment"), 'value' => '', 'size' => '100')
+        );
+
+        $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?facid=' . $object->id, $langs->trans('CancelBill'), $langs->trans('ConfirmCancelBill', $object->ref), 'confirm_canceled', $formquestion, "yes");
+    }
+}
+
+
+// Confirmation du classement paye
+$resteapayer = $object->total_ttc - $object->getSommePaiement();
+if ($action == 'paid' && $resteapayer <= 0) {
+    $formconfirm = $form->formconfirm($_SERVER["PHP_SELF"] . '?facid=' . $object->id, $langs->trans('ClassifyPaid'), $langs->trans('ConfirmClassifyPaidBill', $object->ref), 'confirm_paid', '', "yes", 1);
+}
+if ($action == 'paid' && $resteapayer > 0) {
+    // Code
+    $i = 0;
+    $close[$i]['code'] = 'discount_vat';
+    $i++;
+    $close[$i]['code'] = 'badcustomer';
+    $i++;
+    // Help
+    $i = 0;
+    $close[$i]['label'] = $langs->trans("HelpEscompte") . '<br><br>' . $langs->trans("ConfirmClassifyPaidPartiallyReasonDiscountVatDesc");
+    $i++;
+    $close[$i]['label'] = $langs->trans("ConfirmClassifyPaidPartiallyReasonBadCustomerDesc");
+    $i++;
+    // Texte
+    $i = 0;
+    $close[$i]['reason'] = $form->textwithpicto($langs->transnoentities("ConfirmClassifyPaidPartiallyReasonDiscountVat", $resteapayer, $langs->trans("Currency" . $conf->currency)), $close[$i]['label'], 1);
+    $i++;
+    $close[$i]['reason'] = $form->textwithpicto($langs->transnoentities("ConfirmClassifyPaidPartiallyReasonBadCustomer", $resteapayer, $langs->trans("Currency" . $conf->currency)), $close[$i]['label'], 1);
+    $i++;
+    // arrayreasons[code]=reason
+    foreach ($close as $key => $val) {
+        $arrayreasons[$close[$key]['code']] = $close[$key]['reason'];
+    }
+
+    // Cree un tableau formulaire
+    $formquestion = array(
+        'text' => $langs->trans("ConfirmClassifyPaidPartiallyQuestion"),
+        array('type' => 'radio', 'name' => 'close_code', 'label' => $langs->trans("Reason"), 'values' => $arrayreasons),
+        array('type' => 'text', 'name' => 'close_note', 'label' => $langs->trans("Comment"), 'value' => '', 'size' => '100')
+    );
+    // Paiement incomplet. On demande si motif = escompte ou autre
+    $formconfirm = $form->formconfirm($_SERVER["PHP_SELF"] . '?facid=' . $object->id, $langs->trans('ClassifyPaid'), $langs->trans('ConfirmClassifyPaidPartially', $object->ref), 'confirm_paid_partially', $formquestion, "yes");
 }
 
 print $formconfirm;
@@ -826,15 +1012,20 @@ else {
         if ($user->societe_id == 0 && $action <> 'editline') {
             print '<div class="tabsAction">';
 
+            $totalpaye = $object->getSommePaiement();
+            $resteapayer = $object->total_ttc - $totalpaye;
+            
             // Editer une facture deja validee, sans paiement effectue et pas exporte en compta
             if ($object->Status == "NOT_PAID") {
                 // On verifie si les lignes de factures ont ete exportees en compta et/ou ventilees
                 $ventilExportCompta = $object->getVentilExportCompta();
 
-                if ($resteapayer == $object->total_ttc && $object->paye == 0 && $ventilExportCompta == 0) {
+                if ($resteapayer == $object->total_ttc &&  $ventilExportCompta == 0) {
                     if (!$objectidnext) {
                         if ((empty($conf->global->MAIN_USE_ADVANCED_PERMS) && $user->rights->facture->valider) || $user->rights->facture->invoice_advance->unvalidate) {
-                            print '<a class="butAction" href="' . $_SERVER['PHP_SELF'] . '?facid=' . $object->id . '&amp;action=modif">' . $langs->trans('Modify') . '</a>';
+                            print '<p class="button-height right">';
+                            print '<a class="button icon-pencil" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=modif">' . $langs->trans('Modify') . '</a>';
+                            print "</p>";
                         } else {
                             print '<span class="butActionRefused" title="' . $langs->trans("NotEnoughPermissions") . '">' . $langs->trans('Modify') . '</span>';
                         }
@@ -844,6 +1035,33 @@ else {
                 }
             }
 
+            // Classify paid (if not deposit and not credit note. Such invoice are "converted")
+            if ($object->Status == "STARTED" && $user->rights->facture->paiement &&
+                    (($object->type != 2 && $object->type != 3 && $resteapayer <= 0) || ($object->type == 2 && $resteapayer >= 0))) {
+                print '<p class="button-height right">';
+                print '<a class="button" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=paid">' . $langs->trans('ClassifyPaid') . '</a>';
+                print "</p>";
+            }
+            
+            // Classify 'closed not completely paid' (possible si validee et pas encore classee payee)
+            if ($object->Status == "STARTED"  && $resteapayer > 0
+                    && $user->rights->facture->paiement) {
+                if ($totalpaye > 0 || $totalcreditnotes > 0) {
+                    // If one payment or one credit note was linked to this invoice
+                    print '<p class="button-height right">';
+                    print '<a class="button" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=paid">' . $langs->trans('ClassifyPaidPartially') . '</a>';
+                    print "</p>";
+                } else {
+                    if ($objectidnext) {
+                        print '<span class="butActionRefused" title="' . $langs->trans("DisabledBecauseReplacedInvoice") . '">' . $langs->trans('ClassifyCanceled') . '</span>';
+                    } else {
+                        print '<p class="button-height right">';
+                        print '<a class="button" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=canceled">' . $langs->trans('ClassifyCanceled') . '</a>';
+                        print "</p>";
+                    }
+                }
+            }
+            
             // Delete invoice
             if ($user->rights->facture->supprimer) {
                 if ($numshipping == 0) {
@@ -856,20 +1074,31 @@ else {
             }
 
             // Clone
-            if (($object->type == "STANDARD_INVOICE" || $object->type == 3 || $object->type == 4) && $user->rights->facture->creer) {
+                
+            if (($object->type == "INVOICE_STANDARD" || $object->type == 3 || $object->type == 4) && $user->rights->facture->creer) {
                 print '<p class="button-height right">';
                 print '<a class="button icon-pages" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=clone&amp;object=invoice">' . $langs->trans("ToClone") . '</a>';
                 print "</p>";
             }
 
             // Clone as predefined
-            if (($object->type == "STANDARD_INVOICE" || $object->type == 3 || $object->type == 4) && $object->statut == 0 && $user->rights->facture->creer) {
+            if (($object->type == "INVOICE_STANDARD" || $object->type == 3 || $object->type == 4) && $object->Status != "PAID" && $object->Status != "NOT_PAID" && $object->Status != "STARTED" && $object->Status != "CANCELED" && $object->Status != "PAID_PARTIALLY" && $user->rights->facture->creer) {
                 if (!$objectidnext) {
                     print '<p class="button-height right">';
-                    print '<a class="butAction" href="facture/fiche-rec.php?id=' . $object->id . '&amp;action=create">' . $langs->trans("ChangeIntoRepeatableInvoice") . '</a>';
+                    print '<a class="button icon-page" href="facture/fiche-rec.php?id=' . $object->id . '&amp;action=create">' . $langs->trans("ChangeIntoRepeatableInvoice") . '</a>';
                     print "</p>";
                 }
             }
+            
+            // Reopen a standard paid invoice
+            if (($object->type == "INVOICE_STANDARD" || $object->type == 1) && ($object->Status == "CANCELED" || $object->Status == "PAID" || $object->Status == "PAID_PARTIALLY")) {    // A paid invoice (partially or completely)
+                if (!$objectidnext && $object->close_code != 'replaced') { // Not replaced by another invoice
+                    print '<p class="button-height right">';
+                    print '<a class="button icon-reply" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=reopen">' . $langs->trans('ReOpen') . '</a>';
+                    print '</p>';
+                }
+            }
+            
 
             // Validate
             if ($object->Status == "DRAFT" && count($object->lines) > 0 &&
@@ -886,13 +1115,11 @@ else {
             
             // Create payment
             if ($object->type != 2 && ($object->Status == "NOT_PAID" || $object->Status == "STARTED") &&  $user->rights->facture->paiement) {
-//                    if ($resteapayer == 0) {
-//                        print '<span class="butActionRefused" title="' . $langs->trans("DisabledBecauseRemainderToPayIsZero") . '">' . $langs->trans('DoPayment') . '</span>';
-//                    } else {
+                if ($resteapayer > 0) {
                     print '<p class="button-height right">';
                     print '<a class="button" href="compta/paiement.php?facid=' . $object->id . '&amp;action=create">' . $langs->trans('DoPayment') . '</a>';
                     print "</p>";
-//                    }
+                }
             }
 
             print '</div>';
