@@ -27,7 +27,7 @@
  *		\class      DiscountAbsolute
  *		\brief      Class to manage absolute discounts
  */
-class DiscountAbsolute
+class DiscountAbsolute extends nosqlDocument
 {
     var $db;
     var $error;
@@ -53,7 +53,7 @@ class DiscountAbsolute
      */
     function __construct($db)
     {
-        $this->db = $db;
+        parent::__construct($db);
     }
 
 
@@ -66,6 +66,7 @@ class DiscountAbsolute
      */
     function fetch($rowid,$fk_facture_source=0)
     {
+        return parent::fetch($rowid);
         // Check parameters
         if (! $rowid && ! $fk_facture_source)
         {
@@ -147,6 +148,9 @@ class DiscountAbsolute
             dol_syslog(get_class($this)."::create ".$this->error, LOG_ERR);
             return -1;
         }
+        
+        $this->record();
+        return $this->id;
 
         // Insert request
         $sql = "INSERT INTO ".MAIN_DB_PREFIX."societe_remise_except";

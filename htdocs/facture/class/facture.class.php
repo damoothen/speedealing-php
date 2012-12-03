@@ -2289,9 +2289,11 @@ class Facture extends nosqlDocument {
     function addPayment(){
         $amountPaid = $this->getSommePaiement();
         if ($amountPaid > 0) {
-            if ($amountPaid < $this->total_ttc)
+            if ($this->type == "INVOICE_DEPOSIT")
                 $this->Status = "STARTED";
-            else if ($amountPaid == $this->total_ttc) 
+            else if ($this->type == "INVOICE_STANDARD" && $amountPaid < $this->total_ttc)
+                $this->Status = "STARTED";
+            else if ($this->type == "INVOICE_STANDARD" && $amountPaid == $this->total_ttc) 
                 $this->Status = "PAID";
         }
         $this->record();

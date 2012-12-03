@@ -660,6 +660,69 @@ else if ($action == 'confirm_paid_partially' && $confirm == 'yes' && $user->righ
 }
 
 
+// Convertir en reduc
+else if ($action == 'confirm_converttoreduc' && $confirm == 'yes' && $user->rights->facture->creer) {
+
+    $object->fetch($id);
+    $object->fetch_thirdparty();
+    $object->getLinesArray();
+
+    if ($object->Status != "PAID") { // protection against multiple submit
+        // Boucle sur chaque taux de tva
+        $i = 0;
+        foreach ($object->lines as $line) {
+            $amount_ht[$line->tva_tx]+=$line->total_ht;
+            $amount_tva[$line->tva_tx]+=$line->total_tva;
+            $amount_ttc[$line->tva_tx]+=$line->total_ttc;
+            $i++;
+        }
+
+        // Insert one discount by VAT rate category
+        $discount = new DiscountAbsolute($db);
+        if ($object->type == 2)
+            $discount->description = '(CREDIT_NOTE)';
+        elseif ($object->type == "INVOICE_DEPOSIT")
+            $discount->description = '(DEPOSIT)';
+        else {
+            $this->error = "CantConvertToReducAnInvoiceOfThisType";
+            return -1;
+        }
+        $discount->tva_tx = abs($object->total_ttc);
+        $discount->fk_soc = $object->socid;
+        $discount->fk_facture_source = $object->id;
+
+        $error = 0;
+        foreach ($amount_ht as $tva_tx => $xxx) {
+            $discount->amount_ht = abs($amount_ht[$tva_tx]);
+            $discount->amount_tva = abs($amount_tva[$tva_tx]);
+            $discount->amount_ttc = abs($amount_ttc[$tva_tx]);
+            $discount->tva_tx = abs($tva_tx);
+
+            $result = $discount->create($user);
+            if ($result < 0) {
+                $error++;
+                break;
+            }
+        }
+
+        if (!$error) {
+            // Classe facture
+            $result = $object->set_paid($user);
+            if ($result > 0) {
+                //$mesgs[]='OK'.$discount->id;
+                $db->commit();
+            } else {
+                $mesgs[] = '<div class="error">' . $object->error . '</div>';
+                $db->rollback();
+            }
+        } else {
+            $mesgs[] = '<div class="error">' . $discount->error . '</div>';
+            $db->rollback();
+        }
+    }
+}
+
+
 
 /* View ********************************************************************* */
 
@@ -810,6 +873,13 @@ if ($action == 'paid' && $resteapayer > 0) {
     );
     // Paiement incomplet. On demande si motif = escompte ou autre
     $formconfirm = $form->formconfirm($_SERVER["PHP_SELF"] . '?facid=' . $object->id, $langs->trans('ClassifyPaid'), $langs->trans('ConfirmClassifyPaidPartially', $object->ref), 'confirm_paid_partially', $formquestion, "yes");
+}
+
+
+// Confirmation de la conversion de l'avoir en reduc
+if ($action == 'converttoreduc') {
+    $text = $langs->trans('ConfirmConvertToReduc');
+    $formconfirm = $form->formconfirm($_SERVER['PHP_SELF'] . '?id=' . $object->id, $langs->trans('ConvertToReduc'), $text, 'confirm_converttoreduc', '', "yes", 2);
 }
 
 print $formconfirm;
@@ -1034,10 +1104,28 @@ else {
                     }
                 }
             }
+            
+            // Reverse back money or convert to reduction
+            if ($object->type == "INVOICE_DEPOSIT" || $object->type == 3) {
+                // For credit note only
+                if ($object->type == 2 && $object->statut == 1 && $object->paye == 0 && $user->rights->facture->paiement) {
+                    print '<a class="butAction" href="paiement.php?facid=' . $object->id . '&amp;action=create">' . $langs->trans('DoPaymentBack') . '</a>';
+                }
+                // For credit note
+                if ($object->type == 2 && $object->statut == 1 && $object->paye == 0 && $user->rights->facture->creer && $object->getSommePaiement() == 0) {
+                    print '<a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?facid=' . $object->id . '&amp;action=converttoreduc">' . $langs->trans('ConvertToReduc') . '</a>';
+                }
+                // For deposit invoice
+                if ($object->type == "INVOICE_DEPOSIT" && $object->Status == "STARTED" && $resteapayer == 0 && $user->rights->facture->creer) {
+                    print '<p class="button-height right">';
+                    print '<a class="button" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . '&amp;action=converttoreduc">' . $langs->trans('ConvertToReduc') . '</a>';
+                    print '</p>';
+                }
+            }
 
             // Classify paid (if not deposit and not credit note. Such invoice are "converted")
             if ($object->Status == "STARTED" && $user->rights->facture->paiement &&
-                    (($object->type != 2 && $object->type != 3 && $resteapayer <= 0) || ($object->type == 2 && $resteapayer >= 0))) {
+                    (($object->type != "INVOICE_DEPOSIT" && $object->type != 3 && $resteapayer <= 0) || ($object->type == 2 && $resteapayer >= 0))) {
                 print '<p class="button-height right">';
                 print '<a class="button" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=paid">' . $langs->trans('ClassifyPaid') . '</a>';
                 print "</p>";
@@ -1075,14 +1163,14 @@ else {
 
             // Clone
                 
-            if (($object->type == "INVOICE_STANDARD" || $object->type == 3 || $object->type == 4) && $user->rights->facture->creer) {
+            if (($object->type == "INVOICE_STANDARD" || $object->type == "INVOICE_DEPOSIT" || $object->type == 4) && $user->rights->facture->creer) {
                 print '<p class="button-height right">';
                 print '<a class="button icon-pages" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=clone&amp;object=invoice">' . $langs->trans("ToClone") . '</a>';
                 print "</p>";
             }
 
             // Clone as predefined
-            if (($object->type == "INVOICE_STANDARD" || $object->type == 3 || $object->type == 4) && $object->Status != "PAID" && $object->Status != "NOT_PAID" && $object->Status != "STARTED" && $object->Status != "CANCELED" && $object->Status != "PAID_PARTIALLY" && $user->rights->facture->creer) {
+            if (($object->type == "INVOICE_STANDARD" || $object->type == "INVOICE_DEPOSIT" || $object->type == 4) && $object->Status != "PAID" && $object->Status != "NOT_PAID" && $object->Status != "STARTED" && $object->Status != "CANCELED" && $object->Status != "PAID_PARTIALLY" && $user->rights->facture->creer) {
                 if (!$objectidnext) {
                     print '<p class="button-height right">';
                     print '<a class="button icon-page" href="facture/fiche-rec.php?id=' . $object->id . '&amp;action=create">' . $langs->trans("ChangeIntoRepeatableInvoice") . '</a>';
@@ -1103,7 +1191,7 @@ else {
             // Validate
             if ($object->Status == "DRAFT" && count($object->lines) > 0 &&
                     (
-                    (($object->type == "INVOICE_STANDARD" || $object->type == 1 || $object->type == 3 || $object->type == 4) && (!empty($conf->global->FACTURE_ENABLE_NEGATIVE) || $object->total_ttc >= 0))
+                    (($object->type == "INVOICE_STANDARD" || $object->type == "INVOICE_DEPOSIT" || $object->type == 3 || $object->type == 4) && (!empty($conf->global->FACTURE_ENABLE_NEGATIVE) || $object->total_ttc >= 0))
                     || ($object->type == 2 && $object->total_ttc <= 0))
             ) {
                 if ($user->rights->facture->valider) {

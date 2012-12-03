@@ -558,7 +558,7 @@ if ($action == 'create' || $action == 'confirm_paiement' || $action == 'add_paie
                     print "</tr>\n";
 
                     $total+=$objp->total;
-                    $total_ttc+=$objp->total_ttc;
+                    $total_ttc+=$invoice->total_ttc;
                     $totalrecu+=$paiement;
                     $totalrecucreditnote+=$creditnotes;
                     $totalrecudeposits+=$deposits;

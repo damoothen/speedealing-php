@@ -30,6 +30,9 @@
        "sumPaymentsPerFacture": {
            "map": "function(doc) {\nif (doc.class && doc.class == \"Paiement\") {\nfor (i in doc.amounts) {\n  emit(i, parseFloat(doc.amounts[i]));\n}\n}\n}",
            "reduce": "function(keys, values){\nreturn sum(values);\n}"
+       },
+       "discounts": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"DiscountAbsolute\")\n  emit(doc._id, doc);\n}"
        }
    }
 }
