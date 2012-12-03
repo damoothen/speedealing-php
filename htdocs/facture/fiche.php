@@ -79,6 +79,7 @@ $hidedesc = (GETPOST('hidedesc', 'int') ? GETPOST('hidedesc', 'int') : (!empty($
 $hideref = (GETPOST('hideref', 'int') ? GETPOST('hideref', 'int') : (!empty($conf->global->MAIN_GENERATE_DOCUMENTS_HIDE_REF) ? 1 : 0));
 
 $object = new Facture($db);
+$replacingInvoice = null;
 $societe = new Societe($db);
 
 if (!empty($socid)) {
@@ -94,6 +95,7 @@ $title = $langs->trans("Bill");
 // Load object
 if (!empty($id)) {
     $object->fetch($id);
+    $replacingInvoice = $object->getReplacingInvoice();
 }
 
 // Initialize technical object to manage hooks of thirdparties. Note that conf->hooks_modules contains array array
@@ -145,11 +147,13 @@ else if ($action == 'add' && $user->rights->facture->creer) {
             $object->fk_facture_source = $_POST['fac_replacement'];
             $object->type = "INVOICE_REPLACEMENT";
             
-            echo '<pre>' . print_r($object, true) . '</pre>';die;
-
             $id = $object->createFromCurrent($user);
-            if ($id <= 0)
+            if (empty($id))
                 $mesgs[] = $object->error;
+            else {
+                header('Location: ' . $_SERVER['PHP_SELF'] .'?id=' . $id);
+                exit;
+            }
         }
     }
     
@@ -1266,7 +1270,7 @@ else {
             }
             
             // Reopen a standard paid invoice
-            if (($object->type == "INVOICE_STANDARD" || $object->type == 1) && ($object->Status == "CANCELED" || $object->Status == "PAID" || $object->Status == "PAID_PARTIALLY")) {    // A paid invoice (partially or completely)
+            if (($object->type == "INVOICE_STANDARD" || $object->type == "INVOICE_REPLACEMENT") && ($object->Status == "CANCELED" || $object->Status == "PAID" || $object->Status == "PAID_PARTIALLY")) {    // A paid invoice (partially or completely)
                 if (!$objectidnext && $object->close_code != 'replaced') { // Not replaced by another invoice
                     print '<p class="button-height right">';
                     print '<a class="button icon-reply" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&amp;action=reopen">' . $langs->trans('ReOpen') . '</a>';
@@ -1278,7 +1282,7 @@ else {
             // Validate
             if ($object->Status == "DRAFT" && count($object->lines) > 0 &&
                     (
-                    (($object->type == "INVOICE_STANDARD" || $object->type == "INVOICE_DEPOSIT" || $object->type == 3 || $object->type == 4) && (!empty($conf->global->FACTURE_ENABLE_NEGATIVE) || $object->total_ttc >= 0))
+                    (($object->type == "INVOICE_STANDARD" || $object->type == "INVOICE_DEPOSIT" || $object->type == "INVOICE_REPLACEMENT" || $object->type == 4) && (!empty($conf->global->FACTURE_ENABLE_NEGATIVE) || $object->total_ttc >= 0))
                     || ($object->type == 2 && $object->total_ttc <= 0))
             ) {
                 if ($user->rights->facture->valider) {
@@ -1323,7 +1327,16 @@ else {
 
     // Type
     print '<tr><td width="20%">' . $langs->trans('Type') . '</td>';
-    print '<td>' . $object->getExtraFieldLabel('type') . '</td></tr>';
+    print '<td>' . $object->getExtraFieldLabel('type');
+    if ($object->type == "INVOICE_REPLACEMENT") {
+        $facreplaced = new Facture($db);
+        $facreplaced->fetch($object->fk_facture_source);
+        print ' (' . $langs->transnoentities("ReplaceInvoice", $facreplaced->getNomUrl(1)) . ')';
+    }
+    if (!empty($replacingInvoice)) {
+            print ' (' . $langs->transnoentities("ReplacedByInvoice", $replacingInvoice->getNomUrl(1)) . ')';
+        }
+    print '</td></tr>';
     
             // Relative and absolute discounts
         $addrelativediscount = '<a href="' . DOL_URL_ROOT . '/comm/remise.php?id=' . $soc->id . '&backtopage=' . urlencode($_SERVER["PHP_SELF"]) . '?facid=' . $object->id . '">' . $langs->trans("EditRelativeDiscounts") . '</a>';

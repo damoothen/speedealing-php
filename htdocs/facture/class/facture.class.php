@@ -441,7 +441,8 @@ class Facture extends nosqlDocument {
         $facture->remise_absolue = $this->remise_absolue;
         $facture->remise_percent = $this->remise_percent;
         $facture->Status = "NOT_PAID";
-
+        $facture->ref = $this->getNextNumRef($this->socid);
+        
 //        $facture->lines = $this->lines; // Tableau des lignes de factures
 //        $facture->products = $this->lines; // Tant que products encore utilise
 //        // Loop on each line of new invoice
@@ -459,6 +460,18 @@ class Facture extends nosqlDocument {
         dol_syslog(get_class($this) . "::createFromCurrent invertdetail=" . $invertdetail . " socid=" . $this->socid . " nboflines=" . count($facture->lines));
 
         $facid = $facture->create($user);
+        
+        // Copier les lignes de la facture
+        $this->getLinesArray();
+        foreach ($this->lines as $line) {
+            unset($line->id);
+            unset($line->_id);
+            unset($line->_rev);
+            $line->fk_facture = $facid;
+            $line->record();
+        }
+        $facture->update_price();
+        
 //        if ($facid <= 0) {
 //            $this->error = $facture->error;
 //            $this->errors = $facture->errors;
@@ -662,7 +675,7 @@ class Facture extends nosqlDocument {
         if ($option == 'withdraw')
             $url = DOL_URL_ROOT . '/compta/facture/prelevement.php?facid=' . $this->id;
         else
-            $url = DOL_URL_ROOT . '/compta/facture.php?facid=' . $this->id;
+            $url = DOL_URL_ROOT . '/facture/fiche.php?id=' . $this->id;
 
         if ($short)
             return $url;
@@ -1525,6 +1538,14 @@ class Facture extends nosqlDocument {
         
         $this->record();
         
+        // Si facture de remplacement, abandonner la facture remplacée
+        if ($this->type == "INVOICE_REPLACEMENT") {
+            $replacedInvoice = new Facture($this->db);
+            $replacedInvoice->fetch($this->fk_facture_source);
+            $replacedInvoice->Status = "CANCELED";
+            $replacedInvoice->record();
+        }
+        
         // Appel des triggers
         include_once DOL_DOCUMENT_ROOT . '/core/class/interfaces.class.php';
         $interface = new Interfaces($this->db);
@@ -2290,9 +2311,9 @@ class Facture extends nosqlDocument {
         if ($amountPaid > 0) {
             if ($this->type == "INVOICE_DEPOSIT")
                 $this->Status = "STARTED";
-            else if ($this->type == "INVOICE_STANDARD" && $amountPaid < $this->total_ttc)
+            else if (($this->type == "INVOICE_STANDARD" || $this->type == "INVOICE_REPLACEMENT") && $amountPaid < $this->total_ttc)
                 $this->Status = "STARTED";
-            else if ($this->type == "INVOICE_STANDARD" && $amountPaid == $this->total_ttc) 
+            else if (($this->type == "INVOICE_STANDARD" || $this->type == "INVOICE_REPLACEMENT") && $amountPaid == $this->total_ttc) 
                 $this->Status = "PAID";
         }
         $this->record();
@@ -3294,6 +3315,16 @@ class Facture extends nosqlDocument {
             }
         }
         return $options;
+    }
+    
+    public function getReplacingInvoice(){
+        
+        $result = $this->getView('listReplacedInvoices', array('key' => $this->id));
+        if (empty($result->rows)) return null;
+        $facture = new Facture($this->db);
+        $facture->fetch($result->rows[0]->value);
+        return $facture;
+        
     }
 
 }
