@@ -33,6 +33,10 @@
        },
        "discounts": {
            "map": "function(doc) {\nif (doc.class && doc.class == \"DiscountAbsolute\")\n  emit(doc._id, doc);\n}"
+       },
+       "availableDiscountsPerSociete": {
+           "map": "function(doc) {\nif (doc.class && doc.class == \"DiscountAbsolute\" && !doc.fk_facture && !doc.fk_facture_line)\n  emit(doc.fk_soc, parseFloat(doc.amount_ttc));\n}",
+           "reduce": "function(keys, values){\nreturn sum(values);\n}"
        }
    }
 }

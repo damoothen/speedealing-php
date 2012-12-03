@@ -289,6 +289,13 @@ class DiscountAbsolute extends nosqlDocument
             $this->error='ErrorBadParameters';
             return -2;
         }
+        
+        if ($rowidline) $this->fk_facture_line = $rowidline;
+        if ($rowidinvoice) $this->fk_facture = $rowidinvoice;
+        
+        $this->record();
+        
+        return 1;
 
         $sql ="UPDATE ".MAIN_DB_PREFIX."societe_remise_except";
         if ($rowidline)    $sql.=" SET fk_facture_line = ".$rowidline;
@@ -350,6 +357,10 @@ class DiscountAbsolute extends nosqlDocument
      */
     function getAvailableDiscounts($company='', $user='',$filter='', $maxvalue=0)
     {
+        $result = $this->getView('totalAvailableDiscountsPerSociete', array('key' => $company->id, 'group' => true));
+        if (empty($result->rows)) return 0;
+        return $result->rows[0]->value;
+        
         $sql  = "SELECT SUM(rc.amount_ttc) as amount";
         //        $sql  = "SELECT rc.amount_ttc as amount";
         $sql.= " FROM ".MAIN_DB_PREFIX."societe_remise_except as rc";

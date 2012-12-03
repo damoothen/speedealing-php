@@ -723,6 +723,31 @@ else if ($action == 'confirm_converttoreduc' && $confirm == 'yes' && $user->righ
 }
 
 
+else if ($action == "setabsolutediscount" && $user->rights->facture->creer) {
+    // POST[remise_id] ou POST[remise_id_for_payment]
+    if (!empty($_POST["remise_id"])) {
+        $ret = $object->fetch($id);
+        if (!empty($ret)) {
+            $result = $object->insert_discount($_POST["remise_id"]);
+            if ($result < 0) {
+                $mesgs[] = '<div class="error">' . $object->error . '</div>';
+            }
+        } else {
+            dol_print_error($db, $object->error);
+        }
+    }
+    if (!empty($_POST["remise_id_for_payment"])) {
+        require_once DOL_DOCUMENT_ROOT . '/core/class/discount.class.php';
+        $discount = new DiscountAbsolute($db);
+        $discount->fetch($_POST["remise_id_for_payment"]);
+
+        $result = $discount->link_to_invoice(0, $id);
+        if ($result < 0) {
+            $mesgs[] = '<div class="error">' . $discount->error . '</div>';
+        }
+    }
+}
+
 
 /* View ********************************************************************* */
 
@@ -1237,6 +1262,86 @@ else {
     // Type
     print '<tr><td width="20%">' . $langs->trans('Type') . '</td>';
     print '<td>' . $object->getExtraFieldLabel('type') . '</td></tr>';
+    
+            // Relative and absolute discounts
+        $addrelativediscount = '<a href="' . DOL_URL_ROOT . '/comm/remise.php?id=' . $soc->id . '&backtopage=' . urlencode($_SERVER["PHP_SELF"]) . '?facid=' . $object->id . '">' . $langs->trans("EditRelativeDiscounts") . '</a>';
+        $addabsolutediscount = '<a href="' . DOL_URL_ROOT . '/comm/remx.php?id=' . $soc->id . '&backtopage=' . urlencode($_SERVER["PHP_SELF"]) . '?facid=' . $object->id . '">' . $langs->trans("EditGlobalDiscounts") . '</a>';
+        $addcreditnote = '<a href="' . DOL_URL_ROOT . '/compta/facture.php?action=create&socid=' . $soc->id . '&type=2&backtopage=' . urlencode($_SERVER["PHP_SELF"]) . '?facid=' . $object->id . '">' . $langs->trans("AddCreditNote") . '</a>';
+
+        print '<tr><td>' . $langs->trans('Discounts');
+        print '</td><td colspan="5">';
+        if ($soc->remise_client)
+            print $langs->trans("CompanyHasRelativeDiscount", $soc->remise_client);
+        else
+            print $langs->trans("CompanyHasNoRelativeDiscount");
+        //print ' ('.$addrelativediscount.')';
+
+        $object->fetch_thirdparty();
+        $absolute_discount = $object->thirdparty->getAvailableDiscounts();
+        if ($absolute_discount > 0) {
+            print '. ';
+            if ($object->Status != "DRAFT" || $object->type == "INVOICE_DEPOSIT" || $object->type == 3) {
+                if ($object->Status == "DRAFT") {
+                    print $langs->trans("CompanyHasAbsoluteDiscount", price($absolute_discount), $langs->transnoentities("Currency" . $conf->currency));
+                    print '. ';
+                } else {
+                    if ($object->Status == "DRAFT" || $object->type == "INVOICE_DEPOSIT" || $object->type == 3) {
+                        $text = $langs->trans("CompanyHasAbsoluteDiscount", price($absolute_discount), $langs->transnoentities("Currency" . $conf->currency));
+                        print '<br>' . $text . '.<br>';
+                    } else {
+                        $text = $langs->trans("CompanyHasAbsoluteDiscount", price($absolute_discount), $langs->transnoentities("Currency" . $conf->currency));
+                        $text2 = $langs->trans("AbsoluteDiscountUse");
+                        print $form->textwithpicto($text, $text2);
+                    }
+                }
+            } else {
+                // Remise dispo de type remise fixe (not credit note)
+                print '<br>';
+                $form->form_remise_dispo($_SERVER["PHP_SELF"] . '?id=' . $object->id, GETPOST('discountid'), 'remise_id', $object->socid, $absolute_discount, $filterabsolutediscount, $resteapayer, ' (' . $addabsolutediscount . ')');
+            }
+        } else {
+            if ($absolute_creditnote > 0) {    // If not, link will be added later
+                if ($object->statut == 0 && $object->type != 2 && $object->type != 3)
+                    print ' (' . $addabsolutediscount . ')<br>';
+                else
+                    print '. ';
+            }
+            else
+                print '. ';
+        }
+        if ($absolute_creditnote > 0) {
+            // If validated, we show link "add credit note to payment"
+            if ($object->statut != 1 || $object->type == 2 || $object->type == 3) {
+                if ($object->statut == 0 && $object->type != 3) {
+                    $text = $langs->trans("CompanyHasCreditNote", price($absolute_creditnote), $langs->transnoentities("Currency" . $conf->currency));
+                    print $form->textwithpicto($text, $langs->trans("CreditNoteDepositUse"));
+                } else {
+                    print $langs->trans("CompanyHasCreditNote", price($absolute_creditnote), $langs->transnoentities("Currency" . $conf->currency)) . '.';
+                }
+            } else {
+                // Remise dispo de type avoir
+                if (!$absolute_discount)
+                    print '<br>';
+                //$form->form_remise_dispo($_SERVER["PHP_SELF"].'?facid='.$object->id, 0, 'remise_id_for_payment', $soc->id, $absolute_creditnote, $filtercreditnote, $resteapayer);
+                $form->form_remise_dispo($_SERVER["PHP_SELF"] . '?facid=' . $object->id, 0, 'remise_id_for_payment', $soc->id, $absolute_creditnote, $filtercreditnote, 0);    // We must allow credit not even if amount is higher
+            }
+        }
+        if (!$absolute_discount && !$absolute_creditnote) {
+            print $langs->trans("CompanyHasNoAbsoluteDiscount");
+            if ($object->statut == 0 && $object->type != 2 && $object->type != 3)
+                print ' (' . $addabsolutediscount . ')<br>';
+            else
+                print '. ';
+        }
+        /* if ($object->statut == 0 && $object->type != 2 && $object->type != 3)
+          {
+          if (! $absolute_discount && ! $absolute_creditnote) print '<br>';
+          //print ' &nbsp; - &nbsp; ';
+          print $addabsolutediscount;
+          //print ' &nbsp; - &nbsp; '.$addcreditnote;      // We disbale link to credit note
+          } */
+        print '</td></tr>';
+
 
     // Date invoice
     print '<tr><td width="20%">' . $langs->trans('Date') . '</td>';
