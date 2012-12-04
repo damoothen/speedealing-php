@@ -23,9 +23,6 @@
  */
 require_once(DOL_DOCUMENT_ROOT . "/core/class/nosqlDocument.class.php");
 
-/**
- * 	Class to manage standard extra fields
- */
 class ExtraFields extends nosqlDocument {
 
     var $db;

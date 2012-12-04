@@ -468,6 +468,46 @@ abstract class nosqlDocument extends CommonObject {
     }
 
     /**
+     *  For menu Add/Remove a datatable
+     *
+     *  @param $ref_css name of #list
+     *  @return string
+     */
+    public function datatablesEdit($ref_css, $title = "") {
+        global $langs, $user;
+
+        $class = strtolower(get_class($this));
+
+        if (!$user->rights->$class->edit)
+            return null;
+
+        if (count($this->fk_extrafields->createList)) {
+            print '<form id="' . $ref_css . '_formAddNewRow" title="' . $title . '">';
+
+            foreach ($this->fk_extrafields->createList as $aRow) {
+                $label = $langs->trans($this->fk_extrafields->fields->$aRow->label);
+                if (empty($label))
+                    $label = $langs->trans($aRow);
+                print '<label for = "' . $aRow . '">' . $label . '</label><br />';
+                if (count($this->fk_extrafields->fields->$aRow->values) || isset($this->fk_extrafields->fields->$aRow->view))
+                    print $this->select_fk_extrafields($aRow, $aRow);
+                else
+                    print '<input type = "text" name = "' . $aRow . '" id = "' . $aRow . '" class = "required" rel = "0" />';
+                print '<br/>';
+            }
+            print '</form>';
+
+            if ($user->rights->$class->edit)
+                print '<button id="' . $ref_css . '_btnAddNewRow">' . $langs->trans("Add") . '</button> ';
+        }
+
+        /* if ($user->rights->$class->delete)
+          print '<button id="' . $ref_css . '_btnDeleteRow">' . $langs->trans("Delete") . '</button>'; */
+
+        print '<p class="button-height "></p>';
+    }
+
+    /**
      *  For Generate a datatable
      *
      *  @param $obj object of aocolumns parameters
@@ -475,12 +515,13 @@ abstract class nosqlDocument extends CommonObject {
      *  @return string
      */
     public function datatablesCreate($obj, $ref_css, $json = false, $ColSearch = false) {
-        global $conf, $langs;
-        ?>
-        <script type="text/javascript" charset="utf-8">
-            $(document).ready(function() {
-                var oTable = $('#<?php echo $ref_css ?>').dataTable( {
-                    "aoColumns" : [
+        global $conf, $langs, $user;
+
+        $class = strtolower(get_class($this));
+        ?><script type="text/javascript" charset="utf-8">
+                    $(document).ready(function() {
+                        var oTable = $('#<?php echo $ref_css ?>').dataTable( {
+                            "aoColumns" : [
         <?php
         $nb = count($obj->aoColumns);
         foreach ($obj->aoColumns as $i => $aRow):
@@ -596,163 +637,139 @@ abstract class nosqlDocument extends CommonObject {
             <?php if (isset($obj->fnDrawCallback)): ?>
                                     "fnDrawCallback": <?php echo $obj->fnDrawCallback; ?>,
             <?php else : ?>
-                                    // jeditable
                                     "fnDrawCallback": function () {
-                                        var columns = [
-                <?php foreach ($obj->aoColumns as $i => $aRow) : ?>
-                                                    "<?php echo $aRow->mDataProp; ?>",
-                <?php endforeach; ?>
-                                            ];
                                             prth_stickyFooter.resize();
-                                            $("td.dol_edit", this.fnGetNodes()).editable( urlSaveInPlace, {
-                                                "callback": function( sValue, y ) {
-                                                    oTable.fnDraw();
-                                                },
-                                                "submitdata": function ( value, settings ) {
-                                                    return { "id": oTable.fnGetData( this.parentNode, 0),
-                                                        "element_class" : "<?php echo get_class($this); ?>",
-                                                        "type":"input",
-                                                        "key": "editval_"+columns[oTable.fnGetPosition( this )[2]]};
-                                                },
-                                                "height": "14px",
-                                                "tooltip": tooltipInPlace,
-                                                "indicator" : indicatorInPlace,
-                                                "placeholder" : ""
-
-                                            } );
-                                            $("td.dol_select", this.fnGetNodes()).editable( urlSaveInPlace, {
-                                                "callback": function( sValue, y ) {
-                                                    oTable.fnDraw();
-                                                },
-                                                "submitdata": function ( value, settings ) {
-                                                    return { "id": oTable.fnGetData( this.parentNode, 0),
-                                                        "element_class" : "<?php echo get_class($this); ?>",
-                                                        "type":"select",
-                                                        "key": "editval_"+columns[oTable.fnGetPosition( this )[2]]};
-                                                },
-                                                "loaddata": function ( value, settings ) {
-                                                    return { "id": oTable.fnGetData( this.parentNode, 0),
-                                                        "element_class" : "<?php echo get_class($this); ?>",
-                                                        "type":"select",
-                                                        "key": "editval_"+columns[oTable.fnGetPosition( this )[2]]};
-                                                },
-                                                "loadurl" : urlLoadInPlace,
-                                                "type" : 'select',
-                                                "submit" : submitInPlace,
-                                                "height": "14px",
-                                                "tooltip": tooltipInPlace,
-                                                "indicator" : indicatorInPlace,
-                                                "placeholder" : ""
-
-                                            } );
-                                            $("td.dol_autocomplete", this.fnGetNodes()).editable( urlSaveInPlace, {
-                                                "callback": function( sValue, y ) {
-                                                    oTable.fnDraw();
-                                                },
-                                                "submitdata": function ( value, settings ) {
-                                                    console.log(this);
-                                                    return { "id": oTable.fnGetData( this.parentNode, 0),
-                                                        "element_class" : "<?php echo get_class($this); ?>",
-                                                        "type":"autocomplete",
-                                                        "key": "editval_"+columns[oTable.fnGetPosition( this )[2]]};
-                                                },
-                                                "loaddata": function ( value, settings ) {
-                                                    var aPos = oTable.fnGetData( this.parentNode, 0);
-                                                    return { "id": oTable.fnGetData( this.parentNode, 0),
-                                                        "element_class" : "<?php echo get_class($this); ?>",
-                                                        "type":"select",
-                                                        "key": "editval_"+columns[oTable.fnGetPosition( this )[2]]};
-                                                },
-                                                "type" : 'autocomplete',
-                                                "submit" : submitInPlace,
-                                                "height": "14px",
-                                                "tooltip": tooltipInPlace,
-                                                "indicator" : indicatorInPlace,
-                                                "placeholder" : "",
-                                                "autocomplete" : {
-                                                    /*source: function(request, response) {
-                                                                                                        //console.log($(this).attr('element'));
-                                                                                                        $.ajax({
-                                                                                                            url: urlLoadInPlace,
-                                                                                                            data: {
-                                                                                                                //"id": oTable.fnGetData( this.parentNode, 0),
-                                                                                                                "element_class" : "<?php echo get_class($this); ?>",
-                                                                                                                "type":"autocomplete"
-                                                                                                                //"key": "editval_"+columns[oTable.fnGetPosition( this )[2]]
-                                                                                                            },
-                                                                                                            dataType : 'json',
-                                                                                                            type : 'GET'
-                                                                                                        });
-                                                                                                    },*/
-                                                    url: urlLoadInPlace,
-                                                    /*"change":{"projet":"123"},*/
-                                                    /*"data" : function ( value, settings ) {
-                                                                                                                                                console.log("toto");
-                                                                                                                                                return { //"id": oTable.fnGetData( this.parentNode, 0),
-                                                                                                                                                    "element_class" : "<?php echo get_class($this); ?>",
-                                                                                                                                                    "type":"autocomplete",
-                                                                                                                                                    "id" : "1234"};
-                                                                                                                                                    //"key": "editval_"+columns[oTable.fnGetPosition( this )[2]]};
-                                                                                                                                            },*/
-                                                    "delay"	: 10,
-                                                    "minLength"	: 1,
-                                                    "max"	: 6,
-                                                    "matchCase"	: 1
-                                                    //selectOnly      : 1
-                                                    //inputSeparator  : ';'
-                                                }
-                                            } );
                                         }
             <?php endif; ?>
         <?php endif; ?>
-                    });
-        <?php if ($ColSearch) : ?>
-                        $("tfoot input").keyup( function () {
-                            /* Filter on the column */
-                            var id = $(this).parent().attr("id");
-                            oTable.fnFilter( this.value, id);
-                        } );
-                        /*send selected level value to server */
-                        $("tfoot #level").change( function () {
-                            /* Filter on the column */
-                            var id = $(this).parent().attr("id");
-                            var value = $(this).val();
-                            oTable.fnFilter( value, id);
-                        } );
-                        /*send selected stcomm value to server */
-                        $("tfoot .flat").change( function () {
-                            /* Filter on the column */
-                            var id = $(this).parent().attr("id");
-                            var value = $(this).val();
-                            oTable.fnFilter( value, id);
-                        } );
-        <?php endif; ?>
-                    // Select_all
+        <?php if ($user->rights->$class->edit) : ?>
+                        }).makeEditable({
+                            sUpdateURL: urlSaveInPlace,
+                            "aoColumns": [<?php
+            $nb = count($obj->aoColumns);
+            foreach ($obj->aoColumns as $i => $aRow) {
+                $idx = $aRow->mDataProp;
+                if (isset($aRow->bVisible) && $aRow->bVisible == false)
+                    continue;
 
-                    $('.chSel_all').click(function () {
-                        $(this).closest('table').find('input[name=row_sel]').attr('checked', this.checked);
-                    });
-                    $("tbody tr td .delEnqBtn").live('click', function(){
-                        var aPos = oTable.fnGetPosition(this.parentNode);
-                        var aData = oTable.fnGetData(aPos[0]);
-                        if(aData["name"] === undefined)
-                            var text = aData["label"];
-                        else
-                            var text = aData["name"];
-                        var answer = confirm("<?php echo $langs->trans("Delete"); ?> '"+text+"' ?");
-                        if(answer) {
-                            $.ajax({
-                                type: "GET",
-                                url: "<?php echo DOL_URL_ROOT . '/core/ajax/deleteinplace.php'; ?>",
-                                data: "json=delete&class=<?php echo get_class($this); ?>&id="+aData["_id"],
-                                success: function(msg){
-                                    oTable.fnDeleteRow(aPos[0]);
-                                }
-                            });
+                if (!empty($idx) && $aRow->editable && isset($this->fk_extrafields->fields->$idx->type)) {
+                    print "{";
+                    print "event:'click',";
+                    print "indicator: indicatorInPlace,";
+                    print "tooltip: tooltipInPlace,";
+                    print "placeholder : '',";
+                    print "submit: submitInPlace,";
+                    print "onblur: 'cancel',";
+                    print "height: '14px',";
+                    switch ($this->fk_extrafields->fields->$idx->type) {
+                        case "select" :
+                            print "type: 'select',";
+                            print "loadurl : urlLoadInPlace,";
+                            ?>loaddata: function ( value, settings ) {
+                                                                    return { 
+                                                                        "id": oTable.fnGetData( this.parentNode, 0),
+                                                                        "element_class" : "<?php echo get_class($this); ?>",
+                                                                        "type":"select",
+                                                                        "key": "editval_<?php echo $idx; ?>"
+                                                                    };
+                                                                },<?php
+                            break;
+                        case "text":
+                            print "type: 'text',";
+                            break;
+                        default :
+                            print "type: 'text',";
+                            break;
+                    }
+                    ?>submitdata: function ( value, settings ) {
+                                                return { "id": oTable.fnGetData( this.parentNode, 0),
+                                                    "element_class" : "<?php echo get_class($this); ?>",
+                                                    "type": "<?php echo $this->fk_extrafields->fields->$idx->type; ?>",
+                                                    "key": "editval_<?php echo $idx; ?>"
+                                                };
+                                            },<?php
+                    print "},";
+                } else
+                    print "null,";
+            }
+            ?>
+                        ],
+                        oAddNewRowButtonOptions: { 
+                            icons: { primary: 'ui-icon-plus' }
+                        },
+                        oDeleteRowButtonOptions: {
+                            icons: { primary: 'ui-icon-trash' }
+                        },
+                        oAddNewRowOkButtonOptions: {
+                            label: "<?php echo $langs->trans("Confirm"); ?>",
+                            icons: { primary: 'ui-icon-check' },
+                            name: "action",
+                            value: "add-new"
+                        },
+                        oAddNewRowCancelButtonOptions: { 
+                            label: "<?php echo $langs->trans("Undo"); ?>",
+                            class: "back-class",
+                            name: "action",
+                            value: "cancel-add",
+                            icons: { primary: 'ui-icon-close' }
+                        },
+                        oAddNewRowFormOptions: {
+                            show: "blind",
+                            hide: "blind"
+                        },                                                                                                   
+                        sAddNewRowFormId: "<?php echo $ref_css ?>_formAddNewRow",
+                        sAddNewRowButtonId: "<?php echo $ref_css ?>_btnAddNewRow",
+                        sAddNewRowOkButtonId: "<?php echo $ref_css ?>_btnAddNewRowOk",
+                        sAddNewRowCancelButtonId: "<?php echo $ref_css ?>_btnAddNewRowCancel",
+                        sDeleteRowButtonId: "<?php echo $ref_css ?>_btnDeleteRow"
+        <?php endif; ?>
+            });
+        <?php if ($ColSearch) : ?>
+                $("tfoot input").keyup( function () {
+                    /* Filter on the column */
+                    var id = $(this).parent().attr("id");
+                    oTable.fnFilter( this.value, id);
+                } );
+                /*send selected level value to server */
+                $("tfoot #level").change( function () {
+                    /* Filter on the column */
+                    var id = $(this).parent().attr("id");
+                    var value = $(this).val();
+                    oTable.fnFilter( value, id);
+                } );
+                /*send selected stcomm value to server */
+                $("tfoot .flat").change( function () {
+                    /* Filter on the column */
+                    var id = $(this).parent().attr("id");
+                    var value = $(this).val();
+                    oTable.fnFilter( value, id);
+                } );
+        <?php endif; ?>
+            // Select_all
+            $('.chSel_all').click(function () {
+                $(this).closest('table').find('input[name=row_sel]').attr('checked', this.checked);
+            });
+            $("tbody tr td .delEnqBtn").live('click', function(){
+                var aPos = oTable.fnGetPosition(this.parentNode);
+                var aData = oTable.fnGetData(aPos[0]);
+                if(aData["name"] === undefined)
+                    var text = aData["label"];
+                else
+                    var text = aData["name"];
+                var answer = confirm("<?php echo $langs->trans("Delete"); ?> '"+text+"' ?");
+                if(answer) {
+                    $.ajax({
+                        type: "GET",
+                        url: "<?php echo DOL_URL_ROOT . '/core/ajax/deleteinplace.php'; ?>",
+                        data: "json=delete&class=<?php echo get_class($this); ?>&id="+aData["_id"],
+                        success: function(msg){
+                            oTable.fnDeleteRow(aPos[0]);
                         }
-                        return false;
                     });
-                });
+                }
+                return false;
+            });
+        });
         </script>
         <?php
         //$output.= "});"; // ATTENTION AUTOFILL NOT COMPATIBLE WITH COLVIS !!!!
@@ -1124,17 +1141,17 @@ abstract class nosqlDocument extends CommonObject {
         </div>
         <?php ?>
         <script type="text/javascript" charset="utf-8">
-                $(document).ready(function() {
-                    $("#fd3").fancybox({
-                        'overlayOpacity'	: '0.2',
-                        'transitionIn'		: 'elastic',
-                        'transitionOut'		: 'fade',
-                        'onCleanup'			: function() {
-                            if($('.fd3_pane:first').is(':hidden')){$('.fd3_pane').toggle();$.fancybox.resize();}
-                            $('.fd3_pane label.error').remove();
-                        }
-                    });
-                });
+        $(document).ready(function() {
+            $("#fd3").fancybox({
+                'overlayOpacity'	: '0.2',
+                'transitionIn'		: 'elastic',
+                'transitionOut'		: 'fade',
+                'onCleanup'			: function() {
+                    if($('.fd3_pane:first').is(':hidden')){$('.fd3_pane').toggle();$.fancybox.resize();}
+                    $('.fd3_pane label.error').remove();
+                }
+            });
+        });
         </script>
         <?php
         return 1;
@@ -1297,7 +1314,7 @@ abstract class nosqlDocument extends CommonObject {
             $aRow->values[0]->enable = true;
 
             foreach ($result->rows as $row) {
-				$aRow->values[$row->value->_id] = new stdClass();
+                $aRow->values[$row->value->_id] = new stdClass();
                 $aRow->values[$row->value->_id]->label = $row->value->name;
                 $aRow->values[$row->value->_id]->enable = true;
             }

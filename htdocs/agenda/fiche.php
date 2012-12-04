@@ -29,7 +29,7 @@ require_once(DOL_DOCUMENT_ROOT . "/contact/class/contact.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/user/class/user.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/agenda/class/agenda.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/class/html.formactions.class.php");
-require_once(DOL_DOCUMENT_ROOT . '/comm/propal/class/propal.class.php');
+require_once(DOL_DOCUMENT_ROOT . '/propal/class/propal.class.php');
 require_once(DOL_DOCUMENT_ROOT . "/projet/class/project.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/lib/project.lib.php");
 if ($conf->lead->enabled)

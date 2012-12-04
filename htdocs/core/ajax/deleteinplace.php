@@ -16,10 +16,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- *       \file       htdocs/core/ajax/saveinplace.php
- *       \brief      File to save field value
- */
 if (!defined('NOTOKENRENEWAL'))
     define('NOTOKENRENEWAL', '1'); // Disables token renewal
 if (!defined('NOREQUIREMENU'))
@@ -45,6 +41,7 @@ top_httphead();
 
 //print '<!-- Ajax page called with url '.$_SERVER["PHP_SELF"].'?'.$_SERVER["QUERY_STRING"].' -->'."\n";
 //print_r($_POST);
+//error_log(print_r($_GET, true));
 
 if (!empty($json) && !empty($id) && !empty($class)) {
     $res = dol_include_once("/" . $class . "/class/" . strtolower($class) . ".class.php");

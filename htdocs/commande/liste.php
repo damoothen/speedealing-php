@@ -20,17 +20,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- *	\file       htdocs/commande/liste.php
- *	\ingroup    commande
- *	\brief      Page to list orders
- */
-
-
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
-require_once DOL_DOCUMENT_ROOT.'/commande/class/commande.class.php';
+require_once DOL_DOCUMENT_ROOT . '/core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT . '/core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT . '/commande/class/commande.class.php';
 
 $langs->load('orders');
 $langs->load('deliveries');
@@ -77,16 +70,16 @@ if (!empty($_GET['json'])) {
  * View
  */
 
-$now=dol_now();
+$now = dol_now();
 
 $form = new Form($db);
 $formother = new FormOther($db);
 $formfile = new FormFile($db);
 $companystatic = new Societe($db);
 
-$help_url="EN:Module_Customers_Orders|FR:Module_Commandes_Clients|ES:Módulo_Pedidos_de_clientes";
+$help_url = "EN:Module_Customers_Orders|FR:Module_Commandes_Clients|ES:Módulo_Pedidos_de_clientes";
 $title = $langs->trans('Orders');
-llxHeader('',$title,$help_url);
+llxHeader('', $title, $help_url);
 print_fiche_titre($title);
 ?>
 <div class="dashboard">
@@ -115,10 +108,12 @@ if ($user->rights->commande->creer) {
     print "</span>";
     print "</p>";
 }
-print '</div>';
 
 $i = 0;
 $obj = new stdClass();
+
+print $object->datatablesEdit("listorders", $langs->trans("NewOrder"));
+
 print '<table class="display dt_act" id="listorders" >';
 // Ligne des titres 
 print'<thead>';
@@ -151,6 +146,7 @@ print'</th>';
 $obj->aoColumns[$i]->mDataProp = "ref_client";
 $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->bSearchable = true;
+$obj->aoColumns[$i]->editable = true;
 $i++;
 print'<th class="essential">';
 print $langs->trans('Date');
@@ -160,7 +156,6 @@ $obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->sDefaultContent = "";
 $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("date", "datetime");
-//$obj->aoColumns[$i]->sClass = "edit";
 $i++;
 print'<th class="essential">';
 print $langs->trans('DateEnd');
@@ -170,7 +165,6 @@ $obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->sDefaultContent = "";
 $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("date_livraison", "datetime");
-//$obj->aoColumns[$i]->sClass = "edit";
 $i++;
 
 //print'<th class="essential">';
@@ -180,13 +174,13 @@ $i++;
 //$obj->aoColumns[$i]->sDefaultContent = "";
 //$obj->aoColumns[$i]->fnRender = $contact->datatablesFnRender("contact.name", "url", array('id' => "contact.id"));
 //$i++;
- print'<th class="essential">';
-  print $langs->trans('ActionUserAsk');
-  print'</th>';
-  $obj->aoColumns[$i]->mDataProp = "author";
-  $obj->aoColumns[$i]->sDefaultContent = "";
-  //$obj->aoColumns[$i]->fnRender = $userstatic->datatablesFnRender("author.name", "url", array('id' => "author.id"));
-  $i++; 
+print'<th class="essential">';
+print $langs->trans('ActionUserAsk');
+print'</th>';
+$obj->aoColumns[$i]->mDataProp = "author";
+$obj->aoColumns[$i]->sDefaultContent = "";
+//$obj->aoColumns[$i]->fnRender = $userstatic->datatablesFnRender("author.name", "url", array('id' => "author.id"));
+$i++;
 print'<th class="essential">';
 print $langs->trans("Status");
 print'</th>';
@@ -194,6 +188,7 @@ $obj->aoColumns[$i]->mDataProp = "Status";
 $obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->sDefaultContent = "DRAFT";
 $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("Status", "status");
+$obj->aoColumns[$i]->editable = true;
 $i++;
 print'<th class="essential">';
 print $langs->trans('Action');
@@ -234,7 +229,7 @@ $i++;
 print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search DateEnd") . '" /></th>';
 $i++;
 print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search author") . '" /></th>';
-$i++; 
+$i++;
 //print'<th id="' . $i . '"><input type="text" placeholder="' . $langs->trans("Search Status") . '" /></th>';
 //$i++;
 print'<th id="' . $i . '"></th>';
@@ -248,7 +243,6 @@ print "</table>";
 
 $obj->aaSorting = array(array(2, 'asc'));
 //$obj->bServerSide = true;
-
 //if ($all) {
 //    if ($type == "DONE")
 //        $obj->sAjaxSource = "core/ajax/listdatatables.php?json=actionsDONE&class=" . get_class($object);
@@ -264,6 +258,8 @@ $obj->aaSorting = array(array(2, 'asc'));
 $obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=list";
 
 $object->datatablesCreate($obj, "listorders", true, true);
+
+print '</div>';
 
 
 llxFooter();

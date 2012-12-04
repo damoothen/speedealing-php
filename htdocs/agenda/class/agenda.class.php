@@ -19,11 +19,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- *       \file       htdocs/comm/action/class/actioncomm.class.php
- *       \ingroup    commercial
- *       \brief      File of class to manage agenda events (actions)
- */
 require_once DOL_DOCUMENT_ROOT . '/core/class/commonobject.class.php';
 
 /**     \class      ActionComm
@@ -944,12 +939,8 @@ class Agenda extends nosqlDocument {
          *
          */
 
-        print '<p class="button-height right">';
-        print '<span class="button-group">';
-        print '<a class="button compact icon-star" href="' . strtolower(get_class($this)) . '/fiche.php?action=create&socid=' . $id . '&backtopage=' . $_SERVER['PHP_SELF'] . '?id=' . $id . '">' . $langs->trans("NewAction") . '</a>';
-        print "</span>";
-        print "</p>";
-
+        print $this->datatablesEdit("actions_datatable", $langs->trans("NewAction"));
+        
         print '<table class="display dt_act" id="actions_datatable" >';
         // Ligne des titres
 

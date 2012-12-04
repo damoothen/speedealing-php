@@ -1,6 +1,6 @@
 {
    "_id": "extrafields:Societe",
-   "_rev": "92-13f084247ae057ba65c29d96b4d717ed",
+   "_rev": "94-3fac10dd41ad741591666424b411f835",
    "class": "extrafields",
    "ico": "16-Apartment-Building.png",
    "langs": [
@@ -23,7 +23,7 @@
    ],
    "fields": {
        "name": {
-           "type": "input",
+           "type": "text",
            "length": 60,
            "enable": true,
            "validate": {
@@ -88,7 +88,8 @@
            "aoColumns": {
                "sClass": "center dol_edit",
                "bSearchable": true,
-               "bVisible": true
+               "bVisible": true,
+               "editable": true
            }
        },
        "town": {
@@ -100,7 +101,8 @@
            "aoColumns": {
                "sClass": "dol_edit",
                "bSearchable": true,
-               "bVisible": true
+               "bVisible": true,
+               "editable": true
            }
        },
        "country_id": {

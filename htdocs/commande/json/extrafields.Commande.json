@@ -1,9 +1,16 @@
 {
    "_id": "extrafields:Commande",
+   "_rev": "9-ee70c801d6b5b2e886b913f58258bf50",
    "class": "extrafields",
-    "ico": "16-Document.png",
+   "ico": "16-Document.png",
    "langs": [
        "orders"
+   ],
+   "createList": [
+       "societe",
+       "date",
+       "ref_client",
+       "Status"
    ],
    "fields": {
        "Status": {
@@ -20,24 +27,24 @@
                "DRAFT": {
                    "enable": true,
                    "label": "StatusOrderDraft",
-                   "cssClass": "gray-gradient"
+                   "cssClass": "grey-gradient"
                },
-                "VALIDATED": {
+               "VALIDATED": {
                    "enable": true,
                    "label": "StatusOrderValidated",
                    "cssClass": "red-gradient"
                },
-                "TO_BILL": {
+               "TO_BILL": {
                    "enable": true,
                    "label": "StatusOrderToBill2",
                    "cssClass": "orange-gradient"
                },
-                "PROCESSED": {
+               "PROCESSED": {
                    "enable": true,
                    "label": "StatusOrderProcessed",
                    "cssClass": "green-gradient"
                },
-                "CANCELED": {
+               "CANCELED": {
                    "enable": true,
                    "label": "StatusOrderCanceled",
                    "cssClass": "black-gradient"
@@ -87,6 +94,17 @@
                "bVisible": true
            },
            "dict": "dict:fk_input_reason"
+       },
+       "societe": {
+           "enable": true,
+           "class": "Societe",
+           "view": "list",
+           "label": "Company"
+       },
+       "ref_client": {
+           "type": "text",
+           "enable": true,
+           "label": "RefCustomer"
        }
    }
 }

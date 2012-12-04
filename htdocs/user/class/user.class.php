@@ -476,6 +476,26 @@ class User extends nosqlDocument {
         }
 
         //print_r($this->rights);
+        
+        // Convert for old right definition
+        if($this->rights->societe->creer)
+            $this->rights->societe->edit = true;
+        if($this->rights->societe->supprimer)
+            $this->rights->societe->delete = true;
+        if($this->rights->societe->contact->creer)
+            $this->rights->contact->edit = true;
+        if($this->rights->societe->contact->supprimer)
+            $this->rights->contact->delete = true;
+        if($this->rights->agenda->myactions->create)
+            $this->rights->agenda->edit = true;
+        if($this->rights->agenda->myactions->delete)
+            $this->rights->agenda->delete = true;
+        if($this->rights->commande->creer)
+            $this->rights->commande->edit = true;
+        if($this->rights->commande->supprimer)
+            $this->rights->commande->delete = true;
+        
+        
 
         if (!$moduletag) {
             // Si module etait non defini, alors on a tout charge, on peut donc considerer

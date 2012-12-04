@@ -20,11 +20,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * 	\file       htdocs/comm/list.php
- * 	\ingroup    commercial societe
- * 	\brief      List of customers
- */
 require '../main.inc.php';
 
 $langs->load("companies");
@@ -83,6 +78,8 @@ print '<p class="button-height right">';
 print '<a class="button icon-star" href="' . strtolower(get_class($object)) . '/fiche.php?action=create">' . $langs->trans("NewThirdParty") . '</a>';
 print "</p>";
 
+print $object->datatablesEdit("societe", $langs->trans("NewThirdParty"));
+
 $i = 0;
 $obj = new stdClass();
 print '<table class="display dt_act" id="societe" >';
@@ -115,7 +112,7 @@ if ($user->rights->societe->client->voir) {
     $obj->aoColumns[$i]->bUseRendered = true;
     $obj->aoColumns[$i]->bSearchable = true;
     $obj->aoColumns[$i]->sDefaultContent = "";
-    $obj->aoColumns[$i]->sClass = "dol_select";
+    $obj->aoColumns[$i]->editable = true;
     $user_tmp = new User($db);
     $obj->aoColumns[$i]->fnRender = $user->datatablesFnRender("commercial_id.name", "url", array('id' => "commercial_id.id"));
     $i++;
@@ -161,9 +158,10 @@ print $langs->trans("Status");
 print'</th>';
 $obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "Status";
-$obj->aoColumns[$i]->sClass = "dol_select center";
+$obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->sWidth = "100px";
 $obj->aoColumns[$i]->sDefaultContent = "ST_NEVER";
+$obj->aoColumns[$i]->editable = true;
 $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("Status", "status");
 $i++;
 print'<th class="essential">';
@@ -171,8 +169,9 @@ print $langs->trans("ProspectLevelShort");
 print'</th>';
 $obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "prospectlevel";
-$obj->aoColumns[$i]->sClass = "dol_select center";
+$obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->sDefaultContent = "PL_NONE";
+$obj->aoColumns[$i]->editable = true;
 $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("prospectlevel", "status");
 $i++;
 print'<th class="essential">';

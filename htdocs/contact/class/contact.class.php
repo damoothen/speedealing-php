@@ -848,11 +848,7 @@ class Contact extends nosqlDocument {
          *
          */
 
-        print '<p class="button-height right">';
-        print '<span class="button-group">';
-        print '<a class="button compact icon-star" href="' . strtolower(get_class($object)) . '/fiche.php?action=create&socid=' . $id . '&backtopage=' . $_SERVER['PHP_SELF'] . '?id=' . $id . '">' . $langs->trans("NewContact") . '</a>';
-        print "</span>";
-        print "</p>";
+        print $this->datatablesEdit("contacts_datatable");
 
         print '<table class="display dt_act" id="contacts_datatable" >';
         // Ligne des titres
