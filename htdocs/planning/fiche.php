@@ -29,13 +29,14 @@ require_once(DOL_DOCUMENT_ROOT . "/contact/class/contact.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/user/class/user.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/agenda/class/agenda.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/class/html.formactions.class.php");
-require_once(DOL_DOCUMENT_ROOT . '/comm/propal/class/propal.class.php');
+require_once(DOL_DOCUMENT_ROOT . '/propal/class/propal.class.php');
 require_once(DOL_DOCUMENT_ROOT . "/projet/class/project.class.php");
 require_once(DOL_DOCUMENT_ROOT . "/core/lib/project.lib.php");
-if ($conf->lead->enabled)
-    dol_include_once("/lead/class/lead.class.php");
-if ($conf->lead->enabled)
-    dol_include_once("/lead/lib/lead.lib.php");
+if (! empty($conf->lead->enabled)) {
+	dol_include_once("/lead/class/lead.class.php");
+	dol_include_once("/lead/lib/lead.lib.php");
+}
+
 
 $langs->load("companies");
 $langs->load("commercial");
@@ -182,7 +183,7 @@ if ($action == 'add_action') {
       $userdone->fetch($_POST["doneby"]);
       }
       $object->userdone = $userdone;
-     * 
+     *
      */
 
     if (strlen($_POST["doneby"]) > 0)
@@ -1276,7 +1277,7 @@ if ($id) {
         print '</div>';
 
         print end_box();
-        
+
         print $object->show_notes();
     }
 }

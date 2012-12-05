@@ -22,7 +22,8 @@
  */
 
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT . '/planning/class/planning.class.php';
+if (! class_exists('Planning'))
+	require DOL_DOCUMENT_ROOT . '/planning/class/planning.class.php';
 
 $langs->load("companies");
 $langs->load("customers");
@@ -129,8 +130,11 @@ foreach ($object->fk_extrafields->longList as $aRow) {
     $obj->aoColumns[$i] = $object->fk_extrafields->fields->$aRow->aoColumns;
     if (isset($object->fk_extrafields->$aRow->default))
         $obj->aoColumns[$i]->sDefaultContent = $object->fk_extrafields->$aRow->default;
-    else
-        $obj->aoColumns[$i]->sDefaultContent = "";
+    else {
+    	if (! is_object($obj->aoColumns[$i]))
+    		$obj->aoColumns[$i] = new stdClass(); // avoid error with php 5.4 strict mode
+    	$obj->aoColumns[$i]->sDefaultContent = "";
+    }
     $obj->aoColumns[$i]->mDataProp = $aRow;
     $i++;
 }
