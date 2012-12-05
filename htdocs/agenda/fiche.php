@@ -5,7 +5,7 @@
  * Copyright (C) 2005      Simon TOSSER         <simon@kornog-computing.com>
  * Copyright (C) 2005-2012 Regis Houssin        <regis@dolibarr.fr>
  * Copyright (C) 2010      Juanjo Menent        <jmenent@2byte.es>
- * Copyright (C) 2010-2011 Herve Prot           <herve.prot@symeos.com>
+ * Copyright (C) 2010-2012 Herve Prot           <herve.prot@symeos.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,21 +21,32 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-require("../main.inc.php");
-require_once(DOL_DOCUMENT_ROOT . "/agenda/lib/agenda.lib.php");
-require_once(DOL_DOCUMENT_ROOT . "/core/lib/project.lib.php");
-require_once(DOL_DOCUMENT_ROOT . "/core/lib/date.lib.php");
-require_once(DOL_DOCUMENT_ROOT . "/contact/class/contact.class.php");
-require_once(DOL_DOCUMENT_ROOT . "/user/class/user.class.php");
-require_once(DOL_DOCUMENT_ROOT . "/agenda/class/agenda.class.php");
-require_once(DOL_DOCUMENT_ROOT . "/core/class/html.formactions.class.php");
-require_once(DOL_DOCUMENT_ROOT . '/propal/class/propal.class.php');
-require_once(DOL_DOCUMENT_ROOT . "/projet/class/project.class.php");
-require_once(DOL_DOCUMENT_ROOT . "/core/lib/project.lib.php");
-if ($conf->lead->enabled)
-    dol_include_once("/lead/class/lead.class.php");
-if ($conf->lead->enabled)
-    dol_include_once("/lead/lib/lead.lib.php");
+require '../main.inc.php';
+
+// For best performance, it's preferred to use "class_exists + require" instead "require_once"
+
+require_once DOL_DOCUMENT_ROOT . '/core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT . '/agenda/lib/agenda.lib.php';
+if (! class_exists('Agenda'))
+	require DOL_DOCUMENT_ROOT . '/agenda/class/agenda.class.php';
+if (! class_exists('Contact'))
+	require DOL_DOCUMENT_ROOT . '/contact/class/contact.class.php';
+if (! class_exists('User'))
+	require DOL_DOCUMENT_ROOT . '/user/class/user.class.php';
+if (! class_exists('FormActions'))
+	require DOL_DOCUMENT_ROOT . '/core/class/html.formactions.class.php';
+if (! empty($conf->propal->enabled) && ! class_exists('Propal'))
+	require DOL_DOCUMENT_ROOT . '/propal/class/propal.class.php';
+if (! empty($conf->project->enabled)) {
+	require_once DOL_DOCUMENT_ROOT . '/core/lib/project.lib.php';
+	if (! class_exists('User'))
+		require DOL_DOCUMENT_ROOT . '/projet/class/project.class.php';
+}
+if (! empty($conf->lead->enabled)) {
+	dol_include_once("/lead/class/lead.class.php");
+	dol_include_once("/lead/lib/lead.lib.php");
+}
+
 
 $langs->load("companies");
 $langs->load("commercial");
@@ -182,7 +193,7 @@ if ($action == 'add_action') {
       $userdone->fetch($_POST["doneby"]);
       }
       $object->userdone = $userdone;
-     * 
+     *
      */
 
     if (strlen($_POST["doneby"]) > 0)
@@ -1276,7 +1287,7 @@ if ($id) {
         print '</div>';
 
         print end_box();
-        
+
         print $object->show_notes();
     }
 }

@@ -20,10 +20,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ *	\file       htdocs/commande/liste.php
+ *	\ingroup    commande
+ *	\brief      Page to list orders
+ */
+
+
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT . '/core/class/html.formfile.class.php';
-require_once DOL_DOCUMENT_ROOT . '/core/class/html.formother.class.php';
-require_once DOL_DOCUMENT_ROOT . '/commande/class/commande.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/commande/class/commande.class.php';
 
 $langs->load('orders');
 $langs->load('deliveries');
@@ -70,16 +77,16 @@ if (!empty($_GET['json'])) {
  * View
  */
 
-$now = dol_now();
+$now=dol_now();
 
 $form = new Form($db);
 $formother = new FormOther($db);
 $formfile = new FormFile($db);
 $companystatic = new Societe($db);
 
-$help_url = "EN:Module_Customers_Orders|FR:Module_Commandes_Clients|ES:Módulo_Pedidos_de_clientes";
+$help_url="EN:Module_Customers_Orders|FR:Module_Commandes_Clients|ES:Módulo_Pedidos_de_clientes";
 $title = $langs->trans('Orders');
-llxHeader('', $title, $help_url);
+llxHeader('',$title,$help_url);
 print_fiche_titre($title);
 ?>
 <div class="dashboard">
@@ -120,6 +127,7 @@ print'<thead>';
 print'<tr>';
 print'<th>';
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "_id";
 $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->bSearchable = false;
@@ -128,6 +136,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans("Ref");
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "ref";
 $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->bSearchable = true;
@@ -136,6 +145,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans('Company');
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "client.name";
 $obj->aoColumns[$i]->sDefaultContent = "";
 $obj->aoColumns[$i]->fnRender = $societe->datatablesFnRender("client.name", "url", array('id' => "client.id"));
@@ -143,6 +153,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans("RefCustomer");
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "ref_client";
 $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->bSearchable = true;
@@ -151,15 +162,18 @@ $i++;
 print'<th class="essential">';
 print $langs->trans('Date');
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "date";
 $obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->sDefaultContent = "";
 $obj->aoColumns[$i]->bUseRendered = false;
 $obj->aoColumns[$i]->fnRender = $object->datatablesFnRender("date", "datetime");
+//$obj->aoColumns[$i]->sClass = "edit";
 $i++;
 print'<th class="essential">';
 print $langs->trans('DateEnd');
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "date_livraison";
 $obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->sDefaultContent = "";
@@ -174,16 +188,18 @@ $i++;
 //$obj->aoColumns[$i]->sDefaultContent = "";
 //$obj->aoColumns[$i]->fnRender = $contact->datatablesFnRender("contact.name", "url", array('id' => "contact.id"));
 //$i++;
-print'<th class="essential">';
-print $langs->trans('ActionUserAsk');
-print'</th>';
-$obj->aoColumns[$i]->mDataProp = "author";
-$obj->aoColumns[$i]->sDefaultContent = "";
-//$obj->aoColumns[$i]->fnRender = $userstatic->datatablesFnRender("author.name", "url", array('id' => "author.id"));
-$i++;
+ print'<th class="essential">';
+  print $langs->trans('ActionUserAsk');
+  print'</th>';
+  $obj->aoColumns[$i] = new stdClass();
+  $obj->aoColumns[$i]->mDataProp = "author";
+  $obj->aoColumns[$i]->sDefaultContent = "";
+  //$obj->aoColumns[$i]->fnRender = $userstatic->datatablesFnRender("author.name", "url", array('id' => "author.id"));
+  $i++;
 print'<th class="essential">';
 print $langs->trans("Status");
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "Status";
 $obj->aoColumns[$i]->sClass = "center";
 $obj->aoColumns[$i]->sDefaultContent = "DRAFT";
@@ -193,6 +209,7 @@ $i++;
 print'<th class="essential">';
 print $langs->trans('Action');
 print'</th>';
+$obj->aoColumns[$i] = new stdClass();
 $obj->aoColumns[$i]->mDataProp = "";
 $obj->aoColumns[$i]->sClass = "center content_actions";
 $obj->aoColumns[$i]->sWidth = "60px";
@@ -243,6 +260,7 @@ print "</table>";
 
 $obj->aaSorting = array(array(2, 'asc'));
 //$obj->bServerSide = true;
+
 //if ($all) {
 //    if ($type == "DONE")
 //        $obj->sAjaxSource = "core/ajax/listdatatables.php?json=actionsDONE&class=" . get_class($object);
@@ -253,7 +271,7 @@ $obj->aaSorting = array(array(2, 'asc'));
 //        $obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=listDONEByUser";
 //    else
 //        $obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=listTODOByUser";
-//        
+//
 //}
 $obj->sAjaxSource = $_SERVER["PHP_SELF"] . "?json=list";
 

@@ -951,7 +951,7 @@ class Form {
 
 
 
-                    
+
 // Multiprice
                 if ($price_level >= 1) {  // If we need a particular price level (from 1 to 6)
                     $sql = "SELECT price, price_ttc, price_base_type, tva_tx";
@@ -2008,7 +2008,7 @@ class Form {
             print '<input type="hidden" name="token" value="' . $_SESSION['newtoken'] . '">';
             print '<table class="nobordernopadding" cellpadding="0" cellspacing="0">';
             print '<tr><td>';
-            print $this->select_users($selected, $htmlname, 1, $exclude, 0, $include);
+            print $this->select_users($selected, $htmlname, 1, $exclude, 0, $include); // TODO where is this function
             print '</td>';
             print '<td align="left"><input type="submit" class="button" value="' . $langs->trans("Modify") . '"></td>';
             print '</tr></table></form>';
